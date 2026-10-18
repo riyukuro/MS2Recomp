@@ -88,6 +88,7 @@ public:
     void FUN_1409c6a20(const CStringW& strA, const CStringW& strB);     // set a tooltip text pair (ItemInfoSlot exchange scroll)
     void FUN_1409c7060(const CStringW& strKey, const CStringW& strB);   // set a keyed tooltip text pair (ItemInfoSlot exchange scroll)
     void FUN_1409db7b0(MS2Ptr<CItem> spItem);                            // compare against this item (by value: callee destroys)
+    void FUN_1409db930(MS2Ptr<CItem> spCompare, MS2Ptr<CItem> spItem);   // item tooltip with an optional comparison item (by value: callee destroys)
 
 private:
     __int64 m_40; unsigned m_48; unsigned m_pad_4c; CStringW m_50; void* m_pad_58;   // m_50: text (destroyed by ~ASTooltip, aseffect.cpp)
