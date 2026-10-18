@@ -1,0 +1,3 @@
+23c
+const GUID IID_NiD3DXEffectStateManager = {0};    // MSVC zero-initialises (C4268)
+.

@@ -1,0 +1,23 @@
+56a
+
+    // MS2: helper for the wchar_t overloads (not in the game binary). Converts
+    // with the thread ANSI code page; returns false if the path does not fit.
+    static bool MS2WideToNarrowPath(const wchar_t* pwcPath, char* pcPath,
+        unsigned int uiPathLen);
+.
+39a
+    virtual NiPixelData* ReadImageFile(const wchar_t* pwcFilename,
+        NiPixelData* pkOptDest);
+.
+35a
+    virtual bool ReadImageFileInfo(const wchar_t* pwcFilename,
+        NiPixelFormat& kFmt, bool& bMipmap, unsigned int& uiWidth,
+        unsigned int& uiHeight, unsigned int& uiNumFaces);
+.
+33a
+    // MS2: Nexon added wchar_t overloads of the three file functions. In the
+    // game each wide overload directly follows its narrow one (slots 3/4,
+    // 5/6, 7/8). MSVC groups overloads at the first declaration in reverse
+    // order, so the wide overload must be declared first.
+    virtual bool CanReadImageFile(const wchar_t* pwcFilename) const;
+.

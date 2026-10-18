@@ -1,0 +1,76 @@
+1402a
+// MS2: Nexon addition (game 0x141d3ac10); a copy of the narrow version that
+// calls the wchar_t overloads of ReadImageFileInfo and ReadImageFile.
+NiPixelData* NiDevImageConverter::GenerateMipmapPyramidFromFiles(
+    const wchar_t* apwcFilenames[], unsigned int uiNumLevels,
+    const NiPixelData* pkSrc)
+{
+    if (!apwcFilenames[0])
+        return 0;
+
+    NiPixelData* pkDest;
+    NiPixelFormat kFmt;
+    bool bMipmap;
+    unsigned int uiWidth;
+    unsigned int uiHeight;
+    unsigned int uiNumFaces;
+
+    if (ReadImageFileInfo(apwcFilenames[0], kFmt, bMipmap, uiWidth, uiHeight,
+        uiNumFaces))
+    {
+        if (uiNumFaces != 1)
+            return 0;
+
+        pkDest = NiNew NiPixelData(uiWidth, uiHeight, kFmt, uiNumLevels);
+
+        if (!pkDest)
+            return 0;
+
+        for (unsigned int i = 0; i < uiNumLevels; i++)
+        {
+            if (!apwcFilenames[i])
+            {
+                NiDelete pkDest;
+                return 0;
+            }
+
+            NiPixelDataPtr spLevel;
+
+            if (i == 0 && pkSrc)
+                spLevel = (NiPixelData*)pkSrc;
+            else
+                spLevel = ReadImageFile(apwcFilenames[i], NULL);
+
+            if (!spLevel)
+            {
+                NiDelete pkDest;
+                return 0;
+            }
+
+            size_t stDestSize = pkDest->GetSizeInBytes(i);
+
+            if (stDestSize != spLevel->GetSizeInBytes())
+            {
+                NiDelete pkDest;
+                return 0;
+            }
+
+            NiMemcpy(pkDest->GetPixels(i), spLevel->GetPixels(), stDestSize);
+
+            if (!i && kFmt.GetPalettized())
+            {
+                // Use the palette from the base image
+                pkDest->SetPalette(spLevel->GetPalette());
+            }
+        }
+    }
+    else
+    {
+        return 0;
+    }
+
+    return pkDest;
+}
+
+//--------------------------------------------------------------------------------------------------
+.

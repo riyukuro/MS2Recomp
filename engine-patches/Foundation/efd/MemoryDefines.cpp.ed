@@ -1,0 +1,19 @@
+170a
+    if (!pvMem)  // MS2: v2525
+        throw std::bad_alloc();
+    return pvMem;
+.
+165@74s "" "  // MS2: v2525"
+165@6s "turn" "m ="
+165@4s "r" "pvM"
+78a
+    if (!pvMem)  // MS2: v2525
+        throw std::bad_alloc();
+    return pvMem;
+.
+73@72s "" "  // MS2: v2525"
+73@6s "turn" "m ="
+73@4s "r" "void* pvM"
+16a
+#include <new>  // MS2: v2525
+.

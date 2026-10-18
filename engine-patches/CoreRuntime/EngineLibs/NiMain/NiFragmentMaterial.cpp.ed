@@ -1,0 +1,13 @@
+558c
+        if (!pkShaderFragDesc) continue;  // MS2: v2525
+.
+553c
+        if (!pkShader) continue;  // MS2: v2525
+.
+460,461c
+    NiGetStudioShaderContext().m_pkCurrentObject = pkGeometry; NiShader* pkShader = GenerateShader(spMatDesc);  // MS2: v2525
+    NiGetStudioShaderContext().m_pkCurrentObject = NULL; return pkShader;
+.
+12c
+#include "NiStudioShaderContext.h" // gb-nimain-a (replaces a comment line)  // MS2: v2525
+.

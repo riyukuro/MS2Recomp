@@ -1,0 +1,9 @@
+34c
+#include "d3dcompiler.h"
+.
+16c
+#include "initguid.h"
+.
+14c
+#include "D3DX11.h"
+.

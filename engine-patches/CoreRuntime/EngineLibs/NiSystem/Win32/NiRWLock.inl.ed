@@ -1,0 +1,5 @@
+53@66s ")" ""
+53@29s "static_cast<NiUInt32>(" ""
+31c
+    efd::AtomicIncrement(m_uiNumReaders);
+.

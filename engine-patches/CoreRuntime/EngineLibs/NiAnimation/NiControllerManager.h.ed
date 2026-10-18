@@ -1,0 +1,26 @@
+303a
+
+    // MS2: Nexon added a hash map at +0x100 (sizeof 256 -> 288): an NiTMap
+    // with 37 buckets, an 8-byte POD key and a float value (game vtable
+    // 0x143000b60: SetValue stores a float at item+0x10, NewItem allocates
+    // 24-byte items through NiTDefaultAllocator). The engine code never
+    // touches it except RemoveAll in the destructor; key meaning unknown.
+    NiTMap<const void*, float> m_kMS2FloatMap;
+.
+71a
+
+    // MS2: stores a float for a sequence data in m_kMS2FloatMap (exe 0x1409a1f80, instantiated by
+    // ?\animationmanager.cpp; its only caller is NiActorManager::SetTargetAnimation, which passes
+    // its float argument). Name inferred: the exe's COMDAT order puts it between
+    // NiControllerSequence::SetOffset and AnimationService::SetTargetAnimation.
+    void SetSequenceDataValue(const NiSequenceData* pkSeqData, float fValue)
+    {
+        m_kMS2FloatMap.SetAt(pkSeqData, fValue);
+    }
+.
+34a
+    friend class NiControllerSequence;  // MS2: reads m_kMS2FloatMap
+.
+20a
+#include <NiTMap.h> // MS2
+.

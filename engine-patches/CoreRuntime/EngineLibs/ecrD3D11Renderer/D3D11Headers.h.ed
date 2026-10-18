@@ -1,0 +1,10 @@
+34c
+#include <d3d9.h>
+.
+29,30c
+#include <d3dcompiler.h>
+#include <dxgi.h>
+.
+27c
+#include <d3d11.h>
+.

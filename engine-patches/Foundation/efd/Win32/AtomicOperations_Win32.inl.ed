@@ -1,0 +1,40 @@
+82a
+#if defined(EE_ARCH_64)  // studio x64 port (inferred bodies)  // MS2: v2525
+#define EE_STUDIO_ATOMIC64 1  // lets unit-local stand-ins step aside
+inline efd::SInt64 AtomicIncrement(efd::SInt64& value)
+{
+    return InterlockedIncrement64((LONGLONG*)&value);
+}
+inline efd::SInt64 AtomicDecrement(efd::SInt64& value)
+{
+    return InterlockedDecrement64((LONGLONG*)&value);
+}
+inline efd::SInt64 AtomicIncrement(volatile efd::SInt64& value)
+{
+    return InterlockedIncrement64((volatile LONGLONG*)&value);
+}
+inline efd::SInt64 AtomicDecrement(volatile efd::SInt64& value)
+{
+    return InterlockedDecrement64((volatile LONGLONG*)&value);
+}
+inline efd::UInt64 AtomicIncrement(efd::UInt64& value)
+{
+    return InterlockedIncrement64((LONGLONG*)&value);
+}
+inline efd::UInt64 AtomicDecrement(efd::UInt64& value)
+{
+    EE_ASSERT(value > 0);
+    return InterlockedDecrement64((LONGLONG*)&value);
+}
+inline efd::UInt64 AtomicIncrement(volatile efd::UInt64& value)
+{
+    return InterlockedIncrement64((volatile LONGLONG*)&value);
+}
+inline efd::UInt64 AtomicDecrement(volatile efd::UInt64& value)
+{
+    EE_ASSERT(value > 0);
+    return InterlockedDecrement64((volatile LONGLONG*)&value);
+}
+//-------------------------------------------------------------------------------------------------
+#endif
+.

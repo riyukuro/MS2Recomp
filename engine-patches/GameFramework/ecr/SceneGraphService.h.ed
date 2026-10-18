@@ -1,0 +1,16 @@
+1123,1124c
+    // MS2: virtual and out of line in the MS2 engine build (vftable slots 33/34).
+    virtual void AddToUpdate(SceneGraphData* pData);
+    virtual void RemoveFromUpdate(SceneGraphData* pData);
+.
+1035a
+        // MS2: two extra fields in the MS2 engine build (SceneGraphData is 0x78, m_attached at
+        // +0x48, m_flags at +0x70): the dynamic-update bucket and the position inside it.
+        efd::UInt32 m_ms2UpdateBucket;
+        efd::UInt32 m_ms2UpdateBucketIndex;
+
+.
+376c
+    // MS2: virtual in the MS2 engine build (vftable slot 22, called through the vptr).
+    virtual efd::Bool ForEachEntitySceneGraph(EntitySceneGraphFunctor& functor);
+.

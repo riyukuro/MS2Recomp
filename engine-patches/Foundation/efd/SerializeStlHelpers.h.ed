@@ -1,0 +1,5 @@
+61@63s "" "  // MS2: v2525"
+61@41s "" "_t"
+33c
+        efd::basic_string<CHAR_TYPE, efd::char_traits<CHAR_TYPE>, efd::CustomAllocator<CHAR_TYPE> >& io_str,  // MS2: v2525
+.

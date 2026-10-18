@@ -1,0 +1,38 @@
+408a
+
+    // MS2: sequence data that is loaded but not yet added to the controller manager (+0x100; the
+    // SDK members behind it shift by 0x20). SetTargetAnimation moves an entry into
+    // m_spManager / m_kSeqDataMap on first use. Engine ctor 0x141c3d300 builds it (37 buckets)
+    // between m_kSeqDataMap (+0xe0) and m_kCallbacks (+0x120); dtor 0x141c3d920 destroys it in
+    // that order; m_kExtraSequenceMap is at +0x138, sizeof 0x158 (Create allocates 0x158).
+    NiTPointerMap<SequenceID, NiSequenceDataPtr> m_kMS2PendingSeqDataMap;
+.
+263c
+    virtual NiActorManager* CloneOnlyAnimation(NiAVObject* pkAVObject, // MS2: virtual (slot 5)
+        bool bCumulativeAnimation);
+.
+164c
+    // MS2: Nexon's SetTargetAnimation takes a per-sequence float that is stored in the controller
+    // manager (NiControllerManager::SetSequenceDataValue) and a force flag that Resets the actor
+    // first; sequence data still in m_kMS2PendingSeqDataMap is moved into the manager on first
+    // use (exe 0x1409a20a0, instantiated by ?\animationmanager.cpp). The defaults are not from
+    // the exe (every game caller passes all three); they keep the SDK call sites compiling.
+    inline bool SetTargetAnimation(SequenceID eSequenceID, float fValue = 1.0f,
+        bool bForce = false);
+.
+159c
+    virtual void Update(float fTime); // MS2: virtual (slot 4)
+.
+114@69s "" " // MS2: virtual (slot 3)"
+114@3s "" " virtual"
+36a
+    // MS2: Nexon gave NiActorManager run-time type info and made Clone, Update and
+    // CloneOnlyAnimation(NiAVObject*, bool) virtual. Exe primary vftable 0x143001978 (no RTTI
+    // COL): 0 scalar deleting dtor 0x141c3e460, 1 NiRefObject::DeleteThis 0x141d16bf0,
+    // 2 GetRTTI 0x141c42470 (-> ms_RTTI 0x143af8988, root RTTI "NiActorManager", initialised in
+    // the engine .text$di at 0x140120a40), 3 Clone 0x141c3f950, 4 Update 0x141c45340,
+    // 5 CloneOnlyAnimation 0x141c3ff70. MS2ActorManager (src/ms2/client/ms2/ms2actormanager.h)
+    // overrides 0, 2, 3 and 5. sizeof 0x138 -> 0x158 (m_kMS2PendingSeqDataMap below).
+    NiDeclareRTTI;
+
+.

@@ -1,0 +1,15 @@
+61a
+    // MS2: Nexon added a wchar_t overload (game slot 16, after the narrow one
+    // in slot 15); declared first because of MSVC's overload ordering.
+    virtual NiPixelData* GenerateMipmapPyramidFromFiles(
+        const wchar_t* apwcFilenames[], unsigned int uiNumLevels,
+        const NiPixelData* pkSrc = NULL);
+.
+31a
+    // MS2: the game also overrides the wchar_t overloads added to
+    // NiImageConverter (natively wide); here the base versions are used.
+    using NiImageConverter::CanReadImageFile;
+    using NiImageConverter::ReadImageFileInfo;
+    using NiImageConverter::ReadImageFile;
+
+.

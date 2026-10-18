@@ -1,0 +1,5 @@
+145c
+    NiDeclareDefaultIndexedBitfieldEntry(ALPHATEST,  1, PSSMWHICHLIGHT, 4)
+    NiDeclareDefaultIndexedBitfieldEntry(GBNB_RESERVED5, 2, ALPHATEST, 4)
+    NiDeclareDefaultLastIndexedBitfieldEntry(HEIGHTFOG, 1, GBNB_RESERVED5, 4)       
+.

@@ -1,0 +1,11 @@
+555c
+    // x64 port: m_uiMeshSize is a size_t; the NIF field is 32 bits
+    unsigned int uiMeshSize = 0;
+    NiStreamLoadBinary(kStream, uiMeshSize);
+    m_uiMeshSize = uiMeshSize;
+.
+524c
+    // x64 port: m_uiMeshSize is a size_t; the NIF field is 32 bits
+    unsigned int uiMeshSize = (unsigned int)m_uiMeshSize;
+    NiStreamSaveBinary(kStream, uiMeshSize);
+.

@@ -1,0 +1,9 @@
+82c
+    if (uiBind < GetBindingCount()) return m_kBindings.GetAt(uiBind); return NULL;  // MS2: v2525
+.
+54c
+    if (uiFrag < GetNodeCount()) return m_kNodes.GetAt(uiFrag); return NULL;  // MS2: v2525
+.
+47c
+    if (!pkFrag) return;  // MS2: v2525
+.

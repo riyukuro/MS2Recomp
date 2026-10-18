@@ -1,0 +1,6 @@
+647a
+    bool HandleCalculateHeightFog(Context& kContext,
+        NiMaterialResource* pkWorldPos);
+.
+343@25s "6" "8"
+337@26s "8" "9"

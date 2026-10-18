@@ -1,0 +1,3 @@
+79a
+        EE_LOG(efd::kMessageService, efd::ILogger::kLVL0, ("New Class : 0x%08X, 0x%08X, 0x%08X", newMsgClassID, BaseMessageClass::CLASS_ID, baseClassID)); // MS2: exe 0x1411d1670 logs here (imessage.inl line 80)
+.

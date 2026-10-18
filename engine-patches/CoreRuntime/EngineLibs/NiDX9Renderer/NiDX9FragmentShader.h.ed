@@ -1,0 +1,5 @@
+76c
+    // MS2: virtual in the game (last slot, 38; shared by
+    // NiDX9ShadowWriteShader and overridable by the game's MS2FragmentShader).
+    virtual void PrepareTextureStage(
+.

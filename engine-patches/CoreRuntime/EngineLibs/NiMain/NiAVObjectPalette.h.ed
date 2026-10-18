@@ -1,0 +1,6 @@
+31a
+    // MS2: Nexon added this pure virtual (vtable slot 19, right after
+    // GetAVObject). Real name unknown; see NiAVObject::GetObjectByNameExcluding.
+    virtual NiAVObject* GetAVObjectExcluding(const char* pcName,
+        unsigned int usExcludeFlags) = 0;
+.

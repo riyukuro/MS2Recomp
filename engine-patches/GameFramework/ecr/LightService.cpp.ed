@@ -1,0 +1,11 @@
+519,520c
+        NiNode* pNode = NULL;
+        NiNode* pNodeVal = NULL;
+        NiTMapIterator kPos = affectedNodeList.GetFirstPos();
+        affectedNodeList.GetNext(kPos, pNode, pNodeVal);
+        affectedNodeList.RemoveAt(pNode);
+.
+516c
+    NiTPointerMap<NiNode*, NiNode*>& affectedNodeList =
+        const_cast<NiTPointerMap<NiNode*, NiNode*>&>(pLight->GetAffectedNodeList());
+.

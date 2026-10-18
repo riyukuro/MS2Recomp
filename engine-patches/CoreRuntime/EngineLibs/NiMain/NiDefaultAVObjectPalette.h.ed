@@ -1,0 +1,5 @@
+32a
+    // MS2: Nexon addition (game 0x141c3a800).
+    virtual NiAVObject* GetAVObjectExcluding(const char* pcName,
+        unsigned int usExcludeFlags);
+.

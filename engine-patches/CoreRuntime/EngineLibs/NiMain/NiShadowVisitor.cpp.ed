@@ -1,0 +1,39 @@
+115@57s "kIter" "ui"
+115@52s "Nex" "A"
+112,113c
+    for (unsigned int ui = 0; ui < kUnaffectedReceiverList.GetSize(); ui++)
+.
+109c
+    // MS2: the receiver list is an NiTPrimitiveSet in the game.
+    const NiTPrimitiveSet<NiNode*>& kUnaffectedReceiverList =
+.
+100c
+    NiTListIterator kIter = kUnaffectedNodeList.GetHeadPos();  // MS2: v2525
+.
+92c
+        NiNode* pkKey; NiNode* pkNode; kAffectedNodeList.GetNext(kMapIter, pkKey, pkNode);
+.
+90c
+    while (kMapIter)
+.
+89@49s "Head" "First"
+89@21s "" "Map"
+89@7s "List" "Map"
+88c
+    const NiTPointerMap<NiNode*, NiNode*>& kAffectedNodeList = pkDynEffect->GetAffectedNodeList();  // MS2: v2525
+.
+54c
+    NiTListIterator kIter = kUnaffectedNodeList.GetHeadPos();  // MS2: v2525
+.
+46c
+        NiNode* pkKey; NiNode* pkNode; kAffectedNodeList.GetNext(kMapIter, pkKey, pkNode);
+.
+44c
+    while (kMapIter)
+.
+43@49s "Head" "First"
+43@21s "" "Map"
+43@7s "List" "Map"
+42c
+    const NiTPointerMap<NiNode*, NiNode*>& kAffectedNodeList = pkDynEffect->GetAffectedNodeList();  // MS2: v2525
+.

@@ -1,0 +1,36 @@
+741a
+            if (pkObject)
+                return pkObject;
+        }
+    }
+
+    return 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2: Nexon addition (game 0x141d1a960). An excluded node hides its subtree.
+NiAVObject* NiNode::GetObjectByNameExcluding(const NiFixedString& kName,
+    unsigned short usExcludeFlags)
+{
+    if (MS2HasAnyFlag(usExcludeFlags))
+        return 0;
+
+    NiAVObject* pkObject = NiAVObject::GetObjectByNameExcluding(kName,
+        usExcludeFlags);
+    if (pkObject)
+        return pkObject;
+
+    for (unsigned int i = 0; i < m_kChildren.GetSize(); i++)
+    {
+        NiAVObject* pkChild = GetAt(i);
+        if (pkChild)
+        {
+            pkObject = pkChild->GetObjectByNameExcluding(kName,
+                usExcludeFlags);
+.
+72a
+    if (m_kChildren.GetSize() == 0xffff) { if (g_pfnStudioNiNodeChildLimit) g_pfnStudioNiNodeChildLimit(this); bFirstAvail = true; }  // MS2: v2525
+.
+32a
+void (*g_pfnStudioNiNodeChildLimit)(NiNode*) = NULL; // gb-nimain-a: inferred hook 0x143afa4d0 (AttachChild 0x141d19e2b)  // MS2: v2525
+.

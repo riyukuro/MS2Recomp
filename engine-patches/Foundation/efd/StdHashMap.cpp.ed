@@ -1,0 +1,16 @@
+24a
+#endif
+.
+20a
+#if defined(EE_USE_NATIVE_STL)
+size_t std::hash<efd::utf8string>::operator()(efd::utf8string s) const
+{
+    // Same function as STLport's __stl_hash_string (32-bit 'unsigned long' accumulator), so hash
+    // values do not depend on the STL in use.
+    unsigned long h = 0;
+    for (const char* p = s.c_str(); *p; ++p)
+        h = 5 * h + *p;
+    return size_t(h);
+}
+#else
+.

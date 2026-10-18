@@ -1,0 +1,31 @@
+3695a
+
+// MS2: moved from SceneGraphService.inl (virtual in the MS2 engine build).
+//------------------------------------------------------------------------------------------------
+void ecr::SceneGraphService::AddToUpdate(SceneGraphData* pData)
+{
+    if (pData->m_updateIndex == SceneGraphData::kInvalidUpdateIndex)
+    {
+        pData->m_updateIndex = static_cast<efd::UInt32>(m_toUpdate.size());
+        m_toUpdate.push_back(pData);
+    }
+}
+
+//------------------------------------------------------------------------------------------------
+void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
+{
+    if (pData->m_updateIndex != SceneGraphData::kInvalidUpdateIndex)
+    {
+        SceneGraphData* pBackData = m_toUpdate.back();
+        pBackData->m_updateIndex = pData->m_updateIndex;
+        m_toUpdate[pBackData->m_updateIndex] = pBackData;
+        m_toUpdate.pop_back();
+
+        pData->m_updateIndex = SceneGraphData::kInvalidUpdateIndex;
+    }
+}
+
+.
+33c
+#include <NiMemStream.h>
+.

@@ -1,0 +1,16 @@
+444a
+// gb-terrain overlay: +2 lines, EXE EE_LOG __LINE__ values are SDK+2 (ReadSurface 0x141f8dfe0)  // MS2: v2525
+
+.
+80c
+    return true; }  // studio: bool, EXE 0x141f8cd80/0x141f8ce60 end `mov al,1` (gb-layer)  // MS2: v2525
+.
+67@73s "" "  // MS2: v2525"
+67@2s "id" "ol"
+67@0s "v" "b"
+63c
+    return true; }  // studio: bool, EXE 0x141f8cd80/0x141f8ce60 end `mov al,1` (gb-layer)  // MS2: v2525
+.
+44@66s "" "  // MS2: v2525"
+44@2s "id" "ol"
+44@0s "v" "b"

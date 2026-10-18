@@ -1,0 +1,10 @@
+58a
+#endif
+.
+56a
+// MS2: the hook DLL runs inside the exe, which already registered the key loaders.
+#ifdef MS2_NO_ENGINE_STATIC_INIT
+#define NiRegisterAnimationStream(classname) \
+    typedef int classname##registerloaderreturn_unused
+#else
+.

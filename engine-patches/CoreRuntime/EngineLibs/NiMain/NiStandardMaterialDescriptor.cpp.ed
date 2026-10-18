@@ -1,0 +1,3 @@
+568c
+        } else if (pkVCProp->GetSourceMode() == (NiVertexColorProperty::SourceVertexMode)3) { SetAMBDIFFEMISSIVE((NiStandardMaterial::AmbDiffEmissiveEnum)3); }  // MS2: v2525
+.

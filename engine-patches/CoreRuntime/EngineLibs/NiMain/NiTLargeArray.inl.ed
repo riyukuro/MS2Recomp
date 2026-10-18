@@ -1,0 +1,11 @@
+158c
+    if (uiIndex >= m_uiMaxSize)  // studio bound check  // MS2: v2525
+        return;
+.
+127c
+        }  // MS2: v2525
+.
+115,116c
+        if (m_pBase)  // studio null check  // MS2: v2525
+        {
+.

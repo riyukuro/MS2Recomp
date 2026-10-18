@@ -1,0 +1,6 @@
+78c
+inline void ClassInfo::AddClass(const char* name, ClassID id, size_t offset,    // MS2: was efd::UInt32
+.
+35c
+            size_t offset = m_Classes[ui].m_Offset;    // MS2: was efd::UInt32
+.

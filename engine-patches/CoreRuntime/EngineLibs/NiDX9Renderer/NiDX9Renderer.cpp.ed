@@ -1,0 +1,20 @@
+4778@37s "" "(const char*)"
+2323a
+// MS2: v2525 (studio, name inferred; exe 0x1427cf790)
+const char* NiDX9Renderer::GetDriverName() const
+{
+    D3DADAPTER_IDENTIFIER9 kD3DAdapterIdentifier9;
+
+    m_acStudioDriverName[0] = 0;
+    memset((void*)&kD3DAdapterIdentifier9, 0, sizeof(kD3DAdapterIdentifier9));
+
+    if (SUCCEEDED(ms_pkD3D9->GetAdapterIdentifier(m_uiAdapter,
+        0, &kD3DAdapterIdentifier9)))
+    {
+        NiSprintf(m_acStudioDriverName, 512, "%s", kD3DAdapterIdentifier9.Driver);
+    }
+
+    return m_acStudioDriverName;
+}
+//--------------------------------------------------------------------------------------------------
+.

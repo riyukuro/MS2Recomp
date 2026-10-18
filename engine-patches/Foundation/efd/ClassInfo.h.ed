@@ -1,0 +1,20 @@
+248@90s " " "*/"
+248@89s "" "MS2"
+248@88s "" "/*"
+248@68s "32" ""
+248@60s "fd::UIn" "_"
+248@59s "" "siz"
+200c
+        size_t offsetFromClass) /* MS2: was efd::UInt32 */                          \
+.
+125c
+        size_t m_Offset;    // MS2: was efd::UInt32
+.
+109c
+        size_t offset,  // MS2: was efd::UInt32
+.
+43c
+    // MS2: the offset is size_t in the build MapleStory2 links (exe ClassInfo::AddClass 0x1409f2e10 / TypeCast
+    // 0x1409f31d0 pass and store 64 bits; SetupClassInfo homes it as a qword).
+    typedef void (*CLASSINFO_FUNC)(ClassInfo* pClassInfo, size_t offsetFromClass);
+.

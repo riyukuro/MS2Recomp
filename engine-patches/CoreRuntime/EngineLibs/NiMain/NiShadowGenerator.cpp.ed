@@ -1,0 +1,71 @@
+1057@64s "kTestIter" "ui"
+1057@59s "Nex" "A"
+1056@46s "kBaseIter" "ui"
+1056@41s "Nex" "A"
+1052,1054c
+    // MS2: set instead of list.
+    for (unsigned int ui = 0; ui < m_kUnaffectedReceiverList.GetSize(); ui++)
+.
+998@61s "kIter" "ui"
+998@56s "Nex" "A"
+995,996c
+    // MS2: set instead of list.
+    for (unsigned int ui = 0; ui < uiUnaffectedCount; ui++)
+.
+955@54s "" " // MS2: set"
+955@41s "Tail" ""
+820c
+                (unsigned int)i);
+.
+819@72s "Prev" "At"
+816,817c
+        // MS2: set instead of list (still iterated in reverse, as the game).
+        for (int i = (int)m_kUnaffectedReceiverList.GetSize() - 1; i >= 0; i--)
+.
+764a
+    pkDest->m_fMS2DepthBiasScale = m_fMS2DepthBiasScale; // MS2
+.
+700c
+            // MS2: scaled by the Nexon-added multiplier (game 0x141d5a690).
+            float fDepthBias = pkGenerator->GetDepthBias() *
+                pkGenerator->m_fMS2DepthBiasScale;
+.
+519a
+    if (ms_pfnStudioForceMaterialNeedsUpdate) { ms_pfnStudioForceMaterialNeedsUpdate(this); return; }  // MS2: v2525
+.
+383,384c
+        if (m_kUnaffectedReceiverList.Find(const_cast<NiNode*>(pkNode)) != -1)
+.
+380,381c
+    // MS2: the game (0x141d5ae80) walks up the parents of the geometry and
+    // looks each one up in the receiver set instead of searching the subtree
+    // of every receiver.
+    for (const NiNode* pkNode = pkGeometry->GetParent(); pkNode;
+        pkNode = pkNode->GetParent())
+.
+368a
+        pkNode = pkNode->GetParent();
+.
+366,367c
+        if (m_kUnaffectedReceiverList.Find((NiNode*)pkNode) != -1)
+.
+363,364c
+    // MS2: v2525: walk up the parents of the node and look each one up in the receiver set.
+    const NiNode* pkNode = pkPossibleNode;
+    while (pkNode)
+.
+87a
+    m_fMS2DepthBiasScale(1.0f), // MS2
+.
+77a
+    m_kUnaffectedReceiverList(20000), // MS2
+.
+43a
+    m_fMS2DepthBiasScale(1.0f), // MS2
+.
+33a
+    m_kUnaffectedReceiverList(20000), // MS2
+.
+27a
+void (*NiShadowGenerator::ms_pfnStudioForceMaterialNeedsUpdate)(NiShadowGenerator*) = NULL;  // MS2: v2525
+.

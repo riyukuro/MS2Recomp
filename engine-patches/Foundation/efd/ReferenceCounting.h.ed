@@ -1,0 +1,3 @@
+79c
+    EE_DECLARE_CONCRETE_REFCOUNT_EX(efd::AtomicRefCount)  // studio: atomic  // MS2: v2525
+.

@@ -1,0 +1,4 @@
+79a
+    NiRegisterStream(NiFOVController); // MS2: v2525 order
+    NiRegisterStream(NiFOVInterpolator);
+.

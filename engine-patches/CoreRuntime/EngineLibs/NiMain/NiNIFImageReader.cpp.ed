@@ -1,0 +1,3 @@
+109c
+        return uiWidth != 0 && uiHeight != 0;  // MS2: v2525
+.

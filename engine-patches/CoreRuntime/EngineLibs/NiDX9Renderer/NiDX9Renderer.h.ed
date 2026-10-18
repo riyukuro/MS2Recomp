@@ -1,0 +1,18 @@
+1104a
+    // MS2: Nexon appended 0x148 bytes (sizeof(NiDX9Renderer) is 0x1080 in the game: operator new(0x1080) at
+    // 0x1427cb5e4, MS2Renderer scalar deleting dtor @0x140d9d5c0). InitToDefault (0x1427d0320) clears the byte at
+    // +0x1070 and the 8 bytes at +0x1074; the 0x138 bytes after m_uiCGMacroBufferLen are untouched there.
+    char m_acMS2Unknown_F38[0x138];
+    unsigned char m_ucMS2Unknown_1070;
+    unsigned int m_uiMS2Unknown_1074;
+    unsigned int m_uiMS2Unknown_1078;
+    unsigned int m_uiMS2Unknown_107C;
+.
+914a
+    // MS2: Nexon inserted 0x200 unidentified bytes here (m_uiAdapter is at 0x718 in the game, 0x518 in the stock
+    // layout; GetDriverInfo @0x1427cf830, ctor @0x1427c8af0). Proven by every member offset after it.
+    mutable char m_acStudioDriverName[512];  // written by GetDriverName (name inferred)
+.
+464a
+    const char* GetDriverName() const;  // MS2: v2525 (studio 0x1427cf790, name inferred)
+.

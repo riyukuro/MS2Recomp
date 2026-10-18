@@ -1,0 +1,9 @@
+129c
+    NiTPointerMap<NiNode*, NiNode*> m_kAffectedNodeList;  // gb-nimain-a: studio map (vtable 0x14301f2e8, +0x100)
+.
+83c
+    inline const NiTPointerMap<NiNode*, NiNode*>& GetAffectedNodeList();
+.
+17a
+#include "NiTPointerMap.h"
+.

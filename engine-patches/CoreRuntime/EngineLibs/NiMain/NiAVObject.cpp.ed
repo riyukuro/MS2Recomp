@@ -1,0 +1,25 @@
+545a
+    pkDest->m_uiMS2Unknown = m_uiMS2Unknown; // MS2
+.
+441a
+// MS2: Nexon addition (game 0x141d14ed0).
+NiAVObject* NiAVObject::GetObjectByNameExcluding(const NiFixedString& kName,
+    unsigned short usExcludeFlags)
+{
+    if (MS2HasAnyFlag(usExcludeFlags))
+        return 0;
+
+    if (!kName.Exists())
+        return 0;
+
+    if (GetName() == kName)
+        return this;
+
+    return 0;
+}
+
+//------------------------------------------------------------------------------------------------
+.
+50a
+    m_uiMS2Unknown = 0; // MS2
+.

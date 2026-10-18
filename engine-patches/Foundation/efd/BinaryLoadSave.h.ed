@@ -1,0 +1,46 @@
+125,127c
+    return os.BinaryWrite(&value, uiBytesToWrite, &uiBytesToWrite, 1) ==  // MS2: v2525
+        uiBytesToWrite;
+.
+122@60s "" "  // MS2: v2525"
+122@2s "id" "ol"
+122@0s "v" "b"
+114,117c
+    return os.BinaryWrite(  // MS2: v2525
+            pvValue, uiBytesToWrite, puiComponentSizes, uiNumComponents) ==
+        uiBytesToWrite;
+.
+96@68s "" "  // MS2: v2525"
+96@9s "id" "ol"
+96@7s "v" "b"
+89,92c
+    return os.BinaryWrite(pValue, uiSize * uiNumEls, &uiSize, 1) ==  // MS2: v2525
+        uiSize * uiNumEls;
+.
+84@57s "" "  // MS2: v2525"
+84@2s "id" "ol"
+84@0s "v" "b"
+79a
+    return bResult;  // MS2: v2525
+.
+75,77c
+    bool bResult =  // MS2: v2525
+        is.BinaryRead(&iDummy, uiBytesToRead, &uiBytesToRead, 1) == uiBytesToRead;
+.
+71@55s "" "  // MS2: v2525"
+71@2s "id" "ol"
+71@0s "v" "b"
+63,66c
+    return is.BinaryRead(  // MS2: v2525
+            pvValue, uiBytesToRead, puiComponentSizes, uiNumComponents) ==
+        uiBytesToRead;
+.
+42@62s "" "  // MS2: v2525"
+42@9s "id" "ol"
+42@7s "v" "b"
+36,38c
+    return is.BinaryRead(pValue, uiBytesToRead, &uiSize, 1) == uiBytesToRead;  // MS2: v2525
+.
+30@51s "" "  // MS2: v2525"
+30@2s "id" "ol"
+30@0s "v" "b"

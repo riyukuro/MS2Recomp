@@ -1,0 +1,9 @@
+53a
+#endif
+.
+38a
+#if defined(EE_USE_NATIVE_STL)
+    // Release elements and storage; leaves an empty, allocation-free vector behind.
+    BaseClass().swap(*this);
+#else
+.

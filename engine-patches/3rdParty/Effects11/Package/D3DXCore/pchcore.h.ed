@@ -1,0 +1,6 @@
+18c
+#include "d3dxGlobal.h"
+.
+16c
+#include "D3DX11.h"
+.

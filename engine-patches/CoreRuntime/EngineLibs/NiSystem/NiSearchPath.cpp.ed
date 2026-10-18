@@ -1,0 +1,179 @@
+160a
+}
+
+//--------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------  // MS2: v2525
+// fw-nisys: studio factory (0x141f42df0, 0x141f42fe0, 0x141f43840).
+//--------------------------------------------------------------------------------------------------
+NiSearchPath* NiSearchPath::DefaultCreate()
+{
+    return NiNew NiSearchPath;
+}
+
+//--------------------------------------------------------------------------------------------------
+NiSearchPath* NiSearchPath::Create()
+{
+    return ms_pfnCreateFunc();
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiSearchPath::SetCreateFunc(CreateFunction pfnCreate)
+{
+    if (pfnCreate)
+        ms_pfnCreateFunc = pfnCreate;
+    else
+        ms_pfnCreateFunc = DefaultCreate;
+}
+
+//--------------------------------------------------------------------------------------------------
+// fw-nisys: NiTextureSearchPath (0x141f42e30..0x141f43711).
+//--------------------------------------------------------------------------------------------------
+NiTextureSearchPath::NiTextureSearchPath()
+{
+    m_bTexturesSearched = false;
+    m_hFind = NULL;
+    m_acTexturesPath[0] = '\0';
+}
+
+//--------------------------------------------------------------------------------------------------
+NiTextureSearchPath::~NiTextureSearchPath()
+{
+    if (m_hFind)
+        FindClose(m_hFind);
+}
+
+//--------------------------------------------------------------------------------------------------
+NiSearchPath* NiTextureSearchPath::Create()
+{
+    return NiNew NiTextureSearchPath;
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiTextureSearchPath::Reset()
+{
+    NiSearchPath::Reset();
+
+    m_bTexturesSearched = false;
+    m_acTexturesPath[0] = '\0';
+    if (m_hFind)
+    {
+        FindClose(m_hFind);
+        m_hFind = NULL;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiTextureSearchPath::FindTexturesDirectory(char* pcTexturesPath,
+    unsigned int uiStringLen, const char* pcStartPath)
+{
+    char acPath[NI_MAX_PATH];
+    NiStrcpy(acPath, NI_MAX_PATH, pcStartPath);
+    NiPath::Standardize(acPath);
+
+    while (PathRemoveFileSpecA(acPath))
+    {
+        NiSprintf(pcTexturesPath, uiStringLen, "%s\\Textures", acPath);
+        if (NiFile::DirectoryExists(pcTexturesPath))
+            return true;
+
+        if (NiStricmp(acPath, ".") == 0)
+            break;
+    }
+
+    pcTexturesPath[0] = '\0';
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiTextureSearchPath::GetNextSearchPath(char* pcPath, unsigned int uiStringLen)
+{
+    bool bResult = NiSearchPath::GetNextSearchPath(pcPath, uiStringLen);
+    if (!bResult)
+    {
+        if (!m_bTexturesSearched)
+        {
+            // First pass: find the "Textures" directory above the reference file.
+            char acWorkingDir[NI_MAX_PATH];
+            NiPath::GetCurrentWorkingDirectory(acWorkingDir, NI_MAX_PATH);
+
+            if (FindTexturesDirectory(m_acTexturesPath, NI_MAX_PATH,
+                ms_bSearchWorkingDirectory ? acWorkingDir : m_acReferencePath))
+            {
+                unsigned int uiLen = (unsigned int)strlen(m_acTexturesPath);
+                if (uiLen)
+                {
+                    NiFilename kTexturesPath(m_acFilePath);
+                    kTexturesPath.SetDrive("");
+                    kTexturesPath.SetDir(m_acTexturesPath);
+                    kTexturesPath.GetFullPath(pcPath, uiStringLen);
+                    NiPath::Standardize(pcPath);
+                    bResult = true;
+                }
+            }
+
+            m_bTexturesSearched = true;
+        }
+        else if (NiFile::DirectoryExists(m_acTexturesPath))
+        {
+            // Later passes: each subdirectory of the "Textures" directory.
+            char acDir[NI_MAX_PATH + 3];
+            WIN32_FIND_DATAA kFindData;
+            if (m_hFind == NULL)
+            {
+                NiSprintf(acDir, sizeof(acDir), "%s%s", m_acTexturesPath, "\\*");
+                m_hFind = FindFirstFileExA(acDir, FindExInfoStandard, &kFindData,
+                    FindExSearchLimitToDirectories, NULL, 0);
+                if (m_hFind == INVALID_HANDLE_VALUE)
+                {
+                    m_hFind = NULL;
+                    return false;
+                }
+
+                if (!FindNextFileA(m_hFind, &kFindData))
+                {
+                    FindClose(m_hFind);
+                    m_hFind = NULL;
+                    return false;
+                }
+            }
+
+            if (!FindNextFileA(m_hFind, &kFindData))
+            {
+                FindClose(m_hFind);
+                m_hFind = NULL;
+                return false;
+            }
+
+            while (!(kFindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+            {
+                if (!FindNextFileA(m_hFind, &kFindData))
+                {
+                    FindClose(m_hFind);
+                    m_hFind = NULL;
+                    return false;
+                }
+            }
+
+            NiSprintf(acDir, sizeof(acDir), "%s\\%s", m_acTexturesPath, kFindData.cFileName);
+
+            NiFilename kSubDir(m_acFilePath);
+            kSubDir.SetDrive("");
+            kSubDir.SetDir(acDir);
+            kSubDir.GetFullPath(pcPath, uiStringLen);
+            NiPath::Standardize(pcPath);
+            bResult = true;
+        }
+    }
+
+    return bResult;
+.
+20a
+bool NiSearchPath::ms_bSearchWorkingDirectory;  // MS2: v2525
+NiSearchPath::CreateFunction NiSearchPath::ms_pfnCreateFunc = NiSearchPath::DefaultCreate;
+.
+18a
+// fw-nisys: studio additions below need these.  // MS2: v2525
+#include "NiPath.h"
+#include "NiFile.h"
+#include <shlwapi.h>
+.

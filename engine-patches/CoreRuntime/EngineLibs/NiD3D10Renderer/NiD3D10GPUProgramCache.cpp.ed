@@ -1,0 +1,11 @@
+297@46s "" "(const char*)"
+236c
+    // x64 port: the code size is stored as 32 bits (as on x86; the loader reads 32 bits)
+    unsigned int stCodeSize = (unsigned int)pkShaderByteCode->GetBufferSize();
+.
+163@35s "" "(const char*)"
+163@12s "" "(const char*)"
+147@35s "" "(const char*)"
+147@12s "" "(const char*)"
+132@35s "" "(const char*)"
+132@12s "" "(const char*)"

@@ -1,0 +1,8 @@
+88c
+            NiNode* pkKey; NiNode* pkReceiver; kReceivers.GetNext(kIter, pkKey, pkReceiver);  // MS2: v2525
+.
+85@46s "Head" "First"
+85@11s "List" "Map"
+84c
+        const NiTPointerMap<NiNode*, NiNode*>& kReceivers = pkDynEffect->GetAffectedNodeList();  // MS2: v2525
+.

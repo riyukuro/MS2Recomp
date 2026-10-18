@@ -1,0 +1,5 @@
+53a
+    // MS2: override of the Nexon-added NiAVObject virtual (game 0x141d1a960).
+    virtual NiAVObject* GetObjectByNameExcluding(const NiFixedString& kName,
+        unsigned short usExcludeFlags);
+.

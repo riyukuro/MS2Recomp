@@ -1,0 +1,11 @@
+161a
+#endif
+.
+160a
+// MS2: the hook DLL runs inside the exe, which already ran this SDM; do not construct a second one.
+#ifndef MS2_NO_ENGINE_STATIC_INIT
+.
+85a
+#include "NiFOVController.h" // MS2
+#include "NiFOVInterpolator.h" // MS2
+.

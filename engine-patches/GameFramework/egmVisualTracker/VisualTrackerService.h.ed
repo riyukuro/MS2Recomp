@@ -1,0 +1,3 @@
+314c
+    virtual void ToggleShowTrackers(); // MS2: virtual in the exe (base vftable slot 16, overridden by MS2VisualTrackerManager)
+.

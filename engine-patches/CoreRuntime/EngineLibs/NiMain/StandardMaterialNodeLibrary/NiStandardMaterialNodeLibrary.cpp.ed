@@ -1,0 +1,224 @@
+7023a
+    CreateFragment73(pkLib);  // MS2: v2525
+.
+6853@70s "" "  // MS2: v2525"
+6853@39s "2" "3"
+6468@70s "" "  // MS2: v2525"
+6468@39s "1" "2"
+6341@70s "" "  // MS2: v2525"
+6341@39s "0" "1"
+6069@70s "" "  // MS2: v2525"
+6069@38s "69" "70"
+5854@70s "" "  // MS2: v2525"
+5854@39s "8" "9"
+5486@70s "" "  // MS2: v2525"
+5486@39s "7" "8"
+5296@70s "" "  // MS2: v2525"
+5296@39s "6" "7"
+5236@70s "" "  // MS2: v2525"
+5236@39s "5" "6"
+5165@70s "" "  // MS2: v2525"
+5165@39s "4" "5"
+5056@70s "" "  // MS2: v2525"
+5056@39s "3" "4"
+4986@70s "" "  // MS2: v2525"
+4986@39s "2" "3"
+4815@70s "" "  // MS2: v2525"
+4815@39s "1" "2"
+4618@70s "" "  // MS2: v2525"
+4618@39s "0" "1"
+4567@70s "" "  // MS2: v2525"
+4567@38s "59" "60"
+4516@70s "" "  // MS2: v2525"
+4516@39s "8" "9"
+4465@70s "" "  // MS2: v2525"
+4465@39s "7" "8"
+4414@70s "" "  // MS2: v2525"
+4414@39s "6" "7"
+4338@70s "" "  // MS2: v2525"
+4338@39s "5" "6"
+4260@70s "" "  // MS2: v2525"
+4260@39s "4" "5"
+4212@70s "" "  // MS2: v2525"
+4212@39s "3" "4"
+4164@70s "" "  // MS2: v2525"
+4164@39s "2" "3"
+4116@70s "" "  // MS2: v2525"
+4116@39s "1" "2"
+4047@70s "" "  // MS2: v2525"
+4047@39s "0" "1"
+3978@70s "" "  // MS2: v2525"
+3978@38s "49" "50"
+3909@70s "" "  // MS2: v2525"
+3909@39s "8" "9"
+3840@70s "" "  // MS2: v2525"
+3840@39s "7" "8"
+3792@70s "" "  // MS2: v2525"
+3792@39s "6" "7"
+3744@70s "" "  // MS2: v2525"
+3744@39s "5" "6"
+3696@70s "" "  // MS2: v2525"
+3696@39s "4" "5"
+3648@70s "" "  // MS2: v2525"
+3648@39s "3" "4"
+3590@70s "" "  // MS2: v2525"
+3590@39s "2" "3"
+3532@70s "" "  // MS2: v2525"
+3532@39s "1" "2"
+3474@70s "" "  // MS2: v2525"
+3474@39s "0" "1"
+3416@70s "" "  // MS2: v2525"
+3416@38s "39" "40"
+3358@70s "" "  // MS2: v2525"
+3358@39s "8" "9"
+3300@70s "" "  // MS2: v2525"
+3300@39s "7" "8"
+3242@70s "" "  // MS2: v2525"
+3242@39s "6" "7"
+3184@70s "" "  // MS2: v2525"
+3184@39s "5" "6"
+3126@70s "" "  // MS2: v2525"
+3126@39s "4" "5"
+3068@70s "" "  // MS2: v2525"
+3068@39s "3" "4"
+3010@70s "" "  // MS2: v2525"
+3010@39s "2" "3"
+3000@60s "" "  // MS2: v2525"
+3000@55s ")" ""
+3000@34s "saturate(" ""
+2946@70s "" "  // MS2: v2525"
+2946@39s "1" "2"
+2883@70s "" "  // MS2: v2525"
+2883@39s "0" "1"
+2799@70s "" "  // MS2: v2525"
+2799@38s "29" "30"
+2736@70s "" "  // MS2: v2525"
+2736@39s "8" "9"
+2575@70s "" "  // MS2: v2525"
+2575@39s "7" "8"
+2487@70s "" "  // MS2: v2525"
+2487@39s "6" "7"
+2410@70s "" "  // MS2: v2525"
+2410@39s "5" "6"
+2024@70s "" "  // MS2: v2525"
+2024@39s "4" "5"
+1932@70s "" "  // MS2: v2525"
+1932@39s "3" "4"
+1867@70s "" "  // MS2: v2525"
+1867@39s "2" "3"
+1789a
+{  // MS2: v2525
+    NiMaterialFragmentNode* pkFrag = NiNew NiMaterialFragmentNode();  // MS2: v2525
+
+    pkFrag->SetType("Vertex/Pixel");
+    pkFrag->SetName("CalculateHeightFog");
+    pkFrag->SetDescription("\n"
+        "     HeightFog\n"
+        "    ");
+    // Insert an input resource
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float4");
+        pkRes->SetSemantic("Position");
+        pkRes->SetLabel("World");
+        pkRes->SetVariable("WorldPosition");
+
+        pkFrag->AddInputResource(pkRes);
+    }
+
+    // Insert an input resource
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float");
+        pkRes->SetSemantic("UpperZ");
+        pkRes->SetVariable("UpperZ");
+        pkRes->SetDefaultValue("(0.0)");
+
+        pkFrag->AddInputResource(pkRes);
+    }
+
+    // Insert an input resource
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float");
+        pkRes->SetSemantic("LowerZ");
+        pkRes->SetVariable("LowerZ");
+        pkRes->SetDefaultValue("(-500.0)");
+
+        pkFrag->AddInputResource(pkRes);
+    }
+
+    // Insert an input resource
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float");
+        pkRes->SetSemantic("Weight");
+        pkRes->SetVariable("Weight");
+        pkRes->SetDefaultValue("(1.0)");
+
+        pkFrag->AddInputResource(pkRes);
+    }
+
+    // Insert an output resource
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float");
+        pkRes->SetSemantic("Color");
+        pkRes->SetLabel("HeightFogOut");
+        pkRes->SetVariable("HeightFogOut");
+
+        pkFrag->AddOutputResource(pkRes);
+    }
+
+    // Insert a code block
+    {
+        NiCodeBlock* pkBlock = NiNew NiCodeBlock();
+
+        pkBlock->SetLanguage("hlsl/Cg");
+        pkBlock->SetPlatform("D3D11/D3D10/DX9/Xenon/PS3");
+        pkBlock->SetTarget("vs_1_1/ps_2_0/vs_4_0/ps_4_0/vs_5_0/ps_5_0");
+
+        pkBlock->SetText("        \n"
+             "        float z = WorldPosition.z;\n"
+             "        if (z > UpperZ)\n"
+             "            HeightFogOut = 1;\n"
+             "        else if (z > LowerZ)\n"
+             "            HeightFogOut = Weight * (z - LowerZ) / (UpperZ - LowerZ) + 1 - Weight;\n"
+             "        else\n"
+             "            HeightFogOut = 1.0f - Weight;\n"
+             "    ");
+
+
+        pkFrag->AddCodeBlock(pkBlock);
+    }
+
+    pkLib->AddNode(pkFrag);
+}
+//--------------------------------------------------------------------------------------------------
+// MS2: Height fog is fragment 21; fragment 22 is WorldReflect.
+EE_NOINLINE static void CreateFragment22(NiMaterialNodeLibrary* pkLib)
+.
+1777@66s "" "  // MS2: v2525"
+1777@56s "" "+ FogBias "
+1732a
+    // Insert an input resource  // MS2: v2525
+    {
+        NiMaterialResource* pkRes = NiNew NiMaterialResource();
+
+        pkRes->SetType("float");
+        pkRes->SetSemantic("FogBias");
+        pkRes->SetVariable("FogBias");
+        pkRes->SetDefaultValue("(0.0)");
+
+        pkFrag->AddInputResource(pkRes);
+    }
+
+.
+1258c
+        pkRes->SetType("float4");  // MS2: v2525
+.

@@ -1,0 +1,32 @@
+42a
+    static bool ms_bSearchWorkingDirectory;  // studio: 0x143afd094  // MS2: v2525
+    static CreateFunction ms_pfnCreateFunc;  // studio: 0x1439fe910
+};
+
+// studio (inferred): after the stock order, search a "Textures" directory above the
+// reference path, then its subdirectories (docs/tu/fwnisys.md).
+class NISYSTEM_ENTRY NiTextureSearchPath : public NiSearchPath
+{
+public:
+    NiTextureSearchPath();
+    virtual ~NiTextureSearchPath();
+
+    virtual void Reset();
+    virtual bool GetNextSearchPath(char* pcPath, unsigned int uiStringLen);
+
+    static NiSearchPath* Create();
+    static bool FindTexturesDirectory(char* pcTexturesPath, unsigned int uiStringLen,
+        const char* pcStartPath);
+
+protected:
+    bool m_bTexturesSearched;
+    void* m_hFind;
+    char m_acTexturesPath[NI_MAX_PATH];
+.
+34a
+    // studio factory (inferred names, docs/tu/fwnisys.md)  // MS2: v2525
+    typedef NiSearchPath* (*CreateFunction)();
+    static NiSearchPath* Create();
+    static void SetCreateFunc(CreateFunction pfnCreate);
+    static NiSearchPath* DefaultCreate();
+.

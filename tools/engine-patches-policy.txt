@@ -1,0 +1,7 @@
+# tools/engine-patches.py policy (see work/pub2/engine-review.md for the evidence)
+# Added files that are v2525-derived (0.84-1.00 identical to the v2525 snapshot overlay files): must not ship.
+withhold-file CoreRuntime/EngineLibs/NiAnimation/NiFOVController.cpp
+withhold-file CoreRuntime/EngineLibs/NiAnimation/NiFOVController.h
+withhold-file CoreRuntime/EngineLibs/NiAnimation/NiFOVInterpolator.cpp
+withhold-file CoreRuntime/EngineLibs/NiAnimation/NiFOVInterpolator.h
+withhold-file CoreRuntime/EngineLibs/NiMain/NiStudioShaderContext.h

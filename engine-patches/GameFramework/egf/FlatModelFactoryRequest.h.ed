@@ -1,0 +1,9 @@
+68a
+
+protected:  // MS2: v2525
+    bool m_studioFlag0x68;  // studio: +0x68, name inferred
+.
+66c
+        bool isReload = false,  // MS2: v2525
+        bool studioFlag = false);  // studio: name inferred
+.

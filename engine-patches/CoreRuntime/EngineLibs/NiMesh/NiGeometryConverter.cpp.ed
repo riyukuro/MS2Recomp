@@ -1,0 +1,14 @@
+65a
+#else
+    // cvtss2si rounds with the current MXCSR mode (default round-to-nearest-even), like fistp.
+    iValue = _mm_cvt_ss2si(_mm_set_ss(fValue));
+#endif
+.
+63a
+#if defined(_M_IX86)
+.
+58a
+#if !defined(_M_IX86)
+#include <xmmintrin.h>   // _mm_cvt_ss2si (x64 FastFloatToInt)
+#endif
+.

@@ -1,0 +1,125 @@
+152c
+//--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------  // MS2: v2525
+// fw-nisys: studio wide-character twin (bodies 0x141f42690..0x141f42be8).
+#define DIR_SEPERATOR_WSTRING L"\\"
+
+//--------------------------------------------------------------------------------------------------
+NiFilenameW::NiFilenameW(const wchar_t* pcFullPath)
+{
+    m_acSubDir[0] = L'\0';
+    // Break down the file name here
+    Splitpath(pcFullPath);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFilenameW::GetFullPath(wchar_t* pcFullPath, unsigned int uiStrLen) const
+{
+    return Makepath(pcFullPath, uiStrLen);
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiFilenameW::Splitpath(const wchar_t* pcStr)
+{
+    _wsplitpath_s(pcStr, m_acDrive, _MAX_DRIVE, m_acDir, _MAX_DIR,
+        m_acFname, _MAX_FNAME, m_acExt, _MAX_EXT);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFilenameW::Makepath(wchar_t* pcStr, size_t stStrLen) const
+{
+    if (pcStr == NULL)
+        return false;
+
+    // First test to make sure that the buffer is large enough to hold the data
+    // before actually writing the data.
+    size_t stRequiredLength = 1;
+    if (m_acDrive[0] != L'\0')
+    {
+        stRequiredLength += 2;
+    }
+
+    if (m_acDir[0] != L'\0')
+    {
+        size_t stLen = wcslen(m_acDir);
+        stRequiredLength += stLen;
+        if (m_acDir[stLen-1] != L'\\' && m_acDir[stLen-1] != L'/')
+            stRequiredLength += wcslen(DIR_SEPERATOR_WSTRING);
+    }
+
+    if (m_acSubDir[0] != L'\0')
+    {
+        size_t stLen = wcslen(m_acSubDir);
+        stRequiredLength += stLen;
+        if (m_acSubDir[stLen-1] != L'\\' && m_acSubDir[stLen-1] != L'/')
+            stRequiredLength += wcslen(DIR_SEPERATOR_WSTRING);
+    }
+
+    if (m_acFname[0] != L'\0')
+    {
+        stRequiredLength += wcslen(m_acFname);
+    }
+
+    if (m_acExt[0] != L'\0')
+    {
+        if (m_acExt[0] != L'.')
+            stRequiredLength++;
+        stRequiredLength += wcslen(m_acExt);
+    }
+
+    // The data is too large, do not write anything and return false.
+    if (stRequiredLength > stStrLen)
+        return false;
+
+    // Begin copying the string
+    pcStr[0] = L'\0'; // Initialize the destination string
+
+    // Copy the drive letter, if provided
+    if (m_acDrive[0] != L'\0')
+    {
+        pcStr[0] = m_acDrive[0];
+        pcStr[1] = L':';
+        pcStr[2] = L'\0';
+    }
+
+    // Copy the directory, if provided
+    if (m_acDir[0] != L'\0')
+    {
+        wcscat_s(pcStr, stStrLen, m_acDir);
+        // Do we need to append a trailing directory separator?
+        size_t stLen = wcslen(pcStr);
+
+        if (pcStr[stLen-1] != L'\\' && pcStr[stLen-1] != L'/')
+        {
+            wcscat_s(pcStr, stStrLen, DIR_SEPERATOR_WSTRING);
+        }
+    }
+
+    // Copy the subdirectory, if provided
+    if (m_acSubDir[0] != L'\0')
+    {
+        wcscat_s(pcStr, stStrLen, m_acSubDir);
+        // Do we need to append a trailing directory separator?
+        size_t stLen = wcslen(pcStr);
+
+        if (pcStr[stLen-1] != L'\\' && pcStr[stLen-1] != L'/')
+        {
+            wcscat_s(pcStr, stStrLen, DIR_SEPERATOR_WSTRING);
+        }
+    }
+
+    // Copy the filename, if provided
+    if (m_acFname[0] != L'\0')
+        wcscat_s(pcStr, stStrLen, m_acFname);
+
+    // Copy the extension, if provided
+    if (m_acExt[0] != L'\0')
+    {   // Do we need to prepend a period?
+        if (m_acExt[0] != L'.')
+            wcscat_s(pcStr, stStrLen, L".");
+        wcscat_s(pcStr, stStrLen, m_acExt);
+    }
+
+    return true;
+}
+
+.

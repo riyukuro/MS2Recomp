@@ -1,0 +1,20 @@
+1003c
+    // studio: no UnregisterCallback here (0x141c43700)  // MS2: v2525
+.
+955c
+    m_kCallbacks.Add(pkCallback);  // MS2: v2525
+.
+708c
+        m_fTransEndTime = m_fTransStartTime + pkTransition->GetDuration(); if (!m_spCurSequence) return;  // MS2: v2525
+.
+504c
+                if (m_spCurSequence) m_spManager->DeactivateSequence(m_spCurSequence);  // MS2: v2525
+.
+60@27s "3" "1024"
+59c
+    m_kCallbacks.SetSize(1024);  // MS2: v2525
+.
+21a
+// MS2: the exe's NiActorManager has RTTI (root, no base: initialiser 0x140120a40).
+NiImplementRootRTTI(NiActorManager);
+.

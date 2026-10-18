@@ -1,0 +1,9 @@
+124a
+#else
+    s = efd::Float32(::sin(radians));
+    c = efd::Float32(::cos(radians));
+#endif
+.
+120a
+#if defined(_M_IX86)
+.

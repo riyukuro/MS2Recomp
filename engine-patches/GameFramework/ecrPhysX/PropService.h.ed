@@ -1,0 +1,4 @@
+59c
+    // MS2: exe base vftable 1430bcb80 uses atomic ++/-- at +0x18 (1414d9de0/1414d9b70).
+    EE_DECLARE_CONCRETE_ATOMIC_REFCOUNT;
+.

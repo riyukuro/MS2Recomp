@@ -1,0 +1,40 @@
+47c
+            m_spManager->AddSequenceData(spPending);
+            m_kSeqDataMap.SetAt(eSequenceID, spPending);
+            m_kMS2PendingSeqDataMap.RemoveAt(eSequenceID);
+        }
+        else
+        {
+            NiSequenceDataPtr spSeqData = 0;
+            if (!m_kSeqDataMap.GetAt(eSequenceID, spSeqData) || !spSeqData)
+            {
+                return false;
+            }
+        }
+    }
+
+    if (eSequenceID != INVALID_SEQUENCE_ID)
+    {
+        NiSequenceDataPtr spSeqData = GetSequenceData(eSequenceID);
+        if (spSeqData)
+        {
+            m_spManager->SetSequenceDataValue(spSeqData, fValue);
+.
+44,45c
+        NiSequenceDataPtr spPending = 0;
+        if (m_kMS2PendingSeqDataMap.GetAt(eSequenceID, spPending))
+.
+41a
+    if (bForce)
+    {
+        Reset();
+    }
+
+.
+37@8s "" "!bForce && "
+35c
+// MS2: Nexon's version (exe 0x1409a20a0): fValue / bForce and the pending sequence data map,
+// see the declaration.
+inline bool NiActorManager::SetTargetAnimation(SequenceID eSequenceID, float fValue,
+    bool bForce)
+.

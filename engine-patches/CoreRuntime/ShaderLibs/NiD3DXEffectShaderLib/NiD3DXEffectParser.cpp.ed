@@ -1,0 +1,12 @@
+703c
+            // x64 port: was &((D3DXVECTOR4)pkDesc->m_afMaxValue), i.e. the address of a temporary
+            // (the value read is discarded); behaviour kept.
+            D3DXVECTOR4 kTemp(pkDesc->m_afMaxValue);
+            pkEffect->GetVector(hAnnot, &kTemp);
+.
+698c
+            // x64 port: was &((D3DXVECTOR4)pkDesc->m_afMinValue), i.e. the address of a temporary
+            // (the value read is discarded); behaviour kept.
+            D3DXVECTOR4 kTemp(pkDesc->m_afMinValue);
+            pkEffect->GetVector(hAnnot, &kTemp);
+.

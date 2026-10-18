@@ -1,0 +1,3 @@
+332a
+    char m_acStudioPath0x8[NI_MAX_PATH];  // studio: +0x8, name inferred  // MS2: v2525
+.

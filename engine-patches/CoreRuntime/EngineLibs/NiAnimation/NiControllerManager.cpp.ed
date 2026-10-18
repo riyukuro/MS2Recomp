@@ -1,0 +1,22 @@
+1082a
+    m_kMS2FloatMap.RemoveAll(); // MS2: v2525
+.
+413c
+    m_kSeqDataArray.Add(pkSeqData);  // MS2: v2525
+.
+155a
+    m_kMS2FloatMap.RemoveAll(); // MS2: game 0x141c38400 does this first
+.
+149c
+    m_uiActivationID(0), m_kMS2FloatMap(37) // MS2
+.
+136a
+    // MS2: the game's constructor presizes the sequence data array
+    // (game 0x141c37e00: SetSize(0x400), grow-by 100) before Init.
+    m_kSeqDataArray.SetSize(1024);
+    m_kSeqDataArray.SetGrowBy(100);
+
+.
+135c
+    m_uiActivationID(0), m_kMS2FloatMap(37) // MS2
+.

@@ -1,0 +1,33 @@
+82a
+#else
+// x64: no inline assembly. Same semantics as the x86 versions above.
+#include <string.h>
+#include <xmmintrin.h>
+inline void NiMemcpyFloatArraySSE(float* pDst, const float* pSrc, int SizeInFloats)
+{
+    // aligned 16-byte copies of (SizeInFloats >> 2) vectors
+    int iCount = SizeInFloats >> 2;
+    for (int i = 0; i < iCount; ++i)
+        _mm_store_ps(pDst + 4 * i, _mm_load_ps(pSrc + 4 * i));
+}
+
+inline void NiMemcpyFloatArray(float* pDst, const float* pSrc, int SizeInFloats)
+{
+    // rep movsd of (bytes >> 2) dwords
+    memcpy(pDst, pSrc, (size_t)((sizeof(float) * SizeInFloats) >> 2) * 4);
+}
+
+inline int NiMemcpyBytes(long* pDst,const long* pSrc, unsigned long SizeInBytes)
+{
+    // The x86 loop moves a dword at every byte offset 0..SizeInBytes-1.
+    char* pD = (char*)pDst;
+    const char* pS = (const char*)pSrc;
+    for (unsigned long i = 0; i < SizeInBytes; ++i)
+        memcpy(pD + i, pS + i, 4);
+    return 0;
+}
+#endif
+.
+16a
+#if defined(_M_IX86)
+.

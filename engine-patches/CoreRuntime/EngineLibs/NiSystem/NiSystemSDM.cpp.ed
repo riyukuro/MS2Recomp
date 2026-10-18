@@ -1,0 +1,8 @@
+60a
+
+    // fw-nisys: studio addition (0x141f44969), install the Textures-aware search path.  // MS2: v2525
+    NiSearchPath::SetCreateFunc(NiTextureSearchPath::Create);
+.
+20a
+#include "NiSearchPath.h"   // fw-nisys: studio Init addition  // MS2: v2525
+.

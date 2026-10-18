@@ -1,0 +1,4 @@
+30a
+    #elif (_MSC_VER >= 1910 && _MSC_VER < 1920) && defined(_WIN64) //VC14.1x x64 port
+        #define NI_PLATFORM_NAME "Win64VC141"
+.

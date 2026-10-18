@@ -1,0 +1,7 @@
+56a
+#endif
+.
+55a
+// MS2: the hook DLL runs inside the exe, which already ran this SDM; do not construct a second one.
+#ifndef MS2_NO_ENGINE_STATIC_INIT
+.

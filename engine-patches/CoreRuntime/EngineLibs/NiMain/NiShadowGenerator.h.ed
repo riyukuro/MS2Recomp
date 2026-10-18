@@ -1,0 +1,31 @@
+336a
+
+    // MS2: Nexon added a float at +0xA4 that defaults to 1.0. It is copied by
+    // CopyMembers and DefaultGetShaderConstantCallback multiplies a
+    // non-default depth bias by it. It is not streamed.
+    float m_fMS2DepthBiasScale;
+.
+310c
+    // MS2: Nexon replaced this NiNodeList (32 bytes) with an NiTPrimitiveSet
+    // (16 bytes, +0x40) that the constructors presize to 20000 entries.
+    NiTPrimitiveSet<NiNode*> m_kUnaffectedReceiverList;
+.
+306a
+public:
+    // MS2: v2525 (studio hook, inferred 0x143afb020), checked first by ForceMaterialNeedsUpdate 0x141d5a792
+    static void (*ms_pfnStudioForceMaterialNeedsUpdate)(NiShadowGenerator*);
+protected:
+.
+237a
+    // MS2: accessors for the Nexon-added depth bias multiplier (inline, so
+    // their real names are unknown).
+    inline void SetMS2DepthBiasScale(float fScale);
+    inline float GetMS2DepthBiasScale() const;
+.
+139c
+    // MS2: the receiver list is an NiTPrimitiveSet in the game.
+    inline const NiTPrimitiveSet<NiNode*>& GetUnaffectedReceiverNodeList();
+.
+20a
+#include "NiTSet.h" // MS2
+.

@@ -1,0 +1,131 @@
+6983c
+        pkNode->GetInputResourceByVariableName(bMultiply ? "V2" : "Scale"));  // MS2: v2525
+.
+6969c
+            "MultiplyFloat"); bMultiply = true;  // MS2: v2525
+.
+6940c
+    NiMaterialNode* pkNode = NULL; bool bMultiply = false;  // MS2: v2525
+.
+6611,6614d
+6584a
+    pkFogOutput = pkUnfoggedColor;  // MS2: v2525
+
+    if (pkPixDesc->GetHEIGHTFOG() != 0)
+    {
+        NiMaterialNode* pkHeightFogNode =
+            GetAttachableNodeFromLibrary("ApplyFog");
+        kContext.m_spConfigurator->AddNode(pkHeightFogNode);
+
+        NiMaterialResource* pkHeightFogResource =
+            kContext.m_spInputs->AddOutputResource("float", "Color", "",
+            "HeightFogOut");
+
+        kContext.m_spConfigurator->AddBinding(pkHeightFogResource,
+            pkHeightFogNode->GetInputResourceByVariableName("FogAmount"));
+
+        kContext.m_spConfigurator->AddBinding(pkUnfoggedColor,
+            pkHeightFogNode->GetInputResourceByVariableName("UnfoggedColor"));
+
+        NiMaterialResource* pkHeightFogColor = AddOutputGlobal(
+            kContext.m_spUniforms, "gkHeightFogColor",
+            NiShaderAttributeDesc::ATTRIB_TYPE_POINT3);
+        kContext.m_spConfigurator->AddBinding(pkHeightFogColor,
+            pkHeightFogNode->GetInputResourceByVariableName("FogColor"));
+
+        pkFogOutput =
+            pkHeightFogNode->GetOutputResourceByVariableName("FoggedColor");
+        pkUnfoggedColor = pkFogOutput;
+    }
+
+.
+5104c
+        pkFogNode->GetInputResourceByVariableName("ViewPosition")); NiMaterialResource* pkFogBias = AddOutputGlobal(kContext.m_spUniforms, "gakFogBias", NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT); kContext.m_spConfigurator->AddBinding(pkFogBias, pkFogNode->GetInputResourceByVariableName("FogBias"));  // MS2: v2525
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiStandardMaterial::HandleCalculateHeightFog(Context& kContext,
+    NiMaterialResource* pkWorldPos)
+{
+    NiMaterialNode* pkHeightFogNode = GetAttachableNodeFromLibrary(
+        "CalculateHeightFog");
+    kContext.m_spConfigurator->AddNode(pkHeightFogNode);
+
+    NiMaterialResource* pkHeightFogOut =
+        kContext.m_spOutputs->AddInputResource("float", "Color", "",
+        "HeightFogOut");
+    kContext.m_spConfigurator->AddBinding(
+        pkHeightFogNode->GetOutputResourceByVariableName("HeightFogOut"),
+        pkHeightFogOut);
+
+    kContext.m_spConfigurator->AddBinding(pkWorldPos,
+        pkHeightFogNode->GetInputResourceByVariableName("WorldPosition"));
+
+    NiMaterialResource* pkUpperZ = AddOutputGlobal(kContext.m_spUniforms,
+        "gfHeightFogUpperZ", NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT);
+    NiMaterialResource* pkLowerZ = AddOutputGlobal(kContext.m_spUniforms,
+        "gfHeightFogLowerZ", NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT);
+    NiMaterialResource* pkPercent = AddOutputGlobal(kContext.m_spUniforms,
+        "gfHeightFogPercent", NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT);
+
+    kContext.m_spConfigurator->AddBinding(pkUpperZ,
+        pkHeightFogNode->GetInputResourceByVariableName("UpperZ"));
+    kContext.m_spConfigurator->AddBinding(pkLowerZ,
+        pkHeightFogNode->GetInputResourceByVariableName("LowerZ"));
+    kContext.m_spConfigurator->AddBinding(pkPercent,
+        pkHeightFogNode->GetInputResourceByVariableName("Weight"));
+.
+4376c
+            break;  case ((AmbDiffEmissiveEnum)3): { pkEmissiveColorRes = AddOutputPredefined(kContext.m_spUniforms, NiShaderConstantMap::SCM_DEF_MATERIAL_EMISSIVE); if (eLightingMode == LIGHTING_E_A_D) { pkDiffuseColorRes = AddOutputPredefined(kContext.m_spUniforms, NiShaderConstantMap::SCM_DEF_MATERIAL_DIFFUSE); pkAmbientColorRes = pkVertexColorRes; } } break;  // MS2: v2525
+.
+4355c
+        ((eADF == ADE_AMB_DIFF || eADF == ((AmbDiffEmissiveEnum)3)) && eLightingMode == LIGHTING_E_A_D));  // MS2: v2525
+.
+4070c
+            "TransformSkinnedPosition"); if (!pkProjFrag) return false;  // MS2: v2525
+.
+4046c
+            "TransformPosition"); if (!pkProjFrag) return false;  // MS2: v2525
+.
+3636a
+    {  // MS2: v2525
+        return false;
+    }
+
+    if (pkVertexDesc->GetHEIGHTFOG() &&
+        !HandleCalculateHeightFog(kContext, pkWorldPos))
+    {
+        return false;
+    }
+
+    if (pkVertexDesc->GetHEIGHTFOG() &&  // MS2: v2525
+        !HandleCalculateHeightFog(kContext, pkWorldPos))
+.
+3555c
+                ((eAmbDiffEmissive == ADE_AMB_DIFF || eAmbDiffEmissive == ((AmbDiffEmissiveEnum)3)) &&  // MS2: v2525
+.
+1264a
+    pkVertexDesc->SetHEIGHTFOG(pkMatlDesc->GetHEIGHTFOG());  // MS2: v2525
+    pkPixelDesc->SetHEIGHTFOG(pkMatlDesc->GetHEIGHTFOG());
+
+.
+684a
+    NiGlobalConstantEntry* pkHeightFogEnable =  // MS2: v2525
+        NiShaderFactory::GetInstance()->GetGlobalShaderConstantEntry(
+        "gbHeightFogEnable");
+    NiAlphaProperty* pkAlphaProp =
+        (NiAlphaProperty*)pkMesh->GetProperty(NiProperty::ALPHA);
+    bool bAdditive = pkAlphaProp &&
+        pkAlphaProp->GetDestBlendMode() == NiAlphaProperty::ALPHA_ONE;
+    if (pkHeightFogEnable && !bAdditive)
+        pkDesc->SetHEIGHTFOG(*(bool*)pkHeightFogEnable->GetDataSource());
+    else
+        pkDesc->SetHEIGHTFOG(0);
+
+.
+36a
+#include "NiShaderFactory.h"  // MS2: v2525
+#include "NiGlobalConstantEntry.h"
+.

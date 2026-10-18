@@ -1,0 +1,7 @@
+374c
+#ifdef __clang__  // MS2: clang gives the 0x80000000 enumerator type int; a switch on unsigned cannot narrow it
+    switch ((int)uiMode)
+#else
+    switch (uiMode)
+#endif
+.

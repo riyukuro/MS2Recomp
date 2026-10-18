@@ -1,0 +1,9 @@
+410@54s "" "(const char*)"
+348c
+    // x64 port: the code size is stored as 32 bits (as on x86; the loader reads 32 bits)
+    efd::UInt32 stCodeSize = (efd::UInt32)pShaderByteCode->GetBufferSize();
+.
+267@12s "" "(const char*)"
+266@12s "" "(const char*)"
+240@12s "" "(const char*)"
+239@12s "" "(const char*)"

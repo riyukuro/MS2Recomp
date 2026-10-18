@@ -1,0 +1,4 @@
+150c
+    // x64 port: the length is stored as 32 bits (as on x86; the loader reads 32 bits)
+    unsigned int uiLength = (unsigned int)(pcString ? strlen(pcString) : 0);
+.

@@ -1,0 +1,8 @@
+20a
+#endif
+.
+19a
+#if defined(EE_USE_NATIVE_STL)
+#include <algorithm>
+#else
+.

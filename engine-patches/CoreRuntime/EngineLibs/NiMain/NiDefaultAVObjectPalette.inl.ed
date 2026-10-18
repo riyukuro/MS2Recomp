@@ -1,0 +1,28 @@
+44a
+// MS2: Nexon addition (game 0x141c3a800). Same as GetAVObject, but a scene
+// search skips objects whose flags intersect usExcludeFlags. Cached entries
+// are returned without checking the flags, as in the game.
+inline NiAVObject* NiDefaultAVObjectPalette::GetAVObjectExcluding(
+    const char* pcName, unsigned int usExcludeFlags)
+{
+    NiAVObject* pkObj = NULL;
+    if (m_kHash.GetAt(pcName, pkObj))
+    {
+        return pkObj;
+    }
+    else if (m_pkScene)
+    {
+        pkObj = m_pkScene->GetObjectByNameExcluding(pcName, usExcludeFlags);
+        if (pkObj)
+        {
+            SetAVObject(pcName, pkObj);
+        }
+
+        return pkObj;
+    }
+
+    return NULL;
+}
+
+//--------------------------------------------------------------------------------------------------
+.

@@ -1,0 +1,51 @@
+446c
+        NiTListIterator kPos = m_kUnaffectedNodeList.GetHeadPos();  // MS2: v2525
+.
+440c
+            NiNode* pkKey; NiNode* pkNode; m_kAffectedNodeList.GetNext(kMapPos, pkKey, pkNode);  // MS2: v2525
+.
+437,438c
+        NiTMapIterator kMapPos = m_kAffectedNodeList.GetFirstPos();  // MS2: v2525
+        while (kMapPos)
+.
+377,396d
+373@61s "Size" "Count"
+372@58s "" "  // MS2: v2525"
+372@51s "Size" "Count"
+261c
+        NiTListIterator kIter = m_kUnaffectedNodeList.GetTailPos();  // MS2: v2525
+.
+243c
+            NiNode* pkAffectedNode; NiNode* pkKey; m_kAffectedNodeList.GetNext(kMapIter, pkKey, pkAffectedNode);  // MS2: v2525
+.
+240,241c
+        NiTMapIterator kMapIter = m_kAffectedNodeList.GetFirstPos();  // MS2: v2525
+        while (kMapIter)
+.
+110c
+    return true;  // MS2: v2525
+    }
+    return false;
+.
+108d
+105,106c
+    NiTMapIterator kPos = m_kAffectedNodeList.GetFirstPos();  // MS2: v2525
+    while (kPos)
+    {
+        NiNode* pkKey; NiNode *pkNode;
+        m_kAffectedNodeList.GetNext(kPos, pkKey, pkNode);
+.
+102,103c
+    if (m_kAffectedNodeList.GetCount() != 0)  // MS2: v2525
+.
+94c
+
+.
+91c
+    if (!m_kAffectedNodeList.RemoveAt(pkAffectedNode))  // MS2: v2525
+.
+79,82c
+    NiNode* pkExisting;  // MS2: v2525
+    if (m_kAffectedNodeList.GetAt(pkAffectedNode, pkExisting)) return false;
+    m_kAffectedNodeList.SetAt(pkAffectedNode, pkAffectedNode);
+.

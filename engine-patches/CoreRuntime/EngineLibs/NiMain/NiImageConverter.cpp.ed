@@ -1,0 +1,54 @@
+148a
+// MS2: the game implements the wchar_t overloads natively (wide NiFilename and
+// a wide efd::File::GetFile, game 0x141d6ed20/0x141d6f590/0x141d6f800). Our
+// engine has no wide file layer, so convert the path and use the narrow code.
+bool NiImageConverter::MS2WideToNarrowPath(const wchar_t* pwcPath,
+    char* pcPath, unsigned int uiPathLen)
+{
+    if (!pwcPath || !pcPath || uiPathLen == 0)
+        return false;
+#if defined(_WIN32)
+    int iLen = ::WideCharToMultiByte(CP_THREAD_ACP, 0, pwcPath, -1, pcPath,
+        (int)uiPathLen, NULL, NULL);
+    return iLen > 0;
+#else
+    size_t stLen = wcstombs(pcPath, pwcPath, uiPathLen);
+    if (stLen == (size_t)-1 || stLen >= uiPathLen)
+        return false;
+    return true;
+#endif
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiImageConverter::CanReadImageFile(const wchar_t* pwcFilename) const
+{
+    char acFilename[NI_MAX_PATH];
+    if (!MS2WideToNarrowPath(pwcFilename, acFilename, NI_MAX_PATH))
+        return false;
+    return CanReadImageFile(acFilename);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiImageConverter::ReadImageFileInfo(const wchar_t* pwcFilename,
+    NiPixelFormat& kFmt, bool& bMipmap, unsigned int& uiWidth,
+    unsigned int& uiHeight, unsigned int& uiNumFaces)
+{
+    char acFilename[NI_MAX_PATH];
+    if (!MS2WideToNarrowPath(pwcFilename, acFilename, NI_MAX_PATH))
+        return false;
+    return ReadImageFileInfo(acFilename, kFmt, bMipmap, uiWidth, uiHeight,
+        uiNumFaces);
+}
+
+//--------------------------------------------------------------------------------------------------
+NiPixelData* NiImageConverter::ReadImageFile(const wchar_t* pwcFilename,
+    NiPixelData* pkOptDest)
+{
+    char acFilename[NI_MAX_PATH];
+    if (!MS2WideToNarrowPath(pwcFilename, acFilename, NI_MAX_PATH))
+        return NULL;
+    return ReadImageFile(acFilename, pkOptDest);
+}
+
+//--------------------------------------------------------------------------------------------------
+.

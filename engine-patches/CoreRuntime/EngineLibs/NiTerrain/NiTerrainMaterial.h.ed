@@ -1,0 +1,3 @@
+274c
+        NiUInt32 m_uiSize;  // studio: 32-bit (SDK size_t)  // MS2: v2525
+.

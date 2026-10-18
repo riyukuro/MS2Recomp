@@ -1,0 +1,11 @@
+123@98s "" "\r"
+94c
+        NiNode* pkReceiver = NULL;
+        NiNode* pkReceiverVal = NULL;
+        kReceivers.GetNext(kIter, pkReceiver, pkReceiverVal);
+.
+91@42s "Head" "First"
+91@7s "List" "Map"
+90@18s "st" "Node*>"
+90@16s "L" "*, N"
+90@12s "" "TPointerMap<Ni"

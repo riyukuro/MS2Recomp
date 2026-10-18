@@ -1,0 +1,171 @@
+660@25s "" "(DWORD_PTR)"
+603@9s "" "_PTR"
+589@9s "" "_PTR"
+553a
+#else
+    {
+        // bsr on the low 16 bits of (count - 1); 0 if they are all zero
+        unsigned long index;
+        MaskWidth = 0;
+        if (_BitScanReverse(&index, (count - 1) & 0xffff))
+            MaskWidth = index + 1;
+    }
+#endif
+.
+539a
+#if defined(_M_IX86)
+.
+526a
+#else
+    {
+        int regs[4];
+        __cpuid(regs, 1);
+        Regebx = (UInt32)regs[1];
+    }
+#endif
+.
+520a
+#if defined(_M_IX86)
+.
+508a
+#else
+    {
+        int regs[4];
+        __cpuid(regs, 1);
+        Regebx = (UInt32)regs[1];
+    }
+#endif
+.
+502a
+#if defined(_M_IX86)
+.
+482a
+#else
+        {
+            int regs[4];
+            __cpuid(regs, 1);
+            Regedx = (UInt32)regs[3];
+        }
+#endif
+.
+476a
+#if defined(_M_IX86)
+.
+461a
+#else
+        {
+            int regs[4];
+            __cpuid(regs, 1);
+            Regedx = (UInt32)regs[3];
+        }
+#endif
+.
+455a
+#if defined(_M_IX86)
+.
+441a
+#else
+        {
+            int regs[4];
+            __cpuid(regs, 1);
+            Regedx = (UInt32)regs[3];
+        }
+#endif
+.
+435a
+#if defined(_M_IX86)
+.
+421a
+#else
+        {
+            int regs[4];
+            __cpuid(regs, 1);
+            Regedx = (UInt32)regs[3];
+        }
+#endif
+.
+415a
+#if defined(_M_IX86)
+.
+401a
+#else
+    {
+        int regs[4];
+        __cpuid(regs, 0);
+        if (regs[0] >= 4)   // check if cpuid supports leaf 4
+        {
+            __cpuidex(regs, 4, (int)lv);
+            Regeax = (UInt32)regs[0];
+        }
+    }
+#endif
+.
+388a
+#if defined(_M_IX86)
+.
+370a
+#else
+    {
+        int regs[4];
+        __cpuid(regs, 0);
+        if (regs[0] < 4)
+        {
+            Regeax = 1;     // Single core
+        }
+        else
+        {
+            __cpuidex(regs, 4, 0);  // index 0: leaf 4 reports at least one valid cache level
+            Regeax = (UInt32)regs[0];
+        }
+    }
+#endif
+.
+353a
+#if defined(_M_IX86)
+.
+319a
+#else
+    {
+        int regs[4];
+        __cpuid(regs, 1);
+        Regeax = (UInt32)regs[0];
+    }
+#endif
+.
+313a
+#if defined(_M_IX86)
+.
+291a
+#else
+    {
+        int regs[4];
+        __cpuid(regs, 0);
+        VendorID[0] = (UInt32)regs[1];  // ebx
+        VendorID[1] = (UInt32)regs[3];  // edx
+        VendorID[2] = (UInt32)regs[2];  // ecx
+    }
+#endif
+.
+283a
+#if defined(_M_IX86)
+.
+269a
+#else
+    {
+        int regs[4];
+        __cpuid(regs, 0);
+        MaxInputValue = (UInt32)regs[0];
+    }
+#endif
+.
+263a
+#if defined(_M_IX86)
+.
+45c
+#if defined(EE_ARCH_32) || defined(EE_ARCH_64)
+.
+18a
+#if !defined(_M_IX86)
+#include <intrin.h>     // __cpuid/__cpuidex/_BitScanReverse replace the x86 inline assembly on x64
+#endif
+.

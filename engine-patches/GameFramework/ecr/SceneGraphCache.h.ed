@@ -1,0 +1,11 @@
+405c
+    // MS2: RemoveFilePaths is declared public above.
+.
+341a
+    // MS2: accessor of the MS2 engine build (inline COMDAT 0x1414fcea0, logged as "SceneGraphCached count").
+    inline efd::UInt32 GetIdentifierCount() const { return (efd::UInt32)m_identifierCache.size(); }
+
+    // MS2: public in the MS2 engine build (MS2SceneGraphService::RemoveUnusedCacheAssetData calls it).
+    void RemoveFilePaths(const efd::utf8string& identifier);
+
+.

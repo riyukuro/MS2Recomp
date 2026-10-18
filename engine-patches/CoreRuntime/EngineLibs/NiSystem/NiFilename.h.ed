@@ -1,0 +1,83 @@
+124a
+// studio (inferred): wide-character twin of NiFilename (docs/tu/fwnisys.md)  // MS2: v2525
+class NISYSTEM_ENTRY NiFilenameW : public NiMemObject
+{
+public:
+    NiFilenameW(const wchar_t* pcFullPath);
+
+    inline void SetDir(const wchar_t* pcDir);
+    inline void SetDrive(const wchar_t* pcDrive);
+    inline void SetExt(const wchar_t* pcExt);
+    inline void SetFilename(const wchar_t* pcFilename);
+    inline void SetPlatformSubDir(const wchar_t* pcPlatformSubDir);
+
+    inline const wchar_t* GetDir() const;
+    inline const wchar_t* GetDrive() const;
+    inline const wchar_t* GetExt() const;
+    inline const wchar_t* GetFilename() const;
+    inline const wchar_t* GetPlatformSubDir() const;
+
+    bool GetFullPath(wchar_t* pcFullPath, unsigned int uiStrLen) const;
+
+private:
+    void Splitpath(const wchar_t* pcStr);
+    bool Makepath(wchar_t* pcStr, size_t stStrLen) const;
+
+    wchar_t m_acDir[_MAX_DIR];
+    wchar_t m_acDrive[_MAX_DRIVE];
+    wchar_t m_acExt[_MAX_EXT];
+    wchar_t m_acFname[_MAX_FNAME];
+    wchar_t m_acSubDir[_MAX_DIR];
+};
+
+inline void NiFilenameW::SetDir(const wchar_t* pcDir)
+{
+    wcscpy_s(m_acDir, _MAX_DIR, pcDir);
+}
+
+inline void NiFilenameW::SetDrive(const wchar_t* pcDrive)
+{
+    wcscpy_s(m_acDrive, _MAX_DRIVE, pcDrive);
+}
+
+inline void NiFilenameW::SetExt(const wchar_t* pcExt)
+{
+    wcscpy_s(m_acExt, _MAX_EXT, pcExt);
+}
+
+inline void NiFilenameW::SetFilename(const wchar_t* pcFilename)
+{
+    wcscpy_s(m_acFname, _MAX_FNAME, pcFilename);
+}
+
+inline void NiFilenameW::SetPlatformSubDir(const wchar_t* pcPlatformSubDir)
+{
+    wcscpy_s(m_acSubDir, _MAX_DIR, pcPlatformSubDir);
+}
+
+inline const wchar_t* NiFilenameW::GetDir() const
+{
+    return m_acDir;
+}
+
+inline const wchar_t* NiFilenameW::GetDrive() const
+{
+    return m_acDrive;
+}
+
+inline const wchar_t* NiFilenameW::GetExt() const
+{
+    return m_acExt;
+}
+
+inline const wchar_t* NiFilenameW::GetFilename() const
+{
+    return m_acFname;
+}
+
+inline const wchar_t* NiFilenameW::GetPlatformSubDir() const
+{
+    return m_acSubDir;
+}
+
+.

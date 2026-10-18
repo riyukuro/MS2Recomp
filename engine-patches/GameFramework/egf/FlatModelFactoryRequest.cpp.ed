@@ -1,0 +1,7 @@
+37a
+    , m_studioFlag0x68(studioFlag)
+.
+36c
+    bool isReload,
+    bool studioFlag)
+.

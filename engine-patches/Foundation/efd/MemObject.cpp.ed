@@ -1,0 +1,9 @@
+23a
+#endif
+.
+21a
+#if defined(EE_USE_NATIVE_STL)
+#include <exception> // for std::bad_alloc
+#include <new>
+#else
+.

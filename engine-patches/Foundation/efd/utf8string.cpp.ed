@@ -1,0 +1,8 @@
+14a
+// sprintf(const utf8string&, ...) calls va_start on a reference parameter. The VC90 x64 va_start
+// intrinsic accepted that; the newer CRT rejects it with a static_assert, which this define switches
+// off. The code generated is the same __va_start(&ap, x) as in VC90.
+#if defined(_MSC_VER) && !defined(__clang__)
+#define _CRT_NO_VA_START_VALIDATION
+#endif
+.

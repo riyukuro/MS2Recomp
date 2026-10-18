@@ -1,0 +1,6 @@
+170a
+    // MS2: Nexon's MS2MeshCullingProcess derives from NiCullingProcess directly (RTTI base, ctor 0x140d96010 calls
+    // NiCullingProcess::NiCullingProcess), so it needs the private constructors.
+    friend class MS2MeshCullingProcess;
+
+.

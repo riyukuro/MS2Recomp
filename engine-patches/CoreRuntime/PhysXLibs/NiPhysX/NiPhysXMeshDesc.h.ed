@@ -1,0 +1,3 @@
+251c
+    NxU32 m_uiMeshSize;  // studio: 32-bit (SDK size_t)  // MS2: v2525
+.

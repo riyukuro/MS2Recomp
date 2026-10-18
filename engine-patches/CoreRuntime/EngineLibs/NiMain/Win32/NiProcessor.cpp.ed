@@ -1,0 +1,20 @@
+192a
+#endif // _M_IX86
+
+.
+32a
+#else
+// x64: no inline x87 assembly; use the portable C++ transforms.
+NiProcessorSpecificCode::VectorTransformFunc
+    NiProcessorSpecificCode::ms_pVectorsTransform
+        = NiProcessorSpecificCode::TransformVectorsBasic;
+NiProcessorSpecificCode::PointTransformFunc
+    NiProcessorSpecificCode::ms_pPointsTransform
+        = NiProcessorSpecificCode::TransformPointsBasic;
+#endif
+
+#if defined(_M_IX86)
+.
+20a
+#if defined(_M_IX86)
+.

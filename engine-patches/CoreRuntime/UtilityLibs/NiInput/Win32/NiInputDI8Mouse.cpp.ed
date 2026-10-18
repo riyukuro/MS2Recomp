@@ -1,0 +1,10 @@
+19a
+#if defined(__clang__)
+// winnt.h's FIELD_OFFSET (pointer arithmetic on a null pointer) is not a constant expression for clang,
+// but the DIMOFS_* case labels below need one; cl.exe folds it.
+#include <stddef.h>
+#undef FIELD_OFFSET
+#define FIELD_OFFSET(type, field) ((LONG)offsetof(type, field))
+#endif
+
+.

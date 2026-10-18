@@ -1,0 +1,69 @@
+342a
+#if defined(EE_USE_NATIVE_STL)
+        /// Access to the underlying container (STLport's stack::_Get_s(), used by egf::ScriptContext).
+        _container& _Get_s() { return this->c; }
+        const _container& _Get_s() const { return this->c; }
+#endif
+.
+228a
+#endif
+.
+218a
+#if defined(EE_USE_NATIVE_STL)
+    class hash_map : public EE_STL_NAMESPACE::unordered_map< _key, _data, _HashFcn, _EqualKey,
+        CustomAllocator< EE_STL_NAMESPACE::pair<const _key, _data> > >
+    {
+    public:
+        typedef EE_STL_NAMESPACE::unordered_map<
+            _key,
+            _data,
+            _HashFcn,
+            _EqualKey,
+            CustomAllocator< EE_STL_NAMESPACE::pair<const _key, _data> > > BaseClass;
+#else
+.
+175a
+#endif
+.
+167a
+#if defined(EE_USE_NATIVE_STL)
+    class map : public EE_STL_NAMESPACE::map< _key, _data, _compare,
+        efd::CustomAllocator< EE_STL_NAMESPACE::pair<const _key, _data> > >
+    {
+    public:
+        typedef EE_STL_NAMESPACE::map<
+            _key,
+            _data,
+            _compare,
+            efd::CustomAllocator< EE_STL_NAMESPACE::pair<const _key, _data> > > BaseClass;
+#else
+.
+58a
+#endif
+.
+56a
+#if defined(EE_USE_NATIVE_STL)
+        // MSVC vector iterators are class types, not raw pointers.
+        typedef typename BaseClass::iterator iterator;
+        typedef typename BaseClass::const_iterator const_iterator;
+#else
+.
+38a
+#endif
+.
+28a
+#if defined(EE_USE_NATIVE_STL)
+// x64 port: native MSVC STL. efd::hash_map is built on std::unordered_map (stdext::hash_map has an
+// incompatible, non-SGI template signature).
+#include <map>
+#include <unordered_map>
+#include <list>
+#include <vector>
+#include <set>
+#include <deque>
+#include <stack>
+#include <queue>
+#include <functional>
+#include <algorithm>
+#else
+.
