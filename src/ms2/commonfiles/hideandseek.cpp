@@ -4,14 +4,14 @@
 // MS2-RANGE: 0x1400b8ec0-0x1400b9090 .text$di
 // MS2-RANGE: 0x14050a120-0x14050d4c0 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$?0AEAIAEAV?$vector@HV?$allocator@H@std@@@std@@$0A@@?$pair@$$CBIV?$vector@HV?$allocator@H@std@@@std@@@std@@QEAA@AEAIAEAV?$vector@HV?$allocator@H@std@@@1@@Z 0x14050ab30 ; unique
+// MS2-PIN: ??$?0AEAIAEAV?$vector@HV?$allocator@H@std@@@std@@$0A@@?$pair@IV?$vector@HV?$allocator@H@std@@@std@@@std@@QEAA@AEAIAEAV?$vector@HV?$allocator@H@std@@@1@@Z 0x14050ab30 ; unique
 // MS2-PIN: ??$?0V?$allocator@H@std@@$$V@?$_Compressed_pair@V?$allocator@H@std@@V?$_Vector_val@U?$_Simple_types@H@std@@@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@$$QEAV?$allocator@H@1@@Z 0x14050acc0 ; unique
 // MS2-PIN: ??$?0V?$allocator@H@std@@X@?$_Vector_alloc@U?$_Vec_base_types@HV?$allocator@H@std@@@std@@@std@@QEAA@$$QEAV?$allocator@H@1@@Z 0x14050ad00 ; unique
 // MS2-PIN: ??$forward@V?$allocator@H@std@@@std@@YA$$QEAV?$allocator@H@0@AEAV10@@Z 0x14050b870 ; prop
-// MS2-PIN: ??0?$allocator@H@std@@QEAA@XZ 0x14050b8d0 ; order
 // MS2-PIN: ??0?$vector@HV?$allocator@H@std@@@std@@QEAA@$$QEAV01@@Z 0x14050ba90 ; unique
 // MS2-PIN: ??0?$vector@HV?$allocator@H@std@@@std@@QEAA@AEBV01@@Z 0x14050bb10 ; unique
 // MS2-PIN: ??1?$pair@$$CBIV?$vector@HV?$allocator@H@std@@@std@@@std@@QEAA@XZ 0x14050bc60 ; unique
+// MS2-PIN: ??1?$pair@IV?$vector@HV?$allocator@H@std@@@std@@@std@@QEAA@XZ 0x14050bc80 ; prop
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@HV?$allocator@H@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@HV?$allocator@H@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@I@2@XZ 0x14050c9c0 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@HV?$allocator@H@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@HV?$allocator@H@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@I@2@XZ 0x14050c9d0 ; unique
 // MS2-PIN: ?_Move_from@?$vector@HV?$allocator@H@std@@@std@@AEAAX$$QEAV12@U?$integral_constant@_N$00@2@@Z 0x14050cc80 ; unique
@@ -45,7 +45,6 @@ struct Unk_RegMarker {};
 
 // ---- dynamic initializers (.text$di) ----
 
-#ifndef MS2_HOOK_DLL
 // @0x1400b8ec0
 static std::map<unsigned, std::vector<int> > s_ridingTable;
 
@@ -61,6 +60,7 @@ static CString s_skill("skill");
 // @0x1400b9010
 static CString s_stun("stun");
 
+#ifndef MS2_HOOK_DLL
 // @0x1400b9040
 static char s_marker[0x48];
 static Unk_RegMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142c9aa30), Unk_RegMarker());
@@ -131,6 +131,7 @@ bool HideAndSeek::Info::FUN_14050a4d0() { return m_19; }
 // @0x14050a510
 bool HideAndSeek::Info::FUN_14050a510() { return m_1a; }
 
+// MS2-FUNCTIONAL: clamp codegen differs
 // @0x14050a530
 void HideAndSeek::Info::FUN_14050a530(__int64 nAdd, unsigned short nRule)
 {
@@ -141,6 +142,7 @@ void HideAndSeek::Info::FUN_14050a530(__int64 nAdd, unsigned short nRule)
     m_20 += n;
 }
 
+// MS2-FUNCTIONAL: clamp codegen differs
 // @0x14050a5a0
 void HideAndSeek::Info::FUN_14050a5a0(__int64 nValue, unsigned short nRule)
 {
@@ -176,6 +178,7 @@ HideAndSeek::ObjectData::~ObjectData()
 {
 }
 
+// MS2-FUNCTIONAL: lock-guard/find sequence schedules registers differently
 // @0x14050a770
 void HideAndSeek::FUN_14050a770(unsigned nMapCode, std::vector<int>& out)
 {
@@ -190,6 +193,7 @@ void HideAndSeek::FUN_14050a770(unsigned nMapCode, std::vector<int>& out)
     }
 }
 
+// MS2-FUNCTIONAL: XML loader; register/call-order differences in the tokenise/emplace sequence
 // @0x14050a830
 void HideAndSeek::FUN_14050a830()
 {
@@ -217,7 +221,7 @@ void HideAndSeek::FUN_14050a830()
             Unk_LockGuard guard(s_lock);
             if (guard == 0 && nMapCode != 0)
             {
-                s_ridingTable.emplace(std::pair<const unsigned, std::vector<int> >(nMapCode, objects));
+                s_ridingTable.insert(std::pair<unsigned, std::vector<int> >(nMapCode, objects));
             }
         }
     }
