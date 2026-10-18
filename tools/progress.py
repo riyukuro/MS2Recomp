@@ -57,6 +57,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import bytematch as bm  # noqa: E402
 import ms2paths  # noqa: E402
 import gbprogress  # noqa: E402
+import mergekey  # noqa: E402
 
 SRC = os.path.join(ROOT, "src")
 GAME = os.path.join(SRC, "ms2")
@@ -1090,6 +1091,8 @@ def main():
             cache[u.rel] = {"key": None, "failed": True, "res": None}
             continue
         key = [os.path.getmtime(u.obj), os.path.getsize(u.obj), u.ranges, "multicopy5" + ("g" if u.guess else "") + ("f9" if not os.environ.get("MS2_NO_ICF_FOLD") else "") + ("m" if merge_mode else "") + ("x" if os.environ.get("MS2_NO_MULTICOPY") else "")]
+        if os.environ.get("MS2_MERGE_INCR"):      # tools/merge.sh: persistent tree, match results also keyed by their inputs
+            key.append(mergekey.game_stamp())
         c = cache.get(u.rel)
         if not a.force and c and c.get("key") == json.loads(json.dumps(key)) and not a.verbose:
             continue

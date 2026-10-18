@@ -220,6 +220,9 @@ def run(cache, j=8, filters=(), log=print):
             res.pop(u["recipe"] + ":" + u["name"], None)
             continue
         key = [os.path.getmtime(o), os.path.getsize(o)]
+        if os.environ.get("MS2_MERGE_INCR"):      # tools/merge.sh: also keyed by the symbol tables the match read
+            import mergekey
+            key.append(mergekey.engine_stamp())
         c = res.get(u["recipe"] + ":" + u["name"])
         if not c or c.get("key") != key:
             jobs.append((u, o, key))
