@@ -6,6 +6,7 @@
 #pragma once
 #include <afx.h>
 #include <map>
+#include <vector>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/mstime.h"
@@ -61,6 +62,17 @@ public:
 
     void Load();                            // 0x14059dea0 (name invented)
     GachaBoxDataPtr FUN_14059e340(int nRandomBoxID);    // find by id, returned by value (null pointer when missing; hidden return slot)
+    int GetIndividualDropBoxID(int nRandomBoxID);       // 0x14059e400 (+0x4c; 0 when missing)
+    int FUN_14059e490(int nShopID);                     // 0x14059e490 first box of that shop: ui (+0x48)
+    int FUN_14059e550(int nShopID);                     // 0x14059e550 first box of that shop: coinItemID
+    int GetCoinItemID(int nRandomBoxID);                // 0x14059e610 (+0x54; 0 when missing)
+    int FUN_14059e6a0(int nItemID);                     // 0x14059e6a0 coin item of the box an item opens (or of the first drop that has one)
+    int FUN_14059ebb0(int nCoinItemID);                 // 0x14059ebb0 randomBoxID of the first box paid with that coin item
+    void FUN_14059ec70(std::vector<GachaBoxDataPtr>& out);   // 0x14059ec70 every box
+    int FUN_14059ed00(int nId);                         // 0x14059ed00 GetSeason() of the box whose randomBoxID or coinItemID is nId
+    int FUN_14059ee00(int nShopID);                     // 0x14059ee00 first box of that shop: paymentIconTag
+    bool FUN_14059eec0(int nCoinItemID);                // 0x14059eec0 a box is paid with that coin item
+    bool FUN_14059ef70(int nRandomBoxID);               // 0x14059ef70 seasonNumberOnIcon
 
     std::map<int, GachaBoxDataPtr> m_map;   // +0x08 randomBoxID -> box
 };
