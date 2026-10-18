@@ -1,0 +1,13 @@
+91a92,103
+> 	rc=$?
+> 	# MS2: if wine exited without ever opening the FIFOs (e.g. command line over 32767 chars), the sed readers block in
+> 	# open() forever and cleanup's `wait` hangs. Open each FIFO read-write once and close it again: that releases a blocked
+> 	# reader (EOF) and is harmless if the reader already finished.
+> 	while [ -n "$(jobs -pr)" ]; do
+> 		exec 5<>$WINE_MSVC_STDOUT 6<>$WINE_MSVC_STDERR
+> 		exec 5>&- 6>&-
+> 		sleep 0.1
+> 	done
+> 	rm -f $WINE_MSVC_STDOUT $WINE_MSVC_STDERR
+> 	trap - EXIT
+> 	exit $rc
