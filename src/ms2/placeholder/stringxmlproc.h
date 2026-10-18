@@ -16,6 +16,7 @@
 #include "ms2/placeholder/cptred.h"
 
 enum PVPStringId { PVPStringIdNone = 0 };
+enum IndividualArenaStringId { IndividualArenaStringIdNone = 0 };
 
 class StringXmlProcBase : public CPtred
 {
@@ -29,9 +30,11 @@ template <class T>
 class StringXmlProc : public StringXmlProcBase
 {
 public:
-    typedef ATL::CRBMap<CStringW, T, ATL::CStringElementTraitsI<CStringW> > KeyMap;
+    typedef ATL::CRBMap<CStringW, T, ATL::CStringElementTraits<CStringW> > KeyMap;   // case-sensitive: the exe compares keys with wcscmp (0x14051b270)
     typedef ATL::CRBMap<T, CStringW> ValueMap;
 
+    // 0x14084faa0 (IndividualArenaStringId); callee destroys the three by-value strings. Defined by stringidinterfacebase.cpp.
+    StringXmlProc(CStringA path, std::auto_ptr<KeyMap> (*factory)(), CStringA keyAttribute, CStringA valueAttribute);
     virtual ~StringXmlProc();                               // 0x14084ff80 (PVPStringId)
     CStringW GetText(T id);                                 // 0x141025b80 (PVPStringId)
     ValueMap* GetData();                                    // 0x141025c50
