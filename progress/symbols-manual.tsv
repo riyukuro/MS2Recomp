@@ -3146,3 +3146,5 @@ __imp_AddSurveyParameterA	142cd1480	data
 ?Load@CBlackMarketTable@@QEAAXXZ	1401c3da0	func
 ?s_bInit@CFishingTable@@2_NA	143aaece8	data
 ?s_pTextFilter@CFishingTable@@2PEAVUnk_FishTextFilter@@EA	143aaecf0	data
+??0Unk_IssTabArray@@QEAA@H@Z	1422deec0	func
+??1Unk_IssTabArray@@UEAA@XZ	1422df070	func
