@@ -35,7 +35,7 @@ import bytematch as bm  # noqa: E402
 import ms2paths  # noqa: E402
 import gbtree  # noqa: E402
 
-CL = ms2paths.CL
+CL = ms2paths.find_cl()
 UNITS_TSV = ms2paths.UNITS_TSV
 FUNCS = ms2paths.FUNCTIONS_TSV
 GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
@@ -75,10 +75,7 @@ def needs_compile(cache, u):
 
 
 def _real(p):
-    p = p.strip()
-    if re.match(r"^[zZ]:", p):
-        p = p[2:]
-    p = os.path.normpath(p.replace("\\", "/"))
+    p = ms2paths.host_path(p)
     return os.path.realpath(p) if os.path.exists(p) else None
 
 
@@ -86,8 +83,8 @@ def compile_unit(args):
     cache, u = args
     o = obj_path(cache, u)
     os.makedirs(os.path.dirname(o), exist_ok=True)
-    env = dict(os.environ, WINEPREFIX=ms2paths.WINEPREFIX, WINEDEBUG="-all")
-    cmd = [CL, "/nologo", "/c"] + u["args"] + ["/showIncludes", "/Fo" + o, u["source"]]
+    env = ms2paths.toolchain_env()
+    cmd = ms2paths.cl_cmdline([CL, "/nologo", "/c"] + u["args"] + ["/showIncludes", "/Fo" + o, u["source"]])
     t0 = time.time()
     r = subprocess.run(cmd, cwd=u["cwd"], capture_output=True, text=True, env=env, encoding="latin1")
     deps, errs = set(), []

@@ -40,8 +40,10 @@ Merged totals by area (functions in the original executable; regenerated on each
 |---|---|
 | `src/ms2/` | recovered game code; `client/ms2/` and `commonfiles/` follow the original source paths, `unnamed/` and `guess/` hold units whose file name is unknown or guessed, and `placeholder/` holds partially recovered class layouts |
 | `src/hook/` | the hook DLL runtime (`ms2hook.h` macros, differential tests, vendored Detours) |
-| `cmake/` | toolchains (clang-cl, or real cl 19.16 under Wine) and the game and engine compiler flags |
-| `tools/msvc/` | wrappers that run MSVC 14.16 under Wine |
+| `cmake/` | toolchains (clang-cl, or real cl 19.16 under Wine or natively on Windows) and the game and engine compiler flags |
+| `tools/msvc/` | wrappers that run MSVC 14.16 under Wine (Linux only; on Windows the real `cl.exe` is used directly) |
+| `tools/ms2paths.py` | where the tools find the exe, maps and toolchain; the Linux/Wine and native Windows differences live here |
+| `.gitattributes` | turns line-ending conversion off (`* -text`): patches, maps and sources must check out byte-exact |
 | `tools/ms2symobj.py` | turns the symbol tables into the object that binds unrecovered names to their addresses in the exe |
 | `progress/symbols*.tsv` | symbol name → address tables for the original exe, used by the DLL link |
 | `engine-patches/` | our Gamebryo changes as SDK-free edit scripts against stock LightSpeed 3.2.0.661 (`tools/apply-engine-patches.sh`) |
@@ -50,10 +52,13 @@ Merged totals by area (functions in the original executable; regenerated on each
 
 ## Requirements
 
-- Linux with CMake 3.20+, Ninja, Python 3 and Wine (the toolchains assume a Linux host)
-- MSVC 14.16 (VS2017) headers, libraries and, for byte-matching builds, `cl.exe`, installed with
-  [msvc-wine](https://github.com/mstorsjo/msvc-wine) into `third_party/msvc/`
-- clang-cl, for the faster non-matching build
+- Either **Linux** with CMake 3.20+, Ninja, Python 3 and Wine, or **native Windows 10/11** with CMake 3.20+, Ninja, Python 3.10+
+  and Git (no WSL, no Wine)
+- MSVC 14.16 (VS2017 15.9, cl 19.16.27054) with MFC/ATL (MBCS) and the Windows 10 SDK 10.0.19041. Linux: installed with
+  [msvc-wine](https://github.com/mstorsjo/msvc-wine) into `third_party/msvc/`. Windows: the Visual Studio 2017 Build Tools
+  (v141 toolset); component IDs and setup in [`CONTRIBUTING.md`](CONTRIBUTING.md#windows-native-no-wsl-no-wine).
+  `tools/check_toolchain.py` verifies either install against our hashes
+- clang-cl and the LLVM tools (`llvm-nm`, `llvm-undname`), for the faster non-matching build and the gates
 - Stock Gamebryo LightSpeed 3.2.0.661 source (not included), patched with `engine-patches/` into `engine/gamebryo/`
 - DirectX SDK (June 2010) in `third_party/dxsdk/` and the NVIDIA PhysX SDK 2.8.4 in `third_party/physx284/`
 - Optional: the Scaleform GFx 4.1 SDK. Without it, the build uses the placeholder types in `src/ms2/placeholder/`.
@@ -71,11 +76,23 @@ cmake -G Ninja -S src -B build/hook-msvc -DCMAKE_TOOLCHAIN_FILE=$PWD/cmake/toolc
 tools/ninja-msvc.sh -C build/hook-msvc
 ```
 
-Both builds produce `dinput8.dll`. `-DMS2HOOK_WITH_GAME=OFF` builds the bare proxy with no hooks.
+On native Windows, run the same commands from a shell that has the VS 2017 environment (`python tools\ms2paths.py shell`,
+or prefix a command with `python tools\ms2paths.py run`), with the native toolchain in place of the Wine one:
+
+```bat
+cmake -G Ninja -S src -B build\hook-clang -DCMAKE_TOOLCHAIN_FILE=%CD%\cmake\toolchain-clangcl-x64.cmake
+ninja -C build\hook-clang
+
+rem MSVC 14.16 (byte-matching flags): the real cl.exe
+cmake -G Ninja -S src -B build\hook-msvc -DCMAKE_TOOLCHAIN_FILE=%CD%\cmake\toolchain-msvc1416-native.cmake
+ninja -C build\hook-msvc
+```
+
+The per-unit gate does these builds for you (`python tools\unit_check.py`). Both builds produce `dinput8.dll`. `-DMS2HOOK_WITH_GAME=OFF` builds the bare proxy with no hooks.
 
 ## Running
 
-Copy `dinput8.dll` next to `MapleStory2.exe` and start the game (under Wine, set the DLL override `dinput8=n,b`).
+Copy `dinput8.dll` next to `MapleStory2.exe` and start the game (on Windows nothing else is needed; under Wine, set the DLL override `dinput8=n,b`).
 The DLL writes `ms2hook.log` beside the exe, listing every hook as INSTALLED or REFUSED. Each hook checks a hash of
 the original function's bytes, and the DLL refuses all hooks if the exe is not the expected build.
 

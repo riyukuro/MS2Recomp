@@ -118,7 +118,7 @@ endif()
 
 # DirectX SDK (June 2010) headers the Windows SDK lacks (d3dx9*.h, ...), through a symlink overlay so that the Windows SDK's
 # d3d9/d3d11/dxgi headers still win (the same trick as engine/gamebryo/CMakeLists.txt). tools/progress.py builds the same
-# overlay in build/ms2-engine-dxsdk (keep both in sync).
+# overlay in build/ms2-engine-dxsdk (keep both in sync). COPY_ON_ERROR: native Windows without symlink privilege copies.
 set(MS2_DXSDK_DIR "${CMAKE_CURRENT_LIST_DIR}/../third_party/dxsdk/DXSDK" CACHE PATH "DirectX SDK (June 2010) root")
 set(MS2_WINSDK_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/../third_party/msvc/Windows Kits/10/Include/10.0.19041.0" CACHE PATH
     "Windows SDK include root (decides which DXSDK headers are shadowed)")
@@ -140,13 +140,13 @@ foreach(h ${_ms2_dxh})
     endif()
     foreach(n "${h}" "${hl}")
         if(NOT EXISTS "${MS2_ENGINE_OVERLAY}/${n}")
-            file(CREATE_LINK "${MS2_DXSDK_DIR}/Include/${h}" "${MS2_ENGINE_OVERLAY}/${n}" SYMBOLIC)
+            file(CREATE_LINK "${MS2_DXSDK_DIR}/Include/${h}" "${MS2_ENGINE_OVERLAY}/${n}" COPY_ON_ERROR SYMBOLIC)
         endif()
     endforeach()
 endforeach()
 foreach(n XInput.h xinput.h)
     if(NOT EXISTS "${MS2_ENGINE_OVERLAY_PREFERRED}/${n}")
-        file(CREATE_LINK "${MS2_DXSDK_DIR}/Include/XInput.h" "${MS2_ENGINE_OVERLAY_PREFERRED}/${n}" SYMBOLIC)
+        file(CREATE_LINK "${MS2_DXSDK_DIR}/Include/XInput.h" "${MS2_ENGINE_OVERLAY_PREFERRED}/${n}" COPY_ON_ERROR SYMBOLIC)
     endif()
 endforeach()
 

@@ -6,11 +6,14 @@ header-defined globals (ATL _AtlComModule & co) and the anonymous-namespace hash
 loses the header-only COMDATs that the exe's unit ranges may include.  Units whose text before the stdafx include
 is anything but `#define MS2_THIS_FILE` are compiled without the PCH.
 """
-import fcntl
 import hashlib
 import os
 import re
 import subprocess
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ms2paths  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HDR = "ms2/placeholder/ms2stdafx.h"
@@ -44,8 +47,7 @@ def args(flags, text, cl, env):
     stamp = pch + ".ok"
     if _ok.get(pch) is None:
         os.makedirs(DIR, exist_ok=True)
-        with open(pch + ".lock", "w") as lk:
-            fcntl.flock(lk, fcntl.LOCK_EX)
+        with ms2paths.file_lock(pch + ".lock"):
             if not (os.path.exists(stamp) and os.path.getmtime(stamp) >= os.path.getmtime(hdr)):
                 stub = os.path.join(DIR, "ms2pch-%s.cpp" % key)
                 open(stub, "w").write('#include "ms2pch.h"\n')

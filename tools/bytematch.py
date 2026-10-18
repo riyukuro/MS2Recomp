@@ -46,8 +46,7 @@ import ms2paths  # noqa: E402
 EXE = ms2paths.EXE
 FUNCS = ms2paths.FUNCTIONS_TSV
 # import libraries that resolve the exe's by-ordinal imports (mfc140.dll exports everything by ordinal)
-ORDINAL_LIBS = [os.path.join(ms2paths.THIRD_PARTY, "msvc", "VC", "Tools", "MSVC", "14.16.27023", "atlmfc", "lib", "x64",
-                             "mfc140.lib")]
+ORDINAL_LIBS = [os.path.join(ms2paths.msvc_tools_dir(), "atlmfc", "lib", "x64", "mfc140.lib")]
 
 
 def import_lib_ordinals(path):

@@ -1,0 +1,5 @@
+# Check out every file byte-exact on every platform (no CRLF conversion, even with core.autocrlf=true).
+# engine-patches/ (.ed line numbers and the stock/result sha256 in manifest.tsv), data/map, progress/*.tsv and the
+# src/ files that carry CRLF on purpose are all compared byte by byte by the gates.
+* -text
+*.sh text eol=lf

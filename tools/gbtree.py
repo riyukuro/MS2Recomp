@@ -29,6 +29,9 @@ import os
 import shutil
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ms2paths  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ENGINE = os.path.join(ROOT, "engine", "gamebryo")
 V2525 = os.path.join(ROOT, "engine", "gamebryo-v2525")
@@ -39,7 +42,7 @@ D3DX = os.path.join(ROOT, "third_party", "dxsdk", "DXSDK", "Include")
 PHYSX = os.path.join(ROOT, "third_party", "physx284", "PFiles", "NVIDIA Corporation", "NVIDIA PhysX SDK", "v2.8.4_win",
                      "SDKs")
 TREE = os.path.join(ROOT, "build", "gb-tree")
-WINSDK = os.path.join(ROOT, "third_party", "msvc", "Windows Kits", "10", "Include", "10.0.19041.0")
+WINSDK = ms2paths.winsdk_include()
 # the generated include dirs of engine/gamebryo/CMakeLists.txt, rebuilt in the tree under stock/ for the stock recipe
 PCH_FORWARD = ("Foundation/efd/efdPCH.h", "Foundation/efdLogService/efdLogServicePCH.h",
                "Foundation/efdNetwork/efdNetworkPCH.h", "Foundation/efdPhysX/efdPhysXPCH.h", "GameFramework/ecr/ecrPCH.h",
@@ -141,7 +144,7 @@ def assemble(tree=TREE, verbose=False):
         dst = os.path.join(tree, rel)
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         if not os.path.lexists(dst):
-            os.symlink(src, dst)
+            ms2paths.link_or_copy(src, dst)
     os.makedirs(os.path.join(tree, "include"), exist_ok=True)     # the snapshot's game include dir (unused by engine TUs)
     for h in PCH_FORWARD:     # gb_pch_forwarder(): the libs' PCH headers, which are not on their include path
         d = os.path.join(tree, "stock", "pch-forward", os.path.basename(os.path.dirname(h)))

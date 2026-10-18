@@ -56,7 +56,7 @@ def main():
     if len(sys.argv) != 3:
         sys.exit(__doc__)
     pd, tree = Path(sys.argv[1]), Path(sys.argv[2])
-    rows = [l.split("\t") for l in (pd / "manifest.tsv").read_text().splitlines()[1:]]
+    rows = [l.split("\t") for l in (pd / "manifest.tsv").read_text(encoding="ascii").splitlines()[1:]]
     results, bad = {}, []
     for path, ssha, rsha, kind in rows:
         if kind == "withheld":

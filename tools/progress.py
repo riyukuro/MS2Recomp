@@ -63,7 +63,7 @@ SRC = os.path.join(ROOT, "src")
 GAME = os.path.join(SRC, "ms2")
 OUT = os.path.join(ROOT, "progress")
 CACHE = os.path.join(ROOT, "build", "progress")
-CL = ms2paths.CL
+CL = ms2paths.find_cl()
 FUNCS = ms2paths.FUNCTIONS_TSV
 UNITS = ms2paths.UNITS_TSV
 RTTI_CLASSES = ms2paths.RTTI_CLASSES
@@ -91,7 +91,7 @@ def engine_flags():
     over = os.path.join(ROOT, "build", "ms2-engine-dxsdk")
     pref = over + "-preferred"
     dx = os.path.join(ms2paths.THIRD_PARTY, "dxsdk", "DXSDK", "Include")
-    wk = os.path.join(ms2paths.THIRD_PARTY, "msvc", "Windows Kits", "10", "Include", "10.0.19041.0")
+    wk = ms2paths.winsdk_include()
     if not os.path.isdir(over):
         os.makedirs(over, exist_ok=True)
         os.makedirs(pref, exist_ok=True)
@@ -100,9 +100,10 @@ def engine_flags():
             if h.lower() not in shadow:
                 for n in {h, h.lower()}:
                     if not os.path.lexists(os.path.join(over, n)):
-                        os.symlink(os.path.join(dx, h), os.path.join(over, n))
+                        ms2paths.link_or_copy(os.path.join(dx, h), os.path.join(over, n))
         for n in ("XInput.h", "xinput.h"):
-            os.symlink(os.path.join(dx, "XInput.h"), os.path.join(pref, n))
+            if not os.path.lexists(os.path.join(pref, n)):
+                ms2paths.link_or_copy(os.path.join(dx, "XInput.h"), os.path.join(pref, n))
     return (["/I" + pref] + ["/I" + os.path.join(eng, d) for d in listing("MS2_ENGINE_INCLUDE_DIRS")] + ["/I" + over]
             + ["/D" + d for d in listing("MS2_ENGINE_DEFINITIONS")])
 
@@ -302,10 +303,7 @@ _case = {}
 
 def unixpath(p):
     """Wine cl reports paths as z:\\... and (in CodeView) lowercased: map back to the real file under ROOT."""
-    p = p.strip()
-    if re.match(r"^[zZ]:", p):
-        p = p[2:]
-    p = os.path.normpath(p.replace("\\", "/"))
+    p = ms2paths.host_path(p)
     if os.path.exists(p):
         return p
     if not _case:
@@ -335,16 +333,16 @@ def needs_compile(u):
 
 def compile_unit(u):
     os.makedirs(os.path.dirname(u.obj), exist_ok=True)
-    env = dict(os.environ, WINEPREFIX=ms2paths.WINEPREFIX, WINEDEBUG="-all")
+    env = ms2paths.toolchain_env()
     pch = ms2pch.args(GAME_FLAGS, open(u.path, encoding="latin1").read(), CL, env)
-    cmd = [CL] + GAME_FLAGS + pch + ["/showIncludes", "/Fo" + u.obj, u.path]
+    cmd = ms2paths.cl_cmdline([CL] + GAME_FLAGS + pch + ["/showIncludes", "/Fo" + u.obj, u.path])
     t0 = time.time()
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, encoding="latin1")
     deps, msgs = [], []
     for line in (r.stdout + r.stderr).splitlines():
         if line.startswith("Note: including file:"):
             f = unixpath(line.split(":", 2)[2])
-            if f.startswith(SRC) or f.startswith(ms2paths.ENGINE_DIR):
+            if ms2paths.under(f, SRC) or ms2paths.under(f, ms2paths.ENGINE_DIR):
                 deps.append(f)
         elif line.strip() and line.strip() != os.path.basename(u.path) and "_WIN32_WINNT not defined" not in line:
             msgs.append(line)
@@ -526,8 +524,7 @@ def demangle_all(names):
     if not names:
         return {}
     try:
-        r = subprocess.run(["llvm-undname"], input="\n".join(names) + "\n", capture_output=True, text=True)
-        out = [l for l in r.stdout.splitlines()]
+        out = ms2paths.undname("\n".join(names) + "\n").splitlines()
         res, i = {}, 0
         # llvm-undname echoes "<mangled>\n<demangled>\n\n" per input line
         for n in names:

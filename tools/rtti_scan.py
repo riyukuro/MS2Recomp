@@ -15,7 +15,6 @@ Usage: tools/rtti_scan.py [exe] [outdir]
 """
 import os
 import struct
-import subprocess
 import sys
 from bisect import bisect_left
 
@@ -89,9 +88,9 @@ class Image:
 def demangle_types(mangled):
     """'.?AVFoo@Bar@@' -> 'Bar::Foo' via llvm-undname on the vftable symbol."""
     syms = ["??_7" + m[4:] + "6B@" for m in mangled]
-    p = subprocess.run(["llvm-undname"], input="\n".join(syms) + "\n", capture_output=True, text=True)
+    out = ms2paths.undname("\n".join(syms) + "\n")
     res = {}
-    blocks = [b for b in p.stdout.split("\n\n")]
+    blocks = [b for b in out.split("\n\n")]
     lines = []
     for b in blocks:
         ls = [x for x in b.split("\n") if x != ""]
