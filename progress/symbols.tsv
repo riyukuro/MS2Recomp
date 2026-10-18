@@ -446,8 +446,8 @@ HRESULT_FROM_WIN32	14015b330	func
 ??0ArgType@internal@fmt@@QEAA@XZ	140163e80	func
 ??0Unk_MpArgType@internal@fmt@@QEAA@XZ	140163e80	func
 ??0Unk_WcArgType@internal@fmt@@QEAA@XZ	140163e80	func
-??0CAtlComModule@ATL@@QEAA@XZ	140163ea0	func
-??0CAtlWinModule@ATL@@QEAA@XZ	140163ea0	func
+??0CAtlComModule@ATL@@QEAA@XZ	141803560	func
+??0CAtlWinModule@ATL@@QEAA@XZ	141803610	func
 ??0CLockCriticalSection@@QEAA@XZ	140163ea0	func
 ??0Unk_BanLock@@QEAA@XZ	140163ea0	func
 ??0Unk_PacketLogLock@@QEAA@XZ	140163ea0	func
@@ -30708,7 +30708,7 @@ sprintf	1403b0860	func
 ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z	14050bca0	func
 ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@1@XZ	14050bd20	func
 ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ	14050bdd0	func
-??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@@std@@QEAAAEAV01@XZ	14050bdf0	func
+??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@@std@@QEAAAEAV01@XZ	141b188a0	func
 ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ	14050be80	func
 ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$vector@IV?$allocator@I@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@PEAX@2@XZ	14050c110	func
 ?_Get_data@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$vector@IV?$allocator@I@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@2@XZ	14050c960	func
@@ -33042,7 +33042,7 @@ sprintf	1403b0860	func
 ??$_Fill_unchecked1@PEAV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@std@@@std@@V12@@std@@YAXPEAV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@std@@@0@0AEBV10@U?$integral_constant@_N$0A@@0@@Z	140562180	func
 ??$_Fill_unchecked@PEAV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@std@@@std@@V12@@std@@YAXPEAV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@std@@@0@0AEBV10@@Z	1405621d0	func
 ??$_Freenode0@V?$allocator@U?$_List_node@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@PEAX@std@@@std@@@?$_List_node@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_List_node@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@PEAX@std@@@1@PEAU01@@Z	140562220	func
-??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@@1@PEAU01@@Z	1405624d0	func
+??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@@1@PEAU01@@Z	1405623b0	func
 ??$_Get_unwrapped@V?$MS2Ptr@VCItemData@@@@@std@@YAPEAV?$MS2Ptr@VCItemData@@@@QEAV1@@Z	140562560	func
 ??$_Get_unwrapped@V?$MS2Ptr@VDropNifData@@@@@std@@YAPEAV?$MS2Ptr@VDropNifData@@@@QEAV1@@Z	140562570	func
 ??$_Get_unwrapped@V?$MS2Ptr@VItemModelData@@@@@std@@YAPEAV?$MS2Ptr@VItemModelData@@@@QEAV1@@Z	140562580	func
@@ -33398,7 +33398,7 @@ sprintf	1403b0860	func
 ??1?$CValidData@VCItemDataTable@@@@UEAA@XZ	14056c130	func
 ??1?$Delegate@$$A6A_NAEBVItemColorEx@@V?$MS2Ptr@VCItemData@@@@@Z@@QEAA@XZ	14056c150	func
 ??1?$MS2Ptr@VDropNifData@@@@QEAA@XZ	14056c1b0	func
-??1_Chore@details@Concurrency@@MEAA@XZ	14056c1b0	func
+??1_Chore@details@Concurrency@@MEAA@XZ	1402ffb70	func
 ??1?$MS2Ptr@VItemDropEffect@@@@QEAA@XZ	14056c1e0	func
 ??1?$MS2Ptr@VItemTagParam@CItemDataTable@@@@QEAA@XZ	14056c210	func
 ??1?$Unk_BmBoxPtr@V?$CAtlArray@V?$MS2Ptr@VItemColorEx@@@@V?$CElementTraits@V?$MS2Ptr@VItemColorEx@@@@@ATL@@@ATL@@@@QEAA@XZ	14056c240	func
@@ -33589,9 +33589,9 @@ sprintf	1403b0860	func
 ??_ECItemDataTable@@WCI@EAAPEAXI@Z	14056eba8	func
 ??_ECItemDataTable@@WDA@EAAPEAXI@Z	14056ebb4	func
 ??_G?$CValidData@VCItemDataTable@@@@UEAAPEAXI@Z	14056ebc0	func
-??_G_Chore@details@Concurrency@@MEAAPEAXI@Z	14056ec00	func
+??_G_Chore@details@Concurrency@@MEAAPEAXI@Z	140302960	func
 ??_G?$MS2Ptr@VCItemData@@@@QEAAPEAXI@Z	14056ec40	func
-??_G?$MS2Ptr@VDropNifData@@@@QEAAPEAXI@Z	14056ec40	func
+??_G?$MS2Ptr@VDropNifData@@@@QEAAPEAXI@Z	14056ec00	func
 ??_G?$MS2Ptr@VItemColorEx@@@@QEAAPEAXI@Z	14056ec80	func
 ??_G?$MS2Ptr@VItemModelData@@@@QEAAPEAXI@Z	14056ecc0	func
 ??_G?$TPtredDummy@V?$CAtlArray@V?$MS2Ptr@VItemColorEx@@@@V?$CElementTraits@V?$MS2Ptr@VItemColorEx@@@@@ATL@@@ATL@@@@UEAAPEAXI@Z	14056ed00	func
@@ -34022,7 +34022,7 @@ sprintf	1403b0860	func
 ?FUN_140581e40@Unk_Misc32d8@@QEAAXXZ	140581e40	func
 ?clear@?$_Tree@V?$_Tset_traits@UUnk_SSGHouseKey@@U?$less@UUnk_SSGHouseKey@@@std@@V?$allocator@UUnk_SSGHouseKey@@@3@$0A@@std@@@std@@QEAAXXZ	140581e40	func
 ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_List_node@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_List_node@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@PEAX@std@@@2@QEAU?$_List_node@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@PEAX@2@_K@Z	140581fc0	func
-?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@2@_K@Z	1405820b0	func
+?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@2@_K@Z	140582050	func
 ?deallocate@?$allocator@V?$MS2Ptr@VCItemData@@@@@std@@QEAAXQEAV?$MS2Ptr@VCItemData@@@@_K@Z	140582230	func
 ?end@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VItemHousing@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VItemHousing@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VItemHousing@@@@@std@@@std@@@std@@@2@XZ	1405822f0	func
 ?end@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VItemModelData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VItemModelData@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VItemModelData@@@@@std@@@std@@@std@@@2@XZ	140582350	func
@@ -67578,12 +67578,10 @@ atan2f	140a4e660	func
 ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@1@@Z	140c20550	func
 ??0?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAA@XZ	140c20590	func
 ??0?$allocator@U?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@std@@@std@@QEAA@XZ	140c205c0	func
-??0?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAA@XZ	140c205d0	func
 ??0?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@QEAA@XZ	140c205d0	func
 ??1?$MS2Ptr@VUnk_HsInfo@@@@QEAA@XZ	140c20600	func
 ??1?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEAA@XZ	140c20630	func
 ??1?$_Tree_comp_alloc@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEAA@XZ	140c20660	func
-??1?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAA@XZ	140c20690	func
 ??1?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@QEAA@XZ	140c20690	func
 ??8?$TPtr@VPCBase@@@@QEBA_NPEAVPCBase@@@Z	140c206b0	func
 ??8?$MS2Ptr@VUnk_HsInfo@@@@QEBA_NPEAVUnk_HsInfo@@@Z	140c206f0	func
@@ -67591,7 +67589,6 @@ atan2f	140a4e660	func
 ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@QEBA_NAEBV01@@Z	140c20730	func
 ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@QEBA_NAEBV01@@Z	140c20770	func
 ??C?$MS2Ptr@VUnk_HsInfo@@@@QEBAPEAVUnk_HsInfo@@XZ	140c207b0	func
-??D?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@QEBAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	140c207c0	func
 ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@QEBAAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	140c207c0	func
 ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@QEAA?AV01@H@Z	140c207e0	func
 ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@QEAAAEAV01@XZ	140c20830	func
@@ -67653,12 +67650,10 @@ atan2f	140a4e660	func
 ?_Tidy@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@IEAAXXZ	140c21a50	func
 ?allocate@?$allocator@U?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@2@_K@Z	140c21aa0	func
 ?begin@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@XZ	140c21ad0	func
-?begin@?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@XZ	140c21ad0	func
 ?clear@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEAAXXZ	140c21b40	func
 ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@std@@@2@QEAU?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@2@_K@Z	140c21be0	func
 ?deallocate@?$allocator@U?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@2@_K@Z	140c21c10	func
 ?end@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@XZ	140c21c40	func
-?end@?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@XZ	140c21c40	func
 ?erase@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@V32@0@Z	140c21ca0	func
 ?erase@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@V32@@Z	140c21d90	func
 ?find@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140c21e40	func
@@ -90728,7 +90723,6 @@ atan2f	140a4e660	func
 ?deallocate@?$allocator@U?$_Tree_node@UUnk_PreloadId@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@UUnk_PreloadId@@PEAX@2@_K@Z	141217770	func
 ?deallocate@?$allocator@U?$_Tree_node@UUnk_PreloadPath@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@UUnk_PreloadPath@@PEAX@2@_K@Z	1412177a0	func
 ?empty@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEBA_NXZ	1412177d0	func
-?empty@?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEBA_NXZ	1412177d0	func
 ?empty@?$_Tree@V?$_Tset_traits@UUnk_PreloadId@@U?$less@UUnk_PreloadId@@@std@@V?$allocator@UUnk_PreloadId@@@3@$0A@@std@@@std@@QEBA_NXZ	141217810	func
 ?empty@?$_Tree@V?$_Tset_traits@UUnk_PreloadPath@@U?$less@UUnk_PreloadPath@@@std@@V?$allocator@UUnk_PreloadPath@@@3@$0A@@std@@@std@@QEBA_NXZ	141217850	func
 ?end@?$_Tree@V?$_Tset_traits@UUnk_PreloadId@@U?$less@UUnk_PreloadId@@@std@@V?$allocator@UUnk_PreloadId@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_PreloadId@@@std@@@std@@@2@XZ	141217890	func
@@ -132550,9 +132544,9 @@ DAT_1439f8358	1439f8358	data
 ?ms_RTTI@CNifEffect@@2VNiRTTI@@B	143ae1f08	data
 ?DAT_143ae1f20@@3HA	143ae1f20	data
 ?DAT_143ae1f28@@3VCLockCriticalSection@@A	143ae1f28	data
-?_AtlComModule@ATL@@3VCAtlComModule@1@A	143ae1f28	data
+?_AtlComModule@ATL@@3VCAtlComModule@1@A	143aec410	data
 ?DAT_143ae1f58@@3VCLockCriticalSection@@A	143ae1f58	data
-?_AtlWinModule@ATL@@3VCAtlWinModule@1@A	143ae1f58	data
+?_AtlWinModule@ATL@@3VCAtlWinModule@1@A	143aec460	data
 ?ms_ClassInfo@CNifLoadingService@@2VClassInfo@efd@@B	143ae1f90	data
 ?ms_ClassInfo@CNifModel@@2VClassInfo@efd@@B	143ae2440	data
 ?DAT_143ae2960@@3HA	143ae2960	data
