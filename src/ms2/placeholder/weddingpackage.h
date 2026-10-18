@@ -5,6 +5,7 @@
 #pragma once
 
 #include <afx.h>
+#include <map>
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"                // MS2Ptr<T>
@@ -40,7 +41,7 @@ public:
 
     int m_nId;                                              // +0x18 "id"
     unsigned int m_nPlanner;                                // +0x1c "planner"
-    unsigned char m_halls[0x10];                            // +0x20 std::map<int, MS2Ptr<WeddingHallData>>
+    std::map<int, MS2Ptr<WeddingHallData>> m_halls;         // +0x20
 };
 MS2_CHECK_OFFSET(WeddingPackage, m_nId, 0x18);
 MS2_CHECK_SIZE(WeddingPackage, 0x30);

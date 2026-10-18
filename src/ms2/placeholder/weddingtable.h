@@ -18,6 +18,8 @@ public:
     virtual ~WeddingTable();
     MS2Ptr<WeddingPackage> FUN_140908b80(int nPackageId);   // the package of an id (null: none)
     unsigned int FUN_140908d50(int nPackageId, int nHallId, bool bNight);   // the hall's field id (night variant)
+    __int64 FUN_140908e60(int nA, int nB);                  // the base experience per day
+    int FUN_140909130(int nPackageId, int nHallId);         // the grade of a hall
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_10[0x60 - 0x10];
