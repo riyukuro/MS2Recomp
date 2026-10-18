@@ -13,8 +13,10 @@
 class Unk_PetRow : public CPtred
 {
 public:
-    char m_pad_18[0x9c - sizeof(CPtred)];
+    int m_nF18;                                             // +0x18 (1: the pet takes part in the summon button state; petmanager.cpp)
+    char m_pad_1c[0x9c - 0x1c];
     float m_fScaleBonus;                                    // +0x9c added to the pet's body height (vfunc_89)
+    int m_nSlots;                                           // +0xa0 the pet inventory's slot count (petmanager.cpp)
 };
 
 class CPet : public CNpc

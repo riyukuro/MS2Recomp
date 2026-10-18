@@ -194,6 +194,7 @@ public:
     void FUN_141a01d30(int nMode, const CStringW& strDefault, unsigned int nMax, int a4, int a5);    // text input setup
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb); // result callback
     void FUN_141a01600(__int64 n);                                  // uiugccubepalettedialog.cpp: the item uid
+    void FUN_141a01620(int n);                                      // petmanager.cpp: the inventory slot argument
     void FUN_141a01ca0(int nButton, int nTime, const CStringW& strText);   // guildmanager.cpp: the auto-decline countdown
     void FUN_141a02460(int n);
     void FUN_141a02480(int n);
@@ -222,6 +223,7 @@ public:
     bool FUN_141a02e10(int nIndex, bool bDefault) const;            // the nIndex-th argument as a bool
     int FUN_141a02c40() const;                                      // keep the box open after the result
     int FUN_141a02c60() const;                                      // the storage slot
+    int FUN_141a02c80() const;                                      // the inventory slot argument (set by FUN_141a01620)
     int FUN_141a02ca0() const;                                      // the box id
     IMessageListener* FUN_141a02cc0() const;                        // the listener
     const CStringW& FUN_141a02ce0() const;                          // the tag
