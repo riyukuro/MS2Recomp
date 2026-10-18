@@ -12,10 +12,26 @@ None of this is in the repository.
 |---|---|
 | The KMS2_DEV x64 `MapleStory2.exe` | `Game Versions/KMS2_DEV/x64/MapleStory2.exe`, or set `MS2_EXE`. Run `tools/check-exe.sh`: it must print `OK` (SHA-256 check) |
 | MSVC 14.16 (VS2017 15.9, cl 19.16.27054), MFC/ATL MBCS, Windows 10 SDK 10.0.19041 | `third_party/msvc/`, installed with [msvc-wine](https://github.com/mstorsjo/msvc-wine) (`vsdownload.py --manifest` for 15.9, then `install.sh`). `tools/msvc/*` wrap it under Wine |
-| Gamebryo 3.2.0.661 source with the engine patches (coming separately) | `engine/gamebryo/` |
+| Stock Gamebryo 3.2.0.661 (LightSpeed) source, patched with `engine-patches/` (see below) | `engine/gamebryo/` |
 | DirectX SDK June 2010, PhysX 2.8.4 | `third_party/dxsdk/`, `third_party/physx284/` |
 | Scaleform GFx 4.1.x SDK headers (the game uses 4.1.18; 4.1.19 headers also work) | `work/scaleform/4.1.19/Scaleform`, or set `MS2_SCALEFORM_SDK`. Optional: without it the placeholder types are used |
-| Exe-derived maps: `functions.tsv`, `units.tsv`, `rtti_classes.tsv`, `rtti_vftables.tsv` | `work/map/` and `work/classes/`. The two RTTI files are regenerated from the exe by `tools/regen-map.sh rtti`. `functions.tsv` and `units.tsv` come from the maintainer (they are derived from a curated Ghidra project; `tools/regen-map.sh ghidra` gives an approximation) |
+| Exe-derived maps: `rtti_classes.tsv`, `rtti_vftables.tsv` | `work/classes/`, regenerated from the exe by `tools/regen-map.sh rtti` (byte-identical) |
+| `functions.tsv`, `units.tsv` (curated Ghidra map) | shipped in this repository as `data/map/`; the tools use `work/map/` if present, else `data/map/` (or set `MS2_MAP_DIR`). `tools/regen-map.sh ghidra` gives an approximation only |
+
+### Engine patches
+
+`engine-patches/` holds our changes to Gamebryo as ed-style scripts, one `<path>.ed` per file, containing only our
+inserted text (never the stock lines), plus `manifest.tsv` with the SHA-256 of every stock and patched file. You supply
+the stock Gamebryo 3.2.0.661 tree and apply the patches:
+
+```
+tools/apply-engine-patches.sh engine-patches /path/to/stock/gamebryo   # verify stock hashes, patch, verify results
+```
+
+Copy or move the patched tree to `engine/gamebryo/` (or set `MS2_ENGINE_DIR`). The script refuses and writes nothing if
+a stock file hash, an added file or a result hash does not match. 199 files are patched and 41 added (CMake files and
+the Nexon-specific `NiFOV*` / `NiStudioShaderContext` classes). Likewise provide Scaleform 4.1.x as in the table.
+`tools/engine-patches.py` regenerates the patches (maintainer only; needs the private stock-import history).
 
 Everything is looked up relative to the checkout. To keep a file elsewhere, set the matching variable instead:
 `MS2_EXE`, `MS2_MAP_DIR`, `MS2_CLASSES_DIR`, `MS2_THIRD_PARTY`, `MS2_ENGINE_DIR`, `MS2_WINEPREFIX`,
