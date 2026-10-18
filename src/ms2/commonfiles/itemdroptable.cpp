@@ -123,11 +123,28 @@
 // MS2-PIN: ?lower_bound@?$_Hash@V?$_Umap_traits@IV?$MS2Ptr@VItemDropGlobalGroup@@@@V?$_Uhash_compare@IU?$hash@I@std@@U?$equal_to@I@2@@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VItemDropGlobalGroup@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBIV?$MS2Ptr@VItemDropGlobalGroup@@@@@std@@@std@@@std@@@2@AEBI@Z 0x140313020 ; unique
 // MS2-PIN: ?lower_bound@?$_Hash@V?$_Umap_traits@IV?$MS2Ptr@VItemDropIndividualBox@@@@V?$_Uhash_compare@IU?$hash@I@std@@U?$equal_to@I@2@@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VItemDropIndividualBox@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBIV?$MS2Ptr@VItemDropIndividualBox@@@@@std@@@std@@@std@@@2@AEBI@Z 0x140313170 ; unique
 // MS2-PINS-END tplpin
+// cf9: additional attribution accepted by tplpin --simulate.
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBV?$MS2Ptr@VItemDropGlobalBox@@@@@?$vector@V?$MS2Ptr@VItemDropGlobalBox@@@@V?$allocator@V?$MS2Ptr@VItemDropGlobalBox@@@@@std@@@std@@AEAAXAEBV?$MS2Ptr@VItemDropGlobalBox@@@@@Z 0x1402f0b30
+// MS2-PIN: ??$_Emplace_reallocate@AEBV?$MS2Ptr@VItemDropGlobalBox@@@@@?$vector@V?$MS2Ptr@VItemDropGlobalBox@@@@V?$allocator@V?$MS2Ptr@VItemDropGlobalBox@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VItemDropGlobalBox@@@@QEAV2@AEBV2@@Z 0x1402f12d0
+// MS2-PIN: ??1_Chore@details@Concurrency@@MEAA@XZ 0x1402ffb70
+// MS2-PIN: ??_G_Chore@details@Concurrency@@MEAAPEAXI@Z 0x140302960
+// MS2-PIN: ?_Change_array@?$vector@V?$MS2Ptr@VItemDropGlobalBox@@@@V?$allocator@V?$MS2Ptr@VItemDropGlobalBox@@@@@std@@@std@@AEAAXQEAV?$MS2Ptr@VItemDropGlobalBox@@@@_K1@Z 0x140305200
+// MS2-PIN: ??1_UnrealizedChore@details@Concurrency@@UEAA@XZ 0x1402ffb90
+// MS2-PIN: ??D?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@I@std@@@std@@@std@@QEBAAEAIXZ 0x140300ba0
+// MS2-PIN: ?_Unchecked_begin@?$vector@V?$MS2Ptr@VItemDropDataGlobal@@@@V?$allocator@V?$MS2Ptr@VItemDropDataGlobal@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VItemDropDataGlobal@@@@XZ 0x14030ef30
+// MS2-PIN: ?_Unchecked_end@?$vector@V?$MS2Ptr@VItemDropDataGlobal@@@@V?$allocator@V?$MS2Ptr@VItemDropDataGlobal@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VItemDropDataGlobal@@@@XZ 0x14030f100
 // MS2-PIN: ??R?$_Uhash_compare@IU?$hash@I@std@@U?$equal_to@I@2@@std@@QEBA_KAEBI@Z 0x1403021d0 ; manual: hash operator(), exe copy called from every unordered_map<unsigned> _Hashval
 // MS2-PIN: ??_7ItemDropTable@@6B?$TSingleton@VItemDropTable@@@@@ 0x142d24b98 ; manual: RTTI pairing misses the base name
 // MS2-PIN: ??_7ItemDropTable@@6B?$CValidData@VItemDropTable@@@@@ 0x142d24ba8 ; manual
 // The unit name is a guess: the queue row commonfiles\dungeonmatch.cpp (0x1402e6c50-0x14031b800) is four TUs, see
 // commonfiles\dungeonmatch.cpp.
+// cf9: residual look-alikes resolved by the pinned vector callers and const getter chain.
+// MS2-PIN: ??$emplace_back@AEBV?$MS2Ptr@VItemDropGlobalBox@@@@@?$vector@V?$MS2Ptr@VItemDropGlobalBox@@@@V?$allocator@V?$MS2Ptr@VItemDropGlobalBox@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VItemDropGlobalBox@@@@@Z 0x1402fade0
+// MS2-PIN: ?_Tidy@?$vector@V?$MS2Ptr@VItemDropGlobalBox@@@@V?$allocator@V?$MS2Ptr@VItemDropGlobalBox@@@@@std@@@std@@AEAAXXZ 0x14030e1f0
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@PEAVUnk_140165cf0@@V?$allocator@PEAVUnk_140165cf0@@@std@@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@PEAVUnk_140165cf0@@@std@@@2@XZ 0x140309790
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@PEAVUnk_140165cf0@@V?$allocator@PEAVUnk_140165cf0@@@std@@@std@@@std@@QEBAAEBQEAPEAVUnk_140165cf0@@XZ 0x14030bee0
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VItemDropGlobalBox@@@@V?$allocator@V?$MS2Ptr@VItemDropGlobalBox@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VItemDropGlobalBox@@@@XZ 0x14030c3c0
+// MS2-PIN: ?_Unchecked_end@?$vector@V?$MS2Ptr@VItemDropGlobalBox@@@@V?$allocator@V?$MS2Ptr@VItemDropGlobalBox@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VItemDropGlobalBox@@@@XZ 0x14030f140
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemdroptable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <ppl.h>

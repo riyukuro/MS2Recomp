@@ -8,6 +8,13 @@
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@UPreminmMarketSaleEventContext@@@@AEAAXPEAX@Z 0x1406ae740
 // MS2-PIN: ??8?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEBA_NPEAUPreminmMarketSaleEventContext@@@Z 0x1406a8f50
 // MS2-RANGE: 0x1400bb3f0-0x1400bb6a0 .text$di
+// cf9: preserve per-TU premium-event pointer copies.
+// MS2-PIN: ??1?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEAA@XZ 0x1406a8810
+// MS2-PIN: ??4?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEAAAEAV0@AEBV0@@Z 0x1406a8bc0
+// MS2-PIN: ??C?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEBAPEAUPreminmMarketSaleEventContext@@XZ 0x1406a9100
+// MS2-PIN: ??_G?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEAAPEAXI@Z 0x1406a9190
+// MS2-PIN: ?AddRef@?$MS2Ptr@UPreminmMarketSaleEventContext@@@@AEBAXXZ 0x1406ae220
+// MS2-PIN: ?Release@?$MS2Ptr@UPreminmMarketSaleEventContext@@@@AEAAXXZ 0x1406ae540
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\meratmarketbasketinfo.cpp"   // no asserts of its own
 #include "ms2/placeholder/ms2stdafx.h"
 extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const* _File, unsigned _Line);  // xmlattr.h asserts (NDEBUG DLL build)

@@ -140,6 +140,13 @@
 // MS2-PIN: ??_7CItemDataTable@@6B?$CValidData@VCItemDataTable@@@@@ 0x142d5f510
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlArray@V?$MS2Ptr@VItemColorEx@@@@V?$CElementTraits@V?$MS2Ptr@VItemColorEx@@@@@ATL@@@ATL@@@@6B@ 0x142d5f538
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlMap@HV?$MS2Ptr@VItemColorEx@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VItemColorEx@@@@@3@@ATL@@@@6B@ 0x142d5f528
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemHousing@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemHousing@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemHousing@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x140562290
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemModelData@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemModelData@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemModelData@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x140562320
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VItemMusicScore@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1405623b0
+// cf9: DropNifData-vector tree nodes deallocate 0x40 bytes, not 0x38.
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@V?$MS2Ptr@VDropNifData@@@@V?$allocator@V?$MS2Ptr@VDropNifData@@@@@std@@@std@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$vector@V?$MS2Ptr@VDropNifData@@@@V?$allocator@V?$MS2Ptr@VDropNifData@@@@@std@@@std@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@V?$MS2Ptr@VDropNifData@@@@V?$allocator@V?$MS2Ptr@VDropNifData@@@@@std@@@std@@@std@@PEAX@std@@@1@PEAU01@@Z 0x140562440
+// cf9: the deleting destructor calls MS2Ptr<DropNifData>::~MS2Ptr.
+// MS2-PIN: ??_G?$MS2Ptr@VDropNifData@@@@QEAAPEAXI@Z 0x14056ec00
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemdatatable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/commonfiles/itemdatatable.h"
