@@ -2,4 +2,8 @@
 # Pins the project Wine prefix: ninja runs compilers long after cmake configured, without its ENV{WINEPREFIX}.
 R=$(cd "$(dirname "$0")/../.." && pwd)
 export WINEPREFIX="${MS2_WINEPREFIX:-${MS2_MSVC_WINEPREFIX:-$R/work/wineprefix-msvc}}" WINEDEBUG="${WINEDEBUG:--all}"
+# Wine's cl lowercases the paths in /showIncludes ("Note: including file:"); ninja then finds no such file on case-sensitive
+# Linux, treats every dep as missing/dirty and rebuilds every object on every run. Restore the checkout's real case.
+RE=$(printf '%s' "$R" | sed 's/[][\.*^$+?(){}|/]/\\&/g')
+export WINE_MSVC_STDOUT_SED="s/^(Note: including file: *)$RE/\\1$(printf '%s' "$R" | sed 's/[\\&/]/\\&/g')/I;$WINE_MSVC_STDOUT_SED"
 exec "${MS2_THIRD_PARTY:-$R/third_party}/msvc/bin/x64/cl" "$@"
