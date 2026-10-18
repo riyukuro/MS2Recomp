@@ -32,11 +32,12 @@ from multiprocessing import Pool
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import bytematch as bm  # noqa: E402
+import ms2paths  # noqa: E402
 import gbtree  # noqa: E402
 
-CL = os.path.join(ROOT, "third_party", "msvc", "bin", "x64", "cl")
-UNITS_TSV = os.path.join(ROOT, "work", "map", "units.tsv")
-FUNCS = os.path.join(ROOT, "work", "map", "functions.tsv")
+CL = ms2paths.CL
+UNITS_TSV = ms2paths.UNITS_TSV
+FUNCS = ms2paths.FUNCTIONS_TSV
 GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
@@ -85,7 +86,7 @@ def compile_unit(args):
     cache, u = args
     o = obj_path(cache, u)
     os.makedirs(os.path.dirname(o), exist_ok=True)
-    env = dict(os.environ, WINEPREFIX=os.path.join(ROOT, "work", "wineprefix-msvc"), WINEDEBUG="-all")
+    env = dict(os.environ, WINEPREFIX=ms2paths.WINEPREFIX, WINEDEBUG="-all")
     cmd = [CL, "/nologo", "/c"] + u["args"] + ["/showIncludes", "/Fo" + o, u["source"]]
     t0 = time.time()
     r = subprocess.run(cmd, cwd=u["cwd"], capture_output=True, text=True, env=env, encoding="latin1")

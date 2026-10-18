@@ -55,17 +55,18 @@ from concurrent.futures import ThreadPoolExecutor
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import bytematch as bm  # noqa: E402
+import ms2paths  # noqa: E402
 import gbprogress  # noqa: E402
 
 SRC = os.path.join(ROOT, "src")
 GAME = os.path.join(SRC, "ms2")
 OUT = os.path.join(ROOT, "progress")
 CACHE = os.path.join(ROOT, "build", "progress")
-CL = os.path.join(ROOT, "third_party", "msvc", "bin", "x64", "cl")
-FUNCS = os.path.join(ROOT, "work", "map", "functions.tsv")
-UNITS = os.path.join(ROOT, "work", "map", "units.tsv")
-RTTI_CLASSES = os.path.join(ROOT, "work", "classes", "rtti_classes.tsv")
-RTTI_VFTABLES = os.path.join(ROOT, "work", "classes", "rtti_vftables.tsv")
+CL = ms2paths.CL
+FUNCS = ms2paths.FUNCTIONS_TSV
+UNITS = ms2paths.UNITS_TSV
+RTTI_CLASSES = ms2paths.RTTI_CLASSES
+RTTI_VFTABLES = ms2paths.RTTI_VFTABLES
 
 # cmake/ms2-game-flags.cmake (MS2_GAME_COMPILE_OPTIONS + _DEFINITIONS + C++14) + /MD /Z7 + the ms2game include dirs.
 GAME_FLAGS = ["/nologo", "/c", "/Od", "/Ob0", "/Oi", "/EHsc", "/GS", "/GR", "/Gy", "/fp:fast", "/Zc:wchar_t",
@@ -85,11 +86,11 @@ def engine_flags():
             out = [d.replace("physx284/PFiles/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/",
                              "physx283/PFiles/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.3/") for d in out]
         return out
-    eng = os.path.join(ROOT, "engine", "gamebryo")
+    eng = os.path.join(ms2paths.ENGINE_DIR, "gamebryo")
     over = os.path.join(ROOT, "build", "ms2-engine-dxsdk")
     pref = over + "-preferred"
-    dx = os.path.join(ROOT, "third_party", "dxsdk", "DXSDK", "Include")
-    wk = os.path.join(ROOT, "third_party", "msvc", "Windows Kits", "10", "Include", "10.0.19041.0")
+    dx = os.path.join(ms2paths.THIRD_PARTY, "dxsdk", "DXSDK", "Include")
+    wk = os.path.join(ms2paths.THIRD_PARTY, "msvc", "Windows Kits", "10", "Include", "10.0.19041.0")
     if not os.path.isdir(over):
         os.makedirs(over, exist_ok=True)
         os.makedirs(pref, exist_ok=True)
@@ -111,7 +112,7 @@ GAME_FLAGS += engine_flags()
 def scaleform_flags():
     """Scaleform SDK includes/defines (cmake/ms2-scaleform-sdk.cmake: same default path, same lists). Off when the SDK dir is
     absent or MS2_SCALEFORM_SDK is set empty in the environment; then gfxvalue.h uses its placeholders."""
-    sdk = os.environ.get("MS2_SCALEFORM_SDK", os.path.join(ROOT, "work", "scaleform", "4.1.19", "Scaleform"))
+    sdk = os.environ.get("MS2_SCALEFORM_SDK", ms2paths.SCALEFORM_SDK)
     if not sdk or not os.path.isdir(sdk):
         return []
     txt = open(os.path.join(ROOT, "cmake", "ms2-scaleform-sdk.cmake")).read()
@@ -307,7 +308,7 @@ def unixpath(p):
     if os.path.exists(p):
         return p
     if not _case:
-        for top in (SRC, os.path.join(ROOT, "engine")):
+        for top in (SRC, ms2paths.ENGINE_DIR):
             for d, _, files in os.walk(top):
                 for f in files:
                     q = os.path.join(d, f)
@@ -333,7 +334,7 @@ def needs_compile(u):
 
 def compile_unit(u):
     os.makedirs(os.path.dirname(u.obj), exist_ok=True)
-    env = dict(os.environ, WINEPREFIX=os.path.join(ROOT, "work", "wineprefix-msvc"), WINEDEBUG="-all")
+    env = dict(os.environ, WINEPREFIX=ms2paths.WINEPREFIX, WINEDEBUG="-all")
     pch = ms2pch.args(GAME_FLAGS, open(u.path, encoding="latin1").read(), CL, env)
     cmd = [CL] + GAME_FLAGS + pch + ["/showIncludes", "/Fo" + u.obj, u.path]
     t0 = time.time()
@@ -342,7 +343,7 @@ def compile_unit(u):
     for line in (r.stdout + r.stderr).splitlines():
         if line.startswith("Note: including file:"):
             f = unixpath(line.split(":", 2)[2])
-            if f.startswith(SRC) or f.startswith(os.path.join(ROOT, "engine")):
+            if f.startswith(SRC) or f.startswith(ms2paths.ENGINE_DIR):
                 deps.append(f)
         elif line.strip() and line.strip() != os.path.basename(u.path) and "_WIN32_WINNT not defined" not in line:
             msgs.append(line)

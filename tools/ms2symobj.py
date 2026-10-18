@@ -126,7 +126,7 @@ def autobind_fun(syms, objs):
     """Undefined externals named ...FUN_<va>... bind to that exe VA when it is a known function start. An explicit
     symbols.tsv / symbols-manual.tsv entry for the same name always wins."""
     starts = set()
-    fp = os.path.join(ROOT, "work", "functions.tsv")
+    fp = os.path.join(os.environ.get("MS2_MAP_DIR") or os.path.join(ROOT, "work"), "functions.tsv")
     if os.path.exists(fp):
         for line in open(fp):
             starts.add(line.split("\t", 1)[0].strip().lower())

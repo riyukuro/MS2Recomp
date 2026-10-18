@@ -41,10 +41,12 @@ import pefile
 from capstone import x86
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EXE = os.path.join(ROOT, "Game Versions", "KMS2_DEV", "x64", "MapleStory2.exe")
-FUNCS = os.path.join(ROOT, "work", "map", "functions.tsv")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ms2paths  # noqa: E402
+EXE = ms2paths.EXE
+FUNCS = ms2paths.FUNCTIONS_TSV
 # import libraries that resolve the exe's by-ordinal imports (mfc140.dll exports everything by ordinal)
-ORDINAL_LIBS = [os.path.join(ROOT, "third_party", "msvc", "VC", "Tools", "MSVC", "14.16.27023", "atlmfc", "lib", "x64",
+ORDINAL_LIBS = [os.path.join(ms2paths.THIRD_PARTY, "msvc", "VC", "Tools", "MSVC", "14.16.27023", "atlmfc", "lib", "x64",
                              "mfc140.lib")]
 
 

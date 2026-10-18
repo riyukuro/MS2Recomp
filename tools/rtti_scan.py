@@ -22,8 +22,10 @@ from bisect import bisect_left
 import pefile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EXE = os.path.join(ROOT, "Game Versions/KMS2_DEV/x64/MapleStory2.exe")
-OUT = os.path.join(ROOT, "work/classes")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ms2paths  # noqa: E402
+EXE = ms2paths.EXE
+OUT = ms2paths.CLASSES_DIR
 
 
 class Image:
