@@ -95,6 +95,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, int a3);              // 0x140f24650 (not in the unit that owns it yet; added by uihsldialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1);                          // 0x1409b46e0
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2);            // 0x140e78470
+    Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CString a2);             // 0x1412cc450 (inline COMDAT, defined in uiindividualpvpdialog.cpp; both by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1);            // 0x1409b13b0 (a1 by value: callee destroys)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2);   // 0x1409b1490 (ascommondepth.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, const AScript& a2);      // 0x140e7bcb0 (inline COMDAT, defined in uiquestnavigation.cpp; a1 by value)
