@@ -14,10 +14,6 @@
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-// TPtr<T>::~TPtr of the entity handed to vfunc_7 by value (0x140a5a8c0 for the T of UISwfEntity's vfunc_25; this slot
-// takes the same pointer wrapper and the callee destroys the argument).
-void FUN_140a5a8c0(void* pEntity);                          // 0x140a5a8c0
-
 // @0x140c8ef00
 PetSystemTabContents::~PetSystemTabContents()
 {
@@ -57,11 +53,11 @@ int PetSystemTabContents::vfunc_6(const char* szEvent, const Scaleform::GFx::Val
 }
 
 // @0x140c8efa0
-void PetSystemTabContents::vfunc_7(void* a1, void* a2, void* a3)
+void PetSystemTabContents::vfunc_7(void* a1, TPtr<Unk_UISwfEntity_25> a2, void* a3, void* a4)
 {
     (void)a1;
     (void)a3;
-    FUN_140a5a8c0(a2);
+    (void)a4;
 }
 
 // @0x140c8efd0
