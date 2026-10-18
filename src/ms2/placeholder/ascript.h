@@ -116,6 +116,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, int a2, int a3);          // 0x141944620 (inline COMDAT, defined in uigameoptiondialog.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, bool a2, bool a3);            // 0x141944710 (inline COMDAT, defined in uigameoptiondialog.cpp)
 
+    Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2, int a3, CStringW a4);   // 0x140fb1a80 (inline COMDAT, defined in uiugcportaldialog.cpp; a1/a4 by value: the callee destroys them)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, AScript a2, ASArray a3);   // 0x140c1f740 (inline COMDAT, defined in uihideandseekresultdialog.cpp; a2/a3 by value: the callee destroys them)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1); // 0x1409ba030 (couple dance HUD)
     Scaleform::GFx::Value Invoke(const char* szMethod, class ASFunction a1);                 // 0x1409bb370 (inline COMDAT, defined in asitemslot.cpp; a1 by value: the callee destroys it)
