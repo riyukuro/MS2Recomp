@@ -1,0 +1,90 @@
+0a
+// MS2: reconstructed from MapleStory2.exe; see NiFOVInterpolator.h.
+
+// Precompiled Header
+#include "NiAnimationPCH.h"
+
+#include "NiFOVInterpolator.h"
+
+NiImplementRTTI(NiFOVInterpolator, NiFloatInterpolator);
+
+//--------------------------------------------------------------------------------------------------
+NiFOVInterpolator::NiFOVInterpolator()
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+// game 0x141c2f480 (tail call to NiFloatInterpolator::Update)
+bool NiFOVInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget,
+    float& fValue)
+{
+    return NiFloatInterpolator::Update(fTime, pkInterpTarget, fValue);
+}
+
+//--------------------------------------------------------------------------------------------------
+// game 0x141c2f2a0
+bool NiFOVInterpolator::IsTransformValueSupported() const
+{
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+// Cloning
+//--------------------------------------------------------------------------------------------------
+NiImplementCreateClone(NiFOVInterpolator);
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVInterpolator::CopyMembers(NiFOVInterpolator* pkDest,
+    NiCloningProcess& kCloning)
+{
+    NiFloatInterpolator::CopyMembers(pkDest, kCloning);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Streaming (same format as NiFloatInterpolator)
+//--------------------------------------------------------------------------------------------------
+NiImplementCreateObject(NiFOVInterpolator);
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVInterpolator::LoadBinary(NiStream& kStream)
+{
+    NiFloatInterpolator::LoadBinary(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVInterpolator::LinkObject(NiStream& kStream)
+{
+    NiFloatInterpolator::LinkObject(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVInterpolator::RegisterStreamables(NiStream& kStream)
+{
+    return NiFloatInterpolator::RegisterStreamables(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVInterpolator::SaveBinary(NiStream& kStream)
+{
+    NiFloatInterpolator::SaveBinary(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVInterpolator::IsEqual(NiObject* pkObject)
+{
+    return NiFloatInterpolator::IsEqual(pkObject);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Viewer strings
+//--------------------------------------------------------------------------------------------------
+void NiFOVInterpolator::GetViewerStrings(NiViewerStringsArray* pkStrings)
+{
+    NiFloatInterpolator::GetViewerStrings(pkStrings);
+
+    pkStrings->Add(NiGetViewerString(NiFOVInterpolator::ms_RTTI.GetName()));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+.

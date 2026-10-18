@@ -1,0 +1,19 @@
+0a
+// gb-nimain-a: studio singleton (names inferred). Instance getter 0x141d6fd90 (function-local
+// static at 0x143afb278: pointer + std::map whose node keys a scene object and holds a NiString);
+// NiFragmentMaterial::GetCurrentShader 0x141d6a831/0x141d6a84b sets/clears the first member.
+#ifndef NISTUDIOSHADERCONTEXT_H
+#define NISTUDIOSHADERCONTEXT_H
+
+class NiAVObject;
+
+struct NiStudioShaderContext
+{
+    const NiAVObject* m_pkCurrentObject;
+};
+
+NiStudioShaderContext& NiGetStudioShaderContext();
+
+#endif
+
+.

@@ -1,0 +1,120 @@
+0a
+// MS2: reconstructed from MapleStory2.exe; see NiFOVController.h.
+
+// Precompiled Header
+#include "NiAnimationPCH.h"
+
+#include "NiFOVController.h"
+#include <NiCamera.h>
+
+NiImplementRTTI(NiFOVController, NiFloatInterpController);
+
+//--------------------------------------------------------------------------------------------------
+NiFOVController::NiFOVController()
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+// game 0x141c4a790
+bool NiFOVController::InterpTargetIsCorrectType(NiObjectNET* pkTarget) const
+{
+    return (NiIsKindOf(NiCamera, pkTarget));
+}
+
+//--------------------------------------------------------------------------------------------------
+// game 0x141c4a740
+void NiFOVController::GetTargetFloatValue(float& fValue)
+{
+    fValue = 0.0f;
+}
+
+//--------------------------------------------------------------------------------------------------
+// game 0x141c4a820
+void NiFOVController::Update(float fTime)
+{
+    if (GetManagerControlled())
+    {
+        return;
+    }
+
+    if (DontDoUpdate(fTime) &&
+        (!m_spInterpolator || !m_spInterpolator->AlwaysUpdate()))
+    {
+        return;
+    }
+
+    if (m_spInterpolator)
+    {
+        // The value is not applied to the target in the game binary.
+        float fValue;
+        m_spInterpolator->Update(m_fScaledTime, m_pkTarget, fValue);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+// game 0x141c4a8e0
+bool NiFOVController::UpdateValue(float, float, unsigned short)
+{
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+// Cloning
+//--------------------------------------------------------------------------------------------------
+NiImplementCreateClone(NiFOVController);
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::CopyMembers(NiFOVController* pkDest,
+    NiCloningProcess& kCloning)
+{
+    NiFloatInterpController::CopyMembers(pkDest, kCloning);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Streaming (same format as NiFloatInterpController)
+//--------------------------------------------------------------------------------------------------
+NiImplementCreateObject(NiFOVController);
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::LoadBinary(NiStream& kStream)
+{
+    NiFloatInterpController::LoadBinary(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::LinkObject(NiStream& kStream)
+{
+    NiFloatInterpController::LinkObject(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVController::RegisterStreamables(NiStream& kStream)
+{
+    return NiFloatInterpController::RegisterStreamables(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::SaveBinary(NiStream& kStream)
+{
+    NiFloatInterpController::SaveBinary(kStream);
+}
+
+//--------------------------------------------------------------------------------------------------
+bool NiFOVController::IsEqual(NiObject* pkObject)
+{
+    return NiFloatInterpController::IsEqual(pkObject);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Viewer strings
+//--------------------------------------------------------------------------------------------------
+void NiFOVController::GetViewerStrings(NiViewerStringsArray* pkStrings)
+{
+    NiFloatInterpController::GetViewerStrings(pkStrings);
+
+    pkStrings->Add(NiGetViewerString(NiFOVController::ms_RTTI.GetName()));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+.

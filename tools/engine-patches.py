@@ -17,6 +17,7 @@ Line numbers refer to the stock file; commands run in descending order.
 File model: data.split(b"\\n") (last element is the text after the final newline).
 
 Policy file (tools/engine-patches-policy.txt), one entry per line, `#` comments:
+  exclude-file <path>         patched file that is not part of our build: no patch is written, not listed in the manifest
   withhold-file <path>        added file that must not ship (kind=withheld)
   keep <path>:<newline>       force the literal line (ours dominates) at that result line
   withhold <path>:<newline>   force token-substitution form at that result line
@@ -41,7 +42,7 @@ def sha(b):
 
 
 def load_policy(p):
-    pol = {"withhold-file": set(), "keep": set(), "withhold": set()}
+    pol = {"exclude-file": set(), "withhold-file": set(), "keep": set(), "withhold": set()}
     if p.exists():
         for ln in p.read_text().splitlines():
             ln = ln.split("#", 1)[0].strip()
@@ -177,6 +178,8 @@ def main():
         shutil.rmtree(out)
     for st, p in sorted(ents, key=lambda e: e[1]):
         rel = p[len(SUB) + 1:]
+        if rel in pol["exclude-file"]:
+            continue
         new = git("show", f"HEAD:{p}")
         if st == "A":
             if rel in pol["withhold-file"] or p in pol["withhold-file"]:

@@ -1,0 +1,33 @@
+0a
+// MS2: NiFOVInterpolator is not part of the Gamebryo 3.2 source. It was
+// reconstructed from MapleStory2.exe (KMS2_DEV x64): RTTI "NiFOVInterpolator"
+// with parent NiFloatInterpolator, stream loader 0x141c2f150, vftable
+// 0x142fff0e8 (42 slots, no new virtuals), sizeof 0x30 (no new members).
+// It only overrides Update(float&), which forwards to NiFloatInterpolator,
+// and IsTransformValueSupported, which returns true.
+
+#ifndef NIFOVINTERPOLATOR_H
+#define NIFOVINTERPOLATOR_H
+
+#include "NiFloatInterpolator.h"
+
+class NIANIMATION_ENTRY NiFOVInterpolator : public NiFloatInterpolator
+{
+    NiDeclareRTTI;
+    NiDeclareClone(NiFOVInterpolator);
+    NiDeclareStream;
+    NiDeclareViewerStrings;
+
+public:
+    NiFOVInterpolator();
+
+    virtual bool Update(float fTime, NiObjectNET* pkInterpTarget,
+        float& fValue);
+    virtual bool IsTransformValueSupported() const;
+};
+
+typedef efd::SmartPointer<NiFOVInterpolator> NiFOVInterpolatorPtr;
+
+#endif
+
+.

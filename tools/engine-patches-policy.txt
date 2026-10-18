@@ -1,7 +1,9 @@
-# tools/engine-patches.py policy (see work/pub2/engine-review.md for the evidence)
-# Added files that are v2525-derived (0.84-1.00 identical to the v2525 snapshot overlay files): must not ship.
-withhold-file CoreRuntime/EngineLibs/NiAnimation/NiFOVController.cpp
-withhold-file CoreRuntime/EngineLibs/NiAnimation/NiFOVController.h
-withhold-file CoreRuntime/EngineLibs/NiAnimation/NiFOVInterpolator.cpp
-withhold-file CoreRuntime/EngineLibs/NiAnimation/NiFOVInterpolator.h
-withhold-file CoreRuntime/EngineLibs/NiMain/NiStudioShaderContext.h
+# tools/engine-patches.py policy. Entries: exclude-file <path> | keep|withhold <path>:<newline>
+# (every added file our build needs ships; no withhold-file entries)
+# Patched in the tree but not part of our build (no CMake target / never included): no patch shipped.
+exclude-file CoreRuntime/EngineLibs/NiTerrain/NiTerrainLib.h
+exclude-file CoreRuntime/UtilityLibs/NiSettingsDialog/NiBaseRendererOptionsView.cpp
+exclude-file CoreRuntime/UtilityLibs/NiSettingsDialog/NiRendererTabController.cpp
+exclude-file CoreRuntime/UtilityLibs/NiSettingsDialog/NiSettingsDialog.cpp
+exclude-file Foundation/efd/SerializeStlHelpers.h
+exclude-file GameFramework/ecr/ecrLua/ecrLuaRuntimeInitializer.cpp

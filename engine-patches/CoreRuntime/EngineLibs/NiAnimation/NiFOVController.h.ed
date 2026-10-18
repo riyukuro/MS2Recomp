@@ -1,0 +1,39 @@
+0a
+// MS2: NiFOVController is not part of the Gamebryo 3.2 source. It was
+// reconstructed from MapleStory2.exe (KMS2_DEV x64): RTTI "NiFOVController"
+// with parent NiFloatInterpController, stream loader 0x141c4a660, vftable
+// 0x1430022d8 (49 slots, no new virtuals), sizeof 0x50 (no new members).
+// In the shipped binary it is a stub: the interpolator is evaluated but the
+// value is discarded, UpdateValue does nothing and GetTargetFloatValue
+// returns 0. Its target must be an NiCamera.
+
+#ifndef NIFOVCONTROLLER_H
+#define NIFOVCONTROLLER_H
+
+#include "NiFloatInterpController.h"
+
+class NIANIMATION_ENTRY NiFOVController : public NiFloatInterpController
+{
+    NiDeclareRTTI;
+    NiDeclareClone(NiFOVController);
+    NiDeclareStream;
+    NiDeclareViewerStrings;
+
+public:
+    NiFOVController();
+
+    virtual void Update(float fTime);
+    virtual bool UpdateValue(float fTime, float fFloat,
+        unsigned short usIndex = 0);
+
+protected:
+    // Virtual function overrides from base classes.
+    virtual bool InterpTargetIsCorrectType(NiObjectNET* pkTarget) const;
+    virtual void GetTargetFloatValue(float& fValue);
+};
+
+typedef efd::SmartPointer<NiFOVController> NiFOVControllerPtr;
+
+#endif
+
+.
