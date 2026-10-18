@@ -3099,3 +3099,6 @@ DAT_143af6ac0	143af6ac0	data
 ?DAT_143ab2a90@@3VUnk_HlDb@@A	143ab2a90	data
 ?DAT_143ab2ee0@@3PADA	143ab2ee0	data
 ??1Unk_JcSkillRef@@QEAA@XZ	14063e5c0	func
+??1Unk_CaQuestRef@@QEAA@XZ	14064d3e0	func
+??1Unk_CaSkillRef@@QEAA@XZ	1401836a0	func
+?Invoke@AScript@@QEAA?AVValue@GFx@Scaleform@@PEBDHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	140e65dd0	func
