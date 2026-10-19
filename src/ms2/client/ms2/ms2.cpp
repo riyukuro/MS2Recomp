@@ -33,7 +33,7 @@
 // MS2-PIN: ??0?$SmartPointer@VMS2@@@efd@@QEAA@PEAVMS2@@@Z 0x141495190
 // MS2-PIN: ??1?$SmartPointer@VMS2@@@efd@@QEAA@XZ 0x141496c00
 // MS2-PIN: ??0?$SmartPointer@VNiTexturePalette@@@efd@@QEAA@PEAVNiTexturePalette@@@Z 0x141495430
-// MS2-PIN: ??1?$CRBMap@HV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@H@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAA@XZ 0x1414964d0
+// MS2-PIN: ??1?$CRBMap@KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@K@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAA@XZ 0x1414964d0
 // MS2-PIN: ??_G?$pair@$$CB_JV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@QEAAPEAXI@Z 0x141498800
 // MS2-PIN: ??$destroy@U?$pair@$$CB_JV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CB_JV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CB_JV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@1@QEAU?$pair@$$CB_JV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@@Z 0x141494010
 // MS2-PIN: ??$construct@PEAU?$_Tree_node@U?$pair@$$CB_JV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CB_JV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CB_JV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CB_JV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@1@AEAPEAU31@@Z 0x141493f60
@@ -1047,6 +1047,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     return bResult;
 }
 MS2_REPLACE_METHOD(0x14148B370, MS2, RegisterServices, 13544, 0x09D796FF);
+#ifndef MS2_HOOK_DLL
 // @0x14148e860
 efd::Logger* MS2::CreateLogger()
 {
@@ -1062,6 +1063,7 @@ efd::Logger* MS2::CreateLogger()
     spLogger->AddDest(m_spDebugOutDest, false, false);
     return spLogger;
 }
+#endif
 // @0x14148ec40
 void MS2::RemoveLogDestinations()
 {

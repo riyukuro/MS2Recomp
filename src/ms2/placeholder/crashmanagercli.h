@@ -19,10 +19,15 @@ public:
     // @0x141497620
     virtual ~CrashManagerCli() {}
     void FUN_140a435a0();                                   // installs the crash handler (InitInstance)
+    void FUN_140a43750(DWORD nId, CString strText);           // set the text of a crash-log entry
+    void FUN_140a437d0(DWORD nId);                            // remove a crash-log entry
+    void FUN_140a43830();                                   // write every entry to the crash log
+    bool FUN_140a43920(DWORD nId, CString& strText);          // read a crash-log entry
+    std::list<TFunctor<void, EmptyParam> >& FUN_140a44800();    // the shutdown callbacks
 private:
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x70
-    ATL::CRBMap<int, CString> m_map;                        // +0xa0 (the value type is assumed: 8 bytes)
+    ATL::CRBMap<DWORD, CString> m_map;                      // +0xa0 log entries by id
 };
 MS2_CHECK_SIZE(CrashManagerCli, 0xd0);
 
