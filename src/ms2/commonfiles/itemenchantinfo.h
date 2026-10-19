@@ -58,6 +58,8 @@ public:
     void FUN_140266d20(Unk_EnchantWrite&) const;
     void FUN_140266d60(Unk_EnchantRead&);
     void FUN_140266da0(const BaseOption* pSource);   // copy
+    void FUN_140266dd0(const BaseOption* pSource);   // add the values (unlimitedenchantoption.cpp)
+    void FUN_140266e50(float fRate);        // sets the rate (unlimitedenchantoption.cpp)
     bool FUN_140266ee0(const BaseOption* pOther) const;   // the same option (itemoptiondata.cpp)
 private: void* p0; void* p8; void* p10; int m_nValue;
 public:
