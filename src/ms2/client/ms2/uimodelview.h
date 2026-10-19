@@ -20,6 +20,10 @@ public:
     float m_fStep;                                          // +0x24
     int m_nSteps;                                           // +0x28
     int m_nStepsDone;                                       // +0x2c
+
+    void FUN_141b48530();                                   // 0x141b48530 the character preset
+    void FUN_141b485d0();                                   // 0x141b485d0 the cube preset
+    void FUN_141b48670();                                   // 0x141b48670 the pet / ridee preset
 };
 MS2_CHECK_SIZE(Unk_ModelViewCamera, 0x30);
 

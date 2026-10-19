@@ -58,8 +58,11 @@ public:
     int m_nHidesEquip;                                      // +0x5c nonzero: the rider's equip nodes are not shown
     char m_pad_60[0x80];
     CString m_strEffect;                                    // +0xe0 effect name
+    char m_pad_e8[0x110 - 0xe8];
+    float m_fViewScale;                                     // +0x110 model size in the UI preview (itempreview.cpp: * 0.015)
 };
 MS2_CHECK_OFFSET(Unk_RideeRow, m_fScale, 0x58);
+MS2_CHECK_OFFSET(Unk_RideeRow, m_fViewScale, 0x110);
 MS2_CHECK_OFFSET(Unk_RideeRow, m_strEffect, 0xe0);
 
 // 16-byte smart pointer to a ridee table row; every member is an exe function bound by VA.
