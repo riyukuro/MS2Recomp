@@ -35,6 +35,7 @@ class ItemInfoSlot;
 class ASSlot;
 class ASTooltip;
 class CMsgBoxData;
+class MyPC;
 class Unk_UISwfEntity_25;
 
 class LapenshardSystemTabPanelBase;
@@ -126,7 +127,7 @@ public:
     virtual int vfunc_8() = 0;                                      //  8 pure
     virtual void vfunc_9(CInPacket& packet);                        //  9 0x140c5ece0 (packet 0x11b)
     virtual void vfunc_10(void* a1, bool b);                        // 10 0x140c5ecf0 (empty)
-    virtual void vfunc_11();                                        // 11 0x140c608f0 (looks the local player up)
+    virtual class MyPC* vfunc_11();                                 // 11 0x140c608f0 (looks the local player up)
 };
 MS2_CHECK_SIZE(LapenshardSystemTabContents, 0x18);
 
@@ -150,6 +151,133 @@ public:
 };
 MS2_CHECK_SIZE(UILapenshardEquipTab, 0x58);
 MS2_CHECK_OFFSET(UILapenshardEquipTab, m_ui, 0x48);
+
+// ---- the upgrade page ---------------------------------------------------------------------------------------------
+
+typedef ATL::CAtlArray<MS2Ptr<CItem> > LapenshardItemArray;
+
+// 0x58 bytes, vftable 0x142e0b8?: the source bag ("m_sourceItemBag"): the lapenshards that can be upgraded.
+class LapenshardSourceItemSlotBagPanel : public LapenshardSystemTabPanelBase
+{
+public:
+    LapenshardSourceItemSlotBagPanel(UILapenshardUpgradeTab* pTab); // 0x140c63710
+    virtual ~LapenshardSourceItemSlotBagPanel();                    //  0 0x140c6a1c0 (??_G 0x140c6a4c0)
+    virtual void vfunc_1();                                         //  1 0x140c63780 -> vfunc_4
+    virtual void vfunc_2();                                         //  2 0x140c637b0 -> vfunc_4
+    virtual void vfunc_3();                                         //  3 0x140c637e0
+    virtual void vfunc_4();                                         //  4 0x140c63a00
+    virtual void vfunc_5(int nEvent);                               //  5 0x140c63a70
+    virtual int vfunc_8(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 8 0x140c63ad0 "OnSelectSourceItem"
+
+    void FUN_140c63bb0(int nIndex);                                 // pick the item of the bag as the source
+
+    CString m_strBag;                                               // +0x28 the bag's registry name
+    UILapenshardUpgradeTab* m_pTab;                                 // +0x30
+    LapenshardItemArray m_items;                                    // +0x38
+};
+MS2_CHECK_SIZE(LapenshardSourceItemSlotBagPanel, 0x58);
+
+// 0x58 bytes: the ingredient bag ("m_ingredientItemBag").
+class LapenshardIngredientItemSlotBagPanel : public LapenshardSystemTabPanelBase
+{
+public:
+    LapenshardIngredientItemSlotBagPanel(UILapenshardUpgradeTab* pTab);   // 0x140c63c70
+    virtual ~LapenshardIngredientItemSlotBagPanel();                //  0 0x140c6a180 (??_G 0x140c6a480)
+    virtual void vfunc_1();                                         //  1 0x140c63ce0 -> vfunc_4
+    virtual void vfunc_2();                                         //  2 0x140c63d10 -> vfunc_4
+    virtual void vfunc_3();                                         //  3 0x140c63d40
+    virtual void vfunc_4();                                         //  4 0x140c64160
+    virtual void vfunc_5(int nEvent);                               //  5 0x140c64200
+    virtual int vfunc_8(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 8 0x140c642b0 "OnSelectIngredientItem"
+
+    void FUN_140c64390(int nIndex);                                 // pick (some of) the item of the bag as an ingredient
+    void FUN_140c64960(int nIndex, int nCount);                     // move nCount of the item into / out of the ingredients
+    bool FUN_140c64b10(int nResult, const CMsgBoxData& box);       // the count input box's answer (message-box delegate)
+    bool FUN_140c64bc0(int nResult, const CMsgBoxData& box);       // the count box's answer (message-box delegate)
+
+    CString m_strBag;                                               // +0x28
+    UILapenshardUpgradeTab* m_pTab;                                 // +0x30
+    LapenshardItemArray m_items;                                    // +0x38
+};
+MS2_CHECK_SIZE(LapenshardIngredientItemSlotBagPanel, 0x58);
+
+// 0xc8 bytes: the source / result slot and the upgrade animation ("m_body").
+class LapenshardUpgradeSlotPanel : public LapenshardSystemTabPanelBase
+{
+public:
+    LapenshardUpgradeSlotPanel(UILapenshardUpgradeTab* pTab);       // 0x140c64d50
+    virtual ~LapenshardUpgradeSlotPanel();                          //  0 0x140c6a200 (??_G 0x140c6a500)
+    virtual void vfunc_1();                                         //  1 0x140c64e50 -> vfunc_4
+    virtual void vfunc_2();                                         //  2 0x140c64e80 -> vfunc_4
+    virtual void vfunc_3();                                         //  3 0x140c64eb0
+    virtual void vfunc_4();                                         //  4 0x140c650d0
+    virtual void vfunc_5(int nEvent);                               //  5 0x140c651a0
+
+    void FUN_140c652d0(ItemInfoSlot& slot, ASSlot& asSlot);        // slot callback: mark an empty slot
+    void FUN_140c65360(ItemInfoSlot& slot, ASTooltip& tooltip);    // tooltip callback
+    void FUN_140c654a0(CString& strSlot, MS2Ptr<CItem> spItem);     // 0x140c654a0 bind a slot name to an item
+    void FUN_140c65e00();
+    void FUN_140c65ef0();
+    void FUN_140c660f0();
+    void FUN_140c671d0();
+    void FUN_140c67440(int bSuccess);
+    void FUN_140c67ce0();
+
+    CString m_strSource;                                            // +0x28 "lapenshardUpgradeSourceSlot"
+    CString m_strResult;                                            // +0x30 "lapenshardUpgradeResultSlot"
+    CString m_strBind;                                              // +0x38
+    ATL::CAtlArray<CString> m_slotNames;                            // +0x40
+    UILapenshardUpgradeTab* m_pTab;                                 // +0x60
+    MS2Ptr<CItem> m_spSource;                                       // +0x68
+    ATL::CAtlArray<int> m_aRows;                                    // +0x78
+    ATL::CAtlArray<int> m_aCols;                                    // +0x98
+    MS2Ptr<ASUIComponent> m_body;                                   // +0xb8 "m_body"
+};
+MS2_CHECK_SIZE(LapenshardUpgradeSlotPanel, 0xc8);
+
+// 0xc8 bytes, vftable 0x142e0b9?: the "upgrade" page (source slot, ingredients, upgrade request).
+class UILapenshardUpgradeTab : public LapenshardSystemTabContents
+{
+public:
+    UILapenshardUpgradeTab();                                       // 0x140c67de0
+    virtual ~UILapenshardUpgradeTab();                              //  0 0x140c6a2d0 (??_G 0x140c6a540)
+    virtual void vfunc_1();                                         //  1 0x140c68090 close the sections
+    virtual void vfunc_2(int nEvent);                               //  2 0x140c68260
+    virtual void vfunc_3(MS2Ptr<ASUIComponent> ui);                 //  3 0x140c68390
+    virtual void vfunc_4();                                         //  4 0x140c68190
+    virtual int vfunc_6(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 6 0x140c68500
+    virtual int vfunc_8();                                          //  8 0x140c68860 (0)
+    virtual void vfunc_9(CInPacket& packet);                        //  9 0x140c68870
+    virtual void vfunc_10(void* a1, bool b);                        // 10 0x140c68a30 (empty)
+
+    void FUN_140c68a50();                                           // reset the page state
+    void FUN_140c68aa0();                                           // tell the server the ingredients changed
+    void FUN_140c68bd0(MS2Ptr<CItem> spItem);                       // pick the source item
+    MS2Ptr<CItem> FUN_140c68da0();                                  // the source item
+    void FUN_140c68df0();                                           // clear the source item
+    int FUN_140c68e20() { return m_nState; }                        // 0 idle, 1 source set, 2 requested, 3 answered, 4 processed
+    int FUN_140c68e40() { return m_n_bc; }
+    void FUN_140c68e60(unsigned __int64 nUid, int nDelta);          // add / remove ingredients of an item
+    void FUN_140c68f90();                                           // clear the ingredients
+    int FUN_140c68fd0() { return m_nTotal; }                        // the number of ingredients
+    int FUN_140c68ff0(unsigned __int64 nUid);                       // the number of one ingredient
+    void FUN_140c69030();                                           // request the upgrade
+    int FUN_140c691f0();                                            // the upgrade can be requested
+    void FUN_140c69620();
+    int FUN_140c69650() { return m_n_c0; }
+
+    LapenshardPanelList m_panels;                                   // +0x18
+    int m_nState;                                                   // +0x48
+    MS2Ptr<ASUIComponent> m_ui;                                     // +0x50
+    MS2Ptr<CItem> m_spSource;                                       // +0x60
+    ATL::CAtlMap<unsigned __int64, int> m_ingredients;              // +0x70 item uid -> count
+    int m_nTotal;                                                   // +0xb8
+    int m_n_bc;                                                     // +0xbc
+    int m_n_c0;                                                     // +0xc0
+};
+MS2_CHECK_SIZE(UILapenshardUpgradeTab, 0xc8);
+MS2_CHECK_OFFSET(UILapenshardUpgradeTab, m_ui, 0x50);
+MS2_CHECK_OFFSET(UILapenshardUpgradeTab, m_ingredients, 0x70);
 
 // ---- the window -----------------------------------------------------------------------------------------------------
 
