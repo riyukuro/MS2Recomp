@@ -43,6 +43,7 @@ public:
     // Registers an AS -> C++ callback under a name (the list lives at +0x60; aseffect.cpp "GetTooltipCallback").
     void FUN_1422c3180(CString strName, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
     void FUN_1422c00f0(float x, float y);                       // set the position (float)
+    void FUN_1422c0f60(float* pX, float* pY);                   // get the position (uivipdialog.cpp)
     float FUN_1422c10a0();                                      // x
     float FUN_1422c1110();                                      // y
     void FUN_1422c0420(float x);                                // set x

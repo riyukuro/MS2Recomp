@@ -18,5 +18,6 @@ public:
     void FUN_1422c4f00(const CStringW& strText);                        // set the html text
     void FUN_1422c4eb0(const CString& strText);                         // set the html text (narrow)
     void FUN_1422c4c80(const CString& strText);                         // set the text (narrow; UICameraDialog)
+    double FUN_1422c5970();                                             // the text width (uivipdialog.cpp)
 };
 MS2_CHECK_SIZE(ASTextField, 0x80);                                      // exe allocates 0x80 bytes
