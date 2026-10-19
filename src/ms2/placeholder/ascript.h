@@ -154,6 +154,8 @@ public:
     Scaleform::GFx::Value FUN_14184af30(const char* szMethod, bool a1, int a2);             // 0x14184af30 (game menu quest)
     Scaleform::GFx::Value Invoke(const char* szMethod, unsigned int a1);                    // 0x140ba26d0 (UIStanceBar; Value = UInt)
     Scaleform::GFx::Value Invoke(const char* szMethod, unsigned long a1);                   // 0x140ba2770
+    Scaleform::GFx::Value Invoke(const char* szMethod, long a1);                            // 0x1418e0670 (inline COMDAT, defined in uicameraeditdialog.cpp; an Int value like the int form 0x1409ba030)
+    Scaleform::GFx::Value Invoke(const char* szMethod, float a1, float a2, CStringW a3, int a4, bool a5, CStringW a6, CStringW a7, int a8);   // 0x1418e1d20 (inline COMDAT, defined in uicameraeditdialog.cpp; a3/a6/a7 by value: the callee destroys them)
     Scaleform::GFx::Value Invoke(const char* szMethod, unsigned long a1, unsigned long a2); // 0x140ba2810
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2, int a3, Scaleform::GFx::Value a4);   // 0x140c6db60 (inline COMDAT, defined in uilongtermattendgiftdialog.cpp; a1/a2/a4 by value: the callee destroys them)
     Scaleform::GFx::Value Invoke(const char* szMethod, unsigned int a1, Scaleform::GFx::Value a2);   // 0x140e2b2d0 (inline COMDAT, defined in uiequipiconcontainer.cpp)
