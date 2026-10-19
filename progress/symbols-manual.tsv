@@ -3404,3 +3404,5 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?DAT_142e13290@@3PAIA	142e13290	data
 ?DAT_1439f5448@@3PAEA	1439f5448	data
 ?DAT_1439f5458@@3PAEA	1439f5458	data
+?DAT_143a09680@@3UUnk_MeColor@@A	143a09680	data
+?ApplyFieldFogRange@ApplyEffect@@QEAAX_N@Z	1409a43a0	func
