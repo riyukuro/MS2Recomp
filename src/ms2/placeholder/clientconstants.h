@@ -101,6 +101,7 @@ public:
         bool Define(const char* key);
         bool Define(const char* key, ATL::CAtlArray<T>* out);
         bool Contains(T v);
+        bool Get(ATL::CAtlArray<T>& out);                   // 0x140ce06c0 (CString): copy the loaded values
         ATL::CAtlArray<T> m_values;                         // +0x50
     };
 
