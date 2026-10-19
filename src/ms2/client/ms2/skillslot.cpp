@@ -42,8 +42,6 @@
 // MS2-PIN: ??__Es_strSortTypeNames@@YAXXZ 0x1401014a0 ; probe
 // MS2-PIN: ??8?$MS2Ptr@VUnk_MyPCSkillSet@@@@QEBA_NPEAVUnk_MyPCSkillSet@@@Z 0x1417624d0 ; unique
 // MS2-PIN: ?GetClassDesc@SkillSlot@@UEBAPEBVClassInfo@efd@@XZ 0x141762740 ; unique
-// MS2-PIN: ?RightRotate@?$CRBTree@IHV?$CElementTraits@I@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x141763110 ; unique
-// MS2-PIN: ?SetNil@?$CRBTree@IHV?$CElementTraits@I@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x141763280 ; unique
 // MS2-PIN: ?TypeCast@SkillSlot@@UEBA_NIPEAPEAX@Z 0x141763350 ; unique
 // MS2-PIN: ?TypeCast@SkillSlot@@UEBA_NIPEAPEBX@Z 0x1417633a0 ; unique
 // MS2-PIN: ??_ESkillSlotBag@@WII@EAAPEAXI@Z 0x141763cfc ; unique
@@ -53,10 +51,24 @@
 // MS2-PIN: ?TypeCast@SkillSlotBag@@UEBA_NIPEAPEBX@Z 0x141763e30 ; unique
 // MS2-PIN: memmove_s 0x141763e80 ; unique
 // MS2-PIN: ??$Unk_SocketFormat@HH@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBH1@Z 0x14176bb90 ; unique
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBV?$MS2Ptr@VstEmotion@CSkillSystem@@@@@?$vector@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@V?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@std@@@std@@AEAAXAEBV?$MS2Ptr@VstEmotion@CSkillSystem@@@@@Z 0x14176c010 ; unique
+// MS2-PIN: ??$_Emplace_reallocate@AEBV?$MS2Ptr@VstEmotion@CSkillSystem@@@@@?$vector@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@V?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VstEmotion@CSkillSystem@@@@QEAV2@AEBV2@@Z 0x14176c0d0 ; unique
+// MS2-PIN: ??$construct@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@AEAV1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@1@QEAV?$MS2Ptr@VstEmotion@CSkillSystem@@@@AEAV3@@Z 0x14176c6f0 ; unique
+// MS2-PIN: ??$construct@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@AEBV1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@1@QEAV?$MS2Ptr@VstEmotion@CSkillSystem@@@@AEBV3@@Z 0x14176c740 ; prop
+// MS2-PIN: ??$construct@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@V1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@1@QEAV?$MS2Ptr@VstEmotion@CSkillSystem@@@@$$QEAV3@@Z 0x14176c790 ; unique
+// MS2-PIN: ??$emplace_back@AEBV?$MS2Ptr@VstEmotion@CSkillSystem@@@@@?$vector@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@V?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VstEmotion@CSkillSystem@@@@@Z 0x14176c800 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VCSkillRecord@@@@QEAA@$$T@Z 0x14176ca00 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VSkillLevelData@@@@QEAA@$$T@Z 0x14176ca60 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VstEmotion@CSkillSystem@@@@QEAA@$$T@Z 0x14176ca80 ; prop
 // MS2-PIN: ??8?$MS2Ptr@VCSkillCompactControlConfig@@@@QEBA_NPEAVCSkillCompactControlConfig@@@Z 0x14176ce10 ; unique
 // MS2-PIN: ??8?$MS2Ptr@VstEmotion@CSkillSystem@@@@QEBA_NPEAVstEmotion@CSkillSystem@@@Z 0x14176ce90 ; order
 // MS2-PIN: ??C?$MS2Ptr@VSkillData@@@@QEBAPEAVSkillData@@XZ 0x14176cf50 ; unique
+// MS2-PIN: ?_Change_array@?$vector@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@V?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@std@@@std@@AEAAXQEAV?$MS2Ptr@VstEmotion@CSkillSystem@@@@_K1@Z 0x14176ea70 ; unique
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@V?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VstEmotion@CSkillSystem@@@@XZ 0x14176ecd0 ; unique
+// MS2-PIN: ?_Tidy@?$vector@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@V?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@std@@@std@@AEAAXXZ 0x14176ee70 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ?_Unchecked_begin@?$vector@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@V?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VstEmotion@CSkillSystem@@@@XZ 0x14176f020 ; hand
+// MS2-PIN: ?_Unchecked_end@?$vector@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@V?$allocator@V?$MS2Ptr@VstEmotion@CSkillSystem@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VstEmotion@CSkillSystem@@@@XZ 0x14176f040 ; hand
 // MS2-PIN: ??_7SkillSlot@@6BBindData@NotifyContext@@@ 0x142f61f60 ; hand: primary vftable
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\skillslot.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
