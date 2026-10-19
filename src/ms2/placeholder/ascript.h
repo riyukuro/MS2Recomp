@@ -157,6 +157,7 @@ public:
     template<class T> MS2Ptr<T> FUN_140beaf20(const CString&, MS2Ptr<T>&); // bind text (mentoring reward)
     template<class T> MS2Ptr<T> FUN_140bc71c0(const CString&, MS2Ptr<T>&); // bind display object
     template<class T> MS2Ptr<T> FUN_141009c70(const CString&, MS2Ptr<T>&); // bind child component (inline COMDAT, defined in uinoticedialog.cpp)
+    template<class T> MS2Ptr<T> FUN_140c57d70(const CString&, MS2Ptr<T>&); // bind child control (inline COMDAT, defined in uiitemtreasuremapdialog.cpp)
     template<class T> MS2Ptr<T> FUN_140bbe7c0(const CString&, MS2Ptr<T>&); // bind combo box (party search register)
     template<class T> MS2Ptr<T> FUN_140bbe940(const CString&, MS2Ptr<T>&); // bind input box (party search register)
     template<class T> MS2Ptr<T> FUN_140bc7340(const CString&, MS2Ptr<T>&); // bind list (debug guide)
