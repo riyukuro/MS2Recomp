@@ -18,7 +18,6 @@
 // MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VCTextLogFile@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCTextLogFile@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCTextLogFile@@@@@std@@@std@@@std@@@2@AEBH@Z 0x140395e20 ; unique
 // MS2-PIN: ??__F?ms_files@CFileLogger@@0V?$map@HV?$MS2Ptr@VCTextLogFile@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCTextLogFile@@@@@std@@@3@@std@@A@@YAXXZ 0x142c9a7c0 ; prop
 // MS2-PINS-END tplpin
-// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tset_traits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@U?$less@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEAX@2@@Z 0x140395520
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\filebuffer.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "filebuffer_2.h"
