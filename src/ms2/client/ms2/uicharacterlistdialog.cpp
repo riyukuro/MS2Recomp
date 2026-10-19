@@ -2,6 +2,11 @@
 // MS2-UNIT: ?\uicharacterlistdialog.cpp
 // MS2-RANGE: 0x140111400-0x140111600 .text$di
 // MS2-RANGE: 0x1418e93f0-0x1418fafd0 .text$mn
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1418f5650
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@@std@@QEAA@XZ 0x1418f8bb0
+// MS2-PIN: ??0?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAA@XZ 0x1418f8d70
+// MS2-PIN: ??4?$MS2Ptr@VCMsgBoxData@@@@QEAAAEAV0@H@Z 0x1418f90d0
+// MS2-PIN: ??$format_arg@_WW4Unk_ClCharError@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_ClCharError@@@Z 0x1418f8310
 // MS2-PIN: ??$FUN_14028dee0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@W4Unk_ClCharError@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBV01@AEBW4Unk_ClCharError@@@Z 0x1418f5e20
 // MS2-PIN: ??$FUN_14028dee0@GV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBGAEBV01@1@Z 0x1418f5ab0
 // MS2-PINS-BEGIN tplpin
@@ -12,7 +17,8 @@
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x1418f8840 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCMsgBoxDataItem@@@@QEAA@H@Z 0x1418f8b20 ; unique
 // MS2-PIN: ??0ArgType@internal@fmt@@QEAA@XZ 0x1418f8dd0 ; probe
-// MS2-PIN: ??0UniversalID@efd@@QEAA@XZ 0x1418f8df0 ; probe
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VCMsgBoxDataItem@@@@QEAAAEAV1@PEAVCMsgBoxDataItem@@@Z 0x1418f9100 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VAScript@@@@QEBAPEAVAScript@@XZ 0x1418f9290 ; order
 // MS2-PIN: ??C?$MS2Ptr@VCMsgBoxDataItem@@@@QEBAPEAVCMsgBoxDataItem@@XZ 0x1418f92b0 ; order
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$CElementTraits@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@_K@Z 0x1418f9790 ; unique
 // MS2-PIN: ?RemoveAt@?$CAtlList@V?$MS2Ptr@VCDeleteCharacterInfo@UICharacterListDialog@@@@V?$CElementTraits@V?$MS2Ptr@VCDeleteCharacterInfo@UICharacterListDialog@@@@@ATL@@@ATL@@QEAAXPEAU__POSITION@@@Z 0x1418f9d80 ; unique
@@ -146,6 +152,14 @@ extern __int64 DAT_143ab2820;                                       // the accou
 extern int DAT_1439f4a84;
 extern int DAT_1439f4a88;
 void FUN_1418f42c0(ASObj& obj, UICharacterListDialog::CCharacterInfo* pInfo);   // fill the movie object of a character
+struct Unk_ClReqSelect { __int64 m_nId; Unk_ClReqSelect() { m_nId = 0; } };      // 0x1418f8dd0 the packet 9 / 2 body
+struct Unk_ClReqCancel { __int64 m_nId; Unk_ClReqCancel() { m_nId = 0; } };      // 0x1418f8e50 the packet 9 / 3 body
+struct Unk_ClReqDelete { __int64 m_nId; Unk_ClReqDelete() { m_nId = 0; } };      // 0x1418f8df0 the packet 9 / 4 body
+struct Unk_ClReqRename { __int64 m_nId; CStringW m_strName; Unk_ClReqRename() : m_strName(L"") { m_nId = 0; } };   // 0x1418f8e10 the packet 9 / 5 body
+void FUN_1401fa3d0(const Unk_ClReqSelect& req, COutPacket& packet);
+void FUN_1401fa460(const Unk_ClReqCancel& req, COutPacket& packet);
+void FUN_1401fa4f0(const Unk_ClReqDelete& req, COutPacket& packet);
+void FUN_1401fa2c0(const Unk_ClReqRename& req, COutPacket& packet);
 class Unk_ClBox : public CMsgBoxData { public: void FUN_141a02a70(CStringW strText, CString strUrl); void FUN_141a015d0(const CStringW& str); __int64 FUN_141a02f10(int n, __int64 nDefault); void FUN_141a015a0(const CStringW& str); };
 void FUN_14151f4e0(CStringW strTag, MS2Ptr<CMsgBoxData> spBox);     // replace the box of that tag
 CStringW FUN_140298ea0(const CStringW& strKey);                     // string table text (second table)
@@ -1236,7 +1250,7 @@ UICharacterListDialog::DeletePtr UICharacterListDialog::FindPending(unsigned __i
             if (spInfo.get() != 0 && spInfo.get() != 0)
             {
                 if (spInfo->m_spCharacter.get() != 0 && spInfo->m_spCharacter->FUN_1418e9cb0() == nId)
-                    return DeletePtr(spInfo);
+                    return DeletePtr(std::move(spInfo));
             }
             m_1f0.GetNext(pos);
         }
@@ -1358,10 +1372,10 @@ CStringW UICharacterListDialog::FUN_1418f05b0(unsigned __int64 nId)
     static CStringW s_empty(L"");
     if (nId == 0)
         return s_empty;
-    for (size_t i = 0; i < m_1a8.size(); ++i)
+    for (std::vector<CharPtr>::iterator it = m_1a8.begin(); it != m_1a8.end(); ++it)
     {
-        if (m_1a8[i]->FUN_1418e9cb0() == nId)
-            return m_1a8[i]->FUN_1418e9cd0();
+        if ((*it)->FUN_1418e9cb0() == nId)
+            return (*it)->FUN_1418e9cd0();
     }
     return s_empty;
 }
@@ -1540,10 +1554,11 @@ void UICharacterListDialog::FUN_1418f1880()
         MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPC != 0)
         {
-            __int64 nId = FUN_141656a80(pPC);
+            Unk_ClReqSelect req;
+            req.m_nId = FUN_141656a80(pPC);
             COutPacket packet(9, 0);
             packet.Encode1(2);
-            packet.Encode8(nId);
+            FUN_1401fa3d0(req, packet);
             FUN_140710590(packet);
             m_1d8 = 1;
         }
@@ -1557,9 +1572,11 @@ void UICharacterListDialog::CancelDelete(CharPtr spCharacter)
     if (!(spCharacter == 0))
     {
         spCharacter->FUN_1418e9ed0(0);
+        Unk_ClReqCancel req;
+        req.m_nId = spCharacter->FUN_1418e9cb0();
         COutPacket packet(9, 0);
         packet.Encode1(3);
-        packet.Encode8(spCharacter->FUN_1418e9cb0());
+        FUN_1401fa460(req, packet);
         FUN_140710590(packet);
     }
 }
@@ -1574,9 +1591,11 @@ void UICharacterListDialog::CheckDelete(unsigned __int64 nId)
         CharPtr spCharacter = FindCharacter(nId, &nIndex);
         if (!(spCharacter == 0))
         {
+            Unk_ClReqDelete req;
+            req.m_nId = nId;
             COutPacket packet(9, 0);
             packet.Encode1(4);
-            packet.Encode8(nId);
+            FUN_1401fa4f0(req, packet);
             FUN_140710590(packet);
             m_1d8 = 1;
         }
@@ -1722,10 +1741,12 @@ void UICharacterListDialog::FUN_1418f1fd0()
 // MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
 void UICharacterListDialog::FUN_1418f2030(unsigned __int64 nId, CStringW str)
 {
+    Unk_ClReqRename req;
+    req.m_nId = nId;
+    req.m_strName = str;
     COutPacket packet(9, 0);
     packet.Encode1(5);
-    packet.Encode8(nId);
-    packet.vfunc_o10_8(str);
+    FUN_1401fa2c0(req, packet);
     FUN_140710590(packet);
 }
 
@@ -2223,7 +2244,7 @@ void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
     MS2Ptr<CMsgBoxDataItem> spSecond(0);
     if (spEvent->m_90.FUN_1404110e0())
     {
-        spFirst = new CMsgBoxDataItem;
+        spFirst.AssignRaw(new CMsgBoxDataItem);
         MS2Ptr<CItem> spItem(new CItem);
         Unk_ClRewardEntry* pEntry = spEvent->m_90.FUN_1403e8aa0();
         spItem->FUN_140523c40(pEntry->m_ref.vfunc_0(), pEntry->m_ref.vfunc_1(), 0);
@@ -2236,7 +2257,7 @@ void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
     }
     if (!spEvent->m_70.FUN_140c0e9f0())
     {
-        spSecond = new CMsgBoxDataItem;
+        spSecond.AssignRaw(new CMsgBoxDataItem);
         MS2Ptr<CItem> spItem(new CItem);
         Unk_ClRewardEntry* pEntry = spEvent->m_70.FUN_140bfe440();
         spItem->FUN_140523c40(pEntry->m_ref.vfunc_0(), pEntry->m_ref.vfunc_1(), 0);
@@ -2420,7 +2441,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                     int nNext = nIndex + 1;
                     Scaleform::GFx::Value result = list.FUN_140acd9f0()->Invoke("swapIndex", nIndex, nNext);
                     if (FUN_1409c1720(&result) && nIndex < (int)m_1a8.size() && nNext < (int)m_1a8.size())
-                        std::swap(m_1a8[nIndex], m_1a8[nNext]);
+                        std::swap(m_1a8.at(nNext), m_1a8.at(nIndex));
                 }
                 list.FUN_140acd710();
             }
@@ -2441,7 +2462,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                     int nPrev = nIndex - 1;
                     Scaleform::GFx::Value result = list.FUN_140acd9f0()->Invoke("swapIndex", nIndex, nPrev);
                     if (FUN_1409c1720(&result) && nIndex < (int)m_1a8.size() && nPrev < (int)m_1a8.size())
-                        std::swap(m_1a8[nPrev], m_1a8[nIndex]);
+                        std::swap(m_1a8.at(nPrev), m_1a8.at(nIndex));
                 }
                 list.FUN_140acd710();
             }
