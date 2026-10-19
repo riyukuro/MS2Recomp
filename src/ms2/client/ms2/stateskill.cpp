@@ -29,6 +29,7 @@
 #include "ms2/client/ms2/uicoupleactiondialog.h"
 #include "ms2/placeholder/statecoupleemotion.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/skillusepayload.h"
 #include <typeinfo>
 #include <NiMatrix3.h>
 #include <NiColor.h>
@@ -180,6 +181,11 @@ void FUN_1418e0ad0(Unk_CastingParam* pThis, MS2Ptr<CXmlData> spXml);  // the cas
 int FUN_141654700(void* pPc);                              // the pc's job
 
 bool FUN_14028d470(float a, float b);                      // a == b (within epsilon)
+
+int FUN_141472bc0();                                       // the client tick of a cast
+Unk_UtilFloat3 FUN_141b6dff0(const Unk_UtilFloat3* pVec);  // a copy of the position
+void FUN_1401fd510(unsigned char* payload, COutputStream& stream);  // write the skill use payload
+void FUN_14165f130(MyPC* pMy, int n);                      // put the held object weapon away
 
 // ---- statics -------------------------------------------------------------------------------------------------------
 
@@ -1766,6 +1772,55 @@ int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
     return 0;
 }
 MS2_REPLACE(0x1417eaa50, StateSkill::FUN_1417eaa50, 2311, 0xEAE85E66);
+
+// Sends the use of a cast (packet 0x20 mode 0 with the skill use payload); a held object weapon whose skill this is
+// is put away.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417ebc00
+int StateSkill::FUN_1417ebc00(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult)
+{
+    *pResult = 1;
+    MyPC* pMyPC = efd::DynamicCast<MyPC>(pOwner);
+    if (pMyPC == NULL)
+        return 0;
+    pMyPC->FUN_14152e0c0();
+    int nTick = FUN_141472bc0();
+    spRecord->m_nTick = nTick;
+    spRecord->m_nSendTick = spRecord->m_nTick;
+    Unk_SkillUsePayload kPayload;
+    kPayload.m_nCastId = spRecord->m_nCastId;
+    kPayload.m_nTick = spRecord->m_nTick;
+    kPayload.m_nSkillId = spRecord->GetSkillId();
+    kPayload.m_nLevel = spRecord->GetLevel();
+    kPayload.m_nMotion = (unsigned char)spRecord->m_nMotion;
+    kPayload.m_ptPos = Unk_SkillUseVec3(FUN_141b6dff0(reinterpret_cast<const Unk_UtilFloat3*>(&spRecord->m_ptPos)));
+    kPayload.m_ptDir = Unk_SkillUseVec3(FUN_141b6dff0(reinterpret_cast<const Unk_UtilFloat3*>(&spRecord->m_ptDir)));
+    kPayload.m_ptRot = Unk_SkillUseVec3(FUN_141b6dff0(reinterpret_cast<const Unk_UtilFloat3*>(&spRecord->m_ptRot)));
+    kPayload.m_fCooldown = spRecord->m_fCooldown;
+    kPayload.m_nElapsed = TSingleton<CMainSystem>::GetInstance()->GetElapsedTime();
+    kPayload.m_bAE = spRecord->m_bAE;
+    kPayload.m_n48 = spRecord->FUN_1417599c0();
+    kPayload.m_n60 = spRecord->FUN_1417599e0();
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xae))
+    {
+        kPayload.m_bAttached = spRecord->m_nB0 != 0;
+        kPayload.m_nAttachId = spRecord->m_nB0;
+        kPayload.m_strAttachNode = spRecord->m_strB8;
+    }
+    COutPacket packet(0x20, 0);
+    packet.vfunc_o10_1(0);
+    FUN_1401fd510(reinterpret_cast<unsigned char*>(&kPayload), packet);
+    FUN_140710590(packet);
+    Unk_SsHeldItem* pHeld = FUN_14165f100(pMyPC);
+    if (pHeld != NULL && spRecord->m_spSkill->GetMainType() == 4)
+    {
+        int nHeldSkill = pHeld->FUN_140527840()->FUN_14053dc90();
+        if (nHeldSkill == spRecord->GetSkillId())
+            FUN_14165f130(pMyPC, 0);
+    }
+    return 1;
+}
+MS2_REPLACE(0x1417ebc00, StateSkill::FUN_1417ebc00, 1186, 0x00C3144C);
 
 // The hold attack of a cast attached to an npc (feature 0xae, buff 0x49401, job 0x46): a record of the hold attack
 // skill (Constants HoldAttackSkillID, level 1) attached to the same npc node.
