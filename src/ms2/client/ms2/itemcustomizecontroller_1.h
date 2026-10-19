@@ -63,7 +63,8 @@ public:
     CItemCustomizeController();                                     // 0x141410cd0
     virtual ~CItemCustomizeController() = 0;                        // 0  0x141410e60 (_purecall in the base table)
     // 1  NiRefObject::DeleteThis
-    NiDeclareRTTI;                                                  // 2  GetRTTI 0x141412ed0
+    NiDeclareRootRTTI(CItemCustomizeController);                    // 2  GetRTTI 0x141412ed0 (root: the IsKindOf /
+                                                                    //    DynamicCast inlines 0x140cd6050 0x140cd5580 0x140cd55d0 are customize.cpp's)
     virtual int vfunc_3();                                          // 3  0x1414111d0
     virtual void vfunc_4();                                         // 4  0x1414111f0 caches m_nPartCount
     virtual void vfunc_5() {}                                       // 5  0x140b02d50

@@ -6,6 +6,7 @@
 #pragma once
 #include <afx.h>
 #include <vector>
+#include <algorithm>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"
@@ -14,6 +15,7 @@
 #include "ms2/placeholder/imessagelistener.h"
 #include "ms2/client/ms2/uiattendgiftdialog.h"     // Unk_14102fe10 (the AS list holder)
 #include "ms2/client/ms2/uimodaldialog.h"          // UIBillDialog base
+#include "ms2/client/ms2/customize.h"
 
 class CItem;
 class CInPacket;
@@ -44,6 +46,22 @@ public:
     virtual int vfunc_5(void*, void*) { return 1; }
     // @0x140f0b710
     void FUN_140f0b710(int n) { m_0c = n; }
+    // Inline getters, first emitted by ?\customize.cpp (Customize::Equipment's packets).
+    // @0x140cd60e0
+    int GetShopId() { return m_08; }        // the shop id
+    // @0x140cd5db0
+    int IsSendEnabled() { return m_0c; }        // send the changes (0: preview only)
+    // @0x140cd5e30
+    int GetCurrency() { return m_10; }
+    // @0x140cd5950 uses one of the m_14 free tries (-1: unlimited, then m_10)
+    int UseFreeTry()
+    {
+        if (m_14 == -1)
+            return GetCurrency();
+        int nOld = m_14--;
+        m_14 = (std::max)(0, m_14);
+        return nOld > 0;
+    }
 
     MS2_LAYOUT_FRIEND;
     int m_08;
@@ -53,52 +71,7 @@ public:
 };
 MS2_CHECK_SIZE(IItemCustomizeEventListener, 0x18);
 
-// The customize controller (0x88 bytes, ctor 0x140cd1570; itemcustomizecontroller): previews and stores the hair.
-class Customize : public CPtred
-{
-public:
-    // The shop context handed to the controller (0x28 bytes, ctor 0x140ccad60).
-    class BeautyShopContext : public CPtred
-    {
-    public:
-        BeautyShopContext(int nEventId, __int64 n);
-        MS2_LAYOUT_FRIEND;
-        int m_18;                               // +0x18 the sale event id
-        __int64 m_20;
-    };
-    Customize(int nObjectId, IItemCustomizeEventListener* pListener, int n);
-    bool FUN_140cd1c90(CItem* pItem);           // preview an item (false: not wearable)
-    void FUN_140cd20c0();
-    void FUN_140cd22f0(int nSlot);              // restore the slot
-    void FUN_140cd24a0(int nSlot);              // show the cap
-    void FUN_140cd2530(int nSlot);              // hide the cap
-    void FUN_140cd25c0(int nSlot);              // begin on the slot
-    void FUN_140cd2660(int nItemId);            // preview an item id
-    int FUN_140cd2a00();                        // changed (billable)
-    int FUN_140cd2c20();                        // changed
-    int FUN_140cd17e0();                        // the previewed item id
-    void FUN_140cd1bf0();
-    int FUN_140cd27f0();
-    int FUN_140cd28a0();                        // a style is previewed
-    int FUN_140cd2ea0();                        // a colour is previewed
-    int FUN_140cd3000();                        // a crop is previewed
-    void FUN_140cd1d50(int nItemId);
-    void FUN_140cd2280(int nSlot);
-    void FUN_140cd3220(int nPalette, int nColor, int n);
-    void FUN_140cd32f0(const int& nPalette, int nColor, int n);
-    void FUN_140cd38d0(int nPalette);
-    Unk_BSPartHandle FUN_140cd1a30();           // the part being edited
-    void FUN_140cd38f0(MS2Ptr<BeautyShopContext> spContext);
-    MS2Ptr<CItem> FUN_140cd1890();              // the previewed item (uiitemcoloringdialog.cpp)
-    __int64 FUN_140cd1980();                    // the uid of the item being dyed
-    void FUN_140cd2210(__int64 nUid);           // restore the item
-    void FUN_140cd2360(__int64 nUid, MS2Ptr<CItem>& spOut);    // the dyed copy of the item
-    void FUN_140cd2700(__int64 nUid);           // preview the item (0: none)
-    void FUN_140cd27a0();                       // keep the preview
-    void FUN_140cd3820();                       // forget the kept previews
-    char m_pad_18[0x70];
-};
-MS2_CHECK_SIZE(Customize, 0x88);
+// The customize controller (Customize): ms2/client/ms2/customize.h.
 
 // The beauty shop camera (UI 0x4ef2's object).
 class Unk_BSCamera : public CPtred

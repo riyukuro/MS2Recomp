@@ -24,6 +24,9 @@ class CEquipItem;
 class CMsTime;
 struct Unk_PCEquipSet
 {
+    MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nKind, int n);    // a worn item of the slot (customize.cpp)
+    void FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& out, int nKind);   // the worn items of a kind (customize.cpp)
+    void FUN_1411e5c10(); void FUN_1411e6ab0(); void FUN_1411e75f0();   // refresh the look (customize.cpp)
     MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nKind); MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nItemUid); void FUN_1411e4150(__int64 nItemUid, unsigned char nSlot, int nKind); void FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd); void FUN_1411ea7c0(); void FUN_1411e7660();
     MS2Ptr<CEquipmentSlotLayerInfo> GetTitle();            // 0x140d29440 the codi (outfit) tab period (defined in unit_140d1ae30)
     unsigned char unknown0[0x188];
@@ -120,6 +123,8 @@ public:
     virtual bool vfunc_146();                               // 146 0x141662e50
     // non-virtual members called by scenestategame.cpp (w86)
     MS2Ptr<CItem> FUN_141655b80(__int64 nItemUid);          // 0x141655b80 an owned item by uid
+    MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);            // 0x141655e10 the worn item of a slot (customize.cpp)
+    int FUN_1416569b0(CItem* pItem);                        // 0x1416569b0 the equip slot of an item (customize.cpp)
     MS2Ptr<CEquipItem> FUN_141655c30(__int64 nItemUid);     // 0x141655c30 a worn item by uid
     MS2Ptr<CEquipItem> FUN_141655e80(int nSlot, int nKind); // 0x141655e80 the worn item of a slot (scenestategame 0x7b)
     void FUN_1416642c0(bool b);                             // 0x1416642c0 +0x1224 (scenestategame 0x79 mode 6)
