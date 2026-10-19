@@ -96,14 +96,14 @@ class PCActionDataTable : public TSingleton<PCActionDataTable>, public DataTable
 {
 public:
     PCActionDataTable();                                    // 0x140949170
-    virtual ~PCActionDataTable();
+    virtual ~PCActionDataTable() = default;
     virtual void Add(MS2Ptr<PCActionGroup> spRow);          // 0x1409492b0
     virtual void Loaded();                                  // 0x1409493a0
     virtual MS2Ptr<PCActionGroup> Create(Unk_140165cf0* pNode);   // 0x1409493b0
-    MS2Ptr<PCActionGroup> Find(int nId);               // 0x1409494e0 the group, the default group when unknown
+    MS2Ptr<PCActionGroup> Find(unsigned nId);               // 0x1409494e0 the group, the default group when unknown
 private:
     MS2_LAYOUT_FRIEND;
-    std::map<int, MS2Ptr<PCActionGroup> > m_groups;         // +0x40 the custom groups by id
+    std::map<unsigned, MS2Ptr<PCActionGroup> > m_groups;         // +0x40 the custom groups by id
     MS2Ptr<PCActionGroup> m_spDefault;                      // +0x50
 };
 MS2_CHECK_SIZE(PCActionDataTable, 0x60);
