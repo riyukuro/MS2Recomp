@@ -66,6 +66,7 @@ struct Unk_PickMeshPtr
     Unk_PickMeshPtr& FUN_141418a00(NiAVObject* p);              // assignment (0x141418a00)
     NiAVObject* FUN_141412c90() const { return m_p; }           // get (inline COMDAT 0x141412c90, emitted by #1)
     NiAVObject* operator->() const { return m_p; }              // inline COMDAT 0x141477f60, first emitted by ?\makeupcontroller.cpp
+    bool operator==(NiAVObject* p) const;                       // inline COMDAT 0x141849ec0 (textureanimationdata.cpp)
     NiAVObject* m_p;
 };
 MS2_CHECK_SIZE(Unk_PickMeshPtr, 8);

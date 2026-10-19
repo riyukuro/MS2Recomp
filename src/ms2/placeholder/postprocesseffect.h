@@ -45,6 +45,7 @@ public:
     void Assign(void* p);           // 0x14097f9b0
     void* Get();                    // 0x14097fbf0
     Unk_PPSmartC& operator=(const Unk_PPSmartC& rhs);   // 0x140a5ab40
+    bool operator!=(void* p) const;                     // 0x141849f40 (textureanimationdata.cpp)
 private:
     void* m_p;
 };

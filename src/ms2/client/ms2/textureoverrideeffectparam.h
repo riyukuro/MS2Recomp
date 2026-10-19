@@ -9,16 +9,8 @@
 #include "ms2/client/ms2/effectparam.h"
 #include "ms2/placeholder/postprocesseffect.h"   // Unk_PPSmartC (texture handle)
 
-// Texture layer (?\textureanimationdata.cpp; NiRefObject, 0x30 bytes). Only the ctor is used here.
-class TextureLayer : public NiRefObject
-{
-public:
-    TextureLayer(int nKind, NiProperty* pTexturing, void* pTexture, void* pReserved);   // 0x14184b040
-private:
-    void* m_unk[4];                 // +0x10 (layout owned by ?\textureanimationdata.cpp)
-};
-MS2_CHECK_SIZE(TextureLayer, 0x30);
-typedef NiPointer<TextureLayer> TextureLayerPtr;
+// TextureLayer (NiObject-based Layer, 0x30 bytes) is owned by ?\textureanimationdata.cpp.
+#include "ms2/client/ms2/textureanimationdata.h"
 
 // 0x50 bytes. vftable 0x142f87618 region (8 slots; overrides 1, 5, 6). Implicit dtor 0x14184bf80, ??_G 0x14184c0b0.
 class TextureOverrideEffectParam : public CEffectParam

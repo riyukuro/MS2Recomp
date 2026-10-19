@@ -174,6 +174,7 @@ public:
     template<class T> MS2Ptr<T> FUN_140e159f0(const CString&);               // child control by name, one COMDAT per wrapper class (dungeon helper)
     template<class F> void FUN_1422c2a70(const F&, int); // click callback (DT attendance)
     Scaleform::GFx::Value& FUN_1422bb890(); // root value forwarding accessor
+    Scaleform::GFx::Value FUN_140e813f0(const char* szMethod, const ASArray& arr, int n);    // Invoke(method, array, int) (unit_141347b10: "buildCategoryList")
     MS2Ptr<ASMovieClip> FUN_1409b4560(const CString& strName); // bind a movie clip child (w4s10; units may hide it)
     MS2Ptr<ASTextField> FUN_1409b4620(const CString& strName); // bind a text field child (aseffect.cpp)
     Scaleform::GFx::Value Invoke(const char*, CString, int); // setTabCount, 0x140a46640
@@ -208,8 +209,15 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, Scaleform::GFx::Value a3);   // 0x140f0a3f0 (inline COMDAT, defined in uibeautyshopstyledialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, Scaleform::GFx::Value a2);   // 0x140f0a510 (inline COMDAT, defined in uibeautyshopstyledialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, const wchar_t* a1, bool a2, bool a3);   // 0x140f0a610 (inline COMDAT, defined in uibeautyshopstyledialog.cpp)
+    Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, Scaleform::GFx::Value a2);    // 0x140f0c520 (inline COMDAT, defined in uiblackmarketpage.cpp; both by value: the callee destroys them)
+    Scaleform::GFx::Value Invoke(const char* szMethod, const ASArray& a1, int a2, int a3);       // 0x140f17080 (inline COMDAT, defined in uiblackmarketpage.cpp)
+    Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, Scaleform::GFx::Value a2);   // 0x140f17150 (inline COMDAT, defined in uiblackmarketpage.cpp; both by value)
+    Scaleform::GFx::Value Invoke(const char* szMethod, const class ASDataProvider& a1);          // 0x140bbeaa0 (inline COMDAT; the provider's value)
+    Scaleform::GFx::Value Invoke(const char* szMethod, const ASArray& a1, int a2);               // 0x140e813f0 (inline COMDAT)
+    CStringW FUN_1422bb2b0(const char* szName);                                                 // a member as text (uiblackmarketpage.cpp; ASObj declares the same)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2, bool a3, bool a4);   // 0x140f0a6f0 (inline COMDAT, defined in uibeautyshopstyledialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, long a2);   // 0x140f0a830 (inline COMDAT, defined in uibeautyshopstyledialog.cpp)
+    Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, bool a2, bool a3, Scaleform::GFx::Value a4);   // 0x1419b2be0 (inline COMDAT, defined in uiitemcoloringdialog.cpp; all by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, bool a2);                    // 0x140f356e0 (inline COMDAT, defined in uidarkstreamscoredialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, bool a3);            // 0x140f9d9e0 (inline COMDAT, defined in uishadowexpeditionbossbar.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, bool a1, bool a2);                   // 0x140fc1a70 (inline COMDAT, defined in uiwatchagamedialog.cpp)
