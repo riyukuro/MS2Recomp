@@ -1305,3 +1305,163 @@ int StateSkill::vfunc_1()
 {
     return 0x10;
 }
+
+// @0x1417ea570
+int StateSkill::FUN_1417ea570(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult)
+{
+    if (spRecord->m_spSkill->FUN_1407e9d30())
+        return FUN_1417eaa50(pOwner, spRecord, pResult);
+    if (spRecord->m_spSkill->FUN_1407e9bd0() != 0)
+        return FUN_1417eb3a0(pOwner, spRecord, pResult);
+    if (pOwner->FUN_141675ed0() != 0 && spRecord->m_spLevel->FUN_140804450())
+        return 0;
+    return FUN_1417ebc00(pOwner, spRecord, pResult);
+}
+MS2_REPLACE(0x1417ea570, StateSkill::FUN_1417ea570, 453, 0x1F6283A2);
+
+// MS2-FUNCTIONAL: the record goes to PCBase::FUN_141673ce0 as the Unk_PCBaseComp_b18 view of the same pointer.
+// @0x1417ea750
+void StateSkill::FUN_1417ea750(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord)
+{
+    if (pOwner->FUN_14166ce30() != 0)
+        return;
+    if (!spRecord->m_spLevel->FUN_140804450())
+    {
+        Unk_EffectTarget kTarget;
+        kTarget.m_strName = spRecord->FUN_1417598a0();
+        kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(pOwner);
+        kTarget.FUN_140a53190(pOwner->FUN_14123c580());
+        kTarget.m_b31 = spRecord->FUN_141759a50();
+        if (!FUN_1417f4bc0(kTarget))
+            CEffectService::GetInstance()->FUN_1411a4a00(kTarget);
+    }
+    else
+    {
+        if (pOwner->FUN_141673ce0(reinterpret_cast<MS2Ptr<Unk_PCBaseComp_b18>&>(spRecord)).get() != NULL)
+            pOwner->vfunc_59(0x10, NULL, 0, 1);
+    }
+}
+MS2_REPLACE(0x1417ea750, StateSkill::FUN_1417ea750, 453, 0xDBB6FA7A);
+
+// @0x1417ea920
+int StateSkill::FUN_1417ea920(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord)
+{
+    if (!spRecord)
+        return 0;
+    DWORD nNow = CMainSystem::GetInstance()->FUN_1414732b0(pOwner);
+    SkillAttackData* pAttack = spRecord->FUN_14175a000();
+    if (pAttack == NULL)
+        return 0;
+    FUN_1417ecce0(nNow, spRecord, 0, pOwner);
+    FUN_1417f2b50(spRecord);
+    return 1;
+}
+MS2_REPLACE(0x1417ea920, StateSkill::FUN_1417ea920, 296, 0xAEF0F574);
+
+// @0x1417f0d60
+void StateSkill::FUN_1417f0d60(unsigned nTick, const char* szPoint)
+{
+    if (m_spRecord == NULL)
+        return;
+    SkillAttackData* pAttack = m_spRecord->FUN_14175a050(m_nAttack);
+    if (pAttack == NULL)
+        return;
+    if (pAttack->m_strPoint.IsEmpty())
+        return;
+    m_spRecord->m_nAttackIndex = m_nAttack;
+    FUN_1417ecce0(nTick, m_spRecord, m_nAttack, m_pOwner);
+    FUN_1417f2b50(m_spRecord);
+    FUN_1417f2a90(false);
+}
+MS2_REPLACE_METHOD(0x1417f0d60, StateSkill, FUN_1417f0d60, 336, 0xD8EB0EE5);
+
+// @0x1417f0f10
+void StateSkill::FUN_1417f0f10(unsigned nTick, const char* szPoint)
+{
+    if (!(m_spRecord == NULL) && m_spRecord->m_n9c == 0)
+    {
+        CString strPoint;
+        while (true)
+        {
+            SkillAttackData* pAttack = m_spRecord->FUN_14175a050(m_nAttack);
+            if (pAttack == NULL || pAttack->m_strPoint.IsEmpty()
+                || (!strPoint.IsEmpty() && !(strPoint == pAttack->m_strPoint)))
+                break;
+            strPoint = pAttack->m_strPoint;
+            FUN_1417f0d60(nTick, szPoint);
+            m_nAttack++;
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x1417f0f10, StateSkill, FUN_1417f0f10, 315, 0xED11F6BF);
+
+// @0x1417f1060
+void StateSkill::FUN_1417f1060()
+{
+    if (m_spRecord == NULL)
+        return;
+    CEffectService::GetInstance()->FUN_1411a6060(m_spRecord->m_n84);
+    CEffectService::GetInstance()->FUN_1411a6060(m_spRecord->m_n88);
+    m_spRecord->m_n84 = 0;
+    m_spRecord->m_n88 = 0;
+    for (POSITION pos = m_spRecord->m_map138.GetHeadPosition(); pos != NULL; m_spRecord->m_map138.GetNext(pos))
+    {
+        ATL::CRBMap<CString, int>::CPair* pPair = m_spRecord->m_map138.GetAt(pos);
+        CEffectService::GetInstance()->FUN_1411a6060(pPair->m_value);
+        pPair->m_value = 0;
+    }
+}
+MS2_REPLACE_METHOD(0x1417f1060, StateSkill, FUN_1417f1060, 349, 0x409298ED);
+
+// @0x1417f1ea0
+void StateSkill::FUN_1417f1ea0()
+{
+    if (m_nLoopEffectId != 0)
+        return;
+    SkillMotionData* pMotion = m_spRecord->FUN_141759830();
+    if (pMotion != NULL && !pMotion->m_strLoopKeepEffect.IsEmpty())
+    {
+        Unk_EffectTarget kTarget;
+        kTarget.m_strName = pMotion->m_strLoopKeepEffect;
+        kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+        kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
+        kTarget.m_b31 = m_spRecord->FUN_141759a50();
+        if (!FUN_1417f4bc0(kTarget))
+            m_nLoopEffectId = CEffectService::GetInstance()->FUN_1411a49c0(kTarget);
+    }
+}
+MS2_REPLACE_METHOD(0x1417f1ea0, StateSkill, FUN_1417f1ea0, 309, 0xA356D9CC);
+
+// @0x1417f2030
+void StateSkill::FUN_1417f2030()
+{
+    SkillMotionData* pMotion = m_spRecord->FUN_141759830();
+    if (pMotion != NULL && !pMotion->m_strLoopEndEffect.IsEmpty())
+    {
+        Unk_EffectTarget kTarget;
+        kTarget.m_strName = pMotion->m_strLoopEndEffect;
+        kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
+        kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
+        kTarget.m_b31 = m_spRecord->FUN_141759a50();
+        if (!FUN_1417f4bc0(kTarget))
+            CEffectService::GetInstance()->FUN_1411a4a00(kTarget);
+    }
+}
+MS2_REPLACE_METHOD(0x1417f2030, StateSkill, FUN_1417f2030, 274, 0x09AB4954);
+
+// @0x1417f2b50
+void StateSkill::FUN_1417f2b50(MS2Ptr<CSkillRecord> spRecord)
+{
+    POSITION pos = spRecord->m_magics.GetHeadPosition();
+    while (pos != NULL)
+    {
+        SkillTargetRecord* pTarget = SS_TARGET(spRecord->m_magics.GetAt(pos)->FUN_141467bc0());
+        int nTick = 0;
+        if (!spRecord->m_mapC0.Lookup(pTarget->m_nAttack, nTick))
+            return;
+        pTarget->m_nStartTick = nTick;
+        spRecord->m_magics.GetNext(pos);
+    }
+    spRecord->m_magics.RemoveAll();
+}
+MS2_REPLACE(0x1417f2b50, StateSkill::FUN_1417f2b50, 332, 0x570297DB);

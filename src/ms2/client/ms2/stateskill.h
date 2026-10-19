@@ -115,7 +115,7 @@ public:
     MS2Ptr<CSkillRecord> FUN_1417f0230();
     MS2Ptr<CSkillRecord> FUN_1417f0570(int nKind);
     void FUN_1417f0940();
-    void FUN_1417f0d60(float fTime);
+    void FUN_1417f0d60(unsigned nTick, const char* szPoint);                                 // fire the current attack
     float FUN_1417f0ec0();
     void FUN_1417f0f10(unsigned nTick, const char* szPoint);              // fire the attack of a cast point
     void FUN_1417f1060();
@@ -143,6 +143,14 @@ public:
     void FUN_1417f4dc0();                                               // stop it
     bool FUN_1417f5060();                                               // the combo input may chain
     static void FUN_1417f2b50(MS2Ptr<CSkillRecord> spRecord);           // fire the due magic models of a cast
+    static int FUN_1417ea570(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult);   // check a cast by kind
+    static void FUN_1417ea750(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord);   // the cast's start effect
+    static int FUN_1417ea920(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord);    // fire the cast's first attack
+    static int FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult);
+    static int FUN_1417eb3a0(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult);
+    static int FUN_1417ebc00(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult);
+    static void FUN_1417ecce0(unsigned nTick, MS2Ptr<CSkillRecord> spRecord, int nAttack, PCBase* pOwner);
+                                                                        // fire one attack (magic models + packet)
     static bool FUN_1417f4bc0(Unk_EffectTarget& kTarget);               // the effect is hidden by the options
 
     bool m_b48;                         // +0x48 the chain input is held
