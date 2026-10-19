@@ -63,7 +63,7 @@ public:
     int m_n60;                                                          // +0x60 use the second query kind
     int m_nMotion;                                                      // +0x64
     int m_nAttack;                                                      // +0x68
-    int m_n6c;                                                          // +0x6c passed to the shape lookup (0x141754580)
+    float m_fZOffset;                                                   // +0x6c the shape lookup's z offset (0x141754580)
     MS2Ptr<CBaseCollision> m_spCollision;                               // +0x70 the pick shape
     unsigned m_nKindFlags;                                              // +0x80 or'ed into the query kind
     int m_n84;                                                          // +0x84 test every anchor box
@@ -135,6 +135,8 @@ public:
     static int FUN_1417e93a0(PCBase* pOwner, MS2Ptr<SkillLevelData> spLevel, int n60, int nAttack);
                                                                         // pick per motion until one finds targets
     static int FUN_1417e95a0(Unk_SocketPtr<CFillTargetContext> spCtx);  // run an area pick (callee releases)
+    static int FUN_1417ea310(GameObject* pOwner, ATL::CAtlArray<efd::SmartPointer<GameObject> >& aTargets);
+                                                                        // party members first
     static int FUN_1417e9d20(Unk_SocketPtr<CArrowFillTargetContext> spCtx);  // run an arrow pick (callee releases)
     unsigned FUN_1417e9330();                                           // the running skill id (0: none)
     float FUN_1417f4ea0(PCBase* pOwner, efd::Point3 kRot);

@@ -6,6 +6,8 @@
 // MS2-UNIT: client\ms2\stateskill.cpp
 // MS2-RANGE: 0x140103f20-0x140104310 .text$di
 // MS2-RANGE: 0x1417e47d0-0x1417f6050 .text$mn
+// MS2-PIN: ??A?$CAtlArray@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAAAEAV?$SmartPointer@VGameObject@@@efd@@_K@Z 0x1417f5e30
+#define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\stateskill.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 
@@ -20,6 +22,11 @@
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/client/ms2/statemanager.h"
 #include "ms2/placeholder/cbasecollision.h"
+#include "ms2/placeholder/cboxcollision.h"
+#include "ms2/placeholder/cdetectcontext.h"
+#include "ms2/client/ms2/skillcollisionmanager.h"
+#include <NiMatrix3.h>
+#include <NiColor.h>
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/client/ms2/ms2inputservice.h"
@@ -105,6 +112,7 @@ class Unk_SsWorld
 public:
     void* FUN_141bd0cc0();                              // the local player (a MyPC)
     int FUN_141bd1a10(GameObject* pObject);
+    void* FUN_141bd1200(int nId);                       // the field object of an id
     Unk_WsOptional<float>* FUN_141bd9c00();             // the effect hide distance option
 };
 Unk_SsWorld* FUN_1403ed2d0();
@@ -271,7 +279,7 @@ CFillTargetContext::CFillTargetContext()
     m_n60 = 0;
     m_nMotion = 0;
     m_nAttack = 0;
-    m_n6c = 0;
+    m_fZOffset = 0;
     m_nKindFlags = 0;
     m_n84 = 0;
 }
@@ -1083,6 +1091,103 @@ int StateSkill::FUN_1417e93a0(PCBase* pOwner, MS2Ptr<SkillLevelData> spLevel, in
 }
 MS2_REPLACE(0x1417e93a0, StateSkill::FUN_1417e93a0, 494, 0x53B86F72);
 
+// The skill's area shape (CSkillCollisionManager keeps its own view of SkillLevelData).
+class Unk_SkillSrc;
+// CArrowFillTargetContext keeps its hit list and shape as opaque arrays / handles (magicdata.h).
+typedef ATL::CAtlArray<efd::SmartPointer<GameObject> > Unk_SsTargetArray;
+
+// @0x1417e95a0
+// MS2-FUNCTIONAL: first-pass source of the area pick; temps not byte-compared yet
+int StateSkill::FUN_1417e95a0(Unk_SocketPtr<CFillTargetContext> spCtx)
+{
+    if (spCtx == NULL)
+        return 0;
+    spCtx->m_spCollision = CSkillCollisionManager::GetInstance()->GetCached(
+        reinterpret_cast<Unk_SkillSrc*>((SkillLevelData*)spCtx->m_spLevel), spCtx->m_nMotion, spCtx->m_nAttack,
+        spCtx->m_pOwner, spCtx->m_fZOffset);
+    if (spCtx->m_spCollision.IsNull())
+        return 0;
+    SkillMotionData* pMotion = spCtx->m_spLevel->FUN_140803f00(spCtx->m_nMotion);
+    if (pMotion == NULL)
+        return 0;
+    SkillAttackData* pAttack = spCtx->m_spLevel->FUN_140803f60(spCtx->m_nMotion, spCtx->m_nAttack);
+    if (pAttack == NULL)
+        return 0;
+    efd::Point3 kOffset = efd::Point3::ZERO;
+    efd::Point3 kHeight = efd::Point3::ZERO;
+    if (spCtx->m_spLevel->FUN_1408043f0(spCtx->m_nMotion, spCtx->m_nAttack) == 0)
+    {
+        kOffset = pAttack->m_range.m_pt2c;
+        kHeight.z = pAttack->m_range.m_f38;
+        float fAngle = GameObject::FUN_14123ce70(spCtx->m_pOwner->FUN_14123cc20());
+        NiMatrix3 kRot;
+        kRot.MakeZRotation(fAngle + 3.1415927f);
+        kOffset = kRot * kOffset;
+    }
+    int nSortMode = pAttack->m_nDirection;
+    int bRideToRider = pAttack->m_range.m_n40;
+    int nKind = pAttack->m_range.m_n44;
+    if (spCtx->m_n60 != 0)
+        nKind = pAttack->m_range.m_n48;
+    if (spCtx->m_nKindFlags != 0)
+        nKind |= spCtx->m_nKindFlags;
+    MS2Ptr<CDetectContext> spDetect(new CDetectContext);
+    spDetect->m_pOwner = spCtx->m_pOwner;
+    spDetect->m_pRange = reinterpret_cast<Unk_DetectRange*>(pAttack);
+    spDetect->m_kPos = spCtx->m_ptOwner + kOffset;
+    spDetect->m_nTargetKind = nKind;
+    spDetect->m_nSortMode = nSortMode;
+    spDetect->m_bRideToRider = bRideToRider;
+    spDetect->m_n78 = spCtx->m_nAttack;
+    spDetect->m_bUseAllAnchors = spCtx->m_n84;
+    spCtx->m_spCollision->FUN_1409fc390(spDetect, NiPoint3(spCtx->m_pOwner->vfunc_20() + kHeight));
+    spCtx->m_arrTargets.Append(spDetect->m_arrTargets);
+    return 1;
+}
+MS2_REPLACE(0x1417e95a0, StateSkill::FUN_1417e95a0, 1914, 0xDAAEFE48);
+
+// @0x1417e9d20
+// MS2-FUNCTIONAL: first-pass source of the arrow pick; temps not byte-compared yet
+int StateSkill::FUN_1417e9d20(Unk_SocketPtr<CArrowFillTargetContext> spCtx)
+{
+    if (spCtx == NULL)
+        return 0;
+    GameObject* pOwner = (GameObject*)FUN_1403ed2d0()->FUN_141bd1200(SS_TAG(spCtx->m_spOwner)->m_nOwnerId);
+    if (pOwner == NULL)
+        return 0;
+    SkillAttackData* pAttack = SS_TAG(spCtx->m_spOwner)->FUN_141759050();
+    const Unk_RangeProperty& kRange = pAttack->m_range;
+    int nKind = pAttack->m_range.m_n44;
+    if (spCtx->m_n8C != 0)
+        nKind = kRange.m_n48;
+    if (spCtx->m_nA0 != 0)
+        nKind |= spCtx->m_nA0;
+    float fLength = (spCtx->m_ptTo.FUN_140965c40(spCtx->m_ptFrom)).FUN_140968990();
+    efd::Point3 kSize = pAttack->m_arrow.m_collision;
+    MS2Ptr<CBoxCollision> spBox(new CBoxCollision);
+    spBox->m_ptBox = Unk_StreamPoint(kSize.x, fLength + kSize.y, kSize.z);
+    efd::Point3 kAdd = pAttack->m_arrow.m_collisionAdd;
+    spBox->m_ptSize = Unk_StreamPoint(0.0f, kAdd.y, kAdd.z);
+    spBox->m_kColor = NiColorA(0.0f, 0.0f, 1.0f, 1.0f);
+    spBox->vfunc_4();
+    int nSortMode = pAttack->m_nDirection;
+    int bRideToRider = kRange.m_n40;
+    MS2Ptr<CDetectContext> spDetect(new CDetectContext);
+    spDetect->m_pOwner = pOwner;
+    spDetect->m_pRange = reinterpret_cast<Unk_DetectRange*>(pAttack);
+    spDetect->m_kPos = SS_PT(spCtx->m_ptFrom);
+    spDetect->m_nTargetKind = nKind;
+    spDetect->m_nSortMode = nSortMode;
+    spDetect->m_bRideToRider = bRideToRider;
+    spDetect->m_pExclude = (ATL::CAtlMap<unsigned int, float>*)spCtx->m_p28;
+    spDetect->m_bUseAllAnchors = spCtx->m_nA4;
+    spBox->FUN_1409fc540(spDetect, reinterpret_cast<const NiMatrix3&>(spCtx->m_matAim));
+    reinterpret_cast<Unk_SsTargetArray&>(spCtx->m_arr30).Append(spDetect->m_arrTargets);
+    reinterpret_cast<MS2Ptr<CBaseCollision>&>(spCtx->m_spVal) = spBox;
+    return 1;
+}
+MS2_REPLACE(0x1417e9d20, StateSkill::FUN_1417e9d20, 1501, 0x89F8755C);
+
 // MS2-FUNCTIONAL: slot 98 is called directly (pcbase.h declares it void; the exe returns its float).
 // @0x1417ec0d0
 float StateSkill::FUN_1417ec0d0(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord)
@@ -1317,6 +1422,38 @@ int StateSkill::vfunc_1()
 {
     return 0x10;
 }
+
+// Puts the party members of the own player first in a target list (only while in a party).
+// @0x1417ea310
+int StateSkill::FUN_1417ea310(GameObject* pOwner, Unk_SsTargetArray& aTargets)
+{
+    MyPC* pMy = efd::DynamicCast<MyPC>(pOwner);
+    if (pMy == NULL)
+        return 0;
+    if (!pMy->FUN_141527280())
+        return 0;
+    Unk_SsTargetArray aParty;
+    Unk_SsTargetArray aOther;
+    for (unsigned i = 0; i < aTargets.GetCount(); i++)
+    {
+        GameObject* pObject = aTargets[i];
+        PC* pPC = efd::DynamicCast<PC>(pObject);
+        if (pPC != NULL && pMy->FUN_1415278d0(reinterpret_cast<void*>(pPC->FUN_141656a80())) != 0)
+            aParty.Add(pObject);
+        else
+            aOther.Add(pObject);
+    }
+    if (!aParty.IsEmpty())
+    {
+        aTargets.RemoveAll();
+        for (unsigned i = 0; i < aParty.GetCount(); i++)
+            aTargets.Add(aParty[i]);
+        for (unsigned i = 0; i < aOther.GetCount(); i++)
+            aTargets.Add(aOther[i]);
+    }
+    return 1;
+}
+MS2_REPLACE(0x1417ea310, StateSkill::FUN_1417ea310, 596, 0xA8082E63);
 
 // @0x1417ea570
 int StateSkill::FUN_1417ea570(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult)
