@@ -124,6 +124,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2, CString a3);   // 0x1418ce360 (inline COMDAT, defined in uibeautyshopdialog.cpp; a1/a3 by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, float a1, int a2);                    // 0x1418cc380 (inline COMDAT, defined in uibeautyshopdialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1); // 0x1409ba030 (couple dance HUD)
+    Scaleform::GFx::Value Invoke(const char* szMethod, const char* a1, bool a2);             // 0x141aa2d90 (inline COMDAT, defined in uiquestdialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, class ASFunction a1);                 // 0x1409bb370 (inline COMDAT, defined in asitemslot.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, class ASSlot a1);                     // 0x1409bb460 (inline COMDAT, defined in asitemslot.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, long a1, int a2);                     // 0x141a004c0 (inline COMDAT, defined in uimessagebox.cpp; Int/Int values, (int, int) is taken by 0x140acd070)
