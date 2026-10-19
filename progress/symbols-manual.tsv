@@ -3148,3 +3148,15 @@ __imp_AddSurveyParameterA	142cd1480	data
 ?s_pTextFilter@CFishingTable@@2PEAVUnk_FishTextFilter@@EA	143aaecf0	data
 ??0Unk_IssTabArray@@QEAA@H@Z	1422deec0	func
 ??1Unk_IssTabArray@@UEAA@XZ	1422df070	func
+??0Unk_AcRequest@@QEAA@H@Z	1401baa00	func
+??0Unk_AcRequest@@QEAA@PEBX@Z	1401baaa0	func
+??0Unk_AcRequestValue@@QEAA@XZ	1401ba840	func
+??1Unk_AcRequest@@QEAA@XZ	1401baaf0	func
+??1Unk_AcRequestValue@@QEAA@XZ	1401ba940	func
+?GetRow@CAchieveCategory@@SA?AV?$MS2Ptr@VCAchieveCategory@@@@H@Z	14093ece0	func
+?GetRows@CAchieveCategory@@SAXAEAV?$CAtlArray@V?$MS2Ptr@VCAchieveCategory@@@@V?$CElementTraits@V?$MS2Ptr@VCAchieveCategory@@@@@ATL@@@ATL@@@Z	14093eb90	func
+?IsAvailable@CAchieveData@@QEAA_NXZ	14015bd60	func
+?IsGradeCleared@CAchieveManager@@QEAA_NIH@Z	140936640	func
+?Load@CAchieveCategory@@SA_NXZ	14093e610	func
+?Matches@CAchieveCategory@@QEAA_NI@Z	14093f2d0	func
+?ParseRewardType@CAchieveData@@SAHAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	14015df00	func
