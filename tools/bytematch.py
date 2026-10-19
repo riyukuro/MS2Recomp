@@ -822,6 +822,8 @@ def write_harvest(path, exe, fresh=False):
                 else:
                     CONFLICTS.append((n, cur[n][0], va))
             continue
+        if not text_lo <= va < text_hi and re.match(r"\?[^?@]+@(?:[^@?]+@)*?(?:[^@]*@)?@[A-Z]", n) and "?1?" not in n and not n.startswith("??_"):
+            continue    # function-mangled name at a data VA (a vftable slot holding no code, e.g. UISceneEntity::vfunc_65 -> 0x14327b0e8)
         cur[n] = (va, "func" if text_lo <= va < text_hi else "data")
         added += 1
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
