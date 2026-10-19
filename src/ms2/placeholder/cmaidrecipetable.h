@@ -3,18 +3,4 @@
 // A TSingleton that CGameApp::InitInstance (?\ms2.cpp) creates; only the ctor is declared, the members are not
 // recovered.
 #pragma once
-
-#include "ms2/ms2layout.h"
-#include "ms2/commonfiles/os.h"
-#include "ms2/placeholder/cvaliddata.h"
-
-class CMaidRecipeTable : public TSingleton<CMaidRecipeTable>, public CValidData<CMaidRecipeTable>
-{
-public:
-    CMaidRecipeTable();                                     // 0x140684dc0
-    virtual ~CMaidRecipeTable();
-private:
-    MS2_LAYOUT_FRIEND;
-    char m_pad_10[0x40 - 0x10];
-};
-MS2_CHECK_SIZE(CMaidRecipeTable, 0x40);
+#include "ms2/commonfiles/maidgradejockpottable.h"   // the recovered classes (this placeholder predates the unit)
