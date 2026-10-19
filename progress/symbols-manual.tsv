@@ -3287,3 +3287,15 @@ __imp_AddSurveyParameterA	142cd1480	data
 ??0SkillSlot@@QEAA@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HIH_J@Z	14175c840	func
 ?GetMainDataList@CArcadeDataTable@@QEAAXAEAV?$vector@V?$MS2SvrPtr@VCArcadeMainData@@@@V?$allocator@V?$MS2SvrPtr@VCArcadeMainData@@@@@std@@@std@@@Z	1401a3a00	func
 ?GetRecords@CArcadeDataTable@@QEBAXHAEAV?$vector@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@@std@@@Z	1401a3ae0	func
+??0Unk_SkillCommand@@QEAA@H@Z	1401baa00	func
+??1Unk_SkillCommand@@QEAA@XZ	1401baaf0	func
+?AutoDistribute@CSkillPointSimulator@@QEAAHAEAV?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@0@Z	140abe1e0	func
+?CanLevelDown@CSkillPointSimulator@@QEAAHI@Z	140abd5f0	func
+?CanLevelUp@CSkillPointSimulator@@QEAAHI@Z	140abd3b0	func
+?CheckRequirements@CSkillPointSimulator@@QEAAHIG@Z	140abd760	func
+?Commit@CSkillPointSimulator@@QEAAXH@Z	140abe620	func
+?LevelDown@CSkillPointSimulator@@QEAAHIPEAI@Z	140abd1b0	func
+?Validate@CSkillPointSimulator@@QEAAHPEAI@Z	140abcd70	func
+?Read@CSkillBookTreeTabConfig@@QEAAXPEAVCInputStream@@@Z	14026a860	func
+?Write@CSkillBookTreeTabConfig@@QEAAXPEAVCOutputStream@@@Z	14026a6e0	func
+?DAT_143ab2a90@@3VUnk_SkillInventory@@A	143ab2a90	data
