@@ -36,6 +36,7 @@
 #include "ms2/client/ms2/effectparam.h"
 #include "ms2/client/ms2/magicdata.h"
 #include "ms2/client/ms2/uicastingbar.h"
+#include "ms2/client/ms2/statedata.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/placeholder/cequipmentslotlayerinfo.h"
@@ -1516,3 +1517,42 @@ bool StateSkill::FUN_1417f4bc0(Unk_EffectTarget& kTarget)
     return fDistance > pRange->get();
 }
 MS2_REPLACE(0x1417f4bc0, StateSkill::FUN_1417f4bc0, 332, 0x06769160);
+
+// @0x1417f0070
+void StateSkill::FUN_1417f0070()
+{
+    if (m_spRecord.get() != NULL && m_spRecord->m_nB0 != 0)
+    {
+        MS2Ptr<StateHoldData> spData(new StateHoldData);
+        spData->m_nTargetId = m_spRecord->m_nB0;
+        spData->m_strTargetName = m_spRecord->m_strB8;
+        m_pOwner->vfunc_59(0x20, spData, 0, 0);
+        return;
+    }
+    m_pOwner->vfunc_59(1, NULL, 0, 0);
+}
+MS2_REPLACE_METHOD(0x1417f0070, StateSkill, FUN_1417f0070, 427, 0xC0B4F0FC);
+
+// @0x1417eeb10
+void StateSkill::FUN_1417eeb10(bool bChain)
+{
+    if (m_spRecord == NULL)
+        return;
+    if (m_spRecord->FUN_141759e40() != 0)
+        return;
+    MS2Ptr<CSkillRecord> spNext(0);
+    if (bChain && m_spRecord->m_nB0 != 0)
+        spNext = FUN_1417f0230();
+    else
+        spNext = m_pOwner->vfunc_104(bChain, true, true);
+    if (spNext == NULL)
+        spNext = FUN_1417f0570(0);
+    if (spNext == NULL)
+        return;
+    if (!FUN_1417eed70(spNext))
+        return;
+    m_spNext = spNext;
+    if (m_nChainType != 0)
+        FUN_1417ef4a0();
+}
+MS2_REPLACE_METHOD(0x1417eeb10, StateSkill, FUN_1417eeb10, 587, 0x2D7DDBE8);
