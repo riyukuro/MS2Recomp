@@ -3,36 +3,33 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-UNIT: commonfiles\seasondatatable.cpp
 // MS2-RANGE: 0x140790bd0-0x1407a1bf0 .text$mn
+// MS2-PIN: ??_7?$TPtredDummy@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@6B@ 0x142d8bc18
+// MS2-PIN: ??_7?$TPtredDummy@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@6B@ 0x142d8bc28
+// MS2-PIN: ?CompareElementsOrdered@?$CDefaultCompareTraits@W4SeasonRankType@@@ATL@@SAHAEBW4SeasonRankType@@0@Z 0x140798620
+// MS2-PIN: ??4?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@QEAAAEAV0@AEBUUnk_GrNewTag@@@Z 0x1407984c0
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0?$CRBMap@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@QEAA@_K@Z 0x140795770 ; unique
 // MS2-PIN: ??0?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@IEAA@_K@Z 0x140795a10 ; unique
-// MS2-PIN: ??0?$MS2Ptr@VCSeasonDataCurrent@@@@QEAA@AEBV0@@Z 0x140795d30 ; prop
+// MS2-PIN: ??0?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@QEAA@AEBV0@@Z 0x140795d30 ; prop
 // MS2-PIN: ??0?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@QEAA@H@Z 0x140795d70 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCSeasonContentsName@@@@QEAA@AEBV0@@Z 0x140795d90 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VCSeasonContentsName@@@@QEAA@H@Z 0x140795dd0 ; prop
-// MS2-PIN: ??0?$MS2Ptr@VCSeasonContentsName@@@@QEAA@PEAVCSeasonContentsName@@@Z 0x140795df0 ; prop
-// MS2-PIN: ??0?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@QEAA@AEBV0@@Z 0x140795f30 ; unique
-// MS2-PIN: ??0?$MS2Ptr@VCSeasonDataCurrent@@@@QEAA@H@Z 0x140795f70 ; unique
-// MS2-PIN: ??0?$MS2Ptr@VCSeasonDataCurrent@@@@QEAA@PEAVCSeasonDataCurrent@@@Z 0x140795f90 ; prop
-// MS2-PIN: ??0?$MS2Ptr@VCSeasonReward@@@@QEAA@AEBV0@@Z 0x140795ff0 ; prop
-// MS2-PIN: ??0?$MS2Ptr@VCSeasonReward@@@@QEAA@H@Z 0x140796030 ; unique
-// MS2-PIN: ??0?$MS2Ptr@VCSeasonReward@@@@QEAA@PEAVCSeasonReward@@@Z 0x140796050 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VCSeasonContentsName@@@@QEAA@PEAVCSeasonContentsName@@@Z 0x140795df0 ; unique
 // MS2-PIN: ??0?$TPtredDummy@V?$CRBMap@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CElementTraits@H@2@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@@ATL@@@@QEAA@XZ 0x1407960f0 ; prop
 // MS2-PIN: ??0?$TPtredDummy@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@QEAA@XZ 0x140796140 ; prop
 // MS2-PIN: ??0?$TPtredDummy@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@QEAA@XZ 0x140796190 ; prop
 // MS2-PIN: ??0CNode@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@QEAA@HAEBV?$MS2Ptr@VCSeasonData@@@@@Z 0x140796510 ; prop
 // MS2-PIN: ??0CNode@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@QEAA@HAEBV?$MS2Ptr@VCSeasonReward@@@@@Z 0x140796560 ; prop
-// MS2-PIN: ??0CNode@?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@QEAA@HAEBV?$MS2Ptr@VCSeasonRewardData@@@@@Z 0x1407965b0 ; prop
 // MS2-PIN: ??0CNode@?$CRBTree@W4SeasonRankType@@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@@4@@ATL@@QEAA@AEBW4SeasonRankType@@AEBV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@@Z 0x140796650 ; prop
-// MS2-PIN: ??0CNode@?$CRBTree@W4SeasonRankType@@V?$MS2Ptr@VCSeasonDataCurrent@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonDataCurrent@@@@@4@@ATL@@QEAA@AEBW4SeasonRankType@@AEBV?$MS2Ptr@VCSeasonDataCurrent@@@@@Z 0x1407966a0 ; prop
+// MS2-PIN: ??0CNode@?$CRBTree@W4SeasonRankType@@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@@4@@ATL@@QEAA@AEBW4SeasonRankType@@AEBV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@@Z 0x1407966a0 ; prop
 // MS2-PIN: ??0CNode@?$CRBTree@W4SeasonRankType@@V?$MS2Ptr@VCSeasonContentsName@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonContentsName@@@@@4@@ATL@@QEAA@AEBW4SeasonRankType@@AEBV?$MS2Ptr@VCSeasonContentsName@@@@@Z 0x1407966f0 ; prop
-// MS2-PIN: ??0CNode@?$CRBTree@W4SeasonRankType@@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@@4@@ATL@@QEAA@AEBW4SeasonRankType@@AEBV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@@Z 0x140796740 ; prop
+// MS2-PIN: ??0CNode@?$CRBTree@W4SeasonRankType@@V?$MS2Ptr@VCSeasonDataCurrent@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonDataCurrent@@@@@4@@ATL@@QEAA@AEBW4SeasonRankType@@AEBV?$MS2Ptr@VCSeasonDataCurrent@@@@@Z 0x140796740 ; prop
 // MS2-PIN: ??0CPair@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@IEAA@HAEBV?$MS2Ptr@VCSeasonData@@@@@Z 0x140796810 ; prop
 // MS2-PIN: ??0CPair@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@IEAA@HAEBV?$MS2Ptr@VCSeasonReward@@@@@Z 0x140796850 ; prop
-// MS2-PIN: ??0CPair@?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@IEAA@HAEBV?$MS2Ptr@VCSeasonRewardData@@@@@Z 0x140796890 ; prop
 // MS2-PIN: ??0CPair@?$CRBTree@W4SeasonRankType@@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@@4@@ATL@@IEAA@AEBW4SeasonRankType@@AEBV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@@Z 0x140796910 ; prop
-// MS2-PIN: ??0CPair@?$CRBTree@W4SeasonRankType@@V?$MS2Ptr@VCSeasonDataCurrent@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonDataCurrent@@@@@4@@ATL@@IEAA@AEBW4SeasonRankType@@AEBV?$MS2Ptr@VCSeasonDataCurrent@@@@@Z 0x140796960 ; prop
+// MS2-PIN: ??0CPair@?$CRBTree@W4SeasonRankType@@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@@4@@ATL@@IEAA@AEBW4SeasonRankType@@AEBV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@@Z 0x140796960 ; prop
 // MS2-PIN: ??0CPair@?$CRBTree@W4SeasonRankType@@V?$MS2Ptr@VCSeasonContentsName@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonContentsName@@@@@4@@ATL@@IEAA@AEBW4SeasonRankType@@AEBV?$MS2Ptr@VCSeasonContentsName@@@@@Z 0x1407969b0 ; prop
+// MS2-PIN: ??0CPair@?$CRBTree@W4SeasonRankType@@V?$MS2Ptr@VCSeasonDataCurrent@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonDataCurrent@@@@@4@@ATL@@IEAA@AEBW4SeasonRankType@@AEBV?$MS2Ptr@VCSeasonDataCurrent@@@@@Z 0x140796a00 ; prop
 // MS2-PIN: ??1?$TPtredDummy@V?$CRBMap@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CElementTraits@H@2@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@@ATL@@@@UEAA@XZ 0x140796f80 ; prop
 // MS2-PIN: ??1?$TPtredDummy@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@UEAA@XZ 0x140796fb0 ; prop
 // MS2-PIN: ??1?$TPtredDummy@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@UEAA@XZ 0x140796fe0 ; prop
@@ -40,12 +37,9 @@
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VCSeasonReward@@@@QEAAAEAV1@PEAVCSeasonReward@@@Z 0x1407975c0 ; prop
 // MS2-PIN: ??8?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@QEBA_NPEAV?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@Z 0x1407976f0 ; unique
 // MS2-PIN: ??8?$MS2Ptr@VCSeasonDataCurrent@@@@QEBA_NPEAVCSeasonDataCurrent@@@Z 0x140797770 ; unique
-// MS2-PIN: ??8?$MS2Ptr@VCSeasonRewardData@@@@QEBA_NPEAVCSeasonRewardData@@@Z 0x1407977f0 ; unique
 // MS2-PIN: ?get@?$MS2Ptr@VCSeasonData@@@@QEBAPEAVCSeasonData@@XZ 0x140797960 ; unique
 // MS2-PIN: ??C?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@QEBAPEAV?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@XZ 0x140797a70 ; unique
 // MS2-PIN: ??C?$MS2Ptr@VCSeasonDataCurrent@@@@QEBAPEAVCSeasonDataCurrent@@XZ 0x140797a90 ; unique
-// MS2-PIN: ??C?$MS2Ptr@VCSeasonRewardData@@@@QEBAPEAVCSeasonRewardData@@XZ 0x140797ab0 ; unique
-// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SeasonRankType@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140797c00 ; unique
 // MS2-PIN: ??_G?$TPtredDummy@V?$CRBMap@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CElementTraits@H@2@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@@ATL@@@@UEAAPEAXI@Z 0x140797db0 ; prop
 // MS2-PIN: ??_G?$TPtredDummy@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@UEAAPEAXI@Z 0x140797df0 ; prop
 // MS2-PIN: ??_G?$TPtredDummy@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@UEAAPEAXI@Z 0x140797e30 ; prop
@@ -69,39 +63,27 @@
 // MS2-PIN: ?GetHeadPosition@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x140799ad0 ; unique
 // MS2-PIN: ?InsertImpl@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCSeasonData@@@@@Z 0x140799f50 ; prop
 // MS2-PIN: ?InsertImpl@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCSeasonReward@@@@@Z 0x14079a050 ; prop
-// MS2-PIN: ?InsertImpl@?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCSeasonRewardData@@@@@Z 0x14079a150 ; prop
 // MS2-PIN: ?LeftRotate@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x14079abf0 ; prop
 // MS2-PIN: ?LeftRotate@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x14079ad00 ; prop
-// MS2-PIN: ?LeftRotate@?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x14079ae10 ; prop
 // MS2-PIN: ?Lookup@?$CRBMap@W4SeasonRankType@@V?$MS2Ptr@VCSeasonContentsName@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonContentsName@@@@@4@@ATL@@QEBA_NAEBW4SeasonRankType@@AEAV?$MS2Ptr@VCSeasonContentsName@@@@@Z 0x14079b6c0 ; prop
 // MS2-PIN: ?Lookup@?$CRBMap@W4SeasonRankType@@V?$MS2Ptr@VCSeasonDataCurrent@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonDataCurrent@@@@@4@@ATL@@QEBA_NAEBW4SeasonRankType@@AEAV?$MS2Ptr@VCSeasonDataCurrent@@@@@Z 0x14079b710 ; prop
 // MS2-PIN: ?NewNode@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCSeasonData@@@@@Z 0x14079c290 ; prop
 // MS2-PIN: ?NewNode@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCSeasonReward@@@@@Z 0x14079c4f0 ; prop
-// MS2-PIN: ?NewNode@?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCSeasonRewardData@@@@@Z 0x14079c750 ; prop
 // MS2-PIN: ?NewNode@?$CRBTree@W4SeasonRankType@@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4SeasonRankType@@AEBV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@@@@Z 0x14079cc10 ; unique
 // MS2-PIN: ?NewNode@?$CRBTree@W4SeasonRankType@@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4SeasonRankType@@AEBV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@@@@Z 0x14079ce70 ; unique
 // MS2-PIN: ?NewNode@?$CRBTree@W4SeasonRankType@@V?$MS2Ptr@VCSeasonContentsName@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonContentsName@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4SeasonRankType@@AEBV?$MS2Ptr@VCSeasonContentsName@@@@@Z 0x14079d0d0 ; unique
 // MS2-PIN: ?NewNode@?$CRBTree@W4SeasonRankType@@V?$MS2Ptr@VCSeasonDataCurrent@@@@V?$CElementTraits@W4SeasonRankType@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonDataCurrent@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4SeasonRankType@@AEBV?$MS2Ptr@VCSeasonDataCurrent@@@@@Z 0x14079d330 ; unique
 // MS2-PIN: ?RBInsert@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@IEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCSeasonData@@@@@Z 0x14079e2b0 ; prop
 // MS2-PIN: ?RBInsert@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@IEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCSeasonReward@@@@@Z 0x14079e530 ; prop
-// MS2-PIN: ?RBInsert@?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@IEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCSeasonRewardData@@@@@Z 0x14079e7b0 ; prop
 // MS2-PIN: ?RightRotate@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x1407a02d0 ; prop
 // MS2-PIN: ?RightRotate@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x1407a03e0 ; prop
-// MS2-PIN: ?RightRotate@?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x1407a04f0 ; prop
 // MS2-PIN: ?SetAt@?$CRBMap@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$MS2Ptr@VCSeasonData@@@@@Z 0x1407a0c30 ; prop
 // MS2-PIN: ?SetAt@?$CRBMap@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$MS2Ptr@VCSeasonReward@@@@@Z 0x1407a0ca0 ; prop
-// MS2-PIN: ?SetAt@?$CRBMap@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$MS2Ptr@VCSeasonRewardData@@@@@Z 0x1407a0d10 ; prop
 // MS2-PIN: ?SetNil@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x1407a1220 ; prop
 // MS2-PIN: ?SetNil@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x1407a1290 ; prop
-// MS2-PIN: ?SetNil@?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x1407a1300 ; prop
 // MS2-PIN: ?Successor@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1407a15a0 ; prop
 // MS2-PIN: ?Successor@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1407a1670 ; prop
 // MS2-PIN: ?Successor@?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1407a1740 ; prop
-// MS2-PIN: ?AddRef@?$MS2Ptr@VCSeasonDataCurrent@@@@AEBAXXZ 0x1407a1900 ; unique
-// MS2-PIN: ?AddRef@?$MS2Ptr@VCSeasonReward@@@@AEBAXXZ 0x1407a1930 ; unique
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCSeasonDataCurrent@@@@AEBAXPEAX@Z 0x1407a1b60 ; prop
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCSeasonReward@@@@AEBAXPEAX@Z 0x1407a1b90 ; prop
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCSeasonRewardData@@@@AEBAXPEAX@Z 0x1407a1bc0 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\seasondatatable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -112,6 +94,10 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#ifdef __clang__
+CStringA FUN_140298360(const char*, const CStringA&);
+CStringA FUN_14038f6d0(const CStringA&, const char*);
+#endif
 
 // Unrecovered helpers.
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
@@ -529,7 +515,8 @@ int CSeasonDataTable::ReadData(SeasonRankType type, CStringA strPath)
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    TPtrValue<Seasons> spSeasons(Unk_GrNewTag(0));
+    TPtrValue<Seasons> spSeasons(0);
+    spSeasons = Unk_GrNewTag(0);
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("Season"); pNode != 0; pNode = pNode->FUN_140168650("Season")) {
         MS2Ptr<CSeasonData> spData(new CSeasonData);
         spData->m_type = type;
@@ -623,7 +610,12 @@ void CSeasonDataTable::Refresh(SeasonRankType type, int nMode)
 // @0x1407931f0
 bool CSeasonDataTable::ReadNames()
 {
+#ifdef __clang__
+    // clang emits an unavailable MFC CopyChars import for operator+; bind the exe's concatenation helpers.
+    CStringA strPath = FUN_14071ae20(FUN_14038f6d0(FUN_140298360("seasonName", FUN_140651390()), ".xml"));
+#else
     CStringA strPath = FUN_14071ae20("seasonName" + FUN_140651390() + ".xml");
+#endif
     TiXmlDocument doc;
     if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return false;
