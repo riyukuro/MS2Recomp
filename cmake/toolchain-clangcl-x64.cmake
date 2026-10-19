@@ -22,7 +22,7 @@ set(CMAKE_CXX_COMPILER_TARGET x86_64-pc-windows-msvc)
 # Native Windows host: clang-cl reads the INCLUDE/LIB of the vcvars environment (v141 + SDK 10.0.19041), so the msvc-wine
 # directories below are only added on other hosts.
 if(CMAKE_HOST_WIN32)
-    set(_flags "-fms-compatibility-version=19.16 --target=x86_64-pc-windows-msvc")
+    set(_flags "-fms-compatibility-version=19.16 --target=x86_64-pc-windows-msvc -D_HAS_AUTO_PTR_ETC=1")
     set(CMAKE_C_FLAGS_INIT "${_flags}")
     set(CMAKE_CXX_FLAGS_INIT "${_flags}")
     set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
@@ -33,7 +33,7 @@ set(_inc
     "${MSVC_VC}/include" "${MSVC_VC}/atlmfc/include"
     "${WINSDK}/Include/${WINSDK_VER}/ucrt" "${WINSDK}/Include/${WINSDK_VER}/um"
     "${WINSDK}/Include/${WINSDK_VER}/shared" "${WINSDK}/Include/${WINSDK_VER}/winrt")
-set(_flags "-fms-compatibility-version=19.16 --target=x86_64-pc-windows-msvc")
+set(_flags "-fms-compatibility-version=19.16 --target=x86_64-pc-windows-msvc -D_HAS_AUTO_PTR_ETC=1")
 foreach(d ${_inc})
     string(APPEND _flags " /imsvc \"${d}\"")
 endforeach()
