@@ -3,6 +3,56 @@
 // MS2-UNIT: client\ms2\gameoption.cpp
 // MS2-RANGE: 0x1400ea4e0-0x1400ea840 .text$di
 // MS2-RANGE: 0x141241810-0x141250a80 .text$mn
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??$_Buynode@U?$pair@HH@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@$$QEAU?$pair@HH@1@@Z 0x141244680 ; unique
+// MS2-PIN: ??$construct@U?$pair@$$CBHH@std@@U?$pair@HH@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@1@QEAU?$pair@$$CBHH@1@$$QEAU?$pair@HH@1@@Z 0x141245030 ; unique
+// MS2-PIN: ??$emplace@U?$pair@HH@std@@@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@HH@1@@Z 0x1412450f0 ; unique
+// MS2-PIN: ??$insert@U?$pair@HH@std@@X@?$map@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@HH@1@@Z 0x141245210 ; unique
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBH_K@std@@PEAX@std@@@std@@QEAA@XZ 0x1412454e0 ; unique
+// MS2-PIN: ??1Unk_GoConnect@@QEAA@XZ 0x1412455e0 ; unique
+// MS2-PIN: ??$forward@AEAH@std@@YAAEAHAEAH@Z 0x141248370 ; prop
+// MS2-PIN: ??0?$CAtlArray@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@V?$CElementTraits@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@ATL@@@ATL@@QEAA@XZ 0x141248380 ; unique
+// MS2-PIN: ??0?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@QEAA@AEBU01@@Z 0x1412483c0 ; unique
+// MS2-PIN: ??1?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@QEAA@XZ 0x141248440 ; unique
+// MS2-PIN: ??_G?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@QEAAPEAXI@Z 0x141248460 ; unique
+// MS2-PIN: ?Add@?$CAtlArray@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@V?$CElementTraits@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@ATL@@@ATL@@QEAA_KAEBU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@Z 0x1412484e0 ; unique
+// MS2-PIN: ?CallDestructors@?$CAtlArray@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@V?$CElementTraits@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@ATL@@@ATL@@CAXPEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@_K@Z 0x141248590 ; unique
+// MS2-PIN: ??A?$CAtlArray@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@V?$CElementTraits@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@ATL@@@ATL@@QEAAAEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@_K@Z 0x1412485f0 ; unique
+// MS2-PIN: ?GrowBuffer@?$CAtlArray@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@V?$CElementTraits@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@ATL@@@ATL@@AEAA_N_K@Z 0x141248650 ; unique
+// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@ATL@@SAXPEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@0_K@Z 0x1412487f0 ; unique
+// MS2-PIN: ??$?0AEAPEAUUnk_GoResMode@@AEAPEAU0@$0A@@?$pair@PEAUUnk_GoResMode@@PEAU1@@std@@QEAA@AEAPEAUUnk_GoResMode@@0@Z 0x14124dd10 ; unique
+// MS2-PIN: ??$FormatStringId@HHHH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBH000@Z 0x14124dd60 ; unique
+// MS2-PIN: ??$_Adl_verify_range1@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UUnk_GoResMode@@@std@@@std@@@std@@V12@@std@@YAXAEBV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UUnk_GoResMode@@@std@@@std@@@0@0U?$integral_constant@_N$0A@@0@@Z 0x14124e4a0 ; unique
+// MS2-PIN: ??$_Adl_verify_range@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UUnk_GoResMode@@@std@@@std@@@std@@V12@@std@@YAXAEBV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UUnk_GoResMode@@@std@@@std@@@0@0@Z 0x14124e4b0 ; unique
+// MS2-PIN: ??$_Guess_median_unchecked@PEAUUnk_GoResMode@@UUnk_GoResModeLess@@@std@@YAXPEAUUnk_GoResMode@@00UUnk_GoResModeLess@@@Z 0x14124e910 ; unique
+// MS2-PIN: ??$_Insertion_sort_unchecked@PEAUUnk_GoResMode@@UUnk_GoResModeLess@@@std@@YAPEAUUnk_GoResMode@@PEAU1@QEAU1@UUnk_GoResModeLess@@@Z 0x14124ead0 ; unique
+// MS2-PIN: ??$_Make_heap_unchecked@PEAUUnk_GoResMode@@UUnk_GoResModeLess@@@std@@YAXPEAUUnk_GoResMode@@0UUnk_GoResModeLess@@@Z 0x14124ec20 ; unique
+// MS2-PIN: ??$_Med3_unchecked@PEAUUnk_GoResMode@@UUnk_GoResModeLess@@@std@@YAXPEAUUnk_GoResMode@@00UUnk_GoResModeLess@@@Z 0x14124ece0 ; unique
+// MS2-PIN: ??$_Move_backward_unchecked1@PEAUUnk_GoResMode@@PEAU1@@std@@YAPEAUUnk_GoResMode@@PEAU1@00U_General_ptr_iterator_tag@0@@Z 0x14124ed80 ; unique
+// MS2-PIN: ??$_Move_backward_unchecked@PEAUUnk_GoResMode@@PEAU1@@std@@YAPEAUUnk_GoResMode@@PEAU1@00@Z 0x14124edf0 ; unique
+// MS2-PIN: ??$_Partition_by_median_guess_unchecked@PEAUUnk_GoResMode@@UUnk_GoResModeLess@@@std@@YA?AU?$pair@PEAUUnk_GoResMode@@PEAU1@@0@PEAUUnk_GoResMode@@0UUnk_GoResModeLess@@@Z 0x14124ee40 ; unique
+// MS2-PIN: ??$_Pass_fn@UUnk_GoResModeLess@@$0A@@std@@YA?AUUnk_GoResModeLess@@U1@@Z 0x14124f200 ; unique
+// MS2-PIN: ??$_Pop_heap_hole_by_index@PEAUUnk_GoResMode@@U1@UUnk_GoResModeLess@@@std@@YAXPEAUUnk_GoResMode@@_J1$$QEAU1@UUnk_GoResModeLess@@@Z 0x14124f210 ; unique
+// MS2-PIN: ??$_Pop_heap_hole_unchecked@PEAUUnk_GoResMode@@U1@UUnk_GoResModeLess@@@std@@YAXPEAUUnk_GoResMode@@00$$QEAU1@UUnk_GoResModeLess@@@Z 0x14124f3a0 ; unique
+// MS2-PIN: ??$_Pop_heap_unchecked@PEAUUnk_GoResMode@@UUnk_GoResModeLess@@@std@@YAXPEAUUnk_GoResMode@@0UUnk_GoResModeLess@@@Z 0x14124f420 ; unique
+// MS2-PIN: ??$_Push_heap_by_index@PEAUUnk_GoResMode@@U1@UUnk_GoResModeLess@@@std@@YAXPEAUUnk_GoResMode@@_J1$$QEAU1@UUnk_GoResModeLess@@@Z 0x14124f4e0 ; unique
+// MS2-PIN: ??$_Sort_heap_unchecked@PEAUUnk_GoResMode@@UUnk_GoResModeLess@@@std@@YAXPEAUUnk_GoResMode@@0UUnk_GoResModeLess@@@Z 0x14124f5e0 ; unique
+// MS2-PIN: ??$_Sort_unchecked@PEAUUnk_GoResMode@@UUnk_GoResModeLess@@@std@@YAXPEAUUnk_GoResMode@@0_JUUnk_GoResModeLess@@@Z 0x14124f640 ; unique
+// MS2-PIN: ??$forward@AEAPEAUUnk_GoResMode@@@std@@YAAEAPEAUUnk_GoResMode@@AEAPEAU1@@Z 0x14124f9f0 ; prop
+// MS2-PIN: ??$iter_swap@PEAUUnk_GoResMode@@PEAU1@@std@@YAXPEAUUnk_GoResMode@@0@Z 0x14124fa10 ; unique
+// MS2-PIN: ??$sort@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UUnk_GoResMode@@@std@@@std@@@std@@UUnk_GoResModeLess@@@std@@YAXV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UUnk_GoResMode@@@std@@@std@@@0@0UUnk_GoResModeLess@@@Z 0x14124fa50 ; unique
+// MS2-PIN: ??$swap@UUnk_GoResMode@@X@std@@YAXAEAUUnk_GoResMode@@0@Z 0x14124fae0 ; unique
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@UUnk_GoResMode@@V?$allocator@UUnk_GoResMode@@@std@@@std@@@std@@QEAA@XZ 0x14124fb90 ; unique
+// MS2-PIN: ??0?$_Vector_val@U?$_Simple_types@UUnk_GoResMode@@@std@@@std@@QEAA@XZ 0x14124fc40 ; unique
+// MS2-PIN: ??0?$vector@UUnk_GoResMode@@V?$allocator@UUnk_GoResMode@@@std@@@std@@QEAA@XZ 0x14124fc90 ; unique
+// MS2-PIN: ??0Unk_GoResMode@@QEAA@HHH@Z 0x14124fcc0 ; unique
+// MS2-PINS-END tplpin
+// MS2-GUESS-LOOKALIKES
+// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_K@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141245790
+// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_K@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1412457b0
+// MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@H_KU?$less@H@std@@V?$allocator@U?$pair@$$CBH_K@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBH_K@std@@PEAX@2@@Z 0x1412463a0
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@H_KU?$less@H@std@@V?$allocator@U?$pair@$$CBH_K@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBH_K@std@@PEAX@2@@Z 0x1412463d0
+// MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tmap_traits@H_KU?$less@H@std@@V?$allocator@U?$pair@$$CBH_K@std@@@2@$0A@@std@@@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBH_K@std@@PEAX@std@@@2@XZ 0x1412464c0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gameoption.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/cgameoption.h"
@@ -2108,6 +2158,32 @@ unsigned __int64 Unk_GoDeviceInfo::FUN_141245aa0()
 }
 
 // @0x1412455e0
+#pragma inline_depth(0)
 Unk_GoConnect::~Unk_GoConnect()
 {
 }
+#pragma inline_depth()
+
+// @0x141246c20
+MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+MS2_EMIT_CRT_MEMMOVE_S();
+
+// ---- hooks (the tab pages; the CGameOption store functions stay unhooked) ----
+MS2_REPLACE_METHOD(0x141246E70, CGameOptionBattle, vfunc_6, 2287, 0x22470429);
+MS2_REPLACE_METHOD(0x141247770, CGameOptionBattle, vfunc_7, 2500, 0x217711C5);
+MS2_REPLACE_METHOD(0x141248240, CGameOptionBattle, vfunc_14, 50, 0x4ECA3B1D);
+MS2_REPLACE_METHOD(0x141248C40, CGameOptionCamera, vfunc_7, 707, 0x62410CDA);
+MS2_REPLACE_METHOD(0x141248F10, CGameOptionCamera, vfunc_10, 671, 0xC5B4487D);
+MS2_REPLACE_METHOD(0x141249270, CGameOptionCamera, vfunc_14, 50, 0x53642C2D);
+MS2_REPLACE_METHOD(0x141249460, CGameOptionCommunity, vfunc_6, 2536, 0x2155A55C);
+MS2_REPLACE_METHOD(0x141249E50, CGameOptionCommunity, vfunc_7, 2674, 0x7EBF1589);
+MS2_REPLACE_METHOD(0x14124A8D0, CGameOptionCommunity, vfunc_10, 185, 0xAC6D6A49);
+MS2_REPLACE_METHOD(0x14124AA70, CGameOptionCommunity, vfunc_14, 104, 0xF88DB113);
+MS2_REPLACE_METHOD(0x14124AC90, CGameOptionGraphicDefault, vfunc_5, 852, 0x52F076F7);
+MS2_REPLACE_METHOD(0x14124AFF0, CGameOptionGraphicDefault, vfunc_6, 3875, 0x0567FD04);
+MS2_REPLACE_METHOD(0x14124BF20, CGameOptionGraphicDefault, vfunc_7, 3824, 0x07F7AC40);
+MS2_REPLACE_METHOD(0x14124CE20, CGameOptionGraphicDefault, FUN_14124ce20, 592, 0xE7513A0F);
+MS2_REPLACE_METHOD(0x14124D080, CGameOptionGraphicDefault, FUN_14124d080, 1372, 0xEE8A49AB);
+MS2_REPLACE_METHOD(0x14124D5F0, CGameOptionGraphicDefault, FUN_14124d5f0, 161, 0x5BC550DC);
+MS2_REPLACE_METHOD(0x14124D6A0, CGameOptionGraphicDefault, vfunc_10, 240, 0xF49F03C5);
+MS2_REPLACE_METHOD(0x14124D890, CGameOptionGraphicDefault, vfunc_14, 106, 0xDC755D9F);
