@@ -39,7 +39,8 @@
 42@9s "id" "ol"
 42@7s "v" "b"
 36,38c
-    return is.BinaryRead(pValue, uiBytesToRead, &uiSize, 1) == uiBytesToRead;  // MS2: v2525
+    unsigned int uiBytesRead = is.BinaryRead(pValue, uiBytesToRead, &uiSize, 1);  // MS2: exe keeps the count in a local
+    return uiBytesRead == uiBytesToRead;
 .
 30@51s "" "  // MS2: v2525"
 30@2s "id" "ol"
