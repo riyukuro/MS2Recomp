@@ -19,6 +19,8 @@ public:
     virtual ~CharacterDecalData() = default;        // 0x1401e4e40 (implicit: no vptr store; pinned)
     void FUN_1401e4090(Unk_140165cf0* pElem);       // XML read
     std::vector<MS2Ptr<ItemCustom> >* FUN_1401e41c0();      // &customs
+    // Inline COMDAT 0x140d38880 (emitted by ?\itemloadinfo.cpp): the texture path.
+    const CString& GetTexture() const { return unknown18; }
     CString unknown18;              // +0x18
     float unknown20;                // +0x20
     float unknown24;                // +0x24

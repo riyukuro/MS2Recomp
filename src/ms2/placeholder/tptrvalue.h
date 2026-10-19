@@ -28,6 +28,7 @@ public:
     TPtrValue& operator=(const TPtrValue& o) { o.AddRef(); Release(); m_p = o.m_p; return *this; }
     TPtrValue& operator=(const Unk_GrNewTag&) { Make(); return *this; }
     T* operator->() const { return m_p; }
+    T* get() const { return m_p; }      // `if (spList)` (0x140d37f30 for the item loader's lists)
     bool operator!() const { return m_p == 0; }
     bool operator==(T* p) const { return m_p == p; }
 

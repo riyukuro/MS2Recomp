@@ -5,6 +5,7 @@
 class Unk_140659080 {
 public:
     void FUN_1401d42d0();
+    int FUN_140659080(int nResult);                         // the thread failed to start (itemloadinfo.cpp)
     CThread* owner;
     void* user;
     DWORD flags;
