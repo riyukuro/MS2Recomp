@@ -128,7 +128,8 @@ public:
 Unk_G9World* FUN_1403ed2d0();
 
 // The guide manager and the guide entry reference.
-class Unk_G9GuideEntry { public: void* m_p0; void* m_p1; void* m_p2; void* m_p3; };
+class Unk_G9GuideEntry { public: void* m_p0; void* m_p1; void* m_p2; int m_n18; int m_n1c; };   // m_n1c: tested by 0x1413aa8f0
+MS2_CHECK_OFFSET(Unk_G9GuideEntry, m_n1c, 0x1c);
 class Unk_G9GuideRef
 {
 public:

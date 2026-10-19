@@ -243,7 +243,7 @@ int CGuideConditionGuideOpen::vfunc_3()
         FUN_141397db0(&ref);
         return 0;
     }
-    int nResult = FUN_1413a5600(ref.FUN_141398900()->m_p0 != 0);
+    int nResult = FUN_1413a5600(ref.FUN_141398900()->m_n1c != 0);
     FUN_141397db0(&ref);
     return nResult;
 }
