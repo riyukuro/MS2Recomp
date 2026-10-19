@@ -2813,6 +2813,120 @@ void StateSkill::FUN_1417edc20(double fTime)
 }
 MS2_REPLACE_METHOD(0x1417edc20, StateSkill, FUN_1417edc20, 1264, 0x125D56A2);
 
+// The end of a motion of the running cast. Without the chain input held it goes to the chain (FUN_1417ef4a0).
+// Attacks left: the own player starts the next motion of the cast as a new record. The attacks over: a rider idles
+// (unless the motion keeps playing), the own player casts the queued cast (else the chained one, the next input
+// or an auto change) unless the running skill blocks it; a cast that does not start ends the state. A cast running
+// for more than 5 seconds ends too.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417ee120
+void StateSkill::FUN_1417ee120()
+{
+    if (m_spRecord == NULL)
+        return;
+    if (!m_b48)
+    {
+        FUN_1417ef4a0();
+        return;
+    }
+    m_nAttack = 0;
+    m_spRecord->FUN_141759fc0();
+    if (m_spRecord->FUN_141759e40() == 0)
+    {
+        if (FUN_1417b8340() != 0)
+        {
+            Unk_InventorySkillRequest kReq(m_spRecord->GetSkillId(), m_spRecord->GetLevel());
+            kReq.m_nCastId = m_spRecord->m_nCastId;
+            kReq.m_nMotion = m_spRecord->m_nMotion + 1;
+            reinterpret_cast<NiPoint3&>(kReq.m_ptPos) = m_pOwner->vfunc_18();
+            reinterpret_cast<NiPoint3&>(kReq.m_ptDir) = reinterpret_cast<const NiPoint3&>(m_spRecord->m_ptDir);
+            kReq.m_fRotZ = m_spRecord->m_ptRot.z;
+            MS2Ptr<CSkillRecord> spMotion(new CSkillRecord);
+            if (!spMotion->Init(kReq))
+                return;
+            if (m_spRecord->m_nB0 != 0)
+            {
+                spMotion->m_nB0 = m_spRecord->m_nB0;
+                spMotion->m_strB8 = m_spRecord->m_strB8;
+            }
+            spMotion->m_bAD = spMotion->m_spLevel->FUN_140804450();
+            if (!m_pOwner->vfunc_102(spMotion))
+                FUN_1417f0070();
+        }
+    }
+    else
+    {
+        if (FUN_1417b8340() == 0)
+        {
+            if (FUN_1417b8480() == NULL)
+            {
+                FUN_1417f0070();
+            }
+            else
+            {
+                bool bPlaying = false;
+                SkillMotionData* pMotion = m_spRecord->FUN_141759830();
+                if (pMotion != NULL)
+                    bPlaying = !pMotion->m_bDoesPlayIdleOnSkillEnd;
+                if (!bPlaying)
+                    m_pOwner->vfunc_59(1, NULL, 0, 0);
+            }
+        }
+        else
+        {
+            if (m_spNext == NULL)
+            {
+                MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+                if (pMy != NULL)
+                {
+                    int nOldInput = pMy->FUN_141523bc0()->FUN_141765cf0(0);
+                    int nOldHold = pMy->FUN_141523bc0()->FUN_141765d30(1);
+                    if (m_spRecord->m_nB0 == 0)
+                        m_spNext = m_pOwner->vfunc_104(true, true, true);
+                    else
+                        m_spNext = FUN_1417f0230();
+                    if (m_spNext == NULL)
+                    {
+                        MS2Ptr<CSkillRecord> spAuto = FUN_1417f0570(2);
+                        if (spAuto != NULL)
+                        {
+                            if (spAuto->m_spSkill->m_bKeyIsDown
+                                || spAuto->m_spSkill->GetId() != m_spRecord->m_spSkill->GetId())
+                            {
+                                if (spAuto->m_spSkill->m_eImmediateActive != 0)
+                                    m_spNext = spAuto;
+                            }
+                        }
+                    }
+                    pMy->FUN_141523bc0()->FUN_141765cf0(nOldInput);
+                    pMy->FUN_141523bc0()->FUN_141765d30(nOldHold);
+                }
+            }
+            if (m_spNext.get() == NULL)
+            {
+                FUN_1417f0070();
+            }
+            else if (m_b111 && m_spRecord->m_spSkill->m_blockA4.FUN_140802ff0(m_spNext->m_spSkill->GetId()) != 0)
+            {
+                FUN_1417f0070();
+            }
+            else
+            {
+                m_pOwner->vfunc_100(m_spNext, 0);
+                m_spNext->m_bAD = false;
+                if ((SkillLevelData*)m_spNext->m_spLevel != NULL)
+                    m_spNext->m_bAD = m_spNext->m_spLevel->FUN_140804450();
+                if (!m_pOwner->vfunc_102(m_spNext))
+                    FUN_1417f0070();
+            }
+        }
+        m_spNext = 0;
+    }
+    if (m_fStartTime + 5.0 < CMainSystem::GetInstance()->FUN_141473280())
+        FUN_1417f0070();
+}
+MS2_REPLACE_METHOD(0x1417ee120, StateSkill, FUN_1417ee120, 2524, 0x3637A3E5);
+
 // @0x1417eeb10
 void StateSkill::FUN_1417eeb10(bool bChain)
 {
