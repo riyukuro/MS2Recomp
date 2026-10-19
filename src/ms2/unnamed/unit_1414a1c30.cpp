@@ -10,7 +10,19 @@
 #include <atlstr.h>
 #include <direct.h>
 #include "ms2/ms2layout.h"
+#include "ms2/commonfiles/filesystem.h"
 #include "hook/ms2hook.h"
+
+// Typed prefixes for the otherwise opaque getter objects and hash-chain nodes.
+struct Unk_ShutdownValue30 { void* m_opaque[6]; int m_value; };
+struct Unk_ShutdownNode18 { void* m_payload[3]; Unk_ShutdownNode18* m_next; };
+struct Unk_ShutdownNode20 { void* m_payload[4]; Unk_ShutdownNode20* m_next; };
+MS2_CHECK_SIZE(Unk_ShutdownValue30, 0x38);
+MS2_CHECK_SIZE(Unk_ShutdownNode18, 0x20);
+MS2_CHECK_SIZE(Unk_ShutdownNode20, 0x28);
+MS2_CHECK_OFFSET(Unk_ShutdownValue30, m_value, 0x30);
+MS2_CHECK_OFFSET(Unk_ShutdownNode18, m_next, 0x18);
+MS2_CHECK_OFFSET(Unk_ShutdownNode20, m_next, 0x20);
 
 // ---- opaque singleton objects ---------------------------------------------------------------------------------------------
 class Unk_SingletonObj { public: virtual ~Unk_SingletonObj(); };                                // deleted via slot 0
@@ -334,7 +346,7 @@ public:
 extern char DAT_143ae0130; extern int DAT_143a01f90; extern int DAT_143a284b0; extern char* DAT_143afa980; extern int DAT_143ae2b48;
 struct CResultObj { void* p; CResultObj(void* ptr); ~CResultObj(); };
 void* FUN_1414a54f0_ctor(void* mem, void* self);
-void FUN_1409a8120(void*); void FUN_1409f2d50(void*); void FUN_1409f2d60(void*); void FUN_140c8f690(void*); void FUN_141427740(void*);
+void FUN_1409a8120(void*); void FUN_1409f2d50(void*); void FUN_1409f2d60(void*); void FUN_140c8f690(void*); void* FUN_141427740(void*);
 class Unk_HashMap1 {
 public:
     void** m_ppBins; unsigned long long m_nElements; unsigned int m_nBins; char m_pad[0x1c]; int m_nLockCount;
@@ -1761,12 +1773,12 @@ int* Unk_MiscThis::FUN_1414a5650() { return &DAT_143a01f90; }
 // @0x1414a5660
 int* Unk_MiscThis::FUN_1414a5660() { return &DAT_143a284b0; }
 // @0x1414a5670
-int FUN_1414a5670(char* pThis) { return *(int*)(pThis + 0x30); }
+int FUN_1414a5670(Unk_ShutdownValue30* pThis) { return pThis->m_value; }
 MS2_REPLACE(0x1414A5670, FUN_1414a5670, 14, 0x828204CF);
 // @0x1414a5680
 const char* Unk_MiscThis::FUN_1414a5680() { return "MS2PropertyVisualizationService"; }
 // @0x1414a5690
-int FUN_1414a5690(char* pThis) { return *(int*)(pThis + 0x1c0); }
+int FUN_1414a5690(CFileSystem* pThis) { return pThis->archiveMode; }
 MS2_REPLACE(0x1414A5690, FUN_1414a5690, 17, 0x05FDCC0A);
 // @0x1414a56b0
 int FUN_1414a56b0(char* pThis) { return *(int*)(pThis + 8); }
@@ -1885,7 +1897,7 @@ MS2_REPLACE(0x1414A5960, FUN_1414a5960, 31, 0x24583782);
 void FUN_1414a5980(char* pThis) { FUN_140c8f690(pThis + 0x28); }
 MS2_REPLACE(0x1414A5980, FUN_1414a5980, 31, 0xEFCBF263);
 // @0x1414a59a0
-void FUN_1414a59a0(char* pThis) { FUN_141427740(pThis + 0x118); }
+void* FUN_1414a59a0(char* pThis) { return FUN_141427740(pThis + 0x118); }
 MS2_REPLACE(0x1414A59A0, FUN_1414a59a0, 33, 0x0033409D);
 // @0x1414a59d0
 void FUN_1414a59d0(char* pThis) { FUN_1409f2d60(pThis + 0x20); }
@@ -1915,10 +1927,10 @@ void Unk_HashMap1::FUN_1414a5ac0()
     FUN_1414a5450();
     if (m_ppBins != 0) {
         for (unsigned int iBin = 0; iBin < m_nBins; iBin++) {
-            char* pNode = (char*)m_ppBins[iBin];
+            Unk_ShutdownNode18* pNode = (Unk_ShutdownNode18*)m_ppBins[iBin];
             while (pNode != 0) {
-                char* pKill = pNode;
-                pNode = *(char**)(pNode + 0x18);
+                Unk_ShutdownNode18* pKill = pNode;
+                pNode = pNode->m_next;
                 FUN_14076d7d0(pKill);
             }
         }
@@ -1938,10 +1950,10 @@ void Unk_HashMap2::FUN_1414a5bd0()
     FUN_1414a5470();
     if (m_ppBins != 0) {
         for (unsigned int iBin = 0; iBin < m_nBins; iBin++) {
-            char* pNode = (char*)m_ppBins[iBin];
+            Unk_ShutdownNode18* pNode = (Unk_ShutdownNode18*)m_ppBins[iBin];
             while (pNode != 0) {
-                char* pKill = pNode;
-                pNode = *(char**)(pNode + 0x18);
+                Unk_ShutdownNode18* pKill = pNode;
+                pNode = pNode->m_next;
                 FUN_14076d8d0(pKill);
             }
         }
@@ -1961,10 +1973,10 @@ void Unk_HashMap3::FUN_1414a5ce0()
     FUN_1414a5490();
     if (m_ppBins != 0) {
         for (unsigned int iBin = 0; iBin < m_nBins; iBin++) {
-            char* pNode = (char*)m_ppBins[iBin];
+            Unk_ShutdownNode18* pNode = (Unk_ShutdownNode18*)m_ppBins[iBin];
             while (pNode != 0) {
-                char* pKill = pNode;
-                pNode = *(char**)(pNode + 0x18);
+                Unk_ShutdownNode18* pKill = pNode;
+                pNode = pNode->m_next;
                 FUN_1401a9940(pKill);
             }
         }
@@ -1984,10 +1996,10 @@ void Unk_HashMap4::FUN_1414a5df0()
     FUN_1414a54b0();
     if (m_ppBins != 0) {
         for (unsigned int iBin = 0; iBin < m_nBins; iBin++) {
-            char* pNode = (char*)m_ppBins[iBin];
+            Unk_ShutdownNode20* pNode = (Unk_ShutdownNode20*)m_ppBins[iBin];
             while (pNode != 0) {
-                char* pKill = pNode;
-                pNode = *(char**)(pNode + 0x20);
+                Unk_ShutdownNode20* pKill = pNode;
+                pNode = pNode->m_next;
                 FUN_1401a9a40(pKill);
             }
         }
@@ -2007,10 +2019,10 @@ void Unk_HashMap5::FUN_1414a5f00()
     FUN_1414a54d0();
     if (m_ppBins != 0) {
         for (unsigned int iBin = 0; iBin < m_nBins; iBin++) {
-            char* pNode = (char*)m_ppBins[iBin];
+            Unk_ShutdownNode20* pNode = (Unk_ShutdownNode20*)m_ppBins[iBin];
             while (pNode != 0) {
-                char* pKill = pNode;
-                pNode = *(char**)(pNode + 0x20);
+                Unk_ShutdownNode20* pKill = pNode;
+                pNode = pNode->m_next;
                 FUN_1401a9b40(pKill);
             }
         }
