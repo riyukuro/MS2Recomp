@@ -58,7 +58,12 @@ static const char* LoadList(const char* var, char** storage, bool* isSet) {
     DWORD n = GetEnvironmentVariableA(var, envbuf, sizeof(envbuf));
     *isSet = n != 0 && n < sizeof(envbuf);
     if (!*isSet) return "";
-    if (envbuf[0] != '@') return envbuf;
+    if (envbuf[0] != '@') {
+        // own copy: envbuf is shared, so the next LoadList (MS2HOOK_ONLY after MS2HOOK_DISABLE) would overwrite it
+        *storage = static_cast<char*>(HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, n + 1));
+        memcpy(*storage, envbuf, n);
+        return *storage;
+    }
     HANDLE h = CreateFileA(envbuf + 1, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
     if (h == INVALID_HANDLE_VALUE) return "";
     DWORD sz = GetFileSize(h, nullptr), got = 0;
