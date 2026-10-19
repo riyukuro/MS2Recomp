@@ -2951,6 +2951,70 @@ void StateSkill::FUN_1417eeb10(bool bChain)
 }
 MS2_REPLACE_METHOD(0x1417eeb10, StateSkill, FUN_1417eeb10, 587, 0x2D7DDBE8);
 
+// Whether the next cast may follow the running one: not the same skill again (unless it is a key-down skill), by its
+// chain type (1: any other skill, 2: another origin skill), else only after the last motion with the self combo or
+// the chain input, not while a continuing skill keeps its key held, not against the self combo of the motion, and
+// never into the running skill or its combo output.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417eed70
+bool StateSkill::FUN_1417eed70(MS2Ptr<CSkillRecord> spNext)
+{
+    if (!spNext->m_spSkill->m_bKeyIsDown && spNext->m_spSkill->GetId() == m_spRecord->m_spSkill->GetId())
+        return false;
+    m_nChainType = (int)spNext->m_spSkill->m_eImmediateActive;
+    if (m_nChainType == 1)
+        return spNext->m_spSkill->GetId() != m_spRecord->m_spSkill->GetId();
+    if (m_nChainType == 2 && spNext->m_spSkill->GetOriginId() != m_spRecord->m_spSkill->GetOriginId())
+        return true;
+    if (m_nChainType == 2 && spNext->m_spSkill->GetOriginId() == m_spRecord->m_spSkill->GetOriginId())
+        return false;
+    if (m_spRecord->FUN_141759f20() == 0)
+        return false;
+    if (!m_b4a && !m_b114)
+        return false;
+    if (m_spRecord->m_spSkill->m_bContinue)
+    {
+        if (!m_spRecord->m_spSkill->m_blockA4.m_bChargingSkill || FUN_14028d470(m_fChargeTime, 0))
+        {
+            if (static_cast<Unk_SsMove*>(m_pOwner->FUN_14166d240())->FUN_141682f80(m_spRecord->m_nA4))
+                return false;
+        }
+    }
+    SkillMotionData* pMotion = m_spRecord->FUN_141759830();
+    if (pMotion != NULL && !pMotion->m_strSelfInputCombo.IsEmpty())
+    {
+        if (!m_b114)
+        {
+            if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xca))
+            {
+                if (spNext->m_spSkill->GetId() == m_spRecord->m_spSkill->GetId())
+                    return false;
+            }
+            else
+            {
+                if (spNext->m_spSkill->GetId() == m_spRecord->m_spSkill->GetId())
+                    return false;
+                if (m_spRecord->m_spSkill->m_blockA4.FUN_140802ff0(spNext->m_spSkill->GetId()) != 0)
+                    return false;
+            }
+        }
+        else if (!m_b4a)
+        {
+            if (spNext->m_spSkill->GetId() != m_spRecord->m_spSkill->GetId())
+                return false;
+        }
+    }
+    if (m_b115)
+    {
+        if (spNext->m_spSkill->GetId() == m_spRecord->m_spSkill->GetId())
+            return false;
+        if (m_spRecord->m_spSkill->m_blockA4.FUN_140802ff0(spNext->m_spSkill->GetId()) != 0)
+            return false;
+    }
+    return true;
+}
+MS2_REPLACE_METHOD(0x1417eed70, StateSkill, FUN_1417eed70, 1830, 0xCD4C5F92);
+
 // Keeps the caster on the node of the object the cast is attached to (feature 0xae): the caster takes the node's
 // world rotation and position; when the object is gone, dead or not an npc the caster leaves the state (6).
 // MS2-FUNCTIONAL: written from the call sequence.
