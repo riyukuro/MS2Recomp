@@ -3193,3 +3193,6 @@ __imp_AddSurveyParameterA	142cd1480	data
 ??1ASDisplayObject@@UEAA@XZ	1422bf810	func
 ??1Unk_DcUiRef@@QEAA@XZ	1403e5630	func
 ?DAT_142ed3718@@3QBDB	142ed3718	data
+??0RemakeOption@CCItemRemakeOptionScrollPacket@@QEAA@XZ	1406179e0	func
+??1RemakeOption@CCItemRemakeOptionScrollPacket@@UEAA@XZ	140617a50	func
+?vfunc_1@RemakeOption@CCItemRemakeOptionScrollPacket@@UEAAXAEAVCOutputStream@@@Z	140617a90	func
