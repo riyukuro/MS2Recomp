@@ -93,3 +93,7 @@ MS2_CHECK_SIZE(ASMovieClip, 0x80);                              // exe allocates
 
 // new ASDisplayObject(v, n) wrapped in an MS2Ptr (free function or static; 0x140d01be0).
 MS2Ptr<ASDisplayObject> FUN_140d01be0(int n, const Scaleform::GFx::Value& v);
+
+// ASLoader (RTTI .?AVASLoader@@, COL 0x1432d06b0): an ASDisplayObjectContainer (the AS Loader clip that shows an
+// external image; the guild dialog's event image, uiguilddialog.h). Nothing of its own is declared yet.
+class ASLoader : public ASDisplayObjectContainer {};
