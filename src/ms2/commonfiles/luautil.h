@@ -64,12 +64,27 @@ struct Unk_OffenseScore
     long long m_60; float m_68; float m_6c; float m_70; float m_74; float m_78; float m_7c; float m_80; float m_84;
     float m_88; float m_8c; float m_90; float m_94; float m_98; int m_9c_pad; long long m_a0; int m_a8; int m_ac_pad;
     long long m_b0; float m_b8; float m_bc;
+
+    // 0x141338cc0 (emitted by uipcinfodialog.cpp): every field but the pads is cleared
+    Unk_OffenseScore()
+        : m_00(0), m_08(0), m_10(0), m_18(0), m_20(0), m_28(0), m_30(0), m_38(0), m_40(0), m_44(0), m_48(0), m_50(0), m_58(0),
+          m_60(0), m_68(0), m_6c(0), m_70(0), m_74(0), m_78(0), m_7c(0), m_80(0), m_84(0), m_88(0), m_8c(0), m_90(0), m_94(0),
+          m_98(0), m_a0(0), m_a8(0), m_b0(0), m_b8(0), m_bc(0)
+    {
+    }
 };
 struct Unk_DefenseScore
 {
     int m_00; int m_04_pad; long long m_08; long long m_10; long long m_18; long long m_20; long long m_28;
     long long m_30; float m_38; float m_3c; float m_40; float m_44; float m_48; float m_4c; float m_50; float m_54;
-    float m_58; int m_5c_pad; float m_60; float m_64; long long m_68; long long m_70;
+    float m_58; float m_5c; float m_60; float m_64; long long m_68; long long m_70;
+
+    // 0x141338ba0 (emitted by uipcinfodialog.cpp): m_00 starts at 1, the rest is cleared (m_5c is a float field, filled by UIPCInfoDialog::FUN_141335290)
+    Unk_DefenseScore()
+        : m_00(1), m_08(0), m_10(0), m_18(0), m_20(0), m_28(0), m_30(0), m_38(0), m_3c(0), m_40(0), m_44(0), m_48(0), m_4c(0),
+          m_50(0), m_54(0), m_58(0), m_5c(0), m_60(0), m_64(0), m_68(0), m_70(0)
+    {
+    }
 };
 
 class CLua
