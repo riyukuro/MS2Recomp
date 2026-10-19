@@ -2,6 +2,7 @@
 // the frame limiter, Optimization.xml and the hardware log.
 // MS2-UNIT: ?\optimizer.cpp
 // MS2-RANGE: 0x14161b8c0-0x1416252b0 .text$mn
+// MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEB_J$$Z$$V@?$pair@$$CB_JPEAVPCBase@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEB_J@1@V?$tuple@$$V@1@@Z 0x14161ddc0 ; unique
 // MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@1@0@Z 0x14161dea0 ; unique
@@ -16,6 +17,9 @@
 // MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1416225c0 ; prop
 // MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@2@AEB_J@Z 0x141624de0 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@1@AEAU?$pair@$$CB_JUEntry@COptimizer@@@1@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@1@@Z 0x14161f7d0
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CB_JUEntry@COptimizer@@@1@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@1@@Z 0x141620410
+// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEBA_NAEB_J0@Z 0x141622bd0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\optimizer.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <psapi.h>
@@ -29,6 +33,8 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/ms2recover.h"
+#include <errno.h>
+#include <string.h>
 #include "hook/ms2hook.h"
 
 // ---- the world, the actors and the helper services this unit calls ----------------------------------------------------
@@ -41,15 +47,11 @@ PCBase* FUN_141bd0cc0(Unk_OptWorld* pWorld);                        // the local
 PCBase* FUN_141bd1530(Unk_OptWorld* pWorld, __int64 nUid);
 PCBase* FUN_141bd1180(Unk_OptWorld* pWorld, unsigned nId);
 class Unk_OptObjMap;                                                // the world's actor table
-struct Unk_OptRefHolder { void* m_p; };                             // a copy of an entry
 Unk_OptObjMap* FUN_141bd36b0(Unk_OptWorld* pWorld);
 POSITION FUN_140c20a10(Unk_OptObjMap* pMap);                        // GetHeadPosition
 TPtr<PC>& FUN_140c20a80(Unk_OptObjMap* pMap, POSITION pos);          // GetValueAt
 void FUN_140c20a30(Unk_OptObjMap* pMap, POSITION* pPos);            // GetNext
-void FUN_140c20410(Unk_OptRefHolder* pDst, const TPtr<PC>& spSrc);  // copy ctor
-void FUN_140aac150(Unk_OptRefHolder* pHolder);                      // dtor
 PC* FUN_140aac420(const TPtr<PC>& spRef);                           // the actor
-PC* FUN_140aac420(Unk_OptRefHolder* pRef);
 PC* FUN_140aac440(const TPtr<PC>& spRef);                           // operator->
 void* FUN_1409613d0(PCBase* pActor);
 GameObject* FUN_1416764a0(PCBase* pActor);                          // the ridee
@@ -278,13 +280,13 @@ void COptimizer::FUN_14161bee0()
 float COptimizer::FUN_14161c360()
 {
     m_fFrameLimit = (float)*FUN_1402056b0(&FUN_1401d3200()->m_frameLimit);
-    if (FUN_14028d470(m_fFrameLimit, 0) == 0)
+    if (FUN_14028d470(m_fFrameLimit, 0))
     {
-        m_nFrameDelay = (int)(1000.0 / m_fFrameLimit);
+        m_nFrameDelay = 0;
     }
     else
     {
-        m_nFrameDelay = 0;
+        m_nFrameDelay = (int)(1000.0f / m_fFrameLimit);
     }
     return m_fFrameLimit;
 }
@@ -300,13 +302,13 @@ void COptimizer::FUN_14161c3f0()
 void COptimizer::FUN_14161c420(float fLimit)
 {
     m_fFrameLimit = fLimit;
-    if (FUN_14028d470(m_fFrameLimit, 0) == 0)
+    if (FUN_14028d470(m_fFrameLimit, 0))
     {
-        m_nFrameDelay = (int)(1000.0 / m_fFrameLimit);
+        m_nFrameDelay = 0;
     }
     else
     {
-        m_nFrameDelay = 0;
+        m_nFrameDelay = (int)(1000.0f / m_fFrameLimit);
     }
 }
 
@@ -381,11 +383,12 @@ void COptimizer::FUN_14161c8c0()
 // @0x14161c940
 void COptimizer::FUN_14161c940(unsigned nCount, int nCycle)
 {
-    if (m_nSampleCount == 0)
+    if (m_nSampleCount != 0)
     {
-        m_nSampleCount = nCount;
-        m_nSampleCycle = nCycle;
+        return;
     }
+    m_nSampleCount = nCount;
+    m_nSampleCycle = nCycle;
 }
 
 // @0x14161c990
@@ -402,7 +405,7 @@ void COptimizer::FUN_14161c990()
                 float fLowest = 1000.0f;
                 float fHighest = 0.0f;
                 float fAverage = 0.0f;
-                for each (float fFrame in m_samples)
+                MS2_FOR_EACH(float fFrame, m_samples)
                 {
                     if (fFrame < fLowest)
                     {
@@ -528,8 +531,7 @@ void COptimizer::FUN_14161cf60(PCBase* pPC)
     if (pPC != 0)
     {
         __int64 nKey = pPC->FUN_141656a80();
-        std::map<__int64, Entry>::iterator itEnd = m_selected.end();
-        if (m_selected.find(nKey) != itEnd)
+        if (m_selected.find(nKey) != m_selected.end())
         {
             FUN_14161dbe0(pPC, 0);
         }
@@ -568,13 +570,13 @@ void COptimizer::FUN_14161d070(const egf::EntityID& kId)
 int COptimizer::FUN_14161d0f0() const
 {
     int nResult;
-    if (m_nUpdateOn2 == 0 || m_nUpdateOn == 0)
+    if (m_nUpdateOn2 != 0 && m_nUpdateOn != 0)
     {
-        nResult = 0;
+        nResult = 1;
     }
     else
     {
-        nResult = 1;
+        nResult = 0;
     }
     return nResult;
 }
@@ -643,8 +645,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                                     if (FUN_140aac440(spRef)->GetClassID() != 0x6200016)
                                     {
                                         __int64 nUid = FUN_140aac440(spRef)->FUN_141656a80();
-                                        std::map<__int64, Entry>::iterator itEnd = selected.end();
-                                        if (selected.find(nUid) == itEnd)
+                                        if (selected.find(nUid) == selected.end())
                                         {
                                             PCBase* pActor = FUN_140aac420(spRef);
                                             float fDistance = FUN_140aac440(spRef)->FUN_140f4a450();
@@ -719,14 +720,10 @@ void COptimizer::FUN_14161db10(int nFlags)
         if (FUN_141bca2e0(FUN_1403ed2d0()) != 0)
         {
             Unk_OptObjMap* pMap = FUN_141bd36b0(FUN_1403ed2d0());
-            POSITION pos = FUN_140c20a10(pMap);
-            while (pos != 0)
+            for (POSITION pos = FUN_140c20a10(pMap); pos != 0; FUN_140c20a30(pMap, &pos))
             {
-                Unk_OptRefHolder holder;
-                FUN_140c20410(&holder, FUN_140c20a80(pMap, pos));
-                FUN_14161dbe0(FUN_140aac420(&holder), nFlags);
-                FUN_140aac150(&holder);
-                FUN_140c20a30(pMap, &pos);
+                TPtr<PC> spActor(FUN_140c20a80(pMap, pos));
+                FUN_14161dbe0(spActor.get(), nFlags);
             }
         }
     }
@@ -735,25 +732,45 @@ void COptimizer::FUN_14161db10(int nFlags)
 // @0x14161dbe0
 void COptimizer::FUN_14161dbe0(PCBase* pPC, int nFlags)
 {
-    if (pPC != 0 && FUN_1409613d0(pPC) == 0 && pPC->GetClassID() != 0x6200044 && pPC->GetClassID() != 0x6200047
-        && pPC->GetClassID() != 0x620005e && pPC->GetClassID() != 0x6200016)
+    if (pPC == 0)
     {
-        pPC->vfunc_24(nFlags);
-        GameObject* pObject = FUN_1416764a0(pPC);
-        if (pObject != 0)
-        {
-            pObject->vfunc_24(nFlags);
-        }
-        pObject = FUN_141676a10(pPC);
-        if (pObject != 0)
-        {
-            pObject->vfunc_24(nFlags);
-        }
-        pObject = FUN_1416625e0(pPC);
-        if (pObject != 0)
-        {
-            pObject->vfunc_24(nFlags);
-        }
+        return;
+    }
+    if (FUN_1409613d0(pPC) != 0)
+    {
+        return;
+    }
+    if (pPC->GetClassID() == 0x6200044)
+    {
+        return;
+    }
+    if (pPC->GetClassID() == 0x6200047)
+    {
+        return;
+    }
+    if (pPC->GetClassID() == 0x620005e)
+    {
+        return;
+    }
+    if (pPC->GetClassID() == 0x6200016)
+    {
+        return;
+    }
+    pPC->vfunc_24(nFlags);
+    GameObject* pObject = FUN_1416764a0(pPC);
+    if (pObject != 0)
+    {
+        pObject->vfunc_24(nFlags);
+    }
+    pObject = FUN_141676a10(pPC);
+    if (pObject != 0)
+    {
+        pObject->vfunc_24(nFlags);
+    }
+    pObject = FUN_1416625e0(pPC);
+    if (pObject != 0)
+    {
+        pObject->vfunc_24(nFlags);
     }
 }
 
@@ -767,13 +784,13 @@ void COptimizer::FUN_14161dd30(int nFlags, int nLimit)
     {
         if (FUN_141bca2e0(FUN_1403ed2d0()) != 0)
         {
-            if ((preloadMode & 8) == 0 || nLimit == 0)
+            if ((preloadMode & 8) != 0 && nLimit != 0)
             {
-                FUN_14161db10(nFlags);
+                FUN_14161d130(true);
             }
             else
             {
-                FUN_14161d130(true);
+                FUN_14161db10(nFlags);
             }
         }
     }
@@ -803,4 +820,22 @@ bool operator<(const COptimizer::Entry& left, const COptimizer::Entry& right)
 int COptimizer::FUN_141622790() const
 {
     return m_nEnabled;
+}
+
+// @0x141625160
+// The UCRT's memcpy_s (checked copy that zeroes the destination on failure), as an ordinary function.
+#pragma function(memcpy, memset)
+int FUN_141625160(void* const d, size_t const dsz, void const* const s, size_t const ssz)
+{
+    if (ssz == 0) { return 0; }
+    { int e = !!(d != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+    if (s == NULL || dsz < ssz)
+    {
+        memset(d, 0, dsz);
+        { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+        { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
+        return EINVAL;
+    }
+    memcpy(d, s, ssz);
+    return 0;
 }
