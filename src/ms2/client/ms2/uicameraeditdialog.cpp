@@ -899,6 +899,16 @@ void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);                 // se
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);      // set a String value
 int FUN_141277f50();                                                       // the UI object type of the hud
 
+// The (float, int) COMDAT is defined in uibeautyshopdialog.cpp (0x1418cc380); the DLL link needs this unit's copy too.
+inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, int a2)
+{
+    ASArgList args;
+    args.FUN_1409b2800(2);
+    FUN_1422bcd70(args.FUN_1409b1f70(0), a1);
+    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
 // @0x1418e1d20
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, float a2, CStringW a3, int a4, bool a5, CStringW a6, CStringW a7, int a8)
 {
