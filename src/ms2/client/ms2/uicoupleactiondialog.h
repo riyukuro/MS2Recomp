@@ -27,7 +27,8 @@ public:
     int m_isNew;                                            // +0x18 "isNew"
     int m_id;                                               // +0x1c the emotion (item) id
     unsigned short m_level;                                 // +0x20
-    void* m_pad_28; void* m_pad_30;
+    __int64 m_28;                                           // +0x28 expiry time of a timed action (0 = none)
+    void* m_pad_30;
     unsigned char m_pad_38;
     unsigned char m_favorite;                               // +0x39 "isFavorite"
 };
