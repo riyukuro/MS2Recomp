@@ -242,6 +242,8 @@ void Unk_CMISFwdAnchor(void* p)
     }
     ((std::set<egf::EntityID>*)p)->insert(*(const egf::EntityID*)p);
     ((std::set<unsigned>*)p)->insert(*(const unsigned*)p);
+    // 14111d3f0
+    ((Unk_CMISAutoSet*)p)->insert(*(const MS2Ptr<AutomaticCreateCubeInfo>*)p);
 }
 
 
