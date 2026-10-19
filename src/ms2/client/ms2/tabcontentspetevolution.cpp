@@ -4,16 +4,10 @@
 // MS2-RANGE: 0x1400c5c20-0x1400c5e00 .text$di
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEA_KAEAH$0A@@?$pair@_KH@std@@QEAA@AEA_KAEAH@Z 0x140acc810 ; unique
-// MS2-PIN: ??0?$CAtlList@V?$MS2Ptr@VPetEvolutionBase@@@@V?$CElementTraits@V?$MS2Ptr@VPetEvolutionBase@@@@@ATL@@@ATL@@QEAA@I@Z 0x140acd320 ; unique
-// MS2-PIN: ??0?$MS2Ptr@VPetEvolutionBase@@@@QEAA@PEAVPetEvolutionBase@@@Z 0x140acd540 ; prop
-// MS2-PIN: ?vfunc_4@PetEvolutionBase@@UEAAXXZ 0x140acddc0 ; unique
+// MS2-PIN: ??$?0AEB_KAEAH$0A@@?$pair@_KH@std@@QEAA@AEB_KAEAH@Z 0x140acc860 ; prop
 // MS2-PIN: ?vfunc_3@PetEvolutionBase@@UEAAXXZ 0x140acdf80 ; unique
 // MS2-PIN: ??A?$CAtlArray@U?$pair@_KH@std@@V?$CElementTraits@U?$pair@_KH@std@@@ATL@@@ATL@@QEAAAEAU?$pair@_KH@std@@_K@Z 0x140ace000 ; unique
 // MS2-PIN: ?vfunc_5@PetEvolutionBase@@UEAAXH@Z 0x140ace4e0 ; unique
-// MS2-PIN: ?Reference@?$MS2Ptr@VPetEvolutionBase@@@@CAXPEAVPetEvolutionBase@@@Z 0x140ace9b0 ; prop
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VPetEvolutionBase@@@@AEBAXPEAX@Z 0x140acea30 ; unique
-// MS2-PIN: ?Release@?$MS2Ptr@VPetEvolutionBase@@@@AEAAXXZ 0x140aceae0 ; unique
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VPetEvolutionBase@@@@AEAAXPEAX@Z 0x140acebc0 ; prop
 // MS2-PINS-END tplpin
 // MS2-PIN: ??0?$MS2Ptr@VUnk_PetButton@@@@QEAA@H@Z 0x140acd3b0
 // MS2-PIN: ??0?$MS2Ptr@VUnk_PetItemBag@@@@QEAA@H@Z 0x140acd430
