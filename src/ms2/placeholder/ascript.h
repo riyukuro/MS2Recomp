@@ -179,6 +179,7 @@ public:
     bool FUN_1422ba9f0(const char* szMember);                                               // the AS object has the member (uipvpguildteamdialog)
     Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2);               // 0x1409ba0d0 (UIQuestGuideDialog setMaxEntity)
     Scaleform::GFx::Value FUN_140bd2cb0(const char* szMethod, const ASArray& a1);           // 0x140bd2cb0 (UIQuestGuideDialog buildAll)
+    Scaleform::GFx::Value FUN_140ed11b0(const char* szMethod, unsigned int a1);               // 0x140ed11b0 (inline COMDAT, defined in uiskillbookautodistributedialog.cpp; Value = UInt)
     Scaleform::GFx::Value FUN_140ed0fd0(const char* szMethod, int a1, bool a2);             // 0x140ed0fd0 (UIQuestGuideDialog setTracingEntity)
     Scaleform::GFx::Value FUN_1422bb3c0();                                                   // 0x1422bb3c0 call the AS function this object wraps
     Scaleform::GFx::Value Invoke(const char* szMethod, const AScript& a1, const char* a2);  // 0x141aafc10 (inline COMDAT, defined in uiquesteventlistener.cpp)

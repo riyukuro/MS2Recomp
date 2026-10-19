@@ -7,6 +7,44 @@
 // MS2-RANGE: 0x1400dc6d0-0x1400dc9e0 .text$di
 // MS2-RANGE: 0x140ec41e0-0x140ed74c0 .text$mn
 // MS2-PINS-BEGIN tplpin
+// MS2-PIN: ?vfunc_48@UISkillBookAutoDistributeDialog@@UEAAHXZ 0x140ec4d20 ; unique
+// MS2-PIN: ??$?0AEBH$0A@@?$tuple@AEBH@std@@QEAA@AEBH@Z 0x140ecfdf0 ; unique
+// MS2-PIN: ??$?0VUISkillBookTreeDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUISkillBookTreeDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140ecfeb0 ; unique
+// MS2-PIN: ??$?0U_Exact_args_t@std@@AEBH$$V$0A@@?$tuple@AEBH@std@@QEAA@U_Exact_args_t@1@AEBH@Z 0x140ed0010 ; unique
+// MS2-PIN: ??$?0V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x140ed0070 ; prop
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x140ed01d0 ; unique
+// MS2-PIN: ??$?8PEAVUISkillBookTreeDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x140ed0220 ; prop
+// MS2-PIN: ??$?8PEAVUISkillBookTreeDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x140ed0290 ; prop
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x140ed13c0 ; unique
+// MS2-PIN: ??$construct@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x140ed2a40 ; unique
+// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x140ed2af0 ; unique
+// MS2-PIN: ??$forward@AEAU?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@YAAEAU?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@0@AEAU10@@Z 0x140ed2b90 ; prop
+// MS2-PIN: ??$forward@AEBH@std@@YAAEBHAEBH@Z 0x140ed2be0 ; prop
+// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@std@@@0@AEAV10@@Z 0x140ed2bf0 ; prop
+// MS2-PIN: ??$forward@V?$tuple@AEBH@std@@@std@@YA$$QEAV?$tuple@AEBH@0@AEAV10@@Z 0x140ed2c10 ; prop
+// MS2-PIN: ??$forward_as_tuple@AEBH@std@@YA?AV?$tuple@AEBH@0@AEBH@Z 0x140ed2c20 ; unique
+// MS2-PIN: ??$move@AEAV?$tuple@AEBH@std@@@std@@YA$$QEAV?$tuple@AEBH@0@AEAV10@@Z 0x140ed2d10 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x140ed3080 ; unique
+// MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@QEAA@AEBUUnk_GrNewTag@@@Z 0x140ed3120 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VCMsgBoxData@@@@QEAA@H@Z 0x140ed3220 ; unique
+// MS2-PIN: ??0?$tuple@AEBH@std@@QEAA@$$QEAV01@@Z 0x140ed3460 ; unique
+// MS2-PIN: ??4?$MS2Ptr@VCSkillBookTreeTabConfig@@@@QEAAAEAV0@AEBV0@@Z 0x140ed39c0 ; prop
+// MS2-PIN: ??8?$MS2Ptr@VCSkillBookTreeTabConfig@@@@QEBA_NPEAVCSkillBookTreeTabConfig@@@Z 0x140ed3aa0 ; unique
+// MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140ed3c70 ; prop
+// MS2-PIN: ??R?$less@H@std@@QEBA_NAEBH0@Z 0x140ed3d60 ; unique
+// MS2-PIN: ?vfunc_48@UISkillBookTreeDialog@@UEAAHXZ 0x140ed4c90 ; unique
+// MS2-PIN: ?AddRefImpl@?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@AEBAXPEAX@Z 0x140ed6a10 ; unique
+// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@PEAX@2@@Z 0x140ed6c20 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ 0x140ed6cd0 ; prop
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEAAAEAU?$less@H@2@XZ 0x140ed6d50 ; prop
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140ed7020 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140ed7080 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140ed70e0 ; unique
+// MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140ed7110 ; unique
+// MS2-PIN: ??$Call@VUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140ed7150 ; unique
+// MS2-PIN: ??$Call@VUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x140ed7190 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140ed71d0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140ed7230 ; unique
 // MS2-PINS-END tplpin
 //
 // File name assumed (the exe has no assert path for it).
@@ -256,7 +294,65 @@ void UISkillBookAutoDistributeDialog::FUN_140ec48e0()
 }
 
 
-MS2_EMIT_CRT_MEMMOVE_S();
+void FUN_1422bcd10(Scaleform::GFx::Value* pValue, int n);               // Value = n (Int)
+void FUN_1422bccb0(Scaleform::GFx::Value* pValue, unsigned int n);     // Value = n (UInt)
+void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
+void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);
+void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
+
+// @0x140ed0ed0
+inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a2, CStringW a3)
+{
+    ASArgList args;
+    args.FUN_1409b2800(3);
+    FUN_1422bcd10(args.FUN_1409b1f70(0), a1);
+    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcea0(args.FUN_1409b1f70(2), a3.GetString());
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x140ed0fd0
+inline Scaleform::GFx::Value AScript::FUN_140ed0fd0(const char* szMethod, int a1, bool a2)
+{
+    ASArgList args;
+    args.FUN_1409b2800(2);
+    FUN_1422bcd10(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcce0(args.FUN_1409b1f70(1), a2);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x140ed1090
+inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, CStringW a2, int a3)
+{
+    ASArgList args;
+    args.FUN_1409b2800(3);
+    FUN_1422bcea0(args.FUN_1409b1f70(0), a1.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(1), a2.GetString());
+    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x140ed11b0
+inline Scaleform::GFx::Value AScript::FUN_140ed11b0(const char* szMethod, unsigned int a1)
+{
+    ASArgList args;
+    args.FUN_1409b2800(1);
+    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x140ed1250
+inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned __int64 a1, CStringW a2)
+{
+    ASArgList args;
+    args.FUN_1409b2800(2);
+    FUN_1422bce00(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcea0(args.FUN_1409b1f70(1), a2.GetString());
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x140ec4d30
+MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
 // ---- the skill window (UISkillBookTreeDialog) ----
 
@@ -1879,7 +1975,7 @@ void UISkillBookTreeDialog::OnLoadComplete()
     {
         m_spButtonBar = static_cast<Unk_SkillScriptView*>(m_30.operator->())->FUN_140be23c0("m_buttonBar");
         m_spAddButton = m_30->FUN_140acce30<Unk_140acd6e0>("m_addButton");
-        m_30->Invoke("SetMaxTabCount", 3u);
+        m_30->FUN_140ed11b0("SetMaxTabCount", 3u);
     }
     FUN_1419260d0("m_webGuideButton", 0);
     if (FUN_140166410()->FUN_14036d570(0xca))
