@@ -78216,7 +78216,7 @@ atan2f	140a4e660	func
 ??0?$MS2Ptr@VUnk_SumText@@@@QEAA@XZ	140bbf710	func
 ??0?$Unk_DropPtr@VUnk_DropInput@@@@QEAA@XZ	140bbf710	func
 ??0ASArray@@QEAA@AEBV0@@Z	140bbf770	func
-??0ASDataProvider@@QEAA@H@Z	140bbf7b0	func
+??0ASDataProvider@@QEAA@H@Z	1422deec0	func
 ??0DelegateImplBase@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@QEAA@XZ	140bbf7f0	func
 ??0DelegateImplBase@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@QEAA@XZ	140bbf810	func
 ??0DelegateImplBase@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@QEAA@XZ	140bbf830	func
@@ -78290,7 +78290,7 @@ atan2f	140a4e660	func
 ??C?$MS2Ptr@VUnk_SumText@@@@QEBAPEAVUnk_SumText@@XZ	140bc0550	func
 ??C?$Unk_DropPtr@VUnk_DropInput@@@@QEBAPEAVUnk_DropInput@@XZ	140bc0550	func
 ??C?$Unk_QuestDebugPtr@VUnk_QuestDebugInput@@@@QEBAPEAVUnk_QuestDebugInput@@XZ	140bc0550	func
-??1ASDataProvider@@UEAA@XZ	140bc0740	func
+??1ASDataProvider@@UEAA@XZ	1422df070	func
 ?FUN_140bc09f0@@YAPEAVUIUGCEventDispatcher@@XZ	140bc09f0	func
 ?FUN_140bc09f0@@YAPEAVUnk_AptUgcEvents@@XZ	140bc09f0	func
 ?FUN_140bc09f0@@YAPEAVUnk_ClUgcEvents@@XZ	140bc09f0	func
