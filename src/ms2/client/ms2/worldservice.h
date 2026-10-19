@@ -424,7 +424,7 @@ public:
     void FUN_141bd1750(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out);
     CStringW FUN_141bd1830(int id);
     __int64 FUN_141bd1980(int id);
-    void FUN_141bd19d0(int id);
+    int FUN_141bd19d0(int id);
     int FUN_141bd1a10(class Unk_WsC_GameObj* obj);
     class Unk_WsC_GameObj* FUN_141bd1a50(class Unk_WsC_GameObj* self);
     class Unk_WsC_GameObj* FUN_141bd1d10(int a, int b);

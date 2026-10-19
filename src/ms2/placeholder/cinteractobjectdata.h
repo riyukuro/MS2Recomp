@@ -66,7 +66,10 @@ public:
     unsigned m_nCostItemLevel;          // +0x220 minimum level of that item
     int m_pad_224;
     std::vector<Unk_InteractReqItem> m_aReqItem;   // +0x228 items of which the player needs one
-    int m_pad_240[21];                  // +0x240 .. +0x294
+    int m_pad_240[2];                   // +0x240 .. +0x248
+    int m_nDropHeight;                  // +0x248 height a dropped item starts from (0: default)
+    int m_nDropBase;                    // +0x24c distance a dropped item flies (0: default)
+    int m_pad_250[17];                  // +0x250 .. +0x294
     int m_nNeedCond;                    // +0x294 extra requirement id (0: none)
     int m_pad_298[4];
     CString m_strUrl;                   // +0x2a8 web address of the display image
