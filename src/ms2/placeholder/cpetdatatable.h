@@ -63,6 +63,7 @@ public:
     PetPtr Find(unsigned int nPetId);                       // 0x1407290f0 (the exe name is FUN_1407290f0)
     PetPtr Find(CString strKfm);                            // 0x1407291c0 pet by model kfm
     int Contains(CString strKfm);                           // 0x1407292a0
+    CPetCollectTable* GetCollect() { return &m_collect; }   // 0x140cb17e0 (inline COMDAT, tabcontentspetcollect.cpp)
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -35,6 +35,7 @@ public:
     Unk_PetGroupPtr& operator=(const Unk_PetGroupPtr& o);
     T* get() const;
     T* operator->() const;
+    bool operator==(T* p) const;                        // 0x140cb1670 (PetGroupInfoPtr, tabcontentspetcollect.cpp)
 
 private:
     void AddRef() const;
@@ -60,6 +61,7 @@ template <class T> Unk_PetGroupPtr<T>& Unk_PetGroupPtr<T>::operator=(const Unk_P
 }
 template <class T> T* Unk_PetGroupPtr<T>::get() const { return m_p; }
 template <class T> T* Unk_PetGroupPtr<T>::operator->() const { return m_p; }
+template <class T> bool Unk_PetGroupPtr<T>::operator==(T* p) const { return m_p == p; }
 template <class T> void Unk_PetGroupPtr<T>::AddRef() const { if (m_p) AddRefImpl(0); }
 template <class T> void Unk_PetGroupPtr<T>::Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }
 template <class T> void Unk_PetGroupPtr<T>::Ref(CPtred* p) { CPtred::AddRefPtred(p); }
