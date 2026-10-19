@@ -3374,3 +3374,6 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?DAT_143ae52f8@@3VNiFixedString@@A	143ae52f8	data
 ?g_itemDefaultSiblingStatic@@3PADA	143aaf9f0	data
 ?FUN_14058a830@@YAXPEAX@Z	14058a830	func
+?GetBenefitItem@CVIPTable@@QEAA?AV?$MS2Ptr@VCVIPBenefitItem@@@@I@Z	1408f6d80	func
+?GetBenefitItems@CVIPTable@@QEAAXAEAV?$CAtlArray@V?$MS2Ptr@VCVIPBenefitItem@@@@V?$CElementTraits@V?$MS2Ptr@VCVIPBenefitItem@@@@@ATL@@@ATL@@@Z	1408f6f20	func
+??$GetChild@VUnk_VdList@@@UISwfEntity@@QEAA?AV?$MS2Ptr@VUnk_VdList@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140ba4b70	func
