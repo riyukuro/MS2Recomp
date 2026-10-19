@@ -1621,8 +1621,8 @@ __imp_CrashReporter_SetClientExit	142cce1c0	data
 ??1Unk_ClosingCameraPtr@@QEAA@XZ	140cb1460	func
 ??$GetChild@VASUIComponent@@@UISwfEntity@@QEAA?AV?$MS2Ptr@VASUIComponent@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140c02990	func
 ?g_ltaTable@@3VUnk_LtaTable@@A	143ab2fc0	data
-??0ASDataProvider@@QEAA@H@Z	140bbf7b0	func
-??1ASDataProvider@@UEAA@XZ	140bc0740	func
+??0ASDataProvider@@QEAA@H@Z	1422deec0	func
+??1ASDataProvider@@UEAA@XZ	1422df070	func
 ?IsNull@Unk_MentorInstPtr@@QEBA_NXZ	1407475b0	func
 ??0Unk_HmImageHttp@@QEAA@XZ	140511030	func
 ??1Unk_HmImageHttp@@QEAA@XZ	1405110d0	func
@@ -3574,3 +3574,16 @@ __imp_NxGetUtilLib	142cced28	data
 ??0ASDataProvider@@QEAA@AEBVASArray@@@Z	140bbf7b0	func
 ?SendReservation@WeddingManager@@QEAAXHH_JE_N@Z	141b86420	func
 ?DAT_143ab2a90@@3VUnk_WrInventory@@A	143ab2a90	data
+??0Unk_FmInt3@@QEAA@XZ	1408850a0	func
+??1Unk_FmAdditionalPtr@@QEAA@XZ	1407eb950	func
+??1Unk_FmAdditionalRowPtr@@QEAA@XZ	1401836a0	func
+??0Unk_FmFile@@QEAA@XZ	1402970b0	func
+??1Unk_FmFile@@QEAA@XZ	1402978f0	func
+?DAT_143b059e8@@3UUnk_FmFramework@@A	143b059e8	data
+??$GetChild@VUnk_TeList@@@UISwfEntity@@QEAA?AV?$MS2Ptr@VUnk_TeList@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140ba4b70	func
+??4TiXmlString@@QEAAAEAV0@PEBD@Z	1408725b0	func
+?DAT_143b059e8@@3UUnk_TeFramework@@A	143b059e8	data
+?GetArg@TriggerActionCli@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	140de4f00	func
+?GetArg@TriggerConditionCli@@QEBA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	140de5970	func
+?GetOnEnter@TriggerStateCli@@QEAA?AV?$MS2Ptr@VTriggerActionCli@@@@H@Z	140dea510	func
+?GetTransition@TriggerStateCli@@QEAA?AV?$MS2Ptr@VTriggerTransitionCli@@@@H@Z	140dea570	func
