@@ -7,6 +7,7 @@ enum Unk_PacketOptionA { Unk_PacketOptionA_Zero };
 enum Unk_PacketOptionB { Unk_PacketOptionB_Zero };
 class CCCreateItemPacket {
 public:
+    CCCreateItemPacket() : a(0), b(0), c(0), d(0), e(0), f(0), g(-1), h(-1), i(-1), j(0) {}    // 0x1412d4ee0 (inline COMDAT, uiitemoptioncreatedialog.cpp)
     virtual void vfunc_0(COutputStream&);
     virtual void vfunc_1(void*);
     virtual int vfunc_2();

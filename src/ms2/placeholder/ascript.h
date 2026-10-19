@@ -219,6 +219,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, unsigned __int64 a1, CStringW a2);   // 0x140ed1250 (inline COMDAT, defined in uiskillbookautodistributedialog.cpp; a2 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2, int a3);   // 0x140ed1090 (inline COMDAT, defined in uiskillbookautodistributedialog.cpp; the strings by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, Scaleform::GFx::Value a2, int a3);   // 0x1412e13f0 (inline COMDAT, defined in uimaidrecipelistdialog.cpp; the values by value)
+    Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, const char* a3, int a4);   // 0x1412d4770 (inline COMDAT, defined in uiitemoptioncreatedialog.cpp)
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {
