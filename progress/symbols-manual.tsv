@@ -3386,3 +3386,9 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?DAT_143adda48@@3UScreenSetting@MessengerData@@A	143adda48	data
 ?s_bInit@CLoadingDescriptionTable@@2_NA	143adc948	data
 ??4?$MS2Ptr@VCFunctionCubeObject@@@@QEAAAEAV0@H@Z	141126230	func
+??0Unk_BrmList@@QEAA@H@Z	140dc5a60	func
+??1Unk_BrmList@@QEAA@XZ	140dc5fd0	func
+??0Unk_AasImage@@QEAA@H@Z	1422e5300	func
+??0Unk_AasSource@@QEAA@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	1422e5a70	func
+??0Unk_DpChat@@QEAA@XZ	140acd570	func
+??1Unk_DpChat@@QEAA@XZ	140acd770	func
