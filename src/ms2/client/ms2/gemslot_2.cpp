@@ -67,7 +67,7 @@ public:
     char m_pad[0x152 - 0x18];
     char m_bFlag152;
 };
-MS2Ptr<Unk_WsPtred298> FUN_141bd30a0(Unk_GmWorld* p);   // the world's field record
+struct Unk_GsWorld { MS2Ptr<Unk_WsPtred298> FUN_141bd30a0(); }; // the world's field record
 bool FUN_140222e10(int nGemType);                       // the gem type is valid
 unsigned __int64 FUN_140222f50();                            // the count of the gem types
 void FUN_140d73bc0(int, int, void*, CStringW);
@@ -410,7 +410,7 @@ MS2Ptr<CItem> PCGemEquip::FUN_1412712e0(int nIndex)
         return MS2Ptr<CItem>(0);
     if (m_pOwner->FUN_141662eb0(spItem.get()) == 0)
         return MS2Ptr<CItem>(0);
-    char bFlag = FUN_141bd30a0(FUN_1403ed2d0())->m_bFlag152;
+    char bFlag = reinterpret_cast<Unk_GsWorld*>(FUN_1403ed2d0())->FUN_141bd30a0()->m_bFlag152;
     if (bFlag == 0)
         return MS2Ptr<CItem>(0);
     spItem->FUN_140527900()->vfunc_6(m_pOwner, spItem);

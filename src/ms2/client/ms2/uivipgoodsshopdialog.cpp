@@ -128,7 +128,6 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show
 void FUN_141415450(const CString& strBindId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind the item to the id
 void FUN_141415600(const CString& strBindId);                                              // release the bind
 int FUN_1405276c0(CItem* pItem);                                // the item id
-CStringW FUN_140527b10(CItem* pItem);                           // the item name
 int FUN_1409e13a0(ASTooltip* pTip, CItem* pCompare, CItem* pItem);   // item tooltip (the member in astooltip.h is declared void)
 void FUN_1409d6a40(ASTooltip* pTip, int nItemId, __int64 nPeriod);    // the period line of the tooltip
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
@@ -387,7 +386,7 @@ void UIVIPGoodsShopDialog::FUN_140fbaca0()
                 row.FUN_1407cba60(strKey, strBindId);
                 nNumber = j + 1;
                 strKey = FUN_140513200("bonusItemName{0}", nNumber);
-                row.FUN_1407cbb20(strKey, FUN_140527b10(spItem.get()));
+                row.FUN_1407cbb20(strKey, spItem->FUN_140527b10());   // CItem member: this=rcx, hidden return=rdx
             }
         }
         spList->FUN_1422dd230(row);

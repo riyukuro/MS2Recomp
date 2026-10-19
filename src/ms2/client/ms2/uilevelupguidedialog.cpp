@@ -146,7 +146,7 @@ private:
     UIObject* m_object;
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef, 0x10);
-Unk_CommandUIRef FUN_141adcf50(void* pMgr, const CString& strName);
+struct Unk_LgUiMgr { Unk_CommandUIRef FUN_141adcf50(const CString& strName); };
 UIObject* FUN_1403ed9e0(Unk_CommandUIRef& ref);
 
 // recommendContents.xml
@@ -398,7 +398,7 @@ void UILevelUpGuideDialog::FUN_140f854b0(int nId)
         }
     }
     else {
-        Unk_CommandUIRef ref = FUN_141adcf50(FUN_1403ed2b0(), spRow->m_link);
+        Unk_CommandUIRef ref = reinterpret_cast<Unk_LgUiMgr*>(FUN_1403ed2b0())->FUN_141adcf50(spRow->m_link);
         UIDialog* pDialog = dynamic_cast<UIDialog*>(FUN_1403ed9e0(ref));
         if (pDialog != 0)
             pDialog->FUN_141924680();

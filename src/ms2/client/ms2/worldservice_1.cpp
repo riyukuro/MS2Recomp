@@ -6774,7 +6774,7 @@ Unk_WsC_MsgBoxPtr FUN_140d73d20(int a, CStringW text, int b, CStringW caption); 
 CStringW FUN_14028de60(int stringId);                                               // string table lookup
 void FUN_140d73c60(Unk_WsC_MsgBoxPtr box);                                          // show
 void FUN_141adbf30(void* sys);
-int FUN_140375130(void* data);
+bool FUN_140375130(void* data);
 void* FUN_1411d14b0(efd::ServiceManager* mgr);
 egf::FlatModelManager* FUN_1414f3e00(void* h);
 void FUN_140d86950(egf::FlatModelManager* fm);

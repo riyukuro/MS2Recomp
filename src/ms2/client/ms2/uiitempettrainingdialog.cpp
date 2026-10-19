@@ -66,7 +66,7 @@ class CMsgBoxData : public CPtred
 public:
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> fn);
     void FUN_141a01600(__int64 n);
-    void FUN_141a01ee0(const CItem* pDummy);
+    void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);   // item entry
     void FUN_141a01700(int nA, int nB, int nC);
 };
 
@@ -166,7 +166,7 @@ int UIItemPetTrainingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                 if (box.get() != 0)
                 {
                     box->FUN_141a01600(m_spPet->FUN_140526a50());
-                    box->FUN_141a01ee0(0);
+                    box->FUN_141a01ee0(MS2Ptr<CItem>(m_spPet), m_spPet->FUN_140527b10(), 1, 0, -1, -1, 1);
                     box->FUN_141a01700(0x477, 0x478, 0);
                     FUN_140d73c60(box);
                     return 1;

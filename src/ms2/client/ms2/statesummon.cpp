@@ -62,8 +62,8 @@ extern Unk_LockInventory DAT_143ab2a90;
 // The item-data tables.
 MS2Ptr<Unk_RideeData> FUN_1407844b0(int nRideeId);                         // 0x1407844b0 the ridee row
 Unk_RideeData* FUN_1407895d0(MS2Ptr<Unk_RideeData>& refRow);               // 0x1407895d0 the row
-void* FUN_14052d210();                                                     // 0x14052d210 the pet-data table
-MS2Ptr<Unk_PetRow> FUN_1407290f0(void* pTable, int nPetId);                // 0x1407290f0 that pet row
+class Unk_SmPetTable { public: MS2Ptr<Unk_PetRow> FUN_1407290f0(int nPetId); };   // 0x1407290f0 that pet row (member)
+Unk_SmPetTable* FUN_14052d210();                                           // 0x14052d210 the pet-data table
 
 // The world service, its effect manager and the field objects it hands out.
 void* FUN_1403ed2d0();                                                     // 0x1403ed2d0 the world
@@ -99,7 +99,7 @@ void* FUN_14165f100(PCBase* p);                                            // 0x
 void FUN_14165f170(PCBase* p);                                             // 0x14165f170 stop it
 void FUN_140b11180(void* pPet);                                            // 0x140b11180 update
 void FUN_140b114e0(PCBase* pPet, int nAnimId);                             // 0x140b114e0 play a pet animation
-int FUN_140b102b0(PCBase* pPet);                                           // 0x140b102b0 the pet's item uid
+struct Unk_SmPet { MS2Ptr<Unk_PetRow> FUN_140b102b0(); };                // 0x140b102b0 CPet: the pet's row (by value)
 int FUN_141661970(PCBase* pActor);                                         // 0x141661970 the actor is busy
 int FUN_140f48d40(void* pComp);                                            // 0x140f48d40 the component's flag
 
@@ -125,8 +125,6 @@ class Unk_SmBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
 Unk_SmBuffMgr* FUN_14166d240(PCBase* p);                                   // 0x14166d240 &m_unk_6d8
 
 // The ride-on action the summon packet carries (RideOnActionUseItem: ms2/commonfiles/rideonaction.h).
-RideOnActionUseItem* FUN_141532400(RideOnActionUseItem* p);                // 0x141532400 the reference is set
-RideOnActionUseItem* FUN_141533230(RideOnActionUseItem* p);                // 0x141533230 operator-> (temp)
 
 // The pet motion helpers of this unit.
 void FUN_1417f9100(StateSummonIdle* pState, int nActorId);
@@ -204,8 +202,7 @@ void StateSummon::vfunc_4(StateData* pData)
             }
             else
             {
-                MS2Ptr<Unk_PetRow> spRow = FUN_1407290f0(FUN_14052d210(),
-                                                         pItem->FUN_140527840()->FUN_14053dc60());
+                MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(pItem->FUN_140527840()->FUN_14053dc60());
                 if (spRow.get() != 0)
                 {
                     nLabel = 0x64f;
@@ -306,21 +303,22 @@ void StateSummon::vfunc_8(double fTime)
                 if (pEquip->FUN_14053cc80())
                 {
                     int nItemId = pEquip->FUN_14053dd80();
-                    RideOnActionUseItem* pAction = FUN_141532400(new RideOnActionUseItem());
-                    *reinterpret_cast<int*>(reinterpret_cast<char*>(pAction) + 0x1c) = nItemId;
-                    *reinterpret_cast<__int64*>(reinterpret_cast<char*>(pAction) + 0x38) = pItem->FUN_140526a50();
-                    *reinterpret_cast<char*>(reinterpret_cast<char*>(pAction) + 0x28) =
-                        *reinterpret_cast<char*>(static_cast<char*>(FUN_14124ab20(FUN_1409a8b10())) + 2);
+                    // MS2Ptr<RideOnActionUseItem> local (ctor 0x141532400, operator-> 0x141533230, dtor 0x141532ba0)
+                    MS2Ptr<RideOnActionUseItem> spAction(new RideOnActionUseItem());
+                    *reinterpret_cast<int*>(reinterpret_cast<char*>(spAction.operator->()) + 0x1c) = nItemId;
+                    __int64 nUid = pItem->FUN_140526a50();
+                    *reinterpret_cast<__int64*>(reinterpret_cast<char*>(spAction.operator->()) + 0x38) = nUid;
+                    char* pCfg = static_cast<char*>(FUN_14124ab20(FUN_1409a8b10()));
+                    *(reinterpret_cast<char*>(spAction.operator->()) + 0x28) = pCfg[2];
                     COutPacket packet(0x40, 0);
                     packet.Encode1(0);
-                    FUN_141533230(pAction)->vfunc_1(reinterpret_cast<COutputStream*>(&packet));
+                    spAction->vfunc_1(reinterpret_cast<COutputStream*>(&packet));
                     FUN_140710590(packet);
                 }
             }
             else
             {
-                MS2Ptr<Unk_PetRow> spRow = FUN_1407290f0(FUN_14052d210(),
-                                                         pItem->FUN_140527840()->FUN_14053dc60());
+                MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(pItem->FUN_140527840()->FUN_14053dc60());
                 if (spRow.get() != 0)
                 {
                     if (pSummon->m_b18 == 0)
@@ -832,12 +830,11 @@ void StateSummonExpire::vfunc_3(double fTime)
     if (pPet == 0)
         return;
 
-    if (FUN_140b102b0(pPet) == 0)
-    {
-        if (m_t40.FUN_140268870(
-                *FUN_1401d7c10(reinterpret_cast<const char*>(FUN_1401d3200()) + 0x7e38)) != 0)
-            FUN_140b114e0(pPet, 0x5b);
-    }
+    MS2Ptr<Unk_PetRow> spRow = reinterpret_cast<Unk_SmPet*>(pPet)->FUN_140b102b0();
+    if (spRow == 0)
+        return;
+    if (m_t40.FUN_140268870(*FUN_1401d7c10(reinterpret_cast<const char*>(FUN_1401d3200()) + 0x7e38)) != 0)
+        FUN_140b114e0(pPet, 0x5b);
 }
 
 // @0x1417f99c0

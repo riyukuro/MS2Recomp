@@ -313,7 +313,7 @@ struct Unk_BSConstUInt { char m_pad[0x58]; };
 class Unk_BSConstStr
 {
 public:
-    CString FUN_140298f80();                    // the string value
+    const CString& FUN_140298f80();             // the string value (by reference: this+0x50)
     char m_data[0x58];
 };
 struct Unk_BSConstants

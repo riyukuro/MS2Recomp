@@ -205,7 +205,7 @@ MS2Ptr<CItem> FUN_141420330(void*, int);
 void FUN_141415600(const CString&);
 void FUN_141415450(const CString&, MS2Ptr<CItem>, int, int, int);
 CStringW FUN_1419021b0(unsigned, unsigned);
-Scaleform::GFx::Value FUN_140f356e0(AScript*, const char*, int, bool);
+struct Unk_SpInvokeB { Scaleform::GFx::Value FUN_140f356e0(const char*, int, bool); };
 void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>);
 DragSlotBag* FUN_140c54570(const CString&);
 void FUN_1422cc9e0(DragSlotBag*);
@@ -220,8 +220,8 @@ Unk_SocketPageItemEvents* FUN_140a6a840();
 void FUN_1419caeb0(Unk_SocketPageItemEvents*, UIItemEventListener*);
 void FUN_1419cae20(Unk_SocketPageItemEvents*, UIItemEventListener*);
 void FUN_140cfe1b0(const CString&);
-MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(AScript*, const CString&);
-MS2Ptr<Unk_SocketPageButton> FUN_140acce30(AScript*, const CString&);
+struct Unk_SpFindBag { MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); };
+struct Unk_SpFindButton { MS2Ptr<Unk_SocketPageButton> FUN_140acce30(const CString&); };
 class Unk_SocketPageDebug;
 Unk_SocketPageDebug* FUN_14025e7c0();
 bool FUN_14116d720(Unk_SocketPageDebug*);
@@ -297,7 +297,7 @@ void FUN_140628b70(Unk_SSGGemUnequip&, COutputStream&);
 void FUN_140629de0(Unk_SockMsgIIL&, COutputStream&);
 class Unk_SocketPageUIService;
 Unk_SocketPageUIService* FUN_1403ed2b0();
-MS2Ptr<UIObject> FUN_141adcea0(Unk_SocketPageUIService*, int);
+struct Unk_SpUIService { MS2Ptr<UIObject> FUN_141adcea0(int); };
 
 // The gemstone upgrade page (itemsocketsystempagegemstoneupgrade.cpp).
 float FUN_1411e1110(Unk_SocketPageInventory*, int);
@@ -305,7 +305,7 @@ int FUN_140627a20(unsigned, unsigned*, unsigned);
 bool FUN_140627020(MS2Ptr<CItemGemStoneData>);
 bool FUN_140626fb0(unsigned);
 CStringW FUN_14042cb90(CStringW, const float&);
-MS2Ptr<AScript> FUN_1409db730(ASTooltip*);
+struct Unk_SpTooltipRoot { MS2Ptr<AScript> FUN_1409db730(); };
 void FUN_1409d8bf0(ASTooltip*, int);
 bool FUN_140841300(const CStringW&, const char*);
 NotifySystem* FUN_140939a10();
@@ -778,7 +778,7 @@ void ItemSocketSystemPageBase::FUN_140f6e250(const CString& name, const CAtlArra
 void ItemSocketSystemPageBase::FUN_140f6e500(int index, bool isNew)
 {
     if (!(m_root == 0))
-        FUN_140f356e0(m_root.operator->(), "setNew", index, isNew);
+        reinterpret_cast<Unk_SpInvokeB*>(m_root.operator->())->FUN_140f356e0("setNew", index, isNew);
 }
 
 // @0x140f6e580
@@ -877,15 +877,15 @@ void ItemSocketSystemPageGemStoneManage::vfunc_7(MS2Ptr<AScript> root)
             {
                 MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots0");
                 if (slots.get() != 0)
-                    m_equipmentControl = FUN_140c4bc60(slots.operator->(), "m_itemBag");
+                    m_equipmentControl = reinterpret_cast<Unk_SpFindBag*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
             }
             {
                 MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots1");
                 if (slots.get() != 0)
-                    m_gemControl = FUN_140c4bc60(slots.operator->(), "m_itemBag");
+                    m_gemControl = reinterpret_cast<Unk_SpFindBag*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
             }
             bool debug = FUN_14116d720(FUN_14025e7c0());
-            m_debugButton = FUN_140acce30(m_root.operator->(), "m_debugBtnFillIngredient");
+            m_debugButton = reinterpret_cast<Unk_SpFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnFillIngredient");
             if (m_debugButton.get() != 0) {
                 m_debugButton->vfunc_3(debug);
                 if (debug)
@@ -1440,7 +1440,7 @@ UIHighlightGameMenu* FUN_140f73450()
     Unk_SocketPageUIService* service = FUN_1403ed2b0();
     if (service == 0)
         return 0;
-    MS2Ptr<UIObject> ui = FUN_141adcea0(service, FUN_140f73c10());
+    MS2Ptr<UIObject> ui = reinterpret_cast<Unk_SpUIService*>(service)->FUN_141adcea0(FUN_140f73c10());
     if (!ui)
         return 0;
     return dynamic_cast<UIHighlightGameMenu*>(ui.operator->());
@@ -1518,21 +1518,21 @@ void ItemSocketSystemPageGemStoneUpgrade::vfunc_7(MS2Ptr<AScript> root)
             m_root = root->FUN_1409b4560("m_gemStoneUpgradePage");
         if (!(m_root == 0)) {
             FUN_140f75c50();
-            m_bag = FUN_140c4bc60(m_root.operator->(), "m_itemBag");
+            m_bag = reinterpret_cast<Unk_SpFindBag*>(m_root.operator->())->FUN_140c4bc60("m_itemBag");
             bool debug = FUN_14116d720(FUN_14025e7c0());
-            m_debugAction = FUN_140acce30(m_root.operator->(), "m_debugBtnAction");
+            m_debugAction = reinterpret_cast<Unk_SpFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnAction");
             if (m_debugAction.get() != 0) {
                 m_debugAction->vfunc_3(debug);
                 if (debug)
                     FUN_1422ce240(m_debugAction.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneUpgrade::FUN_140f79760), 0);
             }
-            m_debugFill = FUN_140acce30(m_root.operator->(), "m_debugBtnFillIngredient");
+            m_debugFill = reinterpret_cast<Unk_SpFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnFillIngredient");
             if (m_debugFill.get() != 0) {
                 m_debugFill->vfunc_3(debug);
                 if (debug)
                     FUN_1422ce240(m_debugFill.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneUpgrade::FUN_140f798e0), 0);
             }
-            m_debugFillUnit = FUN_140acce30(m_root.operator->(), "m_debugBtnFillIngredientUnit");
+            m_debugFillUnit = reinterpret_cast<Unk_SpFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnFillIngredientUnit");
             if (m_debugFillUnit.get() != 0) {
                 m_debugFillUnit->vfunc_3(debug);
                 if (debug)
@@ -2237,7 +2237,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f79c50(ItemInfoSlot& slot, ASTo
             equip = record->m_equipment;
         tooltip.FUN_1409e13a0(equip.get(), item.get());
         if (equip.get() != 0) {
-            MS2Ptr<AScript> sub = FUN_1409db730(&tooltip);
+            MS2Ptr<AScript> sub = reinterpret_cast<Unk_SpTooltipRoot*>(&tooltip)->FUN_1409db730();
             if (sub.get() != 0) {
                 ASTooltip compare(sub->FUN_1422bb870(), 2);
                 if (!compare.FUN_1422ba9a0() && !FUN_1414258e0(equip->FUN_140526a50()))

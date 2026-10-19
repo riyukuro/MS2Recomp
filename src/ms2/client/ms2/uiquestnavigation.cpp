@@ -65,7 +65,7 @@ public:
 };
 extern Unk_QgNavi* DAT_143abf7e8;                              // the quest navigator
 Unk_QgNavi* FUN_140e7c990() { return DAT_143abf7e8; }           // 0x140e7c990
-class Unk_QgCamera { public: int FUN_140af0700(const Unk_StreamPoint& ptWorld, Unk_StreamPoint& rptScreen); };
+class Unk_QgCamera { public: bool FUN_140af0700(const Unk_StreamPoint& ptWorld, Unk_StreamPoint& rptScreen); };
 Unk_QgCamera* FUN_1409478c0();
 class Unk_QgUIScale;
 Unk_QgUIScale* FUN_14025e7a0();

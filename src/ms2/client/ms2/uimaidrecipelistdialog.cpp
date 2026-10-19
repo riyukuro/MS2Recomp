@@ -863,7 +863,7 @@ class Unk_MdText : public AScript { public: void FUN_1422c4cd0(CStringW str); };
 class Unk_MdShopList : public Unk_MdList {};
 class Unk_MdShopPanel : public AScript {};
 MS2Ptr<ASObj> FUN_1409e7dc0(int nUiId, Scaleform::GFx::Value v);   // the AS object of a row/dialog by the value
-template <class T> MS2Ptr<T> FUN_1409b4620(AScript* pParent, const CString& strName);   // text child of a panel
+struct Unk_MdChildFinder { template <class T> MS2Ptr<T> FUN_1409b4620(const CString& strName); };   // text child of a panel (AScript member)
 MS2Ptr<Unk_MdShopList> FUN_140accef0_(AScript* p);
 
 struct Unk_MdColors;                                        // the palette of the designer colours
@@ -1282,7 +1282,7 @@ struct Unk_MdAsRows { ~Unk_MdAsRows(); ASArray* FUN_140be3d00(); };     // dtor 
 Unk_MdAsRows FUN_140ff6b60(int nMode, Scaleform::GFx::Value& v);
 void FUN_1409c1770(AScript* p, const char* szName, Scaleform::GFx::Value& out);
 class Unk_MdRowObj : public ASObj { public: Unk_MdRowObj(ASArray* pArr, unsigned nIndex); };     // 0x1422df140 the element as an object
-CStringW FUN_1422bb2b0(AScript* p, const char* szName);     // a member as text
+struct Unk_MdMemberText { CStringW FUN_1422bb2b0(const char* szName); }; // a member as text
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);          // the value as int
 bool FUN_1409c1720(const Scaleform::GFx::Value& v);         // the value as bool
 int FUN_1409c1750(const Scaleform::GFx::Value& v);
@@ -1351,8 +1351,8 @@ bool FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int
     {
         Unk_MdRowObj row(items.FUN_140be3d00(), i);
         Unk_MdXmlElement item("item");
-        int nSn = FUN_1412df3b0(FUN_1422bb2b0(&row, "sn"));
-        FUN_1408740a0(&item, "sn", FUN_1422bb2b0(&row, "sn"));
+        int nSn = FUN_1412df3b0(reinterpret_cast<Unk_MdMemberText*>(&row)->FUN_1422bb2b0("sn"));
+        FUN_1408740a0(&item, "sn", reinterpret_cast<Unk_MdMemberText*>(&row)->FUN_1422bb2b0("sn"));
         FUN_140873dc0(&item, "index", FUN_1409c17e0(row.FUN_1422baa20("index")));
         FUN_140873bc0(&item, "visible", FUN_1409c1720(row.FUN_1422baa20("visible")));
         FUN_140873bc0(&item, "category", FUN_1409c1720(row.FUN_1422baa20("category")));
@@ -1370,8 +1370,8 @@ bool FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int
         if (!FUN_1409b0390(vId))
             nStringId = FUN_1409c1750(row.FUN_1422baa20("stringId"));
         FUN_140873ca0(&category, "stringId", nStringId);
-        FUN_1408740a0(&category, "name", FUN_1422bb2b0(&row, "name"));
-        FUN_1408740a0(&category, "indexes", FUN_1422bb2b0(&row, "indexes"));
+        FUN_1408740a0(&category, "name", reinterpret_cast<Unk_MdMemberText*>(&row)->FUN_1422bb2b0("name"));
+        FUN_1408740a0(&category, "indexes", reinterpret_cast<Unk_MdMemberText*>(&row)->FUN_1422bb2b0("indexes"));
         FUN_140873dc0(&category, "colorIndex", FUN_1409c17e0(row.FUN_1422baa20("colorIndex")));
         FUN_14086e000(&root, &category);
     }
@@ -1429,7 +1429,7 @@ void UIMDEditDialog::FUN_1412dea90(CStringW strSearch)
     MS2Ptr<Unk_MdShopList> spList = spPanel->FUN_140accef0<Unk_MdShopList>(CString("m_itemList"));
     if (!spList)
         return;
-    MS2Ptr<Unk_MdText> spName = FUN_1409b4620<Unk_MdText>(spPanel.get(), CString("m_name"));
+    MS2Ptr<Unk_MdText> spName = reinterpret_cast<Unk_MdChildFinder*>(spPanel.get())->FUN_1409b4620<Unk_MdText>(CString("m_name"));
     if (spName.get() != 0)
         spName->FUN_1422c4cd0(CStringW(m_180 == 2 ? L"\xce90\xc2dc\xc0f5" : L"\xba54\xb7ff\xc0f5"));
     ATL::CAtlArray<MS2Ptr<CMeratMarketPremiumProduct> >* pProducts;
@@ -1494,7 +1494,7 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
             MS2Ptr<ASObj> spObj = FUN_1409e7dc0(m_28, data.FUN_1422b9260());
             if (!spObj.IsNull())
             {
-                int nSn = FUN_1412df3b0(FUN_1422bb2b0(spObj.get(), "sn"));
+                int nSn = FUN_1412df3b0(reinterpret_cast<Unk_MdMemberText*>(spObj.get())->FUN_1422bb2b0("sn"));
                 unsigned nItemId = FUN_141b71a10(FUN_142576d50(spObj->FUN_1422baa20("itemID")).ToCStr());
                 Unk_MdItemRef item = FUN_14053f870(nItemId);
                 if (item.FUN_140203c60() == 0)

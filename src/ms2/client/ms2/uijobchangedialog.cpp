@@ -72,12 +72,12 @@ Unk_JcRewardUI* FUN_140a7b2b0(int nId);
 
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
-Scaleform::GFx::Value FUN_14190b490(AScript* pDlg, const char* szMethod, unsigned nW, unsigned nH, float fScale);
+struct Unk_JcInvoke4 { Scaleform::GFx::Value FUN_14190b490(const char* szMethod, unsigned nW, unsigned nH, float fScale); };
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
-Scaleform::GFx::Value FUN_1409ba030(AScript* pDlg, const char* szMethod, int n);
-Scaleform::GFx::Value FUN_1409ba0d0(AScript* pDlg, const char* szMethod, int a1, int a2);
-Scaleform::GFx::Value FUN_140e78470(AScript* pDlg, const char* szMethod, CStringW a1, CStringW a2);
+struct Unk_JcInvoke1 { Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int n); };
+struct Unk_JcInvoke2 { Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2); };
+struct Unk_JcInvokeS { Scaleform::GFx::Value FUN_140e78470(const char* szMethod, CStringW a1, CStringW a2); };
 CString FUN_14016a5c0(const char* pszName, int nFlags);          // undecorated class name
 
 extern unsigned DAT_143af62d4;                                  // client area width
@@ -196,7 +196,7 @@ void UIJobChangeDialog::vfunc_43()
         return;
     }
     if (FUN_1409ee240(&m_30) != 0)
-        FUN_14190b490(FUN_1409ee290(&m_30), "setStageSize", DAT_143af62d4, DAT_143af62d8,
+        reinterpret_cast<Unk_JcInvoke4*>(FUN_1409ee290(&m_30))->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8,
                       FUN_14025e7a0()->FUN_1422afec0(m_28));
 }
 
@@ -295,7 +295,7 @@ void UIJobChangeDialog::FUN_1419dbe30(int nJob)
                 FUN_1419dc5e0(pDlg, "setSkill", (int)i, obj);
             }
         }
-        FUN_1409ba030(pDlg, "setDifficulty", spPreview->m_nDifficulty);
+        reinterpret_cast<Unk_JcInvoke1*>(pDlg)->FUN_1409ba030("setDifficulty", spPreview->m_nDifficulty);
     }
 }
 
@@ -315,9 +315,9 @@ void UIJobChangeDialog::FUN_1419dc1e0(int nJob)
         MS2Ptr<ASTextField> spHistoryText = FUN_140bb4cf0("m_jobHistory");
         if (spHistoryText.get())
             spHistoryText->FUN_1422c4cd0(spDesc->m_strHistory);
-        FUN_140e78470(pDlg, "setJobName", spDesc->m_strSub, spDesc->m_strMain);
-        FUN_1409ba030(pDlg, "setJob", nJob);
-        FUN_1409ba0d0(pDlg, "setVideo", 1, nJob);
+        reinterpret_cast<Unk_JcInvokeS*>(pDlg)->FUN_140e78470("setJobName", spDesc->m_strSub, spDesc->m_strMain);
+        reinterpret_cast<Unk_JcInvoke1*>(pDlg)->FUN_1409ba030("setJob", nJob);
+        reinterpret_cast<Unk_JcInvoke2*>(pDlg)->FUN_1409ba0d0("setVideo", 1, nJob);
     }
 }
 

@@ -154,8 +154,8 @@ NiNode* FUN_14098d0f0(const NiAVObjectPtr& spNode);                            /
 NiTransform* FUN_140a33de0(const NiTransform& kA, NiTransform* pOut, const NiTransform& kB);   // 0x140a33de0 compose
 void FUN_140a35bd0(efd::Matrix3* pDest, const NiTransform* pSrc);          // 0x140a35bd0 store the rotation part
 void FUN_140ae9200(NiPoint3* pDest, const NiPoint3* pSrc);                 // 0x140ae9200 point copy / normalise
-void FUN_140ad0c10(efd::Point3* pAngles, unsigned nRadToDeg);              // 0x140ad0c10 scale the angles (radians -> degrees)
-efd::Point3 FUN_14097fd50(const efd::Point3& kA, const NiPoint3& kB);      // 0x14097fd50 kA + kB
+void FUN_140ad0c10(efd::Point3* pAngles, float fScale);                     // 0x140ad0c10 scale the angles (radians -> degrees)
+struct Unk_SceAdd { efd::Point3 FUN_14097fd50(const NiPoint3& kB) const; }; // 0x14097fd50 kA + kB
 void FUN_140a4e560(NiPoint3* pDest, const efd::Point3* pSrc);              // 0x140a4e560 efd::Point3 -> NiPoint3
 void FUN_140aacc00(NiAVObject* pObject, const NiPoint3* pTranslate);       // 0x140aacc00 set the translation
 void FUN_140aacbb0(NiAVObject* pObject, const NiTransform* pXform);        // 0x140aacbb0 set the local transform
@@ -589,7 +589,7 @@ void StateCoupleEmotion::vfunc_24()
                 NiTransform kXform;
                 FUN_140a33de0(FUN_1409478e0(FUN_14098d0f0(spParent)), &kXform, FUN_140a33f90(pOwnerNode));
                 FUN_140a0b1f0(&kXform, &kRot);
-                kRot = FUN_14097fd50(m_spCoupleData->m_posEnd, kRot);
+                kRot = reinterpret_cast<const Unk_SceAdd*>(&m_spCoupleData->m_posEnd)->FUN_14097fd50(kRot);
                 pOwnerPC->FUN_14166d970(efd::Point3(kRot.x, kRot.y, kRot.z));
             }
         }
@@ -861,8 +861,8 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         NiTransform kTmp;
         kParentXf = *FUN_140a33de0(kOwnerXf, &kTmp, kParentXf);
         kPeerXf = *FUN_140a33de0(kOwnerXf, &kTmp, kPeerXf);
-        NiPoint3 ptPeer(FUN_14097fd50(m_spCoupleData->m_posStart, kPeerXf.m_Translate));
-        NiPoint3 ptOwner(FUN_14097fd50(m_spCoupleData->m_posStart, kOwnerXf.m_Translate));
+        NiPoint3 ptPeer(reinterpret_cast<const Unk_SceAdd*>(&m_spCoupleData->m_posStart)->FUN_14097fd50(kPeerXf.m_Translate));
+        NiPoint3 ptOwner(reinterpret_cast<const Unk_SceAdd*>(&m_spCoupleData->m_posStart)->FUN_14097fd50(kOwnerXf.m_Translate));
         if (FUN_140b84dc0(ptPeer) && FUN_140b84dc0(ptOwner))
         {
             NiPoint3 kHit;
@@ -874,10 +874,10 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
             {
                 efd::Point3 kAngles;
                 if (kParentXf.m_Rotate.ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
-                    FUN_140ad0c10(&kAngles, 0xc2652ee0);
+                    FUN_140ad0c10(&kAngles, -57.2957763671875f);   // 0xc2652ee0
                 *pfYaw = kAngles.z;
                 posA = ptPeer;
-                posB = FUN_14097fd50(m_spCoupleData->m_posStart, kParentXf.m_Translate);
+                posB = reinterpret_cast<const Unk_SceAdd*>(&m_spCoupleData->m_posStart)->FUN_14097fd50(kParentXf.m_Translate);
                 return true;
             }
         }
@@ -982,12 +982,12 @@ bool StateCoupleEmotion::SyncWithPartner()
     kParentXf.m_Rotate = matEnd;
     NiTransform kOwnerXf;
     FUN_140a33de0(kParentXf, &kOwnerXf, FUN_140a33f90((NiAVObject*)FUN_1409475f0(&m_spAnimInfo->m_spOwnerNode)));
-    NiPoint3 kPos(FUN_14097fd50(m_spCoupleData->m_posStart, kOwnerXf.m_Translate));
+    NiPoint3 kPos(reinterpret_cast<const Unk_SceAdd*>(&m_spCoupleData->m_posStart)->FUN_14097fd50(kOwnerXf.m_Translate));
     pOwnerPC->vfunc_19(efd::Point3(kPos.x, kPos.y, kPos.z));
     efd::Point3 kAngles;
     if (kOwnerXf.m_Rotate.ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
     {
-        FUN_140ad0c10(&kAngles, 0xc2652ee0);
+        FUN_140ad0c10(&kAngles, -57.2957763671875f);   // 0xc2652ee0
         pOwnerPC->vfunc_21(kAngles);
     }
     NiTransform kCenterXf;

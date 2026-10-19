@@ -74,7 +74,7 @@ private:
     UIObject* m_pObject;
 };
 MS2_CHECK_SIZE(Unk_DcUiRef, 0x10);
-Unk_DcUiRef FUN_141adcea0(Unk_DcUiMgr* pMgr, int nId);
+struct Unk_DcUiMgrCall { Unk_DcUiRef FUN_141adcea0(int nId); };
 UIObject* FUN_1403ed9e0(Unk_DcUiRef& ref);
 
 // The dialog of a ui id, and the value of a movie member.
@@ -177,7 +177,7 @@ static UIWeddingHallReservationDialog* FUN_141296ab0(int nId)
 {
     if (FUN_1403ed2b0() != 0)
     {
-        Unk_DcUiRef ref = FUN_141adcea0(FUN_1403ed2b0(), nId);
+        Unk_DcUiRef ref = reinterpret_cast<Unk_DcUiMgrCall*>(FUN_1403ed2b0())->FUN_141adcea0(nId);
         if (ref.FUN_1403e8a70() != 0)
             return dynamic_cast<UIWeddingHallReservationDialog*>(FUN_1403ed9e0(ref));
     }

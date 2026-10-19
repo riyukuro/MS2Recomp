@@ -24,7 +24,7 @@ Unk_RrTransform* FUN_140a33f90(void* pTarget);
 void FUN_140a343c0(NiQuatTransform* pDst, Unk_RrPoint3* pOut);
 void FUN_140a342a0(NiQuatTransform* pDst, Unk_RrMatrix3* pM);
 void FUN_140a34360(NiQuatTransform* pDst, float fScale);
-Unk_RrQuat* FUN_14098d000(Unk_RrQuat* p, float fAngle, Unk_RrPoint3* pAxis);
+Unk_RrQuat* FUN_14209b8e0(Unk_RrQuat* p, float fAngle, Unk_RrPoint3* pAxis);   // efd::Quaternion(float, const Point3&) (was mislabelled 0x14098d000, an iterator ==)
 Unk_RrMatrix3* FUN_140a34450(Unk_RrQuat* pQ, Unk_RrMatrix3* pOut);
 Unk_RrMatrix3& FUN_140a33480(Unk_RrMatrix3& a, Unk_RrMatrix3* pOut, const Unk_RrMatrix3* b);   // a * b
 void FUN_140a33240(Unk_RrMatrix3* pOut, const Unk_RrMatrix3& pSrc);
@@ -79,7 +79,7 @@ bool RootRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
     FUN_140a342a0(&m_kTransformValue, &m_matrix);
     FUN_140a34360(&m_kTransformValue, 0.0f);
     Unk_RrQuat kAxisRot;
-    FUN_14098d000(&kAxisRot, 1.0471976f, &m_axis);
+    FUN_14209b8e0(&kAxisRot, 1.0471976f, &m_axis);
     Unk_RrMatrix3 kRot;
     FUN_1409f7320(&kRot);
     FUN_140a34450(&kAxisRot, &kRot);

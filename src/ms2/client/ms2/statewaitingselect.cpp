@@ -43,7 +43,7 @@ public:
     char m_pad_18[8];
     int m_n20;
 };
-MS2Ptr<Unk_WsEquipRec> FUN_14165c520(PCBase* p);           // 0x14165c520
+struct Unk_WsEquipOwner { MS2Ptr<Unk_WsEquipRec> FUN_14165c520(); }; // 0x14165c520
 
 // The skill request a CSkillRecord is built from (same view as pcbase.cpp).
 struct Unk_InventorySkillRequest
@@ -172,7 +172,7 @@ void StateWaitingSelect::vfunc_2(int n)
         pPC->FUN_14166ce70(1);
         FUN_141653f00(pPC);
         {
-            MS2Ptr<Unk_WsEquipRec> spEquip = FUN_14165c520(pPC);
+            MS2Ptr<Unk_WsEquipRec> spEquip = reinterpret_cast<Unk_WsEquipOwner*>(pPC)->FUN_14165c520();
             if (spEquip.get() != 0)
             {
                 Unk_InventorySkillRequest kReq(spEquip->m_n20, 1);

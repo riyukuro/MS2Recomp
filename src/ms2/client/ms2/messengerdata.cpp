@@ -161,7 +161,7 @@ Unk_MdPlayers* FUN_1403ed2d0();
 
 // Source records of the chat entries (partial layouts: only what the entry builders read).
 class Unk_MdName { public: CString FUN_1408f1a60(); CStringW FUN_1408f19e0(); };   // a name box
-class Unk_MdSrcA { public: int FUN_1401cc680(); __int64 FUN_1401cc230(); CString FUN_1401cc530(); CStringW FUN_1401cc1c0();
+class Unk_MdSrcA { public: int FUN_1401cc680(); __int64 FUN_1401cc230(); const CString& FUN_1401cc530(); CStringW FUN_1401cc1c0();
                    unsigned short FUN_1401cc210(); int FUN_1401cc290(); };
 class Unk_MdSrcB
 {

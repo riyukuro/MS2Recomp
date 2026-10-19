@@ -23,7 +23,7 @@ char FUN_141546c80(void* pArr);
 void* FUN_141546aa0(void* pArr, void** ppPos);      // element at position, advances it
 float FUN_140af7f50(void* pCtrl);                   // controller end time
 void FUN_14098e870(void* pCtrl, int nValue);
-void FUN_14098e9e0(void* pCtrl, unsigned int uValue);
+void FUN_14098e9e0(void* pCtrl, float fValue);   // exe takes the value in xmm1
 void FUN_1416f18b0(void* pCtrl, unsigned int uValue);
 void* FUN_14086d260();
 float FUN_141473280(void* pHandle);
@@ -324,5 +324,5 @@ void FUN_141852970(Unk_CtrlValue* pArg, void* pCtrl)
     void* pHandle = FUN_14086d260();
     float fScale = FUN_141473280(pHandle);
     ((Unk_CtrlIface*)pCtrl)->vfunc_18(fScale);
-    FUN_14098e9e0(pCtrl, pArg->m_uValue);
+    FUN_14098e9e0(pCtrl, *reinterpret_cast<const float*>(&pArg->m_uValue));
 }

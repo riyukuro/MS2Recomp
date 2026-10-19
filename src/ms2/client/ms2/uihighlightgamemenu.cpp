@@ -290,7 +290,7 @@ int FUN_140691130(P);
 int FUN_140690370(P);
 P FUN_14062c280();
 P FUN_1405b2650(void*);
-char FUN_1405b2610(void*);
+char FUN_1405b2610(void*, void*);                         // MS2Ptr == (null ptr argument)
 void FUN_1405b1a60(P, void*, int);
 int FUN_14058df90(P, P);
 char FUN_140545da0(void*, int);
@@ -1020,7 +1020,7 @@ bool UIHighlightGameMenu::FUN_140c23f10()
                     int nId = FUN_1405276c0(FUN_1401c0180(&g));
                     char rec[16];
                     FUN_1405b1a60(FUN_14062c280(), rec, nId);
-                    if (FUN_1405b2610(rec) == 0 && (*(unsigned*)((char*)FUN_1405b2650(rec) + 0x28) & nMask) != 0)
+                    if (FUN_1405b2610(rec, 0) == 0 && (*(unsigned*)((char*)FUN_1405b2650(rec) + 0x28) & nMask) != 0)
                     {
                         m_bitsSocket.FUN_140c260a0(0, true);
                         FUN_1405b2540(rec);

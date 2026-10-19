@@ -154,8 +154,8 @@ private:
 // A scheduled game event (the <eventTag> lookup), handed out as an intrusive pointer.
 class Unk_EventEntry;
 bool FUN_140866880(Unk_EventEntry* pEntry, __int64* pTime);          // the time falls into the event
-CMsTime FUN_140866720(Unk_EventEntry* pEntry);                       // the event's start
-CMsTime FUN_1408666e0(Unk_EventEntry* pEntry);                       // the event's end
+struct Unk_QdEventStart { CMsTime FUN_140866720(); }; // the event's start
+struct Unk_QdEventEnd { CMsTime FUN_1408666e0(); }; // the event's end
 bool FUN_140866820(Unk_EventEntry* pEntry, const CMsTime& time);
 bool FUN_140866760(Unk_EventEntry* pEntry);
 class Unk_GEManagerA { public: Unk_PayloadPtr<Unk_EventEntry> FUN_140479410(CStringW* pTag); bool FUN_1404793a0(const CStringW* pTag); };
@@ -258,7 +258,7 @@ __int64 CQuestCommon::FUN_1407448a0()
             if (!FUN_140866880(event.operator->(), &tStart))
                 return 0;
         }
-        tEvent = FUN_140866720(event.operator->()).Get();
+        tEvent = reinterpret_cast<Unk_QdEventStart*>(event.operator->())->FUN_140866720().Get();
     }
     if (tPeriod != 0 && tEvent != 0)
         return FUN_1402e49a0(tPeriod, tEvent);
@@ -342,7 +342,7 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
         if (FUN_140866760(event.operator->()))
         {
             __int64 tNow = vfunc_o10_8();
-            if (tNow < FUN_1408666e0(event.operator->()).Get())
+            if (tNow < reinterpret_cast<Unk_QdEventEnd*>(event.operator->())->FUN_1408666e0().Get())
                 return 0;
         }
         if (tStart != 0)

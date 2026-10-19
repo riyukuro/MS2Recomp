@@ -139,7 +139,7 @@ public:
 private: void* unknown; UIObject* object;
 };
 void* FUN_1403ed2b0();
-Unk_CommandUIRef FUN_141adcea0(void*, int);
+struct Unk_GeUiMgr { Unk_CommandUIRef FUN_141adcea0(int); };
 UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 class Unk_GmPane { public: int FUN_1422dc2d0(); };
 Unk_GmPane* FUN_14136f3e0(unsigned nUIId);
@@ -1112,7 +1112,7 @@ Unk_GmMovie* FUN_14138fd50(unsigned nUIId)
 {
     if (FUN_1403ed2b0() != 0)
     {
-        Unk_CommandUIRef ref = FUN_141adcea0(FUN_1403ed2b0(), nUIId);
+        Unk_CommandUIRef ref = reinterpret_cast<Unk_GeUiMgr*>(FUN_1403ed2b0())->FUN_141adcea0(nUIId);
         if (ref.FUN_1403e8a70() != 0)
             return reinterpret_cast<Unk_GmMovie*>(dynamic_cast<UICutSceneMovie*>(FUN_1403ed9e0(ref)));
     }

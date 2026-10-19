@@ -57,7 +57,7 @@ public:
     char m_pad[0xd0 - 0x18];
     Unk_NametagScore m_score;
 };
-MS2Ptr<Unk_NametagChar> FUN_141bc9be0(void* pPlayer, int nCharId);
+struct Unk_NtPlayer { MS2Ptr<Unk_NametagChar> FUN_141bc9be0(int nCharId); };
 
 // The unit's init flag and singleton are exe globals (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -295,7 +295,7 @@ CStringW CNametagSymbolTable::GetIcon(unsigned short nId, Unk_NametagActor* pAct
     {
         CStringW strIcon(spData->m_strIcon);
         int nCharId = FUN_14123c580(pActor);
-        MS2Ptr<Unk_NametagChar> spChar = FUN_141bc9be0(FUN_1403ed2d0(), nCharId);
+        MS2Ptr<Unk_NametagChar> spChar = reinterpret_cast<Unk_NtPlayer*>(FUN_1403ed2d0())->FUN_141bc9be0(nCharId);
         if (spChar.get() != 0)
         {
             if (spChar->m_score.FUN_140267c10() < 2000)

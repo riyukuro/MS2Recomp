@@ -33,8 +33,8 @@ extern Unk_StreamPoint DAT_143a08cf8;                                       // t
 // A 2D point and its NiPoint2 / efd::Point2 helpers.
 struct Unk_Pt2 { float x, y; };
 struct Unk_Pt2Pair { float x, y; };
-Unk_Pt2 FUN_140a4e500(const Unk_Pt2& kThis, const Unk_Pt2& kRhs);           // efd::Point2::operator-
-Unk_Pt2 FUN_141412ca0(const Unk_Pt2& kThis, const Unk_Pt2& kRhs);           // efd::Point2::operator+
+struct Unk_Pt2Sub { Unk_Pt2 FUN_140a4e500(const Unk_Pt2& kRhs) const; }; // efd::Point2::operator-
+struct Unk_Pt2Add { Unk_Pt2 FUN_141412ca0(const Unk_Pt2& kRhs) const; }; // efd::Point2::operator+
 Unk_Pt2 FUN_140c90220(float fScalar, const Unk_Pt2& kPt);                   // efd::operator*(float, Point2)
 void FUN_140db9c80(Unk_Pt2* pOut, const Unk_Pt2& kPt);                      // NiPoint2(const efd::Point2&)
 
@@ -141,7 +141,7 @@ int FUN_14147a500(Unk_StreamPoint* pOut, const Unk_StreamPoint* pStart, const Un
 bool FUN_14147a850(const Unk_Pt2& kOrigin, const Unk_Pt2& kDir, const Unk_Pt2& kCenter, float fRadius, Unk_Pt2* pHit0, Unk_Pt2* pHit1)
 {
     Unk_Pt2 kLocal;
-    FUN_140db9c80(&kLocal, FUN_140a4e500(kOrigin, kCenter));
+    FUN_140db9c80(&kLocal, reinterpret_cast<const Unk_Pt2Sub*>(&kOrigin)->FUN_140a4e500(kCenter));
     float fA = FUN_14147aed0(&kDir, &kDir);
     float fB = FUN_14147aed0(&kLocal, &kDir);
     float fC = FUN_14147aed0(&kLocal, &kLocal);
@@ -152,9 +152,9 @@ bool FUN_14147a850(const Unk_Pt2& kOrigin, const Unk_Pt2& kDir, const Unk_Pt2& k
         float fT0 = (-fB - fRoot) * (1.0f / fA);
         float fT1 = (-fB + fRoot) * (1.0f / fA);
         Unk_Pt2 kHit;
-        FUN_140db9c80(&kHit, FUN_141412ca0(kOrigin, FUN_140c90220(fT0, kDir)));
+        FUN_140db9c80(&kHit, reinterpret_cast<const Unk_Pt2Add*>(&kOrigin)->FUN_141412ca0(FUN_140c90220(fT0, kDir)));
         *pHit0 = kHit;
-        FUN_140db9c80(&kHit, FUN_141412ca0(kOrigin, FUN_140c90220(fT1, kDir)));
+        FUN_140db9c80(&kHit, reinterpret_cast<const Unk_Pt2Add*>(&kOrigin)->FUN_141412ca0(FUN_140c90220(fT1, kDir)));
         *pHit1 = kHit;
     }
     return 0.0f <= fDisc;

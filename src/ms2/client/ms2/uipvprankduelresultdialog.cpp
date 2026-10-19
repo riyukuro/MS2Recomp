@@ -76,7 +76,7 @@ CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);   // format
 CStringW FUN_1408116a0(int nId, const int& nArg);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
 __int64 FUN_141656a80(PCBase* pPC);                                 // the character id
-CString FUN_1416612e0(PCBase* pPC);                                 // the profile key of the player
+struct Unk_PrdProfile { CString FUN_1416612e0(); }; // the profile key of the player
 CString FUN_141028be0(unsigned __int64 nId, CString strKey, int n, CString strExtra);   // the profile picture url
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 void FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
@@ -191,7 +191,7 @@ void UIPvPRankDuelResultDialog::FUN_140f90ec0(__int64 nCharId, bool bLeft)
     PCBase* pPC = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
     if (pPC == 0)
         return;
-    CStringW strUrl = FUN_14016a730(FUN_141028be0(FUN_141656a80(pPC), FUN_1416612e0(pPC), 1, ""), 0);
+    CStringW strUrl = FUN_14016a730(FUN_141028be0(FUN_141656a80(pPC), reinterpret_cast<Unk_PrdProfile*>(pPC)->FUN_1416612e0(), 1, ""), 0);
     if (bLeft)
         m_30->Invoke("setLeftCharProfile", strUrl);
     else

@@ -57,7 +57,7 @@ int FUN_140eb5040(void* pDialog);
 int FUN_140eb5150(void* pDialog);
 void* FUN_140d0c040(unsigned nUIId);                    // the play instrument dialog
 int FUN_14100c890(void* pDialog);
-int FUN_14100d8c0(void* pDialog);
+bool FUN_14100d8c0(void* pDialog);
 int FUN_14166c930(Unk_G9Player* pPlayer);               // the action state
 int FUN_14166cc80(Unk_G9Player* pPlayer);               // the instrument id
 void* FUN_140ef0b20();                                  // the cube holder dialog

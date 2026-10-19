@@ -110,8 +110,8 @@ void* FUN_141b6f910();
 void FUN_141206030(void* pTable, Unk_DbgModelSet* pOut, const egf::EntityID& kKey);
 const char* FUN_1408ac310(Unk_DbgModelSet* p);                          // animation name
 void FUN_1408a8900(Unk_DbgModelSet* p);
-float FUN_14028d3a0(unsigned nValue);                                   // table value of a speed
-bool FUN_14028d470(float fValue, int nZero);                            // fValue == nZero
+float FUN_14028d3a0(float fValue);                                       // table value of a speed
+bool FUN_14028d470(float fValue, float fZero);                           // fValue == nZero
 // The npc record handle accessors.
 struct Unk_DbgSpeedRec;
 
@@ -318,7 +318,7 @@ void UIDebuggingDialog::vfunc_72()
             FUN_141286050("m_aniSpeedExpression", FUN_14016a730(pNpc->FUN_141671430(), 0));
             CStringW strMoveSpeed;
             MS2Ptr<Unk_DbgNpcRec> spRec = pNpc->FUN_141093270();
-            float fMax = FUN_14028d3a0(*(unsigned*)&spRec->m_fRunSpeed);
+            float fMax = FUN_14028d3a0(spRec->m_fRunSpeed);
             strMoveSpeed.Format(L"%.1f/%.1f", (double)pNpc->vfunc_95(), (double)fMax);
             FUN_141286050("m_moveSpeedS", strMoveSpeed);
             MS2Ptr<Unk_DbgNpcRec> spData = pNpc->FUN_141093270();

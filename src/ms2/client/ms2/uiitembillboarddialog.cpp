@@ -192,7 +192,7 @@ Unk_Int3 FUN_1408a14c0(Unk_StreamPoint pt);                     // cell of a poi
 int FUN_1408a03c0(Unk_Int3 cell);                               // cell id
 Unk_Int3 FUN_1408a0400(int nCellId);
 Unk_StreamPoint FUN_1408a15b0(Unk_Int3 cell, Unk_StreamPoint& ptCenter);   // fills the cell center
-Unk_StreamPoint FUN_1409673c0(void* pActor);                    // actor position copy
+struct Unk_IbActorPos { Unk_StreamPoint FUN_1409673c0(); }; // actor position copy
 class Unk_RxNpcData : public CPtred { public: int FUN_1406ccfc0(); };
 class Unk_RxNpc : public CPtred { public: MS2Ptr<Unk_RxNpcData> FUN_141093270(); };
 static const int DAT_142e03614 = -2060086266;   // rdata constants copied from 0x142e03614 ...
@@ -441,7 +441,7 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
     for (size_t i = 0; i < arrNear.GetCount(); ++i) {
         MS2Ptr<Unk_WsPtred298> spObj = arrNear[i];
         if (!(spObj == (Unk_WsPtred298*)0)) {
-            Unk_StreamPoint pt = FUN_1409673c0(spObj.get());
+            Unk_StreamPoint pt = reinterpret_cast<Unk_IbActorPos*>(spObj.get())->FUN_1409673c0();
             if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f) {
                 CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
                 FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);

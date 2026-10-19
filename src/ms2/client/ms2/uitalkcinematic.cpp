@@ -885,7 +885,7 @@ struct Unk_TcEquip
     void* FUN_1405a8ed0() const;
     void* m_0; void* m_8;
 };
-Unk_TcEquip FUN_141655e10(MyPC* pPC, int nSlot, int nUnused, int nZero);
+struct Unk_TcPCEquip { Unk_TcEquip FUN_141655e10(int nSlot, int nUnused, int nZero); };
 void* FUN_1411dc7f0(void* p);  void* FUN_14053ec70(void* p);  char FUN_1405471d0(void* p);
 void* FUN_14165f460(MyPC* pPC);  int FUN_1412706f0(void* p, int n);
 void FUN_141275260(int nMsg, int a, int b);
@@ -1980,7 +1980,7 @@ int UITalkManager::FUN_141b218b0(Unk_TcNpc* pNpc)
     if (pNpc->FUN_1410937b0() != 0x23)
         return 0;
     int nNotice;
-    Unk_TcEquip kEquip = FUN_141655e10(pPC, 6, 0, 0);
+    Unk_TcEquip kEquip = reinterpret_cast<Unk_TcPCEquip*>(pPC)->FUN_141655e10(6, 0, 0);
     if (kEquip.FUN_1405a8e70() == 0)
     {
         nNotice = 0x84;

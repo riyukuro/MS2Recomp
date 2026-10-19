@@ -22,7 +22,7 @@ CString FUN_1409a2360(const char* psz, int n);                          // text 
 CString FUN_14016a5c0(const char* psz, int n);                          // path conversion
 int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);
 CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDefault);
-__int64 FUN_140354150(Unk_140165cf0* pElem, const char* pszName);       // _time64 attribute
+__int64 FUN_140354150(Unk_140165cf0* pElem, const char* pszName, __int64 nDefault); // _time64 attribute
 void* FUN_14086e000(void* pParent, const void* pChild);                 // InsertEndChild
 void FUN_140873ca0(void* pElem, const char* pszName, int nValue);       // SetAttribute(name, int)
 void FUN_1408740a0(void* pElem, const char* pszName, const CStringW* pstrValue);   // SetAttribute(name, string)
@@ -115,7 +115,7 @@ void BlindManager::Load()
     {
         int nType = FUN_140197350(pNode, "type", 0);
         CStringW strTarget = FUN_1401bf530(pNode, "target", CStringW(L""));
-        __int64 nExpire = FUN_140354150(pNode, "time");
+        __int64 nExpire = FUN_140354150(pNode, "time", 0);
         if (nType < 0 || nType > 5)
             continue;
         __time64_t nNow;

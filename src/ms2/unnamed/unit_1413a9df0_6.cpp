@@ -101,8 +101,8 @@ public:
 };
 MS2_CHECK_SIZE(Unk_GcUIRef, 0x10);
 void* FUN_1403ed2b0();                                      // the UI manager
-Unk_GcUIRef FUN_141adcea0(void* pMgr, int nUIId);
-Unk_GcUIRef FUN_141adcf50(void* pMgr, const CString& strName);
+struct Unk_GcUiMgrId { Unk_GcUIRef FUN_141adcea0(int nUIId); };
+struct Unk_GcUiMgrName { Unk_GcUIRef FUN_141adcf50(const CString& strName); };
 UIObject* FUN_1403ed9e0(Unk_GcUIRef& ref);
 
 // A parsed dialog tree node (40 bytes; the destructor is 0x140614800).
@@ -117,7 +117,7 @@ void FUN_1422baa20(void* pInner, Unk_GcNode* pOut, const char* pszName);
 char FUN_1409b4d40(Unk_GcNode* pNode);
 void FUN_140d02f80(Unk_G9Val* pOut, int nNull);
 void FUN_140d01be0(Unk_G9Val* pOut, int nIdx, Unk_GcNode* pNode);
-char FUN_140ba28d0(void* pList);
+char FUN_140ba28d0(void* pList, void* pNull);
 void* FUN_1409ee290(void* pList);
 
 // @0x1413b19d0
@@ -136,7 +136,7 @@ Unk_G9Val* FUN_1413b19d0(void* pInner, Unk_G9Val* pOut, const CString* pName)
 void FUN_1413b1a90(void* pDialog, Unk_G9Val* pOut, const CString* pChild)
 {
     void* pList = (char*)pDialog + 0x30;
-    if (!FUN_140ba28d0(pList))
+    if (!FUN_140ba28d0(pList, 0))
         FUN_1413b19d0(FUN_1409ee290(pList), pOut, pChild);
     else
         FUN_140d02f80(pOut, 0);
@@ -147,7 +147,7 @@ void* FUN_1413b1b20(unsigned nUIId)
 {
     if (FUN_1403ed2b0())
     {
-        Unk_GcUIRef ref = FUN_141adcea0(FUN_1403ed2b0(), nUIId);
+        Unk_GcUIRef ref = reinterpret_cast<Unk_GcUiMgrId*>(FUN_1403ed2b0())->FUN_141adcea0(nUIId);
         if (ref.FUN_1403e8a70())
             return dynamic_cast<UIChatEmoticonDialog*>(FUN_1403ed9e0(ref));
     }
@@ -159,7 +159,7 @@ void* FUN_1413b1bc0(unsigned nUIId)
 {
     if (FUN_1403ed2b0())
     {
-        Unk_GcUIRef ref = FUN_141adcea0(FUN_1403ed2b0(), nUIId);
+        Unk_GcUIRef ref = reinterpret_cast<Unk_GcUiMgrId*>(FUN_1403ed2b0())->FUN_141adcea0(nUIId);
         if (ref.FUN_1403e8a70())
             return dynamic_cast<UIItemEnchantDialog*>(FUN_1403ed9e0(ref));
     }
@@ -171,7 +171,7 @@ void* FUN_1413b1c60(const CStringA& strName)
 {
     if (FUN_1403ed2b0())
     {
-        Unk_GcUIRef ref = FUN_141adcf50(FUN_1403ed2b0(), strName);
+        Unk_GcUIRef ref = reinterpret_cast<Unk_GcUiMgrName*>(FUN_1403ed2b0())->FUN_141adcf50(strName);
         if (ref.FUN_1403e8a70())
             return dynamic_cast<UIPartyDialog*>(FUN_1403ed9e0(ref));
     }

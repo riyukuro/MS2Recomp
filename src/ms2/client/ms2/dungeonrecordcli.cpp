@@ -92,7 +92,7 @@ unsigned FUN_14031ddd0(DungeonRoom* pThis);                     // DungeonRoom::
 unsigned FUN_14031e110(DungeonRoom* pThis);                     // DungeonRoom::GetCouponBaseItemID
 bool FUN_14031e190(DungeonRoom* pThis);                         // DungeonRoom::CanBuyCouponInMeratMarket
 unsigned FUN_14031e2b0(DungeonRoom* pThis, unsigned nCount);    // DungeonRoom::GetExtraRewardTicketCost
-DungeonRoomPtr FUN_1403206b0(DungeonRoomTable* pThis, unsigned nRoomId);    // DungeonRoomTable::GetRoom
+struct Unk_DrcRoomTable { DungeonRoomPtr FUN_1403206b0(unsigned nRoomId); }; // DungeonRoomTable::GetRoom
 
 // the empty callback of the message boxes (declared by unit_140d73aa0)
 Unk_MsgBoxCallback FUN_140b240b0();
@@ -365,7 +365,7 @@ void DungeonRecordManagerCli::OnError(CInPacket& packet)
         break;
     case 4:
     {
-        DungeonRoomPtr spRoom = FUN_1403206b0(DungeonRoomTable::GetInstance(), (unsigned)nArg);
+        DungeonRoomPtr spRoom = reinterpret_cast<Unk_DrcRoomTable*>(DungeonRoomTable::GetInstance())->FUN_1403206b0((unsigned)nArg);
         if (!(spRoom == 0))
         {
             DungeonRecordCliPtr spRecord = GetRecord(FUN_14031ddd0(spRoom.operator->()));
@@ -543,7 +543,7 @@ bool DungeonRecordManagerCli::CanClaimHelperReward(unsigned nRoomID)
 {
     if (WorldService::GetInstance()->FUN_141bd0cc0())
     {
-        DungeonRoomPtr spRoom = FUN_1403206b0(DungeonRoomTable::GetInstance(), nRoomID);
+        DungeonRoomPtr spRoom = reinterpret_cast<Unk_DrcRoomTable*>(DungeonRoomTable::GetInstance())->FUN_1403206b0(nRoomID);
         if (!(spRoom == 0))
         {
             if (spRoom->m_dungeonHelperRequireClearCount != 0)
@@ -698,7 +698,7 @@ void DungeonRecordManagerCli::GetSeasonRooms(std::vector<DungeonRoomPtr>& out)
 // MS2-FUNCTIONAL: CStringW temp slots not matched
 void DungeonRecordManagerCli::ShowLackExtraTicket(unsigned nRoomID)
 {
-    DungeonRoomPtr spRoom = FUN_1403206b0(DungeonRoomTable::GetInstance(), nRoomID);
+    DungeonRoomPtr spRoom = reinterpret_cast<Unk_DrcRoomTable*>(DungeonRoomTable::GetInstance())->FUN_1403206b0(nRoomID);
     if (!(spRoom == 0))
     {
         if (!FUN_14031e190(spRoom.operator->()))

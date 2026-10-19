@@ -33,10 +33,10 @@ public:
     void* m_pad_00;
     Unk_PvPTeam* m_p;
 };
-Unk_PvPTeamPtr FUN_140967420(PCBase* pPC);                  // 0x140967420 the player's team-info proxy
+struct Unk_PwlTeamOwner { Unk_PvPTeamPtr FUN_140967420(); }; // 0x140967420 the player's team-info proxy
 
 // Build the animation name of slot nSlot for the value nId, looked up in the owner's +0xd00 name table.
-efd::utf8string FUN_141679170(PCBase* pOwner, int nSlot, int nId);   // 0x141679170
+struct Unk_PwlAnimOwner { efd::utf8string FUN_141679170(int nSlot, int nId); }; // 0x141679170
 
 // @0x141282440
 StatePvPWinLose::StatePvPWinLose(PCBase* pOwner) : State(pOwner)
@@ -58,17 +58,17 @@ void StatePvPWinLose::vfunc_4(StateData* pData)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        Unk_PvPTeamPtr kTeam = FUN_140967420(pPC);
+        Unk_PvPTeamPtr kTeam = reinterpret_cast<Unk_PwlTeamOwner*>(pPC)->FUN_140967420();
         nId = kTeam.FUN_140965970()->m_nValue;
     }
     if (m_n10 == 0x73)
     {
-        efd::utf8string kAnim = FUN_141679170(m_pOwner, 0x41, nId);
+        efd::utf8string kAnim = reinterpret_cast<Unk_PwlAnimOwner*>(m_pOwner)->FUN_141679170(0x41, nId);
         m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
     }
     else if (m_n10 == 0x74)
     {
-        efd::utf8string kAnim = FUN_141679170(m_pOwner, 0x40, nId);
+        efd::utf8string kAnim = reinterpret_cast<Unk_PwlAnimOwner*>(m_pOwner)->FUN_141679170(0x40, nId);
         m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
     }
 }

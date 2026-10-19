@@ -207,7 +207,7 @@ CStringW FUN_14042cb90(CStringW key, const float& v);
 CStringW FUN_1419021b0(int a, int b);
 CStringW FUN_1409404f0(__int64 v);
 int FUN_14053feb0(unsigned itemId);
-__int64 FUN_1411e1110(Unk_PCItems* items, int a);
+float FUN_1411e1110(Unk_PCItems* items, int a);   // returns in xmm0
 extern __int64 DAT_143ab2898;
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, int a, CStringW b);
@@ -780,7 +780,7 @@ bool UIItemRemakeOptionDialog::FUN_1412a0940(MS2Ptr<CItem> item)
     unsigned rate = 0;
     MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pc != 0)
-        rate = (unsigned)(__int64)((float)FUN_1411e1110(FUN_1416561a0(pc), 0xa9) * 10000.0);
+        rate = (unsigned)(__int64)(FUN_1411e1110(FUN_1416561a0(pc), 0xa9) * 10000.0f);
     MS2Ptr<CItemData> equipData(reinterpret_cast<CItemData*>(item->FUN_140527840()));
     int bSale = FUN_140616b60(equipData, &discount, rate);
     __int64 fee = 0;
@@ -829,7 +829,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIn
         unsigned rate = 0;
         MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pc != 0)
-            rate = (unsigned)(__int64)((float)FUN_1411e1110(FUN_1416561a0(pc), 0xa9) * 10000.0);
+            rate = (unsigned)(__int64)(FUN_1411e1110(FUN_1416561a0(pc), 0xa9) * 10000.0f);
         __int64 fee = 0;
         int bSale = FUN_140616b60(MS2Ptr<CItemData>(equipData), &discount, rate);
         ASArray list(2);

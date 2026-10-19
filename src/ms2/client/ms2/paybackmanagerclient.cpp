@@ -102,7 +102,7 @@ void FUN_141275260(int nStringId, int nA, int nB);                  // notice by
 __int64 FUN_140869440();                                            // the server clock
 __int64 FUN_14086b380(__int64 nTime);                               // midnight of the day
 int FUN_14086b490(int year, int month);                             // days of the month
-Scaleform::GFx::Value FUN_1422baa20(AScript* p, const char* szMember);  // child member by name
+struct Unk_PbMember { Scaleform::GFx::Value FUN_1422baa20(const char* szMember); }; // child member by name
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);         // value is undefined
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 
@@ -221,7 +221,7 @@ void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
         MS2Ptr<ASMeratMarketBuyBillData> spBuy(dynamic_cast<ASMeratMarketBuyBillData*>(spBill.get()));
         if (spBuy == 0)
             continue;
-        Scaleform::GFx::Value serial = FUN_1422baa20(spBill.operator->(), "serialID");
+        Scaleform::GFx::Value serial = reinterpret_cast<Unk_PbMember*>(spBill.operator->())->FUN_1422baa20("serialID");
         if (FUN_1409b0390(&serial) == 0)
         {
             int nSerial = FUN_1409c17e0(serial);

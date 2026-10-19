@@ -136,7 +136,7 @@ size_t FUN_1409203a0(void* pArray);
 __int64* FUN_14091cea0(void* pArray);
 void FUN_140915430(RReward* pDst, Unk_RewardEntry* pElem);
 Unk_RewardInfo* FUN_140917000(RReward* p);
-RList FUN_140bc7280(AScript* pScript, const CString& strName);              // GetChild (member of AScript)
+struct Unk_WhGetChild { RList FUN_140bc7280(const CString& strName); }; // GetChild (member of AScript)
 
 class UIWeddingHallReservationPageSelect : public UIWeddingHallReservationPage
 {
@@ -192,7 +192,7 @@ bool UIWeddingHallReservationPageSelect::vfunc_1()
     RHall hall = FUN_1409023c0()->FUN_140908b80(FUN_140fe2d20(m_pDialog));
     if (FUN_140901fa0(&hall, 0))
         return false;
-    RList list = FUN_140bc7280(m_pScript.operator->(), CString("m_list"));
+    RList list = reinterpret_cast<Unk_WhGetChild*>(m_pScript.operator->())->FUN_140bc7280(CString("m_list"));
     if (FUN_140bcc0c0(&list, 0))
         return false;
     int nPackageSlot = -1;
