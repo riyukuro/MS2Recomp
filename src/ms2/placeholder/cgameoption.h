@@ -5,6 +5,7 @@
 // shipped defaults, and the benchmark level. CGameApp::InitInstance (?\ms2.cpp) creates it. Member names are invented.
 #pragma once
 
+#include <atlcoll.h>
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/tixmldocument.h"
@@ -19,26 +20,24 @@
 #include "ms2/client/ms2/gameoptionlanguage.h"
 #include "ms2/client/ms2/gameoptionpersonalinfoagreement.h"
 
-// The connect block (0x58 bytes): four strings, a wide string and a pointer array; dtor 0x1412455e0.
+// The connect block (0x58 bytes): four strings, a wide string and a pointer array; ctor 0x1412604b0, dtor 0x1412455e0.
 struct Unk_GoConnect
 {
+    Unk_GoConnect();                                                // 0x1412604b0
+    ~Unk_GoConnect();                                               // 0x1412455e0
     CStringW m_str00;                                               // +0x00
     CStringW m_str08;                                               // +0x08
     CString m_str10;                                                // +0x10
     CString m_str18;                                                // +0x18
     CStringW m_str20;                                               // +0x20
-    int m_n28[4];                                                   // +0x28 (written by the ctor 0x1412604b0)
-    void* m_pArray;                                                 // +0x38 CAtlArray<void*> data
-    size_t m_nArraySize;                                            // +0x40
-    size_t m_nArrayMax;                                             // +0x48
-    int m_nArrayGrowBy;                                             // +0x50
-    int m_pad54;
+    int m_n28[4];                                                   // +0x28 (written by the ctor)
+    ATL::CAtlArray<void*> m_arr;                                    // +0x38
 };
 MS2_CHECK_SIZE(Unk_GoConnect, 0x58);
 
 // Further blocks the tabs fill from the XML; only their size and the FUN_ helpers are known.
 struct Unk_GoAutoLoot { int m_n[5]; };                              // 0x14 bytes (ctor 0x141260ea0)
-struct Unk_GoEtc { int m_n[14]; };                                  // 0x38 bytes (ctor 0x141261750)
+struct Unk_GoEtc { int m_n00; int m_n04; __int64 m_n08; int m_n10[10]; };   // 0x38 bytes (ctor 0x141261750)
 struct Unk_GoChroma { int m_n; };                                   // 4 bytes (ctor 0x141261670)
 
 class CGameOption : public TSingleton<CGameOption>
@@ -47,9 +46,9 @@ public:
     CGameOption();                                          // 0x141241810
     virtual ~CGameOption();                                 // 0x141241aa0 (deleting dtor 0x141245a10)
     CString FUN_141241b60(int nKind, bool bDefault);        // XML path: kind 0 GameOption, 1 AccountOption, 2 CharacterOption
-    int FUN_141241f30();                                    // load GameOption.xml into the tab blocks
-    int FUN_141242570();                                    // load AccountOption.xml
-    int FUN_141242990();                                    // load CharacterOption.xml
+    void FUN_141241f30();                                   // load GameOption.xml into the tab blocks
+    void FUN_141242570();                                  // load AccountOption.xml
+    void FUN_141242990();                                  // load CharacterOption.xml
     int FUN_141242f60();                                    // load the language block
     void FUN_1412432d0();                                   // save GameOption.xml / AccountOption.xml
     void FUN_141243450();                                   // reset the document roots of game and account options
@@ -68,6 +67,8 @@ public:
     Unk_CommunityStateB* FUN_140ae6540();                   // &m_account (0x140ae6540)
     Unk_BattleState* FUN_141248630();                       // &m_battle
     Unk_CommunityStateA* FUN_14124ab20();                   // &m_communityA
+    Unk_SoundState* FUN_140d13c70();                        // &m_sound
+    Unk_GoEtc* FUN_140c9b8b0();                             // &m_etc
     Unk_GraphicState* FUN_1409a8ac0();                      // &m_graphic
     Unk_GraphicState2* FUN_140c77560();                     // &m_graphic2
     TiXmlDocument* FUN_1412442a0();                         // &m_docGameDefault

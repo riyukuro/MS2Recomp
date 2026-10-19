@@ -24,6 +24,8 @@
 #include <utility>
 #include <atlcoll.h>
 #include <vector>
+#include <map>
+#include "ms2/commonfiles/crashmanager.h"
 #include <algorithm>
 #include <stdlib.h>
 #include <math.h>
@@ -826,8 +828,14 @@ class Unk_GoDeviceInfo
 {
 public:
     CStringW FUN_141245ab0();                                   // copy of the adapter name
-    char m_pad[0x18];
+    int FUN_141245b00();                                        // the vendor kind
+    unsigned __int64 FUN_141245aa0();                           // the memory bandwidth
+    char m_pad0[8];
+    int m_nVendor;                                              // +0x08
+    char m_pad1[0xc];
     CStringW m_strName;                                         // +0x18
+    char m_pad2[0x38 - 0x20];
+    unsigned __int64 m_nBandwidth;                              // +0x38
 };
 extern Unk_GoDeviceInfo* DAT_143ad5158;
 
@@ -1153,7 +1161,7 @@ void CGameOptionGraphicDefault::vfunc_6()
     {
         MS2Ptr<Unk_GoInput> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e2e0(CString("m_customInput"), -1);
         if (static_cast<Unk_GoInput*>(sp) != 0)
-            sp->FUN_1422e0ab0(FUN_1401ceea0(L"%d", m_state2.m_nCustomInput));
+            sp->FUN_1422e0ab0(FUN_1401ceea0(L"{0}", m_state2.m_nCustomInput));
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showPhysx"), -1);
@@ -1524,4 +1532,582 @@ static std::pair<int, int> FUN_14124d9d0(int nWidth, int nHeight)
         }
     }
     return std::pair<int, int>(a, b);
+}
+
+// ---- CGameOption (the option store) ----
+
+class CCrashManager;
+CCrashManager* FUN_140a44830();                                 // the crash manager singleton
+class Unk_GoXmlFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* szPath, int n, bool b1, bool b2); };
+Unk_GoXmlFiles* FUN_140166420();                                // the xml loader
+void* FUN_140166440();                                          // the log string table
+void FUN_1401859c0(void* pLog, int nLevel, int nCategory, const wchar_t* pszText);
+class Unk_GoFlags { public: bool FUN_14036e560(); };
+Unk_GoFlags* FUN_140166410();
+int FUN_1406c34c0();                                            // the platform kind
+extern char DAT_143ae0900;
+void FUN_14086ddc0(TiXmlDocument* pDoc);                        // drop the children
+void* FUN_14081b310(TiXmlDocument* pDoc);                       // root element
+void* FUN_140165cf0(void* pNode, const char* szName);           // first child element
+void* FUN_140168650(void* pNode, const char* szName);           // next sibling element
+int FUN_1408731e0(void* pElem, const char* szName, int& nValue);   // int attribute
+CStringW FUN_1401bf530(void* pElem, const char* szName, CStringW strDefault);   // string attribute (strDefault by value)
+bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);    // SaveFile
+void FUN_140874050(void* pElem, const char* szName, const CString& strValue);   // SetAttribute
+void* FUN_14086e090(void* pParent, void* pChild);               // LinkEndChild
+void* FUN_14086f2f0(void* pMem, const char* szName);            // TiXmlElement::TiXmlElement(const char*)
+CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
+CString FUN_1412755b0();                                        // the option folder
+CString FUN_141275640();                                        // the account folder
+CString FUN_1412755f0();                                        // the character folder
+CString FUN_141275750();                                        // the default option folder
+int FUN_1406518d0(short nLangId);
+void FUN_1406507a0(int nLanguage);
+void FUN_140650b30(int nVoice);
+bool FUN_14025cd60(const CStringW& a, const CStringW& b);
+void FUN_140841420(CStringW& str);                              // MakeLower
+void FUN_14125fe20(Unk_SoundState* p);
+CString FUN_1409a23d0(const char* pszUtf8, int nCodePage);
+
+// The GPU and adapter records the benchmark reads.
+class Unk_GoGpuMgr
+{
+public:
+    unsigned __int64 FUN_141245b10();                           // +0x28 the video memory
+    char m_pad[0x28];
+    unsigned __int64 m_nVideoMem;                               // +0x28
+};
+Unk_GoGpuMgr* FUN_1409f7c90();
+
+// The state blocks' methods that gameoptionstruct.cpp owns (the ones with FUN_ names resolve through the address).
+void FUN_14125b770(Unk_InterfaceState* p);
+void FUN_14125bc30(Unk_InterfaceFlag* p);
+void FUN_14125bda0(Unk_StatusState* p);
+void FUN_14125c880(Unk_StatusFlag* p);
+void FUN_14125f710(Unk_SoundState* p);
+void FUN_141260380(Unk_SoundFlag* p);
+void FUN_141260ea0(Unk_GoAutoLoot* p);
+void FUN_141261750(Unk_GoEtc* p);
+void FUN_14125f090(Unk_LgState* p);
+void FUN_14125f290(Unk_GpState* p);
+void FUN_141261670(Unk_GoChroma* p);
+void FUN_141261cf0(Unk_PiAgreeState* p);
+int FUN_14125b820(Unk_InterfaceState* p, TiXmlDocument* pDoc);
+int FUN_14125bee0(Unk_StatusState* p, TiXmlDocument* pDoc);
+int FUN_14125f7f0(Unk_SoundState* p, TiXmlDocument* pDoc);
+int FUN_141260600(Unk_GoConnect* p, TiXmlDocument* pDoc);
+int FUN_1412616c0(Unk_GoChroma* p, TiXmlDocument* pDoc);
+int FUN_14125f190(Unk_LgState* p, TiXmlDocument* pDoc);
+void FUN_141260ed0(Unk_GoAutoLoot* p);
+void FUN_141261780(Unk_GoEtc* p);
+void FUN_14125c8b0(Unk_StatusFlag* p);
+void FUN_1412603b0(Unk_SoundFlag* p);
+void FUN_14125bc60(Unk_InterfaceFlag* p);
+void FUN_14125f2c0(Unk_GpState* p);
+int FUN_141260f40(Unk_GoAutoLoot* p, TiXmlDocument* pDoc);
+int FUN_141261810(Unk_GoEtc* p, TiXmlDocument* pDoc);
+int FUN_14125c8d0(Unk_StatusFlag* p, TiXmlDocument* pDoc);
+int FUN_1412603d0(Unk_SoundFlag* p, TiXmlDocument* pDoc);
+int FUN_14125bc80(Unk_InterfaceFlag* p, TiXmlDocument* pDoc);
+int FUN_14125f330(Unk_GpState* p, TiXmlDocument* pDoc);
+int FUN_14125c970(Unk_StatusFlag* p, TiXmlDocument* pDoc);
+void FUN_14125b5e0(Unk_CameraState* p, TiXmlDocument* pDoc);
+void FUN_14125ba30(Unk_InterfaceState* p, TiXmlDocument* pDoc);
+void FUN_14125c270(Unk_StatusState* p, TiXmlDocument* pDoc);
+void FUN_14125ce20(Unk_BattleState* p, TiXmlDocument* pDoc);
+void FUN_14125d220(Unk_CommunityStateA* p, TiXmlDocument* pDoc);
+void FUN_14125de00(Unk_GraphicState* p, TiXmlDocument* pDoc);
+void FUN_14125fc00(Unk_SoundState* p, TiXmlDocument* pDoc);
+void FUN_1412607a0(Unk_GoConnect* p, TiXmlDocument* pDoc);
+void FUN_14125ee30(Unk_GraphicState2* p, TiXmlDocument* pDoc);
+void FUN_14125f200(Unk_LgState* p, TiXmlDocument* pDoc);
+void FUN_14125d580(Unk_CommunityStateB* p, TiXmlDocument* pDoc);
+void FUN_141261700(Unk_GoChroma* p, TiXmlDocument* pDoc);
+void FUN_141261150(Unk_GoAutoLoot* p, TiXmlDocument* pDoc);
+void FUN_1412619e0(Unk_GoEtc* p, TiXmlDocument* pDoc);
+void FUN_14125c910(Unk_StatusFlag* p, TiXmlDocument* pDoc);
+void FUN_141260410(Unk_SoundFlag* p, TiXmlDocument* pDoc);
+void FUN_14125bcc0(Unk_InterfaceFlag* p, TiXmlDocument* pDoc);
+void FUN_14125f520(Unk_GpState* p, TiXmlDocument* pDoc);
+void FUN_14125e5c0(Unk_GraphicState* p, int n);
+static void FUN_141244320(TiXmlDocument* pDoc);
+
+// @0x141241810
+CGameOption::CGameOption()
+{
+    FUN_14125b400(&m_camera);
+    FUN_14125b770(&m_interface);
+    FUN_14125bc30(&m_interfaceChar);
+    FUN_14125bda0(&m_status);
+    FUN_14125c880(&m_statusChar);
+    FUN_14125ca80(&m_battle);
+    FUN_14125d130(&m_communityA);
+    FUN_14125d890(&m_graphic);
+    FUN_14125ec20(&m_graphic2);
+    FUN_14125f710(&m_sound);
+    FUN_141260380(&m_soundChar);
+    FUN_14125d330(&m_account);
+    FUN_141260ea0(&m_autoLoot);
+    FUN_141261750(&m_etc);
+    FUN_14125f090(&m_language);
+    FUN_14125f290(&m_gamepad);
+    FUN_141261670(&m_chroma);
+    FUN_141261cf0(&m_agree);
+    m_nBenchmark = -1;
+    m_n464 = 0;
+    FUN_140a44830()->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CGameOption::FUN_141243630));
+    FUN_141242f60();
+    FUN_141241f30();
+}
+
+// @0x141241aa0
+CGameOption::~CGameOption()
+{
+}
+
+// @0x141241b60
+CString CGameOption::FUN_141241b60(int nKind, bool bDefault)
+{
+    if (nKind == 0)
+    {
+        if (!bDefault)
+            return FUN_140cc2a00(FUN_1412755b0(), CString("GameOption.xml"));
+        return FUN_140cc2a00(FUN_141275750(), CString("DefaultGameOption.xml"));
+    }
+    else if (nKind == 1)
+    {
+        if (!bDefault)
+            return FUN_140cc2a00(FUN_141275640(), CString("AccountOption.xml"));
+        return FUN_140cc2a00(FUN_141275750(), CString("DefaultAccountOption.xml"));
+    }
+    else if (nKind == 2)
+    {
+        if (!bDefault)
+            return FUN_140cc2a00(FUN_1412755f0(), CString("CharacterOption.xml"));
+        return FUN_140cc2a00(FUN_141275750(), CString("DefaultCharacterOption.xml"));
+    }
+    return CString();
+}
+
+// @0x141241f30
+void CGameOption::FUN_141241f30()
+{
+    int bRead = 0;
+    if (FUN_141243f50(0) == 0)
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docGame, FUN_141241b60(0, false), 0, true, false);
+    else
+    {
+        DeleteFileA(FUN_141241b60(0, false));
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docGame, FUN_141241b60(0, true), 0, true, false);
+    }
+    if (bRead == 0)
+        EE_LOG_AT(1, 1, ("Failed to read %s", "GameOption.xml"), MS2_THIS_FILE, 0x59);
+    if (FUN_14125b480(&m_camera, &m_docGame) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read camera option");
+    if (FUN_14125b820(&m_interface, &m_docGame) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read interface option");
+    if (FUN_14125bee0(&m_status, &m_docGame) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read status option");
+    if (FUN_14125cb20(&m_battle, &m_docGame) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read battle option");
+    if (FUN_14125d190(&m_communityA, &m_docGame) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read community option");
+    if (FUN_14125d9b0(&m_graphic, &m_docGame, 0) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read graphic option");
+    if (FUN_14125f7f0(&m_sound, &m_docGame) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read sound option");
+    if (FUN_141260600(&m_connect, &m_docGame) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read connect option");
+    if (FUN_14125ecc0(&m_graphic2, &m_docGame) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read optimal hide option");
+    if (FUN_1412616c0(&m_chroma, &m_docGame) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read chroma option");
+    FUN_140a44830()->FUN_1401ce2f0("GameOption: Width(%d) Height(%d)", m_graphic.m_nWidth, m_graphic.m_nHeight);
+    FUN_140166420()->FUN_1403974b0(&m_docGameDefault, FUN_141241b60(0, true), 0, true, false);
+}
+
+// @0x141242570
+void CGameOption::FUN_141242570()
+{
+    FUN_14086ddc0(&m_docAccount);
+    int bRead = 0;
+    if (FUN_141243f50(1) == 0)
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docAccount, FUN_141241b60(1, false), 0, true, false);
+    else
+    {
+        DeleteFileA(FUN_141241b60(1, false));
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docAccount, FUN_141241b60(1, true), 0, true, false);
+    }
+    if (bRead == 0)
+        EE_LOG_AT(1, 1, ("Failed to read %s", "AccountOption.xml"), MS2_THIS_FILE, 0x85);
+    if (FUN_14125d3d0(&m_account, &m_docAccount) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read account option");
+    FUN_140166420()->FUN_1403974b0(&m_docAccountDefault, FUN_141241b60(1, true), 0, true, false);
+    if (FUN_140166410()->FUN_14036e560())
+    {
+        TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n08 = 0;
+        TSingleton<CGameOption>::GetInstance()->FUN_140ae6540()->m_b[0] = true;
+        TSingleton<CGameOption>::GetInstance()->FUN_140ae6540()->m_b[1] = true;
+        TSingleton<CGameOption>::GetInstance()->FUN_140ae6540()->m_b[2] = true;
+        TSingleton<CGameOption>::GetInstance()->FUN_141243540();
+    }
+}
+
+// @0x141242990
+void CGameOption::FUN_141242990()
+{
+    FUN_14086ddc0(&m_docCharacter);
+    int bRead = 0;
+    if (FUN_141243f50(2) == 0)
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docCharacter, FUN_141241b60(2, false), 0, true, false);
+    else
+    {
+        DeleteFileA(FUN_141241b60(2, false));
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docCharacter, FUN_141241b60(2, true), 0, true, false);
+    }
+    if (bRead == 0)
+        EE_LOG_AT(1, 1, ("Failed to read %s", "CharacterOption.xml"), MS2_THIS_FILE, 0xad);
+    FUN_141260ed0(&m_autoLoot);
+    FUN_141261780(&m_etc);
+    FUN_14125c8b0(&m_statusChar);
+    FUN_1412603b0(&m_soundChar);
+    FUN_14125bc60(&m_interfaceChar);
+    FUN_14125f2c0(&m_gamepad);
+    if (FUN_141260f40(&m_autoLoot, &m_docCharacter) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read m_autoLooting option");
+    if (FUN_141261810(&m_etc, &m_docCharacter) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read m_etc option");
+    if (FUN_14125c8d0(&m_statusChar, &m_docCharacter) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read m_statusCharacter option");
+    if (FUN_1412603d0(&m_soundChar, &m_docCharacter) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read m_soundCharacter option");
+    if (FUN_14125bc80(&m_interfaceChar, &m_docCharacter) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read m_interfaceCharacter option");
+    if (FUN_14125f330(&m_gamepad, &m_docCharacter) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read m_gamePadOption option");
+    if (FUN_14125c970(&m_statusChar, &m_docCharacter) != 0)
+        FUN_141243540();
+    FUN_140166420()->FUN_1403974b0(&m_docCharacterDefault, FUN_141241b60(2, true), 0, true, false);
+}
+
+// @0x141242f60
+int CGameOption::FUN_141242f60()
+{
+    if (FUN_1406c34c0() == 0 && DAT_143ae0900 != 0)
+        return 1;
+    int bRead = 0;
+    int bDefaulted = 0;
+    TiXmlDocument doc;
+    if (FUN_141243f50(0) == 0)
+        bRead = FUN_140166420()->FUN_1403974b0(&doc, FUN_141241b60(0, false), 0, true, false);
+    else
+    {
+        DeleteFileA(FUN_141241b60(0, false));
+        bRead = FUN_140166420()->FUN_1403974b0(&doc, FUN_141241b60(0, true), 0, true, false);
+        bDefaulted = 1;
+    }
+    if (bRead == 0)
+        EE_LOG_AT(1, 1, ("Failed to read %s", "GameOption.xml"), MS2_THIS_FILE, 0xe2);
+    if (FUN_14125f190(&m_language, &doc) == 0)
+        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read language hide option");
+    if (FUN_140166410()->FUN_14036e560() && bDefaulted != 0)
+        m_language.m_nLanguage = FUN_1406518d0((short)GetUserDefaultUILanguage());
+    FUN_1406507a0(m_language.m_nLanguage);
+    FUN_140650b30(m_language.m_nVoice);
+    return 1;
+}
+
+// @0x1412432d0
+void CGameOption::FUN_1412432d0()
+{
+    FUN_14125b5e0(&m_camera, &m_docGame);
+    FUN_14125ba30(&m_interface, &m_docGame);
+    FUN_14125c270(&m_status, &m_docGame);
+    FUN_14125ce20(&m_battle, &m_docGame);
+    FUN_14125d220(&m_communityA, &m_docGame);
+    FUN_14125de00(&m_graphic, &m_docGame);
+    FUN_14125fc00(&m_sound, &m_docGame);
+    FUN_1412607a0(&m_connect, &m_docGame);
+    FUN_14125ee30(&m_graphic2, &m_docGame);
+    FUN_14125f200(&m_language, &m_docGame);
+    FUN_14125d580(&m_account, &m_docAccount);
+    FUN_141261700(&m_chroma, &m_docGame);
+    FUN_141243450();
+}
+
+// @0x141243450
+void CGameOption::FUN_141243450()
+{
+    FUN_141244320(&m_docGame);
+    FUN_141244320(&m_docAccount);
+    FUN_1408710c0(&m_docGame, FUN_141241b60(0, false));
+    FUN_1408710c0(&m_docAccount, FUN_141241b60(1, false));
+}
+
+// @0x141243540
+void CGameOption::FUN_141243540()
+{
+    FUN_141261150(&m_autoLoot, &m_docCharacter);
+    FUN_1412619e0(&m_etc, &m_docCharacter);
+    FUN_14125c910(&m_statusChar, &m_docCharacter);
+    FUN_141260410(&m_soundChar, &m_docCharacter);
+    FUN_14125bcc0(&m_interfaceChar, &m_docCharacter);
+    FUN_14125f520(&m_gamepad, &m_docCharacter);
+    FUN_141244320(&m_docCharacter);
+    FUN_1412437e0();
+}
+
+// @0x141243630
+void CGameOption::FUN_141243630()
+{
+    FILE* pFile = fopen(FUN_141241b60(0, false), "r");
+    if (pFile != 0)
+    {
+        fseek(pFile, 0, SEEK_END);
+        long nSize = ftell(pFile);
+        fseek(pFile, 0, SEEK_SET);
+        char* pBuf = new char[nSize + 2];
+        memset(pBuf, 0, nSize + 2);
+        fread(pBuf, nSize, 1, pFile);
+        CString strText(pBuf);
+        FUN_140a44830()->FUN_1401ce2b0(FUN_1409a23d0((const char*)strText, 0));
+        delete[] pBuf;
+        fclose(pFile);
+    }
+}
+
+// @0x1412437e0
+void CGameOption::FUN_1412437e0()
+{
+    FUN_1408710c0(&m_docCharacter, FUN_141241b60(2, false));
+}
+
+// @0x141243850
+void CGameOption::FUN_141243850()
+{
+}
+
+// @0x141243860
+void CGameOption::FUN_141243860()
+{
+    FUN_14125fe20(FUN_140d13c70());
+    FUN_14125e5c0(&m_graphic, m_graphic.m_n0c);
+    FUN_14125ef90(&m_graphic2);
+    FUN_1403ed280()->FUN_1411a8880(m_graphic.m_nEffectStep);
+}
+
+// @0x1412438d0
+void CGameOption::FUN_1412438d0()
+{
+}
+
+// @0x1412438e0
+void CGameOption::FUN_1412438e0()
+{
+}
+
+// The benchmark rows: level -> bandwidth (unsigned) and level -> value.
+// @0x1412438f0
+int CGameOption::FUN_1412438f0()
+{
+    if (m_nBenchmark == -1)
+    {
+        m_nBenchmark = 0;
+        if (FUN_1409f7c90()->FUN_141245b10() < 0x801)
+            m_nBenchmark = 0;
+        else if (FUN_141245b20()->FUN_141245b00() == 2)
+        {
+            TiXmlDocument doc;
+            if (FUN_140166420()->FUN_1403974b0(&doc, "./Data/Xml/Table/benchmarkOption.xml", 0, true, false) != 0)
+            {
+                std::map<int, unsigned __int64> levels;
+                void* pRoot = FUN_140165cf0(&doc, "ms2");
+                if (pRoot != 0)
+                {
+                    for (void* pNode = FUN_140165cf0(pRoot, "option"); pNode != 0; pNode = FUN_140168650(pNode, "option"))
+                    {
+                        int nLevel = 0;
+                        FUN_1408731e0(pNode, "level", nLevel);
+                        int nBandWidth = 0;
+                        FUN_1408731e0(pNode, "bandWidth", nBandWidth);
+                        levels.insert(std::make_pair(nLevel, nBandWidth));
+                    }
+                }
+                std::map<int, unsigned __int64>::iterator it = levels.begin();
+                while (it != levels.end())
+                {
+                    m_nBenchmark = it->first;
+                    if (FUN_141245b20()->FUN_141245aa0() <= it->second)
+                        break;
+                    ++it;
+                }
+            }
+        }
+        else
+        {
+            CStringW strNvidia(L"NVIDIA ");
+            CStringW strName = FUN_141245b20()->FUN_141245ab0();
+            if (strName.Find(strNvidia, 0) != -1)
+                strName = (const wchar_t*)strName + strNvidia.GetLength();
+            FUN_140841420(strName);
+            int nValue = 0;
+            TiXmlDocument docVga;
+            if (FUN_140166420()->FUN_1403974b0(&docVga, "./Data/Xml/Table/benchmark.xml", 0, true, false) != 0)
+            {
+                void* pRoot = FUN_140165cf0(&docVga, "ms2");
+                if (pRoot != 0)
+                {
+                    for (void* pNode = FUN_140165cf0(pRoot, "vga"); pNode != 0; pNode = FUN_140168650(pNode, "vga"))
+                    {
+                        CStringW strVga = FUN_1401bf530(pNode, "name", CStringW(L""));
+                        if (FUN_14025cd60(strVga, strName))
+                        {
+                            FUN_1408731e0(pNode, "value", nValue);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (nValue == 0)
+                m_nBenchmark = 1;
+            else
+            {
+                TiXmlDocument docOption;
+                if (FUN_140166420()->FUN_1403974b0(&docOption, "./Data/Xml/Table/benchmarkOption.xml", 0, true, false) != 0)
+                {
+                    std::map<int, int> levels;
+                    void* pRoot = FUN_140165cf0(&docOption, "ms2");
+                    if (pRoot != 0)
+                    {
+                        for (void* pNode = FUN_140165cf0(pRoot, "option"); pNode != 0; pNode = FUN_140168650(pNode, "option"))
+                        {
+                            int nLevel = 0;
+                            FUN_1408731e0(pNode, "level", nLevel);
+                            int nLevelValue = 0;
+                            FUN_1408731e0(pNode, "value", nLevelValue);
+                            levels.insert(std::make_pair(nLevel, nLevelValue));
+                        }
+                    }
+                    std::map<int, int>::iterator it = levels.begin();
+                    while (it != levels.end())
+                    {
+                        m_nBenchmark = it->first;
+                        if (nValue <= it->second)
+                            break;
+                        ++it;
+                    }
+                }
+            }
+        }
+    }
+    return m_nBenchmark;
+}
+
+// @0x141243f50
+unsigned int CGameOption::FUN_141243f50(int nKind)
+{
+    TiXmlDocument doc;
+    CString strPath;
+    if (nKind == 0)
+        strPath = FUN_141241b60(0, false);
+    else if (nKind == 1)
+        strPath = FUN_141241b60(1, false);
+    else if (nKind == 2)
+        strPath = FUN_141241b60(2, false);
+    else
+        return 1;
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 1;
+    void* pRoot = FUN_14081b310(&doc);
+    if (pRoot == 0)
+        return 1;
+    void* pOption = FUN_140165cf0(pRoot, "option");
+    if (pOption == 0)
+        return 1;
+    int nVersion = 0;
+    FUN_1408731e0(pOption, "version", nVersion);
+    return nVersion != 0x15;
+}
+
+// @0x141244240
+void CGameOption::FUN_141244240(int nLevel)
+{
+    if (m_nBenchmark != nLevel)
+    {
+        m_nBenchmark = nLevel;
+        FUN_14125e1f0(FUN_1409a8ac0(), nLevel, 1);
+    }
+}
+
+// @0x1412442a0
+TiXmlDocument* CGameOption::FUN_1412442a0()
+{
+    return &m_docGameDefault;
+}
+
+// @0x1412442c0
+TiXmlDocument* CGameOption::FUN_1412442c0()
+{
+    return &m_docAccountDefault;
+}
+
+// @0x1412442e0
+TiXmlDocument* CGameOption::FUN_1412442e0()
+{
+    return &m_docGame;
+}
+
+// @0x141244300
+TiXmlDocument* CGameOption::FUN_141244300()
+{
+    return &m_docCharacter;
+}
+
+// Stamp the option version (0x15) on an option file's <option> element.
+// @0x141244320
+static void FUN_141244320(TiXmlDocument* pDoc)
+{
+    void* pRoot = FUN_14081b310(pDoc);
+    if (pRoot != 0)
+    {
+        void* pOption = FUN_140165cf0(pRoot, "option");
+        if (pOption == 0)
+        {
+            void* pMem = operator new(0x90);
+            pOption = pMem != 0 ? FUN_14086f2f0(pMem, "option") : 0;
+            FUN_14086e090(pRoot, pOption);
+        }
+        CString strVersion;
+        strVersion.Format("%d", 0x15);
+        FUN_140874050(pOption, "version", strVersion);
+    }
+}
+
+// @0x141248630
+Unk_BattleState* CGameOption::FUN_141248630()
+{
+    return &m_battle;
+}
+
+// @0x141245b10
+unsigned __int64 Unk_GoGpuMgr::FUN_141245b10()
+{
+    return m_nVideoMem;
+}
+
+// @0x141245b00
+int Unk_GoDeviceInfo::FUN_141245b00()
+{
+    return m_nVendor;
+}
+
+// @0x141245aa0
+unsigned __int64 Unk_GoDeviceInfo::FUN_141245aa0()
+{
+    return m_nBandwidth;
+}
+
+// @0x1412455e0
+Unk_GoConnect::~Unk_GoConnect()
+{
 }
