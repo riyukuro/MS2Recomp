@@ -135,6 +135,9 @@ public:
     bool FUN_141682f80(int nKey);                          // the key is held
     efd::Point3 FUN_141683900();                           // the move input direction
     bool FUN_141682fe0(int nBuffId);                       // the actor has the buff
+    efd::Point3 FUN_1416836d0();                           // the move key direction
+    efd::Point3 FUN_141683290();                           // the held move direction
+    bool FUN_141683100(int nBuffId);                       // the buff's input was given
 };
 
 // The actor's buffs: a buff blocks the kept skill effects.
@@ -1316,6 +1319,67 @@ MS2Ptr<CSkillRecord> StateSkill::FUN_1417ed7a0()
 }
 MS2_REPLACE_METHOD(0x1417ed7a0, StateSkill, FUN_1417ed7a0, 65, 0x4E486D38);
 
+// The move input during a cast: the self combo / chain casts take the input direction as the push (the move key
+// direction or, with CancelSwing_KeyIsDown, the held direction); a continuing skill whose key is held and a charging
+// cast push nowhere. A combo cast whose key is released moves the actor and leaves the state (2 after a move input, 6
+// after the cancel buff 0x493e1).
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417ed7f0
+void StateSkill::FUN_1417ed7f0()
+{
+    if (m_spRecord == NULL)
+        return;
+    MyPC* pMyPC = FUN_1417b84b0();
+    if (m_pOwner->vfunc_63() == 0 || m_pOwner->vfunc_99(0) != 0)
+        return;
+    if (m_b4a || m_b114)
+    {
+        Unk_SsMove* pMove = static_cast<Unk_SsMove*>(m_pOwner->FUN_14166d240());
+        efd::Point3 kDir;
+        static int s_nCancelSwingKeyIsDown = TSingleton<Client::Constants>::GetInstance()->CancelSwing_KeyIsDown.Read();
+        if (s_nCancelSwingKeyIsDown == 0)
+            kDir = pMove->FUN_1416836d0();
+        else
+            kDir = pMove->FUN_141683290();
+        if (kDir != efd::Point3::ZERO)
+            m_ptPush = kDir;
+        if (pMove->FUN_141683100(0x493e1))
+            m_b110 = true;
+    }
+    if (m_spRecord->m_spSkill->m_bContinue)
+    {
+        CSkillRecord* pRecord = m_spRecord.operator->();
+        if (static_cast<Unk_SsMove*>(pMyPC->FUN_14166d240())->FUN_141682f80(pRecord->m_nA4))
+            m_ptPush = efd::Point3::ZERO;
+    }
+    if (m_spCharge.get() != NULL)
+        m_ptPush = efd::Point3::ZERO;
+    if (m_b49 || m_b116 || m_b112)
+    {
+        int nKey = m_spRecord->m_nA4;
+        if (m_spNext.get() != NULL)
+            nKey = m_spNext->m_nA4;
+        if (!static_cast<Unk_SsMove*>(pMyPC->FUN_14166d240())->FUN_141682f80(nKey))
+        {
+            m_pOwner->vfunc_22(m_ptPush);
+            if (m_n10 != 0x3c)
+            {
+                if (m_b110)
+                {
+                    FUN_1417f4e10();
+                    vfunc_7(6);
+                }
+                else if (m_pOwner->FUN_1416749c0())
+                {
+                    FUN_1417f4e10();
+                    vfunc_7(2);
+                }
+            }
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x1417ed7f0, StateSkill, FUN_1417ed7f0, 1061, 0x9F13DD5B);
+
 // @0x1417f0ec0
 float StateSkill::FUN_1417f0ec0()
 {
@@ -1325,6 +1389,36 @@ float StateSkill::FUN_1417f0ec0()
     return fScale;
 }
 MS2_REPLACE_METHOD(0x1417f0ec0, StateSkill, FUN_1417f0ec0, 70, 0x113F1B89);
+
+// Starts the cooldown of a continuing skill for the rest of its loop ("loopstart".."loopend" of the sequence at the
+// cast's speed, less the charge time), unless the loop was entered by the input of a chain.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417f16f0
+void StateSkill::FUN_1417f16f0(MS2Ptr<CSkillRecord> spRecord)
+{
+    if (spRecord == NULL)
+        return;
+    if (m_pSequence == NULL)
+        return;
+    MyPC* pMyPC = FUN_1417b84b0();
+    if (pMyPC == NULL)
+        return;
+    MS2Ptr<SkillData> spSkill = spRecord->m_spSkill;
+    MS2Ptr<SkillLevelData> spLevel = spRecord->m_spLevel;
+    if (!spSkill->m_bContinue)
+        return;
+    if (m_b111 && spRecord->m_n98 != 0)
+        return;
+    float fStart = FUN_141b6fe90(m_pSequence, NiFixedString("loopstart"), 1.0f);
+    float fEnd = FUN_141b6fe90(m_pSequence, NiFixedString("loopend"), 1.0f);
+    float fLeft = (fEnd - fStart) / FUN_1417e9380();
+    if (fLeft - FUN_14028d280(m_nChargeTick) >= 0.0f)
+        fLeft = fLeft - FUN_14028d280(m_nChargeTick);
+    else
+        fLeft = 0.0f;
+    pMyPC->FUN_141523bc0()->FUN_1417664e0(spRecord->m_nSendTick, spLevel->FUN_140803dc0(), fLeft, 0, 1);
+}
+MS2_REPLACE_METHOD(0x1417f16f0, StateSkill, FUN_1417f16f0, 782, 0xDA74EBE1);
 
 // @0x1417f1a10
 int StateSkill::FUN_1417f1a10(unsigned nNow, unsigned nStart)
