@@ -48,6 +48,7 @@ class CScriptContent : public CPtred
 {
 public:
     virtual ~CScriptContent();
+    virtual int vfunc_1();                  // content type (0 = CCinematicContent)
     CStringW m_name;                        // +0x18
     CStringA m_unk20;                       // +0x20
     CStringA m_unk28;                       // +0x28
