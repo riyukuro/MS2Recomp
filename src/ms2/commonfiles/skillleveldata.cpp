@@ -30,15 +30,14 @@
 // MS2-PIN: ?_Has_unused_capacity@?$vector@V?$MS2Ptr@VSkillMotionData@@@@V?$allocator@V?$MS2Ptr@VSkillMotionData@@@@@std@@@std@@AEBA_NXZ 0x140806a80 ; prop
 // MS2-PIN: ?_Umove@?$vector@V?$MS2Ptr@VSkillActionAdditional@@@@V?$allocator@V?$MS2Ptr@VSkillActionAdditional@@@@@std@@@std@@AEAAPEAV?$MS2Ptr@VSkillActionAdditional@@@@PEAV3@00@Z 0x140806cf0 ; prop
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@V?$MS2Ptr@VSkillActionAdditional@@@@V?$allocator@V?$MS2Ptr@VSkillActionAdditional@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VSkillActionAdditional@@@@00U?$integral_constant@_N$0A@@2@@Z 0x140806d70 ; prop
-// MS2-PIN: ?_Umove_if_noexcept1@?$vector@V?$MS2Ptr@VSkillAttackData@@@@V?$allocator@V?$MS2Ptr@VSkillAttackData@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VSkillAttackData@@@@00U?$integral_constant@_N$0A@@2@@Z 0x140806db0 ; prop
 // MS2-PIN: ?_Umove_if_noexcept@?$vector@V?$MS2Ptr@VSkillAttackData@@@@V?$allocator@V?$MS2Ptr@VSkillAttackData@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VSkillAttackData@@@@00@Z 0x140806e50 ; prop
 // MS2-PIN: ?allocate@?$allocator@V?$MS2Ptr@VSkillMotionData@@@@@std@@QEAAPEAV?$MS2Ptr@VSkillMotionData@@@@_K@Z 0x140806f30 ; prop
 // MS2-PIN: ?clear@?$vector@HV?$allocator@H@std@@@std@@QEAAXXZ 0x140806fd0 ; unique
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@H@std@@@std@@SA_KAEBV?$allocator@H@2@@Z 0x1408070f0 ; unique
 // MS2-PIN: ?max_size@?$vector@V?$MS2Ptr@VSkillActionAdditional@@@@V?$allocator@V?$MS2Ptr@VSkillActionAdditional@@@@@std@@@std@@QEBA_KXZ 0x140807100 ; prop
-// MS2-PIN: ?push_back@?$vector@HV?$allocator@H@std@@@std@@QEAAX$$QEAH@Z 0x1408071d0 ; unique
 // MS2-PIN: ??__Fs_strEmpty@?1??FUN_140804500@SkillLevelData@@QEAAAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HH@Z@YAXXZ 0x142c9c1a0 ; unique
 // MS2-PINS-END tplpin
+// MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const* _File, unsigned _Line);  // xmlattr.h asserts (NDEBUG DLL build)
