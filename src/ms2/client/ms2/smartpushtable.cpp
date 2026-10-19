@@ -58,23 +58,10 @@ CAutoActionPricePackage::CAutoActionPricePackage()
     m_nMeso = 0;
 }
 
-// @0x1408123c0
-CAutoActionPricePackage::~CAutoActionPricePackage()
-{
-}
-
-// @0x140812480
-CSmartPushData::~CSmartPushData()
-{
-}
-
 // @0x140812180
 CSmartPushData::CSmartPushData()
+    : m_nId(0), m_strContent(), m_nActionType(0), m_nActionValue(0), m_nRequireMerat(0), m_requireItem(), m_strImgPath()
 {
-    m_nId = 0;
-    m_nActionType = 0;
-    m_nActionValue = 0;
-    m_nRequireMerat = 0;
 }
 
 // @0x1408105e0
@@ -87,15 +74,26 @@ CSmartPushTable::~CSmartPushTable()
 {
 }
 
+// tinyxmlhelper.h: an enum attribute converted from its string form.
 // @0x140811a50
-int FUN_140811a50(Unk_140165cf0* pNode, const char* pszName, int* pOut)
+#undef MS2_THIS_FILE
+#define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h"
+inline int FUN_140811a50(Unk_140165cf0* pNode, const char* pszName, int* pOut)
 {
+    if (FALSE)
+    {
+        MS2_ASSERT_AT(0xfa, FALSE);
+        return 2;
+    }
     CString str;
-    int nResult = FUN_1408733e0(pNode, pszName, str);
-    if (nResult == 0)
-        *pOut = Parse_140219650(str);
-    return nResult;
+    int nRead = FUN_1408733e0(pNode, pszName, str);
+    if (nRead != 0)
+        return nRead;
+    *pOut = Parse_140219650(str);
+    return nRead;
 }
+#undef MS2_THIS_FILE
+#define MS2_THIS_FILE ""
 
 // @0x140810730
 void CSmartPushTable::Load()
@@ -184,12 +182,8 @@ void CSmartPushTable::LoadPackages()
 void CSmartPushTable::GetAll(ATL::CAtlArray<DataPtr>& rOut)
 {
     CheckInit();
-    POSITION pos = m_data.GetStartPosition();
-    while (pos != 0)
-    {
+    for (POSITION pos = m_data.GetStartPosition(); pos != 0; m_data.GetNext(pos))
         rOut.Add(m_data.GetValueAt(pos));
-        m_data.GetNext(pos);
-    }
 }
 
 // @0x140810ca0
@@ -208,9 +202,9 @@ CSmartPushTable::PackagePtr CSmartPushTable::GetPackage(const CStringW& strName,
     m_packages.Lookup(strName, spList);
     if (spList == 0)
         return PackagePtr(0);
-    if (n < spList->GetCount())
-        return spList->GetAt(n);
-    return PackagePtr(0);
+    if (spList->GetCount() <= n)
+        return PackagePtr(0);
+    return spList->GetAt(n);
 }
 
 // @0x140811240
@@ -228,7 +222,7 @@ int CSmartPushTable::GetPackageDuration(const CStringW& strName, unsigned n)
     PackagePtr sp = GetPackage(strName, n);
     if (sp == 0)
         return 0;
-    return sp->m_nDuration * 60000;
+    return sp->m_nDuration * 60 * 1000;
 }
 
 // @0x140811370
@@ -275,9 +269,15 @@ bool FUN_140811640(int n)
 {
     if (!FUN_140166410()->FUN_14036d710(0x10c))
         return false;
-    if (n > 0 && n < 5)
+    switch (n)
+    {
+    case 1: case 2: case 3: case 4:
         return true;
-    return false;
+    case 5: case 6: case 7: case 8:
+        return false;
+    default:
+        return false;
+    }
 }
 
 // @0x140812a90

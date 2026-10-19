@@ -17,7 +17,7 @@ class CSmartPushData : public CPtred
 {
 public:
     CSmartPushData();                   // 0x140812180
-    virtual ~CSmartPushData();          // 0x140812480
+    // the destructor is implicit (0x140812480; no vftable store)
 
     int m_nId;                          // +0x18 "id"
     CStringW m_strContent;              // +0x20 "content"
@@ -36,7 +36,7 @@ class CAutoActionPricePackage : public CPtred
 {
 public:
     CAutoActionPricePackage();          // 0x140812000
-    virtual ~CAutoActionPricePackage(); // 0x1408123c0
+    // the destructor is implicit (0x1408123c0; no vftable store)
 
     CStringW m_strContent;              // +0x18 "content"
     unsigned m_nId;                     // +0x20 "id"
