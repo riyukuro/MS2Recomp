@@ -40,27 +40,12 @@
 // MS2-PIN: ??__Es_strStun@@YAXXZ 0x140101440 ; probe
 // MS2-PIN: ??__Es_strUgcTag@@YAXXZ 0x140101470 ; probe
 // MS2-PIN: ??__Es_strSortTypeNames@@YAXXZ 0x1401014a0 ; probe
-// MS2-PIN: ??0?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEAA@_K@Z 0x141762270 ; unique
-// MS2-PIN: ??1?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@XZ 0x141762370 ; unique
-// MS2-PIN: ??1CNode@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@XZ 0x1417623b0 ; prop
 // MS2-PIN: ??8?$MS2Ptr@VUnk_MyPCSkillSet@@@@QEBA_NPEAVUnk_MyPCSkillSet@@@Z 0x1417624d0 ; unique
-// MS2-PIN: ??_GCNode@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAPEAXI@Z 0x141762510 ; unique
-// MS2-PIN: ??_GSkillSlot@@UEAAPEAXI@Z 0x141762550 ; unique
-// MS2-PIN: ?Find@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@H@Z 0x1417625b0 ; unique
-// MS2-PIN: ?FreeNode@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@@Z 0x1417626a0 ; unique
-// MS2-PIN: ?GetClassDesc@SkillSlot@@UEBAPEBVClassInfo@efd@@XZ 0x141762740 ; prop
-// MS2-PIN: ?IsNil@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBA_NPEAVCNode@12@@Z 0x141762850 ; unique
-// MS2-PIN: ?LeftRotate@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x141762890 ; unique
-// MS2-PIN: ?Lookup@?$CRBMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAPEAVCPair@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@2@H@Z 0x1417629a0 ; unique
-// MS2-PIN: ?Lookup@?$CRBMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEBA_NHAEAH@Z 0x1417629c0 ; unique
-// MS2-PIN: ?Maximum@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x141762a10 ; unique
-// MS2-PIN: ?Predecessor@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x141762ce0 ; unique
-// MS2-PIN: ?RemoveAll@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXXZ 0x141763030 ; unique
-// MS2-PIN: ?RemovePostOrder@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@@Z 0x1417630b0 ; unique
-// MS2-PIN: ?RightRotate@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x141763110 ; unique
-// MS2-PIN: ?SetNil@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x141763280 ; unique
-// MS2-PIN: ?TypeCast@SkillSlot@@UEBA_NIPEAPEAX@Z 0x141763350 ; order
-// MS2-PIN: ?TypeCast@SkillSlot@@UEBA_NIPEAPEBX@Z 0x1417633a0 ; order
+// MS2-PIN: ?GetClassDesc@SkillSlot@@UEBAPEBVClassInfo@efd@@XZ 0x141762740 ; unique
+// MS2-PIN: ?RightRotate@?$CRBTree@IHV?$CElementTraits@I@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x141763110 ; unique
+// MS2-PIN: ?SetNil@?$CRBTree@IHV?$CElementTraits@I@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x141763280 ; unique
+// MS2-PIN: ?TypeCast@SkillSlot@@UEBA_NIPEAPEAX@Z 0x141763350 ; unique
+// MS2-PIN: ?TypeCast@SkillSlot@@UEBA_NIPEAPEBX@Z 0x1417633a0 ; unique
 // MS2-PIN: ??_ESkillSlotBag@@WII@EAAPEAXI@Z 0x141763cfc ; unique
 // MS2-PIN: ??_GSkillSlotBag@@UEAAPEAXI@Z 0x141763d10 ; unique
 // MS2-PIN: ?GetClassDesc@SkillSlotBag@@UEBAPEBVClassInfo@efd@@XZ 0x141763d70 ; unique
@@ -1910,7 +1895,7 @@ bool Unk_SsEmotionGreater::operator()(const MS2Ptr<CSkillSystem::stEmotion>& a, 
 CSkillSystem::CSkillSystem()
     : m_pOwner(0), m_fLastCastTime(0), m_nLastCastSkill(0), m_nShowError(1), m_mapCooltime(17, 0.75f, 0.25f, 2.25f, 10),
       m_nGroundState(0), m_fGroundDistance(0), m_nCastAllowed(0), m_lstLapenSkills(10), m_lstLapenChains(10), m_nLapenJob(1),
-      m_nf4(0), m_lstCompact(10), m_spCompact(0), m_nLapenTick(0), m_nLapenDirty(1), m_spSkillSet(0),
+      m_nf4(0), m_lstCompact(10), m_spCompact(nullptr), m_nLapenTick(0), m_nLapenDirty(1), m_spSkillSet(0),
       m_mapUses(17, 0.75f, 0.25f, 2.25f, 10), m_mapRechargeTick(17, 0.75f, 0.25f, 2.25f, 10)
 {
 }
@@ -2161,12 +2146,12 @@ MS2Ptr<SkillLevelData> CSkillSystem::FUN_141764c80(int nSkillId)
 {
     MS2Ptr<SkillData> spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
     if (spSkill == 0)
-        return MS2Ptr<SkillLevelData>(0);
+        return MS2Ptr<SkillLevelData>(nullptr);
     if (!spSkill->FUN_1407e9d30())
         return reinterpret_cast<Unk_SsPc*>(m_pOwner)->FUN_1416546d0()->vfunc_1(nSkillId);
     MS2Ptr<stEmotion> spEmotion = FUN_14176ba90(nSkillId);
     if (spEmotion == 0)
-        return MS2Ptr<SkillLevelData>(0);
+        return MS2Ptr<SkillLevelData>(nullptr);
     return spSkill->FUN_1407e90a0(spEmotion->m_level);
 }
 
@@ -2178,19 +2163,19 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141764e30(Unk_InventorySkillRequest& kReq
     {
         FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_not_learn_skill")), 1, 1);
         FUN_141276180(DAT_143aea1b8, CString(""));
-        return MS2Ptr<CSkillRecord>(0);
+        return MS2Ptr<CSkillRecord>(nullptr);
     }
     __int64 nItemUid = FUN_1409331f0()->FUN_14142ded0(kReq.m_n34);
     if (nItemUid != 0)
     {
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
         if (spItem == 0)
-            return MS2Ptr<CSkillRecord>(0);
+            return MS2Ptr<CSkillRecord>(nullptr);
         unsigned short nPcLevel = (unsigned short)pOwner->vfunc_78();
         if (FUN_140526810(spItem.operator->(), nPcLevel) == 0)
         {
             FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_not_enough_level")), 1, 1);
-            return MS2Ptr<CSkillRecord>(0);
+            return MS2Ptr<CSkillRecord>(nullptr);
         }
         kReq.m_n40 = nItemUid;
     }
@@ -2199,27 +2184,27 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141764e30(Unk_InventorySkillRequest& kReq
     {
         MS2Ptr<SkillLevelData> spLevel = FUN_141764c80(kReq.m_nSkillId);
         if (spLevel == 0)
-            return MS2Ptr<CSkillRecord>(0);
+            return MS2Ptr<CSkillRecord>(nullptr);
         if (spLevel->FUN_140803e10()->m_nUseDefaultSkillID == 0 && !spLevel->FUN_140803e10()->m_bUseDefaultSkill)
-            return MS2Ptr<CSkillRecord>(0);
+            return MS2Ptr<CSkillRecord>(nullptr);
         int nWhy = FUN_141769b70(spLevel, &kReq);
         if (nWhy == 0)
-            return MS2Ptr<CSkillRecord>(0);
+            return MS2Ptr<CSkillRecord>(nullptr);
         if (nWhy != 6 && nWhy != 7 && nWhy != 2)
-            return MS2Ptr<CSkillRecord>(0);
+            return MS2Ptr<CSkillRecord>(nullptr);
         int nOrigin = 0;
         int nDefaultId = spLevel->FUN_140803e10()->m_nUseDefaultSkillID;
         if (nDefaultId == 0 || nWhy == 2)
         {
             if (!spLevel->FUN_140803e10()->m_bUseDefaultSkill)
-                return MS2Ptr<CSkillRecord>(0);
+                return MS2Ptr<CSkillRecord>(nullptr);
             nDefaultId = pOwner->FUN_14165c570();
             nOrigin = kReq.m_nSkillId;
         }
         MS2Ptr<SkillData> spDefault = FUN_1401958b0()->GetSkillData(nDefaultId);
         MS2Ptr<SkillLevelData> spDefaultLevel = spDefault->FUN_1407e90a0(1);
         if (spDefaultLevel == 0)
-            return MS2Ptr<CSkillRecord>(0);
+            return MS2Ptr<CSkillRecord>(nullptr);
         kReq.m_nSkillId = nDefaultId;
         kReq.m_nLevel = spDefaultLevel->FUN_140803df0();
         kReq.m_b38 = spDefaultLevel->FUN_140804450();
@@ -2235,7 +2220,7 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141765570(Unk_InventorySkillRequest& kReq
 {
     MS2Ptr<SkillLevelData> spLevel = FUN_1401958b0()->GetSkillLevelData(kReq.m_nSkillId, kReq.m_nLevel);
     if (spLevel.IsNull())
-        return MS2Ptr<CSkillRecord>(0);
+        return MS2Ptr<CSkillRecord>(nullptr);
     MS2Ptr<SkillLevelData> spCur = spLevel;
     if (kReq.m_b38)
     {
@@ -2244,14 +2229,14 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141765570(Unk_InventorySkillRequest& kReq
         {
             spCur = FUN_14176b7c0(nBase, spCur->FUN_140803df0());
             if (spCur == 0)
-                return MS2Ptr<CSkillRecord>(0);
+                return MS2Ptr<CSkillRecord>(nullptr);
         }
         int nJump = FUN_141764ad0(spCur->FUN_140803e10());
         if (nJump != spCur->FUN_140803dc0())
         {
             spCur = FUN_14176b7c0(nJump, spCur->FUN_140803df0());
             if (spCur == 0)
-                return MS2Ptr<CSkillRecord>(0);
+                return MS2Ptr<CSkillRecord>(nullptr);
         }
     }
     int nWhy = FUN_141769b70(spCur, &kReq);
@@ -2261,14 +2246,14 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141765570(Unk_InventorySkillRequest& kReq
         kReq.m_nLevel = spCur->FUN_140803df0();
         MS2Ptr<CSkillRecord> spRecord(new CSkillRecord);
         if (!spRecord->Init(kReq))
-            return MS2Ptr<CSkillRecord>(0);
+            return MS2Ptr<CSkillRecord>(nullptr);
         if (!kReq.m_b39)
             m_pOwner->vfunc_100(spRecord, 1);
         return spRecord;
     }
     if (m_nShowError != 0)
         FUN_141769440(nWhy);
-    return MS2Ptr<CSkillRecord>(0);
+    return MS2Ptr<CSkillRecord>(nullptr);
 }
 
 // @0x141765a70
@@ -3607,10 +3592,10 @@ __int64 CSkillSystem::FUN_14176b960(int nSkillId, __int64 nBase)
 // @0x14176ba90
 MS2Ptr<CSkillSystem::stEmotion> CSkillSystem::FUN_14176ba90(int nId)
 {
-    for (std::vector<MS2Ptr<stEmotion> >::iterator it = m_vEmotions.begin(); ; ++it)
+    for (MS2Ptr<stEmotion>* it = m_vEmotions._Unchecked_begin(); ; ++it)
     {
-        if (it == m_vEmotions.end())
-            return MS2Ptr<stEmotion>(0);
+        if (it == m_vEmotions._Unchecked_end())
+            return MS2Ptr<stEmotion>(nullptr);
         if ((*it)->m_id == nId)
             return *it;
     }
