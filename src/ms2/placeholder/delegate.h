@@ -46,6 +46,7 @@ public:
 
     private:
         template <class C, class M> static R Call(std::pair<C*, M>& p, A1 a1, A2 a2) { return (p.first->*p.second)(a1, a2); }
+        static R Call(R (*&pfn)(A1, A2), A1 a1, A2 a2) { return pfn(a1, a2); }   // a free function (microgamemanagercli.cpp)
 
         F m_f;
     };
@@ -54,6 +55,11 @@ public:
     template <class C>
     Delegate(C* const& obj, R (C::*const& f)(A1, A2))
         : m_pImpl(new DelegateImpl<std::pair<C*, R (C::*)(A1, A2)> >(std::make_pair(obj, f)))
+    {
+    }
+    // A free function (microgamemanagercli.cpp: Delegate<bool(int, const CMsgBoxData&)>, 0x140b76b10).
+    explicit Delegate(R (*f)(A1, A2))
+        : m_pImpl(new DelegateImpl<R (*)(A1, A2)>(f))
     {
     }
     Delegate(const Delegate& o);        // declared: makes a by-value Delegate argument go by reference to a caller temp (see the one-argument form)

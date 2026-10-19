@@ -216,6 +216,7 @@ public:
 
     // Accessors uimessagebox.cpp calls (0x141a01570-0x141a03470 and outside COMDATs).
     void FUN_141a01570(const CStringW& strMsg);                     // set the message text
+    void FUN_141a01660(const CStringW& strTag);                     // set the tag (the micro game request boxes)
     void FUN_141a01540(const CStringW& strTag);                     // set the tag (uirevivaldialog.cpp)
     void FUN_141a015d0(const CStringW& str);                        // quest dispatch box: the sender name argument
     void FUN_141a02810(CStringW strTag);                            // the clicked tag (OnClick)
