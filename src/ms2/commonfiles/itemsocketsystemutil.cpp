@@ -1,6 +1,7 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The item socket tables (Table/itemSocket.xml), see
 // itemsocketsystemutil.h. The unit also holds CItemStatus / CItemUgc / CItemTransfer and the template glue of its
 // containers (not recovered yet).
+// MS2-GUESS-LOOKALIKES
 // MS2-UNIT: ?\itemsocketsystemutil.cpp
 // MS2-RANGE: 0x1400baa10-0x1400bae70 .text$di
 // MS2-RANGE: 0x140626a20-0x140635ec0 .text$mn
@@ -19,6 +20,8 @@
 // MS2-PIN: ??0?$MS2Ptr@VCItemTransfer@@@@QEAA@$$QEAV0@@Z 0x140635bf0 ; unique
 // MS2-PIN: ??D?$MS2Ptr@VCItemBinding@CItemTransfer@@@@QEBAAEAVCItemBinding@CItemTransfer@@XZ 0x140635e60 ; unique
 // MS2-PIN: ??D?$MS2Ptr@VCItemTransfer@@@@QEBAAEAVCItemTransfer@@XZ 0x140635e70 ; unique
+// MS2-PIN: ?begin@?$vector@_JV?$allocator@_J@std@@@std@@QEBA?AV?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@_J@std@@@std@@@2@XZ 0x14062c4c0 ; unique
+// MS2-PIN: ?end@?$vector@_JV?$allocator@_J@std@@@std@@QEBA?AV?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@_J@std@@@std@@@2@XZ 0x14062c5f0 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_GCItemUgc@@UEAAPEAXI@Z 0x140633490
 // MS2-PIN: ??$_Ucopy@PEB_J@?$vector@_JV?$allocator@_J@std@@@std@@AEAAPEA_JPEB_J0PEA_J@Z 0x14062be30
