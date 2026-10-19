@@ -16,11 +16,16 @@
 // MS2-PIN: ?Reference@?$MS2Ptr@VASArray@@@@CAXPEAVASArray@@@Z 0x140ec3f20 ; merge-bind
 // MS2-PIN: ?Release@?$MS2Ptr@VASArray@@@@AEAAXXZ 0x140ec3fe0 ; merge-bind
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VASArray@@@@AEAAXPEAX@Z 0x140ec4070 ; merge-bind
+// MS2-PIN: ??0?$MS2Ptr@VCUserReportData@@@@QEAA@AEBV0@@Z 0x140ec33f0 ; merge-bind
+// MS2-PIN: ??0?$MS2Ptr@VCUserReportData@@@@QEAA@PEAVCUserReportData@@@Z 0x140ec3430 ; merge-bind
+// MS2-PIN: ?AddRef@?$MS2Ptr@VCUserReportData@@@@AEBAXXZ 0x140ec3ed0 ; merge-bind
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCUserReportData@@@@AEBAXPEAX@Z 0x140ec3f70 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimeratmarketcommon.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "asclickoutdata.h"
 #include "ms2/commonfiles/meratmarketbasketinfo.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/uimeratmarketweapontype.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/astooltip.h"
@@ -41,24 +46,6 @@ static CString s_stun = "stun";
 // ---- unit-local declarations ----
 class PCBase;
 
-namespace UIMeratMarketCommon {
-
-// The weapon filter of the market tabs: two weapon categories (0 = none, then the job/gender filter applies).
-class WeaponType : public CPtred
-{
-public:
-    WeaponType();                                           // 0x140ebb6c0
-    virtual ~WeaponType();                                  // 0x140ec3500, ??_G 0x140ec3730
-    virtual void vfunc_1() = 0;                             // _purecall in the exe vftable
-    void FUN_140ebb750();                                   // reset the filter
-    bool FUN_140ebb780(int nGender, int nJob, MS2Ptr<CItemData> spData);
-
-    int m_n18;
-    int m_n1c;
-};
-MS2_CHECK_SIZE(WeaponType, 0x20);
-
-}   // namespace UIMeratMarketCommon
 
 // The click data of a product button (UIMeratMarketDialogUtil), see asclickoutdata.h.
 void* FUN_1403ed2d0();
@@ -67,7 +54,6 @@ int FUN_140ec2ab0();
 int* FUN_1401d7c10(void* pValue);
 AScript& FUN_1409edaf0(AScript& dst, const AScript& src);          // AScript::operator=
 int FUN_140ec04b0(CMeratMarketPremiumProduct* pProduct);
-bool FUN_140ebb730();
 
 CStringW FUN_14028b8e0(const CStringW& strKey);
 CStringW FUN_1408116a0(int nId, const int& nArg);
@@ -83,9 +69,10 @@ class Unk_McBlind { public: bool FUN_140a259b0(int nKind, __int64 nId); };
 Unk_McBlind* FUN_1409c1730();
 
 // @0x140ebb6c0
-UIMeratMarketCommon::WeaponType::WeaponType()
+UIMeratMarketCommon::WeaponType::WeaponType(PC* pOwner)
     : m_n18(0), m_n1c(0)
 {
+    FUN_140ebb730(pOwner);
 }
 
 // @0x140ec3500
@@ -94,7 +81,7 @@ UIMeratMarketCommon::WeaponType::~WeaponType()
 }
 
 // @0x140ebb730
-bool FUN_140ebb730()
+bool UIMeratMarketCommon::WeaponType::FUN_140ebb730(PC* pOwner)
 {
     return true;
 }
