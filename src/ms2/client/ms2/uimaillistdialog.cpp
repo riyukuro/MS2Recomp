@@ -14,6 +14,7 @@
 #include <algorithm>
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/blockmanager.h"
+#include "ms2/client/ms2/networkservice.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/commonfiles/usermail.h"
 #include "ms2/placeholder/asdata.h"
@@ -911,4 +912,46 @@ void UIMailListDialog::FUN_1419e5190()
         spNext->FUN_1422c1fe0(FUN_1419e6fe0(m_nPage + 1));
     if (MS2Ptr<Unk_MlCheckBox> spCheck = FUN_140e52670("m_checkAll"))
         spCheck->FUN_1422ce090(0);
+}
+
+// @0x1419e8620
+MS2Ptr<TMailAdBillDataParam> UIMailListDialog::FUN_1419e8620(const CStringA& strMovie)
+{
+    MS2Ptr<TMailAdBillDataParam> sp(new TMailAdBillDataParam());
+    if (sp == 0)
+        return MS2Ptr<TMailAdBillDataParam>(0);
+    sp->m_nDialogId = vfunc_48();
+    sp->m_strMovie = strMovie;
+    sp->m_nCurrency = 3;
+    sp->m_dgBuy = TMarketBillDataParam::BuyCallback(this, &UIMailListDialog::FUN_1419e88b0);
+    sp->m_dgTooltip = TMarketBillDataParam::TooltipCallback(this, &UIMailListDialog::FUN_1419e8b70);
+    return sp;
+}
+
+// @0x1419e88b0
+bool UIMailListDialog::FUN_1419e88b0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay)
+{
+    if (m_30 == 0)
+        return true;
+    if (spParam == 0)
+        return true;
+    MS2Ptr<TMailAdBillDataParam> spMailParam(dynamic_cast<TMailAdBillDataParam*>(spParam.operator->()));
+    if (spMailParam == 0)
+        return true;
+    CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(spMailParam->m_nMailId).get();
+    if (pMail == 0)
+        return true;
+    if (pMail->FUN_140690b80() == 0)
+        return true;
+    unsigned int nPrice = (unsigned int)pMail->FUN_1406925a0();
+    if (!FUN_140d86260()->vfunc_40(nPrice))
+    {
+        CUIService::GetInstance()->FUN_141add1f0();
+        return false;
+    }
+    COutPacket packet(0x2d, 0);
+    packet.Encode1(0xc);
+    packet.Encode8(pMail->FUN_140690350());
+    FUN_140710590(packet);
+    return true;
 }

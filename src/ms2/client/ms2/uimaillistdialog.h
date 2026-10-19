@@ -13,6 +13,8 @@
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/placeholder/mctimer.h"
+#include "ms2/placeholder/asbilldata.h"
+#include "ms2/client/ms2/tmarketbilldataparam.h"
 
 class ASTextField;
 class CMsgBoxData;
@@ -22,6 +24,28 @@ class Unk_MlCheckBox;
 class Unk_MlList;
 class Unk_MlTab;
 template <class T> class Unk_MailPtr;
+
+// One ad of an ad mail as a bill row (RTTI .?AVASMailAdBillData@@, 0x58 bytes; ctor 0x1419ea130, dtor 0x1419ea3c0).
+class ASMailAdBillData : public ASBillData
+{
+public:
+    ASMailAdBillData() : ASBillData(2), m_nSlot(-1) {}              // 0x1419ea130
+    virtual ~ASMailAdBillData() {}                                  //  0 0x1419ea3c0 (??_G 0x1419ea650)
+    virtual int vfunc_5() { return m_nSlot; }                       //  5 0x1419eaab0 the ad slot of the mail
+    void FUN_1419eb8f0(int nSlot) { m_nSlot = nSlot; }              // 0x1419eb8f0
+    int m_nSlot;                                                    // +0x50
+};
+MS2_CHECK_SIZE(ASMailAdBillData, 0x58);
+
+// The bill dialog argument block of an ad mail (RTTI .?AVTMailAdBillDataParam@@, 0xe8 bytes; ctor 0x1419ea230).
+class TMailAdBillDataParam : public TMarketBillDataParam
+{
+public:
+    TMailAdBillDataParam() { m_nMailId = 0; m_b2c = false; }        // 0x1419ea230
+    virtual ~TMailAdBillDataParam() {}                              //  0 0x1419ea450 (??_G 0x1419ea710)
+    __int64 m_nMailId;                                              // +0xe0
+};
+MS2_CHECK_SIZE(TMailAdBillDataParam, 0xe8);
 
 class UIMailListDialog : public UIDialog
 {
@@ -39,6 +63,9 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // IMessageListener 0 0x1419e3780
 
     bool FUN_1419e8080(unsigned __int64 nMailId);                   // "onBuyAd": the ad bill dialog
+    MS2Ptr<TMailAdBillDataParam> FUN_1419e8620(const CStringA& strMovie);   // the ad bill dialog's argument block
+    bool FUN_1419e88b0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay);   // buy
+    bool FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);     // tooltip
     void FUN_1419e4f10();                                           // a mail was removed: clamp the page, refresh
     void FUN_1419e5000(__int64 nMailId);                            // "readMail"
     void FUN_1419e50b0(__int64 nMailId);                            // "receiveMail"
