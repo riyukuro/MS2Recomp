@@ -4,6 +4,23 @@
 // MS2-RANGE: 0x141906f30-0x14190eac0 .text$mn
 // MS2-RANGE: 0x140111bf0-0x140111d60 .text$di
 // MS2-RANGE: 0x142cbd5a0-0x142cbd625 .text$yd
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??$?0VUICutSceneCinematic@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUICutSceneCinematic@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x14190b110 ; unique
+// MS2-PIN: ??$?8PEAVUICutSceneCinematic@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUICutSceneCinematic@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x14190b340 ; prop
+// MS2-PIN: ??$?8PEAVUICutSceneCinematic@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVUICutSceneCinematic@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x14190b3b0 ; prop
+// MS2-PIN: ??$?8PEAVUICutSceneCinematic@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUICutSceneCinematic@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x14190b420 ; prop
+// MS2-PIN: ?vfunc_48@UICutSceneCinematic@@UEAAHXZ 0x14190ce80 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUICutSceneCinematic@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x14190e720 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUICutSceneCinematic@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x14190e750 ; unique
+// MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUICutSceneCinematic@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x14190e780 ; unique
+// MS2-PIN: ??$Call@VUICutSceneCinematic@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUICutSceneCinematic@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUICutSceneCinematic@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x14190e840 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUICutSceneCinematic@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x14190e880 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUICutSceneCinematic@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x14190e8e0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUICutSceneCinematic@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x14190e940 ; unique
+// MS2-PINS-END tplpin
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICutSceneCinematic@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14190e660
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICutSceneCinematic@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14190e6c0
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VBalloonGroup@UICutSceneCinematic@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VBalloonGroup@UICutSceneCinematic@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x14190cd20
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicutscenecinematic.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uicutscenecinematic.h"
@@ -141,6 +158,7 @@ CString UICutSceneCinematic::vfunc_1()
 {
     return "CutSceneCinematic";
 }
+MS2_REPLACE_METHOD(0x141907520, UICutSceneCinematic, vfunc_1, 61, 0x75C8B586);
 
 // @0x141907570
 UICutSceneCinematic::BalloonGroup::BalloonGroup()
@@ -155,6 +173,7 @@ void UICutSceneCinematic::vfunc_2()
     FUN_140b632f0()->FUN_1422d4780(this, 4);
     FUN_140a94350()->vfunc_10(0xb);
 }
+MS2_REPLACE_METHOD(0x1419075C0, UICutSceneCinematic, vfunc_2, 93, 0x3990A77A);
 
 // @0x141907630
 void UICutSceneCinematic::vfunc_3()
@@ -174,6 +193,7 @@ void UICutSceneCinematic::vfunc_3()
     FUN_140b632f0()->FUN_1422d4840(this, 4);
     FUN_140a94350()->vfunc_10(0);
 }
+MS2_REPLACE_METHOD(0x141907630, UICutSceneCinematic, vfunc_3, 219, 0x828082D7);
 
 // MS2-FUNCTIONAL: the exe's bind-and-throw keeps two more pointer temps (8 more bytes of frame); behaviour equivalent
 // @0x141907720
@@ -201,6 +221,7 @@ void UICutSceneCinematic::vfunc_26()
     m_nMode = 0;
     m_spSkip = 0;
 }
+MS2_REPLACE_METHOD(0x141907B20, UICutSceneCinematic, vfunc_26, 57, 0x49A2FB0A);
 
 // @0x141907b60
 void UICutSceneCinematic::vfunc_43()
@@ -213,6 +234,7 @@ void UICutSceneCinematic::vfunc_43()
         spEntity->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8, fScale);
     }
 }
+MS2_REPLACE_METHOD(0x141907B60, UICutSceneCinematic, vfunc_43, 272, 0x83EFB7E0);
 
 // @0x141907c80
 int UICutSceneCinematic::vfunc_13()
@@ -233,6 +255,7 @@ int UICutSceneCinematic::vfunc_13()
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141907C80, UICutSceneCinematic, vfunc_13, 203, 0xC5C48216);
 
 // @0x141907d60
 void UICutSceneCinematic::FUN_141907d60(int nState, CStringW strKey, CStringW strLabel)
@@ -249,6 +272,7 @@ void UICutSceneCinematic::FUN_141907d60(int nState, CStringW strKey, CStringW st
         m_30->FUN_14190b570("setSkip", bSkip, CStringW(m_strSkipKey), CStringW(m_strSkipLabel));
     }
 }
+MS2_REPLACE_METHOD(0x141907D60, UICutSceneCinematic, FUN_141907d60, 531, 0x897BCD1A);
 
 // @0x141907f80
 void UICutSceneCinematic::FUN_141907f80(int nId, CStringW strText)
@@ -262,6 +286,7 @@ void UICutSceneCinematic::FUN_141907f80(int nId, CStringW strText)
     FUN_141909490();
     FUN_140a94350()->vfunc_10(0xb);
 }
+MS2_REPLACE_METHOD(0x141907F80, UICutSceneCinematic, FUN_141907f80, 174, 0x4D855AE2);
 
 // @0x141908040
 void UICutSceneCinematic::FUN_141908040(bool bOn)
@@ -277,6 +302,7 @@ void UICutSceneCinematic::FUN_141908040(bool bOn)
         FUN_1408e57f0()->FUN_1422b9fd0(0x620001d);
     }
 }
+MS2_REPLACE_METHOD(0x141908040, UICutSceneCinematic, FUN_141908040, 95, 0x0200FE35);
 
 // @0x1419080b0
 void UICutSceneCinematic::FUN_1419080b0()
@@ -289,6 +315,7 @@ void UICutSceneCinematic::FUN_1419080b0()
     FUN_140cffa50(FUN_1422dbb40(), "m_document", "_out");
     FUN_140a94350()->vfunc_10(0);
 }
+MS2_REPLACE_METHOD(0x1419080B0, UICutSceneCinematic, FUN_1419080b0, 460, 0xB4DFB1FB);
 
 // @0x141908290
 void UICutSceneCinematic::FUN_141908290(CInPacket& packet)
@@ -310,6 +337,7 @@ void UICutSceneCinematic::FUN_141908290(CInPacket& packet)
     case 5: FUN_14190afb0(packet); break;
     }
 }
+MS2_REPLACE_METHOD(0x141908290, UICutSceneCinematic, FUN_141908290, 327, 0x2227BCC9);
 
 // @0x141908410
 void UICutSceneCinematic::FUN_141908410()
@@ -318,6 +346,7 @@ void UICutSceneCinematic::FUN_141908410()
         return;
     m_30->Invoke("hideScript");
 }
+MS2_REPLACE_METHOD(0x141908410, UICutSceneCinematic, FUN_141908410, 89, 0x4D1B078C);
 
 // @0x141908470
 void UICutSceneCinematic::FUN_141908470(CStringW strName, CStringW strText, CStringW strIllust, int nFlag)
@@ -325,6 +354,7 @@ void UICutSceneCinematic::FUN_141908470(CStringW strName, CStringW strText, CStr
     if (m_30.get())
         m_30->Invoke("setScript", CStringW(strName), CStringW(strText), CStringW(strIllust), nFlag);
 }
+MS2_REPLACE_METHOD(0x141908470, UICutSceneCinematic, FUN_141908470, 361, 0x81464EF3);
 
 // @0x1419085e0
 void UICutSceneCinematic::FUN_1419085e0(NotifyObject* pNotice)
@@ -332,6 +362,7 @@ void UICutSceneCinematic::FUN_1419085e0(NotifyObject* pNotice)
     Unk_CscRemoveNotice* pRemove = reinterpret_cast<Unk_CscRemoveNotice*>(pNotice);
     m_groups.RemoveKey(pRemove->m_nObjectId);
 }
+MS2_REPLACE_METHOD(0x1419085E0, UICutSceneCinematic, FUN_1419085e0, 56, 0x844E23E8);
 
 // @0x141908620
 void UICutSceneCinematic::FUN_141908620(NotifyObject* pNotice)
@@ -341,6 +372,7 @@ void UICutSceneCinematic::FUN_141908620(NotifyObject* pNotice)
     m_strSkipLabel.Empty();
     m_strSkipMsg.Empty();
 }
+MS2_REPLACE_METHOD(0x141908620, UICutSceneCinematic, FUN_141908620, 94, 0x765E5887);
 
 // @0x141908690
 void UICutSceneCinematic::FUN_141908690()
@@ -355,6 +387,7 @@ void UICutSceneCinematic::FUN_141908690()
         m_nVoice = 0;
     }
 }
+MS2_REPLACE_METHOD(0x141908690, UICutSceneCinematic, FUN_141908690, 132, 0x45B8DE86);
 
 // @0x141908720
 void UICutSceneCinematic::FUN_141908720(float fDelta)
@@ -362,6 +395,7 @@ void UICutSceneCinematic::FUN_141908720(float fDelta)
     FUN_141908750();
     FUN_141908c00();
 }
+MS2_REPLACE_METHOD(0x141908720, UICutSceneCinematic, FUN_141908720, 40, 0xDE476A42);
 
 // @0x141908750
 void UICutSceneCinematic::FUN_141908750()
@@ -400,6 +434,7 @@ void UICutSceneCinematic::FUN_141908750()
     if (!m_spTalk->m_strSound.IsEmpty())
         m_nVoice = FUN_1403ed280()->FUN_1411a5d80(m_spTalk->m_strSound);
 }
+MS2_REPLACE_METHOD(0x141908750, UICutSceneCinematic, FUN_141908750, 1186, 0xFFB16FB9);
 
 // @0x141908c00
 void UICutSceneCinematic::FUN_141908c00()
@@ -447,6 +482,7 @@ void UICutSceneCinematic::FUN_141908c00()
         }
     }
 }
+MS2_REPLACE_METHOD(0x141908C00, UICutSceneCinematic, FUN_141908c00, 954, 0x50B57242);
 
 // @0x141908fc0
 void UICutSceneCinematic::FUN_141908fc0()
@@ -484,6 +520,7 @@ void UICutSceneCinematic::FUN_141909230()
         FUN_140710590(packet);
     }
 }
+MS2_REPLACE_METHOD(0x141909230, UICutSceneCinematic, FUN_141909230, 103, 0x1F36D64F);
 
 // @0x1419092a0
 void UICutSceneCinematic::FUN_1419092a0(CStringW& strText)
@@ -492,6 +529,7 @@ void UICutSceneCinematic::FUN_1419092a0(CStringW& strText)
     strText.Replace(L"\\n", L"\n");
     FUN_1403b4750()->FUN_1416fb300(strText);
 }
+MS2_REPLACE_METHOD(0x1419092A0, UICutSceneCinematic, FUN_1419092a0, 145, 0x2D9D36A2);
 
 // @0x141909340
 void UICutSceneCinematic::FUN_141909340(int nActorId)
@@ -507,6 +545,7 @@ void UICutSceneCinematic::FUN_141909340(int nActorId)
         return;
     spBalloon->vfunc_3();
 }
+MS2_REPLACE_METHOD(0x141909340, UICutSceneCinematic, FUN_141909340, 210, 0x52979E7F);
 
 // @0x141909420
 bool UICutSceneCinematic::FUN_141909420(int nResult, const CMsgBoxData& box)
@@ -516,12 +555,14 @@ bool UICutSceneCinematic::FUN_141909420(int nResult, const CMsgBoxData& box)
     FUN_141909100();
     return true;
 }
+MS2_REPLACE_METHOD(0x141909420, UICutSceneCinematic, FUN_141909420, 46, 0xF76CB353);
 
 // @0x141909460
 void UICutSceneCinematic::FUN_141909460(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     FUN_141908fc0();
 }
+MS2_REPLACE_METHOD(0x141909460, UICutSceneCinematic, FUN_141909460, 29, 0xE9715B8A);
 
 // @0x141909490
 void UICutSceneCinematic::FUN_141909490()
@@ -530,6 +571,7 @@ void UICutSceneCinematic::FUN_141909490()
         return;
     m_30->FUN_14129cce0("setCinematic", m_nCinematicId, CStringW(m_strText));
 }
+MS2_REPLACE_METHOD(0x141909490, UICutSceneCinematic, FUN_141909490, 184, 0x56FF538B);
 
 // @0x141909550
 void UICutSceneCinematic::FUN_141909550()
@@ -538,6 +580,7 @@ void UICutSceneCinematic::FUN_141909550()
         return;
     m_30->FUN_140f5ff80("setOpening", CStringW(m_strText), m_bOpening);
 }
+MS2_REPLACE_METHOD(0x141909550, UICutSceneCinematic, FUN_141909550, 186, 0x5FB2857B);
 
 // @0x141909610
 void UICutSceneCinematic::FUN_141909610()
@@ -546,12 +589,14 @@ void UICutSceneCinematic::FUN_141909610()
         return;
     m_30->Invoke("setIntro", CStringW(m_strText));
 }
+MS2_REPLACE_METHOD(0x141909610, UICutSceneCinematic, FUN_141909610, 161, 0x0CC3B5AF);
 
 // @0x1419096c0
 bool UICutSceneCinematic::FUN_1419096c0()
 {
     return FUN_1408e57f0()->FUN_1422b9e00() == 0x6200041;
 }
+MS2_REPLACE_METHOD(0x1419096C0, UICutSceneCinematic, FUN_1419096c0, 57, 0x1B8A4E6C);
 
 // @0x141909700
 void UICutSceneCinematic::FUN_141909700(CInPacket& packet)
@@ -559,12 +604,14 @@ void UICutSceneCinematic::FUN_141909700(CInPacket& packet)
     bool bOn = packet.vfunc_o8_0();
     FUN_141908040(bOn);
 }
+MS2_REPLACE_METHOD(0x141909700, UICutSceneCinematic, FUN_141909700, 71, 0x9EF82459);
 
 // @0x141909750
 void UICutSceneCinematic::FUN_141909750(CInPacket& packet)
 {
     FUN_1419080b0();
 }
+MS2_REPLACE_METHOD(0x141909750, UICutSceneCinematic, FUN_141909750, 29, 0x72FB9950);
 
 // @0x141909780
 void UICutSceneCinematic::FUN_141909780(CInPacket& packet)
@@ -574,6 +621,7 @@ void UICutSceneCinematic::FUN_141909780(CInPacket& packet)
     CStringW strUnused = packet.vfunc_o8_8();
     FUN_141907f80(nId, CStringW(strText));
 }
+MS2_REPLACE_METHOD(0x141909780, UICutSceneCinematic, FUN_141909780, 241, 0x184D9336);
 
 // MS2-FUNCTIONAL: the exe passes job/gender through ecx (mov ecx,[x]; mov r8d,ecx), the source type behind it is not recovered
 // @0x141909880
@@ -625,6 +673,7 @@ void UICutSceneCinematic::FUN_141909e80(CInPacket& packet)
 {
     FUN_141908690();
 }
+MS2_REPLACE_METHOD(0x141909E80, UICutSceneCinematic, FUN_141909e80, 29, 0xE78F1D46);
 
 // @0x141909eb0
 void UICutSceneCinematic::FUN_141909eb0(CInPacket& packet)
@@ -676,6 +725,7 @@ void UICutSceneCinematic::FUN_14190a400(CInPacket& packet)
         spGroup->m_talks.RemoveAll();
     }
 }
+MS2_REPLACE_METHOD(0x14190A400, UICutSceneCinematic, FUN_14190a400, 177, 0xE46A55A7);
 
 // @0x14190a4c0
 void UICutSceneCinematic::FUN_14190a4c0(CInPacket& packet)
@@ -693,6 +743,7 @@ void UICutSceneCinematic::FUN_14190a4c0(CInPacket& packet)
         strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
     FUN_141907d60(nType, CStringW(strKey), CStringW(strLabel));
 }
+MS2_REPLACE_METHOD(0x14190A4C0, UICutSceneCinematic, FUN_14190a4c0, 523, 0xECC7A13D);
 
 // @0x14190a6e0
 void UICutSceneCinematic::FUN_14190a6e0(CInPacket& packet)
@@ -726,6 +777,7 @@ void UICutSceneCinematic::FUN_14190a6e0(CInPacket& packet)
     if (!strSound.IsEmpty())
         FUN_1403ed280()->FUN_1411a5d80(strSound);
 }
+MS2_REPLACE_METHOD(0x14190A6E0, UICutSceneCinematic, FUN_14190a6e0, 1408, 0x2065A4F5);
 
 // @0x14190ac70
 void UICutSceneCinematic::FUN_14190ac70(CInPacket& packet)
@@ -743,6 +795,7 @@ void UICutSceneCinematic::FUN_14190ac70(CInPacket& packet)
     if (!strSound.IsEmpty())
         FUN_1403ed280()->FUN_1411a5d80(strSound);
 }
+MS2_REPLACE_METHOD(0x14190AC70, UICutSceneCinematic, FUN_14190ac70, 617, 0xE5FDE549);
 
 // @0x14190aee0
 void UICutSceneCinematic::FUN_14190aee0(CInPacket& packet)
@@ -754,6 +807,7 @@ void UICutSceneCinematic::FUN_14190aee0(CInPacket& packet)
     if (!FUN_1419096c0())
         FUN_141908040(true);
 }
+MS2_REPLACE_METHOD(0x14190AEE0, UICutSceneCinematic, FUN_14190aee0, 190, 0xC358CCEE);
 
 // @0x14190afb0
 void UICutSceneCinematic::FUN_14190afb0(CInPacket& packet)
@@ -762,12 +816,14 @@ void UICutSceneCinematic::FUN_14190afb0(CInPacket& packet)
     m_strSkipMsg.Empty();
     FUN_141907d60(0, CStringW(L""), CStringW(L""));
 }
+MS2_REPLACE_METHOD(0x14190AFB0, UICutSceneCinematic, FUN_14190afb0, 165, 0x7F0B1D8B);
 
 // @0x14190b060
 void UICutSceneCinematic::vfunc_41(const Scaleform::GFx::Value& root)
 {
     m_30 = FUN_140ba77e0(m_28, root);
 }
+MS2_REPLACE_METHOD(0x14190B060, UICutSceneCinematic, vfunc_41, 99, 0x17B77628);
 
 // @0x14190b490
 inline Scaleform::GFx::Value AScript::FUN_14190b490(const char* szMethod, unsigned int a1, unsigned int a2, float a3)
