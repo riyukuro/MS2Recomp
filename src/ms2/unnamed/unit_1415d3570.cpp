@@ -11,22 +11,7 @@
 #include "ms2/ms2recover.h"
 #include <type_traits>
 #include <iterator>
-
-// an element of sizeof(T) == N
-template <size_t N>
-struct Unk_StlElem
-{
-    unsigned char m_bytes[N];
-};
-
-// std::_Uninitialized_backout_al<T*, allocator<T>>: the elements [m_pFirst, m_pLast) constructed so far
-template <class T>
-struct Unk_StlBackout
-{
-    T* m_pFirst;
-    T* m_pLast;
-    void* m_pAl;
-};
+#include "ms2/unnamed/unk_stlglue.h"
 
 // Callees (accessors, allocator_traits, uninitialized copy helpers) of the same vectors, in other units.
 extern Unk_StlElem<0x20>* FUN_140296020(Unk_StlElem<0x20>* p);
