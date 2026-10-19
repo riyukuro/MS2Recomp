@@ -5,8 +5,8 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@1@0@Z 0x14161dea0 ; unique
-// MS2-PIN: ??$Unk_OptLog@H@@YAXPEAVCLogString@@HHPEB_WAEBH@Z 0x14161e160 ; unique
-// MS2-PIN: ??$Unk_OptLog@_KH@@YAXPEAVCLogString@@HHPEB_WAEB_KAEBH@Z 0x14161e280 ; unique
+// MS2-PIN: ??$Unk_OptLog@K@@YAXPEAVCLogString@@HHPEB_WAEBK@Z 0x14161e160 ; unique
+// MS2-PIN: ??$Unk_OptLog@_KI@@YAXPEAVCLogString@@HHPEB_WAEB_KAEBI@Z 0x14161e280 ; unique
 // MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@0@AEAV10@@Z 0x1416217d0 ; unique
 // MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@0@AEAV10@@Z 0x1416217e0 ; unique
 // MS2-PIN: ??0?$allocator@U?$_List_node@UEntry@COptimizer@@PEAX@std@@@std@@QEAA@XZ 0x141621da0 ; unique
@@ -437,7 +437,7 @@ void COptimizer::FUN_14161c8c0()
         m_nFirstLoadTick = FUN_140869420();
         if (FUN_140166440() != 0)
         {
-            int nElapsed = m_nFirstLoadTick - m_nStartTick;
+            unsigned long nElapsed = m_nFirstLoadTick - m_nStartTick;
             Unk_OptLog(FUN_140166440(), 0xb, 6, L"First MyPC Load Time = {0}", nElapsed);
         }
     }
@@ -492,7 +492,7 @@ void COptimizer::FUN_14161c990()
     fAverage = fAverage / (float)m_samples.size();
     if (FUN_140166440() != 0)
     {
-        Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] sampleCount:{0} sampleCycleTick:{1}", m_nSampleCount, m_nSampleCycle);
+        Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] sampleCount:{0} sampleCycleTick:{1}", m_nSampleCount, (unsigned)m_nSampleCycle);
     }
     if (FUN_140166440() != 0)
     {
