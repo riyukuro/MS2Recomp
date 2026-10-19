@@ -2,6 +2,8 @@
 // table (xblock/block scan feeding the Unk_FieldIdList maps), the market item SQL, the sound data table.
 // MS2-UNIT: client\ms2\tableexporter.cpp
 // MS2-RANGE: 0x141821bf0-0x1418379e0 .text$mn
+// MS2-RANGE: 0x14010d320-0x14010d4c0 .text$di
+// MS2-PIN: ??__Eg_mapTaxi@@YAXXZ 0x14010d470
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1418265b0 ; unique
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1418265e0 ; prop
@@ -173,9 +175,12 @@ typedef ATL::CAtlList<Unk_NpcInfo> Unk_NpcList;
 typedef Unk_FieldPtr<Unk_NpcList> Unk_NpcListPtr;
 typedef std::map<unsigned int, Unk_NpcListPtr> Unk_NpcMap;
 
+// Condition names of the market item SQL filter.
+static CStringA s_aszCondition[7] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };   // 0x143aef0e0
+
 // Result containers of the export (the exe keeps them as globals).
-static Unk_NpcMap g_mapNpc;
 static Unk_FieldMapA g_mapPet;
+static Unk_NpcMap g_mapNpc;
 static Unk_FieldMapA g_mapLiftable;
 static ATL::CAtlMap<unsigned int, bool> g_mapTaxi;
 
