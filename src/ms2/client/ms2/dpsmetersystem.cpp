@@ -1,11 +1,11 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The client's dpsmetersystem.cpp: the DPS tool dialog
 // (CDPSDialog), the DPS meter (CDPSMeterSystem) and its record types (dpsmetersystem.h).
 // MS2-UNIT: client\ms2\dpsmetersystem.cpp
-// MS2-RANGE: 0x141178370-0x14118b420 .text$mn
+// MS2-RANGE: 0x141178340-0x14118b420 .text$mn
 // MS2-RANGE: 0x1400e7190-0x1400e7300 .text$di
 // MS2-RANGE: 0x142cac920-0x142caca70 .text$yd
-// CDPSDialog::_GetBaseClass (IMPLEMENT_DYNAMIC) is 0x141178340, which the done ?\depthoffieldmanager.cpp range holds
-// as FUN_141178340.
+// CDPSDialog::_GetBaseClass (IMPLEMENT_DYNAMIC) is 0x141178340 (moved here from ?\depthoffieldmanager.cpp's range).
+// MS2-PIN: ?_GetBaseClass@CDPSDialog@@KAPEAUCRuntimeClass@@XZ 0x141178340
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\dpsmetersystem.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <process.h>

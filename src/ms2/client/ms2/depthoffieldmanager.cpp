@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13).
 // MS2-UNIT: ?\depthoffieldmanager.cpp
-// MS2-RANGE: 0x141177ee0-0x141178370 .text$mn
+// MS2-RANGE: 0x141177ee0-0x141178340 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\depthoffieldmanager.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "depthoffieldmanager.h"
@@ -146,8 +146,3 @@ void* FUN_141178320(void* p)
     return ((Unk_DOFW*)p)->FUN_1411782f0();
 }
 
-// @0x141178340
-CRuntimeClass* FUN_141178340()
-{
-    return CDialog::GetThisClass();
-}
