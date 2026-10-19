@@ -59,8 +59,17 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(CubeMapInformationService);
 CubeMapInformationService* TSingleton<CubeMapInformationService>::s_instance = 0;
 inline TSingleton<CubeMapInformationService>::TSingleton() { s_instance = static_cast<CubeMapInformationService*>(this); }
 
-template <unsigned __int64 N> Unk_CMISTree<N>::Unk_CMISTree() : head(0), count(0) {}
-template <unsigned __int64 N> Unk_CMISTree<N>::~Unk_CMISTree() {}
+// Unk_CMISTree<N>'s ctor/dtor stay declared only: symbols.tsv binds each family to the exe's wrapper pair
+// (0x141122xxx / 0x141125xxx), which allocates/frees the tree's head node. A local definition would win over that
+// binding in the hook DLL and leave head null (the hooked MS2::RegisterServices then AVs in the first f368 lookup).
+// Exceptions: 287's dtor (FUN_1410b7fe0's static, atexit thunk 0x142cac250) has no symbol row, and the 294/295 locals
+// of FUN_1410d3450 are constructed/destroyed by explicit wrapper calls, so their implicit ctor/dtor do nothing.
+void FUN_1411258b0(Unk_CMISTree<287>*);
+template <> Unk_CMISTree<287>::~Unk_CMISTree() { FUN_1411258b0(this); }
+template <> Unk_CMISTree<294>::Unk_CMISTree() {}
+template <> Unk_CMISTree<294>::~Unk_CMISTree() {}
+template <> Unk_CMISTree<295>::Unk_CMISTree() {}
+template <> Unk_CMISTree<295>::~Unk_CMISTree() {}
 Unk_CMISFlags3::Unk_CMISFlags3() : a(false), b(false), c(false) {}
 
 // @0x1410b68a0
@@ -5215,7 +5224,7 @@ efd::AsyncResult CubeMapInformationService::OnTick()
             FUN_14111c6f0(&f88, &itNext, itCube);
         }
     }
-    return efd::AsyncResult_Complete;
+    return efd::AsyncResult_Pending;
 }
 
 // ---- w142 batch 7 ----
