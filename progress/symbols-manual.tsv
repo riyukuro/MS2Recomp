@@ -3335,3 +3335,4 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??1Unk_ClPopupInfo@@QEAA@XZ	141541190	func
 ??0Unk_ClTimer@@QEAA@XZ	140517b00	func
 ??R?$less@_J@std@@QEBA_NAEB_J0@Z	1406f0a80	func
+?DAT_143ab1a40@@3V?$vector@USpecialAbilityInfo@@V?$allocator@USpecialAbilityInfo@@@std@@@std@@A	143ab1a40	data
