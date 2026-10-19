@@ -160,8 +160,6 @@ unsigned __int64 FUN_1401662c0(void* arr);              // GetCount
 CString* FUN_140164930(void* arr, unsigned __int64 i);  // operator[]
 struct Unk_NcStrArray { void* m_0; void* m_8; void* m_10; void* m_18; };
 
-WC_WRAP(5)
-WC_WRAP(6)
 // @0x141a6c140
 template CStringW FUN_14028dfa0<CStringW, unsigned short, CStringW, unsigned, CStringW, CStringW>(CStringW, const CStringW&, const unsigned short&, const CStringW&, const unsigned&, const CStringW&, const CStringW&);
 // @0x141a6c5a0
