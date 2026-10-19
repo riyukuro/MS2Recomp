@@ -71,7 +71,7 @@ CString UIKeySettingSelectDialog::vfunc_1()
 {
     return "KeySettingSelectDialog";
 }
-MS2_REPLACE_METHOD(0x140C582E0, UIKeySettingSelectDialog, vfunc_1, 61, 0);
+MS2_REPLACE_METHOD(0x140C582E0, UIKeySettingSelectDialog, vfunc_1, 61, 0x1E8AD39C);
 
 // @0x140c58330
 void UIKeySettingSelectDialog::vfunc_67()

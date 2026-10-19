@@ -80,21 +80,21 @@ CString UIWeddingHallListDialog::vfunc_1()
 {
     return "WeddingHallListDialog";
 }
-MS2_REPLACE_METHOD(0x140FD8EC0, UIWeddingHallListDialog, vfunc_1, 0x36C88FDF, 1);
+MS2_REPLACE_METHOD(0x140FD8EC0, UIWeddingHallListDialog, vfunc_1, 61, 0x36C88FDF);
 
 // @0x140fd8f10
 int UIWeddingHallListDialog::vfunc_65()
 {
     return UIDialog::vfunc_65();
 }
-MS2_REPLACE_METHOD(0x140FD8F10, UIWeddingHallListDialog, vfunc_65, 0x19660E05, 65);
+MS2_REPLACE_METHOD(0x140FD8F10, UIWeddingHallListDialog, vfunc_65, 24, 0x19660E05);
 
 // @0x140fd8f30
 void UIWeddingHallListDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
 }
-MS2_REPLACE_METHOD(0x140FD8F30, UIWeddingHallListDialog, vfunc_67, 0x6F5A03D1, 67);
+MS2_REPLACE_METHOD(0x140FD8F30, UIWeddingHallListDialog, vfunc_67, 24, 0x6F5A03D1);
 
 // @0x140fd8f50
 void UIWeddingHallListDialog::vfunc_72()
@@ -105,7 +105,7 @@ void UIWeddingHallListDialog::vfunc_72()
         FUN_140fd9110();
     }
 }
-MS2_REPLACE_METHOD(0x140FD8F50, UIWeddingHallListDialog, vfunc_72, 0xB770684D, 72);
+MS2_REPLACE_METHOD(0x140FD8F50, UIWeddingHallListDialog, vfunc_72, 63, 0xB770684D);
 
 // @0x140fd8fa0
 void UIWeddingHallListDialog::OnLoadComplete()
@@ -130,14 +130,14 @@ int UIWeddingHallListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140FD8FD0, UIWeddingHallListDialog, vfunc_28, 0x104ECF56, 28);
+MS2_REPLACE_METHOD(0x140FD8FD0, UIWeddingHallListDialog, vfunc_28, 274, 0x104ECF56);
 
 // @0x140fd90f0
 void UIWeddingHallListDialog::FUN_140fd90f0(bool b)
 {
     m_bRefresh = 1;
 }
-MS2_REPLACE_METHOD(0x140FD90F0, UIWeddingHallListDialog, FUN_140fd90f0, 90, 0);
+MS2_REPLACE_METHOD(0x140FD90F0, UIWeddingHallListDialog, FUN_140fd90f0, 22, 0x418ED914);
 
 // @0x140fd9110
 void UIWeddingHallListDialog::FUN_140fd9110()
@@ -176,7 +176,7 @@ void UIWeddingHallListDialog::FUN_140fd9110()
     pOpenList->vfunc_24(true);
     pProgressList->vfunc_24(true);
 }
-MS2_REPLACE_METHOD(0x140FD9110, UIWeddingHallListDialog, FUN_140fd9110, 140, 9110);
+MS2_REPLACE_METHOD(0x140FD9110, UIWeddingHallListDialog, FUN_140fd9110, 1258, 0x20B250A4);
 
 // @0x140fd9c90
 // (vfunc_48 is inline in the header)

@@ -402,7 +402,7 @@ void ASItemSlot::FUN_1409ba5d0(int nItemId, int nRarity, int nCount)
     m_nCount = nCount;
     FUN_1409ba460();
 }
-MS2_REPLACE_METHOD(0x1409BA5D0, ASItemSlot, FUN_1409ba5d0, 83, 0);
+MS2_REPLACE_METHOD(0x1409BA5D0, ASItemSlot, FUN_1409ba5d0, 83, 0x4AF4ED20);
 
 // @0x1409ba630
 void ASItemSlot::FUN_1409ba630(const Unk_ItemSlotSource& item)

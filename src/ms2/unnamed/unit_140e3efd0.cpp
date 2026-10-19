@@ -222,7 +222,7 @@ CString UIAdPushDialog::vfunc_1()
 {
     return "AdPushDialog";
 }
-MS2_REPLACE_METHOD(0x140E3F2F0, UIAdPushDialog, vfunc_1, 61, 0x0);
+MS2_REPLACE_METHOD(0x140E3F2F0, UIAdPushDialog, vfunc_1, 61, 0xE7B3DBF2);
 
 // @0x140e3f340
 int UIAdPushDialog::vfunc_65()

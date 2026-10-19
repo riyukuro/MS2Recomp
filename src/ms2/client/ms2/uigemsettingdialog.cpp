@@ -181,4 +181,4 @@ void UIGemSettingDialog::FUN_141946b10(CString strName, int nValue)
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x1419460D0, UIGemSettingDialog, vfunc_1, 61, 0);
+MS2_REPLACE_METHOD(0x1419460D0, UIGemSettingDialog, vfunc_1, 61, 0xB036F7FD);

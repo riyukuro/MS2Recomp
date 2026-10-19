@@ -72,7 +72,7 @@ CString UIDungeonExpenseRewardDialog::vfunc_1()
 {
     return "DungeonExpenseRewardDialog";
 }
-MS2_REPLACE_METHOD(0x140F3A940, UIDungeonExpenseRewardDialog, vfunc_1, 61, 0);
+MS2_REPLACE_METHOD(0x140F3A940, UIDungeonExpenseRewardDialog, vfunc_1, 61, 0xF8A33BFF);
 
 // MS2-FUNCTIONAL: OnLoadComplete: the exe keeps the MS2Ptr temps and delegate copies of each button hook (larger frame)
 // @0x140f3a990

@@ -103,7 +103,7 @@ void FieldGameScoreBoardCli::FUN_140f9c300(CInPacket& packet)
         break;
     }
 }
-MS2_REPLACE_METHOD(0x140F9C300, FieldGameScoreBoardCli, FUN_140f9c300, 9, 300);
+MS2_REPLACE_METHOD(0x140F9C300, FieldGameScoreBoardCli, FUN_140f9c300, 140, 0xC9F8E29F);
 
 // @0x140f9c3a0
 void FieldGameScoreBoardCli::FUN_140f9c3a0(CInPacket& packet)
@@ -115,7 +115,7 @@ void FieldGameScoreBoardCli::FUN_140f9c3a0(CInPacket& packet)
     int nMax = (&packet.m_stream)->ReadInt();
     FUN_140f9c610(strTitle, nCur, nMax);
 }
-MS2_REPLACE_METHOD(0x140F9C3A0, FieldGameScoreBoardCli, FUN_140f9c3a0, 3, 0);
+MS2_REPLACE_METHOD(0x140F9C3A0, FieldGameScoreBoardCli, FUN_140f9c3a0, 369, 0xEFB6E87E);
 
 // @0x140f9c520
 void FieldGameScoreBoardCli::FUN_140f9c520(CInPacket& packet)
@@ -126,7 +126,7 @@ void FieldGameScoreBoardCli::FUN_140f9c520(CInPacket& packet)
     m_pDlg->vfunc_84(nCur);
     m_pDlg->vfunc_85();
 }
-MS2_REPLACE_METHOD(0x140F9C520, FieldGameScoreBoardCli, FUN_140f9c520, 9, 520);
+MS2_REPLACE_METHOD(0x140F9C520, FieldGameScoreBoardCli, FUN_140f9c520, 129, 0xDF4E6D51);
 
 // @0x140f9c5b0
 void FieldGameScoreBoardCli::FUN_140f9c5b0(CInPacket& packet)
@@ -138,7 +138,7 @@ void FieldGameScoreBoardCli::FUN_140f9c5b0(CInPacket& packet)
         }
     }
 }
-MS2_REPLACE_METHOD(0x140F9C5B0, FieldGameScoreBoardCli, FUN_140f9c5b0, 5, 0);
+MS2_REPLACE_METHOD(0x140F9C5B0, FieldGameScoreBoardCli, FUN_140f9c5b0, 89, 0x4027BBF2);
 
 // The open dialog of an id, cast to its class (one copy per class).
 // @0x140f9d8a0
@@ -204,7 +204,7 @@ void FieldGameScoreBoardCli::FUN_140f9c610(CStringW strTitle, int nCur, int nMax
     else
         m_pDlg->vfunc_85();
 }
-MS2_REPLACE_METHOD(0x140F9C610, FieldGameScoreBoardCli, FUN_140f9c610, 9, 610);
+MS2_REPLACE_METHOD(0x140F9C610, FieldGameScoreBoardCli, FUN_140f9c610, 479, 0x3368A4D1);
 
 // @0x140f9c800
 ASScoreBoardGauge::ASScoreBoardGauge(CString strLinkage)
@@ -234,7 +234,7 @@ void ASScoreBoardGauge::FUN_140f9ca30(int nCur, int nMax, CStringW strTitle)
     FUN_140cfee80(FUN_1422bb870(), "m_title", strTitle);
     FUN_140cfee80(FUN_1422bb870(), "m_progressText", FUN_14052bd00(0x98e, FUN_1401ceea0(L"{0}", nClamped)));
 }
-MS2_REPLACE_METHOD(0x140F9CA30, ASScoreBoardGauge, FUN_140f9ca30, 9, 30);
+MS2_REPLACE_METHOD(0x140F9CA30, ASScoreBoardGauge, FUN_140f9ca30, 548, 0x79062904);
 
 // ---- UIShadowExpeditionBossBar --------------------------------------------------------------------------------------
 
@@ -256,7 +256,7 @@ CString UIShadowExpeditionBossBar::vfunc_1()
 {
     return "ShadowExpeditionBossBar";
 }
-MS2_REPLACE_METHOD(0x140F9CDB0, UIShadowExpeditionBossBar, vfunc_1, 0x93704178, 1);
+MS2_REPLACE_METHOD(0x140F9CDB0, UIShadowExpeditionBossBar, vfunc_1, 61, 0x93704178);
 
 // @0x140f9ce00
 void UIShadowExpeditionBossBar::vfunc_43()
@@ -266,7 +266,7 @@ void UIShadowExpeditionBossBar::vfunc_43()
     if (spEntity.get() != 0)
         spEntity->vfunc_2(1, 0, 0x8c);
 }
-MS2_REPLACE_METHOD(0x140F9CE00, UIShadowExpeditionBossBar, vfunc_43, 0x5A3F8DCF, 43);
+MS2_REPLACE_METHOD(0x140F9CE00, UIShadowExpeditionBossBar, vfunc_43, 167, 0x5A3F8DCF);
 
 // @0x140f9ceb0
 void UIShadowExpeditionBossBar::OnLoadComplete()
@@ -291,7 +291,7 @@ void UIShadowExpeditionBossBar::vfunc_26()
     }
     m_strTitle = L"";
 }
-MS2_REPLACE_METHOD(0x140F9D0F0, UIShadowExpeditionBossBar, vfunc_26, 0xC85CF14F, 26);
+MS2_REPLACE_METHOD(0x140F9D0F0, UIShadowExpeditionBossBar, vfunc_26, 246, 0xC85CF14F);
 
 // @0x140f9d1f0
 void UIShadowExpeditionBossBar::FUN_140f9d1f0(int nCur, int nMax)
@@ -299,21 +299,21 @@ void UIShadowExpeditionBossBar::FUN_140f9d1f0(int nCur, int nMax)
     m_nCur = nCur;
     m_nMax = nMax;
 }
-MS2_REPLACE_METHOD(0x140F9D1F0, UIShadowExpeditionBossBar, FUN_140f9d1f0, 1, 0);
+MS2_REPLACE_METHOD(0x140F9D1F0, UIShadowExpeditionBossBar, FUN_140f9d1f0, 45, 0xB629382D);
 
 // @0x140f9d230
 void UIShadowExpeditionBossBar::FUN_140f9d230(CStringW strTitle)
 {
     m_strTitle = strTitle;
 }
-MS2_REPLACE_METHOD(0x140F9D230, UIShadowExpeditionBossBar, FUN_140f9d230, 9, 230);
+MS2_REPLACE_METHOD(0x140F9D230, UIShadowExpeditionBossBar, FUN_140f9d230, 65, 0x444C32F9);
 
 // @0x140f9d280
 void UIShadowExpeditionBossBar::vfunc_84(int nCur)
 {
     m_nCur = nCur;
 }
-MS2_REPLACE_METHOD(0x140F9D280, UIShadowExpeditionBossBar, vfunc_84, 0x9BF64FA6, 84);
+MS2_REPLACE_METHOD(0x140F9D280, UIShadowExpeditionBossBar, vfunc_84, 25, 0x9BF64FA6);
 
 // @0x140f9d2a0
 void UIShadowExpeditionBossBar::vfunc_85()
@@ -324,7 +324,7 @@ void UIShadowExpeditionBossBar::vfunc_85()
         return;
     m_pGauge->FUN_140f9ca30(m_nCur, m_nMax, m_strTitle);
 }
-MS2_REPLACE_METHOD(0x140F9D2A0, UIShadowExpeditionBossBar, vfunc_85, 0x7EE2D026, 85);
+MS2_REPLACE_METHOD(0x140F9D2A0, UIShadowExpeditionBossBar, vfunc_85, 190, 0x7EE2D026);
 
 // @0x140f9d9e0 Invoke(name, int, int, bool)
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a2, bool a3)
@@ -342,7 +342,7 @@ int UIShadowExpeditionBossBar::vfunc_48()
 {
     return 0x4f0e;
 }
-MS2_REPLACE_METHOD(0x140F9DEA0, UIShadowExpeditionBossBar, vfunc_48, 0xD609E02E, 48);
+MS2_REPLACE_METHOD(0x140F9DEA0, UIShadowExpeditionBossBar, vfunc_48, 11, 0xD609E02E);
 
 // @0x140f9e0e0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);

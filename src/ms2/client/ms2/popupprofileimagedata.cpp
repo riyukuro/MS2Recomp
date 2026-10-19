@@ -161,28 +161,28 @@ void CPopupProfileImageData::FUN_141697180(unsigned __int64 nId)
 {
     m_nId = nId;
 }
-MS2_REPLACE_METHOD(0x141697180, CPopupProfileImageData, FUN_141697180, 0xAB8BF0FB, 141697180);
+MS2_REPLACE_METHOD(0x141697180, CPopupProfileImageData, FUN_141697180, 25, 0xAB8BF0FB);
 
 // @0x1416971a0
 unsigned __int64 CPopupProfileImageData::FUN_1416971a0()
 {
     return m_nId;
 }
-MS2_REPLACE_METHOD(0x1416971A0, CPopupProfileImageData, FUN_1416971a0, 1416971, 0);
+MS2_REPLACE_METHOD(0x1416971A0, CPopupProfileImageData, FUN_1416971a0, 15, 0xBBB219C9);
 
 // @0x1416971c0
 void CPopupProfileImageData::FUN_1416971c0(int nTime)
 {
     m_nTime = nTime;
 }
-MS2_REPLACE_METHOD(0x1416971C0, CPopupProfileImageData, FUN_1416971c0, 1416971, 0);
+MS2_REPLACE_METHOD(0x1416971C0, CPopupProfileImageData, FUN_1416971c0, 22, 0xF6E32213);
 
 // @0x1416971e0
 int CPopupProfileImageData::FUN_1416971e0()
 {
     return m_nTime;
 }
-MS2_REPLACE_METHOD(0x1416971E0, CPopupProfileImageData, FUN_1416971e0, 1416971, 0);
+MS2_REPLACE_METHOD(0x1416971E0, CPopupProfileImageData, FUN_1416971e0, 14, 0xA25B27BF);
 
 // @0x141697200
 int CPopupProfileImageData::FUN_141697200(int nNow)
@@ -193,7 +193,7 @@ int CPopupProfileImageData::FUN_141697200(int nNow)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x141697200, CPopupProfileImageData, FUN_141697200, 0x8577550E, 141697200);
+MS2_REPLACE_METHOD(0x141697200, CPopupProfileImageData, FUN_141697200, 80, 0x8577550E);
 
 // @0x141697260
 // MS2-FUNCTIONAL: frame-slot order of the locals/temps differs from the exe (permuter lane)
@@ -210,7 +210,7 @@ int CPopupProfileImageData::FUN_141697260(int nNow, void* pA, void* pB)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x141697260, CPopupProfileImageData, FUN_141697260, 0xF67CA85A, 141697260);
+MS2_REPLACE_METHOD(0x141697260, CPopupProfileImageData, FUN_141697260, 171, 0xF67CA85A);
 
 // @0x141697320
 CPopupProfileImageMan::CPopupProfileImageMan()
@@ -262,7 +262,7 @@ void CPopupProfileImageMan::FUN_141697430()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141697430, CPopupProfileImageMan, FUN_141697430, 0x76498148, 141697430);
+MS2_REPLACE_METHOD(0x141697430, CPopupProfileImageMan, FUN_141697430, 800, 0x76498148);
 
 // @0x141697760
 // MS2-FUNCTIONAL: frame-slot order of the MS2Ptr/guard temps differs from the exe
@@ -298,7 +298,7 @@ int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x141697760, CPopupProfileImageMan, FUN_141697760, 0x2C413CDA, 141697760);
+MS2_REPLACE_METHOD(0x141697760, CPopupProfileImageMan, FUN_141697760, 627, 0x2C413CDA);
 
 // @0x1416979e0
 // MS2-FUNCTIONAL: frame-slot order of the MS2Ptr/handle temps differs from the exe
@@ -318,7 +318,7 @@ void CPopupProfileImageMan::FUN_1416979e0(unsigned __int64 nId)
             pEntity->vfunc_86().FUN_141667730()->vfunc_3();
     }
 }
-MS2_REPLACE_METHOD(0x1416979E0, CPopupProfileImageMan, FUN_1416979e0, 1416979, 0);
+MS2_REPLACE_METHOD(0x1416979E0, CPopupProfileImageMan, FUN_1416979e0, 465, 0xF1C4CEB1);
 
 // @0x141697bc0
 unsigned int FUN_141697bc0(Unk_PpConst* p)

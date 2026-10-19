@@ -59,14 +59,14 @@ int CSmartRecommendShopTable::FUN_140815690()
         SetInit(true);
     return m_bLoaded;
 }
-MS2_REPLACE_METHOD(0x140815690, CSmartRecommendShopTable, FUN_140815690, 0xD02E9B63, 140815690);
+MS2_REPLACE_METHOD(0x140815690, CSmartRecommendShopTable, FUN_140815690, 329, 0xD02E9B63);
 
 // @0x1408157e0
 int CSmartRecommendShopTable::FUN_1408157e0(CString strPath)
 {
     return 1;
 }
-MS2_REPLACE_METHOD(0x1408157E0, CSmartRecommendShopTable, FUN_1408157e0, 1408157, 0);
+MS2_REPLACE_METHOD(0x1408157E0, CSmartRecommendShopTable, FUN_1408157e0, 42, 0x1D9326F7);
 
 // @0x140815810
 void CSmartRecommendShopTable::FUN_140815810()
@@ -79,7 +79,7 @@ void CSmartRecommendShopTable::FUN_140815810()
         m_spData->m_items.RemoveAll();
     }
 }
-MS2_REPLACE_METHOD(0x140815810, CSmartRecommendShopTable, FUN_140815810, 0x00B29241, 140815810);
+MS2_REPLACE_METHOD(0x140815810, CSmartRecommendShopTable, FUN_140815810, 114, 0x00B29241);
 
 // @0x140815890
 // MS2-FUNCTIONAL: trailing cleanup NOP after the lock-guard else path / EH ip2state boundary
@@ -101,7 +101,7 @@ MS2Ptr<CRecommendItem> CSmartRecommendShopTable::FUN_140815890(int nCode)
         return spItem;
     }
 }
-MS2_REPLACE_METHOD(0x140815890, CSmartRecommendShopTable, FUN_140815890, 0xA094458D, 140815890);
+MS2_REPLACE_METHOD(0x140815890, CSmartRecommendShopTable, FUN_140815890, 364, 0xA094458D);
 
 // @0x140815a10
 // MS2-FUNCTIONAL: `this->m_spData` is reached through rax+mov rcx instead of the exe's direct add rcx,0x10 (no source form found)
@@ -116,7 +116,7 @@ void CSmartRecommendShopTable::FUN_140815a10(MS2Ptr<CRecommendItem> spItem)
         m_spData->m_items.SetAt(pItem->m_nCode, spItem);
     }
 }
-MS2_REPLACE_METHOD(0x140815A10, CSmartRecommendShopTable, FUN_140815a10, 140815, 10);
+MS2_REPLACE_METHOD(0x140815A10, CSmartRecommendShopTable, FUN_140815a10, 155, 0x3D6FB2DA);
 
 // @0x140815ac0
 // MS2-FUNCTIONAL: trailing cleanup NOP after the lock-guard else path (ip2state boundary)
@@ -162,7 +162,7 @@ int CSmartRecommendShopTable::FUN_140815ac0(CString strPath)
         return 1;
     }
 }
-MS2_REPLACE_METHOD(0x140815AC0, CSmartRecommendShopTable, FUN_140815ac0, 140815, 0);
+MS2_REPLACE_METHOD(0x140815AC0, CSmartRecommendShopTable, FUN_140815ac0, 1687, 0xFD880C5C);
 
 // @0x1408163a0
 CRecommendItem::CRecommendItem()
