@@ -179,6 +179,8 @@ void FUN_1418e0ad0(Unk_CastingParam* pThis, MS2Ptr<CXmlData> spXml);  // the cas
 
 int FUN_141654700(void* pPc);                              // the pc's job
 
+bool FUN_14028d470(float a, float b);                      // a == b (within epsilon)
+
 // ---- statics -------------------------------------------------------------------------------------------------------
 
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
@@ -1841,6 +1843,59 @@ MS2Ptr<CSkillRecord> StateSkill::FUN_1417f0570(int nKind)
 }
 MS2_REPLACE_METHOD(0x1417f0570, StateSkill, FUN_1417f0570, 970, 0xA2CA0BB0);
 
+// Starts the motion of the running cast: resets the chain / combo state, takes the motion's loop count and sequence
+// (a charging skill of another player loops 20 more times), and plays the model's animation of it at the cast's
+// speed (without blending when it is the same sequence, a delayed / non-idle motion or an immediate skill).
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417f0940
+void StateSkill::FUN_1417f0940()
+{
+    if (m_spRecord == NULL)
+        return;
+    m_pSequence = NULL;
+    m_spNext = 0;
+    m_b48 = false;
+    m_b49 = false;
+    m_b4a = false;
+    m_ptPush = efd::Point3::ZERO;
+    m_b110 = false;
+    m_b111 = false;
+    m_b112 = false;
+    m_bLoop = false;
+    m_b114 = false;
+    m_b115 = false;
+    m_b116 = false;
+    m_b117 = false;
+    m_nChainType = 0;
+    m_pause.FUN_1417e4c50(m_pOwner);
+    int nRepeat = 0;
+    CString strSequence("");
+    bool bIdleOnEnd = true;
+    SkillMotionData* pMotion = m_spRecord->FUN_141759830();
+    if (pMotion != NULL)
+    {
+        nRepeat = pMotion->m_nLoopCount;
+        strSequence = pMotion->m_strSequenceName;
+        bIdleOnEnd = pMotion->m_bDoesPlayIdleOnSkillEnd;
+    }
+    m_nRepeat = nRepeat;
+    if (FUN_1417b84b0() == NULL && m_spRecord->m_spSkill->m_blockA4.m_bChargingSkill)
+        m_nRepeat += 0x14;
+    CString strName(strSequence);
+    CString strAnim = m_pOwner->FUN_14166dbf0(efd::utf8string((const char*)strName));
+    bool bNoBlend = strAnim == m_strSequence;
+    if (pMotion->m_nStartNoneBlendDelay != 0)
+        bNoBlend = true;
+    if (!bIdleOnEnd)
+        bNoBlend = true;
+    if (m_spRecord->m_spSkill->m_eImmediateActive != 0)
+        bNoBlend = true;
+    m_fSpeed = FUN_1417ec0d0(m_pOwner, m_spRecord);
+    m_strSequence = strAnim;
+    m_pOwner->FUN_14166dd20(efd::utf8string((const char*)strName), m_fSpeed, bNoBlend, false);
+}
+MS2_REPLACE_METHOD(0x1417f0940, StateSkill, FUN_1417f0940, 1044, 0x0BF7F050);
+
 // @0x1417f0d60
 void StateSkill::FUN_1417f0d60(unsigned nTick, const char* szPoint)
 {
@@ -1895,6 +1950,50 @@ void StateSkill::FUN_1417f1060()
     }
 }
 MS2_REPLACE_METHOD(0x1417f1060, StateSkill, FUN_1417f1060, 349, 0x409298ED);
+
+// Arms the move phases of the cast when the sequence's "move0" / "move2" keys lie in its loop: the phase from
+// "move2" to "move3" (or "move0" to "move1" for move0) when it spans the whole loop.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417f1a90
+void StateSkill::FUN_1417f1a90()
+{
+    if (m_spRecord == NULL)
+        return;
+    float fMove0 = FUN_141b6fe90(m_pSequence, NiFixedString("move0"), 1.0f);
+    float fMove2 = FUN_141b6fe90(m_pSequence, NiFixedString("move2"), 1.0f);
+    if (fMove0 == -FLT_MAX && fMove2 == -FLT_MAX)
+        return;
+    float fLoopStart = FUN_141b6fe90(m_pSequence, NiFixedString("loopstart"), 1.0f);
+    float fLoopEnd = FUN_141b6fe90(m_pSequence, NiFixedString("loopend"), 1.0f);
+    if (fLoopStart == -FLT_MAX || fLoopEnd == -FLT_MAX)
+        return;
+    bool bMove = false;
+    if (fLoopStart <= fMove0 && fMove0 <= fLoopEnd)
+    {
+        bMove = true;
+        m_bMove0 = true;
+    }
+    if (fLoopStart <= fMove2 && fMove2 <= fLoopEnd)
+    {
+        bMove = true;
+        m_bMove2 = true;
+    }
+    if (!bMove)
+        return;
+    m_spRecord->m_fDuration = 0;
+    m_spRecord->m_fElapsed = 0;
+    m_spRecord->m_f80 = 0;
+    float fStart = FUN_141b6fe90(m_pSequence, NiFixedString("move2"), 1.0f);
+    float fEnd = FUN_141b6fe90(m_pSequence, NiFixedString("move3"), 1.0f);
+    if (m_bMove0)
+    {
+        fStart = FUN_141b6fe90(m_pSequence, NiFixedString("move0"), 1.0f);
+        fEnd = FUN_141b6fe90(m_pSequence, NiFixedString("move1"), 1.0f);
+    }
+    if (FUN_14028d470(fStart, fLoopStart) && FUN_14028d470(fEnd, fLoopEnd))
+        FUN_1417ec210(m_spRecord, fStart, fEnd, m_fSpeed);
+}
+MS2_REPLACE_METHOD(0x1417f1a90, StateSkill, FUN_1417f1a90, 1033, 0x395E7CBD);
 
 // @0x1417f1ea0
 void StateSkill::FUN_1417f1ea0()
