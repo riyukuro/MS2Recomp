@@ -93,7 +93,8 @@ private:
 MS2_CHECK_SIZE(Unk_PCBaseBuffTracker, 0x70);
 
 // +0x748: the actor's buffs (0x1a0; ctor 0x14096ef20(p, owner); unit 0x14096ef20..). FUN_1416749a0 returns it as the
-// Unk_PCBaseBuffs view that ridee.cpp / pcbase.cpp declare.
+// Unk_PCBaseBuffs view that ridee.cpp / pcbase.cpp declare. The recovered class is AdditionalCliList
+// (additionalclilist.h, ?\additionalcli.cpp#2); this opaque view keeps pcbase.h free of the table headers.
 class Unk_PCBaseBuffList
 {
 public:
@@ -291,6 +292,10 @@ public:
     __int64 FUN_141656a80();                                // 0x141656a80 (scenestategame packet 0x39 battle record key)
     void FUN_14166ce50(int n);                              // 0x14166ce50 (scenestategame packet 0x34: 0)
     int FUN_14166ce30();                                    // 0x14166ce30 dead (1)
+    // @0x140976780
+    int FUN_140976780() { return m_unk_118; }               // sound pitch (additionalcli.cpp)
+    // @0x1409788b0
+    void FUN_1409788b0(int n) { m_unk_118 = n; }
     float FUN_14166da40();                                  // 0x14166da40
     void FUN_14166d820();                                   // 0x14166d820
     void FUN_14166e0a0();                                   // 0x14166e0a0

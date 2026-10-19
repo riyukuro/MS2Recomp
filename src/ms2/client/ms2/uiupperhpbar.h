@@ -67,6 +67,8 @@ public:
  void FUN_141b4ce20(bool);void FUN_141b4ceb0(bool);void FUN_141b4cf40(Unk_UpperPtr<Unk_UpperBuff>);void FUN_141b4cfd0(Unk_UpperPtr<Unk_UpperBuff>);
  void FUN_141b4d060(Unk_UpperActor*,int);void FUN_141b4d0a0();UpperHpBarEntity& FUN_141b4d170(void*);bool FUN_141b4d320(UpperHpBarEntity&);void FUN_141b4d5c0();
  bool FUN_141b4d630(UpperHpBarEntity&,int,int);CString FUN_141b4d690(void*);CStringW FUN_141b4d710(void*);bool FUN_141b4d860(void*);int FUN_141b4d8a0(void*);
+ // @0x140976440
+ UpperHpBarEntity* FUN_140976440(){return m_current;} // the shown entity (additionalcli.cpp)
 private:MS2_LAYOUT_FRIEND;UpperHpBarEntity m_entities[4];UpperHpBarEntity* m_current;
 };
 MS2_CHECK_SIZE(UIUpperHpBar,0x3c0);

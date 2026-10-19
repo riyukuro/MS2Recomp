@@ -1,6 +1,7 @@
 #pragma once
 #include "ms2/client/ms2/pcbase.h"
 #include <NiFixedString.h>
+#include "ms2/client/ms2/costumemanager.h"   // MS2Ptr<CostumeManager> at PC+0x1130
 class CItem;
 class NiAVObject;
 class NiColor;
@@ -22,12 +23,14 @@ class Unk_PCActionTimer;   // CPtred-derived, defined by the user unit (avatarpc
 class Unk_PCSkillTree;   // MS2Ptr<T> at +0x1110 (copied out by FUN_1409eee00; defined by the user unit)
 class CEquipItem;
 class CMsTime;
+class AdditionalCli;
 struct Unk_PCEquipSet
 {
     MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nKind, int n);    // a worn item of the slot (customize.cpp)
     void FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& out, int nKind);   // the worn items of a kind (customize.cpp)
     void FUN_1411e5c10(); void FUN_1411e6ab0(); void FUN_1411e75f0();   // refresh the look (customize.cpp)
     MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nKind); MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nItemUid); void FUN_1411e4150(__int64 nItemUid, unsigned char nSlot, int nKind); void FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd); void FUN_1411ea7c0(); void FUN_1411e7660();
+    void FUN_1411e7640();                                   // the look changed (flag 50; additionalcli.cpp)
     MS2Ptr<CEquipmentSlotLayerInfo> GetTitle();            // 0x140d29440 the codi (outfit) tab period (defined in unit_140d1ae30)
     unsigned char unknown0[0x188];
     MS2Ptr<CEquipmentSlotLayerInfo> m_spTitle;              // +0x188 (new CEquipmentSlotLayerInfo(2))
@@ -195,6 +198,18 @@ public:
     MS2Ptr<Unk_HsInfo> FUN_141664200();                     // the hide and seek record (scenestategame 0x12b)
     MS2Ptr<Unk_PCSkillTree> FUN_1409eee00();                // copy of the skill tree at +0x1110 (scenestategame 0x49)
     CString FUN_1416612e0();                                // the profile image key (wedding partner icons, unit_140fdab30)
+    // additionalcli.cpp (the buff list)
+    void FUN_141663ef0(AdditionalCli* pCli);                // a tail effect record was added
+    void FUN_1416640d0(AdditionalCli* pCli);                // a tail effect record was modified
+    void FUN_141664160(AdditionalCli* pCli);                // a tail effect record was removed
+    bool FUN_141660120();                                   // the stun state is blocked
+    void FUN_141658f70(unsigned char nFlags);               // add PC bang bonus flags (+0xff9)
+    // @0x140978540
+    void FUN_140978540() { m_nFF9 = 0; }                    // clear the PC bang bonus flags
+    // @0x140976c10
+    int FUN_140976c10() { return m_n1058 != 0; }
+    // @0x1409763e0
+    MS2Ptr<CostumeManager> FUN_1409763e0() { return m_spCostume; }
     // 0xd40..0x12e0. The MS2Ptr at +0xfc8 (an action timer; AvatarPC::vfunc_142 pokes it) is exposed, the rest is opaque.
     // ClonePC (clonepc.cpp) uses the list at +0xd48, the MS2Ptr at +0xd88 and the equip holder at +0xde0.
     unsigned char unknownD40[8];
@@ -203,9 +218,15 @@ public:
     unsigned char unknownD98[0x48];
     Unk_PCEquipSet m_kEquipDE0;                             // +0xde0 equip holder (FUN_1411e3de0)
     MS2Ptr<Unk_PCActionTimer> m_spFC8;                      // +0xfc8
-    unsigned char unknownFD8[0x48];
+    unsigned char unknownFD8[0x21];
+    unsigned char m_nFF9;                                   // +0xff9 PC bang bonus flags (FUN_141658f70)
+    unsigned char unknownFFA[0x26];
     class Unk_PCCubeCraft* m_pCubeCraft;                    // +0x1020 (FUN_141659700; cube craft mode only)
-    unsigned char unknown1028[0x1a0];
+    unsigned char unknown1028[0x30];
+    int m_n1058;                                            // +0x1058 (non-zero: buffs never resist knock-back)
+    unsigned char unknown105c[0xd4];
+    MS2Ptr<CostumeManager> m_spCostume;                     // +0x1130 the costume sets (additionalcli.cpp)
+    unsigned char unknown1140[0x88];
     int m_n11c8;                                            // +0x11c8 (FUN_14174a340)
     unsigned char unknown11cc[0x74];
     MS2Ptr<Unk_PCInteractMode> m_spInteractMode;      // +0x1240 (actionkeyobject.cpp)
@@ -216,6 +237,9 @@ MS2_CHECK_OFFSET(PC, m_spD88, 0xd88);
 MS2_CHECK_OFFSET(PC, m_kEquipDE0, 0xde0);
 MS2_CHECK_OFFSET(PC, m_spFC8, 0xfc8);
 MS2_CHECK_OFFSET(PC, m_pCubeCraft, 0x1020);
+MS2_CHECK_OFFSET(PC, m_nFF9, 0xff9);
+MS2_CHECK_OFFSET(PC, m_n1058, 0x1058);
+MS2_CHECK_OFFSET(PC, m_spCostume, 0x1130);
 MS2_CHECK_OFFSET(PC, m_spInteractMode, 0x1240);
 MS2_CHECK_SIZE(PC, 0x12e0); // deleting dtor 1416678b0
 
