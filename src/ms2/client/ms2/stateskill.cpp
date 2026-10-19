@@ -28,6 +28,7 @@
 #include "ms2/client/ms2/ridee.h"
 #include "ms2/client/ms2/uicoupleactiondialog.h"
 #include "ms2/placeholder/statecoupleemotion.h"
+#include "ms2/placeholder/cstringtable.h"
 #include <typeinfo>
 #include <NiMatrix3.h>
 #include <NiColor.h>
@@ -133,6 +134,7 @@ class Unk_SsMove
 public:
     bool FUN_141682f80(int nKey);                          // the key is held
     efd::Point3 FUN_141683900();                           // the move input direction
+    bool FUN_141682fe0(int nBuffId);                       // the actor has the buff
 };
 
 // The actor's buffs: a buff blocks the kept skill effects.
@@ -168,6 +170,11 @@ int FUN_140ae51b0(void* pService, __int64 nActorId);       // the actor is on th
 int FUN_141240780(Unk_PCBaseBody* pBody);                  // the body is blocked
 class Unk_SsUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
 Unk_SsUIManager* FUN_1403ed2b0();
+
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);  // the string key's text formatted with one argument
+void FUN_1418e0ad0(Unk_CastingParam* pThis, MS2Ptr<CXmlData> spXml);  // the cast arguments of a <castingBar> node
+
+int FUN_141654700(void* pPc);                              // the pc's job
 
 // ---- statics -------------------------------------------------------------------------------------------------------
 
@@ -1664,6 +1671,82 @@ int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
 }
 MS2_REPLACE(0x1417eaa50, StateSkill::FUN_1417eaa50, 2311, 0xEAE85E66);
 
+// The hold attack of a cast attached to an npc (feature 0xae, buff 0x49401, job 0x46): a record of the hold attack
+// skill (Constants HoldAttackSkillID, level 1) attached to the same npc node.
+// @0x1417f0230
+MS2Ptr<CSkillRecord> StateSkill::FUN_1417f0230()
+{
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xae))
+        return MS2Ptr<CSkillRecord>(0);
+    Unk_SsMove* pBuffs = static_cast<Unk_SsMove*>(m_pOwner->FUN_14166d240());
+    if (!pBuffs->FUN_141682fe0(0x49401))
+        return MS2Ptr<CSkillRecord>(0);
+    MyPC* pMyPC = FUN_1417b84b0();
+    if (pMyPC == NULL)
+        return MS2Ptr<CSkillRecord>(0);
+    if (FUN_141654700(pMyPC) != 0x46)
+        return MS2Ptr<CSkillRecord>(0);
+    if (m_spRecord == NULL)
+        return MS2Ptr<CSkillRecord>(0);
+    PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1200(m_spRecord->m_nB0);
+    if (pTarget == NULL)
+        return MS2Ptr<CSkillRecord>(0);
+    if (pTarget->GetClassID() != 0x6200028)
+        return MS2Ptr<CSkillRecord>(0);
+    Unk_InventorySkillRequest kReq(TSingleton<Client::Constants>::GetInstance()->HoldAttackSkillID, 1);
+    MS2Ptr<CSkillRecord> spHold = pMyPC->FUN_141523bc0()->FUN_141765570(kReq);
+    if (spHold == NULL)
+        return MS2Ptr<CSkillRecord>(0);
+    spHold->m_nB0 = m_spRecord->m_nB0;
+    spHold->m_strB8 = m_spRecord->m_strB8;
+    return spHold;
+}
+MS2_REPLACE_METHOD(0x1417f0230, StateSkill, FUN_1417f0230, 825, 0x32E08868);
+
+// The auto change cast of the running skill (its autoChange 1 / 2 when the matching input is held, nKind 0: any):
+// the record of the skill the player's buffs turn it into, unless that is the same skill and level.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417f0570
+MS2Ptr<CSkillRecord> StateSkill::FUN_1417f0570(int nKind)
+{
+    if (m_spRecord == NULL)
+        return MS2Ptr<CSkillRecord>(0);
+    int nAutoChange = m_spRecord->m_spSkill->m_blockB0.m_eAutoChange;
+    if (nKind != 0 && nKind != nAutoChange)
+        return MS2Ptr<CSkillRecord>(0);
+    if (nAutoChange == 0)
+        return MS2Ptr<CSkillRecord>(0);
+    if (nAutoChange == 1)
+    {
+        if (!m_b11c)
+            return MS2Ptr<CSkillRecord>(0);
+    }
+    else if (nAutoChange == 2)
+    {
+        if (!m_b11d)
+            return MS2Ptr<CSkillRecord>(0);
+    }
+    else
+        return MS2Ptr<CSkillRecord>(0);
+    MyPC* pMyPC = FUN_1417b84b0();
+    if (pMyPC == NULL)
+        return MS2Ptr<CSkillRecord>(0);
+    Unk_InventorySkillRequest kReq(m_spRecord->m_spLevel->FUN_140803dc0(), 1);
+    kReq.m_nLevel = m_spRecord->m_spLevel->FUN_140803df0();
+    pMyPC->FUN_141526c80(kReq.m_nSkillId, kReq.m_nLevel);
+    if (kReq.m_nSkillId == m_spRecord->m_spLevel->FUN_140803dc0()
+        && kReq.m_nLevel == m_spRecord->m_spLevel->FUN_140803df0())
+        return MS2Ptr<CSkillRecord>(0);
+    MS2Ptr<CSkillRecord> spChange = pMyPC->FUN_141523bc0()->FUN_141765570(kReq);
+    if (spChange == NULL)
+        return MS2Ptr<CSkillRecord>(0);
+    if (m_b11d)
+        m_b11d = false;
+    m_b11e = true;
+    return spChange;
+}
+MS2_REPLACE_METHOD(0x1417f0570, StateSkill, FUN_1417f0570, 970, 0xA2CA0BB0);
+
 // @0x1417f0d60
 void StateSkill::FUN_1417f0d60(unsigned nTick, const char* szPoint)
 {
@@ -1772,6 +1855,36 @@ void StateSkill::FUN_1417f2b50(MS2Ptr<CSkillRecord> spRecord)
 }
 MS2_REPLACE(0x1417f2b50, StateSkill::FUN_1417f2b50, 332, 0x570297DB);
 
+// Shows the casting bar of the running cast ("s_action_skill_cating_progress" with the skill name, then the skill's
+// <castingBar> parameters) when the cast has a casting duration.
+// MS2-FUNCTIONAL: temp order of the format call.
+// @0x1417f27d0
+void StateSkill::FUN_1417f27d0()
+{
+    if (!FUN_1417b8560())
+        return;
+    if (!m_spRecord)
+        return;
+    MS2Ptr<SkillData> spSkill = m_spRecord->m_spSkill;
+    if (!spSkill)
+        return;
+    if (m_nCastDuration == 0)
+        return;
+    UICastingBar* pBar = FUN_140ac2270(0x4e72);
+    if (pBar == NULL)
+        return;
+    unsigned nSkillId = spSkill->GetId();
+    Unk_CastingParam kParam;
+    kParam.m_nDuration = m_nCastDuration;
+    kParam.m_str28 = FUN_1405c2690(CStringW(L"s_action_skill_cating_progress"), CStringTable::GetInstance()->FUN_141811980(4, nSkillId));
+    FUN_1418e0ad0(&kParam, spSkill->m_spParamCastingBar);
+    pBar->FUN_1418e12b0(reinterpret_cast<Unk_CastingListener*>(static_cast<ICastingEventListener*>(this)), &kParam);
+    m_nCastEnd = 0;
+    m_nCastDuration = 0;
+    m_nCastId = m_spRecord->m_nCastId;
+}
+MS2_REPLACE_METHOD(0x1417f27d0, StateSkill, FUN_1417f27d0, 683, 0x607D2CF9);
+
 // @0x1417f2a90
 void StateSkill::FUN_1417f2a90(bool bFinish)
 {
@@ -1849,6 +1962,42 @@ void StateSkill::FUN_1417eeb10(bool bChain)
         FUN_1417ef4a0();
 }
 MS2_REPLACE_METHOD(0x1417eeb10, StateSkill, FUN_1417eeb10, 587, 0x2D7DDBE8);
+
+// Keeps the caster on the node of the object the cast is attached to (feature 0xae): the caster takes the node's
+// world rotation and position; when the object is gone, dead or not an npc the caster leaves the state (6).
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417efbe0
+int StateSkill::FUN_1417efbe0()
+{
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xae))
+        return 0;
+    if (m_spRecord == NULL)
+        return 0;
+    if (m_spRecord->m_nB0 == 0)
+        return 0;
+    efd::SmartPointer<NiAVObject> spNode = NULL;
+    PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1200(m_spRecord->m_nB0);
+    if (pTarget != NULL)
+        spNode = pTarget->FUN_1416757c0(m_spRecord->m_strB8);
+    if ((NiAVObject*)spNode == NULL || pTarget == NULL || pTarget->FUN_14166ce30() != 0
+        || pTarget->GetClassID() != 0x6200028)
+    {
+        m_pOwner->vfunc_59(6, 0, 0x22, 0);
+    }
+    else
+    {
+        efd::Point3 kRot;
+        if (reinterpret_cast<const efd::Matrix3&>(spNode->GetWorldRotate()).ToEulerAnglesXYZ(kRot.x, kRot.y, kRot.z))
+        {
+            kRot *= -57.2957764f;
+            m_pOwner->vfunc_21(kRot);
+        }
+        efd::Point3 kPos = reinterpret_cast<const efd::Point3&>(spNode->GetWorldTranslate());
+        m_pOwner->vfunc_19(kPos);
+    }
+    return 1;
+}
+MS2_REPLACE_METHOD(0x1417efbe0, StateSkill, FUN_1417efbe0, 778, 0x4588DED1);
 
 // @0x1417efef0
 int StateSkill::FUN_1417efef0()
