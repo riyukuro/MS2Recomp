@@ -16,8 +16,8 @@ public:
     UIStatusEventDispatcher();                              // 0x141b0cc60
     virtual ~UIStatusEventDispatcher();                     //  0 0x141b0ccb0 (??_G 0x141b0e520)
 
-    void FUN_141b0cd00(void* pListener);   // register (once)
-    void FUN_141b0cd90(void* pListener);   // unregister
+    void FUN_141b0cd00(UIStatusEventListener* pListener);   // register (once)
+    void FUN_141b0cd90(UIStatusEventListener* pListener);   // unregister
     void FUN_141b0ce20(int nEvent, int nValue);             // push one status to every active listener
     void FUN_141b0e000();                                   // push all 19 statuses (nValue 0)
     void FUN_141b0e050();                                   // listener slot 2
@@ -30,6 +30,6 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    ATL::CAtlArray<void*> m_listeners;                      // +0x08 UIStatusEventListener*
+    ATL::CAtlArray<UIStatusEventListener*> m_listeners;     // +0x08
 };
 MS2_CHECK_SIZE(UIStatusEventDispatcher, 0x28);

@@ -5,6 +5,24 @@
 // MS2-RANGE: 0x14011dbe0-0x14011dd60 .text$di
 // MS2-RANGE: 0x142cc2a90-0x142cc2b36 .text$yd
 // MS2-RANGE: 0x141b0cc00-0x141b127f0 .text$mn
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??$FUN_14028dee0@_JH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEB_JAEBH@Z 0x141b11f40 ; unique
+// MS2-PIN: ??$forward@AEBQEAVUIStoreDialog@@@std@@YAAEBQEAVUIStoreDialog@@AEBQEAV1@@Z 0x141b12270 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIStoreDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x141b12320 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIStoreDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBU?$pair@PEAVUIStoreDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@Z 0x141b12370 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIStoreDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x141b123c0 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIStoreDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVUIStoreDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z 0x141b12410 ; prop
+// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIStoreDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA@XZ 0x141b12480 ; prop
+// MS2-PIN: ??_EUIStoreDialog@@WBHI@EAAPEAXI@Z 0x141b12498 ; unique
+// MS2-PIN: ??_EUIStoreDialog@@WBIA@EAAPEAXI@Z 0x141b124a4 ; unique
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIStoreDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAPEAXI@Z 0x141b124b0 ; prop
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIStoreDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x141b124f0 ; prop
+// MS2-PIN: ??_GUIStoreDialog@@UEAAPEAXI@Z 0x141b12530 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIStoreDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b12580 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIStoreDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b125e0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIStoreDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141b12730 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIStoreDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141b12790 ; unique
+// MS2-PINS-END tplpin
 //
 // Status: see progress/status.tsv. Callees that are not recovered yet are declared below ("unit-local
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
@@ -282,6 +300,7 @@ int UIStatusEventListener::vfunc_oa0_1()
 {
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B0CC40, UIStatusEventListener, vfunc_oa0_1, 11, 0x30025ED0);
 
 // ---- UIStatusEventDispatcher -----------------------------------------------------------------------------------------
 
@@ -297,7 +316,7 @@ UIStatusEventDispatcher::~UIStatusEventDispatcher()
 }
 
 // @0x141b0cd00
-void UIStatusEventDispatcher::FUN_141b0cd00(void* pListener)
+void UIStatusEventDispatcher::FUN_141b0cd00(UIStatusEventListener* pListener)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); ++i)
     {
@@ -306,9 +325,10 @@ void UIStatusEventDispatcher::FUN_141b0cd00(void* pListener)
     }
     m_listeners.Add(pListener);
 }
+MS2_REPLACE_METHOD(0x141B0CD00, UIStatusEventDispatcher, FUN_141b0cd00, 125, 0x58B76DE9);
 
 // @0x141b0cd90
-void UIStatusEventDispatcher::FUN_141b0cd90(void* pListener)
+void UIStatusEventDispatcher::FUN_141b0cd90(UIStatusEventListener* pListener)
 {
     size_t i = 0;
     while (i < m_listeners.GetCount())
@@ -320,6 +340,7 @@ void UIStatusEventDispatcher::FUN_141b0cd90(void* pListener)
     if (i < m_listeners.GetCount())
         m_listeners.RemoveAt(i, 1);
 }
+MS2_REPLACE_METHOD(0x141B0CD90, UIStatusEventDispatcher, FUN_141b0cd90, 131, 0x46B00969);
 
 #define ST_EACH_LISTENER(i, pL) \
     for (size_t i = 0; i < m_listeners.GetCount(); ++i) \
@@ -433,6 +454,7 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
             pL->vfunc_oa0_31((void*)DAT_143ab2958);
     }
 }
+MS2_REPLACE_METHOD(0x141B0CE20, UIStatusEventDispatcher, FUN_141b0ce20, 4567, 0x9388CDAB);
 
 // @0x141b0e000
 void UIStatusEventDispatcher::FUN_141b0e000()
@@ -440,6 +462,7 @@ void UIStatusEventDispatcher::FUN_141b0e000()
     for (size_t i = 0; i < 0x13; ++i)
         FUN_141b0ce20((int)i, 0);
 }
+MS2_REPLACE_METHOD(0x141B0E000, UIStatusEventDispatcher, FUN_141b0e000, 65, 0xC6427F57);
 
 // @0x141b0e050
 void UIStatusEventDispatcher::FUN_141b0e050()
@@ -451,6 +474,7 @@ void UIStatusEventDispatcher::FUN_141b0e050()
             pL->vfunc_oa0_2();
     }
 }
+MS2_REPLACE_METHOD(0x141B0E050, UIStatusEventDispatcher, FUN_141b0e050, 118, 0x2AED0672);
 
 // @0x141b0e0d0
 void UIStatusEventDispatcher::FUN_141b0e0d0()
@@ -462,6 +486,7 @@ void UIStatusEventDispatcher::FUN_141b0e0d0()
             pL->vfunc_oa0_22();
     }
 }
+MS2_REPLACE_METHOD(0x141B0E0D0, UIStatusEventDispatcher, FUN_141b0e0d0, 121, 0xC771F790);
 
 // @0x141b0e150
 void UIStatusEventDispatcher::FUN_141b0e150()
@@ -473,6 +498,7 @@ void UIStatusEventDispatcher::FUN_141b0e150()
             pL->vfunc_oa0_23();
     }
 }
+MS2_REPLACE_METHOD(0x141B0E150, UIStatusEventDispatcher, FUN_141b0e150, 121, 0x95CDA6B7);
 
 // @0x141b0e1d0
 void UIStatusEventDispatcher::FUN_141b0e1d0(int a1)
@@ -484,6 +510,7 @@ void UIStatusEventDispatcher::FUN_141b0e1d0(int a1)
             pL->vfunc_oa0_24(a1);
     }
 }
+MS2_REPLACE_METHOD(0x141B0E1D0, UIStatusEventDispatcher, FUN_141b0e1d0, 129, 0xFCE23D30);
 
 // @0x141b0e260
 void UIStatusEventDispatcher::FUN_141b0e260(void* a1)
@@ -495,6 +522,7 @@ void UIStatusEventDispatcher::FUN_141b0e260(void* a1)
             pL->vfunc_oa0_25(a1);
     }
 }
+MS2_REPLACE_METHOD(0x141B0E260, UIStatusEventDispatcher, FUN_141b0e260, 131, 0xB2F69842);
 
 // @0x141b0e2f0
 void UIStatusEventDispatcher::FUN_141b0e2f0(void* a1)
@@ -506,6 +534,7 @@ void UIStatusEventDispatcher::FUN_141b0e2f0(void* a1)
             pL->vfunc_oa0_26(a1);
     }
 }
+MS2_REPLACE_METHOD(0x141B0E2F0, UIStatusEventDispatcher, FUN_141b0e2f0, 131, 0x27D0EF09);
 
 // @0x141b0e380
 void UIStatusEventDispatcher::FUN_141b0e380(int a1, int a2)
@@ -517,6 +546,7 @@ void UIStatusEventDispatcher::FUN_141b0e380(int a1, int a2)
             pL->vfunc_oa0_27(a1, a2);
     }
 }
+MS2_REPLACE_METHOD(0x141B0E380, UIStatusEventDispatcher, FUN_141b0e380, 139, 0xED999672);
 
 // ---- UIStoreDialog ---------------------------------------------------------------------------------------------------
 
@@ -543,21 +573,24 @@ CString UIStoreDialog::vfunc_1()
 {
     return "StoreDialog";
 }
+MS2_REPLACE_METHOD(0x141B0EE20, UIStoreDialog, vfunc_1, 61, 0xCD7E5793);
 
 // @0x141b0ee70
 int UIStoreDialog::vfunc_oa0_1()
 {
     return vfunc_55() == 0;
 }
+MS2_REPLACE_METHOD_VIA(0x141B0EE70, UIStoreDialog, UIStatusEventListener, vfunc_oa0_1, 69, 0x93DD6E81);
 
 // @0x141b0eec0
 int UIStoreDialog::vfunc_65()
 {
-    int nOpened = UIDialog::vfunc_65();
-    if (nOpened != 0)
-        m_188 = vfunc_1();
-    return nOpened != 0;
+    if (UIDialog::vfunc_65() == 0)
+        return 0;
+    m_188 = vfunc_1();
+    return 1;
 }
+MS2_REPLACE_METHOD(0x141B0EEC0, UIStoreDialog, vfunc_65, 119, 0x19826C4E);
 
 // @0x141b0ef40
 void UIStoreDialog::vfunc_66()
@@ -584,6 +617,7 @@ void UIStoreDialog::vfunc_66()
         }
     }
 }
+MS2_REPLACE_METHOD(0x141B0EF40, UIStoreDialog, vfunc_66, 370, 0xA96F3C5E);
 
 // @0x141b0f0c0
 void UIStoreDialog::vfunc_67()
@@ -600,12 +634,14 @@ void UIStoreDialog::vfunc_67()
     m_190 = 0;
     vfunc_47(1);
 }
+MS2_REPLACE_METHOD(0x141B0F0C0, UIStoreDialog, vfunc_67, 270, 0xC1E0EB6E);
 
 // @0x141b0f1e0
 int UIStoreDialog::vfunc_54(void* pCfg)
 {
     return UIDialog::vfunc_54(pCfg);
 }
+MS2_REPLACE_METHOD(0x141B0F1E0, UIStoreDialog, vfunc_54, 34, 0x95C54B23);
 
 // @0x141b0f210
 int UIStoreDialog::vfunc_73()
@@ -615,23 +651,27 @@ int UIStoreDialog::vfunc_73()
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
-    if (FUN_141b10af0() == 0)
-        return UIDialog::vfunc_73();
-    FUN_140d73bc0(0x9e, 0, 0, CStringW(L""));
-    return 0;
+    if (FUN_141b10af0() != 0)
+    {
+        FUN_140d73bc0(0x9e, 0, 0, CStringW(L""));
+        return 0;
+    }
+    return UIDialog::vfunc_73();
 }
+MS2_REPLACE_METHOD(0x141B0F210, UIStoreDialog, vfunc_73, 146, 0x7CAE19AE);
 
 // @0x141b0f2b0
 int UIStoreDialog::vfunc_71()
 {
     if (FUN_141b10af0() == 0)
         return 0;
-    if (m_190 == 0)
-        FUN_140d73aa0(FUN_1409eec40(0x2ad), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
-    else
+    if (m_190 != 0)
         FUN_140d73aa0(FUN_1409eec40(0x2ae), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
+    else
+        FUN_140d73aa0(FUN_1409eec40(0x2ad), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B0F2B0, UIStoreDialog, vfunc_71, 374, 0xCD6372B2);
 
 // @0x141b0f430
 void UIStoreDialog::OnLoadInit()
@@ -643,6 +683,7 @@ void UIStoreDialog::OnLoadInit()
     if (DAT_143ab2d80.FUN_140de2860() == 0)
         DAT_143ab2d80.FUN_140de2b50();
 }
+MS2_REPLACE_METHOD(0x141B0F430, UIStoreDialog, OnLoadInit, 179, 0xEF53147D);
 
 // @0x141b0f4f0
 void UIStoreDialog::OnLoadComplete()
@@ -667,6 +708,7 @@ void UIStoreDialog::OnLoadComplete()
         pScript->FUN_140c38f00("initData", m_188, CStringW(strMoney));
     }
 }
+MS2_REPLACE_METHOD(0x141B0F4F0, UIStoreDialog, OnLoadComplete, 637, 0x655A75AF);
 
 // @0x141b0f780
 void UIStoreDialog::vfunc_26()
@@ -674,6 +716,7 @@ void UIStoreDialog::vfunc_26()
     UIDialog::vfunc_26();
     FUN_140bc0300(&m_1a8, 0);
 }
+MS2_REPLACE_METHOD(0x141B0F780, UIStoreDialog, vfunc_26, 45, 0x0B7C51C7);
 
 // @0x141b0f7c0
 int UIStoreDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
@@ -720,6 +763,7 @@ int UIStoreDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         FUN_14151f200();
     return 1;
 }
+MS2_REPLACE_METHOD_VIA(0x141B0F7C0, UIStoreDialog, IMessageListener, OnMessage, 627, 0xBC88E193);
 
 // @0x141b0fa40
 // MS2-FUNCTIONAL: frame layout of the message box temporaries differs
@@ -801,19 +845,24 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141B0FA40, UIStoreDialog, vfunc_28, 1967, 0x698AF0F7);
 
 // @0x141b10210
 void UIStoreDialog::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (vfunc_55() == 0 && 0 < m_198)
+    if (vfunc_55() == 0)
     {
-        if ((m_198 & 4) != 0)
-            FUN_141b110e0();
-        if ((m_198 & 2) != 0)
-            FUN_141b11590();
+        if (0 < m_198)
+        {
+            if ((m_198 & 4) != 0)
+                FUN_141b110e0();
+            if ((m_198 & 2) != 0)
+                FUN_141b11590();
+        }
     }
 }
+MS2_REPLACE_METHOD(0x141B10210, UIStoreDialog, vfunc_15, 119, 0xC8F4DB08);
 
 // @0x141b10290
 int UIStoreDialog::vfunc_13()
@@ -848,6 +897,7 @@ int UIStoreDialog::vfunc_13()
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B10290, UIStoreDialog, vfunc_13, 490, 0x272CDE81);
 
 // @0x141b10480
 // MS2-FUNCTIONAL: frame layout of the request temporaries differs
@@ -870,6 +920,7 @@ void UIStoreDialog::vfunc_80(void* pRequest)
         }
     }
 }
+MS2_REPLACE_METHOD(0x141B10480, UIStoreDialog, vfunc_80, 543, 0x638A1600);
 
 // @0x141b106b0
 void UIStoreDialog::vfunc_oa0_13(void* a1)
@@ -879,6 +930,7 @@ void UIStoreDialog::vfunc_oa0_13(void* a1)
         static_cast<Unk_StScript*>(m_30.operator->())->FUN_140acd130("changeMoney", CStringW(FUN_140719a00((__int64)a1)));
     }
 }
+MS2_REPLACE_METHOD_VIA(0x141B106B0, UIStoreDialog, UIStatusEventListener, vfunc_oa0_13, 189, 0x2E2DBA5D);
 
 // @0x141b10780
 void UIStoreDialog::vfunc_oa0_9(unsigned short a1)
@@ -890,6 +942,7 @@ void UIStoreDialog::vfunc_oa0_9(unsigned short a1)
             FUN_1422cca90(pBag);
     }
 }
+MS2_REPLACE_METHOD_VIA(0x141B10780, UIStoreDialog, UIStatusEventListener, vfunc_oa0_9, 90, 0x9FD650A0);
 
 // @0x141b107e0
 void UIStoreDialog::vfunc_oa0_7(int a1, CStringW s)
@@ -901,6 +954,7 @@ void UIStoreDialog::vfunc_oa0_7(int a1, CStringW s)
             FUN_1422cca90(pBag);
     }
 }
+MS2_REPLACE_METHOD_VIA(0x141B107E0, UIStoreDialog, UIStatusEventListener, vfunc_oa0_7, 115, 0x8820D5B0);
 
 // @0x141b10860
 void UIStoreDialog::vfunc_oa0_25(void* a1)
@@ -909,6 +963,7 @@ void UIStoreDialog::vfunc_oa0_25(void* a1)
     if (pCtl != 0)
         pCtl->vfunc_11((int)(__int64)a1);
 }
+MS2_REPLACE_METHOD_VIA(0x141B10860, UIStoreDialog, UIStatusEventListener, vfunc_oa0_25, 78, 0x9F46CB42);
 
 // @0x141b108c0
 void UIStoreDialog::vfunc_oa0_26(void* a1)
@@ -917,24 +972,28 @@ void UIStoreDialog::vfunc_oa0_26(void* a1)
     if (pCtl != 0)
         pCtl->vfunc_12((int)(__int64)a1);
 }
+MS2_REPLACE_METHOD_VIA(0x141B108C0, UIStoreDialog, UIStatusEventListener, vfunc_oa0_26, 78, 0x794CF81A);
 
 // @0x141b10920
 void UIStoreDialog::vfunc_9(void* p)
 {
     m_198 |= 2;
 }
+MS2_REPLACE_METHOD_VIA(0x141B10920, UIStoreDialog, UIItemEventListener, vfunc_9, 30, 0x78EB2B76);
 
 // @0x141b10950
 void UIStoreDialog::vfunc_10(void* p)
 {
     m_198 |= 2;
 }
+MS2_REPLACE_METHOD_VIA(0x141B10950, UIStoreDialog, UIItemEventListener, vfunc_10, 30, 0x78EB2B76);
 
 // @0x141b10980
 void UIStoreDialog::vfunc_il13()
 {
     m_198 = 6;
 }
+MS2_REPLACE_METHOD_VIA(0x141B10980, UIStoreDialog, UIItemEventListener, vfunc_il13, 18, 0x9E7560E5);
 
 // @0x141b109a0
 void UIStoreDialog::FUN_141b109a0()
@@ -951,26 +1010,28 @@ void UIStoreDialog::FUN_141b109a0()
         FUN_141276180(s_strExpandBankSlot, CString(""));
     }
 }
+MS2_REPLACE_METHOD(0x141B109A0, UIStoreDialog, FUN_141b109a0, 316, 0x290F2820);
 
 // @0x141b10af0
 int UIStoreDialog::FUN_141b10af0()
 {
-    if (FUN_141b21220(FUN_140967100()) == 0 && vfunc_55() == 0)
-        return 1;
-    return 0;
+    return FUN_141b21220(FUN_140967100()) == 0 && vfunc_55() == 0;
 }
+MS2_REPLACE_METHOD(0x141B10AF0, UIStoreDialog, FUN_141b10af0, 76, 0x899AED12);
 
 // @0x141b10b50
 CStringW UIStoreDialog::FUN_141b10b50()
 {
     return m_1a0;
 }
+MS2_REPLACE_METHOD(0x141B10B50, UIStoreDialog, FUN_141b10b50, 68, 0x4659ED21);
 
 // @0x141b10ba0
 void UIStoreDialog::FUN_141b10ba0(int n)
 {
     m_190 = n;
 }
+MS2_REPLACE_METHOD(0x141B10BA0, UIStoreDialog, FUN_141b10ba0, 25, 0xB1829CF6);
 
 // @0x141b10bc0
 // MS2-FUNCTIONAL: frame layout of the candidate temporaries differs
@@ -1005,12 +1066,14 @@ void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params&
     static_cast<ASObj*>(static_cast<AScript*>(FUN_140bc0550(&m_1a8)))->FUN_1407cb9c0("m_rowCount", nShown);
     FUN_140bc0550(&m_1a8)->FUN_140bbeaa0("setCandidates", aCandidates);
 }
+MS2_REPLACE_METHOD(0x141B10BC0, UIStoreDialog, FUN_141b10bc0, 743, 0xB9D72077);
 
 // @0x141b10eb0
 void UIStoreDialog::FUN_141b10eb0()
 {
     m_198 = 4;
 }
+MS2_REPLACE_METHOD(0x141B10EB0, UIStoreDialog, FUN_141b10eb0, 21, 0x441926A2);
 
 // @0x141b10ed0
 void UIStoreDialog::FUN_141b10ed0(CStringW strText)
@@ -1032,6 +1095,7 @@ void UIStoreDialog::FUN_141b10ed0(CStringW strText)
         return;
     }
 }
+MS2_REPLACE_METHOD(0x141B10ED0, UIStoreDialog, FUN_141b10ed0, 490, 0xB3629071);
 
 // @0x141b110e0
 void UIStoreDialog::FUN_141b110e0()
@@ -1042,6 +1106,7 @@ void UIStoreDialog::FUN_141b110e0()
         m_30->Invoke("updateBag");
     m_198 &= ~4;
 }
+MS2_REPLACE_METHOD(0x141B110E0, UIStoreDialog, FUN_141b110e0, 161, 0xFE12A06D);
 
 // @0x141b11190
 int UIStoreDialog::FUN_141b11190(const __int64& nAmount)
@@ -1075,6 +1140,7 @@ int UIStoreDialog::FUN_141b11190(const __int64& nAmount)
     FUN_140961010(0x2b3, 1, 1, FUN_140763e10(2000000000));
     return 0;
 }
+MS2_REPLACE_METHOD(0x141B11190, UIStoreDialog, FUN_141b11190, 438, 0xAEFB6E3B);
 
 // @0x141b11350
 int UIStoreDialog::FUN_141b11350(const __int64& nAmount)
@@ -1102,6 +1168,7 @@ int UIStoreDialog::FUN_141b11350(const __int64& nAmount)
     DAT_143ab2d80.FUN_140de2c40(0, nAmount);
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B11350, UIStoreDialog, FUN_141b11350, 311, 0x41BAD15F);
 
 // @0x141b11490
 int UIStoreDialog::FUN_141b11490()
@@ -1114,12 +1181,14 @@ int UIStoreDialog::FUN_141b11490()
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141B11490, UIStoreDialog, FUN_141b11490, 84, 0x951EC76A);
 
 // @0x141b114f0
 bool UIStoreDialog::FUN_141b114f0()
 {
     return DAT_143ab2d80.FUN_140de2970() == 0;
 }
+MS2_REPLACE_METHOD(0x141B114F0, UIStoreDialog, FUN_141b114f0, 39, 0x9C32443A);
 
 // @0x141b11520
 void UIStoreDialog::FUN_141b11520()
@@ -1130,6 +1199,7 @@ void UIStoreDialog::FUN_141b11520()
     else
         FUN_141add1f0(FUN_1403ed2b0());
 }
+MS2_REPLACE_METHOD(0x141B11520, UIStoreDialog, FUN_141b11520, 103, 0x3BDCFA30);
 
 // @0x141b11590
 void UIStoreDialog::FUN_141b11590()
@@ -1144,6 +1214,7 @@ void UIStoreDialog::FUN_141b11590()
     }
     m_198 &= ~2;
 }
+MS2_REPLACE_METHOD(0x141B11590, UIStoreDialog, FUN_141b11590, 309, 0x7FA1358F);
 
 // @0x141b116d0
 // MS2-FUNCTIONAL: frame layout of the message box temporaries differs
@@ -1177,6 +1248,7 @@ void UIStoreDialog::FUN_141b116d0(CStringW strText)
         }
     }
 }
+MS2_REPLACE_METHOD(0x141B116D0, UIStoreDialog, FUN_141b116d0, 823, 0x91F98195);
 
 // @0x141b11a10
 void UIStoreDialog::FUN_141b11a10(CStringW strText, Unk_StCandSet* pOut)
@@ -1203,6 +1275,7 @@ void UIStoreDialog::FUN_141b11a10(CStringW strText, Unk_StCandSet* pOut)
         FUN_1401bfde0(&entry);
     }
 }
+MS2_REPLACE_METHOD(0x141B11A10, UIStoreDialog, FUN_141b11a10, 391, 0x02F4CAD4);
 
 // @0x141b11ba0
 bool UIStoreDialog::FUN_141b11ba0(int nButton, const CMsgBoxData& box)
@@ -1218,6 +1291,7 @@ bool UIStoreDialog::FUN_141b11ba0(int nButton, const CMsgBoxData& box)
     }
     return true;
 }
+MS2_REPLACE_METHOD(0x141B11BA0, UIStoreDialog, FUN_141b11ba0, 233, 0xFB122B7D);
 
 // @0x141b11c90
 bool UIStoreDialog::FUN_141b11c90(int nButton, const CMsgBoxData& box)
@@ -1226,3 +1300,4 @@ bool UIStoreDialog::FUN_141b11c90(int nButton, const CMsgBoxData& box)
         FUN_141b11520();
     return true;
 }
+MS2_REPLACE_METHOD(0x141B11C90, UIStoreDialog, FUN_141b11c90, 46, 0xE9C7C327);
