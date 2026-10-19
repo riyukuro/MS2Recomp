@@ -1689,8 +1689,7 @@ void FUN_1402929a0(const CStringW& strText, std::vector<int>& arrOut, const wcha
     CStringW strToken = strText.Tokenize(pszDelim, nStart);
     while (!strToken.IsEmpty())
     {
-        int nValue = FUN_140274f40(strToken);
-        arrOut.push_back(nValue);
+        arrOut.push_back(FUN_140274f40(strToken));
         strToken = strText.Tokenize(pszDelim, nStart);
     }
 }
