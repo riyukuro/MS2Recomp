@@ -22,6 +22,7 @@ public:
     ASTooltip(void* pOwner, int a1, int a2);
     ASTooltip(class Unk_TooltipOwner* pOwner, int a1, int a2);       // 0x1409c64c0 (same body as the void* form; the owner's real type is unknown)
     ASTooltip(const Scaleform::GFx::Value& root, int nMovieId);     // 0x1409c6350 (uiadventureleveldialog.cpp)
+    ASTooltip(const ASTooltip& o);                                  // 0x140f47c60 (inline COMDAT, uigamedictionarydialog.cpp)
     virtual ~ASTooltip();
     void FUN_1409c7b10(CItem* pItem);                                    // itemDamage (sum of the damage lines)
     void FUN_1409c7c10(CItem* pItem);
