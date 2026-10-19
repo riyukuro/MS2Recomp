@@ -29,6 +29,8 @@ class Unk_140165cf0
 public:
     Unk_140165cf0* FUN_140165cf0(const char* pszName);     // FirstChildElement
     Unk_140165cf0* FUN_140168650(const char* pszName);     // NextSiblingElement
+    Unk_140165cf0* FUN_14086e8d0(const char* pszName);     // FirstChildElement (the tinyxmlhelper.h list readers' copy)
+    Unk_140165cf0* FUN_14086e7e0(const char* pszName);     // NextSiblingElement (same)
     const Unk_140165cf0* NextSiblingElement() const;       // 0x14086e770 (TiXmlNode, any name)
     // @0x1403f0510 (TinyXML's non-const wrapper)
     Unk_140165cf0* NextSiblingElement() { return const_cast<Unk_140165cf0*>((const_cast<const Unk_140165cf0*>(this))->NextSiblingElement()); }
