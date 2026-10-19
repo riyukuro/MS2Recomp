@@ -22,6 +22,7 @@
 #include "ms2/placeholder/cube.h"
 #include "ms2/client/ms2/uihousemark.h"
 #include "ms2/client/ms2/functioncubeobject.h"
+#include "ms2/commonfiles/guilddef_1.h"
 #include "ms2/client/ms2/cubemapinformationservice_3.h"
 
 // ---- record classes held by MS2Ptr (RTTI names; only the CPtred base matters here) --------------------------------------
@@ -30,7 +31,12 @@ class SalesInfo : public CPtred                         // house sale marker rec
 public:
     SalesInfo();
     virtual ~SalesInfo();
+    int m_nA;                                           // +0x18 (not set by the ctor)
+    efd::Point3 m_pos;                                  // +0x1c
+    CStringW m_str;                                     // +0x28
+    void* m_pTail;                                      // +0x30 (not set by the ctor)
 };
+MS2_CHECK_SIZE(SalesInfo, 0x38);
 class SetItemEffectInfo : public CPtred                 // 0x28, ctor 0x1411233c0
 {
 public:
@@ -39,18 +45,27 @@ public:
     int m_nEffect;                                      // +0x18
     CString m_strName;                                  // +0x20
 };
-class AutomaticCreateCubeInfo : public CPtred           // ctor 0x141122e70
+class AutomaticCreateCubeInfo : public CPtred           // ctor 0x141122e70 (0x50)
 {
 public:
     AutomaticCreateCubeInfo();
     virtual ~AutomaticCreateCubeInfo();
+    int m_nId;                                          // +0x18
+    Unk_Int3 m_cell;                                    // +0x1c
+    float m_fAngle;                                     // +0x28
+    int m_nFlag;                                        // +0x2c
+    Unk_GuildArray m_arr;                               // +0x30
 };
+MS2_CHECK_SIZE(AutomaticCreateCubeInfo, 0x50);
 class SaleStateData : public CPtred                     // sale state of a house (0x28, ctor 0x141123290)
 {
 public:
     SaleStateData();
     virtual ~SaleStateData();
+    int m_nState;                                       // +0x18
+    void* m_p;                                          // +0x20
 };
+MS2_CHECK_SIZE(SaleStateData, 0x28);
 class Unk_CMISUidRecord : public CPtred                 // value of a 64-bit-keyed table (pair 0x18, dtor ICF'd with the 16-byte pointers)
 {
 public:
