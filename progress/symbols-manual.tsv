@@ -3372,3 +3372,5 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?g_trCounters@@3VUnk_TrCounters@@A	143ab3010	data
 ?DAT_143d6eed8@@3DA	143d6eed8	data
 ?DAT_143ae52f8@@3VNiFixedString@@A	143ae52f8	data
+?g_itemDefaultSiblingStatic@@3PADA	143aaf9f0	data
+?FUN_14058a830@@YAXPEAX@Z	14058a830	func
