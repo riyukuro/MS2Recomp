@@ -33,6 +33,7 @@ public:
     Scaleform::GFx::Value FUN_1422b9260();
     float FUN_1422b8c10();                                                          // next argument as float (UIRimLightDialog)
     void FUN_1422b7f70(int n);                                                      // append an int argument
+    void FUN_1422b7fd0(bool b);                                                     // append a bool argument (shopcategorytable.cpp)
     void FUN_1422b8270(const AScript& obj);                                         // append an AS object argument (astooltip.cpp)
     void FUN_1422b83f0(const Scaleform::GFx::Value& v);                             // append a value argument (uimessagebox.cpp)
     bool FUN_1422b8a90();                                                           // next argument as bool (UIChaosLightDialog)
