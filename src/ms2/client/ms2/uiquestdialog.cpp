@@ -737,7 +737,7 @@ void UIQuestDialog::RefreshList()
             while (pos2 != 0)
             {
                 int nKey = spGroup->GetKeyAt(pos2);
-                TPtrValue<CAtlArray<int> > spIds(spGroup->GetValueAt(pos2));
+                TPtrValue<CAtlArray<int> > spIds(static_cast<const ChapterQuests*>(spGroup.operator->())->GetValueAt(pos2));
                 if (spIds->GetCount() != 0)
                 {
                     CStringW strRegion = FUN_1401a9d70()->FUN_141811980(0x12, nKey);
