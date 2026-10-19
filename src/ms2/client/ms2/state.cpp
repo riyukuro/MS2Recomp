@@ -948,6 +948,8 @@ CString FUN_1417b85a0(int nState)
     }
 }
 
+int FUN_1417b90f0(CString strName);
+#ifndef MS2_HOOK_DLL
 // @0x1417b90f0
 int FUN_1417b90f0(CString strName)
 {
@@ -963,6 +965,7 @@ int FUN_1417b90f0(CString strName)
         return it->second;
     return 0;
 }
+#endif
 
 // @0x1417b92a0
 void State::FUN_1417b92a0()
@@ -2094,9 +2097,9 @@ StateInteractNpcData::StateInteractNpcData()
 StateHitData::StateHitData()
 {
     m_f18 = 1.0f;
-    m_n1c = 0;
-    m_n24 = 0;
-    m_n28 = 0;
+    m_f1c = 0;
+    m_f24 = 0;
+    m_f28 = 0;
     m_n2c = 0;
     m_n30 = 0;
 }

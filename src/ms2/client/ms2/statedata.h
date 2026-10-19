@@ -98,11 +98,11 @@ public:
     StateHitData();                                             // 0x1417c0f50
     virtual ~StateHitData();                                    // 0x1417c1bc0 (implicit)
 
-    float m_f18;                                                // +0x18 1.0
-    int m_n1c;                                                  // +0x1c
-    int m_n20;                                                  // +0x20 (not set by the ctor)
-    int m_n24;                                                  // +0x24
-    int m_n28;                                                  // +0x28
+    float m_f18;                                                // +0x18 1.0 the hit animation speed
+    float m_f1c;                                                // +0x1c
+    float m_f20;                                                // +0x20 (not set by the ctor)
+    float m_f24;                                                // +0x24
+    float m_f28;                                                // +0x28
     int m_n2c;                                                  // +0x2c
     int m_n30;                                                  // +0x30
     CString m_str;                                              // +0x38
