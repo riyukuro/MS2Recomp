@@ -11,7 +11,7 @@ class CSoundDlg : public CToolBaseDialog, public TSingleton<CSoundDlg>
 {
     DECLARE_DYNAMIC(CSoundDlg)
 public:
-    CSoundDlg(CWnd* pParent);                                       // 0x141774260
+    CSoundDlg(CWnd* pParent = NULL);                                // 0x141774260
     virtual ~CSoundDlg();                                           // 0x141774460 (deleting dtor 0x141775540)
 
     virtual void DoDataExchange(CDataExchange* pDX);                // slot 66
