@@ -1,0 +1,431 @@
+// Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). UIMailListDialog: see uimaillistdialog.h.
+// MS2-UNIT: ?\uimaillistdialog.cpp
+// MS2-RANGE: 0x140116000-0x140116360 .text$di
+// MS2-RANGE: 0x1419e3510-0x1419ee140 .text$mn
+//
+// File name assumed (the class name; the exe has no assert path for it).
+#define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimaillistdialog.cpp"    // assumed
+
+#include "ms2/placeholder/ms2stdafx.h"
+
+#include "uimaillistdialog.h"
+
+#include <stdlib.h>
+#include <algorithm>
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/uimessageboxdata.h"
+#include "ms2/commonfiles/usermail.h"
+#include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asobj.h"
+#include "ms2/placeholder/astextfield.h"
+#include "ms2/placeholder/cmailtypes.h"
+#include "ms2/placeholder/cmypckeyinputcontroller.h"
+#include "ms2/placeholder/coutpacket.h"
+#include "ms2/placeholder/delegate.h"
+#include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/unk_1402a9d70.h"
+#include "ms2/ms2recover.h"
+#include "hook/ms2hook.h"
+
+// ---- statics of the unit's headers (two copies of the merat market sort names / key controller block) ----
+
+static CString s_strSortTypeNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
+static CString s_strSortTypeNamesLike[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkill = "skill";
+static CString s_strStun = "stun";
+static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
+static UICommon::CMyPCKeyInputController s_keyInput;
+static CString s_strSortTypeNamesLike2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static UICommon::CMyPCKeyInputController s_keyInput2;
+
+// ---- unit-local views of exe objects ----
+
+// The SWF dialog object handed around by the UI library (the exe's dynamic_cast target).
+class ASDialog : public ASDisplayObject
+{
+public:
+    virtual void vfunc_2(int, int, int);
+    Scaleform::GFx::Value FUN_140acd130(const char* szMethod, CStringW a1);          // invoke with a string
+    Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2);       // invoke with two ints
+    Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& a1);      // invoke with an object
+};
+
+// The page buttons of the movie.
+class Unk_MlButton : public ASDisplayObject { public: void FUN_1422c1fe0(unsigned int bEnabled); };
+// "m_checkAll".
+class Unk_MlCheckBox : public ASDisplayObject { public: void FUN_1422ce090(int bSelected); };
+// "m_tab".
+class Unk_MlTab : public ASDisplayObject { public: int FUN_1422e3210(); };
+
+// The mail list control of the movie (the AS list with clear / append / select).
+class Unk_MlList : public AScript
+{
+public:
+    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
+    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
+    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
+    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
+    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
+    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
+    virtual void vfunc_24(bool bRefresh);
+    void FUN_1422dcca0(int nIndex);                                 // select a row (-1: none)
+    void FUN_1422dd1d0();                                           // clear
+    void FUN_1422dd230(const ASObj& row);                           // append a row
+};
+
+class UIMailSendDialog;
+void FUN_1419ecbb0(UIMailSendDialog* pDlg, CMailInfo* pReplyTo);   // UIMailSendDialog: start a reply
+
+extern CUserMail g_143ab2ee0;                                       // the user's mails
+extern int DAT_143af37b0;                                           // the mail list needs a refresh (scenestategame.cpp)
+extern int DAT_143af37b4;                                           // a mail was removed
+extern __int64 DAT_143af37b8;                                       // the mail to open
+
+UIMailSendDialog* FUN_141742fb0(int nUiType);                       // the open send dialog
+CStringW FUN_141b71910(__int64 n);                                  // number -> text
+unsigned __int64 FUN_140718370(const CStringW& text);               // text -> number
+CStringW FUN_14016a730(const char* psz, int n);                     // multibyte -> wide
+CStringW FUN_14028de60(int nStrId);                                 // string table text by id
+CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table text by key
+CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);  // StringFormat<int>
+void FUN_14025a680(const CStringW& text, ATL::CAtlArray<CStringW>& out, const wchar_t* pszSep);   // split
+void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);       // notice box
+void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);          // notice box by string id
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
+MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* pListener, CStringW tag);      // create one by string id
+void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show it
+void FUN_141275260(int nStrId, int nA, int nB);                     // system notice
+float FUN_140bf4fd0(float f);                                       // ceil
+const char* FUN_140b63540(const Scaleform::GFx::Value& v);          // Value::GetString
+void FUN_1414728e0(const CStringA& strKey);                         // drop a registered item tooltip
+
+// The mail is an ad mail (kind 200).
+// @0x1419ead90
+bool FUN_1419ead90(CMailInfo* pMail)
+{
+    return pMail->FUN_140690370() == 200;
+}
+
+// The ad mail is sold out.
+// @0x1419eadd0
+int FUN_1419eadd0(CMailInfo* pMail)
+{
+    return pMail->m_n130;
+}
+
+// ---- UIMailListDialog ----
+
+// @0x1419e3510
+UIMailListDialog::UIMailListDialog()
+    : m_mapChecked(17, 0.75f, 0.25f, 2.25f, 10)
+{
+    m_bRefresh = false;
+    FUN_141924170(1);
+    m_nPage = 0;
+}
+
+// @0x1419e35e0
+UIMailListDialog::~UIMailListDialog()
+{
+}
+
+// @0x1419e3630
+CString UIMailListDialog::vfunc_1()
+{
+    return "MailListDialog";
+}
+
+// @0x1419e3680
+int UIMailListDialog::vfunc_65()
+{
+    return UIDialog::vfunc_65() != 0;
+}
+
+// @0x1419e36b0
+void UIMailListDialog::vfunc_67()
+{
+    FUN_1419e6b70();
+    UIDialog::vfunc_67();
+    m_bRefresh = false;
+}
+
+// @0x1419e36f0
+void UIMailListDialog::OnLoadComplete()
+{
+    UIDialog::OnLoadComplete();
+    m_mapChecked.RemoveAll();
+    m_nPage = 0;
+    FUN_1419e73f0();
+    FUN_1419e90d0();
+}
+
+// @0x1419e3750
+void UIMailListDialog::vfunc_79(void* p)
+{
+    UIDialog::vfunc_79(p);
+}
+
+// @0x1419e3780
+int UIMailListDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
+{
+    return UIDialog::OnMessage(pSender, pMsg) != 0;
+}
+
+// @0x1419e4de0
+void UIMailListDialog::vfunc_15()
+{
+    if (!m_30.IsNull())
+    {
+        if (DAT_143af37b0 != 0)
+        {
+            DAT_143af37b0 = 0;
+            FUN_1419e5190();
+            __int64 nOpen = FUN_1419e6c30();
+            if (nOpen != 0)
+                FUN_1419e5a10(nOpen);
+        }
+        if (DAT_143af37b8 != 0)
+        {
+            FUN_1419e5a10(DAT_143af37b8);
+            DAT_143af37b8 = 0;
+        }
+        if (DAT_143af37b4 != 0)
+        {
+            FUN_1419e4f10();
+            DAT_143af37b4 = 0;
+            FUN_141275260(0x22a, 1, 1);
+        }
+        if (m_bRefresh && m_timer.FUN_140268870(1000) != 0)
+            FUN_1419e90d0();
+    }
+}
+
+// @0x1419e4f10
+void UIMailListDialog::FUN_1419e4f10()
+{
+    ATL::CAtlList<CUserMail::MailPtr> mails(10);
+    FUN_1419e6d20(mails);
+    int nPages = (int)FUN_140bf4fd0((float)mails.GetCount() / 14.0f);
+    int nMin = 1;
+    const int& nLast = (std::max)(nMin, nPages);
+    if (nLast <= m_nPage)
+    {
+        m_nPage = nLast - 1;
+        FUN_1419e73f0();
+    }
+    FUN_1419e5190();
+    FUN_1419e5a10(0);
+}
+
+// @0x1419e5000
+void UIMailListDialog::FUN_1419e5000(__int64 nMailId)
+{
+    ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDlg)
+        pDlg->FUN_140acd130("readMail", FUN_141b71910(nMailId));
+    FUN_1419e5900();
+}
+
+// @0x1419e50b0
+void UIMailListDialog::FUN_1419e50b0(__int64 nMailId)
+{
+    ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDlg)
+        pDlg->FUN_140acd130("receiveMail", FUN_141b71910(nMailId));
+}
+
+// @0x1419e5150
+void UIMailListDialog::FUN_1419e5150()
+{
+    m_bRefresh = true;
+    m_timer.FUN_140268840();
+}
+
+// @0x1419e5900
+void UIMailListDialog::FUN_1419e5900()
+{
+    ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDlg)
+    {
+        int nUser = 0;
+        int nSystem = 0;
+        for (int nKind = 1; nKind < 4; nKind++)
+            nUser += g_143ab2ee0.FUN_1408e3f00(nKind);
+        for (int nKind = 100; nKind < 0x71; nKind++)
+            nSystem += g_143ab2ee0.FUN_1408e3f00(nKind);
+        pDlg->FUN_1409ba0d0("onMailCount", nUser, nSystem);
+    }
+}
+
+// @0x1419e61c0
+void UIMailListDialog::FUN_1419e61c0(__int64 nMailId)
+{
+    CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(nMailId).get();
+    if (pMail != 0 && pMail->FUN_140691110() == 0)
+    {
+        COutPacket packet(0x2d, 0);
+        packet.Encode1(2);
+        packet.Encode8(pMail->FUN_140690350());
+        FUN_140710590(packet);
+    }
+}
+
+// @0x1419e6290
+void UIMailListDialog::FUN_1419e6290(__int64 nMailId)
+{
+    CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(nMailId).get();
+    if (pMail != 0 && pMail->FUN_140690b80() != 0)
+    {
+        COutPacket packet(0x2d, 0);
+        packet.Encode1(0xb);
+        packet.Encode8(pMail->FUN_140690350());
+        FUN_140710590(packet);
+    }
+}
+
+// @0x1419e6360
+void UIMailListDialog::FUN_1419e6360(__int64 nMailId)
+{
+    CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(nMailId).get();
+    if (pMail != 0)
+    {
+        UIMailSendDialog* pSend = FUN_141742fb0(0x4e4a);
+        if (pSend != 0)
+            FUN_1419ecbb0(pSend, pMail);
+        CUIService::GetInstance()->FUN_141adc750((eUIClassID)0x4e4a);
+    }
+}
+
+// @0x1419e6b70
+void UIMailListDialog::FUN_1419e6b70()
+{
+    for (int i = 0; i < 5; i++)
+    {
+        CStringA strKey;
+        strKey.Format("%s.%d", (const char*)vfunc_1(), i);
+        FUN_1414728e0(strKey);
+    }
+}
+
+// @0x1419e6c30
+__int64 UIMailListDialog::FUN_1419e6c30()
+{
+    if (m_30 == 0)
+        return 0;
+    CStringA strId = FUN_140b63540(m_30->Invoke("getMailID"));
+    if (strId.GetLength() == 0)
+        return 0;
+    return atoi(strId);
+}
+
+// @0x1419e6ec0
+int UIMailListDialog::FUN_1419e6ec0(Unk_MailPtr<CMailInfo> spMail)
+{
+    if (FUN_1419e7fd0() == 1)
+    {
+        for (int nKind = 1; nKind < 4; nKind++)
+        {
+            if (spMail->FUN_140690370() == nKind)
+                return 1;
+        }
+    }
+    else
+    {
+        for (int nKind = 100; nKind < 0x71; nKind++)
+        {
+            if (spMail->FUN_140690370() == nKind)
+                return 1;
+        }
+        if (FUN_1419ead90(spMail.get()) != 0)
+            return 1;
+    }
+    return 0;
+}
+
+// @0x1419e6fe0
+int UIMailListDialog::FUN_1419e6fe0(int nPage)
+{
+    int nCount = 0;
+    if (FUN_1419e7fd0() == 1)
+    {
+        for (int nKind = 1; nKind < 4; nKind++)
+            nCount += g_143ab2ee0.FUN_1408e3dd0(nKind);
+    }
+    else
+    {
+        for (int nKind = 100; nKind < 0x71; nKind++)
+            nCount += g_143ab2ee0.FUN_1408e3dd0(nKind);
+    }
+    float fPages = FUN_140bf4fd0((float)nCount / 14.0f);
+    if (nPage < 0 || (int)fPages <= nPage)
+        return 0;
+    return 1;
+}
+
+// @0x1419e70c0
+int UIMailListDialog::FUN_1419e70c0(CStringW strIds)
+{
+    ATL::CAtlArray<CStringW> aIds;
+    FUN_14025a680(strIds, aIds, L",");
+    if (aIds.GetCount() == 0)
+        return 0;
+    ATL::CAtlArray<CStringW> aUnused;
+    for (size_t i = 0; i < aIds.GetCount(); i++)
+    {
+        unsigned __int64 nId = FUN_140718370(aIds[i]);
+        CUserMail::MailPtr spMail = g_143ab2ee0.FUN_1408e3720(nId);
+        if (spMail.get() != 0 && spMail->FUN_140691220() != 0)
+            return 1;
+    }
+    return 0;
+}
+
+// @0x1419e7260
+CStringA UIMailListDialog::FUN_1419e7260(Unk_MailPtr<CMailInfo> spMail)
+{
+    if (FUN_1419ead90(spMail.operator->()) == 0)
+    {
+        if (spMail->FUN_140690370() == 0x70)
+            return "wedding_invitation";
+        if (spMail->FUN_140691220() == 0)
+            return "non_attached";
+        return "attached";
+    }
+    if (FUN_1419eadd0(spMail.operator->()) == 0)
+        return "ad_attached";
+    return "ad";
+}
+
+// @0x1419e73f0
+void UIMailListDialog::FUN_1419e73f0()
+{
+    if (MS2Ptr<ASTextField> spPage = FUN_140bb4cf0("m_page"))
+    {
+        int nShown = m_nPage + 1;
+        spPage->FUN_1422c4cd0(FUN_1401ceea0(L"{0}", nShown));
+    }
+}
+
+// @0x1419e7fd0
+int UIMailListDialog::FUN_1419e7fd0()
+{
+    MS2Ptr<Unk_MlTab> spTab = FUN_140c02870("m_tab");
+    if (spTab.get() == 0)
+        return -1;
+    return spTab->FUN_1422e3210();
+}
+
+// @0x1419e90d0
+void UIMailListDialog::FUN_1419e90d0()
+{
+    if (m_30 == 0)
+        return;
+    if (FUN_1422dc430() != 0)
+    {
+        COutPacket packet(0x2d, 0);
+        packet.Encode1(0);
+        FUN_140710590(packet);
+        m_bRefresh = false;
+    }
+}
