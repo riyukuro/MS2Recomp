@@ -25,6 +25,8 @@ public:
     void FUN_140e64c00();
     void FUN_140e64e70();
     int FUN_140e64e80();
+    // @0x140b8be30
+    void FUN_140b8be30(int nPrevious) { m_previous = nPrevious; }
 private:
     MS2_LAYOUT_FRIEND;
     int m_selected;
