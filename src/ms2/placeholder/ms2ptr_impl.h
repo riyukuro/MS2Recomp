@@ -32,7 +32,6 @@ template <class T> MS2Ptr<T>& MS2Ptr<T>::AssignRaw(T* p)
     tmp.m_p = pOld;
     return *this;
 }
-template <class T> bool MS2Ptr<T>::operator!() const { return m_p == 0; }
 template <class T> bool MS2Ptr<T>::operator==(T* p) const { return m_p == p; }
 template <class T> T* MS2Ptr<T>::get() const { return m_p; }
 template <class T> MS2Ptr<T>::operator T*() const { return m_p; }

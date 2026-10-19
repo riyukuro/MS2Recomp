@@ -64,7 +64,7 @@ private:
     void ReleaseImpl(void*);            // explicit specializations only (Unk_DropEntry, uiitemdropinfodialog.cpp)
     static void Reference(T*);
 public:
-    bool operator!() const;             // `m_p == 0` (w3o1: generic bodies of all members in ms2ptr_impl.h)
+    bool operator!() const { return m_p == 0; }             // `m_p == 0` (w3o1: generic bodies of all members in ms2ptr_impl.h)
     MS2Ptr(MS2Ptr&& o) { m_p = o.m_p; o.m_p = 0; }   // merge3: inline (the out-of-line ms2ptr_impl.h body was unresolved in units that do not include it); a3: move at 140e08d80 / 141633bb0 transfers +8 and clears the source
 private:
     void AddRefImpl(void*) const;       // Reference(m_p) (rdx homed as a pointer)
