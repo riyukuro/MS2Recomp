@@ -165,7 +165,7 @@ public:
     int m_nWaitServer;                                          // +0x294 a packet is on its way
     int m_nJobLevel;                                            // +0x298 the shown job rank (1 / 2)
     MS2Ptr<CCacheData> m_spCache;                               // +0x2a0 skillAutoDistribute.xml
-    ATL::CAtlMap<int, TPtrValue<AutoDistributeArray> > m_autoDistribute;  // +0x2b0 by job code
+    ATL::CAtlMap<int, TPtrValue<AutoDistributeArray>, ATL::CDefaultElementTraits<int> > m_autoDistribute;  // +0x2b0 by job code
 };
 MS2_CHECK_SIZE(UISkillBookTreeDialog::AutoDistribute, 0x70);
 MS2_CHECK_SIZE(UISkillBookTreeDialog, 0x2f8);

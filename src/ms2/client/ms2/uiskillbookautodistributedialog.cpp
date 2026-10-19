@@ -3,9 +3,14 @@
 // into the movie slot by slot, the point reset / apply / auto-distribute flow, and the "SkillBookAutoDistributeDialog"
 // (UI type 0x4f20) that lets the player pick one of the table's presets (Table/skillAutoDistribute.xml). See
 // uiskillbookautodistributedialog.h.
+// MS2-GUESS-LOOKALIKES
 // MS2-UNIT: ?\uiskillbookautodistributedialog.cpp
 // MS2-RANGE: 0x1400dc6d0-0x1400dc9e0 .text$di
 // MS2-RANGE: 0x140ec41e0-0x140ed74c0 .text$mn
+// MS2-PIN: ??_7?$TPtredDummy@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@6B@ 0x142e66dc0
+// MS2-PIN: ??$FUN_14028dfa0@HHHH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBH111@Z 0x140ed0300
+// MS2-PIN: ??$FUN_14028dfa0@HHHHG@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBH111AEBG@Z 0x140ed06e0
+// MS2-PIN: ??$FUN_14028dfa0@GG@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBG1@Z 0x140ed0b00
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?vfunc_48@UISkillBookAutoDistributeDialog@@UEAAHXZ 0x140ec4d20 ; unique
 // MS2-PIN: ??$?0AEBH$0A@@?$tuple@AEBH@std@@QEAA@AEBH@Z 0x140ecfdf0 ; unique
@@ -28,15 +33,15 @@
 // MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@QEAA@AEBUUnk_GrNewTag@@@Z 0x140ed3120 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCMsgBoxData@@@@QEAA@H@Z 0x140ed3220 ; unique
 // MS2-PIN: ??0?$tuple@AEBH@std@@QEAA@$$QEAV01@@Z 0x140ed3460 ; unique
-// MS2-PIN: ??4?$MS2Ptr@VCSkillBookTreeTabConfig@@@@QEAAAEAV0@AEBV0@@Z 0x140ed39c0 ; prop
 // MS2-PIN: ??8?$MS2Ptr@VCSkillBookTreeTabConfig@@@@QEBA_NPEAVCSkillBookTreeTabConfig@@@Z 0x140ed3aa0 ; unique
-// MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140ed3c70 ; prop
+// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140ed3c50 ; prop
 // MS2-PIN: ??R?$less@H@std@@QEBA_NAEBH0@Z 0x140ed3d60 ; unique
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@AEBHAEAI1AEAPEAV312@@Z 0x140ed4a40 ; unique
 // MS2-PIN: ?vfunc_48@UISkillBookTreeDialog@@UEAAHXZ 0x140ed4c90 ; unique
-// MS2-PIN: ?AddRefImpl@?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@AEBAXPEAX@Z 0x140ed6a10 ; unique
+// MS2-PIN: ?Lookup@?$CAtlMap@HV?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@@3@@ATL@@QEBA_NAEBHAEAV?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@@Z 0x140ed51e0 ; prop
+// MS2-PIN: ?Lookup@?$CAtlMap@_JV?$MS2Ptr@VCSkillPointSimulator@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSkillPointSimulator@@@@@3@@ATL@@QEBA_N_JAEAV?$MS2Ptr@VCSkillPointSimulator@@@@@Z 0x140ed5250 ; unique
 // MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@PEAX@2@@Z 0x140ed6c20 ; unique
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ 0x140ed6cd0 ; prop
-// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HJU?$less@H@std@@V?$allocator@U?$pair@$$CBHJ@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEAAAEAU?$less@H@2@XZ 0x140ed6d50 ; prop
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHJ@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHJ@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x140ed6ce0 ; prop
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140ed7020 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140ed7080 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140ed70e0 ; unique
@@ -416,7 +421,11 @@ Unk_SkillService* FUN_140d86260();
 JobSystemCli* FUN_1416546d0(MyPC* pPlayer);                                 // the job system of a PC
 int FUN_141654730(MyPC* pPlayer);                                           // the sub job
 int FUN_141654760(MyPC* pPlayer);                                           // the job rank
-int FUN_140ed47e0(MyPC* pPlayer);                                           // the character level (m_n179c)
+// @0x140ed47e0
+int FUN_140ed47e0(MyPC* pPlayer)                                            // the character level (m_n179c)
+{
+    return pPlayer->m_n179c;
+}
 char* FUN_1401d3200();                                                      // the settings table
 const wchar_t* FUN_1402056b0(const char* pSetting);                         // text of a setting
 unsigned* FUN_1401d7c10(const char* pSetting);                              // value of a setting
