@@ -16,6 +16,8 @@ public:
     // @0x140203af0
     ~Exception(){}
     // 0x140b700e0 (first instantiated by client\ms2\ugcmanager.cpp#1)
+    // @0x14067bc30 (out of line in commonfiles\luautil.cpp)
+    CString GetText();
     int GetCode() const { return m_code; }
 private:
     MS2_LAYOUT_FRIEND;
