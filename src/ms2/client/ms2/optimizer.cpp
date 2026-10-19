@@ -7,16 +7,17 @@
 // MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@1@0@Z 0x14161dea0 ; unique
 // MS2-PIN: ??$Unk_OptLog@H@@YAXPEAVCLogString@@HHPEB_WAEBH@Z 0x14161e160 ; unique
 // MS2-PIN: ??$Unk_OptLog@_KH@@YAXPEAVCLogString@@HHPEB_WAEB_KAEBH@Z 0x14161e280 ; unique
-// MS2-PIN: ??$_Try_emplace@AEB_J$$V@?$map@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@std@@_N@1@AEB_J@Z 0x141620f60 ; unique
-// MS2-PIN: ??$try_emplace@$$V@?$map@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@std@@_N@1@$$QEA_J@Z 0x141621910 ; unique
-// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CB_JPEAVPCBase@@@std@@PEAX@std@@@std@@QEAA@XZ 0x141621db0 ; unique
-// MS2-PIN: ??A?$map@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@@std@@QEAAAEAUEntry@COptimizer@@$$QEA_J@Z 0x141622210 ; unique
-// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@2@AEB_J@Z 0x141624de0 ; unique
+// MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@0@AEAV10@@Z 0x1416217d0 ; unique
+// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@0@AEAV10@@Z 0x1416217e0 ; unique
+// MS2-PIN: ??0?$allocator@U?$_List_node@UEntry@COptimizer@@PEAX@std@@@std@@QEAA@XZ 0x141621da0 ; unique
+// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1416224c0 ; prop
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tset_traits@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@VEntityID@egf@@PEAX@2@@Z 0x141623ad0 ; prop
+// MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@SAPEAU?$pair@$$CB_KUEntry@COptimizer@@@2@AEAU32@@Z 0x141624fb0 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ??$_Try_emplace@_J$$V@?$map@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@std@@_N@1@$$QEA_J@Z 0x1416210b0
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@1@AEAU?$pair@$$CB_JUEntry@COptimizer@@@1@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@1@@Z 0x14161f7d0
-// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CB_JUEntry@COptimizer@@@1@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@1@@Z 0x141620410
-// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEBA_NAEB_J0@Z 0x141622bd0
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CB_KUEntry@COptimizer@@@std@@PEAU?$_Tree_node@U?$pair@$$CB_KUEntry@COptimizer@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@_KUEntry@COptimizer@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@1@AEAU?$pair@$$CB_KUEntry@COptimizer@@@1@PEAU?$_Tree_node@U?$pair@$$CB_KUEntry@COptimizer@@@std@@PEAX@1@@Z 0x14161f7d0
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CB_KUEntry@COptimizer@@@std@@PEAU?$_Tree_node@U?$pair@$$CB_KUEntry@COptimizer@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@_KUEntry@COptimizer@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CB_KUEntry@COptimizer@@@1@PEAU?$_Tree_node@U?$pair@$$CB_KUEntry@COptimizer@@@std@@PEAX@1@@Z 0x141620410
+// MS2-PIN: ??$_Try_emplace@_K$$V@?$map@_KUEntry@COptimizer@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@std@@@std@@@std@@_N@1@$$QEA_K@Z 0x1416210b0
+// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@_KUEntry@COptimizer@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEBA_NAEB_K0@Z 0x141622bd0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\optimizer.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <psapi.h>
@@ -58,7 +59,7 @@ bool FUN_141527280(PCBase* pActor);
 CPartyManager* FUN_1409670d0();
 class CGuildManager;
 CGuildManager* FUN_1403ed290();
-int FUN_1413bcbc0(CGuildManager* pGuild, std::map<__int64, PCBase*>& out);   // CGuildManager::FUN_1413bcbc0
+int FUN_1413bcbc0(CGuildManager* pGuild, std::map<unsigned __int64, PCBase*>& out);   // CGuildManager::FUN_1413bcbc0
 bool FUN_14028d470(float a, float b);
 struct Unk_OptConstVal { int m_n; };
 class Unk_OptOptions { public: unsigned char m_pad_0[0x36d8]; Unk_OptConstVal m_frameLimit; };
@@ -173,9 +174,9 @@ void COptimizer::FUN_14161bb60()
     {
         if ((preloadMode & 8) == 0)
         {
-            for (std::set<__int64>::iterator it = m_players.begin(); it != m_players.end(); ++it)
+            for (std::set<unsigned __int64>::iterator it = m_players.begin(); it != m_players.end(); ++it)
             {
-                const __int64* pId = &*it;
+                const unsigned __int64* pId = &*it;
                 PCBase* pPC = FUN_141bd1530(FUN_1403ed2d0(), *pId);
                 if (pPC != 0)
                 {
@@ -461,7 +462,7 @@ void COptimizer::FUN_14161cd00()
 }
 
 // @0x14161cd60
-void COptimizer::FUN_14161cd60(__int64 nId)
+void COptimizer::FUN_14161cd60(unsigned __int64 nId)
 {
     if (FUN_1403ed2d0() != 0 && preloadMode != 0 && preloadMode != 1)
     {
@@ -476,7 +477,7 @@ void COptimizer::FUN_14161cd60(__int64 nId)
 void COptimizer::FUN_14161cdd0(unsigned nId)
 {
     __int64 nKey = nId;
-    std::map<__int64, Entry>::iterator it = m_selected.find(nKey);
+    std::map<unsigned __int64, Entry>::iterator it = m_selected.find(nKey);
     if (it != m_selected.end())
     {
         m_selected.erase(it);
@@ -585,7 +586,7 @@ void COptimizer::FUN_14161d130(bool bForce)
     {
         if (FUN_141bca2e0(FUN_1403ed2d0()) != 0)
         {
-            std::map<__int64, PCBase*> preferred;
+            std::map<unsigned __int64, PCBase*> preferred;
             PCBase* pLocal = FUN_141bd0cc0(FUN_1403ed2d0());
             if (pLocal != 0)
             {
@@ -608,10 +609,10 @@ void COptimizer::FUN_14161d130(bool bForce)
                     FUN_1413bcbc0(FUN_1403ed290(), preferred);
                 }
             }
-            std::map<__int64, Entry> selected;
-            for (std::map<__int64, PCBase*>::iterator it = preferred.begin(); it != preferred.end(); ++it)
+            std::map<unsigned __int64, Entry> selected;
+            for (std::map<unsigned __int64, PCBase*>::iterator it = preferred.begin(); it != preferred.end(); ++it)
             {
-                std::map<__int64, Entry>::iterator itOld = m_selected.find(it->first);
+                std::map<unsigned __int64, Entry>::iterator itOld = m_selected.find(it->first);
                 if (itOld == m_selected.end())
                 {
                     FUN_14161dbe0(it->second, preloadMode);
@@ -676,7 +677,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                     while (it != candidates.end() && nAdded < nWant)
                     {
                         __int64 nKey = it->m_pPC->FUN_141656a80();
-                        std::map<__int64, Entry>::iterator itOld = m_selected.find(nKey);
+                        std::map<unsigned __int64, Entry>::iterator itOld = m_selected.find(nKey);
                         if (itOld == m_selected.end())
                         {
                             FUN_14161dbe0(it->m_pPC, 0);
@@ -692,7 +693,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                     }
                 }
             }
-            for (std::map<__int64, Entry>::iterator it = m_selected.begin(); it != m_selected.end(); ++it)
+            for (std::map<unsigned __int64, Entry>::iterator it = m_selected.begin(); it != m_selected.end(); ++it)
             {
                 PCBase* pOld = FUN_141bd1530(FUN_1403ed2d0(), it->first);
                 if (pOld != 0)

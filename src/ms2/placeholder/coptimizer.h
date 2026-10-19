@@ -44,7 +44,7 @@ public:
     void FUN_14161c990();                                   // sample the frame rate
     void FUN_14161cc80(int nFlags, int nLimit, int nEnabled, int nMode);
     void FUN_14161cd00();                                   // clear
-    void FUN_14161cd60(__int64 nId);
+    void FUN_14161cd60(unsigned __int64 nId);
     void FUN_14161cdd0(unsigned nId);
     int FUN_14161ce60(unsigned nId);
     void FUN_14161cee0(int nSuppressed);
@@ -59,7 +59,7 @@ public:
     void FUN_14161dd30(int nFlags, int nLimit);
     int FUN_141622790() const;
     void FUN_14109ac50(int n);                              // m_nUpdateOn = n
-    std::set<__int64> m_players;                            // +0x08
+    std::set<unsigned __int64> m_players;                   // +0x08
     std::set<egf::EntityID> m_suppress;                     // +0x18
     unsigned __int64 m_nTotalMemory;                        // +0x28 physical MB
     float m_fMemoryTime;                                    // +0x30
@@ -69,7 +69,7 @@ public:
     int m_nEnabled;                                         // +0x40
     int m_nMode;                                            // +0x44
     int m_nLimit;                                           // +0x48
-    std::map<__int64, Entry> m_selected;                    // +0x50
+    std::map<unsigned __int64, Entry> m_selected;                    // +0x50
     float m_fFrameLimit;                                    // +0x60
     int m_nFrameDelay;                                      // +0x64
     int m_nUpdateOn;                                        // +0x68
