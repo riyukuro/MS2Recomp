@@ -19,7 +19,7 @@ set(MS2_SCALEFORM_INCLUDE_DIRS
     "Include"
     "Src"
 )
-set(_ms2_sf_default "${CMAKE_CURRENT_LIST_DIR}/../work/scaleform/4.1.19/Scaleform")
+get_filename_component(_ms2_sf_default "${CMAKE_CURRENT_LIST_DIR}/../work/scaleform/4.1.19/Scaleform" ABSOLUTE)
 if(NOT IS_DIRECTORY "${_ms2_sf_default}")
     set(_ms2_sf_default "")
 endif()
