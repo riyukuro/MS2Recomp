@@ -17,6 +17,7 @@ template<class T> class Unk_14102fe10 {
 public:
     Unk_14102fe10() : m_p(0) {}
     Unk_14102fe10(int);
+    Unk_14102fe10(T* p);                        // 0x140ce8d10 (gameeventcli.cpp)
     Unk_14102fe10(const Unk_14102fe10&);
     Unk_14102fe10(Unk_14102fe10&&);
     ~Unk_14102fe10();

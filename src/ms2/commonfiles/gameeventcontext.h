@@ -40,7 +40,7 @@ public:
     virtual void vfunc_5();
     virtual void vfunc_6();
     virtual void vfunc_10();
-private:
+protected:   // gameeventcli.cpp (GameEvent*Cli) reads the members
     MS2_LAYOUT_FRIEND;
     ATL::CAtlArray<MS2Ptr<ItemGift> > m_gifts;  // +0xd0
     CStringW m_strName;                         // +0xf0
@@ -74,7 +74,7 @@ public:
     virtual void vfunc_6();
     virtual void vfunc_10();
     int FUN_1403fbdc0() { return m_i4; }        // 0x1403fbdc0
-private:
+protected:   // gameeventcli.cpp (GameEvent*Cli) reads the members
     MS2_LAYOUT_FRIEND;
     int m_i0;                                   // +0xd0 table id
     int m_i4;                                   // +0xd4
