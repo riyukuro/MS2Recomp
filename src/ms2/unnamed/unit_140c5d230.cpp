@@ -830,6 +830,7 @@ void UILapenshardSystemDialog::FUN_140c627a0(unsigned nTab, const Scaleform::GFx
 class UIRewardNotify;
 #include "ms2/client/ms2/uirewardnotify.h"
 #include "ms2/placeholder/asgameentity.h"
+#include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/cmainsystem.h"
 
@@ -2405,4 +2406,129 @@ void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<Unk_LsRec
     if (0 < spRec->m_nCost)
         out.FUN_1407cbb20("requireMeso", FUN_1418fec00(1, spRec->m_nCost, 0));
     FUN_140c65ef0();
+}
+
+CStringW FUN_14183e9c0(CStringW strName, int nRank);                    // the item name coloured by rank
+void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int n);   // set a child's mode
+void FUN_141416650(ItemInfoSlot* pSlot, Delegate<void(ItemInfoSlot&, ASSlot&)> fn);
+void FUN_1414166a0(ItemInfoSlot* pSlot, Delegate<void(ItemInfoSlot&, ASTooltip&)> fn);
+
+// Shows an item's name in the textField of a named child of the upgrade body.
+static void Unk_LsSetNameText(MS2Ptr<ASUIComponent>& spBody, const char* szClip, const CStringW& strText)
+{
+    MS2Ptr<ASMovieClip> clip = spBody->FUN_1409b4560(CString(szClip));
+    if (clip.get() != 0)
+    {
+        MS2Ptr<ASTextField> tf = clip->FUN_1409b4620(CString("textField"));
+        if (tf.get() != 0)
+        {
+            FUN_140d01420(clip->FUN_1422bb890(), CString("textField"), 2);
+            tf->FUN_1422c4f00(strText);
+        }
+    }
+}
+
+// @0x140c664e0
+// MS2-FUNCTIONAL: the source and result halves share one helper and the temporaries are laid out differently
+void LapenshardUpgradeSlotPanel::FUN_140c664e0()
+{
+    if (m_body == 0)
+        return;
+    MS2Ptr<ASMovieClip> spSourceSlot = m_body->FUN_1409b4560(CString("m_sourceSlot"));
+    if (spSourceSlot.get() != 0)
+    {
+        CStringW strName;
+        if (!(m_spSource == 0))
+        {
+            MS2Ptr<CItem> spItem(new CItem());
+            if (spItem->FUN_14052b2e0(m_spSource->FUN_1405276c0(), 0, 0, 0) != 0)
+            {
+                spItem->FUN_140526a70(m_spSource->FUN_140526a50());
+                FUN_140c654a0(m_strSource, spItem);
+                ItemInfoSlot* pBag = FUN_140c69ab0(FUN_1422c8e90(m_strSource));
+                if (pBag != 0)
+                {
+                    FUN_141416650(pBag, Delegate<void(ItemInfoSlot&, ASSlot&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c652d0));
+                    FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
+                    ASObj obj(2);
+                    obj.FUN_1407cba60("bindID", m_strSource);
+                    spSourceSlot->FUN_140acd1f0("setData", AScript(obj));
+                    unsigned nItemId = spItem->FUN_1405276c0();
+                    strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, nItemId), FUN_14053feb0(nItemId));
+                }
+            }
+        }
+        Unk_LsSetNameText(m_body, "m_sourceItemName", strName);
+    }
+    MS2Ptr<ASMovieClip> spResultSlot = m_body->FUN_1409b4560(CString("m_resultSlot"));
+    if (spResultSlot.get() != 0)
+    {
+        CStringW strName;
+        MS2Ptr<Unk_LsRecord> spRec = FUN_140c65d60();
+        if (!(spRec == 0) && spRec->m_n20 != 0)
+        {
+            MS2Ptr<CItem> spItem(new CItem());
+            if (spItem->FUN_14052b2e0(spRec->m_n20, 0, 0, 0) != 0)
+            {
+                FUN_140c654a0(m_strResult, spItem);
+                ItemInfoSlot* pBag = FUN_140c69ab0(FUN_1422c8e90(m_strResult));
+                if (pBag != 0)
+                {
+                    FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
+                    ASObj obj(2);
+                    obj.FUN_1407cba60("bindID", m_strResult);
+                    spResultSlot->FUN_140acd1f0("setData", AScript(obj));
+                    unsigned nItemId = spItem->FUN_1405276c0();
+                    strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, nItemId), FUN_14053feb0(nItemId));
+                }
+            }
+        }
+        Unk_LsSetNameText(m_body, "m_resultItemName", strName);
+    }
+}
+
+// @0x140c660f0
+void LapenshardUpgradeSlotPanel::FUN_140c660f0()
+{
+    if (!(m_ui == 0) && m_items.GetCount() != 0 && m_kinds.GetCount() != 0)
+    {
+        ASArray rows(2);
+        for (unsigned i = 0; i < m_items.GetCount(); ++i)
+        {
+            MS2Ptr<CItem> spItem = m_items[i];
+            if (spItem == 0)
+                continue;
+            ASObj row(2);
+            row.FUN_1407cba60("binding", FUN_1422cc860(m_strBind, i));
+            int nHave = 0;
+            if (spItem->FUN_140526100() == 0)
+                nHave = FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &m_kinds[i]);
+            row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, spItem->FUN_140526c50()));
+            rows.FUN_1422bc050(row.FUN_1422bb870());
+        }
+        ASObj data(2);
+        data.FUN_1409adbe0("ingredient", rows.FUN_1422bb870());
+        m_ui->Invoke("setIngredientData", data.FUN_1422bb870());
+        FUN_140c65ef0();
+    }
+}
+
+// @0x140c671d0
+void LapenshardUpgradeSlotPanel::FUN_140c671d0()
+{
+    if (m_body == 0)
+        return;
+    m_body->vfunc_13(CString("select"));
+    FUN_140c664e0();
+    MS2Ptr<Unk_LsRecord> spRec = FUN_140c65d60();
+    if (spRec == 0)
+        return;
+    if (spRec->m_n20 == 0)
+        return;
+    m_strBind = "lapenshardUpgradeIngredientSlotBag";
+    m_items.RemoveAll();
+    m_kinds.RemoveAll();
+    ASObj data(2);
+    FUN_140c65540(m_strBind, spRec, m_items, m_kinds, data);
+    m_ui->Invoke("selectItem", data.FUN_1422bb870());
 }
