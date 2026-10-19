@@ -8,6 +8,7 @@
 // MS2-PIN: ??8?$MS2Ptr@VRpsGameData@@@@QEBA_NPEAVRpsGameData@@@Z 0x140b8bb30 ; unique
 // MS2-PIN: ??8?$MS2Ptr@VUnk_StateArg22@@@@QEBA_NPEAVUnk_StateArg22@@@Z 0x140b8bbf0 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_MgDanceEvent@@@@AEAAXPEAX@Z 0x140b8c090 ; merge-bind
 // MS2-GUESS-LOOKALIKES
 // MS2-PIN: ??$Unk_MgGetDialog@VUIMicroGameCoupleDance@@@@YAPEAVUIMicroGameCoupleDance@@H@Z 0x140b8b5c0
 // MS2-PIN: ??$Unk_MgGetDialog@VUIMicroGameCoupleDanceMessage@@@@YAPEAVUIMicroGameCoupleDanceMessage@@H@Z 0x140b8b660

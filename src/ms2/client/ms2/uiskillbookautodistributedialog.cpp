@@ -51,6 +51,7 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140ed71d0 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUISkillBookTreeDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140ed7230 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_PCSkillTree@@@@AEAAXPEAX@Z 0x140ed6f30 ; merge-bind
 //
 // File name assumed (the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiskillbookautodistributedialog.cpp"    // assumed

@@ -3,6 +3,12 @@
 // return a result code (0: allowed) and the std::list<meso log row> glue.
 // MS2-UNIT: ?\weddingproxy.cpp
 // MS2-RANGE: 0x1408fe100-0x1409030d0 .text$mn
+// MS2-PIN: ??1?$MS2Ptr@VWeddingHallData@@@@QEAA@XZ 0x140901e30 ; merge-bind
+// MS2-PIN: ??1?$MS2Ptr@VWeddingPackage@@@@QEAA@XZ 0x140901e60 ; merge-bind
+// MS2-PIN: ?Reference@?$MS2Ptr@VWeddingPackage@@@@CAXPEAVWeddingPackage@@@Z 0x140902420 ; merge-bind
+// MS2-PIN: ?Release@?$MS2Ptr@VWeddingHallData@@@@AEAAXXZ 0x140902920 ; merge-bind
+// MS2-PIN: ?Release@?$MS2Ptr@VWeddingPackage@@@@AEAAXXZ 0x140902960 ; merge-bind
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VWeddingPackage@@@@AEAAXPEAX@Z 0x1409029f0 ; merge-bind
 // File name assumed (the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\weddingproxy.cpp"    // assumed
 

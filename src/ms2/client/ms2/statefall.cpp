@@ -6,6 +6,13 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?get@?$MS2Ptr@VStateFallData@@@@QEBAPEAVStateFallData@@XZ 0x1417c7a40 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??0?$MS2Ptr@VStateFallData@@@@QEAA@PEAVStateFallData@@@Z 0x1417c79e0 ; merge-bind
+// MS2-PIN: ??1?$MS2Ptr@VStateFallData@@@@QEAA@XZ 0x1417c7a10 ; merge-bind
+// MS2-PIN: ?AddRef@?$MS2Ptr@VStateFallData@@@@AEBAXXZ 0x1417c7ad0 ; merge-bind
+// MS2-PIN: ?Reference@?$MS2Ptr@VStateFallData@@@@CAXPEAVStateFallData@@@Z 0x1417c7b00 ; merge-bind
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VStateFallData@@@@AEBAXPEAX@Z 0x1417c7b20 ; merge-bind
+// MS2-PIN: ?Release@?$MS2Ptr@VStateFallData@@@@AEAAXXZ 0x1417c7b50 ; merge-bind
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VStateFallData@@@@AEAAXPEAX@Z 0x1417c7b90 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\statefall.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 

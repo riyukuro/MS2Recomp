@@ -5,6 +5,9 @@
 // MS2-UNIT: client\ms2\ms2clientplatformbase.cpp
 // MS2-RANGE: 0x1400cecb0-0x1400cef9a .text$di
 // MS2-RANGE: 0x140c74e70-0x140c77990 .text$mn
+// MS2-PIN: ?Reference@?$MS2Ptr@VCUserReportData@@@@CAXPEAVCUserReportData@@@Z 0x140c77740 ; merge-bind
+// MS2-PIN: ?Release@?$MS2Ptr@VCUserReportData@@@@AEAAXXZ 0x140c77760 ; merge-bind
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCUserReportData@@@@AEAAXPEAX@Z 0x140c777a0 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2clientplatformbase.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/ms2clientplatformbase.h"

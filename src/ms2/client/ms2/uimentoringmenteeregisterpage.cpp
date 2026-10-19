@@ -1,6 +1,9 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Mentoring: the mentee register page. Field/helper names are inferred.
 // MS2-UNIT: client\ms2\uimentoringmenteeregisterpage.cpp
 // MS2-RANGE: 0x140c70480-0x140c71310 .text$mn
+// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMentoringMenteeRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA@XZ 0x140c71140 ; merge-bind
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMentoringMenteeRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x140c71160 ; merge-bind
+// MS2-PIN: ??_GUIMentoringMenteeRegisterPage@@UEAAPEAXI@Z 0x140c711a0 ; merge-bind
 // MS2-PIN: ??$FUN_14028dfa0@HHHHHHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBH11111AEBV01@@Z 0x140c70b70
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimentoringmenteeregisterpage.cpp"
 #include "ms2/placeholder/ms2stdafx.h"

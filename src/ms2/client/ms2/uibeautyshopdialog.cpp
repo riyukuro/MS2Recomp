@@ -66,6 +66,15 @@
 // MS2-PIN: ??__Fs_strVIP@@YAXXZ 0x142cbcc90 ; probe
 // MS2-PIN: ??__Fs_strWillUpdatePos@@YAXXZ 0x142cbccb0 ; probe
 // MS2-PINS-END tplpin
+// MS2-PIN: ??0?$MS2Ptr@VBeautyShopContext@Customize@@@@QEAA@PEAVBeautyShopContext@Customize@@@Z 0x1418cc750 ; merge-bind
+// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIBeautyShopDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAA@XZ 0x1418cc7c0 ; merge-bind
+// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIBeautyShopDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAA@XZ 0x1418cc7e0 ; merge-bind
+// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIBeautyShopDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA@XZ 0x1418cc800 ; merge-bind
+// MS2-PIN: ??4?$MS2Ptr@VUnk_BSPriceRow@@@@QEAAAEAV0@AEBV0@@Z 0x1418cc820 ; merge-bind
+// MS2-PIN: ??4?$MS2Ptr@VUnk_BSPriceRow@@@@QEAAAEAV0@H@Z 0x1418cc860 ; merge-bind
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIBeautyShopDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAPEAXI@Z 0x1418cc980 ; merge-bind
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIBeautyShopDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z 0x1418cc9c0 ; merge-bind
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIBeautyShopDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x1418cca00 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uibeautyshopdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uibeautyshopdialog.h"

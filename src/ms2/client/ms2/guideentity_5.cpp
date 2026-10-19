@@ -66,6 +66,8 @@
 // MS2-PIN: ??$_Ucopy@PEAV?$MS2Ptr@VCGuideEntity@@@@@?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@AEAAPEAV?$MS2Ptr@VCGuideEntity@@@@PEAV2@00@Z 0x1413a0190 ; prop
 // MS2-PIN: ?_Umove_if_noexcept@?$vector@U?$pair@W4Occurrence@CGuideManager@@H@std@@V?$allocator@U?$pair@W4Occurrence@CGuideManager@@H@std@@@2@@std@@AEAAXPEAU?$pair@W4Occurrence@CGuideManager@@H@2@00@Z 0x1413a0250 ; prop
 // MS2-PINS-END tplpin
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCGuideEntity@@@@AEAAXPEAX@Z 0x14139f820 ; merge-bind
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VGuideTriggerEventGroup@@@@AEAAXPEAX@Z 0x14139f870 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\guideentity.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 

@@ -38,6 +38,7 @@
 // MS2-PIN: ??$Call@VUICharacterCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUICharacterCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUICharacterCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x1418e9230 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUICharacterCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1418e9270 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ?ReleaseImpl@?$Unk_SocketPtr@VCameraData@UICameraEditDialog@@@@AEAAXPEAX@Z 0x1418df490 ; merge-bind
 // MS2-PIN: ??__Es_pointer1@@YAXXZ 0x140111060
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VCItem@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1418e8340
 // MS2-PIN: ??0?$Unk_SocketPtr@VCameraData@UICameraEditDialog@@@@QEAA@AEBV0@@Z 0x1418deb30

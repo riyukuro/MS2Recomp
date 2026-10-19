@@ -140,6 +140,7 @@
 // MS2-PIN: ??__Fs_strTabIndex@@YAXXZ 0x142c9e160 ; probe
 // MS2-PIN: ??__Fs_strUgctag@@YAXXZ 0x142c9e180 ; probe
 // MS2-PINS-END tplpin
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_AdditionalEffect@@@@AEAAXPEAX@Z 0x1409c1a30 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\asitemslot.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <new>

@@ -3,6 +3,7 @@
 // MS2-RANGE: 0x140fa8cc0-0x140fa9eb0 .text$mn
 // MS2-RANGE: 0x1400e1a10-0x1400e1bd0 .text$di
 // MS2-RANGE: 0x142caa570-0x142caa620 .text$yd
+// MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400e1b30 ; merge-bind
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uihomeoptiondialog.h"

@@ -57,6 +57,8 @@
 // MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCCacheData@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCCacheData@@@@@std@@PEAX@2@_K@Z 0x1406db7d0 ; prop
 // MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBIV?$MS2Ptr@VCCacheData@@@@@std@@@std@@SAPEAU?$pair@$$CBIV?$MS2Ptr@VCCacheData@@@@@2@AEAU32@@Z 0x1406dbd30 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCCacheData@@@@AEAAXPEAX@Z 0x1406db0c0 ; merge-bind
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCNpcData@@@@AEAAXPEAX@Z 0x1406db200 ; merge-bind
 // MS2-PIN: ??1NodeCollision@CNpcData@@UEAA@XZ 0x1406d5820
 // MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@I_NU?$less@I@std@@V?$allocator@U?$pair@$$CBI_N@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBI_N@std@@PEAX@2@XZ 0x1406da210 ; manual
 // MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@I_NU?$less@I@std@@V?$allocator@U?$pair@$$CBI_N@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBI_N@std@@PEAX@2@@Z 0x1406daaf0 ; manual

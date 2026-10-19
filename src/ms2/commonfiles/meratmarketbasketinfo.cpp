@@ -8,6 +8,11 @@
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@UPreminmMarketSaleEventContext@@@@AEAAXPEAX@Z 0x1406ae740
 // MS2-PIN: ??8?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEBA_NPEAUPreminmMarketSaleEventContext@@@Z 0x1406a8f50
 // MS2-RANGE: 0x1400bb3f0-0x1400bb6a0 .text$di
+// MS2-PIN: ??1?$CAtlArray@V?$MS2Ptr@UPreminmMarketSaleEventContext@@@@V?$CElementTraits@V?$MS2Ptr@UPreminmMarketSaleEventContext@@@@@ATL@@@ATL@@QEAA@XZ 0x1406a86a0 ; merge-bind
+// MS2-PIN: ??1?$MS2Ptr@VCUGCDesignData@@@@QEAA@XZ 0x1406a8930 ; merge-bind
+// MS2-PIN: ?Reference@?$MS2Ptr@VCUGCDesignData@@@@CAXPEAVCUGCDesignData@@@Z 0x1406ae3e0 ; merge-bind
+// MS2-PIN: ?Release@?$MS2Ptr@VCUGCDesignData@@@@AEAAXXZ 0x1406ae6c0 ; merge-bind
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCUGCDesignData@@@@AEAAXPEAX@Z 0x1406ae920 ; merge-bind
 // cf9: preserve per-TU premium-event pointer copies.
 // MS2-PIN: ??1?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEAA@XZ 0x1406a8810
 // MS2-PIN: ??4?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEAAAEAV0@AEBV0@@Z 0x1406a8bc0

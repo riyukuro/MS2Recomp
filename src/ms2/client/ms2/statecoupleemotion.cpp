@@ -5,6 +5,7 @@
 // MS2-UNIT: client\ms2\statecoupleemotion.cpp
 // MS2-RANGE: 0x1400c90a0-0x1400c9240 .text$di
 // MS2-RANGE: 0x140b7fa70-0x140b866d0 .text$mn
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VStateSyncObjectCoupleEmotion@@@@AEAAXPEAX@Z 0x140b86680 ; merge-bind
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\statecoupleemotion.cpp"
 #include "ms2/placeholder/ms2stdafx.h"

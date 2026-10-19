@@ -35,6 +35,7 @@
 // MS2-PIN: ?SetOptimalLoad@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXMMM_N@Z 0x140c1e2b0 ; unique
 // MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXXZ 0x140c1e360 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_GpButton@@@@AEAAXPEAX@Z 0x140c1e560 ; merge-bind
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uigamepadmenudialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"

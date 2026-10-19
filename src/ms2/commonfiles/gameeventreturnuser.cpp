@@ -2,6 +2,7 @@
 // MentoringContext (the registration of the factory is in gameeventlobbymap.cpp).
 // MS2-UNIT: ?\gameeventreturnuser.cpp
 // MS2-RANGE: 0x14041cb50-0x14041d470 .text$mn
+// MS2-PIN: ?Reference@?$MS2Ptr@VUnk_RuAux@@@@CAXPEAVUnk_RuAux@@@Z 0x14041d1b0 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\gameeventreturnuser.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "gameeventreturnuser.h"

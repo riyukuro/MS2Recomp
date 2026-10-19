@@ -10,6 +10,14 @@
 // MS2-PIN: memmove_s 0x141b1d960 ; unique
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VCTalkScript@@@@QEAAAEAV1@PEAVCTalkScript@@@Z 0x141b22220 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??0?$MS2Ptr@VCCinematicContent@@@@QEAA@AEBV0@@Z 0x141b1d600 ; merge-bind
+// MS2-PIN: ??0?$MS2Ptr@VUITalkCinematic@@@@QEAA@PEAVUITalkCinematic@@@Z 0x141b22100 ; merge-bind
+// MS2-PIN: ??1?$MS2Ptr@VCScriptContent@@@@QEAA@XZ 0x141b22180 ; merge-bind
+// MS2-PIN: ?AddRef@?$MS2Ptr@VUITalkCinematic@@@@AEBAXXZ 0x141b223e0 ; merge-bind
+// MS2-PIN: ?Reference@?$MS2Ptr@VCCinematicContent@@@@CAXPEAVCCinematicContent@@@Z 0x141b22410 ; merge-bind
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCScriptContent@@@@AEBAXPEAX@Z 0x141b22430 ; merge-bind
+// MS2-PIN: ?Release@?$MS2Ptr@VCScriptContent@@@@AEAAXXZ 0x141b22460 ; merge-bind
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCScriptContent@@@@AEAAXPEAX@Z 0x141b224a0 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uitalkcinematic.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uitalkcinematic.h"

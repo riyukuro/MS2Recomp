@@ -10,6 +10,12 @@
 // MS2-PIN: ??_GWeaponType@UIMeratMarketCommon@@UEAAPEAXI@Z 0x140ec3730 ; unique
 // MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VASMeratMarketBuyBillData@@@@V?$CElementTraits@V?$MS2Ptr@VASMeratMarketBuyBillData@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VASMeratMarketBuyBillData@@@@@Z 0x140ec3770 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??1?$CAtlArray@V?$MS2Ptr@VASMeratMarketBuyBillData@@@@V?$CElementTraits@V?$MS2Ptr@VASMeratMarketBuyBillData@@@@@ATL@@@ATL@@QEAA@XZ 0x140ec3460 ; merge-bind
+// MS2-PIN: ??1?$MS2Ptr@VASArray@@@@QEAA@XZ 0x140ec34d0 ; merge-bind
+// MS2-PIN: ??4?$MS2Ptr@VASMeratMarketProductBase@@@@QEAAAEAV0@AEBV0@@Z 0x140ec3520 ; merge-bind
+// MS2-PIN: ?Reference@?$MS2Ptr@VASArray@@@@CAXPEAVASArray@@@Z 0x140ec3f20 ; merge-bind
+// MS2-PIN: ?Release@?$MS2Ptr@VASArray@@@@AEAAXXZ 0x140ec3fe0 ; merge-bind
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VASArray@@@@AEAAXPEAX@Z 0x140ec4070 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimeratmarketcommon.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "asclickoutdata.h"
