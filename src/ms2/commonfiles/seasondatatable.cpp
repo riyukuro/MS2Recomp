@@ -246,8 +246,7 @@ void CSeasonReward::Add(MS2Ptr<CSeasonRewardData> spData)
     int nKey = CalcKey(spData->m_nRewardType, spData->m_nValue);
     if (nKey == 0)
         return;
-    MS2Ptr<CSeasonRewardData> spOld;
-    if (!m_data.Lookup(nKey, spOld))
+    if (!m_data.Lookup(nKey))
         m_data.SetAt(nKey, spData);
 }
 
@@ -351,8 +350,8 @@ void CSeasonDataTable::Tick()
         __int64 nNow = FUN_140869440();
         if (m_nLastUpdate == 0 || nNow - m_nLastUpdate > 59) {
             m_nLastUpdate = nNow;
-            std::map<SeasonRankType, CStringA>::iterator it = m_typeNames.begin();
-            std::map<SeasonRankType, CStringA>::iterator end = m_typeNames.end();
+            std::map<SeasonRankType, CStringA>::_Unchecked_iterator it = m_typeNames._Unchecked_begin();
+            std::map<SeasonRankType, CStringA>::_Unchecked_iterator end = m_typeNames._Unchecked_end();
             while (it != end) {
                 Refresh(it->first, 0);
                 ++it;
@@ -374,8 +373,8 @@ void CSeasonDataTable::Callback2()
 // @0x140791c30
 bool CSeasonDataTable::Load()
 {
-    std::map<SeasonRankType, CStringA>::iterator it = m_typeNames.begin();
-    std::map<SeasonRankType, CStringA>::iterator end = m_typeNames.end();
+    std::map<SeasonRankType, CStringA>::_Unchecked_iterator it = m_typeNames._Unchecked_begin();
+    std::map<SeasonRankType, CStringA>::_Unchecked_iterator end = m_typeNames._Unchecked_end();
     while (it != end) {
         std::pair<const SeasonRankType, CStringA> entry(*it);
         CStringA strFile = FUN_140536a50("SeasonData_{0}.xml", entry.second);
@@ -479,8 +478,8 @@ void CSeasonDataTable::GetRecent(SeasonRankType type, ATL::CAtlArray<MS2Ptr<CSea
 SeasonRankType CSeasonDataTable::GetType(CStringA strName)
 {
     SeasonRankType result = static_cast<SeasonRankType>(9);
-    std::map<SeasonRankType, CStringA>::iterator it = m_typeNames.begin();
-    std::map<SeasonRankType, CStringA>::iterator end = m_typeNames.end();
+    std::map<SeasonRankType, CStringA>::_Unchecked_iterator it = m_typeNames._Unchecked_begin();
+    std::map<SeasonRankType, CStringA>::_Unchecked_iterator end = m_typeNames._Unchecked_end();
     while (it != end) {
         if (it->second.CompareNoCase(strName) == 0) {
             result = it->first;
