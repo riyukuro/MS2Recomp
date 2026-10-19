@@ -179,6 +179,9 @@
 #include "ms2/commonfiles/usermail.h"     // CUserMail (DAT_143ab2ee0), CMailInfo (0x54)
 #undef FUN_1403ed2d0
 #include <egf/EntityIDFactory.h>
+#include <egf/Entity.h>
+// the exe calls the unit_1410dbc10 specialization (0x1410dc360, cache refresh + engine write), not an instantiation
+template <> egf::PropertyResult egf::Entity::SetPropertyValue<int>(egf::PropertyID propID, const int& data);
 // MS2Ptr<CProxyGameObject>::operator-> / get are the exe's out-of-range copies (0x1406c71d0 / 0x1406c71b0); left
 // undefined here so they are not paired with the unit's in-range look-alikes.
 template <> CProxyGameObject* MS2Ptr<CProxyGameObject>::operator->() const;
