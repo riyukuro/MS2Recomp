@@ -268,6 +268,9 @@
 // MS2-PIN: ??__Fs_lock@@YAXXZ 0x142c9a000 ; prop
 // MS2-PIN: ??__Fs_mapSkill@@YAXXZ 0x142c9a040 ; prop
 // MS2-PINS-END tplpin
+// MS2-PIN: ??$?0V?$tuple@AEBU?$pair@IH@std@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBU?$pair@IH@std@@H@std@@QEAA@AEAV?$tuple@AEBU?$pair@IH@std@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x14015e710
+// MS2-PIN: ??$?0V?$tuple@AEBU?$pair@IH@std@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBU?$pair@IH@std@@U?$pair@HH@2@@std@@QEAA@AEAV?$tuple@AEBU?$pair@IH@std@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x14015e760
+// MS2-PIN: ??$move@AEAV?$tuple@AEBU?$pair@IH@std@@@std@@@std@@YA$$QEAV?$tuple@AEBU?$pair@IH@std@@@0@AEAV10@@Z 0x140163100
 // MS2-PIN: ?_Orphan_all@_Container_base0@std@@QEAAXXZ 0x14016c7c0
 // MS2-PIN: ?get@?$MS2Ptr@VCAchieveGradeData@@@@QEBAPEAVCAchieveGradeData@@XZ 0x1401669f0
 // MS2-PIN: ?get@?$MS2Ptr@VCConditionCommonData@@@@QEBAPEAVCConditionCommonData@@XZ 0x140166a00
@@ -1059,6 +1062,7 @@ void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
     }
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x14015d9e0
 MS2Ptr<CAchieveData> GetAchieveData(int nId)
 {
@@ -1075,6 +1079,7 @@ MS2Ptr<CAchieveData> GetAchieveData(int nId)
     }
     return pData;
 }
+#endif
 
 // @0x14015dab0
 MS2Ptr<CAchieveGradeData> CAchieveData::Find(int nId, int nGrade)
