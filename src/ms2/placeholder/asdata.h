@@ -43,6 +43,7 @@ public:
     void FUN_1422b81c0(__int64 n);                                                  // append a 64-bit argument (asitemslot.cpp)
     void FUN_1422b82b0(const char* sz);                                             // append a string argument (asitemslot.cpp)
     double FUN_1422b8ca0();                                                         // next argument as double (UIStatControlDialog)
+    int FUN_1422b9360();                                                            // argument count (uiitemcreatedialog.cpp)
 
 private:
     void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30; void* m_pad_38; void* m_pad_40;

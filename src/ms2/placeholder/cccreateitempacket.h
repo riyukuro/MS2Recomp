@@ -20,6 +20,7 @@ MS2_CHECK_OFFSET(CCCreateItemPacket,optionsA,0x30);
 MS2_CHECK_OFFSET(CCCreateItemPacket,optionsB,0x198);
 class CCCompareItemPacket:public CCCreateItemPacket {
 public:
+    CCCompareItemPacket() : compareValue(100) {}    // 0x1419b9db0 (inline COMDAT, uiitemcreatedialog.cpp)
     void vfunc_0(COutputStream&)override;
     void vfunc_1(void*)override;
     int compareValue;

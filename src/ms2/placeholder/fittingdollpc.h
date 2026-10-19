@@ -118,6 +118,7 @@ public:
     void FUN_141661c70(int n);                              // 0x141661c70 +0x10f4, refreshes the name tag (scenestategame 0xa8 mode 1)
     Unk_PCEquipSet* FUN_1416561a0();                        // 0x1416561a0 &m_kEquipDE0
     int FUN_141654700();                                    // 0x141654700 the job
+    int FUN_141658e60();                                    // 0x141658e60 the gender (uiitemcreatedialog.cpp)
     int FUN_141662eb0(class CItem* pItem);                  // 0x141662eb0 the item may be used (mypc)
     class Unk_PCItemCooldowns* FUN_1416561c0();             // 0x1416561c0
     int FUN_1416595d0();                                    // the cube craft mode (scenestategame 0x1417235a0)

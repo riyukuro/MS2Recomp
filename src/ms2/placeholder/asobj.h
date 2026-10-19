@@ -58,6 +58,10 @@ public:
     void FUN_1412d4900(const char* szName, int n);                       // same, a second instance
     void FUN_1412d49a0(const char* szName, int n);                       // same, a third instance
     void FUN_140ec3230(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uimeratmarketcommon.cpp)
+    void FUN_140f17290(const char* szName, int n);                       // same body, another COMDAT (inline, uiblackmarketpage.cpp: the stat group)
+    void FUN_141253870(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, gameoptioninputdefault.cpp)
+    CStringW FUN_1422bb2b0(const char* szName);                          // a member as text (uiitemcreatedialog.cpp)
+    void FUN_1422bae10(const char* szName, int& n);                      // read an int member (uiitemcreatedialog.cpp)
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
 
@@ -84,6 +88,7 @@ class ASDataProvider : public ASArray
 {
 public:
     ASDataProvider(int nType);
+    ASDataProvider(const ASArray& arr);                                  // 0x140bbf7b0 (copies the array; invenslot slot names)
     virtual ~ASDataProvider();
 };
 MS2_CHECK_SIZE(ASDataProvider, 0x40);
