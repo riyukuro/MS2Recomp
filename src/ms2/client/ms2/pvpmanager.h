@@ -123,6 +123,7 @@ public:
     void SendCancelRequest();                                           // 0x141280d40
     int State() const { return m_nState; }                              // 0x1412818a0
     int Selection() const { return m_nSelection; }                      // 0x1412818d0
+    CPvpRankDuelComponent* GetRankDuel() { return &m_rankDuel; }        // 0x140f97f00 (inline COMDAT, first emitted in uirankpvpdialog.cpp; name invented)
 
 private:
     MS2_LAYOUT_FRIEND;

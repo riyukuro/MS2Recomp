@@ -49,6 +49,8 @@ public:
     void FUN_1422c0420(float x);                                // set x
     void FUN_1422c05a0(float y);                                // set y
     void FUN_1422c0ec0(int nHeight);                            // set the height
+    void FUN_1422c0e20(int nWidth);                             // set the width (uirankpvpdialog.cpp)
+    void FUN_1422c04a0(int y);                                  // set y (int; uirankpvpdialog.cpp)
 };
 
 class ASInteractiveObject : public ASDisplayObject {};

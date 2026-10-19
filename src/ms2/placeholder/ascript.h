@@ -102,6 +102,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, float a2, CStringW a3);            // 0x14100fe60 (inline COMDAT, defined in uiplayinstrumentdialog.cpp; a1/a3 by value)
     template <class T> MS2Ptr<T> FUN_140be2480(const CString&, MS2Ptr<T>&);                            // bind tab bar (UIPlayInstrumentDialog)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, int a3);              // 0x140f24650 (not in the unit that owns it yet; added by uihsldialog.cpp)
+    Scaleform::GFx::Value Invoke(const char* szMethod, bool a1, int a2);                     // 0x14184af30 (inline COMDAT, defined in textureanimationdata.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1);                          // 0x1409b46e0
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2);            // 0x140e78470
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CString a2);             // 0x1412cc450 (inline COMDAT, defined in uiindividualpvpdialog.cpp; both by value)
@@ -117,6 +118,7 @@ public:
     template <class T> MS2Ptr<T> FUN_140accef0(const CString& strName);                      // child control by name (the adventure level lists)
     template <class T> MS2Ptr<T> FUN_140acce30(const CString& strName);                      // same, one COMDAT per wrapper class (w47: pet evolution)
     template <class T> MS2Ptr<T> FUN_140accfb0(const CString& strName);
+    template <class T> MS2Ptr<T> FUN_140c11f50(const CString& strName);                      // child control by name (check box; uirankpvpdialog.cpp)
     template <class T> MS2Ptr<T> FUN_140bfa6a0(const CString& strName);                      // child control by name (alliance quest list)
     template <class T> MS2Ptr<T> FUN_140be23c0(const CString& strName);                      // child control by name (tab bar; uidailymissiondialog.cpp)
     template <class T> MS2Ptr<T> FUN_140bc7280(const CString& strName);                      // child control by name (list; uidailymissiondialog.cpp)
