@@ -61,6 +61,37 @@ public:
     CStringW FUN_1422e0b00();                           // the text
 };
 
+// The exe inlines MS2Ptr<T>'s dtor / conversion / arrow for these two unit-local controls; the generic bodies of
+// ms2ptr_impl.h cannot be included here (they would instantiate every other MS2Ptr<T> of mypc.h), so write these three.
+template <> MS2Ptr<Unk_ObjectCreateList>::~MS2Ptr()
+{
+    if (m_p)
+    {
+        if (CPtred::ReleasePtred(m_p) == 0)
+        {
+            CPtred::AddRefPtred(m_p);
+            CPtred::DeletePtred(m_p);
+        }
+        m_p = 0;
+    }
+}
+template <> MS2Ptr<Unk_ObjectCreateList>::operator Unk_ObjectCreateList*() const { return m_p; }
+template <> Unk_ObjectCreateList* MS2Ptr<Unk_ObjectCreateList>::operator->() const { return m_p; }
+template <> MS2Ptr<Unk_ObjectCreateInput>::~MS2Ptr()
+{
+    if (m_p)
+    {
+        if (CPtred::ReleasePtred(m_p) == 0)
+        {
+            CPtred::AddRefPtred(m_p);
+            CPtred::DeletePtred(m_p);
+        }
+        m_p = 0;
+    }
+}
+template <> MS2Ptr<Unk_ObjectCreateInput>::operator Unk_ObjectCreateInput*() const { return m_p; }
+template <> Unk_ObjectCreateInput* MS2Ptr<Unk_ObjectCreateInput>::operator->() const { return m_p; }
+
 // The key input state (singleton).
 class Unk_14025e7c0 { public: bool FUN_14116d9c0(int nKey, int a, int b); };
 Unk_14025e7c0* FUN_14025e7c0();

@@ -39,7 +39,7 @@ public:
     virtual void vfunc_62();
     virtual void vfunc_63();
     virtual void vfunc_64();
-    virtual int vfunc_65();
+    virtual int vfunc_65() { return 0; }       // slot 65: no exe body (was a bogus symbols.tsv data row)
 
     void FUN_1422e7950();                                       // 0x1422e7950 the presentation ref has changed
 

@@ -186,6 +186,7 @@
 // MS2-PIN: ??$_Assign_range@PEAI@?$vector@IV?$allocator@I@std@@@std@@AEAAXPEAI0Uforward_iterator_tag@1@@Z 0x1402bbdc0
 // MS2-PIN: ??4?$vector@IV?$allocator@I@std@@@std@@QEAAAEAV01@AEBV01@@Z 0x1402be4b0
 #define MS2_THIS_FILE ""
+#define _NO_CRT_STDIO_INLINE 1                  // _vsnprintf lives in unit_1402c3760.cpp (the exe calls it out of line)
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 #include "ms2/ms2layout.h"

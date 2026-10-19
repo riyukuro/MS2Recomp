@@ -156,11 +156,7 @@ int FUN_140764310(const CStringA& strStarts, const CStringA& strEnds, QuestMask*
     return 1;
 }
 
-// @0x140266860
-QuestMask::QuestMask()
-    : m_nEnable(1)
-{
-}
+// QuestMask::QuestMask() (0x140266860) is defined by unit_140266860.cpp.
 
 // @0x1407648d0
 CQuestMaskTable::CQuestMaskTable()

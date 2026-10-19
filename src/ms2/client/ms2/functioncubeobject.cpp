@@ -278,15 +278,15 @@ unsigned char FUN_1402a5b40(const CString& a, const char* b);                // 
 unsigned char FUN_1401647e0(const CString& a, const CString& b);             // CString == CString
 
 // The use-request the cube sends (CString id + count); constructed / destroyed by exe helpers.
-struct Unk_FcUseInfo
+struct Unk_FcCubeUseInfo
 {
     CString m_strId;                                                // +0x00
     int m_nCount;                                                   // +0x08
     int m_nPad0c;
 };
-void FUN_140ac2e80(Unk_FcUseInfo* p);                               // construct
-void FUN_140ac3050(Unk_FcUseInfo* p);                               // destroy
-void FUN_1401fc610(Unk_FcUseInfo* pInfo, COutPacket* pPacket);      // serialize
+void FUN_140ac2e80(Unk_FcCubeUseInfo* p);                               // construct
+void FUN_140ac3050(Unk_FcCubeUseInfo* p);                               // destroy
+void FUN_1401fc610(Unk_FcCubeUseInfo* pInfo, COutPacket* pPacket);      // serialize
 void FUN_140710590(COutPacket& packet);                             // send
 
 struct Unk_FcCellInt { char m_pad[0x58]; };
@@ -627,7 +627,7 @@ void CFunctionCubeObject::vfunc_8(CString str)
 {
     if (FUN_140966fc0() == 3 || FUN_140966fc0() == 9)
     {
-        Unk_FcUseInfo kInfo;
+        Unk_FcCubeUseInfo kInfo;
         FUN_140ac2e80(&kInfo);
         kInfo.m_strId = m_strId;
         kInfo.m_nCount = 1;
@@ -2984,7 +2984,7 @@ void CFunctionCubeService::FUN_141231730()
                     nAreaValue = nEquipField;
             }
             pCube->FUN_141227100(nSound);
-            Unk_FcUseInfo kInfo;
+            Unk_FcCubeUseInfo kInfo;
             FUN_140ac2e80(&kInfo);
             kInfo.m_strId = strKey;
             kInfo.m_nCount = 2;

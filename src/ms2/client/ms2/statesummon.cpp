@@ -36,6 +36,7 @@
 #include "ms2/placeholder/uiobject.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/commonfiles/rideonaction.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -123,13 +124,7 @@ void FUN_141276180(const CStringA& strCommand, const CStringA& strArg);    // 0x
 class Unk_SmBuffMgr { public: Unk_StreamPoint FUN_141683290(); };
 Unk_SmBuffMgr* FUN_14166d240(PCBase* p);                                   // 0x14166d240 &m_unk_6d8
 
-// The ride-on action the summon packet carries.
-class RideOnActionUseItem
-{
-public:
-    virtual void vfunc_0();
-    virtual void vfunc_1(COutPacket& packet);                              // 1 write into the packet
-};
+// The ride-on action the summon packet carries (RideOnActionUseItem: ms2/commonfiles/rideonaction.h).
 RideOnActionUseItem* FUN_141532400(RideOnActionUseItem* p);                // 0x141532400 the reference is set
 RideOnActionUseItem* FUN_141533230(RideOnActionUseItem* p);                // 0x141533230 operator-> (temp)
 
@@ -318,7 +313,7 @@ void StateSummon::vfunc_8(double fTime)
                         *reinterpret_cast<char*>(static_cast<char*>(FUN_14124ab20(FUN_1409a8b10())) + 2);
                     COutPacket packet(0x40, 0);
                     packet.Encode1(0);
-                    FUN_141533230(pAction)->vfunc_1(packet);
+                    FUN_141533230(pAction)->vfunc_1(reinterpret_cast<COutputStream*>(&packet));
                     FUN_140710590(packet);
                 }
             }

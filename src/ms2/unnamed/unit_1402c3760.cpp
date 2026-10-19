@@ -36,7 +36,10 @@ int FUN_1402c3770(char* pBuffer, size_t nBufferCount, const char* pszFormat, _lo
 }
 
 // @0x1402c37e0 - the CRT's _vsnprintf (the wrapper with the NULL locale)
-int __cdecl _vsnprintf(char* pDest, size_t nBufferCount, const char* pszFormat, va_list args)
+// Defined inline (a COMDAT) because other units of the game, which keep the SDK's inline stdio bodies, instantiate their own
+// copy of this symbol; a selectany address table keeps this unit's copy emitted.
+inline int __cdecl _vsnprintf(char* pDest, size_t nBufferCount, const char* pszFormat, va_list args)
 {
     return FUN_1402c3770(pDest, nBufferCount, pszFormat, 0, args);
 }
+__declspec(selectany) extern const void* const ms2_vsnprintfAnchor[] = { (const void*)&_vsnprintf };

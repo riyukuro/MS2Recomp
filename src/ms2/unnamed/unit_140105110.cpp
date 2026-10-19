@@ -230,6 +230,16 @@ static CString s_str_empty2("");
 #include <NiPhysX.h>
 #include <NiTerrainLib.h>
 
+// efdPhysXSDM's constructor (0x142756a00, a Gamebryo PhysX-lib function in the exe's runtime range) is not part of the
+// engine libraries this build links, so it is defined here (EE_IMPLEMENT_SDM_CONSTRUCTOR without the ms_initialized
+// definition, which the exe's Init already owns).
+efdPhysX::efdPhysXSDM::efdPhysXSDM()
+{
+    static efd::SInt32 counter = 0;
+    if (counter++ == 0)
+        efd::StaticDataManager::AddLibrary("efdPhysX", efdPhysXSDM::Init, efdPhysXSDM::Shutdown, NULL, NULL, "");
+}
+
 static efdPhysX::efdPhysXSDM efdPhysXSDMObject;
 static NSFParserLibSDM NSFParserLibSDMObject;
 static NiAnimationSDM NiAnimationSDMObject;

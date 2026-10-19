@@ -138,8 +138,8 @@ template <> CStateManager* MS2Ptr<CStateManager>::get() const;                  
 template <> MS2Ptr<CSkillRecord>::MS2Ptr(const MS2Ptr& o);                               // 0x1409f71b0
 template <> MS2Ptr<CSkillRecord>::~MS2Ptr();                                            // 0x140975740
 
-// @0x1417089e0 (COMDAT first instantiated here)
-template <> bool MS2Ptr<Unk_PCBaseComp_b18>::operator==(Unk_PCBaseComp_b18* p) const
+// @0x1417089e0 (COMDAT first instantiated here; inline so ugcmanager_4.cpp's own COMDAT copy does not collide)
+template <> inline bool MS2Ptr<Unk_PCBaseComp_b18>::operator==(Unk_PCBaseComp_b18* p) const
 {
     return m_p == p;
 }
