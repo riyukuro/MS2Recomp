@@ -118,6 +118,8 @@ public:
     template <class T> MS2Ptr<T> FUN_140acce30(const CString& strName);                      // same, one COMDAT per wrapper class (w47: pet evolution)
     template <class T> MS2Ptr<T> FUN_140accfb0(const CString& strName);
     template <class T> MS2Ptr<T> FUN_140bfa6a0(const CString& strName);                      // child control by name (alliance quest list)
+    template <class T> MS2Ptr<T> FUN_140be23c0(const CString& strName);                      // child control by name (tab bar; uidailymissiondialog.cpp)
+    template <class T> MS2Ptr<T> FUN_140bc7280(const CString& strName);                      // child control by name (list; uidailymissiondialog.cpp)
     AScript(const AScript& o);                                                               // 0x1409bb7b0 (inline COMDAT)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1);                         // 0x140acd130 (inline COMDAT, tabcontentspetevolution.cpp)
     Scaleform::GFx::Value FUN_140acd1f0(const char* szMethod, AScript a1);                   // 0x140acd1f0 (Invoke with the AS object by value: the callee destroys it)
