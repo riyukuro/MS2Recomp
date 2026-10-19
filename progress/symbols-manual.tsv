@@ -3434,3 +3434,11 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?DAT_143afa4d8@@3VNiRTTI@@B	143afa4d8	data
 ?SendRequest4@CManufactureManager@@QEAAH_KHPEAH@Z	140d509b0	func
 ?SendRequest8@CManufactureManager@@QEAA_N_KPEAH@Z	140d510a0	func
+??0Unk_GemNode@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422c6570	func
+??1Unk_GemNode@@QEAA@XZ	1422c65c0	func
+?FUN_14062ad80@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCItem@@@@@Z	14062ad80	func
+?FUN_140bc7450@Unk_GemNode@@QEAA?AV?$MS2Ptr@VUnk_GemText@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140bc7450	func
+?FUN_140d01d30@Unk_GemClip@@QEAA?AV?$MS2Ptr@VUnk_GemText@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140d01d30	func
+?FUN_140d01d80@Unk_GemNode@@QEAA?AV?$MS2Ptr@VUnk_GemClip@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140d01d80	func
+?GetMaidText@CManufactureManager@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HPEAVUnk_MfNpc@@@Z	140d51400	func
+?Invoke@AScript@@QEAA?AVValue@GFx@Scaleform@@PEBDHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@1@Z	140fac340	func

@@ -7,6 +7,7 @@ public:
     CGemStoneItem();
     virtual ~CGemStoneItem();
     void FUN_140c4e720(MS2Ptr<CItem> equipment, MS2Ptr<CItem> gemstone, bool locked = false);
+    bool GetLocked() const { return m_locked; }      // inline COMDAT 0x140cfead0 (gemstoneslot.cpp)
     MS2Ptr<CItem> m_equipment;
     MS2Ptr<CItem> m_gemstone;
     bool m_locked;
