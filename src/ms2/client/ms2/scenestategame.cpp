@@ -5062,6 +5062,8 @@ void CSceneStateGame::FUN_141739880()
 }
 MS2_REPLACE_METHOD(0x141739880, CSceneStateGame, FUN_141739880, 60, 0xCFA8D3E8);
 
+#include "ms2/client/ms2/uiitemcreatedialog.h"
+
 // ---- 0x101: the item option simulator (debug; ?\uiitemcreatedialog.cpp) -----------------------------------------
 // The rolled option block of an item (commonfiles\item.h; that header clashes with this unit's CItemEnchantInfo).
 class CItemOption : public CPtred
@@ -5073,22 +5075,6 @@ private:
     char m_pad[0x2f8 - 0x18];                               // unrecovered members
 };
 MS2_CHECK_SIZE(CItemOption, 0x2f8);
-class ItemOptionDebug : public CPtred { };                  // RTTI ItemOptionDebug (0x50): one simulated item's rolls
-// Collects the server's rolled item options per item id and writes them to "itemOptionRepeat.xml".
-class Unk_ItemOptionSimulator
-{
-public:
-    Unk_ItemOptionSimulator();                              // 0x1419b86c0
-    void FUN_1419b8730();                                   // start ("Item Simulate Start")
-    void FUN_1419b8810();                                   // finish (save the document)
-    void FUN_1419b9030(int nItemId, int nRarity, MS2Ptr<CItemOption> spOption);   // add one rolled option
-
-    CString m_strFile;                                      // +0x00
-    TiXmlDocument m_doc;                                    // +0x08
-    ATL::CRBMap<int, MS2Ptr<ItemOptionDebug> > m_mapItems;  // +0x78
-};
-MS2_CHECK_OFFSET(Unk_ItemOptionSimulator, m_mapItems, 0x78);
-MS2_CHECK_SIZE(Unk_ItemOptionSimulator, 0xa8);
 
 // @0x14173a0f0
 void CSceneStateGame::FUN_14173a0f0(CInPacket& packet)
