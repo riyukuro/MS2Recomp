@@ -116,6 +116,7 @@ StatDefinition::StatDefinition(int nId, CStringA strName, int nValueType, CStrin
 }
 
 // @0x14082e2b0
+// MS2-FUNCTIONAL: temp/EH layout of the option merge differs
 void MergeOptions(StatOptionSet* pDest, MS2Ptr<StatOptionSet> spSource)
 {
     if (!spSource)
@@ -159,6 +160,7 @@ int LoadStatNames(std::map<int, CStringW>& rNames)
 }
 
 // @0x14082e7b0
+// MS2-FUNCTIONAL: local layout/EH states differ
 int LoadStatDefinitions()
 {
     s_definitions.clear();
@@ -204,6 +206,7 @@ int LoadStats()
 }
 
 // @0x14082eb80
+// MS2-FUNCTIONAL: stack layout of the 56000-byte local differs
 int LoadUserStats(unsigned nJob)
 {
     CStringA strFile;
@@ -289,13 +292,17 @@ __int64 GetStatValue(int nJob, unsigned short nLevel, int nStat)
 {
     CheckValid();
     StatLevelMap::CPair* pPair = s_levels.Lookup(nJob);
-    if (pPair == 0 || nLevel >= 200)
-        return 0;
-    return pPair->m_value.m_values[nLevel][nStat];
+    if (pPair)
+    {
+        StatLevelValues* pValues = &pPair->m_value;
+        if (nLevel < 200)
+            return pValues->m_values[nLevel][nStat];
+    }
+    return 0;
 }
 
 // @0x14082f1a0
-bool IsPercentStat(int nStat)
+int IsPercentStat(int nStat)
 {
     switch (nStat)
     {
