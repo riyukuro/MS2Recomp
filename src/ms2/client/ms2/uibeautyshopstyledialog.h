@@ -89,6 +89,13 @@ public:
     void FUN_140cd38d0(int nPalette);
     Unk_BSPartHandle FUN_140cd1a30();           // the part being edited
     void FUN_140cd38f0(MS2Ptr<BeautyShopContext> spContext);
+    MS2Ptr<CItem> FUN_140cd1890();              // the previewed item (uiitemcoloringdialog.cpp)
+    __int64 FUN_140cd1980();                    // the uid of the item being dyed
+    void FUN_140cd2210(__int64 nUid);           // restore the item
+    void FUN_140cd2360(__int64 nUid, MS2Ptr<CItem>& spOut);    // the dyed copy of the item
+    void FUN_140cd2700(__int64 nUid);           // preview the item (0: none)
+    void FUN_140cd27a0();                       // keep the preview
+    void FUN_140cd3820();                       // forget the kept previews
     char m_pad_18[0x70];
 };
 MS2_CHECK_SIZE(Customize, 0x88);
