@@ -57,7 +57,7 @@ public:
     virtual void vfunc_7();                                        // 0x14124bf20
     virtual void vfunc_10();                                       // 0x14124d6a0
     virtual void vfunc_12();                                       // 0x14124d7a0
-    virtual bool vfunc_14();                                       // 0x14124d890
+    virtual int vfunc_14();                                       // 0x14124d890
 
     void FUN_14124ce20();                                           // apply the page to the live graphic options
     void FUN_14124d080();                                           // fill the m_resolution combo

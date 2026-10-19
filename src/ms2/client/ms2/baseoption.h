@@ -28,7 +28,7 @@ public:
     virtual void vfunc_11();
     virtual void vfunc_12();
     virtual void vfunc_13();
-    virtual bool vfunc_14();
+    virtual int vfunc_14();
 
     UIGameOptionDialog* GetOptionDialog();                          // 0x140a02d70 (this unused)
     void FUN_140a02d90(int n);                                      // forwards n to the dialog if it is open

@@ -386,7 +386,7 @@ CString CGameOptionBattle::vfunc_1()
 
 // MS2-FUNCTIONAL: the exe returns the raw memcmp int from a bool-declared slot (no setne)
 // @0x141248240
-bool CGameOptionBattle::vfunc_14()
+int CGameOptionBattle::vfunc_14()
 {
     return memcmp(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_141248630(), 0x14);
 }
@@ -553,7 +553,7 @@ CString CGameOptionCamera::vfunc_1()
 
 // MS2-FUNCTIONAL: the exe returns the raw memcmp int from a bool-declared slot (no setne)
 // @0x141249270
-bool CGameOptionCamera::vfunc_14()
+int CGameOptionCamera::vfunc_14()
 {
     return memcmp(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_140af7de0(), 0x10);
 }
@@ -777,7 +777,7 @@ CString CGameOptionCommunity::vfunc_1()
 }
 
 // @0x14124aa70
-bool CGameOptionCommunity::vfunc_14()
+int CGameOptionCommunity::vfunc_14()
 {
     if (FUN_14125d2d0(&m_stateA, TSingleton<CGameOption>::GetInstance()->FUN_14124ab20()))
         return true;
@@ -1494,7 +1494,7 @@ CString CGameOptionGraphicDefault::vfunc_1()
 }
 
 // @0x14124d890
-bool CGameOptionGraphicDefault::vfunc_14()
+int CGameOptionGraphicDefault::vfunc_14()
 {
     unsigned int nDiff1 = memcmp(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0(), sizeof(Unk_GraphicState));
     unsigned int nDiff2 = memcmp(&m_state2, TSingleton<CGameOption>::GetInstance()->FUN_140c77560(), sizeof(Unk_GraphicState2));

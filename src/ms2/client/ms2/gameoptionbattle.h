@@ -26,7 +26,7 @@ public:
     virtual void vfunc_7();                                         // 0x141247770 read the state back from the UI
     virtual void vfunc_10();                                        // 0x141248140
     virtual void vfunc_12();                                        // 0x141248190
-    virtual bool vfunc_14();                                        // 0x141248240 differs from the saved settings
+    virtual int vfunc_14();                                        // 0x141248240 differs from the saved settings
 
     Unk_BattleState m_state;                                       // +0x30 (ctor 0x14125ca80)
 };

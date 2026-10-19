@@ -33,7 +33,7 @@ public:
     virtual void vfunc_7();                                         // 0x140a57730 read the state back from the UI
     virtual void vfunc_10();                                        // 0x140a57c20
     virtual void vfunc_12();                                        // 0x140a57d00
-    virtual bool vfunc_14();                                        // 0x140a57db0 differs from the saved settings
+    virtual int vfunc_14();                                        // 0x140a57db0 differs from the saved settings
 
     Unk_GpState m_state;                                            // +0x30
 };

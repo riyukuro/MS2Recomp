@@ -29,7 +29,7 @@ public:
     virtual void vfunc_7();                                         // 0x141249e50 read the state back from the UI
     virtual void vfunc_10();                                        // 0x14124a8d0
     virtual void vfunc_12();                                        // 0x14124a990
-    virtual bool vfunc_14();                                        // 0x14124aa70 differs from the saved settings
+    virtual int vfunc_14();                                        // 0x14124aa70 differs from the saved settings
 
     Unk_CommunityStateA m_stateA;                                  // +0x30 (ctor 0x14125d130)
     Unk_CommunityStateB m_stateB;                                  // +0x33 (ctor 0x14125d330)

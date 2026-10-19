@@ -39,7 +39,7 @@ public:
     virtual void vfunc_10();                                        // 0x1412569a0
     virtual void vfunc_11();                                        // 0x141256b50
     virtual void vfunc_12();                                        // 0x141256bb0
-    virtual bool vfunc_14();                                        // 0x141256ca0 differs from the saved settings
+    virtual int vfunc_14();                                        // 0x141256ca0 differs from the saved settings
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // 0x141255b50 (vfunc_o30_0)
 
     Unk_InterfaceState m_state;                                    // +0x38 (ctor 0x14125b770)

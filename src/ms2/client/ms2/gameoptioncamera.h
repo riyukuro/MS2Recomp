@@ -27,7 +27,7 @@ public:
     virtual void vfunc_7();                                         // 0x141248c40 read the state back from the UI
     virtual void vfunc_10();                                        // 0x141248f10
     virtual void vfunc_12();                                        // 0x1412491c0
-    virtual bool vfunc_14();                                        // 0x141249270 differs from the saved settings
+    virtual int vfunc_14();                                        // 0x141249270 differs from the saved settings
 
     Unk_CameraState m_state;                                       // +0x30 (ctor 0x14125b400)
 };

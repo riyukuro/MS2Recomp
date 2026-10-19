@@ -254,7 +254,7 @@ MS2_REPLACE_METHOD(0x140A57D60, CGameOptionGamePad, vfunc_1, 61, 0xECB38628);
 
 // MS2-FUNCTIONAL: the exe returns the raw memcmp int from a bool-declared slot (no setne)
 // @0x140a57db0
-bool CGameOptionGamePad::vfunc_14()
+int CGameOptionGamePad::vfunc_14()
 {
     return memcmp(&m_state, FUN_140a58500(FUN_1409a8b10()), 0x10);
 }

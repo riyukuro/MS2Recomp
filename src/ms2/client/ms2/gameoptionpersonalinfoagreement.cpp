@@ -205,7 +205,7 @@ CString CGameOptionPersonalInfoAgreement::vfunc_1()   // @0x140a46340
 }
 
 // MS2-FUNCTIONAL: bool compare temp placement
-bool CGameOptionPersonalInfoAgreement::vfunc_14()   // @0x140a46390
+int CGameOptionPersonalInfoAgreement::vfunc_14()   // @0x140a46390
 {
     int c = m_state.m_bAgree;
     return c != *FUN_140a46860(FUN_1409a8b10()) ? true : false;

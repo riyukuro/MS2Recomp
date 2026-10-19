@@ -32,7 +32,7 @@ public:
     virtual void vfunc_7();                                        // 0x141257a90
     virtual void vfunc_10();                                       // 0x1412585a0
     virtual void vfunc_12();                                       // 0x141258650
-    virtual bool vfunc_14();                                       // 0x141258730
+    virtual int vfunc_14();                                       // 0x141258730
 
     Unk_SoundState m_state;                                         // +0x30 (ctor 0x14125f710)
     Unk_SoundFlag m_flag;                                           // +0x64 (ctor 0x141260380)

@@ -77,7 +77,7 @@ public:
     virtual MS2Ptr<Unk_PCBaseComp_a98> vfunc_84() override; // 0x1410902f0
     virtual MS2Ptr<Unk_PCBaseComp_aa8> vfunc_85() override; // 0x1410904c0
     virtual void vfunc_90(void* p) override;                // 0x1410909a0
-    virtual void vfunc_98(float f) override;                // 0x141090950
+    virtual float vfunc_98(float f) override;               // 0x141090950
     virtual void vfunc_111(void* p, int a, int b, void* q) override;   // 0x141090620
     virtual void vfunc_112(void* p, int n) override;        // 0x141090740
     virtual void vfunc_113(void* p) override;               // 0x141090820

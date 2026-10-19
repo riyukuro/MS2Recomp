@@ -25,7 +25,7 @@ public:
     virtual void vfunc_7();                                      // 0x140a46040
     virtual void vfunc_10();                                     // 0x140a461f0
     virtual void vfunc_12();                                     // 0x140a462f0
-    virtual bool vfunc_14();                                      // 0x140a46390
+    virtual int vfunc_14();                                      // 0x140a46390
 
     Unk_PiAgreeState m_state;                                    // +0x30
 };

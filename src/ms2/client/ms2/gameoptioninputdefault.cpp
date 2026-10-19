@@ -391,7 +391,7 @@ MS2_REPLACE_METHOD(0x141251A30, CGameOptionInputDefault, vfunc_5, 825, 0xD9D6C1D
 
 // MS2-FUNCTIONAL: the exe returns an int (xor eax,eax); the CBaseOption slot is declared bool (xor al,al)
 // @0x141251d90
-bool CGameOptionInputDefault::vfunc_14()
+int CGameOptionInputDefault::vfunc_14()
 {
     return m_bChanged != 0;
 }

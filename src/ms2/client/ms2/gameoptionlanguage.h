@@ -29,7 +29,7 @@ public:
     virtual void vfunc_7();                                         // 0x140cfb9e0 read the state back from the UI
     virtual void vfunc_10();                                        // 0x140cfcb20
     virtual void vfunc_12();                                        // 0x140cfce00
-    virtual bool vfunc_14();                                        // 0x140cfceb0 differs from the saved settings
+    virtual int vfunc_14();                                        // 0x140cfceb0 differs from the saved settings
 
     int FUN_140cfbcd0(int nVoice);                                  // are the sound banks of the voice installed
     void FUN_140cfbf50();                                           // fill the three drop downs

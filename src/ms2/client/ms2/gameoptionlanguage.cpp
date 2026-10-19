@@ -453,7 +453,7 @@ CString CGameOptionLanguage::vfunc_1()
 
 // MS2-FUNCTIONAL: result materialised with a different branch layout
 // @0x140cfceb0
-bool CGameOptionLanguage::vfunc_14()
+int CGameOptionLanguage::vfunc_14()
 {
     if (m_state.m_nLanguage == FUN_1409a8b10()->FUN_140cfd280()->m_nLanguage)
     {

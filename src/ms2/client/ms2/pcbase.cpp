@@ -302,7 +302,7 @@ class Unk_PCBaseFormula
 public:
     float FUN_140674100(__int64 nStat, int nBonus);                // move speed
     float FUN_140674290(__int64 nStat);                             // move speed of a 0x6200045 actor
-    void FUN_140674420(__int64 nStat, float f);
+    float FUN_140674420(__int64 nStat, float f);                    // CLua::FUN_140674420 (luautil.h)
 };
 Unk_PCBaseFormula* FUN_1401c0db0();
 
@@ -2395,9 +2395,9 @@ float PCBase::vfunc_96()
 MS2_REPLACE_METHOD(0x141671680, PCBase, vfunc_96, 142, 0x5A4E0AB6);
 
 // @0x1416718d0
-void PCBase::vfunc_98(float f)
+float PCBase::vfunc_98(float f)
 {
-    FUN_1401c0db0()->FUN_140674420(FUN_141670a00(0xd), f);
+    return FUN_1401c0db0()->FUN_140674420(FUN_141670a00(0xd), f);
 }
 MS2_REPLACE_METHOD(0x1416718d0, PCBase, vfunc_98, 67, 0x9F70B920);
 

@@ -102,7 +102,8 @@ MS2_CHECK_OFFSET(CArcMotionController, m_dDuration, 0x80);
 MS2_CHECK_OFFSET(CArcMotionController, m_kCtrlPos, 0x90);
 MS2_CHECK_OFFSET(CArcMotionController, m_fSpeedLimit, 0xa4);
 
-// Linear / Blink / Move (0x58 bytes, no new members). The ctors are in client\ms2\stateskill.
+// Linear / Blink are 0x60 bytes (StateSkill::vfunc_4 new(0x60), ??_G delete 0x60; +0x58 is never touched by the
+// recovered code), Move is 0x58 (no new members). The ctors are in client\ms2\stateskill.
 class CLinearMotionController : public CMotionController
 {
 public:
@@ -115,8 +116,9 @@ public:
     virtual Unk_StreamPoint vfunc_3();                          // 0x141488e30
     virtual int vfunc_4();                                      // 0x141488e60
     virtual bool vfunc_5(double fTime);                         // 0x141488e80
+    char m_pad58[8];                                            // +0x58
 };
-MS2_CHECK_SIZE(CLinearMotionController, 0x58);
+MS2_CHECK_SIZE(CLinearMotionController, 0x60);
 
 class CBlinkMotionController : public CMotionController
 {
@@ -130,8 +132,9 @@ public:
     virtual Unk_StreamPoint vfunc_3();                          // 0x141489140
     virtual int vfunc_4();                                      // 0x141489170
     virtual bool vfunc_5(double fTime);                         // 0x141489190
+    char m_pad58[8];                                            // +0x58
 };
-MS2_CHECK_SIZE(CBlinkMotionController, 0x58);
+MS2_CHECK_SIZE(CBlinkMotionController, 0x60);
 
 class CMoveMotionController : public CMotionController
 {

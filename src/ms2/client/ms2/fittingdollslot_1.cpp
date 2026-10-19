@@ -498,9 +498,9 @@ int FittingDollPC::FUN_14121c910(CItem* pItem)
             return 3;
         return 4;
     }
-    if (::FUN_1405267d0(pItem, FUN_141658e60(this)) == 0)
+    if (::FUN_1405267d0(pItem, ::FUN_141658e60(this)) == 0)
     {
-        if (FUN_141658e60(this) == 0)
+        if (::FUN_141658e60(this) == 0)
             return 7;
         return 8;
     }

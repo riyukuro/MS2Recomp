@@ -41,7 +41,7 @@ public:
     virtual void vfunc_10();                                       // 0x141251df0
     virtual void vfunc_12();                                       // 0x141251e90
     virtual void vfunc_13();                                       // 0x141251490
-    virtual bool vfunc_14();                                       // 0x141251d90
+    virtual int vfunc_14();                                       // 0x141251d90
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // 0x141252f20 (vfunc_o30_0)
 
     void FUN_141250cc0(int nCategory);                              // fill the key list of a tab

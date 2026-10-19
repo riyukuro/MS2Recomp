@@ -30,7 +30,7 @@ public:
     virtual void vfunc_7();                                        // 0x141259c40
     virtual void vfunc_10();                                       // 0x14125ae50
     virtual void vfunc_12();                                       // 0x14125afe0
-    virtual bool vfunc_14();                                       // 0x14125b0b0
+    virtual int vfunc_14();                                       // 0x14125b0b0
 
     Unk_StatusState m_state;                                        // +0x30 (ctor 0x14125bda0)
     Unk_StatusFlag m_flag;                                          // +0x4c (ctor 0x14125c880)

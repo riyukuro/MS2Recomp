@@ -215,7 +215,7 @@ public:
     virtual float vfunc_95();                               // 95  0x141671620
     virtual float vfunc_96();                               // 96  0x141671680 move speed
     virtual float vfunc_97();                               // 97  0x141671720
-    virtual void vfunc_98(float f);                         // 98  0x1416718d0
+    virtual float vfunc_98(float f);                        // 98  0x1416718d0
     virtual int vfunc_99(int n);                            // 99  0x141671b70
     // 100-102 take the skill record smart pointer BY VALUE (the callee destroys it: MS2Ptr<CSkillRecord> dtor
     // 0x140975740 on the homed rdx in 0x141672910 / 0x141672de0 / 0x141673890; callers copy it with 0x1409f71b0 first,
