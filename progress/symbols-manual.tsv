@@ -3222,3 +3222,9 @@ __imp_AddSurveyParameterA	142cd1480	data
 ?DAT_142dfc138@@3DA	142dfc138	data
 ?Invoke@AScript@@QEAA?AVValue@GFx@Scaleform@@PEBDHHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	140ed0ed0	func
 ??0MS2SvrNewTag@@QEAA@H@Z	1401b7b90	func
+??$GetChild@VUnk_VgList@@@UISwfEntity@@QEAA?AV?$MS2Ptr@VUnk_VgList@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140ba4b70	func
+??1TMarketBillDataParam@@UEAA@XZ	140bbfea0	func
+?GetFirstEffect@CVIPTable@@QEAA?AUUnk_VipEffectRef@@XZ	1408f70b0	func
+?GetGoods@CVIPTable@@QEAA?AV?$MS2Ptr@VCVIPGoods@@@@I@Z	1408f6c90	func
+?GetPriceText@CVIPGoods@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	1408f5240	func
+?GetSalesPeriodText@CVIPGoods@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	1408f53c0	func
