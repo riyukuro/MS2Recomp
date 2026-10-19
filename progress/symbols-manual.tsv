@@ -3336,3 +3336,5 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??0Unk_ClTimer@@QEAA@XZ	140517b00	func
 ??R?$less@_J@std@@QEBA_NAEB_J0@Z	1406f0a80	func
 ?DAT_143ab1a40@@3V?$vector@USpecialAbilityInfo@@V?$allocator@USpecialAbilityInfo@@@std@@@std@@A	143ab1a40	data
+?g_mapSAAbilityList@@3V?$CAtlMap@W4eSpecialAbility@@V?$Unk_BmBoxPtr@V?$CAtlList@W4eSpecialAbility@@V?$CElementTraits@W4eSpecialAbility@@@ATL@@@ATL@@@@V?$CElementTraits@W4eSpecialAbility@@@ATL@@V?$CElementTraits@V?$Unk_BmBoxPtr@V?$CAtlList@W4eSpecialAbility@@V?$CElementTraits@W4eSpecialAbility@@@ATL@@@ATL@@@@@4@@ATL@@A	143ab1a60	data
+?g_mapSANameToType@@3V?$map@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@W4SAType@@UUnk_SANameLess@@V?$allocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@W4SAType@@@std@@@std@@@std@@A	143ab1af8	data
