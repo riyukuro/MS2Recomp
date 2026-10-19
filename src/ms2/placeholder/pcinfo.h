@@ -37,7 +37,7 @@ public:
     void FUN_140dba990(ATL::CAtlArray<MS2Ptr<CItem> >& aItems);  // appends every item of m_mapEquip0
     int FUN_140dbaa10();                                    // FUN_140526bd0 of the item in slot 5
 
-    short m_18;                                             // +0x18 (1)
+    unsigned short m_18;                                    // +0x18 (1) level (UIPCInfoDialog::vfunc_95 zero-extends it)
     int m_1c;                                               // +0x1c (1)
     int m_20;                                               // +0x20 (10)
     __int64 m_28;                                           // +0x28
