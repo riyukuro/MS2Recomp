@@ -124,6 +124,8 @@ public:
     template <class T> MS2Ptr<T> FUN_140bc7280(const CString& strName);                      // child control by name (list; uidailymissiondialog.cpp)
     AScript(const AScript& o);                                                               // 0x1409bb7b0 (inline COMDAT)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1);                         // 0x140acd130 (inline COMDAT, tabcontentspetevolution.cpp)
+    // 0x141917bf0 (inline COMDAT, defined in uidamagetext.cpp; all by value: the callee destroys them)
+    Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, CString a2, CString a3, CString a4);
     Scaleform::GFx::Value FUN_140acd1f0(const char* szMethod, AScript a1);                   // 0x140acd1f0 (Invoke with the AS object by value: the callee destroys it)
     Scaleform::GFx::Value FUN_1422bb8f0(const char* szMethod, ASArgList& args);              // the Invoke back end
     Scaleform::GFx::Value Invoke(const char* szMethod, __int64 a1, CStringW a2, int a3, CStringW a4);   // 0x141b4da00 (inline COMDAT, defined in uiupperhpbar.cpp)
