@@ -118,6 +118,7 @@ public:
 
     private:
         template <class C, class M> static R Call(std::pair<C*, M>& p, A1 a1) { return (p.first->*p.second)(a1); }
+        static R Call(R (*&pfn)(A1), A1 a1) { return pfn(a1); }   // a free function (ugcmanager_5.cpp)
 
         F m_f;
     };
