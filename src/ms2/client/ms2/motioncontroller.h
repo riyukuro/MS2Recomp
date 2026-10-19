@@ -109,7 +109,7 @@ public:
     static const NiRTTI ms_RTTI;                                // 0x143adffb8
 
     CLinearMotionController();                                  // 0x1417f58e0
-    virtual ~CLinearMotionController();                         // 0x1417f5b00
+    // ~CLinearMotionController() is implicit (0x1417f5b00 in stateskill.obj: no vptr store).
     virtual const NiRTTI* vfunc_1();                            // 0x1417f5ee0
     virtual int vfunc_2(Unk_MotionData* pData, PCBase* pTarget);    // 0x141488df0
     virtual Unk_StreamPoint vfunc_3();                          // 0x141488e30
@@ -124,7 +124,7 @@ public:
     static const NiRTTI ms_RTTI;                                // 0x143adffd8
 
     CBlinkMotionController();
-    virtual ~CBlinkMotionController();
+    // ~CBlinkMotionController() is implicit (0x1417f5a90 in stateskill.obj: no vptr store).
     virtual const NiRTTI* vfunc_1();                            // 0x1417f5ed0
     virtual int vfunc_2(Unk_MotionData* pData, PCBase* pTarget);    // 0x141489100
     virtual Unk_StreamPoint vfunc_3();                          // 0x141489140
@@ -139,7 +139,7 @@ public:
     static const NiRTTI ms_RTTI;                                // 0x143adffe8
 
     CMoveMotionController();                                    // 0x1417f5910
-    virtual ~CMoveMotionController();                           // 0x1417f5b20
+    // ~CMoveMotionController() is implicit (0x1417f5b20 in stateskill.obj: no vptr store).
     virtual const NiRTTI* vfunc_1();                            // 0x1417f5ef0
     virtual int vfunc_2(Unk_MotionData* pData, PCBase* pTarget);    // 0x1414891c0
     virtual Unk_StreamPoint vfunc_3();                          // 0x141489200

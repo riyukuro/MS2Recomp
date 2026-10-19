@@ -15,6 +15,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/state.h"
 #include "ms2/placeholder/icastingeventlistener.h"
+#include "ms2/placeholder/socketptr.h"
 
 class PCBase;
 class GameObject;
@@ -25,6 +26,7 @@ class CBaseCollision;
 class CMotionController;
 class NiControllerSequence;
 class Unk_EffectTarget;
+class CArrowFillTargetContext;
 struct Unk_MagicTagPtr;
 
 // The hit pause / camera vibration of the running attack (StateSkill +0xb8).
@@ -52,7 +54,7 @@ class CFillTargetContext : public CPtred
 {
 public:
     CFillTargetContext();
-    virtual ~CFillTargetContext();
+    // ~CFillTargetContext() is implicit (0x1417f5ab0: no vptr store).
 
     PCBase* m_pOwner;                                                   // +0x18 the caster
     efd::Point3 m_ptOwner;                                              // +0x20 the caster's position
@@ -61,7 +63,7 @@ public:
     int m_n60;                                                          // +0x60 use the second query kind
     int m_nMotion;                                                      // +0x64
     int m_nAttack;                                                      // +0x68
-    int m_n6c;                                                          // +0x6c
+    int m_n6c;                                                          // +0x6c passed to the shape lookup (0x141754580)
     MS2Ptr<CBaseCollision> m_spCollision;                               // +0x70 the pick shape
     unsigned m_nKindFlags;                                              // +0x80 or'ed into the query kind
     int m_n84;                                                          // +0x84 test every anchor box
@@ -129,12 +131,16 @@ public:
     void FUN_1417f2150();
     void FUN_1417f27d0();
     void FUN_1417f2a90(bool bFinish);
-    float FUN_1417e9380();
-    void FUN_1417e9330();
+    float FUN_1417e9380();                                              // the sequence frequency
+    static int FUN_1417e93a0(PCBase* pOwner, MS2Ptr<SkillLevelData> spLevel, int n60, int nAttack);
+                                                                        // pick per motion until one finds targets
+    static int FUN_1417e95a0(Unk_SocketPtr<CFillTargetContext> spCtx);  // run an area pick (callee releases)
+    static int FUN_1417e9d20(Unk_SocketPtr<CArrowFillTargetContext> spCtx);  // run an arrow pick (callee releases)
+    unsigned FUN_1417e9330();                                           // the running skill id (0: none)
     float FUN_1417f4ea0(PCBase* pOwner, efd::Point3 kRot);
     void FUN_1417f4e10();
-    int FUN_1417f4d20();
-    int FUN_1417f4dc0();
+    void FUN_1417f4d20();                                               // start the super armor effect
+    void FUN_1417f4dc0();                                               // stop it
     bool FUN_1417f5060();                                               // the combo input may chain
     static void FUN_1417f2b50(MS2Ptr<CSkillRecord> spRecord);           // fire the due magic models of a cast
     static bool FUN_1417f4bc0(Unk_EffectTarget& kTarget);               // the effect is hidden by the options
