@@ -62,5 +62,6 @@ public:
     // Registers the selection-change callback; pUser comes back in Params::pUserData.
     void FUN_1422df9a0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);
     void FUN_1422dfce0(const CStringW& strLabel);                       // append an entry
+    void FUN_1422dfc10();                                               // remove every entry
 };
 MS2_CHECK_SIZE(ASDropdownMenu, 0x88);

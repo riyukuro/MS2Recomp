@@ -15,6 +15,8 @@
 #include "ms2/placeholder/mctimer.h"
 #include "ms2/placeholder/asbilldata.h"
 #include "ms2/client/ms2/tmarketbilldataparam.h"
+#include "ms2/placeholder/uistatuseventlistener.h"
+#include "ms2/commonfiles/usermail.h"
 
 class ASTextField;
 class CMsgBoxData;
@@ -23,6 +25,8 @@ class Unk_MlButton;
 class Unk_MlCheckBox;
 class Unk_MlList;
 class Unk_MlTab;
+class Unk_MsInput;
+class Unk_MsCombo;
 template <class T> class Unk_MailPtr;
 
 // One ad of an ad mail as a bill row (RTTI .?AVASMailAdBillData@@, 0x58 bytes; ctor 0x1419ea130, dtor 0x1419ea3c0).
@@ -117,3 +121,44 @@ MS2_CHECK_OFFSET(UIMailListDialog, m_nPage, 0x178);
 MS2_CHECK_OFFSET(UIMailListDialog, m_mapChecked, 0x180);
 MS2_CHECK_OFFSET(UIMailListDialog, m_bRefresh, 0x1c8);
 MS2_CHECK_OFFSET(UIMailListDialog, m_timer, 0x1cc);
+
+// The mail compose dialog (RTTI .?AVUIMailSendDialog@@, bases UIDialog and UIStatusEventListener at +0x178; 0x190 bytes).
+// Ctor 0x1419ec180, dtor 0x1419ec230 (deleting dtor 0x1419eded0), vftables 0x142fbf2e8 / 0x142fbf590 (IMessageListener) /
+// 0x142fbf5a0 (UIStatusEventListener, no overrides), UI type 0x4e4a. m_spReply is the mail being answered.
+class UIMailSendDialog : public UIDialog, public UIStatusEventListener
+{
+public:
+    UIMailSendDialog();                                             // 0x1419ec180
+    virtual ~UIMailSendDialog();                                    //  0 0x1419ec230 (??_G 0x1419eded0)
+    virtual CString vfunc_1();                                      //  1 0x1419ec2b0 "MailSendDialog"
+    virtual int vfunc_13();                                         // 13 0x1419ec440 enter / tab keys
+    virtual void vfunc_15();                                        // 15 0x1419ecb70 empty
+    virtual void OnLoadComplete();                                  // 22 0x1419ec570
+    virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1419ec700
+    virtual void vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs);   // 45 0x1419ec7a0 empty
+    virtual int vfunc_48() { return 0x4e4a; }                       // 48 0x1419ee090 UI type id
+    virtual int vfunc_65();                                         // 65 0x1419ec300 open (or raise)
+    virtual void vfunc_67();                                        // 67 0x1419ec3d0 close
+    virtual int vfunc_74(int nMsg, void* p2, void* p3);             // 74 0x1419ec7c0 receiver name candidates while typing
+    virtual void vfunc_79(void* p);                                 // 79 0x1419ec5c0 packet 0x54 (send result)
+
+    void FUN_1419ecb80();                                           // close (vfunc_67)
+    void FUN_1419ecbb0(CMailInfo* pReplyTo);                        // answer this mail
+    void FUN_1419ecbf0();                                           // "setData": the reply prefill
+    void FUN_1419ed010();                                           // fill "m_buddys" with the buddy names
+    void FUN_1419ed1c0();                                           // "OnSend": check and send (packet 0x2d / 1)
+    void FUN_1419ed410(CStringW& strReceiver);                      // the receiver text
+    void FUN_1419ed4e0(CStringW& strTitle);                         // the title text (reserved words filtered)
+    void FUN_1419ed6b0(CStringW& strContent);                       // the content text (reserved words filtered)
+    void FUN_1419ed7f0(ATL::CAtlMap<unsigned __int64, CStringW>& names);   // buddies and guild members by character id
+
+    // child lookups (UIDialog COMDATs shared by many dialogs)
+    MS2Ptr<Unk_MsInput> FUN_140e35bd0(const CString& strName);      // 0x140e35bd0 text input
+    MS2Ptr<Unk_MsCombo> FUN_140c28560(const CString& strName);      // 0x140c28560 dropdown
+
+private:
+    MS2_LAYOUT_FRIEND;
+    CUserMail::MailPtr m_spReply;                                   // +0x180
+};
+MS2_CHECK_SIZE(UIMailSendDialog, 0x190);
+MS2_CHECK_OFFSET(UIMailSendDialog, m_spReply, 0x180);

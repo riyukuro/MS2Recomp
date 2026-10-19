@@ -22,6 +22,10 @@ public:
     ~Unk_MailPtr() { Release(); }
     Unk_MailPtr& operator=(const Unk_MailPtr& o) { o.AddRef(); Release(); p = o.p; return *this; }
     Unk_MailPtr& operator=(int) { Release(); return *this; }
+    // Assignment from a raw pointer (`Unk_MailPtr tmp(value); swap`), named so that `p = q` / `p = 0` keep their overloads
+    // (the exe operator= COMDAT 0x1419ede60 is in uimaillistdialog.cpp).
+    // @0x1419ede60
+    Unk_MailPtr& AssignRaw(T* value) { Unk_MailPtr temp(value); T* old = p; p = temp.p; temp.p = old; return *this; }
     bool operator==(T* value) const { return p == value; }
     T* get() const { return p; }
     T* operator->() const { return p; }
