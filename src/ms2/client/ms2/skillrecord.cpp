@@ -138,9 +138,9 @@ const CString& SkillTargetRecord::FUN_1417590d0()
     SkillAttackData* pAttack = FUN_141759050();
     if (pAttack == 0)
         return s_strEmpty;
-    if (pAttack->FUN_1407e1a10() != 1)
+    if (pAttack->GetAttackMethodType() != 1)
         return s_strEmpty;
-    return pAttack->FUN_1407e1a30();
+    return pAttack->GetArrowEffect();
 }
 
 // @0x141758fb0
@@ -531,7 +531,7 @@ int CDamageRecord::FUN_14175a920()
     SkillAttackData* pAttack = FUN_14175a8b0();
     if (pAttack == 0)
         return 0;
-    return pAttack->m_sensor.m_nType;
+    return pAttack->m_damage.m_nNameIndex;
 }
 
 // @0x14175a960
@@ -541,7 +541,7 @@ CString CDamageRecord::FUN_14175a960()
     SkillAttackData* pAttack = FUN_14175a8b0();
     if (pAttack == 0)
         return s_strEmpty;
-    return pAttack->m_sensor.m_str;
+    return pAttack->m_damage.m_strEffectHit;
 }
 
 // @0x14175aa50
@@ -551,7 +551,7 @@ CString CDamageRecord::FUN_14175aa50()
     SkillAttackData* pAttack = FUN_14175a8b0();
     if (pAttack == 0)
         return s_strEmpty;
-    return pAttack->m_sensor.m_strEffectRemain;
+    return pAttack->m_damage.m_strEffectRemain;
 }
 
 // @0x14175ab40
@@ -560,7 +560,7 @@ bool CDamageRecord::FUN_14175ab40()
     SkillAttackData* pAttack = FUN_14175a8b0();
     if (pAttack == 0)
         return false;
-    return pAttack->m_sensor.m_bIgnoreOptimalHideDamageHitEffect;
+    return pAttack->m_damage.m_bIgnoreOptimalHideDamageHitEffect;
 }
 
 // @0x14175ab80
@@ -569,7 +569,7 @@ bool CDamageRecord::FUN_14175ab80()
     SkillAttackData* pAttack = FUN_14175a8b0();
     if (pAttack == 0)
         return false;
-    return pAttack->m_sensor.m_bIgnoreOptimalHideDamageRemainEffect;
+    return pAttack->m_damage.m_bIgnoreOptimalHideDamageRemainEffect;
 }
 
 // @0x14175abc0
@@ -605,7 +605,7 @@ int CDamageRecord::FUN_14175ad50()
     Unk_SrEntity* pOwner = FUN_1403ed2d0()->FUN_141bd1200(m_nOwnerId);
     if (pOwner == 0)
         return nMaterial;
-    nMaterial = FUN_14175a8b0()->m_sensor.m_nAttackMaterial;
+    nMaterial = FUN_14175a8b0()->m_damage.m_nAttackMaterial;
     void* pNpc = FUN_14096e110(pOwner);
     if (pNpc != 0) {
         return nMaterial;

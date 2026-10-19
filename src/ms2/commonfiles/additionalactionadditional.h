@@ -174,6 +174,7 @@ public:
     ~Unk_RangeProperty() {}                                             // 0x140184170 (no move: copy operator= 0x1401944c0)
     bool FUN_140800920(const Unk_RangeProperty& o);                     // is different
     int FUN_140800b50(Unk_140165cf0* pElem, CString strName);           // reads the named child element
+    void FUN_140800de0(void* pParent, CString strName);                 // writes the named child element
 
     // Thirteen scalars, not an array: SpreadProperty::Clear 0x140192e20 has no /GS cookie for the 0x78 temporary and
     // operator= 0x1401944c0 copies them one by one.

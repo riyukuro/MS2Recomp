@@ -1306,17 +1306,17 @@ void SkillDataTable::IndexSensors(MS2Ptr<SkillData> spSkill)
     std::vector<MS2Ptr<SkillAttackData> > vAttacks = spSkill->GetAttacks();
     for (MS2Ptr<SkillAttackData> spAttack : vAttacks)
     {
-        CString strName = spAttack->m_sensor.m_str;
+        CString strName = spAttack->m_damage.m_strEffectHit;
         if (strName.IsEmpty())
             continue;
         std::map<CString, int>::iterator it = m_sensorIndex.find(strName);
         if (it != m_sensorIndex.end())
         {
-            spAttack->m_sensor.m_nType = it->second;
+            spAttack->m_damage.m_nNameIndex = it->second;
         }
         else
         {
-            spAttack->m_sensor.m_nType = m_nSensorCount;
+            spAttack->m_damage.m_nNameIndex = m_nSensorCount;
             m_sensorIndex.insert(std::make_pair(strName, m_nSensorCount));
             m_nSensorCount++;
         }

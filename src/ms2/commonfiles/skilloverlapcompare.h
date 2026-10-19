@@ -18,6 +18,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cxmldata.h"
 #include "ms2/placeholder/xmlattr.h"
+#include "ms2/commonfiles/skillattackdata.h"
 #include "ms2/commonfiles/additionalactionadditional.h"   // Unk_RangeShape, the attribute enums, Unk_CompareStat
 
 class SkillData;
@@ -184,37 +185,6 @@ struct Unk_SkillSensor : public Unk_RangeShape
     int m_n40, m_n44, m_n48, m_n4c, m_n50, m_n54, m_n58;    // +0x40
 };
 MS2_CHECK_SIZE(Unk_SkillSensor, 0x60);
-
-// The tail of the <damage> block of an attack (the block starts at +0x168 of SkillAttackData; v2525 SkillAttackData::Damage
-// +0x18..+0x38). SkillDataTable 0x1407ee9f0 numbers the attacks by the string at +0x08 into m_nType.
-struct Unk_SkillAttackName
-{
-    int m_nType;                                            // +0x00 the index of m_str (v2525 m_nameIndex)
-    CString m_str;                                          // +0x08 the hit effect (v2525 m_effectHit)
-    CString m_strEffectRemain;                              // +0x10
-    int m_nIsConstDamageValue;                              // +0x18
-    bool m_bIgnoreOptimalHideDamageHitEffect;               // +0x1c
-    bool m_bIgnoreOptimalHideDamageRemainEffect;            // +0x1d
-    int m_nAttackMaterial;                                  // +0x20
-};
-MS2_CHECK_OFFSET(Unk_SkillAttackName, m_nAttackMaterial, 0x20);
-
-// One attack of a motion (?\skillattackdata.cpp); only the members read by the client units are named.
-class SkillAttackData : public CPtred
-{
-public:
-    int FUN_1407e1a10() const;                              // the attack method type
-    const CString& FUN_1407e1a30() const;                   // the arrow effect
-
-    unsigned char m_unk18[0x24];
-    int m_nHitImmuneBreak;                                  // +0x3c
-    int m_nBrokenOffence;                                   // +0x40
-    float m_fBrokenForce;                                   // +0x44
-    unsigned char m_unk48[0x138];
-    Unk_SkillAttackName m_sensor;                           // +0x180 (named m_sensor by the 0x1407e5b80 unit)
-};
-MS2_CHECK_OFFSET(SkillAttackData, m_nHitImmuneBreak, 0x3c);
-MS2_CHECK_OFFSET(SkillAttackData, m_sensor, 0x180);
 
 // One motion of a level (the 0x1408011f0 unit).
 class SkillMotionData : public CPtred
