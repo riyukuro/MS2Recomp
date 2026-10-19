@@ -8,7 +8,12 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 #pragma warning(disable : 4995)
+// This TU's own copy of the CRT's _vsnprintf (0x14160bd30, outside every unit) is what StringVPrintfWorkerA calls; the
+// symbol table binds the name _vsnprintf to the other copy (unit_1402c3760, 0x1402c37e0), so call the copy by address.
+int __cdecl FUN_14160bd30(char* pDest, size_t nBufferCount, const char* pszFormat, va_list args);
+#define _vsnprintf FUN_14160bd30
 #include <strsafe.h>
+#undef _vsnprintf
 
 // @0x141569a00
 // @0x141569ab0
