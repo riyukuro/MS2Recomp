@@ -3515,3 +3515,16 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??1?$MS2Ptr@VCStatPointManager@@@@QEAA@XZ	140c24a50	func
 ??C?$MS2Ptr@VCStatPointManager@@@@QEBAPEAVCStatPointManager@@XZ	140c24af0	func
 ?RequestAdd@CStatPointManager@@QEAAXHH@Z	140caa280	func
+?AnimActivated@StateSkill@@UEAAXPEAVNiActorManager@@IPEAVNiControllerSequence@@M@Z	1417e71d0	func
+?TextKeyEvent@StateSkill@@UEAAXPEAVNiActorManager@@IAEBVNiFixedString@@PEBVNiTextKeyMatch@@PEAVNiControllerSequence@@M@Z	1417e7660	func
+?EndOfSequence@StateSkill@@UEAAXPEAVNiActorManager@@IPEAVNiControllerSequence@@M@Z	1417e9130	func
+??0?$Unk_SocketPtr@VCFillTargetContext@@@@QEAA@PEAVCFillTargetContext@@@Z	141468820	func
+??0?$Unk_SocketPtr@VCFillTargetContext@@@@QEAA@AEBV0@@Z	1414687e0	func
+??1?$Unk_SocketPtr@VCFillTargetContext@@@@QEAA@XZ	141468c70	func
+??C?$Unk_SocketPtr@VCFillTargetContext@@@@QEBAPEAVCFillTargetContext@@XZ	141469330	func
+??$?4VUnk_PCBaseComp_b18@@@?$MS2Ptr@VCSkillRecord@@@@QEAAAEAV0@AEBV?$MS2Ptr@VUnk_PCBaseComp_b18@@@@@Z	141746e70	func
+??0Unk_BdUIMsg@@QEAA@XZ	1422e4490	func
+??1Unk_BdUIMsg@@QEAA@XZ	140c30570	func
+?LoadItemNameIds@CItemDataTable@@QEAAXAEAV?$vector@IV?$allocator@I@std@@@std@@@Z	1405594b0	func
+??0ASFunction@@QEAA@AEBV?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@PEAVCItem@@H@Z	1422c8430	func
+?DAT_143ab2a90@@3VUnk_IcInventory@@A	143ab2a90	data
