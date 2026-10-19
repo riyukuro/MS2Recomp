@@ -12,6 +12,7 @@ public:
     virtual ~TMeratMarketBillDataParam();                           //  0 0x140bbff60
 
     void SetSourceKind(int nKind);                                  // 0x140bc0b10 m_nSourceKind = nKind
+    bool FUN_140eacf70() const { return m_bGift; }                  // 0x140eacf70 (inline COMDAT, uimarketbilldialog.cpp)
     void SetGift(bool bGift);                                       // 0x140bc0b30 m_bGift = bGift
 
     bool m_bGift;                                                   // +0xe0
