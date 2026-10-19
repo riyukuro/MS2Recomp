@@ -183,6 +183,7 @@ extern int DAT_143ab0248;
 extern int DAT_143ab2914;
 int FUN_141acdeb0();
 Unk_LsServerDlg* FUN_140c300a0(int nUiId);
+Unk_LsServerDlg* FUN_14136f520(int nUiId);                 // byte-identical look-alike of FUN_140c300a0; vfunc_64 calls this copy
 Unk_LsDevice* FUN_140d86260();
 Unk_LsSceneId* FUN_1408e57f0();
 int FUN_1422b9de0(Unk_LsSceneId* p);
@@ -562,7 +563,7 @@ MS2_REPLACE_METHOD(0x141ACE970, UISceneLobbyServer, vfunc_55, 32, 0x8489FABA);
 // @0x141ace9a0
 void UISceneLobbyServer::vfunc_64()
 {
-    Unk_LsServerDlg* pDlg = FUN_140c300a0(0x4ef0);
+    Unk_LsServerDlg* pDlg = FUN_14136f520(0x4ef0);
     if (pDlg != 0) pDlg->FUN_141ad2ef0();
 }
 MS2_REPLACE_METHOD(0x141ACE9A0, UISceneLobbyServer, vfunc_64, 47, 0x6342EA2F);
