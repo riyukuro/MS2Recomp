@@ -8,11 +8,16 @@
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/skilldatatable.h"
 
+template <class T> class MS2Ptr;
+class AdditionalLevelData;
+
 class SkillDataTableCli : public SkillDataTable, public TSingleton<SkillDataTableCli>
 {
 public:
     SkillDataTableCli();                                    // 0x140aae580
     virtual ~SkillDataTableCli();
+    // The additional-effect level row (id, level); NULL when unknown (UIPcBangDialog::UpdateBuff, the buff icon).
+    MS2Ptr<AdditionalLevelData> FUN_140aafef0(int nId, unsigned short nLevel);
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_148[0x1c8 - 0x148];
