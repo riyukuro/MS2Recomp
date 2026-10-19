@@ -66,6 +66,11 @@ private:
 public:
     bool operator!() const { return m_p == 0; }             // `m_p == 0` (w3o1: generic bodies of all members in ms2ptr_impl.h)
     MS2Ptr(MS2Ptr&& o) { m_p = o.m_p; o.m_p = 0; }   // merge3: inline (the out-of-line ms2ptr_impl.h body was unresolved in units that do not include it); a3: move at 140e08d80 / 141633bb0 transfers +8 and clears the source
+#ifdef MS2_PTR_MOVE_CONVERT
+    // Converting move (U derives from T): m_p = o.m_p; o.m_p = NULL (0x14100f980 for T = ASDisplayObject, U = Unk_140acd6e0;
+    // opt-in per unit: the other units keep the converting copy)
+    template <class U> MS2Ptr(MS2Ptr<U>&& o) { m_p = o.m_p; o.m_p = 0; }
+#endif
 private:
     void AddRefImpl(void*) const;       // Reference(m_p) (rdx homed as a pointer)
 
@@ -92,6 +97,8 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2);                      // 0x140acd070
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, int a3, CStringW a4, int a5);   // 0x140f24720 (inline COMDAT, defined in uibluemarblegamedialog.cpp; a4 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2, int a3, int a4);      // 0x140f24850 (inline COMDAT, defined in uibluemarblegamedialog.cpp; a1/a2 by value)
+    Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, float a2, CStringW a3);            // 0x14100fe60 (inline COMDAT, defined in uiplayinstrumentdialog.cpp; a1/a3 by value)
+    template <class T> MS2Ptr<T> FUN_140be2480(const CString&, MS2Ptr<T>&);                            // bind tab bar (UIPlayInstrumentDialog)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, int a3);              // 0x140f24650 (not in the unit that owns it yet; added by uihsldialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1);                          // 0x1409b46e0
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2);            // 0x140e78470
