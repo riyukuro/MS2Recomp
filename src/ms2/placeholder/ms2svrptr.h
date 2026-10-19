@@ -7,12 +7,18 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 
+// Argument of the creating constructor (0x1401b7b90 builds it; same shape as Unk_JobNewTag).
+struct MS2SvrNewTag { explicit MS2SvrNewTag(int); };
+CPtred* FUN_1401ba820(CPtred* p);       // marks a freshly allocated object (sets the count to 1)
+
 template <class T>
 class MS2SvrPtr
 {
 public:
+    MS2SvrPtr(const MS2SvrNewTag&) { m_p = 0; Make(); }   // fresh object (itemgachaboxtable.cpp)
     MS2SvrPtr() { m_p = 0; }
     MS2SvrPtr(int) { m_p = 0; }
+    MS2SvrPtr(decltype(nullptr)) { m_p = 0; }   // null literal (itemgachaboxtable.cpp: the exe's copy takes a 64-bit argument)
     MS2SvrPtr(T* p) { m_p = p; AddRef(); }
     MS2SvrPtr(const MS2SvrPtr& o) { m_p = o.m_p; AddRef(); }
     MS2SvrPtr(MS2SvrPtr& o) { m_p = o.m_p; o.m_p = 0; }   // auto_ptr-style steal (non-const lvalue); PortalRandomTargetData specializes it to copy+AddRef (portaltable.h)
@@ -38,6 +44,9 @@ public:
     bool operator==(T* o) const { return m_p == o; }
     bool operator!() const { return m_p == 0; }   // portaltable.cpp: `if (!p)` is an out-of-line no-arg COMDAT
 private:
+    void Make() { Release(); m_p = Create(0); }
+    static T* Allocate(void*) { return new T; }
+    static T* Create(void*) { return static_cast<T*>(FUN_1401ba820(Allocate(0))); }
     void AddRef() const { if (m_p) AddRefImpl(0); }
     void AddRefImpl(void*) const { Reference(m_p); }
     static void Reference(T* p) { CPtred::AddRefPtred(p); }

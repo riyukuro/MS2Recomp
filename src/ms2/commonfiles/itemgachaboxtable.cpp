@@ -124,7 +124,7 @@ GachaBoxDataPtr ItemGachaBoxTable::FUN_14059e340(int nRandomBoxID)
 {
     std::map<int, GachaBoxDataPtr>::iterator it = m_map.find(nRandomBoxID);
     if (it == m_map.end())
-        return GachaBoxDataPtr(0);
+        return GachaBoxDataPtr(nullptr);
     return it->second;
 }
 
@@ -140,9 +140,9 @@ int ItemGachaBoxTable::GetIndividualDropBoxID(int nRandomBoxID)
 // @0x14059e490
 int ItemGachaBoxTable::FUN_14059e490(int nShopID)
 {
-    for (std::map<int, GachaBoxDataPtr>::iterator it = m_map.begin(); it != m_map.end(); ++it)
+    for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
-        GachaBoxDataPtr& sp = it->second;
+        GachaBoxDataPtr& sp = kv.second;
         if (sp.get() != 0 && sp->m_nShopID == nShopID)
             return sp->m_nUi;
     }
@@ -152,9 +152,9 @@ int ItemGachaBoxTable::FUN_14059e490(int nShopID)
 // @0x14059e550
 int ItemGachaBoxTable::FUN_14059e550(int nShopID)
 {
-    for (std::map<int, GachaBoxDataPtr>::iterator it = m_map.begin(); it != m_map.end(); ++it)
+    for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
-        GachaBoxDataPtr& sp = it->second;
+        GachaBoxDataPtr& sp = kv.second;
         if (sp.get() != 0 && sp->m_nShopID == nShopID)
             return sp->m_nCoinItemID;
     }
@@ -222,9 +222,9 @@ int ItemGachaBoxTable::FUN_14059e6a0(int nItemID)
 // @0x14059ebb0
 int ItemGachaBoxTable::FUN_14059ebb0(int nCoinItemID)
 {
-    for (std::map<int, GachaBoxDataPtr>::iterator it = m_map.begin(); it != m_map.end(); ++it)
+    for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
-        GachaBoxDataPtr& sp = it->second;
+        GachaBoxDataPtr& sp = kv.second;
         if (sp.get() != 0 && sp->m_nCoinItemID == nCoinItemID)
             return sp->m_nRandomBoxID;
     }
@@ -234,16 +234,16 @@ int ItemGachaBoxTable::FUN_14059ebb0(int nCoinItemID)
 // @0x14059ec70
 void ItemGachaBoxTable::FUN_14059ec70(std::vector<GachaBoxDataPtr>& out)
 {
-    for (std::map<int, GachaBoxDataPtr>::iterator it = m_map.begin(); it != m_map.end(); ++it)
-        out.push_back(it->second);
+    for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
+        out.push_back(kv.second);
 }
 
 // @0x14059ed00
 int ItemGachaBoxTable::FUN_14059ed00(int nId)
 {
-    for (std::map<int, GachaBoxDataPtr>::iterator it = m_map.begin(); it != m_map.end(); ++it)
+    for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
-        GachaBoxDataPtr& sp = it->second;
+        GachaBoxDataPtr& sp = kv.second;
         if (sp.get() != 0)
         {
             int nCoin = sp->m_nCoinItemID;
@@ -257,9 +257,9 @@ int ItemGachaBoxTable::FUN_14059ed00(int nId)
 // @0x14059ee00
 int ItemGachaBoxTable::FUN_14059ee00(int nShopID)
 {
-    for (std::map<int, GachaBoxDataPtr>::iterator it = m_map.begin(); it != m_map.end(); ++it)
+    for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
-        GachaBoxDataPtr& sp = it->second;
+        GachaBoxDataPtr& sp = kv.second;
         if (sp.get() != 0 && sp->m_nShopID == nShopID)
             return sp->m_nPaymentIconTag;
     }
@@ -269,9 +269,9 @@ int ItemGachaBoxTable::FUN_14059ee00(int nShopID)
 // @0x14059eec0
 bool ItemGachaBoxTable::FUN_14059eec0(int nCoinItemID)
 {
-    for (std::map<int, GachaBoxDataPtr>::iterator it = m_map.begin(); it != m_map.end(); ++it)
+    for (std::pair<const int, GachaBoxDataPtr>& kv : m_map)
     {
-        GachaBoxDataPtr& sp = it->second;
+        GachaBoxDataPtr& sp = kv.second;
         if (sp.get() != 0 && sp->m_nCoinItemID == nCoinItemID)
             return true;
     }
