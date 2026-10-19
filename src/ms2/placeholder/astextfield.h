@@ -16,6 +16,7 @@ public:
     CStringW FUN_1422c4da0();                                           // get the html text
     void FUN_1422c4cd0(const CStringW& strText);                        // set the text
     void FUN_1422c4f00(const CStringW& strText);                        // set the html text
+    void FUN_1422c5ab0(const CStringW& strText);                        // append text (uinpcpreviewdialog.cpp)
     void FUN_1422c4eb0(const CString& strText);                         // set the html text (narrow)
     void FUN_1422c4c80(const CString& strText);                         // set the text (narrow; UICameraDialog)
     double FUN_1422c5970();                                             // the text width (uivipdialog.cpp)
