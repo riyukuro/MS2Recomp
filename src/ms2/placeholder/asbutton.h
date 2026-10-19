@@ -17,6 +17,10 @@ public:
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, int nUser);
     void FUN_1422ce090(int bSelected);                              // set "selected"
     bool FUN_1422ce0e0();                                           // "selected"
+    void FUN_1422cdf20(bool bVisible);                              // show the label (uidungeonsearchsettingdialog)
+    void FUN_1422cdfb0(const CStringW& strText);                    // set the label text
+    // Registers the click callback with a pointer-sized user value (Params::pUserData).
+    void FUN_1422ce320(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);
 };
 MS2_CHECK_SIZE(ASButton, 0x88);
 

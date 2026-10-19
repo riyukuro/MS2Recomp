@@ -51,6 +51,8 @@ public:
     void FUN_1422c0ec0(int nHeight);                            // set the height
     void FUN_1422c0e20(int nWidth);                             // set the width (uirankpvpdialog.cpp)
     void FUN_1422c04a0(int y);                                  // set y (int; uirankpvpdialog.cpp)
+    // addEventListener: an AS event of the object calls the delegate (uiblackmarketpage.cpp "changeTotalPrice")
+    void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, int nPriority, int a5, int a6);
 };
 
 class ASInteractiveObject : public ASDisplayObject {};
@@ -62,6 +64,7 @@ public:
     Scaleform::GFx::Value FUN_1422c6b00(const CString& strName);       // getChildByName (uipvpguildteamdialog)
     int FUN_1422c6670();                                                // numChildren
     Scaleform::GFx::Value FUN_1422c6aa0(int nIndex);                   // getChildAt
+    void FUN_1422c6640(bool b);                                         // a bool member of the container (uidungeonsearchsettingdialog)
 };
 class ASSprite : public ASDisplayObjectContainer {};
 class ASMovieClip : public ASSprite
