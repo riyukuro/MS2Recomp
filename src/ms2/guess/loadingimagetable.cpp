@@ -4,30 +4,26 @@
 // MS2-UNIT: ?\loadingimagetable.cpp
 // MS2-RANGE: 0x140d43fe0-0x140d4a310 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$?0IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@$0A@@?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@QEAA@$$QEAU?$pair@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@@Z 0x140d45560 ; unique
-// MS2-PIN: ??$_Buynode@U?$pair@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@1@$$QEAU?$pair@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@@Z 0x140d459f0 ; unique
-// MS2-PIN: ??$construct@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@U?$pair@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@$$QEAU?$pair@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@@Z 0x140d46ac0 ; unique
-// MS2-PIN: ??$emplace@U?$pair@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@?$_Tree@V?$_Tmap_traits@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@@Z 0x140d46b10 ; unique
-// MS2-PIN: ??$insert@U?$pair@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@X@?$map@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@@Z 0x140d46cd0 ; unique
-// MS2-PIN: ??0Unk_MapRange@CLoadingImageTable@@QEAA@HH@Z 0x140d46fd0 ; unique
-// MS2-PIN: ??0?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@QEAA@PEAVLoadingImage@CLoadingImageTable@@@Z 0x140d47040 ; unique
-// MS2-PIN: ??0?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@QEAA@H@Z 0x140d47090 ; unique
-// MS2-PIN: ??0?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@QEAA@PEAVLoadingMovie@CLoadingImageTable@@@Z 0x140d470b0 ; unique
-// MS2-PIN: ??1CPair@?$CRBTree@IV?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@@3@@ATL@@IEAA@XZ 0x140d474d0 ; unique
-// MS2-PIN: ?get@?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@QEBAPEAVLoadingImage@CLoadingImageTable@@XZ 0x140d47660 ; unique
-// MS2-PIN: ?get@?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@QEBAPEAVLoadingMovie@CLoadingImageTable@@XZ 0x140d47670 ; unique
-// MS2-PIN: ??_G?$TSingleton@VCLoadingImageTable@@@@UEAAPEAXI@Z 0x140d47720 ; unique
-// MS2-PIN: ?GetCount@?$CAtlArray@V?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@V?$CElementTraits@V?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@@ATL@@@ATL@@QEBA_KXZ 0x140d47f90 ; unique
+// MS2-PIN: ??_ECLoadingImageTable@@W7EAAPEAXI@Z 0x140d47690 ; unique
+// MS2-PIN: ??_G?$CValidData@VCLoadingImageTable@@@@UEAAPEAXI@Z 0x140d476a0 ; prop
+// MS2-PIN: ??_G?$TSingleton@VCLoadingImageTable@@@@UEAAPEAXI@Z 0x140d47720 ; prop
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x140d480a0 ; unique
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
-// MS2-PIN: ?ms2_memmove_s_copy1@@YAHQEAX_KQEBX1@Z 0x140d4a1c0
+// MS2-PIN: ?NewNode@?$CRBTree@IV?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@@3@@ATL@@AEAAPEAVCNode@12@IAEBV?$Unk_LiRowPtr@VLoadingImage@CLoadingImageTable@@@@@Z 0x140d48c00
+// MS2-PIN: ?InitHashTable@?$CAtlMap@HV?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@@3@@ATL@@QEAA_NI_N@Z 0x140d484d0
+// MS2-PIN: ?Rehash@?$CAtlMap@HV?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_LiRowPtr@VLoadingMovie@CLoadingImageTable@@@@@3@@ATL@@QEAAXI@Z 0x140d492a0
+// MS2-PIN: ?ms2_lit_memcpy_s@@YAHQEAX_KQEBX1@Z 0x140d4a1c0
 // MS2-PIN: ??1LoadingImage@CLoadingImageTable@@UEAA@XZ 0x140d474f0
 // MS2-PIN: ??1LoadingMovie@CLoadingImageTable@@UEAA@XZ 0x140d47530
 // MS2-PIN: ??_7CLoadingImageTable@@6B?$TSingleton@VCLoadingImageTable@@@@@ 0x142e2bef8
 // MS2-PIN: ??_7CLoadingImageTable@@6B?$CValidData@VCLoadingImageTable@@@@@ 0x142e2bf08
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\loadingimagetable.cpp"
+#include <vcruntime_string.h>
+#pragma function(memcpy, memset)
 #include "ms2/placeholder/ms2stdafx.h"
+#include <errno.h>
+#include <string.h>
 #include "ms2/guess/loadingimagetable.h"
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/placeholder/tixmldocument.h"
@@ -181,10 +177,10 @@ int CLoadingImageTable::Load()
         ImagePtr spImage(new LoadingImage);
         if (spImage.get()->Load(pNode) != 0)
         {
-            if (spImage.get()->IsCommon() == 0)
-                m_mapImages.Insert(spImage.get()->m_nCode, spImage);
-            else
+            if (spImage.get()->IsCommon() != 0)
                 m_images.Add(spImage);
+            else
+                m_mapImages.Insert(spImage.get()->m_nCode, spImage);
         }
         CString strMovie;
         FUN_1408733e0(pNode, "movieFileName", strMovie);
@@ -200,7 +196,7 @@ int CLoadingImageTable::Load()
                 FUN_140275080(*tokens.FUN_14027f1c0(i), &parts, ":");
                 if (parts.FUN_14028b4c0() == 2)
                 {
-                    unsigned nIndex = FUN_1407181d0(parts.FUN_14027f1c0(0));
+                    int nIndex = FUN_1407181d0(parts.FUN_14027f1c0(0));
                     CString strFile(parts.FUN_14027f1c0(1)->Trim());
                     spMovie.get()->m_files.insert(std::make_pair(nIndex, strFile));
                 }
@@ -358,4 +354,20 @@ void CLoadingImageTable::CheckInit()
     }
 }
 
-MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+// The UCRT's `static __inline memcpy_s` copy of this TU (kept alive by the pointer below).
+// MS2-FUNCTIONAL: CRT memcpy_s copy: source spelling may differ
+static __inline errno_t ms2_lit_memcpy_s(void* const d, size_t const dsz, void const* const s, size_t const ssz)
+{
+    if (ssz == 0) { return 0; }
+    { int e = !!(d != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+    if (s == NULL || dsz < ssz)
+    {
+        memset(d, 0, dsz);
+        { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+        { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
+        return EINVAL;
+    }
+    memcpy(d, s, ssz);
+    return 0;
+}
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnLitMemcpyS)(void*, size_t, const void*, size_t) = &ms2_lit_memcpy_s;
