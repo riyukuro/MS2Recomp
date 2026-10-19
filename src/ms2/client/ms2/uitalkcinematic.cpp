@@ -749,6 +749,8 @@ UINpcPreviewDialog* FUN_141b1d4f0(unsigned nUiId)
 
 // ---- UITalkManager: packets and dialogs ----
 
+CTalkScript* FUN_140854fa0(void* pThis, CInPacket& in);        // CTalkScript::CTalkScript(CInPacket&) (talkscript.cpp, not recovered)
+
 // The incoming packet: a CInputStream sub-object at +8.
 class CInPacket
 {
@@ -1087,7 +1089,8 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
     {
         unsigned nNpcId = in.Stream().vfunc_o8_3();
         unsigned nSub = in.Stream().vfunc_o8_2();
-        MS2Ptr<CTalkScript> spScript(new CTalkScript(in));
+        void* pMem = operator new(0x90);
+        MS2Ptr<CTalkScript> spScript(pMem != 0 ? FUN_140854fa0(pMem, in) : 0);
         if (nSub == 1)
         {
             if (spScript->m_contents.FUN_14078fae0() == 0)
