@@ -46,6 +46,8 @@ public:
     float FUN_1422c10a0();                                      // x
     float FUN_1422c1110();                                      // y
     void FUN_1422c0420(float x);                                // set x
+    void FUN_1422c05a0(float y);                                // set y
+    void FUN_1422c0ec0(int nHeight);                            // set the height
 };
 
 class ASInteractiveObject : public ASDisplayObject {};
