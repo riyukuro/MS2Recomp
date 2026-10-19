@@ -2,6 +2,31 @@
 // MS2-UNIT: ?\uicharacterlistdialog.cpp
 // MS2-RANGE: 0x140111400-0x140111600 .text$di
 // MS2-RANGE: 0x1418e93f0-0x1418fafd0 .text$mn
+// MS2-PIN: ??$FUN_14028dee0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@W4Unk_ClCharError@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBV01@AEBW4Unk_ClCharError@@@Z 0x1418f5e20
+// MS2-PIN: ??$FUN_14028dee0@GV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBGAEBV01@1@Z 0x1418f5ab0
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x140111520 ; probe
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x140111550 ; probe
+// MS2-PIN: ??$?8PEAVUICharacterListDialog@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x1418f58d0 ; prop
+// MS2-PIN: ??$?8PEAVUICharacterListDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUICharacterListDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x1418f5940 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x1418f8840 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VCMsgBoxDataItem@@@@QEAA@H@Z 0x1418f8b20 ; unique
+// MS2-PIN: ??0ArgType@internal@fmt@@QEAA@XZ 0x1418f8dd0 ; probe
+// MS2-PIN: ??0UniversalID@efd@@QEAA@XZ 0x1418f8df0 ; probe
+// MS2-PIN: ??C?$MS2Ptr@VCMsgBoxDataItem@@@@QEBAPEAVCMsgBoxDataItem@@XZ 0x1418f92b0 ; order
+// MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$CElementTraits@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@_K@Z 0x1418f9790 ; unique
+// MS2-PIN: ?RemoveAt@?$CAtlList@V?$MS2Ptr@VCDeleteCharacterInfo@UICharacterListDialog@@@@V?$CElementTraits@V?$MS2Ptr@VCDeleteCharacterInfo@UICharacterListDialog@@@@@ATL@@@ATL@@QEAAXPEAU__POSITION@@@Z 0x1418f9d80 ; unique
+// MS2-PIN: ?SetAt@?$CAtlArray@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$CElementTraits@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@ATL@@@ATL@@QEAAX_KAEBV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@Z 0x1418f9e60 ; unique
+// MS2-PIN: ?SetCount@?$CAtlArray@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$CElementTraits@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@ATL@@@ATL@@QEAA_N_KH@Z 0x1418f9eb0 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418faab0 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418fab10 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x1418fad20 ; unique
+// MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x1418fad50 ; unique
+// MS2-PIN: ??$Call@VUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x1418fad90 ; unique
+// MS2-PIN: ??$Call@VUICharacterListDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUICharacterListDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x1418fadd0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1418fae10 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1418fae70 ; unique
+// MS2-PINS-END tplpin
 //
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicharacterlistdialog.cpp"    // assumed
@@ -25,6 +50,8 @@
 #include "ms2/client/ms2/uimessagebox.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/mypc.h"
+#include "ms2/client/ms2/uiregionlistdialog.h"
+#include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -67,7 +94,7 @@ public:
 };
 class Unk_ClPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
 Unk_ClPackets* FUN_140bccd50();
-class Unk_ClIdSet { public: void FUN_1403f19e0(); void FUN_140212bf0(unsigned __int64 nId); bool FUN_141315e50(); unsigned FUN_1403ed0f0(); bool FUN_1418f5a10(unsigned __int64 nId, unsigned* pnIndex); };
+class Unk_ClIdSet { public: unsigned __int64* FUN_140534f30(unsigned nIndex); void FUN_1403f19e0(); void FUN_140212bf0(unsigned __int64 nId); bool FUN_141315e50(); unsigned FUN_1403ed0f0(); bool FUN_1418f5a10(unsigned __int64 nId, unsigned* pnIndex); };
 class Unk_ClUserInfo
 {
 public:
@@ -139,7 +166,9 @@ struct Unk_ClOptions
     CString m_thirdParty;
 };
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs);
-CStringW FUN_1418f5ab0(int nStringId, const unsigned short* pnLevel, const CStringW& strTime, const CStringW& strName);
+CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);          // common string by id, formatted
+FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
+enum Unk_ClCharError : int {};                                      // the result code of the name change (a custom fmt argument)
 CStringW FUN_1409eec40(int nId);
 CStringW FUN_1406c6bd0(const wchar_t* szFormat, const unsigned __int64* pnArg);
 unsigned __int64 FUN_140718350(const CString& str);
@@ -173,7 +202,6 @@ void FUN_1412761e0(MS2Ptr<AScript>* pScript, int nFlag);            // lock the 
 CString FUN_141028a90(CString str, int nFlag);
 CStringW FUN_14052bd00(int nStringId, const CStringW& str);         // the string table text with an argument
 CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds);       // a time span as text
-CStringW FUN_1418f5e20(int nStringId, const CStringW& str, int* pnCode);
 void FUN_140cfefe0(Scaleform::GFx::Value& root, CString strChild, CString strLabel, CStringW strText);   // set the label text of a child
 void FUN_140710590(COutPacket& packet);                 // send
 class Unk_ClPopupInfo                                   // 0x30 bytes: the popup answer of the server
@@ -194,12 +222,12 @@ class Unk_ClUgcEvents { public: void FUN_141b38be0(UIUGCEventListener* p); void 
 Unk_ClUgcEvents* FUN_140bc09f0();
 class Unk_ClScene { public: void FUN_14174f470(); void FUN_14174eb30(); void FUN_14174eb80(int n); };
 extern int DAT_143ab0248;
-void* FUN_1418f6130(int nId);
-void FUN_140e80740(void* p);
+UIRegionListDialog* FUN_1418f6130(int nId);                         // the open region list dialog
+void FUN_140e80740(UIRegionListDialog* p);
 void* FUN_140aa6d30();
 void FUN_1417e25a0(void* p, int nId);
 Unk_ClScene* FUN_140f30370();
-class Unk_ClUIMgr { public: void FUN_141adc530(int nId); int FUN_141adc890(int nId); void FUN_141adc5d0(int nId); };
+class Unk_ClUIMgr { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); void FUN_141adc530(int nId); int FUN_141adc890(int nId); void FUN_141adc5d0(int nId); };
 Unk_ClUIMgr* FUN_1403ed2b0();
 class Unk_ClFeatures { public: bool FUN_14036d570(int nFeature); bool FUN_14036e510(); };
 Unk_ClFeatures* FUN_140166410();
@@ -596,7 +624,7 @@ void UICharacterListDialog::vfunc_79(void* p)
             else if (nCode == 6)
                 FUN_140d73aa0(FUN_14052bd00(0x29, strText), 0, 0, L"");
             else
-                FUN_140d73aa0(FUN_1418f5e20(0x2c, strText, &nCode), 0, 0, L"");
+                FUN_140d73aa0(FUN_14028dee0(0x2c, strText, reinterpret_cast<const Unk_ClCharError&>(nCode)), 0, 0, L"");
         }
     }
     else if (nOpcode == 0xe)
@@ -655,10 +683,10 @@ void UICharacterListDialog::vfunc_72()
 {
     if (m_238.FUN_140268870(500) == 0)
         return;
-    std::shared_ptr<DeleteReply> spReply(s_reply);
+    std::shared_ptr<DeleteReply> spReply = std::atomic_load(&s_reply);
     if (spReply != nullptr)
     {
-        s_reply = std::shared_ptr<DeleteReply>(nullptr);
+        std::atomic_store(&s_reply, std::shared_ptr<DeleteReply>(nullptr));
         HandleDeleteReply(spReply->m_nResult, spReply->m_str8, spReply->m_str10, spReply->m_str18);
     }
 }
@@ -1649,7 +1677,7 @@ void UICharacterListDialog::FUN_1418f1e90()
 {
     if (DAT_143ab0248 == 2)
     {
-        void* pDialog = FUN_1418f6130(0x4eef);
+        UIRegionListDialog* pDialog = FUN_1418f6130(0x4eef);
         if (pDialog != 0)
             FUN_140e80740(pDialog);
     }
@@ -2261,7 +2289,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             if ((unsigned short)pPC->vfunc_78() < nLimit)
                 strMsg = FUN_14052bd00(4, pPC->vfunc_77());
             else
-                strMsg = FUN_1418f5ab0(5, &nLimit, FUN_141b708a0(*FUN_1401d3200()->m_55f8.FUN_1402056b0(), false), pPC->vfunc_77());
+                strMsg = FUN_14028dee0(5, nLimit, FUN_141b708a0(*FUN_1401d3200()->m_55f8.FUN_1402056b0(), false), pPC->vfunc_77());
             if (!strMsg.IsEmpty())
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0xe, strMsg, static_cast<IMessageListener*>(this), CStringW(L"deletePC"));
@@ -2456,4 +2484,42 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         }
     }
     return 0;
+}
+
+// @0x1418f5a10
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+bool Unk_ClIdSet::FUN_1418f5a10(unsigned __int64 nId, unsigned* pnIndex)
+{
+    *pnIndex = 0;
+    if (FUN_1403ed0f0() != 0)
+    {
+        for (unsigned i = 0; i < FUN_1403ed0f0(); ++i)
+        {
+            if (*FUN_140534f30(i) == nId)
+            {
+                *pnIndex = i;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// @0x1418f6130
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+UIRegionListDialog* FUN_1418f6130(int nId)
+{
+    if (FUN_1403ed2b0() != 0)
+    {
+        MS2Ptr<UIObject> spObject = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        if (!(spObject == 0))
+            return dynamic_cast<UIRegionListDialog*>(spObject.get());
+    }
+    return 0;
+}
+
+// @0x1418f99c0
+int UICharacterListDialog::vfunc_48()
+{
+    return 0x4ef1;
 }

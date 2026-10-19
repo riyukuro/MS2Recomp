@@ -110,6 +110,7 @@ public:
     virtual void vfunc_15();                                // 15 0x1418ead80 tick the pending deletions
     virtual void OnLoadComplete();                          // 22 0x1418eb1c0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x1418eba00
+    virtual int vfunc_48();                                 // 48 0x1418f99c0 the UI type id
     virtual int vfunc_65();                                 // 65 0x1418ea790
     virtual void vfunc_67();                                // 67 0x1418ed080
     virtual void vfunc_72();                                // 72 0x1418eb0a0 the delete reply poll
