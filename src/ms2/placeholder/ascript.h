@@ -187,6 +187,9 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, CStringW a2, int a3);        // 0x140e65dd0 (inline COMDAT, defined in uimicrogamecoupledancemessage.cpp; a2 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2, CStringW a3, CStringW a4);   // 0x141342280 (inline COMDAT, defined in uipvpguildteamresultdialog.cpp; the strings by value: the callee destroys them)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, const char* a2);        // 0x1413423e0 (inline COMDAT, defined in uipvpguildteamresultdialog.cpp; a1 by value: the callee destroys it)
+    Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, unsigned __int64 a2, CString a3);   // 0x1412db770 (inline COMDAT, defined in uimaidrecipelistdialog.cpp; the strings by value: the callee destroys them)
+    Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, CStringW a3);        // 0x140ed0ed0 (UIManufactureStatus updateProgress; a3 by value: the callee destroys it)
+    Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, Scaleform::GFx::Value a2, int a3);   // 0x1412e13f0 (inline COMDAT, defined in uimaidrecipelistdialog.cpp; the values by value)
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {

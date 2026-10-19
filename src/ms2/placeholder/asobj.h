@@ -66,6 +66,7 @@ public:
     void FUN_1422bbfe0(const wchar_t* sz);                               // push a wide string
     void FUN_1422bbf00(const ASObj& obj);                                // push an AS object
     void FUN_1422bbcd0(bool b);                                          // push a bool
+    void FUN_1422bbc60(int n);                                           // push an int
     unsigned int FUN_1422bc5d0();                                        // element count
 };
 
