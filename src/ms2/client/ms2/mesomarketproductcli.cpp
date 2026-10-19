@@ -208,6 +208,7 @@ CStringW FUN_140d6e230(int nCurrency)
 
 // @0x140d6e2b0
 CMesoMarketMan::CMesoMarketMan()
+    : m_nOwn(0), m_nBuy(0)
 {
 }
 
@@ -230,8 +231,8 @@ void CMesoMarketMan::FUN_140d6e400()
 // @0x140d6e490
 void CMesoMarketMan::FUN_140d6e490(CInPacket& packet)
 {
-    unsigned char cSub = packet.vfunc_o8_1();
-    switch (cSub)
+    int nSub = packet.vfunc_o8_1();
+    switch (nSub)
     {
     case 0:
         FUN_140d6eb90(packet);
@@ -286,19 +287,19 @@ void CMesoMarketMan::FUN_140d6e6d0(ASArray& rows)
 // @0x140d6e7e0
 MS2Ptr<CMesoMarketProductCli> CMesoMarketMan::FUN_140d6e7e0(unsigned __int64 qwId)
 {
-    MS2Ptr<CMesoMarketProductCli> sp(0);
-    if (!m_mapOwn.Lookup(qwId, sp))
-        return MS2Ptr<CMesoMarketProductCli>(0);
-    return sp;
+    MS2Ptr<CMesoMarketProductCli> sp;
+    if (m_mapOwn.Lookup(qwId, sp))
+        return sp;
+    return MS2Ptr<CMesoMarketProductCli>(0);
 }
 
 // @0x140d6e890
 MS2Ptr<CMesoMarketProductCli> CMesoMarketMan::FUN_140d6e890(unsigned __int64 qwId)
 {
-    MS2Ptr<CMesoMarketProductCli> sp(0);
-    if (!m_mapMarket.Lookup(qwId, sp))
-        return MS2Ptr<CMesoMarketProductCli>(0);
-    return sp;
+    MS2Ptr<CMesoMarketProductCli> sp;
+    if (m_mapMarket.Lookup(qwId, sp))
+        return sp;
+    return MS2Ptr<CMesoMarketProductCli>(0);
 }
 
 // @0x140d6e940
@@ -308,37 +309,37 @@ Unk_MesoLimits& CMesoMarketMan::FUN_140d6e940()
 }
 
 // @0x140d6e960
-int CMesoMarketMan::FUN_140d6e960(__int64 nMeso, __int64 nPrice)
+bool CMesoMarketMan::FUN_140d6e960(__int64 nMeso, __int64 nPrice)
 {
-    if (DAT_143ab2898 < nMeso)
+    if (nMeso > DAT_143ab2898)
     {
         FUN_140d6f130(5);
-        return 0;
+        return false;
     }
-    if (m_mapOwn.GetCount() < (unsigned)m_limits.m_n18)
+    if (m_mapOwn.GetCount() >= (unsigned)m_limits.m_n18)
     {
-        if (m_nOwn < m_limits.m_n1C)
-        {
-            __int64 nLow = FUN_140d6ff60();
-            __int64 nHigh = FUN_140d6ffe0();
-            if (nPrice < nLow || nHigh < nPrice)
-            {
-                FUN_140d6f130(0x10);
-                return 0;
-            }
-            return 1;
-        }
-        FUN_140d6f130(0xd);
-        return 0;
+        FUN_140d6f130(8);
+        return false;
     }
-    FUN_140d6f130(8);
-    return 0;
+    if (m_nOwn >= m_limits.m_n1C)
+    {
+        FUN_140d6f130(0xd);
+        return false;
+    }
+    __int64 nLow = FUN_140d6ff60();
+    __int64 nHigh = FUN_140d6ffe0();
+    if (nPrice > nHigh || nPrice < nLow)
+    {
+        FUN_140d6f130(0x10);
+        return false;
+    }
+    return true;
 }
 
 // @0x140d6ea50
 bool CMesoMarketMan::FUN_140d6ea50(unsigned __int64 qwId)
 {
-    MS2Ptr<CMesoMarketProductCli> sp(0);
+    MS2Ptr<CMesoMarketProductCli> sp;
     if (!m_mapMarket.Lookup(qwId, sp))
     {
         FUN_140d6f130(9);
@@ -349,10 +350,12 @@ bool CMesoMarketMan::FUN_140d6ea50(unsigned __int64 qwId)
         FUN_140d6f130(0xb);
         return false;
     }
-    if (m_nBuy < m_limits.m_n20)
-        return true;
-    FUN_140d6f130(0xe);
-    return false;
+    if (m_nBuy >= m_limits.m_n20)
+    {
+        FUN_140d6f130(0xe);
+        return false;
+    }
+    return true;
 }
 
 // @0x140d6eb50
@@ -419,11 +422,8 @@ void CMesoMarketMan::FUN_140d6eec0(CInPacket& packet)
     m_arrMarket.RemoveAll();
     m_mapMarket.RemoveAll();
     FUN_140d70240(packet, m_arrMarket);
-    for (size_t i = 0; i < m_arrMarket.GetCount(); ++i)
-    {
-        MS2Ptr<CMesoMarketProductCli> sp = m_arrMarket[i];
-        m_mapMarket.SetAt(m_arrMarket[i]->GetValue18(), sp);
-    }
+    for (unsigned i = 0; i < m_arrMarket.GetCount(); ++i)
+        m_mapMarket.SetAt(m_arrMarket[i]->GetValue18(), m_arrMarket[i]);
 }
 
 // @0x140d6efb0
@@ -532,14 +532,16 @@ void CMesoMarketMan::FUN_140d6f130(int nCode)
 // @0x140d6ff60
 __int64 CMesoMarketMan::FUN_140d6ff60()
 {
-    __int64 nValue = (__int64)((float)m_limits.m_nBase * (1.0001f - m_limits.m_fRateB));
+    double dFactor = 1.0001 - m_limits.m_fRateB;
+    __int64 nValue = (__int64)((double)m_limits.m_nBase * dFactor);
     return FUN_140d706c0(&nValue, m_limits.m_nMin, m_limits.m_nMax);
 }
 
 // @0x140d6ffe0
 __int64 CMesoMarketMan::FUN_140d6ffe0()
 {
-    __int64 nValue = (__int64)((float)m_limits.m_nBase * (m_limits.m_fRateB + 1.0001f));
+    double dFactor = 1.0001 + m_limits.m_fRateB;
+    __int64 nValue = (__int64)((double)m_limits.m_nBase * dFactor);
     return FUN_140d706c0(&nValue, m_limits.m_nMin, m_limits.m_nMax);
 }
 
@@ -618,11 +620,9 @@ CStringW FUN_140d70320(CStringW strKey, float* pRate, i64* pLow, i64* pHigh)
 // @0x140d706c0
 i64 FUN_140d706c0(i64* pValue, i64 nMin, i64 nMax)
 {
-    if (nMin <= *pValue)
-    {
-        nMin = nMax;
-        if (*pValue <= nMax)
-            nMin = *pValue;
-    }
-    return nMin;
+    if (*pValue < nMin)
+        return nMin;
+    if (*pValue > nMax)
+        return nMax;
+    return *pValue;
 }

@@ -69,7 +69,7 @@ public:
     MS2Ptr<CMesoMarketProductCli> FUN_140d6e7e0(unsigned __int64 qwId);   // product of the own listing
     MS2Ptr<CMesoMarketProductCli> FUN_140d6e890(unsigned __int64 qwId);   // product of the market
     Unk_MesoLimits& FUN_140d6e940();                        // the limits
-    int FUN_140d6e960(__int64 nCount, __int64 nPrice);      // validate a sale (true when allowed)
+    bool FUN_140d6e960(__int64 nCount, __int64 nPrice);      // validate a sale (true when allowed)
     bool FUN_140d6ea50(unsigned __int64 qwId);              // validate a buy
     int FUN_140d6eb50();                                    // the own count
     int FUN_140d6eb70();                                    // the buy count
