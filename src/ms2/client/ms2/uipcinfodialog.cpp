@@ -10,7 +10,6 @@
 // MS2-PIN: ??$?8PEAVUIPCInfoDialog@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x141337c20 ; prop
 // MS2-PIN: ??$?8PEAVUIPCInfoDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x141337c90 ; prop
 // MS2-PIN: ??$?8PEAVUIPCInfoDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIPCInfoDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x141337d00 ; prop
-// MS2-PIN: ??$FUN_14028dfa0@HIIII@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBHAEBI222@Z 0x141338090 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x141338970 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x141338a10 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x141338ab0 ; prop
@@ -34,6 +33,7 @@
 // MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142cb0050 ; probe
 // MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142cb0070 ; probe
 // MS2-PINS-END tplpin
+// MS2-PIN: ??4?$MS2Ptr@VPCInfo@@@@QEAAAEAV0@AEBV0@@Z 0x141338ef0 ; called by FUN_14132c330 (m_spInfo = ...)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uipcinfodialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 static CString s_strSetData = "setData";
@@ -257,7 +257,11 @@ void FUN_1418bee30(ASObj* pObj, int n);
 CItemData* FUN_140527840(CItem* pItem);
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);
 
-inline CString FUN_1413391a0();
+extern CString DAT_143af7be0;   // news page url (feature 0x5c)
+inline CString FUN_1413391a0()
+{
+    return DAT_143af7be0;
+}
 int FUN_141337900(const void* p1, const void* p2);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -819,7 +823,7 @@ void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params
         if ((unsigned short)pPC->vfunc_78() >= FUN_1401d3200()->m_9298.FUN_140ba4b30())
         {
             strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason_with_adventure_level"),
-                                    pPC->FUN_140c25130()->GetTotal(),
+                                    (unsigned int)pPC->FUN_140c25130()->GetTotal(),
                                     pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
                                     pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
                                     pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3),
