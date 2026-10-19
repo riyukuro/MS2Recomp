@@ -15,9 +15,9 @@
 extern void* FUN_1415e1730(void* p);
 extern void FUN_1415e3880(void* guard, void* p);
 extern void FUN_141609460(void* guard, void* p, int n);
-extern void FUN_141606ff0(void* p);
-extern void FUN_141607000(void* p);
-extern void FUN_141607010(void* p);
+extern void* FUN_141606ff0(void* p);
+extern void* FUN_141607000(void* p);
+extern void* FUN_141607010(void* p);
 
 template const char* std::_Find_unchecked<const char*, char>(const char* const, const char* const, const char&);
 
@@ -65,21 +65,21 @@ void* FUN_1415daa00(void* p)
 }
 
 // @0x1415daa10
-void FUN_1415daa10(void* p)
+void* FUN_1415daa10(void* p)
 {
-    FUN_141606ff0(p);
+    return FUN_141606ff0(p);
 }
 
 // @0x1415daa30
-void FUN_1415daa30(void* p)
+void* FUN_1415daa30(void* p)
 {
-    FUN_141607000(p);
+    return FUN_141607000(p);
 }
 
 // @0x1415daa50
-void FUN_1415daa50(void* p)
+void* FUN_1415daa50(void* p)
 {
-    FUN_141607010(p);
+    return FUN_141607010(p);
 }
 
 // @0x1415daa70
