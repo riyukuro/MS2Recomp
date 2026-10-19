@@ -3446,3 +3446,6 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?SetFees@UIQuizOXCreateDialog@@QEAAXAEAV?$vector@HV?$allocator@H@std@@@std@@@Z	140e7e3a0	func
 ?DAT_143ab2a90@@3VUnk_WpBag@@A	143ab2a90	data
 ?GetMessageW@WeddingProxy@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@_N@Z	1408ff830	func
+?LimitState@CMasteryTable@@QEAAHH@Z	14066bc40	func
+?Factor@CMasteryTable@@QEAAHHI@Z	14066ab90	func
+?DifferentialName@CMasteryTable@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HI@Z	14066adb0	func
