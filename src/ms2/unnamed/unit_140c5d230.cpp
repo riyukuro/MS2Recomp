@@ -2431,7 +2431,7 @@ CStringW FUN_1418fec00(int nType, __int64 nValue, int);                 // money
 
 // @0x140c65540
 // MS2-FUNCTIONAL: the ingredient rows are built with different temporaries
-void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<Unk_LsRecord> spRec, ItemArray& items, ATL::CAtlArray<int>& kinds, ASObj& out)
+void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<Unk_LsRecord> spRec, ItemArray& items, LapenshardKindArray& kinds, ASObj& out)
 {
     if (spRec->m_nNeed != 0)
     {
@@ -2578,7 +2578,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
 // @0x140c660f0
 void LapenshardUpgradeSlotPanel::FUN_140c660f0()
 {
-    if (!(m_ui == 0) && m_items.GetCount() != 0 && m_kinds.GetCount() != 0)
+    if (!(m_ui == 0) && !m_items.IsEmpty() && !m_kinds.IsEmpty())
     {
         ASArray rows(2);
         for (unsigned i = 0; i < m_items.GetCount(); ++i)

@@ -155,6 +155,7 @@ MS2_CHECK_OFFSET(UILapenshardEquipTab, m_ui, 0x48);
 // ---- the upgrade page ---------------------------------------------------------------------------------------------
 
 typedef ATL::CAtlArray<MS2Ptr<CItem> > LapenshardItemArray;
+typedef ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> > LapenshardKindArray;   // the exe's int arrays of the upgrade page (const int& element args)
 
 // 0x58 bytes, vftable 0x142e0b8?: the source bag ("m_sourceItemBag"): the lapenshards that can be upgraded.
 class LapenshardSourceItemSlotBagPanel : public LapenshardSystemTabPanelBase
@@ -217,7 +218,7 @@ public:
     void FUN_140c652d0(ItemInfoSlot& slot, ASSlot& asSlot);        // slot callback: mark an empty slot
     void FUN_140c65360(ItemInfoSlot& slot, ASTooltip& tooltip);    // tooltip callback
     void FUN_140c654a0(CString& strSlot, MS2Ptr<CItem> spItem);     // 0x140c654a0 bind a slot name to an item
-    void FUN_140c65540(CString& strBag, MS2Ptr<class Unk_LsRecord> spRec, ATL::CAtlArray<MS2Ptr<CItem> >& items, ATL::CAtlArray<int>& kinds, ASObj& out);
+    void FUN_140c65540(CString& strBag, MS2Ptr<class Unk_LsRecord> spRec, ATL::CAtlArray<MS2Ptr<CItem> >& items, LapenshardKindArray& kinds, ASObj& out);
     void FUN_140c664e0();
     void FUN_140c65e00();
     void FUN_140c65ef0();
@@ -233,7 +234,7 @@ public:
     UILapenshardUpgradeTab* m_pTab;                                 // +0x60
     MS2Ptr<CItem> m_spSource;                                       // +0x68
     ATL::CAtlArray<MS2Ptr<CItem> > m_items;                         // +0x78 the ingredient items
-    ATL::CAtlArray<int> m_kinds;                                    // +0x98 their kinds
+    LapenshardKindArray m_kinds;                                          // +0x98 their kinds
     MS2Ptr<ASUIComponent> m_body;                                   // +0xb8 "m_body"
 };
 MS2_CHECK_SIZE(LapenshardUpgradeSlotPanel, 0xc8);
