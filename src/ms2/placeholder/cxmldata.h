@@ -10,6 +10,7 @@
 #include "ms2/placeholder/cptred.h"
 
 int FUN_1407181a0(const CStringW& str);    // a wide string as an int
+unsigned long FUN_1407182c0(const CStringW& str);   // a wide string as an unsigned long
 
 class CXmlData : public CPtred
 {
@@ -37,6 +38,15 @@ public:
             return nDefault;
         return FUN_1407181a0(strValue);
     }
+    // The value as an unsigned long, nDefault when the key is missing (COMDAT 0x140d26970 in unit_140d1ae30).
+    unsigned long GetULong(const CStringW& strKey, const unsigned long& nDefault)
+    {
+        CStringW strValue;
+        if (!reinterpret_cast<Values*>(m_unknown18)->Lookup(strKey, strValue))
+            return nDefault;
+        return FUN_1407182c0(strValue);
+    }
+    bool FUN_1409e8780(const CStringW& strKey, const bool& bDefault);   // value as a bool (unit_140d1ae30)
 private:
     // The parsed key/values. A union so that the units that only need the map can still reach the same storage
     // through the raw array (xmldata.cpp's ctor/dtor construct/destroy m_values explicitly).

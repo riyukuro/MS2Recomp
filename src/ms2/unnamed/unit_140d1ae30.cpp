@@ -56,6 +56,8 @@
 #include "ms2/client/ms2/uiselectitemboxdialog.h"
 #include "ms2/client/ms2/uiwebbrowser.h"
 #include "ms2/placeholder/cmycharacter.h"
+#include "ms2/client/ms2/stateplayinstrumentdata.h"
+#include "ms2/client/ms2/portal.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/commonfiles/dungeonroom.h"
 #include "ms2/client/ms2/dungeonrecordcli.h"
@@ -81,6 +83,11 @@ public:
     MyPC* FUN_141bd0cc0();                                  // the local player
     MS2Ptr<Unk_RideeFieldObj> FUN_141bc4f10(Unk_Entity* pEntity);   // the field object of an entity
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                  // the current field's data
+    void FUN_141bc2c90(NiPoint3 kPos, ATL::CAtlArray<void*>& arrOut);   // the portals containing a position
+    void FUN_141bc2980(std::vector<int>& vOut);             // the portal ids of the field
+    MS2Ptr<CPortal> FUN_141bc2800(int nId);                 // a portal by id
+    int FUN_141bdb660(int nKind);                           // the field forbids the play kind
+    bool FUN_141bcada0(__int64 nCharacterId);               // the player is registered for the instrument play
     int FUN_141bd3060();                                    // the current field (map) id
 };
 Unk_IuWorld* FUN_1403ed2d0();
@@ -267,6 +274,33 @@ CMyCharacter* FUN_140931510();
 unsigned FUN_140869420();                                   // the raw timer (ms)
 int FUN_14086be10(int nSeconds);                            // seconds to ms
 extern int DAT_143ab2914;                                   // the GM level
+
+// OpenMassive.
+size_t FUN_140966da0(const ATL::CAtlArray<void*>& arr);     // GetCount (the CAtlArray<MS2Ptr<T>> COMDAT)
+bool FUN_140930b10();                                       // the player has a state that blocks it
+bool FUN_140930b70();                                       // the player is idle
+extern int DAT_143ab287c;                                   // the wedding progress state
+int FUN_14166c930(PC* pPlayer);                             // the actor state kind
+class Unk_IuScene;
+Unk_IuScene* FUN_1408e57f0();
+int FUN_1422b9e00(Unk_IuScene* pScene);                     // the scene state id
+unsigned FUN_14086bd90(unsigned nMs);                       // ms to seconds
+CStringW FUN_141b708a0(unsigned nSeconds, int n);           // a duration text
+
+// OpenInstrument.
+int FUN_14166cc80(PC* pPlayer);                             // the move state
+void* FUN_14165f100(PC* pPlayer);                           // the ridden object
+__int64 FUN_141656a80(PC* pPlayer);                         // the character id
+class Unk_IuMusicPlayer { public: bool FUN_140d09d90(int n); };   // pre-listening a score
+Unk_IuMusicPlayer* FUN_140c8dac0();
+struct Unk_InventoryUsePacket                               // inventory.cpp's use-item packet (0x19)
+{
+    Unk_InventoryUsePacket();
+    ~Unk_InventoryUsePacket();
+    void FUN_1401fbc40(COutPacket& packet);
+    __int64 id;
+    CStringW argument;
+};
 
 // ---- the box helpers ----
 
@@ -1722,4 +1756,176 @@ MS2Ptr<CEquipmentSlotLayerInfo> Unk_PCEquipSet::GetTitle()
 WeddingProxy* WeddingManager::FUN_140d295d0()
 {
     return &m_proxy;
+}
+
+// The massive event portal item: open a portal (wedding party or event field) where none is.
+// @0x140d20710
+int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x3b) != 0)
+    {
+        FUN_141275260(0x2f7, 1, 1);
+        return 0;
+    }
+    ATL::CAtlArray<void*> arrPortals;
+    FUN_1403ed2d0()->FUN_141bc2c90(pPlayer->vfunc_18(), arrPortals);
+    if (FUN_140966da0(arrPortals) != 0)
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_error_another_portal"), 1, 1);
+        return 0;
+    }
+    int nTipped = 0;
+    std::vector<int> vIds;
+    FUN_1403ed2d0()->FUN_141bc2980(vIds);
+    for (size_t i = 0; i < vIds.size(); ++i)
+    {
+        MS2Ptr<CPortal> spPortal = FUN_1403ed2d0()->FUN_141bc2800(vIds[i]);
+        if (spPortal == 0)
+            continue;
+        if (spPortal->m_strTip.GetLength() > 0)
+            ++nTipped;
+    }
+    if (nTipped >= 10)
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_error_too_many_portal"), 1, 1);
+        return 0;
+    }
+    if (FUN_1403ed2d0()->FUN_141bd30a0() == 0)
+        return 0;
+    if (FUN_140930b10())
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_cant_open"), 1, 1);
+        return 0;
+    }
+    if (FUN_1403ed2d0()->FUN_141bd30a0()->m_nMassiveEventField == 1)
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_cant_open"), 1, 1);
+        return 0;
+    }
+    bool bDefault = false;
+    bool bWedding = spItem->FUN_140527840()->function.xml.FUN_1409e8780(L"weddingParty", bDefault);
+    if (!bWedding)
+    {
+        if (!FUN_140930b70())
+        {
+            FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_cant_open"), 1, 1);
+            return 0;
+        }
+    }
+    else if (DAT_143ab287c != 0xf)
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_cant_open"), 1, 1);
+        return 0;
+    }
+    if (FUN_14166c930(pPlayer) != 1 || FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_msg_item_open_massive_invalid_state"), 1, 1);
+        return 0;
+    }
+    const wchar_t* pszKey = bWedding ? L"s_msg_item_open_massive_open_wedding" : L"s_msg_item_open_massive_open";
+    int nFieldDefault = 0;
+    int nFieldId = spItem->FUN_140527840()->function.xml.GetInt(L"fieldID", nFieldDefault);
+    unsigned long nTickDefault = 60000;
+    unsigned long nDuration = spItem->FUN_140527840()->function.xml.GetULong(L"portalDurationTick", nTickDefault);
+    int nMaxDefault = 1;
+    int nMaxCount = spItem->FUN_140527840()->function.xml.GetInt(L"maxCount", nMaxDefault);
+    CStringW strDuration = FUN_141b708a0(FUN_14086bd90(nDuration), 0);
+    CStringW strMsg = FUN_14028dfa0(CStringW(pszKey), FUN_1401a9d70()->FUN_141811980(3, nFieldId), nMaxCount, strDuration);
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, strMsg, 0, s_strOpenMassive);
+    if (spBox.get() != 0)
+    {
+        spBox->FUN_141a01600(spItem->FUN_140526a50());
+        spBox->FUN_141a01d30(5, L"", 6, 0, 0);
+        FUN_140d73c60(spBox);
+    }
+    return 1;
+}
+
+// The instrument item: play it where the field and the player's state allow.
+// @0x140d23c50
+int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (!FUN_140166410()->FUN_14036d570(10))
+        return 0;
+    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(5) != 0)
+    {
+        FUN_141275260(0x2f7, 1, 1);
+        return 0;
+    }
+    if (pPlayer == 0)
+        return 0;
+    if (FUN_14166ce30(pPlayer) != 0 || FUN_14166c930(pPlayer) != 1)
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_invalid_state"), 1, 1);
+        return 0;
+    }
+    bool bMovable = false;
+    if (FUN_14166cc80(pPlayer) == 1)
+        bMovable = true;
+    else if (FUN_14166cc80(pPlayer) > 1 && FUN_14166cc80(pPlayer) < 6)
+        bMovable = true;
+    if (!bMovable || FUN_14165f100(pPlayer) != 0)
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_invalid_state"), 1, 1);
+        return 0;
+    }
+    Unk_EntRef spEntity(FUN_141240f20(FUN_14166d220(pPlayer))->FUN_140cfaff0());
+    if (spEntity != 0)
+    {
+        MS2Ptr<Unk_RideeFieldObj> spObj = FUN_1403ed2d0()->FUN_141bc4f10(spEntity.FUN_1408a9090());
+        if (spObj.get() != 0 && spObj->FUN_140ae0700())
+        {
+            FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_invalid_position"), 1, 1);
+            return 0;
+        }
+    }
+    BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0xf);
+    if (spBlock.get() != 0)
+    {
+        FUN_140a30ad0(spBlock, 0xf, 0);
+        return 0;
+    }
+    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    if (spField == 0)
+        return 0;
+    if ((spField->m_nLimitContent & 8) != 0)
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_invalid_map"), 1, 1);
+        return 0;
+    }
+    if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4eed) != 0)
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_cant_while_write_music"), 1, 1);
+        return 0;
+    }
+    if (FUN_140c8dac0()->FUN_140d09d90(0))
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_cant_while_pre_listening"), 1, 1);
+        return 0;
+    }
+    if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4eec) != 0)
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_invalid_state"), 1, 1);
+        return 0;
+    }
+    if (FUN_1403ed2d0()->FUN_141bdb660(3) != 0)
+    {
+        FUN_1412751f0(FUN_1409eec40(0x62), 1, 1);
+        FUN_141276180(s_warningNotThisPlace, "");
+        return 0;
+    }
+    if (!FUN_1403ed2d0()->FUN_141bcada0(FUN_141656a80(pPlayer)))
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_play_instrument_cant_doesnt_register"), 1, 1);
+        return 0;
+    }
+    __int64 nItemUid = spItem->FUN_140526a50();
+    StatePlayInstrumentData* pData = new StatePlayInstrumentData(MS2Ptr<CItemData>(spItem->FUN_140527840()), nItemUid);
+    pPlayer->vfunc_59(0x2f, pData, 0x7d, 0);
+    Unk_InventoryUsePacket use;
+    use.id = nItemUid;
+    COutPacket packet(0x19, 0);
+    use.FUN_1401fbc40(packet);
+    FUN_140710590(packet);
+    return 1;
 }
