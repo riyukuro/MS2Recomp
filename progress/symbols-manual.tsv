@@ -3285,3 +3285,5 @@ __imp_AddSurveyParameterA	142cd1480	data
 ?DAT_143ab2e50@@3VUnk_MrdCubeStock@@A	143ab2e50	data
 ?DAT_143ab2e20@@3VCWarehouseItemTable@@A	143ab2e20	data
 ??0SkillSlot@@QEAA@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HIH_J@Z	14175c840	func
+?GetMainDataList@CArcadeDataTable@@QEAAXAEAV?$vector@V?$MS2SvrPtr@VCArcadeMainData@@@@V?$allocator@V?$MS2SvrPtr@VCArcadeMainData@@@@@std@@@std@@@Z	1401a3a00	func
+?GetRecords@CArcadeDataTable@@QEBAXHAEAV?$vector@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@@std@@@Z	1401a3ae0	func
