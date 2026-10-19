@@ -3477,3 +3477,6 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??1Unk_ListEventBase@@QEAA@XZ	1422e22a0	func
 ??0ASListItemRenderer@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422e1c50	func
 ??1ASListItemRenderer@@UEAA@XZ	1422e1ca0	func
+?s_bInit@CItemEnchantLimitTable@@2_NA	143aafb48	data
+?ms_RTTI@NiPhysXD6JointDesc@@2VNiRTTI@@B	143afc8c0	data
+?GetJoint@NiPhysXD6JointDesc@@QEAAPEAVNxD6Joint@@XZ	141ef6110	func
