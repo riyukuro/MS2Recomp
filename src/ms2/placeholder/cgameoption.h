@@ -75,6 +75,7 @@ public:
     TiXmlDocument* FUN_1412442c0();                         // &m_docAccountDefault
     TiXmlDocument* FUN_1412442e0();                         // &m_docGame
     TiXmlDocument* FUN_141244300();                         // &m_docCharacter
+    Unk_GpState* FUN_140a58500();                           // &m_gamepad (0x140a58500, stateskill.cpp)
 public:
     Unk_CameraState m_camera;                               // +0x08 ctor 0x14125b400
     Unk_InterfaceState m_interface;                         // +0x18 ctor 0x14125b770
