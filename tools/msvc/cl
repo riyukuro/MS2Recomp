@@ -2,4 +2,7 @@
 # Pins the project Wine prefix: ninja runs compilers long after cmake configured, without its ENV{WINEPREFIX}.
 R=$(cd "$(dirname "$0")/../.." && pwd)
 export WINEPREFIX="${MS2_WINEPREFIX:-${MS2_MSVC_WINEPREFIX:-$R/work/wineprefix-msvc}}" WINEDEBUG="${WINEDEBUG:--all}"
+# ninja lowercases the directory part of /showIncludes paths that contain a backslash (cl prints "-I dir\file.h" for headers found
+# through an include dir), so recorded deps never matched the real files and every object rebuilt on every run: use '/'.
+export WINE_MSVC_STDOUT_SED='/^Note: including file:/ s#\\#/#g;'"$WINE_MSVC_STDOUT_SED"
 exec "${MS2_THIRD_PARTY:-$R/third_party}/msvc/bin/x64/cl" "$@"
