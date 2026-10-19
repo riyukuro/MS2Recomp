@@ -11,6 +11,12 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/mstime.h"
 
+// The game's config singleton type (FUN_1401d3200). Only the "constants" block at +0x6018 is touched.
+class Unk_CMesoMarketConfig
+{
+public:
+    char m_pad[0x6018];
+};
 
 class CMesoMarketProduct : public CPtred
 {
