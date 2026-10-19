@@ -32,6 +32,7 @@ struct Unk_AdBannerPtr
     Unk_AdBannerPtr(const Unk_AdBannerPtr& o);      // 0x14016e2b0
     ~Unk_AdBannerPtr();                         // 0x14016e430
     AdBannerData* get() const;                  // 0x1409fb8a0 (unit_1409faff0)
+    AdBannerData* FUN_14016e5a0() const;        // 0x14016e5a0 operator-> (unit_141347b10)
     void* m_pad_0;
     AdBannerData* m_p;
 };
