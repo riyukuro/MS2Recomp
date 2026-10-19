@@ -235,6 +235,10 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2, int a3);   // 0x140ed1090 (inline COMDAT, defined in uiskillbookautodistributedialog.cpp; the strings by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, Scaleform::GFx::Value a2, int a3);   // 0x1412e13f0 (inline COMDAT, defined in uimaidrecipelistdialog.cpp; the values by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, const char* a3, int a4);   // 0x1412d4770 (inline COMDAT, defined in uiitemoptioncreatedialog.cpp)
+    // Invoke(method, size_t) / Invoke(method, size_t, bool) under their addresses: an Invoke overload taking a single
+    // unsigned __int64 would make the existing Invoke(method, <int-like>) calls ambiguous.
+    Scaleform::GFx::Value FUN_140c1c8c0(const char* szMethod, unsigned __int64 a1);         // 0x140c1c8c0 (UInt value; "setupTabSize")
+    Scaleform::GFx::Value FUN_140fdd6b0(const char* szMethod, unsigned __int64 a1, bool a2);   // 0x140fdd6b0 (inline COMDAT, defined in uiweddinghallreservationdialog.cpp; "setTabEnable")
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {

@@ -26,6 +26,9 @@ public:
     unsigned char m_items[0x30];                            // +0x40 the weddingItem / weddingCompleteItem vectors
     unsigned int m_nFieldId;                                // +0x70 "fieldID"
     unsigned int m_nNightFieldId;                           // +0x74 "nightFieldID"
+
+    unsigned int FUN_140906e40(bool bNight);                // the field id (the night field when set and nonzero)
+    int FUN_140906e80();                                    // the reservation coupon of the grade (grade 1-3: 0xd4-0xd6, else 0)
 };
 MS2_CHECK_OFFSET(WeddingHallData, m_nMerat, 0x20);
 MS2_CHECK_OFFSET(WeddingHallData, m_nFieldId, 0x70);

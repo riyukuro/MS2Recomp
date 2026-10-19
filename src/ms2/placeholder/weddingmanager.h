@@ -67,6 +67,8 @@ public:
     void SendReservationChange(int packageId, int hallId, __int64 time, unsigned char night);         // 0x141b865c0
     int CheckPropose(unsigned __int64 id);                  // 0x141b87220
     bool CanVisit(int packageId, int hallId, __int64 id);   // 0x141b89a10
+    // CanVisit as the reservation dialog calls it: with a fourth (night) argument the body never reads.
+    bool FUN_141b89a10(int packageId, int hallId, __int64 time, unsigned char night);   // 0x141b89a10
     bool IsPartnerOnline();                                 // 0x141b8a580
     bool IsInProgress();                                    // 0x141b89990
     bool CanStartWedding(__int64 partnerId);                // 0x141b867e0

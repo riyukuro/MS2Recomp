@@ -3572,3 +3572,5 @@ __imp_NxGetUtilLib	142cced28	data
 ??1Unk_IsPadHudPtr@@QEAA@XZ	140a58400	func
 ?DAT_143af2258@@3V?$CAtlList@HV?$CElementTraits@H@ATL@@@ATL@@A	143af2258	data
 ??0ASDataProvider@@QEAA@AEBVASArray@@@Z	140bbf7b0	func
+?SendReservation@WeddingManager@@QEAAXHH_JE_N@Z	141b86420	func
+?DAT_143ab2a90@@3VUnk_WrInventory@@A	143ab2a90	data
