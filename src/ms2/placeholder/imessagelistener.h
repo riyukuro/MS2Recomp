@@ -13,6 +13,7 @@ class UIMsg
 {
 public:
     int FUN_1422e4520();                // nonzero: handled/cancelled? (UICutSceneMovie::OnMessage returns 0)
+    int FUN_1422b8a90();                // the second result (the bill dialog's "use coupon" check box)
     int FUN_1422b8a10();                // result code; 0 = OK/yes button (switched on)
     CStringW FUN_1422b8f40();           // message box tag ("askClose") passed to UIMessageBox
     CString FUN_1422b8d30();            // the AS method name ("OnExit"; uibeautyshopstyledialog.cpp)

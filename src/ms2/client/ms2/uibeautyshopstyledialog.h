@@ -13,6 +13,7 @@
 #include "ms2/placeholder/uiitemeventlistener.h"
 #include "ms2/placeholder/imessagelistener.h"
 #include "ms2/client/ms2/uiattendgiftdialog.h"     // Unk_14102fe10 (the AS list holder)
+#include "ms2/client/ms2/uimodaldialog.h"          // UIBillDialog base
 
 class CItem;
 class CInPacket;
@@ -21,6 +22,7 @@ class NotifyObject;
 class ASGameEntity;
 class ASMovieClip;
 class Unk_140bfc2e0;        // the AS list of the style slots ("m_items")
+class Unk_BSPartHandle;     // a handle to the part the customize controller edits (uibeautyshopdialog.cpp)
 
 // The item customize listener (vftable 0x142e6f3a0, 6 slots, no virtual destructor): the customize controller
 // (Customize) reports to it. 0x18 bytes.
@@ -55,6 +57,15 @@ MS2_CHECK_SIZE(IItemCustomizeEventListener, 0x18);
 class Customize : public CPtred
 {
 public:
+    // The shop context handed to the controller (0x28 bytes, ctor 0x140ccad60).
+    class BeautyShopContext : public CPtred
+    {
+    public:
+        BeautyShopContext(int nEventId, __int64 n);
+        MS2_LAYOUT_FRIEND;
+        int m_18;                               // +0x18 the sale event id
+        __int64 m_20;
+    };
     Customize(int nObjectId, IItemCustomizeEventListener* pListener, int n);
     bool FUN_140cd1c90(CItem* pItem);           // preview an item (false: not wearable)
     void FUN_140cd20c0();
@@ -65,6 +76,19 @@ public:
     void FUN_140cd2660(int nItemId);            // preview an item id
     int FUN_140cd2a00();                        // changed (billable)
     int FUN_140cd2c20();                        // changed
+    int FUN_140cd17e0();                        // the previewed item id
+    void FUN_140cd1bf0();
+    int FUN_140cd27f0();
+    int FUN_140cd28a0();                        // a style is previewed
+    int FUN_140cd2ea0();                        // a colour is previewed
+    int FUN_140cd3000();                        // a crop is previewed
+    void FUN_140cd1d50(int nItemId);
+    void FUN_140cd2280(int nSlot);
+    void FUN_140cd3220(int nPalette, int nColor, int n);
+    void FUN_140cd32f0(const int& nPalette, int nColor, int n);
+    void FUN_140cd38d0(int nPalette);
+    Unk_BSPartHandle FUN_140cd1a30();           // the part being edited
+    void FUN_140cd38f0(MS2Ptr<BeautyShopContext> spContext);
     char m_pad_18[0x70];
 };
 MS2_CHECK_SIZE(Customize, 0x88);
@@ -77,14 +101,23 @@ public:
 };
 
 // The shop fee row (CBeautyShopDataCli::FUN_1406e3dc0).
-class Unk_BSFee
+class Unk_BSFee : public CPtred
 {
 public:
+    Unk_BSFee& operator=(const Unk_BSFee& o);   // 0x1418cc890
     const CString& FUN_1406dc4b0();             // the fee's currency name
     int FUN_1406dc4d0();                        // currency type
     int FUN_1406dc4f0();                        // fee
     int FUN_1406dc510();                        // fee type
+
+    MS2_LAYOUT_FRIEND;
+    CString m_18;                               // +0x18 currency name
+    int m_20;
+    int m_24;
+    __int64 m_28;
+    int m_30;
 };
+MS2_CHECK_SIZE(Unk_BSFee, 0x38);
 
 // The beauty shop's data (0xa8 bytes, ctor 0x1406e53e0, dtor 0x1406ef480; npcshopdata).
 class CBeautyShopDataCli
@@ -94,19 +127,25 @@ public:
     ~CBeautyShopDataCli();
     void FUN_1406e3d30();                       // reset
     Unk_BSFee* FUN_1406e3dc0();                 // the fee row
+    Unk_BSFee* FUN_1406e3de0();                 // the second fee row
     void FUN_1406e5420(CInPacket& packet);      // read the shop
 
     MS2_LAYOUT_FRIEND;
     char m_pad_00[0x18];
     int m_18;                                   // +0x18 the sale event id
     int m_1c;                                   // +0x1c shop kind (1: hair)
-    char m_pad_20[0x88];
+    int m_20;                                   // +0x20 the beauty coupon item id (0: none)
+    int m_24;
+    int m_28;                                   // +0x28 the returned coupon item id
+    int m_2c;                                   // +0x2c the coupon's event id
+    char m_30;                                  // +0x30 the page selects a style first
+    char m_pad_31[0x88 - 0x11];
 };
 MS2_CHECK_SIZE(CBeautyShopDataCli, 0xa8);
 MS2_CHECK_OFFSET(CBeautyShopDataCli, m_18, 0x18);
 
 // The bill dialog (UI 0x4e7b): shows the price of a beauty shop change.
-class UIBillDialog : public UIDialog
+class UIBillDialog : public UIModalDialog
 {
 public:
     // The bill (0x68 bytes, vftable 0x142e6f7f0).
@@ -129,9 +168,27 @@ public:
         int m_60;
     };
 
+    UIBillDialog();                             // 0x1418cd0c0 (uibeautyshopdialog.cpp)
+    virtual ~UIBillDialog();                    // 0x1418cd170
+    virtual CString vfunc_1();                  // "BillDialog"
+    virtual int vfunc_13();
+    virtual void OnLoadComplete();
+    virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
+    virtual int vfunc_48() { return 0x4e7b; }   // @0x1418ce5d0
+    virtual void vfunc_67();
     void FUN_1418cda20(MS2Ptr<TData> spData);
     void FUN_1418cda70(int nPrice);
+    MS2Ptr<class Unk_BSCheckBox> FUN_140e52670(const CString& strName);     // check box child lookup (a UIDialog member)
+    MS2Ptr<class ASTextField> FUN_140bb4cf0(const CString& strName);        // text field child lookup (a UIDialog member)
+
+private:
+    MS2_LAYOUT_FRIEND;
+    CStringW m_180;                             // +0x180
+    MS2Ptr<TData> m_188;                        // +0x188 the bill
+    void* m_198;                                // +0x198 (never set)
 };
+MS2_CHECK_SIZE(UIBillDialog, 0x1a0);
+MS2_CHECK_OFFSET(UIBillDialog, m_188, 0x188);
 MS2_CHECK_SIZE(UIBillDialog::TData, 0x68);
 MS2_CHECK_OFFSET(UIBillDialog::TData, m_20, 0x20);
 MS2_CHECK_OFFSET(UIBillDialog::TData, m_40, 0x40);
