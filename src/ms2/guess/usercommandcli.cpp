@@ -4,6 +4,10 @@
 // MS2-RANGE: 0x142cb0d00-0x142cb0de0 .text$yd
 // MS2-RANGE: 0x142cb0de0-0x142cb0ef0 .text$yd
 // MS2-RANGE: 0x141361c50-0x141374a90 .text$mn
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBK@?$vector@KV?$allocator@K@std@@@std@@AEAAXAEBK@Z 0x14136f820 ; unique
+// MS2-PIN: ??$emplace@AEBK@?$vector@KV?$allocator@K@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@K@std@@@std@@@1@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@K@std@@@std@@@1@AEBK@Z 0x141370460 ; unique
+// MS2-PINS-END tplpin
 // MS2-PIN: ??$_Emplace_reallocate@AEBK@?$vector@KV?$allocator@K@std@@@std@@QEAAPEAKQEAKAEBK@Z 0x14136f8e0
 // MS2-PIN: ??$_Insert_range@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@std@@@?$vector@KV?$allocator@K@std@@@std@@AEAAXV?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@K@std@@@std@@@1@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@H@std@@@std@@@1@1Uforward_iterator_tag@1@@Z 0x14136fc50
 // MS2-PIN: ??$_Range_construct_or_tidy@PEBK@?$vector@KV?$allocator@K@std@@@std@@AEAAXPEBK0Uforward_iterator_tag@1@@Z 0x141370100
