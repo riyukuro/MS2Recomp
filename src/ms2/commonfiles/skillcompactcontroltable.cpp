@@ -210,9 +210,4 @@ void CSkillCompactControlTable::SetInit(bool b)
     s_bInit = b;
 }
 
-// @0x1401ba820
-CPtred* FUN_1401ba820(CPtred* p)
-{
-    p->m_nRef = 1;
-    return p;
-}
+CPtred* FUN_1401ba820(CPtred* p);   // 0x1401ba820 lives in unit_1401b6d10.cpp (a second definition breaks the DLL link)
