@@ -10,6 +10,7 @@
 #include "ms2/placeholder/cptred.h"
 
 class MyPC;
+class PC;
 
 // 12-byte appearance record (two per character: the two equip colour slots); default ctor 0x1409f72f0.
 struct Unk_CharEquip
@@ -27,8 +28,10 @@ public:
     virtual ~TCreateCharInfo();                             // 0x14107ad50
 
     void FUN_14107ae00();                                   // fill with a random gender and the default appearance
-    int FUN_14107b440(MyPC* pPC);                           // apply to a pc
-    int FUN_14107c3a0(MyPC* pPC);                           // apply to a pc and its default items
+    int FUN_14107b440(PC* pPC);                           // apply to a pc
+    int FUN_14107c3a0(PC* pPC);                           // apply to a pc and its default items
+    void FUN_14107ad90();                                   // reset to the defaults
+    void FUN_14107afa0();                                   // both equip records = the default appearance
 
     int m_nType;                                            // +0x18 (3 = lobby preview)
     unsigned long long m_n20;                               // +0x20
