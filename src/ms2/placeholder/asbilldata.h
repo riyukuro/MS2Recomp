@@ -27,6 +27,14 @@ public:
     virtual int vfunc_8();                                          //  8 0x1409abf70 the payback type (m_4c)
     virtual __int64 vfunc_9();                                      //  9 0x1409abf90 the random payback (0)
 
+    // Setters of the row's AS members (uivipgoodsshopdialog.cpp fills a VIP row with them; the member names are not known).
+    void FUN_1409ab940(Scaleform::GFx::Value& vSlot);               // 0x1409ab940 the slot object
+    void FUN_1409aba80(const CStringW& strName);                    // 0x1409aba80 the shown name
+    void FUN_1409abad0(const CStringW& strPrice, __int64 nPrice);   // 0x1409abad0 the price text and amount
+    void FUN_1409abbf0(const CStringW& strExtra);                   // 0x1409abbf0 the extra line
+    void FUN_1409abc90(int n);                                      // 0x1409abc90
+    void FUN_1409abcd0(int nPayType);                               // 0x1409abcd0 the pay type
+    void FUN_1409abd20(int n);                                      // 0x1409abd20
     bool FUN_140eacf60() const { return m_b40; }                    // 0x140eacf60 (inline COMDAT, uimarketbilldialog.cpp)
     bool FUN_140eacf20() const { return m_b48; }                    // 0x140eacf20 (same)
     bool m_b40;                                                     // +0x40
