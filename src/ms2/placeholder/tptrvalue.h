@@ -21,6 +21,7 @@ class TPtrValue
 public:
     TPtrValue() { m_p = 0; }
     TPtrValue(int) { m_p = 0; }
+    TPtrValue(decltype(nullptr)) { m_p = 0; }   // dpsmetersystem.cpp: the qword-homed null ctor (0x141184e90)
     TPtrValue(const Unk_GrNewTag&) { m_p = 0; Make(); }
 #ifdef MS2_TPTRVALUE_MOVE
     // maidgradejockpottable.cpp: the exe's std glue copies lvalues with the add-ref ctor and moves with the stealing one
