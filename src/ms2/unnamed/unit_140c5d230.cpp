@@ -6,29 +6,36 @@
 // MS2-RANGE: 0x1400ce050-0x1400ce500 .text$di
 // MS2-PIN: memmove_s 0x140c607d0
 // MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??0?$MS2Ptr@VLapenshardSystemTabPanelBase@@@@QEAA@PEAVLapenshardSystemTabPanelBase@@@Z 0x140c5e420 ; prop
 // MS2-PIN: ??$Unk_Fmt2@HH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBH1@Z 0x140c60060 ; unique
 // MS2-PIN: ??_EUILapenshardShieldBar@@WHA@EAAPEAXI@Z 0x140c6075c ; unique
 // MS2-PIN: ??_GUILapenshardShieldBar@@UEAAPEAXI@Z 0x140c60770 ; unique
-// MS2-PIN: ?vfunc_48@UILapenshardShieldBar@@UEAAHXZ 0x140c607c0 ; unique
 // MS2-PIN: ?FUN_140c62500@UILapenshardSystemDialog@@QEBAHXZ 0x140c62500 ; unique
-// MS2-PIN: ??0?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@QEAA@PEAVTabInfo@UILapenshardSystemDialog@@@Z 0x140c629d0 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VLapenshardSystemTabContents@@@@QEAA@PEAVLapenshardSystemTabContents@@@Z 0x140c62a80 ; prop
 // MS2-PIN: ??8?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@QEBA_NPEAVTabInfo@UILapenshardSystemDialog@@@Z 0x140c62c70 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VCreateParam@ItemSlotBag@@@@QEBAPEAVCreateParam@ItemSlotBag@@XZ 0x140c62d30 ; unique
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCItem@@@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCItem@@@@_K@Z 0x140c62fe0 ; unique
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@V?$CElementTraits@V?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@@ATL@@@ATL@@QEBA_KXZ 0x140c63020 ; unique
 // MS2-PIN: ?vfunc_48@UILapenshardSystemDialog@@UEAAHXZ 0x140c63030 ; unique
+// MS2-PIN: ?RemoveAll@?$CAtlArray@V?$MS2Ptr@VCItem@@@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@ATL@@@ATL@@QEAAXXZ 0x140c63220 ; prop
 // MS2-PIN: ?FUN_140c68e20@UILapenshardUpgradeTab@@QEAAHXZ 0x140c68e20 ; unique
 // MS2-PIN: ?FUN_140c68fd0@UILapenshardUpgradeTab@@QEAAHXZ 0x140c68fd0 ; unique
+// MS2-PIN: ??$?8PEAVLapenshardIngredientItemSlotBagPanel@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVLapenshardIngredientItemSlotBagPanel@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x140c69940 ; prop
+// MS2-PIN: ??$?8PEAVLapenshardUpgradeSlotPanel@@P80@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@YA_NAEBU?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@0@0@Z 0x140c69990 ; prop
+// MS2-PIN: ??$?8PEAVLapenshardUpgradeSlotPanel@@P80@EAAXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@std@@YA_NAEBU?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@0@0@Z 0x140c699e0 ; prop
 // MS2-PIN: ??0?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA@IMMMI@Z 0x140c69c80 ; unique
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVLapenshardIngredientItemSlotBagPanel@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x140c69d70 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVLapenshardIngredientItemSlotBagPanel@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVLapenshardIngredientItemSlotBagPanel@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z 0x140c69dc0 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAA@AEBV01@@Z 0x140c69e10 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAA@AEBU?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@Z 0x140c69e60 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@@QEAA@AEBV01@@Z 0x140c69eb0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@@QEAA@AEBU?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@std@@@Z 0x140c69f00 ; prop
 // MS2-PIN: ??1?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA@XZ 0x140c6a0d0 ; unique
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVLapenshardIngredientItemSlotBagPanel@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA@XZ 0x140c6a100 ; prop
-// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@@UEAA@XZ 0x140c6a140 ; prop
+// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@UEAA@XZ 0x140c6a120 ; prop
 // MS2-PIN: ??1Unk_LsPktB@@QEAA@XZ 0x140c6a2b0 ; unique
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVLapenshardIngredientItemSlotBagPanel@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x140c6a380 ; prop
-// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@@UEAAPEAXI@Z 0x140c6a400 ; prop
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@UEAAPEAXI@Z 0x140c6a3c0 ; prop
 // MS2-PIN: ??_GLapenshardIngredientItemSlotBagPanel@@UEAAPEAXI@Z 0x140c6a480 ; prop
 // MS2-PIN: ??_GLapenshardSourceItemSlotBagPanel@@UEAAPEAXI@Z 0x140c6a4c0 ; prop
 // MS2-PIN: ??_GLapenshardUpgradeSlotPanel@@UEAAPEAXI@Z 0x140c6a500 ; prop
