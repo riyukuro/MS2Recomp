@@ -187,6 +187,12 @@ Unk_UtilFloat3 FUN_141b6dff0(const Unk_UtilFloat3* pVec);  // a copy of the posi
 void FUN_1401fd510(unsigned char* payload, COutputStream& stream);  // write the skill use payload
 void FUN_14165f130(MyPC* pMy, int n);                      // put the held object weapon away
 
+class CNpc;
+CNpc* FUN_14096e110(PCBase* pActor);                       // the npc side of an actor (null for a player)
+PCBase* FUN_141468360(PCBase* pActor);                     // the player base of an actor
+extern char DAT_143ae95e0;                                 // debug: show the skill range of a pc
+extern char DAT_143ae95e1;                                 // debug: show the skill range of an npc
+
 // ---- statics -------------------------------------------------------------------------------------------------------
 
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
@@ -1305,6 +1311,102 @@ void StateSkill::FUN_1417ecc10(Unk_MagicTagPtr spTag)
 }
 MS2_REPLACE_METHOD(0x1417ecc10, StateSkill, FUN_1417ecc10, 189, 0x9A62BC2A);
 
+typedef ATL::CAtlArray<Unk_MagicTagPtr> Unk_SsTagArray;
+
+// Fires one attack of a cast: shows its debug range, notes the attack's tick, picks the targets of the attack along
+// the cast's direction (for a direction-rotation actor, -x turned by the rotation), starts a magic model for every
+// target record and every record linked to it, then sends them (packet 0x20 mode 1) and runs the models once.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417ecce0
+void StateSkill::FUN_1417ecce0(unsigned nTick, MS2Ptr<CSkillRecord> spRecord, int nAttack, PCBase* pOwner)
+{
+    FUN_1417f2cb0(FUN_14028d280(nTick), spRecord, nAttack, pOwner);
+    spRecord->m_mapC0[nAttack] = nTick;
+    if (pOwner->vfunc_108() == 0)
+        return;
+    Unk_SsTagArray aTags;
+    efd::Point3 kDir;
+    PCBase* pPC = FUN_140974230(pOwner);
+    if (pPC == NULL || FUN_141489940(pPC) != 10)
+    {
+        kDir = GameObject::FUN_14123cc80(reinterpret_cast<const NiPoint3&>(spRecord->m_ptRot));
+    }
+    else
+    {
+        efd::Point3 kRad = SS_PT(spRecord->m_ptRot) * 3.1415927f / 180.0f;
+        efd::Point3 kAxis = -efd::Point3::UNIT_X;
+        efd::Matrix3 kMat;
+        kMat.FromEulerAnglesXYZ(kRad.x, kRad.y, kRad.z);
+        kAxis = kMat * kAxis;
+        kDir = kAxis;
+    }
+    FUN_1417f3180(aTags, kDir, spRecord, nAttack, pOwner);
+    for (unsigned i = 0; i < aTags.GetCount(); i++)
+    {
+        SkillTargetRecord* pTag = reinterpret_cast<SkillTargetRecord*>(aTags[i].get());
+        pTag->m_nStartTick = 0;
+        Unk_SocketPtr<CMagicModel> spModel(new CMagicModel);
+        spModel->FUN_141467500(Unk_MagicTagPtr(reinterpret_cast<Unk_MagicTag*>(pTag)), Unk_MagicTagPtr(0),
+            SS_SP(efd::Point3::ZERO), 0, 0, 0);
+        spRecord->m_magics.AddTail(spModel);
+        do
+        {
+            SkillTargetRecord* pPrev = pTag;
+            pTag = pTag->m_spLinked.get();
+            bool bLinked = pTag != NULL;
+            if (bLinked)
+            {
+                Unk_SocketPtr<CMagicModel> spLinkModel(new CMagicModel);
+                spLinkModel->FUN_141467500(Unk_MagicTagPtr(reinterpret_cast<Unk_MagicTag*>(pTag)),
+                    Unk_MagicTagPtr(reinterpret_cast<Unk_MagicTag*>(pPrev)), SS_SP(efd::Point3::ZERO), 0, 0, 0);
+            }
+        } while (pTag != NULL);
+    }
+    FUN_1417f2b50(spRecord);
+    COutPacket packet(0x20, 0);
+    packet.Encode1(1);
+    packet.Encode1(0);
+    packet.Encode8(spRecord->m_nCastId);
+    packet.Encode1((unsigned char)nAttack);
+    packet.vfunc_o10_10(spRecord->m_ptPos);
+    packet.vfunc_o10_10(SS_SP(kDir));
+    packet.Encode1((unsigned char)aTags.GetCount());
+    packet.Encode4(spRecord->m_nSendCount);
+    for (unsigned i = 0; i < aTags.GetCount(); i++)
+    {
+        SkillTargetRecord* pTag = reinterpret_cast<SkillTargetRecord*>(aTags[i].get());
+        packet.Encode8(pTag->m_nTagSub);
+        packet.Encode4(pTag->m_nCasterId);
+        packet.Encode1((unsigned char)pTag->m_n84);
+        do
+        {
+            pTag = pTag->m_spLinked.get();
+            bool bLinked = pTag != NULL;
+            packet.Encode1(bLinked);
+            if (bLinked)
+            {
+                packet.Encode8(pTag->m_nTagSub);
+                packet.Encode4(pTag->m_nCasterId);
+                packet.Encode1((unsigned char)pTag->m_n80);
+                packet.Encode1((unsigned char)pTag->m_n84);
+            }
+        } while (pTag != NULL);
+    }
+    FUN_140710590(packet);
+    for (unsigned i = 0; i < aTags.GetCount(); i++)
+    {
+        SkillTargetRecord* pTag = reinterpret_cast<SkillTargetRecord*>(aTags[i].get());
+        if (pTag != NULL)
+        {
+            CMagicModel* pModel = FUN_1410a7630()->FUN_14146c5d0(pTag->m_nTagId, pTag->m_nTagSub).get();
+            if (pModel != NULL)
+                pModel->FUN_141467860();
+        }
+    }
+    spRecord->m_nA0 = 1;
+}
+MS2_REPLACE(0x1417ecce0, StateSkill::FUN_1417ecce0, 2564, 0xE267354E);
+
 // @0x1417ed6f0
 MS2Ptr<CSkillRecord> StateSkill::FUN_1417ed6f0()
 {
@@ -2194,6 +2296,48 @@ void StateSkill::FUN_1417f2a90(bool bFinish)
     pBar->FUN_1418e1390();
 }
 MS2_REPLACE_METHOD(0x1417f2a90, StateSkill, FUN_1417f2a90, 173, 0x9B19AA5D);
+
+// The debug view of an attack's range (the skill range check boxes, pc / npc): a shape of the attack placed at the
+// caster along the cast's direction (shifted by the attack's range offset), handed to the collision manager.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417f2cb0
+void StateSkill::FUN_1417f2cb0(float fTime, MS2Ptr<CSkillRecord> spRecord, int nAttack, PCBase* pOwner)
+{
+    if (FUN_14096e110(pOwner) == NULL)
+    {
+        if ((FUN_140974230(pOwner) != NULL || FUN_141468360(pOwner) != NULL) && !DAT_143ae95e0)
+            return;
+    }
+    else if (!DAT_143ae95e1)
+        return;
+    Unk_SsTagArray aTags;
+    efd::Point3 kDir = GameObject::FUN_14123cc80(reinterpret_cast<const NiPoint3&>(spRecord->m_ptRot));
+    FUN_1417f3180(aTags, kDir, spRecord, nAttack, pOwner);
+    NiPoint3 kPos(pOwner->vfunc_18());
+    NiPoint3 kTop(pOwner->vfunc_20());
+    if (spRecord->FUN_141759f70() == 0)
+    {
+        efd::Point3 kOffset = SS_PT(spRecord->FUN_14175a000()->m_range.m_pt2c);
+        efd::Point3 kHeight(0, 0, spRecord->FUN_14175a000()->m_range.m_f38);
+        float fAngle = GameObject::FUN_14123ce70(kDir);
+        NiMatrix3 kRot;
+        kRot.MakeZRotation(fAngle + 3.1415927f);
+        kOffset = kRot * kOffset;
+        reinterpret_cast<efd::Point3&>(kPos) += kOffset;
+        reinterpret_cast<efd::Point3&>(kTop) += kHeight;
+    }
+    CSkillRecord* pRecord = spRecord.operator->();
+    CSkillRecord* pMotionRecord = spRecord.operator->();
+    SkillLevelData* pLevel = spRecord->m_spLevel;
+    MS2Ptr<CBaseCollision> spShape = CSkillCollisionManager::GetInstance()->Create(
+        reinterpret_cast<Unk_SkillSrc*>(pLevel), pMotionRecord->m_nMotion, pRecord->m_nAttackIndex, pOwner, 0.0f);
+    if (spShape == NULL)
+        return;
+    spShape->m_n58 = GetTickCountMs2();
+    spShape->vfunc_3(SS_SP(kPos), SS_SP(kTop), 1.0f);
+    CSkillCollisionManager::GetInstance()->Add(spShape);
+}
+MS2_REPLACE(0x1417f2cb0, StateSkill::FUN_1417f2cb0, 1220, 0x71FD2B5D);
 
 // @0x1417f4bc0
 bool StateSkill::FUN_1417f4bc0(Unk_EffectTarget& kTarget)

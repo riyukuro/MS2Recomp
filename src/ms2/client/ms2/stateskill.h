@@ -153,6 +153,9 @@ public:
     static int FUN_1417ebc00(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult);
     static void FUN_1417ecce0(unsigned nTick, MS2Ptr<CSkillRecord> spRecord, int nAttack, PCBase* pOwner);
                                                                         // fire one attack (magic models + packet)
+    static void FUN_1417f2cb0(float fTime, MS2Ptr<CSkillRecord> spRecord, int nAttack, PCBase* pOwner);   // the debug range
+    static void FUN_1417f3180(ATL::CAtlArray<Unk_MagicTagPtr>& aTags, const efd::Point3& kDir,
+        MS2Ptr<CSkillRecord> spRecord, int nAttack, PCBase* pOwner);   // pick the targets of an attack
     static bool FUN_1417f4bc0(Unk_EffectTarget& kTarget);               // the effect is hidden by the options
 
     bool m_b48;                         // +0x48 the chain input is held
