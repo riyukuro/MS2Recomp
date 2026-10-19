@@ -128,6 +128,7 @@ CDPSDialog::~CDPSDialog()
 }
 
 // @0x1411784d0
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 BOOL CDPSDialog::OnInitDialog()
 {
     BOOL bRet = CToolBaseDialog::OnInitDialog();
@@ -169,6 +170,7 @@ void CDPSDialog::OnEnChangeText()
 }
 
 // @0x1411786e0
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSDialog::OnSizing(UINT fwSide, LPRECT pRect)
 {
     CToolBaseDialog::OnSizing(fwSide, pRect);
@@ -188,6 +190,7 @@ void CDPSDialog::OnBnClickedSave()
 }
 
 // @0x141178870
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSDialog::Refresh()
 {
     if (Unk_LockGuard guard = m_lock)
@@ -236,6 +239,7 @@ CMeterRecordData::Aggregation::Aggregation()
 }
 
 // @0x141178de0
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CMeterRecordData::Aggregation::AddDamage(MS2Ptr<CDamageMeterData> spData)
 {
     if (spData->m_nKind == 0)
@@ -336,6 +340,7 @@ const CStringW& CMeterRecordData::Aggregation::GetSkillReport()
 }
 
 // @0x141179ac0
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 const CStringW& CMeterRecordData::Aggregation::GetDamageLog()
 {
     static CStringW s_strLog;
@@ -387,6 +392,7 @@ const CStringW& CMeterRecordData::Aggregation::GetDotReport()
 }
 
 // @0x14117a950
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 const CStringW& CMeterRecordData::Aggregation::GetEffectLog()
 {
     static CStringW s_strLog;
@@ -423,6 +429,7 @@ CDPSMeterSystem::~CDPSMeterSystem()
 }
 
 // @0x14117ae30
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::StartThread()
 {
     if (m_bRunning != 0)
@@ -457,6 +464,7 @@ void CDPSMeterSystem::StartThread()
 }
 
 // @0x14117b080
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::StopThread()
 {
     if (m_hThread == 0)
@@ -471,6 +479,7 @@ void CDPSMeterSystem::StopThread()
 }
 
 // @0x14117b120
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 unsigned __stdcall CDPSMeterSystem::ThreadEntry(void* ptr)
 {
     MS2_ASSERT_AT(0x1ac, NULL != ptr);
@@ -610,6 +619,7 @@ int CDPSMeterSystem::StopRecord(unsigned nTime)
 }
 
 // @0x14117c8b0
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 int CDPSMeterSystem::IsRecording()
 {
     return (m_bRecording != 0 && m_spRecord.get() != 0) ? 1 : 0;
@@ -641,6 +651,7 @@ void CDPSMeterSystem::Flush()
 }
 
 // @0x14117c9f0
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::Accumulate(CMeterRecordData::Aggregation* pAgg, MS2Ptr<CDamageMeterData> spData)
 {
     pAgg->m_nCount++;
@@ -716,6 +727,7 @@ int CDPSMeterSystem::AddDamage(int nSide, int nCasterId, int nTargetId, int nKin
 }
 
 // @0x14117d090
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 int CDPSMeterSystem::AddStat(int nSide, int nList, __int64 nValue, __int64 nEffective, __int64 nOver, int nType)
 {
     if (IsRecording() == 0)
@@ -797,6 +809,7 @@ int CDPSMeterSystem::AddEffect(CStringW strEvent, int nSide, int nCasterId, int 
 }
 
 // @0x14117d750
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
 {
     if (IsRecording() == 0 || spRecord.IsNull())
@@ -832,6 +845,7 @@ void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
 }
 
 // @0x14117dbe0
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
 {
     if (IsRecording() == 0 || spRecord.IsNull())
@@ -868,6 +882,7 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
 }
 
 // @0x14117e030
+// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
 {
     if (IsRecording() == 0 || spRecord.IsNull())
