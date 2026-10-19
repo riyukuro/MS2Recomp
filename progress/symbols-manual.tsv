@@ -3443,3 +3443,4 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?GetMaidText@CManufactureManager@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HPEAVUnk_MfNpc@@@Z	140d51400	func
 ?Invoke@AScript@@QEAA?AVValue@GFx@Scaleform@@PEBDHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@1@Z	140fac340	func
 ??1Unk_SmDgRef@@QEAA@XZ	14031c0f0	func
+?SetFees@UIQuizOXCreateDialog@@QEAAXAEAV?$vector@HV?$allocator@H@std@@@std@@@Z	140e7e3a0	func
