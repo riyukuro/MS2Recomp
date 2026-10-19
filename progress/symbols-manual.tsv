@@ -3392,3 +3392,8 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??0Unk_AasSource@@QEAA@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	1422e5a70	func
 ??0Unk_DpChat@@QEAA@XZ	140acd570	func
 ??1Unk_DpChat@@QEAA@XZ	140acd770	func
+?s_bInit@CDynamicActionData@@2_NA	143aad201	data
+?s_lock@CDynamicActionData@@2VCLockCriticalSection@@A	143aad208	data
+?s_rows@CDynamicActionData@@2V?$CAtlList@V?$MS2Ptr@VCDynamicActionData@@@@V?$CElementTraits@V?$MS2Ptr@VCDynamicActionData@@@@@ATL@@@ATL@@A	143aad238	data
+?s_defaultSkills@CDynamicActionData@@2VUnk_DynSetRef@@A	143aad268	data
+?s_allSkills@CDynamicActionData@@2VUnk_DynSetRef@@A	143aad278	data
