@@ -1,0 +1,14 @@
+147,149c
+    NIBITFIELD_TYPE name##_MASK = NIBITFIELD_MASK(name##_POS, name##_SIZE);
+.
+18a
+// MS2: clang rejects a constant shift by the full width (POS + SIZE == 32); widen so the mask folds the same way.
+#ifdef __clang__
+#define NIBITFIELD_MASK(pos, size) \
+    ((unsigned int)(((unsigned long long)BITFIELDALLONES << (pos)) ^ \
+    ((unsigned long long)BITFIELDALLONES << ((pos) + (size)))))
+#else
+#define NIBITFIELD_MASK(pos, size) \
+    ((BITFIELDALLONES << (pos)) ^ (BITFIELDALLONES << ((pos) + (size))))
+#endif
+.
