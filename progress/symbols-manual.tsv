@@ -3160,3 +3160,6 @@ __imp_AddSurveyParameterA	142cd1480	data
 ?Load@CAchieveCategory@@SA_NXZ	14093e610	func
 ?Matches@CAchieveCategory@@QEAA_NI@Z	14093f2d0	func
 ?ParseRewardType@CAchieveData@@SAHAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	14015df00	func
+??0SetItemInfo@@QEAA@XZ	1407ad240	func
+??0Unk_CtlIntVec@@QEAA@XZ	140182ea0	func
+??1Unk_CtlIntVec@@QEAA@XZ	140183b60	func
