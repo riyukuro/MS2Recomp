@@ -79,6 +79,7 @@ public:
     virtual int vfunc_78();                                 // 78 0x1416578f0
     virtual MS2Ptr<Unk_PCBaseComp_a68> vfunc_81();          // 81 0x141656f80
     virtual MS2Ptr<Unk_PCBaseComp_a98> vfunc_84();          // 84 0x1416572b0
+    virtual void vfunc_49();                                // 49 0x141660e00
     virtual int vfunc_64();                                 // 64 0x141654840 (mypc vftable, w97)
     virtual MS2Ptr<Unk_PCBaseComp_a78> vfunc_82();          // 82 0x141657100
     virtual MS2Ptr<Unk_PCBaseComp_aa8> vfunc_85();          // 85 0x1416573b0
@@ -202,11 +203,40 @@ MS2_CHECK_OFFSET(PC, m_pCubeCraft, 0x1020);
 MS2_CHECK_OFFSET(PC, m_spInteractMode, 0x1240);
 MS2_CHECK_SIZE(PC, 0x12e0); // deleting dtor 1416678b0
 
+// The fitting doll: a PC-derived actor the cube fitting-doll UI dresses up (?\fittingdollslot.cpp, 0x14121b350-0x14121ced0).
+// Size 0x1300 (??_G 0x14121cca0). vftable 0x142ec2b60 (147 slots), CallbackObject vftable 0x142ec3000 (dtor thunk 0x14121cc8c).
+// efd: GetClassDesc 0x14121cd80, TypeCast 0x14121cf50 / 0x14121cfa0, ms_ClassInfo 0x143ad3290, SetupClassInfo 0x14121cef0.
 class FittingDollPC : public PC {
+    EE_DECLARE_CLASS1(FittingDollPC, 0x06200046, PC);
 public:
-    virtual ~FittingDollPC();
+    FittingDollPC();                                        // 0x14121b350
+    virtual ~FittingDollPC();                               // 0x14121b540
+    virtual void vfunc_9(void* p);                          // 9   0x14121c140
+    virtual int vfunc_10();                                 // 10  0x14121bec0
+    virtual void vfunc_12();                                // 12  0x14121bf10
+    virtual void vfunc_19(efd::Point3 kPos);                // 19  0x14121c1c0
+    virtual void vfunc_24(int) { m_unk_40 = 0; }            // 24  0x14121ced0
+    virtual void vfunc_53(float f);                         // 53  0x14121bf80
+    virtual bool vfunc_68(void* a, double t, int b, unsigned c, int d);   // 68 0x14121bf60
+    virtual MS2Ptr<Unk_PCBaseComp_a58> vfunc_80();          // 80  0x14121ce10
+    virtual MS2Ptr<Unk_PCBaseComp_a78> vfunc_82();          // 82  0x14121ce50
+    virtual MS2Ptr<Unk_PCBaseComp_a88> vfunc_83();          // 83  0x14121cd90
+    virtual MS2Ptr<Unk_PCBaseComp_aa8> vfunc_85();          // 85  0x14121cd40
+    virtual MS2Ptr<Unk_PCBaseComp_ab8> vfunc_86();          // 86  0x14121ce90
+    virtual MS2Ptr<Unk_PCBaseComp_ac8> vfunc_87();          // 87  0x14121cd00
+    virtual UISwfEntity* vfunc_88();                        // 88  0x14121cdd0
+    virtual void vfunc_138(NiAVObject* pRoot, int n, const Unk_CharEquip* pEquip);  // 138 0x14121c230
+    virtual int vfunc_145();                                // 145 0x14121ca50
+
     void FUN_14121c170(NiFixedString parentName);
     int FUN_14121c710();                                    // 0x14121c710 (scenestategame 0x7b mode 7: 1 selects the equip set)
+    int FUN_14121bab0(int nItemId);                         // 0x14121bab0 set up the doll from an item (false when the item has no doll)
+    void* FUN_14121c6c0();                                  // 0x14121c6c0 return unknown12f0
+    void FUN_14121c6e0(void* p);                            // 0x14121c6e0 unknown12f0 = p
+    bool FUN_14121c830();                                   // 0x14121c830 FUN_14121c710() == 0
+    int FUN_14121c870(CItem* pItem);                        // 0x14121c870 the result of putting the item on the doll (0 = ok)
+    int FUN_14121c910(CItem* pItem);                        // 0x14121c910
+    int FUN_14121c9d0(CItem* pItem);                        // 0x14121c9d0
     int type, index, unknown12e8;
     void* unknown12f0;
     NiFixedString parentName;
