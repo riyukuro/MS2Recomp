@@ -22,21 +22,12 @@
 #include "ms2/client/ms2/scenestatemulti.h"
 #include "ms2/client/ms2/uicameraeditdialog.h"
 #include "ms2/client/ms2/uidialog.h"
+#include "ms2/commonfiles/itemdefaultdata.h"         // DefaultItemData (the rows of the item list)
 
 class CInPacket;
 class CMsgBoxData;
 class CEquipItem;
 class CSceneStateMulti;
-
-// A row of the item list (a default item of the job: id and the sale tag). Ctor 0x140586e50 (itemdefaultdata.cpp).
-class DefaultItemData : public CPtred
-{
-public:
-    int m_nItemId;                                              // +0x18
-    int m_nSaleTag;                                             // +0x1c
-    char m_pad_20[8];
-};
-MS2_CHECK_SIZE(DefaultItemData, 0x28);
 
 // The items the lobby actor wears (item id -> the item), a CAtlMap<int, MS2Ptr<CItem> > at +0x1d8 (0x48 bytes).
 typedef ATL::CAtlMap<int, MS2Ptr<CItem> > Unk_CcItemMap;

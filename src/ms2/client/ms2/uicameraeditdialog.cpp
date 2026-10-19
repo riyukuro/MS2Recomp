@@ -32,7 +32,7 @@
 // MS2-PIN: ?RemoveNode@?$CAtlMap@HV?$MS2Ptr@VCItem@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x1418e8d80 ; unique
 // MS2-PIN: ?SetAt@?$CAtlMap@HV?$MS2Ptr@VCItem@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$MS2Ptr@VCItem@@@@@Z 0x1418e8e40 ; unique
 // MS2-PIN: ?SetOptimalLoad@?$CAtlMap@HV?$MS2Ptr@VCItem@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@3@@ATL@@QEAAXMMM_N@Z 0x1418e8ef0 ; unique
-// MS2-PIN: ?AddRef@?$MS2Ptr@VDefaultItemData@@@@AEBAXXZ 0x1418e9080 ; prop
+// MS2-PIN: ?AddRef@?$MS2Ptr@UDefaultItemData@@@@AEBAXXZ 0x1418e9080 ; prop
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICharacterCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418e9190 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUICharacterCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x1418e91f0 ; unique
 // MS2-PIN: ??$Call@VUICharacterCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUICharacterCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUICharacterCreateDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x1418e9230 ; unique
