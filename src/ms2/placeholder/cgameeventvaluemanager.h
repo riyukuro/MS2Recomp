@@ -58,7 +58,7 @@ class CShutdownEventUGCUpload {
 public:
     CShutdownEventUGCUpload();                  // 0x1407d1ea0
     CLockCriticalSection m_lock;
-    std::map<int, Unk_ShutdownUGCUploadInfo> m_events;
+    std::map<unsigned, Unk_ShutdownUGCUploadInfo> m_events;   // the key is unsigned (less<unsigned> in 0x1407d1f70)
 };
 MS2_CHECK_SIZE(CShutdownEventUGCUpload, 0x40);
 

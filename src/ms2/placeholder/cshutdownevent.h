@@ -160,6 +160,9 @@ class CShutdownEventItemRemakeOption : public CPtred
 {
 public:
     CShutdownEventItemRemakeOption();                       // 0x1407d1470
+    int FUN_1407d1500(int nKey);                            // 0x1407d1500 shut an option down
+    void FUN_1407d1570(int nKey);                           // 0x1407d1570 undo it
+    int FUN_1407d15d0(int nKey);                            // 0x1407d15d0 the shut down value (0 if none)
 private:
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x18
@@ -172,10 +175,14 @@ class CShutdownEventValue : public CPtred
 {
 public:
     CShutdownEventValue();                                  // 0x1407d1080
+    void FUN_1407d10e0(unsigned long nId);                            // 0x1407d10e0 count one more shut down of the id
+    void FUN_1407d1160(unsigned long nId);                            // 0x1407d1160 undo one (drops the id at zero)
+    bool FUN_1407d1210(unsigned long nId);                            // 0x1407d1210 the id is shut down
+    bool FUN_1407d12b0();                                   // 0x1407d12b0 any id is shut down
 private:
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x18
-    std::map<int, int> m_ids;                               // +0x48
+    std::map<unsigned long, unsigned long> m_ids;           // +0x48 (the exe map is <DWORD, DWORD>: 0x140445750 / 0x140446b20)
 };
 MS2_CHECK_SIZE(CShutdownEventValue, 0x58);
 
