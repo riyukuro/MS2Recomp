@@ -12,6 +12,8 @@
 // MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@1@@Z 0x14025be00
 // MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@1@@Z 0x14025be40
 // MS2-PIN: memmove_s 0x140266500
+// MS2-PIN: ??1CPair@?$CRBTree@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V32@@ATL@@IEAA@XZ 0x14025c970
+// MS2-PIN: ??1CNode@?$CRBTree@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V32@@ATL@@QEAA@XZ 0x14025c8d0
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??_7CBanTextChecker@@6B?$CValidData@VCBanTextChecker@@@@@ 0x142d129b8
 // MS2-PIN: ??_7CommonString@@6B?$TSingleton@VCommonString@@@@@ 0x142d129f8
