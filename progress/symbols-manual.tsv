@@ -3449,3 +3449,4 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?LimitState@CMasteryTable@@QEAAHH@Z	14066bc40	func
 ?Factor@CMasteryTable@@QEAAHHI@Z	14066ab90	func
 ?DifferentialName@CMasteryTable@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HI@Z	14066adb0	func
+??RUnk_HashKeyHash@@QEBA_KAEBUUnk_HashKey@@@Z	140ad7090	func
