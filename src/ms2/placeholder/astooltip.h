@@ -74,6 +74,7 @@ public:
     void FUN_1409c6e90(int n);
     int FUN_1409e26b0(const CStringW& strText);
     int FUN_1409e1770(int a1, int a2);
+    int FUN_1409e21a0(unsigned nId, unsigned nGrade);                   // achievement tooltip (uiachievedialog.cpp)
     int FUN_1409e0d40(CItem* pItem);
     int FUN_1409e2750(void* pSkillAttr, int a1, int a2);                   // skill record tooltip (uiadventureleveldialog.cpp)
     void FUN_1409db870(Unk_GalleryPtr<Unk_GalleryItem> item);

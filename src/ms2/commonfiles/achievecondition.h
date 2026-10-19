@@ -71,6 +71,9 @@ public:
     int GetStartGrade();                // 0x140939ae0
     int GetCondType();                  // 0x140941760
     __int64 GetProgress();              // 0x140941790
+    void SetBookmark(int bBookmark);    // 0x1418b0bc0 (COMDAT of uiachievedialog.cpp: m_d8)
+    int GetBookmark();                  // 0x1418aff70 (m_d8)
+    int GetValue80();                   // 0x1418aff90 (m_80)
 
     float m_18;                         // +0x18
     MS2Ptr<CAchieveData> m_pData;       // +0x20
