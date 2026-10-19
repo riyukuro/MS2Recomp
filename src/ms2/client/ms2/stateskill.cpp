@@ -35,6 +35,10 @@
 #include "ms2/client/ms2/skillsystem.h"
 #include "ms2/client/ms2/effectparam.h"
 #include "ms2/client/ms2/magicdata.h"
+#include "ms2/client/ms2/uicastingbar.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/gameobject.h"
+#include "ms2/placeholder/cequipmentslotlayerinfo.h"
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/placeholder/commonresource.h"
 #include "ms2/placeholder/coutpacket.h"
@@ -95,8 +99,16 @@ class Unk_SsAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID&
 Unk_SsAnimSvc* FUN_141b6f910();
 
 // TSingleton<WorldService>: the scene kind of an actor.
-class Unk_SsWorld { public: int FUN_141bd1a10(GameObject* pObject); };
+class Unk_SsWorld
+{
+public:
+    void* FUN_141bd0cc0();                              // the local player (a MyPC)
+    int FUN_141bd1a10(GameObject* pObject);
+    Unk_WsOptional<float>* FUN_141bd9c00();             // the effect hide distance option
+};
 Unk_SsWorld* FUN_1403ed2d0();
+UICastingBar* FUN_140ac2270(int nId);                  // the casting bar dialog
+float FUN_140966f00(NiPoint3 kFrom, NiPoint3 kTo);      // the distance of two points
 
 // The magic service: cancel the projectiles of a cast.
 class Unk_SsMagicSvc { public: void FUN_14146c6c0(unsigned long long nCaster, int bForce, int bDestroy); };
@@ -1465,3 +1477,42 @@ void StateSkill::FUN_1417f2b50(MS2Ptr<CSkillRecord> spRecord)
     spRecord->m_magics.RemoveAll();
 }
 MS2_REPLACE(0x1417f2b50, StateSkill::FUN_1417f2b50, 332, 0x570297DB);
+
+// @0x1417f2a90
+void StateSkill::FUN_1417f2a90(bool bFinish)
+{
+    if (!FUN_1417b8560())
+        return;
+    UICastingBar* pBar = FUN_140ac2270(0x4e72);
+    if (pBar == NULL)
+        return;
+    if (!pBar->vfunc_9())
+        return;
+    if (reinterpret_cast<Unk_CastingListener*>(static_cast<ICastingEventListener*>(this)) != pBar->FUN_1417f5e90())
+        return;
+    if (bFinish)
+        pBar->FUN_1418e1560(1.0f);
+    pBar->FUN_1418e1390();
+}
+MS2_REPLACE_METHOD(0x1417f2a90, StateSkill, FUN_1417f2a90, 173, 0x9B19AA5D);
+
+// @0x1417f4bc0
+bool StateSkill::FUN_1417f4bc0(Unk_EffectTarget& kTarget)
+{
+    if (kTarget.m_nKind != 3)
+        return false;
+    Unk_WsOptional<float>* pRange = FUN_1403ed2d0()->FUN_141bd9c00();
+    if (!*pRange)
+        return false;
+    PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    if (pPlayer == NULL)
+        return false;
+    GameObject* pObject = kTarget.FUN_140a533b0();
+    if (pObject == NULL)
+        return false;
+    const NiPoint3& kPlayer = pPlayer->vfunc_18();
+    const NiPoint3& kObject = pObject->vfunc_18();
+    float fDistance = FUN_140966f00(kObject, kPlayer);
+    return fDistance > pRange->get();
+}
+MS2_REPLACE(0x1417f4bc0, StateSkill::FUN_1417f4bc0, 332, 0x06769160);

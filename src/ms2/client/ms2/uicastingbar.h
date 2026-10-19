@@ -71,6 +71,7 @@ public:
     void FUN_1418e1ab0();                                           // 0x1418e1ab0 drop the text fields
     void FUN_1418e1b20(bool bShowTime);                             // 0x1418e1b20 bind the text fields
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // 0x140bb4cf0 text field child lookup
+    Unk_CastingListener* FUN_1417f5e90() { return m_pListener; }   // 0x1417f5e90 (COMDAT in stateskill.obj)
 
     Unk_CastingListener* m_pListener;                               // +0x70 the caster
     MS2Ptr<ASTextField> m_spText1;                                  // +0x78 "m_text1"
