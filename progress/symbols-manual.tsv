@@ -3452,3 +3452,9 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??RUnk_HashKeyHash@@QEBA_KAEBUUnk_HashKey@@@Z	140ad7090	func
 ?GetMeso@CExchangeItemInfo@@QEBA_JXZ	140595050	func
 ?GetTotalMeso@CExchangeItemInfo@@QEBA_JH@Z	1405950b0	func
+?DAT_143b02320@@3UUnk_TdXY@@A	143b02320	data
+??0ASTextInput@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422e07c0	func
+??1ASTextInput@@UEAA@XZ	1422e0810	func
+??1ASTextField@@UEAA@XZ	1422c4c50	func
+??0Unk_TdUIMsg@@QEAA@XZ	1422e4490	func
+??1Unk_TdUIMsg@@QEAA@XZ	140c30570	func

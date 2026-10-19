@@ -65,6 +65,10 @@ public:
     bool FUN_14185d8b0();                           // can a new trade start?
     __int64 FUN_14185d920();                        // m_uidLastSent
     void FUN_14185dc90();                           // m_bConfirmed = false
+    // Inline accessors (COMDATs first emitted in uitradedialogex.cpp).
+    __int64 FUN_141b29c10() { return m_uidPartner; }    // 0x141b29c10
+    CStringW FUN_141b29c20() { return m_strName; }      // 0x141b29c20
+    CString FUN_141b29c70() { return m_strChar; }       // 0x141b29c70
 
 public:
     MS2_LAYOUT_FRIEND;
