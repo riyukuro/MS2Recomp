@@ -3321,3 +3321,9 @@ __imp_AddSurveyParameterA	142cd1480	data
 ?DAT_143ae2bf8@@3HA	143ae2bf8	data
 ??0SalesInfo@@QEAA@XZ	1411232e0	func
 ?push_back@?$vector@HV?$allocator@H@std@@@std@@QEAAX$$QEAH@Z	140190a70	func
+?g_dlgCrash@@3VUnk_CrashDialog@@A	143af7f80	data
+?g_dwCrashMainThreadId@@3KA	143aac530	data
+?g_pfnPrevExceptionFilter@@3P6AJPEAU_EXCEPTION_POINTERS@@@ZEA	143ab6728	data
+__imp_CrashReporter_Init	142cce1b0	data
+__imp_CrashReporter_RegisterCallback_BeforeDump	142cce1c8	data
+__imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
