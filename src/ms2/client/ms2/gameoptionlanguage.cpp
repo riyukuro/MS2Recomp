@@ -22,6 +22,8 @@ struct Unk_Ref
     void* m_0;
     void* m_p;
     Unk_Ref() : m_0(0), m_p(0) {}
+    Unk_Ref(Unk_Ref& o);                        // takes o's handle (auto_ptr style), per handle type below
+    explicit Unk_Ref(int n);                    // the null handle, per handle type below
     ~Unk_Ref() { REL(this); }
 };
 
@@ -52,8 +54,10 @@ public:
 void* FUN_140bc04f0(RLg* p);                                    // the control (null test)
 Unk_LgCombo* FUN_140bc0530(RLg* p);                             // the control
 void FUN_140bbe120(RLg* pOut, int nId, const Scaleform::GFx::Value* pChild);
-void FUN_140bbf570(RLg* pDst, RLg* pSrc);                       // copy
+void FUN_140bbf570(RLg* pDst, RLg* pSrc);                       // transfer: pDst takes pSrc's handle, pSrc is nulled
 void FUN_140bbf5e0(RLg* pDst, int);                             // null
+template <> inline Unk_Ref<FUN_140bbfda0>::Unk_Ref(Unk_Ref& o) { FUN_140bbf570(this, &o); }
+template <> inline Unk_Ref<FUN_140bbfda0>::Unk_Ref(int n) { FUN_140bbf5e0(this, n); }
 Unk_LgProv* FUN_140be3d00(const RProv& r);
 
 // View of the option dialog: the option id at +0x28 and the AS root at +0x30.
@@ -464,7 +468,8 @@ bool CGameOptionLanguage::vfunc_14()
 // @0x140cfcf10
 RLg Unk_LgDialog::FUN_140cfcf10(CString name, int nIndex)
 {
-    RLg res;
+    // The exe constructs straight into the return slot (0x140bbf570 / 0x140bbf5e0); a local copied out and then
+    // destroyed would release the handle the caller receives.
     if (FUN_140a467d0(m_root) == 0)
     {
         Scaleform::GFx::Value child = FUN_140a46640(FUN_1409ee290(&m_root), name, nIndex);
@@ -473,16 +478,11 @@ RLg Unk_LgDialog::FUN_140cfcf10(CString name, int nIndex)
             RLg list;
             FUN_140bbe120(&list, m_nId, &child);
             if (FUN_140bc04f0(&list) != 0)
-            {
-                FUN_140bbf570(&res, &list);
-                return res;
-            }
+                return RLg(list);
         }
-        FUN_140bbf5e0(&res, 0);
-        return res;
+        return RLg(0);
     }
-    FUN_140bbf5e0(&res, 0);
-    return res;
+    return RLg(0);
 }
 
 // @0x140cfd0d0
