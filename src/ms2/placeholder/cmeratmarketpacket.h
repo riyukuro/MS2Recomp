@@ -8,6 +8,7 @@ public:
     struct ErrorPacket;     // meratmarketbasketinfo.h
     class UgcAddProductBase:public CPtred {
     public:
+        UgcAddProductBase();                // 0x14131cff0 (uimeratmarketregisterdialog.cpp)
         virtual ~UgcAddProductBase();
         virtual void vfunc_1(COutputStream&);
         virtual void vfunc_2(void*);
@@ -18,6 +19,7 @@ public:
     };
     class UgcAddProduct:public UgcAddProductBase {
     public:
+        UgcAddProduct();                    // 0x14131cfb0
         virtual ~UgcAddProduct();
         void vfunc_1(COutputStream&)override;
         void vfunc_2(void*)override;
@@ -25,6 +27,7 @@ public:
     };
     class UgcResaleProduct:public UgcAddProductBase {
     public:
+        UgcResaleProduct();                 // 0x14131d070
         virtual ~UgcResaleProduct();
         void vfunc_1(COutputStream&)override;
         void vfunc_2(void*)override;
