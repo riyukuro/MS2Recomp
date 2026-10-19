@@ -15,6 +15,7 @@ class Unk_MentorRef { public: void FUN_14015b020(); int FUN_140159bc0(); void FU
 template<class T> class Unk_MentorPtr {
 public:
     Unk_MentorPtr() : p(0) {}
+    Unk_MentorPtr(int) : p(0) {}                       // 0x140b72f60 (mentoringmanager.cpp: `return 0`)
     Unk_MentorPtr(T* value) : p(value) { AddRef(); }
     ~Unk_MentorPtr() { Release(); }
     Unk_MentorPtr& operator=(T* value) { Unk_MentorPtr temp(value); T* old=p; p=temp.p; temp.p=old; return *this; }
@@ -24,6 +25,7 @@ public:
     Unk_MentorPtr(Unk_MentorPtr&& o) : p(o.p) { o.p = 0; }
     Unk_MentorPtr& operator=(const Unk_MentorPtr& o) { o.AddRef(); Release(); p = o.p; return *this; }
     T* get() const { return p; }
+    bool operator==(T* o) const { return p == o; }     // 0x140b733c0 (mentoringmanager.cpp)
 private:
     void AddRef() const { if(p) AddRefImpl(0); }
     static void AddRefObject(T* value) { reinterpret_cast<Unk_MentorRef*>(value)->FUN_14015b020(); }

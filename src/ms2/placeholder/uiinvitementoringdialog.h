@@ -9,5 +9,6 @@ class UIInviteMentoringDialog : public UIDialog
 {
 public:
     UIInviteMentoringDialog();
+    void FUN_140c2f070(const ATL::CAtlArray<Unk_MentorPtr<CMentor> >& arrMentors);  // 0x140c2f070
     void FUN_140c2f440(const ATL::CAtlArray<Unk_MentorPtr<CMentor> >& arrMentors);  // 0x140c2f440 shows the list
 };
