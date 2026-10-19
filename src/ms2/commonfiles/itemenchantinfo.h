@@ -28,6 +28,7 @@ public:
     Unk_EnchantPtr(Unk_EnchantPtr&& o) : p(o.p) { o.p=0; }
     Unk_EnchantPtr(T* value) : p(value) { AddRef(); }
     explicit Unk_EnchantPtr(int) : p(0) {}  // `Unk_EnchantPtr<T>(0)`: the int is homed as a dword (0x1405ccda0, itemoptiondata.cpp)
+    explicit Unk_EnchantPtr(__int64) : p(0) {}  // `Unk_EnchantPtr<T>(0LL)`: the qword is homed (0x1407bf260, setitemoptionpart.cpp)
     ~Unk_EnchantPtr() { Release(); }
     Unk_EnchantPtr& operator=(const Unk_EnchantPtr&);
     T* operator->() const { return p; }
