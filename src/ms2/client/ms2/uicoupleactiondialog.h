@@ -66,6 +66,7 @@ public:
     void FUN_140bee150(int nKey);                           // keys: move the selection in "m_list"
     int FUN_140bee590(int nKey);                           // the key has no emotion shortcut
     int FUN_140bee5e0(int nKey, unsigned __int64 nEmotion);    // set a shortcut
+    unsigned __int64 FUN_1417f5f70() { return m_178; }     // the selected character (COMDAT, stateskill)
 
 private:
     MS2_LAYOUT_FRIEND;

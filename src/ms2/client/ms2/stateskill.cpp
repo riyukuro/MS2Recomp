@@ -25,6 +25,10 @@
 #include "ms2/placeholder/cboxcollision.h"
 #include "ms2/placeholder/cdetectcontext.h"
 #include "ms2/client/ms2/skillcollisionmanager.h"
+#include "ms2/client/ms2/ridee.h"
+#include "ms2/client/ms2/uicoupleactiondialog.h"
+#include "ms2/placeholder/statecoupleemotion.h"
+#include <typeinfo>
 #include <NiMatrix3.h>
 #include <NiColor.h>
 #include "ms2/client/ms2/camera.h"
@@ -113,6 +117,7 @@ public:
     void* FUN_141bd0cc0();                              // the local player (a MyPC)
     int FUN_141bd1a10(GameObject* pObject);
     void* FUN_141bd1200(int nId);                       // the field object of an id
+    void* FUN_141bd1530(__int64 nId);                   // the player of a character id
     Unk_WsOptional<float>* FUN_141bd9c00();             // the effect hide distance option
 };
 Unk_SsWorld* FUN_1403ed2d0();
@@ -149,6 +154,20 @@ PCBase* FUN_140974230(GameObject* pActor);                // the actor's player 
 int FUN_141793500(CString strName);                        // the voice id of a sound name
 void FUN_141663be0(PCBase* pPC, const char* szSequence, float fFrequency, const NiFixedString& kKey);  // sync the pc's weapon
 void FUN_14142c6c0(CKeyTable* pKeys, ATL::CAtlArray<Unk_MyPCKeyId>& aOut, unsigned nSkillId);   // the keys of a skill
+
+// The couple emotion checks (statecoupleemotion.cpp) and the notices.
+bool FUN_140b83ec0();                                      // the couple emotions are allowed here
+bool FUN_140b83f60(int nState);                            // the state allows a couple emotion
+bool FUN_140b83fa0(const NiPoint3& kA, const NiPoint3& kB);  // the two actors are close enough
+bool FUN_140b84dc0(const NiPoint3& kPoint);                // the point is placeable
+CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);  // string table text with {0}
+void FUN_1412751f0(const CStringW& text, int nA, int nB);  // show a notice
+void FUN_141275260(int nStringId, int nA, int nB);         // show a string table notice
+void* FUN_14097a780();                                     // the buddy manager
+int FUN_140ae51b0(void* pService, __int64 nActorId);       // the actor is on the block list
+int FUN_141240780(Unk_PCBaseBody* pBody);                  // the body is blocked
+class Unk_SsUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nId); };
+Unk_SsUIManager* FUN_1403ed2b0();
 
 // ---- statics -------------------------------------------------------------------------------------------------------
 
@@ -1506,6 +1525,144 @@ int StateSkill::FUN_1417ea920(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord)
     return 1;
 }
 MS2_REPLACE(0x1417ea920, StateSkill::FUN_1417ea920, 296, 0xAEF0F574);
+
+// The dialog of an id as a couple action dialog (GetDialog<UICoupleActionDialog>).
+// @0x1417f5780
+UICoupleActionDialog* FUN_1417f5780(int nId)
+{
+    if (FUN_1403ed2b0())
+    {
+        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0(nId);
+        if (p.get())
+            return dynamic_cast<UICoupleActionDialog*>((UIObject*)p);
+    }
+    return 0;
+}
+MS2_REPLACE(0x1417f5780, FUN_1417f5780, 147, 0x98A4701D);
+
+// The special casts: a social emotion (main type 0xe, sent as packet 0x13) or a couple emotion with the partner chosen
+// in the couple action dialog (main type 0xf, the state 0x3a and packet 0xa3). *pResult is set when the cast is handled.
+// @0x1417eaa50
+int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult)
+{
+    Unk_PCBaseBody* pBody = pOwner->FUN_14166d220();
+    efd::SmartPointer<Ridee> spRidee = pOwner->FUN_1416764a0();
+    if (spRidee != NULL)
+    {
+        Unk_PCBaseBody* pRideeBody = spRidee->FUN_14166d220();
+        if (pRideeBody != NULL)
+            pBody = pRideeBody;
+    }
+    if (pBody != NULL && FUN_141240780(pBody))
+        return 0;
+    switch (spRecord->m_spSkill->GetMainType())
+    {
+    case 0xe:
+        if (pOwner->FUN_141675ed0())
+            break;
+        switch (pOwner->FUN_14166c930())
+        {
+        case 5:
+        case 8:
+        case 9:
+        case 0xd:
+        case 0x10:
+        case 0x1d:
+        case 0x1e:
+            return 0;
+        }
+        pOwner->FUN_14166ed70(spRecord->GetSkillId());
+        if (spRecord->GetSkillId())
+        {
+            COutPacket packet(0x13, 0);
+            packet.Encode1(2);
+            packet.Encode4(spRecord->GetSkillId());
+            packet.vfunc_o10_6(spRecord->m_spSkill->GetParamStr());
+            FUN_140710590(packet);
+        }
+        *pResult = 1;
+        break;
+    case 0xf:
+    {
+        MyPC* pMyPC = efd::DynamicCast<MyPC>(pOwner);
+        if (pMyPC == NULL)
+        {
+            MS2_ASSERT_AT(0x47e, "pMyPC" && 0);
+            break;
+        }
+        UICoupleActionDialog* pDialog = FUN_1417f5780(0x4f4e);
+        if (pDialog == NULL)
+        {
+            MS2_ASSERT_AT(0x481, "pDialog" && 0);
+            break;
+        }
+        __int64 nPartner = pDialog->FUN_1417f5f70();
+        PCBase* pPeer = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(pDialog->FUN_1417f5f70());
+        if (pPeer == NULL)
+        {
+            MS2_ASSERT_AT(0x486, "pPeer" && 0);
+            break;
+        }
+        if (FUN_140ae51b0(FUN_14097a780(), nPartner) != 0)
+        {
+            FUN_1412751f0(FUN_14052bd00(0xcef, pPeer->vfunc_77()), 1, 1);
+            break;
+        }
+        if (!FUN_140b83ec0())
+        {
+            FUN_141275260(0xced, 1, 1);
+            break;
+        }
+        if (pMyPC->FUN_1416595d0() == 1)
+        {
+            FUN_141275260(0xcec, 1, 1);
+            break;
+        }
+        if (pMyPC->FUN_141675ed0() == 1)
+        {
+            FUN_141275260(0xcec, 1, 1);
+            break;
+        }
+        if (!FUN_140b83f60(pMyPC->FUN_14166c930()))
+        {
+            FUN_141275260(0xcec, 1, 1);
+            break;
+        }
+        NiPoint3 kMyPos = pMyPC->vfunc_18();
+        if (!FUN_140b84dc0(kMyPos))
+        {
+            FUN_141275260(0xcec, 1, 1);
+            break;
+        }
+        if (!FUN_140b83fa0(kMyPos, pPeer->vfunc_18()))
+        {
+            FUN_1412751f0(FUN_14052bd00(0xcee, pPeer->vfunc_77()), 1, 1);
+            break;
+        }
+        MS2Ptr<StateCoupleEmotionData> spData(new StateCoupleEmotionData);
+        if (!spData)
+        {
+            MS2_ASSERT_AT(0x4b4, "spData" && 0);
+            break;
+        }
+        spData->m_nEmotion = spRecord->GetSkillId();
+        spData->m_nPartnerId = pPeer->FUN_14123c580();
+        spData->m_nRequesterId = pMyPC->FUN_14123c580();
+        spData->m_posStart = pPeer->vfunc_18();
+        spData->m_posEnd = pPeer->vfunc_20();
+        pMyPC->vfunc_59(0x3a, spData.get(), 0x93, 1);
+        COutPacket packet(0xa3, 0);
+        packet.Encode1(0);
+        packet.Encode4(spRecord->GetSkillId());
+        packet.Encode8(pPeer->FUN_141656a80());
+        FUN_140710590(packet);
+        *pResult = 1;
+        break;
+    }
+    }
+    return 0;
+}
+MS2_REPLACE(0x1417eaa50, StateSkill::FUN_1417eaa50, 2311, 0xEAE85E66);
 
 // @0x1417f0d60
 void StateSkill::FUN_1417f0d60(unsigned nTick, const char* szPoint)
