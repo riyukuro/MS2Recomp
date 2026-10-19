@@ -3,10 +3,6 @@
 // MS2-UNIT: ?\smartpushtable.cpp
 // MS2-RANGE: 0x1408105e0-0x140815690 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??0?$MS2SvrPtr@VCAutoActionPricePackage@@@@QEAA@H@Z 0x140811e40 ; unique
-// MS2-PIN: ??0?$MS2SvrPtr@VCAutoActionPricePackage@@@@QEAA@PEAVCAutoActionPricePackage@@@Z 0x140811e60 ; unique
-// MS2-PIN: ??4?$TPtrValue@V?$CAtlArray@V?$MS2SvrPtr@VCAutoActionPricePackage@@@@V?$CElementTraits@V?$MS2SvrPtr@VCAutoActionPricePackage@@@@@ATL@@@ATL@@@@QEAAAEAV0@AEBUUnk_GrNewTag@@@Z 0x140812980 ; unique
-// MS2-PIN: ?GetAt@?$CAtlArray@V?$MS2SvrPtr@VCAutoActionPricePackage@@@@V?$CElementTraits@V?$MS2SvrPtr@VCAutoActionPricePackage@@@@@ATL@@@ATL@@QEAAAEAV?$MS2SvrPtr@VCAutoActionPricePackage@@@@_K@Z 0x140813060 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_7CSmartPushTable@@6B?$TSingleton@VCSmartPushTable@@@@@ 0x142d951f0
 // MS2-PIN: ??_7CSmartPushTable@@6B?$CValidData@VCSmartPushTable@@@@@ 0x142d95200
@@ -130,7 +126,7 @@ void CSmartPushTable::Load()
                 continue;
             Unk_StrVec idTag;
             FUN_140275080(*parts.FUN_14027f1c0(0), &idTag, ":");
-            if (idTag.FUN_14028b4c0() != 0)
+            if (idTag.FUN_14028b4c0() > 0)
                 spData->m_requireItem.m_a = FUN_1407181d0(idTag.FUN_14027f1c0(0));
             if (idTag.FUN_14028b4c0() > 1)
                 spData->m_requireItem.m_b = FUN_140557640(FUN_140281980(), idTag.FUN_14027f1c0(1));
@@ -165,15 +161,15 @@ void CSmartPushTable::LoadPackages()
         FUN_1408732e0(pNode, "merat", spPkg->m_nMerat);
         FUN_1408732e0(pNode, "meso", spPkg->m_nMeso);
         PackageArrayPtr spList(0);
-        if (!m_packages.Lookup(spPkg->m_strContent, spList))
+        if (m_packages.Lookup(spPkg->m_strContent, spList))
+        {
+            spList->InsertAt(spPkg->m_nId, spPkg, 1);
+        }
+        else
         {
             spList = Unk_GrNewTag(0);
             spList->InsertAt(spPkg->m_nId, spPkg, 1);
             m_packages.SetAt(spPkg->m_strContent, spList);
-        }
-        else
-        {
-            spList->InsertAt(spPkg->m_nId, spPkg, 1);
         }
     }
 }
@@ -204,7 +200,7 @@ CSmartPushTable::PackagePtr CSmartPushTable::GetPackage(const CStringW& strName,
         return PackagePtr(0);
     if (spList->GetCount() <= n)
         return PackagePtr(0);
-    return spList->GetAt(n);
+    return const_cast<const PackageArray&>(*spList.get()).GetAt(n);
 }
 
 // @0x140811240
@@ -233,24 +229,15 @@ CStringW CSmartPushTable::GetPackageDurationText(const CStringW& strName, unsign
     if (sp == 0)
         return strText;
     int nMinutes = sp->m_nDuration;
+    int nMin;
     int nHours = nMinutes / 60;
-    int nMin = nMinutes % 60;
-    if (nHours == 0 || nMin == 0)
-    {
-        if (nHours == 0)
-        {
-            if (nMin != 0)
-                strText = FormatStringId(0x97c, nMin);
-        }
-        else
-        {
-            strText = FormatStringId(0x97d, nHours);
-        }
-    }
-    else
-    {
+    nMin = nMinutes % 60;
+    if (nHours != 0 && nMin != 0)
         strText = FormatStringId(0x97f, nHours, nMin);
-    }
+    else if (nHours != 0)
+        strText = FormatStringId(0x97d, nHours);
+    else if (nMin != 0)
+        strText = FormatStringId(0x97c, nMin);
     return strText;
 }
 
