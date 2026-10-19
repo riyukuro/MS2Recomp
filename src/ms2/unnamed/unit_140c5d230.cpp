@@ -93,6 +93,12 @@
 #include "ms2/placeholder/asslot.h"
 #include "ms2/client/ms2/iteminfoslot.h"
 
+// The tooltip callback's Delegate base is first emitted here.
+// @0x140c69f90
+template<> Delegate<void(ItemInfoSlot&, ASTooltip&)>::DelegateImplBase::DelegateImplBase() {}
+// @0x140c6a160
+template<> Delegate<void(ItemInfoSlot&, ASTooltip&)>::DelegateImplBase::~DelegateImplBase() {}
+
 // @0x140c628f0 TPtr<> copy: AddRef through the pointee's slot 1
 template <> inline TPtr<Unk_UISwfEntity_25>::TPtr(const TPtr& o)
 {
