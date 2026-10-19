@@ -1,7 +1,10 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Shared game utilities: host/IP lookups, string splitting
 // and parsing helpers, easing calculators and the common STL/ATL instantiations they pull in.
 // MS2-UNIT: commonfiles\commonutil.cpp
+// MS2-RANGE: 0x1400b56f0-0x1400b57d1 .text$di
 // MS2-RANGE: 0x14028b820-0x14029dff0 .text$mn
+// MS2-RANGE: 0x142c9a450-0x142c9a480 .text$yd
+// MS2-RANGE: 0x142c9a4a0-0x142c9a4c0 .text$yd
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?SetManager@CNilStringData@ATL@@QEAAXPEAUIAtlStringMgr@2@@Z 0x140295c10 ; unique
 // MS2-PIN: ?_Adopt@_Iterator_base0@std@@QEAAXPEBX@Z 0x140296580 ; order
@@ -1255,7 +1258,8 @@ public:
 };
 MS2_CHECK_SIZE(CItemTabNameTable, 0x198);
 
-extern CItemTabNameTable g_ItemTabNames;                        // 0x143aacde0
+static CStringA s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};  // 0x143aacda0
+CItemTabNameTable g_ItemTabNames;                               // 0x143aacde0
 
 // @0x140290460
 CItemTabNameTable::CItemTabNameTable()
@@ -1992,6 +1996,18 @@ struct Unk_BindHostPtr
     void FUN_140299e30();                                       // 0x140299e30
 };
 
+extern void FUN_140297a00(void* p);
+
+// Destroy-and-free helper of the bind host (flag bit 0 = free the block).
+// @0x1402986c0
+void* FUN_1402986c0(void* p, unsigned nFlags)
+{
+    FUN_140297a00(p);
+    if (nFlags & 1)
+        operator delete(p);
+    return p;
+}
+
 // @0x140298720
 long Unk_BindHost::FUN_140298720()
 {
@@ -2018,7 +2034,6 @@ extern void FUN_14016ad80(void* pThis, void* pArg);
 void* FUN_140297a40(size_t nBytes);
 extern void FUN_140297790(void* p);
 extern void FUN_1402978c0(void* p);
-extern void FUN_1402986c0(void* p, int nFlag);
 extern void** FUN_140298fc0(void* pHolder);
 extern void FUN_14028b5b0(void* pDst, unsigned long long nDstBytes, const void* pSrc, unsigned long long nCount);
 extern void* FUN_140183290(void* pOut);
