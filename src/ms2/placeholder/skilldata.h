@@ -18,5 +18,6 @@ public:
     unsigned short FUN_1407e9ac0();                     // the level cap a sub skill follows its parent skill up to
     MS2Ptr<SkillLevelData> FUN_1407e90a0(unsigned short nLevel);  // the data of one level
     unsigned short FUN_1407e9b10();                     // the max level
+    bool FUN_1407e9de0();                               // passive skill
     bool FUN_1407e9f30();                               // checked before handing out level 1 of an unowned skill
 };

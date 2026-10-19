@@ -207,6 +207,8 @@ public:
     void FUN_141a01c70(const CStringW& str);
     void FUN_141a02670(bool b);
     void FUN_141a024e0(CStringW str, int n);
+    void FUN_141a02560(CStringW str, int n);                        // the second choice text (skill window reset)
+    void FUN_141a026f0(int n);                                      // choice mode (skill window reset)
     void FUN_140533ff0(int n);                                      // appends an int argument (COMDAT outside this class' range)
     void FUN_1405340b0(__int64 n);                                  // appends an __int64 argument (scenestategame.cpp, w97)
     void FUN_140534050(int n);                                      // appends an unsigned argument (Append<unsigned>; actionkeyobject.cpp)

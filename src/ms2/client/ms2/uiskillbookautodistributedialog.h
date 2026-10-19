@@ -25,6 +25,7 @@ class Unk_SkillButtonBar;
 class UIMsg;
 class UISwfEntity;
 class AScript;
+class ASObj;
 class JobSkill;
 
 // The skill window's "Auto Distribute" choice dialog (modal). The names and tooltips of the entries are filled by
@@ -66,8 +67,8 @@ public:
         int m_nSubJob;                                          // +0x18 "subJobCode"
         CStringW m_strName;                                     // +0x20 "name"
         CStringW m_strTooltip;                                  // +0x28 "tooltip"
-        ATL::CAtlArray<int> m_skillIds;                         // +0x30 <skill id>
-        ATL::CAtlArray<int> m_skillPoints;                      // +0x50 <skill point>
+        ATL::CAtlArray<unsigned> m_skillIds;                         // +0x30 <skill id>
+        ATL::CAtlArray<unsigned> m_skillPoints;                      // +0x50 <skill point>
     };
     typedef ATL::CAtlArray<MS2Ptr<AutoDistribute> > AutoDistributeArray;
 
@@ -126,7 +127,7 @@ public:
     void UpdateSubJobLevel();                                   // 0x140ecc850
     void RefreshAll();                                          // 0x140ecc8b0
     void RefreshTree();                                         // 0x140eccbb0
-    BOOL HasPendingChanges();                                   // 0x140ecce40
+    bool HasPendingChanges();                                  // 0x140ecce40
     void LoadAutoDistribute();                                  // 0x140eccf50
     int CanApply();                                             // 0x140ecd4b0
     int CheckApply(bool bNotify);                               // 0x140ecd6d0
@@ -135,7 +136,7 @@ public:
     unsigned short GetLevelValue(MS2Ptr<JobSkill> spSkill);     // 0x140ecdd90
     bool IsLearnable(MS2Ptr<JobSkill> spSkill);                 // 0x140ece040
     bool IsDisabled(MS2Ptr<JobSkill> spSkill);                  // 0x140ece160
-    int FillSkill(MS2Ptr<JobSkill> spSkill, AScript& info);     // 0x140ece300
+    int FillSkill(MS2Ptr<JobSkill> spSkill, ASObj& info);     // 0x140ece300
     void PlayChangeEffect(int nSkillId);                        // 0x140ece840
     __int64 AddTab(const CStringW& strName, int bFree);         // 0x140ece8b0
     void LoadTab(MS2Ptr<CSkillBookTreeTabConfig> spTab);        // 0x140ecec20
