@@ -144,6 +144,11 @@ int FUN_1419eadd0(CMailInfo* pMail)
     return pMail->m_n130;
 }
 
+// The text translator of the system mails (sender / title keys -> text).
+class Unk_MlTextFilter { public: void FUN_1416fb300(CStringW& str); };
+Unk_MlTextFilter* FUN_1403b4750();
+CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip);             // the "days left" text of a row
+
 // The mail pointer is empty.
 // @0x1419ea470
 bool FUN_1419ea470(const CUserMail::MailPtr& spMail)
@@ -843,4 +848,67 @@ void UIMailListDialog::FUN_1419e7ea0(CStringW strIds, ATL::CAtlArray<__int64>& a
                 aIds.Add(nMailId);
         }
     }
+}
+
+// @0x1419e5190
+void UIMailListDialog::FUN_1419e5190()
+{
+    __int64 nOpen = FUN_1419e6c30();
+    int nSelect = -1;
+    if (MS2Ptr<Unk_MlList> spList = FUN_140c02900("m_list"))
+    {
+        spList->FUN_1422dd1d0();
+        ATL::CAtlList<CUserMail::MailPtr> mails(10);
+        FUN_1419e6d20(mails);
+        int nIndex = -1;
+        int nRow = 0;
+        for (POSITION pos = mails.GetHeadPosition(); pos != 0; mails.GetNext(pos))
+        {
+            nIndex++;
+            if (m_nPage * 14 <= nIndex)
+            {
+                if (m_nPage * 14 + 14 <= nIndex)
+                    break;
+                CMailInfo* pMail = mails.GetAt(pos).get();
+                if (pMail->FUN_140691180() == 0)
+                {
+                    int bSelect = 0;
+                    m_mapChecked.Lookup(pMail->FUN_140690350(), bSelect);
+                    CStringW strSender = pMail->FUN_140690410();
+                    CStringW strTitle = pMail->FUN_1406905b0();
+                    int nKind = pMail->FUN_140690370();
+                    if (99 < nKind && nKind < 0x71)
+                    {
+                        FUN_1403b4750()->FUN_1416fb300(strSender);
+                        FUN_1403b4750()->FUN_1416fb300(strTitle);
+                    }
+                    ASObj row(2);
+                    row.FUN_1407cbb20("mailSN", FUN_141b71910(pMail->FUN_140690350()));
+                    row.FUN_1407cbb20("sender", CStringW(strSender));
+                    row.FUN_1407cbb20("content", CStringW(strTitle));
+                    row.FUN_1407cbb20("date", FUN_1419e95d0(pMail, 0));
+                    row.FUN_1407cbb20("dateTooltip", FUN_1419e95d0(pMail, 1));
+                    row.FUN_1407cb9c0("read", pMail->FUN_140691130());
+                    row.FUN_1407cb9c0("attachment", pMail->FUN_140691220());
+                    row.FUN_1407cb9c0("select", bSelect);
+                    row.FUN_1407cb9c0("adMail", FUN_1419ead90(pMail));
+                    row.FUN_1407cb9c0("adSoldout", FUN_1419eadd0(pMail));
+                    row.FUN_1407cb9c0("adExpired", pMail->FUN_140692630());
+                    spList->FUN_1422dd230(row);
+                    if (pMail->FUN_140690350() == nOpen)
+                        nSelect = nRow;
+                    nRow++;
+                }
+            }
+        }
+        spList->vfunc_24(true);
+        spList->FUN_1422dcca0(nSelect);
+    }
+    FUN_1419e5900();
+    if (MS2Ptr<Unk_MlButton> spPrev = FUN_140bb4b10("m_prev"))
+        spPrev->FUN_1422c1fe0(FUN_1419e6fe0(m_nPage - 1));
+    if (MS2Ptr<Unk_MlButton> spNext = FUN_140bb4b10("m_next"))
+        spNext->FUN_1422c1fe0(FUN_1419e6fe0(m_nPage + 1));
+    if (MS2Ptr<Unk_MlCheckBox> spCheck = FUN_140e52670("m_checkAll"))
+        spCheck->FUN_1422ce090(0);
 }
