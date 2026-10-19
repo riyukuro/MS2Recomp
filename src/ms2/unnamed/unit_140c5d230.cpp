@@ -2532,3 +2532,55 @@ void LapenshardUpgradeSlotPanel::FUN_140c671d0()
     FUN_140c65540(m_strBind, spRec, m_items, m_kinds, data);
     m_ui->Invoke("selectItem", data.FUN_1422bb870());
 }
+
+// Binds an item to a named slot of the result animation and returns its coloured name.
+static CStringW Unk_LsBindResultSlot(LapenshardUpgradeSlotPanel* pPanel, CString& strSlot, unsigned nItemId, ASObj& obj, const char* szBindKey, const char* szNameKey)
+{
+    MS2Ptr<CItem> spItem(new CItem());
+    if (spItem->FUN_14052b2e0(nItemId, 0, 0, 0) != 0)
+    {
+        pPanel->FUN_140c654a0(strSlot, spItem);
+        ItemInfoSlot* pBag = FUN_140c69ab0(FUN_1422c8e90(strSlot));
+        if (pBag != 0)
+            FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(pPanel, &LapenshardUpgradeSlotPanel::FUN_140c65360));
+    }
+    unsigned nShown = spItem->FUN_1405276c0();
+    CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, nShown), FUN_14053feb0(nShown));
+    obj.FUN_1407cba60(szBindKey, strSlot);
+    obj.FUN_1407cbb20(szNameKey, strName);
+    return strName;
+}
+
+// @0x140c67440
+// MS2-FUNCTIONAL: the success and fail slots share one helper and the temporaries are laid out differently
+void LapenshardUpgradeSlotPanel::FUN_140c67440(int bSuccess)
+{
+    if (m_body == 0)
+        return;
+    m_body->vfunc_13(CString("result"));
+    MS2Ptr<Unk_LsRecord> spRec = FUN_140c65d60();
+    if (spRec == 0)
+        return;
+    if (spRec->m_n20 == 0)
+        return;
+    ASObj obj(2);
+    obj.FUN_1407cbbe0("success", bSuccess != 0);
+    CString strSuccess("lapenshardUpgradeSuccessSlotID");
+    Unk_LsBindResultSlot(this, strSuccess, spRec->m_n20, obj, "successSlotBindID", "successItemName");
+    int bLimit = 0;
+    if (bSuccess != 0)
+    {
+        MS2Ptr<Unk_LsRecord> spNext = FUN_1409c4b30()->FUN_1405b56a0(spRec->m_n20);
+        if (!(spNext == 0) && spNext->m_n20 == 0)
+            bLimit = 1;
+    }
+    obj.FUN_1407cb9c0("limitLevel", bLimit);
+    if (!(m_spSource == 0))
+    {
+        CString strFail("lapenshardUpgradeFailSlotID");
+        Unk_LsBindResultSlot(this, strFail, m_spSource->FUN_1405276c0(), obj, "failSlotBindID", "failItemName");
+    }
+    m_ui->Invoke("upgradeComplete", obj.FUN_1422bb870());
+    m_spSource = 0;
+    m_pTab->FUN_140c68df0();
+}
