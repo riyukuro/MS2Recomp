@@ -29,6 +29,7 @@ public:
     TPtrValue& operator=(const Unk_GrNewTag&) { Make(); return *this; }
     T* operator->() const { return m_p; }
     bool operator!() const { return m_p == 0; }
+    bool operator==(T* p) const { return m_p == p; }
 
 private:
     void AddRef() const { if (m_p) AddRefImpl(0); }
