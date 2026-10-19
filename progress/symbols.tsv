@@ -10118,7 +10118,7 @@ wmemmove	140191580	func
 ??1CHandle@ATL@@QEAA@XZ	140297930	func
 ??1CNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@V?$CStringElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAA@XZ	140297960	func
 ??1CPair@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@V?$CStringElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@IEAA@XZ	140297980	func
-??1CWin32Heap@ATL@@UEAA@XZ	140297a00	func
+??1CWin32Heap@ATL@@UEAA@XZ	14103bde0	func
 ?FUN_140297a20@@YAXPEAPEAX@Z	140297a20	func
 ?FUN_140297a40@@YAPEAX_K@Z	140297a40	func
 ??4?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV01@AEBV01@@Z	140297a60	func
@@ -10163,7 +10163,7 @@ wmemmove	140191580	func
 ??_G?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAPEAXI@Z	140298600	func
 ??_G?$pair@$$CBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@U?$pair@HPEAUUnk_XmlElement@@@std@@@std@@QEAAPEAXI@Z	140298640	func
 ??_GCNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@V?$CStringElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAAPEAXI@Z	140298680	func
-??_GCWin32Heap@ATL@@UEAAPEAXI@Z	1402986c0	func
+??_GCWin32Heap@ATL@@UEAAPEAXI@Z	14103c3a0	func
 ?AddRef@CStringData@ATL@@QEAAXXZ	140298700	func
 ?FUN_140298720@Unk_BindHost@@QEAAJXZ	140298720	func
 ?AtlHresultFromLastError@ATL@@YAJXZ	140298740	func
@@ -54626,7 +54626,7 @@ fprintf	140868660	func
 ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	140932e80	func
 ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ	140932f10	func
 ?FUN_140932f10@@YAPEAUUnk_TailIter@@PEAU1@@Z	140932f10	func
-??_GCAtlStringMgr@ATL@@UEAAPEAXI@Z	140932fa0	func
+??_GCAtlStringMgr@ATL@@UEAAPEAXI@Z	14103c2a0	func
 ?FUN_140932fa0@@YAPEAUUnk_TailAlmVal@@PEAU1@I@Z	140932fa0	func
 ?FUN_140932fe0@@YAPEAUUnk_TailSetVal@@PEAU1@I@Z	140932fe0	func
 ?FUN_140933020@@YAPEAUUnk_TailNodeA@@PEAU1@I@Z	140933020	func
@@ -58801,7 +58801,7 @@ fprintf	140868660	func
 ??1?$MS2Ptr@VASUIComponent@@@@QEAA@XZ	1409b99d0	func
 ??1?$MS2Ptr@VUnk_TfBoard@@@@QEAA@XZ	1409b99d0	func
 ??1?$Unk_UpperPtr@VUnk_UpperClip@@@@QEAA@XZ	1409b99d0	func
-??1?$MS2Ptr@VAScript@@@@QEAA@XZ	1409b9a00	func
+??1?$MS2Ptr@VAScript@@@@QEAA@XZ	14103bc10	func
 ??4?$MS2Ptr@VASMovieClip@@@@QEAAAEAV0@H@Z	1409b9a30	func
 ??4?$MS2Ptr@VUnk_PopupMovie@@@@QEAAAEAV0@H@Z	1409b9a30	func
 ??4?$MS2Ptr@VUnk_WcClip@@@@QEAAAEAV0@H@Z	1409b9a30	func
