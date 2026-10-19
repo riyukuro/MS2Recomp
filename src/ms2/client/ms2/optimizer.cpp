@@ -261,13 +261,76 @@ void COptimizer::FUN_14161bee0()
     }
     int nGfx = FUN_1422e9e50(FUN_1414a56c0()) / 0x100000;
     FUN_140a44830()->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", nGfx);
-    FUN_140a44830()->FUN_1401ce2f0("bUseMultiSceneUpdate %s", DAT_143ae2b30 == 0 ? "FALSE" : "TRUE");
-    FUN_140a44830()->FUN_1401ce2f0("bUseRemoveExtraData %s", DAT_143ae2b34 == 0 ? "FALSE" : "TRUE");
-    FUN_140a44830()->FUN_1401ce2f0("bUseExceptRender %s", DAT_143ae2b38 == 0 ? "FALSE" : "TRUE");
-    FUN_140a44830()->FUN_1401ce2f0("bUseIndoorInstancing %s", DAT_143ae2b3c == 0 ? "FALSE" : "TRUE");
-    FUN_140a44830()->FUN_1401ce2f0("bUseProgressiveLoading %s", DAT_143ae2b40 == 0 ? "FALSE" : "TRUE");
-    FUN_140a44830()->FUN_1401ce2f0("bRemoveShadowEntity %s", DAT_143ae2b44 == 0 ? "FALSE" : "TRUE");
-    FUN_140a44830()->FUN_1401ce2f0("bMS2KFM %s", DAT_143ae2b48 == 0 ? "FALSE" : "TRUE");
+    const char* pszMultiScene;
+    if (DAT_143ae2b30 == 0)
+    {
+        pszMultiScene = "FALSE";
+    }
+    else
+    {
+        pszMultiScene = "TRUE";
+    }
+    FUN_140a44830()->FUN_1401ce2f0("bUseMultiSceneUpdate %s", pszMultiScene);
+    const char* pszRemoveExtra;
+    if (DAT_143ae2b34 == 0)
+    {
+        pszRemoveExtra = "FALSE";
+    }
+    else
+    {
+        pszRemoveExtra = "TRUE";
+    }
+    FUN_140a44830()->FUN_1401ce2f0("bUseRemoveExtraData %s", pszRemoveExtra);
+    const char* pszExceptRender;
+    if (DAT_143ae2b38 == 0)
+    {
+        pszExceptRender = "FALSE";
+    }
+    else
+    {
+        pszExceptRender = "TRUE";
+    }
+    FUN_140a44830()->FUN_1401ce2f0("bUseExceptRender %s", pszExceptRender);
+    const char* pszIndoor;
+    if (DAT_143ae2b3c == 0)
+    {
+        pszIndoor = "FALSE";
+    }
+    else
+    {
+        pszIndoor = "TRUE";
+    }
+    FUN_140a44830()->FUN_1401ce2f0("bUseIndoorInstancing %s", pszIndoor);
+    const char* pszProgressive;
+    if (DAT_143ae2b40 == 0)
+    {
+        pszProgressive = "FALSE";
+    }
+    else
+    {
+        pszProgressive = "TRUE";
+    }
+    FUN_140a44830()->FUN_1401ce2f0("bUseProgressiveLoading %s", pszProgressive);
+    const char* pszRemoveShadow;
+    if (DAT_143ae2b44 == 0)
+    {
+        pszRemoveShadow = "FALSE";
+    }
+    else
+    {
+        pszRemoveShadow = "TRUE";
+    }
+    FUN_140a44830()->FUN_1401ce2f0("bRemoveShadowEntity %s", pszRemoveShadow);
+    const char* pszKfm;
+    if (DAT_143ae2b48 == 0)
+    {
+        pszKfm = "FALSE";
+    }
+    else
+    {
+        pszKfm = "TRUE";
+    }
+    FUN_140a44830()->FUN_1401ce2f0("bMS2KFM %s", pszKfm);
     FUN_141245b20()->FUN_141375a80();
 }
 
