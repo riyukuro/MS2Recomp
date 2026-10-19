@@ -119,6 +119,7 @@ public:
     void* FUN_141bd0cc0();                              // the local player (a MyPC)
     int FUN_141bd1a10(GameObject* pObject);
     void* FUN_141bd1200(int nId);                       // the field object of an id
+    GameObject* FUN_141bd1180(int nId);                 // the field object of an id (a counted reference)
     void* FUN_141bd1530(__int64 nId);                   // the player of a character id
     Unk_WsOptional<float>* FUN_141bd9c00();             // the effect hide distance option
 };
@@ -2439,6 +2440,145 @@ void StateSkill::FUN_1417f3180(Unk_SsTagArray& aTags, const efd::Point3& kDir, M
     }
 }
 MS2_REPLACE(0x1417f3180, StateSkill::FUN_1417f3180, 3315, 0x5A426317);
+
+// The cylinder shape (unit_141083230); only the members used here.
+class CCylinderCollision : public CBaseCollision
+{
+public:
+    CCylinderCollision();                                               // 0x141083230
+    virtual ~CCylinderCollision();                                      // 0x141083320
+    virtual void vfunc_5();
+    virtual float vfunc_6();
+    char m_pad_78[0xb0 - 0x78];
+    float m_fRadius;                                                    // +0xb0
+    Unk_StreamPoint m_ptCenter;                                         // +0xb4
+    float m_fHeight;                                                    // +0xc0
+    char m_pad_c4[4];
+};
+MS2_CHECK_OFFSET(CCylinderCollision, m_fHeight, 0xc0);
+MS2_CHECK_SIZE(CCylinderCollision, 0xc8);
+
+// The index of an object in a target list (-1: not in it).
+// @0x1417f5710
+static int FUN_1417f5710(const Unk_SsTargetArray& aTargets, const efd::SmartPointer<GameObject>& spObject)
+{
+    for (int i = 0; i < (int)aTargets.GetCount(); i++)
+    {
+        if (aTargets[i] == spObject)
+            return i;
+    }
+    return -1;
+}
+MS2_REPLACE(0x1417f5710, FUN_1417f5710, 106, 0xE9D9D3F4);
+
+// Chains one bounce of an arrow from the last record of a chain: a cylinder search (the arrow's bounce radius, 150
+// high) around the last hit, without the objects already in the chain (a bounce that may overlap starts again from
+// the whole search, shuffled, without the last hit); the first object left gets a record linked to the last one,
+// and the chain goes on from it.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417f3e80
+void StateSkill::FUN_1417f3e80(int nBounce, ATL::CAtlList<Unk_MagicTagPtr>& lstChain, MS2Ptr<CSkillRecord> spRecord,
+    int nAttack, PCBase* pOwner)
+{
+    if (nBounce == 0)
+        return;
+    Unk_MagicTagPtr spLast(lstChain.GetTail());
+    efd::SmartPointer<GameObject> spFrom(FUN_1403ed2d0()->FUN_141bd1180(SS_TAG(spLast)->m_nCasterId));
+    if ((GameObject*)spFrom == NULL)
+        return;
+    efd::SmartPointer<GameObject> spSearcher(FUN_1403ed2d0()->FUN_141bd1180(SS_TAG(spLast)->m_nOwnerId));
+    if ((GameObject*)spSearcher == NULL)
+        return;
+    CCylinderCollision kShape;
+    SkillAttackData* pAttack = spRecord->FUN_14175a050(nAttack);
+    kShape.m_fRadius = pAttack->m_arrow.m_fBounceRadius;
+    kShape.m_fHeight = 150.0f;
+    int nKind = pAttack->m_range.m_n44;
+    int nType = pAttack->m_arrow.m_nBounceType;
+    int nOverlap = pAttack->m_arrow.m_nBounceOverlap;
+    MS2Ptr<CDetectContext> spDetect(new CDetectContext);
+    spDetect->m_pOwner = spSearcher;
+    spDetect->m_pRange = reinterpret_cast<Unk_DetectRange*>(pAttack);
+    spDetect->m_kPos = SS_PT(spFrom->vfunc_18());
+    spDetect->m_nTargetKind = nKind;
+    spDetect->m_nSortMode = 3;
+    spDetect->m_bRideToRider = 0;
+    NiPoint3 kRot(spFrom->vfunc_20());
+    kShape.FUN_1409fc390(spDetect, SS_PT(kRot));
+    if (nType == 2)
+    {
+        Unk_SsTargetArray aLeft;
+        aLeft.Copy(spDetect->m_arrTargets);
+        POSITION pos = lstChain.GetHeadPosition();
+        while (pos != NULL)
+        {
+            Unk_MagicTagPtr spTag(lstChain.GetAt(pos));
+            efd::SmartPointer<GameObject> spHit(FUN_1403ed2d0()->FUN_141bd1180(SS_TAG(spTag)->m_nCasterId));
+            int nAt = FUN_1417f5710(aLeft, spHit);
+            if (nAt != -1)
+                aLeft.RemoveAt(nAt, 1);
+            lstChain.GetNext(pos);
+        }
+        if (nOverlap == 1 && aLeft.IsEmpty())
+        {
+            if (spDetect->m_arrTargets.GetCount() < 2)
+            {
+                spDetect->m_arrTargets.RemoveAll();
+            }
+            else
+            {
+                int nLastId = 0;
+                if (!lstChain.IsEmpty())
+                    nLastId = SS_TAG(lstChain.GetTail())->m_nCasterId;
+                lstChain.RemoveAll();
+                for (unsigned i = 0; i < spDetect->m_arrTargets.GetCount(); i++)
+                {
+                    if (((GameObject*)spDetect->m_arrTargets[i])->FUN_14123c580() == nLastId)
+                    {
+                        spDetect->m_arrTargets.RemoveAt(i, 1);
+                        break;
+                    }
+                }
+                for (unsigned i = 0; i < spDetect->m_arrTargets.GetCount(); i++)
+                {
+                    int nPick = rand() % (int)spDetect->m_arrTargets.GetCount();
+                    std::swap(spDetect->m_arrTargets[i], spDetect->m_arrTargets[nPick]);
+                }
+            }
+        }
+        else
+        {
+            spDetect->m_arrTargets.Copy(aLeft);
+        }
+    }
+    else if (nType == 1 || nOverlap == 0)
+    {
+        POSITION pos = lstChain.GetHeadPosition();
+        while (pos != NULL)
+        {
+            Unk_MagicTagPtr spTag(lstChain.GetAt(pos));
+            efd::SmartPointer<GameObject> spHit(FUN_1403ed2d0()->FUN_141bd1180(SS_TAG(spTag)->m_nCasterId));
+            int nAt = FUN_1417f5710(spDetect->m_arrTargets, spHit);
+            if (nAt != -1)
+                spDetect->m_arrTargets.RemoveAt(nAt, 1);
+            lstChain.GetNext(pos);
+        }
+    }
+    if (spDetect->m_arrTargets.IsEmpty())
+        return;
+    Unk_MagicTagPtr spNext(reinterpret_cast<Unk_MagicTag*>(new SkillTargetRecord));
+    efd::SmartPointer<GameObject> spHit(spDetect->m_arrTargets[0]);
+    int nStep = spRecord->FUN_14175a050(nAttack)->m_arrow.m_nBounceCount - nBounce + 1;
+    efd::Point3 kDir = SS_PT(SS_TAG(spLast)->m_ptDir);
+    if (!SS_TAG(spNext)->FUN_141758d70(spRecord->m_nCastId, pOwner->FUN_14123cec0(), pOwner->FUN_14123c580(),
+            ((GameObject*)spHit)->FUN_14123c580(), spRecord->GetSkillId(), spRecord->GetLevel(), spRecord->m_nMotion,
+            SS_SP(kDir), nStep, 0, nAttack, spRecord->m_nSendCount))
+        return;
+    reinterpret_cast<Unk_MagicTagPtr&>(SS_TAG(spLast)->m_spLinked) = spNext;
+    lstChain.AddTail(spNext);
+    FUN_1417f3e80(nBounce - 1, lstChain, spRecord, nAttack, pOwner);
+}
+MS2_REPLACE(0x1417f3e80, StateSkill::FUN_1417f3e80, 3372, 0x3C869B16);
 
 // @0x1417f4bc0
 bool StateSkill::FUN_1417f4bc0(Unk_EffectTarget& kTarget)
