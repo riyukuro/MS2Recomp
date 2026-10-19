@@ -83,7 +83,7 @@ public:
     void FUN_1419085e0(NotifyObject* pNotice);                      // NotifyRemoveGameObject
     void FUN_141908620(NotifyObject* pNotice);                      // NotifyFadeInComplete
     void FUN_141908690();                                           // drop the script lines
-    void FUN_141908720();                                           // update
+    void FUN_141908720(float fDelta);                               // update
     void FUN_141908750();                                           // update the script line
     void FUN_141908c00();                                           // update the balloons
     void FUN_141908fc0();                                           // skip pressed: confirm or skip
