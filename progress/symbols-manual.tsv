@@ -3377,3 +3377,11 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?GetBenefitItem@CVIPTable@@QEAA?AV?$MS2Ptr@VCVIPBenefitItem@@@@I@Z	1408f6d80	func
 ?GetBenefitItems@CVIPTable@@QEAAXAEAV?$CAtlArray@V?$MS2Ptr@VCVIPBenefitItem@@@@V?$CElementTraits@V?$MS2Ptr@VCVIPBenefitItem@@@@@ATL@@@ATL@@@Z	1408f6f20	func
 ??$GetChild@VUnk_VdList@@@UISwfEntity@@QEAA?AV?$MS2Ptr@VUnk_VdList@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140ba4b70	func
+??0Unk_TpsRequest@@QEAA@H@Z	1401baa00	func
+??0Unk_TpsRequest@@QEAA@PEBX@Z	1401baaa0	func
+??1Unk_TpsRequest@@QEAA@XZ	1401baaf0	func
+??0Unk_TpsReqValue@@QEAA@XZ	1401ba840	func
+??1Unk_TpsReqValue@@QEAA@XZ	1401ba940	func
+?DAT_1439f7cbc@@3HA	1439f7cbc	data
+?DAT_143adda48@@3UScreenSetting@MessengerData@@A	143adda48	data
+?s_bInit@CLoadingDescriptionTable@@2_NA	143adc948	data
