@@ -67,6 +67,8 @@ MS2_CHECK_SIZE(CScriptContent, 0x30);
 
 class CChatballonContent : public CScriptContent {
 public:
+    CChatballonContent();                                   // 0x140859d20 (?\talkscript.cpp, holds the vftable)
+    virtual ~CChatballonContent();                          // 0x14085a190
     virtual int vfunc_1();                                  // 0x14078d2a0
     virtual int vfunc_2(Unk_ScriptXmlNode* pNode);         // 0x14078d2c0
 };
