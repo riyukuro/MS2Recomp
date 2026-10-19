@@ -1393,4 +1393,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import heavy_lock
+    with heavy_lock.heavy():     # machine-wide memory limit (tools/heavy_lock.py); a no-op under merge.sh / unit_check
+        main()

@@ -21,6 +21,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ms2paths  # noqa: E402
+import heavy_lock  # noqa: E402
 
 R = ms2paths.ROOT
 NT = ms2paths.is_nt()
@@ -157,6 +158,11 @@ def main(argv):
             ok = subprocess.call(["cmake", "-DMS2_SYMOBJ_PRUNE=OFF", d], env=cenv, stdout=lf, stderr=subprocess.STDOUT) == 0
         return ok and run(ninja + ["-C", d, "-j2"], env=cenv) == 0
 
+    with heavy_lock.heavy():    # the DLL links (wine link.exe, clang-cl) are the other memory-heavy step
+        return link_checks(agent, srcs, clang, func, pst, env, build)
+
+
+def link_checks(agent, srcs, clang, func, pst, env, build):
     dst = 0
     say("== build/hook-msvc-%s (cl 19.16)" % agent)
     os.makedirs(os.path.join(R, "build"), exist_ok=True)
