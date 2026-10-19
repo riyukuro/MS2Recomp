@@ -22,6 +22,7 @@ public:
     virtual ~ASOutData();                                           //  0 (??_G 0x140ec36f0)
 
     MS2Ptr<ASMeratMarketProductBase> FUN_140ec28b0();               // 0x140ec28b0 the product object
+    MS2Ptr<AScript> FUN_140ec2900();                                // 0x140ec2900 the renderer
 
     MS2Ptr<ASMeratMarketProductBase> m_spProduct;                   // +0x40 the clicked product row
     MS2Ptr<AScript> m_spRenderer;                                   // +0x50 the "renderer" child

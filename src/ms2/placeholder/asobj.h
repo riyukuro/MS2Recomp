@@ -52,6 +52,7 @@ public:
     void FUN_140cfd170(const char* szName, int n);                       // same body, a second instance
     void FUN_140fbd930(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uivipgoodsshopdialog.cpp)
     void FUN_141a65c70(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uinpccontroldialog.cpp)
+    void FUN_140ec3230(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uimeratmarketcommon.cpp)
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
 

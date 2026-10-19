@@ -3353,3 +3353,5 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?DAT_143aea1d8@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143aea1d8	data
 ?DAT_143aea1e0@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143aea1e0	data
 ?DAT_143ab2898@@3HA	143ab2898	data
+??0ASMeratMarketBuyBillData@@QEAA@XZ	140e70220	func
+?GetIconPath@CDBPremiumProduct@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1406a0160	func
