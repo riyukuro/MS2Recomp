@@ -44,6 +44,25 @@ public:
     CStringW GetField78() const { return m_str78; }                 // @0x140c774f0
     CStringW GetField80() const { return m_str80; }                 // @0x140c77580
     CStringA GetField50() const { return m_str50; }                 // @0x140c776c0
+    // getters inline in ms2clientplatformtencent.cpp (the Tencent report copy)
+    int GetField28() const { return m_n28; }                        // @0x140c7eb70
+    __int64 GetField88() const { return m_n88; }                    // @0x140c7eb50
+    int GetField90() const { return (int)m_n90; }                   // @0x140c7eae0
+    CStringW GetField98() const { return m_str98; }                 // @0x140c7eb00
+    __int64 GetFielda0() const { return m_na0; }                    // @0x140c7eb80
+    __int64 GetFielda8() const { return m_na8; }                    // @0x140c7eba0
+    CStringW GetFieldb0() const { return m_strb0; }                 // @0x140c7ebc0
+    CStringW GetFieldb8() const { return m_strb8; }                 // @0x140c7ed40
+    __int64 GetFieldc0() const { return m_nc0; }                    // @0x140c7edd0
+    CStringA GetFieldc8() const { return m_strc8; }                 // @0x140c7edf0
+    CStringW GetFieldd0() const { return m_strd0; }                 // @0x140c7ec10
+    __int64 GetFieldd8() const { return m_nd8; }                    // @0x140c7ed20
+    __int64 GetFielde0() const { return m_ne0; }                    // @0x140c7ec60
+    int GetFieldf0() const { return m_nf0; }                        // @0x140c7edb0
+    __int64 GetFieldf8() const { return m_nf8; }                    // @0x140c7ed90
+    CStringW GetField100() const { return m_str100; }               // @0x140c7ecd0
+    CStringA GetField108() const { return m_str108; }               // @0x140c7ec80
+    int GetField110() const { return m_n110; }
     // setters (inline COMDATs of uimeratmarketcommon.cpp; the CStringW/CString arguments are by value: the callee destroys them)
     void SetField28(int n) { m_n28 = n; }                           // @0x140ec3c70
     void SetField60(__int64 n) { m_n60 = n; }                       // @0x140ec3e80
