@@ -119,10 +119,40 @@ extern __int64 DAT_143ab2820;                                       // the accou
 extern int DAT_1439f4a84;
 extern int DAT_1439f4a88;
 void FUN_1418f42c0(ASObj& obj, UICharacterListDialog::CCharacterInfo* pInfo);   // fill the movie object of a character
-class Unk_ClBox : public CMsgBoxData { public: void FUN_141a02a70(CStringW strText, CString strUrl); void FUN_141a015d0(const CStringW& str); };
+class Unk_ClBox : public CMsgBoxData { public: void FUN_141a02a70(CStringW strText, CString strUrl); void FUN_141a015d0(const CStringW& str); __int64 FUN_141a02f10(int n, __int64 nDefault); void FUN_141a015a0(const CStringW& str); };
 void FUN_14151f4e0(CStringW strTag, MS2Ptr<CMsgBoxData> spBox);     // replace the box of that tag
 CStringW FUN_140298ea0(const CStringW& strKey);                     // string table text (second table)
-struct Unk_ClOptions { char m_pad[0xe8b8]; CString m_url; };
+struct Unk_ClSettingU16 { char m_p[0x58]; unsigned short* FUN_1402056b0(); };
+struct Unk_ClSettingU32 { char m_p[0x58]; unsigned* FUN_1402056b0(); };
+struct Unk_ClOptions
+{
+    char m_pad0[0x55a0];
+    Unk_ClSettingU16 m_55a0;                                        // the level up to which a character is deleted at once
+    Unk_ClSettingU32 m_55f8;                                        // the seconds a deletion waits
+    char m_pad2[0xe8b8 - 0x5650];
+    CString m_url;
+    char m_pad3[0xe978 - 0xe8c0];
+    CString m_consult;
+    char m_pad4[0xe9d8 - 0xe980];
+    CString m_privacy;
+    char m_pad5[0xea38 - 0xe9e0];
+    CString m_thirdParty;
+};
+int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs);
+CStringW FUN_1418f5ab0(int nStringId, const unsigned short* pnLevel, const CStringW& strTime, const CStringW& strName);
+CStringW FUN_1409eec40(int nId);
+CStringW FUN_1406c6bd0(const wchar_t* szFormat, const unsigned __int64* pnArg);
+unsigned __int64 FUN_140718350(const CString& str);
+class Unk_ClLobby
+{
+public:
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
+    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
+    virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13();
+    virtual void vfunc_14(int nMapId);
+};
+Unk_ClLobby* FUN_140a94350();
+class Unk_ClPlayer { public: virtual void v0(); };
 Unk_ClOptions* FUN_1401d3200();
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* szDelim);
 class Unk_ClStrings { public: CStringW FUN_141811980(int nTable, int nId); };
@@ -213,7 +243,40 @@ Unk_ClWorld* FUN_1403ed2d0();
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 class Unk_ClEvtMgr { public: bool FUN_14047bb90(); };
 Unk_ClEvtMgr* FUN_1401c0d90();
-class Unk_GmEvtKey { public: bool FUN_140482280(int nKey, unsigned* pnValue); };
+class Unk_GmEvtKey
+{
+public:
+    bool FUN_140482280(int nKey, unsigned* pnValue);
+    __int64 FUN_140be8f80(int nKind, int nId, __int64* pnZero);     // the burning level-up event was received
+    __int64 FUN_140c5af20(int nKind, int nId, __int64* pnZero);     // the burning level-up event was finished
+};
+// The burning level-up events (an event of the game event manager: id, texts and the two reward lists).
+class Unk_ClRewardRef { public: virtual int vfunc_0(); virtual int vfunc_1(); virtual int vfunc_2(); };
+struct Unk_ClRewardEntry { char m_pad[0x18]; Unk_ClRewardRef m_ref; };
+struct Unk_ClRewardList { char m_p[0x10]; bool FUN_1404110e0(); Unk_ClRewardEntry* FUN_1403e8aa0(); };
+struct Unk_ClRewardList2 { char m_p[0x1c]; bool FUN_140c0e9f0(); Unk_ClRewardEntry* FUN_140bfe440(); };
+class Unk_ClBurnEvent : public CPtred
+{
+public:
+    bool FUN_140405230(int nLevel);
+    int m_18;
+    char m_pad1c[0x2c];
+    CStringW m_48;
+    CStringW m_50;
+    CStringW m_58;
+    char m_pad60[0x10];
+    Unk_ClRewardList2 m_70;
+    unsigned short m_8c;
+    char m_pad8e[2];
+    Unk_ClRewardList m_90;
+    CStringW m_a0;
+};
+typedef std::vector<MS2Ptr<Unk_ClBurnEvent> > BurnEvents;
+class Unk_ClBurnSub { public: void FUN_140428300(BurnEvents* pEvents); };
+class Unk_ClBurnMgr { public: Unk_ClBurnSub* FUN_1403ed080(); };
+Unk_ClBurnMgr* FUN_140302b00();
+void FUN_1418fc810();
+void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox);   // attach the reward items to the box
 class Unk_ClApp { public: HWND FUN_14209c720(); };
 Unk_ClApp* FUN_140aadf80();
 class Unk_ClMsgState { public: int FUN_1422b9da0(); };
@@ -230,12 +293,13 @@ void FUN_14135ec00(void* pBrowser, const CString& strUrl, bool b);
 void* FUN_140714f90();
 void FUN_1415388a0(void* p);
 bool FUN_1407cce10(const Scaleform::GFx::Value* pValue);
+bool FUN_1409c1720(const Scaleform::GFx::Value* pValue);            // the call result is true
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& value);
 struct Unk_ClTime { __int64 m_a; __int64 m_b; };
 Unk_ClTime FUN_1406c47a0(__int64 nTime);
 CStringW FUN_14083bdc0(const Unk_ClTime& time, int n, CStringW strSep1, CStringW strSep2);
 CStringW FUN_14083bab0(const Unk_ClTime& time, CStringW strSep);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pTarget, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_1405c2690(CStringW strKey, CStringW strArg);
 extern int DAT_143ab285c;
@@ -1921,6 +1985,475 @@ unsigned UICharacterListDialog::FindFreePreviewSlot()
     {
         if (FUN_1403ed2d0()->FUN_141bd1290(n) == 0)
             return n;
+    }
+    return 0;
+}
+
+// @0x1418ed6b0
+// MS2-FUNCTIONAL: iterator / temp shape of the event list loop differs
+void UICharacterListDialog::FUN_1418ed6b0(CInPacket& packet)
+{
+    CInputStream& s = packet;
+    __int64 nId = s.vfunc_o8_4();
+    if (m_30 == 0)
+        return;
+    BurnEvents events;
+    FUN_140302b00()->FUN_1403ed080()->FUN_140428300(&events);
+    for (size_t i = 0; i < events.size(); ++i)
+    {
+        MS2Ptr<Unk_ClBurnEvent> spEvent(events[i]);
+        if (!(spEvent == 0))
+        {
+            __int64 nZero = 0;
+            if (DAT_143ab2fc0.FUN_140c5af20(2000, spEvent->m_18, &nZero) == nId)
+            {
+                FUN_1418ef890(nId);
+                break;
+            }
+        }
+    }
+}
+
+// @0x1418ed860
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::FUN_1418ed860()
+{
+    FUN_1418fc810();
+}
+
+// @0x1418ef700
+// MS2-FUNCTIONAL: iterator / temp shape of the event list loop differs
+void UICharacterListDialog::FUN_1418ef700()
+{
+    BurnEvents events;
+    FUN_140302b00()->FUN_1403ed080()->FUN_140428300(&events);
+    for (size_t i = 0; i < events.size(); ++i)
+    {
+        MS2Ptr<Unk_ClBurnEvent> spEvent(events[i]);
+        if (!(spEvent == 0))
+        {
+            __int64 nZero = 0;
+            if (DAT_143ab2fc0.FUN_140be8f80(0x7d1, spEvent->m_18, &nZero) == 0)
+            {
+                __int64 nZero2 = 0;
+                __int64 nCharId = DAT_143ab2fc0.FUN_140c5af20(2000, spEvent->m_18, &nZero2);
+                if (nCharId != 0)
+                    FUN_1418ef890(nCharId);
+            }
+        }
+    }
+}
+
+// @0x1418ef980
+// MS2-FUNCTIONAL: iterator / temp shape of the event list loop differs
+void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
+{
+    CharPtr spCharacter = FindCharacter(nId);
+    if (spCharacter == 0)
+        return;
+    MS2Ptr<Unk_ClBurnEvent> spFound(0);
+    BurnEvents events;
+    FUN_140302b00()->FUN_1403ed080()->FUN_140428300(&events);
+    for (size_t i = 0; i < events.size(); ++i)
+    {
+        MS2Ptr<Unk_ClBurnEvent> spEvent(events[i]);
+        if (spEvent == 0)
+            continue;
+        __int64 nZero = 0;
+        if (DAT_143ab2fc0.FUN_140be8f80(0x7d1, spEvent->m_18, &nZero) != 0)
+            continue;
+        if (spEvent->m_8c != 0 && spEvent->m_90.FUN_1404110e0())
+        {
+            __int64 nZero2 = 0;
+            if (DAT_143ab2fc0.FUN_140be8f80(0x7d4, spEvent->m_18, &nZero2) != 0)
+                continue;
+        }
+        __int64 nZero3 = 0;
+        if (DAT_143ab2fc0.FUN_140c5af20(2000, spEvent->m_18, &nZero3) == 0)
+        {
+            if (spEvent->FUN_140405230(spCharacter->FUN_1418e9d70()->m_3c))
+            {
+                spFound = spEvent;
+                break;
+            }
+        }
+    }
+    if (spFound == 0)
+        return;
+    CStringW strText;
+    strText.Format(FUN_14028b8e0(spFound->m_48), (const wchar_t*)spCharacter->FUN_1418e9cd0());
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, strText, 0, CStringW(L""));
+    if (!(spBox == 0))
+    {
+        spBox->FUN_141a01800(2);
+        FUN_1418f4df0(spFound, spBox);
+        spBox->FUN_1405340b0(spCharacter->FUN_1418e9cb0());
+        if (!spFound->m_50.IsEmpty())
+        {
+            CStringW strSender;
+            strSender.Format(FUN_14028b8e0(spFound->m_50), (const wchar_t*)spCharacter->FUN_1418e9cd0());
+            static_cast<Unk_ClBox*>(spBox.operator->())->FUN_141a015d0(strSender);
+        }
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f00b0));
+        FUN_140d73c60(spBox);
+    }
+}
+
+// @0x1418f00b0
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+bool UICharacterListDialog::FUN_1418f00b0(int nResult, const CMsgBoxData& box)
+{
+    if (nResult == 0)
+    {
+        COutPacket packet(0x97, 0);
+        packet.Encode1(0x10);
+        packet.Encode8(static_cast<Unk_ClBox*>(const_cast<CMsgBoxData*>(&box))->FUN_141a02f10(0, 0));
+        FUN_140710590(packet);
+    }
+    return true;
+}
+
+// @0x1418f0140
+// MS2-FUNCTIONAL: iterator / temp shape of the event list loop differs
+void UICharacterListDialog::FUN_1418f0140()
+{
+    BurnEvents events;
+    FUN_140302b00()->FUN_1403ed080()->FUN_140428300(&events);
+    MS2Ptr<Unk_ClBurnEvent> spFound(0);
+    for (size_t i = 0; i < events.size(); ++i)
+    {
+        if (!(events[i] == 0))
+        {
+            spFound = events[i];
+            break;
+        }
+    }
+    if (!(spFound == 0))
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, FUN_14028b8e0(spFound->m_58), 0, CStringW(L""));
+        if (!(spBox == 0))
+        {
+            spBox->FUN_141a01800(3);
+            FUN_1418f4df0(spFound, spBox);
+            FUN_140d73c60(spBox);
+        }
+    }
+}
+
+// @0x1418f0400
+// MS2-FUNCTIONAL: iterator / temp shape of the event list loop differs
+void UICharacterListDialog::FUN_1418f0400()
+{
+    if (m_30 == 0)
+        return;
+    BurnEvents events;
+    FUN_140302b00()->FUN_1403ed080()->FUN_140428300(&events);
+    for (size_t i = 0; i < events.size(); ++i)
+    {
+        if (!(events[i] == 0))
+        {
+            m_30->Invoke("attachBurningLevelupDescBtn");
+            break;
+        }
+    }
+}
+
+// @0x1418f2190
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::FUN_1418f2190()
+{
+    m_221 = 0;
+    m_228 = FUN_140d73d20(0x1b, FUN_140298ea0(CStringW(L"s_delete_account_terms_step_1")), 0, CStringW(L""));
+    if (m_228.get() != 0)
+    {
+        m_228->FUN_141a01800(2);
+        m_228->FUN_141a024e0(FUN_140298ea0(CStringW(L"s_delete_account_check_msg_step_1")), 0);
+        m_228->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f31a0));
+        FUN_140d73c60(m_228);
+        m_224 = 1;
+    }
+}
+
+// @0x1418f4ca0
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+bool UICharacterListDialog::OrderCharacters(CharPtr spA, CharPtr spB)
+{
+    if (spA == 0)
+        return false;
+    if (spB == 0)
+        return true;
+    if (spB->FUN_1418ea060() < spA->FUN_1418ea060())
+        return false;
+    return true;
+}
+
+// @0x1418f4df0
+// MS2-FUNCTIONAL: the reward item setup is written once for both lists
+void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
+{
+    MS2Ptr<CMsgBoxDataItem> spFirst(0);
+    MS2Ptr<CMsgBoxDataItem> spSecond(0);
+    if (spEvent->m_90.FUN_1404110e0())
+    {
+        spFirst = new CMsgBoxDataItem;
+        MS2Ptr<CItem> spItem(new CItem);
+        Unk_ClRewardEntry* pEntry = spEvent->m_90.FUN_1403e8aa0();
+        spItem->FUN_140523c40(pEntry->m_ref.vfunc_0(), pEntry->m_ref.vfunc_1(), 0);
+        spItem->FUN_140526c70(pEntry->m_ref.vfunc_2());
+        int nColor = spItem->FUN_140526bd0();
+        spFirst->FUN_141a06630(spItem->FUN_140527b10(), true, nColor);
+        spFirst->m_spItem = spItem;
+        spFirst->m_nCount = spItem->FUN_140526c50();
+        spFirst->m_48 = 0x411;
+    }
+    if (!spEvent->m_70.FUN_140c0e9f0())
+    {
+        spSecond = new CMsgBoxDataItem;
+        MS2Ptr<CItem> spItem(new CItem);
+        Unk_ClRewardEntry* pEntry = spEvent->m_70.FUN_140bfe440();
+        spItem->FUN_140523c40(pEntry->m_ref.vfunc_0(), pEntry->m_ref.vfunc_1(), 0);
+        spItem->FUN_140526c70(pEntry->m_ref.vfunc_2());
+        int nColor = spItem->FUN_140526bd0();
+        spSecond->FUN_141a06630(spItem->FUN_140527b10(), true, nColor);
+        spSecond->m_spItem = spItem;
+        spSecond->m_nCount = spItem->FUN_140526c50();
+        spSecond->m_48 = 0x411;
+    }
+    if (spFirst == 0)
+    {
+        if (!(spSecond == 0))
+            spBox->m_spItem = spSecond;
+    }
+    else
+    {
+        spBox->m_spItem = spFirst;
+        static_cast<Unk_ClBox*>(spBox.operator->())->FUN_141a015a0(FUN_14028b8e0(spEvent->m_a0));
+        if (!(spSecond == 0))
+            spBox->m_spItem2 = spSecond;
+    }
+}
+
+// @0x1418eba00
+// MS2-FUNCTIONAL: the per-event ASData / temp shape differs
+int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    if (FUN_1418fc760(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    if (_stricmp("OnSceneLobbyServer", szMethod) == 0)
+    {
+        FUN_1418f11c0();
+        return 1;
+    }
+    if (_stricmp("OnCreatePC", szMethod) == 0)
+    {
+        FUN_1418f1260();
+        return 1;
+    }
+    if (_stricmp("OnDeletePC", szMethod) == 0)
+    {
+        MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pPC != 0)
+        {
+            CStringW strMsg(L"");
+            unsigned short nLimit = *FUN_1401d3200()->m_55a0.FUN_1402056b0();
+            if ((unsigned short)pPC->vfunc_78() < nLimit)
+                strMsg = FUN_14052bd00(4, pPC->vfunc_77());
+            else
+                strMsg = FUN_1418f5ab0(5, &nLimit, FUN_141b708a0(*FUN_1401d3200()->m_55f8.FUN_1402056b0(), false), pPC->vfunc_77());
+            if (!strMsg.IsEmpty())
+            {
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0xe, strMsg, static_cast<IMessageListener*>(this), CStringW(L"deletePC"));
+                if (spBox.get() != 0)
+                {
+                    spBox->FUN_141a01d30(2, CStringW(L""), 0, 0, 0);
+                    spBox->FUN_141a024e0(FUN_1409eec40(7), 0);
+                    FUN_140d73c60(spBox);
+                }
+            }
+        }
+        return 1;
+    }
+    if (_stricmp("OnGameStart", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
+            m_188 = FindCharacter(nId);
+            if (!(m_188 == 0))
+            {
+                if (m_188->FUN_1418ea020() > 0)
+                    return 0;
+                FUN_1418f13f0();
+                return 1;
+            }
+        }
+    }
+    else
+    {
+        if (_stricmp("OnSelectCharacter", szMethod) == 0)
+        {
+            if (m_180 == 0)
+            {
+                int nState = m_1d4;
+                if (nState > 0 && m_188 == 0)
+                    nState = 0;
+                if (nState == 0)
+                {
+                    ASData data;
+                    if (data.FUN_1422b9620(pArgs, nArgs))
+                    {
+                        unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
+                        CharPtr spPrev(m_188);
+                        m_188 = 0;
+                        bool bChanged = true;
+                        CharPtr spFound = FindCharacter(nId);
+                        if (!(spFound == 0))
+                        {
+                            m_188 = spFound;
+                            if (m_1a0 == (__int64)nId && m_1c8 == (__int64)nId)
+                                bChanged = false;
+                        }
+                        if (bChanged)
+                        {
+                            if (spPrev.get() != m_188.get() || (m_188 == 0 && m_220 == 0))
+                            {
+                                MS2Ptr<AScript> spScript(m_30);
+                                FUN_1412761e0(&spScript, 0);
+                                m_180 = 1;
+                                PostMessageA(FUN_140aadf80()->FUN_14209c720(), 0x4c8, 0, 0);
+                                int nMapId = 0;
+                                if (!(m_188 == 0))
+                                    nMapId = m_188->FUN_1418e9d70()->m_3c;
+                                FUN_140a94350()->vfunc_14(nMapId);
+                            }
+                        }
+                    }
+                }
+            }
+            return 1;
+        }
+        if (_stricmp("onClickCancelDelete", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
+                CancelDelete(FindCharacter(nId));
+            }
+            return 1;
+        }
+        if (_stricmp("onClickRevivalChar", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
+                CharPtr spCharacter = FindCharacter(nId);
+                if (!(spCharacter == 0))
+                {
+                    CStringW strMsg = FUN_14052bd00(8, spCharacter->FUN_1418e9cd0());
+                    unsigned __int64 nCharId = spCharacter->FUN_1418e9cb0();
+                    CStringW strTag = FUN_1406c6bd0(L"revivalChar,{0}", &nCharId);
+                    FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), strTag);
+                }
+            }
+            return 1;
+        }
+        if (_stricmp("onClickFinalDelete", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                unsigned __int64 nId = FUN_140718350(data.FUN_1422b8d30());
+                CharPtr spCharacter = FindCharacter(nId);
+                if (!(spCharacter == 0))
+                {
+                    CStringW strMsg = FUN_14052bd00(6, spCharacter->FUN_1418e9cd0());
+                    unsigned __int64 nCharId = spCharacter->FUN_1418e9cb0();
+                    CStringW strTag = FUN_1406c6bd0(L"finalDelete,{0}", &nCharId);
+                    FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), strTag);
+                }
+            }
+            return 1;
+        }
+        if (_stricmp("onClickDownArrow", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                int nIndex = data.FUN_1422b8b10();
+                Unk_ClChildRef list;
+                static_cast<Unk_ClMovie*>(m_30.operator->())->FUN_140accef0(&list, "m_charlist");
+                if (list.FUN_140acd9d0() != 0)
+                {
+                    int nNext = nIndex + 1;
+                    Scaleform::GFx::Value result = list.FUN_140acd9f0()->Invoke("swapIndex", nIndex, nNext);
+                    if (FUN_1409c1720(&result) && nIndex < (int)m_1a8.size() && nNext < (int)m_1a8.size())
+                        std::swap(m_1a8[nIndex], m_1a8[nNext]);
+                }
+                list.FUN_140acd710();
+            }
+            return 1;
+        }
+        if (_stricmp("onClickUpArrow", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                int nIndex = data.FUN_1422b8b10();
+                if (nIndex == 0)
+                    return 1;
+                Unk_ClChildRef list;
+                static_cast<Unk_ClMovie*>(m_30.operator->())->FUN_140accef0(&list, "m_charlist");
+                if (list.FUN_140acd9d0() != 0)
+                {
+                    int nPrev = nIndex - 1;
+                    Scaleform::GFx::Value result = list.FUN_140acd9f0()->Invoke("swapIndex", nIndex, nPrev);
+                    if (FUN_1409c1720(&result) && nIndex < (int)m_1a8.size() && nPrev < (int)m_1a8.size())
+                        std::swap(m_1a8[nPrev], m_1a8[nIndex]);
+                }
+                list.FUN_140acd710();
+            }
+            return 1;
+        }
+        if (_stricmp("OnEndPopdown", szMethod) == 0)
+        {
+            FUN_1418f1d80();
+            return 1;
+        }
+        if (_stricmp("onClickRegionList", szMethod) == 0)
+        {
+            FUN_1418f11c0();
+            return 1;
+        }
+        if (_stricmp("onClickBurningLevelupDescBtn", szMethod) == 0)
+        {
+            FUN_1418f0140();
+            return 1;
+        }
+        if (_stricmp("onClickDeleteAccount", szMethod) == 0)
+        {
+            CheckDeleteAccount();
+            return 1;
+        }
+        if (_stricmp("onClickUserConsultation", szMethod) == 0)
+        {
+            FUN_1418ef690(FUN_1401d3200()->m_consult);
+            return 1;
+        }
+        if (_stricmp("onClickUserPrivacyPolicy", szMethod) == 0)
+        {
+            FUN_1418ef690(FUN_1401d3200()->m_privacy);
+            return 1;
+        }
+        if (_stricmp("onClickThirdPartyInfomationSharingList", szMethod) == 0)
+        {
+            FUN_1418ef690(FUN_1401d3200()->m_thirdParty);
+            return 1;
+        }
     }
     return 0;
 }
