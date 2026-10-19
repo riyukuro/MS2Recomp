@@ -18,6 +18,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/ms2dragslot.h"
+#include "ms2/client/ms2/inventory.h"
 #include "ms2/commonfiles/fielddata.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/placeholder/astooltip.h"
@@ -123,7 +124,7 @@ typedef LapenshardItemArray ItemArray;
 void FUN_140a704a0(CString* pstrBag);                                   // unbind the bag name
 void FUN_140a702f0(CString* pstrBag, ItemArray* pItems, int nFlag);     // bind the bag name to the items
 // The inventory: the bag lookup used by FUN_140c60920 below.
-void FUN_140c60920(ItemArray* pOut, int bAll, int bEquip, int bMerge, int bSkill, int nKind, __int64 nOwner);   // 0x140c60920
+void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEquipped, int bTableOnly, int nKind, __int64 nExcludeUid);   // 0x140c60920
 
 // @0x140c610a0
 static void BindBag(CString* pstrBag, ItemArray* pItems, int nFlag)
@@ -2030,7 +2031,6 @@ const ATL::CAtlArray<int>& FUN_140a6aa40(Unk_LsQuestRef* pRef);         // the q
 class Unk_LsQuestDone { public: int FUN_140745590(int nQuest); };
 class Unk_LsQuestLog { public: unsigned char m_pad[0x10]; Unk_LsQuestDone m_done; };
 Unk_LsQuestLog* FUN_140764020();
-int FUN_141654700(MyPC* pPlayer);
 CStringW FUN_1416e4df0(int nQuest);                                     // the name of a quest
 CStringW FUN_1405c2690(CStringW fmt, const CStringW& arg);
 
@@ -2061,7 +2061,7 @@ int UILapenshardSystemDialog::vfunc_73()
             return 1;
     }
     CStringW strName;
-    if (FUN_141654700(pPlayer) == 1)
+    if (pPlayer->FUN_141654700() == 1)
     {
         strName = FUN_1416e4df0(nQuest);
         FUN_1412751f0(FUN_1405c2690(CStringW(L"s_lapenshard_open_newbie_quest_message"), strName), 1, 1);
@@ -2110,15 +2110,13 @@ public:
     MS2Ptr<Unk_LsCostList> FUN_14026c230();                             // the ingredient entries
 };
 
-class Unk_LsInventory;
-int FUN_140a5f180(Unk_LsInventory* pInventory, unsigned nItemId, int nGrade);
 extern char DAT_143ab2a90;                                              // the inventory
 extern __int64 DAT_143ab2898;                                           // the money
 
 // @0x140c69670
 int FUN_140c69670(unsigned nItemId, int nGrade, int* pnUnused)
 {
-    int nCount = FUN_140a5f180(reinterpret_cast<Unk_LsInventory*>(&DAT_143ab2a90), nItemId, nGrade);
+    int nCount = reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5f180(nItemId, nGrade);
     if (*pnUnused != 0)
     {
     }
@@ -2261,4 +2259,81 @@ void UILapenshardShieldBar::FUN_140c5fbd0()
         }
     }
     m_nPending = 0;
+}
+
+// ---- the lapenshard bag filter ----
+
+class Unk_ItemOwnerRef { public: int FUN_140635190(); };                // the binding owner holder of an item
+int FUN_1405b5a50(Unk_LsTable* pTable, unsigned nItemId);               // the item is a lapenshard of the table
+int FUN_1405b59d0(Unk_LsTable* pTable, unsigned nItemId);               // its category
+int FUN_140526790(CItem* pItem, int nJob);                              // the job may use it
+int FUN_140526810(CItem* pItem, unsigned nGender);                      // the gender may use it
+
+// @0x140c60920
+// MS2-FUNCTIONAL: the three nested item-reference scopes use different temporaries than the exe
+void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEquipped, int bTableOnly, int nKind, __int64 nExcludeUid)
+{
+    pOut->RemoveAll();
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    ItemArray items;
+    reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a60880(0xd, items);
+    if (bWithEquipped != 0)
+    {
+        ATL::CAtlArray<unsigned int> equipped;
+        pPlayer->FUN_14152f960(equipped);
+        for (size_t i = 0; i < equipped.GetCount(); ++i)
+        {
+            unsigned nItemId = equipped[i];
+            if (bTableOnly == 0 || FUN_1405b5a50(FUN_1409c4b30(), nItemId) != 0)
+            {
+                MS2Ptr<CItem> spItem(new CItem());
+                int nGrade = FUN_14053feb0(nItemId);
+                if (spItem->FUN_14052b2e0(nItemId, nGrade, 0, 1) != 0)
+                {
+                    if (spItem->FUN_140527930()->FUN_140635190() == 2)
+                    {
+                        __int64 nCharId = pPlayer->FUN_141656a80();
+                        CStringW strName = pPlayer->vfunc_77();
+                        spItem->FUN_14052b5e0(&nCharId, &strName);
+                    }
+                    items.Add(spItem);
+                }
+            }
+        }
+    }
+    if (!items.IsEmpty())
+    {
+        size_t nCount = items.GetCount();
+        for (size_t i = 0; i < nCount; ++i)
+        {
+            MS2Ptr<CItem> spItem = items[i];
+            if (spItem == 0)
+                continue;
+            if (bCheckUse != 0)
+            {
+                if (pPlayer->FUN_141662eb0(spItem.get()) == 0)
+                    continue;
+                if (FUN_140526790(spItem.get(), pPlayer->FUN_141654700()) == 0)
+                    continue;
+                if (FUN_140526810(spItem.get(), pPlayer->vfunc_78()) == 0)
+                    continue;
+            }
+            if (spItem->FUN_140526100() == 0)
+                continue;
+            if (bWithBound == 0 && spItem->FUN_140528e20())
+                continue;
+            if (bTableOnly != 0 && FUN_1405b5a50(FUN_1409c4b30(), spItem->FUN_1405276c0()) == 0)
+                continue;
+            if (nKind != 0 && FUN_1405b59d0(FUN_1409c4b30(), spItem->FUN_1405276c0()) != nKind)
+                continue;
+            if (nExcludeUid != 0 && spItem->FUN_140526a50() == nExcludeUid)
+                continue;
+            if (spItem->FUN_1405291f0() == 0)
+                pOut->Add(spItem->FUN_140524250());
+            else
+                pOut->Add(spItem);
+        }
+    }
 }
