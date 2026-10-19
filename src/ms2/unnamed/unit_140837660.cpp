@@ -22,6 +22,8 @@ typedef ATL::CRBMap<int, unsigned __int64, ATL::CDefaultElementTraits<int> > Unk
 static Unk_CostMap s_costs(10);
 static CLockCriticalSection s_lock;
 
+void FUN_140837660();
+#ifndef MS2_HOOK_DLL
 // @0x140837660
 void FUN_140837660()
 {
@@ -32,12 +34,16 @@ void FUN_140837660()
     s_costs.SetAt(4, 10);
     s_costs.SetAt(0x11, 3);
 }
+#endif
 
+int FUN_140837730(int nId);
+#ifndef MS2_HOOK_DLL
 // @0x140837730
 int FUN_140837730(int nId)
 {
     return s_costs.Lookup(nId) != 0;
 }
+#endif
 
 // @0x140837770
 unsigned __int64 FUN_140837770(int nId, unsigned nCount)

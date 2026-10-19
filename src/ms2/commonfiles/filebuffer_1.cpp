@@ -171,6 +171,8 @@ void FUN_14038bb30(const char* root, const char* relative, std::list<CString>& o
 MS2_REPLACE(0x14038bb30, FUN_14038bb30, 1001, 0x0F1F4D97);
 
 // Not hooked: constructs COnlinePatchFileBuffer with unit-local RTTI.
+COnlinePatchFileBuffer* FUN_14038bf20(const char* root, const char* relative);
+#ifndef MS2_HOOK_DLL
 // @0x14038bf20
 COnlinePatchFileBuffer* FUN_14038bf20(const char* root, const char* relative)
 {
@@ -196,8 +198,10 @@ COnlinePatchFileBuffer* FUN_14038bf20(const char* root, const char* relative)
     result->digest = digest.c_str();
     return result;
 }
+#endif
 
 // Not hooked: constructs Crypto++ objects with unit-local RTTI.
+#ifndef MS2_HOOK_DLL
 // @0x14038c1f0
 std::string FUN_14038c1f0(const void* data, size_t size)
 {
@@ -212,6 +216,7 @@ std::string FUN_14038c1f0(const void* data, size_t size)
     encoder.MessageEnd();
     return result;
 }
+#endif
 
 // @0x14038e1b0
 COnlinePatchFileBuffer::COnlinePatchFileBuffer() : data(0), size(0) {}

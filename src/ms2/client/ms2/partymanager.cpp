@@ -1364,11 +1364,13 @@ MS2_REPLACE_METHOD(0x14162EA90, CPartyManager, FUN_14162ea90, 703, 0x57B044C4);
 
 // Not hooked: the callback object carries DLL-local Delegate RTTI.
 // MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
+#ifndef MS2_HOOK_DLL
 // @0x14162ed60
 void CPartyManager::FUN_14162ed60()
 {
     FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &CPartyManager::FUN_141630c70), L"s_party_match_dungeon");
 }
+#endif
 
 // @0x14162ee10
 void CPartyManager::FUN_14162ee10(CInPacket& packet)
@@ -1513,6 +1515,7 @@ MS2_REPLACE_METHOD(0x141630720, CPartyManager, FUN_141630720, 93, 0xB83564F9);
 
 // Not hooked: constructing NotifySurvivalState here installs DLL-local RTTI.
 // MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
+#ifndef MS2_HOOK_DLL
 // @0x141630790
 void CPartyManager::FUN_141630790(CInPacket& packet)
 {
@@ -1534,9 +1537,11 @@ void CPartyManager::FUN_141630790(CInPacket& packet)
         FUN_140da4fe0(FUN_140939a10(), MS2Ptr<NotifyObject>(new NotifySurvivalState));
     }
 }
+#endif
 
 // Not hooked: the callback object carries DLL-local Delegate RTTI.
 // MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
+#ifndef MS2_HOOK_DLL
 // @0x141630a60
 void CPartyManager::FUN_141630a60(CInPacket& packet)
 {
@@ -1548,6 +1553,7 @@ void CPartyManager::FUN_141630a60(CInPacket& packet)
         FUN_141276180(CString("Dungeon_Room_Open"), CString(""));
     }
 }
+#endif
 
 // @0x141630c30
 bool CPartyManager::FUN_141630c30(__int64 id) { return leaderId == id; }

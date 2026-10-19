@@ -24,11 +24,14 @@ egf::EntityManager* FUN_1409670f0();                                         // 
 egf::Entity* FUN_1411cf440(egf::EntityManager* mgr, const egf::EntityID* id);   // entity lookup by id
 void FUN_1413eb6d0(egf::IPropertyCallback* pCallback);                       // registers the camera property callback
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1414af320
 MS2CameraService::MS2CameraService()
     : m_dirty(10)
 {
 }
+#endif
 
 // @0x1414af3a0
 MS2CameraService::~MS2CameraService()

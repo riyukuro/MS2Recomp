@@ -299,6 +299,8 @@ HWND FUN_14209c720(const void*);
 
 LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x141b90cd0
 CWindowService::CWindowService(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
     : efd::Win32PlatformService(hInstance, hPrevInstance, lpCmdLine, nCmdShow)
@@ -306,6 +308,7 @@ CWindowService::CWindowService(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPT
     SetWndProc(Unk_WindowProc);
     m_bMaximize = false;
 }
+#endif
 
 // @0x141b90d90
 CWindowService::~CWindowService()

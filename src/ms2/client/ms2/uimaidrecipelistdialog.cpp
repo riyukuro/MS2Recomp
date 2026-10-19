@@ -1013,11 +1013,14 @@ struct Unk_MdLayoutItem
 };
 static int s_nHomeMode;                                     // 0 merat home, 3 designers home
 
+void FUN_1412e1d20(int nMode);
+#ifndef MS2_HOOK_DLL
 // @0x1412e1d20
 void FUN_1412e1d20(int nMode)
 {
     s_nHomeMode = nMode;
 }
+#endif
 
 // @0x1412e1630
 Unk_MdLayoutItem* FUN_1412e1630(Unk_MdLayoutItem* p)
@@ -1038,6 +1041,8 @@ int FUN_1412df3b0(const CStringW& str)
     return _wtoi(str);
 }
 
+void FUN_1412e1bd0(Unk_MdLayoutItem* p, Unk_140165cf0* pElem);
+#ifndef MS2_HOOK_DLL
 // @0x1412e1bd0
 void FUN_1412e1bd0(Unk_MdLayoutItem* p, Unk_140165cf0* pElem)
 {
@@ -1054,6 +1059,7 @@ void FUN_1412e1bd0(Unk_MdLayoutItem* p, Unk_140165cf0* pElem)
     else if (s_nHomeMode == 3)
         p->m_editable = false;
 }
+#endif
 
 // @0x1412df350
 UIMDEditDialog* FUN_1412df350(UIMDEditDialog* p)

@@ -550,6 +550,7 @@ static int Unk_ComposeBonus(Unk_PetPlayer* player)
     return nBonus;
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x140cb2fb0
 void PetComposePetEnchant::FUN_140cb2fb0()
 {
@@ -579,6 +580,7 @@ void PetComposePetEnchant::FUN_140cb2fb0()
     ench->FUN_140acd1f0("selectPetCard", AScript(obj));
     FUN_141276180(CString("pet_Button_Click"), CString(""));
 }
+#endif
 
 // @0x140cb34b0
 void PetComposePetEnchant::FUN_140cb34b0()

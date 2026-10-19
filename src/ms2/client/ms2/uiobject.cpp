@@ -225,6 +225,10 @@ void UIObject::OnLoadInit()
 MS2_REPLACE_METHOD(0x14131EAE0, UIObject, OnLoadInit, 272, 0x5906B2D0);
 
 // @0x14131ec00
+// Not in the hook DLL: DLL callers (subclass OnLoadComplete overrides call UIObject::OnLoadComplete by name) bind the
+// exe's copy (symbols.tsv); the DLL body would hand the exe a DelegateImpl with the DLL's vftable/RTTI (hooked
+// UILoadingProgress::OnLoadComplete -> the title never loaded, fx6).
+#ifndef MS2_HOOK_DLL
 void UIObject::OnLoadComplete()
 {
     UISwfEntity::OnLoadComplete();
@@ -237,6 +241,7 @@ void UIObject::OnLoadComplete()
         }
     }
 }
+#endif
 // Not hooked: builds a DelegateImpl with the DLL's vftable/RTTI and hands it to the exe (see section 9).
 
 // @0x14131ed10

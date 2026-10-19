@@ -222,6 +222,7 @@ bool CPhysXHelper::FUN_1416892f0(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMa
     FUN_1409f7ca0()->FUN_14168a570();
     return pHit != 0;
 }
+#ifndef MS2_HOOK_DLL
 // @0x1416897d0
 // MS2-FUNCTIONAL: static lock EH shape differs from exe
 NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
@@ -250,6 +251,7 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
     }
     return pActor;
 }
+#endif
 // @0x141689970
 // MS2-FUNCTIONAL: EH unwind shape differs from exe
 egf::Entity* CPhysXHelper::FUN_141689970(NxActor* pActor)

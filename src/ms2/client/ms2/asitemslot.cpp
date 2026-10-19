@@ -852,6 +852,7 @@ void ASSlot::FUN_1409c1f00(int n)
     FUN_1407cb9c0(s_strItemSeal, n);
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1409c1f40
 void ASSlot::FUN_1409c1f40(CItem* pItem)
 {
@@ -874,6 +875,7 @@ void ASSlot::FUN_1409c1f40(CItem* pItem)
         FUN_1407cbbe0(s_strItemIconUnLock, false);
     }
 }
+#endif
 
 // @0x1409c2050
 void ASSlot::FUN_1409c2050(int n)

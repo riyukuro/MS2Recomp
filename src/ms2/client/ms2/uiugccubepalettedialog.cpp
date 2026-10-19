@@ -1646,6 +1646,7 @@ void UIUGCCubePaletteDialog::FUN_140eed2d0()
     FUN_140bc0530(&spCtl)->vfunc_24(1);
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x140eed620 (rebuild the cube list; nSelect: scroll to the focused cube)
 void UIUGCCubePaletteDialog::FUN_140eed620(int nSelect)
 {
@@ -1717,6 +1718,7 @@ void UIUGCCubePaletteDialog::FUN_140eed620(int nSelect)
         FUN_140eefdd0(nFocus);
     }
 }
+#endif
 
 // @0x140eede00 (fill the main category list of a cube type)
 void UIUGCCubePaletteDialog::FUN_140eede00(int nCubeType)
@@ -1910,6 +1912,7 @@ int UIUGCCubePaletteDialog::FUN_140eee630()
     return 0;
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x140eeea80 (select / preview the cube of a list row)
 void UIUGCCubePaletteDialog::FUN_140eeea80(int nRow)
 {
@@ -1986,6 +1989,7 @@ void UIUGCCubePaletteDialog::FUN_140eeea80(int nRow)
     obj.FUN_1407cb9c0("selectedindex", nRow);
     Scaleform::GFx::Value res = pDlg->FUN_140acd1f0("previewCube", AScript(obj));
 }
+#endif
 
 // @0x140eef140 (the destroy-cube message box of the selected cube)
 void UIUGCCubePaletteDialog::FUN_140eef140()

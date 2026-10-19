@@ -412,6 +412,8 @@ static CString s_storeItemOut="store_itemout";
 CNetworkService* TSingleton<CNetworkService>::s_instance=0;
 inline TSingleton<CNetworkService>::TSingleton() { s_instance=static_cast<CNetworkService*>(this); }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x141538060
 CNetworkService::CNetworkService() : m_connectionCount(0) {
     FUN_1415415f0();
@@ -419,6 +421,7 @@ CNetworkService::CNetworkService() : m_connectionCount(0) {
     m_pingSequence=1;
     FUN_141538570();
 }
+#endif
 // @0x1415381c0
 CNetworkService::~CNetworkService() { FUN_141541700(); }
 // @0x1415382a0

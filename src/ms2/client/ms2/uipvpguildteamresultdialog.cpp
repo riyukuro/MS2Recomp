@@ -300,6 +300,7 @@ void UIPvPGuildTeamResultDialog::FUN_1413418a0()
     FUN_141341e70();
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x141341e70
 void UIPvPGuildTeamResultDialog::FUN_141341e70()
 {
@@ -319,6 +320,7 @@ void UIPvPGuildTeamResultDialog::FUN_141341e70()
     }
     FUN_141276180(s_strGuildBattleReward, "");
 }
+#endif
 
 // @0x141342040
 Unk_PgtrGuild* UIPvPGuildTeamResultDialog::FUN_141342040(bool bLeft)

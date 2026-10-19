@@ -632,6 +632,7 @@ MessengerData::SubjectSetting* MessengerData::PanelSetting::FUN_141482200()
     return &m_subject;
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x141482220
 int MessengerData::PanelSetting::FUN_141482220(Unk_MdXml* pXml)
 {
@@ -655,7 +656,9 @@ int MessengerData::PanelSetting::FUN_141482220(Unk_MdXml* pXml)
     }
     return 0;
 }
+#endif
 
+#ifndef MS2_HOOK_DLL
 // @0x141482340
 int MessengerData::PanelSetting::FUN_141482340(Unk_MdXml* pXml)
 {
@@ -679,6 +682,7 @@ int MessengerData::PanelSetting::FUN_141482340(Unk_MdXml* pXml)
     }
     return 0;
 }
+#endif
 
 // @0x141482460
 int MessengerData::PanelSetting::FUN_141482460(int nType)
@@ -851,12 +855,14 @@ void Unk_MdState::FUN_141482e50()
     m_p40 = 0;
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x141482e80
 Unk_MdState* FUN_141482e80()
 {
     static Unk_MdState s_state;
     return &s_state;
 }
+#endif
 
 // @0x141482f00
 int FUN_141482f00(int nType)

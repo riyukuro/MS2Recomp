@@ -335,7 +335,7 @@ void UILoadingProgress::FUN_1419e07a0()
 // @0x1419e08b0
 void UILoadingProgress::FUN_1419e08b0(int nWidth, int nHeight)
 {
-    char fmt[8];
+    char fmt[12];                                                   // FUN_140984420 fills three ints (12 bytes)
     FUN_140984420(fmt);
     *(int*)(fmt + 4) = 3;
     m_78.Assign(FUN_141d61a80(nWidth, nHeight, FUN_140994450(), fmt, 0x100));

@@ -193,11 +193,14 @@ inline TSingleton<DecoEditService>::TSingleton() { s_instance = static_cast<Deco
 // DecoEditService
 // ---------------------------------------------------------------------------------------------------------------
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x14116f6a0
 DecoEditService::DecoEditService()
     : m_nBrush(2), m_spLayer(0), m_mapLayers(10), m_mapBrushes(17, 0.75f, 0.25f, 2.25f, 10)
 {
 }
+#endif
 
 // @0x14116f7b0
 DecoEditService::~DecoEditService()

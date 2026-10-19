@@ -115,10 +115,12 @@ void CServerListTable::CheckInit()
     }
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x141753350
 void CServerListTable::SetInit(bool b)
 {
     s_bInit = b;
 }
+#endif
 
 // Not hooked: Load/GetServer/GetFirstServer/CheckInit/SetInit read or write s_bInit, which is a DLL-local copy here.

@@ -45,10 +45,13 @@ void* FUN_140d86ec0(long long* p);   void* FUN_140d86ee0(void* p);   void* FUN_1
 
 typedef CAtlList<const egf::FlatModel*> FlatModelList;
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x140d86560
 MS2FlatModelManager::MS2FlatModelManager()
 {
 }
+#endif
 
 // @0x140d865a0
 MS2FlatModelManager::~MS2FlatModelManager()

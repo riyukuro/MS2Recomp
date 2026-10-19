@@ -526,12 +526,15 @@ bool Unk_InstancingCell::operator>=(const Unk_InstancingCell& other) const
 
 // ---- HardwareInstancingService ----
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1413d42a0
 HardwareInstancingService::HardwareInstancingService()
     : m_bEnabled(false), m_bReady(false), m_bVisible(true), m_nMap(0), m_mapQueued(17, 0.75f, 0.25f, 2.25f, 10),
       m_nNextId(0)
 {
 }
+#endif
 
 // @0x1413d43d0
 HardwareInstancingService::~HardwareInstancingService()

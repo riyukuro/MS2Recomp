@@ -101,6 +101,7 @@ Scaleform::GFx::Value FUN_1419dc5e0(AScript* pDlg, const char* szMethod, int n, 
     return pDlg->FUN_1422bb8f0(szMethod, args);
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1419dcf80
 void UIJobChangeDialog::FUN_1419dcf80()
 {
@@ -111,6 +112,7 @@ void UIJobChangeDialog::FUN_1419dcf80()
         MessageBoxA(0, msg, "Error", 0);
     }
 }
+#endif
 
 // @0x1419db000
 UIJobChangeDialog::UIJobChangeDialog()
@@ -321,11 +323,13 @@ void UIJobChangeDialog::FUN_1419dc1e0(int nJob)
     }
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1419dec80
 void UIJobChangeDialog::FUN_1419dec80(bool bValid)
 {
     s_bValid = bValid;
 }
+#endif
 
 // @0x1419dc510
 void UIJobChangeDialog::FUN_1419dc510(int nJob)

@@ -1967,6 +1967,7 @@ void FUN_141050920(Unk_AtlasResult* pResult, NiPixelData* pAlbedo, NiPixelData* 
 }
 
 // Creates the texturing property of the atlas (base texture plus shader map) and dumps both textures to disk (0x141050fd0).
+#ifndef MS2_HOOK_DLL
 // @0x141050fd0
 NiTexturingProperty* FUN_141050fd0(NiPixelData* pAlbedo, NiPixelData* pShader)
 {
@@ -1984,6 +1985,7 @@ NiTexturingProperty* FUN_141050fd0(NiPixelData* pAlbedo, NiPixelData* pShader)
     s_iAtlasFileCount++;
     return pTexturing;
 }
+#endif
 
 
 // Same layout as the stream ref but with its own stream of uiCount elements (0x141051210).

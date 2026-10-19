@@ -115,6 +115,7 @@ CFieldFeatureChecker::CFieldFeatureChecker()
 {
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1406f9750
 void CFieldFeatureChecker::BuildNameTable()
 {
@@ -130,7 +131,9 @@ void CFieldFeatureChecker::BuildNameTable()
     }
     SetInit(true);
 }
+#endif
 
+#ifndef MS2_HOOK_DLL
 // @0x1406f9820
 int CFieldFeatureChecker::IsEnabled(int nFieldId)
 {
@@ -139,6 +142,7 @@ int CFieldFeatureChecker::IsEnabled(int nFieldId)
     s_names.Lookup(nFieldId, strFeature);
     return FUN_140166410()->FUN_14036d4b0(strFeature);
 }
+#endif
 
 // @0x1406f9890
 CFieldMetaTable::CFieldMetaTable()

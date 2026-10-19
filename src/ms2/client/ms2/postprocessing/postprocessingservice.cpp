@@ -1334,6 +1334,8 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
 inline TSingleton<PostProcessingService>::TSingleton() { s_instance = static_cast<PostProcessingService*>(this); }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1416a3020
 PostProcessingService::PostProcessingService()
     : m_bMRT(false), m_bHDR(false), m_b1c2(false), m_b1c3(false), m_nFormat(2), m_b210(false)
@@ -1346,6 +1348,7 @@ PostProcessingService::PostProcessingService()
         m_aiRefCount[i] = 0;
     }
 }
+#endif
 
 // @0x1416a3380
 PostProcessingService::~PostProcessingService()
@@ -2245,6 +2248,7 @@ bool PostProcessingService::FUN_1416ac1e0(NiRenderClick* pkClick, void* pvData)
     return true;
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1416ac240
 bool PostProcessingService::FUN_1416ac240(NiRenderClick* pkClick, void* pvData)
 {
@@ -2255,7 +2259,9 @@ bool PostProcessingService::FUN_1416ac240(NiRenderClick* pkClick, void* pvData)
     pkClick->SetRenderTargetGroup(DAT_143ae4660->m_aspFrameTargets[DAT_143ae4660->m_iFrame]);
     return true;
 }
+#endif
 
+#ifndef MS2_HOOK_DLL
 // @0x1416ac2e0
 bool PostProcessingService::FUN_1416ac2e0(NiRenderClick* pkClick, void* pvData)
 {
@@ -2270,6 +2276,7 @@ bool PostProcessingService::FUN_1416ac2e0(NiRenderClick* pkClick, void* pvData)
     }
     return false;
 }
+#endif
 
 // @0x1416aaef0
 // PostProcessingService::LinkEffects (name from its log strings): takes the steps out of the active render frame, then

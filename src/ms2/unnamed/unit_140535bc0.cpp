@@ -140,6 +140,7 @@ CostumeSetPtr CostumeSetTable::GetSet(unsigned nSetId, int nGender)
     }
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1405361e0
 // MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent vipgoods.cpp, banktable.cpp)
 int CostumeSetTable::LoadXml()
@@ -220,6 +221,7 @@ int CostumeSetTable::LoadXml()
     }
     return 1;
 }
+#endif
 
 // @0x1405371d0
 void CostumeSetTable::CheckInit()

@@ -693,6 +693,8 @@ int FUN_1422b9e00(void*);
 void* FUN_1408e57f0();
 bool FUN_14028d470(float, float);
 
+float FUN_141276490(float fWidth, float fHeight);
+#ifndef MS2_HOOK_DLL
 // @0x141276490
 // MS2-FUNCTIONAL: the exe frame holds 16 more bytes of key temporaries (607 vs 583 bytes); logic equivalent
 float FUN_141276490(float fWidth, float fHeight)
@@ -721,6 +723,7 @@ float FUN_141276490(float fWidth, float fHeight)
     s_scaleCache.SetAt(Unk_ScreenKey(fWidth, fHeight), fScale);
     return fScale;
 }
+#endif
 
 // ---- console window ---------------------------------------------------------------------------------------------------
 class Unk_ConsoleView {

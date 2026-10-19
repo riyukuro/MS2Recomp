@@ -81,6 +81,8 @@ bool FUN_1416ba600(void* a, void* b) { return true; }
 // @0x1416ba620
 bool FUN_1416ba620(void* a, void* b) { return true; }
 
+void FUN_1416ba640(Unk_PPSmartC tex);
+#ifndef MS2_HOOK_DLL
 // @0x1416ba640
 void FUN_1416ba640(Unk_PPSmartC tex)
 {
@@ -93,6 +95,7 @@ void FUN_1416ba640(Unk_PPSmartC tex)
         }
     }
 }
+#endif
 
 // @0x1416ba750
 void ScreenMaskingRenderStep::vfunc_22() {}

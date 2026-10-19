@@ -187,6 +187,7 @@ bool WorldFadeOutRenderStep::vfunc_15(unsigned int a, void* b)
 
 MS2_REPLACE_METHOD(0x1416BAE20, WorldFadeOutRenderStep, vfunc_15, 388, 0xF523D75F);
 
+#ifndef MS2_HOOK_DLL
 // @0x1416bafb0
 bool FUN_1416bafb0(void* a, void* step)
 {
@@ -203,6 +204,7 @@ bool FUN_1416bafb0(void* a, void* step)
     FUN_1409a5770(&DAT_143ae5320, &s_fade, 1);
     return true;
 }
+#endif
 
 // @0x1416bb0a0
 // MS2-FUNCTIONAL: stack-slot layout of temps differs (frame 0x98 matches, slot order does not)

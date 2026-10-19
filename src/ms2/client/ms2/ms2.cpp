@@ -982,7 +982,14 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     m_spServiceManager->RegisterSystemService(spScene);
     efd::SmartPointer<MS2PropService> spProp = EE_NEW MS2PropService;
     spProp->SetAsynchronousSimulation(!bSyncPhysX);
+#ifdef MS2_HOOK_DLL
+    // The SDK header's inline GetSceneGraphCache reads m_spSceneGraphCache at +0x100 when compiled into the hook DLL,
+    // but the exe's ecr::SceneGraphService keeps it at +0x118 (getter 0x1414a59a0); the wrong slot handed PropService
+    // a garbage cache -> NiSPWorkflowManager::FlushTaskGroup crash / black screen with all hooks (fx6).
+    spProp->FUN_142064e10(*reinterpret_cast<ecr::SceneGraphCache**>(reinterpret_cast<char*>(&*spSceneGraph) + 0x118));
+#else
     spProp->FUN_142064e10(spSceneGraph->GetSceneGraphCache());
+#endif
     m_spServiceManager->RegisterSystemService(spProp);
     efd::SmartPointer<egmPhysXWhitebox::PhysXWhiteboxService> spWhitebox = EE_NEW egmPhysXWhitebox::PhysXWhiteboxService;
     m_spServiceManager->RegisterSystemService(spWhitebox);

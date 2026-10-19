@@ -168,11 +168,14 @@ inline TSingleton<MS2LightService>::TSingleton() { s_instance = static_cast<MS2L
 // MS2LightService
 // ---------------------------------------------------------------------------------------------------------------
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1414bfc40
 MS2LightService::MS2LightService()
     : ecr::LightService(true), m_bSortedRelight(false)
 {
 }
+#endif
 
 // @0x1414bfd40
 MS2LightService::~MS2LightService()
@@ -219,11 +222,13 @@ efd::AsyncResult MS2LightService::OnTick()
 }
 MS2_REPLACE_METHOD(0x1414BFEE0, MS2LightService, OnTick, 233, 0xE3B714E2);
 
+#ifndef MS2_HOOK_DLL
 // @0x1414bffd0
 void MS2LightService::QueueLight(const egf::EntityID& entityID)
 {
     s_queuedLights.push_back(entityID);
 }
+#endif
 
 // @0x1414c0000
 void MS2LightService::OnPropertyUpdate(const efd::ClassID& callerID, egf::Entity* pEntity, const egf::PropertyID& propertyID,
@@ -495,6 +500,7 @@ void MS2LightService::RemoveRenderedEntity(egf::Entity* pEntity, NiAVObject* pAV
 }
 MS2_REPLACE_METHOD(0x1414C0BB0, MS2LightService, RemoveRenderedEntity, 421, 0x7C9D8B1A);
 
+#ifndef MS2_HOOK_DLL
 // @0x1414c0d60
 bool MS2LightService::CreateQueuedLights()
 {
@@ -575,3 +581,4 @@ bool MS2LightService::CreateQueuedLights()
     UpdateLightShadows();
     return true;
 }
+#endif

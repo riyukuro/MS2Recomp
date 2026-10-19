@@ -180,10 +180,13 @@ static int FUN_1414a9c80(void* pObj)
 }
 
 // ---- MS2AnimationService ----
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1414a8770
 MS2AnimationService::MS2AnimationService() : egmAnimation::AnimationService(false)
 {
 }
+#endif
 
 // @0x1414a87c0
 MS2AnimationService::~MS2AnimationService()
@@ -249,6 +252,7 @@ efd::AsyncResult MS2AnimationService::OnShutdown()
 
 // Reloads the KF files of the local player when it is a female model (same pass as ReloadMaleKF with the other label).
 // MS2-FUNCTIONAL: player-name handling / local buffer layout differs from the exe
+#ifndef MS2_HOOK_DLL
 // @0x1414a8980
 void MS2AnimationService::ReloadFemaleKF()
 {
@@ -290,8 +294,10 @@ void MS2AnimationService::ReloadFemaleKF()
         }
     }
 }
+#endif
 
 // MS2-FUNCTIONAL: player-name handling / local buffer layout differs from the exe
+#ifndef MS2_HOOK_DLL
 // @0x1414a8c40
 void MS2AnimationService::ReloadMaleKF()
 {
@@ -333,6 +339,7 @@ void MS2AnimationService::ReloadMaleKF()
         }
     }
 }
+#endif
 
 // @0x1414a8f00
 void MS2AnimationService::OnAssetLoadFailure(AssetDataPtr spAssetData)
@@ -510,12 +517,15 @@ void FUN_1414a99e0()
     s_mapCache.RemoveAll();
 }
 
-// Factory of the KFM cache service object.
+// Factory of the KFM cache service object. Not in the hook DLL: MS2::RegisterServices (hooked) registers it, and it
+// must build the exe's MS2KFMCache (fx6).
+#ifndef MS2_HOOK_DLL
 // @0x1414a9a10
 efd::IBase* FUN_1414a9a10()
 {
     return EE_NEW MS2KFMCache();
 }
+#endif
 
 // Protected view of the scene graph cache's data type.
 struct Unk_SGCacheView : public ecr::SceneGraphCache

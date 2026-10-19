@@ -276,7 +276,7 @@ int FUN_1416f9b30(char c, void* obj)
 // @0x1416f9b80
 void FUN_1416f9b80(RTRC* p, unsigned w, unsigned h)
 {
-    struct { int a; int b; } fmt;
+    struct { int a; int b; int c; } fmt;                            // FUN_140984420 fills three ints (12 bytes)
     FUN_140984420(&fmt);
     fmt.b = 2;
     void* tex = FUN_141d61a80(w, h, FUN_140994450(), &fmt, 0x100);

@@ -394,6 +394,8 @@ static CString s_tabIndex = "tabIndex";                                         
 // @0x141aedf10
 inline TSingleton<CUIService>::TSingleton() { s_instance = static_cast<CUIService*>(this); }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x141ad8bc0
 // MS2-FUNCTIONAL: container glue called through the exe; branch/temporary layout differs
 CUIService::CUIService()
@@ -427,6 +429,7 @@ CUIService::CUIService()
     m_strTable = FUN_14071a5b0(CStringA("Table"), CStringA("alignWidget.xml"));
     m_cache.FUN_1401d1160(CString(m_strTable));
 }
+#endif
 
 // @0x141ad91c0
 // MS2-FUNCTIONAL: container glue called through the exe; branch/temporary layout differs

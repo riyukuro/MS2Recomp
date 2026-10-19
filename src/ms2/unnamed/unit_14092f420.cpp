@@ -1033,12 +1033,16 @@ unsigned FUN_140931450(CString strName)
     return DAT_143ab3268.FUN_140408410(nSlot) != -1;
 }
 
+// Not in the hook DLL: the DLL's function-local static would be a second, DLL-constructed emoticon table; DLL callers
+// (FUN_14092f420 on field entry) bind the exe getter and its object 0x143ab3350 (fx6).
+#ifndef MS2_HOOK_DLL
 // @0x140931510
 CChatEmoticonCli* FUN_140931510()
 {
     static CChatEmoticonCli s_emoticons;
     return &s_emoticons;
 }
+#endif
 
 // @0x140931590
 void FUN_140931590(Unk_Wallet* pVec, int nKind, __int64 nAmount)

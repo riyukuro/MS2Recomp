@@ -1108,6 +1108,7 @@ void UIRouletteDialog::FUN_141ac5a30()
 }
 MS2_REPLACE_METHOD(0x141ac5a30, UIRouletteDialog, FUN_141ac5a30, 1071, 0x93B7D820);
 
+#ifndef MS2_HOOK_DLL
 // @0x141ac5e70
 void UIRouletteDialog::FUN_141ac5e70(CInPacket& pkt)
 {
@@ -1154,6 +1155,7 @@ void UIRouletteDialog::FUN_141ac5e70(CInPacket& pkt)
         }
     }
 }
+#endif
 
 // @0x141ac6ad0
 int UIRouletteDialog::vfunc_48() { return 0x4e6d; }

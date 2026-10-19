@@ -353,6 +353,7 @@ CFileSystem::~CFileSystem() {
 }
 // MS2-FUNCTIONAL: standard list/string operations retain descending archive order and one-character trimming.
 // Not hooked: callback construction creates DLL-local ClassFunHandler RTTI.
+#ifndef MS2_HOOK_DLL
 // @0x140396770
 int CFileSystem::FUN_140396770(unsigned char requestedMode, int requestedArchiveMode) {
     mode = requestedMode;
@@ -389,8 +390,10 @@ int CFileSystem::FUN_140396770(unsigned char requestedMode, int requestedArchive
     }
     return 1;
 }
+#endif
 // MS2-FUNCTIONAL: typed archive ownership and reverse list iteration preserve patch priority.
 // Not hooked: callback construction creates DLL-local ClassFunHandler RTTI.
+#ifndef MS2_HOOK_DLL
 // @0x140396d00
 int CFileSystem::FUN_140396d00(const char* directory) {
     if (!FUN_140398190()) return 0;
@@ -428,6 +431,7 @@ int CFileSystem::FUN_140396d00(const char* directory) {
     }
     return 1;
 }
+#endif
 // @0x1403972f0
 int CFileSystem::FUN_1403972f0(const char* path, void** data, unsigned __int64* size, std::string* actualPath) {
     if (path != nullptr && data != nullptr && size != nullptr) {
@@ -493,6 +497,7 @@ int CFileSystem::FUN_140397ab0(TiXmlDocument* document, const CStringW& xml) {
 }
 // MS2-FUNCTIONAL: typed cache lookup retains both locked checks, timestamp updates and hit counters.
 // Not hooked: loader branches construct CFileBuffer objects with DLL-local RTTI.
+#ifndef MS2_HOOK_DLL
 // @0x140397bc0
 CFileSystem::BufferPtr CFileSystem::FUN_140397bc0(const char* path, int cacheMode, int flag) {
     __time64_t now;
@@ -529,6 +534,7 @@ CFileSystem::BufferPtr CFileSystem::FUN_140397bc0(const char* path, int cacheMod
     }
     return std::move(buffer);
 }
+#endif
 // @0x140398190
 bool CFileSystem::FUN_140398190() { return packed; }
 MS2_REPLACE_METHOD(0x140398190, CFileSystem, FUN_140398190, 15, 0x3367C6B5);
@@ -803,6 +809,7 @@ unsigned long CFileSystem::FUN_14039a790(unsigned long magic, unsigned char* dat
 }
 // Not hooked: constructs Crypto++ objects with DLL-local RTTI.
 // MS2-FUNCTIONAL: the exe's CTR_Mode<AES>::Encryption is 8 bytes larger than the vendored Crypto++ one, so the frame is 0x10 smaller (code otherwise identical).
+#ifndef MS2_HOOK_DLL
 // @0x14039a8a0
 unsigned long CFileSystem::FUN_14039a8a0(unsigned char* data, unsigned long size,
                                        unsigned char** output, unsigned long selector) {
@@ -820,8 +827,10 @@ unsigned long CFileSystem::FUN_14039a8a0(unsigned char* data, unsigned long size
     memcpy(*output, result.data(), result.length());
     return static_cast<unsigned long>(result.length());
 }
+#endif
 // Not hooked: constructs Crypto++ objects with DLL-local RTTI.
 // MS2-FUNCTIONAL: the exe's CTR_Mode<AES>::Encryption is 8 bytes larger than the vendored Crypto++ one, so the frame is 0x10 smaller (code otherwise identical).
+#ifndef MS2_HOOK_DLL
 // @0x14039aba0
 unsigned long CFileSystem::FUN_14039aba0(unsigned char* data, unsigned long size,
                                        unsigned char** output, unsigned long selector) {
@@ -839,8 +848,10 @@ unsigned long CFileSystem::FUN_14039aba0(unsigned char* data, unsigned long size
     memcpy(*output, result.data(), result.length());
     return static_cast<unsigned long>(result.length());
 }
+#endif
 // Not hooked: constructs Crypto++ objects with DLL-local RTTI.
 // MS2-FUNCTIONAL: the exe's CTR_Mode<AES>::Encryption is 8 bytes larger than the vendored Crypto++ one, so the frame is 0x10 smaller (code otherwise identical).
+#ifndef MS2_HOOK_DLL
 // @0x14039ae90
 unsigned long CFileSystem::FUN_14039ae90(unsigned char* data, unsigned long size,
                                        unsigned char** output, unsigned long selector) {
@@ -858,8 +869,10 @@ unsigned long CFileSystem::FUN_14039ae90(unsigned char* data, unsigned long size
     memcpy(*output, result.data(), result.length());
     return static_cast<unsigned long>(result.length());
 }
+#endif
 // Not hooked: constructs Crypto++ objects with DLL-local RTTI.
 // MS2-FUNCTIONAL: the exe's CTR_Mode<AES>::Encryption is 8 bytes larger than the vendored Crypto++ one, so the frame is 0x10 smaller (code otherwise identical).
+#ifndef MS2_HOOK_DLL
 // @0x14039b180
 unsigned long CFileSystem::FUN_14039b180(unsigned char* data, unsigned long size,
                                        unsigned char** output, unsigned long selector) {
@@ -877,6 +890,7 @@ unsigned long CFileSystem::FUN_14039b180(unsigned char* data, unsigned long size
     memcpy(*output, result.data(), result.length());
     return static_cast<unsigned long>(result.length());
 }
+#endif
 #ifdef __clang__
 // Keep imported key-array references in code, not in an absolute-address table.
 #pragma clang optimize off
@@ -1055,6 +1069,7 @@ std::string CFileSystem::FUN_14039c050(std::string path, bool checkFile) {
 MS2_REPLACE_METHOD(0x14039c050, CFileSystem, FUN_14039c050, 1968, 0xE34581C1);
 // MS2-FUNCTIONAL: real ATL file wrapper preserves HRESULT tests, FILE_ATTRIBUTE_NORMAL and ignored short-read result.
 // Not hooked: constructs a CFileBuffer with DLL-local RTTI.
+#ifndef MS2_HOOK_DLL
 // @0x14039c810
 CFileSystem::BufferPtr CFileSystem::FUN_14039c810(std::string path, int flag) {
     if (FUN_140398640(path, true)) return BufferPtr(0);
@@ -1083,8 +1098,10 @@ CFileSystem::BufferPtr CFileSystem::FUN_14039c810(std::string path, int flag) {
     file.Close();
     return std::move(buffer);
 }
+#endif
 // MS2-FUNCTIONAL: typed archive iteration retains patch priority and the conditional missing-file warning.
 // Not hooked: constructs a CFileBuffer with DLL-local RTTI.
+#ifndef MS2_HOOK_DLL
 // @0x14039cc50
 CFileSystem::BufferPtr CFileSystem::FUN_14039cc50(std::string path, int flag) {
     void* data = nullptr;
@@ -1115,8 +1132,10 @@ CFileSystem::BufferPtr CFileSystem::FUN_14039cc50(std::string path, int flag) {
     }
     return BufferPtr(0);
 }
+#endif
 // MS2-FUNCTIONAL: typed patch archive iteration retains buffer adoption and by-value parameter destruction.
 // Not hooked: constructs a CFileBuffer with DLL-local RTTI.
+#ifndef MS2_HOOK_DLL
 // @0x14039d190
 CFileSystem::BufferPtr CFileSystem::FUN_14039d190(std::string resolved, std::string original, int flag) {
     void* data = nullptr;
@@ -1140,6 +1159,7 @@ CFileSystem::BufferPtr CFileSystem::FUN_14039d190(std::string resolved, std::str
     }
     return BufferPtr(0);
 }
+#endif
 inline void Unk_FileAppend(ATL::CAtlArray<CString>& output, const CString& path) { output.Add(path); }
 inline void Unk_FileAppend(std::vector<CString>& output, const CString& path) { output.push_back(path); }
 template<class Output> void Unk_EnumerateArchive(CFileSystem* fs, CString& pattern, CString& directory,

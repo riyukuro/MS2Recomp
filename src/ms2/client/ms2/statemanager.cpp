@@ -1619,10 +1619,13 @@ static bool FUN_1417e3620(Unk_SMInputHandle* p)
     return p->m_pTarget == 0;
 }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1417e2460
 CStateService::CStateService() : m_mapScenes(10), m_spCurrent(0)
 {
 }
+#endif
 
 // @0x1417e2510
 CStateService::~CStateService()

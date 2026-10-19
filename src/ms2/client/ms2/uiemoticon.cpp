@@ -89,6 +89,8 @@ Unk_EmoPopupMgr* FUN_1403ed2b0();
 UIEmoticon* FUN_141930440(int nUiId);
 unsigned int FUN_14192fe00(Unk_EmoPlayer* pPlayer);
 
+int FUN_14192e8f0();
+#ifndef MS2_HOOK_DLL
 // @0x14192e8f0
 int FUN_14192e8f0()
 {
@@ -110,7 +112,10 @@ int FUN_14192e8f0()
     }
     return 1;
 }
+#endif
 
+CString FUN_14192ebf0(unsigned int nNpcId);
+#ifndef MS2_HOOK_DLL
 // @0x14192ebf0
 CString FUN_14192ebf0(unsigned int nNpcId)
 {
@@ -121,6 +126,7 @@ CString FUN_14192ebf0(unsigned int nNpcId)
         return StringFormat("emoticon_movie_npc_{0}", FUN_140764010()->FUN_14035b2a0(nNpcId));
     return CString("");
 }
+#endif
 
 // @0x14192ed20
 CString FUN_14192ed20(unsigned int nQuestId, int nKind)

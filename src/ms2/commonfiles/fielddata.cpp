@@ -478,6 +478,7 @@ void FUN_1403731e0(ATL::CAtlArray<Unk_FieldSpawnPair>& out)
         }
     }
 }
+#ifndef MS2_HOOK_DLL
 // @0x140373340
 void FUN_140373340()
 {
@@ -517,6 +518,7 @@ void FUN_140373340()
         }
     }
 }
+#endif
 // @0x1403737a0
 void FUN_1403737a0()
 {
@@ -554,9 +556,12 @@ CFieldData::CFieldData()
 // @0x140373c90
 CFieldData::~CFieldData() {}
 
+#ifndef MS2_HOOK_DLL
 // @0x140373d30
 void CFieldData::FUN_140373d30() { s_fields.RemoveAll(); }
+#endif
 // MS2-FUNCTIONAL: typed XML and logging temporaries differ; virtual loading and insertion conditions are preserved.
+#ifndef MS2_HOOK_DLL
 // @0x140373d50
 void CFieldData::FUN_140373d50()
 {
@@ -583,6 +588,7 @@ void CFieldData::FUN_140373d50()
         }
     }
 }
+#endif
 // @0x140374090
 void CFieldData::FUN_140374090(std::vector<MS2Ptr<CFieldData> >& out)
 {
@@ -594,6 +600,7 @@ void CFieldData::FUN_140374090(std::vector<MS2Ptr<CFieldData> >& out)
     }
 }
 // MS2-FUNCTIONAL: null-return construction is scheduled before lock cleanup; it only clears the returned pointer.
+#ifndef MS2_HOOK_DLL
 // @0x140374140
 MS2Ptr<CFieldData> CFieldData::FUN_140374140(int id)
 {
@@ -606,6 +613,7 @@ MS2Ptr<CFieldData> CFieldData::FUN_140374140(int id)
     }
     return std::move(field);
 }
+#endif
 // MS2-FUNCTIONAL: typed return and string-comparison temporaries differ; search order and ownership are preserved.
 // @0x140374270
 MS2Ptr<CFieldData> CFieldData::FUN_140374270(CString xblock)

@@ -263,6 +263,8 @@ Unk_MagicListPtr FUN_14145c250(unsigned nMagicId)
 }
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
+Unk_SocketPtr<CMagicData> FUN_14145c300(unsigned nMagicId, int nIndex);
+#ifndef MS2_HOOK_DLL
 // @0x14145c300
 Unk_SocketPtr<CMagicData> FUN_14145c300(unsigned nMagicId, int nIndex)
 {
@@ -277,6 +279,7 @@ Unk_SocketPtr<CMagicData> FUN_14145c300(unsigned nMagicId, int nIndex)
     int nWrapped = (int)((unsigned long long)nIndex % list->GetCount());
     return list->GetAt(nWrapped);
 }
+#endif
 
 // @0x14145c4b0
 static void FUN_14145c4b0()
@@ -285,6 +288,7 @@ static void FUN_14145c4b0()
 }
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
+#ifndef MS2_HOOK_DLL
 // @0x14145c4d0
 int FUN_14145c4d0()
 {
@@ -358,6 +362,7 @@ int FUN_14145c4d0()
     s_magics.SetAt(0, defaultList);
     return 1;
 }
+#endif
 
 // @0x14145d120
 CMagic::CMagic()
@@ -2741,12 +2746,15 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMagicMemcpyS)(void*, 
 CMagicService* TSingleton<CMagicService>::s_instance = 0;
 inline TSingleton<CMagicService>::TSingleton() { s_instance = static_cast<CMagicService*>(this); }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x14146b2e0
 CMagicService::CMagicService()
     : m_mapCasts(10)
     , m_mapModels(17, 0.75f, 0.25f, 2.25f, 10)
 {
 }
+#endif
 
 // @0x14146b3b0
 CMagicService::~CMagicService()

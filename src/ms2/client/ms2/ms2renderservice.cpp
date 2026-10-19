@@ -342,6 +342,8 @@ void CRenderCallback::Error(const char* pText)
 }
 MS2_REPLACE_METHOD(0x1414EA550, CRenderCallback, Error, 219, 0x9B8E5B6C);
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1414ea640
 MS2RenderService::MS2RenderService(NiWindowRef parentHandle)
     : ecr::RenderService(parentHandle)
@@ -351,6 +353,7 @@ MS2RenderService::MS2RenderService(NiWindowRef parentHandle)
     m_pCurrentContext = 0;
     m_uiCurrentIndex = 0;
 }
+#endif
 
 // @0x1414ea6d0
 MS2RenderService::~MS2RenderService()

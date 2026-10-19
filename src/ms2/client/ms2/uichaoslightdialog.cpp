@@ -427,6 +427,7 @@ const ChaosLightEffectParam* FUN_141041e90()
     return &s_defaultParam;
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x141041ea0
 // Store the edited param as the override and push it to every live chaos light effect.
 void FUN_141041ea0(const ChaosLightEffectParam* pParam)
@@ -453,18 +454,23 @@ void FUN_141041ea0(const ChaosLightEffectParam* pParam)
         }
     }
 }
+#endif
 
+#ifndef MS2_HOOK_DLL
 // @0x1410420a0
 void FUN_1410420a0(bool bApply)
 {
     s_bApply = bApply;
 }
+#endif
 
+#ifndef MS2_HOOK_DLL
 // @0x1410420c0
 bool FUN_1410420c0()
 {
     return s_bApply;
 }
+#endif
 
 // @0x1410420d0
 // Blink: the colour toggles between black and the current colour, the phase speeds up after blinkBoostStart seconds.

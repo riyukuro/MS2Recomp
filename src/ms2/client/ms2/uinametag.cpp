@@ -439,6 +439,7 @@ void UINameTag::Entity::FUN_141a5f040(const CString& strSkin)
 }
 
 // MS2-FUNCTIONAL: big format/AS-object function; local and temporary layout differs from the exe
+#ifndef MS2_HOOK_DLL
 // @0x141a5f080
 void UINameTag::Entity::FUN_141a5f080()
 {
@@ -519,6 +520,7 @@ void UINameTag::Entity::FUN_141a5f080()
     obj.FUN_1409c0d20("fontColor", m_64);
     m_38->Invoke("setData", obj);
 }
+#endif
 
 // MS2-FUNCTIONAL: big format/AS-object function; local and temporary layout differs from the exe
 // @0x141a5ff60
@@ -700,12 +702,16 @@ void UINameTag::OnLoadComplete()
     FUN_141a60f70(m_68);
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x141a60d30
 int FUN_141a60d30()
 {
     return s_nNameTagMode;
 }
+#endif
 
+void FUN_141a60d40(int nMode);
+#ifndef MS2_HOOK_DLL
 // @0x141a60d40
 void FUN_141a60d40(int nMode)
 {
@@ -722,6 +728,7 @@ void FUN_141a60d40(int nMode)
         s_nNameTagMode = nMode;
     }
 }
+#endif
 
 // @0x141a62100
 UINameTag* FUN_141a62100(int nUiId)

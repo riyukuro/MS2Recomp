@@ -630,6 +630,7 @@ void PetEvolutionPetEnchant::vfunc_5(int nTab)
     }
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x140ac8a00
 void PetEvolutionPetEnchant::FUN_140ac8a00()
 {
@@ -679,6 +680,7 @@ void PetEvolutionPetEnchant::FUN_140ac8a00()
     }
     FUN_141276180(CString("pet_Button_Click"), CString(""));
 }
+#endif
 
 // @0x140ac9140
 void PetEvolutionPetEnchant::FUN_140ac9140()

@@ -230,6 +230,8 @@ unsigned char FUN_1401d1320(CCacheData* pData)
     }
 }
 
+void FUN_1401d1400(CString strPath);
+#ifndef MS2_HOOK_DLL
 // @0x1401d1400
 void FUN_1401d1400(CString strPath)
 {
@@ -279,6 +281,7 @@ void FUN_1401d1400(CString strPath)
         s_map.SetAt(strPath, kWrite);
     }
 }
+#endif
 
 // @0x1401d1730
 unsigned char FUN_1401d1730(CString strPath, FILETIME* pTime)

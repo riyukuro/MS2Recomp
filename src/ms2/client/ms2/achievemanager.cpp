@@ -827,6 +827,7 @@ void CAchieveUIData::LoadAll()
     SetInit(true);
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x14093af50
 // MS2-FUNCTIONAL: the exe builds the file name / path CStringA temps with early destruction; no source form found
 void CAchieveUIData::LoadDesc()
@@ -873,7 +874,9 @@ void CAchieveUIData::LoadDesc()
         }
     }
 }
+#endif
 
+#ifndef MS2_HOOK_DLL
 // @0x14093b440
 // MS2-FUNCTIONAL: the exe builds the file name / path CStringA temps with early destruction; no source form found
 void CAchieveUIData::LoadSpecialReward()
@@ -908,7 +911,9 @@ void CAchieveUIData::LoadSpecialReward()
         }
     }
 }
+#endif
 
+#ifndef MS2_HOOK_DLL
 // @0x14093b8c0
 MS2Ptr<CAchieveUIData> CAchieveUIData::Find(int nId)
 {
@@ -920,6 +925,7 @@ MS2Ptr<CAchieveUIData> CAchieveUIData::Find(int nId)
     }
     return pUI;
 }
+#endif
 
 // ---- achievement texts ----------------------------------------------------------------------------------------------------------
 
@@ -1263,6 +1269,7 @@ CStringW FUN_14093e330(CAchieve* pAchieve, int nKey)
     return FUN_14093f800(nTime);
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x14093e3e0
 MS2Ptr<CAchieveUIData::SpecialRewardDesc> CAchieveUIData::FindSpecialReward(int nId, int nGrade)
 {
@@ -1273,6 +1280,7 @@ MS2Ptr<CAchieveUIData::SpecialRewardDesc> CAchieveUIData::FindSpecialReward(int 
     }
     return pDesc;
 }
+#endif
 
 // ---- CAchieveCategory ---------------------------------------------------------------------------------------------------------
 
@@ -1287,6 +1295,7 @@ CAchieveCategory::~CAchieveCategory()
 {
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x14093e610
 // MS2-FUNCTIONAL: the exe builds the file / directory CStringA temps with early destruction; no source form found
 bool CAchieveCategory::Load()
@@ -1330,6 +1339,7 @@ bool CAchieveCategory::Load()
     aElem.FUN_1401644e0();
     return true;
 }
+#endif
 
 // @0x14093eae0
 void CAchieveCategory::GetTabs(List& rOut)
@@ -1364,6 +1374,7 @@ void CAchieveCategory::GetRows(List& rOut)
 }
 
 // The nIndex-th open row (tabs and their open children counted in display order).
+#ifndef MS2_HOOK_DLL
 // @0x14093ece0
 MS2Ptr<CAchieveCategory> CAchieveCategory::GetRow(int nIndex)
 {
@@ -1389,7 +1400,9 @@ MS2Ptr<CAchieveCategory> CAchieveCategory::GetRow(int nIndex)
     }
     return MS2Ptr<CAchieveCategory>(0);
 }
+#endif
 
+#ifndef MS2_HOOK_DLL
 // @0x14093ef10
 MS2Ptr<CAchieveCategory> CAchieveCategory::FindById(int nId)
 {
@@ -1408,7 +1421,9 @@ MS2Ptr<CAchieveCategory> CAchieveCategory::FindById(int nId)
     }
     return MS2Ptr<CAchieveCategory>(0);
 }
+#endif
 
+#ifndef MS2_HOOK_DLL
 // @0x14093f0d0
 int CAchieveCategory::FindIdByTab(int nTab)
 {
@@ -1427,6 +1442,7 @@ int CAchieveCategory::FindIdByTab(int nTab)
     }
     return 0;
 }
+#endif
 
 // @0x14093f240
 bool CAchieveCategory::IsOpen()

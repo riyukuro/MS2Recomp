@@ -549,12 +549,16 @@ void FUN_141773cc0(void* pRegistry, void* pNode);                   // unregiste
 class Unk_NifPathRegistry
 {
 public:
+#ifndef MS2_HOOK_DLL
     void Register(NiAVObject* pNode, const char* pszPath)           // @0x14154ff90
     {
         NiString kPath;
         kPath = pszPath;
         m_mapPath.insert(std::pair<NiAVObject* const, NiString>(pNode, kPath));
     }
+#else
+    void Register(NiAVObject* pNode, const char* pszPath);          // the exe's copy
+#endif
     char m_pad_0[8];
     std::map<NiAVObject*, NiString> m_mapPath;                      // +0x08
 };
@@ -1710,6 +1714,8 @@ void FUN_141562500(NiSourceTexture* pTexture, NiPixelData* pPixels);    // set t
 void FUN_140399100(CString strPattern, CString strDirectory, ATL::CAtlArray<CString>& aOut, CString strExclude, bool bLocalOnly);
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x141551810
 CNifLoadingService::CNifLoadingService() : m_mapNif(10), m_mapTex(10)
 {
@@ -1731,6 +1737,7 @@ CNifLoadingService::CNifLoadingService() : m_mapNif(10), m_mapTex(10)
     m_bRefreshTextures = 0;
     m_kSweepTimer.FUN_140268840();
 }
+#endif
 
 // @0x141551a10
 CNifLoadingService::~CNifLoadingService()

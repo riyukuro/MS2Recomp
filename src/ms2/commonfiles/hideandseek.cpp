@@ -194,6 +194,7 @@ void HideAndSeek::FUN_14050a770(unsigned nMapCode, std::vector<int>& out)
 }
 
 // MS2-FUNCTIONAL: XML loader; register/call-order differences in the tokenise/emplace sequence
+#ifndef MS2_HOOK_DLL
 // @0x14050a830
 void HideAndSeek::FUN_14050a830()
 {
@@ -226,5 +227,6 @@ void HideAndSeek::FUN_14050a830()
         }
     }
 }
+#endif
 
 MS2_EMIT_CRT_MEMMOVE_S();

@@ -1299,6 +1299,8 @@ MS2_REPLACE_METHOD(0x1411a42b0, Unk_EsEffectGroup, FUN_1411a42b0, 325, 0x1C4B21D
 
 inline TSingleton<CEffectService>::TSingleton() { s_instance = static_cast<CEffectService*>(this); }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1411a4400
 CEffectService::CEffectService()
     : m_spRoot(0), m_bEnabled(true), m_listTracked(10), m_listLooping(10), m_spF8(0), m_spRain(0), m_unk_128(1),
@@ -1306,6 +1308,7 @@ CEffectService::CEffectService()
 {
     m_nTick = GetTickCountMs2();
 }
+#endif
 
 // @0x1411a4650
 CEffectService::~CEffectService()

@@ -375,12 +375,15 @@ TSingleton<MS2VisualTrackerManager>::TSingleton() { s_instance = static_cast<MS2
 MS2VisualTrackerManager* TSingleton<MS2VisualTrackerManager>::s_instance = 0;                                         // 0x143ae0f40
 
 // ---- construction / destruction ----
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x141515740
 MS2VisualTrackerManager::MS2VisualTrackerManager()
     : m_nPage(0), m_idDebugStringPage(0), m_idSystemPage(0), m_idDebuggingPage(0), m_idPhysXPage(0), m_fGpuMemoryMB(0.0f),
       m_pPerformanceChart(0), m_pTimeChart(0), m_pPacketChart(0)
 {
 }
+#endif
 
 // @0x141515e80
 MS2VisualTrackerManager::~MS2VisualTrackerManager()

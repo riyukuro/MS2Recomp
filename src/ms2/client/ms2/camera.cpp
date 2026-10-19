@@ -480,6 +480,8 @@ Unk_CameraSetting Unk_CameraSetting::FUN_140ae8480(const Unk_CameraSetting& o)
 
 // ---- the test camera values (TestCamerValue.xml: <ms2><key name=".." value=".."/></ms2>) ----
 
+BOOL FUN_140ae8540();
+#ifndef MS2_HOOK_DLL
 // @0x140ae8540
 // MS2-FUNCTIONAL: the CRBTree/CAtlMap helper COMDAT names of the static map init are paired with another obj.
 BOOL FUN_140ae8540()
@@ -512,7 +514,10 @@ BOOL FUN_140ae8540()
     }
     return TRUE;
 }
+#endif
 
+CString FUN_140ae8800(CString strKey);
+#ifndef MS2_HOOK_DLL
 // @0x140ae8800
 CString FUN_140ae8800(CString strKey)
 {
@@ -527,6 +532,7 @@ CString FUN_140ae8800(CString strKey)
     }
     return "";
 }
+#endif
 
 // @0x140ae8910
 float FUN_140ae8910(CString strKey)

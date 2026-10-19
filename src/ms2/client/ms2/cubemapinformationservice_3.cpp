@@ -82,6 +82,8 @@ FittingDollData::FittingDollData() {
 // @0x1410b6990
 FittingDollData::~FittingDollData() { items.RemoveAll(); }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1410b69e0
 CubeMapInformationService::CubeMapInformationService() : f158(0), s1c8(L""), s1d0(L""), f2d8(reinterpret_cast<const Unk_CMISEntityRef&>(s_cubeMapNone))
 {
@@ -103,6 +105,7 @@ CubeMapInformationService::CubeMapInformationService() : f158(0), s1c8(L""), s1d
     FUN_14114fae0(&f3c8);
     t3e0.FUN_1408687f0();
 }
+#endif
 // @0x1410b7240
 CubeMapInformationService::~CubeMapInformationService()
 {

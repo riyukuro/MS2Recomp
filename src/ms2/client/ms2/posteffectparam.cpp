@@ -90,12 +90,14 @@ void CPostEffectParam::vfunc_1(Unk_140165cf0* pNode)
 }
 MS2_REPLACE_METHOD(0x140dbcc40, CPostEffectParam, vfunc_1, 529, 0xA368D026);
 
+#ifndef MS2_HOOK_DLL
 // @0x140dbce60
 // Not hooked: constructs CPostEffect with this unit's (DLL) constructor/vftable.
 CEffectPtr CPostEffectParam::vfunc_6()
 {
     return new (efd::MemHint(efd::MemHint::NONE)) CPostEffect;
 }
+#endif
 
 // @0x140dbcf00
 bool CPostEffectParam::vfunc_7(Unk_EffectTarget* p)

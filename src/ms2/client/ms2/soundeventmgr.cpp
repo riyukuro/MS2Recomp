@@ -1210,6 +1210,7 @@ int CSoundEventMgr::FUN_14177c100(int nMusicId, float fParam, unsigned nPriority
     return 0;
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x14177c420
 int CSoundEventMgr::FUN_14177c420(int nParamId, float fValue, unsigned nPriority, int bForce)
 {
@@ -1258,6 +1259,7 @@ int CSoundEventMgr::FUN_14177c420(int nParamId, float fValue, unsigned nPriority
     }
     return 0;
 }
+#endif
 
 // @0x14177c710
 int CSoundEventMgr::FUN_14177c710(int nParamId, float* pfValue)

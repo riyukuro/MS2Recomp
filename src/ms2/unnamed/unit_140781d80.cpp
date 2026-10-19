@@ -973,6 +973,7 @@ bool FUN_1407845b0(CString strPath, std::vector<CRideeDataPtr>& rOut)
     return true;
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x140784a20
 // MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 // MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
@@ -1005,6 +1006,7 @@ CRideeDataPtr FUN_140784a20(unsigned nId)
     }
     return spResult;
 }
+#endif
 
 // @0x140784de0
 // MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)

@@ -121,6 +121,7 @@ bool PostShimmerRenderStep::vfunc_15(unsigned int a, void* b)
 }
 MS2_REPLACE_METHOD(0x140c8f090, PostShimmerRenderStep, vfunc_15, 1014, 0xBACEC7B6);
 
+#ifndef MS2_HOOK_DLL
 // @0x140c8f490
 void FUN_140c8f490(Unk_PPSmartC spTexture)
 {
@@ -137,6 +138,7 @@ void FUN_140c8f490(Unk_PPSmartC spTexture)
         }
     }
 }
+#endif
 
 // @0x140c8f5a0
 void PostShimmerRenderStep::vfunc_16()

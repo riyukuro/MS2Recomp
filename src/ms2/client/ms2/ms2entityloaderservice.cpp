@@ -27,11 +27,14 @@ void* FUN_1414b4410(void* it);
 void* FUN_1414b4430(void* p);
 void* FUN_1414b4a70(void* p);
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1414b3ee0
 MS2EntityLoaderService::MS2EntityLoaderService()
 {
     m_bLoading = false;
 }
+#endif
 
 // @0x1414b3f20
 MS2EntityLoaderService::~MS2EntityLoaderService()

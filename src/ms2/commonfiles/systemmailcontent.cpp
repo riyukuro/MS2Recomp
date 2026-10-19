@@ -66,6 +66,8 @@ template <class T> inline void Unk_SmLog(CLogString* log, int level, int categor
 }
 
 // Reads the table: language file first, then the plain file; every <mail> becomes a row of the map.
+void FUN_140851750();
+#ifndef MS2_HOOK_DLL
 // @0x140851750
 // MS2-FUNCTIONAL: temp slots of the nested path-building calls sit in a different order than the exe (frame 0x10 larger).
 void FUN_140851750()
@@ -105,6 +107,7 @@ void FUN_140851750()
     }
     CSystemMailContent::SetInit(true);
 }
+#endif
 
 // The same rows read from an element of another document.
 // @0x140851c40

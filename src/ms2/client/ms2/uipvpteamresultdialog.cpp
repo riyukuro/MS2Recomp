@@ -250,6 +250,7 @@ void UIPvPTeamResultDialog::FUN_141345740(int nTeam, int nCount)
         FUN_1413457f0();
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1413457f0
 // MS2-FUNCTIONAL: string temp order of the reward text differs
 void UIPvPTeamResultDialog::FUN_1413457f0()
@@ -281,6 +282,7 @@ void UIPvPTeamResultDialog::FUN_1413457f0()
         static_cast<Unk_PtScript*>(m_30.operator->())->FUN_141346430("showLastResult", true, strIcon, L"", strReward, m_nWinTeam);
     }
 }
+#endif
 
 // @0x141345c60
 // MS2-FUNCTIONAL: member field read order differs

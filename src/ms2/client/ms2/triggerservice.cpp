@@ -238,10 +238,13 @@ inline TSingleton<CTriggerService>::TSingleton() { s_instance = static_cast<CTri
 // The packet is a CIOBuffer at +0 and the CInputStream at +8; the trigger objects take it as their event.
 #define TrigEvent(p) reinterpret_cast<Unk_TriggerEvent*>(p)
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x141860e60
 CTriggerService::CTriggerService() : m_mapObjects(10), m_mapHandles(10), m_listCamera(10)
 {
 }
+#endif
 
 // @0x141860f50
 CTriggerService::~CTriggerService()

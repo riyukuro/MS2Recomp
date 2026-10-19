@@ -164,11 +164,14 @@ Unk_EventLoadInfo::Unk_EventLoadInfo()
 // @0x1417b4270
 Unk_SoundTag::Unk_SoundTag() : m_nSubSound(0), m_uLength(0), m_nBank(0) {}
 
+void FUN_1417b4a40(int nState);
+#ifndef MS2_HOOK_DLL
 // @0x1417b4a40
 void FUN_1417b4a40(int nState)
 {
     s_nReload = nState;
 }
+#endif
 
 // @0x1417b4af0
 FMOD_RESULT FUN_1417b4af0(FMOD::EventSystem** ppSystem)
@@ -254,6 +257,8 @@ const char* FUN_1417b7270(const char* pszText, const char* pszFind)
 }
 
 // ---- CSoundService ----
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1417ae520
 CSoundService::CSoundService()
 {
@@ -267,6 +272,7 @@ CSoundService::CSoundService()
     m_pNetSound = 0;
     m_fMessageTimer = 0;
 }
+#endif
 
 // @0x1417ae650
 CSoundService::~CSoundService()
@@ -605,6 +611,8 @@ void FUN_1417af6e0()
         FUN_140c9cb10()->FUN_1417af340();
 }
 
+bool FUN_1417af740(char bFlag, void* pData);
+#ifndef MS2_HOOK_DLL
 // @0x1417af740
 bool FUN_1417af740(char bFlag, void* pData)
 {
@@ -612,13 +620,17 @@ bool FUN_1417af740(char bFlag, void* pData)
         s_nDeviceFlag = 0;
     return true;
 }
+#endif
 
+bool FUN_1417af780(void* pData);
+#ifndef MS2_HOOK_DLL
 // @0x1417af780
 bool FUN_1417af780(void* pData)
 {
     s_nDeviceFlag = 1;
     return true;
 }
+#endif
 
 // Copy the sound resources of the source folder over the target folder and reload (a debug command).
 // @0x1417af7a0

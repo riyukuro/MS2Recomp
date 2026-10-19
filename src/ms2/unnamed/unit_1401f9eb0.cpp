@@ -1251,6 +1251,7 @@ MS2_REPLACE_METHOD(0x1401FE3D0, CMeratMarketPacket::UgcAddProductBase, vfunc_1, 
 
 // MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
+#ifndef MS2_HOOK_DLL
 // @0x1401fe4a0
 void CMeratMarketPacket::UgcAddProductBase::vfunc_2(void* packet)
 {
@@ -1259,6 +1260,7 @@ void CMeratMarketPacket::UgcAddProductBase::vfunc_2(void* packet)
     description=reinterpret_cast<Unk_PayloadReader*>(packet)->ReadWide(Unk_NarrowLimit(200));
     price=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->vfunc_o8_4();
 }
+#endif
 
 // @0x1401fe630
 void CMeratMarketPacket::UgcAddProduct::vfunc_1(COutputStream& stream)
@@ -1483,6 +1485,7 @@ void Unk_PetIdentity::FUN_1401fee50(COutputStream& stream)
 MS2_REPLACE_METHOD(0x1401FEE50, Unk_PetIdentity, FUN_1401fee50, 226, 0xB35DE9FE);
 
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
+#ifndef MS2_HOOK_DLL
 // @0x1401fef40
 void Unk_PetIdentity::FUN_1401fef40(void* packet)
 {
@@ -1494,6 +1497,7 @@ void Unk_PetIdentity::FUN_1401fef40(void* packet)
     state=static_cast<unsigned short>(reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->vfunc_o8_2());
     extra=static_cast<unsigned short>(reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->vfunc_o8_2());
 }
+#endif
 
 // @0x1401ff0f0
 void Unk_PetIdentity::FUN_1401ff0f0(const Unk_PetIdentity& other)
@@ -1670,6 +1674,7 @@ void CCPetInfoPacket::Info::FUN_1401ffca0(COutputStream& stream)
 MS2_REPLACE_METHOD(0x1401FFCA0, CCPetInfoPacket::Info, FUN_1401ffca0, 87, 0xC23F9BBD);
 
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
+#ifndef MS2_HOOK_DLL
 // @0x1401ffd00
 void CCPetInfoPacket::Info::FUN_1401ffd00(void* packet)
 {
@@ -1677,6 +1682,7 @@ void CCPetInfoPacket::Info::FUN_1401ffd00(void* packet)
     options.FUN_1401ff4d0(packet);
     FUN_1401ff930(reinterpret_cast<unsigned char*>(&flags),packet);
 }
+#endif
 
 // @0x1401ffd60
 void FUN_1401ffd60(unsigned char* payload)

@@ -608,6 +608,7 @@ int CSwooshEffect::vfunc_8(void* p)
 }
 
 // MS2-FUNCTIONAL: exe spills the trail positions through extra temporaries; frame differs by 16 bytes.
+#ifndef MS2_HOOK_DLL
 // @0x14181f1d0
 // Appends the current positions of the two trail nodes, smooths the control points into curve samples, writes the
 // two vertex rows of the strip (one per trail, same colour) with the texture coordinates along its length, and
@@ -700,6 +701,7 @@ void CSwooshEffect::UpdateTrail()
         }
     }
 }
+#endif
 
 // FUN_141820e00 builds its result with NiPoint3(x,y,z) (0x14097f250); the curve vectors store it as Unk_StreamPoint.
 // @0x141820e00

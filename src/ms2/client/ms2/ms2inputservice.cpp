@@ -127,6 +127,8 @@ Unk_EventSink* FUN_140d8ee90()
     return DAT_143ab5c70;
 }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x140d8a570
 MS2InputService::MS2InputService()
     : InputService(false, false)
@@ -145,6 +147,7 @@ MS2InputService::MS2InputService()
     m_nHeldKey = -1;
     m_nRumbleActive = 0;
 }
+#endif
 
 // @0x140d8a6c0
 MS2InputService::~MS2InputService()

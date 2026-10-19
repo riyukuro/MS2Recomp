@@ -165,10 +165,13 @@ MS2_CHECK_SIZE(ClearCachedShaderFunctor, 0x18);
 
 // ---- MS2DefaultTexturePalette ----
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1414f0b90
 MS2DefaultTexturePalette::MS2DefaultTexturePalette()
 {
 }
+#endif
 
 // @0x1414f0bd0
 MS2DefaultTexturePalette::~MS2DefaultTexturePalette()
@@ -191,6 +194,8 @@ MS2_REPLACE_METHOD(0x1414F0CA0, MS2DefaultTexturePalette, SetTexture, 98, 0x7EC1
 
 // ---- MS2SceneGraphService ----
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1414f0d10
 MS2SceneGraphService::MS2SceneGraphService(NiSPWorkflowManager* pWorkflowManager, NiTexturePalette* pTexturePalette,
     const efd::Bool toolMode)
@@ -200,6 +205,7 @@ MS2SceneGraphService::MS2SceneGraphService(NiSPWorkflowManager* pWorkflowManager
     , m_uiThreadCount(0)
 {
 }
+#endif
 
 // @0x1414f0e40
 MS2SceneGraphService::~MS2SceneGraphService()

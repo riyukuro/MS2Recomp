@@ -664,6 +664,7 @@ void UIHouseMark::FUN_14198cb00(const Unk_HouseMarkInfo& info)
 }
 // Not hooked: constructs UIHouseMarkEntity with the DLL's vftable.
 
+#ifndef MS2_HOOK_DLL
 // @0x14198cc20
 void UIHouseMark::FUN_14198cc20(MS2Ptr<UIHouseMarkEntity> spEntity)
 {
@@ -678,6 +679,7 @@ void UIHouseMark::FUN_14198cc20(MS2Ptr<UIHouseMarkEntity> spEntity)
     int nId = spEntity->FUN_14198b290();
     m_entities.insert(std::make_pair(nId, spEntity));
 }
+#endif
 // Not hooked: constructs ASMovieClip with the DLL's vftable.
 
 // @0x14198ce50

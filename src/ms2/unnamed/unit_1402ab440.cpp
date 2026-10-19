@@ -262,8 +262,10 @@ MS2_REPLACE_METHOD(0x1402B7510, Common::Constants::Object, IsLoaded, 15, 0x3B1E3
 
 
 // ---- registry -----------------------------------------------------------------------------------------------------
+#ifndef MS2_HOOK_DLL
 // @0x1402b7590
 void Constants::Register(Object* obj) { s_objects.Add(obj); }
+#endif
 // @0x1402b75c0
 bool Constants::Test()
 {
@@ -279,6 +281,7 @@ bool Constants::Test()
     }
     return true;
 }
+#ifndef MS2_HOOK_DLL
 // @0x1402b76d0
 void Constants::ResetAll()
 {
@@ -289,6 +292,7 @@ void Constants::ResetAll()
             obj->vfunc_1();
     }
 }
+#endif
 // @0x1402b7750
 bool Constants::AreSameGroup(int a, int b)
 {

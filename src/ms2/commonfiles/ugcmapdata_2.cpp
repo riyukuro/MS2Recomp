@@ -206,6 +206,8 @@ CUGCMapData::CUGCMapData() { groups.clear(); }
 CUGCMapData::~CUGCMapData() {}
 
 // MS2-FUNCTIONAL: typed scoped cache lookup; /Od return-object placement differs.
+Unk_UGCMapPtr FUN_1408ad3f0(int mapId);
+#ifndef MS2_HOOK_DLL
 // @0x1408ad3f0
 Unk_UGCMapPtr FUN_1408ad3f0(int mapId) {
     Unk_UGCMapPtr value(0);
@@ -216,8 +218,10 @@ Unk_UGCMapPtr FUN_1408ad3f0(int mapId) {
     }
     return FUN_1408ad500(mapId);
 }
+#endif
 
 // MS2-FUNCTIONAL: typed XML records retain all defaults, conversions and error/cache paths.
+#ifndef MS2_HOOK_DLL
 // @0x1408ad500
 Unk_UGCMapPtr FUN_1408ad500(unsigned mapId) {
     CString path;
@@ -296,4 +300,5 @@ Unk_UGCMapPtr FUN_1408ad500(unsigned mapId) {
     }
     return std::move(value);
 }
+#endif
 MS2_EMIT_CRT_MEMMOVE_S();

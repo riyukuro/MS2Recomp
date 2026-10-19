@@ -116,6 +116,7 @@ CUGCMapPackageData::~CUGCMapPackageData()
 {
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1408b9ab0
 int CUGCMapPackageData::FUN_1408b9ab0(int nItemId)
 {
@@ -129,6 +130,7 @@ int CUGCMapPackageData::FUN_1408b9ab0(int nItemId)
     }
     return nCount;
 }
+#endif
 
 // @0x1408b9b90
 UGCMapPackageDataPtr FUN_1408b9b90(const CString& strName)
@@ -146,11 +148,14 @@ UGCMapPackageDataPtr FUN_1408b9b90(const CString& strName)
     return FUN_1408b9cb0(strName);
 }
 
+void FUN_1408b9c90();
+#ifndef MS2_HOOK_DLL
 // @0x1408b9c90
 void FUN_1408b9c90()
 {
     s_cache.RemoveAll();
 }
+#endif
 
 // @0x1408b9cb0
 // MS2-FUNCTIONAL: path arg of FUN_1403974b0 is routed through rcx in the exe (mov rcx,[..]; mov r8,rcx), plus a 2-byte drift later

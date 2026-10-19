@@ -16,10 +16,13 @@
 void* FUN_140166440();                                                  // the game logger
 void FUN_1401859c0(void* pLog, int nCategory, int nLevel, const wchar_t* pszMessage);
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x140d966b0
 MS2MessageService::MS2MessageService()
 {
 }
+#endif
 
 // @0x140d96710
 MS2MessageService::~MS2MessageService()

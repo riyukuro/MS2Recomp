@@ -48,10 +48,13 @@ EE_IMPLEMENT_CONCRETE_CLASS_INFO(CNifAnimationService);
 CNifAnimationService* TSingleton<CNifAnimationService>::s_instance = 0;
 inline TSingleton<CNifAnimationService>::TSingleton() { s_instance = static_cast<CNifAnimationService*>(this); }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x141545470
 CNifAnimationService::CNifAnimationService() : m_spView(0), m_mapInfo(10)
 {
 }
+#endif
 // @0x141545510
 CNifAnimationService::~CNifAnimationService()
 {

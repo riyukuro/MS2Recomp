@@ -197,6 +197,7 @@ int CFieldBannerData::LoadTable()
     return 1;
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1401b7610
 Unk_BannerPtr CFieldBannerData::GetBanner(int nId)
 {
@@ -208,6 +209,7 @@ Unk_BannerPtr CFieldBannerData::GetBanner(int nId)
     }
     return banner;
 }
+#endif
 
 // @0x1401b76c0
 void CFieldBannerData::GetBannersOfField(int nFieldId, ATL::CRBMap<unsigned, Unk_BannerPtr>& out)

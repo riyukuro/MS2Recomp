@@ -18,10 +18,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1414b2470
 CMS2DefaultSurfaceCreator::CMS2DefaultSurfaceCreator()
 {
 }
+#endif
 
 // @0x1414b24b0
 CMS2DefaultSurfaceCreator::~CMS2DefaultSurfaceCreator()

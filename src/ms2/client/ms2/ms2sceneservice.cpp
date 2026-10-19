@@ -43,6 +43,8 @@ inline efd::utf8string (*GetSceneNameDecorator())(const efd::utf8string&) { retu
 // @0x141506c50
 inline efd::TimeType ClockNow(efd::HighPrecisionClock* pClock) { return pClock->efd::HighPrecisionClock::GetCurrentTime(); }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1415033a0
 MS2SceneService::MS2SceneService()
     : egfPhysX::SceneService(true)
@@ -53,6 +55,7 @@ MS2SceneService::MS2SceneService()
     for (int i = 0; i < 2; ++i)
         m_pScenes[i] = 0;
 }
+#endif
 
 // @0x141503470
 MS2SceneService::~MS2SceneService()

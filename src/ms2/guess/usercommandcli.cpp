@@ -1573,6 +1573,7 @@ int CUserCommandCli::FUN_14136a590(Unk_CommandArgs& args) {
     FUN_1412751b0(StringFormat(L"SetFishingCastingBarMode {0} ",*(int*)((char*)FUN_140953f20() + 0x1b8)),20);
     return 1;
 }
+#ifndef MS2_HOOK_DLL
 // @0x14136a630
 int CUserCommandCli::FUN_14136a630(Unk_CommandArgs& args) {
     int trace = 0;
@@ -1624,6 +1625,8 @@ int CUserCommandCli::FUN_14136a630(Unk_CommandArgs& args) {
     }
     return 1;
 }
+#endif
+#ifndef MS2_HOOK_DLL
 // @0x14136ac60
 int CUserCommandCli::FUN_14136ac60(Unk_CommandArgs& args) {
     int trace = 0;
@@ -1675,6 +1678,7 @@ int CUserCommandCli::FUN_14136ac60(Unk_CommandArgs& args) {
     }
     return 1;
 }
+#endif
 // @0x14136b290
 int CUserCommandCli::FUN_14136b290(Unk_CommandArgs& args) {
     if (args.FUN_1408d2380() != 2) {

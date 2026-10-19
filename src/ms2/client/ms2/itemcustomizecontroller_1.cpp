@@ -288,12 +288,14 @@ void CItemCustomizeController::vfunc_13(MS2Ptr<CEquipItem> spOld)
     }
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1414115f0
 const Unk_CustomizeRange* CItemCustomizeController::vfunc_23()
 {
     static Unk_CustomizeRange s_kRange;
     return &s_kRange;
 }
+#endif
 
 // @0x141411680
 const Unk_CustomizeRange* CItemCustomizeController::vfunc_24(int nIndex)

@@ -117,6 +117,8 @@ void FUN_141bf1270(Unk_WsTagPtr* self, void* tag);      // tag pointer from a ne
 void FUN_1409f20e0(Unk_WsTagPtr* self);                 // tag pointer dtor
 void FUN_141c1af10(void* map, unsigned key, Unk_WsTagPtr* value);   // m_208.SetAt(key, value)
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // MS2-FUNCTIONAL: the members are constructed by their C++ types (layout-exact, element types unproven); new
 // TextureLayerManager / ChaosLightEffectLayerManager go through the exe's ctors by VA.
 WorldService::WorldService()
@@ -163,6 +165,7 @@ WorldService::WorldService()
     }
     list.FUN_1402038f0();
 }
+#endif
 
 // MS2-FUNCTIONAL: members destroyed by their C++ types (container element types unproven)
 // @0x141bba870

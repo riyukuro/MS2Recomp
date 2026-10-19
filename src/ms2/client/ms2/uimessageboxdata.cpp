@@ -760,6 +760,7 @@ CString FUN_141a06e80(int nTextType)
     }
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x141a06ff0
 // MS2-FUNCTIONAL: temporary layout differs
 CString FUN_141a06ff0(int nSound)
@@ -772,6 +773,7 @@ CString FUN_141a06ff0(int nSound)
         return s_strSystemNoticeConfirm;
     return CString((const wchar_t*)L"");
 }
+#endif
 
 // @0x141a07140
 // MS2-FUNCTIONAL: temporary layout differs

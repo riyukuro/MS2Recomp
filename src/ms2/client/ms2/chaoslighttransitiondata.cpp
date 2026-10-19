@@ -165,12 +165,14 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
     }
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x141046110
 // Not hooked: constructs ChaosLightEffect with its (DLL) constructor and vftable.
 CEffectPtr ChaosLightEffectParam::vfunc_6()
 {
     return new (efd::MemHint(efd::MemHint::NONE)) ChaosLightEffect;
 }
+#endif
 
 // @0x141046540
 // The chaos material (by kind: 1 normal, 2 skin, 3 hair) that matches the mesh's current material, or null.

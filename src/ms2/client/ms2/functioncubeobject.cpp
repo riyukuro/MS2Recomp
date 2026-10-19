@@ -2408,10 +2408,13 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 // @0x141234920
 inline TSingleton<CFunctionCubeService>::TSingleton() { s_instance = static_cast<CFunctionCubeService*>(this); }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x14122ef20
 CFunctionCubeService::CFunctionCubeService() : m_mapCubes(10), m_mapPending(10), m_mapTags(10)
 {
 }
+#endif
 
 // @0x14122f000
 CFunctionCubeService::~CFunctionCubeService()

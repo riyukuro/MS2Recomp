@@ -131,8 +131,11 @@ extern efd::utf8string (*DAT_143b05980)(const efd::utf8string&);
 // @0x1414da060
 inline void FUN_1414da060(efd::utf8string (*callback)(const efd::utf8string&)) { DAT_143b05980 = callback; }
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1414d6fa0
 MS2PropService::MS2PropService() : ecrPhysX::PropService(false) {}
+#endif
 // @0x1414d7000
 MS2PropService::~MS2PropService() {}
 // @0x1414d7060

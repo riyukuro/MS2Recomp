@@ -151,6 +151,7 @@ void UIInteriorPreviewDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
         *pRetVal = tooltip.FUN_1422bb870();
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x140f4d110
 // MS2-FUNCTIONAL: a 2.4 KB list builder over unrecovered containers (id set, bound item keys); temp / frame layout differs
 void UIInteriorPreviewDialog::FUN_140f4d110()
@@ -210,6 +211,7 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
     pDialog->FUN_140acd1f0("setData", objData);
     FUN_1402038f0(&seen);
 }
+#endif
 
 // @0x140f4dac0
 void UIInteriorPreviewDialog::FUN_140f4dac0()

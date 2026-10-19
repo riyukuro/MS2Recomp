@@ -220,6 +220,7 @@ void UIRandomCoupon::FUN_140bfebf0(MS2Ptr<Unk_RcProduct> spProduct)
 }
 
 // MS2-FUNCTIONAL: branch layout / temporaries of the coupon-kind chain differ; same behavior
+#ifndef MS2_HOOK_DLL
 // @0x140bfec40
 void UIRandomCoupon::FUN_140bfec40()
 {
@@ -232,6 +233,7 @@ void UIRandomCoupon::FUN_140bfec40()
     else
         FUN_141276180(s_strCoupon1, "");
 }
+#endif
 
 // MS2-FUNCTIONAL: dynamic_cast / ref release codegen differs; same behavior
 // @0x140bfed50

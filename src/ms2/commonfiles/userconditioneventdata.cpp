@@ -85,6 +85,7 @@ CUserConditionEventData::~CUserConditionEventData()
 }
 
 // Reads the table; every <event> becomes a row of the map.
+#ifndef MS2_HOOK_DLL
 // @0x1408d2640
 // MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 bool CUserConditionEventData::Load()
@@ -160,6 +161,7 @@ bool CUserConditionEventData::Load()
     SetInit(true);
     return true;
 }
+#endif
 
 // @0x1408d2fc0
 void CUserConditionEventData::GetAllEvents(ATL::CAtlArray<Ptr>& out)
@@ -180,6 +182,7 @@ void CUserConditionEventData::GetAllEvents(ATL::CAtlArray<Ptr>& out)
     }
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1408d3090
 // MS2-FUNCTIONAL: the exe returns the local smart pointer by a steal (no AddRef/Release pair); MS2Ptr has no move ctor
 CUserConditionEventData::Ptr CUserConditionEventData::GetEvent(int nId)
@@ -207,6 +210,7 @@ CUserConditionEventData::Ptr CUserConditionEventData::GetEvent(int nId)
     }
     return spData;
 }
+#endif
 
 // @0x1408d3a70
 void CUserConditionEventData::CheckInit()

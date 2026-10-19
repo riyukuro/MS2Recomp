@@ -767,12 +767,15 @@ unsigned UGCCubePalette::FUN_140df1a40(CubeArray& out, Unk_CubePaletteFilter& fi
 
 // ---- the box table ----
 
+void FUN_140df1e00();
+#ifndef MS2_HOOK_DLL
 void FUN_140df1e00()                                                                           // @0x140df1e00
 {
     if (s_mapBoxes.Lookup(0x65) != 0)
         return;
     s_mapBoxes.SetAt(0x65, Unk_FieldIdListPtr(Unk_FieldNewTag(0)));
 }
+#endif
 
 void FUN_140df1e90(unsigned nBox, unsigned nItemId)                                            // @0x140df1e90
 {
@@ -787,6 +790,8 @@ void FUN_140df1e90(unsigned nBox, unsigned nItemId)                             
     }
 }
 
+void FUN_140df1f40(unsigned nBox, unsigned nItemId);
+#ifndef MS2_HOOK_DLL
 void FUN_140df1f40(unsigned nBox, unsigned nItemId)                                            // @0x140df1f40
 {
     Unk_FieldIdListPtr spList;
@@ -799,6 +804,7 @@ void FUN_140df1f40(unsigned nBox, unsigned nItemId)                             
             spList->MoveToTail(pos);
     }
 }
+#endif
 
 void FUN_140df1ff0(unsigned nBox, Unk_FieldIdList* pOut)                                       // @0x140df1ff0
 {
@@ -810,25 +816,34 @@ void FUN_140df1ff0(unsigned nBox, Unk_FieldIdList* pOut)                        
     }
 }
 
+unsigned FUN_140df20a0(unsigned nArgA, unsigned nArgB);
+#ifndef MS2_HOOK_DLL
 unsigned FUN_140df20a0(unsigned nArgA, unsigned nArgB)                                         // @0x140df20a0
 {
     unsigned nBox = FUN_1409eed80()->FUN_140886790(nArgA, nArgB);
     s_mapBoxes.SetAt(nBox, Unk_FieldIdListPtr(Unk_FieldNewTag(0)));
     return nBox;
 }
+#endif
 
+unsigned FUN_140df2130(CStringW strName, unsigned nArg);
+#ifndef MS2_HOOK_DLL
 unsigned FUN_140df2130(CStringW strName, unsigned nArg)                                        // @0x140df2130
 {
     unsigned nBox = FUN_1409eed80()->FUN_1408867f0(strName, nArg);
     s_mapBoxes.SetAt(nBox, Unk_FieldIdListPtr(Unk_FieldNewTag(0)));
     return nBox;
 }
+#endif
 
+void FUN_140df2210(unsigned nBox);
+#ifndef MS2_HOOK_DLL
 void FUN_140df2210(unsigned nBox)                                                              // @0x140df2210
 {
     FUN_1409eed80()->FUN_140886920(nBox);
     s_mapBoxes.RemoveKey(nBox);
 }
+#endif
 
 // ---- the palette ----
 

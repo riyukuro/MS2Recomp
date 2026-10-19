@@ -50,7 +50,13 @@
 // The UI type ids (vfunc_48) of the open dialogs that asked for it (m_164), most recently opened/raised first. The
 // element is an enum (CElementTraits<E> passes it by const&; the int specialization would pass it by value).
 enum Unk_UIType {};
+#ifdef MS2_HOOK_DLL
+// The hooked open/close/raise paths must share the exe's list: unhooked exe code (0x14140d3e0) reads it too.
+MS2_GLOBAL(0x143af2258, ATL::CAtlList<Unk_UIType>, g_openDialogs);
+#define s_openDialogs (g_openDialogs.get())
+#else
 static ATL::CAtlList<Unk_UIType> s_openDialogs(10);                // 0x143af2258
+#endif
 // Header statics (the header_statics_a.h set without its condition object).
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";
@@ -397,7 +403,7 @@ void UIDialog::FUN_141924190()
         }
     }
 }
-// Not hooked: reads s_openDialogs (a mutable unit static).
+// Reads s_openDialogs (the exe list in the hook DLL).
 
 // MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141924330
@@ -571,6 +577,7 @@ int UIDialog::vfunc_64()
 MS2_REPLACE_METHOD(0x1419249f0, UIDialog, vfunc_64, 14, 0x69D980EB);
 
 // MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
+#ifndef MS2_HOOK_DLL
 // @0x141924a10
 int UIDialog::vfunc_65()
 {
@@ -599,7 +606,8 @@ int UIDialog::vfunc_65()
         s_openDialogs.AddHead((Unk_UIType)vfunc_48());
     return 1;
 }
-// Not hooked: writes s_openDialogs (a mutable unit static).
+#endif
+// Writes s_openDialogs (the exe list in the hook DLL).
 
 // @0x141924cb0
 void UIDialog::vfunc_66()
@@ -611,6 +619,7 @@ void UIDialog::vfunc_66()
 MS2_REPLACE_METHOD(0x141924cb0, UIDialog, vfunc_66, 179, 0x90F5B11C);
 
 // MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
+#ifndef MS2_HOOK_DLL
 // @0x141924d70
 void UIDialog::vfunc_67()
 {
@@ -620,6 +629,7 @@ void UIDialog::vfunc_67()
     m_d8 = NiPoint2(efd::Point2::ZERO);
     m_170.Empty();
 }
+#endif
 // Not hooked: FUN_141924190 reads s_openDialogs.
 
 // MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
@@ -811,6 +821,7 @@ void UIDialog::vfunc_77()
 }
 MS2_REPLACE_METHOD(0x141925690, UIDialog, vfunc_77, 137, 0xF21573C6);
 
+#ifndef MS2_HOOK_DLL
 // @0x141925720
 void UIDialog::vfunc_78()
 {
@@ -821,7 +832,8 @@ void UIDialog::vfunc_78()
             s_openDialogs.MoveToHead(pos);
     }
 }
-// Not hooked: reads s_openDialogs (a mutable unit static).
+#endif
+// Reads s_openDialogs (the exe list in the hook DLL).
 
 // MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x1419257b0
@@ -984,11 +996,13 @@ void UIDialog::FUN_141925e70(int nBit, int bSet)
 }
 MS2_REPLACE_METHOD(0x141925e70, UIDialog, FUN_141925e70, 73, 0x0E440CF3);
 
+#ifndef MS2_HOOK_DLL
 // @0x141925ec0
 void UIDialog::FUN_141925ec0(CString strName)
 {
     FUN_1419264e0(strName, Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialog::FUN_141925de0));
 }
+#endif
 // Not hooked: builds a DelegateImpl with the DLL's vftable/RTTI and hands it to the exe (see section 9).
 
 // @0x141925fa0
@@ -1011,6 +1025,7 @@ void UIDialog::FUN_1419260d0(CString strName, int n)
 MS2_REPLACE_METHOD(0x1419260d0, UIDialog, FUN_1419260d0, 163, 0x0D892337);
 
 // MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
+#ifndef MS2_HOOK_DLL
 // @0x141926180
 void UIDialog::FUN_141926180(MS2Ptr<AScript> spRoot, CString strName, int n)
 {
@@ -1032,6 +1047,7 @@ void UIDialog::FUN_141926180(MS2Ptr<AScript> spRoot, CString strName, int n)
                             FUN_140bb9630(n));
     m_a8.push_back(MS2Ptr<ASUIComponent>(spButton));
 }
+#endif
 // Not hooked: builds a DelegateImpl with the DLL's vftable/RTTI and hands it to the exe (see section 9).
 
 // MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)

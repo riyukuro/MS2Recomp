@@ -797,6 +797,7 @@ void UIItemEnchantDialog::FUN_1419c0d40(ASData* pData)
     FUN_140710590(pkt);
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x1419c10e0
 void UIItemEnchantDialog::FUN_1419c10e0()
 {
@@ -812,6 +813,7 @@ void UIItemEnchantDialog::FUN_1419c10e0()
     }
     FUN_1419c19d0();
 }
+#endif
 
 // @0x1419c11e0
 void UIItemEnchantDialog::FUN_1419c11e0()

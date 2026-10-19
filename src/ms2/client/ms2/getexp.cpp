@@ -236,6 +236,7 @@ void CExpEffectInfo::UpdateOrientation()
 
 static int s_nConstInit = 0;                                        // @0x143ad6000
 
+#ifndef MS2_HOOK_DLL
 // @0x141272b10
 void CExpEffectInfo::InitConstants()
 {
@@ -252,6 +253,7 @@ void CExpEffectInfo::InitConstants()
     s_strEffDummy = *reinterpret_cast<Unk_ConfigString*>((char*)FUN_1401d3200() + 0x23e8)->FUN_140298f80();
     s_nConstInit = 1;
 }
+#endif
 
 // @0x141272c20
 void CExpEffectInfo::StopEffect()

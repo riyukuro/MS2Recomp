@@ -113,8 +113,11 @@ bool Unk_1409c4ef0::SetStringValue(LPCSTR pszValueName, const char* pszValue)
 // @0x1409c50d0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
+void FUN_1409c51f0(void);
+#ifndef MS2_HOOK_DLL
 // @0x1409c51f0
 void FUN_1409c51f0(void)
 {
     s_flag_143ab4330 = 0;
 }
+#endif

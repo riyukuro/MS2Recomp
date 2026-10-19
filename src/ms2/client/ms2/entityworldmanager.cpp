@@ -195,10 +195,13 @@ static const efd::Category s_entityWorldChannel(efd::UniversalID::ECU_Any, 0xfff
 static egf::EntityID s_invalidEntity(0ull);
 static bool s_entityFreeze;
 
+// Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
+#ifndef MS2_HOOK_DLL
 // @0x1411ce100
 EntityWorldManager::EntityWorldManager() : currentMap(0), loaded(true), lastLoadTime(0),
     messages(0), entities(0), loader(0), sceneGraphs(0), models(0), scenes(0), props(0),
     scheduler(0), renderer(0), shaders(0), lights(0), animation(0), services(0) {}
+#endif
 // @0x1411ce320
 EntityWorldManager::~EntityWorldManager() {}
 // @0x1411ce4c0
@@ -390,11 +393,15 @@ int EntityWorldManager::FUN_1411cfbe0() {
     }
     return count;
 }
-// Not hooked: these callbacks access this unit's mutable static.
+// Not hooked: these callbacks access this unit's mutable static; DLL OnInit registers the exe copies.
+bool FUN_1411cfc90(bool frozen, void*);
+bool FUN_1411cfcc0(void*);
+#ifndef MS2_HOOK_DLL
 // @0x1411cfc90
 bool FUN_1411cfc90(bool frozen, void*) { if (!frozen) s_entityFreeze = false; return true; }
 // @0x1411cfcc0
 bool FUN_1411cfcc0(void*) { s_entityFreeze = true; return true; }
+#endif
 // @0x1411cfce0
 void EntityWorldManager::FUN_1411cfce0() {
     FUN_1401ce2b0(FUN_140a44830(), "\n--- EntityWorldManager Log---");

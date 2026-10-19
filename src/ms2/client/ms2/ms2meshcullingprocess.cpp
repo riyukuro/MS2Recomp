@@ -53,6 +53,9 @@ NiSPWorkflowManager* FUN_140d96190(MS2MeshCullingProcess* p)
     return p->m_pkWorkflowManager;
 }
 
+// Not in the hook DLL: none of this class is hooked, so DLL-built objects would carry the DLL vtable and ms_RTTI;
+// MS2::RegisterServices (hooked) stores the culling factory, which must hand out exe objects (fx6).
+#ifndef MS2_HOOK_DLL
 // @0x140d961b0
 MS2MeshCullingProcess* FUN_140d961b0()
 {
@@ -64,6 +67,7 @@ Unk_MCPPtr FUN_140d96230(NiVisibleArray* a, NiSPWorkflowManager* b)
 {
     return Unk_MCPPtr(new (efd::MemHint(efd::MemHint::NONE)) MS2MeshCullingProcess(a, b));
 }
+#endif
 
 // @0x140d962e0
 MS2MeshCullingProcess::MS2MeshCullingProcess(NiVisibleArray* pkVisibleSet, NiSPWorkflowManager* pkWorkflowManager, bool bUseVirtualAppend)

@@ -1671,28 +1671,40 @@ void FUN_141901310(int nRelease, unsigned nChannels, int nLayer)
         s_keyInput.FUN_141900ff0(nRelease, nLayer);
 }
 
+void FUN_141901390(int nRelease, int nLayer);
+#ifndef MS2_HOOK_DLL
 // @0x141901390
 void FUN_141901390(int nRelease, int nLayer) { s_keyInput.FUN_141901070(nRelease, nLayer); }
+#endif
 
+void FUN_1419013c0(int nRelease, int nLayer);
+#ifndef MS2_HOOK_DLL
 // @0x1419013c0
 void FUN_1419013c0(int nRelease, int nLayer) { s_keyInput.FUN_141900ff0(nRelease, nLayer); }
+#endif
 
 // @0x1419013f0
 void FUN_1419013f0(int nRelease, int nLayer) { s_keyInput.FUN_141900f70(nRelease, nLayer); }
 
+void FUN_141901420(int nRelease, int nLayer);
+#ifndef MS2_HOOK_DLL
 // @0x141901420
 void FUN_141901420(int nRelease, int nLayer)
 {
     s_keyInput.FUN_141901070(nRelease, nLayer);
     s_keyInput.FUN_141900f70(nRelease, nLayer);
 }
+#endif
 
+void FUN_141901470(int nRelease, int nLayer);
+#ifndef MS2_HOOK_DLL
 // @0x141901470
 void FUN_141901470(int nRelease, int nLayer)
 {
     s_keyInput.FUN_141901070(nRelease, nLayer);
     s_keyInput.FUN_141900ff0(nRelease, nLayer);
 }
+#endif
 
 // ---- the dialog placement record ----
 // @0x1419014c0

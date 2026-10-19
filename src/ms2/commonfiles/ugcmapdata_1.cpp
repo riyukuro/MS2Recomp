@@ -251,6 +251,8 @@ Unk_CubeOwnerPtr FUN_1408a0fa0(Unk_CubeOwners& owners,int mapID,int blockID) {
 MS2_REPLACE(0x1408a0fa0, FUN_1408a0fa0, 302, 0xE574321C);
 // Not hooked: constructs CubeOwner with DLL-local RTTI.
 // MS2-FUNCTIONAL: reviewed branches and side effects; compiler temporaries differ.
+void FUN_1408a10e0(Unk_CubeOwners& owners,int mapID,int blockID,const CStringW& name,__int64 ownerID);
+#ifndef MS2_HOOK_DLL
 // @0x1408a10e0
 void FUN_1408a10e0(Unk_CubeOwners& owners,int mapID,int blockID,const CStringW& name,__int64 ownerID) {
     Unk_CubeOwnerPtr p=FUN_1408a0fa0(owners,mapID,blockID);
@@ -266,6 +268,7 @@ void FUN_1408a10e0(Unk_CubeOwners& owners,int mapID,int blockID,const CStringW& 
         p->mapID=mapID; p->blockID=blockID; p->ownerID=ownerID; p->ownerName=name;
     }
 }
+#endif
 // @0x1408a1360
 int FUN_1408a1360(const NiPoint3& a,const NiPoint3& b) { int x=(int)(a.z/150.0f); int y=(int)(b.z/150.0f); return x==y; }
 MS2_REPLACE(0x1408a1360, FUN_1408a1360, 100, 0x09C21056);

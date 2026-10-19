@@ -1683,6 +1683,7 @@ MS2_REPLACE_METHOD(0x140a661e0, Unk_Inventory, FUN_140a661e0, 16, 0x32804D89);
 
 // Not hooked: constructs a TOutBindingParam with DLL-local RTTI.
 // MS2-FUNCTIONAL: typed binding result and character-set iterators.
+#ifndef MS2_HOOK_DLL
 // @0x140a66200
 int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
     *reason = 1;
@@ -1713,6 +1714,7 @@ int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
     }
     return 0;
 }
+#endif
 
 // MS2-FUNCTIONAL: indexed typed setting selection replaces the duplicated switch body.
 // @0x140a66510

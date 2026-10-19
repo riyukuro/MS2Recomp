@@ -143,6 +143,7 @@ void UIChaosDPSDialog::FUN_140e057d0()
     static_cast<AScript*>(m_30.operator->())->Invoke("setAscendingMeterValue", m_nMode == 6);
 }
 
+#ifndef MS2_HOOK_DLL
 // @0x140e05950
 void UIChaosDPSDialog::FUN_140e05950()
 {
@@ -192,6 +193,7 @@ void UIChaosDPSDialog::FUN_140e05950()
         }
     }
 }
+#endif
 
 // @0x140e05f80
 void UIChaosDPSDialog::FUN_140e05f80()
@@ -296,6 +298,7 @@ void UIChaosDPSDialog::vfunc_72()
 }
 
 // Orders the ranking: descending meter value (ascending for mode 6).
+#ifndef MS2_HOOK_DLL
 // @0x140e066f0
 bool FUN_140e066f0(MS2Ptr<CPartyMember> spA, MS2Ptr<CPartyMember> spB)
 {
@@ -308,6 +311,7 @@ bool FUN_140e066f0(MS2Ptr<CPartyMember> spA, MS2Ptr<CPartyMember> spB)
         bLess = dB < dA;
     return bLess;
 }
+#endif
 
 // @0x140e06cc0
 Scaleform::GFx::Value Unk_ChaosAS::FUN_140e06cc0(const char* szMethod, double d)

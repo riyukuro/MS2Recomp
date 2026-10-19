@@ -1254,6 +1254,7 @@ int IsDirectory(CStringW kPath)
 }
 
 // Returns the calling thread's image converter, creating it (with the MS2 PNG reader added) on first use.
+#ifndef MS2_HOOK_DLL
 // @0x141851720
 // MS2-FUNCTIONAL: the exe has an EH frame (state -2, 0x88 frame) from an unrecovered temporary of the allocation expression
 NiImageConverter* FUN_141851720()
@@ -1290,8 +1291,10 @@ NiImageConverter* FUN_141851720()
     }
     return (NiImageConverter*)s_kConverterSlot.Get();
 }
+#endif
 
 // Stores the converter in the thread's slot, destroying the one that was there.
+#ifndef MS2_HOOK_DLL
 // @0x141851840
 void FUN_141851840(NiDevImageConverter* pkConverter)
 {
@@ -1301,3 +1304,4 @@ void FUN_141851840(NiDevImageConverter* pkConverter)
     }
     s_kConverterSlot.Set(pkConverter);
 }
+#endif

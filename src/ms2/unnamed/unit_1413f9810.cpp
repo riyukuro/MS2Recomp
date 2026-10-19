@@ -709,6 +709,7 @@ void FUN_1413fb0f0(std::string kIn, std::string* pOut)
 }
 
 // Multibyte to wide through a static buffer (valid until the next call).
+#ifndef MS2_HOOK_DLL
 // @0x1413fb330
 const wchar_t* FUN_1413fb330(const char* pcText, unsigned int uiCodePage)
 {
@@ -716,8 +717,10 @@ const wchar_t* FUN_1413fb330(const char* pcText, unsigned int uiCodePage)
     s_kBuffer = FUN_14016a730(pcText, uiCodePage);
     return s_kBuffer.GetBuffer(0);
 }
+#endif
 
 // Wide to multibyte through a static buffer (valid until the next call).
+#ifndef MS2_HOOK_DLL
 // @0x1413fb400
 const char* FUN_1413fb400(const wchar_t* pwText, unsigned int uiCodePage)
 {
@@ -725,6 +728,7 @@ const char* FUN_1413fb400(const wchar_t* pwText, unsigned int uiCodePage)
     s_kBuffer = FUN_14016a600(pwText, uiCodePage);
     return s_kBuffer.GetBuffer(0);
 }
+#endif
 
 // Depth first traversal; stops (returns false) as soon as the functor returns false.
 // @0x1413fb4d0
