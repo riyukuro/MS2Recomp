@@ -3567,3 +3567,8 @@ __imp_NxGetUtilLib	142cced28	data
 ?s_bInit@CItemDefaultData@@2_NA	143aaf9ac	data
 ?ms_mapJobItems@CItemDefaultData@@2V?$CAtlMap@HV?$MS2Ptr@UTDefaultItems@CItemDefaultData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@UTDefaultItems@CItemDefaultData@@@@@3@@ATL@@A	143aaf9f0	data
 ?RollCount@CBlackMarketProduct@@QEAAIXZ	1401be3f0	func
+??0Unk_IsScript@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422ba780	func
+??1Unk_IsScript@@QEAA@XZ	1422ba860	func
+??1Unk_IsPadHudPtr@@QEAA@XZ	140a58400	func
+?DAT_143af2258@@3V?$CAtlList@HV?$CElementTraits@H@ATL@@@ATL@@A	143af2258	data
+??0ASDataProvider@@QEAA@AEBVASArray@@@Z	140bbf7b0	func
