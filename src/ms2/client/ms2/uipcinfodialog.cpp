@@ -22,6 +22,7 @@ static CString s_strSetData = "setData";
 #include "ms2/commonfiles/pcdata.h"
 #include "ms2/commonfiles/luautil.h"
 #include "ms2/commonfiles/featuremanager.h"
+#include "ms2/commonfiles/commonstringtable.h"
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
@@ -99,7 +100,7 @@ public:
     PCI_V(0) PCI_V(1) PCI_V(2) PCI_V(3) PCI_V(4) PCI_V(5) PCI_V(6) PCI_V(7) PCI_V(8) PCI_V(9) PCI_V(10) PCI_V(11)
     PCI_V(12) PCI_V(13) PCI_V(14) PCI_V(15) PCI_V(16) PCI_V(17) PCI_V(18) PCI_V(19) PCI_V(20) PCI_V(21) PCI_V(22) PCI_V(23)
 #undef PCI_V
-    virtual void vfunc_24(int b);
+    virtual void vfunc_24(bool b);
 };
 // MS2: UIAvatarBase slot 28 takes a fourth argument here (the exe passes the dialog's p4 on the stack); uiavatarbase.h
 // declares three, so the call goes through this slot view.
@@ -174,9 +175,6 @@ CLua* FUN_1401c0db0();
 class Unk_PciWebBrowser { public: void FUN_14135ec00(const CString& strUrl, bool b); };
 Unk_PciWebBrowser* FUN_140c43790(int nId);
 
-class Unk_PciTextFilter : public CPtred { public: int FUN_1402260c0(const CStringW& str, CStringW& strMessage); };
-class Unk_PciTextFilterMgr { public: MS2Ptr<Unk_PciTextFilter> FUN_140229a50(); };
-Unk_PciTextFilterMgr* FUN_14025e7d0();
 class Unk_PciAltStrings { public: CStringW FUN_1422b0570(const CString& strKey); };
 Unk_PciAltStrings* FUN_14025e7a0();
 
@@ -218,7 +216,6 @@ __int64 FUN_140869440();
 int FUN_14086b900(__int64 nThen, __int64 nNow);
 CStringW FUN_140b8e850(const CMsTime& kTime);
 void AddDays(CMsTime& kTime, long nDays);
-CMsTime& FUN_1406c47a0(CMsTime& kTime, unsigned __int64 nTime);
 void FUN_1408377d0(ATL::CAtlArray<int>& ids);
 void FUN_14120d7c0(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int nUnk);
 void FUN_14120d8e0(const CString& strName);
@@ -628,42 +625,41 @@ void UIPCInfoDialog::OnLoadComplete()
     }
 }
 
-// MS2-FUNCTIONAL: memo change request from the decompile
 // @0x14132e4d0
 int UIPCInfoDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (UIDialog::OnMessage(pSender, pMsg) != 0)
         return 1;
-    if (pMsg->FUN_1422e4520() != 0 || dynamic_cast<UIMessageBox*>(pSender) == 0)
-        return 0;
-    ASData* pData = (ASData*)pMsg;
-    int nResult = pData->FUN_1422b8a10();
-    CStringW strTag = pData->FUN_1422b8f40();
-    FUN_14151f200();
-    if (nResult == 0)
+    if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        ATL::CAtlArray<CStringW> aTokens;
-        if (FUN_14028cb70(strTag, aTokens, L",", 2) == 1 && FUN_1403b3c40(aTokens[0], L"changeTodayMemo"))
+        int nResult = ((ASData*)pMsg)->FUN_1422b8a10();
+        CStringW strTag = ((ASData*)pMsg)->FUN_1422b8f40();
+        FUN_14151f200();
+        if (nResult == 0)
         {
-            CStringW strMemo(aTokens[1]);
-            Unk_PciTextFilter* pFilter = FUN_14025e7d0()->FUN_140229a50().get();
-            if (pFilter != 0)
+            ATL::CAtlArray<CStringW> aTokens;
+            if (FUN_14028cb70(strTag, aTokens, L",", 2) == 1 && FUN_1403b3c40(aTokens[0], L"changeTodayMemo"))
             {
-                CStringW strMessage;
-                if (pFilter->FUN_1402260c0(strMemo, strMessage) != 0)
+                CStringW strMemo(aTokens[1]);
+                if (CBanTextChecker* pFilter = CommonString::GetInstance()->GetChecker())
                 {
-                    FUN_140d73aa0(strMessage, 0, this, L"");
-                    return 1;
+                    CStringW strMessage;
+                    if (pFilter->FUN_1402260c0(strMemo, strMessage) != 0)
+                    {
+                        FUN_140d73aa0(strMessage, 0, this, L"");
+                        return 1;
+                    }
                 }
+                COutPacket packet(0x3d, 0);
+                packet.vfunc_o10_1(0);
+                packet.vfunc_o10_8(strMemo);
+                FUN_140710590(packet);
+                return 1;
             }
-            COutPacket packet(0x3d, 0);
-            packet.vfunc_o10_1(0);
-            packet.vfunc_o10_8(strMemo);
-            FUN_140710590(packet);
-            return 1;
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x14132e850
@@ -672,7 +668,6 @@ void UIPCInfoDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& str
     UIObject::vfunc_45(pRetVal, strMethod, pArgs);
 }
 
-// MS2-FUNCTIONAL: method dispatch from the decompile
 // @0x14132e890
 int UIPCInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -684,36 +679,39 @@ int UIPCInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         vfunc_89();
         return 1;
     }
-    if (_stricmp("onChangeTab", szMethod) == 0)
+    else if (_stricmp("onChangeTab", szMethod) == 0)
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            vfunc_90(data.FUN_1422b8a10());
+        {
+            int nTab = data.FUN_1422b8a10();
+            vfunc_90(nTab);
+        }
     }
-    else
+    else if (_stricmp("OnDetailInfo", szMethod) == 0)
     {
-        if (_stricmp("OnDetailInfo", szMethod) == 0)
-        {
-            vfunc_86();
-            return 1;
-        }
-        if (_stricmp("OnAddStatPoint", szMethod) == 0)
-        {
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-                vfunc_91(data.FUN_1422b8a10() - 1);
-            return 1;
-        }
-        if (_stricmp("OnResetStatPoint", szMethod) == 0)
-        {
-            if (vfunc_93() != 0)
-            {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_char_info_reset_stat_point"), 0, L"");
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPCInfoDialog::FUN_14132ee90));
-                FUN_140d73c60(spBox);
-            }
-            return 1;
-        }
+        vfunc_86();
+        return 1;
     }
-    if (m_spAvatar.get() != 0)
+    else if (_stricmp("OnAddStatPoint", szMethod) == 0)
+    {
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        {
+            int nStat = data.FUN_1422b8a10() - 1;
+            vfunc_91(nStat);
+        }
+        return 1;
+    }
+    else if (_stricmp("OnResetStatPoint", szMethod) == 0)
+    {
+        if (vfunc_93() != 0)
+        {
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_char_info_reset_stat_point"), 0, L"");
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPCInfoDialog::FUN_14132ee90));
+            FUN_140d73c60(spBox);
+        }
+        return 1;
+    }
+    if ((bool)m_spAvatar.get())
     {
         if (m_spAvatar->vfunc_27(szMethod, pArgs, nArgs) != 0)
             return 1;
@@ -762,7 +760,6 @@ void UIPCInfoDialog::FUN_14132eed0(const Scaleform::GFx::FunctionHandler::Params
     FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
 }
 
-// MS2-FUNCTIONAL: tooltip text from the stat point manager
 // @0x14132f020
 void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params& params)
 {
@@ -772,25 +769,21 @@ void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params
     CStringW strText;
     if (FUN_140166410()->FUN_14036d570(0xbd))
     {
-        int nLevel = (unsigned short)pPC->vfunc_78();
-        if ((int)FUN_1401d3200()->m_9298.FUN_140ba4b30() <= nLevel)
+        if ((unsigned short)pPC->vfunc_78() >= FUN_1401d3200()->m_9298.FUN_140ba4b30())
         {
-            unsigned int nE4 = pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)4);
-            unsigned int nE3 = pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3);
-            unsigned int nE1 = pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1);
-            unsigned int nE2 = pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2);
-            int nTotal = pPC->FUN_140c25130()->GetTotal();
-            strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason_with_adventure_level"), nTotal, nE2, nE1, nE3, nE4);
+            strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason_with_adventure_level"),
+                                    pPC->FUN_140c25130()->GetTotal(),
+                                    pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
+                                    pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
+                                    pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3),
+                                    pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)4));
             goto show;
         }
     }
-    {
-        unsigned int nE3 = pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3);
-        unsigned int nE1 = pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1);
-        unsigned int nE2 = pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2);
-        int nTotal = pPC->FUN_140c25130()->GetTotal();
-        strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason"), nTotal, nE2, nE1, nE3);
-    }
+    strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason"), pPC->FUN_140c25130()->GetTotal(),
+                            pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
+                            pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
+                            pPC->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3));
 show:
     ASTooltip tooltip((void*)pPC, 1, 2);
     tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
@@ -805,28 +798,31 @@ show:
 void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pPC != 0 && m_spInfo == 0 == false)
+    if (pPC == 0)
+        return;
+    if (m_spInfo == 0)
+        return;
     {
         CStringW strText;
-        const CStringW& strName = FUN_14025cd60(m_spInfo->m_3e8, m_spInfo->m_strGuildName) ? m_spInfo->m_strGuildEmblemPath : m_spInfo->m_strGuildName;
-        CStringW strPartner(strName);
-        CMsTime kTime;
-        FUN_1406c47a0(kTime, m_spInfo->m_nGuildId);
-        int nState = m_spInfo->m_nGuildRank;
-        if (nState == 1)
+        CStringW strPartner(FUN_14025cd60(m_spInfo->m_3e8, m_spInfo->m_strGuildName) ? m_spInfo->m_strGuildEmblemPath : m_spInfo->m_strGuildName);
+        CMsTime kTime(m_spInfo->m_nGuildId);
+        switch (m_spInfo->m_nGuildRank)
         {
+        case 1:
             AddDays(kTime, 7);
             strText = FUN_14028dfa0(CStringW(L"s_wedding_state_promise"), strPartner, FUN_140b8e850(kTime));
-        }
-        else if (nState == 2)
+            break;
+        case 2:
         {
             __int64 nNow = FUN_140869440();
             int nDays = FUN_14086b900(m_spInfo->m_nGuildEmblem, nNow);
             strText = FUN_14028dfa0(CStringW(L"s_wedding_state_marriage"), strPartner, nDays);
+            break;
         }
-        else if (2 < nState && nState < 5)
-        {
+        case 3:
+        case 4:
             strText = FUN_14028dfa0(CStringW(L"s_wedding_state_coolingoff"), strPartner);
+            break;
         }
         ASTooltip tooltip((void*)pPC, 1, 2);
         tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
@@ -1174,7 +1170,6 @@ void UIPCInfoDialog::vfunc_95(const unsigned short& nLevel)
     }
 }
 
-// MS2-FUNCTIONAL: title combo from the decompile
 // @0x141333420
 void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aTitles)
 {
@@ -1182,21 +1177,11 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
         return;
     ATL::CAtlArray<unsigned int> aSorted;
     aSorted.Copy(aTitles);
-    size_t nCount = aSorted.GetCount();
-    qsort(aSorted.GetData(), nCount, 4, FUN_141337900);
+    qsort(aSorted.GetData(), aSorted.GetCount(), 4, FUN_141337900);
     if (MS2Ptr<Unk_PciCombo> spTitle = ((Unk_PciMovieEntity*)this)->FUN_140c28560("m_title"))
     {
         spTitle->FUN_1422dfc10();
-        if (m_spInfo->FUN_140dba220() == 0)
-        {
-            if (nTitle != 0 && FUN_1403ed2d0() != 0)
-            {
-                spTitle->FUN_1422dfce0(FUN_141b72150(nTitle, m_spInfo->m_3c4));
-                spTitle->FUN_1422df690(0);
-            }
-            ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
-        }
-        else
+        if (m_spInfo->FUN_140dba220() != 0)
         {
             ASObj none(2);
             none.FUN_1407cbb20("label", FUN_141b720b0(0, 0));
@@ -1213,19 +1198,28 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
                 item.FUN_1409c0d20("id", aSorted[i]);
                 spTitle->FUN_1422dfc70(item);
                 if (aSorted[i] == (unsigned int)nTitle)
-                    nSelected = (int)i + 1;
+                    nSelected = (int)(i + 1);
             }
             spTitle->FUN_1422df690(nSelected);
             if (aSorted.IsEmpty())
                 ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
             size_t nRows;
-            if (aSorted.GetCount() + 1 < 6)
-                nRows = aSorted.GetCount() + 1;
-            else
+            if (aSorted.GetCount() + 1 > 5)
                 nRows = 5;
+            else
+                nRows = aSorted.GetCount() + 1;
             spTitle->FUN_1422df5f0((unsigned int)nRows);
         }
-        ((Unk_PciComboSlots*)spTitle.get())->vfunc_24(1);
+        else
+        {
+            if ((unsigned int)nTitle > 0 && FUN_1403ed2d0() != 0)
+            {
+                spTitle->FUN_1422dfce0(FUN_141b72150(nTitle, m_spInfo->m_3c4));
+                spTitle->FUN_1422df690(0);
+            }
+            ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
+        }
+        ((Unk_PciComboSlots*)spTitle.get())->vfunc_24(true);
     }
 }
 
@@ -1397,7 +1391,6 @@ void UIPCInfoDialog::vfunc_106()
     }
 }
 
-// MS2-FUNCTIONAL: offense score from the decompile
 // @0x141334890
 __int64 UIPCInfoDialog::FUN_141334890()
 {
@@ -1464,7 +1457,6 @@ __int64 UIPCInfoDialog::FUN_141334890()
     return nScore;
 }
 
-// MS2-FUNCTIONAL: defense score from the decompile
 // @0x141335290
 __int64 UIPCInfoDialog::FUN_141335290()
 {
@@ -1527,7 +1519,6 @@ __int64 UIPCInfoDialog::FUN_141335830(int nStat)
     return nBonus;
 }
 
-// MS2-FUNCTIONAL: float conversions from the decompile
 // @0x141335940
 float UIPCInfoDialog::FUN_141335940(int nStat, float* pfBase, float* pfBonus, float* pfTotal)
 {
@@ -1589,7 +1580,6 @@ float UIPCInfoDialog::FUN_141335d20(int nStat, bool bTenth, float* pfBase, float
     return *pfTotal;
 }
 
-// MS2-FUNCTIONAL: basic stat row from the decompile
 // @0x141335e00
 Scaleform::GFx::Value UIPCInfoDialog::FUN_141335e00(int nStat, int nContainer, int nLabel)
 {
@@ -1648,7 +1638,6 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_141335e00(int nStat, int nContainer, i
     return row.FUN_1422bb870();
 }
 
-// MS2-FUNCTIONAL: special stat row from the decompile
 // @0x1413363d0
 Scaleform::GFx::Value UIPCInfoDialog::FUN_1413363d0(int nStat, int nContainer, int nLabel)
 {
@@ -1704,7 +1693,6 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413363d0(int nStat, int nContainer, i
     return row.FUN_1422bb870();
 }
 
-// MS2-FUNCTIONAL: shield row from the decompile
 // @0x1413369a0
 Scaleform::GFx::Value UIPCInfoDialog::FUN_1413369a0(unsigned int nContainer, int nLabel)
 {
@@ -1769,7 +1757,6 @@ void UIPCInfoDialog::FUN_141336e40(ASArray& aTabs, int nTab, const CStringW& str
     aTabs.FUN_1422bc050(tab.FUN_1422bb870());
 }
 
-// MS2-FUNCTIONAL: the avatar camera from the decompile
 // @0x141337040
 void UIPCInfoDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
 {
@@ -1845,7 +1832,6 @@ void UIPCInfoDialog::FUN_1413375c0()
     m_30->Invoke("unloadRenderTarget");
 }
 
-// MS2-FUNCTIONAL: an unreferenced stat row with zero values (the format temporaries differ)
 // @0x141337620
 Scaleform::GFx::Value FUN_141337620(CString strName, int nContainer, int nLabel, int bPercent)
 {
