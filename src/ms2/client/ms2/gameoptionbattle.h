@@ -10,9 +10,8 @@ struct Unk_BattleState
     int m_n08;                                                      // +0x08 (default 7)
     int m_n0c;                                                      // +0x0c (default 3)
     int m_n10;                                                      // +0x10 (default 3)
-    int m_n14;                                                      // +0x14 (untouched by the ctor)
 };
-MS2_CHECK_SIZE(Unk_BattleState, 0x18);
+MS2_CHECK_SIZE(Unk_BattleState, 0x14);
 
 class CGameOptionBattle : public CBaseOption
 {

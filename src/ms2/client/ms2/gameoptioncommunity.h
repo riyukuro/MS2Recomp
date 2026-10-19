@@ -12,9 +12,9 @@ MS2_CHECK_SIZE(Unk_CommunityStateA, 0x3);
 
 struct Unk_CommunityStateB
 {
-    bool m_b[0xd];                                                  // +0x00 (default 1,1,1 then 0; bytes 0..10 set by the ctor)
+    bool m_b[0xc];                                                  // +0x00 (default 1,1,1 then 0; bytes 0..10 set by the ctor)
 };
-MS2_CHECK_SIZE(Unk_CommunityStateB, 0xd);
+MS2_CHECK_SIZE(Unk_CommunityStateB, 0xc);
 
 class CGameOptionCommunity : public CBaseOption
 {
