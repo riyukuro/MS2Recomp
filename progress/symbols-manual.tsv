@@ -3450,3 +3450,5 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?Factor@CMasteryTable@@QEAAHHI@Z	14066ab90	func
 ?DifferentialName@CMasteryTable@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HI@Z	14066adb0	func
 ??RUnk_HashKeyHash@@QEBA_KAEBUUnk_HashKey@@@Z	140ad7090	func
+?GetMeso@CExchangeItemInfo@@QEBA_JXZ	140595050	func
+?GetTotalMeso@CExchangeItemInfo@@QEBA_JH@Z	1405950b0	func

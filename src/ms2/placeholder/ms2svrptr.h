@@ -43,6 +43,11 @@ public:
     T* get() const { return m_p; }
     bool operator==(T* o) const { return m_p == o; }
     bool operator!() const { return m_p == 0; }   // portaltable.cpp: `if (!p)` is an out-of-line no-arg COMDAT
+#ifdef MS2_SVRPTR_ASSIGN_INT
+    // `p = 0` of units that call the exe's operator=(int) COMDAT (Release; return *this; e.g. 0x140f567a0 for
+    // T = CIngredientContainer, uiitemexchangescrolldialog.cpp). Opt-in per unit: the other units keep operator=(T*).
+    MS2SvrPtr& operator=(int) { Release(); return *this; }
+#endif
 private:
     void Make() { Release(); m_p = Create(0); }
     static T* Allocate(void*) { return new T; }
