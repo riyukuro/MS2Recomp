@@ -2231,6 +2231,50 @@ void StateSkill::FUN_1417f0070()
 }
 MS2_REPLACE_METHOD(0x1417f0070, StateSkill, FUN_1417f0070, 427, 0xC0B4F0FC);
 
+// The motion of the cast for one tick: the motion controller's displacement, then (move type 2 / 3) the move input at
+// the actor's speed unless a move-key skill has run out. A running hit pause (feature 0xca) only extends the cast.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417edc20
+void StateSkill::FUN_1417edc20(double fTime)
+{
+    if (m_spRecord == NULL)
+        return;
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xca) && m_pause.FUN_1417e4e40() != 0)
+    {
+        if (m_pOwner->vfunc_99(1) != 0)
+            m_spRecord->m_f80 += (float)fTime;
+        return;
+    }
+    if (m_n10 == 0x3c)
+        return;
+    bool bMoveInput = true;
+    if (m_spRecord->m_spSkill->m_bMovingInMovekey && FUN_14028d470(m_spRecord->FUN_14175a1b0(), 0.0f))
+        bMoveInput = false;
+    m_bMoved = m_pMotion->vfunc_5(fTime);
+    Unk_StreamPoint kDelta = m_pMotion->vfunc_3();
+    unsigned nIgnoreGroups = 0;
+    SkillMotionData* pMotion = m_spRecord->FUN_141759830();
+    if (pMotion != NULL)
+        nIgnoreGroups = pMotion->m_nIgnoreCollisionGroups;
+    bool bMoved = m_bMoved;
+    int nKind = m_pMotion->vfunc_6();
+    Unk_StreamPoint kMove = kDelta;
+    m_bMoved = bMoved | m_pOwner->vfunc_68(&kMove, fTime, 0, nIgnoreGroups, nKind);
+    if (m_spRecord->m_spSkill->m_nMoveType != 2 && m_spRecord->m_spSkill->m_nMoveType != 3)
+        return;
+    if (!bMoveInput)
+        return;
+    float fYaw = m_pOwner->FUN_14166da40();
+    efd::Point3 kDir = m_pOwner->FUN_141674b60(SS_PT(m_pOwner->FUN_14123c360()));
+    efd::Point3 kStep = kDir * m_pOwner->vfunc_95() * (float)fTime;
+    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xca) && m_spRecord->m_spSkill->m_nMoveType == 2)
+        m_pOwner->FUN_14166d8b0(fYaw);
+    bMoved = m_bMoved;
+    efd::Point3 kStepCopy = kStep;
+    m_bMoved = bMoved | m_pOwner->vfunc_68(&kStepCopy, fTime, 0, nIgnoreGroups, 0);
+}
+MS2_REPLACE_METHOD(0x1417edc20, StateSkill, FUN_1417edc20, 1264, 0x125D56A2);
+
 // @0x1417eeb10
 void StateSkill::FUN_1417eeb10(bool bChain)
 {
