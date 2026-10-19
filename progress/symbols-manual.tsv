@@ -3315,3 +3315,7 @@ __imp_AddSurveyParameterA	142cd1480	data
 ?g_nLogLevel@@3HA	1439f7de4	data
 ??0Unk_CmdArgMap@@QEAA@HMMMH@Z	1401635e0	func
 ??1Unk_CmdArgMap@@QEAA@XZ	140164300	func
+??0?$TPtr@VPC@@@@QEAA@AEBV0@@Z	140c20410	func
+?DAT_143ae2b3c@@3HA	143ae2b3c	data
+?DAT_143ae2b4c@@3HA	143ae2b4c	data
+?DAT_143ae2bf8@@3HA	143ae2bf8	data
