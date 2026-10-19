@@ -84,7 +84,7 @@ public:
     void FUN_1409c65f0(const CStringW& strText);                         // set the tooltip text line
     void FUN_1409c6640(const CStringW& strLhs, const CStringW& strRhs);   // enableUseDbClick on both comparison tooltips
     void FUN_1409c6ef0(const CStringW& strText);                        // append to textBgArr
-    void FUN_1409e13a0(CItem* pCompare, CItem* pItem);                  // item tooltip with the default flags
+    int FUN_1409e13a0(CItem* pCompare, CItem* pItem);                   // item tooltip with the default flags
     bool FUN_1409e25e0(CItem* pItem, unsigned n);
     void FUN_1409cf010(CItem* pItem, unsigned n);
     int FUN_1409e13f0(CItem* pCompare, CItem* pItem, int a1, int a2);   // item tooltip with a comparison item (ItemInfoSlot)

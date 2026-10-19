@@ -17,9 +17,9 @@ public:
     virtual void vfunc_3(void*, bool) {}            // 3  0x140c255d0
     virtual void vfunc_4(void*, int) {}             // 4  0x140be54a0
     virtual void vfunc_5(void*, int) {}             // 5  0x140be54b0
-    virtual void vfunc_6(void*) {}                  // 6  0x140be54c0
-    virtual void vfunc_7(void*) {}                  // 7  0x140be54e0
-    virtual void vfunc_8(void*) {}                  // 8  0x140be54d0
+    virtual void vfunc_il6(void*) {}                // 6  0x140be54c0
+    virtual void vfunc_il7(void*) {}                // 7  0x140be54e0
+    virtual void vfunc_il8(void*) {}                // 8  0x140be54d0
     virtual void vfunc_9(void*) {}                  // 9  0x140be54f0
     virtual void vfunc_10(void*) {}                 // 10 0x140be5520
     virtual void vfunc_il11(void*) {}               // 11 0x140be5510
