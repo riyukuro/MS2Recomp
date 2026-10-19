@@ -2,6 +2,42 @@
 // MS2-UNIT: ?\uitriggereditordialog.cpp
 // MS2-RANGE: 0x14011e550-0x14011e8b0 .text$di
 // MS2-RANGE: 0x141b29f20-0x141b330c0 .text$mn
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??__Es_sortTypeNames0@@YAXXZ 0x14011e550 ; probe
+// MS2-PIN: ??__Es_strSkill0@@YAXXZ 0x14011e610 ; probe
+// MS2-PIN: ??__Es_strSkill1@@YAXXZ 0x14011e640 ; probe
+// MS2-PIN: ??__Es_condition0@@YAXXZ 0x14011e690 ; probe
+// MS2-PIN: ??__Es_strSkill2@@YAXXZ 0x14011e6e0 ; probe
+// MS2-PIN: ??__Es_strStun0@@YAXXZ 0x14011e710 ; probe
+// MS2-PIN: ??__Es_sortTypeNames1@@YAXXZ 0x14011e740 ; probe
+// MS2-PIN: ??__Es_strStun1@@YAXXZ 0x14011e800 ; probe
+// MS2-PIN: ??__Es_strStun2@@YAXXZ 0x14011e830 ; probe
+// MS2-PIN: ??__Es_condition1@@YAXXZ 0x14011e860 ; probe
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@UMessage@UITriggerEditorDialog@@@std@@V?$_Vector_val@U?$_Simple_types@UMessage@UITriggerEditorDialog@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141b2fb50 ; order
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$_Vector_val@U?$_Simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141b2fb80 ; order
+// MS2-PIN: ??$?8PEAVUITriggerEditorDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x141b2fe10 ; prop
+// MS2-PIN: ??$_Unfancy@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@YAPEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEAV12@@Z 0x141b317b0 ; probe
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x141b31ba0 ; prop
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@UMessage@UITriggerEditorDialog@@V?$allocator@UMessage@UITriggerEditorDialog@@@std@@@std@@@std@@QEAA@XZ 0x141b31ca0 ; order
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@std@@QEAA@XZ 0x141b31cd0 ; order
+// MS2-PIN: ??0?$_Vector_val@U?$_Simple_types@UMessage@UITriggerEditorDialog@@@std@@@std@@QEAA@XZ 0x141b31d80 ; order
+// MS2-PIN: ??0?$_Vector_val@U?$_Simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@QEAA@XZ 0x141b31dc0 ; order
+// MS2-PIN: ??0?$allocator@UMessage@UITriggerEditorDialog@@@std@@QEAA@XZ 0x141b31e00 ; order
+// MS2-PIN: ??0?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@QEAA@XZ 0x141b31e10 ; order
+// MS2-PIN: ??0?$vector@UMessage@UITriggerEditorDialog@@V?$allocator@UMessage@UITriggerEditorDialog@@@std@@@std@@QEAA@XZ 0x141b31e20 ; order
+// MS2-PIN: ??0?$vector@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@QEAA@XZ 0x141b31e50 ; order
+// MS2-PIN: ??A?$vector@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@QEAAAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@_K@Z 0x141b322f0 ; unique
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x141b323a0 ; prop
+// MS2-PIN: ??_GUITriggerEditorDialog@@UEAAPEAXI@Z 0x141b32420 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@UMessage@UITriggerEditorDialog@@@std@@V?$_Vector_val@U?$_Simple_types@UMessage@UITriggerEditorDialog@@@std@@@2@$00@std@@QEAAAEAV?$allocator@UMessage@UITriggerEditorDialog@@@2@XZ 0x141b32720 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@UMessage@UITriggerEditorDialog@@@std@@V?$_Vector_val@U?$_Simple_types@UMessage@UITriggerEditorDialog@@@std@@@2@$00@std@@QEBAAEBV?$allocator@UMessage@UITriggerEditorDialog@@@2@XZ 0x141b32730 ; unique
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@UMessage@UITriggerEditorDialog@@@std@@V?$_Vector_val@U?$_Simple_types@UMessage@UITriggerEditorDialog@@@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@UMessage@UITriggerEditorDialog@@@std@@@2@XZ 0x141b32740 ; unique
+// MS2-PIN: ?_Tidy@?$vector@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@AEAAXXZ 0x141b32900 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141b32cf0 ; unique
+// MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x141b32e60 ; unique
+// MS2-PIN: ??$Call@VUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x141b32ee0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUITriggerEditorDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141b32f80 ; unique
+// MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uitriggereditordialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
