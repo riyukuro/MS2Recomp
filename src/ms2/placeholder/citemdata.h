@@ -300,6 +300,7 @@ struct ItemFunctionArgs             // the <function> parameter string split int
     void FUN_1408d1e00(CStringW strText, CStringW strSeparators);   // split strText into args
     unsigned FUN_1408d2380();       // the argument count
     unsigned FUN_1408d1f60(int nIndex, int nDefault);
+    CStringW FUN_1408d21c0(int nIndex, CStringW strDefault);   // the nIndex-th argument as a string (unit_140d1ae30: OpenWebPage)
     int FUN_1408d1fd0(int nIndex, int nDefault);   // the nIndex-th argument as a number (usercommandcli.h: Unk_CommandArgs)
     CStringW text;                  // +0x00
     ATL::CAtlArray<CStringW> args;  // +0x08

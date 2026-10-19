@@ -39,6 +39,22 @@
 #include "ms2/client/ms2/uiitembillboarddialog.h"
 #include "ms2/client/ms2/uiitemblueprintcreatedialog.h"
 #include "ms2/client/ms2/uiugccubebilldialog.h"
+#include "ms2/placeholder/ccashcallmanager.h"
+#include "ms2/placeholder/fishingmanager.h"
+#include "ms2/placeholder/weddingmanager.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/blockmanager.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/uiinteriorbuilddialog.h"
+#include "ms2/client/ms2/uiitemexchangescrolldialog.h"
+#include "ms2/client/ms2/uiitemextractionscrolldialog.h"
+#include "ms2/client/ms2/uiitemlulluboxdialog.h"
+#include "ms2/client/ms2/uiitemmergerevertdialog.h"
+#include "ms2/client/ms2/uiavatarbase.h"               // UIAvatarPet (uiitempetboxdialog.h inline ctor)
+#include "ms2/client/ms2/uiitempetboxdialog.h"
+#include "ms2/client/ms2/uiitempettrainingdialog.h"
+#include "ms2/client/ms2/uiselectitemboxdialog.h"
+#include "ms2/client/ms2/uiwebbrowser.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -154,7 +170,7 @@ class Unk_IuStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_IuStrings* FUN_1401a9d70();
 
 // The quest scroll: the quest client manager.
-class Unk_IuQuestList { public: int FUN_140745630(int nQuestId); };
+class Unk_IuQuestList { public: int FUN_140745590(int nQuestId); int FUN_140745630(int nQuestId); };   // completed / accepted
 class Unk_IuQuestMgr
 {
 public:
@@ -196,6 +212,31 @@ public:
     bool FUN_14199ac30(int nButton, const CMsgBoxData& box);   // the couple effect receiver box result
 };
 UIInventoryDialog* FUN_1405344f0(int nId);                  // Unk_BreakDialog<UIInventoryDialog> (itembreakmanager.cpp)
+
+// The scroll / box dialogs and services the handlers open.
+class UIPetExtractionScrollDialog : public UIDialog
+{
+public:
+    void FUN_140e72860(__int64 nScrollUid);                 // remember the scroll and open
+};
+UIItemExchangeScrollDialog* FUN_140b6ce30(int nId);         // the dialog getter of another unit (same template body)
+UIWebBrowser* FUN_140c43790(int nId);                       // the dialog getter of another unit (same template body)
+CFeatureManager* FUN_140166410();
+CFishingManager* FUN_140953f20();
+CGuildManager* FUN_1403ed290();
+WeddingManager* FUN_1409eed90();
+bool FUN_141b89990(WeddingManager* pWedding);              // married
+bool FUN_141b899d0(WeddingManager* pWedding);              // ApplyPartner: the partner is online (returns AL; weddingmanager.cpp declares it void)
+CBlockManager* FUN_140a6a830();
+void FUN_140a30ad0(const BlockPtr& spBlock, int nAction, unsigned __int64 n);   // the blocked action notice
+CStringA FUN_14016a600(const wchar_t* psz, unsigned nCodePage);                // wide to multibyte
+void FUN_1418fe1c0(const CStringA& strUrl);                 // open the url in the external browser
+bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);   // equals
+CStringW FUN_1409eec40(int nStringId);                      // a string table text (the item string table)
+CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);
+MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW strTag);
+int FUN_1401e0800(unsigned short nLevel);                   // the ability reset is open at that level
+bool FUN_14152e7f0(PC* pPlayer);                            // the gender can't change (MyPC)
 
 // ---- the box helpers ----
 
@@ -1022,5 +1063,432 @@ int InstallBillBoard(MS2Ptr<CItem> spItem, PC* pPlayer)
     UIItemBillBoardDialog* pDialog = GetItemUseDialog<UIItemBillBoardDialog>(0x4f4f);
     if (pDialog != 0 && pDialog->FUN_140c323f0() == true)
         pDialog->FUN_140c32360(spItem->FUN_140526a50());
+    return 1;
+}
+
+// @0x140d21480
+int ItemMergeRevert(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    UIItemMergeRevertDialog* pDialog = GetItemUseDialog<UIItemMergeRevertDialog>(0x4f3d);
+    if (pDialog != 0)
+    {
+        if (pDialog->FUN_141924630() != 0)
+            return 1;
+        pDialog->FUN_140e4c7a0(spItem.get());
+        pDialog->FUN_141924680();
+    }
+    return 1;
+}
+
+// The quest scroll: warn first when the item says so, else accept its quests.
+// @0x140d21520
+int QuestScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    CStringW strWarn = spItem->FUN_140527840()->function.xml.FUN_14042cad0(L"warnMsg", L"");
+    if (strWarn.GetLength() == 0)
+    {
+        std::vector<int> quests = spItem->FUN_140527840()->function.xml.FUN_1409e8620(L"questID", std::vector<int>());
+        for (size_t i = 0; i < quests.size(); ++i)
+        {
+            if (FUN_140764020()->m_list.FUN_140745630(quests[i]) != 0)
+            {
+                FUN_140d73bc0(0x5f3, 0, 0, L"");
+                return 0;
+            }
+            if (FUN_140764020()->vfunc_1(quests[i], 0) == 0)
+            {
+                FUN_140d73bc0(0x5f4, 0, 0, L"");
+                return 0;
+            }
+        }
+        return DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
+    }
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(strWarn), 0, L"");
+    if (spBox.get() != 0)
+    {
+        spBox->FUN_1405340b0(spItem->FUN_140526a50());
+        spBox->FUN_141a027c0(Unk_IuBoxCallback(OnQuestScrollConfirm));
+        FUN_140d73c60(spBox);
+    }
+    return 1;
+}
+
+// @0x140d21a10
+int PetExtraction(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_140166410()->FUN_14036d570(0x6c))
+    {
+        UIPetExtractionScrollDialog* pDialog = GetItemUseDialog<UIPetExtractionScrollDialog>(0x4f4a);
+        if (pDialog != 0)
+        {
+            if (pDialog->FUN_141924630() != 0)
+                return 1;
+            pDialog->FUN_140e72860(spItem->FUN_140526a50());
+            pDialog->FUN_141924680();
+        }
+    }
+    return 1;
+}
+
+// @0x140d21ad0
+int ItemExtraction(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_140166410()->FUN_14036d570(0x8f))
+    {
+        UIItemExtractionScrollDialog* pDialog = GetItemUseDialog<UIItemExtractionScrollDialog>(0x4f49);
+        if (pDialog != 0)
+        {
+            if (pDialog->FUN_141924630() != 0)
+                return 1;
+            pDialog->FUN_140e4b2c0(spItem->FUN_140526a50());
+            pDialog->FUN_141924680();
+        }
+    }
+    return 1;
+}
+
+// @0x140d21b90
+int ItemExchangeScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    UIItemExchangeScrollDialog* pDialog = FUN_140b6ce30(0x4f14);
+    if (pDialog != 0)
+    {
+        if (pDialog->FUN_141924630() != 0)
+            return 1;
+        pDialog->FUN_140f51490(spItem.get());
+        pDialog->FUN_141924680();
+    }
+    return 1;
+}
+
+// @0x140d21c30
+int ItemSocketScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    int bOpen = FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f10);
+    if (bOpen == 0)
+        DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
+    else
+        FUN_140d73aa0(FUN_14028b8e0(L"s_itemsocket_scroll_already_open"), 0, 0, L"");
+    return bOpen == 0;
+}
+
+// The web page item: the in-game browser ("maview") or the external one.
+// @0x140d21d70
+int OpenWebPage(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    CStringA strUrl = FUN_14016a600(spItem->FUN_140527840()->function.parameter.FUN_1408d21c0(0, L""), 0);
+    CStringW strKind = spItem->FUN_140527840()->function.parameter.FUN_1408d21c0(1, L"");
+    if (!FUN_1403b3c40(strKind, L"maview"))
+    {
+        FUN_1418fe1c0(strUrl);
+        return 1;
+    }
+    UIWebBrowser* pBrowser = FUN_140c43790(0x4e6a);
+    if (pBrowser == 0)
+        return 1;
+    pBrowser->FUN_14135ec00(strUrl, true);
+    return 1;
+}
+
+// @0x140d21f50
+int PetTraining(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f12) != 0)
+    {
+        FUN_140d73aa0(FUN_14028b8e0(L"s_pet_training_dialog_already_open"), 0, 0, L"");
+        return 0;
+    }
+    UIItemPetTrainingDialog* pDialog = GetItemUseDialog<UIItemPetTrainingDialog>(0x4f12);
+    if (pDialog != 0)
+    {
+        pDialog->FUN_140e57c80(spItem->FUN_140526a50());
+        pDialog->FUN_141924680();
+    }
+    return 1;
+}
+
+// @0x140d22090
+int ItemRePackingScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f11) != 0)
+    {
+        FUN_140d73aa0(FUN_14028b8e0(L"s_item_repacking_scroll_already_open"), 0, 0, L"");
+        return 0;
+    }
+    return DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
+}
+
+// @0x140d221c0
+int ItemRemakeScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f09) != 0)
+    {
+        FUN_140d73aa0(FUN_14028b8e0(L"s_itemremake_scroll_already_open"), 0, 0, L"");
+        return 0;
+    }
+    return DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
+}
+
+// @0x140d222f0
+int OpenPetBox(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    UIItemPetBoxDialog* pDialog = GetItemUseDialog<UIItemPetBoxDialog>(0x4f2c);
+    if (pDialog != 0)
+    {
+        if (pDialog->FUN_141924630() != 0)
+            return 1;
+        pDialog->FUN_140e4fc30(spItem->FUN_1405276c0());
+        pDialog->FUN_141924680();
+    }
+    return 1;
+}
+
+// @0x140d22390
+int OpenItemBoxLullu(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    UIItemLulluBoxDialog* pDialog = GetItemUseDialog<UIItemLulluBoxDialog>(0x4f2b);
+    if (pDialog != 0)
+    {
+        if (pDialog->FUN_141924630() != 0)
+            return 1;
+        pDialog->FUN_140e9c240(spItem->FUN_1405276c0());
+        pDialog->FUN_141924680();
+    }
+    return 1;
+}
+
+// @0x140d22430
+int SelectItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    UISelectItemBoxDialog* pDialog = GetItemUseDialog<UISelectItemBoxDialog>(0x4eff);
+    if (pDialog != 0)
+    {
+        if (pDialog->FUN_141924630() != 0)
+            return 1;
+        pDialog->FUN_140f9a200(spItem->FUN_140526a50());
+        pDialog->FUN_141924680();
+    }
+    return 1;
+}
+
+// @0x140d224d0
+int UGCMapPackage(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    UIInteriorBuildDialog* pDialog = GetItemUseDialog<UIInteriorBuildDialog>(0x4ee8);
+    if (pDialog != 0)
+        pDialog->FUN_140f4b4c0(spItem->FUN_140526a50());
+    return 1;
+}
+
+// @0x140d22540
+int FishingRod(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_140166410()->FUN_14036d570(0xb))
+        FUN_140953f20()->FUN_140cdadb0(spItem);
+    return 1;
+}
+
+// @0x140d225d0
+int EnchantScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4ee0) != 0)
+    {
+        FUN_140d73bc0(0xb68, 0, 0, L"");
+        return 0;
+    }
+    return DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
+}
+
+// The guild recall: call the other guild members.
+// @0x140d226b0
+int RecallGuild(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x1a) != 0)
+    {
+        FUN_140d73bc0(0x2f7, 0, 0, L"");
+        return 0;
+    }
+    if (FUN_1403ed290()->FUN_1413b6160() == 0)
+    {
+        FUN_140d73bc0(0xb5a, 0, 0, L"");
+        return 0;
+    }
+    ATL::CAtlMap<__int64, __int64> mapMembers;
+    int nCount = FUN_1403ed290()->FUN_1404d3400(&mapMembers) - 1;
+    if (nCount < 1)
+    {
+        FUN_140d73bc0(0xb5c, 0, 0, L"");
+        return 0;
+    }
+    return TSingleton<CCashCallManager>::GetInstance()->FUN_140b04430(spItem->FUN_140526a50(), nCount);
+}
+
+// The wedding recall: call the partner.
+// @0x140d228e0
+int RecallWedding(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x1a) != 0)
+    {
+        FUN_140d73bc0(0x2f7, 0, 0, L"");
+        return 0;
+    }
+    if (!FUN_141b89990(FUN_1409eed90()))
+    {
+        FUN_140d73aa0(FUN_14028b8e0(L"s_err_cash_recall_not_marriage"), 0, 0, L"");
+        return 0;
+    }
+    if (!FUN_141b899d0(FUN_1409eed90()))
+    {
+        FUN_140d73aa0(FUN_14028b8e0(L"s_err_cash_recall_not_marriage"), 0, 0, L"");
+        return 0;
+    }
+    return TSingleton<CCashCallManager>::GetInstance()->FUN_140b04430(spItem->FUN_140526a50(), 1);
+}
+
+// @0x140d22b50
+int ResetAbilityCoolTime(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_1401e0800((unsigned short)pPlayer->vfunc_78()) == 0)
+    {
+        FUN_140d73bc0(0xc63, 0, 0, L"");
+        return 0;
+    }
+    if (FUN_140764020()->m_list.FUN_140745590(*TSingleton<Client::Constants>::GetInstance()->CharacterAbilityOpenQuestID.Get()) == 0)
+    {
+        FUN_140d73bc0(0xc63, 0, 0, L"");
+        return 0;
+    }
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0xc62, 0, s_strUseFunctionItem);
+    if (spBox.get() == 0)
+        return 0;
+    spBox->FUN_141a01600(spItem->FUN_140526a50());
+    spBox->FUN_141a024a0(0);
+    spBox->FUN_141a01700(0x477, 0x478, 0);
+    FUN_140d73c60(spBox);
+    return 1;
+}
+
+// @0x140d22dd0
+int ChangeGender(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_140166410()->FUN_14036d570(0x104))
+    {
+        if (FUN_1409eed90() == 0)
+        {
+            FUN_140d73aa0(FUN_1409eec40(0x2f5), 0, 0, L"");
+            return 1;
+        }
+        int nState = FUN_1409eed90()->FUN_140d295d0()->m_nState;
+        bool bFree = nState == 0 || nState == 5;
+        if (!bFree)
+        {
+            FUN_140d73aa0(FUN_14028b8e0(L"s_change_gender_err_wedding"), 0, 0, L"");
+            return 1;
+        }
+    }
+    if (FUN_14152e7f0(pPlayer))
+    {
+        FUN_140d73aa0(FUN_1409eec40(0x2f3), 0, 0, L"");
+        return 1;
+    }
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, FUN_14052bd00(0x2f2, pPlayer->vfunc_77()), 0, s_strUseFunctionItem);
+    if (spBox.get() == 0)
+        return 0;
+    spBox->FUN_141a01600(spItem->FUN_140526a50());
+    spBox->FUN_141a024a0(0);
+    spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+    spBox->FUN_141a01700(0x477, 0x478, 0);
+    FUN_140d73c60(spBox);
+    return 1;
+}
+
+// @0x140d233d0
+int ChangeGuildName(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_1403ed290()->FUN_1404d01b0(pPlayer->vfunc_77()) == 0)
+    {
+        FUN_1412751f0(FUN_14028de60(0x416), 1, 1);
+        return 0;
+    }
+    int nMax = *TSingleton<Client::Constants>::GetInstance()->GuildNameLengthMax.Get();
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14062b4f0(L"s_guild_ui_change_name", nMax), 0, s_strChangeGuildName);
+    if (spBox.get() != 0)
+    {
+        spBox->FUN_141a01600(spItem->FUN_140526a50());
+        spBox->FUN_141a01d30(0, L"", nMax, 0, 0);
+        FUN_140d73c60(spBox);
+    }
+    return 0;
+}
+
+// @0x140d236a0
+int ChangeCharName(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(10);
+    if (spBlock.get() != 0)
+    {
+        FUN_140a30ad0(spBlock, 10, 0);
+        return 1;
+    }
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(10, 1, 0, s_strChangeCharName);
+    if (spBox.get() != 0)
+    {
+        spBox->FUN_141a01600(spItem->FUN_140526a50());
+        spBox->FUN_141a01d30(2, L"", 0xc, 0, 0);
+        FUN_140d73c60(spBox);
+    }
+    return 1;
+}
+
+// The inventory expansion item: name the tab it expands.
+// @0x140d23870
+int ExpandInven(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    CStringW strMsg = FUN_1409eec40(0x29c);
+    CStringW strTab;
+    if (!DAT_143ab2a90.FUN_140a5ce30(strTab))
+    {
+        FUN_140d73bc0(0x2a3, 0, 0, L"");
+        return 0;
+    }
+    if (strTab.GetLength() != 0 && spItem->FUN_140527840()->function.parameter.FUN_1408d2380() == 1)
+        strMsg = FUN_14052bd00(0x2a6, strTab);
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseFunctionItem);
+    if (spBox.get() == 0)
+        return 0;
+    spBox->FUN_141a01600(spItem->FUN_140526a50());
+    spBox->FUN_141a024a0(0);
+    spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+    spBox->FUN_141a01700(0x477, 0x478, 0);
+    FUN_140d73c60(spBox);
+    return 1;
+}
+
+// @0x140d24cc0
+int OpenBank(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    TSingleton<CCashCallManager>::GetInstance()->FUN_140b03d70(spItem->FUN_140526a50());
+    return 1;
+}
+
+// @0x140d24d30
+int CallBlackMarket(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    TSingleton<CCashCallManager>::GetInstance()->FUN_140b03980(spItem->FUN_140526a50());
+    return 1;
+}
+
+// @0x140d24da0
+int CallMedic(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    TSingleton<CCashCallManager>::GetInstance()->FUN_140b03590(spItem->FUN_140526a50());
+    return 1;
+}
+
+// @0x140d24e10
+int CallAirTaxi(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4e42) != 0)
+        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4e42);
     return 1;
 }
