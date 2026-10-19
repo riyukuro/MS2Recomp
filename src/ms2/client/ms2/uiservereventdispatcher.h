@@ -15,7 +15,7 @@ class UIServerEventListener
 {
 public:
     virtual ~UIServerEventListener() {}     // slot 0
-    virtual void Notify() = 0;              // slot 1
+    virtual void Notify() {}                // slot 1 (0x141a4d920: empty)
 };
 
 class UIServerEventDispatcher : public TSingleton<UIServerEventDispatcher>

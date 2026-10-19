@@ -53,6 +53,7 @@ public:
     MS2Ptr<CBaseOption> FUN_141944460(int nIndex);                  // the nIndex-th page (1-based, map order)
     void FUN_141944590(int n);                                      // FUN_1419445c0(0x10, n)
     void FUN_1419445c0(int nKey, int n);                            // n == 0: drop the page nKey
+    void FUN_141b15670(int nTab) { m_nTab = nTab; }                 // 0x141b15670 (inline COMDAT, uisystemmenudialog.cpp)
 
     int m_nTab;                                                     // +0x178 current tab id (1 on a fresh dialog)
     ATL::CAtlMap<int, MS2Ptr<CBaseOption>> m_mapPages;              // +0x180 tab id -> page

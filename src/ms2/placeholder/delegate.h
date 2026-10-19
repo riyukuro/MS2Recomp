@@ -62,6 +62,12 @@ public:
         : m_pImpl(new DelegateImpl<R (*)(A1, A2)>(f))
     {
     }
+    // A captureless lambda by value (uisystemmenudialog.cpp 0x141b15070): converts to the function pointer, then as above.
+    template <class L>
+    explicit Delegate(L l)
+        : m_pImpl(new DelegateImpl<R (*)(A1, A2)>(static_cast<R (*)(A1, A2)>(l)))
+    {
+    }
     Delegate(const Delegate& o);        // declared: makes a by-value Delegate argument go by reference to a caller temp (see the one-argument form)
     ~Delegate();
     Delegate& operator=(const Delegate& o);
