@@ -3418,3 +3418,4 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?DAT_143ab2a90@@3VUnk_ReInv@@A	143ab2a90	data
 ?DAT_1439f825c@@3HA	1439f825c	data
 ?DAT_143ab2830@@3HA	143ab2830	data
+?CollectNear@DecoEditService@@QEAAXUUnk_StreamPoint@@MAEAV?$CAtlArray@PEAVNiMeshHWInstance@@V?$CElementTraits@PEAVNiMeshHWInstance@@@ATL@@@ATL@@@Z	141170520	func
