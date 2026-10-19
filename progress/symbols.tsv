@@ -1764,7 +1764,7 @@ HRESULT_FROM_WIN32	14015b330	func
 ??0?$fpos@U_Mbstatet@@@std@@QEAA@_J@Z	140182d80	func
 ??0?$map@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$greater@I@std@@V?$allocator@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@@std@@QEAA@XZ	140182dd0	func
 ??0?$map@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@@std@@QEAA@XZ	140182e00	func
-??0?$list@HV?$allocator@H@std@@@std@@QEAA@XZ	140182e30	func
+??0?$list@HV?$allocator@H@std@@@std@@QEAA@XZ	140a3d2e0	func
 ??0?$set@IU?$less@I@std@@V?$allocator@I@2@@std@@QEAA@XZ	140182e30	func
 ??0?$set@JU?$less@J@std@@V?$allocator@J@2@@std@@QEAA@XZ	140182e30	func
 ??0?$tuple@AEBW4SAType@@@std@@QEAA@$$QEAV01@@Z	140182e60	func

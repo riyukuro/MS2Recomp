@@ -92,7 +92,7 @@ public:
     __int64 m_nItemUid;                                 // +0xb0
     int m_nItemId;                                      // +0xb8
     int m_bFixed;                                       // +0xbc
-    ATL::CRBMap<int, int> m_kKeys;                      // +0xc0 slot index -> key code
+    ATL::CRBMap<unsigned, int> m_kKeys;                      // +0xc0 slot index -> key code
     MS2Ptr<AScript> m_spRoot;                           // +0xf0
     MS2Ptr<AScript> m_spUpdate;                         // +0x100
     MS2Ptr<AScript> m_spClear;                          // +0x110
