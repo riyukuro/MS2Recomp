@@ -176,7 +176,6 @@
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@$0A@@std@@@std@@QEAA@XZ 0x1401837c0 ; unique
 // MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tmap_traits@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@$0A@@std@@@std@@QEAA@XZ 0x140183880 ; unique
 // MS2-PIN: ??1?$vector@V?$MS2Ptr@VAdditionalActionAdditional@@@@V?$allocator@V?$MS2Ptr@VAdditionalActionAdditional@@@@@std@@@std@@QEAA@XZ 0x140183bf0 ; prop
-// MS2-PIN: ?_Allocate@_Default_allocate_traits@std@@SAPEAX_K@Z 0x140183d20 ; prop
 // MS2-PIN: ??8?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@U_Iterator_base0@2@@std@@QEBA_NAEBV01@@Z 0x140184280 ; unique
 // MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140184390 ; unique
 // MS2-PIN: ??A?$CAtlArray@MV?$CElementTraits@M@ATL@@@ATL@@QEAAAEAM_K@Z 0x140184590 ; unique
@@ -276,7 +275,6 @@
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@IU?$less@I@std@@V?$allocator@I@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@2@V32@@Z 0x14018fff0 ; prop
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VAdditionalActionSkill@@@@@std@@@std@@SA_KAEBV?$allocator@V?$MS2Ptr@VAdditionalActionSkill@@@@@2@@Z 0x1401902e0 ; unique
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VAdditionalLevelData@@@@@std@@@std@@SA_KAEBV?$allocator@V?$MS2Ptr@VAdditionalLevelData@@@@@2@@Z 0x1401902f0 ; unique
-// MS2-PIN: ?push_back@?$vector@HV?$allocator@H@std@@@std@@QEAAX$$QEAH@Z 0x140190a70 ; unique
 // MS2-PIN: ?size@?$_Tree@V?$_Tmap_traits@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@$0A@@std@@@std@@QEBA_KXZ 0x140191070 ; prop
 // MS2-PIN: ?size@?$_Tree@V?$_Tset_traits@IU?$less@I@std@@V?$allocator@I@2@$0A@@std@@@std@@QEBA_KXZ 0x140191090 ; prop
 // MS2-PIN: ?size@?$vector@HV?$allocator@H@std@@@std@@QEBA_KXZ 0x1401910d0 ; unique
