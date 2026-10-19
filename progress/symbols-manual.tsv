@@ -3480,3 +3480,6 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?s_bInit@CItemEnchantLimitTable@@2_NA	143aafb48	data
 ?ms_RTTI@NiPhysXD6JointDesc@@2VNiRTTI@@B	143afc8c0	data
 ?GetJoint@NiPhysXD6JointDesc@@QEAAPEAVNxD6Joint@@XZ	141ef6110	func
+?DAT_143ae5398@@3VNiFixedString@@A	143ae5398	data
+?DAT_143ae53a8@@3VNiFixedString@@A	143ae53a8	data
+?DAT_143ae53c8@@3VNiFixedString@@A	143ae53c8	data
