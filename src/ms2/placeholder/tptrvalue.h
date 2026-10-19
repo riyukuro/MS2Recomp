@@ -31,11 +31,20 @@ public:
     TPtrValue(const TPtrValue& o) { m_p = o.m_p; AddRef(); }
     ~TPtrValue() { Release(); }
     TPtrValue& operator=(const TPtrValue& o) { o.AddRef(); Release(); m_p = o.m_p; return *this; }
+#ifndef MS2_TPTRVALUE_ASSIGN_VIA_TEMP
     TPtrValue& operator=(const Unk_GrNewTag&) { Make(); return *this; }
+#endif
+    // MS2_TPTRVALUE_ASSIGN_VIA_TEMP (opt-in per unit; itemdefaultdata.cpp): `p = Unk_GrNewTag(0)` converts through the tag
+    // ctor into a temporary and assigns it (ctor 0x140586ba0 + operator= 0x140587320), with no Make() call.
     TPtrValue& operator=(int) { Release(); return *this; }   // `m_ptr = 0` (0x140517ee0 for CWinHttpClient, imagehttpclient.cpp)
     T* operator->() const { return m_p; }
     T& operator*() const { return *m_p; }       // 0x140689c10 for T = CAtlArray<double> (maidgradejockpottable.cpp)
     T* get() const { return m_p; }      // `if (spList)` (0x140d37f30 for the item loader's lists)
+#ifdef MS2_TPTRVALUE_ASSIGN_VIA_TEMP
+    // itemdefaultdata.cpp: `spList ? spList->GetCount() : 0` and `if (spList && ...)` (the bool byte) convert through this
+    // getter (0x140587460 for T = CAtlArray<TPtr<DefaultItemData>>).
+    operator T*() const { return m_p; }
+#endif
     bool operator!() const { return m_p == 0; }
     bool operator==(T* p) const { return m_p == p; }
 
