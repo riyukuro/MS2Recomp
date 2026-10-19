@@ -10,6 +10,8 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/asobj.h"
 
+class CItemData;
+
 class ASBillData : public ASObj
 {
 public:
@@ -35,6 +37,7 @@ public:
     void FUN_1409abc90(int n);                                      // 0x1409abc90
     void FUN_1409abcd0(int nPayType);                               // 0x1409abcd0 the pay type
     void FUN_1409abd20(int n);                                      // 0x1409abd20
+    void FUN_1409ab990(MS2Ptr<CItemData> spItem, int nRank);        // 0x1409ab990 the item (icon slot) of the row
     bool FUN_140eacf60() const { return m_b40; }                    // 0x140eacf60 (inline COMDAT, uimarketbilldialog.cpp)
     bool FUN_140eacf20() const { return m_b48; }                    // 0x140eacf20 (same)
     bool m_b40;                                                     // +0x40

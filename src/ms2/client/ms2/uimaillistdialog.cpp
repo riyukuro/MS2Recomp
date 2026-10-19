@@ -2,6 +2,13 @@
 // MS2-UNIT: ?\uimaillistdialog.cpp
 // MS2-RANGE: 0x140116000-0x140116360 .text$di
 // MS2-RANGE: 0x1419e3510-0x1419ee140 .text$mn
+// MS2-PIN: ??_7?$DelegateImpl@U?$pair@PEAVUIMailListDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@6B@ 0x142fbefc0
+// MS2-PIN: ??_7?$DelegateImpl@U?$pair@PEAVUIMailListDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@6B@ 0x142fbefe8
+// MS2-PIN: ??1TMailAdBillDataParam@@UEAA@XZ 0x1419ea450
+// MS2-PIN: ?Maximum@?$CRBTree@_JV?$Unk_MailPtr@VCMailInfo@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$Unk_MailPtr@VCMailInfo@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1419eaf40
+// MS2-PIN: ?Predecessor@?$CRBTree@_JV?$Unk_MailPtr@VCMailInfo@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$Unk_MailPtr@VCMailInfo@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1419eb2d0
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMailListDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419ebc60
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMailListDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419ebc00
 //
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimaillistdialog.cpp"    // assumed
@@ -17,10 +24,17 @@
 #include "ms2/client/ms2/networkservice.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/commonfiles/usermail.h"
+#include "ms2/commonfiles/commonpricerecord.h"
+#include "ms2/client/ms2/uimarketbilldialog.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astextfield.h"
+#include "ms2/placeholder/astooltip.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/mstime.h"
+#include "ms2/ms2format.h"
 #include "ms2/placeholder/cmailtypes.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
@@ -130,6 +144,26 @@ void FUN_141275260(int nStrId, int nA, int nB);                     // system no
 float FUN_140bf4fd0(float f);                                       // ceil
 const char* FUN_140b63540(const Scaleform::GFx::Value& v);          // Value::GetString
 void FUN_1414728e0(const CStringA& strKey);                         // drop a registered item tooltip
+void FUN_1414727e0(const CStringA& strKey, MS2Ptr<CItem> spItem, int nCount, int nSlot);   // register an item tooltip
+CStringW FUN_1409404f0(__int64 n);                                  // an amount as text
+CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int n);       // a price as text
+int FUN_1403bae00(int nPriceType);                                  // price kind -> pay type
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
+CStringTable* FUN_1401a9d70();                                      // the string table singleton
+UIMarketBillDialog* FUN_140b09580(int nUiType);                     // the open dialog of a UI id
+// FUN_1403ed2d0 (the world) is declared by usermail.h as Unk_MailSession*.
+PCBase* FUN_141bd0cc0(Unk_MailSession* pWorld);                     // the local player
+void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);    // pRetVal = v
+__int64 FUN_140869440();                                            // the server time
+CStringW FormatStringId(int nId, const fmt::ArgList& args);         // 0x14028dee0
+FMT_VARIADIC_W(CStringW, FormatStringId, int)
+
+class PCBase;
+
+// The wedding manager (WeddingManager, placeholder/weddingmanager.h) as this unit calls it: ReadTicketMail with the
+// mail pointer type of CUserMail.
+class Unk_MlWedding { public: void FUN_141b873c0(Unk_MailPtr<CMailInfo> spMail, AScript* pOut); };
+Unk_MlWedding* FUN_1409eed90();                                     // TSingleton<WeddingManager>::GetInstance
 
 // The mail is an ad mail (kind 200).
 // @0x1419ead90
@@ -155,6 +189,117 @@ CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip);             // the "days
 bool FUN_1419ea470(const CUserMail::MailPtr& spMail)
 {
     return spMail.get() == 0;
+}
+
+// The meso of the mail (the plain sum while unclaimed plus the meso benefit).
+// @0x1419e9160
+__int64 FUN_1419e9160(CMailInfo* pMail)
+{
+    __int64 nTotal = 0;
+    if (pMail->FUN_140690db0() != 0 && pMail->FUN_140690dd0() == 0)
+        nTotal = nTotal + pMail->FUN_140690db0();
+    Unk_CommonPriceRecord rec;
+    if (pMail->FUN_140690fa0(0, 0, &rec) == true)
+        nTotal = nTotal + rec.GetAvailableAmount();
+    return nTotal;
+}
+
+// The merat of the mail (the four merat benefit kinds).
+// @0x1419e9200
+__int64 FUN_1419e9200(CMailInfo* pMail)
+{
+    __int64 nTotal = 0;
+    if (pMail->FUN_140690e40() != 0 && pMail->FUN_140690e60() == 0)
+        nTotal = nTotal + pMail->FUN_140690e40();
+    Unk_CommonPriceRecord rec;
+    if (pMail->FUN_140690fa0(2, 0, &rec) == true)
+        nTotal = nTotal + rec.GetAvailableAmount();
+    if (pMail->FUN_140690fa0(2, 1, &rec) == true)
+        nTotal = nTotal + rec.GetAvailableAmount();
+    if (pMail->FUN_140690fa0(2, 2, &rec) == true)
+        nTotal = nTotal + rec.GetAvailableAmount();
+    if (pMail->FUN_140690fa0(2, 3, &rec) == true)
+        nTotal = nTotal + rec.GetAvailableAmount();
+    return nTotal;
+}
+
+// The red merat of the mail.
+// @0x1419e9360
+__int64 FUN_1419e9360(CMailInfo* pMail)
+{
+    __int64 nTotal = 0;
+    if (pMail->FUN_140690ed0() != 0 && pMail->FUN_140690ef0() == 0)
+        nTotal = nTotal + pMail->FUN_140690ed0();
+    Unk_CommonPriceRecord rec;
+    if (pMail->FUN_140690fa0(8, 0, &rec) == true)
+        nTotal = nTotal + rec.GetAvailableAmount();
+    return nTotal;
+}
+
+// A benefit amount as price text.
+// @0x1419e9400
+CStringW FUN_1419e9400(int nPriceType, __int64 nAmount)
+{
+    return FUN_1418fec00(FUN_1403bae00(nPriceType), nAmount, 0);
+}
+
+// The other benefits (not meso / merat kinds 2 and 8) as "token1".."tokenN" members.
+// @0x1419e9460
+void FUN_1419e9460(CMailInfo* pMail, ASObj& info)
+{
+    Unk_MailBenefitList& list = pMail->FUN_1419ea9a0();
+    int nCount = list.FUN_14026a4b0();
+    if (0 < nCount)
+    {
+        ATL::CAtlArray<Unk_MailBenefit>& benefits = list.m_array;
+        int nToken = 1;
+        for (int i = 0; i < nCount; i++)
+        {
+            Unk_MailBenefit& benefit = benefits.GetAt(i);
+            if (benefit.m_nType != 2 && benefit.m_nType != 8 && benefit.m_nSub == 0)
+            {
+                __int64 nAmount = benefit.FUN_14026a1f0();
+                if (nAmount != 0)
+                {
+                    CStringW strPrice = FUN_1419e9400(benefit.m_nType, nAmount);
+                    CStringA strKey = StringFormat("token{0}", nToken);
+                    nToken++;
+                    info.FUN_1407cbb20(strKey, CStringW(strPrice));
+                }
+            }
+        }
+    }
+}
+
+// The "days left" text of a row (bTooltip: the long form).
+// @0x1419e95d0
+CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip)
+{
+    CMsTime now(FUN_140869440());
+    CMsTime expire(pMail->FUN_140691160());
+    if (now > expire)
+        return FUN_14028de60(0x80b);
+    ATL::CTimeSpan span = expire - now;
+    CStringW str;
+    if (span.GetDays() < 1)
+    {
+        if (bTooltip != 0)
+        {
+            __int64 nMinutes = span.GetTotalSeconds() / 60 % 60;
+            __int64 nHours = span.GetTotalSeconds() / 3600;
+            str = FormatStringId(0x80a, nHours, nMinutes);
+        }
+        else
+        {
+            str = FUN_14028de60(0x809);
+        }
+    }
+    else
+    {
+        int nStrId = bTooltip ? 0x808 : 0x807;
+        str = FormatStringId(nStrId, span.GetDays());
+    }
+    return str;
 }
 
 // ---- UIMailListDialog ----
@@ -244,6 +389,12 @@ void UIMailListDialog::vfunc_15()
     }
 }
 
+// An empty member (no caller and no vftable slot in the exe; the parameter is pointer-sized).
+// @0x1419e4ef0
+void UIMailListDialog::FUN_1419e4ef0(void* p)
+{
+}
+
 // @0x1419e4f10
 void UIMailListDialog::FUN_1419e4f10()
 {
@@ -301,6 +452,75 @@ void UIMailListDialog::FUN_1419e5900()
     }
 }
 
+// @0x1419e5a10
+void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
+{
+    FUN_1419e6b70();
+    ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDlg)
+    {
+        ASObj info(2);
+        {
+            CUserMail::MailPtr spMail = g_143ab2ee0.FUN_1408e3720(nMailId);
+            if (spMail.get() != 0)
+            {
+                CStringW strSender = spMail->FUN_140690410();
+                CStringW strTitle = spMail->FUN_1406905b0();
+                CStringW strContent = spMail->FUN_140690600();
+                int nKind = spMail->FUN_140690370();
+                if (99 < nKind && nKind < 0x71)
+                {
+                    FUN_1403b4750()->FUN_1416fb300(strSender);
+                    FUN_1403b4750()->FUN_1416fb300(strTitle);
+                    FUN_1403b4750()->FUN_1416fb300(strContent);
+                }
+                if (nKind == 0x70)
+                {
+                    ASObj wedding(2);
+                    FUN_1409eed90()->FUN_141b873c0(CUserMail::MailPtr(spMail), &wedding);
+                    info.FUN_1409eb270("wedding", wedding);
+                }
+                info.FUN_1407cbb20("sender", CStringW(strSender));
+                info.FUN_1407cbb20("title", CStringW(strTitle));
+                info.FUN_1407cbb20("content", CStringW(strContent));
+                info.FUN_1407cb9c0("attachment", spMail->FUN_140691220());
+                info.FUN_1407cba60("state", FUN_1419e7260(CUserMail::MailPtr(spMail)));
+                info.FUN_1407cb9c0("binding", FUN_1419e67a0(spMail.get()));
+                info.FUN_1407cbb20("date", spMail->FUN_1406922d0());
+                __int64 nMeso = FUN_1419e9160(spMail.get());
+                __int64 nMerat = FUN_1419e9200(spMail.get());
+                __int64 nMeratRed = FUN_1419e9360(spMail.get());
+                if (0 < nMeso)
+                    info.FUN_1407cbb20("meso", FUN_1409404f0(nMeso));
+                if (0 < nMerat)
+                    info.FUN_1407cbb20("merat", FUN_1409404f0(nMerat));
+                if (0 < nMeratRed)
+                    info.FUN_1407cbb20("meratRed", FUN_1409404f0(nMeratRed));
+                FUN_1419e9460(spMail.get(), info);
+                int nKind2 = spMail->FUN_140690370();
+                if (nKind2 == 3)
+                {
+                    info.FUN_1407cbbe0("disableReply", true);
+                }
+                else if (nKind2 == 200)
+                {
+                    info.FUN_1407cbb20("productName", spMail->FUN_1419eab80());
+                    __int64 nPrice = spMail->FUN_140692510();
+                    info.FUN_1407cba60("price", StringFormat("{0}", nPrice));
+                    __int64 nSalePrice = spMail->FUN_1406925a0();
+                    info.FUN_1407cba60("salePrice", StringFormat("{0}", nSalePrice));
+                    info.FUN_1407cb9c0("expired", spMail->FUN_140692630());
+                }
+                else if (0 < spMail->FUN_140690370() && spMail->FUN_140690370() < 4)
+                {
+                    info.FUN_1407cbbe0("visibleUserMailIcon", true);
+                }
+            }
+        }
+        m_30->Invoke("setMailInfo", info);
+    }
+}
+
 // @0x1419e61c0
 void UIMailListDialog::FUN_1419e61c0(__int64 nMailId)
 {
@@ -338,6 +558,48 @@ void UIMailListDialog::FUN_1419e6360(__int64 nMailId)
             FUN_1419ecbb0(pSend, pMail);
         CUIService::GetInstance()->FUN_141adc750((eUIClassID)0x4e4a);
     }
+}
+
+// @0x1419e67a0
+unsigned UIMailListDialog::FUN_1419e67a0(CMailInfo* pMail)
+{
+    if (pMail == 0)
+        return 0;
+    unsigned nCount = 0;
+    if (FUN_1419ead90(pMail) != 0)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            MS2Ptr<CMailAdItem> spAd = pMail->FUN_140692480(i);
+            if (spAd)
+            {
+                CItem* pItem = new CItem();
+                if (pItem->FUN_14052b130(spAd->m_n18, spAd->m_n20, 0) != 0)
+                {
+                    pItem->FUN_140526c70(spAd->m_n1c);
+                    CStringA strKey;
+                    strKey.Format("%s.%d", (const char*)vfunc_1(), nCount);
+                    FUN_1414727e0(strKey, MS2Ptr<CItem>(pItem), spAd->m_n24, i);
+                    nCount++;
+                }
+            }
+        }
+    }
+    else
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            Unk_MailAttachPtr spAttach = pMail->FUN_140690790(i);
+            if (spAttach.get() != 0 && spAttach->m_nTime == 0)
+            {
+                CStringA strKey;
+                strKey.Format("%s.%d", (const char*)vfunc_1(), nCount);
+                FUN_1414727e0(strKey, spAttach->m_item, spAttach->m_n20, i);
+                nCount++;
+            }
+        }
+    }
+    return nCount;
 }
 
 // @0x1419e6b70
@@ -457,6 +719,37 @@ int UIMailListDialog::FUN_1419e7fd0()
     if (spTab.get() == 0)
         return -1;
     return spTab->FUN_1422e3210();
+}
+
+// @0x1419e8b70
+bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam)
+{
+    if (m_30 == 0)
+        return false;
+    if (spParam == 0)
+        return false;
+    ASObj obj(data.FUN_1422b9260(), 2);
+    if (obj.FUN_1422ba9a0())
+        return false;
+    MS2Ptr<TMailAdBillDataParam> spMailParam(dynamic_cast<TMailAdBillDataParam*>(spParam.get()));
+    if (spMailParam == 0)
+        return true;
+    CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(spMailParam->m_nMailId).get();
+    if (pMail == 0)
+        return true;
+    MS2Ptr<ASBillData> spBill = spParam->FUN_140eaba00(data.FUN_1422b8b10());
+    if (spBill == 0)
+        return false;
+    MS2Ptr<ASMailAdBillData> spAdBill(dynamic_cast<ASMailAdBillData*>(spBill.get()));
+    if (spAdBill == 0)
+        return false;
+    MS2Ptr<CMailAdItem> spAd = pMail->FUN_140692480(spAdBill->vfunc_5());
+    if (spAd == 0)
+        return false;
+    ASTooltip tip(FUN_141bd0cc0(FUN_1403ed2d0()), 0x20, 2);
+    if (tip.FUN_1409e1770(spAd->m_n18, spAd->m_n20) != 0)
+        FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+    return true;
 }
 
 // @0x1419e90d0
@@ -709,7 +1002,7 @@ void UIMailListDialog::FUN_1419e6d20(ATL::CAtlList<CUserMail::MailPtr>& out)
     CUserMail::MailArray& mails = g_143ab2ee0.FUN_1408e3700();
     for (size_t i = 0; i < mails.GetCount(); i++)
     {
-        CUserMail::MailPtr spMail = mails[i];
+        CUserMail::MailPtr spMail = mails.GetAt(i);
         if (FUN_1419e6ec0(CUserMail::MailPtr(spMail)) != 0)
         {
             if (FUN_1419ead90(spMail.operator->()) == 0)
@@ -718,7 +1011,7 @@ void UIMailListDialog::FUN_1419e6d20(ATL::CAtlList<CUserMail::MailPtr>& out)
                 out.AddTail(spMail);
         }
     }
-    for (POSITION pos = byTime.GetHeadPosition(); pos != 0; byTime.GetNext(pos))
+    for (POSITION pos = byTime.GetTailPosition(); pos != 0; byTime.GetPrev(pos))
     {
         CUserMail::MailPtr spMail = byTime.GetValueAt(pos);
         out.AddTail(spMail);
@@ -912,6 +1205,49 @@ void UIMailListDialog::FUN_1419e5190()
         spNext->FUN_1422c1fe0(FUN_1419e6fe0(m_nPage + 1));
     if (MS2Ptr<Unk_MlCheckBox> spCheck = FUN_140e52670("m_checkAll"))
         spCheck->FUN_1422ce090(0);
+}
+
+// @0x1419e8080
+bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
+{
+    MS2Ptr<TMailAdBillDataParam> spParam = FUN_1419e8620("mailAd");
+    if (spParam == 0)
+        return false;
+    UIMarketBillDialog* pBillDialog = FUN_140b09580(0x4f17);
+    if (pBillDialog == 0)
+        return false;
+    CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(nMailId).get();
+    if (pMail == 0)
+        return false;
+    unsigned int nPrice = (unsigned int)pMail->FUN_1406925a0();
+    if (!FUN_140d86260()->vfunc_40(nPrice))
+    {
+        CUIService::GetInstance()->FUN_141add1f0();
+        return false;
+    }
+    ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
+    for (size_t i = 0; i < 5; i++)
+    {
+        MS2Ptr<CMailAdItem> spAd = pMail->FUN_140692480((int)i);
+        if (spAd == 0)
+            continue;
+        MS2Ptr<CItemData> spItemData = FUN_14053f870(spAd->m_n18);
+        if (spItemData == 0)
+            continue;
+        MS2Ptr<ASMailAdBillData> spBill(new ASMailAdBillData());
+        spBill->FUN_1409ab990(spItemData, spAd->m_n20);
+        spBill->FUN_1409aba80(FUN_1401a9d70()->FUN_141811980(1, spAd->m_n18));
+        spBill->FUN_1409abad0(FUN_1418fec00(3, spAd->m_n38, 0), spAd->m_n38);
+        spBill->FUN_1409abcd0(3);
+        spBill->FUN_1419eb8f0((int)i);
+        bills.Add(spBill);
+    }
+    spParam->m_nMailId = nMailId;
+    spParam->FUN_140eab9a0(nPrice);
+    MS2Ptr<TMarketBillDataParam> spBase(spParam);
+    pBillDialog->FUN_140ea7770(spBase);
+    CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4f17);
+    return true;
 }
 
 // @0x1419e8620

@@ -17,6 +17,7 @@ class CMailAttachItem;
 class CMailAdItem;
 class CInPacket;
 class CInputStream;
+class Unk_CommonPriceRecord;
 
 // Attachment-list pointer (member +0x20 of CMailSendKeep, element of CMailInfo's attachment array). The same
 // 16-byte intrusive pointer as MS2Ptr<T>; every member is out of line in mailattachitem.cpp except operator=(T*),
@@ -113,11 +114,14 @@ struct Unk_MailTimeRange {
 };
 MS2_CHECK_SIZE(Unk_MailTimeRange, 0x10);
 
-// One reward entry of the mail benefit list (0x18 bytes); the member functions live in another unit.
+// One reward entry of the mail benefit list (0x18 bytes); the member functions live in another unit. It is the price
+// record of commonfiles/commonpricerecord.h (Unk_CommonPriceRecord: ctor 0x14027d8d0, GetAvailableAmount 0x14026a1f0) and
+// the list is Unk_CommonPriceRecordList (GetCount 0x14026a4b0, Read 0x14026a3d0); the names here are kept for mailattachitem.cpp.
 struct Unk_MailBenefit {
     int m_nType; int m_nSub; char m_pad_08[0x10];
     bool FUN_14026a170() const;
     bool FUN_14026a220() const;
+    __int64 FUN_14026a1f0();                                   // the amount while unused (Unk_CommonPriceRecord::GetAvailableAmount)
 };
 MS2_CHECK_SIZE(Unk_MailBenefit, 0x18);
 
@@ -190,6 +194,11 @@ public:
     bool FUN_1406926e0(int kind) const;
     bool FUN_140692720(int kind) const;
     __int64 FUN_140692760() const;
+    bool FUN_140690fa0(int type, int sub, Unk_CommonPriceRecord* out) const;   // 0x140690fa0 (the benefit as a price record)
+    // @0x1419ea9a0
+    Unk_MailBenefitList& FUN_1419ea9a0() { return m_benefits; }   // inline COMDAT (uimaillistdialog.cpp)
+    // @0x1419eab80
+    CStringW FUN_1419eab80() const { return m_str120; }            // inline COMDAT (uimaillistdialog.cpp): the ad product name
     MS2_LAYOUT_FRIEND;
     __int64 m_nId; int m_nKind; int m_n24; __int64 m_n28;      // +0x18
     CStringW m_str30; __int64 m_n38;                           // +0x30

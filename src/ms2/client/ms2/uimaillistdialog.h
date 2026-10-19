@@ -42,7 +42,7 @@ class TMailAdBillDataParam : public TMarketBillDataParam
 {
 public:
     TMailAdBillDataParam() { m_nMailId = 0; m_b2c = false; }        // 0x1419ea230
-    virtual ~TMailAdBillDataParam() {}                              //  0 0x1419ea450 (??_G 0x1419ea710)
+    virtual ~TMailAdBillDataParam() = default;                      //  0 0x1419ea450 (??_G 0x1419ea710; no vptr store)
     __int64 m_nMailId;                                              // +0xe0
 };
 MS2_CHECK_SIZE(TMailAdBillDataParam, 0xe8);
@@ -66,6 +66,7 @@ public:
     MS2Ptr<TMailAdBillDataParam> FUN_1419e8620(const CStringA& strMovie);   // the ad bill dialog's argument block
     bool FUN_1419e88b0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay);   // buy
     bool FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);     // tooltip
+    void FUN_1419e4ef0(void* p);                                    // empty, unreferenced
     void FUN_1419e4f10();                                           // a mail was removed: clamp the page, refresh
     void FUN_1419e5000(__int64 nMailId);                            // "readMail"
     void FUN_1419e50b0(__int64 nMailId);                            // "receiveMail"
