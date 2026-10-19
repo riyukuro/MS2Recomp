@@ -3492,3 +3492,6 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??1AutomaticCreateCubeInfo@@UEAA@XZ	141125e20	func
 ??1SaleStateData@@UEAA@XZ	141125fc0	func
 ??1SalesInfo@@UEAA@XZ	141125fe0	func
+?DAT_143aaeb10@@3PEAVUnk_EmoNpcTable@@EA	143aaeb10	data
+?DAT_1439ed000@@3IA	1439ed000	data
+?Get@?$Value@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Constants@Common@@QEAAPEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	140298f80	func
