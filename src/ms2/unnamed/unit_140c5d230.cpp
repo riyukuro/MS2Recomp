@@ -78,6 +78,14 @@
 #include "ms2/placeholder/asslot.h"
 #include "ms2/client/ms2/iteminfoslot.h"
 
+// @0x140c628f0 TPtr<> copy: AddRef through the pointee's slot 1
+template <> inline TPtr<Unk_UISwfEntity_25>::TPtr(const TPtr& o)
+{
+    if (o.get() != 0)
+        (*reinterpret_cast<void (***)(void*)>(o.operator->()))[1](o.operator->());
+    m_p = o.get();
+}
+
 // ---- statics of the headers this unit includes (three translation units folded into one: the .di of each constructs them
 // in this order; the third and fourth sets also carry a CMyPCKeyInputController) ----
 
@@ -2660,3 +2668,29 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(int bSuccess)
 
 // @0x140c6b1e0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(3);
+
+// @0x140c62440
+MS2Ptr<LapenshardSystemTabContents> UILapenshardSystemDialog::FUN_140c62440()
+{
+    return m_spPage;
+}
+
+// @0x140c69ab0
+ItemInfoSlot* FUN_140c69ab0(NotifyContext::BindData* pEntry)
+{
+    void* pResult = 0;
+    if (pEntry == 0 || !pEntry->TypeCast(0x620002f, &pResult))
+        pResult = 0;
+    return static_cast<ItemInfoSlot*>(pResult);
+}
+
+void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>);
+
+// @0x140c60f40
+void FUN_140c60f40(CString& strBag, ItemArray& items, MS2Ptr<ItemSlotBag::CreateParam> param)
+{
+    FUN_14141f970(&strBag);
+    if (param.get() != 0 && param->m_pfnGetItem == 0)
+        param->m_pfnGetItem = reinterpret_cast<ItemSlotBag::CreateParam::GetItemFn>(FUN_141420330);
+    FUN_14141f860(strBag, static_cast<int>(items.GetCount()), &items, param);
+}

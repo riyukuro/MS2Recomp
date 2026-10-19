@@ -321,6 +321,7 @@ public:
     // UIItemEventListener slot 3 (this+0x180 thunk 0x140c61f60)
     virtual void vfunc_3(void* pItem, bool b);
 
+    MS2Ptr<LapenshardSystemTabContents> FUN_140c62440();           // the page shown (a copy)
     void FUN_140c623c0(int nEvent);                                 // notify the shown page
     void FUN_140c62490(int nSlot);                                  // select a slot, notify 10
     void FUN_140c624d0();                                           // notify 11
