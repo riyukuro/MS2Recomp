@@ -655,7 +655,7 @@ void CSceneStateMulti::FUN_14174ec40(int nGender, bool bFlag)
         info.m_nJobCode = m_nJobCode;
         info.m_n30 = FUN_140644bb0(FUN_1401d7a50(), m_nJobCode);
         info.m_b58 = bFlag;
-        if (info.FUN_14107c3a0(spPC.operator MyPC*()))
+        if (info.FUN_14107c3a0(reinterpret_cast<PC*>(spPC.operator MyPC*())))
             m_hPreviewPC = FUN_14123c500(spPC.operator->());
     }
 }
@@ -677,7 +677,7 @@ void CSceneStateMulti::FUN_14174ee00(BackUpCharacterInfo* pInfo)
         info.m_n30 = pInfo->m_n68;
         for (int i = 0; i < 2; i++)
             info.m_equip[i] = pInfo->m_equip[i];
-        if (info.FUN_14107b440(spPC.operator MyPC*()))
+        if (info.FUN_14107b440(reinterpret_cast<PC*>(spPC.operator MyPC*())))
         {
             m_hPreviewPC = FUN_14123c500(spPC.operator->());
             ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >& items = pInfo->m_items;

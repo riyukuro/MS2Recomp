@@ -7,6 +7,16 @@
 
 #include "mesomarketproduct.h"
 
+// The game's config singleton (FUN_1401d3200; Unk_RsConfig in regionskillobject.cpp). Only the "constants" block at
+// +0x6018 is touched here.
+class Unk_CMesoMarketConfig
+{
+public:
+    char m_pad[0x6018];
+};
+Unk_CMesoMarketConfig* FUN_1401d3200();             // the config singleton
+__int64* FUN_1402c05b0(void* pConstBlock);          // 0x1402c05b0: the <constants> record at block+0x50
+
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 

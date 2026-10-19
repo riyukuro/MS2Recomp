@@ -6360,9 +6360,9 @@ MS2_REPLACE_METHOD(0x141BD1980, WorldService, FUN_141bd1980, 59, 0x6AE08EE8);
 
 // MS2-FUNCTIONAL: codegen differs (call/temporary ordering of out-of-line COMDATs)
 // @0x141bd19d0
-void WorldService::FUN_141bd19d0(int id)
+int WorldService::FUN_141bd19d0(int id)
 {
-    FUN_141bd1a10(FUN_141bd1200(id));
+    return FUN_141bd1a10(FUN_141bd1200(id));
 }
 MS2_REPLACE_METHOD(0x141BD19D0, WorldService, FUN_141bd19d0, 52, 0x458BF2B1);
 
@@ -11522,6 +11522,7 @@ Unk_WsME_ShutdownB* FUN_1409670d0();
 void FUN_14162a310(Unk_WsME_ShutdownB* self);
 Unk_WsME_Worker* FUN_1411f91b0_ME();
 void FUN_140d319d0(Unk_WsME_Worker* self);                    // signals the worker thread to exit
+void FUN_141c2b820(std::set<void*>* pSet);
 // @0x141bcd5a0
 efd::AsyncResult WorldService::OnShutdown()
 {
@@ -11549,7 +11550,7 @@ efd::AsyncResult WorldService::OnShutdown()
         delete m_8d0;
         m_8d0 = 0;
     }
-    m_048.clear();
+    FUN_141c2b820(&m_048);               // std::set<void*>::clear (this copy; unit_141bb15d0 owns the table row of the other one)
     FUN_141bbc580(0, 0);
     if (FUN_1411f91b0_ME())
         FUN_140d319d0(FUN_1411f91b0_ME());

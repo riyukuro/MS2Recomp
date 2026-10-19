@@ -2177,7 +2177,7 @@ void UIItemEventDispatcher::vfunc_5(void* a0)
     for (size_t i = 0; i < m_listeners.GetCount(); i++) {
         UIItemEventListener* listener = m_listeners.GetAt(i);
         if (listener != 0 && listener->vfunc_il1() != 0)
-            listener->vfunc_6(a0);
+            listener->vfunc_il6(a0);
     }
 }
 
@@ -2187,7 +2187,7 @@ void UIItemEventDispatcher::vfunc_6(void* a0)
     for (size_t i = 0; i < m_listeners.GetCount(); i++) {
         UIItemEventListener* listener = m_listeners.GetAt(i);
         if (listener != 0 && listener->vfunc_il1() != 0)
-            listener->vfunc_7(a0);
+            listener->vfunc_il7(a0);
     }
 }
 
@@ -2197,7 +2197,7 @@ void UIItemEventDispatcher::vfunc_7(void* a0)
     for (size_t i = 0; i < m_listeners.GetCount(); i++) {
         UIItemEventListener* listener = m_listeners.GetAt(i);
         if (listener != 0 && listener->vfunc_il1() != 0)
-            listener->vfunc_8(a0);
+            listener->vfunc_il8(a0);
     }
 }
 

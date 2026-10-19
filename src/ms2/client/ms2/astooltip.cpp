@@ -303,10 +303,10 @@ void ASTooltip::FUN_1409c7fc0(CItem* pItem)
 MS2_REPLACE_METHOD(0x1409C7FC0, ASTooltip, FUN_1409c7fc0, 85, 0xF8318C61);
 
 // @0x1409e13a0
-void ASTooltip::FUN_1409e13a0(CItem* pCompare, CItem* pItem)
+int ASTooltip::FUN_1409e13a0(CItem* pCompare, CItem* pItem)
 {
     unsigned nFlags = FUN_1409c6560();
-    FUN_1409e13f0(pCompare, pItem, nFlags, nFlags);
+    return FUN_1409e13f0(pCompare, pItem, nFlags, nFlags);
 }
 MS2_REPLACE_METHOD(0x1409E13A0, ASTooltip, FUN_1409e13a0, 71, 0x2CE140FC);
 
