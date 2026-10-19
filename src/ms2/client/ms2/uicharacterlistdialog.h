@@ -142,6 +142,8 @@ public:
     static void ShowDeleteError(int nError);                // 0x1418f47e0
     static unsigned FindFreePreviewSlot();                  // 0x1418f4da0
     bool FUN_1418f00b0(int nResult, const CMsgBoxData& box);   // 0x1418f00b0 event reward box result
+    CharPtr FUN_1418f0730(int nIndex);                      // 0x1418f0730 the character at the index
+    static bool OrderCharacters(CharPtr spA, CharPtr spB);   // 0x1418f4ca0 sort predicate
     void FUN_1418ed4e0(unsigned __int64 nId, CString str);  // 0x1418ed4e0 hand the text of a character to the ugc manager
     void FUN_1418ed5a0(unsigned __int64 nId, CString str);  // 0x1418ed5a0 set the text of a character
     bool FUN_1418ed650();                                   // 0x1418ed650 the burning level-up event is running

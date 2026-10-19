@@ -23,8 +23,8 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/client/ms2/uimessagebox.h"
-#include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/mypc.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -67,7 +67,7 @@ public:
 };
 class Unk_ClPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
 Unk_ClPackets* FUN_140bccd50();
-class Unk_ClIdSet { public: void FUN_1403f19e0(); void FUN_140212bf0(unsigned __int64 nId); };
+class Unk_ClIdSet { public: void FUN_1403f19e0(); void FUN_140212bf0(unsigned __int64 nId); bool FUN_141315e50(); unsigned FUN_1403ed0f0(); bool FUN_1418f5a10(unsigned __int64 nId, unsigned* pnIndex); };
 class Unk_ClUserInfo
 {
 public:
@@ -79,8 +79,12 @@ public:
     void FUN_141260cb0();
     void FUN_141260e70();
 };
-class Unk_ClUserMgr { public: Unk_ClUserInfo* FUN_140cfd260(); };
+class Unk_ClUserMgr { public: Unk_ClUserInfo* FUN_140cfd260(); void FUN_141242990(); };
 Unk_ClUserMgr* FUN_1409a8b10();
+unsigned char* FUN_140a58500(Unk_ClUserMgr* p);
+unsigned char* FUN_140c58ac0(Unk_ClUserMgr* p);
+void FUN_14125f670(unsigned char* p, unsigned char n, bool b);
+void FUN_14125bd20(unsigned char* p, unsigned char n);
 extern bool DAT_143ab2946;
 extern unsigned short DAT_143ab2944;                    // the highest character level
 extern bool DAT_143ab2942;
@@ -160,9 +164,34 @@ void FUN_14151f200();
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* szDelim, int nExpected);   // split
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);         // equal
 __int64 FUN_140718370(const CStringW& str);                         // parse an id
-class Unk_ClWorld { public: void* FUN_141bd0cc0(); };
+struct Unk_ClId { __int64 m_a; __int64 m_b; };
+class Unk_ClWorld { public: void* FUN_141bd0cc0(); void FUN_141bbbc60(const Unk_ClId* pId, int n); };
 Unk_ClWorld* FUN_1403ed2d0();
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
+class Unk_ClEvtMgr { public: bool FUN_14047bb90(); };
+Unk_ClEvtMgr* FUN_1401c0d90();
+class Unk_GmEvtKey { public: bool FUN_140482280(int nKey, unsigned* pnValue); };
+class Unk_ClApp { public: HWND FUN_14209c720(); };
+Unk_ClApp* FUN_140aadf80();
+class Unk_ClMsgState { public: int FUN_1422b9da0(); };
+Unk_ClMsgState* FUN_1408e57f0();
+void FUN_1401cd100(Unk_ClId* pId, __int64 nId);
+void* FUN_140876480(void* pkOut, int nCategory);        // returns the mem category
+void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
+bool FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, MyPC* pPC);   // build the preview PC
+__int64 FUN_141656a80(MyPC* pPC);
+__int64 FUN_14123c500(MyPC* pPC);
+void FUN_141b70290();
+void* FUN_140c43790(int nId);
+void FUN_14135ec00(void* pBrowser, const CString& strUrl, bool b);
+void* FUN_140714f90();
+void FUN_1415388a0(void* p);
+bool FUN_1407cce10(const Scaleform::GFx::Value* pValue);
+MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& value);
+struct Unk_ClTime { __int64 m_a; __int64 m_b; };
+Unk_ClTime FUN_1406c47a0(__int64 nTime);
+CStringW FUN_14083bdc0(const Unk_ClTime& time, int n, CStringW strSep1, CStringW strSep2);
+CStringW FUN_1405c2690(CStringW strKey, CStringW strArg);
 extern int DAT_143ab285c;
 extern int DAT_143ab2860;
 
@@ -700,5 +729,478 @@ void UICharacterListDialog::vfunc_ugc_1(void* p, CString str)
             spCharacter->FUN_1418e9de0(str);
             m_30->FUN_140e6b140("updateProfile", nIndex, FUN_141028a90(str, 1));
         }
+    }
+}
+
+// @0x1418ed4e0
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::FUN_1418ed4e0(unsigned __int64 nId, CString str)
+{
+    if (FindCharacter(nId).get() != 0)
+        FUN_14052d220()->FUN_141883380(CString(str));
+}
+
+// @0x1418ed5a0
+void UICharacterListDialog::FUN_1418ed5a0(unsigned __int64 nId, CString str)
+{
+    CharPtr spCharacter = FindCharacter(nId);
+    if (spCharacter.get() != 0)
+        spCharacter->FUN_1418e9de0(CString(str));
+}
+
+// @0x1418ed650
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+bool UICharacterListDialog::FUN_1418ed650()
+{
+    if (!FUN_1401c0d90()->FUN_14047bb90())
+        return false;
+    unsigned nValue = 0;
+    if (!DAT_143ab2fc0.FUN_140482280(900, &nValue))
+        return true;
+    return false;
+}
+
+// @0x1418ed880
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
+{
+    unsigned char nMode = packet.vfunc_o8_1();
+    if (nMode == 3)
+    {
+        DAT_143ab2a30.FUN_1403416e0();
+        m_1a8.clear();
+        FUN_1418ee370();
+    }
+    else if (nMode == 4)
+    {
+        m_220 = packet.vfunc_o8_0();
+        if (vfunc_55() == 0 && FUN_1422dc430() == 1)
+            RefreshLobby();
+        else if (FUN_1408e57f0()->FUN_1422b9da0() == 0x620000c)
+            PostMessageA(FUN_140aadf80()->FUN_14209c720(), 0x4c8, 0, 0);
+    }
+    else if (nMode == 0)
+    {
+        int nCount = packet.vfunc_o8_1();
+        ReadCharacters(nCount, packet);
+        if (FUN_1408e57f0()->FUN_1422b9da0() == 0x620000d)
+            PostMessageA(FUN_140aadf80()->FUN_14209c720(), 0x4c8, 0, 0);
+        RefreshSelection();
+    }
+    else if (nMode == 1)
+    {
+        ReadCharacters(1, packet);
+        if (!m_1a8.empty())
+        {
+            int nLast = (int)m_1a8.size() - 1;
+            CharPtr spCharacter = m_1a8[nLast];
+            if (spCharacter.get() != 0)
+            {
+                SelectCharacter(spCharacter->FUN_1418e9cb0());
+                m_1e0 = 1;
+                FUN_1418ef980(spCharacter->FUN_1418e9cb0());
+            }
+            if (vfunc_55() == 0)
+                OpenSelectedCharacter();
+            else
+                FUN_14052d220()->FUN_141880600(CharPtr(spCharacter));
+        }
+        RefreshSelection();
+    }
+    else if (nMode == 2)
+    {
+        int nError = packet.vfunc_o8_3();
+        unsigned __int64 nId = packet.vfunc_o8_4();
+        int nIndex = -1;
+        if (nError == 0)
+            nIndex = EraseCharacter(nId);
+        if (vfunc_55() == 0)
+        {
+            if (nIndex < 0)
+            {
+                CharPtr spCharacter = FindCharacter(nId, (unsigned*)&nIndex);
+                if (spCharacter.get() != 0)
+                    spCharacter->FUN_1418e9ed0(0);
+                ShowDeleteError(nError);
+                SetDeleteState(nIndex, nId);
+            }
+            else
+                CharacterRemoved(nId, nIndex);
+        }
+        m_1d8 = 0;
+        RefreshSelection();
+    }
+    else if (nMode == 5)
+    {
+        if (vfunc_55() == 0)
+        {
+            unsigned __int64 nId = packet.vfunc_o8_4();
+            int nError = packet.vfunc_o8_3();
+            __int64 nDeleteTime = packet.vfunc_o8_4();
+            if (nError == 0)
+            {
+                unsigned nIndex = 0xffffffff;
+                CharPtr spCharacter = FindCharacter(nId, &nIndex);
+                if (spCharacter.get() != 0)
+                {
+                    int nSeconds = spCharacter->FUN_1418e9fa0(nDeleteTime);
+                    if (nDeleteTime > 0 && m_30.get() != 0)
+                    {
+                        Scaleform::GFx::Value value = m_30->FUN_1409ba0d0("requestDelete", nIndex, nSeconds);
+                        if (FUN_1407cce10(&value))
+                        {
+                            MS2Ptr<ASMovieClip> spMovie = FUN_1409b40c0(m_28, value);
+                            if (spMovie.get() != 0)
+                                AddPending(CharPtr(spCharacter), MS2Ptr<ASMovieClip>(spMovie));
+                        }
+                    }
+                }
+            }
+            else if (nError == 10)
+            {
+                CStringW strText = L"";
+                strText = FUN_1405c2690(L"s_char_err_next_delete_char_date", FUN_14083bdc0(FUN_1406c47a0(nDeleteTime), 1, L"/", L":"));
+                FUN_140d73aa0(CStringW(strText), 0, 0, L"");
+            }
+            else
+                ShowDeleteError(nError);
+        }
+        m_1d8 = 0;
+    }
+    else if (nMode == 6 && vfunc_55() == 0)
+    {
+        unsigned __int64 nId = packet.vfunc_o8_4();
+        int nError = packet.vfunc_o8_3();
+        if (nError == 0)
+        {
+            unsigned nIndex = 0xffffffff;
+            CharPtr spCharacter = FindCharacter(nId, &nIndex);
+            if (spCharacter.get() != 0)
+            {
+                spCharacter->FUN_1418e9fa0(0);
+                SetDeleteState(nIndex, nId);
+            }
+        }
+        else
+            ShowDeleteError(nError);
+    }
+}
+
+// @0x1418ee370
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::FUN_1418ee370()
+{
+    if (m_1c0 != 0)
+    {
+        Unk_ClId kId;
+        FUN_1401cd100(&kId, m_1c0);
+        FUN_1403ed2d0()->FUN_141bbbc60(&kId, 0);
+    }
+    m_1c0 = 0;
+    m_1c8 = 0;
+    m_1d0 = 0;
+}
+
+// @0x1418ee400
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::FUN_1418ee400(int nIndex)
+{
+    FUN_1418ee470(FUN_1418f0730(nIndex));
+}
+
+// @0x1418ee470
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::FUN_1418ee470(CharPtr spCharacter)
+{
+    m_180 = 0;
+    CharPtr spPreview(spCharacter);
+    if (spPreview.get() == 0)
+    {
+        FUN_1418ee370();
+        FUN_1418f1d00();
+    }
+    else
+    {
+        unsigned nSlot = FindFreePreviewSlot();
+        FUN_1418ee5c0(spPreview->FUN_1418e9d70(), nSlot);
+        FUN_1403ed2b0()->FUN_141adc530(0x4ef2);
+        DAT_143ab2828 = spPreview->FUN_1418e9cb0();
+        FUN_141b70290();
+        FUN_1409a8b10()->FUN_141242990();
+        FUN_14125f670(FUN_140a58500(FUN_1409a8b10()), *FUN_140a58500(FUN_1409a8b10()), false);
+        FUN_14125bd20(FUN_140c58ac0(FUN_1409a8b10()), *FUN_140c58ac0(FUN_1409a8b10()));
+    }
+}
+
+// @0x1418ee5c0
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::FUN_1418ee5c0(const Unk_UserProxy* pState, unsigned nSlot)
+{
+    FUN_1418ee370();
+    if (pState->m_8 != 0)
+    {
+        int tmp[4];
+        MyPC* pPC = 0;
+        void* pMem = FUN_14208a860(0x1808, *(unsigned*)FUN_140876480(tmp, 0));
+        if (pMem != 0)
+            pPC = new (pMem) MyPC;
+        if (pPC != 0)
+        {
+            m_1d0 = 1;
+            if (FUN_14107b7e0(nSlot, pState, pPC) != 0)
+            {
+                m_1e4 = 1;
+                __int64 nId = FUN_141656a80(pPC);
+                m_1c0 = FUN_14123c500(pPC);
+                SelectCharacter(nId);
+                m_1c8 = nId;
+                FUN_1418f1d00();
+            }
+        }
+    }
+}
+
+// @0x1418ee700
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::HidePopups()
+{
+    FUN_1403ed2b0()->FUN_141adc5d0(0x4ef2);
+    FUN_1403ed2b0()->FUN_141adc5d0(0x4ef3);
+    FUN_1403ed2b0()->FUN_141adc5d0(0x4e6a);
+    m_30->Invoke("popdown");
+    MS2Ptr<AScript> spScript(m_30);
+    FUN_1412761e0(&spScript, 0);
+}
+
+// @0x1418ee7b0
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::ReadCharacters(int nCount, CInPacket& packet)
+{
+    if (0 < nCount)
+    {
+        for (int i = 0; i < nCount; ++i)
+        {
+            CharPtr spCharacter(new CCharacterInfo);
+            spCharacter->Read(packet);
+            spCharacter->FUN_1418ea040(CCharacterInfo::FUN_1418ea080());
+            m_1a8.push_back(spCharacter);
+            unsigned __int64 nId = spCharacter->FUN_1418e9cb0();
+            DAT_143ab2a30.FUN_1416da690(&nId);
+        }
+    }
+}
+
+// @0x1418ee8f0
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+int UICharacterListDialog::EraseCharacter(unsigned __int64 nId)
+{
+    DAT_143ab2a30.FUN_1404bfb40(&nId);
+    if (!m_1a8.empty())
+    {
+        int nIndex = 0;
+        for (std::vector<CharPtr>::iterator it = m_1a8.begin(); it != m_1a8.end(); ++it)
+        {
+            CharPtr spCharacter(*it);
+            if (spCharacter.get() != 0 && spCharacter->FUN_1418e9cb0() == nId)
+            {
+                m_1a8.erase(it);
+                return nIndex;
+            }
+            ++nIndex;
+        }
+    }
+    return -1;
+}
+
+// @0x1418eea70
+UICharacterListDialog::CharPtr UICharacterListDialog::FindCharacter(unsigned __int64 nId)
+{
+    unsigned nIndex = 0xffffffff;
+    return FindCharacter(nId, &nIndex);
+}
+
+// @0x1418eead0
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+UICharacterListDialog::CharPtr UICharacterListDialog::FindCharacter(unsigned __int64 nId, unsigned* pnIndex)
+{
+    if (!m_1a8.empty())
+    {
+        for (unsigned i = 0; i < m_1a8.size(); ++i)
+        {
+            if (m_1a8[i]->FUN_1418e9cb0() == nId)
+            {
+                *pnIndex = i;
+                return CharPtr(m_1a8[i]);
+            }
+        }
+        return CharPtr(0);
+    }
+    return CharPtr(0);
+}
+
+// @0x1418eec00
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+int UICharacterListDialog::RemovePending(unsigned __int64 nId)
+{
+    if (nId != 0)
+    {
+        POSITION pos = m_1f0.GetHeadPosition();
+        while (pos != 0)
+        {
+            DeletePtr spInfo = m_1f0.GetAt(pos);
+            if (spInfo.get() != 0 && spInfo.get() != 0)
+            {
+                if (spInfo->m_spCharacter.get() != 0 && spInfo->m_spCharacter->FUN_1418e9cb0() == nId)
+                {
+                    m_1f0.RemoveAt(pos);
+                    return 1;
+                }
+            }
+            m_1f0.GetNext(pos);
+        }
+    }
+    return 0;
+}
+
+// @0x1418eed70
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+int UICharacterListDialog::AddPending(CharPtr spCharacter, MS2Ptr<ASMovieClip> spMovie)
+{
+    if (spCharacter.get() != 0 && spMovie.get() != 0)
+    {
+        DeletePtr spFound = FindPending(spCharacter->FUN_1418e9cb0());
+        if (spFound.get() != 0)
+        {
+            spFound->m_spCharacter = spCharacter;
+            spFound->m_spMovie = spMovie;
+            return 1;
+        }
+        DeletePtr spNew(new CDeleteCharacterInfo(spCharacter, spMovie));
+        if (spNew.get() != 0)
+        {
+            m_1f0.AddTail(spNew);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// @0x1418ef000
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+UICharacterListDialog::DeletePtr UICharacterListDialog::FindPending(unsigned __int64 nId)
+{
+    if (nId != 0)
+    {
+        POSITION pos = m_1f0.GetHeadPosition();
+        while (pos != 0)
+        {
+            DeletePtr spInfo = m_1f0.GetAt(pos);
+            if (spInfo.get() != 0 && spInfo.get() != 0)
+            {
+                if (spInfo->m_spCharacter.get() != 0 && spInfo->m_spCharacter->FUN_1418e9cb0() == nId)
+                    return DeletePtr(spInfo);
+            }
+            m_1f0.GetNext(pos);
+        }
+    }
+    return DeletePtr(0);
+}
+
+// @0x1418ef190
+void UICharacterListDialog::SetDeleteState(int nIndex, unsigned __int64 nId)
+{
+    RemovePending(nId);
+    if (m_30.get() != 0)
+        m_30->Invoke("cancelDelete", nIndex);
+}
+
+// @0x1418ef210
+void UICharacterListDialog::FUN_1418ef210(int nIndex, unsigned __int64 nId)
+{
+    RemovePending(nId);
+    if (m_30.get() != 0)
+        m_30->Invoke("cancelDelete", nIndex);
+}
+
+// @0x1418ef290
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::SortCharacters()
+{
+    Unk_ClIdSet* pIds = &FUN_1409a8b10()->FUN_140cfd260()->m_ids;
+    if (!pIds->FUN_141315e50() && !m_1a8.empty())
+    {
+        CCharacterInfo::FUN_1418ea0a0();
+        ATL::CAtlArray<CharPtr> arrOrder;
+        arrOrder.SetCount(pIds->FUN_1403ed0f0(), -1);
+        for (size_t i = 0; i < m_1a8.size(); ++i)
+        {
+            CharPtr spCharacter(m_1a8[i]);
+            if (!(spCharacter == 0))
+            {
+                unsigned nIndex = 0;
+                if (!pIds->FUN_1418f5a10(spCharacter->FUN_1418e9cb0(), &nIndex))
+                    arrOrder.Add(spCharacter);
+                else
+                    arrOrder.SetAt(nIndex, spCharacter);
+            }
+        }
+        for (size_t j = 0; j < arrOrder.GetCount(); ++j)
+        {
+            CharPtr spCharacter(arrOrder[j]);
+            if (!(spCharacter == 0))
+                spCharacter->FUN_1418ea040(CCharacterInfo::FUN_1418ea080());
+        }
+        std::sort(m_1a8.begin(), m_1a8.end(), OrderCharacters);
+    }
+}
+
+// @0x1418ef520
+void UICharacterListDialog::SelectCharacter(unsigned __int64 nId)
+{
+    m_1a0 = nId;
+    m_198.Empty();
+}
+
+// @0x1418ef560
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::RefreshSelection()
+{
+    DAT_143ab2944 = 1;
+    for (size_t i = 0; i < m_1a8.size(); ++i)
+    {
+        CharPtr spCharacter(m_1a8[i]);
+        if (DAT_143ab2944 < spCharacter->FUN_1418e9d70()->m_34)
+            DAT_143ab2944 = spCharacter->FUN_1418e9d70()->m_34;
+    }
+}
+
+// @0x1418ef630
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::FUN_1418ef630()
+{
+    if (!DAT_143ab2942)
+        FUN_140d86260()->vfunc_22(0x3f2, "GameEnd");
+    FUN_1415388a0(FUN_140714f90());
+    PostQuitMessage(0);
+}
+
+// @0x1418ef690
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::FUN_1418ef690(CString strUrl)
+{
+    void* pBrowser = FUN_140c43790(0x4e6a);
+    if (pBrowser != 0)
+        FUN_14135ec00(pBrowser, strUrl, false);
+}
+
+// @0x1418ef890
+// MS2-FUNCTIONAL: not byte-identical (temps / frame layout)
+void UICharacterListDialog::FUN_1418ef890(unsigned __int64 nId)
+{
+    if (!m_30.IsNull() == false && nId != 0)
+    {
+        unsigned nIndex = 0;
+        if (!(FindCharacter(nId, &nIndex) == 0))
+            m_30->Invoke("attachBurningLevelupIcon", (int)nIndex);
     }
 }
