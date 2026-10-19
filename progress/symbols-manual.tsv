@@ -3341,3 +3341,4 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?vfunc_49@PC@@UEAAXXZ	141660e00	func
 ?DAT_143d69198@@3VUnk_FdMaterialTable@@A	143d69198	data
 ?DAT_143b059e8@@3UUnk_FdFramework@@A	143b059e8	data
+?IndexRegionSpawn@CNpcDataTable@@QEAAXV?$Unk_BmPtr@VCNpcRegionSpawnData@@@@@Z	1406ce280	func
