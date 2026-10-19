@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 # Pins the project Wine prefix: ninja runs compilers long after cmake configured, without its ENV{WINEPREFIX}.
 R=$(cd "$(dirname "$0")/../.." && pwd)
 export WINEPREFIX="${MS2_WINEPREFIX:-${MS2_MSVC_WINEPREFIX:-$R/work/wineprefix-msvc}}" WINEDEBUG="${WINEDEBUG:--all}"
-# ninja lowercases the directory part of /showIncludes paths that contain a backslash (cl prints "-I dir\file.h" for headers found
-# through an include dir), so recorded deps never matched the real files and every object rebuilt on every run: use '/'.
-export WINE_MSVC_STDOUT_SED='/^Note: including file:/ s#\\#/#g;'"$WINE_MSVC_STDOUT_SED"
+# Wine's cl prints some /showIncludes paths lowercased; ninja then records deps that do not exist -> every object rebuilt every run.
+# tools/msvc/fixincludes.py restores the on-disk case. (The filter keeps ninja's stdout open until it is done.)
+exec > >(python3 -I "$R/tools/msvc/fixincludes.py")
 exec "${MS2_THIRD_PARTY:-$R/third_party}/msvc/bin/x64/cl" "$@"
