@@ -3528,3 +3528,12 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?LoadItemNameIds@CItemDataTable@@QEAAXAEAV?$vector@IV?$allocator@I@std@@@std@@@Z	1405594b0	func
 ??0ASFunction@@QEAA@AEBV?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@PEAVCItem@@H@Z	1422c8430	func
 ?DAT_143ab2a90@@3VUnk_IcInventory@@A	143ab2a90	data
+?_Has_unused_capacity@?$vector@PEAVCube@@V?$allocator@PEAVCube@@@std@@@std@@AEBA_NXZ	141145ad0	func
+?_Has_unused_capacity@?$vector@VNiTransform@@V?$CustomAllocator@VNiTransform@@@efd@@@std@@AEBA_NXZ	141145c60	func
+??$_Emplace_back_with_unused_capacity@VNiTransform@@@?$vector@VNiTransform@@V?$CustomAllocator@VNiTransform@@@efd@@@std@@AEAAX$$QEAVNiTransform@@@Z	1410e3ba0	func
+??$_Emplace_reallocate@VNiTransform@@@?$vector@VNiTransform@@V?$CustomAllocator@VNiTransform@@@efd@@@std@@QEAAPEAVNiTransform@@QEAV2@$$QEAV2@@Z	1410e4c40	func
+??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBK@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@KV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBKV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBK@1@$$QEAV?$tuple@$$V@1@@Z	1410de8f0	func
+??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z	1410df040	func
+??$?0AEBVEntityID@egf@@$0A@@?$tuple@AEBVEntityID@egf@@@std@@QEAA@AEBVEntityID@egf@@@Z	1410d9940	func
+??$?0AEBW4Unk_CMISKindA@@$0A@@?$tuple@AEBW4Unk_CMISKindA@@@std@@QEAA@AEBW4Unk_CMISKindA@@@Z	1410d9a10	func
+??0Unk_GiKeyList@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422cf590	func

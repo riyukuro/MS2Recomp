@@ -81655,7 +81655,7 @@ atan2f	140a4e660	func
 ?FUN_140c47b00@Unk_PetBoxItems@@QEAAX_K@Z	140c47b00	func
 ?resize@?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@QEAAX_K@Z	140c47b00	func
 ?size@?$_Tree@V?$_Tset_traits@UItemEntity@@UUnk_GachaLess@@V?$allocator@UItemEntity@@@std@@$0A@@std@@@std@@QEBA_KXZ	140c47b40	func
-??$StringFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_K@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@AEB_K@Z	140c4b950	func
+??$Unk_SocketFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_K@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@AEB_K@Z	140c4b950	func
 ??0?$MS2Ptr@VUnk_SocketPageBag@@@@QEAA@XZ	140c4dae0	func
 ??0?$MS2Ptr@VCGemStoneItem@@@@QEAA@AEBV0@@Z	140c4db00	func
 ??0CGemStoneItem@@QEAA@XZ	140c4dd90	func
