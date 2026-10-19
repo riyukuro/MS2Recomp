@@ -116,7 +116,7 @@ template <class S> void Unk_WsTouchSet(S& s, typename S::key_type k)
     for (typename S::iterator i = s.end(); i != s.begin(); --i)
         ;
 }
-void Unk_WsAnchor()
+void Unk_WsAnchorGlue()
 {
     std::map<unsigned __int64, Unk_WsV1d8> a0; Unk_WsTouchTree(a0, 0);
     std::map<int, Unk_WsV1f8> a1; Unk_WsTouchTree(a1, 0);

@@ -177,6 +177,7 @@ struct Unk_WsV980 { void* p; };                                  // intrusive po
 struct Unk_WsV990 { void* p; };                                  // intrusive pointer to a ticking task (OnTick, G)
 struct Unk_WsV9a0 { void* p0; void* p1; };                      // p1 = an actor-like object (OnTick, G)
 class Unk_WsK_Rank : public CPtred {};                          // rank record shown by the interact display image (refcounted)
+template <> void MS2Ptr<Unk_WsK_Rank>::ReleaseImpl(void*);   // explicit specialization lives in unit_141bb15d0
 // queued (name, text) / (name, rank) entries: the exe's vector elements are plain std::pair instantiations
 struct Unk_WsVa00 : std::pair<CStringA, CStringW> {};
 struct Unk_WsVa18 : std::pair<CStringA, MS2Ptr<Unk_WsK_Rank> > {};
