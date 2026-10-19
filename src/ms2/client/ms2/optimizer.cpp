@@ -42,7 +42,7 @@ class Unk_OptWorld;
 Unk_OptWorld* FUN_1403ed2d0();                                      // the world service
 int FUN_141bca2e0(Unk_OptWorld* pWorld);                            // the world is ready
 PCBase* FUN_141bd0cc0(Unk_OptWorld* pWorld);                        // the local player
-PCBase* FUN_141bd1530(Unk_OptWorld* pWorld, __int64 nUid);
+PCBase* FUN_141bd1530(Unk_OptWorld* pWorld, unsigned __int64 nUid);
 PCBase* FUN_141bd1180(Unk_OptWorld* pWorld, unsigned nId);
 class Unk_OptObjMap;                                                // the world's actor table
 Unk_OptObjMap* FUN_141bd36b0(Unk_OptWorld* pWorld);
@@ -84,7 +84,7 @@ int FUN_1422e9e50(void* pAllocator);
 CString FUN_14016a600(const wchar_t* pszText, int nCodePage);
 CString FUN_1412755b0();
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);
-int FUN_140870fc0(TiXmlDocument* pDoc, const char* pszFile, int nEncoding);
+bool FUN_140870fc0(TiXmlDocument* pDoc, const char* pszFile, int nEncoding);
 void* FUN_14081b310(TiXmlDocument* pDoc);                           // RootElement
 void* FUN_140165cf0(void* pParent, const char* pszName);            // FirstChildElement
 int FUN_1408731e0(void* pElement, const char* pszAttr, int& nValue);
@@ -157,16 +157,13 @@ void COptimizer::FUN_14161bb60()
         if (!FUN_14070ee20(FUN_1411b1db0()))
         {
             unsigned __int64 nUsage = FUN_14161bdc0();
-            if (nUsage < 0x59a)
-            {
-                if (nUsage < 0x564)
-                {
-                    FUN_141554d20(FUN_140a0afd0());
-                }
-            }
-            else
+            if (0x599 < nUsage)
             {
                 FUN_141554ce0(FUN_140a0afd0(), 120.0);
+            }
+            else if (nUsage < 0x564)
+            {
+                FUN_141554d20(FUN_140a0afd0());
             }
         }
     }
@@ -316,49 +313,54 @@ void COptimizer::FUN_14161c490()
     if (DAT_143ae2bf8 == 0)
     {
         TiXmlDocument doc;
-        int bLoaded = FUN_140870fc0(&doc, FUN_140cc2a00(FUN_1412755b0(), CString("Optimization.xml")), 0);
-        if (bLoaded == 0)
+        bool bLoaded;
         {
-            DAT_143ae2b30 = FUN_140c77560(FUN_1409a8b10())->m_bOptimize;
-            DAT_143ae2b50 = 0;
-            DAT_143ae2b54 = 0;
-            DAT_143ae2b58 = 0;
-            DAT_143ae2b34 = DAT_143ae2b30;
-            DAT_143ae2b38 = DAT_143ae2b30;
-            DAT_143ae2b3c = DAT_143ae2b30;
-            DAT_143ae2b40 = DAT_143ae2b30;
-            DAT_143ae2b44 = DAT_143ae2b30;
-            DAT_143ae2b48 = DAT_143ae2b30;
-            DAT_143ae2b4c = DAT_143ae2b30;
+            CString strFile("Optimization.xml");
+            bLoaded = FUN_140870fc0(&doc, FUN_140cc2a00(FUN_1412755b0(), strFile), 0);
         }
-        else
+        if (bLoaded)
         {
             void* pRoot = FUN_14081b310(&doc);
             if (pRoot != 0)
             {
-                void* pNode = FUN_140165cf0(pRoot, "multiSceneUpdate");
-                if (pNode != 0) FUN_1408731e0(pNode, "value", DAT_143ae2b30);
-                pNode = FUN_140165cf0(pRoot, "removeExtraData");
-                if (pNode != 0) FUN_1408731e0(pNode, "value", DAT_143ae2b34);
-                pNode = FUN_140165cf0(pRoot, "exceptItemRender");
-                if (pNode != 0) FUN_1408731e0(pNode, "value", DAT_143ae2b38);
-                pNode = FUN_140165cf0(pRoot, "IndoorInstancing");
-                if (pNode != 0) FUN_1408731e0(pNode, "value", DAT_143ae2b3c);
-                pNode = FUN_140165cf0(pRoot, "ProgressiveLoading");
-                if (pNode != 0) FUN_1408731e0(pNode, "value", DAT_143ae2b40);
-                pNode = FUN_140165cf0(pRoot, "RemoveShadowEntity");
-                if (pNode != 0) FUN_1408731e0(pNode, "value", DAT_143ae2b44);
-                pNode = FUN_140165cf0(pRoot, "MS2KFM");
-                if (pNode != 0) FUN_1408731e0(pNode, "value", DAT_143ae2b48);
-                pNode = FUN_140165cf0(pRoot, "Piece");
-                if (pNode != 0) FUN_1408731e0(pNode, "value", DAT_143ae2b4c);
-                pNode = FUN_140165cf0(pRoot, "MeshMergeSkin");
-                if (pNode != 0) FUN_1408731e0(pNode, "value", DAT_143ae2b50);
-                pNode = FUN_140165cf0(pRoot, "MeshMergeItem");
-                if (pNode != 0) FUN_1408731e0(pNode, "value", DAT_143ae2b54);
-                pNode = FUN_140165cf0(pRoot, "DebugLevel");
-                if (pNode != 0) FUN_1408731e0(pNode, "value", DAT_143ae2b58);
+                void* pMultiScene = FUN_140165cf0(pRoot, "multiSceneUpdate");
+                if (pMultiScene != 0) FUN_1408731e0(pMultiScene, "value", DAT_143ae2b30);
+                void* pRemoveExtra = FUN_140165cf0(pRoot, "removeExtraData");
+                if (pRemoveExtra != 0) FUN_1408731e0(pRemoveExtra, "value", DAT_143ae2b34);
+                void* pExceptRender = FUN_140165cf0(pRoot, "exceptItemRender");
+                if (pExceptRender != 0) FUN_1408731e0(pExceptRender, "value", DAT_143ae2b38);
+                void* pIndoor = FUN_140165cf0(pRoot, "IndoorInstancing");
+                if (pIndoor != 0) FUN_1408731e0(pIndoor, "value", DAT_143ae2b3c);
+                void* pProgressive = FUN_140165cf0(pRoot, "ProgressiveLoading");
+                if (pProgressive != 0) FUN_1408731e0(pProgressive, "value", DAT_143ae2b40);
+                void* pRemoveShadow = FUN_140165cf0(pRoot, "RemoveShadowEntity");
+                if (pRemoveShadow != 0) FUN_1408731e0(pRemoveShadow, "value", DAT_143ae2b44);
+                void* pKfm = FUN_140165cf0(pRoot, "MS2KFM");
+                if (pKfm != 0) FUN_1408731e0(pKfm, "value", DAT_143ae2b48);
+                void* pPiece = FUN_140165cf0(pRoot, "Piece");
+                if (pPiece != 0) FUN_1408731e0(pPiece, "value", DAT_143ae2b4c);
+                void* pMeshSkin = FUN_140165cf0(pRoot, "MeshMergeSkin");
+                if (pMeshSkin != 0) FUN_1408731e0(pMeshSkin, "value", DAT_143ae2b50);
+                void* pMeshItem = FUN_140165cf0(pRoot, "MeshMergeItem");
+                if (pMeshItem != 0) FUN_1408731e0(pMeshItem, "value", DAT_143ae2b54);
+                void* pDebug = FUN_140165cf0(pRoot, "DebugLevel");
+                if (pDebug != 0) FUN_1408731e0(pDebug, "value", DAT_143ae2b58);
             }
+        }
+        else
+        {
+            int nEnabled = FUN_140c77560(FUN_1409a8b10())->m_bOptimize;
+            DAT_143ae2b30 = nEnabled;
+            DAT_143ae2b34 = nEnabled;
+            DAT_143ae2b38 = nEnabled;
+            DAT_143ae2b3c = nEnabled;
+            DAT_143ae2b40 = nEnabled;
+            DAT_143ae2b44 = nEnabled;
+            DAT_143ae2b4c = nEnabled;
+            DAT_143ae2b48 = nEnabled;
+            DAT_143ae2b50 = 0;
+            DAT_143ae2b54 = 0;
+            DAT_143ae2b58 = 0;
         }
         DAT_143ae2bf8 = 1;
     }
@@ -392,48 +394,54 @@ void COptimizer::FUN_14161c940(unsigned nCount, int nCycle)
 // @0x14161c990
 void COptimizer::FUN_14161c990()
 {
-    if (m_sampleTimer.FUN_140268870(m_nSampleCycle) != 0)
+    if (m_sampleTimer.FUN_140268870(m_nSampleCycle) == 0)
     {
-        m_samples.push_back(FUN_14086d260()->FUN_141473210());
-        if (m_nSampleCount <= m_samples.size())
+        return;
+    }
+    m_samples.push_back(FUN_14086d260()->FUN_141473210());
+    if (m_samples.size() < m_nSampleCount)
+    {
+        return;
+    }
+    m_nSampleCount = 0;
+    if (m_samples.empty())
+    {
+        return;
+    }
+    float fHighest;
+    float fLowest;
+    float fAverage;
+    fLowest = 1000.0f;
+    fHighest = 0.0f;
+    fAverage = 0.0f;
+    MS2_FOR_EACH(float fFrame, m_samples)
+    {
+        if (fFrame < fLowest)
         {
-            m_nSampleCount = 0;
-            if (!m_samples.empty())
-            {
-                float fLowest = 1000.0f;
-                float fHighest = 0.0f;
-                float fAverage = 0.0f;
-                MS2_FOR_EACH(float fFrame, m_samples)
-                {
-                    if (fFrame < fLowest)
-                    {
-                        fLowest = fFrame;
-                    }
-                    if (fHighest < fFrame)
-                    {
-                        fHighest = fFrame;
-                    }
-                    fAverage = fAverage + fFrame;
-                }
-                fAverage = fAverage / (float)m_samples.size();
-                if (FUN_140166440() != 0)
-                {
-                    Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] sampleCount:{0} sampleCycleTick:{1}", m_nSampleCount, m_nSampleCycle);
-                }
-                if (FUN_140166440() != 0)
-                {
-                    Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] lowest Frame:{0}", fLowest);
-                }
-                if (FUN_140166440() != 0)
-                {
-                    Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] highest Frame:{0}", fHighest);
-                }
-                if (FUN_140166440() != 0)
-                {
-                    Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] Avg Frame:{0}", fAverage);
-                }
-            }
+            fLowest = fFrame;
         }
+        if (fHighest < fFrame)
+        {
+            fHighest = fFrame;
+        }
+        fAverage = fAverage + fFrame;
+    }
+    fAverage = fAverage / (float)m_samples.size();
+    if (FUN_140166440() != 0)
+    {
+        Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] sampleCount:{0} sampleCycleTick:{1}", m_nSampleCount, m_nSampleCycle);
+    }
+    if (FUN_140166440() != 0)
+    {
+        Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] lowest Frame:{0}", fLowest);
+    }
+    if (FUN_140166440() != 0)
+    {
+        Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] highest Frame:{0}", fHighest);
+    }
+    if (FUN_140166440() != 0)
+    {
+        Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] Avg Frame:{0}", fAverage);
     }
 }
 
@@ -476,7 +484,7 @@ void COptimizer::FUN_14161cd60(unsigned __int64 nId)
 // @0x14161cdd0
 void COptimizer::FUN_14161cdd0(unsigned nId)
 {
-    __int64 nKey = nId;
+    unsigned __int64 nKey = nId;
     std::map<unsigned __int64, Entry>::iterator it = m_selected.find(nKey);
     if (it != m_selected.end())
     {
@@ -528,7 +536,7 @@ void COptimizer::FUN_14161cf60(PCBase* pPC)
 {
     if (pPC != 0)
     {
-        __int64 nKey = pPC->FUN_141656a80();
+        unsigned __int64 nKey = pPC->FUN_141656a80();
         if (m_selected.find(nKey) != m_selected.end())
         {
             FUN_14161dbe0(pPC, 0);
@@ -596,7 +604,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                     for (int i = 0; i < nCount; i = i + 1)
                     {
                         MS2Ptr<CPartyMember> spMember = FUN_1409670d0()->FUN_14162b360(i);
-                        __int64 nKey = spMember->FUN_141637bb0();
+                        unsigned __int64 nKey = spMember->FUN_141637bb0();
                         PCBase* pOther = FUN_141bd1530(FUN_1403ed2d0(), nKey);
                         if (pOther != 0 && pLocal != pOther)
                         {
@@ -642,7 +650,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                                 {
                                     if (FUN_140aac440(spRef)->GetClassID() != 0x6200016)
                                     {
-                                        __int64 nUid = FUN_140aac440(spRef)->FUN_141656a80();
+                                        unsigned __int64 nUid = FUN_140aac440(spRef)->FUN_141656a80();
                                         if (selected.find(nUid) == selected.end())
                                         {
                                             PCBase* pActor = FUN_140aac420(spRef);
@@ -660,7 +668,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                 {
                     for (std::list<Entry>::iterator it = candidates.begin(); it != candidates.end(); ++it)
                     {
-                        __int64 nKey = it->m_pPC->FUN_141656a80();
+                        unsigned __int64 nKey = it->m_pPC->FUN_141656a80();
                         if (selected.find(nKey) == selected.end())
                         {
                             FUN_14161dbe0(it->m_pPC, preloadMode);
@@ -676,7 +684,7 @@ void COptimizer::FUN_14161d130(bool bForce)
                     std::list<Entry>::iterator it = candidates.begin();
                     while (it != candidates.end() && nAdded < nWant)
                     {
-                        __int64 nKey = it->m_pPC->FUN_141656a80();
+                        unsigned __int64 nKey = it->m_pPC->FUN_141656a80();
                         std::map<unsigned __int64, Entry>::iterator itOld = m_selected.find(nKey);
                         if (itOld == m_selected.end())
                         {
@@ -797,9 +805,10 @@ void COptimizer::FUN_14161dd30(int nFlags, int nLimit)
 MyPC* FUN_14161e580(const TPtr<PC>& spPC)
 {
     MyPC* pMyPC = 0;
-    if (FUN_140aac420(spPC) != 0)
+    if (FUN_140aac420(spPC) ? true : false)
     {
-        if (FUN_140aac440(spPC)->TypeCast(0x6200004, (const void**)&pMyPC))
+        PC* pPC = FUN_140aac440(spPC);
+        if (pPC->TypeCast(0x6200004, (void**)&pMyPC))
         {
             return pMyPC;
         }
