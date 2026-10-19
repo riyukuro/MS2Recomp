@@ -5,6 +5,16 @@
 // MS2-RANGE: 0x140c5d230-0x140c6b300 .text$mn
 // MS2-RANGE: 0x1400ce050-0x1400ce500 .text$di
 // MS2-PIN: memmove_s 0x140c607d0
+// MS2-PIN: ??0?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@QEAA@XZ 0x140c69c40
+// MS2-PIN: ??1?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@QEAA@XZ 0x140c6a090
+// MS2-PIN: ?CallConstructors@?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@CAXPEAH_K@Z 0x140c6a630
+// MS2-PIN: ?CallDestructors@?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@CAXPEAH_K@Z 0x140c6a6a0
+// MS2-PIN: ?GrowBuffer@?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@AEAA_N_K@Z 0x140c6a7e0
+// MS2-PIN: ?SetCount@?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@QEAA_N_KH@Z 0x140c6abf0
+// MS2-PIN: ??1?$CAtlArray@V?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@V?$CElementTraits@V?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@@ATL@@@ATL@@QEAA@XZ 0x140c62ab0
+// MS2-PIN: ??0?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@QEAA@AEBV0@@Z 0x140c62990
+// MS2-PIN: ??1?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@QEAA@XZ 0x140c62af0
+// MS2-PIN: ??0?$MS2Ptr@VUnk_LsRecord@@@@QEAA@AEBV0@@Z 0x140c69f50
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0?$MS2Ptr@VLapenshardSystemTabPanelBase@@@@QEAA@PEAVLapenshardSystemTabPanelBase@@@Z 0x140c5e420 ; prop
 // MS2-PIN: ??$Unk_Fmt2@HH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBH1@Z 0x140c60060 ; unique
@@ -17,7 +27,6 @@
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCItem@@@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCItem@@@@_K@Z 0x140c62fe0 ; unique
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@V?$CElementTraits@V?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@@ATL@@@ATL@@QEBA_KXZ 0x140c63020 ; unique
 // MS2-PIN: ?vfunc_48@UILapenshardSystemDialog@@UEAAHXZ 0x140c63030 ; unique
-// MS2-PIN: ?RemoveAll@?$CAtlArray@V?$MS2Ptr@VCItem@@@@V?$CElementTraits@V?$MS2Ptr@VCItem@@@@@ATL@@@ATL@@QEAAXXZ 0x140c63220 ; prop
 // MS2-PIN: ?FUN_140c68e20@UILapenshardUpgradeTab@@QEAAHXZ 0x140c68e20 ; unique
 // MS2-PIN: ?FUN_140c68fd0@UILapenshardUpgradeTab@@QEAAHXZ 0x140c68fd0 ; unique
 // MS2-PIN: ??$?8PEAVLapenshardIngredientItemSlotBagPanel@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVLapenshardIngredientItemSlotBagPanel@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x140c69940 ; prop
@@ -40,16 +49,15 @@
 // MS2-PIN: ??_GLapenshardSourceItemSlotBagPanel@@UEAAPEAXI@Z 0x140c6a4c0 ; prop
 // MS2-PIN: ??_GLapenshardUpgradeSlotPanel@@UEAAPEAXI@Z 0x140c6a500 ; prop
 // MS2-PIN: ??_GUILapenshardUpgradeTab@@UEAAPEAXI@Z 0x140c6a540 ; prop
-// MS2-PIN: ?CallConstructors@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@CAXPEAH_K@Z 0x140c6a630 ; unique
+// MS2-PIN: ?Add@?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@QEAA_KAEBH@Z 0x140c6a580 ; unique
 // MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAXXZ 0x140c6a6e0 ; unique
 // MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAXXZ 0x140c6a700 ; unique
 // MS2-PIN: ?GetNext@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140c6a720 ; unique
-// MS2-PIN: ?GrowBuffer@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@AEAA_N_K@Z 0x140c6a7e0 ; unique
 // MS2-PIN: ?Lookup@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEBA_N_KAEAH@Z 0x140c6a9b0 ; unique
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@H@ATL@@SAXPEAH0_K@Z 0x140c6aa10 ; unique
+// MS2-PIN: ?RemoveAll@?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@QEAAXXZ 0x140c6aa50 ; prop
 // MS2-PIN: ?RemoveAll@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAXXZ 0x140c6aa70 ; unique
 // MS2-PIN: ?RemoveKey@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA_N_K@Z 0x140c6ab80 ; unique
-// MS2-PIN: ?SetCount@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAA_N_KH@Z 0x140c6abf0 ; unique
 // MS2-PIN: ?SetOptimalLoad@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAXMMM_N@Z 0x140c6ad80 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVLapenshardIngredientItemSlotBagPanel@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140c6ae30 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140c6ae90 ; unique
@@ -2218,8 +2226,8 @@ static void Unk_LsCopyMap(ATL::CAtlMap<unsigned __int64, int>& dst, ATL::CAtlMap
     POSITION pos = src.GetStartPosition();
     while (pos != 0)
     {
-        const ATL::CAtlMap<unsigned __int64, int>::CPair* pPair = src.GetAt(pos);
-        dst.SetAt(pPair->m_key, pPair->m_value);
+        const int& rValue = src.GetValueAt(pos);
+        dst.SetAt(src.GetKeyAt(pos), rValue);
         src.GetNext(pos);
     }
 }
