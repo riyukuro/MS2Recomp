@@ -72,7 +72,9 @@
 #include "ms2/client/ms2/uiitempettrainingdialog.h"
 #include "ms2/client/ms2/uiselectitemboxdialog.h"
 #include "ms2/client/ms2/uiwebbrowser.h"
+#include "ms2/client/ms2/costumemanager.h"           // fittingdollpc.h inline FUN_1409763e0 copies MS2Ptr<CostumeManager>
 #include "ms2/placeholder/cmycharacter.h"
+#include "ms2/commonfiles/itemdroptable.h"
 #include "ms2/client/ms2/stateplayinstrumentdata.h"
 #include "ms2/client/ms2/portal.h"
 #include "ms2/placeholder/wcformat.h"
@@ -154,47 +156,8 @@ struct Unk_IuConfig
 };
 Unk_IuConfig* FUN_14025e7b0();
 
-// The drop table: the reward entries of a box.
-class Unk_IuDropEntry
-{
-public:
-    virtual int vfunc_0();                                  // 0 the item id
-    virtual int vfunc_1();
-    virtual unsigned vfunc_2();                             // 2 the count
-    char m_pad_08[0x18];
-    int m_nItemId;                                          // +0x20
-    unsigned m_nCount;                                      // +0x28
-};
-class Unk_IuDropIter
-{
-public:
-    Unk_IuDropEntry& FUN_1409ee3c0() const;                 // operator*
-    Unk_IuDropIter& FUN_1409ee540();                        // operator++
-    void* m_p;
-};
-bool operator!=(const Unk_IuDropIter& a, const Unk_IuDropIter& b);
-class Unk_IuDropList
-{
-public:
-    Unk_IuDropList();                                       // 0x1405a1910
-    ~Unk_IuDropList();                                      // 0x1405a1a40
-    Unk_IuDropIter FUN_1409efbb0();                         // begin
-    Unk_IuDropIter FUN_1409eff60();                         // end
-    void* m_begin;
-    void* m_end;
-    void* m_cap;
-};
-class Unk_IuDropParams
-{
-public:
-    Unk_IuDropParams();                                     // 0x1402e9180
-    int m_n0;
-    int m_nLevel;                                           // +4
-    int m_nJob;                                             // +8
-    int m_pad[8];
-};
-class Unk_IuDropTable { public: void FUN_1402eaf10(int nBoxId, Unk_IuDropParams& params, Unk_IuDropList& out, int n); };
-Unk_IuDropTable* FUN_1405a1fd0();
+// The drop table: the reward entries of a box (commonfiles/itemdroptable.h).
+ItemDropTable* FUN_1405a1fd0();
 int FUN_1403bafd0(int nItemId);                             // the inventory tab of an item id
 bool FUN_141900510(int nTab, __int64* pnAmount, __int64* pnCap);   // a currency-like tab and its amount/cap
 class Unk_IuStrings { public: CStringW FUN_141811980(int nTable, int nId); };
@@ -615,13 +578,13 @@ bool IsBoxNotAgainChecked(const CMsgBoxData& box)
 // @0x140d1c550
 int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
 {
-    Unk_IuDropList drops;
-    Unk_IuDropParams params;
+    std::vector<ItemDropResult> drops;
+    ItemDropContext context;
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        params.m_nJob = pPlayer->FUN_141658e60();
-        params.m_nLevel = pPlayer->FUN_141654700();
+        context.m_gender = pPlayer->FUN_141658e60();
+        context.m_job = pPlayer->FUN_141654700();
     }
     Unk_ItemEquipData* pRecord = pItem->FUN_140527840();
     if (pRecord->function.parameter.FUN_1408d2380() != 0)
@@ -631,16 +594,16 @@ int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
             nBoxId = pRecord->function.arg0;
         else if (pRecord->function.name == L"OpenItemBoxWithKey")
             nBoxId = pRecord->function.parameter.FUN_1408d1fd0(5, 0);
-        FUN_1405a1fd0()->FUN_1402eaf10(nBoxId, params, drops, 0);
+        FUN_1405a1fd0()->GetBoxItems(nBoxId, context, drops, false);
     }
-    for (Unk_IuDropIter it = drops.FUN_1409efbb0(); it != drops.FUN_1409eff60(); it.FUN_1409ee540())
+    for (std::vector<ItemDropResult>::iterator it = drops.begin(); it != drops.end(); ++it)
     {
-        Unk_IuDropEntry& entry = it.FUN_1409ee3c0();
-        MS2Ptr<CItemData> spData = FUN_14053f870(entry.m_nItemId);
+        ItemDropResult& entry = *it;
+        MS2Ptr<CItemData> spData = FUN_14053f870(entry.m_itemId);
         if (spData == 0)
             continue;
-        int nItemId = entry.vfunc_0();
-        unsigned nCount = entry.vfunc_2();
+        int nItemId = entry.vfunc_o18_0();
+        unsigned nCount = entry.vfunc_o18_2();
         int nTab = FUN_1403bafd0(nItemId);
         if (nTab == 0x11)
             continue;
@@ -650,7 +613,7 @@ int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
             continue;
         if (nTab == 0x10)
             continue;
-        nCount = (std::max)(nCount, entry.m_nCount);
+        nCount = (std::max)(nCount, entry.m_maxCount);
         __int64 nTotal = nCount + nAmount;
         if (nCap < nTotal)
         {
