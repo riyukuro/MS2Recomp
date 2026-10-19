@@ -14,6 +14,7 @@
 class ASMeratMarketBuyBillData : public ASBillData
 {
 public:
+    ASMeratMarketBuyBillData();                                     // ctor called by uimeratmarketcommon.cpp (VA by symbols.tsv)
     // @0x140a8e4e0 (inline COMDAT, paybackmanagerclient.cpp)
     MS2Ptr<CMeratMarketProduct> FUN_140a8e4e0() { return m_spProduct; }
 

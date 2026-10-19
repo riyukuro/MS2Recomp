@@ -44,6 +44,18 @@ public:
     CStringW GetField78() const { return m_str78; }                 // @0x140c774f0
     CStringW GetField80() const { return m_str80; }                 // @0x140c77580
     CStringA GetField50() const { return m_str50; }                 // @0x140c776c0
+    // setters (inline COMDATs of uimeratmarketcommon.cpp; the CStringW/CString arguments are by value: the callee destroys them)
+    void SetField28(int n) { m_n28 = n; }                           // @0x140ec3c70
+    void SetField60(__int64 n) { m_n60 = n; }                       // @0x140ec3e80
+    void SetField38(CStringW str) { m_str38 = str; }                // @0x140ec3e40
+    void SetTitle(CStringW str) { m_strTitle = str; }               // @0x140ec3e00
+    void SetFielda0(__int64 n) { m_na0 = n; }                       // @0x140ec3c90
+    void SetFielda8(__int64 n) { m_na8 = n; }                       // @0x140ec3cb0
+    void SetFieldb0(CStringW str) { m_strb0 = str; }                // @0x140ec3cd0
+    void SetFieldd8(__int64 n) { m_nd8 = n; }                       // @0x140ec3d20
+    void SetFieldb8(CStringW str) { m_strb8 = str; }                // @0x140ec3d40
+    void SetFieldc0(__int64 n) { m_nc0 = n; }                       // @0x140ec3d90
+    void SetFieldc8(CStringA str) { m_strc8 = str; }                // @0x140ec3db0
 
     Unk_ReportId m_id;                          // +0x18
     int m_n28;
