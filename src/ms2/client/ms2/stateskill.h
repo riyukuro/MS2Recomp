@@ -156,6 +156,8 @@ public:
     static void FUN_1417f2cb0(float fTime, MS2Ptr<CSkillRecord> spRecord, int nAttack, PCBase* pOwner);   // the debug range
     static void FUN_1417f3180(ATL::CAtlArray<Unk_MagicTagPtr>& aTags, const efd::Point3& kDir,
         MS2Ptr<CSkillRecord> spRecord, int nAttack, PCBase* pOwner);   // pick the targets of an attack
+    static void FUN_1417f3e80(int nBounce, ATL::CAtlList<Unk_MagicTagPtr>& lstChain, MS2Ptr<CSkillRecord> spRecord,
+        int nAttack, PCBase* pOwner);   // chain a bounce from the last record
     static bool FUN_1417f4bc0(Unk_EffectTarget& kTarget);               // the effect is hidden by the options
 
     bool m_b48;                         // +0x48 the chain input is held

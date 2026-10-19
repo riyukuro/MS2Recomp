@@ -193,6 +193,8 @@ PCBase* FUN_141468360(PCBase* pActor);                     // the player base of
 extern char DAT_143ae95e0;                                 // debug: show the skill range of a pc
 extern char DAT_143ae95e1;                                 // debug: show the skill range of an npc
 
+int FUN_141769410(PCBase* pOwner, SkillAttackData* pAttack, unsigned nSkillId);   // the attack's target count
+
 // ---- statics -------------------------------------------------------------------------------------------------------
 
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
@@ -2338,6 +2340,105 @@ void StateSkill::FUN_1417f2cb0(float fTime, MS2Ptr<CSkillRecord> spRecord, int n
     CSkillCollisionManager::GetInstance()->Add(spShape);
 }
 MS2_REPLACE(0x1417f2cb0, StateSkill::FUN_1417f2cb0, 1220, 0x71FD2B5D);
+
+// Picks the targets of one attack of a cast: an area pick around the caster (unless the arrow flies without a
+// target), cut to the attack's target count (an overlapping arrow fills the rest with random repeats), a hit record
+// per target, a bounce chain from every record, then (for a motion without attacks) one record without a target for
+// a target-less arrow, or (for one with attacks) a target-less record for every free target slot.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417f3180
+void StateSkill::FUN_1417f3180(Unk_SsTagArray& aTags, const efd::Point3& kDir, MS2Ptr<CSkillRecord> spRecord,
+    int nAttack, PCBase* pOwner)
+{
+    SkillAttackData* pAttack = spRecord->FUN_14175a050(nAttack);
+    Unk_SsTargetArray aPicked;
+    Unk_SsTargetArray aHits;
+    if (pAttack->m_arrow.IsNonTargetOne() == 0)
+    {
+        Unk_SocketPtr<CFillTargetContext> spCtx(new CFillTargetContext);
+        spCtx->m_pOwner = pOwner;
+        spCtx->m_ptOwner = pOwner->vfunc_18();
+        spCtx->m_spLevel = spRecord->m_spLevel;
+        spCtx->m_n60 = 0;
+        spCtx->m_nAttack = nAttack;
+        spCtx->m_nMotion = spRecord->m_nMotion;
+        spCtx->m_fZOffset = spRecord->FUN_141759ad0();
+        if (FUN_1417e95a0(spCtx) == 0)
+            return;
+        aHits.Copy(spCtx->m_arrTargets);
+    }
+    int nLimit = FUN_141769410(pOwner, pAttack, spRecord->m_spLevel->FUN_140803dc0());
+    int nCount = nLimit;
+    if ((int)aHits.GetCount() <= nLimit)
+        nCount = (int)aHits.GetCount();
+    int nUsed = 0;
+    for (int i = 0; i < nCount; i++)
+    {
+        nUsed++;
+        aPicked.Add(aHits[i]);
+    }
+    if (pAttack->m_arrow.m_nOverlap != 0 && nLimit - nCount > 0 && !aHits.IsEmpty())
+    {
+        for (int i = 0; i < nLimit - nCount; i++)
+        {
+            nUsed++;
+            int nPick = rand() % (int)aHits.GetCount();
+            aPicked.Add(aHits[nPick]);
+        }
+    }
+    int nHit = 0;
+    for (unsigned i = 0; i < aPicked.GetCount(); i++)
+    {
+        Unk_MagicTagPtr spTag(reinterpret_cast<Unk_MagicTag*>(new SkillTargetRecord));
+        efd::Point3 kTagDir = kDir;
+        if (SS_TAG(spTag)->FUN_141758d70(spRecord->m_nCastId, pOwner->FUN_14123cec0(), pOwner->FUN_14123c580(),
+                ((GameObject*)aPicked[i])->FUN_14123c580(), spRecord->GetSkillId(), spRecord->GetLevel(),
+                spRecord->m_nMotion, SS_SP(kTagDir), 0, nHit, nAttack, spRecord->m_nSendCount))
+        {
+            aTags.Add(spTag);
+            nHit++;
+        }
+    }
+    int nBounce = pAttack->m_arrow.m_nBounceCount;
+    if (nBounce > 0)
+    {
+        for (unsigned i = 0; i < aTags.GetCount(); i++)
+        {
+            ATL::CAtlList<Unk_MagicTagPtr> lstChain(10);
+            lstChain.AddTail(aTags[i]);
+            FUN_1417f3e80(nBounce, lstChain, spRecord, nAttack, pOwner);
+        }
+    }
+    if (spRecord->FUN_141759f70() == 0)
+    {
+        if (pAttack->m_arrow.IsNonTargetOne() != 0)
+        {
+            Unk_MagicTagPtr spTag(reinterpret_cast<Unk_MagicTag*>(new SkillTargetRecord));
+            efd::Point3 kTagDir = kDir;
+            if (SS_TAG(spTag)->FUN_141758d70(spRecord->m_nCastId, pOwner->FUN_14123cec0(), pOwner->FUN_14123c580(),
+                    0, spRecord->GetSkillId(), spRecord->GetLevel(), spRecord->m_nMotion, SS_SP(kTagDir), 0, 0,
+                    nAttack, spRecord->m_nSendCount))
+                aTags.Add(spTag);
+        }
+    }
+    else
+    {
+        int nRest = nLimit - nUsed < 0 ? 0 : nLimit - nUsed;
+        for (int i = 0; i < nRest; i++)
+        {
+            Unk_MagicTagPtr spTag(reinterpret_cast<Unk_MagicTag*>(new SkillTargetRecord));
+            efd::Point3 kTagDir = kDir;
+            if (SS_TAG(spTag)->FUN_141758d70(spRecord->m_nCastId, pOwner->FUN_14123cec0(), pOwner->FUN_14123c580(),
+                    0, spRecord->GetSkillId(), spRecord->GetLevel(), spRecord->m_nMotion, SS_SP(kTagDir), 0, nHit,
+                    nAttack, spRecord->m_nSendCount))
+            {
+                aTags.Add(spTag);
+                nHit++;
+            }
+        }
+    }
+}
+MS2_REPLACE(0x1417f3180, StateSkill::FUN_1417f3180, 3315, 0x5A426317);
 
 // @0x1417f4bc0
 bool StateSkill::FUN_1417f4bc0(Unk_EffectTarget& kTarget)
