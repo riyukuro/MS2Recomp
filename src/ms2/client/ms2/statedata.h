@@ -364,11 +364,14 @@ class StateInteractData : public StateData
 {
 public:
     StateInteractData();                                        // 0x1417d0be0
+    virtual ~StateInteractData();                               // 0x1417d0c50 (??_G 0x1417d4800)
+    virtual void vfunc_1(Unk_StateDataArg* p);                  // 1 0x1417d0cb0
+    virtual void vfunc_2(Unk_StateDataArg* p);                  // 2 0x1417d0d10
 
     int m_nObjectId;                                            // +0x18
     int m_pad_1c;
     CString m_strObjectId;                                      // +0x20
-    int m_pad_28[2];
+    CString m_strAnim;                                          // +0x28 the reaction animation
     int m_nFlag;                                                // +0x30
     int m_pad_34;
 };
