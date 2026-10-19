@@ -53,6 +53,10 @@ public:
     void FUN_140f3f020(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uienchantscrolldialog.cpp)
     void FUN_140fbd930(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uivipgoodsshopdialog.cpp)
     void FUN_141a65c70(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uinpccontroldialog.cpp)
+    void FUN_140fe95a0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiweddingpage.cpp)
+    void FUN_1412d4860(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiitemoptioncreatedialog.cpp)
+    void FUN_1412d4900(const char* szName, int n);                       // same, a second instance
+    void FUN_1412d49a0(const char* szName, int n);                       // same, a third instance
     void FUN_140ec3230(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uimeratmarketcommon.cpp)
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
