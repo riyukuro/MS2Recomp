@@ -3342,3 +3342,14 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?DAT_143d69198@@3VUnk_FdMaterialTable@@A	143d69198	data
 ?DAT_143b059e8@@3UUnk_FdFramework@@A	143b059e8	data
 ?IndexRegionSpawn@CNpcDataTable@@QEAAXV?$Unk_BmPtr@VCNpcRegionSpawnData@@@@@Z	1406ce280	func
+??0Unk_SsItemPtr@@QEAA@PEAX@Z	1401bf970	func
+??1Unk_SsItemPtr@@QEAA@XZ	1401b50d0	func
+??0Unk_SsLapenSet@@QEAA@H@Z	140dcada0	func
+??1Unk_SsLapenSet@@QEAA@XZ	140dcb780	func
+?DAT_143aea1b8@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143aea1b8	data
+?DAT_143aea1c0@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143aea1c0	data
+?DAT_143aea1c8@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143aea1c8	data
+?DAT_143aea1d0@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143aea1d0	data
+?DAT_143aea1d8@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143aea1d8	data
+?DAT_143aea1e0@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143aea1e0	data
+?DAT_143ab2898@@3HA	143ab2898	data
