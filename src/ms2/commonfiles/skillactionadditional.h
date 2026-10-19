@@ -5,12 +5,12 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/xmlattr.h"
+#include "ms2/commonfiles/skillbegincondition.h"
 
 class SkillActionAdditional : public CPtred
 {
 public:
     SkillActionAdditional();                                // 0x140802090
-    virtual ~SkillActionAdditional();                       // 0x140802400 (deleting 0x140802470)
     bool operator!=(const SkillActionAdditional& o);        // 0x140802120
     int Load(Unk_140165cf0* pElem);                         // 0x140802210
 
@@ -21,6 +21,6 @@ public:
     int m_nSkillTarget;                                     // +0x28
     int m_nSkillOwner;                                      // +0x2c
     int m_nDependOnDamageCount;                             // +0x30
-    unsigned char m_beginCondition[0x3c];                   // +0x34 a SkillBeginCondition (0x38 in skilloverlapcompare.h)
+    SkillBeginCondition m_beginCondition;                   // +0x34
 };
 MS2_CHECK_SIZE(SkillActionAdditional, 0x70);

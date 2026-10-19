@@ -162,6 +162,10 @@ struct Unk_RangeShape
     NiPoint3 m_pt2c;                    // +0x2c
     float m_f38;                        // +0x38
 
+    Unk_RangeShape();                                       // 0x1408001f0
+    bool FUN_1408002b0(const Unk_RangeShape& o);            // is different
+    void FUN_1408003b0(Unk_140165cf0* pElem);               // reads the shape attributes
+    void FUN_140800570(void* pElem);                        // writes the shape attributes
     // Declared (0x140184190), so SpreadProperty::Clear assigns through the copy operator= 0x1401945c0 like the exe.
     ~Unk_RangeShape() {}
 };

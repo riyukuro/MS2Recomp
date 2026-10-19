@@ -10,7 +10,6 @@ class SkillActionSkill : public CPtred
 {
 public:
     SkillActionSkill();                                     // 0x1408018d0
-    virtual ~SkillActionSkill();                            // 0x140802420 (deleting 0x1408024b0)
     bool operator!=(const SkillActionSkill& o);             // 0x140801a10
     int Load(Unk_140165cf0* pElem);                         // 0x140801c40
     int Save(void* pParent, CString strName);               // 0x140802050
@@ -19,9 +18,9 @@ public:
     ATL::CAtlArray<int> m_arrSkillID;                       // +0x38 "skillID"
     ATL::CAtlArray<int> m_arrLinkSkillID;                   // +0x58 "linkSkillID"
     unsigned m_nOverlapCount;                               // +0x78
-    int m_nDelay;                                           // +0x7c
-    int m_nInterval;                                        // +0x80
-    int m_nRemoveDelay;                                     // +0x84
+    unsigned m_nDelay;                                           // +0x7c
+    unsigned m_nInterval;                                        // +0x80
+    unsigned m_nRemoveDelay;                                     // +0x84
     int m_nImmediateActive;                                 // +0x88
     int m_nFireCount;                                       // +0x8c
     int m_nNonTargetActive;                                 // +0x90
