@@ -17,6 +17,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/ms2dragslot.h"
 #include "ms2/commonfiles/fielddata.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/placeholder/astooltip.h"
@@ -1072,6 +1073,9 @@ public:
     int m_n20;                                                          // +0x20
     unsigned char m_pad_24[4];
     int m_nNeed;                                                        // +0x28 the number of ingredients
+    unsigned char m_pad_2c[4];
+    __int64 m_nCost;                                                    // +0x30 the money an upgrade costs
+    MS2Ptr<class Unk_LsRecipe> FUN_1405b41b0(unsigned nTier);           // the recipe of an upgrade tier
 };
 
 void FUN_1422c8be0(Unk_LsBagReg* pReg);                                 // refresh the bag slots
@@ -2081,3 +2085,180 @@ int UILapenshardSystemDialog::vfunc_65()
     return 0;
 }
 
+
+// ---- the upgrade request ----
+
+// The item table's upgrade recipe of a lapenshard.
+class Unk_LsCostEntry : public CPtred
+{
+public:
+    bool FUN_14026b350();                                               // the entry is not an ingredient
+    unsigned FUN_14026b500();                                           // its item id
+    unsigned char m_pad_18[4];
+    int m_n1c;                                                          // +0x1c
+    int m_nNeed;                                                        // +0x20 how many are needed
+};
+class Unk_LsCostList : public CPtred
+{
+public:
+    int FUN_14028b500();                                                // the number of entries
+    MS2Ptr<Unk_LsCostEntry> FUN_14028a0f0(int nIndex);
+};
+class Unk_LsRecipe : public CPtred
+{
+public:
+    MS2Ptr<Unk_LsCostList> FUN_14026c230();                             // the ingredient entries
+};
+
+class Unk_LsInventory;
+int FUN_140a5f180(Unk_LsInventory* pInventory, unsigned nItemId, int nGrade);
+extern char DAT_143ab2a90;                                              // the inventory
+extern __int64 DAT_143ab2898;                                           // the money
+
+// @0x140c69670
+int FUN_140c69670(unsigned nItemId, int nGrade, int* pnUnused)
+{
+    int nCount = FUN_140a5f180(reinterpret_cast<Unk_LsInventory*>(&DAT_143ab2a90), nItemId, nGrade);
+    if (*pnUnused != 0)
+    {
+    }
+    return nCount;
+}
+
+// @0x140c69a30
+static void Unk_LsCopyMap(ATL::CAtlMap<unsigned __int64, int>& dst, ATL::CAtlMap<unsigned __int64, int>& src)
+{
+    POSITION pos = src.GetStartPosition();
+    while (pos != 0)
+    {
+        const ATL::CAtlMap<unsigned __int64, int>::CPair* pPair = src.GetAt(pos);
+        dst.SetAt(pPair->m_key, pPair->m_value);
+        src.GetNext(pos);
+    }
+}
+
+// @0x140c691f0
+// MS2-FUNCTIONAL: the recipe walk keeps different temporaries than the exe
+int UILapenshardUpgradeTab::FUN_140c691f0()
+{
+    if (m_nState != 1)
+        return 0;
+    if (m_spSource == 0)
+        return 0;
+    MS2Ptr<Unk_LsRecord> spRec = FUN_1409c4b30()->FUN_1405b56a0(m_spSource->FUN_1405276c0());
+    if (spRec == 0)
+        return 0;
+    if (0 < spRec->m_nCost && DAT_143ab2898 < spRec->m_nCost)
+    {
+        FUN_141275260(0x34, 1, 1);
+        return 0;
+    }
+    if ((unsigned)FUN_140c68fd0() < (unsigned)spRec->m_nNeed)
+    {
+        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_lapenshard_tabname_upgrade_lack_ingredient")), 1, 1);
+        return 0;
+    }
+    MS2Ptr<Unk_LsRecipe> spRecipe = spRec->FUN_1405b41b0(m_n_c0);
+    if (spRecipe == 0)
+        return 0;
+    MS2Ptr<Unk_LsCostList> spList = spRecipe->FUN_14026c230();
+    int nEntries = spList->FUN_14028b500();
+    for (int i = 0; i < nEntries; ++i)
+    {
+        MS2Ptr<Unk_LsCostEntry> spEntry = spList->FUN_14028a0f0(i);
+        if (spEntry == 0)
+            continue;
+        if (spEntry->FUN_14026b350())
+            continue;
+        unsigned nItemId = spEntry->FUN_14026b500();
+        int nGrade = FUN_14053feb0(nItemId);
+        int nNeed = spEntry->m_nNeed;
+        int nHave = FUN_140c69670(nItemId, nGrade, &spEntry->m_n1c);
+        if (nHave < nNeed)
+        {
+            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_lapenshard_tabname_upgrade_lack_ingredient")), 1, 1);
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// @0x140c69030
+void UILapenshardUpgradeTab::FUN_140c69030()
+{
+    if (FUN_140c691f0() != 0)
+    {
+        MyPC* pPlayer = vfunc_11();
+        if (pPlayer != 0)
+        {
+            COutPacket pkt(0xad, 0);
+            pkt.vfunc_o10_1(5);
+            Unk_LsPktB rec;
+            rec.m_nItemId = m_spSource->FUN_1405276c0();
+            rec.m_nUid = m_spSource->FUN_140526a50();
+            rec.m_n5c = m_n_c0;
+            if (rec.m_nUid == 0)
+            {
+                rec.m_nSlot = pPlayer->FUN_14152f7c0(rec.m_nItemId);
+                if (rec.m_nSlot == 0)
+                    return;
+            }
+            Unk_LsCopyMap(rec.m_ingredients, m_ingredients);
+            FUN_1405b5fd0(&rec, pkt);
+            FUN_140710590(pkt);
+            m_nState = 2;
+            m_ui->Invoke("RequestUpgrade");
+        }
+    }
+}
+
+// ---- the shield bar: open ----
+
+// The skill slot of the HUD (0x150 bytes, owned by ?\skillslot.cpp).
+class SkillSlot : public MS2DragSlot
+{
+public:
+    SkillSlot(const CString& strName, int nIndex, unsigned nSkillId, int nUnk, __int64 nUnk2);      // 0x14175c840
+    virtual ~SkillSlot();
+    void FUN_14175cdb0(int n);                                          // m_bc = n
+private:
+    unsigned char m_pad_90[0x150 - 0x90];
+};
+
+class Unk_LsSkillNames { public: CStringW FUN_141811980(int nKind, unsigned nId); };
+Unk_LsSkillNames* FUN_1401a9d70();
+void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
+
+// @0x140c5fbd0
+// MS2-FUNCTIONAL: the allocation hint temporaries and the skill list walk differ from the exe
+void UILapenshardShieldBar::FUN_140c5fbd0()
+{
+    m_bImpending = 0;
+    m_bEnded = 0;
+    m_tick.FUN_140268840();
+    if (m_spBuff == 0)
+        return;
+    if (!m_strBind.IsEmpty())
+        FUN_1422c8f70(m_strBind);
+    m_strBind = "LapenshardShieldBarSkillBindID";
+    Unk_LsBuffInfo* pInfo = FUN_14096d810(m_spBuff.operator->());
+    SkillSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) SkillSlot(m_strBind, 0, pInfo->m_nSkillId, 0, 0);
+    if (pSlot == 0)
+        return;
+    pSlot->FUN_14175cdb0(1);
+    FUN_1422c8f10(m_strBind, pSlot);
+    CStringW strLeft = FUN_140c5f9e0();
+    m_30->Invoke("open", m_spBuff->m_nId, FUN_14096d810(m_spBuff.operator->())->m_nValue, strLeft, m_strBind);
+    UIRewardNotify* pReward = FUN_140938cd0(0x4e5d);
+    if (pReward != 0)
+    {
+        Unk_LsBuffInfo* pBuffInfo = FUN_14096d810(m_spBuff.operator->());
+        if (!pBuffInfo->m_skills.FUN_140311670())
+        {
+            unsigned nSkillId = *pBuffInfo->m_skills.FUN_14018ee60().FUN_1403e8d90();
+            CStringW strMsg = FUN_1405c2690(CStringW(L"s_lapenshard_skill_possible_msg"), FUN_1401a9d70()->FUN_141811980(4, nSkillId));
+            pReward->FUN_141ac05d0(nSkillId, strMsg, 1);
+        }
+    }
+    m_nPending = 0;
+}

@@ -336,10 +336,19 @@ public:
 // ---- the shield bar HUD -------------------------------------------------------------------------------------------------
 
 // The buff the shield bar shows (layout seen through the HUD's reads only; the object is owned elsewhere).
+class Unk_LsSkillRef { public: const unsigned* FUN_1403e8d90(); };      // the skill id behind a reference
+class Unk_LsSkillList
+{
+public:
+    bool FUN_140311670();                                           // the list is empty
+    Unk_LsSkillRef FUN_14018ee60();                                 // its first entry
+};
 class Unk_LsBuffInfo
 {
 public:
-    unsigned char m_pad_00[0x2a0];
+    unsigned char m_pad_00[0x88];
+    Unk_LsSkillList m_skills;                                       // +0x88 the skills the buff makes possible
+    unsigned char m_pad_89[0x2a0 - 0x89];
     __int64 m_nValue;                                               // +0x2a0 the shield value
     unsigned char m_pad_2a8[8];
     unsigned m_nSkillId;                                            // +0x2b0
