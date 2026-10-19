@@ -3364,3 +3364,9 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??1Unk_LulluBoxDropVec@@QEAA@XZ	1405a1a40	func
 ??0Unk_LulluBoxIntVec@@QEAA@XZ	140182ed0	func
 ??1Unk_LulluBoxIntVec@@QEAA@XZ	140183b90	func
+?DAT_143b01a60@@3VPoint3@efd@@A	143b01a60	data
+?DAT_143a08cf8@@3VPoint3@efd@@A	143a08cf8	data
+??0Unk_DropOwners@@QEAA@H@Z	1407b5060	func
+??1Unk_DropOwners@@QEAA@XZ	1407b5a30	func
+??0Unk_DropPickTick@@QEAA@XZ	140517b00	func
+?g_trCounters@@3VUnk_TrCounters@@A	143ab3010	data
