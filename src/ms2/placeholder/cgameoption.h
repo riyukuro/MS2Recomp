@@ -68,6 +68,8 @@ public:
     Unk_CommunityStateB* FUN_140ae6540();                   // &m_account (0x140ae6540)
     Unk_BattleState* FUN_141248630();                       // &m_battle
     Unk_CommunityStateA* FUN_14124ab20();                   // &m_communityA
+    Unk_GraphicState* FUN_1409a8ac0();                      // &m_graphic
+    Unk_GraphicState2* FUN_140c77560();                     // &m_graphic2
     TiXmlDocument* FUN_1412442a0();                         // &m_docGameDefault
     TiXmlDocument* FUN_1412442c0();                         // &m_docAccountDefault
     TiXmlDocument* FUN_1412442e0();                         // &m_docGame

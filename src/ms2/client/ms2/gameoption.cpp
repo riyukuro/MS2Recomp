@@ -23,6 +23,14 @@
 #include <map>
 #include <utility>
 #include <atlcoll.h>
+#include <vector>
+#include <algorithm>
+#include <stdlib.h>
+#include <math.h>
+#include "ms2/placeholder/asuicomponent.h"
+#include "ms2/placeholder/astextfield.h"
+#include "ms2/placeholder/asobj.h"
+#include "ms2/ms2format.h"
 
 // ---- header statics (dynamic initializers 0x1400ea4e0..0x1400ea810) ----
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
@@ -74,12 +82,23 @@ private:
 };
 
 // View of UIGameOptionDialog: the child lookups by name (getTabChild).
+class Unk_GoCombo;
+class Unk_GoInput;
 class Unk_GoDialog
 {
 public:
     MS2Ptr<Unk_GoCheck> FUN_140a57f50(CString name, int nIndex);
     MS2Ptr<Unk_GoSlider> FUN_140a58110(CString name, int nIndex);
     MS2Ptr<Unk_GoRadio> FUN_140a46480(CString name, int nIndex);
+    MS2Ptr<Unk_GoCombo> FUN_140cfcf10(CString name, int nIndex);
+    MS2Ptr<ASTextField> FUN_14124e120(CString name, int nIndex);
+    MS2Ptr<Unk_GoInput> FUN_14124e2e0(CString name, int nIndex);
+    MS2Ptr<ASUIComponent> FUN_14124ff50(int nIndex);
+
+    char m_pad[0x28];
+    int m_nId;                                                      // +0x28 the option id
+    int m_pad2;
+    MS2Ptr<AScript> m_root;                                         // +0x30 the AS root
 };
 
 // The state blocks' methods (declared here; they live in client\ms2\gameoptionstruct.cpp).
@@ -427,6 +446,8 @@ public:
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field data
     float FUN_141bcfc50();                                      // camera scale of the local player
     MyPC* FUN_141bd0cc0();                                      // the local player
+    void FUN_141bd4260();                                       // enchant effect off
+    void FUN_141bd41d0();                                       // enchant effect on
 };
 Unk_1403ed2d0* FUN_1403ed2d0();
 
@@ -711,3 +732,796 @@ bool CGameOptionCommunity::vfunc_14()
     return FUN_14125d740(&m_stateB, TSingleton<CGameOption>::GetInstance()->FUN_140ae6540()) ? true : false;
 }
 
+// ---- CGameOptionGraphicDefault ----
+
+// More option-dialog controls. A combo box, a text input; both derive from the AS component (0x88 bytes).
+class Unk_GoCombo : public ASUIComponent
+{
+public:
+    virtual void vfunc_16();                                    // 16..23 (ASUIComponent slots)
+    virtual void vfunc_17();
+    virtual void vfunc_18();
+    virtual void vfunc_19();
+    virtual void vfunc_20();
+    virtual void vfunc_21();
+    virtual void vfunc_22();
+    virtual void vfunc_23();
+    virtual void vfunc_24(bool bRefresh);                       // 24 validateNow
+    void FUN_1422dfc10();                                       // remove all rows
+    void FUN_1422dfc70(ASObj& item);                            // add a row
+    void FUN_1422df5f0(unsigned int nRows);                     // visible rows
+    void FUN_1422df690(int nRow);                               // select a row
+    int FUN_1422df6c0();                                        // selected row
+    void FUN_1422df8c0(const CStringW& strIcon);                // the dropdown icon
+};
+class Unk_GoInput : public ASUIComponent
+{
+public:
+    void FUN_1422e0ab0(const CStringW& strText);
+    CStringW FUN_1422e0b00();
+};
+
+// The lookups of the dialog view by child name (more instances of the getTabChild template); the first three live in this unit.
+MS2Ptr<ASTextField> FUN_1409b41a0(int nId, const Scaleform::GFx::Value& v);
+MS2Ptr<Unk_GoInput> FUN_140bbe1d0(int nId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASUIComponent> FUN_140acca70(int nId, const Scaleform::GFx::Value& v);
+bool FUN_1407cce10(const Scaleform::GFx::Value* v);
+int FUN_1409c1750(const Scaleform::GFx::Value& v);              // the value as an int
+int FUN_1407181a0(const CStringW& str);
+CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& nArg);   // formats one number
+void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);    // notice
+int FUN_14151f6e0();
+
+static std::pair<int, int> FUN_14124d9d0(int nWidth, int nHeight);
+CStringW FormatStringId(int nId, const fmt::ArgList& args);   // 0x14028dee0
+FMT_VARIADIC_W(CStringW, FormatStringId, int)
+
+// @0x14124ff50
+MS2Ptr<ASUIComponent> Unk_GoDialog::FUN_14124ff50(int nIndex)
+{
+    if (m_root.IsNull())
+        return MS2Ptr<ASUIComponent>(0);
+    Scaleform::GFx::Value comp = m_root->Invoke("getTabComponent", nIndex);
+    if (FUN_1407cce10(&comp))
+    {
+        MS2Ptr<ASUIComponent> sp = FUN_140acca70(m_nId, comp);
+        if (static_cast<ASUIComponent*>(sp) != 0)
+            return sp;
+    }
+    return MS2Ptr<ASUIComponent>(0);
+}
+
+// @0x14124e120
+MS2Ptr<ASTextField> Unk_GoDialog::FUN_14124e120(CString name, int nIndex)
+{
+    if (m_root.IsNull())
+        return MS2Ptr<ASTextField>(0);
+    Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
+    if (FUN_1407cce10(&child))
+    {
+        MS2Ptr<ASTextField> sp = FUN_1409b41a0(m_nId, child);
+        if (static_cast<ASTextField*>(sp) != 0)
+            return sp;
+    }
+    return MS2Ptr<ASTextField>(0);
+}
+
+// @0x14124e2e0
+MS2Ptr<Unk_GoInput> Unk_GoDialog::FUN_14124e2e0(CString name, int nIndex)
+{
+    if (m_root.IsNull())
+        return MS2Ptr<Unk_GoInput>(0);
+    Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
+    if (FUN_1407cce10(&child))
+    {
+        MS2Ptr<Unk_GoInput> sp = FUN_140bbe1d0(m_nId, child);
+        if (static_cast<Unk_GoInput*>(sp) != 0)
+            return sp;
+    }
+    return MS2Ptr<Unk_GoInput>(0);
+}
+
+// The device name holder (DAT_143ad5158): the adapter's name at +0x18.
+class Unk_GoDeviceInfo
+{
+public:
+    CStringW FUN_141245ab0();                                   // copy of the adapter name
+    char m_pad[0x18];
+    CStringW m_strName;                                         // +0x18
+};
+extern Unk_GoDeviceInfo* DAT_143ad5158;
+
+// @0x141245ab0
+CStringW Unk_GoDeviceInfo::FUN_141245ab0()
+{
+    return CStringW(m_strName);
+}
+
+// @0x141245b20
+Unk_GoDeviceInfo* FUN_141245b20()
+{
+    return DAT_143ad5158;
+}
+
+// The renderer's display mode list: raw modes (width, height, format) behind a counted pointer array.
+struct Unk_GoRawMode
+{
+    int m_nWidth;
+    int m_nHeight;
+    int m_nFormat;
+};
+struct Unk_GoModeArray
+{
+    char m_pad0[8];
+    Unk_GoRawMode** m_ppData;                                   // +0x08
+    short m_s10;
+    unsigned short m_nCount;                                    // +0x12
+    Unk_GoRawMode** FUN_14124fec0(unsigned int nIndex);         // slot of the nIndex-th mode
+    unsigned short FUN_14124ff40();                             // count
+};
+struct Unk_GoModeSource
+{
+    char m_pad[0x458];
+    Unk_GoModeArray m_modes;                                    // +0x458
+    Unk_GoRawMode* FUN_14124fee0(unsigned int nIndex);          // the nIndex-th mode (or null)
+    unsigned short FUN_14124ff10();                             // count
+};
+class Unk_GoGfxDevice
+{
+public:
+    Unk_GoModeSource* FUN_14124fea0();                          // +0x728 the display mode source
+    char m_pad[0x728];
+    Unk_GoModeSource* m_pModes;                                 // +0x728
+};
+Unk_GoGfxDevice* FUN_140994450();
+
+// @0x14124fea0
+Unk_GoModeSource* Unk_GoGfxDevice::FUN_14124fea0()
+{
+    return m_pModes;
+}
+
+// @0x14124fec0
+Unk_GoRawMode** Unk_GoModeArray::FUN_14124fec0(unsigned int nIndex)
+{
+    return m_ppData + nIndex;
+}
+
+// @0x14124fee0
+Unk_GoRawMode* Unk_GoModeSource::FUN_14124fee0(unsigned int nIndex)
+{
+    return *m_modes.FUN_14124fec0(nIndex);
+}
+
+// @0x14124ff10
+unsigned short Unk_GoModeSource::FUN_14124ff10()
+{
+    return m_modes.FUN_14124ff40();
+}
+
+// @0x14124ff40
+unsigned short Unk_GoModeArray::FUN_14124ff40()
+{
+    return m_nCount;
+}
+
+// One row of the resolution combo: the mode's index and its size. Sorted by size.
+struct Unk_GoResMode
+{
+    int m_nIndex;
+    std::pair<int, int> m_size;
+    Unk_GoResMode(int nIndex, int nWidth, int nHeight) : m_nIndex(nIndex), m_size(nWidth, nHeight) {}
+};
+struct Unk_GoResModeLess
+{
+    bool operator()(const Unk_GoResMode& a, const Unk_GoResMode& b) const;
+};
+
+// @0x14124fdc0
+bool Unk_GoResModeLess::operator()(const Unk_GoResMode& a, const Unk_GoResMode& b) const
+{
+    if (a.m_size.first == b.m_size.first)
+        return a.m_size.second < b.m_size.second;
+    return a.m_size.first < b.m_size.first;
+}
+
+// More members of the singletons used here.
+class Unk_GoRenderCfg
+{
+public:
+    int FUN_141376510(int nLevel);                              // the hdr flag of a quality level
+    int FUN_141376790(int nIndex);                              // the framebuffer format of a multisampling row
+};
+Unk_GoRenderCfg* FUN_140ae1c00();
+class Unk_GoEffectMgr { public: void FUN_1411a8880(int n); };
+Unk_GoEffectMgr* FUN_1403ed280();
+class Unk_GoUiMgr { public: void FUN_141adc5d0(int nUiId); void FUN_141adc530(int nUiId); };
+Unk_GoUiMgr* FUN_1403ed2b0();
+
+// The graphic state blocks' methods (client\ms2\gameoptionstruct.cpp).
+void FUN_14125d890(Unk_GraphicState* p);
+void FUN_14125d8c0(Unk_GraphicState* p);
+int FUN_14125d9b0(Unk_GraphicState* p, TiXmlDocument* pDoc, int n);
+void FUN_14125dff0(Unk_GraphicState* pDst, const Unk_GraphicState* pSrc);
+void FUN_14125e1f0(Unk_GraphicState* p, int nQuality, int n);
+void FUN_14125e300(Unk_GraphicState* p, bool b);
+void FUN_14125e3b0(Unk_GraphicState* p, bool b);
+void FUN_14125e4b0(Unk_GraphicState* p, int n);
+void FUN_14125e5b0(Unk_GraphicState* p, bool b);
+bool FUN_14125e7e0(Unk_GraphicState* p, int nFormat, int nWidth, int nHeight);
+void FUN_14125e910(Unk_GraphicState* p, int nScreenMode, int nResIdx);
+void FUN_14125ec20(Unk_GraphicState2* p);
+void FUN_14125ec50(Unk_GraphicState2* p);
+int FUN_14125ecc0(Unk_GraphicState2* p, TiXmlDocument* pDoc);
+void FUN_14125ef60(Unk_GraphicState2* pDst, const Unk_GraphicState2* pSrc);
+void FUN_14125ef90(Unk_GraphicState2* p);
+
+// @0x14124ab20
+Unk_CommunityStateA* CGameOption::FUN_14124ab20()
+{
+    return &m_communityA;
+}
+
+// @0x14124ab30
+CGameOptionGraphicDefault::CGameOptionGraphicDefault(int nId, int nType)
+    : CBaseOption(nId, nType)
+{
+    FUN_14125d890(&m_state);
+    FUN_14125ec20(&m_state2);
+    m_n74 = 0;
+}
+
+// @0x14124abb0
+CGameOptionGraphicDefault::~CGameOptionGraphicDefault()
+{
+}
+
+// @0x14124abe0
+void CGameOptionGraphicDefault::vfunc_3(int n)
+{
+    if (n == 0)
+    {
+        FUN_14125dff0(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0());
+        FUN_14125ef60(&m_state2, TSingleton<CGameOption>::GetInstance()->FUN_140c77560());
+    }
+    m_n74 = 0;
+    CBaseOption::vfunc_3(n);
+}
+
+// @0x14124ac60
+void CGameOptionGraphicDefault::vfunc_4(int n)
+{
+    CBaseOption::vfunc_4(n);
+}
+
+// @0x14124ac90
+int CGameOptionGraphicDefault::vfunc_5(const char* pszName, void* pArg, int nArg)
+{
+    if (_stricmp(pszName, "onDisplayQuality") == 0 && m_n74 != 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620((const Scaleform::GFx::Value*)pArg, nArg))
+        {
+            int nLevel = data.FUN_1422b8a10();
+            {
+                MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_hdr"), -1);
+                if (static_cast<Unk_GoCheck*>(sp) != 0)
+                    sp->FUN_1422ce090(FUN_140ae1c00()->FUN_141376510(nLevel));
+            }
+            {
+                MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
+                if (static_cast<Unk_GoCombo*>(sp) != 0)
+                {
+                    if (nLevel < 3)
+                    {
+                        if (nLevel < 2)
+                        {
+                            if (nLevel >= 0)
+                                sp->FUN_1422df690(0);
+                        }
+                        else
+                            sp->FUN_1422df690(1);
+                    }
+                    else
+                        sp->FUN_1422df690(2);
+                }
+            }
+            {
+                MS2Ptr<Unk_GoSlider> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a58110(CString("m_effectStep"), -1);
+                if (static_cast<Unk_GoSlider*>(sp) != 0)
+                {
+                    int nMin = 1;
+                    sp->FUN_1422ce5f0((float)(std::max)(nLevel, nMin));
+                }
+            }
+            int nBenchmark = TSingleton<CGameOption>::GetInstance()->FUN_1412438f0();
+            if (nBenchmark < nLevel && nLevel != m_state.m_nQuality && FUN_14151f6e0() != 0)
+                FUN_140d73bc0(0x84d, 0, 0, CStringW(L""));
+        }
+    }
+    return 0;
+}
+
+// @0x14124aff0
+void CGameOptionGraphicDefault::vfunc_6()
+{
+    FUN_14124d080();
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeWindow"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            sp->FUN_1422ce090(m_state.m_nScreenMode == 1);
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeFullWindow"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            sp->FUN_1422ce090(m_state.m_nScreenMode == 2);
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showFrameRate"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            sp->FUN_1422ce090(m_state.m_bShowFrameRate);
+    }
+    {
+        MS2Ptr<Unk_GoSlider> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a58110(CString("m_effectStep"), -1);
+        if (static_cast<Unk_GoSlider*>(sp) != 0)
+            sp->FUN_1422ce5f0((float)m_state.m_nEffectStep);
+    }
+    {
+        MS2Ptr<Unk_GoSlider> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a58110(CString("m_quality"), -1);
+        if (static_cast<Unk_GoSlider*>(sp) != 0)
+            sp->FUN_1422ce5f0((float)m_state.m_nQuality);
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_hdr"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            sp->FUN_1422ce090(m_state.m_bHdr != 0);
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_shimmer"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            sp->FUN_1422ce090(m_state.m_bShimmer != 0);
+    }
+    {
+        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_multisampling"), -1);
+        if (static_cast<Unk_GoCombo*>(sp) != 0)
+            sp->FUN_1422df690(m_state.m_nMultisampling);
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_vsync"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            sp->FUN_1422ce090(m_state.m_bVsync);
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_enchantEffect"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            sp->FUN_1422ce090(m_state.m_bEnchantEffect);
+    }
+    {
+        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
+        if (static_cast<Unk_GoCombo*>(sp) != 0)
+        {
+            int nShadow = m_state.m_nShadow;
+            if (nShadow < 3)
+            {
+                if (nShadow < 2)
+                {
+                    if (nShadow >= 0)
+                        sp->FUN_1422df690(0);
+                }
+                else
+                    sp->FUN_1422df690(1);
+            }
+            else
+                sp->FUN_1422df690(2);
+        }
+    }
+    {
+        MS2Ptr<ASTextField> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e120(CString("m_devicename"), -1);
+        if (static_cast<ASTextField*>(sp) != 0)
+            sp->FUN_1422c4cd0(FUN_141245b20()->FUN_141245ab0());
+    }
+    {
+        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_optimalHide"), -1);
+        if (static_cast<Unk_GoCombo*>(sp) != 0)
+            sp->FUN_1422df690(m_state2.m_nOptimalHide);
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideAlways"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            sp->FUN_1422ce090(m_state2.m_bHideAlways);
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideBossBattle"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            sp->FUN_1422ce090(m_state2.m_bHideBossBattle);
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showParty"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            sp->FUN_1422ce090(m_state2.m_bShowParty);
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showGuild"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            sp->FUN_1422ce090(m_state2.m_bShowGuild);
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showCustom"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            sp->FUN_1422ce090(m_state2.m_bShowCustom);
+    }
+    {
+        MS2Ptr<Unk_GoInput> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e2e0(CString("m_customInput"), -1);
+        if (static_cast<Unk_GoInput*>(sp) != 0)
+            sp->FUN_1422e0ab0(FUN_1401ceea0(L"%d", m_state2.m_nCustomInput));
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showPhysx"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            sp->FUN_1422ce090(m_state2.m_bShowPhysx);
+    }
+    m_n74 = 1;
+}
+
+// @0x14124bf20
+void CGameOptionGraphicDefault::vfunc_7()
+{
+    {
+        MS2Ptr<ASUIComponent> spComp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124ff50(m_nType);
+        if (static_cast<ASUIComponent*>(spComp) != 0)
+        {
+            int nRes = FUN_1409c1750(spComp->Invoke("getResolution"));
+            if (nRes != -1)
+            {
+                m_state.m_nResIdx = nRes;
+                FUN_14124d5f0(m_state.m_nResIdx, &m_state.m_nWidth, &m_state.m_nHeight);
+            }
+        }
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeWindow"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            if (sp->FUN_1422ce0e0())
+                m_state.m_nScreenMode = 1;
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_screenModeFullWindow"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            if (sp->FUN_1422ce0e0())
+                m_state.m_nScreenMode = 2;
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showFrameRate"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            m_state.m_bShowFrameRate = sp->FUN_1422ce0e0() != 0;
+    }
+    {
+        MS2Ptr<Unk_GoSlider> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a58110(CString("m_effectStep"), -1);
+        if (static_cast<Unk_GoSlider*>(sp) != 0)
+            m_state.m_nEffectStep = (int)sp->FUN_1422ce630();
+    }
+    {
+        MS2Ptr<Unk_GoSlider> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a58110(CString("m_quality"), -1);
+        if (static_cast<Unk_GoSlider*>(sp) != 0)
+            m_state.m_nQuality = (int)sp->FUN_1422ce630();
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_hdr"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            m_state.m_bHdr = sp->FUN_1422ce0e0() != 0;
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_shimmer"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            m_state.m_bShimmer = sp->FUN_1422ce0e0() != 0;
+    }
+    {
+        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
+        if (static_cast<Unk_GoCombo*>(sp) != 0)
+        {
+            int nSel = sp->FUN_1422df6c0();
+            if (nSel == 0)
+                m_state.m_nShadow = 0;
+            else if (nSel == 1)
+                m_state.m_nShadow = 2;
+            else if (nSel == 2)
+                m_state.m_nShadow = 3;
+        }
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_vsync"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            m_state.m_bVsync = sp->FUN_1422ce0e0() != 0;
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_enchantEffect"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            m_state.m_bEnchantEffect = sp->FUN_1422ce0e0() != 0;
+    }
+    {
+        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_multisampling"), -1);
+        if (static_cast<Unk_GoCombo*>(sp) != 0)
+            m_state.m_nMultisampling = sp->FUN_1422df6c0();
+    }
+    {
+        MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_optimalHide"), -1);
+        if (static_cast<Unk_GoCombo*>(sp) != 0)
+            m_state2.m_nOptimalHide = sp->FUN_1422df6c0();
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideAlways"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            m_state2.m_bHideAlways = sp->FUN_1422ce0e0() != 0;
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideBossBattle"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            m_state2.m_bHideBossBattle = sp->FUN_1422ce0e0() != 0;
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showParty"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            m_state2.m_bShowParty = sp->FUN_1422ce0e0() != 0;
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showGuild"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            m_state2.m_bShowGuild = sp->FUN_1422ce0e0() != 0;
+    }
+    {
+        MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showCustom"), -1);
+        if (static_cast<Unk_GoRadio*>(sp) != 0)
+            m_state2.m_bShowCustom = sp->FUN_1422ce0e0() != 0;
+    }
+    {
+        MS2Ptr<Unk_GoInput> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e2e0(CString("m_customInput"), -1);
+        if (static_cast<Unk_GoInput*>(sp) != 0)
+            m_state2.m_nCustomInput = FUN_1407181a0(sp->FUN_1422e0b00());
+    }
+    {
+        MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showPhysx"), -1);
+        if (static_cast<Unk_GoCheck*>(sp) != 0)
+            m_state2.m_bShowPhysx = sp->FUN_1422ce0e0() != 0;
+    }
+}
+
+// @0x14124ce20
+void CGameOptionGraphicDefault::FUN_14124ce20()
+{
+    Unk_GraphicState* pGfx = TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0();
+    bool bResChanged = false;
+    if (m_state.m_nScreenMode != pGfx->m_nScreenMode || m_state.m_nResIdx != pGfx->m_nResIdx)
+        bResChanged = true;
+    if (bResChanged)
+    {
+        FUN_14125e910(TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0(), m_state.m_nScreenMode, m_state.m_nResIdx);
+        m_state.m_nWidth = TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0()->m_nWidth;
+        m_state.m_nHeight = TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0()->m_nHeight;
+    }
+    if (m_state.m_nQuality != pGfx->m_nQuality)
+        FUN_14125e1f0(&m_state, m_state.m_nQuality, 0);
+    if (m_state.m_bHdr != pGfx->m_bHdr)
+        FUN_14125e300(&m_state, m_state.m_bHdr);
+    if (m_state.m_bShimmer != pGfx->m_bShimmer)
+        FUN_14125e3b0(&m_state, m_state.m_bShimmer);
+    if (m_state.m_nEffectStep != pGfx->m_nEffectStep)
+        FUN_1403ed280()->FUN_1411a8880(m_state.m_nEffectStep);
+    bool bMultisampling = m_state.m_nMultisampling != pGfx->m_nMultisampling;
+    if (bMultisampling)
+        FUN_14125e4b0(&m_state, FUN_140ae1c00()->FUN_141376790(m_state.m_nMultisampling));
+    bool bVsync = m_state.m_bVsync != pGfx->m_bVsync;
+    if (bVsync)
+        FUN_14125e5b0(&m_state, m_state.m_bVsync);
+    if (!m_state.m_bShowFrameRate)
+        FUN_1403ed2b0()->FUN_141adc5d0(0x4e7d);
+    else
+        FUN_1403ed2b0()->FUN_141adc530(0x4e7d);
+    if (bVsync || bMultisampling)
+        FUN_140d73bc0(0x84e, 0, 0, CStringW(L""));
+}
+
+// @0x14124d080
+void CGameOptionGraphicDefault::FUN_14124d080()
+{
+    MS2Ptr<Unk_GoCombo> spCombo = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_resolution"), -1);
+    if (static_cast<Unk_GoCombo*>(spCombo) != 0)
+    {
+        spCombo->FUN_1422dfc10();
+        int nCurWidth = m_state.m_nWidth;
+        int nCurHeight = m_state.m_nHeight;
+        Unk_GoGfxDevice* pDevice = FUN_140994450();
+        if (pDevice != 0)
+        {
+            Unk_GoModeSource* pSource = pDevice->FUN_14124fea0();
+            if (pSource != 0)
+            {
+                std::vector<Unk_GoResMode> modes;
+                for (unsigned int i = 0; i < pSource->FUN_14124ff10(); i++)
+                {
+                    Unk_GoRawMode* pRaw = pSource->FUN_14124fee0(i);
+                    if (pRaw != 0
+                        && FUN_14125e7e0(TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0(), pRaw->m_nFormat, pRaw->m_nWidth, pRaw->m_nHeight))
+                        modes.push_back(Unk_GoResMode(i, pRaw->m_nWidth, pRaw->m_nHeight));
+                }
+                if (!modes.empty())
+                {
+                    int nRows = (int)modes.size();
+                    if (nRows < 7)
+                        spCombo->FUN_1422df5f0(nRows);
+                    else
+                        spCombo->FUN_1422df8c0(CStringW(L"export_scroll"));
+                    std::sort(modes.begin(), modes.end(), Unk_GoResModeLess());
+                    int nSelected = 0;
+                    for (int j = 0; j < nRows; j++)
+                    {
+                        const Unk_GoResMode& mode = modes.at(j);
+                        int nWidth = mode.m_size.first;
+                        int nHeight = mode.m_size.second;
+                        CStringW strLabel;
+                        std::pair<int, int> ratio = FUN_14124d9d0(nWidth, nHeight);
+                        if ((float)ratio.first / (float)ratio.second < 1.59f)
+                            strLabel = FormatStringId(0x30f, nWidth, nHeight, ratio.first, ratio.second);
+                        else
+                            strLabel = FormatStringId(0x310, nWidth, nHeight, ratio.first, ratio.second);
+                        ASObj row(2);
+                        row.FUN_1407cb9c0("modeid", mode.m_nIndex);
+                        row.FUN_1407cbb20("label", strLabel);
+                        spCombo->FUN_1422dfc70(row);
+                        if (nCurWidth == nWidth && nCurHeight == nHeight)
+                            nSelected = j;
+                    }
+                    spCombo->FUN_1422df690(nSelected);
+                    spCombo->vfunc_24(true);
+                }
+            }
+        }
+    }
+}
+
+// @0x14124d5f0
+void CGameOptionGraphicDefault::FUN_14124d5f0(int nIndex, int* pnWidth, int* pnHeight)
+{
+    Unk_GoGfxDevice* pDevice = FUN_140994450();
+    if (pDevice != 0)
+    {
+        Unk_GoModeSource* pSource = pDevice->FUN_14124fea0();
+        if (pSource != 0)
+        {
+            Unk_GoRawMode* pRaw = pSource->FUN_14124fee0(nIndex);
+            if (pRaw != 0)
+            {
+                *pnWidth = pRaw->m_nWidth;
+                *pnHeight = pRaw->m_nHeight;
+            }
+        }
+    }
+}
+
+// @0x14124d6a0
+void CGameOptionGraphicDefault::vfunc_10()
+{
+    CBaseOption::vfunc_10();
+    bool bOldEnchant = true;
+    Unk_GraphicState* pGfx = TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0();
+    if (pGfx != 0)
+        bOldEnchant = pGfx->m_bEnchantEffect;
+    FUN_14124ce20();
+    FUN_14125dff0(TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0(), &m_state);
+    FUN_14125ef60(TSingleton<CGameOption>::GetInstance()->FUN_140c77560(), &m_state2);
+    FUN_14125ef90(&m_state2);
+    if (m_state.m_bEnchantEffect != bOldEnchant)
+    {
+        if (!m_state.m_bEnchantEffect)
+            FUN_1403ed2d0()->FUN_141bd4260();
+        else
+            FUN_1403ed2d0()->FUN_141bd41d0();
+    }
+}
+
+// @0x14124d7a0
+void CGameOptionGraphicDefault::vfunc_12()
+{
+    CBaseOption::vfunc_12();
+    FUN_14125d8c0(&m_state);
+    FUN_14125d9b0(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0(), 1);
+    FUN_14125ec50(&m_state2);
+    FUN_14125ecc0(&m_state2, TSingleton<CGameOption>::GetInstance()->FUN_1412442a0());
+    vfunc_6();
+}
+
+// @0x14124d840
+CString CGameOptionGraphicDefault::vfunc_1()
+{
+    return CString("GameOptionGraphic");
+}
+
+// @0x14124d890
+bool CGameOptionGraphicDefault::vfunc_14()
+{
+    unsigned int nDiff1 = memcmp(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0(), sizeof(Unk_GraphicState));
+    unsigned int nDiff2 = memcmp(&m_state2, TSingleton<CGameOption>::GetInstance()->FUN_140c77560(), sizeof(Unk_GraphicState2));
+    return nDiff1 | nDiff2;
+}
+
+// @0x14124d900
+static int FUN_14124d900(int a, int b)
+{
+    while (b != 0)
+    {
+        int nRem = a % b;
+        a = b;
+        b = nRem;
+    }
+    return abs(a);
+}
+
+// @0x14124d950
+static float FUN_14124d950(float f)
+{
+    float fInt = (float)(int)f;
+    if (0.5f <= f - fInt)
+        fInt = ceilf(fInt + 1.0f);
+    return fInt;
+}
+
+// The aspect ratio of a resolution as a small integer pair (16:9, 16:10, ...).
+// @0x14124d9d0
+static std::pair<int, int> FUN_14124d9d0(int nWidth, int nHeight)
+{
+    int nGcd = FUN_14124d900(nWidth, nHeight);
+    int a = nWidth;
+    int b = nHeight;
+    if (1 < nGcd)
+    {
+        a = nWidth / nGcd;
+        b = nHeight / nGcd;
+    }
+    bool bScale = 0x10 < a;
+    if (!bScale)
+    {
+        float fRatio = (float)a / (float)b;
+        if (fRatio < 1.6f || 1.67f <= fRatio)
+            bScale = 5 < a;
+        else
+        {
+            int nMul = (int)(16.0f / (float)a);
+            a = a * nMul;
+            b = b * nMul;
+            if (a < 0x10 && (nGcd = FUN_14124d900(a, b), 1 < nGcd))
+            {
+                a = a / nGcd;
+                b = b / nGcd;
+            }
+        }
+    }
+    if (bScale)
+    {
+        float fRatio = (float)a / (float)b;
+        float fScaled;
+        if (1.6f <= fRatio)
+            fScaled = fRatio * 10.0f;
+        else
+            fScaled = FUN_14124d950(fRatio * 10.0f);
+        if (1.57f <= fRatio)
+        {
+            float fNine = 9.0f;
+            float fMul = 9.0f / (float)b;
+            a = (int)FUN_14124d950((float)a * fMul);
+            b = (int)fNine;
+        }
+        else
+        {
+            int nScaled = (int)fScaled;
+            float fMul = (float)nScaled / (float)a;
+            a = nScaled;
+            b = (int)FUN_14124d950((float)b * fMul);
+            float fRatio2 = (float)a / (float)b;
+            if ((fRatio2 < 1.6f || 1.67f <= fRatio2) && (nGcd = FUN_14124d900(a, b), 1 < nGcd))
+            {
+                a = a / nGcd;
+                b = b / nGcd;
+            }
+        }
+    }
+    return std::pair<int, int>(a, b);
+}
