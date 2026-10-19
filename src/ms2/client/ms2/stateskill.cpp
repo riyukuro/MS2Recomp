@@ -19,6 +19,7 @@
 
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/chomeprivilege.h"
+#include "ms2/client/ms2/costumemanager.h"   // TEMP: fittingdollpc.h (uncommitted edit by another worker) needs it
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/client/ms2/statemanager.h"
 #include "ms2/placeholder/cbasecollision.h"
@@ -50,6 +51,8 @@
 #include "ms2/client/ms2/magicdata.h"
 #include "ms2/client/ms2/uicastingbar.h"
 #include "ms2/client/ms2/statedata.h"
+#include "ms2/client/ms2/stateglide.h"
+#include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/placeholder/cequipmentslotlayerinfo.h"
@@ -195,6 +198,11 @@ extern char DAT_143ae95e0;                                 // debug: show the sk
 extern char DAT_143ae95e1;                                 // debug: show the skill range of an npc
 
 int FUN_141769410(PCBase* pOwner, SkillAttackData* pAttack, unsigned nSkillId);   // the attack's target count
+
+MyPC* FUN_14096e160(PCBase* pActor);                       // the own player side of an actor (null for others)
+extern Unk_Inventory DAT_143ab2a90;                        // the inventory
+// The record of an item (citem.h types it Unk_ItemEquipData; the glide / ride / pet getters are CItemData's).
+#define SS_ITEMDATA(spItem) reinterpret_cast<CItemData*>((spItem)->FUN_140527840())
 
 // ---- statics -------------------------------------------------------------------------------------------------------
 
@@ -1410,6 +1418,71 @@ void StateSkill::FUN_1417ecce0(unsigned nTick, MS2Ptr<CSkillRecord> spRecord, in
 }
 MS2_REPLACE(0x1417ecce0, StateSkill::FUN_1417ecce0, 2564, 0xE267354E);
 
+// The charge input of a charging skill. Released before the loop: jump the motion to its charging attack key (the
+// loop starts there). Pressed again after a charge: turn to the cast, restart the loop sequence at the loop start,
+// sync the weapon and run the move phases.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417ec630
+void StateSkill::FUN_1417ec630(bool bCharge, bool bStart)
+{
+    if (m_spRecord == NULL)
+        return;
+    m_bCharging = bCharge;
+    if (!m_bCharging)
+    {
+        if (m_bLoop || !bStart)
+            return;
+        NiActorManager* pManager = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460());
+        if (pManager == NULL)
+            return;
+        unsigned nSequenceId = m_pOwner->FUN_141679270(m_strSequence);
+        pManager->SetTargetAnimation(nSequenceId, m_fSpeed, true);
+        pManager->Update((float)CMainSystem::GetInstance()->FUN_141473280());
+        NiControllerSequence* pSequence = pManager->GetActiveSequence(nSequenceId, true, true);
+        if (pSequence == NULL)
+            return;
+        float fOffset = FUN_140a53fa0(pSequence) + FUN_141b6fe90(pSequence, NiFixedString("charging_attack"), 1.0f)
+            * (1.0f / FUN_140a53f80(pSequence));
+        pSequence->SetOffset(fOffset);
+        m_bLoop = true;
+        m_b112 = false;
+        m_bCharging = false;
+        m_nRepeat = 0;
+        m_fLoopStart = FUN_141b6fe90(pSequence, NiFixedString("charging_attack"), 1.0f);
+    }
+    else if (m_fChargeTime > 0.0f)
+    {
+        NiActorManager* pManager = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460());
+        if (pManager == NULL)
+            return;
+        PCBase* pPC = FUN_1417b8370();
+        if (pPC == NULL || FUN_141489940(pPC) != 10)
+        {
+            m_pOwner->FUN_14166d8b0(m_spRecord->m_ptRot.z);
+            m_pOwner->vfunc_21(reinterpret_cast<const efd::Point3&>(m_spRecord->m_ptRot));
+        }
+        else
+        {
+            float fYaw = FUN_1417f4ea0(m_pOwner, reinterpret_cast<const efd::Point3&>(m_spRecord->m_ptRot));
+            m_pOwner->FUN_14166d8b0(fYaw);
+        }
+        m_nAttack = 0;
+        m_fChargeTime = 0.0f;
+        m_bCharging = false;
+        m_b117 = true;
+        pManager->SetTargetAnimation(m_nLoopSequenceId, m_fSpeed, true);
+        pManager->Update((float)CMainSystem::GetInstance()->FUN_141473280());
+        NiControllerSequence* pSequence = pManager->GetActiveSequence(m_nLoopSequenceId, true, true);
+        if (pSequence == NULL)
+            return;
+        pSequence->SetOffset(FUN_140a53fa0(pSequence) + m_fLoopStart * (1.0f / FUN_140a53f80(pSequence)));
+        FUN_1417f1a90();
+        if (pPC != NULL)
+            FUN_141663be0(pPC, pSequence->GetName(), m_fSpeed, NiFixedString("loopstart"));
+    }
+}
+MS2_REPLACE_METHOD(0x1417ec630, StateSkill, FUN_1417ec630, 1432, 0x65202FA4);
+
 // @0x1417ed6f0
 MS2Ptr<CSkillRecord> StateSkill::FUN_1417ed6f0()
 {
@@ -1921,6 +1994,86 @@ int StateSkill::FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int
     return 0;
 }
 MS2_REPLACE(0x1417eaa50, StateSkill::FUN_1417eaa50, 2311, 0xEAE85E66);
+// A cast that runs as a state of the own player. Kind 0x26 (use the request's item): mount a ride item, or summon
+// the pet of a pet item. Kind 0x1e (glide on the request's item): glide off when already gliding on it, else start
+// the glide state. Any other kind starts its own state. Both state starts are reported (packet 0x21 mode 0).
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417eb3a0
+int StateSkill::FUN_1417eb3a0(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult)
+{
+    MyPC* pMy = FUN_14096e160(pOwner);
+    if (pMy == NULL)
+        return 0;
+    pMy->FUN_14152e0c0();
+    *pResult = 1;
+    int nState = spRecord->m_spSkill->FUN_1407e9bd0();
+    if (pMy->FUN_141527650(nState) == 0)
+        return 0;
+    if (nState == 0x26 && pMy->GetClassID() == 0x6200004)
+    {
+        if (spRecord->FUN_1417599c0() != 0)
+        {
+            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(spRecord->FUN_1417599c0());
+            if (spItem.get() != NULL)
+            {
+                if (SS_ITEMDATA(spItem)->FUN_14053cc80())
+                    pMy->FUN_14152ba80(spItem);
+                else if (SS_ITEMDATA(spItem)->FUN_14053cc40())
+                    pMy->FUN_14152aa90(spItem, 0);
+            }
+        }
+    }
+    else if (nState == 0x1e)
+    {
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(spRecord->FUN_1417599c0());
+        if (spItem == NULL)
+            return 0;
+        if (pMy->FUN_14166c930() == 0x1e)
+        {
+            StateGlide* pGlide = static_cast<StateGlide*>(pMy->FUN_141678750()->FUN_1417db1c0());
+            if (pGlide->FUN_1417df3c0() == 1 && pGlide->FUN_1417df3e0() == (int)spRecord->GetSkillId()
+                && pGlide->FUN_1417c9740() == SS_ITEMDATA(spItem)->FUN_14053dde0())
+            {
+                pGlide->FUN_1417df370();
+                return 0;
+            }
+        }
+        MS2Ptr<StateGlideData> spData(new StateGlideData);
+        spData->m_nSkill = spRecord->GetSkillId();
+        spData->m_nLevel = spRecord->GetLevel();
+        spData->m_n20 = SS_ITEMDATA(spItem)->FUN_14053dde0();
+        pMy->vfunc_59(0x1e, spData.get(), 0, 1);
+        COutPacket packet(0x21, 0);
+        packet.Encode1(0);
+        packet.Encode8(spRecord->m_nCastId);
+        packet.Encode4(spRecord->m_nTick);
+        packet.Encode4(spRecord->GetSkillId());
+        packet.Encode2(spRecord->GetLevel());
+        packet.Encode4(0x1e);
+        packet.Encode4(CMainSystem::GetInstance()->GetElapsedTime());
+        packet.Encode8(spRecord->FUN_1417599c0());
+        FUN_140710590(packet);
+    }
+    else
+    {
+        MS2Ptr<StateSkillData> spData(new StateSkillData);
+        spData->m_nSkill = spRecord->GetSkillId();
+        spData->m_nLevel = spRecord->GetLevel();
+        pMy->vfunc_59(nState, spData.get(), 0, 1);
+        COutPacket packet(0x21, 0);
+        packet.Encode1(0);
+        packet.Encode8(spRecord->m_nCastId);
+        packet.Encode4(spRecord->m_nTick);
+        packet.Encode4(spRecord->GetSkillId());
+        packet.Encode2(spRecord->GetLevel());
+        packet.Encode4(nState);
+        packet.Encode4(CMainSystem::GetInstance()->GetElapsedTime());
+        packet.Encode8(spRecord->FUN_1417599c0());
+        FUN_140710590(packet);
+    }
+    return 0;
+}
+MS2_REPLACE(0x1417eb3a0, StateSkill::FUN_1417eb3a0, 2135, 0x4FF54D4C);
 
 // Sends the use of a cast (packet 0x20 mode 0 with the skill use payload); a held object weapon whose skill this is
 // is put away.
