@@ -23,6 +23,12 @@ public:
     int FUN_1422c1500();                                            // 0x1422c1500 width
     int FUN_1422c1530();                                            // 0x1422c1530 height
     void FUN_1422c79e0(int nWidth, int nHeight);                    // 0x1422c79e0 resize
+    // mouse / focus members (uinoticedialog.cpp: the hit area of the notice dialog)
+    void FUN_1422c7840(int n);                                      // 0x1422c7840
+    void FUN_1422c7630(int n);                                      // 0x1422c7630 focus
+    int FUN_1422c76c0();                                            // 0x1422c76c0
+    void FUN_1422de700(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // 0x1422de700 mouse over listener
+    void FUN_1422de780(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // 0x1422de780 mouse out listener
 
 private:
     void* m_pad_80;
