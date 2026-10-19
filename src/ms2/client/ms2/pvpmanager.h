@@ -6,6 +6,7 @@
 // and the rank-duel component at +0xc8. The three of them forward the server's PvP packets (OnMessage).
 #pragma once
 
+#include <afx.h>
 #include <map>
 #include <vector>
 
@@ -61,8 +62,24 @@ public:
 MS2_CHECK_SIZE(Unk_PvpTimer, 0x48);
 
 struct Unk_PvpTimerItem;
-struct Unk_PvpEntryItem;
 struct Unk_PvpEntryTarget;
+
+// One team member row of an entry table (0x28 bytes; ctor 0x14101ebb0, dtor 0x14101ec60).
+struct Unk_PvpEntryItem
+{
+    Unk_PvpEntryItem(unsigned __int64 nCharId, CStringW strName, int nJob, int nKill, int nWin, int nLose);   // 0x14101ebb0
+    ~Unk_PvpEntryItem() {}                                              // 0x14101ec60
+    void* FUN_14101eea0(unsigned nFlags);                               // scalar deleting destructor
+
+    unsigned __int64 m_nCharId;                                                // +0x00
+    CStringW m_strName;                                                 // +0x08
+    int m_nKill;                                                        // +0x10
+    int m_nWin;                                                         // +0x14
+    int m_nLose;                                                        // +0x18
+    int m_nJob;                                                         // +0x1c
+    bool m_bOnline;                                                     // +0x20
+};
+MS2_CHECK_SIZE(Unk_PvpEntryItem, 0x28);
 
 // Timer block (0x60): the timer, then a vector of owned pointers.
 class Unk_PvpTimerBlock
@@ -85,13 +102,15 @@ public:
     ~Unk_PvpEntryTable() {}                                             // 0x141281670
 
     void FUN_14101ef40();                                               // clear
-    void FUN_14101b7f0() { FUN_14101ef40(); }
 
     MS2_LAYOUT_FRIEND;
     int m_0;
     int m_4;
     std::vector<Unk_PvpEntryItem*> m_items;                             // +0x08
-    std::map<__int64, Unk_PvpEntryTarget*> m_targets;                   // +0x20
+    std::map<unsigned __int64, Unk_PvpEntryItem*> m_targets;                     // +0x20 by character id
+
+    Unk_PvpEntryItem* FUN_14101f010(unsigned __int64 nCharId);                   // the row of a character
+    void FUN_14101eee0(Unk_PvpEntryItem* pItem);                        // add a row
 };
 MS2_CHECK_SIZE(Unk_PvpEntryTable, 0x30);
 
@@ -102,8 +121,14 @@ public:
     ~Unk_PvpEntryBlock() {}                                             // 0x141281640
 
     void FUN_14101b7f0();                                               // clear both tables
-    void FUN_14101c0b0(void* pArgument);                                // forward
+    void FUN_14101c0b0(void* pArgument);                                // forward: mark a character offline
     void FUN_14101b830(int nMessage, CInPacket& packet);                // OnMessage
+    Unk_PvpEntryTable* FUN_14101c560(int nTeam);                        // the table of a team (0xc9 / 0xca)
+    std::vector<Unk_PvpEntryItem*>* FUN_14101c160(int nTeam);           // the rows of a team
+    void FUN_14101c1a0(int* pA, int* pB);                               // the two table values
+    void FUN_14101c470(int nA, int nB);                                 // set the two table values
+    void FUN_14101c4e0(int nTeam);                                      // sort the rows of a team
+    void FUN_14101c220(int nTeam, __int64 nCharId, int nWin, int nLose, int nKill);   // add / update a row
 
     MS2_LAYOUT_FRIEND;
     Unk_PvpEntryTable m_a;
