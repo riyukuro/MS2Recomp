@@ -4,40 +4,41 @@
 // MS2-RANGE: 0x1400b48f0-0x1400b53d0 .text$di
 // MS2-RANGE: 0x140217910-0x1402226b0 .text$mn
 // MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??8ATL@@YA_NPEB_WAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@0@@Z 0x140220db0 ; unique
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x14021c950 ; unique
 // MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@std@@@1@$$QEA_N@Z 0x14021c980 ; prop
-// MS2-PIN: ??$?0AEAY04$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY04$$CBD$$QEAH@Z 0x14021c9d0 ; probe
-// MS2-PIN: ??$?0AEAY05$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY05$$CBD$$QEAH@Z 0x14021ca20 ; order
-// MS2-PIN: ??$?0AEAY06$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY06$$CBD$$QEAH@Z 0x14021ca70 ; order
-// MS2-PIN: ??$?0AEAY07$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY07$$CBD$$QEAH@Z 0x14021cac0 ; order
-// MS2-PIN: ??$?0AEAY08$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY08$$CBD$$QEAH@Z 0x14021cb10 ; order
+// MS2-PIN: ??$?0AEAY04$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY04$$CBD$$QEAH@Z 0x14021ca20 ; probe
+// MS2-PIN: ??$?0AEAY05$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY05$$CBD$$QEAH@Z 0x14021ca70 ; order
+// MS2-PIN: ??$?0AEAY06$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY06$$CBD$$QEAH@Z 0x14021cac0 ; order
+// MS2-PIN: ??$?0AEAY07$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY07$$CBD$$QEAH@Z 0x14021cb10 ; order
+// MS2-PIN: ??$?0AEAY08$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY08$$CBD$$QEAH@Z 0x14021cbb0 ; order
 // MS2-PIN: ??$?0AEAY08$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY08$$CBD$$QEAI@Z 0x14021cb60 ; prop
-// MS2-PIN: ??$?0AEAY09$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY09$$CBD$$QEAH@Z 0x14021cbb0 ; order
+// MS2-PIN: ??$?0AEAY09$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY09$$CBD$$QEAH@Z 0x14021cc50 ; order
 // MS2-PIN: ??$?0AEAY09$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY09$$CBD$$QEAI@Z 0x14021cc00 ; prop
-// MS2-PIN: ??$?0AEAY0BA@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BA@$$CBD$$QEAH@Z 0x14021cc50 ; order
+// MS2-PIN: ??$?0AEAY0BA@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BA@$$CBD$$QEAH@Z 0x14021ccf0 ; order
 // MS2-PIN: ??$?0AEAY0BA@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0BA@$$CBD$$QEAI@Z 0x14021cca0 ; prop
-// MS2-PIN: ??$?0AEAY0BB@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BB@$$CBD$$QEAH@Z 0x14021ccf0 ; order
+// MS2-PIN: ??$?0AEAY0BB@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BB@$$CBD$$QEAH@Z 0x14021cd90 ; order
 // MS2-PIN: ??$?0AEAY0BB@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0BB@$$CBD$$QEAI@Z 0x14021cd40 ; prop
-// MS2-PIN: ??$?0AEAY0BC@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BC@$$CBD$$QEAH@Z 0x14021cd90 ; order
+// MS2-PIN: ??$?0AEAY0BC@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BC@$$CBD$$QEAH@Z 0x14021ce30 ; order
 // MS2-PIN: ??$?0AEAY0BC@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0BC@$$CBD$$QEAI@Z 0x14021cde0 ; prop
-// MS2-PIN: ??$?0AEAY0BD@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BD@$$CBD$$QEAH@Z 0x14021ce30 ; order
+// MS2-PIN: ??$?0AEAY0BD@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BD@$$CBD$$QEAH@Z 0x14021ced0 ; order
 // MS2-PIN: ??$?0AEAY0BD@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0BD@$$CBD$$QEAI@Z 0x14021ce80 ; prop
-// MS2-PIN: ??$?0AEAY0BE@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BE@$$CBD$$QEAH@Z 0x14021ced0 ; order
+// MS2-PIN: ??$?0AEAY0BE@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BE@$$CBD$$QEAH@Z 0x14021cf70 ; order
 // MS2-PIN: ??$?0AEAY0BE@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0BE@$$CBD$$QEAI@Z 0x14021cf20 ; prop
 // MS2-PIN: ??$?0AEAY0BF@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0BF@$$CBD$$QEAI@Z 0x14021cfc0 ; prop
 // MS2-PIN: ??$?0AEAY0BG@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0BG@$$CBD$$QEAI@Z 0x14021d010 ; prop
-// MS2-PIN: ??$?0AEAY0BH@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BH@$$CBD$$QEAH@Z 0x14021d060 ; order
+// MS2-PIN: ??$?0AEAY0BH@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BH@$$CBD$$QEAH@Z 0x14021d100 ; order
 // MS2-PIN: ??$?0AEAY0BH@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0BH@$$CBD$$QEAI@Z 0x14021d0b0 ; prop
 // MS2-PIN: ??$?0AEAY0BI@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0BI@$$CBD$$QEAI@Z 0x14021d150 ; prop
 // MS2-PIN: ??$?0AEAY0BK@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0BK@$$CBD$$QEAI@Z 0x14021d1a0 ; prop
 // MS2-PIN: ??$?0AEAY0L@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0L@$$CBD$$QEAI@Z 0x14021d1f0 ; prop
-// MS2-PIN: ??$?0AEAY0M@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0M@$$CBD$$QEAH@Z 0x14021d240 ; order
+// MS2-PIN: ??$?0AEAY0M@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0M@$$CBD$$QEAH@Z 0x14021d2e0 ; order
 // MS2-PIN: ??$?0AEAY0M@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0M@$$CBD$$QEAI@Z 0x14021d290 ; prop
-// MS2-PIN: ??$?0AEAY0N@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0N@$$CBD$$QEAH@Z 0x14021d2e0 ; order
+// MS2-PIN: ??$?0AEAY0N@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0N@$$CBD$$QEAH@Z 0x14021d380 ; order
 // MS2-PIN: ??$?0AEAY0N@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0N@$$CBD$$QEAI@Z 0x14021d330 ; prop
-// MS2-PIN: ??$?0AEAY0O@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0O@$$CBD$$QEAH@Z 0x14021d380 ; order
+// MS2-PIN: ??$?0AEAY0O@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0O@$$CBD$$QEAH@Z 0x14021d420 ; order
 // MS2-PIN: ??$?0AEAY0O@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0O@$$CBD$$QEAI@Z 0x14021d3d0 ; prop
-// MS2-PIN: ??$?0AEAY0P@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0P@$$CBD$$QEAH@Z 0x14021d420 ; order
+// MS2-PIN: ??$?0AEAY0P@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0P@$$CBD$$QEAH@Z 0x14021d4c0 ; order
 // MS2-PIN: ??$?0AEAY0P@$$CBDI$0A@@?$pair@PEBDI@std@@QEAA@AEAY0P@$$CBD$$QEAI@Z 0x14021d470 ; prop
 // MS2-PIN: ??$?0AEBUCommonEnumNoCaseLess@@U_Zero_then_variadic_args_t@std@@@?$_Compressed_pair@UCommonEnumNoCaseLess@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@2@$00@std@@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBUCommonEnumNoCaseLess@@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x14021d510 ; unique
 // MS2-PIN: ??$?0PEBDI$0A@@?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@QEAA@$$QEAU?$pair@PEBDI@1@@Z 0x14021d630 ; unique
@@ -57,44 +58,44 @@
 // MS2-PIN: ??$forward@AEAPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@PEAX@std@@@std@@YAAEAPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@PEAX@0@AEAPEAU10@@Z 0x14021f270 ; prop
 // MS2-PIN: ??$forward@AEAU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@YAAEAU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@0@AEAU10@@Z 0x14021f280 ; prop
 // MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@std@@@0@AEAV10@@Z 0x14021f290 ; prop
-// MS2-PIN: ??$forward@AEAY04$$CBD@std@@YAAEAY04$$CBDAEAY04$$CBD@Z 0x14021f2a0 ; order
+// MS2-PIN: ??$forward@AEAY04$$CBD@std@@YAAEAY04$$CBDAEAY04$$CBD@Z 0x14021f2b0 ; order
 // MS2-PIN: ??$forward@AEAY0O@$$CBD@std@@YAAEAY0O@$$CBDAEAY0O@$$CBD@Z 0x14021f2b0 ; order
 // MS2-PIN: ??$forward@AEBUCommonEnumNoCaseLess@@@std@@YAAEBUCommonEnumNoCaseLess@@AEBU1@@Z 0x14021f2d0 ; prop
 // MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@std@@@0@AEAV10@@Z 0x14021f310 ; prop
 // MS2-PIN: ??$forward@I@std@@YA$$QEAIAEAI@Z 0x14021f330 ; prop
 // MS2-PIN: ??$forward@H@std@@YA$$QEAHAEAH@Z 0x14021f340 ; prop
-// MS2-PIN: ??$make_pair@AEAY04$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY04$$CBD$$QEAH@Z 0x14021f3e0 ; probe
-// MS2-PIN: ??$make_pair@AEAY05$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY05$$CBD$$QEAH@Z 0x14021f430 ; order
-// MS2-PIN: ??$make_pair@AEAY06$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY06$$CBD$$QEAH@Z 0x14021f480 ; order
-// MS2-PIN: ??$make_pair@AEAY07$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY07$$CBD$$QEAH@Z 0x14021f4d0 ; order
-// MS2-PIN: ??$make_pair@AEAY08$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY08$$CBD$$QEAH@Z 0x14021f520 ; order
+// MS2-PIN: ??$make_pair@AEAY04$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY04$$CBD$$QEAH@Z 0x14021f430 ; probe
+// MS2-PIN: ??$make_pair@AEAY05$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY05$$CBD$$QEAH@Z 0x14021f480 ; order
+// MS2-PIN: ??$make_pair@AEAY06$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY06$$CBD$$QEAH@Z 0x14021f4d0 ; order
+// MS2-PIN: ??$make_pair@AEAY07$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY07$$CBD$$QEAH@Z 0x14021f520 ; order
+// MS2-PIN: ??$make_pair@AEAY08$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY08$$CBD$$QEAH@Z 0x14021f5c0 ; order
 // MS2-PIN: ??$make_pair@AEAY08$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY08$$CBD$$QEAI@Z 0x14021f570 ; unique
-// MS2-PIN: ??$make_pair@AEAY09$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY09$$CBD$$QEAH@Z 0x14021f5c0 ; order
+// MS2-PIN: ??$make_pair@AEAY09$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY09$$CBD$$QEAH@Z 0x14021f660 ; order
 // MS2-PIN: ??$make_pair@AEAY09$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY09$$CBD$$QEAI@Z 0x14021f610 ; unique
-// MS2-PIN: ??$make_pair@AEAY0BA@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BA@$$CBD$$QEAH@Z 0x14021f660 ; order
+// MS2-PIN: ??$make_pair@AEAY0BA@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BA@$$CBD$$QEAH@Z 0x14021f700 ; order
 // MS2-PIN: ??$make_pair@AEAY0BA@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0BA@$$CBD$$QEAI@Z 0x14021f6b0 ; unique
-// MS2-PIN: ??$make_pair@AEAY0BB@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BB@$$CBD$$QEAH@Z 0x14021f700 ; order
+// MS2-PIN: ??$make_pair@AEAY0BB@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BB@$$CBD$$QEAH@Z 0x14021f7a0 ; order
 // MS2-PIN: ??$make_pair@AEAY0BB@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0BB@$$CBD$$QEAI@Z 0x14021f750 ; unique
-// MS2-PIN: ??$make_pair@AEAY0BC@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BC@$$CBD$$QEAH@Z 0x14021f7a0 ; order
+// MS2-PIN: ??$make_pair@AEAY0BC@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BC@$$CBD$$QEAH@Z 0x14021f840 ; order
 // MS2-PIN: ??$make_pair@AEAY0BC@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0BC@$$CBD$$QEAI@Z 0x14021f7f0 ; unique
-// MS2-PIN: ??$make_pair@AEAY0BD@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BD@$$CBD$$QEAH@Z 0x14021f840 ; order
+// MS2-PIN: ??$make_pair@AEAY0BD@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BD@$$CBD$$QEAH@Z 0x14021f8e0 ; order
 // MS2-PIN: ??$make_pair@AEAY0BD@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0BD@$$CBD$$QEAI@Z 0x14021f890 ; unique
-// MS2-PIN: ??$make_pair@AEAY0BE@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BE@$$CBD$$QEAH@Z 0x14021f8e0 ; order
+// MS2-PIN: ??$make_pair@AEAY0BE@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BE@$$CBD$$QEAH@Z 0x14021f980 ; order
 // MS2-PIN: ??$make_pair@AEAY0BE@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0BE@$$CBD$$QEAI@Z 0x14021f930 ; unique
 // MS2-PIN: ??$make_pair@AEAY0BF@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0BF@$$CBD$$QEAI@Z 0x14021f9d0 ; unique
 // MS2-PIN: ??$make_pair@AEAY0BG@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0BG@$$CBD$$QEAI@Z 0x14021fa20 ; unique
-// MS2-PIN: ??$make_pair@AEAY0BH@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BH@$$CBD$$QEAH@Z 0x14021fa70 ; order
+// MS2-PIN: ??$make_pair@AEAY0BH@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0BH@$$CBD$$QEAH@Z 0x14021fb10 ; order
 // MS2-PIN: ??$make_pair@AEAY0BH@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0BH@$$CBD$$QEAI@Z 0x14021fac0 ; unique
 // MS2-PIN: ??$make_pair@AEAY0BI@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0BI@$$CBD$$QEAI@Z 0x14021fb60 ; unique
 // MS2-PIN: ??$make_pair@AEAY0BK@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0BK@$$CBD$$QEAI@Z 0x14021fbb0 ; unique
 // MS2-PIN: ??$make_pair@AEAY0L@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0L@$$CBD$$QEAI@Z 0x14021fc00 ; unique
-// MS2-PIN: ??$make_pair@AEAY0M@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0M@$$CBD$$QEAH@Z 0x14021fc50 ; order
+// MS2-PIN: ??$make_pair@AEAY0M@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0M@$$CBD$$QEAH@Z 0x14021fcf0 ; order
 // MS2-PIN: ??$make_pair@AEAY0M@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0M@$$CBD$$QEAI@Z 0x14021fca0 ; unique
-// MS2-PIN: ??$make_pair@AEAY0N@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0N@$$CBD$$QEAH@Z 0x14021fcf0 ; order
+// MS2-PIN: ??$make_pair@AEAY0N@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0N@$$CBD$$QEAH@Z 0x14021fd90 ; order
 // MS2-PIN: ??$make_pair@AEAY0N@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0N@$$CBD$$QEAI@Z 0x14021fd40 ; unique
-// MS2-PIN: ??$make_pair@AEAY0O@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0O@$$CBD$$QEAH@Z 0x14021fd90 ; order
+// MS2-PIN: ??$make_pair@AEAY0O@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0O@$$CBD$$QEAH@Z 0x14021fe30 ; order
 // MS2-PIN: ??$make_pair@AEAY0O@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0O@$$CBD$$QEAI@Z 0x14021fde0 ; unique
-// MS2-PIN: ??$make_pair@AEAY0P@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0P@$$CBD$$QEAH@Z 0x14021fe30 ; order
+// MS2-PIN: ??$make_pair@AEAY0P@$$CBDH@std@@YA?AU?$pair@PEBDH@0@AEAY0P@$$CBD$$QEAH@Z 0x14021fed0 ; order
 // MS2-PIN: ??$make_pair@AEAY0P@$$CBDI@std@@YA?AU?$pair@PEBDI@0@AEAY0P@$$CBD$$QEAI@Z 0x14021fe80 ; unique
 // MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@1@@Z 0x14021ffe0 ; prop
 // MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@std@@@std@@@std@@@std@@QEAA@XZ 0x140220020 ; prop
@@ -1464,8 +1465,8 @@ static struct Unk_LookupTableInit {
         ::new (&lookupTable[18]) std::pair<const char*, int>(std::make_pair("IndividualBattle", 19));
         ::new (&lookupTable[19]) std::pair<const char*, int>(std::make_pair("CharacterAbility", 20));
         ::new (&lookupTable[20]) std::pair<const char*, int>(std::make_pair("Design", 21));
-        ::new (&lookupTable[21]) std::pair<const char*, int>(std::make_pair("Mail", 22));
-        ::new (&lookupTable[22]) std::pair<const char*, int>(std::make_pair("Mail", 23));
+        ::new (&lookupTable[21]) std::pair<const char*, int>(std::make_pair("Home", 22));
+        ::new (&lookupTable[22]) std::pair<const char*, int>(std::make_pair("VIP", 23));
         ::new (&lookupTable[23]) std::pair<const char*, int>(std::make_pair("Mastery", 24));
         ::new (&lookupTable[24]) std::pair<const char*, int>(std::make_pair("PartySearch", 25));
         ::new (&lookupTable[25]) std::pair<const char*, int>(std::make_pair("LearningQuest", 26));
@@ -1475,13 +1476,13 @@ static struct Unk_LookupTableInit {
         ::new (&lookupTable[29]) std::pair<const char*, int>(std::make_pair("BeautyHair", 30));
         ::new (&lookupTable[30]) std::pair<const char*, int>(std::make_pair("BeautyItem", 31));
         ::new (&lookupTable[31]) std::pair<const char*, int>(std::make_pair("BeautySkin", 32));
-        ::new (&lookupTable[32]) std::pair<const char*, int>(std::make_pair("Mail", 33));
+        ::new (&lookupTable[32]) std::pair<const char*, int>(std::make_pair("Club", 33));
         ::new (&lookupTable[33]) std::pair<const char*, int>(std::make_pair("EpicRestart", 34));
         ::new (&lookupTable[34]) std::pair<const char*, int>(std::make_pair("LevelUpPackage", 35));
         ::new (&lookupTable[35]) std::pair<const char*, int>(std::make_pair("AdventureBar", 36));
         ::new (&lookupTable[36]) std::pair<const char*, int>(std::make_pair("StampEvent", 37));
         ::new (&lookupTable[37]) std::pair<const char*, int>(std::make_pair("AttendGift", 38));
-        ::new (&lookupTable[38]) std::pair<const char*, int>(std::make_pair("Mail", 39));
+        ::new (&lookupTable[38]) std::pair<const char*, int>(std::make_pair("Pet", 39));
         ::new (&lookupTable[39]) std::pair<const char*, int>(std::make_pair("LiveBroadCast", 40));
         ::new (&lookupTable[40]) std::pair<const char*, int>(std::make_pair("TimeRunEvent", 41));
         ::new (&lookupTable[41]) std::pair<const char*, int>(std::make_pair("Mentoring", 42));
@@ -1489,7 +1490,7 @@ static struct Unk_LookupTableInit {
         ::new (&lookupTable[43]) std::pair<const char*, int>(std::make_pair("FamePointBoard", 44));
         ::new (&lookupTable[44]) std::pair<const char*, int>(std::make_pair("GalleryEvent", 45));
         ::new (&lookupTable[45]) std::pair<const char*, int>(std::make_pair("SkyFortress", 46));
-        ::new (&lookupTable[46]) std::pair<const char*, int>(std::make_pair("Mail", 47));
+        ::new (&lookupTable[46]) std::pair<const char*, int>(std::make_pair("Rps", 47));
         ::new (&lookupTable[47]) std::pair<const char*, int>(std::make_pair("CharacterSelect", 48));
         ::new (&lookupTable[48]) std::pair<const char*, int>(std::make_pair("GameExit", 49));
         ::new (&lookupTable[49]) std::pair<const char*, int>(std::make_pair("SurvivalMap", 50));
@@ -1529,25 +1530,44 @@ int Lookup(const CStringA& value, const std::pair<const char*, int> (&table)[75]
 // @0x14021b830
 int Parse_14021b830(const CStringA& value) { return Lookup(FUN_14016a5c0(static_cast<const char*>(value),0),lookupTable); }
 // @0x14021bdc0
-int Parse_14021bdc0(const CStringW& value) { if(value == L"\u5248") return 1;
-else if(value == L"\u4146") return 2;
-else if(value == L"\u4446") return 3;
-else if(value == L"\u484c") return 4;
-else if(value == L"\u4852") return 5;
-else if(value == L"\u5043") return 6;
-else if(value == L"\u544d") return 7;
-else if(value == L"\u4c43") return 8;
-else if(value == L"\u4150") return 9;
-else if(value == L"\u4c47") return 10;
-else if(value == L"\u4853") return 11;
-else if(value == L"\u4846") return 12;
-else if(value == L"\u5945") return 13;
-else if(value == L"\u4145") return 14;
-else if(value == L"\u4450") return 15;
-else if(value == L"\u4952") return 16;
-else if(value == L"\u4542") return 17;
-else if(value == L"\u5245") return 18;
-else if(value == L"\u484f") return 19;
-else return 0; }
+int Parse_14021bdc0(const CStringW& value) { if(L"\u5248" == value) return 1;
+if(L"\u4146" == value) return 2;
+if(L"\u4446" == value) return 3;
+if(L"\u484c" == value) return 4;
+if(L"\u4852" == value) return 5;
+if(L"\u5043" == value) return 6;
+if(L"\u544d" == value) return 7;
+if(L"\u4c43" == value) return 8;
+if(L"\u4150" == value) return 9;
+if(L"\u4c47" == value) return 10;
+if(L"\u4853" == value) return 11;
+if(L"\u4846" == value) return 12;
+if(L"\u5945" == value) return 13;
+if(L"\u4145" == value) return 14;
+if(L"\u4450" == value) return 15;
+if(L"\u4952" == value) return 16;
+if(L"\u4542" == value) return 17;
+if(L"\u5245" == value) return 18;
+if(L"\u484f" == value) return 19;
+return 0; }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+
+void* FUN_140166410();
+bool FUN_14036d570(void*, int);
+// @0x140222590
+bool FUN_140222590(int value)
+{
+    switch (value - 1) {
+    case 9: case 0x13: case 0x1d: case 0x27: case 0x31: case 0x3b: case 0x45: case 0x4f:
+        return true;
+    case 0x59:
+        return FUN_14036d570(FUN_140166410(), 8);
+    case 99:
+        return FUN_14036d570(FUN_140166410(), 0x12);
+    case 0x6d:
+        return FUN_14036d570(FUN_140166410(), 0x25);
+    default:
+        return false;
+    }
+}
