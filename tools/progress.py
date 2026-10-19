@@ -600,6 +600,8 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
         if va is not None:
             by_tag.setdefault(va, []).append(name)
     for va, names in sorted(by_tag.items()):
+        if not u.in_range(va):
+            continue            # a header tag (shared template) of another unit's copy: attributed by pin/auto here
         if len(names) > 1:
             names = [n for n in names if not n.startswith(GENERATED)] or names
         if len(names) > 1:      # MS2_REPLACE* thunks sit right after short functions, inside their tag window

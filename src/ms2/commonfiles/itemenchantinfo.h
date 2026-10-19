@@ -32,6 +32,7 @@ public:
     ~Unk_EnchantPtr() { Release(); }
     Unk_EnchantPtr& operator=(const Unk_EnchantPtr&);
     T* operator->() const { return p; }
+    bool operator!() const { return p == 0; }   // 0x14058f0c0 (CItemEnchantInfo; itemenchantlimittable.cpp)
     bool operator==(T* value) const { return p == value; }   // 0x1419ca6e0 (CItemEnchantInfo; uiitemenchantdialog.cpp)
     operator T*() const { return p; }       // 0x140633420 (CItemEnchantInfo)
     T* get() const { return p; }            // 0x1405c4950 (BaseOption; itemsocketsystemutil.cpp)
