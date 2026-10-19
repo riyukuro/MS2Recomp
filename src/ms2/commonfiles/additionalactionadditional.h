@@ -687,6 +687,7 @@ MS2_CHECK_OFFSET(AdditionalLevelData, m_arrRequireMasteryValues, 0x678);
 // Encoded/decoded effect state records (ctors are in ?\additionalcli.cpp).
 struct Unk_AdditionalOwner              // 0xc bytes (ctor 0x1409755b0)
 {
+    Unk_AdditionalOwner() : m_n0(0), m_n4(0), m_n8(0) {}               // 0x1409755b0 (?\additionalcli.cpp)
     void Encode(COutputStream* pStream);                // 0x140175f80
     void Decode(CInPacket& packet);                     // 0x140175fe0
     int m_n0;
@@ -696,6 +697,7 @@ struct Unk_AdditionalOwner              // 0xc bytes (ctor 0x1409755b0)
 MS2_CHECK_SIZE(Unk_AdditionalOwner, 0xc);
 struct Unk_AdditionalState              // 0x18 bytes (ctor 0x14096e4f0)
 {
+    Unk_AdditionalState() : m_n0(0), m_n4(0), m_n8(0), m_nC(0), m_n10(0), m_n14(0) {}   // 0x14096e4f0 (?\additionalcli.cpp)
     void Encode(COutputStream* pStream);                // 0x140176080
     void Decode(CInPacket& packet);                     // 0x140176130
     int m_n0;
@@ -708,6 +710,7 @@ struct Unk_AdditionalState              // 0x18 bytes (ctor 0x14096e4f0)
 MS2_CHECK_SIZE(Unk_AdditionalState, 0x18);
 struct Unk_AdditionalValue              // 8 bytes (ctor 0x14096e580)
 {
+    Unk_AdditionalValue() : m_n0(0) {}                                 // 0x14096e580 (?\additionalcli.cpp)
     void Encode(COutputStream* pStream);                // 0x140176250
     void Decode(CInPacket& packet);                     // 0x140176290
     __int64 m_n0;

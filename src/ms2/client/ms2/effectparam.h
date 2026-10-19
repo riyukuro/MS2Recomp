@@ -67,6 +67,7 @@ public:
     void FUN_140a534a0();           // 0x140a534a0 resolve the owner by id and its scene node
     void FUN_140a53550();           // 0x140a53550 start time (+0x68) = now
     void FUN_140a53170(int nId);    // 0x140a53170 +0x50 = nId
+    void FUN_140a531b0(int nId);    // 0x140a531b0 the lookup id (NoticeMessage::SetLookupId, placeholder/effectquery.h)
     Delegate<void(unsigned int, CString, bool)>& FUN_140a53460();  // 0x140a53460 the inserted callback (+0x40)
 };
 MS2_CHECK_OFFSET(Unk_EffectTarget, m_nKind, 0x08);
