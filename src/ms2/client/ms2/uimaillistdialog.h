@@ -38,6 +38,7 @@ public:
     virtual void vfunc_79(void* p);                                 // 79 0x1419e3750
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // IMessageListener 0 0x1419e3780
 
+    bool FUN_1419e8080(unsigned __int64 nMailId);                   // "onBuyAd": the ad bill dialog
     void FUN_1419e4f10();                                           // a mail was removed: clamp the page, refresh
     void FUN_1419e5000(__int64 nMailId);                            // "readMail"
     void FUN_1419e50b0(__int64 nMailId);                            // "receiveMail"
