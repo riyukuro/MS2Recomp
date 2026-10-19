@@ -203,3 +203,73 @@ public:
     ATL::CAtlArray<TabInfoPtr> m_tabs;                              // +0x198
     int m_nSlot;                                                    // +0x1b8
 };
+
+// ---- the shield bar HUD -------------------------------------------------------------------------------------------------
+
+// The buff the shield bar shows (layout seen through the HUD's reads only; the object is owned elsewhere).
+class Unk_LsBuffInfo
+{
+public:
+    unsigned char m_pad_00[0x2a0];
+    __int64 m_nValue;                                               // +0x2a0 the shield value
+    unsigned char m_pad_2a8[8];
+    unsigned m_nSkillId;                                            // +0x2b0
+};
+class Unk_LsBuff : public CPtred
+{
+public:
+    unsigned FUN_14096d2e0();                                       // the time left in ms (0 when none or elapsed)
+
+    unsigned char m_pad_18[8];
+    unsigned m_nEnd;                                                // +0x20 end tick
+    unsigned char m_pad_24[0xc];
+    __int64 m_nId;                                                  // +0x30
+};
+Unk_LsBuffInfo* FUN_14096d810(Unk_LsBuff* pBuff);                   // the buff's info (the object at +0x68)
+
+// The poll timer (ctor 0x140517b00; FUN_140268870: true once nMs have passed since the last true).
+class Unk_LsTick
+{
+public:
+    Unk_LsTick();                                                   // 0x140517b00
+    void FUN_140268840();                                           // restart
+    int FUN_140268870(unsigned nMs);
+private:
+    unsigned __int64 m_nTick;
+};
+
+class Unk_LsEntityEvents;
+
+// 0xa8 bytes, (UIHeadUpDisplay + UIEntityEventListener at +0x70, UI id 0x4f73): shows the shield buff.
+class UILapenshardShieldBar : public UIHeadUpDisplay, public UIEntityEventListener
+{
+public:
+    UILapenshardShieldBar();                                        // 0x140c5efa0
+    virtual ~UILapenshardShieldBar();                               //  0 0x140c5f090 (??_G 0x140c60770)
+    virtual CString vfunc_1();                                      //  1 0x140c5f120 "LapenshardShieldBar"
+    virtual void vfunc_3();                                         //  3 0x140c5f5b0
+    virtual void vfunc_15();                                        // 15 0x140c5f610
+    virtual void OnLoadInit();                                      // 20 0x140c5f170
+    virtual void OnLoadComplete();                                  // 22 0x140c5f1d0
+    virtual void vfunc_26();                                        // 26 0x140c5f200
+    virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140c5f870
+    virtual void vfunc_43();                                        // 43 0x140c5f2a0
+    virtual int vfunc_48() { return 0x4f73; }                       // 48 0x140c607c0
+
+    void FUN_140c5f8f0(MS2Ptr<Unk_LsBuff> spBuff);                  // show a buff (by value: the callee destroys it)
+    MS2Ptr<Unk_LsBuff> FUN_140c5f990();                             // the shown buff
+    CStringW FUN_140c5f9e0();                                       // "mm:ss" left
+    void FUN_140c5faf0();                                           // play "end"
+    int FUN_140c5fbb0() { return m_bEnded; }                        // the buff ended
+    void FUN_140c5fbd0();                                           // bind the skill slot and play "open"
+
+    MS2Ptr<Unk_LsBuff> m_spBuff;                                    // +0x78
+    int m_nPending;                                                 // +0x88 the buff changed, "open" is due
+    CString m_strBind;                                              // +0x90 the skill slot's bind id
+    Unk_LsTick m_tick;                                              // +0x98
+    int m_bImpending;                                               // +0xa0
+    int m_bEnded;                                                   // +0xa4
+};
+MS2_CHECK_SIZE(UILapenshardShieldBar, 0xa8);
+MS2_CHECK_OFFSET(UILapenshardShieldBar, m_spBuff, 0x78);
+MS2_CHECK_OFFSET(UILapenshardShieldBar, m_bEnded, 0xa4);

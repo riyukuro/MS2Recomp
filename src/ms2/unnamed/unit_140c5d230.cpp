@@ -813,3 +813,240 @@ void UILapenshardSystemDialog::FUN_140c627a0(unsigned nTab, const Scaleform::GFx
         }
     }
 }
+
+// ---- UILapenshardShieldBar ----
+
+class UIRewardNotify;
+#include "ms2/client/ms2/uirewardnotify.h"
+#include "ms2/placeholder/asgameentity.h"
+#include "ms2/placeholder/mstime.h"
+#include "ms2/placeholder/cmainsystem.h"
+
+extern Unk_LsEntityEvents* DAT_143abf028;                               // the entity event hub
+void FUN_1419308c0(Unk_LsEntityEvents* pHub, UIEntityEventListener* pListener);
+void FUN_141930950(Unk_LsEntityEvents* pHub, UIEntityEventListener* pListener);
+void FUN_1422c8f70(const CString& strName);                             // unbind a bag / slot name
+UIRewardNotify* FUN_140938cd0(int nId);
+UIObject* FUN_14096e340(int nId);                                       // a shown UI by id
+unsigned FUN_141472bc0();                                               // the server tick
+float FUN_14028d280(unsigned nMs);                                      // ms -> s
+
+// @0x140c607b0
+Unk_LsEntityEvents* FUN_140c607b0()
+{
+    return DAT_143abf028;
+}
+
+// @0x140c5efa0
+UILapenshardShieldBar::UILapenshardShieldBar()
+    : m_spBuff(0), m_nPending(0), m_bImpending(0), m_bEnded(0)
+{
+    m_58 = 0;
+    m_2c = 0x12;
+}
+
+// @0x140c5f090
+UILapenshardShieldBar::~UILapenshardShieldBar()
+{
+}
+
+// @0x140c5f120
+CString UILapenshardShieldBar::vfunc_1()
+{
+    return "LapenshardShieldBar";
+}
+
+// @0x140c5f170
+void UILapenshardShieldBar::OnLoadInit()
+{
+    UIObject::OnLoadInit();
+    FUN_1419308c0(FUN_140c607b0(), static_cast<UIEntityEventListener*>(this));
+}
+
+// @0x140c5f1d0
+void UILapenshardShieldBar::OnLoadComplete()
+{
+    UIObject::OnLoadComplete();
+    FUN_140c5fbd0();
+}
+
+// @0x140c5f200
+void UILapenshardShieldBar::vfunc_26()
+{
+    UIObject::vfunc_26();
+    FUN_141930950(FUN_140c607b0(), static_cast<UIEntityEventListener*>(this));
+    if (!m_strBind.IsEmpty())
+        FUN_1422c8f70(m_strBind);
+    m_strBind.Empty();
+}
+
+// @0x140c5f2a0
+void UILapenshardShieldBar::vfunc_43()
+{
+    MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>(m_30.operator->()));
+    if (spEntity.get() != 0)
+    {
+        int nX = (int)spEntity->FUN_1422c10a0();
+        int nY = (int)spEntity->FUN_1422c1110();
+        spEntity->vfunc_2(1, 0, 0);
+        spEntity->vfunc_3(1);
+        int nOffset = 0x96;
+        UIObject* pHpBar = FUN_14096e340(0x4e3d);
+        if (pHpBar != 0)
+        {
+            MS2Ptr<ASGameEntity> spHp(dynamic_cast<ASGameEntity*>(pHpBar->FUN_1422dba00().operator->()));
+            if (spHp.get() != 0)
+                nOffset = (int)(spHp->FUN_1422c1110() + (float)spHp->FUN_1422c13b0() + 30.0f);
+        }
+        spEntity->vfunc_2(1, 0, nOffset);
+        int nW = (int)spEntity->FUN_1422c10a0();
+        int nH = (int)spEntity->FUN_1422c1110();
+        m_30->Invoke("alignmentWithHpBarOffsetY", nOffset, nX, nY, nW, nH);
+    }
+}
+
+// @0x140c5f5b0
+void UILapenshardShieldBar::vfunc_3()
+{
+    UIHeadUpDisplay::vfunc_3();
+    m_spBuff = 0;
+    UIRewardNotify* pReward = FUN_140938cd0(0x4e5d);
+    if (pReward != 0)
+        pReward->FUN_141ac1f40();
+}
+
+// @0x140c5f610
+void UILapenshardShieldBar::vfunc_15()
+{
+    UISwfEntity::vfunc_15();
+    if (!(m_30 == 0) && !(m_spBuff == 0))
+    {
+        if (m_nPending != 0)
+            FUN_140c5fbd0();
+        if (m_bEnded == 0 && m_tick.FUN_140268870(100) != 0)
+        {
+            if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
+            {
+                if (m_bImpending == 0)
+                {
+                    if (m_spBuff->FUN_14096d2e0() < 5000)
+                    {
+                        m_30->Invoke("impending");
+                        m_bImpending = 1;
+                    }
+                }
+                if (m_spBuff->FUN_14096d2e0() != 0)
+                {
+                    CStringW strLeft = FUN_140c5f9e0();
+                    m_30->Invoke("setValue", m_spBuff->m_nId, FUN_14096d810(m_spBuff.operator->())->m_nValue, strLeft);
+                }
+            }
+        }
+    }
+}
+
+// @0x140c5f870
+int UILapenshardShieldBar::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UISwfEntity::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    if (_stricmp("onEndComplete", szMethod) == 0)
+    {
+        vfunc_3();
+        return 1;
+    }
+    return 0;
+}
+
+// @0x140c5f8f0
+void UILapenshardShieldBar::FUN_140c5f8f0(MS2Ptr<Unk_LsBuff> spBuff)
+{
+    if (m_spBuff.get() != spBuff.get())
+    {
+        if (FUN_141986d30() == 0)
+            vfunc_2();
+        m_spBuff = spBuff;
+        m_nPending = 1;
+    }
+}
+
+// @0x140c5f990
+MS2Ptr<Unk_LsBuff> UILapenshardShieldBar::FUN_140c5f990()
+{
+    return m_spBuff;
+}
+
+// @0x140c5f9e0
+CStringW UILapenshardShieldBar::FUN_140c5f9e0()
+{
+    if (m_spBuff == 0)
+        return L"";
+    ATL::CTimeSpan span = CMsTime((__int64)FUN_14028d280(m_spBuff->m_nEnd)) - CMsTime((__int64)FUN_14028d280(FUN_141472bc0()));
+    int nSeconds = (int)span.GetSeconds();
+    int nMinutes = (int)(span.GetTotalMinutes() - span.GetTotalHours() * 60);
+    return StringFormat(L"{0:02}:{1:02}", nMinutes, nSeconds);
+}
+
+// @0x140c5faf0
+void UILapenshardShieldBar::FUN_140c5faf0()
+{
+    if (m_bEnded == 0 && !(m_30 == 0) && !(m_spBuff == 0))
+    {
+        m_bEnded = 1;
+        m_30->Invoke("end", m_spBuff->m_nId);
+    }
+}
+
+MS2_EMIT_CRT_MEMMOVE_S();  // memmove_s 0x140c607d0
+
+
+// The Invoke COMDATs of this unit.
+void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, __int64 n);
+void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
+void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
+void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+
+// @0x140c60370
+inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a2, int a3, int a4, int a5)
+{
+    ASArgList args;
+    args.FUN_1409b2800(5);
+    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
+    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
+    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
+    FUN_1422bccb0(args.FUN_1409b1f70(4), a5);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x140c60480
+inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, __int64 a1)
+{
+    ASArgList args;
+    args.FUN_1409b2800(1);
+    FUN_1422bcdd0(args.FUN_1409b1f70(0), a1);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x140c60520
+inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, __int64 a1, __int64 a2, CStringW a3)
+{
+    ASArgList args;
+    args.FUN_1409b2800(3);
+    FUN_1422bcdd0(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcdd0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x140c60620
+inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, __int64 a1, __int64 a2, CStringW a3, CString a4)
+{
+    ASArgList args;
+    args.FUN_1409b2800(4);
+    FUN_1422bcdd0(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcdd0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
+    FUN_1422bce70(args.FUN_1409b1f70(3), a4);
+    return FUN_1422bb8f0(szMethod, args);
+}

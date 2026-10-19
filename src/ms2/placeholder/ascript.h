@@ -98,6 +98,8 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CString a2);             // 0x1412cc450 (inline COMDAT, defined in uiindividualpvpdialog.cpp; both by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1);            // 0x1409b13b0 (a1 by value: callee destroys)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2);   // 0x1409b1490 (ascommondepth.cpp)
+    Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, bool a2, Scaleform::GFx::Value a3, Scaleform::GFx::Value a4);   // 0x14131cc10 (inline COMDAT, defined in uimeratmarketregisterdialog.cpp; all by value)
+    void FUN_1422bac00(const char* szMember, CString& strOut);                               // read a narrow string member (uimeratmarketregisterdialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, const AScript& a2);      // 0x140e7bcb0 (inline COMDAT, defined in uiquestnavigation.cpp; a1 by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, const AScript& obj);                  // 0x140ba4cc0 (passes obj's value)
     Scaleform::GFx::Value Invoke(const char* szMethod, unsigned int a1, float a2);          // 0x140ba4c00 (inline COMDAT, defined in uiadventureleveldialog.cpp)
@@ -133,6 +135,11 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, int a3, int a4); // 0x140e64f60 (couple dance HUD COMDAT)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, int a3, int a4, int a5, CString a6, size_t a7);   // 0x140f35180 (inline COMDAT, defined in uidarkstreamresultdialog.cpp; a6 by value: the callee destroys it)
     Scaleform::GFx::Value FUN_140f5ff80(const char* szMethod, CStringW a1, bool a2);        // 0x140f5ff80 (inline COMDAT; a1 by value: the callee destroys it)
+
+    Scaleform::GFx::Value Invoke(const char* szMethod, __int64 a1);                         // 0x140c60480 (inline COMDAT, defined in unit_140c5d230.cpp)
+    Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, int a3, int a4, int a5);   // 0x140c60370 (inline COMDAT, defined in unit_140c5d230.cpp)
+    Scaleform::GFx::Value Invoke(const char* szMethod, __int64 a1, __int64 a2, CStringW a3);   // 0x140c60520 (inline COMDAT, defined in unit_140c5d230.cpp; a3 by value: the callee destroys it)
+    Scaleform::GFx::Value Invoke(const char* szMethod, __int64 a1, __int64 a2, CStringW a3, CString a4);   // 0x140c60620 (inline COMDAT, defined in unit_140c5d230.cpp; a3/a4 by value)
 
     // Binds the AS child `strName` to `out` and returns a copy of it (0x140bbe640 for T = Unk_ASExitButton).
     template <class T> MS2Ptr<T> FUN_140bbe640(const CString& strName, MS2Ptr<T>& out);
