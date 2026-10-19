@@ -6,10 +6,29 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
+// MS2-PIN: ?clear@?$vector@UUnk_WsV9a0@@V?$allocator@UUnk_WsV9a0@@@std@@@std@@QEAAXXZ 0x141bb7960
+// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tset_traits@PEAXU?$less@PEAX@std@@V?$allocator@PEAX@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@PEAXPEAX@2@@Z 0x141bb2540
+// MS2-PIN: ?_Tidy@?$vector@UUnk_WsN1@@V?$allocator@UUnk_WsN1@@@std@@@std@@AEAAXXZ 0x141bb6e60
+// MS2-PIN: ?_Tidy@?$vector@UUnk_WsN2@@V?$allocator@UUnk_WsN2@@@std@@@std@@AEAAXXZ 0x141bb6d90
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_WsK_Rank@@@@AEAAXPEAX@Z 0x141bb6440
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+
+// The exe's MS2Ptr<Unk_WsK_Rank> reaches its CPtred through a helper (a down-adjust by -0x18 with a null test), not the
+// inline upcast of ms2ptr_impl.h.
+CPtred* FUN_141bb0630(Unk_WsK_Rank* p);
+void FUN_141bb1410(CPtred* p);
+template <> void MS2Ptr<Unk_WsK_Rank>::ReleaseImpl(void*)
+{
+    CPtred* p = FUN_141bb0630(m_p);
+    if (CPtred::ReleasePtred(p) == 0)
+    {
+        FUN_141bb1410(p);
+        CPtred::DeletePtred(p);
+    }
+}
 
 template class std::set<void*>;
 template class std::map<unsigned __int64, Unk_WsV1d8>;
@@ -118,6 +137,9 @@ void Unk_WsAnchor()
     std::map<unsigned, Unk_WsF6> b6; Unk_WsTouchTree(b6, 0);
     std::map<unsigned __int64, Unk_WsF7> b7; Unk_WsTouchTree(b7, 0);
     std::map<unsigned __int64, Unk_WsG0> g0; Unk_WsTouchTree(g0, 0);
+    (void)b6.empty();
+    char mb[1], mc[1];
+    (void)memmove_s(mb, 1, mc, 1);
     std::set<void*> c0; Unk_WsTouchSet(c0, 0);
     std::set<unsigned __int64> c1; Unk_WsTouchSet(c1, 0);
     std::set<unsigned> c2; Unk_WsTouchSet(c2, 0);
