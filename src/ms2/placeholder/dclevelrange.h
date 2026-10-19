@@ -9,6 +9,7 @@ public:
     Unk_DcLevelRange();                                         // 0x140757bd0
     bool operator!=(const Unk_DcLevelRange& o) const;           // 0x140759050
     void FUN_14075bc80(unsigned short nLow, unsigned short nHigh);   // set
+    bool FUN_1407790a0() const;                                 // both ends are 0 (rewardcontentstable.cpp)
     bool FUN_1407790e0(unsigned short nLevel) const;            // nLow <= nLevel <= nHigh
     bool IsValid() const                                        // 0x140c0e770
     {
