@@ -23,6 +23,7 @@ private:
     void BuildWire(NiMesh* pMesh, const Unk_StreamPoint* pPoints, unsigned int nCount);   // 0x140d056f0
 
     MS2_LAYOUT_FRIEND;
+    friend class CBaseCollision;        // the detect/intersect shape tests read the ring geometry
     NiMeshPtr m_spInnerTop;             // +0x78 inner ring at the top (m_spMesh is the outer ring at the center)
     NiMeshPtr m_spInnerBottom;          // +0x80
     NiMeshPtr m_spOuterTop;             // +0x88

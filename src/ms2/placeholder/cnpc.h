@@ -99,6 +99,8 @@ public:
     void FUN_141094f20(int nOwnerId);                       // m_nOwnerId = nOwnerId
     int FUN_141094f40();                                    // m_nOwnerId
     PCBase* FUN_141094f60();                                // the owner actor looked up by m_nOwnerId (world FindPC; null: none)
+    int FUN_1410930a0();                                    // 0x1410930a0 (basecollision: a dead npc that still counts as a target)
+    unsigned char FUN_1410934c0();                                  // 0x1410934c0 the npc kind (bit index of a kind mask)
     void FUN_141095140();                                   // release the owner effect handle (+0xec4)
 
     NiPoint3 m_posD40;                                      // +0xd40 (copied from the ZERO constant 0x143b01a60)

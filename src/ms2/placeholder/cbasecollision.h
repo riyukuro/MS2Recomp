@@ -12,6 +12,21 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/nipoint3.h"
+#include <efd/Point3.h>
+#include <efd/SmartPointer.h>
+
+class GameObject;
+class CBoxCollision;
+class CDetectContext;
+template <class T> class MS2Ptr;
+
+// Per-object result of CBaseCollision::TestShape (ctor 0x140a00200): the sort mode in, the metrics out (x lateral,
+// y forward distance, z planar distance).
+struct Unk_DetectHit
+{
+    int m_nMode;
+    NiPoint3 m_kMetric;
+};
 
 class CBaseCollision : public CPtred
 {
@@ -24,7 +39,17 @@ public:
     virtual void vfunc_4();                                         // 0x1409fc040
     virtual void vfunc_5() = 0;                                     // builds the wire meshes
     virtual float vfunc_6() = 0;
-    virtual int vfunc_7(void* pObjA, void* pObjB);                  // 0x1409fc050
+    virtual int vfunc_7(efd::SmartPointer<GameObject> spSelf, efd::SmartPointer<GameObject> spTarget);   // 0x1409fc050
+                                                                    // hit test of spTarget's box against this shape
+                                                                    // placed at spSelf
+
+    void FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const efd::Point3& kRot);   // place by a z rotation, then Detect
+    void FUN_1409fc540(MS2Ptr<CDetectContext> spCtx, const NiMatrix3& kRot);     // place by a rotation, then Detect
+    void Detect(MS2Ptr<CDetectContext> spCtx);                      // 0x1409fc6c0 collect and sort the hit objects
+    void Invalidate();                                              // 0x1409fe440 rebuild the wire meshes on next draw
+    static bool TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 kDir, CBaseCollision* pShape,
+                          CBoxCollision* pBox, Unk_DetectHit* pHit);   // 0x1409fe460
+    static bool Intersect(CBaseCollision* pShape, CBaseCollision* pBox);   // 0x1409ff0d0
 
     int m_n18;                          // +0x18
     Unk_StreamPoint m_ptPos;            // +0x1c
