@@ -15,6 +15,9 @@
 
 class CItem;
 
+// the value traits of the key table take the value by reference (the exe's SetAt/RBInsert pass a pointer)
+struct Unk_SkillSlotValueTraits : ATL::CElementTraits<int> { typedef const int& INARGTYPE; };
+
 // 0x150 bytes. vftable (26 slots, ??_G 0x141762550 sized delete 0x150), ITooltip @+0x78.
 class SkillSlot : public MS2DragSlot
 {
@@ -92,7 +95,7 @@ public:
     __int64 m_nItemUid;                                 // +0xb0
     int m_nItemId;                                      // +0xb8
     int m_bFixed;                                       // +0xbc
-    ATL::CRBMap<unsigned, int> m_kKeys;                      // +0xc0 slot index -> key code
+    ATL::CRBMap<unsigned, int, ATL::CElementTraits<unsigned>, Unk_SkillSlotValueTraits> m_kKeys;                      // +0xc0 slot index -> key code
     MS2Ptr<AScript> m_spRoot;                           // +0xf0
     MS2Ptr<AScript> m_spUpdate;                         // +0x100
     MS2Ptr<AScript> m_spClear;                          // +0x110
