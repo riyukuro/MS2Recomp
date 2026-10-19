@@ -26,6 +26,7 @@ class ASMovieClip;
 class CInPacket;
 class COutPacket;
 class CMsgBoxData;
+class Unk_ClButton;
 
 // The interval check of the delete-reply poll (0x140517b00 ctor, 0x140268870 "the interval elapsed").
 class Unk_ClTimer
@@ -116,7 +117,55 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x1418eb540
     virtual void vfunc_ugc_1(void* p, CString str);         // UGC 1 0x1418ed310
 
+    MS2Ptr<Unk_ClButton> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child
+    void FUN_1418ef700();                                   // 0x1418ef700 the burning level-up icons
+    void FUN_1418ef980(unsigned __int64 nId);               // 0x1418ef980 the burning level-up popup of a character
+    void FUN_1418f0140();                                   // 0x1418f0140 the burning level-up description
+    void FUN_1418f0400();                                   // 0x1418f0400 attach the burning level-up description button
+    void AttachHealthGame();                                // 0x1418f0550
+    void RefreshLobby();                                    // 0x1418f0810
+    void CharacterRemoved(unsigned __int64 nId, int nIndex);   // 0x1418f0e20
+    void OpenSelectedCharacter();                           // 0x1418f1060
+    void FUN_1418f11c0();                                   // 0x1418f11c0 the server list
+    void FUN_1418f1260();                                   // 0x1418f1260 a character was created
+    void FUN_1418f13d0();                                   // 0x1418f13d0
+    void FUN_1418f13f0();                                   // 0x1418f13f0 enter the game with the selected character
+    void CancelDelete(CharPtr spCharacter);                 // 0x1418f1940
+    void CheckDelete(unsigned __int64 nId);                 // 0x1418f1a00
+    void ShowPopup();                                       // 0x1418f1af0
+    void FUN_1418f1d00();                                   // 0x1418f1d00
+    void FUN_1418f1d80();                                   // 0x1418f1d80
+    void CheckDeleteAccount();                              // 0x1418f2120
+    void FUN_1418f2620(void* pPacket);                      // 0x1418f2620 packet 0x132
+    void FUN_1418f2820(void* pPacket);                      // 0x1418f2820 packet 0x133
+    void HandleDeleteReply(unsigned char nResult, const CStringW& str1, const CStringW& str2, const CStringW& str3);   // 0x1418f2730
+    static void ShowDeleteError(int nError);                // 0x1418f47e0
+    static unsigned FindFreePreviewSlot();                  // 0x1418f4da0
+    bool FUN_1418f00b0(int nResult, const CMsgBoxData& box);   // 0x1418f00b0 event reward box result
+    void FUN_1418ed4e0(unsigned __int64 nId, CString str);  // 0x1418ed4e0 hand the text of a character to the ugc manager
+    void FUN_1418ed5a0(unsigned __int64 nId, CString str);  // 0x1418ed5a0 set the text of a character
+    bool FUN_1418ed650();                                   // 0x1418ed650 the burning level-up event is running
     void FUN_1418ed880(CInPacket& packet);                  // 0xc the character list
+    void FUN_1418ee370();                                   // 0x1418ee370 forget the previewed character
+    void FUN_1418ee400(int nIndex);                         // 0x1418ee400 preview the character at the index
+    void FUN_1418ee470(CharPtr spCharacter);                // 0x1418ee470 preview a character
+    void FUN_1418ee5c0(const Unk_UserProxy* pState, unsigned nSlot);   // 0x1418ee5c0 build the preview PC
+    void HidePopups();                                      // 0x1418ee700
+    void ReadCharacters(int nCount, CInPacket& packet);     // 0x1418ee7b0
+    int EraseCharacter(unsigned __int64 nId);               // 0x1418ee8f0 the index it had, -1
+    CharPtr FindCharacter(unsigned __int64 nId);            // 0x1418eea70
+    CharPtr FindCharacter(unsigned __int64 nId, unsigned* pnIndex);   // 0x1418eead0
+    int RemovePending(unsigned __int64 nId);                // 0x1418eec00
+    int AddPending(CharPtr spCharacter, MS2Ptr<ASMovieClip> spMovie);   // 0x1418eed70
+    DeletePtr FindPending(unsigned __int64 nId);            // 0x1418ef000
+    void SetDeleteState(int nIndex, unsigned __int64 nId);  // 0x1418ef190
+    void FUN_1418ef210(int nIndex, unsigned __int64 nId);   // 0x1418ef210 (same body)
+    void SortCharacters();                                  // 0x1418ef290
+    void SelectCharacter(unsigned __int64 nId);             // 0x1418ef520
+    void RefreshSelection();                                // 0x1418ef560
+    static void FUN_1418ef630();                            // 0x1418ef630 quit the game
+    void FUN_1418ef690(CString strUrl);                     // 0x1418ef690 open the page in the browser dialog
+    void FUN_1418ef890(unsigned __int64 nId);               // 0x1418ef890 attach the burning level-up icon
 
     int m_180;                                              // +0x180
     CharPtr m_188;                                          // +0x188 the selected character
