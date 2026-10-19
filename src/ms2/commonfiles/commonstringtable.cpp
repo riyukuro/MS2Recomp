@@ -1,6 +1,9 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Chat / name text filter (CBanTextChecker) and CommonString.
 // MS2-UNIT: commonfiles\commonstringtable.cpp
+// MS2-RANGE: 0x1400b54f0-0x1400b5621 .text$di
 // MS2-RANGE: 0x140223c60-0x140266860 .text$mn
+// MS2-RANGE: 0x142c9a3b0-0x142c9a3f0 .text$yd
+// MS2-RANGE: 0x142c9a400-0x142c9a420 .text$yd
 // MS2-PIN: ?CompareElements@?$CDefaultCompareTraits@H@ATL@@SA_NAEBH0@Z 0x14025d8e0
 // MS2-PIN: ??1?$map@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@@std@@QEAA@XZ 0x14025c810
 // MS2-PIN: ?__empty_global_delete@@YAXPEAX@Z 0x1402272b0
@@ -75,6 +78,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonstringtable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "commonstringtable.h"
+#include "portaldata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include <typeinfo>
@@ -300,6 +304,8 @@ CStringW CBanTextChecker::CheckerErrStringPackage::GetErrString(EBanErrKind nKin
 }
 
 static ATL::CAtlMap<EBanErrKind, EBanStringId> s_mapDefaultErr;   // 0x143aacca0
+static CStringA s_strSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};  // 0x143aacc50
+static QuestMask s_questMask;                                       // 0x143aacd50
 
 // @0x140224600
 // The default error kind -> string id table, filled on first use.
