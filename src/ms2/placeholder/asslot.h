@@ -21,6 +21,9 @@ public:
     ASSlot(int nType);
     ASSlot(const Scaleform::GFx::Value& v, int nMovieId);                 // 0x1409c1c60
     virtual ~ASSlot();
+#ifdef MS2_ASSLOT_COPY_EXTERN
+    ASSlot(const ASSlot& o);                                              // 0x1409bb770 (opt-in per unit: the other units keep the implicit copy)
+#endif
     void FUN_1409c1ce0(int n);                                           // itemPet
     void FUN_1409c1d20(int n);                                           // itemCash
     void FUN_1409c1d60(int n);                                           // itemSkin
