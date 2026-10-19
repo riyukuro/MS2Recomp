@@ -3,15 +3,6 @@
 // MS2-RANGE: 0x140d75430-0x140d7e5f0 .text$mn
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??0?$_Deque_const_iterator@V?$_Deque_val@U?$_Deque_simple_types@UUnk_MidiEvent@@@std@@@std@@@std@@QEAA@_KPEBU_Container_base12@1@@Z 0x140d75910 ; unique
-// MS2-PIN: ??1?$_Deque_const_iterator@V?$_Deque_val@U?$_Deque_simple_types@UUnk_MidiEvent@@@std@@@std@@@std@@QEAA@XZ 0x140d759a0 ; prop
-// MS2-PIN: ??1?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@UUnk_MidiEvent@@@std@@@std@@@std@@QEAA@XZ 0x140d759c0 ; prop
-// MS2-PIN: ??D?$_Deque_const_iterator@V?$_Deque_val@U?$_Deque_simple_types@UUnk_MidiEvent@@@std@@@std@@@std@@QEBAAEBUUnk_MidiEvent@@XZ 0x140d759e0 ; unique
-// MS2-PIN: ??D?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@UUnk_MidiEvent@@@std@@@std@@@std@@QEBAAEAUUnk_MidiEvent@@XZ 0x140d75a50 ; prop
-// MS2-PIN: ?_Setcont@?$_Deque_const_iterator@V?$_Deque_val@U?$_Deque_simple_types@UUnk_MidiEvent@@@std@@@std@@@std@@QEAAXPEBV?$_Deque_val@U?$_Deque_simple_types@UUnk_MidiEvent@@@std@@@2@@Z 0x140d75be0 ; unique
-// MS2-PIN: ?begin@?$deque@UUnk_MidiEvent@@V?$allocator@UUnk_MidiEvent@@@std@@@std@@QEAA?AV?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@UUnk_MidiEvent@@@std@@@std@@@2@XZ 0x140d75c10 ; unique
-// MS2-PIN: ?front@?$deque@UUnk_MidiEvent@@V?$allocator@UUnk_MidiEvent@@@std@@@std@@QEAAAEAUUnk_MidiEvent@@XZ 0x140d75cd0 ; unique
-// MS2-PIN: ?pop_front@?$deque@UUnk_MidiEvent@@V?$allocator@UUnk_MidiEvent@@@std@@@std@@QEAAXXZ 0x140d75d70 ; unique
 // MS2-PIN: ??$?0AEBH$$Z$$V@?$pair@$$CBH_N@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEBH@1@V?$tuple@$$V@1@@Z 0x140d76b60 ; unique
 // MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBH_N@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x140d76d60 ; unique
 // MS2-PIN: ??$_Buynode@AEAU?$pair@$$CBII@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@$00@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@1@AEAU?$pair@$$CBII@1@@Z 0x140d76df0 ; unique
@@ -27,20 +18,19 @@
 // MS2-PIN: ??$_Lbound@H@?$_Tree@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@1@AEBH@Z 0x140d7a220 ; unique
 // MS2-PIN: ??$_Try_emplace@AEBH$$V@?$map@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@std@@@std@@_N@1@AEBH@Z 0x140d7a450 ; unique
 // MS2-PIN: ??$construct@U?$pair@$$CBII@std@@AEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBII@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBII@std@@PEAX@std@@@1@QEAU?$pair@$$CBII@1@AEAU31@@Z 0x140d7a840 ; unique
-// MS2-PIN: ??0?$allocator@UUnk_MidiEvent@@@std@@QEAA@XZ 0x140d7afa0 ; unique
 // MS2-PIN: ??A?$map@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@@std@@QEAAAEA_NAEBH@Z 0x140d7b480 ; unique
 // MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBH_N@1@XZ 0x140d7b4e0 ; prop
-// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBII@1@XZ 0x140d7b500 ; prop
+// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBII@1@XZ 0x140d7b500 ; unique
 // MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBH_N@1@XZ 0x140d7b540 ; prop
 // MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBII@1@XZ 0x140d7b560 ; prop
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBH_N@1@XZ 0x140d7b5a0 ; prop
-// MS2-PIN: ??$forward_as_tuple@$$V@std@@YA?AV?$tuple@$$V@0@XZ 0x140d7b700 ; prop
 // MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x140d7bee0 ; unique
 // MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@2@@Z 0x140d7c060 ; unique
 // MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@$00@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@2@@Z 0x140d7ce00 ; unique
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ 0x140d7cfa0 ; prop
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x140d7cfb0 ; prop
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBII@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@I@2@XZ 0x140d7cfc0 ; prop
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@2@XZ 0x140d7cff0 ; prop
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@2@$00@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@2@XZ 0x140d7d000 ; unique
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@2@$00@2@$00@std@@QEAAAEAV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@2@$00@2@XZ 0x140d7d030 ; prop
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@2@$00@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@2@XZ 0x140d7d070 ; prop
 // MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@QEBAAEBU?$less@H@2@XZ 0x140d7d1c0 ; prop
@@ -240,33 +230,35 @@ void CMidiOutput::OnTimer()
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (int i = 0; i < 16; ++i)
     {
-        Unk_MidiTrack& q = m_channelTracks[i];
-        if (!q.empty())
+        if (m_channelTracks[i].empty())
+            continue;
+        Unk_MidiTrack::iterator it = m_channelTracks[i].begin();
+        Unk_MidiTrack::iterator last = m_channelTracks[i].end();
+        for (; it != last; ++it)
         {
-            Unk_MidiTrack::iterator it = q.begin();
-            while (it != q.end() && it->first <= now)
-            {
-                m_device.SendShort(it->second);
-                ++it;
-            }
-            if (it != q.begin())
-                q.erase(q.begin(), it);
+            if (it->first > now)
+                break;
+            m_device.SendShort(it->second);
         }
+        if (it != m_channelTracks[i].begin())
+            m_channelTracks[i].erase(m_channelTracks[i].begin(), it);
     }
     std::map<int, Unk_MidiTrack>::iterator mi = m_tracks.begin();
-    while (mi != m_tracks.end())
+    std::map<int, Unk_MidiTrack>::iterator miLast = m_tracks.end();
+    for (; mi != miLast; ++mi)
     {
-        Unk_MidiTrack& q = mi->second;
-        Unk_MidiTrack::iterator it = q.begin();
-        while (it != q.end() && it->first <= now)
+        Unk_MidiTrack::iterator it = mi->second.begin();
+        Unk_MidiTrack::iterator last = mi->second.end();
+        for (; it != last; ++it)
         {
-            if (m_trackEnabled[mi->first])
-                m_device.SendShort(it->second);
-            ++it;
+            if (it->first > now)
+                break;
+            if (!m_trackEnabled[mi->first])
+                continue;
+            m_device.SendShort(it->second);
         }
-        if (it != q.begin())
-            q.erase(q.begin(), it);
-        ++mi;
+        if (it != mi->second.begin())
+            mi->second.erase(mi->second.begin(), it);
     }
 }
 
