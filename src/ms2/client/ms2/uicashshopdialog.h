@@ -84,7 +84,7 @@ public:
         ATL::CAtlMap<int, int> m_mapInclude;                        // +0x00
         ATL::CAtlMap<int, int> m_mapExclude;                        // +0x48
     };
-    typedef ATL::CAtlMap<CString, MS2Ptr<CashBannerInfo>, ATL::CStringElementTraits<CString> > BannerMap;
+    typedef ATL::CAtlMap<CString, MS2Ptr<CashBannerInfo>, ATL::CStringElementTraitsI<CString> > BannerMap;
     typedef TMarketBillDataParam::PaymentMap PaymentMap;
 
     UICashShopDialog();                                             // 0x141033360
