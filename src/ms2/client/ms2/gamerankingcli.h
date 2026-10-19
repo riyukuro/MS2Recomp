@@ -16,6 +16,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/tptreddummy.h"
+#include "ms2/placeholder/tptrvalue.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/commonfiles/os.h"
@@ -546,48 +547,6 @@ struct CGameRankingData
 MS2_CHECK_SIZE(CGameRankingData, 0x308);
 MS2_CHECK_OFFSET(CGameRankingData, m_name, 0x38);
 MS2_CHECK_OFFSET(CGameRankingData, m_members, 0x88);
-
-// The new-object tag of the value pointer (0x1401b7b90, returns its this, no code).
-struct Unk_GrNewTag
-{
-    explicit Unk_GrNewTag(int);
-};
-
-// The 16-byte pointer to a value in a TPtredDummy<T> box (RTTI TPtredDummy<CGameRankingData>; the CPtred header sits
-// 0x18 bytes before the value). Copying steals the reference when the source is not const.
-template <class T>
-class TPtrValue
-{
-public:
-    TPtrValue(int) { m_p = 0; }
-    TPtrValue(const Unk_GrNewTag&) { m_p = 0; Make(); }
-    TPtrValue(TPtrValue& o) { m_p = o.m_p; o.m_p = 0; }
-    TPtrValue(const TPtrValue& o) { m_p = o.m_p; AddRef(); }
-    ~TPtrValue() { Release(); }
-    T* operator->() const { return m_p; }
-
-private:
-    void AddRef() const { if (m_p) AddRefImpl(0); }
-    void AddRefImpl(void*) const { Reference(Owner(m_p)); }
-    static void Reference(TPtredDummy<T>* p) { CPtred::AddRefPtred(p); }
-    void Make() { Release(); m_p = Create(0); }
-    void Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }
-    void ReleaseImpl(void*)
-    {
-        TPtredDummy<T>* owner = Owner(m_p);
-        if (CPtred::ReleasePtred(owner) == 0) {
-            Reference(owner);
-            CPtred::DeletePtred(owner);
-        }
-    }
-    static TPtredDummy<T>* Allocate(void*) { return new TPtredDummy<T>(); }
-    static T* Value(TPtredDummy<T>* p) { return p == NULL ? NULL : &p->value; }
-    static TPtredDummy<T>* Owner(T* p) { return p == NULL ? NULL : CONTAINING_RECORD(p, TPtredDummy<T>, value); }
-    static T* Create(void*) { return Value(static_cast<TPtredDummy<T>*>(FUN_1401ba820(Allocate(0)))); }
-
-    void* m_00;
-    T* m_p;
-};
 
 // The ranking cache: the open requests, the answers per board key and the pages waiting for the dialog.
 class CGameRankingCli : public TSingleton<CGameRankingCli>
