@@ -646,23 +646,23 @@ bool CItem::FUN_140526320()
 MS2_REPLACE_METHOD(0x140526320, CItem, FUN_140526320, 100, 0x95712DC4);
 
 // @0x140526790
-void CItem::FUN_140526790(int nJob)
+bool CItem::FUN_140526790(int nJob)
 {
-    m_spData->FUN_14053c8e0(nJob);
+    return m_spData->FUN_14053c8e0(nJob);
 }
 MS2_REPLACE_METHOD(0x140526790, CItem, FUN_140526790, 49, 0xCA42CD40);
 
 // @0x1405267d0
-void CItem::FUN_1405267d0(int nGender)
+bool CItem::FUN_1405267d0(int nGender)
 {
-    m_spData->FUN_14053c940(nGender);
+    return m_spData->FUN_14053c940(nGender);
 }
 MS2_REPLACE_METHOD(0x1405267D0, CItem, FUN_1405267d0, 49, 0xC0D977A0);
 
 // @0x140526810
-void CItem::FUN_140526810(unsigned short nLevel)
+bool CItem::FUN_140526810(unsigned short nLevel)
 {
-    m_spData->FUN_14053c9a0(nLevel);
+    return m_spData->FUN_14053c9a0(nLevel);
 }
 MS2_REPLACE_METHOD(0x140526810, CItem, FUN_140526810, 51, 0xAFB2B386);
 

@@ -4,6 +4,7 @@
 class CItem;
 class NiAVObject;
 class NiColor;
+class CEquipmentSlotLayerInfo;   // MS2Ptr<T> (cequipmentslotlayerinfo.h)
 class Unk_PCWaterGunInfo;   // MS2Ptr<T> (?\watergunbattleinfo.cpp)
 struct Unk_StreamPoint;
 struct Unk_CharEquip;   // tcreatecharinfo.h (0xc)
@@ -21,7 +22,14 @@ class Unk_PCActionTimer;   // CPtred-derived, defined by the user unit (avatarpc
 class Unk_PCSkillTree;   // MS2Ptr<T> at +0x1110 (copied out by FUN_1409eee00; defined by the user unit)
 class CEquipItem;
 class CMsTime;
-struct Unk_PCEquipSet { MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nKind); MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nItemUid); void FUN_1411e4150(__int64 nItemUid, unsigned char nSlot, int nKind); void FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd); void FUN_1411ea7c0(); void FUN_1411e7660(); unsigned char unknown0[0x1e8]; };   // FUN_1411e1780 (itemgem.cpp): the worn item of an equip slot   // the PC's equipment holder (+0xde0); methods FUN_1411e3de0/e3000/e22c0
+struct Unk_PCEquipSet
+{
+    MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nKind); MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nItemUid); void FUN_1411e4150(__int64 nItemUid, unsigned char nSlot, int nKind); void FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd); void FUN_1411ea7c0(); void FUN_1411e7660();
+    MS2Ptr<CEquipmentSlotLayerInfo> GetTitle();            // 0x140d29440 the codi (outfit) tab period (defined in unit_140d1ae30)
+    unsigned char unknown0[0x188];
+    MS2Ptr<CEquipmentSlotLayerInfo> m_spTitle;              // +0x188 (new CEquipmentSlotLayerInfo(2))
+    unsigned char unknown198[0x50];
+};   // FUN_1411e1780 (itemgem.cpp): the worn item of an equip slot   // the PC's equipment holder (+0xde0); methods FUN_1411e3de0/e3000/e22c0
 class Unk_PCD88;      // +0xd88 target (ClonePC::vfunc_12 releases it via FUN_140a35900)
 class Unk_PCArg126;   // MS2Ptr<T> by value (get 0x1409f7930, ICF generic dtor 0x1401bfde0)
 class Unk_HsInfo;     // MS2Ptr<T> by value (defined by uihideandseekresultdialog.cpp)
@@ -118,6 +126,8 @@ public:
     void FUN_141661c70(int n);                              // 0x141661c70 +0x10f4, refreshes the name tag (scenestategame 0xa8 mode 1)
     Unk_PCEquipSet* FUN_1416561a0();                        // 0x1416561a0 &m_kEquipDE0
     int FUN_141654700();                                    // 0x141654700 the job
+    int FUN_141658f30();                                    // 0x141658f30 PC bang premium (item use check, unit_140d1ae30)
+    unsigned FUN_141662de0();                               // 0x141662de0 the VIP grade (item use check, unit_140d1ae30)
     int FUN_141658e60();                                    // 0x141658e60 the gender (uiitemcreatedialog.cpp)
     int FUN_141662eb0(class CItem* pItem);                  // 0x141662eb0 the item may be used (mypc)
     class Unk_PCItemCooldowns* FUN_1416561c0();             // 0x1416561c0

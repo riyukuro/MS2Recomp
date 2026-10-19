@@ -37,7 +37,9 @@ MS2_CHECK_SIZE(Unk_GoConnect, 0x58);
 
 // Further blocks the tabs fill from the XML; only their size and the FUN_ helpers are known.
 struct Unk_GoAutoLoot { int m_n[5]; };                              // 0x14 bytes (ctor 0x141260ea0)
-struct Unk_GoEtc { int m_n00; int m_n04; __int64 m_n08; int m_n10[10]; };   // 0x38 bytes (ctor 0x141261750)
+// +0x10 / +0x18: the server times of the item box "do not ask again" check boxes (open confirm / currency overflow);
+// the reset 0x141261780 stores qwords there (unit_140d1ae30 reads and writes them).
+struct Unk_GoEtc { int m_n00; int m_n04; __int64 m_n08; __int64 m_n10Time; __int64 m_n18Time; int m_n20[6]; };   // 0x38 bytes (ctor 0x141261750)
 struct Unk_GoChroma { int m_n; };                                   // 4 bytes (ctor 0x141261670)
 
 class CGameOption : public TSingleton<CGameOption>

@@ -5,6 +5,7 @@
 
 #include <afx.h>
 #include <atlcoll.h>
+#include <vector>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 
@@ -25,6 +26,8 @@ public:
     typedef ATL::CAtlMap<CStringW, CStringW, ATL::CStringElementTraits<CStringW> > Values;
     CStringW FUN_14092c630() const;                 // serializes to "<v key="value".../>"
     bool FUN_14092c5f0(const CStringW& strKey) const;   // the key is present
+    std::vector<int> FUN_1409e8620(const CStringW& strKey, const std::vector<int>& vDefault);   // value as a comma separated int list (unit_140d1ae30)
+    __int64 FUN_1409e86e0(const CStringW& strKey, const __int64& nDefault);   // value as an __int64 (unit_140d1ae30)
     // The value as an int, nDefault when the key is missing. An inline (COMDAT copies 0x1403d8110 in gameevent.cpp
     // and 0x14054c530 in itemdatastruct.cpp).
     int GetInt(const CStringW& strKey, const int& nDefault)

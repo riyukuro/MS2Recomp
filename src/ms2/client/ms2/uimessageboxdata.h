@@ -204,6 +204,7 @@ public:
     void FUN_141a02770(int nWidth, int nHeight);
     void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);   // item entry
     void FUN_141a01700(int nA, int nB, int nC);
+    void FUN_141a020b0(int nItemId, int nRarity, int n);       // item icon entry (unit_140d1ae30: ChatEmoticonAdd)
     void FUN_141a01c70(const CStringW& str);
     void FUN_141a01c30(const CString& strUrl);                      // the link url (unit_141347b10: shop item box)
     void FUN_141a02670(bool b);
