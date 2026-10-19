@@ -4,19 +4,16 @@
 // MS2-RANGE: 0x14161b8c0-0x1416252b0 .text$mn
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$?0AEB_J$$Z$$V@?$pair@$$CB_JPEAVPCBase@@@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@AEB_J@1@V?$tuple@$$V@1@@Z 0x14161ddc0 ; unique
 // MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@VEntityID@egf@@@std@@@std@@@1@0@Z 0x14161dea0 ; unique
 // MS2-PIN: ??$Unk_OptLog@H@@YAXPEAVCLogString@@HHPEB_WAEBH@Z 0x14161e160 ; unique
 // MS2-PIN: ??$Unk_OptLog@_KH@@YAXPEAVCLogString@@HHPEB_WAEB_KAEBH@Z 0x14161e280 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEB_J@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@_JPEAVPCBase@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JPEAVPCBase@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CB_JPEAVPCBase@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEB_J@1@$$QEAV?$tuple@$$V@1@@Z 0x14161e740 ; unique
 // MS2-PIN: ??$_Try_emplace@AEB_J$$V@?$map@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@std@@_N@1@AEB_J@Z 0x141620f60 ; unique
-// MS2-PIN: ??$_Try_emplace@AEB_J$$V@?$map@_JPEAVPCBase@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JPEAVPCBase@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JPEAVPCBase@@@std@@@std@@@std@@@std@@_N@1@AEB_J@Z 0x1416210b0 ; prop
-// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEB_J@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@_JPEAVPCBase@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JPEAVPCBase@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JPEAVPCBase@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JPEAVPCBase@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEB_J@1@$$QEAV?$tuple@$$V@1@@Z 0x141621620 ; unique
-// MS2-PIN: ??0?$allocator@U?$_List_node@UEntry@COptimizer@@PEAX@std@@@std@@QEAA@XZ 0x141621da0 ; unique
+// MS2-PIN: ??$try_emplace@$$V@?$map@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@std@@_N@1@$$QEA_J@Z 0x141621910 ; unique
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CB_JPEAVPCBase@@@std@@PEAX@std@@@std@@QEAA@XZ 0x141621db0 ; unique
-// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1416225c0 ; prop
+// MS2-PIN: ??A?$map@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@@std@@QEAAAEAUEntry@COptimizer@@$$QEA_J@Z 0x141622210 ; unique
 // MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@2@AEB_J@Z 0x141624de0 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??$_Try_emplace@_J$$V@?$map@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@std@@_N@1@$$QEA_J@Z 0x1416210b0
 // MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@1@AEAU?$pair@$$CB_JUEntry@COptimizer@@@1@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@1@@Z 0x14161f7d0
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CB_JUEntry@COptimizer@@@1@PEAU?$_Tree_node@U?$pair@$$CB_JUEntry@COptimizer@@@std@@PEAX@1@@Z 0x141620410
 // MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@_JUEntry@COptimizer@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JUEntry@COptimizer@@@std@@@4@$0A@@std@@@std@@IEBA_NAEB_J0@Z 0x141622bd0
@@ -732,45 +729,44 @@ void COptimizer::FUN_14161db10(int nFlags)
 // @0x14161dbe0
 void COptimizer::FUN_14161dbe0(PCBase* pPC, int nFlags)
 {
-    if (pPC == 0)
+    if (pPC != 0)
     {
-        return;
-    }
-    if (FUN_1409613d0(pPC) != 0)
-    {
-        return;
-    }
-    if (pPC->GetClassID() == 0x6200044)
-    {
-        return;
-    }
-    if (pPC->GetClassID() == 0x6200047)
-    {
-        return;
-    }
-    if (pPC->GetClassID() == 0x620005e)
-    {
-        return;
-    }
-    if (pPC->GetClassID() == 0x6200016)
-    {
-        return;
-    }
-    pPC->vfunc_24(nFlags);
-    GameObject* pObject = FUN_1416764a0(pPC);
-    if (pObject != 0)
-    {
-        pObject->vfunc_24(nFlags);
-    }
-    pObject = FUN_141676a10(pPC);
-    if (pObject != 0)
-    {
-        pObject->vfunc_24(nFlags);
-    }
-    pObject = FUN_1416625e0(pPC);
-    if (pObject != 0)
-    {
-        pObject->vfunc_24(nFlags);
+        if (FUN_1409613d0(pPC) != 0)
+        {
+            return;
+        }
+        if (pPC->GetClassID() == 0x6200044)
+        {
+            return;
+        }
+        if (pPC->GetClassID() == 0x6200047)
+        {
+            return;
+        }
+        if (pPC->GetClassID() == 0x620005e)
+        {
+            return;
+        }
+        if (pPC->GetClassID() == 0x6200016)
+        {
+            return;
+        }
+        pPC->vfunc_24(nFlags);
+        GameObject* pRidee = FUN_1416764a0(pPC);
+        if (pRidee != 0)
+        {
+            pRidee->vfunc_24(nFlags);
+        }
+        GameObject* pWorldObject = FUN_141676a10(pPC);
+        if (pWorldObject != 0)
+        {
+            pWorldObject->vfunc_24(nFlags);
+        }
+        GameObject* pAttached = FUN_1416625e0(pPC);
+        if (pAttached != 0)
+        {
+            pAttached->vfunc_24(nFlags);
+        }
     }
 }
 
