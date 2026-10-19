@@ -2992,7 +2992,6 @@ __imp_AddSurveyParameterA	142cd1480	data
 ?DAT_143ab2950@@3HA	143ab2950	data
 ?DAT_143ab2a90@@3VUnk_MrInventory@@A	143ab2a90	data
 ??0ASListEvent@@QEAA@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z	1422e2740	func
-??1ASListEvent@@QEAA@XZ	140f83bb0	func
 ?FUN_1422e27d0@ASListEvent@@QEAA?AVValue@GFx@Scaleform@@XZ	1422e27d0	func
 ??1Unk_PetButton@@UEAA@XZ	1422cde30	func
 ?FUN_1422ce090@Unk_PetButton@@QEAAXH@Z	1422ce090	func
@@ -3473,3 +3472,8 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??0Unk_QnRideRef@@QEAA@H@Z	1407844b0	func
 ??1Unk_QnRideRef@@QEAA@XZ	140788ed0	func
 ??1Unk_QnRideEntry@@QEAA@XZ	140788ea0	func
+??0Unk_CMISQueueBase@@QEAA@XZ	1411225a0	func
+??0Unk_CMISQueueMember@@QEAA@XZ	140ae79e0	func
+??1Unk_ListEventBase@@QEAA@XZ	1422e22a0	func
+??0ASListItemRenderer@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422e1c50	func
+??1ASListItemRenderer@@UEAA@XZ	1422e1ca0	func
