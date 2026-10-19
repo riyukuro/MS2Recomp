@@ -4,6 +4,7 @@
 // MS2-UNIT: unit_140c5d230
 // MS2-RANGE: 0x140c5d230-0x140c6b300 .text$mn
 // MS2-RANGE: 0x1400ce050-0x1400ce500 .text$di
+// MS2-PIN: memmove_s 0x140c607d0
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$Unk_Fmt2@HH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBH1@Z 0x140c60060 ; unique
 // MS2-PIN: ??_EUILapenshardShieldBar@@WHA@EAAPEAXI@Z 0x140c6075c ; unique
@@ -22,7 +23,6 @@
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVLapenshardIngredientItemSlotBagPanel@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVLapenshardIngredientItemSlotBagPanel@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z 0x140c69dc0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAA@AEBU?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@std@@@Z 0x140c69e60 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@@QEAA@AEBU?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@std@@@Z 0x140c69f00 ; prop
-// MS2-PIN: ??0?$CSimpleArray@GV?$CSimpleArrayEqualHelper@G@ATL@@@ATL@@QEAA@XZ 0x140c6a020 ; unique
 // MS2-PIN: ??1?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA@XZ 0x140c6a0d0 ; unique
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVLapenshardIngredientItemSlotBagPanel@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA@XZ 0x140c6a100 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVLapenshardUpgradeSlotPanel@@P81@EAAXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@std@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASTooltip@@@Z@@UEAA@XZ 0x140c6a140 ; prop
@@ -1072,7 +1072,7 @@ void UILapenshardShieldBar::FUN_140c5faf0()
     }
 }
 
-MS2_EMIT_CRT_MEMMOVE_S();  // memmove_s 0x140c607d0
+MS2_EMIT_CRT_MEMMOVE_S();
 
 
 // The Invoke COMDATs of this unit.
@@ -1150,6 +1150,9 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_14151f200();
 
 // ---- LapenshardSourceItemSlotBagPanel ----
+
+// @0x140c635f0
+MS2_EMIT_CRT_MEMMOVE_S_COPY(2);
 
 // @0x140c63710
 LapenshardSourceItemSlotBagPanel::LapenshardSourceItemSlotBagPanel(UILapenshardUpgradeTab* pTab)
@@ -1471,26 +1474,33 @@ bool LapenshardIngredientItemSlotBagPanel::FUN_140c64bc0(int nResult, const CMsg
 
 // ---- the upgrade page: records of the packet 0xad ----
 
-// The header every upgrade record starts with (the source item) and its tail.
-struct Unk_LsPktA
+// The head every upgrade record starts with (the source item).
+struct Unk_LsRecHead
 {
     __int64 m_nUid;                                                     // +0x00
     int m_nItemId;                                                      // +0x08
     int m_nSlot;                                                        // +0x0c
+    Unk_LsRecHead();
+};
+struct Unk_LsPktA : Unk_LsRecHead
+{
     int m_n10;                                                          // +0x10
     int m_nTotal;                                                       // +0x14
-    Unk_LsPktA() : m_nUid(0), m_nItemId(0), m_nSlot(0), m_n10(0), m_nTotal(0) {}     // 0x140c6a050
+    Unk_LsPktA();
 };
-struct Unk_LsPktB
+struct Unk_LsPktB : Unk_LsRecHead
 {
-    __int64 m_nUid;                                                     // +0x00
-    int m_nItemId;                                                      // +0x08
-    int m_nSlot;                                                        // +0x0c
     ATL::CAtlMap<unsigned __int64, int> m_ingredients;                  // +0x10
     bool m_bSuccess;                                                    // +0x58
     int m_n5c;                                                          // +0x5c
-    Unk_LsPktB() : m_nUid(0), m_nItemId(0), m_nSlot(0), m_ingredients(0x11, 0.75f, 0.25f, 2.25f, 10), m_bSuccess(false), m_n5c(0) {}   // 0x140c69fb0
+    Unk_LsPktB();
 };
+// @0x140c6a020
+Unk_LsRecHead::Unk_LsRecHead() : m_nUid(0), m_nItemId(0), m_nSlot(0) {}
+// @0x140c6a050
+Unk_LsPktA::Unk_LsPktA() : m_n10(0), m_nTotal(0) {}
+// @0x140c69fb0
+Unk_LsPktB::Unk_LsPktB() : m_ingredients(0x11, 0.75f, 0.25f, 2.25f, 10), m_bSuccess(false), m_n5c(0) {}
 void FUN_1405b6360(Unk_LsPktA* pRecord, CInPacket& packet);             // read
 void FUN_1405b6280(Unk_LsPktA* pRecord, COutPacket& packet);            // write the source record
 void FUN_1405b5ec0(Unk_LsPktA* pRecord, COutPacket& packet);            // write the source record (pick)
@@ -2647,3 +2657,6 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(int bSuccess)
     m_spSource = 0;
     m_pTab->FUN_140c68df0();
 }
+
+// @0x140c6b1e0
+MS2_EMIT_CRT_MEMMOVE_S_COPY(3);
