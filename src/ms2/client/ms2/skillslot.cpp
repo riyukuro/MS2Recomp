@@ -3,7 +3,76 @@
 // MS2-UNIT: ?\skillslot.cpp
 // MS2-RANGE: 0x14175c840-0x14176f2a0 .text$mn
 // MS2-RANGE: 0x140100bf0-0x140101560 .text$di
-// MS2-PIN: ??_7SkillSlot@@6BBindData@NotifyContext@@@ 0x14310c898 ; hand: primary vftable
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??__E?ms_ClassInfo@SkillSlot@@2VClassInfo@efd@@B@@YAXXZ 0x140100bf0 ; prop
+// MS2-PIN: ??__Es_strButtonClickA@@YAXXZ 0x140100c10 ; probe
+// MS2-PIN: ??__Es_strButtonClickB@@YAXXZ 0x140100c40 ; probe
+// MS2-PIN: ??__Es_strDisableDrag@@YAXXZ 0x140100c70 ; probe
+// MS2-PIN: ??__Es_strDropShadowDisable@@YAXXZ 0x140100ca0 ; probe
+// MS2-PIN: ??__Es_strGrayColor@@YAXXZ 0x140100cd0 ; probe
+// MS2-PIN: ??__Es_strIconPath@@YAXXZ 0x140100d00 ; probe
+// MS2-PIN: ??__Es_strItemCount@@YAXXZ 0x140100d30 ; probe
+// MS2-PIN: ??__Es_strItemGrade@@YAXXZ 0x140100d60 ; probe
+// MS2-PIN: ??__Es_strItemLock@@YAXXZ 0x140100d90 ; probe
+// MS2-PIN: ??__Es_strItemPcBang@@YAXXZ 0x140100dc0 ; probe
+// MS2-PIN: ??__Es_strItemPet@@YAXXZ 0x140100df0 ; probe
+// MS2-PIN: ??__Es_strItemPetRank@@YAXXZ 0x140100e20 ; probe
+// MS2-PIN: ??__Es_strItemVIP@@YAXXZ 0x140100e50 ; probe
+// MS2-PIN: ??__Es_strNoticeErrorEp@@YAXXZ 0x140100e80 ; probe
+// MS2-PIN: ??__Es_strSortTypeNames2@@YAXXZ 0x140100eb0 ; probe
+// MS2-PIN: ??__Es_strNoticeErrorNotThisPlace@@YAXXZ 0x140100f70 ; probe
+// MS2-PIN: ??__Es_strNoticeErrorNotThisTime@@YAXXZ 0x140100fa0 ; probe
+// MS2-PIN: ??__Es_unk1402a9d70@@YAXXZ 0x140100fd0 ; probe
+// MS2-PIN: ??__Es_strNoticeErrorSp@@YAXXZ 0x140101020 ; probe
+// MS2-PIN: ??__Es_strNoticeErrorWarningWeapon@@YAXXZ 0x140101050 ; probe
+// MS2-PIN: ??__Es_strSortTypeNames3@@YAXXZ 0x1401010a0 ; probe
+// MS2-PIN: ??__Es_strNoticeFailSkillIncorrectWeapon@@YAXXZ 0x140101160 ; probe
+// MS2-PIN: ??__Es_strRechargeRemainCount@@YAXXZ 0x140101190 ; probe
+// MS2-PIN: ??__Es_unk1402a9d70_2@@YAXXZ 0x1401011c0 ; probe
+// MS2-PIN: ??__Es_strSortTypeNames4@@YAXXZ 0x140101210 ; probe
+// MS2-PIN: ??__Es_strShortcutKey@@YAXXZ 0x1401012d0 ; probe
+// MS2-PIN: ??__Es_strSkill2@@YAXXZ 0x140101300 ; probe
+// MS2-PIN: ??__Es_unk1402a9d70_3@@YAXXZ 0x140101330 ; probe
+// MS2-PIN: ??__Es_strSkill3@@YAXXZ 0x140101380 ; probe
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1401013b0 ; probe
+// MS2-PIN: ??__Es_strStun2@@YAXXZ 0x1401013e0 ; probe
+// MS2-PIN: ??__Es_strStun3@@YAXXZ 0x140101410 ; probe
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x140101440 ; probe
+// MS2-PIN: ??__Es_strUgcTag@@YAXXZ 0x140101470 ; probe
+// MS2-PIN: ??__Es_strSortTypeNames@@YAXXZ 0x1401014a0 ; probe
+// MS2-PIN: ??0?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEAA@_K@Z 0x141762270 ; unique
+// MS2-PIN: ??1?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@XZ 0x141762370 ; unique
+// MS2-PIN: ??1CNode@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@XZ 0x1417623b0 ; prop
+// MS2-PIN: ??8?$MS2Ptr@VUnk_MyPCSkillSet@@@@QEBA_NPEAVUnk_MyPCSkillSet@@@Z 0x1417624d0 ; unique
+// MS2-PIN: ??_GCNode@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAPEAXI@Z 0x141762510 ; unique
+// MS2-PIN: ??_GSkillSlot@@UEAAPEAXI@Z 0x141762550 ; unique
+// MS2-PIN: ?Find@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@H@Z 0x1417625b0 ; unique
+// MS2-PIN: ?FreeNode@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@@Z 0x1417626a0 ; unique
+// MS2-PIN: ?GetClassDesc@SkillSlot@@UEBAPEBVClassInfo@efd@@XZ 0x141762740 ; prop
+// MS2-PIN: ?IsNil@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBA_NPEAVCNode@12@@Z 0x141762850 ; unique
+// MS2-PIN: ?LeftRotate@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x141762890 ; unique
+// MS2-PIN: ?Lookup@?$CRBMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAPEAVCPair@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@2@H@Z 0x1417629a0 ; unique
+// MS2-PIN: ?Lookup@?$CRBMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEBA_NHAEAH@Z 0x1417629c0 ; unique
+// MS2-PIN: ?Maximum@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x141762a10 ; unique
+// MS2-PIN: ?Predecessor@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x141762ce0 ; unique
+// MS2-PIN: ?RemoveAll@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXXZ 0x141763030 ; unique
+// MS2-PIN: ?RemovePostOrder@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@@Z 0x1417630b0 ; unique
+// MS2-PIN: ?RightRotate@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x141763110 ; unique
+// MS2-PIN: ?SetNil@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x141763280 ; unique
+// MS2-PIN: ?TypeCast@SkillSlot@@UEBA_NIPEAPEAX@Z 0x141763350 ; order
+// MS2-PIN: ?TypeCast@SkillSlot@@UEBA_NIPEAPEBX@Z 0x1417633a0 ; order
+// MS2-PIN: ??_ESkillSlotBag@@WII@EAAPEAXI@Z 0x141763cfc ; unique
+// MS2-PIN: ??_GSkillSlotBag@@UEAAPEAXI@Z 0x141763d10 ; unique
+// MS2-PIN: ?GetClassDesc@SkillSlotBag@@UEBAPEBVClassInfo@efd@@XZ 0x141763d70 ; unique
+// MS2-PIN: ?TypeCast@SkillSlotBag@@UEBA_NIPEAPEAX@Z 0x141763de0 ; unique
+// MS2-PIN: ?TypeCast@SkillSlotBag@@UEBA_NIPEAPEBX@Z 0x141763e30 ; unique
+// MS2-PIN: memmove_s 0x141763e80 ; unique
+// MS2-PIN: ??$Unk_SocketFormat@HH@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBH1@Z 0x14176bb90 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VCSkillCompactControlConfig@@@@QEBA_NPEAVCSkillCompactControlConfig@@@Z 0x14176ce10 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VstEmotion@CSkillSystem@@@@QEBA_NPEAVstEmotion@CSkillSystem@@@Z 0x14176ce90 ; order
+// MS2-PIN: ??C?$MS2Ptr@VSkillData@@@@QEBAPEAVSkillData@@XZ 0x14176cf50 ; unique
+// MS2-PINS-END tplpin
+// MS2-PIN: ??_7SkillSlot@@6BBindData@NotifyContext@@@ 0x142f61f60 ; hand: primary vftable
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\skillslot.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "skillslot.h"
@@ -328,6 +397,11 @@ SkillSlot::SkillSlot(const CString& strName, int nIndex, int nSkillId, int nItem
     m_kKeys.SetAt(0x18, nKey2);
 }
 
+
+// @0x1417623e0
+SkillSlot::~SkillSlot()
+{
+}
 
 // @0x14175ca40
 void SkillSlot::vfunc_6(void* p)
@@ -1227,7 +1301,7 @@ int SkillSlot::FUN_141760980(int nMode)
 // @0x141760a10
 __int64 SkillSlot::FUN_141760a10()
 {
-    return (__int64)(m_nIndex + 0x7a121);
+    return m_nIndex + 0x7a121;
 }
 
 // @0x141760a30
@@ -3540,4 +3614,17 @@ MS2Ptr<CSkillSystem::stEmotion> CSkillSystem::FUN_14176ba90(int nId)
         if ((*it)->m_id == nId)
             return *it;
     }
+}
+
+// @0x14176cc40
+CSEReduceSkillGroupCooltimeCtx::CSEReduceSkillGroupCooltimeCtx()
+{
+    m_fReduceRate = 0.0f;
+    m_nGroupId = 0;
+    m_nKind = 4;
+}
+
+// @0x14176cdb0
+CSEReduceSkillGroupCooltimeCtx::~CSEReduceSkillGroupCooltimeCtx()
+{
 }
