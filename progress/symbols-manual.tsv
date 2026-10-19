@@ -3329,3 +3329,8 @@ __imp_CrashReporter_RegisterCallback_BeforeDump	142cce1c8	data
 __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?DAT_143ab2946@@3_NA	143ab2946	data
 ??0?$list@HV?$allocator@H@std@@@std@@QEAA@XZ	140a3d2e0	func
+??0CMsgBoxDataItem@@QEAA@XZ	141a064e0	func
+??0Unk_ClItemReader@@QEAA@XZ	141272280	func
+??0Unk_ClPopupInfo@@QEAA@XZ	141540eb0	func
+??1Unk_ClPopupInfo@@QEAA@XZ	141541190	func
+??0Unk_ClTimer@@QEAA@XZ	140517b00	func

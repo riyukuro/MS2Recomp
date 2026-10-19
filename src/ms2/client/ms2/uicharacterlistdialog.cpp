@@ -2,6 +2,8 @@
 // MS2-UNIT: ?\uicharacterlistdialog.cpp
 // MS2-RANGE: 0x140111400-0x140111600 .text$di
 // MS2-RANGE: 0x1418e93f0-0x1418fafd0 .text$mn
+// MS2-PIN: ?_Unchecked_begin@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@XZ 0x1418fa890
+// MS2-PIN: ?_Unchecked_end@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@XZ 0x1418fa8b0
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1418f5650
 // MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@@std@@QEAA@XZ 0x1418f8bb0
 // MS2-PIN: ??0?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAA@XZ 0x1418f8d70
@@ -14,18 +16,28 @@
 // MS2-PIN: ??__Es_strStun@@YAXXZ 0x140111550 ; probe
 // MS2-PIN: ??$?8PEAVUICharacterListDialog@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x1418f58d0 ; prop
 // MS2-PIN: ??$?8PEAVUICharacterListDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUICharacterListDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x1418f5940 ; prop
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEBV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@AEAAXAEBV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@Z 0x1418f63e0 ; unique
+// MS2-PIN: ??$_Emplace_reallocate@AEBV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAAPEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@QEAV2@AEBV2@@Z 0x1418f64a0 ; unique
+// MS2-PIN: ??$emplace_back@AEBV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@Z 0x1418f82a0 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x1418f8840 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCMsgBoxDataItem@@@@QEAA@H@Z 0x1418f8b20 ; unique
-// MS2-PIN: ??0ArgType@internal@fmt@@QEAA@XZ 0x1418f8dd0 ; probe
+// MS2-PIN: ??0UniversalID@efd@@QEAA@XZ 0x1418f8df0 ; order
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VCMsgBoxDataItem@@@@QEAAAEAV1@PEAVCMsgBoxDataItem@@@Z 0x1418f9100 ; unique
 // MS2-PIN: ??C?$MS2Ptr@VAScript@@@@QEBAPEAVAScript@@XZ 0x1418f9290 ; order
-// MS2-PIN: ??C?$MS2Ptr@VCMsgBoxDataItem@@@@QEBAPEAVCMsgBoxDataItem@@XZ 0x1418f92b0 ; order
+// MS2-PIN: ??C?$MS2Ptr@VCItem@@@@QEBAPEAVCItem@@XZ 0x1418f92a0 ; order
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$CElementTraits@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@_K@Z 0x1418f9790 ; unique
 // MS2-PIN: ?RemoveAt@?$CAtlList@V?$MS2Ptr@VCDeleteCharacterInfo@UICharacterListDialog@@@@V?$CElementTraits@V?$MS2Ptr@VCDeleteCharacterInfo@UICharacterListDialog@@@@@ATL@@@ATL@@QEAAXPEAU__POSITION@@@Z 0x1418f9d80 ; unique
 // MS2-PIN: ?SetAt@?$CAtlArray@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$CElementTraits@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@ATL@@@ATL@@QEAAX_KAEBV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@Z 0x1418f9e60 ; unique
 // MS2-PIN: ?SetCount@?$CAtlArray@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$CElementTraits@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@ATL@@@ATL@@QEAA_N_KH@Z 0x1418f9eb0 ; unique
+// MS2-PIN: ?_Change_array@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@AEAAXQEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@_K1@Z 0x1418fa1b0 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@2@$00@std@@QEBAAEBV?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@2@XZ 0x1418fa420 ; unique
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VUnk_ClBurnEvent@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VUnk_ClBurnEvent@@@@@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VUnk_ClBurnEvent@@@@@std@@@2@XZ 0x1418fa430 ; unique
+// MS2-PIN: ?_Xrange@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@CAXXZ 0x1418fa900 ; order
+// MS2-PIN: ?at@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAAAEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@_K@Z 0x1418fa950 ; unique
+// MS2-PIN: ?clear@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAAXXZ 0x1418faa30 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418faab0 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418fab10 ; unique
+// MS2-PIN: ?erase@?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@@2@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@@2@@Z 0x1418fac50 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x1418fad20 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x1418fad50 ; unique
 // MS2-PIN: ??$Call@VUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUICharacterListDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x1418fad90 ; unique
@@ -155,7 +167,7 @@ void FUN_1418f42c0(ASObj& obj, UICharacterListDialog::CCharacterInfo* pInfo);   
 struct Unk_ClReqSelect { __int64 m_nId; Unk_ClReqSelect() { m_nId = 0; } };      // 0x1418f8dd0 the packet 9 / 2 body
 struct Unk_ClReqCancel { __int64 m_nId; Unk_ClReqCancel() { m_nId = 0; } };      // 0x1418f8e50 the packet 9 / 3 body
 struct Unk_ClReqDelete { __int64 m_nId; Unk_ClReqDelete() { m_nId = 0; } };      // 0x1418f8df0 the packet 9 / 4 body
-struct Unk_ClReqRename { __int64 m_nId; CStringW m_strName; Unk_ClReqRename() : m_strName(L"") { m_nId = 0; } };   // 0x1418f8e10 the packet 9 / 5 body
+struct Unk_ClReqRename { __int64 m_nId; CStringW m_strName; Unk_ClReqRename() : m_nId(0), m_strName(L"") {} };   // 0x1418f8e10 the packet 9 / 5 body
 void FUN_1401fa3d0(const Unk_ClReqSelect& req, COutPacket& packet);
 void FUN_1401fa460(const Unk_ClReqCancel& req, COutPacket& packet);
 void FUN_1401fa4f0(const Unk_ClReqDelete& req, COutPacket& packet);
@@ -293,8 +305,9 @@ public:
     __int64 FUN_140c5af20(int nKind, int nId, __int64* pnZero);     // the burning level-up event was finished
 };
 // The burning level-up events (an event of the game event manager: id, texts and the two reward lists).
-class Unk_ClRewardRef { public: virtual int vfunc_0(); virtual int vfunc_1(); virtual int vfunc_2(); };
-struct Unk_ClRewardEntry { char m_pad[0x18]; Unk_ClRewardRef m_ref; };
+class Unk_ClRewardRef { public: virtual int vfunc_0() = 0; virtual int vfunc_1() = 0; virtual int vfunc_2() = 0; };
+struct Unk_ClRewardEntry { char m_pad[0x18]; };
+inline Unk_ClRewardRef* RewardRef(Unk_ClRewardEntry* p) { return reinterpret_cast<Unk_ClRewardRef*>(p->m_pad + 0x18); }
 struct Unk_ClRewardList { char m_p[0x10]; bool FUN_1404110e0(); Unk_ClRewardEntry* FUN_1403e8aa0(); };
 struct Unk_ClRewardList2 { char m_p[0x1c]; bool FUN_140c0e9f0(); Unk_ClRewardEntry* FUN_140bfe440(); };
 class Unk_ClBurnEvent : public CPtred
@@ -1372,10 +1385,11 @@ CStringW UICharacterListDialog::FUN_1418f05b0(unsigned __int64 nId)
     static CStringW s_empty(L"");
     if (nId == 0)
         return s_empty;
-    for (std::vector<CharPtr>::iterator it = m_1a8.begin(); it != m_1a8.end(); ++it)
+    CharPtr* pEnd = m_1a8._Unchecked_end();
+    for (CharPtr* pIt = m_1a8._Unchecked_begin(); pIt != pEnd; ++pIt)
     {
-        if ((*it)->FUN_1418e9cb0() == nId)
-            return (*it)->FUN_1418e9cd0();
+        if ((*pIt)->FUN_1418e9cb0() == nId)
+            return (*pIt)->FUN_1418e9cd0();
     }
     return s_empty;
 }
@@ -2247,8 +2261,8 @@ void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
         spFirst.AssignRaw(new CMsgBoxDataItem);
         MS2Ptr<CItem> spItem(new CItem);
         Unk_ClRewardEntry* pEntry = spEvent->m_90.FUN_1403e8aa0();
-        spItem->FUN_140523c40(pEntry->m_ref.vfunc_0(), pEntry->m_ref.vfunc_1(), 0);
-        spItem->FUN_140526c70(pEntry->m_ref.vfunc_2());
+        spItem->FUN_140523c40(RewardRef(pEntry)->vfunc_0(), RewardRef(pEntry)->vfunc_1(), 0);
+        spItem->FUN_140526c70(RewardRef(pEntry)->vfunc_2());
         int nColor = spItem->FUN_140526bd0();
         spFirst->FUN_141a06630(spItem->FUN_140527b10(), true, nColor);
         spFirst->m_spItem = spItem;
@@ -2260,8 +2274,8 @@ void FUN_1418f4df0(MS2Ptr<Unk_ClBurnEvent> spEvent, MS2Ptr<CMsgBoxData> spBox)
         spSecond.AssignRaw(new CMsgBoxDataItem);
         MS2Ptr<CItem> spItem(new CItem);
         Unk_ClRewardEntry* pEntry = spEvent->m_70.FUN_140bfe440();
-        spItem->FUN_140523c40(pEntry->m_ref.vfunc_0(), pEntry->m_ref.vfunc_1(), 0);
-        spItem->FUN_140526c70(pEntry->m_ref.vfunc_2());
+        spItem->FUN_140523c40(RewardRef(pEntry)->vfunc_0(), RewardRef(pEntry)->vfunc_1(), 0);
+        spItem->FUN_140526c70(RewardRef(pEntry)->vfunc_2());
         int nColor = spItem->FUN_140526bd0();
         spSecond->FUN_141a06630(spItem->FUN_140527b10(), true, nColor);
         spSecond->m_spItem = spItem;
