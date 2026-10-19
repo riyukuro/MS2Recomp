@@ -5,27 +5,62 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-RANGE: 0x1400bd2a0-0x1400bd460 .text$di
 // MS2-RANGE: 0x140854ea0-0x14085f650 .text$mn
-// MS2-PIN: ??_7CTalkScript@@6B?$CValidData@VCTalkScript@@@@@ 0x142d9aa28
+// MS2-PIN: ??_7CTalkScript@@6B?$CValidData@VCTalkScript@@@@@ 0x142d9aa48
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@6B@ 0x142d9aa58
+// MS2-PIN: ??_7?$TPtredDummy@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@6B@ 0x142d9aa58
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@6B@ 0x142d9aa68
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAXMMM_N@Z 0x14085ecb0
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x14085e3f0
+// MS2-PIN: ??0?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAA@IMMMI@Z 0x1408598c0
+// MS2-PIN: ??0?$CAtlMap@HV?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@@3@@ATL@@QEAA@IMMMI@Z 0x1408597d0
+// MS2-PIN: ??0?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAA@IMMMI@Z 0x1408595f0
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??0?$Unk_ScriptPtr@VCScriptContent@@@@QEAA@AEBV0@@Z 0x140859a00 ; unique
-// MS2-PIN: ??0?$TPtrValue@V?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@QEAA@AEAV0@@Z 0x140859b90 ; unique
-// MS2-PIN: ??1?$TPtredDummy@V?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@UEAA@XZ 0x14085a160 ; unique
-// MS2-PIN: ??C?$TPtrValue@V?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@QEBAPEAV?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@XZ 0x14085a510 ; prop
+// MS2-PIN: ??0?$Unk_TalkContentPtr@VCScriptContent@@@@QEAA@AEBV0@@Z 0x140859a00 ; unique
+// MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@QEAA@H@Z 0x140859a70 ; unique
+// MS2-PIN: ??0?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@QEAA@AEAV0@@Z 0x140859b90 ; unique
+// MS2-PIN: ??0?$TPtredDummy@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@QEAA@XZ 0x140859cb0 ; unique
+// MS2-PIN: ??0CNode@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAA@II@Z 0x140859d50 ; prop
+// MS2-PIN: ??0CNode@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAA@HI@Z 0x140859e10 ; prop
+// MS2-PIN: ??0CPair@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@IEAA@I@Z 0x140859e50 ; prop
+// MS2-PIN: ??0CPair@?$CAtlMap@HV?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@@3@@ATL@@IEAA@H@Z 0x140859e90 ; unique
+// MS2-PIN: ??0CPair@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@IEAA@H@Z 0x140859f10 ; prop
+// MS2-PIN: ??1CPair@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAA@XZ 0x14085a240 ; unique
+// MS2-PIN: ??4?$Unk_TalkContentPtr@VCScriptContent@@@@QEAAAEAV0@PEAVCScriptContent@@@Z 0x14085a340 ; unique
+// MS2-PIN: ??7?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@QEBA_NXZ 0x14085a3f0 ; unique
+// MS2-PIN: ??7?$MS2Ptr@VCNpcData@@@@QEBA_NXZ 0x14085a420 ; prop
+// MS2-PIN: ??8?$Unk_ScriptPtr@VCCacheData@@@@QEBA_NPEAVCCacheData@@@Z 0x14085a450 ; prop
+// MS2-PIN: ??8?$Unk_ScriptPtr@VCTalkScript@@@@QEBA_NPEAVCTalkScript@@@Z 0x14085a490 ; unique
 // MS2-PIN: ??C?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@QEBAPEAV?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@XZ 0x14085a5d0 ; unique
 // MS2-PIN: ??C?$Unk_ScriptPtr@VCCacheData@@@@QEBAPEAVCCacheData@@XZ 0x14085a5e0 ; prop
 // MS2-PIN: ??_F?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAXXZ 0x14085a630 ; unique
-// MS2-PIN: ??4?$TPtrValue@V?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@QEAAAEAV0@AEBUUnk_GrNewTag@@@Z 0x14085a9b0 ; unique
+// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAPEAXI@Z 0x14085a7c0 ; unique
+// MS2-PIN: ??4?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@QEAAAEAV0@AEBUUnk_GrNewTag@@@Z 0x14085a9b0 ; unique
+// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14085aaf0 ; prop
+// MS2-PIN: ?CreateNode@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x14085ac70 ; prop
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x14085adf0 ; unique
+// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14085b030 ; unique
 // MS2-PIN: ??A?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@QEAAAEAV?$Unk_ScriptPtr@VCTalkScript@@@@_K@Z 0x14085b5f0 ; unique
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@QEBA_KXZ 0x14085b630 ; unique
+// MS2-PIN: ?GetKeyAt@?$CAtlMap@HV?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@@3@@ATL@@QEBAAEBHPEAU__POSITION@@@Z 0x14085b680 ; prop
+// MS2-PIN: ?GetKeyAt@?$CAtlMap@HV?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@@3@@ATL@@QEBAAEBHPEAU__POSITION@@@Z 0x14085b6f0 ; prop
+// MS2-PIN: ?GetNext@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x14085b760 ; prop
+// MS2-PIN: ?GetNext@?$CAtlMap@HV?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x14085b7b0 ; prop
+// MS2-PIN: ?GetNext@?$CAtlMap@HV?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x14085b800 ; prop
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x14085b850 ; prop
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x14085b940 ; unique
-// MS2-PIN: ?GetNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x14085ba30 ; unique
-// MS2-PIN: ?GetNode@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x14085bb20 ; unique
-// MS2-PIN: ?Rehash@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAXI@Z 0x14085da70 ; unique
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x14085ba30 ; unique
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@HV?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x14085bc10 ; prop
+// MS2-PIN: ?GetValueAt@?$CAtlMap@HV?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAAEAV?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@PEAU__POSITION@@@Z 0x14085bd60 ; prop
+// MS2-PIN: ?IsEmpty@?$CAtlMap@HV?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@V?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@ATL@@@ATL@@@@@3@@ATL@@QEBA_NXZ 0x14085c4d0 ; prop
+// MS2-PIN: ?Lookup@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEBA_NIAEAV?$Unk_ScriptPtr@VCTalkScript@@@@@Z 0x14085c620 ; unique
+// MS2-PIN: ?NewNode@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14085c7e0 ; prop
+// MS2-PIN: ?NewNode@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x14085ce10 ; prop
+// MS2-PIN: ?Rehash@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAXI@Z 0x14085d3e0 ; unique
 // MS2-PIN: ?RemoveNode@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x14085e4e0 ; unique
+// MS2-PIN: ?SetAt@?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$Unk_ScriptPtr@VCTalkScript@@@@@Z 0x14085e7e0 ; prop
+// MS2-PIN: ?SetAt@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$Unk_ScriptPtr@VCTalkScript@@@@@Z 0x14085e9f0 ; prop
 // MS2-PIN: ?SetOptimalLoad@?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@QEAAXMMM_N@Z 0x14085eaa0 ; unique
-// MS2-PIN: ?AddRefImpl@?$TPtrValue@V?$CAtlMap@HV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@AEBAXPEAX@Z 0x14085f290 ; unique
+// MS2-PIN: ?AddRefImpl@?$TPtrValue@V?$CAtlMap@IV?$Unk_ScriptPtr@VCTalkScript@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_ScriptPtr@VCTalkScript@@@@@3@@ATL@@@@AEBAXPEAX@Z 0x14085f290 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\talkscript.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -43,10 +78,16 @@
 
 typedef Unk_ScriptPtr<CTalkScript> TalkPtr;
 typedef ATL::CAtlArray<TalkPtr> TalkArray;
-typedef ATL::CAtlMap<int, TalkPtr> TalkIdMap;
+typedef ATL::CAtlMap<int, TalkPtr> TalkPickMap;      // s_pick (0x14085bb20 group)
+typedef ATL::CAtlMap<unsigned, TalkPtr> TalkIdMap;   // the per-quest talks (a separate COMDAT group, 0x14085b850...; same code)
 typedef TPtrValue<TalkArray> TalkArrayPtr;
 typedef TPtrValue<TalkIdMap> TalkIdMapPtr;
 typedef Unk_ScriptPtr<CCacheData> CachePtr;
+// Exe-resident members the file never calls: the unsigned-key twins of the int-key map members, and a second
+// operator== COMDAT.
+template void TalkIdMap::RemoveAtPos(POSITION);
+template void TalkIdMap::SetOptimalLoad(float, float, float, bool);
+template bool Unk_ScriptPtr<CCacheData>::operator==(CCacheData*) const;
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names) ----
 
@@ -96,7 +137,7 @@ TalkArrayPtr FUN_140857660(int nNpcId);
 
 // ---- the script tables (static initializers in .text$di, in this order) ----
 
-static TalkIdMap s_pick[2];                         // 0x143ab1ea0 [0] select, [1] job: npc id -> talk
+static TalkPickMap s_pick[2];                         // 0x143ab1ea0 [0] select, [1] job: npc id -> talk
 static ATL::CAtlMap<int, TalkArrayPtr> s_npcAlt;    // 0x143ab1e10 npc id -> monologues
 static ATL::CAtlMap<int, TalkArrayPtr> s_npcTalks;  // 0x143ab1dc0 npc id -> talks
 static ATL::CAtlArray<CachePtr> s_npcFiles;         // 0x143ab1e78 loaded Script/Npc files
@@ -186,7 +227,7 @@ void CTalkScript::Deserialize(CInPacket& in)
     int count = in.vfunc_o8_3();
     for (int i = 0; i < count; i++)
     {
-        Unk_ScriptPtr<CScriptContent> content(0);
+        Unk_TalkContentPtr<CScriptContent> content(0);
         unsigned char type = in.vfunc_o8_1();
         if (type == 0)
             content = new CCinematicContent();
@@ -548,7 +589,7 @@ void FUN_140859160(Unk_ScriptXmlNode* pNode, TalkPtr script)
         Unk_ScriptPtr<CCinematicContent> content(new CCinematicContent());
         content->m_questId = script->m_questId;
         content->vfunc_2(child);
-        Unk_ScriptPtr<CScriptContent> base(content.get());
+        Unk_TalkContentPtr<CScriptContent> base(content.get());
         script->m_contents.Add(base);
     }
 }
@@ -564,7 +605,7 @@ void FUN_140859320(Unk_ScriptXmlNode* pNode, TalkPtr script)
     {
         Unk_ScriptPtr<CChatballonContent> content(new CChatballonContent());
         content->vfunc_2(child);
-        Unk_ScriptPtr<CScriptContent> base(content.get());
+        Unk_TalkContentPtr<CScriptContent> base(content.get());
         script->m_contents.Add(base);
     }
 }
@@ -705,7 +746,7 @@ void FUN_140858440(CStringA path)
                     if (script->m_contents.GetCount() == 0)
                     {
                         Unk_ScriptPtr<CCinematicContent> content(new CCinematicContent());
-                        script->m_contents.Add(Unk_ScriptPtr<CScriptContent>(content.get()));
+                        script->m_contents.Add(Unk_TalkContentPtr<CScriptContent>(content.get()));
                     }
                 }
                 s_pick[k].SetAt(npcId, script);
@@ -723,7 +764,7 @@ void FUN_140858440(CStringA path)
             script->m_npcId = npcId;
             script->m_id = id;
             Unk_ScriptPtr<CCinematicContent> content(new CCinematicContent());
-            script->m_contents.Add(Unk_ScriptPtr<CScriptContent>(content.get()));
+            script->m_contents.Add(Unk_TalkContentPtr<CScriptContent>(content.get()));
             usedIds.insert(script->m_id);
             s_pick[0].SetAt(npcId, script);
         }
@@ -794,19 +835,19 @@ void FUN_140855540()
 
 // @0x140855df0
 // MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
-bool FUN_140855df0(unsigned nNpcId, TalkPtr script)
+int FUN_140855df0(unsigned nNpcId, TalkPtr script)
 {
     CheckValid();
     for (size_t i = 0; i < 2; i++)
     {
         TalkPtr found(0);
-        if (s_pick[0].Lookup(nNpcId, found))
+        if (s_pick->Lookup(nNpcId, found))
         {
             if (found == script.get())
-                return true;
+                return 1;
         }
     }
-    return false;
+    return 0;
 }
 
 // The button set the talk window shows for a page.

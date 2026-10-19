@@ -12,6 +12,29 @@
 
 class CInPacket;
 
+// A second instance of the content pointer (own AddRef/AddRefImpl COMDATs in the exe, 0x14085f0f0).
+template<class T> class Unk_TalkContentPtr {
+public:
+    Unk_TalkContentPtr() : p(0) {}
+    Unk_TalkContentPtr(int) : p(0) {}
+    Unk_TalkContentPtr(T* value) : p(value) { AddRef(); }
+    Unk_TalkContentPtr(const Unk_TalkContentPtr& o) : p(o.p) { AddRef(); }
+    ~Unk_TalkContentPtr() { Release(); }
+    Unk_TalkContentPtr& operator=(int) { Release(); return *this; }
+    Unk_TalkContentPtr& operator=(T* value) { Unk_TalkContentPtr temp(value); T* old=p; p=temp.p; temp.p=old; return *this; }
+    Unk_TalkContentPtr& operator=(const Unk_TalkContentPtr& o) { o.AddRef(); Release(); p = o.p; return *this; }
+    bool operator==(T* o) const { return p == o; }
+    T* get() const { return p; }
+    T* operator->() const { return p; }
+private:
+    void AddRef() const { if(p) AddRefImpl(0); }
+    static void AddRefObject(T* value) { reinterpret_cast<Unk_ScriptRef*>(value)->FUN_14015b020(); }
+    void AddRefImpl(void*) const { AddRefObject(p); }
+    void Release() { if(p) { ReleaseImpl(0); p=0; } }
+    void ReleaseImpl(void*) { if(reinterpret_cast<Unk_ScriptRef*>(p)->FUN_140159bc0()==0) { AddRefObject(p); reinterpret_cast<Unk_ScriptRef*>(p)->FUN_140159ba0(); } }
+    void* pad_00; T* p;
+};
+
 class CTalkScript : public CPtred, public CValidData<CTalkScript>
 {
 public:
@@ -32,7 +55,7 @@ public:
     ATL::CAtlArray<int> m_gotoConditionTalkIds;             // +0x40 "gotoConditionTalkID"
     int m_randomPick;                                       // +0x60 "randomPick"
     int m_pad64;
-    ATL::CAtlArray<Unk_ScriptPtr<CScriptContent> > m_contents;  // +0x68
+    ATL::CAtlArray<Unk_TalkContentPtr<CScriptContent> > m_contents;  // +0x68
     bool m_88;                                              // +0x88 read from a packet
 };
 MS2_CHECK_OFFSET(CTalkScript, m_npcId, 0x24);
