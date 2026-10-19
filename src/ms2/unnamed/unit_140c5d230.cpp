@@ -364,7 +364,7 @@ public:
 };
 Unk_LsBagReg* FUN_140a703d0(CString* pstrBag);                          // the bag of a name
 class Unk_LsRecord;
-class Unk_LsTable { public: int FUN_1405b5810(unsigned nSlot); MS2Ptr<Unk_LsRecord> FUN_1405b56a0(unsigned nItemId); };   // lapenshard slot -> equip kind; item id -> record
+class Unk_LsTable { public: int FUN_1405b5810(unsigned nSlot); MS2Ptr<Unk_LsRecord> FUN_1405b56a0(unsigned nItemId); unsigned FUN_1405b5af0(int nKind); };   // lapenshard slot -> equip kind; item id -> record
 Unk_LsTable* FUN_1409c4b30();
 struct Unk_LsSlotArg { unsigned m_n; Unk_LsSlotArg() : m_n(0) {} };      // 0x140c5e480
 void FUN_1405b5e40(Unk_LsSlotArg* pArg, COutPacket* pPacket);            // write it
@@ -2336,4 +2336,73 @@ void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEqui
                 pOut->Add(spItem);
         }
     }
+}
+
+CStringW FUN_1418fec00(int nType, __int64 nValue, int);                 // money text by pay type
+
+// @0x140c65540
+// MS2-FUNCTIONAL: the ingredient rows are built with different temporaries
+void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<Unk_LsRecord> spRec, ItemArray& items, ATL::CAtlArray<int>& kinds, ASObj& out)
+{
+    if (spRec->m_nNeed != 0)
+    {
+        unsigned nItemId = FUN_1409c4b30()->FUN_1405b5af0(spRec->m_nKind);
+        int nGrade = FUN_14053feb0(nItemId);
+        MS2Ptr<CItem> spItem(new CItem());
+        if (spItem->FUN_14052b2e0(nItemId, nGrade, 0, spRec->m_nNeed) != 0)
+        {
+            items.Add(spItem);
+            int nZero = 0;
+            kinds.Add(nZero);
+        }
+    }
+    int nTier = 0;
+    if (m_pTab != 0)
+        nTier = m_pTab->FUN_140c69650();
+    MS2Ptr<Unk_LsRecipe> spRecipe = spRec->FUN_1405b41b0(nTier);
+    if (!(spRecipe == 0))
+    {
+        MS2Ptr<Unk_LsCostList> spList = spRecipe->FUN_14026c230();
+        unsigned nEntries = spList->FUN_14028b500();
+        for (unsigned i = 0; i < nEntries; ++i)
+        {
+            MS2Ptr<Unk_LsCostEntry> spEntry = spList->FUN_14028a0f0(i);
+            if (spEntry == 0)
+                continue;
+            if (spEntry->FUN_14026b350())
+                continue;
+            unsigned nItemId = spEntry->FUN_14026b500();
+            int nKind = spEntry->m_n1c;
+            int nGrade = FUN_14053feb0(nItemId);
+            MS2Ptr<CItem> spItem(new CItem());
+            if (spItem->FUN_14052b2e0(nItemId, nGrade, 0, spEntry->m_nNeed) == 0)
+                continue;
+            if (nTier != 0)
+            {
+                if (nKind == 0x5d || nKind == 0x5e || nKind == 0x5f)
+                    spItem->FUN_140526910(1);
+            }
+            items.Add(spItem);
+            kinds.Add(nKind);
+        }
+    }
+    FUN_14141f770(strBag, items.GetCount(), items, FUN_141420330, 0x20403, 0x2020);
+    ASArray rows(2);
+    for (unsigned i = 0; i < items.GetCount(); ++i)
+    {
+        MS2Ptr<CItem> spItem = items[i];
+        if (spItem == 0)
+            continue;
+        ASObj row(2);
+        row.FUN_1407cba60("binding", FUN_1422cc860(strBag, i));
+        int nHave = 0;
+        if (spItem->FUN_140526100() == 0)
+            nHave = FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &kinds[i]);
+        row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, spItem->FUN_140526c50()));
+        rows.FUN_1422bc050(row.FUN_1422bb870());
+    }
+    out.FUN_1409adbe0("ingredient", rows.FUN_1422bb870());
+    if (0 < spRec->m_nCost)
+        out.FUN_1407cbb20("requireMeso", FUN_1418fec00(1, spRec->m_nCost, 0));
+    FUN_140c65ef0();
 }

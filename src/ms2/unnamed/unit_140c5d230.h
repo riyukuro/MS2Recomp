@@ -217,6 +217,7 @@ public:
     void FUN_140c652d0(ItemInfoSlot& slot, ASSlot& asSlot);        // slot callback: mark an empty slot
     void FUN_140c65360(ItemInfoSlot& slot, ASTooltip& tooltip);    // tooltip callback
     void FUN_140c654a0(CString& strSlot, MS2Ptr<CItem> spItem);     // 0x140c654a0 bind a slot name to an item
+    void FUN_140c65540(CString& strBag, MS2Ptr<class Unk_LsRecord> spRec, ATL::CAtlArray<MS2Ptr<CItem> >& items, ATL::CAtlArray<int>& kinds, ASObj& out);
     void FUN_140c65e00();
     void FUN_140c65ef0();
     void FUN_140c660f0();
