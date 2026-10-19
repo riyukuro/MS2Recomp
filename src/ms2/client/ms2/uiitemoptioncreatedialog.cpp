@@ -5,27 +5,27 @@
 // MS2-RANGE: 0x1412d2660-0x1412d5890 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEBV<lambda_7186e7be7a3596860ecf3da510e6b81d>@@X@?$_Func_impl_no_alloc@V<lambda_7186e7be7a3596860ecf3da510e6b81d>@@XPEAVItemOptionValueRandom@@@std@@QEAA@AEBV<lambda_7186e7be7a3596860ecf3da510e6b81d>@@@Z 0x1412d4550 ; prop
-// MS2-PIN: ??$?0AEBV<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@X@?$_Func_impl_no_alloc@V<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@XPEAVItemOptionValue@@@std@@QEAA@AEBV<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@@Z 0x1412d45b0 ; prop
+// MS2-PIN: ??$?0AEBV<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@X@?$_Func_impl_no_alloc@V<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@XPEAVItemOptionValue@@@std@@QEAA@AEBV<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@@Z 0x1412d45b0 ; prop
 // MS2-PIN: ??$?0V<lambda_7186e7be7a3596860ecf3da510e6b81d>@@X@?$_Func_impl_no_alloc@V<lambda_7186e7be7a3596860ecf3da510e6b81d>@@XPEAVItemOptionValueRandom@@@std@@QEAA@$$QEAV<lambda_7186e7be7a3596860ecf3da510e6b81d>@@@Z 0x1412d4610 ; unique
 // MS2-PIN: ??$?0V<lambda_7186e7be7a3596860ecf3da510e6b81d>@@X@?$function@$$A6AXPEAVItemOptionValueRandom@@@Z@std@@QEAA@V<lambda_7186e7be7a3596860ecf3da510e6b81d>@@@Z 0x1412d4670 ; prop
-// MS2-PIN: ??$?0V<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@X@?$_Func_impl_no_alloc@V<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@XPEAVItemOptionValue@@@std@@QEAA@$$QEAV<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@@Z 0x1412d46c0 ; unique
-// MS2-PIN: ??$?0V<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@X@?$function@$$A6AXPEAVItemOptionValue@@@Z@std@@QEAA@V<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@@Z 0x1412d4720 ; prop
+// MS2-PIN: ??$?0V<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@X@?$_Func_impl_no_alloc@V<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@XPEAVItemOptionValue@@@std@@QEAA@$$QEAV<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@@Z 0x1412d46c0 ; unique
+// MS2-PIN: ??$?0V<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@X@?$function@$$A6AXPEAVItemOptionValue@@@Z@std@@QEAA@V<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@@Z 0x1412d4720 ; prop
 // MS2-PIN: ??0<lambda_7186e7be7a3596860ecf3da510e6b81d>@@QEAA@QEAVUIItemOptionCreateDialog@@AEAV?$MS2Ptr@VASUIComponent@@@@@Z 0x1412d4e20 ; order
-// MS2-PIN: ??0<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@QEAA@QEAVUIItemOptionCreateDialog@@AEAV?$MS2Ptr@VASUIComponent@@@@@Z 0x1412d4e50 ; order
+// MS2-PIN: ??0<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@QEAA@QEAVUIItemOptionCreateDialog@@AEAV?$MS2Ptr@VASUIComponent@@@@@Z 0x1412d4e50 ; order
 // MS2-PIN: ??0CCCreateItemPacket@@QEAA@XZ 0x1412d4ee0 ; unique
 // MS2-PIN: ??1CCCreateItemPacket@@QEAA@XZ 0x1412d4ff0 ; unique
-// MS2-PIN: ??_GUIItemOptionCreateDialog@@UEAAPEAXI@Z 0x1412d5510 ; unique
 // MS2-PIN: ?_Clone@?$_Func_impl_no_alloc@V<lambda_7186e7be7a3596860ecf3da510e6b81d>@@XPEAVItemOptionValueRandom@@@std@@AEBAPEAV?$_Func_base@XPEAVItemOptionValueRandom@@@2@PEAXU?$integral_constant@_N$0A@@2@@Z 0x1412d5590 ; prop
-// MS2-PIN: ?_Clone@?$_Func_impl_no_alloc@V<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@XPEAVItemOptionValue@@@std@@AEBAPEAV?$_Func_base@XPEAVItemOptionValue@@@2@PEAXU?$integral_constant@_N$0A@@2@@Z 0x1412d55e0 ; prop
+// MS2-PIN: ?_Clone@?$_Func_impl_no_alloc@V<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@XPEAVItemOptionValue@@@std@@AEBAPEAV?$_Func_base@XPEAVItemOptionValue@@@2@PEAXU?$integral_constant@_N$0A@@2@@Z 0x1412d55e0 ; prop
 // MS2-PIN: ?_Copy@?$_Func_impl_no_alloc@V<lambda_7186e7be7a3596860ecf3da510e6b81d>@@XPEAVItemOptionValueRandom@@@std@@EEBAPEAV?$_Func_base@XPEAVItemOptionValueRandom@@@2@PEAX@Z 0x1412d5630 ; prop
-// MS2-PIN: ?_Copy@?$_Func_impl_no_alloc@V<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@XPEAVItemOptionValue@@@std@@EEBAPEAV?$_Func_base@XPEAVItemOptionValue@@@2@PEAX@Z 0x1412d5660 ; prop
+// MS2-PIN: ?_Copy@?$_Func_impl_no_alloc@V<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@XPEAVItemOptionValue@@@std@@EEBAPEAV?$_Func_base@XPEAVItemOptionValue@@@2@PEAX@Z 0x1412d5660 ; prop
 // MS2-PIN: ?_Delete_this@?$_Func_impl_no_alloc@V<lambda_7186e7be7a3596860ecf3da510e6b81d>@@XPEAVItemOptionValueRandom@@@std@@EEAAX_N@Z 0x1412d5690 ; order
-// MS2-PIN: ?_Delete_this@?$_Func_impl_no_alloc@V<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@XPEAVItemOptionValue@@@std@@EEAAX_N@Z 0x1412d56d0 ; order
-// MS2-PIN: ?_Get@?$_Func_impl_no_alloc@V<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@XPEAVItemOptionValue@@@std@@EEBAPEBXXZ 0x1412d5790 ; prop
+// MS2-PIN: ?_Delete_this@?$_Func_impl_no_alloc@V<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@XPEAVItemOptionValue@@@std@@EEAAX_N@Z 0x1412d56d0 ; order
+// MS2-PIN: ?_Get@?$_Func_impl_no_alloc@V<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@XPEAVItemOptionValue@@@std@@EEBAPEBXXZ 0x1412d5790 ; prop
+// MS2-PIN: ?_Getspace@?$_Func_class@XPEAVItemOptionValue@@@std@@AEAAPEAXXZ 0x1412d57b0 ; unique
 // MS2-PIN: ?_Move@?$_Func_impl_no_alloc@V<lambda_7186e7be7a3596860ecf3da510e6b81d>@@XPEAVItemOptionValueRandom@@@std@@EEAAPEAV?$_Func_base@XPEAVItemOptionValueRandom@@@2@PEAX@Z 0x1412d57d0 ; prop
-// MS2-PIN: ?_Move@?$_Func_impl_no_alloc@V<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@XPEAVItemOptionValue@@@std@@EEAAPEAV?$_Func_base@XPEAVItemOptionValue@@@2@PEAX@Z 0x1412d5820 ; prop
+// MS2-PIN: ?_Move@?$_Func_impl_no_alloc@V<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@XPEAVItemOptionValue@@@std@@EEAAPEAV?$_Func_base@XPEAVItemOptionValue@@@2@PEAX@Z 0x1412d5820 ; prop
 // MS2-PIN: ?_Target_type@?$_Func_impl_no_alloc@V<lambda_7186e7be7a3596860ecf3da510e6b81d>@@XPEAVItemOptionValueRandom@@@std@@EEBAAEBVtype_info@@XZ 0x1412d5870 ; order
-// MS2-PIN: ?_Target_type@?$_Func_impl_no_alloc@V<lambda_a792bcd89ec462b6e9fc17d6447f68d5>@@XPEAVItemOptionValue@@@std@@EEBAAEBVtype_info@@XZ 0x1412d5880 ; order
+// MS2-PIN: ?_Target_type@?$_Func_impl_no_alloc@V<lambda_c0426702a5f4d7f5dbbb763dea37cd8a>@@XPEAVItemOptionValue@@@std@@EEBAAEBVtype_info@@XZ 0x1412d5880 ; order
 // MS2-PINS-END tplpin
 // MS2-PIN: ??1UIItemOptionCreateDialog@@UEAA@XZ 0x1412d5060 ; the exe dtor has no vptr store (implicit)
 //
@@ -136,8 +136,6 @@ CStringW FUN_140630e10(int nSpecial);                       // text of a special
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);          // value as an integer
 int FUN_1409c1750(const Scaleform::GFx::Value& v);          // value as an integer
 const char* FUN_140b63540(const Scaleform::GFx::Value& v);  // value as a string
-bool FUN_140ebaf70(const Scaleform::GFx::Value* pArray, unsigned nIndex, Scaleform::GFx::Value* pOut);   // array element
-unsigned FUN_1412d5550(const Scaleform::GFx::Value& v);     // array size (inline COMDAT)
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
@@ -259,9 +257,9 @@ void UIItemOptionCreateDialog::FUN_1412d2e50(unsigned nItemId, unsigned nCount, 
     packet.c = nParam;
     packet.d = 0;
     packet.e = nParam2;
-    for (unsigned i = 0; i < FUN_1412d5550(options); ++i) {
+    for (unsigned i = 0; i < options.GetArraySize(); ++i) {
         Scaleform::GFx::Value elem;
-        if (FUN_140ebaf70(&options, i, &elem) == 0)
+        if (options.GetElement(i, &elem) == 0)
             continue;
         ASObj row(elem, 2);
         Scaleform::GFx::Value vKinds = row.FUN_1422baa20("kinds");
@@ -414,10 +412,10 @@ void UIItemOptionCreateDialog::FUN_1412d3a60()
                 FUN_1412d44d0(row, pValue->FUN_1405ce390());
             }
             int nValue = pValue->vfunc_1(m_nItemId, m_nRank);
-            if (nValue != 0) {
-                row.FUN_1407cb9c0("value", nValue);
-                result->Invoke("appendOption", row.FUN_1422bb870());
-            }
+            if (nValue == 0)
+                return;
+            row.FUN_1407cb9c0("value", nValue);
+            result->Invoke("appendOption", row.FUN_1422bb870());
         };
         constant->FUN_1405d33e0(fn);
     }
