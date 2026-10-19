@@ -55,6 +55,12 @@
 #include "ms2/client/ms2/uiitempettrainingdialog.h"
 #include "ms2/client/ms2/uiselectitemboxdialog.h"
 #include "ms2/client/ms2/uiwebbrowser.h"
+#include "ms2/placeholder/cmycharacter.h"
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/client/ms2/dungeonrecordcli.h"
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/client/ms2/uiitemgachaboxdialog.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -74,6 +80,7 @@ class Unk_IuWorld
 public:
     MyPC* FUN_141bd0cc0();                                  // the local player
     MS2Ptr<Unk_RideeFieldObj> FUN_141bc4f10(Unk_Entity* pEntity);   // the field object of an entity
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                  // the current field's data
     int FUN_141bd3060();                                    // the current field (map) id
 };
 Unk_IuWorld* FUN_1403ed2d0();
@@ -170,7 +177,18 @@ class Unk_IuStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_IuStrings* FUN_1401a9d70();
 
 // The quest scroll: the quest client manager.
-class Unk_IuQuestList { public: int FUN_140745590(int nQuestId); int FUN_140745630(int nQuestId); };   // completed / accepted
+class Unk_IuQuest : public CPtred {};                       // CQuest (Unk_PayloadPtr<CQuest> in the exe: get 0x140747690, dtor 0x140747580)
+class Unk_IuQuestList
+{
+public:
+    virtual void vfunc_0();
+    virtual void vfunc_1();
+    virtual void vfunc_2();
+    virtual MS2Ptr<Unk_IuQuest> vfunc_3(int nQuestId);      // 3 the quest
+    int FUN_140745590(int nQuestId);                        // completed
+    int FUN_140745630(int nQuestId);                        // accepted
+    int FUN_140745820(int nQuestId, int n);                 // the quest may start
+};
 class Unk_IuQuestMgr
 {
 public:
@@ -180,6 +198,8 @@ public:
     Unk_IuQuestList m_list;                                 // +0x10
 };
 Unk_IuQuestMgr* FUN_140764020();
+Unk_IuQuestMgr* FUN_141523ba0(PC* pPlayer);                 // the player's quests (MyPC)
+CStringW FUN_1416e4df0(int nQuestId);                       // the quest name
 
 // ItemChangeBeauty: the field object the player stands on (ridee.cpp's view of the same COMDATs).
 class Unk_IuBody;
@@ -237,6 +257,16 @@ CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW strTag);
 int FUN_1401e0800(unsigned short nLevel);                   // the ability reset is open at that level
 bool FUN_14152e7f0(PC* pPlayer);                            // the gender can't change (MyPC)
+
+// The box / potion handlers.
+int FUN_141658e60(PC* pPlayer);                             // the gender
+int FUN_141276180(const CString& strChannel, const CString& strArg);   // the notice log
+CStringW FUN_1409e8820(CStringW strKey, const int& nArg);
+DungeonRoomTable* FUN_14031c2a0();
+CMyCharacter* FUN_140931510();
+unsigned FUN_140869420();                                   // the raw timer (ms)
+int FUN_14086be10(int nSeconds);                            // seconds to ms
+extern int DAT_143ab2914;                                   // the GM level
 
 // ---- the box helpers ----
 
@@ -1491,4 +1521,205 @@ int CallAirTaxi(MS2Ptr<CItem> spItem, PC* pPlayer)
     if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4e42) != 0)
         FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4e42);
     return 1;
+}
+
+// @0x140d24900
+int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    if (spField == 0)
+        return 0;
+    if (spField->FUN_140375310())
+    {
+        FUN_1412751f0(FUN_14028b8e0(L"s_tutorial_levelup_item_not_use"), 1, 1);
+        return 0;
+    }
+    int nDefault = 0;
+    int nTarget = spItem->FUN_140527840()->function.xml.GetInt(L"targetLevel", nDefault);
+    if (nTarget == 0)
+        return 0;
+    unsigned short nLevel = (unsigned short)nTarget;
+    if ((int)(unsigned short)pPlayer->vfunc_78() >= (int)nLevel)
+    {
+        FUN_140d73aa0(FUN_1409e8820(L"s_err_cannot_already_target_level_potion", nTarget), 0, 0, L"");
+        return 0;
+    }
+    if (FUN_14166ce30(pPlayer) != 0)
+    {
+        FUN_140d73bc0(0x54, 0, 0, L"");
+        return 0;
+    }
+    return DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
+}
+
+// The dungeon reward box: only while the dungeon's reward count isn't used up.
+// @0x140d24e70
+int OpenDungeonItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    int nDungeon = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(0, 0);
+    int nIndex = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(1, 0);
+    DungeonRoomPtr spRoom = FUN_14031c2a0()->GetRoom(nDungeon, nIndex);
+    if (spRoom == 0)
+        return 0;
+    unsigned nRoomId = spRoom->GetRewardRoomID();
+    DungeonRecordCliPtr spRecord = FUN_140931510()->FUN_140d9f2c0()->GetRecord(nRoomId);
+    int nNow = spRecord->GetBonusRewardCountNow();
+    int nMax = spRecord->GetMaxCount();
+    if (nNow >= nMax)
+    {
+        FUN_140d73aa0(FUN_14028b8e0(L"s_msg_dungeon_item_open_dungeon_count"), 0, 0, L"");
+        return 0;
+    }
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, FUN_14028b8e0(L"s_msg_item_open_dungeon_item_box"), 0, s_strUseFunctionItem);
+    if (spBox.get() == 0)
+        return 0;
+    spBox->FUN_141a01600(spItem->FUN_140526a50());
+    spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+    spBox->FUN_141a01700(0x477, 0x478, 0);
+    FUN_140d73c60(spBox);
+    return 1;
+}
+
+// The box opened with keys: needs the key count and the right gender.
+// @0x140d25430
+int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    int nKeyId = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(0, 0);
+    int nNeed = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(1, 0);
+    int nHave = DAT_143ab2a90.FUN_140a5f180(nKeyId, 0);
+    if (nHave < nNeed)
+    {
+        FUN_140d73aa0(FUN_14028dfa0(L"s_msg_item_open_item_box_with_key_no_key_count", FUN_1401a9d70()->FUN_141811980(1, nKeyId), nHave, nNeed), 0, 0, L"");
+        return 1;
+    }
+    if (spItem->FUN_1405267d0(FUN_141658e60(pPlayer)) == 0)
+    {
+        FUN_141276180(s_warningGender, "");
+        FUN_140d73bc0(0x2d, 0, 0, L"");
+        return 1;
+    }
+    CStringW strMsg = FUN_1405c2690(L"s_msg_item_open_item_box_with_key", FUN_1401a9d70()->FUN_141811980(1, nKeyId));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, s_strUseFunctionItem);
+    if (spBox.get() == 0)
+        return 0;
+    spBox->FUN_141a01600(spItem->FUN_140526a50());
+    spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+    spBox->FUN_141a01700(0x477, 0x478, 0);
+    FUN_140d73c60(spBox);
+    return 1;
+}
+
+// @0x140d259d0
+int OpenItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    if (spItem->FUN_1405267d0(FUN_141658e60(pPlayer)) == 0)
+    {
+        FUN_141276180(s_warningGender, "");
+        FUN_140d73bc0(0x2d, 0, 0, L"");
+        return 1;
+    }
+    int nCount = 1;
+    if (spItem->FUN_140527840()->function.parameter.FUN_1408d2380() > 4)
+        nCount = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(4, 1);
+    int nHave = DAT_143ab2a90.FUN_140a5f180(spItem->FUN_1405276c0(), 0);
+    if (nHave < nCount)
+    {
+        FUN_140d73aa0(FUN_1409e8970(L"s_msg_item_open_item_box_multi_no_having_count", nHave, nCount), 0, 0, L"");
+        return 1;
+    }
+    OpenItemBox(spItem.get(), nCount);
+    return 1;
+}
+
+// The limited quantity box: a per-item cooldown between uses (GMs skip it).
+// @0x140d25c50
+int OpenItemBoxLimitedQuantity(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    CXmlData* pXml = &spItem->FUN_140527840()->function.xml;
+    int nCooldown = 0;
+    if (!pXml->FUN_14092c5c0())
+    {
+        int nDefault = 0;
+        nCooldown = pXml->GetInt(L"cooldownTime", nDefault);
+    }
+    if (nCooldown > 0 && DAT_143ab2914 < 0x32)
+    {
+        unsigned nNow = FUN_140869420();
+        unsigned nElapsed = nNow - s_itemUseMap[spItem->FUN_1405276c0()];
+        if (nElapsed < (unsigned)FUN_14086be10(nCooldown))
+            return 0;
+        s_itemUseMap[spItem->FUN_1405276c0()] = nNow;
+    }
+    DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
+    return 1;
+}
+
+// @0x140d25e10
+int OpenGachaBox(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    UIItemGachaBoxDialog* pDialog = GetItemUseDialog<UIItemGachaBoxDialog>(0x4f8b);
+    if (pDialog != 0)
+    {
+        if (pDialog->FUN_141924630() != 0)
+            return 1;
+        pDialog->FUN_140c41c30(spItem->FUN_1405276c0());
+        pDialog->FUN_141924680();
+    }
+    return 1;
+}
+
+// The quest start item: level, start and repeat checks, then confirm.
+// @0x140d25eb0
+int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
+{
+    MS2Ptr<CItemData> spData(spItem->FUN_140527840());
+    if (spData == 0)
+        return 0;
+    if (!spData->FUN_14053cd90())
+        return 0;
+    unsigned nQuestId = spData->function.parameter.FUN_1408d1f60(0, 0);
+    unsigned nLevel = spData->function.parameter.FUN_1408d1f60(1, 0);
+    if (nLevel == 0)
+        nLevel = 10;
+    if ((unsigned)pPlayer->vfunc_78() < nLevel)
+    {
+        FUN_140d73aa0(FUN_14028b8e0(L"s_quest_start_err_level"), 0, 0, L"");
+        return 0;
+    }
+    if (FUN_141523ba0(pPlayer)->m_list.FUN_140745820(nQuestId, 0) == 0)
+    {
+        FUN_140d73aa0(FUN_14028b8e0(L"s_quest_start_err_invalid"), 0, 0, L"");
+        return 0;
+    }
+    MS2Ptr<Unk_IuQuest> spQuest = FUN_141523ba0(pPlayer)->m_list.vfunc_3(nQuestId);
+    if (spQuest.get() != 0 && FUN_141523ba0(pPlayer)->vfunc_1(nQuestId, 0) == 0)
+    {
+        FUN_140d73aa0(FUN_14028b8e0(L"s_quest_start_err_completed"), 0, 0, L"");
+        return 0;
+    }
+    CStringW strTitle = FUN_14028b8e0(L"s_quest_start_title");
+    CStringW strMsg = FUN_1405c2690(L"s_quest_start_msg", FUN_1416e4df0(nQuestId));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(2, strMsg, 0, s_strUseFunctionItem);
+    if (spBox.get() == 0)
+        return DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
+    spBox->FUN_141a015d0(strTitle);
+    spBox->FUN_141a01600(spItem->FUN_140526a50());
+    spBox->FUN_141a024a0(0);
+    spBox->FUN_141a01700(0x477, 0x478, 0);
+    FUN_140d73c60(spBox);
+    return 1;
+}
+
+// ---- inline members of other classes instantiated here ----
+
+// @0x140d29440
+MS2Ptr<CEquipmentSlotLayerInfo> Unk_PCEquipSet::GetTitle()
+{
+    return m_spTitle;
+}
+
+// @0x140d295d0
+WeddingProxy* WeddingManager::FUN_140d295d0()
+{
+    return &m_proxy;
 }
