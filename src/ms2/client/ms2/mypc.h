@@ -225,8 +225,8 @@ public:
     void FUN_14152a2d0(int n);
     void FUN_14152a310(MS2Ptr<Unk_PCBaseComp_b18> sp);
     int FUN_14152e060();
-    void FUN_14152e240(int n);
-    int FUN_14152e280(int n);
+    void FUN_14152e240(unsigned n);
+    int FUN_14152e280(unsigned n);
     int FUN_14152e950();
     bool FUN_1415275b0(short nKind);                         // the burning event is active for nKind
     int FUN_1415279d0(PCBase* pOther);                       // can ride along with pOther (buddy, party or guild)
@@ -327,7 +327,7 @@ public:
     int m_bMapDirty;                                        // +0x15e8 (set when a counted entry changes)
     int m_n15ec;                                            // +0x15ec
     int m_n15f0;                                            // +0x15f0
-    std::set<int> m_set15f8;                                // +0x15f8
+    std::set<unsigned> m_set15f8;                                // +0x15f8
     MS2Ptr<Unk_PCBaseComp_b18> m_sp1608;                    // +0x1608
     MS2Ptr<Unk_MyPCComp1618> m_sp1618;                      // +0x1618
     MS2Ptr<CHomePrivilege> m_spHomePrivilege;               // +0x1628
