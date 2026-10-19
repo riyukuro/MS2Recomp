@@ -3,6 +3,37 @@
 // MS2-RANGE: 0x1400ef760-0x1400ef900 .text$di
 // MS2-RANGE: 0x14132bc00-0x141339640 .text$mn
 // MS2-RANGE: 0x142cb0000-0x142cb00a5 .text$yd
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??__Es_strSetData@@YAXXZ 0x1400ef760 ; probe
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1400ef850 ; probe
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400ef880 ; probe
+// MS2-PIN: ??$?8PEAVUIPCInfoDialog@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x141337c20 ; prop
+// MS2-PIN: ??$?8PEAVUIPCInfoDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x141337c90 ; prop
+// MS2-PIN: ??$?8PEAVUIPCInfoDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIPCInfoDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x141337d00 ; prop
+// MS2-PIN: ??$FUN_14028dfa0@HIIII@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBHAEBI222@Z 0x141338090 ; unique
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x141338970 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x141338a10 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x141338ab0 ; prop
+// MS2-PIN: ??4?$_Tree@V?$_Tmap_traits@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@$0A@@std@@@std@@QEAAAEAV01@AEBV01@@Z 0x141338fd0 ; unique
+// MS2-PIN: ??_EUIPCInfoDialog@@WBHI@EAAPEAXI@Z 0x141339084 ; unique
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAPEAXI@Z 0x141339090 ; prop
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAPEAXI@Z 0x1413390d0 ; prop
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x141339110 ; prop
+// MS2-PIN: ??_GUIPCInfoDialog@@UEAAPEAXI@Z 0x141339150 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1413392a0 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141339300 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141339360 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x1413393c0 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1413393f0 ; unique
+// MS2-PIN: ??$Call@VUIPCInfoDialog@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x141339460 ; prop
+// MS2-PIN: ??$Call@VUIPCInfoDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1413394a0 ; prop
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141339520 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141339580 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPCInfoDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1413395e0 ; unique
+// MS2-PIN: ??__Fs_strSetData@@YAXXZ 0x142cb0000 ; probe
+// MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142cb0050 ; probe
+// MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142cb0070 ; probe
+// MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uipcinfodialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 static CString s_strSetData = "setData";
@@ -259,6 +290,7 @@ CString UIPCInfoDialog::vfunc_1()
 {
     return "MyInfoDialog";
 }
+MS2_REPLACE_METHOD(0x14132C030, UIPCInfoDialog, vfunc_1, 61, 0x75B53313);
 
 // @0x14132c080
 int UIPCInfoDialog::FUN_14132c080(__int64 nCharacterId)
@@ -272,6 +304,7 @@ int UIPCInfoDialog::FUN_14132c080(__int64 nCharacterId)
     m_1e0.Init();
     return 0;
 }
+MS2_REPLACE_METHOD(0x14132C080, UIPCInfoDialog, FUN_14132c080, 168, 0xDC1D34D4);
 
 // @0x14132c130
 void UIPCInfoDialog::FUN_14132c130(PC* pPC)
@@ -288,6 +321,7 @@ void UIPCInfoDialog::FUN_14132c130(PC* pPC)
             pAvatarPC->FUN_1410885b0(true);
     }
 }
+MS2_REPLACE_METHOD(0x14132C130, UIPCInfoDialog, FUN_14132c130, 498, 0x0DF6E9F0);
 
 // MS2-FUNCTIONAL: record copy and item loops from the decompile; frame layout and temporaries differ
 // @0x14132c330
@@ -483,6 +517,7 @@ int UIPCInfoDialog::vfunc_65()
         return 0;
     return 1;
 }
+MS2_REPLACE_METHOD(0x14132D500, UIPCInfoDialog, vfunc_65, 37, 0x1E0CAD2E);
 
 // @0x14132d530
 void UIPCInfoDialog::vfunc_67()
@@ -496,6 +531,7 @@ void UIPCInfoDialog::vfunc_67()
     m_nTab = 0;
     UIDialog::vfunc_67();
 }
+MS2_REPLACE_METHOD(0x14132D530, UIPCInfoDialog, vfunc_67, 193, 0x21224E7D);
 
 // @0x14132d600
 void UIPCInfoDialog::vfunc_26()
@@ -503,6 +539,7 @@ void UIPCInfoDialog::vfunc_26()
     UIDialog::vfunc_26();
     FUN_1413375c0();
 }
+MS2_REPLACE_METHOD(0x14132D600, UIPCInfoDialog, vfunc_26, 34, 0xC51D4F67);
 
 // @0x14132d630
 void UIPCInfoDialog::vfunc_79(void* pPacket)
@@ -542,6 +579,7 @@ void UIPCInfoDialog::vfunc_79(void* pPacket)
         FUN_140d73bc0(0x26, 0, 0, L"");
     }
 }
+MS2_REPLACE_METHOD(0x14132D630, UIPCInfoDialog, vfunc_79, 714, 0xE0887F8F);
 
 // @0x14132d900
 void UIPCInfoDialog::vfunc_ugc_1(void* nCharacterId, CString strPath)
@@ -557,6 +595,7 @@ void UIPCInfoDialog::vfunc_ugc_1(void* nCharacterId, CString strPath)
     m_spInfo->m_3e0 = strPath;
     vfunc_98(FUN_141336c90());
 }
+MS2_REPLACE_METHOD_VIA(0x14132D900, UIPCInfoDialog, UIUGCEventListener, vfunc_ugc_1, 352, 0x960E76E2);
 
 // @0x14132da70
 int UIPCInfoDialog::vfunc_46()
@@ -575,6 +614,7 @@ int UIPCInfoDialog::vfunc_46()
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x14132DA70, UIPCInfoDialog, vfunc_46, 421, 0xDD26DC79);
 
 // MS2-FUNCTIONAL: tab list and button setup from the decompile; temporaries differ
 // @0x14132dc20
@@ -624,6 +664,7 @@ void UIPCInfoDialog::OnLoadComplete()
         }
     }
 }
+MS2_REPLACE_METHOD(0x14132DC20, UIPCInfoDialog, OnLoadComplete, 2205, 0xC07494E2);
 
 // @0x14132e4d0
 int UIPCInfoDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
@@ -661,12 +702,14 @@ int UIPCInfoDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     }
     return 0;
 }
+MS2_REPLACE_METHOD_VIA(0x14132E4D0, UIPCInfoDialog, IMessageListener, OnMessage, 889, 0x0587A763);
 
 // @0x14132e850
 void UIPCInfoDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
     UIObject::vfunc_45(pRetVal, strMethod, pArgs);
 }
+MS2_REPLACE_METHOD(0x14132E850, UIPCInfoDialog, vfunc_45, 54, 0x1D31D0AB);
 
 // @0x14132e890
 int UIPCInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
@@ -718,6 +761,7 @@ int UIPCInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14132E890, UIPCInfoDialog, vfunc_28, 1182, 0x2F990B68);
 
 // @0x14132ed50
 void UIPCInfoDialog::FUN_14132ed50(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -734,6 +778,7 @@ void UIPCInfoDialog::FUN_14132ed50(const Scaleform::GFx::FunctionHandler::Params
         strUrl = StringFormat("maview:/Main/SearchNews?c={0}", reinterpret_cast<const unsigned __int64&>(m_spInfo->m_30));   // formatted unsigned
     pBrowser->FUN_14135ec00(strUrl, true);
 }
+MS2_REPLACE_METHOD(0x14132ED50, UIPCInfoDialog, FUN_14132ed50, 304, 0x65E39183);
 
 // @0x14132ee90
 bool UIPCInfoDialog::FUN_14132ee90(int nResult, const CMsgBoxData& data)
@@ -743,6 +788,7 @@ bool UIPCInfoDialog::FUN_14132ee90(int nResult, const CMsgBoxData& data)
     FUN_14151f200();
     return true;
 }
+MS2_REPLACE_METHOD(0x14132EE90, UIPCInfoDialog, FUN_14132ee90, 56, 0x8AAF4EEA);
 
 // @0x14132eed0
 void UIPCInfoDialog::FUN_14132eed0(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -759,6 +805,7 @@ void UIPCInfoDialog::FUN_14132eed0(const Scaleform::GFx::FunctionHandler::Params
     Scaleform::GFx::Value* pRetVal = params.pRetVal;
     FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
 }
+MS2_REPLACE_METHOD(0x14132EED0, UIPCInfoDialog, FUN_14132eed0, 324, 0xD7BCCED3);
 
 // @0x14132f020
 void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -792,6 +839,7 @@ show:
     Scaleform::GFx::Value* pRetVal = params.pRetVal;
     FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
 }
+MS2_REPLACE_METHOD(0x14132F020, UIPCInfoDialog, FUN_14132f020, 1446, 0x42E4BD98);
 
 // MS2-FUNCTIONAL: wedding tooltip from the decompile
 // @0x14132f5d0
@@ -832,18 +880,21 @@ void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params
         FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
     }
 }
+MS2_REPLACE_METHOD(0x14132F5D0, UIPCInfoDialog, FUN_14132f5d0, 1144, 0xBA2C420E);
 
 // @0x14132fa50
 void UIPCInfoDialog::FUN_14132fa50(const CStringW& strAddress)
 {
     vfunc_101(strAddress);
 }
+MS2_REPLACE_METHOD(0x14132FA50, UIPCInfoDialog, FUN_14132fa50, 43, 0xFF5DCCEA);
 
 // @0x14132fa90
 void UIPCInfoDialog::FUN_14132fa90()
 {
     vfunc_98(FUN_141336c90());
 }
+MS2_REPLACE_METHOD(0x14132FA90, UIPCInfoDialog, FUN_14132fa90, 89, 0xD17D819F);
 
 // @0x14132faf0
 void UIPCInfoDialog::FUN_14132faf0(const CStringW& strProfile)
@@ -852,6 +903,7 @@ void UIPCInfoDialog::FUN_14132faf0(const CStringW& strProfile)
         return;
     vfunc_98(strProfile);
 }
+MS2_REPLACE_METHOD(0x14132FAF0, UIPCInfoDialog, FUN_14132faf0, 68, 0x12AB7DB9);
 
 // @0x14132fb40
 void UIPCInfoDialog::vfunc_84()
@@ -873,6 +925,7 @@ void UIPCInfoDialog::vfunc_84()
     vfunc_105(m_spInfo->m_530);
     vfunc_106();
 }
+MS2_REPLACE_METHOD(0x14132FB40, UIPCInfoDialog, vfunc_84, 889, 0x0F1FB44E);
 
 // @0x14132fec0
 void UIPCInfoDialog::vfunc_85()
@@ -881,6 +934,7 @@ void UIPCInfoDialog::vfunc_85()
         return;
     vfunc_99(m_spInfo->m_408);
 }
+MS2_REPLACE_METHOD(0x14132FEC0, UIPCInfoDialog, vfunc_85, 101, 0xC85E7596);
 
 // MS2-FUNCTIONAL: the stat lists from the decompile; the label index temporaries differ
 // @0x14132ff30
@@ -995,6 +1049,7 @@ void UIPCInfoDialog::vfunc_86()
     }
     vfunc_87();
 }
+MS2_REPLACE_METHOD(0x14132FF30, UIPCInfoDialog, vfunc_86, 9098, 0x7D3617B9);
 
 // MS2-FUNCTIONAL: stat point rows from the decompile
 // @0x1413322c0
@@ -1081,6 +1136,7 @@ void UIPCInfoDialog::vfunc_87()
         }
     }
 }
+MS2_REPLACE_METHOD(0x1413322C0, UIPCInfoDialog, vfunc_87, 2860, 0x741C1FD3);
 
 // @0x141332e00
 void UIPCInfoDialog::vfunc_88(int nTab)
@@ -1104,6 +1160,7 @@ void UIPCInfoDialog::vfunc_88(int nTab)
     }
     static_cast<ASObj*>(m_30.operator->())->FUN_1407cba60("equipBagID", strBag);
 }
+MS2_REPLACE_METHOD(0x141332E00, UIPCInfoDialog, vfunc_88, 433, 0xEC13BD1B);
 
 // @0x141332fc0
 void UIPCInfoDialog::vfunc_89()
@@ -1111,6 +1168,7 @@ void UIPCInfoDialog::vfunc_89()
     FUN_14120d8e0(m_strEquipBag);
     FUN_14126e3f0(m_strGemBag);
 }
+MS2_REPLACE_METHOD(0x141332FC0, UIPCInfoDialog, vfunc_89, 52, 0xEED58DDD);
 
 // @0x141333000
 void UIPCInfoDialog::vfunc_90(int nTab)
@@ -1120,22 +1178,26 @@ void UIPCInfoDialog::vfunc_90(int nTab)
     m_nTab = nTab;
     vfunc_88(nTab);
 }
+MS2_REPLACE_METHOD(0x141333000, UIPCInfoDialog, vfunc_90, 84, 0xDB356949);
 
 // @0x141333060
 void UIPCInfoDialog::vfunc_91(int nStat)
 {
 }
+MS2_REPLACE_METHOD(0x141333060, UIPCInfoDialog, vfunc_91, 10, 0x96F6F902);
 
 // @0x141333070
 void UIPCInfoDialog::vfunc_92()
 {
 }
+MS2_REPLACE_METHOD(0x141333070, UIPCInfoDialog, vfunc_92, 6, 0xA9AF6E37);
 
 // @0x141333080
 int UIPCInfoDialog::vfunc_93()
 {
     return 0;
 }
+MS2_REPLACE_METHOD(0x141333080, UIPCInfoDialog, vfunc_93, 8, 0x7F371472);
 
 // @0x141333090
 void UIPCInfoDialog::FUN_141333090()
@@ -1145,6 +1207,7 @@ void UIPCInfoDialog::FUN_141333090()
     if (MS2Ptr<Unk_PciCombo> spTitle = ((Unk_PciMovieEntity*)this)->FUN_140c28560("m_title"))
         ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
 }
+MS2_REPLACE_METHOD(0x141333090, UIPCInfoDialog, FUN_141333090, 220, 0x5680505A);
 
 // @0x141333180
 void UIPCInfoDialog::vfunc_94(const unsigned int& nJob)
@@ -1158,6 +1221,7 @@ void UIPCInfoDialog::vfunc_94(const unsigned int& nJob)
     if (MS2Ptr<Unk_PciLabel> spJob = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_job"))
         spJob->FUN_1422e4a50(FUN_1401a9d70()->FUN_141811980(6, nJob));
 }
+MS2_REPLACE_METHOD(0x141333180, UIPCInfoDialog, vfunc_94, 437, 0x6E3D79C9);
 
 // @0x141333340
 void UIPCInfoDialog::vfunc_95(const unsigned short& nLevel)
@@ -1169,6 +1233,7 @@ void UIPCInfoDialog::vfunc_95(const unsigned short& nLevel)
         spLevel->FUN_1422e4a00(strLevel);
     }
 }
+MS2_REPLACE_METHOD(0x141333340, UIPCInfoDialog, vfunc_95, 205, 0xB4F00A53);
 
 // @0x141333420
 void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aTitles)
@@ -1222,6 +1287,7 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
         ((Unk_PciComboSlots*)spTitle.get())->vfunc_24(true);
     }
 }
+MS2_REPLACE_METHOD(0x141333420, UIPCInfoDialog, vfunc_96, 1198, 0xC1734295);
 
 // @0x1413338e0
 void UIPCInfoDialog::vfunc_97(const CStringW& strName)
@@ -1229,6 +1295,7 @@ void UIPCInfoDialog::vfunc_97(const CStringW& strName)
     if (m_30.get() != 0)
         m_30->Invoke("setName", strName);
 }
+MS2_REPLACE_METHOD(0x1413338E0, UIPCInfoDialog, vfunc_97, 153, 0xF16D0E2E);
 
 // @0x141333980
 void UIPCInfoDialog::vfunc_98(const CStringW& strProfile)
@@ -1256,6 +1323,7 @@ void UIPCInfoDialog::vfunc_98(const CStringW& strProfile)
         }
     }
 }
+MS2_REPLACE_METHOD(0x141333980, UIPCInfoDialog, vfunc_98, 543, 0xDE504DF6);
 
 // @0x141333bb0
 void UIPCInfoDialog::vfunc_99(const CStringW& strMemo)
@@ -1266,6 +1334,7 @@ void UIPCInfoDialog::vfunc_99(const CStringW& strMemo)
     if (pDialog != 0)
         pDialog->FUN_140e0a8c0("setTodayMemo", strMemo, m_spInfo->FUN_140dba260());
 }
+MS2_REPLACE_METHOD(0x141333BB0, UIPCInfoDialog, vfunc_99, 239, 0x328C943C);
 
 // @0x141333cb0
 void UIPCInfoDialog::vfunc_100(int nGender, unsigned int nSkin)
@@ -1277,6 +1346,7 @@ void UIPCInfoDialog::vfunc_100(int nGender, unsigned int nSkin)
         spCharacter->vfunc_13(strFrame);
     }
 }
+MS2_REPLACE_METHOD(0x141333CB0, UIPCInfoDialog, vfunc_100, 267, 0xA51284A2);
 
 // @0x141333dd0
 void UIPCInfoDialog::vfunc_101(const CStringW& strAddress)
@@ -1292,6 +1362,7 @@ void UIPCInfoDialog::vfunc_101(const CStringW& strAddress)
             spAddress->FUN_1422e4a50(strAddress);
     }
 }
+MS2_REPLACE_METHOD(0x141333DD0, UIPCInfoDialog, vfunc_101, 549, 0x80BF13E0);
 
 // @0x141334000
 void UIPCInfoDialog::vfunc_102(int nPoint, int nRank)
@@ -1304,6 +1375,7 @@ void UIPCInfoDialog::vfunc_102(int nPoint, int nRank)
         spInterior->FUN_1422e4a50(FUN_140811740(0x25, nRank, nPoint));
     }
 }
+MS2_REPLACE_METHOD(0x141334000, UIPCInfoDialog, vfunc_102, 276, 0xB5DDDC11);
 
 // @0x141334120
 void UIPCInfoDialog::vfunc_103(const CStringW& strGuild, const CStringW& strRank)
@@ -1326,6 +1398,7 @@ void UIPCInfoDialog::vfunc_103(const CStringW& strGuild, const CStringW& strRank
         spGuild->FUN_1422e4a50(strText);
     }
 }
+MS2_REPLACE_METHOD(0x141334120, UIPCInfoDialog, vfunc_103, 492, 0xB7104160);
 
 // @0x141334320
 void UIPCInfoDialog::vfunc_104(int nTrophy)
@@ -1334,6 +1407,7 @@ void UIPCInfoDialog::vfunc_104(int nTrophy)
         return;
     m_30->Invoke("setTrophy", (unsigned int)nTrophy);
 }
+MS2_REPLACE_METHOD(0x141334320, UIPCInfoDialog, vfunc_104, 96, 0x50CEEB1F);
 
 // @0x141334390
 void UIPCInfoDialog::vfunc_105(const int& nLevel)
@@ -1358,6 +1432,7 @@ void UIPCInfoDialog::vfunc_105(const int& nLevel)
             spIcon->vfunc_3(1);
     }
 }
+MS2_REPLACE_METHOD(0x141334390, UIPCInfoDialog, vfunc_105, 442, 0x974AFBD0);
 
 // @0x141334550
 void UIPCInfoDialog::vfunc_106()
@@ -1390,6 +1465,7 @@ void UIPCInfoDialog::vfunc_106()
         }
     }
 }
+MS2_REPLACE_METHOD(0x141334550, UIPCInfoDialog, vfunc_106, 826, 0xB7E7E3E5);
 
 // @0x141334890
 __int64 UIPCInfoDialog::FUN_141334890()
@@ -1456,6 +1532,7 @@ __int64 UIPCInfoDialog::FUN_141334890()
     __int64 nScore = FUN_1401c0db0()->FUN_14067a680(nMeanAttack, nAttackMin, nAttackMax, fCritRate, fDamage);
     return nScore;
 }
+MS2_REPLACE_METHOD(0x141334890, UIPCInfoDialog, FUN_141334890, 2554, 0xA471D6B9);
 
 // @0x141335290
 __int64 UIPCInfoDialog::FUN_141335290()
@@ -1491,6 +1568,7 @@ __int64 UIPCInfoDialog::FUN_141335290()
     }
     return m_spInfo->m_aStats2[0x14];
 }
+MS2_REPLACE_METHOD(0x141335290, UIPCInfoDialog, FUN_141335290, 1251, 0x9126E927);
 
 // @0x141335780
 __int64 UIPCInfoDialog::FUN_141335780()
@@ -1501,6 +1579,7 @@ __int64 UIPCInfoDialog::FUN_141335780()
     __int64 nMax = m_spInfo->m_aStats2[0x1c];
     return (__int64)((float)(nMin + nMax) * 0.5f);
 }
+MS2_REPLACE_METHOD(0x141335780, UIPCInfoDialog, FUN_141335780, 162, 0x879E9A4F);
 
 // @0x141335830
 __int64 UIPCInfoDialog::FUN_141335830(int nStat)
@@ -1518,6 +1597,7 @@ __int64 UIPCInfoDialog::FUN_141335830(int nStat)
     }
     return nBonus;
 }
+MS2_REPLACE_METHOD(0x141335830, UIPCInfoDialog, FUN_141335830, 261, 0xB140EADA);
 
 // @0x141335940
 float UIPCInfoDialog::FUN_141335940(int nStat, float* pfBase, float* pfBonus, float* pfTotal)
@@ -1562,6 +1642,7 @@ float UIPCInfoDialog::FUN_141335940(int nStat, float* pfBase, float* pfBonus, fl
     }
     return *pfTotal;
 }
+MS2_REPLACE_METHOD(0x141335940, UIPCInfoDialog, FUN_141335940, 981, 0x24B9E42C);
 
 // @0x141335d20
 float UIPCInfoDialog::FUN_141335d20(int nStat, bool bTenth, float* pfBase, float* pfBonus, float* pfTotal)
@@ -1579,6 +1660,7 @@ float UIPCInfoDialog::FUN_141335d20(int nStat, bool bTenth, float* pfBase, float
     *pfTotal = *pfBase + *pfBonus;
     return *pfTotal;
 }
+MS2_REPLACE_METHOD(0x141335D20, UIPCInfoDialog, FUN_141335d20, 214, 0x0D7C0D7A);
 
 // @0x141335e00
 Scaleform::GFx::Value UIPCInfoDialog::FUN_141335e00(int nStat, int nContainer, int nLabel)
@@ -1637,6 +1719,7 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_141335e00(int nStat, int nContainer, i
     row.FUN_1407cbb20("detail", strDetail);
     return row.FUN_1422bb870();
 }
+MS2_REPLACE_METHOD(0x141335E00, UIPCInfoDialog, FUN_141335e00, 1482, 0x18ADFFFD);
 
 // @0x1413363d0
 Scaleform::GFx::Value UIPCInfoDialog::FUN_1413363d0(int nStat, int nContainer, int nLabel)
@@ -1692,6 +1775,7 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413363d0(int nStat, int nContainer, i
     row.FUN_1407cbb20("detail", strDetail);
     return row.FUN_1422bb870();
 }
+MS2_REPLACE_METHOD(0x1413363D0, UIPCInfoDialog, FUN_1413363d0, 1477, 0x4F8FB42C);
 
 // @0x1413369a0
 Scaleform::GFx::Value UIPCInfoDialog::FUN_1413369a0(unsigned int nContainer, int nLabel)
@@ -1715,6 +1799,7 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413369a0(unsigned int nContainer, int
     row.FUN_1407cbb20("detail", strDetail);
     return row.FUN_1422bb870();
 }
+MS2_REPLACE_METHOD(0x1413369A0, UIPCInfoDialog, FUN_1413369a0, 736, 0x224D2010);
 
 // @0x141336c90
 CStringW UIPCInfoDialog::FUN_141336c90()
@@ -1723,6 +1808,7 @@ CStringW UIPCInfoDialog::FUN_141336c90()
         return L"";
     return FUN_14016a730(FUN_141028be0(m_spInfo->m_30, m_spInfo->m_3e0, 1, ""), 0);
 }
+MS2_REPLACE_METHOD(0x141336C90, UIPCInfoDialog, FUN_141336c90, 328, 0xFC5A761A);
 
 // @0x141336de0
 int UIPCInfoDialog::FUN_141336de0(int nTab)
@@ -1738,6 +1824,7 @@ int UIPCInfoDialog::FUN_141336de0(int nTab)
     }
     return 6;
 }
+MS2_REPLACE_METHOD(0x141336DE0, UIPCInfoDialog, FUN_141336de0, 75, 0xC50A4756);
 
 // @0x141336e40
 void UIPCInfoDialog::FUN_141336e40(ASArray& aTabs, int nTab, const CStringW& strLabel, const CStringW& strFrame,
@@ -1756,6 +1843,7 @@ void UIPCInfoDialog::FUN_141336e40(ASArray& aTabs, int nTab, const CStringW& str
     }
     aTabs.FUN_1422bc050(tab.FUN_1422bb870());
 }
+MS2_REPLACE_METHOD(0x141336E40, UIPCInfoDialog, FUN_141336e40, 506, 0x74EC012D);
 
 // @0x141337040
 void UIPCInfoDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
@@ -1787,6 +1875,7 @@ void UIPCInfoDialog::vfunc_16()
     UISwfEntity::vfunc_16();
     FUN_1413375c0();
 }
+MS2_REPLACE_METHOD(0x141337380, UIPCInfoDialog, vfunc_16, 34, 0x68EB2B1C);
 
 // @0x1413373b0
 bool UIPCInfoDialog::vfunc_17()
@@ -1796,6 +1885,7 @@ bool UIPCInfoDialog::vfunc_17()
     FUN_141337560();
     return true;
 }
+MS2_REPLACE_METHOD(0x1413373B0, UIPCInfoDialog, vfunc_17, 47, 0x6EB3451D);
 
 // @0x1413373f0
 int UIPCInfoDialog::vfunc_o178_1(void* pAvatar)
@@ -1815,6 +1905,7 @@ int UIPCInfoDialog::vfunc_o178_1(void* pAvatar)
         m_30->Invoke("initData", data.FUN_1422bb870());
     return 1;
 }
+MS2_REPLACE_METHOD_VIA(0x1413373F0, UIPCInfoDialog, IUIAvatarEventListener, vfunc_o178_1, 350, 0xB47FD197);
 
 // @0x141337560
 void UIPCInfoDialog::FUN_141337560()
@@ -1823,6 +1914,7 @@ void UIPCInfoDialog::FUN_141337560()
         return;
     m_30->Invoke("loadRenderTarget");
 }
+MS2_REPLACE_METHOD(0x141337560, UIPCInfoDialog, FUN_141337560, 87, 0x2B26D966);
 
 // @0x1413375c0
 void UIPCInfoDialog::FUN_1413375c0()
@@ -1831,6 +1923,7 @@ void UIPCInfoDialog::FUN_1413375c0()
         return;
     m_30->Invoke("unloadRenderTarget");
 }
+MS2_REPLACE_METHOD(0x1413375C0, UIPCInfoDialog, FUN_1413375c0, 87, 0x31A67606);
 
 // @0x141337620
 Scaleform::GFx::Value FUN_141337620(CString strName, int nContainer, int nLabel, int bPercent)
@@ -1863,3 +1956,4 @@ int FUN_141337900(const void* p1, const void* p2)
     CStringW str2 = FUN_141b720b0(*pn2, 0);
     return __imp_wcscmp(str1.GetBuffer(0), str2.GetBuffer(0));
 }
+MS2_REPLACE(0x141337900, FUN_141337900, 169, 0xE4127450);
