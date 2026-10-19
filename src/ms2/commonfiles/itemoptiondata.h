@@ -229,6 +229,10 @@ public:
     }
     // n distinct entries: each pick removes its entry and rebuilds the running totals of the rest.
     bool PickN(std::vector<T>& out, unsigned n, Unk_Random* pRandom) const;    // itemoptiondata_2.cpp
+    // probability.cpp (the log of the picks): the running total, and removing the first entry holding a value
+    // (0x1407432f0 / 0x140743300 for ItemOptionValueRandom*).
+    unsigned GetTotal();
+    bool PopFirstItemData(T value, Entry& out);
 
     std::map<unsigned, Entry> m_entries;
     unsigned m_total;
