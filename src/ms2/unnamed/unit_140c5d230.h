@@ -10,6 +10,7 @@
 //   UILapenshardShieldBar (0xa8, UIHeadUpDisplay + UIEntityEventListener, UI id 0x4f73): the shield buff HUD.
 #pragma once
 
+#include "ms2/placeholder/chomeprivilege.h"
 #include <afx.h>
 #include <atlcoll.h>
 #include <atlstr.h>
@@ -41,6 +42,7 @@ class LapenshardSystemTabContents;
 class UILapenshardEquipTab;
 class UILapenshardUpgradeTab;
 class UILapenshardSystemDialog;
+class Unk_LsTabBar;
 
 typedef MS2Ptr<LapenshardSystemTabPanelBase> LapenshardPanelPtr;
 typedef ATL::CAtlList<LapenshardPanelPtr> LapenshardPanelList;
@@ -62,6 +64,8 @@ public:
     virtual void vfunc_6(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB);     //  6 0x140c5ed00 (both by value: the callee destroys them)
     virtual void vfunc_7();                                         //  7 0x140c5ec20
     virtual int vfunc_8(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 8 0x140c5ec70 returns 0
+
+    void FUN_140c5ee50(MS2Ptr<ASUIComponent> ui);                   // 0x140c5ee50 attach the page's movie (by value: the callee destroys it)
 
     MS2Ptr<ASUIComponent> m_ui;                                     // +0x18 the page's movie
 };
@@ -146,3 +150,56 @@ public:
 };
 MS2_CHECK_SIZE(UILapenshardEquipTab, 0x58);
 MS2_CHECK_OFFSET(UILapenshardEquipTab, m_ui, 0x48);
+
+// ---- the window -----------------------------------------------------------------------------------------------------
+
+typedef MS2Ptr<LapenshardSystemTabContents> LapenshardTabPtr;
+
+// 0x1c0 bytes: the Lapenshard window (a modal dialog), a tab strip over the pages.
+class UILapenshardSystemDialog : public UIModalDialog, public UIItemEventListener
+{
+public:
+    // 0x38 bytes, vftable 0x142e0b8f8 (CPtred): one tab, its name ("equip" / "upgrade"), its label and its page.
+    class TabInfo : public CPtred
+    {
+    public:
+        TabInfo(CString strName, CStringW strLabel, LapenshardTabPtr spPage);   // 0x140c61110 (all by value: the callee destroys them)
+        virtual ~TabInfo();                                         //  0 0x140c62b50 (??_G 0x140c62dd0)
+
+        CString m_strName;                                          // +0x18
+        CStringW m_strLabel;                                        // +0x20
+        LapenshardTabPtr m_spPage;                                  // +0x28
+    };
+    typedef MS2Ptr<TabInfo> TabInfoPtr;
+
+    UILapenshardSystemDialog();                                     // 0x140c611d0
+    virtual ~UILapenshardSystemDialog();                            //  0 0x140c62ba0 (??_G 0x140c62e10)
+    virtual CString vfunc_1();                                      //  1 0x140c612a0 "LapenshardSystemDialog"
+    virtual void vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4);   // 25 0x140c61de0
+    virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140c61be0
+    virtual void vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs);   // 45 0x140c61b50
+    virtual int vfunc_48() { return 0x4f6d; }                       // 48 0x140c63030
+    virtual int vfunc_65();                                         // 65 0x140c612f0 Open: build the two tabs
+    virtual void vfunc_67();                                        // 67 0x140c616f0 Close
+    virtual int vfunc_73();                                         // 73 0x140c62000 can open
+    virtual bool vfunc_75();                                        // 75 0x140c62390
+    virtual void vfunc_79(void* p);                                 // 79 0x140c61f00
+    virtual int vfunc_82();                                         // 82 0x140c61ea0
+    virtual void OnLoadComplete();                                  // 22 0x140c61870
+
+    // UIItemEventListener slot 3 (this+0x180 thunk 0x140c61f60)
+    virtual void vfunc_3(void* pItem, bool b);
+
+    void FUN_140c623c0(int nEvent);                                 // notify the shown page
+    void FUN_140c62490(int nSlot);                                  // select a slot, notify 10
+    void FUN_140c624d0();                                           // notify 11
+    int FUN_140c62500() const { return m_nSlot; }                   // the selected equip slot
+    void FUN_140c62740();                                           // the shown page: close
+    void FUN_140c627a0(unsigned nTab, const Scaleform::GFx::Value& root);   // show the page of tab nTab
+
+    MS2Ptr<Unk_LsTabBar> FUN_140c02870(const CString& strName);     // bind the tab strip
+
+    LapenshardTabPtr m_spPage;                                      // +0x188 the shown page
+    ATL::CAtlArray<TabInfoPtr> m_tabs;                              // +0x198
+    int m_nSlot;                                                    // +0x1b8
+};

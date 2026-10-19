@@ -10,6 +10,9 @@
 #include "unit_140c5d230.h"
 
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
+#include "ms2/commonfiles/featuremanager.h"
+#include "ms2/client/ms2/mypc.h"
+#include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
@@ -86,8 +89,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 // ---- unit-local views of the exe objects and unrecovered callees ----------------------------------------------------
 
-class Unk_LsPlayer;
-class Unk_LsWorld { public: Unk_LsPlayer* FUN_141bd0cc0(); };           // the local player
+class Unk_LsWorld { public: MyPC* FUN_141bd0cc0(); };                   // the local player
 Unk_LsWorld* FUN_1403ed2d0();
 
 // The item bag control inside a section clip (as Unk_PetItemBag in tabcontentspetcompose.cpp).
@@ -338,4 +340,476 @@ void LapenshardEquipSlotPanel::vfunc_1()
 void LapenshardEquipSlotPanel::vfunc_2()
 {
     vfunc_4();
+}
+
+// ---- unit-local views, second part ----
+
+// The bag registry entry of a name (FUN_140c610e0): per-slot ids.
+class Unk_LsBagReg
+{
+public:
+#define LS_R(n) virtual void vfunc_##n();
+    LS_R(0) LS_R(1) LS_R(2) LS_R(3) LS_R(4) LS_R(5) LS_R(6) LS_R(7) LS_R(8) LS_R(9) LS_R(10) LS_R(11) LS_R(12) LS_R(13) LS_R(14)
+#undef LS_R
+    virtual CString vfunc_15(unsigned nIndex);                          // 15 (+0x78) the bag id of slot nIndex
+};
+Unk_LsBagReg* FUN_140a703d0(CString* pstrBag);                          // the bag of a name
+class Unk_LsTable { public: int FUN_1405b5810(unsigned nSlot); };        // lapenshard slot -> equip kind
+Unk_LsTable* FUN_1409c4b30();
+struct Unk_LsSlotArg { unsigned m_n; Unk_LsSlotArg() : m_n(0) {} };      // 0x140c5e480
+void FUN_1405b5e40(Unk_LsSlotArg* pArg, COutPacket* pPacket);            // write it
+Unk_LsBagReg* FUN_140a70b70(void* pEntry);                              // the bag component (class id 0x6200084) of a registry entry
+void* FUN_1422c8e90(CString* pstrBag);                                   // the registry entry of a bag name
+UILapenshardSystemDialog* FUN_140a6ff40(int nId);                      // the open Lapenshard window
+CFeatureManager* FUN_140166410();
+int FUN_140c62520();                                                    // the window may be used (not in battle / disabled field)
+
+// @0x140c610e0
+static Unk_LsBagReg* BindBagReg(CString* pstrBag)
+{
+    FUN_140a704a0(pstrBag);
+    return FUN_140a703d0(pstrBag);
+}
+
+// ---- LapenshardEquipSlotPanel ----
+
+// @0x140c5d680
+void LapenshardEquipSlotPanel::vfunc_3()
+{
+    if (m_pTab == 0)
+        return;
+    vfunc_4();
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    m_strBag = "LapenshardEquipSlotBag";
+    Unk_LsBagReg* pReg = BindBagReg(&m_strBag);
+    if (pReg == 0)
+        return;
+    for (unsigned i = 1; i < 7; ++i)
+    {
+        CString strName;
+        strName.Format("m_equipSlot%d", i);
+        MS2Ptr<ASMovieClip> slot = m_ui->FUN_1409b4560(strName);
+        if (slot.get() != 0)
+        {
+            ASObj obj(2);
+            obj.FUN_1407cba60("bindID", pReg->vfunc_15(i - 1));
+            obj.FUN_1409c0d20("slotIndex", i);
+            obj.FUN_1407cb9c0("isEquip", pPlayer->FUN_14152f770((Unk_MyPCLapenSlot)i) != 0);
+            slot->FUN_140acd1f0("setData", AScript(obj));
+        }
+    }
+}
+
+// @0x140c5d900
+void LapenshardEquipSlotPanel::vfunc_4()
+{
+    if (!m_strBag.IsEmpty())
+    {
+        FUN_140a704a0(&m_strBag);
+        m_strBag.Empty();
+    }
+}
+
+// @0x140c5d950
+void LapenshardEquipSlotPanel::vfunc_5(int nEvent)
+{
+    if (-1 < nEvent)
+    {
+        if (nEvent < 3)
+            vfunc_3();
+        else if (nEvent == 10)
+            FUN_140c5d9c0(1);
+        else if (nEvent == 0xb)
+            FUN_140c5d9c0(0);
+    }
+}
+
+// @0x140c5d9c0
+void LapenshardEquipSlotPanel::FUN_140c5d9c0(int bOn)
+{
+    Unk_LsBagReg* pReg = FUN_140a70b70(FUN_1422c8e90(&m_strBag));
+    if (pReg == 0)
+        return;
+    int nKind = 0;
+    UILapenshardSystemDialog* pDlg = FUN_140a6ff40(0x4f6d);
+    if (pDlg != 0)
+        nKind = pDlg->FUN_140c62500();
+    if (nKind == 0)
+        return;
+    for (unsigned i = 1; i < 7; ++i)
+    {
+        if (nKind == FUN_1409c4b30()->FUN_1405b5810(i))
+        {
+            CString strName;
+            strName.Format("m_equipSlot%d", i);
+            MS2Ptr<ASMovieClip> slot = m_ui->FUN_1409b4560(strName);
+            if (slot.get() != 0)
+            {
+                MS2Ptr<ASMovieClip> effect = slot->FUN_1409b4560(CString("m_equipEffect"));
+                if (effect.get() != 0)
+                    effect->vfunc_3(bOn);
+            }
+        }
+    }
+}
+
+// ---- LapenshardSystemTabPanelBase ----
+
+// @0x140c5ee50
+void LapenshardSystemTabPanelBase::FUN_140c5ee50(MS2Ptr<ASUIComponent> ui)
+{
+    m_ui = ui;
+}
+
+// ---- UILapenshardEquipTab ----
+
+// @0x140c5dba0
+UILapenshardEquipTab::UILapenshardEquipTab()
+    : m_panels(10), m_ui(0)
+{
+    m_panels.AddTail(LapenshardPanelPtr(new LapenshardItemSlotBagPanel(this)));
+    m_panels.AddTail(LapenshardPanelPtr(new LapenshardEquipSlotPanel(this)));
+}
+
+// @0x140c5e660
+UILapenshardEquipTab::~UILapenshardEquipTab()
+{
+}
+
+// @0x140c5dd20
+void UILapenshardEquipTab::vfunc_1()
+{
+    POSITION pos = m_panels.GetHeadPosition();
+    while (pos != 0)
+    {
+        LapenshardPanelPtr p = m_panels.GetAt(pos);
+        if (!(p == 0))
+            p->vfunc_1();
+        m_panels.GetNext(pos);
+    }
+    m_panels.RemoveAll();
+    m_ui = 0;
+}
+
+// @0x140c5de10
+void UILapenshardEquipTab::vfunc_4()
+{
+    POSITION pos = m_panels.GetHeadPosition();
+    while (pos != 0)
+    {
+        LapenshardPanelPtr p = m_panels.GetAt(pos);
+        if (!(p == 0))
+            p->vfunc_2();
+        m_panels.GetNext(pos);
+    }
+}
+
+// @0x140c5dee0
+void UILapenshardEquipTab::vfunc_2(int nEvent)
+{
+    if (m_ui == 0)
+        return;
+    POSITION pos = m_panels.GetHeadPosition();
+    while (pos != 0)
+    {
+        LapenshardPanelPtr p = m_panels.GetAt(pos);
+        if (!(p == 0))
+            p->vfunc_5(nEvent);
+        m_panels.GetNext(pos);
+    }
+}
+
+// @0x140c5dfd0
+void UILapenshardEquipTab::vfunc_3(MS2Ptr<ASUIComponent> ui)
+{
+    m_ui = ui;
+    POSITION pos = m_panels.GetHeadPosition();
+    while (pos != 0)
+    {
+        LapenshardPanelPtr p = m_panels.GetAt(pos);
+        if (!(p == 0))
+        {
+            p->FUN_140c5ee50(ui);
+            p->vfunc_4();
+            p->vfunc_3();
+        }
+        m_panels.GetNext(pos);
+    }
+}
+
+// @0x140c5e140
+int UILapenshardEquipTab::vfunc_6(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return 0;
+    if (_stricmp("OnUnmountEquipSlot", szMethod) != 0)
+        return 0;
+    if (FUN_140c62520() == 0)
+        return 1;
+    ASData data;
+    if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+    {
+        int nSlot = data.FUN_1422b8a10();
+        if (pPlayer->FUN_14152f770((Unk_MyPCLapenSlot)nSlot) != 0)
+        {
+            COutPacket pkt(0xad, 0);
+            pkt.vfunc_o10_1(2);
+            Unk_LsSlotArg arg;
+            arg.m_n = nSlot;
+            FUN_1405b5e40(&arg, &pkt);
+            FUN_140710590(pkt);
+        }
+    }
+    return 1;
+}
+
+// @0x140c5e290
+int UILapenshardEquipTab::vfunc_8()
+{
+    return 1;
+}
+
+// @0x140c5e2b0
+void UILapenshardEquipTab::vfunc_9(CInPacket& packet)
+{
+    if (packet.FUN_14070fe80() == 0x11b)
+    {
+        char nKind = packet.vfunc_o8_1();
+        if (nKind == 0)
+            vfunc_2(2);
+        else if (nKind == 1)
+            vfunc_2(0);
+        else if (nKind == 2)
+            vfunc_2(1);
+    }
+}
+
+// @0x140c5e370
+void UILapenshardEquipTab::vfunc_10(void* a1, bool b)
+{
+    (void)a1;
+    (void)b;
+}
+
+// ---- UILapenshardSystemDialog ----
+
+// "m_buttonBar": the tab strip.
+class Unk_LsTabBar : public ASDisplayObject
+{
+public:
+    virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
+    virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
+    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
+    virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
+    virtual void vfunc_24(bool bVisible);
+    void FUN_1422e3460(const ASObj& row);                       // add a tab
+    void FUN_1422e31e0(int nIndex);                             // select a tab
+};
+
+class Unk_LsItemEvents;
+Unk_LsItemEvents* FUN_140a6a840();
+void FUN_1419cae20(Unk_LsItemEvents*, UIItemEventListener*);
+void FUN_1419caeb0(Unk_LsItemEvents*, UIItemEventListener*);
+int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, UIDialog* pDialog);
+MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+CStringW FUN_14028b8e0(const CStringW& str);
+
+// @0x140c61110
+UILapenshardSystemDialog::TabInfo::TabInfo(CString strName, CStringW strLabel, LapenshardTabPtr spPage)
+    : m_strName(strName), m_strLabel(strLabel), m_spPage(spPage)
+{
+}
+
+// @0x140c62b50
+UILapenshardSystemDialog::TabInfo::~TabInfo()
+{
+}
+
+// @0x140c611d0
+UILapenshardSystemDialog::UILapenshardSystemDialog()
+    : m_spPage(0), m_nSlot(0)
+{
+    m_164 = 1;
+    FUN_141924170(1);
+}
+
+// @0x140c62ba0
+UILapenshardSystemDialog::~UILapenshardSystemDialog()
+{
+}
+
+// @0x140c612a0
+CString UILapenshardSystemDialog::vfunc_1()
+{
+    return "LapenshardSystemDialog";
+}
+
+// @0x140c616f0
+void UILapenshardSystemDialog::vfunc_67()
+{
+    FUN_1419caeb0(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    FUN_140c62740();
+    for (unsigned i = 0; i < m_tabs.GetCount(); ++i)
+    {
+        TabInfoPtr spTab = m_tabs[i];
+        if (!(spTab == 0))
+        {
+            if (!(spTab->m_spPage == 0))
+                spTab->m_spPage->vfunc_1();
+        }
+    }
+    m_tabs.RemoveAll();
+    m_spPage = 0;
+    UIModalDialog::vfunc_67();
+}
+
+// @0x140c61870
+void UILapenshardSystemDialog::OnLoadComplete()
+{
+    UIModalDialog::OnLoadComplete();
+    MS2Ptr<Unk_LsTabBar> spBar = FUN_140c02870("m_buttonBar");
+    if (spBar.get() != 0)
+    {
+        for (unsigned i = 0; i < m_tabs.GetCount(); ++i)
+        {
+            TabInfoPtr spTab = m_tabs[i];
+            if (!(spTab == 0))
+            {
+                if (!(spTab->m_spPage == 0))
+                {
+                    ASObj row(2);
+                    row.FUN_1409c0d20("tabIndex", i);
+                    row.FUN_1407cbb20("label", spTab->m_strLabel);
+                    row.FUN_1407cba60("frame", spTab->m_strName);
+                    spBar->FUN_1422e3460(row);
+                }
+            }
+        }
+        spBar->vfunc_24(true);
+        spBar->FUN_1422e31e0(0);
+    }
+    FUN_1419260d0("m_webGuideButton", 0);
+}
+
+// @0x140c61b50
+void UILapenshardSystemDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
+{
+    UIObject::vfunc_45(pRetVal, strMethod, pArgs);
+    if (m_spPage.get() != 0)
+        m_spPage->vfunc_5(pRetVal, (void*)&strMethod, pArgs);
+}
+
+// @0x140c61be0
+int UILapenshardSystemDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    if (FUN_1418fc760(szMethod, pArgs, nArgs, this) != 0)
+        return 1;
+    if (m_spPage.get() != 0)
+    {
+        if (m_spPage->vfunc_6(szMethod, pArgs, nArgs) != 0)
+            return 1;
+    }
+    ASData data;
+    if (_stricmp("OnLeaveTab", szMethod) == 0)
+    {
+        FUN_140c62740();
+        return 1;
+    }
+    if (_stricmp("OnChangeTab", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
+    {
+        unsigned nTab = data.FUN_1422b8b10();
+        FUN_140c627a0(nTab, data.FUN_1422b9260());
+        return 1;
+    }
+    return 0;
+}
+
+// @0x140c61de0
+void UILapenshardSystemDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
+{
+    if (m_spPage.get() != 0)
+        m_spPage->vfunc_7(p1, p2, p3, p4);
+}
+
+// @0x140c61ea0
+int UILapenshardSystemDialog::vfunc_82()
+{
+    if (m_spPage == 0)
+        return -1;
+    return m_spPage->vfunc_8();
+}
+
+// @0x140c61f00
+void UILapenshardSystemDialog::vfunc_79(void* p)
+{
+    if (m_spPage.get() != 0)
+        m_spPage->vfunc_9(*static_cast<CInPacket*>(p));
+}
+
+// @0x140c61f60
+void UILapenshardSystemDialog::vfunc_3(void* pItem, bool b)
+{
+    if (pItem != 0 && static_cast<CItem*>(pItem)->FUN_140526100() != 0)
+    {
+        FUN_140c623c0(2);
+        if (m_spPage.get() != 0)
+            m_spPage->vfunc_10(pItem, b);
+    }
+}
+
+// @0x140c62390
+bool UILapenshardSystemDialog::vfunc_75()
+{
+    return FUN_140166410()->FUN_14036d570(0xd3);
+}
+
+// @0x140c623c0
+void UILapenshardSystemDialog::FUN_140c623c0(int nEvent)
+{
+    if (vfunc_55() == 0 && m_spPage.get() != 0)
+        m_spPage->vfunc_2(nEvent);
+}
+
+// @0x140c62490
+void UILapenshardSystemDialog::FUN_140c62490(int nSlot)
+{
+    m_nSlot = nSlot;
+    FUN_140c623c0(10);
+}
+
+// @0x140c624d0
+void UILapenshardSystemDialog::FUN_140c624d0()
+{
+    FUN_140c623c0(11);
+}
+
+// @0x140c62740
+void UILapenshardSystemDialog::FUN_140c62740()
+{
+    if (m_spPage.get() != 0)
+        m_spPage->vfunc_4();
+}
+
+// @0x140c627a0
+void UILapenshardSystemDialog::FUN_140c627a0(unsigned nTab, const Scaleform::GFx::Value& root)
+{
+    if (nTab < m_tabs.GetCount())
+    {
+        TabInfoPtr spTab = m_tabs[nTab];
+        if (spTab.get() != 0)
+        {
+            m_spPage = spTab->m_spPage;
+            if (m_spPage.get() != 0)
+            {
+                MS2Ptr<ASUIComponent> spUi = FUN_140acca70(m_28, root);
+                if (spUi.get() != 0)
+                    m_spPage->vfunc_3(spUi);
+            }
+        }
+    }
 }
