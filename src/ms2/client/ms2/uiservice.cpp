@@ -1827,7 +1827,7 @@ efd::AsyncResult CUIService::OnInit()
     m_pWorldSvc30 = FUN_1411d15b0(m_pServiceManager);
     m_pEntitySvc28 = FUN_14168ab40(m_pServiceManager);
     if (FUN_140af7da0(m_pWorldSvc30) == 0)
-        return efd::AsyncResult_Complete;
+        return efd::AsyncResult_Pending;                        // no world yet: called again next tick
     FUN_141adf250();
     FUN_141adf580();
     void* pEvt = FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
@@ -1836,7 +1836,7 @@ efd::AsyncResult CUIService::OnInit()
     TFunctor<void, EmptyParam> fnReset(this, &CUIService::FUN_141aece70);
     FUN_1401ce3d0(FUN_140a44830(), fnReset);
     FUN_140cf10d0(FUN_141aee920());
-    return efd::AsyncResult_Pending;
+    return efd::AsyncResult_Complete;
 }
 
 // @0x141adecf0
