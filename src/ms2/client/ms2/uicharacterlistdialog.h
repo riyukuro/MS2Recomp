@@ -123,12 +123,31 @@ public:
     void FUN_1418f0140();                                   // 0x1418f0140 the burning level-up description
     void FUN_1418f0400();                                   // 0x1418f0400 attach the burning level-up description button
     void AttachHealthGame();                                // 0x1418f0550
+    CStringW FUN_1418f05b0(unsigned __int64 nId);           // 0x1418f05b0 the name of a character, empty when unknown
     void RefreshLobby();                                    // 0x1418f0810
     void CharacterRemoved(unsigned __int64 nId, int nIndex);   // 0x1418f0e20
     void OpenSelectedCharacter();                           // 0x1418f1060
     void FUN_1418f11c0();                                   // 0x1418f11c0 the server list
     void FUN_1418f1260();                                   // 0x1418f1260 a character was created
     void FUN_1418f13d0();                                   // 0x1418f13d0
+    void FUN_1418f1790();                                   // 0x1418f1790
+    void FUN_1418f1880();                                   // 0x1418f1880 request the delete of the selected character
+    int FUN_1418f1b90();                                    // 0x1418f1b90 the id of the selected character's map
+    int FUN_1418f1c20();                                    // 0x1418f1c20 the number of characters
+    __int64 FUN_1418f1c50();                                // 0x1418f1c50
+    bool FUN_1418f1c70();                                   // 0x1418f1c70
+    void FUN_1418f1cb0();                                   // 0x1418f1cb0 preview the selected character
+    static void FUN_1418f1e90();                            // 0x1418f1e90
+    void FUN_1418f1f10();                                   // 0x1418f1f10
+    void FUN_1418f1fd0();                                   // 0x1418f1fd0
+    void FUN_1418f2030(unsigned __int64 nId, CStringW str);   // 0x1418f2030 send the rename of a character
+    void FUN_1418f20d0();                                   // 0x1418f20d0
+    void FUN_1418f2190();                                   // 0x1418f2190 the delete account box, step 1
+    void FUN_1418f2480(CStringW str1, CStringW str2);       // 0x1418f2480
+    void FUN_1418f2570(const CStringW& str1, const CStringW& str2, const CStringW& str3);   // 0x1418f2570
+    bool FUN_1418f31a0(int nButton, const CMsgBoxData& box);   // 0x1418f31a0 delete account box result, steps 1..3
+    bool FUN_1418f3bd0(int nButton, const CMsgBoxData& box);   // 0x1418f3bd0 delete account box result, steps 4, 5
+    CStringW FUN_1418f2960(int nError, unsigned __int64 nId);   // 0x1418f2960 the text of a delete account error
     void FUN_1418f13f0();                                   // 0x1418f13f0 enter the game with the selected character
     void CancelDelete(CharPtr spCharacter);                 // 0x1418f1940
     void CheckDelete(unsigned __int64 nId);                 // 0x1418f1a00
