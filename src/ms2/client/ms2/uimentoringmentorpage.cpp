@@ -1,6 +1,8 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Mentoring: the mentor tab page, the mentor register page, the mission page and the common page base. Field/helper names are inferred.
 // MS2-UNIT: client\ms2\uimentoringmentorpage.cpp
+// MS2-RANGE: 0x1400ce910-0x1400cecb0 .text$di
 // MS2-RANGE: 0x140c71310-0x140c74e70 .text$mn
+// MS2-RANGE: 0x142ca3540-0x142ca3690 .text$yd
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMentoringMentorRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x140c73200 ; prop
 // MS2-PIN: ??_GUIMentoringPage@@UEAAPEAXI@Z 0x140c74e30 ; prop
 // MS2-PIN: memmove_s 0x140c728a0 ; unique
@@ -13,10 +15,7 @@
 // MS2-PIN: ??$make_pair@AEBQEAVUIMentoringMentorRegisterPage@@AEBQ81@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA?AU?$pair@PEAVUIMentoringMentorRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@AEBQEAVUIMentoringMentorRegisterPage@@AEBQ82@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x140c730d0 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMentoringMentorRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x140c73120 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMentoringMentorRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVUIMentoringMentorRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z 0x140c73170 ; unique
-// MS2-PIN: ??_GUIMentoringMentorRegisterPage@@UEAAPEAXI@Z 0x140c73240 ; prop
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMentoringMentorRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140c73280 ; unique
-// MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIMentoringMentorRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140c732e0 ; unique
-// MS2-PIN: ??$Call@VUIMentoringMentorRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIMentoringMentorRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIMentoringMentorRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x140c73320 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIMentoringMentorRegisterPage@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140c73350 ; unique
 // MS2-PIN: ??_EUIMentoringMissionPage@@WDA@EAAPEAXI@Z 0x140c749fc ; unique
 // MS2-PIN: ??_GUIMentoringMissionPage@@UEAAPEAXI@Z 0x140c74a10 ; unique
@@ -26,6 +25,12 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uimentoringrewardpage.h"
 #include "ms2/placeholder/header_statics_a.h"
+// Additional original translation-unit header statics in the recovered initializer range.
+static CString s_mentorSortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_mentorSkill2 = "skill";
+static CString s_mentorStun2 = "stun";
+static Unk_1402a9d70 s_mentorCondition2(17, 0.75f, 0.25f, 2.25f, 10);
+static CString s_mentorSortNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astooltip.h"
