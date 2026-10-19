@@ -54,7 +54,7 @@ public:
     virtual bool vfunc_40(__int64 nCharacterId);   // uicommon.cpp: character is on the block list
     virtual bool vfunc_41(__int64 nCharacterId);   // uicommon.cpp: character is a friend / contact
     virtual void vfunc_42(CInPacket&);
-    virtual void vfunc_43();
+    virtual void vfunc_43(int nA, int nB, int nC);   // 0x158 (uiugcbannerdialog.cpp: (0xe, 0, 1000))
     virtual void vfunc_44();
     virtual void vfunc_45();
     virtual void vfunc_46();
