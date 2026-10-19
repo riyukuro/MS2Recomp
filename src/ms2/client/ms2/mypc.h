@@ -74,6 +74,11 @@ public:
     int FUN_141768fb0(unsigned int nSkillId, unsigned short nLevel);   // uses left
     void FUN_1417664e0(int nSkillId, int nCoolSkillId, float fCool, float fCombo, int bCombo);   // start a cooldown
     void FUN_141768900(MS2Ptr<class CSkillRecord> spRecord);
+    int FUN_141768770(class SkillData* pData);              // the skill's use-count condition
+    int FUN_141766230(int nSkillId, float* pRemain, float* pTotal, int* pByItem, int nFlag);   // the cooldown of a skill
+    int FUN_141765cf0(int n);                               // set m_18, return the old
+    int FUN_141765d30(int n);                               // set m_88, return the old
+    unsigned char FUN_141765a70(int nSkillId);              // the skill may be cast
     void* m_vfptr_unused_;                                  // +0x00 (vftable; slots unrecovered)
     unsigned char m_body[0x1e8];
 };
