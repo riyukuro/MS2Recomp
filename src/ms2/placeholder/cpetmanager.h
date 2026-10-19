@@ -77,6 +77,8 @@ class Unk_PetManagerEmpty
 {
 public:
     Unk_PetManagerEmpty* FUN_140c89200();
+    MS2Ptr<CItem> FUN_140c892c0(int nItemId);               // item lookup by id
+    int FUN_140c89440(int nItemId, int nRarity);
 };
 
 class CPetManager : public TSingleton<CPetManager>

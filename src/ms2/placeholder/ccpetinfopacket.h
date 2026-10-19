@@ -23,6 +23,7 @@ MS2_CHECK_SIZE(Unk_PetIdentity,0x50);
 MS2_CHECK_OFFSET(Unk_PetIdentity,lock,0x20);
 struct Unk_PetOption {
     Unk_PetOption():type(0),value(0),enabled(0){}
+    Unk_PetOption(int t,float v,int e):type(t),value(v),enabled(e){}
     int type;float value;int enabled;
 };
 MS2_CHECK_SIZE(Unk_PetOption,12);
