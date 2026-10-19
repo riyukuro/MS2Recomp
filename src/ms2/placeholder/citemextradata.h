@@ -37,7 +37,7 @@ public:
     virtual int vfunc_1(const CItemExtraData*);
     virtual int vfunc_2(const CItemExtraData*);
     virtual void vfunc_3(const CItemExtraData*);
-    virtual void vfunc_4(void*);
+    virtual void vfunc_4(CItemData*);
     virtual void vfunc_5(COutputStream&);
     virtual void vfunc_6(CInputStream&);
     virtual void vfunc_7(COutputStream&);
@@ -47,7 +47,7 @@ public:
     int FUN_140599830(const CItemExtraData* pOther);
     int FUN_140599970(const CItemExtraData* pOther);
     void FUN_140599ab0(CItemData* pData);
-    void FUN_140599bc0(const ItemColorEx* pColor, char bExtra, int nDelay, unsigned nSlot);
+    void FUN_140599bc0(const ItemColorEx* pColor, bool bExtra, int nDelay, unsigned nSlot);
     void FUN_140599d10(ATL::CAtlArray<int>& aValues, unsigned nSlot);
     void FUN_140599ea0(int nIndex, const int& nValue, unsigned nSlot);
     int FUN_140599fd0(unsigned nIndex);
@@ -59,7 +59,7 @@ public:
     int FUN_14059a210();
     ColorPtr FUN_14059a230(unsigned nSlot) const;
     ColorPtr FUN_14059a2c0();
-    int FUN_14059a350();
+    bool FUN_14059a350();
     int FUN_14059d130() const;
     int FUN_14059d140() const;
 protected:
@@ -79,7 +79,7 @@ public:
     CDecalExtraData();                              // 0x14059a400
     virtual int vfunc_2(const CItemExtraData*);
     virtual void vfunc_3(const CItemExtraData*);
-    virtual void vfunc_4(void*);
+    virtual void vfunc_4(CItemData*);
     virtual void vfunc_5(COutputStream&);
     virtual void vfunc_6(CInputStream&);
     float m_f58, m_f5c, m_f60, m_f64;               // +0x58 the decal block values (scale / offset)
@@ -90,7 +90,7 @@ public:
     CHairExtraData();                               // 0x14059a8a0
     virtual int vfunc_2(const CItemExtraData*);
     virtual void vfunc_3(const CItemExtraData*);
-    virtual void vfunc_4(void*);
+    virtual void vfunc_4(CItemData*);
     virtual void vfunc_5(COutputStream&);
     virtual void vfunc_6(CInputStream&);
     void FUN_14059aa20();                           // clamp the scales to >= 0
@@ -105,7 +105,7 @@ public:
     CCapExtraData();                                // 0x14059b350
     virtual int vfunc_2(const CItemExtraData*);
     virtual void vfunc_3(const CItemExtraData*);
-    virtual void vfunc_4(void*);
+    virtual void vfunc_4(CItemData*);
     virtual void vfunc_5(COutputStream&);
     virtual void vfunc_6(CInputStream&);
     float m_f58;                                    // +0x58

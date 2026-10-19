@@ -3483,3 +3483,5 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?DAT_143ae5398@@3VNiFixedString@@A	143ae5398	data
 ?DAT_143ae53a8@@3VNiFixedString@@A	143ae53a8	data
 ?DAT_143ae53c8@@3VNiFixedString@@A	143ae53c8	data
+?GetPaletteColorOrRandom@CItemDataTable@@QEAA?AV?$MS2Ptr@VItemColorEx@@@@HH@Z	140558b90	func
+?DAT_143afc898@@3EA	143afc898	data
