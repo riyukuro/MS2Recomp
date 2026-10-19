@@ -1,0 +1,148 @@
+// MS2-GUESS-LOOKALIKES
+// MS2-UNIT: unit_14111acc0
+// MS2-RANGE: 0x14111acc0-0x14111d430 .text$mn
+#define MS2_THIS_FILE ""
+#include "ms2/placeholder/ms2stdafx.h"
+#include <map>
+#include <set>
+#include <vector>
+#include <tuple>
+#include <new>
+#include <efd/StdContainers.h>
+#include <egf/EntityID.h>
+#include <egf/Entity.h>
+#include <NiTransform.h>
+#include "ms2/client/ms2/cubemapinformationservice_tail.h"
+
+class CGuideEntity;
+struct Unk_CMISIdPtr { int m_id; MS2Ptr<Cube> m_p; };
+
+// 14111aef0
+template decltype(auto) std::vector<class Cube *, class std::allocator<class Cube *>>::emplace_back<class Cube *>(class Cube *&&);
+// 14111af60
+template decltype(auto) std::vector<class NiTransform, class efd::CustomAllocator<class NiTransform>>::emplace_back<class NiTransform>(class NiTransform &&);
+// 14111b390
+template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned int const, int>>>> std::_Tree<class std::_Tmap_traits<unsigned int, int, struct std::less<unsigned int>, class efd::CustomAllocator<struct std::pair<unsigned int const, int>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<unsigned int &&>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned int const, int>>>>, struct std::piecewise_construct_t const &, class std::tuple<unsigned int &&> &&, class std::tuple<> &&);
+// 14111b570
+template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, int>>>> std::_Tree<class std::_Tmap_traits<enum Unk_CMISKindB, int, struct std::less<enum Unk_CMISKindB>, class efd::CustomAllocator<struct std::pair<enum Unk_CMISKindB const, int>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindB &&>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, int>>>>, struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindB &&> &&, class std::tuple<> &&);
+// 14111b610
+template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, unsigned char>>>> std::_Tree<class std::_Tmap_traits<enum Unk_CMISKindB, unsigned char, struct std::less<enum Unk_CMISKindB>, class efd::CustomAllocator<struct std::pair<enum Unk_CMISKindB const, unsigned char>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindB &&>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, unsigned char>>>>, struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindB &&> &&, class std::tuple<> &&);
+// 14111c0b0
+template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned long const, class std::set<int, struct std::less<int>, class std::allocator<int>>>>>> std::_Tree<class std::_Tmap_traits<unsigned long, class std::set<int, struct std::less<int>, class std::allocator<int>>, struct std::less<unsigned long>, class std::allocator<struct std::pair<unsigned long const, class std::set<int, struct std::less<int>, class std::allocator<int>>>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<unsigned long const &>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned long const, class std::set<int, struct std::less<int>, class std::allocator<int>>>>>>, struct std::piecewise_construct_t const &, class std::tuple<unsigned long const &> &&, class std::tuple<> &&);
+// 14111c3d0
+template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindA const, int>>>> std::_Tree<class std::_Tmap_traits<enum Unk_CMISKindA, int, struct std::less<enum Unk_CMISKindA>, class efd::CustomAllocator<struct std::pair<enum Unk_CMISKindA const, int>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindA const &>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindA const, int>>>>, struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindA const &> &&, class std::tuple<> &&);
+// 14111c470
+template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindA const, int>>>> std::_Tree<class std::_Tmap_traits<enum Unk_CMISKindA, int, struct std::less<enum Unk_CMISKindA>, class std::allocator<struct std::pair<enum Unk_CMISKindA const, int>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindA const &>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindA const, int>>>>, struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindA const &> &&, class std::tuple<> &&);
+// 14111c510
+template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, int>>>> std::_Tree<class std::_Tmap_traits<enum Unk_CMISKindB, int, struct std::less<enum Unk_CMISKindB>, class efd::CustomAllocator<struct std::pair<enum Unk_CMISKindB const, int>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindB const &>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, int>>>>, struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindB const &> &&, class std::tuple<> &&);
+// 14111c5b0
+template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, unsigned char>>>> std::_Tree<class std::_Tmap_traits<enum Unk_CMISKindB, unsigned char, struct std::less<enum Unk_CMISKindB>, class efd::CustomAllocator<struct std::pair<enum Unk_CMISKindB const, unsigned char>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindB const &>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, unsigned char>>>>, struct std::piecewise_construct_t const &, class std::tuple<enum Unk_CMISKindB const &> &&, class std::tuple<> &&);
+// 14111c650
+template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class Cube>>>>> std::_Tree<class std::_Tmap_traits<int, class MS2Ptr<class Cube>, struct std::less<int>, class std::allocator<struct std::pair<int const, class MS2Ptr<class Cube>>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<int const &>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class Cube>>>>>, struct std::piecewise_construct_t const &, class std::tuple<int const &> &&, class std::tuple<> &&);
+
+void Unk_CMISFwdAnchor(void* p)
+{
+    std::forward_as_tuple(*(class egf::EntityID const*)p);
+    std::forward_as_tuple(*(enum Unk_CMISKindA const*)p);
+    std::forward_as_tuple(*(enum Unk_CMISKindB const*)p);
+    std::forward_as_tuple(std::move(*(enum Unk_CMISKindB*)p));
+    std::get<0>(std::move(*(class std::tuple<enum Unk_CMISKindB &&>*)p));
+    std::get<0>(std::move(*(class std::tuple<class egf::EntityID const &>*)p));
+    std::get<0>(std::move(*(class std::tuple<enum Unk_CMISKindB const &>*)p));
+    std::forward<struct std::_Tree_node<struct std::pair<int const, class std::vector<class MS2Ptr<class CGuideEntity>, class std::allocator<class MS2Ptr<class CGuideEntity>>>>, void *> *&>(*(struct std::_Tree_node<struct std::pair<int const, class std::vector<class MS2Ptr<class CGuideEntity>, class std::allocator<class MS2Ptr<class CGuideEntity>>>>, void *> **)p);
+    std::forward<class efd::SmartPointer<class egf::Entity> *&>(*(class efd::SmartPointer<class egf::Entity> **)p);
+    std::forward<struct std::pair<int const, struct Unk_CMISCell> &>(*(struct std::pair<int const, struct Unk_CMISCell>*)p);
+    std::forward<struct std::pair<int const, struct Unk_CMISCubeTimer> &>(*(struct std::pair<int const, struct Unk_CMISCubeTimer>*)p);
+    std::forward<struct std::pair<int const, struct Unk_CMISMarkRec> &>(*(struct std::pair<int const, struct Unk_CMISMarkRec>*)p);
+    std::forward<struct std::pair<int const, struct Unk_Int3> &>(*(struct std::pair<int const, struct Unk_Int3>*)p);
+    std::forward<struct std::pair<int const, class MS2Ptr<class Cube>> &>(*(struct std::pair<int const, class MS2Ptr<class Cube>>*)p);
+    std::forward<struct std::pair<int const, class MS2Ptr<class FittingDollData>> &>(*(struct std::pair<int const, class MS2Ptr<class FittingDollData>>*)p);
+    std::forward<struct std::pair<int const, class MS2Ptr<class SalesInfo>> &>(*(struct std::pair<int const, class MS2Ptr<class SalesInfo>>*)p);
+    std::forward<struct std::pair<int const, class MS2Ptr<class SetItemEffectInfo>> &>(*(struct std::pair<int const, class MS2Ptr<class SetItemEffectInfo>>*)p);
+    std::forward<struct std::pair<int const, class MS2Ptr<class UICubeUGCHead>> &>(*(struct std::pair<int const, class MS2Ptr<class UICubeUGCHead>>*)p);
+    std::forward<struct std::pair<int const, class efd::SmartPointer<class egf::Entity>> &>(*(struct std::pair<int const, class efd::SmartPointer<class egf::Entity>>*)p);
+    std::forward<struct std::pair<int const, class std::map<int, class MS2Ptr<class Cube>, struct std::less<int>, class std::allocator<struct std::pair<int const, class MS2Ptr<class Cube>>>>> &>(*(struct std::pair<int const, class std::map<int, class MS2Ptr<class Cube>, struct std::less<int>, class std::allocator<struct std::pair<int const, class MS2Ptr<class Cube>>>>>*)p);
+    std::forward<struct std::pair<int const, class std::map<unsigned int, class std::set<int, struct std::less<int>, class std::allocator<int>>, struct std::less<unsigned int>, class std::allocator<struct std::pair<unsigned int const, class std::set<int, struct std::less<int>, class std::allocator<int>>>>>> &>(*(struct std::pair<int const, class std::map<unsigned int, class std::set<int, struct std::less<int>, class std::allocator<int>>, struct std::less<unsigned int>, class std::allocator<struct std::pair<unsigned int const, class std::set<int, struct std::less<int>, class std::allocator<int>>>>>>*)p);
+    std::forward<struct std::pair<int const, class efd::set<int, struct std::less<int>>> &>(*(struct std::pair<int const, class efd::set<int, struct std::less<int>>>*)p);
+    std::forward<struct std::pair<int const, class efd::vector<class efd::SmartPointer<class egf::Entity>>> &>(*(struct std::pair<int const, class efd::vector<class efd::SmartPointer<class egf::Entity>>>*)p);
+    std::forward<struct std::pair<int const, class egf::EntityID> &>(*(struct std::pair<int const, class egf::EntityID>*)p);
+    std::forward<struct std::pair<unsigned int const, class std::set<int, struct std::less<int>, class std::allocator<int>>> &>(*(struct std::pair<unsigned int const, class std::set<int, struct std::less<int>, class std::allocator<int>>>*)p);
+    std::forward<struct std::pair<struct std::pair<int, int> const, class MS2Ptr<class SaleStateData>> &>(*(struct std::pair<struct std::pair<int, int> const, class MS2Ptr<class SaleStateData>>*)p);
+    std::forward<struct std::pair<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const, int> &>(*(struct std::pair<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const, int>*)p);
+    std::forward<struct std::pair<class egf::EntityID const, class MS2Ptr<class Cube>> &>(*(struct std::pair<class egf::EntityID const, class MS2Ptr<class Cube>>*)p);
+    std::forward<struct std::pair<class egf::EntityID const, class Unk_CMISPropPtr> &>(*(struct std::pair<class egf::EntityID const, class Unk_CMISPropPtr>*)p);
+    std::forward<struct std::pair<class egf::EntityID const, __int64> &>(*(struct std::pair<class egf::EntityID const, __int64>*)p);
+    std::forward<struct std::pair<enum Unk_CMISKindA const, int> &>(*(struct std::pair<enum Unk_CMISKindA const, int>*)p);
+    std::forward<struct std::pair<enum Unk_CMISKindB const, int> &>(*(struct std::pair<enum Unk_CMISKindB const, int>*)p);
+    std::forward<struct std::pair<enum Unk_CMISKindB const, unsigned char> &>(*(struct std::pair<enum Unk_CMISKindB const, unsigned char>*)p);
+    std::forward<struct Unk_CMISIdPtr &>(*(struct Unk_CMISIdPtr*)p);
+    std::forward<class efd::SmartPointer<class egf::Entity> &>(*(class efd::SmartPointer<class egf::Entity>*)p);
+    std::forward<class MS2Ptr<class CFunctionCubeObject> &>(*(class MS2Ptr<class CFunctionCubeObject>*)p);
+    std::forward<class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, unsigned int>>>> &>(*(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, unsigned int>>>>*)p);
+    std::forward<class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISMarkRec>>>> &>(*(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISMarkRec>>>>*)p);
+    std::forward<class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_Int3>>>> &>(*(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_Int3>>>>*)p);
+    std::forward<class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, __int64>>>> &>(*(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, __int64>>>>*)p);
+    std::forward<class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, class Unk_CMISPropPtr>>>> &>(*(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, class Unk_CMISPropPtr>>>>*)p);
+    std::forward<class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<__int64 const, class Unk_PayloadPtr<class CubeOwner>>>>> &>(*(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<__int64 const, class Unk_PayloadPtr<class CubeOwner>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned int const, int>>>> &>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned int const, int>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, enum Unk_CMISKindA>>>> &>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, enum Unk_CMISKindA>>>>*)p);
+    std::forward<class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<class egf::EntityID>>> &>(*(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<class egf::EntityID>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISCell>>>> &>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISCell>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISCubeTimer>>>> &>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISCubeTimer>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class Cube>>>>> &>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class Cube>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class FittingDollData>>>>> &>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class FittingDollData>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class SalesInfo>>>>> &>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class SalesInfo>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class SetItemEffectInfo>>>>> &>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class SetItemEffectInfo>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class UICubeUGCHead>>>>> &>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class UICubeUGCHead>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, __int64>>>> &>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, __int64>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<__int64 const, class Unk_PayloadPtr<class CubeOwner>>>>> &>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<__int64 const, class Unk_PayloadPtr<class CubeOwner>>>>>*)p);
+    std::forward<class Cube *const &>(*(class Cube *const*)p);
+    std::forward<struct std::less<enum Unk_CMISKindA> const &>(*(struct std::less<enum Unk_CMISKindA> const*)p);
+    std::forward<struct std::less<class MS2Ptr<class CFunctionCubeObject>> const &>(*(struct std::less<class MS2Ptr<class CFunctionCubeObject>> const*)p);
+    std::forward<struct std::less<class MS2Ptr<class AutomaticCreateCubeInfo>> const &>(*(struct std::less<class MS2Ptr<class AutomaticCreateCubeInfo>> const*)p);
+    std::forward<class MS2Ptr<class AutomaticCreateCubeInfo> const &>(*(class MS2Ptr<class AutomaticCreateCubeInfo> const*)p);
+    std::forward<class MS2Ptr<class CFunctionCubeObject> const &>(*(class MS2Ptr<class CFunctionCubeObject> const*)p);
+    std::forward<class egf::EntityID const &>(*(class egf::EntityID const*)p);
+    std::forward<enum Unk_CMISKindA const &>(*(enum Unk_CMISKindA const*)p);
+    std::forward<enum Unk_CMISKindB const &>(*(enum Unk_CMISKindB const*)p);
+    std::forward<enum Unk_CMISKindC const &>(*(enum Unk_CMISKindC const*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned int const, int>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned int const, int>>>>*)p);
+    std::forward<class Cube *>(*(class Cube **)p);
+    std::forward<class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<class MS2Ptr<class AutomaticCreateCubeInfo>>>>>(*(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<class MS2Ptr<class AutomaticCreateCubeInfo>>>>*)p);
+    std::forward<class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<class MS2Ptr<class CFunctionCubeObject>>>>>(*(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<class MS2Ptr<class CFunctionCubeObject>>>>*)p);
+    std::forward<class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<class egf::EntityID>>>>(*(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<class egf::EntityID>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, unsigned int>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, unsigned int>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISCell>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISCell>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISCubeTimer>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISCubeTimer>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISMarkRec>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_CMISMarkRec>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_Int3>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, struct Unk_Int3>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class Cube>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class Cube>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class FittingDollData>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class FittingDollData>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class SalesInfo>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class SalesInfo>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class SetItemEffectInfo>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class SetItemEffectInfo>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class UICubeUGCHead>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class MS2Ptr<class UICubeUGCHead>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class efd::SmartPointer<class egf::Entity>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class efd::SmartPointer<class egf::Entity>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class std::map<int, class MS2Ptr<class Cube>, struct std::less<int>, class std::allocator<struct std::pair<int const, class MS2Ptr<class Cube>>>>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class std::map<int, class MS2Ptr<class Cube>, struct std::less<int>, class std::allocator<struct std::pair<int const, class MS2Ptr<class Cube>>>>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class std::map<unsigned int, class std::set<int, struct std::less<int>, class std::allocator<int>>, struct std::less<unsigned int>, class std::allocator<struct std::pair<unsigned int const, class std::set<int, struct std::less<int>, class std::allocator<int>>>>>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class std::map<unsigned int, class std::set<int, struct std::less<int>, class std::allocator<int>>, struct std::less<unsigned int>, class std::allocator<struct std::pair<unsigned int const, class std::set<int, struct std::less<int>, class std::allocator<int>>>>>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class efd::set<int, struct std::less<int>>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class efd::set<int, struct std::less<int>>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class efd::vector<class efd::SmartPointer<class egf::Entity>>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class efd::vector<class efd::SmartPointer<class egf::Entity>>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class egf::EntityID>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const, class egf::EntityID>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned long const, class std::set<int, struct std::less<int>, class std::allocator<int>>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned long const, class std::set<int, struct std::less<int>, class std::allocator<int>>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<struct std::pair<int, int> const, class MS2Ptr<class SaleStateData>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<struct std::pair<int, int> const, class MS2Ptr<class SaleStateData>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, class MS2Ptr<class Cube>>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, class MS2Ptr<class Cube>>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, class Unk_CMISPropPtr>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, class Unk_CMISPropPtr>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, __int64>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, __int64>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindA const, int>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindA const, int>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, int>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, int>>>>*)p);
+    std::forward<class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, unsigned char>>>>>(*(class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<enum Unk_CMISKindB const, unsigned char>>>>*)p);
+    std::forward<class std::allocator<struct std::_Tree_node<int, void *>>>(*(class std::allocator<struct std::_Tree_node<int, void *>>*)p);
+    std::forward<class std::tuple<enum Unk_CMISKindB const &>>(*(class std::tuple<enum Unk_CMISKindB const &>*)p);
+    std::forward<class std::tuple<class egf::EntityID const &>>(*(class std::tuple<class egf::EntityID const &>*)p);
+    std::forward<class std::tuple<enum Unk_CMISKindA const &>>(*(class std::tuple<enum Unk_CMISKindA const &>*)p);
+    std::forward<class std::tuple<enum Unk_CMISKindB &&>>(*(class std::tuple<enum Unk_CMISKindB &&>*)p);
+    std::forward<enum Unk_CMISKindB>(*(enum Unk_CMISKindB*)p);
+}
+
+
+
+
