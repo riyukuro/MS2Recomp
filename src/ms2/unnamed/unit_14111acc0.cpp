@@ -20,8 +20,6 @@ struct Unk_CMISIdPtr { int m_id; MS2Ptr<Cube> m_p; };
 
 // 14111aef0
 template decltype(auto) std::vector<class Cube *, class std::allocator<class Cube *>>::emplace_back<class Cube *>(class Cube *&&);
-// 14111af60
-template decltype(auto) std::vector<class NiTransform, class efd::CustomAllocator<class NiTransform>>::emplace_back<class NiTransform>(class NiTransform &&);
 // 14111b390
 template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned int const, int>>>> std::_Tree<class std::_Tmap_traits<unsigned int, int, struct std::less<unsigned int>, class efd::CustomAllocator<struct std::pair<unsigned int const, int>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<unsigned int &&>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<unsigned int const, int>>>>, struct std::piecewise_construct_t const &, class std::tuple<unsigned int &&> &&, class std::tuple<> &&);
 // 14111b570
@@ -97,6 +95,14 @@ template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types
 template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, class Unk_CMISPropPtr>>>> std::_Tree<class std::_Tmap_traits<class egf::EntityID, class Unk_CMISPropPtr, struct std::less<class egf::EntityID>, class efd::CustomAllocator<struct std::pair<class egf::EntityID const, class Unk_CMISPropPtr>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<class egf::EntityID const &>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, class Unk_CMISPropPtr>>>>, struct std::piecewise_construct_t const &, class std::tuple<class egf::EntityID const &> &&, class std::tuple<> &&);
 // 14111c330
 template std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, __int64>>>> std::_Tree<class std::_Tmap_traits<class egf::EntityID, __int64, struct std::less<class egf::EntityID>, class efd::CustomAllocator<struct std::pair<class egf::EntityID const, __int64>>, 0>>::emplace_hint<struct std::piecewise_construct_t const &, class std::tuple<class egf::EntityID const &>, class std::tuple<>>(class std::_Tree_const_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<class egf::EntityID const, __int64>>>>, struct std::piecewise_construct_t const &, class std::tuple<class egf::EntityID const &> &&, class std::tuple<> &&);
+
+// 14111ad30 14111ada0 14111ae10 14111ae80 14111af60: vector::emplace_back(const T&) over the element types the callers use
+template decltype(auto) std::vector<efd::SmartPointer<egf::Entity>, efd::CustomAllocator<efd::SmartPointer<egf::Entity> > >::emplace_back<const efd::SmartPointer<egf::Entity>&>(const efd::SmartPointer<egf::Entity>&);
+template decltype(auto) std::vector<efd::SmartPointer<egf::Entity>, std::allocator<efd::SmartPointer<egf::Entity> > >::emplace_back<const efd::SmartPointer<egf::Entity>&>(const efd::SmartPointer<egf::Entity>&);
+template decltype(auto) std::vector<egf::EntityID, efd::CustomAllocator<egf::EntityID> >::emplace_back<const egf::EntityID&>(const egf::EntityID&);
+template decltype(auto) std::vector<Unk_CMISElem52, efd::CustomAllocator<Unk_CMISElem52> >::emplace_back<const Unk_CMISElem52&>(const Unk_CMISElem52&);
+template decltype(auto) std::vector<Unk_CMISKindC, std::allocator<Unk_CMISKindC> >::emplace_back<const Unk_CMISKindC&>(const Unk_CMISKindC&);
+template decltype(auto) std::vector<Cube*, std::allocator<Cube*> >::emplace_back<Cube* const&>(Cube* const&);
 
 void Unk_CMISFwdAnchor(void* p)
 {
@@ -199,6 +205,26 @@ void Unk_CMISFwdAnchor(void* p)
     std::forward<class std::tuple<enum Unk_CMISKindA const &>>(*(class std::tuple<enum Unk_CMISKindA const &>*)p);
     std::forward<class std::tuple<enum Unk_CMISKindB &&>>(*(class std::tuple<enum Unk_CMISKindB &&>*)p);
     std::forward<enum Unk_CMISKindB>(*(enum Unk_CMISKindB*)p);
+    std::forward_as_tuple(*(const Unk_CMISKindC*)p);
+    {
+        typedef std::map<int, MS2Ptr<Cube>, std::less<int>, efd::CustomAllocator<std::pair<const int, MS2Ptr<Cube> > > > CubeMap;
+        typedef std::map<egf::EntityID, MS2Ptr<Cube>, std::less<egf::EntityID>, efd::CustomAllocator<std::pair<const egf::EntityID, MS2Ptr<Cube> > > > EntCubeMap;
+        ((CubeMap*)p)->erase(CubeMap::iterator());
+        ((EntCubeMap*)p)->erase(EntCubeMap::iterator());
+    }
+    {
+        typedef std::set<int, std::less<int>, efd::CustomAllocator<int> > IntSet;
+        typedef std::set<std::pair<int, int>, std::less<std::pair<int, int> >, efd::CustomAllocator<std::pair<int, int> > > PairSet;
+        typedef std::set<std::pair<int, int> > PairSetStd;
+        typedef std::set<egf::EntityID, std::less<egf::EntityID>, efd::CustomAllocator<egf::EntityID> > IdSet;
+        ((IntSet*)p)->insert(std::move(*(int*)p));
+        ((IntSet*)p)->insert(*(const int*)p);
+        ((PairSet*)p)->insert(std::move(*(std::pair<int, int>*)p));
+        ((PairSetStd*)p)->insert(std::move(*(std::pair<int, int>*)p));
+        ((PairSet*)p)->insert(*(const std::pair<int, int>*)p);
+        ((IdSet*)p)->insert(*(const egf::EntityID*)p);
+        ((std::set<int>*)p)->insert(*(const int*)p);
+    }
 }
 
 
