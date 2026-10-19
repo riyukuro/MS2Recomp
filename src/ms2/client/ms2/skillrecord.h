@@ -20,6 +20,7 @@ class CMagicModel;
 // The skill request a cast record is built from (the 3rd argument of CSkillRecord::Init).
 struct Unk_InventorySkillRequest
 {
+    Unk_InventorySkillRequest(int nSkillId, unsigned short nLevel);   // 0x141763fa0 (?\skillslot.cpp)
     int m_nSkillId;                                         // +0x00
     unsigned short m_nLevel;                                // +0x04
     __int64 m_nCastId;                                      // +0x08

@@ -14,6 +14,7 @@
 #include "ms2/placeholder/notifyobject.h"
 #include "ms2/client/ms2/cubecraft_1.h"     // StateLocalController
 #include "ms2/client/ms2/clonepc.h"         // Unk_CloneTimer
+#include "ms2/client/ms2/skillsystem.h"     // CSkillSystem (?\skillslot.cpp)
 
 class CInPacket;
 class CEquipItem;
@@ -49,38 +50,6 @@ public:
     ~Unk_MyPCActionKeys();                                  // 0x140952e70
     void FUN_140952ef0();
     unsigned char m_body[0xa0];                             // three CAtlMaps of actions by key
-};
-
-// The skill system at +0x13d8 (RTTI CSkillSystem, ?\skillslot.cpp; ctor 0x1417646d0, dtor 0x141764900).
-class CSkillSystem
-{
-public:
-    CSkillSystem();                                         // 0x1417646d0
-    ~CSkillSystem();                                        // 0x141764900
-    void FUN_141764a80(class MyPC* pOwner);                 // init with the owner
-    void FUN_141766af0(float fDelta);                       // per-frame update
-    MS2Ptr<class CSkillRecord> FUN_141765570(struct Unk_InventorySkillRequest& kReq);   // build the record of a request
-    void FUN_141767f80(int nSkillId);                       // add a temporary skill
-    void FUN_1417683d0();                                   // refresh the skill slots
-    MS2Ptr<class Unk_MyPCSkillSet> FUN_141768380();         // the temporary (ridee) skill set, if any
-    void FUN_141768100(int nSkillId);                       // remove a temporary skill
-    MS2Ptr<class CSkillRecord> FUN_141764e30(struct Unk_InventorySkillRequest& kReq);   // cast a request
-    MS2Ptr<class Unk_PCBaseComp_b18> FUN_141764e30(struct Unk_InventorySkillRequest* pReq);   // the same, the record as the casting skill (vfunc_104)
-    int FUN_1417674a0(int n);                               // the pending skill id
-    float FUN_141765fe0(int nSkillId, int n);              // the cooldown left of nSkillId
-    int FUN_141768bd0(MS2Ptr<class CSkillRecord> spRecord); // the record may be cast during its cooldown
-    void FUN_141766cc0(MS2Ptr<class CSkillRecord> spRecord);
-    void FUN_141767990(int nSkillId, unsigned short nLevel); // start the cooldown
-    int FUN_141768fb0(unsigned int nSkillId, unsigned short nLevel);   // uses left
-    void FUN_1417664e0(int nSkillId, int nCoolSkillId, float fCool, float fCombo, int bCombo);   // start a cooldown
-    void FUN_141768900(MS2Ptr<class CSkillRecord> spRecord);
-    int FUN_141768770(class SkillData* pData);              // the skill's use-count condition
-    int FUN_141766230(int nSkillId, float* pRemain, float* pTotal, int* pByItem, int nFlag);   // the cooldown of a skill
-    int FUN_141765cf0(int n);                               // set m_18, return the old
-    int FUN_141765d30(int n);                               // set m_88, return the old
-    unsigned char FUN_141765a70(int nSkillId);              // the skill may be cast
-    void* m_vfptr_unused_;                                  // +0x00 (vftable; slots unrecovered)
-    unsigned char m_body[0x1e8];
 };
 
 // The pending portal move at +0x17a0 (0x20; ctor 0x1415328a0).
