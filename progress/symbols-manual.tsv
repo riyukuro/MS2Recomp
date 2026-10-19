@@ -3196,3 +3196,9 @@ __imp_AddSurveyParameterA	142cd1480	data
 ??0RemakeOption@CCItemRemakeOptionScrollPacket@@QEAA@XZ	1406179e0	func
 ??1RemakeOption@CCItemRemakeOptionScrollPacket@@UEAA@XZ	140617a50	func
 ?vfunc_1@RemakeOption@CCItemRemakeOptionScrollPacket@@UEAAXAEAVCOutputStream@@@Z	140617a90	func
+??0ASBillData@@QEAA@AEAVValue@GFx@Scaleform@@H@Z	1409ab870	func
+??0ASBillData@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1409ab810	func
+??0ASBillData@@QEAA@H@Z	1409ab7c0	func
+??0Unk_MbRows@@QEAA@H@Z	1422deec0	func
+??1ASBillData@@UEAA@XZ	1409ab8d0	func
+??1Unk_MbRows@@UEAA@XZ	1422df070	func
