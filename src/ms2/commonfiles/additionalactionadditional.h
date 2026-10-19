@@ -11,6 +11,7 @@
 #include <set>
 #include <vector>
 #include <NiPoint3.h>
+#include <efd/Point3.h>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cobjectcount.h"
@@ -158,8 +159,8 @@ struct Unk_RangeShape
     int m_nType;                        // +0x00
     CString m_str;                      // +0x08
     float m_f10, m_f14, m_f18, m_f1c;   // +0x10 (copied one by one in 0x1401945c0)
-    NiPoint3 m_pt20;                    // +0x20
-    NiPoint3 m_pt2c;                    // +0x2c
+    efd::Point3 m_pt20;                  // +0x20
+    efd::Point3 m_pt2c;                  // +0x2c
     float m_f38;                        // +0x38
 
     Unk_RangeShape();                                       // 0x1408001f0
