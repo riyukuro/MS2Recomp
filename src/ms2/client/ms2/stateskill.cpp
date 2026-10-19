@@ -112,8 +112,7 @@ UICastingBar* FUN_140ac2270(int nId);                  // the casting bar dialog
 float FUN_140966f00(NiPoint3 kFrom, NiPoint3 kTo);      // the distance of two points
 
 // The magic service: cancel the projectiles of a cast.
-class Unk_SsMagicSvc { public: void FUN_14146c6c0(unsigned long long nCaster, int bForce, int bDestroy); };
-Unk_SsMagicSvc* FUN_1410a7630();
+CMagicService* FUN_1410a7630();
 
 // The actor's movement controller (PCBase::FUN_14166d240).
 class Unk_SsMove
@@ -1556,3 +1555,30 @@ void StateSkill::FUN_1417eeb10(bool bChain)
         FUN_1417ef4a0();
 }
 MS2_REPLACE_METHOD(0x1417eeb10, StateSkill, FUN_1417eeb10, 587, 0x2D7DDBE8);
+
+// @0x1417efef0
+int StateSkill::FUN_1417efef0()
+{
+    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xca))
+        return 0;
+    if (m_spRecord == NULL)
+        return 0;
+    if (m_n10 != 0x3c)
+        return 0;
+    if (!m_b48)
+    {
+        Unk_MagicModelMapPtr spModels = FUN_1410a7630()->FUN_14146c910(m_spRecord->m_nCastId);
+        if (m_spRecord->m_magics.IsEmpty() && (spModels == NULL || spModels->IsEmpty()))
+        {
+            m_b116 = true;
+            m_b49 = true;
+            m_b112 = true;
+            m_b48 = true;
+            m_bLoop = true;
+            m_nAttack = 0;
+            m_fStartTime = static_cast<float>(TSingleton<CMainSystem>::GetInstance()->FUN_141473280());
+        }
+    }
+    return 1;
+}
+MS2_REPLACE_METHOD(0x1417efef0, StateSkill, FUN_1417efef0, 373, 0x43743998);
