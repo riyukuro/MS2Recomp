@@ -28,6 +28,7 @@ enum MergeSpecialOption : int {};
 struct Unk_MergeRange
 {
     Unk_MergeRange() : m_nMin(0), m_nMax(0) {}
+    void Set(int nMin, int nMax);                   // 0x1405c6380
     int m_nMin;
     int m_nMax;
 };
@@ -39,6 +40,7 @@ class CItemMergeOptionVariation : public CPtred
 public:
     CItemMergeOptionVariation();                    // 0x1405bea40
     virtual ~CItemMergeOptionVariation();           // 0x1405c4590
+    CItemMergeOptionVariation& operator=(const CItemMergeOptionVariation& o);   // 0x1405c4670 (not the pad)
     int FUN_1405beaa0();                            // the number of values of the range
     int FUN_1405beac0();                            // the minimum, as an integer
     int FUN_1405beae0();                            // the maximum, as an integer
@@ -52,11 +54,18 @@ public:
 MS2_CHECK_SIZE(CItemMergeOptionVariation, 0x28);
 
 // The weighted pool of rolls of an option / a slot: a tree followed by the total weight (ctor 0x1405c3840 / 0x1405c3870).
+// One roll of a pool (0x18 bytes: the exe's tree node is 0x40, and ~pair -> ~entry -> ~MS2Ptr is three calls deep).
+template <class T> struct MergePoolEntry
+{
+    MS2Ptr<T> m_spOption;
+    int m_nWeight;
+};
+
 template <class T> struct MergePoolRecord
 {
     MergePoolRecord();
     ~MergePoolRecord();
-    std::map<unsigned, MS2Ptr<T> > m_pool;
+    std::map<unsigned, MergePoolEntry<T> > m_pool;
     int m_nTotal;
 };
 
@@ -65,6 +74,7 @@ template <class T> struct MergePoolRecord
 class Unk_MergeNormalMap : public ATL::CAtlMap<MergeNormalOption, CItemMergeOptionVariation>
 {
 public:
+    __forceinline Unk_MergeNormalMap() {}           // inlined into CItemMergeOptionProxy's ctor (no copy of its own in the exe)
     POSITION FUN_1405c5e80();                       // GetStartPosition
     void FUN_1405c5be0(POSITION& pos);              // GetNext
     const int& FUN_1405c5ad0(POSITION pos);         // GetKeyAt
@@ -76,6 +86,7 @@ MS2_CHECK_SIZE(Unk_MergeNormalMap, 0x48);
 class Unk_MergeSpecialMap : public ATL::CAtlMap<MergeSpecialOption, CItemMergeOptionVariation>
 {
 public:
+    __forceinline Unk_MergeSpecialMap() {}          // inlined into CItemMergeOptionProxy's ctor
     POSITION FUN_1405c5e10();                       // GetStartPosition
     void FUN_1405c5b90(POSITION& pos);              // GetNext
     const int& FUN_1405c5a60(POSITION pos);         // GetKeyAt

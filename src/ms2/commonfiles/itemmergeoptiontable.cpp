@@ -1,10 +1,13 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CItemMergeOptionTable: Table/itemMergeOptionBase.xml, the value
 // ranges an item merge (option transfer) can roll, and the records the merge dialog receives (CItemMergeOptionProxy).
 // MS2-UNIT: commonfiles\itemmergeoptiontable.cpp
+// MS2-GUESS-LOOKALIKES
 // MS2-RANGE: 0x1405bea40-0x1405caed0 .text$mn
 // MS2-RANGE: 0x1400ba410-0x1400ba590 .text$di
-// MS2-PIN: ??_7CItemMergeOptionTable@@6B?$TSingleton@VCItemMergeOptionTable@@@@@ 0x142d65288
-// MS2-PIN: ??_7CItemMergeOptionTable@@6B?$CValidData@VCItemMergeOptionTable@@@@@ 0x142d65298
+// MS2-PIN: ??_7?$TSingleton@VCItemMergeOptionTable@@@@6B@ 0x142d65288
+// MS2-PIN: ??_7?$CValidData@VCItemMergeOptionTable@@@@6B@ 0x142d65298
+// MS2-PIN: ??_7CItemMergeOptionTable@@6B?$TSingleton@VCItemMergeOptionTable@@@@@ 0x142d652a8
+// MS2-PIN: ??_7CItemMergeOptionTable@@6B?$CValidData@VCItemMergeOptionTable@@@@@ 0x142d652b8
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$FUN_14028dfa0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBV01@@Z 0x1405c2690 ; unique
 // MS2-PIN: ??0?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@IMMMI@Z 0x1405c3640 ; prop
@@ -19,9 +22,7 @@
 // MS2-PIN: ??0CPair@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@IEAA@AEBW4MergeSpecialOption@@@Z 0x1405c40a0 ; prop
 // MS2-PIN: ??1?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@XZ 0x1405c4160 ; prop
 // MS2-PIN: ??1?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@XZ 0x1405c4190 ; prop
-// MS2-PIN: ??1?$MergePoolRecord@VCItemMergeOptionVariation@@@@QEAA@XZ 0x1405c4200 ; prop
-// MS2-PIN: ??1CPair@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@XZ 0x1405c45f0 ; unique
-// MS2-PIN: ??1CPair@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAA@XZ 0x1405c4610 ; unique
+// MS2-PIN: ??1?$pair@U?$pair@HH@std@@V?$MS2Ptr@VCItemMergeOptionData@@@@@std@@QEAA@XZ 0x1405c44b0 ; unique
 // MS2-PIN: ?IsNull@?$MS2Ptr@VCItemOption@@@@QEBA_NXZ 0x1405c4720 ; unique
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCItemMergeOption@@@@V?$CElementTraits@V?$MS2Ptr@VCItemMergeOption@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCItemMergeOption@@@@_K@Z 0x1405c48d0 ; prop
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCItemMergeOptionVariation@@@@V?$CElementTraits@V?$MS2Ptr@VCItemMergeOptionVariation@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCItemMergeOptionVariation@@@@_K@Z 0x1405c4910 ; unique
@@ -59,9 +60,9 @@
 // MS2-PIN: ?RemoveNode@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@AEAAXPEAVCNode@12@0@Z 0x1405c7650 ; prop
 // MS2-PIN: ?SetAt@?$CAtlMap@W4MergeSpecialOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeSpecialOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAPEAU__POSITION@@AEBW4MergeSpecialOption@@AEBVCItemMergeOptionVariation@@@Z 0x1405c7710 ; prop
 // MS2-PIN: ?SetAt@?$CAtlMap@W4MergeNormalOption@@VCItemMergeOptionVariation@@V?$CElementTraits@W4MergeNormalOption@@@ATL@@V?$CElementTraits@VCItemMergeOptionVariation@@@4@@ATL@@QEAAPEAU__POSITION@@AEBW4MergeNormalOption@@AEBVCItemMergeOptionVariation@@@Z 0x1405c77c0 ; prop
-// MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCItemMergeOption@@@@@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCItemMergeOption@@@@@std@@PEAX@2@_K@Z 0x1405ca260 ; unique
-// MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCItemMergeOptionVariation@@@@@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VCItemMergeOptionVariation@@@@@std@@PEAX@2@_K@Z 0x1405ca290 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??$?0AEAHH$0A@@?$pair@HH@std@@QEAA@AEAH$$QEAH@Z 0x1405c20a0 ; make_pair(lvalue, rvalue): forward<int&> then forward<int>
+// MS2-PIN: ??$?0HAEAH$0A@@?$pair@HH@std@@QEAA@$$QEAHAEAH@Z 0x1405c2230 ; make_pair(rvalue, lvalue)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemmergeoptiontable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/citemmergeoptiontable.h"
@@ -142,6 +143,22 @@ template <class T> MergePoolRecord<T>::~MergePoolRecord()
 }
 template struct MergePoolRecord<CItemMergeOption>;
 template struct MergePoolRecord<CItemMergeOptionVariation>;
+
+// @0x1405c4670
+CItemMergeOptionVariation& CItemMergeOptionVariation::operator=(const CItemMergeOptionVariation& o)
+{
+    CPtred::operator=(o);
+    m_range = o.m_range;
+    m_nIndex = o.m_nIndex;
+    return *this;
+}
+
+// @0x1405c6380
+void Unk_MergeRange::Set(int nMin, int nMax)
+{
+    m_nMin = nMin;
+    m_nMax = nMax;
+}
 
 // @0x1405bea40
 CItemMergeOptionVariation::CItemMergeOptionVariation() : m_nIndex(0)
@@ -306,8 +323,7 @@ int CItemMergeOptionData::FUN_1405bf470(Unk_140165cf0* pSlot)
                 (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemmergeoptiontable.cpp", 0xcf), 0));
                 FUN_1403d7960(FUN_140166440(), 1, 0x13, L"ItemMergeError {0} {1}", nPrev, nMax);
             }
-            spStep->m_range.m_nMin = nPrev + 1;
-            spStep->m_range.m_nMax = nMax;
+            spStep->m_range.Set(nPrev + 1, nMax);
             aSteps.Add(spStep);
             nPrev = nMax;
         }
@@ -661,16 +677,16 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1d20(int nItemId,
             {
                 MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
                 if (!spItem)
-                    return DataPtr(0);
+                    return DataPtr(nullptr);
                 nPart = spItem->FUN_14053c620();
             }
             std::map<std::pair<int, int>, DataPtr>::iterator it = m_data.find(std::make_pair(spMaterial->FUN_14053de10(), nPart));
             if (it != m_data.end())
                 return it->second;
-            return DataPtr(0);
+            return DataPtr(nullptr);
         }
     }
-    return DataPtr(0);
+    return DataPtr(nullptr);
 }
 
 // @0x1405c1f40
@@ -678,7 +694,7 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1f40(int nCategor
 {
     std::map<std::pair<int, int>, DataPtr>::iterator it = m_data.find(std::make_pair(nCategory, 0));
     if (it == m_data.end())
-        return DataPtr(0);
+        return DataPtr(nullptr);
     return it->second;
 }
 
