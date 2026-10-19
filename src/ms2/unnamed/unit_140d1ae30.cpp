@@ -7,7 +7,24 @@
 // MS2-RANGE: 0x1400d1f70-0x1400d2300 .text$di
 // MS2-RANGE: 0x140d1ae30-0x140d2a7e0 .text$mn
 // MS2-RANGE: 0x142ca49f0-0x142ca4bc0 .text$yd
+// MS2-PIN: memcpy_s 0x140d2a6c0
+// MS2-PIN: ??$GetItemUseDialog@VUIInteriorBuildDialog@@@@YAPEAVUIInteriorBuildDialog@@H@Z 0x140d27120
+// MS2-PIN: ??$GetItemUseDialog@VUIItemBillBoardDialog@@@@YAPEAVUIItemBillBoardDialog@@H@Z 0x140d271c0
+// MS2-PIN: ??$GetItemUseDialog@VUIItemBlueprintCreateDialog@@@@YAPEAVUIItemBlueprintCreateDialog@@H@Z 0x140d27260
+// MS2-PIN: ??$GetItemUseDialog@VUIItemExtractionScrollDialog@@@@YAPEAVUIItemExtractionScrollDialog@@H@Z 0x140d27300
+// MS2-PIN: ??$GetItemUseDialog@VUIItemGachaBoxDialog@@@@YAPEAVUIItemGachaBoxDialog@@H@Z 0x140d273a0
+// MS2-PIN: ??$GetItemUseDialog@VUIItemLulluBoxDialog@@@@YAPEAVUIItemLulluBoxDialog@@H@Z 0x140d27440
+// MS2-PIN: ??$GetItemUseDialog@VUIItemMergeRevertDialog@@@@YAPEAVUIItemMergeRevertDialog@@H@Z 0x140d274e0
+// MS2-PIN: ??$GetItemUseDialog@VUIItemMultiOpenBoxDialog@@@@YAPEAVUIItemMultiOpenBoxDialog@@H@Z 0x140d27580
+// MS2-PIN: ??$GetItemUseDialog@VUIItemPetBoxDialog@@@@YAPEAVUIItemPetBoxDialog@@H@Z 0x140d27620
+// MS2-PIN: ??$GetItemUseDialog@VUIItemPetTrainingDialog@@@@YAPEAVUIItemPetTrainingDialog@@H@Z 0x140d276c0
+// MS2-PIN: ??$GetItemUseDialog@VUIPetExtractionScrollDialog@@@@YAPEAVUIPetExtractionScrollDialog@@H@Z 0x140d27760
+// MS2-PIN: ??$GetItemUseDialog@VUISelectItemBoxDialog@@@@YAPEAVUISelectItemBoxDialog@@H@Z 0x140d27800
+// MS2-PIN: ??$GetItemUseDialog@VUIUGCCubeBillDialog@@@@YAPEAVUIUGCCubeBillDialog@@H@Z 0x140d278a0
 #define MS2_THIS_FILE ""
+// The exe's memcpy_s is a plain call (no /Oi expansion); the pragma must precede the inline copy.
+#include <vcruntime_string.h>
+#pragma function(memcpy)
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include <algorithm>
@@ -324,12 +341,15 @@ template <class T> T* GetItemUseDialog(int nId)
     return 0;
 }
 
+// The UCRT's `static __inline memcpy_s` of this TU (kept alive by the pointer below).
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+
 // ---- dynamic initializers (.text$di) ----
 
 // @0x1400d1f70
 static ATL::CAtlMap<CStringW, Unk_ItemUseFunc, ATL::CStringElementTraits<CStringW> > s_itemUseFuncs;
 // @0x1400d1fc0
-static std::map<unsigned, unsigned> s_itemUseMap;
+static std::map<unsigned, DWORD> s_itemUseMap;   // item id -> last use tick (the exe type is map<unsigned,unsigned>; stand-in: worldservice.cpp claims the pair ctor names)
 // @0x1400d1ff0
 static CStringW s_strChangeCharName(L"changeCharName");
 // @0x1400d2020
@@ -463,6 +483,7 @@ void RegisterItemUseFuncs()
 
 // Can the local player use the item now (cooldown, item lock, PC bang / VIP / wedding items, level, job, gender,
 // character binding)? Shows the reason when not.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1b610
 bool CanUseItem(MS2Ptr<CItem> spItem)
 {
@@ -523,6 +544,7 @@ bool CanUseItem(MS2Ptr<CItem> spItem)
 
 // Use an item: checks, the bind-on-use confirmation (unless bConfirmed), then the item function's handler; an item
 // without a registered handler is sent to the server as is.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1bd60
 int UseItem(MS2Ptr<CItem> spItem, int bConfirmed)
 {
@@ -589,6 +611,7 @@ bool IsBoxNotAgainChecked(const CMsgBoxData& box)
 }
 
 // Would opening the box overflow a currency-like inventory tab? Returns the tab name and the overflow.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1c550
 int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
 {
@@ -628,9 +651,10 @@ int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
         if (nTab == 0x10)
             continue;
         nCount = (std::max)(nCount, entry.m_nCount);
-        if (nCap < (__int64)(nCount + nAmount))
+        __int64 nTotal = nCount + nAmount;
+        if (nCap < nTotal)
         {
-            *pnOver = (nCount + nAmount) - nCap;
+            *pnOver = nTotal - nCap;
             strTab = FUN_1401a9d70()->FUN_141811980(1, nItemId);
             return 1;
         }
@@ -639,6 +663,7 @@ int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
 }
 
 // The quest scroll confirm box: accept the scroll's quests (when none is in progress and all can be accepted).
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1c8e0
 bool OnQuestScrollConfirm(int nButton, const CMsgBoxData& box)
 {
@@ -666,6 +691,7 @@ bool OnQuestScrollConfirm(int nButton, const CMsgBoxData& box)
 }
 
 // Open a box item: confirm first unless the player chose "do not ask again" in the last 7 days.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1cbd0
 void OpenItemBox(CItem* pItem, int nCount)
 {
@@ -723,6 +749,7 @@ void OpenItemBoxSingle(CItem* pItem)
 }
 
 // Send the open request; boxes that allow it ask for the count to open at once.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1d3f0
 void OpenItemBoxContents(CItem* pItem, CStringW strArgs)
 {
@@ -768,6 +795,7 @@ void OpenItemBoxContents(CItem* pItem, CStringW strArgs)
     }
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1da90
 bool OnOpenItemBoxConfirm(int nButton, const CMsgBoxData& box)
 {
@@ -785,6 +813,7 @@ bool OnOpenItemBoxConfirm(int nButton, const CMsgBoxData& box)
     return true;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1db60
 bool OnOpenItemBoxCapacity(int nButton, const CMsgBoxData& box)
 {
@@ -803,6 +832,7 @@ bool OnOpenItemBoxCapacity(int nButton, const CMsgBoxData& box)
 }
 
 // The multi-open count box: open that many boxes (through the multi open dialog for more than one).
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1dc60
 bool OnOpenItemBoxMulti(int nButton, const CMsgBoxData& box)
 {
@@ -841,6 +871,7 @@ int RecallParty(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The codi (outfit) tab item: activate the tab or extend its period.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1dfa0
 int ItemActiveCodiTab(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -907,6 +938,7 @@ int ItemActiveCodiTab(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The beauty change item: only while the player stands normally, outside a beauty-blocking field object.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1e8d0
 int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -954,6 +986,7 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 0;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1ef50
 int CreateReactor(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -964,6 +997,7 @@ int CreateReactor(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The festival item: only in its fields and while its game event (and festival kind) runs.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1f030
 int FestivalEvent(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1015,6 +1049,7 @@ int FestivalEvent(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The blueprint item: create its image first, else confirm and import it.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1f6d0
 int BlueprintImport(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1057,6 +1092,7 @@ int BlueprintImport(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The chat emoticon item: describe its period and confirm.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1fba0
 int ChatEmoticonAdd(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1103,6 +1139,7 @@ int SuperWorldChat(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The couple effect box: ask for the receiver's name.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d203f0
 int OpenCoupleEffectBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1145,6 +1182,7 @@ int ItemMergeRevert(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The quest scroll: warn first when the item says so, else accept its quests.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d21520
 int QuestScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1225,6 +1263,7 @@ int ItemExchangeScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 1;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d21c30
 int ItemSocketScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1237,6 +1276,7 @@ int ItemSocketScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The web page item: the in-game browser ("maview") or the external one.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d21d70
 int OpenWebPage(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1364,6 +1404,7 @@ int EnchantScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The guild recall: call the other guild members.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d226b0
 int RecallGuild(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1409,6 +1450,7 @@ int RecallWedding(MS2Ptr<CItem> spItem, PC* pPlayer)
     return TSingleton<CCashCallManager>::GetInstance()->FUN_140b04430(spItem->FUN_140526a50(), 1);
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d22b50
 int ResetAbilityCoolTime(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1432,6 +1474,7 @@ int ResetAbilityCoolTime(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 1;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d22dd0
 int ChangeGender(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1466,6 +1509,7 @@ int ChangeGender(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 1;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d233d0
 int ChangeGuildName(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1485,6 +1529,7 @@ int ChangeGuildName(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 0;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d236a0
 int ChangeCharName(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1505,6 +1550,7 @@ int ChangeCharName(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The inventory expansion item: name the tab it expands.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d23870
 int ExpandInven(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1557,6 +1603,7 @@ int CallAirTaxi(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 1;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d24900
 int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1587,6 +1634,7 @@ int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The dungeon reward box: only while the dungeon's reward count isn't used up.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d24e70
 int OpenDungeonItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1615,6 +1663,7 @@ int OpenDungeonItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The box opened with keys: needs the key count and the right gender.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d25430
 int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1643,6 +1692,7 @@ int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 1;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d259d0
 int OpenItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1666,6 +1716,7 @@ int OpenItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The limited quantity box: a per-item cooldown between uses (GMs skip it).
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d25c50
 int OpenItemBoxLimitedQuantity(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1703,6 +1754,7 @@ int OpenGachaBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The quest start item: level, start and repeat checks, then confirm.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d25eb0
 int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1759,6 +1811,7 @@ WeddingProxy* WeddingManager::FUN_140d295d0()
 }
 
 // The massive event portal item: open a portal (wedding party or event field) where none is.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d20710
 int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1842,6 +1895,7 @@ int OpenMassive(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The instrument item: play it where the field and the player's state allow.
+// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d23c50
 int OpenInstrument(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
