@@ -3495,3 +3495,5 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?DAT_143aaeb10@@3PEAVUnk_EmoNpcTable@@EA	143aaeb10	data
 ?DAT_1439ed000@@3IA	1439ed000	data
 ?Get@?$Value@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Constants@Common@@QEAAPEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	140298f80	func
+??1Unk_DaUIRef@@QEAA@XZ	1403e5630	func
+?Release@?$MS2Ptr@VUnk_PopupField@@@@AEAAXXZ	1409b4ee0	func
