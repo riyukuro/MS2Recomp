@@ -17,6 +17,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/commonfiles/fielddata.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asslot.h"
@@ -93,7 +94,8 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 // ---- unit-local views of the exe objects and unrecovered callees ----------------------------------------------------
 
-class Unk_LsWorld { public: MyPC* FUN_141bd0cc0(); };                   // the local player
+class Unk_LsMapInfo;
+class Unk_LsWorld { public: MyPC* FUN_141bd0cc0(); Unk_LsMapInfo FUN_141bd30a0(); };                   // the local player
 Unk_LsWorld* FUN_1403ed2d0();
 
 // The item bag control inside a section clip (as Unk_PetItemBag in tabcontentspetcompose.cpp).
@@ -364,8 +366,9 @@ class Unk_LsTable { public: int FUN_1405b5810(unsigned nSlot); MS2Ptr<Unk_LsReco
 Unk_LsTable* FUN_1409c4b30();
 struct Unk_LsSlotArg { unsigned m_n; Unk_LsSlotArg() : m_n(0) {} };      // 0x140c5e480
 void FUN_1405b5e40(Unk_LsSlotArg* pArg, COutPacket* pPacket);            // write it
-Unk_LsBagReg* FUN_140a70b70(void* pEntry);                              // the bag component (class id 0x6200084) of a registry entry
-void* FUN_1422c8e90(CString* pstrBag);                                   // the registry entry of a bag name
+Unk_LsBagReg* FUN_140a70b70(NotifyContext::BindData* pEntry);
+NotifyContext::BindData* FUN_1422c8e90(const CString& strBag);   // the registry entry of a bag name
+ItemInfoSlot* FUN_140c69ab0(NotifyContext::BindData* pEntry);                              // the bag component (class id 0x6200084) of a registry entry
 UILapenshardSystemDialog* FUN_140a6ff40(int nId);                      // the open Lapenshard window
 CFeatureManager* FUN_140166410();
 int FUN_140c62520();                                                    // the window may be used (not in battle / disabled field)
@@ -435,7 +438,7 @@ void LapenshardEquipSlotPanel::vfunc_5(int nEvent)
 // @0x140c5d9c0
 void LapenshardEquipSlotPanel::FUN_140c5d9c0(int bOn)
 {
-    Unk_LsBagReg* pReg = FUN_140a70b70(FUN_1422c8e90(&m_strBag));
+    Unk_LsBagReg* pReg = FUN_140a70b70(FUN_1422c8e90(m_strBag));
     if (pReg == 0)
         return;
     int nKind = 0;
@@ -1065,7 +1068,9 @@ class Unk_LsRecord : public CPtred
 public:
     int m_nKind;                                                        // +0x18
     unsigned short m_nGrade;                                            // +0x1c
-    unsigned char m_pad_1e[0xa];
+    unsigned char m_pad_1e[2];
+    int m_n20;                                                          // +0x20
+    unsigned char m_pad_24[4];
     int m_nNeed;                                                        // +0x28 the number of ingredients
 };
 
@@ -1351,7 +1356,7 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64960(int nIndex, int nCount)
             spItem->FUN_14052a230(2);
         else
             spItem->FUN_14052a260(2);
-        Unk_LsBagReg* pReg = FUN_140a70b70(FUN_1422c8e90(&m_strBag));
+        Unk_LsBagReg* pReg = FUN_140a70b70(FUN_1422c8e90(m_strBag));
         if (pReg != 0)
         {
             pReg->vfunc_14(nIndex);
@@ -1873,3 +1878,206 @@ void UILapenshardUpgradeTab::FUN_140c69620()
 {
     m_n_c0 = FUN_14047f880(FUN_1401c0d90());
 }
+
+// ---- the bag registry helpers and the rest of the upgrade slot panel ----
+
+CString FUN_1422cc860(const CString& strBase, int nIndex);
+void FUN_14141f770(CString&, unsigned int, const ItemArray&, MS2Ptr<CItem>(*)(const ItemArray&, int), int, int);
+MS2Ptr<CItem> FUN_141420330(const ItemArray&, int);
+void FUN_14141f970(CString* pstrBag);
+CStringW FUN_14042cb90(CStringW key, const float& v);
+CStringW FUN_1419021b0(int a, int b);
+
+// @0x140c5fbb0 (the shield bar), 0x140c68e40 and 0x140c69650 (the upgrade page): plain getters
+int UILapenshardShieldBar::FUN_140c5fbb0()
+{
+    return m_bEnded;
+}
+
+// @0x140c68e40
+int UILapenshardUpgradeTab::FUN_140c68e40()
+{
+    return m_n_bc;
+}
+
+// @0x140c69650
+int UILapenshardUpgradeTab::FUN_140c69650()
+{
+    return m_n_c0;
+}
+
+// @0x140c60ed0
+void FUN_140c60ed0(CString& strBag, const ItemArray& items, int nIconType, int nFlags)
+{
+    FUN_14141f970(&strBag);
+    FUN_14141f770(strBag, items.GetCount(), items, FUN_141420330, nIconType, nFlags);
+}
+
+// @0x140c61010
+void FUN_140c61010(CString& strSlot, MS2Ptr<CItem> spItem, int nIconType, int nFlags)
+{
+    FUN_141415600(&strSlot);
+    FUN_141415450(&strSlot, spItem, 0, nIconType, nFlags);
+}
+
+// @0x140c65d60
+MS2Ptr<Unk_LsRecord> LapenshardUpgradeSlotPanel::FUN_140c65d60()
+{
+    if (!(m_spSource == 0))
+        return FUN_1409c4b30()->FUN_1405b56a0(m_spSource->FUN_1405276c0());
+    return MS2Ptr<Unk_LsRecord>(0);
+}
+
+// @0x140c65e00
+void LapenshardUpgradeSlotPanel::FUN_140c65e00()
+{
+    if (!(m_body == 0))
+    {
+        float fProb = (float)m_pTab->FUN_140c68e40() / 100.0f;
+        m_ui->Invoke("setSuccessProb", FUN_14042cb90(CStringW(L"s_lapenshard_tabname_upgrade_success_prob"), fProb));
+    }
+}
+
+// @0x140c65ef0
+void LapenshardUpgradeSlotPanel::FUN_140c65ef0()
+{
+    if (!(m_spSource == 0))
+    {
+        MS2Ptr<Unk_LsRecord> spRec = FUN_1409c4b30()->FUN_1405b56a0(m_spSource->FUN_1405276c0());
+        if (!(spRec == 0))
+        {
+            if (spRec->m_nNeed != 0)
+            {
+                if (m_pTab->FUN_140c68e20() == 0 || m_pTab->FUN_140c68e20() == 1)
+                {
+                    CString strSlot = FUN_1422cc860(m_strBind, 0);
+                    if (FUN_140c69ab0(FUN_1422c8e90(strSlot)) != 0)
+                        m_ui->Invoke("setIngredientLapenshardCount", FUN_1419021b0(m_pTab->FUN_140c68fd0(), spRec->m_nNeed));
+                }
+            }
+        }
+    }
+}
+
+// @0x140c67ce0
+void LapenshardUpgradeSlotPanel::FUN_140c67ce0()
+{
+    if (!(m_body == 0))
+    {
+        if (FUN_14116d720(FUN_14025e7c0()))
+        {
+            MS2Ptr<ASMovieClip> spButton = m_body->FUN_140acce30<ASMovieClip>("m_fillIngredientDebug");
+            if (spButton.get() != 0)
+                spButton->vfunc_3(1);
+        }
+    }
+}
+
+// ---- the window: opening conditions ----
+
+// The map the player stands on.
+class Unk_LsMapInfo
+{
+public:
+    bool FUN_140965240(int nFlag);                                      // no map
+    CFieldData* FUN_140885340();                                        // its field data
+    void* m_p0; void* m_p1; void* m_p2; void* m_p3;
+};
+void FUN_1408850f0(Unk_LsMapInfo* pInfo);
+void FUN_140d73aa0(CStringW strMsg, int nType, int nTarget, CStringW strTag);
+void FUN_1412751f0(const CStringW& text, int nA, int nB);
+void FUN_141275260(int nStringId, int nA, int nB);
+
+// @0x140c62520
+int FUN_140c62520()
+{
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return 0;
+    if (pPlayer->vfunc_65() == 0)
+    {
+        Unk_LsMapInfo info = FUN_1403ed2d0()->FUN_141bd30a0();
+        if (!info.FUN_140965240(0))
+        {
+            if (info.FUN_140885340()->FUN_140375660(0x200) == 0)
+            {
+                FUN_1408850f0(&info);
+                return 1;
+            }
+            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_lapenshard_disable_field")), 0, 0, CStringW(L""));
+            FUN_1408850f0(&info);
+            return 0;
+        }
+        FUN_1408850f0(&info);
+        return 0;
+    }
+    FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_lapenshard_disable_battle")), 0, 0, CStringW(L""));
+    return 0;
+}
+
+// The singletons the opening conditions read.
+class Unk_LsRuleFlags { public: int FUN_1402c4c90(int nRule); };
+class Unk_LsRules { public: unsigned char m_pad[8]; Unk_LsRuleFlags m_flags; };
+Unk_LsRules* FUN_14025e7b0();
+class Unk_LsQuestRef;
+class Unk_LsGameTables { public: unsigned char m_pad[0xa040]; Unk_LsQuestRef* m_pQuests; };
+Unk_LsGameTables* FUN_1401d3200();
+const ATL::CAtlArray<int>& FUN_140a6aa40(Unk_LsQuestRef* pRef);         // the quests that open the window
+class Unk_LsQuestDone { public: int FUN_140745590(int nQuest); };
+class Unk_LsQuestLog { public: unsigned char m_pad[0x10]; Unk_LsQuestDone m_done; };
+Unk_LsQuestLog* FUN_140764020();
+int FUN_141654700(MyPC* pPlayer);
+CStringW FUN_1416e4df0(int nQuest);                                     // the name of a quest
+CStringW FUN_1405c2690(CStringW fmt, const CStringW& arg);
+
+// @0x140c62000
+int UILapenshardSystemDialog::vfunc_73()
+{
+    if (UIDialog::vfunc_73() == 0)
+        return 0;
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return 0;
+    if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x5b) != 0)
+    {
+        FUN_141275260(0x2f7, 1, 1);
+        return 0;
+    }
+    ATL::CAtlArray<int> quests;
+    quests.Copy(FUN_140a6aa40(FUN_1401d3200()->m_pQuests));
+    if (quests.GetCount() != 2)
+        return 0;
+    int nNewbie = quests[0];
+    int nQuest = quests[1];
+    if (FUN_14116d720(FUN_14025e7c0()))
+        return 1;
+    for (unsigned i = 0; i < quests.GetCount(); ++i)
+    {
+        if (FUN_140764020()->m_done.FUN_140745590(quests[i]) != 0)
+            return 1;
+    }
+    CStringW strName;
+    if (FUN_141654700(pPlayer) == 1)
+    {
+        strName = FUN_1416e4df0(nQuest);
+        FUN_1412751f0(FUN_1405c2690(CStringW(L"s_lapenshard_open_newbie_quest_message"), strName), 1, 1);
+    }
+    else
+    {
+        strName = FUN_1416e4df0(nNewbie);
+        FUN_1412751f0(FUN_1405c2690(CStringW(L"s_lapenshard_open_quest_message"), strName), 1, 1);
+    }
+    return 0;
+}
+// @0x140c612f0
+int UILapenshardSystemDialog::vfunc_65()
+{
+    if (UIDialog::vfunc_65() != 0)
+    {
+        m_tabs.Add(TabInfoPtr(new TabInfo(CString("equip"), FUN_14028b8e0(CStringW(L"s_lapenshard_tabname_equip")), LapenshardTabPtr(new UILapenshardEquipTab()))));
+        m_tabs.Add(TabInfoPtr(new TabInfo(CString("upgrade"), FUN_14028b8e0(CStringW(L"s_lapenshard_tabname_upgrade")), LapenshardTabPtr(new UILapenshardUpgradeTab()))));
+        FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    }
+    return 0;
+}
+

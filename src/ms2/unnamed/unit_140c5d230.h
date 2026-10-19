@@ -213,6 +213,7 @@ public:
     virtual void vfunc_4();                                         //  4 0x140c650d0
     virtual void vfunc_5(int nEvent);                               //  5 0x140c651a0
 
+    MS2Ptr<class Unk_LsRecord> FUN_140c65d60();                     // the table record of the source item
     void FUN_140c652d0(ItemInfoSlot& slot, ASSlot& asSlot);        // slot callback: mark an empty slot
     void FUN_140c65360(ItemInfoSlot& slot, ASTooltip& tooltip);    // tooltip callback
     void FUN_140c654a0(CString& strSlot, MS2Ptr<CItem> spItem);     // 0x140c654a0 bind a slot name to an item
@@ -256,7 +257,7 @@ public:
     MS2Ptr<CItem> FUN_140c68da0();                                  // the source item
     void FUN_140c68df0();                                           // clear the source item
     int FUN_140c68e20() { return m_nState; }                        // 0 idle, 1 source set, 2 requested, 3 answered, 4 processed
-    int FUN_140c68e40() { return m_n_bc; }
+    int FUN_140c68e40();
     void FUN_140c68e60(unsigned __int64 nUid, int nDelta);          // add / remove ingredients of an item
     void FUN_140c68f90();                                           // clear the ingredients
     int FUN_140c68fd0() { return m_nTotal; }                        // the number of ingredients
@@ -264,7 +265,7 @@ public:
     void FUN_140c69030();                                           // request the upgrade
     int FUN_140c691f0();                                            // the upgrade can be requested
     void FUN_140c69620();
-    int FUN_140c69650() { return m_n_c0; }
+    int FUN_140c69650();
 
     LapenshardPanelList m_panels;                                   // +0x18
     int m_nState;                                                   // +0x48
@@ -388,7 +389,7 @@ public:
     MS2Ptr<Unk_LsBuff> FUN_140c5f990();                             // the shown buff
     CStringW FUN_140c5f9e0();                                       // "mm:ss" left
     void FUN_140c5faf0();                                           // play "end"
-    int FUN_140c5fbb0() { return m_bEnded; }                        // the buff ended
+    int FUN_140c5fbb0();                                            // the buff ended
     void FUN_140c5fbd0();                                           // bind the skill slot and play "open"
 
     MS2Ptr<Unk_LsBuff> m_spBuff;                                    // +0x78
