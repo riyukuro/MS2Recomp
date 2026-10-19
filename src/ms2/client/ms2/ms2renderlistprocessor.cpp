@@ -2,9 +2,10 @@
 // NiShaderSortProcessor bucket logic plus swapped post-processing materials, outlined objects, alpha shell groups and
 // depth-sorted alpha objects. Also the render-view and after-image variants.
 // MS2-UNIT: ?\ms2renderlistprocessor.cpp
-// MS2-RANGE: 0x1400f91f0-0x1400f9250 .text$di
+// MS2-RANGE: 0x1400f8ee0-0x1400f9250 .text$di
 // MS2-RANGE: 0x1414dbf30-0x1414ea3d0 .text$mn
 // MS2-RANGE: 0x142cb30c0-0x142cb3100 .text$yd
+// MS2-PIN: ??__Es_pointer3@@YAXXZ 0x1400f9170
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 #include "ms2/placeholder/ms2stdafx.h"
@@ -13,6 +14,11 @@
 #include <atlstr.h>
 #include "ms2renderlistprocessor.h"
 #include "ms2afterimagerenderlistprocessor.h"
+#include "ms2/client/ms2/ms2materialswapprocessor.h"
+#include "ms2/client/ms2/ms2outerglowmaterialswapprocessor.h"
+#include "ms2/client/ms2/ms2outlinepreprocessor.h"
+#include "ms2/client/ms2/ms2overdrawprocessor.h"
+#include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/client/ms2/skillcollisionmanager.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/decoeditservice.h"
@@ -88,11 +94,36 @@ CSkillCollisionManager* FUN_141469a90();
 WorldService* FUN_1403ed2d0();
 DecoEditService* FUN_1411987a0();
 
-// ---- file-scope strings (.text$di) -------------------------------------------------------------------------------------
-// @0x1400f91f0
+// ---- file-scope statics (.text$di) -------------------------------------------------------------------------------------
+// This range also holds the initializers of the neighbouring processor TUs (their RTTI objects and the header statics every
+// one of them carries: the condition table, the skill/stun labels, a condition map, a null handle).
+class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
+
+#ifndef MS2_HOOK_DLL   // the exe's own RTTI objects are the registered ones
+// @0x1400f8ee0
+const NiRTTI MS2MaterialSwapProcessor::ms_RTTI("MS2MaterialSwapProcessor", &MS2RenderListProcessor::ms_RTTI);
+// @0x1400f8f10
+static NiRTTI s_rttiOuterGlow("MS2OuterGlowMaterialSwapProcessor", &MS2RenderListProcessor::ms_RTTI);
+// @0x1400f8f40
+const NiRTTI MS2OutlinePreProcessor::ms_RTTI("MS2OutlinePreProcessor", &MS2RenderListProcessor::ms_RTTI);
+#endif
+static CString s_sortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkill1("skill");
+static CString s_strStun1("stun");
+static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
+#ifndef MS2_HOOK_DLL
+// @0x1400f90e0
+const NiRTTI MS2OverdrawProcessor::ms_RTTI("MS2OverdrawProcessor", &MS2RenderListProcessor::ms_RTTI);
+#endif
+static CString s_strSkill2("skill");
+static CString s_strStun2("stun");
+static Unk_1401cd100 s_pointer3(NULL);
+// @0x1400f9190
 static CString s_skill("skill");
-// @0x1400f9220
+// @0x1400f91c0
 static CString s_stun("stun");
+static CString s_strSkill4("skill");
+static CString s_strStun4("stun");
 
 // @0x1414dbf30
 MS2RenderListProcessor::MS2RenderListProcessor()
