@@ -3487,3 +3487,8 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?DAT_143afc898@@3EA	143afc898	data
 ?ms_pInstance@CDebugConsole@@0PEAV1@EA	143acffb8	data
 ?ms_szLine@CDebugConsole@@0PADA	143acffd0	data
+??1Unk_PcMapPtr@@QEAA@XZ	1408850f0	func
+??0Unk_PetBoxVector@@QEAA@AEBUUnk_StreamPoint@@@Z	14027dcf0	func
+??1AutomaticCreateCubeInfo@@UEAA@XZ	141125e20	func
+??1SaleStateData@@UEAA@XZ	141125fc0	func
+??1SalesInfo@@UEAA@XZ	141125fe0	func
