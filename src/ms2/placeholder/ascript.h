@@ -109,6 +109,8 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2);   // 0x1409b1490 (ascommondepth.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, bool a2, Scaleform::GFx::Value a3, Scaleform::GFx::Value a4);   // 0x14131cc10 (inline COMDAT, defined in uimeratmarketregisterdialog.cpp; all by value)
     void FUN_1422bac00(const char* szMember, CString& strOut);                               // read a narrow string member (uimeratmarketregisterdialog.cpp)
+    Scaleform::GFx::Value FUN_140e5bf20(const char* szMethod, float a1, float a2);          // 0x140e5bf20 (inline COMDAT, defined in uimasteryobjectmark.cpp)
+    Scaleform::GFx::Value FUN_140e5bfe0(const char* szMethod, CString a1, float a2, float a3);   // 0x140e5bfe0 (inline COMDAT, defined in uimasteryobjectmark.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, const AScript& a2);      // 0x140e7bcb0 (inline COMDAT, defined in uiquestnavigation.cpp; a1 by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, const AScript& obj);                  // 0x140ba4cc0 (passes obj's value)
     Scaleform::GFx::Value Invoke(const char* szMethod, unsigned int a1, float a2);          // 0x140ba4c00 (inline COMDAT, defined in uiadventureleveldialog.cpp)
@@ -131,6 +133,8 @@ public:
 
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2, int a3, CStringW a4);   // 0x140fb1a80 (inline COMDAT, defined in uiugcportaldialog.cpp; a1/a4 by value: the callee destroys them)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, AScript a2, ASArray a3);   // 0x140c1f740 (inline COMDAT, defined in uihideandseekresultdialog.cpp; a2/a3 by value: the callee destroys them)
+    Scaleform::GFx::Value Invoke(const char* szMethod, int a1, CStringW a2, CStringW a3, CStringW a4, int a5, bool a6);   // 0x1412e7f30 (inline COMDAT, defined in uimanufacturedialog.cpp; a2..a4 by value: the callee destroys them)
+    Scaleform::GFx::Value Invoke(const char* szMethod, unsigned __int64 a1, CString a2, CStringW a3);   // 0x1412e8210 (inline COMDAT, defined in uimanufacturedialog.cpp; a2/a3 by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2, CStringW a3, int a4);   // 0x1418ce200 (inline COMDAT, defined in uibeautyshopdialog.cpp; a1..a3 by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2, CString a3);   // 0x1418ce360 (inline COMDAT, defined in uibeautyshopdialog.cpp; a1/a3 by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, float a1, int a2);                    // 0x1418cc380 (inline COMDAT, defined in uibeautyshopdialog.cpp)
