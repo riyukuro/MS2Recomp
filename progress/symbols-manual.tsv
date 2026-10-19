@@ -3178,3 +3178,12 @@ __imp_AddSurveyParameterA	142cd1480	data
 ?DAT_143ae95e1@@3_NA	143ae95e1	data
 ?DAT_143afa458@@3QBEB	143afa458	data
 ?GetFileSize@MS2MemFile@@UEBAIXZ	1416271c0	func
+??0BeautyShopContext@Customize@@QEAA@H_J@Z	140ccad60	func
+??0Unk_BSUIMsg@@QEAA@XZ	1422e4490	func
+??0Unk_DictRequest@@QEAA@H@Z	1401baa00	func
+??0Unk_DictRequest@@QEAA@PEBX@Z	1401baaa0	func
+??0Unk_DictRequestValue@@QEAA@XZ	1401ba840	func
+??1Unk_BSPartHandle@@QEAA@XZ	140cd4cf0	func
+??1Unk_BSUIMsg@@QEAA@XZ	140c30570	func
+??1Unk_DictRequest@@QEAA@XZ	1401baaf0	func
+??1Unk_DictRequestValue@@QEAA@XZ	1401ba940	func
