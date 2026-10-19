@@ -30,13 +30,18 @@
 // MS2-PIN: ?_Has_unused_capacity@?$vector@V?$MS2Ptr@VSkillMotionData@@@@V?$allocator@V?$MS2Ptr@VSkillMotionData@@@@@std@@@std@@AEBA_NXZ 0x140806a80 ; prop
 // MS2-PIN: ?_Umove@?$vector@V?$MS2Ptr@VSkillActionAdditional@@@@V?$allocator@V?$MS2Ptr@VSkillActionAdditional@@@@@std@@@std@@AEAAPEAV?$MS2Ptr@VSkillActionAdditional@@@@PEAV3@00@Z 0x140806cf0 ; prop
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@V?$MS2Ptr@VSkillActionAdditional@@@@V?$allocator@V?$MS2Ptr@VSkillActionAdditional@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VSkillActionAdditional@@@@00U?$integral_constant@_N$0A@@2@@Z 0x140806d70 ; prop
-// MS2-PIN: ?_Umove_if_noexcept@?$vector@V?$MS2Ptr@VSkillAttackData@@@@V?$allocator@V?$MS2Ptr@VSkillAttackData@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VSkillAttackData@@@@00@Z 0x140806e50 ; prop
+// MS2-PIN: ?_Umove_if_noexcept1@?$vector@HV?$allocator@H@std@@@std@@AEAAXPEAH00U?$integral_constant@_N$00@2@@Z 0x140806db0 ; hand (int copy; was mis-bound to SkillAttackData)
+// MS2-PIN: ?_Umove_if_noexcept@?$vector@HV?$allocator@H@std@@@std@@AEAAXPEAH00@Z 0x140806e50 ; hand (int; was mis-bound to SkillAttackData)
 // MS2-PIN: ?allocate@?$allocator@V?$MS2Ptr@VSkillMotionData@@@@@std@@QEAAPEAV?$MS2Ptr@VSkillMotionData@@@@_K@Z 0x140806f30 ; prop
 // MS2-PIN: ?clear@?$vector@HV?$allocator@H@std@@@std@@QEAAXXZ 0x140806fd0 ; unique
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@H@std@@@std@@SA_KAEBV?$allocator@H@2@@Z 0x1408070f0 ; unique
 // MS2-PIN: ?max_size@?$vector@V?$MS2Ptr@VSkillActionAdditional@@@@V?$allocator@V?$MS2Ptr@VSkillActionAdditional@@@@@std@@@std@@QEBA_KXZ 0x140807100 ; prop
 // MS2-PIN: ??__Fs_strEmpty@?1??FUN_140804500@SkillLevelData@@QEAAAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HH@Z@YAXXZ 0x142c9c1a0 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??$_Emplace_reallocate@AEBH@?$vector@HV?$allocator@H@std@@@std@@QEAAPEAHQEAHAEBH@Z 0x140805510
+// MS2-PIN: ?_Calculate_growth@?$vector@HV?$allocator@H@std@@@std@@AEBA_K_K@Z 0x1408066d0
+// MS2-PIN: ??$Combine@_J@Unk_HashKey@@QEAAXAEB_J@Z 0x140805f50
+// MS2-PIN: ?Finish@Unk_HashKey@@QEAAXXZ 0x1408070d0
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -45,6 +50,7 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include "ms2/ms2recover.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/commonfiles/skillactionskill.h"
+#include "ms2/commonfiles/portaldata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "hook/ms2hook.h"
@@ -82,6 +88,17 @@ const float& FUN_140805fc0(const float&, const float&);                    // st
 class Unk_ActionLog;
 Unk_ActionLog* FUN_140166440();
 void FUN_140177a80(Unk_ActionLog* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned* pArg);
+// A running hash key: Combine is the boost-style hash_combine.
+struct Unk_HashKey
+{
+    unsigned __int64 m_nHash;
+    void Finish() {}
+    template <class T> void Combine(const T& value)
+    {
+        m_nHash ^= value + 0x9e3779b9 + (m_nHash << 6) + (m_nHash >> 2);
+        Finish();
+    }
+};
 template <class T> bool IsSameArray(const ATL::CAtlArray<T>& a, const ATL::CAtlArray<T>& b)
 {
     if (a.GetCount() != b.GetCount())
@@ -205,6 +222,35 @@ void Unk_SkillSensor::FUN_140801540(void* pParent, CString strName)
         FUN_140873ca0(&elem, "targetHasBuffOwner", m_nTargetHasBuffOwner);
     if (elem.HasAttributes())
         FUN_14086e000(pParent, &elem);
+}
+
+// 0x80-byte record constructed at 0x140801790 (no caller in the unit; two float triples and a trailing CString).
+struct Unk_140801790
+{
+    Unk_140801790();                                        // 0x140801790
+    __int64 m_n00;
+    int m_n08, m_n0c, m_n10;
+    short m_s14;
+    int m_n18;
+    Unk_PDVec3 m_v1c, m_v28, m_v34;
+    int m_n40, m_n44;
+    bool m_b48;
+    int m_n4c, m_n50;
+    __int64 m_n58;
+    bool m_b60;
+    int m_n64;
+    CString m_str68;
+    bool m_b70;
+    __int64 m_n78;
+};
+MS2_CHECK_SIZE(Unk_140801790, 0x80);
+
+// @0x140801790
+Unk_140801790::Unk_140801790()
+    : m_n00(0), m_n08(0), m_n0c(0), m_n10(0), m_s14(1), m_n18(0), m_v1c(0, 0, 0), m_v28(0, 0, 0), m_v34(0, 0, 0),
+      m_n40(0), m_n44(0), m_b48(false), m_n4c(0), m_n50(0), m_n58(0), m_b60(false), m_n64(0), m_b70(false),
+      m_n78(0)
+{
 }
 
 // @0x1408018d0
@@ -947,24 +993,23 @@ int SkillLevelData::FUN_140804ae0(void* pParent)
 // @0x140804c90
 __int64 SkillLevelData::FUN_140804c90(unsigned __int64 nMotion)
 {
-    __int64 nKey = 0;
-    if (m_pSkill != 0)
+    if (m_pSkill == 0)
+        return 0;
+    if (nMotion >= m_vMotion.size())
+        return 0;
+    Unk_HashKey key;
+    key.m_nHash = m_pSkill->FUN_1407ea030();
+    SkillMotionData* pMotion = m_vMotion[nMotion];
+    if (pMotion != 0)
     {
-        if (nMotion < m_vMotion.size())
-        {
-            nKey = m_pSkill->FUN_1407ea030();
-            SkillMotionData* pMotion = m_vMotion[nMotion];
-            if (pMotion != 0)
-            {
-                __int64 nMotionKey = pMotion->FUN_140808040();
-                (std::max)(nKey, nMotionKey);
-            }
-        }
-        else
-            nKey = 0;
+        __int64 nMotionKey = pMotion->FUN_140808040();
+        key.Combine(nMotionKey);
     }
-    return nKey;
+    return key.m_nHash;
 }
+
+// @0x140807280
+MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
 // @0x1408073a0
 SkillMotionData::SkillMotionData()
@@ -1054,9 +1099,9 @@ SkillAttackData* SkillMotionData::FUN_140807e20(int nAttack)
 // @0x140807e80
 SkillAttackData* SkillMotionData::FUN_140807e80(const CString& strPoint)
 {
-    for (std::vector<MS2Ptr<SkillAttackData> >::iterator it = m_vAttack.begin(); it != m_vAttack.end(); ++it)
+    for (MS2Ptr<SkillAttackData>& spAttack : m_vAttack)
     {
-        SkillAttackData* pAttack = *it;
+        SkillAttackData* pAttack = spAttack;
         if (FUN_1401c0090(pAttack->m_strPoint, strPoint))
             return pAttack;
     }
@@ -1066,9 +1111,9 @@ SkillAttackData* SkillMotionData::FUN_140807e80(const CString& strPoint)
 // @0x140807f20
 SkillAttackData* SkillMotionData::FUN_140807f20(const CString& strPoint)
 {
-    for (std::vector<MS2Ptr<SkillAttackData> >::iterator it = m_vAttack.begin(); it != m_vAttack.end(); ++it)
+    for (MS2Ptr<SkillAttackData>& spAttack : m_vAttack)
     {
-        SkillAttackData* pAttack = *it;
+        SkillAttackData* pAttack = spAttack;
         if (pAttack->HasPause() && FUN_1401c0090(pAttack->m_strPoint, strPoint))
             return pAttack;
     }
