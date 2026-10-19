@@ -41,6 +41,7 @@ symbol table of the agent's hook build, tools/unit-check.sh). `--report` gives r
 import argparse
 import bisect
 import contextlib
+import hashlib
 import io
 import json
 import os
@@ -874,6 +875,53 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
                 break
             for n in drop:
                 del folds[n]
+    # 2b'. own-copy pass: a function whose only candidates were rejected because the committed table binds its name (or a
+    # callee's) to ANOTHER unit's byte-identical copy (bytematch.same_code) is paired with its own copy: a merge that
+    # re-binds a shared MS2Ptr/CAtlArray/STL COMDAT name to another unit's copy must not turn the unit's gated function
+    # into a stub. Only names nothing above paired (no fold), unique candidate and unique claimant, so look-alike groups
+    # decided by the table's hints (and auto-order) are unchanged. MS2_NO_OWN_COPY=1: off.
+    if not os.environ.get("MS2_NO_OWN_COPY"):
+        bm.LENIENT_TRIAL = bm.OWN_COPY_TRIAL = True
+        try:
+            # callers first: a paired function's call target names the copy (to a fixpoint)
+            if any(n not in known and n not in folds for n in hits0):
+                expanded3 = set()
+                while True:
+                    todo = [(n, v) for n, v in sorted(known.items(), key=lambda kv: kv[1]) if n not in expanded3]
+                    if not todo:
+                        break
+                    taken = set(known.values()) | set(folds.values())
+                    for name, va in todo:
+                        expanded3.add(name)
+                        for n2, v2 in refs(name, va).items():
+                            if n2 in hits0 and n2 not in known and n2 not in folds and v2 not in taken \
+                                    and v2 in hits0[n2] and trial(n2, v2):
+                                known[n2] = v2
+                                how[n2] = "auto-owncopy"
+                                used.add(v2)
+                                taken.add(v2)
+            while True:
+                taken = set(known.values()) | set(folds.values())
+                og = {}
+                for name in sorted(hits0):
+                    if name in known or name in folds:
+                        continue
+                    g = [va for va in hits0[name] if va not in taken and order_ok(name, va) and trial(name, va)]
+                    if g:
+                        og[name] = g
+                ocl = {}
+                for name, g in og.items():
+                    for va in g:
+                        ocl.setdefault(va, []).append(name)
+                acc = [(n, g[0]) for n, g in og.items() if len(g) == 1 and ocl[g[0]] == [n]]
+                if not acc:
+                    break
+                for name, va in acc:
+                    known[name] = va
+                    how[name] = "auto-owncopy"
+                    used.add(va)
+        finally:
+            bm.LENIENT_TRIAL = bm.OWN_COPY_TRIAL = False
     # 2c. look-alike GUESS (opt-in: `// MS2-GUESS-LOOKALIKES` in the unit, or MS2_GUESS_LOOKALIKES=1): byte-identical
     # groups that nothing above could pair (no reloc evidence, M != N, or callee symbols the global table disagrees
     # about). The bytes AND unwind data are identical and every relocation target is consistent (a pair known from
@@ -1016,6 +1064,35 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
     return res
 
 
+LOOKALIKE_HOW = ("auto-order", "auto-leaf", "auto-guess")
+
+
+def unit_score(u, res, starts):
+    """(stubs, -exact, -vftables ok) of a process_unit result over the unit's ranges: lower is better."""
+    byva = {}
+    for p in res["pairs"].values():
+        byva[p["va"]] = byva.get(p["va"], False) or p["ok"]
+    stubs = exact = 0
+    for lo, hi in u.ranges:
+        i = bisect.bisect_left(starts, lo)
+        while i < len(starts) and starts[i] < hi:
+            if starts[i] not in byva:
+                stubs += 1
+            elif byva[starts[i]]:
+                exact += 1
+            i += 1
+    return (stubs, -exact, -sum(1 for v in res["vft"].values() if v["ok"]))
+
+
+def needs_gate_pass(u, res, starts):
+    """Could the committed table's hints change this unit's pairing? (stubs, failed pairs, look-alike choices)"""
+    if unit_score(u, res, starts)[0]:
+        return True
+    if any(p["how"] in LOOKALIKE_HOW for p in res["pairs"].values()):
+        return True
+    return any(n.startswith("ambiguous") for n in res["notes"])
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("filters", nargs="*", help="only units whose path/name contains one of these")
@@ -1111,10 +1188,54 @@ def main():
             for n, p in res["vft"].items():
                 if not p["ok"]:
                     print(p["report"])
+    # gate-faithful pass (merge mode): the pass above pairs every unit with only symbols-manual.tsv as the symbol table,
+    # but the unit's own gate (report mode) paired it against the committed progress/symbols.tsv, whose rows for other
+    # units' byte-identical COMDAT copies (MS2Ptr<T>/Delegate/ReleaseImpl/STL glue ...) rule those look-alike
+    # candidates out. Without them several look-alikes compete for the unit's copy -> "ambiguous" -> stub (merge 17:
+    # 47 gated functions in 20 units). Units with stubs, failed pairs or look-alike pairing are matched again exactly
+    # like their gate (table = committed symbols.tsv) and that result is kept unless it is worse (more stubs, fewer
+    # exact, fewer vftables). The output table is still rebuilt from the harvests only. MS2_NO_GATE_PASS=1: old behaviour.
+    if merge_mode and os.path.exists(bm.SYMBOLS_TSV) and not os.environ.get("MS2_NO_GATE_PASS"):
+        stamp = hashlib.sha1(open(bm.SYMBOLS_TSV, "rb").read()).hexdigest()
+        gate_todo = []
+        for u in units:
+            c = cache.get(u.rel)
+            if not c or not c.get("res"):
+                continue
+            if c.get("key2") == [c["key"], stamp]:
+                continue
+            c.pop("res2", None)
+            c.pop("key2", None)
+            if needs_gate_pass(u, c["res"], starts):
+                gate_todo.append(u)
+            else:
+                c["key2"] = [c["key"], stamp]
+        if gate_todo:
+            print(f"gate pass: re-matching {len(gate_todo)} unit(s) against the committed symbols.tsv ...", flush=True)
+            bm.load_symbols(bm.SYMBOLS_TSV)
+            kept = 0
+            for u in gate_todo:
+                c = cache[u.rel]
+                bm.HARVEST.clear()
+                nconf0 = len(bm.CONFLICTS)
+                res2 = process_unit(u, exe, starts, finfo, bases, vft, False)
+                res2["conflicts"] = [list(x) for x in bm.CONFLICTS[nconf0:]]
+                del bm.CONFLICTS[nconf0:]
+                s1, s2 = unit_score(u, c["res"], starts), unit_score(u, res2, starts)
+                if s2 <= s1:
+                    c["res2"] = res2
+                    kept += 1
+                    if s2 < s1:
+                        print(f"gate pass: {u.rel}: stubs {s1[0]} -> {s2[0]}, exact {-s1[1]} -> {-s2[1]}")
+                c["key2"] = [c["key"], stamp]
+            bm.load_symbols(manual_tsv)
+            print(f"gate pass: {kept} of {len(gate_todo)} unit(s) keep their gate pairing", flush=True)
     # drop cache entries of units that no longer exist
     live = {u.rel for u in all_units}
     cache = {k: v for k, v in cache.items() if k in live}
     json.dump(cache, open(cache_path, "w"))
+    if merge_mode and not os.environ.get("MS2_NO_GATE_PASS"):
+        cache = {k: (dict(v, res=v["res2"]) if v.get("res2") else v) for k, v in cache.items()}
 
     # symbols: union of all units' harvests. One mangled name has one exe address: when units disagree, the mapping of
     # the units that fully match wins (then the most units), and every unit that harvested another address is
@@ -1147,10 +1268,23 @@ def main():
                 bm.CONFLICTS.append((f"{n} [inside {rel}: 0x{x:x} and 0x{y:x}]", x, y))
             else:
                 STALE.append((n, x, y, [rel]))
+    # a unit that is not done yet (WIP commit, often before tools/tplpin.py --apply) harvests nothing for the names it
+    # paired only by look-alike order (auto-order/auto-leaf: no caller evidence): such rows are arbitrary and later
+    # fail the unit's own report-mode --check with rotated conflicts (w465)
+    queue_done = set()
+    try:
+        _qd = {l.split("\t")[0] for l in open(os.path.join(ROOT, "progress", "queue.tsv"))
+               if l.strip() and not l.startswith("#") and l.split("\t")[4] in ("done", "done-functional")}
+        queue_done = {u.rel for u in all_units if u.name in _qd}
+    except (OSError, IndexError):
+        pass
     for rel, c in sorted(cache.items()):
         if c.get("res") and not (merge_mode and rel in stale_units):
+            weak = set() if rel in queue_done or not merge_mode else \
+                {n for n, p in c["res"]["pairs"].items() if p["how"] in ("auto-order", "auto-leaf")}
             for n, va in c["res"]["harvest"].items():
-                seen.setdefault(n, {}).setdefault(va, []).append(rel)
+                if n not in weak:
+                    seen.setdefault(n, {}).setdefault(va, []).append(rel)
     bm.HARVEST.clear()
     inconsistent = {}               # unit rel -> [description]
     for n, by_va in seen.items():

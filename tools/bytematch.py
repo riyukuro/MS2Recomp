@@ -593,6 +593,8 @@ MULTICOPY = []     # (name, table va, exe va): one name, several byte-identical 
 LENIENT_TRIAL = False    # tools/progress.py late pass: strict pairing trials accept same-code copies of a known callee
 STRICT_SYMBOLS = False  # tools/progress.py pairing trials: only the unit's own pairs override the table (the table's
                         # other copy stays a hint against look-alike candidates)
+OWN_COPY_TRIAL = False  # tools/progress.py own-copy pass: a strict trial accepts a same-code copy of a table binding
+                        # (the table names another unit's byte-identical COMDAT copy; only for otherwise unpaired names)
 CUR_EXE = None     # the Exe of the current match_one call (note_symbol needs it for same_code)
 _SAME_MEMO = {}
 _MD2 = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
@@ -781,7 +783,7 @@ def note_symbol(name, va, rep):
     if not harvestable(name, va):
         return
     want = SYMBOLS.get(name)
-    if want is not None and want != va and (not STRICT_SYMBOLS or LOCAL_KNOWN.get(name) == va) \
+    if want is not None and want != va and (not STRICT_SYMBOLS or OWN_COPY_TRIAL or LOCAL_KNOWN.get(name) == va) \
             and same_code(CUR_EXE, want, va):
         # one name, several byte-identical exe copies (template COMDATs per TU, or stand-in types that fold several
         # real instantiations into one mangled name): the unit's own binding wins for its own references
