@@ -1398,6 +1398,50 @@ float StateSkill::FUN_1417f0ec0()
 }
 MS2_REPLACE_METHOD(0x1417f0ec0, StateSkill, FUN_1417f0ec0, 70, 0x113F1B89);
 
+// Releases the charging cast once its cooldown allows: a plain charge is cast from the current position, a charge of
+// a continuing skill resumes the loop of the running sequence after the charge time and starts its cooldown.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417f11d0
+void StateSkill::FUN_1417f11d0()
+{
+    MyPC* pMyPC = FUN_1417b84b0();
+    if (pMyPC == NULL || m_spCharge == NULL)
+        return;
+    if (!pMyPC->FUN_141523bc0()->FUN_141768bd0(m_spCharge))
+    {
+        if (!FUN_14028d470(pMyPC->FUN_141523bc0()->FUN_141765fe0(m_spCharge->GetSkillId(), 0), 0.0f))
+            return;
+    }
+    m_spCharge->m_n9c = 0;
+    if (m_spCharge->m_n98 == 0)
+    {
+        NiPoint3 kPos = pMyPC->vfunc_18();
+        m_spCharge->m_ptPos = SS_SP(kPos);
+        m_spCharge->m_bAD = m_spCharge->m_spLevel->FUN_140804450();
+        pMyPC->vfunc_102(m_spCharge);
+    }
+    else
+    {
+        m_spCharge->FUN_14175a430();
+        FUN_1417f1a90();
+        FUN_1417f16f0(m_spCharge);
+        pMyPC->FUN_141523bc0()->FUN_141767990(m_spCharge->GetSkillId(), m_spCharge->GetLevel());
+        pMyPC->FUN_141523bc0()->FUN_141768900(m_spRecord);
+        NiActorManager* pManager = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460());
+        if (pManager != NULL)
+        {
+            pManager->SetTargetAnimation(m_nLoopSequenceId, m_fSpeed, true);
+            pManager->Update((float)CMainSystem::GetInstance()->FUN_141473280());
+            m_pSequence->SetOffset(FUN_140a53fa0(m_pSequence)
+                + (m_fLoopStart + FUN_14028d280(m_nChargeTick)) * (1.0f / FUN_140a53f80(m_pSequence)));
+            FUN_141663be0(pMyPC, m_pSequence->GetName(), m_fSpeed, NiFixedString("loopstart"));
+        }
+        m_nStartTick = GetTickCountMs2();
+    }
+    m_spCharge = 0;
+}
+MS2_REPLACE_METHOD(0x1417f11d0, StateSkill, FUN_1417f11d0, 1299, 0xEA9B4824);
+
 // Starts the cooldown of a continuing skill for the rest of its loop ("loopstart".."loopend" of the sequence at the
 // cast's speed, less the charge time), unless the loop was entered by the input of a chain.
 // MS2-FUNCTIONAL: written from the call sequence.
