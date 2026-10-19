@@ -5,6 +5,7 @@
 // Header name assumed from the unit path; member names are invented from use.
 #pragma once
 #include <afx.h>
+#include <vector>
 #include <atlcoll.h>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
@@ -13,8 +14,8 @@
 
 class GameObject;
 
-// The weighted index pool at CGroundEffectData+0x58 (0x18 bytes, a vector of ints). Its members are defined in the
-// ?\weddingmanager.cpp range (0x141b90b70..0x141b90c70), which is not recovered yet; names invented.
+// The weighted index pool at CGroundEffectData+0x58 (0x18 bytes, a vector of ints). Its members are defined in
+// weddingmanager.cpp (the exe places them at 0x141b90b70..0x141b90c70, after that unit's template glue); names invented.
 class Unk_IndexPool
 {
 public:
@@ -25,7 +26,7 @@ public:
     int Pick();                                 // 0x141b90c70 random entry
 
 private:
-    char m_pad[0x18];
+    std::vector<int> m_indices;                 // each index repeated by its weight
 };
 MS2_CHECK_SIZE(Unk_IndexPool, 0x18);
 

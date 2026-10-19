@@ -8,7 +8,7 @@
 
 CStringW FUN_14028dfa0(const CStringW&, const fmt::ArgList&);
 namespace fmt { namespace internal {
-struct Unk_WcFormatter { typedef wchar_t Char; };
+struct Unk_WcFormatter : BasicFormatter<wchar_t> { typedef wchar_t Char; };   // stands for the formatter object in custom-argument callbacks (format_arg<wchar_t, E>)
 template <typename T> inline ULongLong wc_make_type(const T& arg) { return MakeValue<Unk_WcFormatter>::type(arg); }
 struct Unk_WcArgType {
     ULongLong type;
