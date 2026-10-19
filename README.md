@@ -25,13 +25,13 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 188,681 | 123,465 (65.4%) | 9,979 (5.3%) | 70.7% |
-| Runtime & middleware | 20,538 | 339 (1.7%) | 19 (0.1%) | 1.7% |
-| Gamebryo engine | 16,032 | 9,697 (60.5%) | 154 (1.0%) | 61.4% |
-| Game framework · egf | 9,929 | 7,029 (70.8%) | 138 (1.4%) | 72.2% |
-| Libraries | 8,213 | 259 (3.2%) | 3 (0.0%) | 3.2% |
-| Foundation | 10,109 | 7,697 (76.1%) | 681 (6.7%) | 82.9% |
-| **Total** | **253,502** | 148,486 (58.6%) | 10,974 (4.3%) | 62.9% |
+| Game · ms2 | 188,400 | 129,478 (68.7%) | 11,144 (5.9%) | 74.6% |
+| Runtime & middleware | 20,576 | 363 (1.8%) | 26 (0.1%) | 1.9% |
+| Gamebryo engine | 16,044 | 9,760 (60.8%) | 93 (0.6%) | 61.4% |
+| Game framework · egf | 9,960 | 7,062 (70.9%) | 137 (1.4%) | 72.3% |
+| Libraries | 8,213 | 258 (3.1%) | 4 (0.0%) | 3.2% |
+| Foundation | 10,309 | 8,018 (77.8%) | 681 (6.6%) | 84.4% |
+| **Total** | **253,502** | 154,939 (61.1%) | 12,085 (4.8%) | 65.9% |
 <!-- progress:end -->
 
 ## Layout
