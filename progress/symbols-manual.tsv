@@ -3278,3 +3278,7 @@ __imp_AddSurveyParameterA	142cd1480	data
 ??0Unk_GoConnect@@QEAA@XZ	1412604b0	func
 ?DAT_143ae0900@@3DA	143ae0900	data
 ??0CMidiMessage@@QEAA@XZ	140d123b0	func
+?ms_RTTI@MS2OuterGlowMaterialSwapProcessor@@2VNiRTTI@@B	143ae0ad8	data
+??0Unk_AeSceneIter@@QEAA@PEAVNiAVObject@@@Z	14098cb80	func
+??1Unk_AeSceneIter@@QEAA@XZ	14098cf00	func
+?FUN_14098e0d0@Unk_AeSceneIter@@QEAAPEAVNiAVObject@@_N@Z	14098e0d0	func

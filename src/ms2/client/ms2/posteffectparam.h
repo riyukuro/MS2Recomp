@@ -76,6 +76,8 @@ public:
     virtual bool vfunc_6(bool b);                   // 6 0x140dbdab0 if (!b) vfunc_7(m_nState, m_fAlpha); true
     virtual void vfunc_7(int nState, float fAlpha) = 0;  // 7 pure (apply)
 
+    // @0x1409a8c30 (compiled into ?\applyeffect.cpp)
+    int FUN_1409a8c30() const { return m_nType; }
     void SetState(int nState, float fAlpha);        // 0x140dbdb00
 
 public:

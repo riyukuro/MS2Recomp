@@ -4,6 +4,7 @@
 // Owning unit: ?\softparticlesmanager.cpp (0x141773630-0x141774240).
 #pragma once
 #include "ms2/placeholder/nirefobject.h"
+#include <efd/SmartPointer.h>
 #include <NiViewRenderClick.h>
 #include <Ni3DRenderView.h>
 #include <NiMaterial.h>
@@ -13,11 +14,12 @@ class SoftParticlesManager : public NiRefObject
 public:
     SoftParticlesManager();                                     // 0x1409a7940 (?\applyeffect.cpp)
     virtual ~SoftParticlesManager();                            // 0x1417738e0
+    void FUN_141773940(bool bEnabled);                          // enable / disable the soft particle view
 
     MS2_LAYOUT_FRIEND;
-    NiViewRenderClickPtr m_spClick;     // +0x10 the "SoftParticleClick" render click
-    Ni3DRenderViewPtr m_spView;         // +0x18 the mirrored 3D view
-    NiMaterialPtr m_spMaterial;         // +0x20 the material created for the view
+    efd::SmartPointer<NiViewRenderClick> m_spClick;     // +0x10 the "SoftParticleClick" render click
+    efd::SmartPointer<Ni3DRenderView> m_spView;         // +0x18 the mirrored 3D view
+    efd::SmartPointer<NiMaterial> m_spMaterial;         // +0x20 the material created for the view
 };
 MS2_CHECK_SIZE(SoftParticlesManager, 0x28);
 MS2_CHECK_OFFSET(SoftParticlesManager, m_spClick, 0x10);

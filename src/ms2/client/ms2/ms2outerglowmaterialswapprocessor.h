@@ -10,6 +10,9 @@
 class MS2OuterGlowMaterialSwapProcessor : public MS2RenderListProcessor
 {
 public:
+    static const NiRTTI ms_RTTI;                                                        // 0x143ae0ad8
+    virtual const NiRTTI* GetRTTI() const;                                              // 0x1409a8c70
+    MS2OuterGlowMaterialSwapProcessor(NiMaterialPtr spMaterial);                        // 0x1409a78e0 (?\applyeffect.cpp)
     virtual void PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData);   // 0x1414d2460
 
     NiMaterialPtr m_spGlowMaterial;                         // +0xe8 the material the glowing objects are drawn with
