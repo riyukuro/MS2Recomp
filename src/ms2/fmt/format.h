@@ -176,6 +176,18 @@ public:
     }
     MakeValue(const std::basic_string<wchar_t>& value) { set_string(value); }
 
+    // MS2: std::string arguments (commonfiles\imagehttpclient.cpp, wide formatter): MakeValue 0x140517490 builds a
+    // BasicStringRef<char> (0x1402d8580) and calls set_string 0x14051a110 (value, size; no Convert). make_type returns
+    // STRING (10) / WSTRING (11) through the one-line functions 0x14051a150 / 0x14051a160.
+    // @0x14051a110
+    void set_string(BasicStringRef<char> str) { string.value = str.c_str(); string.size = str.size(); }
+    // @0x140517490
+    MakeValue(const std::string& value) { set_string(value); }
+    // @0x14051a150
+    static ULongLong type(const std::string&) { return Arg::STRING; }
+    // @0x14051a160
+    static ULongLong type(const std::basic_string<wchar_t>&) { return Arg::WSTRING; }
+
     FMT_MAKE_VALUE(void*, pointer, POINTER)
     FMT_MAKE_VALUE(const void*, pointer, POINTER)
 

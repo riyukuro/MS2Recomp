@@ -32,6 +32,7 @@ public:
     ~TPtrValue() { Release(); }
     TPtrValue& operator=(const TPtrValue& o) { o.AddRef(); Release(); m_p = o.m_p; return *this; }
     TPtrValue& operator=(const Unk_GrNewTag&) { Make(); return *this; }
+    TPtrValue& operator=(int) { Release(); return *this; }   // `m_ptr = 0` (0x140517ee0 for CWinHttpClient, imagehttpclient.cpp)
     T* operator->() const { return m_p; }
     T& operator*() const { return *m_p; }       // 0x140689c10 for T = CAtlArray<double> (maidgradejockpottable.cpp)
     T* get() const { return m_p; }      // `if (spList)` (0x140d37f30 for the item loader's lists)
