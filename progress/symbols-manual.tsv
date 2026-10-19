@@ -3564,3 +3564,6 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 __imp_NxGetUtilLib	142cced28	data
 ?IntersectsBox@CFrustumCollision@@QEBAHPEBX@Z	141223e70	func
 ??0?$MS2Ptr@VCSkillRecord@@@@QEAA@H@Z	141532140	func
+?s_bInit@CItemDefaultData@@2_NA	143aaf9ac	data
+?ms_mapJobItems@CItemDefaultData@@2V?$CAtlMap@HV?$MS2Ptr@UTDefaultItems@CItemDefaultData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@UTDefaultItems@CItemDefaultData@@@@@3@@ATL@@A	143aaf9f0	data
+?RollCount@CBlackMarketProduct@@QEAAIXZ	1401be3f0	func
