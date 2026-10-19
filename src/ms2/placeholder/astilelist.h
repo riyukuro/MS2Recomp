@@ -15,5 +15,6 @@ public:
     void FUN_1422dcca0(int nIndex);                                     // ASCoreList: select an entry (-1: none)
     int FUN_1422dccd0();                                                // ASCoreList: the selected entry
     void FUN_1422dd1d0();                                               // ASCoreList: clear
+    void FUN_1422dd230(const class ASObj& item);                        // ASCoreList: append an entry (uitriggereditordialog.cpp)
 };
 MS2_CHECK_SIZE(ASTileList, 0x88);

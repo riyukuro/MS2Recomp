@@ -26,6 +26,7 @@ public:
         CStringW m_strCategory;                                         // +0x00 "SystemError", ...
         CStringW m_strText;                                             // +0x08
         int m_nKind;                                                    // +0x10
+        CStringW FUN_1408f4c40();                                       // 0x1408f4c40 the report line (userproxy.cpp's Unk_UserProxyTriggerText, same shape)
     };
 
     UITriggerEditorDialog();                                            // 0x141b29f20
@@ -39,6 +40,7 @@ public:
     virtual int vfunc_48() { return 0x4e6b; }                           // 48 (COMDAT 0x141b32480)
     virtual void vfunc_67();                                            // 67 0x141b2a0f0 close: tell the server (0x2e/7)
 
+    MS2Ptr<ASButton> FUN_140bc6d10(const CString& strName, MS2Ptr<ASButton>& out);   // 0x140bc6d10 bind a button child
     bool FUN_141b2b140(int nResult, const CMsgBoxData& data);          // 0x141b2b140 close answer
     bool FUN_141b2b180(int nResult, const CMsgBoxData& data);          // 0x141b2b180 reset answer
     bool FUN_141b2b200(int nResult, const CMsgBoxData& data);          // 0x141b2b200 apply answer
@@ -59,6 +61,7 @@ public:
     void FUN_141b2d570();                                               // 0x141b2d570 verify, then send
     void FUN_141b2d870();                                               // 0x141b2d870 the install list
     void FUN_141b2dd80();                                               // 0x141b2dd80 the states of the script
+    POINT FUN_141b2f430(int nX, int nY);                                // 0x141b2f430 keep a state inside the canvas
     void FUN_141b2f140(const std::vector<Message>& messages);          // 0x141b2f140 the report
     void FUN_141b2f510();                                               // 0x141b2f510 new script
 

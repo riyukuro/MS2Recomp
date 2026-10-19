@@ -62,6 +62,8 @@ public:
     void FUN_141253870(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, gameoptioninputdefault.cpp)
     CStringW FUN_1422bb2b0(const char* szName);                          // a member as text (uiitemcreatedialog.cpp)
     void FUN_1422bae10(const char* szName, int& n);                      // read an int member (uiitemcreatedialog.cpp)
+    void FUN_141b2ffc0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uitriggereditordialog.cpp)
+    void FUN_141a07250(const char* szName, int n);                       // set an int member (uimessagebox's range; the trigger state positions)
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
 

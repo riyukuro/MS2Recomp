@@ -91,6 +91,7 @@ public:
     int CheckObjects(std::vector<CStringW>& rErrors);                  // 0x14119ab70
     CStringW GetErrorText(int nError);                                  // 0x14119ae90
     StatePtr GetState(const CStringW& strName);                         // 0x14119afc0 (creates it when missing)
+    ATL::CAtlArray<StatePtr>& GetStates() { return m_states; }         // inline (0x141b32460, uitriggereditordialog.cpp)
 
     TextMap m_mapText;                                                  // +0x18 key -> display text ("#n#" placeholders)
     TextMap m_mapTooltip;                                               // +0x48 key -> tooltip text

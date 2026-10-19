@@ -34,6 +34,7 @@ public:
     const char* c_str() const { return rep_->str; }
     // @0x1406aeab0
     size_type length() const { return rep_->size; }
+    TiXmlString& operator=(const char* copy);              // 0x1408725b0 (inline in TinyXML; the COMDAT is outside the users' ranges)
 
 private:
     // @0x1406aea80
@@ -126,6 +127,8 @@ public:
 
     // @0x1406a9770
     const char* CStr() { return buffer.c_str(); }
+    // 0x141b324c0 (uitriggereditordialog.cpp): no indentation, no line breaks
+    void SetStreamPrinting() { indent = ""; lineBreak = ""; }
 
 private:
     int depth;                                              // +0x08
