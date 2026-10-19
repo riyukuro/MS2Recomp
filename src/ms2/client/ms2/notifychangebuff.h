@@ -183,7 +183,15 @@ class NotifyBlindTarget : public NotifyObject { public: virtual CStringW vfunc_1
 
 class NotifyChatEmoticonSelected : public NotifyObject { public: virtual CStringW vfunc_1(); static ClassObject* CreateObject(); };   // 0x140db5520 / 0x140db5510
 
-class NotifyChangeGameOptionInput : public NotifyObject { public: virtual CStringW vfunc_1(); static ClassObject* CreateObject(); };   // 0x140db5580 / 0x140db5570
+// The ctor (0x141253de0) is inline: ?\gameoptioninputdefault.cpp builds it (and so emits its vftable 0x142ec88f0).
+class NotifyChangeGameOptionInput : public NotifyObject
+{
+public:
+    NotifyChangeGameOptionInput(int nOption) : m_nOption(nOption) {}
+    virtual CStringW vfunc_1();                                     // 0x140db5580
+    static ClassObject* CreateObject();                             // 0x140db5570
+    int m_nOption;                                                  // +0x18 the option tab id (9..13)
+};
 
 class NotifyChangeUIBuildingCount : public NotifyObject { public: virtual CStringW vfunc_1(); static ClassObject* CreateObject(); };   // 0x140db55e0 / 0x140db55d0
 
