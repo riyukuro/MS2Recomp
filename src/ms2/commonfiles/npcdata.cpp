@@ -957,7 +957,7 @@ bool FUN_14025cd60(const CStringW&, const CStringW&);
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);
 void* FUN_140166410();
 bool FUN_14036d4b0(void*, const CStringW&);
-CString FUN_14036d8e0(void*);
+struct Unk_NdFeature { CString FUN_14036d8e0(); };
 bool FUN_1401647e0(const CString&, const CString&);
 float FUN_14028d2e0();
 CStringW FUN_140298ea0(CStringW strKey);
@@ -968,7 +968,8 @@ class Unk_NpcWeightMgr { public: int FUN_1406762d0(int nMain, int nSub, int nRar
 Unk_NpcWeightMgr* FUN_1401c0db0();
 
 class Unk_NpcTableCli { public: MS2Ptr<CNpcData> FUN_140a7cab0(int nNpcId); };
-static Unk_NpcTableCli* s_pNpcTable;
+class Unk_SingletonObj;
+extern Unk_SingletonObj* DAT_143ab06f0;                         // the exe's NpcDataTableCli singleton (0x1406d6e90 returns it)
 
 // How often a query's main / sub tags hit one region spawn row.
 struct Unk_RegionTagHit
@@ -1039,7 +1040,7 @@ MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId)
 // @0x1406d6e90
 Unk_NpcTableCli* FUN_1406d6e90()
 {
-    return s_pNpcTable;
+    return reinterpret_cast<Unk_NpcTableCli*>(DAT_143ab06f0);
 }
 MS2_REPLACE(0x1406D6E90, FUN_1406d6e90, 8, 0x5738B5AB);
 
@@ -1239,7 +1240,7 @@ void CNpcDataTable::LoadRegionSpawn()
         CString strLocale;
         FUN_140873420(pNode, "feature", strFeature);
         FUN_1408733e0(pNode, "locale", strLocale);
-        bool bSkip = !strLocale.IsEmpty() && FUN_1401647e0(strLocale, FUN_14036d8e0(FUN_140166410()));
+        bool bSkip = !strLocale.IsEmpty() && FUN_1401647e0(strLocale, reinterpret_cast<Unk_NdFeature*>(FUN_140166410())->FUN_14036d8e0());
         if (bSkip)
             continue;
         if (!FUN_14036d4b0(FUN_140166410(), strFeature))
