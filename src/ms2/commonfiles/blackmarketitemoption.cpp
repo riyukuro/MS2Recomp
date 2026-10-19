@@ -124,7 +124,7 @@ void FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
 int FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int FUN_1408736d0(Unk_140165cf0*, const char*, bool&);
 int FUN_140873710(Unk_140165cf0*, const char*, int*);
-int FUN_140873a50(Unk_140165cf0*, const char*, int*);
+int FUN_140873a50(Unk_140165cf0*, const char*, float*);
 const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
 CString FUN_14015f710(Unk_140165cf0*, const char*, CString strDefault);   // string attribute with default
 bool FUN_14028f710(Unk_140165cf0*);                                 // the element is usable
@@ -1101,7 +1101,7 @@ void CBlackMarketTable::Load()
                             CStringA strName(FUN_14086f4b0(pStat, "name"));
                             CStringW strText;
                             FUN_140873710(pStat, "percent", &stat->m_nPercent);
-                            FUN_140873a50(pStat, "default", &stat->m_nDefault);
+                            FUN_140873a50(pStat, "default", &stat->m_fDefault);
                             int nStat = FUN_14082ee80(strName);
                             if (nStat == -1)
                             {
@@ -1229,7 +1229,7 @@ void CBlackMarketTable::ReadTabs(Unk_140165cf0* pElem, TabList* pOut, TabMap* pB
 // @0x1401c5540
 // MS2-FUNCTIONAL: frame size and EH state setup differ
 CBlackMarketTable::StatInfo::StatInfo()
-    : m_nId(-1), m_strName(L""), m_nPercent(0), m_nDefault(0)
+    : m_nId(-1), m_strName(L""), m_nPercent(0), m_fDefault(0)
 {
 }
 

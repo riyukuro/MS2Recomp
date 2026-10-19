@@ -49,6 +49,7 @@ public:
     virtual int vfunc_8(void* p);                   // 8 0x1422c8db0 return 0
     virtual void vfunc_9();                         // 9 0x1422c8dd0 {}
     CString FUN_1422c89f0();                        // 0x1422c89f0 a copy of m_strName
+    Scaleform::GFx::Value& FUN_1422c8d40();         // 0x1422c8d40 &m_value18 (the slot's AS data)
 
 public:
     MS2_LAYOUT_FRIEND;

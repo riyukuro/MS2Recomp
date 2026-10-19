@@ -50,6 +50,7 @@ public:
     T* operator->() const;
     T& operator*() const;
     bool operator==(T* p) const;
+    bool operator!() const;                                 // 0x140f17990 for T = CBlackMarketTable::StatInfo (uiblackmarketpage.cpp)
 
 private:
     void AddRef() const;
@@ -92,6 +93,7 @@ template <class T> T* Unk_BmPtr<T>::get() const { return m_p; }
 template <class T> T* Unk_BmPtr<T>::operator->() const { return m_p; }
 template <class T> T& Unk_BmPtr<T>::operator*() const { return *m_p; }
 template <class T> bool Unk_BmPtr<T>::operator==(T* p) const { return m_p == p; }
+template <class T> bool Unk_BmPtr<T>::operator!() const { return m_p == 0; }
 template <class T> void Unk_BmPtr<T>::AddRef() const { if (m_p) AddRefImpl(0); }
 template <class T> void Unk_BmPtr<T>::Make() { Release(); m_p = Create(0); }
 template <class T> void Unk_BmPtr<T>::Release() { if (m_p) { ReleaseImpl(0); m_p = 0; } }
@@ -337,7 +339,7 @@ public:
         CStringW m_strName;             // +0x20
         int m_nKind;                    // +0x28 1 when the name is a string id, 0 for a stat-name
         int m_nPercent;                 // +0x2c "percent"
-        int m_nDefault;                 // +0x30 "default"
+        float m_fDefault;               // +0x30 "default" (a float attribute: the ctor stores 0.0f, read by the float query 0x140873a50)
     };
     MS2_CHECK_SIZE(StatInfo, 0x38);
 

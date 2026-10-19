@@ -83,7 +83,6 @@ void FUN_140d2cfc0(MS2Ptr<CItem> spItem);
 void FUN_140d2cf00(unsigned __int64 nUid, MS2Ptr<CItem> spItem);
 void FUN_1413490b0(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool b, unsigned n1, unsigned n2);
 void FUN_141349ae0(MS2Ptr<CItem> spItem, int n, const CString& str);
-int FUN_1401be330(CItem* p, char c);
 int FUN_1405276c0(CItem* p);
 int FUN_140526bd0(CItem* p);
 bool FUN_140a467d0(const MS2Ptr<AScript>* p);
@@ -314,11 +313,10 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
     else if (strMethod.CompareNoCase("getEquipmentItemTooltip") == 0)
     {
         unsigned __int64 nUid = FUN_140718350(pArgs->FUN_1422b8d30());
-        MS2Ptr<Unk_BlackMarketEntry> spEntry;
-        m_pCurPage->vfunc_6(&spEntry, nUid);
+        MS2Ptr<Unk_BlackMarketEntry> spEntry = m_pCurPage->vfunc_6(nUid);
         if (spEntry.get())
         {
-            MS2Ptr<CItem> spItem = spEntry->m_spItem;
+            MS2Ptr<CItem> spItem = spEntry->m_item;
             bool bRegister = FUN_1418d0da0(m_spItemRegister.get());
             FUN_1413490b0(spItem, pRetVal, bRegister, 0x400, 0);
             ASTooltip tip(*pRetVal, 2);
@@ -345,10 +343,9 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
             else if (FUN_140184310(strArg, "MarketSN"))
             {
                 unsigned __int64 nUid = FUN_140718350(pArgs->FUN_1422b8d30());
-                MS2Ptr<Unk_BlackMarketEntry> spEntry;
-                m_pCurPage->vfunc_6(&spEntry, nUid);
+                MS2Ptr<Unk_BlackMarketEntry> spEntry = m_pCurPage->vfunc_6(nUid);
                 if (spEntry.get())
-                    FUN_140d40120(FUN_1409bb9e0(), spEntry->m_spItem, 0);
+                    FUN_140d40120(FUN_1409bb9e0(), spEntry->m_item, 0);
             }
         }
     }
@@ -365,10 +362,9 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
         else if (FUN_140184310(strArg, "MarketSN"))
         {
             unsigned __int64 nUid = FUN_140718350(pArgs->FUN_1422b8d30());
-            MS2Ptr<Unk_BlackMarketEntry> spEntry;
-            m_pCurPage->vfunc_6(&spEntry, nUid);
+            MS2Ptr<Unk_BlackMarketEntry> spEntry = m_pCurPage->vfunc_6(nUid);
             if (spEntry.get())
-                FUN_140d2cf00(nUid, spEntry->m_spItem);
+                FUN_140d2cf00(nUid, spEntry->m_item);
         }
     }
 }
@@ -414,7 +410,7 @@ bool UIBlackMarketDialog::FUN_1418d0da0(BlackMarketPage* pPage)
 void UIBlackMarketDialog::FUN_1418d0de0(void* p)
 {
     if (!(m_spItemRegister == 0))
-        m_spItemRegister->FUN_140f132c0(p);
+        m_spItemRegister->FUN_140f132c0(*static_cast<CBlackMarketMan::ProductMap*>(p));
 }
 
 // @0x1418d0e40
@@ -438,7 +434,7 @@ void UIBlackMarketDialog::FUN_1418d0f00(MS2Ptr<Unk_BlackMarketEntry> spEntry, in
 void UIBlackMarketDialog::FUN_1418d0fc0(void* p2, void* p3)
 {
     if (vfunc_55() == 0 && !FUN_140a467d0(&m_30) && !(m_spItemRegister == 0) && m_pCurPage == m_spItemRegister.get())
-        m_spItemRegister->FUN_140f13420(p2, p3);
+        m_spItemRegister->FUN_140f13420(static_cast<NotifyContext::BindData*>(p2), *static_cast<CItem*>(p3));
 }
 
 // @0x1418d1080
@@ -447,13 +443,13 @@ void UIBlackMarketDialog::FUN_1418d1080(MS2Ptr<Unk_BlackMarketEntry> spEntry, in
 {
     if (vfunc_55() != 0 || m_spItemSearch == 0)
         return;
-    if (spEntry.get() && spEntry->m_spItem.get())
+    if (spEntry.get() && spEntry->m_item.get())
     {
         MS2Ptr<CItem> spNew = new CItem();
-        spNew->FUN_14052b2e0(FUN_1405276c0(spEntry->m_spItem.get()), FUN_140526bd0(spEntry->m_spItem.get()), 0, n);
+        spNew->FUN_14052b2e0(FUN_1405276c0(spEntry->m_item.get()), FUN_140526bd0(spEntry->m_item.get()), 0, n);
         FUN_141349ae0(spNew, 0x945, CString(""));
     }
-    m_spItemSearch->FUN_140f0db00(spEntry, FUN_1401be330(spEntry->m_spItem.get(), 0));
+    m_spItemSearch->FUN_140f0db00(spEntry, (int)spEntry->GetState(false));
 }
 
 // @0x1418d1330
@@ -469,7 +465,7 @@ void UIBlackMarketDialog::FUN_1418d1330(int nA, int nB, void* p)
 void UIBlackMarketDialog::FUN_1418d13a0(int nA, int nB, void* p)
 {
     if (!(m_spItemRegister == 0) && m_pCurPage == m_spItemRegister.get())
-        m_spItemRegister->FUN_140f137a0(nA, nB, p);
+        m_spItemRegister->FUN_140f137a0(nA, nB, (unsigned __int64)p);
 }
 
 // @0x1418d1430
