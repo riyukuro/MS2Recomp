@@ -3398,3 +3398,9 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ?s_defaultSkills@CDynamicActionData@@2VUnk_DynSetRef@@A	143aad268	data
 ?s_allSkills@CDynamicActionData@@2VUnk_DynSetRef@@A	143aad278	data
 ??0Unk_InvUIMsg@@QEAA@XZ	1422e4490	func
+?DAT_142e12690@@3PAIA	142e12690	data
+?DAT_142e12a90@@3PAIA	142e12a90	data
+?DAT_142e12e90@@3PAIA	142e12e90	data
+?DAT_142e13290@@3PAIA	142e13290	data
+?DAT_1439f5448@@3PAEA	1439f5448	data
+?DAT_1439f5458@@3PAEA	1439f5458	data
