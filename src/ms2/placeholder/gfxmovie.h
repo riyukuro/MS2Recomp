@@ -61,6 +61,7 @@ public:
     virtual bool vfunc_13();                                        // 13 0x1422bdde0 returns true
     virtual int vfunc_14(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);   // 14 0x1422bddf0 returns 0
     virtual bool vfunc_15(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);  // 15 0x1422bde10 returns 0
+    static const NiRTTI ms_RTTI;                                    // 0x143b0ae40 ("GFxMovie", no parent; vfunc_2 returns it)
 
     // 0x10..0x80, ctor 0x1422bced0. The three 16-byte handles are MS2Ptr<T> (pointer at +8, intrusive CPtred count:
     // ctor FUN_1422b31e0/b31a0/b31c0 zero +8, dtors FUN_140b62a60/140a58400/140b62a30). The two Scaleform handles are
