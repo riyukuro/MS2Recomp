@@ -137,6 +137,7 @@ public:
     int FUN_141658f30();                                    // 0x141658f30 PC bang premium (item use check, unit_140d1ae30)
     unsigned FUN_141662de0();                               // 0x141662de0 the VIP grade (item use check, unit_140d1ae30)
     int FUN_141658e60();                                    // 0x141658e60 the gender (uiitemcreatedialog.cpp)
+    int FUN_1416639e0();                                    // 0x1416639e0 the selected super world chat item id (uisidepopuptalk_2.cpp)
     int FUN_141662eb0(class CItem* pItem);                  // 0x141662eb0 the item may be used (mypc)
     class Unk_PCItemCooldowns* FUN_1416561c0();             // 0x1416561c0
     int FUN_1416595d0();                                    // the cube craft mode (scenestategame 0x1417235a0)

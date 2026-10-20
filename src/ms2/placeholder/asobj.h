@@ -69,6 +69,7 @@ public:
     void FUN_141b46a40(const char* szName, class ASFunction fn);         // set a member to an AS function (inline COMDAT, uiugcitemeditdialog.cpp; fn by value)
     void FUN_141b46af0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiugcitemeditdialog.cpp)
     void FUN_141b46b90(const char* szName, int n);                       // same body, a second instance
+    void FUN_140e88a10(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uisidepopuptalk_1.cpp: the popup "type")
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
 

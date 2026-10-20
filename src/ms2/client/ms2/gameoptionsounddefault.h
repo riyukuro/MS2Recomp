@@ -11,6 +11,7 @@ struct Unk_SoundState
     int m_n28;                                                      // +0x28 (default 7)
     int m_n2c;                                                      // +0x2c (default 10)
     bool m_b30;                                                     // +0x30 (default 1)
+    float FUN_1412602e0();                                          // the effective volume (0x1412602e0; UISidePopupTalk "volume")
 };
 MS2_CHECK_SIZE(Unk_SoundState, 0x34);
 
