@@ -126243,7 +126243,8 @@ vsprintf	14116bc30	func
 ??$try_emplace@$$V@?$map@W4Unk_EquipAttrType@@HU?$less@W4Unk_EquipAttrType@@@std@@V?$allocator@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@std@@@std@@@std@@_N@1@AEBW4Unk_EquipAttrType@@@Z	1411f62b0	func
 ??0<lambda_03a44a5b621ff3df12d7d28eb1f3e086>@@QEAA@QEAV?$vector@V?$MS2Ptr@VCEquipItem@@@@V?$allocator@V?$MS2Ptr@VCEquipItem@@@@@std@@@std@@AEBV?$MS2Ptr@VCEquipItem@@@@@Z	1411f62f0	func
 ??0<lambda_e3ae51564bd7b6f324d46c66dbae60ef>@@QEAA@QEAV?$vector@HV?$allocator@H@std@@@std@@AEBH@Z	1411f6320	func
-??0Unk_SetEffectBits@@QEAA@XZ	1411f6350	func
+??0Unk_LayerBits@@QEAA@XZ	1411f6350	func
+??0Unk_SetEffectBits@@QEAA@XZ	140afed60	func
 ??0?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@QEAA@IMMMI@Z	1411f6370	func
 ??0?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VReplaceObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VReplaceObject@@@@@2@@ATL@@QEAA@_K@Z	1411f6460	func
 ??0?$CRBMap@W4Unk_EquipSlotId@@V?$MS2Ptr@VCEquipmentSlot@@@@V?$CElementTraits@W4Unk_EquipSlotId@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCEquipmentSlot@@@@@4@@ATL@@QEAA@_K@Z	1411f6490	func
@@ -126585,7 +126586,7 @@ vsprintf	14116bc30	func
 ?size@?$vector@V?$MS2Ptr@VCEquipItem@@@@V?$allocator@V?$MS2Ptr@VCEquipItem@@@@@std@@@std@@QEBA_KXZ	1411ff300	func
 ?size@?$vector@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@QEBA_KXZ	1411ff340	func
 ?Test@Unk_LayerBits@@QEBA_NH@Z	1411ff380	func
-?FUN_140afee90@Unk_SetEffectBits@@QEAAXE@Z	1411ff420	func
+?FUN_140afee90@Unk_SetEffectBits@@QEAAXE@Z	140afee90	func
 ?FUN_1411ff420@@YAXPEAEE@Z	1411ff420	func
 ?FUN_1411ff480@@YAXPEAE@Z	1411ff480	func
 ??0CPriortyCutting@@QEAA@PEAUUnk_CuttingTarget@@@Z	1411ff4c0	func
@@ -169360,6 +169361,8 @@ FUN_141485590	141485590	func
 ??1Unk_MsgBoxItems@@QEAA@XZ	141a077e0	func
 ??1Unk_MsgBoxTimer@@QEAA@XZ	141a07810	func
 ??4?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAAAEAV0@AEBV0@@Z	141a07850	func
+??4?$MS2Ptr@VCMsgBoxDataItem@@@@QEAAAEAV0@AEBV0@@Z	141a07910	func
+??8?$MS2Ptr@VCMsgBoxDataItem@@@@QEBA_NPEAVCMsgBoxDataItem@@@Z	141a07980	func
 ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z	141a079c0	func
 ??A?$CAtlArray@V?$MS2Ptr@VUnk_ClubBuffData@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_ClubBuffData@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VUnk_ClubBuffData@@@@_K@Z	141a07a00	func
 ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@1@XZ	141a07a40	func
