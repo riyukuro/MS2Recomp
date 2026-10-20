@@ -22,9 +22,9 @@
 // MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$set@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$set@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@@std@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141bdde60 ; prop
 // MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBVEntityID@egf@@@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$allocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@_J@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBVEntityID@egf@@@1@$$QEAV?$tuple@$$V@1@@Z 0x141bde0d0 ; prop
 // MS2-PIN: ??$_Buynode@AEBVVisibleObjectRecord@WsReal@@@?$_Tree_comp_alloc@V?$_Tset_traits@VVisibleObjectRecord@WsReal@@U?$less@VVisibleObjectRecord@WsReal@@@std@@V?$allocator@VVisibleObjectRecord@WsReal@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@VVisibleObjectRecord@WsReal@@PEAX@1@AEBVVisibleObjectRecord@WsReal@@@Z 0x141bde270 ; prop
-// MS2-PIN: ??$_Destroy_range@V?$allocator@V?$MS2Ptr@VCLiftableTargetBox@@@@@std@@@std@@YAXPEAV?$MS2Ptr@VCLiftableTargetBox@@@@0AEAV?$allocator@V?$MS2Ptr@VCLiftableTargetBox@@@@@0@@Z 0x141bde890 ; prop
+// MS2-PIN: ??$_Destroy_range@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@@std@@YAXPEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@0@0AEAV?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@0@@Z 0x141bde890 ; prop
 // MS2-PIN: ??$_Destroy_range@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@std@@@std@@YAXPEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@0@0AEAV?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@0@@Z 0x141bde8e0 ; prop
-// MS2-PIN: ??$_Destroy_range@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@@std@@YAXPEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@0@0AEAV?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@0@@Z 0x141bde980 ; prop
+//
 // MS2-PIN: ??$_Emplace_back@AEAV?$MS2Ptr@VCLiftableTargetBox@@@@@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VCLiftableTargetBox@@@@V?$allocator@V?$MS2Ptr@VCLiftableTargetBox@@@@@std@@@std@@QEAAXAEAV?$MS2Ptr@VCLiftableTargetBox@@@@@Z 0x141bdebb0 ; unique
 // MS2-PIN: ??$_Emplace_back@V?$MS2Ptr@VCLiftableTargetBox@@@@@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VCLiftableTargetBox@@@@V?$allocator@V?$MS2Ptr@VCLiftableTargetBox@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VCLiftableTargetBox@@@@@Z 0x141bded90 ; unique
 // MS2-PIN: ??$_Emplace_back_with_unused_capacity@AEAV?$MS2Ptr@VCLiftableTargetBox@@@@@?$vector@V?$MS2Ptr@VCLiftableTargetBox@@@@V?$allocator@V?$MS2Ptr@VCLiftableTargetBox@@@@@std@@@std@@AEAAXAEAV?$MS2Ptr@VCLiftableTargetBox@@@@@Z 0x141bdee50 ; prop
@@ -375,19 +375,19 @@ void Unk_WsInst2Real()
     v9a0.reserve(4);
     v9a0.erase(v9a0.begin());
 
-    // the corrected member types (worldservice_real.h *Real): m_1f8 values are (entity, grid) pairs, m_ac0 / m_ad0 keys
+    // the corrected member types (worldservice_real.h): m_1f8 values are (entity, grid) pairs, m_ac0 / m_ad0 keys
     // are unsigned / unsigned __int64
-    WsReal::Map1f8Real m1f8r;
+    WsReal::Map1f8 m1f8r;
     WsDriveRealMap(m1f8r, 1);
     WsDriveRealMap2(m1f8r, 1);
     const egf::EntityID& cid = id;
     unsigned gridValue = 0;
     int gridKey = 1;
     m1f8r[gridKey] = std::make_pair(cid, gridValue);
-    WsReal::Mapac0Real mac0r;
+    WsReal::Mapac0 mac0r;
     WsDriveRealMap(mac0r, 1u);
     WsDriveRealMap2(mac0r, 1u);
-    WsReal::Mapad0Real mad0r;
+    WsReal::Mapad0 mad0r;
     WsDriveRealMap(mad0r, 1ull);
     WsDriveRealMap2(mad0r, 1ull);
     mad0r[1ull];    // the only map also indexed by an rvalue key (the others: operator[](const key&) alone)
@@ -435,3 +435,11 @@ void Unk_WsInst2Real()
     TPtrValue<ATL::CAtlList<efd::SmartPointer<egf::Entity> > > spList;
     spList = Unk_GrNewTag(0);
 }
+// MS2-PIN: ??$_Buynode@AEBQEAVEntity@egf@@@?$_List_buy@PEAVEntity@egf@@V?$allocator@PEAVEntity@egf@@@std@@@std@@QEAAPEAU?$_List_node@PEAVEntity@egf@@PEAX@1@PEAU21@0AEBQEAVEntity@egf@@@Z 0x141bddba0 ; list<Entity*>::_Insert 0x141be0c50 calls it
+// MS2-PIN: ??$_Buynode@AEBQEAVIWorldServiceCallback@@@?$_Tree_comp_alloc@V?$_Tset_traits@PEAVIWorldServiceCallback@@U?$less@PEAVIWorldServiceCallback@@@std@@V?$allocator@PEAVIWorldServiceCallback@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@PEAVIWorldServiceCallback@@PEAX@1@AEBQEAVIWorldServiceCallback@@@Z 0x141bddc30 ; set<IWorldServiceCallback*> _Buynode0 0x141c20910
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBVEntityID@egf@@@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@VEntityID@egf@@VVisibleObjectRecord@WsReal@@U?$less@VEntityID@egf@@@std@@V?$allocator@U?$pair@$$CBVEntityID@egf@@VVisibleObjectRecord@WsReal@@@std@@@6@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@VVisibleObjectRecord@WsReal@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBVEntityID@egf@@@1@$$QEAV?$tuple@$$V@1@@Z 0x141bde000 ; map<EntityID,VisibleObjectRecord>[] 0x141beb700 -> 0x141bee370 -> here -> _Buynode0 0x141c20670
+// MS2-PIN: ??$_Destroy_range@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@YAXPEAV?$MS2Ptr@VMS2ActorUpdater@@@@0AEAV?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@0@@Z 0x141bde980
+// MS2-PIN: ??$_Destroy_range1@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@@std@@YAXPEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@0@0AEAV?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@0@U?$integral_constant@_N$0A@@0@@Z 0x141bde710
+// MS2-PIN: ??$_Destroy_range1@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@YAXPEAV?$MS2Ptr@VMS2ActorUpdater@@@@0AEAV?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@0@U?$integral_constant@_N$0A@@0@@Z 0x141bde830
+// MS2-PIN: ??$_Copy@U_Copy_tag@?$_Tree@V?$_Tset_traits@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@$0A@@std@@@std@@@?$_Tree@V?$_Tset_traits@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@$0A@@std@@@std@@IEAAXAEBV01@U_Copy_tag@01@@Z 0x141bde4b0 ; set<EntityID>::_Copy, called by the set copy ctor 0x141bf7060 (merge-20 exact, lost its harvest pair)
+// MS2-PIN: ??$_Copy_nodes@U_Copy_tag@?$_Tree@V?$_Tset_traits@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@$0A@@std@@@std@@@?$_Tree@V?$_Tset_traits@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@VEntityID@egf@@PEAX@1@PEAU21@0U_Copy_tag@01@@Z 0x141bde5d0 ; set<EntityID>::_Copy_nodes, recursive callee of 0x141bde4b0
