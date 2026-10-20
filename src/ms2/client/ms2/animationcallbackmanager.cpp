@@ -62,6 +62,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\animationcallbackmanager.cpp"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/ecrcameraservice.h"
+#include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include <egmAnimation/AnimationService.h>
 #include <efd/AssetID.h>
@@ -88,20 +89,9 @@ void FUN_142095bc0(efd::AssetLocatorService* pService, const efd::utf8string& kU
 template <class T, class U> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                                              const T& first, const U& second);      // filesystem.cpp 0x1403a1310
 
-// Background effect play request (0x78 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0). Layout as in unit_140ad1860.cpp.
-struct Unk_BgEffectRequest
-{
-    CString m_strName;                      // +0 effect xml name
-    int m_nOwnerId;                         // +8
-    int m_pad_0c;
-    char m_pad_10[0x68];
-};
-MS2_CHECK_SIZE(Unk_BgEffectRequest, 0x78);
-class Unk_BgEffectMgr { public: void FUN_1411a4a00(Unk_BgEffectRequest* pRequest); };
+// The background effect play request is the NoticeMessage of effectquery.h (ctor 0x140a52ef0, dtor 0x1405a89e0).
+class Unk_BgEffectMgr { public: void FUN_1411a4a00(NoticeMessage* pRequest); };
 Unk_BgEffectMgr* FUN_1403ed280();
-void FUN_140a52ef0(Unk_BgEffectRequest* pRequest);                                  // construct
-void FUN_140a53190(Unk_BgEffectRequest* pRequest, int nOwnerId);                    // bind to an owner object
-void FUN_1405a89e0(Unk_BgEffectRequest* pRequest);                                  // destroy
 
 // The URN text of an asset id (m_urn.c_str() read straight off the AssetID, +8).
 // @0x14099ad40
@@ -333,65 +323,62 @@ bool Unk_AnimTable::FUN_140997990(ItemPtr spItem, CString strText)
 // @0x140997ab0
 void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb)
 {
-    if (spEntity != 0)
+    if (spEntity == 0)
+        return;
+    NiActorManager* pMgr = FUN_1413f9b70(spEntity->GetEntityID());
+    if (pMgr == 0)
+        return;
+    if (DAT_143ae2b30 != 0)
     {
-        NiActorManager* pMgr = FUN_1413f9b70(spEntity->GetEntityID());
-        if (pMgr != 0)
+        AnimationCallbackManager::GetInstance()->FUN_14099bb80(pMgr, pCb);
+    }
+    else
+    {
+        pMgr->SetCallbackObject(0);
+        pMgr->ClearAllRegisteredCallbacks();
+        pMgr->SetCallbackObject(pCb);
+    }
+    NiKFMTool* pKfm = pMgr->GetKFMTool();
+    unsigned int* pIds = 0;
+    unsigned int nIds;
+    pKfm->GetSequenceIDs(pIds, nIds);
+    for (unsigned int i = 0; i < nIds; i++)
+    {
+        unsigned int uiSeq = pIds[i];
+        NiSequenceData* pSeqData = static_cast<Unk_CbActorMgr*>(pMgr)->FUN_140999740(uiSeq);
+        if (pSeqData == 0)
+            continue;
+        NiTextKeyExtraData* pTextKeys = pSeqData->GetTextKeys();
+        unsigned int nKeys = 0;
+        NiTextKey* pKeys = pTextKeys->GetKeys(nKeys);
+        pMgr->RegisterCallback(NiActorManager::ANIM_ACTIVATED, uiSeq, 0);
+        pMgr->RegisterCallback(NiActorManager::END_OF_SEQUENCE, uiSeq, 0);
+        for (unsigned int k = 0; k < nKeys; k++)
         {
-            if (DAT_143ae2b30 == 0)
+            const NiFixedString& kText = pKeys[k].GetText();
+            if (kText == "start" || kText == "end")
+                continue;
+            if (kText.Contains("emo_") || kText.Contains("-GlobalRatio"))
             {
-                pMgr->SetCallbackObject(0);
-                pMgr->ClearAllRegisteredCallbacks();
-                pMgr->SetCallbackObject(pCb);
-            }
-            else
-            {
-                AnimationCallbackManager::GetInstance()->FUN_14099bb80(pMgr, pCb);
-            }
-            NiKFMTool* pKfm = pMgr->GetKFMTool();
-            unsigned int* pIds = 0;
-            unsigned int nIds;
-            pKfm->GetSequenceIDs(pIds, nIds);
-            for (unsigned int i = 0; i < nIds; i++)
-            {
-                unsigned int uiSeq = pIds[i];
-                NiSequenceData* pSeqData = static_cast<Unk_CbActorMgr*>(pMgr)->FUN_140999740(uiSeq);
-                if (pSeqData != 0)
+                efd::AssetID kAsset;
+                spEntity->GetPropertyValue(0x12383cea, kAsset);
+                efd::AssetLocatorService* pLocator =
+                    g_143b059e8.GetSystemServiceAs<efd::AssetLocatorService>();
+                efd::utf8string kResult("Unknown");
                 {
-                    NiTextKeyExtraData* pTextKeys = pSeqData->GetTextKeys();
-                    unsigned int nKeys = 0;
-                    NiTextKey* pKeys = pTextKeys->GetKeys(nKeys);
-                    pMgr->RegisterCallback(NiActorManager::ANIM_ACTIVATED, uiSeq, 0);
-                    pMgr->RegisterCallback(NiActorManager::END_OF_SEQUENCE, uiSeq, 0);
-                    for (unsigned int k = 0; k < nKeys; k++)
-                    {
-                        const NiFixedString& kText = pKeys[k].GetText();
-                        if (!(kText == "start") && !(kText == "end"))
-                        {
-                            if (kText.Contains("emo_") || kText.Contains("-GlobalRatio"))
-                            {
-                                efd::AssetID kAsset;
-                                spEntity->GetPropertyValue(0x12383cea, kAsset);
-                                efd::AssetLocatorService* pLocator =
-                                    g_143b059e8.GetSystemServiceAs<efd::AssetLocatorService>();
-                                efd::utf8string kResult("Unknown");
-                                FUN_142095bc0(pLocator, efd::utf8string(Unk_AssetUrnText(&kAsset)), kResult);
-                                const char* pszResult = kResult.c_str();
-                                const char* pszKey = (const char*)kText;
-                                Unk_FileLog(FUN_140166440(), 12, 0x13, L"skip text {0} - [{1}]", pszKey, pszResult);
-                            }
-                            else
-                            {
-                                pMgr->RegisterCallback(NiActorManager::TEXT_KEY_EVENT, uiSeq, kText);
-                            }
-                        }
-                    }
+                    efd::utf8string kUrn(Unk_AssetUrnText(&kAsset));
+                    FUN_142095bc0(pLocator, kUrn, kResult);
                 }
+                const char* pszResult = kResult.c_str();
+                const char* pszKey = (const char*)kText;
+                Unk_FileLog(FUN_140166440(), 12, 0x13, L"skip text {0} - [{1}]", pszKey, pszResult);
+                continue;
             }
-            if (pIds != 0)
-                NiFree(pIds);
+            pMgr->RegisterCallback(NiActorManager::TEXT_KEY_EVENT, uiSeq, kText);
         }
     }
+    if (pIds != 0)
+        NiFree(pIds);
 }
 
 // ---- CGlobalKeyTextCallback ----
@@ -423,28 +410,28 @@ void CGlobalKeyTextCallback::TextKeyEvent(NiActorManager* pkManager, NiActorMana
     CString strKey((const char*)kTextKey);
     if (strKey.Find("bgEffect_", 0) == 0)
     {
-        Unk_BgEffectRequest kRequest;
-        FUN_140a52ef0(&kRequest);
+        NoticeMessage kRequest;
         kRequest.m_strName = strKey.Right(strKey.GetLength() - 9);
-        kRequest.m_nOwnerId = 7;
-        if (DAT_143ae2b30 == 0)
+        kRequest.m_nObject = 7;
+        if (DAT_143ae2b30 != 0)
         {
-            PCBase* pPC = dynamic_cast<PCBase*>(pkManager->GetCallbackObject());
-            if (pPC != 0)
-                FUN_140a53190(&kRequest, pPC->FUN_14123c580());
-        }
-        else
-        {
-            AniCallbackBridge* pBridge = dynamic_cast<AniCallbackBridge*>(pkManager->GetCallbackObject());
+            NiActorManager::CallbackObject* pCb = pkManager->GetCallbackObject();
+            AniCallbackBridge* pBridge = dynamic_cast<AniCallbackBridge*>(pCb);
             if (pBridge != 0)
             {
                 PCBase* pPC = dynamic_cast<PCBase*>(pBridge->m_pTarget);
                 if (pPC != 0)
-                    FUN_140a53190(&kRequest, pPC->FUN_14123c580());
+                    kRequest.SetActor(pPC->FUN_14123c580());
             }
         }
+        else
+        {
+            NiActorManager::CallbackObject* pCb = pkManager->GetCallbackObject();
+            PCBase* pPC = dynamic_cast<PCBase*>(pCb);
+            if (pPC != 0)
+                kRequest.SetActor(pPC->FUN_14123c580());
+        }
         FUN_1403ed280()->FUN_1411a4a00(&kRequest);
-        FUN_1405a89e0(&kRequest);
     }
 }
 
