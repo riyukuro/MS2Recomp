@@ -151,6 +151,12 @@ def _allowed(va):
                           not any(lo <= va < hi for lo, hi in exc))
 
 
+def _is_text(va):
+    exe = G["exe"]
+    return any(sec.Name.rstrip(b"\0") == b".text" and sec.VirtualAddress <= va - exe.base < sec.VirtualAddress
+               + sec.Misc_VirtualSize for sec in exe.pe.sections)
+
+
 def _init():
     exe = bm.Exe(bm.EXE)
     names, dnames = {}, {}
@@ -312,7 +318,7 @@ def match_obj(path):
         _static_hints(obj, out, shints, callees)
         for n in list(vfts):
             va = callees.get(n) or G["dnames"].get(n)
-            if va is not None and _allowed(va):
+            if va is not None and (_allowed(va) or not _is_text(va)):   # windows are code ranges, vftables are .rdata
                 for tn, tgt in _vft_slots(obj, vfts.pop(n), va):
                     callees.setdefault(tn, tgt)
                 grew = True
@@ -416,6 +422,95 @@ def _verify_job(job):
         return path, xok
     _greedy(todo, xok, lambda n, v: _match(obj, n, v))
     return path, xok
+
+
+def _code_match(obj, n, va):
+    """code bytes match (relocations resolved consistently) whatever the unwind/EH data: its targets are reliable"""
+    with contextlib.redirect_stdout(io.StringIO()):
+        try:
+            return bool(bm.match_one(obj, n, va, G["exe"], verbose=False, check_unwind=False, quiet=True))
+        except Exception:
+            return False
+
+
+def _libhint_job(job):
+    """library obj: the exe targets (vftables -> their slots, direct callees) of its functions whose code matches
+    (exact pairs, the copy pairs assign_copies found, then the hints themselves, to a fixpoint; plus `ext`, the other
+    library objs' hints) name its functions that stay unpaired: (path, [(name, va)] credited functional, {name: va}
+    every target found)"""
+    path, pairs, win, ext = job
+    G["win"] = win
+    try:
+        obj = bm.Obj(path)
+    except Exception:
+        return path, [], {}
+    exe = G["exe"]
+    funcs = [obj.syms[si][0] for si in obj.func_symbols() if not obj.syms[si][0].startswith(bm.FUNCLET_PREFIXES)]
+    paired = {n for n, _, _ in pairs}
+    callees = {}
+    todo = [(n, va) for n, va, _ in pairs]
+    vfts = {obj.syms[i][0]: i for i in obj.syms if obj.syms[i][0].startswith("??_7") and obj.syms[i][2] > 0}
+    out = []
+    used = {va for _, va, _ in pairs}
+    while True:
+        for n, va in todo:
+            if _code_match(obj, n, va):
+                for k, v in bm.LAST_TARGETS.items():
+                    callees.setdefault(k, v)
+        for k, v in ext.items():
+            callees.setdefault(k, v)
+        for vn in list(vfts):
+            va = callees.get(vn)
+            if va is not None and not _is_text(va):
+                for tn, tgt in _vft_slots(obj, vfts.pop(vn), va):
+                    callees.setdefault(tn, tgt)
+        todo = []
+        for n in funcs:
+            va = callees.get(n)
+            if n in paired or va is None or va in used or not _allowed(va):
+                continue
+            if va - exe.base in exe.rf or va - exe.base in G["leaf"]:
+                out.append((n, va))
+                todo.append((n, va))
+                paired.add(n)
+                used.add(va)
+        if not todo:
+            break
+    return path, out, {k: v for k, v in callees.items() if _allowed(v) or not _is_text(v)}
+
+
+def lib_hints(res, paths, windows, j, log=print):
+    """res[key]["hpairs"] of the library units (recipe lib-*): see _libhint_job (two rounds: the second one seeded
+    with every obj's targets); a VA some obj pairs exactly or another hint already names is skipped"""
+    keys = [k for k, c in res.items() if c["recipe"].startswith("lib-") and k in paths]
+    jobs, byp = [], {}
+    for k in keys:
+        c = res[k]
+        win = unit_window(c["unit"], windows)
+        if not win[0]:
+            continue
+        jobs.append((paths[k], [(n, va, ok) for n, va, ok, _ in c["pairs"] + c.get("xpairs", [])], win))
+        byp[paths[k]] = k
+    if not jobs:
+        return
+    taken = {va for c in res.values() for _, va, ok, _ in c["pairs"] + c.get("xpairs", []) if ok}
+    got, ext = {}, {}
+    with Pool(max(1, j), initializer=_init) as p:
+        for rnd in range(2):
+            for path, hp, tg in p.imap_unordered(_libhint_job, [jb + (ext if rnd else {},) for jb in jobs]):
+                got[byp[path]] = hp
+                if not rnd:
+                    for k, v in tg.items():
+                        ext.setdefault(k, v)
+    n = 0
+    for k in sorted(got):
+        res[k]["hpairs"] = []
+        for nm, va in got[k]:
+            if va not in taken:
+                taken.add(va)
+                res[k]["hpairs"].append([nm, va, False, "libhint"])
+                n += 1
+    log(f"engine: library hint pairs {n}")
 
 
 def _small_leaf():
@@ -527,7 +622,7 @@ def run(cache, j=8, filters=(), log=print):
             continue
         key = [os.path.getmtime(o), os.path.getsize(o), MATCH_KEY]
         if LIB_RECIPE in o:
-            key.append("lib-hint")
+            key.append("lib-hint2")
         win = unit_window(u["unit"], windows)
         if win != (None, []):
             key.append(json.dumps(win))
@@ -556,6 +651,7 @@ def run(cache, j=8, filters=(), log=print):
         t2 = time.time()
         allu = gbtree.load_units(tree)
         assign_copies(res, groups, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, j, log)
+        lib_hints(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
         used = {g for c in res.values() for _, g in c.get("cands", ())}
         groups = {g: h for g, h in groups.items() if g in used}
         json.dump(groups, open(gpath + ".tmp", "w"))
@@ -607,7 +703,7 @@ def credit(res, game_rows):
     for k, c in sorted(res.items()):
         c = dict(c, unit=canon[c["unit"].lower()])
         better = {x[0] for x in c.get("xpairs", ())}
-        for sym, va, ok, how in c["pairs"] + c.get("xpairs", []):
+        for sym, va, ok, how in c["pairs"] + c.get("xpairs", []) + c.get("hpairs", []):
             if not ok and sym in better:      # a non-exact table-name pair superseded by an exact copy pair
                 continue
             if how == "name":
