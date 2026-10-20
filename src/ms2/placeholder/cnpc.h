@@ -175,6 +175,8 @@ public:
     void FUN_141099370(float fTime);                        // monologue timer
     void FUN_141099580();                                   // restart the monologue timer
     void FUN_141096730();                                   // build the npc's collision
+    void MakeDeadPhysXActor();                              // 0x141096f00
+    void NxTerrainPhsyx();                                  // 0x141099640 the terrain-only body actor
     void FUN_1410947e0();                                   // the reward item model above the npc (+0xea8)
     CStringW FUN_141093310();                               // display name from the npc table
     CStringW FUN_141093980();                               // display name (maid title / maid row / npc name)

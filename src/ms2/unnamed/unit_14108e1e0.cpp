@@ -137,6 +137,16 @@ class UIDamageText { public: void FUN_141912a80(GameObject* pObj, int nValue, in
 UIDamageText* FUN_140b624b0(int nUiId);
 class CStringTable { public: CStringW FUN_141811980(int nKind, int nId); };
 CStringTable* FUN_1401a9d70();
+float FUN_14028d3a0(float fValue);                                  // * 0.01 (game units -> PhysX)
+float FUN_140968970(float f);                                       // sqrtf
+struct Unk_ICCEntityLoader;
+Unk_ICCEntityLoader* FUN_141b6f910();
+NiActorManager* FUN_140999440(void* pLoader, const egf::EntityID& kId);   // the actor manager of an entity's model
+// The collision groups the dead bodies cycle through (so neighbouring corpses don't collide).
+static unsigned s_aDeadGroupMask[] = { 0x400, 0x800, 0x1000, 0x2000, 0x4000, 0x8000, 0x10000, 0x20000 };
+static int s_nDeadGroupMask = 8;
+static int s_nDeadActorSerial;
+NxVec3 FUN_140ae1df0(const Unk_StreamPoint* pPoint);               // game point -> PhysX point
 // The maid description table (the row's +0x08 is the maid npc's title); the 16 byte row pointer of the maid tables
 // (uimanufacturedialog.cpp), its members are COMDATs of other units.
 template <class T> class Unk_UmValuePtr
@@ -1423,6 +1433,156 @@ bool CNpc::FUN_1410952d0()
     return m_cF38 != 0;
 }
 
+// Builds the npc's collision: the body box ("box" shape) and one box per node collision of the npc row (green, bound
+// to model nodes) and per server node collision (orange, placed at the actor), then the terrain actor.
+// MS2-FUNCTIONAL: the box temporaries live in different stack slots
+// @0x141096730
+void CNpc::FUN_141096730()
+{
+    if (m_spNpcData->m_collision.m_strShape == "box") {
+        const Unk_NpcShape& kShape = m_spNpcData->m_collision;
+        efd::Point3 kSize(m_spNpcData->m_collision.m_fWidth, m_spNpcData->m_collision.m_fDepth * 0.5f, kShape.m_fHeight);
+        efd::Point3 kOffset(0.0f, m_spNpcData->m_collision.m_fDepth * 0.5f, 0.0f);
+        FUN_141670fd0(kSize, kOffset);
+    }
+    if (!m_spNpcData->m_aNodeCollision.IsEmpty()) {
+        for (unsigned i = 0; i < m_spNpcData->m_aNodeCollision.GetCount(); i++) {
+            MS2Ptr<CNpcData::NodeCollision> spNode = m_spNpcData->m_aNodeCollision[i];
+            if (spNode == 0)
+                continue;
+            MS2Ptr<CBoxCollision> spBox(new CBoxCollision);
+            spBox->m_strName = spNode->m_strTargetNode;
+            Unk_StreamPoint ptBox(spNode->m_vVolume.x, spNode->m_vVolume.y * 0.5f, spNode->m_vVolume.z);
+            Unk_StreamPoint ptSize(0.0f, spNode->m_vVolume.y * 0.5f, 0.0f);
+            spBox->m_ptBox = ptBox;
+            spBox->m_ptSize = ptSize;
+            spBox->m_ptDir = spNode->m_vOffset;
+            spBox->m_kColor = NiColorA(0.0f, 1.0f, 0.0f, 1.0f);
+            spBox->vfunc_4();
+            m_arrE68.Add(spBox);
+        }
+    }
+    if (!m_spNpcData->m_aNodeServerCollision.IsEmpty()) {
+        for (unsigned i = 0; i < m_spNpcData->m_aNodeServerCollision.GetCount(); i++) {
+            MS2Ptr<CNpcData::NodeCollision> spNode = m_spNpcData->m_aNodeServerCollision[i];
+            if (spNode == 0)
+                continue;
+            MS2Ptr<CBoxCollision> spBox(new CBoxCollision);
+            Unk_StreamPoint ptBox(spNode->m_vVolume.x, spNode->m_vVolume.y * 0.5f, spNode->m_vVolume.z);
+            Unk_StreamPoint ptSize(0.0f, spNode->m_vVolume.y * 0.5f, 0.0f);
+            spBox->m_ptBox = ptBox;
+            spBox->m_ptSize = ptSize;
+            spBox->m_ptDir = spNode->m_vOffset;
+            spBox->m_kColor = NiColorA(1.0f, 0.5f, 0.0f, 1.0f);
+            spBox->vfunc_4();
+            m_arrE88.Add(spBox);
+        }
+    }
+    NxTerrainPhsyx();
+}
+
+// Creates the dead body's PhysX actor (+0xd60): a box pushed back / up by the killing skill's knockback (scaled by the
+// npc's push values, randomised by NPCRandomDeadPushRate, turned by the hit direction), then picks the dead animation
+// (the "up" one when pushed up and the model has it).
+// MS2-FUNCTIONAL: the PhysX descriptor / matrix temporaries live in different stack slots
+// @0x141096f00
+void CNpc::MakeDeadPhysXActor()
+{
+    s_nDeadActorSerial++;
+    int nGroup = s_nDeadActorSerial % s_nDeadGroupMask;
+    float fBackScale = 1.0f;
+    float fUpScale = 1.0f;
+    float fDensity = 1.0f;
+    float fBack = 0.0f;
+    float fUp = 0.2f;
+    float fPushBack = 0.0f;
+    float fPushUp = 0.0f;
+    efd::Matrix3 kRot;
+    kRot.MakeIdentity();
+    if (m_spSkillRow.get() != 0) {
+        fPushUp = FUN_14028d3a0(m_spSkillRow->FUN_140803e10()->m_block170.m_fUp) * m_spNpcData->m_push.m_fUp;
+        fPushBack = FUN_14028d3a0(m_spSkillRow->FUN_140803e10()->m_block170.m_fBack) * m_spNpcData->m_push.m_fBack;
+        static float s_fRate = FUN_1401d3200()->NPCRandomDeadPushRate.Read();
+        fPushBack = fPushBack * (FUN_14109ace0() * s_fRate + 1.0f);
+        fPushUp = fPushUp * (FUN_14109ace0() * s_fRate + 1.0f);
+        if (FUN_14028d470(fPushBack, 0.0f) && FUN_14028d470(fPushUp, 0.0f))
+            return;
+        if (m_nD80 == 2) {
+            int nRange = 3;
+            float fStep = 30.0f;
+            int nStep = rand() % nRange < 2 ? 1 : rand() % nRange;
+            float fAngle = (float)nStep * fStep;
+            kRot.MakeZRotation((fAngle * 3.1415927f) / 180.0f);
+        } else if (m_nD80 == 1) {
+            int nRange = 3;
+            float fStep = 30.0f;
+            int nStep = rand() % nRange < 2 ? 1 : rand() % nRange;
+            float fAngle = (float)nStep * fStep;
+            kRot.MakeZRotation((-fAngle * 3.1415927f) / 180.0f);
+        } else if (m_nD80 == 3) {
+            int nRange = 3;
+            float fStep = 30.0f;
+            int nStep = rand() % nRange;
+            float fAngle = (float)nStep * fStep;
+            if (rand() % 2 != 0)
+                fAngle = -fAngle;
+            kRot.MakeZRotation((fAngle * 3.1415927f) / 180.0f);
+        }
+    }
+    fBack = fBack + fPushBack;
+    fUp = fUp + fPushUp;
+    NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
+    if (pScene == NULL)
+        return;
+    FUN_1410979a0();
+    NxVec3 kGravity;
+    pScene->getGravity(kGravity);
+    float fGravity = -kGravity.z;
+    float fTime = FUN_140968970((fUpScale * fUp * 2.0f) / fGravity);
+    float fUpSpeed = fTime * fGravity;
+    efd::Matrix3 kDir = m_unkD88 * kRot;
+    float fBackSpeed = (fBackScale * fBack) / (fTime * 2.0f);
+    efd::Point3 kVel = (kDir * efd::Point3::UNIT_Y) * fBackSpeed;
+    NxBodyDesc kBodyDesc;
+    kBodyDesc.angularDamping = 0.0f;
+    kBodyDesc.linearDamping = 0.0f;
+    kBodyDesc.linearVelocity = NxVec3(kVel.x, kVel.y, fUpSpeed);
+    kBodyDesc.flags |= NX_BF_FROZEN_ROT;
+    NxBoxShapeDesc kBoxDesc;
+    kBoxDesc.dimensions.set(m_spNpcData->m_collision.m_fWidth, m_spNpcData->m_collision.m_fDepth,
+        m_spNpcData->m_collision.m_fHeight);
+    kBoxDesc.dimensions = kBoxDesc.dimensions * 0.01f * 0.5f;
+    kBoxDesc.groupsMask.bits0 = s_aDeadGroupMask[nGroup];
+    NxActorDesc kActorDesc;
+    kActorDesc.shapes.pushBack(&kBoxDesc);
+    kActorDesc.body = &kBodyDesc;
+    kActorDesc.density = fDensity;
+    efd::Point3 kPos = vfunc_18();
+    kActorDesc.globalPose.t = NxVec3(kPos.x, kPos.y, kPos.z);
+    kActorDesc.globalPose.t = kActorDesc.globalPose.t * 0.01f;
+    kActorDesc.globalPose.t.z += kBoxDesc.dimensions.z + 0.05f;
+    kActorDesc.globalPose.M.rotZ((vfunc_20().z * 3.1415927f) / 180.0f);
+    FUN_1409f7ca0()->FUN_14168a540(0);
+    m_pD60 = pScene->createActor(kActorDesc);
+    if (m_pD60 != NULL)
+        m_pD60->setName("CNpc::MakeDeadPhysXActor");
+    FUN_1409f7ca0()->FUN_14168a570();
+    FUN_141097b40(6);
+    CString strAnim = m_spNpcData->m_dead.GetRandomDefaultAction();
+    if (0.0f < fPushUp) {
+        CString strUp = m_spNpcData->m_dead.GetRandomUpAction();
+        if (!strUp.IsEmpty()) {
+            egf::EntityID kId;
+            efd::SmartPointer<NiActorManager> spManager = FUN_140999440(FUN_141b6f910(), FUN_14123c460(kId));
+            if (spManager != 0) {
+                if (spManager->FindSequenceID((const char*)strUp) != (NiActorManager::SequenceID)0xfffffffe)
+                    strAnim = strUp;
+            }
+        }
+    }
+    m_strED0 = strAnim;
+}
+
 // Releases the dead body's PhysX actor.
 // @0x1410979a0
 void CNpc::FUN_1410979a0()
@@ -1753,6 +1913,49 @@ void FUN_1410917a0(unsigned int nNpcId)
         }
         reinterpret_cast<Unk_PCBaseFxLibView*>(FUN_140a50010()->FUN_1411bf1e0())->FUN_1411be510(spData->GetId(), "");
     }
+}
+
+// Creates the npc's body actor (+0xd68): a box of the npc's collision size standing on its position, turned to its
+// facing, for npcs with property tag 0x13 and a "box" shape.
+// MS2-FUNCTIONAL: the PhysX descriptor temporaries live in different stack slots
+// @0x141099640
+void CNpc::NxTerrainPhsyx()
+{
+    if (m_pD68 != NULL)
+        return;
+    if (!FUN_141093270()->HasPropertyTag(0x13))
+        return;
+    if (m_spNpcData->m_collision.m_strShape != "box")
+        return;
+    NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
+    if (pScene == NULL)
+        return;
+    NxVec3 kUnused;
+    Unk_StreamPoint ptSelf(vfunc_18());
+    kUnused = FUN_140ae1df0(&ptSelf);
+    NxBoxShapeDesc kBoxDesc;
+    kBoxDesc.dimensions.set(m_spNpcData->m_collision.m_fWidth, m_spNpcData->m_collision.m_fDepth,
+        m_spNpcData->m_collision.m_fHeight);
+    kBoxDesc.dimensions = kBoxDesc.dimensions * 0.01f * 0.5f;
+    kBoxDesc.groupsMask.bits0 = 0xffffffff;
+    kBoxDesc.shapeFlags &= ~0x120000;
+    NxActorDesc kActorDesc;
+    kActorDesc.shapes.pushBack(&kBoxDesc);
+    efd::Point3 kPos = vfunc_18();
+    kActorDesc.globalPose.t = NxVec3(kPos.x, kPos.y, kPos.z);
+    kActorDesc.globalPose.t = kActorDesc.globalPose.t * 0.01f;
+    kActorDesc.globalPose.t.z += kBoxDesc.dimensions.z;
+    kActorDesc.globalPose.M.rotZ((vfunc_20().z * 3.1415927f) / 180.0f);
+    FUN_1409f7ca0()->FUN_14168a540(0);
+    m_pD68 = pScene->createActor(kActorDesc);
+    if (m_pD68 != NULL) {
+        m_pD68->setName("CNpc::NxTerrainPhsyx");
+        unsigned int nShapes = m_pD68->getNbShapes();
+        NxShape* const* ppShapes = m_pD68->getShapes();
+        for (unsigned int i = 0; i < nShapes; i++)
+            ppShapes[i]->setGroup(0);
+    }
+    FUN_1409f7ca0()->FUN_14168a570();
 }
 
 // Releases the npc's body actor (+0xd68).
