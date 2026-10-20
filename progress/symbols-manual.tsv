@@ -3750,7 +3750,6 @@ __imp_NxGetUtilLib	142cced28	data
 ??0Unk_MeratChat@@QEAA@XZ	140acd570	func
 ??1Unk_MeratChat@@QEAA@XZ	140acd770	func
 # w495 uimeratmarketdialog: TEMPORARY bindings of the 29 dialog methods not yet recovered (partial unit) to the exe; delete each row when its body is written.
-?AddPreviewSlot@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCItem@@@@V?$MS2Ptr@VCMeratMarketProduct@@@@HHHV?$MS2Ptr@VCItemData@@@@@Z	1412efee0	func
 ?EquipPreview@UIMeratMarketDialog@@QEAAXPEAVUIAvatarBase@@V?$MS2Ptr@VCItemData@@@@_N2@Z	141308540	func
 ?FillBannerProducts@UIMeratMarketDialog@@QEAAHAEBHAEAVASArray@@AEAV?$CAtlArray@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$CElementTraits@V?$MS2Ptr@VCMeratMarketProduct@@@@@ATL@@@ATL@@PEBVUnk_MmViewScope@@@Z	1412fa370	func
 ?LoadTab@UIMeratMarketDialog@@QEAAXH@Z	1412ed920	func
@@ -3886,5 +3885,5 @@ __imp_NxGetUtilLib	142cced28	data
 ?DAT_1439f87f4@@3KA	1439f87f4	data
 ?DAT_1439f87f8@@3KA	1439f87f8	data
 ?g_kCubeGuideZero@@3VNiPoint3@@B	143b01a60	data
-?FillProductRow@UIMeratMarketDialog@@QEAAHAEAVASMeratMarketProduct@@V?$MS2Ptr@VCMeratMarketProduct@@@@PEAVUnk_MmViewScope@@@Z	1412ef330	func
+# w531 uimeratmarketdialog: AScript click callback with a user pointer (the preview slot icon; same COMDAT as the int overload)
 ??$FUN_1422c2a70@V?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@@AScript@@QEAAXAEBV?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@PEAX@Z	1422c2a70	func
