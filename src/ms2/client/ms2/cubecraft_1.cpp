@@ -409,12 +409,12 @@ CGuideObject::CGuideObject()
 {
     m_bLocal = false;
     m_bBusy = false;
-    m_unk_180[2] = 3.5f;
-    m_unk_180[1] = 1.2f;
-    m_unk_180[3] = 3.5f;
-    m_unk_190[2] = 3.5f;
-    m_unk_190[1] = 1.2f;
-    m_unk_190[3] = 3.5f;
+    m_unk_180.m_z = 3.5f;
+    m_unk_180.m_y = 1.2f;
+    m_unk_180.m_w = 3.5f;
+    m_unk_190.m_z = 3.5f;
+    m_unk_190.m_y = 1.2f;
+    m_unk_190.m_w = 3.5f;
     m_ctrl.FUN_1417b7430(this);
 }
 

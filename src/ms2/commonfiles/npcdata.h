@@ -22,13 +22,8 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/xmlattr.h"
 
-// The 7 floats of <distance>; ctor 0x1402666f0 and operator!= 0x140266790 are defined in commonstringtable.cpp.
-struct Unk_Vec7
-{
-    float m_a, m_b, m_c, m_d, m_e, m_f, m_g;
-    Unk_Vec7();
-    bool operator!=(const Unk_Vec7& other) const;
-};
+// The 7 floats of <distance> (Unk_Vec7): ms2/placeholder/unkvec47.h.
+#include "ms2/placeholder/unkvec47.h"
 class CNpcData;
 class CNpcRegionSpawnData;
 class CRegionSpawnProb;

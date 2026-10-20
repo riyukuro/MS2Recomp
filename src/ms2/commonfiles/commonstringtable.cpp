@@ -80,6 +80,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonstringtable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "commonstringtable.h"
+#include "ms2/placeholder/unkvec47.h"
 #include "portaldata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/tixmldocument.h"
@@ -1438,14 +1439,6 @@ unsigned FUN_14025ed00(const wchar_t* psz)
     return nHash;
 }
 
-struct Unk_Vec4
-{
-    float m_x;
-    float m_y;
-    float m_z;
-    float m_w;
-    Unk_Vec4();
-};
 
 struct Unk_Vec3
 {
@@ -1455,18 +1448,6 @@ struct Unk_Vec3
     bool operator!=(const Unk_Vec3& other) const;
 };
 
-struct Unk_Vec7
-{
-    float m_a;
-    float m_b;
-    float m_c;
-    float m_d;
-    float m_e;
-    float m_f;
-    float m_g;
-    Unk_Vec7();
-    bool operator!=(const Unk_Vec7& other) const;
-};
 
 // @0x140266620
 Unk_Vec4::Unk_Vec4() : m_x(0), m_y(0), m_z(0), m_w(0)

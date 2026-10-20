@@ -384,7 +384,6 @@ static ATL::CAtlMap<unsigned int, CString> s_conditions(17, .75f, .25f, 2.25f, 1
 static CString s_strNoticeEp("system_notice_error_ep");
 
 // @0x141703a70
-// MS2-FUNCTIONAL: PCBase::m_unk_180/190 are arrays here; the exe stores to named float fields (constant offsets)
 Ridee::Ridee()
     : m_pRider(0)
     , m_spD50(0)
@@ -410,12 +409,12 @@ Ridee::Ridee()
     m_spStateMgr->FUN_1417daeb0(0x16, new StateTalk(this));
     m_spStateMgr->FUN_1417daeb0(0x35, new StateTriggerEmotion(this));
     m_spStateMgr->FUN_1417daeb0(0x46, new StateTriggerFollowNpc(this));
-    m_unk_180[2] = 3.5f;
-    m_unk_180[1] = 1.2f;
-    m_unk_180[3] = 3.5f;
-    m_unk_190[2] = 3.5f;
-    m_unk_190[1] = 1.2f;
-    m_unk_190[3] = 3.5f;
+    m_unk_180.m_z = 3.5f;
+    m_unk_180.m_y = 1.2f;
+    m_unk_180.m_w = 3.5f;
+    m_unk_190.m_z = 3.5f;
+    m_unk_190.m_y = 1.2f;
+    m_unk_190.m_w = 3.5f;
     m_nD40 = FUN_141472bc0();
     m_nD44 = 0;
     m_controller.FUN_1417b7430(this);
@@ -466,9 +465,9 @@ int Ridee::FUN_1417043a0(int nRideeId, int nObjectId, PCBase* pRider)
     vfunc_76(CStringW(L""));
     vfunc_59(1, 0, 0, 0);
     FUN_141670d50(efd::Point2(25.0f, 105.0f));
-    m_unk_180[1] = spData->m_f78;
-    m_unk_180[2] = spData->m_f7c;
-    m_unk_180[3] = spData->m_f84;
+    m_unk_180.m_y = spData->m_f78;
+    m_unk_180.m_z = spData->m_f7c;
+    m_unk_180.m_w = spData->m_f84;
     FUN_141671960(spData->m_f7c);
     FUN_14123c300(spData->m_fScale);
     if (strAnim.IsEmpty())
@@ -1057,10 +1056,9 @@ float Ridee::FUN_1417070a0()
 MS2_REPLACE_METHOD(0x1417070a0, Ridee, FUN_1417070a0, 291, 0x5C3B4FBE);
 
 // @0x1417071d0
-// MS2-FUNCTIONAL: PCBase::m_unk_180 is an array here; the exe reads a named float field
 float Ridee::FUN_1417071d0()
 {
-    float fSpeed = m_unk_180[2];
+    float fSpeed = m_unk_180.m_z;
     if (!m_pRider)
         return fSpeed;
     Unk_RideePC* pc = FUN_140974230(m_pRider);
