@@ -229,6 +229,7 @@ public:
     void FUN_141660c20(const CAtlArray<MS2Ptr<CItem> >& aItems, bool bQuick);   // equip the items (bQuick: FUN_1411e38e0)
     void FUN_1416611b0(CString strKey);                     // take the profile image key if it names this character
     CString FUN_14165e010(int nAction);                     // the swim effect of an action (0x30 idle, 0x32 dash, else run)
+    bool FUN_14165e2a0(efd::utf8string& kOut, int nAction); // the swim gem's animation of an action (false: none)
     void FUN_141659250(int nValue, CubeItemInfo* pInfo);   // recreate the cube craft controller for the mode
     __int64 FUN_141656ad0();                                // +0xdc0
     int FUN_14165ef30();                                    // this is the local player
@@ -329,6 +330,7 @@ public:
     MS2Ptr<CItem> FUN_141663450();                          // +0x11b8
     void FUN_141663500(int nObjectId);                      // the couple effect: an object
     void FUN_141663620();                                   // start the couple effect (or remember it)
+    void FUN_1416636e0(MS2Ptr<CItem> spItem, int nGemId);   // create the couple effect of a couple item (itemgem.cpp)
     void FUN_141663680();                                   // stop the couple effect
     void FUN_141663870();                                   // drop the couple effect
     CStringW FUN_1416638b0();                               // the couple effect name
@@ -356,6 +358,7 @@ public:
     void FUN_1416616a0(unsigned int nDelay);                // blink the model alpha (faster nDelay ms after +0x1064)
     void FUN_141661880(int bEnable, int nValue, const CubeItemInfo* pInfo);   // enter / leave the cube mode (+0x1000 / +0x1008)
     void FUN_14165d300(int nA, int nB, int nC);             // PCBase member (pcbase.cpp; scenestategame 0x5d)
+    void FUN_14165d550(int bHide);                          // the tomb stone breaks (bHide: hide its entity)
     void FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot);   // scenestategame 0x141721a30
     MS2Ptr<Unk_PCWaterGunInfo> FUN_141664250();             // the water gun battle info (+0x1260)
     void FUN_141662640(__int64 nValue);                      // scenestategame 0x1417340f0

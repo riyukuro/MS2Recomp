@@ -272,6 +272,7 @@
 #include "ms2/placeholder/propertycache.h"
 #include "ms2/placeholder/tptreddummy.h"
 #include "ms2/commonfiles/itemenchantinfo.h"
+#include "ms2/client/ms2/effectparam.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -344,6 +345,8 @@ public:
     egf::Entity* FUN_141bcfd30(unsigned int nModel, NiPoint3 kPos, float fRange, int a, int b);  // the nearest entity of a model
 };
 Unk_PCWorld* FUN_1403ed2d0();
+void FUN_1419f37f0(int n);                                          // refresh the main player info's held item (UIMainPlayerInfo, static)
+void FUN_140cfaf30(void* pActor);                                   // wake the physics actor
 // CItem::FUN_1405278a0's record (CItemStatus, commonfiles/item.h): the enchant record.
 class Unk_PCItemStatus { public: CItemEnchantInfo* FUN_140630d60(); };
 // The movement keys of the local player (PCBase +0x6d8; unit_141682f80.cpp's Unk_PCMove).
@@ -380,6 +383,7 @@ public:
     void FUN_1411a5770(int nKind, PCBase* pTarget);                 // play an event effect on an actor
     void FUN_1411a6060(unsigned nId);                               // stop the effects of an id
     unsigned FUN_1411a5580(int nMaterial, int nKind, int nRelation, const NiPoint3& kPos, float fVolume);   // play a hit sound
+    unsigned int FUN_1411a49c0(Unk_EffectTarget& kTarget);          // play an effect (its id)
 };
 Unk_PCFxMgr* FUN_1403ed280();
 // The controller body (PCBase +0x150; unit_14123f5b0.cpp's GameObjectController).
@@ -389,6 +393,8 @@ public:
     void FUN_14123fbf0(unsigned short nGroup);                      // collision group of every shape
     void FUN_14123fd30(unsigned int nGroups);                       // the active groups
     bool FUN_1412410c0(const efd::Point3& kPos, float fRadius);     // the capsule at kPos overlaps something
+    void FUN_141240730();                                           // reset the body after a teleport
+    void* FUN_141240f20();                                          // the physics actor
 };
 // The animation service singleton (statefall.h declares the global FUN_141b6f910 with a unit-local view type).
 namespace PCAnim { egmAnimation::AnimationService* FUN_141b6f910(); }
@@ -633,6 +639,13 @@ public:
     void FUN_1419f1370(int nId);                                    // stop it
 };
 Unk_PCMainPlayerInfo* FUN_140931900(int nUiId);
+// The client config singleton (FUN_1401d31f0): the invincibility effect file at +0x268 (other members not recovered).
+struct Unk_PCConfig
+{
+    char m_pad_0[0x268];
+    CString m_strInvincibleEffect;                                  // +0x268
+};
+Unk_PCConfig* FUN_1401d31f0();
 MyPC* FUN_1409613d0(PCBase* p);                                     // efd::DynamicCast<MyPC>
 int FUN_14086ae10(__int64 nTime);                                   // the time lies before today
 CMasteryTable* FUN_1409670c0();                                     // TSingleton<CMasteryTable>
@@ -694,7 +707,11 @@ public:
 class Unk_PCLinkFD8 : public CPtred                                 // UITombStoneBar::Entity
 {
 public:
+    virtual void vfunc_1();
+    virtual void vfunc_2();
+    virtual void vfunc_3();                                         // MS2: slot 3 (hide the bar)
     void FUN_141992e40();                                           // refresh
+    void FUN_141992ea0(int nA, int nB);                             // the hit count
 };
 // The action timer at +0xfc8 (avatarpc.cpp has the same stand-in).
 class Unk_PCActionTimer : public CPtred                             // CBreakableObject (the tomb stone; cbreakableobject.h)
@@ -707,6 +724,9 @@ public:
     void FUN_140adeaf0(int nNow);                                   // per-frame update (timers, movement)
     int FUN_140adf350();                                            // m_n184
     void FUN_140adf770(efd::Point3 ptPos);                          // move: position property
+    void FUN_140ade030(int nHitter, int nKind);                     // play the hit sound
+    void FUN_140ade420(int nState, unsigned int nDelay);            // set the state (animations, effects, actor)
+    egf::EntityPtr FUN_140adf980();                                 // the entity
 };
 
 // ---- header statics of this TU (.text$di 0x1400fb010-0x1400fb4d0; same groups as unit_140114300 / unit_140102270) ----
@@ -3393,6 +3413,239 @@ BOOL PC::FUN_141661e40(int* pnEnchant, int* pnGrade)
         return 1;
     }
     return 0;
+}
+
+// @0x1416629d0
+void PC::FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot)
+{
+    // kPos / kRot are efd::Point3 values (Unk_StreamPoint is the shared header's spelling)
+    efd::SmartPointer<Ridee> spRidee = FUN_1416764a0();
+    if (spRidee)
+    {
+        MS2Ptr<CStateManager> spStates = spRidee->FUN_141678750();
+        if (spStates.get())
+            ((CStateManager*)spStates)->FUN_1417daa70();
+    }
+    else
+    {
+        MS2Ptr<CStateManager> spStates = FUN_141678750();
+        if (spStates.get())
+            ((CStateManager*)spStates)->FUN_1417daa70();
+    }
+    if (FUN_14166ce30() == 0 && spRidee == NULL && FUN_14166c930() != 0x3a)
+        vfunc_59(1, 0, 0, 0);
+    vfunc_19(reinterpret_cast<const efd::Point3&>(kPos));
+    vfunc_21(reinterpret_cast<const efd::Point3&>(kRot));
+    FUN_14166d8b0(kRot.z);
+    if (FUN_14166d220())
+    {
+        FUN_14166d220()->FUN_141240730();
+        FUN_140cfaf30(FUN_14166d220()->FUN_141240f20());
+    }
+    if (spRidee)
+    {
+        spRidee->vfunc_19(reinterpret_cast<const efd::Point3&>(kPos));
+        spRidee->vfunc_21(reinterpret_cast<const efd::Point3&>(kRot));
+        spRidee->FUN_14166d8b0(kRot.z);
+        Unk_PCBaseBody* pBody = spRidee->FUN_14166d220();
+        if (pBody)
+        {
+            pBody->FUN_141240730();
+            FUN_140cfaf30(pBody->FUN_141240f20());
+        }
+        spRidee->vfunc_59(1, 0, 0, 0);
+    }
+    if (FUN_14166ccb0())
+        FUN_14166ccb0()->vfunc_24();
+}
+
+// @0x141663150
+void PC::FUN_141663150(CInPacket& packet)
+{
+    bool bHas = static_cast<CInputStream&>(packet).vfunc_o8_0();
+    if (!bHas)
+    {
+        m_spItem11b8 = 0;
+        return;
+    }
+    int nItemId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    __int64 nItemUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
+    int nRarity = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    MS2Ptr<CItem> spItem = FUN_141663450();
+    if (spItem == 0 || spItem->FUN_140526a50() != nItemUid)
+    {
+        spItem.AssignRaw(new CItem());
+        if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
+            return;
+    }
+    spItem->FUN_140524eb0(packet);
+    spItem->FUN_140526a70(nItemUid);
+    spItem->FUN_140526b30(FUN_14123c580());
+    FUN_141663400(spItem);
+    FUN_1416769a0(nItemUid);
+    FUN_1416561a0()->FUN_1411e7660();
+}
+
+// @0x141661370
+void PC::FUN_141661370(int bStart, int nFlag, int nTimerId)
+{
+    if (FUN_1409613d0(this))
+    {
+        if (Unk_PCMainPlayerInfo* pInfo = FUN_140931900(0x4e5f))
+        {
+            if (m_n105c != 0)
+                pInfo->FUN_1419f1370(m_n105c);
+            if (bStart != 0)
+            {
+                int nEnd = 0;
+                switch (nTimerId)
+                {
+                case 0x5f5e104:
+                    nEnd = FUN_141472bc0() + Client::Constants::GetInstance()->UserRevivalInvincibleTick.Read();
+                    break;
+                case 0x5f5e105:
+                    nEnd = FUN_141472bc0() + Client::Constants::GetInstance()->UserPortalInvincibleTick.Read();
+                    break;
+                }
+                if (nEnd != 0)
+                    pInfo->FUN_1419f1200(nTimerId, nEnd);
+            }
+        }
+    }
+    if (bStart)
+    {
+        m_n105c = nTimerId;
+        unsigned int nNow = FUN_140869420();
+        m_n1054 = nNow;
+        m_n106c = nNow;
+        m_n1064 = nNow;
+        m_n1058 = nFlag;
+        Unk_EffectTarget kTarget;
+        kTarget.m_strName = FUN_1401d31f0()->m_strInvincibleEffect;
+        kTarget.m_nKind = 0;
+        kTarget.FUN_140a53190(FUN_14123c580());
+        m_n1060 = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+    }
+    else
+    {
+        m_n105c = 0;
+        m_n1054 = 0;
+        m_n1058 = 0;
+        FUN_1403ed280()->FUN_1411a6060(m_n1060);
+        m_n1060 = 0;
+    }
+}
+
+// @0x14165f1f0
+void PC::FUN_14165f1f0(int nItemId, int bHold)
+{
+    if (bHold)
+    {
+        MS2Ptr<CItem> spItem(new CItem());
+        if (!spItem->FUN_140523c40(nItemId, 1, 0))
+            return;
+        spItem->FUN_140526b30(FUN_14123c580());
+        spItem->FUN_140526a70(FUN_14123cec0());
+        spItem->FUN_14052a130(5);
+        vfunc_127(spItem.get(), 0);
+        FUN_14165f0b0(spItem);
+        FUN_14165f130(1);
+        if (FUN_1409613d0(this))
+            FUN_1419f37f0(1);
+    }
+    else
+    {
+        if (m_spItem1040.get())
+        {
+            vfunc_128(m_spItem1040.get(), 0);
+            m_spItem1040 = 0;
+            FUN_14165f130(0);
+            if (FUN_1409613d0(this))
+                FUN_1419f37f0(1);
+        }
+    }
+}
+
+// @0x14165d300
+void PC::FUN_14165d300(int nA, int nB, int nHitter)
+{
+    if (m_spFC8 == 0)
+        return;
+    if (nA == 0)
+    {
+        bool bLocal = FUN_1403ed2d0()->FUN_141bd0cc0() == this;
+        if (nHitter != 0)
+        {
+            m_spFC8->FUN_140ade030(nHitter, bLocal ? 1 : 3);
+            if (bLocal)
+                FUN_1403ed280()->FUN_1411a5770(4, this);
+        }
+        FUN_14165d550(1);
+    }
+    else
+    {
+        bool bLocal = FUN_1403ed2d0()->FUN_141bd0cc0() == this;
+        m_spFC8->FUN_140ade030(nHitter, bLocal ? 1 : 3);
+        m_spFC8->FUN_140ade420(6, 1000);
+        if (FUN_141657730().get())
+            FUN_141657730()->FUN_141992ea0(nA, nB);
+    }
+}
+
+// @0x14165d550
+void PC::FUN_14165d550(int bHide)
+{
+    if (m_spFC8 == 0)
+        return;
+    m_spFC8->FUN_140ade420(3, 1000);
+    if (bHide != 0)
+    {
+        egf::EntityPtr spEntity = m_spFC8->FUN_140adf980();
+        if (spEntity)
+        {
+            bool bVisible = false;
+            FUN_14098c6e0(spEntity.operator->(), 0xa0b6b179, bVisible);
+        }
+    }
+    if (FUN_141657730().get())
+        FUN_141657730()->vfunc_3();
+    m_nFF4 = 0;
+}
+
+// @0x14165e2a0
+bool PC::FUN_14165e2a0(efd::utf8string& kOut, int nAction)
+{
+    kOut.clear();
+    MS2Ptr<CGemSwim> spSwim = FUN_14165e1b0();
+    if (spSwim == 0)
+        return false;
+    MS2Ptr<CGemSwimData> spData = spSwim->FUN_1405a5720();
+    if (spData.get())
+    {
+        if (nAction == 0x30)
+            kOut = (const char*)spData->FUN_1405ac8f0();
+        else if (nAction == 0x32)
+            kOut = (const char*)spData->FUN_1405ac990();
+        else
+            kOut = (const char*)spData->FUN_1405ac940();
+    }
+    return !kOut.empty();
+}
+
+// CItem::FUN_1405294a0 (the couple info's linked flag) really returns int: the exe caller stores eax without widening
+// (citem.h / item.cpp spell it unsigned char, the callee bytes are the same).
+class Unk_PCCoupleItem { public: int FUN_1405294a0(); };
+
+// @0x1416636e0
+void PC::FUN_1416636e0(MS2Ptr<CItem> spItem, int nGemId)
+{
+    m_spCouple11d8.AssignRaw(new CoupleEffectSystem(this, spItem->FUN_1405293b0(), spItem->FUN_1405276c0(),
+        reinterpret_cast<Unk_PCCoupleItem*>((CItem*)spItem)->FUN_1405294a0(), spItem->FUN_140529410(), nGemId));
+    if (m_n11d0 != 0)
+    {
+        m_spCouple11d8->FUN_140b0ed30();
+        m_n11d0 = 0;
+    }
 }
 
 // @0x141660c20
