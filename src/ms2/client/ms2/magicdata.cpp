@@ -2143,7 +2143,7 @@ void CMagic::FUN_141461bd0(unsigned nNow)
                 pBox->m_ptSize = Unk_StreamPoint(0, pRow->m_ptBoxSize.y, pRow->m_ptBoxSize.z);
                 pBox->m_kColor = NiColorA(0.0f, 0.0f, 1.0f, 1.0f);
                 pBox->vfunc_4();
-                pBox->vfunc_2(m_ptLast, reinterpret_cast<const Unk_StreamPoint&>(m_matRotation), 1.0f);
+                pBox->vfunc_2(m_ptLast, reinterpret_cast<const NiMatrix3&>(m_matRotation), 1.0f);
                 spShape = spBox;
             }
             m_nCollision = FUN_141469a90()->Add(spShape);

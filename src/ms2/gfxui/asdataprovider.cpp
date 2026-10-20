@@ -80,7 +80,7 @@ void ASDataProvider::FUN_1422df1c0(const CString& strType, const Value& listener
 // @0x1422df2e0
 void ASDataProvider::FUN_1422df2e0(const CString& strType, const Value& listener, int bUseCapture)
 {
-    Invoke("removeEventListener", strType, listener, bUseCapture != 0);
+    FUN_1422c3e40("removeEventListener", strType, listener, bUseCapture != 0);
 }
 
 // @0x1422df3c0

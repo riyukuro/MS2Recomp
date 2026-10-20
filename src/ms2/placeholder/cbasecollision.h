@@ -34,7 +34,7 @@ public:
     CBaseCollision();                                               // 0x1409fbc80
     virtual ~CBaseCollision();                                      // 0x1409fbed0
     virtual void vfunc_1();                                         // 0x1409fbf20: draws the wire mesh
-    virtual void vfunc_2(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale);   // 0x1409fbff0 (same body as vfunc_3)
+    virtual void vfunc_2(Unk_StreamPoint ptPos, const NiMatrix3& kRot, float fScale);   // 0x1409fbff0 (same body as vfunc_3)
     virtual void vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale);   // 0x1409fbfa0
     virtual void vfunc_4();                                         // 0x1409fc040
     virtual void vfunc_5() = 0;                                     // builds the wire meshes

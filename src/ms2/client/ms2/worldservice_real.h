@@ -46,11 +46,11 @@ public:
 };
 MS2_CHECK_SIZE(VisibleObjectRecord, 0x20);
 
-class Rec1f8 : public CPtred {};                        // m_1f8 values (held through MS2Ptr)
+class Rec1f8 : public CPtred {};                        // unidentified MS2Ptr pointee (not m_1f8's: its values are pair<EntityID,unsigned>)
 class Recad0 : public CPtred {};                        // m_ad0 values (held through MS2Ptr)
 // The tail holds 7 MS2Ptr<T>::Release/ReleaseImpl pairs (0x141c28c80..0x141c28e00 / 0x141c28ee0..0x141c290c0, called by the
 // ~MS2Ptr COMDATs 0x141bf5570..0x141bf5690) whose Reference<T> COMDATs are 0x141c1f620..0x141c1f6c0, except FieldProperty's
-// (0x140b28640). In that order T = MS2ActorUpdater, Rec1f8, Recad0 (= m_aa0's pointee too: ~MS2Ptr 0x141bf55d0), m_a80's,
+// (0x140b28640). In that order T = MS2ActorUpdater, Rec1f8 (unidentified), Recad0 (= m_aa0's pointee too: ~MS2Ptr 0x141bf55d0), m_a80's,
 // FieldProperty, and two not yet identified (stand-ins below; 0x141bf5660 is used by the m_208 list holder, 0x141bf5690 by
 // the m_708 values in FUN_141bd0220).
 class Rec058 : public CPtred {};                        // m_058 elements (CAtlList<MS2Ptr>; FreeNode 0x141bfccb0, RemoveAll 0x141c16150)
@@ -74,7 +74,7 @@ typedef std::list<egf::Entity*> List088;                                        
 typedef std::map<egf::EntityID, VisibleObjectRecord> Map1d8;                             // +0x1d8
 typedef std::set<egf::EntityID> EntitySet;
 typedef std::map<int, EntitySet> Map1e8;                                                 // +0x1e8
-typedef std::map<int, MS2Ptr<Rec1f8> > Map1f8;                                           // +0x1f8
+typedef std::map<int, std::pair<egf::EntityID, unsigned> > Map1f8;                        // +0x1f8 (see below)
 typedef std::map<egf::EntityID, efd::SmartPointer<egf::Entity> > Map2e8;                 // +0x2e8
 typedef std::map<egf::EntityID, int> Map900;                                             // +0x900 (ctor 0x1413e86d0, other CU; empty() 0x141c2c0c0 here)
 typedef std::map<egf::EntityID, efd::SmartPointer<CEntityShower> > Map980;               // +0x980
@@ -84,20 +84,17 @@ typedef std::vector<std::pair<CStringA, CStringW> > Veca00;                     
 typedef std::vector<std::pair<CStringA, MS2Ptr<Unk_WsK_Rank> > > Veca18;                 // +0xa18
 typedef std::vector<std::pair<CStringA, CStringA> > VecTextPair;                         // local of FUN_141bdb1b0 (ctor 0x141bf3300, dtor 0x141bf5ef0)
 typedef std::map<egf::EntityID, __int64> Mapab0;                                         // +0xab0 (server-time deadline)
-typedef std::map<int, efd::SmartPointer<egf::Entity> > Mapac0;                           // +0xac0
-typedef std::map<__int64, MS2Ptr<Recad0> > Mapad0;                                       // +0xad0
+typedef std::map<unsigned, efd::SmartPointer<egf::Entity> > Mapac0;                      // +0xac0 (see below)
+typedef std::map<unsigned __int64, MS2Ptr<Recad0> > Mapad0;                              // +0xad0 (see below)
 
-// The real key / value types of three of the maps above (w532, worldservice.cpp#2). Map1f8 / Mapac0 / Mapad0 stay for
-// the parts pinned against them (their tree COMDATs are byte-identical look-alikes):
+// The key / value types of m_1f8, m_ac0 and m_ad0 (w532, worldservice.cpp#2; the earlier stand-ins map<int, MS2Ptr>,
+// map<int, SmartPointer> and map<__int64, MS2Ptr> named byte-identical look-alikes wrongly):
 // - m_1f8 values are (entity, grid value) pairs: FUN_141bbd640 does m_1f8[cell] = std::make_pair(id, grid) (make_pair
 //   0x141beeda0, pair ctor 0x141bdc620, pair operator= 0x141bdd030);
 // - m_ac0 has an unsigned key: its _Try_emplace 0x141beb5b0 (operator[] 0x141bf7a50) compares with less<unsigned>
 //   0x140185090;
 // - m_ad0 has an unsigned __int64 key: its _Try_emplace 0x141beb9a0 / 0x141bebaf0 (const& / && key) compare with
 //   less<unsigned __int64> 0x14044a540 (unsigned jae).
-typedef std::map<int, std::pair<egf::EntityID, unsigned> > Map1f8Real;                    // +0x1f8
-typedef std::map<unsigned, efd::SmartPointer<egf::Entity> > Mapac0Real;                   // +0xac0
-typedef std::map<unsigned __int64, MS2Ptr<Recad0> > Mapad0Real;                           // +0xad0
 
 MS2_CHECK_SIZE(Map1d8, 0x10);
 MS2_CHECK_SIZE(Vec9a0, 0x18);

@@ -1,38 +1,56 @@
 // gfxservice.h - PLACEHOLDER for GFxService and GFxSceneService (RTTI .?AVGFxService@@ 0x30 bytes, .?AVGFxSceneService@@
 // 0x40 bytes). NOT an original header. Both are efd system services of the game's Scaleform integration (class ids
-// 0x06202711 / 0x06202712); RTTI also lists an empty SingletonClass<T> base (@0x19) for each (GFxService still leaves it out).
-// GFxService initialises Scaleform::GFx::System; MS2::RegisterServices gives it the locale's font name (+0x28).
-// The integration code (0x1422b9000-0x1422eb000) has no unit yet; only the members ms2.cpp uses are declared.
+// 0x06202711 / 0x06202712) with an empty SingletonClass<T> base @0x19.
+//
+// GFxService (vftable 0x1431169d8, 20 slots; code in ?\gfxservice.cpp, src/ms2/gfxui/gfxservice.cpp): its ctor
+// initialises Scaleform::GFx::System with a GFxSysAlloc and creates the UI singletons (GFxManager, UniqueSwfIDCreator,
+// UIAlignWidgetManager, UISwfEntityManager, GFxAtlasCache), its dtor destroys them. It forwards render device lost /
+// restored (NiDX9Renderer notifications) and window messages to GFxManager / UISwfEntityManager. MS2::RegisterServices
+// gives it the locale's font name (+0x28). SingletonClass<GFxService> is the FIRST base (its ctor runs before
+// ISystemService's; MSVC still puts the vfptr base at 0). The instance pointer is 0x143ae0748 (getter 0x1414a56c0).
 #pragma once
 
+#include <afx.h>
 #include <efd/ISystemService.h>
 #include <efd/ReferenceCounting.h>
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/singletonclass.h"
 
+class GFxSysAlloc;
 class UISceneEntity;
 
-class GFxService : public efd::ISystemService
+class GFxService : public SingletonClass<GFxService>, public efd::ISystemService
 {
     EE_DECLARE_CLASS1(GFxService, 0x06202711, efd::ISystemService);
     EE_DECLARE_CONCRETE_ATOMIC_REFCOUNT;
 public:
     GFxService();                                                   // 0x1422e9a40
-    virtual ~GFxService();
-    virtual const char* GetDisplayName() const;
-    virtual void vfunc_16();                                        // 0x1422e9c40
-    virtual void vfunc_17();                                        // 0x1422e9c90
-    virtual void vfunc_18();                                        // 0x1422e9d90
-    virtual void vfunc_19(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);   // 0x1422e9df0 sees every message
+    virtual ~GFxService();                                          // 0x1422e9b40
+    virtual efd::SyncResult OnPreInit(efd::IDependencyRegistrar* pDependencyRegistrar);   // 0x1422e9e80
+    virtual efd::AsyncResult OnInit();                              // 0x1422e9ed0
+    virtual efd::AsyncResult OnTick();                              // 0x1422ea020
+    virtual efd::AsyncResult OnShutdown();                          // 0x1422ea080
+    virtual const char* GetDisplayName() const;                     // 0x1422e9c20
+    virtual void vfunc_16();                                        // 16 0x1422e9c40 render device lost
+    virtual bool vfunc_17();                                        // 17 0x1422e9c90 render device restored
+    virtual int vfunc_18(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);    // 18 0x1422e9d90
+    virtual int vfunc_19(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);    // 19 0x1422e9df0 sees every message
+    int FUN_1422e9e50();                                            // GFx allocator bytes in use (0 without allocator)
+    static bool FUN_1422ea110(bool bBeforeReset, void* pvData);     // NiDX9Renderer reset notification
+    static bool FUN_1422ea1f0(void* pvData);                        // NiDX9Renderer lost device notification
+    static void FUN_1422ea210(int nCaptureBlock);                   // s_nCaptureBlock =
     void FUN_1422ea230(CString strFont);                            // +0x28
+    void FUN_1422ea280(bool b);
     static int FUN_141b47780();                                     // s_nCaptureBlock (inline COMDAT, uiugcitemeditdialog.cpp)
-    bool FUN_1422ea2a0();                                           // 0x1422ea2a0 (GFxMovieMouseCursor::vfunc_5: no cursor show/hide while set)
+    bool FUN_1422ea2a0();                                           // 0x1422ea2a0 the font is "CN" (GFxMovieMouseCursor::vfunc_5)
     static int s_nCaptureBlock;                                     // 0x143b0d360 screenshots blocked while set
 private:
     MS2_LAYOUT_FRIEND;
-    char m_pad_1c[0x30 - 0x1c];
+    GFxSysAlloc* m_pSysAlloc;                                       // +0x20 Scaleform's system allocator
+    CString m_strFont;                                              // +0x28
 };
+MS2_CHECK_OFFSET(GFxService, m_pSysAlloc, 0x20);
 MS2_CHECK_SIZE(GFxService, 0x30);
 
 GFxService* FUN_1414a56c0();                                        // the GFxService instance

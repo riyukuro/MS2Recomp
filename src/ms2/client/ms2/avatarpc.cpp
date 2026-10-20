@@ -1163,7 +1163,7 @@ void AvatarPC::FUN_1409f68e0(MS2Ptr<CItem> spItem)
     {
         FUN_1409f6540(false);
         ::FUN_141661ba0(this, 0);
-        FUN_14165cac0(this);
+        ::FUN_14165cac0(this);
     }
 }
 

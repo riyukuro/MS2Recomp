@@ -19,6 +19,7 @@ Cache: <cache>/gb/obj/<recipe>/... (incremental: obj mtime vs source + /showIncl
 (per-obj match results keyed by obj mtime/size).
 """
 import argparse
+import bisect
 import collections
 import contextlib
 import hashlib
@@ -46,8 +47,9 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb1"                                  # bump to recompile everything
-MATCH_KEY = "callee9-leaf"                        # bump to re-match every obj (pairing logic changed)
+MATCH_KEY = "static-near"                       # bump to re-match every obj (pairing logic changed)
 LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
+STATIC_NEAR = 0x10000                           # match_obj: a COMDAT caller's static callee only this near the obj's own code
 COPY_ROUNDS = 8                              # assign_copies: offers of an unpaired copy to the next claimant
 NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
 if NO_CALLEE:
@@ -171,7 +173,10 @@ def _search(obj, si):
     idx = [k for k in range(len(data)) if keep[k]]
     want = bytes(data[k] for k in idx)
     hits = []
+    leaf = G["leaf"]
     for rva in G["bylen"].get(len(data), []):
+        if (rva in leaf) != (unw is None):      # a leaf (no .pdata) only pairs with a leaf, and vice versa
+            continue
         img = exe.img[rva:rva + len(data)]
         if bytes(img[k] for k in idx) == want:
             hits.append(rva + exe.base)
@@ -186,6 +191,35 @@ def _match(obj, n, va):
             return False
 
 
+def _comdat_any(obj, n):
+    return obj.sec(obj.syms[obj.by_name[n]][2]).get("comdat", (0,))[0] == 2
+
+
+def _hints(obj, n, shints):
+    """the exe targets of the last match of n; the static callees of a COMDAT-any caller go to shints instead: the
+    linker may have kept another TU's copy of the caller, which calls that TU's statics (LuaTraits<T>::ToLuaObject ->
+    _SWIG_Lua_AddMetatable), so they count only near the obj's own code (_static_hints)"""
+    t = dict(bm.LAST_TARGETS)
+    if not _comdat_any(obj, n):
+        return t
+    for k in [k for k in t if k in obj.by_name and obj.syms[obj.by_name[k]][4] == 3]:
+        shints.setdefault(k, t.pop(k))
+    return t
+
+
+def _static_hints(obj, out, shints, callees):
+    """shints whose exe VA lies within STATIC_NEAR of the obj's own (non-COMDAT-any) exact functions (if it has none:
+    any of its exact functions) -> callees"""
+    own = sorted(va for n, va, ok, _ in out if ok and not _comdat_any(obj, n)) or sorted(va for _, va, ok, _ in out if ok)
+    if not own:
+        return
+    for k, v in shints.items():
+        if k not in callees:
+            i = bisect.bisect_left(own, v)
+            if min(abs(v - own[j]) for j in (i - 1, i) if 0 <= j < len(own)) <= STATIC_NEAR:
+                callees[k] = v
+
+
 def match_obj(path):
     """([(symbol, va, ok, how)] for the obj's functions that pair with an exe VA, [[symbol, [exe copies]]] of the
     unpaired functions whose bytes several exe functions have, exe VAs of the obj's exact non-template functions)"""
@@ -197,6 +231,7 @@ def match_obj(path):
     callees, pending = {}, []    # name -> exe VA called/referenced by this obj's exact functions; unpaired functions
     copies = {}                  # unpaired name -> the exe functions whose bytes equal it (relocations masked), if several
     weak = {}                    # name -> its non-exact table-name pair, kept if nothing better turns up
+    shints = {}                  # static name -> exe VA called by an exact COMDAT-any function (see _hints)
     for si in obj.func_symbols():
         n = obj.syms[si][0]
         if n.startswith(bm.FUNCLET_PREFIXES):
@@ -208,7 +243,7 @@ def match_obj(path):
         if va is not None:
             ok = _match(obj, n, va)
             if ok:
-                callees.update(bm.LAST_TARGETS)
+                callees.update(_hints(obj, n, shints))
         if not ok:
             hits = _search(obj, si)
             if len(hits) > 1:
@@ -218,7 +253,7 @@ def match_obj(path):
             if len(hits) == 1 and hits[0] != va:
                 ok2 = _match(obj, n, hits[0])
                 if ok2:
-                    callees.update(bm.LAST_TARGETS)
+                    callees.update(_hints(obj, n, shints))
                 if ok2 or va is None:
                     va, how, ok = hits[0], "search", ok2
             elif len(hits) == 1:
@@ -242,6 +277,7 @@ def match_obj(path):
     tried = set()
     while (pending or vfts) and not NO_CALLEE:
         grew = False
+        _static_hints(obj, out, shints, callees)
         for n in list(vfts):
             va = callees.get(n) or G["dnames"].get(n)
             if va is not None:
@@ -256,7 +292,7 @@ def match_obj(path):
                 continue
             tried.add((n, va))
             if _match(obj, n, va):          # exact only: the caller itself may be a byte-identical look-alike of
-                callees.update(bm.LAST_TARGETS)     # another type, so its reloc targets are only a hint
+                callees.update(_hints(obj, n, shints))      # another type, so its reloc targets are only a hint
                 out.append((n, va, True, "callee"))
             else:                           # a wrong hint: still unpaired (a copy candidate below)
                 nxt.append(n)

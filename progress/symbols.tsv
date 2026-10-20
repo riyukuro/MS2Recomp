@@ -34746,7 +34746,7 @@ sprintf	1403b0860	func
 ?FUN_140536a30@Unk_C2ConstA@@QEAAIXZ	140536a30	func
 ?FUN_140536a30@Unk_IdleChance@@QEAAIXZ	140536a30	func
 ?FUN_140536a30@Unk_WhisperConstValue@@QEAAHXZ	140536a30	func
-??$StringFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@@Z	140536a50	func
+??$StringFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@@Z	140540050	func
 ??$Unk_SocketFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@@Z	140536a50	func
 ?FUN_140536a50@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV12@@Z	140536a50	func
 ??0?$CAtlMap@IV?$MS2SvrPtr@VCostumeSet@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2SvrPtr@VCostumeSet@@@@@3@@ATL@@QEAA@IMMMI@Z	140536af0	func
@@ -135597,7 +135597,7 @@ vsprintf	14116bc30	func
 ?_Compat@?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@U?$pair@W4Occurrence@CGuideManager@@H@std@@@std@@@std@@@std@@QEBAXAEBV12@@Z	14139c4f0	func
 ?_Compat@?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@QEBAXAEBV12@@Z	14139c500	func
 ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAXXZ	14139c510	func
-?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Occurrence@CGuideManager@@HU?$less@W4Occurrence@CGuideManager@@@std@@V?$allocator@U?$pair@$$CBW4Occurrence@CGuideManager@@H@std@@@4@$0A@@std@@@std@@QEAAXXZ	14139c540	func
+?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Occurrence@CGuideManager@@HU?$less@W4Occurrence@CGuideManager@@@std@@V?$allocator@U?$pair@$$CBW4Occurrence@CGuideManager@@H@std@@@4@$0A@@std@@@std@@QEAAXXZ	14139c570	func
 ?_Construct@?$_Tree_comp_alloc@V?$_Tset_traits@JU?$less@J@std@@V?$allocator@J@2@$0A@@std@@@std@@QEAAXXZ	14139c540	func
 ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Occurrence@CGuideManager@@VGuideOccurContainer@@U?$less@W4Occurrence@CGuideManager@@@std@@V?$allocator@U?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@5@$0A@@std@@@std@@QEAAXXZ	14139c5a0	func
 ?_Construct@?$_Tree_comp_alloc@V?$_Tset_traits@W4Occurrence@CGuideManager@@U?$less@W4Occurrence@CGuideManager@@@std@@V?$allocator@W4Occurrence@CGuideManager@@@4@$0A@@std@@@std@@QEAAXXZ	14139c5d0	func
@@ -135907,7 +135907,7 @@ vsprintf	14116bc30	func
 ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@W4Occurrence@CGuideManager@@H@std@@V?$allocator@U?$pair@W4Occurrence@CGuideManager@@H@std@@@2@@std@@@std@@QEBAAEBQEAU?$pair@W4Occurrence@CGuideManager@@H@2@XZ	1413a2710	func
 ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@std@@SAPEAU?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@2@AEAU32@@Z	1413a2710	func
 ?pointer_to@?$pointer_traits@PEBU?$pair@$$CBW4Occurrence@CGuideManager@@H@std@@@std@@SAPEBU?$pair@$$CBW4Occurrence@CGuideManager@@H@2@AEBU32@@Z	1413a2730	func
-?Reference@?$MS2Ptr@VCGuideEntity@@@@CAXPEAVCGuideEntity@@@Z	1413a2750	func
+?Reference@?$MS2Ptr@VCGuideEntity@@@@CAXPEAVCGuideEntity@@@Z	14139b660	func
 ?pointer_to@?$pointer_traits@PEBU?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@std@@SAPEBU?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@2@AEBU32@@Z	1413a2750	func
 ?push_back@?$list@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VCGuideEntity@@@@@Z	1413a2770	func
 ?push_back@?$vector@U?$pair@W4Occurrence@CGuideManager@@H@std@@V?$allocator@U?$pair@W4Occurrence@CGuideManager@@H@std@@@2@@std@@QEAAX$$QEAU?$pair@W4Occurrence@CGuideManager@@H@2@@Z	1413a27b0	func
@@ -183269,7 +183269,7 @@ FUN_141485590	141485590	func
 ?CreateMaterial@NiMaterialLibrary@@SAPEAVNiMaterial@@AEBVNiFixedString@@@Z	141d284a0	func
 ?FUN_141d284a0@@YAPEAVNiMaterial@@PEAX@Z	141d284a0	func
 ?FUN_141d284a0@@YAPEAVNiMaterial@@PEBVNiFixedString@@@Z	141d284a0	func
-?GetMaterial@NiMaterial@@SAPEAV1@AEBVNiFixedString@@@Z	141d284a0	func
+?GetMaterial@NiMaterial@@SAPEAV1@AEBVNiFixedString@@@Z	141d661d0	func
 ?GetGlobalShaderConstantEntry@NiShaderFactory@@QEAAPEAVNiGlobalConstantEntry@@AEBVNiFixedString@@@Z	141d29310	func
 ?GetInstance@NiShaderFactory@@SAPEAV1@XZ	141d29370	func
 ?RegisterErrorCallback@NiShaderFactory@@SA_NP6AIPEBDI_N@Z@Z	141d29760	func

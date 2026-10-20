@@ -458,3 +458,4 @@ void Unk_WsInst4(WorldService* w, Unk_WsTextEntry& text, Unk_WsLogEntry& log, Un
     { ATL::CAtlArray<void*> a; }
     w->TSingleton<WorldService>::~TSingleton();
 }
+// MS2-PIN: ??1ActorRemovedMessage@egmAnimation@@UEAA@XZ 0x141bf5fb0 ; stores ??_7ActorRemovedMessage (0x142ffeb08); ~ActorAddedMessage is its look-alike

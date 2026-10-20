@@ -242,3 +242,5 @@ void Unk_GuildDrivePtrs6(TP<GX::GuildEvent>& a,TP<GX::GuildHouse>& b,TP<GX::Guil
     Unk_DrivePtr6(m,(CGuildNpcShopMgr*)0); Unk_DrivePtr6(n,(CGuildSkill*)0); Unk_DrivePtr6(o,(Hist*)0);
     Unk_DrivePtr6(p,(CNpcShopProductProxy*)0); Unk_DrivePtr6(q,(CSeasonData*)0);
 }
+// vector<pair<int,int>>::_Orphan_all (bytematch MATCH; the auto pairing leaves it unpaired after merge 20)
+// MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@@std@@QEAAXXZ 0x140503b40

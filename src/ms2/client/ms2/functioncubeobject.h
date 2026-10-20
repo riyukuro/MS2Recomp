@@ -17,6 +17,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/cbasecollision.h"
+#include "ms2/placeholder/cboxcollision.h"           // CBoxCollision (the interaction box)
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cubeiteminfo.h"
 #include "ms2/client/ms2/animationcallbackmanager.h"      // CGlobalKeyTextCallback
@@ -26,17 +27,6 @@
 namespace efd { class IMessage; }
 namespace egf { class EntityChangeMessage; }
 
-// The interaction box: a debug-visible box collision (class of an unrecovered unit; only the ctor and the fields touched).
-class CBoxCollision : public CBaseCollision
-{
-public:
-    CBoxCollision();                                              // 0x140ada4c0
-    virtual void vfunc_5();
-    virtual float vfunc_6();
-    Unk_StreamPoint m_ptBox;                                      // +0x78
-    char m_pad_84[0x150 - 0x84];
-};
-MS2_CHECK_SIZE(CBoxCollision, 0x150);
 class FunctionCubeData;
 class Unk_Entity;
 

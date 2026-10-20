@@ -11,35 +11,16 @@
 // MS2-PIN: ??_GSkillActionSkill@@UEAAPEAXI@Z 0x1408024b0 ; unique
 // MS2-PIN: ??1SkillGlideData@@UEAA@XZ 0x140802ae0 ; unique
 // MS2-PIN: ??_GSkillGlideData@@UEAAPEAXI@Z 0x140802b70 ; unique
-// MS2-PIN: ??$IsSameVector@H@@YA_NAEBV?$vector@HV?$allocator@H@std@@@std@@0@Z 0x140804ec0 ; unique
-// MS2-PIN: ??$_Copy_memmove@PEAHPEAH@std@@YAPEAHPEAH00@Z 0x140804f60 ; unique
-// MS2-PIN: ??$_Get_unwrapped@H@std@@YAPEAHQEAH@Z 0x140805760 ; prop
 // MS2-PIN: ??$_Get_unwrapped_n@V?$MS2Ptr@VSkillActionAdditional@@@@_J$0A@@std@@YAPEAV?$MS2Ptr@VSkillActionAdditional@@@@QEAV1@_J@Z 0x140805770 ; unique
-// MS2-PIN: ??$_Idl_distance1@PEAHPEAH@std@@YA_JAEBQEAH0Urandom_access_iterator_tag@0@@Z 0x1408057c0 ; unique
-// MS2-PIN: ??$_Idl_distance@PEAHPEAH@std@@YA_JAEBQEAH0@Z 0x140805820 ; prop
-// MS2-PIN: ??$_Ptr_move_cat@HH@std@@YA?AU_Really_trivial_ptr_iterator_tag@0@AEBQEAH0@Z 0x1408058b0 ; unique
-// MS2-PIN: ??$_Seek_wrapped@H@std@@YAXAEAPEAHQEAH@Z 0x1408058f0 ; prop
-// MS2-PIN: ??$_Uninitialized_move@PEAHPEAHV?$allocator@H@std@@@std@@YAPEAHQEAH0PEAHAEAV?$allocator@H@0@@Z 0x140805b60 ; unique
-// MS2-PIN: ??$_Uninitialized_move_al_unchecked@HHV?$allocator@H@std@@@std@@YAPEAHQEAH00AEAV?$allocator@H@0@U_Really_trivial_ptr_iterator_tag@0@U?$integral_constant@_N$00@0@@Z 0x140805ca0 ; unique
 // MS2-PIN: ??$emplace_back@AEBV?$MS2Ptr@VSkillMotionData@@@@@?$vector@V?$MS2Ptr@VSkillMotionData@@@@V?$allocator@V?$MS2Ptr@VSkillMotionData@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VSkillMotionData@@@@@Z 0x140805e30 ; prop
 // MS2-PIN: ??$move@AEAV?$MS2Ptr@VSkillActionAdditional@@@@@std@@YA$$QEAV?$MS2Ptr@VSkillActionAdditional@@@@AEAV1@@Z 0x140805ff0 ; unique
-// MS2-PIN: ??$move@AEAH@std@@YA$$QEAHAEAH@Z 0x140806000 ; prop
-// MS2-PIN: ??A?$vector@HV?$allocator@H@std@@@std@@QEBAAEBH_K@Z 0x140806350 ; unique
 // MS2-PIN: ?_Calculate_growth@?$vector@V?$MS2Ptr@VSkillActionAdditional@@@@V?$allocator@V?$MS2Ptr@VSkillActionAdditional@@@@@std@@@std@@AEBA_K_K@Z 0x140806640 ; prop
-// MS2-PIN: ?_Change_array@?$vector@HV?$allocator@H@std@@@std@@AEAAXQEAH_K1@Z 0x140806870 ; unique
 // MS2-PIN: ?_Has_unused_capacity@?$vector@V?$MS2Ptr@VSkillMotionData@@@@V?$allocator@V?$MS2Ptr@VSkillMotionData@@@@@std@@@std@@AEBA_NXZ 0x140806a80 ; prop
 // MS2-PIN: ?_Umove@?$vector@V?$MS2Ptr@VSkillActionAdditional@@@@V?$allocator@V?$MS2Ptr@VSkillActionAdditional@@@@@std@@@std@@AEAAPEAV?$MS2Ptr@VSkillActionAdditional@@@@PEAV3@00@Z 0x140806cf0 ; prop
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@V?$MS2Ptr@VSkillActionAdditional@@@@V?$allocator@V?$MS2Ptr@VSkillActionAdditional@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VSkillActionAdditional@@@@00U?$integral_constant@_N$0A@@2@@Z 0x140806d70 ; prop
-// MS2-PIN: ?_Umove_if_noexcept1@?$vector@HV?$allocator@H@std@@@std@@AEAAXPEAH00U?$integral_constant@_N$00@2@@Z 0x140806db0 ; hand (int copy; was mis-bound to SkillAttackData)
-// MS2-PIN: ?_Umove_if_noexcept@?$vector@HV?$allocator@H@std@@@std@@AEAAXPEAH00@Z 0x140806e50 ; hand (int; was mis-bound to SkillAttackData)
 // MS2-PIN: ?allocate@?$allocator@V?$MS2Ptr@VSkillMotionData@@@@@std@@QEAAPEAV?$MS2Ptr@VSkillMotionData@@@@_K@Z 0x140806f30 ; prop
-// MS2-PIN: ?clear@?$vector@HV?$allocator@H@std@@@std@@QEAAXXZ 0x140806fd0 ; unique
-// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@H@std@@@std@@SA_KAEBV?$allocator@H@2@@Z 0x1408070f0 ; unique
 // MS2-PIN: ?max_size@?$vector@V?$MS2Ptr@VSkillActionAdditional@@@@V?$allocator@V?$MS2Ptr@VSkillActionAdditional@@@@@std@@@std@@QEBA_KXZ 0x140807100 ; prop
-// MS2-PIN: ??__Fs_strEmpty@?1??FUN_140804500@SkillLevelData@@QEAAAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HH@Z@YAXXZ 0x142c9c1a0 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ??$_Emplace_reallocate@AEBH@?$vector@HV?$allocator@H@std@@@std@@QEAAPEAHQEAHAEBH@Z 0x140805510
-// MS2-PIN: ?_Calculate_growth@?$vector@HV?$allocator@H@std@@@std@@AEBA_K_K@Z 0x1408066d0
 // MS2-PIN: ??$Combine@_J@Unk_HashKey@@QEAAXAEB_J@Z 0x140805f50
 // MS2-PIN: ?Finish@Unk_HashKey@@QEAAXXZ 0x1408070d0
 // MS2-GUESS-LOOKALIKES
@@ -616,13 +597,10 @@ int Unk_SkillBlockB0::FUN_1408034a0(Unk_140165cf0* pElem)
         std::vector<int> vCompare;
         XmlTokenList(pChange, "changeSkillCheckEffectCompareFunc", vCompare);
         for (int nFunc : vCompare)
-            m_vCheckEffectCompareFunc.push_back(nFunc);
+            m_vCheckEffectCompareFunc.push_back((SkillCompareSign)nFunc);
     }
     while (m_vCheckEffectCompareFunc.size() < m_arrCheckEffectID.GetCount())
-    {
-        int nDefault = 1;
-        m_vCheckEffectCompareFunc.push_back(nDefault);
-    }
+        m_vCheckEffectCompareFunc.push_back(SkillCompareSign_Equals);
     int nResult = 0;
     if (m_arrCheckEffectID.GetCount() == m_arrCheckEffectLevel.GetCount() &&
         m_arrCheckEffectID.GetCount() == m_arrCheckEffectOverlapCount.GetCount() &&
@@ -775,11 +753,11 @@ SkillAttackData* SkillLevelData::FUN_140803fb0(int nMotion, CString strName)
 }
 
 // @0x140804030
-SkillAttackData* SkillLevelData::FUN_140804030(const CString& strPoint)
+SkillAttackData* SkillLevelData::FUN_140804030(const CString& strPoint) const
 {
-    for (std::vector<MS2Ptr<SkillMotionData> >::iterator it = m_vMotion.begin(); it != m_vMotion.end(); ++it)
+    for (const MS2Ptr<SkillMotionData>& pMotion : m_vMotion)
     {
-        SkillAttackData* pAttack = (*it)->FUN_140807f20(strPoint);
+        SkillAttackData* pAttack = pMotion->FUN_140807f20(strPoint);
         if (pAttack != 0)
             return pAttack;
     }
@@ -884,13 +862,12 @@ int SkillLevelData::FUN_1408043f0(int nMotion, int nAttack)
 // @0x140804450
 bool SkillLevelData::FUN_140804450()
 {
-    if (!m_vMotion.empty())
+    if (m_vMotion.empty())
+        return false;
+    for (SkillMotionData* pMotion : m_vMotion)
     {
-        for (std::vector<MS2Ptr<SkillMotionData> >::iterator it = m_vMotion.begin(); it != m_vMotion.end(); ++it)
-        {
-            if (!(*it)->m_strSequenceName.IsEmpty())
-                return true;
-        }
+        if (!pMotion->m_strSequenceName.IsEmpty())
+            return true;
     }
     return false;
 }

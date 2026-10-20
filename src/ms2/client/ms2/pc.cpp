@@ -6,7 +6,6 @@
 // MS2-RANGE: 0x14164dfd0-0x14166a650 .text$mn
 // MS2-RANGE: 0x1400fb010-0x1400fb4d0 .text$di
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@IPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1416642e0 ; unique
 // MS2-PIN: ?SetManager@CNilStringData@ATL@@QEAAXPEAUIAtlStringMgr@2@@Z 0x141665910 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VUnk_PCBaseComp_a98@@@@QEAA@AEBV0@@Z 0x1416660b0 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VCSkillTierOptionManager@@@@QEAA@PEAVCSkillTierOptionManager@@@Z 0x1416661d0 ; unique
@@ -45,9 +44,118 @@
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VJobSystemCli@@@@AEBAXPEAX@Z 0x141669540 ; unique
 // MS2-PIN: ?Release@?$MS2Ptr@VUnk_PCBaseComp_a68@@@@AEAAXXZ 0x141669aa0 ; prop
 // MS2-PIN: ??__FstrMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ 0x14166a060 ; prop
-// MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@IPEAX@std@@@std@@QEAAPEAU?$_Tree_node@IPEAX@2@_K@Z 0x14166a0a0 ; unique
 // MS2-PINS-END tplpin
+// tplpin --simulate (w553), hand-applied:
+// MS2-PIN: ??0PC@@QEAA@XZ 0x14164dfd0
+// MS2-PIN: ??$_Destroy1@PEAD@?$_Normal_allocator_traits@V?$CustomAllocator@D@efd@@@std@@SAXAEAV?$CustomAllocator@D@efd@@PEAPEADU?$integral_constant@_N$00@1@@Z 0x141664590
+// MS2-PIN: ??$_Copy_memmove@PEAHPEAH@std@@YAPEAHPEAH00@Z 0x1416645e0
+// MS2-PIN: ??$_Destroy_range1@V?$allocator@H@std@@@std@@YAXPEAH0AEAV?$allocator@H@0@U?$integral_constant@_N$00@0@@Z 0x141664650
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@H@?$vector@HV?$allocator@H@std@@@std@@AEAAX$$QEAH@Z 0x141664780
+// MS2-PIN: ??$_Emplace_reallocate@H@?$vector@HV?$allocator@H@std@@@std@@QEAAPEAHQEAH$$QEAH@Z 0x141664a80
+// MS2-PIN: ??$_Idl_distance1@PEAHPEAH@std@@YA_JAEBQEAH0Urandom_access_iterator_tag@0@@Z 0x141664e60
+// MS2-PIN: ??$_Ptr_move_cat@HH@std@@YA?AU_Really_trivial_ptr_iterator_tag@0@AEBQEAH0@Z 0x141665820
+// MS2-PIN: ??$_Uninitialized_move@PEAHPEAHV?$allocator@H@std@@@std@@YAPEAHQEAH0PEAHAEAV?$allocator@H@0@@Z 0x141665af0
+// MS2-PIN: ??$_Uninitialized_move_al_unchecked@HHV?$allocator@H@std@@@std@@YAPEAHQEAH00AEAV?$allocator@H@0@U_Really_trivial_ptr_iterator_tag@0@U?$integral_constant@_N$00@0@@Z 0x141665ba0
+// MS2-PIN: ?FindNextNode@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObject@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141667ac0
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VNiAVObject@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VNiAVObject@@@efd@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x141667d00
+// MS2-PIN: ?GetKeyAt@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VNiAVObject@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VNiAVObject@@@efd@@@2@@ATL@@QEBAAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@PEAU__POSITION@@@Z 0x141667d20
+// MS2-PIN: ?GetNext@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObject@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141667d80
+// MS2-PIN: ?GetNext@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VNiAVObject@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VNiAVObject@@@efd@@@2@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141667dd0
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObject@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141667e10
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObject@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141667f00
+// MS2-PIN: ?GetValueAt@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObject@@@@@3@@ATL@@QEAAAEAV?$MS2Ptr@VCTailEffectObject@@@@PEAU__POSITION@@@Z 0x141667fc0
+// MS2-PIN: ?GetValueAt@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VNiAVObject@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VNiAVObject@@@efd@@@2@@ATL@@QEAAAEAV?$SmartPointer@VNiAVObject@@@efd@@PEAU__POSITION@@@Z 0x141668030
+// MS2-PIN: ?IsNil@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VNiAVObject@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VNiAVObject@@@efd@@@2@@ATL@@AEBA_NPEAVCNode@12@@Z 0x1416683d0
+// MS2-PIN: ?Minimum@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VNiAVObject@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VNiAVObject@@@efd@@@2@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x141668480
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObject@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x141668b70
+// MS2-PIN: ?RemoveNode@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObject@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x141668cd0
+// MS2-PIN: ?Successor@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$SmartPointer@VNiAVObject@@@efd@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$SmartPointer@VNiAVObject@@@efd@@@2@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x141668ef0
+// MS2-PIN: ?_Calculate_growth@?$vector@HV?$allocator@H@std@@@std@@AEBA_K_K@Z 0x1416695a0
+// MS2-PIN: ?_Change_array@?$vector@HV?$allocator@H@std@@@std@@AEAAXQEAH_K1@Z 0x141669630
+// MS2-PIN: ?_Has_unused_capacity@?$vector@HV?$allocator@H@std@@@std@@AEBA_NXZ 0x141669840
+// MS2-PIN: ?_Orphan_range@?$vector@HV?$allocator@H@std@@@std@@AEBAXPEAH0@Z 0x141669970
+// MS2-PIN: ?_Reallocate_exactly@?$vector@HV?$allocator@H@std@@@std@@AEAAX_K@Z 0x141669980
+// MS2-PIN: ?_Umove_if_noexcept@?$vector@HV?$allocator@H@std@@@std@@AEAAXPEAH00@Z 0x141669ff0
+// MS2-PIN: ?deallocate@?$allocator@H@std@@QEAAXQEAH_K@Z 0x14166a1b0
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@H@std@@@std@@SA_KAEBV?$allocator@H@2@@Z 0x14166a240
+// MS2-PIN: ?max_size@?$vector@HV?$allocator@H@std@@@std@@QEBA_KXZ 0x14166a250
+// MS2-PIN: ?reserve@?$vector@HV?$allocator@H@std@@@std@@QEAAX_K@Z 0x14166a300
+// MS2-PIN: ??$_Get_unwrapped@H@std@@YAPEAHQEAH@Z 0x141664ce0
+// MS2-PIN: ??$_Seek_wrapped@H@std@@YAXAEAPEAHQEAH@Z 0x141665910
+// MS2-PIN: ??$_Unfancy@H@std@@YAPEAHPEAH@Z 0x141665ae0
+// MS2-PIN: ??$move@AEAH@std@@YA$$QEAHAEAH@Z 0x141665d60
+// MS2-PIN: ??0?$allocator@H@std@@QEAA@XZ 0x141666730
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@HV?$allocator@H@std@@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@H@std@@@2@XZ 0x1416697a0
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@H@std@@V?$_Vector_val@U?$_Simple_types@H@std@@@2@$00@std@@QEAAAEAV?$allocator@H@2@XZ 0x1416697c0
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$CustomAllocator@D@efd@@V?$_String_val@U?$_Simple_types@D@std@@@std@@$00@std@@QEAAAEAV?$CustomAllocator@D@efd@@XZ 0x1416697d0
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@H@std@@V?$_Vector_val@U?$_Simple_types@H@std@@@2@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@H@std@@@2@XZ 0x1416697f0
+// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@HV?$allocator@H@std@@@std@@@std@@QEAAAEAV?$allocator@H@2@XZ 0x141669800
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@HV?$allocator@H@std@@@std@@@std@@QEAAAEAPEAHXZ 0x141669890
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@HV?$allocator@H@std@@@std@@@std@@QEAAAEAPEAHXZ 0x1416698d0
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@HV?$allocator@H@std@@@std@@@std@@QEBAAEBQEAHXZ 0x1416698f0
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@HV?$allocator@H@std@@@std@@@std@@QEAAAEAPEAHXZ 0x141669910
+// MS2-PIN: ?_Umove@?$vector@HV?$allocator@H@std@@@std@@AEAAPEAHPEAH00@Z 0x141669f70
+// MS2-PIN: ?_Umove_if_noexcept1@?$vector@HV?$allocator@H@std@@@std@@AEAAXPEAH00U?$integral_constant@_N$00@2@@Z 0x141669fb0
+// MS2-PIN: ?_Xlength@?$vector@HV?$allocator@H@std@@@std@@CAXXZ 0x14166a060
+// MS2-PIN: ?size@?$vector@HV?$allocator@H@std@@@std@@QEBA_KXZ 0x14166a350
+// MS2-PIN: ?SetManager@CNilStringData@ATL@@QEAAXPEAUIAtlStringMgr@2@@Z 0x141665910
+// MS2-PIN: ??0?$MS2Ptr@VUnk_PCBaseComp_a98@@@@QEAA@AEBV0@@Z 0x1416660b0
+// MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@IPEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@I@std@@@1@@Z 0x141666670
+// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@IPEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@I@std@@@1@@Z 0x1416666b0
+// MS2-PIN: ??1?$MS2Ptr@VCEquipItem@@@@QEAA@XZ 0x141666900
+// MS2-PIN: ??1?$MS2Ptr@VJobSystemCli@@@@QEAA@XZ 0x141666990
+// MS2-PIN: ??1?$MS2Ptr@VWaterGunBattleInfo@@@@QEAA@XZ 0x1416669c0
+// MS2-PIN: ??4?$MS2Ptr@VUnk_PCBaseComp_a68@@@@QEAAAEAV0@AEBV0@@Z 0x1416670a0
+// MS2-PIN: ??_GUnk_PCCubeCraft@@QEAAPEAXI@Z 0x141667830
+// MS2-PIN: ?AddRef@?$MS2Ptr@VRideOnAction@@@@AEBAXXZ 0x141669140
+// MS2-PIN: ?AddRef@?$MS2Ptr@VCSkillTierOptionManager@@@@AEBAXXZ 0x141669170
+// MS2-PIN: ?AddRef@?$MS2Ptr@VUnk_PCBaseComp_a68@@@@AEBAXXZ 0x1416691d0
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VRideOnAction@@@@AEBAXPEAX@Z 0x1416693f0
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCTailEffectObject@@@@AEBAXPEAX@Z 0x141669450
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_PCBaseComp_a68@@@@AEBAXPEAX@Z 0x141669480
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VJobSystemCli@@@@AEBAXPEAX@Z 0x141669540
+// MS2-PIN: ?Release@?$MS2Ptr@VUnk_PCBaseComp_a68@@@@AEAAXXZ 0x141669aa0
+// MS2-PIN: ??__FstrMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ 0x14166a060
+// MS2-PIN: ??0?$MS2Ptr@VUnk_PCInteractMode@@@@QEAA@H@Z 0x141666110
+// MS2-PIN: ??0?$MS2Ptr@VUnk_PCInteractMode@@@@QEAA@PEAVUnk_PCInteractMode@@@Z 0x141666130
+// MS2-PIN: ??0?$MS2Ptr@VCSkillTierOptionManager@@@@QEAA@PEAVCSkillTierOptionManager@@@Z 0x1416661d0
+// MS2-PIN: ??0?$MS2Ptr@VCTailEffectObject@@@@QEAA@PEAVCTailEffectObject@@@Z 0x141666270
+// MS2-PIN: ??0?$MS2Ptr@VInfo@HideAndSeek@@@@QEAA@PEAVInfo@HideAndSeek@@@Z 0x141666510
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VUnk_PCInteractMode@@@@QEAAAEAV1@PEAVUnk_PCInteractMode@@@Z 0x141666dc0
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VCSetItemManager@@@@QEAAAEAV1@PEAVCSetItemManager@@@Z 0x141666e30
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VCSkillTierOptionManager@@@@QEAAAEAV1@PEAVCSkillTierOptionManager@@@Z 0x141666ea0
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VCStatPointManager@@@@QEAAAEAV1@PEAVCStatPointManager@@@Z 0x141666f10
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VCostumeManager@@@@QEAAAEAV1@PEAVCostumeManager@@@Z 0x1416670e0
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VInfo@HideAndSeek@@@@QEAAAEAV1@PEAVInfo@HideAndSeek@@@Z 0x1416672e0
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VWaterGunBattleInfo@@@@QEAAAEAV1@PEAVWaterGunBattleInfo@@@Z 0x1416673f0
+// MS2-PIN: ?IsEmpty@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObject@@@@@3@@ATL@@QEBA_NXZ 0x141668370
+// MS2-PIN: ?Reference@?$MS2Ptr@VJobSystemCli@@@@CAXPEAVJobSystemCli@@@Z 0x1416693b0
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCSkillTierOptionManager@@@@AEBAXPEAX@Z 0x141669420
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VJobSystemCli@@@@AEAAXPEAX@Z 0x141669e00
+// MS2-PIN: ??1?$MS2Ptr@VCWeaponAction@@@@QEAA@XZ 0x1416668d0
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VUnk_PCD88@@@@QEAAAEAV1@PEAVUnk_PCD88@@@Z 0x141666ba0
+// MS2-PIN: ??4?$MS2Ptr@VUnk_PCInteractMode@@@@QEAAAEAV0@H@Z 0x141666d90
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VCTailEffectObject@@@@QEAAAEAV1@PEAVCTailEffectObject@@@Z 0x141667030
+// MS2-PIN: ??4?$MS2Ptr@VCWeaponAction@@@@QEAAAEAV0@AEBV0@@Z 0x1416670a0
+// MS2-PIN: ??7?$MS2Ptr@VCWeaponAction@@@@QEBA_NXZ 0x141667490
+// MS2-PIN: ?get@?$MS2Ptr@VCGemSwim@@@@QEBAPEAVCGemSwim@@XZ 0x141667650
+// MS2-PIN: ?get@?$MS2Ptr@VCTailEffectObject@@@@QEBAPEAVCTailEffectObject@@XZ 0x141667670
+// MS2-PIN: ??C?$MS2Ptr@VCGemSwim@@@@QEBAPEAVCGemSwim@@XZ 0x1416676e0
+// MS2-PIN: ?Lookup@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObject@@@@@3@@ATL@@QEBA_NHAEAV?$MS2Ptr@VCTailEffectObject@@@@@Z 0x141668410
+// MS2-PIN: ?RemoveKey@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObject@@@@@3@@ATL@@QEAA_NH@Z 0x141668c60
+// MS2-PIN: ?SetAt@?$CAtlMap@HV?$MS2Ptr@VCTailEffectObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCTailEffectObject@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$MS2Ptr@VCTailEffectObject@@@@@Z 0x141668d90
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCWeaponAction@@@@AEAAXPEAX@Z 0x141669cc0
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VWaterGunBattleInfo@@@@AEAAXPEAX@Z 0x141669e50
+// MS2-PIN: ??$emplace_back@H@?$vector@HV?$allocator@H@std@@@std@@QEAAX$$QEAH@Z 0x141665ca0
+// MS2-PIN: ??1?$vector@HV?$allocator@H@std@@@std@@QEAA@XZ 0x1416669f0
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VCStateManager@@@@QEAAAEAV1@PEAVCStateManager@@@Z 0x141666d20
+// MS2-PIN: ?push_back@?$vector@HV?$allocator@H@std@@@std@@QEAAX$$QEAH@Z 0x14166a2d0
+// MS2-PIN: ?GetClassDesc@PC@@UEBAPEBVClassInfo@efd@@XZ 0x141667cd0
+// MS2-PIN: ?TypeCast@PC@@UEBA_NIPEAPEBX@Z 0x141669010
+// MS2-PIN: ?TypeCast@PC@@UEBA_NIPEAPEAX@Z 0x141668fc0
+// MS2-PIN: ?capacity@?$vector@HV?$allocator@H@std@@@std@@QEBA_KXZ 0x14166a170
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\pc.cpp"   // assumed (no __FILE__ in the TU)
+#define NOMINMAX   // cbreakableobject.h pulls the PhysX headers
 #include "ms2/placeholder/ms2stdafx.h"
 #include <egmAnimation/AnimationService.h>
 #include "ms2/placeholder/fittingdollpc.h"
@@ -63,6 +171,9 @@
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/ms2svrptr.h"
 #include "ms2/placeholder/cubeiteminfo.h"
+#include "ms2/placeholder/cube.h"
+#include "ms2/placeholder/cbreakableobject.h"
+#include <egf/EntityIDFactory.h>
 #include "ms2/placeholder/csetitemmanager.h"
 #include "ms2/client/ms2/statemanager.h"
 #include "ms2/client/ms2/jobsystemcli.h"
@@ -81,6 +192,14 @@
 #include "ms2/unnamed/unit_140b0e5f0.h"
 #include "ms2/client/ms2/cubecraft_1.h"
 #include "ms2/placeholder/cproxygameobject.h"
+#include "ms2/placeholder/pcinfo.h"
+#include "ms2/placeholder/cequipmentslotlayerinfo.h"
+#include "ms2/commonfiles/itemdroptable.h"
+#include "ms2/commonfiles/luautil.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include <NiFloatsExtraData.h>
+#include <io.h>
+#include "ms2/placeholder/cugcmanager.h"
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/client/ms2/cubecraft_2.h"
@@ -99,6 +218,9 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "weaponactiontable.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/stateholddata.h"
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/commonfiles/itemdefaultdata.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/mstime.h"
@@ -146,6 +268,7 @@
 #include "ms2/placeholder/statecoupleemotion.h"
 #include "ms2/placeholder/stateweddingemotion.h"
 #include "ms2/unnamed/unit_140ad5280.h"
+#include "ms2/placeholder/propertycache.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -175,11 +298,14 @@ public:
     GameObject* FUN_141bd1180(int nObjectId);                       // the object of an id
     int FUN_141bc9830(int* pnId, CString* pstrName, float fRange, int n);   // the nearest holdable target
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(__int64 nId);            // the proxy of a player by id
+    MS2Ptr<CProxyGameObject> FUN_141bc9be0(int nObjectId);          // the proxy of an object id
+    void FUN_141bd92c0(float fFrom, float fTo, float fDuration, int n);   // slow the time scale
     int FUN_141bca2e0();                                            // the field is loaded
     void FUN_141bca390(unsigned int nObjectId);                     // the player model is ready (quick equip)
     int FUN_141bd19d0(int nObjectId);                               // the relation of an object (1: the local player)
     int FUN_141bd3060();                                            // the current map id
     PCBase* FUN_141bd1200(int nObjectId);                           // the actor of an object id
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                          // the current field
 };
 Unk_PCWorld* FUN_1403ed2d0();
 // The effect service (FUN_1403ed280).
@@ -197,6 +323,7 @@ class Unk_PCBaseBody
 public:
     void FUN_14123fbf0(unsigned short nGroup);                      // collision group of every shape
     void FUN_14123fd30(unsigned int nGroups);                       // the active groups
+    bool FUN_1412410c0(const efd::Point3& kPos, float fRadius);     // the capsule at kPos overlaps something
 };
 // The animation service singleton (statefall.h declares the global FUN_141b6f910 with a unit-local view type).
 namespace PCAnim { egmAnimation::AnimationService* FUN_141b6f910(); }
@@ -213,7 +340,100 @@ void FUN_1401859c0(void* pLog, int nLevel, int nCategory, const wchar_t* pszText
 class Unk_PCBaseBuffs
 {
 public:
+    int FUN_1409701d0(int nKind);
     int FUN_1409709b0();                                            // a buff blocks being grabbed
+    bool FUN_140970a20();                                           // a buff protects from pk attacks
+};
+// The content switches (FUN_140166410).
+class Unk_PCFeatures
+{
+public:
+    bool FUN_14036d570(int nFeature);                               // the feature is enabled
+};
+Unk_PCFeatures* FUN_140166410();
+// The entity manager and the entity property reads (as pcbase.cpp).
+class Unk_PCEntMgr                                                  // EntityWorldManager (entityworldmanager.h)
+{
+public:
+    egf::EntityPtr FUN_1411ce7c0(efd::utf8string kModel, efd::utf8string kAsset, efd::Point3 kPos, efd::Point3 kRot,
+        float fScale, int a, int b);                                // create an entity
+};
+Unk_PCEntMgr* FUN_1409670f0();
+egf::Entity* FUN_1411cf440(Unk_PCEntMgr* pMgr, const egf::EntityID& kId);
+void FUN_1409618c0(egf::Entity* pEntity, unsigned int nPropId, NiPoint3& kValue);   // Entity::GetPropertyValue<efd::Point3>
+float FUN_140966ea0(efd::Point3 a, efd::Point3 b);                  // the horizontal distance
+extern NiPoint3 DAT_143b01a60;                                      // the zero point
+void FUN_14015f050(CString& str, CAtlArray<CString>& aParts, const char* pszSep);   // split
+CString FUN_141425540(int nGender, int nAction);                    // the default swim effect of an action (itemugcmesh.cpp)
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);                     // the item record of an id
+// The housing service, looked up from its registry cell (as guildmanager.cpp).
+// The housing service is CubeMapInformationService (efd::SmartPointer<CubeMapInformationService> handle).
+class Unk_PCHousingSvc
+{
+public:
+    void FUN_1410cc160(int nKind);                                  // the cube build mode UI
+    Cube* FUN_1410b8f30(NiPoint3 kFrom, efd::Point3* pHit, float fRange);   // the cube under a point
+    efd::Point3 FUN_1410b9150(efd::Point3 kPos);                    // snap a point onto the cube grid
+    Cube* FUN_1410b8a60(Unk_Int3 kCell);                            // the cube of a grid cell
+    Cube* FUN_1410b9080(Cube* pBase, int nOffset);                  // the neighbour cube (packed cell offset)
+    Cube* FUN_1410b8e60(void* pEntity);                             // the cube of an entity
+    int FUN_1410b9330(Cube* pCube, efd::Point3 kHit, float fStep, efd::Point3* pPos, efd::Point3* pRot, int* pnDir,
+        Cube** ppFound);                                            // the climb-on spot of a cube face
+};
+Unk_PCHousingSvc* FUN_1409670e0();                                  // TSingleton<CubeMapInformationService>::GetInstance
+class Unk_PCHousingSvcPtr
+{
+public:
+    Unk_PCHousingSvcPtr(Unk_PCHousingSvc* p);                       // 0x1401cd0b0
+    ~Unk_PCHousingSvcPtr();                                         // 0x1401cd150
+    Unk_PCHousingSvc* FUN_1401cd1a0() const;                        // operator->
+    Unk_PCHousingSvc* FUN_140885310() const;                        // operator CubeMapInformationService*
+    Unk_PCHousingSvc* m_p;
+};
+Unk_PCHousingSvc* FUN_1401cd040(char* pCell);
+extern char DAT_143b059e8;
+// Physics: the ray cast record and the PhysX helper (physxhelper.h needs NOMINMAX; state.cpp has the same view).
+struct Unk_RayCastInfo
+{
+    Unk_RayCastInfo();                                              // 0x140ad4440
+    efd::Point3 m_origin;                                           // +0x00
+    efd::Point3 m_dir;                                              // +0x0c
+    float m_maxDist;                                                // +0x18
+    int m_groups;                                                   // +0x1c collision groups
+    void* m_20;
+    void* m_28;
+    void* m_hitEntity;                                              // +0x30
+    void* m_hitActor;
+    void* m_hitShape;
+    float m_hitDist;                                                // +0x48
+    efd::Point3 m_hitPoint;                                         // +0x4c
+    efd::Point3 m_hitNormal;                                        // +0x58
+};
+MS2_CHECK_SIZE(Unk_RayCastInfo, 0x68);
+class NxGroupsMask;
+class CPhysXHelper
+{
+public:
+    bool FUN_1416892f0(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);   // cast the ray
+};
+CPhysXHelper* FUN_1409f7ca0();
+extern float DAT_1439f8220;                                         // the climb reach (3)
+extern float DAT_1439f8224;                                         // the climb probe range (30)
+// The shadow quality settings (?\gameoption.cpp keeps the full view).
+class Unk_PCShadowCfg
+{
+public:
+    int FUN_141376880(int n);
+    int FUN_1413769d0(int n);
+};
+Unk_PCShadowCfg* FUN_140ae1c00();
+// The actor's ground shadow (unit_14160fb10; dropitem.cpp has the 5-argument ctor).
+class CObjectShadow : public NiRefObject
+{
+public:
+    CObjectShadow(GameObject* pOwner, int nLodHi, int nLodLo);      // 0x14160fb10
+private:
+    char m_pad_10[0x58 - sizeof(NiRefObject)];
 };
 // The pvp manager (FUN_140f97ef0).
 class Unk_PCPvPMgr
@@ -355,11 +575,24 @@ bool FUN_14081dc50(int nSpecial);                                   // the speci
 bool FUN_14081dcd0(int nSpecial);                                   // the special ability value is a rate
 int FUN_14086ace0(__int64 nTime);                                   // the time has passed
 // The hide and seek record / the water gun battle info as other TUs see them (fittingdollpc.h returns these types).
-class Unk_HsInfo : public CPtred {};
-class Unk_PCWaterGunInfo : public CPtred {};
+class Unk_HsInfo : public CPtred                                    // HideAndSeek::Info
+{
+public:
+    bool FUN_14050a490();                                           // a hide-and-seek match is on
+    int FUN_14050a6a0();                                            // the player's side (1 seeker, 2 hider)
+};
+class Unk_PCWaterGunInfo : public CPtred                            // WaterGunBattleInfo
+{
+public:
+    bool FUN_1408fe070();                                           // GetFlag: in a water gun battle
+    int FUN_1408fe0b0();                                            // GetValue: the team
+};
 void FUN_141201d50(CEquipModel* pModel, CString strNode);           // attach the model to a node
 int FUN_141202940(CEquipModel* pModel);                             // the equip slot of the model
 void FUN_141200390(CEquipModel* pModel, const CString& strAnim);    // play an animation
+CString FUN_141b6ed00(const CString& strPath);                      // the kfm's animation path
+CString FUN_1409a2360(const char* pszUrn, int n);                   // normalise an asset urn
+ModelPart* FUN_141200ab0(CEquipModel* pModel);                      // the model's part record (m_unk_20)
 extern bool DAT_143aad1e0;                                          // the upper HUD hides the weapon effects (uiupperhuddialog.cpp)
 extern CString DAT_143ae2de8;                                       // the hidden-equip reason (CEquipment::FUN_1411e8eb0 / FUN_1411e9020)
 bool FUN_14028d470(float a, float b);                               // the floats are equal
@@ -388,14 +621,27 @@ Unk_PCNotices* FUN_140939a10();
 
 // The +0xd88 record is the head CBoneRotateManager (vfunc_12 news it; clonepc.cpp/stateidle.cpp keep the
 // Unk_PCD88 name, which the exe's MS2Ptr COMDAT symbols carry) and the +0xfd8 record (create 0x141993100).
-class Unk_PCD88 : public CBoneRotateManager {};
-class Unk_PCLinkFD8 : public CPtred {};
-// The action timer at +0xfc8 (avatarpc.cpp has the same stand-in).
-class Unk_PCActionTimer : public CPtred
+class Unk_PCD88 : public CBoneRotateManager
 {
 public:
+    void FUN_140a35500(double dTime);                               // per-frame: pick/advance actions
+};
+class Unk_PCLinkFD8 : public CPtred                                 // UITombStoneBar::Entity
+{
+public:
+    void FUN_141992e40();                                           // refresh
+};
+// The action timer at +0xfc8 (avatarpc.cpp has the same stand-in).
+class Unk_PCActionTimer : public CPtred                             // CBreakableObject (the tomb stone; cbreakableobject.h)
+{
+public:
+    void FUN_140adf370(egf::Entity* pEntity, int nObjectId, MS2Ptr<CGemTombStone> spTomb);   // bind as a tomb stone
     virtual void vfunc_1(void* p, int nMode);                       // 1 notify (FUN_14165c970: 2 / 5)
     int FUN_140addea0();                                            // active
+    int FUN_140adea80();                                            // the state
+    void FUN_140adeaf0(int nNow);                                   // per-frame update (timers, movement)
+    int FUN_140adf350();                                            // m_n184
+    void FUN_140adf770(efd::Point3 ptPos);                          // move: position property
 };
 
 // ---- header statics of this TU (.text$di 0x1400fb010-0x1400fb4d0; same groups as unit_140114300 / unit_140102270) ----
@@ -420,7 +666,7 @@ static CString s_sortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 static efd::Category s_category(0);
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_1401cd100 s_pointer(NULL);              // 0x143ae2e18: egf::kENTITY_INVALID (EntityID(0))
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- PC ----
@@ -801,6 +1047,7 @@ void PC::vfunc_34(void* p)
     vfunc_113(pRecord);
 }
 
+// MS2-FUNCTIONAL: frame differs - the exe keeps the reaction flags as int locals (ours are bool), saves rsi/rdi for a block copy and has no copy of p
 // @0x141652e20
 void PC::vfunc_35(void* p)
 {
@@ -2736,6 +2983,1431 @@ MS2Ptr<CEquipItem> PC::FUN_141655ee0(int nSlot, bool bKind0Only)
     return m_kEquipDE0.FUN_1411e1780(nSlot, 0);
 }
 
+// @0x141660120
+bool PC::FUN_141660120()
+{
+    if (FUN_14166c930() != 0x20)
+        return false;
+    State* pState = FUN_14166ccb0();
+    if (pState == 0)
+        return false;
+    int nHolderId = static_cast<StateHold*>(pState)->FUN_1417cd0d0();
+    PCBase* pHolder = FUN_1403ed2d0()->FUN_141bd1200(nHolderId);
+    if (pHolder == 0)
+        return false;
+    if (pHolder->GetClassID() != 0x6200003 && pHolder->GetClassID() != 0x6200004)
+        return false;
+    PC* pPC = efd::DynamicCast<PC>(pHolder);
+    if (pPC == 0)
+        return false;
+    Ridee* pRidee = pPC->FUN_1416764a0();
+    if (pRidee == 0)
+        return false;
+    int nKind = pPC->FUN_1416749a0()->FUN_1409701d0(2);
+    return nKind == 1;
+}
+
+// @0x14165c090
+int PC::FUN_14165c090(efd::Point3 kPos)
+{
+    Unk_RayCastInfo kInfo;
+    kInfo.m_origin = kPos + efd::Point3(0.0f, 0.0f, 54.0000038f);
+    kInfo.m_dir = FUN_14123cc20();
+    kInfo.m_maxDist = 50.0f;
+    kInfo.m_groups = 0x201;
+    if (!FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+        return false;
+    return !FUN_14166d220()->FUN_1412410c0(kPos, m_unk_620.y * 0.5f);
+}
+
+// @0x14165df00
+MS2Ptr<CGemPetSkin> PC::FUN_14165df00()
+{
+    if (!FUN_140166410()->FUN_14036d570(0x6c))
+        return MS2Ptr<CGemPetSkin>(0);
+    MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(FUN_14165f460())->FUN_141270740(0xb);
+    if (!spGem)
+        return MS2Ptr<CGemPetSkin>(0);
+    return MS2Ptr<CGemPetSkin>(dynamic_cast<CGemPetSkin*>(spGem.get()));
+}
+
+// @0x14165e1b0
+MS2Ptr<CGemSwim> PC::FUN_14165e1b0()
+{
+    MS2Ptr<CGemSwim> spSwim(0);
+    if (FUN_140166410()->FUN_14036d570(0x68))
+    {
+        MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(FUN_14165f460())->FUN_141270740(6);
+        if (spGem)
+            spSwim.AssignRaw(dynamic_cast<CGemSwim*>(spGem.get()));
+    }
+    return spSwim;
+}
+
+// @0x141660e00
+void PC::vfunc_49()
+{
+    Unk_PCShadowCfg* pCfg = FUN_140ae1c00();
+    int nLodHi = pCfg->FUN_141376880(1);
+    int nLodLo = pCfg->FUN_1413769d0(1);
+    m_spShadow = NiNew CObjectShadow(this, nLodHi, nLodLo);
+    FUN_14123cb20(m_bUnkB8);
+}
+
+// @0x141659250
+void PC::FUN_141659250(int nValue, CubeItemInfo* pInfo)
+{
+    if (FUN_1416595d0())
+    {
+        if (m_pCubeCraft != 0)
+        {
+            m_pCubeCraft->FUN_1410a8af0(false);
+            delete m_pCubeCraft;
+            m_pCubeCraft = 0;
+        }
+        if (FUN_141b6efc0(FUN_14123c410()) == 0)
+            FUN_141661880(1, nValue, pInfo);
+        else
+        {
+            m_pCubeCraft = new Unk_PCCubeCraft(this, nValue, pInfo);
+            m_pCubeCraft->FUN_1410a8af0(true);
+        }
+    }
+    else
+    {
+        if (m_pCubeCraft != 0)
+        {
+            m_pCubeCraft->FUN_1410a8af0(false);
+            delete m_pCubeCraft;
+            m_pCubeCraft = 0;
+        }
+    }
+}
+
+// @0x141659450
+void PC::vfunc_135(int nMode, int nValue, void* pInfo)
+{
+    if (FUN_14166ce30() != 0)
+        return;
+    if (FUN_1416595d0() == 0)
+    {
+        if (FUN_14123bea0() == 0)
+            vfunc_59(5, 0, 0, 0);
+        else
+            vfunc_59(1, 0, 0, 0);
+    }
+    m_nCubeModeFFC = nMode;
+    FUN_141659250(nValue, static_cast<CubeItemInfo*>(pInfo));
+    FUN_141659000(0);
+    PC* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (this == pLocal)
+    {
+        Unk_PCHousingSvcPtr spHousing(FUN_1401cd040(&DAT_143b059e8));
+        if (nMode == 0)
+            spHousing.FUN_1401cd1a0()->FUN_1410cc160(0);
+        else if (nValue != 2)
+            spHousing.FUN_1401cd1a0()->FUN_1410cc160(1);
+    }
+}
+
+// @0x14165f480
+int PC::vfunc_69()
+{
+    MS2Ptr<CEquipItem> spEquip = FUN_141655e10(2);
+    if (spEquip.get())
+    {
+        CAtlArray<CString> aParts;
+        spEquip->FUN_1411dca30(2, aParts);
+        if (aParts.GetCount() > 0)
+            return spEquip->FUN_1411dc7f0()->FUN_14053c510();
+    }
+    int nItemId = CItemDefaultData::FUN_140583f00(FUN_141658e60());
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (!spData)
+        return 0;
+    return nItemId;
+}
+
+// @0x14165f5d0
+int PC::vfunc_122(void* p)
+{
+    PC* pOther = efd::DynamicCast<PC>(static_cast<PCBase*>(p));
+    if (pOther != 0)
+    {
+        int bPk = FUN_1403ed2d0()->FUN_141bd30a0()->FUN_1403754d0();
+        if (bPk != 0)
+        {
+            if (p == this)
+                return 0;
+            if (FUN_141661bc0() != 0 && FUN_141661bc0() == pOther->FUN_141661bc0())
+                return 0;
+            if (FUN_1416749a0()->FUN_140970a20())
+                return 0;
+            if (pOther->FUN_1416749a0()->FUN_140970a20())
+                return 0;
+            return 1;
+        }
+        if (FUN_14165ef30() != pOther->FUN_14165ef30())
+            return 0;
+    }
+    return PCBase::vfunc_122(p);
+}
+
+// MS2-FUNCTIONAL: structure aligned, the exe keeps the points in different temporaries
+// @0x1416599b0
+void PC::FUN_1416599b0()
+{
+    if (m_entityDB0 != egf::EntityID(0ull))
+    {
+        egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_entityDB0);
+        if (pEntity != 0)
+        {
+            NiPoint3 kPos = vfunc_18();
+            NiPoint3 kEntPos = DAT_143b01a60;
+            FUN_1409618c0(pEntity, 0xfd95ca52, kEntPos);
+            if (FUN_140966ea0(kEntPos, kPos) > 70.0f)
+                m_entityDB0 = egf::EntityID::kENTITY_INVALID;
+        }
+    }
+}
+
+// @0x141660c20
+void PC::FUN_141660c20(const CAtlArray<MS2Ptr<CItem> >& aItems, bool bQuick)
+{
+    for (size_t i = 0; i < aItems.GetCount(); i++)
+    {
+        MS2Ptr<CItem> spItem = aItems[i];
+        if (spItem == 0)
+            continue;
+        if (bQuick)
+            m_kEquipDE0.FUN_1411e38e0(spItem);
+        else
+            m_kEquipDE0.FUN_1411e3600(spItem);
+    }
+}
+
+// MS2-FUNCTIONAL: structure aligned, the exe destroys the locals per branch
+// @0x1416611b0
+void PC::FUN_1416611b0(CString strKey)
+{
+    CString strPath(strKey);
+    CAtlArray<CString> aParts;
+    FUN_14015f050(strPath, aParts, "/");
+    if (aParts.GetCount() < 4)
+        return;
+    __int64 nCharId = _atoi64(aParts[3]);
+    if (nCharId == FUN_141656a80())
+        m_str1028 = strKey;
+}
+
+// MS2-FUNCTIONAL: structure aligned, return-copy placement differs
+// @0x14165e010
+CString PC::FUN_14165e010(int nAction)
+{
+    MS2Ptr<CGemSwim> spSwim = FUN_14165e1b0();
+    if (spSwim.get())
+    {
+        MS2Ptr<CGemSwimData> spData = spSwim->FUN_1405a5720();
+        if (spData.get())
+        {
+            if (nAction == 0x30)
+                return spData->m_strIdleEffect;
+            if (nAction == 0x32)
+                return spData->m_strDashEffect;
+            return spData->m_strRunEffect;
+        }
+    }
+    return FUN_141425540(FUN_141658e60(), nAction);
+}
+
+// MS2-FUNCTIONAL: structure aligned, codegen differs slightly
+// @0x141660ee0
+void PC::FUN_141660ee0()
+{
+    if (m_bD40 && m_kEquipDE0.FUN_1411e09a0())
+    {
+        m_bD40 = false;
+        if (m_unk_b0 == 0)
+            vfunc_23(0);
+        vfunc_144();
+        FUN_1409f7c90()->FUN_14161cf60(this);
+    }
+}
+
+// MS2-FUNCTIONAL: structure aligned, the exe keeps the elapsed time in a separate temporary
+// @0x1416616a0
+void PC::FUN_1416616a0(unsigned int nDelay)
+{
+    unsigned int nNow = FUN_140869420();
+    unsigned int nElapsed = nNow - m_n106c;
+    m_n106c = nNow;
+    float fSpeed = 5.0f;
+    if (nDelay > 0 && nDelay < nNow - m_n1064)
+        fSpeed = (nNow - m_n1064 - nDelay) / 1000.0f + 5.0f;
+    m_n1068 = (unsigned int)(m_n1068 + nElapsed * fSpeed);
+    if (m_n1068 > 1000)
+    {
+        m_b1070 = !m_b1070;
+        m_n1068 = 0;
+    }
+    vfunc_42(m_b1070 ? 0.5f : 0.9f, false);
+}
+
+// @0x14165a540
+int PC::FUN_14165a540()
+{
+    efd::Point3 kPos;
+    efd::Point3 kRot;
+    Unk_PCHousingSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+    if (spSvc.FUN_140885310())
+    {
+        efd::Point3 kHit;
+        NiPoint3 kMy = vfunc_18();
+        Cube* pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kMy, &kHit, 0.0f);
+        if (pCube == 0)
+        {
+            NiPoint3 kTry = kMy;
+            kTry.y += 25.0f;
+            pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x += 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.y -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x -= 25.0f;
+                kTry.y += 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x += 25.0f;
+                kTry.y += 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x -= 25.0f;
+                kTry.y -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x += 25.0f;
+                kTry.y -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+        }
+        if (pCube != 0)
+        {
+            // the cell above the cube must be free
+            Unk_Int3 kCell = pCube->position;
+            kCell.z += 1;
+            Cube* pAbove = FUN_1409670e0()->FUN_1410b8a60(kCell);
+            if (pAbove != 0)
+                return 0;
+            efd::Point3 kDir(0.0f, 0.0f, 0.0f);
+            Cube* pFound = pCube;
+            egf::Entity* pSideA = 0;
+            egf::Entity* pSideB = 0;
+            egf::Entity** ppSide = &pSideA;
+            int nDir;
+            if (spSvc.FUN_1401cd1a0()->FUN_1410b9330(pCube, kHit, 25.0f, &kPos, &kRot, &nDir, &pFound))
+            {
+                Cube* pSide;
+                switch (nDir)
+                {
+                case 1:
+                    kDir.y = 1.0f;
+                    kDir.x = -1.0f;
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0xff);
+                    if (pSide != 0)
+                    {
+                        *ppSide = pSide->entity;
+                        ppSide = &pSideB;
+                    }
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0x100);
+                    if (pSide != 0)
+                        *ppSide = pSide->entity;
+                    break;
+                case 2:
+                    kDir.y = 1.0f;
+                    break;
+                case 3:
+                    kDir.y = 1.0f;
+                    kDir.x = 1.0f;
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 1);
+                    if (pSide != 0)
+                    {
+                        *ppSide = pSide->entity;
+                        ppSide = &pSideB;
+                    }
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0x100);
+                    if (pSide != 0)
+                        *ppSide = pSide->entity;
+                    break;
+                case 4:
+                    kDir.x = 1.0f;
+                    break;
+                case 5:
+                    kDir.y = -1.0f;
+                    kDir.x = 1.0f;
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 1);
+                    if (pSide != 0)
+                    {
+                        *ppSide = pSide->entity;
+                        ppSide = &pSideB;
+                    }
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0xff00);
+                    if (pSide != 0)
+                        *ppSide = pSide->entity;
+                    break;
+                case 6:
+                    kDir.y = -1.0f;
+                    break;
+                case 7:
+                    kDir.y = -1.0f;
+                    kDir.x = -1.0f;
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0xff);
+                    if (pSide != 0)
+                    {
+                        *ppSide = pSide->entity;
+                        ppSide = &pSideB;
+                    }
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0xff00);
+                    if (pSide != 0)
+                        *ppSide = pSide->entity;
+                    break;
+                case 8:
+                    kDir.x = -1.0f;
+                    break;
+                }
+                kDir.Unitize();
+                // nothing may block the way from the cube's centre to the spot
+                NiPoint3 kEntPos;
+                FUN_1409618c0(pFound->entity.operator->(), 0xfd95ca52, kEntPos);
+                Unk_RayCastInfo kInfo;
+                kInfo.m_origin = kEntPos;
+                kInfo.m_origin.z = kPos.z - 20.0f;
+                kInfo.m_dir = kDir;
+                kInfo.m_maxDist = 150.0f;
+                kInfo.m_groups = 0x28b;
+                kInfo.m_20 = 0;
+                kInfo.m_28 = 0;
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                    return 0;
+                kInfo.m_origin = kEntPos;
+                kInfo.m_origin.z = kPos.z + 20.0f;
+                kInfo.m_groups = 0x28b;
+                kInfo.m_20 = 0;
+                kInfo.m_28 = 0;
+                efd::Point3 kCornerA = kPos;
+                kCornerA.x -= 25.0f;
+                kCornerA.y += 25.0f;
+                kCornerA.z += 20.0f;
+                efd::Point3 kCornerB = kPos;
+                kCornerB.x += 25.0f;
+                kCornerB.y += 25.0f;
+                kCornerB.z += 20.0f;
+                efd::Point3 kCornerC = kPos;
+                kCornerC.x -= 25.0f;
+                kCornerC.y -= 25.0f;
+                kCornerC.z += 20.0f;
+                efd::Point3 kCornerD = kPos;
+                kCornerD.x += 25.0f;
+                kCornerD.y -= 25.0f;
+                kCornerD.z += 20.0f;
+                kInfo.m_dir = kCornerA - kInfo.m_origin;
+                kInfo.m_maxDist = kInfo.m_dir.Unitize();
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                    return 0;
+                kInfo.m_dir = kCornerB - kInfo.m_origin;
+                kInfo.m_maxDist = kInfo.m_dir.Unitize();
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                    return 0;
+                kInfo.m_dir = kCornerC - kInfo.m_origin;
+                kInfo.m_maxDist = kInfo.m_dir.Unitize();
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                    return 0;
+                kInfo.m_dir = kCornerD - kInfo.m_origin;
+                kInfo.m_maxDist = kInfo.m_dir.Unitize();
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                    return 0;
+                vfunc_19(kPos);
+                vfunc_21(kRot);
+                FUN_14166d8b0(kRot.z);
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    }
+    return 0;
+}
+
+// @0x14165b500
+int PC::FUN_14165b500(int nKind)
+{
+    Unk_PCHousingSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+    if (!spSvc.FUN_140885310())
+        return 0;
+    if (nKind == 1)
+    {
+        // a wall ahead (along +y or +x, whichever the actor faces first): step onto its top
+        efd::Point3 aDirs[2] = { efd::Point3::UNIT_Y, efd::Point3::UNIT_X };
+        if (vfunc_20().z < 135.0f)
+        {
+            aDirs[0] = efd::Point3::UNIT_X;
+            aDirs[1] = efd::Point3::UNIT_Y;
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            efd::Point3 kDir = aDirs[i];
+            Unk_RayCastInfo kInfo;
+            kInfo.m_origin = vfunc_18() + efd::Point3(0.0f, 0.0f, 90.0f);
+            kInfo.m_dir = kDir;
+            kInfo.m_maxDist = 25.0f + DAT_1439f8220 + DAT_1439f8224;
+            kInfo.m_groups = StateClimb::FUN_1417bc010();
+            if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+            {
+                kDir = -kInfo.m_hitNormal;
+                kInfo.m_origin = vfunc_18() + efd::Point3(0.0f, 0.0f, 90.0f);
+                kInfo.m_dir = kDir;
+                kInfo.m_maxDist = 25.0f + DAT_1439f8220 + DAT_1439f8224;
+                kInfo.m_groups = StateClimb::FUN_1417bc010();
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                {
+                    if (spSvc.FUN_1401cd1a0()->FUN_1410b8e60(kInfo.m_hitEntity) != 0)
+                    {
+                        efd::Point3 kTarget = kInfo.m_hitPoint + kInfo.m_hitNormal * (25.0f + DAT_1439f8220)
+                            - efd::Point3(0.0f, 0.0f, 90.0f);
+                        if (!FUN_14165c090(kTarget))
+                            continue;
+                        vfunc_19(kTarget);
+                        FUN_14166d430(-kInfo.m_hitNormal, 1, 1);
+                        return 1;
+                    }
+                }
+            }
+        }
+    }
+    else if (nKind == 2)
+    {
+        // standing on a cube: climb down its open side
+        efd::Point3 kHit;
+        NiPoint3 kMy = vfunc_18();
+        Cube* pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kMy, &kHit, 0.0f);
+        if (pCube == 0)
+        {
+            NiPoint3 kTry = kMy;
+            kTry.y += 25.0f;
+            pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x += 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.y -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+        }
+        if (pCube != 0)
+        {
+            int aOffsets[2] = { 0xff00, 0xff };
+            efd::Point3 aDirs[2] = { efd::Point3::UNIT_Y, efd::Point3::UNIT_X };
+            for (int i = 0; i < 2; i++)
+            {
+                int nOffset = aOffsets[i];
+                efd::Point3 kDir = aDirs[i];
+                if (spSvc.FUN_1401cd1a0()->FUN_1410b9080(pCube, nOffset) == 0)
+                {
+                    efd::Point3 kFrom = kMy;
+                    kFrom += -kDir * 25.0f;
+                    kFrom.z -= 91.0f;
+                    Unk_RayCastInfo kInfo;
+                    kInfo.m_origin = kFrom;
+                    kInfo.m_dir = kDir;
+                    kInfo.m_maxDist = 50.0f;
+                    kInfo.m_groups = StateClimb::FUN_1417bc010();
+                    if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0) && kInfo.m_hitEntity != 0
+                        && kInfo.m_hitEntity == (egf::Entity*)pCube->entity)
+                    {
+                        efd::Point3 kAbove = kMy;
+                        kAbove += -kDir * 25.0f;
+                        Unk_RayCastInfo kDown;
+                        kDown.m_origin = kAbove;
+                        kDown.m_dir = -efd::Point3::UNIT_Z;
+                        kDown.m_maxDist = 90.0f;
+                        kDown.m_groups = StateClimb::FUN_1417bc010() | 0x100;
+                        if (!FUN_1409f7ca0()->FUN_1416892f0(&kDown, 0))
+                        {
+                            efd::Point3 kTarget = kInfo.m_hitPoint + kInfo.m_hitNormal * (25.0f + DAT_1439f8220);
+                            kTarget += efd::Point3(0.0f, 0.0f, 105.0f);
+                            if (!FUN_14165c090(kTarget))
+                                return 0;
+                            vfunc_19(kTarget);
+                            FUN_14166d430(-kInfo.m_hitNormal, 1, 1);
+                            return 1;
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+    return 0;
+}
+
+// MS2-FUNCTIONAL: one register hop differs (the exe loads this straight into rcx for FUN_141658e60)
+// @0x141658150
+bool PC::FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CString>& kNodes, int bPrimary)
+{
+    int nRightType = 0;
+    int nLeftType = 0;
+    MS2Ptr<CEquipItem> spRight = m_kEquipDE0.FUN_1411e1860(5, 6, 1);
+    if (spRight.get())
+    {
+        MS2Ptr<CEquipItem> spWeapon = FUN_141655ee0(5, false);
+        if (spWeapon.get())
+            nRightType = spWeapon->FUN_1411dc7f0()->FUN_14053c620();
+        ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+        spRight->FUN_1411dcc80(aModels);
+        for (unsigned int i = 0; i < aModels.GetCount(); i++)
+        {
+            if (FUN_141202940(aModels.GetAt(i).operator->()) == 5)
+            {
+                kEffects.Add(aModels.GetAt(i).get());
+                CString strNode(FUN_141200ab0(aModels.GetAt(i).operator->())->name18);
+                if (!strNode.IsEmpty())
+                    kNodes.Add(bPrimary ? strNode : "");
+                else
+                    kNodes.Add(bPrimary ? "Weapon_Hand_R_Point" : "");
+            }
+        }
+    }
+    if (spRight.IsNull())
+        bPrimary = 0;
+    MS2Ptr<CEquipItem> spLeft = m_kEquipDE0.FUN_1411e1860(4, 6, 1);
+    if (spLeft.get())
+    {
+        MS2Ptr<CEquipItem> spWeapon = FUN_141655ee0(4, false);
+        if (spWeapon.get())
+            nLeftType = spWeapon->FUN_1411dc7f0()->FUN_14053c620();
+        ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+        spLeft->FUN_1411dcc80(aModels);
+        for (unsigned int i = 0; i < aModels.GetCount(); i++)
+        {
+            int nWorld = 0;
+            if (FUN_141202940(aModels.GetAt(i).operator->()) == 4)
+            {
+                CEquipModel* pModel = aModels[i].get();
+                ModelPart* pPart = FUN_141200ab0(pModel);
+                std::vector<ModelNameEntry>& kList = pPart->entries[(unsigned int)FUN_141658e60()];
+                std::vector<ModelNameEntry>::const_iterator it;
+                for (it = kList.begin(); it != kList.end(); ++it)
+                {
+                    nWorld = it->worldMode | it->worldLerp;
+                    if (nWorld != 0)
+                        break;
+                }
+                if (CWeaponActionTable::IsAllowed(nRightType, nLeftType) == 0)
+                {
+                    // a left hand weapon the pair does not allow: no node
+                    kEffects.Add(aModels.GetAt(i).get());
+                    kNodes.Add("");
+                }
+                else
+                {
+                    kEffects.Add(aModels.GetAt(i).get());
+                    CString strNode(FUN_141200ab0(aModels.GetAt(i).operator->())->name18);
+                    if (!strNode.IsEmpty())
+                        kNodes.Add(bPrimary != 0 && nWorld == 0 ? strNode : "");
+                    else
+                        kNodes.Add(bPrimary != 0 && nWorld == 0 ? "Weapon_Hand_L_Point" : "");
+                }
+            }
+        }
+    }
+    if (kEffects.GetCount())
+        return true;
+    return false;
+}
+
+// The actor seen through its primary vftable: slot 18 (GetPosition) really returns efd::Point3 (pcbase.h declares
+// NiPoint3, which costs a slicing copy; afterimageitem.cpp has the same view).
+class Unk_PCPosActor
+{
+public:
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
+    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
+    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
+    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
+    virtual void vfunc_16(); virtual void vfunc_17();
+    virtual efd::Point3 vfunc_18();
+};
+
+// @0x14165cac0
+void PC::FUN_14165cac0()
+{
+    // the tomb stone of the dead player (its look from the worn tomb stone gem)
+    efd::utf8string kModel;
+    egf::EntityID kId = egf::EntityIDFactory::GetNextID();
+    egf::EntityPtr spEntity(0);
+    int bBusy = FUN_141661970();
+    if (bBusy)
+        kModel = "MS2TombStoneDark";
+    else
+        kModel = "MS2TombStone";
+    efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
+    {
+        Unk_PCHousingSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+        if (spSvc.FUN_140885310())
+            kPos = spSvc.FUN_1401cd1a0()->FUN_1410b9150(kPos);
+    }
+    if (efd::ClassInfo::IsKindOf(this != NULL ? GetClassDesc() : NULL, 0x06200044))   // AvatarPC
+        kPos = efd::Point3::ZERO;
+    efd::Point3 kRot = efd::Point3::ZERO;
+    efd::utf8string kAsset;
+    MS2Ptr<CGemTombStone> spTomb(0);
+    if (FUN_140166410()->FUN_14036d570(0x67))
+    {
+        MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(FUN_14165f460())->FUN_141270740(5);
+        if (spGem.get())
+        {
+            spTomb.AssignRaw(dynamic_cast<CGemTombStone*>((CGemBase*)spGem));
+            if (spTomb.get())
+            {
+                MS2Ptr<CGemTombStoneData> spData = spTomb->FUN_1405a53c0();
+                if (spData.get())
+                {
+                    kRot = spData->m_ptRotation;
+                    CString strUrn = "urn:gamebryo-animation:"
+                        + FUN_141b6ed00(bBusy != 0 ? spData->m_attrB.m_strKfm : spData->m_attrA.m_strKfm);
+                    efd::AssetID kUrn;
+                    kUrn.SetURN(efd::utf8string((const char*)FUN_1409a2360(strUrn, 0)));
+                    kAsset = kUrn.GetURN();
+                }
+            }
+        }
+    }
+    spEntity = FUN_1409670f0()->FUN_1411ce7c0(kModel, kAsset, kPos, kRot, 1.0f, 0, 0);
+    if (spEntity == 0)
+        return;
+    efd::UInt32 nObjectId = FUN_14123c580();
+    static_cast<Unk_CachedEntity*>(spEntity.operator->())->SetPropertyValue(0x85b708e6, nObjectId);
+    m_spFC8.AssignRaw(reinterpret_cast<Unk_PCActionTimer*>(new CBreakableObject));
+    m_spFC8->FUN_140adf370(spEntity, FUN_14123c580(), spTomb);
+    if (FUN_141657730().get())
+        FUN_141657730()->FUN_141992e40();
+}
+
+// The pc record (MS2Ptr<Unk_PCArg125> is MS2Ptr<PCInfo>: get 0x1409f7930, copy 0x1409f7220, dtor 0x1409f74e0).
+class Unk_PCArg125 : public PCInfo {};
+
+int FUN_14081dd50(int nIndex);
+void FUN_14098b3e0(NiAVObject* pNode, float fAlpha, bool b);       // set the alpha of a node tree
+void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);   // fade a node tree
+CLua* FUN_1401c0db0();
+CUgcManager* FUN_14052d220();                                       // TSingleton<CUgcManager>::GetInstance (exe copy)
+CString FUN_1410280d0(int nType, CString strPath);                  // a UGC resource path (ugcimagepath.cpp)
+extern unsigned DAT_143ab2830;                                      // the own character's type
+extern NiFixedString DAT_143ae50f8;                                 // the skin colour extra data key
+bool FUN_1406343b0(MS2Ptr<CItem> spItem, const __int64* pnCharId);  // the item is bound to the character
+float FUN_14028d3a0(float fValue);                                  // (commonutil.cpp)
+float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                      // distance
+float FUN_140a0fde0(float fValue, float fMax);                      // min(value, max)
+void FUN_140a01250(efd::Point3 kDir, efd::Point3* pForward, efd::Point3* pRight);                                      // the special ability is shown (specialability.cpp)
+
+// The proxy object view: FUN_1416c2920 returns an int here (the shared header declares it void).
+class Unk_PCProxyView
+{
+public:
+    int FUN_1416c2920();
+};
+
+// Fill a pc record with this player's look, stats, equipment and titles.
+void PC::vfunc_125(MS2Ptr<Unk_PCArg125> spInfo)
+{
+    if (spInfo == NULL)
+        return;
+    unsigned short nLevel = vfunc_78();
+    spInfo->m_18 = nLevel;
+    spInfo->m_1c = FUN_141654700();
+    spInfo->m_20 = FUN_141654730();
+    spInfo->m_28 = FUN_141656ad0();
+    spInfo->m_30 = FUN_141656a80();
+    spInfo->m_38 = FUN_141661c50();
+    spInfo->m_60 = m_unk_1bc;
+    memcpy(spInfo->m_aStats1, m_unk_1c0[1], sizeof(m_unk_1c0[1]));
+    memcpy(spInfo->m_aStats0, m_unk_1c0[0], sizeof(m_unk_1c0[0]));
+    memcpy(spInfo->m_aStats2, m_unk_1c0[2], sizeof(m_unk_1c0[2]));
+    for (unsigned int i = 0; i < 0xcf; i++)
+    {
+        SAType eType = (SAType)i;
+        if (!FUN_14081dd50(eType))
+            continue;
+        spInfo->m_3b0[eType] = m_kEquipDE0.FUN_1411e1160(eType);
+    }
+    spInfo->m_3c0 = 0;
+    spInfo->m_3c4 = FUN_141658e60();
+    MS2Ptr<CProxyGameObject> spProxy = FUN_1403ed2d0()->FUN_141bc9be0(m_unk_70);
+    if (spProxy)
+    {
+        spInfo->m_3c8 = spProxy->m_c8;
+        spInfo->m_3d4 = reinterpret_cast<Unk_PCProxyView*>((CProxyGameObject*)spProxy.operator->())->FUN_1416c2920();
+        spInfo->m_3f0 = spProxy->FUN_1416c2600();
+    }
+    spInfo->m_3e0 = FUN_1416612e0();
+    spInfo->m_3e8 = vfunc_77();
+    spInfo->m_3f8 = FUN_141656be0();
+    spInfo->m_3d8 = FUN_141662730();
+    spInfo->m_3dc = FUN_1416626b0();
+    MS2Ptr<CGuildMember> spMember = CGuildManager::GetInstance()->FUN_1404cf9f0(vfunc_77());
+    if (spMember)
+        spInfo->m_400 = CGuildManager::GetInstance()->FUN_1404d0af0(spMember->fb4);
+    spInfo->m_408 = FUN_141656d90();
+    spInfo->m_3cc = 0;
+    spInfo->m_3d0 = 0;
+    vfunc_126(spInfo, 0);
+    vfunc_126(spInfo, 1);
+    vfunc_126(spInfo, 2);
+    spInfo->m_aItems.RemoveAll();
+    m_kGemEquip1078.FUN_1412700e0(spInfo->m_aItems);
+    MS2Ptr<CEquipmentSlotLayerInfo> spTitle = FUN_1416561a0()->GetTitle();
+    if (spTitle.get())
+    {
+        spInfo->m_508 = spTitle->FUN_1411df810();
+        spInfo->m_510 = spTitle->m_start;
+        spInfo->m_520 = spTitle->m_end;
+    }
+    spInfo->m_530 = vfunc_141();
+}
+
+// Fill one equip map of a pc record (0 worn, 1 outfit, 2 the third layer) and add the worn weapons' attack to it.
+void PC::vfunc_126(MS2Ptr<Unk_PCArg125> spInfo, int nLayer)
+{
+    ATL::CAtlMap<Unk_InventoryEquipSlot, MS2Ptr<CItem> >* pMap = NULL;
+    if (nLayer == 0)
+        pMap = &spInfo->m_mapEquip0;
+    else if (nLayer == 1)
+        pMap = &spInfo->m_mapEquip1;
+    else if (nLayer == 2)
+        pMap = &spInfo->m_mapEquip2;
+    if (pMap == NULL)
+        return;
+    unsigned int nAttackMin = 0;
+    unsigned int nAttackMax = 0;
+    unsigned int nRightMin = 0;
+    unsigned int nLeftMin = 0;
+    unsigned int nRightMax = 0;
+    unsigned int nLeftMax = 0;
+    int nRings = 0;
+    bool bWorn = nLayer == 0;
+    ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
+    m_kEquipDE0.FUN_1411e1ce0(kList, nLayer);
+    pMap->RemoveAll();
+    POSITION pos = kList.GetHeadPosition();
+    while (pos)
+    {
+        MS2Ptr<CEquipItem> spEquip = kList.GetNext(pos);
+        if (spEquip == NULL || spEquip->FUN_1411dc7a0() == NULL)
+            continue;
+        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        Unk_InventoryEquipSlot nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140526c30();
+        if (nSlot == 0)
+            nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140527a20();
+        pMap->SetAt(nSlot, spItem->FUN_140524250());
+        if (!FUN_141662eb0(spItem.get()))
+            continue;
+        if (!bWorn || !spItem->FUN_140528980())
+            continue;
+        MS2Ptr<CItemData> spData(spItem->FUN_140527840());
+        if (spData == 0)
+            continue;
+        unsigned int nMin = spItem->FUN_140529070();
+        unsigned int nMax = spItem->FUN_140529090();
+        if (nSlot == 4)
+        {
+            nRightMin = nMin;
+            nRightMax = nMax;
+            if (spData->FUN_14053d510())
+                nRings++;
+        }
+        else if (nSlot == 5)
+        {
+            nLeftMin = nMin;
+            nLeftMax = nMax;
+            if (spData->FUN_14053d510())
+                nRings++;
+        }
+        else
+        {
+            nAttackMin += nMin;
+            nAttackMax += nMax;
+        }
+    }
+    ItemDropCount kRange;
+    float fDivisor = *FUN_1401d3200()->BothHandGearScorePenaltyDiv.Get();
+    switch (nRings)
+    {
+    case 0:
+        nAttackMin += nLeftMin;
+        nAttackMax += nLeftMax;
+        break;
+    case 1:
+        nAttackMin += nLeftMin / fDivisor;
+        nAttackMax += nLeftMax / fDivisor;
+        break;
+    case 2:
+    {
+        unsigned int nLow = nRightMin < nLeftMin ? nRightMin : nLeftMin;
+        unsigned int nHigh = nRightMin > nLeftMin ? nRightMin : nLeftMin;
+        unsigned int nLowMax = nRightMax < nLeftMax ? nRightMax : nLeftMax;
+        unsigned int nHighMax = nRightMax > nLeftMax ? nRightMax : nLeftMax;
+        int nAddMin = 0;
+        int nAddMax = 0;
+        FUN_1401c0db0()->FUN_140678570(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
+        nAttackMin += nAddMin;
+        nAttackMax += nAddMax;
+        break;
+    }
+    default:
+        nAttackMin += nLeftMin / fDivisor;
+        nAttackMax += nLeftMax / fDivisor;
+        break;
+    }
+    spInfo->m_3cc += nAttackMin;
+    spInfo->m_3d0 += nAttackMax;
+}
+
+// The damage record's points as efd::Point3 (skillrecord.h keeps them as Unk_StreamPoint).
+#define PC_RECORD_PT(f) reinterpret_cast<efd::Point3&>(spRecord->f)
+
+// Knock-back from a hit (PCBase::vfunc_107 plus the PC's state / hold checks and the equipment's push resistance).
+void PC::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
+{
+    if (FUN_14028d470(fScale, 0.0f))
+        return;
+    if (m_unk_748.FUN_140970c10(spRecord->FUN_14175a8b0(), 1) != 0)
+        return;
+    if (FUN_14166c930() == 0xc)
+        return;
+    if (spRecord->FUN_14175ac30() == 0)
+        return;
+    if (FUN_141660120() == true)
+        return;
+    SkillAttackData* pAttack = spRecord->FUN_14175a8b0();
+    if (pAttack == 0)
+        return;
+    int nKind = pAttack->m_damage.GetPush(FUN_1403ed2d0()->FUN_141bd3060());
+    if (nKind == 0)
+        return;
+    if (m_pushControl.m_kDir != efd::Point3::ZERO && m_pushControl.m_nPriority >= pAttack->m_damage.m_nPushPriority)
+        return;
+    float fSpeed = FUN_14028d3a0(pAttack->m_damage.m_fPushDistance);
+    efd::Point3 kDir;
+    if (nKind == 2) {
+        kDir = PC_RECORD_PT(m_ptPos) - vfunc_18();
+    }
+    else if (nKind == 1) {
+        kDir = vfunc_18() - PC_RECORD_PT(m_ptPos);
+    }
+    else if (nKind == 5) {
+        if (PC_RECORD_PT(m_ptDir) == efd::Point3::ZERO) {
+            PCBase* pAttacker = FUN_1403ed2d0()->FUN_141bd1200(spRecord->m_nOwnerId);
+            if (pAttacker)
+                kDir = pAttacker->FUN_14123cc20();
+        }
+        else {
+            kDir = PC_RECORD_PT(m_ptDir);
+        }
+    }
+    else if (nKind == 6) {
+        efd::Point3 kFacing = PC_RECORD_PT(m_ptHit);
+        efd::Point3 kForward;
+        efd::Point3 kRight;
+        FUN_140a01250(kFacing, &kForward, &kRight);
+        kDir = -kForward;
+    }
+    kDir.Unitize();
+    PC_RECORD_PT(m_ptDir) = kDir;
+    fSpeed = FUN_1416561a0()->FUN_1411e0f90(fSpeed);
+    fSpeed *= fScale;
+    if (nKind == 2) {
+        PCBase* pAttacker = FUN_1403ed2d0()->FUN_141bd1200(spRecord->m_nOwnerId);
+        if (pAttacker)
+            fSpeed = FUN_140a0fde0((FUN_140966f00(pAttacker->vfunc_18(), vfunc_18()) - 150.0f) * 0.01f, fSpeed);
+    }
+    else if (nKind == 4) {
+        PC_RECORD_PT(m_ptDir) = PC_RECORD_PT(m_ptPos) - vfunc_18();
+        PC_RECORD_PT(m_ptDir).z = 0.0f;
+        fSpeed = FUN_14028d3a0(PC_RECORD_PT(m_ptDir).Length());
+        PC_RECORD_PT(m_ptDir).Unitize();
+    }
+    if (FUN_14028d470(fSpeed, 0.0f))
+        return;
+    m_pushControl.FUN_1413fcf90();
+    m_pushControl.m_kDir = PC_RECORD_PT(m_ptDir);
+    m_pushControl.m_fSpeed = fSpeed;
+    m_pushControl.m_f28 = pAttack->m_damage.m_fPushDuration;
+    m_pushControl.m_f2c = 0.0f;
+    m_pushControl.m_b30 = FUN_14028d470(pAttack->m_damage.m_fPushUpDistance, 0.0f) ? 0 : 1;
+    m_pushControl.m_n34 = pAttack->m_damage.m_nPushFall;
+    m_pushControl.m_nPriority = pAttack->m_damage.m_nPushPriority;
+    m_pushControl.FUN_1413fd050(pAttack->m_damage.m_ePushEaseType);
+}
+
+// The damage rate by the level gap: a = the attacker's level-ish value, b / c = the upper / lower reference
+// (*pOut: 1 above c). nFlag == 0 scales it by vfunc_97.
+float PC::vfunc_115(float a, float b, float c, float d, int nFlag, int* pOut)
+{
+    *pOut = 1;
+    if (a <= c / 3.0f) {
+        *pOut = 0;
+        float fRate = 0.2f;
+        float fMul = 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a > c / 3.0f && a < c) {
+        *pOut = 0;
+        float fRate = 1.0f - (c - a) / (c * 0.85f);
+        float fMul = 1.0f;
+        fRate = _finite(fRate) ? fRate : 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a == c) {
+        *pOut = 0;
+        float fRate = 1.0f;
+        float fMul = 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a > c && a < (c + b) / 2.5f) {
+        *pOut = 0;
+        float fRate = 1.0f - (c - a) / (c * 1.35f);
+        float fMul = 1.0f;
+        fRate = _finite(fRate) ? fRate : 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a > (c + b) / 2.5f && a < b) {
+        *pOut = 1;
+        float fRate = 1.0f - (b - a) / (b * 1.65f);
+        float fMul = 1.0f;
+        fRate = _finite(fRate) ? fRate : 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a == b) {
+        *pOut = 1;
+        float fRate = 1.0f;
+        float fMul = 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a > b && a < 2.0f * b) {
+        *pOut = 1;
+        float fRate = 1.0f - (b - a) / (b * 1.25f);
+        float fMul = 1.0f;
+        fRate = _finite(fRate) ? fRate : 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a > 2.0f * b) {
+        *pOut = 1;
+        float fRate = 1.8f;
+        float fMul = 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    return 1.0f;
+}
+
+// The couple effect view: the per-tick update takes the frame time (unit_140b0e5f0.h declares it without).
+class Unk_PCCoupleView
+{
+public:
+    void FUN_140b0e7a0(float fDelta);
+};
+// The random target effect view (randomtargeteffect.h lacks the update).
+class Unk_PCRandomTargetView
+{
+public:
+    void FUN_140aab0f0();                                           // per-frame update
+    void FUN_140aab3c0(float fAlpha);                               // set the alpha
+};
+int FUN_14080b8e0(CSkillTierOptionManager* pTier);                  // the skill tier options changed
+UIStatusEventDispatcher* FUN_140aa6d40();
+extern __int64 DAT_143ab2828;                                       // the own character id
+
+// Per-frame update.
+void PC::vfunc_53(float f)
+{
+    FUN_141678360();
+    FUN_141660df0();
+    m_kEquipDE0.FUN_1411e76c0(f);
+    PCBase::vfunc_53(f);
+    if (DAT_143ab2828 == m_nCharIdDB8 || CPartyManager::GetInstance()->FUN_14162ae20(m_nCharIdDB8))
+        m_nFF0 = CPartyManager::GetInstance()->FUN_14162ab00();
+    else
+        m_nFF0 = 0;
+    FUN_141659000(0);
+    bool bExpired = m_timer970.FUN_140868c00() || !m_timer970.FUN_140868ba0() ? true : false;
+    if (bExpired)
+        m_timer970.FUN_140868750(200);
+    vfunc_93(bExpired);
+    FUN_141660ee0();
+    if (m_spD88.get())
+        m_spD88->FUN_140a35500(f);
+    FUN_1416599b0();
+    vfunc_142();
+    Unk_PCBaseComp_a78* pTag;
+    Unk_PCBaseComp_a78* pTagCopy = pTag = vfunc_82().get();         // the exe keeps a second (unused) copy
+    if (pTag)
+    {
+        Unk_PCLocalPlayer* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pLocal)
+        {
+            unsigned int nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorPC);
+            if (this == pLocal)
+                nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorMyPC);
+            else if (pLocal->vfunc_122(this))
+                nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorPCHostile);
+            else if (pLocal->FUN_1415278d0(FUN_141656a80()))
+                nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorParty);
+            pTag->FUN_141a5e500(nColor);
+        }
+    }
+    FUN_1416615f0(f);
+    FUN_141659720();
+    FUN_141661ac0();
+    if (FUN_14080b8e0(m_spSkillTier1110.get()))
+    {
+        if (GetClassID() == 0x06200004)
+            FUN_140aa6d40()->FUN_141b0ce20(0xe, 0);
+    }
+    if (m_spCouple11d8.get())
+        reinterpret_cast<Unk_PCCoupleView*>((CoupleEffectSystem*)m_spCouple11d8.operator->())->FUN_140b0e7a0(f);
+    if (m_spTailEffect1270.get())
+        m_spTailEffect1270->FUN_140ad0200();
+    for (POSITION pos = m_mapTail1280.GetStartPosition(); pos; m_mapTail1280.GetNext(pos))
+    {
+        MS2Ptr<CTailEffectObject> spTail = m_mapTail1280.GetValueAt(pos);
+        ((CTailEffectObject*)spTail)->FUN_140ad0200();
+    }
+    if (m_spRandomTarget12c8.get())
+        reinterpret_cast<Unk_PCRandomTargetView*>((CRandomTargetEffect*)m_spRandomTarget12c8.operator->())->FUN_140aab0f0();
+}
+
+// The team of the player (the PvP team, the hide-and-seek side or the water gun battle team; 1: none).
+int PC::vfunc_116()
+{
+    if (FUN_14165ef30())
+        return reinterpret_cast<CPvPInfo*>(FUN_140967420().operator->())->m_nPoint;
+    if (FUN_141664200()->FUN_14050a490())
+    {
+        if (FUN_141664200()->FUN_14050a6a0() == 1)
+            return 0xc9;
+        if (FUN_141664200()->FUN_14050a6a0() == 2)
+            return 0xca;
+    }
+    if (FUN_140166410()->FUN_14036d570(0x10e) == true)
+    {
+        if (FUN_141664250().get() && FUN_141664250()->FUN_1408fe070() == true)
+            return FUN_141664250()->FUN_1408fe0b0();
+    }
+    return 1;
+}
+
+// Equip the owned items once they are loaded: the equip-flagged items straight away, the rest sorted
+// (kind 2 first, then the outfit layer, then the worn layer).
+void PC::vfunc_143()
+{
+    if (m_kListD48.IsEmpty())
+        return;
+    CAtlArray<MS2Ptr<CItem> > aWorn;
+    CAtlArray<MS2Ptr<CItem> > aOutfit;
+    CAtlArray<MS2Ptr<CItem> > aKind2;
+    bool bQuick = FUN_1416566f0() == 0 && FUN_1409f7c90()->FUN_1409f7ea0();
+    for (size_t i = 0; i < m_kListD48.GetCount(); i++)
+    {
+        MS2Ptr<CItem> spItem = m_kListD48[i];
+        if (spItem == 0 || spItem->FUN_140527840() == 0)
+            continue;
+        if (spItem->FUN_140527840()->FUN_14053d550())
+        {
+            if (bQuick)
+                m_kEquipDE0.FUN_1411e38e0(spItem);
+            else
+                m_kEquipDE0.FUN_1411e3600(spItem);
+        }
+        else if (spItem->FUN_14052a150() == 2)
+            aKind2.Add(spItem);
+        else if (spItem->FUN_1405258b0())
+            aOutfit.Add(spItem);
+        else
+            aWorn.Add(spItem);
+    }
+    FUN_141660c20(aKind2, bQuick);
+    FUN_141660c20(aOutfit, bQuick);
+    FUN_141660c20(aWorn, bQuick);
+    m_kListD48.RemoveAll();
+    FUN_141653f00();
+}
+
+// Fade the player: every equip model's node, the tails and the random target effect follow the alpha.
+void PC::vfunc_42(float f, bool b)
+{
+    GameObject::vfunc_42(f, b);
+    ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
+    m_kEquipDE0.FUN_1411e1b80(kList);
+    for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
+    {
+        ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+        kList.GetAt(pos)->FUN_1411dcc80(aModels);
+        for (unsigned int i = 0; i < aModels.GetCount(); i++)
+        {
+            NiAVObject* pNode = (NiAVObject*)aModels[i]->vfunc_14();
+            FUN_14123e020(pNode);
+            FUN_14098b3e0(pNode, f, b);
+        }
+    }
+    if (m_spTailEffect1270.get())
+        m_spTailEffect1270->FUN_140acffc0(f);
+    for (POSITION posTail = m_mapTail1280.GetStartPosition(); posTail; m_mapTail1280.GetNext(posTail))
+    {
+        MS2Ptr<CTailEffectObject> spTail = m_mapTail1280.GetValueAt(posTail);
+        ((CTailEffectObject*)spTail)->FUN_140acffc0(f);
+    }
+    if (m_spRandomTarget12c8.get())
+        reinterpret_cast<Unk_PCRandomTargetView*>((CRandomTargetEffect*)m_spRandomTarget12c8.operator->())->FUN_140aab3c0(f);
+}
+
+// Fade the equip models with the actor (GameObject::vfunc_40 for the body).
+void PC::vfunc_40(float a, float b, float c, float d)
+{
+    GameObject::vfunc_40(a, b, c, d);
+    ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
+    m_kEquipDE0.FUN_1411e1b80(kList);
+    for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
+    {
+        ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+        kList.GetAt(pos)->FUN_1411dcc80(aModels);
+        for (unsigned int i = 0; i < aModels.GetCount(); i++)
+        {
+            NiAVObject* pNode = (NiAVObject*)aModels[i]->vfunc_14();
+            FUN_14123e020(pNode);
+            FUN_140ae1e80(pNode, a, b, c, d, reinterpret_cast<const egf::EntityID&>(s_pointer));   // s_pointer is this TU's kENTITY_INVALID
+        }
+    }
+}
+
+// Die: the dying state, and the PvP slow motion.
+int PC::vfunc_137()
+{
+    if (FUN_14166c930() != 0xc && FUN_141670a00(4) == 0)
+    {
+        m_nFF4 = 1;
+        if (m_n10ec > 0)
+            m_n10f0 = 1;
+        FUN_14166ce50(1);
+        if (FUN_140967420()->FUN_140743590() || FUN_140967420()->FUN_140743690())
+        {
+            float fScale = *FUN_1401d3200()->TimeScalePCScale.Get();
+            FUN_1403ed2d0()->FUN_141bd92c0(fScale, fScale, *FUN_1401d3200()->TimeScalePCDuration.Get(), 0);
+        }
+        return 1;
+    }
+    return 0;
+}
+
+// Drive the tomb stone: follow the player (snapped onto the housing cube) or drop it once it finished.
+void PC::vfunc_142()
+{
+    if (m_spFC8 == 0)
+        return;
+    int bFinished = m_spFC8->FUN_140adea80() != 3 && FUN_14166c930() != 0xc;
+    if (m_spFC8->FUN_140adf350() || bFinished)
+    {
+        m_spFC8 = 0;
+        return;
+    }
+    efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
+    {
+        Unk_PCHousingSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+        if (spSvc.FUN_140885310())
+            kPos = spSvc.FUN_1401cd1a0()->FUN_1410b9150(kPos);
+    }
+    m_spFC8->FUN_140adf770(kPos);
+    m_spFC8->FUN_140adeaf0(FUN_140869420());
+}
+
+// Hide (n != 0) / show the player: the equipment under the default reason, the tails and the random target effect.
+void PC::vfunc_23(int n)
+{
+    PCBase::vfunc_23(n);
+    if (n)
+        m_kEquipDE0.FUN_1411e8eb0(s_strDefault);
+    else
+        m_kEquipDE0.FUN_1411e9020(s_strDefault);
+    if (m_spTailEffect1270.get())
+    {
+        if (n)
+            m_spTailEffect1270->FUN_140acfeb0();
+        else
+            m_spTailEffect1270->FUN_140acfda0();
+    }
+    for (POSITION pos = m_mapTail1280.GetStartPosition(); pos; m_mapTail1280.GetNext(pos))
+    {
+        MS2Ptr<CTailEffectObject> spTail = m_mapTail1280.GetValueAt(pos);
+        if (n)
+            ((CTailEffectObject*)spTail)->FUN_140acfeb0();
+        else
+            ((CTailEffectObject*)spTail)->FUN_140acfda0();
+    }
+    if (m_spRandomTarget12c8.get())
+    {
+        if (n)
+            m_spRandomTarget12c8->Hide();
+        else
+            m_spRandomTarget12c8->Show();
+    }
+}
+
+// Collect the scene nodes of the player: the body and every equip model.
+void PC::vfunc_44(void* p)
+{
+    typedef std::list<NiAVObject*, efd::CustomAllocator<NiAVObject*> > NodeList;
+    static_cast<NodeList*>(p)->clear();
+    static_cast<NodeList*>(p)->push_back(FUN_141b6efc0(FUN_14123c410()));
+    ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
+    m_kEquipDE0.FUN_1411e1b80(kList);
+    for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
+    {
+        ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+        kList.GetAt(pos)->FUN_1411dcc80(aModels);
+        for (unsigned int i = 0; i < aModels.GetCount(); i++)
+            static_cast<NodeList*>(p)->push_back((NiAVObject*)aModels[i]->vfunc_14());
+    }
+}
+
+// The item may be used by this player: the PC bang / VIP / vfunc_146 requirements, the owner bind (not for the
+// fitting doll when feature 0xd4 is on) and the codi layer of kind 2 items.
+int PC::FUN_141662eb0(CItem* pItem)
+{
+    if (pItem == 0)
+        return 0;
+    if (!pItem->FUN_140528980())
+        return 0;
+    if (pItem->FUN_14052a2d0() && FUN_141658f30() == 0)
+        return 0;
+    if (pItem->FUN_14052a330() && FUN_141662de0() == 0)
+        return 0;
+    if (pItem->FUN_14052a390() && !vfunc_146())
+        return 0;
+    bool bCheckOwner = true;
+    if (FUN_140166410()->FUN_14036d570(0xd4))
+        bCheckOwner = GetClassID() != 0x06200046;   // FittingDollPC
+    if (bCheckOwner)
+    {
+        __int64 nCharId = FUN_141656a80();
+        if (!FUN_1406343b0(MS2Ptr<CItem>(pItem), &nCharId))
+            return 0;
+    }
+    if (pItem->FUN_14052a170() == 2 && !m_kEquipDE0.FUN_1411ea770())
+        return 0;
+    return 1;
+}
+
+// Re-apply the appearance: refresh the face model and push the skin colour floats onto "FA_Skin".
+void PC::FUN_141656780()
+{
+    {
+        MS2Ptr<CEquipItem> spFace = FUN_141655e10(2);
+        if (spFace.get())
+            spFace->FUN_1411dcd00();
+    }
+    NiActorManager* pActor = PCAnim::FUN_141b6f910()->GetActorManager(FUN_14123c460());
+    if (pActor)
+    {
+        NiAVObject* pRoot = pActor->GetNIFRoot();
+        if (pRoot == 0)
+            return;
+        NiAVObject* pSkin = pRoot->GetObjectByName("FA_Skin");
+        if (pSkin != 0)
+        {
+            NiFloatsExtraData* pData = NiDynamicCast(NiFloatsExtraData, pSkin->GetExtraData(DAT_143ae50f8));
+            if (pData == 0)
+            {
+                pData = NiNew NiFloatsExtraData(4, m_afA20);
+                pSkin->AddExtraData(DAT_143ae50f8, pData);
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                    pData->SetValue(i, m_afA20[i]);
+            }
+            FUN_1416561a0()->FUN_1411e6b50();
+        }
+    }
+}
+
+// Set the profile image key; request the image when it is not cached yet.
+void PC::FUN_141660fc0(CString str)
+{
+    if (FUN_14052d220()->FUN_14187f3b0() == 1)
+        m_str1028 = "";
+    else
+        m_str1028 = str;
+    if (m_str1028.GetLength() == 0)
+        return;
+    if (str.GetLength() == 0)
+        return;
+    CString strPath = FUN_1410280d0(5, str);
+    if (_access(strPath, 0) != 0)
+        FUN_14052d220()->FUN_141884e30(DAT_143ab2830, 0, FUN_141656a80(), str, CString(""));
+}
+
 // ---- end of code ----
 
 // MS2-PIN: ??_7PC@@6BIBase@efd@@@ 0x142f4ae28
@@ -2744,3 +4416,11 @@ MS2Ptr<CEquipItem> PC::FUN_141655ee0(int nSlot, bool bKind0Only)
 // MS2-PIN: ??_EPC@@W7EAAPEAXI@Z 0x1416677f8
 // MS2-PIN: ??__Es_category@@YAXXZ 0x1400fb430
 // MS2-PIN: ??__Es_pointer@@YAXXZ 0x1400fb460
+// MS2-PIN: ??$SetPropertyValue@I@Unk_CachedEntity@@QEAA?AW4PropertyResult@egf@@IAEBI@Z 0x141664540
+// MS2-PIN: ??$CachePropertyValue@I@Unk_CachedEntity@@QEAAXIAEBI@Z 0x141664360
+// tplpin --simulate (w558), hand-applied (skipped: vfunc/FUN_ names already bind; prop guesses 0x141666f80 = AssignRaw<CTailEffectObject> per its ctor callee, 0x1416662a0; 0x141666020 already named MS2Ptr<Unk_RideeFieldObj>; 0x141667640 not called by the ctor):
+// MS2-PIN: ??$?0U_Exact_args_t@std@@$0A@@?$tuple@$$V@std@@QEAA@U_Exact_args_t@1@@Z 0x1416655b0
+// MS2-PIN: ??0?$MS2Ptr@VUnk_PCD88@@@@QEAA@H@Z 0x141665fa0
+// MS2-PIN: ??0?$MS2Ptr@VCRandomTargetEffect@@@@QEAA@XZ 0x141666160
+// MS2-PIN: ??0?$MS2Ptr@VJobSystemCli@@@@QEAA@XZ 0x141666590
+// MS2-PIN: ??0?$MS2Ptr@VWaterGunBattleInfo@@@@QEAA@PEAVWaterGunBattleInfo@@@Z 0x1416665f0

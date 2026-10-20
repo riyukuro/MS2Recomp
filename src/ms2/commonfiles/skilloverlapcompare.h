@@ -124,7 +124,7 @@ struct Unk_SkillBlockB0
     ATL::CAtlArray<unsigned> m_arrCheckEffectID;            // +0x00
     ATL::CAtlArray<unsigned short> m_arrCheckEffectLevel;   // +0x20
     ATL::CAtlArray<unsigned> m_arrCheckEffectOverlapCount;  // +0x40
-    std::vector<int> m_vCheckEffectCompareFunc;             // +0x60
+    std::vector<SkillCompareSign> m_vCheckEffectCompareFunc; // +0x60 (default Equals)
     ATL::CAtlArray<unsigned> m_arrChangeSkillID;            // +0x78
     SkillAutoChange m_eAutoChange;                          // +0x98
     int m_n9c;
@@ -261,7 +261,7 @@ public:
     SkillMotionData* FUN_140803f00(int nMotion);            // one motion (0 if out of range)
     SkillAttackData* FUN_140803f60(int nMotion, int nAttack);   // one attack of a motion (0 if out of range)
     SkillAttackData* FUN_140803fb0(int nMotion, CString strName);   // one attack of a motion by name
-    SkillAttackData* FUN_140804030(const CString& strPoint);    // one attack with a pause, by point
+    SkillAttackData* FUN_140804030(const CString& strPoint) const; // one attack with a pause, by point
     Unk_RangeProperty* FUN_1408040d0(int nMotion, int nAttack);   // the range of an attack
     Unk_RangeShape* FUN_140804120();                        // the detect shape (0 without one)
     float FUN_140804150(int nMotion, int nAttack);          // the damage rate of an attack

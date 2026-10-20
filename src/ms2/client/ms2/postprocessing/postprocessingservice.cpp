@@ -2672,7 +2672,7 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a8140()
             pkClick->SetRenderTargetGroup(m_aspFrameTargets[m_iFrame]);
             pkClick->SetClearAllBuffers(true);
             pkClick->AppendRenderView(FUN_1413f9a70());
-            NiMaterialPtr spMaterial = NiMaterial::GetMaterial(DAT_143ae5260);
+            NiMaterialPtr spMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae5260);
             if (!spMaterial)
                 return 0;
             MS2VelocityMaterialSwapProcessor* pkProcessor = NiNew MS2VelocityMaterialSwapProcessor(spMaterial, 0xffffffff);
@@ -2816,7 +2816,7 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a92e0()
         spClick->SetRenderTargetGroup(spTarget);
         spClick->SetClearAllBuffers(true);
         spClick->AppendRenderView(FUN_1413f9a70());
-        NiMaterialPtr spMaterial = NiMaterial::GetMaterial(DAT_143ae51f0);
+        NiMaterialPtr spMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae51f0);
         if (!spMaterial)
             return 0;
         MS2MaterialSwapProcessor* pkProcessor = NiNew MS2MaterialSwapProcessor(spMaterial, FUN_1414cffc0);
@@ -2860,13 +2860,13 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a8600()
         spClick->AppendRenderView(FUN_1413f9a70());
         spClick->SetPreProcessingCallbackFunc(FUN_1416ac150, &DAT_143a09680);
         spClick->SetPostProcessingCallbackFunc(FUN_1416ac1e0, 0);
-        NiMaterialPtr spSkinned = NiMaterial::GetMaterial(DAT_143ae5220);
+        NiMaterialPtr spSkinned = NiMaterialLibrary::CreateMaterial(DAT_143ae5220);
         if (!spSkinned)
             return 0;
-        NiMaterialPtr spAlpha = NiMaterial::GetMaterial(DAT_143ae5228);
+        NiMaterialPtr spAlpha = NiMaterialLibrary::CreateMaterial(DAT_143ae5228);
         if (!spAlpha)
             return 0;
-        NiMaterialPtr spStatic = NiMaterial::GetMaterial(DAT_143ae5210);
+        NiMaterialPtr spStatic = NiMaterialLibrary::CreateMaterial(DAT_143ae5210);
         if (!spStatic)
             return 0;
         std::vector<NiPointer<MaterialSwapper> > kSwappers;

@@ -62,6 +62,11 @@ struct Unk_PCEquipSet
     void FUN_1411e8b60(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend);   // (CEquipment)
     float FUN_1411e1110(int nSpecial);                      // the special ability rate (CEquipment)
     int FUN_1411e1160(int nSpecial);                        // the special ability total (CEquipment)
+    void FUN_1411e1ce0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);   // the equip items of a layer (CEquipment)
+    void FUN_1411e76c0(double fTime);                       // Update (CEquipment)
+    bool FUN_1411ea770();                                   // IsLayerActive (CEquipment)
+    void FUN_1411e6b50();                                   // apply the skin decal colours (CEquipment)
+    void FUN_1411e1b80(ATL::CAtlList<MS2Ptr<CEquipItem> >& items);   // all the equip items (CEquipment)
     float FUN_1411e1250(int nOption, unsigned nKey);        // an invoke effect option rate (CEquipment)
     float FUN_1411e13e0(int nOption, unsigned nKey);        // an invoke effect option count (CEquipment)
     void FUN_1411e7680();                                   // refresh (CEquipment)
@@ -70,7 +75,7 @@ struct Unk_PCEquipSet
     MS2Ptr<CEquipmentSlotLayerInfo> m_spTitle;              // +0x188 (new CEquipmentSlotLayerInfo(2))
 };   // FUN_1411e1780 (itemgem.cpp): the worn item of an equip slot   // the PC's equipment holder (+0xde0); methods FUN_1411e3de0/e3000/e22c0
 class Unk_PCD88;      // +0xd88 target (ClonePC::vfunc_12 releases it via FUN_140a35900)
-class Unk_PCArg126;   // MS2Ptr<T> by value (get 0x1409f7930, ICF generic dtor 0x1401bfde0)
+
 class Unk_HsInfo;     // MS2Ptr<T> by value (defined by uihideandseekresultdialog.cpp)
 // PC member types (w539). Complete types only in pc.cpp; the MS2Ptr members need only declarations.
 class CEquipModel;     // equipmodel.h (the attach-effect models of the worn weapons)
@@ -104,6 +109,8 @@ public:
     bool FUN_140743550();                                   // active
     void FUN_140743a10(CInPacket& packet);                  // decode (scenestategame OnAddUser)
     int FUN_140743710();                                    // the target kind
+    bool FUN_140743590();                                   // CPvPInfo: mode 1
+    bool FUN_140743690();                                   // CPvPInfo: mode 10
 };
 class PC : public PCBase {
     EE_DECLARE_CLASS1(PC, 0x06200003, PCBase);   // ClassInfo 0x143ae2e20 (setup COMDAT 0x1409f8020 in avatarpc; sb4)
@@ -165,7 +172,7 @@ public:
     virtual int vfunc_99(int n);                            // 99 0x141654850
     virtual int vfunc_124(int a, int b);                    // 124 0x141653840 (1/0; homes edx and r8d)
     virtual void vfunc_125(MS2Ptr<Unk_PCArg125> p);         // 125 0x141654900 (MyPC 0x141522d40)
-    virtual void vfunc_126(MS2Ptr<Unk_PCArg126> p, int n);  // 126 0x141655230 (n == 0: p.get() + 0x430)
+    virtual void vfunc_126(MS2Ptr<Unk_PCArg125> p, int n);  // 126 0x141655230 (n == 0: p.get() + 0x430)
     virtual void vfunc_127(CItem* pItem, int n);            // 127 0x1416563c0 (MS2Ptr<CItem>(pItem) into +0xde0)
     virtual void vfunc_128(CItem* pItem, int n);            // 128 0x1416564a0
     virtual void vfunc_129(const CStringW& str);            // 129 0x141656ba0: +0xdc8 = str
@@ -208,6 +215,18 @@ public:
     MS2Ptr<CEquipItem> FUN_141655ee0(int nSlot, bool bKind0Only);   // the worn weapon (slot 4/5): kind 0, or the first of kinds 0..2 holding one
     int FUN_14165c570();                                    // the normal attack skill of the weapon stance
     void FUN_14165c720(int nSkillId, short nLevel);         // preload a skill and its combo chain
+    int FUN_14165c090(efd::Point3 kPos);                    // there is ground ahead of kPos and room to stand there (by value)
+    void FUN_14165cac0();                                   // create the tomb stone entity (+0xfc8)
+    int FUN_14165a540();                                    // step onto the cube under / next to the actor
+    int FUN_14165b500(int nKind);                           // climb: 1 onto a wall ahead, 2 down the side of the cube below
+    MS2Ptr<class CGemPetSkin> FUN_14165df00();              // the worn pet skin gem (feature 0x6c)
+    MS2Ptr<class CGemSwim> FUN_14165e1b0();                 // the worn swim gem (feature 0x68)
+    void FUN_141660ee0();                                   // the equipment finished loading (once: +0xd40)
+    void FUN_1416599b0();                                   // drop the followed entity (+0xdb0) beyond 70 units
+    void FUN_141660c20(const CAtlArray<MS2Ptr<CItem> >& aItems, bool bQuick);   // equip the items (bQuick: FUN_1411e38e0)
+    void FUN_1416611b0(CString strKey);                     // take the profile image key if it names this character
+    CString FUN_14165e010(int nAction);                     // the swim effect of an action (0x30 idle, 0x32 dash, else run)
+    void FUN_141659250(int nValue, CubeItemInfo* pInfo);   // recreate the cube craft controller for the mode
     __int64 FUN_141656ad0();                                // +0xdc0
     int FUN_14165ef30();                                    // this is the local player
     MS2Ptr<Unk_PCLinkFD8> FUN_141657730();                  // the +0xfd8 record, created on demand (none while busy)
@@ -330,7 +349,7 @@ public:
     void FUN_141660d50();                                   // the default collision box
     void FUN_141660df0();                                   // (empty)
     void FUN_1416615f0(float fDelta);                       // the +0x1054 timer tick
-    void FUN_1416616a0(unsigned int nDelay);                // schedule the +0x1054 timer
+    void FUN_1416616a0(unsigned int nDelay);                // blink the model alpha (faster nDelay ms after +0x1064)
     void FUN_141661880(int bEnable, int nValue, const CubeItemInfo* pInfo);   // enter / leave the cube mode (+0x1000 / +0x1008)
     void FUN_14165d300(int nA, int nB, int nC);             // PCBase member (pcbase.cpp; scenestategame 0x5d)
     void FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot);   // scenestategame 0x141721a30
@@ -434,9 +453,10 @@ public:
     int m_n105c;                                            // +0x105c
     int m_n1060;                                            // +0x1060 an effect id (the dtor removes it)
     int m_n1064;                                            // +0x1064
-    int m_n1068;                                            // +0x1068
-    int m_n106c;                                            // +0x106c
-    __int64 m_n1070;                                        // +0x1070 (not set by the ctor)
+    unsigned int m_n1068;                                   // +0x1068 the blink phase (FUN_1416616a0, 0..1000)
+    unsigned int m_n106c;                                   // +0x106c the last blink tick
+    bool m_b1070;                                           // +0x1070 the blink state (not set by the ctor)
+    char m_pad_1071[7];
     PCGemEquip m_kGemEquip1078;                             // +0x1078 (FUN_14165f460)
     unsigned int m_n10e8;                                   // +0x10e8
     int m_n10ec;                                            // +0x10ec
@@ -513,6 +533,7 @@ MS2_CHECK_OFFSET(PC, m_spFC8, 0xfc8);
 MS2_CHECK_OFFSET(PC, m_pCubeCraft, 0x1020);
 MS2_CHECK_OFFSET(PC, m_nFF9, 0xff9);
 MS2_CHECK_OFFSET(PC, m_n1058, 0x1058);
+MS2_CHECK_OFFSET(PC, m_b1070, 0x1070);
 MS2_CHECK_OFFSET(PC, m_n1200, 0x1200);
 MS2_CHECK_OFFSET(PC, m_b1204, 0x1204);
 MS2_CHECK_OFFSET(PC, m_spSetItems, 0x1100);

@@ -2950,3 +2950,4 @@ void CGameRule::FUN_14047fc60()
     }
 }
 MS2_REPLACE_METHOD(0x14047FC60, CGameRule, FUN_14047fc60, 247, 0x577FF757);
+// MS2-FUNCTIONAL 0x140497ca0: the exe has two MS2Ptr<OntimeEventContext> families - this TU's copy ctor reads the source through get() 0x1403e89f0 and AddRef 0x1404aeed0, the other TU's (0x1403e1cd0) reads m_p and calls AddRef 0x1403f38c0; one generic MS2Ptr<T> copy ctor cannot emit both, so the map value here is a second, unrecovered smart-pointer type
