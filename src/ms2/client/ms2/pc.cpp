@@ -198,6 +198,7 @@
 #include "ms2/placeholder/cequipmentslotlayerinfo.h"
 #include "ms2/commonfiles/itemdroptable.h"
 #include "ms2/commonfiles/luautil.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/client/ms2/cubecraft_2.h"
@@ -607,7 +608,11 @@ Unk_PCNotices* FUN_140939a10();
 
 // The +0xd88 record is the head CBoneRotateManager (vfunc_12 news it; clonepc.cpp/stateidle.cpp keep the
 // Unk_PCD88 name, which the exe's MS2Ptr COMDAT symbols carry) and the +0xfd8 record (create 0x141993100).
-class Unk_PCD88 : public CBoneRotateManager {};
+class Unk_PCD88 : public CBoneRotateManager
+{
+public:
+    void FUN_140a35500(double dTime);                               // per-frame: pick/advance actions
+};
 class Unk_PCLinkFD8 : public CPtred                                 // UITombStoneBar::Entity
 {
 public:
@@ -3943,6 +3948,157 @@ void PC::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
     m_pushControl.m_n34 = pAttack->m_damage.m_nPushFall;
     m_pushControl.m_nPriority = pAttack->m_damage.m_nPushPriority;
     m_pushControl.FUN_1413fd050(pAttack->m_damage.m_ePushEaseType);
+}
+
+// The damage rate by the level gap: a = the attacker's level-ish value, b / c = the upper / lower reference
+// (*pOut: 1 above c). nFlag == 0 scales it by vfunc_97.
+float PC::vfunc_115(float a, float b, float c, float d, int nFlag, int* pOut)
+{
+    *pOut = 1;
+    if (a <= c / 3.0f) {
+        *pOut = 0;
+        float fRate = 0.2f;
+        float fMul = 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a > c / 3.0f && a < c) {
+        *pOut = 0;
+        float fRate = 1.0f - (c - a) / (c * 0.85f);
+        float fMul = 1.0f;
+        fRate = _finite(fRate) ? fRate : 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a == c) {
+        *pOut = 0;
+        float fRate = 1.0f;
+        float fMul = 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a > c && a < (c + b) / 2.5f) {
+        *pOut = 0;
+        float fRate = 1.0f - (c - a) / (c * 1.35f);
+        float fMul = 1.0f;
+        fRate = _finite(fRate) ? fRate : 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a > (c + b) / 2.5f && a < b) {
+        *pOut = 1;
+        float fRate = 1.0f - (b - a) / (b * 1.65f);
+        float fMul = 1.0f;
+        fRate = _finite(fRate) ? fRate : 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a == b) {
+        *pOut = 1;
+        float fRate = 1.0f;
+        float fMul = 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a > b && a < 2.0f * b) {
+        *pOut = 1;
+        float fRate = 1.0f - (b - a) / (b * 1.25f);
+        float fMul = 1.0f;
+        fRate = _finite(fRate) ? fRate : 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    else if (a > 2.0f * b) {
+        *pOut = 1;
+        float fRate = 1.8f;
+        float fMul = 1.0f;
+        if (nFlag == 0)
+            fMul = vfunc_97();
+        return fRate * fMul;
+    }
+    return 1.0f;
+}
+
+// The couple effect view: the per-tick update takes the frame time (unit_140b0e5f0.h declares it without).
+class Unk_PCCoupleView
+{
+public:
+    void FUN_140b0e7a0(float fDelta);
+};
+// The random target effect view (randomtargeteffect.h lacks the update).
+class Unk_PCRandomTargetView
+{
+public:
+    void FUN_140aab0f0();                                           // per-frame update
+};
+int FUN_14080b8e0(CSkillTierOptionManager* pTier);                  // the skill tier options changed
+UIStatusEventDispatcher* FUN_140aa6d40();
+extern __int64 DAT_143ab2828;                                       // the own character id
+
+// Per-frame update.
+void PC::vfunc_53(float f)
+{
+    FUN_141678360();
+    FUN_141660df0();
+    m_kEquipDE0.FUN_1411e76c0(f);
+    PCBase::vfunc_53(f);
+    if (DAT_143ab2828 == m_nCharIdDB8 || CPartyManager::GetInstance()->FUN_14162ae20(m_nCharIdDB8))
+        m_nFF0 = CPartyManager::GetInstance()->FUN_14162ab00();
+    else
+        m_nFF0 = 0;
+    FUN_141659000(0);
+    bool bExpired = m_timer970.FUN_140868c00() || !m_timer970.FUN_140868ba0() ? true : false;
+    if (bExpired)
+        m_timer970.FUN_140868750(200);
+    vfunc_93(bExpired);
+    FUN_141660ee0();
+    if (m_spD88.get())
+        m_spD88->FUN_140a35500(f);
+    FUN_1416599b0();
+    vfunc_142();
+    Unk_PCBaseComp_a78* pTag;
+    Unk_PCBaseComp_a78* pTagCopy = pTag = vfunc_82().get();         // the exe keeps a second (unused) copy
+    if (pTag)
+    {
+        Unk_PCLocalPlayer* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pLocal)
+        {
+            unsigned int nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorPC);
+            if (this == pLocal)
+                nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorMyPC);
+            else if (pLocal->vfunc_122(this))
+                nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorPCHostile);
+            else if (pLocal->FUN_1415278d0(FUN_141656a80()))
+                nColor = FUN_140a7d630(&static_cast<Client::Constants*>(FUN_1401d3200())->NameTagColorParty);
+            pTag->FUN_141a5e500(nColor);
+        }
+    }
+    FUN_1416615f0(f);
+    FUN_141659720();
+    FUN_141661ac0();
+    if (FUN_14080b8e0(m_spSkillTier1110.get()))
+    {
+        if (GetClassID() == 0x06200004)
+            FUN_140aa6d40()->FUN_141b0ce20(0xe, 0);
+    }
+    if (m_spCouple11d8.get())
+        reinterpret_cast<Unk_PCCoupleView*>((CoupleEffectSystem*)m_spCouple11d8.operator->())->FUN_140b0e7a0(f);
+    if (m_spTailEffect1270.get())
+        m_spTailEffect1270->FUN_140ad0200();
+    for (POSITION pos = m_mapTail1280.GetStartPosition(); pos; m_mapTail1280.GetNext(pos))
+    {
+        MS2Ptr<CTailEffectObject> spTail = m_mapTail1280.GetValueAt(pos);
+        ((CTailEffectObject*)spTail)->FUN_140ad0200();
+    }
+    if (m_spRandomTarget12c8.get())
+        reinterpret_cast<Unk_PCRandomTargetView*>((CRandomTargetEffect*)m_spRandomTarget12c8.operator->())->FUN_140aab0f0();
 }
 
 // ---- end of code ----
