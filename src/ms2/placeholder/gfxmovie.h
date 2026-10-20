@@ -77,6 +77,27 @@ public:
     // value: the callee destroys it). astooltipmanager.cpp.
     Scaleform::GFx::Value FUN_1422bd120(CString strClassName);      // 0x1422bd120
 
+    // The rest of ?\gfxmovie.cpp (src/ms2/gfxui/gfxmovie.cpp).
+    Scaleform::GFx::Value FUN_1422bd1b0(const char* szMethod);      // call an AS function of the root (no arguments)
+    Scaleform::GFx::Value FUN_1422bd250(const char* szMethod, class ASArgList& args);   // the same with arguments (undefined on failure)
+    // FUN_1422bd250 with one string argument (inline COMDAT; the CString by value: the callee destroys it)
+    Scaleform::GFx::Value FUN_1422be7f0(const char* szMethod, CString a1);
+    float FUN_1422bde30();                                          // m_14 (the viewport scale)
+    void FUN_1422bde50(float fScale);                               // m_14 = fScale
+    int FUN_1422bde80(float fScale);                                 // set m_14 and the viewport scale; true if it changed
+    int FUN_1422bdf70();                                            // the viewport width
+    int FUN_1422bdfc0();                                            // the viewport height
+    void FUN_1422be010(int* pnWidth, int* pnHeight);                // both
+    void FUN_1422be080(int bPause);                                 // Movie::SetPause
+    void FUN_1422be0e0(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&));   // m_70 = pfn
+    void FUN_1422be100(const Scaleform::GFx::FunctionHandler::Params& params);         // calls m_70 (Common.m_getFormatFunction)
+    void FUN_1422be280(void (*pfn)(AScript& kCommon, int nMovieId));                   // m_78 = pfn
+    int FUN_1422be360();                                            // m_10
+    int FUN_1422be3a0(unsigned msg);                                // m_10 for the mouse messages of movie 2, else 0
+    int FUN_1422be400();                                            // m_18 (the movie id)
+    MS2Ptr<ASStage> FUN_1422be420();                                // m_20
+    MS2Ptr<ASMouseCursor> FUN_1422be470();                          // m_30
+
     // 0x10..0x80, ctor 0x1422bced0. The three 16-byte handles are MS2Ptr<T> (pointer at +8, intrusive CPtred count:
     // ctor FUN_1422b31e0/b31a0/b31c0 zero +8, dtors FUN_140b62a60/140a58400/140b62a30). The two Scaleform handles are
     // Ptr<> with the SDK's AddRef/Release (FUN_14257dc30/142573e70 for the Movie, FUN_1425a3850/1425a4030 for the MovieDef).
@@ -89,7 +110,7 @@ public:
     MS2Ptr<ASStage> m_20;                                           // +0x20 the stage object (created by FUN_140b62400)
     MS2Ptr<ASMouseCursor> m_30;                                     // +0x30 the mouse cursor (type 6 of the movie manager)
     MS2Ptr<ASMovieClipLoader> m_40;                                 // +0x40 vfunc_11 invokes "shutdown" on it (FUN_140b62350)
-    int m_50;                                                       // +0x50 ctor 0
+    unsigned m_50;                                                  // +0x50 ctor 0; MemoryParams::MaxCollectionRoots if set
 #if defined(MS2_HAVE_SCALEFORM_SDK)
     Scaleform::KeyModifiers m_54;                                   // +0x54 the last key modifiers (ctor FUN_14127c3b0)
     Scaleform::UInt8 m_pad_55[3];
@@ -99,8 +120,8 @@ public:
     MS2_GFX_LOADER* m_58;                                           // +0x58 ctor 0; vfunc_6 argument
     MS2_GFX_PTR(MS2_GFX_MOVIE) m_60;                                // +0x60 Ptr<GFx::Movie> (accessor FUN_14127c960 / FUN_14127c910 = non-null)
     MS2_GFX_PTR(MS2_GFX_MOVIEDEF) m_68;                             // +0x68 Ptr<GFx::MovieDef> (Loader::CreateMovie result)
-    void* m_70;                                                     // +0x70 ctor 0
-    void* m_78;                                                     // +0x78 ctor 0
+    void (*m_70)(const Scaleform::GFx::FunctionHandler::Params&);   // +0x70 ctor 0; the Common.m_getFormatFunction callback
+    void (*m_78)(AScript& kCommon, int nMovieId);                   // +0x78 ctor 0; called with scaleform.ms2.common.Common
 };
 MS2_CHECK_SIZE(GFxMovie, 0x80);
 
