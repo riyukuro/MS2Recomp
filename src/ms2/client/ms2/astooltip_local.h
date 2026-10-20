@@ -242,6 +242,12 @@ CStringW FUN_1408116a0(int nStringId, const int& n);        // FormatStringId<in
 CStringW FUN_14028b8e0(const CStringW& strKey);             // the string-table text of a key (commonutil.cpp)
 // CItem::FUN_140526470 returns the count of the asked kind (citem.h declares it void).
 struct Unk_TooltipItemView : CItem { int FUN_140526470(unsigned nKind); };
+#include "ms2/client/ms2/questmanager_2.h"
+CQuestManager* FUN_140764020_p3();                          // 0x140764020 TSingleton<CQuestManager>::GetInstance (exe copy)
+CStringW FUN_1416e5210(unsigned nQuestId, CStringW strKey); // the quest name formatted with a string-table key (by value)
+// the UI string service (0x14025e7a0): "$"-prefixed keys translated by FUN_1422b0570
+class Unk_TooltipUiStrings { public: CStringW FUN_1422b0570(const CString& strKey); };
+Unk_TooltipUiStrings* FUN_14025e7a0_p3();
 #if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 3
 class Unk_ItemEquipData : public CItemData {};                       // solo build only: part 5 defines it otherwise
 #endif
@@ -361,11 +367,6 @@ CStringW FUN_1409e3050(const CStringW& strPrefix, int nScope, int nReset);
 void FUN_1409e68a0(int nJob, ATL::CAtlArray<unsigned>& jobs, int& nAllowed, CStringW& strOut);   // the job limit text
 void FUN_1409e6aa0(int nJob, ATL::CAtlArray<unsigned>& jobs, CStringW& strOut);                  // the disabled job text
 void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons
-CStringW FUN_1408116a0(int nStringId, const int& n);                  // FormatStringId<int>
-#include "ms2/commonfiles/featuremanager.h"
-CFeatureManager* FUN_140166410_p5();                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
-CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // the item limit text
-void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons
 #endif
 // interface_check reads reasons from the unit .cpp and its own headers, not from the .inl files:
 // MS2-FUNCTIONAL 0x1409db930: the exe keeps the null test of the side tooltip in a bool temp (no source form found)
@@ -438,6 +439,11 @@ JobTable* FUN_1401d7a50_p5();                                         // 0x1401d
 bool FUN_1402226b0(int nJob);                                         // the job code is valid
 void FUN_1409e68a0(int nJob, ATL::CAtlArray<unsigned>& jobs, int& nAllowed, CStringW& strOut);   // the job limit text
 void FUN_1409e6aa0(int nJob, ATL::CAtlArray<unsigned>& jobs, CStringW& strOut);                  // the disabled job text
+CStringW FUN_1408116a0(int nStringId, const int& n);                  // FormatStringId<int>
+#include "ms2/commonfiles/featuremanager.h"
+CFeatureManager* FUN_140166410_p5();                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
+CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // the item limit text
+void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons
 #endif
 // ---- end part 5 ----
 
