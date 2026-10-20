@@ -50,8 +50,6 @@
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z 0x140ce99f0
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAA@XZ 0x140ce9390
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z 0x140ce9a30
-// MS2-PIN: ??__Fs_sortNames8A@@YAXXZ 0x1400d12b0
-// MS2-PIN: ??__Fs_sortNames8B@@YAXXZ 0x1400d1580
 // MS2-FUNCTIONAL ??1RpsGameData@@UEAA@XZ: RpsGameData +0x18..+0x50 is a nested play struct { CStringW names[3]; CAtlArray<CStringW> messages; } in the exe with its own implicit ctor 0x140ce91f0 / dtor 0x140ce9720 (one call each in RpsGameData's ctor/dtor); gameevent.h keeps the members flat (statemicrogame.cpp / gameeventcontext.cpp access them directly)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gameeventcli.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -1461,6 +1459,7 @@ static Unk_GEFactoryRegistry s_regWorldmapIcon(L"GameEventWorldmapIconCli", FUN_
 
 // Header statics (the same sort-name tables as header_statics_a.h plus the grid column names).
 static CStringA s_sortNames8A[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
+static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
@@ -1468,6 +1467,7 @@ static CString s_strJobCode = "jobCode";
 static CString s_strSortValue = "sortValue";
 static CString s_strTabIndex = "tabIndex";
 static CStringA s_sortNames8B[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
+static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 #endif
 
 // ---- smart-pointer glue ----------------------------------------------------------------------------------------------
@@ -1519,3 +1519,6 @@ void FUN_140ce9720(void* p)
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca44b0-0x142ca4570 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142ca4450-0x142ca44b0 .text$yd
+// MS2-RANGE: 0x142ca4570-0x142ca45d0 .text$yd

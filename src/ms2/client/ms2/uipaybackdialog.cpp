@@ -300,3 +300,5 @@ ASMeratMarketBuyBillData::~ASMeratMarketBuyBillData()
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142ca72a0-0x142ca73c0 .text$yd

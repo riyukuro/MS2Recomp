@@ -459,3 +459,5 @@ UIPetExtractionScrollDialog::SlotBag* FUN_140e72d40(NotifyContext::BindData* p)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142ca73c0-0x142ca7450 .text$yd
