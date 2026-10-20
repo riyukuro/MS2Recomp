@@ -57,6 +57,7 @@ public:
     ~ASArgList();
     void FUN_1409b2800(int nCount);                                      // resize
     Scaleform::GFx::Value* FUN_1409b1f70(int nIndex);                    // operator[]
+    unsigned __int64 FUN_1409b2840();                                    // size (asevent.cpp)
 
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10;
