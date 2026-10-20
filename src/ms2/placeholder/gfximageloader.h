@@ -54,6 +54,8 @@ public:
         const Scaleform::String& url);                                      // 1 0x1422ed950
     // The keepMem loader: LoadImageFile through the GFx UI manager's memory-file cache.
     Scaleform::Render::Image* FUN_1422edd80(const Scaleform::GFx::ImageCreateInfo& info, const Scaleform::String& url);
+    // m_fnCallback = fn (inline COMDAT 0x1422b7890 in ?\gfxmanager.cpp; fn by value: the callee destroys it).
+    void FUN_1422b7890(ImageCallback fn) { m_fnCallback = fn; }
 
 private:
     MS2_LAYOUT_FRIEND;

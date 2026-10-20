@@ -10,8 +10,8 @@
 class GFxClipboard : public Scaleform::GFx::TextClipboard
 {
 public:
-    GFxClipboard();
-    virtual ~GFxClipboard();
+    // The ctor / dtor are implicit: GFxManager::FUN_1422b1030 value-initialises `new GFxClipboard()` (memset 0x40, then the
+    // ctor COMDAT 0x1422b33a0); ??_G 0x1422b4d00.
     // Copies the text to the Windows clipboard (CF_UNICODETEXT) when the GFx UI manager allows it.
     virtual void OnTextStore(const wchar_t* ptext, Scaleform::UPInt len);   // 4 0x1422ecd70
 };
