@@ -590,36 +590,32 @@ int CKeyTable::FUN_141429e60(const CString& strPath)
 // @0x14142a510
 void CKeyTable::FUN_14142a510()
 {
-    if (m_keys.GetCount() != 0)
+    if (m_keys.GetCount() == 0)
+        return;
+    m_keysBackup.RemoveAll();
+    for (POSITION pos = m_keys.GetHeadPosition(); pos != 0; m_keys.GetNext(pos))
     {
-        m_keysBackup.RemoveAll();
-        POSITION pos = m_keys.GetHeadPosition();
-        while (pos != 0)
-        {
-            int nKey = m_keys.GetKeyAt(pos);
-            MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
-            m_keysBackup.SetAt(nKey, MS2Ptr<stKeyData>(new stKeyData(*spKey)));
-            m_keys.GetNext(pos);
-        }
+        int nKey = m_keys.GetKeyAt(pos);
+        MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
+        MS2Ptr<stKeyData> spCopy(new stKeyData(*spKey));
+        m_keysBackup.SetAt(nKey, spCopy);
     }
 }
 
 // @0x14142a680
 void CKeyTable::FUN_14142a680()
 {
-    if (m_keysBackup.GetCount() != 0)
+    if (m_keysBackup.GetCount() == 0)
+        return;
+    m_keys.RemoveAll();
+    for (POSITION pos = m_keysBackup.GetHeadPosition(); pos != 0; m_keysBackup.GetNext(pos))
     {
-        m_keys.RemoveAll();
-        POSITION pos = m_keysBackup.GetHeadPosition();
-        while (pos != 0)
-        {
-            int nKey = m_keysBackup.GetKeyAt(pos);
-            MS2Ptr<stKeyData> spKey = m_keysBackup.GetValueAt(pos);
-            m_keys.SetAt(nKey, MS2Ptr<stKeyData>(new stKeyData(*spKey)));
-            m_keysBackup.GetNext(pos);
-        }
-        FUN_1414321f0();
+        int nKey = m_keysBackup.GetKeyAt(pos);
+        MS2Ptr<stKeyData> spKey = m_keysBackup.GetValueAt(pos);
+        MS2Ptr<stKeyData> spCopy(new stKeyData(*spKey));
+        m_keys.SetAt(nKey, spCopy);
     }
+    FUN_1414321f0();
 }
 
 // @0x14142a800
