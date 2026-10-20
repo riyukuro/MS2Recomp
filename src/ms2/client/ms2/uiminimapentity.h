@@ -70,7 +70,7 @@ public:
     void FUN_141a31270(ASObj& data, efd::SmartPointer<MinimapViewport> spViewport);   // BuildData
     int FUN_141a316d0(const int& nField, bool& bSpecial, CString& strIcon, CString& strLayer);   // ResolvePortalNpc
     CStringW FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strName, bool b);          // NpcTooltip
-    bool FUN_141a31c80(const class Unk_MmQuestGuide* pGuide, CString& strIcon, CString& strLayer);      // ResolveQuestIcon
+    bool FUN_141a31c80(const struct Unk_QmNpcQuestState* pGuide, CString& strIcon, CString& strLayer);      // ResolveQuestIcon
     void FUN_141a32120(const Scaleform::GFx::FunctionHandler::Params& params);          // the AS "userFunction"
     bool FUN_141a32260(ASObj& data);                            // BuildTooltip
     void FUN_141a32330();                                       // OnClick
