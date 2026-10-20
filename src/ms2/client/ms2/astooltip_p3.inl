@@ -546,6 +546,88 @@ void ASTooltip::FUN_1409d6730(int nItemId)
 }
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D6730, ASTooltip, FUN_1409d6730, 763, 0x6733EB1B); }
 
+// @0x1409d6a40
+void ASTooltip::FUN_1409d6a40(int nItemId, __int64 nMinutes)
+{
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (spData == 0)
+        return;
+    if (spData->period.usePeriod > 0 || spData->FUN_14053ce20() || nMinutes > 0)
+    {
+        CStringW strPeriod(L"");
+        CStringW strDays(L"");
+        CStringW strHours(L"");
+        CStringW strMinutes(L"");
+        __int64 nSeconds = 0;
+        if (spData->period.usePeriod > 0)
+            nSeconds = spData->period.usePeriod * 60;
+        else if (spData->FUN_14053ce20())
+            nSeconds = *FUN_1401d3200()->PCBangItemDefaultPeriod.Get() * 60;
+        if (nMinutes > 0)
+            nSeconds = nMinutes * 60;
+        ATL::CTimeSpan span(nSeconds);
+        if (span.GetDays() > 0)
+            strDays = FUN_14086d060(0xc5, span.GetDays());
+        if (span.GetHours() > 0)
+        {
+            strHours = FUN_14086cfc0(0xc6, span.GetHours());
+            if (span.GetDays() > 0)
+                strHours = StringFormat(L" {0}", strHours);
+        }
+        if (span.GetMinutes() > 0)
+        {
+            strMinutes = FUN_14086cfc0(199, span.GetMinutes());
+            if (span.GetDays() > 0 || span.GetHours() > 0)
+                strMinutes = StringFormat(L" {0}", strMinutes);
+        }
+        strPeriod = StringFormat(L"{0}{1}{2}", strDays, strHours, strMinutes);
+        if (spData->FUN_14053ce20())
+            FUN_1407cbb20("itemUsePeriod", FUN_14052bd00(0xc0, strPeriod));
+        else if (spData->FUN_14053cde0())
+            FUN_1407cbb20("itemUsePeriod", FUN_14052bd00(0xc1, strPeriod));
+        else
+            FUN_1407cbb20("itemUsePeriod", FUN_14052bd00(0xbe, strPeriod));
+    }
+    else
+    {
+        CMsTime tNull(0);
+        if (spData->period.expiration > tNull)
+        {
+            int nYear = spData->period.expiration.GetYear();
+            int nMonth = spData->period.expiration.GetMonth();
+            int nDay = spData->period.expiration.GetDay();
+            int nHour = spData->period.expiration.GetHour();
+            int nMinute = spData->period.expiration.GetMinute();
+            FUN_1407cbb20("itemUsePeriod", FUN_14052bd00(0xbf, BlockFormat(0xb8, nYear, nMonth, nDay, nHour, nMinute)));
+        }
+        else if (spData->period.expirationType == 1)
+        {
+            unsigned nCount = spData->period.numberOfWeeksMonths;
+            if (nCount == 0)
+                nCount = 1;
+            FUN_1407cbb20("itemUsePeriod", FUN_14028dfa0(CStringW(L"s_item_end_time_tooltip_expirationtype_weekly"), nCount));
+        }
+        else if (spData->period.expirationType == 2)
+        {
+            unsigned nCount = spData->period.numberOfWeeksMonths;
+            if (nCount == 0)
+                nCount = 1;
+            FUN_1407cbb20("itemUsePeriod", FUN_14028dfa0(CStringW(L"s_item_end_time_tooltip_expirationtype_monthly"), nCount));
+        }
+        else if (!spData->period.termTag.IsEmpty())
+        {
+            CMsTime end = TermTagManagerCli::GetInstance()->GetEndTime(spData->period.termTag);
+            int nYear = end.GetYear();
+            int nMonth = end.GetMonth();
+            int nDay = end.GetDay();
+            int nHour = end.GetHour();
+            int nMinute = end.GetMinute();
+            FUN_1407cbb20("itemUsePeriod", FUN_14052bd00(0xbf, BlockFormat(0xb8, nYear, nMonth, nDay, nHour, nMinute)));
+        }
+    }
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D6A40, ASTooltip, FUN_1409d6a40, 2638, 0xD20CA894); }
+
 // @0x1409d7560
 void ASTooltip::FUN_1409d7560(int nItemId, int nRank)
 {
@@ -593,6 +675,121 @@ void ASTooltip::FUN_1409d77b0(int nItemId)
     FUN_1407cbb20("itemSeason", str);
 }
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D77B0, ASTooltip, FUN_1409d77b0, 330, 0xAD681CF7); }
+
+// @0x1409d7900
+void ASTooltip::FUN_1409d7900(int nItemId)
+{
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (!spData)
+        return;
+    PCBase* pPc = FUN_141bd0cc0_p3(FUN_1403ed2d0_p3());
+    if (pPc == 0)
+        return;
+    ItemFunction& func = spData->function;
+    if (func.name == L"ItemChangeBeauty")
+    {
+        unsigned nCount = func.parameter.FUN_1408d2380();
+        if (nCount == 0)
+            return;
+        if (nCount > 0)
+        {
+            int nShopId = func.parameter.FUN_1408d1fd0(0, 0);
+            if (nShopId == 0)
+                return;
+            Unk_SocketPtr<Unk_TooltipBeautyItems> spItems = FUN_1406e5af0(nShopId);
+            if (spItems == 0 || FUN_1405729c0(spItems.operator->()) == true)
+                return;
+            std::vector<ItemDropResult> drops;
+            size_t nItems = spItems->GetCount();
+            drops.reserve(nItems);
+            int nGender = FUN_141658e60_p3(pPc);
+            bool bGenderOnly = static_cast<Unk_ItemDataIntView*>(spData.operator->())->FUN_14053c940(nGender) == 1;
+            for (size_t i = 0; i < nItems; i++)
+            {
+                MS2Ptr<CItemData> spItem(spItems->operator[](i));
+                if (spItem == 0)
+                    continue;
+                if (bGenderOnly && static_cast<Unk_ItemDataIntView*>(spItem.operator->())->FUN_14053c940(nGender) == 0)
+                    continue;
+                int nId = spItem->FUN_14053c510();
+                int nRank = FUN_14053feb0(nId);
+                ItemDropResult drop(nId, 0, nRank, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                drops.push_back(drop);
+            }
+            if (drops.empty() == true)
+                return;
+            FUN_1409e72a0(&drops);
+        }
+    }
+    else if (func.name == L"OpenCoupleEffectBox")
+    {
+        unsigned nCount = func.parameter.FUN_1408d2380();
+        if (nCount < 2)
+            return;
+        int nId = func.parameter.FUN_1408d1fd0(0, 0);
+        if (nId == 0)
+            return;
+        MS2Ptr<CItemData> spItem = FUN_14053f870(nId);
+        if (spItem == 0)
+            return;
+        int nRank = func.parameter.FUN_1408d1fd0(1, 0);
+        if (nRank == 0)
+            return;
+        std::vector<ItemDropResult> drops;
+        drops.push_back(ItemDropResult(nId, 0, nRank, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        FUN_1409e72a0(&drops);
+    }
+    else if (func.name == L"ItemRemakeScroll")
+    {
+        unsigned nCount = func.parameter.FUN_1408d2380();
+        if (nCount == 0)
+            return;
+        unsigned nScrollId = func.parameter.FUN_1408d1f60(0, 0);
+        CItemRemakeScrollDataPtr spInfo = CItemRemakeScrollTable::GetInstance()->GetData(nScrollId);
+        if (spInfo == 0 || spInfo->m_arrItemTypes.IsEmpty() == true)
+            return;
+        std::vector<ItemDropResult> drops;
+        const ATL::CAtlArray<unsigned>& ids = spInfo->m_arrItemTypes;
+        const ATL::CAtlArray<unsigned>& ranks = spInfo->m_arrRanks;
+        int nRank = ranks.IsEmpty() ? 1 : ranks[0];
+        int nJob = FUN_141654700_p3(pPc);
+        for (size_t i = 0; i < ids.GetCount(); i++)
+        {
+            unsigned nId = ids[i];
+            MS2Ptr<CItemData> spItem = FUN_14053f870(nId);
+            if (spItem == 0)
+                continue;
+            if (!spItem->limit.FUN_140545c80(nJob))
+                continue;
+            if (!spItem->limit.FUN_140545da0(nJob))
+                continue;
+            drops.push_back(ItemDropResult(nId, 0, nRank, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        }
+        FUN_1409e72a0(&drops);
+    }
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D7900, ASTooltip, FUN_1409d7900, 2552, 0x6AF15DEB); }
+
+// @0x1409d8300
+void ASTooltip::FUN_1409d8300(int nItemId)
+{
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (spData == 0)
+        return;
+    if (spData->function.name != L"SuperWorldChat")
+        return;
+    unsigned long nColor1 = DAT_1439f87c0;
+    unsigned long nColor2 = DAT_1439f87f0;
+    unsigned long nSize = 1;
+    CStringW strIcon(DAT_143aef3b8);
+    FUN_14183eba0(nItemId, strIcon, nSize, nColor1, nColor2);
+    CStringW strPreview = FUN_14028dfa0(CStringW(L"s_html_chat_super_preview"), strIcon, nColor1, FUN_1401a9d70_p3()->FUN_141811980(1, nItemId));
+    ASObj obj(2);
+    obj.FUN_1407cbb20("text", strPreview);
+    obj.FUN_1409c4990("colorIdx", nSize);
+    FUN_1409adbe0("previewSuperWorldChat", obj.FUN_1422bb870());
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D8300, ASTooltip, FUN_1409d8300, 606, 0xC0DF2680); }
 
 // @0x1409d8570
 void ASTooltip::FUN_1409d8570(CItem* pItem)
@@ -681,6 +878,75 @@ void ASTooltip::FUN_1409d8bf0(bool bEnable)
         FUN_1409c0e60(s_strItemEquip, L"");
 }
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D8BF0, ASTooltip, FUN_1409d8bf0, 123, 0xFF195793); }
+
+// @0x1409d8d90
+void ASTooltip::FUN_1409d8d90(CItem* pItem, CStringW& strOut)
+{
+    if (pItem == 0)
+        return;
+    Unk_EnchantPtr<CItemEnchantInfo> spEnchant(pItem->FUN_1405278a0()->FUN_140630d60());
+    if (!spEnchant)
+        return;
+    if (!pItem->FUN_140527840()->FUN_14053cbc0())
+        return;
+    if (pItem->FUN_1405258b0() != 0)
+        return;
+    int bNoEnchant = pItem->FUN_140525c60() != 0 || static_cast<Unk_ItemDataIntView*>(static_cast<CItemData*>(pItem->FUN_140527840()))->FUN_14053d660() != 0 || pItem->FUN_140525ca0() != 0;
+    if (pItem->FUN_140527840()->limit.exceptEnchant || bNoEnchant != 0)
+    {
+        if (!strOut.IsEmpty())
+            strOut.Append(L"\n");
+        strOut.Append(FUN_14028de60(0x94e));
+        return;
+    }
+    bool bEnchantable = true;
+    if (CItemEnchantLimitTable::GetInstance()->FUN_14058df90(pItem) == 0)
+        bEnchantable = false;
+    if (bEnchantable)
+    {
+        if (!strOut.IsEmpty())
+            strOut.Append(L"\n");
+        if (spEnchant->FUN_14058c8a0() == 0)
+        {
+            strOut.Append(FUN_14028de60(0x959));
+            if (FUN_140166410_p3()->FUN_14036d570(0xa6))
+            {
+                unsigned nLevel = CItemEnchantTransformTable::GetInstance()->FUN_140592620(pItem->FUN_1405276c0());
+                if (nLevel != 0)
+                {
+                    strOut.Append(L"\n");
+                    strOut.Append(FUN_14028dfa0(CStringW(L"s_itemenchant_transform_valid_item"), nLevel));
+                }
+            }
+        }
+        else
+        {
+            strOut.Append(FUN_14028de60(0x95a));
+        }
+        if (spEnchant->FUN_14058ccf0() > 0)
+        {
+            if (!strOut.IsEmpty())
+                strOut.Append(L"\n");
+            strOut.Append(FUN_14028dfa0(CStringW(L"s_itemenchant_fail_stack_count"), spEnchant->FUN_14058ccf0()));
+        }
+    }
+    else
+    {
+        if (spEnchant->FUN_14058c8a0() == 0)
+        {
+            if (FUN_140166410_p3()->FUN_14036d570(0xa6))
+            {
+                unsigned nLevel = CItemEnchantTransformTable::GetInstance()->FUN_140592620(pItem->FUN_1405276c0());
+                if (nLevel != 0)
+                {
+                    strOut.Append(L"\n");
+                    strOut.Append(FUN_14028dfa0(CStringW(L"s_itemenchant_transform_valid_item"), nLevel));
+                }
+            }
+        }
+    }
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D8D90, ASTooltip, FUN_1409d8d90, 1423, 0x01772AAA); }
 
 // @0x1409d9330
 void ASTooltip::FUN_1409d9330(CItem* pItem, CStringW& strOut)
