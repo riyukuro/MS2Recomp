@@ -6,7 +6,6 @@
 // MS2-RANGE: 0x14164dfd0-0x14166a650 .text$mn
 // MS2-RANGE: 0x1400fb010-0x1400fb4d0 .text$di
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@IPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1416642e0 ; unique
 // MS2-PIN: ?SetManager@CNilStringData@ATL@@QEAAXPEAUIAtlStringMgr@2@@Z 0x141665910 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VUnk_PCBaseComp_a98@@@@QEAA@AEBV0@@Z 0x1416660b0 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VCSkillTierOptionManager@@@@QEAA@PEAVCSkillTierOptionManager@@@Z 0x1416661d0 ; unique
@@ -45,7 +44,6 @@
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VJobSystemCli@@@@AEBAXPEAX@Z 0x141669540 ; unique
 // MS2-PIN: ?Release@?$MS2Ptr@VUnk_PCBaseComp_a68@@@@AEAAXXZ 0x141669aa0 ; prop
 // MS2-PIN: ??__FstrMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ 0x14166a060 ; prop
-// MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@IPEAX@std@@@std@@QEAAPEAU?$_Tree_node@IPEAX@2@_K@Z 0x14166a0a0 ; unique
 // MS2-PINS-END tplpin
 // tplpin --simulate (w553), hand-applied:
 // MS2-PIN: ??0PC@@QEAA@XZ 0x14164dfd0
@@ -199,6 +197,9 @@
 #include "ms2/commonfiles/itemdroptable.h"
 #include "ms2/commonfiles/luautil.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
+#include <NiFloatsExtraData.h>
+#include <io.h>
+#include "ms2/placeholder/cugcmanager.h"
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/client/ms2/cubecraft_2.h"
@@ -1045,6 +1046,7 @@ void PC::vfunc_34(void* p)
     vfunc_113(pRecord);
 }
 
+// MS2-FUNCTIONAL: frame differs - the exe keeps the reaction flags as int locals (ours are bool), saves rsi/rdi for a block copy and has no copy of p
 // @0x141652e20
 void PC::vfunc_35(void* p)
 {
@@ -3720,7 +3722,7 @@ void PC::FUN_14165cac0()
     spEntity = FUN_1409670f0()->FUN_1411ce7c0(kModel, kAsset, kPos, kRot, 1.0f, 0, 0);
     if (spEntity == 0)
         return;
-    int nObjectId = FUN_14123c580();
+    efd::UInt32 nObjectId = FUN_14123c580();
     spEntity->SetPropertyValue(0x85b708e6, nObjectId);
     m_spFC8.AssignRaw(reinterpret_cast<Unk_PCActionTimer*>(new CBreakableObject));
     m_spFC8->FUN_140adf370(spEntity, FUN_14123c580(), spTomb);
@@ -3735,6 +3737,11 @@ int FUN_14081dd50(int nIndex);
 void FUN_14098b3e0(NiAVObject* pNode, float fAlpha, bool b);       // set the alpha of a node tree
 void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);   // fade a node tree
 CLua* FUN_1401c0db0();
+CUgcManager* FUN_14052d220();                                       // TSingleton<CUgcManager>::GetInstance (exe copy)
+CString FUN_1410280d0(int nType, CString strPath);                  // a UGC resource path (ugcimagepath.cpp)
+extern unsigned DAT_143ab2830;                                      // the own character's type
+extern NiFixedString DAT_143ae50f8;                                 // the skin colour extra data key
+bool FUN_1406343b0(MS2Ptr<CItem> spItem, const __int64* pnCharId);  // the item is bound to the character
 float FUN_14028d3a0(float fValue);                                  // (commonutil.cpp)
 float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                      // distance
 float FUN_140a0fde0(float fValue, float fMax);                      // min(value, max)
@@ -4321,6 +4328,83 @@ void PC::vfunc_44(void* p)
         for (unsigned int i = 0; i < aModels.GetCount(); i++)
             static_cast<NodeList*>(p)->push_back((NiAVObject*)aModels[i]->vfunc_14());
     }
+}
+
+// The item may be used by this player: the PC bang / VIP / vfunc_146 requirements, the owner bind (not for the
+// fitting doll when feature 0xd4 is on) and the codi layer of kind 2 items.
+int PC::FUN_141662eb0(CItem* pItem)
+{
+    if (pItem == 0)
+        return 0;
+    if (!pItem->FUN_140528980())
+        return 0;
+    if (pItem->FUN_14052a2d0() && FUN_141658f30() == 0)
+        return 0;
+    if (pItem->FUN_14052a330() && FUN_141662de0() == 0)
+        return 0;
+    if (pItem->FUN_14052a390() && !vfunc_146())
+        return 0;
+    bool bCheckOwner = true;
+    if (FUN_140166410()->FUN_14036d570(0xd4))
+        bCheckOwner = GetClassID() != 0x06200046;   // FittingDollPC
+    if (bCheckOwner)
+    {
+        __int64 nCharId = FUN_141656a80();
+        if (!FUN_1406343b0(MS2Ptr<CItem>(pItem), &nCharId))
+            return 0;
+    }
+    if (pItem->FUN_14052a170() == 2 && !m_kEquipDE0.FUN_1411ea770())
+        return 0;
+    return 1;
+}
+
+// Re-apply the appearance: refresh the face model and push the skin colour floats onto "FA_Skin".
+void PC::FUN_141656780()
+{
+    {
+        MS2Ptr<CEquipItem> spFace = FUN_141655e10(2);
+        if (spFace.get())
+            spFace->FUN_1411dcd00();
+    }
+    NiActorManager* pActor = PCAnim::FUN_141b6f910()->GetActorManager(FUN_14123c460());
+    if (pActor)
+    {
+        NiAVObject* pRoot = pActor->GetNIFRoot();
+        if (pRoot == 0)
+            return;
+        NiAVObject* pSkin = pRoot->GetObjectByName("FA_Skin");
+        if (pSkin != 0)
+        {
+            NiFloatsExtraData* pData = NiDynamicCast(NiFloatsExtraData, pSkin->GetExtraData(DAT_143ae50f8));
+            if (pData == 0)
+            {
+                pData = NiNew NiFloatsExtraData(4, m_afA20);
+                pSkin->AddExtraData(DAT_143ae50f8, pData);
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                    pData->SetValue(i, m_afA20[i]);
+            }
+            FUN_1416561a0()->FUN_1411e6b50();
+        }
+    }
+}
+
+// Set the profile image key; request the image when it is not cached yet.
+void PC::FUN_141660fc0(CString str)
+{
+    if (FUN_14052d220()->FUN_14187f3b0() == 1)
+        m_str1028 = "";
+    else
+        m_str1028 = str;
+    if (m_str1028.GetLength() == 0)
+        return;
+    if (str.GetLength() == 0)
+        return;
+    CString strPath = FUN_1410280d0(5, str);
+    if (_access(strPath, 0) != 0)
+        FUN_14052d220()->FUN_141884e30(DAT_143ab2830, 0, FUN_141656a80(), str, CString(""));
 }
 
 // ---- end of code ----
