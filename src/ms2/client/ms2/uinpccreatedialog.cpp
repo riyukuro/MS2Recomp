@@ -32,6 +32,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/commandchat.h"
 
 extern template class MS2Ptr<CProxyGameObject>;
 
@@ -91,15 +92,7 @@ Unk_NcWorld* FUN_1403ed2d0();
 bool FUN_140ac5aa0(const MS2Ptr<CProxyGameObject>& sp);      // the actor is gone
 void FUN_1406c70a0(void* sp);                                // ~MS2Ptr<CProxyGameObject>
 
-// The chat command record handed to the command queue (layout of usercommandcli.cpp's Unk_CommandChat).
-struct Unk_CommandChat {
-    Unk_CommandChat();
-    ~Unk_CommandChat();
-    int state, kind;
-    CStringW message, target;
-    __int64 value;
-};
-MS2_CHECK_SIZE(Unk_CommandChat, 0x20);
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 void FUN_141276f80(const Unk_CommandChat&);
 CString FUN_1411c0aa0(const char* szText);                   // a text without arguments
 CString FUN_140513200(const char* szFormat, const int& n);   // narrow format of one int

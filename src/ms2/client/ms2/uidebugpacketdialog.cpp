@@ -19,6 +19,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/commandchat.h"
 
 // The header statics of this unit: the label key of the combo rows, then the game header's sort names and "skill".
 static CString s_strLabel = "label";
@@ -58,18 +59,7 @@ public:
 };
 class Unk_DpMovie { public: void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& callback,
                                                int a3, int a4, int a5, void* a6); };
-// The chat command record (same layout as Unk_ChatInput in unit_141274d10.cpp).
-struct Unk_DpChat
-{
-    Unk_DpChat();                                               // 0x140acd570
-    ~Unk_DpChat();                                              // 0x140acd770
-    void FUN_1401fa700(COutPacket& packet);                     // write the chat packet body
-    int m_nState;
-    int m_nKind;
-    CStringW m_strMessage;
-    CStringW m_strTarget;
-    __int64 m_nValue;
-};
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& rValue);
 CStringA FUN_1402bb1c0(const char* pszFormat, const int& n);
@@ -263,12 +253,12 @@ void UIDebugPacketDialog::OnExecuteRandom(const Scaleform::GFx::FunctionHandler:
 void UIDebugPacketDialog::OnPacketCount(const Scaleform::GFx::FunctionHandler::Params& rParams)
 {
     COutPacket packet(0x11, 0);
-    Unk_DpChat chat;
-    chat.m_nKind = 0;
-    chat.m_strMessage = L"/PacketCounter 0";
+    Unk_CommandChat chat;
+    chat.kind = 0;
+    chat.message = L"/PacketCounter 0";
     if (m_bPacketCounter)
-        chat.m_strMessage = L"/PacketCounter 1";
-    chat.m_strTarget = L"";
+        chat.message = L"/PacketCounter 1";
+    chat.target = L"";
     chat.FUN_1401fa700(packet);
     FUN_140710590(packet);
     if (!m_bPacketCounter)
@@ -281,12 +271,12 @@ void UIDebugPacketDialog::OnPacketCount(const Scaleform::GFx::FunctionHandler::P
 void UIDebugPacketDialog::OnCloseFromPacket(const Scaleform::GFx::FunctionHandler::Params& rParams)
 {
     COutPacket packet(0x11, 0);
-    Unk_DpChat chat;
-    chat.m_nKind = 0;
-    chat.m_strMessage = L"/CloseFromPacket 0";
+    Unk_CommandChat chat;
+    chat.kind = 0;
+    chat.message = L"/CloseFromPacket 0";
     if (m_bCloseFromPacket)
-        chat.m_strMessage = L"/CloseFromPacket 1";
-    chat.m_strTarget = L"";
+        chat.message = L"/CloseFromPacket 1";
+    chat.target = L"";
     chat.FUN_1401fa700(packet);
     FUN_140710590(packet);
     if (!m_bCloseFromPacket)

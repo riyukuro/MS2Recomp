@@ -42,6 +42,7 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 #include "ms2/placeholder/tptr.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/pcbase.h"
+#include "ms2/placeholder/commandchat.h"
 
 // ---- unit-local stand-ins -------------------------------------------------------------------------------------------
 class Unk_ChatLog;
@@ -904,15 +905,7 @@ int FUN_141276e00(const CStringW& strName, CStringW& strOut)
 MS2_REPLACE(0x141276e00, FUN_141276e00, 365, 0xC07834C7);
 
 // ---- chat send --------------------------------------------------------------------------------------------------------
-struct Unk_ChatInput {                                           // same layout as Unk_CommandChat (usercommandcli.cpp)
-    int m_nState;
-    int m_nKind;                                                 // +0x04 (4 = whisper)
-    CStringW m_strMessage;
-    CStringW m_strTarget;                                        // +0x10
-    __int64 m_nValue;
-    void FUN_1401fa700(COutPacket& packet);
-};
-MS2_CHECK_OFFSET(Unk_ChatInput, m_strTarget, 0x10);
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 struct Unk_PenaltyRecord {
     char m_pad_00[0x28];
     int m_nKind;                                                 // +0x28 (2 = permanent)
@@ -945,11 +938,11 @@ struct Unk_ChatWorldView { Unk_ChatMapPtr FUN_141bd30a0(); };   // WorldService 
 
 // @0x141276f80
 // MS2-FUNCTIONAL: named temporaries for the string-id / literal key differ (910 vs 867 bytes); logic equivalent
-int FUN_141276f80(Unk_ChatInput* pChat)
+int FUN_141276f80(Unk_CommandChat* pChat)
 {
-    if (pChat->m_nKind == 4) {
+    if (pChat->kind == 4) {
         CStringW strReply;
-        int nResult = FUN_141276e00(pChat->m_strTarget, strReply);
+        int nResult = FUN_141276e00(pChat->target, strReply);
         if (nResult != 0) {
             int nStringId;
             if (nResult == 10)

@@ -71,6 +71,7 @@
 #include <list>
 #include <vector>
 #include <algorithm>
+#include "ms2/placeholder/commandchat.h"
 
 // Header-local objects in original initializer order. Unknown original names.
 struct Unk_CommandStatics {
@@ -96,15 +97,8 @@ static CString s_skillb="skill";
 static CString s_stunb="stun";
 static Unk_CommandStatics s_tableb(17,.75f,.25f,2.25f,10);
 
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 // External, non-RTTI command and XML helper types; scalar layout follows callers.
-struct Unk_CommandChat {
-    Unk_CommandChat();
-    ~Unk_CommandChat();
-    int state,kind;
-    CStringW message,target;
-    __int64 value;
-};
-MS2_CHECK_SIZE(Unk_CommandChat,0x20);
 void FUN_141276f80(const Unk_CommandChat&);
 struct Unk_CommandStrings { CStringW FUN_141811980(int,int); };
 Unk_CommandStrings* FUN_1401a9d70();

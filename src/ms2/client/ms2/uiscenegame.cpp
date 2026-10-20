@@ -315,6 +315,7 @@ MS2_REPLACE_METHOD(0x141ac78f0, UISceneGame, vfunc_56, 108, 0xF5771772);
 
 #include "ms2/commonfiles/rideonaction.h"
 #include "ms2/placeholder/nipoint3.h"
+#include "ms2/placeholder/commandchat.h"
 
 class Unk_GsEnt { public: Unk_StreamPoint FUN_14169d2f0(); };
 class Unk_GsObjRef { public: void* FUN_140c9b7d0(); Unk_GsEnt* FUN_140965960(); void FUN_140964a70(); void* m_0; void* m_8; };
@@ -1086,14 +1087,7 @@ extern char DAT_142fdeb28[];
 extern Unk_GsAppG DAT_143b059e8;
 int FUN_141aca870();
 
-struct Unk_CommandChat {
-    Unk_CommandChat();                                      // 0x140acd570
-    ~Unk_CommandChat();                                     // 0x140acd770
-    int state, kind;
-    CStringW message, target;
-    __int64 value;
-};
-MS2_CHECK_SIZE(Unk_CommandChat, 0x20);
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 
 // @0x141ac9d30
 UISceneGamePlay::UISceneGamePlay()

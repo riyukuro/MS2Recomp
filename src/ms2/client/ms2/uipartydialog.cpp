@@ -143,6 +143,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/commandchat.h"
 
 // ---- out-of-unit callees ----
 class Unk_PdWorld                                                       // the world service (FUN_1403ed2d0)
@@ -214,17 +215,8 @@ double FUN_1407184e0(const CStringW& str);                              // parse
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);     // FUN_14028dfa0<CStringW>
 CStringW FUN_140c2fcc0(CStringW strFormat, const int& nHour, const int& nMinute, const int& nSecond, const CStringW& strArg);
 void FUN_141b70810(unsigned nMs, CStringW& strOut);                     // elapsed time text
-// The chat record the notice history is posted as (uichaosdpsdialog.cpp).
-struct Unk_PdChat
-{
-    Unk_PdChat();                                                       // 0x140acd570
-    ~Unk_PdChat();                                                      // 0x140acd770
-    int state, kind;
-    CStringW message, target;
-    __int64 value;
-};
-MS2_CHECK_SIZE(Unk_PdChat, 0x20);
-void FUN_141276f80(const Unk_PdChat& kChat);                            // post a chat record
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
+void FUN_141276f80(const Unk_CommandChat& kChat);                            // post a chat record
 class Unk_PdMainSystem { public: unsigned int FUN_141473460(); float FUN_141473210(); };   // CMainSystem: draw count, fps
 Unk_PdMainSystem* FUN_14086d260();
 extern const wchar_t DAT_142fd11d4[];                                   // L","
@@ -1312,7 +1304,7 @@ int UIPartyDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         CStringW strTotal;
         FUN_141b70810(nTime, strTotal);
         strHistory.Append(FUN_1405c2690(CStringW(L"s_partydps_notice_history_total_time"), strTotal));
-        Unk_PdChat kChat;
+        Unk_CommandChat kChat;
         kChat.kind = 7;
         kChat.message = strHistory;
         FUN_141276f80(kChat);

@@ -3827,16 +3827,6 @@ __imp_NxGetUtilLib	142cced28	data
 ??4?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAAAEAV0@AEBV0@@Z	140c4e0d0	func
 ?BuildSellerRow@UIMeratMarketDialog@@QEAAHAEAVASObj@@V?$MS2Ptr@VCUgcMarketSeller@@@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1412ef960	func
 ?GetID@GameEvent@@QEAAHXZ	1402e1d00	func
-??0Unk_ChaosChat@@QEAA@XZ	140acd570	func
-??1Unk_ChaosChat@@QEAA@XZ	140acd770	func
-??0Unk_DpChat@@QEAA@XZ	140acd570	func
-??1Unk_DpChat@@QEAA@XZ	140acd770	func
-?RepurchaseAdded@UIShopDialog@@QEAAXV?$MS2Ptr@VCNpcShopProductCli@@@@@Z	141afb320	func
-?PopulateProduct@UIShopDialog@@QEAAHAEAVAScript@@V?$MS2Ptr@VCNpcShopProductCli@@@@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@PEAX@Z	141b00240	func
-??0Unk_PdChat@@QEAA@XZ	140acd570	func
-??1Unk_PdChat@@QEAA@XZ	140acd770	func
-??0Unk_WmCommandChat@@QEAA@XZ	140acd570	func
-??1Unk_WmCommandChat@@QEAA@XZ	140acd770	func
 ??4Unk_ShopLifeRef@@QEAAAEAV0@AEBV0@@Z	14052caa0	func
 ??BUnk_ShopLifeRef@@QEBAPEAVNpcShopItemLife@@XZ	14052ce00	func
 ??0CEquipmentSlotLayerInfo@@QEAA@H@Z	1411f6f10	func

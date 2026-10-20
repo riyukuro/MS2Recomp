@@ -117,6 +117,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/commandchat.h"
 
 // ---- unit-local views (names invented) --------------------------------------------------------------------------------
 
@@ -232,19 +233,8 @@ UIWorldChampionRewardDialog* FUN_14193f2b0(int nUiId);                      // t
 UIDungeonRoomDialog* FUN_140961550(int nUiId);                              // the open dungeon room dialog
 static MS2Ptr<CMsgBoxData> FUN_141b62fc0(Delegate<bool(int, const CMsgBoxData&)> kHandler, CStringW strKey, CStringW strArg);   // the formatted prompt (below)
 
-// A chat line sent as a command (usercommandcli's Unk_CommandChat; ctor 0x140acd570, dtor 0x140acd770).
-struct Unk_WmCommandChat
-{
-    Unk_WmCommandChat();                                                    // 0x140acd570
-    ~Unk_WmCommandChat();                                                   // 0x140acd770
-    int state;                                                              // +0x00
-    int kind;                                                               // +0x04
-    CStringW message;                                                       // +0x08
-    CStringW target;                                                        // +0x10
-    __int64 value;                                                          // +0x18
-};
-MS2_CHECK_SIZE(Unk_WmCommandChat, 0x20);
-void FUN_141276f80(const Unk_WmCommandChat& record);                       // send a chat line
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
+void FUN_141276f80(const Unk_CommandChat& record);                       // send a chat line
 QuestDataTable* FUN_1407476c0();                                            // TSingleton<QuestDataTable>::GetInstance
 void FUN_141415450(const CString& strBindID, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind an item under the name
 void FUN_141415560(const CString& strBindID, ItemInfoSlot::CreateParam* pParam);   // bind a slot of the parameters under the name
@@ -684,7 +674,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             }
             if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0))
             {
-                Unk_WmCommandChat record;
+                Unk_CommandChat record;
                 record.kind = 0;
                 record.message = StringFormat(L"/MoveField {0} 1", nKey);
                 FUN_141276f80(record);

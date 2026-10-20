@@ -49,6 +49,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/commandchat.h"
 
 // MS2Ptr<ASUIComponent>: the exe shares every member except these four, which are COMDATs of this unit.
 template <> MS2Ptr<ASUIComponent>::MS2Ptr(MS2Ptr<ASUIComponent>&& o);                 // 0x140acd480
@@ -237,19 +238,8 @@ CStringW FUN_1408116a0(int nStringId, const int& n);
 CStringW FUN_1405c2690(CStringW fmt, const CStringW& arg);
 CString FUN_14038f6d0(const CString& a, const char* b);                 // a + b
 
-// A chat command (the debug "/petevolutionpoint").
-struct Unk_PetChatCmd
-{
-    Unk_PetChatCmd();                                                   // 0x140acd570
-    ~Unk_PetChatCmd();                                                  // 0x140acd770
-    int m_nType;                                                        // 1
-    int m_nArg;
-    CStringW m_str;
-    CStringW m_str2;
-    void* m_p;
-};
-MS2_CHECK_SIZE(Unk_PetChatCmd, 0x20);
-void FUN_141276f80(Unk_PetChatCmd* pCmd);
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
+void FUN_141276f80(Unk_CommandChat* pCmd);
 void FUN_140710590(COutPacket& pkt);                                    // send
 
 // The Value setters/getters the Invoke helpers use.
@@ -394,12 +384,12 @@ inline void PetSystemTabContents::vfunc_9(void*)
 }
 
 // @0x140acd570
-inline Unk_PetChatCmd::Unk_PetChatCmd() : m_nType(1), m_nArg(0), m_p(0)
+inline Unk_CommandChat::Unk_CommandChat() : state(1), kind(0), value(0)
 {
 }
 
 // @0x140acd770
-inline Unk_PetChatCmd::~Unk_PetChatCmd()
+inline Unk_CommandChat::~Unk_CommandChat()
 {
 }
 
@@ -1045,9 +1035,9 @@ void TabContentsPetEvolution::FUN_140acb560(unsigned nPoint)
     if (nHave < nNeed)
     {
         FUN_140acb810(nPoint);
-        Unk_PetChatCmd cmd;
-        cmd.m_nArg = 0;
-        cmd.m_str = StringFormat(L"/petevolutionpoint {0} {1}", m_uidPet, nPoint);
+        Unk_CommandChat cmd;
+        cmd.kind = 0;
+        cmd.message = StringFormat(L"/petevolutionpoint {0} {1}", m_uidPet, nPoint);
         FUN_141276f80(&cmd);
     }
 }

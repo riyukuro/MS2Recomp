@@ -1745,7 +1745,7 @@ MS2_REPLACE_METHOD(0x140631E80, CItemUgc, FUN_140631e80, 196, 0x5C94FB68);
 void CItemUgc::FUN_140631f50(COutputStream& out)
 {
     FUN_140893070(&m_look, &out);
-    m_blueprint.FUN_1408925d0(&out);
+    m_blueprint.Write(out);
 }
 MS2_REPLACE_METHOD(0x140631F50, CItemUgc, FUN_140631f50, 65, 0xD959A128);
 
@@ -1753,7 +1753,7 @@ MS2_REPLACE_METHOD(0x140631F50, CItemUgc, FUN_140631f50, 65, 0xD959A128);
 void CItemUgc::FUN_140631fa0(CInputStream& in)
 {
     FUN_140893250(&m_look, &in);
-    m_blueprint.FUN_1408926e0(&in);
+    m_blueprint.Read(in);
 }
 MS2_REPLACE_METHOD(0x140631FA0, CItemUgc, FUN_140631fa0, 65, 0xBF3AE4BB);
 
@@ -1782,8 +1782,8 @@ MS2_REPLACE_METHOD(0x140632050, CItemUgc, FUN_140632050, 14, 0xB1F80757);
 // @0x140632070
 void CItemUgc::FUN_140632070(CBlueprintItemData* pBlueprint)
 {
-    m_blueprint.FUN_140892470();
-    m_blueprint.FUN_140892510(pBlueprint);
+    m_blueprint.Clear();
+    m_blueprint.CopyFrom(*pBlueprint);
 }
 MS2_REPLACE_METHOD(0x140632070, CItemUgc, FUN_140632070, 62, 0xBB4AA826);
 

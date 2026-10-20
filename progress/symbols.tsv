@@ -456,8 +456,8 @@ HRESULT_FROM_WIN32	14015b330	func
 ??0ArgType@internal@fmt@@QEAA@XZ	140163e80	func
 ??0Unk_MpArgType@internal@fmt@@QEAA@XZ	140163e80	func
 ??0Unk_WcArgType@internal@fmt@@QEAA@XZ	140163e80	func
-??0CAtlComModule@ATL@@QEAA@XZ	140163ea0	func
-??0CAtlWinModule@ATL@@QEAA@XZ	140163ea0	func
+??0CAtlComModule@ATL@@QEAA@XZ	141803560	func
+??0CAtlWinModule@ATL@@QEAA@XZ	141803610	func
 ??0CLockCriticalSection@@QEAA@XZ	140163ea0	func
 ??0Unk_BanLock@@QEAA@XZ	140163ea0	func
 ??0Unk_PacketLogLock@@QEAA@XZ	140163ea0	func
@@ -157879,7 +157879,7 @@ FUN_141485590	141485590	func
 ?FindProduct@UIShopDialog@@QEAA?AV?$MS2Ptr@VCNpcShopProductBase@@@@HH@Z	141affbe0	func
 ?FindCurrentProduct@UIShopDialog@@QEAA?AV?$MS2Ptr@VCNpcShopProductBase@@@@H@Z	141affce0	func
 ?FindMeratItem@UIShopDialog@@QEAA?AV?$MS2Ptr@VCNpcShopMeratItemCli@@@@H@Z	141affd40	func
-?PopulateProduct@UIShopDialog@@QEAAHAEAVAScript@@V?$MS2Ptr@VCNpcShopProductCli@@@@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@PEAX@Z	141b00240	func
+?PopulateProduct@UIShopDialog@@QEAAHAEAVASSlot@@V?$MS2Ptr@VCNpcShopProductCli@@@@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@PEAX@Z	141b00240	func
 ?HasShop@UIShopDialog@@QEAA_NXZ	141b031c0	func
 ?GetTalk@UIShopDialog@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H_N@Z	141b03470	func
 ?SetTalk@UIShopDialog@@QEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	141b035c0	func
@@ -164555,7 +164555,7 @@ __imp_OpenSurveyWindowA	142cd1488	data
 ??_7CAchieveData@@6BCCacheData@@@	142ce68c0	data
 ??_7CAchieveData@@6B?$CValidData@VCAchieveData@@@@@	142ce68d0	data
 ??_7AdBannerData@@6B@	142ce6ac0	data
-?InitializeCAtlStringMgr@ATLImplementationDetails@ATL@@3UCAtlStringMgrStaticInitializer@12@A	142ceaa70	data
+?InitializeCAtlStringMgr@ATLImplementationDetails@ATL@@3UCAtlStringMgrStaticInitializer@12@A	143aec4a8	data
 ??_7AdditionalActionAdditional@@6B@	142ceaaa0	data
 ??_7AdditionalActionSkill@@6B@	142ceaab0	data
 ??_7AdditionalData@@6B@	142ceaac0	data
@@ -170704,9 +170704,9 @@ DAT_1439f8358	1439f8358	data
 ?ms_RTTI@CNifEffect@@2VNiRTTI@@B	143ae1f08	data
 ?DAT_143ae1f20@@3HA	143ae1f20	data
 ?DAT_143ae1f28@@3VCLockCriticalSection@@A	143ae1f28	data
-?_AtlComModule@ATL@@3VCAtlComModule@1@A	143ae1f28	data
+?_AtlComModule@ATL@@3VCAtlComModule@1@A	143aec410	data
 ?DAT_143ae1f58@@3VCLockCriticalSection@@A	143ae1f58	data
-?_AtlWinModule@ATL@@3VCAtlWinModule@1@A	143ae1f58	data
+?_AtlWinModule@ATL@@3VCAtlWinModule@1@A	143aec460	data
 ?ms_ClassInfo@CNifLoadingService@@2VClassInfo@efd@@B	143ae1f90	data
 ?ms_ClassInfo@CNifModel@@2VClassInfo@efd@@B	143ae2440	data
 ?DAT_143ae2960@@3HA	143ae2960	data

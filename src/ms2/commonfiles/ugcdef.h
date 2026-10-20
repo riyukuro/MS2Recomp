@@ -14,6 +14,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/blueprintitemdata.h"
 #include "ms2/placeholder/cmeratmarketschcond.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 
@@ -359,29 +360,7 @@ public:
 };
 MS2_CHECK_SIZE(CUgcShopBannerProxy, 0x28);
 
-// The record of one blueprint item (CPtred with its own vftable; read from a CInputStream).
-class CBlueprintItemData : public CPtred
-{
-public:
-    CBlueprintItemData();                                   // 0x1408923d0
-    virtual ~CBlueprintItemData();                          // 0x140892430
-
-    void Clear();                                           // 0x140892470
-    void CopyFrom(const CBlueprintItemData& other);         // 0x140892510
-    void Write(COutputStream& stream) const;                // 0x1408925d0
-    void Read(CInputStream& stream);                        // 0x1408926e0
-
-    __int64 m_n18;                                          // +0x18
-    int m_n20;                                              // +0x20
-    int m_n24;                                              // +0x24
-    int m_n28;                                              // +0x28
-    __int64 m_n30;                                          // +0x30
-    int m_n38;                                              // +0x38
-    __int64 m_n40;                                          // +0x40
-    __int64 m_n48;                                          // +0x48
-    CStringW m_strName;                                     // +0x50
-};
-MS2_CHECK_SIZE(CBlueprintItemData, 0x58);
+// CBlueprintItemData (the record of one blueprint item): placeholder/blueprintitemdata.h (item.h shares it).
 
 // A blueprint image (vftable 0x142da0150); CopyFrom does not reset first.
 class CUgcBlueprintImageProxy : public IUgcProxy

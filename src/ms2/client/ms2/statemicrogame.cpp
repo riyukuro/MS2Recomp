@@ -39,6 +39,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/commandchat.h"
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
@@ -173,16 +174,7 @@ const char* FUN_1408ac310(const efd::utf8string& s);
 int FUN_1408a01e0(const CStringA& s);
 class Unk_MgWorldQuery { public: int FUN_141bcafa0(egf::Entity* pEntity); };
 
-// The command-chat record the chat line is sent with (see uimovefielddialog.cpp).
-struct Unk_CommandChat
-{
-    Unk_CommandChat();                                   // 0x140acd570
-    ~Unk_CommandChat();                                  // 0x140acd770
-    int state, kind;
-    CStringW message, target;
-    __int64 value;
-};
-MS2_CHECK_SIZE(Unk_CommandChat, 0x20);
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 void FUN_141276f80(const Unk_CommandChat& chat);         // 0x141276f80 send the chat line
 
 // The player lookup the banner listener calls (uibannereventlistener.cpp); its callee is FUN_140b73bc0.

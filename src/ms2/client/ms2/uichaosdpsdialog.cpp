@@ -27,6 +27,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <string.h>
+#include "ms2/placeholder/commandchat.h"
 
 // ---- header statics (the second copy of the sort names comes from a header between the two dialog statics) ----
 static CString s_strSortTypeNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -68,17 +69,8 @@ public:
     Scaleform::GFx::Value FUN_140e06cc0(const char* szMethod, double d);            // 0x140e06cc0 Invoke(name, number)
 };
 
-// The chat record the notice history is posted as (same record as usercommandcli.cpp's command chat).
-struct Unk_ChaosChat
-{
-    Unk_ChaosChat();                                        // 0x140acd570
-    ~Unk_ChaosChat();                                       // 0x140acd770
-    int state, kind;
-    CStringW message, target;
-    __int64 value;
-};
-MS2_CHECK_SIZE(Unk_ChaosChat, 0x20);
-void FUN_141276f80(const Unk_ChaosChat& kChat);
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
+void FUN_141276f80(const Unk_CommandChat& kChat);
 
 // Number parsing, localized strings and ASObj/Value setters of other units.
 double FUN_1407184e0(const CStringW& str);
@@ -258,7 +250,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         CStringW strTotal;
         FUN_141b70810(nTime, strTotal);
         strHistory.Append(FUN_1405c2690(CStringW(L"s_chaosdps_notice_history_total_time"), strTotal));
-        Unk_ChaosChat kChat;
+        Unk_CommandChat kChat;
         kChat.kind = 7;
         kChat.message = strHistory;
         FUN_141276f80(kChat);

@@ -25,6 +25,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/commandchat.h"
 
 static UICommon::CMyPCKeyInputController s_keyInput;
 
@@ -52,15 +53,7 @@ Unk_14025e7c0* FUN_14025e7c0();
 class Unk_MoveFieldPlayers { public: MyPC* FUN_141bd0cc0(); };
 Unk_MoveFieldPlayers* FUN_1403ed2d0();
 
-// The chat command record handed to the command queue (layout of usercommandcli.cpp's Unk_CommandChat).
-struct Unk_CommandChat {
-    Unk_CommandChat();
-    ~Unk_CommandChat();
-    int state, kind;
-    CStringW message, target;
-    __int64 value;
-};
-MS2_CHECK_SIZE(Unk_CommandChat, 0x20);
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 void FUN_141276f80(const Unk_CommandChat&);
 
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);    // pop the system message nTable

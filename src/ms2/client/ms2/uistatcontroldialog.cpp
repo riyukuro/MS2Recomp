@@ -13,6 +13,7 @@
 
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/commandchat.h"
 
 // ---- unit-local placeholders (unrecovered helpers) ----
 
@@ -61,15 +62,7 @@ Unk_StatItemEvents* FUN_140a6a840();
 void FUN_1419cae20(Unk_StatItemEvents*, UIItemEventListener*);
 void FUN_1419caeb0(Unk_StatItemEvents*, UIItemEventListener*);
 
-// The chat command record handed to the command queue (layout of usercommandcli.cpp's Unk_CommandChat).
-struct Unk_CommandChat {
-    Unk_CommandChat();
-    ~Unk_CommandChat();
-    int state, kind;
-    CStringW message, target;
-    __int64 value;
-};
-MS2_CHECK_SIZE(Unk_CommandChat, 0x20);
+// Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 void FUN_141276f80(const Unk_CommandChat&);
 
 const CString& FUN_14082efb0(int nStat);                // the xml name of a stat
