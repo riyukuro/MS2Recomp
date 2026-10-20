@@ -98,6 +98,7 @@ public:
     template<class T> class Values : public Object {
     public:
         Values() : Object(TypeName<T>()) { FUN_1401d3200()->Register(this); }
+        ~Values() {}                                        // user-declared: the exe dtor re-stores the vfptr
         virtual void vfunc_1();
         bool Define(const char* key);
         bool Define(const char* key, ATL::CAtlArray<T>* out);
