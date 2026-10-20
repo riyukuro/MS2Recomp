@@ -590,3 +590,5 @@ MS2_REPLACE_METHOD(0x141041AE0, ChaosLightEffect, vfunc_7, 307, 0x9E354AEA);
 MS2_REPLACE_METHOD(0x141041C20, ChaosLightEffect, vfunc_13, 540, 0x2DCE3D62);
 MS2_REPLACE_METHOD(0x141041E50, ChaosLightEffect, vfunc_9, 50, 0x6D5BDC9F);
 MS2_REPLACE_METHOD(0x1410420D0, ChaosLightEffect, FUN_1410420d0, 747, 0x30F00AC9);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cab8e0-0x142cab980 .text$yd

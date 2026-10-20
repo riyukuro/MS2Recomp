@@ -1023,3 +1023,5 @@ void UISkillCompactControlDialog::FUN_140fa29f0(CStringW strName)
         m_lstConfig.GetNext(pos);
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caa420-0x142caa4e0 .text$yd

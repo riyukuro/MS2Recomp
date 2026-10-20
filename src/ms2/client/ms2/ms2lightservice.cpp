@@ -582,3 +582,5 @@ bool MS2LightService::CreateQueuedLights()
     return true;
 }
 #endif
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb2f10-0x142cb2fb0 .text$yd

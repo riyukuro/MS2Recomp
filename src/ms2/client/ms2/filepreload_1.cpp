@@ -762,3 +762,5 @@ static unsigned __stdcall PreloadThreadEntry(void* context) {
     }
     return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cad780-0x142cad840 .text$yd

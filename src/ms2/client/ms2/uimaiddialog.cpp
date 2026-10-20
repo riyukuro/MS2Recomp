@@ -744,3 +744,5 @@ int UIMaidDialog::vfunc_48()
 {
     return 0x4e9d;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caf6f0-0x142caf7a0 .text$yd

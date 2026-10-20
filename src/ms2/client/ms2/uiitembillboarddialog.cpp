@@ -624,3 +624,5 @@ bool UIItemBillBoardDialog::FUN_140c34050(int nResult, const CMsgBoxData& data)
     return true;
 }
 MS2_REPLACE_METHOD(0x140C34050, UIItemBillBoardDialog, FUN_140c34050, 281, 0xB2B062D6);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca29e0-0x142ca2a90 .text$yd
