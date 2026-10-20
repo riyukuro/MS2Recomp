@@ -130,7 +130,7 @@ public:
     void FUN_1411e3c70(MS2Ptr<CEquipItem> spItem, int nFlag);   // RequestLoad
     void FUN_1411e3d20(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nFlag);     // Unequip
     void FUN_1411e3de0(int bKeepLoaded);                    // UnequipAll
-    void FUN_1411e3f80(const ATL::CRBMap<int, int>& keep, int bKeepLoaded);       // UnequipExcept
+    void FUN_1411e3f80(const ATL::CRBMap<Unk_EquipSlotId, int>& keep, int bKeepLoaded);       // UnequipExcept
     void FUN_1411e4150(__int64 nItemUid, int nSlot, int nLayer);   // move an item to another slot
     void FUN_1411e46b0(MS2Ptr<CEquipItem> spItem);          // an item's models were loaded
     void FUN_1411e4b30(MS2Ptr<CEquipItem> spItem);          // an item's models were dropped

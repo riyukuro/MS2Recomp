@@ -562,7 +562,7 @@ CEquipment::CEquipment(PC* pPC)
     }
     m_spLayerInfo.AssignRaw(new CEquipmentSlotLayerInfo(2));
     FUN_1411ef740();
-    m_setEffects.resize(3, MS2Ptr<Equipment::SetEffectInfo>(0));
+    m_setEffects.assign(3, MS2Ptr<Equipment::SetEffectInfo>(0));
 }
 
 // @0x1411e06e0
@@ -1050,12 +1050,12 @@ void CEquipment::FUN_1411e3de0(int bKeepLoaded)
 }
 
 // @0x1411e3f80
-void CEquipment::FUN_1411e3f80(const ATL::CRBMap<int, int>& keep, int bKeepLoaded)
+void CEquipment::FUN_1411e3f80(const ATL::CRBMap<Unk_EquipSlotId, int>& keep, int bKeepLoaded)
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
         MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
         for (int i = 0; i < 6; i++) {
-            if (keep.Lookup(spSlot->m_nIndex) != NULL)
+            if (keep.Lookup((Unk_EquipSlotId)spSlot->m_nIndex) != NULL)
                 continue;
             MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
             if (spItem.get() != NULL) {
@@ -2536,7 +2536,7 @@ void CEquipment::FUN_1411ec480(bool bForce)
         }
     }
     std::vector<MS2Ptr<Equipment::SetEffectInfo> > effects;
-    effects.resize(3, MS2Ptr<Equipment::SetEffectInfo>(0));
+    effects.assign(3, MS2Ptr<Equipment::SetEffectInfo>(0));
     CString strEffect;
     CString strGround;
     CString strAnimation;
