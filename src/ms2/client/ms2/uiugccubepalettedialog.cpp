@@ -466,7 +466,6 @@ void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Sca
 UIObject* FUN_1403e8a70(Unk_UIRef* p);                          // the held object
 UIObject* FUN_1403ed9e0(Unk_UIRef* p);
 void FUN_140ef2fb0();
-int FUN_140ef4970();
 CStringW FUN_140ef4540();
 UIUGCCubePaletteDialog* FUN_140ef4a50(int nId);
 UIHomeMenuDialog* FUN_140ef49b0(int nId);
@@ -647,7 +646,7 @@ void FUN_141243540(void* p);
 void FUN_140df5180(MS2Ptr<CUgcItemLook>* pDst, void* pSrc);
 void FUN_140874440(void* pCfg, void* pA, void* pB, int n, int m);
 void FUN_140df1e00();
-void FUN_140df1e90(int nId, __int64 n);
+void FUN_140df1e90(unsigned nBox, unsigned nItemId);
 void FUN_140df1f40(int nId, int n);
 void FUN_140df1ff0(int nId, ATL::CAtlList<int>* pList);
 Unk_SndMgr* FUN_140d86260();
@@ -800,10 +799,7 @@ bool Unk_CubeFocus::FUN_140ee9cd0()
 void Unk_CubeFocus::FUN_140ee9cf0(int nIndex, int nCubeId)
 {
     m_bActive = true;
-    int n = nIndex;
-    if (nIndex < 0)
-        n = 0;
-    m_nIndex = n;
+    m_nIndex = nIndex < 0 ? 0 : nIndex;
     m_nCubeId = nCubeId;
 }
 
@@ -834,17 +830,16 @@ Unk_CubeTimer::Unk_CubeTimer()
 // @0x140ee9e80
 bool Unk_CubeTimer::FUN_140ee9e80()
 {
-    return m_timer.FUN_140868c00() != 0;
+    if (m_timer.FUN_140868c00())
+        return true;
+    return false;
 }
 
 // @0x140ee9eb0
 void Unk_CubeTimer::FUN_140ee9eb0(int n)
 {
     m_timer.FUN_140868750(200);
-    int v = n;
-    if (n < 0)
-        v = 0;
-    m_nValue = v;
+    m_nValue = n < 0 ? 0 : n;
 }
 
 // @0x140ee9f00
@@ -938,7 +933,8 @@ int UIUGCCubePaletteDialog::vfunc_il1()
         return 0;
     if (FUN_141659690(pPlayer) != 0)
         return 0;
-    if (FUN_141530290(pPlayer) == 0)
+    void* pEditor = FUN_141530290(pPlayer);
+    if (pEditor == 0)
         return 0;
     return 1;
 }
@@ -977,8 +973,7 @@ void UIUGCCubePaletteDialog::vfunc_43()
     if (pDlg != 0)
     {
         int a = FUN_1418dd0c0();
-        int b = FUN_1418dd110();
-        pDlg->vfunc_2(8, 5, -(a + b));
+        pDlg->vfunc_2(8, 5, (a + FUN_1418dd110()) * -1);
     }
 }
 
@@ -1466,8 +1461,9 @@ bool UIUGCCubePaletteDialog::FUN_140eec410(int nBtn, const CMsgBoxData& data)
 // @0x140eec480
 void UIUGCCubePaletteDialog::FUN_140eec480()
 {
-    if (vfunc_il1() != 0)
-        FUN_140eefc50(4);
+    if (vfunc_il1() == 0)
+        return;
+    FUN_140eefc50(4);
 }
 
 // @0x140eec4d0 (the screen position of the list row of a cube type; false when the type or the row is missing)
@@ -2251,12 +2247,13 @@ void UGCKeyMode1::vfunc_5(void*, float, float)
 // @0x140ef22d0 (wheel: next / previous cube)
 void UGCKeyMode1::vfunc_7(void*, float, float, float f)
 {
-    if (FUN_140ef4a50(0x4f16) != 0)
+    UIUGCCubePaletteDialog* pDlg = FUN_140ef4a50(0x4f16);
+    if (pDlg != 0)
     {
-        if (f <= 0.0f)
-            FUN_140ef3fc0();
-        else
+        if (f > 0.0f)
             FUN_140ef3f70();
+        else
+            FUN_140ef3fc0();
     }
 }
 
@@ -2343,7 +2340,8 @@ UGCKeyController::UGCKeyController()
 // @0x140ef29c0 (per-frame: switch the mode by the hot keys, then let the mode update)
 void UGCKeyController::vfunc_0()
 {
-    if (FUN_140ef4970() != 0)
+    if (!FUN_140ef4970())
+        return;
     {
         if (FUN_14025e7c0()->FUN_14116da30(0x3b, 0, 0) == 0)
         {
@@ -2369,58 +2367,55 @@ void UGCKeyController::vfunc_0()
 // @0x140ef2ba0
 void UGCKeyController::vfunc_1(void* p, float x, float y)
 {
-    if (FUN_140ef4970() != 0 && m_mode.get() != 0)
+    if (!FUN_140ef4970())
+        return;
+    if (m_mode.get())
         m_mode->vfunc_2(p, x, y);
 }
 
 // @0x140ef2c30
 void UGCKeyController::vfunc_2(void* p, float x, float y)
 {
-    if (FUN_140ef4970() != 0 && m_mode.get() != 0)
-    {
-        if (FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
-            m_mode->vfunc_3(p, x, y);
-    }
+    if (!FUN_140ef4970())
+        return;
+    if ((bool)m_mode.get() && FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
+        m_mode->vfunc_3(p, x, y);
 }
 
 // @0x140ef2ce0
 void UGCKeyController::vfunc_3(void* p, float x, float y)
 {
-    if (FUN_140ef4970() != 0 && m_mode.get() != 0)
-    {
-        if (FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
-            m_mode->vfunc_4(p, x, y);
-    }
+    if (!FUN_140ef4970())
+        return;
+    if ((bool)m_mode.get() && FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
+        m_mode->vfunc_4(p, x, y);
 }
 
 // @0x140ef2d90
 void UGCKeyController::vfunc_4(void* p, float x, float y)
 {
-    if (FUN_140ef4970() != 0 && m_mode.get() != 0)
-    {
-        if (FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
-            m_mode->vfunc_5(p, x, y);
-    }
+    if (!FUN_140ef4970())
+        return;
+    if ((bool)m_mode.get() && FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
+        m_mode->vfunc_5(p, x, y);
 }
 
 // @0x140ef2e40
 void UGCKeyController::vfunc_5(void* p, float x, float y)
 {
-    if (FUN_140ef4970() != 0 && m_mode.get() != 0)
-    {
-        if (FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
-            m_mode->vfunc_6(p, x, y);
-    }
+    if (!FUN_140ef4970())
+        return;
+    if ((bool)m_mode.get() && FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
+        m_mode->vfunc_6(p, x, y);
 }
 
 // @0x140ef2ef0
 void UGCKeyController::vfunc_6(void* p, float x, float y, float f)
 {
-    if (FUN_140ef4970() != 0 && m_mode.get() != 0)
-    {
-        if (FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
-            m_mode->vfunc_7(p, x, y, f);
-    }
+    if (!FUN_140ef4970())
+        return;
+    if ((bool)m_mode.get() && FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
+        m_mode->vfunc_7(p, x, y, f);
 }
 
 // ---- buy / install / remove flow ----
@@ -2504,16 +2499,15 @@ void FUN_140ef2fb0()
 // @0x140ef37d0 (install the selected cube without buying)
 void FUN_140ef37d0()
 {
+    void* pEditor;
     void* pWorld = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pWorld != 0)
-    {
-        void* pEditor = FUN_141530290(pWorld);
-        if (pEditor != 0)
-        {
-            FUN_1410aad50(pEditor);
-            FUN_140df1e90(0x65, FUN_1410ad610(pEditor));
-        }
-    }
+    if (pWorld == 0)
+        return;
+    pEditor = FUN_141530290(pWorld);
+    if (pEditor == 0)
+        return;
+    FUN_1410aad50(pEditor);
+    FUN_140df1e90(0x65, FUN_1410ad610(pEditor));
 }
 
 // @0x140ef3840 (remove the cube under the editor cursor)
@@ -2596,41 +2590,51 @@ void FUN_140ef3840()
 void FUN_140ef3f00()
 {
     void* pWorld = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pWorld != 0 && FUN_141530290(pWorld) != 0)
-    {
-        FUN_1410ab5a0(FUN_141530290(pWorld));
-        FUN_14138bf00(FUN_1409331e0(), 10, 0, 0);
-    }
+    if (pWorld == 0)
+        return;
+    void* pEditor = FUN_141530290(pWorld);
+    if (pEditor == 0)
+        return;
+    FUN_1410ab5a0(pEditor);
+    FUN_14138bf00(FUN_1409331e0(), 10, 0, 0);
 }
 
 // @0x140ef3f70
 void FUN_140ef3f70()
 {
     void* pWorld = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pWorld != 0 && FUN_141530290(pWorld) != 0)
-        FUN_1410ac1c0(FUN_141530290(pWorld));
+    if (pWorld == 0)
+        return;
+    void* pEditor = FUN_141530290(pWorld);
+    if (pEditor == 0)
+        return;
+    FUN_1410ac1c0(pEditor);
 }
 
 // @0x140ef3fc0
 void FUN_140ef3fc0()
 {
     void* pWorld = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pWorld != 0 && FUN_141530290(pWorld) != 0)
-        FUN_1410ac380(FUN_141530290(pWorld));
+    if (pWorld == 0)
+        return;
+    void* pEditor = FUN_141530290(pWorld);
+    if (pEditor == 0)
+        return;
+    FUN_1410ac380(pEditor);
 }
 
 // @0x140ef4010 (toggle the UGC edit mode)
 void FUN_140ef4010()
 {
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4e3b) == 0)
+    if (FUN_1403ed2b0()->FUN_141adc890(0x4e3b) != 0)
+    {
+        FUN_1403ed2b0()->FUN_141adc5d0(0x4e3b);
+    }
+    else
     {
         void* pWorld = FUN_141bd0cc0(FUN_1403ed2d0());
         if (pWorld != 0)
             FUN_141530200(pWorld);
-    }
-    else
-    {
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4e3b);
     }
 }
 
@@ -2728,8 +2732,12 @@ void FUN_140ef4330()
 void FUN_140ef44f0()
 {
     void* pWorld = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pWorld != 0 && FUN_141530290(pWorld) != 0)
-        FUN_1410ac540(FUN_141530290(pWorld));
+    if (pWorld == 0)
+        return;
+    void* pEditor = FUN_141530290(pWorld);
+    if (pEditor == 0)
+        return;
+    FUN_1410ac540(pEditor);
 }
 
 // @0x140ef4540 (the buy-and-install confirmation text of the selected cube)
@@ -2763,14 +2771,14 @@ CStringW FUN_140ef4540()
 }
 
 // @0x140ef4970 (in a UGC edit session)
-int FUN_140ef4970()
+bool UGCKeyController::FUN_140ef4970()
 {
     void* pWorld = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pWorld == 0)
-        return 0;
+        return false;
     if (FUN_1416595d0(pWorld) == 0)
-        return 0;
-    return 1;
+        return false;
+    return true;
 }
 
 // @0x140ef49b0
@@ -2893,19 +2901,17 @@ unsigned __int64 FUN_140ef4d00(Unk_Arr16* p)
 // @0x140ef0a60
 void* FUN_140ef0a60(void* pTbl, unsigned __int64 n)
 {
-    Unk_Arr16* p = (Unk_Arr16*)pTbl;
-    if (n >= p->m_nCount)
+    if (n >= ((Unk_Arr16*)pTbl)->m_nCount)
         FUN_140159b70(0x80070057);
-    return p->m_pData + n * 0x10;
+    return ((Unk_Arr16*)pTbl)->m_pData + n * 0x10;
 }
 
 // @0x140ef0aa0
 void* FUN_140ef0aa0(void* pTbl, unsigned __int64 n)
 {
-    Unk_Arr16* p = (Unk_Arr16*)pTbl;
-    if (n >= p->m_nCount)
+    if (n >= ((Unk_Arr16*)pTbl)->m_nCount)
         FUN_140159b70(0x80070057);
-    return p->m_pData + n * 0x10;
+    return ((Unk_Arr16*)pTbl)->m_pData + n * 0x10;
 }
 
 // @0x140ef0b20

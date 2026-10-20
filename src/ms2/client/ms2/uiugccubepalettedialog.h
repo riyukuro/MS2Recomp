@@ -78,6 +78,7 @@ public:
     virtual void vfunc_4(void* p, float x, float y);        //  4 0x140ef2d90
     virtual void vfunc_5(void* p, float x, float y);        //  5 0x140ef2e40
     virtual void vfunc_6(void* p, float x, float y, float f);   //  6 0x140ef2ef0
+    bool FUN_140ef4970();                                   // 0x140ef4970 in a UGC edit session
 
     MS2Ptr<UGCKeyMode> m_mode;                              // +0x08 (pointer at +0x10)
 };
