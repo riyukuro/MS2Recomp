@@ -3,6 +3,8 @@
 // MS2-UNIT: ?\uiitemenchanttransformdialog.cpp
 // MS2-RANGE: 0x140c3cc10-0x140c3f350 .text$mn
 // MS2-RANGE: 0x1400cd100-0x1400cd360 .text$di
+// MS2-PINS-BEGIN tplpin
+// MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiitemenchanttransformdialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 
@@ -463,3 +465,5 @@ bool UIItemEnchantTransformDialog::FUN_140c3eda0(int nButton, const CMsgBoxData&
         FUN_140c3ecb0();
     return true;
 }
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142ca2b90-0x142ca2c70 .text$yd

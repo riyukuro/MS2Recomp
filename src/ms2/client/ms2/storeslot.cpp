@@ -792,3 +792,5 @@ StoreSlotBag* FUN_14180b940(NotifyContext::BindData* p)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142cbb550-0x142cbb6d0 .text$yd

@@ -19,7 +19,7 @@
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- header statics ----
-static CString s_strSortTypeNames[] = {"None", "Buy"};            // @0x1400dc9e0
+static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // @0x1400dc9e0
 
 // ---- unit-local views of exe functions ----
 extern __int64 DAT_143ab2828;                                       // the own character id
@@ -248,3 +248,5 @@ int UISurveyDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         vfunc_67();
     return 0;
 }
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142ca85a0-0x142ca85d0 .text$yd

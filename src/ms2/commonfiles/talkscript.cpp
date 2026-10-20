@@ -901,3 +901,6 @@ int FUN_140857990(TalkPtr script, unsigned char nFlags, int nNpcId, int nPage)
 // MS2-RANGE: 0x142c9c4d0-0x142c9c540 .text$yd
 // MS2-RANGE: 0x142c9c560-0x142c9c580 .text$yd
 // MS2-RANGE: 0x142c9c5a0-0x142c9c5c0 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142c9c540-0x142c9c560 .text$yd
+// MS2-RANGE: 0x142c9c580-0x142c9c5a0 .text$yd

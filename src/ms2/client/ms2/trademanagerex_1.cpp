@@ -128,11 +128,7 @@ FMT_VARIADIC_W(CStringW, Unk_TradeFormat, int)
 
 // ---- statics (.text$di) ----
 static CStringW s_requestTradeEx(L"requestTradeEx");
-// Header-defined sort-name table (same 7 strings in every obj that includes the item-sort header).
-static CString s_sortNames[] = {"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
-static CString s_skill("skill");
-static CString s_stun("stun");
-static ATL::CAtlMap<int, int> s_condition(17, 0.75f, 0.25f, 2.25f, 10);
+#include "ms2/placeholder/header_statics_a.h"     // sort names, skill/stun, the condition table (Unk_1402a9d70: ctor 0x1402a9d70)
 static CString s_inviteSuccess("PC_InviteSuccess");
 
 CTradeManagerEx* TSingleton<CTradeManagerEx>::s_instance = 0;
@@ -733,3 +729,5 @@ void CTradeManagerEx::FUN_14185dc90()
 {
     m_bConfirmed = false;
 }
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142cbbf90-0x142cbc060 .text$yd

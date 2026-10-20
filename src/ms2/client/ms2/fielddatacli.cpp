@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CFieldDataCli: client-side CFieldData (fieldData.xml + MapXblock xml: bgm, hdr, fog, camera, shadow, minimap).
 // MS2-UNIT: ?\fielddatacli.cpp
-// MS2-FUNCTIONAL: vfunc_1, FUN_140a55df0, LoadXBlock, Find, CMinimap::CMinimap/~CMinimap, FUN_1400c4040, FUN_140a56e70, FUN_140a55d20 differ from the exe in temp/EH layout only (extern-FUN style); behaviour identical
+// MS2-FUNCTIONAL: vfunc_1, FUN_140a55df0, LoadXBlock, Find, CMinimap::CMinimap/~CMinimap, FUN_140a56e70, FUN_140a55d20 differ from the exe in temp/EH layout only (extern-FUN style); behaviour identical
 // MS2-RANGE: 0x1400c4040-0x1400c4100 .text$di
 // MS2-RANGE: 0x140a54160-0x140a571b0 .text$mn
 // MS2-PIN: ?get@?$MS2Ptr@VCMinimap@@@@QEBAPEAVCMinimap@@XZ 0x140a56f90
@@ -45,27 +45,14 @@ bool FUN_1406cf9e0(const std::vector<short>&, const std::vector<short>&);
 bool FUN_140552700(const Unk_GVec3&, const Unk_GVec3&);
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
-void FUN_142c9f4f0();
 bool FUN_140a56ee0(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
 bool FUN_140a56f50(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
 bool FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli>* sp);
 int FUN_140a56ad0(Unk_140165cf0* node, const char* name, int& out);
 MS2Ptr<CMinimap>* FUN_140a56e70(MS2Ptr<CMinimap>* self, CMinimap* p);
 
-// ---- static string table (None/Buy/Like/PriceLow/PriceHigh/Create/EnumEnd), 0x1400c4040 ----
-extern char DAT_143ab77c8, DAT_143ab77d0, DAT_143ab77d8, DAT_143ab77e0, DAT_143ab77e8, DAT_143ab77f0, DAT_143ab77f8;
-// @0x1400c4040
-void FUN_1400c4040()
-{
-    new ((void*)&DAT_143ab77c8) CString("None");
-    new ((void*)&DAT_143ab77d0) CString("Buy");
-    new ((void*)&DAT_143ab77d8) CString("Like");
-    new ((void*)&DAT_143ab77e0) CString("PriceLow");
-    new ((void*)&DAT_143ab77e8) CString("PriceHigh");
-    new ((void*)&DAT_143ab77f0) CString("Create");
-    new ((void*)&DAT_143ab77f8) CString("EnumEnd");
-    atexit(FUN_142c9f4f0);
-}
+// ---- static string table (the first static of header_statics_a.h), 0x1400c4040; atexit thunk 0x142c9f4f0 ----
+static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
 // @0x140a54160
 CFieldDataCli::CFieldDataCli()
@@ -504,3 +491,5 @@ bool FUN_140a56f50(const Unk_Vec3Cli* a, const Unk_Vec3Cli* b)
     char r = FUN_140a56ee0(a, b);
     return r == 0;
 }
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142c9f4f0-0x142c9f520 .text$yd

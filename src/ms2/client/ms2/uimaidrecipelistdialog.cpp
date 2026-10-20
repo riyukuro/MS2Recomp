@@ -1696,3 +1696,9 @@ CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix)
 // MS2-RANGE: 0x142caf820-0x142caf840 .text$yd
 // MS2-RANGE: 0x142caf880-0x142caf8b0 .text$yd
 // MS2-RANGE: 0x142caf940-0x142caf960 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142caf7a0-0x142caf7d0 .text$yd
+// MS2-RANGE: 0x142caf7f0-0x142caf820 .text$yd
+// MS2-RANGE: 0x142caf840-0x142caf880 .text$yd
+// MS2-RANGE: 0x142caf8b0-0x142caf940 .text$yd
+// MS2-RANGE: 0x142caf960-0x142caf9c0 .text$yd

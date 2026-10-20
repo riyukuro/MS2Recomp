@@ -380,3 +380,5 @@ void Unk_CmdBitset::FUN_1414b2430()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb2d20-0x142cb2de0 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142cb2de0-0x142cb2e20 .text$yd

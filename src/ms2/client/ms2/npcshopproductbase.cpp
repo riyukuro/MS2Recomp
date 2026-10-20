@@ -50,18 +50,10 @@ struct Unk_ProdPremium
 };
 MS2_CHECK_OFFSET(Unk_ProdPremium, m_1cc, 0x1cc);
 
-// Two name tables (the enum names of the product tabs): seven strings each, constructed by the .text$di initializers.
-struct Unk_ProdNameTable
-{
-    CString m_a[7];
-};
-#ifdef MS2_HOOK_DLL
-extern Unk_ProdNameTable g_prodTabNames1;                       // 0x143ac3df0
-extern Unk_ProdNameTable g_prodTabNames2;                       // 0x143ac3e98
-#else
-Unk_ProdNameTable g_prodTabNames1 = { { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" } };
-Unk_ProdNameTable g_prodTabNames2 = { { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" } };
-#endif
+// Two copies of the sort-type name table (as header_statics_a.h's s_strSortTypeNames; raw CString[7] arrays: their atexit
+// thunks 0x142ca5690/0x142ca56c0 run the eh vector destructor iterator directly), constructed by the .text$di initializers.
+static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};   // 0x143ac3df0
+static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};  // 0x143ac3e98
 
 // The exe's swap-assign of an Unk_ShopLifeRef from a raw pointer (a COMDAT of the exe, 0x140db8b90).
 Unk_ShopLifeRef& FUN_140db8b90(Unk_ShopLifeRef& ref, NpcShopItemLife* p);
@@ -602,3 +594,5 @@ Unk_ShopLifeRef& FUN_140db8b90(Unk_ShopLifeRef& ref, NpcShopItemLife* p)
     tmp.m_p = pOld;
     return ref;
 }
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142ca5690-0x142ca56f0 .text$yd
