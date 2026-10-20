@@ -3,6 +3,27 @@
 // MS2-UNIT: client\ms2\uigroupmessenger.cpp
 // MS2-RANGE: 0x141947920-0x141959330 .text$mn
 // MS2-RANGE: 0x140113b00-0x140113ff0 .text$di
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??C?$MS2Ptr@VTalkLogList@GroupMessengerData@@@@QEBAPEAVTalkLogList@GroupMessengerData@@XZ 0x14194e5e0 ; unique
+// MS2-PIN: ??A?$CAtlArray@VTalkLog@GroupMessengerData@@V?$CElementTraits@VTalkLog@GroupMessengerData@@@ATL@@@ATL@@QEAAAEAVTalkLog@GroupMessengerData@@_K@Z 0x14194eca0 ; unique
+// MS2-PIN: ?GetCount@?$CAtlArray@VTalkLog@GroupMessengerData@@V?$CElementTraits@VTalkLog@GroupMessengerData@@@ATL@@@ATL@@QEBA_KXZ 0x14194ed50 ; unique
+// MS2-PIN: ?GetHeadPosition@?$CAtlList@V?$Unk_ChatPtr@VCGroupChatMember@@@@V?$CElementTraits@V?$Unk_ChatPtr@VCGroupChatMember@@@@@ATL@@@ATL@@QEBAPEAU__POSITION@@XZ 0x14194ed80 ; unique
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@_K@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x14194f0b0 ; prop
+// MS2-PIN: ?IsEmpty@?$CAtlMap@_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@_K@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEBA_NXZ 0x14194f460 ; prop
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$_Deque_val@U?$_Deque_simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@$00@std@@QEAAAEAV?$_Deque_val@U?$_Deque_simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@XZ 0x1419501e0 ; unique
+// MS2-PIN: ?empty@?$list@V?$MS2Ptr@VChatEmoticonData@@@@V?$allocator@V?$MS2Ptr@VChatEmoticonData@@@@@std@@@std@@QEBA_NXZ 0x141950420 ; unique
+// MS2-PIN: ?rbegin@?$deque@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@std@@@2@XZ 0x1419505b0 ; unique
+// MS2-PIN: ?rend@?$deque@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@std@@@2@XZ 0x141950600 ; prop
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VUIGroupMessenger@@@@QEAAAEAV1@PEAVUIGroupMessenger@@@Z 0x1419551b0 ; unique
+// MS2-PIN: ??Y?$_Deque_const_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@std@@QEAAAEAV01@_J@Z 0x1419555b0 ; unique
+// MS2-PIN: ??Y?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@std@@QEAAAEAV01@_J@Z 0x1419555e0 ; unique
+// MS2-PIN: ?GetCount@?$CAtlMap@IPEAVUIGroupMessenger@@V?$CElementTraits@I@ATL@@V?$CElementTraits@PEAVUIGroupMessenger@@@3@@ATL@@QEBA_KXZ 0x141955ee0 ; unique
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@IPEAVUIGroupMessenger@@V?$CElementTraits@I@ATL@@V?$CElementTraits@PEAVUIGroupMessenger@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x1419561b0 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$_Deque_val@U?$_Deque_simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@$00@std@@QEAAAEAV?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@XZ 0x141958020 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$_Deque_val@U?$_Deque_simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@$00@std@@QEBAAEBV?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@XZ 0x141958030 ; unique
+// MS2-PIN: ?push_back@?$deque@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@QEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z 0x141958fd0 ; unique
+// MS2-PIN: ?size@?$deque@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@QEBA_KXZ 0x1419591f0 ; unique
+// MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 // MS2-PIN: memmove_s 0x141950650
 //
@@ -257,6 +278,9 @@ int FUN_140d2aa60(CStringW& strHtml);                               // the input
 void FUN_140d2c650(CStringW& strHtml);                              // encodes the item links
 void FUN_140d2c2a0(MS2Ptr<Unk_GrmInput> spInput, ATL::CAtlArray<CStringW>& arrHistory);   // the input history keys
 CStringW FUN_141842320(const CStringW& strText);                    // text to html
+#ifdef __clang__
+CStringW FUN_1401d0080(const CStringW& strA, const CStringW& strB);  // operator+
+#endif
 void FUN_140d73aa0(CStringW strText, int nA, int nB, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
@@ -1358,7 +1382,12 @@ void UIGroupMessenger::FUN_14194d100(MS2Ptr<Unk_GrmInput> spInput, const CString
         CStringW strHtml = spInput->FUN_1422e0c20();
         if (strHtml.GetLength() + strSpace.GetLength() + strText.GetLength() < 0x800)
         {
+#ifdef __clang__
+            // clang emits an unavailable MFC CopyChars import for CString's operator+; bind the exe's copy.
+            spInput->FUN_1422e0bd0(FUN_1401d0080(FUN_1401d0080(strHtml, strText), strSpace));
+#else
             spInput->FUN_1422e0bd0(strHtml + strText + strSpace);
+#endif
             spInput->vfunc_24(1);
             int nLength = spInput->FUN_1422e0b00().GetLength();
             if (bSelectEnd && nLength > 0)
@@ -2271,3 +2300,7 @@ int UIGroupMessengerBrowser::vfunc_48()
     return 0x4e93;
 }
 MS2_REPLACE_METHOD(0x141956220, UIGroupMessengerBrowser, vfunc_48, 11, 0xF77482E4);
+
+// The range holds two of the CRT's static-inline memmove_s copies (the window's and the tray's TU tails).
+// @0x141959210
+MS2_EMIT_CRT_MEMMOVE_S_COPY(2);
