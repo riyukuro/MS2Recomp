@@ -188,12 +188,10 @@ void UISidePopupTalk::vfunc_3()
 {
     UIHeadUpDisplay::vfunc_3();
     FUN_140e886f0(1);
-    POSITION pos = m_voices.GetStartPosition();
-    while (pos != NULL)
+    for (POSITION pos = m_voices.GetStartPosition(); pos != NULL; m_voices.GetNext(pos))
     {
         unsigned& nEffect = m_voices.GetValueAt(pos);
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(nEffect);
-        m_voices.GetNext(pos);
     }
     m_voices.RemoveAll();
 }
@@ -216,15 +214,14 @@ void UISidePopupTalk::FUN_140e879a0(MS2Ptr<SidePopupTalkParam> spParam)
 // @0x140e87a40
 void UISidePopupTalk::vfunc_o178_1(void* p)
 {
-    CQuest* pQuest = static_cast<CQuest*>(p);
     {
-        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_ACCEPT, pQuest->FUN_140bfc580());
+        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_ACCEPT, static_cast<CQuest*>(p)->FUN_140bfc580());
         if (spParam.get())
             FUN_140e879a0(spParam);
     }
-    if (pQuest->IsComplete())
+    if (static_cast<CQuest*>(p)->IsComplete())
     {
-        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_SATISFIED, pQuest->FUN_140bfc580());
+        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_SATISFIED, static_cast<CQuest*>(p)->FUN_140bfc580());
         if (spParam.get())
             FUN_140e879a0(spParam);
     }
@@ -233,15 +230,14 @@ void UISidePopupTalk::vfunc_o178_1(void* p)
 // @0x140e87ba0
 void UISidePopupTalk::vfunc_o178_3(void* p)
 {
-    CQuest* pQuest = static_cast<CQuest*>(p);
     {
-        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_PROGRESS, pQuest->FUN_140bfc580());
+        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_PROGRESS, static_cast<CQuest*>(p)->FUN_140bfc580());
         if (spParam.get())
             FUN_140e879a0(spParam);
     }
-    if (pQuest->IsComplete())
+    if (static_cast<CQuest*>(p)->IsComplete())
     {
-        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_SATISFIED, pQuest->FUN_140bfc580());
+        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_SATISFIED, static_cast<CQuest*>(p)->FUN_140bfc580());
         if (spParam.get())
             FUN_140e879a0(spParam);
     }
@@ -250,8 +246,7 @@ void UISidePopupTalk::vfunc_o178_3(void* p)
 // @0x140e87d00
 void UISidePopupTalk::vfunc_o178_2(void* p)
 {
-    CQuest* pQuest = static_cast<CQuest*>(p);
-    MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_COMPLETE, pQuest->FUN_140bfc580());
+    MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_COMPLETE, static_cast<CQuest*>(p)->FUN_140bfc580());
     if (spParam.get())
         FUN_140e879a0(spParam);
 }
@@ -259,20 +254,19 @@ void UISidePopupTalk::vfunc_o178_2(void* p)
 // @0x140e87da0
 void UISidePopupTalk::vfunc_1(__int64 n, int a, int b)
 {
-    if (FUN_140e88690(reinterpret_cast<const Unk_SptNpcNotice*>(n)->m_nNpcId) == 0)
+    if (FUN_140e88690(reinterpret_cast<const Unk_SptNpcNotice*>(n)->m_nNpcId))
+        return;
+    m_lastTick.SetAt(reinterpret_cast<const Unk_SptNpcNotice*>(n)->m_nNpcId, GetTickCountMs2());
+    MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_BOSS_REGEN, reinterpret_cast<const Unk_SptNpcNotice*>(n)->m_nNpcId);
+    if (spParam.get())
     {
-        m_lastTick.SetAt(reinterpret_cast<const Unk_SptNpcNotice*>(n)->m_nNpcId, GetTickCountMs2());
-        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_BOSS_REGEN, reinterpret_cast<const Unk_SptNpcNotice*>(n)->m_nNpcId);
-        if (spParam.get())
-        {
-            FUN_140e879a0(spParam);
-        }
-        else
-        {
-            UIWhisperNotifyDialog* pDialog = Unk_SptGetUI<UIWhisperNotifyDialog>(0x4e5e);
-            if (pDialog != 0)
-                pDialog->FUN_141b52570(reinterpret_cast<const Unk_WhisperInfo*>(n), a, b);
-        }
+        FUN_140e879a0(spParam);
+    }
+    else
+    {
+        UIWhisperNotifyDialog* pDialog = Unk_SptGetUI<UIWhisperNotifyDialog>(0x4e5e);
+        if (pDialog != 0)
+            pDialog->FUN_141b52570(reinterpret_cast<const Unk_WhisperInfo*>(n), a, b);
     }
 }
 
@@ -301,14 +295,14 @@ void UISidePopupTalk::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
 void UISidePopupTalk::FUN_140e88010(MS2Ptr<SidePopupTalkParam> spParam)
 {
     CStringW strMsg;
-    if (spParam->m_script.size() == 0)
-    {
-        strMsg = spParam->m_strText;
-    }
-    else
+    if (spParam->m_script.size() > 0)
     {
         int nIndex = FUN_140768010(spParam->m_script.size(), 0);
         strMsg = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x44, spParam->m_script[nIndex]);
+    }
+    else
+    {
+        strMsg = spParam->m_strText;
     }
     TSingleton<CReservedWordTable>::GetInstance()->FUN_1416fb300(strMsg);
 
@@ -324,13 +318,11 @@ void UISidePopupTalk::FUN_140e88010(MS2Ptr<SidePopupTalkParam> spParam)
     obj.FUN_1407cbb20("mapName", spParam->m_str70);
     obj.FUN_1407cba60("expire", spParam->m_str78);
     obj.FUN_1407cbb20("userValue", spParam->m_strUserValue);
-    POSITION pos = spParam->m_extra.GetStartPosition();
-    while (pos != NULL)
+    for (POSITION pos = spParam->m_extra.GetStartPosition(); pos != NULL; spParam->m_extra.GetNext(pos))
     {
         CStringA strName = spParam->m_extra.GetKeyAt(pos);
         CStringW strValue = spParam->m_extra.GetValueAt(pos);
         obj.FUN_1407cbb20(strName, strValue);
-        spParam->m_extra.GetNext(pos);
     }
     Unk_SoundState* pSound = TSingleton<CGameOption>::GetInstance()->FUN_140d13c70();
     if (pSound != 0)
@@ -346,9 +338,9 @@ int UISidePopupTalk::FUN_140e88690(unsigned nId)
     DWORD nTick = 0;
     if (!m_lastTick.Lookup(nId, nTick))
         return 0;
-    if ((unsigned)(GetTickCountMs2() - nTick) <= 60000)
-        return 1;
-    return 0;
+    if ((unsigned)(GetTickCountMs2() - nTick) > 60000)
+        return 0;
+    return 1;
 }
 
 // @0x140e886f0
