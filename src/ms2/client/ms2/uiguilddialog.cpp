@@ -70,6 +70,8 @@
 #include <deque>
 #include "ms2/placeholder/mstime.h"
 #include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/placeholder/cwinhttpclient.h"
+#include "ms2/placeholder/xmlattr.h"
 #include "ms2/client/ms2/iteminfoslot.h"
 #include "ms2/placeholder/asslot.h"
 #include "ms2/placeholder/citem.h"
@@ -224,6 +226,29 @@ CStringW FUN_1409e8ca0(CStringW strKey, const int& n1, const int& n2, const int&
 class Unk_GdTextArea : public ASTextInput { public: void FUN_1422e0bd0(const CStringW& strHtml); };   // a text area: set the html text
 CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
+int FUN_141977b70(ASObj& obj, const MS2Ptr<CGuildPVPHistoryData>& spHistory);   // fill a pvp history row
+class Unk_GdBrowserMgr { public: void FUN_141b794e0(CString& strOut, const char* pszUrl); };   // resolve a web api url
+Unk_GdBrowserMgr* FUN_140cc18a0();
+CString FUN_1401d9af0(const char* pszFormat, const __int64& n);  // StringFormat, one numeric argument
+CString FUN_1401d4330(const wchar_t* psz, int nCodePage);       // wide -> multibyte
+void FUN_141b6de20();                                           // thread start-up
+struct Unk_GdThreadScope { char m_buf[0x10]; };                 // names the worker thread for the crash log
+void FUN_141b721f0(Unk_GdThreadScope* p, CString strName);
+void FUN_141b722b0(Unk_GdThreadScope* p);
+UIGuildDialog* FUN_14136f480(int nUIType);                      // Unk_GetUI<UIGuildDialog>
+// The answer's root TinyXML element (TiXmlElement, 0x90 bytes; Parse is its virtual slot 2, called directly).
+class Unk_GdXmlRoot : public Unk_140165cf0
+{
+public:
+    Unk_GdXmlRoot(const char* pszValue);                        // 0x14086f2f0
+    ~Unk_GdXmlRoot();                                           // 0x14086f450
+    const char* FUN_1408782b0(const char* p, void* pData, int nEncoding);   // Parse
+private:
+    char m_pad[0x50];
+};
+const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text (null = absent)
+unsigned __int64 FUN_140718350(const CString& str);             // string -> id
+CString FUN_1407185b0(const CString& str);                      // ConvertTo<CString>
 
 // ---- the dialog ----
 
@@ -2772,6 +2797,48 @@ void UIGuildDialog::FUN_141974190(const CStringW& strName)
     m_infoPage->Invoke("setGuildName", strName);
 }
 
+// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
+// @0x141974240
+void UIGuildDialog::FUN_141974240()
+{
+    if (m_pvpHistoryPage.IsNull())
+        return;
+    ASArray arrHistory(2);
+    ATL::CAtlArray<MS2Ptr<CGuildPVPHistoryData>> arr;
+    CGuildManager::GetInstance()->FUN_1413bbf70(arr);
+    std::set<__int64> guildIds;
+    for (size_t i = 0; i < arr.GetCount(); i++)
+    {
+        ASObj objHistory(2);
+        if (arr[i].get() != 0)
+        {
+            if (FUN_141977b70(objHistory, arr[i]))
+            {
+                arrHistory.FUN_1422bc050(objHistory.FUN_1422bb870());
+                guildIds.insert(arr[i]->f28);
+                guildIds.insert(arr[i]->f30);
+            }
+        }
+    }
+    m_pvpHistoryPage->FUN_140bd2cb0("buildHistory", arrHistory);
+    if (guildIds.empty())
+        return;
+    std::set<__int64>::iterator it = guildIds.begin();
+    std::set<__int64>::iterator itEnd = guildIds.end();
+    FUN_140cc18a0()->FUN_141b794e0(m_strMarkRequestIds, "api:/data/guild?guilds=");
+    for (; it != itEnd; ++it)
+    {
+        if (it != guildIds.begin())
+            m_strMarkRequestIds += ",";
+        m_strMarkRequestIds += FUN_1401d9af0("{0}", *it);
+    }
+    if (m_strMarkRequestIds.GetLength() > 0)
+    {
+        m_bMarksPending = true;
+        AfxBeginThread(RequestHistoryGuildMarkToWeb, this, 0, 0, 0, 0);
+    }
+}
+
 // @0x141974640
 void UIGuildDialog::FUN_141974640()
 {
@@ -3166,6 +3233,60 @@ void UIGuildDialog::vfunc_oa0_11(void* a1)
 {
     if (!FUN_140ba28d0(&m_30, 0) && !FUN_140acd940(&m_skillPage2, 0))
         FUN_140cfee80((*m_skillPage2).FUN_1422bb890(), "m_guildFund", FUN_1409404f0((__int64)a1));
+}
+
+// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
+// @0x141976b60 (thread: fetch the pvp history guilds' marks)
+UINT UIGuildDialog::RequestHistoryGuildMarkToWeb(LPVOID pParam)
+{
+    FUN_141b6de20();
+    Unk_GdThreadScope scope;
+    FUN_141b721f0(&scope, CString("UIGuildDialog::RequestHistoryGuildMarkToWeb"));
+    UIGuildDialog* pThis = static_cast<UIGuildDialog*>(pParam);
+    if (pThis == 0)
+    {
+        FUN_141b722b0(&scope);
+        return 0;
+    }
+    std::wstring strUrl(FUN_14016a730(pThis->m_strMarkRequestIds, 0));
+    CWinHttpClient client(strUrl);
+    if (client.FUN_140920cf0(std::wstring(L"GET"), false))
+    {
+        if (client.FUN_140922f20() != 0)
+        {
+            FUN_141b722b0(&scope);
+            return 0;
+        }
+        std::wstring strBody = client.FUN_140922860();
+        CString strXml = FUN_1401d4330(strBody.c_str(), 0);
+        UIGuildDialog* pDialog;
+        if (CUIService::GetInstance() != 0 && (pDialog = FUN_14136f480(0x4e4f)) != 0)
+            pDialog->FUN_141976e00(strXml);
+    }
+    FUN_141b722b0(&scope);
+    return 0;
+}
+
+// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
+// @0x141976e00 (the web answer: <guilds><guild sn=".." mark=".."/>..</guilds>)
+void UIGuildDialog::FUN_141976e00(CString strXml)
+{
+    Unk_GdXmlRoot root("guilds");
+    if (root.FUN_1408782b0(strXml, 0, 0) == 0)
+        return;
+    std::vector<std::pair<unsigned __int64, CString> > marks;
+    for (Unk_140165cf0* pGuild = root.FUN_140165cf0("guild"); pGuild != 0; pGuild = pGuild->NextSiblingElement())
+    {
+        unsigned __int64 nGuildId = FUN_140718350(CString(FUN_14086f4b0(pGuild, "sn")));
+        CString strMark = FUN_1407185b0(CString(FUN_14086f4b0(pGuild, "mark")));
+        marks.push_back(std::pair<unsigned __int64, CString>(nGuildId, strMark));
+    }
+    if (Unk_LockGuard guard = m_lock) {}
+    else
+    {
+        m_marks.clear();
+        m_marks.insert(marks.begin(), marks.end());
+    }
 }
 
 // @0x141977050 (split "id,mark:id,mark" into pairs)

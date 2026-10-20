@@ -132,6 +132,8 @@ public:
     void FUN_1419769d0();                                       // set the own guild's mark
     void FUN_141970900();
     void FUN_141976980(const CStringW& strMark);                // set the mark unless the dialog is closed
+    static UINT RequestHistoryGuildMarkToWeb(LPVOID pParam);    // thread: the pvp history guilds' marks from the web
+    void FUN_141976e00(CString strXml);                         // the web answer: store the guilds' marks
 
 private:
     MS2_LAYOUT_FRIEND;

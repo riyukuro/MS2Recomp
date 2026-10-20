@@ -16,6 +16,7 @@ public:
     void FUN_140922d20(const std::wstring& strHeaders);
     int FUN_140922f20();                                    // last error (0: none)
     std::wstring FUN_140922860();                           // copy of the response text (+0x70)
+    CWinHttpClient(const std::wstring& strUrl);             // 0x1409208e0 (uiguilddialog.cpp: GET client for the url)
 
 private:
     void* m_session;                    // +0x000
