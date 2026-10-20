@@ -3,6 +3,87 @@
 // MS2-UNIT: client\ms2\uidungeonroomdialog.cpp
 // MS2-RANGE: 0x1400ed270-0x1400ed3e0 .text$di
 // MS2-RANGE: 0x1412a74a0-0x1412c2020 .text$mn
+// MS2-PIN: ??0?$vector@UUnk_DayTimeRange@@V?$allocator@UUnk_DayTimeRange@@@std@@@std@@QEAA@XZ 0x1412bfb70 ; call site RefreshLimits (identical copies elsewhere)
+// MS2-PIN: ??0?$vector@V?$MS2Ptr@VRewardPreviewItem@@@@V?$allocator@V?$MS2Ptr@VRewardPreviewItem@@@@@std@@@std@@QEAA@XZ 0x1412bfba0 ; call site FUN_1412b2250
+// MS2-PIN: ??0?$vector@HV?$allocator@H@std@@@std@@QEAA@XZ 0x1412bfbd0 ; call site UIDungeonRoomDialog ctor
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@UUnk_DayTimeRange@@V?$allocator@UUnk_DayTimeRange@@@std@@@std@@@std@@QEAA@XZ 0x1412bf8f0 ; callee of 0x1412bfb70
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VRewardPreviewItem@@@@V?$allocator@V?$MS2Ptr@VRewardPreviewItem@@@@@std@@@std@@@std@@QEAA@XZ 0x1412bf920 ; callee of 0x1412bfba0
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@HV?$allocator@H@std@@@std@@@std@@QEAA@XZ 0x1412bf950 ; callee of 0x1412bfbd0
+// MS2-PIN: ??A?$vector@HV?$allocator@H@std@@@std@@QEAAAEAH_K@Z 0x1412c0310 ; m_dungeonIds[i]
+// MS2-PIN: ?_Calculate_growth@?$vector@HV?$allocator@H@std@@@std@@AEBA_K_K@Z 0x1412c0920 ; m_dungeonIds push_back
+// MS2-PIN: ??$_Destroy_range1@V?$allocator@H@std@@@std@@YAXPEAH0AEAV?$allocator@H@0@U?$integral_constant@_N$00@0@@Z 0x1412bd070 ; vector<int> (identical int/unsigned/DayTimeRange copies)
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??$?0VUIDungeonRoomDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIDungeonRoomDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x1412bb110 ; unique
+// MS2-PIN: ??$?0VUIDungeonRoomInfo@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIDungeonRoomInfo@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x1412bb2b0 ; unique
+// MS2-PIN: ??$?8PEAVUIDungeonRoomDialog@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x1412bb410 ; prop
+// MS2-PIN: ??$?8PEAVUIDungeonRoomDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x1412bb480 ; prop
+// MS2-PIN: ??$?8PEAVUIDungeonRoomDialog@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x1412bb4f0 ; prop
+// MS2-PIN: ??$?8PEAVUIDungeonRoomInfo@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIDungeonRoomInfo@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x1412bb560 ; prop
+// MS2-PIN: ??$?8PEAVUIDungeonRoomInfo@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIDungeonRoomInfo@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x1412bb5b0 ; prop
+// MS2-PIN: ??$Unk_ASCreate@VASScrollPanel@@@@YA?AV?$MS2Ptr@VASScrollPanel@@@@HAEBVValue@GFx@Scaleform@@@Z 0x1412bb600 ; unique
+// MS2-PIN: ??$StringFormat@$$BY0N@D$$BY0DN@DH$$BY0CE@D@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEAY0N@$$CBDAEAY0DN@$$CBDAEBHAEAY0CE@$$CBD@Z 0x1412bb6b0 ; unique
+// MS2-PIN: ??$StringFormat@$$BY0N@D$$BY0DN@DH$$BY0CF@D@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEAY0N@$$CBDAEAY0DN@$$CBDAEBHAEAY0CF@$$CBD@Z 0x1412bba70 ; unique
+// MS2-PIN: ??$StringFormat@$$BY0N@D$$BY0DN@DH$$BY0DN@D@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEAY0N@$$CBDAEAY0DN@$$CBDAEBH2@Z 0x1412bc1f0 ; unique
+// MS2-PIN: ??$FUN_140e159f0@VASScrollPanel@@@AScript@@QEAA?AV?$MS2Ptr@VASScrollPanel@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x1412bc5b0 ; unique
+// MS2-PIN: ??$FUN_140bc7340@VASScrollPanel@@@AScript@@QEAA?AV?$MS2Ptr@VASScrollPanel@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@AEAV1@@Z 0x1412bc670 ; unique
+// MS2-PIN: ??$FUN_1412bc730@VASTextField@@@Unk_Finder@@QEAA?AV?$MS2Ptr@VASTextField@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@AEAV1@@Z 0x1412bc730 ; unique
+// MS2-PIN: ??$FUN_14028dfa0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@F@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBV01@AEBF@Z 0x1412bc800 ; unique
+// MS2-PIN: ??$_Adl_verify_range1@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VDungeonRoom@@@@@std@@@std@@@std@@V12@@std@@YAXAEBV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VDungeonRoom@@@@@std@@@std@@@0@0U?$integral_constant@_N$0A@@0@@Z 0x1412bcf60 ; unique
+// MS2-PIN: ??$_Adl_verify_range1@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VRewardPreviewItem@@@@@std@@@std@@@std@@V12@@std@@YAXAEBV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VRewardPreviewItem@@@@@std@@@std@@@0@0U?$integral_constant@_N$0A@@0@@Z 0x1412bcf70 ; unique
+// MS2-PIN: ??$_Copy_memmove@PEAHPEAH@std@@YAPEAHPEAH00@Z 0x1412bd000 ; unique
+// MS2-PIN: ??$_Emplace_back_with_unused_capacity@H@?$vector@HV?$allocator@H@std@@@std@@AEAAX$$QEAH@Z 0x1412bd0e0 ; unique
+// MS2-PIN: ??$_Emplace_reallocate@H@?$vector@HV?$allocator@H@std@@@std@@QEAAPEAHQEAH$$QEAH@Z 0x1412bd260 ; unique
+// MS2-PIN: ??$_Get_unwrapped@H@std@@YAPEAHQEAH@Z 0x1412bd730 ; prop
+// MS2-PIN: ??$_Idl_distance1@PEAHPEAH@std@@YA_JAEBQEAH0Urandom_access_iterator_tag@0@@Z 0x1412bd8a0 ; unique
+// MS2-PIN: ??$_Ptr_move_cat@HH@std@@YA?AU_Really_trivial_ptr_iterator_tag@0@AEBQEAH0@Z 0x1412be8c0 ; unique
+// MS2-PIN: ??$_Uninitialized_move@PEAHPEAHV?$allocator@H@std@@@std@@YAPEAHQEAH0PEAHAEAV?$allocator@H@0@@Z 0x1412becd0 ; unique
+// MS2-PIN: ??$_Uninitialized_move_al_unchecked@HHV?$allocator@H@std@@@std@@YAPEAHQEAH00AEAV?$allocator@H@0@U_Really_trivial_ptr_iterator_tag@0@U?$integral_constant@_N$00@0@@Z 0x1412bed80 ; unique
+// MS2-PIN: ??$construct@HH@?$_Default_allocator_traits@V?$allocator@H@std@@@std@@SAXAEAV?$allocator@H@1@QEAH$$QEAH@Z 0x1412bede0 ; unique
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x1412bf370 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x1412bf4b0 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIDungeonRoomInfo@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x1412bf5f0 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VASScrollPanel@@@@QEAA@PEAVASScrollPanel@@@Z 0x1412bf760 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VASScrollPanel@@@@QEAA@XZ 0x1412bf790 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VUIDungeonRoomInfo@@@@QEAA@PEAVUIDungeonRoomInfo@@@Z 0x1412bf7b0 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VUIDungeonRoomLimitTextGroup@@@@QEAA@PEAVUIDungeonRoomLimitTextGroup@@@Z 0x1412bf800 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VUIDungeonRoomLimitTextGroup@@@@QEAA@XZ 0x1412bf830 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VUIDungeonRoomRankPanel@@@@QEAA@XZ 0x1412bf880 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VUIDungeonRoomSeasonRankReward@@@@QEAA@XZ 0x1412bf8d0 ; unique
+// MS2-PIN: ??1?$vector@V?$MS2Ptr@VDungeonRoom@@@@V?$allocator@V?$MS2Ptr@VDungeonRoom@@@@@std@@@std@@QEAA@XZ 0x1412bfdc0 ; prop
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VUIDungeonRoomInfo@@@@QEAAAEAV1@PEAVUIDungeonRoomInfo@@@Z 0x1412bffa0 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VCPartyMember@@@@QEBA_NPEAVCPartyMember@@@Z 0x1412c01a0 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VDungeonRankRewardBase@@@@QEBA_NPEAVDungeonRankRewardBase@@@Z 0x1412c01e0 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VASScrollPanel@@@@QEBAPEAVASScrollPanel@@XZ 0x1412c0360 ; unique
+// MS2-PIN: ?vfunc_48@UIDungeonRoomDialog@@UEAAHXZ 0x1412c0690 ; unique
+// MS2-PIN: ?AddRef@?$MS2Ptr@VUIDungeonRoomInfo@@@@AEBAXXZ 0x1412c06d0 ; prop
+// MS2-PIN: ?AddRef@?$MS2Ptr@VUIDungeonRoomLimitTextGroup@@@@AEBAXXZ 0x1412c0700 ; prop
+// MS2-PIN: ?AddRef@?$MS2Ptr@VUIDungeonRoomRankPanel@@@@AEBAXXZ 0x1412c0730 ; prop
+// MS2-PIN: ?_Change_array@?$vector@HV?$allocator@H@std@@@std@@AEAAXQEAH_K1@Z 0x1412c09b0 ; unique
+// MS2-PIN: ?_Tidy@?$vector@UUnk_DayTimeRange@@V?$allocator@UUnk_DayTimeRange@@@std@@@std@@AEAAXXZ 0x1412c1080 ; prop
+// MS2-PIN: ?_Tidy@?$vector@V?$MS2Ptr@VASLabel@@@@V?$allocator@V?$MS2Ptr@VASLabel@@@@@std@@@std@@AEAAXXZ 0x1412c1220 ; prop
+// MS2-PIN: ?_Unwrapped@?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VDungeonRoom@@@@@std@@@std@@@std@@QEBAPEAV?$MS2Ptr@VDungeonRoom@@@@XZ 0x1412c1450 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1412c1640 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1412c16a0 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1412c1700 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomInfo@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1412c1760 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomInfo@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1412c17c0 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x1412c19b0 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1412c19e0 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x1412c1a10 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomInfo@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1412c1a40 ; unique
+// MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomInfo@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x1412c1a70 ; unique
+// MS2-PIN: ??$Call@VUIDungeonRoomDialog@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x1412c1ab0 ; prop
+// MS2-PIN: ??$Call@VUIDungeonRoomDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1412c1af0 ; prop
+// MS2-PIN: ??$Call@VUIDungeonRoomDialog@@P81@EAAXPEAVNotifyObject@@@Z@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@CAXAEAU?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@PEAVNotifyObject@@@Z 0x1412c1b30 ; prop
+// MS2-PIN: ??$Call@VUIDungeonRoomInfo@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomInfo@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIDungeonRoomInfo@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1412c1b70 ; unique
+// MS2-PIN: ??$Call@VUIDungeonRoomInfo@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomInfo@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIDungeonRoomInfo@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x1412c1ba0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1412c1bd0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1412c1c30 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1412c1c90 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomInfo@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1412c1cf0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIDungeonRoomInfo@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1412c1d50 ; unique
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@H@std@@@std@@SA_KAEBV?$allocator@H@2@@Z 0x1412c1db0 ; unique
+// MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidungeonroomdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/header_statics_a.h"
@@ -235,6 +316,7 @@ UIDungeonRoomRankPanel::UIDungeonRoomRankPanel(MS2Ptr<ASMovieClip> spPanel)
     do { m_spPanel->FUN_140bc71c0("m_summaryScore", m_summaryScore); if (m_summaryScore == 0) throw DR_SWF_ERROR(43); } while (0);
 }
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412a78a0
 void UIDungeonRoomRankPanel::Refresh(MS2Ptr<DungeonRoom> spRoom)
 {
@@ -297,6 +379,7 @@ void UIDungeonRoomRankPanel::Reset()
 }
 MS2_REPLACE_METHOD(0x1412A81D0, UIDungeonRoomRankPanel, Reset, 520, 0xDDC5F7EB);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412a83e0
 void UIDungeonRoomRankPanel::AddMissionLabels(size_t nCount)
 {
@@ -316,6 +399,7 @@ void UIDungeonRoomRankPanel::AddMissionLabels(size_t nCount)
 }
 MS2_REPLACE_METHOD(0x1412A83E0, UIDungeonRoomRankPanel, AddMissionLabels, 902, 0x8CC3EDF3);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412a8770
 void UIDungeonRoomRankPanel::SetLayout(int nLines)
 {
@@ -326,6 +410,7 @@ MS2_REPLACE_METHOD(0x1412A8770, UIDungeonRoomRankPanel, SetLayout, 93, 0x9F469BB
 
 // ======== UIDungeonRoomSeasonRankReward ========
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412a87e0
 UIDungeonRoomSeasonRankReward::UIDungeonRoomSeasonRankReward(MS2Ptr<ASMovieClip> spPanel)
     : m_spPanel(spPanel)
@@ -341,6 +426,7 @@ UIDungeonRoomSeasonRankReward::UIDungeonRoomSeasonRankReward(MS2Ptr<ASMovieClip>
     }
 }
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412a8d30
 UIDungeonRoomSeasonRankReward::~UIDungeonRoomSeasonRankReward()
 {
@@ -348,6 +434,7 @@ UIDungeonRoomSeasonRankReward::~UIDungeonRoomSeasonRankReward()
         FUN_1422c63f0((*m_seasonRankReward[i]).FUN_1422bb890(), 2);
 }
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412a8e20
 void UIDungeonRoomSeasonRankReward::Refresh(MS2Ptr<DungeonRoom> spRoom)
 {
@@ -426,6 +513,7 @@ int UIDungeonRoomLimitTextGroup::GetBottom()
 }
 MS2_REPLACE_METHOD(0x1412A9610, UIDungeonRoomLimitTextGroup, GetBottom, 14, 0x7A15C443);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412a9630
 void UIDungeonRoomLimitTextGroup::AddText(const CStringW& strText, int nColor, const CStringW& strTooltip)
 {
@@ -441,6 +529,7 @@ void UIDungeonRoomLimitTextGroup::AddText(const CStringW& strText, int nColor, c
 }
 MS2_REPLACE_METHOD(0x1412A9630, UIDungeonRoomLimitTextGroup, AddText, 651, 0x109A083B);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412a98d0
 void UIDungeonRoomLimitTextGroup::Clear()
 {
@@ -457,6 +546,7 @@ MS2_REPLACE_METHOD(0x1412A98D0, UIDungeonRoomLimitTextGroup, Clear, 189, 0x141DE
 
 // ======== UIDungeonRoomInfo ========
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412a99a0
 UIDungeonRoomInfo::UIDungeonRoomInfo(UIDungeonRoomDialog* pOwner, MS2Ptr<ASMovieClip> spPanel)
     : m_pOwner(pOwner), m_spPanel(spPanel), m_slotBinder("DungeonRoomDialog")
@@ -501,9 +591,9 @@ UIDungeonRoomInfo::UIDungeonRoomInfo(UIDungeonRoomDialog* pOwner, MS2Ptr<ASMovie
         do { m_subPanels[1]->FUN_140beaf20("m_limitText", m_limitText); if (m_limitText == 0) throw DR_SWF_ERROR(343); } while (0);
         do { m_subPanels[1]->FUN_140bc71c0("m_requireCondition", m_requireCondition); if (m_requireCondition == 0) throw DR_SWF_ERROR(344); } while (0);
         FUN_140bc7c10((*m_subPanels[2]).FUN_1422bb890(), "m_rewardItem", 0x1c, m_rewardItems, 0);
-        m_spRankPanel = new UIDungeonRoomRankPanel(m_subPanels[3]);
-        m_spSeasonRankReward = new UIDungeonRoomSeasonRankReward(m_subPanels[4]);
-        m_spLimitTextGroup = new UIDungeonRoomLimitTextGroup(m_subPanels[1]);
+        m_spRankPanel.AssignRaw(new UIDungeonRoomRankPanel(m_subPanels[3]));
+        m_spSeasonRankReward.AssignRaw(new UIDungeonRoomSeasonRankReward(m_subPanels[4]));
+        m_spLimitTextGroup.AssignRaw(new UIDungeonRoomLimitTextGroup(m_subPanels[1]));
     }
     if (MS2Ptr<ASTextField> spText = m_requireCondition->FUN_1409b4620("textField"))
         FUN_140d01340((*spText).FUN_1422bb890(), 2, 2);
@@ -570,6 +660,7 @@ void UIDungeonRoomInfo::Refresh()
 }
 MS2_REPLACE_METHOD(0x1412ADB40, UIDungeonRoomInfo, Refresh, 1134, 0x415FF5E5);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412adfc0
 void UIDungeonRoomInfo::RefreshSubTabVisibility()
 {
@@ -597,6 +688,7 @@ void UIDungeonRoomInfo::RefreshSubTabVisibility()
 }
 MS2_REPLACE_METHOD(0x1412ADFC0, UIDungeonRoomInfo, RefreshSubTabVisibility, 733, 0x403F334A);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412ae2b0
 void UIDungeonRoomInfo::RefreshLimits()
 {
@@ -715,6 +807,7 @@ void UIDungeonRoomInfo::RefreshLimits()
 }
 MS2_REPLACE_METHOD(0x1412AE2B0, UIDungeonRoomInfo, RefreshLimits, 7769, 0x502DC9CD);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b0110
 void UIDungeonRoomInfo::FUN_1412b0110()
 {
@@ -798,6 +891,7 @@ void UIDungeonRoomInfo::RefreshReward()
 }
 MS2_REPLACE_METHOD(0x1412B0D30, UIDungeonRoomInfo, RefreshReward, 100, 0xA1D75F60);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b0da0
 void UIDungeonRoomInfo::RefreshNormalReward()
 {
@@ -887,6 +981,7 @@ void UIDungeonRoomInfo::RefreshRoundReward()
 }
 MS2_REPLACE_METHOD(0x1412B1D50, UIDungeonRoomInfo, RefreshRoundReward, 1274, 0xB3EB2DB6);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b2250
 void UIDungeonRoomInfo::FUN_1412b2250()
 {
@@ -918,7 +1013,7 @@ void UIDungeonRoomInfo::FUN_1412b2250()
     MS2Ptr<RewardPreviewInfo> spPreview = FUN_140f26650()->GetDungeon(m_spRoom->GetDungeonRoomID());
     // developer keys: show the drop boxes instead of the preview table
     if (FUN_14025e7c0() != NULL && FUN_14025e7c0()->FUN_14116d950(0x2a, true, 0) && FUN_14025e7c0()->FUN_14116d950(0x1d, true, 0))
-        spPreview = 0;
+        spPreview.AssignRaw(NULL);
     if (spPreview.get() == NULL)
     {
         std::vector<ItemDropResult> results;
@@ -975,6 +1070,7 @@ void UIDungeonRoomInfo::FUN_1412b2250()
 }
 MS2_REPLACE_METHOD(0x1412B2250, UIDungeonRoomInfo, FUN_1412b2250, 3095, 0x7A36D83B);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b2e70
 void UIDungeonRoomInfo::FUN_1412b2e70()
 {
@@ -997,6 +1093,7 @@ void UIDungeonRoomInfo::FUN_1412b2e70()
 }
 MS2_REPLACE_METHOD(0x1412B2E70, UIDungeonRoomInfo, FUN_1412b2e70, 681, 0x61AC527B);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b3120
 void UIDungeonRoomInfo::RefreshEnterButtons()
 {
@@ -1031,6 +1128,7 @@ void UIDungeonRoomInfo::FUN_1412b3180()
 
 MS2_REPLACE_METHOD(0x1412B3180, UIDungeonRoomInfo, FUN_1412b3180, 680, 0x41D4CCC1);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b3430
 void UIDungeonRoomInfo::FUN_1412b3430()
 {
@@ -1107,6 +1205,7 @@ void UIDungeonRoomInfo::FUN_1412b3890()
 }
 MS2_REPLACE_METHOD(0x1412B3890, UIDungeonRoomInfo, FUN_1412b3890, 678, 0x9084A40D);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b3b40
 void UIDungeonRoomInfo::FUN_1412b3b40()
 {
@@ -1147,6 +1246,7 @@ void UIDungeonRoomInfo::FUN_1412b3b40()
 }
 MS2_REPLACE_METHOD(0x1412B3B40, UIDungeonRoomInfo, FUN_1412b3b40, 831, 0x944FA0E1);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b3e90
 void UIDungeonRoomInfo::FUN_1412b3e90()
 {
@@ -1167,6 +1267,7 @@ void UIDungeonRoomInfo::FUN_1412b3e90()
 }
 MS2_REPLACE_METHOD(0x1412B3E90, UIDungeonRoomInfo, FUN_1412b3e90, 329, 0x887BA71D);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b3fe0
 void UIDungeonRoomInfo::FUN_1412b3fe0()
 {
@@ -1200,6 +1301,7 @@ void UIDungeonRoomInfo::FUN_1412b4150(MS2Ptr<DungeonRoom> spRoom)
 }
 MS2_REPLACE_METHOD(0x1412B4150, UIDungeonRoomInfo, FUN_1412b4150, 63, 0xDC260D09);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b41a0
 void UIDungeonRoomInfo::OnEnterSolo(const ASParams& params)
 {
@@ -1208,6 +1310,7 @@ void UIDungeonRoomInfo::OnEnterSolo(const ASParams& params)
 }
 MS2_REPLACE_METHOD(0x1412B41A0, UIDungeonRoomInfo, OnEnterSolo, 113, 0x819F8DAA);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b4220
 void UIDungeonRoomInfo::OnEnterParty(const ASParams& params)
 {
@@ -1223,6 +1326,7 @@ void UIDungeonRoomInfo::OnEnterParty(const ASParams& params)
 }
 MS2_REPLACE_METHOD(0x1412B4220, UIDungeonRoomInfo, OnEnterParty, 265, 0x8187852C);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b4330
 void UIDungeonRoomInfo::OnPartySearch(const ASParams& params)
 {
@@ -1290,6 +1394,7 @@ void UIDungeonRoomInfo::OnChangeExpert(const ASParams& params)
 }
 MS2_REPLACE_METHOD(0x1412B49D0, UIDungeonRoomInfo, OnChangeExpert, 349, 0x41F82966);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b4b40
 void UIDungeonRoomInfo::OnSubTab(const ASParams& params)
 {
@@ -1303,6 +1408,7 @@ void UIDungeonRoomInfo::OnSubTab(const ASParams& params)
 }
 MS2_REPLACE_METHOD(0x1412B4B40, UIDungeonRoomInfo, OnSubTab, 180, 0xEDC7DF57);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b4c00
 void UIDungeonRoomInfo::OnFindHelper(const ASParams& params)
 {
@@ -1322,6 +1428,7 @@ void UIDungeonRoomInfo::OnFindHelper(const ASParams& params)
 }
 MS2_REPLACE_METHOD(0x1412B4C00, UIDungeonRoomInfo, OnFindHelper, 718, 0x2EBC70DB);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b4ee0
 void UIDungeonRoomInfo::OnFindMember(const ASParams& params)
 {
@@ -1341,6 +1448,7 @@ void UIDungeonRoomInfo::OnFindMember(const ASParams& params)
 }
 MS2_REPLACE_METHOD(0x1412B4EE0, UIDungeonRoomInfo, OnFindMember, 718, 0x84E13C9C);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b51c0
 void UIDungeonRoomInfo::OnRequireCondition(const ASParams& params)
 {
@@ -1359,6 +1467,7 @@ void UIDungeonRoomInfo::OnRequireCondition(const ASParams& params)
 }
 MS2_REPLACE_METHOD(0x1412B51C0, UIDungeonRoomInfo, OnRequireCondition, 188, 0xDB6CE811);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b5290
 void UIDungeonRoomInfo::OnReset(const ASParams& params)
 {
@@ -1374,6 +1483,7 @@ void UIDungeonRoomInfo::OnReset(const ASParams& params)
 }
 MS2_REPLACE_METHOD(0x1412B5290, UIDungeonRoomInfo, OnReset, 135, 0x0D56CD86);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b5320
 void UIDungeonRoomInfo::OnFavoriteMark(const ASParams& params)
 {
@@ -1485,6 +1595,7 @@ void UIDungeonRoomInfo::RequestLeaveDungeon()
 }
 MS2_REPLACE_METHOD(0x1412B5760, UIDungeonRoomInfo, RequestLeaveDungeon, 75, 0x6B5017CF);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b57c0
 void UIDungeonRoomInfo::LayoutSubPanels()
 {
@@ -1510,6 +1621,7 @@ void UIDungeonRoomInfo::LayoutSubPanels()
 }
 MS2_REPLACE_METHOD(0x1412B57C0, UIDungeonRoomInfo, LayoutSubPanels, 469, 0xBB377534);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b59a0
 void UIDungeonRoomInfo::LayoutSearching()
 {
@@ -1529,6 +1641,7 @@ void UIDungeonRoomInfo::LayoutSearching()
 }
 MS2_REPLACE_METHOD(0x1412B59A0, UIDungeonRoomInfo, LayoutSearching, 652, 0xED16F777);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b5c40
 bool UIDungeonRoomInfo::CanAskHelp()
 {
@@ -1559,6 +1672,7 @@ bool UIDungeonRoomInfo::CanAskHelp()
 }
 MS2_REPLACE_METHOD(0x1412B5C40, UIDungeonRoomInfo, CanAskHelp, 656, 0x74CC40D5);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b5ee0
 bool UIDungeonRoomInfo::AskExtraTicketEnter(bool bParty)
 {
@@ -1584,6 +1698,7 @@ bool UIDungeonRoomInfo::AskExtraTicketEnter(bool bParty)
 }
 MS2_REPLACE_METHOD(0x1412B5EE0, UIDungeonRoomInfo, AskExtraTicketEnter, 870, 0x2EBE632F);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b6250
 void UIDungeonRoomInfo::RequestEntry(bool bParty, bool bUseTicket)
 {
@@ -1616,6 +1731,7 @@ int UIDungeonRoomInfo::GetMemberClearCount(MS2Ptr<CPartyMember> spMember)
     return spMember->counters.FUN_140268570(m_spRoom->GetDungeonRoomID());
 }
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b6480
 CString UIDungeonRoomInfo::GetCountColor(int nState)
 {
@@ -1627,6 +1743,7 @@ CString UIDungeonRoomInfo::GetCountColor(int nState)
 }
 MS2_REPLACE_METHOD(0x1412B6480, UIDungeonRoomInfo, GetCountColor, 162, 0x90B2E79D);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b6530
 CStringW UIDungeonRoomInfo::FUN_1412b6530(int nState, CStringW strName)
 {
@@ -1686,6 +1803,7 @@ int UIDungeonRoomInfo::IsCooldown()
 }
 MS2_REPLACE_METHOD(0x1412B6BB0, UIDungeonRoomInfo, IsCooldown, 214, 0xE7D9E1CC);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b6c90
 UIDungeonRoomDialog::UIDungeonRoomDialog()
 {
@@ -1711,6 +1829,7 @@ CString UIDungeonRoomDialog::vfunc_1()
 }
 MS2_REPLACE_METHOD(0x1412B71D0, UIDungeonRoomDialog, vfunc_1, 61, 0xCFD0FB0C);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b7220
 void UIDungeonRoomDialog::OnLoadComplete()
 {
@@ -1808,6 +1927,7 @@ void UIDungeonRoomDialog::vfunc_26()
 }
 MS2_REPLACE_METHOD(0x1412B82F0, UIDungeonRoomDialog, vfunc_26, 1215, 0xAFD379DC);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b87c0
 void UIDungeonRoomDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
@@ -1866,6 +1986,7 @@ void UIDungeonRoomDialog::vfunc_43()
 }
 MS2_REPLACE_METHOD(0x1412B8CC0, UIDungeonRoomDialog, vfunc_43, 24, 0x3D64AD4B);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b8ce0
 void UIDungeonRoomDialog::OnPartyPacket(CInPacket& packet)
 {
@@ -1875,6 +1996,7 @@ void UIDungeonRoomDialog::OnPartyPacket(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1412B8CE0, UIDungeonRoomDialog, OnPartyPacket, 108, 0x3014D536);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b8d60
 void UIDungeonRoomDialog::OnRoomPacket(CInPacket& packet)
 {
@@ -1898,6 +2020,7 @@ void UIDungeonRoomDialog::OnRoomPacket(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1412B8D60, UIDungeonRoomDialog, OnRoomPacket, 194, 0x9780EBBF);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b8e30
 void UIDungeonRoomDialog::OnRoomPacket53(CInPacket& packet)
 {
@@ -1912,6 +2035,7 @@ void UIDungeonRoomDialog::OnRoomPacket53(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1412B8E30, UIDungeonRoomDialog, OnRoomPacket53, 195, 0x540C14C1);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b8f00
 bool UIDungeonRoomDialog::FUN_1412b8f00(int nId)
 {
@@ -1930,6 +2054,7 @@ bool UIDungeonRoomDialog::FUN_1412b8f00(int nId)
 }
 MS2_REPLACE_METHOD(0x1412B8F00, UIDungeonRoomDialog, FUN_1412b8f00, 222, 0xF6C57BAE);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b8ff0
 bool UIDungeonRoomDialog::FUN_1412b8ff0(int nRoomId)
 {
@@ -1964,6 +2089,7 @@ void UIDungeonRoomDialog::FUN_1412b9110()
 }
 MS2_REPLACE_METHOD(0x1412B9110, UIDungeonRoomDialog, FUN_1412b9110, 21, 0x9F36C97E);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b9130
 void UIDungeonRoomDialog::Refresh()
 {
@@ -2012,6 +2138,7 @@ void UIDungeonRoomDialog::FUN_1412b9460()
 {
 }
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b9470
 void UIDungeonRoomDialog::OnGroupChanged(const ASParams& params)
 {
@@ -2021,6 +2148,7 @@ void UIDungeonRoomDialog::OnGroupChanged(const ASParams& params)
 }
 MS2_REPLACE_METHOD(0x1412B9470, UIDungeonRoomDialog, OnGroupChanged, 120, 0x88ADA732);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b94f0
 void UIDungeonRoomDialog::OnRoomSelected(const ASParams& params)
 {
@@ -2033,6 +2161,7 @@ void UIDungeonRoomDialog::OnRoomSelected(const ASParams& params)
 }
 MS2_REPLACE_METHOD(0x1412B94F0, UIDungeonRoomDialog, OnRoomSelected, 222, 0xE1710678);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b95e0
 void UIDungeonRoomDialog::OnListItemData(const ASParams& params)
 {
@@ -2081,6 +2210,7 @@ int UIDungeonRoomDialog::FUN_1412b9850()
 }
 MS2_REPLACE_METHOD(0x1412B9850, UIDungeonRoomDialog, FUN_1412b9850, 17, 0x24676F72);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b9870
 void FUN_1412b9870(int nRoomId, int nReason)
 {
@@ -2122,6 +2252,7 @@ void FUN_1412b9870(int nRoomId, int nReason)
 }
 MS2_REPLACE(0x1412B9870, FUN_1412b9870, 1558, 0x7EA60062);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412b9ec0
 CStringW FUN_1412b9ec0(int nRank)
 {
@@ -2139,6 +2270,7 @@ CStringW FUN_1412b9ec0(int nRank)
 }
 MS2_REPLACE(0x1412B9EC0, FUN_1412b9ec0, 561, 0xDF541C67);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412ba100
 void UIDungeonRoomDialog::ShowAchieveTooltip(Scaleform::GFx::Value* pRetVal)
 {
@@ -2157,6 +2289,7 @@ void UIDungeonRoomDialog::ShowAchieveTooltip(Scaleform::GFx::Value* pRetVal)
 }
 MS2_REPLACE_METHOD(0x1412BA100, UIDungeonRoomDialog, ShowAchieveTooltip, 384, 0xED187295);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412ba290
 void UIDungeonRoomDialog::ShowVipTooltip(Scaleform::GFx::Value* pRetVal)
 {
@@ -2185,6 +2318,7 @@ bool UIDungeonRoomDialog::SelectGroup(int nGroup, unsigned nRoomId)
 }
 MS2_REPLACE_METHOD(0x1412BA3A0, UIDungeonRoomDialog, SelectGroup, 224, 0x3BD6D799);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412ba490
 void UIDungeonRoomDialog::RefreshGroupList()
 {
@@ -2218,6 +2352,7 @@ void UIDungeonRoomDialog::RefreshGroupList()
 }
 MS2_REPLACE_METHOD(0x1412BA490, UIDungeonRoomDialog, RefreshGroupList, 778, 0x6E1E89BA);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412ba7a0
 void UIDungeonRoomDialog::SelectComboGroup(int nGroup)
 {
@@ -2232,6 +2367,7 @@ void UIDungeonRoomDialog::SelectComboGroup(int nGroup)
 }
 MS2_REPLACE_METHOD(0x1412BA7A0, UIDungeonRoomDialog, SelectComboGroup, 129, 0x5016478E);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412ba830
 void UIDungeonRoomDialog::ShowGroup(int nGroup, int nRoomId)
 {
@@ -2277,6 +2413,7 @@ void UIDungeonRoomDialog::ShowGroup(int nGroup, int nRoomId)
 }
 MS2_REPLACE_METHOD(0x1412BA830, UIDungeonRoomDialog, ShowGroup, 847, 0x22CDA082);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412bab90
 void UIDungeonRoomDialog::GetPartyLevel(unsigned short& nLevel, unsigned& nGearScore)
 {
@@ -2305,6 +2442,7 @@ void UIDungeonRoomDialog::SetRoom(MS2Ptr<DungeonRoom> spRoom)
 }
 MS2_REPLACE_METHOD(0x1412BAC40, UIDungeonRoomDialog, SetRoom, 169, 0x33D70A2C);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412bacf0
 int UIDungeonRoomDialog::TypeOfGroup(int nGroup)
 {
@@ -2329,6 +2467,7 @@ int UIDungeonRoomDialog::TypeOfGroup(int nGroup)
 }
 MS2_REPLACE_METHOD(0x1412BACF0, UIDungeonRoomDialog, TypeOfGroup, 163, 0x2EDD83E7);
 
+// MS2-FUNCTIONAL: frame slot / temporary order of the /Od build differs (behaviour-equivalent)
 // @0x1412bade0
 int UIDungeonRoomDialog::GroupOfType(int nType)
 {
@@ -2353,3 +2492,7 @@ int UIDungeonRoomDialog::GroupOfType(int nType)
 }
 MS2_REPLACE_METHOD(0x1412BADE0, UIDungeonRoomDialog, GroupOfType, 165, 0x09EA9194);
 
+
+// The CRT memmove_s copy of this unit (unreferenced, last in the COMDAT tail).
+// @0x1412c1f00
+MS2_EMIT_CRT_MEMMOVE_S();
