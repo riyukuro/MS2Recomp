@@ -4036,3 +4036,4 @@ FMOD_System_Create	142303a95	func
 ?ms_setPushed@Unk_NotifyContext@@2V?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@A	143b0b268	data
 ??0EntityActorData@egfPhysX@@QEAA@V?$SmartPointer@VEntity@egf@@@efd@@@Z	14225f250	func
 ?FUN_14025e7a0@@YAPEAVGFxManager@@XZ	14025e7a0	func
+?GetMaterial@NiMaterial@@SAPEAV1@AEBVNiFixedString@@@Z	141d661d0	func

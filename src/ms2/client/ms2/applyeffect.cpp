@@ -59,6 +59,7 @@
 #include <NiDefaultClickRenderStep.h>
 #include <NiViewRenderClick.h>
 #include <NiMaterial.h>
+#include <NiMaterialLibrary.h>
 #include <NiShaderFactory.h>
 #include <NiFogProperty.h>
 #include <NiRenderObject.h>
@@ -721,11 +722,11 @@ void ApplyEffect::SwapClickProcessor(NiRenderListProcessor* pProcessor)
 void ApplyEffect::Initialize()
 {
     if (!m_spOuterGlow) {
-        NiMaterialPtr spMaterial(NiMaterial::GetMaterial(DAT_143ae5268));
+        NiMaterialPtr spMaterial(NiMaterialLibrary::CreateMaterial(DAT_143ae5268));
         m_spOuterGlow = NiNew MS2OuterGlowMaterialSwapProcessor(spMaterial);
     }
     if (!m_spMaterialSwap) {
-        NiMaterialPtr spMaterial(NiMaterial::GetMaterial(DAT_143ae5270));
+        NiMaterialPtr spMaterial(NiMaterialLibrary::CreateMaterial(DAT_143ae5270));
         m_spMaterialSwap = NiNew MS2MaterialSwapProcessor(spMaterial, FUN_1414d00b0);
     }
     ApplyFieldFog();
