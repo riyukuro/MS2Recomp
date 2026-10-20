@@ -5,6 +5,9 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?SetManager@CNilStringData@ATL@@QEAAXPEAUIAtlStringMgr@2@@Z 0x1409ef8a0 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??_GASTooltip@@UEAAPEAXI@Z 0x1409ee9a0
+// MS2-PIN: ??4AScript@@QEAAAEAV0@AEBV0@@Z 0x1409edaf0
+// MS2-PIN: ?GetCount@?$CAtlArray@W4Unk_StatType@@V?$CDefaultElementTraits@W4Unk_StatType@@@ATL@@@ATL@@QEBA_KXZ 0x1409eecc0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\astooltip.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/astooltip.h"
@@ -891,6 +894,24 @@ void ASTooltip::FUN_1409c7cc0(CItem* pItem)
 }
 MS2_REPLACE_METHOD(0x1409C7CC0, ASTooltip, FUN_1409c7cc0, 681, 0xD953CC81);
 
+// Matches an equipped item whose data is the given set piece (the find_if predicate of FUN_1409c8020; name invented,
+// the exe constructs it through a real constructor taking the id by value: 0x1409ed7f0).
+struct Unk_SetPieceEquipped
+{
+    unsigned m_nPieceId;
+    Unk_SetPieceEquipped(unsigned nPieceId) : m_nPieceId(nPieceId) {}
+    bool operator()(MS2Ptr<CEquipItem> spEquip) const
+    {
+        if (spEquip == 0 || spEquip->FUN_1411dc7a0() == 0)
+            return false;
+        if (!spEquip->FUN_1411dc7a0()->FUN_140528980())
+            return false;
+        if (spEquip->FUN_1411dc7f0()->FUN_14053c560() == m_nPieceId)
+            return true;
+        return false;
+    }
+};
+
 // The equipment sets of the item: per set the pieces (equipped ones highlighted) and the option parts by piece count.
 // @0x1409c8020
 // MS2-FUNCTIONAL: /Od frame is 0x10 larger (lambda/list temporaries placed differently); behaviour as the exe
@@ -986,18 +1007,10 @@ void ASTooltip::FUN_1409c8020(CItem* pItem)
             if (spData == 0)
                 continue;
             const CStringW& strName = FUN_1401a9d70_p1()->FUN_141811980(1, nPieceId);
-            int nColor = nInactiveColor;
+            unsigned nColor = nInactiveColor;
             if (!equipped.empty())
             {
-                if (std::find_if(equipped.begin(), equipped.end(), [nPieceId](MS2Ptr<CEquipItem> spEquip) -> bool {
-                        if (spEquip == 0 || spEquip->FUN_1411dc7a0() == 0)
-                            return false;
-                        if (!spEquip->FUN_1411dc7a0()->FUN_140528980())
-                            return false;
-                        if (spEquip->FUN_1411dc7f0()->FUN_14053c560() == nPieceId)
-                            return true;
-                        return false;
-                    }) != equipped.end())
+                if (std::find_if(equipped.begin(), equipped.end(), Unk_SetPieceEquipped(nPieceId)) != equipped.end())
                 {
                     nEquipped++;
                     nColor = nEquippedColor;
@@ -1014,7 +1027,7 @@ void ASTooltip::FUN_1409c8020(CItem* pItem)
             MS2Ptr<SetItemOptionPart> spPart = sets[i]->GetOptionPart(n);
             if (spPart == 0)
                 continue;
-            int nColor = nInactiveColor;
+            unsigned nColor = nInactiveColor;
             if (n <= nEquipped)
                 nColor = nActiveColor;
             CStringW strPartTitle = StringFormat(strPartFormat, nColor, n);
@@ -1064,7 +1077,7 @@ void ASTooltip::FUN_1409c8df0(int nItemId)
     if (spSet == 0)
         return;
     FUN_1409e5480();
-    int nColor = 0xffffff;
+    unsigned nColor = 0xffffff;
     ASArray arr(2);
     CStringW strUnused;
     CStringW strBody;
@@ -1213,7 +1226,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                     if (spBase->FUN_140266ce0())
                     {
                         __int64 nValue = spBase->FUN_140266e30();
-                        float fRate = (float)floor((double)FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
+                        float fRate = (float)floor(FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
                         __int64 nMax = (__int64)(fBase + fRate * (float)(int)(*FUN_1401d3200()->PetMaxLevel.Get() - 1));
                         nValue = (__int64)((float)nValue + fRate * (float)(pItem->FUN_140528c20() - 1));
@@ -2031,41 +2044,41 @@ void ASTooltip::FUN_1409cfbf0(CItem* pItem)
         return;
     if (pItem->FUN_140527840()->FUN_14053c5c0() != 1)
         return;
-    static ATL::CAtlArray<int> s_aStatOrder;
+    static ATL::CAtlArray<Unk_StatType, ATL::CDefaultElementTraits<Unk_StatType> > s_aStatOrder;   // the stat display order
     if (s_aStatOrder.IsEmpty())
     {
-        s_aStatOrder.Add(0x1c);
-        s_aStatOrder.Add(0x1d);
-        s_aStatOrder.Add(0x1e);
-        s_aStatOrder.Add(0x14);
-        s_aStatOrder.Add(4);
-        s_aStatOrder.Add(7);
-        s_aStatOrder.Add(10);
-        s_aStatOrder.Add(0xe);
-        s_aStatOrder.Add(0x20);
-        s_aStatOrder.Add(0);
-        s_aStatOrder.Add(1);
-        s_aStatOrder.Add(2);
-        s_aStatOrder.Add(3);
-        s_aStatOrder.Add(0x17);
-        s_aStatOrder.Add(0x18);
-        s_aStatOrder.Add(0xd);
-        s_aStatOrder.Add(0xf);
-        s_aStatOrder.Add(0x11);
-        s_aStatOrder.Add(0x19);
-        s_aStatOrder.Add(0x1a);
-        s_aStatOrder.Add(0x12);
-        s_aStatOrder.Add(0x10);
-        s_aStatOrder.Add(0x13);
-        s_aStatOrder.Add(0x15);
-        s_aStatOrder.Add(0x16);
-        s_aStatOrder.Add(0x1f);
-        s_aStatOrder.Add(5);
-        s_aStatOrder.Add(6);
-        s_aStatOrder.Add(8);
-        s_aStatOrder.Add(9);
-        s_aStatOrder.Add(0xb);
-        s_aStatOrder.Add(0xc);
+        s_aStatOrder.Add((Unk_StatType)0x1c);
+        s_aStatOrder.Add((Unk_StatType)0x1d);
+        s_aStatOrder.Add((Unk_StatType)0x1e);
+        s_aStatOrder.Add((Unk_StatType)0x14);
+        s_aStatOrder.Add((Unk_StatType)4);
+        s_aStatOrder.Add((Unk_StatType)7);
+        s_aStatOrder.Add((Unk_StatType)10);
+        s_aStatOrder.Add((Unk_StatType)0xe);
+        s_aStatOrder.Add((Unk_StatType)0x20);
+        s_aStatOrder.Add((Unk_StatType)0);
+        s_aStatOrder.Add((Unk_StatType)1);
+        s_aStatOrder.Add((Unk_StatType)2);
+        s_aStatOrder.Add((Unk_StatType)3);
+        s_aStatOrder.Add((Unk_StatType)0x17);
+        s_aStatOrder.Add((Unk_StatType)0x18);
+        s_aStatOrder.Add((Unk_StatType)0xd);
+        s_aStatOrder.Add((Unk_StatType)0xf);
+        s_aStatOrder.Add((Unk_StatType)0x11);
+        s_aStatOrder.Add((Unk_StatType)0x19);
+        s_aStatOrder.Add((Unk_StatType)0x1a);
+        s_aStatOrder.Add((Unk_StatType)0x12);
+        s_aStatOrder.Add((Unk_StatType)0x10);
+        s_aStatOrder.Add((Unk_StatType)0x13);
+        s_aStatOrder.Add((Unk_StatType)0x15);
+        s_aStatOrder.Add((Unk_StatType)0x16);
+        s_aStatOrder.Add((Unk_StatType)0x1f);
+        s_aStatOrder.Add((Unk_StatType)5);
+        s_aStatOrder.Add((Unk_StatType)6);
+        s_aStatOrder.Add((Unk_StatType)8);
+        s_aStatOrder.Add((Unk_StatType)9);
+        s_aStatOrder.Add((Unk_StatType)0xb);
+        s_aStatOrder.Add((Unk_StatType)0xc);
     }
     int aStat[35] = {0};
     int aSpecial[207] = {0};
@@ -2218,8 +2231,8 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
         PCBase* pPC = FUN_141bd0cc0_p2(FUN_1403ed2d0_p2());
         if (pPC != 0)
         {
-            int nA = FUN_141901d20(pItem->FUN_1405276c0(), pItem->FUN_140526a50(), pItem->FUN_1405283d0());
-            int nB = FUN_141901f70(pItem->FUN_1405276c0(), pItem->FUN_140526a50(), pItem->FUN_1405283d0());
+            unsigned nA = FUN_141901d20(pItem->FUN_1405276c0(), pItem->FUN_140526a50(), pItem->FUN_1405283d0());
+            unsigned nB = FUN_141901f70(pItem->FUN_1405276c0(), pItem->FUN_140526a50(), pItem->FUN_1405283d0());
             if (nA != 0 || nB != 0)
             {
                 if (!strDesc.IsEmpty())
@@ -2344,8 +2357,8 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
                 PCBase* pPC = FUN_141bd0cc0_p2(FUN_1403ed2d0_p2());
                 if (bLocal && pPC != 0)
                 {
-                    int nA = FUN_141901d20(pItem->FUN_1405276c0(), pItem->FUN_140526a50(), pItem->FUN_1405283d0());
-                    int nB = FUN_141901f70(pItem->FUN_1405276c0(), pItem->FUN_140526a50(), pItem->FUN_1405283d0());
+                    unsigned nA = FUN_141901d20(pItem->FUN_1405276c0(), pItem->FUN_140526a50(), pItem->FUN_1405283d0());
+                    unsigned nB = FUN_141901f70(pItem->FUN_1405276c0(), pItem->FUN_140526a50(), pItem->FUN_1405283d0());
                     if (nA != 0 || nB != 0)
                     {
                         if (!strGuide.IsEmpty())
@@ -5248,7 +5261,7 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
                     if (spBase->FUN_140266ce0())
                     {
                         __int64 nValue = spBase->FUN_140266e30();
-                        float fRate = (float)floor((double)FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
+                        float fRate = (float)floor(FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
                         __int64 nMax = (__int64)(fBase + fRate * (float)(int)(*FUN_1401d3200()->PetMaxLevel.Get() - 1));
                         nValue = (__int64)((float)nValue + fRate * (float)(spItem->FUN_140528c20() - 1));
@@ -5823,4 +5836,23 @@ CStringW FUN_14083cb20(const CStringW& str);
 CStringW FUN_1409eb450(int n)
 {
     return FUN_14083cb20(FUN_1407196b0(n));
+}
+
+// The singleton getters and the player's skill tier manager copy (inline members first instantiated in this unit).
+// @0x1409eecd0
+CChatEmoticonTable* TSingleton<CChatEmoticonTable>::GetInstance()
+{
+    return s_instance;
+}
+
+// @0x1409eed50
+CUGCMapSetItemTable* TSingleton<CUGCMapSetItemTable>::GetInstance()
+{
+    return s_instance;
+}
+
+// @0x1409eee00
+MS2Ptr<Unk_PCSkillTree> PC::FUN_1409eee00()
+{
+    return reinterpret_cast<const MS2Ptr<Unk_PCSkillTree>&>(m_spSkillTier1110);   // the member is typed by its real class in fittingdollpc.h
 }

@@ -3,6 +3,12 @@
 // Each part appends ONLY inside its own section. The part that DEFINES a function owns its signature.
 #pragma once
 
+#include <cmath>
+// The exe imports floor from the UCRT: its <cmath> floor<int> (0x1409ecf20) calls through the IAT.
+extern "C" double (__cdecl* __imp_floor)(double);
+template <> inline double floor<int, void>(int n) { return __imp_floor((double)n); }
+
+
 // ---- part 1 (0x1409c5210-0x1409cc800) ----
 #include "ms2/ms2format.h"
 #include "ms2/commonfiles/itemenchantinfo.h"     // Unk_EnchantPtr<BaseOption>
