@@ -3893,3 +3893,4 @@ __imp_NxGetUtilLib	142cced28	data
 ??0Unk_GcCondRef@@QEAA@XZ	1413a4750	func
 ?GetPaletteColorBySN@CItemDataTable@@QEAA?AV?$MS2Ptr@VItemColorEx@@@@HH@Z	140558960	func
 ?GetPetEvolution@CExpTable@@QEAAHGH@Z	1403539d0	func
+??B?$MS2Ptr@VCMinimap@@@@QEBAPEAVCMinimap@@XZ	140159a40	func
