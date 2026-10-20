@@ -39,6 +39,22 @@
 #include "ms2/placeholder/uipopupentity.h"
 #include "ms2/placeholder/asgameentity.h"
 #include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/gameobject.h"
+#include "ms2/client/ms2/ridee.h"
+#include "ms2/placeholder/cpet.h"
+#include "ms2/placeholder/cnpc.h"
+#include "ms2/placeholder/cproxygameobject.h"
+#include "ms2/commonfiles/ugcdef.h"
+#include "ms2/commonfiles/clubcommon.h"
+#include "ms2/commonfiles/guilddef_1.h"
+#include "ms2/client/ms2/buddymanager.h"
+#include "ms2/client/ms2/homeblockmanager.h"
+#include "ms2/client/ms2/blockmanager.h"
+#include "ms2/client/ms2/ms2clientplatformbase.h"
+#include "ms2/client/ms2/uimessagebox.h"
+#include "ms2/client/ms2/uipcinfodialog.h"
+#include "ms2/placeholder/ascorelist.h"
+#include "ms2/commonfiles/logstring.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/battlerecordmanager.h"
 #include "ms2/commonfiles/timeutil.h"
@@ -58,9 +74,20 @@ public:
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                              // the current field data
     int FUN_141bc2bc0();
     int FUN_141bc2b30();
+    GameObject* FUN_141bd0fe0(unsigned __int64 nObjectId);              // a game object by id
+    MS2Ptr<CProxyGameObject> FUN_141bc9be0(unsigned int nObjectId);     // the proxy of an object id
 };
 Unk_PdWorld* FUN_1403ed2d0();
-class Unk_PdApp;                                                        // the application (FUN_1403ed2b0)
+class Unk_PdApp                                                         // the application / ui service (FUN_1403ed2b0)
+{
+public:
+    const CString& FUN_141adc530(int nUiId);                            // toggle a dialog
+    void FUN_141adc690(int nUiId);                                      // open a dialog
+    int FUN_141adc7f0(int nUiId);                                       // is a dialog registered
+    int FUN_141adc940(int nUiId);                                       // is a dialog open
+    float FUN_141adbe70();                                              // the ui scale
+    MS2Ptr<UIObject> FUN_141adcea0(int nUiId);                          // a dialog by id
+};
 Unk_PdApp* FUN_1403ed2b0();
 void FUN_141add1f0(Unk_PdApp* pApp);                                    // open the merat charge page
 CPartyManager* FUN_1409670d0();                                         // TSingleton<CPartyManager>::GetInstance
@@ -1536,3 +1563,1837 @@ int UIPopupEntity::vfunc_48()
 
 // @0x141a7d460
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// ======== UIPopUpMenu (the fifth TU of this range) ========
+
+// The callees of the popup menu.
+CLogString* FUN_140166440();                                            // TSingleton<CLogString>::GetInstance
+int FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szText);   // log a line
+int FUN_1409c17e0(const Scaleform::GFx::Value& v);                      // an int value
+class Unk_PmCamera { public: bool FUN_140af0700(const efd::Point3& kWorld, NiPoint3& kScreen); int FUN_140a18070(); float FUN_141032df0(); float FUN_140b67d10(); float FUN_1409f2430(); };
+Unk_PmCamera* FUN_1409478c0();                                          // the camera manager
+class Unk_PmInput;
+Unk_PmInput* FUN_14025e7c0();                                           // the key input handler
+bool FUN_14116d840(Unk_PmInput* pInput);                                // escape pressed
+class Unk_PmSwfManager { public: void FUN_1422d4780(UISwfEntity* pEntity, int n); void FUN_1422d4840(UISwfEntity* pEntity, int n); };
+Unk_PmSwfManager* FUN_140b632f0();                                      // UISwfEntityManager
+class Unk_PmEntityEvents;
+Unk_PmEntityEvents* FUN_140c607b0();
+void FUN_1419308c0(Unk_PmEntityEvents* pEvents, UIEntityEventListener* pListener);   // register
+void FUN_141930950(Unk_PmEntityEvents* pEvents, UIEntityEventListener* pListener);   // unregister
+class Unk_PmUgcEvents;
+Unk_PmUgcEvents* FUN_140bc09f0();                                       // UIUGCEventDispatcher
+void FUN_141b38be0(Unk_PmUgcEvents* pEvents, UIUGCEventListener* pListener);         // register
+void FUN_141b38c70(Unk_PmUgcEvents* pEvents, UIUGCEventListener* pListener);         // unregister
+MS2Ptr<ASScrollingList> FUN_140bc61d0(int nMovieId, const Scaleform::GFx::Value& v);  // new ASScrollingList
+class Unk_PmRoot { public: Scaleform::GFx::Value FUN_140ba4cc0(const char* szMethod, const ASObj& obj); };
+bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                     // is an object value
+void FUN_14028cd00(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szSep, int n);   // split
+bool FUN_140841300(const CStringW& str, const char* sz);               // equals
+void FUN_14162b7d0(CPartyManager* pParty, CStringW strName);            // expel member
+void FUN_14162b8b0(CPartyManager* pParty, __int64 nCharId);             // vote kick
+void FUN_14162bdb0(CPartyManager* pParty);                              // leave
+void FUN_14162be10(CPartyManager* pParty);
+void FUN_14162ba50(CPartyManager* pParty, CStringW strName);            // invite
+bool FUN_14162ab60(CPartyManager* pParty);                              // in a party
+int FUN_14162ad50(CPartyManager* pParty, CStringW strName);             // is a member
+__int64 FUN_141a02ed0(const CMsgBoxData& data, int nIndex, int nDefault);
+int FUN_141a02e50(const CMsgBoxData* pData, int nIndex, int nDefault);
+int FUN_1418fd740(__int64 nAccount, __int64 nCharId, int nKind);       // report
+int FUN_1418fd330(__int64 nCharId);
+int FUN_1418fd530(__int64 nCharId);
+int FUN_1418fd580(__int64 nCharId);
+int FUN_1418fd5d0(__int64 nCharId);
+int FUN_1418fd670(__int64 nCharId);
+void FUN_1418fde20(__int64 nAccount, __int64 nCharId, int nKind, const CStringW& strName, Delegate<bool(int, const CMsgBoxData&)> cb);
+class Unk_PmWedding { public: void FUN_141b862d0(const CStringW& strName); };
+Unk_PmWedding* FUN_1409eed90();                                         // WeddingManager
+CString FUN_141028a90(CString strImage, int n);                         // profile image path
+CString FUN_141028be0(__int64 nCharId, const CString& strImage, int n, CString strDefault);
+__int64 FUN_141656a80(PCBase* pPC);                                     // character id
+__int64 FUN_141656ad0(PCBase* pPC);                                     // account id
+CString FUN_1416612e0(PCBase* pPC);                                     // PC: profile image
+int FUN_14166ce30(PCBase* pPC);
+int FUN_141654700(PCBase* pPC);
+int FUN_141654730(PCBase* pPC);
+CBuddyManager* FUN_14097a780();                                         // TSingleton<CBuddyManager>::GetInstance
+HomeBlockManager* FUN_1414a5830();                                      // TSingleton<HomeBlockManager>::GetInstance
+CStringW FUN_14016a730(const char* sz, int nCodePage);                  // to wide
+CString FUN_14016a600(const wchar_t* sz, int nCodePage);                // to multibyte
+class Unk_PmGuild { public: char m_00[8]; CGuildInfo m_info; };
+Unk_PmGuild* FUN_1403ed290();                                           // CGuildManager
+int FUN_1413b6160(Unk_PmGuild* pGuild);                                 // has a guild
+bool FUN_1413b71c0(Unk_PmGuild* pGuild, CStringW strName);              // invite to the guild
+CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc name
+int FUN_141092fa0(CNpc* pNpc);                                          // the npc id
+class Unk_PmCubeMap { public: __int64 FUN_1410c3180(); };
+Unk_PmCubeMap* FUN_1409670e0();                                         // CubeMapInformationService
+extern __int64 DAT_143ab2820;                                           // the own account id
+extern int DAT_143af62d8;                                               // the screen height
+float FUN_140bf4fd0(float f);
+bool FUN_140900550();                                                   // wedding enabled
+void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);   // message box
+CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);     // StringFormat<CStringW>
+CStringW FUN_14052bd00(int nStringId, const CStringW& a);               // FormatStringId<CStringW>
+MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);
+struct Unk_PmMsgBox : CMsgBoxData { void FUN_1405340b0(__int64 n); };    // Append<__int64>
+void FUN_14151f150(MS2Ptr<CMsgBoxData> box);                            // show a box
+class Unk_PmMdState { public: char m_00[0x48]; void* m_48; void* m_50; };
+Unk_PmMdState* FUN_141482e80();
+void FUN_141a252a0(void* pWhisper, const CStringW& strName);            // whisper to
+void FUN_141951f70(void* pMail, const CStringW& strName);               // mail to
+class Unk_PmCommunity { public: virtual void s0(); };                   // UICommunityDialog
+int FUN_1418d6960(Unk_PmCommunity* pDialog);                            // the current tab
+UIDialog* FUN_140ae5990(int nUiId);                                     // UICommunityDialog lookup
+UIDialog* FUN_140ae5a30(int nUiId);                                     // UICommunityQueryDialog lookup
+class Unk_PmCouple { public: void FUN_140bed2a0(unsigned __int64 nCharId); };
+UIDialog* FUN_1417f5780(int nUiId);                                     // UICoupleActionDialog lookup
+void FUN_140f8ff40(int nStringId, int a, int b);                        // notice
+CBlockManager* FUN_140a6a830();                                         // TSingleton<CBlockManager>::GetInstance
+class Unk_PmTrade { public: void FUN_14185b870(__int64 nCharId); };
+Unk_PmTrade* FUN_14140ea30();                                           // CTradeManagerEx
+__int64 FUN_1416769f0(PCBase* pPC);
+void FUN_14152b800(MyPC* pMe, void* p);
+__int64 FUN_140c75430(CUserReportData* pData, int nKind);                // the report category
+// The UIMsg built on the stack (uitalkcinematic.cpp: its ASData setters are free functions bound by address).
+struct Unk_FcUIMsg
+{
+    ~Unk_FcUIMsg();                                                     // 0x140c30570
+    char m_pad[0x50];
+};
+void FUN_1422e4490(Unk_FcUIMsg* p);                                     // construct
+void FUN_1422b82b0(Unk_FcUIMsg* p, const char* psz);
+void FUN_1422b8310(Unk_FcUIMsg* p, const wchar_t* psz);
+void FUN_1422b7f70(Unk_FcUIMsg* p, int n);
+// The entry the user-proxy menu reads (FUN_141a7f890): a CPtred with a user proxy at +0x18.
+class Unk_PmUserEntry : public CPtred
+{
+public:
+    Unk_UserProxy m_user;
+};
+
+CNpc* FUN_140a38a00(GameObject* pObject);                                // the npc of an object
+PCBase* FUN_141706540(Ridee* pRidee);                                   // the rider
+bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);      // is of the class id
+float FUN_1412762d0(const Unk_PopupPos& pt);
+const Unk_PopupPos& FUN_140947900(NiAVObject* pNode);
+void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, int n);        // notice of a blocked action
+
+// The log call with one argument (0x141a876e0; FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
+template <class T> void Unk_PmLog(CLogString* log, int level, int category, const wchar_t* format, const T& value)
+{
+    const fmt::internal::ArgArray<1>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(value)};
+    log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(value), args));
+}
+
+// A dialog of the ui service as T (0x141a877c0).
+template <class T> T* Unk_PmGetDialog(int nUiId)
+{
+    if (FUN_1403ed2b0() != 0)
+    {
+        MS2Ptr<UIObject> spDialog = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
+        if (spDialog.get() != 0)
+            return dynamic_cast<T*>(spDialog.get());
+    }
+    return 0;
+}
+
+// A yes / no box with one argument (0x141a879a0).
+template <class A> MS2Ptr<CMsgBoxData> Unk_PmShowYesNo(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb, A arg)
+{
+    MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(nType));
+    spBox->FUN_141a01570(strText);
+    spBox->FUN_141a027c0(cb);
+    spBox->FUN_140b76940(arg);
+    FUN_14151f150(spBox);
+    return spBox;
+}
+
+// The two ASObj member setters through an ASData argument of this TU (0x141a87860 / 0x141a87900).
+enum Unk_PmMenuType : int {};
+enum Unk_PmDir : int { Unk_PmDirOn = 1 };
+
+// @0x141a7d580
+UIPopUpMenu::UIPopUpMenu()
+    : m_80(0), m_84(0), m_98(0), m_a0(0), m_a8(0), m_b8(0), m_c8(0), m_d0(0), m_d8(0), m_e0(DAT_143b01a60), m_f0(0), m_100(1),
+      m_110(0), m_138(0), m_140(L""), m_148(""), m_160(0x11, 0.75f, 0.25f, 2.25f, 10)
+{
+    m_58 = 0;
+    m_2c = 0x1d;
+    FUN_141a80c40();
+}
+
+// @0x141a7d850
+CString UIPopUpMenu::vfunc_1()
+{
+    return "PopUpMenu";
+}
+
+// @0x141a7d8a0
+void UIPopUpMenu::vfunc_2()
+{
+    FUN_1422dbf00(0x1d, 0, 0);
+    PacketHandlerManager::GetInstance()->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIPopUpMenu::FUN_141a80a50));
+}
+
+// @0x141a7d960
+void UIPopUpMenu::vfunc_3()
+{
+    PacketHandlerManager::GetInstance()->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIPopUpMenu::FUN_141a80a50));
+    FUN_141a80770();
+    FUN_1422dc080();
+}
+
+// @0x141a7da20
+int UIPopUpMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UISwfEntity::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    if (_stricmp("MenuItemClick", szMethod) == 0)
+    {
+        int nMenuId = FUN_1409c17e0(*pArgs);
+        Delegate<void()> handler;
+        if (m_160.Lookup(nMenuId, handler))
+            handler();
+    }
+    return 0;
+}
+
+// @0x141a7daf0
+void UIPopUpMenu::vfunc_15()
+{
+    UISwfEntity::vfunc_15();
+    if (m_100 != 0)
+        return;
+    if (!(m_f0 == 0) && m_f0->FUN_1422bfca0())
+    {
+    }
+    else
+    {
+        FUN_141a80770();
+    }
+    if (m_80 == 1)
+    {
+        PCBase* pTarget = efd::DynamicCast<PCBase>(FUN_1403ed2d0()->FUN_141bd0fe0(m_98));
+        if (pTarget != 0)
+        {
+            NiPoint3 kScreen;
+            if (!FUN_1409478c0()->FUN_140af0700(pTarget->vfunc_18(), kScreen) && (1.1f < kScreen.x || 1.1f < 1.0f - kScreen.y))
+                FUN_141a80770();
+        }
+    }
+}
+
+// @0x141a7dc20
+void UIPopUpMenu::vfunc_o70_2(const void* pId)
+{
+    if (m_30 == 0)
+        FUN_141a80770();
+    else if (static_cast<const efd::UniversalID*>(pId)->GetValue() == m_98)
+        FUN_141a80770();
+}
+
+// @0x141a7dc90
+int UIPopUpMenu::vfunc_13()
+{
+    if (UISwfEntity::vfunc_13() != 0)
+        return 1;
+    if ((ASScrollingList*)m_f0.get() != 0 && m_f0->FUN_1422bfca0() && FUN_14116d840(FUN_14025e7c0()))
+    {
+        FUN_141a80770();
+        return 1;
+    }
+    return 0;
+}
+
+// @0x141a7dd30
+int UIPopUpMenu::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
+{
+    if (UISwfEntity::OnMessage(pSender, pMsg) != 0)
+        return 1;
+    if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
+    {
+        int nResult = pMsg->FUN_1422b8a10();
+        CStringW strTag = pMsg->FUN_1422b8f40();
+        if (nResult == 0)
+        {
+            ATL::CAtlArray<CStringW> args;
+            FUN_14028cd00(strTag, args, L":", 2);
+            if (args.GetCount() == 2)
+            {
+                if (FUN_140841300(args[0], "changeChief"))
+                {
+                    COutPacket packet(0x2c, 0);
+                    packet.Encode1(0x11);
+                    packet.COutPacket::vfunc_o10_8(args[1]);
+                    FUN_140710590(packet);
+                }
+                else if (FUN_140841300(args[0], "expelMember"))
+                {
+                    FUN_14162b7d0(FUN_1409670d0(), args[1]);
+                }
+            }
+        }
+        FUN_14151f200();
+        return 1;
+    }
+    return 0;
+}
+
+// @0x141a7df60
+// MS2-FUNCTIONAL: the by-value MS2Ptr<CProxyGameObject> argument arrives as the base's void* (destroyed explicitly)
+void UIPopUpMenu::vfunc_4(void* pProxy)
+{
+    MS2Ptr<CProxyGameObject>& spProxy = *static_cast<MS2Ptr<CProxyGameObject>*>(pProxy);
+    if (m_30 == 0)
+    {
+        FUN_141a80770();
+    }
+    else if (m_a8 != 0 && spProxy.get() != 0 && (__int64)spProxy->FUN_1416c22f0() == m_a8)
+    {
+        FUN_141a80770();
+    }
+    spProxy.~MS2Ptr<CProxyGameObject>();
+}
+
+// @0x141a7e020
+bool UIPopUpMenu::FUN_141a7e020(int nButton, const CMsgBoxData& data)
+{
+    if (nButton == 0)
+        FUN_1418fd740(FUN_141a02ed0(data, 0, 0), FUN_141a02ed0(data, 1, 0), FUN_141a02e50(&data, 2, 0));
+    return true;
+}
+
+// @0x141a7e0a0
+bool UIPopUpMenu::FUN_141a7e0a0(int nButton, const CMsgBoxData& data)
+{
+    if (nButton == 0)
+        FUN_14162b8b0(FUN_1409670d0(), data.FUN_141a02f10(0, 0));
+    return true;
+}
+
+// @0x141a7e100
+bool UIPopUpMenu::FUN_141a7e100(int nButton, const CMsgBoxData& data)
+{
+    if (nButton == 0)
+    {
+        CStringW strName = data.FUN_141a02fd0(0, CStringW());
+        FUN_1409eed90()->FUN_141b862d0(strName);
+    }
+    return true;
+}
+
+// @0x141a7e1a0
+void UIPopUpMenu::vfunc_ugc_1(void* pId, CString strImage)
+{
+    if (FUN_141a80880() == 0)
+    {
+        if (m_a8 == (__int64)pId)
+            FUN_141a82fb0(FUN_141028a90(strImage, 0));
+    }
+}
+
+// @0x141a7e280
+void UIPopUpMenu::FUN_141a7e280(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType)
+{
+    if (info.m_a == m_80 && pTarget->FUN_14123c500() == m_98)
+        return;
+    FUN_141a80770();
+    int nKind = FUN_141a83080(pTarget);
+    if (nKind == 0 || nKind == 3)
+        return;
+    CStringW strName;
+    FUN_141a832e0(pTarget, strName);
+    if (strName.IsEmpty())
+    {
+        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::PopUpMenu Empty Menu");
+        return;
+    }
+    m_110 = nType;
+    FUN_141a80af0(info);
+    m_98 = pTarget->FUN_14123c500();
+    Unk_PmTarget target;
+    if (info.m_a == 2 || info.m_a == 3)
+        target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    else
+        target.m_pos = pTarget->vfunc_18();
+    target.m_nLevel = (unsigned short)pTarget->vfunc_78();
+    target.m_nCharId = FUN_141656a80(pTarget);
+    target.m_strImage = FUN_141028be0(FUN_141656a80(pTarget), FUN_1416612e0(pTarget), 1, CString(""));
+    target.m_strName = strName;
+    target.m_b38 = FUN_14166ce30(pTarget) == 0;
+    target.m_bOnline = 1;
+    target.m_n20 = FUN_141654700(pTarget);
+    target.m_nJobCode = FUN_141654730(pTarget);
+    unsigned int nObjectId = pTarget->FUN_14123c580();
+    MS2Ptr<CProxyGameObject> spProxy = FUN_1403ed2d0()->FUN_141bc9be0(nObjectId);
+    if (spProxy.get() != 0)
+        target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(spProxy->FUN_1416c2950())->FUN_140267c10();
+    m_a0 = FUN_141656ad0(pTarget);
+    m_a8 = FUN_141656a80(pTarget);
+    m_b0 = pTarget->vfunc_77();
+    m_158 = target.m_strImage;
+    CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4c30(0, m_a8, m_b0);
+    if (spBuddy.get() != 0)
+        m_d0 = spBuddy->FUN_1401cc2f0();
+    HomeBlockManager::HomePtr spHome = FUN_1414a5830()->FUN_140a47580(m_a8);
+    if (spHome.get() != 0)
+        m_d8 = spHome->m_18;
+    if (FUN_141a82140(target, info.m_b, nKind) == 0)
+        FUN_141a82dd0();
+}
+
+// @0x141a7e870
+void UIPopUpMenu::FUN_141a7e870(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType)
+{
+    if (info.m_a == m_80 && pTarget->FUN_14123c500() == m_98)
+        return;
+    FUN_141a80770();
+    int nKind = FUN_141a83080(pTarget);
+    if (nKind == 0 || nKind == 3)
+        return;
+    CStringW strName;
+    FUN_141a832e0(pTarget, strName);
+    if (strName.IsEmpty())
+    {
+        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::PopUpMenu Empty Menu");
+        return;
+    }
+    m_110 = nType;
+    FUN_141a80af0(info);
+    m_98 = pTarget->FUN_14123c500();
+    Unk_PmTarget target;
+    if (info.m_a == 2 || info.m_a == 3)
+    {
+        target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    }
+    else
+    {
+        target.m_pos = pTarget->vfunc_18();
+        NiAVObject* pNode = pTarget->FUN_141675150(CString("Eff_UI"));
+        if (pNode != 0)
+            target.m_pos.y = target.m_pos.y + FUN_1412762d0(FUN_140947900(pNode));
+    }
+    target.m_nLevel = (unsigned short)pTarget->vfunc_78();
+    target.m_strImage = "";
+    target.m_strName = strName;
+    target.m_b38 = true;
+    target.m_bOnline = 1;
+    if (FUN_141a82140(target, info.m_b, nKind) == 0)
+        FUN_141a82dd0();
+}
+
+// @0x141a7eb60
+void UIPopUpMenu::FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGameObject> spProxy, int nType)
+{
+    FUN_141a80770();
+    if (spProxy.IsNull())
+        return;
+    if (spProxy->FUN_1416c2040() == 0 && spProxy->FUN_1416c1ff0() == 0)
+        return;
+    CStringW strName = spProxy->FUN_1416c23b0();
+    if (strName.IsEmpty())
+        return;
+    m_110 = nType;
+    FUN_141a80af0(info);
+    Unk_PmTarget target;
+    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_nLevel = spProxy->FUN_1416c2330();
+    target.m_nCharId = (__int64)spProxy->FUN_1416c22f0();
+    target.m_strImage = FUN_141028be0((__int64)spProxy->FUN_1416c22f0(), spProxy->FUN_1416c2520(), 1, CString(""));
+    target.m_strName = strName;
+    target.m_bOnline = 1;
+    target.m_b38 = true;
+    target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(spProxy->FUN_1416c2950())->FUN_140267c10();
+    target.m_n20 = spProxy->FUN_1416c2370();
+    target.m_nJobCode = spProxy->FUN_1416c2390();
+    m_a0 = (__int64)spProxy->FUN_1416c2310();
+    m_a8 = (__int64)spProxy->FUN_1416c22f0();
+    m_b0 = spProxy->FUN_1416c23b0();
+    CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4c30(0, m_a8, m_b0);
+    if (spBuddy.get() != 0)
+        m_d0 = spBuddy->FUN_1401cc2f0();
+    HomeBlockManager::HomePtr spHome = FUN_1414a5830()->FUN_140a47580(m_a8);
+    if (spHome.get() != 0)
+        m_d8 = spHome->m_18;
+    int nKind;
+    if (spProxy->FUN_1416c1ff0() == 0)
+        nKind = 2;
+    else
+        nKind = 1;
+    if (FUN_141a82140(target, info.m_b, nKind) == 0)
+        FUN_141a82dd0();
+}
+
+// @0x141a7f090
+void UIPopUpMenu::FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nCharId, void* pAccount, int nType, int nDir)
+{
+    FUN_141a80770();
+    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+        return;
+    m_110 = nType;
+    FUN_141a80af0(info);
+    m_a0 = (__int64)pAccount;
+    m_a8 = nCharId;
+    m_b0 = strName;
+    if (FUN_141a828a0(strName, info, 2, nDir) == 0)
+        FUN_141a82dd0();
+}
+
+// @0x141a7f190
+void UIPopUpMenu::FUN_141a7f190(const Unk_PopupMenuInfo& info, CPartyMember* pMember)
+{
+    FUN_141a80770();
+    CStringW strName = pMember->user.FUN_1408f19e0();
+    if (strName.IsEmpty())
+    {
+        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromPartyMember Empty Menu");
+        return;
+    }
+    m_110 = 2;
+    FUN_141a80af0(info);
+    Unk_PmTarget target;
+    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    Unk_UserProxy* pUser = &pMember->user;
+    target.m_nLevel = (unsigned short)pMember->user.m_34;
+    target.m_nCharId = pMember->user.m_8;
+    target.m_strImage = FUN_141028be0(pMember->user.m_8, pUser->FUN_1408f1a60(), 1, CString(""));
+    target.m_strName = strName;
+    target.m_b38 = 0 < pMember->user.m_48;
+    target.m_bOnline = !pMember->FUN_141637c20();
+    target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(&pMember->user.m_d4)->FUN_140267c10();
+    target.m_n20 = pMember->user.m_3c;
+    target.m_nJobCode = pMember->user.m_40;
+    m_a0 = pUser->m_0;
+    m_a8 = pMember->user.m_8;
+    m_b0 = pUser->FUN_1408f19e0();
+    if (FUN_141a82140(target, info.m_b, 2) == 0)
+        FUN_141a82dd0();
+}
+
+// @0x141a7f510
+void UIPopUpMenu::FUN_141a7f510(const Unk_PopupMenuInfo& info, CGuildMember* pMember)
+{
+    FUN_141a80770();
+    CStringW strName = pMember->data.FUN_1404ca890();
+    if (strName.IsEmpty())
+    {
+        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromGuildMember Empty Menu");
+        return;
+    }
+    m_110 = 3;
+    FUN_141a80af0(info);
+    Unk_PmTarget target;
+    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    Unk_GuildMemberData* pData = &pMember->data;
+    target.m_nLevel = (unsigned short)pMember->data.f1c;
+    target.m_nCharId = pMember->data.f08;
+    target.m_strImage = FUN_141028be0(pMember->data.f08, pData->FUN_1404ca980(), 1, CString(""));
+    target.m_strName = strName;
+    target.m_b38 = true;
+    target.m_bOnline = pMember->f158 == 0;
+    target.m_nTrophy = pMember->data.f2c.FUN_140267c10();
+    target.m_n20 = pMember->data.f14;
+    target.m_nJobCode = pMember->data.f18;
+    m_a0 = pData->f00;
+    m_a8 = pMember->data.f08;
+    m_b0 = pData->FUN_1404ca890();
+    int nKind = 2;
+    if (pMember->data.f08 != 0 && pMember->data.f08 == DAT_143ab2828)
+        nKind = 1;
+    if (FUN_141a82140(target, info.m_b, nKind) == 0)
+        FUN_141a82dd0();
+}
+
+// @0x141a7f890
+void UIPopUpMenu::FUN_141a7f890(const Unk_PopupMenuInfo& info, Unk_PmUserEntry* pEntry, const CStringW& strText, int nType)
+{
+    m_108 = strText;
+    FUN_141a7f090(info, pEntry->m_user.FUN_1408f19e0(), pEntry->m_user.m_8, (void*)pEntry->m_user.m_0, nType, 1);
+}
+
+// @0x141a7f950
+void UIPopUpMenu::FUN_141a7f950(const Unk_PopupMenuInfo& info, __int64 nBuddyId)
+{
+    FUN_141a80770();
+    CBuddy* pBuddy = FUN_14097a780()->FUN_140ae4b70(nBuddyId).get();
+    if (pBuddy == 0)
+        return;
+    CStringW strName = pBuddy->FUN_1401cc1c0();
+    if (strName.IsEmpty())
+    {
+        FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"Popupmenu error!: name is Empty!");
+        return;
+    }
+    m_110 = 7;
+    FUN_141a80af0(info);
+    m_d0 = pBuddy->FUN_1401cc2f0();
+    Unk_PmTarget target;
+    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_nLevel = pBuddy->FUN_1401cc210();
+    target.m_nCharId = pBuddy->FUN_1401cc230();
+    target.m_strImage = FUN_141028be0(pBuddy->FUN_1401cc230(), *pBuddy->FUN_1401cc530(), 1, CString(""));
+    target.m_strName = strName;
+    target.m_b38 = true;
+    target.m_bOnline = pBuddy->FUN_1401cc680();
+    target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(pBuddy->FUN_1401cc330())->FUN_140267c10();
+    target.m_n20 = pBuddy->FUN_1401cc290();
+    target.m_nJobCode = pBuddy->FUN_1401cc2b0();
+    if (FUN_141a82140(target, info.m_b, 2) == 0)
+        FUN_141a82dd0();
+}
+
+// @0x141a7fc50
+void UIPopUpMenu::FUN_141a7fc50(const Unk_PopupMenuInfo& info, __int64 nHomeId)
+{
+    FUN_141a80770();
+    HomeBlockManager::HomePtr spHome = FUN_1414a5830()->FUN_140a47490(nHomeId);
+    if (spHome.IsNull())
+        return;
+    CStringW strName = FUN_14016a730(spHome->m_30, 0);
+    if (strName.IsEmpty())
+    {
+        FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"Popupmenu error!: name is Empty!");
+        return;
+    }
+    m_110 = 7;
+    FUN_141a80af0(info);
+    m_d8 = spHome->m_18;
+    Unk_PmTarget target;
+    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_nLevel = spHome->m_38;
+    target.m_nCharId = spHome->m_28;
+    target.m_strImage = FUN_141028be0(spHome->m_28, spHome->m_48, 1, CString(""));
+    target.m_strName = strName;
+    target.m_b38 = true;
+    target.m_bOnline = 0;
+    target.m_nTrophy = 0;
+    target.m_n20 = spHome->m_3c;
+    target.m_nJobCode = spHome->m_40;
+    if (FUN_141a82140(target, info.m_b, 2) == 0)
+        FUN_141a82dd0();
+}
+
+// @0x141a7ff60
+void UIPopUpMenu::FUN_141a7ff60(const Unk_PopupMenuInfo& info, int nIndex, MS2Ptr<CUgcRegistBanner> spBanner)
+{
+    if (spBanner == 0)
+        return;
+    FUN_141a80770();
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return;
+    CStringW strName(spBanner->m_user.m_strName);
+    if (pMe->vfunc_77() == strName)
+        return;
+    m_110 = 1;
+    FUN_141a80af0(info);
+    m_a0 = spBanner->m_user.m_accountId;
+    m_a8 = spBanner->m_user.m_characterId;
+    m_b0 = spBanner->m_user.m_strName;
+    m_b8 = spBanner->m_upload.m_uid;
+    m_c0 = spBanner->m_upload.m_strName;
+    m_c8 = nIndex;
+    m_158 = spBanner->m_strUrl;
+    if (FUN_141a828a0(strName, info, 4, 1) == 0)
+        FUN_141a82dd0();
+}
+
+// @0x141a80210
+void UIPopUpMenu::FUN_141a80210(const Unk_PopupMenuInfo& info, CClubMember* pMember)
+{
+    FUN_141a80770();
+    CStringW strName = pMember->m_info.FUN_14020e5d0();
+    if (strName.IsEmpty())
+    {
+        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromClubMember Empty Menu");
+        return;
+    }
+    m_110 = 0xe;
+    FUN_141a80af0(info);
+    Unk_PmTarget target;
+    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_nLevel = (unsigned short)pMember->m_info.m_level;
+    target.m_nCharId = pMember->m_info.m_characterId;
+    target.m_strImage = FUN_141028be0(pMember->m_info.m_characterId, pMember->m_info.FUN_14020e6c0(), 1, CString(""));
+    target.m_strName = strName;
+    target.m_b38 = true;
+    target.m_bOnline = pMember->m_f0 == 0;
+    target.m_nTrophy = pMember->m_info.m_trophy.FUN_140267c10();
+    target.m_n20 = pMember->m_info.m_jobCode;
+    target.m_nJobCode = pMember->m_info.m_job;
+    int nKind = 2;
+    if (pMember->m_info.m_characterId != 0 && pMember->m_info.m_characterId == DAT_143ab2828)
+        nKind = 1;
+    m_a0 = pMember->m_info.m_accountId;
+    m_a8 = pMember->m_info.m_characterId;
+    m_b0 = pMember->m_info.FUN_14020e5d0();
+    m_138 = 0;
+    m_140 = L"";
+    m_148 = "";
+    if (FUN_141a82140(target, info.m_b, nKind) == 0)
+        FUN_141a82dd0();
+}
+
+// @0x141a805f0
+void UIPopUpMenu::FUN_141a805f0(const Unk_PopupMenuInfo& info, void* pAccount, unsigned __int64 nCharId, const CStringW& strName, const CStringW& strText, int nType)
+{
+    m_108 = strText;
+    FUN_141a7f090(info, strName, nCharId, pAccount, nType, 1);
+}
+
+// @0x141a80670
+void UIPopUpMenu::FUN_141a80670(const Unk_PopupMenuInfo& info)
+{
+    FUN_141a80770();
+    FUN_141a80af0(info);
+    m_110 = 0x10;
+    Unk_PmTarget target;
+    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_nCharId = info.m_infoB.m_18;
+    target.m_strName = info.m_infoB.m_20;
+    FUN_141a82140(target, info.m_b, 0);
+}
+
+// @0x141a80770
+void UIPopUpMenu::FUN_141a80770()
+{
+    if (m_100 == 0)
+    {
+        vfunc_47(1);
+        if ((ASScrollingList*)m_f0.get() != 0)
+            static_cast<Unk_PdScript*>((AScript*)m_f0.get())->FUN_1422bb330("close");
+        FUN_141a82dd0();
+        FUN_140b632f0()->FUN_1422d4840(this, 0);
+        FUN_141930950(FUN_140c607b0(), this);
+        FUN_141b38c70(FUN_140bc09f0(), this);
+    }
+}
+
+// @0x141a80880
+int UIPopUpMenu::FUN_141a80880()
+{
+    return m_100;
+}
+
+// @0x141a808a0
+__int64 UIPopUpMenu::FUN_141a808a0()
+{
+    return m_a8;
+}
+
+// @0x141a808c0
+CString UIPopUpMenu::FUN_141a808c0()
+{
+    return m_88;
+}
+
+// @0x141a80910
+void UIPopUpMenu::FUN_141a80910()
+{
+    m_138 = FUN_1403ed290()->m_info.FUN_1404ccbd0();
+    m_140 = FUN_1403ed290()->m_info.FUN_1404cccb0();
+    m_148 = FUN_1403ed290()->m_info.FUN_1404ccdb0();
+}
+
+// @0x141a809e0
+void UIPopUpMenu::FUN_141a809e0(__int64 nGuildId, const CStringW& strGuild, const CString& strMark)
+{
+    m_138 = nGuildId;
+    m_140 = strGuild;
+    m_148 = strMark;
+}
+
+// @0x141a80a50
+void UIPopUpMenu::FUN_141a80a50(CInPacket& packet)
+{
+    if (FUN_141a80880() != 0)
+        return;
+    unsigned char nMode = packet.vfunc_o8_1();
+    if (nMode == 7)
+    {
+        FUN_141a80770();
+    }
+    else if (nMode == 8)
+    {
+        if (FUN_14162ab60(FUN_1409670d0()))
+            FUN_141a80770();
+    }
+}
+
+// @0x141a80af0
+void UIPopUpMenu::FUN_141a80af0(const Unk_PopupMenuInfo& info)
+{
+    m_80 = info.m_a;
+    m_84 = info.m_c;
+    m_88 = info.m_str;
+    m_a0 = (__int64)info.m_p;
+    m_d0 = 0;
+    m_d8 = 0;
+    m_98 = 0;
+    m_1a8 = Unk_PopupMenuInfo::Unk_PmA(info.m_infoA);
+    m_1d0 = Unk_PopupMenuInfo::Unk_PmB(info.m_infoB);
+}
+
+// @0x141a80c40
+void UIPopUpMenu::FUN_141a80c40()
+{
+    m_160.SetAt(100, Delegate<void()>(this, &UIPopUpMenu::FUN_141a84d40));
+    m_160.SetAt(0x65, Delegate<void()>(this, &UIPopUpMenu::FUN_141a84da0));
+    m_160.SetAt(0x66, Delegate<void()>(this, &UIPopUpMenu::FUN_141a84df0));
+    m_160.SetAt(200, Delegate<void()>(this, &UIPopUpMenu::FUN_141a84f60));
+    m_160.SetAt(0xc9, Delegate<void()>(this, &UIPopUpMenu::FUN_141a84f90));
+    m_160.SetAt(0xca, Delegate<void()>(this, &UIPopUpMenu::FUN_141a85010));
+    m_160.SetAt(0xcb, Delegate<void()>(this, &UIPopUpMenu::FUN_141a85120));
+    m_160.SetAt(0xcc, Delegate<void()>(this, &UIPopUpMenu::FUN_141a85230));
+    m_160.SetAt(0xcd, Delegate<void()>(this, &UIPopUpMenu::FUN_141a853a0));
+    m_160.SetAt(300, Delegate<void()>(this, &UIPopUpMenu::FUN_141a853c0));
+    m_160.SetAt(0x12d, Delegate<void()>(this, &UIPopUpMenu::FUN_141a85410));
+    m_160.SetAt(400, Delegate<void()>(this, &UIPopUpMenu::FUN_141a85460));
+    m_160.SetAt(0x191, Delegate<void()>(this, &UIPopUpMenu::FUN_141a854b0));
+    m_160.SetAt(0x192, Delegate<void()>(this, &UIPopUpMenu::FUN_141a85500));
+    m_160.SetAt(500, Delegate<void()>(this, &UIPopUpMenu::FUN_141a85680));
+    m_160.SetAt(0x1f5, Delegate<void()>(this, &UIPopUpMenu::FUN_141a85760));
+    m_160.SetAt(0x1f6, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86920));
+    m_160.SetAt(0x1f7, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86970));
+    m_160.SetAt(0x1f8, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86a50));
+    m_160.SetAt(0x1f9, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86ad0));
+    m_160.SetAt(0x1fa, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86b80));
+    if (FUN_140166410()->FUN_14036d570(0x100))
+        m_160.SetAt(0x1fb, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86bd0));
+    m_160.SetAt(0x1fc, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86ca0));
+    m_160.SetAt(600, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86d20));
+    m_160.SetAt(0x259, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86db0));
+    m_160.SetAt(0x25a, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86e40));
+    m_160.SetAt(0x2bd, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86ed0));
+    m_160.SetAt(0x321, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86f50));
+    m_160.SetAt(0x385, Delegate<void()>(this, &UIPopUpMenu::FUN_141a87100));
+    m_160.SetAt(0x386, Delegate<void()>(this, &UIPopUpMenu::FUN_141a87150));
+    m_160.SetAt(0x387, Delegate<void()>(this, &UIPopUpMenu::FUN_141a871a0));
+}
+
+// @0x141a82140
+int UIPopUpMenu::FUN_141a82140(const Unk_PmTarget& target, int nFlags, int nType)
+{
+    if (m_30 == 0)
+        return 0;
+    if (FUN_1409478c0()->FUN_140a18070() == 0)
+        return 0;
+    {
+        MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+        bool bPopup = spField->m_bPopupMenu;
+        if (!bPopup)
+            return 0;
+    }
+    m_118.RemoveAll();
+    FUN_141a83810(nFlags, nType, target);
+    if (m_118.IsEmpty())
+    {
+        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::Open Empty Menu");
+        return 0;
+    }
+    float fDirX = 1.0f;
+    int nDirY = 1;
+    NiPoint3 kPos;
+    float fOffset = 0;
+    bool bPlaced = false;
+    float fScale = FUN_14025e7a0()->FUN_1422afec0(m_28);
+    if (m_80 == 1)
+    {
+        nDirY = 2;
+        NiPoint3 kWorld;
+        FUN_141a82f30(target.m_pos, kWorld, 1.0f);
+        bPlaced = FUN_1409478c0()->FUN_140af0700(kWorld, kPos);
+        if (!bPlaced)
+        {
+            fDirX = -1.0f;
+            FUN_141a82f30(target.m_pos, kWorld, -1.0f);
+            bPlaced = FUN_1409478c0()->FUN_140af0700(kWorld, kPos);
+        }
+        kPos *= fScale;
+        fOffset = FUN_141a83db0();
+        fOffset = fOffset * fScale;
+    }
+    else if (m_80 == 2)
+    {
+        bPlaced = true;
+        kPos = target.m_pos;
+        kPos *= fScale;
+    }
+    else if (m_80 == 3)
+    {
+        bPlaced = true;
+        kPos = target.m_pos;
+    }
+    if (!bPlaced)
+        return 0;
+    ASObj obj(2);
+    Unk_PdSetData(&obj, "type", (Unk_PmMenuType)m_84);
+    {
+        ASArray menu(2);
+        FUN_141a84320(menu);
+        obj.FUN_1409adbe0("menu", menu.FUN_1422bb870());
+        obj.FUN_1409c4a30("posx", kPos.x);
+        obj.FUN_1409c4a30("posy", kPos.y - fOffset);
+        obj.FUN_1407cbb20("name", target.m_strName);
+        obj.FUN_1409c4a30("dirx", fDirX);
+        obj.FUN_1407cb9c0("diry", nDirY);
+        obj.FUN_1407cb9c0("level", target.m_nLevel);
+        obj.FUN_1407cba60("imgpath", target.m_strImage);
+        obj.FUN_1407cb9c0("trophy", target.m_nTrophy);
+        obj.FUN_1407cb9c0("jobcode", target.m_nJobCode);
+    }
+    Scaleform::GFx::Value list = reinterpret_cast<Unk_PmRoot*>(m_30.get())->FUN_140ba4cc0("open", obj);
+    if (!FUN_1409b4d40(list))
+        return 0;
+    m_100 = 0;
+    m_90 = target.m_strName;
+    m_a8 = target.m_nCharId;
+    vfunc_8(1);
+    vfunc_47(0);
+    FUN_140b632f0()->FUN_1422d4780(this, 0);
+    FUN_1419308c0(FUN_140c607b0(), this);
+    FUN_141b38be0(FUN_140bc09f0(), this);
+    m_f0 = FUN_140bc61d0(m_28, list);
+    return 1;
+}
+
+// @0x141a828a0
+int UIPopUpMenu::FUN_141a828a0(CStringW strName, const Unk_PopupMenuInfo& info, int nMode, int nDir)
+{
+    if (m_30 == 0)
+        return 0;
+    if (FUN_1409478c0()->FUN_140a18070() == 0)
+        return 0;
+    float fX = info.m_x;
+    float fY = info.m_y;
+    m_118.RemoveAll();
+    FUN_141a834e0(info.m_b, nMode, strName, nDir);
+    if (m_118.IsEmpty())
+    {
+        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::OpenFromCharName Empty Menu");
+        return 0;
+    }
+    if (m_80 == 2)
+    {
+        fX = fX * FUN_1403ed2b0()->FUN_141adbe70();
+        fY = fY * FUN_1403ed2b0()->FUN_141adbe70();
+    }
+    ASObj obj(2);
+    Unk_PdSetData(&obj, "type", (Unk_PmMenuType)m_84);
+    {
+        ASArray menu(2);
+        FUN_141a84320(menu);
+        obj.FUN_1409adbe0("menu", menu.FUN_1422bb870());
+        obj.FUN_1409c4a30("posx", fX);
+        obj.FUN_1409c4a30("posy", fY);
+        obj.FUN_1407cbb20("name", strName);
+        Unk_PdSetData(&obj, "dirx", Unk_PmDirOn);
+        Unk_PdSetData(&obj, "diry", Unk_PmDirOn);
+    }
+    Scaleform::GFx::Value list = reinterpret_cast<Unk_PmRoot*>(m_30.get())->FUN_140ba4cc0("open", obj);
+    if (!FUN_1409b4d40(list))
+        return 0;
+    m_100 = 0;
+    m_90 = strName;
+    vfunc_8(1);
+    vfunc_47(0);
+    FUN_140b632f0()->FUN_1422d4780(this, 0);
+    FUN_1419308c0(FUN_140c607b0(), this);
+    FUN_141b38be0(FUN_140bc09f0(), this);
+    m_f0 = FUN_140bc61d0(m_28, list);
+    return 1;
+}
+
+// @0x141a82dd0
+void UIPopUpMenu::FUN_141a82dd0()
+{
+    m_f0 = 0;
+    m_e0 = NiPoint3(DAT_143b01a60);
+    m_88 = "";
+    m_a8 = 0;
+    m_100 = 1;
+    m_90 = L"";
+    m_98 = 0;
+    m_d0 = 0;
+    m_80 = 0;
+    m_84 = 0;
+    m_b8 = 0;
+}
+
+// @0x141a82ed0
+int UIPopUpMenu::FUN_141a82ed0(GameObject* pObject, NiPoint3& out, float fDir)
+{
+    if (pObject == 0)
+        return 0;
+    return FUN_141a82f30(pObject->vfunc_18(), out, fDir);
+}
+
+// @0x141a82f30
+int UIPopUpMenu::FUN_141a82f30(const NiPoint3& pos, NiPoint3& out, float fDir)
+{
+    out = pos + NiPoint3(fDir * *FUN_1401d3200()->OffsetPcPopupMenu.Get(), 0, 0);
+    return 1;
+}
+
+// @0x141a82fb0
+void UIPopUpMenu::FUN_141a82fb0(const CString& strImage)
+{
+    if (FUN_141a80880() == 0 && !strImage.IsEmpty() && m_30.get() != 0)
+        m_30->Invoke("setProfileImage", CString(strImage));
+}
+
+// @0x141a83080
+// MS2-FUNCTIONAL: the Ridee owner check keeps the exe's dead result (it returns 0 like the exe)
+int UIPopUpMenu::FUN_141a83080(GameObject* pObject)
+{
+    if (FUN_14087ddc0(pObject ? pObject->GetClassDesc() : 0, 0x6200004))
+        return 1;
+    if (FUN_14087ddc0(pObject ? pObject->GetClassDesc() : 0, 0x6200045))
+    {
+        efd::SmartPointer<Ridee> spRidee = efd::DynamicCast<Ridee>(pObject);
+        if (spRidee != 0)
+            efd::DynamicCast<MyPC>(FUN_141706540(spRidee));
+    }
+    else
+    {
+        if (FUN_14087ddc0(pObject ? pObject->GetClassDesc() : 0, 0x6200003))
+            return 2;
+        if (FUN_14087ddc0(pObject ? pObject->GetClassDesc() : 0, 0x6200074))
+            return 5;
+        if (FUN_14087ddc0(pObject ? pObject->GetClassDesc() : 0, 0x6200028))
+            return 3;
+    }
+    return 0;
+}
+
+// @0x141a832e0
+void UIPopUpMenu::FUN_141a832e0(GameObject* pObject, CStringW& strName)
+{
+    CPet* pPet = efd::DynamicCast<CPet>(pObject);
+    if (pPet != 0)
+    {
+        strName = pPet->vfunc_77();
+        return;
+    }
+    CNpc* pNpc = FUN_140a38a00(pObject);
+    if (pNpc != 0)
+    {
+        strName = FUN_1401aa6a0(FUN_141092fa0(pNpc));
+        return;
+    }
+    PC* pPC = efd::DynamicCast<PC>(pObject);
+    if (pPC != 0)
+    {
+        strName = pPC->vfunc_77();
+        return;
+    }
+    Ridee* pRidee = efd::DynamicCast<Ridee>(pObject);
+    if (pRidee != 0)
+    {
+        PC* pOwner = efd::DynamicCast<PC>(FUN_141706540(pRidee));
+        if (pOwner != 0)
+            strName = pOwner->vfunc_77();
+    }
+}
+
+// @0x141a834e0
+int UIPopUpMenu::FUN_141a834e0(unsigned nFlags, int nType, const CStringW& strName, int nDir)
+{
+    if (strName.IsEmpty())
+        return 0;
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return 0;
+    if ((nFlags & 2) != 0)
+        FUN_141a84520(nType, nDir, m_a8);
+    if ((nFlags & 0x80) != 0)
+        FUN_141a84980(nType, nDir);
+    if ((nFlags & 0x100) != 0)
+        FUN_141a849c0(nType, m_a8);
+    if ((nFlags & 0x200) != 0)
+        FUN_141a84a10(nType, m_a8);
+    if ((nFlags & 8) != 0 && nType != 1 && 0 < strName.GetLength())
+        FUN_141a847c0(nType, pMe, FUN_14097a780()->FUN_140ae4950(strName).get());
+    if ((nFlags & 4) != 0)
+        FUN_141a84590(nType, pMe, strName, nDir);
+    if ((nFlags & 0x4000) != 0)
+        FUN_141a84b40(nType, pMe, strName);
+    if ((nFlags & 0x2000) != 0)
+        FUN_141a84ac0(nType, m_a8);
+    if ((nFlags & 0x10) != 0 && nType != 1 && 0 < strName.GetLength())
+        FUN_141a84860(nType, pMe, FUN_14097a780()->FUN_140ae4950(strName).get());
+    if ((nFlags & 0x40) != 0)
+        FUN_141a84940(nType, nDir);
+    return 1;
+}
+
+// @0x141a83810
+int UIPopUpMenu::FUN_141a83810(unsigned nFlags, int nType, const Unk_PmTarget& target)
+{
+    CStringW strName(target.m_strName);
+    __int64 nCharId = target.m_nCharId;
+    if (strName.IsEmpty())
+        return 0;
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return 0;
+    int bOnline = target.m_bOnline;
+    CStringW strUnused;
+    if ((nFlags & 0x20) != 0)
+        FUN_141a848d0(nType, bOnline, nCharId);
+    if ((nFlags & 2) != 0)
+        FUN_141a84520(nType, bOnline, nCharId);
+    if ((nFlags & 0x80) != 0)
+        FUN_141a84980(nType, bOnline);
+    if ((nFlags & 0x100) != 0)
+        FUN_141a849c0(nType, nCharId);
+    if ((nFlags & 0x200) != 0)
+        FUN_141a84a10(nType, nCharId);
+    if ((nFlags & 0x10000) != 0)
+        FUN_141a84c60(nType, pMe, m_a8);
+    if ((nFlags & 8) != 0 && nType != 1 && nCharId != 0)
+    {
+        CBuddy* pBuddy = FUN_14097a780()->FUN_140ae4880(nCharId).get();
+        FUN_141a847c0(nType, pMe, pBuddy);
+    }
+    if ((nFlags & 4) != 0)
+        FUN_141a84590(nType, pMe, strName, bOnline);
+    if ((nFlags & 0x4000) != 0)
+        FUN_141a84b40(nType, pMe, strName);
+    if ((nFlags & 0x2000) != 0)
+        FUN_141a84ac0(nType, m_a8);
+    if ((nFlags & 0x10) != 0 && nType != 1 && nCharId != 0)
+    {
+        CBuddy* pBuddy = FUN_14097a780()->FUN_140ae4880(nCharId).get();
+        FUN_141a84860(nType, pMe, pBuddy);
+    }
+    if ((nFlags & 0x20000) != 0 && nType != 1 && nCharId != 0)
+    {
+        HomeBlockManager::HomePtr spHome = FUN_1414a5830()->FUN_140a47580(nCharId);
+        FUN_141a84cb0(nType, pMe, spHome);
+    }
+    if ((nFlags & 0x400) != 0)
+        FUN_141a84a60(nType);
+    if ((nFlags & 0x800) != 0)
+        FUN_141a84a90(nType);
+    if ((nFlags & 0x8000) != 0)
+        FUN_141a84b10(nType);
+    if (FUN_140166410()->FUN_14036d570(0x39) && (nFlags & 0x1000) == 0x1000)
+    {
+        if (FUN_1409670e0()->FUN_1410c3180() == DAT_143ab2820 && nType != 1)
+        {
+            if (!target.m_b38)
+            {
+                FUN_141a844a0(0x259);
+                FUN_141a844a0(0x25a);
+            }
+            else
+            {
+                FUN_141a844a0(600);
+                FUN_141a844a0(0x25a);
+            }
+        }
+    }
+    if ((nFlags & 0x40) != 0)
+        FUN_141a84940(nType, bOnline);
+    return 1;
+}
+
+// @0x141a83db0
+float UIPopUpMenu::FUN_141a83db0()
+{
+    float fNear = FUN_1409478c0()->FUN_141032df0();
+    float fFar = FUN_1409478c0()->FUN_140b67d10();
+    float fDepth = fFar - fNear;
+    float fHeight = FUN_1409478c0()->FUN_1409f2430();
+    float fOffset = 0;
+    if (fDepth != 0.0f)
+        fOffset = FUN_140bf4fd0((fFar / fHeight) * ((-1.0f / fDepth) * fHeight + fFar / fDepth) * 60.0f * ((float)DAT_143af62d8 / 1050.0f));
+    return fOffset;
+}
+
+// @0x141a83ed0
+void UIPopUpMenu::FUN_141a83ed0(int nQuery, int nKind)
+{
+    __int64 nBuddyId = m_d0;
+    if (nBuddyId != 0)
+    {
+        CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4c30(m_d0, m_a8, m_90);
+        if (spBuddy.get() != 0)
+        {
+            nBuddyId = spBuddy->FUN_1401cc2f0();
+            if (nKind == 1 && spBuddy->FUN_1401cc5d0() != 0)
+            {
+                FUN_140d73bc0(0x623, 0, 0, CStringW(L""));
+                return;
+            }
+        }
+    }
+    CString strBuddy = FUN_140719530(nBuddyId);
+    CString strChar = FUN_140719530(m_a8);
+    Unk_FcUIMsg msg;
+    FUN_1422e4490(&msg);
+    FUN_1422b7f70(&msg, nQuery);
+    FUN_1422b7f70(&msg, nKind);
+    FUN_1422b8310(&msg, m_90);
+    FUN_1422b82b0(&msg, strBuddy);
+    FUN_1422b82b0(&msg, strChar);
+    UIDialog* pQuery = FUN_140ae5a30(0x4e4e);
+    if (pQuery != 0)
+        static_cast<IMessageListener*>(pQuery)->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+}
+
+// @0x141a84130
+void UIPopUpMenu::FUN_141a84130(int nQuery, int nKind)
+{
+    __int64 nHomeId = m_d8;
+    if (nHomeId != 0)
+    {
+        HomeBlockManager::HomePtr spHome = FUN_1414a5830()->FUN_140a47490(m_d8);
+        if (spHome == 0)
+            return;
+        nHomeId = spHome->m_18;
+    }
+    CString strHome = FUN_140719530(nHomeId);
+    CString strChar = FUN_140719530(m_a8);
+    Unk_FcUIMsg msg;
+    FUN_1422e4490(&msg);
+    FUN_1422b7f70(&msg, nQuery);
+    FUN_1422b7f70(&msg, nKind);
+    FUN_1422b8310(&msg, m_90);
+    FUN_1422b82b0(&msg, strHome);
+    FUN_1422b82b0(&msg, strChar);
+    UIDialog* pQuery = FUN_140ae5a30(0x4e4e);
+    if (pQuery != 0)
+        static_cast<IMessageListener*>(pQuery)->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+}
+
+// @0x141a842f0
+void UIPopUpMenu::FUN_141a842f0()
+{
+    FUN_14162bdb0(FUN_1409670d0());
+}
+
+// @0x141a84320
+void UIPopUpMenu::FUN_141a84320(ASArray& menu)
+{
+    if (m_118.IsEmpty())
+        return;
+    for (size_t i = 0; i < m_118.GetCount(); i++)
+    {
+        ASObj item(2);
+        item.FUN_1409c0d20("id", m_118[i]);
+        item.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141811980(7, m_118[i]));
+        menu.FUN_1422bc050(item.FUN_1422bb870());
+    }
+}
+
+// @0x141a844a0
+void UIPopUpMenu::FUN_141a844a0(unsigned nMenuId)
+{
+    if (m_160.Lookup(nMenuId) == 0)
+        Unk_PmLog(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::AddPopupMenu NotFound MenuID:{0}", nMenuId);
+    else
+        m_118.Add(nMenuId);
+}
+
+// @0x141a84520
+void UIPopUpMenu::FUN_141a84520(int nType, int bOnline, __int64 nCharId)
+{
+    if (nType == 1)
+    {
+        FUN_141a844a0(100);
+    }
+    else
+    {
+        if (nCharId != 0)
+            FUN_141a844a0(0x66);
+        if (bOnline != 0)
+            FUN_141a844a0(0x65);
+    }
+}
+
+// @0x141a84590
+void UIPopUpMenu::FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, int bOnline)
+{
+    if (pMe == 0)
+        return;
+    if (nType == 1)
+    {
+        if (pMe->FUN_141527280())
+        {
+            FUN_141a844a0(200);
+            if (FUN_14162ab60(FUN_1409670d0()))
+                FUN_141a844a0(0xcd);
+        }
+        return;
+    }
+    if (strName.IsEmpty())
+        return;
+    if (!pMe->FUN_141527280())
+    {
+        if (bOnline != 0)
+            FUN_141a844a0(0xc9);
+    }
+    else if (!FUN_14162ab60(FUN_1409670d0()))
+    {
+        if (FUN_14162ad50(FUN_1409670d0(), strName) != 0 && FUN_140166410()->FUN_14036d570(0xe0))
+            FUN_141a844a0(0xcc);
+    }
+    else if (FUN_14162ad50(FUN_1409670d0(), strName) == 0)
+    {
+        if (bOnline != 0)
+            FUN_141a844a0(0xc9);
+    }
+    else
+    {
+        FUN_141a844a0(0xca);
+        if (bOnline != 0)
+            FUN_141a844a0(0xcb);
+        if (FUN_140166410()->FUN_14036d570(0xe0))
+            FUN_141a844a0(0xcc);
+    }
+}
+
+// @0x141a847c0
+void UIPopUpMenu::FUN_141a847c0(int nType, MyPC* pMe, CBuddy* pBuddy)
+{
+    if (pMe == 0)
+        return;
+    if (pBuddy == 0)
+    {
+        FUN_141a844a0(0x12d);
+    }
+    else if (pBuddy->FUN_1401cc5f0() == 0)
+    {
+        if (pBuddy->FUN_1401cc5b0() == 0 && pBuddy->FUN_1401cc660() == 0)
+            FUN_141a844a0(0x12d);
+    }
+    else
+    {
+        FUN_141a844a0(300);
+    }
+}
+
+// @0x141a84860
+void UIPopUpMenu::FUN_141a84860(int nType, MyPC* pMe, CBuddy* pBuddy)
+{
+    if (pBuddy != 0 && pBuddy->FUN_1401cc5b0() != 0)
+    {
+        FUN_141a844a0(0x191);
+        FUN_141a844a0(0x192);
+        return;
+    }
+    FUN_141a844a0(400);
+}
+
+// @0x141a848d0
+void UIPopUpMenu::FUN_141a848d0(int nType, int bOnline, __int64 nCharId)
+{
+    if (nType != 1 && bOnline != 0 && nCharId != 0 && FUN_1403ed2d0()->FUN_141bd1530(nCharId) != 0)
+        FUN_141a844a0(500);
+}
+
+// @0x141a84940
+void UIPopUpMenu::FUN_141a84940(int nType, int bOnline)
+{
+    if (nType != 1 && bOnline != 0)
+        FUN_141a844a0(0x1f5);
+}
+
+// @0x141a84980
+void UIPopUpMenu::FUN_141a84980(int nType, int bOnline)
+{
+    if (nType == 2 && bOnline != 0)
+        FUN_141a844a0(0x1f6);
+}
+
+// @0x141a849c0
+void UIPopUpMenu::FUN_141a849c0(int nType, __int64 nCharId)
+{
+    if (nType == 2 && FUN_1418fd530(nCharId) != 0)
+        FUN_141a844a0(0x1f7);
+}
+
+// @0x141a84a10
+void UIPopUpMenu::FUN_141a84a10(int nType, __int64 nCharId)
+{
+    if (nType == 2 && FUN_1418fd5d0(nCharId) != 0)
+        FUN_141a844a0(0x1f8);
+}
+
+// @0x141a84a60
+void UIPopUpMenu::FUN_141a84a60(int nType)
+{
+    if (nType == 5)
+        FUN_141a844a0(0x1f9);
+}
+
+// @0x141a84a90
+void UIPopUpMenu::FUN_141a84a90(int nType)
+{
+    if (nType == 5)
+        FUN_141a844a0(0x1fa);
+}
+
+// @0x141a84ac0
+void UIPopUpMenu::FUN_141a84ac0(int nType, __int64 nCharId)
+{
+    if (nType == 2 && FUN_1418fd670(nCharId) != 0)
+        FUN_141a844a0(0x1fb);
+}
+
+// @0x141a84b10
+void UIPopUpMenu::FUN_141a84b10(int nType)
+{
+    if (nType != 1)
+        FUN_141a844a0(0x1fc);
+}
+
+// @0x141a84b40
+void UIPopUpMenu::FUN_141a84b40(int nType, MyPC* pMe, const CStringW& strName)
+{
+    if (pMe == 0)
+        return;
+    if (FUN_1413b6160(FUN_1403ed290()) != 0 && nType != 1 && 0 < strName.GetLength())
+    {
+        if (FUN_1403ed290()->m_info.FUN_1404cf9f0(strName).get() == 0)
+            FUN_141a844a0(0x2bd);
+    }
+}
+
+// @0x141a84c60
+void UIPopUpMenu::FUN_141a84c60(int nType, MyPC* pMe, __int64 nCharId)
+{
+    if (FUN_140900550() && nType == 2)
+        FUN_141a844a0(0x321);
+}
+
+// @0x141a84cb0
+void UIPopUpMenu::FUN_141a84cb0(int nType, MyPC* pMe, HomeBlockManager::HomePtr spHome)
+{
+    if (spHome.get() == 0)
+    {
+        if (FUN_1409670e0()->FUN_1410c3180() == DAT_143ab2820)
+            FUN_141a844a0(0x385);
+    }
+    else
+    {
+        FUN_141a844a0(0x386);
+        FUN_141a844a0(0x387);
+    }
+}
+
+// ---- the menu handlers (registered in FUN_141a80c40) ----
+
+// @0x141a84d40
+void UIPopUpMenu::FUN_141a84d40()
+{
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe != 0 && FUN_141656a80(pMe) == m_a8)
+        FUN_1403ed2b0()->FUN_141adc530(0x2711);
+}
+
+// @0x141a84da0
+void UIPopUpMenu::FUN_141a84da0()
+{
+    if (FUN_141482e80()->m_48 != 0)
+        FUN_141a252a0(FUN_141482e80()->m_48, m_90);
+}
+
+// @0x141a84df0
+void UIPopUpMenu::FUN_141a84df0()
+{
+    UIPCInfoDialog* pInfo = Unk_PmGetDialog<UIPCInfoDialog>(0x4ec8);
+    if (pInfo != 0 && m_a8 != 0 && m_100 == 0)
+    {
+        int nState = pInfo->FUN_14132c080(m_a8);
+        if (nState == 1)
+        {
+            CStringW strKey(L"s_char_info_already_request");
+            FUN_140d73aa0(FUN_14028b8e0(strKey), 0, 0, CStringW(L""));
+        }
+        else if (nState != 2)
+        {
+            FUN_1403ed2b0()->FUN_141adc690(0x4ec8);
+            COutPacket packet(0x1e, 0);
+            packet.Encode8(m_a8);
+            FUN_140710590(packet);
+        }
+    }
+}
+
+// @0x141a84f60
+void UIPopUpMenu::FUN_141a84f60()
+{
+    FUN_14162be10(FUN_1409670d0());
+}
+
+// @0x141a84f90
+void UIPopUpMenu::FUN_141a84f90()
+{
+    if (!m_90.IsEmpty())
+        FUN_14162ba50(FUN_1409670d0(), m_90);
+}
+
+// @0x141a85010
+void UIPopUpMenu::FUN_141a85010()
+{
+    if (!m_90.IsEmpty())
+    {
+        CStringW strTag = FUN_1401e8510(L"expelMember:{0}", m_90);
+        FUN_140d73aa0(FUN_14052bd00(0x340, m_90), 1, this, CStringW(strTag));
+    }
+}
+
+// @0x141a85120
+void UIPopUpMenu::FUN_141a85120()
+{
+    if (!m_90.IsEmpty())
+    {
+        CStringW strTag = FUN_1401e8510(L"changeChief:{0}", m_90);
+        FUN_140d73aa0(FUN_14052bd00(0x33f, m_90), 1, this, CStringW(strTag));
+    }
+}
+
+// @0x141a85230
+void UIPopUpMenu::FUN_141a85230()
+{
+    if (m_a8 != 0)
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPopUpMenu::FUN_141a7e0a0),
+                                                  FUN_1405c2690(CStringW(L"s_party_vote_kick_user_confirm"), m_90));
+        if ((CMsgBoxData*)spBox.get() != 0)
+            static_cast<Unk_PmMsgBox*>(spBox.get())->FUN_1405340b0(m_a8);
+    }
+}
+
+// @0x141a853a0
+void UIPopUpMenu::FUN_141a853a0()
+{
+    FUN_141a842f0();
+}
+
+// @0x141a853c0
+void UIPopUpMenu::FUN_141a853c0()
+{
+    if (!m_90.IsEmpty())
+        FUN_141a83ed0(1, 6);
+}
+
+// @0x141a85410
+void UIPopUpMenu::FUN_141a85410()
+{
+    if (!m_90.IsEmpty())
+        FUN_141a83ed0(0, 1);
+}
+
+// @0x141a85460
+void UIPopUpMenu::FUN_141a85460()
+{
+    if (!m_90.IsEmpty())
+        FUN_141a83ed0(0, 2);
+}
+
+// @0x141a854b0
+void UIPopUpMenu::FUN_141a854b0()
+{
+    if (!m_90.IsEmpty())
+        FUN_141a83ed0(1, 7);
+}
+
+// @0x141a85500
+void UIPopUpMenu::FUN_141a85500()
+{
+    if (m_90.IsEmpty())
+        return;
+    UIDialog* pDialog;
+    if (m_d0 == 0 || (pDialog = FUN_140ae5990(0x4e4d)) == 0 || pDialog->vfunc_55() != 0 ||
+        FUN_1418d6960(reinterpret_cast<Unk_PmCommunity*>(pDialog)) != 3)
+    {
+        FUN_141a83ed0(0, 4);
+    }
+    else
+    {
+        CString strBuddy = FUN_140719530(m_d0);
+        Unk_FcUIMsg msg;
+    FUN_1422e4490(&msg);
+        FUN_1422b82b0(&msg, "editMemo");
+        FUN_1422b82b0(&msg, strBuddy);
+        static_cast<IMessageListener*>(pDialog)->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+    }
+}
+
+// @0x141a85680
+void UIPopUpMenu::FUN_141a85680()
+{
+    if (FUN_1403ed2b0()->FUN_141adc7f0(0x4e83) == 0)
+        return;
+    if (FUN_1403ed2b0()->FUN_141adc940(0x4e83) == 0)
+    {
+        FUN_140f8ff40(0x841, 1, 1);
+    }
+    else
+    {
+        BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0x20);
+        if (spBlock.get() == 0)
+        {
+            if (m_a8 != 0)
+                FUN_14140ea30()->FUN_14185b870(m_a8);
+        }
+        else
+        {
+            FUN_140a2ff20(spBlock, 0x20, 0);
+        }
+    }
+}
+
+// @0x141a85760
+void UIPopUpMenu::FUN_141a85760()
+{
+    if (m_90.IsEmpty())
+        return;
+    if (m_b8 == 0)
+    {
+        if (m_110 == 4 || m_110 == 6)
+        {
+            MS2Ptr<CUserReportData> spReport(new CUserReportData(1));
+            spReport->SetField28((int)FUN_140c75430(spReport.get(), m_110));
+            spReport->SetTitle(m_90);
+            spReport->SetField78(m_108);
+            spReport->SetFielda0(m_a0);
+            spReport->SetFielda8(m_a8);
+            spReport->SetFieldb0(m_b0);
+            spReport->SetFieldd0(m_108);
+            FUN_140d86260()->vfunc_48(spReport);
+        }
+        else if (m_110 == 0xf)
+        {
+            MS2Ptr<CUserReportData> spReport(new CUserReportData(7));
+            spReport->SetField28((int)FUN_140c75430(spReport.get(), m_110));
+            spReport->SetField40(m_1a8.m_08);
+            spReport->SetTitle(m_1a8.m_10);
+            spReport->SetField80(m_90);
+            spReport->SetFielda0(m_1a8.m_00);
+            spReport->SetFielda8(m_1a8.m_08);
+            spReport->SetFieldb0(m_1a8.m_10);
+            spReport->SetFieldd0(m_108);
+            spReport->SetFieldb8(m_90);
+            spReport->SetFieldf0(m_1a8.m_18);
+            spReport->SetFieldf8(m_1a8.m_20);
+            FUN_140d86260()->vfunc_48(spReport);
+        }
+        else if (m_110 == 0x10)
+        {
+            MS2Ptr<CUserReportData> spReport(new CUserReportData(8));
+            spReport->SetField28((int)FUN_140c75430(spReport.get(), m_110));
+            spReport->SetField88(m_1d0.m_00);
+            spReport->SetField90(m_1d0.m_08);
+            spReport->SetField98(m_1d0.m_10);
+            spReport->SetField40(m_1d0.m_18);
+            spReport->SetTitle(m_1d0.m_20);
+            spReport->SetFielda0(m_1d0.m_28);
+            spReport->SetFielda8(m_1d0.m_18);
+            spReport->SetFieldb0(m_1d0.m_20);
+            spReport->SetFielde0(m_1d0.m_00);
+            spReport->SetFieldc0(m_1d0.m_08);
+            spReport->SetFieldc8(FUN_14016a600(m_1d0.m_10, 0));
+            FUN_140d86260()->vfunc_48(spReport);
+        }
+        else
+        {
+            MS2Ptr<CUserReportData> spReport(new CUserReportData(0));
+            spReport->SetField28((int)FUN_140c75430(spReport.get(), m_110));
+            spReport->SetField40(m_a8);
+            spReport->SetTitle(m_90);
+            spReport->SetFielda0(m_a0);
+            spReport->SetFielda8(m_a8);
+            spReport->SetFieldb0(m_b0);
+            spReport->SetFieldb8(m_b0);
+            spReport->SetFieldd0(m_108);
+            spReport->SetFielde0(m_138);
+            spReport->SetField100(m_140);
+            spReport->SetField108(m_148);
+            FUN_140d86260()->vfunc_48(spReport);
+        }
+    }
+    else
+    {
+        MS2Ptr<CUserReportData> spReport(new CUserReportData(2));
+        spReport->SetField28(4);
+        spReport->SetField48(m_b8);
+        spReport->SetField58(m_c8);
+        spReport->SetField50(m_c0);
+        spReport->SetTitle(m_90);
+        spReport->SetFielda0(m_a0);
+        spReport->SetFielda8(m_a8);
+        spReport->SetFieldb0(m_b0);
+        spReport->SetFieldc0(m_c8);
+        spReport->SetFieldc8(m_158);
+        FUN_140d86260()->vfunc_48(spReport);
+    }
+}
+
+// @0x141a86920
+void UIPopUpMenu::FUN_141a86920()
+{
+    if (FUN_141482e80()->m_50 != 0)
+        FUN_141951f70(FUN_141482e80()->m_50, m_90);
+}
+
+// @0x141a86970
+void UIPopUpMenu::FUN_141a86970()
+{
+    if (FUN_1418fd330(m_a8) != 0)
+        FUN_1418fde20(m_a0, m_a8, m_110, m_90, Delegate<bool(int, const CMsgBoxData&)>(this, &UIPopUpMenu::FUN_141a7e020));
+}
+
+// @0x141a86a50
+void UIPopUpMenu::FUN_141a86a50()
+{
+    if (FUN_1418fd580(m_a8) != 0)
+    {
+        COutPacket packet(0x51, 0);
+        packet.Encode1(1);
+        packet.COutPacket::vfunc_o10_8(m_90);
+        FUN_140710590(packet);
+    }
+}
+
+// @0x141a86ad0
+void UIPopUpMenu::FUN_141a86ad0()
+{
+    if (m_1a8.m_08 == DAT_143ab2828)
+    {
+        FUN_1403ed2b0()->FUN_141adc530(0x4f38);
+    }
+    else
+    {
+        COutPacket packet(0x78, 0);
+        packet.Encode1(0x10);
+        packet.Encode8(m_1a8.m_08);
+        packet.Encode8(m_1a8.m_20);
+        FUN_140710590(packet);
+    }
+}
+
+// @0x141a86b80
+void UIPopUpMenu::FUN_141a86b80()
+{
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe != 0)
+        pMe->FUN_14152b800(FUN_1416769f0(pMe));
+}
+
+// @0x141a86bd0
+void UIPopUpMenu::FUN_141a86bd0()
+{
+    if (FUN_140166410()->FUN_14036d570(0x100))
+    {
+        COutPacket packet(0x37, 0);
+        packet.Encode1(0x39);
+        packet.COutPacket::vfunc_o10_6(FUN_14016a600(m_90, 0));
+        FUN_140710590(packet);
+    }
+}
+
+// @0x141a86ca0
+void UIPopUpMenu::FUN_141a86ca0()
+{
+    __int64 nCharId = m_a8;
+    if (FUN_1403ed2b0()->FUN_141adc940(0x4f4e) != 0)
+        FUN_1403ed2b0()->FUN_141adc530(0x4f4e);
+    Unk_PmCouple* pCouple = reinterpret_cast<Unk_PmCouple*>(FUN_1417f5780(0x4f4e));
+    if (pCouple != 0)
+        pCouple->FUN_140bed2a0(nCharId);
+}
+
+// @0x141a86d20
+void UIPopUpMenu::FUN_141a86d20()
+{
+    if (!m_90.IsEmpty())
+    {
+        COutPacket packet(0x90, 0);
+        packet.Encode1(1);
+        packet.COutPacket::vfunc_o10_8(m_90);
+        FUN_140710590(packet);
+    }
+}
+
+// @0x141a86db0
+void UIPopUpMenu::FUN_141a86db0()
+{
+    if (!m_90.IsEmpty())
+    {
+        COutPacket packet(0x90, 0);
+        packet.Encode1(3);
+        packet.COutPacket::vfunc_o10_8(m_90);
+        FUN_140710590(packet);
+    }
+}
+
+// @0x141a86e40
+void UIPopUpMenu::FUN_141a86e40()
+{
+    if (!m_90.IsEmpty())
+    {
+        COutPacket packet(0x90, 0);
+        packet.Encode1(2);
+        packet.COutPacket::vfunc_o10_8(m_90);
+        FUN_140710590(packet);
+    }
+}
+
+// @0x141a86ed0
+void UIPopUpMenu::FUN_141a86ed0()
+{
+    if (!m_90.IsEmpty())
+        FUN_1413b71c0(FUN_1403ed290(), m_90);
+}
+
+// @0x141a86f50
+void UIPopUpMenu::FUN_141a86f50()
+{
+    if (!m_90.IsEmpty() && FUN_140900550())
+    {
+        CStringW strText = FUN_14028b8e0(CStringW(L"s_wedding_msg_box_propose_confirm"));
+        Unk_PmShowYesNo(strText, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UIPopUpMenu::FUN_141a7e100), m_90);
+    }
+}
+
+// @0x141a87100
+void UIPopUpMenu::FUN_141a87100()
+{
+    if (!m_90.IsEmpty())
+        FUN_141a84130(0, 3);
+}
+
+// @0x141a87150
+void UIPopUpMenu::FUN_141a87150()
+{
+    if (!m_90.IsEmpty())
+        FUN_141a84130(1, 8);
+}
+
+// @0x141a871a0
+void UIPopUpMenu::FUN_141a871a0()
+{
+    if (m_90.IsEmpty())
+        return;
+    UIDialog* pDialog;
+    if (m_d8 == 0 || (pDialog = FUN_140ae5990(0x4e4d)) == 0 || pDialog->vfunc_55() != 0 ||
+        FUN_1418d6960(reinterpret_cast<Unk_PmCommunity*>(pDialog)) != 4)
+    {
+        FUN_141a84130(0, 5);
+    }
+    else
+    {
+        CString strHome = FUN_140719530(m_d8);
+        Unk_FcUIMsg msg;
+    FUN_1422e4490(&msg);
+        FUN_1422b82b0(&msg, "editMemoHomeBlock");
+        FUN_1422b82b0(&msg, strHome);
+        static_cast<IMessageListener*>(pDialog)->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+    }
+}

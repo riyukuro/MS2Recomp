@@ -27,7 +27,34 @@ public:
         virtual bool vfunc_3(const DelegateImplBase* p) const = 0;     // 3 equals
     };
 
+    // Bound-member implementation, as for the one-argument form (appended by the uipartydialog.cpp agent: UIPopUpMenu's
+    // menu handlers, 0x141a87400 / 0x141a87fd0 / 0x141a89cf0 / 0x141a89de0 / 0x141a89f50).
+    template <class F>
+    class DelegateImpl : public DelegateImplBase
+    {
+    public:
+        DelegateImpl(const DelegateImpl& o) : m_f(o.m_f) {}
+        DelegateImpl(const F& f) : m_f(f) {}
+        virtual DelegateImplBase* vfunc_1() const { return new DelegateImpl(*this); }
+        virtual R vfunc_2() { return (m_f.first->*m_f.second)(); }
+        virtual bool vfunc_3(const DelegateImplBase* p) const
+        {
+            const DelegateImpl* o = dynamic_cast<const DelegateImpl*>(p);
+            if (!o)
+                return false;
+            return m_f == o->m_f;
+        }
+
+    private:
+        F m_f;
+    };
+
     Delegate() : m_pImpl(0) {}
+    template <class C>
+    Delegate(C* const& obj, R (C::*const& f)())
+        : m_pImpl(new DelegateImpl<std::pair<C*, R (C::*)()> >(std::make_pair(obj, f)))
+    {
+    }
     Delegate(const Delegate& o);
     ~Delegate();
     Delegate& operator=(const Delegate& o);

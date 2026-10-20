@@ -161,6 +161,9 @@ MS2_CHECK_SIZE(UIPerformanceDialog, 0x188);
 #include "ms2/placeholder/uiheadupdisplay.h"
 #include "ms2/placeholder/uientityeventlistener.h"
 #include "ms2/placeholder/uiugceventlistener.h"
+#include "ms2/client/ms2/alphaanimation.h"     // Delegate<void()>
+
+extern NiPoint3 DAT_143b01a60;                              // zero position
 
 class ASScrollingList;
 class PCBase;
@@ -175,13 +178,13 @@ public:
     struct Unk_PmA                                                  // ctor 0x140c30440, dtor 0x140c30550
     {
         Unk_PmA() : m_00(0), m_08(0), m_10(L""), m_18(0), m_20(0) {}
-        void* m_00; void* m_08; CStringW m_10; int m_18; void* m_20;
+        __int64 m_00; __int64 m_08; CStringW m_10; int m_18; __int64 m_20;
     };
     struct Unk_PmB                                                  // ctor 0x140c303c0, dtor 0x140c30510
     {
         Unk_PmB() : m_00(0), m_08(0), m_10(L""), m_18(0), m_20(L"") {}
-        void* m_00; int m_08; CStringW m_10; void* m_18; CStringW m_20;
-        void* m_28;                                                 // not set by the ctor
+        __int64 m_00; int m_08; CStringW m_10; __int64 m_18; CStringW m_20;
+        __int64 m_28;                                                 // not set by the ctor
     };
     float m_x, m_y;
     int m_a, m_b, m_c;
@@ -192,55 +195,170 @@ public:
 };
 MS2_CHECK_SIZE(Unk_PopupMenuInfo, 0x80);
 
+// The target of a menu (a stack value built by the PopUpMenu* entry points, passed to FUN_141a82140). Ctor/dtor are inline
+// COMDATs (0x141a882d0 / 0x141a884d0).
+struct Unk_PmTarget
+{
+    Unk_PmTarget() : m_pos(DAT_143b01a60), m_nLevel(0), m_nCharId(0), m_bOnline(1), m_nTrophy(0), m_n20(0), m_nJobCode(0), m_b38(false) {}
+    NiPoint3 m_pos;                     // +0x00 world (or screen) position
+    unsigned m_nLevel;                  // +0x0c "level"
+    __int64 m_nCharId;                  // +0x10
+    int m_bOnline;                      // +0x18
+    int m_nTrophy;                      // +0x1c "trophy"
+    int m_n20;                          // +0x20
+    int m_nJobCode;                     // +0x24 "jobcode"
+    CString m_strImage;                 // +0x28 "imgpath"
+    CStringW m_strName;                 // +0x30 "name"
+    bool m_b38;                         // +0x38
+};
+MS2_CHECK_SIZE(Unk_PmTarget, 0x40);
+
+class CProxyGameObject;
+class CUgcRegistBanner;
+class CClubMember;
+class CGuildMember;
+class CBuddy;
+class MyPC;
+class GameObject;
+class ASArray;
+class CMsgBoxData;
+class CInPacket;
+template <class T> class Unk_PayloadPtr;
+struct HomeBlockInfo;
+class Unk_PmUserEntry;
+
 class UIPopUpMenu : public UIHeadUpDisplay, public UIEntityEventListener, public UIUGCEventListener
 {
 public:
-    UIPopUpMenu();                                              // 0x141a7d580
-    virtual ~UIPopUpMenu();                                     //  0 0x141a88510 (??_G 0x141a888d0)
+    UIPopUpMenu();                                              // 0x141a7d580 (the dtor is implicit: 0x141a88510, ??_G 0x141a888d0)
     virtual CString vfunc_1();                                  //  1 0x141a7d850 "PopUpMenu"
     virtual void vfunc_2();                                     //  2 0x141a7d8a0
     virtual void vfunc_3();                                     //  3 0x141a7d960
     virtual int vfunc_13();                                     // 13 0x141a7dc90
     virtual void vfunc_15();                                    // 15 0x141a7daf0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141a7da20
-    virtual int vfunc_48();                                     // 48 0x141a88d40
+    virtual int vfunc_48() { return 0x4e39; }                   // 48 0x141a88d40 (inline)
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141a7dd30
-    virtual void vfunc_o70_2(const void* p);                    // UIEntityEventListener 2 0x141a7dc20
-    virtual void vfunc_4(void* p);                              // UIEntityEventListener 4 0x141a7df60
-    virtual void vfunc_ugc_1(void* p, CString str);             // UIUGCEventListener 1 0x141a7e1a0
+    virtual void vfunc_o70_2(const void* pId);                  // UIEntityEventListener 2 0x141a7dc20 (an efd::UniversalID)
+    virtual void vfunc_4(void* pProxy);                         // UIEntityEventListener 4 0x141a7df60 (a by-value MS2Ptr<CProxyGameObject>)
+    virtual void vfunc_ugc_1(void* pId, CString strImage);      // UIUGCEventListener 1 0x141a7e1a0
     // ---- non-virtual members (sorted by address) ----
-    void FUN_141a7e280(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType);
-    void FUN_141a7f190(const Unk_PopupMenuInfo& info, CPartyMember* pMember);
+    bool FUN_141a7e020(int nButton, const CMsgBoxData& data);   // report confirm
+    bool FUN_141a7e0a0(int nButton, const CMsgBoxData& data);   // party vote kick confirm
+    bool FUN_141a7e100(int nButton, const CMsgBoxData& data);   // wedding propose confirm
+    void FUN_141a7e280(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType);     // PopUpMenu
+    void FUN_141a7e870(const Unk_PopupMenuInfo& info, PCBase* pTarget, int nType);     // PopUpMenu (fitting / npc)
+    void FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGameObject> spProxy, int nType);
+    void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nCharId, void* pAccount, int nType, int nDir);
+    void FUN_141a7f190(const Unk_PopupMenuInfo& info, CPartyMember* pMember);         // PopUpMenuFromPartyMember
+    void FUN_141a7f510(const Unk_PopupMenuInfo& info, CGuildMember* pMember);         // PopUpMenuFromGuildMember
+    void FUN_141a7f890(const Unk_PopupMenuInfo& info, Unk_PmUserEntry* pEntry, const CStringW& strText, int nType);
+    void FUN_141a7f950(const Unk_PopupMenuInfo& info, __int64 nBuddyId);
+    void FUN_141a7fc50(const Unk_PopupMenuInfo& info, __int64 nHomeId);
+    void FUN_141a7ff60(const Unk_PopupMenuInfo& info, int nIndex, MS2Ptr<CUgcRegistBanner> spBanner);
+    void FUN_141a80210(const Unk_PopupMenuInfo& info, CClubMember* pMember);          // PopUpMenuFromClubMember
+    void FUN_141a805f0(const Unk_PopupMenuInfo& info, void* pAccount, unsigned __int64 nCharId, const CStringW& strName, const CStringW& strText, int nType);
+    void FUN_141a80670(const Unk_PopupMenuInfo& info);
     void FUN_141a80770();                                       // close
-    int FUN_141a80880();                                        // m_80
+    int FUN_141a80880();                                        // m_100 (closed)
+    __int64 FUN_141a808a0();                                    // m_a8
     CString FUN_141a808c0();                                    // the request key (m_88)
+    void FUN_141a80910();                                       // copy the own guild
+    void FUN_141a809e0(__int64 nGuildId, const CStringW& strGuild, const CString& strMark);
+    void FUN_141a80a50(CInPacket& packet);                      // packet 0x53
+    void FUN_141a80af0(const Unk_PopupMenuInfo& info);          // take the request
+    void FUN_141a80c40();                                       // register the menu handlers
+    int FUN_141a82140(const Unk_PmTarget& target, int nFlags, int nType);   // Open
+    int FUN_141a828a0(CStringW strName, const Unk_PopupMenuInfo& info, int nMode, int nDir);   // OpenFromCharName
+    void FUN_141a82dd0();                                       // reset
+    int FUN_141a82ed0(GameObject* pObject, NiPoint3& out, float fDir);
+    int FUN_141a82f30(const NiPoint3& pos, NiPoint3& out, float fDir);
+    void FUN_141a82fb0(const CString& strImage);
+    int FUN_141a83080(GameObject* pObject);                     // target kind
+    void FUN_141a832e0(GameObject* pObject, CStringW& strName);
+    int FUN_141a834e0(unsigned nFlags, int nType, const CStringW& strName, int nDir);
+    int FUN_141a83810(unsigned nFlags, int nType, const Unk_PmTarget& target);
+    float FUN_141a83db0();                                      // camera height offset
+    void FUN_141a83ed0(int nQuery, int nKind);
+    void FUN_141a84130(int nQuery, int nKind);
+    void FUN_141a842f0();
+    void FUN_141a84320(ASArray& menu);
+    void FUN_141a844a0(unsigned nMenuId);                       // AddPopupMenu
+    void FUN_141a84520(int nType, int bOnline, __int64 nCharId);
+    void FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, int bOnline);
+    void FUN_141a847c0(int nType, MyPC* pMe, CBuddy* pBuddy);
+    void FUN_141a84860(int nType, MyPC* pMe, CBuddy* pBuddy);
+    void FUN_141a848d0(int nType, int bOnline, __int64 nCharId);
+    void FUN_141a84940(int nType, int bOnline);
+    void FUN_141a84980(int nType, int bOnline);
+    void FUN_141a849c0(int nType, __int64 nCharId);
+    void FUN_141a84a10(int nType, __int64 nCharId);
+    void FUN_141a84a60(int nType);
+    void FUN_141a84a90(int nType);
+    void FUN_141a84ac0(int nType, __int64 nCharId);
+    void FUN_141a84b10(int nType);
+    void FUN_141a84b40(int nType, MyPC* pMe, const CStringW& strName);
+    void FUN_141a84c60(int nType, MyPC* pMe, __int64 nCharId);
+    void FUN_141a84cb0(int nType, MyPC* pMe, Unk_PayloadPtr<HomeBlockInfo> spHome);
+    // menu handlers (m_160)
+    void FUN_141a84d40();
+    void FUN_141a84da0();
+    void FUN_141a84df0();
+    void FUN_141a84f60();
+    void FUN_141a84f90();
+    void FUN_141a85010();
+    void FUN_141a85120();
+    void FUN_141a85230();
+    void FUN_141a853a0();
+    void FUN_141a853c0();
+    void FUN_141a85410();
+    void FUN_141a85460();
+    void FUN_141a854b0();
+    void FUN_141a85500();
+    void FUN_141a85680();
+    void FUN_141a85760();
+    void FUN_141a86920();
+    void FUN_141a86970();
+    void FUN_141a86a50();
+    void FUN_141a86ad0();
+    void FUN_141a86b80();
+    void FUN_141a86bd0();
+    void FUN_141a86ca0();
+    void FUN_141a86d20();
+    void FUN_141a86db0();
+    void FUN_141a86e40();
+    void FUN_141a86ed0();
+    void FUN_141a86f50();
+    void FUN_141a87100();
+    void FUN_141a87150();
+    void FUN_141a871a0();
 
     MS2_LAYOUT_FRIEND;
-    int m_80;
-    int m_84;
-    CString m_88;
-    CStringW m_90;
-    void* m_98;
-    void* m_a0;
-    void* m_a8;
-    CStringW m_b0;
-    void* m_b8;
-    CString m_c0;
-    int m_c8;
-    void* m_d0;
-    void* m_d8;
+    int m_80;                                                   // menu kind (1: on a world object, 2/3: at the cursor)
+    int m_84;                                                   // AS "type"
+    CString m_88;                                               // request key
+    CStringW m_90;                                              // target name
+    unsigned __int64 m_98;                                      // target object id
+    __int64 m_a0;                                               // target account id
+    __int64 m_a8;                                               // target character id
+    CStringW m_b0;                                              // target name (report)
+    __int64 m_b8;                                               // ugc banner id
+    CString m_c0;                                               // ugc banner text
+    int m_c8;                                                   // ugc banner index
+    __int64 m_d0;                                               // buddy id
+    __int64 m_d8;                                               // home block id
     NiPoint3 m_e0;
-    MS2Ptr<ASScrollingList> m_f0;
-    int m_100;
-    CStringW m_108;
-    int m_110;
-    ATL::CAtlArray<void*> m_118;                                // element type unrecovered
-    void* m_138;
-    CStringW m_140;
-    CString m_148;
+    MS2Ptr<ASScrollingList> m_f0;                               // the open menu list
+    int m_100;                                                  // closed
+    CStringW m_108;                                             // report text
+    int m_110;                                                  // report kind
+    ATL::CAtlArray<unsigned int> m_118;                         // menu ids of the open menu
+    __int64 m_138;                                              // guild id
+    CStringW m_140;                                             // guild name
+    CString m_148;                                              // guild mark
     void* m_150;
-    CString m_158;
-    ATL::CAtlMap<int, int> m_160;                               // key/value types unrecovered (17 bins)
+    CString m_158;                                              // profile image
+    ATL::CAtlMap<int, Delegate<void()> > m_160;                 // menu id -> handler
     Unk_PopupMenuInfo::Unk_PmA m_1a8;
     Unk_PopupMenuInfo::Unk_PmB m_1d0;
 };

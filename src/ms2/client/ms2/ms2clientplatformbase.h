@@ -75,6 +75,22 @@ public:
     void SetFieldb8(CStringW str) { m_strb8 = str; }                // @0x140ec3d40
     void SetFieldc0(__int64 n) { m_nc0 = n; }                       // @0x140ec3d90
     void SetFieldc8(CStringA str) { m_strc8 = str; }                // @0x140ec3db0
+    // setters (inline COMDATs of uipartydialog.cpp: UIPopUpMenu's report menu)
+    void SetField40(__int64 n) { m_n40 = n; }                       // @0x141a89b30
+    void SetField48(__int64 n) { m_n48 = n; }                       // @0x141a89b90
+    void SetField50(CStringA str) { m_str50 = str; }                // @0x141a89b50
+    void SetField58(int n) { m_n58 = n; }                           // @0x141a897f0
+    void SetField78(CStringW str) { m_str78 = str; }                // @0x141a89810
+    void SetField80(CStringW str) { m_str80 = str; }                // @0x141a89990
+    void SetField88(__int64 n) { m_n88 = n; }                       // @0x141a898c0
+    void SetField90(int n) { m_n90 = n; }                           // @0x141a89850 (the exe stores 4 bytes)
+    void SetField98(CStringW str) { m_str98 = str; }                // @0x141a89870
+    void SetFieldd0(CStringW str) { m_strd0 = str; }                // @0x141a899e0
+    void SetFielde0(__int64 n) { m_ne0 = n; }                       // @0x141a89a30
+    void SetFieldf0(int n) { m_nf0 = n; }                           // @0x141a89b10
+    void SetFieldf8(__int64 n) { m_nf8 = n; }                       // @0x141a89af0
+    void SetField100(CStringW str) { m_str100 = str; }              // @0x141a89aa0
+    void SetField108(CStringA str) { m_str108 = str; }              // @0x141a89a50
 
     Unk_ReportId m_id;                          // +0x18
     int m_n28;
