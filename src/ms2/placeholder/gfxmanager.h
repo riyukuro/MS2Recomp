@@ -7,11 +7,15 @@
 // Declarations only; the layout is unknown (never instantiate or embed).
 #pragma once
 
+#include <afx.h>
+
 class GFxMovie;
 
 class GFxManager
 {
 public:
     GFxMovie* FUN_1422b01a0(int nMovieId);                          // the movie of a movie id (NULL if not loaded)
+    bool FUN_1422b0610(const CString& strSound, const CString& strArg); // play a UI sound (NotifySwfEntity "playSound")
+    int FUN_1422aeed0(int n);                                       // input state query (NotifyDragSlot passes 2: drop outside any slot)
 };
 GFxManager* FUN_14025e7a0();                                        // the singleton
