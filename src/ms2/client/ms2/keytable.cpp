@@ -288,6 +288,7 @@ int CKeyTable::stKeyData::FUN_1414287c0(int nType, __int64 nCode, int nSlot, int
         return 0;
     return 1;
 }
+MS2_REPLACE_METHOD(0x1414287C0, CKeyTable::stKeyData, FUN_1414287c0, 99, 0x0097B8F9);
 
 // @0x141428830
 CKeyTable::CKeyTable()
@@ -415,6 +416,7 @@ void CKeyTable::FUN_1414294e0(int nKey)
         FUN_140710590(packet);
     }
 }
+MS2_REPLACE_METHOD(0x1414294E0, CKeyTable, FUN_1414294e0, 281, 0xE9AD9B88);
 
 // @0x141429600
 void CKeyTable::FUN_141429600()
@@ -444,6 +446,7 @@ void CKeyTable::FUN_141429600()
     FUN_140710590(packet);
     m_bDirty = 0;
 }
+MS2_REPLACE_METHOD(0x141429600, CKeyTable, FUN_141429600, 467, 0x64A12F3D);
 
 // @0x1414297e0
 int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
@@ -514,6 +517,7 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
     FUN_1414321f0();
     return 1;
 }
+MS2_REPLACE_METHOD(0x1414297E0, CKeyTable, FUN_1414297e0, 1645, 0x48DBACBE);
 
 // @0x141429e60
 int CKeyTable::FUN_141429e60(const CString& strPath)
@@ -581,6 +585,7 @@ int CKeyTable::FUN_141429e60(const CString& strPath)
     FUN_1414321f0();
     return 1;
 }
+MS2_REPLACE_METHOD(0x141429E60, CKeyTable, FUN_141429e60, 1700, 0xFF8CA100);
 
 // @0x14142a510
 void CKeyTable::FUN_14142a510()
@@ -625,6 +630,7 @@ void CKeyTable::FUN_14142a800()
     }
     FUN_1414321f0();
 }
+MS2_REPLACE_METHOD(0x14142A800, CKeyTable, FUN_14142a800, 159, 0xE92B4FDD);
 
 // @0x14142a8b0
 void CKeyTable::FUN_14142a8b0(__int64 nAction)
@@ -633,6 +639,7 @@ void CKeyTable::FUN_14142a8b0(__int64 nAction)
     str.Format("%I64u", nAction);
     FUN_1422c9380(str);
 }
+MS2_REPLACE_METHOD(0x14142A8B0, CKeyTable, FUN_14142a8b0, 85, 0x3BC4C506);
 
 // @0x14142a910
 void CKeyTable::FUN_14142a910()
@@ -713,6 +720,7 @@ int CKeyTable::FUN_14142b1c0(int nKey, int nType, __int64 nAction, int nSlot, in
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142B1C0, CKeyTable, FUN_14142b1c0, 137, 0x8F634E0D);
 
 // @0x14142b250
 int CKeyTable::FUN_14142b250(int nKey, int nType, __int64 nAction, int nSlot, int nPriority)
@@ -727,6 +735,7 @@ int CKeyTable::FUN_14142b250(int nKey, int nType, __int64 nAction, int nSlot, in
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142B250, CKeyTable, FUN_14142b250, 159, 0xD7F8BAAF);
 
 // @0x14142b300
 int CKeyTable::FUN_14142b300(int nKey)
@@ -735,6 +744,7 @@ int CKeyTable::FUN_14142b300(int nKey)
         return 1;
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142B300, CKeyTable, FUN_14142b300, 45, 0x00F4DB80);
 
 // @0x14142b340
 int CKeyTable::FUN_14142b340(int nAction)
@@ -910,18 +920,21 @@ int CKeyTable::FUN_14142b340(int nAction)
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x14142B340, CKeyTable, FUN_14142b340, 1757, 0x7F357C0C);
 
 // @0x14142bad0
 void CKeyTable::FUN_14142bad0(int nMode)
 {
     m_nMode = nMode;
 }
+MS2_REPLACE_METHOD(0x14142BAD0, CKeyTable, FUN_14142bad0, 22, 0x566B64E3);
 
 // @0x14142baf0
 int CKeyTable::FUN_14142baf0()
 {
     return m_nMode;
 }
+MS2_REPLACE_METHOD(0x14142BAF0, CKeyTable, FUN_14142baf0, 14, 0xC2D0886F);
 
 // @0x14142bb10
 void CKeyTable::FUN_14142bb10()
@@ -1014,6 +1027,7 @@ void CKeyTable::FUN_14142bb10()
         }
     }
 }
+MS2_REPLACE_METHOD(0x14142BB10, CKeyTable, FUN_14142bb10, 1449, 0x8EF2B619);
 
 // @0x14142c0c0
 int CKeyTable::FUN_14142c0c0(int nSkillId)
@@ -1040,6 +1054,7 @@ int CKeyTable::FUN_14142c0c0(int nSkillId)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142C0C0, CKeyTable, FUN_14142c0c0, 415, 0x7B9191EF);
 
 // @0x14142c270
 int CKeyTable::FUN_14142c270(int nAction)
@@ -1054,6 +1069,7 @@ int CKeyTable::FUN_14142c270(int nAction)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142C270, CKeyTable, FUN_14142c270, 138, 0x83F4819B);
 
 // @0x14142c300
 int CKeyTable::FUN_14142c300(int nSkillId)
@@ -1080,6 +1096,7 @@ int CKeyTable::FUN_14142c300(int nSkillId)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142C300, CKeyTable, FUN_14142c300, 412, 0x9817887F);
 
 // @0x14142c4b0
 int CKeyTable::FUN_14142c4b0(int nAction)
@@ -1094,6 +1111,7 @@ int CKeyTable::FUN_14142c4b0(int nAction)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142C4B0, CKeyTable, FUN_14142c4b0, 135, 0xBC98637E);
 
 // @0x14142c540
 int CKeyTable::FUN_14142c540(int nAction)
@@ -1108,6 +1126,7 @@ int CKeyTable::FUN_14142c540(int nAction)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142C540, CKeyTable, FUN_14142c540, 135, 0x7AAC129D);
 
 // @0x14142c5d0
 void CKeyTable::FUN_14142c5d0(ATL::CAtlArray<Unk_MyPCKeyId>& aOut)
@@ -1123,6 +1142,7 @@ void CKeyTable::FUN_14142c5d0(ATL::CAtlArray<Unk_MyPCKeyId>& aOut)
         aOut.Add(nKey);
     }
 }
+MS2_REPLACE_METHOD(0x14142C5D0, CKeyTable, FUN_14142c5d0, 227, 0xFF2FE0A8);
 
 // @0x14142c6c0
 void CKeyTable::FUN_14142c6c0(ATL::CAtlArray<Unk_MyPCKeyId>& aOut, int nSkillId)
@@ -1140,12 +1160,14 @@ void CKeyTable::FUN_14142c6c0(ATL::CAtlArray<Unk_MyPCKeyId>& aOut, int nSkillId)
         aOut.Add(nKey);
     }
 }
+MS2_REPLACE_METHOD(0x14142C6C0, CKeyTable, FUN_14142c6c0, 349, 0x6D66EC02);
 
 // @0x14142c830
 int CKeyTable::FUN_14142c830(int nKey, int& nPair)
 {
     return m_pairKeys.Lookup(nKey, nPair) != 0;
 }
+MS2_REPLACE_METHOD(0x14142C830, CKeyTable, FUN_14142c830, 81, 0x7206F89F);
 
 // @0x14142c890
 MS2Ptr<CKeyTable::stKeyData> CKeyTable::FUN_14142c890(int nKey)
@@ -1155,6 +1177,7 @@ MS2Ptr<CKeyTable::stKeyData> CKeyTable::FUN_14142c890(int nKey)
         return spKey;
     return MS2Ptr<stKeyData>(0);
 }
+MS2_REPLACE_METHOD(0x14142C890, CKeyTable, FUN_14142c890, 169, 0x3D0D87EE);
 
 // @0x14142c940
 int CKeyTable::FUN_14142c940(__int64 nAction, int nPriority)
@@ -1175,6 +1198,7 @@ int CKeyTable::FUN_14142c940(__int64 nAction, int nPriority)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142C940, CKeyTable, FUN_14142c940, 243, 0xBA488D8E);
 
 // @0x14142ca40
 int CKeyTable::FUN_14142ca40(int nId, int nPriority)
@@ -1195,6 +1219,7 @@ int CKeyTable::FUN_14142ca40(int nId, int nPriority)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142CA40, CKeyTable, FUN_14142ca40, 240, 0xEF244DAB);
 
 // @0x14142cb40
 int CKeyTable::FUN_14142cb40(unsigned nIndex, int nPriority)
@@ -1203,12 +1228,14 @@ int CKeyTable::FUN_14142cb40(unsigned nIndex, int nPriority)
         return 0;
     return FUN_14142c940(m_quickSlotActions[(int)nIndex], nPriority);
 }
+MS2_REPLACE_METHOD(0x14142CB40, CKeyTable, FUN_14142cb40, 98, 0x88201520);
 
 // @0x14142cbb0
 size_t CKeyTable::FUN_14142cbb0()
 {
     return m_quickSlotActions.GetCount();
 }
+MS2_REPLACE_METHOD(0x14142CBB0, CKeyTable, FUN_14142cbb0, 33, 0x2B1D3988);
 
 // @0x14142cbe0
 __int64 CKeyTable::FUN_14142cbe0(unsigned nIndex)
@@ -1217,6 +1244,7 @@ __int64 CKeyTable::FUN_14142cbe0(unsigned nIndex)
         return 0;
     return m_quickSlotActions[(int)nIndex];
 }
+MS2_REPLACE_METHOD(0x14142CBE0, CKeyTable, FUN_14142cbe0, 78, 0xDE3D617A);
 
 // @0x14142cc40
 int CKeyTable::FUN_14142cc40(int nKey)
@@ -1233,6 +1261,7 @@ int CKeyTable::FUN_14142cc40(int nKey)
         return 0;
     return 1;
 }
+MS2_REPLACE_METHOD(0x14142CC40, CKeyTable, FUN_14142cc40, 89, 0x5FBDDE9B);
 
 // @0x14142cca0
 int CKeyTable::FUN_14142cca0(int nKey)
@@ -1242,6 +1271,7 @@ int CKeyTable::FUN_14142cca0(int nKey)
         return 0;
     return FUN_14142cf60(spKey);
 }
+MS2_REPLACE_METHOD(0x14142CCA0, CKeyTable, FUN_14142cca0, 161, 0x15AABA96);
 
 // @0x14142cd50
 int CKeyTable::FUN_14142cd50(int nKey, int nAction)
@@ -1256,6 +1286,7 @@ int CKeyTable::FUN_14142cd50(int nKey, int nAction)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142CD50, CKeyTable, FUN_14142cd50, 186, 0xB49DAE0B);
 
 // @0x14142ce10
 int CKeyTable::FUN_14142ce10(int nKey)
@@ -1271,12 +1302,14 @@ int CKeyTable::FUN_14142ce10(int nKey)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142CE10, CKeyTable, FUN_14142ce10, 244, 0x0EED7FEC);
 
 // @0x14142cf10
 int CKeyTable::FUN_14142cf10(__int64 nAction)
 {
     return Unk_BreakFind(m_quickSlotActions, nAction) != -1;
 }
+MS2_REPLACE_METHOD(0x14142CF10, CKeyTable, FUN_14142cf10, 70, 0xBDE6A588);
 
 // @0x14142cf60
 int CKeyTable::FUN_14142cf60(MS2Ptr<stKeyData> spKey)
@@ -1303,6 +1336,7 @@ int CKeyTable::FUN_14142cf60(MS2Ptr<stKeyData> spKey)
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x14142CF60, CKeyTable, FUN_14142cf60, 407, 0x9F237905);
 
 // @0x14142d100
 int CKeyTable::FUN_14142d100(int nKey)
@@ -1312,6 +1346,7 @@ int CKeyTable::FUN_14142d100(int nKey)
         return spKey->m_nType;
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142D100, CKeyTable, FUN_14142d100, 129, 0xB070A024);
 
 // @0x14142d190
 __int64 CKeyTable::FUN_14142d190(int nKey)
@@ -1321,6 +1356,7 @@ __int64 CKeyTable::FUN_14142d190(int nKey)
         return spKey->m_nCode;
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142D190, CKeyTable, FUN_14142d190, 134, 0x17DAE7B5);
 
 // @0x14142d220
 CStringW CKeyTable::FUN_14142d220(int nKey)
@@ -1353,6 +1389,7 @@ CStringW CKeyTable::FUN_14142d220(int nKey)
     }
     return L"";
 }
+MS2_REPLACE_METHOD(0x14142D220, CKeyTable, FUN_14142d220, 801, 0x02B623A0);
 
 // @0x14142d580
 CStringW CKeyTable::FUN_14142d580(int nKey)
@@ -1375,6 +1412,7 @@ CStringW CKeyTable::FUN_14142d580(int nKey)
         return L"RShift";
     return FUN_14142d220(nKey);
 }
+MS2_REPLACE_METHOD(0x14142D580, CKeyTable, FUN_14142d580, 433, 0xC3BED9B7);
 
 // @0x14142d760
 CStringW CKeyTable::FUN_14142d760(int nAction, int nPriority)
@@ -1383,6 +1421,7 @@ CStringW CKeyTable::FUN_14142d760(int nAction, int nPriority)
     int nKey = FUN_14142c940(nCode, nPriority);
     return FUN_14142d220(nKey);
 }
+MS2_REPLACE_METHOD(0x14142D760, CKeyTable, FUN_14142d760, 107, 0xA4DDC314);
 
 // @0x14142d7e0
 CStringW CKeyTable::FUN_14142d7e0(const int& nKey)
@@ -1396,6 +1435,7 @@ CStringW CKeyTable::FUN_14142d7e0(const int& nKey)
         return FUN_1401a9d70()->FUN_1418125b0((int)nAction);
     return FUN_1401a9d70()->FUN_1418125b0((int)nAction);
 }
+MS2_REPLACE_METHOD(0x14142D7E0, CKeyTable, FUN_14142d7e0, 442, 0x7180F4EA);
 
 // @0x14142d9b0
 int CKeyTable::FUN_14142d9b0(stKeyData* pKey)
@@ -1429,6 +1469,7 @@ int CKeyTable::FUN_14142d9b0(stKeyData* pKey)
     }
     return pKey->m_nSlot;
 }
+MS2_REPLACE_METHOD(0x14142D9B0, CKeyTable, FUN_14142d9b0, 264, 0xE98EBD47);
 
 // @0x14142dad0
 int CKeyTable::FUN_14142dad0(unsigned nKey)
@@ -1454,6 +1495,7 @@ int CKeyTable::FUN_14142dad0(unsigned nKey)
     }
     return FUN_14142d9b0(FUN_14142c890(nKey).get());
 }
+MS2_REPLACE_METHOD(0x14142DAD0, CKeyTable, FUN_14142dad0, 364, 0x70BB5782);
 
 // @0x14142dc50
 int CKeyTable::FUN_14142dc50(unsigned nSlot)
@@ -1465,6 +1507,7 @@ int CKeyTable::FUN_14142dc50(unsigned nSlot)
     pPage->Lookup(nSlot, entry);
     return entry.m_nSkillId;
 }
+MS2_REPLACE_METHOD(0x14142DC50, CKeyTable, FUN_14142dc50, 89, 0x47A866FE);
 
 // @0x14142dcb0
 int CKeyTable::FUN_14142dcb0(int nKey, int& nIndex)
@@ -1520,6 +1563,7 @@ int CKeyTable::FUN_14142dcb0(int nKey, int& nIndex)
     nIndex = -1;
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142DCB0, CKeyTable, FUN_14142dcb0, 527, 0x8EA568DC);
 
 // @0x14142ded0
 __int64 CKeyTable::FUN_14142ded0(unsigned nKey)
@@ -1535,6 +1579,7 @@ __int64 CKeyTable::FUN_14142ded0(unsigned nKey)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142DED0, CKeyTable, FUN_14142ded0, 204, 0x6795B4C7);
 
 // @0x14142dfb0
 int CKeyTable::FUN_14142dfb0(unsigned nKey)
@@ -1546,6 +1591,7 @@ int CKeyTable::FUN_14142dfb0(unsigned nKey)
         return pSlot->FUN_14175cc20();
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142DFB0, CKeyTable, FUN_14142dfb0, 113, 0x6C96D5D5);
 
 // @0x14142e030
 bool CKeyTable::FUN_14142e030(unsigned nSlot, Unk_SsQuickEntry& entry)
@@ -1555,6 +1601,7 @@ bool CKeyTable::FUN_14142e030(unsigned nSlot, Unk_SsQuickEntry& entry)
         return false;
     return pPage->Lookup(nSlot, entry);
 }
+MS2_REPLACE_METHOD(0x14142E030, CKeyTable, FUN_14142e030, 80, 0x4C1331C1);
 
 // @0x14142e090
 int CKeyTable::FUN_14142e090(int nSkillId, __int64 nItemUid)
@@ -1570,6 +1617,7 @@ int CKeyTable::FUN_14142e090(int nSkillId, __int64 nItemUid)
     }
     return -1;
 }
+MS2_REPLACE_METHOD(0x14142E090, CKeyTable, FUN_14142e090, 176, 0x7B0AC73E);
 
 // @0x14142e150
 int CKeyTable::FUN_14142e150(int nSkillId, int nItemId, __int64 nItemUid)
@@ -1585,6 +1633,7 @@ int CKeyTable::FUN_14142e150(int nSkillId, int nItemId, __int64 nItemUid)
     }
     return -1;
 }
+MS2_REPLACE_METHOD(0x14142E150, CKeyTable, FUN_14142e150, 198, 0xA02EF2EE);
 
 // @0x14142e220
 int CKeyTable::FUN_14142e220(__int64 nAction)
@@ -1597,12 +1646,14 @@ int CKeyTable::FUN_14142e220(__int64 nAction)
     }
     return -1;
 }
+MS2_REPLACE_METHOD(0x14142E220, CKeyTable, FUN_14142e220, 120, 0x63DE7BEB);
 
 // @0x14142e2a0
 void CKeyTable::FUN_14142e2a0(unsigned nSlot, const Unk_SsQuickEntry& entry)
 {
     FUN_14142e2e0(m_nQuickSlotPage, nSlot, entry);
 }
+MS2_REPLACE_METHOD(0x14142E2A0, CKeyTable, FUN_14142e2a0, 54, 0x2A0E873A);
 
 // @0x14142e2e0
 void CKeyTable::FUN_14142e2e0(int nPage, unsigned nSlot, const Unk_SsQuickEntry& entry)
@@ -1612,6 +1663,7 @@ void CKeyTable::FUN_14142e2e0(int nPage, unsigned nSlot, const Unk_SsQuickEntry&
         return;
     pPage->SetAt(nSlot, entry);
 }
+MS2_REPLACE_METHOD(0x14142E2E0, CKeyTable, FUN_14142e2e0, 76, 0x0E630629);
 
 // @0x14142e340
 int CKeyTable::FUN_14142e340(int bPressed)
@@ -1635,6 +1687,7 @@ int CKeyTable::FUN_14142e340(int bPressed)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142E340, CKeyTable, FUN_14142e340, 290, 0x98582408);
 
 // @0x14142e470
 int CKeyTable::FUN_14142e470(int bPressed)
@@ -1656,6 +1709,7 @@ int CKeyTable::FUN_14142e470(int bPressed)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142E470, CKeyTable, FUN_14142e470, 140, 0x4FA7D96B);
 
 // @0x14142e510
 bool CKeyTable::FUN_14142e510(unsigned nCombo)
@@ -1674,6 +1728,7 @@ bool CKeyTable::FUN_14142e510(unsigned nCombo)
     }
     return false;
 }
+MS2_REPLACE_METHOD(0x14142E510, CKeyTable, FUN_14142e510, 228, 0xC5362B35);
 
 // @0x14142e600
 void CKeyTable::FUN_14142e600(__int64 nAction, ATL::CAtlArray<Unk_MyPCKeyId>& aOut)
@@ -1687,6 +1742,7 @@ void CKeyTable::FUN_14142e600(__int64 nAction, ATL::CAtlArray<Unk_MyPCKeyId>& aO
         aOut.Add(nKey);
     }
 }
+MS2_REPLACE_METHOD(0x14142E600, CKeyTable, FUN_14142e600, 222, 0xF13E6B05);
 
 // @0x14142e6f0
 int CKeyTable::FUN_14142e6f0(int nKey)
@@ -1695,24 +1751,28 @@ int CKeyTable::FUN_14142e6f0(int nKey)
         return 1;
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142E6F0, CKeyTable, FUN_14142e6f0, 56, 0x1D23C6E6);
 
 // @0x14142e730
 void CKeyTable::FUN_14142e730(int nKey)
 {
     m_shortKeys.SetAt(nKey, nKey);
 }
+MS2_REPLACE_METHOD(0x14142E730, CKeyTable, FUN_14142e730, 47, 0x7BDF8918);
 
 // @0x14142e770
 void CKeyTable::FUN_14142e770(int nKey)
 {
     m_shortKeys.RemoveKey(nKey);
 }
+MS2_REPLACE_METHOD(0x14142E770, CKeyTable, FUN_14142e770, 42, 0x359C743D);
 
 // @0x14142e7a0
 int CKeyTable::FUN_14142e7a0()
 {
     return m_nLocked;
 }
+MS2_REPLACE_METHOD(0x14142E7A0, CKeyTable, FUN_14142e7a0, 14, 0x5ADC0513);
 
 // @0x14142e7c0
 int CKeyTable::FUN_14142e7c0(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount)
@@ -1737,6 +1797,7 @@ int CKeyTable::FUN_14142e7c0(int nSkillId, int nItemId, __int64 nItemUid, unsign
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14142E7C0, CKeyTable, FUN_14142e7c0, 245, 0x4845B103);
 
 // @0x14142e8c0
 void CKeyTable::FUN_14142e8c0(MS2Ptr<CSkillSet> spSet)
@@ -1877,6 +1938,7 @@ void CKeyTable::FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsig
         }
     }
 }
+MS2_REPLACE_METHOD(0x14142EF50, CKeyTable, FUN_14142ef50, 607, 0x560846BE);
 
 // @0x14142f1c0
 void CKeyTable::FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid)
@@ -1931,6 +1993,7 @@ void CKeyTable::FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid)
     FUN_1414321f0();
     FUN_14092f690(nSkillId, nItemId, nItemUid, m_nQuickSlotPage, nSlot);
 }
+MS2_REPLACE_METHOD(0x14142F1C0, CKeyTable, FUN_14142f1c0, 668, 0xE69F370C);
 
 // @0x14142f470
 void CKeyTable::FUN_14142f470(int nPage, int nSlot)
@@ -1975,6 +2038,7 @@ void CKeyTable::FUN_14142f470(int nPage, int nSlot)
         FUN_14092f690(nSkillId, nItemId, nItemUid, nPage, nSlot);
     }
 }
+MS2_REPLACE_METHOD(0x14142F470, CKeyTable, FUN_14142f470, 650, 0xA4530BDC);
 
 // @0x14142f700
 void CKeyTable::FUN_14142f700()
@@ -2000,6 +2064,7 @@ int CKeyTable::FUN_14142f830(int nSlot)
         return nSlot;
     return nSlot;
 }
+MS2_REPLACE_METHOD(0x14142F830, CKeyTable, FUN_14142f830, 54, 0x89DB0C7A);
 
 // @0x14142f870
 int CKeyTable::FUN_14142f870(int nSlot)
@@ -2009,6 +2074,7 @@ int CKeyTable::FUN_14142f870(int nSlot)
         return nSlot;
     return nSlot;
 }
+MS2_REPLACE_METHOD(0x14142F870, CKeyTable, FUN_14142f870, 54, 0xBF6F947A);
 
 // The unit's log call (an FMT_VARIADIC wrapper over CLogString::FUN_1406530d0; instance 0x141432850).
 template <class T> void Unk_KtLogFormat(Unk_KtLog* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const T& first)
@@ -2051,6 +2117,7 @@ void CKeyTable::FUN_14142f8b0(CString strName)
     CString strFile = FUN_140540050("keySetting_{0}.xml", strName);
     FUN_1408710c0(&doc, FUN_140cc2a00(FUN_1412755f0(), strFile));
 }
+MS2_REPLACE_METHOD(0x14142F8B0, CKeyTable, FUN_14142f8b0, 843, 0x96150CB6);
 
 // @0x14142fc10
 void CKeyTable::FUN_14142fc10(CString strName)
@@ -2098,6 +2165,7 @@ void CKeyTable::FUN_14142fc10(CString strName)
         pSlot->vfunc_10();
     }
 }
+MS2_REPLACE_METHOD(0x14142FC10, CKeyTable, FUN_14142fc10, 978, 0x3C20ED15);
 
 // @0x14142fff0
 int CKeyTable::FUN_14142fff0()
@@ -2158,6 +2226,7 @@ int CKeyTable::FUN_141430470(__int64 nAction)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141430470, CKeyTable, FUN_141430470, 273, 0x5FDCA844);
 
 // @0x141430590
 MS2Ptr<CKeySettingParam> CKeyTable::FUN_141430590(__int64 nAction) const
@@ -2174,6 +2243,7 @@ MS2Ptr<CKeySettingParam> CKeyTable::FUN_141430590(__int64 nAction) const
     }
     return MS2Ptr<CKeySettingParam>(0);
 }
+MS2_REPLACE_METHOD(0x141430590, CKeyTable, FUN_141430590, 374, 0xBC02E11B);
 
 // @0x141430710
 CKeyTable::SettingList CKeyTable::FUN_141430710(int nCategory)
@@ -2182,6 +2252,7 @@ CKeyTable::SettingList CKeyTable::FUN_141430710(int nCategory)
     m_settings.Lookup(nCategory, spList);
     return spList;
 }
+MS2_REPLACE_METHOD(0x141430710, CKeyTable, FUN_141430710, 123, 0x8348C6B3);
 
 // @0x1414307a0
 void CKeyTable::FUN_1414307a0()
@@ -2215,6 +2286,7 @@ void CKeyTable::FUN_1414307a0()
         }
     }
 }
+MS2_REPLACE_METHOD(0x1414307A0, CKeyTable, FUN_1414307a0, 862, 0x918D9639);
 
 // @0x141430b10
 int CKeyTable::FUN_141430b10(__int64 nAction)
@@ -2226,6 +2298,7 @@ int CKeyTable::FUN_141430b10(__int64 nAction)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141430B10, CKeyTable, FUN_141430b10, 114, 0x0CC9897B);
 
 // @0x141430b90
 int CKeyTable::FUN_141430b90(int nKey)
@@ -2238,6 +2311,7 @@ int CKeyTable::FUN_141430b90(int nKey)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141430B90, CKeyTable, FUN_141430b90, 148, 0x314DB862);
 
 // @0x141430c30
 int CKeyTable::FUN_141430c30(int nKey)
@@ -2249,6 +2323,7 @@ int CKeyTable::FUN_141430c30(int nKey)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141430C30, CKeyTable, FUN_141430c30, 111, 0x141EF281);
 
 // @0x141430cb0
 int CKeyTable::FUN_141430cb0(int nKey)
@@ -2260,6 +2335,7 @@ int CKeyTable::FUN_141430cb0(int nKey)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141430CB0, CKeyTable, FUN_141430cb0, 111, 0xB349CD99);
 
 // @0x141430d30
 void CKeyTable::FUN_141430d30(__int64 nAction, int nKey, int nPriority, int nOldKey)
@@ -2280,6 +2356,7 @@ void CKeyTable::FUN_141430d30(__int64 nAction, int nKey, int nPriority, int nOld
             FUN_141431c80(nOldKey, 2, spKey->m_nCode, 0, 2, 1);
     }
 }
+MS2_REPLACE_METHOD(0x141430D30, CKeyTable, FUN_141430d30, 309, 0x36A93CDE);
 
 // @0x141430e70
 unsigned* CKeyTable::FUN_141430e70(unsigned* pOut, int nFirst, int nSecond, int nMode)
@@ -2292,6 +2369,7 @@ unsigned* CKeyTable::FUN_141430e70(unsigned* pOut, int nFirst, int nSecond, int 
     *pOut = packed.value;
     return pOut;
 }
+MS2_REPLACE_METHOD(0x141430E70, CKeyTable, FUN_141430e70, 93, 0x06A76195);
 
 // @0x141430ee0
 CStringW CKeyTable::FUN_141430ee0(int nFirst, int nSecond)
@@ -2310,6 +2388,7 @@ CStringW CKeyTable::FUN_141430ee0(int nFirst, int nSecond)
     strKey.Format(L"%s,%s", (const wchar_t*)spFirst->m_strName, (const wchar_t*)spSecond->m_strName);
     return strKey;
 }
+MS2_REPLACE_METHOD(0x141430EE0, CKeyTable, FUN_141430ee0, 431, 0xF8C5E308);
 
 // @0x1414310a0
 void CKeyTable::FUN_1414310a0(unsigned nKey, int* pFirst, int* pSecond)
@@ -2319,6 +2398,7 @@ void CKeyTable::FUN_1414310a0(unsigned nKey, int* pFirst, int* pSecond)
     *pFirst = packed.bytes.high + 0x91;
     *pSecond = packed.bytes.low + 0x91;
 }
+MS2_REPLACE_METHOD(0x1414310A0, CKeyTable, FUN_1414310a0, 68, 0x7BA7262D);
 
 // @0x1414310f0
 void CKeyTable::FUN_1414310f0(int nKey, int nOtherKey, __int64 nAction, __int64 nOtherAction)
@@ -2388,6 +2468,7 @@ void CKeyTable::FUN_1414310f0(int nKey, int nOtherKey, __int64 nAction, __int64 
         FUN_14142a8b0(nComboAction);
     }
 }
+MS2_REPLACE_METHOD(0x1414310F0, CKeyTable, FUN_1414310f0, 1506, 0x0411AC44);
 
 // @0x1414316e0
 void CKeyTable::FUN_1414316e0(int nKey, __int64 nAction)
@@ -2400,6 +2481,7 @@ void CKeyTable::FUN_1414316e0(int nKey, __int64 nAction)
         FUN_141431c80(nCombo, 2, 0, 0, 2, 1);
     }
 }
+MS2_REPLACE_METHOD(0x1414316E0, CKeyTable, FUN_1414316e0, 188, 0xE6CF03B9);
 
 // @0x1414317b0
 __int64 CKeyTable::FUN_1414317b0(__int64 nAction)
@@ -2413,6 +2495,7 @@ __int64 CKeyTable::FUN_1414317b0(__int64 nAction)
     }
     return nBase;
 }
+MS2_REPLACE_METHOD(0x1414317B0, CKeyTable, FUN_1414317b0, 104, 0xEB7B6208);
 
 // @0x141431820
 CStringW CKeyTable::FUN_141431820(int nKey)
@@ -2442,6 +2525,7 @@ CStringW CKeyTable::FUN_141431820(int nKey)
     }
     return L"";
 }
+MS2_REPLACE_METHOD(0x141431820, CKeyTable, FUN_141431820, 445, 0xA9F48A3D);
 
 // @0x1414319f0
 int CKeyTable::FUN_1414319f0()
@@ -2451,6 +2535,7 @@ int CKeyTable::FUN_1414319f0()
     else
         return 0;
 }
+MS2_REPLACE_METHOD(0x1414319F0, CKeyTable, FUN_1414319f0, 43, 0xD1F3830F);
 
 // @0x141431a30
 int CKeyTable::FUN_141431a30(int nKey)
@@ -2459,6 +2544,7 @@ int CKeyTable::FUN_141431a30(int nKey)
         return 1;
     return 0;
 }
+MS2_REPLACE_METHOD(0x141431A30, CKeyTable, FUN_141431a30, 29, 0x573705D5);
 
 // @0x141431a60
 int CKeyTable::FUN_141431a60(int nKey)
@@ -2467,6 +2553,7 @@ int CKeyTable::FUN_141431a60(int nKey)
         return 1;
     return 0;
 }
+MS2_REPLACE_METHOD(0x141431A60, CKeyTable, FUN_141431a60, 39, 0xB42A4CF0);
 
 // @0x141431a90
 int CKeyTable::FUN_141431a90(int nKey)
@@ -2477,6 +2564,7 @@ int CKeyTable::FUN_141431a90(int nKey)
         return 1;
     return 0;
 }
+MS2_REPLACE_METHOD(0x141431A90, CKeyTable, FUN_141431a90, 66, 0x3C69A6F2);
 
 // @0x141431ae0
 void CKeyTable::FUN_141431ae0(int nPage, bool bSend)
@@ -2500,6 +2588,7 @@ CKeyTable::QuickSlotPage* CKeyTable::FUN_141431c20(int nPage)
         return 0;
     return &m_quickSlots[nPage];
 }
+MS2_REPLACE_METHOD(0x141431C20, CKeyTable, FUN_141431c20, 79, 0x4BB3C385);
 
 // @0x141431c80
 int CKeyTable::FUN_141431c80(int nKey, int nType, __int64 nCode, int nSlot, int nPriority, int bSave)
@@ -2533,6 +2622,7 @@ int CKeyTable::FUN_141431c80(int nKey, int nType, __int64 nCode, int nSlot, int 
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x141431C80, CKeyTable, FUN_141431c80, 651, 0xF9583AF2);
 
 // @0x141431f20
 void CKeyTable::FUN_141431f20(int nKey)
@@ -2547,6 +2637,7 @@ void CKeyTable::FUN_141431f20(int nKey)
         FUN_1422c9380(str);
     }
 }
+MS2_REPLACE_METHOD(0x141431F20, CKeyTable, FUN_141431f20, 153, 0xDC75732D);
 
 // @0x141431fc0
 int CKeyTable::FUN_141431fc0()
@@ -2557,6 +2648,7 @@ int CKeyTable::FUN_141431fc0()
         return 0;
     return 1;
 }
+MS2_REPLACE_METHOD(0x141431FC0, CKeyTable, FUN_141431fc0, 63, 0x6C16D997);
 
 // @0x141432010
 int CKeyTable::FUN_141432010(int nAction)
@@ -2579,6 +2671,7 @@ int CKeyTable::FUN_141432010(int nAction)
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x141432010, CKeyTable, FUN_141432010, 462, 0x677DEC51);
 
 // @0x1414321f0
 void CKeyTable::FUN_1414321f0()
@@ -2598,6 +2691,7 @@ void CKeyTable::FUN_1414321f0()
     }
     FUN_140a94350()->vfunc_9();
 }
+MS2_REPLACE_METHOD(0x1414321F0, CKeyTable, FUN_1414321f0, 354, 0xEBF564A2);
 
 // @0x141432360
 void CKeyTable::FUN_141432360(int nSkillId)
@@ -2611,6 +2705,7 @@ void CKeyTable::FUN_141432360(int nSkillId)
             m_18.SetAt(nSkillId, nSkillId);
     }
 }
+MS2_REPLACE_METHOD(0x141432360, CKeyTable, FUN_141432360, 137, 0x7A083E09);
 
 // @0x1414323f0
 void CKeyTable::FUN_1414323f0(int nPage, unsigned nSlot, int nSkillId, int nItemId, __int64 nItemUid)
@@ -2626,6 +2721,7 @@ void CKeyTable::FUN_1414323f0(int nPage, unsigned nSlot, int nSkillId, int nItem
     entry.m_nItemUid = nItemUid;
     pPage->SetAt(nSlot, entry);
 }
+MS2_REPLACE_METHOD(0x1414323F0, CKeyTable, FUN_1414323f0, 125, 0xEA0D85D3);
 
 // @0x141432480
 TiXmlDocument CKeyTable::FUN_141432480(const CString& strPath)
@@ -2640,6 +2736,7 @@ TiXmlDocument CKeyTable::FUN_141432480(const CString& strPath)
     FUN_1408710c0(&doc, strPath);
     return doc;
 }
+MS2_REPLACE_METHOD(0x141432480, CKeyTable, FUN_141432480, 446, 0xBEC6CC5E);
 
 // @0x141432650
 int CKeyTable::FUN_141432650(int nCode)
