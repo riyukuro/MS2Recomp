@@ -15,7 +15,7 @@
 #include "ms2/ms2recover.h"
 #include <set>
 #include <atlcoll.h>
-#include <NiSmartPointer.h>
+#include "ms2/gfxui/notifyhandler.h"
 #include "ms2/placeholder/gfxservice.h"
 #include "ms2/placeholder/gfxmovie.h"
 #include "ms2/gfxui/dragslot.h"
@@ -35,14 +35,16 @@ const NiRTTI GFxMovie::ms_RTTI("GFxMovie", 0);
 
 // NotifyContext binding registry. Slot name -> bound slot; FUN_1422c8de0 logs "Unremoved binding slot : %s" for what is
 // left in it at shutdown.
+#ifndef MS2_HOOK_DLL
 // @0x140135b60
-static CRBMap<CString, NiPointer<NotifyContext::BindData> > s_bindings;
+CRBMap<CString, efd::SmartPointer<NotifyContext::BindData> > Unk_NotifyContext::ms_mapBindings;
 // Names skipped by the pending-name pass (FUN_1422c90d0 looks every binding's name up here).
 // @0x140135b90
-static std::set<CString> s_skipNames;
+std::set<CString> Unk_NotifyContext::ms_setPushed;
 // Names whose bindings are refreshed by FUN_1422c90d0 (walked, then cleared).
 // @0x140135bc0
-static std::set<CString> s_pendingNames;
+std::set<CString> Unk_NotifyContext::ms_setChanged;
+#endif
 
 // @0x140135bf0
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(NotifyContext::BindData);
