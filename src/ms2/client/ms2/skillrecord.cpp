@@ -206,8 +206,8 @@ bool CSkillRecord::Init(Unk_InventorySkillRequest& kReq)
     m_nSendTick = kReq.m_nTick;
     m_nCastId = kReq.m_nCastId;
     m_nMotion = kReq.m_nMotion;
-    m_ptPos = kReq.m_ptPos;
-    m_ptDir = kReq.m_ptDir;
+    m_ptPos = *(const Unk_StreamPoint*)&kReq.m_ptPos;
+    m_ptDir = *(const Unk_StreamPoint*)&kReq.m_ptDir;
     m_ptRot = Unk_StreamPoint(0, 0, kReq.m_fRotZ);
     m_bAE = kReq.m_b3a;
     m_bAD = kReq.m_b38;

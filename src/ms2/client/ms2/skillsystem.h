@@ -116,7 +116,7 @@ public:
     int FUN_1417686e0(int nSkillId);                        // the uses left of a skill
     void FUN_1417687e0(Unk_SkillCooltime* pCool);           // an over cooldown restores a use
     void FUN_141768a50();                                   // restart the recharge of the skills with uses
-    void FUN_141768d40(MS2Ptr<SkillData> spSkill, float);   // start the emotion cooldown
+    void FUN_141768d40(MS2Ptr<SkillData> spSkill);          // start the recharge tick
     int FUN_141768dd0(MS2Ptr<SkillData> spSkill);           // the recharge tick
     void FUN_141768e70(int nId, unsigned short nLevel, __int64 nStart, __int64 nEnd, bool bPermanent, bool bFavorite, int bNew);   // learn an emotion
     void FUN_1417691a0(ATL::CAtlArray<MS2Ptr<stEmotion> >& arrOut);   // the emotions that are valid now
@@ -151,7 +151,7 @@ public:
     unsigned m_nLapenTick;                                  // +0x138
     int m_nLapenDirty;                                      // +0x13c (1)
     MS2Ptr<Unk_MyPCSkillSet> m_spSkillSet;                  // +0x140
-    std::list<int> m_lstSkillSets;                          // +0x150
+    std::list<unsigned> m_lstSkillSets;                         // +0x150
     ATL::CAtlMap<unsigned, int> m_mapUses;                  // +0x160 uses by recharge id
     ATL::CAtlMap<unsigned, unsigned> m_mapRechargeTick;       // +0x1a8
 };
