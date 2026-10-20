@@ -30,5 +30,6 @@ public:
     void FUN_1422e0bd0(const CStringW& strHtml);                        // 0x1422e0bd0 set "htmlText"
     void FUN_1422e0b80(const CString& strHtml);                         // 0x1422e0b80 set "htmlText" (narrow)
     void FUN_1422e1500(int nBegin, int nEnd);                           // 0x1422e1500 set the selection
+    void FUN_1422e1430(const CStringW& strHtml);                        // 0x1422e1430 append html ("appendHtml")
 };
 MS2_CHECK_SIZE(ASTextInput, 0x88);

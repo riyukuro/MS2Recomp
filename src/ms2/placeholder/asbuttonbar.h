@@ -28,6 +28,8 @@ public:
     void FUN_1422e3460(const ASObj& item);                              // append a button (pushed to the data provider)
     void FUN_1422e3590(const CStringW& strLabel);                       // 0x1422e3590 select the button of a label (uimessenger.cpp)
     CStringW FUN_1422e3790();                                           // 0x1422e3790 the selected label
+    CStringW FUN_1422e37e0(int nIndex);                                 // 0x1422e37e0 the label of a button
+    unsigned FUN_1422e3380();                                           // 0x1422e3380 the button count
     void FUN_1422e3a70(const CStringW& strLabel);                       // 0x1422e3a70 remove the button of a label
     void FUN_1422e3c70(const CStringW& strOld, const CStringW& strNew); // 0x1422e3c70 relabel a button
     MS2Ptr<ASDataProvider> FUN_1422e2e00();                             // the data provider (uiclosetdialog.cpp)

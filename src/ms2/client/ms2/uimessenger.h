@@ -36,6 +36,13 @@ class CMsgBoxData;
 class UIMessengerBrowser;
 class ChatEmoticonData;
 
+// An input history entry of the browser (0x28): the line and the keys of its item links.
+struct Unk_MsgHistory
+{
+    CStringW m_strText;                                                     // +0x00
+    ATL::CAtlArray<CStringW> m_keys;                                        // +0x08
+};
+
 // One debug chat command (DebugChatCommand.xml <ms2><CommandSet><cmd .../>): the help shown by the chat input.
 struct TDebugCommand : public CPtred
 {
@@ -82,7 +89,7 @@ public:
     virtual void vfunc_91();                                                // 91 0x141a15ef0 focus out
     virtual void vfunc_92();                                                // 92 0x141a15f60 a new tab
     virtual void vfunc_93();                                                // 93 0x141a16030
-    virtual void vfunc_94();                                                // 94 0x141a162a0 the input text changed
+    virtual void vfunc_94(const CStringW& strText);                         // 94 0x141a162a0 the input text changed
     virtual void vfunc_95(const CStringW& strTarget);                       // 95 0x141a162e0 the whisper target
     virtual void vfunc_96(int nMenu);                                       // 96 0x141a16310 the tab menu
     virtual void vfunc_97(const CStringW& strName);                         // 97 0x141a16400 select a tab
@@ -113,7 +120,7 @@ public:
     void FUN_141a0e990();                                                   // 0x141a0e990 selects the default tab
     void FUN_141a0e9f0(const CStringW& strOld, const CStringW& strNew);     // 0x141a0e9f0 renames a tab
     void FUN_141a0ead0(unsigned nFontSize, CStringW& strHtml);              // 0x141a0ead0 sets the html font size
-    void FUN_141a0ebb0(int nAlpha);                                         // 0x141a0ebb0 the background alpha
+    void FUN_141a0ebb0(unsigned nAlpha);                                       // 0x141a0ebb0 the background alpha
     void FUN_141a0ec30(const CStringW& strText);                            // 0x141a0ec30 appends to the input
     void FUN_141a0f180();                                                   // 0x141a0f180 reads the alignment
     void FUN_141a0f1d0(CStringW strText, CStringW strHtml, bool bHistory);  // 0x141a0f1d0 submits a line
@@ -130,33 +137,49 @@ public:
     int FUN_141a0fe20(int nEmoticonId);                                     // 0x141a0fe20 sends an emoticon
     void FUN_141a10010(int nType, int nEmoticonId);                         // 0x141a10010 types an emoticon
     int FUN_141a10490(int nEmoticonId, bool bFavorite);                     // 0x141a10490 the emoticon favorite
+    void FUN_141a10660(int nType, CStringW strText, CStringW strTarget, int nItem);   // 0x141a10660 sends a chat line
     int FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks);     // 0x141a10fd0 runs a command
+    void FUN_141a11be0(int nType, const CStringW& strText);                 // 0x141a11be0 sends a chat line to the server
+    bool FUN_141a11c60(const CStringW& strCommand, CStringW strText, int* pType);   // 0x141a11c60 a chat command
+    void FUN_141a11e30();                                                   // 0x141a11e30 enter: submits or focuses the input
     void FUN_141a0e940(const Scaleform::GFx::FunctionHandler::Params& params);   // the input text changed
     void FUN_141a0f520(const Scaleform::GFx::FunctionHandler::Params& params);   // the dialog was moved
     int FUN_141a12260();                                                    // 0x141a12260 escape: leaves the input
     bool FUN_141a12380(int nType, CStringW strText);                        // 0x141a12380 the chat actions
     void FUN_141a12e40(int nType, CStringW strText, bool bHistory);         // 0x141a12e40 sends a chat line
     int FUN_141a12f30();                                                    // 0x141a12f30 has the key focus
+    bool FUN_141a13030(CStringW& strText);                                  // 0x141a13030 blank
     bool FUN_141a13070(const CStringW& strName);                            // 0x141a13070 a tab exists
+    int FUN_141a13160(MessengerData::TalkTab* pTab, int nChannel);          // 0x141a13160 the tab hides a channel
+    int FUN_141a131a0(MessengerData::TalkTab* pTab, int nType);             // 0x141a131a0 the tab hides a line type
     void FUN_141a13210();                                                   // 0x141a13210 the emoticon aliases
     void FUN_141a13510(std::list<MS2Ptr<ChatEmoticonData> >& emoticons);    // 0x141a13510 the emoticon preview
     void FUN_141a13940();                                                   // 0x141a13940 closes the preview
+    void FUN_141a139c0(const CStringW& strText, int bClear);                // 0x141a139c0 writes the output lines
     void FUN_141a13ac0();                                                   // 0x141a13ac0 refreshes the tab bar
     void FUN_141a13c20(int bUp);                                            // 0x141a13c20 input history
-    void FUN_141a13d20(CStringW* pName);                                    // 0x141a13d20 a free tab name
+    CStringW FUN_141a13d20();                                               // 0x141a13d20 a free tab name
+    void FUN_141a13e00();                                                   // 0x141a13e00 the subject list's chat types
     int FUN_141a14110();                                                    // 0x141a14110 the default chat type index
+    int FUN_141a141c0(int nType);                                           // 0x141a141c0 the subject index of a chat type
     int FUN_141a14250();                                                    // 0x141a14250 the chat type of the input
     int FUN_141a144a0();                                                    // 0x141a144a0 the selected chat type
     int FUN_141a14500();                                                    // 0x141a14500 the default subject
+    int FUN_141a14580(int nIndex);                                          // 0x141a14580 the chat type of a subject index
     void FUN_141a14600();
     void FUN_141a146d0(int nType);                                          // 0x141a146d0 selects a subject
     void FUN_141a14760();
+    int FUN_141a148b0(const CStringW& strText);                             // 0x141a148b0 an emotion command
+    void FUN_141a14bb0(const CStringW& strTarget);                          // 0x141a14bb0 whispers anyone but oneself
+    bool FUN_141a14c40(CStringW& strText, CStringW strPart);                // 0x141a14c40 cuts a part out
     bool FUN_141a14ce0(CStringW strText, int nMax);                         // 0x141a14ce0 fits without the markup
     void FUN_141a14dc0();                                                   // 0x141a14dc0 rebuilds the subject list
+    void FUN_141a15890();                                                   // 0x141a15890 the super world chat effect
     void FUN_141a15970();                                                   // 0x141a15970 orders the tabs as the bar
     void FUN_141a17700();
     void FUN_141a17830(const CStringW& strText, int bSelectEnd);            // 0x141a17830 sets the input text
     void FUN_141a17900(const CStringW& strTarget);                          // 0x141a17900 begins a whisper
+    void FUN_141a17a60(const CStringW& strTarget);                          // 0x141a17a60 begins a talk
 
     MS2_LAYOUT_FRIEND;
     int m_178;                                                              // +0x178
@@ -195,6 +218,8 @@ public:
 
     // ---- non-virtual members (exe order) ----
     void FUN_141a25f70(const CStringW& strText, ATL::CAtlArray<CStringW>& history);   // 0x141a25f70 records a command
+    int FUN_141a25410(int nKind, const CStringW& strName);                  // 0x141a25410 the window name is free
+    int FUN_141a261b0(int bUp, Unk_MsgHistory& entry);                      // 0x141a261b0 the input history
     bool FUN_141a26480();                                                   // 0x141a26480
     bool FUN_141a264c0(int nType);                                          // 0x141a264c0 the chat type is hidden
 

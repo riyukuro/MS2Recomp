@@ -20,6 +20,9 @@
 #include "ms2/client/ms2/chatemoticoncli.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/messengerdata.h"
+#include "ms2/client/ms2/mypc.h"
+#include "ms2/placeholder/chomeprivilege.h"
+#include "ms2/placeholder/tusercommandinfo.h"
 #include "ms2/client/ms2/uichatemoticondialog.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/commonfiles/chatemoticontable.h"
@@ -77,13 +80,17 @@ public:
     int FUN_1422c1340();                                            // the width
     int FUN_1422c13b0();                                            // the height
     void FUN_1422c7490(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // "moved"
-    Scaleform::GFx::Value FUN_140ba26d0(const char* szMember, int n);   // set a number member
     void FUN_1422deb40(bool bActive);                               // the active frame
+    void FUN_1407cb9c0(const char* szName, int n);                  // set an int member
 };
 
 // "m_subject": the chat type drop-down.
 class ASDropdownMenu : public ASUIComponent
 {
+public:
+    unsigned FUN_1422df620();                                       // the entry count
+    void FUN_1422df690(int nIndex);                                 // select an entry
+    int FUN_1422df6c0();                                            // the selected entry
 };
 
 // The messenger settings element (messengerdata.cpp's view): children by name.
@@ -100,6 +107,8 @@ public:
     bool FUN_14116d840();                                           // escape pressed
     bool FUN_14116d9c0(int nKey, int a, int b);                     // key pressed
     bool FUN_14116dd30(int nKeyCode, int a, int b);                 // bound key pressed
+    bool FUN_14116d720();                                           // the ":alias:" emoticons are on
+    bool FUN_14116d7a0(int nKey);                                   // a key is held
 };
 Unk_MsgKeys* FUN_14025e7c0();
 
@@ -150,10 +159,54 @@ Unk_MsgUser* FUN_140931510();
 CChatEmoticonTable* FUN_1409eecd0();
 
 // The world and its local player (the selected super world chat item).
-class Unk_MsgPlayer { public: int FUN_1416639e0(); };
-class Unk_MsgWorld { public: Unk_MsgPlayer* FUN_141bd0cc0(); };
+class Unk_MsgWorld { public: MyPC* FUN_141bd0cc0(); };
 Unk_MsgWorld* FUN_1403ed2d0();
 extern Unk_Inventory DAT_143ab2a90;                                 // the player's inventory
+
+// The messenger state (messengerdata.cpp's Unk_MdState): the current window name and the browser (+0x48).
+class Unk_MsgState
+{
+public:
+    CStringW FUN_1414829e0();                                       // the current window name
+    void FUN_141482c80(CStringW strName);                           // make a window the current one
+    char m_pad_00[0x48];
+    UIMessengerBrowser* m_pBrowser;                                 // +0x48
+};
+Unk_MsgState* FUN_141482e80();
+int FUN_141482f00(int nChannel);                                    // the line type of a chat channel
+
+// The chat line request (usercommandcli.cpp's Unk_CommandChat).
+struct Unk_MsgChat
+{
+    Unk_MsgChat();                                                  // 0x140acd570
+    ~Unk_MsgChat();                                                 // 0x140acd770
+    int m_nState;                                                   // +0x00
+    int m_nType;                                                    // +0x04
+    CStringW m_strText;                                             // +0x08
+    CStringW m_strTarget;                                           // +0x10
+    __int64 m_nValue;                                               // +0x18
+};
+void FUN_141276f80(const Unk_MsgChat& chat);                       // sends a chat line
+
+// The search keywords of an emotion (uidynamicactiondialog.cpp's Unk_EmotionKeywords).
+class Unk_MsgEmotionKeywords : public CPtred
+{
+public:
+    char m_pad_18[0x34 - 0x18];
+    int m_nAction;                                                  // +0x34
+    ATL::CAtlArray<CStringW> m_keywords;                            // +0x38
+};
+MS2Ptr<Unk_MsgEmotionKeywords> FUN_140347050(int nEmotionId);
+
+class Unk_MsgStrings { public: CStringW FUN_1422af5f0(int nId); };   // the UI string table
+Unk_MsgStrings* FUN_14025e7a0();
+CStringW FUN_14028de60(int nStringId);
+CStringW FUN_1409e97f0(int nStringId, const int& n);                // a string with one number
+CStringW FUN_141842320(const CStringW& strText);                    // text to html
+void FUN_140d2c650(CStringW& strHtml);                              // encodes the item links
+void FUN_140d2c2a0(MS2Ptr<ASTextInput> spInput, ATL::CAtlArray<CStringW>& history);   // the input history keys
+void* FUN_1422bb8b0(int nMovieId);                                  // the movie of a UI layer
+void FUN_14256e3e0(void* pMovie, Scaleform::GFx::Value* pValue);   // movie->CreateArray
 
 class TiXmlElement
 {
@@ -722,11 +775,11 @@ void UIMessenger::FUN_141a0ead0(unsigned nFontSize, CStringW& strHtml)
 }
 
 // @0x141a0ebb0
-void UIMessenger::FUN_141a0ebb0(int nAlpha)
+void UIMessenger::FUN_141a0ebb0(unsigned nAlpha)
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
-        pDialog->FUN_140ba26d0("backgroundAlpha", nAlpha);
+        pDialog->Invoke("backgroundAlpha", nAlpha);
 }
 
 // @0x141a0ec30
@@ -859,7 +912,7 @@ void UIMessenger::FUN_141a0f5d0(NotifyObject* pNotify)
 // @0x141a0f7b0
 void UIMessenger::FUN_141a0f7b0()
 {
-    Unk_MsgPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     FUN_141a14dc0();
@@ -1046,4 +1099,578 @@ int UIMessenger::FUN_141a10490(int nEmoticonId, bool bFavorite)
     packet.vfunc_o10_3(nEmoticonId);
     FUN_140710590(packet);
     return 1;
+}
+
+// @0x141a11be0
+void UIMessenger::FUN_141a11be0(int nType, const CStringW& strText)
+{
+    Unk_MsgChat chat;
+    chat.m_nType = nType;
+    chat.m_strText = strText;
+    FUN_141276f80(chat);
+    m_pBrowser->m_1b0 = FUN_141482f00(nType);
+}
+
+// @0x141a11c60
+bool UIMessenger::FUN_141a11c60(const CStringW& strCommand, CStringW strText, int* pType)
+{
+    *pType = 0x1b;
+    if (strCommand.IsEmpty())
+        return true;
+    MS2Ptr<TUserCommandInfo> spInfo = CUserCommandCli::GetInstance()->Find(strCommand);
+    int nType = 0x1b;
+    if (spInfo.get() != 0)
+    {
+        nType = spInfo->chatType;
+        if (!spInfo->function.IsEmpty())
+            strText.Replace(strCommand, L"/" + spInfo->function);
+    }
+    *pType = nType;
+    if (nType == 0x1b || nType == 10 || nType == 0x15)
+    {
+        FUN_141a11be0(FUN_141a144a0(), strText);
+        return true;
+    }
+    return false;
+}
+
+// @0x141a11e30
+void UIMessenger::FUN_141a11e30()
+{
+    if (m_textInput == 0)
+        return;
+    if (m_textInput->FUN_1422c76c0() == 0)
+    {
+        vfunc_78();
+        if (m_pBrowser->m_1b0 == 4)
+        {
+            m_textInput->FUN_1422c7630(1);
+            FUN_141a17900(m_pBrowser->m_strWhisperTarget);
+        }
+        else if (m_pBrowser->m_1b0 == 0x1a)
+        {
+            m_textInput->FUN_1422c7630(1);
+            FUN_141a17a60(m_pBrowser->m_1a8);
+        }
+        else
+        {
+            int nLength = m_textInput->FUN_1422e0b00().GetLength();
+            m_textInput->FUN_1422c7630(1);
+            m_textInput->FUN_1422e1500(nLength, nLength);
+            m_textInput->vfunc_24(1);
+        }
+        return;
+    }
+    FUN_140d2c2a0(m_textInput, m_inputHistory);
+    CStringW strText = FUN_141842320(m_textInput->FUN_1422e0b00());
+    CStringW strHtml = m_textInput->FUN_1422e0c20();
+    FUN_140d2c650(strHtml);
+    strText = strText.Trim();
+    if (strText.IsEmpty())
+    {
+        FUN_141a12260();
+        return;
+    }
+    CStringW strSuffix = FUN_14025e7a0()->FUN_1422af5f0(2);
+    if (!strSuffix.IsEmpty())
+        strText.Append(strSuffix);
+    FUN_141a0f1d0(strText, strHtml, 1);
+    FUN_141a12260();
+}
+
+// @0x141a12260
+int UIMessenger::FUN_141a12260()
+{
+    if (MS2Ptr<ASTextInput> spInput = m_textInput)
+    {
+        if (spInput->FUN_1422c76c0() != 0)
+        {
+            m_inputHistory.RemoveAll();
+            spInput->FUN_1422c7630(0);
+            spInput->FUN_1422e0bd0(CStringW(L"<FONT></FONT>"));
+            spInput->vfunc_24(1);
+            FUN_141a0d880(0);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// @0x141a12e40
+void UIMessenger::FUN_141a12e40(int nType, CStringW strText, bool bHistory)
+{
+    FUN_141a10660(nType, strText, CStringW(L""), 0);
+    if (bHistory)
+        m_pBrowser->FUN_141a25f70(strText, m_inputHistory);
+}
+
+// @0x141a12f30
+int UIMessenger::FUN_141a12f30()
+{
+    if (FUN_141482e80()->FUN_1414829e0() != m_strName)
+        return 0;
+    {
+        MS2Ptr<ASTextInput> spInput = m_textInput;
+        if (spInput && spInput->FUN_1422c76c0() != 0)
+            return 1;
+    }
+    if (FUN_14025e7c0()->FUN_14116d7a0(0xf))
+        return 0;
+    return 1;
+}
+
+// @0x141a13030
+bool UIMessenger::FUN_141a13030(CStringW& strText)
+{
+    strText.Trim(L" ");
+    return strText.IsEmpty();
+}
+
+// @0x141a13070
+bool UIMessenger::FUN_141a13070(const CStringW& strName)
+{
+    for (size_t i = 0; i < m_tabs.GetCount(); i++)
+    {
+        MS2Ptr<TalkTab> spTab = m_tabs[i];
+        if (!spTab)
+            continue;
+        if (spTab->m_strName == strName)
+            return true;
+    }
+    return false;
+}
+
+// @0x141a13160
+int UIMessenger::FUN_141a13160(TalkTab* pTab, int nChannel)
+{
+    return FUN_141a131a0(pTab, FUN_141482f00(nChannel));
+}
+
+// @0x141a131a0
+int UIMessenger::FUN_141a131a0(TalkTab* pTab, int nType)
+{
+    if (pTab == 0)
+        return 1;
+    return pTab->m_panel.FUN_141482460(nType);
+}
+
+// @0x141a13210
+void UIMessenger::FUN_141a13210()
+{
+    MS2Ptr<ASTextInput> spInput = m_textInput;
+    if (spInput.IsNull())
+        return;
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    if (spCli.IsNull())
+    {
+        MS2_ASSERT_AT(0x720, 0);
+        return;
+    }
+    CStringW strText = spInput->FUN_1422e0b00();
+    strText.Trim();
+    std::list<ChatEmoticonDataPtr> found;
+    std::list<ChatEmoticonDataPtr> aliases;
+    FUN_1409eecd0()->FUN_1401e74c0(strText, &aliases);
+    for (std::list<ChatEmoticonDataPtr>::iterator it = aliases.begin(); it != aliases.end(); ++it)
+    {
+        ChatEmoticonDataPtr spEmo = *it;
+        if (!spEmo)
+            continue;
+        if (!spCli->FUN_140a39dd0(spEmo->m_nId))
+            continue;
+        found.push_back(spEmo);
+    }
+    if (found.empty())
+        return;
+    FUN_141a13510(found);
+    spInput->FUN_1422e0ab0(CStringW(L""));
+}
+
+// @0x141a13510
+void UIMessenger::FUN_141a13510(std::list<ChatEmoticonDataPtr>& emoticons)
+{
+    if (emoticons.empty())
+        return;
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    if (spCli.IsNull())
+    {
+        MS2_ASSERT_AT(0x747, 0);
+        return;
+    }
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog == 0)
+        return;
+    void* pMovie = FUN_1422bb8b0(m_28);
+    if (pMovie == 0)
+        return;
+    ASObj data(2);
+    Scaleform::GFx::Value arr;
+    FUN_14256e3e0(pMovie, &arr);
+    for (std::list<ChatEmoticonDataPtr>::const_iterator it = emoticons.begin(); it != emoticons.end(); ++it)
+    {
+        ChatEmoticonDataPtr spEmo = *it;
+        if (!!spEmo)
+        {
+            ASObj item(2);
+            item.FUN_1409c0d20("id", spEmo->m_nId);
+            item.FUN_1407cbb20("imgPath", spEmo->m_strImagePath);
+            item.FUN_1407cb9c0("width", spEmo->m_nWidth);
+            item.FUN_1407cb9c0("height", spEmo->m_nHeight);
+            item.FUN_1407cbbe0("favorite", spCli->FUN_140a39fa0(spEmo->m_nId));
+            arr.PushBack(item.FUN_1422bb870());
+        }
+    }
+    if (arr.GetArraySize() == 0)
+        return;
+    data.FUN_1409adbe0("emoticonDatas", arr);
+    pDialog->Invoke("openChatEmoticonPreview", data.FUN_1422bb870());
+}
+
+// @0x141a13940
+void UIMessenger::FUN_141a13940()
+{
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog != 0)
+        pDialog->Invoke("closeChatEmoticonPreview");
+}
+
+// @0x141a139c0
+void UIMessenger::FUN_141a139c0(const CStringW& strText, int bClear)
+{
+    if (!m_textOutput)
+        return;
+    int bAtEnd = m_textOutput->FUN_1422e4680();
+    if (bClear)
+        m_textOutput->FUN_1422e0b80(CString(""));
+    if (!strText.IsEmpty())
+        m_textOutput->FUN_1422e1430(strText);
+    if (bAtEnd)
+        m_textOutput->FUN_1422e4720();
+}
+
+// @0x141a13ac0
+void UIMessenger::FUN_141a13ac0()
+{
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog == 0)
+        return;
+    int bAdditive = 0;
+    for (unsigned i = 0; i < m_tabs.GetCount(); i++)
+    {
+        MS2Ptr<TalkTab> spTab = m_tabs[i];
+        if (spTab.get() != 0 && spTab->m_nAdditive != 0)
+        {
+            bAdditive = 1;
+            break;
+        }
+    }
+    pDialog->FUN_1407cb9c0("m_additiveTab", bAdditive);
+    pDialog->Invoke("updateAdditiveButton");
+}
+
+// @0x141a13c20
+void UIMessenger::FUN_141a13c20(int bUp)
+{
+    if (m_textInput == 0)
+        return;
+    if (m_textInput->FUN_1422c76c0() == 0)
+        return;
+    Unk_MsgHistory entry;
+    if (m_pBrowser->FUN_141a261b0(bUp, entry))
+    {
+        m_inputHistory.RemoveAll();
+        m_inputHistory.Copy(entry.m_keys);
+        FUN_141a17830(entry.m_strText, 1);
+        vfunc_94(entry.m_strText);
+    }
+}
+
+// @0x141a13d20
+CStringW UIMessenger::FUN_141a13d20()
+{
+    if (FUN_141482e80()->m_pBrowser != 0)
+    {
+        for (int i = 1; i < 100; i++)
+        {
+            CStringW strName = FUN_1409e97f0(0x57d, i);
+            if (FUN_141482e80()->m_pBrowser->FUN_141a25410(0, strName))
+                return strName;
+        }
+    }
+    return FUN_14028de60(0x57d);
+}
+
+// @0x141a13e00
+void UIMessenger::FUN_141a13e00()
+{
+    std::vector<int> types;
+    types.push_back(0x10);
+    types.push_back(0xb);
+    types.push_back(0xc);
+    types.push_back(0);
+    types.push_back(7);
+    types.push_back(8);
+    types.push_back(0x12);
+    types.push_back(0x14);
+    m_subjects.clear();
+    m_subjects.push_back(0);
+    m_subjects.push_back(0xc);
+    m_subjects.push_back(0xb);
+    m_subjects.push_back(0x10);
+    m_subjects.push_back(7);
+    m_subjects.push_back(8);
+    m_subjects.push_back(0x12);
+    m_subjects.push_back(0x14);
+    m_subjectIndex.clear();
+    int nIndex = 0;
+    for (std::vector<int>::iterator it = types.begin(); it != types.end(); ++it)
+    {
+        int& nType = *it;
+        if (m_pBrowser->FUN_141a264c0(nType))
+            continue;
+        m_subjectIndex.insert(std::make_pair(nIndex++, nType));
+    }
+}
+
+// @0x141a14110
+int UIMessenger::FUN_141a14110()
+{
+    for (std::vector<int>::iterator it = m_subjects.begin(); it != m_subjects.end(); ++it)
+    {
+        int& nType = *it;
+        if (!m_pBrowser->FUN_141a264c0(nType))
+            return FUN_141a141c0(nType);
+    }
+    return -1;
+}
+
+// @0x141a141c0
+int UIMessenger::FUN_141a141c0(int nType)
+{
+    for (std::map<int, int>::iterator it = m_subjectIndex.begin(); it != m_subjectIndex.end(); ++it)
+    {
+        if (nType == it->second)
+            return it->first;
+    }
+    return -1;
+}
+
+// @0x141a14250
+int UIMessenger::FUN_141a14250()
+{
+    if (MS2Ptr<ASTextInput> spInput = m_textInput)
+    {
+        CStringW strText = spInput->FUN_1422e0b00();
+        strText.Trim();
+        if (strText.GetLength() < 2)
+            return 0x1b;
+        if (strText.GetAt(0) == L'/')
+        {
+            const int& nType = CUserCommandCli::GetInstance()->ChatType(strText);
+            if (!m_pBrowser->FUN_141a264c0(nType))
+                return nType;
+            return FUN_141a14500();
+        }
+        if (FUN_14025e7c0()->FUN_14116d720())
+        {
+            int nLast = strText.GetLength() - 1;
+            if (strText.GetAt(0) == L':' && strText.GetAt(nLast) == L':')
+            {
+                std::list<ChatEmoticonDataPtr> aliases;
+                FUN_1409eecd0()->FUN_1401e74c0(strText, &aliases);
+                if (aliases.size() != 0)
+                    return 0x18;
+            }
+        }
+    }
+    return 0x1b;
+}
+
+// @0x141a144a0
+int UIMessenger::FUN_141a144a0()
+{
+    if (m_subject)
+        return FUN_141a14580(m_subject->FUN_1422df6c0());
+    return FUN_141a14500();
+}
+
+// @0x141a14500
+int UIMessenger::FUN_141a14500()
+{
+    std::map<int, int>::iterator it = m_subjectIndex.find(FUN_141a14110());
+    if (it == m_subjectIndex.end())
+        return 0x1b;
+    return it->second;
+}
+
+// @0x141a14580
+int UIMessenger::FUN_141a14580(int nIndex)
+{
+    std::map<int, int>::iterator it = m_subjectIndex.find(nIndex);
+    if (it == m_subjectIndex.end())
+        return FUN_141a14500();
+    return it->second;
+}
+
+// @0x141a14600
+void UIMessenger::FUN_141a14600()
+{
+    int nType = FUN_141a14250();
+    switch (nType)
+    {
+    case 0:
+    case 7:
+    case 8:
+    case 0xb:
+    case 0xc:
+    case 0x10:
+    case 0x12:
+        FUN_141a146d0(nType);
+        break;
+    case 4:
+        FUN_141a17900(m_pBrowser->m_strWhisperTarget);
+        break;
+    case 0x14:
+        FUN_141a17a60(m_pBrowser->m_1a8);
+        break;
+    }
+}
+
+// @0x141a146d0
+void UIMessenger::FUN_141a146d0(int nType)
+{
+    if (FUN_141a12f30() && m_subject)
+    {
+        m_subject->FUN_1422df690(FUN_141a141c0(nType));
+        vfunc_93();
+    }
+}
+
+// @0x141a14760
+void UIMessenger::FUN_141a14760()
+{
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0 || !m_subject)
+        return;
+    unsigned nCount = m_subject->FUN_1422df620();
+    unsigned nNext = m_subject->FUN_1422df6c0() + 1;
+    if (nCount <= nNext)
+        nNext = 0;
+    int nType = FUN_141a14580(nNext);
+    if (nType == 0x10)
+    {
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(pPlayer->FUN_1416639e0());
+        if (spItem == 0)
+        {
+            if (!m_pBrowser->FUN_141a264c0(0xb))
+                nType = 0xb;
+            else
+                nType = FUN_141a14500();
+        }
+    }
+    FUN_141a146d0(nType);
+}
+
+// @0x141a148b0
+int UIMessenger::FUN_141a148b0(const CStringW& strText)
+{
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return 0;
+    ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> > emotions;
+    pPlayer->FUN_141523bc0()->FUN_1417691a0(emotions);
+    if (emotions.GetCount() == 0)
+        return 0;
+    CStringW strLine(strText);
+    FUN_140d2c650(strLine);
+    int nBegin = strLine.Find(L'/', 0);
+    if (nBegin == -1)
+        return 0;
+    int nEnd = strLine.Find(L' ', nBegin);
+    if (nEnd == -1)
+        nEnd = strLine.GetLength();
+    CStringW strCommand = strLine.Mid(nBegin, nEnd);
+    strCommand.TrimRight();
+    for (size_t i = 0; i < emotions.GetCount(); i++)
+    {
+        MS2Ptr<Unk_MsgEmotionKeywords> spKeywords = FUN_140347050(emotions[i]->m_id);
+        if (spKeywords == 0)
+            return 0;
+        for (size_t j = 0; j < spKeywords->m_keywords.GetCount(); j++)
+        {
+            CStringW strKeyword = spKeywords->m_keywords[j];
+            if (strKeyword.CompareNoCase(strCommand) == 0)
+            {
+                pPlayer->FUN_141525480(spKeywords->m_nAction, 0);
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+// @0x141a14bb0
+void UIMessenger::FUN_141a14bb0(const CStringW& strTarget)
+{
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    if (pPlayer->vfunc_77() == strTarget)
+        return;
+    FUN_141a17900(strTarget);
+}
+
+// @0x141a14c40
+bool UIMessenger::FUN_141a14c40(CStringW& strText, CStringW strPart)
+{
+    int nFound = strText.Find(strPart, 0);
+    if (nFound != -1)
+        strText.Delete(nFound, strPart.GetLength());
+    return nFound != -1;
+}
+
+// @0x141a14ce0
+bool UIMessenger::FUN_141a14ce0(CStringW strText, int nMax)
+{
+    int nOpen;
+    int nClose;
+    while ((nOpen = strText.Find(L"<", 0)) != -1)
+    {
+        nClose = strText.Find(L">", nOpen + 1);
+        if (nClose == -1)
+            break;
+        strText.Delete(nOpen, nClose - nOpen + 1);
+    }
+    int nLength = strText.GetLength();
+    return nLength <= nMax;
+}
+
+// @0x141a15890
+void UIMessenger::FUN_141a15890()
+{
+    bool bEffect = false;
+    const int& nType = FUN_141a14580(m_nTargetSelectedIndex);
+    if (nType == 0x10 && !m_pBrowser->FUN_141a264c0(0x10))
+        bEffect = true;
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog != 0)
+        pDialog->Invoke("updateSuperWorldChatEffect", bEffect);
+}
+
+// @0x141a15970
+void UIMessenger::FUN_141a15970()
+{
+    if (!m_buttonBar)
+        return;
+    unsigned nCount = m_buttonBar->FUN_1422e3380();
+    ATL::CAtlArray<MS2Ptr<TalkTab> > tabs;
+    for (unsigned i = 0; i < nCount; i++)
+    {
+        TalkTab* pTab = FUN_141a0e0f0(m_buttonBar->FUN_1422e37e0(i));
+        if (pTab == 0)
+            return;
+        tabs.Add(MS2Ptr<TalkTab>(pTab));
+    }
+    m_tabs.RemoveAll();
+    m_tabs.Copy(tabs);
 }
