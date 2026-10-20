@@ -9,6 +9,7 @@
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\statecoupleemotion.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/client/ms2/uimessageboxdata.h"
 
 #include <new>
 #include <egf/Entity.h>
@@ -147,8 +148,7 @@ float FUN_140967ac0(const NiPoint3& kVec);                                 // 0x
 void FUN_1406530d0(void* pLogger, int nLevel, int nId, const CStringW& strText);   // 0x1406530d0 log
 const char* FUN_1408ac310(const efd::utf8string& s);                       // 0x1408ac310 c string
 int FUN_1408a01e0(const CStringA& s);                                      // 0x1408a01e0 string -> id
-class Unk_UiTag { public: void FUN_14151f820(); bool FUN_14062c1f0(int n); void* FUN_140534fe0(); void FUN_140534d60(); char m_b[0x18]; };
-const wchar_t* FUN_141a02ce0(void* p);                                     // 0x141a02ce0 the tag's name
+MS2Ptr<CMsgBoxData> FUN_14151f820();                                      // 0x14151f820 the message box currently shown
 struct Unk_RayHit { char m_pad[0x30]; Unk_CeEntity* m_pObject; };                                    // 0x14097eba0 smart-pointer copy of a node
 NiNode* FUN_14098d0f0(const NiNodePtr& spNode);
 NiNode* FUN_14098d0f0(const NiAVObjectPtr& spNode);                            // 0x14098d0f0 the pointer in the smart pointer
@@ -432,6 +432,7 @@ StateCoupleEmotion::~StateCoupleEmotion()
 
 // Enter: creates the animation set, resolves the partner, reads the emotion row and starts the first animation (when the
 // state is entered already running).
+// MS2-FUNCTIONAL: the emotion table helpers are typed as local Unk_EmoTable/Unk_EmoRow (operator!/get) where the exe calls SkillDataTable::FUN_1407ee1d0 -> MS2Ptr<SkillData> operator== and MS2Ptr<StateCoupleEmotionData>::operator==/operator->; needs the shared SkillData types
 // @0x140b808a0
 void StateCoupleEmotion::vfunc_4(StateData* pData)
 {
@@ -470,6 +471,7 @@ void StateCoupleEmotion::vfunc_4(StateData* pData)
 }
 
 // Leave: stops every running effect, restores the saved rotation and drops the loop node.
+// MS2-FUNCTIONAL: the obj copies a by-value struct temporary (rep movsb, push rsi/rdi in the prologue) that the exe passes by reference; same callees
 // @0x140b80d10
 void StateCoupleEmotion::vfunc_5(int n)
 {
@@ -509,27 +511,34 @@ void StateCoupleEmotion::vfunc_3(double fTime)
         Stop(0);
         return;
     }
-    if (FUN_1417b7e40() == 0x93)
+    switch (FUN_1417b7e40())
     {
+    case 0x93:
         if (!FUN_140b83fa0(pOwnerPC->vfunc_18(), pPartner->vfunc_18()))
-            Stop(1);
-    }
-    else if (FUN_1417b7e40() == 0x96)
-    {
-        if (pPartner->FUN_14166c930() == 0x3a)
         {
-            if (pPartner->FUN_14166cc80() < 0x95)
-                Stop(0);
+            Stop(1);
+            break;
         }
-        else
+        break;
+    case 0x96:
+        if (pPartner->FUN_14166c930() != 0x3a)
             Stop(0);
+        else if (pPartner->FUN_14166cc80() < 0x95)
+            Stop(0);
+        break;
     }
-    if (FUN_1417b7e40() == 0x95)
+    switch (FUN_1417b7e40())
     {
+    case 0x95:
         if (pPartner->FUN_14166cc80() == 0x96)
             pOwnerPC->FUN_14166cc40(0x96);
-        else if (pPartner->FUN_14166cc80() == 0x95)
+        else
+        {
+            if (pPartner->FUN_14166cc80() != 0x95)
+                break;
             pOwnerPC->FUN_14166cc40(0x96);
+        }
+        break;
     }
     State::vfunc_3(fTime);
 }
@@ -647,6 +656,7 @@ void StateCoupleEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int e
 }
 
 // Follows the owner's ridden mount position; ends the state when the actor can no longer stay.
+// MS2-FUNCTIONAL: the exe copies the returned position into a by-value argument temporary for PCBase vfunc_22 (rep movsb frame); the shared mypc.h slot is declared const efd::Point3& and has 270+ users, not re-typed here
 // @0x140b81830
 void StateCoupleEmotion::vfunc_8(double fTime)
 {
@@ -673,21 +683,28 @@ void StateCoupleEmotion::vfunc_2(int n)
 {
     int nOld = FUN_1417b7e40();
     State::vfunc_2(n);
-    if (nOld != n && !m_spCoupleData.IsNull())
+    if (nOld == n)
+        return;
+    if (m_spCoupleData == NULL)
+        return;
+    m_n6c = FUN_140869420();
+    PCBase* pOwnerPC = FUN_1417b8370();
+    if (pOwnerPC == 0)
     {
-        m_n6c = FUN_140869420();
-        if (FUN_1417b8370() == 0)
-        {
-            MS2_ASSERT_AT(0x244, "pOwnerPC" && 0);
-            return;
-        }
-        if (n == 0x96)
-            PlayFirstAni();
+        MS2_ASSERT_AT(0x244, "pOwnerPC" && 0);
+        return;
+    }
+    switch (n)
+    {
+    case 0x96:
+        PlayFirstAni();
+        break;
     }
 }
 
 // The nif's text keys "loopstart_effect_<name>" / "loopend_effect_<name>" / "loopreset_effect_<name>" start / stop /
 // restart the named effect (requester only).
+// MS2-FUNCTIONAL: AddEffect/RemoveEffect take CStringA by value: the exe builds named CStringA copies (13 more CStringT copy-ctor/dtor imports, 868 vs 680 bytes); body restructure pending
 // @0x140b81a30
 void StateCoupleEmotion::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID,
     const NiFixedString& kTextKey, const NiTextKeyMatch* pkMatchObject, NiControllerSequence* pkSeq, float fEventTime)
@@ -743,7 +760,7 @@ int StateCoupleEmotion::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 // @0x140b81f70
 bool StateCoupleEmotion::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 {
-    return m_n10 != p->m_nSub;
+    return FUN_1417b7e40() != p->m_nSub;
 }
 
 // @0x140b81fe0
@@ -1174,20 +1191,16 @@ bool StateCoupleEmotion::PlayAni(int nAni)
 
 // ---- free helpers -----------------------------------------------------------------------------------------------------
 
-// The UI is not in the couple-emotion tab (or no UI tag is active at all).
+// No message box is shown, or the shown box is not the couple-emotion request.
 // @0x140b83ec0
 bool FUN_140b83ec0()
 {
-    Unk_UiTag kTag;
-    kTag.FUN_14151f820();
-    if (kTag.FUN_14062c1f0(0))
-    {
-        kTag.FUN_140534d60();
+    MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
+    if (spBox == NULL)
         return true;
-    }
-    bool bOther = !(CStringW(FUN_141a02ce0(kTag.FUN_140534fe0())) == s_strCoupleEmotion);
-    kTag.FUN_140534d60();
-    return bOther;
+    if (spBox->FUN_141a02ce0() == s_strCoupleEmotion)
+        return false;
+    return true;
 }
 
 // Is the actor in a state that may start a couple emotion?
@@ -1201,10 +1214,11 @@ static bool FUN_140b83f60(int nState)
 // @0x140b83fa0
 static bool FUN_140b83fa0(const NiPoint3& kA, const NiPoint3& kB)
 {
-    int nMax = *FUN_1401d3200()->m_maxDist.FUN_1402056b0();
-    NiPoint3 kDiff;
-    FUN_140965c40(&kDiff, kA, kB);
-    return FUN_140967ac0(kDiff) <= (float)nMax;
+    float fMax = (float)*FUN_1401d3200()->m_maxDist.FUN_1402056b0();
+    float fLen = (kA - kB).Length();
+    if (fLen > fMax)
+        return false;
+    return true;
 }
 
 // Shows the "couldn't start the couple emotion" notice matching the failure reason nWhy.
