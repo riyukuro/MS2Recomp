@@ -1297,14 +1297,12 @@ void UIGameMenuDialog::FUN_141938490(int nId, const CStringW& strText)
 // @0x1419384d0
 void UIGameMenuDialog::FUN_1419384d0()
 {
-    POSITION pos = m_menuText.GetStartPosition();
-    while (pos != NULL) {
+    for (POSITION pos = m_menuText.GetStartPosition(); pos != NULL; m_menuText.GetNext(pos)) {
         int nId = m_menuText.GetKeyAt(pos);
         CStringW strText(m_menuText.GetValueAt(pos));
         MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(FUN_14193b530(nId)));
         if (spItem.get() != 0)
             spItem->FUN_140c38f00("setEventPopup", FUN_14193afc0(nId), CStringW(strText));
-        m_menuText.GetNext(pos);
     }
 }
 
@@ -1524,7 +1522,7 @@ void UIGameMenuDialog::FUN_141939770(int nId, int nEnable)
     MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(FUN_14193b530(nId)));
     if (spItem.get() != 0)
         spItem->Invoke("setMenuEnable", FUN_14193afc0(nId), nEnable);
-    m_enabled.SetAt(nId, nEnable);
+    m_enabled.SetAt(reinterpret_cast<const EMenuKey&>(nId), nEnable);
 }
 
 // @0x1419398d0
@@ -1719,7 +1717,7 @@ int UIGameMenuDialog::FUN_14193a7b0(int nId, ASObj* pObj)
     pObj->FUN_1407cba60("layerName", CString(strName));
     pObj->FUN_1407cb9c0("isBig", ref.FUN_140c1cda0()->m_28);
     int nEnabled = 1;
-    if (m_enabled.Lookup(nId, nEnabled))
+    if (m_enabled.Lookup(reinterpret_cast<const EMenuKey&>(nId), nEnabled))
         pObj->FUN_1407cb9c0("enabled", nEnabled);
     if (FUN_14036d570(FUN_140166410(), 0xc4)) {
         pObj->FUN_1407cbb20("tooltipName", CStringW(strTip));
@@ -1798,7 +1796,7 @@ MS2Ptr<Unk_GmItem> UIGameMenuDialog::FUN_14193b0f0(int nId, void*)
 }
 
 // @0x14193b180
-MS2Ptr<Unk_GmItem> UIGameMenuDialog::FUN_14193b180(CString strName)
+MS2Ptr<Unk_GmItem> UIGameMenuDialog::FUN_14193b180(const CString& strName)
 {
     MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus");
     if (spMenus.get() != 0) {

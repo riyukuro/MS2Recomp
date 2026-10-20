@@ -127,7 +127,7 @@ public:
     CString FUN_14193ae90(int nId);
     CString FUN_14193afc0(int nId);
     MS2Ptr<Unk_GmItem> FUN_14193b0f0(int nId, void*);
-    MS2Ptr<Unk_GmItem> FUN_14193b180(CString strName);
+    MS2Ptr<Unk_GmItem> FUN_14193b180(const CString& strName);
     // game menu button handlers bound by CGameMenuTable::RegisterDefs (0x140cf1110)
     void FUN_14193b5b0();
     void FUN_14193b630();
@@ -192,7 +192,7 @@ private:
     bool m_bPetUpdate;                                  // +0x1a4
     ATL::CAtlMap<EMenuKey, CStringW> m_menuText;             // +0x1a8 menu id -> event popup text
     ATL::CAtlArray<int> m_order;                        // +0x1f0 the menu ids of the last build (the "new" badge)
-    ATL::CAtlMap<int, int> m_enabled;                   // +0x210 menu id -> enabled
+    ATL::CAtlMap<EMenuKey, int> m_enabled;              // +0x210 menu id -> enabled (key by reference: SetAt 0x140c1e090)
     bool m_bFlag258;                                    // +0x258 UGC terms accepted
     bool m_bFlag259;                                    // +0x259 red circle of the UGC entry (id 0x16)
     bool m_bFlag25a;                                    // +0x25a red circle of the entry with id 7
