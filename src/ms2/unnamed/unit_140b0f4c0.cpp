@@ -285,17 +285,19 @@ float CPet::vfunc_89()
     float fRow = 0.0f;
     if (m_spRow.get() != 0)
         fRow = m_spRow->m_fScaleBonus;
-    Unk_OwnerPC* pOwner = static_cast<Unk_OwnerPC*>(FUN_141094f60());
-    if (pOwner != 0)
+    do
     {
+        Unk_OwnerPC* pOwner = static_cast<Unk_OwnerPC*>(FUN_141094f60());
+        if (pOwner == 0)
+            break;
         CGemPetSkin* pGem = pOwner->FUN_14165df00().get();
-        if (pGem != 0)
-        {
-            MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(pGem->m_nPetId);
-            if (!spRow.IsNull())
-                fRow = spRow->m_fScaleBonus;
-        }
-    }
+        if (pGem == 0)
+            break;
+        MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(pGem->m_nPetId);
+        if (spRow.IsNull())
+            break;
+        fRow = spRow->m_fScaleBonus;
+    } while (0);
     return m_f16c + m_f170 + fRow;
 }
 
