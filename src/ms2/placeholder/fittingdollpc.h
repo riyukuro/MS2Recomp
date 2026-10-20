@@ -143,7 +143,8 @@ public:
     virtual MS2Ptr<Unk_PCBaseComp_a78> vfunc_82();          // 82 0x141657100
     virtual MS2Ptr<Unk_PCBaseComp_aa8> vfunc_85();          // 85 0x1416573b0
     virtual MS2Ptr<Unk_PCBaseComp_ac8> vfunc_87();          // 87 0x1416575b0
-    virtual void vfunc_90(void* p);                         // 90 0x141657910
+    virtual void vfunc_90(void* p);                         // 90 0x141657910 the stats packet
+    virtual void vfunc_91(void* p);                         // 91 0x141657c40 = vfunc_90
     virtual float vfunc_95();                               // 95 0x14165e4a0 (PCBase 0x141671620)
     virtual int vfunc_99(int n);                            // 99 0x141654850
     virtual int vfunc_124(int a, int b);                    // 124 0x141653840 (1/0; homes edx and r8d)
@@ -191,6 +192,7 @@ public:
     int FUN_14165ef30();                                    // this is the local player
     MS2Ptr<Unk_PCLinkFD8> FUN_141657730();                  // the +0xfd8 record, created on demand (none while busy)
     int FUN_141661970();                                    // busy
+    void FUN_141657c80(bool bEnable);                       // apply the attach effects of the equipment
     CStringW& FUN_141656be0();                              // +0xdc8
     CStringA& FUN_141656c50();                              // +0xdd0
     CStringW& FUN_141656d90();                              // +0x1030 the displayed name

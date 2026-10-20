@@ -11,6 +11,8 @@
 #include "ms2/placeholder/ascript.h"       // MS2Ptr<T>
 
 // 0x20. The watering animation name.
+#ifndef MS2_STATETREEWATERINGDATA_DEFINED   // also defined by another header (w539: both may be included)
+#define MS2_STATETREEWATERINGDATA_DEFINED
 class StateTreeWateringData : public StateData
 {
 public:
@@ -23,6 +25,7 @@ public:
 };
 MS2_CHECK_SIZE(StateTreeWateringData, 0x20);
 MS2_CHECK_OFFSET(StateTreeWateringData, m_strAnim, 0x18);
+#endif
 
 // 0x60.
 class StateTreeWatering : public State, public ICastingEventListener

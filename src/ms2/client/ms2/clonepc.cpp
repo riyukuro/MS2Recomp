@@ -318,7 +318,7 @@ void ClonePC::vfunc_149()
     {
         if (m_pSourcePC != 0)
         {
-            FUN_1408f3a80(m_kListD48);
+            FUN_1408f3a80(&m_kListD48);
             FUN_1411e3de0(&m_kEquipDE0, 1);
             ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);
             vfunc_152(&kEquips, ::FUN_1416561a0(m_pSourcePC));

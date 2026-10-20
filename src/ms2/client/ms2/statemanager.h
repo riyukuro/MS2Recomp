@@ -30,6 +30,8 @@ class COutputStream;
 // RTTI StateSyncObject (defined in ?\statesyncobject.cpp, subclasses in commonfiles/statesyncobject.h). The exe object
 // is 0xb8: its last field (void* +0xb0, not set by the ctor) is left out here because ?\state.cpp's local subclasses pad it.
 // Fields proven from CStateManager::FUN_1417db550 (applies one request to the actor) and the packet coders.
+#ifndef MS2_UNK_STATEARG22_DEFINED   // also defined by another header (w539: both may be included)
+#define MS2_UNK_STATEARG22_DEFINED
 class Unk_StateArg22 : public CPtred
 {
 public:
@@ -81,6 +83,7 @@ MS2_CHECK_OFFSET(Unk_StateArg22, m_pos78, 0x78);
 MS2_CHECK_OFFSET(Unk_StateArg22, m_str88, 0x88);
 MS2_CHECK_OFFSET(Unk_StateArg22, m_nA8, 0xa8);
 MS2_CHECK_OFFSET(Unk_StateArg22, m_fA4, 0xa4);
+#endif
 
 // The owner state whose slots 36/37 CStateManager::FUN_1417daaa0 drives (state id 2).
 class Unk_SMStateSlots : public State

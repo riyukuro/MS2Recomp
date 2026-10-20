@@ -102,6 +102,7 @@ public:
     Unk_PCBaseBuffList(PCBase* pOwner);                     // 0x14096ef20
     ~Unk_PCBaseBuffList();
     void FUN_140970490();                                   // clear
+    void FUN_140971150();                                   // refresh after an equip change (pc.cpp)
     void FUN_140970420(double dTime);                       // per-frame update
     float FUN_1409705d0();                                  // scale
     int FUN_1409701d0(int nKind);

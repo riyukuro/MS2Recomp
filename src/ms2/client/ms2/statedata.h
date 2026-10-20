@@ -393,6 +393,8 @@ public:
 MS2_CHECK_SIZE(StateHoldData, 0x30);
 
 // 0x30. The reactor being used (built by ReactorAction::vfunc_2; the state itself is in another unit).
+#ifndef MS2_STATEREACTDATA_DEFINED   // also defined by another header (w539: both may be included)
+#define MS2_STATEREACTDATA_DEFINED
 class StateReactData : public StateData
 {
 public:
@@ -404,8 +406,11 @@ public:
     CString m_strAnim;                                          // +0x28
 };
 MS2_CHECK_SIZE(StateReactData, 0x30);
+#endif
 
 // 0x20. The tree watering state (built by TreeWateringAction::vfunc_2; the state itself is in another unit).
+#ifndef MS2_STATETREEWATERINGDATA_DEFINED   // also defined by another header (w539: both may be included)
+#define MS2_STATETREEWATERINGDATA_DEFINED
 class StateTreeWateringData : public StateData
 {
 public:
@@ -414,3 +419,4 @@ public:
     CString m_strName;                                          // +0x18
 };
 MS2_CHECK_SIZE(StateTreeWateringData, 0x20);
+#endif

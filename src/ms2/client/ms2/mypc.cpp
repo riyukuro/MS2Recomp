@@ -796,7 +796,6 @@ public:
     enum { CLASS_ID = 0x6200046 };
 };
 Unk_MyPCPlotPC* FUN_140884db0(efd::IBase* pObj);           // efd::DynamicCast<Unk_MyPCPlotPC>
-__int64 FUN_141656ad0(PCBase* pPC);                         // +0xdc0 the account id
 __int64 FUN_14121c6c0(PCBase* pPC);                         // +0x12f0
 void FUN_1411e1b80(Unk_PCEquipSet* pEquip, ATL::CAtlList<MS2Ptr<CEquipItem> >& aOut);
 extern __int64 DAT_143af25f0;                               // the actor id of the house owner
@@ -2098,8 +2097,8 @@ int MyPC::FUN_141527c50(int nItemId)
         if (spEquip->FUN_1411dc820() == nItemId)
             return 1;
     }
-    for (size_t i = 0; i < reinterpret_cast<Unk_MyPCItemArray*>(m_kListD48)->FUN_140720ca0(); i++) {
-        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_MyPCItemArray*>(m_kListD48)->FUN_140a69ee0(i);
+    for (size_t i = 0; i < reinterpret_cast<Unk_MyPCItemArray*>(&m_kListD48)->FUN_140720ca0(); i++) {
+        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_MyPCItemArray*>(&m_kListD48)->FUN_140a69ee0(i);
         if (spItem->FUN_1405276c0() == nItemId)
             return 1;
     }
@@ -4129,7 +4128,7 @@ CItem* MyPC::FUN_14152efa0(__int64 nItemUid, __int64* pOwner)
     Unk_MyPCPlot* pPlot = pSvc->FUN_1410b8c90(pPC->FUN_14123c460());
     if (pPlot == 0)
         return 0;
-    if (pSvc->FUN_1410c8030(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0(this))
+    if (pSvc->FUN_1410c8030(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0())
         return 0;
     MS2Ptr<CEquipItem> spItem = pPC->FUN_1416561a0()->FUN_1411e1580(nItemUid);
     if (!spItem)
@@ -4150,7 +4149,7 @@ void MyPC::FUN_14152f140(__int64 nOwnerId)
     Unk_MyPCPlot* pPlot = pSvc->FUN_1410b8c90(pPC->FUN_14123c460());
     if (pPlot == 0)
         return;
-    if (pSvc->FUN_1410c8030(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0(this))
+    if (pSvc->FUN_1410c8030(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0())
         return;
     ATL::CAtlList<MS2Ptr<CEquipItem> > aItems(10);
     FUN_1411e1b80(pPC->FUN_1416561a0(), aItems);
@@ -4186,7 +4185,7 @@ void MyPC::FUN_14152f3c0()
             Unk_MyPCPlot* pPlot = pSvc->FUN_1410b8c90(pPC->FUN_14123c460());
             if (pPlot != 0)
             {
-                if (pSvc->FUN_1410c8030(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0(this))
+                if (pSvc->FUN_1410c8030(pPlot->m_n50, pPlot->m_n54) != FUN_141656ad0())
                     continue;
                 FUN_14152f140(pPlot->m_nOwnerId);
             }
