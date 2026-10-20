@@ -476,6 +476,9 @@ class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* p
 Unk_MmFiles* FUN_140166420();                                               // the resource file system
 CLogString* FUN_140166440();
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
+bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError);
+bool FUN_140ebfdd0(CDBPremiumProduct* pProduct, bool bShowError);
+bool FUN_140ebfb90(CMeratMarketPremiumProduct* pProduct, bool bShowError);
 void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 // The world service seen from here: the field proxy of a character id (worldservice.h types the result otherwise).
 class Unk_MmMyPC { public: void FUN_141529fb0(); };                       // MyPC: request the field leave
@@ -2295,6 +2298,59 @@ int UIMeratMarketDialog::FillProducts(ASArray& rows, Unk_MmProductArray& list, U
             rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
     }
     return (int)nCount;
+}
+
+// Fills the rows of a banner tab: every product of the list that can be shown gets a product row of the given row
+// type, and a premium product with a banner category links the banner to the row. Returns the number of rows added.
+// @0x1412fa370
+int UIMeratMarketDialog::FillBannerProducts(const int& nType, ASArray& rows, Unk_MmProductArray& list, const Unk_MmViewScope* pScope)
+{
+    size_t nCount = list.GetCount();
+    int nAdded = 0;
+    for (size_t i = 0; i < nCount; i++)
+    {
+        MS2Ptr<CMeratMarketProduct> spProduct(list[i]);
+        if (spProduct == 0)
+            continue;
+        CMeratMarketPremiumProduct* pPremium = &spProduct->m_premium;
+        if (spProduct->GetType() == 3)
+        {
+            if (pPremium->m_b108)
+                continue;
+            if (!pPremium->m_bf0)
+            {
+                if (!FUN_140ebfdd0(pPremium, 0))
+                    continue;
+                if (!FUN_140ebff70(pPremium, 0))
+                    continue;
+                if (!FUN_140ebfb90(pPremium, 0))
+                    continue;
+            }
+        }
+        MS2Ptr<ASMeratMarketProductBase> spRow = ASMeratMarketProductBase::FUN_1409bbf30(nType, FUN_1422db730());
+        if (spRow == 0)
+            continue;
+        if (pPremium->FUN_1406a0fe0())
+        {
+            MS2Ptr<ShopBannerInfo> spBanner = m_banner.FUN_1413480a0(pPremium->GetCategory());
+            if (spBanner.get() != 0)
+            {
+                spRow->FUN_1409bc4f0(reinterpret_cast<MS2Ptr<Unk_MeratBanner>&>(spBanner));
+                MS2Ptr<MeratMarketShopBannerInfo> spInfo(dynamic_cast<MeratMarketShopBannerInfo*>((ShopBannerInfo*)spBanner));
+                if (spInfo.get() != 0)
+                {
+                    spInfo->m_nProduct = nAdded;
+                    spInfo->m_key = reinterpret_cast<Unk_ShopBannerProductKey&>(spProduct->m_key);
+                }
+            }
+        }
+        if (spRow->vfunc_1(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spProduct), reinterpret_cast<const Unk_MeratViewOpt*>(pScope)))
+        {
+            rows.FUN_1422bc050(Scaleform::GFx::Value(spRow->FUN_1422bb870()));
+            nAdded++;
+        }
+    }
+    return nAdded;
 }
 
 // @0x1412fa7b0
