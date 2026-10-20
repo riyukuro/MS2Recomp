@@ -19,6 +19,11 @@ The tree (build/gb-tree/, symlinks only, rebuilt when its inputs change) reprodu
   - unchanged SDK files (engine/gamebryo-v2525/SDK_FILES.tsv) -> the pristine SDK in third_party/gamebryo (fallback
     engine/gamebryo); $(D3DX) files -> third_party/dxsdk;
   - stock/: the generated include dirs of engine/gamebryo/CMakeLists.txt (DXSDK overlay, XInput, PCH forwarders).
+Library units (2026-10-20, lb3): engine/units-lib-*.json (same format, own flags/include_dirs tables; one file per
+library lane so lanes do not edit one line of JSON) list statically linked third-party TUs compiled in place from
+third_party/src (CEF libcef_dll wrapper, ...); unit names gb:<lib>/<TU>, credited like engine TUs. Give each library an
+include window (engine/unit-windows.tsv, its span in the exe): its look-alike COMDATs (std::_Tree helpers, tiny
+leaves) otherwise pair with engine functions.
 Path variables in units-gb.json: $(TREE) the tree, $(ROOT) the repo, $(SDK) an SDK file (stock recipe: engine/gamebryo
 first; v2525 recipe: the pristine SDK first), $(PHYSX) the PhysX 2.8.4 SDKs dir, $(D3DX) the DirectX SDK include dir.
 """
@@ -175,8 +180,10 @@ def expand(s, tree=TREE):
 def load_units(tree=TREE):
     """[{name, recipe, unit, source, cmd}] with every path resolved; source None when it does not exist."""
     out = []
-    doc = json.load(open(UNITS_JSON))
-    for u in doc["units"]:
+    import glob
+    docs = [json.load(open(UNITS_JSON))] + [json.load(open(p)) for p in
+                                            sorted(glob.glob(os.path.join(ROOT, "engine", "units-lib-*.json")))]
+    for doc, u in ((d, u) for d in docs for u in d["units"]):
         u = dict(u, flags=doc["flags"][u["flags"]], include_dirs=doc["include_dirs"][u["include_dirs"]])
         src = u["source"]
         if src.startswith("$(SDK)/"):
