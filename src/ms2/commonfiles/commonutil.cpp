@@ -87,6 +87,7 @@ extern long g_lUniqueSeq;
 void FUN_1402929a0(const CStringW& strText, std::vector<int>& arrOut, const wchar_t* pszDelim);
 int FUN_140274f40(const CStringW& strText);                     // _wtoi
 bool FUN_14028d470(float fValue, float fTolerance);
+float FUN_14029d220(float fValue);
 
 // Unrecovered helpers.
 CString FUN_140188f50(const char* psz, int n);                  // CString from a C string
@@ -546,7 +547,6 @@ void FUN_14028cf00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const C
 }
 
 // Sums 1 << (n - 1) over a comma separated list of numbers (a bit mask from 1-based indices).
-// MS2-FUNCTIONAL: stack-slot layout differs
 // @0x14028d020
 int FUN_14028d020(const CStringW& strList)
 {
@@ -554,20 +554,20 @@ int FUN_14028d020(const CStringW& strList)
     std::vector<int> arrValues;
     FUN_1402929a0(strList, arrValues, L",");
     for (size_t i = 0; i < arrValues.size(); ++i)
-        nMask = nMask + (1 << ((char)arrValues[i] - 1U & 0x1f));
+        nMask = nMask + (1 << (arrValues[i] - 1));
     return nMask;
 }
 
 // Unique 64-bit id: server time (offset by 1e9) followed by five digits of a process-wide counter.
-// MS2-FUNCTIONAL: stack-slot layout differs
 // @0x14028d0e0
 __int64 FUN_14028d0e0()
 {
     __int64 nId = 0;
     int nSeq = FUN_140298fd0(&g_lUniqueSeq);
     __int64 nTime = FUN_140869440();
+    nTime = nTime - 1000000000;
     CString strId;
-    strId.Format("%09I64d%05d", nTime - 1000000000, nSeq % 100000);
+    strId.Format("%09I64d%05d", nTime, nSeq % 100000);
     nId = _atoi64(strId);
     return nId;
 }
@@ -616,16 +616,14 @@ float FUN_14028d2e0()
 }
 
 // Rolls a probability: never for (nearly) zero, always for exactly 1.
-// MS2-FUNCTIONAL: result is a 32-bit int slot in the exe; branch shape differs
 // @0x14028d310
 BOOL FUN_14028d310(float fChance)
 {
     if (FUN_14028d470(fChance, 0.0f))
         return FALSE;
-    if (fChance == 1.0f)
+    else if (fChance == 1.0f)
         return TRUE;
-    BOOL bResult = FUN_14028d2e0() <= fChance;
-    return bResult;
+    return FUN_14028d2e0() <= fChance;
 }
 
 // @0x14028d380
@@ -650,11 +648,12 @@ CString FUN_14028d3c0(CString strPath)
 }
 
 // Whether two floats are closer than 1e-6.
-// MS2-FUNCTIONAL: bool/branch lowering and stack slots differ from the exe
 // @0x14028d470
 bool FUN_14028d470(float fA, float fB)
 {
-    return fabsf(fA - fB) < 1e-06f ? true : false;
+    if (FUN_14029d220(fA - fB) < 1e-06f)
+        return true;
+    return false;
 }
 
 // MS2-FUNCTIONAL: bool/branch lowering and stack slots differ from the exe
@@ -1466,15 +1465,14 @@ std::string FUN_140291550(int nKind)
     }
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (std::string glue pairing / frame layout)
 // @0x140291620
 int FUN_140291620(const std::string& strKey)
 {
     if (FUN_140292820(strKey, "game"))
         return 0;
-    if (FUN_140292820(strKey, "skin"))
+    else if (FUN_140292820(strKey, "skin"))
         return 1;
-    if (FUN_140292820(strKey, "codi"))
+    else if (FUN_140292820(strKey, "codi"))
         return 2;
     return 3;
 }
@@ -1519,11 +1517,11 @@ __int64 FUN_1402916a0(__int64 nTime, int nMode)
 }
 
 // Wraps a degree value into [0, 360).
-// MS2-FUNCTIONAL: not yet byte-matched (std::string glue pairing / frame layout)
 // @0x140291b70
 void FUN_140291b70(float* pfDegrees)
 {
-    int nDegrees = (int)*pfDegrees % 360;
+    int nDegrees = (int)*pfDegrees;
+    nDegrees = nDegrees % 360;
     if (nDegrees < 0)
         nDegrees = nDegrees + 360;
     *pfDegrees = (float)nDegrees;
@@ -2005,7 +2003,7 @@ void* FUN_1402986c0(void* p, unsigned nFlags)
 {
     FUN_140297a00(p);
     if (nFlags & 1)
-        operator delete(p);
+        operator delete(p, (size_t)0x18);
     return p;
 }
 
@@ -2190,9 +2188,7 @@ void FUN_140297a20(void** pp)
 // @0x140297d20
 void* FUN_140297d20(Unk_BstrHolderRef* p)
 {
-    if (p->m_pHolder == NULL)
-        return NULL;
-    return *FUN_140298fc0(p->m_pHolder);
+    return p->m_pHolder ? *FUN_140298fc0(p->m_pHolder) : NULL;
 }
 
 // @0x1402979b0
