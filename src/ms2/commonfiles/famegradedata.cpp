@@ -200,10 +200,17 @@ int FUN_14035b710(CStringA& str)
 // @0x14035ba10
 int FUN_14035ba10(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 {
+    if (0)
+    {
+        MS2_ASSERT_AT(0xe7, 0);
+        return 2;
+    }
+    int nRet;
     int nValue = 0;
-    int nRet = FUN_140873890(pElem, pszName, nValue);
-    if (nRet == 0)
-        *pOut = nValue;
+    nRet = FUN_140873890(pElem, pszName, nValue);
+    if (nRet != 0)
+        return nRet;
+    *pOut = nValue;
     return nRet;
 }
 
@@ -230,10 +237,17 @@ int FUN_14035bb60(Unk_140165cf0* pElem, const char* pszName, Unk_FameSeason* pOu
 // @0x14035bc20
 int FUN_14035bc20(Unk_140165cf0* pElem, const char* pszName, Unk_FameAlliance* pOut)
 {
+    if (0)
+    {
+        MS2_ASSERT_AT(0xfa, 0);
+        return 2;
+    }
+    int nRet;
     CStringA str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
-    if (nRet == 0)
-        *pOut = FUN_14021a330(str);
+    nRet = FUN_1408733e0(pElem, pszName, str);
+    if (nRet != 0)
+        return nRet;
+    *pOut = FUN_14021a330(str);
     return nRet;
 }
 
@@ -814,12 +828,9 @@ ATL::CAtlArray<Unk_FameAlliance>& CFameTable::GetAllianceIds()
 int CFameTable::IsExped(Unk_FameAlliance nAlliance)
 {
     DefPtr spDef(0);
-    int nRet;
     if (m_mapDef.Lookup(nAlliance, spDef))
-        nRet = spDef->m_nIsExped;
-    else
-        nRet = 0;
-    return nRet;
+        return spDef->m_nIsExped;
+    return 0;
 }
 
 // @0x14035b0a0
