@@ -272,6 +272,7 @@ public:
     void SetGenderData(ASObj& data, int nGender);                   // 0x1412fd0c0
     void LoadSearchResult(MS2Ptr<AScript> spScript, int nKind);     // 0x1412fd140
     void OnSearchLoaded(AScript& data);                             // 0x1412fd2e0
+    void OnSearchItemLink(ASData& data);                            // 0x1412ff230 "onSearchItemLink"
     void SetMarketInitData(ASObj& data, int nPremium);              // 0x1412fd310
     void SetGenderSelection(ASObj& data, bool bUseMine, int nGender);   // 0x1412fd340
     void FillJobDropDown(ASObj& data, bool bUseMyJob, int nJob);    // 0x1412fd420

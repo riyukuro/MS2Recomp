@@ -297,6 +297,9 @@ public:
     void FUN_140d54d50(MS2Ptr<CMeratMarketSchCond> spCond);
     void FUN_140d542c0(int nShop, int nType);
     void FUN_140d550c0(MS2Ptr<CMeratMarketSchCond> spCond, int nPage);
+    void FUN_140d54fe0(bool bPremium, const unsigned __int64& nId, const int& nUiId);   // request a product by its id
+    void FUN_140d551e0(ATL::CAtlArray<int>& ids);                           // request premium products
+    void FUN_140d552c0(ATL::CAtlArray<unsigned __int64>& ids);              // request UGC products
     void FUN_140d553a0();
     void FUN_140d54440();
     void FUN_140d54ba0();
@@ -476,6 +479,8 @@ class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* p
 Unk_MmFiles* FUN_140166420();                                               // the resource file system
 CLogString* FUN_140166440();
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
+bool FUN_1409c1720(const Scaleform::GFx::Value& v);
+CStringW FUN_141277dd0(Scaleform::GFx::Value* pValue);                      // the string of a value
 bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError);
 bool FUN_140ebfdd0(CDBPremiumProduct* pProduct, bool bShowError);
 bool FUN_140ebfb90(CMeratMarketPremiumProduct* pProduct, bool bShowError);
@@ -2985,6 +2990,63 @@ void UIMeratMarketDialog::OnSelectItem(ASData& data)
         Unk_MeratProductKey key;
         spProduct->FUN_1409bc6a0(reinterpret_cast<Unk_MeratOid*>(&key));   // Unk_MeratOid is the same {premium id, ugc id} pair
         OpenProductByKey(key, IsCurrentShopTab());
+    }
+}
+
+// "onSearchItemLink": a search text searches the market; otherwise the market serial(s) of the link request the
+// linked product(s) of a premium / UGC tab.
+// @0x1412ff230
+void UIMeratMarketDialog::OnSearchItemLink(ASData& data)
+{
+    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    ASObj obj(value, 2);
+    if (obj.FUN_1422ba9a0())
+        return;
+    int nTab = FUN_1409c1750(obj.FUN_1422baa20("selectedTab"));
+    Scaleform::GFx::Value vText = obj.FUN_1422baa20("searchText");
+    CStringW strText;
+    if (!FUN_1409b0390(&vText) && !FUN_1409b0350(&vText))
+        strText = FUN_141277dd0(&vText);
+    if (!strText.IsEmpty())
+    {
+        MS2Ptr<CMeratMarketSchCond> spCond = GetSearchCondition();
+        if (spCond.get() != 0)
+        {
+            spCond->Set(strText);
+            FUN_140939a00()->FUN_140d550c0(spCond, 0);
+            return;
+        }
+    }
+    CStringA strSN;
+    obj.FUN_1422bac00("marketSN", strSN);
+    if (nTab != 1 && nTab != 2 && nTab != 3 && nTab != 8)
+        return;
+    bool bPremium = !FUN_1409c1720(obj.FUN_1422baa20("isUgc"));
+    if (strSN.Find(",", 0) != -1)
+    {
+        if (bPremium)
+        {
+            ATL::CAtlArray<int> ids;
+            XmlSplitImpl(strSN, ids, ",");
+            if (!ids.IsEmpty())
+                FUN_140939a00()->FUN_140d551e0(ids);
+        }
+        else
+        {
+            ATL::CAtlArray<unsigned __int64> ids;
+            XmlSplitImpl(strSN, ids, ",");
+            if (!ids.IsEmpty())
+                FUN_140939a00()->FUN_140d552c0(ids);
+        }
+    }
+    else
+    {
+        unsigned __int64 nSN = FUN_140718350(strSN);
+        if (nSN > 0)
+        {
+            int nUiId = vfunc_48();
+            FUN_140939a00()->FUN_140d54fe0(bPremium, nSN, nUiId);
+        }
     }
 }
 
