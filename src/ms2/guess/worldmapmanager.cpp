@@ -5,6 +5,102 @@
 // MS2-RANGE: 0x141b94cb0-0x141bb1490 .text$mn
 // MS2-RANGE: 0x140120010-0x140120210 .text$di
 // MS2-RANGE: 0x142cc3970-0x142cc3a60 .text$yd
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??__Es_strIconPath@@YAXXZ 0x140120010 ; probe
+// MS2-PIN: ??__Es_strItemGrade@@YAXXZ 0x140120040 ; probe
+// MS2-PIN: ??__Es_strItemSkin@@YAXXZ 0x140120070 ; probe
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x140120160 ; probe
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x140120190 ; probe
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141b9c7f0 ; prop
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141b9c820 ; prop
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141b9c850 ; prop
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141b9c880 ; prop
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141b9c8e0 ; prop
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141b9c910 ; prop
+// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141b9cf70 ; prop
+// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141b9cfc0 ; prop
+// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141b9d010 ; prop
+// MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141b9d0b0 ; prop
+// MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141b9d100 ; prop
+// MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141b9d150 ; prop
+// MS2-PIN: ??$_Emplace_back@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VMapTile@UIWorldMap@@@@@Z 0x141b9e3a0 ; prop
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x141b9ea70 ; order
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x141b9eb90 ; order
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x141b9ec20 ; order
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@1@PEAU01@@Z 0x141b9ecb0 ; order
+// MS2-PIN: ??$_Kfn@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@?$_Tmap_traits@HV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@@3@$0A@@std@@SAAEBHAEBU?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@1@@Z 0x141ba7ec0 ; order
+// MS2-PIN: ??$_Kfn@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@?$_Tmap_traits@HV?$MS2Ptr@VIconInfo@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@@3@$0A@@std@@SAAEBHAEBU?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@1@@Z 0x141ba7ed0 ; order
+// MS2-PIN: ??$_Kfn@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@?$_Tmap_traits@HV?$MS2Ptr@VMapTile@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@3@$0A@@std@@SAAEBHAEBU?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@1@@Z 0x141ba7ee0 ; order
+// MS2-PIN: ??$_Kfn@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@?$_Tmap_traits@HV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@2@$0A@@std@@SAAEBHAEBU?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@1@@Z 0x141ba7ef0 ; order
+// MS2-PIN: ??$_Kfn@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@?$_Tmap_traits@IV?$MS2Ptr@VEventIconInfo@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@@3@$0A@@std@@SAAEBIAEBU?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@1@@Z 0x141ba7f00 ; order
+// MS2-PIN: ??$_Lbound@H@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@1@AEBH@Z 0x141ba7f20 ; order
+// MS2-PIN: ??$_Lbound@H@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VIconInfo@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@PEAX@1@AEBH@Z 0x141ba7fc0 ; order
+// MS2-PIN: ??$_Lbound@H@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VMapTile@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@1@AEBH@Z 0x141ba8060 ; order
+// MS2-PIN: ??$_Lbound@H@?$_Tree@V?$_Tmap_traits@HV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@PEAX@1@AEBH@Z 0x141ba8100 ; order
+// MS2-PIN: ??$_Lbound@I@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VEventIconInfo@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@PEAX@1@AEBI@Z 0x141ba81a0 ; order
+// MS2-PIN: ??$_Lbound@I@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@1@AEBI@Z 0x141ba8240 ; order
+// MS2-PIN: ??$_Lbound@I@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VMapTile@UIWorldMap@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@1@AEBI@Z 0x141ba82e0 ; order
+// MS2-PIN: ??$_Move_backward_unchecked1@PEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@PEAV1@@std@@YAPEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@PEAV1@00U_General_ptr_iterator_tag@0@@Z 0x141ba88b0 ; unique
+// MS2-PIN: ??$_Pass_fn@P6A_NAEBV?$MS2Ptr@VMapTile@UIWorldMap@@@@0@Z$0A@@std@@YAP6A_NAEBV?$MS2Ptr@VMapTile@UIWorldMap@@@@0@ZP6A_N00@Z@Z 0x141ba98a0 ; prop
+// MS2-PIN: ??$_Uninitialized_copy@PEAV?$MS2Ptr@VDungeonRoom@@@@PEAV1@V?$allocator@V?$MS2Ptr@VDungeonRoom@@@@@std@@@std@@YAPEAV?$MS2Ptr@VDungeonRoom@@@@QEAV1@0PEAV1@AEAV?$allocator@V?$MS2Ptr@VDungeonRoom@@@@@0@@Z 0x141bab040 ; prop
+// MS2-PIN: ??$addressof@H@std@@YAPEAHAEAH@Z 0x141bab310 ; order
+// MS2-PIN: ??$addressof@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@YAPEAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@PEAX@0@AEAPEAU10@@Z 0x141bab330 ; order
+// MS2-PIN: ??$addressof@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@YAPEAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@0@AEAPEAU10@@Z 0x141bab350 ; order
+// MS2-PIN: ??$addressof@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@std@@YAPEAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@0@AEAPEAU10@@Z 0x141bab360 ; order
+// MS2-PIN: ??$construct@PEAU?$_Tree_node@HPEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@HPEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@HPEAX@std@@@1@QEAPEAU?$_Tree_node@HPEAX@1@AEAPEAU31@@Z 0x141bab440 ; order
+// MS2-PIN: ??$construct@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@1@AEAPEAU31@@Z 0x141bab490 ; order
+// MS2-PIN: ??$construct@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@1@AEAPEAU31@@Z 0x141bab580 ; order
+// MS2-PIN: ??$construct@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@AEBV1@@?$_Default_allocator_traits@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@std@@SAXAEAV?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@1@QEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@AEBV3@@Z 0x141babbf0 ; prop
+// MS2-PIN: ??$construct@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@1@QEAV?$MS2Ptr@VMapTile@UIWorldMap@@@@$$QEAV3@@Z 0x141babc40 ; prop
+// MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@1@@Z 0x141babca0 ; order
+// MS2-PIN: ?_Adopt@_Iterator_base0@std@@QEAAXPEBX@Z 0x141babcd0 ; order
+// MS2-PIN: ?__empty_global_delete@@YAXPEAX_K@Z 0x141babce0 ; order
+// MS2-PIN: ??$destroy@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@1@@Z 0x141babcf0 ; prop
+// MS2-PIN: ??$destroy@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@1@@Z 0x141babd10 ; prop
+// MS2-PIN: ??$destroy@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@1@@Z 0x141babd50 ; prop
+// MS2-PIN: ??$destroy@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@1@@Z 0x141babd70 ; prop
+// MS2-PIN: ??$destroy@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@1@@Z 0x141babd90 ; prop
+// MS2-PIN: ??$destroy@U?$pair@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@std@@@?$_Default_allocator_traits@V?$allocator@U?$pair@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@std@@@std@@@std@@SAXAEAV?$allocator@U?$pair@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@std@@@1@QEAU?$pair@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@1@@Z 0x141babdb0 ; prop
+// MS2-PIN: ??$forward@AEAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@PEAX@std@@@std@@YAAEAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@PEAX@0@AEAPEAU10@@Z 0x141bac3a0 ; order
+// MS2-PIN: ??0?$TSingleton@VWorldMapManager@@@@QEAA@XZ 0x141bacc90 ; unique
+// MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141baccc0 ; prop
+// MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VIconInfo@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141baccf0 ; prop
+// MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VMapTile@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141bacd20 ; prop
+// MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@HV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141bacd50 ; prop
+// MS2-PIN: ??0?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141bacd80 ; prop
+// MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VMapTile@UIWorldMap@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x141bacde0 ; prop
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$MS2Ptr@VIconInfo@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141bace50 ; prop
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$MS2Ptr@VMapTile@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141bace90 ; prop
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141baced0 ; prop
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VEventIconInfo@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x141bacf10 ; prop
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x141bacf50 ; prop
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VMapTile@UIWorldMap@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x141bacf90 ; prop
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@QEAA@XZ 0x141bad910 ; prop
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@std@@QEAA@XZ 0x141bad920 ; prop
+// MS2-PIN: ??0?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@QEAA@XZ 0x141bad930 ; prop
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@PEAX@std@@@std@@QEAA@XZ 0x141bad940 ; prop
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@QEAA@XZ 0x141bad950 ; prop
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@PEAX@std@@@std@@QEAA@XZ 0x141bad960 ; prop
+// MS2-PIN: ??0?$allocator@U?$pair@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@std@@@std@@QEAA@XZ 0x141bad970 ; unique
+// MS2-PIN: ??0?$map@HV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@@3@@std@@QEAA@XZ 0x141bad9a0 ; unique
+// MS2-PIN: ??0?$map@HV?$MS2Ptr@VIconInfo@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@@3@@std@@QEAA@XZ 0x141bad9d0 ; unique
+// MS2-PIN: ??0?$map@HV?$MS2Ptr@VMapTile@UIWorldMap@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@3@@std@@QEAA@XZ 0x141bada00 ; unique
+// MS2-PIN: ??0?$map@HV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VMapTile@UIWorldMap@@@@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@@std@@@2@@std@@QEAA@XZ 0x141bada30 ; unique
+// MS2-PIN: ??0?$map@IV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@@3@@std@@QEAA@XZ 0x141bada90 ; unique
+// MS2-PIN: ??0?$map@IV?$MS2Ptr@VMapTile@UIWorldMap@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@3@@std@@QEAA@XZ 0x141badac0 ; unique
+// MS2-PIN: ??1IconInfo@UIWorldMap@@UEAA@XZ 0x141bae4d0 ; unique
+// MS2-PIN: ??_G?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@QEAAPEAXI@Z 0x141bb0000 ; prop
+// MS2-PIN: ??_G?$pair@$$CBHV?$MS2Ptr@VIconInfo@UIWorldMap@@@@@std@@QEAAPEAXI@Z 0x141bb0040 ; prop
+// MS2-PIN: ??_G?$pair@$$CBIV?$MS2Ptr@VEventIconInfo@@@@@std@@QEAAPEAXI@Z 0x141bb00c0 ; prop
+// MS2-PIN: ??_G?$pair@$$CBIV?$MS2Ptr@VFieldSearchInfo@UIWorldMap@@@@@std@@QEAAPEAXI@Z 0x141bb0100 ; prop
+// MS2-PIN: ??_G?$pair@$$CBIV?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@QEAAPEAXI@Z 0x141bb0140 ; prop
+// MS2-PIN: ?Lookup@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAPEAVCPair@12@PEB_W@Z 0x141bb0940 ; unique
+// MS2-PIN: ??__Fs_strIconPath@@YAXXZ 0x142cc3970 ; probe
+// MS2-PIN: ??__Fs_strItemGrade@@YAXXZ 0x142cc3990 ; probe
+// MS2-PIN: ??__Fs_strItemSkin@@YAXXZ 0x142cc39b0 ; probe
+// MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142cc3a00 ; probe
+// MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142cc3a20 ; probe
+// MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/commonfiles/blackmarketitemoption.h"
@@ -12,6 +108,7 @@
 #include <algorithm>
 #include <stdlib.h>
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/tptrvalue.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/ccachedata.h"
 #include "ms2/placeholder/tixmldocument.h"
@@ -184,31 +281,31 @@ void UIWorldMap::DisplaySetting::FUN_141b95000()
 }
 
 // @0x141b95080
-// The display filter shows a quest (DisplaySetting::AllowsQuest; free function: the header declares no member).
-int FUN_141b95080(UIWorldMap::DisplaySetting* pThis, MS2Ptr<CQuestData> spQuest)
+// The display filter shows a quest.
+int UIWorldMap::DisplaySetting::FUN_141b95080(MS2Ptr<CQuestData> spQuest)
 {
     if (!spQuest)
         return 0;
     PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPC == 0)
         return 0;
-    if (pThis->m_18[3] != 0)
+    if (m_18[3] != 0)
     {
         if (abs(spQuest->m_level - (unsigned short)pPC->vfunc_78()) > 5)
             return 0;
     }
     if (FUN_140764040(spQuest.operator->()))
-        return pThis->m_18[0];
+        return m_18[0];
     if (FUN_140764080(spQuest.operator->()))
         return 1;
     if (FUN_1407640c0(spQuest.operator->()))
-        return pThis->m_18[2];
-    return pThis->m_18[1];
+        return m_18[2];
+    return m_18[1];
 }
 
 // @0x141b95270
-// The display filter shows a dungeon (DisplaySetting::AllowsDungeon).
-int FUN_141b95270(UIWorldMap::DisplaySetting* pThis, MS2Ptr<DungeonRoom> spRoom)
+// The display filter shows a dungeon.
+int UIWorldMap::DisplaySetting::FUN_141b95270(MS2Ptr<DungeonRoom> spRoom)
 {
     if (!spRoom)
         return 0;
@@ -216,7 +313,7 @@ int FUN_141b95270(UIWorldMap::DisplaySetting* pThis, MS2Ptr<DungeonRoom> spRoom)
     if (pPC == 0)
         return 0;
     bool bSuits = FUN_14031e720(spRoom->m_limitPlayerLevel, (unsigned short)pPC->vfunc_78());
-    if (pThis->m_18[4] != 0 && !bSuits)
+    if (m_18[4] != 0 && !bSuits)
         return 0;
     return 1;
 }
@@ -512,7 +609,6 @@ void WorldMapManager::LoadIconPacket(CInPacket* packet)
         LoadAddtionalInfos(packet);
 }
 
-bool WorldMapSpecialNpcLess(Unk_BmBoxPtr<SpecialNPCInfo> a, Unk_BmBoxPtr<SpecialNPCInfo> b);
 
 // @0x141b971a0
 void WorldMapManager::LoadSpecialNpcs(CInPacket* packet)
@@ -541,7 +637,15 @@ void WorldMapManager::LoadSpecialNpcs(CInPacket* packet)
             }
         }
     }
-    std::sort(records.begin(), records.end(), WorldMapSpecialNpcLess);
+    struct Less
+    {
+        // @0x141baff00
+        bool operator()(Unk_BmBoxPtr<SpecialNPCInfo> a, Unk_BmBoxPtr<SpecialNPCInfo> b) const
+        {
+            return a->m_n08 < b->m_n08;
+        }
+    };
+    std::sort(records.begin(), records.end(), Less());
     for (size_t i = 0; i < records.size(); i++)
     {
         Unk_BmBoxPtr<SpecialNPCInfo> spRecord = records[i];
@@ -1275,7 +1379,8 @@ int WorldMapManager::BuildMissionSearch(unsigned field, ASObj* script)
 }
 
 // @0x141b9c2c0
-bool WorldMapSpecialNpcLess(Unk_BmBoxPtr<SpecialNPCInfo> a, Unk_BmBoxPtr<SpecialNPCInfo> b)
+// The same order over the value pointer flavour of the record (unreferenced in the exe).
+bool WorldMapSpecialNpcLess(TPtrValue<SpecialNPCInfo> a, TPtrValue<SpecialNPCInfo> b)
 {
     return a->m_n08 < b->m_n08;
 }
