@@ -3906,3 +3906,6 @@ __imp_NxGetUtilLib	142cced28	data
 ??$GetChild@VASTileList@@@UISwfEntity@@QEAA?AV?$MS2Ptr@VASTileList@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140ba4b70	func
 ??0Unk_BSDevRow@@QEAA@PEAVASArray@@I@Z	1422df140	func
 ??B?$MS2Ptr@VCMinimap@@@@QEBAPEAVCMinimap@@XZ	140159a40	func
+??1Unk_SkillRowRef@@QEAA@XZ	14063e5c0	func
+?FUN_1401958b0@@YAPEAVUnk_CsgSkillTable@@XZ	1401958b0	func
+?FUN_1407ee1d0@Unk_CsgSkillTable@@QEAA?AVUnk_SkillRowRef@@H@Z	1407ee1d0	func
