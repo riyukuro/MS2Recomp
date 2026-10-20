@@ -268,6 +268,7 @@
 #include "ms2/placeholder/statecoupleemotion.h"
 #include "ms2/placeholder/stateweddingemotion.h"
 #include "ms2/unnamed/unit_140ad5280.h"
+#include "ms2/placeholder/propertycache.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -3723,7 +3724,7 @@ void PC::FUN_14165cac0()
     if (spEntity == 0)
         return;
     efd::UInt32 nObjectId = FUN_14123c580();
-    spEntity->SetPropertyValue(0x85b708e6, nObjectId);
+    static_cast<Unk_CachedEntity*>(spEntity.operator->())->SetPropertyValue(0x85b708e6, nObjectId);
     m_spFC8.AssignRaw(reinterpret_cast<Unk_PCActionTimer*>(new CBreakableObject));
     m_spFC8->FUN_140adf370(spEntity, FUN_14123c580(), spTomb);
     if (FUN_141657730().get())
@@ -4415,3 +4416,11 @@ void PC::FUN_141660fc0(CString str)
 // MS2-PIN: ??_EPC@@W7EAAPEAXI@Z 0x1416677f8
 // MS2-PIN: ??__Es_category@@YAXXZ 0x1400fb430
 // MS2-PIN: ??__Es_pointer@@YAXXZ 0x1400fb460
+// MS2-PIN: ??$SetPropertyValue@I@Unk_CachedEntity@@QEAA?AW4PropertyResult@egf@@IAEBI@Z 0x141664540
+// MS2-PIN: ??$CachePropertyValue@I@Unk_CachedEntity@@QEAAXIAEBI@Z 0x141664360
+// tplpin --simulate (w558), hand-applied (skipped: vfunc/FUN_ names already bind; prop guesses 0x141666f80 = AssignRaw<CTailEffectObject> per its ctor callee, 0x1416662a0; 0x141666020 already named MS2Ptr<Unk_RideeFieldObj>; 0x141667640 not called by the ctor):
+// MS2-PIN: ??$?0U_Exact_args_t@std@@$0A@@?$tuple@$$V@std@@QEAA@U_Exact_args_t@1@@Z 0x1416655b0
+// MS2-PIN: ??0?$MS2Ptr@VUnk_PCD88@@@@QEAA@H@Z 0x141665fa0
+// MS2-PIN: ??0?$MS2Ptr@VCRandomTargetEffect@@@@QEAA@XZ 0x141666160
+// MS2-PIN: ??0?$MS2Ptr@VJobSystemCli@@@@QEAA@XZ 0x141666590
+// MS2-PIN: ??0?$MS2Ptr@VWaterGunBattleInfo@@@@QEAA@PEAVWaterGunBattleInfo@@@Z 0x1416665f0
