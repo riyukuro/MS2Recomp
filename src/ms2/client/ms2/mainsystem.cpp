@@ -9,7 +9,7 @@
 // MS2-PIN: ??0NiRenderClick@@QEAA@XZ 0x141474960
 // MS2-PIN: ??1NiDefaultClickRenderStep@@UEAA@XZ 0x141474dd0
 // MS2-PIN: ??1NiRenderStep@@UEAA@XZ 0x141474e50
-// MS2-FUNCTIONAL 0x141474960: NiRenderClick() calls NiColorA(float x4); the exe NiColorA ctor is the efd::ColorA forwarder 0x14097f1d0, our Gamebryo NiColorA has no ColorA base so its body (direct stores) binds efd::ColorA 0x14097f050 (afterimageitem.cpp) - same effect
+// (0x141474960 NiRenderClick() calls the inline NiColorA(float x4) = the exe's efd::ColorA forwarder 0x14097f1d0)
 // MS2-PIN: ??4?$SmartPointer@VEntityManager@egf@@@efd@@QEAAAEAV01@PEAVEntityManager@egf@@@Z 0x141474ed0
 // MS2-PIN: ??4?$SmartPointer@VNiRenderClick@@@efd@@QEAAAEAV01@PEAVNiRenderClick@@@Z 0x141474fc0
 // MS2-PIN: ??4?$SmartPointer@VNiRenderView@@@efd@@QEAAAEAV01@PEAVNiRenderView@@@Z 0x1414750a0

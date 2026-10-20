@@ -69616,7 +69616,7 @@ swprintf_s	14092c040	func
 ??0?$allocator@V?$MS2Ptr@VAfterImageItem@@@@@std@@QEAA@XZ	14097f010	func
 ??0?$vector@V?$MS2Ptr@VAfterImageItem@@@@V?$allocator@V?$MS2Ptr@VAfterImageItem@@@@@std@@@std@@QEAA@XZ	14097f020	func
 ??0ColorA@efd@@QEAA@MMMM@Z	14097f050	func
-??0NiColorA@@QEAA@MMMM@Z	14097f050	func
+??0NiColorA@@QEAA@MMMM@Z	14097f1d0	func
 ??0NiAlphaProperty@@QEAA@XZ	14097f0b0	func
 ??0NiBillboardNode@@QEAA@XZ	14097f140	func
 ??0NiBound@@QEAA@XZ	14097f1b0	func

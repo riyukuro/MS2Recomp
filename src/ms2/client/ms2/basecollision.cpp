@@ -105,13 +105,13 @@ CDetectContext::CDetectContext()
 {
 }
 
-// The exe builds m_kColor with NiColorA(float x4) 0x14097f1d0, but progress/symbols.tsv binds that name to efd::ColorA's
-// ctor 0x14097f050 (afterimageitem.cpp models 0x14097f1d0 as Unk_AfterImageColor); this goes through efd::ColorA so the
-// unit does not depend on the disputed row.
+// The exe builds m_kColor with NiColorA(float x4) 0x14097f1d0 (the inline Gamebryo ctor forwarding to efd::ColorA's
+// 0x14097f050).
+//
 // @0x1409fbc80
-// MS2-FUNCTIONAL: m_kColor built via efd::ColorA (see above); otherwise exact
+//
 CBaseCollision::CBaseCollision()
-    : m_n18(0), m_ptPos(0, 0, 0), m_ptSize(0, 0, 0), m_ptDir(0, 0, 0), m_nShape(0), m_kColor(efd::ColorA(1.0f, 0, 0, 1.0f)),
+    : m_n18(0), m_ptPos(0, 0, 0), m_ptSize(0, 0, 0), m_ptDir(0, 0, 0), m_nShape(0), m_kColor(1.0f, 0, 0, 1.0f),
       m_b54(true), m_n58(0), m_spMesh(NULL), m_bBuilt(0)
 {
     m_spMesh = NiNew NiMesh;
