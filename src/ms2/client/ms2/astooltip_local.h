@@ -75,6 +75,25 @@ void FUN_14083d2b0(CStringW& str);                // trims the trailing line bre
 #include "ms2/client/ms2/skilldatatablecli.h"
 CItemSocketTable* FUN_14052d200();                // TSingleton<CItemSocketTable>::GetInstance (exe copy; as part 2)
 SkillDataTableCli* FUN_1401958b0();               // TSingleton<SkillDataTableCli>::GetInstance (exe copy; as part 2)
+#include <cmath>
+#include "ms2/placeholder/clientconstants.h"
+#include "ms2/placeholder/cpetdatatable.h"
+#include "ms2/placeholder/unlimitedenchantinfo.h"
+#include "ms2/commonfiles/exptable.h"
+#include "ms2/commonfiles/itemenchantlimittable.h"
+CPetDataTable* FUN_14052d210();                   // TSingleton<CPetDataTable>::GetInstance (exe copy; as part 2)
+CExpTable* FUN_1404a1bb0_p1();                    // 0x1404a1bb0 TSingleton<CExpTable>::GetInstance (exe copy)
+int FUN_14082ee80(const CStringA& strName);       // stat name -> id (-1 when none; stat.cpp)
+int FUN_14081d260(const CStringA& strName);       // special option name -> id (0 when none; specialability.cpp)
+const CString& FUN_14082efb0(int nStat);          // the xml name of a stat (stat.cpp)
+const CString& FUN_14081d380(int nSpecial);       // the xml name of a special stat (specialability.cpp)
+int FUN_1406198a0(int nValue, float fRate);       // itemremakescrolldata.cpp
+__int64 FUN_140632990(__int64 nValue, float fRate);   // itemsocketsystemutil.cpp
+CStringW FUN_140631720(int nStat, int nValue, bool bPercent);   // a stat value text (itemsocketsystemutil.cpp)
+CStringW FUN_140631af0(int nStat, Unk_EnchantPtr<BaseOption> spBase, CItemStatus* pStatus);   // an enchant stat row (itemsocketsystemutil.cpp)
+int FUN_14072fd00(int nUnused);                   // the pet option count (unit_14072f7f0.cpp)
+CStringW FUN_14028b8e0(const CStringW& strKey);   // the string-table text of a key (commonutil.cpp)
+CStringW FUN_1409404f0(__int64 nValue);           // a number with separators (achievemanager.cpp)
 #endif
 #if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 1
 class Unk_ItemEquipData : public CItemData {};    // solo build only: part 5 defines it otherwise
@@ -497,7 +516,14 @@ CStringW FUN_1408116a0(int nStringId, const int& n);                  // FormatS
 // The no-argument BlockFormat (0x1409eec40, COMDAT in the template range): FMT_VARIADIC_W has no 0-arg form. w534: move to the shared section.
 CStringW BlockFormat(int, const fmt::ArgList&);
 inline CStringW BlockFormat(int nStringId) { return BlockFormat(nStringId, fmt::ArgList()); }
-CFeatureManager* FUN_140166410_p5();                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
+int FUN_140936640(CAchieveManager* pManager, int nId, int nGrade);    // 0x140936640 CAchieveManager: the trophy grade is reached
+CStringW FUN_14093bd40(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
+const int& FUN_1409e8500(const CAtlArray<int>& arr, int nIndex, const int& nDefault);   // part 6: arr[nIndex], nDefault when out of range
+bool FUN_1409e7080(const ATL::CAtlArray<unsigned long>& ids, const ATL::CAtlArray<int>& grades, CStringW& strOut);   // the unmet trophy requirements
+CFeatureManager* FUN_140166410_p5();
+#include "ms2/commonfiles/commonstruct_wa.h"                 // Unk_IngVec (FUN_1409e7460)
+int FUN_14053feb0(int nItemId);                                       // the default rank of an item (itemdata.cpp)
+MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                    // the item data of an id                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
 CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // the item limit text
 void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons
 #endif
