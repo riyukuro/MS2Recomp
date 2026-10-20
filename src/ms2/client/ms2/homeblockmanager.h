@@ -15,6 +15,7 @@ template<> struct Unk_SocketRef<PCBase> {
         return p==0 ? 0 : reinterpret_cast<CPtred*>(reinterpret_cast<char*>(p)-sizeof(CPtred));
     }
 };
+MS2_SOCKETPTR_BOXED(PCBase)
 class HomeBlockManager : public TSingleton<HomeBlockManager> {
 public:
     typedef Unk_PayloadPtr<HomeBlockInfo> HomePtr;

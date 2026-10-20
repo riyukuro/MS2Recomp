@@ -23,4 +23,5 @@ template<> struct Unk_SocketRef<Unk_OptionNameList> {
     }
     static Unk_OptionNameList* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
 };
+MS2_SOCKETPTR_BOXED(Unk_OptionNameList)
 typedef Unk_SocketPtr<Unk_OptionNameList> Unk_OptionNameListPtr;

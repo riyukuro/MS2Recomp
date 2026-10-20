@@ -59,6 +59,7 @@ template<> struct Unk_SocketRef<ChangeJobData> {
     }
     static ChangeJobData* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
 };
+MS2_SOCKETPTR_BOXED(ChangeJobData)
 MS2_CHECK_SIZE(TPtredDummy<ChangeJobData>, 0x98);
 MS2_CHECK_OFFSET(TPtredDummy<ChangeJobData>, value, 0x18);
 

@@ -260,7 +260,8 @@ typedef ATL::CAtlArray<__int64> Unk_ShopLimitArray;
             return result;                                                                                            \
         }                                                                                                             \
         static T* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }                                          \
-    };
+    };                                                                                                                \
+    MS2_SOCKETPTR_BOXED(T)
 MS2_NPCSHOP_BOX_REF(Unk_CouponItemArray)          // New 0x1406e8c20
 MS2_NPCSHOP_BOX_REF(Unk_MeratItemArray)           // New 0x1406e8c90
 MS2_NPCSHOP_BOX_REF(Unk_ShopLimitArray)           // New 0x1406e8d00

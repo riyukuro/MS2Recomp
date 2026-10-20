@@ -43,9 +43,18 @@ public:
 private:
     static void Reference(CPtred* v) { FUN_14015b020(v); }
     void AddRef() const { if(p) AddRefImpl((void*)0); }
-    void AddRefImpl(void*) const { Reference(Unk_SocketRef<T>::Base(p)); }
+    // T derives from CPtred at offset 0: the exe passes p straight on (implicit upcast). Boxed payloads (Unk_SocketRef<T>
+    // specialized) go through Base: MS2_SOCKETPTR_BOXED(T) after the specialization.
+    void AddRefImpl(void*) const { Reference(p); }
     void Release() { if(p) { ReleaseImpl((void*)0); p=0; } }
-    void ReleaseImpl(void*) { CPtred* base=Unk_SocketRef<T>::Base(p); if(FUN_140159bc0(base)==0) { Reference(base); FUN_140159ba0(base); } }
+    void ReleaseImpl(void*) { if(FUN_140159bc0(p)==0) { Reference(p); FUN_140159ba0(p); } }
     void ResetNew() { Release(); p=Unk_SocketRef<T>::Create((void*)0); }
     void* pad; T* p;
 };
+// The AddRefImpl/ReleaseImpl of a payload boxed behind its CPtred (Unk_SocketRef<T> specialized): one Base call each.
+#define MS2_SOCKETPTR_BOXED(...)                                                                                        \
+    template<> inline void Unk_SocketPtr<__VA_ARGS__>::AddRefImpl(void*) const                                          \
+    { Reference(Unk_SocketRef<__VA_ARGS__>::Base(p)); }                                                                 \
+    template<> inline void Unk_SocketPtr<__VA_ARGS__>::ReleaseImpl(void*)                                               \
+    { CPtred* base=Unk_SocketRef<__VA_ARGS__>::Base(p); if(FUN_140159bc0(base)==0) { Reference(base); FUN_140159ba0(base); } }
+MS2_SOCKETPTR_BOXED(CInPacket)

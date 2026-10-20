@@ -48,6 +48,7 @@ template<> struct Unk_SocketRef<Unk_CcSkillList> {
     }
     static Unk_CcSkillList* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
 };
+MS2_SOCKETPTR_BOXED(Unk_CcSkillList)
 MS2_CHECK_SIZE(TPtredDummy<Unk_CcSkillList>, 0x48);
 MS2_CHECK_OFFSET(TPtredDummy<Unk_CcSkillList>, value, 0x18);
 typedef Unk_SocketPtr<Unk_CcSkillList> Unk_CcSkillListPtr;

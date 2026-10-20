@@ -76,6 +76,7 @@ template<> struct Unk_SocketRef<Unk_MagicList> {
     }
     static Unk_MagicList* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
 };
+MS2_SOCKETPTR_BOXED(Unk_MagicList)
 typedef Unk_SocketPtr<Unk_MagicList> Unk_MagicListPtr;
 MS2_CHECK_SIZE(TPtredDummy<Unk_MagicList>, 0x38);
 MS2_CHECK_OFFSET(TPtredDummy<Unk_MagicList>, value, 0x18);
@@ -302,6 +303,7 @@ template<> struct Unk_SocketRef<Unk_MagicModelMap> {
     }
     static Unk_MagicModelMap* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
 };
+MS2_SOCKETPTR_BOXED(Unk_MagicModelMap)
 typedef Unk_SocketPtr<Unk_MagicModelMap> Unk_MagicModelMapPtr;
 MS2_CHECK_SIZE(TPtredDummy<Unk_MagicModelMap>, 0x48);
 MS2_CHECK_OFFSET(TPtredDummy<Unk_MagicModelMap>, value, 0x18);
