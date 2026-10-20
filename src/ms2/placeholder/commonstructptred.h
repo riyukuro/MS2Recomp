@@ -68,12 +68,15 @@ MS2_CHECK_SIZE(CMarketBuyLimitProduct, 0x20);
 
 // RTTI CAdditionalEvent (vftable 0x142d159f8; implicit ctor 0x14027d780 builds the list with block size 10; allocated
 // with 0x48 bytes in 0x140267820). Add is 0x1402804b0.
+// The list element is a 4-byte non-primitive (an enum: CAtlList passes it by reference, Add 0x1402804b0 takes the
+// address of its int argument).
+enum Unk_AdditionalEventValue { Unk_AdditionalEventValue_None = 0 };
 class CAdditionalEvent : public CPtred
 {
 public:
-    void Add(int value) { m_values.AddTail(value); }
+    void Add(Unk_AdditionalEventValue value) { m_values.AddTail(value); }
 
-    ATL::CAtlList<int> m_values;        // +0x18
+    ATL::CAtlList<Unk_AdditionalEventValue> m_values;   // +0x18
 };
 MS2_CHECK_SIZE(CAdditionalEvent, 0x48);
 

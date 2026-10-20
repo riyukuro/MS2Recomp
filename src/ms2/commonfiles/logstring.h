@@ -77,6 +77,9 @@ public:
     void FUN_140653440(const CString&,const wchar_t*,const fmt::ArgList&);
     void FUN_140653550(unsigned __int64,unsigned __int64,int,const wchar_t*,const fmt::ArgList&);
     void FUN_1406535b0(unsigned __int64,unsigned __int64,int,const wchar_t*,const fmt::ArgList&);
+    // The argument-less form of the 0x1406535b0 log call (a header inline, first emitted by commonstruct.cpp at
+    // 0x1402804e0; the original is probably a variadic template's zero-argument instance).
+    void FUN_1402804e0(unsigned __int64 a,unsigned __int64 c,int category,const wchar_t* text) { FUN_1406535b0(a,c,category,text,fmt::ArgList()); }
     void FUN_140653690(unsigned __int64,unsigned __int64,int,const wchar_t*,const fmt::ArgList&);
     void FUN_1406536f0(unsigned __int64,unsigned __int64,int,const wchar_t*,const fmt::ArgList&);
     void FUN_140653750(unsigned __int64,unsigned __int64,int,const wchar_t*,const fmt::ArgList&);
