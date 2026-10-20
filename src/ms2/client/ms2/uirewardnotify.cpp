@@ -492,22 +492,22 @@ void UIRewardNotify::FUN_141ac0210(PC* pPlayer)
 }
 
 // @0x141ac05d0
-void UIRewardNotify::FUN_141ac05d0(int nSkillId, const CStringW& strMsg, int nSkillType)
+void UIRewardNotify::FUN_141ac05d0(int nSkillId, CStringW strMsg, int nSkillType)
 {
     Unk_RNSkillRef ref = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
-    if (!ref.FUN_14063eab0(0)) {
-        FUN_141ac1f40();
-        MS2Ptr<AScript> pObj(new ASObj(2));
-        RN_OBJ(pObj)->FUN_1409c0dc0("type", "skill_msg");
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
-        if (nSkillType == 0) {
-            RN_OBJ(pObj)->FUN_1407cb9c0("skillType", ref.FUN_14063ed50()->FUN_1407e9de0() != 0);
-        } else {
-            RN_OBJ(pObj)->FUN_1407cb9c0("skillType", DAT_1439fa004);
-        }
-        RN_OBJ(pObj)->FUN_1407cba60("skillIconPath", ref.FUN_14063ed50()->m_48);
-        FUN_141ac1fe0(pObj);
+    if (ref.FUN_14063eab0(0))
+        return;
+    FUN_141ac1f40();
+    MS2Ptr<AScript> pObj(new ASObj(2));
+    RN_OBJ(pObj)->FUN_1409c0dc0("type", "skill_msg");
+    RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
+    if (nSkillType == 0) {
+        RN_OBJ(pObj)->FUN_1407cb9c0("skillType", ref.FUN_14063ed50()->FUN_1407e9de0() != 0);
+    } else {
+        RN_OBJ(pObj)->FUN_1407cb9c0("skillType", DAT_1439fa004);
     }
+    RN_OBJ(pObj)->FUN_1407cba60("skillIconPath", ref.FUN_14063ed50()->m_48);
+    FUN_141ac1fe0(pObj);
 }
 MS2_REPLACE_METHOD(0x141ac05d0, UIRewardNotify, FUN_141ac05d0, 641, 0xFD5E4298);
 
@@ -801,14 +801,14 @@ MS2_REPLACE_METHOD(0x141ac2510, UIFameContentsNotify, vfunc_28, 142, 0xEA30EA87)
 void UIFameContentsNotify::FUN_141ac25b0(int nQuestId)
 {
     MS2Ptr<CQuestData> pQuest = FUN_14074bc40(nQuestId);
-    if (!pQuest.IsNull()) {
-        std::pair<int, int> entry(pQuest->m_4c, 1);
-        if (m_list.Find(entry) == 0) {
-            m_list.AddTail(entry);
-            if (m_30.IsNull())
-                vfunc_2();
-        }
-    }
+    if (pQuest.IsNull())
+        return;
+    std::pair<int, int> entry(pQuest->m_4c, 1);
+    if (m_list.Find(entry) != 0)
+        return;
+    m_list.AddTail(entry);
+    if (m_30.IsNull())
+        vfunc_2();
 }
 MS2_REPLACE_METHOD(0x141ac25b0, UIFameContentsNotify, FUN_141ac25b0, 234, 0x433D9F6E);
 
@@ -816,14 +816,14 @@ MS2_REPLACE_METHOD(0x141ac25b0, UIFameContentsNotify, FUN_141ac25b0, 234, 0x433D
 void UIFameContentsNotify::FUN_141ac26a0(int nQuestId)
 {
     MS2Ptr<CQuestData> pQuest = FUN_14074bc40(nQuestId);
-    if (!pQuest.IsNull()) {
-        std::pair<int, int> entry(pQuest->m_4c, 0);
-        if (m_list.Find(entry) == 0) {
-            m_list.AddTail(entry);
-            if (m_30.IsNull())
-                vfunc_2();
-        }
-    }
+    if (pQuest.IsNull())
+        return;
+    std::pair<int, int> entry(pQuest->m_4c, 0);
+    if (m_list.Find(entry) != 0)
+        return;
+    m_list.AddTail(entry);
+    if (m_30.IsNull())
+        vfunc_2();
 }
 MS2_REPLACE_METHOD(0x141ac26a0, UIFameContentsNotify, FUN_141ac26a0, 234, 0xC16B99F5);
 
