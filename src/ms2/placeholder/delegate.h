@@ -168,7 +168,39 @@ public:
         virtual bool vfunc_3(const DelegateImplBase* p) const = 0;     // 3 equals
     };
 
+    // Bound-member implementation as in the other forms (appended by the equipment.cpp agent: CEquipment's set effect
+    // callback, DelegateImpl<pair<CEquipment*, ...>> vftable 0x142ec0458, ctor 0x1411f0240).
+    template <class F>
+    class DelegateImpl : public DelegateImplBase
+    {
+    public:
+        DelegateImpl(const DelegateImpl& o) : m_f(o.m_f) {}
+        DelegateImpl(const F& f) : m_f(f) {}
+        virtual DelegateImplBase* vfunc_1() const { return new DelegateImpl(*this); }
+        virtual R vfunc_2(A1 a1, A2 a2, A3 a3) { return Call(m_f, a1, a2, a3); }
+        virtual bool vfunc_3(const DelegateImplBase* p) const
+        {
+            const DelegateImpl* o = dynamic_cast<const DelegateImpl*>(p);
+            if (!o)
+                return false;
+            return m_f == o->m_f;
+        }
+
+    private:
+        template <class C, class M> static R Call(std::pair<C*, M>& p, A1 a1, A2 a2, A3 a3)
+        {
+            return (p.first->*p.second)(a1, a2, a3);
+        }
+
+        F m_f;
+    };
+
     Delegate() : m_pImpl(0) {}
+    template <class C>
+    Delegate(C* const& obj, R (C::*const& f)(A1, A2, A3))
+        : m_pImpl(new DelegateImpl<std::pair<C*, R (C::*)(A1, A2, A3)> >(std::make_pair(obj, f)))
+    {
+    }
     Delegate(const Delegate& o);
     ~Delegate();
     Delegate& operator=(const Delegate& o);

@@ -30,6 +30,7 @@ public:
     SetItemInfoPtr GetSetItemInfo(int nSetId);              // 0x1407c5050 the set row (null when missing)
     void FUN_1407c50e0(int nSetId, void* pOut);             // appends the piece item ids of a set
     bool FUN_1407c5160(int nSetId);                         // the flag at +0x80 of a set (false when missing)
+    bool FUN_1407c51f0(int nSetId);                         // a set item id (equipment.cpp)
     bool HasSetItem(unsigned nItemId) const;                         // 0x1407c51f0 the item is a piece of some set
     void GetSetItemInfos(unsigned nItemId, std::vector<SetItemInfoPtr>& sets);   // 0x1407c5250 every set of an item
 

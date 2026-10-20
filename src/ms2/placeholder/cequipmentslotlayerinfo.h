@@ -19,7 +19,7 @@ public:
     bool FUN_1411df7d0();                                   // the codi tab feature (kind 2, feature 0x8e) is on
     unsigned char FUN_1411df910();                          // Update: re-evaluate the period (1 when the active flag changed)
     void FUN_1411dfbf0(bool bDirty);                        // mark for re-evaluation
-    int FUN_1411dfc10(const CMsTime& kStart, const CMsTime& kEnd);   // set the period (equipment.cpp)
+    bool FUN_1411dfc10(const CMsTime& kStart, const CMsTime& kEnd);   // set the period (equipment.cpp)
 
     CMsTime m_start;                                        // +0x18 (CMsTime(0) in the ctor)
     CMsTime m_end;                                          // +0x28
