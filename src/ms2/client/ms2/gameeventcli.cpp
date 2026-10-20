@@ -52,6 +52,7 @@
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z 0x140ce9a30
 // MS2-PIN: ??__Fs_sortNames8A@@YAXXZ 0x1400d12b0
 // MS2-PIN: ??__Fs_sortNames8B@@YAXXZ 0x1400d1580
+// MS2-FUNCTIONAL ??1RpsGameData@@UEAA@XZ: RpsGameData +0x18..+0x50 is a nested play struct { CStringW names[3]; CAtlArray<CStringW> messages; } in the exe with its own implicit ctor 0x140ce91f0 / dtor 0x140ce9720 (one call each in RpsGameData's ctor/dtor); gameevent.h keeps the members flat (statemicrogame.cpp / gameeventcontext.cpp access them directly)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gameeventcli.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "gameeventcli.h"
