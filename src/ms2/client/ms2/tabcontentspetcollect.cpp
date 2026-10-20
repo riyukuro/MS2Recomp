@@ -1,7 +1,7 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The pet collection tab of the pet system dialog: see tabcontentspetcollect.h.
 // MS2-UNIT: ?\tabcontentspetcollect.cpp
 // MS2-RANGE: 0x1400cfa40-0x1400cfbb0 .text$di
-// MS2-RANGE: 0x140cac530-0x140cb1c70 .text$mn
+// MS2-RANGE: 0x140cac530-0x140cb1d90 .text$mn
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBHV?$vector@IV?$allocator@I@std@@@std@@@1@XZ 0x140cb1710
@@ -192,6 +192,8 @@ void TabContentsPetCollect::vfunc_3(MS2Ptr<ASUIComponent> ui)
     FUN_140cac6a0();
     m_ui->Invoke("gotoIndexFromGroupId", m_nGroup);
 }
+MS2_EMIT_CRT_MEMMOVE_S();
+
 MS2_REPLACE_METHOD(0x140cac5c0, TabContentsPetCollect, vfunc_3, 147, 0x6C27E07A);
 
 // @0x140cac660
