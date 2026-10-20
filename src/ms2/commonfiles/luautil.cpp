@@ -292,27 +292,25 @@ void CLua::Validate()
 {
     CString strLocale = FUN_140166410()->FUN_14036d8e0();
     CString strCurrent = GetLocale();
-    if (strLocale.Compare(strCurrent) == 0)
-    {
-        FUN_140674100(0, 0);
-        FUN_140674290(0);
-        FUN_140674420(0, 0);
-        FUN_1406745e0(0, 0);
-        FUN_140674bb0(0, "");
-        FUN_140675730(0, 0, 0);
-        FUN_140675920(0);
-        FUN_140675ab0(0);
-        FUN_140675c30(0);
-        FUN_140675e00(0, 0, 0, 0);
-        FUN_140676020(0, 0, 0, 0, 0, 0, 0);
-        FUN_1406762d0(0, 0, 0, 0);
-        FUN_1406764e0(0, 0);
-    }
-    else
+    if (strLocale.Compare(strCurrent) != 0)
     {
         MS2_ASSERT_AT(0x207, 0);
         m_bError = true;
+        return;
     }
+    FUN_140674100(0, 0);
+    FUN_140674290(0);
+    FUN_140674420(0, 0);
+    FUN_1406745e0(0, 0);
+    FUN_140674bb0(0, "");
+    FUN_140675730(0, 0, 0);
+    FUN_140675920(0);
+    FUN_140675ab0(0);
+    FUN_140675c30(0);
+    FUN_140675e00(0, 0, 0, 0);
+    FUN_140676020(0, 0, 0, 0, 0, 0, 0);
+    FUN_1406762d0(0, 0, 0, 0);
+    FUN_1406764e0(0, 0);
 }
 
 // @0x140673670
