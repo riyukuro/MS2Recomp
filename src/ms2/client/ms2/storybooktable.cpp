@@ -144,12 +144,9 @@ int CStoryBookTable::GetMaxPage(int nId)
 {
     CheckInit();
     CStoryBookDataPtr spData(0);
-    int nMaxPage;
-    if (!m_map.Lookup(nId, spData))
-        nMaxPage = 0;
-    else
-        nMaxPage = spData->m_nMaxPage;
-    return nMaxPage;
+    if (m_map.Lookup(nId, spData))
+        return spData->m_nMaxPage;
+    return 0;
 }
 
 // @0x14180cea0
