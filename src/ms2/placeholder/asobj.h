@@ -95,6 +95,7 @@ public:
     unsigned int FUN_1422bc5d0();                                        // element count
     Scaleform::GFx::Value FUN_1422bc6b0(unsigned nIndex);                // the element at an index (merat market buy rows)
     void FUN_1422bc660(unsigned nIndex, int nCount);                    // splice(index, count) (asdropdownmenu.cpp: remove a row)
+    void FUN_1422bc860(unsigned nIndex, unsigned& nOut);                // the element at an index as a UInt (astilelist.cpp)
 };
 
 // ASDataProvider: an ASArray with its own vftable (RTTI ASDataProvider : ASArray : AScript : CPtred), same 0x40 layout.

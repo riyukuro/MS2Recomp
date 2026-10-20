@@ -314,6 +314,9 @@ public:
     template <class T> MS2Ptr<T> FUN_140eb9cf0(const CString& strName);  // child by name (0x140eb9cf0 for T = ASEventDispatcher: new ASEventDispatcher(v, movie))
     template <class T> MS2Ptr<T> FUN_1422e5780(const CString& strName, MS2Ptr<T>& out);   // bind a child (inline COMDAT, defined in asloader.cpp for T = ASEventDispatcher)
     Scaleform::GFx::Value Invoke(const char* szMethod, class ASURLRequest a1);  // 0x1422e5810 (inline COMDAT, defined in asloader.cpp; a1 by value: the callee destroys it)
+    // ASTileList (gfxui/astilelist.cpp)
+    void FUN_140e06d60(const char* szName, double d);                    // set a double member (ASObj declares the same COMDAT)
+    Scaleform::GFx::Value FUN_140caf140(const char* szMethod, ASArray a1);   // 0x140caf140 Invoke with an AS array (a1 by value: the callee destroys it)
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {
