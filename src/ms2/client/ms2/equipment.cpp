@@ -22,6 +22,7 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/setitemtable.h"
+#include "ms2/commonfiles/setitemoptionpart.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/ms2format.h"
@@ -43,6 +44,9 @@
 #include <efd/utf8string.h>
 #include <NiMesh.h>
 #include <set>
+#include <bitset>
+#include <NiCollisionGroup.h>
+#include "ms2/placeholder/clientconstants.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -144,6 +148,8 @@ struct Unk_EqApp
     Unk_EqSvcHolder m_spServiceManager;                 // +0x08
 };
 Unk_EqApp* FUN_14086d260();
+double FUN_141473280(Unk_EqApp* pApp);                 // the app time
+bool FUN_141b701f0(NiMesh* pMesh, unsigned nMask);     // every sub mesh has the flag (util.cpp)
 void* FUN_140af8310(Unk_EqSvcHolder* pSmart);           // operator->
 Unk_EqAssetSvc* FUN_140998330(void* pMgr);              // the system service (NULL when absent)
 // The animation service (WorldService's actor cache).
@@ -153,12 +159,13 @@ public:
     NiActorManager* FUN_140999440(const egf::EntityID& kId);   // the actor manager of an entity
 };
 Unk_EqAnimSvc* FUN_141b6f910();
-// The scene graph dump of 0x1411eac40 (a 0x38-byte walker over the actor's NIF root).
+// The scene graph walker (0x38 bytes) of 0x1411eac40 / 0x1411ed270.
 class Unk_EqSceneDump
 {
 public:
     void FUN_14098cb80(NiAVObject* pRoot);              // init
     void FUN_14098cf00();                               // destroy
+    NiAVObject* FUN_14098e0d0(int n);                   // the next object (NULL at the end)
     void FUN_1411f88a0(bool bCulled, NiAVObject* pObject, int nDepth);   // dump (recursive)
 private:
     char m_buf[0x38];
@@ -214,6 +221,11 @@ public:
     NiPoint3 FUN_141200130();                                       // the position
     void FUN_141200160(NiPoint3 kPos);
     CString FUN_1412028f0();                                        // the loaded file
+    CString FUN_1412029d0();                                        // the attach node name
+    NiAVObject* FUN_1412018c0();                                    // the first root
+    bool FUN_141200bb0(const CString& strTag);                      // add a tag
+    char FUN_141200c10(const CString& strTag);                      // remove a tag
+    NiAVObject* FUN_1411673f0(const CString& strName) const;        // the scene node of the part (unit_1411673f0)
 };
 #define MODEL(sp) static_cast<Unk_EquipModelCalls*>((sp).operator->())
 
@@ -2183,4 +2195,292 @@ void CEquipment::FUN_1411ef2e0(CEquipModel* pModel, const NiPoint3& kPos, const 
     }
     pCalls->FUN_141200160(kPos);
     pCalls->FUN_141200100(kRot);
+}
+
+// @0x1411df8e0
+unsigned CEquipmentSlotLayerInfo::FUN_1411df8e0()
+{
+    return FUN_1401d3200()->CodiTabMaxDay.Read();
+}
+
+// @0x1411e99a0
+int CEquipment::FUN_1411e99a0(int nSlot, CString strName, int nType, int bByName)
+{
+    if (bByName == 0) {
+        if (nSlot != 1 && FUN_1411e1860(nSlot, 6, 0).get() != NULL)
+            return 1;
+    } else if (FUN_1411e1860(FUN_1405451c0(strName), 6, 0).get() != NULL) {
+        return 1;
+    }
+    NiActorManager* pActor = FUN_141b6f910()->FUN_140999440(m_pPC->FUN_14123c460());
+    if (pActor == NULL)
+        return 0;
+    NiAVObject* pRoot = pActor->GetNIFRoot();
+    if (pRoot == NULL)
+        return 0;
+    MS2Ptr<CEquipmentSlot> spSlot(0);
+    if (m_slots.Lookup(nSlot, spSlot)) {
+        CString strMesh;
+        POSITION pos = s_meshSuffixes.GetHeadPosition();
+        while (pos != NULL) {
+            strMesh = strName + s_meshSuffixes.GetNext(pos);
+            MS2Ptr<ReplaceObject> spReplace(0);
+            if (!spSlot->m_replaced.Lookup(strMesh, spReplace)) {
+                efd::SmartPointer<NiMesh> spMesh = NiDynamicCast(NiMesh, pRoot->GetObjectByName(NiFixedString((const char*)strMesh)));
+                if (spMesh == NULL)
+                    continue;
+                efd::SmartPointer<NiNode> spParent = FUN_140a0b000(spMesh);
+                if (spParent != NULL)
+                    spParent->DetachChild(spMesh);
+                MS2Ptr<ReplaceObject> spNew(new ReplaceObject(spParent, spMesh));
+                spSlot->m_replaced.SetAt(strMesh, spNew);
+            } else if (spReplace->m_spNode != NULL && spReplace->m_spMesh != NULL) {
+                spReplace->m_spNode->DetachChild(spReplace->m_spMesh);
+            }
+        }
+    }
+    return 1;
+}
+
+// @0x1411ed270
+void CEquipment::FUN_1411ed270()
+{
+    MS2Ptr<CEquipItem> spHair = m_pPC->FUN_141655e10(1);
+    if (spHair == 0 || spHair->FUN_1411dc0d0() == 0)
+        return;
+    ATL::CAtlArray<MS2Ptr<CEquipModel> > hairModels;
+    spHair->FUN_1411dcc80(hairModels);
+    if (hairModels.IsEmpty())
+        return;
+    for (unsigned i = 1; i < hairModels.GetCount(); i++)
+        MODEL(hairModels[i])->FUN_141200c10(s_tagCap);
+    MS2Ptr<CEquipItem> spCap = m_pPC->FUN_141655e10(6);
+    if (spCap == 0 || spCap->FUN_1411dc0d0() == 0)
+        return;
+    if (spCap->FUN_1411dc670() == 0)
+        return;
+    ATL::CAtlArray<MS2Ptr<CEquipModel> > capModels;
+    spCap->FUN_1411dcc80(capModels);
+    if (capModels.IsEmpty())
+        return;
+    NiAVObject* pCapNode = NULL;
+    CString strCP("CP");
+    CString strCPA("CPA");
+    for (unsigned i = 0; i < capModels.GetCount(); i++) {
+        const MS2Ptr<CEquipModel>& spModel = capModels[i];
+        pCapNode = MODEL(spModel)->FUN_1411673f0(strCP);
+        if (pCapNode != NULL)
+            break;
+        pCapNode = MODEL(spModel)->FUN_1411673f0(strCPA);
+        if (pCapNode != NULL)
+            break;
+    }
+    if (pCapNode == NULL)
+        return;
+    float fTime = (float)FUN_141473280(FUN_14086d260());
+    Unk_EqAnimSvc* pAnim = FUN_141b6f910();
+    pCapNode->Update(fTime, true);
+    for (unsigned i = 1; i < hairModels.GetCount(); i++) {
+        if (MODEL(hairModels[i])->FUN_141200ab0()->pony == 0)
+            continue;
+        if (hairModels[i]->vfunc_9() == 0)
+            continue;
+        NiActorManager* pActor = pAnim->FUN_140999440(m_pPC->FUN_14123c460());
+        if (pActor == NULL)
+            continue;
+        NiAVObject* pRoot = pActor->GetNIFRoot();
+        if (pRoot == NULL)
+            continue;
+        NiAVObject* pAttach = pRoot->GetObjectByName(NiFixedString((const char*)MODEL(hairModels[i])->FUN_1412029d0()));
+        if (pAttach == NULL || MODEL(hairModels[i])->FUN_1412018c0() == NULL)
+            continue;
+        MODEL(hairModels[i])->FUN_1412018c0()->Update(fTime, true);
+        pAttach->Update(fTime, true);
+        NiCollisionGroup kGroup;
+        if (pCapNode->GetCollisionObject() == NULL) {
+            for (unsigned j = 0; j < capModels.GetCount(); j++) {
+                std::set<NiAVObjectPtr>* pRoots = FUN_141201c90(capModels[j].operator->());
+                for (std::set<NiAVObjectPtr>::iterator it = pRoots->begin(); it != pRoots->end(); ++it) {
+                    NiAVObjectPtr spRoot = *it;
+                    Unk_EqSceneDump kWalk;
+                    kWalk.FUN_14098cb80(spRoot);
+                    NiAVObject* pObject;
+                    while ((pObject = kWalk.FUN_14098e0d0(1)) != NULL) {
+                        NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
+                        if ((pMesh == NULL || FUN_141b701f0(pMesh, 1)) && pObject->GetCollisionObject() != NULL)
+                            kGroup.AddCollider(pObject, true, -1, 1);
+                    }
+                    kWalk.FUN_14098cf00();
+                }
+            }
+        } else {
+            kGroup.AddCollider(pCapNode, true, -1, 1);
+        }
+        kGroup.AddCollidee(MODEL(hairModels[i])->FUN_1412018c0(), true, -1, 1);
+        if (kGroup.TestCollisions(0.0f)) {
+            MODEL(hairModels[i])->FUN_141200bb0(s_tagCap);
+            hairModels[i]->vfunc_17();
+        }
+    }
+}
+
+// @0x1411edbb0
+void CEquipment::FUN_1411edbb0()
+{
+    if (FUN_14087ddc0(m_pPC != 0 ? m_pPC->GetClassDesc() : 0, 0x6200044))
+        return;
+    MS2Ptr<CEquipItem> spTop = FUN_1411e1780(5, 1);
+    MS2Ptr<CEquipItem> spTopBase = FUN_1411e1780(5, 0);
+    MS2Ptr<CEquipItem> spBottom = FUN_1411e1780(4, 1);
+    MS2Ptr<CEquipItem> spBottomBase = FUN_1411e1780(4, 0);
+    bool bLayer2 = FUN_140166410()->FUN_14036d570(0x8e);
+    MS2Ptr<CEquipItem> spTop2(0);
+    MS2Ptr<CEquipItem> spBottom2(0);
+    if (bLayer2) {
+        spTop2 = FUN_1411e1780(5, 2);
+        spBottom2 = FUN_1411e1780(4, 2);
+    }
+    int nGender = m_pPC->FUN_141658e60();
+    bool bMiss = false;
+    bool bMiss2 = false;
+    if (spTopBase.get() != NULL) {
+        int nKind = spTopBase->FUN_1411dc7f0()->FUN_14053c620();
+        int bUsable = m_pPC->FUN_141662eb0(spTopBase->FUN_1411dc7a0().get());
+        if (spTop.get() != NULL && spTop->FUN_1411dc7a0().get() != NULL) {
+            bMiss = spTop->FUN_1411dc7a0()->FUN_140525e50(nGender, nKind) == 0;
+            if (bUsable == 0 || m_pPC->FUN_141662eb0(spTop->FUN_1411dc7a0().get()) == 0)
+                bMiss = true;
+        }
+        if (bLayer2 && spTop2.get() != NULL && spTop2->FUN_1411dc7a0().get() != NULL) {
+            bMiss2 = spTop2->FUN_1411dc7a0()->FUN_140525e50(nGender, nKind) == 0;
+            if (bUsable == 0 || m_pPC->FUN_141662eb0(spTop2->FUN_1411dc7a0().get()) == 0)
+                bMiss2 = true;
+        }
+    }
+    if (spBottomBase.get() != NULL) {
+        int nKind = spBottomBase->FUN_1411dc7f0()->FUN_14053c620();
+        int bUsable = m_pPC->FUN_141662eb0(spBottomBase->FUN_1411dc7a0().get());
+        if (spBottom.get() != NULL && spBottom->FUN_1411dc7a0().get() != NULL) {
+            if (spBottom->FUN_1411dc7a0()->FUN_140525e50(nGender, nKind) == 0)
+                bMiss = true;
+            if (bUsable == 0 || m_pPC->FUN_141662eb0(spBottom->FUN_1411dc7a0().get()) == 0)
+                bMiss = true;
+        }
+        if (bLayer2 && spBottom2.get() != NULL && spBottom2->FUN_1411dc7a0().get() != NULL) {
+            if (spBottom2->FUN_1411dc7a0()->FUN_140525e50(nGender, nKind) == 0)
+                bMiss2 = true;
+            if (bUsable == 0 || m_pPC->FUN_141662eb0(spBottom2->FUN_1411dc7a0().get()) == 0)
+                bMiss2 = true;
+        }
+    }
+    FUN_1411ee980(bMiss, spTop, spBottom);
+    if (bLayer2)
+        FUN_1411ee980(bMiss2, spTop2, spBottom2);
+}
+
+// @0x1411ec480
+void CEquipment::FUN_1411ec480(bool bForce)
+{
+    std::map<int, std::vector<__int64> > pieces[3];
+    for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
+        MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
+        for (int i = 0; i < 3; i++) {
+            if (spSlot->m_bShown[i] == 0)
+                continue;
+            std::map<int, std::vector<__int64> >& setPieces = pieces[i];
+            MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
+            if (spItem == 0)
+                continue;
+            MS2Ptr<CItem> spCItem = spItem->FUN_1411dc7a0();
+            if (spCItem == 0 || spCItem->FUN_140528930())
+                continue;
+            Unk_EquipItemData* pData = spItem->FUN_1411dc7f0();
+            std::vector<SetItemInfoPtr> sets;
+            int nItemId = pData->FUN_14053c560();
+            SetItemTable::GetInstance()->GetSetItemInfos(nItemId, sets);
+            for (unsigned j = 0; j < sets.size(); j++) {
+                int nSetId = sets[j]->FUN_1407ad550();
+                std::vector<__int64>& uids = setPieces[nSetId];
+                if (uids.capacity() < 0x14)
+                    uids.reserve(0x14);
+                __int64 nUid = spItem->FUN_1411dc870();
+                uids.push_back(nUid);
+            }
+        }
+    }
+    std::vector<MS2Ptr<Equipment::SetEffectInfo> > effects;
+    effects.resize(3, MS2Ptr<Equipment::SetEffectInfo>(0));
+    CString strEffect;
+    CString strGround;
+    CString strAnimation;
+    bool bShowEffect = false;
+    for (unsigned i = 0; i < 3; i++) {
+        std::map<int, std::vector<__int64> >& setPieces = pieces[i];
+        for (std::map<int, std::vector<__int64> >::iterator it = setPieces.begin(); it != setPieces.end(); it++) {
+            SetItemInfoPtr spSet = SetItemTable::GetInstance()->GetSetItemInfo(it->first);
+            if (spSet == 0)
+                continue;
+            ATL::CAtlArray<MS2Ptr<SetItemOptionPart> > parts;
+            spSet->GetOptionParts((unsigned)it->second.size(), parts);
+            for (unsigned j = 0; j < parts.GetCount(); j++) {
+                MS2Ptr<SetItemOptionPart> spPart = parts[j];
+                if (!spPart->FUN_1407bce90().IsEmpty())
+                    strEffect = spPart->FUN_1407bce90();
+                if (!spPart->FUN_1407bceb0().IsEmpty())
+                    strGround = spPart->FUN_1407bceb0();
+                if (!spPart->FUN_1407bce70().IsEmpty()) {
+                    strAnimation = spPart->FUN_1407bce70();
+                    bShowEffect = SetItemTable::GetInstance()->FUN_1407c5160(it->first);
+                }
+            }
+            if (!strEffect.IsEmpty()) {
+                int nIndex = FUN_1411efb90(strEffect, effects);
+                if (nIndex >= 0)
+                    effects[nIndex] = 0;
+                MS2Ptr<Equipment::SetEffectInfo> spInfo(new Equipment::SetEffectInfo());
+                spInfo->m_strName = strEffect;
+                spInfo->m_nGroup = i;
+                spInfo->m_uids = it->second;
+                effects[i] = spInfo;
+            }
+        }
+    }
+    std::bitset<3> changed;
+    if (!bForce && m_setEffects.size() == effects.size()) {
+        int nLast = -1;
+        for (size_t i = 0; i < m_setEffects.size(); i++) {
+            MS2Ptr<Equipment::SetEffectInfo> spOld = m_setEffects[i];
+            MS2Ptr<Equipment::SetEffectInfo> spNew = effects[i];
+            if (spOld == 0 && spNew == 0)
+                continue;
+            if (spOld.get() == NULL || spNew.get() == NULL || !spNew->FUN_1411dfcf0(spOld))
+                changed.set(i, true);
+            if (spNew.get() != NULL)
+                nLast = (int)i;
+        }
+        if (nLast >= 0 && nLast < (int)m_setEffects.size()) {
+            MS2Ptr<Equipment::SetEffectInfo> spLast = m_setEffects[nLast];
+            if (spLast.get() != NULL && spLast->m_nEffect == 0)
+                changed.set(nLast, true);
+        }
+    } else {
+        changed.set();
+    }
+    if (!changed.any())
+        return;
+    if (!changed.all()) {
+        for (size_t i = 0; i < effects.size(); i++) {
+            if (changed.test(i)) {
+                FUN_1411efa00((int)i);
+                FUN_1411eaa00(effects[i]);
+            }
+        }
+    } else {
+        FUN_1411ef970();
+        for (size_t i = 0; i < effects.size(); i++)
+            FUN_1411eaa00(effects[i]);
+    }
+    m_strSetName = strAnimation;
+    m_bHasSetName = bShowEffect;
+    m_pPC->FUN_141670e50(CString(strGround));
 }
