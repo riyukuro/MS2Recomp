@@ -3765,10 +3765,8 @@ __imp_NxGetUtilLib	142cced28	data
 ?FillBannerProducts@UIMeratMarketDialog@@QEAAHAEBHAEAVASArray@@AEAV?$CAtlArray@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$CElementTraits@V?$MS2Ptr@VCMeratMarketProduct@@@@@ATL@@@ATL@@PEBVUnk_MmViewScope@@@Z	1412fa370	func
 ?FillProductRow@UIMeratMarketDialog@@QEAAHAEAVASMeratMarketProduct@@V?$MS2Ptr@VCMeratMarketProduct@@@@PEAVUnk_MmViewScope@@@Z	1412ef330	func
 ?LoadTab@UIMeratMarketDialog@@QEAAXH@Z	1412ed920	func
-?OnAskMoveToModelHouse@UIMeratMarketDialog@@QEAA_NHAEBVCMsgBoxData@@@Z	1413065c0	func
 ?OnBuyBasketItem@UIMeratMarketDialog@@QEAAXAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@AEAVASData@@@Z	1413035c0	func
 ?OnLoadComplete@UIMeratMarketDialog@@UEAAXXZ	1412e9210	func
-?OnRightClickSeller@UIMeratMarketDialog@@QEAAXAEAVASData@@@Z	141304060	func
 ?OnSelectLimited@UIMeratMarketDialog@@QEAAXAEAVASOutData@UIMeratMarketDialogUtil@@@Z	141305e70	func
 ?OnShowHistory@UIMeratMarketDialog@@QEAAXXZ	141305480	func
 ?OpenProduct@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCMeratMarketProduct@@@@@Z	1412f07e0	func
@@ -3831,3 +3829,5 @@ __imp_NxGetUtilLib	142cced28	data
 ?SetSlotKind@UIMeratMarketDialog@@QEAAXH@Z	141308440	func
 ?FillBasketRow@UIMeratMarketDialog@@QEAA_NAEAVASMeratMarketProduct@@V?$MS2Ptr@VUnk_MeratBasketEntry@@@@HPEAVUnk_MmViewScope@@@Z	1412ef150	func
 ?RefreshMyShop@UIMeratMarketDialog@@QEAAXXZ	1412eef70	func
+?OnAskMoveToModelHouse@UIMeratMarketDialog@@QEAA_NHAEBVCMsgBoxData@@@Z	1413065c0	func
+?OnRightClickSeller@UIMeratMarketDialog@@QEAAXAEAVASData@@@Z	141304060	func

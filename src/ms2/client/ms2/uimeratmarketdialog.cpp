@@ -110,6 +110,8 @@
 #include "ms2/placeholder/cshopeventmanager.h"
 #include "ms2/placeholder/cmeratmarketman.h"
 #include "ms2/placeholder/wcformat.h"
+#include "ms2/placeholder/uipopupmenu.h"
+#include "ms2/placeholder/cproxygameobject.h"
 #include "ms2/commonfiles/gameevent.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -415,6 +417,18 @@ template <> inline Delegate<bool(MS2Ptr<TMarketBillDataParam>)>& Delegate<bool(M
 }
 
 // ---- free callees ----
+// The world service seen from here: the field proxy of a character id (worldservice.h types the result otherwise).
+class Unk_MmMyPC { public: void FUN_141529fb0(); };                       // MyPC: request the field leave
+class Unk_MmWorld
+{
+public:
+    MS2Ptr<CProxyGameObject> FUN_141bc9c60(unsigned __int64 nCharId);
+    Unk_MmMyPC* FUN_141bd0cc0();                                            // the local player
+};
+// The model house loading notice: shows the house of a UGC id with its name.
+class Unk_MmHouseNotice { public: void FUN_140bbbd70(const __int64& nUgcId, const CStringW& strName); };
+Unk_MmHouseNotice* FUN_140d61ca0();
+Unk_MmWorld* FUN_1403ed2d0();                                               // the world service
 CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nOption);  // UIMeratMarketCommon: the text of a chosen option
 CStringW FormatStringId(int nId, const fmt::ArgList& args);                 // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
@@ -3329,6 +3343,28 @@ void UIMeratMarketDialog::OnGetSellerProductList(ASData& data)
     FUN_140939a00()->FUN_140d54ce0(nSellerId);
 }
 
+// @0x141304060
+void UIMeratMarketDialog::OnRightClickSeller(ASData& data)
+{
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    if (pMenu)
+    {
+        float fX = data.FUN_1422b8c10();
+        float fY = data.FUN_1422b8c10();
+        unsigned __int64 nCharId = FUN_140718350(data.FUN_1422b8d30());
+        CStringW strName = data.FUN_1422b8f40();
+        if (nCharId > 0)
+        {
+            Unk_PopupMenuInfo info(fX, fY, 3, 0x3f3fe, 0, "", 0);
+            MS2Ptr<CProxyGameObject> spProxy = FUN_1403ed2d0()->FUN_141bc9c60(nCharId);
+            if (spProxy.get() != 0)
+                pMenu->FUN_141a7eb60(info, spProxy, 5);
+            else
+                pMenu->FUN_141a7f090(info, strName, 0, 0, 5, 1);
+        }
+    }
+}
+
 // MS2-FUNCTIONAL: temporary/cleanup order of the message box copy
 // @0x141304830
 void UIMeratMarketDialog::OnClickCancelSale(ASData& data)
@@ -3518,6 +3554,37 @@ bool UIMeratMarketDialog::OnAskRemoveSale(int nButton, const CMsgBoxData& box)
         Unk_MeratOid key;
         key.FUN_1409c1640(CStringW(strOid));
         FUN_140d54960(FUN_140939a00(), key);
+    }
+    return true;
+}
+
+// @0x1413065c0
+bool UIMeratMarketDialog::OnAskMoveToModelHouse(int nButton, const CMsgBoxData& box)
+{
+    if (nButton == 0)
+    {
+        CStringW strOid = box.FUN_141a02fd0(0, CStringW());
+        MS2Ptr<CMeratMarketProduct> spProduct(m_spProduct);
+        if (!strOid.IsEmpty())
+        {
+            Unk_MeratProductKey key;
+            key.FUN_1409c1640(CStringW(strOid));
+            __int64 nSeller = CurrentSearchId();
+            spProduct = FindProduct(key, nSeller, IsCurrentShopTab());
+        }
+        if ((spProduct.get() ? true : false) && spProduct->m_ugc.FUN_140896350())
+        {
+            CBlueprintItemData* pBlueprint = &spProduct->m_ugc.m_blueprint;
+            if (pBlueprint != 0)
+            {
+                Unk_MmMyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+                if (pPC != 0)
+                    pPC->FUN_141529fb0();
+                Unk_MmHouseNotice* pNotice = FUN_140d61ca0();
+                if (pNotice != 0)
+                    pNotice->FUN_140bbbd70(spProduct->m_ugc.m_n20, spProduct->GetName());
+            }
+        }
     }
     return true;
 }

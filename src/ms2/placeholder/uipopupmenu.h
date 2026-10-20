@@ -10,6 +10,7 @@
 #include "ms2/ms2layout.h"
 
 class UIDialog;
+template <class T> class MS2Ptr;
 
 UIDialog* FUN_140c30140(int nDialogId);                     // the open dialog of this id
 
@@ -47,4 +48,5 @@ public:
     void FUN_141a80910();                                       // copy the own guild
     void FUN_141a809e0(__int64 nGuildId, const CStringW& strGuild, const CString& strMark);
     void FUN_141a7f510(const Unk_PopupMenuInfo& info, class CGuildMember* pMember);   // the guild member menu (uiguilddialog.cpp)
+    void FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<class CProxyGameObject> spProxy, int nType);   // the menu of a player in the field
 };
