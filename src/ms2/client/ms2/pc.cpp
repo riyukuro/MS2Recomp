@@ -229,6 +229,15 @@ public:
     bool FUN_14036d570(int nFeature);                               // the feature is enabled
 };
 Unk_PCFeatures* FUN_140166410();
+// The entity manager and the entity property reads (as pcbase.cpp).
+class Unk_PCEntMgr;
+Unk_PCEntMgr* FUN_1409670f0();
+egf::Entity* FUN_1411cf440(Unk_PCEntMgr* pMgr, const egf::EntityID& kId);
+void FUN_1409618c0(egf::Entity* pEntity, unsigned int nPropId, NiPoint3& kValue);   // Entity::GetPropertyValue<efd::Point3>
+float FUN_140966ea0(efd::Point3 a, efd::Point3 b);                  // the horizontal distance
+extern NiPoint3 DAT_143b01a60;                                      // the zero point
+void FUN_14015f050(CString& str, CAtlArray<CString>& aParts, const char* pszSep);   // split
+CString FUN_141425540(int nGender, int nAction);                    // the default swim effect of an action (itemugcmesh.cpp)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                     // the item record of an id
 // The housing service, looked up from its registry cell (as guildmanager.cpp).
 class Unk_PCHousingSvc
@@ -2976,6 +2985,73 @@ int PC::vfunc_122(void* p)
             return 0;
     }
     return PCBase::vfunc_122(p);
+}
+
+// MS2-FUNCTIONAL: structure aligned, the exe keeps the points in different temporaries
+// @0x1416599b0
+void PC::FUN_1416599b0()
+{
+    if (m_entityDB0 != egf::EntityID(0ull))
+    {
+        egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_entityDB0);
+        if (pEntity != 0)
+        {
+            NiPoint3 kPos = vfunc_18();
+            NiPoint3 kEntPos = DAT_143b01a60;
+            FUN_1409618c0(pEntity, 0xfd95ca52, kEntPos);
+            if (FUN_140966ea0(kEntPos, kPos) > 70.0f)
+                m_entityDB0 = egf::EntityID::kENTITY_INVALID;
+        }
+    }
+}
+
+// @0x141660c20
+void PC::FUN_141660c20(const CAtlArray<MS2Ptr<CItem> >& aItems, bool bQuick)
+{
+    for (size_t i = 0; i < aItems.GetCount(); i++)
+    {
+        MS2Ptr<CItem> spItem = aItems[i];
+        if (spItem == 0)
+            continue;
+        if (bQuick)
+            m_kEquipDE0.FUN_1411e38e0(spItem);
+        else
+            m_kEquipDE0.FUN_1411e3600(spItem);
+    }
+}
+
+// MS2-FUNCTIONAL: structure aligned, the exe destroys the locals per branch
+// @0x1416611b0
+void PC::FUN_1416611b0(CString strKey)
+{
+    CString strPath(strKey);
+    CAtlArray<CString> aParts;
+    FUN_14015f050(strPath, aParts, "/");
+    if (aParts.GetCount() < 4)
+        return;
+    __int64 nCharId = _atoi64(aParts[3]);
+    if (nCharId == FUN_141656a80())
+        m_str1028 = strKey;
+}
+
+// MS2-FUNCTIONAL: structure aligned, return-copy placement differs
+// @0x14165e010
+CString PC::FUN_14165e010(int nAction)
+{
+    MS2Ptr<CGemSwim> spSwim = FUN_14165e1b0();
+    if (spSwim.get())
+    {
+        MS2Ptr<CGemSwimData> spData = spSwim->FUN_1405a5720();
+        if (spData.get())
+        {
+            if (nAction == 0x30)
+                return spData->m_strIdleEffect;
+            if (nAction == 0x32)
+                return spData->m_strDashEffect;
+            return spData->m_strRunEffect;
+        }
+    }
+    return FUN_141425540(FUN_141658e60(), nAction);
 }
 
 // ---- end of code ----

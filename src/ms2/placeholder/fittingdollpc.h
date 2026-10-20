@@ -211,6 +211,10 @@ public:
     int FUN_14165c090(const efd::Point3& kPos);             // there is ground ahead of kPos and room to stand there
     MS2Ptr<class CGemPetSkin> FUN_14165df00();              // the worn pet skin gem (feature 0x6c)
     MS2Ptr<class CGemSwim> FUN_14165e1b0();                 // the worn swim gem (feature 0x68)
+    void FUN_1416599b0();                                   // drop the followed entity (+0xdb0) beyond 70 units
+    void FUN_141660c20(const CAtlArray<MS2Ptr<CItem> >& aItems, bool bQuick);   // equip the items (bQuick: FUN_1411e38e0)
+    void FUN_1416611b0(CString strKey);                     // take the profile image key if it names this character
+    CString FUN_14165e010(int nAction);                     // the swim effect of an action (0x30 idle, 0x32 dash, else run)
     void FUN_141659250(int nValue, CubeItemInfo* pInfo);   // recreate the cube craft controller for the mode
     __int64 FUN_141656ad0();                                // +0xdc0
     int FUN_14165ef30();                                    // this is the local player
