@@ -89,7 +89,7 @@ struct Unk_EquipItemData : public CItemData {};   // solo build only: CEquipItem
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
-#include "ms2/placeholder/cubeiteminfo.h"                // CUgcItemLook (the placeholder form other parts use; not commonfiles/ugcdef.h)
+#include "ms2/commonfiles/ugcdef.h"                       // CUgcItemLook (as parts 4/5; not placeholder/cubeiteminfo.h)
 #include "ms2/commonfiles/additionalactionadditional.h"
 #include "ms2/client/ms2/skilldatatablecli.h"       // SkillDataTableCli (commonfiles form, as part 4)
 #include "ms2/client/ms2/mypc.h"
@@ -127,7 +127,6 @@ CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);        // FormatS
 CStringW FUN_1409e0900(int n);                                        // part 5
 CStringW FUN_1409e0b40(int nTenths);                                  // part 5
 int FUN_1409e6c80(CItem* pItem);                                      // part 5
-#include "ms2/commonfiles/item.h"                                     // CItemStatus / CItemUgc
 #include "ms2/commonfiles/ugccubecategorytable.h"
 #include "ms2/client/ms2/achievemanager.h"
 #include <set>
@@ -174,7 +173,8 @@ class Unk_ItemEquipData : public CItemData {};    // solo build only: part 5 def
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/itemgachaboxtable.h"
 class Unk_ItemPlusInfo { public: int FUN_1408bbc50(); };    // CItemStatus::FUN_140630d90's record (UnlimitedEnchantInfo)
-class Unk_ItemEnchantData { public: Unk_ItemPlusInfo* FUN_140630d90(); };   // CItem::FUN_1405278a0's record (CItemStatus)
+#include "ms2/commonfiles/itemenchantinfo.h"              // CItemEnchantInfo
+class Unk_ItemEnchantData { public: CItemEnchantInfo* FUN_140630d60(); Unk_ItemPlusInfo* FUN_140630d90(); };   // CItem::FUN_1405278a0's record (CItemStatus)
 CStringTable* FUN_1401a9d70_p3();                           // 0x1401a9d70 the string table (astooltip.cpp declares the Unk_CommandStrings form)
 CReservedWordTable* FUN_1403b4750();                        // 0x1403b4750 the reserved word table
 ItemGachaBoxTable* FUN_14052d230();                         // 0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance
@@ -231,6 +231,17 @@ Unk_TooltipBreakManager* FUN_1409c4b20_p3();                // 0x1409c4b20 the b
 // The callers here test CItemData::FUN_14053d740 (enableRegisterMeratMarket) as an int (no movzx): the exe's caller-side
 // prototype returns BOOL.
 struct Unk_ItemDataMeratView : CItemData { int FUN_14053d740(); };
+#include "ms2/commonfiles/itemgemstonedata.h"
+CItemGemStoneUpgradeTable* FUN_14062c280_p3();              // 0x14062c280 TSingleton<CItemGemStoneUpgradeTable>::GetInstance (exe copy)
+bool FUN_140627020(MS2Ptr<CItemGemStoneData> spRow);        // the gemstone is at its last level (itemsocketsystemutil.cpp)
+#include "ms2/commonfiles/itemextractiontable.h"
+CItemExtractionTable* FUN_14052d1f0_p3();                   // 0x14052d1f0 TSingleton<CItemExtractionTable>::GetInstance (exe copy)
+bool FUN_140634230(MS2Ptr<CItem> spItem);                   // the item is excluded from repacking (itemsocketsystemutil.cpp)
+bool FUN_140632780_p3(CItemCustomMusicScore* pScore);       // 0x140632780 CItemCustomMusicScore::FUN_140632780 (commonfiles/item.h is not includable here)
+CStringW FUN_1408116a0(int nStringId, const int& n);        // FormatStringId<int>
+CStringW FUN_14028b8e0(const CStringW& strKey);             // the string-table text of a key (commonutil.cpp)
+// CItem::FUN_140526470 returns the count of the asked kind (citem.h declares it void).
+struct Unk_TooltipItemView : CItem { int FUN_140526470(unsigned nKind); };
 #if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 3
 class Unk_ItemEquipData : public CItemData {};                       // solo build only: part 5 defines it otherwise
 #endif
@@ -257,7 +268,7 @@ bool FUN_141b488c0(MS2Ptr<CItemData> spData);                         // the ite
 // The job system of a player (JobSystemCli; jobsystem.h is not included: it pulls placeholder/skilldata.h, which clashes
 // with the commonfiles SkillData of skilldatatablecli.h). Only the proven slots.
 #include "ms2/commonfiles/jobtable.h"                 // JobData / JobSkillData
-#include "ms2/placeholder/cquestmanagercommon.h"
+#include "ms2/placeholder/fittingdollpc.h"                // PC::FUN_1409eee00
 // A learnt skill of the job system (JobSkill, guess/jobsystem.h; that header is not included here, see below).
 class Unk_TooltipJobSkillP4 : public CPtred
 {
@@ -288,10 +299,14 @@ public:
     unsigned short FUN_14080baf0(unsigned nSkillId);                  // CSkillTierOptionManager::GetSkillLevel
 };
 // The local player's quest state (MyPC::FUN_141523ba0 result; the CQuestManagerCommon sits at +0x10).
+struct Unk_TooltipQuestState                                           // the CQuestManagerCommon (abstract here)
+{
+    int FUN_140745590(int nQuestId);                                  // CQuestManagerCommon: the quest is completed
+};
 struct Unk_TooltipQuestHolder
 {
     unsigned char m_00[0x10];
-    CQuestManagerCommon m_quests;                                     // +0x10
+    Unk_TooltipQuestState m_quests;                                   // +0x10
 };
 struct Unk_TooltipQuestOwner
 {

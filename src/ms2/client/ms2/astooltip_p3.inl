@@ -38,7 +38,58 @@ void ASTooltip::FUN_1409d3010(CItem* pItem)
     }
     FUN_1409adbe0("customizeColorData", obj.FUN_1422bb870());
 }
-MS2_REPLACE_METHOD(0x1409D3010, ASTooltip, FUN_1409d3010, 1104, 0x85F94BBB);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D3010, ASTooltip, FUN_1409d3010, 1104, 0x85F94BBB); }
+
+// @0x1409d3470
+// MS2-FUNCTIONAL: the exe converts the gem id through ecx (a long-typed parameter) and keeps a bool temporary for the row test
+void ASTooltip::FUN_1409d3470(CItem* pItem)
+{
+    MS2Ptr<CItemData> spData(pItem->FUN_140527840());
+    if (spData == 0)
+        return;
+    CStringW str;
+    if (spData->FUN_14053cd10())
+        str = FUN_1409d9c50(pItem);
+    else if (spData->FUN_14053d840())
+    {
+        if (!FUN_140166410_p3()->FUN_14036d570(0x2e))
+            return;
+        int nGemId = spData->FUN_14053c510();
+        MS2Ptr<CItemGemStoneData> spRow = FUN_14062c280_p3()->FUN_1405b1a60(nGemId);
+        if (spRow)
+        {
+            if (!FUN_140627020(spRow))
+            {
+                str = FUN_14028de60(0x9c3);
+                CIngredientContainer* pIngredients = &spRow->m_ingredients;
+                if (!pIngredients->FUN_14026bf70())
+                {
+                    str.Append(L"\n");
+                    CStringW strList;
+                    size_t nCount = pIngredients->FUN_14026bf10();
+                    for (size_t i = 0; i < nCount; i++)
+                    {
+                        Unk_IngRef ref = pIngredients->FUN_14026be50(i);
+                        if (ref == 0)
+                            continue;
+                        if (!strList.IsEmpty())
+                            strList.Append(L", ");
+                        CIngredientInfo* pInfo = ref.operator->();
+                        strList.Append(FUN_1401a9d70_p3()->FUN_141811980(1, pInfo->m_a));
+                    }
+                    str.Append(FUN_14028dfa0(L"s_msg_tooltip_gemstone_enable_upgrade_ingredients", strList));
+                }
+            }
+        }
+    }
+    else if (spData->FUN_14053c5c0() == 0x10)
+        str = FUN_1409da690(pItem);
+    else if (spData->FUN_14053dfd0(L"ChatEmoticonAdd"))
+        str = FUN_1409daa30(spData);
+    if (!str.IsEmpty())
+        FUN_1407cbb20("extraComment", str);
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D3470, ASTooltip, FUN_1409d3470, 1471, 0xBE16A635); }
 
 // @0x1409d4490
 // MS2-FUNCTIONAL: the exe loads nRank through ecx and compares the max level with the operands swapped (source form not found)
@@ -80,7 +131,7 @@ void ASTooltip::FUN_1409d46e0(CItem* pItem)
     if (pInfo != 0 && pInfo->FUN_1408bbc50() > 0)
         FUN_1407cb9c0("unlimited", pInfo->FUN_1408bbc50());
 }
-MS2_REPLACE_METHOD(0x1409D46E0, ASTooltip, FUN_1409d46e0, 121, 0x0809F9B2);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D46E0, ASTooltip, FUN_1409d46e0, 121, 0x0809F9B2); }
 
 // @0x1409d5610
 void ASTooltip::FUN_1409d5610(int nItemId)
@@ -91,7 +142,7 @@ void ASTooltip::FUN_1409d5610(int nItemId)
     long nKinds = FUN_1409e6fc0(sp->FUN_14053c600());
     FUN_1409eb3b0(s_strItemKinds, nKinds);
 }
-MS2_REPLACE_METHOD(0x1409D5610, ASTooltip, FUN_1409d5610, 142, 0x346866BF);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D5610, ASTooltip, FUN_1409d5610, 142, 0x346866BF); }
 
 // @0x1409d56b0
 void ASTooltip::FUN_1409d56b0(int nItemId)
@@ -103,7 +154,7 @@ void ASTooltip::FUN_1409d56b0(int nItemId)
         return;
     FUN_1407cba60(s_strItemMovie, sp->property.movie);
 }
-MS2_REPLACE_METHOD(0x1409D56B0, ASTooltip, FUN_1409d56b0, 178, 0x8173E7A7);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D56B0, ASTooltip, FUN_1409d56b0, 178, 0x8173E7A7); }
 
 // @0x1409d5770
 void ASTooltip::FUN_1409d5770(int nItemId)
@@ -113,13 +164,13 @@ void ASTooltip::FUN_1409d5770(int nItemId)
         return;
     FUN_1407cbb20(s_strIconPath, FUN_14016a730(sp->FUN_14053fdd0(), 0));
 }
-MS2_REPLACE_METHOD(0x1409D5770, ASTooltip, FUN_1409d5770, 214, 0x8CD290D2);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D5770, ASTooltip, FUN_1409d5770, 214, 0x8CD290D2); }
 
 // @0x1409d5850
 void ASTooltip::FUN_1409d5850(int nItemId)
 {
 }
-MS2_REPLACE_METHOD(0x1409D5850, ASTooltip, FUN_1409d5850, 10, 0x96F6F902);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D5850, ASTooltip, FUN_1409d5850, 10, 0x96F6F902); }
 
 // @0x1409d5860
 void ASTooltip::FUN_1409d5860(int nItemId, int nRarity)
@@ -128,7 +179,7 @@ void ASTooltip::FUN_1409d5860(int nItemId, int nRarity)
     if (sp->FUN_140523c40(nItemId, nRarity, 0))
         FUN_1409cd9c0(sp.get());
 }
-MS2_REPLACE_METHOD(0x1409D5860, ASTooltip, FUN_1409d5860, 178, 0x98E59B9F);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D5860, ASTooltip, FUN_1409d5860, 178, 0x98E59B9F); }
 
 // @0x1409d5920
 void ASTooltip::FUN_1409d5920(int nItemId)
@@ -152,7 +203,7 @@ void ASTooltip::FUN_1409d5920(int nItemId)
         return;
     FUN_1409e72a0(&results);
 }
-MS2_REPLACE_METHOD(0x1409D5920, ASTooltip, FUN_1409d5920, 363, 0x5540657B);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D5920, ASTooltip, FUN_1409d5920, 363, 0x5540657B); }
 
 // @0x1409d5aa0
 void ASTooltip::FUN_1409d5aa0(int nItemId)
@@ -161,7 +212,7 @@ void ASTooltip::FUN_1409d5aa0(int nItemId)
     FUN_1403b4750()->FUN_1416fb340(str);
     FUN_1407cbb20("itemDescription", str);
 }
-MS2_REPLACE_METHOD(0x1409D5AA0, ASTooltip, FUN_1409d5aa0, 189, 0xA32EDB32);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D5AA0, ASTooltip, FUN_1409d5aa0, 189, 0xA32EDB32); }
 
 // @0x1409d7560
 void ASTooltip::FUN_1409d7560(int nItemId, int nRank)
@@ -174,7 +225,7 @@ void ASTooltip::FUN_1409d7560(int nItemId, int nRank)
     FUN_1409adc90(s_strItemPetRank, nRank);
     FUN_1407cb9c0(s_strDropShadowDisable, 1);
 }
-MS2_REPLACE_METHOD(0x1409D7560, ASTooltip, FUN_1409d7560, 187, 0xFBC6422C);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D7560, ASTooltip, FUN_1409d7560, 187, 0xFBC6422C); }
 
 // @0x1409d7630
 void ASTooltip::FUN_1409d7630(int nItemId)
@@ -188,7 +239,7 @@ void ASTooltip::FUN_1409d7630(int nItemId)
     if (!str.IsEmpty())
         FUN_1407cbb20("extraComment", str);
 }
-MS2_REPLACE_METHOD(0x1409D7630, ASTooltip, FUN_1409d7630, 365, 0xCCE37309);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D7630, ASTooltip, FUN_1409d7630, 365, 0xCCE37309); }
 
 // @0x1409d77b0
 void ASTooltip::FUN_1409d77b0(int nItemId)
@@ -209,7 +260,7 @@ void ASTooltip::FUN_1409d77b0(int nItemId)
     CStringW str = FUN_1409e5320(nSeason);
     FUN_1407cbb20("itemSeason", str);
 }
-MS2_REPLACE_METHOD(0x1409D77B0, ASTooltip, FUN_1409d77b0, 330, 0xAD681CF7);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D77B0, ASTooltip, FUN_1409d77b0, 330, 0xAD681CF7); }
 
 // @0x1409d8570
 void ASTooltip::FUN_1409d8570(CItem* pItem)
@@ -224,7 +275,7 @@ void ASTooltip::FUN_1409d8570(CItem* pItem)
         nSockets = pItem->FUN_1405279c0()->FUN_140620a20();
     FUN_1409d8650(nItemId, pItem->FUN_140526bd0(), nSockets);
 }
-MS2_REPLACE_METHOD(0x1409D8570, ASTooltip, FUN_1409d8570, 212, 0xF9182D6C);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D8570, ASTooltip, FUN_1409d8570, 212, 0xF9182D6C); }
 
 // @0x1409d8650
 void ASTooltip::FUN_1409d8650(int nItemId, int nGrade, int nSockets)
@@ -241,7 +292,7 @@ void ASTooltip::FUN_1409d8650(int nItemId, int nGrade, int nSockets)
         return;
     FUN_1409e7460(spIngredients->FUN_14026c230());
 }
-MS2_REPLACE_METHOD(0x1409D8650, ASTooltip, FUN_1409d8650, 420, 0x50CA6567);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D8650, ASTooltip, FUN_1409d8650, 420, 0x50CA6567); }
 
 // @0x1409d8800
 void ASTooltip::FUN_1409d8800(MS2Ptr<CItemData> spData)
@@ -253,7 +304,7 @@ void ASTooltip::FUN_1409d8800(MS2Ptr<CItemData> spData)
     if (static_cast<Unk_ItemDataMeratView*>(spData.operator->())->FUN_14053d740() == 0)
         FUN_1407cbb20("ugcItemLimitRegister", FUN_14028de60(0x9b9));
 }
-MS2_REPLACE_METHOD(0x1409D8800, ASTooltip, FUN_1409d8800, 206, 0xE07649E6);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D8800, ASTooltip, FUN_1409d8800, 206, 0xE07649E6); }
 
 // @0x1409d88e0
 void ASTooltip::FUN_1409d88e0(MS2Ptr<CItem> spItem)
@@ -287,7 +338,7 @@ void ASTooltip::FUN_1409d88e0(MS2Ptr<CItem> spItem)
     if (!bRegistrable)
         FUN_1407cbb20("ugcItemLimitRegister", FUN_14028de60(0x9b9));
 }
-MS2_REPLACE_METHOD(0x1409D88E0, ASTooltip, FUN_1409d88e0, 775, 0xA2C0CBD9);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D88E0, ASTooltip, FUN_1409d88e0, 775, 0xA2C0CBD9); }
 
 // @0x1409d8bf0
 void ASTooltip::FUN_1409d8bf0(bool bEnable)
@@ -297,4 +348,165 @@ void ASTooltip::FUN_1409d8bf0(bool bEnable)
     else
         FUN_1409c0e60(s_strItemEquip, L"");
 }
-MS2_REPLACE_METHOD(0x1409D8BF0, ASTooltip, FUN_1409d8bf0, 123, 0xFF195793);
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D8BF0, ASTooltip, FUN_1409d8bf0, 123, 0xFF195793); }
+
+// @0x1409d9330
+void ASTooltip::FUN_1409d9330(CItem* pItem, CStringW& strOut)
+{
+    if (pItem == 0)
+        return;
+    if (static_cast<Unk_TooltipItemView*>(pItem)->FUN_140526470(2) == 1)
+    {
+        if (!strOut.IsEmpty())
+            strOut.Append(L"\n");
+        if ((m_48 & 0x400) != 0 || (m_48 & 0x1000) != 0)
+        {
+            CStringW str;
+            if (pItem->FUN_140525640() != 0)
+                str = FUN_14028b8e0(L"s_tooltip_petremake_enable");
+            else
+                str = FUN_14028de60(0xbfa);
+            strOut.Append(str);
+        }
+        else
+        {
+            CStringW str;
+            if (pItem->FUN_140525640() != 0)
+            {
+                int nCount = pItem->FUN_140527300();
+                str = FUN_14028dfa0(L"s_tooltip_petremake_count", nCount);
+            }
+            else
+            {
+                int nCount = pItem->FUN_140527300();
+                str = FUN_1408116a0(0xbf9, nCount);
+            }
+            strOut.Append(str);
+        }
+    }
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D9330, ASTooltip, FUN_1409d9330, 683, 0x416C252A); }
+
+// @0x1409d95f0
+void ASTooltip::FUN_1409d95f0(CItem* pItem, CStringW& strOut)
+{
+    if (!FUN_140166410_p3()->FUN_14036d570(0x38))
+        return;
+    if (pItem == 0)
+        return;
+    if (pItem->FUN_140527840() == 0)
+        return;
+    if (!pItem->FUN_140527840()->FUN_14053d800())
+        return;
+    if (pItem->FUN_140527030() != 0)
+        return;
+    if (FUN_140634230(MS2Ptr<CItem>(pItem)))
+        return;
+    CItemEnchantInfo* pEnchant = pItem->FUN_1405278a0()->FUN_140630d60();
+    if (pEnchant != 0 && !pEnchant->FUN_14058c9a0())
+        return;
+    int nRemain = pItem->FUN_1405274e0();
+    if (nRemain <= 0)
+        return;
+    if (!strOut.IsEmpty())
+        strOut.Append(L"\n");
+    if (pItem->FUN_140527580() == 0)
+    {
+        CStringW str = FUN_14028b8e0(L"s_item_repacking_disable");
+        strOut.Append(str);
+    }
+    else
+    {
+        CStringW strKey(L"s_item_repacking_limit_count");
+        if (pItem->FUN_140525640() != 0)
+        {
+            if (!FUN_140166410_p3()->FUN_14036d570(0x101))
+                return;
+            strKey = L"s_item_repacking_pet_limit_count";
+        }
+        int nUsed = pItem->FUN_140527530();
+        int nMax = pItem->FUN_140527580();
+        CStringW str = FUN_14028dfa0(strKey, nMax, nUsed);
+        strOut.Append(str);
+    }
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D95F0, ASTooltip, FUN_1409d95f0, 679, 0x1836DFFB); }
+
+// @0x1409d98a0
+void ASTooltip::FUN_1409d98a0(CItem* pItem, CStringW& strText)
+{
+    if (pItem == 0)
+        return;
+    if (!FUN_140166410_p3()->FUN_14036d570(0x3a))
+        return;
+    if (pItem->FUN_1405258b0() == 0)
+        return;
+    if (FUN_1409c4b20_p3()->FUN_140531270(MS2Ptr<CItem>(pItem)) == 0)
+    {
+        if (!strText.IsEmpty())
+            strText.Append(L"\n");
+        CStringW str = FUN_14028de60(0xc44);
+        strText.Append(str);
+    }
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D98A0, ASTooltip, FUN_1409d98a0, 247, 0x20F31EEC); }
+
+// @0x1409d99a0
+void ASTooltip::FUN_1409d99a0(CItem* pItem, CStringW& strText)
+{
+    if (pItem == 0)
+        return;
+    if (!FUN_140166410_p3()->FUN_14036d570(0x6f))
+        return;
+    if (pItem->FUN_140527840() == 0)
+        return;
+    if (pItem->FUN_140527840()->fusion.fusionable == 0)
+        return;
+    if (!strText.IsEmpty())
+        strText.Append(L"\n");
+    strText.Append(FUN_14028b8e0(L"s_item_merge_valid_item"));
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D99A0, ASTooltip, FUN_1409d99a0, 242, 0xE8D921E7); }
+
+// @0x1409d9aa0
+// MS2-FUNCTIONAL: the exe passes the item id to GetData through ecx (an argument conversion; source form not found)
+void ASTooltip::FUN_1409d9aa0(CItem* pItem, CStringW& strText)
+{
+    if (pItem == 0)
+        return;
+    int nItemId = pItem->FUN_1405276c0();
+    CExtractionItemInfoPtr spRow = FUN_14052d1f0_p3()->GetData(nItemId);
+    if (spRow.get() != 0)
+    {
+        unsigned nTry = pItem->FUN_1405292a0();
+        if (!strText.IsEmpty())
+            strText.Append(L"\n");
+        if (nTry > 0)
+            strText.Append(FUN_14028dfa0(L"s_itemextraction_trycount", nTry, spRow->m_nScrollCount));
+        else
+            strText.Append(FUN_14028b8e0(L"s_itemextraction_invalid"));
+    }
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D9AA0, ASTooltip, FUN_1409d9aa0, 424, 0x4D23CBFE); }
+
+// @0x1409d9c50
+CStringW ASTooltip::FUN_1409d9c50(CItem* pItem)
+{
+    CStringW str;
+    if (pItem == 0)
+        return str;
+    MS2Ptr<CItemData> spData(pItem->FUN_140527840());
+    if (spData.IsNull())
+        return str;
+    if (!spData->FUN_14053cd10())
+        return str;
+    if (pItem->FUN_140525680() && pItem->FUN_140527990() != 0 && FUN_140632780_p3(pItem->FUN_140527990()))
+        return FUN_1409d9f30(spData);
+    int nCount = pItem->FUN_140527340();
+    if (nCount > 0)
+        str = FUN_1408116a0(0x9bb, nCount);
+    else
+        str = FUN_1408116a0(0x9bc, nCount);
+    return str;
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D9C50, ASTooltip, FUN_1409d9c50, 723, 0x63A8522D); }

@@ -148,6 +148,8 @@ public:
     void FUN_1409d8bf0(bool bEnable);                                    // itemEquip
     void FUN_1409e72a0(const std::vector<class ItemDropResult>* pResults);    // part 5 (declared by part 3): the package rows
     void FUN_1409e7460(class Unk_IngVec* pIngredients);                       // part 5 (declared by part 3): the break ingredient rows
+    void FUN_1409d3470(CItem* pItem);                                    // extraComment (gemstone upgrade / mastery / emoticon)
+    CStringW FUN_1409d9c50(CItem* pItem);                                // the extra comment of an item
     // ---- end part 3 ----
     // ---- astooltip.cpp part 4 members (owner: part 4 agent; append here only) ----
     CStringW FUN_1409d9f30(MS2Ptr<CItemData> spData);                    // music score play count text
