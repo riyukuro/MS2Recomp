@@ -208,6 +208,9 @@ public:
     MS2Ptr<CEquipItem> FUN_141655ee0(int nSlot, bool bKind0Only);   // the worn weapon (slot 4/5): kind 0, or the first of kinds 0..2 holding one
     int FUN_14165c570();                                    // the normal attack skill of the weapon stance
     void FUN_14165c720(int nSkillId, short nLevel);         // preload a skill and its combo chain
+    int FUN_14165c090(const efd::Point3& kPos);             // there is ground ahead of kPos and room to stand there
+    MS2Ptr<class CGemPetSkin> FUN_14165df00();              // the worn pet skin gem (feature 0x6c)
+    MS2Ptr<class CGemSwim> FUN_14165e1b0();                 // the worn swim gem (feature 0x68)
     __int64 FUN_141656ad0();                                // +0xdc0
     int FUN_14165ef30();                                    // this is the local player
     MS2Ptr<Unk_PCLinkFD8> FUN_141657730();                  // the +0xfd8 record, created on demand (none while busy)

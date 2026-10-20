@@ -99,6 +99,7 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "weaponactiontable.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
+#include "ms2/client/ms2/stateholddata.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/mstime.h"
@@ -197,6 +198,7 @@ class Unk_PCBaseBody
 public:
     void FUN_14123fbf0(unsigned short nGroup);                      // collision group of every shape
     void FUN_14123fd30(unsigned int nGroups);                       // the active groups
+    bool FUN_1412410c0(const efd::Point3& kPos, float fRadius);     // the capsule at kPos overlaps something
 };
 // The animation service singleton (statefall.h declares the global FUN_141b6f910 with a unit-local view type).
 namespace PCAnim { egmAnimation::AnimationService* FUN_141b6f910(); }
@@ -213,7 +215,56 @@ void FUN_1401859c0(void* pLog, int nLevel, int nCategory, const wchar_t* pszText
 class Unk_PCBaseBuffs
 {
 public:
+    int FUN_1409701d0(int nKind);
     int FUN_1409709b0();                                            // a buff blocks being grabbed
+};
+// The content switches (FUN_140166410).
+class Unk_PCFeatures
+{
+public:
+    bool FUN_14036d570(int nFeature);                               // the feature is enabled
+};
+Unk_PCFeatures* FUN_140166410();
+// Physics: the ray cast record and the PhysX helper (physxhelper.h needs NOMINMAX; state.cpp has the same view).
+struct Unk_RayCastInfo
+{
+    Unk_RayCastInfo();                                              // 0x140ad4440
+    efd::Point3 m_origin;                                           // +0x00
+    efd::Point3 m_dir;                                              // +0x0c
+    float m_maxDist;                                                // +0x18
+    int m_groups;                                                   // +0x1c collision groups
+    void* m_20;
+    void* m_28;
+    void* m_hitEntity;                                              // +0x30
+    void* m_hitActor;
+    void* m_hitShape;
+    float m_hitDist;                                                // +0x48
+    efd::Point3 m_hitPoint;                                         // +0x4c
+    efd::Point3 m_hitNormal;                                        // +0x58
+};
+MS2_CHECK_SIZE(Unk_RayCastInfo, 0x68);
+class NxGroupsMask;
+class CPhysXHelper
+{
+public:
+    bool FUN_1416892f0(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);   // cast the ray
+};
+CPhysXHelper* FUN_1409f7ca0();
+// The shadow quality settings (?\gameoption.cpp keeps the full view).
+class Unk_PCShadowCfg
+{
+public:
+    int FUN_141376880(int n);
+    int FUN_1413769d0(int n);
+};
+Unk_PCShadowCfg* FUN_140ae1c00();
+// The actor's ground shadow (unit_14160fb10; dropitem.cpp has the 5-argument ctor).
+class CObjectShadow : public NiRefObject
+{
+public:
+    CObjectShadow(GameObject* pOwner, int nLodHi, int nLodLo);      // 0x14160fb10
+private:
+    char m_pad_10[0x58 - sizeof(NiRefObject)];
 };
 // The pvp manager (FUN_140f97ef0).
 class Unk_PCPvPMgr
@@ -2734,6 +2785,77 @@ MS2Ptr<CEquipItem> PC::FUN_141655ee0(int nSlot, bool bKind0Only)
         return spItem;
     }
     return m_kEquipDE0.FUN_1411e1780(nSlot, 0);
+}
+
+// @0x141660120
+bool PC::FUN_141660120()
+{
+    if (FUN_14166c930() != 0x20)
+        return false;
+    State* pState = FUN_14166ccb0();
+    if (pState == 0)
+        return false;
+    int nHolderId = static_cast<StateHold*>(pState)->FUN_1417cd0d0();
+    PCBase* pHolder = FUN_1403ed2d0()->FUN_141bd1200(nHolderId);
+    if (pHolder == 0)
+        return false;
+    if (pHolder->GetClassID() != 0x6200003 && pHolder->GetClassID() != 0x6200004)
+        return false;
+    PC* pPC = efd::DynamicCast<PC>(pHolder);
+    if (pPC == 0)
+        return false;
+    Ridee* pRidee = pPC->FUN_1416764a0();
+    if (pRidee == 0)
+        return false;
+    int nKind = pPC->FUN_1416749a0()->FUN_1409701d0(2);
+    return nKind == 1;
+}
+
+// @0x14165c090
+int PC::FUN_14165c090(const efd::Point3& kPos)
+{
+    Unk_RayCastInfo kInfo;
+    kInfo.m_origin = kPos + efd::Point3(0.0f, 0.0f, 54.0000038f);
+    kInfo.m_dir = FUN_14123cc20();
+    kInfo.m_maxDist = 50.0f;
+    kInfo.m_groups = 0x201;
+    if (!FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+        return false;
+    return !FUN_14166d220()->FUN_1412410c0(kPos, m_unk_620.y * 0.5f);
+}
+
+// @0x14165df00
+MS2Ptr<CGemPetSkin> PC::FUN_14165df00()
+{
+    if (!FUN_140166410()->FUN_14036d570(0x6c))
+        return MS2Ptr<CGemPetSkin>(0);
+    MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(FUN_14165f460())->FUN_141270740(0xb);
+    if (!spGem)
+        return MS2Ptr<CGemPetSkin>(0);
+    return MS2Ptr<CGemPetSkin>(dynamic_cast<CGemPetSkin*>(spGem.get()));
+}
+
+// @0x14165e1b0
+MS2Ptr<CGemSwim> PC::FUN_14165e1b0()
+{
+    MS2Ptr<CGemSwim> spSwim(0);
+    if (FUN_140166410()->FUN_14036d570(0x68))
+    {
+        MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(FUN_14165f460())->FUN_141270740(6);
+        if (spGem)
+            spSwim.AssignRaw(dynamic_cast<CGemSwim*>(spGem.get()));
+    }
+    return spSwim;
+}
+
+// @0x141660e00
+void PC::vfunc_49()
+{
+    Unk_PCShadowCfg* pCfg = FUN_140ae1c00();
+    int nLodHi = pCfg->FUN_141376880(1);
+    int nLodLo = pCfg->FUN_1413769d0(1);
+    m_spShadow = NiNew CObjectShadow(this, nLodHi, nLodLo);
+    FUN_14123cb20(m_bUnkB8);
 }
 
 // ---- end of code ----
