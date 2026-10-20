@@ -628,6 +628,7 @@ void UIMessenger::vfunc_67()
     m_subject = 0;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a09320
 int UIMessenger::vfunc_4()
 {
@@ -647,6 +648,7 @@ int UIMessenger::vfunc_4()
     return FUN_1408710c0(&doc, FUN_140cc2a00(FUN_1412755f0(), FUN_14016a600(m_strName, 0)));
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a095d0
 int UIMessenger::vfunc_5()
 {
@@ -675,6 +677,7 @@ int UIMessenger::vfunc_5()
     return m_78;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a098b0
 int UIMessenger::vfunc_53(void* pCfg)
 {
@@ -937,6 +940,7 @@ bool UIMessenger::FUN_141a0d930()
     return true;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0df10
 int UIMessenger::FUN_141a0df10()
 {
@@ -972,6 +976,7 @@ TalkTab* UIMessenger::FUN_141a0e050()
     return FUN_141a0e0f0(FUN_141a0dfc0());
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0e0f0
 TalkTab* UIMessenger::FUN_141a0e0f0(const CStringW& strName)
 {
@@ -1011,6 +1016,7 @@ int UIMessenger::FUN_141a0e2a0(const CStringW& strName)
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0e350
 int UIMessenger::FUN_141a0e350(const CStringW& strName)
 {
@@ -1034,6 +1040,7 @@ int UIMessenger::FUN_141a0e350(const CStringW& strName)
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0e4d0
 int UIMessenger::FUN_141a0e4d0(TalkTab* pTab)
 {
@@ -1053,6 +1060,7 @@ int UIMessenger::FUN_141a0e4d0(TalkTab* pTab)
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0e650
 int UIMessenger::FUN_141a0e650(TalkTab* pTab)
 {
@@ -1088,6 +1096,7 @@ size_t UIMessenger::FUN_141a0e900(ATL::CAtlArray<MS2Ptr<TalkTab> >& tabs)
     return tabs.GetCount();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0e940
 void UIMessenger::FUN_141a0e940(const Scaleform::GFx::FunctionHandler::Params& params)
 {
@@ -1142,6 +1151,7 @@ void UIMessenger::FUN_141a0ebb0(unsigned nAlpha)
         pDialog->Invoke("backgroundAlpha", nAlpha);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0ec30
 void UIMessenger::FUN_141a0ec30(const CStringW& strText)
 {
@@ -1178,6 +1188,7 @@ void UIMessenger::vfunc_85(int bActive)
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0f040
 int UIMessenger::vfunc_86(TalkTab* pExcept, const CStringW& strName)
 {
@@ -1286,6 +1297,7 @@ void UIMessenger::FUN_141a0f7b0()
     FUN_141a146d0(nType);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0f870
 void UIMessenger::FUN_141a0f870()
 {
@@ -1305,6 +1317,7 @@ void UIMessenger::FUN_141a0f870()
     FUN_141a0e990();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0f900
 bool UIMessenger::FUN_141a0f900(int nButton, const CMsgBoxData& box)
 {
@@ -1313,6 +1326,7 @@ bool UIMessenger::FUN_141a0f900(int nButton, const CMsgBoxData& box)
     return true;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0f980
 bool UIMessenger::FUN_141a0f980(int nButton, const CMsgBoxData& box)
 {
@@ -1321,6 +1335,7 @@ bool UIMessenger::FUN_141a0f980(int nButton, const CMsgBoxData& box)
     return true;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0f9d0
 bool UIMessenger::FUN_141a0f9d0(int nButton, const CMsgBoxData& box)
 {
@@ -1342,6 +1357,7 @@ bool UIMessenger::FUN_141a0f9d0(int nButton, const CMsgBoxData& box)
     return true;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0fb40
 bool UIMessenger::FUN_141a0fb40(int nButton, const CMsgBoxData& box)
 {
@@ -1363,6 +1379,7 @@ bool UIMessenger::FUN_141a0fb40(int nButton, const CMsgBoxData& box)
     return true;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0fcb0
 bool UIMessenger::FUN_141a0fcb0(int nButton, const CMsgBoxData& box)
 {
@@ -1407,6 +1424,7 @@ int UIMessenger::FUN_141a0fe20(int nEmoticonId)
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a10010
 void UIMessenger::FUN_141a10010(int nType, int nEmoticonId)
 {
@@ -1440,6 +1458,7 @@ void UIMessenger::FUN_141a10010(int nType, int nEmoticonId)
     FUN_141a0f1d0(strLine, strLine, 0);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a10490
 int UIMessenger::FUN_141a10490(int nEmoticonId, bool bFavorite)
 {
@@ -1471,6 +1490,7 @@ void UIMessenger::FUN_141a11be0(int nType, const CStringW& strText)
     m_pBrowser->m_1b0 = FUN_141482f00(nType);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a11c60
 bool UIMessenger::FUN_141a11c60(const CStringW& strCommand, CStringW strText, int* pType)
 {
@@ -1494,6 +1514,7 @@ bool UIMessenger::FUN_141a11c60(const CStringW& strCommand, CStringW strText, in
     return false;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a11e30
 void UIMessenger::FUN_141a11e30()
 {
@@ -1538,6 +1559,7 @@ void UIMessenger::FUN_141a11e30()
     FUN_141a12260();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a12260
 int UIMessenger::FUN_141a12260()
 {
@@ -1564,6 +1586,7 @@ void UIMessenger::FUN_141a12e40(int nType, CStringW strText, bool bHistory)
         m_pBrowser->FUN_141a25f70(strText, m_inputHistory);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a12f30
 int UIMessenger::FUN_141a12f30()
 {
@@ -1579,6 +1602,7 @@ int UIMessenger::FUN_141a12f30()
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a13030
 bool UIMessenger::FUN_141a13030(CStringW& strText)
 {
@@ -1586,6 +1610,7 @@ bool UIMessenger::FUN_141a13030(CStringW& strText)
     return strText.IsEmpty();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a13070
 bool UIMessenger::FUN_141a13070(const CStringW& strName)
 {
@@ -1614,6 +1639,7 @@ int UIMessenger::FUN_141a131a0(TalkTab* pTab, int nType)
     return pTab->m_panel.FUN_141482460(nType);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a13210
 void UIMessenger::FUN_141a13210()
 {
@@ -1646,6 +1672,7 @@ void UIMessenger::FUN_141a13210()
     spInput->FUN_1422e0ab0(CStringW(L""));
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a13510
 void UIMessenger::FUN_141a13510(std::list<ChatEmoticonDataPtr>& emoticons)
 {
@@ -1686,6 +1713,7 @@ void UIMessenger::FUN_141a13510(std::list<ChatEmoticonDataPtr>& emoticons)
     pDialog->Invoke("openChatEmoticonPreview", data.FUN_1422bb870());
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a13940
 void UIMessenger::FUN_141a13940()
 {
@@ -1694,6 +1722,7 @@ void UIMessenger::FUN_141a13940()
         pDialog->Invoke("closeChatEmoticonPreview");
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a139c0
 void UIMessenger::FUN_141a139c0(const CStringW& strText, int bClear)
 {
@@ -1708,6 +1737,7 @@ void UIMessenger::FUN_141a139c0(const CStringW& strText, int bClear)
         m_textOutput->FUN_1422e4720();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a13ac0
 void UIMessenger::FUN_141a13ac0()
 {
@@ -1745,6 +1775,7 @@ void UIMessenger::FUN_141a13c20(int bUp)
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a13d20
 CStringW UIMessenger::FUN_141a13d20()
 {
@@ -1792,6 +1823,7 @@ void UIMessenger::FUN_141a13e00()
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a14110
 int UIMessenger::FUN_141a14110()
 {
@@ -1815,6 +1847,7 @@ int UIMessenger::FUN_141a141c0(int nType)
     return -1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a14250
 int UIMessenger::FUN_141a14250()
 {
@@ -1854,6 +1887,7 @@ int UIMessenger::FUN_141a144a0()
     return FUN_141a14500();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a14500
 int UIMessenger::FUN_141a14500()
 {
@@ -1863,6 +1897,7 @@ int UIMessenger::FUN_141a14500()
     return it->second;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a14580
 int UIMessenger::FUN_141a14580(int nIndex)
 {
@@ -1896,6 +1931,7 @@ void UIMessenger::FUN_141a14600()
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a146d0
 void UIMessenger::FUN_141a146d0(int nType)
 {
@@ -1906,6 +1942,7 @@ void UIMessenger::FUN_141a146d0(int nType)
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a14760
 void UIMessenger::FUN_141a14760()
 {
@@ -1931,6 +1968,7 @@ void UIMessenger::FUN_141a14760()
     FUN_141a146d0(nType);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a148b0
 int UIMessenger::FUN_141a148b0(const CStringW& strText)
 {
@@ -1980,6 +2018,7 @@ void UIMessenger::FUN_141a14bb0(const CStringW& strTarget)
     FUN_141a17900(strTarget);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a14c40
 bool UIMessenger::FUN_141a14c40(CStringW& strText, CStringW strPart)
 {
@@ -1989,6 +2028,7 @@ bool UIMessenger::FUN_141a14c40(CStringW& strText, CStringW strPart)
     return nFound != -1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a14ce0
 bool UIMessenger::FUN_141a14ce0(CStringW strText, int nMax)
 {
@@ -2005,6 +2045,7 @@ bool UIMessenger::FUN_141a14ce0(CStringW strText, int nMax)
     return nLength <= nMax;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a15890
 void UIMessenger::FUN_141a15890()
 {
@@ -2017,6 +2058,7 @@ void UIMessenger::FUN_141a15890()
         pDialog->Invoke("updateSuperWorldChatEffect", bEffect);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a15970
 void UIMessenger::FUN_141a15970()
 {
@@ -2035,6 +2077,7 @@ void UIMessenger::FUN_141a15970()
     m_tabs.Copy(tabs);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a15ae0
 void UIMessenger::vfunc_87(const CStringW& strMsg, const CString& strWindow)
 {
@@ -2069,6 +2112,7 @@ void UIMessenger::vfunc_89(const CStringW& strText, int nChannel)
     vfunc_88(strText, FUN_141482f00(nChannel));
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a15dc0
 int UIMessenger::vfunc_88(const CStringW& strText, int nType)
 {
@@ -2096,6 +2140,7 @@ void UIMessenger::vfunc_91()
     m_pBrowser->m_itHistory = m_pBrowser->m_history.end();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a15f60
 void UIMessenger::vfunc_92()
 {
@@ -2113,6 +2158,7 @@ void UIMessenger::vfunc_92()
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a16030
 void UIMessenger::vfunc_93()
 {
@@ -2180,6 +2226,7 @@ void UIMessenger::vfunc_96(int nMenu)
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a16400
 void UIMessenger::vfunc_97(const CStringW& strName)
 {
@@ -2244,6 +2291,7 @@ void UIMessenger::FUN_141a16730(const CStringW& strName, int nX, int nY, int nWi
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a168a0
 void UIMessenger::FUN_141a168a0(const ATL::CAtlArray<CStringW>& args)
 {
@@ -2278,6 +2326,7 @@ void UIMessenger::FUN_141a168a0(const ATL::CAtlArray<CStringW>& args)
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a16bb0
 void UIMessenger::FUN_141a16bb0(int nProductId, int nA, int nB)
 {
@@ -2303,6 +2352,7 @@ void UIMessenger::FUN_141a16c50(int nRoomId)
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a16cc0
 void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
 {
@@ -2386,6 +2436,7 @@ void UIMessenger::FUN_141a17690(CStringW strName)
     FUN_1409670d0()->FUN_14162ba50(CStringW(strName));
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a17700
 void UIMessenger::FUN_141a17700()
 {
@@ -2402,6 +2453,7 @@ void UIMessenger::FUN_141a17700()
     FUN_141a11e30();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a17830
 void UIMessenger::FUN_141a17830(const CStringW& strText, int bSelectEnd)
 {
@@ -2425,6 +2477,7 @@ void UIMessenger::FUN_141a17900(const CStringW& strTarget)
     FUN_141a17830(strText, 1);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a17bc0
 bool UIMessenger::FUN_141a17bc0(int nButton, const CMsgBoxData& box)
 {
@@ -2444,6 +2497,7 @@ bool UIMessenger::FUN_141a17bc0(int nButton, const CMsgBoxData& box)
     return true;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a17c90
 bool UIMessenger::FUN_141a17c90(int nButton, const CMsgBoxData& box)
 {
@@ -2718,6 +2772,7 @@ int UIMessengerBrowser::vfunc_65()
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a21b10
 void UIMessengerBrowser::vfunc_67()
 {
@@ -2753,6 +2808,7 @@ void UIMessengerBrowser::vfunc_8(int nVisible)
         m_windows[i]->vfunc_8(nVisible);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a21d60
 int UIMessengerBrowser::vfunc_74(int a1, void* p2, void* p3)
 {
@@ -2767,6 +2823,7 @@ int UIMessengerBrowser::vfunc_74(int a1, void* p2, void* p3)
     return bHandled;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a21e90
 void UIMessengerBrowser::vfunc_43()
 {
@@ -2948,6 +3005,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     FUN_141a271b0(strName, strHtml, FUN_141482f00(line.m_nType));
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a22cd0
 void UIMessengerBrowser::vfunc_85(CInPacket& packet)
 {
@@ -2969,6 +3027,7 @@ void UIMessengerBrowser::vfunc_85(CInPacket& packet)
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a22ee0
 void UIMessengerBrowser::FUN_141a22ee0(CInPacket& packet)
 {
@@ -2978,6 +3037,7 @@ void UIMessengerBrowser::FUN_141a22ee0(CInPacket& packet)
     FUN_141a247c0(FUN_140632a60(0x898, strName, strValue), 0x14);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a22fc0
 void UIMessengerBrowser::FUN_141a22fc0(CInPacket& packet)
 {
@@ -2986,6 +3046,7 @@ void UIMessengerBrowser::FUN_141a22fc0(CInPacket& packet)
     FUN_141a247c0(FUN_14052bd00(0xaf2, strValue), 0x14);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a23060
 void UIMessengerBrowser::FUN_141a23060(CInPacket& packet)
 {
@@ -2997,6 +3058,7 @@ void UIMessengerBrowser::FUN_141a23060(CInPacket& packet)
         FUN_141a233d0(packet);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a230e0
 void UIMessengerBrowser::FUN_141a230e0(CInPacket& packet)
 {
@@ -3059,6 +3121,7 @@ void UIMessengerBrowser::FUN_141a239e0(CStringW strText)
     FUN_141a26e00(strHtml, 0x19);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a23a70
 void UIMessengerBrowser::FUN_141a23a70()
 {
@@ -3077,6 +3140,7 @@ void UIMessengerBrowser::OnLoadInit()
     m_184 = 0;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a23b30
 void UIMessengerBrowser::vfunc_15()
 {
@@ -3118,6 +3182,7 @@ int UIMessengerBrowser::FUN_141a23d50()
     return m_184;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a23d70
 int UIMessengerBrowser::FUN_141a23d70(const CStringW& strName)
 {
@@ -3129,6 +3194,7 @@ int UIMessengerBrowser::FUN_141a23d70(const CStringW& strName)
     return 0;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a23e80
 void UIMessengerBrowser::FUN_141a23e80()
 {
@@ -3191,6 +3257,7 @@ void UIMessengerBrowser::FUN_141a24160(const ATL::CAtlArray<MS2Ptr<TalkTab> >& t
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a24490
 void UIMessengerBrowser::FUN_141a24490()
 {
@@ -3207,6 +3274,7 @@ void UIMessengerBrowser::FUN_141a24490()
     m_windows.RemoveAll();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a245d0
 void UIMessengerBrowser::FUN_141a245d0(const CStringW& strName)
 {
@@ -3270,6 +3338,7 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
     FUN_141a247c0(strText, 9);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a24cb0
 void UIMessengerBrowser::FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta)
 {
@@ -3289,6 +3358,7 @@ void UIMessengerBrowser::FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a24e10
 void UIMessengerBrowser::FUN_141a24e10(CItem* pItem)
 {
@@ -3299,6 +3369,7 @@ void UIMessengerBrowser::FUN_141a24e10(CItem* pItem)
     Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} [Count:{1}] Item Removed", strItem, nCount);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a24ee0
 void UIMessengerBrowser::FUN_141a24ee0(CItem* pItem)
 {
@@ -3309,6 +3380,7 @@ void UIMessengerBrowser::FUN_141a24ee0(CItem* pItem)
     Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} [Count:{1}] Item Added", strItem, nCount);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a24fb0
 void UIMessengerBrowser::FUN_141a24fb0(CStringW strText)
 {
@@ -3327,6 +3399,7 @@ void UIMessengerBrowser::FUN_141a25130(unsigned nFontSize)
     FUN_141a27bf0();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a25160
 void UIMessengerBrowser::FUN_141a25160(unsigned nAlpha)
 {
@@ -3343,6 +3416,7 @@ void UIMessengerBrowser::FUN_141a251f0(int n)
     m_180 = n;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a25210
 void UIMessengerBrowser::FUN_141a25210(int bActive)
 {
@@ -3354,6 +3428,7 @@ void UIMessengerBrowser::FUN_141a25210(int bActive)
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a252a0
 void UIMessengerBrowser::FUN_141a252a0(const CStringW& strTarget)
 {
@@ -3365,6 +3440,7 @@ void UIMessengerBrowser::FUN_141a252a0(const CStringW& strTarget)
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a25410
 int UIMessengerBrowser::FUN_141a25410(TalkTab* pExcept, const CStringW& strName)
 {
@@ -3377,12 +3453,11 @@ int UIMessengerBrowser::FUN_141a25410(TalkTab* pExcept, const CStringW& strName)
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a254c0
 void UIMessengerBrowser::FUN_141a254c0(__int64 nSince, CStringW& strOut)
 {
-    std::multimap<__int64, CStringW>::iterator it = m_timedLogs.lower_bound(nSince);
-    std::multimap<__int64, CStringW>::iterator itEnd = m_timedLogs.end();
-    for (; it != itEnd; ++it)
+    for (std::multimap<__int64, CStringW>::const_iterator it = m_timedLogs.lower_bound(nSince); it != m_timedLogs.end(); ++it)
     {
         CMsTime time(it->first);
         int nHour = time.GetHour();
@@ -3425,6 +3500,7 @@ int UIMessengerBrowser::FUN_141a25840(const CStringW& strText)
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a258a0
 CStringW UIMessengerBrowser::FUN_141a258a0()
 {
@@ -3436,6 +3512,7 @@ CStringW UIMessengerBrowser::FUN_141a258a0()
     return L"";
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a25970
 UIMessenger* UIMessengerBrowser::FUN_141a25970()
 {
@@ -3444,6 +3521,7 @@ UIMessenger* UIMessengerBrowser::FUN_141a25970()
     return m_windows[0];
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a259c0
 UIMessenger* UIMessengerBrowser::FUN_141a259c0(const CStringW& strName)
 {
@@ -3456,6 +3534,7 @@ UIMessenger* UIMessengerBrowser::FUN_141a259c0(const CStringW& strName)
     return 0;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a25ad0
 void UIMessengerBrowser::FUN_141a25ad0(CStringW& strHtml)
 {
@@ -3487,6 +3566,7 @@ void UIMessengerBrowser::vfunc_2(void* pItem)
     FUN_141a24ee0((CItem*)pItem);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a25d80
 void UIMessengerBrowser::vfunc_3(void* pItem, bool bMoved)
 {
@@ -3500,6 +3580,7 @@ void UIMessengerBrowser::vfunc_4(void* pItem, int nOld)
     FUN_141275150((CItem*)pItem, ((CItem*)pItem)->FUN_140526c50(), nOld, 0x2ba, 0x2b9);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a25e10
 void UIMessengerBrowser::vfunc_5(void* pItem, int nSlot)
 {
@@ -3528,6 +3609,7 @@ Unk_MsgHistory& Unk_MsgHistory::operator=(const Unk_MsgHistory& other)
     return *this;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a25f70
 void UIMessengerBrowser::FUN_141a25f70(const CStringW& strText, ATL::CAtlArray<CStringW>& history)
 {
@@ -3547,6 +3629,7 @@ void UIMessengerBrowser::FUN_141a25f70(const CStringW& strText, ATL::CAtlArray<C
     m_itHistory = m_history.end();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a261b0
 int UIMessengerBrowser::FUN_141a261b0(int bUp, Unk_MsgHistory& entry)
 {
@@ -3569,6 +3652,7 @@ int UIMessengerBrowser::FUN_141a261b0(int bUp, Unk_MsgHistory& entry)
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a263d0
 MS2Ptr<CItem> UIMessengerBrowser::FUN_141a263d0(unsigned __int64 nUid)
 {
@@ -3578,12 +3662,14 @@ MS2Ptr<CItem> UIMessengerBrowser::FUN_141a263d0(unsigned __int64 nUid)
     return MS2Ptr<CItem>(spItem);
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a26480
 bool UIMessengerBrowser::FUN_141a26480()
 {
     return m_hiddenTypes.size() != 0;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a264c0
 bool UIMessengerBrowser::FUN_141a264c0(int nType)
 {
@@ -3610,6 +3696,7 @@ void UIMessengerBrowser::FUN_141a265d0()
     m_hiddenTypes.clear();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a26600
 void UIMessengerBrowser::FUN_141a26600()
 {
@@ -3658,6 +3745,7 @@ void UIMessengerBrowser::FUN_141a26680()
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a26a00
 void UIMessengerBrowser::FUN_141a26a00()
 {
@@ -3686,6 +3774,7 @@ void UIMessengerBrowser::FUN_141a26a00()
         FUN_141a23e80();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a26cd0
 CStringW UIMessengerBrowser::FUN_141a26cd0()
 {
@@ -3711,6 +3800,7 @@ int UIMessengerBrowser::FUN_141a26e00(const CStringW& strHtml, int nKind)
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a26f10
 int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& strText, int nType)
 {
@@ -3738,6 +3828,7 @@ int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& s
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a271b0
 int UIMessengerBrowser::FUN_141a271b0(const CStringW& strName, const CStringW& strText, int nType)
 {
@@ -3775,6 +3866,7 @@ int UIMessengerBrowser::FUN_141a271b0(const CStringW& strName, const CStringW& s
     return 1;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a27570
 int UIMessengerBrowser::FUN_141a27570()
 {
@@ -3833,6 +3925,7 @@ int UIMessengerBrowser::FUN_141a27570()
     return 0;
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a27ad0
 void UIMessengerBrowser::FUN_141a27ad0(unsigned nFontSize)
 {
@@ -3851,6 +3944,7 @@ void UIMessengerBrowser::FUN_141a27ad0(unsigned nFontSize)
     }
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a27bf0
 void UIMessengerBrowser::FUN_141a27bf0()
 {
@@ -3863,6 +3957,7 @@ void UIMessengerBrowser::FUN_141a27bf0()
     m_pendingLogs.RemoveAll();
 }
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a27ca0
 void UIMessengerBrowser::FUN_141a27ca0()
 {
@@ -3903,6 +3998,7 @@ int UIMessengerBrowser::vfunc_48()
 
 int FUN_1418fc760(const char* szMethod, void* pArgs, unsigned int nArgs, UIMessenger* pDialog);   // uicommon.cpp: the shared AS events
 
+// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0bfd0
 int UIMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
