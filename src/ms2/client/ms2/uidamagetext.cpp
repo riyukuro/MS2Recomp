@@ -613,15 +613,15 @@ float UIDamageText::FUN_141913b80(const NiPoint3& kPos)
 }
 
 // @0x141913bd0
-bool UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
+int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
 {
     if (nGrade == 4)
-        return false;
+        return 0;
     GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
-        return false;
+        return 0;
     if (m_pBattleOption == 0)
-        return false;
+        return 0;
     bool bShow = false;
     unsigned int nCasterMask = 0;
     unsigned int nTargetMask = 0;
@@ -657,14 +657,14 @@ bool UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
                 {
                     if (pNpc->FUN_141094f40() == nPlayerId)
                         bShow = true;
-                    else if (pNpc->FUN_141093270().get() != 0)
+                    else if (pNpc->FUN_141093270().get())
                         bShow = pNpc->FUN_141093270()->m_bAttackDamage ? true : false;
                 }
             }
         }
     }
     if (bShow)
-        return true;
+        return 1;
     bool bRecover = FUN_141914530(nGrade) == 1;
     if (bRecover)
     {
@@ -674,11 +674,11 @@ bool UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
             return m_pBattleOption->m_b[0];
         else if ((nCasterMask & 2) || (nTargetMask & 2))
             return m_pBattleOption->m_b[2];
-        return false;
+        return 0;
     }
     int nCasterFlags = m_pBattleOption->m_n08;
     int nTargetFlags = m_pBattleOption->m_n0c;
-    return (nTargetMask & nTargetFlags) != 0 || (nCasterMask & nCasterFlags) != 0;
+    return (nTargetFlags & nTargetMask) != 0 || (nCasterFlags & nCasterMask) != 0;
 }
 
 // @0x141914020
@@ -754,15 +754,18 @@ int UIDamageText::FUN_1419142a0(GameObject* pTarget)
 CString UIDamageText::FUN_1419143c0(int nTargetKind, bool bUser)
 {
     CString str;
-    if (nTargetKind == 0)
+    switch (nTargetKind)
     {
-        if (!bUser)
-            str = s_strMonster;
-        else
+    case 0:
+        if (bUser)
             str = s_strUser;
-    }
-    else if (nTargetKind == 1)
+        else
+            str = s_strMonster;
+        break;
+    case 1:
         str = s_strMonster;
+        break;
+    }
     return str;
 }
 
@@ -845,14 +848,14 @@ CString UIDamageText::FUN_141914660(__int64 nValue, int nGrade)
     case 1:
         str = Unk_SocketFormat((const char*)s_strFormat, nValue);
         break;
+    case 5:
+        str = Unk_SocketFormat((const char*)s_strPlusFormat, nValue);
+        break;
     case 2:
         str = s_strMiss;
         break;
     case 3:
         str = s_strBlock;
-        break;
-    case 5:
-        str = Unk_SocketFormat((const char*)s_strPlusFormat, nValue);
         break;
     }
     return str;
@@ -870,11 +873,15 @@ CString UIDamageText::FUN_1419147e0()
 // @0x141914850
 int UIDamageText::FUN_141914850(int nType)
 {
-    if (nType == 0)
+    switch (nType)
+    {
+    case 0:
         return 0;
-    if (nType < 1 || 2 < nType)
-        return 0;
-    return 1;
+    case 1:
+    case 2:
+        return 1;
+    }
+    return 0;
 }
 
 // @0x141914890
@@ -898,18 +905,25 @@ CString UIDamageText::FUN_141914890(int nValue, int nType)
 CString UIDamageText::FUN_1419149d0(int nType)
 {
     CString str;
-    if (nType == 0)
-        str += "Exp";
-    else if (nType == 1)
+    switch (nType)
+    {
+    case 1:
         str += "Meso";
-    else if (nType == 2)
+        break;
+    case 0:
+        str += "Exp";
+        break;
+    case 2:
         str += "Item";
+        break;
+    }
     return str;
 }
 
 // @0x141914a90
 float UIDamageText::FUN_141914a90(const NiPoint3& kPos)
 {
+    float fScale = 1.0f;
     GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 1.0f;
@@ -919,14 +933,19 @@ float UIDamageText::FUN_141914a90(const NiPoint3& kPos)
     efd::Point3 kCamera = Unk_DtCamera::FUN_1409478c0()->FUN_140a17e10();
     float fDistance = (kPos - kPlayer).Length();
     float fRange = FUN_1401d3200()->m_168.FUN_1402bac70();
-    if ((kPos - kCamera).Length() <= (kPlayer - kCamera).Length())
-        return 1.0f;
-    return FUN_140a0fde0(1.0f, FUN_140a0fda0(0.0f, (fRange - fDistance) / fRange)) * 0.5f + 0.5f;
+    float fToTarget = (kPos - kCamera).Length();
+    if (fToTarget > (kPlayer - kCamera).Length())
+    {
+        float fRatio = FUN_140a0fde0(1.0f, FUN_140a0fda0(0.0f, (fRange - fDistance) / fRange));
+        return 0.5f + fRatio * 0.5f;
+    }
+    return 1.0f;
 }
 
 // @0x141914c40
 float UIDamageText::FUN_141914c40(GameObject* pTarget)
 {
+    float fScale = 1.0f;
     if (pTarget == 0)
         return 1.0f;
     GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
@@ -935,9 +954,9 @@ float UIDamageText::FUN_141914c40(GameObject* pTarget)
     if (pPlayer->FUN_14123c460() == pTarget->FUN_14123c460())
         return 1.0f;
     NiNode* pRoot = FUN_1413fa070(pTarget->FUN_14123c460());
-    if (pRoot == 0)
-        return 1.0f;
-    return FUN_141914a90(*FUN_140947900((NiAVObject*)pRoot));
+    if (pRoot != 0)
+        return FUN_141914a90(*FUN_140947900((NiAVObject*)pRoot));
+    return 1.0f;
 }
 
 // @0x141914d40
@@ -1002,33 +1021,34 @@ void UIDamageText::FUN_141914da0(int bAppend, POSITION* pLast, DamageList& list,
 // @0x141915090
 void UIDamageText::FUN_141915090(POSITION pos)
 {
-    if (!m_ownerFollowers.IsEmpty())
-        FUN_141917ab0(pos, &m_posOwnerFollowers, m_ownerFollowers);
+    if (m_ownerFollowers.IsEmpty())
+        return;
+    FUN_141917ab0(pos, &m_posOwnerFollowers, m_ownerFollowers);
 }
 
 // @0x1419150f0
 void UIDamageText::FUN_1419150f0(POSITION pos)
 {
-    if (!m_normals.IsEmpty())
-        FUN_141917ab0(pos, &m_posNormals, m_normals);
+    if (m_normals.IsEmpty())
+        return;
+    FUN_141917ab0(pos, &m_posNormals, m_normals);
 }
 
 // @0x141915150
 void UIDamageText::FUN_141915150(const unsigned __int64& nOwnerId, int nCount, CounterMap& map)
 {
-    if (!map.IsEmpty())
+    if (map.IsEmpty())
+        return;
+    if (nCount == -1)
+        map.RemoveKey(nOwnerId);
+    else
     {
-        if (nCount == -1)
-            map.RemoveKey(nOwnerId);
-        else
+        MS2Ptr<CounterInfo> spCounter(0);
+        if (map.Lookup(nOwnerId, spCounter) && spCounter.get() != 0)
         {
-            MS2Ptr<CounterInfo> spCounter(0);
-            if (map.Lookup(nOwnerId, spCounter) && spCounter.get() != 0)
-            {
-                spCounter->m_nCount -= nCount;
-                if (spCounter->m_nCount < 1)
-                    map.RemoveKey(nOwnerId);
-            }
+            spCounter->m_nCount -= nCount;
+            if (spCounter->m_nCount <= 0)
+                map.RemoveKey(nOwnerId);
         }
     }
 }
@@ -1274,16 +1294,14 @@ void UIDamageText::FUN_141915990()
 void UIDamageText::FUN_141916340()
 {
     unsigned int nNow = FUN_140869420();
-    if (m_nLastQueueTime + 200 <= nNow)
-    {
-        MS2Ptr<DamageQueueParam> spParam = m_queue.RemoveHead();
-        GameObject* pTarget = WorldService::GetInstance()->FUN_141bd1180(spParam->m_nActorId);
-        if (pTarget != 0)
-        {
-            FUN_141912a80(pTarget, spParam->m_nValue, spParam->m_nType);
-            m_nLastQueueTime = nNow;
-        }
-    }
+    if (nNow < m_nLastQueueTime + 200)
+        return;
+    MS2Ptr<DamageQueueParam> spParam = m_queue.RemoveHead();
+    GameObject* pTarget = WorldService::GetInstance()->FUN_141bd1180(spParam->m_nActorId);
+    if (pTarget == 0)
+        return;
+    FUN_141912a80(pTarget, spParam->m_nValue, spParam->m_nType);
+    m_nLastQueueTime = nNow;
 }
 
 // @0x141916430

@@ -107,7 +107,7 @@ public:
     void FUN_141913a20();                                                               // read the layout constants
     float FUN_141913af0(GameObject* pTarget);                                           // height offset of a target
     float FUN_141913b80(const NiPoint3& kPos);
-    bool FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId);                 // the number is shown (battle options)
+    int FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId);                  // the number is shown (battle options)
     int FUN_141914020(GameObject* pTarget, NiPoint3& kPos, const CString& strNode);    // anchor position of a target
     int FUN_1419140f0(GameObject* pTarget, int& nIndex, CounterMap& map);
     int FUN_1419141a0(GameObject* pTarget);                                            // within the show distance
