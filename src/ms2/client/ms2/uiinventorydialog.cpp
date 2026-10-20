@@ -9,12 +9,18 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiinventorydialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiinventorydialog.h"
+#include "uiinvitegroupdialog.h"
+#include "uiitembreakdialog.h"
 
 #include <math.h>
 #include <stdlib.h>
 #include <algorithm>
 #include "ms2/ms2format.h"
+#include <map>
+#include "ms2/client/ms2/buddymanager.h"
+#include "ms2/client/ms2/groupchatmanager.h"
 #include "ms2/client/ms2/inventory.h"
+#include "ms2/client/ms2/partymanager.h"
 #include "ms2/client/ms2/invenslot.h"
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/client/ms2/pcbase.h"
@@ -23,8 +29,11 @@
 #include "ms2/client/ms2/uiscenelobbyselect.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/commonfiles/guilddef_1.h"
+#include "ms2/commonfiles/itembreakmanager.h"
 #include "ms2/gfxui/uiswfentity.h"
 #include "ms2/placeholder/asbuttonbar.h"
+#include "ms2/placeholder/ascorelist.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
@@ -34,6 +43,7 @@
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/ctalkscript.h"
@@ -43,6 +53,7 @@
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/uitalkmanager.h"
+#include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/unk_blocklist.h"
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -214,6 +225,7 @@ public:
     void FUN_141adc530(int nUiId);                                  // open
     void FUN_141adc750(int nUiId);                                  // toggle
     void FUN_141add1f0();                                           // the "not enough mesos" shop
+    int FUN_141adbb00();                                            // a window takes the keys
 };
 Unk_InvUIService* FUN_1403ed2b0();
 extern bool DAT_143af62d0;                                          // the UI development mode ("initData")
@@ -284,6 +296,25 @@ template <class T> MS2Ptr<T> UISwfEntity::GetChild(const CString& strName)
         return MS2Ptr<T>(0);
     return m_30->FUN_140e159f0<T>(strName);
 }
+
+// ---- statics (.text$di, in init order): the headers' statics, the user list keys, the break sounds ----------------------
+#ifndef MS2_HOOK_DLL
+static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkill = "skill";
+static CString s_strStun = "stun";
+static Unk_1402a9d70 s_unkTab(17, 0.75f, 0.25f, 2.25f, 10);
+static UICommon::CMyPCKeyInputController s_keyInput;
+#endif
+static CString s_strCharacterName = "characterName";               // 0x143af3090
+static CString s_strIconPath = "iconPath";                         // 0x143af3088
+static CString s_strLevelAndJobName = "levelAndJobName";           // 0x143af3098
+static CString s_strOnline = "online";                             // 0x143af3080
+#ifndef MS2_HOOK_DLL
+static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+#endif
+static CString s_strExtractEnd = "Extract_End";                    // 0x143af30e0
+static CString s_strExtractProgress = "Extract_Progress";          // 0x143af30d8
 
 // ---- UIInventoryDialog -----------------------------------------------------------------------------------------------
 
@@ -1617,3 +1648,1173 @@ void UIInventoryDialog::FUN_14199e2a0()
         FUN_1403ed2b0()->FUN_141add1f0();
 }
 MS2_REPLACE_METHOD(0x14199E2A0, UIInventoryDialog, FUN_14199e2a0, 113, 0);
+
+// ---- UIInviteGroupDialog ---------------------------------------------------------------------------------------------
+
+// One row of the user list (messengerdata.cpp's entry: kind, character id, image, name, level / job line), built from a
+// buddy, a party member or a guild member. The copy and the destruction are implicit (dtor 0x14194e470).
+struct Unk_InvGroupEntry
+{
+    Unk_InvGroupEntry(CBuddy& src);                                 // 0x141483300
+    Unk_InvGroupEntry(CPartyMember& src);                           // 0x141483580
+    Unk_InvGroupEntry(CGuildMember& src);                           // 0x141483830
+    unsigned FUN_141483d80();                                       // online
+    __int64 FUN_141483da0();                                        // the character id
+    CStringW FUN_141483dc0();                                       // the image
+    CStringW FUN_141483e10();                                       // the name
+    CStringW FUN_141483e60();                                       // the level / job line
+    unsigned m_nKind;                                               // +0x00
+    __int64 m_nId;                                                  // +0x08
+    CStringW m_strImage;                                            // +0x10
+    CStringW m_strName;                                             // +0x18
+    CStringW m_strInfo;                                             // +0x20
+};
+MS2_CHECK_SIZE(Unk_InvGroupEntry, 0x28);
+
+// The counted guild member handle of CGuildInfo's member list (guilddef_1.cpp's Unk_GuildRef with its release).
+class Unk_InvGuildRef
+{
+public:
+    ~Unk_InvGuildRef();                                             // 0x1404eead0
+    CGuildMember* FUN_1404f0ab0();                                  // get()
+private:
+    void* m_00;
+    CGuildMember* m_p;
+};
+MS2_CHECK_SIZE(Unk_InvGuildRef, 0x10);
+
+// "m_userList": the user list. Slot 24 (+0xc0) redraws it.
+class Unk_InvUserList : public ASTileList
+{
+public:
+    INV_V(16) INV_V(17) INV_V(18) INV_V(19) INV_V(20) INV_V(21) INV_V(22) INV_V(23)
+    virtual void vfunc_24(int bRefresh);                            // 24 (+0xc0)
+    void FUN_1422dd000(int nRows);                                  // the visible row count
+    unsigned FUN_1422dd150();                                       // the entry count
+};
+
+// The group chat windows (UIGroupMessengerBrowser at +0x50 of the chat UI).
+class Unk_InvGroupWindow { public: int FUN_14194b9d0(__int64 nCharacterId); };   // UIGroupMessenger: is a member
+class Unk_InvGroupBrowser { public: Unk_InvGroupWindow* FUN_141952f20(int nGroupId); };
+class Unk_InvChatUI
+{
+public:
+    char m_pad_00[0x50];
+    Unk_InvGroupBrowser* m_pBrowser;                                // +0x50
+};
+MS2_CHECK_OFFSET(Unk_InvChatUI, m_pBrowser, 0x50);
+Unk_InvChatUI* FUN_141482e80();
+CGroupChatManager* FUN_141484720();                                 // TSingleton<CGroupChatManager>::GetInstance
+CPartyManager* FUN_1409670d0();                                     // TSingleton<CPartyManager>::GetInstance
+CBuddyManager* FUN_14097a780();                                     // TSingleton<CBuddyManager>::GetInstance
+class Unk_InvGuildManager
+{
+public:
+    void* m_vfptr;                                                  // TSingleton<CGuildManager>
+    CGuildInfo m_info;                                              // +0x08 the own guild
+};
+Unk_InvGuildManager* FUN_1403ed290();                               // TSingleton<CGuildManager>::GetInstance
+MS2Ptr<CMsgBoxData> FUN_14151f820();                                // the message box on top
+
+// @0x14199f740
+UIInviteGroupDialog::UIInviteGroupDialog()
+    : m_180(0)
+{
+    m_80 = 1;
+    m_88 = 1;
+    FUN_141924170(1);
+    FUN_1422dc3b0(1);
+}
+
+// @0x14199f7e0
+UIInviteGroupDialog::~UIInviteGroupDialog()
+{
+}
+
+// @0x14199f820
+CString UIInviteGroupDialog::vfunc_1()
+{
+    return "InviteGroupDialog";
+}
+MS2_REPLACE_METHOD(0x14199F820, UIInviteGroupDialog, vfunc_1, 61, 0);
+
+// @0x14199f870
+void UIInviteGroupDialog::vfunc_67()
+{
+    UIModalDialog::vfunc_67();
+    FUN_14199fcf0(0);
+}
+MS2_REPLACE_METHOD(0x14199F870, UIInviteGroupDialog, vfunc_67, 36, 0);
+
+// @0x14199f8a0
+void UIInviteGroupDialog::OnLoadInit()
+{
+    UIObject::OnLoadInit();
+    MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_userCount");
+    if (spCount.get() != 0)
+        spCount->FUN_1422c4cd0(FUN_14028dee0(0x48a, 0));
+    FUN_1419a0240();
+}
+MS2_REPLACE_METHOD(0x14199F8A0, UIInviteGroupDialog, OnLoadInit, 237, 0);
+
+// @0x14199f9a0
+int UIInviteGroupDialog::vfunc_13()
+{
+    if (UIDialog::vfunc_13())
+        return 1;
+    if (!FUN_1419a0b20())
+        return 0;
+    if (!FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+        return 0;
+    MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput");
+    if (spInput.get() != 0)
+        FUN_141484720()->Invite(m_180, spInput->FUN_1422e0b00());
+    return 1;
+}
+MS2_REPLACE_METHOD(0x14199F9A0, UIInviteGroupDialog, vfunc_13, 309, 0);
+
+// @0x14199fae0
+int UIInviteGroupDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
+        return 1;
+    if (_stricmp("OnInvite", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+            FUN_141484720()->Invite(m_180, data.FUN_1422b8f40());
+        return 1;
+    }
+    if (_stricmp("OnChangeUserCount", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+            FUN_14199fe70(data.FUN_1422b8b10());
+    }
+    else if (_stricmp("OnRefreshUserCount", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+            FUN_1419a0160(data.FUN_1422b8b10());
+    }
+    return 0;
+}
+MS2_REPLACE_METHOD(0x14199FAE0, UIInviteGroupDialog, vfunc_28, 506, 0);
+
+// @0x14199fcf0
+void UIInviteGroupDialog::FUN_14199fcf0(unsigned nGroupId)
+{
+    m_180 = nGroupId;
+}
+MS2_REPLACE_METHOD(0x14199FCF0, UIInviteGroupDialog, FUN_14199fcf0, 25, 0);
+
+// @0x14199fd10
+void UIInviteGroupDialog::FUN_14199fd10(int nGroupId, const CStringW& strName, const CStringW& strText)
+{
+    if (vfunc_55() == 0)
+        FUN_1419a0240();
+}
+MS2_REPLACE_METHOD(0x14199FD10, UIInviteGroupDialog, FUN_14199fd10, 63, 0);
+
+// @0x14199fd60
+void UIInviteGroupDialog::FUN_14199fd60(int nGroupId, const CStringW& strName, const CStringW& strOther)
+{
+    if (vfunc_55() == 0)
+        FUN_1419a0240();
+}
+MS2_REPLACE_METHOD(0x14199FD60, UIInviteGroupDialog, FUN_14199fd60, 63, 0);
+
+// @0x14199fdb0
+void UIInviteGroupDialog::FUN_14199fdb0(int nGroupId, const CStringW& strName)
+{
+    if (vfunc_55() == 0)
+        FUN_1419a0240();
+}
+MS2_REPLACE_METHOD(0x14199FDB0, UIInviteGroupDialog, FUN_14199fdb0, 58, 0);
+
+// @0x14199fdf0
+void UIInviteGroupDialog::FUN_14199fdf0(int nGroupId, const CStringW& strName)
+{
+    if (vfunc_55() == 0)
+        FUN_1419a0240();
+}
+MS2_REPLACE_METHOD(0x14199FDF0, UIInviteGroupDialog, FUN_14199fdf0, 58, 0);
+
+// @0x14199fe30
+void UIInviteGroupDialog::FUN_14199fe30(int nGroupId, const CStringW& strName)
+{
+    if (vfunc_55() == 0)
+        FUN_1419a0240();
+}
+MS2_REPLACE_METHOD(0x14199FE30, UIInviteGroupDialog, FUN_14199fe30, 58, 0);
+
+// @0x14199fe70
+void UIInviteGroupDialog::FUN_14199fe70(unsigned nCount)
+{
+    FUN_1419a0160(nCount);
+    MS2Ptr<ASUIComponent> spButton = GetChild<ASUIComponent>("m_inviteFromComunity");
+    if (spButton.get() != 0)
+    {
+        Unk_ChatPtrChat spChat = FUN_141484720()->FUN_14137e630(m_180);
+        unsigned nTotal = nCount;
+        if (spChat.get() != 0)
+            nTotal = nCount + spChat->FUN_14137bad0();
+        if (nTotal < 0x15)
+        {
+            spButton->FUN_1422c1fe0(1);
+        }
+        else
+        {
+            spButton->FUN_1422c1fe0(0);
+            CStringW strText = FUN_14028de60(0x814);
+            MS2Ptr<CMsgBoxData> spTop = FUN_14151f820();
+            if (spTop.get() != 0 && spTop->FUN_141a02ce0() == strText)
+                return;
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strText, 0, strText);
+            if (spBox.get() != 0)
+                FUN_140d73c60(spBox);
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x14199FE70, UIInviteGroupDialog, FUN_14199fe70, 735, 0);
+
+// @0x1419a0160
+void UIInviteGroupDialog::FUN_1419a0160(unsigned nCount)
+{
+    MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_userCount");
+    if (spCount.get() != 0)
+        spCount->FUN_1422c4cd0(FUN_14028dee0(0x48a, nCount));
+}
+MS2_REPLACE_METHOD(0x1419A0160, UIInviteGroupDialog, FUN_1419a0160, 204, 0);
+
+// @0x1419a0240
+void UIInviteGroupDialog::FUN_1419a0240()
+{
+    EntryList entries(10);
+    FUN_1419a06d0(entries);
+    FUN_1419a07d0(entries);
+    FUN_1419a08f0(entries);
+    MS2Ptr<Unk_InvUserList> spList = GetChild<Unk_InvUserList>("m_userList");
+    if (spList.get() != 0)
+    {
+        spList->FUN_1422dd1d0();
+        for (POSITION pos = entries.GetHeadPosition(); pos != 0; entries.GetNext(pos))
+        {
+            Unk_InvGroupEntry entry = entries.GetAt(pos);
+            ASObj row(2);
+            row.FUN_1407cb9c0(s_strOnline, entry.FUN_141483d80());
+            row.FUN_1407cbb20(s_strIconPath, entry.FUN_141483dc0());
+            row.FUN_1407cbb20(s_strCharacterName, entry.FUN_141483e10());
+            row.FUN_1407cbb20(s_strLevelAndJobName, entry.FUN_141483e60());
+            if (entry.FUN_141483d80() != 0)
+                spList->FUN_1422dd230(row);
+        }
+        spList->FUN_1422dd000(spList->FUN_1422dd150() < 9 ? spList->FUN_1422dd150() : 8);
+        spList->vfunc_24(1);
+    }
+    MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput");
+    if (spInput.get() != 0)
+        spInput->FUN_1422e0a60(CString(""));
+    if (ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30))
+        pDlg->Invoke("updateUserCount");
+}
+MS2_REPLACE_METHOD(0x1419A0240, UIInviteGroupDialog, FUN_1419a0240, 1149, 0);
+
+// @0x1419a06d0
+void UIInviteGroupDialog::FUN_1419a06d0(EntryList& entries)
+{
+    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = FUN_1409670d0()->FUN_14162ba30();
+    size_t nCount = members.GetCount();
+    for (size_t i = 0; i < nCount; i++)
+    {
+        CPartyMember* pMember = members[i].get();
+        if (pMember != 0 && FUN_1419a0a10(pMember->user.m_8, entries) == 0)
+            entries.AddTail(Unk_InvGroupEntry(*pMember));
+    }
+}
+MS2_REPLACE_METHOD(0x1419A06D0, UIInviteGroupDialog, FUN_1419a06d0, 243, 0);
+
+// @0x1419a07d0
+void UIInviteGroupDialog::FUN_1419a07d0(EntryList& entries)
+{
+    ATL::CAtlArray<Unk_InvGuildRef> members;
+    FUN_1403ed290()->m_info.FUN_1404d0420(&members);
+    size_t nCount = members.GetCount();
+    for (size_t i = 0; i < nCount; i++)
+    {
+        CGuildMember* pMember = members[i].FUN_1404f0ab0();
+        if (pMember != 0 && FUN_1419a0a10(pMember->data.f08, entries) == 0)
+            entries.AddTail(Unk_InvGroupEntry(*pMember));
+    }
+}
+MS2_REPLACE_METHOD(0x1419A07D0, UIInviteGroupDialog, FUN_1419a07d0, 268, 0);
+
+// @0x1419a08f0
+void UIInviteGroupDialog::FUN_1419a08f0(EntryList& entries)
+{
+    ATL::CAtlArray<CBuddyManager::Ptr> buddies;
+    FUN_14097a780()->FUN_140ae4df0(buddies);
+    size_t nCount = buddies.GetCount();
+    for (size_t i = 0; i < nCount; i++)
+    {
+        CBuddy* pBuddy = buddies[i].get();
+        if (pBuddy != 0 && FUN_1419a0a10(pBuddy->FUN_1401cc230(), entries) == 0)
+            entries.AddTail(Unk_InvGroupEntry(*pBuddy));
+    }
+}
+MS2_REPLACE_METHOD(0x1419A08F0, UIInviteGroupDialog, FUN_1419a08f0, 268, 0);
+
+// @0x1419a0a10
+int UIInviteGroupDialog::FUN_1419a0a10(__int64 nCharacterId, EntryList& entries)
+{
+    if (FUN_141482e80()->m_pBrowser != 0)
+    {
+        Unk_InvGroupWindow* pWindow = FUN_141482e80()->m_pBrowser->FUN_141952f20(m_180);
+        if (pWindow != 0 && pWindow->FUN_14194b9d0(nCharacterId))
+            return 1;
+    }
+    for (POSITION pos = entries.GetHeadPosition(); pos != 0; entries.GetNext(pos))
+    {
+        Unk_InvGroupEntry entry = entries.GetAt(pos);
+        if (entry.FUN_141483da0() == nCharacterId)
+            return 1;
+    }
+    return 0;
+}
+MS2_REPLACE_METHOD(0x1419A0A10, UIInviteGroupDialog, FUN_1419a0a10, 254, 0);
+
+// @0x1419a0b20
+bool UIInviteGroupDialog::FUN_1419a0b20()
+{
+    MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput");
+    if (spInput.get() != 0 && spInput->FUN_1422c76c0())
+        return true;
+    UIMessageBox* pBox = FUN_14151f890();
+    if (pBox != 0 && pBox->FUN_1419f8270() == 0)
+        return false;
+    return FUN_1403ed2b0()->FUN_141adbb00() == 0;
+}
+MS2_REPLACE_METHOD(0x1419A0B20, UIInviteGroupDialog, FUN_1419a0b20, 234, 0);
+
+// ---- UIItemBreakBase / UIItemBreakDialog / UIItemBreakDonationDialog -------------------------------------------------
+
+// The slot bag movie of "m_itemBag" ("instance"): the bag name and the scrolling.
+class Unk_IbSlotBag : public ASObj
+{
+public:
+    void FUN_1422cf4f0(int nRow);                                   // scroll to a row
+    int FUN_1422cf520();                                            // the scroll position
+};
+// The slot bag registered under a movie name (FUN_1422c8e90): redraw a slot.
+class Unk_IbBreakBag;
+Unk_IbBreakBag* FUN_1414109f0(Unk_InvBagBind* pBind);               // DynamicCast to the item break bag
+void FUN_1414109a0(Unk_IbBreakBag* pBag, int nIndex);               // a slot changed
+void FUN_141410780(const CString& strName);                         // drop the item break bag of a name
+void FUN_1414106d0(const CString& strName);                         // create the item break bag of a name
+void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int a, int nFlags, int b);   // bind an item slot to a name
+void FUN_141415600(const CString& strName);                         // release an item slot name
+void FUN_141276180(const CString& strSound, const CString& strArg);  // play a UI sound
+int FUN_14053feb0(int nItemId);                                     // the default rarity of an item
+CStringW FUN_141425950(int nItemId);                                // the item name
+CStringW FUN_140b99450(CStringW strKey, const CStringW& strName, const int& nCount);   // the localized "{name} x{n}"
+CStringW FUN_140e9fe10(CStringW strKey, const CStringW& strName, const int& nLow, const int& nHigh);
+CStringW FUN_140298ea0(CStringW strKey);                            // a localized string
+void FUN_1412751b0(const CStringW& strText, int nType);             // a notice
+CItemBreakManager* FUN_1409c4b20();                                 // TSingleton<CItemBreakManager>::GetInstance
+UIInventoryDialog* FUN_1405344f0(int nUiId);                        // the inventory window
+int FUN_1405352d0(UIItemBreakBase* pDialog);                        // breaking (m_188)
+void FUN_140c3fe30(UIInventoryDialog* pInventory, int nTab);        // select a tab of the inventory
+class Unk_IbRankTexts { public: CStringW FUN_141813150(int nRank); };   // the rarity names
+Unk_IbRankTexts* FUN_1401a9d70();
+class Unk_IbAnalytics;
+Unk_IbAnalytics* FUN_140d8ee90();
+void FUN_140a1f970(Unk_IbAnalytics* p, const CString& strEvent, const CString& strName);
+// The UI message to the inventory ("openWindowPos", the ui id).
+class Unk_IbUIMsg : public UIMsg
+{
+public:
+    Unk_IbUIMsg();                                                  // 0x1422e4490
+    ~Unk_IbUIMsg();                                                 // 0x140c30570
+    void FUN_1422b82b0(const char* szMethod);
+    void FUN_1422b7f70(int n);
+    void* m_pad[10];
+};
+// "m_bundleTypeDropdown" / "m_bundleRankDropdown": slot 24 (+0xc0) redraws.
+class Unk_IbDropdown : public ASDropdownMenu
+{
+public:
+    INV_V(16) INV_V(17) INV_V(18) INV_V(19) INV_V(20) INV_V(21) INV_V(22) INV_V(23)
+    virtual void vfunc_24(int bRefresh);                            // 24 (+0xc0)
+    void FUN_1422dfc70(const ASObj& item);                          // add an item
+    int FUN_1422dfb90();                                            // the item count
+};
+
+// @0x1419a1280
+UIItemBreakBase::UIItemBreakBase()
+    : m_190(10)
+{
+    m_188 = 0;
+    FUN_141924170(1);
+    m_164 = 1;
+}
+
+// @0x1419a1360
+UIItemBreakBase::~UIItemBreakBase()
+{
+}
+
+// @0x1419a1400
+int UIItemBreakBase::vfunc_46()
+{
+    return UISwfEntity::vfunc_46() != 0;
+}
+MS2_REPLACE_METHOD(0x1419A1400, UIItemBreakBase, vfunc_46, 37, 0);
+
+// @0x1419a1430
+void UIItemBreakBase::FUN_1419a1430()
+{
+    FUN_141410780(vfunc_1());
+    FUN_1414106d0(vfunc_1());
+    MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag");
+    if (spBag.get() != 0)
+    {
+        MS2Ptr<Unk_IbSlotBag> spSlots = spBag->FUN_140accef0<Unk_IbSlotBag>("instance");
+        if (spSlots.get() != 0)
+            spSlots->FUN_1407cba60("bagId", vfunc_1());
+    }
+    vfunc_85(true, 0);
+}
+MS2_REPLACE_METHOD(0x1419A1430, UIItemBreakBase, FUN_1419a1430, 541, 0);
+
+// @0x1419a1660
+int UIItemBreakBase::FUN_1419a1660()
+{
+    if (m_30 == 0)
+        return 0;
+    MS2Ptr<ASMovieClip> spBag = m_30->FUN_1409b4560("m_itemBag");
+    if (spBag.get() == 0)
+        return 0;
+    return spBag->FUN_1422bfca0();
+}
+MS2_REPLACE_METHOD(0x1419A1660, UIItemBreakBase, FUN_1419a1660, 214, 0);
+
+// @0x1419a1740
+void UIItemBreakBase::OnLoadInit()
+{
+    UIObject::OnLoadInit();
+    m_188 = 0;
+}
+MS2_REPLACE_METHOD(0x1419A1740, UIItemBreakBase, OnLoadInit, 39, 0);
+
+// @0x1419a1770
+void UIItemBreakBase::OnLoadComplete()
+{
+    UIDialog::OnLoadComplete();
+    FUN_1419a1430();
+    FUN_140a6a840()->FUN_1419cae20(this);
+    FUN_1409c4b20()->FUN_140531c20(vfunc_88());
+    if (UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d))
+    {
+        pInventory->FUN_141999f60();
+        pInventory->FUN_141999e00();
+    }
+}
+MS2_REPLACE_METHOD(0x1419A1770, UIItemBreakBase, OnLoadComplete, 172, 0);
+
+// @0x1419a1830
+void UIItemBreakBase::vfunc_26()
+{
+    UIDialog::vfunc_26();
+    if (UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d))
+    {
+        pInventory->FUN_141999f60();
+        pInventory->FUN_141999e00();
+    }
+    FUN_141410780(vfunc_1());
+}
+#ifndef MS2_STANDALONE
+namespace {
+struct Unk_IbDropControlsThunk : UIItemBreakBase
+{
+    void Call() { UIItemBreakBase::vfunc_26(); }
+};
+}
+MS2_REPLACE_IMPL(0x1419A1830, ::ms2::hook::detail::MemberToVoid(&Unk_IbDropControlsThunk::Call), "UIItemBreakBase::vfunc_26()", 134, 0);
+#endif
+
+// @0x1419a18c0
+void UIItemBreakBase::vfunc_67()
+{
+    UIDialog::vfunc_67();
+    FUN_141410780(vfunc_1());
+    FUN_1419a1fb0();
+    FUN_140a6a840()->FUN_1419caeb0(this);
+    FUN_1409c4b20()->FUN_140531cc0();
+}
+MS2_REPLACE_METHOD(0x1419A18C0, UIItemBreakBase, vfunc_67, 167, 0);
+
+// @0x1419a1970
+int UIItemBreakBase::vfunc_73()
+{
+    UIDialog* pLock = FUN_140613770(0x4f08);
+    if (pLock != 0 && pLock->vfunc_55() == 0)
+        return 0;
+    return UIDialog::vfunc_73();
+}
+MS2_REPLACE_METHOD(0x1419A1970, UIItemBreakBase, vfunc_73, 86, 0);
+
+// @0x1419a19d0
+void UIItemBreakBase::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
+{
+}
+MS2_REPLACE_METHOD(0x1419A19D0, UIItemBreakBase, vfunc_45, 21, 0);
+
+// @0x1419a19f0
+int UIItemBreakBase::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    return UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0;
+}
+MS2_REPLACE_METHOD(0x1419A19F0, UIItemBreakBase, vfunc_28, 67, 0);
+
+// @0x1419a1a40
+void UIItemBreakBase::vfunc_15()
+{
+    if (vfunc_55() == 0)
+        FUN_1409c4b20()->FUN_140531ed0();
+}
+MS2_REPLACE_METHOD(0x1419A1A40, UIItemBreakBase, vfunc_15, 52, 0);
+
+// @0x1419a1a80
+void UIItemBreakBase::vfunc_66()
+{
+    UIDialog::vfunc_66();
+    UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+    if (pInventory != 0 && pInventory->vfunc_55() != 0)
+    {
+        if (dynamic_cast<ASDialog*>((AScript*)m_30) != 0)
+        {
+            Unk_IbUIMsg msg;
+            msg.FUN_1422b82b0("openWindowPos");
+            msg.FUN_1422b7f70(vfunc_48());
+            pInventory->OnMessage(this, &msg);
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x1419A1A80, UIItemBreakBase, vfunc_66, 283, 0);
+
+// @0x1419a1bb0
+void UIItemBreakBase::vfunc_43()
+{
+    UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+    if (pInventory != 0 && pInventory->FUN_1422dc430())
+    {
+        float fX = 0.0f;
+        float fY = 0.0f;
+        ASDialog* pOther = dynamic_cast<ASDialog*>((AScript*)pInventory->FUN_1422dba00());
+        if (pOther != 0)
+        {
+            fX = pOther->FUN_1422c10a0();
+            fY = pOther->FUN_1422c1110();
+        }
+        if (ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30))
+        {
+            pDlg->FUN_1422c00f0(fX - (float)pDlg->FUN_1422c1340(), fY);
+            return;
+        }
+    }
+    UIDialog::vfunc_43();
+}
+MS2_REPLACE_METHOD(0x1419A1BB0, UIItemBreakBase, vfunc_43, 361, 0);
+
+// @0x1419a1d20
+void UIItemBreakBase::FUN_1419a1d20(int nIndex)
+{
+    Unk_IbBreakBag* pBag = FUN_1414109f0(FUN_1422c8e90(vfunc_1()));
+    if (pBag != 0)
+        FUN_1414109a0(pBag, nIndex);
+    vfunc_85(false, nIndex);
+}
+MS2_REPLACE_METHOD(0x1419A1D20, UIItemBreakBase, FUN_1419a1d20, 145, 0);
+
+// @0x1419a1dc0
+CString UIItemBreakBase::FUN_1419a1dc0(int nItemId, int nRarity, int nCount)
+{
+    CItem* pItem = new CItem();
+    if (!pItem->FUN_140523c40(nItemId, nRarity, 0))
+        return "";
+    pItem->FUN_140526c70(nCount);
+    CString strName;
+    strName.Format("%s_%d", (const char*)vfunc_1(), nItemId);
+    FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
+    m_190.AddTail(strName);
+    return strName;
+}
+MS2_REPLACE_METHOD(0x1419A1DC0, UIItemBreakBase, FUN_1419a1dc0, 475, 0);
+
+// @0x1419a1fb0
+void UIItemBreakBase::FUN_1419a1fb0()
+{
+    for (POSITION pos = m_190.GetHeadPosition(); pos != 0; m_190.GetNext(pos))
+        FUN_141415600(CString(m_190.GetAt(pos)));
+    m_190.RemoveAll();
+}
+MS2_REPLACE_METHOD(0x1419A1FB0, UIItemBreakBase, FUN_1419a1fb0, 163, 0);
+
+// @0x1419a2060
+void UIItemBreakBase::FUN_1419a2060()
+{
+    if (m_30 != 0)
+    {
+        m_30->Invoke("startBreak");
+        m_188 = 1;
+    }
+    FUN_141276180(s_strExtractProgress, CString(""));
+}
+MS2_REPLACE_METHOD(0x1419A2060, UIItemBreakBase, FUN_1419a2060, 155, 0);
+
+// @0x1419a2110
+void UIItemBreakBase::FUN_1419a2110()
+{
+    if (m_30 != 0)
+    {
+        m_30->Invoke("endBreak");
+        m_188 = 0;
+    }
+    FUN_141276180(s_strExtractEnd, CString(""));
+}
+MS2_REPLACE_METHOD(0x1419A2110, UIItemBreakBase, FUN_1419a2110, 155, 0);
+
+// @0x1419a21c0
+UIItemBreakDialog::UIItemBreakDialog()
+    : m_1c8(10)
+{
+    m_1c0 = 1;
+    m_1f8 = 0;
+    m_1fc = 1;
+    m_200.clear();
+}
+
+// @0x1419a22a0
+UIItemBreakDialog::~UIItemBreakDialog()
+{
+}
+
+// @0x1419a2330
+CString UIItemBreakDialog::vfunc_1()
+{
+    return "ItemBreakDialog";
+}
+MS2_REPLACE_METHOD(0x1419A2330, UIItemBreakDialog, vfunc_1, 61, 0);
+
+// @0x1419a2380
+void UIItemBreakDialog::OnLoadInit()
+{
+    UIItemBreakBase::OnLoadInit();
+    FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "item_break");
+}
+MS2_REPLACE_METHOD(0x1419A2380, UIItemBreakDialog, OnLoadInit, 118, 0);
+
+// @0x1419a2400
+void UIItemBreakDialog::OnLoadComplete()
+{
+    UIItemBreakBase::OnLoadComplete();
+    m_200.clear();
+    MS2Ptr<Unk_IbDropdown> spType = GetChild<Unk_IbDropdown>("m_bundleTypeDropdown");
+    if (spType.get() != 0)
+    {
+        int nIndex = 0;
+        ASObj equip(2);
+        equip.FUN_1407cb9c0("type", INV_TAB_EQUIP);
+        equip.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_inventory_tab_equip"));
+        spType->FUN_1422dfc70(equip);
+        m_200.insert(std::make_pair((int)INV_TAB_EQUIP, nIndex));
+        nIndex++;
+        if (FUN_140166410()->FUN_14036d570(0x3a))
+        {
+            ASObj skin(2);
+            skin.FUN_1407cb9c0("type", INV_TAB_SKIN);
+            skin.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_inventory_tab_skin"));
+            spType->FUN_1422dfc70(skin);
+            m_200.insert(std::make_pair((int)INV_TAB_SKIN, nIndex));
+            nIndex++;
+        }
+        if (FUN_140166410()->FUN_14036d570(0x2e))
+        {
+            ASObj gem(2);
+            gem.FUN_1407cb9c0("type", INV_TAB_GEM);
+            gem.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_inventory_tab_gem"));
+            spType->FUN_1422dfc70(gem);
+            m_200.insert(std::make_pair((int)INV_TAB_GEM, nIndex));
+            nIndex++;
+        }
+        ASObj pet(2);
+        pet.FUN_1407cb9c0("type", INV_TAB_PET);
+        pet.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_inventory_tab_pet"));
+        spType->FUN_1422dfc70(pet);
+        m_200.insert(std::make_pair((int)INV_TAB_PET, nIndex));
+        nIndex++;
+        int nRows = spType->FUN_1422dfb90();
+        if (nRows < 2)
+            nRows = 1;
+        spType->FUN_1422df5f0(nRows);
+        int nSelect = 0;
+        std::map<int, int>::iterator it = m_200.find(m_1f8);
+        if (it != m_200.end())
+            nSelect = it->second;
+        spType->FUN_1422df690(nSelect);
+        spType->vfunc_24(1);
+    }
+    MS2Ptr<Unk_IbDropdown> spRank = GetChild<Unk_IbDropdown>("m_bundleRankDropdown");
+    if (spRank.get() != 0)
+    {
+        CStringW strOrBelow = FUN_140298ea0(CStringW(L"s_itembreak_rank_or_below"));
+        for (int nRank = 1; nRank < 7; nRank++)
+        {
+            ASObj rank(2);
+            rank.FUN_1407cb9c0("rank", nRank);
+            rank.FUN_1407cbb20("label", StringFormat(L"{0} {1}", FUN_1401a9d70()->FUN_141813150(nRank), strOrBelow));
+            spRank->FUN_1422dfc70(rank);
+        }
+        int nRows = spRank->FUN_1422dfb90();
+        if (nRows < 2)
+            nRows = 1;
+        spRank->FUN_1422df5f0(nRows);
+        spRank->FUN_1422df690(m_1fc - 1);
+        spRank->vfunc_24(1);
+    }
+}
+MS2_REPLACE_METHOD(0x1419A2400, UIItemBreakDialog, OnLoadComplete, 2266, 0);
+
+// @0x1419a2ce0
+void UIItemBreakDialog::vfunc_67()
+{
+    UIItemBreakBase::vfunc_67();
+    FUN_1419a4c80();
+    FUN_140a1f970(FUN_140d8ee90(), "dialog_close", "item_break");
+}
+MS2_REPLACE_METHOD(0x1419A2CE0, UIItemBreakDialog, vfunc_67, 128, 0);
+
+// @0x1419a2d70
+int UIItemBreakDialog::vfunc_73()
+{
+    UIDialog* pDonation = FUN_1405346e0(0x4e8e);
+    if (pDonation == 0)
+        return UIItemBreakBase::vfunc_73();
+    return pDonation->FUN_1422dc430() == 0;
+}
+MS2_REPLACE_METHOD(0x1419A2D70, UIItemBreakDialog, vfunc_73, 85, 0);
+
+// @0x1419a2dd0
+int UIItemBreakDialog::vfunc_86()
+{
+    if (FUN_1405352d0(this) != 0)
+        return 0;
+    return FUN_1419a1660();
+}
+MS2_REPLACE_METHOD(0x1419A2DD0, UIItemBreakDialog, vfunc_86, 42, 0);
+
+// @0x1419a2e10
+int UIItemBreakDialog::vfunc_88()
+{
+    return m_1c0;
+}
+MS2_REPLACE_METHOD(0x1419A2E10, UIItemBreakDialog, vfunc_88, 17, 0);
+
+// @0x1419a2e30
+void UIItemBreakDialog::vfunc_85(bool bReset, int nIndex)
+{
+    MS2Ptr<ASUIComponent> spBreak = GetChild<ASUIComponent>("m_break");
+    if (spBreak.get() != 0)
+        spBreak->FUN_1422c1fe0(FUN_1409c4b20()->FUN_140532b60());
+    MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag");
+    if (spBag.get() != 0)
+    {
+        MS2Ptr<Unk_IbSlotBag> spSlots = spBag->FUN_140accef0<Unk_IbSlotBag>("instance");
+        if (spSlots.get() != 0)
+        {
+            if (!bReset)
+            {
+                int nLastRow = (int)FUN_1409c4b20()->FUN_140533e20() / 5;
+                int nRow = nIndex / 5;
+                nRow = (std::min)((std::max)(0, nRow), nLastRow);
+                int nTop = spSlots->FUN_1422cf520();
+                if (nRow < nTop || nTop + 2 < nRow)
+                    spSlots->FUN_1422cf4f0(nRow);
+            }
+            else
+            {
+                int nLastRow = (int)FUN_1409c4b20()->FUN_140533e20() / 5;
+                spSlots->FUN_1422cf4f0((std::max)(nLastRow - 2, 0));
+            }
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x1419A2E30, UIItemBreakDialog, vfunc_85, 729, 0);
+
+// @0x1419a3110
+int UIItemBreakDialog::vfunc_46()
+{
+    if (!UIItemBreakBase::vfunc_46())
+        return 0;
+    MS2Ptr<ASTextField> spDesc = m_30->FUN_1409b4620("m_desc");
+    if (spDesc.get() != 0)
+    {
+        CStringW strDesc = spDesc->FUN_1422c4da0();
+        if (FUN_140166410()->FUN_14036d570(0x3a) == true)
+            strDesc = StringFormat(L"{0}, {1}", strDesc, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_desc_skin"));
+        if (FUN_140166410()->FUN_14036d570(0x2e) == true)
+            strDesc = StringFormat(L"{0}, {1}", strDesc, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_desc_socket"));
+        spDesc->FUN_1422c4cd0(strDesc);
+    }
+    MS2Ptr<ASUIComponent> spInfo = m_30->FUN_140acce30<ASUIComponent>("m_info");
+    if (spInfo.get() != 0)
+    {
+        CStringW strTooltip = FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_tooltip_desc");
+        if (FUN_140166410()->FUN_14036d570(0x3a) == true)
+            strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_tooltip_skin"));
+        if (FUN_140166410()->FUN_14036d570(0x2e) == true)
+            strTooltip = StringFormat(L"{0}\n{1}", strTooltip, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_tooltip_socket"));
+        spInfo->FUN_1422c7b40(strTooltip);
+    }
+    return 1;
+}
+MS2_REPLACE_METHOD(0x1419A3110, UIItemBreakDialog, vfunc_46, 1422, 0);
+
+// @0x1419a36b0
+void UIItemBreakDialog::vfunc_84(CInPacket* pPacket)
+{
+    if (m_30 == 0)
+        return;
+    FUN_1419a1fb0();
+    ASArray rows(2);
+    ASObj data(2);
+    unsigned nCount = pPacket->vfunc_o8_3();
+    for (unsigned i = 0; i < nCount; i++)
+    {
+        int nItemId = pPacket->vfunc_o8_3();
+        int nAmount = pPacket->vfunc_o8_3();
+        if (nAmount != 0)
+        {
+            ASObj row(2);
+            CStringW strText = FUN_140b99450(CStringW(L"s_itembreak_preview_static"), FUN_141425950(nItemId), nAmount);
+            CString strBinding = FUN_1419a1dc0(nItemId, FUN_14053feb0(nItemId), nAmount);
+            row.FUN_1407cba60("slotBinding", CString(strBinding));
+            row.FUN_1407cbbe0("toggle", false);
+            row.FUN_1407cbb20("text", CStringW(strText));
+            rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+        }
+    }
+    data.FUN_1409adbe0("dp", Scaleform::GFx::Value(rows.FUN_1422bb870()));
+    m_30->Invoke("setResult", data);
+    FUN_1419a2110();
+}
+MS2_REPLACE_METHOD(0x1419A36B0, UIItemBreakDialog, vfunc_84, 957, 0);
+
+// @0x1419a3a80
+int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UIItemBreakBase::vfunc_28(szMethod, pArgs, nArgs))
+        return 1;
+    if (_stricmp(szMethod, "onClickBreak") == 0)
+    {
+        if (FUN_1409c4b20()->FUN_140532b60() == 0)
+        {
+            FUN_1412751b0(FUN_1409eec40(0xe6), 0x14);
+        }
+        else
+        {
+            int nRarity = FUN_1409c4b20()->FUN_140532c30();
+            if (nRarity == 6 || nRarity == 5)
+            {
+                bool bLegendary = nRarity != 6;
+                CStringW strText = bLegendary ? FUN_14028b8e0(CStringW(L"s_itembreak_legendary_item"))
+                                              : FUN_14028b8e0(CStringW(L"s_itembreak_artifact_item"));
+                CStringW strCheck = bLegendary ? FUN_14028b8e0(CStringW(L"s_itembreak_legendary_item_checkbox"))
+                                               : FUN_14028b8e0(CStringW(L"s_itembreak_artifact_item_checkbox"));
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, strText, 0, CStringW(L""));
+                if (spBox.get() != 0)
+                {
+                    spBox->FUN_141a01800(1);
+                    spBox->FUN_141a026f0(1);
+                    spBox->FUN_141a024a0(0);
+                    spBox->FUN_141a024e0(strCheck, 0);
+                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDialog::vfunc_87));
+                    FUN_140d73c60(spBox);
+                }
+            }
+            else if (nRarity == 4)
+            {
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0x8f9, 0, CStringW(L""));
+                if (spBox.get() != 0)
+                {
+                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDialog::vfunc_87));
+                    FUN_140d73c60(spBox);
+                }
+            }
+            else
+            {
+                FUN_1419a2060();
+            }
+        }
+        return 1;
+    }
+    if (_stricmp(szMethod, "onSendBreak") == 0)
+        return FUN_1409c4b20()->FUN_140532d80();
+    if (_stricmp(szMethod, "onResetBreak") == 0)
+    {
+        if (UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d))
+            FUN_140c3fe30(pInventory, 7);
+        return 1;
+    }
+    if (_stricmp(szMethod, "OnBundleType") == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+            m_1f8 = data.FUN_1422b8a10();
+        return 1;
+    }
+    if (_stricmp(szMethod, "OnBundleRank") == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+            m_1fc = data.FUN_1422b8a10();
+        return 1;
+    }
+    if (_stricmp(szMethod, "OnBundleRegister") == 0)
+    {
+        FUN_1409c4b20()->FUN_1405332b0(m_1f8, m_1fc);
+        return 1;
+    }
+    return 0;
+}
+MS2_REPLACE_METHOD(0x1419A3A80, UIItemBreakDialog, vfunc_28, 2436, 0);
+
+// @0x1419a4420
+bool UIItemBreakDialog::vfunc_87(int nResult, const CMsgBoxData& box)
+{
+    if (nResult == 0)
+        FUN_1419a2060();
+    return true;
+}
+MS2_REPLACE_METHOD(0x1419A4420, UIItemBreakDialog, vfunc_87, 46, 0);
+
+// @0x1419a4460
+void UIItemBreakDialog::FUN_1419a4460()
+{
+    if (!m_30)
+        return;
+    m_188 = 0;
+    m_30->Invoke("resetBreak");
+}
+MS2_REPLACE_METHOD(0x1419A4460, UIItemBreakDialog, FUN_1419a4460, 102, 0);
+
+// @0x1419a44d0
+void UIItemBreakDialog::FUN_1419a44d0(CInPacket* pPacket)
+{
+    if (!m_30)
+        return;
+    FUN_1419a4c80();
+    std::map<int, ItemBreakCommon::BreakPreview> previews;
+    unsigned nCount = pPacket->vfunc_o8_3();
+    for (unsigned i = 0; i < nCount; i++)
+    {
+        ItemBreakCommon::BreakPreview preview;
+        int nItemId = pPacket->vfunc_o8_3();
+        preview.FUN_140530920(*reinterpret_cast<Unk_BreakPacket*>(pPacket));
+        previews[nItemId] = preview;
+    }
+    ASArray rows(2);
+    ASObj data(2);
+    for (std::map<int, ItemBreakCommon::BreakPreview>::iterator it = previews.begin(); it != previews.end(); ++it)
+    {
+        int nItemId = it->first;
+        if (it->second.FUN_1405309d0() == 0)
+            continue;
+        CStringW strText;
+        if (it->second.FUN_140530990() == 0)
+            strText = FUN_140b99450(CStringW(L"s_itembreak_preview_static"), FUN_141425950(nItemId), it->second.low);
+        else
+            strText = FUN_140e9fe10(CStringW(L"s_itembreak_preview_random"), FUN_141425950(nItemId), it->second.low, it->second.high);
+        ASObj row(2);
+        CString strBinding = FUN_1419a4aa0(nItemId);
+        row.FUN_1407cba60("slotBinding", CString(strBinding));
+        row.FUN_1407cbbe0("toggle", false);
+        row.FUN_1407cbb20("text", CStringW(strText));
+        rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+    }
+    data.FUN_1409adbe0("dp", Scaleform::GFx::Value(rows.FUN_1422bb870()));
+    m_30->Invoke("setPreview", data);
+}
+MS2_REPLACE_METHOD(0x1419A44D0, UIItemBreakDialog, FUN_1419a44d0, 1478, 0);
+
+// @0x1419a4aa0
+CString UIItemBreakDialog::FUN_1419a4aa0(int nItemId)
+{
+    CItem* pItem = new CItem();
+    if (!pItem->FUN_140523c40(nItemId, FUN_14053feb0(nItemId), 0))
+        return "";
+    CString strName;
+    strName.Format("%s_preview_%d", (const char*)vfunc_1(), nItemId);
+    FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
+    m_1c8.AddTail(strName);
+    return strName;
+}
+MS2_REPLACE_METHOD(0x1419A4AA0, UIItemBreakDialog, FUN_1419a4aa0, 460, 0);
+
+// @0x1419a4c80
+void UIItemBreakDialog::FUN_1419a4c80()
+{
+    for (POSITION pos = m_1c8.GetHeadPosition(); pos != 0; m_1c8.GetNext(pos))
+        FUN_141415600(CString(m_1c8.GetAt(pos)));
+    m_1c8.RemoveAll();
+}
+MS2_REPLACE_METHOD(0x1419A4C80, UIItemBreakDialog, FUN_1419a4c80, 163, 0);
+
+// @0x1419a4d30
+UIItemBreakDonationDialog::UIItemBreakDonationDialog()
+{
+    m_1c0 = 2;
+}
+
+// @0x1419a4db0
+UIItemBreakDonationDialog::~UIItemBreakDonationDialog()
+{
+}
+
+// @0x1419a4e20
+CString UIItemBreakDonationDialog::vfunc_1()
+{
+    return "ItemBreakDonationDialog";
+}
+MS2_REPLACE_METHOD(0x1419A4E20, UIItemBreakDonationDialog, vfunc_1, 61, 0);
+
+// @0x1419a4e70
+void UIItemBreakDonationDialog::OnLoadInit()
+{
+    UIItemBreakBase::OnLoadInit();
+    FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "item_break");
+}
+MS2_REPLACE_METHOD(0x1419A4E70, UIItemBreakDonationDialog, OnLoadInit, 118, 0);
+
+// @0x1419a4ef0
+void UIItemBreakDonationDialog::vfunc_67()
+{
+    UIItemBreakBase::vfunc_67();
+    FUN_140a1f970(FUN_140d8ee90(), "dialog_close", "item_break");
+}
+MS2_REPLACE_METHOD(0x1419A4EF0, UIItemBreakDonationDialog, vfunc_67, 118, 0);
+
+// @0x1419a4f70
+int UIItemBreakDonationDialog::vfunc_73()
+{
+    UIDialog* pBreak = FUN_140534590(0x4e8d);
+    if (pBreak == 0)
+        return UIItemBreakBase::vfunc_73();
+    return pBreak->FUN_1422dc430() == 0;
+}
+MS2_REPLACE_METHOD(0x1419A4F70, UIItemBreakDonationDialog, vfunc_73, 85, 0);
+
+// @0x1419a4fd0
+int UIItemBreakDonationDialog::vfunc_86()
+{
+    if (FUN_1405352d0(this) != 0)
+        return 0;
+    return FUN_1419a1660();
+}
+MS2_REPLACE_METHOD(0x1419A4FD0, UIItemBreakDonationDialog, vfunc_86, 42, 0);
+
+// @0x1419a5010
+int UIItemBreakDonationDialog::vfunc_88()
+{
+    return m_1c0;
+}
+MS2_REPLACE_METHOD(0x1419A5010, UIItemBreakDonationDialog, vfunc_88, 17, 0);
+
+// @0x1419a5030
+void UIItemBreakDonationDialog::vfunc_85(bool bReset, int nIndex)
+{
+}
+MS2_REPLACE_METHOD(0x1419A5030, UIItemBreakDonationDialog, vfunc_85, 15, 0);
+
+// @0x1419a5050
+int UIItemBreakDonationDialog::vfunc_46()
+{
+    MS2Ptr<ASUIComponent> spInfo = m_30->FUN_140acce30<ASUIComponent>("m_info");
+    if (spInfo.get() != 0)
+        spInfo->FUN_1422c7b40(FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_donation_tooltip_desc"));
+    return 1;
+}
+MS2_REPLACE_METHOD(0x1419A5050, UIItemBreakDonationDialog, vfunc_46, 256, 0);
+
+// @0x1419a5160
+void UIItemBreakDonationDialog::vfunc_84(CInPacket* pPacket)
+{
+    if (m_30 == 0)
+        return;
+    FUN_1419a1fb0();
+    FUN_1419a2110();
+}
+MS2_REPLACE_METHOD(0x1419A5160, UIItemBreakDonationDialog, vfunc_84, 67, 0);
+
+// @0x1419a51b0
+int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UIItemBreakBase::vfunc_28(szMethod, pArgs, nArgs))
+        return 1;
+    if (_stricmp(szMethod, "onClickBreak") == 0)
+    {
+        if (FUN_1409c4b20()->FUN_140532b60() == 0)
+        {
+            FUN_1412751b0(FUN_1409eec40(0xe6), 0x14);
+        }
+        else
+        {
+            int nRarity = FUN_1409c4b20()->FUN_140532c30();
+            if (nRarity == 6 || nRarity == 5)
+            {
+                bool bLegendary = nRarity != 6;
+                CStringW strText = bLegendary ? FUN_14028b8e0(CStringW(L"s_itembreak_donation_legendary_item"))
+                                              : FUN_14028b8e0(CStringW(L"s_itembreak_donation_artifact_item"));
+                CStringW strCheck = bLegendary ? FUN_14028b8e0(CStringW(L"s_itembreak_donation_legendary_item_checkbox"))
+                                               : FUN_14028b8e0(CStringW(L"s_itembreak_donation_artifact_item_checkbox"));
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, strText, 0, CStringW(L""));
+                if (spBox.get() != 0)
+                {
+                    spBox->FUN_141a01800(1);
+                    spBox->FUN_141a026f0(1);
+                    spBox->FUN_141a024a0(0);
+                    spBox->FUN_141a024e0(strCheck, 0);
+                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDonationDialog::vfunc_87));
+                    FUN_140d73c60(spBox);
+                }
+            }
+            else if (nRarity == 4)
+            {
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0x8fa, 0, CStringW(L""));
+                if (spBox.get() != 0)
+                {
+                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBreakDonationDialog::vfunc_87));
+                    FUN_140d73c60(spBox);
+                }
+            }
+            else
+            {
+                FUN_1419a2060();
+            }
+        }
+        return 1;
+    }
+    if (_stricmp(szMethod, "onSendBreak") == 0)
+        return FUN_1409c4b20()->FUN_140532d80();
+    return 0;
+}
+MS2_REPLACE_METHOD(0x1419A51B0, UIItemBreakDonationDialog, vfunc_28, 1989, 0);
+
+// @0x1419a5980
+bool UIItemBreakDonationDialog::vfunc_87(int nResult, const CMsgBoxData& box)
+{
+    if (nResult == 0)
+        FUN_1419a2060();
+    return true;
+}
+MS2_REPLACE_METHOD(0x1419A5980, UIItemBreakDonationDialog, vfunc_87, 46, 0);
