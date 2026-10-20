@@ -61,7 +61,7 @@
 // MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@1@XZ 0x140759440 ; prop
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@1@XZ 0x140759460 ; prop
 // MS2-PIN: ??E?$_Tree_unchecked_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VCQuestData@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140759650 ; prop
-// MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140759670 ; prop
+// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140759670 ; multicopy of 0x14050bdd0 (FUN_140750d90 range-for ++)
 // MS2-PIN: ??RUnk_QuestLevelFree@@QEBA_NV?$MS2Ptr@VCQuestData@@@@@Z 0x140759830 ; unique
 // MS2-PIN: ?Add@?$CAtlArray@V?$Unk_SocketPtr@VNavigationTarget@CQuestData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VNavigationTarget@CQuestData@@@@@ATL@@@ATL@@QEAA_KAEBV?$Unk_SocketPtr@VNavigationTarget@CQuestData@@@@@Z 0x14075a090 ; prop
 // MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VCConditionCommonData@@@@V?$CElementTraits@V?$MS2Ptr@VCConditionCommonData@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCConditionCommonData@@@@@Z 0x14075a140 ; prop
@@ -1707,41 +1707,22 @@ int FUN_14074b840(int nQuestId)
 // @0x14074b950
 int FUN_14074b950(int nQuestId)
 {
-    int nResult;
-    if (!FUN_14036d570(FUN_140166410(), 0x6e))
-    {
-        nResult = 0;
-    }
-    else
+    if (FUN_14036d570(FUN_140166410(), 0x6e))
     {
         MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
         if (data.IsNull())
-        {
-            nResult = 0;
-        }
-        else if (data->m_require.m_followingQuests.GetCount() == 1)
-        {
-            int nNext = data->m_require.m_followingQuests[0];
-            MS2Ptr<CQuestData> next = FUN_14074bc40(nNext);
-            if (next.IsNull())
-            {
-                nResult = 0;
-            }
-            else if (next->m_2e8 == data->m_2ec)
-            {
-                nResult = 1;
-            }
-            else
-            {
-                nResult = 0;
-            }
-        }
-        else
-        {
-            nResult = 0;
-        }
+            return 0;
+        if (data->m_require.m_followingQuests.GetCount() != 1)
+            return 0;
+        int nNext = data->m_require.m_followingQuests[0];
+        MS2Ptr<CQuestData> next = FUN_14074bc40(nNext);
+        if (next.IsNull())
+            return 0;
+        if (next->m_2e8 != data->m_2ec)
+            return 0;
+        return 1;
     }
-    return nResult;
+    return 0;
 }
 
 // @0x14074bae0
@@ -2131,7 +2112,7 @@ void QuestDataTable::FUN_14074d480()
                 {
                     QuestVec::iterator pos = chain.begin();
                     QuestVec::iterator cur = chain.begin();
-                    for (; cur != chain.end(); ++cur)
+                    for (; cur != chain.end(); cur++)
                     {
                         int nCurLevel = (*cur)->m_require.m_level;
                         if (nLevel < nCurLevel)
