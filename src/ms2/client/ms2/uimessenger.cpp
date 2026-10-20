@@ -234,7 +234,6 @@
 // MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@QEAA@XZ 0x141a2b7c0 ; prop
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CB_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@QEAA@XZ 0x141a2b7f0 ; prop
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@HPEAX@std@@@std@@QEAA@XZ 0x141a2b800 ; prop
-// MS2-PIN: ??0UniversalID@efd@@QEAA@_K@Z 0x141a2b8b0 ; unique
 // MS2-PIN: ??0?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@QEAA@XZ 0x141a2b8d0 ; unique
 // MS2-PIN: ??0Unk_1407a5330@@QEAA@XZ 0x141a2b960 ; unique
 // MS2-PIN: ??1?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA@XZ 0x141a2bd10 ; prop
@@ -3457,7 +3456,8 @@ int UIMessengerBrowser::FUN_141a25410(TalkTab* pExcept, const CStringW& strName)
 // @0x141a254c0
 void UIMessengerBrowser::FUN_141a254c0(__int64 nSince, CStringW& strOut)
 {
-    for (std::multimap<__int64, CStringW>::const_iterator it = m_timedLogs.lower_bound(nSince); it != m_timedLogs.end(); ++it)
+    std::multimap<__int64, CStringW>::reverse_iterator itStop(m_timedLogs.lower_bound(nSince));
+    for (std::multimap<__int64, CStringW>::const_reverse_iterator it = m_timedLogs.rbegin(); it != itStop; ++it)
     {
         CMsTime time(it->first);
         int nHour = time.GetHour();
@@ -3829,6 +3829,8 @@ int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& s
 }
 
 // MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
+// MS2-FUNCTIONAL 0x141a1b9b0: std::list<MS2Ptr<ChatEmoticonData>> _List_alloc dtor; same two calls (_Myhead, _Freeheadnode) as the exe, bound to byte-identical helper copies at other VAs
+
 // @0x141a271b0
 int UIMessengerBrowser::FUN_141a271b0(const CStringW& strName, const CStringW& strText, int nType)
 {
