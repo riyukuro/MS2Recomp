@@ -297,6 +297,7 @@ public:
     void FUN_140d54d50(MS2Ptr<CMeratMarketSchCond> spCond);
     void FUN_140d542c0(int nShop, int nType);
     void FUN_140d550c0(MS2Ptr<CMeratMarketSchCond> spCond, int nPage);
+    bool FUN_140d5b1f0(MS2Ptr<CMeratMarketProduct> spProduct, bool bShowError);   // the product can be bought
     void FUN_140d54fe0(bool bPremium, const unsigned __int64& nId, const int& nUiId);   // request a product by its id
     void FUN_140d551e0(ATL::CAtlArray<int>& ids);                           // request premium products
     void FUN_140d552c0(ATL::CAtlArray<unsigned __int64>& ids);              // request UGC products
@@ -479,6 +480,7 @@ class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* p
 Unk_MmFiles* FUN_140166420();                                               // the resource file system
 CLogString* FUN_140166440();
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
+int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 bool FUN_1409c1720(const Scaleform::GFx::Value& v);
 CStringW FUN_141277dd0(Scaleform::GFx::Value* pValue);                      // the string of a value
 bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError);
@@ -3539,6 +3541,44 @@ void UIMeratMarketDialog::OnRemoveBasketItem(ASData& data)
 {
     int nId = data.FUN_1422b8b10();
     FUN_140939a00()->FUN_140d584c0(nId);
+}
+
+// @0x1413035c0
+void UIMeratMarketDialog::OnBuyBasketItem(const CStringA& strName, ASData& data)
+{
+    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    ASObj obj(value, 2);
+    int nIndex = FUN_1409c17e0(obj.FUN_1422baa20("index"));
+    MS2Ptr<Unk_MeratPreviewEntry> spEntry = FUN_140939a00()->FUN_140d57ed0(nIndex);
+    if (spEntry == 0 || spEntry->m_spProduct == 0)
+        return;
+    MS2Ptr<CMeratMarketProduct> spProduct(spEntry->m_spProduct);
+    if (!FUN_140939a00()->FUN_140d5b1f0(spProduct, 1))
+        return;
+    if (!CheckProduct(spProduct, spProduct->GetCurrency()))
+        return;
+    UIMarketBillDialog* pDialog = FUN_140b09580(0x4f17);
+    if (pDialog == 0)
+        return;
+    MS2Ptr<TMeratMarketBillDataParam> spParam = CreateBillParam(strName, 1, 2);
+    if (spParam == 0)
+        return;
+    bool bGift = false;
+    ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
+    {
+        MS2Ptr<ASMeratMarketBuyBillData> spBill(new ASMeratMarketBuyBillData());
+        spBill->FUN_1409ab940(value);
+        FUN_1409ac5e0(spBill.operator->(), spEntry);
+        FUN_1413160d0(spBill.operator->(), nIndex);
+        MS2Ptr<ASBillData> spRow(spBill);
+        bills.Add(spRow);
+        spParam->FUN_140eab940(spBill->FUN_140eacf60());
+        bGift = FUN_141315f00(spBill.operator->());
+    }
+    spParam->SetGift(bGift);
+    MS2Ptr<TMarketBillDataParam> spBase = spParam;
+    pDialog->FUN_140ea7770(spBase);
+    FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4f17);
 }
 
 // @0x141303b50
