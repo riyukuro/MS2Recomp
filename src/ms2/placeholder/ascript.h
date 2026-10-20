@@ -97,7 +97,7 @@ public:
     AScript(int nMovieId);                                                                   // 0x1422ba6e0 creates a fresh AS object (asequipicon.cpp)
     AScript(Scaleform::GFx::Value& v, int nMovieId);                                         // 0x1422ba7f0 same body as the const& form (asequipicon.cpp)
     Scaleform::GFx::Value FUN_1422baa20(const char* szMember);                               // child member by name
-    void FUN_1422baad0(const char* szMember, CStringW& strOut);                             // read a string member (merat market products)
+    bool FUN_1422baad0(const char* szMember, CStringW& strOut);                             // read a string member (merat market products; false if missing)
     bool FUN_1422ba9a0();                                                                    // value is undefined
     Scaleform::GFx::Value& FUN_1422bb870();                                                  // m_value
     Scaleform::GFx::Value Invoke(const char* szMethod);                                     // 0x1422bb330
@@ -117,11 +117,15 @@ public:
     // overload here: callers passing unsigned to Invoke(method, Value, int) 0x1409b1490 would switch to it.
     Scaleform::GFx::Value FUN_1422e4350(const char* szMethod, Scaleform::GFx::Value a1, unsigned a2);
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, bool a2, Scaleform::GFx::Value a3, Scaleform::GFx::Value a4);   // 0x14131cc10 (inline COMDAT, defined in uimeratmarketregisterdialog.cpp; all by value)
-    void FUN_1422bac00(const char* szMember, CString& strOut);                               // read a narrow string member (uimeratmarketregisterdialog.cpp)
+    bool FUN_1422bac00(const char* szMember, CString& strOut);                               // read a narrow string member (uimeratmarketregisterdialog.cpp; false if missing)
     Scaleform::GFx::Value FUN_140e5bf20(const char* szMethod, float a1, float a2);          // 0x140e5bf20 (inline COMDAT, defined in uimasteryobjectmark.cpp)
     Scaleform::GFx::Value FUN_140e5bfe0(const char* szMethod, CString a1, float a2, float a3);   // 0x140e5bfe0 (inline COMDAT, defined in uimasteryobjectmark.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, const AScript& a2);      // 0x140e7bcb0 (inline COMDAT, defined in uiquestnavigation.cpp; a1 by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, const AScript& obj);                  // 0x140ba4cc0 (passes obj's value)
+    // ASEventDispatcher (gfxui/aseventdispatcher.cpp): addEventListener / removeEventListener / dispatchEvent
+    Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, Scaleform::GFx::Value a2, bool a3, float a4, bool a5);   // 0x1422c3f80 (a1/a2 by value: the callee destroys them)
+    Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, Scaleform::GFx::Value a2, bool a3);   // 0x1422c3e40 (a1/a2 by value)
+    Scaleform::GFx::Value Invoke(const char* szMethod, const class ASEvent& a1);                       // 0x1422c3da0
     Scaleform::GFx::Value Invoke(const char* szMethod, unsigned int a1, float a2);          // 0x140ba4c00 (inline COMDAT, defined in uiadventureleveldialog.cpp)
     template <class T> MS2Ptr<T> FUN_140accef0(const CString& strName);                      // child control by name (the adventure level lists)
     template <class T> MS2Ptr<T> FUN_140acce30(const CString& strName);                      // same, one COMDAT per wrapper class (w47: pet evolution)
@@ -248,6 +252,7 @@ public:
     Scaleform::GFx::Value FUN_14197a320(const char* szMethod, bool a1, const class ASArray& a2);   // 0x14197a320 (inline COMDAT, defined in uiguilddialog.cpp)
     Scaleform::GFx::Value FUN_14197a120(const char* szMethod, int a1, float a2, int a3, CStringW a4);   // 0x14197a120 (inline COMDAT, defined in uiguilddialog.cpp; a4 by value: the callee destroys it)
     Scaleform::GFx::Value FUN_141979f30(const char* szMethod, int a1, int a2, CStringW a3);   // 0x141979f30 (inline COMDAT, defined in uiguilddialog.cpp; a3 by value: the callee destroys it)
+    Scaleform::GFx::Value FUN_1422c5e40(const char* szMethod, int a1, int a2, CString a3);    // 0x1422c5e40 (inline COMDAT, defined in astextfield.cpp: replaceText; a3 by value: the callee destroys it)
     template <class T> MS2Ptr<T> FUN_140c436d0(const CString& strName);   // child control by name (guild championship "m_participate" as ASLabel; uiguilddialog.cpp)
     Scaleform::GFx::Value FUN_140e6b140(const char* szMethod, int a1, CString a2);          // 0x140e6b140 (a2 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2);                // 0x140e0a8c0 (inline COMDAT, defined in uichapterbook.cpp; a1 by value: the callee destroys it)
@@ -259,6 +264,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, unsigned __int64 a2, CString a3);   // 0x1412db770 (inline COMDAT, defined in uimaidrecipelistdialog.cpp; the strings by value: the callee destroys them)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, CStringW a3);        // 0x140ed0ed0 (UIManufactureStatus updateProgress; a3 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, unsigned __int64 a1, CStringW a2);   // 0x140ed1250 (inline COMDAT, defined in uiskillbookautodistributedialog.cpp; a2 by value: the callee destroys it)
+    Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, Scaleform::GFx::Value a2, Scaleform::GFx::Value a3);   // 0x1422f1b50 (inline COMDAT, defined in gfxmovietooltip.cpp; the values by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CStringW a2, int a3);   // 0x140ed1090 (inline COMDAT, defined in uiskillbookautodistributedialog.cpp; the strings by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, Scaleform::GFx::Value a2, int a3);   // 0x1412e13f0 (inline COMDAT, defined in uimaidrecipelistdialog.cpp; the values by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, const char* a3, int a4);   // 0x1412d4770 (inline COMDAT, defined in uiitemoptioncreatedialog.cpp)
@@ -321,6 +327,26 @@ public:
     void FUN_140e06d60(const char* szName, double d);                    // set a double member (ASObj declares the same COMDAT)
     Scaleform::GFx::Value FUN_140caf140(const char* szMethod, ASArray a1);   // 0x140caf140 Invoke with an AS array (a1 by value: the callee destroys it)
     template <class T> MS2Ptr<T> FUN_1422de460(const CString& strName);  // child object by name (inline COMDAT, defined in ascorelist.cpp for T = ASDataProvider)
+
+    // AScript's own unit (gfxui/ascript.cpp). The typed readers return false if the member is missing.
+    virtual ~AScript();                                                                      // 0x1422ba860 (m_value.SetNull(); ??_G 0x1409bb9a0)
+    CString FUN_1422ba8c0();                                                                 // the "name" member as text
+    CString FUN_1422ba950();                                                                 // the class name "AScript"
+    bool FUN_1422bad80(const char* szMember, unsigned int* pOut);                            // UInt member
+    bool FUN_1422bae10(const char* szMember, int* pOut);                                     // Int member
+    bool FUN_1422baea0(const char* szMember, float* pOut);                                   // Number member as float
+    bool FUN_1422baf40(const char* szMember, double* pOut);                                  // Number member
+    bool FUN_1422bafe0(const char* szMember, bool* pOut);                                    // Boolean member
+    bool FUN_1422bb070(const char* szMember, __int64* pOut);                                 // Int / Number / numeric String member
+    bool FUN_1422bb170(const char* szMember, unsigned __int64* pOut);                        // UInt / Number / numeric String member
+    CString FUN_1422bb440();                                                                 // toString()
+    CString FUN_1422bb4d0();                                                                 // toLocaleString()
+    int FUN_1422bb560(Scaleform::GFx::Value v);                                              // IsPrototypeOf(v) (v by value: destroyed here)
+    int FUN_1422bb610(const CString& strName);                                               // hasOwnProperty(strName)
+    int FUN_1422bb6b0(const CString& strName);                                               // PropertyIsEnumerable(strName)
+    void FUN_1422bb750(const CString& strName, int bEnum);                                   // setPropertyIsEnumerable(strName, bEnum)
+    bool FUN_1422bb7e0(const AScript& obj);                                                  // calls the method named DAT_143b0ae38 with obj if the object has it
+    Scaleform::GFx::Value FUN_1422bb9f0(ASArgList& args);                                    // InvokeSelf back end (the static undefined value on failure)
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {
