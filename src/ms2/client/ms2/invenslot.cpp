@@ -2618,3 +2618,5 @@ static __int64 FUN_14140fa00(int nIndex, int nTab)
     return 0;
 }
 MS2_REPLACE(0x14140FA00, FUN_14140fa00, 303, 0x1FA59440);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb1740-0x142cb1ab0 .text$yd

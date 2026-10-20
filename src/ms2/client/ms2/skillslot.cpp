@@ -3617,3 +3617,5 @@ CSEReduceSkillGroupCooltimeCtx::CSEReduceSkillGroupCooltimeCtx()
 CSEReduceSkillGroupCooltimeCtx::~CSEReduceSkillGroupCooltimeCtx()
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb68d0-0x142cb6d70 .text$yd

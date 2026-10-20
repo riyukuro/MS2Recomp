@@ -33,3 +33,5 @@ static CString s_sortTypeNames4[] = {"None", "Buy", "Like", "PriceLow", "PriceHi
 static CString s_strSkill4 = "skill";
 static CString s_strStun4 = "stun";
 static Unk_1402a9d70 s_condition4(17, 0.75f, 0.25f, 2.25f, 10);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca7800-0x142ca7a80 .text$yd

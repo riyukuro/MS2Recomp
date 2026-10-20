@@ -1146,3 +1146,5 @@ void CashInventorySlot::FUN_140b0d440()
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca0610-0x142ca08a0 .text$yd
