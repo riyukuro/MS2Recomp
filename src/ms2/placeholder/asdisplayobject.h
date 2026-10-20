@@ -47,6 +47,7 @@ public:
     void FUN_1422c00f0(float x, float y);                       // set the position (float)
     void FUN_1422c0f60(float* pX, float* pY);                   // get the position (uivipdialog.cpp)
     int FUN_1422c2510(double* pX, double* pY);                  // get the position (double; uiminimapentity.cpp)
+    void FUN_1422bfef0(float fRotation);                        // set the rotation (degrees; uiminimapentity.cpp)
     float FUN_1422c10a0();                                      // x
     float FUN_1422c1110();                                      // y
     void FUN_1422c0420(float x);                                // set x

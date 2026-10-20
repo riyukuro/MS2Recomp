@@ -3010,6 +3010,76 @@ void UIMinimapDialog::FUN_141a400d0(ProxyPtr spProxy, EntityPtr spEntity, int n)
     }
 }
 
+// @0x141a402b0
+// MS2-FUNCTIONAL: the exe frame is 0x10 smaller (temporaries share slots).
+void UIMinimapDialog::FUN_141a402b0(EntityPtr spEntity)
+{
+    if (spEntity == 0 || spEntity->m_clip == 0)
+        return;
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return;
+    if (m_viewport == 0)
+        return;
+    MS2Ptr<ASMovieClip> spClip = spEntity->m_clip;
+    NiPoint3 kOut(efd::Point3::ZERO);
+    NiPoint3 kPos(static_cast<const efd::Point3&>(pPC->vfunc_18()));
+    if (m_viewport->FUN_141486410(kPos, kOut)) {
+        spClip->vfunc_4(true);
+        spClip->FUN_1422c00f0(kOut.x, kOut.y);
+    }
+    if (!m_fullmap && static_cast<ASMovieClip*>(m_clip228) != 0) {
+        float x = m_208.x - kOut.x * m_scale;
+        float y = m_208.y - kOut.y * m_scale;
+        m_clip228->vfunc_4(true);
+        m_clip228->FUN_1422c00f0(x, y);
+    }
+    bool bAlive = pPC->FUN_14166c930() != 12;
+    CString strState(bAlive ? s_strIdle : s_strDie);
+    if (strState != spEntity->m_state) {
+        spEntity->m_state = strState;
+        spClip->vfunc_15(strState);
+    }
+    if (m_clip238 == 0)
+        m_clip238 = spClip->FUN_1409b4560(CString("m_arrow"));
+    if (static_cast<ASMovieClip*>(m_clip238) != 0) {
+        m_clip238->vfunc_4(bAlive);
+        if (bAlive)
+            m_clip238->FUN_1422bfef0(FUN_141a45920(pPC));
+    }
+}
+
+// @0x141a407c0
+void UIMinimapDialog::FUN_141a407c0(ProxyPtr spProxy, EntityPtr spEntity)
+{
+    if (m_30 == 0)
+        return;
+    if (spEntity == 0 || spEntity->m_clip == 0)
+        return;
+    if (spProxy == 0 || !spProxy->FUN_1416c20d0())
+        return;
+    MS2Ptr<ASMovieClip> spClip = spEntity->m_clip;
+    bool bUpdate = m_210;
+    if (!bUpdate)
+        bUpdate = spClip->FUN_1422bfca0() != spProxy->m_portal->FUN_14169d1d0();
+    if (bUpdate) {
+        bool bVisible = spEntity->m_visible;
+        CString strIcon = spEntity->m_icon;
+        CString strState = spEntity->m_state;
+        FUN_141a43b80(spProxy, spEntity, false);
+        if (bVisible != spEntity->m_visible || strIcon != spEntity->m_icon || strState != spEntity->m_state) {
+            ASObj data(2);
+            spEntity->FUN_141a31270(data, m_viewport);
+            Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spClip->FUN_1422bb870(), data.FUN_1422bb870());
+            if (!FUN_1409b4d40(value))
+                return;
+            spClip = FUN_1409b40c0(m_28, value);
+            spClip->vfunc_4(spEntity->m_visible);
+            spEntity->m_clip = spClip;
+        }
+    }
+}
+
 // @0x141a3e7d0
 bool UIMinimapDialog::FUN_141a3e7d0(EntityPtr spEntity)
 {
