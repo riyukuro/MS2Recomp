@@ -426,6 +426,7 @@ public:
     bool FillSearchData(MS2Ptr<CMeratMarketSchCond> spCond, AScript& data, bool bForce);   // 0x14130fc10
     void ApplyPreviewChanges(bool bApply);                          // 0x141310a60
     void ShowSellerProducts(const __int64& nSeller);                // 0x141304270 foreign
+    void ResetUgcTermsAgreed();                                     // 0x141310fe0 m_638 = false (usercommandcli)
     void ShowProduct(MS2Ptr<CMeratMarketProduct> spProduct);        // 0x1412ebc40 foreign
     bool IsPlaceableItem(MS2Ptr<CItemData> spData);                 // 0x14130b670
     int MarkTab(int nTab);                                          // 0x14130b730

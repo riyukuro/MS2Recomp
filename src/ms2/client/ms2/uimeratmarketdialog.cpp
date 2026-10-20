@@ -1527,7 +1527,7 @@ void UIMeratMarketDialog::PreviewBoxProduct(MS2Ptr<CMeratMarketProduct> spProduc
                 while (pos != 0) {
                     POSITION posCur = pos;
                     pIcons->GetNext(pos);
-                    int nKey = pIcons->GetAt(posCur)->m_key;
+                    int nKey = pIcons->GetKeyAt(posCur);
                     if (pPC->FUN_1418bd510(nKey).get() != 0)
                         spIcons->FUN_140e2a640(nKey);
                 }
@@ -6062,6 +6062,27 @@ bool UIMeratMarketDialog::CheckProduct(MS2Ptr<CMeratMarketProduct> spProduct, in
 
 // ---- the nested helper types (COMDATs placed after the dialog's code) ----
 
+// @0x141310fe0
+void UIMeratMarketDialog::ResetUgcTermsAgreed()
+{
+    m_638 = false;
+}
+
+// A bill row of a UGC product (gifts are only offered for UGC rows).
+// @0x141315f00
+bool FUN_141315f00(ASMeratMarketBuyBillData* pBill)
+{
+    if (pBill->m_spProduct.get() != 0)
+        return pBill->m_spProduct->IsUgc() == 1;
+    return false;
+}
+
+// @0x1413160d0
+void FUN_1413160d0(ASMeratMarketBuyBillData* pBill, int nIndex)
+{
+    pBill->m_n74 = nIndex;
+}
+
 // @0x141314210
 ShopBanner::ShopBanner()
     : m_banners(10)
@@ -6195,6 +6216,13 @@ void UIMeratMarketDialog::TDirtySearch::Set(int nType, bool bSet)
 {
     m_nType = nType;
     m_bSet = bSet;
+}
+
+// @0x141315d90
+void Unk_MmViewScope::Set(MS2Ptr<UIMeratMarketCommon::WeaponType> spWeapon)
+{
+    m_bDebug = true;
+    m_spFilter = spWeapon;
 }
 
 // @0x141315de0
