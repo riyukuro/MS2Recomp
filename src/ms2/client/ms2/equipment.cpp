@@ -23,7 +23,7 @@
 // MS2-PIN: ??$forward@$$QEAW4Unk_EquipAttrType@@@std@@YA$$QEAW4Unk_EquipAttrType@@AEAW41@@Z 0x1411f5f90 ; unique
 // MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@0@AEAV10@@Z 0x1411f6050 ; prop
 // MS2-PIN: ??0<lambda_e3ae51564bd7b6f324d46c66dbae60ef>@@QEAA@QEAV?$vector@HV?$allocator@H@std@@@std@@AEBH@Z 0x1411f6320 ; prop
-// MS2-PIN: ??0Unk_SetEffectBits@@QEAA@XZ 0x1411f6350 ; unique
+// MS2-PIN: ??0Unk_LayerBits@@QEAA@XZ 0x1411f6350 ; unique (fx18: calls the T = 6 fill 0x1411ff420)
 // MS2-PIN: ??0?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VReplaceObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VReplaceObject@@@@@2@@ATL@@QEAA@_K@Z 0x1411f6460 ; prop
 // MS2-PIN: ??0?$CRBMap@W4Unk_EquipSlotId@@V?$MS2Ptr@VCEquipmentSlot@@@@V?$CElementTraits@W4Unk_EquipSlotId@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCEquipmentSlot@@@@@4@@ATL@@QEAA@_K@Z 0x1411f6490 ; unique
 // MS2-PIN: ??0?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VReplaceObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VReplaceObject@@@@@2@@ATL@@IEAA@_K@Z 0x1411f64c0 ; prop
@@ -264,7 +264,7 @@ class Unk_MyPCEquip : public PCGemEquip {};
 class Unk_SetEffectBits
 {
 public:
-    Unk_SetEffectBits() { FUN_140afee90(0); }
+    Unk_SetEffectBits();    // 0x140afed60: the exe calls cameramoveeffectparam's T = 3 ctor (Unk_CamMoveBits)
     Unk_SetEffectBits& FUN_140314670(int nPos, bool bValue);   // Set
     bool FUN_140314790(int nPos) const;                         // Test
     void FUN_140afee90(unsigned char ucValue);                  // Fill
@@ -400,7 +400,7 @@ public:
         Unk_LayerBits* m_pBits;
         int m_nPos;
     };
-    Unk_LayerBits() { FUN_1411ff420(m_bits, 0); }
+    Unk_LayerBits() { FUN_1411ff420(0); }  void FUN_1411ff420(unsigned char ucValue);   // fill (unit_1411ff420, same ABI)
     Unk_LayerBits& Set(int pos, bool value)
     {
         if (UINT(pos) >= UINT(6)) { MS2_BITSET_ASSERT(243, 0); }
