@@ -123,7 +123,7 @@ CString FUN_14192ebf0(unsigned int nNpcId)
     if (s_npcMovieNames.Lookup(nNpcId, strName))
         return strName;
     if (FUN_140764010()->FUN_14035b0a0(nNpcId) != 0)
-        return StringFormat("emoticon_movie_npc_{0}", FUN_140764010()->FUN_14035b2a0(nNpcId));
+        return Unk_SocketFormat("emoticon_movie_npc_{0}", FUN_140764010()->FUN_14035b2a0(nNpcId));
     return CString("");
 }
 #endif

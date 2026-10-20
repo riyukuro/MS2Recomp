@@ -108,10 +108,10 @@ CString FUN_141026d10(CString strPath)
         MS2_ASSERT_AT(0x69, 0);
         return CString("");
     }
-    CString strBase = StringFormat("{0}{1}/0", DAT_143accfc0, strKind);
+    CString strBase = Unk_SocketFormat("{0}{1}/0", DAT_143accfc0, strKind);
     CString strFile(strPath);
     strFile.Replace('/', '_');
-    CString strFull = StringFormat("{0}/{1}/0", strBase, strFile);
+    CString strFull = Unk_SocketFormat("{0}/{1}/0", strBase, strFile);
     return strFull;
 }
 
@@ -135,7 +135,7 @@ CString FUN_141026f00(CString strPath)
         MS2_ASSERT_AT(0x8a, 0);
         return CString("");
     }
-    CString strBase = StringFormat("{0}{1}/0", DAT_143accfc0, strKind);
+    CString strBase = Unk_SocketFormat("{0}{1}/0", DAT_143accfc0, strKind);
     CString strRest = strPath.Mid(strBase.GetLength() + 1);
     int nLen = strRest.GetLength() - 2;
     strRest = strRest.Mid(0, nLen);
@@ -150,7 +150,7 @@ CString FUN_141027200(CString strName)
 {
     if (DAT_1439f6efc == 0)
         return FUN_141026d10(strName);
-    CString strKey = StringFormat("{0}/{1}", DAT_143accfc0, strName);
+    CString strKey = Unk_SocketFormat("{0}/{1}", DAT_143accfc0, strName);
     return strKey;
 }
 
@@ -204,7 +204,7 @@ CString FUN_141027770(CString strId)
     ATL::CAtlArray<CString> parts;
     FUN_14015f050(strId, parts, "/");
     if (parts.GetCount() == 3)
-        strResult = StringFormat("{0}", parts[2]);
+        strResult = Unk_SocketFormat("{0}", parts[2]);
     return strResult;
 }
 
@@ -346,29 +346,29 @@ CString FUN_1410280d0(int nKind, CString strName)
     CString strPath;
     if (nKind == 3 || nKind == 1 || nKind == 2 || nKind == 7 || nKind == 5 || nKind == 6 || nKind == 10)
     {
-        strPath = StringFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027490(strName));
+        strPath = Unk_SocketFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027490(strName));
     }
     else if (nKind == 8)
     {
-        strPath = StringFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027600(strName));
+        strPath = Unk_SocketFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027600(strName));
     }
     else if (nKind == 0xce)
     {
-        strPath = StringFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027770(strName));
+        strPath = Unk_SocketFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027770(strName));
     }
     else if (nKind == 0xc9)
     {
         CString strIcon = FUN_141027880(strName);
-        strPath = StringFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027490(strIcon));
+        strPath = Unk_SocketFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027490(strIcon));
     }
     else if (nKind == 9)
     {
-        strPath = StringFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027490(strName));
+        strPath = Unk_SocketFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027490(strName));
     }
     else if (nKind == 0xd1)
     {
         CString strIcon = FUN_141027a20(strName);
-        strPath = StringFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027490(strIcon));
+        strPath = Unk_SocketFormat("{0}\\{1}", FUN_141027d30(nKind), FUN_141027490(strIcon));
     }
     else
     {

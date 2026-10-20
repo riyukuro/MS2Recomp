@@ -566,7 +566,7 @@ void UIItemRemakeOptionDialog::FUN_14129ed90(ASData* pData)
             CStringW finalText = FUN_140617e50(CStringW(L"s_itemremake_final_random_option"), stat, 0);
             ASObj obj(2);
             obj.FUN_1407cbb20("remakeStatFinal", CStringW(finalText));
-            obj.FUN_1407cba60("binding", FUN_1412a0720(picked.get(), StringFormat("{0}.resultItem", vfunc_1()), m_names198));
+            obj.FUN_1407cba60("binding", FUN_1412a0720(picked.get(), Unk_SocketFormat("{0}.resultItem", vfunc_1()), m_names198));
             m_enchantAni->Invoke("selectComplete", obj.FUN_1422bb870());
             FUN_1412a1650(MS2Ptr<CItem>(picked));
             FUN_14129dd50();
@@ -816,7 +816,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0cd0(ASObj& obj, MS2Ptr<CItem> item)
 {
     if (!(item == 0)) {
         obj.FUN_1407cba60("enchantItem",
-            FUN_1412a0720(item.get(), StringFormat("{0}.selectedItem", vfunc_1()), m_names198));
+            FUN_1412a0720(item.get(), Unk_SocketFormat("{0}.selectedItem", vfunc_1()), m_names198));
     }
 }
 
@@ -904,7 +904,7 @@ void UIItemRemakeOptionDialog::FUN_1412a1790(MS2Ptr<CItem> cur, MS2Ptr<CItem> ne
         obj.FUN_1407cbb20("itemName", cur->FUN_140528160());
         int remakeCount = cur->FUN_140527300();
         obj.FUN_1407cbb20("remakeCount", FUN_14062b4f0(CStringW(L"s_itemremake_remake_count"), &remakeCount));
-        obj.FUN_1407cba60("binding", FUN_1412a0720(cur.get(), StringFormat("{0}.resultItem", vfunc_1()), m_names198));
+        obj.FUN_1407cba60("binding", FUN_1412a0720(cur.get(), Unk_SocketFormat("{0}.resultItem", vfunc_1()), m_names198));
         CStringW keyCur(L"s_itemremake_cur_random_option");
         CStringW keyNew(L"s_itemremake_new_random_option");
         Unk_RemakeStat stat(m_remakeMode, MS2Ptr<CItem>(cur), true);

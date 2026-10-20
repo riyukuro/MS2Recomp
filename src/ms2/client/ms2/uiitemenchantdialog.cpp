@@ -522,7 +522,7 @@ void UIItemEnchantDialog::vfunc_67()
         FUN_140d8ee90()->FUN_140a1f970(CString("dialog_close"), CString("enchant_peachy"));
     FUN_14151f460(1);
     FUN_141414e50(vfunc_1());
-    FUN_141414e50(StringFormat("{0}.equip", vfunc_1()));
+    FUN_141414e50(Unk_SocketFormat("{0}.equip", vfunc_1()));
     FUN_1419c77a0();
     FUN_1419c4050();
     FUN_1419c6420();
@@ -633,7 +633,7 @@ void UIItemEnchantDialog::FUN_1419bff60()
     MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pc == 0)
         return;
-    CString bagName = StringFormat("{0}.equip", vfunc_1());
+    CString bagName = Unk_SocketFormat("{0}.equip", vfunc_1());
     FUN_141414e50(bagName);
     if (m_result.vfunc_o18_0() == 0)
         return;
@@ -1089,7 +1089,7 @@ void UIItemEnchantDialog::FUN_1419c2e30(CItem* item, int prevLevel, CInPacket& p
     obj.FUN_1407cbbe0("diff", prevLevel != m_item->FUN_140526fc0());
     obj.FUN_1407cbb20("prevLevel", FUN_1419c7ec0(prevLevel, item->FUN_140526bd0()));
     obj.FUN_1407cbb20("curLevel", FUN_1419c7ec0(m_item->FUN_140526fc0(), item->FUN_140526bd0()));
-    obj.FUN_1407cba60("binding", FUN_1419c78a0(m_item.get(), StringFormat("{0}.resultItem", vfunc_1()), m_bag0));
+    obj.FUN_1407cba60("binding", FUN_1419c78a0(m_item.get(), Unk_SocketFormat("{0}.resultItem", vfunc_1()), m_bag0));
     obj.FUN_1407cbb20("failDesc", FUN_1419c7f50(m_item.get(), failType));
     obj.FUN_1407cbbe0("protect", !((m_208 == 0) && (m_218 == 0)));
     m_enchantAni->Invoke("setEnchantResult", obj);
@@ -1110,7 +1110,7 @@ void UIItemEnchantDialog::FUN_1419c3390(CItem* item, CEnchantOption* stat, int p
     obj.FUN_1407cbb20("prevLevel", FUN_1419c7ec0(prevLevel, item->FUN_140526bd0()));
     obj.FUN_1407cbb20("curLevel", FUN_1419c7ec0(m_item->FUN_140526fc0(), item->FUN_140526bd0()));
     obj.FUN_1407cbb20("enchantStat", FUN_1419c65b0(MS2Ptr<CItem>(item), stat));
-    obj.FUN_1407cba60("binding", FUN_1419c78a0(m_item.get(), StringFormat("{0}.resultItem", vfunc_1()), m_bag0));
+    obj.FUN_1407cba60("binding", FUN_1419c78a0(m_item.get(), Unk_SocketFormat("{0}.resultItem", vfunc_1()), m_bag0));
     m_enchantAni->Invoke("setEnchantResult", obj);
     FUN_141276180(s_progress, CString(""));
     m_state = 1;
@@ -1616,7 +1616,7 @@ void UIItemEnchantDialog::FUN_1419c6840(MS2Ptr<CItem> item, CEnchantOption* pOpt
 void UIItemEnchantDialog::FUN_1419c6bb0(ASObj& dest, CItem* item)
 {
     if (item != 0)
-        dest.FUN_1407cba60("enchantItem", FUN_1419c78a0(item, StringFormat("{0}.selectedItem", vfunc_1()), m_bag0));
+        dest.FUN_1407cba60("enchantItem", FUN_1419c78a0(item, Unk_SocketFormat("{0}.selectedItem", vfunc_1()), m_bag0));
 }
 
 // @0x1419c6cd0
@@ -1654,7 +1654,7 @@ void UIItemEnchantDialog::FUN_1419c7140(ASObj& dest)
     ASObj obj(2);
     CItem* ci = new CItem;
     if (ci->FUN_14052b130(m_result.vfunc_o18_0(), m_result.vfunc_o18_1(), 0) != 0) {
-        obj.FUN_1407cba60("binding", FUN_1419c78a0(ci, StringFormat("{0}.equip_ingredient", vfunc_1()), m_bag1));
+        obj.FUN_1407cba60("binding", FUN_1419c78a0(ci, Unk_SocketFormat("{0}.equip_ingredient", vfunc_1()), m_bag1));
         obj.FUN_1407cbb20("countText", FUN_141902320(m_2bc, m_result.vfunc_o18_2()));
         dest.FUN_1409eb270("equipIngredient", obj);
     }

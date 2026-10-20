@@ -187,19 +187,19 @@ bool CGemSwimData::vfunc_1(Unk_140165cf0* pElem)
 // @0x1405ac8f0
 CString CGemSwimData::FUN_1405ac8f0()
 {
-    return StringFormat("SwimIdle_{0}", m_strKf);
+    return Unk_SocketFormat("SwimIdle_{0}", m_strKf);
 }
 
 // @0x1405ac940
 CString CGemSwimData::FUN_1405ac940()
 {
-    return StringFormat("SwimRun_{0}", m_strKf);
+    return Unk_SocketFormat("SwimRun_{0}", m_strKf);
 }
 
 // @0x1405ac990
 CString CGemSwimData::FUN_1405ac990()
 {
-    return StringFormat("SwimDash_{0}", m_strKf);
+    return Unk_SocketFormat("SwimDash_{0}", m_strKf);
 }
 
 // @0x1405ac9e0
