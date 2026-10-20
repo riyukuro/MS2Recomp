@@ -226,3 +226,5 @@ MS2_REPLACE_METHOD(0x140D41AD0, ItemLockSlot, vfunc_15, 97, 0xC098DB9B);
 MS2_REPLACE_METHOD(0x140D41B40, ItemLockSlot, vfunc_25, 67, 0x047509C0);
 MS2_REPLACE_METHOD(0x140D41CF0, ItemLockSlot, vfunc_8, 255, 0xBDFF241E);
 MS2_REPLACE_METHOD(0x140D41E00, ItemLockSlot, FUN_140d41e00, 163, 0x6D64D169);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca4df0-0x142ca4f10 .text$yd

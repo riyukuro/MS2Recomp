@@ -188,3 +188,5 @@ LapenshardSlotBag* FUN_140a70b70(NotifyContext::BindData* p)
     else
         return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9f7c0-0x142c9f8e0 .text$yd

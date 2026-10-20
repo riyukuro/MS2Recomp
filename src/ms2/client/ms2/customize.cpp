@@ -2229,3 +2229,6 @@ PC* Customize::FUN_140cd3df0()
     return 0;
 }
 MS2_REPLACE_METHOD(0x140CD3DF0, Customize, FUN_140cd3df0, 50, 0x4666D5B3);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca3ef0-0x142ca3f10 .text$yd
+// MS2-RANGE: 0x142ca4090-0x142ca4180 .text$yd

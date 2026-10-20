@@ -583,3 +583,5 @@ int ReadAction(Unk_140165cf0* pNode, const char* szName, int* pnType)
     return nRet;
 }
 MS2_REPLACE(0x14094A400, ReadAction, 188, 0x0CD24539);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9d360-0x142c9d480 .text$yd

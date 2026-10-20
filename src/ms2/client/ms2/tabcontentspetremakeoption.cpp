@@ -1657,3 +1657,5 @@ MS2_REPLACE_METHOD(0x140B98AD0, TabContentsPetRemakeOption, FUN_140b98ad0, 256, 
 // ---- the option list of the remake record: push_back(const&) is this unit's COMDAT ----
 
 template void Unk_RemakeLockOptList::push_back(const Unk_RemakeLockOpt& val);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1330-0x142ca1440 .text$yd
