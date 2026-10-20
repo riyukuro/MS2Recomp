@@ -106,7 +106,22 @@ void* FUN_140166410();
 bool FUN_14036d570(void*, int);
 void* FUN_1403ed2d0();
 void* FUN_141bd0cc0(void*);
-class Unk_DhRewardList { public: Unk_DhRewardList(); ~Unk_DhRewardList(); void* m_p[6]; };
+// The reward list of a reward id (meso, exp and the items); same layout as uidungeoncategory.cpp's.
+struct Unk_DcRewardHead { void* m_00; void* m_08; void* m_10; };
+struct Unk_DcRewardSlot { void* m_00; void* m_08; void* m_10; };
+struct Unk_DcRewardItem : public Unk_DcRewardHead, public Unk_DcRewardSlot {};
+MS2_CHECK_SIZE(Unk_DcRewardItem, 0x30);
+class Unk_DhRewardList
+{
+public:
+    Unk_DhRewardList();
+    ~Unk_DhRewardList();
+    __int64 m_nMeso;                                            // +0x00
+    __int64 m_nExp;                                             // +0x08
+    void* m_10;
+    std::vector<Unk_DcRewardItem> m_items;                      // +0x18
+};
+MS2_CHECK_SIZE(Unk_DhRewardList, 0x30);
 class Unk_DhRewardManager { public: bool FUN_140770e40(int, short, Unk_DhRewardList&); };
 Unk_DhRewardManager* FUN_140764030();
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nValue);
@@ -291,9 +306,6 @@ MS2_REPLACE_METHOD(0x140E12E40, UIDungeonSearchUnitedReward, Init, 3377, 0x93D91
 // @0x140e13c00
 void UIDungeonSearchUnitedReward::FUN_140e13c00()
 {
-    // MS2-FUNCTIONAL: locals and temporaries are ordered differently; the exe also fills each reward slot from the first
-    // reward item (rewards+0x18 not empty: slot->FUN_1409ba630(&item[0] + 0x18)) and passes the reward meso/exp
-    // (rewards+0/+8) to FUN_140e12780, the recovered body passes 0, 0
     void* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pActor == NULL)
         return;
@@ -327,7 +339,9 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
         Unk_DhRewardList rewards;
         short nJob = (short)static_cast<PCBase*>(pActor)->vfunc_78();     // slot 78 (+0x270)
         FUN_140764030()->FUN_140770e40(entry->m_nRewardId, nJob, rewards);
-        m_slots[i]->FUN_140e12780(0, 0);
+        if (!rewards.m_items.empty())
+            m_slots[i]->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<Unk_DcRewardSlot&>(rewards.m_items[0])));
+        m_slots[i]->FUN_140e12780(rewards.m_nMeso, rewards.m_nExp);
         const bool bReached = entry->m_nNeed <= nWeekly;
         if (bReached)
             nGauge = entry->m_nPoint;
