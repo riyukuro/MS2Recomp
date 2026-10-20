@@ -103,8 +103,8 @@ public:
     int FUN_14142e220(__int64 nAction);                     // the quick slot index of an action, -1 = none
     void FUN_14142e2a0(unsigned nSlot, const Unk_SsQuickEntry& entry);
     void FUN_14142e2e0(int nPage, unsigned nSlot, const Unk_SsQuickEntry& entry);
-    int FUN_14142e340(int n);                               // the key pressed (key capture)
-    int FUN_14142e470(int n);                               // the key held (key capture)
+    int FUN_14142e340(int bPressed);                         // the key pressed (key capture)
+    int FUN_14142e470(int bPressed);                         // the key held (key capture)
     bool FUN_14142e510(unsigned nCombo);                    // both keys of a modifier combo are known
     void FUN_14142e600(__int64 nAction, ATL::CAtlArray<Unk_MyPCKeyId>& aOut);   // the keys bound to the action
     int FUN_14142e6f0(int nKey);

@@ -5,6 +5,7 @@
 // MS2-UNIT: client\ms2\keytable.cpp
 // MS2-RANGE: 0x1414286a0-0x14143d580 .text$mn
 // MS2-RANGE: 0x1400f6ce0-0x1400f6db0 .text$di
+// MS2-PIN: ??__Es_pointer@@YAXXZ 0x1400f6d40
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlList@V?$MS2Ptr@VCKeySettingParam@@@@V?$CElementTraits@V?$MS2Ptr@VCKeySettingParam@@@@@ATL@@@ATL@@@@6B@ 0x142f12e20
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\keytable.cpp"    // the _wassert path of FUN_141431ae0
 #include "ms2/placeholder/ms2stdafx.h"
@@ -29,9 +30,11 @@
 #include "ms2/placeholder/notifykeytable.h"
 #include "ms2/client/ms2/skillslot.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/client/ms2/ridee.h"
 #include <vector>
 #include <map>
 #include "hook/ms2hook.h"
+extern template class MS2Ptr<Unk_RideeData>;          // the riding row's pointer glue is another unit's (0x140788ed0)
 
 // ---- file statics (.text$di): the shared header statics without the sort type names ----
 #ifndef MS2_HOOK_DLL
@@ -62,6 +65,9 @@ void FUN_14086f8d0(Unk_140165cf0* pElem, const char* pszName, const char* pszVal
 void FUN_14086f920(Unk_140165cf0* pElem, const char* pszName, int nValue);     // SetAttribute (int)
 void* FUN_14086e090(void* pParent, void* pChild);                              // LinkEndChild
 CString FUN_14028d1f0(const char* psz);
+CStringW FUN_14028b8e0(const CStringW& strKey);              // string table text by key
+void FUN_1412751f0(const CStringW& strText, int nA, int nB);  // system notice
+extern int DAT_143af7d40;                                   // input enabled
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                   // the element is enabled
 void FUN_1422c9380(const CString& str);                     // the action's binding changed (UI notice)
@@ -75,6 +81,7 @@ public:
     int FUN_14165f150();                                    // an item is held
     int FUN_14166c930();                                    // the current state id
     int FUN_1416764d0();                                    // riding
+    Ridee* FUN_1416764a0();                                 // the ridee this player rides
 };
 class Unk_KtWorld { public: Unk_KtPlayer* FUN_141bd0cc0(); };   // the local player
 class Unk_KtRestrictions { public: int FUN_14138c900(int nKind); };
@@ -1143,6 +1150,50 @@ void CKeyTable::FUN_14142e2e0(int nPage, unsigned nSlot, const Unk_SsQuickEntry&
     pPage->SetAt(nSlot, entry);
 }
 
+// @0x14142e340
+int CKeyTable::FUN_14142e340(int bPressed)
+{
+    if (DAT_143af7d40 == 0)
+        return 0;
+    for (POSITION pos = m_keys.GetTailPosition(); pos != 0; m_keys.GetPrev(pos))
+    {
+        MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
+        int nKey = m_keys.GetKeyAt(pos);
+        if (bPressed)
+        {
+            if (FUN_140a58540()->FUN_140d8ad60(nKey))
+                return nKey;
+        }
+        else
+        {
+            if (FUN_140a58540()->FUN_140d8ac50(nKey, 0))
+                return nKey;
+        }
+    }
+    return 0;
+}
+
+// @0x14142e470
+int CKeyTable::FUN_14142e470(int bPressed)
+{
+    if (DAT_143af7d40 == 0)
+        return 0;
+    for (int nKey = 0x96; nKey <= 0x99; nKey++)
+    {
+        if (bPressed)
+        {
+            if (FUN_140a58540()->FUN_140d8ad60(nKey))
+                return nKey;
+        }
+        else
+        {
+            if (FUN_140a58540()->FUN_140d8ac50(nKey, 1))
+                return nKey;
+        }
+    }
+    return 0;
+}
+
 // @0x14142e510
 bool CKeyTable::FUN_14142e510(unsigned nCombo)
 {
@@ -1775,6 +1826,28 @@ int CKeyTable::FUN_141431fc0()
     return 1;
 }
 
+// @0x141432010
+int CKeyTable::FUN_141432010(int nAction)
+{
+    Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return 1;
+    efd::SmartPointer<Ridee> spRidee = pPlayer->FUN_1416764a0();
+    if (spRidee == 0)
+        return 1;
+    if (spRidee->FUN_141707750()->m_nSeats == 0)
+        return 1;
+    switch (nAction)
+    {
+    case 0x61a81:
+    case 0x61a82:
+    case 0x61a85:
+        FUN_1412751f0(FUN_14028b8e0(L"s_hide_pcinfo_dialog_disable_message"), 1, 1);
+        return 0;
+    }
+    return 1;
+}
+
 // @0x1414321f0
 void CKeyTable::FUN_1414321f0()
 {
@@ -1830,4 +1903,30 @@ int CKeyTable::FUN_141432650(int nCode)
     if (nCode == 0x1312d16 || nCode == 0x1312fb4)
         return 9;
     return -1;
+}
+
+// ---- the unit's small classes ----
+
+// @0x141435250
+CKeySettingParam::CKeySettingParam()
+{
+    m_nAction = 0;
+    m_nType = 0;
+    m_nPriority = 1;
+    m_nPrimaryLocked = 0;
+    m_nSecondaryLocked = 0;
+    m_nThirdlyLocked = 0;
+}
+
+// @0x141435590
+NotifyShortkeyPage::NotifyShortkeyPage(int nPrev, int nCur)
+{
+    m_nPrev = nPrev;
+    m_nCur = nCur;
+}
+
+// @0x1414355e0
+NotifySkillSetMode::NotifySkillSetMode(bool bMode)
+{
+    m_bMode = bMode;
 }

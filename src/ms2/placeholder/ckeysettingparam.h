@@ -11,7 +11,7 @@ class CKeySettingParam : public CPtred
 {
 public:
     CKeySettingParam();                                     // 0x141435250
-    virtual ~CKeySettingParam();
+    virtual ~CKeySettingParam() = default;                  // 0x1414359a0 (compiler-generated: no vptr reset)
 
     __int64 m_nAction;                                      // +0x18 action id (keyGUID; 0x49409 is the fixed one)
     int m_nType;                                            // +0x20

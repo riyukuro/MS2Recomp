@@ -11,7 +11,7 @@ class NotifyShortkeyPage : public NotifyObject
 {
 public:
     NotifyShortkeyPage(int nPrev, int nCur);        // 0x141435590 / 0x1414355e0 (one of them)
-    virtual ~NotifyShortkeyPage();
+    virtual ~NotifyShortkeyPage() = default;                 // compiler-generated (no vptr reset)
     virtual CStringW vfunc_1();
     int m_nPrev;                                    // +0x18
     int m_nCur;                                     // +0x1c
@@ -23,7 +23,7 @@ class NotifySkillSetMode : public NotifyObject
 {
 public:
     explicit NotifySkillSetMode(bool bMode);
-    virtual ~NotifySkillSetMode();
+    virtual ~NotifySkillSetMode() = default;                 // compiler-generated (no vptr reset)
     virtual CStringW vfunc_1();
     bool m_bMode;                                   // +0x18
 };
