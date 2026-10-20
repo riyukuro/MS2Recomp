@@ -79,6 +79,11 @@ public:
     TiXmlDocument* FUN_141244300();                         // &m_docCharacter
     Unk_GpState* FUN_140a58500();                           // &m_gamepad (0x140a58500, stateskill.cpp)
     Unk_GoChroma* FUN_140aaaa90();                          // &m_chroma (0x140aaaa90, unit_140a93d00)
+    Unk_InterfaceState* FUN_140e09150();                    // &m_interface
+    Unk_InterfaceFlag* FUN_140c58ac0();                     // &m_interfaceChar
+    Unk_StatusState* FUN_140b123b0();                       // &m_status
+    Unk_StatusFlag* FUN_140ea41a0();                        // &m_statusChar
+    Unk_SoundFlag* FUN_1411b1f30();                         // &m_soundChar
 public:
     Unk_CameraState m_camera;                               // +0x08 ctor 0x14125b400
     Unk_InterfaceState m_interface;                         // +0x18 ctor 0x14125b770
