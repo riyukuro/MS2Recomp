@@ -131,6 +131,7 @@ public:
     Ridee* FUN_1416764a0();                                 // the ridee this player rides
     int FUN_141654700();                                    // the job
     int FUN_14166ce30();                                    // busy (a cutscene/state blocks input)
+    int FUN_1416595d0();                                    // dead
 };
 class Unk_KtWorld { public: Unk_KtPlayer* FUN_141bd0cc0(); };   // the local player
 class Unk_KtRestrictions { public: int FUN_14138c900(int nKind); };
@@ -191,7 +192,17 @@ CUIService* FUN_1403ed2b0();
 CStringW FUN_140298ea0(CStringW strKey);                    // string table text (second table)
 void FUN_140d73aa0(CStringW strMsg, int nType, int nTarget, CStringW strTag);   // message box
 class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527840's record (item.cpp owns the real one)
-class Unk_KtInventory { public: void FUN_140a60880(int nTab, ATL::CAtlArray<MS2Ptr<CItem> >& arrOut); };   // the items of one inventory tab
+class Unk_KtInventory                                       // the player's inventory
+{
+public:
+    MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid);          // the item of the uid
+    MS2Ptr<CItem> FUN_140a5e2e0(int nItemId);               // an item of the id
+    void FUN_140a60880(int nTab, ATL::CAtlArray<MS2Ptr<CItem> >& arrOut);   // the items of one inventory tab
+};
+int UseItem(MS2Ptr<CItem> spItem, int nMode);              // 0x140d1bd60
+int FUN_140dffeb0(ItemFunctionArgs* pArgs);                 // the ugc event item command
+class Unk_KtCamera { public: int FUN_140af7e30(); };       // the camera manager: its mode
+Unk_KtCamera* FUN_1409478c0();
 extern Unk_KtInventory DAT_143ab2a90;                       // the player's inventory
 void FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // send the quick slot change
 
@@ -876,6 +887,98 @@ void CKeyTable::FUN_14142bad0(int nMode)
 int CKeyTable::FUN_14142baf0()
 {
     return m_nMode;
+}
+
+// @0x14142bb10
+void CKeyTable::FUN_14142bb10()
+{
+    if (!FUN_141431fc0())
+        return;
+    Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    if (pPlayer->FUN_1416595d0())
+        return;
+    int nCameraMode = FUN_1409478c0()->FUN_140af7e30();
+    switch (nCameraMode)
+    {
+    case 6:
+    case 7:
+        return;
+    }
+    QuickSlotPage* pPage = FUN_141431c20(m_nQuickSlotPage);
+    if (pPage == 0)
+        return;
+    for (POSITION pos = pPage->GetStartPosition(); pos != 0; pPage->GetNext(pos))
+    {
+        unsigned nSlot = pPage->GetKeyAt(pos);
+        Unk_MyPCKeyId nPrimary = (Unk_MyPCKeyId)FUN_14142cb40(nSlot, 0);
+        Unk_MyPCKeyId nSecondary = (Unk_MyPCKeyId)FUN_14142cb40(nSlot, 1);
+        Unk_MyPCKeyId nThirdly = (Unk_MyPCKeyId)FUN_14142cb40(nSlot, 2);
+        ATL::CAtlArray<Unk_MyPCKeyId> aKeys;
+        if (nPrimary != 0)
+        {
+            aKeys.Add(nPrimary);
+            Unk_MyPCKeyId nPair = (Unk_MyPCKeyId)0;
+            if (FUN_14142c830(nPrimary, (int&)nPair))
+                aKeys.Add(nPair);
+        }
+        if (nSecondary != 0)
+        {
+            aKeys.Add(nSecondary);
+            Unk_MyPCKeyId nPair = (Unk_MyPCKeyId)0;
+            if (FUN_14142c830(nSecondary, (int&)nPair))
+                aKeys.Add(nPair);
+        }
+        if (nThirdly != 0)
+        {
+            aKeys.Add(nThirdly);
+            Unk_MyPCKeyId nPair = (Unk_MyPCKeyId)0;
+            if (FUN_14142c830(nThirdly, (int&)nPair))
+                aKeys.Add(nPair);
+        }
+        for (unsigned i = 0; i < aKeys.GetCount(); i++)
+        {
+            int nKey = aKeys[i];
+            if (FUN_14025e7c0()->FUN_14116d9c0(nKey, false, 0))
+            {
+                if (FUN_14142e6f0(nKey))
+                    continue;
+                Unk_SsQuickEntry entry = pPage->GetValueAt(pos);
+                if (entry.m_nItemId == 0)
+                    continue;
+                MS2Ptr<CItemData> spData = FUN_14053f870(entry.m_nItemId);
+                if (!spData)
+                    continue;
+                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(entry.m_nItemUid);
+                if (spItem.get())
+                {
+                    if (spData->FUN_14053cd90())
+                        UseItem(spItem, 0);
+                }
+                else
+                {
+                    MS2Ptr<CItem> spAny = DAT_143ab2a90.FUN_140a5e2e0(entry.m_nItemId);
+                    if (spAny.get())
+                    {
+                        if (spData->FUN_14053cd90())
+                            UseItem(spAny, 0);
+                    }
+                    else if (spData->FUN_14053c6f0() == 0xd9)
+                    {
+                        ItemFunction* pFunc = &spData->function;
+                        if (pFunc->parameter.FUN_1408d21c0(0, L"") == L"ugcevent")
+                            FUN_140dffeb0(&pFunc->parameter);
+                    }
+                    else
+                    {
+                        FUN_141275260(0xe6, 1, 1);
+                        continue;
+                    }
+                }
+            }
+        }
+    }
 }
 
 // @0x14142c0c0
