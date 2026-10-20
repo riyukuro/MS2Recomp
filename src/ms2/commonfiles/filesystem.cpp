@@ -1413,3 +1413,5 @@ void FUN_1403ab1a0(CFileBuffer* buffer, __time64_t time) { buffer->m_tLastAccess
 
 
 
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9a800-0x142c9a820 .text$yd

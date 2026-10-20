@@ -85,3 +85,5 @@ CActionCameraData::DataPtr CActionCameraData::Load(const CString& strName)
 }
 
 
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9d2d0-0x142c9d2f0 .text$yd

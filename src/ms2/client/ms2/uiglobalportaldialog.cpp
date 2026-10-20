@@ -262,3 +262,5 @@ void UIGlobalPortalDialog::FUN_1412c3640(CInPacket& packet)
     if (FUN_141924630() != 0)
         vfunc_67();
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caf1d0-0x142caf200 .text$yd

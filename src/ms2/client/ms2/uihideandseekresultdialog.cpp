@@ -284,3 +284,5 @@ errno_t FUN_140c21fb0(void* const dst, rsize_t const dstSize, void const* const 
     memcpy(dst, src, srcSize);
     return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca26e0-0x142ca2700 .text$yd

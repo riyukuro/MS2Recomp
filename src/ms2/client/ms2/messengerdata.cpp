@@ -1075,3 +1075,5 @@ Unk_MdRooms* FUN_141484720()
 {
     return g_pRooms;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb2920-0x142cb2940 .text$yd
