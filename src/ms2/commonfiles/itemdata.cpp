@@ -131,7 +131,7 @@ public:
     Unk_OptionKey(int nId);                                 // 0x140768210
     ~Unk_OptionKey();                                       // 0x1401cdc30
 private:
-    unsigned char m_data[0x48];
+    __int64 m_data[9];                                      // 0x48 bytes (no char array: the exe frame has no GS cookie)
 };
 class Unk_OptionMgr
 {
@@ -1049,21 +1049,23 @@ int CItemData::FUN_14053d9d0()
 // @0x14053da20
 bool CItemData::FUN_14053da20()
 {
-    CStringW strName(L"OpenGachaBox");
-    bool bMatch = FUN_14053dfd0(strName);
-    if (!bMatch)
+    if (!FUN_14053dfd0(L"OpenGachaBox"))
         return false;
-    return function.parameter.FUN_1408d1fd0(0, 0) != 0;
+    int nValue = function.parameter.FUN_1408d1fd0(0, 0);
+    if (nValue == 0)
+        return false;
+    return true;
 }
 
 // @0x14053dad0
 bool CItemData::FUN_14053dad0()
 {
-    CStringW strName(L"QuestStart");
-    bool bMatch = FUN_14053dfd0(strName);
-    if (!bMatch)
+    if (!FUN_14053dfd0(L"QuestStart"))
         return false;
-    return function.parameter.FUN_1408d1fd0(0, 0) != 0;
+    int nValue = function.parameter.FUN_1408d1fd0(0, 0);
+    if (nValue == 0)
+        return false;
+    return true;
 }
 
 // @0x14053db80
@@ -1507,9 +1509,9 @@ void CItemData::FUN_14053eb20()
 ItemModelData* CItemData::FUN_14053eba0()
 {
     static ItemModelData s_emptyModel;
-    if (model == 0)
-        return &s_emptyModel;
-    return model.get();
+    if (model.get() != 0)
+        return model;
+    return &s_emptyModel;
 }
 
 // @0x14053ec50
@@ -1536,6 +1538,7 @@ bool CItemData::FUN_14053ecf0()
     return true;
 }
 
+// MS2-FUNCTIONAL: the obj frame carries a GS cookie (0x128 vs exe 0x108 alloc) from a buffer-typed placeholder local in the option-registration loop (Unk_PayloadPtr<Unk_OptionData> return temps / MS2Ptr<CItemData>(this) args); same callees
 // @0x14053ed00
 void CItemData::FUN_14053ed00()
 {
@@ -1933,25 +1936,45 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId)
 // @0x14053f8c0
 bool FUN_14053f8c0(unsigned nItemId)
 {
-    if (nItemId < 0x55d4a81 || 0x55d4a83 < nItemId)
+    switch (nItemId)
+    {
+    case 0x55d4a81:
+    case 0x55d4a82:
+    case 0x55d4a83:
+        return true;
+    default:
         return false;
-    return true;
+    }
 }
 
 // @0x14053f900
 bool FUN_14053f900(unsigned nItemId)
 {
-    if (nItemId < 0x55d4a88 || (0x55d4a8a < nItemId && nItemId != 0x55d4a93))
+    switch (nItemId)
+    {
+    case 0x55d4a88:
+    case 0x55d4a89:
+    case 0x55d4a8a:
+    case 0x55d4a93:
+        return true;
+    default:
         return false;
-    return true;
+    }
 }
 
 // @0x14053f940
 bool FUN_14053f940(unsigned nItemId)
 {
-    if (nItemId == 0x55d4a84 || nItemId == 0x55d4a8b || (0x55d4a8e < nItemId && nItemId < 0x55d4a91))
+    switch (nItemId)
+    {
+    case 0x55d4a84:
+    case 0x55d4a8b:
+    case 0x55d4a8f:
+    case 0x55d4a90:
         return true;
-    return false;
+    default:
+        return false;
+    }
 }
 
 // @0x14053f990
@@ -2041,17 +2064,34 @@ bool FUN_14053fc90(int nSub)
 // @0x14053fd10
 bool FUN_14053fd10(int nSub)
 {
-    if (nSub < 0xd || (0x11 < nSub && nSub != 0x16))
+    switch (nSub)
+    {
+    case 0xd:
+    case 0xe:
+    case 0xf:
+    case 0x10:
+    case 0x11:
+    case 0x16:
+        return true;
+    default:
         return false;
-    return true;
+    }
 }
 
 // @0x14053fd50
 bool FUN_14053fd50(int nSub)
 {
-    if (nSub == 0xc || (0x11 < nSub && nSub < 0x16))
+    switch (nSub)
+    {
+    case 0xc:
+    case 0x12:
+    case 0x13:
+    case 0x14:
+    case 0x15:
         return true;
-    return false;
+    default:
+        return false;
+    }
 }
 
 // @0x14053fd90
@@ -2066,6 +2106,9 @@ int CItemData::FUN_14053fdb0()
     return limit.vipLevel;
 }
 
+// StringFormat<int> as compiled in item.cpp's TU (the exe calls that copy here; the shared name binds unit_1402ab440's).
+CString FUN_14052ea30(const char* pszFormat, const int& nArg);
+
 // @0x14053fdd0
 CString CItemData::FUN_14053fdd0()
 {
@@ -2073,16 +2116,11 @@ CString CItemData::FUN_14053fdd0()
     if (pIcon->IsEmpty())
     {
         int nItemId = FUN_14053c510();
-        return StringFormat("./Data/Resource/Image/item/icon/{0}.png", nItemId);
+        return FUN_14052ea30("./Data/Resource/Image/item/icon/{0}.png", nItemId);
     }
-    else if ((*pIcon)[0] == '.')
-    {
-        return CString(*pIcon);
-    }
-    else
-    {
+    if ((*pIcon)[0] != '.')
         return FormatIconPath("./Data/Resource/Image/item/icon/{0}.png", *pIcon);
-    }
+    return *pIcon;
 }
 
 // @0x14053feb0
