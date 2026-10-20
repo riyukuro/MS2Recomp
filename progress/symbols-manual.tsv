@@ -4133,3 +4133,5 @@ luaopen_Entity	1422416d0	func
 ?SetData@NiShaderConstantMapEntry@@QEAAXIIPEAX_N@Z	1427eda50	func
 ?SetupDefinedConstantValue@NiD3DShaderConstantMap@@IEAAIAEBVNiRenderCallContext@@IPEAVNiShaderConstantMapEntry@@@Z	1427f02b0	func
 ?BytesToCommaString@efd@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$CustomAllocator@D@efd@@@std@@_K@Z	14207a630	func
+??0CKfmModel@@QEAA@V?$MS2Ptr@VUnk_EquipModelOwner@@@@PEAX1@Z	14143d580	func
+??0CNifModel@@QEAA@V?$MS2Ptr@VUnk_EquipModelOwner@@@@PEAX1@Z	141565560	func
