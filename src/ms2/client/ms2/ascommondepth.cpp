@@ -94,18 +94,21 @@ struct Unk_ArgVec
     std::vector<Scaleform::GFx::Value> v;
 };
 
+// MS2-FUNCTIONAL: ASArgList is really std::vector<GFx::Value>: the exe ctor is vector() (_Vector_alloc ctor 0x1409b1e00 under a noexcept EH frame); this wrapper placement-constructs the vector instead. Exact needs `typedef std::vector<Value> ASArgList` + editing ~750 call sites in 119 dependent units
 // @0x1409b1e80
 ASArgList::ASArgList()
 {
     new (this) Unk_ArgVec();
 }
 
+// MS2-FUNCTIONAL: ASArgList is really std::vector<GFx::Value>: the exe dtor is ~vector() (_Tidy 0x1409b2530 under a noexcept EH frame); this wrapper calls the vector dtor (see the ctor)
 // @0x1409b1f20
 ASArgList::~ASArgList()
 {
     ((Unk_ArgVec*)this)->~Unk_ArgVec();
 }
 
+// MS2-FUNCTIONAL: ASArgList is really std::vector<GFx::Value>: the exe function is vector::resize(size_t) (lambda ctor 0x1409b1d50 + _Resize 0x1409b17a0); this wrapper takes an int and forwards (see the ctor)
 // @0x1409b2800
 void ASArgList::FUN_1409b2800(int nCount)
 {
