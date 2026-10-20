@@ -281,6 +281,7 @@ public:
     void OnChangePage(ASData& data);                                // 0x1412fe520
     void OnChangePageRequest(ASData& data);                         // 0x1412fe580
     void OnCheckPreviewColoring(ASData& data);                      // 0x1412fe6a0
+    void OnUnEquip(ASData& data);                                   // 0x1412fe760 an equip icon taken off the preview
     void OnSelectItem(ASData& data);                                // 0x1412ff0b0
     void OnGetSearchAttrVisible(ASData& data);                      // 0x1412ff700
     void OnClickShowMyEquip();                                      // 0x1412ff7f0

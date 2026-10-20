@@ -3291,6 +3291,100 @@ void UIMeratMarketDialog::OnCheckPreviewColoring(ASData& data)
         m_spMyAvatarPC->FUN_1418bc280(bColoring);
 }
 
+// @0x1412fe760
+void UIMeratMarketDialog::OnUnEquip(ASData& data)
+{
+    CStringA strName = data.FUN_1422b8d30();
+    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    AScript icon(value, 2);
+    int nSlot = FUN_1407181d0(strName);
+    bool bApply = false;
+    bool bReset = false;
+    bool bRefresh = false;
+    if (nSlot == 0x79) {
+        if ((bool)m_spAvatar.get() && m_spAvatar->FUN_1418b9ba0() == 1) {
+            CStringA strId;
+            icon.FUN_1422bac00("itemID", strId);
+            int nItemId = FUN_1407181d0(strId);
+            OnAvatarEquipChanged(&nItemId, &bApply, &bReset, &bRefresh);
+        }
+    }
+    else if (nSlot == 0x7a) {
+        if ((bool)m_spAvatar.get() && m_spAvatar->FUN_1418b9ba0() == 1) {
+            {
+                MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>(m_spAvatar.operator UIAvatarBase*()));
+                if (spPC.get() != 0) {
+                    Unk_MeratProductKey key;
+                    CStringW strOid;
+                    icon.FUN_1422baad0("productOID", strOid);
+                    key.FUN_1409c1640(strOid);
+                    MS2Ptr<CMeratMarketProduct> spProduct = FUN_140939a00()->FUN_140d578d0(key);
+                    if (spProduct.get() != 0) {
+                        Unk_AvPackageKey pkg;
+                        FUN_1418bf850(spProduct, &pkg);
+                        spPC->FUN_1418bc500(&pkg);
+                    }
+                }
+            }
+            bApply = true;
+            bReset = true;
+            bRefresh = true;
+        }
+    }
+    else if (nSlot == 0x7b) {
+        if ((bool)m_spAvatar.get() && m_spAvatar->FUN_1418b9ba0() == 1) {
+            bApply = true;
+            if ((bool)m_spItem.get()) {
+                if (FUN_141b48710(MS2Ptr<CItemData>(FUN_140527840(m_spItem.operator->())))) {
+                    bReset = true;
+                    if (FUN_140527840(m_spItem.operator->())->FUN_14053cd50() || FUN_140527840(m_spItem.operator->())->FUN_14053cd10())
+                        bRefresh = true;
+                }
+            }
+        }
+    }
+    else if (nSlot == 0x7c) {
+        bApply = true;
+        bReset = true;
+        bRefresh = true;
+    }
+    else {
+        CStringA strGuid;
+        icon.FUN_1422bac00("itemGUID", strGuid);
+        __int64 nGuid = FUN_140718350(strGuid);
+        if (m_spAvatar.get() != 0)
+            m_spAvatar->vfunc_4(nGuid);
+        if ((bool)m_spItem.get()) {
+            if (m_spItem->FUN_140526a50() == nGuid) {
+                bReset = true;
+                if (FUN_140527840(m_spItem.operator->())->FUN_14053cd50() || FUN_140527840(m_spItem.operator->())->FUN_14053cd10())
+                    bRefresh = true;
+                if ((bool)m_spItemData.get()) {
+                    if (m_spItemData->FUN_14053cd50() || m_spItemData->FUN_14053cd10())
+                        bRefresh = true;
+                }
+            }
+        }
+    }
+    if (m_620 && bRefresh)
+        Refresh7710(0);
+    if (bApply) {
+        ApplyPreviewChanges(1);
+        m_dirty.SetFlag(8);
+    }
+    int nPreview = FindPreview(m_spAvatar.get());
+    int nKind = SlotKindOf(nPreview, m_spItemData);
+    MS2Ptr<UIEquipIconContainer> spIcons = GetEquipIcon(nKind);
+    if (spIcons.get() != 0)
+        spIcons->FUN_140e2a640(nSlot);
+    if (bReset)
+        ResetPreview();
+    if (spIcons == 0 || spIcons->GetIconMap()->IsEmpty()) {
+        if ((m_spAvatar.get() != m_spAvatarPC.get() && m_spAvatar.get() != m_spMyAvatarPC.get()) || m_29c != 0)
+            ChangeModel(0, 0, MS2Ptr<CMeratMarketProduct>(0));
+    }
+}
+
 // @0x1412ff0b0
 void UIMeratMarketDialog::OnSelectItem(ASData& data)
 {
