@@ -33,6 +33,10 @@
 #include "ms2/placeholder/cusermaidmanager.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/ms2format.h"
+#include "ms2/client/ms2/randomeffectparam.h"
+#include "ms2/client/ms2/physxhelper.h"
+#include "ms2/placeholder/effectquery.h"
+#include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -69,6 +73,8 @@ public:
     virtual void vfunc_1();
     virtual void vfunc_2();
     virtual void vfunc_3();                                         // hide
+    bool FUN_1418fb6b0();                                           // UIChatBalloon::Entity: showing
+    int FUN_140f48d40();                                            // UIHudEntity::Entity: visible
 };
 MS2Ptr<Unk_PCBaseComp_a58> FUN_141992920(int nObjectId);           // new hp bar
 MS2Ptr<Unk_PCBaseComp_a78> FUN_141a60da0(int nObjectId);           // new name tag
@@ -147,6 +153,55 @@ class Unk_SSGMisc2d80 { public: void FUN_140de2a00(); };
 extern Unk_SSGMisc2d80 DAT_143ab2d80;
 extern int DAT_143abdc30;                                           // the npc id of the last 0x4f50 dialog
 class Unk_EmoCfgFloat { public: float* FUN_140967520(const float* pDefault); };
+
+class Unk_PoEffectSvc { public: unsigned FUN_1411a49c0(NoticeMessage& kQuery); unsigned FUN_1411a4a00(NoticeMessage& kQuery); };
+class Unk_PortalQuestTable2 { public: int FUN_140764ef0(CNpc* pNpc); };
+class WorldService;
+PCBase* FUN_141bd1290(WorldService* pWorld, int nObjectId);
+
+CPhysXHelper* FUN_1409f7ca0();
+
+class Unk_PopupTimerCfg;
+Unk_PopupTimerCfg* FUN_140a36020(void* pValue);                    // Value<MS2Tick>::Get
+int FUN_140a35ca0(Unk_PopupTimerCfg* pTick);                        // MS2Tick -> ms
+class Unk_UisSceneMgr;
+Unk_UisSceneMgr* FUN_1408e57f0();
+int FUN_1422b9ea0(Unk_UisSceneMgr* pMgr);                           // a full-screen ui is open
+class Unk_TalkMgrView { public: void FUN_141b20790(int nObjectId, int nFriendly); };   // UITalkManager: monologue
+Unk_TalkMgrView* FUN_140967100();
+int FUN_14028d260(float f);                                         // float -> int (ms)
+float FUN_14028d5b0(float fAngle);                                  // normalise an angle
+float FUN_14059d930(float f);                                       // fabs
+extern int DAT_143ae2b4c;                                           // the optimizer's turn-smoothing option
+
+// @0x14109a9d0
+static int FUN_14109a9d0()
+{
+    return DAT_143ae2b4c;
+}
+
+// @0x14109ac70
+static float FUN_14109ac70(float f)
+{
+    float fSign;
+    if (f > 0.0f)
+        fSign = 1.0f;
+    else
+        fSign = (f < 0.0f) ? -1.0f : 0.0f;
+    return fSign;
+}
+
+// @0x14109a9e0
+static int FUN_14109a9e0()
+{
+    return rand();
+}
+
+// @0x14109ace0
+static float FUN_14109ace0()
+{
+    return ((float)FUN_14109a9e0() * 2.0f) / 32767.0f - 1.0f;
+}
 
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };   // zero-initialised pointer holder (0x1401cd100)
 
@@ -930,4 +985,281 @@ void CNpc::FUN_141094790(__int64 nUid)
 __int64 CNpc::FUN_1410947c0()
 {
     return m_nE48;
+}
+
+// @0x141094dc0
+void CNpc::FUN_141094dc0(__int64 n)
+{
+    m_nE60 = n;
+}
+
+// @0x141094df0
+void CNpc::FUN_141094df0(__int64 n)
+{
+    m_nE60 += n;
+}
+
+// @0x141094e20
+__int64 CNpc::FUN_141094e20()
+{
+    return m_nE60;
+}
+
+// @0x141094e40
+void CNpc::FUN_141094e40(bool b)
+{
+    m_cEAC = b;
+}
+
+// Hides the npc while its portal quest condition fails.
+// @0x141094e60
+void CNpc::FUN_141094e60()
+{
+    if (m_nEB8 == 0)
+        return;
+    if (m_unk_b4 == 0)
+        return;
+    int bCollide;
+    if (reinterpret_cast<Unk_PortalQuestTable2*>(FUN_14109a710())->FUN_140764ef0(this) == 0) {
+        FUN_14166ca20(5);
+    } else {
+        FUN_14166ca80(5);
+        if (m_unk_15c == 0) {
+            bCollide = 1;
+            goto done;
+        }
+    }
+    bCollide = 0;
+done:
+    vfunc_126(bCollide, 1);
+}
+
+// @0x141094f20
+void CNpc::FUN_141094f20(int nOwnerId)
+{
+    m_nOwnerId = nOwnerId;
+}
+
+// @0x141094f40
+int CNpc::FUN_141094f40()
+{
+    return m_nOwnerId;
+}
+
+// @0x141094f60
+PCBase* CNpc::FUN_141094f60()
+{
+    return FUN_141bd1290(reinterpret_cast<WorldService*>(FUN_1403ed2d0()), m_nOwnerId);
+}
+
+// @0x141094f90
+void CNpc::FUN_141094f90(CString strEffect)
+{
+    m_strEC8 = strEffect;
+    FUN_141095140();
+    FUN_141095050();
+}
+
+// @0x141094ff0
+void CNpc::FUN_141094ff0(int nActor)
+{
+    int nOld = m_nEC0;
+    m_nEC0 = nActor;
+    if (m_nEC0 != nOld) {
+        FUN_141095140();
+        FUN_141095050();
+    }
+}
+
+// Attaches the +0xec8 effect to the +0xec0 actor.
+// @0x141095050
+void CNpc::FUN_141095050()
+{
+    PCBase* pActor = FUN_141bd1290(reinterpret_cast<WorldService*>(FUN_1403ed2d0()), m_nEC0);
+    if (pActor != NULL && m_strEC8.GetLength() > 0) {
+        NoticeMessage kQuery;
+        kQuery.m_strName = m_strEC8;
+        kQuery.m_nMode48 = 6;
+        kQuery.SetActor(pActor->FUN_14123c580());
+        kQuery.m_bFlag31 = true;
+        m_nEC4 = reinterpret_cast<Unk_PoEffectSvc*>(FUN_1403ed280())->FUN_1411a49c0(kQuery);
+    }
+}
+
+// @0x141095140
+void CNpc::FUN_141095140()
+{
+    if (m_nEC4 != 0)
+        FUN_1411a6060(FUN_1403ed280(), m_nEC4);
+    m_nEC4 = 0;
+}
+
+// @0x141095190
+void CNpc::FUN_141095190(const CString& strKfm)
+{
+    m_strED8 = strKfm;
+}
+
+// @0x1410951d0
+void CNpc::FUN_1410951d0(const CString& strKfm)
+{
+    FUN_141095190(strKfm);
+    FUN_14123bc20("urn:gamebryo-animation:" + m_strED8);
+}
+
+// @0x141095240
+void CNpc::FUN_141095240(__int64 n)
+{
+    m_nEE0 = n;
+}
+
+// @0x141095270
+__int64 CNpc::FUN_141095270()
+{
+    return m_nEE0;
+}
+
+// @0x141095290
+void CNpc::FUN_141095290(int n)
+{
+    m_nF20 = n;
+}
+
+// @0x1410952b0
+void CNpc::FUN_1410952b0(bool b)
+{
+    m_cF38 = b;
+}
+
+// @0x1410952d0
+bool CNpc::FUN_1410952d0()
+{
+    return m_cF38 != 0;
+}
+
+// Releases the dead body's PhysX actor.
+// @0x1410979a0
+void CNpc::FUN_1410979a0()
+{
+    if (m_pD60 != NULL) {
+        NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
+        if (pScene != NULL) {
+            FUN_1409f7ca0()->FUN_14168a540(0);
+            pScene->releaseActor(*m_pD60);
+            FUN_1409f7ca0()->FUN_14168a570();
+            m_pD60 = NULL;
+        }
+    }
+}
+
+// Moves the npc to its dead body's PhysX pose.
+// @0x141097a30
+void CNpc::FUN_141097a30()
+{
+    if (m_pD60 != NULL) {
+        NxMat34 kPose = m_pD60->getGlobalPose();
+        efd::Point3 kPos(kPose.t.x, kPose.t.y, kPose.t.z);
+        kPos *= 100.0f;
+        kPos.z = kPos.z - m_spNpcData->m_collision.m_fHeight * 0.5f;
+        GameObject::vfunc_19(kPos);
+    }
+}
+
+// Moves the dead body's shapes to a collision group.
+// @0x141097b40
+void CNpc::FUN_141097b40(unsigned short nGroup)
+{
+    if (m_nD84 != nGroup && m_pD60 != NULL) {
+        FUN_1409f7ca0()->FUN_14168a540(0);
+        unsigned int nShapes = m_pD60->getNbShapes();
+        NxShape* const* ppShapes = m_pD60->getShapes();
+        for (unsigned int i = 0; i < nShapes; i++)
+            ppShapes[i]->setGroup(nGroup);
+        FUN_1409f7ca0()->FUN_14168a570();
+    }
+}
+
+// Plays the dead (0) / damage (1) effect of the npc row.
+// @0x141098fb0
+void CNpc::FUN_141098fb0(int nKind)
+{
+    CString strEffect;
+    if (nKind == 0)
+        strEffect = m_spNpcData->m_strDeadEffect;
+    else if (nKind == 1)
+        strEffect = m_spNpcData->m_strDamageEffect;
+    if (!strEffect.IsEmpty()) {
+        NoticeMessage kQuery;
+        kQuery.m_strName = strEffect;
+        kQuery.m_nMode48 = FUN_141093270()->IsBoss() ? 6 : 5;
+        kQuery.SetActor(FUN_14123c580());
+        reinterpret_cast<Unk_PoEffectSvc*>(FUN_1403ed280())->FUN_1411a4a00(kQuery);
+    }
+    if (nKind == 0 && m_nE54 != 0) {
+        FUN_1411a6060(FUN_1403ed280(), m_nE54);
+        m_nE54 = 0;
+    }
+}
+
+// Turns toward the target yaw (+0x934) at the row's rotation speed.
+// @0x141099170
+void CNpc::FUN_141099170(float fTime)
+{
+    efd::Point3 kRot = vfunc_20();
+    if (FUN_14109a9d0() == 0 || !FUN_14028d470(kRot.z, m_f934)) {
+        FUN_14166d8b0(FUN_14028d5b0(m_f934));
+        float fDelta = FUN_14028d5b0(m_f934 - kRot.z);
+        float fSpeed = FUN_14059d930(fDelta);
+        fSpeed = fSpeed / 0.1f;
+        if (m_spNpcData->m_fRotationSpeed < fSpeed)
+            fSpeed = m_spNpcData->m_fRotationSpeed;
+        fTime = FUN_14109ac70(fDelta) * fSpeed * fTime;
+        if (FUN_14059d930(fTime) < FUN_14059d930(fDelta))
+            kRot.z = kRot.z + fTime;
+        else
+            kRot.z = m_f934;
+        kRot.z = FUN_14028d5b0(kRot.z);
+        vfunc_21(kRot);
+    }
+}
+
+// The idle monologue balloon timer.
+// @0x141099370
+void CNpc::FUN_141099370(float fTime)
+{
+    if (FUN_1422b9ea0(FUN_1408e57f0()) == 0 && m_questState.m_state == 4) {
+        MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85();
+        if (spBalloon.IsNull())
+            return;
+        if (spBalloon->FUN_1418fb6b0())
+            return;
+        int nRandom = FUN_140a35ca0(FUN_140a36020(&FUN_1401d3200()->MonologueRandom));
+        if (spBalloon->FUN_140f48d40() == 0) {
+            m_nDE0 += FUN_14028d260(fTime);
+            unsigned int nElapsed = m_nDE0;
+            int nDelay = m_nDE4;
+            if ((unsigned int)(FUN_140a35ca0(FUN_140a36020(&FUN_1401d3200()->MonologueInterval)) + nRandom) <= nElapsed + nDelay) {
+                FUN_140967100()->FUN_141b20790(FUN_14123c580(), vfunc_116());
+                FUN_141099580();
+            }
+        } else {
+            m_nDE0 += FUN_14028d260(fTime);
+            if ((unsigned int)FUN_140a35ca0(FUN_140a36020(&FUN_1401d3200()->MonologueShowTime)) <= (unsigned int)m_nDE0) {
+                spBalloon->vfunc_3();
+                FUN_141099580();
+            }
+        }
+    }
+}
+
+// @0x141099580
+void CNpc::FUN_141099580()
+{
+    m_nDE0 = 0;
+    unsigned int nRandom = FUN_140a35ca0(FUN_140a36020(&FUN_1401d3200()->MonologueRandom));
+    if (nRandom != 0) {
+        int nObjectId = FUN_14123c580();
+        Unk_Random kRandom(nObjectId * FUN_140768010(nRandom, 0));
+        m_nDE4 = kRandom.FUN_1407684c0() % nRandom;
+    }
 }

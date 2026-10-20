@@ -15,6 +15,7 @@
 #include <efd/Matrix3.h>
 
 class SkillLevelData;
+class NxActor;
 class CMaid;                 // commonfiles/maid.h
 class CInPacket;        // commonfiles/skilloverlapcompare.h (+0xd70)
 class CRandomTargetEffect;   // randomtargeteffect.h (+0xf28; MS2Ptr(int) 0x140aac100, dtor 0x140aac190)
@@ -153,13 +154,33 @@ public:
     void FUN_141094730();                                   // send packet 0x32 (talk)
     void FUN_141094790(__int64 nUid);                       // m_nE48 (maid uid)
     __int64 FUN_1410947c0();
+    void FUN_141094dc0(__int64 n);                          // m_nE60 (accumulated damage)
+    void FUN_141094df0(__int64 n);                          // m_nE60 += n
+    __int64 FUN_141094e20();
+    void FUN_141094e40(bool b);                             // m_cEAC
+    void FUN_141094e60();                                   // portal quest visibility
+    void FUN_141094f90(CString strEffect);                  // set the owner effect (by value)
+    void FUN_141094ff0(int nActor);                         // set the owner effect's actor
+    void FUN_141095050();                                   // attach the owner effect
+    void FUN_141095190(const CString& strKfm);              // m_strED8
+    void FUN_1410951d0(const CString& strKfm);              // set and load the model
+    __int64 FUN_141095270();                                // m_nEE0
+    void FUN_141095290(int n);                              // m_nF20
+    void FUN_1410952b0(bool b);                             // m_cF38
+    bool FUN_1410952d0();
+    void FUN_141097a30();                                   // follow the dead body's pose
+    void FUN_141097b40(unsigned short nGroup);              // the dead body's collision group
+    void FUN_141098fb0(int nKind);                          // dead (0) / damage (1) effect
+    void FUN_141099170(float fTime);                        // turn toward m_f934
+    void FUN_141099370(float fTime);                        // monologue timer
+    void FUN_141099580();                                   // restart the monologue timer
     CStringW FUN_141093310();                               // display name from the npc table
     void FUN_1410979a0();
     void FUN_141099ab0();
 
     efd::Point3 m_posD40;                                   // +0xd40 (copied from the ZERO constant 0x143b01a60)
     MS2Ptr<NpcDataCli> m_spNpcData;                         // +0xd50 the npc table row
-    void* m_pD60;                                           // +0xd60 = 0
+    NxActor* m_pD60;                                        // +0xd60 = 0 the dead body's PhysX actor
     void* m_pD68;                                           // +0xd68 = 0
     MS2Ptr<SkillLevelData> m_spSkillRow;                    // +0xd70
     int m_nD80;                                             // +0xd80 = 3
