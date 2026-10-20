@@ -66,6 +66,8 @@ public:
     void FUN_14100e880(int nKey, MS2Ptr<Unk_140acd6e0> spButton, int nIndex);   // 0x14100e880
     void FUN_14100e910();                                                   // 0x14100e910 apply the octave
     void FUN_14100e9a0(int nMode);                                          // 0x14100e9a0 the play / stop buttons
+    int FUN_140d13c50();                                                    // inline: m_nMode (instrumentmanager.cpp)
+    void FUN_140d13d80(int nInstrument);                                    // inline: set m_nInstrument (instrumentmanager.cpp)
     void FUN_14100f1f0();                                                   // 0x14100f1f0 the slot count
     unsigned char FUN_14100f2e0();                                          // 0x14100f2e0 play the chosen score
 
