@@ -21,6 +21,7 @@ public:
     virtual void vfunc_24(bool bRefresh);                               // 24 0x1422c80c0 validateNow
 
     void FUN_1422e31e0(int nIndex);                                     // select a button ("selectedIndex")
+    int FUN_1422e3210();                                                // the selected button (uiguilddialog.cpp)
     void FUN_1422e3400();                                               // clear the data provider
     void FUN_1422e3460(const ASObj& item);                              // append a button (pushed to the data provider)
 };

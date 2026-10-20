@@ -51,6 +51,11 @@
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/placeholder/cguildxmldata.h"
 #include "ms2/placeholder/cinpacket.h"
+#include "ms2/placeholder/asbuttonbar.h"
+#include "ms2/placeholder/ascorelist.h"
+#include "ms2/placeholder/cfeaturemanager.h"
+#include "ms2/placeholder/packethandlermanager.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -67,7 +72,11 @@ class Unk_GdBrowser { public: void FUN_14135ec00(const CString& strUrl, bool bOn
 Unk_GdBrowser* FUN_140c43790(int nUiId);                        // the web browser dialog of an id
 class Unk_GdWorld { public: void* FUN_141bd0cc0(); };           // the local player
 Unk_GdWorld* FUN_1403ed2d0();
-void FUN_1408741a0(void* pCfg, const char* szSection, const char* szKey, int* pValue);   // write an int setting
+void FUN_1408741a0(void* pCfg, const char* szSection, const char* szKey, int* pValue);   // read an int setting
+void FUN_140874440(void* pCfg, const char* szSection, const char* szKey, int nValue, bool bFlush);   // write an int setting
+void FUN_14141f970(const CString& strName);                     // drop the item slots registered under a name
+CString FUN_141029590(unsigned __int64 nGuildId, const CString& strMark, const CString& a3, CString a4);   // the mark image path
+CString FUN_140719530(unsigned __int64 n);                      // "%I64u"
 
 // ---- the dialog ----
 
@@ -102,6 +111,117 @@ int UIGuildDialog::vfunc_65()
 }
 MS2_REPLACE_METHOD(0x141961390, UIGuildDialog, vfunc_65, 37, 0x9F86173A);
 
+// @0x1419613c0
+void UIGuildDialog::vfunc_67()
+{
+    if (m_30.get())
+        m_30->Invoke("ClosePopup");
+    if (m_storagePage.get())
+        m_storagePage->Invoke("ClosePopup");
+    UIDialog::vfunc_67();
+    m_bMarksPending = false;
+    CGuildManager::GetInstance()->FUN_1413c7ed0();
+    UIStatusEventDispatcher::GetInstance()->FUN_141b0cd90(this);
+}
+
+// @0x1419614e0
+void UIGuildDialog::vfunc_72()
+{
+    UIDialog::vfunc_72();
+    if (vfunc_55() != 0)
+        return;
+    FUN_1419758a0();
+    FUN_141975c80();
+    FUN_1419760c0();
+    if (!m_bMarksPending)
+        return;
+    if (Unk_LockGuard guard = m_lock) {}
+    else
+    {
+        if (m_marks.empty())
+            return;
+        if (m_pvpHistoryPage.get())
+        {
+            std::map<unsigned __int64, CString>::iterator it = m_marks.begin();
+            std::map<unsigned __int64, CString>::iterator itEnd = m_marks.end();
+            for (; it != itEnd; ++it)
+            {
+                CString strMark = FUN_141029590(it->first, it->second, "", "");
+                m_pvpHistoryPage->FUN_1413127f0("setGuildMark", FUN_140719530(it->first), strMark);
+            }
+        }
+        m_marks.clear();
+        m_bMarksPending = false;
+    }
+}
+
+// @0x1419617e0
+void UIGuildDialog::vfunc_26()
+{
+    UIDialog::vfunc_26();
+    FUN_14141f970(m_strStorageName);
+    PacketHandlerManager::GetInstance()->UnregisterHandler(0x8a, Delegate<void(CInPacket&)>(this, &UIGuildDialog::FUN_141968140));
+    m_1b0.clear();
+    m_1c0.clear();
+    m_requests.clear();
+    m_createPage = 0;
+    m_joinPage = 0;
+    m_infoPage = 0;
+    m_memberPage = 0;
+    m_managePage = 0;
+    m_championshipPage = 0;
+    m_pvpHistoryPage = 0;
+    m_acceptRequestPage = 0;
+    m_skillPage = 0;
+    m_skillPage2 = 0;
+    m_eventPage = 0;
+    m_housePage = 0;
+    m_storagePage = 0;
+    m_raidPage = 0;
+    m_eventVsGame = 0;
+    m_eventLoader = 0;
+    m_eventImageArea = 0;
+    m_button368 = 0;
+    m_button378 = 0;
+}
+
+// @0x141961ab0
+void UIGuildDialog::OnLoadComplete()
+{
+    UIDialog::OnLoadComplete();
+    if (m_30.get())
+    {
+        FUN_141974ce0();
+        if (CGuildManager::GetInstance()->FUN_1413b6160())
+        {
+            if (MS2Ptr<ASButtonBar> spCategory = FUN_140c02870("m_category"))
+            {
+                spCategory->FUN_1422c7630(1);
+                spCategory->FUN_1422e31e0(m_nTab);
+                spCategory->vfunc_24(1);
+                m_30->Invoke("onCategoryChange");
+            }
+        }
+        else
+        {
+            CGuildManager::GetInstance()->FUN_1413bc710(1);
+        }
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0x110) == 1)
+        {
+            if (MS2Ptr<ASMovieClip> spIcon = m_30->FUN_1409b4560("m_championshipIcon"))
+            {
+                if (CGameRule::GetInstance()->FUN_14047e880() && CGuildManager::GetInstance()->FUN_1413b6160())
+                    spIcon->vfunc_3(1);
+                else
+                    spIcon->vfunc_3(0);
+            }
+        }
+    }
+    FUN_14196da70();
+    UIStatusEventDispatcher::GetInstance()->FUN_141b0cd00(this);
+    PacketHandlerManager::GetInstance()->RegisterHandler(0x8a, Delegate<void(CInPacket&)>(this, &UIGuildDialog::FUN_141968140));
+}
+
 // @0x141961e40
 int UIGuildDialog::vfunc_54(void* pCfg)
 {
@@ -111,6 +231,22 @@ int UIGuildDialog::vfunc_54(void* pCfg)
     return 1;
 }
 MS2_REPLACE_METHOD(0x141961e40, UIGuildDialog, vfunc_54, 115, 0x59B31712);
+
+// @0x141961ec0
+int UIGuildDialog::vfunc_53(void* pCfg)
+{
+    if (MS2Ptr<ASButtonBar> spCategory = FUN_140c02870("m_category"))
+        m_nTab = spCategory->FUN_1422e3210();
+    if (m_memberPage.get())
+    {
+        if (MS2Ptr<ASDropdownMenu> spSort = m_memberPage->FUN_140bbe700("m_sortDropdown"))
+            m_nMemberSort = spSort->FUN_1422df6c0();
+    }
+    UIDialog::vfunc_53(pCfg);
+    FUN_140874440(pCfg, "Histroy", "lastTabIndex", m_nTab, 1);
+    FUN_140874440(pCfg, "History", "lastMemberSortindex", m_nMemberSort, 1);
+    return 1;
+}
 
 // @0x1419625d0
 CString UIGuildDialog::vfunc_1()
@@ -292,6 +428,21 @@ bool UIGuildDialog::FUN_141974c90(int nResult, const CMsgBoxData& box)
     return 1;
 }
 MS2_REPLACE_METHOD(0x141974c90, UIGuildDialog, FUN_141974c90, 68, 0x04837610);
+
+// @0x141974ce0
+void UIGuildDialog::FUN_141974ce0()
+{
+    if (m_30.IsNull())
+        return;
+    FUN_1419260d0("m_webGuideButton", 0);
+    FUN_14196b250();
+    FUN_14196b2f0();
+    FUN_14196c860();
+    FUN_14196cd30();
+    FUN_141975620();
+    FUN_14196b3a0();
+    FUN_141973a70();
+}
 
 // @0x141974e70
 void UIGuildDialog::FUN_141974e70(const CStringW& strName)

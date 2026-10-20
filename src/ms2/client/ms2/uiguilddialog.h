@@ -21,6 +21,7 @@
 
 class CInPacket;
 class CMsgBoxData;
+class ASButtonBar;
 
 class UIGuildDialog : public UIDialog, public UIStatusEventListener
 {
@@ -44,6 +45,7 @@ public:
     virtual void vfunc_oa0_11(void* a1);                        // UIStatusEventListener 11 0x141976a60 (the guild fund)
 
 
+    MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);  // 0x140c02870 bind a button bar child ("m_category")
     void FUN_141968140(CInPacket& packet);                      // guild packet 0x8a: refresh the buttons on 0x76 / 0x77
     void FUN_141969870(MS2Ptr<ASUIComponent> spPage, bool b);   // a page's slot 4
     bool FUN_141969d10(const CString& strName, MS2Ptr<ASUIComponent>& spPage);   // bind (create) a page
@@ -56,8 +58,14 @@ public:
     void FUN_14196b0e0();                                       // open "guild_house_page"
     void FUN_14196b160();                                       // open "guild_storage_page"
     void FUN_14196b1d0();                                       // open "guild_raid_page"
+    void FUN_14196b250();
+    void FUN_14196b2f0();
+    void FUN_14196b3a0();
     void FUN_14196c1d0();
+    void FUN_14196c860();
+    void FUN_14196cd30();
     void FUN_14196d660();                                       // refresh the join page
+    void FUN_14196da70();                                       // the request member page
     void FUN_14196e2c0();                                       // "setGuildFund"
     void FUN_14196e590();
     void FUN_14196f830();
@@ -67,15 +75,21 @@ public:
     void FUN_141972fc0();                                       // the raid score
     void FUN_141973220();                                       // the raid history
     void FUN_141973610();                                       // the championship info
+    void FUN_141973a70();
     bool FUN_141974ba0(int nResult, const CMsgBoxData& box);    // confirm boxes: forward the box's number to the manager
     bool FUN_141974bf0(int nResult, const CMsgBoxData& box);
     bool FUN_141974c40(int nResult, const CMsgBoxData& box);
     bool FUN_141974c90(int nResult, const CMsgBoxData& box);
+    void FUN_141974ce0();                                       // bind the web guide button and build the static pages
     void FUN_141974e70(const CStringW& strName);                // request by name
     bool FUN_141974ea0();                                       // request a refresh
     bool FUN_1419754b0();                                       // open the realtime rank page
     bool FUN_141975500();                                       // open the rank page
     bool FUN_141975550();                                       // open the pvp rank page
+    void FUN_141975620();
+    void FUN_1419758a0();
+    void FUN_141975c80();
+    void FUN_1419760c0();
     void FUN_1419761f0();                                       // update the buttons
     void FUN_141976380(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_1419763d0(const Scaleform::GFx::FunctionHandler::Params& params);

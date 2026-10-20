@@ -241,6 +241,8 @@ public:
     // unsigned __int64 would make the existing Invoke(method, <int-like>) calls ambiguous.
     Scaleform::GFx::Value FUN_140c1c8c0(const char* szMethod, unsigned __int64 a1);         // 0x140c1c8c0 (UInt value; "setupTabSize")
     Scaleform::GFx::Value FUN_140fdd6b0(const char* szMethod, unsigned __int64 a1, bool a2);   // 0x140fdd6b0 (inline COMDAT, defined in uiweddinghallreservationdialog.cpp; "setTabEnable")
+    Scaleform::GFx::Value FUN_1413127f0(const char* szMethod, CString a1, CString a2);         // 0x1413127f0 (Invoke(string, string); both by value: the callee destroys them; uiguilddialog "setGuildMark")
+    MS2Ptr<class ASDropdownMenu> FUN_140bbe700(const CString& strName);                       // 0x140bbe700 bind a dropdown child (uiguilddialog "m_sortDropdown")
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {
