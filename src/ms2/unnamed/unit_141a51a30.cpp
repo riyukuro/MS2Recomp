@@ -5,8 +5,6 @@
 // reproduces them here (not an exe function of its own). w535.
 // MS2-UNIT: unit_141a51a30
 // MS2-RANGE: 0x141a51a30-0x141a51d30 .text$mn
-// MS2-PIN: ?Release@?$MS2Ptr@VUIMinimapEntityTaxi@@@@AEAAXXZ 0x141a51ab0
-// MS2-PIN: ?Release@?$Unk_AlignInfoPtr@VCAlignmentInfo@UICommon@@@@AEAAXXZ 0x141a51af0
 #define NOMINMAX
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
