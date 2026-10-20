@@ -3712,3 +3712,8 @@ __imp_NxGetUtilLib	142cced28	data
 ??0Unk_InvGroupEntry@@QEAA@AEAVCPartyMember@@@Z	141483580	func
 ??0Unk_InvGroupEntry@@QEAA@AEAVCGuildMember@@@Z	141483830	func
 ??1Unk_InvGuildRef@@QEAA@XZ	1404eead0	func
+??0Unk_PdChat@@QEAA@XZ	140acd570	func
+??1Unk_PdChat@@QEAA@XZ	140acd770	func
+?DAT_142fd11d4@@3QB_WB	142fd11d4	data
+?DAT_142fd1144@@3QBDB	142fd1144	data
+?DAT_142fd116c@@3QBDB	142fd116c	data
