@@ -204,8 +204,8 @@ public:
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x8
     Unk_MeratProductMap m_products;                         // +0x38 every product seen, by key
-    ATL::CRBMap<__int64, MS2Ptr<CUgcCharBookMark> > m_bookMarks;    // +0x68 by bookmark id
-    ATL::CRBMap<__int64, MS2Ptr<CUgcMarketSeller> > m_sellers;      // +0x98 by seller id
+    ATL::CRBMap<unsigned __int64, MS2Ptr<CUgcCharBookMark> > m_bookMarks;   // +0x68 by bookmark id
+    ATL::CRBMap<unsigned __int64, MS2Ptr<CUgcMarketSeller> > m_sellers;     // +0x98 by seller id
     int m_nSellerState;                                     // +0xc8
     __int64 m_nd0;                                          // +0xd0
     __int64 m_nd8;                                          // +0xd8
