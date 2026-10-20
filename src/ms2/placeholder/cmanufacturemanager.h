@@ -27,11 +27,11 @@ public:
     int SendRequest4(unsigned __int64 nId, int nRecipeId, int* pnResult);   // 0x140d509b0: checks the recipe, sends mode 4
     int SendRequest5(unsigned __int64 nId, int nRecipeId, int* pnResult);   // 0x140d50dd0
     int SendRequest6(unsigned __int64 nId, int* pnResult);  // 0x140d50e70: also checks the meso cost
-    bool SendRequest7(unsigned __int64 nId, int* pnResult); // 0x140d50fb0
-    bool SendRequest8(unsigned __int64 nId, int* pnResult); // 0x140d510a0
-    bool SendRequest9(unsigned __int64 nId, int* pnResult); // 0x140d51190
-    bool SendRequest10(unsigned __int64 nId, int* pnResult);    // 0x140d51280
-    bool Lookup(unsigned __int64 nId, MS2Ptr<CManufacture>& spOut);     // 0x140d51370
+    int SendRequest7(unsigned __int64 nId, int* pnResult); // 0x140d50fb0
+    int SendRequest8(unsigned __int64 nId, int* pnResult); // 0x140d510a0
+    int SendRequest9(unsigned __int64 nId, int* pnResult); // 0x140d51190
+    int SendRequest10(unsigned __int64 nId, int* pnResult);    // 0x140d51280
+    int Lookup(unsigned __int64 nId, MS2Ptr<CManufacture>& spOut);     // 0x140d51370
     bool HasManufacture();                                  // 0x140d513c0
     CStringW GetMaidText(int nType, Unk_MfNpc* pNpc);       // 0x140d51400: speech text of the maid npc (plays its sound)
     static UIManufactureDialog* GetManufactureDialog(int nUiId);    // 0x140d51900
