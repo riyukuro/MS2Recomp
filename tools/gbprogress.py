@@ -46,7 +46,7 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb1"                                  # bump to recompile everything
-MATCH_KEY = "callee9-leaf"                        # bump to re-match every obj (pairing logic changed)
+MATCH_KEY = "leaf-pdata"                        # bump to re-match every obj (pairing logic changed)
 LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
 COPY_ROUNDS = 8                              # assign_copies: offers of an unpaired copy to the next claimant
 NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
@@ -171,7 +171,10 @@ def _search(obj, si):
     idx = [k for k in range(len(data)) if keep[k]]
     want = bytes(data[k] for k in idx)
     hits = []
+    leaf = G["leaf"]
     for rva in G["bylen"].get(len(data), []):
+        if (rva in leaf) != (unw is None):      # a leaf (no .pdata) only pairs with a leaf, and vice versa
+            continue
         img = exe.img[rva:rva + len(data)]
         if bytes(img[k] for k in idx) == want:
             hits.append(rva + exe.base)
