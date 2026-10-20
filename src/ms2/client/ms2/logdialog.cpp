@@ -681,3 +681,6 @@ void ClientLogManager::AppendLogContext(MS2Ptr<LogDialogCtx> spCtx)
 // memcpy_s 0x14145bb00 and memmove_s 0x14145bc50 close the obj's COMDAT tail.
 __declspec(selectany) extern errno_t(__cdecl* const ms2_logDialogMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
 __declspec(selectany) extern errno_t(__cdecl* const ms2_logDialogMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;
+
+// IMPLEMENT_DYNAMIC's _GetBaseClass sits just before this TU's range start in the exe.
+// MS2-RANGE: 0x14144fe90-0x14144fec0 .text$mn
