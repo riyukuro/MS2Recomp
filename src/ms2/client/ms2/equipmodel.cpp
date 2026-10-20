@@ -72,6 +72,8 @@
 #include <efd/Category.h>
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/equipitem.h"
+#include "ms2/placeholder/citem.h"
 
 // ---- exe data ----
 extern char DAT_143afa4d8;      // NiNode::ms_RTTI
@@ -326,12 +328,10 @@ void CEquipModel::vfunc_5()
 {
     FUN_1412034e0(this);
     FUN_141203db0(this);
-    alignas(8) char guard[32];
-    FUN_1411de2e0(guard, this);
+    MS2Ptr<CEquipModel> spKeep(this);    // keeps the model alive while the owner drops it
     FUN_1411ddf10(OWNER(this), this);
     FUN_140d37c50(&m_spOwner, 0);
     FUN_1409fabf0(&m_unk_f0, 0);
-    FUN_140b02860(guard);
 }
 
 // @0x1411ffe70
@@ -553,11 +553,7 @@ void* FUN_141200820(CEquipModel* self)
 // @0x141200850
 void* FUN_141200850(CEquipModel* self)
 {
-    alignas(8) char kId[32];
-    unsigned nId = FUN_140526b10(FUN_1401c0180(FUN_1411dc7a0(OWNER(self), kId)));
-    void* p = FUN_141bd1180(FUN_1403ed2d0(), nId);
-    FUN_1401bfde0(kId);
-    return p;
+    return FUN_141bd1180(FUN_1403ed2d0(), ((CEquipItem*)OWNER(self))->FUN_1411dc7a0()->FUN_140526b10());
 }
 
 // @0x1412008e0
