@@ -4047,6 +4047,8 @@ FMOD_System_Create	142303a95	func
 ?FUN_1422af7a0@GFxManager@@QEAAHH@Z	1422af7a0	func
 ?FUN_1422aed30@GFxManager@@QEAAX_N@Z	1422aed30	func
 ?FUN_14025e7a0@@YAPEAVGFxManager@@XZ	14025e7a0	func
+?DirectoryExists@File@efd@@SA_NPEBD@Z	1420b18a0	func
+?DefaultDirectoryExistsFunc@File@efd@@SA_NPEBD@Z	1420b1ae0	func
 ?FUN_1422e6d30@UIAlignWidgetManager@@QEAAXXZ	1422e6d30	func
 ?FUN_1422d0070@ASMovieClipLoader@@QEAAXAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0IH@Z	1422d0070	func
 ?FUN_1422d01b0@ASMovieClipLoader@@QEAAXAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z	1422d01b0	func
