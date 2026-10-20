@@ -30634,7 +30634,7 @@ sprintf	1403b0860	func
 ??$_Destroy_range1@V?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@std@@@std@@YAXPEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@0AEAV?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@0@U?$integral_constant@_N$0A@@0@@Z	1404dba60	func
 ??$_Destroy_range@V?$allocator@PEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@YAXPEAPEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@0AEAV?$allocator@PEAV?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@0@@Z	1404dbac0	func
 ??$_Destroy_range@V?$allocator@U?$pair@HH@std@@@std@@@std@@YAXPEAU?$pair@HH@0@0AEAV?$allocator@U?$pair@HH@std@@@0@@Z	1404dbb10	func
-??$_Destroy_range@V?$allocator@UItemEntity@@@std@@@std@@YAXPEAUItemEntity@@0AEAV?$allocator@UItemEntity@@@0@@Z	1404dbb10	func
+??$_Destroy_range@V?$allocator@UItemEntity@@@std@@@std@@YAXPEAUItemEntity@@0AEAV?$allocator@UItemEntity@@@0@@Z	1402774c0	func
 ??$_Destroy_range@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@YAXPEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@0AEAV?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@0@@Z	1404dbb60	func
 ??$_Destroy_range@V?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@std@@@std@@YAXPEAV?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@0AEAV?$allocator@V?$Unk_PayloadPtr@VCNpcShopProductProxy@@@@@0@@Z	1404dbbb0	func
 ??$_Distance1@PEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@YA_JPEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@0Urandom_access_iterator_tag@0@@Z	1404dbc00	func
@@ -35383,7 +35383,7 @@ sprintf	1403b0860	func
 ??$_Destroy_range1@V?$allocator@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@std@@@std@@@std@@@std@@YAXPEAV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@std@@@0@0AEAV?$allocator@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@std@@@std@@@0@U?$integral_constant@_N$00@0@@Z	1405613c0	func
 ??$_Destroy_range@V?$allocator@V?$MS2Ptr@VCItemData@@@@@std@@@std@@YAXPEAV?$MS2Ptr@VCItemData@@@@0AEAV?$allocator@V?$MS2Ptr@VCItemData@@@@@0@@Z	1405613e0	func
 ??$_Destroy_range@V?$allocator@V?$MS2Ptr@VDropNifData@@@@@std@@@std@@YAXPEAV?$MS2Ptr@VDropNifData@@@@0AEAV?$allocator@V?$MS2Ptr@VDropNifData@@@@@0@@Z	1405613e0	func
-??$_Destroy_range@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@YAXPEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0AEAV?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@0@@Z	140561430	func
+??$_Destroy_range@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@YAXPEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0AEAV?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@0@@Z	140277510	func
 ??$_Destroy_range@V?$allocator@V?$MS2Ptr@VItemModelData@@@@@std@@@std@@YAXPEAV?$MS2Ptr@VItemModelData@@@@0AEAV?$allocator@V?$MS2Ptr@VItemModelData@@@@@0@@Z	140561480	func
 ??$_Destroy_range@V?$allocator@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@std@@@std@@@std@@@std@@YAXPEAV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@std@@@0@0AEAV?$allocator@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCItemData@@@@@std@@@std@@@std@@@std@@@0@@Z	1405614d0	func
 ??$_Emplace_back@AEAV?$MS2Ptr@VCItemData@@@@@?$_Uninitialized_backout_al@PEAV?$MS2Ptr@VCItemData@@@@V?$allocator@V?$MS2Ptr@VCItemData@@@@@std@@@std@@QEAAXAEAV?$MS2Ptr@VCItemData@@@@@Z	140561520	func
@@ -157879,7 +157879,7 @@ FUN_141485590	141485590	func
 ?FindProduct@UIShopDialog@@QEAA?AV?$MS2Ptr@VCNpcShopProductBase@@@@HH@Z	141affbe0	func
 ?FindCurrentProduct@UIShopDialog@@QEAA?AV?$MS2Ptr@VCNpcShopProductBase@@@@H@Z	141affce0	func
 ?FindMeratItem@UIShopDialog@@QEAA?AV?$MS2Ptr@VCNpcShopMeratItemCli@@@@H@Z	141affd40	func
-?PopulateProduct@UIShopDialog@@QEAAHAEAVASSlot@@V?$MS2Ptr@VCNpcShopProductCli@@@@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@PEAX@Z	141b00240	func
+?PopulateProduct@UIShopDialog@@QEAAHAEAVAScript@@V?$MS2Ptr@VCNpcShopProductCli@@@@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@PEAX@Z	141b00240	func
 ?HasShop@UIShopDialog@@QEAA_NXZ	141b031c0	func
 ?GetTalk@UIShopDialog@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H_N@Z	141b03470	func
 ?SetTalk@UIShopDialog@@QEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	141b035c0	func
