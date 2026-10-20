@@ -286,6 +286,8 @@ public:
     Scaleform::GFx::Value FUN_140f0a830(const char* szMethod, Scaleform::GFx::Value a1, long a2);   // 0x140f0a830 Invoke(method, value, long) (uimeratmarketdialog.cpp "updateBg"; a1 by value)
 
     Scaleform::GFx::Value Invoke(const char* szMethod, float a1, float a2, CStringW a3, CStringW a4, CStringW a5, CStringW a6);   // 0x140e6e910 (inline COMDAT, defined in uioxquizdialog.cpp: "setQuizPromoteCooltime"; the strings by value)
+    Scaleform::GFx::Value FUN_140fa7400(const char* szMethod, CStringW a1, CStringW a2, const wchar_t* a3, const wchar_t* a4);   // 0x140fa7400 (inline COMDAT, defined in uisystemshopdialog.cpp: "setShop"; a1/a2 by value)
+    Scaleform::GFx::Value FUN_140fa7540(const char* szMethod, CStringW a1, CStringW a2, CStringW a3, CString a4);   // 0x140fa7540 (inline COMDAT, defined in uisystemshopdialog.cpp: "setShop"; all by value)
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {
