@@ -6,51 +6,74 @@
 // MS2-RANGE: 0x142cad030-0x142cad300 .text$yd
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0$$QEAW4SAType@@$$Z$$V@?$pair@$$CBW4SAType@@H@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@$$QEAW4SAType@@@1@V?$tuple@$$V@1@@Z 0x1411eff10 ; unique
-// MS2-PIN: ??$?0$$QEAW4Unk_EquipAttrType@@$$Z$$V@?$pair@$$CBW4Unk_EquipAttrType@@H@std@@QEAA@Upiecewise_construct_t@1@V?$tuple@$$QEAW4Unk_EquipAttrType@@@1@V?$tuple@$$V@1@@Z 0x1411eff60 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4SAType@@H@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1411effb0 ; prop
-// MS2-PIN: ??$?0V?$tuple@$$QEAH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@QEAA@AEAV?$tuple@$$QEAH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1411f0430 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1411effe0 ; prop
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1411f0010 ; prop
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1411f0070 ; prop
+// MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1411f0160 ; prop
+// MS2-PIN: ??$?0V?$tuple@$$QEAI@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@QEAA@AEAV?$tuple@$$QEAI@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1411f0430 ; unique
 // MS2-PIN: ??$?0V?$tuple@$$QEAW4SAType@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBW4SAType@@H@std@@QEAA@AEAV?$tuple@$$QEAW4SAType@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1411f0480 ; prop
 // MS2-PIN: ??$?8_JV?$allocator@_J@std@@@std@@YA_NAEBV?$vector@_JV?$allocator@_J@std@@@0@0@Z 0x1411f06e0 ; unique
 // MS2-PIN: ??$_Assign_range@PEA_J@?$vector@_JV?$allocator@_J@std@@@std@@AEAAXPEA_J0Uforward_iterator_tag@1@@Z 0x1411f0ee0 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@$$QEAH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAH@1@$$QEAV?$tuple@$$V@1@@Z 0x1411f11c0 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@$$QEAI@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAI@1@$$QEAV?$tuple@$$V@1@@Z 0x1411f11c0 ; unique
 // MS2-PIN: ??$_Copy_unchecked1@PEA_JPEA_J@std@@YAPEA_JPEA_J00U_Trivially_copyable_ptr_iterator_tag@0@@Z 0x1411f1590 ; unique
-// MS2-PIN: ??$_Kfn@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@?$_Tmap_traits@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@SAAEBHAEBU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@1@@Z 0x1411f44d0 ; unique
-// MS2-PIN: ??$_Kfn@$$CBW4Unk_EquipAttrType@@H@?$_Tmap_traits@W4Unk_EquipAttrType@@HU?$less@W4Unk_EquipAttrType@@@std@@V?$allocator@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@3@$0A@@std@@SAAEBW4Unk_EquipAttrType@@AEBU?$pair@$$CBW4Unk_EquipAttrType@@H@1@@Z 0x1411f44e0 ; unique
+// MS2-PIN: ??$addressof@PEAU?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@YAPEAPEAU?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@0@AEAPEAU10@@Z 0x1411f55d0 ; prop
 // MS2-PIN: ??$assign@PEA_JX@?$vector@_JV?$allocator@_J@std@@@std@@QEAAXPEA_J0@Z 0x1411f5660 ; unique
-// MS2-PIN: ??$construct@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@$$QEAH@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAH@1@$$QEAV?$tuple@$$V@1@@Z 0x1411f5760 ; unique
-// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@$$QEAH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAH@1@$$QEAV?$tuple@$$V@1@@Z 0x1411f5c20 ; unique
-// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@0@AEAV10@@Z 0x1411f6050 ; prop
-// MS2-PIN: ??$try_emplace@$$V@?$map@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@_N@1@$$QEAH@Z 0x1411f61f0 ; unique
+// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@$$QEAI@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@IV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAI@1@$$QEAV?$tuple@$$V@1@@Z 0x1411f5c20 ; unique
+// MS2-PIN: ??$forward@$$QEAW4SAType@@@std@@YA$$QEAW4SAType@@AEAW41@@Z 0x1411f5f80 ; unique
+// MS2-PIN: ??$forward@$$QEAW4Unk_EquipAttrType@@@std@@YA$$QEAW4Unk_EquipAttrType@@AEAW41@@Z 0x1411f5f90 ; unique
+// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@0@AEAV10@@Z 0x1411f6050 ; prop
 // MS2-PIN: ??0<lambda_e3ae51564bd7b6f324d46c66dbae60ef>@@QEAA@QEAV?$vector@HV?$allocator@H@std@@@std@@AEBH@Z 0x1411f6320 ; prop
 // MS2-PIN: ??0Unk_SetEffectBits@@QEAA@XZ 0x1411f6350 ; unique
+// MS2-PIN: ??0?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VReplaceObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VReplaceObject@@@@@2@@ATL@@QEAA@_K@Z 0x1411f6460 ; prop
 // MS2-PIN: ??0?$CRBMap@W4Unk_EquipSlotId@@V?$MS2Ptr@VCEquipmentSlot@@@@V?$CElementTraits@W4Unk_EquipSlotId@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCEquipmentSlot@@@@@4@@ATL@@QEAA@_K@Z 0x1411f6490 ; unique
 // MS2-PIN: ??0?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VReplaceObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VReplaceObject@@@@@2@@ATL@@IEAA@_K@Z 0x1411f64c0 ; prop
 // MS2-PIN: ??0?$CRBTree@W4Unk_EquipSlotId@@V?$MS2Ptr@VCEquipmentSlot@@@@V?$CElementTraits@W4Unk_EquipSlotId@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCEquipmentSlot@@@@@4@@ATL@@IEAA@_K@Z 0x1411f6520 ; prop
-// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@std@@@std@@QEAA@XZ 0x1411f6c00 ; unique
-// MS2-PIN: ??0?$_Vector_val@U?$_Simple_types@H@std@@@std@@QEAA@XZ 0x1411f6d10 ; prop
-// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBW4SAType@@H@std@@PEAX@std@@@std@@QEAA@XZ 0x1411f6d90 ; prop
-// MS2-PIN: ??0?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@QEAA@XZ 0x1411f6dc0 ; prop
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@W4Unk_EquipAttrType@@HU?$less@W4Unk_EquipAttrType@@@std@@V?$allocator@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@W4Unk_EquipAttrType@@@1@@Z 0x1411f6990 ; prop
+// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@std@@QEAA@XZ 0x1411f6a10 ; prop
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@@std@@QEAA@XZ 0x1411f6ce0 ; prop
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@PEAX@std@@@std@@QEAA@XZ 0x1411f6d90 ; prop
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@QEAA@XZ 0x1411f6da0 ; prop
+// MS2-PIN: ??0?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@QEAA@XZ 0x1411f6db0 ; prop
+// MS2-PIN: ??0?$map@W4Unk_EquipAttrType@@HU?$less@W4Unk_EquipAttrType@@@std@@V?$allocator@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@3@@std@@QEAA@XZ 0x1411f6e00 ; unique
 // MS2-PIN: ??0?$vector@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@QEAA@XZ 0x1411f6ee0 ; unique
+// MS2-PIN: ??1?$map@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@@std@@QEAA@XZ 0x1411f75a0 ; prop
 // MS2-PIN: ??1SetEffectInfo@Equipment@@UEAA@XZ 0x1411f77d0 ; unique
 // MS2-PIN: ??4?$vector@_JV?$allocator@_J@std@@@std@@QEAAAEAV01@AEBV01@@Z 0x1411f79e0 ; unique
-// MS2-PIN: ??A?$map@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@@std@@QEAAAEAV?$vector@_JV?$allocator@_J@std@@@1@$$QEAH@Z 0x1411f7c90 ; unique
+// MS2-PIN: ??A?$map@IV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@@std@@QEAAAEAV?$vector@_JV?$allocator@_J@std@@@1@$$QEAI@Z 0x1411f7c90 ; unique
 // MS2-PIN: ??Breference@Unk_LayerBits@@QEBA_NXZ 0x1411f7e50 ; unique
 // MS2-PIN: ??C?$MS2Ptr@VReplaceObject@@@@QEBAPEAVReplaceObject@@XZ 0x1411f7eb0 ; unique
+// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBW4SAType@@H@1@XZ 0x1411f7ed0 ; prop
+// MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBW4SAType@@H@1@XZ 0x1411f7f50 ; prop
+// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1411f7fe0 ; prop
+// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1411f8200 ; prop
+// MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1411f8240 ; prop
 // MS2-PIN: ?CompareElementsOrdered@?$CDefaultCompareTraits@W4Unk_EquipSlotId@@@ATL@@SAHAEBW4Unk_EquipSlotId@@0@Z 0x1411f8860 ; unique
 // MS2-PIN: ?Lookup@?$CRBMap@W4Unk_EquipSlotId@@V?$MS2Ptr@VCEquipmentSlot@@@@V?$CElementTraits@W4Unk_EquipSlotId@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCEquipmentSlot@@@@@4@@ATL@@QEBA_NAEBW4Unk_EquipSlotId@@AEAV?$MS2Ptr@VCEquipmentSlot@@@@@Z 0x1411f99e0 ; unique
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@W4Unk_EquipAttrType@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@W4Unk_EquipAttrType@@@2@XZ 0x1411fce80 ; unique
-// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@@std@@QEBAAEBV?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@2@XZ 0x1411fd130 ; unique
+// MS2-PIN: ?_Copy_alloc@?$_Vector_alloc@U?$_Vec_base_types@_JV?$allocator@_J@std@@@std@@@std@@QEAAXAEBV?$allocator@_J@2@@Z 0x1411fbe70 ; prop
+// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@IV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@2@@Z 0x1411fbf20 ; unique
+// MS2-PIN: ?_Erase@?$_Tree@V?$_Tmap_traits@IV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@2@@Z 0x1411fbfc0 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@I@2@XZ 0x1411fce60 ; prop
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4SAType@@H@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBW4SAType@@H@std@@PEAX@std@@@2@XZ 0x1411fceb0 ; prop
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@W4SAType@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4SAType@@H@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@2@$00@2@$00@std@@QEAAAEAV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4SAType@@H@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@2@$00@2@XZ 0x1411fcf30 ; prop
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4SAType@@H@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@2@$00@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@2@XZ 0x1411fcf70 ; prop
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAAEAU?$less@I@2@XZ 0x1411fd150 ; prop
+// MS2-PIN: ?_Key@?$_Tree@V?$_Tmap_traits@IV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@IEBAAEBIPEAU?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@2@@Z 0x1411fd250 ; unique
 // MS2-PIN: ??AUnk_LayerBits@@QEAA?AVreference@0@H@Z 0x1411fe3c0 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@std@@@?$Delegate@$$A6AXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1411fe720 ; unique
+// MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@2@_K@Z 0x1411fe780 ; prop
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@2@_K@Z 0x1411fe7e0 ; prop
+// MS2-PIN: ?erase@?$_Tree@V?$_Tmap_traits@IV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@2@@Z 0x1411feaa0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@std@@@?$Delegate@$$A6AXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@@UEAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x1411fecf0 ; unique
 // MS2-PIN: ??$Call@VCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@?$DelegateImpl@U?$pair@PEAVCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@std@@@?$Delegate@$$A6AXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@@CAXAEAU?$pair@PEAVCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@std@@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x1411fed60 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@std@@@?$Delegate@$$A6AXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1411fedd0 ; unique
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@2@@Z 0x1411fef00 ; unique
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VCEquipItem@@@@@std@@@std@@SA_KAEBV?$allocator@V?$MS2Ptr@VCEquipItem@@@@@2@@Z 0x1411fef20 ; unique
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@SA_KAEBV?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@2@@Z 0x1411fef30 ; unique
 // MS2-PIN: ?resize@?$vector@HV?$allocator@H@std@@@std@@QEAAX_KAEBH@Z 0x1411ff0c0 ; prop
 // MS2-PIN: ?resize@?$vector@V?$MS2Ptr@VCEquipItem@@@@V?$allocator@V?$MS2Ptr@VCEquipItem@@@@@std@@@std@@QEAAX_KAEBV?$MS2Ptr@VCEquipItem@@@@@Z 0x1411ff120 ; prop
 // MS2-PIN: ?Test@Unk_LayerBits@@QEBA_NH@Z 0x1411ff380 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??A?$map@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@@std@@QEAAAEAH$$QEAW4SAType@@@Z 0x1411f7cd0 ; manual: m_abilities[(SAType)k] of 0x1411e76c0 (calls at 0x1411e8346, 0x1411e83ab)
 // The queue row ?\equipitem.cpp also covers this TU (equipitem.cpp holds 0x1411dbc70-0x1411df580).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\equipment.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -392,6 +415,7 @@ public:
 };
 
 // @0x1411df590
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 CEquipmentSlot::CEquipmentSlot()
 {
     m_nIndex = 0;
@@ -407,6 +431,7 @@ CEquipmentSlot::~CEquipmentSlot()
 }
 
 // @0x1411df700
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 bool CEquipmentSlotLayerInfo::FUN_1411df700()
 {
     if (FUN_1411df7d0() == true) {
@@ -418,6 +443,7 @@ bool CEquipmentSlotLayerInfo::FUN_1411df700()
     }
     return false;
 }
+MS2_REPLACE_METHOD(0x1411DF700, CEquipmentSlotLayerInfo, FUN_1411df700, 187, 0x42BE9E17);
 
 // @0x1411df7d0
 bool CEquipmentSlotLayerInfo::FUN_1411df7d0()
@@ -426,14 +452,17 @@ bool CEquipmentSlotLayerInfo::FUN_1411df7d0()
         return true;
     return false;
 }
+MS2_REPLACE_METHOD(0x1411DF7D0, CEquipmentSlotLayerInfo, FUN_1411df7d0, 57, 0xC4DEB61E);
 
 // @0x1411df810
 bool CEquipmentSlotLayerInfo::FUN_1411df810()
 {
     return m_bActive;
 }
+MS2_REPLACE_METHOD(0x1411DF810, CEquipmentSlotLayerInfo, FUN_1411df810, 15, 0x52A185E5);
 
 // @0x1411df830
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipmentSlotLayerInfo::FUN_1411df830()
 {
     if (!FUN_1411df7d0())
@@ -446,8 +475,10 @@ int CEquipmentSlotLayerInfo::FUN_1411df830()
         return 3;
     return 1;
 }
+MS2_REPLACE_METHOD(0x1411DF830, CEquipmentSlotLayerInfo, FUN_1411df830, 161, 0x240A1BD9);
 
 // @0x1411df910
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 unsigned char CEquipmentSlotLayerInfo::FUN_1411df910()
 {
     if (!m_bBusy && (m_48 == 0 || m_timer.Check(m_48) == 0)) {
@@ -491,12 +522,14 @@ unsigned char CEquipmentSlotLayerInfo::FUN_1411df910()
     m_bBusy = false;
     return bChanged;
 }
+MS2_REPLACE_METHOD(0x1411DF910, CEquipmentSlotLayerInfo, FUN_1411df910, 715, 0x227410BA);
 
 // @0x1411dfbf0
 void CEquipmentSlotLayerInfo::FUN_1411dfbf0(bool bDirty)
 {
     m_bBusy = true;
 }
+MS2_REPLACE_METHOD(0x1411DFBF0, CEquipmentSlotLayerInfo, FUN_1411dfbf0, 19, 0xDA3B4451);
 
 // @0x1411dfc10
 bool CEquipmentSlotLayerInfo::FUN_1411dfc10(const CMsTime& kStart, const CMsTime& kEnd)
@@ -507,8 +540,10 @@ bool CEquipmentSlotLayerInfo::FUN_1411dfc10(const CMsTime& kStart, const CMsTime
     FUN_1411df910();
     return true;
 }
+MS2_REPLACE_METHOD(0x1411DFC10, CEquipmentSlotLayerInfo, FUN_1411dfc10, 92, 0x016F9104);
 
 // @0x1411dfc80
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 Equipment::SetEffectInfo::SetEffectInfo()
 {
     m_nEffect = 0;
@@ -530,6 +565,7 @@ bool Equipment::SetEffectInfo::FUN_1411dfcf0(MS2Ptr<SetEffectInfo> spOther)
 }
 
 // @0x1411dfe00
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 CEquipment::CEquipment(PC* pPC)
     : m_00(0), m_04(0), m_pPC(pPC), m_slots(10), m_spCutting(0), m_48(0), m_4c(0), m_50(0), m_54(0), m_58(0),
       m_5c(false), m_bOptimize(false), m_5e(false), m_5f(false), m_64(0),
@@ -569,6 +605,7 @@ CEquipment::CEquipment(PC* pPC)
 }
 
 // @0x1411e06e0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 CEquipment::~CEquipment()
 {
     m_pPC = 0;
@@ -590,6 +627,7 @@ void CEquipment::FUN_1411e0810()
     }
     FUN_1411ef970();
 }
+MS2_REPLACE_METHOD(0x1411E0810, CEquipment, FUN_1411e0810, 383, 0x19ED6C0E);
 
 // @0x1411e09a0
 int CEquipment::FUN_1411e09a0()
@@ -608,6 +646,7 @@ int CEquipment::FUN_1411e09a0()
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x1411E09A0, CEquipment, FUN_1411e09a0, 394, 0xEE20E395);
 
 // @0x1411e0b30
 int CEquipment::FUN_1411e0b30()
@@ -619,6 +658,7 @@ int CEquipment::FUN_1411e0b30()
     FUN_1411e6e70();
     return 1;
 }
+MS2_REPLACE_METHOD(0x1411E0B30, CEquipment, FUN_1411e0b30, 94, 0xE7498C31);
 
 // @0x1411e0ba0
 int CEquipment::FUN_1411e0ba0()
@@ -628,20 +668,24 @@ int CEquipment::FUN_1411e0ba0()
     FUN_1411e6e70();
     return 1;
 }
+MS2_REPLACE_METHOD(0x1411E0BA0, CEquipment, FUN_1411e0ba0, 80, 0xB616FBC2);
 
 // @0x1411e0c00
 int CEquipment::FUN_1411e0c00()
 {
     return 0;
 }
+MS2_REPLACE_METHOD(0x1411E0C00, CEquipment, FUN_1411e0c00, 8, 0x7F371472);
 
 // @0x1411e0c10
 void CEquipment::FUN_1411e0c10()
 {
     FUN_1411e0b30();
 }
+MS2_REPLACE_METHOD(0x1411E0C10, CEquipment, FUN_1411e0c10, 24, 0xB748DA86);
 
 // @0x1411e0c30
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e0c30(int nItemId)
 {
     ATL::CAtlList<MS2Ptr<CEquipItem> > items(10);
@@ -654,8 +698,10 @@ int CEquipment::FUN_1411e0c30(int nItemId)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1411E0C30, CEquipment, FUN_1411e0c30, 258, 0x13E7BCD3);
 
 // @0x1411e0d40
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e0d40(int nItemId)
 {
     ATL::CAtlList<MS2Ptr<CEquipItem> > items(10);
@@ -668,25 +714,30 @@ int CEquipment::FUN_1411e0d40(int nItemId)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1411E0D40, CEquipment, FUN_1411e0d40, 402, 0xD6A89EDA);
 
 // @0x1411e0ee0
 PC* CEquipment::FUN_1411e0ee0()
 {
     return m_pPC;
 }
+MS2_REPLACE_METHOD(0x1411E0EE0, CEquipment, FUN_1411e0ee0, 15, 0x5B8A7339);
 
 // MS2-FUNCTIONAL: the (double)a * b + 1e-6 helper 0x1411f0e30 is a header inline; written out here.
 // @0x1411e0f00
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 float CEquipment::FUN_1411e0f00(float f)
 {
     return FUN_1411f0e30(f, FUN_1411e1110((SAType)3) + 1.0f);
 }
+MS2_REPLACE_METHOD(0x1411E0F00, CEquipment, FUN_1411e0f00, 64, 0x3EEAD177);
 
 // @0x1411e0f50
 float CEquipment::FUN_1411e0f50(float f)
 {
     return f + (float)FUN_1411e1160((SAType)4);
 }
+MS2_REPLACE_METHOD(0x1411E0F50, CEquipment, FUN_1411e0f50, 52, 0x8F1B85F0);
 
 // @0x1411e0f90
 float CEquipment::FUN_1411e0f90(float f)
@@ -703,6 +754,7 @@ float CEquipment::FUN_1411e0f90(float f)
         fReduce = FUN_14028d3a0(200.0f);
     return efd::Max(0.0f, f - fReduce);
 }
+MS2_REPLACE_METHOD(0x1411E0F90, CEquipment, FUN_1411e0f90, 219, 0xCA24EDCB);
 
 // @0x1411e1080
 unsigned CEquipment::FUN_1411e1080(unsigned n)
@@ -710,13 +762,16 @@ unsigned CEquipment::FUN_1411e1080(unsigned n)
     n = (unsigned)((float)n - (float)n * FUN_1411e1110((SAType)0x22));
     return n < 0 ? 0 : n;
 }
+MS2_REPLACE_METHOD(0x1411E1080, CEquipment, FUN_1411e1080, 127, 0xAAB3833A);
 
 // @0x1411e1110
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 float CEquipment::FUN_1411e1110(SAType eType)
 {
     int nValue = FUN_1411e1160(eType);
     return nValue / 1000.0f;
 }
+MS2_REPLACE_METHOD(0x1411E1110, CEquipment, FUN_1411e1110, 62, 0xA9611F25);
 
 // @0x1411e1160
 int CEquipment::FUN_1411e1160(SAType eType)
@@ -727,8 +782,10 @@ int CEquipment::FUN_1411e1160(SAType eType)
     nValue += m_pPC->FUN_1411f9310()->GetSpecialAbility(eType);
     return nValue;
 }
+MS2_REPLACE_METHOD(0x1411E1160, CEquipment, FUN_1411e1160, 231, 0xFAF634DB);
 
 // @0x1411e1250
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 float CEquipment::FUN_1411e1250(int nOption, unsigned nKey)
 {
     MS2Ptr<SAInvokeEffectStat> spStat;
@@ -745,8 +802,10 @@ float CEquipment::FUN_1411e1250(int nOption, unsigned nKey)
         return 0;
     return spOption->FUN_140267350();
 }
+MS2_REPLACE_METHOD(0x1411E1250, CEquipment, FUN_1411e1250, 393, 0x8631731B);
 
 // @0x1411e13e0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 float CEquipment::FUN_1411e13e0(int nOption, unsigned nKey)
 {
     MS2Ptr<SAInvokeEffectStat> spStat;
@@ -763,6 +822,7 @@ float CEquipment::FUN_1411e13e0(int nOption, unsigned nKey)
         return 0.0f;
     return (float)spOption->FUN_140267370();
 }
+MS2_REPLACE_METHOD(0x1411E13E0, CEquipment, FUN_1411e13e0, 397, 0xAC56B855);
 
 // @0x1411e1580
 MS2Ptr<CEquipItem> CEquipment::FUN_1411e1580(__int64 nUid)
@@ -779,8 +839,10 @@ MS2Ptr<CEquipItem> CEquipment::FUN_1411e1580(__int64 nUid)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1411E1580, CEquipment, FUN_1411e1580, 502, 0x411B38E6);
 
 // @0x1411e1780
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 MS2Ptr<CEquipItem> CEquipment::FUN_1411e1780(int nSlot, int nLayer)
 {
     MS2Ptr<CEquipmentSlot> spSlot(0);
@@ -788,6 +850,7 @@ MS2Ptr<CEquipItem> CEquipment::FUN_1411e1780(int nSlot, int nLayer)
         return 0;
     return spSlot->m_items[nLayer];
 }
+MS2_REPLACE_METHOD(0x1411E1780, CEquipment, FUN_1411e1780, 212, 0xC2F226B7);
 
 // @0x1411e1860
 MS2Ptr<CEquipItem> CEquipment::FUN_1411e1860(int nSlot, int nSkip, int bCheck)
@@ -806,6 +869,7 @@ MS2Ptr<CEquipItem> CEquipment::FUN_1411e1860(int nSlot, int nSkip, int bCheck)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1411E1860, CEquipment, FUN_1411e1860, 474, 0x7790768A);
 
 // @0x1411e1a50
 MS2Ptr<CEquipItem> CEquipment::FUN_1411e1a50(int nSlot, int bCheck)
@@ -820,6 +884,7 @@ MS2Ptr<CEquipItem> CEquipment::FUN_1411e1a50(int nSlot, int bCheck)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1411E1A50, CEquipment, FUN_1411e1a50, 285, 0x343BA48E);
 
 // @0x1411e1b80
 void CEquipment::FUN_1411e1b80(ATL::CAtlList<MS2Ptr<CEquipItem> >& items) const
@@ -835,6 +900,7 @@ void CEquipment::FUN_1411e1b80(ATL::CAtlList<MS2Ptr<CEquipItem> >& items) const
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E1B80, CEquipment, FUN_1411e1b80, 341, 0xF0F75B4F);
 
 // @0x1411e1ce0
 void CEquipment::FUN_1411e1ce0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer)
@@ -848,6 +914,7 @@ void CEquipment::FUN_1411e1ce0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nL
             items.AddTail(spItem);
     }
 }
+MS2_REPLACE_METHOD(0x1411E1CE0, CEquipment, FUN_1411e1ce0, 319, 0x555C694A);
 
 // @0x1411e1e30
 void CEquipment::FUN_1411e1e30(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nSkip)
@@ -867,6 +934,7 @@ void CEquipment::FUN_1411e1e30(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nS
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E1E30, CEquipment, FUN_1411e1e30, 392, 0x743982C5);
 
 // @0x1411e1fc0
 void CEquipment::FUN_1411e1fc0(std::list<MS2Ptr<CEquipItem> >& items, int nSkip)
@@ -886,6 +954,7 @@ void CEquipment::FUN_1411e1fc0(std::list<MS2Ptr<CEquipItem> >& items, int nSkip)
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E1FC0, CEquipment, FUN_1411e1fc0, 392, 0xEE0FA6C8);
 
 // @0x1411e2150
 void CEquipment::FUN_1411e2150(std::list<MS2Ptr<CEquipItem> >& items, int nLayer)
@@ -901,6 +970,7 @@ void CEquipment::FUN_1411e2150(std::list<MS2Ptr<CEquipItem> >& items, int nLayer
             items.push_back(spItem);
     }
 }
+MS2_REPLACE_METHOD(0x1411E2150, CEquipment, FUN_1411e2150, 350, 0x565779E5);
 
 // @0x1411e22c0
 void CEquipment::FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer)
@@ -916,6 +986,7 @@ void CEquipment::FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nL
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E22C0, CEquipment, FUN_1411e22c0, 367, 0xC09FFC5A);
 
 // @0x1411e2440
 int CEquipment::FUN_1411e2440(int nLayer)
@@ -934,6 +1005,7 @@ int CEquipment::FUN_1411e2440(int nLayer)
     }
     return nCount;
 }
+MS2_REPLACE_METHOD(0x1411E2440, CEquipment, FUN_1411e2440, 450, 0x0D336FC1);
 
 // @0x1411e2e40
 void CEquipment::FUN_1411e2e40(ATL::CAtlList<MS2Ptr<CEquipItem> >& items)
@@ -951,6 +1023,7 @@ void CEquipment::FUN_1411e2e40(ATL::CAtlList<MS2Ptr<CEquipItem> >& items)
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E2E40, CEquipment, FUN_1411e2e40, 434, 0x9872F663);
 
 // @0x1411e3600
 void CEquipment::FUN_1411e3600(MS2Ptr<CItem> spItem)
@@ -969,6 +1042,7 @@ void CEquipment::FUN_1411e36e0(MS2Ptr<CEquipItem> spItem)
     spItem->FUN_1411dbf60();
     NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyChangeEquipment(m_pPC)));
 }
+MS2_REPLACE_METHOD(0x1411E36E0, CEquipment, FUN_1411e36e0, 266, 0x0D1E0438);
 
 // @0x1411e37f0
 void CEquipment::FUN_1411e37f0(MS2Ptr<CItem> spItem, __int64 nValue)
@@ -1016,6 +1090,7 @@ void CEquipment::FUN_1411e3bd0(MS2Ptr<CEquipItem> spItem, int nFlag)
     FUN_1411ebec0(spItem, 0);
     spItem->FUN_1411dbf80(nFlag);
 }
+MS2_REPLACE_METHOD(0x1411E3BD0, CEquipment, FUN_1411e3bd0, 143, 0x0A117D3B);
 
 // @0x1411e3c70
 void CEquipment::FUN_1411e3c70(MS2Ptr<CEquipItem> spItem, int nFlag)
@@ -1024,6 +1099,7 @@ void CEquipment::FUN_1411e3c70(MS2Ptr<CEquipItem> spItem, int nFlag)
         return;
     CItemLoader::GetInstance()->Request(m_pPC->FUN_14123c580(), MS2Ptr<CPtred>(spItem), nFlag);
 }
+MS2_REPLACE_METHOD(0x1411E3C70, CEquipment, FUN_1411e3c70, 164, 0xA28D6850);
 
 // @0x1411e3d20
 void CEquipment::FUN_1411e3d20(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nFlag)
@@ -1034,6 +1110,7 @@ void CEquipment::FUN_1411e3d20(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nF
             FUN_1411e3bd0(spItem, nFlag);
     }
 }
+MS2_REPLACE_METHOD(0x1411E3D20, CEquipment, FUN_1411e3d20, 186, 0xDD1FFFAB);
 
 // @0x1411e3de0
 void CEquipment::FUN_1411e3de0(int bKeepLoaded)
@@ -1051,8 +1128,10 @@ void CEquipment::FUN_1411e3de0(int bKeepLoaded)
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E3DE0, CEquipment, FUN_1411e3de0, 408, 0xF5635027);
 
 // @0x1411e3f80
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e3f80(const ATL::CRBMap<Unk_EquipSlotId, int>& keep, int bKeepLoaded)
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
@@ -1070,8 +1149,10 @@ void CEquipment::FUN_1411e3f80(const ATL::CRBMap<Unk_EquipSlotId, int>& keep, in
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E3F80, CEquipment, FUN_1411e3f80, 451, 0x79A32EFE);
 
 // @0x1411e2610
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 MS2Ptr<CEquipItem> CEquipment::FUN_1411e2610(NiAVObject* pObj, bool bActive, int nLayer, bool bDeep)
 {
     ATL::CAtlList<MS2Ptr<CEquipItem> > items(10);
@@ -1108,8 +1189,10 @@ MS2Ptr<CEquipItem> CEquipment::FUN_1411e2610(NiAVObject* pObj, bool bActive, int
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1411E2610, CEquipment, FUN_1411e2610, 1096, 0x8C22F7A4);
 
 // @0x1411e2a60
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 NiAVObjectPtr CEquipment::FUN_1411e2a60(__int64 nUid, const CString& strName, bool bDeep)
 {
     MS2Ptr<CEquipItem> spItem = FUN_1411e1580(nUid);
@@ -1137,8 +1220,10 @@ NiAVObjectPtr CEquipment::FUN_1411e2a60(__int64 nUid, const CString& strName, bo
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1411E2A60, CEquipment, FUN_1411e2a60, 980, 0x3A9CCBCA);
 
 // @0x1411e3000
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e3000(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nMaxLayer, int bCheck, bool bForce)
 {
     bool bNotFitting = !FUN_14087ddc0(m_pPC != 0 ? m_pPC->GetClassDesc() : 0, 0x6200044);
@@ -1186,8 +1271,10 @@ void CEquipment::FUN_1411e3000(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nM
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E3000, CEquipment, FUN_1411e3000, 1524, 0xF09AC989);
 
 // @0x1411e4150
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e4150(__int64 nItemUid, int nSlot, int nLayer)
 {
     MS2Ptr<CEquipItem> spItem = FUN_1411e1580(nItemUid);
@@ -1220,8 +1307,10 @@ void CEquipment::FUN_1411e4150(__int64 nItemUid, int nSlot, int nLayer)
         FUN_141653f00(m_pPC);
     }
 }
+MS2_REPLACE_METHOD(0x1411E4150, CEquipment, FUN_1411e4150, 1364, 0x8FA3D284);
 
 // @0x1411e46b0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e46b0(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem == 0)
@@ -1264,8 +1353,10 @@ void CEquipment::FUN_1411e46b0(MS2Ptr<CEquipItem> spItem)
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E46B0, CEquipment, FUN_1411e46b0, 1138, 0x9393D16F);
 
 // @0x1411e4b30
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e4b30(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem == 0)
@@ -1319,8 +1410,10 @@ void CEquipment::FUN_1411e4b30(MS2Ptr<CEquipItem> spItem)
     if (m_pPC != 0 && pData->FUN_14053d2f0())
         m_pPC->FUN_141659000(1);
 }
+MS2_REPLACE_METHOD(0x1411E4B30, CEquipment, FUN_1411e4b30, 1469, 0xA5ED6CA1);
 
 // @0x1411e5100
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e5100(MS2Ptr<CEquipItem> spItem)
 {
     if (m_pPC == 0 || spItem == 0)
@@ -1337,8 +1430,10 @@ void CEquipment::FUN_1411e5100(MS2Ptr<CEquipItem> spItem)
             FUN_1411e58c0(spItem, s_tagLayerExpired);
     }
 }
+MS2_REPLACE_METHOD(0x1411E5100, CEquipment, FUN_1411e5100, 377, 0xE9C3365C);
 
 // @0x1411e5280
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e5280(int nLayer)
 {
     for (int i = nLayer + 1; i <= 5; i++) {
@@ -1351,6 +1446,7 @@ int CEquipment::FUN_1411e5280(int nLayer)
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x1411E5280, CEquipment, FUN_1411e5280, 446, 0x5AA11983);
 
 // @0x1411e5450
 void CEquipment::FUN_1411e5450(MS2Ptr<CEquipItem> spItem)
@@ -1361,6 +1457,7 @@ void CEquipment::FUN_1411e5450(MS2Ptr<CEquipItem> spItem)
     spItem->FUN_1411dd280();
     FUN_1411e5940(spItem);
 }
+MS2_REPLACE_METHOD(0x1411E5450, CEquipment, FUN_1411e5450, 156, 0xA4CB1680);
 
 // @0x1411e5500
 void CEquipment::FUN_1411e5500(MS2Ptr<CEquipItem> spItem)
@@ -1371,6 +1468,7 @@ void CEquipment::FUN_1411e5500(MS2Ptr<CEquipItem> spItem)
     spItem->FUN_1411dd280();
     FUN_1411e5940(spItem);
 }
+MS2_REPLACE_METHOD(0x1411E5500, CEquipment, FUN_1411e5500, 156, 0x2E51EBC3);
 
 // @0x1411e55b0
 void CEquipment::FUN_1411e55b0(MS2Ptr<CEquipItem> spItem)
@@ -1381,6 +1479,7 @@ void CEquipment::FUN_1411e55b0(MS2Ptr<CEquipItem> spItem)
     spItem->FUN_1411dd280();
     FUN_1411e5940(spItem);
 }
+MS2_REPLACE_METHOD(0x1411E55B0, CEquipment, FUN_1411e55b0, 156, 0x71C69819);
 
 // @0x1411e5660
 void CEquipment::FUN_1411e5660(MS2Ptr<CEquipItem> spItem)
@@ -1390,6 +1489,7 @@ void CEquipment::FUN_1411e5660(MS2Ptr<CEquipItem> spItem)
     spItem->FUN_1411dcf10(s_tagPCBang);
     spItem->FUN_1411dd280();
 }
+MS2_REPLACE_METHOD(0x1411E5660, CEquipment, FUN_1411e5660, 111, 0x483B4198);
 
 // @0x1411e56e0
 void CEquipment::FUN_1411e56e0(MS2Ptr<CEquipItem> spItem)
@@ -1400,6 +1500,7 @@ void CEquipment::FUN_1411e56e0(MS2Ptr<CEquipItem> spItem)
     spItem->FUN_1411dd280();
     FUN_1411e5940(spItem);
 }
+MS2_REPLACE_METHOD(0x1411E56E0, CEquipment, FUN_1411e56e0, 156, 0x763951D3);
 
 // @0x1411e5790
 void CEquipment::FUN_1411e5790(MS2Ptr<CEquipItem> spItem)
@@ -1409,6 +1510,7 @@ void CEquipment::FUN_1411e5790(MS2Ptr<CEquipItem> spItem)
     spItem->FUN_1411dcf10(s_tagVIP);
     spItem->FUN_1411dd280();
 }
+MS2_REPLACE_METHOD(0x1411E5790, CEquipment, FUN_1411e5790, 111, 0x3D0022FC);
 
 // @0x1411e5810
 void CEquipment::FUN_1411e5810(MS2Ptr<CEquipItem> spItem, const CString& strTag)
@@ -1419,6 +1521,7 @@ void CEquipment::FUN_1411e5810(MS2Ptr<CEquipItem> spItem, const CString& strTag)
     spItem->FUN_1411dd280();
     FUN_1411e5940(spItem);
 }
+MS2_REPLACE_METHOD(0x1411E5810, CEquipment, FUN_1411e5810, 159, 0x2B07B628);
 
 // @0x1411e58c0
 void CEquipment::FUN_1411e58c0(MS2Ptr<CEquipItem> spItem, const CString& strTag)
@@ -1428,8 +1531,10 @@ void CEquipment::FUN_1411e58c0(MS2Ptr<CEquipItem> spItem, const CString& strTag)
     spItem->FUN_1411dcf10(strTag);
     spItem->FUN_1411dd280();
 }
+MS2_REPLACE_METHOD(0x1411E58C0, CEquipment, FUN_1411e58c0, 114, 0x3C864B8A);
 
 // @0x1411e5940
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e5940(MS2Ptr<CEquipItem> spItem)
 {
     if (!spItem)
@@ -1458,14 +1563,17 @@ void CEquipment::FUN_1411e5940(MS2Ptr<CEquipItem> spItem)
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E5940, CEquipment, FUN_1411e5940, 710, 0x69C7F7D5);
 
 // @0x1411e7320
 void CEquipment::FUN_1411e7320()
 {
     m_pPC->FUN_1416749a0()->FUN_140971720(m_skillStats, m_effectStats);
 }
+MS2_REPLACE_METHOD(0x1411E7320, CEquipment, FUN_1411e7320, 85, 0xE5AB6BCD);
 
 // @0x1411e7380
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e7380()
 {
     MS2Ptr<CEquipItem> spItem = m_pPC->FUN_141655e10(7);
@@ -1489,12 +1597,14 @@ void CEquipment::FUN_1411e7380()
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E7380, CEquipment, FUN_1411e7380, 615, 0xF0247AD0);
 
 // @0x1411e75f0
 void CEquipment::FUN_1411e75f0()
 {
     m_48 = 1;
 }
+MS2_REPLACE_METHOD(0x1411E75F0, CEquipment, FUN_1411e75f0, 18, 0xA1EAFB60);
 
 // @0x1411e7610
 void CEquipment::FUN_1411e7610()
@@ -1502,30 +1612,35 @@ void CEquipment::FUN_1411e7610()
     m_4c = 1;
     FUN_1411e7660();
 }
+MS2_REPLACE_METHOD(0x1411E7610, CEquipment, FUN_1411e7610, 36, 0x641EB9E8);
 
 // @0x1411e7640
 void CEquipment::FUN_1411e7640()
 {
     m_50 = 1;
 }
+MS2_REPLACE_METHOD(0x1411E7640, CEquipment, FUN_1411e7640, 18, 0xC9FC9738);
 
 // @0x1411e7660
 void CEquipment::FUN_1411e7660()
 {
     m_54 = 1;
 }
+MS2_REPLACE_METHOD(0x1411E7660, CEquipment, FUN_1411e7660, 18, 0xD8A4B754);
 
 // @0x1411e7680
 void CEquipment::FUN_1411e7680()
 {
     m_58 = 1;
 }
+MS2_REPLACE_METHOD(0x1411E7680, CEquipment, FUN_1411e7680, 18, 0xE74CD770);
 
 // @0x1411e76a0
 void CEquipment::FUN_1411e76a0()
 {
     m_5f = true;
 }
+MS2_REPLACE_METHOD(0x1411E76A0, CEquipment, FUN_1411e76a0, 15, 0xA716FA28);
 
 // @0x1411ea2e0
 void CEquipment::FUN_1411ea2e0(bool bEnable)
@@ -1534,6 +1649,7 @@ void CEquipment::FUN_1411ea2e0(bool bEnable)
     if (!m_bOptimize)
         FUN_1411eeda0();
 }
+MS2_REPLACE_METHOD(0x1411EA2E0, CEquipment, FUN_1411ea2e0, 54, 0x7597CE77);
 
 // @0x1411ea770
 bool CEquipment::FUN_1411ea770()
@@ -1542,12 +1658,14 @@ bool CEquipment::FUN_1411ea770()
         return m_spLayerInfo->FUN_1411df810();
     return false;
 }
+MS2_REPLACE_METHOD(0x1411EA770, CEquipment, FUN_1411ea770, 69, 0x31E92972);
 
 // @0x1411eac20
 bool CEquipment::FUN_1411eac20()
 {
     return m_bHasSetName;
 }
+MS2_REPLACE_METHOD(0x1411EAC20, CEquipment, FUN_1411eac20, 18, 0xAEA97C04);
 
 // @0x1411ef740
 void CEquipment::FUN_1411ef740()
@@ -1555,8 +1673,10 @@ void CEquipment::FUN_1411ef740()
     m_attrs.clear();
     m_abilities.clear();
 }
+MS2_REPLACE_METHOD(0x1411EF740, CEquipment, FUN_1411ef740, 52, 0xA33D0B18);
 
 // @0x1411ef780
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411ef780(MS2Ptr<CEquipItem> spItem, int nLayer)
 {
     if (spItem == 0)
@@ -1565,8 +1685,10 @@ int CEquipment::FUN_1411ef780(MS2Ptr<CEquipItem> spItem, int nLayer)
         return 0;
     return spItem->FUN_1411dc670();
 }
+MS2_REPLACE_METHOD(0x1411EF780, CEquipment, FUN_1411ef780, 225, 0x96AF8FEE);
 
 // @0x1411ef870
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411ef870(MS2Ptr<CEquipmentSlot> spSlot, int nLayer)
 {
     if (spSlot == 0)
@@ -1586,6 +1708,7 @@ void CEquipment::FUN_1411ef970()
     m_bHasSetName = false;
     m_strSetName.Empty();
 }
+MS2_REPLACE_METHOD(0x1411EF970, CEquipment, FUN_1411ef970, 136, 0x9C733ED9);
 
 // @0x1411efa00
 void CEquipment::FUN_1411efa00(int nIndex)
@@ -1599,6 +1722,7 @@ void CEquipment::FUN_1411efa00(int nIndex)
         FUN_1411a6060(CEffectService::GetInstance(), spInfo->m_nEffect);
     m_setEffects[nIndex] = 0;
 }
+MS2_REPLACE_METHOD(0x1411EFA00, CEquipment, FUN_1411efa00, 232, 0x5106F4B8);
 
 // @0x1411efb90
 int CEquipment::FUN_1411efb90(const CString& strName, const std::vector<MS2Ptr<Equipment::SetEffectInfo> >& effects)
@@ -1616,8 +1740,10 @@ int CEquipment::FUN_1411efb90(const CString& strName, const std::vector<MS2Ptr<E
     }
     return -1;
 }
+MS2_REPLACE_METHOD(0x1411EFB90, CEquipment, FUN_1411efb90, 262, 0x7A4B0AC5);
 
 // @0x1411e6ab0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e6ab0()
 {
     m_04 = FUN_1411eacf0() == 0;
@@ -1629,8 +1755,10 @@ void CEquipment::FUN_1411e6ab0()
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E6AB0, CEquipment, FUN_1411e6ab0, 148, 0xB5CD7ED8);
 
 // @0x1411e6b50
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e6b50()
 {
     NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410(m_pPC));
@@ -1658,8 +1786,10 @@ void CEquipment::FUN_1411e6b50()
             spItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547190(), strTexture, kColor0, kColor1, kColor2);
     }
 }
+MS2_REPLACE_METHOD(0x1411E6B50, CEquipment, FUN_1411e6b50, 790, 0x4B9F4B63);
 
 // @0x1411e6e70
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e6e70()
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
@@ -1701,6 +1831,7 @@ void CEquipment::FUN_1411e6e70()
     }
     m_5f = false;
 }
+MS2_REPLACE_METHOD(0x1411E6E70, CEquipment, FUN_1411e6e70, 1182, 0xF3D78184);
 
 // @0x1411e89d0
 void CEquipment::FUN_1411e89d0(int n)
@@ -1717,6 +1848,7 @@ void CEquipment::FUN_1411e89d0(int n)
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E89D0, CEquipment, FUN_1411e89d0, 380, 0xB0AF59D8);
 
 // @0x1411e8b60
 void CEquipment::FUN_1411e8b60(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend)
@@ -1733,6 +1865,7 @@ void CEquipment::FUN_1411e8b60(const CString& strA, const CString& strB, const e
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E8B60, CEquipment, FUN_1411e8b60, 431, 0xA09A0603);
 
 // @0x1411e8d20
 void CEquipment::FUN_1411e8d20(const CString& strName)
@@ -1749,6 +1882,7 @@ void CEquipment::FUN_1411e8d20(const CString& strName)
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411E8D20, CEquipment, FUN_1411e8d20, 382, 0x5CE00D0A);
 
 // @0x1411e8eb0
 void CEquipment::FUN_1411e8eb0(const CString& strTag)
@@ -1765,6 +1899,7 @@ void CEquipment::FUN_1411e8eb0(const CString& strTag)
     }
     FUN_1411e6e70();
 }
+MS2_REPLACE_METHOD(0x1411E8EB0, CEquipment, FUN_1411e8eb0, 362, 0x2B228BC5);
 
 // @0x1411e9020
 void CEquipment::FUN_1411e9020(const CString& strTag)
@@ -1781,8 +1916,10 @@ void CEquipment::FUN_1411e9020(const CString& strTag)
     }
     FUN_1411e6e70();
 }
+MS2_REPLACE_METHOD(0x1411E9020, CEquipment, FUN_1411e9020, 362, 0x47CBC4FF);
 
 // @0x1411e9190
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e9190(int bShow)
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
@@ -1817,8 +1954,10 @@ void CEquipment::FUN_1411e9190(int bShow)
     }
     FUN_1411e6e70();
 }
+MS2_REPLACE_METHOD(0x1411E9190, CEquipment, FUN_1411e9190, 922, 0xDA3737DC);
 
 // @0x1411e9530
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e9530(int nSlot, const CString& strName)
 {
     MS2Ptr<CEquipmentSlot> spSlot(0);
@@ -1837,6 +1976,7 @@ int CEquipment::FUN_1411e9530(int nSlot, const CString& strName)
 }
 
 // @0x1411e9760
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e9760(int nSlot, const CString& strName)
 {
     MS2Ptr<CEquipmentSlot> spSlot(0);
@@ -1866,8 +2006,10 @@ void CEquipment::FUN_1411ea320()
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411EA320, CEquipment, FUN_1411ea320, 259, 0x10C77115);
 
 // @0x1411ea430
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ea430(MS2Ptr<CEquipItem> spItem)
 {
     if (SetItemTable::GetInstance()->FUN_1407c51f0(spItem->FUN_1411dc7f0()->FUN_14053c560()))
@@ -1875,8 +2017,10 @@ void CEquipment::FUN_1411ea430(MS2Ptr<CEquipItem> spItem)
     else if (spItem->FUN_1411dc7a0()->FUN_14052a170() == 3)
         m_bSetDirty = true;
 }
+MS2_REPLACE_METHOD(0x1411EA430, CEquipment, FUN_1411ea430, 191, 0x13E459D7);
 
 // @0x1411ea500
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ea500(MS2Ptr<CEquipItem> spItem)
 {
     if (SetItemTable::GetInstance()->FUN_1407c51f0(spItem->FUN_1411dc7f0()->FUN_14053c560()))
@@ -1884,12 +2028,14 @@ void CEquipment::FUN_1411ea500(MS2Ptr<CEquipItem> spItem)
     else if (spItem->FUN_1411dc7a0()->FUN_14052a170() == 3)
         m_bSetDirty = true;
 }
+MS2_REPLACE_METHOD(0x1411EA500, CEquipment, FUN_1411ea500, 191, 0xDF304086);
 
 // @0x1411ea5d0
 CString CEquipment::FUN_1411ea5d0(const CString& str)
 {
     return FUN_1414253b0(str, m_00);
 }
+MS2_REPLACE_METHOD(0x1411EA5D0, CEquipment, FUN_1411ea5d0, 71, 0xD4995B21);
 
 // @0x1411ea620
 void CEquipment::FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd)
@@ -1903,6 +2049,7 @@ void CEquipment::FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd)
         FUN_1411ea7c0();
     }
 }
+MS2_REPLACE_METHOD(0x1411EA620, CEquipment, FUN_1411ea620, 317, 0xA6B83510);
 
 // @0x1411ea7c0
 void CEquipment::FUN_1411ea7c0()
@@ -1915,6 +2062,7 @@ void CEquipment::FUN_1411ea7c0()
             static_cast<PC*>(pMyPC)->FUN_1416561a0()->FUN_1411ea620(m_spLayerInfo->m_start, m_spLayerInfo->m_end);
     }
 }
+MS2_REPLACE_METHOD(0x1411EA7C0, CEquipment, FUN_1411ea7c0, 235, 0x72250368);
 
 // @0x1411ea8c0
 void CEquipment::FUN_1411ea8c0()
@@ -1925,8 +2073,10 @@ void CEquipment::FUN_1411ea8c0()
     if (pMyPC != NULL && m_pPC != 0 && m_pPC->FUN_14123c580() == pMyPC->FUN_14123c580())
         NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyChangeActiveMyCodiTab(m_spLayerInfo->FUN_1411df810())));
 }
+MS2_REPLACE_METHOD(0x1411EA8C0, CEquipment, FUN_1411ea8c0, 308, 0xF9AC0534);
 
 // @0x1411eaa00
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411eaa00(MS2Ptr<Equipment::SetEffectInfo> spInfo)
 {
     if (spInfo == 0)
@@ -1947,8 +2097,10 @@ CString CEquipment::FUN_1411eabd0()
 {
     return m_strSetName;
 }
+MS2_REPLACE_METHOD(0x1411EABD0, CEquipment, FUN_1411eabd0, 68, 0xE976802C);
 
 // @0x1411ebde0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ebde0()
 {
     if (m_updateTimer.Check(500) == 0)
@@ -1962,14 +2114,17 @@ void CEquipment::FUN_1411ebde0()
     if (m_04 != 0)
         FUN_1411e6ab0();
 }
+MS2_REPLACE_METHOD(0x1411EBDE0, CEquipment, FUN_1411ebde0, 217, 0xFA60A8C2);
 
 // @0x1411ee930
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ee930()
 {
     m_bSetDirty = false;
     if (m_pPC->GetClassID() != 0x6200016)
         FUN_1411ec480(false);
 }
+MS2_REPLACE_METHOD(0x1411EE930, CEquipment, FUN_1411ee930, 68, 0x5DB15100);
 
 // @0x1411efaf0
 MS2Ptr<Equipment::SetEffectInfo> CEquipment::FUN_1411efaf0(const CString& strName,
@@ -1980,6 +2135,7 @@ MS2Ptr<Equipment::SetEffectInfo> CEquipment::FUN_1411efaf0(const CString& strNam
         return 0;
     return effects[nIndex];
 }
+MS2_REPLACE_METHOD(0x1411EFAF0, CEquipment, FUN_1411efaf0, 145, 0xBFAEF387);
 
 // @0x1411efcb0
 void CEquipment::FUN_1411efcb0(unsigned nId, CString strName, bool bInserted)
@@ -1992,8 +2148,10 @@ void CEquipment::FUN_1411efcb0(unsigned nId, CString strName, bool bInserted)
         FUN_1411e76a0();
     }
 }
+MS2_REPLACE_METHOD(0x1411EFCB0, CEquipment, FUN_1411efcb0, 147, 0x6545D614);
 
 // @0x1411efd50
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int FUN_1411efd50(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem == 0)
@@ -2012,6 +2170,7 @@ int FUN_1411efd50(MS2Ptr<CEquipItem> spItem)
 }
 
 // @0x1411ebec0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
 {
     MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
@@ -2034,8 +2193,10 @@ void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
         FUN_1411e4b30(spItem);
     FUN_1411e7660();
 }
+MS2_REPLACE_METHOD(0x1411EBEC0, CEquipment, FUN_1411ebec0, 711, 0xCF7FF0BD);
 
 // @0x1411ec190
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
 {
     MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
@@ -2060,8 +2221,10 @@ void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
         FUN_1411e46b0(spItem);
     FUN_1411e7660();
 }
+MS2_REPLACE_METHOD(0x1411EC190, CEquipment, FUN_1411ec190, 736, 0xC951536C);
 
 // @0x1411ee980
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ee980(int bMissMatch, MS2Ptr<CEquipItem> spA, MS2Ptr<CEquipItem> spB)
 {
     if (bMissMatch == 0) {
@@ -2088,8 +2251,10 @@ void CEquipment::FUN_1411ee980(int bMissMatch, MS2Ptr<CEquipItem> spA, MS2Ptr<CE
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411EE980, CEquipment, FUN_1411ee980, 568, 0xF46D1936);
 
 // @0x1411eebc0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411eebc0()
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
@@ -2107,6 +2272,7 @@ void CEquipment::FUN_1411eebc0()
         }
     }
 }
+MS2_REPLACE_METHOD(0x1411EEBC0, CEquipment, FUN_1411eebc0, 473, 0x6B712F9C);
 
 // @0x1411eeda0
 void CEquipment::FUN_1411eeda0()
@@ -2123,8 +2289,10 @@ void CEquipment::FUN_1411eeda0()
     for (size_t i = 0; i < m_meshes88.GetCount(); i++)
         FUN_140a0b300(m_meshes88[i].operator->(), false);
 }
+MS2_REPLACE_METHOD(0x1411EEDA0, CEquipment, FUN_1411eeda0, 429, 0x6BA0B7ED);
 
 // @0x1411e9fa0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e9fa0(int nSlot, CString strName, int nType, int bByName)
 {
     if (bByName == 0) {
@@ -2150,6 +2318,7 @@ int CEquipment::FUN_1411e9fa0(int nSlot, CString strName, int nType, int bByName
 }
 
 // @0x1411eac40
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411eac40(bool b)
 {
     NiActorManager* pActor = FUN_141b6f910()->FUN_140999440(m_pPC->FUN_14123c460());
@@ -2160,8 +2329,10 @@ void CEquipment::FUN_1411eac40(bool b)
         kDump.FUN_14098cf00();
     }
 }
+MS2_REPLACE_METHOD(0x1411EAC40, CEquipment, FUN_1411eac40, 169, 0xC962716D);
 
 // @0x1411eacf0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411eacf0()
 {
     MS2Ptr<CEquipItem> spEar = FUN_1411e1860(0x12, 6, 0);
@@ -2205,8 +2376,10 @@ int CEquipment::FUN_1411eacf0()
         faceModels[0]->vfunc_4(strFace);
     return 1;
 }
+MS2_REPLACE_METHOD(0x1411EACF0, CEquipment, FUN_1411eacf0, 1729, 0x620D6137);
 
 // @0x1411eb3c0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411eb3c0()
 {
     CString strName("A");
@@ -2219,8 +2392,10 @@ int CEquipment::FUN_1411eb3c0()
     }
     return FUN_1411eb550(strName);
 }
+MS2_REPLACE_METHOD(0x1411EB3C0, CEquipment, FUN_1411eb3c0, 387, 0xB7906D89);
 
 // @0x1411eb550
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411eb550(CString strName)
 {
     MS2Ptr<CEquipItem> spHair = FUN_1411e1860(1, 6, 0);
@@ -2267,8 +2442,10 @@ int CEquipment::FUN_1411eb550(CString strName)
     models[0]->vfunc_4(strPath);
     return 1;
 }
+MS2_REPLACE_METHOD(0x1411EB550, CEquipment, FUN_1411eb550, 2186, 0xFBA28A0D);
 
 // @0x1411eef60
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411eef60()
 {
     if (!m_bOptimize || GetTickCountMs2() - m_64 <= 4999)
@@ -2294,8 +2471,10 @@ void CEquipment::FUN_1411eef60()
         FUN_1412751b0(StringFormat(L"[MeshOptimizer] Merge mesh complete: {0}", m_pPC->vfunc_77()), 0x14);
     FUN_1411e6b50();
 }
+MS2_REPLACE_METHOD(0x1411EEF60, CEquipment, FUN_1411eef60, 883, 0x9EF779D8);
 
 // @0x1411ef2e0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ef2e0(CEquipModel* pModel, const NiPoint3& kPos, const NiPoint3& kRot)
 {
     if (pModel == NULL)
@@ -2327,14 +2506,17 @@ void CEquipment::FUN_1411ef2e0(CEquipModel* pModel, const NiPoint3& kPos, const 
     pCalls->FUN_141200160(kPos);
     pCalls->FUN_141200100(kRot);
 }
+MS2_REPLACE_METHOD(0x1411EF2E0, CEquipment, FUN_1411ef2e0, 1105, 0x2DB48AAF);
 
 // @0x1411df8e0
 unsigned CEquipmentSlotLayerInfo::FUN_1411df8e0()
 {
     return FUN_1401d3200()->CodiTabMaxDay.Read();
 }
+MS2_REPLACE_METHOD(0x1411DF8E0, CEquipmentSlotLayerInfo, FUN_1411df8e0, 33, 0xA4709220);
 
 // @0x1411e99a0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 int CEquipment::FUN_1411e99a0(int nSlot, CString strName, int nType, int bByName)
 {
     if (bByName == 0) {
@@ -2374,6 +2556,7 @@ int CEquipment::FUN_1411e99a0(int nSlot, CString strName, int nType, int bByName
 }
 
 // @0x1411ed270
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ed270()
 {
     MS2Ptr<CEquipItem> spHair = m_pPC->FUN_141655e10(1);
@@ -2456,6 +2639,7 @@ void CEquipment::FUN_1411ed270()
 }
 
 // @0x1411edbb0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411edbb0()
 {
     if (FUN_14087ddc0(m_pPC != 0 ? m_pPC->GetClassDesc() : 0, 0x6200044))
@@ -2510,6 +2694,7 @@ void CEquipment::FUN_1411edbb0()
 }
 
 // @0x1411ec480
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411ec480(bool bForce)
 {
     std::map<unsigned, std::vector<__int64> > pieces[3];
@@ -2616,6 +2801,7 @@ void CEquipment::FUN_1411ec480(bool bForce)
 }
 
 // @0x1411e5c10
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e5c10()
 {
     if (FUN_1411e0ee0() == NULL)
@@ -2735,6 +2921,7 @@ void CEquipment::FUN_1411e5c10()
 }
 
 // @0x1411e76c0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void CEquipment::FUN_1411e76c0(double fTime)
 {
     int bExpired = 0;
@@ -2922,8 +3109,10 @@ MS2Ptr<CSetItemManager> PC::FUN_1411f9310()
 {
     return m_spSetItems;
 }
+MS2_REPLACE_METHOD(0x1411F9310, PC, FUN_1411f9310, 67, 0x99EF29FF);
 
 // @0x1411f88a0
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void Unk_EqSceneDump::FUN_1411f88a0(bool bCulled, NiAVObject* pObject, int nDepth)
 {
     if (pObject == NULL) {
@@ -2969,6 +3158,7 @@ void Unk_EqSceneDump::FUN_1411f88a0(bool bCulled, NiAVObject* pObject, int nDept
 }
 
 // @0x1411fa480
+// MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
 void Unk_EqSceneDump::FUN_1411fa480(const NiTransform& kTransform)
 {
     NiPoint3 kRot;
