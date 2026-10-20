@@ -2419,3 +2419,81 @@ CStringW UIMinimapDialog::FUN_141a45d50(const unsigned __int64& nId)
     return L"";
 }
 MS2_REPLACE_METHOD(0x141a45d50, UIMinimapDialog, FUN_141a45d50, 0, 0);
+
+class Unk_MmCamera;                                                 // the field camera
+Unk_MmCamera* FUN_1409478c0();
+int FUN_140a18070(Unk_MmCamera* pCamera);                           // the camera is ready
+bool FUN_140af0520(Unk_MmCamera* pCamera, const NiPoint2& kCursor, NiPoint3& kOrigin, NiPoint3& kDir);   // the pick ray
+class Unk_MmSpatial;                                                // the field's collision space
+Unk_MmSpatial* FUN_1409f7ca0();
+int FUN_14168a230(Unk_MmSpatial* pSpatial, NiPoint3 kOrigin, NiPoint3& kHit, NiPoint3 kDir, float fRange, int nMask);   // ray cast
+
+// @0x141a451b0
+bool UIMinimapDialog::FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOut)
+{
+    if (bLocal) {
+        if (m_30 == 0)
+            return false;
+        Scaleform::GFx::Value local = m_30->Invoke("getLocal");
+        if (FUN_1409b4d40(local)) {
+            Scaleform::GFx::Value valueX;
+            Scaleform::GFx::Value valueY;
+            if (local.GetMember("x", &valueX))
+                kOut.x = static_cast<float>(FUN_140f17ed0(valueX));
+            if (local.GetMember("y", &valueY))
+                kOut.y = static_cast<float>(FUN_140f17ed0(valueY));
+            return true;
+        }
+    } else {
+        NiPoint2 kCursor(x, y);
+        if (FUN_141b90e30(FUN_140aadf80(), kCursor.x, kCursor.y)) {
+            if (FUN_140a18070(FUN_1409478c0())) {
+                NiPoint3 kOrigin(efd::Point3::ZERO);
+                NiPoint3 kDir(efd::Point3::ZERO);
+                if (FUN_140af0520(FUN_1409478c0(), kCursor, kOrigin, kDir)) {
+                    NiPoint3 kHit(efd::Point3::ZERO);
+                    if (FUN_14168a230(FUN_1409f7ca0(), NiPoint3(kOrigin), kHit, NiPoint3(kDir), 10000.0f, 0x201)) {
+                        m_viewport->FUN_141486410(kHit, kOut);
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+MS2_REPLACE_METHOD(0x141a451b0, UIMinimapDialog, FUN_141a451b0, 0, 0);
+
+// The ridden mount of an actor, held while it is read.
+class Unk_MmRideeRef
+{
+public:
+    Unk_MmRideeRef(Ridee* p);
+    ~Unk_MmRideeRef();                                              // 0x1409648b0
+    PCBase* FUN_140965790() const;                                  // get
+    PCBase* FUN_140975bc0() const;                                  // operator->
+private:
+    Ridee* m_p;
+};
+
+// @0x141a45920
+float UIMinimapDialog::FUN_141a45920(PCBase* pPC)
+{
+    efd::Point3 kUp(0.0f, -1.0f, 0.0f);
+    efd::Point3 kDir;
+    efd::Point3 kSide;
+    float fAngle = 0.0f;
+    float fRot = 0.0f;
+    Unk_MmRideeRef spRidee(pPC->FUN_1416764a0());
+    if (spRidee.FUN_140965790()) {
+        spRidee.FUN_140975bc0()->vfunc_67(&kDir, &kSide);
+        fAngle = spRidee.FUN_140975bc0()->FUN_14166dad0(kUp, kSide);
+        fRot = spRidee.FUN_140975bc0()->vfunc_20().z;
+    } else {
+        pPC->vfunc_67(&kDir, &kSide);
+        fAngle = pPC->FUN_14166dad0(kUp, kSide);
+        fRot = pPC->vfunc_20().z;
+    }
+    return fAngle - fRot + 90.0f;
+}
+MS2_REPLACE_METHOD(0x141a45920, UIMinimapDialog, FUN_141a45920, 0, 0);
