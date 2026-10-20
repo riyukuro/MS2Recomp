@@ -80,6 +80,8 @@ public:
     CStringW FUN_1416c2570();                                       // the today word
     bool FUN_1416c2b30();                                           // visible on the minimap
     bool FUN_1416c2b70();                                           // the visibility follows the actor
+    int FUN_1416c21c0();                                            // a pet
+    efd::Point3 FUN_1416c2270();                                    // the position
 
     MS2Ptr<CPortal> m_portal;                                       // +0x18
     MS2Ptr<NpcDataCli> m_npc;                                       // +0x28
@@ -2248,6 +2250,35 @@ private:
     Ridee* m_p;
 };
 
+// @0x141a422c0
+void UIMinimapDialog::FUN_141a422c0(ProxyPtr spProxy, EntityPtr spEntity)
+{
+    if (m_30 == 0)
+        return;
+    if (spProxy == 0 || !spProxy->FUN_1416c21c0())
+        return;
+    if (spEntity == 0 || spEntity->m_clip == 0)
+        return;
+    FUN_141a43ac0(spProxy, spEntity);
+    if (spEntity->m_visible) {
+        if (!FUN_141a44730(spProxy->FUN_1416c2270(), spEntity->m_clip))
+            spEntity->m_visible = false;
+    }
+    if (!spEntity->m_64)
+        spEntity->m_clip->vfunc_4(spEntity->m_visible);
+}
+
+// @0x141a42600
+void UIMinimapDialog::FUN_141a42600(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity)
+{
+    if (m_30 == 0 || spObject == 0)
+        return;
+    if (spEntity == 0 || spEntity->m_clip == 0)
+        return;
+    CString strState = spObject->FUN_1413b5600() == 0 ? "enabled" : "disabled";
+    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46b60("changeEntityFrame", spEntity->m_clip->FUN_1422bb870(), strState);
+}
+
 // @0x141a42550
 void UIMinimapDialog::FUN_141a42550()
 {
@@ -2816,6 +2847,43 @@ void UIMinimapDialog::FUN_141a3ea10()
     m_30->Invoke("buildPlayers");
 }
 MS2_REPLACE_METHOD(0x141a3ea10, UIMinimapDialog, FUN_141a3ea10, 0, 0);
+
+// @0x141a3fe10
+void UIMinimapDialog::FUN_141a3fe10(ProxyPtr spProxy, EntityPtr spEntity, int n)
+{
+    if (spProxy == 0 || spEntity == 0)
+        return;
+    switch (n) {
+    case 1:
+        FUN_141a41560(spProxy, spEntity);
+        break;
+    case 2:
+        FUN_141a40d90(spProxy, spEntity);
+        break;
+    case 3:
+        FUN_141a422c0(spProxy, spEntity);
+        break;
+    case 4:
+        FUN_141a407c0(spProxy, spEntity);
+        break;
+    }
+}
+
+// @0x141a400d0
+// MS2-FUNCTIONAL: the exe frame is 0x10 larger (one more temporary).
+void UIMinimapDialog::FUN_141a400d0(ProxyPtr spProxy, EntityPtr spEntity, int n)
+{
+    if (spProxy == 0 || spEntity == 0)
+        return;
+    if (n == 4)
+        return;
+    if (spEntity->m_visible && static_cast<ASMovieClip*>(spEntity->m_clip) != 0) {
+        if (!FUN_141a44730(spProxy->FUN_1416c2270(), spEntity->m_clip)) {
+            spEntity->m_visible = false;
+            spEntity->m_clip->vfunc_4(spEntity->m_visible);
+        }
+    }
+}
 
 // @0x141a3e7d0
 bool UIMinimapDialog::FUN_141a3e7d0(EntityPtr spEntity)
