@@ -183,6 +183,7 @@ PCBase* FUN_1417dcb20(PCBase* p)
 
 // ---- CStateManager ----
 
+// MS2-FUNCTIONAL: m_pos (+0x88) is efd::Point3 here (default ctor + operator= calls); the exe member is a trivially copyable point (no ctor, rep movsb copy from Point3::ZERO); retyping the shared statemanager.h member touches the vfunc_18 compare/assign users
 // @0x1417da7a0
 CStateManager::CStateManager(PCBase* pOwner) : m_states(17, 0.75f, 0.25f, 2.25f, 10)
 {
@@ -219,6 +220,7 @@ void CStateManager::FUN_1417daa70()
     m_requests.clear();
 }
 
+// MS2-FUNCTIONAL: the exe resets the slot-22 argument by destroying a MS2Ptr temporary (dtor 0x140837140) where the obj assigns 0 (operator=(int)), and builds the hit-report EntityID by value without the default-ctor call; body restructure pending
 // @0x1417daaa0
 void CStateManager::FUN_1417daaa0(double fTime)
 {
@@ -711,23 +713,25 @@ void StateMoveSkill::vfunc_7(int n)
 // @0x1417df2d0
 void StateMoveSkill::vfunc_8(double fTime)
 {
-    if (FUN_1417b84b0() != 0)
+    if (FUN_1417b8560() == 0)
+        return;
+    if (m_nMode == 0)
     {
-        if (m_nMode == 0)
-        {
-            if (vfunc_36() == 0)
-            {
-                FUN_1417df370();
-                return;
-            }
-        }
-        else if (m_nMode == 1 && vfunc_37() == 0)
+        if (vfunc_36() == 0)
         {
             FUN_1417df370();
             return;
         }
-        State::vfunc_8(fTime);
     }
+    else if (m_nMode == 1)
+    {
+        if (vfunc_37() == 0)
+        {
+            FUN_1417df370();
+            return;
+        }
+    }
+    State::vfunc_8(fTime);
 }
 
 // @0x1417df370
@@ -767,14 +771,14 @@ int StateMoveSkill::vfunc_36()
 }
 
 // @0x1417df4e0
-bool StateMoveSkill::vfunc_37()
+int StateMoveSkill::vfunc_37()
 {
     if (m_spData.get() != 0)
     {
         if (FUN_141adbb00(FUN_1403ed2b0()) == 0)
             return FUN_1409331f0()->FUN_14142c300(m_spData->m_nSkill) == 0;
     }
-    return true;
+    return 1;
 }
 
 // @0x1417df570
@@ -791,25 +795,23 @@ bool StateMoveSkill::vfunc_38(StateData* pData)
 // @0x1417df6a0
 bool StateMoveSkill::FUN_1417df6a0()
 {
-    if (FUN_1417b84b0() != 0)
+    if (FUN_1417b8560() == 0)
+        return true;
+    if (m_tick.FUN_140268870(1000))
     {
-        if (m_tick.FUN_140268870(1000) != 0)
+        if (FUN_141670a00(m_pOwner, 10) < FUN_1417df430())
         {
-            if (FUN_141670a00(m_pOwner, 10) < FUN_1417df430())
-            {
-                FUN_1417df370();
-                return false;
-            }
+            FUN_1417df370();
+            return false;
         }
-        MyPC* pPC = FUN_1417b84b0();
-        if (pPC != 0)
+    }
+    MyPC* pPC = FUN_1417b84b0();
+    if (pPC != 0)
+    {
+        if (!FUN_141523bc0(pPC)->FUN_141765b80(FUN_1417df3e0()))
         {
-            int nSkill = FUN_1417df3e0();
-            if (!FUN_141523bc0(pPC)->FUN_141765b80(nSkill))
-            {
-                FUN_1417df370();
-                return false;
-            }
+            FUN_1417df370();
+            return false;
         }
     }
     return true;
@@ -1624,6 +1626,7 @@ static bool FUN_1417e3620(Unk_SMInputHandle* p)
 // @0x1417e2460
 CStateService::CStateService() : m_mapScenes(10), m_spCurrent(0)
 {
+    m_spCurrent = 0;
 }
 #endif
 

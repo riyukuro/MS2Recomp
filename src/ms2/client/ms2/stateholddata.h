@@ -31,7 +31,7 @@ public:
     virtual int vfunc_16();                            // 16 @0x1417ccd20
     virtual MS2Ptr<StateData> vfunc_27();              // 27 @0x1417cd390: a new StateHoldData
     virtual int vfunc_36();                            // 36 @0x1417cd120
-    virtual bool vfunc_37();                           // 37 @0x1417cd1b0: true
+    virtual int vfunc_37();                            // 37 @0x1417cd1b0: 1
 
     void FUN_1417ccca0(int nState, int nSub);          // @0x1417ccca0: owner slot 59 (switch state)
     void FUN_1417ccd50();                              // @0x1417ccd50: remember whether the holder rides, aim the camera

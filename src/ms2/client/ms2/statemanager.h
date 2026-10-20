@@ -196,7 +196,7 @@ public:
     virtual MS2Ptr<StateData> vfunc_27();                           // 27 0x1417beea0 (ICF-folded body in another unit; symbols-manual)
     virtual void vfunc_8(double fTime);                             // 8  0x1417df2d0
     virtual int vfunc_36();                                         // 36 0x1417df480
-    virtual bool vfunc_37();                                        // 37 0x1417df4e0
+    virtual int vfunc_37();                                         // 37 0x1417df4e0
     virtual bool vfunc_38(StateData* pData);                        // 38 0x1417df570
 
     void FUN_1417df370();                                           // go to the fallback state

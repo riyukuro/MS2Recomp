@@ -492,9 +492,9 @@ int StateHold::vfunc_36()
 }
 
 // @0x1417cd1b0
-bool StateHold::vfunc_37()
+int StateHold::vfunc_37()
 {
-    return true;
+    return 1;
 }
 
 // @0x1417cd1c0
