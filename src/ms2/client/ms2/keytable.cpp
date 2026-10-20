@@ -8,7 +8,6 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141432710 ; unique
 // MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHPEAVUnk_140165cf0@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x141432800 ; unique
-// MS2-PIN: ??$StringFormat@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBV01@1@Z 0x1414328e0 ; unique
 // MS2-PIN: ??$FUN_14028dfa0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@V12@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBV01@111@Z 0x141432bf0 ; unique
 // MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@1@@Z 0x141433030 ; unique
 // MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141433050 ; unique
@@ -63,6 +62,7 @@
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/ms2recover.h"
 #include "ms2/ms2format.h"
+#include <sstream>
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/placeholder/notifykeytable.h"
 #include "ms2/client/ms2/skillslot.h"
@@ -231,6 +231,28 @@ void FUN_140873f20(TiXmlElement* pElem, const char* pszName, const size_t& nValu
 CString FUN_140540050(const char* pszFormat, const CString& strArg);   // StringFormat<CString>
 CString FUN_1412755f0();                                    // the user setting directory
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
+
+// A key code as a custom-formatted fmt argument (as in gameoptioninputdefault.cpp / guess\usercommandcli.cpp).
+enum Unk_CommandKeyCode : int {};
+template <> inline void fmt::format_arg(BasicFormatter<wchar_t>& f, const wchar_t*& format_str, const Unk_CommandKeyCode& value)
+{
+    internal::Arg arg;
+    internal::Value& arg_value = arg;
+    if (std::is_enum<Unk_CommandKeyCode>::value)
+    {
+        arg.int_value = value;
+        arg.type = internal::Arg::INT;
+    }
+    else
+    {
+        std::basic_ostringstream<wchar_t> os;
+        os << value;
+        std::basic_string<wchar_t> str = os.str();
+        arg_value = internal::MakeValue<BasicFormatter<wchar_t> >(str);
+        arg.type = internal::Arg::STRING;
+    }
+    format_str = f.format(format_str, arg);
+}
 
 template <class T> inline int Unk_BreakFind(const ATL::CAtlArray<T>& values, const T& value)
 {
@@ -1348,12 +1370,12 @@ CStringW CKeyTable::FUN_14142d760(int nAction, int nPriority)
 // @0x14142d7e0
 CStringW CKeyTable::FUN_14142d7e0(const int& nKey)
 {
-    __int64 nAction = FUN_1409331f0()->FUN_14142d190(nKey);
+    unsigned __int64 nAction = FUN_1409331f0()->FUN_14142d190(nKey);
     if (FUN_14142ce10(nKey))
         return StringFormat(L"{0}[{1}]", FUN_1401a9d70()->FUN_1418125b0((int)nAction), FUN_1409331f0()->FUN_14142d220(nKey));
-    if (nAction >= 0xaae61 && nAction <= 0xaae63)
+    else if (nAction >= 0xaae61 && nAction <= 0xaae63)
         return FUN_1401a9d70()->FUN_1418125b0((int)nAction);
-    if (nAction >= 0xdbba1 && nAction <= 0xdbbaa)
+    else if (nAction >= 0xdbba1 && nAction <= 0xdbbaa)
         return FUN_1401a9d70()->FUN_1418125b0((int)nAction);
     return FUN_1401a9d70()->FUN_1418125b0((int)nAction);
 }
@@ -2264,7 +2286,7 @@ CStringW CKeyTable::FUN_141430ee0(int nFirst, int nSecond)
     m_keys.Lookup(nSecond, spSecond);
     if (spFirst == 0 || spSecond == 0)
     {
-        MessageBoxW(0, StringFormat(L"{0} {1} Have not key string (keyName.xml)", nFirst, nSecond),
+        MessageBoxW(0, StringFormat(L"{0} {1} Have not key string (keyName.xml)", (const Unk_CommandKeyCode&)nFirst, (const Unk_CommandKeyCode&)nSecond),
             L"CKeyTable::CreateCombineKeyString Error", 0);
         exit(1);
     }
