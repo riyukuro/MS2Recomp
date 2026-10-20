@@ -1188,3 +1188,5 @@ MS2_REPLACE_METHOD(0x140F83060, ItemSocketSystemPageSocketUnlock, FUN_140f83060,
 MS2_REPLACE_METHOD(0x140F832F0, ItemSocketSystemPageSocketUnlock, FUN_140f832f0, 327, 0x39B1FAC1);
 MS2_REPLACE_METHOD(0x140F83440, ItemSocketSystemPageSocketUnlock, FUN_140f83440, 270, 0x68123107);
 MS2_REPLACE_METHOD(0x140F83560, ItemSocketSystemPageSocketUnlock, FUN_140f83560, 205, 0x9565FF57);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9ee0-0x142ca9ff0 .text$yd

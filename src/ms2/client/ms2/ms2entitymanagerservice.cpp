@@ -207,3 +207,5 @@ unsigned Unk_EmitEntityManagerNonAtomicDecrement(efd::NonAtomicRefCount& refCoun
 // efd::map/efd::set default ctor wrappers of EntityFactoryResponse's by-value defaults (CreateEntity): each calls its std base ctor (0x1414b7dd0 / 0x1414b7e20).
 // MS2-PIN: ??0?$map@Vutf8string@efd@@V?$SmartPointer@VFlatModel@egf@@@2@U?$less@Vutf8string@efd@@@std@@@efd@@QEAA@XZ 0x1414b7db0
 // MS2-PIN: ??0?$set@V?$SmartPointer@VScriptFactoryResponse@egf@@@efd@@U?$less@V?$SmartPointer@VScriptFactoryResponse@egf@@@efd@@@std@@@efd@@QEAA@XZ 0x1414b7e00
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb2e20-0x142cb2e80 .text$yd

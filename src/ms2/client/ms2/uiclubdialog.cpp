@@ -556,3 +556,5 @@ void UIClubDialog::FUN_140e0d230(ASObj& row, __int64 nNameChangeTime)
         row.FUN_1407cb9c0("nameChange", 0);
 }
 MS2_REPLACE_METHOD(0x140E0D230, UIClubDialog, FUN_140e0d230, 91, 0x3A2471AF);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca62f0-0x142ca6350 .text$yd

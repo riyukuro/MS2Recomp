@@ -5875,3 +5875,5 @@ UISkillBookTreeDialog* FUN_1409eb120(int nId)
     return 0;
 }
 
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9e1c0-0x142c9e950 .text$yd

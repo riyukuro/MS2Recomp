@@ -156,3 +156,5 @@ void FUN_14174c520(CSceneStateLogin*, CInPacket& packet)
     }
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb6480-0x142cb6510 .text$yd

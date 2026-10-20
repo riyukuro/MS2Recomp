@@ -746,3 +746,5 @@ int UIDynamicActionDialog::FUN_14192df00(int nKey, unsigned __int64 nAction)
 MS2_REPLACE_METHOD(0x14192DF00, UIDynamicActionDialog, FUN_14192df00, 108, 0);
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbdd90-0x142cbde60 .text$yd

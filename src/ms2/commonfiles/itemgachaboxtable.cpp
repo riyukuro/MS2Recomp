@@ -291,3 +291,5 @@ bool ItemGachaBoxTable::FUN_14059ef70(int nRandomBoxID)
         return false;
     return it->second->m_bSeasonNumberOnIcon;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9b020-0x142c9b050 .text$yd

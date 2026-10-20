@@ -51,3 +51,5 @@ int CSceneStateLogo::vfunc_15()
 {
     return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb6510-0x142cb6580 .text$yd

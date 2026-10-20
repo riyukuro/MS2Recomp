@@ -2379,3 +2379,5 @@ template class std::map<NiMesh*, efd::map<unsigned char, unsigned char>, std::le
 template class std::map<NiMesh*, Unk_UVRect, std::less<NiMesh*>, efd::CustomAllocator<std::pair<NiMesh* const, Unk_UVRect> > >;
 template class std::map<CString, CCharacterMeshMerger::TexNode*, std::less<CString>, efd::CustomAllocator<std::pair<const CString, CCharacterMeshMerger::TexNode*> > >;
 template class std::map<NiTransform, MeshList, Unk_TransformLess, efd::CustomAllocator<std::pair<const NiTransform, MeshList> > >;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cab980-0x142caba10 .text$yd
