@@ -208,7 +208,6 @@
 // MS2-PIN: ??0?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV678@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV678@@@2@@ATL@@QEAA@_K@Z 0x141befe90
 // MS2-PIN: ??0?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV510@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV510@@@2@@ATL@@QEAA@_K@Z 0x141befec0
 // MS2-PIN: ??0?$CRBMap@_KUUnk_WsV6a8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV6a8@@@3@@ATL@@QEAA@_K@Z 0x141befef0
-// MS2-PIN: ??0Category@efd@@QEAA@_K@Z 0x141beff20
 // MS2-PIN: ??0?$CRBMap@_KUUnk_WsV0b8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV0b8@@@3@@ATL@@QEAA@_K@Z 0x141beff50
 // MS2-PIN: ??0?$CRBMap@HUUnk_WsV540@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV540@@@3@@ATL@@QEAA@_K@Z 0x141beff80
 // MS2-PIN: ??0?$CRBMap@HUUnk_WsV570@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV570@@@3@@ATL@@QEAA@_K@Z 0x141beffb0
@@ -348,6 +347,10 @@
 // MS2-PIN: ??$emplace_back@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@2@@std@@QEAAX$$QEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@1@@Z 0x141bedfa0
 // MS2-PIN: ??$emplace_back@V?$MS2Ptr@VCLiftableObject@@@@@?$vector@V?$MS2Ptr@VCLiftableObject@@@@V?$allocator@V?$MS2Ptr@VCLiftableObject@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VCLiftableObject@@@@@Z 0x141bee010
 // MS2-PIN: ??$emplace_back@V?$MS2Ptr@VMS2ActorUpdater@@@@@?$vector@V?$MS2Ptr@VMS2ActorUpdater@@@@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VMS2ActorUpdater@@@@@Z 0x141bee080
+// m_9d0's CRBMap<int, int> constructor and its CRBTree base constructor.
+// MS2-PIN: ??0?$CRBMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@_K@Z 0x141beff20
+// MS2-PIN: ??0?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEAA@_K@Z 0x141bf0580
+// MS2-PIN: ??0?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA@XZ 0x141bef1c0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "worldservice.h"
@@ -443,6 +446,8 @@ void Unk_WsInst3Bases(const efd::SmartPointer<egf::EntityManager>& spEntityManag
 {
     efd::SmartPointer<egf::EntityManager> spCopy(spEntityManager);    // m_268 copy (FUN_141bc16d0)
     TSingleton<WorldService> singleton;
+    ATL::CRBMap<int, int> map9d0;
+    ATL::CAtlArray<void*> pointers;
 }
 
 // The message handler constructors (0x141bf07d0-0x141bf0e6d) of the EE_HANDLER statics of worldservice_1.cpp. Placement
