@@ -84,7 +84,8 @@
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@W4Occurrence@CGuideManager@@H@std@@V?$allocator@U?$pair@W4Occurrence@CGuideManager@@H@std@@@2@@std@@@std@@QEAAAEAPEAU?$pair@W4Occurrence@CGuideManager@@H@2@XZ 0x1413a26f0
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@W4Occurrence@CGuideManager@@H@std@@V?$allocator@U?$pair@W4Occurrence@CGuideManager@@H@std@@@2@@std@@@std@@QEBAAEBQEAU?$pair@W4Occurrence@CGuideManager@@H@2@XZ 0x1413a2710
 // MS2-PIN: ?_Myhead@?$_List_alloc@U?$_List_base_types@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@QEAAAEAPEAU?$_List_node@V?$MS2Ptr@VCGuideEntity@@@@PEAX@2@XZ 0x1413a2730
-// MS2-PIN: ?Reference@?$MS2Ptr@VCGuideEntity@@@@CAXPEAVCGuideEntity@@@Z 0x1413a2750
+// MS2-PIN: ?pointer_to@?$pointer_traits@PEBU?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@std@@SAPEBU?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@2@AEBU32@@Z 0x1413a2750
+// MS2-PIN: ?select_on_container_copy_construction@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@PEAX@std@@@std@@@std@@SA?AV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@PEAX@std@@@2@AEBV32@@Z 0x1413a2810
 // MS2-PIN: ?push_back@?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VCGuideEntity@@@@@Z 0x1413a27b0
 // MS2-PIN: ?push_back@?$vector@U?$pair@W4Occurrence@CGuideManager@@H@std@@V?$allocator@U?$pair@W4Occurrence@CGuideManager@@H@std@@@2@@std@@QEAAXAEBU?$pair@W4Occurrence@CGuideManager@@H@2@@Z 0x1413a27e0
 // MS2-PINS-END manual
@@ -188,5 +189,9 @@ template GeSetInt::key_compare GeSetInt::_Mybase::key_comp() const;
 template GeListEnt::iterator GeListEnt::erase(GeListEnt::const_iterator);
 template bool GeVecEnt::empty() const noexcept;
 template bool GeVecSub::empty() const noexcept;
+template struct std::pointer_traits<const GeMapOcc::value_type*>;
+template std::allocator<GeMapSub::_Mybase::_Node>
+std::_Default_allocator_traits<std::allocator<GeMapSub::_Mybase::_Node> >::select_on_container_copy_construction(
+    const std::allocator<GeMapSub::_Mybase::_Node>&);
 
 MS2_EMIT_CRT_MEMMOVE_S();

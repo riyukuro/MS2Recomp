@@ -4086,3 +4086,6 @@ FMOD_System_Create	142303a95	func
 ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Occurrence@CGuideManager@@HU?$less@W4Occurrence@CGuideManager@@@std@@V?$allocator@U?$pair@$$CBW4Occurrence@CGuideManager@@H@std@@@4@$0A@@std@@@std@@QEAAXXZ	14139c570	func
 ?pointer_to@?$pointer_traits@PEBU?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@std@@SAPEBU?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@2@AEBU32@@Z	1413a2750	func
 ?vfunc_126@PC@@UEAAXV?$MS2Ptr@VUnk_PCArg126@@@@H@Z	141655230	func
+?Reference@?$MS2Ptr@VCGuideEntity@@@@CAXPEAVCGuideEntity@@@Z	14139b660	func
+?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Occurrence@CGuideManager@@HU?$less@W4Occurrence@CGuideManager@@@std@@V?$allocator@U?$pair@$$CBW4Occurrence@CGuideManager@@H@std@@@4@$0A@@std@@@std@@QEAAXXZ	14139c570	func
+?pointer_to@?$pointer_traits@PEBU?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@std@@SAPEBU?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@2@AEBU32@@Z	1413a2750	func
