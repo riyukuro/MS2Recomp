@@ -2404,6 +2404,72 @@ void StateSkill::FUN_1417f2b50(MS2Ptr<CSkillRecord> spRecord)
     spRecord->m_magics.RemoveAll();
 }
 MS2_REPLACE(0x1417f2b50, StateSkill::FUN_1417f2b50, 332, 0x570297DB);
+// Times the casting bar of a cast that shows one: from the motion's casting start key to its casting end key (the
+// auto change keys without them; the end of the motion without an end key), plus the charge loops of the motion,
+// less 100 ms. Nothing while the bar runs a cast or this cast was shown already.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417f2150
+void StateSkill::FUN_1417f2150()
+{
+    m_nCastDuration = 0;
+    if (!FUN_1417b8560())
+        return;
+    UICastingBar* pBar = FUN_140ac2270(0x4e72);
+    if (pBar == NULL)
+        return;
+    if (pBar->FUN_1417f5f90() != 0)
+        return;
+    if (!m_spRecord)
+        return;
+    if (m_spRecord->m_nCastId == m_nCastId)
+        return;
+    MS2Ptr<SkillData> spSkill = m_spRecord->m_spSkill;
+    if (!spSkill)
+        return;
+    if (!spSkill->m_bShowCastingBar)
+        return;
+    if (m_pSequence == NULL)
+        return;
+    float fLoops = 0.0f;
+    do
+    {
+        SkillMotionData* pMotion = m_spRecord->FUN_141759830();
+        if (pMotion == NULL)
+            break;
+        int nLoopCount = pMotion->m_nLoopCount;
+        if (nLoopCount == 0)
+            break;
+        const char* szLoopStart = "loopstart";
+        const char* szLoopEnd = "loopend";
+        bool bNoLoop = !FUN_141b6ff60(m_pSequence, NiFixedString(szLoopStart))
+            || !FUN_141b6ff60(m_pSequence, NiFixedString(szLoopEnd));
+        if (bNoLoop)
+            break;
+        float fLoopStart = FUN_141b6fe90(m_pSequence, NiFixedString(szLoopStart), 1.0f);
+        float fLoopEnd = FUN_141b6fe90(m_pSequence, NiFixedString(szLoopEnd), 1.0f);
+        fLoops = (fLoopEnd - fLoopStart) * (float)nLoopCount / m_fSpeed;
+    } while (false);
+    const char* szStart = FUN_141b6ff60(m_pSequence, NiFixedString("casting_start")) ? "casting_start" : "startAutoChangeSkill";
+    const char* szEnd = FUN_141b6ff60(m_pSequence, NiFixedString("casting_end")) ? "casting_end" : "endAutoChangeSkill";
+    float fStart = 0.0f;
+    if (FUN_141b6ff60(m_pSequence, NiFixedString(szStart)))
+        fStart = FUN_141b6fe90(m_pSequence, NiFixedString(szStart), m_fSpeed);
+    float fEnd = m_pSequence->GetDuration() / m_fSpeed;
+    // The exe tests the start key again before it reads the end key.
+    if (FUN_141b6ff60(m_pSequence, NiFixedString(szStart)))
+        fEnd = FUN_141b6fe90(m_pSequence, NiFixedString(szEnd), m_fSpeed);
+    fEnd += fLoops;
+    int nStart = FUN_14028d260(fStart);
+    int nEnd = FUN_14028d260(fEnd) - 100;
+    int nZero = 0;
+    int nLast = (std::max)(nZero, nEnd);
+    if (nStart >= nLast)
+        return;
+    m_nCastEnd = GetTickCountMs2() + nStart;
+    m_nCastDuration = nLast - nStart;
+}
+MS2_REPLACE_METHOD(0x1417f2150, StateSkill, FUN_1417f2150, 1646, 0x0C618763);
+
 
 // Shows the casting bar of the running cast ("s_action_skill_cating_progress" with the skill name, then the skill's
 // <castingBar> parameters) when the cast has a casting duration.
