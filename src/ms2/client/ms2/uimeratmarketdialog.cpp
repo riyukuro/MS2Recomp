@@ -118,6 +118,7 @@
 #include "ms2/placeholder/gfxvalue.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/commandchat.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/iclientplatform.h"
@@ -430,19 +431,6 @@ Unk_MeratRecipeDialog* FUN_1412dd5a0(int nUiId);
 class UIInteriorPreviewDialog : public UIDialog { public: void FUN_140f4cd90(int nItemId); };
 UIInteriorPreviewDialog* FUN_141312450(int nUiId);
 
-// The chat line sent to the server (same layout as Unk_CommandChat, 0x20 bytes).
-struct Unk_MeratChat
-{
-    Unk_MeratChat();                                                        // 0x140acd570
-    ~Unk_MeratChat();                                                       // 0x140acd770
-    void FUN_1401fa700(COutPacket& packet);
-    int m_nState;
-    int m_nKind;
-    CStringW m_strMessage;
-    CStringW m_strTarget;
-    __int64 m_nValue;
-};
-MS2_CHECK_SIZE(Unk_MeratChat, 0x20);
 
 // The owner of the items (account and character ids of the player; 0x20 bytes).
 struct Unk_McOwner
@@ -3850,9 +3838,9 @@ void UIMeratMarketDialog::OnClickSaleCommand(ASData& data)
         MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d55800(FUN_140939a00(), key);
         if (!(spProduct == 0)) {
             COutPacket packet(0x11, 0);
-            Unk_MeratChat chat;
-            chat.m_strMessage = FUN_141311bb0(L"/UgcProductSale {0} {1}", spProduct->m_ugc.m_n20, nCount);
-            chat.m_strTarget = L"";
+            Unk_CommandChat chat;
+            chat.message = FUN_141311bb0(L"/UgcProductSale {0} {1}", spProduct->m_ugc.m_n20, nCount);
+            chat.target = L"";
             chat.FUN_1401fa700(packet);
             FUN_140710590(packet);
         }
