@@ -42,9 +42,9 @@ public:
     bool FUN_14162ac40();
     bool FUN_14162ac70(int);
     bool FUN_14162ad30();
-    bool FUN_14162ad50(CStringW);
-    bool FUN_14162ae20(__int64);
-    bool FUN_14162ae90(__int64);
+    int FUN_14162ad50(CStringW);                // exe returns a full int (callers test eax)
+    int FUN_14162ae20(__int64);                 // exe returns a full int (callers test eax)
+    int FUN_14162ae90(__int64);                 // exe returns a full int (callers test eax)
     int FUN_14162af00();
     int FUN_14162af30(__int64);
     MS2Ptr<CPartyMember> FUN_14162afc0(__int64);

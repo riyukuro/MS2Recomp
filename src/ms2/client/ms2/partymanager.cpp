@@ -591,17 +591,17 @@ MS2_REPLACE_METHOD(0x14162AD30, CPartyManager, FUN_14162ad30, 15, 0x52CC66EC);
 
 // MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x14162ad50
-bool CPartyManager::FUN_14162ad50(CStringW name) { return FUN_14162b0c0(name).get() != NULL; }
+int CPartyManager::FUN_14162ad50(CStringW name) { return FUN_14162b0c0(name).get() != NULL; }
 MS2_REPLACE_METHOD(0x14162AD50, CPartyManager, FUN_14162ad50, 187, 0xEF192C97);
 
 // MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x14162ae20
-bool CPartyManager::FUN_14162ae20(__int64 id) { return FUN_14162afc0(id).get() != NULL; }
+int CPartyManager::FUN_14162ae20(__int64 id) { return FUN_14162afc0(id).get() != NULL; }
 MS2_REPLACE_METHOD(0x14162AE20, CPartyManager, FUN_14162ae20, 105, 0x72DB080E);
 
 // MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x14162ae90
-bool CPartyManager::FUN_14162ae90(__int64 id) { return FUN_14162b260(id).get() != NULL; }
+int CPartyManager::FUN_14162ae90(__int64 id) { return FUN_14162b260(id).get() != NULL; }
 MS2_REPLACE_METHOD(0x14162AE90, CPartyManager, FUN_14162ae90, 105, 0xB07D31F7);
 
 // @0x14162af00
