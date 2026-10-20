@@ -36,6 +36,9 @@
 #include "ms2/client/ms2/statedata.h"
 #include "ms2/client/ms2/roomstagedungeoncli.h"
 #include "ms2/placeholder/cmycharacter.h"
+#include "ms2/placeholder/uipopupentity.h"
+#include "ms2/placeholder/asgameentity.h"
+#include "ms2/client/ms2/camera.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/battlerecordmanager.h"
 #include "ms2/commonfiles/timeutil.h"
@@ -1300,3 +1303,236 @@ int UIPerformanceDialog::vfunc_48()
 {
     return 0x4e7d;
 }
+
+// ======== UIPopupEntity (the fourth TU of this range) ========
+
+// The owner's PCBase / GameObject members the popup entity calls (UIPopupEntity keeps the owner as Unk_PopupOwner*).
+struct Unk_PeOwner : Unk_PopupOwner
+{
+    int FUN_141674bc0();                                                    // PCBase: is the local player
+    NiAVObject* FUN_141675150(const CString& strName);                      // PCBase: effect dummy node by name
+    void FUN_141676310(int nUiId);                                          // PCBase: drop a ui slot
+    egf::EntityID FUN_14123c460();                                          // GameObject: entity id
+    float FUN_140f4a450();                                                  // GameObject: distance to the camera
+};
+egf::Entity* FUN_14123c410(Unk_PopupOwner* pOwner);                      // the owner's entity
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                          // the entity's scene graph
+class Unk_PeAnimService;
+Unk_PeAnimService* FUN_141b6f910();
+void* FUN_140999440(Unk_PeAnimService* pService, const egf::EntityID& id);   // the entity's actor manager
+const Unk_PopupPos& FUN_140947900(NiAVObject* pNode);                     // world translate of a node
+int FUN_141277f40();                                                      // the popup entity ui layer
+MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
+class Unk_PeUiScale { public: float FUN_1422afec0(int nLayer); };
+Unk_PeUiScale* FUN_14025e7a0();
+float FUN_1412762d0(const Unk_PopupPos& pt);                              // height offset of a position
+extern NiPoint3 DAT_143b01a60;                                            // zero position
+
+// @0x141a7caf0
+UIPopupEntity::UIPopupEntity(Unk_PopupOwner* pOwner)
+    : m_68(pOwner), m_70(0), m_78("Eff_UI"), m_80(0), m_84(0), m_88(0), m_8c(0), m_90(0), m_94(0)
+{
+    m_28 = FUN_141277f40();
+    m_58 = 0;
+    m_d0 = 0;
+}
+
+// @0x141a7cc10
+UIPopupEntity::~UIPopupEntity()
+{
+    vfunc_55();
+    FUN_141a7d300();
+}
+
+// @0x141a7cca0
+CString UIPopupEntity::vfunc_1()
+{
+    return "PopupEntity";
+}
+
+// @0x141a7ccf0
+void UIPopupEntity::vfunc_52()
+{
+    MS2Ptr<ASDisplayObject> spRoot(dynamic_cast<ASDisplayObject*>(m_30.get()));
+    if ((ASDisplayObject*)spRoot.get() != 0)
+    {
+        vfunc_8(1);
+        m_88 = 0;
+    }
+}
+
+// @0x141a7cd90
+void UIPopupEntity::OnLoadInit()
+{
+    UIObject::OnLoadInit();
+    m_d0 = vfunc_48();
+}
+
+// @0x141a7cdd0
+void UIPopupEntity::OnLoadComplete()
+{
+    UIObject::OnLoadComplete();
+}
+
+// @0x141a7cdf0
+// MS2-FUNCTIONAL: the world position goes through Unk_PopupPos copies (the exe passes the efd::Point3 / NiPoint3 locals)
+void UIPopupEntity::vfunc_15()
+{
+    if (m_84 != 0)
+    {
+        if (vfunc_57(0) == 0)
+        {
+            NiPoint3 kScreen;
+            Unk_PopupPos posWorld = vfunc_60();
+            efd::Point3 kWorld(posWorld.x, posWorld.y, posWorld.z);
+            if (!CameraMgr::GetInstance()->FUN_140af0700(kWorld, kScreen))
+            {
+                vfunc_55();
+            }
+            else
+            {
+                if (m_88 != 0)
+                    vfunc_52();
+                kScreen *= FUN_14025e7a0()->FUN_1422afec0(m_28);
+                kScreen.y = kScreen.y + vfunc_59();
+                kScreen.y = kScreen.y + FUN_1412762d0(vfunc_60());
+                Unk_PopupPos pos;
+                pos.x = kScreen.x;
+                pos.y = kScreen.y;
+                pos.z = kScreen.z;
+                vfunc_53(pos);
+            }
+        }
+        else
+        {
+            vfunc_55();
+        }
+    }
+}
+
+// @0x141a7cf60
+void UIPopupEntity::vfunc_53(Unk_PopupPos pos)
+{
+}
+
+// @0x141a7cf80
+void UIPopupEntity::vfunc_54(int nMode)
+{
+    m_80 = nMode;
+    m_84 = 1;
+    m_88 = 1;
+    m_98.FUN_140868750(m_90);
+}
+
+// @0x141a7cff0
+void UIPopupEntity::vfunc_55()
+{
+    if (m_84 != 0)
+    {
+        m_80 = 0;
+        m_84 = 0;
+        m_88 = 0;
+        m_8c = 0;
+        m_98.FUN_140868820();
+        vfunc_8(0);
+    }
+}
+
+// @0x141a7d080
+int UIPopupEntity::vfunc_56()
+{
+    return m_84;
+}
+
+// @0x141a7d0a0
+void UIPopupEntity::FUN_141a7d0a0()
+{
+    m_8c = 1;
+}
+
+// @0x141a7d0c0
+int UIPopupEntity::vfunc_57(int nForce)
+{
+    if (m_68 == 0)
+        return 1;
+    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+        return 1;
+    if (m_80 == 0 && m_98.FUN_140868ba0() == 0)
+        return 1;
+    if (vfunc_58() == 0)
+        return 1;
+    if (FUN_141b6efc0(FUN_14123c410(m_68)) == 0)
+        return 1;
+    Unk_PeOwner* pOwner = static_cast<Unk_PeOwner*>(m_68);
+    if (pOwner->FUN_141674bc0() != 0 && nForce == 0)
+        return 1;
+    if (FUN_140999440(FUN_141b6f910(), pOwner->FUN_14123c460()) == 0)
+        return 1;
+    return 0;
+}
+
+// @0x141a7d1f0
+int UIPopupEntity::vfunc_58()
+{
+    if (m_8c != 0)
+        return 1;
+    float fDist = vfunc_61();
+    if (fDist <= m_94)
+        return 1;
+    return 0;
+}
+
+// @0x141a7d250
+float UIPopupEntity::vfunc_59()
+{
+    return 0;
+}
+
+// @0x141a7d260
+// MS2-FUNCTIONAL: returns the zero position as an Unk_PopupPos copy (the exe builds a NiPoint3 from DAT_143b01a60)
+Unk_PopupPos UIPopupEntity::vfunc_60()
+{
+    if (m_68 != 0)
+    {
+        if (m_70 == 0)
+            m_70 = static_cast<Unk_PeOwner*>(m_68)->FUN_141675150(m_78);
+        if (m_70 != 0)
+            return FUN_140947900(static_cast<NiAVObject*>(m_70));
+    }
+    Unk_PopupPos pos;
+    pos.x = DAT_143b01a60.x;
+    pos.y = DAT_143b01a60.y;
+    pos.z = DAT_143b01a60.z;
+    return pos;
+}
+
+// @0x141a7d300
+void UIPopupEntity::FUN_141a7d300()
+{
+    if (m_68 != 0 && 0 < m_d0)
+        static_cast<Unk_PeOwner*>(m_68)->FUN_141676310(m_d0);
+    m_d0 = 0;
+}
+
+// @0x141a7d360
+float UIPopupEntity::vfunc_61()
+{
+    if (m_68 == 0)
+        return 1e9f;
+    return static_cast<Unk_PeOwner*>(m_68)->FUN_140f4a450();
+}
+
+// @0x141a7d3a0
+void UIPopupEntity::vfunc_41(const Scaleform::GFx::Value& root)
+{
+    m_30 = FUN_140ba77e0(m_28, root);
+}
+
+// @0x141a7d450
+int UIPopupEntity::vfunc_48()
+{
+    return 0x4e35;
+}
+
+// @0x141a7d460
+MS2_EMIT_CRT_MEMMOVE_S();

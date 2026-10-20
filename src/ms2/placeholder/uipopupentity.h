@@ -144,6 +144,8 @@ public:
     virtual Unk_PopupPos vfunc_60();                                // 60 0x141a7d260
     virtual float vfunc_61();                                       // 61 0x141a7d360
     // ---- agents: append non-virtual UIPopupEntity members below this line (sorted by address) ----
+    void FUN_141a7d0a0();                                           // m_8c = 1 (ignore the range limit)
+    void FUN_141a7d300();                                           // drop the owner's ui slot m_d0
 
 protected:
     MS2_LAYOUT_FRIEND;
