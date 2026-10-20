@@ -281,6 +281,7 @@
 // MS2-PIN: ??0?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@QEAA@H@Z 0x140163770
 // MS2-PIN: ??0?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@QEAA@I@Z 0x140163790
 // MS2-PIN: ?Init@?$CW2AEX@$0IA@@ATL@@AEAAXPEB_WI@Z 0x140167410
+// MS2-FUNCTIONAL ?Init@?$CW2AEX@$0IA@@ATL@@AEAAXPEB_WI@Z: ATL's own atlconv.h template; the toolchain ATL build differs from the exe's (539 vs 462 bytes, 8 vs 9 callees in the WideCharToMultiByte retry path), no unit source to change
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\achievedata.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "achievedata.h"
@@ -391,7 +392,7 @@ int FUN_1408733e0(Unk_XmlNode*, const char*, CString&);
 int FUN_140873420(Unk_XmlNode*, const char*, CStringW&);
 int FUN_140873710(Unk_XmlNode*, const char*, int*);
 int FUN_140873890(Unk_XmlNode*, const char*, int&);
-void FUN_14086dd00(TiXmlDocument*);
+void FUN_14086dd00(TiXmlDocument*) noexcept;          // ~TiXmlNode (base part)
 
 // ---------------------------------------------------------------------------------------------------------------
 // Inline instances first emitted by this unit (the COMDAT zone).
@@ -460,7 +461,7 @@ public:
 // @0x140164670
 inline TiXmlDocument::~TiXmlDocument()
 {
-    reinterpret_cast<Unk_TiXmlString*>(&m_58)->~Unk_TiXmlString();
+    reinterpret_cast<Unk_TiXmlString*>(&m_58)->Unk_TiXmlString::~Unk_TiXmlString();
     FUN_14086dd00(this);
 }
 
