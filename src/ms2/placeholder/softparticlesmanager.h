@@ -12,7 +12,7 @@
 class SoftParticlesManager : public NiRefObject
 {
 public:
-    SoftParticlesManager();                                     // 0x1409a7940 (?\applyeffect.cpp)
+    // implicit ctor 0x1409a7940 (?\applyeffect.cpp; value-initialized by NiNew SoftParticlesManager())
     virtual ~SoftParticlesManager();                            // 0x1417738e0
     void FUN_141773940(bool bEnabled);                          // enable / disable the soft particle view
 

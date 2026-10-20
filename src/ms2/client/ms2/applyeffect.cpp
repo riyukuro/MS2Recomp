@@ -411,13 +411,14 @@ void ApplyEffect::ApplyFieldRenderInfo()
     }
 }
 
+// MS2-FUNCTIONAL: body byte-identical, but the frame is 0x10 larger (the /Od local area places the field ref one slot higher)
 // @0x1409a43a0
 void ApplyEffect::ApplyFieldFogRange(bool bEnabled)
 {
     Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
     if (FUN_1409657a0(&field) != 0) {
-        Unk_AeFieldInfo* pField = FUN_140885340(&field);
-        SetFogRange(bEnabled, pField->m_fFogNear, pField->m_fFogFar, pField->m_uiFogColor);
+        SetFogRange(bEnabled, FUN_140885340(&field)->m_fFogNear, FUN_140885340(&field)->m_fFogFar,
+            FUN_140885340(&field)->m_uiFogColor);
     }
 }
 
@@ -492,6 +493,7 @@ bool ApplyEffect::SetSoftParticlesOption(bool bEnabled, Unk_AeFieldInfo* pField)
     return bEnabled;
 }
 
+// MS2-FUNCTIONAL: body byte-identical, but the frame is 0x10 larger (the /Od local area places the field ref one slot higher)
 // @0x1409a49b0
 void ApplyEffect::ApplyFieldFog()
 {
@@ -507,9 +509,8 @@ void ApplyEffect::ApplyFieldFog()
         } else {
             bFog = false;
         }
-        Unk_AeFieldInfo* pField = FUN_140885340(&field);
-        GetInstance()->SetFogEffect(bFog, &pField->m_uiFieldFogColor, pField->m_fFieldFogNear,
-            pField->m_fFieldFogFar, pField->m_fFieldFogDensity);
+        GetInstance()->SetFogEffect(bFog, &FUN_140885340(&field)->m_uiFieldFogColor, FUN_140885340(&field)->m_fFieldFogNear,
+            FUN_140885340(&field)->m_fFieldFogFar, FUN_140885340(&field)->m_fFieldFogDensity);
     }
 }
 
@@ -529,9 +530,8 @@ void ApplyEffect::ApplyFieldFogEnabled(bool bEnabled)
         } else {
             bFog = false;
         }
-        Unk_AeFieldInfo* pField = FUN_140885340(&field);
-        GetInstance()->SetFogEffect(bFog, &pField->m_uiFieldFogColor, pField->m_fFieldFogNear,
-            pField->m_fFieldFogFar, pField->m_fFieldFogDensity);
+        GetInstance()->SetFogEffect(bFog, &FUN_140885340(&field)->m_uiFieldFogColor, FUN_140885340(&field)->m_fFieldFogNear,
+            FUN_140885340(&field)->m_fFieldFogFar, FUN_140885340(&field)->m_fFieldFogDensity);
     }
 }
 
@@ -769,11 +769,6 @@ efd::Bool UpdateAffectsFunctor::operator()(const ecr::SceneGraphService::SceneGr
         pNode->UpdateEffects();
     }
     return false;
-}
-
-SoftParticlesManager::SoftParticlesManager()
-    : m_spClick(0), m_spView(0), m_spMaterial(0)
-{
 }
 
 // @0x1409a8c70
