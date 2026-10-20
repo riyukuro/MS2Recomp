@@ -306,10 +306,10 @@ CKeyTable::~CKeyTable()
 // @0x141428bb0
 void CKeyTable::FUN_141428bb0(CInPacket& packet)
 {
-    unsigned char nMode = packet.vfunc_o8_1();
+    int nMode = packet.vfunc_o8_1();
     if (nMode == 0)
     {
-        unsigned char nDefault = packet.vfunc_o8_1();
+        int nDefault = packet.vfunc_o8_1();
         FUN_14142a800();
         if (nDefault == 1)
         {
@@ -344,17 +344,17 @@ void CKeyTable::FUN_141428bb0(CInPacket& packet)
                     int nType = packet.vfunc_o8_3();
                     __int64 nCode = packet.vfunc_o8_4();
                     int nSlot = packet.vfunc_o8_3();
-                    unsigned char nPriority = packet.vfunc_o8_1();
+                    int nPriority = packet.vfunc_o8_1();
                     FUN_141431c80(nKey, nType, nCode, nSlot, nPriority, 0);
                     if (nCode != 0)
                         FUN_141432360((int)nCode);
                 }
             }
-            short nPage = packet.vfunc_o8_2();
+            int nPage = (unsigned short)packet.vfunc_o8_2();
             m_quickSlots.RemoveAll();
-            unsigned short nPages = packet.vfunc_o8_2();
+            int nPages = (unsigned short)packet.vfunc_o8_2();
             m_quickSlots.SetCount(nPages, -1);
-            for (int i = 0; i < (int)nPages; i++)
+            for (int i = 0; i < nPages; i++)
             {
                 int nSlots = packet.vfunc_o8_3();
                 for (int j = 0; j < nSlots; j++)
@@ -372,13 +372,15 @@ void CKeyTable::FUN_141428bb0(CInPacket& packet)
         }
         m_nLoaded = 1;
     }
-    else if (nMode == 7 && FUN_14142e7a0() == 0)
+    else if (nMode == 7)
     {
-        short nPage = packet.vfunc_o8_2();
+        if (FUN_14142e7a0())
+            return;
+        int nPage = (unsigned short)packet.vfunc_o8_2();
         m_quickSlots.RemoveAll();
-        unsigned short nPages = packet.vfunc_o8_2();
+        int nPages = (unsigned short)packet.vfunc_o8_2();
         m_quickSlots.SetCount(nPages, -1);
-        for (int i = 0; i < (int)nPages; i++)
+        for (int i = 0; i < nPages; i++)
         {
             int nSlots = packet.vfunc_o8_3();
             for (int j = 0; j < nSlots; j++)
