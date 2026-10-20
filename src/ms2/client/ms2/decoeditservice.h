@@ -87,7 +87,7 @@ public:
     void SetCulled(int bVisible);                                   // 0x141176dc0
     CString GetName();                                              // 0x141176e60
     CString GetAsset();                                             // 0x141176eb0
-    static bool IsKfm(CString strAsset);                            // 0x141176f00 the path contains ".kfm"
+    bool IsKfm(CString strAsset);                                   // 0x141176f00 the path contains ".kfm" (a member: rcx = this)
     bool SetAsset(CString strAsset);                                // 0x141176f70 first asset of the layer
     bool ChangeAsset(CString strAsset);                             // 0x1411770b0 rebuild every item for another asset
     DecoItem* AddItem();                                            // 0x1411773c0
