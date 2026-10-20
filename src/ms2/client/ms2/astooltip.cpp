@@ -673,9 +673,21 @@ void FUN_1409e5480()
 }
 // not hooked: writes the unit statics s_ws*/s_bTextsLoaded (DLL-local copies; the exe readers would see empty strings)
 
+#if !defined(MS2_AT_SOLO) || MS2_AT_SOLO == 1
 #include "astooltip_p1.inl"
+#endif
+#if !defined(MS2_AT_SOLO) || MS2_AT_SOLO == 2
 #include "astooltip_p2.inl"
+#endif
+#if !defined(MS2_AT_SOLO) || MS2_AT_SOLO == 3
 #include "astooltip_p3.inl"
+#endif
+#if !defined(MS2_AT_SOLO) || MS2_AT_SOLO == 4
 #include "astooltip_p4.inl"
+#endif
+#if !defined(MS2_AT_SOLO) || MS2_AT_SOLO == 5
 #include "astooltip_p5.inl"
+#endif
+#if !defined(MS2_AT_SOLO) || MS2_AT_SOLO == 6
 #include "astooltip_p6.inl"
+#endif
