@@ -6,10 +6,34 @@
 // MS2-UNIT: ?\additionalcli.cpp#2
 // MS2-RANGE: 0x14096ee00-0x140978f40 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: memmove_s 0x14096ee00 ; unique
-// MS2-PIN: ?GetAt@?$CAtlArray@V?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VSAInvokeEffectStat@@@@_K@Z 0x140975b50 ; unique
-// MS2-PIN: ?get@?$MS2Ptr@VCSkillRecord@@@@QEBAPEAVCSkillRecord@@XZ 0x140975ba0 ; unique
-// MS2-PIN: ?IsEmpty@?$CAtlArray@V?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@ATL@@@ATL@@QEBA_NXZ 0x140976be0 ; unique
+// MS2-PIN: ??0CNode@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@QEAA@II@Z 0x1409754a0 ; prop
+// MS2-PIN: ??0CPair@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@IEAA@I@Z 0x140975530 ; prop
+// MS2-PIN: ??1?$MS2Ptr@VUnk_PCBaseComp_a98@@@@QEAA@XZ 0x1409757a0 ; prop
+// MS2-PIN: ??1CNode@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@QEAA@XZ 0x1409757f0 ; prop
+// MS2-PIN: ??1CPair@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@QEAA@XZ 0x140975830 ; prop
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VInvokeEffectOption@@@@QEAAAEAV1@PEAVInvokeEffectOption@@@Z 0x1409759f0 ; prop
+// MS2-PIN: ??4?$MS2Ptr@VSAInvokeEffectStat@@@@QEAAAEAV0@AEBV0@@Z 0x140975a60 ; prop
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VSAInvokeEffectStat@@@@QEAAAEAV1@PEAVSAInvokeEffectStat@@@Z 0x140975aa0 ; prop
+// MS2-PIN: ??C?$SmartPointer@VRidee@@@efd@@QEBAPEAVRidee@@XZ 0x140975bc0 ; prop
+// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@QEAAPEAXI@Z 0x140975c80 ; prop
+// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140975f60 ; prop
+// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x140976180 ; prop
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@AEAAXXZ 0x140976320 ; prop
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@QEBAIXZ 0x140976540 ; prop
+// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x140976650 ; prop
+// MS2-PIN: ?InitHashTable@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@QEAA_NI_N@Z 0x1409769c0 ; prop
+// MS2-PIN: ?IsLocked@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@AEBA_NXZ 0x140976c40 ; prop
+// MS2-PIN: ?Lookup@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@QEBA_NIAEAV?$MS2Ptr@VSAInvokeEffectStat@@@@@Z 0x140976dc0 ; prop
+// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140977040 ; prop
+// MS2-PIN: ?PickSize@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@AEBAI_K@Z 0x1409774b0 ; prop
+// MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@QEAAXI@Z 0x140977dd0 ; prop
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x1409782e0 ; prop
+// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140978420 ; prop
+// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VSAInvokeEffectStat@@@@@Z 0x140978670 ; prop
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IV?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@3@@ATL@@AEAAXXZ 0x140978b00 ; prop
+// MS2-PIN: ?Reference@?$MS2Ptr@VUnk_PCBaseComp_a98@@@@CAXPEAVUnk_PCBaseComp_a98@@@Z 0x140978c80 ; prop
+// MS2-PIN: ?Release@?$MS2Ptr@VUnk_PCBaseComp_a98@@@@AEAAXXZ 0x140978d80 ; prop
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_PCBaseComp_a98@@@@AEAAXPEAX@Z 0x140978e60 ; prop
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_GSAInvokeEffectStat@@UEAAPEAXI@Z 0x140975d00
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\additionalcli.cpp"
