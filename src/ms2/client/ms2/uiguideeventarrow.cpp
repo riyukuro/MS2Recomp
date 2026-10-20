@@ -409,11 +409,13 @@ void UIGuideEvent::FUN_141959a60(MS2Ptr<UIGuideEventArrow> arrow)
             FUN_140a94350()->vfunc_6(value);
         } else if (FUN_1403b3c40(name, L"keyAction")) {
             int action = FUN_141389500(value, 0);
-            info.FUN_1407cbb20("key", FUN_1409331f0()->FUN_14142d760(action, 0));
+            CStringW key = FUN_1409331f0()->FUN_14142d760(action, 0);
+            info.FUN_1407cbb20("key", key);
             FUN_140a94350()->vfunc_7(action, 1);
         } else if (FUN_1403b3c40(name, L"keyActionSub")) {
             int action = FUN_141389500(value, 0);
-            info.FUN_1407cbb20("key", FUN_1409331f0()->FUN_14142d760(action, 1));
+            CStringW key = FUN_1409331f0()->FUN_14142d760(action, 1);
+            info.FUN_1407cbb20("key", key);
             FUN_140a94350()->vfunc_7(action, 1);
         }
     }
@@ -487,30 +489,36 @@ void UIGuideEvent::FUN_14195ab40(unsigned int guideId, unsigned int stringId, in
         FUN_14195a1d0(text, part, special);
         if (special == 0) {
             GuideAS(m_summary)->FUN_140acd130("addText", part);
-            continue;
-        }
-        CStringW name, value;
-        FUN_14195bc50(part, name, value);
-        if (FUN_1403b3c40(name, L"keyText")) {
-            GuideAS(m_summary)->FUN_140acd130("addKeyButton", value);
-            FUN_140a94350()->vfunc_6(value);
-        } else if (FUN_1403b3c40(name, L"icon")) {
-            GuideAS(m_summary)->FUN_140acd130("addIcon", value);
-        } else if (FUN_1403b3c40(name, L"keyAction")) {
-            int action = FUN_141389500(value, 0);
-            if (*FUN_140a58500(FUN_1409a8b10()) == 0) {
-                GuideAS(m_summary)->FUN_140acd130("addKeyButton", FUN_1409331f0()->FUN_14142d760(action, 0));
-                FUN_140a94350()->vfunc_7(action, 1);
-            } else {
-                GuideAS(m_summary)->FUN_140acd130("addText", FUN_1409331f0()->FUN_14142d760(action, 2));
-            }
-        } else if (FUN_1403b3c40(name, L"keyActionSub")) {
-            int action = FUN_141389500(value, 0);
-            if (*FUN_140a58500(FUN_1409a8b10()) == 0) {
-                GuideAS(m_summary)->FUN_140acd130("addKeyButton", FUN_1409331f0()->FUN_14142d760(action, 1));
-                FUN_140a94350()->vfunc_7(action, 1);
-            } else {
-                GuideAS(m_summary)->FUN_140acd130("addText", FUN_1409331f0()->FUN_14142d760(action, 2));
+        } else {
+            CStringW name, value;
+            FUN_14195bc50(part, name, value);
+            if (FUN_1403b3c40(name, L"keyText")) {
+                GuideAS(m_summary)->FUN_140acd130("addKeyButton", value);
+                FUN_140a94350()->vfunc_6(value);
+            } else if (FUN_1403b3c40(name, L"icon")) {
+                GuideAS(m_summary)->FUN_140acd130("addIcon", value);
+            } else if (FUN_1403b3c40(name, L"keyAction")) {
+                if (*FUN_140a58500(FUN_1409a8b10()) == 0) {
+                    int action = FUN_141389500(value, 0);
+                    CStringW key = FUN_1409331f0()->FUN_14142d760(action, 0);
+                    GuideAS(m_summary)->FUN_140acd130("addKeyButton", key);
+                    FUN_140a94350()->vfunc_7(action, 1);
+                } else {
+                    int action = FUN_141389500(value, 0);
+                    CStringW key = FUN_1409331f0()->FUN_14142d760(action, 2);
+                    GuideAS(m_summary)->FUN_140acd130("addText", key);
+                }
+            } else if (FUN_1403b3c40(name, L"keyActionSub")) {
+                if (*FUN_140a58500(FUN_1409a8b10()) == 0) {
+                    int action = FUN_141389500(value, 0);
+                    CStringW key = FUN_1409331f0()->FUN_14142d760(action, 1);
+                    GuideAS(m_summary)->FUN_140acd130("addKeyButton", key);
+                    FUN_140a94350()->vfunc_7(action, 1);
+                } else {
+                    int action = FUN_141389500(value, 0);
+                    CStringW key = FUN_1409331f0()->FUN_14142d760(action, 2);
+                    GuideAS(m_summary)->FUN_140acd130("addText", key);
+                }
             }
         }
     }
