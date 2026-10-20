@@ -29,18 +29,18 @@ MS2_CHECK_SIZE(Unk_RemakeLockOpt, 8);
 typedef std::vector<Unk_RemakeLockOpt> Unk_RemakeLockOptList;
 MS2_CHECK_SIZE(Unk_RemakeLockOptList, 0x18);
 
-// The remake stat view of an item (the 0x20 byte record the option texts are built from; ctor 0x140617de0, dtor
-// 0x14061ac50). nMode is the remake kind (2 = pet / option remake); bFinal selects the item's current options.
+// The remake stat view of an item (the 0x20 byte record the option texts are built from; ctors 0x140617da0 / 0x140617de0,
+// implicit dtor 0x14061ac50). nMode is the option group of CItemOption (2 = the random options a remake changes); bFinal
+// adds the stat ranges to the text.
 class Unk_RemakeStat
 {
 public:
+    Unk_RemakeStat();                                                   // 0x140617da0 (group 5, no item)
     Unk_RemakeStat(unsigned nMode, MS2Ptr<CItem> item, bool bFinal);   // 0x140617de0
-    ~Unk_RemakeStat();                                                  // 0x14061ac50
     bool FUN_140619290(int nOption, int& nIndex, int& nValue);          // the nOption-th option as a lock record
     unsigned m_nMode;                                                   // +0x00
-    int m_pad4;
     MS2Ptr<CItem> m_item;                                               // +0x08
-    void* m_pad18;
+    bool m_bFinal;                                                      // +0x18
 };
 MS2_CHECK_SIZE(Unk_RemakeStat, 0x20);
 
@@ -55,6 +55,23 @@ CStringW FUN_140619760(int nItemId, unsigned nLevel);       // the lock item's n
 CStringW FUN_140617e50(const CStringW& strKey, Unk_RemakeStat& stat, unsigned* pCount);   // the option text under strKey
 CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount);                     // the option text
 CStringW FUN_140619070(Unk_RemakeStat& stat, const ATL::CAtlArray<int>& aLocked);   // the locked options' text
+
+// RTTI CItemRemakeOptionUtil::TStatInfo (0x28 bytes, base CPtred): one option of an item's group, collected by
+// FUN_140615ca0 (inline ctor 0x14061aa30, implicit dtor 0x14061ac70, ??_G 0x14061b190).
+namespace CItemRemakeOptionUtil {
+class TStatInfo : public CPtred
+{
+public:
+    TStatInfo() : m_nKind(0), m_nId(-1), m_nValue(0) {}
+    int m_nKind;                                        // +0x18 0 = stat, 1 = special stat
+    int m_nId;                                          // +0x1c the stat / special id
+    int m_nValue;                                       // +0x20
+};
+}
+MS2_CHECK_SIZE(CItemRemakeOptionUtil::TStatInfo, 0x28);
+
+// The options of nGroup whose value is the top of their range (MS2Ptr<TStatInfo> per option).
+void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRemakeOptionUtil::TStatInfo> >& out);
 
 // RTTI CItemRemakeOptionIngredient (0x28 bytes, vftable 0x142de9a48): the cost box of an option remake, filled by
 // CItemOptionTable::FUN_1405f4bb0. The ctor 0x140b9a3c0 / dtor 0x140b9a580 are inline COMDATs of

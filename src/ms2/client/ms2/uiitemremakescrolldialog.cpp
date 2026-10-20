@@ -507,25 +507,6 @@ void UIItemRemakeScrollDialog::FUN_140f59420(unsigned __int64 nOptionUid, int nU
     }
 }
 
-// The remake request of the scroll (packet 0x76, kind 1): RTTI CCItemRemakeOptionScrollPacket::RemakeOption, 0x40 bytes
-// (ctor 0x1406179e0, dtor 0x140617a50, encode 0x140617a90).
-namespace CCItemRemakeOptionScrollPacket {
-class RemakeOption
-{
-public:
-    RemakeOption();
-    virtual ~RemakeOption();
-    virtual void vfunc_1(COutputStream& out);
-    virtual void vfunc_2(CInPacket& in);
-    __int64 m_scrollUid;                                        // +0x08
-    __int64 m_itemUid;                                          // +0x10
-    __int64 m_ingredientUid;                                    // +0x18
-    Unk_RemakeOptionList50 m_options;                           // +0x20
-    bool m_bLocked;                                             // +0x38
-};
-MS2_CHECK_SIZE(RemakeOption, 0x40);
-}
-
 // @0x140f59ad0
 // MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemRemakeScrollDialog::FUN_140f59ad0(unsigned __int64 nOptionUid, int nUnk)
@@ -1054,13 +1035,13 @@ bool UIItemRemakeScrollDialog::FUN_140f5d460(MS2Ptr<CItemRemakeScrollData> spRow
     else
         strLevel = FUN_140ec2f00(CStringW(L"s_common_scroll_limit_level_range"), pRow->m_nLevelMin, pRow->m_nLevelMax);
     CStringW strLimit;
-    Unk_IrsUIntArray* pRanks = &spRow.get()->m_arrRanks;
+    ATL::CAtlArray<unsigned>* pRanks = &spRow.get()->m_arrRanks;
     CStringW strSeparator = FUN_14028b8e0(CStringW(L"s_itemremake_scroll_limit_add"));
-    if (!pRanks->FUN_140187930())
+    if (!pRanks->IsEmpty())
     {
-        for (unsigned __int64 i = 0; i < pRanks->FUN_140186270(); i++)
+        for (unsigned __int64 i = 0; i < pRanks->GetCount(); i++)
         {
-            unsigned nRank = *pRanks->FUN_140184510(i);
+            unsigned nRank = (*pRanks)[i];
             CStringW strRank = FUN_14183e9c0(FUN_1401a9d70()->FUN_141813150(nRank), nRank);
             if (i == 0)
                 strLimit.Append(strRank);
@@ -1069,17 +1050,17 @@ bool UIItemRemakeScrollDialog::FUN_140f5d460(MS2Ptr<CItemRemakeScrollData> spRow
         }
     }
     CStringW strCondition;
-    if (!spRow.get()->m_arrItemTypes.FUN_140187930())
+    if (!spRow.get()->m_arrItemTypes.IsEmpty())
     {
         if (spRow.get()->m_nPetKind == 0)
         {
             CStringW strSlots;
-            Unk_IrsUIntArray* pSlots = &spRow.get()->m_arrSlots;
-            if (!pSlots->FUN_140187930())
+            ATL::CAtlArray<unsigned>* pSlots = &spRow.get()->m_arrSlots;
+            if (!pSlots->IsEmpty())
             {
-                for (unsigned __int64 i = 0; i < pSlots->FUN_140186270(); i++)
+                for (unsigned __int64 i = 0; i < pSlots->GetCount(); i++)
                 {
-                    CStringW strSlot = FUN_1401a9d70()->FUN_141811980(8, *pSlots->FUN_140184510(i));
+                    CStringW strSlot = FUN_1401a9d70()->FUN_141811980(8, (*pSlots)[i]);
                     if (strSlot.IsEmpty())
                         continue;
                     if (strSlots.IsEmpty())
@@ -1129,15 +1110,15 @@ bool UIItemRemakeScrollDialog::FUN_140f5dd50(MS2Ptr<CItem> spItem, MS2Ptr<CItemR
     }
     if (spRow->m_nLockOption != 0)
     {
-        Unk_IrsUIntArray* pSlots = &spRow->m_arrSlots;
+        ATL::CAtlArray<unsigned>* pSlots = &spRow->m_arrSlots;
         unsigned __int64 i = 0;
-        while (i < pSlots->FUN_140186270())
+        while (i < pSlots->GetCount())
         {
-            if (!FUN_140222c60(*pSlots->FUN_140184510(i)))
+            if (!FUN_140222c60((*pSlots)[i]))
                 break;
             i++;
         }
-        if (i == pSlots->FUN_140186270())
+        if (i == pSlots->GetCount())
         {
             strText.Append(L"\n");
             strText.Append(FUN_14028b8e0(CStringW(L"s_itemremake_scroll_desc_represent_wap_value_o")));

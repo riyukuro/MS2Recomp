@@ -1,36 +1,33 @@
 // citemremakescrolldata.h - PLACEHOLDER for CItemRemakeScrollData (RTTI .?AVCItemRemakeScrollData@@, 0x90 bytes, base CPtred;
-// ctor 0x140615410): one row of Table/itemRemakeScroll.xml. NOT an original header. Only the members the remake scroll dialog
-// (?\uiitemremakescrolldialog.cpp) reads are named; the reader and the table (citemremakescrolltable.h) stay in the exe.
-// Names are invented from the use.
+// ctor 0x140615410): one <remakeScroll> row of Table/itemRemakeScroll.xml, read by CItemRemakeScrollTable::Load
+// (?\itemremakescrolldata.cpp). NOT an original header. Names are invented from the xml attributes and the use in the
+// remake scroll dialog (?\uiitemremakescrolldialog.cpp).
 #pragma once
 
+#include <atlcoll.h>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"
 
-// An ATL::CAtlArray<unsigned> inside the row (0x20 bytes); the accessors are the exe's shared instances.
-struct Unk_IrsUIntArray
-{
-    unsigned __int64 FUN_140186270();                       // GetCount
-    unsigned* FUN_140184510(unsigned __int64 nIndex);       // operator[]
-    bool FUN_140187930();                                   // IsEmpty
-    char m_pad_00[0x20];
-};
-MS2_CHECK_SIZE(Unk_IrsUIntArray, 0x20);
+// The enum attributes of a row (read with the tinyxmlhelper.h enum reader; the enumerators are not recovered).
+enum RemakeScrollOpKind { RemakeScrollOpKindNone = 0 };     // "addOpKind" (XmlValue instance 0x140619fd0)
+enum RemakeScrollOpValue { RemakeScrollOpValueNone = 0 };   // "representOpValue" / "addOpValue" (0x14061a060)
 
 class CItemRemakeScrollData : public CPtred
 {
 public:
-    unsigned short m_nLevelMin;                             // +0x18
-    unsigned short m_nLevelMax;                             // +0x1a
-    int m_nPetKind;                                         // +0x1c nonzero: the scroll is for pets
-    Unk_IrsUIntArray m_arrSlots;                            // +0x20 the equipment slots (item scrolls)
-    Unk_IrsUIntArray m_arrItemTypes;                        // +0x40 the allowed item types (empty: unrestricted)
-    Unk_IrsUIntArray m_arrRanks;                            // +0x60 the allowed ranks
-    int m_nLockOption;                                      // +0x80 option locking enabled
-    int m_nOptionKind;                                      // +0x84 index for the kind text (kind_x / kind_o)
-    int m_nOptionValue;                                     // +0x88 index for the value text (value_x/o/high/max); 0: none
-    int m_pad_8c;
+    CItemRemakeScrollData();                                // 0x140615410
+    virtual ~CItemRemakeScrollData();                       // 0x1406154d0
+
+    unsigned short m_nLevelMin;                             // +0x18 "minLv"
+    unsigned short m_nLevelMax;                             // +0x1a "maxLv"
+    int m_nPetKind;                                         // +0x1c "onlyPet" nonzero: the scroll is for pets
+    ATL::CAtlArray<unsigned> m_arrSlots;                    // +0x20 "slot" the equipment slots (item scrolls)
+    ATL::CAtlArray<unsigned> m_arrItemTypes;                // +0x40 "item" the allowed item ids (empty: unrestricted)
+    ATL::CAtlArray<unsigned> m_arrRanks;                    // +0x60 "rank" the allowed ranks
+    RemakeScrollOpValue m_nLockOption;                      // +0x80 "representOpValue" option locking enabled
+    RemakeScrollOpKind m_nOptionKind;                       // +0x84 "addOpKind" index for the kind text (kind_x / kind_o)
+    RemakeScrollOpValue m_nOptionValue;                     // +0x88 "addOpValue" index for the value text; 0: none
 };
 MS2_CHECK_SIZE(CItemRemakeScrollData, 0x90);
 MS2_CHECK_OFFSET(CItemRemakeScrollData, m_arrSlots, 0x20);
