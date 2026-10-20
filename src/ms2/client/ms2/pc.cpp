@@ -194,6 +194,10 @@
 #include "ms2/unnamed/unit_140b0e5f0.h"
 #include "ms2/client/ms2/cubecraft_1.h"
 #include "ms2/placeholder/cproxygameobject.h"
+#include "ms2/placeholder/pcinfo.h"
+#include "ms2/placeholder/cequipmentslotlayerinfo.h"
+#include "ms2/commonfiles/itemdroptable.h"
+#include "ms2/commonfiles/luautil.h"
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/client/ms2/cubecraft_2.h"
@@ -291,6 +295,7 @@ public:
     GameObject* FUN_141bd1180(int nObjectId);                       // the object of an id
     int FUN_141bc9830(int* pnId, CString* pstrName, float fRange, int n);   // the nearest holdable target
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(__int64 nId);            // the proxy of a player by id
+    MS2Ptr<CProxyGameObject> FUN_141bc9be0(int nObjectId);          // the proxy of an object id
     int FUN_141bca2e0();                                            // the field is loaded
     void FUN_141bca390(unsigned int nObjectId);                     // the player model is ready (quick equip)
     int FUN_141bd19d0(int nObjectId);                               // the relation of an object (1: the local player)
@@ -3689,6 +3694,174 @@ void PC::FUN_14165cac0()
     m_spFC8->FUN_140adf370(spEntity, FUN_14123c580(), spTomb);
     if (FUN_141657730().get())
         FUN_141657730()->FUN_141992e40();
+}
+
+// The pc record (MS2Ptr<Unk_PCArg125> is MS2Ptr<PCInfo>: get 0x1409f7930, copy 0x1409f7220, dtor 0x1409f74e0).
+class Unk_PCArg125 : public PCInfo {};
+
+int FUN_14081dd50(int nIndex);
+CLua* FUN_1401c0db0();                                      // the special ability is shown (specialability.cpp)
+
+// The proxy object view: FUN_1416c2920 returns an int here (the shared header declares it void).
+class Unk_PCProxyView
+{
+public:
+    int FUN_1416c2920();
+};
+
+// Fill a pc record with this player's look, stats, equipment and titles.
+void PC::vfunc_125(MS2Ptr<Unk_PCArg125> spInfo)
+{
+    if (spInfo == NULL)
+        return;
+    unsigned short nLevel = vfunc_78();
+    spInfo->m_18 = nLevel;
+    spInfo->m_1c = FUN_141654700();
+    spInfo->m_20 = FUN_141654730();
+    spInfo->m_28 = FUN_141656ad0();
+    spInfo->m_30 = FUN_141656a80();
+    spInfo->m_38 = FUN_141661c50();
+    spInfo->m_60 = m_unk_1bc;
+    memcpy(spInfo->m_aStats1, m_unk_1c0[1], sizeof(m_unk_1c0[1]));
+    memcpy(spInfo->m_aStats0, m_unk_1c0[0], sizeof(m_unk_1c0[0]));
+    memcpy(spInfo->m_aStats2, m_unk_1c0[2], sizeof(m_unk_1c0[2]));
+    for (unsigned int i = 0; i < 0xcf; i++)
+    {
+        SAType eType = (SAType)i;
+        if (!FUN_14081dd50(eType))
+            continue;
+        spInfo->m_3b0[eType] = m_kEquipDE0.FUN_1411e1160(eType);
+    }
+    spInfo->m_3c0 = 0;
+    spInfo->m_3c4 = FUN_141658e60();
+    MS2Ptr<CProxyGameObject> spProxy = FUN_1403ed2d0()->FUN_141bc9be0(m_unk_70);
+    if (spProxy)
+    {
+        spInfo->m_3c8 = spProxy->m_c8;
+        spInfo->m_3d4 = reinterpret_cast<Unk_PCProxyView*>((CProxyGameObject*)spProxy.operator->())->FUN_1416c2920();
+        spInfo->m_3f0 = spProxy->FUN_1416c2600();
+    }
+    spInfo->m_3e0 = FUN_1416612e0();
+    spInfo->m_3e8 = vfunc_77();
+    spInfo->m_3f8 = FUN_141656be0();
+    spInfo->m_3d8 = FUN_141662730();
+    spInfo->m_3dc = FUN_1416626b0();
+    MS2Ptr<CGuildMember> spMember = CGuildManager::GetInstance()->FUN_1404cf9f0(vfunc_77());
+    if (spMember)
+        spInfo->m_400 = CGuildManager::GetInstance()->FUN_1404d0af0(spMember->fb4);
+    spInfo->m_408 = FUN_141656d90();
+    spInfo->m_3cc = 0;
+    spInfo->m_3d0 = 0;
+    vfunc_126(spInfo, 0);
+    vfunc_126(spInfo, 1);
+    vfunc_126(spInfo, 2);
+    spInfo->m_aItems.RemoveAll();
+    m_kGemEquip1078.FUN_1412700e0(spInfo->m_aItems);
+    MS2Ptr<CEquipmentSlotLayerInfo> spTitle = FUN_1416561a0()->GetTitle();
+    if (spTitle.get())
+    {
+        spInfo->m_508 = spTitle->FUN_1411df810();
+        spInfo->m_510 = spTitle->m_start;
+        spInfo->m_520 = spTitle->m_end;
+    }
+    spInfo->m_530 = vfunc_141();
+}
+
+// Fill one equip map of a pc record (0 worn, 1 outfit, 2 the third layer) and add the worn weapons' attack to it.
+void PC::vfunc_126(MS2Ptr<Unk_PCArg125> spInfo, int nLayer)
+{
+    ATL::CAtlMap<Unk_InventoryEquipSlot, MS2Ptr<CItem> >* pMap = NULL;
+    if (nLayer == 0)
+        pMap = &spInfo->m_mapEquip0;
+    else if (nLayer == 1)
+        pMap = &spInfo->m_mapEquip1;
+    else if (nLayer == 2)
+        pMap = &spInfo->m_mapEquip2;
+    if (pMap == NULL)
+        return;
+    unsigned int nAttackMin = 0;
+    unsigned int nAttackMax = 0;
+    unsigned int nRightMin = 0;
+    unsigned int nLeftMin = 0;
+    unsigned int nRightMax = 0;
+    unsigned int nLeftMax = 0;
+    int nRings = 0;
+    bool bWorn = nLayer == 0;
+    ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
+    m_kEquipDE0.FUN_1411e1ce0(kList, nLayer);
+    pMap->RemoveAll();
+    POSITION pos = kList.GetHeadPosition();
+    while (pos)
+    {
+        MS2Ptr<CEquipItem> spEquip = kList.GetNext(pos);
+        if (spEquip == NULL || spEquip->FUN_1411dc7a0() == NULL)
+            continue;
+        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        Unk_InventoryEquipSlot nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140526c30();
+        if (nSlot == 0)
+            nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140527a20();
+        pMap->SetAt(nSlot, spItem->FUN_140524250());
+        if (!FUN_141662eb0(spItem.get()))
+            continue;
+        if (!bWorn || !spItem->FUN_140528980())
+            continue;
+        MS2Ptr<CItemData> spData(spItem->FUN_140527840());
+        if (spData == 0)
+            continue;
+        unsigned int nMin = spItem->FUN_140529070();
+        unsigned int nMax = spItem->FUN_140529090();
+        if (nSlot == 4)
+        {
+            nRightMin = nMin;
+            nRightMax = nMax;
+            if (spData->FUN_14053d510())
+                nRings++;
+        }
+        else if (nSlot == 5)
+        {
+            nLeftMin = nMin;
+            nLeftMax = nMax;
+            if (spData->FUN_14053d510())
+                nRings++;
+        }
+        else
+        {
+            nAttackMin += nMin;
+            nAttackMax += nMax;
+        }
+    }
+    ItemDropCount kRange;
+    float fDivisor = *FUN_1401d3200()->BothHandGearScorePenaltyDiv.Get();
+    switch (nRings)
+    {
+    case 0:
+        nAttackMin += nLeftMin;
+        nAttackMax += nLeftMax;
+        break;
+    case 1:
+        nAttackMin += nLeftMin / fDivisor;
+        nAttackMax += nLeftMax / fDivisor;
+        break;
+    case 2:
+    {
+        unsigned int nLow = nRightMin < nLeftMin ? nRightMin : nLeftMin;
+        unsigned int nHigh = nRightMin > nLeftMin ? nRightMin : nLeftMin;
+        unsigned int nLowMax = nRightMax < nLeftMax ? nRightMax : nLeftMax;
+        unsigned int nHighMax = nRightMax > nLeftMax ? nRightMax : nLeftMax;
+        int nAddMin = 0;
+        int nAddMax = 0;
+        FUN_1401c0db0()->FUN_140678570(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
+        nAttackMin += nAddMin;
+        nAttackMax += nAddMax;
+        break;
+    }
+    default:
+        nAttackMin += nLeftMin / fDivisor;
+        nAttackMax += nLeftMax / fDivisor;
+        break;
+    }
+    spInfo->m_3cc += nAttackMin;
+    spInfo->m_3d0 += nAttackMax;
 }
 
 // ---- end of code ----

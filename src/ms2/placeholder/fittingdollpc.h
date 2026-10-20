@@ -62,6 +62,7 @@ struct Unk_PCEquipSet
     void FUN_1411e8b60(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend);   // (CEquipment)
     float FUN_1411e1110(int nSpecial);                      // the special ability rate (CEquipment)
     int FUN_1411e1160(int nSpecial);                        // the special ability total (CEquipment)
+    void FUN_1411e1ce0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);   // the equip items of a layer (CEquipment)
     float FUN_1411e1250(int nOption, unsigned nKey);        // an invoke effect option rate (CEquipment)
     float FUN_1411e13e0(int nOption, unsigned nKey);        // an invoke effect option count (CEquipment)
     void FUN_1411e7680();                                   // refresh (CEquipment)
@@ -70,7 +71,7 @@ struct Unk_PCEquipSet
     MS2Ptr<CEquipmentSlotLayerInfo> m_spTitle;              // +0x188 (new CEquipmentSlotLayerInfo(2))
 };   // FUN_1411e1780 (itemgem.cpp): the worn item of an equip slot   // the PC's equipment holder (+0xde0); methods FUN_1411e3de0/e3000/e22c0
 class Unk_PCD88;      // +0xd88 target (ClonePC::vfunc_12 releases it via FUN_140a35900)
-class Unk_PCArg126;   // MS2Ptr<T> by value (get 0x1409f7930, ICF generic dtor 0x1401bfde0)
+
 class Unk_HsInfo;     // MS2Ptr<T> by value (defined by uihideandseekresultdialog.cpp)
 // PC member types (w539). Complete types only in pc.cpp; the MS2Ptr members need only declarations.
 class CEquipModel;     // equipmodel.h (the attach-effect models of the worn weapons)
@@ -165,7 +166,7 @@ public:
     virtual int vfunc_99(int n);                            // 99 0x141654850
     virtual int vfunc_124(int a, int b);                    // 124 0x141653840 (1/0; homes edx and r8d)
     virtual void vfunc_125(MS2Ptr<Unk_PCArg125> p);         // 125 0x141654900 (MyPC 0x141522d40)
-    virtual void vfunc_126(MS2Ptr<Unk_PCArg126> p, int n);  // 126 0x141655230 (n == 0: p.get() + 0x430)
+    virtual void vfunc_126(MS2Ptr<Unk_PCArg125> p, int n);  // 126 0x141655230 (n == 0: p.get() + 0x430)
     virtual void vfunc_127(CItem* pItem, int n);            // 127 0x1416563c0 (MS2Ptr<CItem>(pItem) into +0xde0)
     virtual void vfunc_128(CItem* pItem, int n);            // 128 0x1416564a0
     virtual void vfunc_129(const CStringW& str);            // 129 0x141656ba0: +0xdc8 = str
