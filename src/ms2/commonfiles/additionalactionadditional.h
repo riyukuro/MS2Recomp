@@ -39,7 +39,7 @@ enum SkillGroupType { SkillGroupType_None };
 enum UIShieldType { UIShieldType_None };
 // Enum attributes stored by name.
 enum Unk_CompareOp { Unk_CompareOp_None };                  // casterHpOp (FUN_140219400)
-enum Unk_DungeonGroupType { Unk_DungeonGroupType_None };    // dungeonGroupType (FUN_140218c20)
+#include "ms2/placeholder/dungeongrouptype.h"                // Unk_DungeonGroupType: dungeonGroupType (FUN_140218c20)
 enum SAType { SAType_None };                                // <SpecialAbility><v type=...> (FUN_14081dd80)
 enum Unk_SkillMasteryType { Unk_SkillMasteryType_None };              // requireMasteryTypes (FUN_14021c400)
 

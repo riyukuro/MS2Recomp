@@ -16,7 +16,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/dungeonroomshutdowncontext.h"
 
-enum Unk_DungeonGroupType { Unk_DungeonGroupType_None };
+#include "ms2/placeholder/dungeongrouptype.h"
 
 // Out-of-unit helpers.
 int FUN_140179060(Unk_140165cf0* pElem, const char* pszName, Unk_DungeonGroupType& eOut);   // enum attribute by name
