@@ -65,6 +65,7 @@ public:
     void AddLevel(int nDelta, int bIgnoreLimit);   // 0x14067dd80
     int AddMood(int nDelta);                    // 0x14067de50 clamps to 0..100; true when changed
     void FUN_14067def0(int nMode);              // 0x14067def0 sets the maid's mode
+    CStringW FUN_1409eeda0() { return m_profile.name; }   // inline COMDAT 0x1409eeda0 (astooltip.cpp): the maid's name
 
     MS2_LAYOUT_FRIEND;
     __int64 m_n18;                              // +0x18
@@ -99,6 +100,7 @@ struct MaidInfo
     unsigned npcId;                             // +0x08 "NPCID"
     int salaryType;                             // +0x0c from the item price table
     int salary;                                 // +0x10
+    int FUN_1409eee80() { return salaryType == 0; }   // inline COMDAT 0x1409eee80 (astooltip.cpp): paid in meso
 };
 MS2_CHECK_SIZE(MaidInfo, 0x14);
 
