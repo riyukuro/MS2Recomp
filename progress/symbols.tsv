@@ -34746,7 +34746,7 @@ sprintf	1403b0860	func
 ?FUN_140536a30@Unk_C2ConstA@@QEAAIXZ	140536a30	func
 ?FUN_140536a30@Unk_IdleChance@@QEAAIXZ	140536a30	func
 ?FUN_140536a30@Unk_WhisperConstValue@@QEAAHXZ	140536a30	func
-??$StringFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@@Z	140536a50	func
+??$StringFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@@Z	140540050	func
 ??$Unk_SocketFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@@Z	140536a50	func
 ?FUN_140536a50@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV12@@Z	140536a50	func
 ??0?$CAtlMap@IV?$MS2SvrPtr@VCostumeSet@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2SvrPtr@VCostumeSet@@@@@3@@ATL@@QEAA@IMMMI@Z	140536af0	func
@@ -183269,7 +183269,7 @@ FUN_141485590	141485590	func
 ?CreateMaterial@NiMaterialLibrary@@SAPEAVNiMaterial@@AEBVNiFixedString@@@Z	141d284a0	func
 ?FUN_141d284a0@@YAPEAVNiMaterial@@PEAX@Z	141d284a0	func
 ?FUN_141d284a0@@YAPEAVNiMaterial@@PEBVNiFixedString@@@Z	141d284a0	func
-?GetMaterial@NiMaterial@@SAPEAV1@AEBVNiFixedString@@@Z	141d284a0	func
+?GetMaterial@NiMaterial@@SAPEAV1@AEBVNiFixedString@@@Z	141d661d0	func
 ?GetGlobalShaderConstantEntry@NiShaderFactory@@QEAAPEAVNiGlobalConstantEntry@@AEBVNiFixedString@@@Z	141d29310	func
 ?GetInstance@NiShaderFactory@@SAPEAV1@XZ	141d29370	func
 ?RegisterErrorCallback@NiShaderFactory@@SA_NP6AIPEBDI_N@Z@Z	141d29760	func
