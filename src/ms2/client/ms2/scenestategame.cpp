@@ -29,7 +29,7 @@
 // MS2-PIN: ??1Unk_SSGCharNameResult@@QEAA@XZ 0x141746aa0 ; w97 manual
 // MS2-PIN: ?Id@UIExpBar@@SAHXZ 0x141748200 ; w102 manual
 // MS2-PIN: ?get@?$MS2Ptr@VCSplashDamageRecord@@@@QEBAPEAVCSplashDamageRecord@@XZ 0x1417472a0 ; w102 manual
-// MS2-PIN: ??$Log@HW4Unk_SSGSkillUseError@@@Unk_SSGCommandLog@@QEAAXHHPEB_WAEBHAEBW4Unk_SSGSkillUseError@@@Z 0x141740800 ; w102 manual
+// MS2-PIN: ??$Log@IW4Unk_SSGSkillUseError@@@Unk_SSGCommandLog@@QEAAXHHPEB_WAEBIAEBW4Unk_SSGSkillUseError@@@Z 0x141740800 ; w102 manual (fx18: skill id is unsigned, ArgType<unsigned> 0x14015e5d0)
 // MS2-PIN: ??0?$MS2Ptr@VCSplashDamageRecord@@@@QEAA@PEAVCSplashDamageRecord@@@Z 0x141745850 ; w109 manual (was auto-order)
 // MS2-PIN: ??0?$MS2Ptr@VUGCMapBlueprintInfo@@@@QEAA@PEAVUGCMapBlueprintInfo@@@Z 0x141745880 ; w109 manual (was auto-order)
 // MS2-PIN: ??0?$MS2Ptr@VUGCMapDesignInfo@@@@QEAA@PEAVUGCMapDesignInfo@@@Z 0x1417458f0 ; w109 manual (was auto-order)
@@ -1077,7 +1077,7 @@ public:
     int FUN_1401859c0(int nType, int nValue, const wchar_t* pszText);
     void FUN_14015eb90(int nCat, int nLevel, const wchar_t* pszFormat, const CString& strArg);
     void FUN_1406530d0(int nCat, int nLevel, const wchar_t* pszFormat, const fmt::ArgList& args);
-    // fmt log line with two arguments (0x141740800 = <int, Unk_SSGSkillUseError>).
+    // fmt log line with two arguments (0x141740800 = <unsigned, Unk_SSGSkillUseError>).
     template <class A, class B> void Log(int nCat, int nLevel, const wchar_t* pszFormat, const A& a, const B& b)
     {
         const fmt::internal::ArgArray<2>::Type values = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(a), fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(b)};
@@ -3582,7 +3582,7 @@ void CSceneStateGame::FUN_1417187b0(CInPacket& packet)
 {
     int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
     __int64 nSkillUid = static_cast<CInputStream&>(packet).vfunc_o8_4();
-    int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    unsigned int nSkillId = static_cast<CInputStream&>(packet).vfunc_o8_3();
     Unk_SSGSkillUseError eError = static_cast<Unk_SSGSkillUseError>(static_cast<CInputStream&>(packet).vfunc_o8_1());
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC != 0)
@@ -9429,7 +9429,7 @@ struct Unk_1407a7d20
     unsigned m_nFlags;                                      // +0x04 where to show it
     CStringW m_strText;                                     // +0x08
     unsigned m_nArg;                                        // +0x10 (flag 0x10: the repeat count)
-    ATL::CAtlArray<void*> m_aExtra;                         // +0x18
+    ATL::CAtlArray<CString> m_aExtra;                       // +0x18 (dtor 0x1401641d0 = CAtlArray<CStringA>, fx18)
 };
 CStringW FUN_14083d340(CStringW strText);                   // expand the text macros
 void FUN_1412753b0(const CStringW& strMsg, int nType, int nArg);
