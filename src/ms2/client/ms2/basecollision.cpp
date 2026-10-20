@@ -143,7 +143,7 @@ void CBaseCollision::vfunc_3(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float
 }
 
 // @0x1409fbff0
-void CBaseCollision::vfunc_2(Unk_StreamPoint ptPos, Unk_StreamPoint ptDir, float fScale)
+void CBaseCollision::vfunc_2(Unk_StreamPoint ptPos, const NiMatrix3& kRot, float fScale)
 {
     m_ptPos = ptPos;
     Invalidate();
@@ -590,7 +590,7 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
         {
             for (int i = 0; i < 8; i++)
             {
-                if (pRing->Contains(pBox->m_akCorners[i]))
+                if (pRing->Contains(reinterpret_cast<const Unk_StreamPoint&>(pBox->m_akCorners[i])))
                 {
                     bHit = true;
                     break;
@@ -635,7 +635,7 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
                 {
                     for (int i = 0; i < 8; i++)
                     {
-                        if (pFrustum->Contains(pBox->m_akCorners[i]))
+                        if (pFrustum->Contains(reinterpret_cast<const Unk_StreamPoint&>(pBox->m_akCorners[i])))
                         {
                             bHit = true;
                             break;
@@ -728,7 +728,7 @@ bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    if (pRing->Contains(pBox->m_akCorners[i]))
+                    if (pRing->Contains(reinterpret_cast<const Unk_StreamPoint&>(pBox->m_akCorners[i])))
                     {
                         bHit = true;
                         break;
@@ -770,7 +770,7 @@ bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
                     {
                         for (int i = 0; i < 8; i++)
                         {
-                            if (pFrustum->Contains(pBox->m_akCorners[i]))
+                            if (pFrustum->Contains(reinterpret_cast<const Unk_StreamPoint&>(pBox->m_akCorners[i])))
                             {
                                 bHit = true;
                                 break;
