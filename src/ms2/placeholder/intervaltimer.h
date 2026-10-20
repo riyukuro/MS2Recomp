@@ -12,6 +12,8 @@ public:
     Unk_IntervalTimer();                                        // 0x140517b00
     void Init();                                                // 0x140268840
     int Check(unsigned int nInterval);                          // 0x140268870
+    // @0x1411f9230 (first emitted by equipment.cpp)
+    unsigned int GetLast() const { return m_nLast; }
 
     unsigned int m_nInterval;
     unsigned int m_nLast;

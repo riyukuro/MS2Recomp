@@ -23,6 +23,7 @@ class Unk_PCActionTimer;   // CPtred-derived, defined by the user unit (avatarpc
 class Unk_PCSkillTree;   // MS2Ptr<T> at +0x1110 (copied out by FUN_1409eee00; defined by the user unit)
 class CEquipItem;
 class CMsTime;
+class CSetItemManager;   // csetitemmanager.h
 class AdditionalCli;
 struct Unk_PCEquipSet
 {
@@ -176,6 +177,7 @@ public:
     void FUN_141662710(int nValue);
     void FUN_141661330(const CStringW& strName);             // set the displayed name (scenestategame)
     class Unk_MyPCEquip* FUN_14165f460();                   // the equipment (mypc.cpp, w97)
+    MS2Ptr<CSetItemManager> FUN_1411f9310();                // 0x1411f9310 m_spSetItems (a pc.h inline first emitted by equipment.cpp)
     void FUN_141670540(int nIndex, int nType, __int64 nValue);   // PCBase: set a stat value (mypc.cpp, w97)
     // scenestategame OnAddUser (0x14170fda0); argument kinds from the callee prologues
     void FUN_141656aa0(__int64 nAccountId);
@@ -234,7 +236,9 @@ public:
     class Unk_PCCubeCraft* m_pCubeCraft;                    // +0x1020 (FUN_141659700; cube craft mode only)
     unsigned char unknown1028[0x30];
     int m_n1058;                                            // +0x1058 (non-zero: buffs never resist knock-back)
-    unsigned char unknown105c[0xd4];
+    unsigned char unknown105c[0xa4];
+    MS2Ptr<CSetItemManager> m_spSetItems;                   // +0x1100 the set item bonuses (FUN_1411f9310)
+    unsigned char unknown1110[0x20];
     MS2Ptr<CostumeManager> m_spCostume;                     // +0x1130 the costume sets (additionalcli.cpp)
     unsigned char unknown1140[0x88];
     int m_n11c8;                                            // +0x11c8 (FUN_14174a340)
@@ -249,6 +253,7 @@ MS2_CHECK_OFFSET(PC, m_spFC8, 0xfc8);
 MS2_CHECK_OFFSET(PC, m_pCubeCraft, 0x1020);
 MS2_CHECK_OFFSET(PC, m_nFF9, 0xff9);
 MS2_CHECK_OFFSET(PC, m_n1058, 0x1058);
+MS2_CHECK_OFFSET(PC, m_spSetItems, 0x1100);
 MS2_CHECK_OFFSET(PC, m_spCostume, 0x1130);
 MS2_CHECK_OFFSET(PC, m_spInteractMode, 0x1240);
 MS2_CHECK_SIZE(PC, 0x12e0); // deleting dtor 1416678b0

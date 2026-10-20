@@ -6,6 +6,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/mstime.h"
+#include "ms2/placeholder/intervaltimer.h"
 
 class CEquipmentSlotLayerInfo : public CPtred
 {
@@ -15,6 +16,10 @@ public:
     bool FUN_1411df810();                                   // active (m_bActive)
     int FUN_1411df830();                                    // state: 0 off, 1 active with an end, 2 no end, 3 expired, 4 not started
     unsigned FUN_1411df8e0();                               // the most days the period may span
+    bool FUN_1411df7d0();                                   // the codi tab feature (kind 2, feature 0x8e) is on
+    unsigned char FUN_1411df910();                          // Update: re-evaluate the period (1 when the active flag changed)
+    void FUN_1411dfbf0(bool bDirty);                        // mark for re-evaluation
+    int FUN_1411dfc10(const CMsTime& kStart, const CMsTime& kEnd);   // set the period (equipment.cpp)
 
     CMsTime m_start;                                        // +0x18 (CMsTime(0) in the ctor)
     CMsTime m_end;                                          // +0x28
@@ -23,10 +28,10 @@ public:
     int m_nKind;                                            // +0x40 the ctor argument
     bool m_bBusy;                                           // +0x44
     int m_48;                                               // +0x48
-    int m_4c[2];                                            // +0x4c (ctor 0x140517b00)
+    Unk_IntervalTimer m_timer;                              // +0x4c (ctor 0x140517b00)
     int m_pad_54;
 };
 MS2_CHECK_SIZE(CEquipmentSlotLayerInfo, 0x58);
 MS2_CHECK_OFFSET(CEquipmentSlotLayerInfo, m_end, 0x28);
 MS2_CHECK_OFFSET(CEquipmentSlotLayerInfo, m_nKind, 0x40);
-MS2_CHECK_OFFSET(CEquipmentSlotLayerInfo, m_4c, 0x4c);
+MS2_CHECK_OFFSET(CEquipmentSlotLayerInfo, m_timer, 0x4c);

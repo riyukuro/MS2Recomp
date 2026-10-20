@@ -13,6 +13,8 @@ public:
     void FUN_140267220(MS2Ptr<InvokeEffectOption> spOther);    // add another option's count and rate
     void FUN_140267300(float fRate);                        // set the rate
     void FUN_140267330(int nCount);                         // set the count
+    float FUN_140267350();                                  // the rate
+    int FUN_140267370();                                    // the count
 
     int m_nA;                                               // +0x18 stat option type
     int m_nB;                                               // +0x1c count

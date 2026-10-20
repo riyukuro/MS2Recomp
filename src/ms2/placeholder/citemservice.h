@@ -8,6 +8,11 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/os.h"
+#include "ms2/placeholder/ascript.h"
+
+class CItem;
+class CEquipItem;
+class PC;
 
 class CItemService : public efd::ISystemService, public TSingleton<CItemService>
 {
@@ -17,6 +22,7 @@ public:
     CItemService();                                                 // 0x141419df0
     virtual ~CItemService();
     virtual const char* GetDisplayName() const;
+    MS2Ptr<CEquipItem> FUN_14141a060(CItem* pItem, PC* pPC, __int64 nValue);   // 0x14141a060 create the equip item (equipment.cpp)
 private:
     MS2_LAYOUT_FRIEND;
     char m_pad_24[0x68 - 0x24];

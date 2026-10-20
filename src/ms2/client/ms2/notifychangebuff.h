@@ -9,6 +9,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/notifyobject.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/notifychangeactivemycoditab.h"
 
 class PCBase;
 // A buff record (?\additionalcli.cpp, new(0x78)); only its size and the shared MS2Ptr instances are needed here.
@@ -107,7 +108,6 @@ class NotifyDebugMode : public NotifyObject { public: virtual CStringW vfunc_1()
 
 class NotifyActiveMyCodiTab : public NotifyObject { public: virtual CStringW vfunc_1(); static ClassObject* CreateObject(); };   // 0x140db4cd0 / 0x140db4cc0
 
-class NotifyChangeActiveMyCodiTab : public NotifyObject { public: virtual CStringW vfunc_1(); static ClassObject* CreateObject(); };   // 0x140db4d30 / 0x140db4d20
 
 class NotifyDebugState : public NotifyObject { public: virtual CStringW vfunc_1(); static ClassObject* CreateObject(); };   // 0x140db4d90 / 0x140db4d80
 

@@ -18,6 +18,7 @@ MS2_CHECK_SIZE(NotifyChangeJob, 0x20);
 class NotifyChangeEquipment : public NotifyObject
 {
 public:
+    NotifyChangeEquipment(PCBase* pc);        // 0x140db4ef0
     virtual ~NotifyChangeEquipment();         // 0x140db5740
     virtual CStringW vfunc_1();         // 0x140db4ea0
     PCBase* m_pc;                       // +0x18
