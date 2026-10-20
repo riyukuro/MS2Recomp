@@ -164503,7 +164503,7 @@ FUN_141485590	141485590	func
 ??A?$vector@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@V?$allocator@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@QEAAAEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@_K@Z	1418f9250	func
 ??C?$MS2Ptr@VUnk_ClBurnEvent@@@@QEBAPEAVUnk_ClBurnEvent@@XZ	1418f9280	func
 ??C?$MS2Ptr@VCDeleteCharacterInfo@UICharacterListDialog@@@@QEBAPEAVCDeleteCharacterInfo@UICharacterListDialog@@XZ	1418f92b0	func
-??C?$MS2Ptr@VCMsgBoxDataItem@@@@QEBAPEAVCMsgBoxDataItem@@XZ	1418f92c0	func
+??C?$MS2Ptr@VCMsgBoxDataItem@@@@QEBAPEAVCMsgBoxDataItem@@XZ	140ce9910	func
 ??D?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@@std@@QEBAAEBV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@XZ	1418f92d0	func
 ??D?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@@std@@QEBAAEAV?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@XZ	1418f92e0	func
 ??E?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCCharacterInfo@UICharacterListDialog@@@@@std@@@std@@@std@@QEAAAEAV01@XZ	1418f9300	func
