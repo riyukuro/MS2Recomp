@@ -30,6 +30,7 @@
 
 #pragma comment(lib, "winhttp.lib")
 #pragma comment(lib, "advapi32.lib")
+#pragma comment(lib, "comsuppw.lib")   // _bstr_t (charset conversion, URLEncoding, MD5)
 
 // The exe calls the imported wcslen and wcscmp (`call [__imp_wcslen]`); the static-CRT headers declare it without dllimport, so the
 // IAT slot is reached through its own symbol (same as fmt/format.h).

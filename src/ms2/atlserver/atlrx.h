@@ -24,6 +24,8 @@
 // MS2: the game links the DLL CRT, so CAtlRECharTraitsW::ByteLen (0x1409276a0) calls the imported wcslen
 // (`call [__imp_wcslen]`); the static-CRT headers used here declare it without dllimport.
 extern "C" size_t (__cdecl* __imp_wcslen)(const wchar_t*);
+// MS2: the game's TU is built with _UNICODE, so CAtlRegExp::Match's _TUCHAR casts read wchar_t (`movzx eax, word ptr`).
+#define MS2_ATLRX_TUCHAR wchar_t
 
 #ifndef ATL_REGEXP_MIN_STACK
 #define ATL_REGEXP_MIN_STACK 256
@@ -610,7 +612,7 @@ public:
 				break;
 
 			case RE_SYMBOL:
-				if (GetInstruction(ip).symbol.nSymbol == static_cast<size_t>(static_cast<_TUCHAR>(*sz)))
+				if (GetInstruction(ip).symbol.nSymbol == static_cast<size_t>(static_cast<MS2_ATLRX_TUCHAR>(*sz)))
 				{
 					sz = CharTraits::Next(sz);
 					ip++;
@@ -750,7 +752,7 @@ public:
 					}
 
 					RECHAR *pBits = reinterpret_cast<RECHAR *>((&m_Instructions[ip]+1));
-					size_t u = static_cast<size_t>(static_cast<_TUCHAR>(* ((RECHAR *) sz)));
+					size_t u = static_cast<size_t>(static_cast<MS2_ATLRX_TUCHAR>(* ((RECHAR *) sz)));
 					if (pBits[u >> 3] & 1 << (u & 0x7))
 					{
 						ip = (size_t) pContext->Pop();
@@ -778,8 +780,8 @@ public:
 
 					while (ip < inEnd)
 					{						
-						if (static_cast<size_t>(static_cast<_TUCHAR>(*sz)) >= GetInstruction(ip).memory.nIndex && 
-							static_cast<size_t>(static_cast<_TUCHAR>(*sz)) <= GetInstruction(ip+1).memory.nIndex)
+						if (static_cast<size_t>(static_cast<MS2_ATLRX_TUCHAR>(*sz)) >= GetInstruction(ip).memory.nIndex && 
+							static_cast<size_t>(static_cast<MS2_ATLRX_TUCHAR>(*sz)) <= GetInstruction(ip+1).memory.nIndex)
 						{
 							// if we match, we jump to the end
 							sz = CharTraits::Next(sz);
@@ -812,8 +814,8 @@ public:
 
 					while (ip < inEnd)
 					{
-						if (static_cast<size_t>(static_cast<_TUCHAR>(*sz)) >= GetInstruction(ip).memory.nIndex && 
-							static_cast<size_t>(static_cast<_TUCHAR>(*sz)) <= GetInstruction(ip+1).memory.nIndex)
+						if (static_cast<size_t>(static_cast<MS2_ATLRX_TUCHAR>(*sz)) >= GetInstruction(ip).memory.nIndex && 
+							static_cast<size_t>(static_cast<MS2_ATLRX_TUCHAR>(*sz)) <= GetInstruction(ip+1).memory.nIndex)
 						{
 							ip = (size_t) pContext->Pop();
 							bMatch = FALSE;
