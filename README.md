@@ -1,4 +1,4 @@
-# Maplestory2-Recomp
+# MS2Recomp
 
 A work-in-progress recompilation of the MapleStory2 client (KMS2 dev build, x64, April 2022).
 
