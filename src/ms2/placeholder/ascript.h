@@ -266,7 +266,7 @@ public:
     Scaleform::GFx::Value FUN_1413130e0(const char* szMethod, Scaleform::GFx::Value a1, CStringW a2, int a3);   // 0x1413130e0 (inline COMDAT of uimeratmarketdialog.cpp: "changeState"; a1/a2 by value)
     MS2Ptr<class ASDropdownMenu> FUN_140bbe700(const CString& strName);                       // 0x140bbe700 bind a dropdown child (uiguilddialog "m_sortDropdown")
 
-    Scaleform::GFx::Value FUN_1413125d0(const char* szMethod, const ASArray& a1, int a2, int a3, Scaleform::GFx::Value a4);   // 0x1413125d0 (inline COMDAT, defined in uimeratmarketdialog.cpp: "buildItemList"; a4 by value)
+    Scaleform::GFx::Value FUN_1413125d0(const char* szMethod, const ASArray& a1, int a2, bool a3, Scaleform::GFx::Value a4);   // 0x1413125d0 (inline COMDAT, defined in uimeratmarketdialog.cpp: "buildItemList"; a4 by value)
 
     Scaleform::GFx::Value FUN_1413124f0(const char* szMethod, const ASArray& a1, int a2, bool a3);   // 0x1413124f0 (inline COMDAT, uimeratmarketdialog.cpp: "buildItemList" without the info object)
 
@@ -275,6 +275,9 @@ public:
     Scaleform::GFx::Value FUN_141312c10(const char* szMethod, CStringW a1, int a2);   // 0x141312c10 (inline COMDAT, uimeratmarketdialog.cpp: "removeBasket"; a1 by value)
 
     Scaleform::GFx::Value FUN_141313220(const char* szMethod, Scaleform::GFx::Value a1, int a2);   // 0x141313220 (inline COMDAT, defined in uimeratmarketdialog.cpp: "appendLimitedTab"; a1 by value)
+    Scaleform::GFx::Value FUN_141312cf0(const char* szMethod, ASArray a1, int a2, bool a3);   // 0x141312cf0 (inline COMDAT, defined in uimeratmarketdialog.cpp; a1 by value)
+    Scaleform::GFx::Value FUN_141312e20(const char* szMethod, Scaleform::GFx::Value a1, const ASArray& a2, int a3, int a4);   // 0x141312e20 (inline COMDAT, uimeratmarketdialog.cpp: "addSellerComplete"; a1 by value)
+    Scaleform::GFx::Value FUN_141312f60(const char* szMethod, Scaleform::GFx::Value a1, Scaleform::GFx::Value a2, CString a3);   // 0x141312f60 (inline COMDAT, uimeratmarketdialog.cpp; all by value)
 
     Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int a1);   // 0x1409ba030 Invoke(method, int) (uimeratmarketdialog.cpp "changeTab")
 

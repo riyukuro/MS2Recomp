@@ -510,6 +510,13 @@ class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* p
 Unk_MmFiles* FUN_140166420();                                               // the resource file system
 CLogString* FUN_140166440();
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
+void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);               // set an Int value
+void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);              // set a Boolean value
+void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);      // set a UInt value
+void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);  // set a String value
+void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);      // set a String value (narrow)
+void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);  // set a Value from an AS object
+void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // copy a Value
 
 // The base ctor/dtor COMDATs of the delegates whose exe copies live in this unit (pinned above).
 template <> Delegate<void(ATL::CAtlList<MS2Ptr<CEquipItem> >*, Unk_PCEquipSet*)>::DelegateImplBase::DelegateImplBase() {}
@@ -5239,7 +5246,7 @@ void UIMeratMarketDialog::BuildItemList(int nKind)
         info.FUN_1407cbbe0("isSearchItemLink", false);
         info.FUN_1407cbbe0("isEndPage", false);
         info.FUN_1407cb9c0("endPage", (int)(list.GetCount() / 0x12));
-        spPage->FUN_1413125d0("buildItemList", items, nResult, 1, info.FUN_1422bb870());
+        spPage->FUN_1413125d0("buildItemList", items, nResult, true, info.FUN_1422bb870());
         return;
     }
     ASObj home(2);
@@ -5402,7 +5409,7 @@ void UIMeratMarketDialog::ShowSearchPage(int nPage, int nFrom, int nTo, int nCou
         info.FUN_1407cb9c0("curPage", nPage);
         info.FUN_1407cbbe0("isSearchItemLink", m_query.IsActive());
         info.FUN_1407cbbe0("isEndPage", bEnd);
-        spPage->FUN_1413125d0("buildItemList", items, nResult, 1, info.FUN_1422bb870());
+        spPage->FUN_1413125d0("buildItemList", items, nResult, true, info.FUN_1422bb870());
         if (bFirstPage && nResult == 0 && !strNotice.IsEmpty())
             spPage->Invoke("updateNoticeText", CStringW(strNotice));
         if (m_query.IsActive())
@@ -6066,6 +6073,140 @@ bool UIMeratMarketDialog::CheckProduct(MS2Ptr<CMeratMarketProduct> spProduct, in
 void UIMeratMarketDialog::ResetUgcTermsAgreed()
 {
     m_638 = false;
+}
+
+// @0x1413124f0
+Scaleform::GFx::Value AScript::FUN_1413124f0(const char* szMethod, const ASArray& a1, int a2, bool a3)
+{
+    ASArgList args;
+    args.FUN_1409b2800(3);
+    FUN_1422bce40(args.FUN_1409b1f70(0), a1);
+    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcce0(args.FUN_1409b1f70(2), a3);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x1413125d0
+Scaleform::GFx::Value AScript::FUN_1413125d0(const char* szMethod, const ASArray& a1, int a2, bool a3, Scaleform::GFx::Value a4)
+{
+    ASArgList args;
+    args.FUN_1409b2800(4);
+    FUN_1422bce40(args.FUN_1409b1f70(0), a1);
+    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcce0(args.FUN_1409b1f70(2), a3);
+    FUN_1422bcc70(args.FUN_1409b1f70(3), a4);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x141312710
+Scaleform::GFx::Value AScript::FUN_141312710(const char* szMethod, CStringA a1, int a2)
+{
+    ASArgList args;
+    args.FUN_1409b2800(2);
+    FUN_1422bce70(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x1413127f0
+Scaleform::GFx::Value AScript::FUN_1413127f0(const char* szMethod, CString a1, CString a2)
+{
+    ASArgList args;
+    args.FUN_1409b2800(2);
+    FUN_1422bce70(args.FUN_1409b1f70(0), a1);
+    FUN_1422bce70(args.FUN_1409b1f70(1), a2);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x1413128f0
+Scaleform::GFx::Value AScript::FUN_1413128f0(const char* szMethod, CString a1, Scaleform::GFx::Value a2, int a3, int a4, const wchar_t* a5)
+{
+    ASArgList args;
+    args.FUN_1409b2800(5);
+    FUN_1422bce70(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcc70(args.FUN_1409b1f70(1), a2);
+    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
+    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
+    FUN_1422bcea0(args.FUN_1409b1f70(4), a5);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x141312a70
+Scaleform::GFx::Value AScript::FUN_141312a70(const char* szMethod, CString a1, Scaleform::GFx::Value a2, int a3, int a4, CStringW a5)
+{
+    ASArgList args;
+    args.FUN_1409b2800(5);
+    FUN_1422bce70(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcc70(args.FUN_1409b1f70(1), a2);
+    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
+    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
+    FUN_1422bcea0(args.FUN_1409b1f70(4), a5);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x141312c10
+Scaleform::GFx::Value AScript::FUN_141312c10(const char* szMethod, CStringW a1, int a2)
+{
+    ASArgList args;
+    args.FUN_1409b2800(2);
+    FUN_1422bcea0(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x141312cf0
+Scaleform::GFx::Value AScript::FUN_141312cf0(const char* szMethod, ASArray a1, int a2, bool a3)
+{
+    ASArgList args;
+    args.FUN_1409b2800(3);
+    FUN_1422bcc70(args.FUN_1409b1f70(0), a1.FUN_1422bb890());
+    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcce0(args.FUN_1409b1f70(2), a3);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x141312e20
+Scaleform::GFx::Value AScript::FUN_141312e20(const char* szMethod, Scaleform::GFx::Value a1, const ASArray& a2, int a3, int a4)
+{
+    ASArgList args;
+    args.FUN_1409b2800(4);
+    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
+    FUN_1422bce40(args.FUN_1409b1f70(1), a2);
+    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
+    FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x141312f60
+Scaleform::GFx::Value AScript::FUN_141312f60(const char* szMethod, Scaleform::GFx::Value a1, Scaleform::GFx::Value a2, CString a3)
+{
+    ASArgList args;
+    args.FUN_1409b2800(3);
+    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcc70(args.FUN_1409b1f70(1), a2);
+    FUN_1422bce70(args.FUN_1409b1f70(2), a3);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x1413130e0
+Scaleform::GFx::Value AScript::FUN_1413130e0(const char* szMethod, Scaleform::GFx::Value a1, CStringW a2, int a3)
+{
+    ASArgList args;
+    args.FUN_1409b2800(3);
+    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcea0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x141313220
+Scaleform::GFx::Value AScript::FUN_141313220(const char* szMethod, Scaleform::GFx::Value a1, int a2)
+{
+    ASArgList args;
+    args.FUN_1409b2800(2);
+    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
+    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    return FUN_1422bb8f0(szMethod, args);
 }
 
 // A bill row of a UGC product (gifts are only offered for UGC rows).
