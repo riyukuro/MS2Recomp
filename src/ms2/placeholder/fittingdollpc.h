@@ -89,6 +89,7 @@ class CStatPointManager;
 class CoupleEffectSystem;
 class WaterGunBattleInfo;
 class CTailEffectObject;
+class CTailEffectObjectFromAdditional;
 class CRandomTargetEffect;
 namespace HideAndSeek { class Info; }
 // PC +0xf78: four item handles (ctor 0x140c86000 = vector ctor + FUN_140c86060; implicit dtor 0x141666a60).
@@ -508,7 +509,7 @@ public:
     MS2Ptr<HideAndSeek::Info> m_spHideAndSeek1250;          // +0x1250
     MS2Ptr<WaterGunBattleInfo> m_spWaterGun1260;            // +0x1260
     MS2Ptr<CTailEffectObject> m_spTailEffect1270;           // +0x1270
-    ATL::CAtlMap<int, MS2Ptr<CTailEffectObject> > m_mapTail1280;   // +0x1280 additional-effect tails
+    ATL::CAtlMap<int, MS2Ptr<CTailEffectObjectFromAdditional> > m_mapTail1280;   // +0x1280 additional-effect tails (a separate MS2Ptr instantiation from +0x1270's)
     MS2Ptr<CRandomTargetEffect> m_spRandomTarget12c8;       // +0x12c8
     efd::SmartPointer<NiAVObject> m_sp12d8;                 // +0x12d8 (init 0x14097eba0(p,0), as PCBase +0xbe8)
 };
