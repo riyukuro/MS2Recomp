@@ -141,17 +141,17 @@ Unk_Rect4::Unk_Rect4(float fLeft, float fRight, float fTop, float fBottom)
 {
 }
 
-// @0x14097f220
-Unk_AfterImageColor::Unk_AfterImageColor()
-    : NiColorA(0.0f, 0.0f, 0.0f, 0.0f)
-{
-}
-
-// @0x14097f1d0
-Unk_AfterImageColor::Unk_AfterImageColor(float r, float g, float b, float a)
-    : NiColorA(r, g, b, a)
-{
-}
+// 0x14097f220 / 0x14097f1d0 are Gamebryo's inline NiColorA() / NiColorA(float x4) (Unk_AfterImageColor is NiColorA);
+// both COMDATs are emitted by this TU.
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // @0x14097eec0
 Unk_AfterImageRef::Unk_AfterImageRef()

@@ -128,6 +128,7 @@ public:
     template <class T> MS2Ptr<T> FUN_140bfa6a0(const CString& strName);                      // child control by name (alliance quest list)
     template <class T> MS2Ptr<T> FUN_140be23c0(const CString& strName);                      // child control by name (tab bar; uidailymissiondialog.cpp)
     template <class T> MS2Ptr<T> FUN_140bc7280(const CString& strName);                      // child control by name (list; uidailymissiondialog.cpp)
+    template <class T> MS2Ptr<T> FUN_140fe4370(const CString& strName);                      // child control by name (tab button group; uimeratmarketdialog.cpp)
     AScript(const AScript& o);                                                               // 0x1409bb7b0 (inline COMDAT)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1);                         // 0x140acd130 (inline COMDAT, tabcontentspetevolution.cpp)
     // 0x141917bf0 (inline COMDAT, defined in uidamagetext.cpp; all by value: the callee destroys them)
@@ -184,6 +185,7 @@ public:
     template<class T> MS2Ptr<T> FUN_140bc6e60(const CString&, MS2Ptr<T>&); // bind gauge (uidungeonroomdialog "m_summaryGauge")
     template<class T> MS2Ptr<T> FUN_140e159f0(const CString&);               // child control by name, one COMDAT per wrapper class (dungeon helper)
     template<class F> void FUN_1422c2a70(const F&, int); // click callback (DT attendance)
+    template<class F> void FUN_1422c2a70(const F&, void* pUser); // click callback with a user pointer (uimeratmarketdialog.cpp preview slot)
     Scaleform::GFx::Value& FUN_1422bb890(); // root value forwarding accessor
     Scaleform::GFx::Value FUN_140e813f0(const char* szMethod, const ASArray& arr, int n);    // Invoke(method, array, int) (unit_141347b10: "buildCategoryList")
     MS2Ptr<ASMovieClip> FUN_1409b4560(const CString& strName); // bind a movie clip child (w4s10; units may hide it)
@@ -284,6 +286,8 @@ public:
     Scaleform::GFx::Value FUN_140f0a830(const char* szMethod, Scaleform::GFx::Value a1, long a2);   // 0x140f0a830 Invoke(method, value, long) (uimeratmarketdialog.cpp "updateBg"; a1 by value)
 
     Scaleform::GFx::Value Invoke(const char* szMethod, float a1, float a2, CStringW a3, CStringW a4, CStringW a5, CStringW a6);   // 0x140e6e910 (inline COMDAT, defined in uioxquizdialog.cpp: "setQuizPromoteCooltime"; the strings by value)
+    Scaleform::GFx::Value FUN_140fa7400(const char* szMethod, CStringW a1, CStringW a2, const wchar_t* a3, const wchar_t* a4);   // 0x140fa7400 (inline COMDAT, defined in uisystemshopdialog.cpp: "setShop"; a1/a2 by value)
+    Scaleform::GFx::Value FUN_140fa7540(const char* szMethod, CStringW a1, CStringW a2, CStringW a3, CString a4);   // 0x140fa7540 (inline COMDAT, defined in uisystemshopdialog.cpp: "setShop"; all by value)
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {

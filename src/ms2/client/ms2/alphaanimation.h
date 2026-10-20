@@ -7,6 +7,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/delegate.h"
+#include "ms2/placeholder/tfunctor.h"
 #include <NiAlphaController.h>
 #include <NiAVObject.h>
 #include <NiRefObject.h>
@@ -36,7 +37,7 @@ public:
         DelegateImpl(const DelegateImpl& o) : m_f(o.m_f) {}
         DelegateImpl(const F& f) : m_f(f) {}
         virtual DelegateImplBase* vfunc_1() const { return new DelegateImpl(*this); }
-        virtual R vfunc_2() { return (m_f.first->*m_f.second)(); }
+        virtual R vfunc_2() { return Call(m_f); }        // through the pair helper (0x141a89de0 -> 0x141a89e80)
         virtual bool vfunc_3(const DelegateImplBase* p) const
         {
             const DelegateImpl* o = dynamic_cast<const DelegateImpl*>(p);
@@ -46,6 +47,8 @@ public:
         }
 
     private:
+        template <class C, class M> static R Call(std::pair<C*, M>& p) { return (p.first->*p.second)(); }
+
         F m_f;
     };
 
@@ -59,7 +62,7 @@ public:
     ~Delegate();
     Delegate& operator=(const Delegate& o);
     bool IsNull() const { return m_pImpl == 0; }
-    R operator()() const { return m_pImpl->vfunc_2(); }
+    R operator()() const;               // body specialized by the unit that owns the COMDAT (uipartydialog.cpp: null check, slot 2)
 
 private:
     DelegateImplBase* m_pImpl;
@@ -92,7 +95,7 @@ public:
     float m_fDuration;                  // +0x08
     T m_from;                           // +0x0c
     T m_to;                             // +0x10
-    Delegate<void()> m_onFinish;        // +0x18
+    TFunctor<void, EmptyParam> m_onFinish;  // +0x18 (dtor 0x1401cffb0 calls Clear: TFunctor, not Delegate<void()>)
     Delegate<T(T)> m_filter;            // +0x20 (optionally post-processes the target value)
 };
 
@@ -155,6 +158,10 @@ public:
     virtual ~CEntityShower();
     virtual bool vfunc_2();                         // false = finished
     void SetAlpha(float fAlpha);                    // 0x14098beb0
+    // @0x141bfe630
+    float GetAlpha() { return m_fAlpha; }           // (COMDAT in worldservice.cpp)
+    // @0x141bffde0
+    egf::EntityID GetEntityID() { return m_idEntity; }   // (COMDAT in worldservice.cpp)
 
     bool m_bWasShown;                               // +0x10
     float m_fAlpha;                                 // +0x14

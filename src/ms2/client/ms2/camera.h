@@ -64,6 +64,8 @@ public:
     // @0x140af7f60
     egf::Entity* FUN_140af7f60() { return m_10; }
     egf::EntityID FUN_140af7fd0();                                      // the camera entity id (inline, camera.cpp)
+    unsigned __int64 FUN_141bfe700();                                   // the camera entity id value (inline: its COMDAT reads
+                                                                        // the including TU's kENTITY_INVALID copy; worldservice.cpp)
     void FUN_140a38dc0(Unk_StreamPoint pt);                             // look-at offset (another obj)
     void FUN_140a38e00(Unk_StreamPoint pt);                             // second point property (another obj)
 
@@ -166,6 +168,13 @@ public:
     void FUN_140aead90();                                               // release the camera, the modes and effects
     void FUN_140aeaf40(Unk_CameraTargetEntity* pTarget, int n);         // set the camera target
     BOOL FUN_140aeb070();                                               // activate the camera on the render surface
+    // @0x141bfe750
+    unsigned __int64 FUN_141bfe750()                                    // the camera entity id value, 0 without a camera
+    {
+        if (m_pCamera != NULL)
+            return m_pCamera->FUN_141bfe700();
+        return 0;
+    }
     void FUN_140aeb420(int nMode, const Unk_CameraFlyBy* pFlyBy);       // switch mode, keeping the setting
     void FUN_140aeb730(efd::Point3 ptPos);                              // fixed-position camera at a point
     void FUN_140aeb830(int n);

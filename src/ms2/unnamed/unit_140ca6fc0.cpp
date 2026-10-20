@@ -17,7 +17,7 @@ unsigned OnceCallbackTimer::s_nextId = 1;
 #endif
 
 // @0x140ca6fc0
-OnceCallbackTimer::Entry::Entry(unsigned start, unsigned end, Delegate<void()> callback)
+OnceCallbackTimer::Entry::Entry(unsigned start, unsigned end, TFunctor<void, EmptyParam> callback)
     : m_start(start), m_end(end), m_callback(callback)
 {
 }
@@ -69,7 +69,7 @@ void OnceCallbackTimer::Update()
 }
 
 // @0x140ca7230
-int OnceCallbackTimer::Add(int delayMs, Delegate<void()> callback)
+int OnceCallbackTimer::Add(int delayMs, TFunctor<void, EmptyParam> callback)
 {
     unsigned now = (unsigned)GetTimeMs();
     unsigned end = now + delayMs;

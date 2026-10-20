@@ -211,6 +211,7 @@ public:
     Unk_ShopLifeRef& operator=(const Unk_ShopLifeRef&); // 0x14052caa0
     operator NpcShopItemLife*() const;                 // 0x14052ce00
     NpcShopItemLife& operator*() const { return *m_p; } // 0x1406f24f0 (inline COMDAT, commonfiles\npcshopdata.cpp)
+    bool operator==(NpcShopItemLife* p) const { return m_p == p; }   // 0x1409ede90 (inline COMDAT, client\ms2\astooltip.cpp)
     void* m_unknown; NpcShopItemLife* m_p;
 };
 MS2_CHECK_SIZE(Unk_ShopLifeRef, 16);

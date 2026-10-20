@@ -1173,12 +1173,8 @@ void CClub::FUN_1402109d0(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
         {
             MS2Ptr<CClubMember> sp = m_members.GetValueAt(pos);
             if (sp == 0)
-            {
-            }
-            else
-            {
-                members.Add(sp);
-            }
+                continue;
+            members.Add(sp);
         }
     }
 }
@@ -1319,9 +1315,9 @@ int CClub::FUN_140211080(CStringW strName)
             return 0;
         if (sp->m_info.m_characterId == m_leaderCharacterId)
             return 1;
-        return 0;
+        else
+            return 0;
     }
-    __nop();
 }
 
 // @0x1402133d0

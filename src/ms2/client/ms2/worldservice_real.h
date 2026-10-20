@@ -87,6 +87,18 @@ typedef std::map<egf::EntityID, __int64> Mapab0;                                
 typedef std::map<int, efd::SmartPointer<egf::Entity> > Mapac0;                           // +0xac0
 typedef std::map<__int64, MS2Ptr<Recad0> > Mapad0;                                       // +0xad0
 
+// The real key / value types of three of the maps above (w532, worldservice.cpp#2). Map1f8 / Mapac0 / Mapad0 stay for
+// the parts pinned against them (their tree COMDATs are byte-identical look-alikes):
+// - m_1f8 values are (entity, grid value) pairs: FUN_141bbd640 does m_1f8[cell] = std::make_pair(id, grid) (make_pair
+//   0x141beeda0, pair ctor 0x141bdc620, pair operator= 0x141bdd030);
+// - m_ac0 has an unsigned key: its _Try_emplace 0x141beb5b0 (operator[] 0x141bf7a50) compares with less<unsigned>
+//   0x140185090;
+// - m_ad0 has an unsigned __int64 key: its _Try_emplace 0x141beb9a0 / 0x141bebaf0 (const& / && key) compare with
+//   less<unsigned __int64> 0x14044a540 (unsigned jae).
+typedef std::map<int, std::pair<egf::EntityID, unsigned> > Map1f8Real;                    // +0x1f8
+typedef std::map<unsigned, efd::SmartPointer<egf::Entity> > Mapac0Real;                   // +0xac0
+typedef std::map<unsigned __int64, MS2Ptr<Recad0> > Mapad0Real;                           // +0xad0
+
 MS2_CHECK_SIZE(Map1d8, 0x10);
 MS2_CHECK_SIZE(Vec9a0, 0x18);
 }

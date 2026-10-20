@@ -10,6 +10,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/uidialog.h"
+#include "ms2/client/ms2/uiservice.h"    // eUIClassID (GetUIClassID)
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"
 

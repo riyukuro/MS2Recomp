@@ -294,13 +294,9 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
 // @0x140d509b0
 int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* pnResult)
 {
-    int nRet;
     Unk_MfPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPC == 0)
-    {
-        nRet = 0;
-    }
-    else
+        return 0;
     {
         Unk_MfValuePtr<Unk_MfRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(nRecipeId);
         if (spRecipe.get() != 0)
@@ -308,31 +304,23 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
             for (unsigned __int64 i = 0; i < spRecipe->m_aIngredients.size(); i++)
             {
                 Unk_MfValuePtr<Unk_MfIngredient> spIng = spRecipe->m_aIngredients[i];
-                if (!spIng.IsNull())
+                if (spIng.IsNull())
+                    continue;
+                unsigned nItemId = spIng->FUN_140684c40();
+                MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
+                if (spItem == 0)
+                    continue;
+                int nRarity = spItem->FUN_14053cbc0() ? spIng->m_nRarity : FUN_14053feb0(nItemId);
+                unsigned nOwned = 0;
+                if (spIng->FUN_140684c80() == 0)
+                    nOwned = DAT_143ab2a90.FUN_140a5f180(nItemId, nRarity);
+                else
+                    nOwned = DAT_143ab2a90.FUN_140a5f780(spIng->FUN_140684c80(), nRarity);
+                unsigned nNeed = FUN_1401c0d90()->FUN_14047b860(pPC->FUN_1416561a0()->FUN_1411e1110(0x3f), spIng->m_nCount);
+                if (nNeed > nOwned)
                 {
-                    unsigned nItemId = spIng->FUN_140684c40();
-                    MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
-                    if (spItem.get() != 0)
-                    {
-                        int nRarity;
-                        if (!spItem->FUN_14053cbc0())
-                            nRarity = FUN_14053feb0(nItemId);
-                        else
-                            nRarity = spIng.get()->m_nRarity;
-                        unsigned nOwned;
-                        if (spIng->FUN_140684c80() == 0)
-                            nOwned = DAT_143ab2a90.FUN_140a5f180(nItemId, nRarity);
-                        else
-                            nOwned = DAT_143ab2a90.FUN_140a5f780(spIng->FUN_140684c80(), nRarity);
-                        Unk_MfIngredient* pIng = spIng.get();
-                        float fRate = pPC->FUN_1416561a0()->FUN_1411e1110(0x3f);
-                        unsigned nNeed = FUN_1401c0d90()->FUN_14047b860(fRate, pIng->m_nCount);
-                        if (nOwned < nNeed)
-                        {
-                            *pnResult = 8;
-                            return 0;
-                        }
-                    }
+                    *pnResult = 8;
+                    return 0;
                 }
             }
             if (0 < spRecipe->m_nMeso)
@@ -347,15 +335,14 @@ int CManufactureManager::SendRequest4(unsigned __int64 nId, int nRecipeId, int* 
                 }
             }
         }
-        COutPacket packet(0x68, 0);
-        packet.vfunc_o10_1(4);
-        packet.vfunc_o10_3(nRecipeId);
-        packet.vfunc_o10_4(nId);
-        FUN_140710590(packet);
-        *pnResult = 1;
-        nRet = 1;
     }
-    return nRet;
+    COutPacket packet(0x68, 0);
+    packet.vfunc_o10_1(4);
+    packet.vfunc_o10_3(nRecipeId);
+    packet.vfunc_o10_4(nId);
+    FUN_140710590(packet);
+    *pnResult = 1;
+    return 1;
 }
 
 // @0x140d50dd0
@@ -395,89 +382,79 @@ int CManufactureManager::SendRequest6(unsigned __int64 nId, int* pnResult)
 }
 
 // @0x140d50fb0
-bool CManufactureManager::SendRequest7(unsigned __int64 nId, int* pnResult)
+int CManufactureManager::SendRequest7(unsigned __int64 nId, int* pnResult)
 {
     MS2Ptr<CManufacture> spItem(0);
-    int nFound = Lookup(nId, spItem);
-    if (nFound != 0)
-    {
-        COutPacket packet(0x68, 0);
-        packet.vfunc_o10_1(7);
-        packet.vfunc_o10_4(nId);
-        FUN_140710590(packet);
-        *pnResult = 2;
-    }
-    else
+    if (Lookup(nId, spItem) == 0)
     {
         *pnResult = 7;
+        return 0;
     }
-    return nFound != 0;
+    COutPacket packet(0x68, 0);
+    packet.vfunc_o10_1(7);
+    packet.vfunc_o10_4(nId);
+    FUN_140710590(packet);
+    *pnResult = 2;
+    return 1;
 }
 
 // @0x140d510a0
-bool CManufactureManager::SendRequest8(unsigned __int64 nId, int* pnResult)
+int CManufactureManager::SendRequest8(unsigned __int64 nId, int* pnResult)
 {
     MS2Ptr<CManufacture> spItem(0);
-    int nFound = Lookup(nId, spItem);
-    if (nFound != 0)
-    {
-        COutPacket packet(0x68, 0);
-        packet.vfunc_o10_1(8);
-        packet.vfunc_o10_4(nId);
-        FUN_140710590(packet);
-        *pnResult = 2;
-    }
-    else
+    if (Lookup(nId, spItem) == 0)
     {
         *pnResult = 7;
+        return 0;
     }
-    return nFound != 0;
+    COutPacket packet(0x68, 0);
+    packet.vfunc_o10_1(8);
+    packet.vfunc_o10_4(nId);
+    FUN_140710590(packet);
+    *pnResult = 2;
+    return 1;
 }
 
 // @0x140d51190
-bool CManufactureManager::SendRequest9(unsigned __int64 nId, int* pnResult)
+int CManufactureManager::SendRequest9(unsigned __int64 nId, int* pnResult)
 {
     MS2Ptr<CManufacture> spItem(0);
-    int nFound = Lookup(nId, spItem);
-    if (nFound != 0)
-    {
-        COutPacket packet(0x68, 0);
-        packet.vfunc_o10_1(9);
-        packet.vfunc_o10_4(nId);
-        FUN_140710590(packet);
-        *pnResult = 3;
-    }
-    else
+    if (Lookup(nId, spItem) == 0)
     {
         *pnResult = 7;
+        return 0;
     }
-    return nFound != 0;
+    COutPacket packet(0x68, 0);
+    packet.vfunc_o10_1(9);
+    packet.vfunc_o10_4(nId);
+    FUN_140710590(packet);
+    *pnResult = 3;
+    return 1;
 }
 
 // @0x140d51280
-bool CManufactureManager::SendRequest10(unsigned __int64 nId, int* pnResult)
+int CManufactureManager::SendRequest10(unsigned __int64 nId, int* pnResult)
 {
     MS2Ptr<CManufacture> spItem(0);
-    int nFound = Lookup(nId, spItem);
-    if (nFound != 0)
-    {
-        COutPacket packet(0x68, 0);
-        packet.vfunc_o10_1(10);
-        packet.vfunc_o10_4(nId);
-        FUN_140710590(packet);
-        *pnResult = 4;
-    }
-    else
+    if (Lookup(nId, spItem) == 0)
     {
         *pnResult = 7;
+        return 0;
     }
-    return nFound != 0;
+    COutPacket packet(0x68, 0);
+    packet.vfunc_o10_1(10);
+    packet.vfunc_o10_4(nId);
+    FUN_140710590(packet);
+    *pnResult = 4;
+    return 1;
 }
 
 // @0x140d51370
-bool CManufactureManager::Lookup(unsigned __int64 nId, MS2Ptr<CManufacture>& spOut)
+int CManufactureManager::Lookup(unsigned __int64 nId, MS2Ptr<CManufacture>& spOut)
 {
-    return m_mapManufacture.Lookup(nId, spOut);
+    if (m_mapManufacture.Lookup(nId, spOut))
+        return 1;
+    return 0;
 }
 
 // @0x140d513c0

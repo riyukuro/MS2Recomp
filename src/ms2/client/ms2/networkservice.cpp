@@ -314,7 +314,8 @@ void FUN_1405340b0(void*,__int64);
 void FUN_141a01d30(void*,int,const CStringW&,unsigned,int,int);
 void FUN_141a027c0(void*,Delegate<bool(int,const CMsgBoxData&)>);
 void FUN_141a01690(void*,const CStringW&,const CStringW&,const CStringW&);
-CStringW FUN_14028b8e0(CStringW);CStringW FUN_14028de60(int);
+#include "ms2/commonfiles/commonutil.h"
+CStringW FUN_14028de60(int);
 CStringW FUN_1408116a0(int,const int&);
 void FUN_141add6e0(void*,int);
 struct Unk_NetworkTransfer {
@@ -523,6 +524,8 @@ unsigned CNetworkService::FUN_141538f20() { return m_latency.minimum; }
 unsigned CNetworkService::FUN_141538f40() { return m_latency.maximum; }
 // @0x141538f60
 unsigned CNetworkService::FUN_141538f60() { return m_latency.average; }
+// MS2-FUNCTIONAL: same callees in the same order; exe frame 0xd8 vs 0x78: it spills the packet/guard ctor results (+0xb0/+0xb8),
+//   the lock test int (+0x28) and copies now/head through extra temps (+0x2c/+0x34, +0x30) - lock-macro shape not reproduced
 // @0x141538f80
 void CNetworkService::FUN_141538f80() {
     for(;;) {

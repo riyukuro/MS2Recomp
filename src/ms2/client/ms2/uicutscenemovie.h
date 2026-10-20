@@ -41,7 +41,7 @@ public:
 
     // UISwfEntity / UIObject / UIVideoContents overrides (slot index in the primary vftable)
     virtual int vfunc_52(const CString& strPath, float fVolume);    // 52 play
-    virtual bool vfunc_53();                                         // 53 stop
+    virtual int vfunc_53();                                          // 53 stop
     virtual void OnLoadComplete();                                  // 22
     virtual void vfunc_26();                                        // 26
     void SetCutSceneId(int nId);                                    // 0x14190f0b0

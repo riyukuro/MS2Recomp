@@ -32,24 +32,27 @@ MS2_CHECK_SIZE(Unk_GcSmartRef, 0x10);
 
 
 // @0x1413b4010
-Unk_GcOptInt::Unk_GcOptInt(const int& nValue)
+Unk_GcOptInt& Unk_GcOptInt::operator=(const int& nValue)
 {
     m_nValue = nValue;
     m_bSet = true;
+    return *this;
 }
 
 // @0x1413b4040
-Unk_GcOptVec3::Unk_GcOptVec3(const Unk_StreamPoint& pt)
+Unk_GcOptVec3& Unk_GcOptVec3::operator=(const Unk_StreamPoint& pt)
 {
     reinterpret_cast<Unk_StreamPoint&>(m_x) = pt;
     m_bSet = true;
+    return *this;
 }
 
 // @0x1413b4080
-Unk_GcOptBool::Unk_GcOptBool(const bool& bValue)
+Unk_GcOptBool& Unk_GcOptBool::operator=(const bool& bValue)
 {
     m_bValue = bValue;
     m_bSet = true;
+    return *this;
 }
 
 // @0x1413b40b0

@@ -323,16 +323,14 @@ void UIMaidRecipeListDialog::vfunc_43()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
     if (pDlg != 0)
-        pDlg->vfunc_2(5, (int)m_17c, (int)m_180);
+        pDlg->vfunc_2(5, (int)m_17c.x, (int)m_17c.y);
 }
 
 // @0x1412db660
 void UIMaidRecipeListDialog::FUN_1412db660(int nBook, float fX, float fY)
 {
     m_178 = nBook;
-    m_17c = fX;
-    m_180 = fY;
-    m_184 = 0;
+    m_17c = efd::Point3(fX, fY, 0.0f);
 }
 
 // @0x1412db6c0
@@ -340,7 +338,7 @@ void UIMaidRecipeListDialog::FUN_1412db6c0()
 {
     MS2Ptr<ASMovieClip> spClip(dynamic_cast<ASMovieClip*>(static_cast<AScript*>(m_30)));
     if (spClip.get() != 0)
-        spClip->FUN_1422c00f0(m_17c, m_180);
+        spClip->FUN_1422c00f0(m_17c.x, m_17c.y);
     FUN_1412dac40();
 }
 

@@ -214,7 +214,7 @@ Unk_UGCMapPtr FUN_1408ad3f0(int mapId) {
     if(mapId==0) return Unk_UGCMapPtr(0);
     {
         Unk_140163940 lock(s_lock);
-        if(static_cast<int>(lock)==0 && s_cache.Lookup(mapId,value)) return std::move(value);
+        if(static_cast<int>(lock)) {} else if(s_cache.Lookup(mapId,value)) return value;
     }
     return FUN_1408ad500(mapId);
 }

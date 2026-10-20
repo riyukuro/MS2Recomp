@@ -16,6 +16,11 @@
 #include "ms2/client/ms2/toolbasedialog.h"
 #include "ms2/client/ms2/colorlistctrl.h"
 
+// CLogStringCtx::m_level as the dialog's level map key (1 error, 2 warning, 11 info, 12 debug). The exe keeps this
+// TU's map<., bool> glue apart from midimessage.cpp's map<int, bool> copy (0x141457410 vs 0x140d7b480, not
+// byte-identical), so the key is a distinct type here.
+enum class Unk_LogLevel : int {};
+
 // One log line as the dialog shows it (built by ClientLogManager::OnLogString from a CLogStringCtx).
 class LogDialogCtx : public CPtred
 {
@@ -74,7 +79,7 @@ public:
     CColorListCtrl m_list;                                              // +0x158 control 0x4b5 (virtual list)
     CComboBox m_comboCategory;                                          // +0x2a0 control 0x4b6
     CEdit m_editCommand;                                                // +0x388 control 0x4e1
-    std::map<int, bool> m_levels;                                       // +0x470 the shown levels (checks 0x4b8..0x4bb)
+    std::map<Unk_LogLevel, bool> m_levels;                                       // +0x470 the shown levels (checks 0x4b8..0x4bb)
     std::vector<int> m_categories;                                      // +0x480 the combo entries
     CStringA m_strFilter;                                               // +0x498 the text filter (edit 0x4e2)
     std::deque<LogDialogCtxPtr> m_all;                                  // +0x4a0 every line (at most 1001)

@@ -510,7 +510,7 @@ CFileSystem::BufferPtr CFileSystem::FUN_140397bc0(const char* path, int cacheMod
             ++buffer->m_field34;
         }
     }
-    if (buffer.get() != nullptr) return std::move(buffer);
+    if (buffer.get() != nullptr) return buffer;
     std::string normalized(static_cast<const char*>(FUN_140188f50(path, 0)));
     if (normalized.empty()) return BufferPtr(0);
     if (FUN_140398190() && !FUN_14039f3b0(CString(path))) {
@@ -522,17 +522,17 @@ CFileSystem::BufferPtr CFileSystem::FUN_140397bc0(const char* path, int cacheMod
         buffer->m_field38 = flag;
         FUN_1403ab1a0(buffer.operator->(), now);
     }
-    if (cacheMode != 0 && buffer.get() != nullptr) {
+    if (cacheMode != 0 && (buffer.get() ? true : false)) {
         Unk_FileSystemLock guard(cacheLock, 1);
         BufferPtr existing(0);
-        if (!cache.Lookup(path, existing)) cache.SetAt(path, buffer);
-        else {
+        if (cache.Lookup(path, existing)) {
             buffer = existing;
             ++buffer->m_field34;
             FUN_1403ab1a0(buffer.operator->(), now);
         }
+        else cache.SetAt(path, buffer);
     }
-    return std::move(buffer);
+    return buffer;
 }
 #endif
 // @0x140398190

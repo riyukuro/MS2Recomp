@@ -10,7 +10,6 @@
 // MS2-RANGE: 0x142c9d0c0-0x142c9d1c0 .text$yd
 // MS2-PIN: ??$forward@U?$pair@H_J@std@@@std@@YA$$QEAU?$pair@H_J@0@AEAU10@@Z 0x140932390 ; hand: callers expect this twin
 // MS2-PIN: ??$construct@U?$pair@H_J@std@@U12@@?$_Default_allocator_traits@V?$allocator@U?$pair@H_J@std@@@std@@@std@@SAXAEAV?$allocator@U?$pair@H_J@std@@@1@QEAU?$pair@H_J@1@$$QEAU31@@Z 0x1409321e0 ; hand: callers expect this twin
-// MS2-PIN: ??1CAtlStringMgr@ATL@@UEAA@XZ 0x140932b60 ; hand: callers expect this twin
 // MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@2@_K@Z 0x140935140 ; hand: callers expect this twin
 // MS2-PIN: ?_Max@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@std@@SAPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@2@PEAU32@@Z 0x140934ac0 ; hand: callers expect this twin
 // MS2-PIN: ?_Lrotate@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@2@@Z 0x140934900 ; hand: callers expect this twin
@@ -44,7 +43,6 @@
 // MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x140932d40 ; prop
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x140932da0 ; unique
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_TailSetVal@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x140932e10 ; prop
-// MS2-PIN: ??_GCAtlStringMgr@ATL@@UEAAPEAXI@Z 0x140932fa0 ; unique
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_TailAlmState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_TailAlmState@@@std@@PEAX@2@XZ 0x1409335f0 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tset_traits@UUnk_TailSetVal@@UUnk_TailSetLess@@V?$allocator@UUnk_TailSetVal@@@std@@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@UUnk_TailSetVal@@PEAX@2@XZ 0x1409336b0 ; prop
 // MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@IUUnk_TailAlmState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_TailAlmState@@@std@@@3@$0A@@std@@@std@@QEAAXXZ 0x140933910 ; prop
@@ -81,9 +79,11 @@
 #include "ms2/placeholder/mypc.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/chatemoticoncli.h"
+#include "ms2/placeholder/cmycharacter.h"
 #include "ms2/client/ms2/uimainplayerinfo.h"
 #include "ms2/client/ms2/uiobject.h"
 #include "ms2/commonfiles/usermail.h"
+#include "ms2/commonfiles/itemgift.h"
 #include "hook/ms2hook.h"
 
 #include <map>
@@ -140,7 +140,7 @@ class Unk_BonusBar { };
 void FUN_140da55a0(Unk_BonusBar* pBar, unsigned nId, void* pObj);
 class Unk_ItemSlotTable { public: int FUN_14087a930(CString strName); };
 class Unk_QuestTable { };
-void FUN_140663010(Unk_QuestTable* pTable, unsigned nId, unsigned nValue, ATL::CAtlArray<void*>& result);
+void FUN_140663010(Unk_QuestTable* pTable, unsigned nId, unsigned nValue, ATL::CAtlArray<MS2Ptr<ItemEntity> >& result);
 class Unk_SkillSlots { public: void FUN_14035a870(int nSlot, int nValue); };
 class Unk_StatTable { public: };
 
@@ -270,8 +270,8 @@ class Unk_IdList { public: int FUN_140408410(const int& nId); };
 class Unk_QuickSlots { };
 int FUN_14035a870(Unk_QuickSlots* pSlots, int nSlot, unsigned nValue);
 Unk_QuickSlots* FUN_140764010();
-void FUN_140d9f140(CChatEmoticonCli* pCli);
-CChatEmoticonCli* FUN_140931510();
+CMyCharacter* FUN_140931510();
+void FUN_140935a90(std::vector<std::pair<int, __int64> >* pVec, std::pair<int, __int64>&& value);
 extern Unk_Restrictions* DAT_143ab3330;
 extern Unk_SoundSink* DAT_143ab3328;
 extern Unk_QuestTable* DAT_143ab0260;
@@ -306,7 +306,7 @@ void FUN_141276180(const CString& strSound, const CString& strArg);
 // @0x14092f420
 void FUN_14092f420()
 {
-    FUN_140d9f140(FUN_140931510());
+    FUN_140931510()->FUN_140d9f140();
     DAT_143ab2d80.FUN_140de1070();
     g_143ab2a90.FUN_140a5c970();
     DAT_143ab2fc0.FUN_14041f6e0();
@@ -681,7 +681,7 @@ bool FUN_140930590(__int64 nAmount, Unk_PayList* pOut)
             {
                 if (nRemain <= pWallet->at(i))
                 {
-                    pOut->push_back(std::pair<int, __int64>(i, nRemain));
+                    FUN_140935a90(pOut, std::pair<int, __int64>(i, nRemain));
                     nRemain = 0;
                     break;
                 }
@@ -689,7 +689,7 @@ bool FUN_140930590(__int64 nAmount, Unk_PayList* pOut)
                 if (0 < nHave)
                 {
                     nRemain = nRemain - nHave;
-                    pOut->push_back(std::pair<int, __int64>(i, nHave));
+                    FUN_140935a90(pOut, std::pair<int, __int64>(i, nHave));
                 }
             }
         }
@@ -698,7 +698,7 @@ bool FUN_140930590(__int64 nAmount, Unk_PayList* pOut)
     if (nRemain < 1 && !pOut->empty())
         return false;
     unsigned nKind = FUN_1409301f0();
-    pOut->push_back(std::pair<int, __int64>(nKind, nRemain));
+    FUN_140935a90(pOut, std::pair<int, __int64>(nKind, nRemain));
     return nCash < nRemain;
 }
 
@@ -729,7 +729,7 @@ bool FUN_140930750(Unk_PayList* pIn, Unk_PayList* pOut)
             while (k < vecTotals.size())
             {
                 if (vecTotals[k] != -1)
-                    pOut->push_back(std::pair<int, __int64>(k, vecTotals[k]));
+                    FUN_140935a90(pOut, std::pair<int, __int64>(k, vecTotals[k]));
                 k = k + 1;
             }
             return true;
@@ -902,14 +902,13 @@ int FUN_140930e10()
     int nCount = 0;
     for (unsigned short nLevel = 1; nLevel <= DAT_143ab291c; nLevel++)
     {
-        ATL::CAtlArray<void*> quests;
-        int nJob = FUN_141654700(pPc);
-        unsigned nLv = nLevel;
-        FUN_140663010(FUN_140933200(), nLv, nJob, quests);
+        ATL::CAtlArray<MS2Ptr<ItemEntity> > quests;
+        FUN_140663010(FUN_140933200(), nLevel, FUN_141654700(pPc), quests);
         if (quests.GetCount() == 0)
             continue;
-        if (FUN_140931890(&DAT_143ab32b8, &nLevel) == -1)
-            nCount = nCount + 1;
+        if (FUN_140931890(&DAT_143ab32b8, &nLevel) != -1)
+            continue;
+        nCount = nCount + 1;
     }
     return nCount;
 }
@@ -1033,14 +1032,14 @@ unsigned FUN_140931450(CString strName)
     return DAT_143ab3268.FUN_140408410(nSlot) != -1;
 }
 
-// Not in the hook DLL: the DLL's function-local static would be a second, DLL-constructed emoticon table; DLL callers
+// Not in the hook DLL: the DLL's function-local static would be a second, DLL-constructed character state; DLL callers
 // (FUN_14092f420 on field entry) bind the exe getter and its object 0x143ab3350 (fx6).
 #ifndef MS2_HOOK_DLL
 // @0x140931510
-CChatEmoticonCli* FUN_140931510()
+CMyCharacter* FUN_140931510()
 {
-    static CChatEmoticonCli s_emoticons;
-    return &s_emoticons;
+    static CMyCharacter s_character;
+    return &s_character;
 }
 #endif
 
@@ -1238,6 +1237,8 @@ Unk_TailAlmVal* FUN_140932fa0(Unk_TailAlmVal* pVal, unsigned nFlags);
 Unk_TailSetVal* FUN_140932fe0(Unk_TailSetVal* pVal, unsigned nFlags);
 void FUN_140932b80(Unk_TailSetVal* pVal);
 void FUN_14063e780(Unk_TailRefBox* pBox);
+void FUN_140195700(Unk_TailRefBox* pBox);
+void FUN_140932b60(Unk_TailAlmVal* pVal);
 Unk_TailIter* FUN_140932640(Unk_TailIter* pIt, void* pNode, const void* pCont);
 void FUN_14016ad80(void* pIt, void* pCont);
 void FUN_140932a20(Unk_TailAlmTree* pTree);
@@ -1841,6 +1842,14 @@ Unk_TailIter* FUN_140935980(Unk_TailSet* pThis, Unk_TailIter* pRet, Unk_TailIter
     return pRet;
 }
 
+// @0x140935a90
+// vector<pair<int, __int64>>::push_back(&&) as compiled here: the rvalue goes to emplace_back without a std::move call
+// (the 0x14098a960 twin that the shared push_back row binds does call it)
+void FUN_140935a90(std::vector<std::pair<int, __int64> >* pVec, std::pair<int, __int64>&& value)
+{
+    pVec->emplace_back(static_cast<std::pair<int, __int64>&&>(value));
+}
+
 // @0x140932c10
 // MS2-FUNCTIONAL: MS2Ptr<CItemData>::AssignRaw COMDAT (swap through a temp), written through the public assignment
 MS2Ptr<CItemData>* FUN_140932c10(MS2Ptr<CItemData>* pThis, CItemData* pData)
@@ -1905,6 +1914,21 @@ Unk_TailVecVal* FUN_1409347d0(Unk_TailVecVal* pThis)
 void FUN_140932b80(Unk_TailSetVal* pThis)
 {
     FUN_14063e780(&pThis->m_ref);
+}
+
+// @0x140932b60
+void FUN_140932b60(Unk_TailAlmVal* pThis)
+{
+    FUN_140195700(&pThis->m_ref);
+}
+
+// @0x140932fa0
+Unk_TailAlmVal* FUN_140932fa0(Unk_TailAlmVal* pThis, unsigned nFlags)
+{
+    FUN_140932b60(pThis);
+    if (nFlags & 1)
+        ::operator delete(pThis, sizeof(Unk_TailAlmVal));
+    return pThis;
 }
 
 // @0x140932fe0

@@ -90,7 +90,7 @@ CStringW FUN_1416e7fb0(int);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 CStringW FUN_1401e8510(const wchar_t*, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
-CStringW FUN_14028b8e0(CStringW str);
+CStringW FUN_14028b8e0(const CStringW& str);
 CQuestManager* FUN_140764020();
 UIRewardNotify* FUN_140938cd0(int);
 UIFameContentsNotify* FUN_140e77d80(int);
@@ -1233,7 +1233,7 @@ int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
 }
 
 // @0x141815160
-CStringW CStringTable::FUN_141815160(LevelDescMap& rMap, int* pnId, unsigned short* pnLevel, CString strTag)
+CStringW CStringTable::FUN_141815160(LevelDescMap& rMap, int* pnId, unsigned short* pnLevel, const CString& strTag)
 {
     LevelDescPtr spLevels;
     DescPtr spDesc;

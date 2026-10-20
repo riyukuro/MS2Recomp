@@ -42,7 +42,7 @@ public:
     int FUN_140b871c0();                                    // the played card (-1: none)
     bool FUN_140b87210(MS2Ptr<Unk_StateArg22> p);           // the request carries the same game
     int FUN_140b872c0();                                    // the partner's actor id
-    bool FUN_140b87310(int nMode, int nCard, int nPick);    // play a card (UI selection)
+    void FUN_140b87310(int nMode, int nCard, int nPick);    // play a card (UI selection)
     bool FUN_140b876a0();                                   // start the game: reset the payload
     void FUN_140b877c0();                                   // show a random chat line of the event
     PCBase* FUN_140b879d0();                                // the partner actor

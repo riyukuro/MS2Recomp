@@ -399,27 +399,27 @@ CString CPortal::FUN_14169c5f0()
     static CString s_strBossPortal("boss_portal");
     static CString s_strDungeonSpecial("dungeon_special");
     static CString s_strDungeon("dungeon");
-    if (m_nType == 4)
-        return s_strEventPortal;
-    if (m_nType == 8)
+    switch (m_nType)
     {
+    case 4:
+        return s_strEventPortal;
+    case 8:
+    {
+        const unsigned nFieldLimit = 100000;
         MS2Ptr<Unk_PortalRoom> spRoom;
-        if (m_nId < 100000)
+        if (m_nId < nFieldLimit)
             spRoom = FUN_14031c2a0()->FUN_140320950(m_nId);
         else
             spRoom = FUN_14031c2a0()->FUN_1403206b0(m_nId);
         if (spRoom.get() != 0)
         {
             if (spRoom->m_bSpecial != 0)
-            {
-                if (spRoom->m_nBoss == 0)
-                    return s_strBossPortal;
-                return s_strBossPortalSpecial;
-            }
-            if (spRoom->m_nBoss == 0)
-                return s_strDungeon;
-            return s_strDungeonSpecial;
+                return spRoom->m_nBoss != 0 ? s_strBossPortalSpecial : s_strBossPortal;
+            else
+                return spRoom->m_nBoss != 0 ? s_strDungeonSpecial : s_strDungeon;
         }
+        break;
+    }
     }
     return s_strPortal;
 }

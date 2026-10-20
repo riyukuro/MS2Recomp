@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). UICameraDialog: see uicameradialog.h.
 // MS2-UNIT: ?\uicameradialog.cpp
-// MS2-RANGE: 0x141031f80-0x1410330d0 .text$mn
+// MS2-RANGE: 0x141031f80-0x141033200 .text$mn
 //
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicameradialog.cpp"    // assumed
@@ -378,6 +378,8 @@ static __inline errno_t ms2_cd_memcpy_s(void* const d, size_t const dsz, void co
     return 0;
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnCdMemcpyS)(void*, size_t, const void*, size_t) = &ms2_cd_memcpy_s;
+
+MS2_EMIT_CRT_MEMMOVE_S();
 
 MS2_REPLACE_METHOD(0x141032010, UICameraDialog, vfunc_1, 61, 0x4CF0D4E6);
 MS2_REPLACE_METHOD(0x141032060, UICameraDialog, OnLoadComplete, 186, 0x7D704146);

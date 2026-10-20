@@ -9,6 +9,7 @@
 class CInteractWebObject : public CInteractObject
 {
 public:
-    virtual int vfunc_5();                                      // 5 0x141c002d0 kind id
+    // @0x141c002d0
+    virtual int vfunc_5() { return 4; }                         // 5 kind id (COMDAT in ?\worldservice.cpp#6)
 };
 MS2_CHECK_SIZE(CInteractWebObject, sizeof(CInteractObject));

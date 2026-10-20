@@ -61,6 +61,7 @@ template<> struct Unk_SocketRef<Unk_BanWordList> {
     }
     static Unk_BanWordList* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
 };
+MS2_SOCKETPTR_BOXED(Unk_BanWordList)
 MS2_CHECK_SIZE(TPtredDummy<Unk_BanWordList>, 0x38);
 typedef Unk_SocketPtr<Unk_BanWordList> Unk_BanWordPtr;
 

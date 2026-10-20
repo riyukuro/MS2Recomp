@@ -85,7 +85,7 @@ public:
     int FUN_1418ac320(int nId);                                                         // the tab of the trophy
     int FUN_1418ac480();                                                                // the selected filter
     void FUN_1418ac5f0(int nIndex);                                                     // select a filter
-    void FUN_1418ac710();                                                               // select the tab in the movie
+    void FUN_1418ac710(int nTab);                                                       // select the tab in the movie (the exe passes m_178, the body reads the member)
     int FUN_1418ac780(CAchieve* pAchieve);                                              // locked for a player
     int FUN_1418ac870(CAchieve* pAchieve);                                              // locked and hidden
     int FUN_1418ac8f0(CAchieve* pAchieve);                                              // 0 reward, 1 open, 2 done

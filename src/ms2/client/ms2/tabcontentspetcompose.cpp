@@ -3,6 +3,7 @@
 // MS2-UNIT: ?\tabcontentspetcompose.cpp
 // MS2-RANGE: 0x140cb1d90-0x140cb87d0 .text$mn
 // MS2-RANGE: 0x1400cfbb0-0x1400cfde0 .text$di
+// MS2-PIN: ??$FUN_14028dfa0@_J_J@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEB_J1@Z 0x140cb6660 ; the string-key formatter for two __int64 (wcformat.h)
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0?$CAtlList@V?$MS2Ptr@VPetComposeBase@@@@V?$CElementTraits@V?$MS2Ptr@VPetComposeBase@@@@@ATL@@@ATL@@QEAA@I@Z 0x140cb6a50 ; unique
 // MS2-PIN: ??0?$CRBMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA@_K@Z 0x140cb6ab0 ; unique
@@ -317,12 +318,6 @@ IdCount FUN_140cb65d0(unsigned __int64 id)
 IdCount FUN_140cb6610(unsigned __int64& id, int& n)
 {
     return std::make_pair(id, n);
-}
-
-// @0x140cb6660
-CStringW FUN_140cb6660(CStringW strKey, const __int64* pn1, const __int64* pn2)
-{
-    return FUN_14028dfa0(strKey, *pn1, *pn2);
 }
 
 // @0x140cb1d90
@@ -644,7 +639,7 @@ void PetComposePetEnchant::FUN_140cb3a30()
     int nBonus = Unk_ComposeBonus(player);
     ASObj obj(2);
     obj.FUN_1407cbb20("bonus", FUN_14062b4f0(CStringW(L"s_pet_compose_exp_bonus"), &nBonus));
-    obj.FUN_1407cbb20("successMsg", FUN_140cb6660(CStringW(L"s_pet_compose_compose_success"), &m_pOwner->m_nGainBase, &m_pOwner->m_nGainBonus));
+    obj.FUN_1407cbb20("successMsg", FUN_14028dfa0(CStringW(L"s_pet_compose_compose_success"), m_pOwner->m_nGainBase, m_pOwner->m_nGainBonus));
     ench->FUN_140acd1f0("selectPetEnchant", AScript(obj));
 }
 

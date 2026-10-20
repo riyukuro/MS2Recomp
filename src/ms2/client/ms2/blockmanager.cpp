@@ -19,6 +19,9 @@ typedef unsigned long long u64;
 
 // Custom game time: the CTime value at offset zero and a flag at offset eight (ctor 0x1406c47a0).
 #include "ms2/placeholder/mstime.h"
+#include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/ms2ptr_impl.h"
 
 CStringW BlockFormat(int, const fmt::ArgList&);
 FMT_VARIADIC_W(CStringW, BlockFormat, int)
@@ -32,16 +35,14 @@ CStringW FUN_1409e8970(CStringW key, const int& a, const int& b);
 void AddDays(CMsTime& time, long days);   // 0x14086a7e0 (commonfiles/timeutil.cpp)
 void FUN_140268750(AccountBlockInfo* info, void* stream);     // AccountBlockInfo::Read
 void FUN_140d73aa0(CStringW msg, int a, u64 cb, CStringW b);  // message box
-void* FUN_140d73d20(void* outHandle, int flags, CStringW msg, u64 cb, CStringW b);   // dialog (smart-pointer handle out)
-void* FUN_140d73e40(void* outHandle, int a, int id, int b, CStringW s);
-void* FUN_140534fc0(void* handle);                            // handle->get()
-void* FUN_140534fe0(void* handle);                            // handle->operator->
-void* FUN_140534b80(void* out, void* handle);                 // handle copy
-void FUN_140534d60(void* handle);                             // handle dtor
-void FUN_140d73c60(void* h);
+// The message box data (CMsgBoxData of unit_140d74b20.cpp; only handled through its MS2Ptr here).
+class Unk_BmMsgBox : public CPtred {};
+MS2Ptr<Unk_BmMsgBox> FUN_140d73d20(int flags, CStringW msg, u64 cb, CStringW b);   // message box (copy 0x140534b80, dtor 0x140534d60)
+MS2Ptr<Unk_BmMsgBox> FUN_140d73e40(int a, int id, int b, CStringW s);
+void FUN_140d73c60(MS2Ptr<Unk_BmMsgBox> box);                                       // show (by value)
 void FUN_141a015d0(void* dialog, const CStringW& text);
 void* FUN_140166410();
-char FUN_14036e4c0(void* p);
+bool FUN_14036e4c0(void* p);
 CStringW FUN_140217ff0(int id);
 void FUN_140165320(void* dst, const CStringW& s);
 void FUN_142c9ef00();
@@ -69,12 +70,9 @@ CBlockManager::~CBlockManager()
 BlockPtr CBlockManager::FindBlockedAction(int action)
 {
     BlockPtr p = m_checker.get()->FindAction(action);
-    if (!(p == 0)) {
-        Unk_BlockRecord* rec = p.operator->();
-        if (FUN_140869440() <= rec->expiry)
-            return static_cast<const BlockPtr&>(p);
-    }
-    return BlockPtr(0);
+    if (p == 0 || p.operator->()->expiry < FUN_140869440())
+        return BlockPtr(0);
+    return p;
 }
 
 // @0x140a2f700
@@ -157,59 +155,52 @@ void FUN_140a30b80(char* dialog, int id)
 // @0x140a2ff20  show the "you are blocked" notice for a record
 void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
 {
-    int kind = rec->kind;
-    if (kind == 2 || kind == 4) {
+    switch (rec->kind) {
+    case 2:
+    case 4: {
         CMsTime t1((__int64)rec->m_38);
         CMsTime t2(rec->expiry);
         CStringW title, body;
         if (rec->kind == 2) {
             title = FUN_14028de60(0x436);
-            int s2 = t2.GetSecond(), mi2 = t2.GetMinute(), h2 = t2.GetHour(), d2 = t2.GetDay(), mo2 = t2.GetMonth(), y2 = t2.GetYear();
-            int s1 = t1.GetSecond(), mi1 = t1.GetMinute(), h1 = t1.GetHour(), d1 = t1.GetDay(), mo1 = t1.GetMonth(), y1 = t1.GetYear();
-            body = BlockFormat(0x437, y1, mo1, d1, h1, mi1, s1, y2, mo2, d2, h2, mi2, s2, *(CStringW*)&rec->m_30);
+            body = BlockFormat(0x437, t1.GetYear(), t1.GetMonth(), t1.GetDay(), t1.GetHour(), t1.GetMinute(), t1.GetSecond(),
+                            t2.GetYear(), t2.GetMonth(), t2.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond(), *(CStringW*)&rec->m_30);
         } else {
             title = FUN_14028de60(0x43b);
-            int s2 = t2.GetSecond(), mi2 = t2.GetMinute(), h2 = t2.GetHour(), d2 = t2.GetDay(), mo2 = t2.GetMonth(), y2 = t2.GetYear();
-            int s1 = t1.GetSecond(), mi1 = t1.GetMinute(), h1 = t1.GetHour(), d1 = t1.GetDay(), mo1 = t1.GetMonth(), y1 = t1.GetYear();
-            body = BlockFormat(0x43c, y1, mo1, d1, h1, mi1, s1, y2, mo2, d2, h2, mi2, s2, *(CStringW*)&rec->m_30);
+            body = BlockFormat(0x43c, t1.GetYear(), t1.GetMonth(), t1.GetDay(), t1.GetHour(), t1.GetMinute(), t1.GetSecond(),
+                            t2.GetYear(), t2.GetMonth(), t2.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond(), *(CStringW*)&rec->m_30);
         }
-        char h[16];
-        FUN_140d73d20(h, 0x10, CStringW(body), cb, CStringW(L""));
-        if (FUN_140534fc0(h)) {
-            FUN_141a015d0(FUN_140534fe0(h), title);
-            char tmp[16];
-            FUN_140d73c60(FUN_140534b80(tmp, h));
+        MS2Ptr<Unk_BmMsgBox> h = FUN_140d73d20(0x10, CStringW(body), cb, CStringW(L""));
+        if (h) {
+            FUN_141a015d0(h.operator->(), title);
+            FUN_140d73c60(MS2Ptr<Unk_BmMsgBox>(h));
         }
-        FUN_140534d60(h);
-    } else if (kind == 5) {
-        if (!FUN_14036e4c0(FUN_140166410())) {
+    }
+        break;
+    case 5:
+        if (FUN_14036e4c0(FUN_140166410())) {
+            MS2Ptr<Unk_BmMsgBox> h = FUN_140d73e40(1, 0x440, 0, CStringW(s_externalBlock));
+            if (h) {
+                FUN_140a30b80((char*)h.operator->(), 1);
+                FUN_141a015d0(h.operator->(), FUN_14028de60(0x43f));
+                FUN_140d73c60(MS2Ptr<Unk_BmMsgBox>(h));
+            }
+        } else {
             CMsTime t1((__int64)rec->m_38);
             CMsTime t2(rec->expiry);
             CStringW title, body;
             title = FUN_14028de60(0x43d);
-            int s2 = t2.GetSecond(), mi2 = t2.GetMinute(), h2 = t2.GetHour(), d2 = t2.GetDay(), mo2 = t2.GetMonth(), y2 = t2.GetYear();
-            int s1 = t1.GetSecond(), mi1 = t1.GetMinute(), h1 = t1.GetHour(), d1 = t1.GetDay(), mo1 = t1.GetMonth(), y1 = t1.GetYear();
-            body = BlockFormat(0x43e, y1, mo1, d1, h1, mi1, s1, y2, mo2, d2, h2, mi2, s2, *(CStringW*)&rec->m_30);
-            char h[16];
-            FUN_140d73d20(h, 0x10, CStringW(body), cb, CStringW(L""));
-            if (FUN_140534fc0(h)) {
-                FUN_141a015d0(FUN_140534fe0(h), title);
-                char tmp[16];
-                FUN_140d73c60(FUN_140534b80(tmp, h));
+            body = BlockFormat(0x43e, t1.GetYear(), t1.GetMonth(), t1.GetDay(), t1.GetHour(), t1.GetMinute(), t1.GetSecond(),
+                            t2.GetYear(), t2.GetMonth(), t2.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond(), *(CStringW*)&rec->m_30);
+            MS2Ptr<Unk_BmMsgBox> h = FUN_140d73d20(0x10, CStringW(body), cb, CStringW(L""));
+            if (h) {
+                FUN_141a015d0(h.operator->(), title);
+                FUN_140d73c60(MS2Ptr<Unk_BmMsgBox>(h));
             }
-            FUN_140534d60(h);
-        } else {
-            char h[16];
-            FUN_140d73e40(h, 1, 0x440, 0, CStringW(s_externalBlock));
-            if (FUN_140534fc0(h)) {
-                FUN_140a30b80((char*)FUN_140534fe0(h), 1);
-                FUN_141a015d0(FUN_140534fe0(h), FUN_14028de60(0x43f));
-                char tmp[16];
-                FUN_140d73c60(FUN_140534b80(tmp, h));
-            }
-            FUN_140534d60(h);
         }
-    } else {
+        break;
+    default:
         FUN_140a30ad0(rec, action, cb);
+        break;
     }
 }

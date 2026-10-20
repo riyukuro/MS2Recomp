@@ -146,26 +146,24 @@ CString FUN_140cc2ba0(const CString& strA, const CString& strB)
 CStringW FUN_140cc20a0(int nErr)
 {
     switch (nErr) {
-    case 7: { CStringW str(L"s_move_err_field_limit"); return FUN_14028b8e0(str); }
     case 8:  return FUN_14028de60(0x268);
     case 9:
     case 0x15: return FUN_14028de60(0x269);
+    case 0x11: return FUN_14028de60(0x26a);
     case 10:
     case 0x16: return FUN_14028de60(0x26c);
     case 0xc:  return FUN_14028de60(0x26d);
-    case 0x11: return FUN_14028de60(0x26a);
     case 0x1b: { CStringW str(L"s_party_err_not_chief"); return FUN_14028b8e0(str); }
-    case 0x1c: { CStringW str(L"s_move_err_NotFoundParty"); return FUN_14028b8e0(str); }
     case 0x1d: { CStringW str(L"s_move_err_dungeon_not_exist"); return FUN_14028b8e0(str); }
     case 0x1e: { CStringW str(L"s_move_err_FailCreateDungeon"); return FUN_14028b8e0(str); }
     case 0x1f: { CStringW str(L"s_move_err_DungeonMatch"); return FUN_14028b8e0(str); }
+    case 0x1c: { CStringW str(L"s_move_err_NotFoundParty"); return FUN_14028b8e0(str); }
     case 0x20: { CStringW str(L"s_move_err_InsideDungeonUser"); return FUN_14028b8e0(str); }
-    case 0x21: { CStringW str(L"s_move_err_ExpireEnterTime"); return FUN_14028b8e0(str); }
     case 0x22: { CStringW str(L"s_move_err_InsideSurvivalSquad"); return FUN_14028b8e0(str); }
+    case 0x21: { CStringW str(L"s_move_err_ExpireEnterTime"); return FUN_14028b8e0(str); }
+    case 7: { CStringW str(L"s_move_err_field_limit"); return FUN_14028b8e0(str); }
     case 0x23: { CStringW str(L"s_move_err_wedding_complete"); return FUN_14028b8e0(str); }
-    default: {
-        CStringW str(L"s_move_err_default");
-        return FUN_140cc25a0(str, &nErr);
-    }
+    default:
+        return FUN_140cc25a0(CStringW(L"s_move_err_default"), &nErr);
     }
 }

@@ -4,7 +4,7 @@
 // MS2-RANGE: 0x140eadd70-0x140ebb6c0 .text$mn
 // MS2-RANGE: 0x1400dc070-0x1400dc300 .text$di
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$StringFormat@H$$BY00_W@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBHAEAY00$$CB_W@Z 0x140eb96d0 ; order
+// MS2-PIN: ??$StringFormat@H$$BY00D@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBHAEAY00$$CBD@Z 0x140eb96d0 ; order
 // MS2-PIN: ??$StringFormat@H$$BY0M@D@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBHAEAY0M@$$CBD@Z 0x140eb99e0 ; order
 // MS2-PIN: ??0?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAA@XZ 0x140eba630 ; order
 // MS2-PIN: ??0?$CAtlArray@UItemEntity@@V?$CElementTraits@UItemEntity@@@ATL@@@ATL@@QEAA@XZ 0x140eba670 ; order
@@ -225,7 +225,7 @@ unsigned int FUN_141662750(MyPC* pPc, int nType);           // mastery value of 
 int FUN_141654700(MyPC* pPc);                               // job
 int FUN_14053feb0(int nItemId);                             // default rank of an item
 CStringW FUN_1419021b0(int nHave, int nNeed);               // "have/need" count text
-CStringW FUN_14028b8e0(CStringW strKey);                    // localized
+#include "ms2/commonfiles/commonutil.h"
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
 CStringW FUN_14062b4f0(CStringW strKey, const int* p);
 CStringW FUN_1409e8820(CStringW strKey, const unsigned short& n);
@@ -414,7 +414,7 @@ int FUN_1406198a0(int n, float f);
 int FUN_1404820b0(int n, float f);
 CStringW FUN_14183e9c0(CStringW str, int nRank);
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW FUN_140bfa7f0(CStringW strKey, CStringW strName, const int* pCount);
+CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nCount);   // string table format (name, count): the FMT_VARIADIC_W <CStringW, int> instance
 int FUN_140930e10();
 CString FUN_140c43630(const char* szFmt, const unsigned __int64& n);
 CStringW FUN_140938ae0(CStringW strKey, const int& n);
@@ -694,7 +694,7 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             int nTab = FUN_140eb5040();
             if (nTab == 1) {
                 int nId = data.FUN_1422b8a10();
-                strCommand = StringFormat((const wchar_t*)strFormat, nId, L"");
+                strCommand = StringFormat((const wchar_t*)strFormat, nId, "");
             } else if (nTab == 3) {
                 int nId = data.FUN_1422b8a10();
                 strCommand = StringFormat((const wchar_t*)strFormat, nId, "magicscroll");
@@ -903,13 +903,13 @@ void UIMasteryDialog::FUN_140eb0bf0(int nType, int nIndex)
     if (!pPc)
         return;
     MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990(CString("m_levelControl"));
-    if (!spLevel.get())
-        return;
-    MS2Ptr<Unk_MGuide> spGuide = spLevel->FUN_140accfb0<Unk_MGuide>(CString("m_guideBar"));
-    if (spGuide.get()) {
-        ASObj obj(2);
-        FUN_140eb6920(nType, nIndex, obj);
-        spGuide->Invoke("addLevelGuide", obj);
+    if (spLevel.get()) {
+        MS2Ptr<Unk_MGuide> spGuide = spLevel->FUN_140accfb0<Unk_MGuide>(CString("m_guideBar"));
+        if (spGuide.get()) {
+            ASObj obj(2);
+            FUN_140eb6920(nType, nIndex, obj);
+            spGuide->Invoke("addLevelGuide", obj);
+        }
     }
 }
 
@@ -1345,12 +1345,12 @@ void UIMasteryDialog::FUN_140eb4be0()
 // @0x140eb4c10
 void UIMasteryDialog::FUN_140eb4c10(int nType, int bRefreshTabs)
 {
-    if (vfunc_46()) {
-        if (bRefreshTabs)
-            FUN_140eb4be0();
-        if (nType == FUN_140eb8a90())
-            FUN_140eb5260(nType);
-    }
+    if (!FUN_141924630())
+        return;
+    if (bRefreshTabs)
+        FUN_140eb4be0();
+    if (nType == FUN_140eb8a90())
+        FUN_140eb5260(nType);
 }
 
 // @0x140eb4c70
@@ -1830,7 +1830,7 @@ CStringW UIMasteryDialog::FUN_140eb7c50(int nType)
     int nRewards = FUN_140e5ca20()->FUN_140b6d140(nType);
     if (nRewards == 0)
         return strName;
-    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, &nRewards);
+    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
 }
 
 // @0x140eb7d40
@@ -1840,7 +1840,7 @@ CStringW UIMasteryDialog::FUN_140eb7d40()
     int nRewards = FUN_140930e10();
     if (nRewards == 0)
         return strName;
-    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, &nRewards);
+    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
 }
 
 // @0x140eb7e30

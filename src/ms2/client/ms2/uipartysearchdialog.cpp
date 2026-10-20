@@ -178,9 +178,9 @@ Unk_PsdDialogMgr* FUN_140b632f0();
 
 CPartyManager* FUN_1409670d0();
 int FUN_140695080(CMatchPartyRecruit* pRecruit);                         // recruitId == 0
-CMatchPartyRecruitSchCond* FUN_1406943b0(CMatchPartyRecruitSchCond* pThis);   // constructor
 __int64 FUN_141656a80(PCBase* pPlayer);                                  // character id
 bool FUN_141527280(PCBase* pPlayer);                                     // in a party
+// (0x1406943b0 is CMatchPartyRecruitSchCond's constructor, cmatchpartyrecruit.h)
 unsigned int FUN_140869420();                                           // tick count
 unsigned __int64 FUN_140718350(const CString& str);                     // string -> id
 unsigned __int64 FUN_140718370(const CStringW& str);
@@ -771,13 +771,13 @@ void UIPartySearchDialog::FUN_140f8e670()
 {
     if (!m_180)
     {
-        CMatchPartyRecruitSchCond* pCond = (CMatchPartyRecruitSchCond*)operator new(0x38);
-        m_180.AssignRaw(pCond ? FUN_1406943b0(pCond) : 0);
+        // new + the 0x1406943b0 constructor
+        m_180.AssignRaw(new CMatchPartyRecruitSchCond());
         if (!m_180)
-        {
-            m_180->page = 1;
-            m_180->kind = 0xc;
-        }
+            return;
+        m_180->page = 1;
+        // the exe stores the kind as a dword (cf. KindOf in matchpartyrecruitschcond.cpp)
+        *reinterpret_cast<int*>(&m_180->kind) = 0xc;
     }
     else
     {

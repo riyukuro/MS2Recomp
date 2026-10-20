@@ -409,12 +409,12 @@ CGuideObject::CGuideObject()
 {
     m_bLocal = false;
     m_bBusy = false;
-    m_unk_180[2] = 3.5f;
-    m_unk_180[1] = 1.2f;
-    m_unk_180[3] = 3.5f;
-    m_unk_190[2] = 3.5f;
-    m_unk_190[1] = 1.2f;
-    m_unk_190[3] = 3.5f;
+    m_unk_180.m_z = 3.5f;
+    m_unk_180.m_y = 1.2f;
+    m_unk_180.m_w = 3.5f;
+    m_unk_190.m_z = 3.5f;
+    m_unk_190.m_y = 1.2f;
+    m_unk_190.m_w = 3.5f;
     m_ctrl.FUN_1417b7430(this);
 }
 
@@ -763,7 +763,7 @@ int CConstructionGuideObject::FUN_1410a2a60(void* pCube)
     {
         if (m_spItem->FUN_1408b3860() == 1)
         {
-            CString strLook = FUN_1410280d0(2, m_spItem->look->resourcePath);
+            CString strLook = FUN_1410280d0(2, m_spItem->look->m_strUrl);
             if (_access(strLook, 0) != 0)
             {
                 Unk_GuideDownloadId kId;
@@ -1705,6 +1705,8 @@ int FUN_140159bc0(void*);                                        // ReleasePtred
 void FUN_140159ba0(void*);                                       // DeletePtred
 void FUN_1410a7db0(void*);
 void FUN_1410a7df0(void*);
+void FUN_1410a7cb0(Unk_SPtr*);
+void FUN_1410a7d10(Unk_SPtr*);
 void FUN_1410a7e90(Unk_SPtr*);
 void FUN_1410a7ef0(Unk_SPtr*);
 void FUN_1410a7fd0(Unk_SPtr*);
@@ -1725,10 +1727,14 @@ void** FUN_1410a69b0(void** p, void* v)
     return p;
 }
 
+// @0x1410a6aa0
+Unk_SPtr* FUN_1410a6aa0(Unk_SPtr* p, void* v) { p->m_p = v; FUN_1410a7cb0(p); return p; }
 // @0x1410a6ad0
 Unk_SPtr* FUN_1410a6ad0(Unk_SPtr* p) { p->m_p = 0; return p; }
 // @0x1410a6af0
 Unk_SPtr* FUN_1410a6af0(Unk_SPtr* p) { p->m_p = 0; return p; }
+// @0x1410a6b10
+Unk_SPtr* FUN_1410a6b10(Unk_SPtr* p, void* v) { p->m_p = v; FUN_1410a7d10(p); return p; }
 // @0x1410a6b90
 Unk_SPtr* FUN_1410a6b90(Unk_SPtr* p) { p->m_p = 0; return p; }
 

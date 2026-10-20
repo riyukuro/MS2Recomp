@@ -456,7 +456,6 @@ bool CMailInfo::FUN_140690fa0(int type, int sub, Unk_MailBenefit* out) const
 }
 
 // @0x140691090
-// MS2-FUNCTIONAL: calls FUN_140691130 whose exe form returns int; symbol row binds it as bool
 void CMailInfo::FUN_140691090()
 {
     if (FUN_140691130())
@@ -469,12 +468,11 @@ void CMailInfo::FUN_1406910e0(__int64 value) { m_n100 = value; }
 __int64 CMailInfo::FUN_140691110() const { return m_n100; }
 
 // @0x140691130
-// MS2-FUNCTIONAL: exe returns int (xor eax,eax / mov eax,1) but the existing symbol row is bool
-bool CMailInfo::FUN_140691130()
+int CMailInfo::FUN_140691130()
 {
     if (m_n100 == 0)
-        return false;
-    return true;
+        return 0;
+    return 1;
 }
 
 __int64 CMailInfo::FUN_140691160() const { return m_n108; }

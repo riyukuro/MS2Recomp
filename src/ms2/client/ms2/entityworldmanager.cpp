@@ -124,6 +124,7 @@
 // RTTI COL offsets 0 and 0x20 identify these two namespaced base vftables.
 // MS2-PIN: ??_7EntityWorldManager@@6BISystemService@efd@@@ 0x142ebe0f8
 // MS2-PIN: ??_7EntityWorldManager@@6B?$TSingleton@VEntityWorldManager@@@@@ 0x142ebe1c8
+// MS2-FUNCTIONAL ??4AssetID@efd@@QEAAAEAV01@AEBV01@@Z: the exe's engine build has a user-defined efd::AssetID::operator= (copies the URN, then strips a trailing ':' via operator[](length-1) / 0x140de91f0, GS frame); our read-only SDK header only has the implicit memberwise copy-assign
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\entityworldmanager.cpp"
 #include "entityworldmanager.h"
 #include "ms2/ms2recover.h"

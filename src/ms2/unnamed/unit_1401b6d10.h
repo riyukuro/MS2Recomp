@@ -97,6 +97,7 @@ template<> struct Unk_SocketRef<Unk_BannerList> {
     }
     static Unk_BannerList* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
 };
+MS2_SOCKETPTR_BOXED(Unk_BannerList)
 MS2_CHECK_SIZE(TPtredDummy<Unk_BannerList>, 0x38);
 MS2_CHECK_OFFSET(TPtredDummy<Unk_BannerList>, value, 0x18);
 

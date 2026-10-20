@@ -835,7 +835,7 @@ void UIItemMergeOptionDialog::ShowMergePrice(MS2Ptr<CItem> spItem)
 // @0x1419d0ef0
 void UIItemMergeOptionDialog::FUN_1419d0ef0(CInPacket& packet)
 {
-    unsigned char nMode = packet.vfunc_o8_1();
+    int nMode = packet.vfunc_o8_1();
     if (nMode == 0)
     {
         SetPhase(1);
@@ -855,18 +855,16 @@ void UIItemMergeOptionDialog::FUN_1419d0ef0(CInPacket& packet)
             int nSpecial = packet.vfunc_o8_3();
             int nValue = packet.vfunc_o8_3();
             MS2Ptr<CItem> spItem = FindMergeItem(nUid);
-            if (!(spItem == (CItem*)0))
-            {
-                m_nItemUid = nUid;
-                m_bSpecial = true;
-                m_30->Invoke("setPrevMergeOption", FUN_140719530(m_nItemUid));
-                FUN_1419d1490(nNormal, nSpecial, nValue);
-            }
-            else
+            if (spItem == (CItem*)0)
             {
                 ShowMissingItem(nId);
                 SetPhase(1);
+                return;
             }
+            m_nItemUid = nUid;
+            m_bSpecial = true;
+            m_30->Invoke("setPrevMergeOption", FUN_140719530(m_nItemUid));
+            FUN_1419d1490(nNormal, nSpecial, nValue);
         }
     }
 }
@@ -903,31 +901,26 @@ void UIItemMergeOptionDialog::FUN_1419d12f0(CInPacket& packet)
 void UIItemMergeOptionDialog::FUN_1419d1490(int nNormal, int nSpecial, int nValue)
 {
     MS2Ptr<CItem> spItem = FindMergeItem(m_nItemUid);
-    if (!(spItem == (CItem*)0))
+    if (spItem == (CItem*)0)
+        return;
+    CStringW strOld = GetCurrentOption(spItem);
+    CStringW strNew(L"");
+    if (nNormal == -1)
     {
-        CStringW strOld = GetCurrentOption(spItem);
-        CStringW strNew(L"");
-        if (nNormal == -1)
+        if (nSpecial != 0)
         {
-            if (nSpecial != 0)
+            if (FUN_14081d9e0(nSpecial) == 0)
             {
                 if (FUN_14081d9e0(nSpecial) == 0)
                 {
-                    if (FUN_14081d9e0(nSpecial) == 0)
+                    if (!FUN_14081dcd0(nSpecial))
                     {
-                        if (!FUN_14081dcd0(nSpecial))
-                        {
-                            strNew = StringFormat(FUN_140184750(&DAT_143ab1a40, nSpecial)->m_strFormat, nValue);
-                        }
-                        else
-                        {
-                            float fValue = (float)nValue / 10.0;
-                            strNew = StringFormat(FUN_140184750(&DAT_143ab1a40, nSpecial)->m_strFormat, fValue);
-                        }
+                        strNew = StringFormat(FUN_140184750(&DAT_143ab1a40, nSpecial)->m_strFormat, nValue);
                     }
                     else
                     {
-                        strNew = FUN_140630e10(nSpecial);
+                        float fValue = (float)nValue / 10.0;
+                        strNew = StringFormat(FUN_140184750(&DAT_143ab1a40, nSpecial)->m_strFormat, fValue);
                     }
                 }
                 else
@@ -935,27 +928,31 @@ void UIItemMergeOptionDialog::FUN_1419d1490(int nNormal, int nSpecial, int nValu
                     strNew = FUN_140630e10(nSpecial);
                 }
             }
-        }
-        else
-        {
-            if (!FUN_14082f250(nNormal))
-                strNew = FUN_1409e0970(nNormal, nValue);
             else
-                strNew = FUN_1409e0bf0(nNormal, nValue);
+            {
+                strNew = FUN_140630e10(nSpecial);
+            }
         }
-        if (m_30.get() != 0)
-        {
-            ASObj obj(2);
-            obj.FUN_1407cbb20("oldOption", FUN_1405c2690(CStringW(L"s_item_merge_option_old_option"), strOld));
-            obj.FUN_1407cbb20("newOption", FUN_1405c2690(CStringW(L"s_item_merge_option_new_option"), strNew));
-            obj.FUN_1407cba60("iconPath", reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053fdd0());
-            obj.FUN_1409adc90("itemGrade", spItem->FUN_140526bd0());
-            obj.FUN_1407cbb20("itemName", spItem->FUN_140528160());
-            m_30->Invoke("selectOption", obj);
-            m_30->Invoke("onMerge");
-        }
-        SetPhase(4);
     }
+    else
+    {
+        if (!FUN_14082f250(nNormal))
+            strNew = FUN_1409e0970(nNormal, nValue);
+        else
+            strNew = FUN_1409e0bf0(nNormal, nValue);
+    }
+    if (m_30.get() != 0)
+    {
+        ASObj obj(2);
+        obj.FUN_1407cbb20("oldOption", FUN_1405c2690(CStringW(L"s_item_merge_option_old_option"), strOld));
+        obj.FUN_1407cbb20("newOption", FUN_1405c2690(CStringW(L"s_item_merge_option_new_option"), strNew));
+        obj.FUN_1407cba60("iconPath", reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053fdd0());
+        obj.FUN_1409adc90("itemGrade", spItem->FUN_140526bd0());
+        obj.FUN_1407cbb20("itemName", spItem->FUN_140528160());
+        m_30->Invoke("selectOption", obj);
+        m_30->Invoke("onMerge");
+    }
+    SetPhase(4);
 }
 
 // @0x1419d1ad0

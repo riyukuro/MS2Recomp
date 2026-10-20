@@ -1045,12 +1045,12 @@ void UIDialog::FUN_141926180(MS2Ptr<AScript> spRoot, CString strName, int n)
     spButton->vfunc_4(true);
     spButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialog::FUN_141925e10),
                             FUN_140bb9630(n));
-    m_a8.push_back(MS2Ptr<ASUIComponent>(spButton));
+    MS2Ptr<ASUIComponent> spComponent(spButton.get());
+    m_a8.push_back(spComponent);
 }
 #endif
 // Not hooked: builds a DelegateImpl with the DLL's vftable/RTTI and hands it to the exe (see section 9).
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x1419264e0
 void UIDialog::FUN_1419264e0(CString strName, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
@@ -1058,7 +1058,8 @@ void UIDialog::FUN_1419264e0(CString strName, const Delegate<void(const Scalefor
     if (spButton == 0)
         return;
     spButton->FUN_1422ce240(cb, 0);
-    m_a8.push_back(MS2Ptr<ASUIComponent>(spButton));
+    MS2Ptr<ASUIComponent> spComponent(spButton.get());
+    m_a8.push_back(spComponent);
 }
 MS2_REPLACE_METHOD(0x1419264e0, UIDialog, FUN_1419264e0, 205, 0xBB52F8BA);
 

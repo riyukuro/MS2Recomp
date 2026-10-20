@@ -1160,12 +1160,12 @@ void UIAvatarPC::FUN_1418bafa0(CItem* pItem, int nEffect)
     if (0 < nEffect)
     {
         AvatarPC* pAvatar = FUN_140a535c0(vfunc_24());
-        if (pAvatar)
-        {
-            Unk_UabPresetPtr kRow = FUN_140281980()->FUN_1405587f0(nEffect, 0);
-            if (!kRow.FUN_14056cf90(0))
-                FUN_141423cf0(pItem->FUN_140526a50(), kRow.FUN_14056d630(), pAvatar, 0);
-        }
+        if (pAvatar == 0)
+            return;
+        Unk_UabPresetPtr kRow = FUN_140281980()->FUN_1405587f0(nEffect, 0);
+        if (kRow.FUN_14056cf90(0))
+            return;
+        FUN_141423cf0(pItem->FUN_140526a50(), kRow.FUN_14056d630(), pAvatar, 0);
     }
 }
 
@@ -1232,6 +1232,7 @@ bool UIAvatarPC::FUN_1418bb2a0(MS2Ptr<CItemData> spData, int nEffect, ATL::CAtlA
     return FUN_1418bb3f0(&kKey, nEffect, pItems);
 }
 
+// MS2-FUNCTIONAL: 2050 vs 2090 bytes: the exe destroys the per-slot MS2Ptr<CItemData>/MS2Ptr<CItem> temporaries on early-continue paths (4 more dtor calls) and indexes the equip list through Unk_PtItemList::FUN_140c3c720 (MS2Ptr<CEquipItem>&) instead of CAtlArray<MS2Ptr<CItem>>::operator[]; loop restructure pending
 // @0x1418bb3f0
 bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArray<MS2Ptr<CItemData> >* pItems)
 {
@@ -1399,17 +1400,13 @@ void UIAvatarPC::FUN_1418bc110(MS2Ptr<CItem> spItem)
 {
     if (FUN_1418b9b80() == 0)
         return;
-    if (!(spItem == 0))
-    {
-        if (FUN_140527840(spItem.operator->()))
-        {
-            if (!FUN_14053cc00(FUN_140527840(spItem.operator->())))
-                return;
-            AvatarPC* pAvatar = FUN_1418bd1d0();
-            if (pAvatar)
-                pAvatar->FUN_1409f4d80(MS2Ptr<CItem>(spItem));
-        }
-    }
+    if (spItem == 0 || !FUN_140527840(spItem.operator->()))
+        return;
+    if (!FUN_14053cc00(FUN_140527840(spItem.operator->())))
+        return;
+    AvatarPC* pAvatar = FUN_1418bd1d0();
+    if (pAvatar)
+        pAvatar->FUN_1409f4d80(MS2Ptr<CItem>(spItem));
 }
 
 // @0x1418bc210
@@ -1739,23 +1736,20 @@ MS2_REPLACE_METHOD(0x1418BD300, UIAvatarPC, FUN_1418bd300, 63, 0xFA23326B);
 // @0x1418bd350
 bool UIAvatarPC::FUN_1418bd350(Unk_AvPackageKey* pKeyOut, int nItemId)
 {
-    if (m_mapPackages.empty())
-        return false;
-    if (nItemId == 0)
+    if (m_mapPackages.empty() || nItemId == 0)
         return false;
     MS2Ptr<CItem> spFound(0);
     for (std::map<Unk_AvPackageKey, MS2Ptr<CAvatarPackageEquip> >::iterator it = m_mapPackages.begin();
          it != m_mapPackages.end(); ++it)
     {
         MS2Ptr<CAvatarPackageEquip> spPackage(it->second);
-        if (!(spPackage == 0))
+        if (spPackage == 0)
+            continue;
+        spFound = spPackage->FUN_1418bfc00((Unk_InventoryEquipSlot)nItemId);
+        if (spFound.get())
         {
-            spFound = spPackage->FUN_1418bfc00((Unk_InventoryEquipSlot)nItemId);
-            if (spFound.get())
-            {
-                *pKeyOut = it->first;
-                return true;
-            }
+            *pKeyOut = it->first;
+            return true;
         }
     }
     return false;
@@ -1764,21 +1758,18 @@ bool UIAvatarPC::FUN_1418bd350(Unk_AvPackageKey* pKeyOut, int nItemId)
 // @0x1418bd510
 MS2Ptr<CItem> UIAvatarPC::FUN_1418bd510(int nItemId)
 {
-    if (m_mapPackages.empty())
-        return MS2Ptr<CItem>(0);
-    if (nItemId == 0)
+    if (m_mapPackages.empty() || nItemId == 0)
         return MS2Ptr<CItem>(0);
     MS2Ptr<CItem> spFound(0);
     for (std::map<Unk_AvPackageKey, MS2Ptr<CAvatarPackageEquip> >::iterator it = m_mapPackages.begin();
          it != m_mapPackages.end(); ++it)
     {
         MS2Ptr<CAvatarPackageEquip> spPackage(it->second);
-        if (!(spPackage == 0))
-        {
-            spFound = spPackage->FUN_1418bfc00((Unk_InventoryEquipSlot)nItemId);
-            if (spFound.get())
-                return spFound;
-        }
+        if (spPackage == 0)
+            continue;
+        spFound = spPackage->FUN_1418bfc00((Unk_InventoryEquipSlot)nItemId);
+        if (spFound.get())
+            return spFound;
     }
     return MS2Ptr<CItem>(0);
 }

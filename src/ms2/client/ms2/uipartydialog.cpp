@@ -145,6 +145,45 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/commandchat.h"
 
+// ---- Delegate<void()> (UIPopUpMenu's menu handlers, RTTI vftable 0x142fd4958): this TU's own COMDAT copies. The
+// TInterpolator / OnceCallbackTimer callbacks bound at 0x1401cffb0 / 0x14098d150 are TFunctor<void, EmptyParam>. ----
+void FUN_140657820();                                                   // throws on a call through an empty delegate
+
+// @0x141a882b0
+template <> Delegate<void()>::DelegateImplBase::DelegateImplBase() {}
+
+// @0x141a884b0
+template <> Delegate<void()>::DelegateImplBase::~DelegateImplBase() {}
+
+// @0x141a883b0
+template <> Delegate<void()>::~Delegate()
+{
+    if (m_pImpl)
+        delete m_pImpl;
+}
+
+// @0x141a88650
+template <> Delegate<void()>& Delegate<void()>::operator=(const Delegate<void()>& o)
+{
+    if (this == &o)
+        return *this;
+    if (m_pImpl)
+        delete m_pImpl;
+    if (o.m_pImpl == 0)
+        m_pImpl = 0;
+    else
+        m_pImpl = o.m_pImpl->vfunc_1();
+    return *this;
+}
+
+// @0x141a88740
+template <> void Delegate<void()>::operator()() const
+{
+    if (m_pImpl == 0)
+        FUN_140657820();
+    m_pImpl->vfunc_2();
+}
+
 // ---- out-of-unit callees ----
 class Unk_PdWorld                                                       // the world service (FUN_1403ed2d0)
 {
@@ -1884,7 +1923,7 @@ void UIPopUpMenu::vfunc_15()
 // @0x141a7dc20
 void UIPopUpMenu::vfunc_o70_2(const void* pId)
 {
-    if (m_30 == 0)
+    if (!m_30)
         FUN_141a80770();
     else if (static_cast<const efd::UniversalID*>(pId)->GetValue() == m_98)
         FUN_141a80770();
@@ -1983,11 +2022,10 @@ bool UIPopUpMenu::FUN_141a7e100(int nButton, const CMsgBoxData& data)
 // @0x141a7e1a0
 void UIPopUpMenu::vfunc_ugc_1(void* pId, CString strImage)
 {
-    if (FUN_141a80880() == 0)
-    {
-        if (m_a8 == (__int64)pId)
-            FUN_141a82fb0(FUN_141028a90(strImage, 0));
-    }
+    if (FUN_141a80880() != 0)
+        return;
+    if (m_a8 == (__int64)pId)
+        FUN_141a82fb0(FUN_141028a90(strImage, 0));
 }
 
 // @0x141a7e280
@@ -2084,9 +2122,7 @@ void UIPopUpMenu::FUN_141a7e870(const Unk_PopupMenuInfo& info, PCBase* pTarget, 
 void UIPopUpMenu::FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGameObject> spProxy, int nType)
 {
     FUN_141a80770();
-    if (spProxy.IsNull())
-        return;
-    if (spProxy->FUN_1416c2040() == 0 && spProxy->FUN_1416c1ff0() == 0)
+    if (spProxy.IsNull() || (spProxy->FUN_1416c2040() == 0 && spProxy->FUN_1416c1ff0() == 0))
         return;
     CStringW strName = spProxy->FUN_1416c23b0();
     if (strName.IsEmpty())
@@ -2107,17 +2143,14 @@ void UIPopUpMenu::FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGame
     m_a0 = (__int64)spProxy->FUN_1416c2310();
     m_a8 = (__int64)spProxy->FUN_1416c22f0();
     m_b0 = spProxy->FUN_1416c23b0();
-    CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4c30(0, m_a8, m_b0);
+    __int64 nAccountId = 0;
+    CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4c30(nAccountId, m_a8, m_b0);
     if (spBuddy.get() != 0)
         m_d0 = spBuddy->FUN_1401cc2f0();
     HomeBlockManager::HomePtr spHome = FUN_1414a5830()->FUN_140a47580(m_a8);
     if (spHome.get() != 0)
         m_d8 = spHome->m_18;
-    int nKind;
-    if (spProxy->FUN_1416c1ff0() == 0)
-        nKind = 2;
-    else
-        nKind = 1;
+    int nKind = spProxy->FUN_1416c1ff0() != 0 ? 1 : 2;
     if (FUN_141a82140(target, info.m_b, nKind) == 0)
         FUN_141a82dd0();
 }
@@ -2152,19 +2185,20 @@ void UIPopUpMenu::FUN_141a7f190(const Unk_PopupMenuInfo& info, CPartyMember* pMe
     Unk_PmTarget target;
     target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     Unk_UserProxy* pUser = &pMember->user;
-    target.m_nLevel = (unsigned short)pMember->user.m_34;
-    target.m_nCharId = pMember->user.m_8;
-    target.m_strImage = FUN_141028be0(pMember->user.m_8, pUser->FUN_1408f1a60(), 1, CString(""));
+    target.m_nLevel = (unsigned short)pUser->m_34;
+    target.m_nCharId = pUser->m_8;
+    target.m_strImage = FUN_141028be0(pUser->m_8, pUser->FUN_1408f1a60(), 1, CString(""));
     target.m_strName = strName;
-    target.m_b38 = 0 < pMember->user.m_48;
+    target.m_b38 = 0 < pUser->m_48;
     target.m_bOnline = !pMember->FUN_141637c20();
-    target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(&pMember->user.m_d4)->FUN_140267c10();
-    target.m_n20 = pMember->user.m_3c;
-    target.m_nJobCode = pMember->user.m_40;
+    target.m_nTrophy = reinterpret_cast<Unk_GuildTriple*>(&pUser->m_d4)->FUN_140267c10();
+    target.m_n20 = pUser->m_3c;
+    target.m_nJobCode = pUser->m_40;
     m_a0 = pUser->m_0;
-    m_a8 = pMember->user.m_8;
+    m_a8 = pUser->m_8;
     m_b0 = pUser->FUN_1408f19e0();
-    if (FUN_141a82140(target, info.m_b, 2) == 0)
+    int nKind = 2;
+    if (FUN_141a82140(target, info.m_b, nKind) == 0)
         FUN_141a82dd0();
 }
 
@@ -2183,20 +2217,20 @@ void UIPopUpMenu::FUN_141a7f510(const Unk_PopupMenuInfo& info, CGuildMember* pMe
     Unk_PmTarget target;
     target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     Unk_GuildMemberData* pData = &pMember->data;
-    target.m_nLevel = (unsigned short)pMember->data.f1c;
-    target.m_nCharId = pMember->data.f08;
-    target.m_strImage = FUN_141028be0(pMember->data.f08, pData->FUN_1404ca980(), 1, CString(""));
+    target.m_nLevel = (unsigned short)pData->f1c;
+    target.m_nCharId = pData->f08;
+    target.m_strImage = FUN_141028be0(pData->f08, pData->FUN_1404ca980(), 1, CString(""));
     target.m_strName = strName;
     target.m_b38 = true;
     target.m_bOnline = pMember->f158 == 0;
-    target.m_nTrophy = pMember->data.f2c.FUN_140267c10();
-    target.m_n20 = pMember->data.f14;
-    target.m_nJobCode = pMember->data.f18;
+    target.m_nTrophy = pData->f2c.FUN_140267c10();
+    target.m_n20 = pData->f14;
+    target.m_nJobCode = pData->f18;
     m_a0 = pData->f00;
-    m_a8 = pMember->data.f08;
+    m_a8 = pData->f08;
     m_b0 = pData->FUN_1404ca890();
     int nKind = 2;
-    if (pMember->data.f08 != 0 && pMember->data.f08 == DAT_143ab2828)
+    if (pData->f08 != 0 && pData->f08 == DAT_143ab2828)
         nKind = 1;
     if (FUN_141a82140(target, info.m_b, nKind) == 0)
         FUN_141a82dd0();
@@ -3529,7 +3563,13 @@ ecr::SceneGraphService* FUN_140ad4ba0();
 int FUN_140ae11a0(egf::Entity* pEntity, unsigned int nPropId, int* pValue);   // an int property
 void FUN_1408a2020(egf::Entity* pEntity, unsigned int nPropId, int* pValue);  // an int property
 void FUN_1413fb630(egf::Entity* pEntity, std::vector<unsigned __int64>& meshes);   // the meshes of an entity
-float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                          // the distance
+// The pick cursor point (TU-local): its ctor 0x141a8e170 constructs an efd::Point3 member (efd::Point3(x, y, z) 0x14027dda0).
+struct Unk_PdCursor
+{
+    Unk_PdCursor(float fX, float fY, float fZ) : m_pt(fX, fY, fZ) {}
+    efd::Point3 m_pt;
+};
+float FUN_140966f00(Unk_PdCursor kA, NiPoint3 kB);                      // the distance
 class Unk_PpStates { public: efd::SmartPointer<CSceneStateBase> FUN_1417e26d0(); };   // CStateService
 Unk_PpStates* FUN_140aa6d30();
 CUgcManager* FUN_14052d220();
@@ -3583,7 +3623,7 @@ void FUN_141a8a730();
 bool FUN_141a8b910();
 
 // @0x141a8a010
-// MS2-FUNCTIONAL: the sort predicate is a lambda (the exe's is a COMDAT functor of the same shape)
+// MS2-FUNCTIONAL: the exe passes the cursor (Unk_PdCursor, ctor 0x141a8e170) as a prvalue copied straight into the sort predicate; here it is a named local captured by the lambda (closure ctor call)
 void FUN_141a8a010(float x, float y)
 {
     if (FUN_1403ed2b0() == 0)
@@ -3615,7 +3655,7 @@ void FUN_141a8a010(float x, float y)
             else if (std::find(objects.begin(), objects.end(), pObject) == objects.end())
                 objects.push_back(pObject);
         }
-        NiPoint3 kCursor(x, y, 0);
+        Unk_PdCursor kCursor(x, y, 0);
         std::sort(objects.begin(), objects.end(), [kCursor](GameObject* pA, GameObject* pB) -> bool {
             if (pA == 0 || pB == 0)
                 return false;

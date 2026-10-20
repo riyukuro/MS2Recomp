@@ -40,7 +40,7 @@ public:
     virtual void vfunc_41(const Scaleform::GFx::Value& root);              // 41 0x14135b0a0
     virtual int vfunc_48();                                                 // 48 0x14135b420
     virtual int vfunc_52(const CString& strPath, float fVolume);            // 52 0x14135ab40 play
-    virtual bool vfunc_53();                                                // 53 0x14135ad10 stop
+    virtual int vfunc_53();                                                 // 53 0x14135ad10 stop
     virtual int vfunc_54(float fTimeout);                                  // 54 0x14135adc0
     void FUN_14135afa0(int bMute);
 

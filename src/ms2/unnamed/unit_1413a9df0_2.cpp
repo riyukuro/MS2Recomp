@@ -50,7 +50,7 @@ void* FUN_1416769f0(Unk_G9Player* pPlayer);             // the summoned pet
 int FUN_1413b6160(Unk_G9Holder* pHolder);                       // joined a guild
 void FUN_140178570(Unk_140165cf0* pElem, const char* pszName, CAtlArray<int>& arr);
 void* FUN_140938b90(unsigned nUIId);                    // the menu bar
-int FUN_141938a00(void* pMenu, const CStringA& strMenu);
+int FUN_141938a00(void* pMenu, CStringA strMenu);
 void* FUN_1419c16a0(void* pDialog);
 void* FUN_140faf160(unsigned nUIId);                    // the mastery dialog
 int FUN_140eb5040(void* pDialog);
@@ -63,10 +63,10 @@ int FUN_14166cc80(Unk_G9Player* pPlayer);               // the instrument id
 void* FUN_140ef0b20();                                  // the cube holder dialog
 int FUN_1410b5bc0(void* pDialog);
 void* FUN_141530930();                                  // the stat window
-void* FUN_140c25130(void* pStat, struct Unk_G9Val* pOut);
-void* FUN_140c24af0(void* pRef);
-int FUN_140caa1a0(void* pRef);
-void FUN_140c24a50(struct Unk_G9Val* pOut);
+// the stat window's value handle, returned by value (dtor 0x140c24a50, accessor 0x140c24af0)
+class Unk_StatRef { public: ~Unk_StatRef(); void* FUN_140c24af0(); private: void* m_p0; void* m_p1; };
+class Unk_StatWnd { public: Unk_StatRef FUN_140c25130(); };
+unsigned FUN_140caa1a0(void* pRef);
 void* FUN_140b72e80(unsigned nUIId);                    // the mentoring pane
 char FUN_1401647e0(const CStringA& strA, const CStringA* pStrB);       // true when the names differ
 __int64 FUN_140d59970(void* pMarket);                   // the expiry of the ugc product
@@ -490,9 +490,12 @@ void CGuideConditionMenuExpand::vfunc_2(Unk_140165cf0* pElem)
 int CGuideConditionMenuExpand::vfunc_3()
 {
     void* pMenu = FUN_140938b90(0x4e28);
-    if (!pMenu)
-        return 0;
-    return FUN_1413a5600(FUN_141938a00(pMenu, CStringA(m_strMenuName)) != 0);
+    if (pMenu != 0)
+    {
+        int nExpanded = FUN_141938a00(pMenu, m_strMenuName);
+        return FUN_1413a55a0(nExpanded);
+    }
+    return 0;
 }
 
 // @0x1413adfd0
@@ -670,11 +673,7 @@ int CGuideConditionHasStatPoint::vfunc_3()
     void* pStat = FUN_141530930();
     if (!pStat)
         return 0;
-    Unk_G9Val ref;
-    void* pRef = FUN_140c24af0(FUN_140c25130(pStat, &ref));
-    int nResult = FUN_1413a5600(FUN_140caa1a0(pRef) != 0);
-    FUN_140c24a50(&ref);
-    return nResult;
+    return FUN_1413a5600(FUN_140caa1a0(static_cast<Unk_StatWnd*>(pStat)->FUN_140c25130().FUN_140c24af0()) > 0);
 }
 
 // @0x1413ae990

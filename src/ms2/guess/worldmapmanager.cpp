@@ -325,11 +325,12 @@ int UIWorldMap::DisplaySetting::FUN_141b95080(MS2Ptr<CQuestData> spQuest)
     }
     if (FUN_140764040(spQuest.operator->()))
         return m_18[0];
-    if (FUN_140764080(spQuest.operator->()))
+    else if (FUN_140764080(spQuest.operator->()))
         return 1;
-    if (FUN_1407640c0(spQuest.operator->()))
+    else if (FUN_1407640c0(spQuest.operator->()))
         return m_18[2];
-    return m_18[1];
+    else
+        return m_18[1];
 }
 
 // @0x141b95270
@@ -898,7 +899,7 @@ int WorldMapManager::WorldOfField(int field)
 {
     CContinentRegionTable::InfoPtr spContinent = FUN_1403782c0()->GetContinent(field);
     if (spContinent.get() != 0)
-        field = spContinent->m_nRepresentWorldmapContinent;
+        return spContinent->m_nRepresentWorldmapContinent;
     return field;
 }
 
@@ -931,6 +932,8 @@ Unk_FieldIdListMap& FUN_141bb07e0(CFieldMetaTable* pTable)
     return *reinterpret_cast<Unk_FieldIdListMap*>(reinterpret_cast<char*>(pTable) + 0x10);
 }
 
+// MS2-FUNCTIONAL: locals constructed in a different order (unwind states 9/11/12 permuted, frame 0x20 larger) and the
+// Unk_FieldPtr<CAtlList<unsigned>> copy ctor binds the look-alike 0x1406fead0 instead of the exe copy.
 // @0x141b984a0
 int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
 {

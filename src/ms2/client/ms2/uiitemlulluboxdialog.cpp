@@ -28,6 +28,18 @@
 // MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142ca7f20 ; probe
 // MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142ca7f40 ; probe
 // MS2-PINS-END tplpin
+// fx14: the Params/CMsgBoxData Delegate glue pairs are emitted in the opposite order to the exe; bound through the exe
+// call chain (make_pair -> forward 0x140ea01a0/01b0, from-F ctor -> vftable 0x142e5ecc8/0x142e5ecf0, clone -> copy ctor)
+// MS2-PIN: ??$?0PEAVUIItemLulluBoxDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z$0A@@?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@QEAA@AEBQEAVUIItemLulluBoxDialog@@AEBQ82@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140e9fb90 ; vftable
+// MS2-PIN: ??$?0PEAVUIItemLulluBoxDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z$0A@@?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@QEAA@AEBQEAVUIItemLulluBoxDialog@@AEBQ82@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x140e9fc60 ; vftable
+// MS2-PIN: ??$?0VUIItemLulluBoxDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIItemLulluBoxDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140e9fbd0 ; vftable
+// MS2-PIN: ??$?0VUIItemLulluBoxDialog@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBQEAVUIItemLulluBoxDialog@@AEBQ81@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x140e9fca0 ; vftable
+// MS2-PIN: ??$make_pair@AEBQEAVUIItemLulluBoxDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA?AU?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@AEBQEAVUIItemLulluBoxDialog@@AEBQ82@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140ea01d0 ; vftable
+// MS2-PIN: ??$make_pair@AEBQEAVUIItemLulluBoxDialog@@AEBQ81@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA?AU?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@AEBQEAVUIItemLulluBoxDialog@@AEBQ82@EAA_NHAEBVCMsgBoxData@@@Z@Z 0x140ea0220 ; vftable
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBU?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@Z 0x140ea02c0 ; vftable
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x140ea0270 ; vftable
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z 0x140ea0360 ; vftable
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x140ea0310 ; vftable
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiitemlulluboxdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiitemlulluboxdialog.h"

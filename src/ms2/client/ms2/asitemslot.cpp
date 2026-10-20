@@ -65,7 +65,6 @@
 // MS2-PIN: ??__Es_unk1402a9d70D@@YAXXZ 0x1400c1350 ; prop
 // MS2-PIN: ??$?8PEAVASAdditionalEffectSlot@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVASAdditionalEffectSlot@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x1409bb2d0 ; prop
 // MS2-PIN: ??$?8PEAVASItemSlot@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVASItemSlot@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x1409bb320 ; prop
-// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVASItemSlot@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x1409bb630 ; unique
 // MS2-PIN: ??_GASAdditionalEffectSlot@@UEAAPEAXI@Z 0x1409bb8e0 ; unique
 // MS2-PIN: ??_GASItemSlot@@UEAAPEAXI@Z 0x1409bb920 ; unique
 // MS2-PIN: ??_GAScript@@UEAAPEAXI@Z 0x1409bb9a0 ; prop
@@ -140,6 +139,9 @@
 // MS2-PIN: ??__Fs_strTabIndex@@YAXXZ 0x142c9e160 ; probe
 // MS2-PIN: ??__Fs_strUgctag@@YAXXZ 0x142c9e180 ; probe
 // MS2-PINS-END tplpin
+// fx14: byte-identical DelegateImpl copy ctors, bound through the clone (vfunc_1) of each exe vftable (0x142db7ff8 ASItemSlot, 0x142db8020 ASAdditionalEffectSlot)
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVASItemSlot@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x1409bb6d0 ; vftable
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVASAdditionalEffectSlot@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x1409bb630 ; vftable
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_AdditionalEffect@@@@AEAAXPEAX@Z 0x1409c1a30 ; merge-bind
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\asitemslot.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -2097,7 +2099,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
         FUN_1407cbb20("itemName", spEntry->FUN_1406a4770());
         CString strIcon;
         if (ugc.FUN_140896310() == 0)
-            strIcon = ugc.m_look.FUN_140892ec0();
+            strIcon = ugc.m_look.GetLocalPath();
         else
             strIcon = ugc.m_template.FUN_140894060();
         FUN_1407cba60("iconPath", strIcon);

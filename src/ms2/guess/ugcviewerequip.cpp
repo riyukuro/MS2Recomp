@@ -95,11 +95,11 @@ CUgcManager* FUN_14052d220();
 void* FUN_140938c30(int nId);                               // 0x2711 the profile dialog
 void* FUN_1418764c0(int nId);                               // 0x4f8c the wedding profile dialog
 void* FUN_14136f480(int nId);                               // 0x4e4f the guild mark dialog
-void FUN_14132faf0(void* pDialog, CStringW strFile);        // show the uploaded image (profile)
+void FUN_14132faf0(void* pDialog, const CStringW& strFile);        // show the uploaded image (profile)
 void FUN_14132fa90(void* pDialog);
-void FUN_140fc7e80(void* pDialog, CStringW strFile);        // (wedding profile)
+void FUN_140fc7e80(void* pDialog, const CStringW& strFile);        // (wedding profile)
 void FUN_140fc7f30(void* pDialog);
-void FUN_141976980(void* pDialog, CStringW strFile);        // (guild mark)
+void FUN_141976980(void* pDialog, const CStringW& strFile);        // (guild mark)
 void FUN_1419769d0(void* pDialog);
 void FUN_141403180(CInteractGuildPosterObject* pPoster, CStringW strFile);   // load the poster file into the entity
 void FUN_141402eb0(CInteractGuildPosterObject* pPoster, unsigned char bShow);
@@ -108,7 +108,7 @@ void FUN_141402eb0(CInteractGuildPosterObject* pPoster, unsigned char bShow);
 int FUN_14186ced0(NiTexture* pTexture, int nItemId, int nKind, CStringW& strOut);   // the texture fits the item mesh (0 = yes)
 int FUN_14186d050(NiTexture* pTexture, int nBannerId, CStringW& strOut);
 CString FUN_1411c0aa0(const char* szText);                  // a text without arguments
-void FUN_14186bd30(Unk_PPSmartC* pOut, const CStringW& strPath, int nSize, int nFlag);   // the texture of an image file (null on error)
+NiTexturePtr FUN_14186bd30(const CStringW& strPath, int nSize, bool bFlag);   // the texture of an image file (null on error)
 
 // The exe formats ids as unsigned values (the unsigned ArgType constructors).
 #define VW_U(x) reinterpret_cast<const unsigned&>(x)
@@ -251,7 +251,10 @@ int CUgcViewerEquip::vfunc_2()
     if (spTexture == 0)
         return 0;
     CStringW strError;
-    return FUN_14186ced0(spTexture, m_item.m_nItemId, 1, strError) == 0;
+    int nResult = FUN_14186ced0(spTexture, m_item.m_nItemId, 1, strError);
+    if (nResult != 0)
+        return 0;
+    return 1;
 }
 
 // @0x14189f040
@@ -262,11 +265,11 @@ int CUgcViewerEquip::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    Unk_PPSmartC spTexture;
-    FUN_14186bd30(&spTexture, spFile->GetPath(), vfunc_9(), 1);
-    if (spTexture.Get() == 0)
+    CStringW strPath = spFile->GetPath();
+    NiTexturePtr spTexture = FUN_14186bd30(strPath, vfunc_9(), true);
+    if (spTexture == 0)
         return 0;
-    if (FUN_14052d220()->FUN_141886a90(&m_item, (NiTexture*)spTexture.Get()) == 0)
+    if (FUN_14052d220()->FUN_141886a90(&m_item, spTexture) == 0)
         return 0;
     spCtrl->m_spFile = spFile;
     return 1;
@@ -396,7 +399,10 @@ int CUgcViewerCube::vfunc_2()
     if (spTexture == 0)
         return 0;
     CStringW strError;
-    return FUN_14186ced0(spTexture, m_item.m_nItemId, 2, strError) == 0;
+    int nResult = FUN_14186ced0(spTexture, m_item.m_nItemId, 2, strError);
+    if (nResult != 0)
+        return 0;
+    return 1;
 }
 
 // @0x14189fab0
@@ -407,11 +413,11 @@ int CUgcViewerCube::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    Unk_PPSmartC spTexture;
-    FUN_14186bd30(&spTexture, spFile->GetPath(), vfunc_9(), 1);
-    if (spTexture.Get() == 0)
+    CStringW strPath = spFile->GetPath();
+    NiTexturePtr spTexture = FUN_14186bd30(strPath, vfunc_9(), true);
+    if (spTexture == 0)
         return 0;
-    if (FUN_14052d220()->FUN_141886de0(&m_item, (NiTexture*)spTexture.Get()) == 0)
+    if (FUN_14052d220()->FUN_141886de0(&m_item, spTexture) == 0)
         return 0;
     spCtrl->m_spFile = spFile;
     return 1;
@@ -573,11 +579,11 @@ int CUgcViewerBanner::vfunc_3(MS2Ptr<CUploadFile> spFile)
     efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(m_nBannerId);
     if (spEntity == 0)
         return 0;
-    Unk_PPSmartC spTexture;
-    FUN_14186bd30(&spTexture, spFile->GetPath(), vfunc_9(), 1);
-    if (spTexture.Get() == 0)
+    CStringW strPath = spFile->GetPath();
+    NiTexturePtr spTexture = FUN_14186bd30(strPath, vfunc_9(), true);
+    if (spTexture == 0)
         return 0;
-    if (FUN_14052d220()->FUN_141888770(spEntity, (NiTexture*)spTexture.Get()) == 1)
+    if (FUN_14052d220()->FUN_141888770(spEntity, spTexture) == 1)
         spCtrl->m_spFile = spFile;
     return 1;
 }
@@ -712,7 +718,8 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    GameObject* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     if (_waccess(strPath, 0) != 0)
@@ -790,7 +797,8 @@ int CUgcViewerWeddingProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    GameObject* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return 0;
     if (FUN_140d295d0(FUN_1409eed90())->m_nState != 2)
         return 0;
@@ -870,7 +878,8 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    GameObject* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return 0;
     if (FUN_1404ccbd0((char*)FUN_1403ed290() + 8) == 0)
         return 0;
@@ -956,7 +965,8 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    GameObject* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return 0;
     if (FUN_1404ccbd0((char*)FUN_1403ed290() + 8) == 0)
         return 0;
@@ -1046,7 +1056,10 @@ int CUgcViewerRidee::vfunc_2()
     if (spTexture == 0)
         return 0;
     CStringW strError;
-    return FUN_14186ced0(spTexture, m_item.m_nItemId, 7, strError) == 0;
+    int nResult = FUN_14186ced0(spTexture, m_item.m_nItemId, 7, strError);
+    if (nResult != 0)
+        return 0;
+    return 1;
 }
 
 // @0x1418a2a80
@@ -1057,11 +1070,11 @@ int CUgcViewerRidee::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    Unk_PPSmartC spTexture;
-    FUN_14186bd30(&spTexture, spFile->GetPath(), vfunc_9(), 1);
-    if (spTexture.Get() == 0)
+    CStringW strPath = spFile->GetPath();
+    NiTexturePtr spTexture = FUN_14186bd30(strPath, vfunc_9(), true);
+    if (spTexture == 0)
         return 0;
-    if (FUN_14052d220()->FUN_141887160(&m_item, (NiTexture*)spTexture.Get()) == 0)
+    if (FUN_14052d220()->FUN_141887160(&m_item, spTexture) == 0)
         return 0;
     spCtrl->m_spFile = spFile;
     return 1;

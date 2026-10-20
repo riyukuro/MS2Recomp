@@ -97,7 +97,7 @@ __int64 CUGCMapItem::FUN_140dfc420()
 {
     __int64 n;
     if (m_spLook.get() != 0)
-        n = m_spLook->ugcId;
+        n = m_spLook->m_n18;
     else
         n = 0;
     return n;
@@ -134,7 +134,7 @@ int Unk_CubeStock::FUN_140dfc520(CUGCMapItem* pItem)
         m_map.SetAt(pItem->FUN_140dfc390(), spItem);
     }
     MS2Ptr<CUgcItemLook> spLook = pItem->FUN_140dfc3d0();
-    bool bName = (spLook.get() ? true : false) && spLook->FUN_140892ec0().GetLength() > 0;
+    bool bName = (spLook.get() ? true : false) && spLook->GetLocalPath().GetLength() > 0;
     if (bName)
         FUN_14052d220()->FUN_1418841f0(spLook, MS2Ptr<CItem>(0), 0);
     return 0;
@@ -246,7 +246,7 @@ void Unk_CubeStock::FUN_140dfcd00(void* pFilter, ATL::CAtlArray<MS2Ptr<CItem> >&
         if (spItem == 0 || spItem->FUN_140dfc3d0() == 0)
             continue;
         const MS2Ptr<CUgcItemLook>& rLook = spItem->FUN_140dfc3d0();
-        if (!FUN_14026d4d0(pFilter, rLook->unknown34, rLook->unknown38))
+        if (!FUN_14026d4d0(pFilter, rLook->m_n34, rLook->m_n38))
             continue;
         int nItemId = spItem->FUN_140dfc370();
         MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);

@@ -387,7 +387,7 @@ public:
 // 5 DependTime. Member names are invented from their use.
 class CNifLoadingService : public efd::ISystemService, public TSingleton<CNifLoadingService>
 {
-    EE_DECLARE_CLASS1(CNifLoadingService, 0x06100011, efd::ISystemService);
+    EE_DECLARE_CLASS1(CNifLoadingService, 0x06100011, efd::IBase);       // exe: SetupClassInfo chains to IBase directly
     EE_DECLARE_CONCRETE_ATOMIC_REFCOUNT;
 public:
     typedef std::map<CString, TCircleList<NiAVObjectPtr> > PoolMap;

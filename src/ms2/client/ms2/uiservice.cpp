@@ -1008,7 +1008,7 @@ void CUIService::FUN_141adbbb0()
 // ---- message boxes that confirm opening the market ----
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
-CStringW FUN_14028b8e0(CStringW str);
+#include "ms2/commonfiles/commonutil.h"
 
 // @0x141add1f0
 void CUIService::FUN_141add1f0()

@@ -88,7 +88,7 @@ void UIQuizOXCreateDialog::SetFees(std::vector<int>& fees)
     std::vector<int>::const_iterator itEnd = range.end();
     for (std::vector<int>::const_iterator it = range.begin(); it != itEnd; ++it) {
         int nFee = *it;
-        m_fees.push_back(static_cast<int&&>(nFee));
+        m_fees.push_back(nFee);
     }
     FUN_141924680();
 }

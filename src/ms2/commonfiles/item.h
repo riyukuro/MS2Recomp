@@ -37,7 +37,7 @@ public:
     MS2Ptr<CItemStatus> FUN_14062fbc0();
     void FUN_14062fe20(CInputStream&);
     int FUN_14062fea0(unsigned nType);
-    void FUN_14062ff70(unsigned nType);
+    int FUN_14062ff70(unsigned nType);
     int FUN_14062ffb0(unsigned nType, int nWhich, int nSub);
     int FUN_140630290(unsigned nType, int nWhich, int nSub);
     unsigned short FUN_140630d00();

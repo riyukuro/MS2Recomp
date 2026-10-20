@@ -11,6 +11,7 @@
 // MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@HPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141902f80 ; unique
 // MS2-PIN: ??$?0V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@std@@_N@std@@QEAA@$$QEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@1@$$QEA_N@Z 0x141902fd0 ; prop
 // MS2-PIN: ??$FormatStringId@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBV01@0@Z 0x1419033e0 ; unique
+// MS2-FUNCTIONAL ??$FormatStringId@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBV01@0@Z: bytes equal the exe; its MakeValue/ArgType callees bind to the exe's ICF-folded copies (0x140163740 MakeValue<wide formatter>, 0x1401cee00 ArgType<CString>) while FMT_VARIADIC_W instantiates MakeValue<BasicFormatter<wchar_t>> 0x1401cfcf0 / ArgType<CStringW> 0x1401cee30 - linker folding, not a type error
 // MS2-PIN: ??$_Buy_if_not_node@AEBH@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@HPEAX@1@U_Not_a_node_tag@1@AEBH@Z 0x1419036f0 ; unique
 // MS2-PIN: ??$_Buynode@AEBH@?$_Tree_comp_alloc@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@HPEAX@1@AEBH@Z 0x141903720 ; unique
 // MS2-PIN: ??$_Distance1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@std@@@std@@YA_JV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x1419037b0 ; unique
@@ -538,74 +539,73 @@ struct Unk_UcProxyRef                                               // counted r
 int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
 {
     MyPC* pPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPC != 0)
+    if (pPC == 0)
+        return 0;
+    if (nType == 7)
     {
-        if (nType == 7)
+        CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4880(nId);
+        if (spBuddy.get() != 0)
         {
-            CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4880(nId);
-            if (spBuddy.get() != 0)
+            FUN_141529c80(pPC, spBuddy->FUN_1401cc3e0(), spBuddy->FUN_1401cc3a0(), spBuddy->FUN_1401cc3c0(),
+                          spBuddy->FUN_1401cc250(), CStringW(L""));
+            return 1;
+        }
+    }
+    else if (nType == 3)
+    {
+        Unk_UcGuildRef guild = FUN_1403ed290()->FUN_1413b6200(nId);
+        if (guild.FUN_1404f0ab0() != 0)
+        {
+            FUN_141529c80(pPC, 0, 0, 0, guild.FUN_1404f0b80()->m_nGuildId, CStringW(L""));
+            return 1;
+        }
+    }
+    else if (nType == 2)
+    {
+        MS2Ptr<CPartyMember> spMember = FUN_1409670d0()->FUN_14162afc0(nId);
+        if (spMember.get() != 0)
+        {
+            FUN_141529c80(pPC, 0, 0, 0, FUN_141637b90(spMember.operator->()), CStringW(L""));
+            return 1;
+        }
+    }
+    else
+    {
+        if (nType == 4)
+        {
+            FUN_141529c80(pPC, 0, 0, 0, nParam, CStringW(L""));
+            return 1;
+        }
+        else if (nType == 0xe)
+        {
+            UIClubDialog* pClubDlg = FUN_140b19090(0x4f25);
+            if (pClubDlg != 0)
             {
-                FUN_141529c80(pPC, spBuddy->FUN_1401cc3e0(), spBuddy->FUN_1401cc3a0(), spBuddy->FUN_1401cc3c0(),
-                              spBuddy->FUN_1401cc250(), CStringW(L""));
-                return 1;
+                __int64 nClubId = pClubDlg->FUN_141904a70();
+                MS2Ptr<CClubMember> spMember = FUN_140e0d900()->FUN_140b15770(nClubId, nId);
+                if (spMember)
+                {
+                    FUN_141529c80(pPC, 0, 0, 0, spMember->m_info.m_accountId, CStringW(L""));
+                    return 1;
+                }
             }
         }
-        else if (nType == 3)
+        else if (nType == 0x11)
         {
-            Unk_UcGuildRef guild = FUN_1403ed290()->FUN_1413b6200(nId);
-            if (guild.FUN_1404f0ab0() != 0)
-            {
-                FUN_141529c80(pPC, 0, 0, 0, guild.FUN_1404f0b80()->m_nGuildId, CStringW(L""));
-                return 1;
-            }
-        }
-        else if (nType == 2)
-        {
-            MS2Ptr<CPartyMember> spMember = FUN_1409670d0()->FUN_14162afc0(nId);
-            if (spMember.get() != 0)
-            {
-                FUN_141529c80(pPC, 0, 0, 0, FUN_141637b90(spMember.get()), CStringW(L""));
-                return 1;
-            }
+            FUN_141529c80(pPC, 0, 0, 0, nParam, CStringW(L""));
+            return 1;
         }
         else
         {
-            if (nType == 4)
+            void* pMap = FUN_1403ed2d0()->FUN_141bc9fb0();
+            for (void* pos = FUN_140ac5e20(pMap); pos != 0; FUN_140ac5dd0(pMap, &pos))
             {
-                FUN_141529c80(pPC, 0, 0, 0, nParam, CStringW(L""));
-                return 1;
-            }
-            if (nType == 0xe)
-            {
-                UIClubDialog* pClubDlg = FUN_140b19090(0x4f25);
-                if (pClubDlg != 0)
+                MS2Ptr<CProxyGameObject> spProxy(*static_cast<const MS2Ptr<CProxyGameObject>*>(FUN_140ac5ed0(pMap, pos)));
+                if (spProxy.get() && reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()) == nId)
                 {
-                    __int64 nClubId = pClubDlg->FUN_141904a70();
-                    MS2Ptr<CClubMember> spMember = FUN_140e0d900()->FUN_140b15770(nClubId, nId);
-                    if (spMember.get() != 0)
-                    {
-                        FUN_141529c80(pPC, 0, 0, 0, spMember->m_info.m_accountId, CStringW(L""));
-                        return 1;
-                    }
-                }
-            }
-            else
-            {
-                if (nType == 0x11)
-                {
-                    FUN_141529c80(pPC, 0, 0, 0, nParam, CStringW(L""));
+                    FUN_141529c80(pPC, spProxy->m_b4, spProxy->m_b8, spProxy->m_bc,
+                                  reinterpret_cast<__int64>(spProxy->FUN_1416c2310()), CStringW(L""));
                     return 1;
-                }
-                void* pMap = FUN_1403ed2d0()->FUN_141bc9fb0();
-                for (void* pos = FUN_140ac5e20(pMap); pos != 0; FUN_140ac5dd0(pMap, &pos))
-                {
-                    Unk_UcProxyRef spProxy(FUN_140ac5ed0(pMap, pos));
-                    if (!spProxy.IsNull() && reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()) == nId)
-                    {
-                        FUN_141529c80(pPC, spProxy->m_b4, spProxy->m_b8, spProxy->m_bc,
-                                      reinterpret_cast<__int64>(spProxy->FUN_1416c2310()), CStringW(L""));
-                        return 1;
-                    }
                 }
             }
         }
@@ -914,7 +914,7 @@ CStringW FUN_1418fe870(int nCurrency, int* pnVSpace, unsigned nItemId)
 MS2_REPLACE(0x1418fe870, FUN_1418fe870, 830, 0x0E450D78);
 
 // The payment text with an icon: key, amount, icon and its vertical offset (0x141081c60).
-CStringW FUN_141081c60(const CStringW& strKey, const CStringW& strAmount, const CStringW& strIcon, const int& nVSpace);
+CStringW FUN_141081c60(CStringW strKey, const CStringW& strAmount, const CStringW& strIcon, const int& nVSpace);   // FUN_14028dfa0<CStringW, CStringW, int> (format by value)
 
 // @0x1418fec90
 CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg)
@@ -923,9 +923,9 @@ CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg)
         return FUN_1412e7c20(0x989, FUN_1409404f0(nAmount), nArg);
     int nVSpace = 0;
     CStringW strIcon = FUN_1418fe870(nCurrency, &nVSpace, 0);
-    if (strIcon.IsEmpty())
-        return CStringW(L"");
-    return FUN_141081c60(CStringW(L"s_common_payment"), FUN_1409404f0(nAmount), strIcon, nVSpace);
+    if (!strIcon.IsEmpty())
+        return FUN_141081c60(CStringW(L"s_common_payment"), FUN_1409404f0(nAmount), strIcon, nVSpace);
+    return CStringW(L"");
 }
 MS2_REPLACE(0x1418fec90, FUN_1418fec90, 421, 0xC875A71E);
 
@@ -1779,40 +1779,31 @@ void UICommon::CAlignmentInfo::FUN_141901880(MS2Ptr<AScript> spScript, float fPa
         float fY = pDialog->FUN_1422c1110();
         float fHalfW = fW * 0.5f;
         float fHalfH = fH * 0.5f;
-        if (fHalfW < fX || fHalfH < fY)
+        if (fX <= fHalfW && fY <= fHalfH)
         {
-            if (fX < fHalfW || fHalfH < fY)
-            {
-                if (fHalfW < fX || fY < fHalfH)
-                {
-                    if (fX < fHalfW || fY < fHalfH)
-                    {
-                        m_align = 5;
-                        m_x = fX;
-                        m_y = fY;
-                    }
-                    else
-                    {
-                        m_align = 8;
-                        m_x = FUN_140bf4fd0((fX + fParentW) - fW);
-                        m_y = FUN_140bf4fd0((fY + fParentH) - fH);
-                    }
-                }
-                else
-                {
-                    m_align = 7;
-                    m_x = fX;
-                    m_y = FUN_140bf4fd0((fY + fParentH) - fH);
-                }
-            }
-            else
-            {
-                m_align = 6;
-                float fRight = FUN_140bf4fd0((fX + fParentW) - fW);
-                float fZero = 0;
-                m_x = (std::max)(fZero, fRight);
-                m_y = fY;
-            }
+            m_align = 5;
+            m_x = fX;
+            m_y = fY;
+        }
+        else if (fX >= fHalfW && fY <= fHalfH)
+        {
+            m_align = 6;
+            float fRight = FUN_140bf4fd0((fX + fParentW) - fW);
+            float fZero = 0;
+            m_x = (std::min)(fZero, fRight);
+            m_y = fY;
+        }
+        else if (fX <= fHalfW && fY >= fHalfH)
+        {
+            m_align = 7;
+            m_x = fX;
+            m_y = FUN_140bf4fd0((fY + fParentH) - fH);
+        }
+        else if (fX >= fHalfW && fY >= fHalfH)
+        {
+            m_align = 8;
+            m_x = FUN_140bf4fd0((fX + fParentW) - fW);
+            m_y = FUN_140bf4fd0((fY + fParentH) - fH);
         }
         else
         {

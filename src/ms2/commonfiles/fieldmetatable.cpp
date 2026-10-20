@@ -538,21 +538,20 @@ void CFieldMetaTable::FUN_1406fb810(unsigned nFieldId, Unk_FieldIdList& out)
 void CFieldMetaTable::FUN_1406fb900(unsigned nFieldId, unsigned nGroupId, Unk_FieldIdList& out)
 {
     MS2Ptr<CFieldData> field = CFieldData::FUN_140374140(nFieldId);
-    if (!field.IsNull())
+    if (field.IsNull())
+        return;
+    if (field->FUN_140375130())
     {
-        if (!field->FUN_140375130())
+        GetInstance()->FUN_1406fb610(nGroupId, out);
+    }
+    else
+    {
+        Unk_FieldIdList fields(10);
+        GetInstance()->FUN_1406fc2f0(nGroupId, fields);
+        for (POSITION pos = fields.GetHeadPosition(); pos != 0; fields.GetNext(pos))
         {
-            Unk_FieldIdList fields(10);
-            GetInstance()->FUN_1406fc2f0(nGroupId, fields);
-            for (POSITION pos = fields.GetHeadPosition(); pos != 0; fields.GetNext(pos))
-            {
-                unsigned nId = fields.GetAt(pos);
-                GetInstance()->FUN_1406fb610(nId, out);
-            }
-        }
-        else
-        {
-            GetInstance()->FUN_1406fb610(nGroupId, out);
+            unsigned nId = fields.GetAt(pos);
+            GetInstance()->FUN_1406fb610(nId, out);
         }
     }
 }

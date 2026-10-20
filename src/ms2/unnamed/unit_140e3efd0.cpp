@@ -13,7 +13,7 @@
 // MS2-PIN: ??$?0VUIAdPushDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIAdPushDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x140e43d50 ; unique
 // MS2-PIN: ??$?8PEAVUIAdPushDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIAdPushDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x140e43f00 ; prop
 // MS2-PIN: ??$?8PEAVUIAdPushDialog@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVUIAdPushDialog@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x140e43f70 ; prop
-// MS2-PIN: ??$StringFormat@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBV01@AEBH2@Z 0x140e44090 ; unique
+// MS2-PIN: ??$StringFormat@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@JH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBV01@AEBJAEBH@Z 0x140e44090 ; unique
 // MS2-PIN: ??$_Distance1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@std@@@std@@YA_JV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x140e444d0 ; unique
 // MS2-PIN: ??$_Eqrange@H@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@std@@V12@@1@AEBH@Z 0x140e44530 ; unique
 // MS2-PIN: ??$_Eqrange@H@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@std@@V12@@1@AEBH@Z 0x140e445c0 ; unique
@@ -917,7 +917,7 @@ bool AdPushEntityLimitedBundle::UpdateRemainTime()
         strHours = StringFormat(L"{0:02d}", nHours);
     else
         strHours = StringFormat(L"{0}", nHours);
-    int nMinutes = left.GetMinutes();
+    long nMinutes = left.GetMinutes();
     m_remain->FUN_1422c4cd0(StringFormat(L"{0}:{1:02d}:{2:02d}", strHours, nMinutes, nSeconds));
     return true;
 }

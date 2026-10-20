@@ -149,13 +149,14 @@ int UIItemExtractionScrollDialog::Slot::vfunc_0(void* p)
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    if (m_spItem.IsNull())
+    if (m_spItem == 0)
         return 0;
     ASTooltip tip(pPlayer, m_nFlags, 2);
-    if (tip.FUN_1409e0d40(m_spItem.get()) == 0)
-        return 0;
-    *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
-    return 1;
+    if (tip.FUN_1409e0d40(m_spItem.get()) != 0) {
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        return 1;
+    }
+    return 0;
 }
 
 // @0x140e49aa0
@@ -164,11 +165,10 @@ int UIItemExtractionScrollDialog::Slot::vfunc_8(void* p)
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    if (m_spItem.IsNull())
+    if (m_spItem == 0)
         return 0;
     ASSlot slot(2);
-    int nOk = slot.FUN_1409c3860(m_spItem.get(), pPlayer, 0x415);
-    if (nOk != 0)
+    if (slot.FUN_1409c3860(m_spItem.get(), pPlayer, 0x415) != 0)
         *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
     return 1;
 }
@@ -397,7 +397,7 @@ void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
 void UIItemExtractionScrollDialog::FUN_140e4b2c0(__int64 nScrollUid)
 {
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nScrollUid);
-    if (spItem.IsNull())
+    if (spItem == 0)
         return;
     m_nScrollUid = nScrollUid;
 }

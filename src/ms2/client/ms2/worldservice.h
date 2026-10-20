@@ -297,7 +297,7 @@ public:
     int FUN_141bbaf00(GameObject* obj, const unsigned __int64& id, bool bNewlyAdded);   // register a created object's entity
     int FUN_141bbb1e0(GameObject* obj, int bFullInit, unsigned cameraArg);   // OnObjectCreated: register in the object maps
     void FUN_141bbb7f0(GameObject* obj, int bImmediate);                         // OnObjectDestroyed: unregister from the object maps
-    void FUN_141bbbc60(const unsigned __int64& id, int bImmediate);              // destroy the object registered under entity id
+    void FUN_141bbbc60(const egf::EntityID& id, int bImmediate);                 // destroy the object registered under entity id
     void FUN_141bbbcf0(unsigned objId, int bImmediate);                          // destroy the object registered under object id
     int FUN_141bbbe40(int mapId, int arg2, int arg3);                            // start loading map mapId
     int FUN_141bbc1d0(const char* urn, int arg2);                                // begin loading the xblock urn

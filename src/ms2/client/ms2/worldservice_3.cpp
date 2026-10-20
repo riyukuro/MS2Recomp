@@ -56,6 +56,7 @@
 // MS2-PIN: ??$distance@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV2e8@@@std@@@std@@@std@@@std@@@std@@YA_JV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV2e8@@@std@@@std@@@std@@@0@0@Z 0x141bedd40
 // MS2-PIN: ??$distance@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV1d8@@@std@@@std@@@std@@@std@@@std@@YA_JV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV1d8@@@std@@@std@@@std@@@0@0@Z 0x141bedd40
 // MS2-PIN: ??$emplace@U?$pair@IUUnk_WsVac0@@@std@@@?$_Tree@V?$_Tmap_traits@IUUnk_WsVac0@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIUUnk_WsVac0@@@std@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIUUnk_WsVac0@@@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@IUUnk_WsVac0@@@1@@Z 0x141bedd70
+// MS2-FUNCTIONAL 0x141bedd70: calls the byte-identical _Insert_nohint copy 0x141be87a0; the stand-in name is bound to 0x141be8390 (part #2)
 // MS2-PIN: ??$emplace@U?$pair@_KUUnk_WsV1d8@@@std@@@?$_Tree@V?$_Tmap_traits@_KUUnk_WsV1d8@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsV1d8@@@std@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV1d8@@@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@_KUUnk_WsV1d8@@@1@@Z 0x141bedde0
 // MS2-PIN: ??$emplace@U?$pair@_KUUnk_WsV2e8@@@std@@@?$_Tree@V?$_Tmap_traits@_KUUnk_WsV2e8@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsV2e8@@@std@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV2e8@@@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@_KUUnk_WsV2e8@@@1@@Z 0x141bede50
 // MS2-PIN: ??$emplace@U?$pair@_KUUnk_WsVad0@@@std@@@?$_Tree@V?$_Tmap_traits@_KUUnk_WsVad0@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KUUnk_WsVad0@@@std@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsVad0@@@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@_KUUnk_WsVad0@@@1@@Z 0x141bede50
@@ -368,7 +369,7 @@
 // Part 1 helpers (see Unk_WsInst3Part1).
 // MS2-PIN: ??$destroy@V?$MS2Ptr@VMS2ActorUpdater@@@@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@1@QEAV?$MS2Ptr@VMS2ActorUpdater@@@@@Z 0x141bedcf0
 // MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@PEAVIWorldServiceCallback@@U?$less@PEAVIWorldServiceCallback@@@std@@V?$allocator@PEAVIWorldServiceCallback@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAVIWorldServiceCallback@@@std@@@std@@@std@@_N@1@AEBQEAVIWorldServiceCallback@@@Z 0x141beec10
-// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@PEAXU?$less@PEAX@std@@V?$allocator@PEAX@2@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAX@std@@@std@@@std@@_N@1@AEBQEAX@Z 0x141beec50
+// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@PEAUUnk_WsVisibleObj@@U?$less@PEAUUnk_WsVisibleObj@@@std@@V?$allocator@PEAUUnk_WsVisibleObj@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAUUnk_WsVisibleObj@@@std@@@std@@@std@@_N@1@AEBQEAUUnk_WsVisibleObj@@@Z 0x141beec50
 // MS2-PIN: ??$swap@UUnk_WsFieldRefRaw@@X@std@@YAXAEAUUnk_WsFieldRefRaw@@0@Z 0x141bef110
 // MS2-PIN: ??0?$SmartPointer@VGameObject@@@efd@@QEAA@PEAVGameObject@@@Z 0x141bf0fd0
 // MS2-PIN: ??0Unk_WsA_PropPtr@@QEAA@AEBV0@@Z 0x141bf10a0
@@ -583,14 +584,15 @@ private:
     Unk_WsA_PropObj* m_p;
 };
 struct Unk_WsFieldRefRaw { void* p0; void* p1; };
-void Unk_WsInst3Part1(GameObject* pObj, const Unk_WsA_PropPtr& prop, IWorldServiceCallback* pCallback, void* pVisible,
+struct Unk_WsVisibleObj;
+void Unk_WsInst3Part1(GameObject* pObj, const Unk_WsA_PropPtr& prop, IWorldServiceCallback* pCallback, Unk_WsVisibleObj* pVisible,
     Unk_WsFieldRefRaw& a, Unk_WsFieldRefRaw& b)
 {
     efd::SmartPointer<GameObject> spObj(pObj);
     Unk_WsA_PropPtr propCopy(prop);
     WsReal::Set048 callbacks;
     callbacks.insert(pCallback);
-    std::set<void*> visible;
+    std::set<Unk_WsVisibleObj*> visible;
     visible.insert(pVisible);
     std::swap(a, b);
     WsDriveDestroy<WsReal::Vec9a0::allocator_type>(static_cast<WsReal::Vec9a0::value_type*>(0));

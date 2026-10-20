@@ -540,6 +540,19 @@
 // MS2-PIN: ??1?$CAtlArray@PEAVNiAVObject@@V?$CElementTraits@PEAVNiAVObject@@@ATL@@@ATL@@QEAA@XZ 0x1410670d0 ; w200 hand
 // MS2-PIN: ??1?$CAtlArray@PEAVNiBound@@V?$CElementTraits@PEAVNiBound@@@ATL@@@ATL@@QEAA@XZ 0x141067110 ; w200 hand
 // MS2-PIN: ??1?$CAtlArray@PEAVNiTransform@@V?$CElementTraits@PEAVNiTransform@@@ATL@@@ATL@@QEAA@XZ 0x141067150 ; w200 hand
+// MS2-FUNCTIONAL ??$_Buynode@AEAU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@@std@@@efd@@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@@std@@PEAX@1@AEAU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@@1@@Z: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ??$_Destroy_range@V?$CustomAllocator@V?$map@EEU?$less@E@std@@@efd@@@efd@@@std@@YAXPEAV?$map@EEU?$less@E@std@@@efd@@0AEAV?$CustomAllocator@V?$map@EEU?$less@E@std@@@efd@@@2@@Z: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ??$_Emplace_back@V?$vector@PEAVNiMesh@@@efd@@@?$_Uninitialized_backout_al@PEAV?$vector@PEAVNiMesh@@@efd@@V?$CustomAllocator@V?$vector@PEAVNiMesh@@@efd@@@2@@std@@QEAAX$$QEAV?$vector@PEAVNiMesh@@@efd@@@Z: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ??$_Emplace_reallocate@V?$vector@PEAVNiMesh@@@efd@@@?$vector@V?$vector@PEAVNiMesh@@@efd@@V?$CustomAllocator@V?$vector@PEAVNiMesh@@@efd@@@2@@std@@QEAAPEAV?$vector@PEAVNiMesh@@@efd@@QEAV23@$$QEAV23@@Z: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ??$_Uninitialized_copy_al_unchecked@PEAV?$set@EU?$less@E@std@@@efd@@PEAV12@V?$CustomAllocator@V?$set@EU?$less@E@std@@@efd@@@2@@std@@YAPEAV?$set@EU?$less@E@std@@@efd@@PEAV12@QEAV12@1AEAV?$CustomAllocator@V?$set@EU?$less@E@std@@@efd@@@2@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ??$_Uninitialized_copy_al_unchecked@PEAV?$set@PEAVNiAVObject@@U?$less@PEAVNiAVObject@@@std@@@efd@@PEAV12@V?$CustomAllocator@V?$set@PEAVNiAVObject@@U?$less@PEAVNiAVObject@@@std@@@efd@@@2@@std@@YAPEAV?$set@PEAVNiAVObject@@U?$less@PEAVNiAVObject@@@std@@@efd@@PEAV12@QEAV12@1AEAV?$CustomAllocator@V?$set@PEAVNiAVObject@@U?$less@PEAVNiAVObject@@@std@@@efd@@@2@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ??0?$_Tree_comp_alloc@V?$_Tmap_traits@PEAVNiMesh@@V?$map@EEU?$less@E@std@@@efd@@U?$less@PEAVNiMesh@@@std@@V?$CustomAllocator@U?$pair@QEAVNiMesh@@V?$map@EEU?$less@E@std@@@efd@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@PEAVNiMesh@@@1@@Z: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ??0?$_Tree_comp_alloc@V?$_Tmap_traits@VNiTransform@@V?$vector@PEAVNiMesh@@@efd@@UUnk_TransformLess@@V?$CustomAllocator@U?$pair@$$CBVNiTransform@@V?$vector@PEAVNiMesh@@@efd@@@std@@@3@$0A@@std@@@std@@QEAA@AEBUUnk_TransformLess@@@Z: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ??1?$_Uninitialized_backout_al@PEAV?$set@PEAVNiAVObject@@U?$less@PEAVNiAVObject@@@std@@@efd@@V?$CustomAllocator@V?$set@PEAVNiAVObject@@U?$less@PEAVNiAVObject@@@std@@@efd@@@2@@std@@QEAA@XZ: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ??1Unk_AtlasResult@@QEAA@XZ: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ?_Change_array@?$vector@V?$set@PEAVNiAVObject@@U?$less@PEAVNiAVObject@@@std@@@efd@@V?$CustomAllocator@V?$set@PEAVNiAVObject@@U?$less@PEAVNiAVObject@@@std@@@efd@@@2@@std@@AEAAXQEAV?$set@PEAVNiAVObject@@U?$less@PEAVNiAVObject@@@std@@@efd@@_K1@Z: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@VNiTransform@@V?$vector@PEAVNiMesh@@@efd@@UUnk_TransformLess@@V?$CustomAllocator@U?$pair@$$CBVNiTransform@@V?$vector@PEAVNiMesh@@@efd@@@std@@@3@$0A@@std@@@std@@QEAAXXZ: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
+// MS2-FUNCTIONAL ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@PEAVNiMesh@@V?$map@EEU?$less@E@std@@@efd@@U?$less@PEAVNiMesh@@@std@@V?$CustomAllocator@U?$pair@QEAVNiMesh@@V?$map@EEU?$less@E@std@@@efd@@@std@@@3@$0A@@std@@@std@@QEAAXXZ: body byte-identical; only callee binding differs: the exe's byte-identical STL template copies (map/set/vector of the merger's element types) sit at VAs crossed versus the guessed element type names, and re-pinning cascades into symbol conflicts across unit_141073440/unit_1410799d0 (needs the real element type names)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\charactermeshmerger.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "charactermeshmerger.h"
@@ -778,42 +791,42 @@ void FUN_14104d450(NiAVObject* pRoot, MeshGroups& kGroups);
 // @0x141049240
 void FUN_141049240(NiAVObject* pRoot, MeshArray& kSource, MeshArray& kMerged)
 {
-    if (pRoot != 0)
+    if (pRoot == 0)
+        return;
+    MeshGroups kGroups;
+    FUN_141049d50(pRoot, kGroups);
+    for (unsigned int i = 0; i < kGroups.size(); i++)
     {
-        MeshGroups kGroups;
-        FUN_141049d50(pRoot, kGroups);
-        for (unsigned int i = 0; i < kGroups.size(); i++)
+        if (kGroups[i].size() == 1)
+            continue;
+        for (unsigned int j = 0; j < kGroups[i].size(); j++)
         {
-            if (kGroups[i].size() != 1)
-            {
-                for (unsigned int j = 0; j < kGroups[i].size(); j++)
-                    kSource.Add(efd::SmartPointer<NiMesh>(kGroups[i][j]));
-            }
+            efd::SmartPointer<NiMesh> spMesh(kGroups[i][j]);
+            kSource.Add(spMesh);
         }
-        if (kSource.GetCount() == 0)
-            return;
-        for (unsigned int i = 0; i < kGroups.size(); i++)
-        {
-            CString kLine = StringFormat("{0}:", i);
-            for (unsigned int j = 0; j < kGroups[i].size(); j++)
-                kLine += Unk_SocketFormat(" {0}", (const char*)kGroups[i][j]->GetName());
-            EE_LOG_AT(1, 1, ((const char*)kLine), MS2_THIS_FILE, 0x68f);
-        }
-        for (unsigned int i = 0; i < kGroups.size(); i++)
-        {
-            if (kGroups[i].size() != 1)
-            {
-                MeshGroups kBuckets;
-                MergeInfo kInfo;
-                FUN_14104a1c0(kGroups[i], kBuckets, kInfo);
-                efd::SmartPointer<NiMesh> spMerged(FUN_14104ae20(kBuckets, kInfo, pRoot));
-                kMerged.Add(spMerged);
-                NiStream kStream;
-                kStream.InsertObject(spMerged);
-                kStream.InsertObject(kInfo.m_spSkin);
-                kStream.Save((const char*)StringFormat("D:\\MergedMesh_{0}.nif", i));
-            }
-        }
+    }
+    if (kSource.GetCount() == 0)
+        return;
+    for (unsigned int i = 0; i < kGroups.size(); i++)
+    {
+        CString kLine = Unk_SocketFormat("{0}:", i);
+        for (unsigned int j = 0; j < kGroups[i].size(); j++)
+            kLine += Unk_SocketFormat(" {0}", (const char*)kGroups[i][j]->GetName());
+        EE_LOG_AT(1, 1, ((const char*)kLine), MS2_THIS_FILE, 0x68f);
+    }
+    for (unsigned int i = 0; i < kGroups.size(); i++)
+    {
+        if (kGroups[i].size() == 1)
+            continue;
+        MeshGroups kBuckets;
+        MergeInfo kInfo;
+        FUN_14104a1c0(kGroups[i], kBuckets, kInfo);
+        efd::SmartPointer<NiMesh> spMerged(FUN_14104ae20(kBuckets, kInfo, pRoot));
+        kMerged.Add(spMerged);
+        NiStream kStream;
+        kStream.InsertObject(spMerged);
+        kStream.InsertObject(kInfo.m_spSkin);
+        kStream.Save((const char*)Unk_SocketFormat("D:\\MergedMesh_{0}.nif", i));
     }
 }
 

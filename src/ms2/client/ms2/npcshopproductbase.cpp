@@ -373,7 +373,7 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
                 }
             }
             CStringW strDays;
-            for (std::set<unsigned>::iterator it = m_c8->m_setDays.begin(); it != m_c8->m_setDays.end(); ++it)
+            for (std::set<int>::iterator it = m_c8->m_setDays.begin(); it != m_c8->m_setDays.end(); ++it)
             {
                 int nDay = *it;
                 if (strDays.IsEmpty())

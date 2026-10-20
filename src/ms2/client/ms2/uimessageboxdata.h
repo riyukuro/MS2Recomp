@@ -208,9 +208,9 @@ public:
     void FUN_141a01c70(const CStringW& str);
     void FUN_141a01c30(const CString& strUrl);                      // the link url (unit_141347b10: shop item box)
     void FUN_141a02670(bool b);
-    void FUN_141a024e0(CStringW str, int n);
-    void FUN_141a02560(CStringW str, int n);                        // the second choice text (skill window reset)
-    void FUN_141a026f0(int n);                                      // choice mode (skill window reset)
+    void FUN_141a024e0(CStringW str, bool bSelected);               // check box 0 label and state
+    void FUN_141a02560(CStringW str, bool bSelected);               // check box 1 label and state (skill window reset)
+    void FUN_141a026f0(bool b);                                     // a check is required (skill window reset)
     void FUN_140533ff0(int n);                                      // appends an int argument (COMDAT outside this class' range)
     void FUN_141a022a0(__int64 nCharId, const CStringW& strName, int nLevel, int nJob, const CString& strCode);   // the character card (uiguilddialog.cpp: change master / expel)
     // Reads argument nIndex back (int: 0x140be25f0, defined in uiclosetdialog.cpp); false when there are fewer arguments.
@@ -243,7 +243,7 @@ public:
     const Delegate<bool(int, const CMsgBoxData&)>& FUN_141a02da0() const;  // the result callback
     CString FUN_141a02dc0() const;                                  // the hyper link url
     unsigned int FUN_141a02e90(int nIndex, unsigned int nDefault) const;    // the nIndex-th argument as an unsigned
-    __int64 FUN_141a02ed0(int nIndex, int nDefault) const;          // the nIndex-th argument as an __int64
+    __int64 FUN_141a02ed0(int nIndex, __int64 nDefault) const;      // the nIndex-th argument as an __int64
     __int64 FUN_141a02f10(int nIndex, __int64 nDefault) const;      // the nIndex-th argument as an __int64
     bool FUN_141a03050() const;
     bool FUN_141a03090() const;                                     // the enter key presses the default button
@@ -258,6 +258,21 @@ public:
     bool FUN_140b76a70(unsigned int nIndex, CStringW& strOut) const;
     bool FUN_140be25f0(unsigned int nIndex, int& nOut) const;
     bool FUN_140e01c50(unsigned int nIndex, __int64& nOut) const;
+    // More members of unit_141a00db0 (0x141a00db0-0x141a034d0, the setters and getters).
+    void FUN_141a015a0(const CStringW& str);                        // msg2
+    void FUN_141a01640(int nAlign);                                 // the text align (4: none)
+    void FUN_141a01bc0(int nSound);                                 // the sound event by id (FUN_141a06ff0)
+    void FUN_141a02220(MS2Ptr<CMsgBoxDataItem> spItem);             // the second item entry (the callee destroys it)
+    void FUN_141a025e0(CStringW strLabel0, CStringW strLabel1);     // both check box labels
+    void FUN_141a02750(int n);                                      // the retraction value
+    void FUN_141a02880(int nBuffId, short nLevel, CStringW strExtra);   // buffNotify: the buff and its description
+    void FUN_141a029b0(const Unk_MsgBoxBuff& buff);                 // buffNotify: copy the buff record
+    void FUN_141a02a30(const ATL::CAtlArray<ItemEntity>& items);    // the required items
+    void FUN_141a02a70(CStringW strTitle, CString strUrl);          // the hyper link
+    void FUN_141a02b00(const CStringW& strDefault, ATL::CAtlList<CStringW>& list);   // the drop-down list
+    CStringW FUN_141a02d00() const;                                 // the drop-down default text
+    CString FUN_141a02f50(int nIndex, CString strDefault) const;    // the nIndex-th argument as a string
+    static long s_nLastId;                                          // 0x1439f9b54 (starts at 1): the box ids
     // 0x141a00450 below: inline COMDAT, defined in uimessagebox.cpp
     bool FUN_141a00450(unsigned int nIndex, int& nOut) const;
 

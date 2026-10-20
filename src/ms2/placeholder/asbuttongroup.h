@@ -14,5 +14,6 @@ class ASButtonGroup : public ASEventDispatcher
 public:
     ASButtonGroup(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422e8920
     virtual ~ASButtonGroup();
+    void FUN_1422e8e50(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, int nUser);   // the change callback (uimeratmarketdialog.cpp)
 };
 MS2_CHECK_SIZE(ASButtonGroup, 0x80);

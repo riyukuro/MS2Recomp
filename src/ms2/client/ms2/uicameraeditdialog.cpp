@@ -928,23 +928,23 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, float a1, flo
 
 // The cast arguments read from a <cast> node (tick, startFrame, color, startGauge, maxGauge, text, ease).
 CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table text
-float FUN_1408276a0(CXmlData* pXml, const CStringW& strName, float* pfDefault);     // the value as a float
 
 // @0x1418e0ad0
 void FUN_1418e0ad0(Unk_CastingParam* pThis, MS2Ptr<CXmlData> spXml)
 {
-    if (spXml != NULL && !spXml->FUN_14092c5c0())
-    {
-        pThis->m_nDuration = spXml->GetInt(CStringW(L"tick"), pThis->m_nDuration);
-        pThis->m_str18 = spXml->FUN_14042cad0(CStringW(L"startFrame"), pThis->m_str18);
-        pThis->m_str20 = spXml->FUN_14042cad0(CStringW(L"color"), pThis->m_str20);
-        pThis->m_fStart = FUN_1408276a0(spXml, CStringW(L"startGauge"), &pThis->m_fStart);
-        pThis->m_fScale = FUN_1408276a0(spXml, CStringW(L"maxGauge"), &pThis->m_fScale);
-        CStringW strText = spXml->FUN_14042cad0(CStringW(L"text"), CStringW());
-        if (!strText.IsEmpty())
-            pThis->m_str28 = FUN_14028b8e0(strText);
-        pThis->m_n10 = spXml->GetInt(CStringW(L"ease"), pThis->m_n10);
-    }
+    if (!spXml)
+        return;
+    if (spXml->FUN_14092c5c0())
+        return;
+    pThis->m_nDuration = spXml->GetInt(L"tick", pThis->m_nDuration);
+    pThis->m_str18 = spXml->FUN_14042cad0(L"startFrame", pThis->m_str18);
+    pThis->m_str20 = spXml->FUN_14042cad0(L"color", pThis->m_str20);
+    pThis->m_fStart = spXml->FUN_1408276a0(L"startGauge", &pThis->m_fStart);
+    pThis->m_fScale = spXml->FUN_1408276a0(L"maxGauge", &pThis->m_fScale);
+    CStringW strText = spXml->FUN_14042cad0(L"text", CStringW());
+    if (!strText.IsEmpty())
+        pThis->m_str28 = FUN_14028b8e0(strText);
+    pThis->m_n10 = spXml->GetInt(L"ease", pThis->m_n10);
 }
 
 // @0x1418e0f10

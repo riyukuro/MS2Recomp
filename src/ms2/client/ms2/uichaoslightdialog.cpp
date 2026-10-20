@@ -15,6 +15,24 @@
 // MS2-PIN: ?vfunc_12@ChaosLightEffect@@UEAAHXZ 0x141044440 ; unique
 // MS2-PIN: ?GetRTTI@ChaosLightEffect@@UEBAPEBVNiRTTI@@XZ 0x141044490 ; unique
 // MS2-PINS-END tplpin
+// MS2-FUNCTIONAL 0x141042690: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (frame differs) - STL version, not a type error
+// MS2-FUNCTIONAL 0x1410426c0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (frame differs) - STL version, not a type error
+// MS2-FUNCTIONAL 0x141042b60: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 7 vs exe 5) - STL version, not a type error
+// MS2-FUNCTIONAL 0x141043050: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 2 vs exe 3) - STL version, not a type error
+// MS2-FUNCTIONAL 0x1410430a0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 2 vs exe 3) - STL version, not a type error
+// MS2-FUNCTIONAL 0x1410430f0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (leaf vs non-leaf)) - STL version, not a type error
+// MS2-FUNCTIONAL 0x141043100: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (leaf vs non-leaf)) - STL version, not a type error
+// MS2-FUNCTIONAL 0x1410432e0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 1 vs exe 3) - STL version, not a type error
+// MS2-FUNCTIONAL 0x1410438c0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 3 vs exe 2) - STL version, not a type error
+// MS2-FUNCTIONAL 0x141043950: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (frame differs) - STL version, not a type error
+// MS2-FUNCTIONAL 0x141043980: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 2 vs exe 1) - STL version, not a type error
+// MS2-FUNCTIONAL 0x1410451c0: efd::CustomAllocator body of the game's Gamebryo build (out-of-line MemHint ctor 0x140876480 + efd::_Malloc/_Free); the GB SDK header inlines it differently (callees differ: 0x140876480, 0x14206ac20) - SDK version, not a type error
+// MS2-FUNCTIONAL 0x1410451f0: efd::CustomAllocator body of the game's Gamebryo build (out-of-line MemHint ctor 0x140876480 + efd::_Malloc/_Free); the GB SDK header inlines it differently (callees differ: 0x140876480, 0x14206ac20) - SDK version, not a type error
+// MS2-FUNCTIONAL 0x141045550: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callees differ: 0x141045580) - STL version, not a type error
+// MS2-FUNCTIONAL 0x141045580: efd::CustomAllocator body of the game's Gamebryo build (out-of-line MemHint ctor 0x140876480 + efd::_Malloc/_Free); the GB SDK header inlines it differently (callees differ: 0x14206ab60) - SDK version, not a type error
+// MS2-FUNCTIONAL 0x1410455b0: efd::CustomAllocator body of the game's Gamebryo build (out-of-line MemHint ctor 0x140876480 + efd::_Malloc/_Free); the GB SDK header inlines it differently (callees differ: 0x14206ab60) - SDK version, not a type error
+// MS2-FUNCTIONAL 0x141045760: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (leaf vs non-leaf)) - STL version, not a type error
+// MS2-FUNCTIONAL 0x1410457c0: MSVC STL internals of the exe's toolchain for list/vector over efd::CustomAllocator differ from the VS2017 headers we build with (callee count 1 vs exe 2) - STL version, not a type error
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$CustomAllocator@V?$SmartPointer@VNiAVObject@@@efd@@@efd@@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1410426c0
 // MS2-PIN: ??0?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@QEAA@XZ 0x1410436b0
 // MS2-PIN: ??$destroy@PEAU?$_List_node@PEAVNiAVObject@@PEAX@std@@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@@std@@SAXAEAV?$CustomAllocator@U?$_List_node@PEAVNiAVObject@@PEAX@std@@@efd@@PEAPEAU?$_List_node@PEAVNiAVObject@@PEAX@1@@Z 0x1410430f0

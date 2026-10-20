@@ -233,21 +233,23 @@ struct Unk_MdEntry
 MS2_CHECK_SIZE(Unk_MdEntry, 0x28);
 
 // The group chat registry: a room by kind, a member by name (counted handles 0x141381160 / 0x14137c280).
-class Unk_MdMember { public: unsigned char m_pad[0x18]; CString m_strImageName; __int64 m_nOwner; };
+class Unk_MdMember { public: unsigned char m_pad[0x18]; Unk_MdName m_name; __int64 m_nOwner; };
 class Unk_MdMemberPtr
 {
 public:
     ~Unk_MdMemberPtr();                                                     // 0x14137c280
-    char FUN_14137c360(int n);                                              // is null
+    bool FUN_14137c360(int n);                                              // is null
     Unk_MdMember* FUN_14137c3b0();                                          // operator->
+    void* m_p[2];                                                           // 16-byte counted handle (exe stack slot)
 };
 class Unk_MdRoom { public: Unk_MdMemberPtr FUN_14137ba10(CStringW strName); };
 class Unk_MdRoomPtr
 {
 public:
     ~Unk_MdRoomPtr();                                                       // 0x141381160
-    char FUN_141381230(int n);                                              // is null
+    bool FUN_141381230(int n);                                              // is null
     Unk_MdRoom* FUN_141381280();                                            // operator->
+    void* m_p[2];                                                           // 16-byte counted handle (exe stack slot)
 };
 class Unk_MdRooms { public: Unk_MdRoomPtr FUN_14137e630(int nKind); };
 extern Unk_MdRooms* g_pRooms;                                               // 0x143ad8ba8
@@ -617,7 +619,9 @@ MessengerData::SystemSetting* MessengerData::PanelSetting::FUN_141482190()
 // @0x1414821b0
 MessengerData::ScreenSetting* MessengerData::PanelSetting::FUN_1414821b0()
 {
-    return s_nGlobal ? &s_screenGlobal : &m_screen;
+    if (s_nGlobal)
+        return &s_screenGlobal;
+    return &m_screen;
 }
 
 // @0x1414821e0
@@ -1058,14 +1062,12 @@ int FUN_141484290(GroupMessengerData::TalkLog* pLog)
 CString FUN_1414842b0(int nKind, CStringW strName)
 {
     Unk_MdRoomPtr room = FUN_141484720()->FUN_14137e630(nKind);
-    if (room.FUN_141381230(0) == 0)
-    {
-        Unk_MdMemberPtr member = room.FUN_141381280()->FUN_14137ba10(CStringW(strName));
-        if (member.FUN_14137c360(0) == 0)
-            return FUN_141028be0(member.FUN_14137c3b0()->m_nOwner, member.FUN_14137c3b0()->m_strImageName, 1, "");
+    if (room.FUN_141381230(0) != 0)
         return CString("");
-    }
-    return CString("");
+    Unk_MdMemberPtr member = room.FUN_141381280()->FUN_14137ba10(CStringW(strName));
+    if (member.FUN_14137c360(0) != 0)
+        return CString("");
+    return FUN_141028be0(member.FUN_14137c3b0()->m_nOwner, member.FUN_14137c3b0()->m_name.FUN_1408f1a60(), 1, "");
 }
 
 // @0x141484720

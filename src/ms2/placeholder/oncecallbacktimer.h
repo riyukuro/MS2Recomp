@@ -7,7 +7,7 @@
 #include <map>
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/os.h"
-#include "ms2/client/ms2/alphaanimation.h"      // Delegate<void()>
+#include "ms2/placeholder/tfunctor.h"           // TFunctor<void, EmptyParam>
 
 namespace efd { class IClock; }
 
@@ -16,19 +16,19 @@ class OnceCallbackTimer : public TSingleton<OnceCallbackTimer>
 public:
     struct Entry                                            // 0x10 bytes
     {
-        Entry(unsigned start, unsigned end, Delegate<void()> callback);     // 0x140ca6fc0
+        Entry(unsigned start, unsigned end, TFunctor<void, EmptyParam> callback);     // 0x140ca6fc0
         Entry(const Entry& o) : m_start(o.m_start), m_end(o.m_end), m_callback(o.m_callback) {}
 
         unsigned m_start;                                   // +0x00 (ms clock when scheduled)
         unsigned m_end;                                     // +0x04 (ms clock when due, wraps)
-        Delegate<void()> m_callback;                        // +0x08
+        TFunctor<void, EmptyParam> m_callback;              // +0x08
     };
 
     OnceCallbackTimer();                                    // 0x140ca7030
     virtual ~OnceCallbackTimer();
     void FUN_140ca70d0();                                   // binds the clock
     void Update();                                          // 0x140ca7100
-    int Add(int delayMs, Delegate<void()> callback);       // 0x140ca7230, returns the timer id
+    int Add(int delayMs, TFunctor<void, EmptyParam> callback);       // 0x140ca7230, returns the timer id
     void Cancel(unsigned id);                               // 0x140ca73a0
     void Clear();                                           // 0x140ca7420
     unsigned long long GetTimeMs();                         // 0x140ca7450

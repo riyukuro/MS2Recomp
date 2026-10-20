@@ -53,6 +53,9 @@ int FUN_1416f9b30(char c, void* obj);
 
 #define VSLOT(o, off) ((*(void***)(o))[(off) / 8])
 
+// MS2-FUNCTIONAL: m_spView/m_spTexture/m_spTarget are opaque void* here; the exe constructs them as NiPointer members
+//   (ctors 0x1409a73e0/0x14127c2a0/0x1414748a0 with EH states 1..3), passes bool (dl) to 0x141476010 and keeps the
+//   NiColorA / NiFixedString locals as real objects (no GS buffer) -> needs the member types recovered across the unit
 // @0x1416f8f50
 RenderedTextureRenderClick::RenderedTextureRenderClick()
 {

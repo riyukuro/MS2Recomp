@@ -127,7 +127,9 @@ void Unk_GuildSeason::FUN_1404c6030(const Unk_GuildSeason& other)
 // @0x1404c60e0
 int Unk_GuildSeason::FUN_1404c60e0(int rank)
 {
-    return rank<1 || rank>7 ? 0 : points[rank];
+    if (rank < 1 || rank >= 8)
+        return 0;
+    return points[rank];
 }
 
 // @0x1404c6110
@@ -705,7 +707,11 @@ void Unk_GuildMemberData::FUN_1404caa00(CString value)
 // @0x1404cab20
 bool CGuildMemberRaid::FUN_1404cab20()
 {
-    Unk_GuildMapLock guard(lock,1); bool empty=raids.empty(); if(!empty) raids.clear(); return !empty;
+    Unk_GuildMapLock guard(lock,1);
+    if (raids.empty())
+        return false;
+    raids.clear();
+    return true;
 }
 
 // @0x1404cabb0
@@ -735,7 +741,11 @@ int CGuildMemberRaid::FUN_1404cadc0()
 // @0x1404cae90
 int CGuildMemberRaid::FUN_1404cae90(unsigned long id)
 {
-    Unk_GuildMapLock guard(lock,1); auto i=raids.find(id); return i==raids.end() ? 0 : i->second;
+    Unk_GuildMapLock guard(lock,1);
+    auto i=raids.find(id);
+    if (i==raids.end())
+        return 0;
+    return i->second;
 }
 
 // @0x1404caf50
@@ -845,6 +855,7 @@ void CGuildSkill::FUN_1404cba60(CInPacket& packet)
     CInputStream& in=packet; f18=in.vfunc_o8_3(); f1c=in.vfunc_o8_3(); f20=in.vfunc_o8_4();
 }
 
+// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) - frame differs
 // @0x1404cbb00
 int CGuildSkill::FUN_1404cbb00()
 {
@@ -858,6 +869,7 @@ int CGuildSkill::FUN_1404cbb00()
     FUN_1404eea40(&ref); return 0;
 }
 
+// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) - frame differs
 // @0x1404cbbf0
 int CGuildSkill::FUN_1404cbbf0()
 {
@@ -998,6 +1010,7 @@ void CGuildNpc::FUN_1404cc440(CInPacket& packet)
     CInputStream& in=packet; f18=in.vfunc_o8_3(); f1c=in.vfunc_o8_3();
 }
 
+// MS2-FUNCTIONAL: CGuildInfo members are raw blobs constructed through explicit FUN_ ctor calls; the exe member ctors carry EH states and one fewer call (23 vs 22)
 // @0x1404cc4b0
 CGuildInfo::CGuildInfo()
 {
@@ -1014,6 +1027,7 @@ CGuildInfo::CGuildInfo()
     FUN_1404efb30(&f360,mgr);
 }
 
+// MS2-FUNCTIONAL: CGuildInfo members are raw blobs destroyed through explicit FUN_ dtor calls; the exe implicit member dtors form a different frame
 // @0x1404cc780
 CGuildInfo::~CGuildInfo()
 {
@@ -1461,6 +1475,7 @@ void CGuildInfo::FUN_1404cf6c0(CInPacket& packet)
     }
 }
 
+// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) (18 vs exe 19 callees)
 // @0x1404cf7d0
 int CGuildInfo::vfunc_0(Unk_GuildRef* member)
 {
@@ -1646,8 +1661,9 @@ int CGuildInfo::FUN_1404d0580()
 int CGuildInfo::FUN_1404d0600(CStringW name,unsigned mask)
 {
     unsigned v=FUN_1404d06a0(name);
-    bool none=(v&mask)==0;
-    return !none;
+    if ((v&mask)!=0)
+        return 1;
+    return 0;
 }
 
 // @0x1404d06a0
@@ -1666,6 +1682,7 @@ unsigned CGuildInfo::FUN_1404d06a0(CStringW name)
     return 0;
 }
 
+// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) (10 vs exe 12 callees)
 // @0x1404d0860
 Unk_GuildRef* CGuildInfo::FUN_1404d0860(Unk_GuildRef* ret,int index)
 {
@@ -1704,6 +1721,7 @@ int CGuildInfo::FUN_1404d0990(int index,Unk_GuildRef* grade)
     return 1;
 }
 
+// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) (16 vs exe 12 callees)
 // @0x1404d0af0
 CStringW CGuildInfo::FUN_1404d0af0(int index)
 {
@@ -2005,6 +2023,7 @@ int CGuildInfo::FUN_1404d1e40()
     return v;
 }
 
+// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) - frame differs
 // @0x1404d1e90
 int CGuildInfo::FUN_1404d1e90()
 {
@@ -2069,6 +2088,7 @@ int CGuildInfo::FUN_1404d2080()
     return 0;
 }
 
+// MS2-FUNCTIONAL: the {name,value,text} record (Unk_GuildStrRec) is a raw struct with explicit ctor 0x1404ee6b0/dtor 0x1404ef6e0 calls; the exe record object has EH states - frame differs
 // @0x1404d2150
 void CGuildInfo::vfunc_2(__int64 value,CStringW name,int key,const CStringW& text)
 {
@@ -2081,6 +2101,7 @@ void CGuildInfo::vfunc_2(__int64 value,CStringW name,int key,const CStringW& tex
     FUN_1404ef6e0(&rec);
 }
 
+// MS2-FUNCTIONAL: Unk_GuildStrRec temporaries are raw structs with explicit ctor 0x1404ee6b0/dtor 0x1404ef6e0 calls; the exe has real record objects - frame differs
 // @0x1404d2220
 CStringW CGuildInfo::FUN_1404d2220(int key)
 {
@@ -2096,6 +2117,7 @@ CStringW CGuildInfo::FUN_1404d2220(int key)
     return r;
 }
 
+// MS2-FUNCTIONAL: Unk_GuildStrRec temporaries are raw structs with explicit ctor 0x1404ee6b0/dtor 0x1404ef6e0 calls; the exe has real record objects - frame differs
 // @0x1404d2330
 __int64 CGuildInfo::FUN_1404d2330(int key)
 {
@@ -2111,6 +2133,7 @@ __int64 CGuildInfo::FUN_1404d2330(int key)
     return v;
 }
 
+// MS2-FUNCTIONAL: Unk_GuildStrRec temporaries are raw structs with explicit ctor 0x1404ee6b0/dtor 0x1404ef6e0 calls; the exe has real record objects - frame differs
 // @0x1404d2400
 CStringW CGuildInfo::FUN_1404d2400(int key)
 {
@@ -2126,6 +2149,7 @@ CStringW CGuildInfo::FUN_1404d2400(int key)
     return r;
 }
 
+// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) - frame differs
 // @0x1404d2510
 int CGuildInfo::FUN_1404d2510(int a,int b)
 {
@@ -2202,6 +2226,7 @@ Unk_GuildRef* CGuildInfo::FUN_1404d28e0(Unk_GuildRef* ret,int key)
     return ret;
 }
 
+// MS2-FUNCTIONAL: Unk_GuildRef returned by FUN_1404d28e0 is a raw struct destroyed by an explicit FUN_1404eeb00 call; the exe temp is a real smart pointer with an EH state - frame differs
 // @0x1404d2990
 int CGuildInfo::FUN_1404d2990(int key)
 {
@@ -2246,7 +2271,7 @@ void CGuildInfo::FUN_1404d2ba0(int a,void* b)
 // @0x1404d2c60
 bool CGuildInfo::FUN_1404d2c60()
 {
-    return f354;
+    return reinterpret_cast<const bool&>(f354);   // the exe field is a bool (f354 stays a byte for guildmanager's stores)
 }
 
 // @0x1404d2ca0
@@ -2268,6 +2293,7 @@ void CGuildInfo::FUN_1404d2cc0(ItemEntity* item)
     if(item->m_count==0) FUN_1405085e0(map,&key);
 }
 
+// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) - frame differs
 // @0x1404d2db0
 int CGuildInfo::FUN_1404d2db0(int a,int b)
 {

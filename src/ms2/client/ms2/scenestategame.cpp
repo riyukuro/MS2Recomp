@@ -76,6 +76,13 @@
 // MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIVCAdventureLevelMissionData@@@std@@PEAX@2@@Z 0x14174af90 ; w131 manual (ICF-folded with map<unsigned,Unk_ALMissionState>, callees 0x1409347f0/0x140931d80)
 // MS2-PIN: ??1?$TPtredDummy@USpecialNPCInfo@@@@UEAA@XZ 0x141746800 ; w131 manual (called by its ??_G 0x1417475b0)
 // MS2-PIN: ??_G?$TPtredDummy@USpecialNPCInfo@@@@UEAAPEAXI@Z 0x1417475b0 ; w131 manual (size 0x38 delete, calls 0x141746800)
+// MS2-FUNCTIONAL 0x141745310: pinned by call-site order (w131); the exe body is a non-leaf wrapper calling 0x141745390,
+//   not the leaf std::forward<const int&> our VS2017 15.9 <utility> emits (map<int,bool> emplace chain of another STL drop)
+// MS2-FUNCTIONAL 0x141740400: _Compressed_pair<allocator,_Tree_val> zero-args ctor: exe 57 B vs 46 B, different STL ctor chain
+// MS2-FUNCTIONAL 0x141744a80: _Default_allocator_traits::construct<node*>: callee set differs at 0x140159860 (forward copy), STL drop
+// MS2-FUNCTIONAL 0x141745ac0: _Tree_comp_alloc(const less<int>&) ctor: exe 73 B vs 62 B, different STL ctor chain
+// MS2-FUNCTIONAL 0x14174b550: allocator<_Tree_node>::allocate: callee set differs at 0x14015fe50/0x14015f9d0 (size/_Allocate
+//   helpers; exe 72 B vs 37 B) -> map<int,bool> node-allocation chain of a different STL version
 // MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x14174acf0 ; w131 manual (call site 0x141745ac0)
 // MS2-PIN: ?_Erase@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@2@@Z 0x14174aec0 ; w131 manual (call site 0x14174aec0/0x14174b750)
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@V32@@Z 0x14174ba20 ; w131 manual (call site 0x14174b930)
@@ -8748,8 +8755,8 @@ void CSceneStateGame::FUN_14173b220(CInPacket& packet)
     CUgcItemLook* pLook = ((CItem*)spItem)->FUN_140528380();
     if (pLook != 0)
     {
-        pLook->unknown60 = nValue;
-        pLook->title = strTitle;
+        pLook->m_n60 = nValue;
+        pLook->m_str28 = strTitle;
     }
 }
 MS2_REPLACE_METHOD(0x14173b220, CSceneStateGame, FUN_14173b220, 334, 0xD2E16AC7);
@@ -11861,9 +11868,9 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
                         if (pInfo != 0)
                         {
                             CUgcItemLook* pLook = &reinterpret_cast<Unk_SSGItemUgc*>(pInfo)->m_look;
-                            pLook->unknown30 = 1;
-                            pLook->resourcePath = gift.m_strUgcPath;
-                            pLook->title = gift.m_strUgcTitle;
+                            pLook->m_n30 = 1;
+                            pLook->m_strUrl = gift.m_strUgcPath;
+                            pLook->m_str28 = gift.m_strUgcTitle;
                         }
                     }
                     else if (spItem->FUN_140525680())

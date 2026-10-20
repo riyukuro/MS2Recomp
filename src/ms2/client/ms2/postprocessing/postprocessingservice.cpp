@@ -5,6 +5,7 @@
 // MS2-RANGE: 0x14169d920-0x1416b5320 .text$mn
 // MS2-RANGE: 0x1400fc2a0-0x1400fc960 .text$di
 // MS2-RANGE: 0x142cb45d0-0x142cb4715 .text$yd
+// MS2-PIN: ??1MS2VelocityMaterialSwapProcessor@@UEAA@XZ 0x1416af0e0 ; fx13: own dtor (~NiClickRenderStep/~NiRenderStep rows are mainsystem.cpp 0x141474db0/0x141474e50)
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??_GDepthOfFieldRenderStep@@UEAAPEAXI@Z 0x1416a09a0 ; prop
 // MS2-PIN: ??_GFadeInOutRenderStep@@UEAAPEAXI@Z 0x1416a0e80 ; prop
@@ -82,6 +83,8 @@
 // The exe passes the address of a temporary NiFixedString (an MSVC extension) to the SSAO step ctor.
 #pragma clang diagnostic ignored "-Waddress-of-temporary"
 #endif
+// MS2-FUNCTIONAL ?ErrorMessage@_com_error@@QEBAPEBDXZ: comdef.h inline (via the PCH); the exe copy (0x1416b0810) calls
+//   strlen out of line (0x14280f01e) where our /Oi build inlines it, and #pragma function(strlen) after the PCH can't reach it
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\postprocessing\\postprocessingservice.cpp"
 #ifndef NOMINMAX
 #define NOMINMAX                                                            // PhysX (via entityworldmanager.h)

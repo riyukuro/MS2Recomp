@@ -4,6 +4,25 @@
 // MS2-RANGE: 0x140117c70-0x140118e40 .text$di
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMinimapDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x141a47ab0 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VUIMinimapEntityPing@@@@QEAA@PEAVUIMinimapEntityPing@@@Z 0x141a47e30 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VUIMinimapEntityProxyPortal@@@@QEAA@PEAVUIMinimapEntityProxyPortal@@@Z 0x141a47e60 ; unique
+// MS2-PIN: ??1?$MS2Ptr@VUIMinimapEntityProxyPortal@@@@QEAA@XZ 0x141a48610 ; unique
+// MS2-PIN: ??1?$MS2Ptr@VUIMinimapEntityTaxi@@@@QEAA@XZ 0x141a48640 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VUIMinimapEntityPing@@@@QEBA_NPEAVUIMinimapEntityPing@@@Z 0x141a48c20 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VUIMinimapEntityProxyPortal@@@@QEBA_NPEAVUIMinimapEntityProxyPortal@@@Z 0x141a48c60 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VUIMinimapEntityPing@@@@QEBAPEAVUIMinimapEntityPing@@XZ 0x141a48d50 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VUIMinimapEntityProxyPortal@@@@QEBAPEAVUIMinimapEntityProxyPortal@@XZ 0x141a48d60 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VUIMinimapEntityTaxi@@@@QEBAPEAVUIMinimapEntityTaxi@@XZ 0x141a48d70 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VCNpcData@@@@QEBAPEAVCNpcData@@XZ 0x141a48d80 ; unique
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@_KV?$CElementTraits@_K@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@_KV?$CElementTraits@_K@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141a4ac40 ; unique
+// MS2-PIN: ?FUN_141a4b020@UIMinimapEntityProxyPortal@@QEBAHXZ 0x141a4b020 ; unique
+// MS2-PIN: ?vfunc_4@UIMinimapEntity@@UEAAHXZ 0x141a4b200 ; unique
+// MS2-PIN: ?vfunc_48@UIMinimapDialog@@UEAAHXZ 0x141a4b210 ; unique
+// MS2-PIN: ?Lookup@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAPEAVCPair@12@_K@Z 0x141a4c6d0 ; unique
+// MS2-PIN: ?FUN_141a50bc0@UIMinimapEntityProxyPortal@@QEAAXAEBH@Z 0x141a50bc0 ; unique
+// MS2-PIN: ?FUN_141a51030@UIMinimapEntityProxyPortal@@QEAAX_N@Z 0x141a51030 ; unique
+// MS2-PIN: ?FUN_141a51050@UIMinimapEntityProxyPortal@@QEAAXH@Z 0x141a51050 ; unique
 // MS2-PINS-END tplpin
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiminimapentity.cpp"    // assumed
@@ -47,6 +66,12 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/client/ms2/ridee.h"
+#include "ms2/client/ms2/partymanager.h"
+#include "ms2/placeholder/cpartymember.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/placeholder/astextfield.h"
+#include "ms2/commonfiles/pvpinfo.h"
+#include "ms2/client/ms2/hardwareinstancingservice.h"
 #include "ms2/client/ms2/uiserverlistdialog.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
@@ -58,14 +83,6 @@
 
 // The world's per-object proxy (RTTI .?AVCProxyGameObject@@, 0xe8). Unit-local typed view of
 // placeholder/cproxygameobject.h: its +0x18 / +0x28 handles are MS2Ptr<CPortal> / MS2Ptr<NpcDataCli> here.
-struct Unk_MmProxyInfo                                              // the proxy's display info (+0x88)
-{
-    int m_type;                                                     // +0x00 (0xb = npc)
-    int m_04;
-    int m_08;
-    int m_0c;
-    CStringW m_text;                                                // +0x10
-};
 class CProxyGameObject : public CPtred
 {
 public:
@@ -73,7 +90,8 @@ public:
     int FUN_1416c2040();                                            // another player's object
     int FUN_1416c2090();                                            // has a template id
     int FUN_1416c20d0();                                            // has a portal
-    Unk_MmProxyInfo* FUN_1416c2200();
+    int FUN_1416c2110();                                            // the portal is shown on the minimap
+    Unk_QmNpcQuestState* FUN_1416c2200();                         // the quest guide (+0x88)
     MS2Ptr<NpcDataCli> FUN_1416c2220();                             // the npc data
     __int64 FUN_1416c22f0();                                        // the owner character id
     int FUN_1416c2350();                                            // the template (npc) id
@@ -93,6 +111,11 @@ public:
     __int64 m_48;
     CString m_50;
     CStringW m_name;                                                // +0x58
+    __int64 m_60;
+    int m_68;                                                       // +0x68 dead
+    int m_6c;
+    char m_pad_70[0xcc - 0x70];
+    int m_cc;                                                       // +0xcc the actor state (0x3f: hidden)
 };
 
 // The entity list a world model lookup returns (the same view as uiworldmapdialog.cpp).
@@ -104,10 +127,19 @@ struct Unk_MmEntityList
     void* m_0;
     void* m_8;
 };
+struct Unk_MmMinimapInfo : public CPtred                            // the field's minimap settings
+{
+    CString m_image;                                                // +0x18 the minimap image
+};
 struct Unk_MmFieldInfo : public CPtred                              // the current field's settings (world +0x298)
 {
-    char m_pad_18[0x150 - 0x18];
+    char m_pad_18[0x64 - 0x18];
+    int m_64;                                                       // +0x64 nonzero: the minimap is forced minimized
+    char m_pad_68[0x150 - 0x68];
     bool m_allowPing;                                               // +0x150
+    char m_pad_151[0x160 - 0x151];
+    MS2Ptr<Unk_MmMinimapInfo> m_minimap;                            // +0x160
+    int FUN_1403754d0();                                            // the pk mode
 };
 class Unk_MmWorld                                                   // the world service (FUN_1403ed2d0)
 {
@@ -120,7 +152,7 @@ public:
     MS2Ptr<Unk_MmFieldInfo> FUN_141bd30a0();                        // the current field settings
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(unsigned __int64 nUid);  // a proxy by character uid
     class Unk_MmActor* FUN_141bd1320(int nId);                      // the actor of an object id
-    PCBase* FUN_141bd1530(unsigned __int64 nCharId);                // a player by character id
+    PC* FUN_141bd1530(unsigned __int64 nCharId);                    // a player by character id
     void FUN_141bc5f10(ATL::CAtlArray<MS2Ptr<CInteractObject> >& objects);   // the interact objects
     int FUN_141bd98f0();                                            // the channel group
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);  // an interact object by name
@@ -215,7 +247,8 @@ public:
     virtual MS2Ptr<class CQuestData> vfunc_0();                     // 0 the quest data
     virtual int vfunc_1();                                          // 1 completable
 };
-class CQuest : public CPtred { public: Unk_MmQuestData m_data; };
+class CQuest : public CPtred, public Unk_MmQuestData {};          // the interface is the second base (+0x18)
+CString FUN_1401d2b10(const CString& a, const CString& b);         // a + b (exe operator+; clang would import MFC CopyChars)
 
 // The UI dialogs reached from the markers.
 CUIService* FUN_1403ed2b0();
@@ -364,7 +397,7 @@ void UIMinimapEntity::FUN_141a310e0(NpcDataCli* pNpc)
     m_layer = FUN_141a32aa0(pNpc, m_icon);
     m_visible = !m_icon.IsEmpty() && m_icon != s_strNoIcon;
 }
-MS2_REPLACE_METHOD(0x141a310e0, UIMinimapEntity, FUN_141a310e0, 0, 0);
+MS2_REPLACE_METHOD(0x141a310e0, UIMinimapEntity, FUN_141a310e0, 389, 0x38FD60B2);
 
 // @0x141a31270
 // MS2-FUNCTIONAL: the exe frame is 0x10 larger (an unrecovered extra temp); the code is otherwise identical.
@@ -391,7 +424,7 @@ void UIMinimapEntity::FUN_141a31270(ASObj& data, efd::SmartPointer<MinimapViewpo
     data.FUN_1409adbe0("userFunction", Scaleform::GFx::Value(fn.FUN_1422bb870()));
     vfunc_2(&data);
 }
-MS2_REPLACE_METHOD(0x141a31270, UIMinimapEntity, FUN_141a31270, 0, 0);
+MS2_REPLACE_METHOD(0x141a31270, UIMinimapEntity, FUN_141a31270, 1101, 0x837C432C);
 
 // @0x141a316d0
 int UIMinimapEntity::FUN_141a316d0(const int& nField, bool& bSpecial, CString& strIcon, CString& strLayer)
@@ -428,7 +461,7 @@ int UIMinimapEntity::FUN_141a316d0(const int& nField, bool& bSpecial, CString& s
     }
     return nNpcId;
 }
-MS2_REPLACE_METHOD(0x141a316d0, UIMinimapEntity, FUN_141a316d0, 0, 0);
+MS2_REPLACE_METHOD(0x141a316d0, UIMinimapEntity, FUN_141a316d0, 780, 0x51BBD233);
 
 // @0x141a319f0
 CStringW UIMinimapEntity::FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strAlign, bool bMultiRow)
@@ -443,7 +476,7 @@ CStringW UIMinimapEntity::FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strAli
     }
     return FUN_14028dfa0(L"s_minimap_tooltip_normal", FUN_1401aa6a0(pNpc->GetId()));
 }
-MS2_REPLACE_METHOD(0x141a319f0, UIMinimapEntity, FUN_141a319f0, 0, 0);
+MS2_REPLACE_METHOD(0x141a319f0, UIMinimapEntity, FUN_141a319f0, 648, 0xB42DAA1D);
 
 // @0x141a31c80
 bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& strIcon, CString& strLayer)
@@ -456,7 +489,7 @@ bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& 
         switch (nState) {
         case 1:
             spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
-            if (static_cast<bool>(spQuest.get()) && spQuest->m_data.vfunc_1()) {
+            if (static_cast<bool>(spQuest.get()) && spQuest->vfunc_1()) {
                 strIcon = s_strQuestComplete;
                 bSuffix = true;
             } else {
@@ -473,16 +506,16 @@ bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& 
         default:
             return false;
         }
-        MS2Ptr<CQuestData> spData = spQuest.get() ? spQuest->m_data.vfunc_0() : FUN_14074bc40(nQuestId);
+        MS2Ptr<CQuestData> spData = spQuest.get() ? spQuest->vfunc_0() : FUN_14074bc40(nQuestId);
         const CString& strSuffix = FUN_141082150(spData, "_epic", "_world", "_repeat", "_event");
         if (bSuffix)
             strIcon += strSuffix;
-        strLayer += s_strLayerQuest + strSuffix;
+        strLayer += FUN_1401d2b10(s_strLayerQuest, strSuffix);
         return true;
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a31c80, UIMinimapEntity, FUN_141a31c80, 0, 0);
+MS2_REPLACE_METHOD(0x141a31c80, UIMinimapEntity, FUN_141a31c80, 1165, 0xD673AD64);
 
 // @0x141a32120
 void UIMinimapEntity::FUN_141a32120(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -501,7 +534,7 @@ void UIMinimapEntity::FUN_141a32120(const Scaleform::GFx::FunctionHandler::Param
         FUN_141a32330();
     }
 }
-MS2_REPLACE_METHOD(0x141a32120, UIMinimapEntity, FUN_141a32120, 0, 0);
+MS2_REPLACE_METHOD(0x141a32120, UIMinimapEntity, FUN_141a32120, 312, 0x1DDD54D5);
 
 // @0x141a32260
 bool UIMinimapEntity::FUN_141a32260(ASObj& data)
@@ -514,7 +547,7 @@ bool UIMinimapEntity::FUN_141a32260(ASObj& data)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a32260, UIMinimapEntity, FUN_141a32260, 0, 0);
+MS2_REPLACE_METHOD(0x141a32260, UIMinimapEntity, FUN_141a32260, 190, 0x14DE07A2);
 
 // @0x141a32330
 void UIMinimapEntity::FUN_141a32330()
@@ -527,7 +560,7 @@ void UIMinimapEntity::FUN_141a32330()
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x141a32330, UIMinimapEntity, FUN_141a32330, 0, 0);
+MS2_REPLACE_METHOD(0x141a32330, UIMinimapEntity, FUN_141a32330, 164, 0x87D81A70);
 
 // @0x141a323e0
 void UIMinimapEntity::FUN_141a323e0(MS2Ptr<CPortal> spPortal)
@@ -555,13 +588,13 @@ void UIMinimapEntity::GetText(CStringW& strText, ASObj& data)
         strText.Empty();
     }
 }
-MS2_REPLACE_METHOD(0x141a32500, UIMinimapEntity, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a32500, UIMinimapEntity, GetText, 267, 0x2BEF602D);
 
 // @0x141a32620
 void UIMinimapEntity::vfunc_2(ASObj* pData)
 {
 }
-MS2_REPLACE_METHOD(0x141a32620, UIMinimapEntity, vfunc_2, 0, 0);
+MS2_REPLACE_METHOD(0x141a32620, UIMinimapEntity, vfunc_2, 11, 0x02239C70);
 
 // @0x141a32640
 bool UIMinimapEntity::FUN_141a32640(CNpcData* pNpc)
@@ -576,7 +609,7 @@ bool UIMinimapEntity::FUN_141a32640(CNpcData* pNpc)
         return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x141a32640, UIMinimapEntity, FUN_141a32640, 0, 0);
+MS2_REPLACE_METHOD(0x141a32640, UIMinimapEntity, FUN_141a32640, 264, 0xE39CD148);
 
 // @0x141a32750
 CString UIMinimapEntity::FUN_141a32750(NpcDataCli* pNpc)
@@ -609,7 +642,7 @@ CString UIMinimapEntity::FUN_141a32750(NpcDataCli* pNpc)
         return s_strFriendly;
     return s_strEnemy;
 }
-MS2_REPLACE_METHOD(0x141a32750, UIMinimapEntity, FUN_141a32750, 0, 0);
+MS2_REPLACE_METHOD(0x141a32750, UIMinimapEntity, FUN_141a32750, 638, 0x25D61A8E);
 
 // @0x141a329e0
 CString UIMinimapEntity::FUN_141a329e0(const CString& strIcon)
@@ -618,7 +651,7 @@ CString UIMinimapEntity::FUN_141a329e0(const CString& strIcon)
         return s_strAlive;
     return "";
 }
-MS2_REPLACE_METHOD(0x141a329e0, UIMinimapEntity, FUN_141a329e0, 0, 0);
+MS2_REPLACE_METHOD(0x141a329e0, UIMinimapEntity, FUN_141a329e0, 174, 0xA64ECAAB);
 
 // @0x141a32aa0
 CString UIMinimapEntity::FUN_141a32aa0(NpcDataCli* pNpc, const CString& strIcon)
@@ -633,7 +666,7 @@ CString UIMinimapEntity::FUN_141a32aa0(NpcDataCli* pNpc, const CString& strIcon)
         return s_strLayerFriendly;
     return s_strLayerNpc;
 }
-MS2_REPLACE_METHOD(0x141a32aa0, UIMinimapEntity, FUN_141a32aa0, 0, 0);
+MS2_REPLACE_METHOD(0x141a32aa0, UIMinimapEntity, FUN_141a32aa0, 236, 0x6D436F94);
 
 // @0x141a32ba0
 CStringW UIMinimapEntity::FUN_141a32ba0(Unk_BuddyPtr<CBuddy> spBuddy)
@@ -643,7 +676,7 @@ CStringW UIMinimapEntity::FUN_141a32ba0(Unk_BuddyPtr<CBuddy> spBuddy)
     CStringW strHome = FUN_1409796e0(spBuddy->FUN_1401cc3e0(), spBuddy->FUN_1401cc3a0(), spBuddy->FUN_1401cc3c0(), spBuddy->FUN_1401cc350());
     return FUN_14028dfa0(L"s_worldmap_tooltip_friendhome", strHome);
 }
-MS2_REPLACE_METHOD(0x141a32ba0, UIMinimapEntity, FUN_141a32ba0, 0, 0);
+MS2_REPLACE_METHOD(0x141a32ba0, UIMinimapEntity, FUN_141a32ba0, 390, 0x45717DE1);
 
 // ---- UIMinimapEntityProxy ----
 
@@ -662,7 +695,7 @@ MS2Ptr<CProxyGameObject> UIMinimapEntityProxy::FUN_141a32da0()
         return MS2Ptr<CProxyGameObject>(0);
     return FUN_1403ed2d0()->FUN_141bc9be0(m_id);
 }
-MS2_REPLACE_METHOD(0x141a32da0, UIMinimapEntityProxy, FUN_141a32da0, 0, 0);
+MS2_REPLACE_METHOD(0x141a32da0, UIMinimapEntityProxy, FUN_141a32da0, 111, 0x93351C5B);
 
 // @0x141a32e20
 void UIMinimapEntityProxy::GetText(CStringW& strText, ASObj& data)
@@ -672,7 +705,7 @@ void UIMinimapEntityProxy::GetText(CStringW& strText, ASObj& data)
         return;
     vfunc_5(spProxy, strText, data);
 }
-MS2_REPLACE_METHOD(0x141a32e20, UIMinimapEntityProxy, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a32e20, UIMinimapEntityProxy, GetText, 155, 0xDD25025D);
 
 // @0x141a32ed0
 void UIMinimapEntityProxy::vfunc_3()
@@ -701,14 +734,14 @@ void UIMinimapEntityProxy::vfunc_3()
     }
     }
 }
-MS2_REPLACE_METHOD(0x141a32ed0, UIMinimapEntityProxy, vfunc_3, 0, 0);
+MS2_REPLACE_METHOD(0x141a32ed0, UIMinimapEntityProxy, vfunc_3, 389, 0xE3B4CF7E);
 
 // @0x141a33060
 int UIMinimapEntityProxy::vfunc_4()
 {
     return m_kind;
 }
-MS2_REPLACE_METHOD(0x141a33060, UIMinimapEntityProxy, vfunc_4, 0, 0);
+MS2_REPLACE_METHOD(0x141a33060, UIMinimapEntityProxy, vfunc_4, 14, 0xD1D12A47);
 
 // @0x141a33080
 void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& strText, ASObj& data)
@@ -726,8 +759,8 @@ void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& s
             }
         }
     } else if (spProxy->FUN_1416c2090()) {
-        Unk_MmProxyInfo* pInfo = spProxy->FUN_1416c2200();
-        if (pInfo->m_type != 0xb) {
+        Unk_QmNpcQuestState* pInfo = spProxy->FUN_1416c2200();
+        if (pInfo->m_icon != 0xb) {
             strText = pInfo->m_text;
         } else {
             MS2Ptr<NpcDataCli> spNpc = spProxy->FUN_1416c2220();
@@ -755,7 +788,7 @@ void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& s
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a33080, UIMinimapEntityProxy, vfunc_5, 0, 0);
+MS2_REPLACE_METHOD(0x141a33080, UIMinimapEntityProxy, vfunc_5, 1357, 0x6DCA8BBE);
 
 // ---- UIMinimapEntityProxyPortal ----
 
@@ -775,7 +808,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33650()
     m_field = 0;
     m_flag = false;
 }
-MS2_REPLACE_METHOD(0x141a33650, UIMinimapEntityProxyPortal, FUN_141a33650, 0, 0);
+MS2_REPLACE_METHOD(0x141a33650, UIMinimapEntityProxyPortal, FUN_141a33650, 39, 0xF292E240);
 
 // @0x141a33680
 void UIMinimapEntityProxyPortal::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& strText, ASObj& data)
@@ -793,7 +826,7 @@ void UIMinimapEntityProxyPortal::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStri
             strText = FUN_14052bd00(0x73d, strName);
     }
 }
-MS2_REPLACE_METHOD(0x141a33680, UIMinimapEntityProxyPortal, vfunc_5, 0, 0);
+MS2_REPLACE_METHOD(0x141a33680, UIMinimapEntityProxyPortal, vfunc_5, 444, 0x1694A5EB);
 
 // @0x141a33850
 void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CStringW& strText)
@@ -843,7 +876,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CString
         strText = FUN_1408f71a0(L"s_minimap_tooltip_function_portal", FUN_1401a9d70()->FUN_141811980(3, nField), strAligned);
     }
 }
-MS2_REPLACE_METHOD(0x141a33850, UIMinimapEntityProxyPortal, FUN_141a33850, 0, 0);
+MS2_REPLACE_METHOD(0x141a33850, UIMinimapEntityProxyPortal, FUN_141a33850, 1494, 0xAD2BDB4B);
 
 // @0x141a33e30
 // MS2-FUNCTIONAL: my frame is 0x10 larger than the exe (an unrecovered temp layout); calls and logic match.
@@ -913,7 +946,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
     }
     strText = FUN_1408f71a0(L"s_minimap_tooltip_function_portal", FUN_1401a9d70()->FUN_141811980(3, nField), strLabel);
 }
-MS2_REPLACE_METHOD(0x141a33e30, UIMinimapEntityProxyPortal, FUN_141a33e30, 0, 0);
+MS2_REPLACE_METHOD(0x141a33e30, UIMinimapEntityProxyPortal, FUN_141a33e30, 1806, 0xFF202207);
 
 // @0x141a34550
 UIMinimapEntityBuddyHome::UIMinimapEntityBuddyHome(Unk_BuddyPtr<CBuddy> spBuddy)
@@ -928,7 +961,7 @@ void UIMinimapEntityBuddyHome::GetText(CStringW& strText, ASObj& data)
         return;
     strText = FUN_141a32ba0(m_buddy);
 }
-MS2_REPLACE_METHOD(0x141a345c0, UIMinimapEntityBuddyHome, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a345c0, UIMinimapEntityBuddyHome, GetText, 161, 0x8388091F);
 
 // @0x141a34670
 UIMinimapEntityMapObject::UIMinimapEntityMapObject(const int& nId, efd::SmartPointer<egf::Entity> spEntity)
@@ -945,7 +978,7 @@ void UIMinimapEntityMapObject::GetText(CStringW& strText, ASObj& data)
     m_entity->GetPropertyValue(0x794e257e, strTooltip);
     strText = FUN_140298ea0(FUN_14016a730(strTooltip.c_str(), 0));
 }
-MS2_REPLACE_METHOD(0x141a34700, UIMinimapEntityMapObject, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a34700, UIMinimapEntityMapObject, GetText, 263, 0xD0921D42);
 
 // @0x141a34810
 UIMinimapEntityTaxi::UIMinimapEntityTaxi(const efd::Point3& kPos)
@@ -975,21 +1008,21 @@ void UIMinimapEntityTaxi::FUN_141a34890(const efd::Point3& kPos)
     m_visible = true;
     m_text = bBest ? FUN_14028b8e0(L"s_word_besttaxistation") : FUN_14028b8e0(L"s_word_taxistation");
 }
-MS2_REPLACE_METHOD(0x141a34890, UIMinimapEntityTaxi, FUN_141a34890, 0, 0);
+MS2_REPLACE_METHOD(0x141a34890, UIMinimapEntityTaxi, FUN_141a34890, 908, 0x75C22537);
 
 // @0x141a34870
 void UIMinimapEntityTaxi::FUN_141a34870(bool bBest)
 {
     m_best = bBest;
 }
-MS2_REPLACE_METHOD(0x141a34870, UIMinimapEntityTaxi, FUN_141a34870, 0, 0);
+MS2_REPLACE_METHOD(0x141a34870, UIMinimapEntityTaxi, FUN_141a34870, 23, 0x1A4301B5);
 
 // @0x141a34c30
 void UIMinimapEntityTaxi::GetText(CStringW& strText, ASObj& data)
 {
     strText = m_best ? FUN_14028b8e0(L"s_word_besttaxistation") : FUN_14028b8e0(L"s_word_taxistation");
 }
-MS2_REPLACE_METHOD(0x141a34c30, UIMinimapEntityTaxi, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a34c30, UIMinimapEntityTaxi, GetText, 368, 0xC0965097);
 
 // @0x141a34db0
 UIMinimapEntityStorm::UIMinimapEntityStorm(int nId, const efd::Point3& kPos, const CStringW& strIcon)
@@ -1006,14 +1039,14 @@ void UIMinimapEntityStorm::FUN_141a34e30(int nId, const efd::Point3& kPos, const
     m_position = kPos;
     m_visible = true;
 }
-MS2_REPLACE_METHOD(0x141a34e30, UIMinimapEntityStorm, FUN_141a34e30, 0, 0);
+MS2_REPLACE_METHOD(0x141a34e30, UIMinimapEntityStorm, FUN_141a34e30, 113, 0xE51E0043);
 
 // @0x141a34eb0
 void UIMinimapEntityStorm::GetText(CStringW& strText, ASObj& data)
 {
     strText.Empty();
 }
-MS2_REPLACE_METHOD(0x141a34eb0, UIMinimapEntityStorm, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a34eb0, UIMinimapEntityStorm, GetText, 35, 0xFDDC58CE);
 
 // @0x141a34ee0
 UIMinimapEntityPing::UIMinimapEntityPing(const efd::Point3& kPos)
@@ -1034,7 +1067,7 @@ void UIMinimapEntityPing::FUN_141a34f40(const efd::Point3& kPos)
     m_state = "red_flag";
     m_guideName = L"";
 }
-MS2_REPLACE_METHOD(0x141a34f40, UIMinimapEntityPing, FUN_141a34f40, 0, 0);
+MS2_REPLACE_METHOD(0x141a34f40, UIMinimapEntityPing, FUN_141a34f40, 174, 0xC68B0059);
 
 // @0x141a35000
 void UIMinimapEntityPing::FUN_141a35000(unsigned __int64 nId, int nColor, const efd::Point3& kPos, const CStringW& strName)
@@ -1053,14 +1086,14 @@ void UIMinimapEntityPing::FUN_141a35000(unsigned __int64 nId, int nColor, const 
     m_guideName = strName;
     m_text = strName;
 }
-MS2_REPLACE_METHOD(0x141a35000, UIMinimapEntityPing, FUN_141a35000, 0, 0);
+MS2_REPLACE_METHOD(0x141a35000, UIMinimapEntityPing, FUN_141a35000, 471, 0xECE9CD61);
 
 // @0x141a351e0
 void UIMinimapEntityPing::GetText(CStringW& strText, ASObj& data)
 {
     strText = m_text;
 }
-MS2_REPLACE_METHOD(0x141a351e0, UIMinimapEntityPing, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a351e0, UIMinimapEntityPing, GetText, 47, 0x85DA9292);
 
 // ---- UIMinimapDialog ----
 
@@ -1095,7 +1128,7 @@ CString UIMinimapDialog::vfunc_1()
 {
     return "MinimapDialog";
 }
-MS2_REPLACE_METHOD(0x141a35ba0, UIMinimapDialog, vfunc_1, 0, 0);
+MS2_REPLACE_METHOD(0x141a35ba0, UIMinimapDialog, vfunc_1, 61, 0xE2400997);
 
 // @0x141a35bf0
 void UIMinimapDialog::OnLoadComplete()
@@ -1128,7 +1161,7 @@ void UIMinimapDialog::OnLoadComplete()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a35bf0, UIMinimapDialog, OnLoadComplete, 0, 0);
+MS2_REPLACE_METHOD(0x141a35bf0, UIMinimapDialog, OnLoadComplete, 992, 0x16529FDF);
 
 // @0x141a35fe0
 void UIMinimapDialog::vfunc_26()
@@ -1164,7 +1197,7 @@ void UIMinimapDialog::vfunc_26()
     m_timer474.FUN_140268840();
     m_47c = 1;
 }
-MS2_REPLACE_METHOD(0x141a35fe0, UIMinimapDialog, vfunc_26, 0, 0);
+MS2_REPLACE_METHOD(0x141a35fe0, UIMinimapDialog, vfunc_26, 707, 0xEB99CE5C);
 
 // @0x141a362b0
 void UIMinimapDialog::vfunc_15()
@@ -1198,7 +1231,7 @@ void UIMinimapDialog::vfunc_15()
     }
     FUN_141a42bb0();
 }
-MS2_REPLACE_METHOD(0x141a362b0, UIMinimapDialog, vfunc_15, 0, 0);
+MS2_REPLACE_METHOD(0x141a362b0, UIMinimapDialog, vfunc_15, 916, 0x744426E4);
 
 // @0x141a36650
 void UIMinimapDialog::vfunc_72()
@@ -1210,7 +1243,7 @@ void UIMinimapDialog::vfunc_72()
         m_460 = target.second;
     }
 }
-MS2_REPLACE_METHOD(0x141a36650, UIMinimapDialog, vfunc_72, 0, 0);
+MS2_REPLACE_METHOD(0x141a36650, UIMinimapDialog, vfunc_72, 119, 0xABF169B7);
 
 // The community dialog (COMDAT 0x141a46630).
 template <class T> T* Unk_MmGetDialog()
@@ -1318,7 +1351,7 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x141a366d0, UIMinimapDialog, vfunc_28, 0, 0);
+MS2_REPLACE_METHOD(0x141a366d0, UIMinimapDialog, vfunc_28, 1862, 0x371BD9E1);
 
 // @0x141a36e50
 bool UIMinimapDialog::vfunc_17()
@@ -1328,7 +1361,7 @@ bool UIMinimapDialog::vfunc_17()
     vfunc_18();
     return true;
 }
-MS2_REPLACE_METHOD(0x141a36e50, UIMinimapDialog, vfunc_17, 0, 0);
+MS2_REPLACE_METHOD(0x141a36e50, UIMinimapDialog, vfunc_17, 56, 0xE31DC9A6);
 
 // @0x141a36e90
 void UIMinimapDialog::vfunc_43()
@@ -1341,7 +1374,7 @@ void UIMinimapDialog::vfunc_43()
     }
     FUN_141a44f40();
 }
-MS2_REPLACE_METHOD(0x141a36e90, UIMinimapDialog, vfunc_43, 0, 0);
+MS2_REPLACE_METHOD(0x141a36e90, UIMinimapDialog, vfunc_43, 108, 0x65931339);
 
 // @0x141a36f10
 int UIMinimapDialog::vfunc_13()
@@ -1362,7 +1395,7 @@ int UIMinimapDialog::vfunc_13()
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x141a36f10, UIMinimapDialog, vfunc_13, 0, 0);
+MS2_REPLACE_METHOD(0x141a36f10, UIMinimapDialog, vfunc_13, 242, 0x0AE9BAF2);
 
 // @0x141a37010
 void UIMinimapDialog::vfunc_18()
@@ -1372,7 +1405,7 @@ void UIMinimapDialog::vfunc_18()
         FUN_141a44f40();
     }
 }
-MS2_REPLACE_METHOD(0x141a37010, UIMinimapDialog, vfunc_18, 0, 0);
+MS2_REPLACE_METHOD(0x141a37010, UIMinimapDialog, vfunc_18, 91, 0x42C557CB);
 
 // MS2-FUNCTIONAL: the result byte is switched as an int (exe jumps straight to the end for 0); 2 attempts
 // @0x141a37080
@@ -1395,7 +1428,7 @@ void UIMinimapDialog::vfunc_79(void* p)
         break;
     }
 }
-MS2_REPLACE_METHOD(0x141a37080, UIMinimapDialog, vfunc_79, 0, 0);
+MS2_REPLACE_METHOD(0x141a37080, UIMinimapDialog, vfunc_79, 190, 0x7B420DBA);
 
 // @0x141a37150
 void UIMinimapDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
@@ -1424,7 +1457,7 @@ void UIMinimapDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         *pRetVal = tooltip.FUN_1422bb870();
     }
 }
-MS2_REPLACE_METHOD(0x141a37150, UIMinimapDialog, vfunc_49, 0, 0);
+MS2_REPLACE_METHOD(0x141a37150, UIMinimapDialog, vfunc_49, 662, 0x279A0D2F);
 
 // The settings xml readers / writers (UIDialog's "transform" section).
 void FUN_1408743d0(void* pCfg, const char* szGroup, const char* szName, bool b, bool bCreate);
@@ -1499,7 +1532,7 @@ int UIMinimapDialog::vfunc_53(void* pCfg)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x141a37480, UIMinimapDialog, vfunc_53, 0, 0);
+MS2_REPLACE_METHOD(0x141a37480, UIMinimapDialog, vfunc_53, 2338, 0x38DA50FE);
 
 // @0x141a37db0
 int UIMinimapDialog::vfunc_54(void* pCfg)
@@ -1545,7 +1578,7 @@ int UIMinimapDialog::vfunc_54(void* pCfg)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x141a37db0, UIMinimapDialog, vfunc_54, 0, 0);
+MS2_REPLACE_METHOD(0x141a37db0, UIMinimapDialog, vfunc_54, 1484, 0xF135E625);
 
 // @0x141a373f0
 int UIMinimapDialog::vfunc_65()
@@ -1560,7 +1593,7 @@ int UIMinimapDialog::vfunc_65()
     FUN_14192e8f0();
     return 1;
 }
-MS2_REPLACE_METHOD(0x141a373f0, UIMinimapDialog, vfunc_65, 0, 0);
+MS2_REPLACE_METHOD(0x141a373f0, UIMinimapDialog, vfunc_65, 85, 0xB26CB77A);
 
 // @0x141a37450
 void UIMinimapDialog::vfunc_67()
@@ -1568,14 +1601,14 @@ void UIMinimapDialog::vfunc_67()
     FUN_141a3abd0();
     UIDialog::vfunc_67();
 }
-MS2_REPLACE_METHOD(0x141a37450, UIMinimapDialog, vfunc_67, 0, 0);
+MS2_REPLACE_METHOD(0x141a37450, UIMinimapDialog, vfunc_67, 34, 0xCF85CBAA);
 
 // @0x141a38390
 int UIMinimapDialog::vfunc_52()
 {
     return 1;
 }
-MS2_REPLACE_METHOD(0x141a38390, UIMinimapDialog, vfunc_52, 0, 0);
+MS2_REPLACE_METHOD(0x141a38390, UIMinimapDialog, vfunc_52, 11, 0x30025ED0);
 
 CString FUN_140719530(unsigned __int64 nId);                        // "%I64u"
 CString FUN_141028a90(CString strId, int bDefault);                 // the UGC profile image path
@@ -1589,7 +1622,7 @@ void UIMinimapDialog::vfunc_ugc_1(void* p, CString str)
         m_30->FUN_1413127f0("changePlayer", strKey, FUN_141028a90(str, 1));
     }
 }
-MS2_REPLACE_METHOD_VIA(0x141a383b0, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_1, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a383b0, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_1, 320, 0x51752DA6);
 
 // @0x141a38500
 void UIMinimapDialog::vfunc_ugc_5()
@@ -1599,7 +1632,7 @@ void UIMinimapDialog::vfunc_ugc_5()
     FUN_141a3a9a0(false);
     FUN_141a39e60();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38500, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_5, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38500, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_5, 102, 0x66758822);
 
 // @0x141a38570
 void UIMinimapDialog::vfunc_ugc_6()
@@ -1609,7 +1642,7 @@ void UIMinimapDialog::vfunc_ugc_6()
     FUN_141a3a9a0(true);
     FUN_141a39e60();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38570, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_6, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38570, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_6, 102, 0x9D9C5CC7);
 
 // MS2-FUNCTIONAL: frame 0x20 larger (temporaries of the by-value entity/buddy copies); 2 attempts
 // @0x141a385e0
@@ -1641,7 +1674,7 @@ void UIMinimapDialog::vfunc_buddy_10(__int64 nId, int n)
             FUN_141a455e0(n, nId);
     }
 }
-MS2_REPLACE_METHOD_VIA(0x141a385e0, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_10, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a385e0, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_10, 666, 0xD25223C1);
 
 // @0x141a38880
 void UIMinimapDialog::vfunc_buddy_5(__int64 nId)
@@ -1651,7 +1684,7 @@ void UIMinimapDialog::vfunc_buddy_5(__int64 nId)
         return;
     FUN_141a3f9f0(spBuddy);
 }
-MS2_REPLACE_METHOD_VIA(0x141a38880, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_5, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38880, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_5, 148, 0xE6AABD87);
 
 // @0x141a38920
 void UIMinimapDialog::vfunc_buddy_4(__int64 nId, int n)
@@ -1663,14 +1696,14 @@ void UIMinimapDialog::vfunc_buddy_4(__int64 nId, int n)
         return;
     FUN_141a3f9f0(spBuddy);
 }
-MS2_REPLACE_METHOD_VIA(0x141a38920, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_4, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38920, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_4, 165, 0xBDF902EA);
 
 // @0x141a389d0
 void UIMinimapDialog::vfunc_buddy_3(__int64 nId)
 {
     vfunc_buddy_10(nId, 0);
 }
-MS2_REPLACE_METHOD_VIA(0x141a389d0, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_3, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a389d0, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_3, 56, 0xAA097725);
 
 // @0x141a38a10
 void UIMinimapDialog::vfunc_oa0_9(unsigned short a1)
@@ -1680,7 +1713,7 @@ void UIMinimapDialog::vfunc_oa0_9(unsigned short a1)
     m_210 = true;
     FUN_141a3a200();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38a10, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_9, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38a10, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_9, 80, 0x1B176E1B);
 
 // @0x141a38a70
 void UIMinimapDialog::vfunc_oa0_7(int a1, CStringW s)
@@ -1689,14 +1722,14 @@ void UIMinimapDialog::vfunc_oa0_7(int a1, CStringW s)
         return;
     m_210 = true;
 }
-MS2_REPLACE_METHOD_VIA(0x141a38a70, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_7, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38a70, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_7, 96, 0x85711457);
 
 // @0x141a38ae0
 void UIMinimapDialog::vfunc_oa0_20(int a1)
 {
     FUN_141a42a70();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38ae0, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_20, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38ae0, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_20, 37, 0x92EE80B3);
 
 // @0x141a38b10
 int UIMinimapDialog::vfunc_oa0_1()
@@ -1705,14 +1738,14 @@ int UIMinimapDialog::vfunc_oa0_1()
         return 0;
     return 1;
 }
-MS2_REPLACE_METHOD_VIA(0x141a38b10, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_1, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38b10, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_1, 69, 0x830FFD61);
 
 // @0x141a38b60
 void UIMinimapDialog::Notify()
 {
     FUN_141a42800();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38b60, UIMinimapDialog, UIServerEventListener, Notify, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38b60, UIMinimapDialog, UIServerEventListener, Notify, 33, 0x1C92923F);
 
 // MS2-FUNCTIONAL: the exe takes the actor as a by-value MS2Ptr (EH frame); the shared slot is declared void*
 // @0x141a38b90
@@ -1725,7 +1758,7 @@ void UIMinimapDialog::vfunc_3(void* pActor)
     FUN_141a3d080(*static_cast<const ProxyPtr*>(pActor));
     FUN_1406c70a0(pActor);
 }
-MS2_REPLACE_METHOD_VIA(0x141a38b90, UIMinimapDialog, UIEntityEventListener, vfunc_3, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38b90, UIMinimapDialog, UIEntityEventListener, vfunc_3, 133, 0xC8D16EBF);
 
 // MS2-FUNCTIONAL: the exe takes the actor as a by-value MS2Ptr (EH frame); the shared slot is declared void*
 // @0x141a38c20
@@ -1738,37 +1771,37 @@ void UIMinimapDialog::vfunc_4(void* pActor)
     FUN_141a3f600(*static_cast<const ProxyPtr*>(pActor));
     FUN_1406c70a0(pActor);
 }
-MS2_REPLACE_METHOD_VIA(0x141a38c20, UIMinimapDialog, UIEntityEventListener, vfunc_4, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38c20, UIMinimapDialog, UIEntityEventListener, vfunc_4, 133, 0xF5478FEC);
 
 // @0x141a38cb0
 void UIMinimapDialog::vfunc_o178_1(void* p)
 {
     if (vfunc_55())
         return;
-    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->m_data.vfunc_0().get()))
+    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
         FUN_141a3ada0();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38cb0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_1, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38cb0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_1, 294, 0xA47B2DEF);
 
 // @0x141a38de0
 void UIMinimapDialog::vfunc_o178_2(void* p)
 {
     if (vfunc_55())
         return;
-    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->m_data.vfunc_0().get()))
+    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
         FUN_141a3ada0();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38de0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_2, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38de0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_2, 294, 0x0513889D);
 
 // @0x141a38f10
 void UIMinimapDialog::vfunc_o178_3(void* p)
 {
     if (vfunc_55())
         return;
-    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->m_data.vfunc_0().get()))
+    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
         FUN_141a3ada0();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38f10, UIMinimapDialog, UIQuestEventListener, vfunc_o178_3, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38f10, UIMinimapDialog, UIQuestEventListener, vfunc_o178_3, 294, 0xAB5504E1);
 
 // @0x141a39040
 void UIMinimapDialog::vfunc_o178_4(void* p)
@@ -1782,17 +1815,17 @@ void UIMinimapDialog::vfunc_o178_7(int a1, int a2)
         return;
     FUN_141a3ada0();
 }
-MS2_REPLACE_METHOD_VIA(0x141a39060, UIMinimapDialog, UIQuestEventListener, vfunc_o178_7, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a39060, UIMinimapDialog, UIQuestEventListener, vfunc_o178_7, 90, 0xB4E6AB38);
 
 // @0x141a390c0
 void UIMinimapDialog::vfunc_o178_5(void* p)
 {
     if (vfunc_55())
         return;
-    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->m_data.vfunc_0().get()))
+    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
         FUN_141a3ada0();
 }
-MS2_REPLACE_METHOD_VIA(0x141a390c0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_5, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a390c0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_5, 294, 0x33501AE3);
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);   // the child clip of a value
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                 // the value is an object
@@ -1832,7 +1865,7 @@ void UIMinimapDialog::FUN_141a391f0(MS2Ptr<CInteractObject> spObject)
         FUN_141a39770(spObject);
     }
 }
-MS2_REPLACE_METHOD(0x141a391f0, UIMinimapDialog, FUN_141a391f0, 0, 0);
+MS2_REPLACE_METHOD(0x141a391f0, UIMinimapDialog, FUN_141a391f0, 1396, 0xED7D2B0A);
 
 // @0x141a39770
 void UIMinimapDialog::FUN_141a39770(MS2Ptr<CInteractObject> spObject)
@@ -1856,7 +1889,7 @@ void UIMinimapDialog::FUN_141a39770(MS2Ptr<CInteractObject> spObject)
     if (spEntity->m_64)
         m_212 = true;
 }
-MS2_REPLACE_METHOD(0x141a39770, UIMinimapDialog, FUN_141a39770, 0, 0);
+MS2_REPLACE_METHOD(0x141a39770, UIMinimapDialog, FUN_141a39770, 1141, 0x13204261);
 
 // @0x141a39bf0
 void UIMinimapDialog::FUN_141a39bf0(MS2Ptr<CInteractObject> spObject)
@@ -1869,7 +1902,7 @@ void UIMinimapDialog::FUN_141a39bf0(MS2Ptr<CInteractObject> spObject)
         m_named.RemoveKey(spObject->FUN_140967060());
     }
 }
-MS2_REPLACE_METHOD(0x141a39bf0, UIMinimapDialog, FUN_141a39bf0, 0, 0);
+MS2_REPLACE_METHOD(0x141a39bf0, UIMinimapDialog, FUN_141a39bf0, 325, 0xD354B6EA);
 
 // @0x141a39d40
 void UIMinimapDialog::FUN_141a39d40(int nId, int bVisible)
@@ -1882,14 +1915,14 @@ void UIMinimapDialog::FUN_141a39d40(int nId, int bVisible)
             spEntity->m_clip->vfunc_3(bVisible);
     }
 }
-MS2_REPLACE_METHOD(0x141a39d40, UIMinimapDialog, FUN_141a39d40, 0, 0);
+MS2_REPLACE_METHOD(0x141a39d40, UIMinimapDialog, FUN_141a39d40, 240, 0x68BE3E46);
 
 // @0x141a39e40
 void UIMinimapDialog::FUN_141a39e40()
 {
     FUN_1418fd2f0();
 }
-MS2_REPLACE_METHOD(0x141a39e40, UIMinimapDialog, FUN_141a39e40, 0, 0);
+MS2_REPLACE_METHOD(0x141a39e40, UIMinimapDialog, FUN_141a39e40, 19, 0x7CB65D04);
 
 extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
 CBuddyManager* FUN_14097a780();                                    // TSingleton<CBuddyManager>::GetInstance
@@ -1922,7 +1955,7 @@ void UIMinimapDialog::FUN_141a39e60()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a39e60, UIMinimapDialog, FUN_141a39e60, 0, 0);
+MS2_REPLACE_METHOD(0x141a39e60, UIMinimapDialog, FUN_141a39e60, 908, 0xF9B39C94);
 
 // @0x141a3a200
 void UIMinimapDialog::FUN_141a3a200()
@@ -2003,7 +2036,7 @@ void UIMinimapDialog::FUN_141a3a780(int n)
         return;
     static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46a60("changeEntityFrame", m_taxi->m_clip->FUN_1422bb870(), "enabled");
 }
-MS2_REPLACE_METHOD(0x141a3a780, UIMinimapDialog, FUN_141a3a780, 0, 0);
+MS2_REPLACE_METHOD(0x141a3a780, UIMinimapDialog, FUN_141a3a780, 260, 0xD00E0BB7);
 
 // @0x141a3a890
 void UIMinimapDialog::FUN_141a3a890()
@@ -2014,7 +2047,7 @@ void UIMinimapDialog::FUN_141a3a890()
         return;
     static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46a60("changeEntityFrame", m_telescope->m_clip->FUN_1422bb870(), "enabled");
 }
-MS2_REPLACE_METHOD(0x141a3a890, UIMinimapDialog, FUN_141a3a890, 0, 0);
+MS2_REPLACE_METHOD(0x141a3a890, UIMinimapDialog, FUN_141a3a890, 256, 0x45FFD4DF);
 
 // @0x141a3a9a0
 void UIMinimapDialog::FUN_141a3a9a0(bool bRemove)
@@ -2044,7 +2077,7 @@ void UIMinimapDialog::FUN_141a3a9a0(bool bRemove)
         FUN_141a3dda0();
     }
 }
-MS2_REPLACE_METHOD(0x141a3a9a0, UIMinimapDialog, FUN_141a3a9a0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3a9a0, UIMinimapDialog, FUN_141a3a9a0, 539, 0xFC7D3984);
 
 // @0x141a3abd0
 void UIMinimapDialog::FUN_141a3abd0()
@@ -2059,7 +2092,7 @@ void UIMinimapDialog::FUN_141a3abd0()
     FUN_140b632f0()->FUN_1422d4840(this, 3);
     FUN_140b632f0()->FUN_1422d4780(this, m_e0);
 }
-MS2_REPLACE_METHOD(0x141a3abd0, UIMinimapDialog, FUN_141a3abd0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3abd0, UIMinimapDialog, FUN_141a3abd0, 197, 0x23AC8E23);
 
 // @0x141a3aca0
 void UIMinimapDialog::FUN_141a3aca0()
@@ -2076,14 +2109,14 @@ void UIMinimapDialog::FUN_141a3aca0()
     FUN_140b632f0()->FUN_1422d4840(this, m_e0);
     FUN_140b632f0()->FUN_1422d4780(this, 3);
 }
-MS2_REPLACE_METHOD(0x141a3aca0, UIMinimapDialog, FUN_141a3aca0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3aca0, UIMinimapDialog, FUN_141a3aca0, 215, 0x1D15CA91);
 
 // @0x141a3ad80
 void UIMinimapDialog::FUN_141a3ad80(bool b)
 {
     m_1fb = b;
 }
-MS2_REPLACE_METHOD(0x141a3ad80, UIMinimapDialog, FUN_141a3ad80, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ad80, UIMinimapDialog, FUN_141a3ad80, 26, 0x8AB8E1D5);
 
 // @0x141a3ada0
 void UIMinimapDialog::FUN_141a3ada0()
@@ -2092,7 +2125,7 @@ void UIMinimapDialog::FUN_141a3ada0()
     m_211 = true;
     m_212 = true;
 }
-MS2_REPLACE_METHOD(0x141a3ada0, UIMinimapDialog, FUN_141a3ada0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ada0, UIMinimapDialog, FUN_141a3ada0, 42, 0xE470E7BA);
 
 struct Unk_MmQuestIconOptions                                       // the quest icon filter options
 {
@@ -2148,7 +2181,7 @@ void UIMinimapDialog::FUN_141a3b130(unsigned __int64 nId, int nColor, const efd:
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3b130, UIMinimapDialog, FUN_141a3b130, 0, 0);
+MS2_REPLACE_METHOD(0x141a3b130, UIMinimapDialog, FUN_141a3b130, 599, 0x9F70BD80);
 
 // @0x141a3b390
 void UIMinimapDialog::FUN_141a3b390(unsigned __int64 nId, int nColor, EntityPtr spEntity, const efd::Point3& kPos)
@@ -2167,7 +2200,7 @@ void UIMinimapDialog::FUN_141a3b4d0(unsigned int& nQuest, unsigned __int64& nId)
     nQuest = m_468;
     nId = m_460;
 }
-MS2_REPLACE_METHOD(0x141a3b4d0, UIMinimapDialog, FUN_141a3b4d0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3b4d0, UIMinimapDialog, FUN_141a3b4d0, 54, 0x63DECFAD);
 
 // @0x141a3b510
 UIMinimapDialog::EntityPtr UIMinimapDialog::FUN_141a3b510(ProxyPtr spProxy)
@@ -2189,7 +2222,7 @@ UIMinimapDialog::HomeListPtr UIMinimapDialog::FUN_141a3b660(const int& nField)
     m_homes.Lookup(nField, spHomes);
     return spHomes;
 }
-MS2_REPLACE_METHOD(0x141a3b660, UIMinimapDialog, FUN_141a3b660, 0, 0);
+MS2_REPLACE_METHOD(0x141a3b660, UIMinimapDialog, FUN_141a3b660, 126, 0x41232F01);
 
 // @0x141a3b6f0
 void UIMinimapDialog::FUN_141a3b6f0()
@@ -2227,7 +2260,7 @@ bool UIMinimapDialog::FUN_141a3bda0(ASObj& data, ProxyPtr spProxy)
     data.FUN_1409eb270("tooltipData", tooltip);
     return true;
 }
-MS2_REPLACE_METHOD(0x141a3bda0, UIMinimapDialog, FUN_141a3bda0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3bda0, UIMinimapDialog, FUN_141a3bda0, 936, 0xFC9D3AA0);
 
 // @0x141a44e60
 void UIMinimapDialog::FUN_141a44e60()
@@ -2236,7 +2269,7 @@ void UIMinimapDialog::FUN_141a44e60()
     if (m_30.get() != 0)
         m_30->Invoke("changeStageSize");
 }
-MS2_REPLACE_METHOD(0x141a44e60, UIMinimapDialog, FUN_141a44e60, 0, 0);
+MS2_REPLACE_METHOD(0x141a44e60, UIMinimapDialog, FUN_141a44e60, 93, 0xF5D0C6CA);
 
 // @0x141a44ed0
 void UIMinimapDialog::FUN_141a44ed0()
@@ -2244,7 +2277,7 @@ void UIMinimapDialog::FUN_141a44ed0()
     if (m_30.get() != 0)
         m_30->FUN_1409ba030("setSelectedChannel", m_channel);
 }
-MS2_REPLACE_METHOD(0x141a44ed0, UIMinimapDialog, FUN_141a44ed0, 0, 0);
+MS2_REPLACE_METHOD(0x141a44ed0, UIMinimapDialog, FUN_141a44ed0, 95, 0x88554227);
 
 // @0x141a44f40
 void UIMinimapDialog::FUN_141a44f40()
@@ -2258,7 +2291,7 @@ void UIMinimapDialog::FUN_141a44f40()
     FUN_141a45ad0(nWidth, nHeight);
     m_alignment->FUN_141901c10(m_30, nWidth, nHeight);
 }
-MS2_REPLACE_METHOD(0x141a44f40, UIMinimapDialog, FUN_141a44f40, 0, 0);
+MS2_REPLACE_METHOD(0x141a44f40, UIMinimapDialog, FUN_141a44f40, 210, 0x473BA9B2);
 
 template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0 (ridee.cpp)
 template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;                   // 0x1407895d0
@@ -2312,22 +2345,19 @@ void UIMinimapDialog::FUN_141a42550()
     for (size_t i = 0; i < objects.GetCount(); ++i)
         FUN_141a391f0(objects[i]);
 }
-MS2_REPLACE_METHOD(0x141a42550, UIMinimapDialog, FUN_141a42550, 0, 0);
+MS2_REPLACE_METHOD(0x141a42550, UIMinimapDialog, FUN_141a42550, 166, 0x38F4D24D);
 
 extern int DAT_143ab0248;                                           // client country (2: no channel group)
 int FUN_14092f640();                                                // the current channel
 
 // @0x141a42800
-// MS2-FUNCTIONAL: the exe moves the channel group through ecx before the string table call.
 void UIMinimapDialog::FUN_141a42800()
 {
     if (m_30 == 0)
         return;
     CStringW strGroup;
-    if (DAT_143ab0248 != 2) {
-        int nGroup = FUN_1403ed2d0()->FUN_141bd98f0();
-        strGroup = FUN_1401a9d70()->FUN_141811980(0x17, nGroup);
-    }
+    if (DAT_143ab0248 != 2)
+        strGroup = FUN_1401a9d70()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
     m_channel = FUN_14092f640();
     int nSelected = 0;
     ASArray channels(2);
@@ -2336,7 +2366,7 @@ void UIMinimapDialog::FUN_141a42800()
         pServerList->FUN_141ad2f60(channels, &nSelected, m_channel);
     static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a468e0("buildChannelList", channels.FUN_1422bb870(), nSelected, FUN_14028b8e0(L"s_word_ch"), strGroup);
 }
-MS2_REPLACE_METHOD(0x141a42800, UIMinimapDialog, FUN_141a42800, 0, 0);
+MS2_REPLACE_METHOD(0x141a42800, UIMinimapDialog, FUN_141a42800, 616, 0x8585C70C);
 
 float FUN_141adbe70(void* pService);                               // the ui scale
 
@@ -2389,7 +2419,7 @@ void UIMinimapDialog::FUN_141a42bb0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a42bb0, UIMinimapDialog, FUN_141a42bb0, 0, 0);
+MS2_REPLACE_METHOD(0x141a42bb0, UIMinimapDialog, FUN_141a42bb0, 1058, 0xAC337C95);
 
 // @0x141a42fe0
 void UIMinimapDialog::FUN_141a42fe0(ATL::CAtlArray<EntityPtr>& entities)
@@ -2412,7 +2442,7 @@ void UIMinimapDialog::FUN_141a42fe0(ATL::CAtlArray<EntityPtr>& entities)
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a42fe0, UIMinimapDialog, FUN_141a42fe0, 0, 0);
+MS2_REPLACE_METHOD(0x141a42fe0, UIMinimapDialog, FUN_141a42fe0, 693, 0xCC18C194);
 
 // @0x141a42a70
 void UIMinimapDialog::FUN_141a42a70()
@@ -2430,7 +2460,7 @@ void UIMinimapDialog::FUN_141a42a70()
     }
     m_30->Invoke("visiblePlayers", bVisible);
 }
-MS2_REPLACE_METHOD(0x141a42a70, UIMinimapDialog, FUN_141a42a70, 0, 0);
+MS2_REPLACE_METHOD(0x141a42a70, UIMinimapDialog, FUN_141a42a70, 310, 0xA88A9455);
 
 // @0x141a43ac0
 void UIMinimapDialog::FUN_141a43ac0(ProxyPtr spProxy, EntityPtr spEntity)
@@ -2472,7 +2502,7 @@ void UIMinimapDialog::FUN_141a454d0(const int& nField, const unsigned __int64& n
         m_homes.SetAt(nField, spHomes);
     }
 }
-MS2_REPLACE_METHOD(0x141a454d0, UIMinimapDialog, FUN_141a454d0, 0, 0);
+MS2_REPLACE_METHOD(0x141a454d0, UIMinimapDialog, FUN_141a454d0, 258, 0x35FA8FE3);
 
 // @0x141a455e0
 void UIMinimapDialog::FUN_141a455e0(const int& nField, const unsigned __int64& nHome)
@@ -2486,7 +2516,7 @@ void UIMinimapDialog::FUN_141a455e0(const int& nField, const unsigned __int64& n
             spHomes->RemoveAt(pos);
     }
 }
-MS2_REPLACE_METHOD(0x141a455e0, UIMinimapDialog, FUN_141a455e0, 0, 0);
+MS2_REPLACE_METHOD(0x141a455e0, UIMinimapDialog, FUN_141a455e0, 206, 0xFF96F73D);
 
 class Unk_MmInput;                                                  // the input manager
 Unk_MmInput* FUN_140aadf80();
@@ -2500,7 +2530,7 @@ void UIMinimapDialog::FUN_141a456c0(const Scaleform::GFx::FunctionHandler::Param
     if (FUN_141b90e30(FUN_140aadf80(), x, y))
         FUN_141a45020(0, x, y);
 }
-MS2_REPLACE_METHOD(0x141a456c0, UIMinimapDialog, FUN_141a456c0, 0, 0);
+MS2_REPLACE_METHOD(0x141a456c0, UIMinimapDialog, FUN_141a456c0, 88, 0x1BA9816C);
 
 // @0x141a45720
 void UIMinimapDialog::FUN_141a45720(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -2510,14 +2540,14 @@ void UIMinimapDialog::FUN_141a45720(const Scaleform::GFx::FunctionHandler::Param
     if (FUN_141b90e30(FUN_140aadf80(), x, y))
         FUN_141a45020(1, x, y);
 }
-MS2_REPLACE_METHOD(0x141a45720, UIMinimapDialog, FUN_141a45720, 0, 0);
+MS2_REPLACE_METHOD(0x141a45720, UIMinimapDialog, FUN_141a45720, 91, 0xCE3BFD94);
 
 // @0x141a458d0
 void UIMinimapDialog::FUN_141a458d0(bool b)
 {
     vfunc_63(b != false);
 }
-MS2_REPLACE_METHOD(0x141a458d0, UIMinimapDialog, FUN_141a458d0, 0, 0);
+MS2_REPLACE_METHOD(0x141a458d0, UIMinimapDialog, FUN_141a458d0, 68, 0xA6155441);
 
 // @0x141a45ad0
 bool UIMinimapDialog::FUN_141a45ad0(int& nWidth, int& nHeight)
@@ -2531,7 +2561,7 @@ bool UIMinimapDialog::FUN_141a45ad0(int& nWidth, int& nHeight)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a45ad0, UIMinimapDialog, FUN_141a45ad0, 0, 0);
+MS2_REPLACE_METHOD(0x141a45ad0, UIMinimapDialog, FUN_141a45ad0, 148, 0xC31D8C09);
 
 // @0x141a45c70
 bool UIMinimapDialog::FUN_141a45c70(const CString& strIcon)
@@ -2550,7 +2580,7 @@ bool UIMinimapDialog::FUN_141a45ce0()
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x141a45ce0, UIMinimapDialog, FUN_141a45ce0, 0, 0);
+MS2_REPLACE_METHOD(0x141a45ce0, UIMinimapDialog, FUN_141a45ce0, 102, 0x620E2CE5);
 
 void FUN_140763210(int nId, int nKind, CStringW& strText, CStringW& strExtra, int n);   // the quest guide text
 
@@ -2563,7 +2593,7 @@ CStringW UIMinimapDialog::FUN_141a45ed0(const int& nId, int nKind)
     FUN_140763210(nId, nKind, strText, strExtra, 0);
     return strText;
 }
-MS2_REPLACE_METHOD(0x141a45ed0, UIMinimapDialog, FUN_141a45ed0, 0, 0);
+MS2_REPLACE_METHOD(0x141a45ed0, UIMinimapDialog, FUN_141a45ed0, 151, 0xFEC1B993);
 
 void FUN_14020af60(COutPacket* pPacket, const Unk_StreamPoint* pPt);    // writes the three floats of a point
 
@@ -2587,7 +2617,7 @@ void UIMinimapDialog::FUN_141a45020(int nKind, float x, float y)
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x141a45020, UIMinimapDialog, FUN_141a45020, 0, 0);
+MS2_REPLACE_METHOD(0x141a45020, UIMinimapDialog, FUN_141a45020, 392, 0xEB54C408);
 
 // The popup menu (uipartydialog.h has the full class; this unit only needs its RTTI and one entry point).
 class Unk_PopupMenuInfo
@@ -2623,7 +2653,7 @@ void UIMinimapDialog::FUN_141a45790(float x, float y, unsigned __int64 nId)
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a45790, UIMinimapDialog, FUN_141a45790, 0, 0);
+MS2_REPLACE_METHOD(0x141a45790, UIMinimapDialog, FUN_141a45790, 310, 0x37E80969);
 
 class Unk_MmActor                                                   // a field actor
 {
@@ -2657,7 +2687,7 @@ CStringW UIMinimapDialog::FUN_141a45d50(const unsigned __int64& nId)
     }
     return L"";
 }
-MS2_REPLACE_METHOD(0x141a45d50, UIMinimapDialog, FUN_141a45d50, 0, 0);
+MS2_REPLACE_METHOD(0x141a45d50, UIMinimapDialog, FUN_141a45d50, 364, 0x1CEEB35C);
 
 class Unk_MmCamera;                                                 // the field camera
 Unk_MmCamera* FUN_1409478c0();
@@ -2701,7 +2731,7 @@ bool UIMinimapDialog::FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOu
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a451b0, UIMinimapDialog, FUN_141a451b0, 0, 0);
+MS2_REPLACE_METHOD(0x141a451b0, UIMinimapDialog, FUN_141a451b0, 787, 0x516BAE6F);
 
 // @0x141a45920
 float UIMinimapDialog::FUN_141a45920(PCBase* pPC)
@@ -2723,7 +2753,7 @@ float UIMinimapDialog::FUN_141a45920(PCBase* pPC)
     }
     return fAngle - fRot + 90.0f;
 }
-MS2_REPLACE_METHOD(0x141a45920, UIMinimapDialog, FUN_141a45920, 0, 0);
+MS2_REPLACE_METHOD(0x141a45920, UIMinimapDialog, FUN_141a45920, 425, 0x27EB4910);
 
 // @0x141a3ced0
 void UIMinimapDialog::FUN_141a3ced0()
@@ -2739,7 +2769,7 @@ void UIMinimapDialog::FUN_141a3ced0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3ced0, UIMinimapDialog, FUN_141a3ced0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ced0, UIMinimapDialog, FUN_141a3ced0, 426, 0x8DA94486);
 
 // @0x141a3dbb0
 void UIMinimapDialog::FUN_141a3dbb0()
@@ -2756,7 +2786,7 @@ void UIMinimapDialog::FUN_141a3dbb0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3dbb0, UIMinimapDialog, FUN_141a3dbb0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3dbb0, UIMinimapDialog, FUN_141a3dbb0, 475, 0x65BF49F1);
 
 // @0x141a3dda0
 void UIMinimapDialog::FUN_141a3dda0()
@@ -2813,7 +2843,7 @@ void UIMinimapDialog::FUN_141a3ed50()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3ed50, UIMinimapDialog, FUN_141a3ed50, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ed50, UIMinimapDialog, FUN_141a3ed50, 377, 0x077301A2);
 
 void FUN_1408a2020(egf::Entity* pEntity, unsigned nProperty, int* pOut);   // reads an int property
 MS2Ptr<CInteractObjectData> FUN_14051f670(int nId);                  // the interact table row
@@ -2847,7 +2877,7 @@ void UIMinimapDialog::FUN_141a3df40()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3df40, UIMinimapDialog, FUN_141a3df40, 0, 0);
+MS2_REPLACE_METHOD(0x141a3df40, UIMinimapDialog, FUN_141a3df40, 906, 0x6C5FA91F);
 
 void FUN_1408a20a0(egf::Entity* pEntity, unsigned nProperty, bool* pOut);  // reads a bool property
 
@@ -2895,7 +2925,7 @@ void UIMinimapDialog::FUN_141a3ef80()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3ef80, UIMinimapDialog, FUN_141a3ef80, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ef80, UIMinimapDialog, FUN_141a3ef80, 567, 0xD23B9533);
 
 void FUN_1401d3700(CString& str);                                    // normalises the symbol name
 
@@ -2929,7 +2959,7 @@ void UIMinimapDialog::FUN_141a3f1c0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3f1c0, UIMinimapDialog, FUN_141a3f1c0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3f1c0, UIMinimapDialog, FUN_141a3f1c0, 927, 0x9CACB9AE);
 
 // @0x141a3ea10
 void UIMinimapDialog::FUN_141a3ea10()
@@ -2971,7 +3001,7 @@ void UIMinimapDialog::FUN_141a3ea10()
     FUN_141a3f1c0();
     m_30->Invoke("buildPlayers");
 }
-MS2_REPLACE_METHOD(0x141a3ea10, UIMinimapDialog, FUN_141a3ea10, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ea10, UIMinimapDialog, FUN_141a3ea10, 816, 0x8461D8E7);
 
 // @0x141a3fe10
 void UIMinimapDialog::FUN_141a3fe10(ProxyPtr spProxy, EntityPtr spEntity, int n)
@@ -3080,6 +3110,547 @@ void UIMinimapDialog::FUN_141a407c0(ProxyPtr spProxy, EntityPtr spEntity)
     }
 }
 
+class Unk_MmObjectPos { public: efd::Point3 FUN_1409673c0(); };    // CInteractObject: position copy
+
+// @0x141a40d90
+void UIMinimapDialog::FUN_141a40d90(ProxyPtr spProxy, EntityPtr spEntity)
+{
+    if (m_30 == 0)
+        return;
+    if (spProxy == 0 || !spProxy->FUN_1416c2090() || spEntity == 0)
+        return;
+    CString strIcon = spEntity->m_icon;
+    CString strState = spEntity->m_state;
+    CString strLayer = spEntity->m_layer;
+    CStringW strGuide = spEntity->m_guideName;
+    FUN_141a43680(spProxy, spEntity);
+    unsigned int nChanged = 0;
+    if (!spEntity->m_icon.IsEmpty()) {
+        if (strIcon != spEntity->m_icon)
+            nChanged |= 1;
+        if (strState != spEntity->m_state)
+            nChanged |= 2;
+        if (strLayer != spEntity->m_layer)
+            nChanged |= 8;
+        if (strGuide != spEntity->m_guideName)
+            nChanged |= 0x10;
+    }
+    if (nChanged != 0) {
+        if (nChanged == 2) {
+            spEntity->m_clip->vfunc_15(spEntity->m_state);
+        } else {
+            ASObj data(2);
+            data.FUN_1407cba60(s_strMcName, spEntity->m_icon);
+            data.FUN_1407cba60(s_strFrame, spEntity->m_state);
+            data.FUN_1407cba60(s_strLayer, spEntity->m_layer);
+            data.FUN_1407cbbe0(s_strShowGuide, spEntity->m_showGuide);
+            data.FUN_1407cbb20(s_strGuideName, spEntity->m_guideName);
+            Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
+            if (FUN_1409b4d40(value))
+                spEntity->m_clip = FUN_1409b40c0(m_28, value);
+        }
+    }
+    if (spEntity->m_visible) {
+        if (!FUN_141a44730(spProxy->FUN_1416c2270(), spEntity->m_clip))
+            spEntity->m_visible = false;
+    }
+    if (!spEntity->m_64)
+        spEntity->m_clip->vfunc_4(spEntity->m_visible);
+}
+
+class Unk_MmPvPPlayer { public: MS2Ptr<CPvPInfo> FUN_140967420(); };   // PC: the pvp info (+0x1240)
+class Unk_HsInfo : public CPtred { public: int FUN_14050a6a0(); };   // hide and seek: the player is a seeker
+class Unk_MmPvPRankEntry { public: bool FUN_141343860(); };         // the player has a rank
+class Unk_MmPvPRank                                                 // the pvp ranking service (FUN_140f97ef0)
+{
+public:
+    int FUN_1413437e0(__int64 nCharId);                             // the rank of a character
+    Unk_MmPvPRankEntry* FUN_141343810(int nRank);                   // the row of a rank
+};
+Unk_MmPvPRank* FUN_140f97ef0();
+CStringW FUN_140719630(int n);
+
+// @0x141a41560
+void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
+{
+    if (m_30 == 0)
+        return;
+    if (spProxy == 0 || !spProxy->FUN_1416c2040() || spEntity == 0)
+        return;
+    MS2Ptr<ASMovieClip> spClip = spEntity->m_clip;
+    if (spClip == 0)
+        return;
+    CString strState = spEntity->m_state;
+    FUN_141a432a0(spProxy, spEntity);
+    if (strState != spEntity->m_state) {
+        ASObj data(2);
+        data.FUN_1407cba60(s_strFrame, spEntity->m_state);
+        data.FUN_1407cba60(s_strLayer, spEntity->m_layer);
+        Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
+        if (!FUN_1409b4d40(value))
+            return;
+        spEntity->m_clip = FUN_1409b40c0(m_28, value);
+        spClip = spEntity->m_clip;
+    }
+    bool bVisible = true;
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC != 0) {
+        int nPkMode = FUN_1403ed2d0()->FUN_141bd30a0()->FUN_1403754d0();
+        if (nPkMode != 0) {
+            bVisible = pPC != 0 ? pPC->FUN_1415278d0(reinterpret_cast<void*>(spProxy->FUN_1416c22f0())) == 1 : false;
+        } else {
+            MS2Ptr<CPvPInfo> spPvP = reinterpret_cast<Unk_MmPvPPlayer*>(pPC)->FUN_140967420();
+            if (spPvP.get() != 0) {
+                if (spPvP->FUN_1407435d0() || spPvP->FUN_1407436d0()) {
+                    __int64 nCharId = spProxy->FUN_1416c22f0();
+                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    if (pOther != 0) {
+                        bVisible = false;
+                        int nRank = FUN_140f97ef0()->FUN_1413437e0(nCharId);
+                        if (nRank > 0) {
+                            Unk_MmPvPRankEntry* pEntry = FUN_140f97ef0()->FUN_141343810(nRank);
+                            if (nRank <= 3 && pEntry != 0 && pEntry->FUN_141343860())
+                                bVisible = true;
+                            if (bVisible) {
+                                {
+                                    CString strFrame("rank");
+                                    spClip->vfunc_15(strFrame);
+                                }
+                                MS2Ptr<ASTextField> spText = spClip->FUN_1409b4620("textField");
+                                if (spText.get() != 0)
+                                    spText->FUN_1422c4cd0(FUN_140719630(nRank));
+                            }
+                        }
+                    }
+                } else if (spPvP->FUN_140743610()) {
+                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    if (pOther != 0) {
+                        bVisible = reinterpret_cast<Unk_MmPvPPlayer*>(pOther)->FUN_140967420()->FUN_140743710() == reinterpret_cast<Unk_MmPvPPlayer*>(pPC)->FUN_140967420()->FUN_140743710();
+                        if (bVisible) {
+                            const CString& strTeam = spPvP->FUN_140743710() == 0xc9 ? s_strLayerRedTeam : s_strLayerBlueTeam;
+                            spClip->vfunc_15(strTeam);
+                        }
+                    }
+                } else if (spPvP->FUN_140743590() || spPvP->FUN_140743690()) {
+                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    if (pOther != 0)
+                        bVisible = pOther->FUN_141674bc0() == 0;
+                } else if (spPvP->FUN_140743550()) {
+                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    if (pOther != 0) {
+                        bVisible = pOther->vfunc_116() == pPC->vfunc_116() ? true : pOther->FUN_141674bc0() == 0;
+                    }
+                }
+            }
+            MS2Ptr<Unk_HsInfo> spHs = pPC->FUN_141664200();
+            if (static_cast<bool>(spHs.get()) && spHs->FUN_14050a6a0() != 0)
+                bVisible = pPC != 0 ? pPC->FUN_1415278d0(reinterpret_cast<void*>(spProxy->FUN_1416c22f0())) == 1 : false;
+        }
+    }
+    if (spProxy->m_cc == 0x3f)
+        bVisible = false;
+    if (bVisible) {
+        if (!FUN_141a44730(spProxy->FUN_1416c2270(), spClip))
+            bVisible = false;
+    }
+    spEntity->m_visible = bVisible;
+    spClip->vfunc_4(bVisible);
+}
+
+// @0x141a432a0
+void UIMinimapDialog::FUN_141a432a0(ProxyPtr spProxy, EntityPtr spEntity)
+{
+    if (spProxy == 0 || spEntity == 0)
+        return;
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return;
+    __int64 nId = spProxy->FUN_1416c22f0();
+    if (spProxy->FUN_1416c1ff0()) {
+        spEntity->m_state = s_strIdle;
+        spEntity->m_layer = s_strLayerPlayer;
+    } else if (m_460 == nId) {
+        spEntity->m_state = s_strQuestTarget;
+        spEntity->m_layer = s_strLayerQuestTarget;
+    } else {
+        MS2Ptr<CPartyMember> spMember = CPartyManager::GetInstance()->FUN_14162afc0(nId);
+        if (static_cast<CPartyMember*>(spMember) != 0) {
+            spEntity->m_state = spMember->leader != 0 ? s_strPartyChief : s_strParty;
+            spEntity->m_layer = s_strLayerParty;
+        } else {
+            MS2Ptr<CGuildMember> spGuild = CGuildManager::GetInstance()->FUN_1404cf9f0(spProxy->FUN_1416c23b0());
+            if (static_cast<CGuildMember*>(spGuild) != 0) {
+                spEntity->m_state = s_strGuild;
+                spEntity->m_layer = s_strLayerGuild;
+            } else if (CBuddyManager::GetInstance()->FUN_140ae4d70(nId)) {
+                spEntity->m_state = s_strBuddy;
+                spEntity->m_layer = s_strLayerBuddy;
+            } else {
+                spEntity->m_state = s_strNormal;
+                spEntity->m_layer = s_strLayerPc;
+            }
+        }
+    }
+    if (spProxy->m_68 != 0)
+        spEntity->m_state = s_strDie;
+}
+
+// @0x141a43680
+void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
+{
+    spEntity->m_64 = false;
+    spEntity->m_showGuide = false;
+    const Unk_QmNpcQuestState* pGuide = spProxy->FUN_1416c2200();
+    bool bBoss = false;
+    if (pGuide->m_icon != 0xb) {
+        CString strState;
+        CString strLayer;
+        spEntity->FUN_141a31c80(pGuide, strState, strLayer);
+        spEntity->m_icon = s_strQuest;
+        spEntity->m_state = strState;
+        spEntity->m_layer = strLayer;
+        spEntity->m_visible = FUN_141a45b70(spProxy);
+        spEntity->m_showGuide = true;
+        spEntity->m_guideName = FUN_141a45ed0(reinterpret_cast<const int&>(pGuide->m_questId), pGuide->m_state);
+        return;
+    }
+    MS2Ptr<NpcDataCli> spNpc = spProxy->FUN_1416c2220();
+    if (spNpc == 0)
+        return;
+    spEntity->FUN_141a310e0(spNpc);
+    if (spEntity->m_visible)
+        spEntity->m_visible = FUN_141a45b70(spProxy);
+    if (spProxy->m_68 != 0) {
+        bBoss = FUN_141a45c70(spEntity->m_icon);
+        if (bBoss)
+            spEntity->m_state = s_strDie;
+        else
+            spEntity->m_visible = false;
+    }
+    if (!bBoss) {
+        if (CQuestNavigator::GetInstance()->HasMap(spProxy->FUN_1416c2350())) {
+            spEntity->m_icon = s_strQuestTargetMonster;
+            spEntity->m_layer = s_strLayerNpc;
+            spEntity->m_64 = true;
+        }
+    }
+}
+
+class Unk_MmPortalPos { public: efd::Point3 FUN_14169d2f0(); };    // CPortal: the entity position
+extern char DAT_143b059e8;                                          // the entity app framework
+HardwareInstancingService* FUN_14098c5b0(char* pFramework);
+
+// @0x141a43b80
+void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool bInit)
+{
+    if (spProxy == 0 || spEntity == 0)
+        return;
+    MS2Ptr<CPortal> spPortal = spProxy->m_portal;
+    if (spPortal == 0)
+        return;
+    efd::SmartPointer<HardwareInstancingService> spService(FUN_14098c5b0(&DAT_143b059e8));
+    if (static_cast<bool>(spService)) {
+        if (spService->FUN_1413d7d90(spPortal->m_idEntity) != 0)
+            return;
+    }
+    MS2Ptr<UIMinimapEntityProxyPortal> spPortalEntity = dynamic_cast<UIMinimapEntityProxyPortal*>(static_cast<UIMinimapEntity*>(spEntity));
+    if (spPortalEntity == 0)
+        return;
+    spPortalEntity->FUN_141a33650();
+    bool bEnabled = spPortal->FUN_14169d160();
+    bool bVisible = spPortal->FUN_14169d1d0();
+    int nDest = spPortal->FUN_14169d280();
+    bool bHousing = false;
+    if (nDest != 0) {
+        MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nDest);
+        if (spField == 0)
+            return;
+        bHousing = spField->FUN_140375130();
+    }
+    if (!bInit) {
+        bool bChanged = spEntity->m_visible != bVisible;
+        if (!bChanged && !bHousing)
+            return;
+    }
+    if (bInit) {
+        int nField = FUN_1403ed2d0()->FUN_141bd3060();
+        if (nDest == nField)
+            return;
+        spEntity->FUN_141a323e0(spPortal);
+        spEntity->m_position = reinterpret_cast<Unk_MmPortalPos*>(spPortal.operator->())->FUN_14169d2f0();
+    }
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return;
+    if (!bHousing) {
+        spEntity->m_showText = true;
+        spEntity->m_showGuide = true;
+    }
+    if (bHousing && spPortal->m_nType != 4) {
+        bool bSpecial = false;
+        CString strIcon;
+        CString strLayer;
+        int nNpc = spEntity->FUN_141a316d0(nDest, bSpecial, strIcon, strLayer);
+        bool bHandled = false;
+        if (!bSpecial) {
+            if (FUN_141a44850(spEntity, nDest, bEnabled)) {
+                spPortalEntity->FUN_141a51050(2);
+                bHandled = true;
+            }
+        }
+        if (!bHandled && nNpc != 0) {
+            if (FUN_141a44c00(spEntity, nNpc, bSpecial, strIcon, strLayer, bEnabled, bVisible)) {
+                spPortalEntity->FUN_141a51050(1);
+                spPortalEntity->FUN_141a51030(bSpecial);
+                spPortalEntity->FUN_141a50bc0(nNpc);
+            }
+        }
+    }
+    if (spPortalEntity->FUN_141a4b020() == 0)
+        spEntity->FUN_141a323e0(spPortal);
+}
+
+// @0x141a44380
+void UIMinimapDialog::FUN_141a44380(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity)
+{
+    bool bOverlap = CQuestNavigator::GetInstance()->HasNpc(spObject->FUN_140967110()) == 1 && spObject->FUN_1413b5600() == 1;
+    spEntity->m_icon = bOverlap ? s_strQuestTargetObject : spObject->FUN_140966e00()->m_strMinimapIcon;
+    spEntity->m_layer = s_strLayerInteract;
+    spEntity->m_position = reinterpret_cast<Unk_MmObjectPos*>(spObject.operator->())->FUN_1409673c0();
+    spEntity->m_text = FUN_1401a9d70()->FUN_141811980(0x10, spObject->FUN_140967110());
+    spEntity->m_64 = bOverlap;
+    if (!spEntity->m_64)
+        spEntity->m_visible = spObject->FUN_1413b5600() == 1 && !spEntity->m_icon.IsEmpty();
+    if (spObject->vfunc_5() == 9) {
+        spEntity->m_layer = s_strLayerWatchtower;
+        spEntity->m_visible = true;
+        FUN_141a42600(spObject, spEntity);
+    }
+}
+
+// @0x141a44850
+bool UIMinimapDialog::FUN_141a44850(EntityPtr spEntity, const int& nField, bool b)
+{
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return false;
+    CString strIcon;
+    int nHome = 0;
+    bool bMine = false;
+    if (pPC->FUN_141527f80(&nHome) && nHome == nField) {
+        bMine = true;
+        strIcon = s_strMyHome;
+    }
+    HomeListPtr spHomes(0);
+    if (m_homes.Lookup(nField, spHomes) && spHomes.get()) {
+        bool bFound = false;
+        CStringW strUnused;
+        size_t nTotal = spHomes->GetCount();
+        size_t nCount = nTotal < 5 ? nTotal : 5;
+        POSITION pos = spHomes->GetHeadPosition();
+        for (size_t i = 0; i < nCount; i++) {
+            __int64 nId = spHomes->GetAt(pos);
+            Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FUN_140ae4b70(nId);
+            if (spBuddy.get()) {
+                bFound = true;
+                break;
+            }
+            spHomes->GetNext(pos);
+        }
+        if (bFound && strIcon.IsEmpty())
+            strIcon = s_strFriendHome;
+    }
+    if (!strIcon.IsEmpty()) {
+        spEntity->m_icon = strIcon;
+        spEntity->m_text = "";
+        spEntity->m_state = "";
+        spEntity->m_layer = s_strLayerHome;
+        spEntity->m_showText = false;
+        spEntity->m_showGuide = false;
+        spEntity->m_visible = b;
+        spEntity->m_inFieldNpc = true;
+        return true;
+    }
+    return false;
+}
+
+// @0x141a44c00
+bool UIMinimapDialog::FUN_141a44c00(EntityPtr spEntity, const int& nField, bool b1, const CString& strIcon, const CString& strLayer, bool b2, bool b3)
+{
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return false;
+    CStringW strText;
+    bool bVisible = false;
+    if (b1) {
+        Unk_QmNpcQuestState guide;
+        FUN_140764020()->FUN_1416d12d0(nField, &guide, 0);
+        bVisible = b2;
+        strText = FUN_141a45ed0(reinterpret_cast<const int&>(guide.m_questId), guide.m_state);
+    } else {
+        bVisible = b3;
+    }
+    spEntity->m_icon = strIcon;
+    if (b1) {
+        spEntity->m_icon = s_strQuest;
+        spEntity->m_showText = true;
+        spEntity->m_showGuide = true;
+        spEntity->m_guideName = strText;
+    } else {
+        spEntity->m_showText = true;
+        spEntity->m_showGuide = false;
+    }
+    spEntity->m_state = strIcon;
+    spEntity->m_layer = strLayer;
+    spEntity->m_visible = bVisible;
+    spEntity->m_inFieldNpc = true;
+    return true;
+}
+
+class Unk_MmHome;
+Unk_MmHome* FUN_1409670e0();                                        // the home service
+void FUN_1410c3330(Unk_MmHome* pHome, CStringW& strOut);            // the home name
+__int64 FUN_1410c3180(Unk_MmHome* pHome);                           // the home owner's account id
+extern __int64 DAT_143ab2820;                                       // the own account id
+
+// @0x141a3c150
+void UIMinimapDialog::FUN_141a3c150()
+{
+    if (m_30 == 0)
+        return;
+    bool bForceMinimize = true;
+    MS2Ptr<Unk_MmFieldInfo> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    if (static_cast<bool>(spField.get()) && static_cast<bool>(spField->m_minimap.get()))
+        bForceMinimize = spField->m_64 != 0 || spField->m_minimap->m_image.IsEmpty();
+    m_forceMinimize = bForceMinimize;
+    CStringW strName;
+    FUN_1410c3330(FUN_1409670e0(), strName);
+    bool bReport = false;
+    __int64 nOwner = FUN_1410c3180(FUN_1409670e0());
+    if (nOwner != 0 && nOwner != DAT_143ab2820)
+        bReport = true;
+    m_maxPanel = FUN_140ede180("m_maxpanel");
+    MS2Ptr<AScript> spData = m_data;
+    if (spData == 0)
+        spData.AssignRaw(new AScript(2));
+    if (spData.get() != 0) {
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("fieldname", strName);
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("minimize", vfunc_64() == 1);
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("fullmap", m_fullmap);
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("forceMinimize", bForceMinimize);
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("reportVisible", bReport);
+        if (m_78 == 0) {
+            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("width", 0);
+            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("height", 0);
+            static_cast<ASObj*>(spData.operator->())->FUN_1409c4a30("scale", 1.0f);
+            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("bgAlpha", 30);
+            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("mapAlpha", 100);
+        }
+        else {
+            float fScale = 1.0f;
+            int nBgAlpha = 30;
+            int nMapAlpha = 100;
+            int nWidth = 0;
+            int nHeight = 0;
+            nWidth = FUN_1409c1750(spData->FUN_1422baa20("width"));
+            nHeight = FUN_1409c1750(spData->FUN_1422baa20("height"));
+            nMapAlpha = FUN_1409c1750(spData->FUN_1422baa20("mapAlpha"));
+            nBgAlpha = FUN_1409c1750(spData->FUN_1422baa20("bgAlpha"));
+            fScale = static_cast<float>(FUN_140f17ed0(spData->FUN_1422baa20("scale")));
+        }
+        ASArray showEntities(2);
+        for (POSITION pos = m_showAttrs.GetStartPosition(); pos != 0; m_showAttrs.GetNext(pos)) {
+            ASObj entry(2);
+            ShowAttrMap::CPair* pPair = m_showAttrs.GetAt(pos);
+            if (pPair != 0) {
+                MS2Ptr<TShowAttr> spAttr = pPair->m_value;
+                if (spAttr == 0)
+                    continue;
+                const CString& strKey = pPair->m_key;
+                entry.FUN_1407cba60("layer", strKey);
+                entry.FUN_1407cb9c0("state", spAttr->m_state);
+                entry.FUN_1407cbb20("textKey", spAttr->m_key);
+                entry.FUN_1407cb9c0("displayOrder", spAttr->m_order);
+                entry.FUN_1407cba60("iconSuffix", strKey);
+            }
+            showEntities.FUN_1422bc050(entry.FUN_1422bb870());
+        }
+        static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("showentity", Scaleform::GFx::Value(showEntities.FUN_1422bb870()));
+        int nSelected = 0;
+        ASArray channels(2);
+        m_channel = FUN_14092f640();
+        UIServerListDialog* pServerList = Unk_MmGetDialog<UIServerListDialog>();
+        if (pServerList != 0)
+            pServerList->FUN_141ad2f60(channels, &nSelected, m_channel);
+        static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("channel", Scaleform::GFx::Value(channels.FUN_1422bb870()));
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("selectedchannel", nSelected);
+        CStringW strGroup;
+        if (DAT_143ab0248 != 2)
+            strGroup = FUN_1401a9d70()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("channelprefix", FUN_14028b8e0(L"s_word_ch"));
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("channelgroup", strGroup);
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("mapAlphaPrefix", FUN_14028b8e0(L"s_word_minimap_alpha"));
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("bgAlphaPrefix", FUN_14028b8e0(L"s_word_mapbg_alpha"));
+    }
+    m_30->Invoke("initData", spData->FUN_1422bb870());
+}
+MS2_REPLACE_METHOD(0x141a3c150, UIMinimapDialog, FUN_141a3c150, 3442, 0x5796E527);
+
+// @0x141a3d080
+// MS2-FUNCTIONAL: the npc data conversion temp is copied through extra stack slots in the exe
+void UIMinimapDialog::FUN_141a3d080(ProxyPtr spProxy)
+{
+    if (m_30 == 0)
+        return;
+    if (m_proxies.Lookup(spProxy) != 0)
+        return;
+    if (spProxy->FUN_1416c2040() || spProxy->FUN_1416c1ff0()) {
+        ASObj data(2);
+        if (FUN_141a3bda0(data, spProxy))
+            m_30->Invoke("createPlayer", data.FUN_1422bb870());
+    }
+    EntityPtr spEntity(0);
+    if (spProxy->FUN_1416c1ff0()) {
+        spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 0));
+        spEntity->m_icon = s_strPlayer;
+        spEntity->m_layer = s_strLayerPlayer;
+        spEntity->m_position = spProxy->FUN_1416c2270();
+        spEntity->m_visible = true;
+        spEntity->m_state = s_strIdle;
+        m_player = spEntity;
+    } else if (spProxy->FUN_1416c2040()) {
+        spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 1));
+        spEntity->m_icon = s_strOther;
+        spEntity->m_position = spProxy->FUN_1416c2270();
+        spEntity->m_visible = true;
+        spEntity->m_text = spProxy->FUN_1416c23b0();
+        spEntity->m_showText = false;
+        spEntity->m_showGuide = false;
+        FUN_141a432a0(spProxy, spEntity);
+    } else if (spProxy->FUN_1416c2090()) {
+        spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 2));
+        MS2Ptr<CNpcData> spNpc = spProxy->FUN_1416c2220();
+        if (static_cast<CNpcData*>(spNpc) != 0) {
+            spEntity->m_text = spProxy->FUN_1416c23b0();
+            spEntity->m_position = spProxy->FUN_1416c2270();
+            FUN_141a43680(spProxy, spEntity);
+        }
+    } else if (spProxy->FUN_1416c21c0()) {
+        spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 3));
+        spEntity->m_text = spProxy->FUN_1416c23b0();
+        spEntity->m_position = spProxy->FUN_1416c2270();
+        FUN_141a43ac0(spProxy, spEntity);
+    } else if (spProxy->FUN_1416c20d0()) {
+        spEntity.AssignRaw(new UIMinimapEntityProxyPortal(spProxy->m_proxyId));
+        if (spProxy->FUN_1416c2110())
+            FUN_141a43b80(spProxy, spEntity, true);
+    }
+    if (FUN_141a3e7d0(spEntity))
+        m_proxies.SetAt(spProxy, spEntity);
+    if (spEntity->m_64)
+        m_212 = true;
+}
+
 // @0x141a3e7d0
 bool UIMinimapDialog::FUN_141a3e7d0(EntityPtr spEntity)
 {
@@ -3106,7 +3677,7 @@ void UIMinimapDialog::FUN_141a3eed0()
     for (size_t i = 0; i < objects.GetCount(); ++i)
         FUN_141a39770(objects[i]);
 }
-MS2_REPLACE_METHOD(0x141a3eed0, UIMinimapDialog, FUN_141a3eed0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3eed0, UIMinimapDialog, FUN_141a3eed0, 166, 0x633A6A4C);
 
 // @0x141a3f570
 void UIMinimapDialog::FUN_141a3f570()
@@ -3118,7 +3689,7 @@ void UIMinimapDialog::FUN_141a3f570()
         m_clip228 = 0;
     }
 }
-MS2_REPLACE_METHOD(0x141a3f570, UIMinimapDialog, FUN_141a3f570, 0, 0);
+MS2_REPLACE_METHOD(0x141a3f570, UIMinimapDialog, FUN_141a3f570, 134, 0x60F6F4E1);
 
 // @0x141a3f600
 void UIMinimapDialog::FUN_141a3f600(ProxyPtr spProxy)
@@ -3150,6 +3721,82 @@ void UIMinimapDialog::FUN_141a3f930(EntityPtr spEntity)
     if (spEntity == 0)
         return;
     FUN_141a3f730(spEntity->m_clip, ProxyPtr(0));
+}
+
+// @0x141a46c90
+void UIMinimapDialog::FUN_141a46c90(EntityMap& map)
+{
+    if (map.IsEmpty())
+        return;
+    for (POSITION pos = map.GetStartPosition(); pos != 0; map.GetNext(pos)) {
+        EntityPtr spEntity = map.GetValueAt(pos);
+        if (spEntity == 0)
+            continue;
+        FUN_141a3f730(spEntity->m_clip, ProxyPtr(0));
+    }
+}
+
+// @0x141a46dc0
+void UIMinimapDialog::FUN_141a46dc0(NamedMap& map)
+{
+    if (map.IsEmpty())
+        return;
+    for (POSITION pos = map.GetStartPosition(); pos != 0; map.GetNext(pos)) {
+        EntityPtr spEntity = map.GetValueAt(pos);
+        if (spEntity == 0)
+            continue;
+        FUN_141a3f730(spEntity->m_clip, ProxyPtr(0));
+    }
+}
+
+// @0x141a46ef0
+void UIMinimapDialog::FUN_141a46ef0(ProxyMap& map)
+{
+    if (map.IsEmpty())
+        return;
+    for (POSITION pos = map.GetHeadPosition(); pos != 0; map.GetNext(pos)) {
+        ProxyPtr spProxy = map.GetKeyAt(pos);
+        EntityPtr spEntity = map.GetValueAt(pos);
+        if (spEntity == 0)
+            continue;
+        FUN_141a3f730(spEntity->m_clip, spProxy);
+    }
+}
+
+// @0x141a47060
+void UIMinimapDialog::FUN_141a47060(BuddyMap& map)
+{
+    if (map.IsEmpty())
+        return;
+    for (POSITION pos = map.GetStartPosition(); pos != 0; map.GetNext(pos)) {
+        EntityPtr spEntity = map.GetValueAt(pos);
+        if (spEntity == 0)
+            continue;
+        FUN_141a3f730(spEntity->m_clip, ProxyPtr(0));
+    }
+}
+
+// @0x141a47190
+void UIMinimapDialog::FUN_141a47190(PingMap& map)
+{
+    if (map.IsEmpty())
+        return;
+    for (POSITION pos = map.GetHeadPosition(); pos != 0; map.GetNext(pos)) {
+        EntityPtr spEntity = map.GetValueAt(pos);
+        if (spEntity == 0)
+            continue;
+        FUN_141a3f730(spEntity->m_clip, ProxyPtr(0));
+    }
+}
+
+void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member
+
+// @0x141a472c0
+void ASObj::FUN_141a472c0(const char* szName, int n)
+{
+    ASData data;
+    data.FUN_1422b7f70(n);
+    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
 }
 
 // @0x141a3f9f0
@@ -3185,7 +3832,7 @@ void UIMinimapDialog::FUN_141a3fb10()
     FUN_141a46c90(m_objects);
     FUN_141a3fd20();
 }
-MS2_REPLACE_METHOD(0x141a3fb10, UIMinimapDialog, FUN_141a3fb10, 0, 0);
+MS2_REPLACE_METHOD(0x141a3fb10, UIMinimapDialog, FUN_141a3fb10, 513, 0xEBDDB7DE);
 
 // @0x141a3fd20
 void UIMinimapDialog::FUN_141a3fd20()
@@ -3202,4 +3849,4 @@ void UIMinimapDialog::FUN_141a3fd20()
     m_objects.RemoveAll();
     m_homes.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x141a3fd20, UIMinimapDialog, FUN_141a3fd20, 0, 0);
+MS2_REPLACE_METHOD(0x141a3fd20, UIMinimapDialog, FUN_141a3fd20, 231, 0x2297E1D9);

@@ -87,7 +87,7 @@ void* FUN_1408b6b20(void* pDst, const void* pSrc);
 void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);
 CString FUN_141b6ed00(const CString& strPath);
 CString FUN_140298360(const char* pszPrefix, const CString& strPath);
-char FUN_1402a5b40(const CString& a, const char* b);                // CString != C string
+bool FUN_1402a5b40(const CString& a, const char* b);                // CString != C string
 
 // ---- scene helpers ----
 class Unk_NodeQueue
@@ -887,7 +887,7 @@ DecoLayer::~DecoLayer()
     {
         egf::EntityID kId;
         m_aItems[i]->FUN_14123c460(kId);
-        FUN_1403ed2d0()->FUN_141bbbc60(kId.GetValue(), 0);
+        FUN_1403ed2d0()->FUN_141bbbc60(kId, 0);
     }
     m_aItems.RemoveAll();
 }
@@ -967,7 +967,10 @@ MS2_REPLACE_METHOD(0x141176EB0, DecoLayer, GetAsset, 66, 0x869FB423);
 // @0x141176f00
 bool DecoLayer::IsKfm(CString strAsset)
 {
-    return strAsset.Find(".kfm", 0) != -1;
+    int nPos = strAsset.Find(".kfm", 0);
+    if (nPos != -1)
+        return true;
+    return false;
 }
 
 // @0x141176f70
@@ -975,44 +978,36 @@ bool DecoLayer::SetAsset(CString strAsset)
 {
     m_strAsset = strAsset;
     DecoItem* pItem = GetEditableItem();
-    if (pItem == 0)
-        return false;
-    if (IsKfm(strAsset))
-        return pItem->LoadKfm(strAsset);
-    return pItem->LoadNif(strAsset);
+    if (pItem != 0)
+        return IsKfm(strAsset) ? pItem->LoadKfm(strAsset) : pItem->LoadNif(strAsset);
+    return false;
 }
 
+// MS2-FUNCTIONAL: the exe takes the EntityID result slot address before indexing aOld (FUN_141bbbc60's id is a by-value argument temp there), while worldservice.h declares it const egf::EntityID& for its other callers; otherwise identical
 // @0x1411770b0
 bool DecoLayer::ChangeAsset(CString strAsset)
 {
-    if (!FUN_1402a5b40(m_strAsset, ""))
+    if (FUN_1402a5b40(m_strAsset, ""))
     {
         m_strAsset = strAsset;
-        return false;
+        ATL::CAtlArray<efd::SmartPointer<DecoItem> > aOld;
+        for (unsigned i = 0; i < m_aItems.GetCount(); i++)
+            aOld.Add(m_aItems[i]);
+        m_aItems.RemoveAll();
+        for (unsigned i = 0; i < aOld.GetCount(); i++)
+        {
+            ATL::CAtlArray<NiTransform> aXf;
+            aOld[i]->CollectTransforms(aXf);
+            FUN_1403ed2d0()->FUN_141bbbc60(aOld[i]->FUN_14123c460(), 0);
+            DecoItem* pItem = AddItem(aXf);
+            if (pItem != 0)
+                IsKfm(GetAsset()) ? pItem->LoadKfm(GetAsset()) : pItem->LoadNif(GetAsset());
+        }
+        aOld.RemoveAll();
+        return true;
     }
     m_strAsset = strAsset;
-    ATL::CAtlArray<efd::SmartPointer<DecoItem> > aOld;
-    for (unsigned i = 0; i < m_aItems.GetCount(); i++)
-        aOld.Add(m_aItems[i]);
-    m_aItems.RemoveAll();
-    for (unsigned i = 0; i < aOld.GetCount(); i++)
-    {
-        ATL::CAtlArray<NiTransform> aXf;
-        aOld[i]->CollectTransforms(aXf);
-        egf::EntityID kId;
-        aOld[i]->FUN_14123c460(kId);
-        FUN_1403ed2d0()->FUN_141bbbc60(kId.GetValue(), 0);
-        DecoItem* pItem = AddItem(aXf);
-        if (pItem != 0)
-        {
-            if (IsKfm(GetAsset()))
-                pItem->LoadKfm(GetAsset());
-            else
-                pItem->LoadNif(GetAsset());
-        }
-    }
-    aOld.RemoveAll();
-    return true;
+    return false;
 }
 
 // @0x1411773c0

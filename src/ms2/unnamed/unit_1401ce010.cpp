@@ -30,8 +30,17 @@
 // @0x1401d02a0
 CStringW StringFormat(const wchar_t* format, const fmt::ArgList& args)
 {
-    CStringW str = fmt::format(fmt::WStringRef(format), args).c_str();
-    return str;
+    try
+    {
+        CStringW str = fmt::format(format, args).c_str();
+        return str;
+    }
+    catch (std::exception& e)
+    {
+        // ASSERT(FALSE) of commonfiles\stringutil.h (the function body lives in that header)
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\stringutil.h", 556), 0));
+    }
+    return format;
 }
 
 // @0x1401d0c40

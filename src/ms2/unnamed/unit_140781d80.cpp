@@ -124,6 +124,7 @@ template<> struct Unk_SocketRef<RideeData::Rider> {
     }
     static RideeData::Rider* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }
 };
+MS2_SOCKETPTR_BOXED(RideeData::Rider)
 typedef Unk_SocketPtr<RideeData::Rider> Unk_RiderPtr;
 
 namespace RideeData

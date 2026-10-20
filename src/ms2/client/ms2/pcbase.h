@@ -23,6 +23,7 @@
 #include "ms2/placeholder/ascript.h"   // MS2Ptr<T>
 #include "ms2/placeholder/timer.h"     // Timer (0x38)
 #include "ms2/placeholder/pushcontrol.h"   // CPushControl (0x48)
+#include "ms2/placeholder/unkvec47.h"     // Unk_Vec4 / Unk_Vec7 (+0x180..+0x1bc)
 #include <efd/utf8string.h>
 #include <efd/Point2.h>
 
@@ -462,28 +463,9 @@ public:
     float m_f174;                       // +0x174
     float m_f178;                       // +0x178
     float m_f17c;                       // +0x17c
-    union {
-        float m_unk_180[4];             // +0x180 (init 0x140266620; [0] = 1800.0)
-        struct {
-            float m_f180;
-            float m_f184;
-            float m_fMoveSpeed;         // +0x188 (vfunc_10 -> FUN_141671960)
-            float m_f18c;
-        };
-    };
-    union {
-        float m_unk_190[4];             // +0x190 (init 0x140266620; [0] = 1800.0)
-        struct {
-            float m_fTurnSpeed;         // +0x190 degrees per second (FUN_14166da10 / FUN_14166dab0)
-            float m_f194;
-            float m_f198;
-            float m_f19c;
-        };
-    };
-    union {
-        float m_unk_1a0[7];             // +0x1a0 (init 0x1402666f0; [0] = 50.0)
-        float m_f1a0;                   // +0x1a0
-    };
+    Unk_Vec4 m_unk_180;                 // +0x180 (ctor 0x140266620; m_x = 1800.0, m_z move speed: vfunc_10 -> FUN_141671960)
+    Unk_Vec4 m_unk_190;                 // +0x190 (ctor 0x140266620; m_x = turn speed in degrees per second, 1800.0)
+    Unk_Vec7 m_unk_1a0;                 // +0x1a0 (ctor 0x1402666f0; m_a = 50.0)
     int m_unk_1bc;                      // +0x1bc
     __int64 m_unk_1c0[3][0x23];         // +0x1c0 stat values (kind 0..2, stat 0..0x22; FUN_141670990)
     __int64 m_unk_508[0x23];            // +0x508 zero-filled record

@@ -101,3 +101,6 @@ void Unk_CMISDrive1410e29c0()
     { Unk_CMISMapUid m; Unk_CMISDistance(m); }
     { Unk_CMISMapKindCount m; Unk_CMISDistance(m); }
 }
+// MS2-PIN: ??$_Emplace_back@V?$SmartPointer@VEntity@egf@@@efd@@@?$_Uninitialized_backout_al@PEAV?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@QEAAX$$QEAV?$SmartPointer@VEntity@egf@@@efd@@@Z 0x1410e34e0 ; the rvalue (_Uninitialized_move) copy; the lvalue one is byte-identical but sits at 0x1410e3360-0x1410e3420
+// MS2-PIN: ??$_Emplace_back@V?$SmartPointer@VEntity@egf@@@efd@@@?$_Uninitialized_backout_al@PEAV?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@QEAAX$$QEAV?$SmartPointer@VEntity@egf@@@efd@@@Z 0x1410e3540 ; the rvalue (_Uninitialized_move) copy; the lvalue one is byte-identical but sits at 0x1410e3360-0x1410e3420
+// MS2-PIN: ??$_Emplace_back@VEntityID@egf@@@?$_Uninitialized_backout_al@PEAVEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAAX$$QEAVEntityID@egf@@@Z 0x1410e35a0 ; the rvalue (_Uninitialized_move) copy; the lvalue one is byte-identical but sits at 0x1410e3360-0x1410e3420

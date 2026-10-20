@@ -16,6 +16,7 @@ public:
     __int64 FUN_1406941f0();                                // m_30
     int FUN_140694200();                                    // m_38
 
+    int FUN_1409eedf0() { return m_28; }                    // inline COMDAT 0x1409eedf0 (astooltip.cpp): the recipe id
     __int64 FUN_140d52020() { return m_20; }                // inline COMDAT 0x140d52020 (manufacturemanager.cpp): the record id
 
     __int64 m_18;                                           // +0x18

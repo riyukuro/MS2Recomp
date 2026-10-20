@@ -686,10 +686,7 @@ bool MS2ShadowClickGenerator::IsInCullPlanes(NiAVObject* pkObject)
 
 // ---- MS2ShadowClickValidator ----
 
-// @0x14150b160
-MS2ShadowClickValidator::MS2ShadowClickValidator()
-{
-}
+// 0x14150b160: the implicit MS2ShadowClickValidator() ctor (COMDAT emitted by CreateMS2ShadowClickValidator)
 
 // @0x14150b1c0
 MS2ShadowClickValidator::~MS2ShadowClickValidator()

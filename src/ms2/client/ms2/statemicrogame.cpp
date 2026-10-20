@@ -387,62 +387,60 @@ int StateMicroGameRps::FUN_140b872c0()
 }
 
 // @0x140b87310
-bool StateMicroGameRps::FUN_140b87310(int nMode, int nCard, int nPick)
+void StateMicroGameRps::FUN_140b87310(int nMode, int nCard, int nPick)
 {
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
     {
         MS2_ASSERT_AT(0x92, 0);
-        return false;
+        return;
     }
     if (FUN_1417b7e40() != 0x9a)
     {
         MS2_ASSERT_AT(0x98, 0);
-        return false;
+        return;
     }
-    if (nMode < 0 || nMode > 3)
+    if ((nMode >= 0 && nMode <= 3) == false)
     {
         MS2_ASSERT_AT(0x9e, 0);
-        return false;
+        return;
     }
-    if (nCard < 0 || nCard > 2)
+    if ((nCard >= 0 && nCard <= 2) == false)
     {
         MS2_ASSERT_AT(0xa4, 0);
-        return false;
+        return;
     }
-    if (nPick < 0 || nPick > 2)
+    if ((nPick >= 0 && nPick <= 2) == false)
     {
         MS2_ASSERT_AT(0xaa, 0);
-        return false;
+        return;
     }
     UIMicroGameRps* pUI = Unk_MgGetDialog<UIMicroGameRps>(0x4f60);
     if (pUI == 0)
     {
         MS2_ASSERT_AT(0xb1, 0);
-        return false;
+        return;
     }
     pUI->FUN_140e663b0();
     MS2Ptr<RpsContext> spEvent = FUN_1401c0d90()->FUN_14047d140();
     if (spEvent == 0)
     {
         MS2_ASSERT_AT(0xba, 0);
-        return false;
+        return;
     }
     MS2Ptr<RpsGameData> spGame = spEvent->m_spGameData;
     if (spGame == 0)
     {
         MS2_ASSERT_AT(0xc1, 0);
-        return false;
+        return;
     }
-    if (!(m_spRps == 0))
-    {
-        m_spRps->m_n1c = nCard;
-        m_spRps->m_n20 = nMode;
-        CStringW* pName = &spGame->m_actionNames[nCard];
-        m_spRps->m_str = *pName;
-        pRider->FUN_14166cc40(0x9b);
-    }
-    return true;
+    if (m_spRps == 0)
+        return;
+    m_spRps->m_n1c = nCard;
+    m_spRps->m_n20 = nMode;
+    CStringW& rName = spGame->m_actionNames[nCard];
+    m_spRps->m_str = rName;
+    pRider->FUN_14166cc40(0x9b);
 }
 
 // @0x140b876a0

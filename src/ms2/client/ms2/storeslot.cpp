@@ -690,19 +690,20 @@ StoreSlotBag::~StoreSlotBag()
 int StoreSlotBag::FUN_14180b3e0(CStringW strSearch)
 {
     int nResult = -1;
-    for (std::map<int, CString>::iterator it = m_slots.begin(); it != m_slots.end(); ++it)
+    std::map<int, CString>& slots = m_slots;
+    for (std::map<int, CString>::iterator it = slots.begin(), itEnd = slots.end(); it != itEnd; ++it)
     {
         std::pair<const int, CString> entry = *it;
         StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd0f0(this, entry.second));
         if (pSlot != 0)
         {
             int nIndex = pSlot->FUN_141808b10(strSearch);
-            if (nIndex != -1)
-            {
-                if (nResult != -1 && nResult < nIndex)
-                    nIndex = nResult;
+            if (nIndex == -1)
+                continue;
+            if (nResult == -1)
                 nResult = nIndex;
-            }
+            else
+                nResult = nResult < nIndex ? nResult : nIndex;
         }
     }
     return nResult;

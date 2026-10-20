@@ -5,6 +5,7 @@
 #pragma once
 #include <afx.h>
 #include <atlcoll.h>
+#include <efd/Point3.h>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/uidialog.h"
@@ -36,9 +37,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     int m_178;                                              // +0x178 the recipe book id (0 = none)
-    float m_17c;                                            // +0x17c x of the window
-    float m_180;                                            // +0x180 y of the window
-    int m_184;                                              // +0x184
+    efd::Point3 m_17c;                                      // +0x17c window position (x, y, 0)
     ATL::CAtlArray<CString> m_188;                          // +0x188 the item bag keys of the rows
 };
 MS2_CHECK_SIZE(UIMaidRecipeListDialog, 0x1a8);

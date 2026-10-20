@@ -2,6 +2,7 @@
 // MS2-UNIT: ?\triggeractioncli.cpp
 // MS2-RANGE: 0x1400d66e0-0x1400d67b0 .text$di
 // MS2-RANGE: 0x140de4d10-0x140dece80 .text$mn
+// MS2-PIN: ??$make_pair@AEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@AEAH@std@@YA?AU?$pair@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@0@AEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@AEAH@Z 0x140deb360 ; std::make_pair(m_strName, nId) in CollectIds
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?SetAtGrow@?$CAtlArray@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@@ATL@@QEAAX_KAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@Z 0x140de52a0 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VTriggerObject@@@@QEAA@H@Z 0x140de8c40 ; unique
@@ -466,7 +467,6 @@ void FUN_140de0cb0(efd::AssetID* pId, efd::utf8string* pUrn);             // set
 bool FUN_140de8e30(const efd::utf8string& str, const char* psz);          // == psz
 int FUN_140de9280(const std::string& s, const char* psz);
 bool FUN_140de8ea0(const void* pA, const void* pB);
-std::pair<CStringW, int>* FUN_140deb360(std::pair<CStringW, int>* p, const CStringW* pName, const int* pnId);
 efd::AssetID* FUN_140de8c90(efd::AssetID* pDst, const efd::AssetID* pSrc);
 void FUN_140de9160(std::string& s, size_t n);
 void FUN_140de91c0(std::string& s);
@@ -1251,6 +1251,7 @@ void TriggerStateCli::Save(void* pNode)
     FUN_14086f450(&elEnter);
 }
 
+// MS2-FUNCTIONAL: the obj's GetName() CStringW temporaries get a C++ EH state (__CxxFrameHandler3, 760 bytes); the exe function has no EH info (728 bytes) - the action name accessor's real return type/inline form is not recovered
 // @0x140de9d40
 bool TriggerStateCli::Validate(int* pnReason)
 {
@@ -1313,26 +1314,25 @@ void TriggerStateCli::CollectIds(std::vector<std::pair<CStringW, int> >& rOut)
         if (m_onEnter[i]->GetIntArg0() != 0)
         {
             int nId = m_onEnter[i]->GetIntArg0();
-            rOut.push_back(std::pair<CStringW, int>(m_strName, nId));
+            rOut.push_back(std::make_pair(m_strName, nId));
         }
     }
     for (size_t j = 0; j < m_transitions.GetCount(); j++)
     {
         TransitionPtr spTrans(m_transitions[j]);
-        if (!(spTrans->m_spCond == 0))
+        if (spTrans->m_spCond == 0)
+            continue;
+        if (spTrans->m_spCond->GetIntArg0() != 0)
         {
-            if (spTrans->m_spCond->GetIntArg0() != 0)
+            int nCondId = spTrans->m_spCond->GetIntArg0();
+            rOut.push_back(std::make_pair(m_strName, nCondId));
+        }
+        for (size_t k = 0; k < spTrans->m_actions.GetCount(); k++)
+        {
+            if (spTrans->m_actions[k]->GetIntArg0() != 0)
             {
-                int nCondId = spTrans->m_spCond->GetIntArg0();
-                rOut.push_back(std::pair<CStringW, int>(m_strName, nCondId));
-            }
-            for (size_t k = 0; k < spTrans->m_actions.GetCount(); k++)
-            {
-                if (spTrans->m_actions[k]->GetIntArg0() != 0)
-                {
-                    int nActId = spTrans->m_actions[k]->GetIntArg0();
-                    rOut.push_back(std::pair<CStringW, int>(m_strName, nActId));
-                }
+                int nActId = spTrans->m_actions[k]->GetIntArg0();
+                rOut.push_back(std::make_pair(m_strName, nActId));
             }
         }
     }
@@ -1523,10 +1523,4 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(2);
 // @0x140dec770
 MS2_EMIT_CRT_MEMMOVE_S_COPY(3);
 
-// @0x140deb360
-std::pair<CStringW, int>* FUN_140deb360(std::pair<CStringW, int>* p, const CStringW* pName, const int* pnId)
-{
-    ::new (p) std::pair<CStringW, int>(*pName, *pnId);
-    return p;
-}
 

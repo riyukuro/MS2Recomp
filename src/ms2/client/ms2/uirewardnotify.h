@@ -38,7 +38,7 @@ public:
     void FUN_141abfdc0(Unk_RNAchieve* pAchieve);                                        // achievement / title
     void FUN_141abffa0(int nEmotionId);                                                 // emotion
     void FUN_141ac0210(PC* pPlayer);                                                  // learned skills
-    void FUN_141ac05d0(int nSkillId, const CStringW& strMsg, int nSkillType);           // skill message
+    void FUN_141ac05d0(int nSkillId, CStringW strMsg, int nSkillType);                  // skill message (by value: the callee destroys it)
     void FUN_141ac0860(__int64 nValue);                                                 // "merat"
     void FUN_141ac0990(__int64 nValue);                                                 // "merat_red"
     void FUN_141ac0ac0(int nId);                                                        // title

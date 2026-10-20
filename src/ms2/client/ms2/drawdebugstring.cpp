@@ -15,27 +15,14 @@
 #include "ms2/ms2recover.h"
 
 // ---- exe callees ----
-struct Unk_DbgRect { float f[4]; char pad[8]; };
-Unk_DbgRect* FUN_14097eac0(Unk_DbgRect* pOut, float fA, float fB, float fC, float fD);   // the window rect of the line
-NiColorA* FUN_140987930(NiColorA* pOut, const NiColorA* pSrc);                           // NiColorA copy
 extern const NiColorA DAT_143a09680;                                                    // black
 extern const NiPoint3 DAT_143b01a60;                                                    // the zero point
-void FUN_1402bd040(NiPoint3* pPoint);                                                   // NiPoint3 ctor
 NiPoint3* FUN_140194470(NiPoint3* pDst, const NiPoint3* pSrc);                          // NiPoint3 assign
 bool FUN_140552690(const NiPoint3* pA, const NiPoint3* pB);                             // NiPoint3 ==
-void* FUN_140876480(void* pOut, int nCategory);
-void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
 void* FUN_140a44830();                                                                  // the debug log singleton
 void FUN_1401ce2f0(void* pLog, const char* pszFormat, const char* pszText);
 CString FUN_14016a5c0(const char* psz, int nCodePage);                                  // narrows a string
 CString FUN_140298360(const char* psz, const CString& str);                             // operator+(const char*, const CString&)
-
-// MS2-FUNCTIONAL: EH state layout (maxState/unwind helper) and ScreenText allocation spelling differ
-static NiRect<float> Unk_DbgWindowRect()
-{
-    Unk_DbgRect kTmp;
-    return *(NiRect<float>*)FUN_14097eac0(&kTmp, 0, 5.0f, 400.0f, 0);
-}
 
 #ifdef __clang__
 // Bind the exe's operator+(char, const CString&); clang would import an unavailable MFC CopyChars.
@@ -46,15 +33,10 @@ inline CString Unk_DbgPrepend(char ch, const CString& str) { return ch + str; }
 #endif
 
 // @0x14118b420
-CDrawDebugString::CDrawDebugString(const char* pcName, NiColorA kColor) : NiVisualTrackerBase(Unk_DbgWindowRect(), false, pcName)
+CDrawDebugString::CDrawDebugString(const char* pcName, NiColorA kColor) : NiVisualTrackerBase(NiRect<float>(0, 5.0f, 400.0f, 0), false, pcName)
 {
-    FUN_1402bd040(&m_kPoint);
-    char kCat1[4];
-    m_pText = ::new(FUN_14208a860(0x50, *(unsigned*)FUN_140876480(kCat1, 0))) NiVisualTrackerBase::ScreenText(0x20, &m_kScreenTextures, kColor);
-    NiColorA kBlack;
-    FUN_140987930(&kBlack, &DAT_143a09680);
-    char kCat2[4];
-    m_pShadow = ::new(FUN_14208a860(0x50, *(unsigned*)FUN_140876480(kCat2, 0))) NiVisualTrackerBase::ScreenText(0x20, &m_kScreenTextures, kBlack);
+    m_pText = NiNew NiVisualTrackerBase::ScreenText(0x20, &m_kScreenTextures, kColor);
+    m_pShadow = NiNew NiVisualTrackerBase::ScreenText(0x20, &m_kScreenTextures, (const efd::ColorA&)DAT_143a09680);    // implicit NiColorA(const efd::ColorA&) temp
     m_pShadow->SetTextOrigin(1, 1);
     m_nValue = 0;
     FUN_140194470(&m_kPoint, &DAT_143b01a60);

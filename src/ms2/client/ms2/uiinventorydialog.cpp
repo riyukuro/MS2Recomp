@@ -309,7 +309,7 @@ int FUN_1409c1750(const Scaleform::GFx::Value& v);                  // the value
 class Unk_InvSwfManager : public UISwfEntityManager
 {
 public:
-    int FUN_1422d4e20(const CString& strKey);                       // has the key focus
+    int FUN_1422d4e20(CString strKey);                              // has the key focus
     void FUN_1422d4dd0(const CString& strKey);                      // take the key focus
 };
 
@@ -432,6 +432,8 @@ CStringW FUN_14028de60(int nStringId);
 CStringW FUN_1409eec40(int nStringId);
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
+bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);         // str == sz
+CStringW FUN_1408116a0(int nId, const int& nArg);                   // the system text formatted with one int (FormatStringId<int>)
 CStringW FUN_1405c2690(const CStringW& strKey, const CStringW& strArg);
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
 CStringW FUN_1413fa9b0(const CStringW& str);                        // lower case
@@ -652,11 +654,10 @@ MS2_REPLACE_METHOD_VIA(0x141997800, UIInventoryDialog, UIStatusEventListener, vf
 // @0x141997880
 void UIInventoryDialog::vfunc_oa0_7(int a1, CStringW s)
 {
-    if (vfunc_55() == 0)
-    {
-        if (InventorySlotBag* pBag = FUN_14140fb30(FUN_1422c8e90(m_188)))
-            FUN_1422cca90(pBag);
-    }
+    if (vfunc_55() != 0)
+        return;
+    if (InventorySlotBag* pBag = FUN_14140fb30(FUN_1422c8e90(m_188)))
+        FUN_1422cca90(pBag);
 }
 MS2_REPLACE_METHOD_VIA(0x141997880, UIInventoryDialog, UIStatusEventListener, vfunc_oa0_7, 151, 0);
 
@@ -801,34 +802,44 @@ int UIInventoryDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 }
             }
         }
-        else if (pMsg->FUN_1422b8d30() == "OnReset")
+        else
         {
-            m_194 = 0;
-            return 1;
+            CString strCmd = pMsg->FUN_1422b8d30();
+            if (strCmd == "OnReset")
+            {
+                m_194 = 0;
+                return 1;
+            }
         }
         return 0;
     }
     int nAnswer = pMsg->FUN_1422b8a10();
     CStringW strTag = pMsg->FUN_1422b8f40();
-    if (nAnswer != 0)
+    if (nAnswer == 0)
+    {
+        if (!FUN_1403b3c40(strTag, L"expandSlot"))
+        {
+            ATL::CAtlArray<CStringW> aParts;
+            if (FUN_14028cb70(strTag, aParts, L",", 2) == 0)
+                return 0;
+            CStringW strAmount(aParts[1]);
+            if (!strAmount.IsEmpty())
+            {
+                __int64 nAmount = _wtoi64(strAmount);
+                FUN_14199bed0(nAmount);
+                return 1;
+            }
+        }
+        else
+        {
+            FUN_14199e2a0();
+        }
+    }
+    else
     {
         FUN_14151f200();
-        return 0;
     }
-    if (strTag == L"expandSlot")
-    {
-        FUN_14199e2a0();
-        return 0;
-    }
-    ATL::CAtlArray<CStringW> aParts;
-    if (FUN_14028cb70(strTag, aParts, L",", 2) == 0)
-        return 0;
-    CStringW strAmount(aParts[1]);
-    if (strAmount.IsEmpty())
-        return 0;
-    __int64 nAmount = _wtoi64(strAmount);
-    FUN_14199bed0(nAmount);
-    return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD_VIA(0x1419982B0, UIInventoryDialog, IMessageListener, OnMessage, 968, 0);
 
@@ -1174,15 +1185,13 @@ MS2_REPLACE_METHOD(0x141999F60, UIInventoryDialog, FUN_141999f60, 1151, 0);
 // @0x14199a3f0
 void UIInventoryDialog::FUN_14199a3f0(__int64 nItemUid)
 {
-    if (vfunc_55() == 0)
-    {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
-        if (!(spItem == 0))
-        {
-            if (InventorySlotBag* pBag = FUN_14140fb30(FUN_1422c8e90(m_188)))
-                pBag->FUN_14140f5b0(spItem.get());
-        }
-    }
+    if (vfunc_55() != 0)
+        return;
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
+    if (!spItem)
+        return;
+    if (InventorySlotBag* pBag = FUN_14140fb30(FUN_1422c8e90(m_188)))
+        pBag->FUN_14140f5b0(spItem.get());
 }
 MS2_REPLACE_METHOD(0x14199A3F0, UIInventoryDialog, FUN_14199a3f0, 179, 0);
 
@@ -1931,7 +1940,7 @@ void UIInviteGroupDialog::OnLoadInit()
     UIObject::OnLoadInit();
     MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_userCount");
     if (spCount.get() != 0)
-        spCount->FUN_1422c4cd0(FUN_14028dee0(0x48a, 0));
+        spCount->FUN_1422c4cd0(FUN_1408116a0(0x48a, 0));
     FUN_1419a0240();
 }
 MS2_REPLACE_METHOD(0x14199F8A0, UIInviteGroupDialog, OnLoadInit, 237, 0);
@@ -2336,7 +2345,9 @@ MS2_REPLACE_METHOD(0x1419A18C0, UIItemBreakBase, vfunc_67, 167, 0);
 int UIItemBreakBase::vfunc_73()
 {
     UIDialog* pLock = FUN_140613770(0x4f08);
-    if (pLock != 0 && pLock->vfunc_55() == 0)
+    if (pLock == 0)
+        return UIDialog::vfunc_73();
+    if (pLock->vfunc_55() == 0)
         return 0;
     return UIDialog::vfunc_73();
 }
@@ -2385,7 +2396,7 @@ MS2_REPLACE_METHOD(0x1419A1A80, UIItemBreakBase, vfunc_66, 283, 0);
 void UIItemBreakBase::vfunc_43()
 {
     UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
-    if (pInventory != 0 && pInventory->FUN_1422dc430())
+    if (pInventory != 0 && pInventory->FUN_141924630())
     {
         float fX = 0.0f;
         float fY = 0.0f;
@@ -2577,9 +2588,9 @@ MS2_REPLACE_METHOD(0x1419A2CE0, UIItemBreakDialog, vfunc_67, 128, 0);
 int UIItemBreakDialog::vfunc_73()
 {
     UIDialog* pDonation = FUN_1405346e0(0x4e8e);
-    if (pDonation == 0)
-        return UIItemBreakBase::vfunc_73();
-    return pDonation->FUN_1422dc430() == 0;
+    if (pDonation != 0)
+        return pDonation->FUN_141924630() == 0;
+    return UIItemBreakBase::vfunc_73();
 }
 MS2_REPLACE_METHOD(0x1419A2D70, UIItemBreakDialog, vfunc_73, 85, 0);
 
@@ -2602,7 +2613,7 @@ MS2_REPLACE_METHOD(0x1419A2E10, UIItemBreakDialog, vfunc_88, 17, 0);
 // @0x1419a2e30
 void UIItemBreakDialog::vfunc_85(bool bReset, int nIndex)
 {
-    MS2Ptr<ASUIComponent> spBreak = GetChild<ASUIComponent>("m_break");
+    MS2Ptr<ASButton> spBreak = GetChild<ASButton>("m_break");
     if (spBreak.get() != 0)
         spBreak->FUN_1422c1fe0(FUN_1409c4b20()->FUN_140532b60());
     MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag");
@@ -2665,7 +2676,7 @@ void UIItemBreakDialog::vfunc_84(CInPacket* pPacket)
     if (m_30 == 0)
         return;
     FUN_1419a1fb0();
-    ASArray rows(2);
+    ASDataProvider rows(2);
     ASObj data(2);
     unsigned nCount = pPacket->vfunc_o8_3();
     for (unsigned i = 0; i < nCount; i++)
@@ -2802,7 +2813,7 @@ void UIItemBreakDialog::FUN_1419a44d0(CInPacket* pPacket)
         preview.FUN_140530920(*reinterpret_cast<Unk_BreakPacket*>(pPacket));
         previews[nItemId] = preview;
     }
-    ASArray rows(2);
+    ASDataProvider rows(2);
     ASObj data(2);
     for (std::map<int, ItemBreakCommon::BreakPreview>::iterator it = previews.begin(); it != previews.end(); ++it)
     {
@@ -2887,9 +2898,9 @@ MS2_REPLACE_METHOD(0x1419A4EF0, UIItemBreakDonationDialog, vfunc_67, 118, 0);
 int UIItemBreakDonationDialog::vfunc_73()
 {
     UIDialog* pBreak = FUN_140534590(0x4e8d);
-    if (pBreak == 0)
-        return UIItemBreakBase::vfunc_73();
-    return pBreak->FUN_1422dc430() == 0;
+    if (pBreak != 0)
+        return pBreak->FUN_141924630() == 0;
+    return UIItemBreakBase::vfunc_73();
 }
 MS2_REPLACE_METHOD(0x1419A4F70, UIItemBreakDonationDialog, vfunc_73, 85, 0);
 

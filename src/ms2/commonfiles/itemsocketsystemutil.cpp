@@ -1768,14 +1768,14 @@ MS2_REPLACE_METHOD(0x140631FF0, CItemUgc, FUN_140631ff0, 51, 0x47EF6E9A);
 // @0x140632030
 unsigned __int64 CItemUgc::FUN_140632030()
 {
-    return m_look.ugcId;
+    return m_look.m_n18;
 }
 MS2_REPLACE_METHOD(0x140632030, CItemUgc, FUN_140632030, 15, 0xAC153A31);
 
 // @0x140632050
 int CItemUgc::FUN_140632050()
 {
-    return m_look.unknown60;
+    return m_look.m_n60;
 }
 MS2_REPLACE_METHOD(0x140632050, CItemUgc, FUN_140632050, 14, 0xB1F80757);
 
@@ -1797,21 +1797,21 @@ MS2_REPLACE_METHOD(0x1406320C0, CItemUgc, FUN_1406320c0, 18, 0xB95413A9);
 // @0x1406320e0
 int CItemUgc::FUN_1406320e0()
 {
-    return m_look.unknown30;
+    return m_look.m_n30;
 }
 MS2_REPLACE_METHOD(0x1406320E0, CItemUgc, FUN_1406320e0, 14, 0x921EE467);
 
 // @0x140632100
 CString CItemUgc::FUN_140632100()
 {
-    return m_look.FUN_140892ec0();
+    return m_look.GetLocalPath();
 }
 MS2_REPLACE_METHOD(0x140632100, CItemUgc, FUN_140632100, 65, 0x2B0AA445);
 
 // @0x140632150
 CStringW CItemUgc::FUN_140632150()
 {
-    return m_look.title;
+    return m_look.m_str28;
 }
 MS2_REPLACE_METHOD(0x140632150, CItemUgc, FUN_140632150, 66, 0x1C4EBE1A);
 
@@ -1999,9 +1999,9 @@ int CItemStatus::FUN_14062fea0(unsigned nType)
 MS2_REPLACE_METHOD(0x14062FEA0, CItemStatus, FUN_14062fea0, 189, 0x47444B3B);
 
 // @0x14062ff70
-void CItemStatus::FUN_14062ff70(unsigned nType)
+int CItemStatus::FUN_14062ff70(unsigned nType)
 {
-    m_spOption->FUN_1405cb440(nType);
+    return m_spOption->FUN_1405cb440(nType);
 }
 MS2_REPLACE_METHOD(0x14062FF70, CItemStatus, FUN_14062ff70, 47, 0x04A83391);
 

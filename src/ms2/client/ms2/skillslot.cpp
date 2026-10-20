@@ -237,7 +237,7 @@ public:
     std::vector<unsigned> m_vItems;                       // +0x88
 };
 
-class Unk_SsContentSwitch { public: char FUN_14036d570(int nFeature); };
+class Unk_SsContentSwitch { public: bool FUN_14036d570(int nFeature); };
 Unk_SsContentSwitch* FUN_140166410();
 class Unk_SsDevice { public: Unk_SsDevice* FUN_14116d7a0(int n); };
 Unk_SsDevice* FUN_14025e7c0();
@@ -1909,8 +1909,10 @@ CSkillSystem::CSkillSystem()
 // @0x141764900
 CSkillSystem::~CSkillSystem()
 {
-    std::list<int> lstTemp(m_lstSkillSets);
-    for (std::list<int>::iterator it = lstTemp.begin(); it != lstTemp.end(); ++it)
+    std::list<unsigned> lstTemp(m_lstSkillSets);
+    std::list<unsigned>::iterator it = lstTemp.begin();
+    std::list<unsigned>::iterator itEnd = lstTemp.end();
+    for (; it != itEnd; ++it)
         FUN_141768100(*it);
 }
 
@@ -2161,6 +2163,7 @@ MS2Ptr<SkillLevelData> CSkillSystem::FUN_141764c80(int nSkillId)
     return spSkill->FUN_1407e90a0(spEmotion->m_level);
 }
 
+// MS2-FUNCTIONAL: exe 1840 vs ours 1902 bytes: the MS2Ptr<CSkillRecord>(nullptr) error returns and CString temporaries are laid out differently (same callees/logic)
 // @0x141764e30
 MS2Ptr<CSkillRecord> CSkillSystem::FUN_141764e30(Unk_InventorySkillRequest& kReq)
 {
@@ -2221,6 +2224,7 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141764e30(Unk_InventorySkillRequest& kReq
     return spRecord;
 }
 
+// MS2-FUNCTIONAL: exe 1268 vs ours 1285 bytes: MS2Ptr<SkillLevelData> operator-> temporaries are reused differently (one fewer exe call; same logic)
 // @0x141765570
 MS2Ptr<CSkillRecord> CSkillSystem::FUN_141765570(Unk_InventorySkillRequest& kReq)
 {
@@ -2378,6 +2382,7 @@ private:
 
 // The skill set of a ridee (CSkillSet): +0x18 id, +0x1c index, +0x20 kind (0: the skill set of the quick slots).
 
+// MS2-FUNCTIONAL: exe 1042 vs ours 1024 bytes: exe goes through one more MS2Ptr<SkillData> operator-> temp (39 vs 38 calls; same logic)
 // @0x1417664e0
 void CSkillSystem::FUN_1417664e0(unsigned nStart, int nSkillId, float fCool, float fCombo, int bCombo)
 {
@@ -2579,6 +2584,7 @@ LAB_CHECK:
     }
 }
 
+// MS2-FUNCTIONAL: exe 1253 vs ours 1341 bytes: compact-config/level-data loop keeps different temporaries and branch layout (same callees/logic)
 // @0x1417674a0
 int CSkillSystem::FUN_1417674a0(int bAny)
 {
@@ -2661,6 +2667,7 @@ int CSkillSystem::FUN_1417674a0(int bAny)
     return 0;
 }
 
+// MS2-FUNCTIONAL: exe CAtlList<unsigned>::Find takes the origin id by const& (element traits with a reference INARGTYPE); ours CElementTraits<unsigned> passes it by value
 // @0x141767990
 void CSkillSystem::FUN_141767990(int nSkillId, unsigned short nLevel)
 {
@@ -2673,8 +2680,9 @@ void CSkillSystem::FUN_141767990(int nSkillId, unsigned short nLevel)
     if (spLevel.IsNull())
         return;
     POSITION pos = m_lstLapenChains.Find(spSkill->GetOriginId());
-    if (pos != 0)
-        m_lstLapenChains.RemoveAt(pos);
+    if (pos == 0)
+        return;
+    m_lstLapenChains.RemoveAt(pos);
 }
 
 // @0x141767ae0
@@ -2739,45 +2747,43 @@ CStringW CSkillSystem::FUN_141767e60(unsigned __int64 nKey)
 // @0x141767f80
 void CSkillSystem::FUN_141767f80(int nSkillSetId)
 {
-    if (nSkillSetId != 0)
+    if (nSkillSetId == 0)
+        return;
+    if (m_spSkillSet.get() != 0 && m_spSkillSet->m_nKind == 0)
     {
-        int nNew = nSkillSetId;
-        if (m_spSkillSet.get() != 0 && m_spSkillSet->m_nKind == 0)
-        {
-            CString strName = Unk_SocketFormat("SkillSet{0}_{1}", m_spSkillSet->m_nId, m_spSkillSet->m_nIndex);
-            FUN_1409331f0()->FUN_14142f8b0(strName);
-        }
-        m_lstSkillSets.push_back(nNew);
-        m_spSkillSet = FUN_1414a57b0()->FUN_140809840(nNew);
+        CString strName = Unk_SocketFormat("SkillSet{0}_{1}", m_spSkillSet->m_nId, m_spSkillSet->m_nIndex);
+        FUN_1409331f0()->FUN_14142f8b0(strName);
     }
+    m_lstSkillSets.push_back(*(const unsigned*)&nSkillSetId);
+    m_spSkillSet = FUN_1414a57b0()->FUN_140809840(nSkillSetId);
 }
 
+// MS2-FUNCTIONAL: frame slots shifted by 8 and the exe copies the FUN_140809840 MS2Ptr result through one more temp before operator= (same callees/logic)
 // @0x141768100
 void CSkillSystem::FUN_141768100(int nSkillSetId)
 {
-    if (nSkillSetId != 0)
+    if (nSkillSetId == 0)
+        return;
+    if (m_spSkillSet.get() != 0 && m_spSkillSet->m_nKind == 0 && m_spSkillSet->m_nId == nSkillSetId)
     {
-        if (m_spSkillSet.get() != 0 && m_spSkillSet->m_nKind == 0 && m_spSkillSet->m_nId == nSkillSetId)
-        {
-            CString strName = Unk_SocketFormat("SkillSet{0}_{1}", m_spSkillSet->m_nId, m_spSkillSet->m_nIndex);
-            FUN_1409331f0()->FUN_14142f8b0(strName);
-        }
-        std::list<int>::iterator it = m_lstSkillSets.begin();
-        std::list<int>::iterator itEnd = m_lstSkillSets.end();
-        while (it != itEnd)
-        {
-            if (*it == nSkillSetId)
-            {
-                m_lstSkillSets.erase(it);
-                break;
-            }
-            ++it;
-        }
-        if (!m_lstSkillSets.empty())
-            m_spSkillSet = FUN_1414a57b0()->FUN_140809840(m_lstSkillSets.back());
-        else
-            m_spSkillSet = 0;
+        CString strName = Unk_SocketFormat("SkillSet{0}_{1}", m_spSkillSet->m_nId, m_spSkillSet->m_nIndex);
+        FUN_1409331f0()->FUN_14142f8b0(strName);
     }
+    std::list<unsigned>::iterator it = m_lstSkillSets.begin();
+    std::list<unsigned>::iterator itEnd = m_lstSkillSets.end();
+    while (it != itEnd)
+    {
+        if (*it == nSkillSetId)
+        {
+            m_lstSkillSets.erase(it);
+            break;
+        }
+        ++it;
+    }
+    if (!m_lstSkillSets.empty())
+        m_spSkillSet = FUN_1414a57b0()->FUN_140809840(m_lstSkillSets.back());
+    else
+        m_spSkillSet = 0;
 }
 
 // @0x141768380
@@ -2886,19 +2892,17 @@ void CSkillSystem::FUN_1417687e0(Unk_SkillCooltime* pCool)
 // @0x141768900
 void CSkillSystem::FUN_141768900(MS2Ptr<CSkillRecord> spRecord)
 {
-    if (!spRecord.IsNull())
-    {
-        if (!(spRecord->m_spSkill == 0))
-        {
-            if (spRecord->m_spSkill->GetRechargeMaxCount() != 0)
-            {
-                int nUsed = FUN_141768680(spRecord->m_spSkill.get());
-                FUN_1417685c0(spRecord->m_spSkill.get(), nUsed + 1);
-                FUN_141768d40(spRecord->m_spSkill, 0.0f);
-                FUN_1419f37f0(5);
-            }
-        }
-    }
+    if (spRecord == 0)
+        return;
+    if (spRecord->m_spSkill == 0)
+        return;
+    if (spRecord->m_spSkill->GetRechargeMaxCount() == 0)
+        return;
+    int nUsed = FUN_141768680(spRecord->m_spSkill.get());
+    nUsed++;
+    FUN_1417685c0(spRecord->m_spSkill.get(), nUsed);
+    FUN_141768d40(spRecord->m_spSkill);
+    FUN_1419f37f0(5);
 }
 
 // @0x141768a50
@@ -2938,13 +2942,12 @@ int CSkillSystem::FUN_141768bd0(MS2Ptr<CSkillRecord> spRecord)
 }
 
 // @0x141768d40
-void CSkillSystem::FUN_141768d40(MS2Ptr<SkillData> spSkill, float)
+void CSkillSystem::FUN_141768d40(MS2Ptr<SkillData> spSkill)
 {
-    if (!(spSkill == 0))
-    {
-        unsigned nNow = FUN_141472bc0();
-        m_mapRechargeTick.SetAt(spSkill->GetRechargeId(), nNow);
-    }
+    if (spSkill == 0)
+        return;
+    unsigned nNow = FUN_141472bc0();
+    m_mapRechargeTick.SetAt(spSkill->GetRechargeId(), nNow);
 }
 
 // @0x141768dd0
@@ -3058,14 +3061,9 @@ __int64 FUN_14028d0e0();                                  // the next cast id
 
 // @0x141763fa0
 Unk_InventorySkillRequest::Unk_InventorySkillRequest(int nSkillId, unsigned short nLevel)
+    : m_nSkillId(nSkillId), m_nLevel(nLevel), m_nCastId(FUN_14028d0e0()), m_nTick(FUN_141472bc0()), m_nMotion(0),
+      m_ptPos(*(const Unk_IsrPoint*)&DAT_143b01a60), m_ptDir(*(const Unk_IsrPoint*)&DAT_143b01a60)
 {
-    m_nSkillId = nSkillId;
-    m_nLevel = nLevel;
-    m_nCastId = FUN_14028d0e0();
-    m_nTick = FUN_141472bc0();
-    m_nMotion = 0;
-    m_ptPos = DAT_143b01a60;
-    m_ptDir = DAT_143b01a60;
     m_fRotZ = 0;
     m_n34 = 0;
     m_b38 = true;

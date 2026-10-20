@@ -36,7 +36,7 @@ public:
     virtual void vfunc_30(const CString& a1, const CString& a2, const CString& a3);   // 30 0x1419956b0
     virtual void vfunc_31(const CString& a1, float a2, const void* a3);   // 31 0x141995760
     virtual int vfunc_52(const CString& strPath, float fVolume);    // 52 0x141995190
-    virtual bool vfunc_53();                                        // 53 0x141995200
+    virtual int vfunc_53();                                         // 53 0x141995200
     virtual int vfunc_48() { return 0x4e33; }                       // 48 (COMDAT 0x1419967b0)
 
     void FUN_141995880();                                           // load Table/introMovie.xml

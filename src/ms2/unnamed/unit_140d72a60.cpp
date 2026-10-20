@@ -153,21 +153,22 @@ CFieldMission::CFieldMission() {}
 void CFieldMission::Complete(CInPacket& packet)
 {
     CQuest::Complete(packet);
-    Unk_QmGroupRewardPtr row = FUN_140d738f0()->FUN_14037c3d0(FUN_140764020()->FUN_1416d0150());
+    int nGroup = FUN_140764020()->FUN_1416d0150();
+    Unk_QmGroupRewardPtr row = FUN_140d738f0()->FUN_14037c3d0(nGroup);
     UIRewardNotify* notify;
     if (row.get() != 0 && (notify = FUN_140938cd0(0x4e5d)) != 0 && row.get() != 0) {
         switch (row->m_kind) {
-        case 2:
-            notify->FUN_141ac1b50(row->m_point);
-            FUN_1412751b0(FUN_14062b4f0(CStringW(L"s_reward_notify_stat_point"), &row->m_point), 0x14);
-            break;
         case 3: {
             notify->FUN_141ac1950(row->m_point, row->m_skillKind);
             CStringW key = L"s_reward_notify_skill_point";
             if (row->m_skillKind == 2) key = L"s_reward_notify_skill_point_sub_1";
             FUN_1412751b0(FUN_14062b4f0(key, &row->m_point), 0x14);
-            break;
         }
+            break;
+        case 2:
+            notify->FUN_141ac1b50(row->m_point);
+            FUN_1412751b0(FUN_14062b4f0(CStringW(L"s_reward_notify_stat_point"), &row->m_point), 0x14);
+            break;
         }
     }
 }

@@ -55,6 +55,7 @@
 #include <afx.h>
 #include <winsock2.h>
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/commonutil.h"
 #include <atlcoll.h>
 #include <atltime.h>
 #include <atlfile.h>

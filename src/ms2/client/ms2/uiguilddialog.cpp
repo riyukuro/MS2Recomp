@@ -191,7 +191,7 @@ CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CSt
 MS2Ptr<CFieldDataCli> FUN_140a55460(int nFieldId);              // CFieldDataCli::Find
 __int64 FUN_140869440();                                        // GetServerTime
 CStringW FUN_14062b4f0(CStringW strKey, const int* pArg);       // string table format
-CStringW FUN_140bfa7f0(CStringW strKey, CStringW strName, const int* pCount);   // string table format (name, count)
+CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nCount);   // string table format (name, count): the FMT_VARIADIC_W <CStringW, int> instance
 CStringW FUN_141081c60(CStringW strKey, const CStringW& strArg0, const CStringW& strArg1, const int* pArg2);   // string table format
 CStringW FUN_140632a60(int nStringId, const CStringW& strA, const CStringW& strB);   // string table format
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);   // create a message box
@@ -2532,7 +2532,7 @@ void UIGuildDialog::FUN_141971ac0()
                 {
                     strCondition = L"MAX";
                     strCost = L"MAX";
-                    strName = FUN_140bfa7f0(L"s_guild_ui_house_npc_name", CStringTable::GetInstance()->FUN_141811980(0x3f, spNpc->f30), &nLevel);
+                    strName = FUN_140bfa7f0(L"s_guild_ui_house_npc_name", CStringTable::GetInstance()->FUN_141811980(0x3f, spNpc->f30), nLevel);
                 }
                 bCanUpgrade = false;
             }
@@ -2548,7 +2548,7 @@ void UIGuildDialog::FUN_141971ac0()
                 if (nLevel == 0)
                     strName = FUN_1405c2690(L"s_guild_ui_house_npc_name_nolevel", CStringTable::GetInstance()->FUN_141811980(0x3f, spNext->f30));
                 else
-                    strName = FUN_140bfa7f0(L"s_guild_ui_house_npc_name", CStringTable::GetInstance()->FUN_141811980(0x3f, spNext->f30), &nLevel);
+                    strName = FUN_140bfa7f0(L"s_guild_ui_house_npc_name", CStringTable::GetInstance()->FUN_141811980(0x3f, spNext->f30), nLevel);
                 int nGuildLevel = CGuildManager::GetInstance()->FUN_1404d1ad0();
                 bCanUpgrade = spNext->f28 <= nGuildLevel;
                 int nHouseLevel = CGuildManager::GetInstance()->FUN_1404d1f90();

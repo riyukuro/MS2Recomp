@@ -37,15 +37,13 @@ void FUN_140694dc0(CMatchPartyRecruit* pThis, CInputStream* in);                
 
 // ---- CMatchPartyRecruitSchCond ---------------------------------------------------------------------------------------
 
-// The object is built through this factory (the search dialog allocates 0x38 bytes and calls it), so it is not a member
-// constructor in the exe either; the implicit constructor it inlines is the base constructor, the vftable store and
-// the default construction of the search text.
+// The constructor: base constructor, vftable store and default construction of the search text, then Reset. The
+// search dialog allocates 0x38 bytes and calls it through its FUN_1406943b0 extern (the same VA; a constructor returns
+// this in rax, so the factory-shaped declaration is ABI-identical).
 // @0x1406943b0
-CMatchPartyRecruitSchCond* FUN_1406943b0(CMatchPartyRecruitSchCond* pThis)
+CMatchPartyRecruitSchCond::CMatchPartyRecruitSchCond()
 {
-    new (pThis) CMatchPartyRecruitSchCond;
-    FUN_140694450(pThis);
-    return pThis;
+    FUN_140694450(this);
 }
 
 // The exe's destructor at 0x140694410 stores the vftable before destroying the search text, so an empty user body

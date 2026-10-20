@@ -782,3 +782,8 @@ MS2Ptr<CSeasonReward> CSeasonDataTable::GetReward(SeasonRankType type)
     spRewards->Lookup(static_cast<int>(nSelected), spResult);
     return spResult;
 }
+
+// Remaining STL map instantiations and the per-TU CRT helper.
+// MS2-RANGE: 0x1407a1bf0-0x1407a3380 .text$mn
+// @0x1407a3260
+MS2_EMIT_CRT_MEMMOVE_S_COPY(1);

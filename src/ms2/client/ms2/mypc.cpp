@@ -5050,3 +5050,6 @@ void MyPC::FUN_141524880(MS2Ptr<Unk_MyPCComp1618> sp)
 {
     m_sp1618 = sp;
 }
+// MS2-PIN: ?Release@?$MS2Ptr@VRideOffActionUseFunctionItem@@@@AEAAXXZ 0x1415377d0 ; fx13: dtor->Release->ReleaseImpl call chain (dtors 0x141532b10/b40/b70)
+// MS2-PIN: ?Release@?$MS2Ptr@VRideOffActionUseGlideItem@@@@AEAAXXZ 0x141537810 ; fx13: dtor->Release->ReleaseImpl call chain (dtors 0x141532b10/b40/b70)
+// MS2-PIN: ?Release@?$MS2Ptr@VRideOffActionUseSkill@@@@AEAAXXZ 0x141537850 ; fx13: dtor->Release->ReleaseImpl call chain (dtors 0x141532b10/b40/b70)

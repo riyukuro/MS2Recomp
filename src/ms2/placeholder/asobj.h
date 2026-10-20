@@ -74,6 +74,7 @@ public:
     void FUN_141b46b90(const char* szName, int n);                       // same body, a second instance
     void FUN_140e88a10(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uisidepopuptalk_1.cpp: the popup "type")
     void FUN_141a472c0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiminimapentity.cpp: "groupType")
+    bool FUN_1409c5bd0(class ItemDropResult* pDrop);                    // fill a drop/reward row (icon, name, grade, count; astooltip.cpp)
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
 

@@ -1184,12 +1184,14 @@ int UIVideoContents::vfunc_52(const CString& strPath, float fVolume)
 }
 
 // @0x14135ad10
-bool UIVideoContents::vfunc_53()
+int UIVideoContents::vfunc_53()
 {
-    MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer");
-    if (spPlayer.get() != 0)
+    if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
+    {
         spPlayer->FUN_1422e9650();
-    return spPlayer.get() != 0;
+        return 1;
+    }
+    return 0;
 }
 
 // @0x14135adc0
@@ -2351,11 +2353,11 @@ void UIWebBrowserBase::FUN_14135ec00(const CString& strUrl, bool bOnce)
     m_b18d = bOnce;
     FUN_140cc18a0()->FUN_141b794e0(strResolved, (const char*)strUrl);
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog == 0)
-        m_strUrl = strResolved;
-    else
+    if (pDialog != 0)
         FUN_140cc18a0()->FUN_141b786f0(m_nBrowserId, (const char*)strResolved);
-    if (vfunc_55() == 0)
+    else
+        m_strUrl = strResolved;
+    if (FUN_141924630() == 0)
         FUN_141924680();
 }
 
@@ -2435,7 +2437,9 @@ void UIWebBrowserBase::vfunc_67()
 // @0x14135f0b0
 void UIWebBrowserBase::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
 {
-    if (p2.get() == 0 || p3 == 0)
+    if (p2.get() == 0)
+        return;
+    if (p3 == 0)
         return;
     Unk_HudBrowserInst* pInst = FUN_140cc18a0()->FUN_141b786a0(m_nBrowserId);
     if (pInst != 0)
@@ -2552,6 +2556,7 @@ bool UIWebBrowserBase::vfunc_90(POINT* pPos)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog == 0)
         return false;
+    POINT ptOrg = { pPos->x, pPos->y };   // an unused copy of the screen position
     pPos->x -= pDialog->FUN_1422c10a0();
     pPos->y -= pDialog->FUN_1422c1110();
     MS2Ptr<ASUIComponent> spTarget = pDialog->FUN_140accfb0<ASUIComponent>("m_renderTarget");
@@ -2561,7 +2566,9 @@ bool UIWebBrowserBase::vfunc_90(POINT* pPos)
     pPos->y -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(spTarget.operator->()))->FUN_1422c1110();
     pPos->x /= FUN_14025e7a0()->FUN_1422afec0(m_28);
     pPos->y /= FUN_14025e7a0()->FUN_1422afec0(m_28);
-    return !(pPos->x < 0 || pPos->y < 0 || pPos->x > m_size.cx || pPos->y > m_size.cy);
+    if (pPos->x < 0 || pPos->y < 0 || pPos->x > m_size.cx || pPos->y > m_size.cy)
+        return false;
+    return true;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();   // 0x14135fb20

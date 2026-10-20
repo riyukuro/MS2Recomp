@@ -185,12 +185,9 @@ int PetSlot::FUN_140dbaf10()
 int PetSlot::FUN_140dbafc0()
 {
     MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(FUN_140dbb060());
-    int nItemId;
-    if (spItem.get() == 0)
-        nItemId = 0;
-    else
-        nItemId = spItem->FUN_1405276c0();
-    return nItemId;
+    if (spItem)
+        return spItem->FUN_1405276c0();
+    return 0;
 }
 
 // @0x140dbb060

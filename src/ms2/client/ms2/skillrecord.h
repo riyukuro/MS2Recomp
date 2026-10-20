@@ -18,6 +18,15 @@
 class CMagicModel;
 
 // The skill request a cast record is built from (the 3rd argument of CSkillRecord::Init).
+// The request's point fields are a 12-byte float triple with no default ctor in the exe: the request ctor copy-
+// initialises them (implicit copy ctor, rep movsb) and constructs nothing. The user-declared ctor keeps the request a
+// non-POD (no /GS cookie in functions with a request local); the efd::Point3 operations go through Unk_StreamPoint casts.
+struct Unk_IsrPoint
+{
+    Unk_IsrPoint(float fX, float fY, float fZ);             // declared only
+    float x, y, z;
+};
+
 struct Unk_InventorySkillRequest
 {
     Unk_InventorySkillRequest(int nSkillId, unsigned short nLevel);   // 0x141763fa0 (?\skillslot.cpp)
@@ -26,8 +35,8 @@ struct Unk_InventorySkillRequest
     __int64 m_nCastId;                                      // +0x08
     int m_nTick;                                            // +0x10
     int m_nMotion;                                          // +0x14
-    Unk_StreamPoint m_ptPos;                                // +0x18
-    Unk_StreamPoint m_ptDir;                                // +0x24
+    Unk_IsrPoint m_ptPos;                                   // +0x18
+    Unk_IsrPoint m_ptDir;                                   // +0x24
     float m_fRotZ;                                          // +0x30
     int m_n34;                                              // +0x34
     bool m_b38;                                             // +0x38

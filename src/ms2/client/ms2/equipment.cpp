@@ -36,14 +36,11 @@
 // MS2-PIN: ??0?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@QEAA@XZ 0x1411f6db0 ; prop
 // MS2-PIN: ??0?$map@W4Unk_EquipAttrType@@HU?$less@W4Unk_EquipAttrType@@@std@@V?$allocator@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@3@@std@@QEAA@XZ 0x1411f6e00 ; unique
 // MS2-PIN: ??0?$vector@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@QEAA@XZ 0x1411f6ee0 ; unique
-// MS2-PIN: ??1?$map@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@@std@@QEAA@XZ 0x1411f75a0 ; prop
 // MS2-PIN: ??1SetEffectInfo@Equipment@@UEAA@XZ 0x1411f77d0 ; unique
 // MS2-PIN: ??4?$vector@_JV?$allocator@_J@std@@@std@@QEAAAEAV01@AEBV01@@Z 0x1411f79e0 ; unique
 // MS2-PIN: ??A?$map@IV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@@std@@QEAAAEAV?$vector@_JV?$allocator@_J@std@@@1@$$QEAI@Z 0x1411f7c90 ; unique
 // MS2-PIN: ??Breference@Unk_LayerBits@@QEBA_NXZ 0x1411f7e50 ; unique
 // MS2-PIN: ??C?$MS2Ptr@VReplaceObject@@@@QEBAPEAVReplaceObject@@XZ 0x1411f7eb0 ; unique
-// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBW4SAType@@H@1@XZ 0x1411f7ed0 ; prop
-// MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBW4SAType@@H@1@XZ 0x1411f7f50 ; prop
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$SmartPointer@VNiAVObject@@@efd@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1411f7fe0 ; prop
 // MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1411f8200 ; prop
 // MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1411f8240 ; prop
@@ -129,6 +126,12 @@ inline float FUN_1411f0e30(float fValue, float fRate)
 {
     return (float)((double)fValue * (double)fRate + 0.000001);
 }
+
+#ifdef __clang__
+// clang emits an unavailable MFC CopyChars import for operator+ (hook DLL); use the exe's copy of
+// operator+(const CString&, const CString&).
+CString FUN_1401d2b10(const CString& strA, const CString& strB);
+#endif
 
 // The mesh name suffixes the ctor fills once.
 static ATL::CAtlList<CString> s_meshSuffixes(10);
@@ -306,7 +309,7 @@ public:
     void FUN_14098cb80(NiAVObject* pRoot);              // init
     void FUN_14098cf00();                               // destroy
     NiAVObject* FUN_14098e0d0(int n);                   // the next object (NULL at the end)
-    void FUN_1411f88a0(bool bCulled, NiAVObject* pObject, int nDepth);   // dump (recursive)
+    void FUN_1411f88a0(bool bCulled, NiAVObject* pObject, unsigned nDepth);   // dump (recursive)
     bool FUN_14098df00();                               // done (no current object)
     NiAVObject** FUN_14107cbe0();                       // the current object
     void FUN_1411fa480(const NiTransform& kTransform);  // log a transform
@@ -1966,7 +1969,11 @@ int CEquipment::FUN_1411e9530(int nSlot, const CString& strName)
     CString strMesh;
     POSITION pos = s_meshSuffixes.GetHeadPosition();
     while (pos != NULL) {
+#ifdef __clang__
+        strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
+#else
         strMesh = strName + s_meshSuffixes.GetNext(pos);
+#endif
         MS2Ptr<ReplaceObject> spReplace(0);
         if (spSlot->m_replaced.Lookup(strMesh, spReplace) && spReplace->m_spNode != NULL && spReplace->m_spMesh != NULL &&
             FUN_140a0b000(spReplace->m_spMesh) == NULL)
@@ -1985,7 +1992,11 @@ int CEquipment::FUN_1411e9760(int nSlot, const CString& strName)
     CString strMesh;
     POSITION pos = s_meshSuffixes.GetHeadPosition();
     while (pos != NULL) {
+#ifdef __clang__
+        strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
+#else
         strMesh = strName + s_meshSuffixes.GetNext(pos);
+#endif
         MS2Ptr<ReplaceObject> spReplace(0);
         if (spSlot->m_replaced.Lookup(strMesh, spReplace) && spReplace->m_spNode != NULL && spReplace->m_spMesh != NULL &&
             FUN_140a0b000(spReplace->m_spMesh) != NULL)
@@ -2306,7 +2317,11 @@ int CEquipment::FUN_1411e9fa0(int nSlot, CString strName, int nType, int bByName
         CString strMesh;
         POSITION pos = s_meshSuffixes.GetHeadPosition();
         while (pos != NULL) {
+#ifdef __clang__
+            strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
+#else
             strMesh = strName + s_meshSuffixes.GetNext(pos);
+#endif
             MS2Ptr<ReplaceObject> spReplace(0);
             if (spSlot->m_replaced.Lookup(strMesh, spReplace) && spReplace->m_spNode != NULL && spReplace->m_spMesh != NULL)
                 spReplace->m_spNode->AttachChild(spReplace->m_spMesh, true);
@@ -2536,7 +2551,11 @@ int CEquipment::FUN_1411e99a0(int nSlot, CString strName, int nType, int bByName
         CString strMesh;
         POSITION pos = s_meshSuffixes.GetHeadPosition();
         while (pos != NULL) {
+#ifdef __clang__
+            strMesh = FUN_1401d2b10(strName, s_meshSuffixes.GetNext(pos));
+#else
             strMesh = strName + s_meshSuffixes.GetNext(pos);
+#endif
             MS2Ptr<ReplaceObject> spReplace(0);
             if (!spSlot->m_replaced.Lookup(strMesh, spReplace)) {
                 efd::SmartPointer<NiMesh> spMesh = NiDynamicCast(NiMesh, pRoot->GetObjectByName(NiFixedString((const char*)strMesh)));
@@ -3113,7 +3132,7 @@ MS2_REPLACE_METHOD(0x1411F9310, PC, FUN_1411f9310, 67, 0x99EF29FF);
 
 // @0x1411f88a0
 // MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
-void Unk_EqSceneDump::FUN_1411f88a0(bool bCulled, NiAVObject* pObject, int nDepth)
+void Unk_EqSceneDump::FUN_1411f88a0(bool bCulled, NiAVObject* pObject, unsigned nDepth)
 {
     if (pObject == NULL) {
         if (FUN_14098df00())

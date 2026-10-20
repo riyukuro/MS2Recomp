@@ -260,7 +260,8 @@ typedef ATL::CAtlArray<__int64> Unk_ShopLimitArray;
             return result;                                                                                            \
         }                                                                                                             \
         static T* Create(void*) { return Value(FUN_1401ba820(New(NULL))); }                                          \
-    };
+    };                                                                                                                \
+    MS2_SOCKETPTR_BOXED(T)
 MS2_NPCSHOP_BOX_REF(Unk_CouponItemArray)          // New 0x1406e8c20
 MS2_NPCSHOP_BOX_REF(Unk_MeratItemArray)           // New 0x1406e8c90
 MS2_NPCSHOP_BOX_REF(Unk_ShopLimitArray)           // New 0x1406e8d00
@@ -440,8 +441,8 @@ void CNpcShopBuyPeriod::FUN_1406dc850(COutputStream& out)
             out.vfunc_o10_3(range.m_end.GetSeconds());
         }
         out.vfunc_o10_1((unsigned char)m_setDays.size());
-        std::set<unsigned>& days = m_setDays;
-        for (std::set<unsigned>::iterator it = days.begin(); it != days.end(); ++it)
+        std::set<int>& days = m_setDays;
+        for (std::set<int>::iterator it = days.begin(); it != days.end(); ++it)
             out.vfunc_o10_1((unsigned char)*it);
     }
 }
@@ -450,14 +451,16 @@ MS2_REPLACE_METHOD(0x1406DC850, CNpcShopBuyPeriod, FUN_1406dc850, 742, 0xD2C9CD2
 // @0x1406dcb40
 void CNpcShopBuyPeriod::FUN_1406dcb40(CInPacket& in)
 {
-    if (in.vfunc_o8_0())
+    bool bHasTime = in.vfunc_o8_0();
+    if (bHasTime)
     {
         m_tmStart = in.vfunc_o8_4();
         m_tmEnd = in.vfunc_o8_4();
     }
-    if (in.vfunc_o8_0())
+    bool bHasPart = in.vfunc_o8_0();
+    if (bHasPart)
     {
-        unsigned char nCount = in.vfunc_o8_1();
+        int nCount = in.vfunc_o8_1();
         for (int i = 0; i < nCount; i++)
         {
             unsigned nStart = in.vfunc_o8_3();
@@ -467,10 +470,10 @@ void CNpcShopBuyPeriod::FUN_1406dcb40(CInPacket& in)
             range.m_end.SetSeconds(nEnd);
             m_aPartTimes.Add(range);
         }
-        unsigned char nDays = in.vfunc_o8_1();
+        int nDays = in.vfunc_o8_1();
         for (int i = 0; i < nDays; i++)
         {
-            unsigned nDay = in.vfunc_o8_1();
+            int nDay = in.vfunc_o8_1();
             m_setDays.insert(nDay);
         }
     }
@@ -1033,9 +1036,9 @@ int FUN_1406df690()
     FUN_1406e1a50(strNew, newShops);
     if (oldShops.size() != newShops.size())
         return 0;
-    std::set<unsigned> oldIds;
-    std::set<unsigned> newIds;
-    std::set<unsigned> diffIds;
+    std::set<int> oldIds;
+    std::set<int> newIds;
+    std::set<int> diffIds;
     for (std::pair<const unsigned, MS2Ptr<CNpcShopData> > entry : oldShops)
         oldIds.insert(entry.first);
     for (std::pair<const unsigned, MS2Ptr<CNpcShopData> > entry : newShops)
@@ -1064,7 +1067,7 @@ int FUN_1406df690()
 }
 
 bool FUN_1406e5bf0(const CStringW& str, ATL::CAtlArray<Unk_DayTimeRange>& out);
-bool FUN_1406e5ea0(const CStringW& str, std::set<unsigned>& out);
+bool FUN_1406e5ea0(const CStringW& str, std::set<int>& out);
 MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(Unk_140165cf0* pElem, unsigned nItemId, unsigned nShopId,
                                                   const CString& strPath, CStringW& strError);
 Unk_ShopLifeRef FUN_1406e3310(Unk_140165cf0* pElem);
@@ -1373,7 +1376,7 @@ int FUN_1406e21b0(const ATL::CAtlArray<MS2Ptr<CNpcShopItem> >& a, const ATL::CAt
     size_t nCountB = b.GetCount();
     if (nCountA != nCountB)
         return FALSE;
-    std::set<unsigned> sns;
+    std::set<int> sns;
     for (size_t i = 0; i < nCountA; i++)
     {
         if (sns.find(a[i]->m_nSn) != sns.end())
@@ -2322,7 +2325,7 @@ bool FUN_1406e5bf0(const CStringW& str, ATL::CAtlArray<Unk_DayTimeRange>& out)
 // Parses a dayOfWeek list ("1,2,...", 1..7, no repeats).
 // MS2-FUNCTIONAL: written from the decompile; the exe's temporaries differ.
 // @0x1406e5ea0
-bool FUN_1406e5ea0(const CStringW& str, std::set<unsigned>& out)
+bool FUN_1406e5ea0(const CStringW& str, std::set<int>& out)
 {
     out.clear();
     if (!str.IsEmpty())
@@ -2331,7 +2334,7 @@ bool FUN_1406e5ea0(const CStringW& str, std::set<unsigned>& out)
         FUN_1401d9a30(str, days, L",");
         for (int i = 0; i < (int)days.GetCount(); i++)
         {
-            unsigned nDay = days[i];
+            int nDay = days[i];
             if (nDay < 1 || nDay > 7)
             {
                 MS2_ASSERT_AT(0x75, FALSE);

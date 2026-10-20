@@ -166,7 +166,13 @@ private:
 };
 MS2_CHECK_SIZE(UIAvatarPC, 0xf0);
 class Unk_ClosingSelf { public: __int64 FUN_141656a80(); };
-class Unk_ClosingPlayer { public: virtual CStringW vfunc_77(); };
+// The PC: the name getter is vtable slot 77 (+0x268).
+class Unk_ClosingPlayer
+{
+public:
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24(); virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30(); virtual void vfunc_31(); virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34(); virtual void vfunc_35(); virtual void vfunc_36(); virtual void vfunc_37(); virtual void vfunc_38(); virtual void vfunc_39(); virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48(); virtual void vfunc_49(); virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); virtual void vfunc_55(); virtual void vfunc_56(); virtual void vfunc_57(); virtual void vfunc_58(); virtual void vfunc_59(); virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64(); virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67(); virtual void vfunc_68(); virtual void vfunc_69(); virtual void vfunc_70(); virtual void vfunc_71(); virtual void vfunc_72(); virtual void vfunc_73(); virtual void vfunc_74(); virtual void vfunc_75(); virtual void vfunc_76();
+    virtual CStringW vfunc_77();
+};
 class Unk_ClosingWorld
 {
 public:
@@ -410,26 +416,26 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
         }
         if (m_entries.size() < 10) {
             Unk_ClosingPlayer* player = FUN_1403ed2d0()->FUN_141bd1530(uid);
-            if (player) {
-                UIAvatarPC* av = new UIAvatarPC(player, false);
-                Unk_ClosingActor* actor = av->FUN_1418bd1d0();
-                actor->vfunc_76(player->vfunc_77());
-                av->FUN_1418bd1d0()->FUN_140e11d00();
-                av->FUN_1418bd1d0()->FUN_1410885b0(true);
-                av->FUN_1418bd1d0()->FUN_14165f460()->FUN_141270610();
-                av->vfunc_1(this);
-                Unk_ClosingEntry entry;
-                entry.m_uid = uid;
-                entry.m_avatar.AssignRaw(av);
-                entry.m_clip = 0;
-                entry.m_text = text;
-                entry.m_rank = rank;
-                m_entries.push_back(entry);
-            }
+            if (player == 0)
+                continue;
+            UIAvatarPC* av = new UIAvatarPC(player, false);
+            Unk_ClosingActor* actor = av->FUN_1418bd1d0();
+            actor->vfunc_76(player->vfunc_77());
+            av->FUN_1418bd1d0()->FUN_140e11d00();
+            av->FUN_1418bd1d0()->FUN_1410885b0(true);
+            av->FUN_1418bd1d0()->FUN_14165f460()->FUN_141270610();
+            av->vfunc_1(this);
+            Unk_ClosingEntry entry;
+            entry.m_uid = uid;
+            entry.m_avatar.AssignRaw(av);
+            entry.m_clip = 0;
+            entry.m_text = text;
+            entry.m_rank = rank;
+            m_entries.push_back(entry);
         }
     }
     m_1bc = FUN_1403ed2d0()->FUN_141bd3060();
-    int flag = 0;
+    unsigned flag = 0;
     if (res == 1) {
         Unk_RewardOtherDialog* dlg = FUN_140e01890(0x4e4c);
         if (dlg) {
@@ -445,10 +451,10 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
             dlg->FUN_1419f6a70(7, FUN_14028b8e0(CStringW(L"s_room_dungeon_fail")), 2000);
         }
     }
-    if (flag == 0)
-        FUN_141924680();
-    else
+    if (flag > 0)
         FUN_140e0fcf0(2000);
+    else
+        FUN_141924680();
 }
 
 // @0x140e0f6b0

@@ -379,22 +379,24 @@ bool CReactor::FUN_140b79490(CInPacket* pPacket)
     m_setPlayers.clear();
     int nCount = pPacket->vfunc_o8_1();
     for (int i = 0; i < nCount; ++i)
-        m_setPlayers.insert(pPacket->vfunc_o8_4());
+    {
+        unsigned __int64 nPlayer = pPacket->vfunc_o8_4();
+        m_setPlayers.insert(nPlayer);
+    }
     m_n158 = (unsigned __int64)(unsigned)pPacket->vfunc_o8_3();
     m_spData = CReactorDataTable::GetInstance()->GetReactorData(nReactorId);
-    if (m_spData.IsNull())
+    if (!m_spData)
         return false;
     MS2Ptr<ReactorStateData> spState = FUN_140b78c00(m_nStateIdx);
     if (spState.IsNull())
         return false;
-    CString strAnim("urn:gamebryo-animation:");
-    strAnim += spState->m_strKfmName;
+    CString strAnim = "urn:gamebryo-animation:" + spState->m_strKfmName;
     m_str88 = "MS2Actor";
     m_strName = strName;
     FUN_14123c5a0(nObjId);
     FUN_14123bb80(CString(strAnim));
-    vfunc_19(efd::Point3(pos.x, pos.y, pos.z));
-    vfunc_21(efd::Point3(rot.x, rot.y, rot.z));
+    vfunc_19(*(const efd::Point3*)&pos);   // the exe's locals are efd::Point3: trivial by-value copies
+    vfunc_21(*(const efd::Point3*)&rot);
     m_listAnims.RemoveAll();
     FUN_140b78ea0(spState->m_strIdleAni);
     return true;
@@ -417,15 +419,17 @@ void CReactor::FUN_140b79a10(CInPacket* pPacket)
     m_setPlayers.clear();
     int nCount = pPacket->vfunc_o8_1();
     for (int i = 0; i < nCount; ++i)
-        m_setPlayers.insert(pPacket->vfunc_o8_4());
+    {
+        unsigned __int64 nPlayer = pPacket->vfunc_o8_4();
+        m_setPlayers.insert(nPlayer);
+    }
     m_n158 = (unsigned __int64)(unsigned)pPacket->vfunc_o8_3();
     MS2Ptr<ReactorStateData> spState = FUN_140b78c00(m_nStateIdx);
-    if (!spState.IsNull())
-    {
-        m_listAnims.RemoveAll();
-        FUN_140b78ea0(spState->m_strStartAni);
-        FUN_140b78ea0(spState->m_strIdleAni);
-    }
+    if (spState.IsNull())
+        return;
+    m_listAnims.RemoveAll();
+    FUN_140b78ea0(spState->m_strStartAni);
+    FUN_140b78ea0(spState->m_strIdleAni);
 }
 
 // @0x140b79c30

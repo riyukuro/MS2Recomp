@@ -511,7 +511,7 @@ CStringW WeddingManager::GetPartnerName()
     return m_proxy.GetSelf(DAT_143ab2828)->m_strName;
 }
 
-#define WM_CHAT(key) FUN_1412751f0(FUN_14028b8e0(CStringW(L##key)), 1, 1)
+#define WM_CHAT(key) FUN_1412751f0(FUN_14028b8e0(L##key), 1, 1)
 #define WM_CHAT_NAME(key) FUN_1412751f0(FUN_14028dfa0(CStringW(L##key), m_strTarget), 1, 1)
 
 // @0x141b87760

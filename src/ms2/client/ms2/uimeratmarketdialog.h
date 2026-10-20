@@ -281,6 +281,7 @@ public:
     void OnChangePage(ASData& data);                                // 0x1412fe520
     void OnChangePageRequest(ASData& data);                         // 0x1412fe580
     void OnCheckPreviewColoring(ASData& data);                      // 0x1412fe6a0
+    void OnUnEquip(ASData& data);                                   // 0x1412fe760 an equip icon taken off the preview
     void OnSelectItem(ASData& data);                                // 0x1412ff0b0
     void OnGetSearchAttrVisible(ASData& data);                      // 0x1412ff700
     void OnClickShowMyEquip();                                      // 0x1412ff7f0
@@ -288,6 +289,7 @@ public:
     void OnClickBuyMerat();                                         // 0x1412ffb40
     void OnClickBuy(const CStringA& strMovie, ASData& data);         // 0x1412ffb80 "OnClickBuy"
     void OnClickRandomSalePick(const CStringA& strName, ASData& data);   // 0x1413000d0
+    void OnClickBuyEquipAll(const CStringA& strMovie);              // 0x141300470 buy everything on the preview model
     // foreign (other fragments)
     void OnSelectLimited(UIMeratMarketDialogUtil::ASOutData& out);  // 0x141305e70 foreign
     void OnShowHistory();                                           // 0x141305480 foreign
@@ -420,6 +422,7 @@ public:
     void ClearSearchRequest();                                      // 0x141310920
     void ClearSearchInput();                                        // 0x141310970
     void OpenBanner(int nKind, const CStringA& strTarget);          // 0x141310d30
+    void OnBannerImageLoaded(CStringA strKey, CStringA strPath, bool bOk);  // 0x14130bf20 UGC banner image downloaded (ugcmanager)
     int PreviewColorCode();                                         // 0x141310e10
     void SetModelTime(int nSeconds);                                // 0x141310e50
     bool CheckProduct(MS2Ptr<CMeratMarketProduct> spProduct, int nCount);   // 0x141310f70
@@ -430,6 +433,7 @@ public:
     void ShowProduct(MS2Ptr<CMeratMarketProduct> spProduct);        // 0x1412ebc40 foreign
     bool IsPlaceableItem(MS2Ptr<CItemData> spData);                 // 0x14130b670
     int MarkTab(int nTab);                                          // 0x14130b730
+    template <class T> MS2Ptr<T> FUN_141311ec0(const CString& strName);   // 0x141311ec0 a child of the movie (null before load)
 
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                                    // +0x198

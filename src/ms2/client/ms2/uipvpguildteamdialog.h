@@ -118,7 +118,7 @@ private:
     MS2Ptr<ASUIComponent> m_spComponent;                            // +0x208 "m_pvpGuildTeamComponent"
     MS2Ptr<ASUIComponent> m_spLeftPlayers[3];                       // +0x218 own guild
     MS2Ptr<ASUIComponent> m_spRightPlayers[3];                      // +0x248
-    std::map<__int64, MS2Ptr<ASUIComponent> > m_slots;              // +0x278 the slot of each shown character
+    std::map<unsigned __int64, MS2Ptr<ASUIComponent> > m_slots;     // +0x278 the slot of each shown character (unsigned key: less<unsigned __int64> 0x14044a540)
 };
 MS2_CHECK_SIZE(UIPvPGuildTeamDialog, 0x288);
 MS2_CHECK_OFFSET(UIPvPGuildTeamDialog, m_info, 0x178);

@@ -652,7 +652,7 @@ void UIAchieveDialog::FUN_1418a8f80()
 {
     if (FUN_140a467d0(&m_30))
         return;
-    FUN_1418ac710();
+    FUN_1418ac710(m_178);
     FUN_1418a8ff0();
     FUN_1418a9800();
     m_1e0.RemoveAll();
@@ -905,17 +905,17 @@ void UIAchieveDialog::FUN_1418aa9b0(int nId)
     m_188 = FUN_14093b970(nId);
     m_178 = FUN_1418ac320(nId);
     MS2Ptr<CAchieveCategory> spCategory = CAchieveCategory::GetRow(m_178);
-    if (spCategory.get() != 0)
+    if (spCategory)
         m_17c = spCategory->m_nId;
-    if (vfunc_55() == 0) {
-        FUN_1418ac5f0(0);
-        FUN_1418aaee0(m_188);
-        FUN_1418ac710();
-        FUN_1418a8ff0();
-    }
-    else {
+    if (vfunc_55()) {
         m_180 = 0;
         FUN_141924680();
+    }
+    else {
+        FUN_1418ac5f0(0);
+        FUN_1418aaee0(m_188);
+        FUN_1418ac710(m_178);
+        FUN_1418a8ff0();
     }
 }
 
@@ -1213,7 +1213,7 @@ void UIAchieveDialog::FUN_1418ac5f0(int nIndex)
 }
 
 // @0x1418ac710
-void UIAchieveDialog::FUN_1418ac710()
+void UIAchieveDialog::FUN_1418ac710(int nTab)
 {
     if (!FUN_140a467d0(&m_30))
         AC_ROOT(m_30)->FUN_1409ba030("setTabIndex", m_178);

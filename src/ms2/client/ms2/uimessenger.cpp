@@ -3453,6 +3453,9 @@ int UIMessengerBrowser::FUN_141a25410(TalkTab* pExcept, const CStringW& strName)
 }
 
 // MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
+// The timed log's rbegin (a COMDAT of this unit's range).
+// MS2-PIN: ?rbegin@?$_Tree@V?$_Tmap_traits@_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@4@$00@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@2@XZ 0x141a30d70
+
 // @0x141a254c0
 void UIMessengerBrowser::FUN_141a254c0(__int64 nSince, CStringW& strOut)
 {
@@ -3860,7 +3863,7 @@ int UIMessengerBrowser::FUN_141a271b0(const CStringW& strName, const CStringW& s
     CStringW strLine;
     strLine.Format(L"%s[%s] %s", (const wchar_t*)strTag, (const wchar_t*)strName, (const wchar_t*)strText);
     __int64 nNow = FUN_140869440();
-    m_timedLogs.insert(std::pair<__int64, CStringW>(nNow, strLine));
+    m_timedLogs.insert(std::make_pair(nNow, strLine));
     ReportLog report(strName, strText);
     m_reports.AddTail(report);
     if (m_reports.GetCount() > (unsigned)m_18c)
@@ -4885,3 +4888,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
         }
     }
 }
+
+// The UCRT's `static __inline memcpy_s` of this TU (unreferenced in the exe, kept alive by the pointer below).
+// MS2-PIN: memcpy_s 0x141a20e70
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMsgMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;

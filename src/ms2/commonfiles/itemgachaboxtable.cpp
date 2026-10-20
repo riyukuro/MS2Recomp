@@ -6,6 +6,10 @@
 // MS2-PIN: ??$construct@V?$MS2SvrPtr@VGachaBoxData@@@@AEAV1@@?$_Default_allocator_traits@V?$allocator@V?$MS2SvrPtr@VGachaBoxData@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2SvrPtr@VGachaBoxData@@@@@1@QEAV?$MS2SvrPtr@VGachaBoxData@@@@AEAV3@@Z 0x1405a1230 ; unique
 // MS2-PIN: ??$construct@V?$MS2SvrPtr@VGachaBoxData@@@@V1@@?$_Default_allocator_traits@V?$allocator@V?$MS2SvrPtr@VGachaBoxData@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2SvrPtr@VGachaBoxData@@@@@1@QEAV?$MS2SvrPtr@VGachaBoxData@@@@$$QEAV3@@Z 0x1405a12d0 ; unique
 // MS2-PINS-END tplpin
+// The exe MS2SvrPtr has a move ctor (0x1405a1520, called by construct<T&&>) and copies AddRef (construct<T&> -> 0x1405a1570);
+// ms2svrptr.h steals on T& instead (same net refcounts): the steal ctor is pinned to the move ctor's VA, the construct pair is functional.
+// MS2-PIN: ??0?$MS2SvrPtr@VGachaBoxData@@@@QEAA@$$QEAV0@@Z 0x1405a1520
+// MS2-FUNCTIONAL ??$construct@V?$MS2SvrPtr@VGachaBoxData@@@@AEAV1@@?$_Default_allocator_traits@V?$allocator@V?$MS2SvrPtr@VGachaBoxData@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2SvrPtr@VGachaBoxData@@@@@1@QEAV?$MS2SvrPtr@VGachaBoxData@@@@AEAV3@@Z: calls the placeholder T& steal ctor where the exe AddRef-copies (0x1405a1570); ms2svrptr.h retype pending
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemgachaboxtable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "itemgachaboxtable.h"
@@ -122,10 +126,11 @@ void ItemGachaBoxTable::Load()
 // @0x14059e340
 GachaBoxDataPtr ItemGachaBoxTable::FUN_14059e340(int nRandomBoxID)
 {
-    std::map<int, GachaBoxDataPtr>::iterator it = m_map.find(nRandomBoxID);
+    int nKey = nRandomBoxID;
+    std::map<int, GachaBoxDataPtr>::iterator it = m_map.find(nKey);
     if (it == m_map.end())
         return GachaBoxDataPtr(nullptr);
-    return it->second;
+    return static_cast<const GachaBoxDataPtr&>(it->second);
 }
 
 // @0x14059e400

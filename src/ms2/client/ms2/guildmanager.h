@@ -89,8 +89,8 @@ public:
     void FUN_1413bc6a0();
     void FUN_1413bc710(bool anyFocus);
     bool FUN_1413bc860(CStringW name);
-    int FUN_1413bca70(std::map<__int64, PCBase*>& out);
-    int FUN_1413bcbc0(std::map<__int64, PCBase*>& out);
+    int FUN_1413bca70(std::map<unsigned __int64, PCBase*>& out);
+    int FUN_1413bcbc0(std::map<unsigned __int64, PCBase*>& out);
     void FUN_1413bcd10();
     void FUN_1413bce40(int skillId, unsigned short skillLevel);
     int FUN_1413bd050(int skillId, int skillLevel);

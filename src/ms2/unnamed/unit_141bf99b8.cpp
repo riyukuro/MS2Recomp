@@ -123,9 +123,180 @@
 // MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffcf0 ; prop
 // MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x141bffe10 ; order
 // MS2-PINS-END tplpin
+// tplpin --simulate accepted pins (w533)
+// MS2-PIN: ??_GUnk_WsVa00@@QEAAPEAXI@Z 0x141bf9e10
+// MS2-PIN: ??_G?$pair@$$CBHV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@@std@@QEAAPEAXI@Z 0x141bf9ed0
+// MS2-PIN: ??_GCNode@?$CAtlList@UUnk_WsV058@@V?$CElementTraits@UUnk_WsV058@@@ATL@@@ATL@@QEAAPEAXI@Z 0x141bfa230
+// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa2f0
+// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa330
+// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa3b0
+// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa3f0
+// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa470
+// MS2-PIN: ??_GCNode@?$CRBTree@HUUnk_WsV540@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV540@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa530
+// MS2-PIN: ??_GCNode@?$CRBTree@HUUnk_WsV570@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV570@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa570
+// MS2-PIN: ??_GCNode@?$CRBTree@IUUnk_WsV1a8@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV1a8@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa5b0
+// MS2-PIN: ??_GCNode@?$CRBTree@IUUnk_WsV118@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV118@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa630
+// MS2-PIN: ??_GCNode@?$CRBTree@IUUnk_WsV148@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV148@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa670
+// MS2-PIN: ??_GCNode@?$CRBTree@IUUnk_WsV708@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV708@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa6b0
+// MS2-PIN: ??_GCNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV4b0@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV4b0@@@2@@ATL@@QEAAPEAXI@Z 0x141bfa730
+// MS2-PIN: ??_GCNode@?$CRBTree@_KUUnk_WsV0b8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV0b8@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa7b0
+// MS2-PIN: ??_GCNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV510@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV510@@@2@@ATL@@QEAAPEAXI@Z 0x141bfa7f0
+// MS2-PIN: ??_GCNode@?$CRBTree@_KUUnk_WsV4e0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV4e0@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa870
+// MS2-PIN: ??_GCNode@?$CRBTree@_KUUnk_WsV6a8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV6a8@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa8b0
+// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfaff0
+// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfb070
+// MS2-PIN: ?CreateNode@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141bfb0f0
+// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb2f0
+// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb370
+// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb3f0
+// MS2-PIN: ?CreateNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEAAPEAVCNode@12@_KII@Z 0x141bfb470
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAXXZ 0x141bfb680
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAXXZ 0x141bfb6a0
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAXXZ 0x141bfb6c0
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAXXZ 0x141bfb6e0
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAXXZ 0x141bfb700
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@QEAAXXZ 0x141bfb720
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@QEAAXXZ 0x141bfb740
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAXXZ 0x141bfb760
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@QEAAXXZ 0x141bfb780
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@QEAAXXZ 0x141bfb7a0
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@QEAAXXZ 0x141bfb860
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAXXZ 0x141bfb880
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAXXZ 0x141bfb8a0
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAXXZ 0x141bfb8c0
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAXXZ 0x141bfb8e0
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@QEAAXXZ 0x141bfb920
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@QEAAXXZ 0x141bfb940
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAXXZ 0x141bfb960
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@QEAAXXZ 0x141bfb980
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@QEAAXXZ 0x141bfb9a0
+// MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV5e8@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV5e8@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfbe70
+// MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV4b0@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV4b0@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfc050
+// MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV678@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV678@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfc230
+// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfcf20
+// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd020
+// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd220
+// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd320
+// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd520
+// MS2-PIN: ?FreeNode@?$CRBTree@HUUnk_WsV540@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV540@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd820
+// MS2-PIN: ?FreeNode@?$CRBTree@HUUnk_WsV570@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV570@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd8c0
+// MS2-PIN: ?FreeNode@?$CRBTree@IUUnk_WsV1a8@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV1a8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd960
+// MS2-PIN: ?FreeNode@?$CRBTree@IUUnk_WsV0e8@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV0e8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfda00
+// MS2-PIN: ?FreeNode@?$CRBTree@IUUnk_WsV148@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV148@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfdb40
+// MS2-PIN: ?FreeNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV5e8@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV5e8@@@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfdc80
+// MS2-PIN: ?FreeNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV4b0@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV4b0@@@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfdd20
+// MS2-PIN: ?FreeNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV7c8@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV7c8@@@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfddc0
+// MS2-PIN: ?FreeNode@?$CRBTree@_KUUnk_WsV0b8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV0b8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfde60
+// MS2-PIN: ?FreeNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV510@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV510@@@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfdf00
+// MS2-PIN: ?FreeNode@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV678@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV678@@@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfdfa0
+// MS2-PIN: ?FreeNode@?$CRBTree@_KUUnk_WsV4e0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV4e0@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfe040
+// MS2-PIN: ?FreeNode@?$CRBTree@_KUUnk_WsV6a8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV6a8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfe0e0
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEAAXXZ 0x141bfe360
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEAAXXZ 0x141bfe3b0
+// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEAAXXZ 0x141bfe450
+// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEAAXXZ 0x141bfe4a0
+// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEAAXXZ 0x141bfe540
+// MS2-PIN: ?GetClassDesc@WorldService@@UEBAPEBVClassInfo@efd@@XZ 0x141bfe670
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV4b0@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV4b0@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfeb50
+// MS2-PIN: ?GetTailPosition@?$CRBTree@HUUnk_WsV540@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_WsV540@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x141bfebb0
+// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfee00
+// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfee50
+// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfeea0
+// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfeef0
+// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfef40
+// MS2-PIN: ?GetNext@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfefe0
+// MS2-PIN: ?GetNextKey@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV7c8@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV7c8@@@2@@ATL@@QEBAAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@AEAPEAU__POSITION@@@Z 0x141bff170
+// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff390
+// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff570
+// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff660
+// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff750
+// MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffb10
+// MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffc00
+// MS2-PIN: ??_GUnk_WsVa18@@QEAAPEAXI@Z 0x141bf99d0
+// MS2-PIN: ??_G?$MessageHandlerImpl@VWorldService@@VActorAddedMessage@egmAnimation@@@efd@@UEAAPEAXI@Z 0x141bf9a50
+// MS2-PIN: ??_G?$MessageHandlerImpl@VWorldService@@VActorRemovedMessage@egmAnimation@@@efd@@UEAAPEAXI@Z 0x141bf9a90
+// MS2-PIN: ??_G?$MessageHandlerImpl@VWorldService@@VAssetLoadResponse@efd@@@efd@@UEAAPEAXI@Z 0x141bf9ad0
+// MS2-PIN: ??_G?$MessageHandlerImpl@VWorldService@@VEntityChangeMessage@egf@@@efd@@UEAAPEAXI@Z 0x141bf9b10
+// MS2-PIN: ??_G?$MessageHandlerImpl@VWorldService@@VEntityLoadResult@egf@@@efd@@UEAAPEAXI@Z 0x141bf9b50
+// MS2-PIN: ??_G?$MessageHandlerImpl@VWorldService@@VPhysXPropMessage@ecrPhysX@@@efd@@UEAAPEAXI@Z 0x141bf9b90
+// MS2-PIN: ??_G?$MessageHandlerImpl@VWorldService@@VSceneGraphAddedMessage@ecr@@@efd@@UEAAPEAXI@Z 0x141bf9bd0
+// MS2-PIN: ??_G?$MessageHandlerImpl@VWorldService@@VSceneGraphRemovedMessage@ecr@@@efd@@UEAAPEAXI@Z 0x141bf9c10
+// MS2-PIN: ??_G?$MessageSubclassHandler@VWorldService@@VAssetLoadResponse@efd@@VFlatModelFactoryResponse@egf@@@efd@@UEAAPEAXI@Z 0x141bf9c50
+// MS2-PIN: ??_G?$MessageSubclassHandler@VWorldService@@VEntityChangeMessage@egf@@V23@@efd@@UEAAPEAXI@Z 0x141bf9c90
+// MS2-PIN: ??_G?$MessageSubclassHandler@VWorldService@@VPhysXPropMessage@ecrPhysX@@V23@@efd@@UEAAPEAXI@Z 0x141bf9cd0
+// MS2-PIN: ??_G?$MessageWrapperSubclassHandler@VWorldService@@VEntityChangeMessage@egf@@V23@$0CAAE@@efd@@UEAAPEAXI@Z 0x141bf9d10
+// MS2-PIN: ??_G?$MessageWrapperSubclassHandler@VWorldService@@VEntityChangeMessage@egf@@V23@$0CADN@@efd@@UEAAPEAXI@Z 0x141bf9d50
+// MS2-PIN: ??_G?$MessageWrapperSubclassHandler@VWorldService@@VEntityChangeMessage@egf@@V23@$0CADO@@efd@@UEAAPEAXI@Z 0x141bf9d90
+// MS2-PIN: ??_G?$MessageWrapperSubclassHandler@VWorldService@@VPhysXPropMessage@ecrPhysX@@V23@$0DAAL@@efd@@UEAAPEAXI@Z 0x141bf9dd0
+// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa270
+// MS2-PIN: ??_GCNode@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa2b0
+// MS2-PIN: ??_GCNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa430
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@QEAAXXZ 0x141bfb660
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@QEAAXXZ 0x141bfb900
+// MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV7c8@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV7c8@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfbf60
+// MS2-PIN: ?Find@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@UUnk_WsV510@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_WsV510@@@2@@ATL@@IEBAPEAVCNode@12@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@@Z 0x141bfc140
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc5f0
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_W6V780@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V780@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc770
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc830
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc8f0
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IUUnk_WsV930@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV930@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfc9b0
+// MS2-PIN: ?FindNextNode@?$CAtlMap@_KUUnk_W6V2f8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V2f8@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfca70
+// MS2-PIN: ?FindNextNode@?$CAtlMap@_KUUnk_W6V420@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V420@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141bfcb30
+// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfcd20
+// MS2-PIN: ?FreeNode@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfce20
+// MS2-PIN: ?FreeNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfd420
+// MS2-PIN: ?FreeNode@?$CRBTree@IUUnk_WsV118@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV118@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfdaa0
+// MS2-PIN: ?FreeNode@?$CRBTree@IUUnk_WsV708@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV708@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfdbe0
+// MS2-PIN: ?FreeNode@?$CRBTree@_KUUnk_WsV6d8@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_WsV6d8@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x141bfe220
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V350@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V350@@@3@@ATL@@AEAAXXZ 0x141bfe2c0
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@AEAAXXZ 0x141bfe310
+// MS2-PIN: ?FreePlexes@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEAAXXZ 0x141bfe4f0
+// MS2-PIN: ?GetNext@?$CAtlMap@IUUnk_W6V3a0@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V3a0@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x141bfedb0
+// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_WsV848@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV848@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff840
+// MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffcf0
+// MS2-PIN: ?CreateInstance@?$TSingleton@VCDebugHelper@@@@SAPEAVCDebugHelper@@XZ 0x141bfaf70
+// MS2-PIN: ?DecRefCount@WorldService@@UEBAXXZ 0x141bfb570
+// MS2-PIN: ?DestroyInstance@?$TSingleton@VCDebugHelper@@@@SAXXZ 0x141bfb600
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@QEBAIXZ 0x141bfea90
+// MS2-PIN: ?GetLastScaledTime@NiControllerSequence@@QEBAMXZ 0x141bfeda0
+// MS2-PIN: ?GetNode@?$CAtlMap@IUUnk_W6V738@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_W6V738@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141bff480
+// MS2-PIN: ?GetNode@?$CAtlMap@W4Unk_WsMapKey7@@V?$MS2Ptr@VUnk_WsMapV7@@@@V?$CElementTraits@W4Unk_WsMapKey7@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV7@@@@@4@@ATL@@AEBAPEAVCNode@12@AEBW4Unk_WsMapKey7@@AEAI1AEAPEAV312@@Z 0x141bff930
+// MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V5a0@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V5a0@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffa20
+// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VCProxyGameObject@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCProxyGameObject@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa370
+// MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VGameObject@@@efd@@@Z 0x141bfad40
+// MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VPC@@@efd@@@Z 0x141bfadc0
+// MS2-PIN: ?AddTail@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VUnk_WsProp058@@@efd@@@Z 0x141bfae40
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IUUnk_WsV208@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsV208@@@3@@ATL@@AEAAXXZ 0x141bfe400
+// MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe790
+// MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VPC@@@efd@@V?$CElementTraits@V?$SmartPointer@VPC@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe870
+// MS2-PIN: ?GetFreeNode@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@AEAAXXZ 0x141bfe950
+// MS2-PIN: ??_G?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityShower@@@efd@@@std@@QEAAPEAXI@Z 0x141bf9f90
+// MS2-PIN: ??_G?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@std@@QEAAPEAXI@Z 0x141bf9fd0
+// MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x141bffe10
+// MS2-PIN: ??_G?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@QEAAPEAXI@Z 0x141bfa050
+// MS2-PIN: ??_G?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@QEAAPEAXI@Z 0x141bfa090
+// MS2-PIN: ??_G?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@QEAAPEAXI@Z 0x141bfa0d0
+// MS2-PIN: ??_G?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityHider@@@efd@@@std@@QEAAPEAXI@Z 0x141bf9f50
+// MS2-PIN: ??_G?$pair@$$CB_JV?$MS2Ptr@VUIDebugTooltip@@@@@std@@QEAAPEAXI@Z 0x141bfa010
+// MS2-PIN: ??_GNotifyCreateMyPC@@UEAAPEAXI@Z 0x141bfa9b0
+// MS2-PIN: ?Clone@?$ClassFunHandler@V?$TFunctor@XVEmptyParam@@@@PEAVCOptimizer@@P82@EAAXXZ@@UEBAPEAV1@XZ 0x141bfb7c0
+// MS2-PIN: ?Clone@?$ClassFunHandler@V?$TFunctor@XVEmptyParam@@@@PEAVWorldService@@P82@EAAXXZ@@UEBAPEAV1@XZ 0x141bfb810
+// MS2-PIN: ?CreateNode@?$CAtlMap@W4Unk_WsMapKey7@@V?$MS2Ptr@VUnk_WsMapV7@@@@V?$CElementTraits@W4Unk_WsMapKey7@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV7@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4Unk_WsMapKey7@@II@Z 0x141bfb4f0
+#define NOMINMAX                                // worldservice_tail.h -> interactobject.h -> NxPhysics.h
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/worldservice_tail.h"
+#include "ms2/client/ms2/alphaanimation.h"
+#include "ms2/client/ms2/ms2actorupdater.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/textureanimationdata.h"
+#include "ms2/client/ms2/uidebugtooltip.h"
+#include "ms2/placeholder/cinteractwebobject.h"
+#include "ms2/placeholder/cdebughelper.h"
+#include "ms2/placeholder/notifyworld.h"
+#include <NiControllerManager.h>
+#include <NiControllerSequence.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/tfunctor.h"
@@ -216,12 +387,6 @@ struct Unk_W6V5a0 { ~Unk_W6V5a0(); void* p; };               // dtor 0x1410a6c00
 struct Unk_W6V420 { ~Unk_W6V420(); void* p0; void* p1; };   // dtor 0x140a00490
 struct Unk_W6V2f8 { ~Unk_W6V2f8(); void* p0; void* p1; };   // dtor 0x14123ebe0
 struct Unk_W6V468 { ~Unk_W6V468(); void* p0; void* p1; };   // dtor 0x1410b4290
-// The Notify* messages WorldService posts (vftable slot 1 = the name, an exe COMDAT of another range): constructing them here emits the
-// vftable and the scalar deleting dtors this tail holds.
-class NotifyChangeServer : public NotifyObject { public: NotifyChangeServer() {} virtual CStringW vfunc_1(); };
-class NotifyCreateMyPC : public NotifyObject { public: NotifyCreateMyPC() {} virtual CStringW vfunc_1(); };
-class NotifyGameStart : public NotifyObject { public: NotifyGameStart() {} virtual CStringW vfunc_1(); };
-class NotifyRemoveGameObject : public NotifyObject { public: NotifyRemoveGameObject() {} virtual CStringW vfunc_1(); };
 struct Unk_W6Access : WorldService { Unk_W6Access(); static void Del(WorldService* w) { static_cast<Unk_W6Access*>(w)->WorldService::DeleteThis(); } };   // reaches the protected DeleteThis
 void Unk_WsInst6(WorldService* w)
 {
@@ -268,7 +433,7 @@ void Unk_WsInst6(WorldService* w)
     delete new NotifyChangeServer;
     delete new NotifyCreateMyPC;
     delete new NotifyGameStart;
-    delete new NotifyRemoveGameObject;
+    delete new NotifyRemoveGameObject(0);
     // inline virtuals of the class macros, emitted here as COMDATs
     w->WorldService::DecRefCount();
     Unk_W6Access::Del(w);
@@ -350,6 +515,92 @@ void Unk_WsInst6(WorldService* w)
     WsDestroy(w->m_a00);
     WsConstruct(w->m_a18);
     WsDestroy(w->m_a18);
+}
+
+// The compiler-generated WorldService scalar deleting dtor and its TSingleton<WorldService> thunk. MSVC emits them with
+// WorldService's vftables in the TU that defines its ctor (worldservice_1.cpp), so they are written out here.
+// @0x141bfaad0
+// MS2-FUNCTIONAL: ??_GWorldService (efd::MemObject sized delete unless bit 4 asks for the global one)
+void* Unk_WsScalarDeletingDtor(WorldService* pService, unsigned int nFlags)
+{
+    pService->WorldService::~WorldService();
+    if (nFlags & 1)
+    {
+        if ((nFlags & 4) == 0)
+            efd::MemObject::operator delete(pService, sizeof(WorldService));
+        else
+            ::operator delete(pService, sizeof(WorldService));
+    }
+    return pService;
+}
+// @0x141bf99b8
+// MS2-FUNCTIONAL: the vftable 0x142ffec20 thunk (this - 0x18) into ??_GWorldService
+void* Unk_WsSingletonDeletingDtor(TSingleton<WorldService>* pSingleton, unsigned int nFlags)
+{
+    return Unk_WsScalarDeletingDtor(static_cast<WorldService*>(pSingleton), nFlags);
+}
+
+// The camera's entity id value. Inline in the original, its COMDAT reads the including TU's copy of the header static
+// egf::kENTITY_INVALID (worldservice.cpp's is 0x143af8278).
+extern egf::EntityID DAT_143af8278;
+// @0x141bfe700
+unsigned __int64 Camera::FUN_141bfe700()
+{
+    return m_10 != NULL ? m_10->GetEntityIDValue() : DAT_143af8278.GetValue();
+}
+
+// The rest of the tail over the recovered types (worldservice_tail.h, the std members, the classes WorldService creates).
+void Unk_WsInst6Tail(PC& pc, CEntityShower& shower, MS2ActorUpdater& updater, CameraMgr& camera, NiControllerManager& manager,
+    NiControllerSequence& sequence, const NiFixedString& name)
+{
+    // std::pair<const K, V> scalar deleting dtors (node / element destruction)
+    { std::map<int, efd::SmartPointer<egf::Entity> > m; m.clear(); }                       // m_ac0
+    { std::map<egf::EntityID, efd::SmartPointer<CEntityHider> > m; m.clear(); }            // m_990
+    { std::map<egf::EntityID, efd::SmartPointer<CEntityShower> > m; m.clear(); }           // m_980
+    { std::map<egf::EntityID, efd::SmartPointer<egf::Entity> > m; m.clear(); }             // m_2e8
+    { std::map<__int64, MS2Ptr<UIDebugTooltip> > m; m.clear(); }                           // m_ad0
+    { std::vector<std::pair<CStringA, CStringA> > v; v.clear(); }                          // FUN_141bdb1b0's local
+    { std::vector<std::pair<CStringA, CStringW> > v; v.clear(); }                          // m_a00
+    { std::vector<std::pair<CStringA, MS2Ptr<Unk_WsK_Rank> > > v; v.clear(); }             // m_a18
+    // classes WorldService creates: their implicit ctors emit the vftables and the scalar deleting dtors
+    { egmAnimation::ActorRemovedMessage msg; }
+    delete new CInteractWebObject();
+    delete new CLiftableTargetBox();
+    delete new CLiftableTargetGuide();
+    NiNew TextureLayerManager();
+    delete new TSingleton<WorldService>();
+    // CAtlMap: FreeNode -> CNode scalar deleting dtor; CreateNode / GetNode of the enum-keyed map
+    { Unk_WsM5 m; m.RemoveKey(0); }
+    { Unk_WsM10 m; m.RemoveKey(0); }
+    { Unk_WsM11 m; m.RemoveKey(0); }
+    { Unk_WsM7 m; m.SetAt(Unk_WsMapKey7(), MS2Ptr<Unk_WsMapV7>()); m.Lookup(Unk_WsMapKey7()); }
+    // CRBTree: Find, FreeNode -> CNode scalar deleting dtor
+    { Unk_WsF8 m; m.Lookup(0); m.RemoveKey(0); }
+    { Unk_WsF9 m; m.Lookup(0); m.RemoveKey(0); }
+    { Unk_WsF10 m; m.Lookup(CStringA()); m.RemoveKey(CStringA()); }
+    { Unk_WsF13 m; m.Lookup(CStringA()); m.RemoveKey(CStringA()); }
+    { Unk_WsF15 m; m.Lookup(egf::EntityID()); m.RemoveKey(egf::EntityID()); }
+    { Unk_WsF16 m; m.Lookup(Unk_WsKindKey()); m.RemoveKey(Unk_WsKindKey()); }
+    // CAtlArray::Add, CAtlList::AddTail (-> NewNode -> GetFreeNode), CAtlArray<void*>::CallDestructors
+    { ATL::CAtlArray<GameObject*> a; a.Add(0); }
+    { ATL::CAtlArray<MS2Ptr<CInteractObject> > a; a.Add(MS2Ptr<CInteractObject>()); }
+    { ATL::CAtlArray<MS2Ptr<CPortal> > a; a.Add(MS2Ptr<CPortal>()); }
+    { Unk_WsL1 l; l.AddTail(NiPointer<Unk_WsProp058>()); }
+    { Unk_WsL2 l; l.AddTail(efd::SmartPointer<GameObject>()); }
+    { Unk_WsL3 l; l.AddTail(efd::SmartPointer<PC>()); }
+    { ATL::CAtlArray<void*> a; }
+    // the debug helper singleton (created / destroyed by WorldService 0x141bcb370 / 0x141bcd5a0)
+    TSingleton<CDebugHelper>::CreateInstance();
+    TSingleton<CDebugHelper>::DestroyInstance();
+    // inline getters
+    pc.FUN_141bfaec0(true);
+    pc.FUN_141bfed80();
+    shower.GetAlpha();
+    shower.GetEntityID();
+    updater.FUN_141bfe6d0();
+    camera.FUN_141bfe750();
+    manager.GetSequenceByName(name);
+    sequence.GetLastScaledTime();
 }
 
 #ifndef MS2_HOOK_DLL  // MS2: instantiates the handler classes (and their scalar deleting dtors) whose COMDATs sit in this tail; the same

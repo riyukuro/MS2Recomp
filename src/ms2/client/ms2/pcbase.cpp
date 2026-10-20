@@ -896,10 +896,10 @@ static CString s_strNotice("system_notice_error_warningNotThisPlace");
 
 // ---- PCBase ----
 
-// MS2-FUNCTIONAL: +0x180/+0x190/+0x1a0 are Unk_Vec4/Unk_Vec7 members in the exe (ctors 0x140266620/0x1402666f0; the
-// layout-neutral float unions here keep the names dependents use), and the comp MS2Ptr instantiations are the UI
-// entity types (UIHpBar::Entity ...), not the Unk_PCBaseComp_ stand-ins. 0x14166a650 (pinned: the line table starts
-// at the brace, below the initializer list).
+// MS2-FUNCTIONAL 0x14166a650: m_pos920/m_posBF4(NiPoint3::ZERO) go through NiPoint3(const efd::Point3&) 0x14027dcf0
+//   (ZERO is efd::Point3's) where the exe copies a NiPoint3-typed zero trivially (rep movsb, rdi/rsi saved), and the comp
+//   MS2Ptr instantiations are the UI entity types (UIHpBar::Entity ...), not the Unk_PCBaseComp_ stand-ins. The ctor is
+//   pinned (the line table starts at the brace, below the initializer list).
 PCBase::PCBase()
     : m_unk_150(0), m_unk_158(0), m_unk_15c(0), m_unk_160(0), m_unk_1bc(0), m_unk_620(25.0f, 105.0f),
       m_unk_748(this), m_unk_8e8(10), m_pos920(NiPoint3::ZERO), m_f92c(1.0f), m_f930(1.0f), m_f934(0.0f),
@@ -916,9 +916,9 @@ PCBase::PCBase()
     for (int i = 0; i < 3; i++)
         memset(m_unk_1c0[i], 0, sizeof(m_unk_1c0[i]));
     memset(m_unk_508, 0, sizeof(m_unk_508));
-    m_f1a0 = 50.0f;
-    m_f180 = 1800.0f;
-    m_fTurnSpeed = 1800.0f;
+    m_unk_1a0.m_a = 50.0f;
+    m_unk_180.m_x = 1800.0f;
+    m_unk_190.m_x = 1800.0f;
     m_f9cc = 0.0f;
     m_unk_ae0 = egf::kENTITY_INVALID;
     m_posAE8 = NiPoint3::ZERO;
@@ -1031,7 +1031,7 @@ int PCBase::vfunc_10()
 {
     GameObject::vfunc_10();
     FUN_14166d8b0(vfunc_20().z);
-    FUN_141671960(m_fMoveSpeed);
+    FUN_141671960(m_unk_180.m_z);
     m_unk_150 = new Unk_PCBaseBody();
     m_unk_150->FUN_14123f5b0(this, m_unk_80, static_cast<const efd::Point3&>(vfunc_18()), m_unk_620.y, m_unk_620.x);
     FUN_14166d260();
@@ -1585,7 +1585,7 @@ MS2_REPLACE_METHOD(0x14166d9d0, PCBase, FUN_14166d9d0, 43, 0x3F019449);
 // @0x14166da10
 void PCBase::FUN_14166da10(float fSpeed)
 {
-    m_fTurnSpeed = fSpeed;
+    m_unk_190.m_x = fSpeed;
 }
 
 // @0x14166da40
@@ -1603,7 +1603,7 @@ float PCBase::FUN_14166da60()
 // @0x14166dab0
 float PCBase::FUN_14166dab0()
 {
-    return m_fTurnSpeed;
+    return m_unk_190.m_x;
 }
 
 // @0x14166dad0
@@ -2184,28 +2184,28 @@ MS2_REPLACE_METHOD(0x1416715b0, PCBase, FUN_1416715b0, 68, 0x981B8463);
 // @0x141671600
 float PCBase::FUN_141671600()
 {
-    return m_f1a0;
+    return m_unk_1a0.m_a;
 }
 MS2_REPLACE_METHOD(0x141671600, PCBase, FUN_141671600, 19, 0x515C60A9);
 
 // @0x141671920
 float* PCBase::FUN_141671920()
 {
-    return m_unk_180;
+    return &m_unk_180.m_x;
 }
 MS2_REPLACE_METHOD(0x141671920, PCBase, FUN_141671920, 17, 0x87CF6FFA);
 
 // @0x141671940
 float PCBase::FUN_141671940()
 {
-    return m_f198;
+    return m_unk_190.m_z;
 }
 MS2_REPLACE_METHOD(0x141671940, PCBase, FUN_141671940, 19, 0x31ACDCE1);
 
 // @0x141671960
 void PCBase::FUN_141671960(float fSpeed)
 {
-    m_f198 = fSpeed;
+    m_unk_190.m_z = fSpeed;
 }
 MS2_REPLACE_METHOD(0x141671960, PCBase, FUN_141671960, 31, 0xEEDFB76D);
 

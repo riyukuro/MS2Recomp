@@ -97,9 +97,13 @@ public:
     virtual void SendState(int nKind, void* pData, int nMsg, int nZero) = 0;   // 59
 };
 class Unk_IoInvView { public: int FUN_140970020(unsigned nItemId, unsigned short nRarity, int a, int b); };
+#include "ms2/placeholder/chomeprivilege.h"
+class Unk_IoHomeInfo : public CPtred {};                    // the player's home info held by MyPC (0x140967420)
 class Unk_IoPlayer : public Unk_IoPlayerBase
 {
 public:
+    MS2Ptr<CHomePrivilege> FUN_140967010();                 // MyPC::FUN_140967010
+    MS2Ptr<Unk_IoHomeInfo> FUN_140967420();                 // MyPC::FUN_140967420
     int FUN_1416627d0(int nItemId);                         // number of items of that id
     unsigned FUN_141662750(int nItemId);                    // level of the item
     Unk_IoInvView* FUN_1416749a0();                         // equip / inventory view
@@ -227,7 +231,6 @@ struct Unk_IoQuestMgr
 {
     char m_pad_00[0x10];
     void* m_pEvalVptr;
-    Unk_IoQuestEval* Eval() { return reinterpret_cast<Unk_IoQuestEval*>(&m_pEvalVptr); }
 };
 Unk_IoQuestMgr* FUN_140764020();
 extern QuestMask DAT_143aacd50;                                 // empty mask
@@ -271,14 +274,7 @@ int FUN_14053feb0(int nItemId);
 
 // condition helpers
 struct Unk_IoRefOwner;
-void* FUN_140967010(Unk_IoPlayer* p, void* pOut);
-void* FUN_1409658f0(void* p);
-int FUN_14050d890(void* p, int n);
-void FUN_140964920(void* p);
-void* FUN_140967420(Unk_IoPlayer* p, void* pOut);
-void* FUN_140965970(void* p);
-int FUN_140743710(void* p);
-void FUN_140964aa0(void* p);
+int FUN_140743710(Unk_IoHomeInfo* p);
 
 // entity and property access
 int FUN_1409618c0(Unk_Entity* e, unsigned nHash, Unk_StreamPoint* pOut);
@@ -297,7 +293,7 @@ unsigned __int64 FUN_140affe40(Unk_Entity* e);
 egf::FlatModel* FUN_1408a9bd0(Unk_Entity* e);
 CString FUN_141b70dd0(Unk_Entity* e);
 void FUN_1401d3700(CString* p);
-void FUN_141b71e70(egf::EntityID id, int a, int b, int c);
+void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot);    // util.cpp
 const char* FUN_1408ac310(efd::utf8string* p);
 const char* FUN_14099ad40(efd::AssetID* p);
 void FUN_1409989e0(efd::utf8string* p, const char* psz);
@@ -446,7 +442,7 @@ int CInteractObject::vfunc_1(Unk_Entity* pEntity, int nState)
     FUN_1409618c0(pEntity, 0x68c7c29d, &m_vRot);
     FUN_1408a2020(pEntity, 0xd460e9bc, &m_nRowId);
     m_spRow = FUN_14051f670(m_nRowId);
-    if (m_spRow == 0)
+    if (!m_spRow)
         return 0;
     m_strName = FUN_141b70dd0(pEntity);
     FUN_1401d3700(&m_strName);
@@ -582,34 +578,34 @@ void CInteractObject::FUN_1413fdc50()
 // @0x1413fdca0
 void CInteractObject::FUN_1413fdca0(unsigned char bVisible)
 {
-    if (m_ent.FUN_1408a9090() != 0)
-    {
-        m_nVisible = bVisible;
-        egf::EntityID id = *FUN_1408b76f0(m_ent.FUN_1408a9280());
-        if (bVisible == 0)
-            FUN_141b71e70(id, 0, 1, 0);
-        else
-            FUN_141b71e70(id, 1, 1, 0);
-    }
+    if (m_ent.FUN_1408a9090() == 0)
+        return;
+    m_nVisible = bVisible;
+    if (bVisible != 0)
+        FUN_141b71e70(*FUN_1408b76f0(m_ent.FUN_1408a9280()), true, 1, false);
+    else
+        FUN_141b71e70(*FUN_1408b76f0(m_ent.FUN_1408a9280()), false, 1, false);
 }
 
 // @0x1413fdd80
 int CInteractObject::FUN_1413fdd80()
 {
-    if (m_spRow == 0)
+    if (!m_spRow)
         return 0;
     Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     if (m_spRow->m_nGatherNeedA != 0)
     {
+        int nItemId = m_spRow->m_nGatherNeedA;
         int nNeed = m_spRow->m_nGatherNeedB;
-        if (pPlayer->FUN_1416627d0(m_spRow->m_nGatherNeedA) < nNeed)
+        if (pPlayer->FUN_1416627d0(nItemId) < nNeed)
             return 0;
     }
     return 1;
 }
 
+// MS2-FUNCTIONAL: the cost item is a raw Unk_IoItemRef released by hand (FUN_1401bfde0 before each return); the exe holds a real MS2Ptr<CItem> local (EH frame, the returns run its dtor), 38 bytes longer
 // @0x1413fde40
 int CInteractObject::FUN_1413fde40()
 {
@@ -648,10 +644,11 @@ int CInteractObject::FUN_1413fdfc0()
 {
     if (m_spRow == 0)
         return 0;
-    Unk_IoQuestMgr* pMgr = FUN_140764020();
-    return pMgr->Eval()->CheckMask(&m_spRow->m_maskUse);
+    Unk_IoQuestEval* pEval = reinterpret_cast<Unk_IoQuestEval*>(&FUN_140764020()->m_pEvalVptr);
+    return pEval->CheckMask(&m_spRow->m_maskUse);
 }
 
+// MS2-FUNCTIONAL: the exe reloads the template id through ecx (mov ecx,[id]; mov edx,ecx) before CHomePrivilege::FUN_14050d890(int), an argument conversion not reproduced with int/long/unsigned locals; otherwise identical
 // @0x1413fe040
 int CInteractObject::FUN_1413fe040()
 {
@@ -662,11 +659,8 @@ int CInteractObject::FUN_1413fe040()
         return 0;
     if (m_spRow->m_nNeedCond == 0)
         return 1;
-    int nId = FUN_140967110();
-    char buf[32];
-    int nResult = FUN_14050d890(FUN_1409658f0(FUN_140967010(pPlayer, buf)), nId);
-    FUN_140964920(buf);
-    return nResult;
+    unsigned nId = FUN_140967110();
+    return pPlayer->FUN_140967010()->FUN_14050d890(nId);
 }
 
 // @0x1413fe120
@@ -680,10 +674,10 @@ int CInteractObject::FUN_1413fe120()
     int nNeed = m_spRow->m_nNeedValue;
     if (nNeed == 0)
         return 1;
-    char buf[24];
-    int nHave = FUN_140743710(FUN_140965970(FUN_140967420(pPlayer, buf)));
-    FUN_140964aa0(buf);
-    return nHave == nNeed;
+    bool bSame = FUN_140743710(pPlayer->FUN_140967420().operator->()) == nNeed;
+    if (bSame)
+        return 1;
+    return 0;
 }
 
 // @0x1413fe220
@@ -746,7 +740,7 @@ void CInteractObject::FUN_1413fe500()
     if (FUN_1413fdfc0() != 0)
     {
         Unk_IoQuestMgr* pMgr = FUN_140764020();
-        if (pMgr->Eval()->CheckMask(FUN_1413fe8a0()) != 0)
+        if (reinterpret_cast<Unk_IoQuestEval*>(&pMgr->m_pEvalVptr)->CheckMask(FUN_1413fe8a0()) != 0)
         {
             FUN_1413fda50();
             return;
@@ -765,6 +759,7 @@ void CInteractObject::vfunc_11()
     }
 }
 
+// MS2-FUNCTIONAL: the effect transform is built through named Unk_StreamPoint / Unk_NiPoint3 locals and an explicit transform init (3 calls more than the exe, which passes the summed point temp straight to the translate setter)
 // @0x1413fe5d0
 void CInteractObject::vfunc_12()
 {
@@ -1786,6 +1781,7 @@ int CInteractGatheringObject::vfunc_16()
     return 1;
 }
 
+// MS2-FUNCTIONAL: the gathering iterator Unk_IoGatherIt is a buffer placeholder released by hand (GS cookie frame); the exe has a real iterator object with a dtor (EH frame) and returns through a stored result
 // @0x141402b40
 int CInteractGatheringObject::FUN_141402b40()
 {
@@ -1867,6 +1863,7 @@ int CInteractGuildPosterObject::FUN_141402e60()
     return m_spRow->m_nPosterId;
 }
 
+// MS2-FUNCTIONAL: string temporaries differ: the exe builds the CStringW copy for FUN_140a25840 after the URL and keeps the texture handle as a by-value object (one CStringA dtor fewer, EH states shifted); the raw texture handle here is released by hand
 // @0x141402eb0
 void CInteractGuildPosterObject::FUN_141402eb0(unsigned char bShow)
 {

@@ -265,13 +265,13 @@ void UIItemRemakeOptionDialog::OnLoadComplete()
         Delegate<void(NotifyObject*)>(this, &UIItemRemakeOptionDialog::FUN_14129dc60));
     Unk_PetDialog* pane = FUN_140b99ba0(0x4f38);
     if (pane != 0) {
-        if (pane->vfunc_55() != 0)
+        if (pane->FUN_141924630() != 0)
             pane->vfunc_67();
     }
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
     COutPacket pkt(0x75, 0);
-    pkt.Encode1(6);
-    pkt.Encode1(1);
+    pkt.vfunc_o10_1(6);
+    pkt.vfunc_o10_1(1);
     FUN_140710590(pkt);
 }
 

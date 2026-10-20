@@ -70,6 +70,7 @@ CItemExchangeScrollTable::CItemExchangeScrollTable()
 {
 }
 
+// MS2-FUNCTIONAL: the toolchain ATL CAtlMap::RemoveAll is not nothrow, so the implicitly-noexcept dtor gets a terminate EH frame (obj 119 vs exe 89 bytes, exe has no FuncInfo); same member/base dtor calls
 // @0x140595190
 CItemExchangeScrollTable::~CItemExchangeScrollTable()
 {
@@ -149,7 +150,8 @@ CExchangeItemInfoPtr CItemExchangeScrollTable::GetData(unsigned int nId)
 // @0x1405957d0
 static __int64 FUN_1405957d0(__int64 nMeso, unsigned int nRate)
 {
-    return (__int64)((double)nMeso * (1.0 - (double)nRate / 10000.0) + 1e-06);
+    double dRate = 1.0 - (double)nRate / 10000.0;
+    return (__int64)((double)nMeso * dRate + 1e-06);
 }
 
 // @0x140595ac0

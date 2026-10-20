@@ -113,7 +113,7 @@ int UICutSceneMovie::vfunc_52(const CString& strPath, float fVolume)
 MS2_REPLACE_METHOD(0x14190EC00, UICutSceneMovie, vfunc_52, 317, 0x6D3CA15C);
 
 // @0x14190ed50
-bool UICutSceneMovie::vfunc_53()
+int UICutSceneMovie::vfunc_53()
 {
     FUN_140b632f0()->FUN_1422d4840(this, 2);
     FUN_1403ed2b0()->FUN_141adb7b0(1);

@@ -3,7 +3,7 @@
 // MS2-RANGE: 0x140a46ab0-0x140a4c470 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEA_JAEAV?$Unk_PayloadPtr@VHomeBlockInfo@@@@$0A@@?$pair@_JV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@std@@QEAA@AEA_JAEAV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@Z 0x140a48100 ; unique
-// MS2-PIN: ??$?0_JV?$Unk_PayloadPtr@VHomeBlockInfo@@@@$0A@@?$pair@$$CB_JV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@std@@QEAA@$$QEAU?$pair@_JV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@1@@Z 0x140a481f0 ; unique
+// MS2-PIN: ??$?0_JV?$Unk_PayloadPtr@VHomeBlockInfo@@@@$0A@@?$pair@$$CB_KV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@std@@QEAA@$$QEAU?$pair@_JV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@1@@Z 0x140a481f0 ; unique
 // MS2-PIN: ??$make_pair@AEA_JAEAV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@std@@YA?AU?$pair@_JV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@0@AEA_JAEAV?$Unk_PayloadPtr@VHomeBlockInfo@@@@@Z 0x140a49bd0 ; unique
 // MS2-PIN: ??_G?$TSingleton@VHomeBlockManager@@@@UEAAPEAXI@Z 0x140a4a6b0 ; unique
 // MS2-PINS-END tplpin
@@ -117,7 +117,7 @@ void HomeBlockManager::FUN_140a470d0(CInPacket& in) {
 MS2_REPLACE_METHOD(0x140a470d0, HomeBlockManager, FUN_140a470d0, 83, 0x4BE55B80);
 // @0x140a47130
 void HomeBlockManager::FUN_140a47130(CInPacket& in) {
-    __int64 id=in.vfunc_o8_4();
+    unsigned __int64 id=in.vfunc_o8_4();
     CStringW memo=in.vfunc_o8_8();
     if(id==0) return;
     Unk_1401b4ec0 guard(m_lock,1);
@@ -146,7 +146,7 @@ void HomeBlockManager::FUN_140a47360(CInPacket& in) {
 }
 MS2_REPLACE_METHOD(0x140a47360, HomeBlockManager, FUN_140a47360, 262, 0x6FA9B62B);
 // @0x140a47490
-HomeBlockManager::HomePtr HomeBlockManager::FUN_140a47490(__int64 id) {
+HomeBlockManager::HomePtr HomeBlockManager::FUN_140a47490(unsigned __int64 id) {
     Unk_1401b4ec0 guard(m_lock,1);
     auto it=m_byId.find(id);
     if(it==m_byId.end()) return HomePtr(0);
@@ -154,7 +154,7 @@ HomeBlockManager::HomePtr HomeBlockManager::FUN_140a47490(__int64 id) {
 }
 MS2_REPLACE_METHOD(0x140a47490, HomeBlockManager, FUN_140a47490, 232, 0xE93ABFD9);
 // @0x140a47580
-HomeBlockManager::HomePtr HomeBlockManager::FUN_140a47580(__int64 id) {
+HomeBlockManager::HomePtr HomeBlockManager::FUN_140a47580(unsigned __int64 id) {
     Unk_1401b4ec0 guard(m_lock,1);
     auto it=m_byAccount.find(id);
     if(it==m_byAccount.end()) return HomePtr(0);
@@ -199,14 +199,14 @@ void HomeBlockManager::FUN_140a479a0(HomePtr p) {
 }
 MS2_REPLACE_METHOD(0x140a479a0, HomeBlockManager, FUN_140a479a0, 379, 0x95F27FBB);
 // @0x140a47b30
-void HomeBlockManager::FUN_140a47b30(__int64 id) {
+void HomeBlockManager::FUN_140a47b30(unsigned __int64 id) {
     Unk_1401b4ec0 guard(m_lock,1);
     auto it=m_byId.find(id);
     if(it==m_byId.end()) return;
     {
         HomePtr p=it->second;
-        m_byId.erase(p->m_18);
-        m_byAccount.erase(p->m_28);
+        m_byId.erase(reinterpret_cast<const unsigned __int64&>(p->m_18));
+        m_byAccount.erase(reinterpret_cast<const unsigned __int64&>(p->m_28));
         HomeMessage(0xd58,1,1,p->m_30);
         Unk_HomeNotifications* events=FUN_140a4a7b0();
         events->slot14();

@@ -182,15 +182,15 @@ unsigned CUserMail::FUN_1408e3950(__int64 id) {
 
 // @0x1408e3a60
 void CUserMail::FUN_1408e3a60(MailPtr mail) {
-    if (!(mail == 0)) {
-        Unk_LockGuard guard(m_lock);
-        if (guard != 0) {} else {
-            if (m_map.Lookup(mail->FUN_140690350()) != 0) {
-                return;
-            }
-            m_map.SetAt(mail->FUN_140690350(), mail);
-            m_mails.Add(mail);
+    if (mail == 0)
+        return;
+    Unk_LockGuard guard(m_lock);
+    if (guard != 0) {} else {
+        if (m_map.Lookup(mail->FUN_140690350()) != 0) {
+            return;
         }
+        m_map.SetAt(mail->FUN_140690350(), mail);
+        m_mails.Add(mail);
     }
 }
 
@@ -256,11 +256,11 @@ int CUserMail::FUN_1408e3f00(int kind) {
     int count = 0;
     for (unsigned i = 0; i < m_mails.GetCount(); ++i) {
         MailPtr mail = m_mails[i];
-        if (mail->FUN_140690370() == kind) {
-            if (mail->FUN_140691130() == 0) {
-                ++count;
-            }
-        }
+        if (mail->FUN_140690370() != kind)
+            continue;
+        if (mail->FUN_140691130())
+            continue;
+        ++count;
     }
     return count;
 }

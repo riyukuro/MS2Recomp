@@ -75,6 +75,7 @@ public:
     void FUN_1418d74f0(__int64 nId);                            // update a buddy's profile image
     int FUN_1418d76c0();                                        // count the online buddies
     void FUN_1418d77f0(int nOnline, int nTotal);                // "setOnline"
+friend void FUN_1418d6410(UICommunityDialog* pDialog);      // inlined tab reset
 private:
     MS2_LAYOUT_FRIEND;
     int m_190;                                                  // +0x190 tab (0 nearby, 1 buddy, 2 request, 3 ban, 4 home blocks)

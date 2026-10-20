@@ -492,8 +492,9 @@ bool CGuideManager::ProcessEntity(MS2Ptr<CGuideEntity> spEntity, int nMode)
 void CGuideManager::FinishById(int nId)
 {
     MS2Ptr<CGuideEntity> spEntity = FindEntity(nId);
-    if (!(spEntity == 0))
-        FinishEntity(spEntity);
+    if (spEntity == 0)
+        return;
+    FinishEntity(spEntity);
 }
 
 // @0x14138c710
@@ -691,7 +692,6 @@ void CGuideManager::TestCondition(CStringA strName)
     {
         ref.FUN_141387bb0()->vfunc_5();
     }
-    ref.FUN_141387660();
 }
 
 // @0x14138d160
@@ -1099,12 +1099,11 @@ void CGuideManager::OnDungeonEnterState(NotifyObject*)
 // @0x14138ec70
 void CGuideManager::vfunc_oa0_7(int nMode, CStringW)
 {
-    if (FUN_1408e57f0()->FUN_1422b9dc0() == 0x620000c)
-    {
-        QueueOccurrence(static_cast<Occurrence>(5), 0);
-        if (nMode != 1)
-            AddTrigger(static_cast<TriggerType>(4), 0, 0);
-    }
+    if (FUN_1408e57f0()->FUN_1422b9dc0() != 0x620000c)
+        return;
+    QueueOccurrence(static_cast<Occurrence>(5), 0);
+    if (nMode != 1)
+        AddTrigger(static_cast<TriggerType>(4), 0, 0);
 }
 
 // @0x14138fd50
