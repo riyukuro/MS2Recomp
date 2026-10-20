@@ -4119,7 +4119,6 @@ luaopen_Quaternion	14223d2d0	func
 luaopen_Entity	1422416d0	func
 ?Access@File@efd@@SA_NPEBDW4OpenMode@12@@Z	1420b1540	func
 ?CreateDirectoryA@File@efd@@SA_NPEBD@Z	1420b1560	func
-?DirectoryExists@File@efd@@SA_NPEBD@Z	1420b18a0	func
 ?GetEncryptionCheckEnabled@File@efd@@SA_NXZ	1420b18c0	func
 ?GetFile@File@efd@@SAPEAV12@PEBDW4OpenMode@12@I_N@Z	1420b18d0	func
 ?SetCreateDirectoryFunc@File@efd@@SAXP6A_NPEBD@Z@Z	1420b1900	func
@@ -4186,3 +4185,15 @@ luaopen_Entity	1422416d0	func
 ??1?$list@PEAVIRenderServiceDelegate@ecr@@V?$CustomAllocator@PEAVIRenderServiceDelegate@ecr@@@efd@@@std@@QEAA@XZ	142019610	func
 ?Get@CPCEffectDummy@@QEAA_NHIAEAVCEffectDummy@@@Z	1416845c0	func
 ?OnDamage@CDPSMeterSystem@@QEAAXV?$MS2Ptr@VCDamageRecord@@@@@Z	14117d750	func
+# mg21 merge 22: symbols.tsv rebinds from fx20/fx24 (work/coord/fixups-pending.md)
+??0?$_Vector_val@U?$_Simple_types@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@std@@QEAA@XZ	141bad8c0	func
+??$?0$$V@?$_Compressed_pair@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z	141b9c9a0	func
+??$_Lbound@H@?$_Tree@V?$_Tmap_traits@HV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@@2@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@@std@@PEAX@1@AEBH@Z	1404e8040	func
+??$_Lbound@I@?$_Tree@V?$_Tmap_traits@IV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@UGuildRaid@CGuildXmlData@@@@@std@@PEAX@1@AEBI@Z	1404e80e0	func
+??$_Lbound@I@?$_Tree@V?$_Tmap_traits@IV?$Unk_PayloadPtr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAX@1@AEBI@Z	1404e8180	func
+??$_Lbound@U?$pair@HH@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@@2@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$Unk_PayloadPtr@UGuildHouse@CGuildXmlData@@@@@std@@PEAX@1@AEBU?$pair@HH@1@@Z	1404e8220	func
+?_Getal@?$_List_alloc@U?$_List_base_types@PEAVEntity@egf@@V?$allocator@PEAVEntity@egf@@@std@@@std@@@std@@QEAAAEAV?$allocator@U?$_List_node@PEAVEntity@egf@@PEAX@std@@@2@XZ	141c26bb0	func
+??$emplace_back@UUnk_Int3@@@?$vector@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@QEAAX$$QEAUUnk_Int3@@@Z	140b7c450	func
+?push_back@?$vector@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@QEAAX$$QEAUUnk_Int3@@@Z	140b7ecf0	func
+??$make_type@W4Unk_SSGJobError@@@internal@fmt@@YA_KAEBW4Unk_SSGJobError@@@Z	141745310	func
+??1LogMessage@logging@cef@@QEAA@XZ	142778a10	func
