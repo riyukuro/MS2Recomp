@@ -62,7 +62,7 @@ struct Unk_PCEquipSet;
 class Unk_MpRideePtr;                                               // uimainplayerinfo.h (the ridee avatar handle)
 class Unk_MmSellerShop;
 class Unk_MeratBasketEntry;
-namespace UIMeratMarketDialogUtil { class ASOutData; }
+namespace UIMeratMarketDialogUtil { class ASOutData; class ASClickOutData; }
 
 // The payment map of the market bill and its gift callback (exe RTTI: the strings by const reference; the shared
 // TMarketBillDataParam::GiftCallback spells them by value).
@@ -301,6 +301,9 @@ public:
     void OnModelCheck(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141306ed0 foreign
     void OnModelRefresh(const Scaleform::GFx::FunctionHandler::Params& params); // 0x141306fa0 foreign
     void OnModelReset(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141306ff0 foreign
+    void OnBuyProduct(const CStringA& strMovie, UIMeratMarketDialogUtil::ASClickOutData& click);   // 0x141305ce0
+    void OnEquipIconTooltip(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141306950
+    void ShowBuyBill(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProduct, int nCount);   // 0x1413061b0
     void SetMusicPlayTime(int nStart, int nLength);                 // 0x141307080
     bool StartMusicPreview();                                       // 0x1413070d0
     void StopMusicPreview(bool bApply);                             // 0x141307600
