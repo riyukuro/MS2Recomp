@@ -1229,23 +1229,20 @@ void AdditionalCliList::FUN_140973950(MS2Ptr<AdditionalCli> sp)
     bool bMe = FUN_140930110(sp->m_nCasterId);
     if (sp->FUN_14096d810()->m_ui.FUN_1401927c0(bMe))
     {
-        if (!FUN_1409735c0())
-        {
-            if (FUN_140973680(sp))
-            {
-                UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
-                if (pBar)
-                    static_cast<Unk_AclUpperBar*>(pBar)->FUN_141b4cf40(sp);
-                UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
-                if (pDuel)
-                    static_cast<Unk_AclDuelBar*>(pDuel)->FUN_140e6c440(sp);
-            }
-        }
-        else
+        if (FUN_1409735c0())
         {
             UIMainPlayerInfo* pInfo = FUN_140931900(20063);
             if (pInfo)
                 static_cast<Unk_AclMainInfo*>(pInfo)->FUN_1419f0fe0(sp);
+        }
+        else if (FUN_140973680(sp))
+        {
+            UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
+            if (pBar)
+                static_cast<Unk_AclUpperBar*>(pBar)->FUN_141b4cf40(sp);
+            UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
+            if (pDuel)
+                static_cast<Unk_AclDuelBar*>(pDuel)->FUN_140e6c440(sp);
         }
     }
     if (!FUN_140973640())
@@ -1258,30 +1255,27 @@ void AdditionalCliList::FUN_140973950(MS2Ptr<AdditionalCli> sp)
                                          sp->FUN_14096d2e0());
         }
     }
-    if (sp->FUN_14096d810()->m_shield.m_fHpByTargetMaxHP > 0.0f || sp->FUN_14096d810()->m_shield.m_nHpValue >= 1)
+    if (sp->FUN_14096d810()->m_shield.m_fHpByTargetMaxHP > 0.0f || sp->FUN_14096d810()->m_shield.m_nHpValue > 0)
         m_pOwner->FUN_141670260((int)sp->m_nShieldValue, true);
 }
 
 // @0x140973cc0
 void AdditionalCliList::FUN_140973cc0(MS2Ptr<AdditionalCli> sp)
 {
-    if (!FUN_1409735c0())
-    {
-        if (FUN_140973680(sp))
-        {
-            UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
-            if (pBar)
-                static_cast<Unk_AclUpperBar*>(pBar)->FUN_141b4d060(m_pOwner, sp->FUN_14096d260());
-            UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
-            if (pDuel)
-                pDuel->FUN_140e6c640(sp->FUN_14096d260());
-        }
-    }
-    else
+    if (FUN_1409735c0())
     {
         UIMainPlayerInfo* pInfo = FUN_140931900(20063);
         if (pInfo)
             pInfo->FUN_1419f1180(sp->FUN_14096d260());
+    }
+    else if (FUN_140973680(sp))
+    {
+        UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
+        if (pBar)
+            static_cast<Unk_AclUpperBar*>(pBar)->FUN_141b4d060(m_pOwner, sp->FUN_14096d260());
+        UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
+        if (pDuel)
+            pDuel->FUN_140e6c640(sp->FUN_14096d260());
     }
     if (sp->FUN_14096d810()->m_ui.m_bIconBalloonOnOff)
     {
@@ -1289,7 +1283,7 @@ void AdditionalCliList::FUN_140973cc0(MS2Ptr<AdditionalCli> sp)
         if (spBalloon.get())
             spBalloon->FUN_14128edb0(sp->FUN_14096d260());
     }
-    if (sp->FUN_14096d810()->m_shield.m_fHpByTargetMaxHP > 0.0f || sp->FUN_14096d810()->m_shield.m_nHpValue >= 1)
+    if (sp->FUN_14096d810()->m_shield.m_fHpByTargetMaxHP > 0.0f || sp->FUN_14096d810()->m_shield.m_nHpValue > 0)
     {
         MS2Ptr<Unk_PCBaseComp_a68> spBar = m_pOwner->vfunc_81();
         if (spBar.get())
