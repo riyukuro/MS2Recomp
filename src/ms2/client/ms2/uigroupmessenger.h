@@ -22,6 +22,7 @@
 #include "ms2/placeholder/uiugceventlistener.h"
 
 class CItem;
+class CInPacket;
 class NotifyObject;
 class ChatEmoticonData;
 class UIGroupMessengerBrowser;
@@ -33,8 +34,7 @@ namespace GroupMessengerData {
 class TalkLogList : public CPtred
 {
 public:
-    TalkLogList() {}
-    virtual ~TalkLogList() {}                                       //  0 0x141955170 (??_G 0x1419556d0)
+    virtual ~TalkLogList() = default;                               //  0 0x141955170 (??_G 0x1419556d0)
     ATL::CAtlArray<TalkLog> m_logs;                                 // +0x18
     std::deque<CStringW> m_lines;                                   // +0x38
 };
@@ -58,7 +58,7 @@ public:
     virtual void vfunc_43();                                                // 43 0x141948f40 alignment
     virtual void vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs);
                                                                             // 45 0x141949640 item tooltip / preview
-    virtual int vfunc_48();                                                 // 48 0x14194f120 UI type id
+    virtual int vfunc_48();                                                 // 48 0x14194f120 UI type id (0x4e94)
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);               // IMessageListener 0 0x141949130
     virtual int vfunc_53(void* pCfg);                                       // 53 0x1419487c0 save
     virtual int vfunc_54(void* pCfg);                                       // 54 0x141948980 load
@@ -131,15 +131,53 @@ class UIGroupMessengerBrowser : public UIDialog
 {
 public:
     UIGroupMessengerBrowser();                                              // 0x141950770
-    virtual ~UIGroupMessengerBrowser();                                     //  0 (??_G 0x141955710)
+    virtual ~UIGroupMessengerBrowser();                                     //  0 0x141950910 (??_G 0x141955710)
+    virtual CString vfunc_1();                                              //  1 0x1419509c0 "GroupMessengerBrowser"
+    virtual void vfunc_15();                                                // 15 0x141951470 flushes the pending lines
+    virtual void OnLoadInit();                                              // 20 0x141950d20
+    virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
+                                                                            // 28 0x141951180
+    virtual void vfunc_43();                                                // 43 0x141950d60 alignment
+    virtual int vfunc_48();                                                 // 48 0x141956220 UI type id
+    virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);               // IMessageListener 0 0x141950e70
+    virtual int vfunc_53(void* pCfg);                                       // 53 0x141950b70 save
+    virtual int vfunc_54(void* pCfg);                                       // 54 0x141950c60 load
+    virtual void vfunc_67();                                                // 67 0x141950a10 Close: closes every window
+    virtual void vfunc_80(void* pPacket);                                   // 80 0x1419512f0 the rename check result
 
-    unsigned FUN_141952530();                                               // refreshes the tray
+    void FUN_1419515c0(int nGroupId);                                       // a chat was created
+    void FUN_141951720(int nGroupId, const CStringW& strName, const CStringW& strText);
+    void FUN_1419517b0(int nGroupId, const CStringW& strName, const CStringW& strOther);   // invited to a chat
+    void FUN_1419519a0(int nGroupId);                                       // a chat was left
+    void FUN_1419519e0(int nGroupId, const CStringW& strName, const CStringW& strOther);   // a member was invited
+    void FUN_141951a70(int nGroupId, const CStringW& strName, int nMode);   // a member joined / refused
+    void FUN_141951af0(int nGroupId, const CStringW& strName);              // a member left
+    void FUN_141951b70(int nGroupId, const CStringW& strName);              // a member was kicked
+    void FUN_141951bf0(int nGroupId, const CStringW& strName, const CStringW& strMsg);    // a notice line
+    void FUN_141951c50(int nGroupId, const CStringW& strName, const CStringW& strMsg);    // queues a member's line
+    void FUN_141951d80(int nGroupId, const CStringW& strName, CInPacket* pPacket);       // the item links of a line
+    void FUN_141951f70(CStringW strText);                                   // shares a text with a chat
+    void FUN_1419524e0();                                                   // forgets everything
+    void FUN_141952530();                                                   // refreshes the tray
+    int FUN_141952780();                                                    // minimizes every window
+    int FUN_141952840();                                                    // a window is shown
+    unsigned FUN_141952900();                                               // the first free window slot
     void FUN_141952960(unsigned nGroupId);                                  // marks a chat read
+    int FUN_141952a30(unsigned nGroupId);                                   // the read line count
     int FUN_141952b30(unsigned nGroupId);                                   // the unread line count
-    UIGroupMessenger* FUN_141952fc0(CStringW strName);                      // the window of a chat name
+    int FUN_141952be0();                                                    // opens the windows of the joined chats
+    int FUN_141952d80(unsigned nGroupId, int bDeleteSave, int bMinimized);  // opens a chat window
+    UIGroupMessenger* FUN_141952f20(int nGroupId);                          // the window of a chat
+    UIGroupMessenger* FUN_141952fc0(const CStringW& strName);               // the window of a chat name
+    void FUN_141953090(const CStringW& strName);                            // shows a window
     void FUN_141953160(const CStringW& strName);                            // a window was hidden
+    void FUN_141953240(const CStringW& strName);                            // toggles a window
+    void FUN_1419532d0(int nGroupId);                                       // closes the window of a chat
     void FUN_141953460(const CStringW& strName);                            // a window was closed
-    void FUN_141953810(int nKind, const CStringW& strName, const CStringW& strMsg, int bSystem, int bMinimized);
+    void FUN_141953660(CStringW strText);                                   // appends to the current window's input
+    void FUN_141953810(int nGroupId, const CStringW& strName, const CStringW& strMsg, int bSystem, int bMinimized);
+    CStringW FUN_141953b10(const CStringW& strMsg);                         // colours the item links
+    MS2Ptr<CItem> FUN_141953df0(__int64 nUid);                              // an item link's item
 
     float m_fOffsetX;                                                       // +0x178
     float m_fOffsetY;                                                       // +0x17c

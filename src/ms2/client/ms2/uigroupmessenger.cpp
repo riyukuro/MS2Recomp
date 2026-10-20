@@ -4,6 +4,7 @@
 // MS2-RANGE: 0x141947920-0x141959330 .text$mn
 // MS2-RANGE: 0x140113b00-0x140113ff0 .text$di
 // MS2-GUESS-LOOKALIKES
+// MS2-PIN: memmove_s 0x141950650
 //
 // Two original TUs: the window (0x141947920-0x141950650) and the tray (0x141950770-), each with its own COMDAT copies
 // of the container glue.
@@ -25,6 +26,10 @@
 #include "ms2/commonfiles/chatemoticontable.h"
 #include "ms2/commonfiles/commonstringtable.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/ascorelist.h"
+#include "ms2/placeholder/blindmanager.h"
+#include "ms2/placeholder/cinpacket.h"
+#include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astextfield.h"
@@ -137,6 +142,7 @@ public:
     void FUN_141482c80(CStringW strName);                           // make a chat the current one
     void FUN_141482d30(CStringW strName);                           // drop a chat name
     CStringW FUN_1414829e0();                                       // the current chat name
+    void FUN_141482b70();                                           // forgets every chat name
     char m_pad_00[0x50];
     UIGroupMessengerBrowser* m_pBrowser;                            // +0x50
 };
@@ -215,6 +221,11 @@ class UIInviteGroupDialog : public UIDialog
 {
 public:
     void FUN_14199fcf0(unsigned nGroupId);                          // opens it for a chat
+    void FUN_14199fd10(int nGroupId, const CStringW& strName, const CStringW& strText);
+    void FUN_14199fd60(int nGroupId, const CStringW& strName, const CStringW& strOther);
+    void FUN_14199fdb0(int nGroupId, const CStringW& strName);
+    void FUN_14199fdf0(int nGroupId, const CStringW& strName);
+    void FUN_14199fe30(int nGroupId, const CStringW& strName);
 };
 UIInviteGroupDialog* FUN_14194dd10(int nUiId);
 
@@ -305,6 +316,7 @@ CString UIGroupMessenger::vfunc_1()
 {
     return "GroupMessenger";
 }
+MS2_REPLACE_METHOD(0x141947C60, UIGroupMessenger, vfunc_1, 61, 0xEA0A8AA4);
 
 // @0x141947cb0
 int UIGroupMessenger::vfunc_65()
@@ -332,7 +344,9 @@ void UIGroupMessenger::vfunc_69()
 {
     vfunc_63(1);
 }
+MS2_REPLACE_METHOD(0x141947F10, UIGroupMessenger, vfunc_69, 38, 0xF585F677);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141947f40
 void UIGroupMessenger::vfunc_63(int n)
 {
@@ -372,6 +386,7 @@ void UIGroupMessenger::vfunc_63(int n)
     if (FUN_141482e80()->m_pBrowser != 0)
         FUN_141482e80()->m_pBrowser->FUN_141952960(m_nGroupId);
 }
+MS2_REPLACE_METHOD(0x141947F40, UIGroupMessenger, vfunc_63, 890, 0x0DD48E64);
 
 // @0x1419482c0
 int UIGroupMessenger::vfunc_4()
@@ -389,7 +404,9 @@ int UIGroupMessenger::vfunc_4()
     vfunc_53(pRoot);
     return FUN_1408710c0(&doc, FUN_140cc2a00(FUN_1412755f0(), FUN_14194b8a0()));
 }
+MS2_REPLACE_METHOD(0x1419482C0, UIGroupMessenger, vfunc_4, 598, 0x06A5FC79);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141948520
 int UIGroupMessenger::vfunc_5()
 {
@@ -415,6 +432,7 @@ int UIGroupMessenger::vfunc_5()
     }
     return m_78;
 }
+MS2_REPLACE_METHOD(0x141948520, UIGroupMessenger, vfunc_5, 662, 0x45487133);
 
 // @0x1419487c0
 int UIGroupMessenger::vfunc_53(void* pCfg)
@@ -436,6 +454,7 @@ int UIGroupMessenger::vfunc_53(void* pCfg)
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x1419487C0, UIGroupMessenger, vfunc_53, 434, 0x79EF8D2C);
 
 // @0x141948980
 int UIGroupMessenger::vfunc_54(void* pCfg)
@@ -459,6 +478,7 @@ int UIGroupMessenger::vfunc_54(void* pCfg)
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x141948980, UIGroupMessenger, vfunc_54, 415, 0x74DBE6B6);
 
 // @0x141948b30
 int UIGroupMessenger::vfunc_84(int bDeleteSave)
@@ -466,7 +486,9 @@ int UIGroupMessenger::vfunc_84(int bDeleteSave)
     m_80 = bDeleteSave == 0;
     return DeleteFileA(FUN_140cc2a00(FUN_1412755f0(), FUN_14194b8a0()));
 }
+MS2_REPLACE_METHOD(0x141948B30, UIGroupMessenger, vfunc_84, 219, 0xD2B9BC23);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141948c20
 void UIGroupMessenger::OnLoadComplete()
 {
@@ -496,6 +518,7 @@ void UIGroupMessenger::OnLoadComplete()
             spInput->FUN_1422e0d60(*Client::Constants::GetInstance()->MaxChatLength.Get());
     }
 }
+MS2_REPLACE_METHOD(0x141948C20, UIGroupMessenger, OnLoadComplete, 783, 0xCFF786F7);
 
 // @0x141948f40
 void UIGroupMessenger::vfunc_43()
@@ -510,7 +533,9 @@ void UIGroupMessenger::vfunc_43()
         }
     }
 }
+MS2_REPLACE_METHOD(0x141948F40, UIGroupMessenger, vfunc_43, 211, 0x36AB4734);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141949020
 int UIGroupMessenger::vfunc_13()
 {
@@ -524,6 +549,7 @@ int UIGroupMessenger::vfunc_13()
         return FUN_14194cd00();
     return 0;
 }
+MS2_REPLACE_METHOD(0x141949020, UIGroupMessenger, vfunc_13, 130, 0x3D622FE2);
 
 // @0x1419490b0
 void UIGroupMessenger::vfunc_15()
@@ -539,7 +565,9 @@ void UIGroupMessenger::vfunc_15()
         }
     }
 }
+MS2_REPLACE_METHOD(0x1419490B0, UIGroupMessenger, vfunc_15, 115, 0x265CF2CC);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141949130
 int UIGroupMessenger::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
@@ -589,6 +617,7 @@ int UIGroupMessenger::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     return 0;
 }
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141949640
 void UIGroupMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
@@ -622,7 +651,9 @@ void UIGroupMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& s
         }
     }
 }
+MS2_REPLACE_METHOD(0x141949640, UIGroupMessenger, vfunc_45, 686, 0xE24B8EBC);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141949900
 int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -740,13 +771,16 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 void UIGroupMessenger::FUN_14194a320(int nKind, const CStringW& strName, const CStringW& strText)
 {
 }
+MS2_REPLACE_METHOD(0x14194A320, UIGroupMessenger, FUN_14194a320, 20, 0x19CBB9B4);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194a340
 void UIGroupMessenger::FUN_14194a340(int nKind, const CStringW& strName, const CStringW& strOther)
 {
     FUN_14194bde0();
     FUN_14194a650(nKind, strName, FUN_140632a60(0x80e, strName, strOther));
 }
+MS2_REPLACE_METHOD(0x14194A340, UIGroupMessenger, FUN_14194a340, 109, 0xF1D02319);
 
 // @0x14194a3c0
 void UIGroupMessenger::FUN_14194a3c0(int nKind, const CStringW& strName, int nMode)
@@ -759,20 +793,25 @@ void UIGroupMessenger::FUN_14194a3c0(int nKind, const CStringW& strName, int nMo
         strMsg = FUN_14052bd00(0x813, strName);
     FUN_14194a650(nKind, strName, strMsg);
 }
+MS2_REPLACE_METHOD(0x14194A3C0, UIGroupMessenger, FUN_14194a3c0, 252, 0xF0BC3812);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194a4d0
 void UIGroupMessenger::FUN_14194a4d0(int nKind, const CStringW& strName)
 {
     FUN_14194bde0();
     FUN_14194a650(nKind, strName, FUN_14052bd00(0x811, strName));
 }
+MS2_REPLACE_METHOD(0x14194A4D0, UIGroupMessenger, FUN_14194a4d0, 99, 0xBA001AB9);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194a540
 void UIGroupMessenger::FUN_14194a540(int nKind, const CStringW& strName)
 {
     FUN_14194bde0();
     FUN_14194a650(nKind, strName, FUN_14052bd00(0x812, strName));
 }
+MS2_REPLACE_METHOD(0x14194A540, UIGroupMessenger, FUN_14194a540, 99, 0x5DE0CDB3);
 
 // @0x14194a5b0
 void UIGroupMessenger::FUN_14194a5b0(int nKind, const CStringW& strName, const CStringW& strMsg)
@@ -781,6 +820,7 @@ void UIGroupMessenger::FUN_14194a5b0(int nKind, const CStringW& strName, const C
     if (FUN_141482e80()->m_pBrowser != 0)
         FUN_141482e80()->m_pBrowser->FUN_141953810(nKind, strName, strMsg, 0, vfunc_64());
 }
+MS2_REPLACE_METHOD(0x14194A5B0, UIGroupMessenger, FUN_14194a5b0, 139, 0x816186C3);
 
 // @0x14194a650
 void UIGroupMessenger::FUN_14194a650(int nKind, const CStringW& strName, const CStringW& strMsg)
@@ -789,7 +829,9 @@ void UIGroupMessenger::FUN_14194a650(int nKind, const CStringW& strName, const C
     if (FUN_141482e80()->m_pBrowser != 0)
         FUN_141482e80()->m_pBrowser->FUN_141953810(nKind, strName, strMsg, 1, vfunc_64());
 }
+MS2_REPLACE_METHOD(0x14194A650, UIGroupMessenger, FUN_14194a650, 139, 0xEFB6BE61);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194a6f0
 void UIGroupMessenger::FUN_14194a6f0(NotifyObject* pNotify)
 {
@@ -820,7 +862,9 @@ void UIGroupMessenger::FUN_14194a6f0(NotifyObject* pNotify)
     FUN_14194a930(emoticons);
     FUN_1419235d0();
 }
+MS2_REPLACE_METHOD(0x14194A6F0, UIGroupMessenger, FUN_14194a6f0, 564, 0x30740B48);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194a930
 void UIGroupMessenger::FUN_14194a930(std::list<MS2Ptr<ChatEmoticonData> >& emoticons)
 {
@@ -860,7 +904,9 @@ void UIGroupMessenger::FUN_14194a930(std::list<MS2Ptr<ChatEmoticonData> >& emoti
     data.FUN_1409adbe0("emoticonDatas", arr);
     pDialog->Invoke("openChatEmoticonPreview", data.FUN_1422bb870());
 }
+MS2_REPLACE_METHOD(0x14194A930, UIGroupMessenger, FUN_14194a930, 1055, 0x7996AA4B);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194ad60
 void UIGroupMessenger::FUN_14194ad60()
 {
@@ -868,7 +914,9 @@ void UIGroupMessenger::FUN_14194ad60()
     if (pDialog != 0)
         pDialog->Invoke("closeChatEmoticonPreview");
 }
+MS2_REPLACE_METHOD(0x14194AD60, UIGroupMessenger, FUN_14194ad60, 110, 0xF5CDBC08);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194ade0
 int UIGroupMessenger::FUN_14194ade0(int nEmoticonId)
 {
@@ -892,7 +940,9 @@ int UIGroupMessenger::FUN_14194ade0(int nEmoticonId)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14194ADE0, UIGroupMessenger, FUN_14194ade0, 460, 0x5BD64367);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194afc0
 void UIGroupMessenger::FUN_14194afc0(int nEmoticonId)
 {
@@ -907,7 +957,9 @@ void UIGroupMessenger::FUN_14194afc0(int nEmoticonId)
         CGroupChatManager::GetInstance()->FUN_14137f080(m_nGroupId, strLine);
     }
 }
+MS2_REPLACE_METHOD(0x14194AFC0, UIGroupMessenger, FUN_14194afc0, 446, 0xADC3693B);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194b190
 int UIGroupMessenger::FUN_14194b190(int nEmoticonId, bool bFavorite)
 {
@@ -930,7 +982,9 @@ int UIGroupMessenger::FUN_14194b190(int nEmoticonId, bool bFavorite)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14194B190, UIGroupMessenger, FUN_14194b190, 446, 0x0BB5667B);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194b360
 void UIGroupMessenger::vfunc_ugc_1(void* pId, CString strText)
 {
@@ -943,7 +997,9 @@ void UIGroupMessenger::vfunc_ugc_1(void* pId, CString strText)
     m_nTypingTime = FUN_140869420();
     m_typing.SetAt((unsigned __int64)pId, strText);
 }
+MS2_REPLACE_METHOD_VIA(0x14194B360, UIGroupMessenger, UIUGCEventListener, vfunc_ugc_1, 204, 0x3AB617C1);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194b440
 void UIGroupMessenger::FUN_14194b440(const CStringW& strName, float x, float y)
 {
@@ -979,23 +1035,27 @@ void UIGroupMessenger::FUN_14194b440(const CStringW& strName, float x, float y)
         }
     }
 }
+MS2_REPLACE_METHOD(0x14194B440, UIGroupMessenger, FUN_14194b440, 951, 0xC1F13251);
 
 // @0x14194b800
 void UIGroupMessenger::vfunc_85()
 {
     FUN_141482e80()->FUN_141482c80(m_strName);
 }
+MS2_REPLACE_METHOD(0x14194B800, UIGroupMessenger, vfunc_85, 92, 0xF2FB97DC);
 
 // @0x14194b870
 void UIGroupMessenger::vfunc_86()
 {
 }
+MS2_REPLACE_METHOD(0x14194B870, UIGroupMessenger, vfunc_86, 6, 0xA9AF6E37);
 
 // @0x14194b880
 int UIGroupMessenger::FUN_14194b880()
 {
     return m_bUserList;
 }
+MS2_REPLACE_METHOD(0x14194B880, UIGroupMessenger, FUN_14194b880, 17, 0x874475EA);
 
 // @0x14194b8a0
 CString UIGroupMessenger::FUN_14194b8a0()
@@ -1004,19 +1064,23 @@ CString UIGroupMessenger::FUN_14194b8a0()
     strFile.Format("%s%d.xml", (const char*)vfunc_1(), m_nIndex);
     return strFile;
 }
+MS2_REPLACE_METHOD(0x14194B8A0, UIGroupMessenger, FUN_14194b8a0, 183, 0xCC64DC7C);
 
 // @0x14194b960
 CStringW UIGroupMessenger::FUN_14194b960()
 {
     return m_strName;
 }
+MS2_REPLACE_METHOD(0x14194B960, UIGroupMessenger, FUN_14194b960, 68, 0x0AB7D61B);
 
 // @0x14194b9b0
 unsigned UIGroupMessenger::FUN_14194b9b0()
 {
     return m_nGroupId;
 }
+MS2_REPLACE_METHOD(0x14194B9B0, UIGroupMessenger, FUN_14194b9b0, 17, 0xABC1DB6D);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194b9d0
 int UIGroupMessenger::FUN_14194b9d0(__int64 nCharacterId)
 {
@@ -1025,7 +1089,9 @@ int UIGroupMessenger::FUN_14194b9d0(__int64 nCharacterId)
         return 1;
     return 0;
 }
+MS2_REPLACE_METHOD(0x14194B9D0, UIGroupMessenger, FUN_14194b9d0, 168, 0x604A3AB2);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194ba80
 CStringW UIGroupMessenger::FUN_14194ba80(unsigned __int64 nCharacterId)
 {
@@ -1047,13 +1113,16 @@ CStringW UIGroupMessenger::FUN_14194ba80(unsigned __int64 nCharacterId)
     }
     return L"";
 }
+MS2_REPLACE_METHOD(0x14194BA80, UIGroupMessenger, FUN_14194ba80, 481, 0xE77E4AA1);
 
 // @0x14194bc70
 void UIGroupMessenger::FUN_14194bc70(CStringW strName)
 {
     m_strName = strName;
 }
+MS2_REPLACE_METHOD(0x14194BC70, UIGroupMessenger, FUN_14194bc70, 65, 0x6116EF81);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194bcc0
 void UIGroupMessenger::FUN_14194bcc0(CStringW strText)
 {
@@ -1065,6 +1134,7 @@ void UIGroupMessenger::FUN_14194bcc0(CStringW strText)
     }
     m_inputHistory.Add(strText);
 }
+MS2_REPLACE_METHOD(0x14194BCC0, UIGroupMessenger, FUN_14194bcc0, 270, 0x53094138);
 
 // @0x14194bde0
 void UIGroupMessenger::FUN_14194bde0()
@@ -1088,7 +1158,9 @@ void UIGroupMessenger::FUN_14194bde0()
     if (FUN_141482e80()->m_pBrowser != 0)
         FUN_141482e80()->m_pBrowser->FUN_141952530();
 }
+MS2_REPLACE_METHOD(0x14194BDE0, UIGroupMessenger, FUN_14194bde0, 627, 0xFCF12C7A);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194c060
 void UIGroupMessenger::FUN_14194c060()
 {
@@ -1144,6 +1216,7 @@ void UIGroupMessenger::FUN_14194c060()
     }
 }
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194c6d0
 int UIGroupMessenger::FUN_14194c6d0()
 {
@@ -1161,7 +1234,9 @@ int UIGroupMessenger::FUN_14194c6d0()
         return 1;
     return 0;
 }
+MS2_REPLACE_METHOD(0x14194C6D0, UIGroupMessenger, FUN_14194c6d0, 331, 0xF9EA75FE);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194c830
 int UIGroupMessenger::FUN_14194c830()
 {
@@ -1199,7 +1274,9 @@ int UIGroupMessenger::FUN_14194c830()
     FUN_14194cd00();
     return 1;
 }
+MS2_REPLACE_METHOD(0x14194C830, UIGroupMessenger, FUN_14194c830, 884, 0x4FB1EAAB);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194cbb0
 int UIGroupMessenger::FUN_14194cbb0()
 {
@@ -1220,7 +1297,9 @@ int UIGroupMessenger::FUN_14194cbb0()
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x14194CBB0, UIGroupMessenger, FUN_14194cbb0, 322, 0x0B436CC5);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194cd00
 int UIGroupMessenger::FUN_14194cd00()
 {
@@ -1238,7 +1317,9 @@ int UIGroupMessenger::FUN_14194cd00()
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14194CD00, UIGroupMessenger, FUN_14194cd00, 314, 0x168DA538);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194ce40
 int UIGroupMessenger::FUN_14194ce40(CStringW strName)
 {
@@ -1264,7 +1345,9 @@ int UIGroupMessenger::FUN_14194ce40(CStringW strName)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14194CE40, UIGroupMessenger, FUN_14194ce40, 696, 0xB730CB0A);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194d100
 void UIGroupMessenger::FUN_14194d100(MS2Ptr<Unk_GrmInput> spInput, const CStringW& strText, int bSelectEnd)
 {
@@ -1284,7 +1367,9 @@ void UIGroupMessenger::FUN_14194d100(MS2Ptr<Unk_GrmInput> spInput, const CString
         }
     }
 }
+MS2_REPLACE_METHOD(0x14194D100, UIGroupMessenger, FUN_14194d100, 701, 0x77104F6D);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194d3d0
 void UIGroupMessenger::FUN_14194d3d0(int nKind, const CStringW& strName, const CStringW& strMsg, int bSystem)
 {
@@ -1306,6 +1391,7 @@ void UIGroupMessenger::FUN_14194d3d0(int nKind, const CStringW& strName, const C
     }
 }
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194d6f0
 void UIGroupMessenger::FUN_14194d6f0()
 {
@@ -1322,7 +1408,9 @@ void UIGroupMessenger::FUN_14194d6f0()
         m_typing.GetNext(pos);
     }
 }
+MS2_REPLACE_METHOD(0x14194D6F0, UIGroupMessenger, FUN_14194d6f0, 498, 0x612545BC);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194d8f0
 CStringW UIGroupMessenger::FUN_14194d8f0(const CStringW& strName, int bSystem)
 {
@@ -1333,7 +1421,9 @@ CStringW UIGroupMessenger::FUN_14194d8f0(const CStringW& strName, int bSystem)
         return L"me";
     return L"other";
 }
+MS2_REPLACE_METHOD(0x14194D8F0, UIGroupMessenger, FUN_14194d8f0, 299, 0xBD408FB8);
 
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194da30
 bool UIGroupMessenger::FUN_14194da30(CStringW strMsg)
 {
@@ -1346,6 +1436,7 @@ bool UIGroupMessenger::FUN_14194da30(CStringW strMsg)
     }
     return true;
 }
+MS2_REPLACE_METHOD(0x14194DA30, UIGroupMessenger, FUN_14194da30, 189, 0xD3318D3F);
 
 // @0x14194dd10
 UIInviteGroupDialog* FUN_14194dd10(int nUiId)
@@ -1359,11 +1450,824 @@ UIInviteGroupDialog* FUN_14194dd10(int nUiId)
     return 0;
 }
 
-// @0x14194e740
-// (thunk: UIUGCEventListener slot 0 of the window, the compiler's this-adjusting destructor thunk)
-
 // @0x14194f120
 int UIGroupMessenger::vfunc_48()
 {
-    return 0x4e91;
+    return 0x4e94;
 }
+MS2_REPLACE_METHOD(0x14194F120, UIGroupMessenger, vfunc_48, 11, 0xF4D94525);
+
+// ---- the tray's views ----
+
+// The message box record: the group list box's choices and its dropdown's text.
+class Unk_GrmBox : public CMsgBoxData
+{
+public:
+    CStringW FUN_141a02d00() const;                                 // the text the box was opened with
+    void FUN_141a02b00(const CStringW& strText, ATL::CAtlList<CStringW>& choices);   // the dropdown entries
+};
+class Unk_GrmDropdown : public ASDropdownMenu
+{
+public:
+    CStringW FUN_1422dfe00();                                       // the selected label
+};
+// The item rarity colours.
+class Unk_GrmRarityColors
+{
+public:
+    unsigned FUN_1405569f0(int nRarity);
+};
+Unk_GrmRarityColors* FUN_140281980();
+MS2Ptr<CMsgBoxData> FUN_14151f820();                                // the shown message box
+CStringW FUN_1409eec40(int nStringId);
+BlindManager* FUN_1409c1730();
+__int64 FUN_140869440();                                            // the server time (epoch seconds)
+bool FUN_140d2c080(CStringW strText, ATL::CAtlList<CStringW>& links, CStringW strBegin, CStringW strEnd);
+__int64 FUN_140d2caf0(const CStringW& strLink);                     // an item link's uid
+CStringW FUN_14183e930(const CStringW& strText, int nColor);        // colours a text
+void FUN_141484270(TalkLog* pLog);                                  // marks a line read
+int FUN_141484290(TalkLog* pLog);                                   // a line is unread
+extern int DAT_143ab2864;
+
+// ---- UIGroupMessengerBrowser ----
+
+// @0x141950770
+UIGroupMessengerBrowser::UIGroupMessengerBrowser()
+    : m_fOffsetX(0), m_fOffsetY(-300.0f), m_nAlignType(7), m_items(17, 0.75f, 0.25f, 2.25f, 10),
+      m_windows(17, 0.75f, 0.25f, 2.25f, 10), m_pending(10), m_logs(17, 0.75f, 0.25f, 2.25f, 10)
+{
+    m_80 = 1;
+    m_88 = 1;
+    FUN_141482e80()->m_pBrowser = this;
+    FUN_141925e70(0, 1);
+}
+
+// @0x141950910
+UIGroupMessengerBrowser::~UIGroupMessengerBrowser()
+{
+    FUN_141482e80()->m_pBrowser = 0;
+}
+
+// @0x1419509c0
+CString UIGroupMessengerBrowser::vfunc_1()
+{
+    return "GroupMessengerBrowser";
+}
+MS2_REPLACE_METHOD(0x1419509C0, UIGroupMessengerBrowser, vfunc_1, 61, 0xA7FDB2D8);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141950a10
+void UIGroupMessengerBrowser::vfunc_67()
+{
+    UIDialog::vfunc_67();
+    ATL::CAtlArray<MS2Ptr<UIGroupMessenger> > windows;
+    POSITION pos = m_windows.GetStartPosition();
+    while (pos != 0)
+    {
+        UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);
+        if (pWindow != 0)
+            windows.Add(MS2Ptr<UIGroupMessenger>(pWindow));
+        m_windows.GetNext(pos);
+    }
+    m_windows.RemoveAll();
+    for (unsigned i = 0; i < windows.GetCount(); i++)
+        windows[i]->vfunc_67();
+}
+MS2_REPLACE_METHOD(0x141950A10, UIGroupMessengerBrowser, vfunc_67, 337, 0x85A4A307);
+
+// @0x141950b70
+int UIGroupMessengerBrowser::vfunc_53(void* pCfg)
+{
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog)
+    {
+        FUN_141926620(&m_nAlignType, &m_fOffsetX, &m_fOffsetY);
+        FUN_140873e30(pCfg, "offsetX", m_fOffsetX);
+        FUN_140873e30(pCfg, "offsetY", m_fOffsetY);
+        FUN_140873ca0(pCfg, "alignType", m_nAlignType);
+    }
+    return 1;
+}
+MS2_REPLACE_METHOD(0x141950B70, UIGroupMessengerBrowser, vfunc_53, 230, 0xC1FBF5E7);
+
+// @0x141950c60
+int UIGroupMessengerBrowser::vfunc_54(void* pCfg)
+{
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog)
+    {
+        FUN_140873360(pCfg, "offsetX", &m_fOffsetX);
+        FUN_140873360(pCfg, "offsetY", &m_fOffsetY);
+        FUN_1408731e0(pCfg, "alignType", m_nAlignType);
+    }
+    return 1;
+}
+MS2_REPLACE_METHOD(0x141950C60, UIGroupMessengerBrowser, vfunc_54, 179, 0x3A420653);
+
+// @0x141950d20
+void UIGroupMessengerBrowser::OnLoadInit()
+{
+    UIObject::OnLoadInit();
+    FUN_141952be0();
+    FUN_141952530();
+}
+MS2_REPLACE_METHOD(0x141950D20, UIGroupMessengerBrowser, OnLoadInit, 44, 0xE7A007D2);
+
+// @0x141950d60
+void UIGroupMessengerBrowser::vfunc_43()
+{
+    if (m_60 != 0)
+    {
+        m_nAlignType = 7;
+        m_fOffsetX = 0;
+        m_fOffsetY = -300.0f;
+    }
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog)
+    {
+        pDialog->vfunc_2(m_nAlignType, (int)m_fOffsetX, (int)m_fOffsetY);
+        FUN_141926620(&m_nAlignType, &m_fOffsetX, &m_fOffsetY);
+    }
+}
+MS2_REPLACE_METHOD(0x141950D60, UIGroupMessengerBrowser, vfunc_43, 259, 0xF88D137F);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141950e70
+int UIGroupMessengerBrowser::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
+{
+    if (UIDialog::OnMessage(pSender, pMsg))
+        return 1;
+    if (pMsg->FUN_1422e4520() == 0x7d1)
+    {
+        CStringW strTag = pMsg->FUN_1422b8f40();
+        int nResult = pMsg->FUN_1422b8a10();
+        Scaleform::GFx::Value root = static_cast<Unk_GrmMsg*>(pMsg)->FUN_1422b9260();
+        if (strTag == s_strGroupList)
+        {
+            bool bDone = false;
+            if (nResult == 0)
+            {
+                MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
+                if (spBox.get())
+                {
+                    CStringW strText = static_cast<Unk_GrmBox*>(spBox.operator->())->FUN_141a02d00();
+                    ASObj box(root, 2);
+                    MS2Ptr<ASDropdownMenu> spGroups = box.FUN_140bbe700("m_dropdown");
+                    if (spGroups.get())
+                    {
+                        UIGroupMessenger* pWindow =
+                            FUN_141952fc0(static_cast<Unk_GrmDropdown*>(spGroups.operator->())->FUN_1422dfe00());
+                        if (pWindow == 0)
+                        {
+                            FUN_14151f200();
+                            CGroupChatManager::GetInstance()->Create(strText);
+                        }
+                        else
+                        {
+                            FUN_14151f200();
+                            CGroupChatManager::GetInstance()->Invite(pWindow->FUN_14194b9b0(), strText);
+                        }
+                        bDone = true;
+                    }
+                }
+            }
+            if (!bDone)
+                FUN_14151f200();
+        }
+    }
+    return 0;
+}
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141951180
+int UIGroupMessengerBrowser::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
+        return 1;
+    if (_stricmp("OnCreateDefaultGroupMessenger", szMethod) == 0)
+    {
+        CGroupChatManager::GetInstance()->Create(L"");
+        return 1;
+    }
+    if (_stricmp("OnToggleDialog", szMethod) == 0)
+    {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs))
+            FUN_141953240(args.FUN_1422b8f40());
+        return 1;
+    }
+    return 0;
+}
+MS2_REPLACE_METHOD(0x141951180, UIGroupMessengerBrowser, vfunc_28, 342, 0x67129DB4);
+
+// @0x1419512f0
+void UIGroupMessengerBrowser::vfunc_80(void* pPacket)
+{
+    Unk_BlockList result(*static_cast<CInPacket*>(pPacket));
+    Unk_BlockEntry entry;
+    if (result.Find("MessengerName", entry) == 1)
+    {
+        if (entry.m_nFlags == 0)
+        {
+            UIGroupMessenger* pWindow = FUN_141952f20(result.GetMode());
+            if (pWindow != 0)
+            {
+                pWindow->FUN_14194bc70(entry.m_strName);
+                pWindow->FUN_14194bde0();
+            }
+        }
+        else
+        {
+            FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, L"");
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x1419512F0, UIGroupMessengerBrowser, vfunc_80, 377, 0x139CC221);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141951470
+void UIGroupMessengerBrowser::vfunc_15()
+{
+    if (m_68 == 0 && m_4c != 0)
+    {
+        UISwfEntity::vfunc_15();
+        if (!m_pending.IsEmpty())
+        {
+            POSITION pos = m_pending.GetHeadPosition();
+            while (pos != 0)
+            {
+                TalkLog& log = m_pending.GetNext(pos);
+                CStringW strMsg = FUN_141953b10(log.m_strName);
+                UIGroupMessenger* pWindow = FUN_141952f20(log.m_nKind);
+                if (pWindow != 0)
+                {
+                    pWindow->FUN_14194a5b0(log.m_nKind, log.m_strMsg, strMsg);
+                    if (pWindow->vfunc_64())
+                        FUN_141952530();
+                }
+            }
+            m_pending.RemoveAll();
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141951470, UIGroupMessengerBrowser, vfunc_15, 323, 0x51F96ABA);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x1419515c0
+void UIGroupMessengerBrowser::FUN_1419515c0(int nGroupId)
+{
+    m_logs.SetAt(nGroupId, MS2Ptr<TalkLogList>(new TalkLogList()));
+    FUN_141952d80(nGroupId, 1, 0);
+    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    if (pWindow != 0)
+        FUN_141482e80()->FUN_141482c80(pWindow->FUN_14194b960());
+    FUN_141276180(s_strButtonClick, "");
+}
+
+// @0x141951720
+void UIGroupMessengerBrowser::FUN_141951720(int nGroupId, const CStringW& strName, const CStringW& strText)
+{
+    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    if (pWindow != 0)
+        pWindow->FUN_14194a320(nGroupId, strName, strText);
+    UIInviteGroupDialog* pInvite = FUN_14194dd10(0x4e90);
+    if (pInvite != 0)
+        pInvite->FUN_14199fd10(nGroupId, strName, strText);
+}
+MS2_REPLACE_METHOD(0x141951720, UIGroupMessengerBrowser, FUN_141951720, 126, 0x0701CC9B);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x1419517b0
+void UIGroupMessengerBrowser::FUN_1419517b0(int nGroupId, const CStringW& strName, const CStringW& strOther)
+{
+    m_logs.SetAt(nGroupId, MS2Ptr<TalkLogList>(new TalkLogList()));
+    FUN_141952d80(nGroupId, 1, 1);
+    FUN_141276180(s_strSystemGroupChat, "");
+    FUN_1412751f0(FUN_14052bd00(0x80f, strName), 3, 1);
+    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    if (pWindow != 0)
+    {
+        pWindow->FUN_14194a650(nGroupId, strName, FUN_140632a60(0x80e, strName, strOther));
+        if (pWindow->vfunc_64())
+            FUN_141952530();
+    }
+}
+
+// @0x1419519a0
+void UIGroupMessengerBrowser::FUN_1419519a0(int nGroupId)
+{
+    m_logs.RemoveKey(nGroupId);
+    FUN_1419532d0(nGroupId);
+}
+MS2_REPLACE_METHOD(0x1419519A0, UIGroupMessengerBrowser, FUN_1419519a0, 55, 0x80CDBA28);
+
+// @0x1419519e0
+void UIGroupMessengerBrowser::FUN_1419519e0(int nGroupId, const CStringW& strName, const CStringW& strOther)
+{
+    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    if (pWindow != 0)
+        pWindow->FUN_14194a340(nGroupId, strName, strOther);
+    UIInviteGroupDialog* pInvite = FUN_14194dd10(0x4e90);
+    if (pInvite != 0)
+        pInvite->FUN_14199fd60(nGroupId, strName, strOther);
+}
+MS2_REPLACE_METHOD(0x1419519E0, UIGroupMessengerBrowser, FUN_1419519e0, 126, 0xC503682C);
+
+// @0x141951a70
+void UIGroupMessengerBrowser::FUN_141951a70(int nGroupId, const CStringW& strName, int nMode)
+{
+    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    if (pWindow != 0)
+        pWindow->FUN_14194a3c0(nGroupId, strName, nMode);
+    UIInviteGroupDialog* pInvite = FUN_14194dd10(0x4e90);
+    if (pInvite != 0)
+        pInvite->FUN_14199fdb0(nGroupId, strName);
+}
+MS2_REPLACE_METHOD(0x141951A70, UIGroupMessengerBrowser, FUN_141951a70, 121, 0x1BF01CE1);
+
+// @0x141951af0
+void UIGroupMessengerBrowser::FUN_141951af0(int nGroupId, const CStringW& strName)
+{
+    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    if (pWindow != 0)
+        pWindow->FUN_14194a4d0(nGroupId, strName);
+    UIInviteGroupDialog* pInvite = FUN_14194dd10(0x4e90);
+    if (pInvite != 0)
+        pInvite->FUN_14199fdf0(nGroupId, strName);
+}
+MS2_REPLACE_METHOD(0x141951AF0, UIGroupMessengerBrowser, FUN_141951af0, 111, 0xCDEE56EC);
+
+// @0x141951b70
+void UIGroupMessengerBrowser::FUN_141951b70(int nGroupId, const CStringW& strName)
+{
+    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    if (pWindow != 0)
+        pWindow->FUN_14194a540(nGroupId, strName);
+    UIInviteGroupDialog* pInvite = FUN_14194dd10(0x4e90);
+    if (pInvite != 0)
+        pInvite->FUN_14199fe30(nGroupId, strName);
+}
+MS2_REPLACE_METHOD(0x141951B70, UIGroupMessengerBrowser, FUN_141951b70, 111, 0x08E085A3);
+
+// @0x141951bf0
+void UIGroupMessengerBrowser::FUN_141951bf0(int nGroupId, const CStringW& strName, const CStringW& strMsg)
+{
+    UIGroupMessenger* pWindow = FUN_141952f20(nGroupId);
+    if (pWindow != 0)
+        pWindow->FUN_14194a650(nGroupId, strName, strMsg);
+}
+MS2_REPLACE_METHOD(0x141951BF0, UIGroupMessengerBrowser, FUN_141951bf0, 79, 0xBE8B028E);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141951c50
+void UIGroupMessengerBrowser::FUN_141951c50(int nGroupId, const CStringW& strName, const CStringW& strMsg)
+{
+    if (!FUN_1409c1730()->IsBlocked(0, strName))
+    {
+        TalkLog log(nGroupId, strMsg, strName);
+        m_pending.AddTail(log);
+    }
+}
+MS2_REPLACE_METHOD(0x141951C50, UIGroupMessengerBrowser, FUN_141951c50, 290, 0x441E5D4D);
+
+// @0x141951d80
+void UIGroupMessengerBrowser::FUN_141951d80(int nGroupId, const CStringW& strName, CInPacket* pPacket)
+{
+    unsigned nCount = pPacket->vfunc_o8_3();
+    for (unsigned i = 0; i < nCount; i++)
+    {
+        __int64 nUid = pPacket->vfunc_o8_4();
+        int nItemId = pPacket->vfunc_o8_3();
+        int nRarity = pPacket->vfunc_o8_3();
+        MS2Ptr<CItem> spItem(new CItem);
+        if (spItem->FUN_140523c40(nItemId, nRarity, 0))
+        {
+            spItem->FUN_140526b30(DAT_143ab2864);
+            spItem->FUN_140524eb0(*pPacket);
+            m_items.SetAt(nUid, spItem);
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141951D80, UIGroupMessengerBrowser, FUN_141951d80, 490, 0xBC44B2DC);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141951f70
+void UIGroupMessengerBrowser::FUN_141951f70(CStringW strText)
+{
+    int nCount = CGroupChatManager::GetInstance()->FUN_14137e820();
+    if (nCount == 0)
+    {
+        CGroupChatManager::GetInstance()->Create(strText);
+    }
+    else if (nCount < 3)
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x16, FUN_14028de60(0x81a), this, s_strGroupList);
+        if (spBox.get())
+        {
+            ATL::CAtlList<CStringW> choices(10);
+            choices.AddTail(FUN_14028de60(0x5d1));
+            POSITION pos = m_windows.GetStartPosition();
+            while (pos != 0)
+            {
+                UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);
+                if (pWindow != 0)
+                    choices.AddTail(pWindow->FUN_14194b960());
+                m_windows.GetNext(pos);
+            }
+            static_cast<Unk_GrmBox*>(spBox.operator->())->FUN_141a02b00(strText, choices);
+            FUN_140d73c60(spBox);
+        }
+    }
+    else
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x16, FUN_14028de60(0x81a), this, s_strGroupList);
+        if (spBox.get())
+        {
+            ATL::CAtlList<CStringW> choices(10);
+            choices.AddTail(FUN_14028de60(0x5d1));
+            POSITION pos = m_windows.GetStartPosition();
+            while (pos != 0)
+            {
+                UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);
+                if (pWindow != 0)
+                    choices.AddTail(pWindow->FUN_14194b960());
+                m_windows.GetNext(pos);
+            }
+            static_cast<Unk_GrmBox*>(spBox.operator->())->FUN_141a02b00(strText, choices);
+            FUN_140d73c60(spBox);
+        }
+    }
+}
+
+// @0x1419524e0
+void UIGroupMessengerBrowser::FUN_1419524e0()
+{
+    FUN_141482e80()->FUN_141482b70();
+    m_logs.RemoveAll();
+    m_pending.RemoveAll();
+}
+MS2_REPLACE_METHOD(0x1419524E0, UIGroupMessengerBrowser, FUN_1419524e0, 65, 0x08A06B2A);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141952530
+void UIGroupMessengerBrowser::FUN_141952530()
+{
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog)
+    {
+        ASArray windows(2);
+        POSITION pos = m_windows.GetStartPosition();
+        while (pos != 0)
+        {
+            UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);
+            if (pWindow != 0)
+            {
+                ASObj item(2);
+                item.FUN_1409c0d20("number", FUN_141952a30(pWindow->FUN_14194b9b0()));
+                item.FUN_1407cbb20("name", pWindow->FUN_14194b960());
+                item.FUN_1407cb9c0("minimize", pWindow->vfunc_64());
+                windows.FUN_1422bc050(item.FUN_1422bb870());
+            }
+            m_windows.GetNext(pos);
+        }
+        pDialog->Invoke("setData", windows.FUN_1422bb870());
+    }
+}
+MS2_REPLACE_METHOD(0x141952530, UIGroupMessengerBrowser, FUN_141952530, 579, 0x8F780D0B);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141952780
+int UIGroupMessengerBrowser::FUN_141952780()
+{
+    int bMinimized = 0;
+    POSITION pos = m_windows.GetStartPosition();
+    while (pos != 0)
+    {
+        UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);
+        if (pWindow != 0 && pWindow->vfunc_64() == 0)
+        {
+            bMinimized = 1;
+            pWindow->vfunc_69();
+        }
+        m_windows.GetNext(pos);
+    }
+    return bMinimized;
+}
+MS2_REPLACE_METHOD(0x141952780, UIGroupMessengerBrowser, FUN_141952780, 178, 0x3F984899);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141952840
+int UIGroupMessengerBrowser::FUN_141952840()
+{
+    POSITION pos = m_windows.GetStartPosition();
+    while (pos != 0)
+    {
+        UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);
+        if (pWindow != 0 && pWindow->vfunc_55() == 0 && pWindow->vfunc_64() == 0)
+            return 1;
+        m_windows.GetNext(pos);
+    }
+    return 0;
+}
+MS2_REPLACE_METHOD(0x141952840, UIGroupMessengerBrowser, FUN_141952840, 176, 0xFA7309D9);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141952900
+unsigned UIGroupMessengerBrowser::FUN_141952900()
+{
+    for (unsigned i = 0; i < 3; i++)
+    {
+        if (m_windows.Lookup(i) == 0)
+            return i;
+    }
+    return 3;
+}
+MS2_REPLACE_METHOD(0x141952900, UIGroupMessengerBrowser, FUN_141952900, 82, 0x18D7270B);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141952960
+void UIGroupMessengerBrowser::FUN_141952960(unsigned nGroupId)
+{
+    MS2Ptr<TalkLogList> spLog;
+    if (m_logs.Lookup(nGroupId, spLog))
+    {
+        for (size_t i = 0; i < spLog->m_logs.GetCount(); i++)
+            FUN_141484270(&spLog->m_logs[i]);
+    }
+}
+MS2_REPLACE_METHOD(0x141952960, UIGroupMessengerBrowser, FUN_141952960, 200, 0x44FE2226);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141952a30
+int UIGroupMessengerBrowser::FUN_141952a30(unsigned nGroupId)
+{
+    int nCount = 0;
+    MS2Ptr<TalkLogList> spLog;
+    if (m_logs.Lookup(nGroupId, spLog))
+    {
+        for (size_t i = 0; i < spLog->m_logs.GetCount(); i++)
+        {
+            if (FUN_141484290(&spLog->m_logs[i]))
+                nCount++;
+        }
+    }
+    return nCount;
+}
+MS2_REPLACE_METHOD(0x141952A30, UIGroupMessengerBrowser, FUN_141952a30, 238, 0xA2A41905);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141952b30
+int UIGroupMessengerBrowser::FUN_141952b30(unsigned nGroupId)
+{
+    int nCount = 0;
+    MS2Ptr<TalkLogList> spLog;
+    if (m_logs.Lookup(nGroupId, spLog))
+    {
+        nCount = (int)spLog->m_logs.GetCount();
+        nCount -= FUN_141952a30(nGroupId);
+    }
+    return nCount;
+}
+MS2_REPLACE_METHOD(0x141952B30, UIGroupMessengerBrowser, FUN_141952b30, 161, 0x0A7AEDC7);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141952be0
+int UIGroupMessengerBrowser::FUN_141952be0()
+{
+    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return 0;
+    ATL::CAtlList<unsigned> groups(10);
+    CGroupChatManager::GetInstance()->FUN_14137e6f0(pPlayer->FUN_141656a80(), groups);
+    POSITION pos = groups.GetHeadPosition();
+    while (pos != 0)
+    {
+        unsigned nGroupId = groups.GetAt(pos);
+        if (m_logs.Lookup(nGroupId) == 0)
+            m_logs.SetAt(nGroupId, MS2Ptr<TalkLogList>(new TalkLogList()));
+        FUN_141952d80(nGroupId, 0, 0);
+        groups.GetNext(pos);
+    }
+    return 1;
+}
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141952d80
+int UIGroupMessengerBrowser::FUN_141952d80(unsigned nGroupId, int bDeleteSave, int bMinimized)
+{
+    if (m_windows.GetCount() >= 3)
+        return 0;
+    Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FUN_14137e630(nGroupId);
+    if (spChat == 0)
+        return 0;
+    FUN_1419532d0(nGroupId);
+    unsigned nSlot = FUN_141952900();
+    UIGroupMessenger* pWindow = new UIGroupMessenger(nGroupId, nSlot, bDeleteSave);
+    if (pWindow->vfunc_65() == 0)
+        return 0;
+    if (bDeleteSave)
+        pWindow->vfunc_63(bMinimized);
+    m_windows.SetAt(nSlot, pWindow);
+    return 1;
+}
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141952f20
+UIGroupMessenger* UIGroupMessengerBrowser::FUN_141952f20(int nGroupId)
+{
+    POSITION pos = m_windows.GetStartPosition();
+    while (pos != 0)
+    {
+        UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);
+        if (pWindow != 0 && pWindow->FUN_14194b9b0() == nGroupId)
+            return pWindow;
+        m_windows.GetNext(pos);
+    }
+    return 0;
+}
+MS2_REPLACE_METHOD(0x141952F20, UIGroupMessengerBrowser, FUN_141952f20, 145, 0x408E827A);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141952fc0
+UIGroupMessenger* UIGroupMessengerBrowser::FUN_141952fc0(const CStringW& strName)
+{
+    POSITION pos = m_windows.GetStartPosition();
+    while (pos != 0)
+    {
+        UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);
+        if (pWindow != 0)
+        {
+            if (pWindow->FUN_14194b960() == strName)
+                return pWindow;
+        }
+        m_windows.GetNext(pos);
+    }
+    return 0;
+}
+MS2_REPLACE_METHOD(0x141952FC0, UIGroupMessengerBrowser, FUN_141952fc0, 192, 0x8B12CA66);
+
+// @0x141953090
+void UIGroupMessengerBrowser::FUN_141953090(const CStringW& strName)
+{
+    UIGroupMessenger* pWindow = FUN_141952fc0(strName);
+    if (pWindow != 0 && pWindow->FUN_14194b960() == strName)
+    {
+        pWindow->vfunc_63(0);
+        FUN_141952530();
+    }
+}
+MS2_REPLACE_METHOD(0x141953090, UIGroupMessengerBrowser, FUN_141953090, 202, 0xD6C75BFA);
+
+// @0x141953160
+void UIGroupMessengerBrowser::FUN_141953160(const CStringW& strName)
+{
+    UIGroupMessenger* pWindow = FUN_141952fc0(strName);
+    if (pWindow != 0 && pWindow->FUN_14194b960() == strName)
+    {
+        pWindow->vfunc_63(1);
+        FUN_141952530();
+    }
+}
+MS2_REPLACE_METHOD(0x141953160, UIGroupMessengerBrowser, FUN_141953160, 205, 0xA33C9EAF);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141953240
+void UIGroupMessengerBrowser::FUN_141953240(const CStringW& strName)
+{
+    UIGroupMessenger* pWindow = FUN_141952fc0(strName);
+    if (pWindow != 0)
+    {
+        if (pWindow->vfunc_64() == 0)
+            pWindow->vfunc_63(1);
+        else
+            pWindow->vfunc_63(0);
+        FUN_141952530();
+    }
+}
+MS2_REPLACE_METHOD(0x141953240, UIGroupMessengerBrowser, FUN_141953240, 127, 0x1F711C0A);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x1419532d0
+void UIGroupMessengerBrowser::FUN_1419532d0(int nGroupId)
+{
+    MS2Ptr<UIGroupMessenger> spClosed(0);
+    POSITION pos = m_windows.GetStartPosition();
+    while (pos != 0)
+    {
+        UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);
+        if (pWindow != 0 && pWindow->FUN_14194b9b0() == nGroupId)
+        {
+            spClosed.AssignRaw(pWindow);
+            FUN_141482e80()->FUN_141482d30(pWindow->FUN_14194b960());
+            pWindow->vfunc_84(1);
+            m_windows.RemoveAtPos(pos);
+            FUN_141952530();
+            break;
+        }
+        m_windows.GetNext(pos);
+    }
+    if (spClosed.get())
+        spClosed->vfunc_67();
+}
+MS2_REPLACE_METHOD(0x1419532D0, UIGroupMessengerBrowser, FUN_1419532d0, 383, 0x00E95FD5);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141953460
+void UIGroupMessengerBrowser::FUN_141953460(const CStringW& strName)
+{
+    MS2Ptr<UIGroupMessenger> spClosed(0);
+    POSITION pos = m_windows.GetStartPosition();
+    while (pos != 0)
+    {
+        UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);
+        if (pWindow != 0 && pWindow->FUN_14194b960() == strName)
+        {
+            spClosed.AssignRaw(pWindow);
+            FUN_141482e80()->FUN_141482d30(pWindow->FUN_14194b960());
+            pWindow->vfunc_84(1);
+            m_windows.RemoveAtPos(pos);
+            FUN_141952530();
+            break;
+        }
+        m_windows.GetNext(pos);
+    }
+    if (spClosed.get())
+        spClosed->vfunc_67();
+}
+MS2_REPLACE_METHOD(0x141953460, UIGroupMessengerBrowser, FUN_141953460, 500, 0x19831DD4);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141953660
+void UIGroupMessengerBrowser::FUN_141953660(CStringW strText)
+{
+    POSITION pos = m_windows.GetStartPosition();
+    while (pos != 0)
+    {
+        UIGroupMessenger* pWindow = m_windows.GetValueAt(pos);
+        if (pWindow != 0 && FUN_141482e80()->FUN_1414829e0() == pWindow->FUN_14194b960())
+            pWindow->FUN_14194bcc0(strText);
+        m_windows.GetNext(pos);
+    }
+}
+MS2_REPLACE_METHOD(0x141953660, UIGroupMessengerBrowser, FUN_141953660, 412, 0x0972322B);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141953810
+void UIGroupMessengerBrowser::FUN_141953810(int nGroupId, const CStringW& strName, const CStringW& strMsg, int bSystem,
+                                            int bMinimized)
+{
+    MS2Ptr<TalkLogList> spLog;
+    if (m_logs.Lookup(nGroupId, spLog))
+    {
+        spLog->m_logs.Add(TalkLog(nGroupId, strMsg, strName, bSystem, bMinimized));
+        if (spLog->m_lines.size() > 50)
+            spLog->m_lines.erase(spLog->m_lines.begin());
+        CStringW strLine;
+        CMsTime now(FUN_140869440());
+        strLine.Format(L"[%2d:%2d:%2d][Group][%s] %s\n", now.GetHour(), now.GetMinute(), now.GetSecond(),
+                       (const wchar_t*)strName, (const wchar_t*)strMsg);
+        spLog->m_lines.push_back(strLine);
+    }
+}
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141953b10
+CStringW UIGroupMessengerBrowser::FUN_141953b10(const CStringW& strMsg)
+{
+    CStringW strHtml(strMsg);
+    ATL::CAtlList<CStringW> links(10);
+    if (!FUN_140d2c080(strHtml, links, L"<A HREF=", L"/A>"))
+        return strMsg;
+    POSITION pos = links.GetHeadPosition();
+    while (pos != 0)
+    {
+        CStringW strLink(links.GetAt(pos));
+        __int64 nUid = FUN_140d2caf0(strLink);
+        int nColor = 0xffffff;
+        MS2Ptr<CItem> spItem = FUN_141953df0(nUid);
+        if (spItem.get())
+            nColor = FUN_140281980()->FUN_1405569f0(spItem->FUN_140526bd0());
+        CStringW strColored = FUN_14183e930(strLink, nColor);
+        strHtml.Replace(strLink, strColored);
+        links.GetNext(pos);
+    }
+    return strHtml;
+}
+MS2_REPLACE_METHOD(0x141953B10, UIGroupMessengerBrowser, FUN_141953b10, 719, 0x1FCCFF0C);
+
+// @0x141953df0
+MS2Ptr<CItem> UIGroupMessengerBrowser::FUN_141953df0(__int64 nUid)
+{
+    MS2Ptr<CItem> spItem;
+    if (m_items.Lookup(nUid, spItem))
+        return spItem;
+    return MS2Ptr<CItem>(0);
+}
+MS2_REPLACE_METHOD(0x141953DF0, UIGroupMessengerBrowser, FUN_141953df0, 169, 0xB578D5C7);
+
+// @0x141956220
+int UIGroupMessengerBrowser::vfunc_48()
+{
+    return 0x4e93;
+}
+MS2_REPLACE_METHOD(0x141956220, UIGroupMessengerBrowser, vfunc_48, 11, 0xF77482E4);
