@@ -144,7 +144,7 @@ public:
     int FUN_141a0fe20(int nEmoticonId);                                     // 0x141a0fe20 sends an emoticon
     void FUN_141a10010(int nType, int nEmoticonId);                         // 0x141a10010 types an emoticon
     int FUN_141a10490(int nEmoticonId, bool bFavorite);                     // 0x141a10490 the emoticon favorite
-    void FUN_141a10660(int nType, CStringW strText, CStringW strTarget, int nItem);   // 0x141a10660 sends a chat line
+    void FUN_141a10660(int nType, CStringW strText, CStringW strTarget, __int64 nClubId);   // 0x141a10660 sends a chat line
     int FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks);     // 0x141a10fd0 runs a command
     void FUN_141a11be0(int nType, const CStringW& strText);                 // 0x141a11be0 sends a chat line to the server
     bool FUN_141a11c60(const CStringW& strCommand, CStringW strText, int* pType);   // 0x141a11c60 a chat command

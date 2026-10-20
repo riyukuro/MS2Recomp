@@ -360,6 +360,9 @@
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/client/ms2/uiwhispernotifydialog.h"
 #include "ms2/client/ms2/pcbase.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/clubcli.h"
+#include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -4153,4 +4156,251 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
             ((Unk_MsgPopup*)(ASUIComponent*)m_2e0)->vfunc_24(false);
     }
     return 0;
+}
+
+CGuildManager* FUN_1403ed290();
+CClubClientManager* FUN_140e0d900();
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item table record
+bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // str equals psz
+void FUN_141bca010(Unk_MsgWorld* pWorld);                           // the chat sent: resets the idle state
+
+// MS2-FUNCTIONAL: the per-channel blocks are folded; temporaries differ from the exe (functional-first)
+// @0x141a10660
+void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget, __int64 nClubId)
+{
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return;
+    int nChannel = FUN_141482f00(nType);
+    Unk_MbChecker* pChecker = FUN_14025e7d0()->FUN_140229a50().get();
+    if (pChecker != 0)
+    {
+        pChecker->FUN_140226980(strText);
+        pChecker->FUN_140226b10(strText);
+    }
+    switch (nChannel)
+    {
+    case 1:
+    {
+        Unk_MsgChat chat;
+        chat.m_nType = nType;
+        chat.m_strText = strText;
+        chat.m_strTarget = strTarget;
+        FUN_141276f80(chat);
+        m_pBrowser->m_1b0 = nChannel;
+        break;
+    }
+    case 2:
+        if (!strText.IsEmpty())
+        {
+            if (!pMe->FUN_141527280())
+            {
+                FUN_141275260(0x335, 1, 1);
+            }
+            else
+            {
+                Unk_MsgChat chat;
+                chat.m_nType = 7;
+                chat.m_strText = strText;
+                chat.m_strTarget = strTarget;
+                FUN_141276f80(chat);
+                m_pBrowser->m_1b0 = nChannel;
+            }
+        }
+        break;
+    case 3:
+        if (!strText.IsEmpty())
+        {
+            if (FUN_1403ed290()->FUN_1413b6160() == 0)
+            {
+                FUN_141275260(0x388, 1, 1);
+            }
+            else
+            {
+                Unk_MsgChat chat;
+                chat.m_nType = 8;
+                chat.m_strText = strText;
+                chat.m_strTarget = strTarget;
+                FUN_141276f80(chat);
+                m_pBrowser->m_1b0 = nChannel;
+            }
+        }
+        break;
+    case 4:
+        if (!strText.IsEmpty())
+        {
+            Unk_MsgChat chat;
+            chat.m_nType = 4;
+            chat.m_strText = strText;
+            chat.m_strTarget = strTarget;
+            FUN_141276f80(chat);
+            m_pBrowser->m_strWhisperTarget = strTarget;
+            m_pBrowser->m_1b0 = nChannel;
+        }
+        break;
+    case 0x15:
+        if (!strText.IsEmpty())
+        {
+            Unk_MsgChat chat;
+            chat.m_nType = nType;
+            chat.m_strText = strText;
+            chat.m_strTarget = strTarget;
+            FUN_141276f80(chat);
+            m_pBrowser->m_1b0 = nChannel;
+        }
+        break;
+    case 0x16:
+        if (!strText.IsEmpty())
+        {
+            Unk_MsgChat chat;
+            chat.m_nType = nType;
+            chat.m_strText = strText;
+            chat.m_strTarget = strTarget;
+            FUN_141276f80(chat);
+            m_pBrowser->m_1b0 = nChannel;
+        }
+        break;
+    case 0x17:
+        if (!strText.IsEmpty())
+        {
+            MS2Ptr<CItemData> spData = FUN_14053f870(pMe->FUN_1416639e0());
+            int nSendType = nType;
+            if (FUN_140166410()->FUN_14036d570(0x104) && spData.get() != 0
+                && FUN_1403b3c40(spData->function.name, L"WeddingChat"))
+                nSendType = 0x19;
+            Unk_MsgChat chat;
+            chat.m_nType = nSendType;
+            chat.m_strText = strText;
+            chat.m_strTarget = strTarget;
+            FUN_141276f80(chat);
+            m_pBrowser->m_1b0 = nChannel;
+        }
+        break;
+    case 0x18:
+        if (!strText.IsEmpty())
+        {
+            if (FUN_1403ed290()->FUN_1413b6160() == 0)
+            {
+                FUN_141275260(0x388, 1, 1);
+            }
+            else if (!FUN_1403ed290()->FUN_1404d0600(pMe->vfunc_77(), 0x800))
+            {
+                FUN_141275260(0x415, 1, 1);
+            }
+            else
+            {
+                Unk_MsgChat chat;
+                chat.m_nType = 0x12;
+                chat.m_strText = strText;
+                chat.m_strTarget = strTarget;
+                FUN_141276f80(chat);
+                m_pBrowser->m_1b0 = nChannel;
+            }
+        }
+        break;
+    case 0x1a:
+        if (!strText.IsEmpty() && nClubId != 0)
+        {
+            MS2Ptr<CClubCli> spClub = FUN_140e0d900()->FUN_140b14d80(nClubId);
+            if (spClub.get() == 0)
+            {
+                FUN_141275260(0x36b, 1, 1);
+            }
+            else
+            {
+                Unk_MsgChat chat;
+                chat.m_nType = 0x14;
+                chat.m_strText = strText;
+                chat.m_strTarget = strTarget;
+                chat.m_nValue = nClubId;
+                FUN_141276f80(chat);
+                m_pBrowser->m_1a8 = spClub->FUN_14020f1a0();
+                m_pBrowser->m_1b0 = nChannel;
+            }
+        }
+        break;
+    }
+    FUN_141bca010(FUN_1403ed2d0());
+}
+
+// MS2-FUNCTIONAL: temporaries differ from the exe (functional-first)
+// @0x141a10fd0
+int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
+{
+    if (FUN_141a148b0(strText))
+        return 1;
+    if (FUN_14135a4d0()->Execute(CStringW(strText)))
+        return 1;
+    int nPos = 0;
+    CStringW strCommand = strText.Tokenize(L" ", nPos);
+    int nType = 0x1b;
+    if (FUN_141a11c60(strCommand, CStringW(strText), &nType))
+        return 1;
+    CStringW strMsg;
+    CStringW strTarget;
+    __int64 nClubId = 0;
+    switch (nType)
+    {
+    case 0:
+    case 7:
+    case 8:
+    case 9:
+    case 0xb:
+    case 0xc:
+    case 0x10:
+    case 0x12:
+        FUN_141a146d0(nType);
+        if (!m_pBrowser->FUN_141a264c0(0x10) && FUN_141a144a0() == 0x10)
+            FUN_1403ed2b0()->FUN_141adc530(0x4f58);
+        return 1;
+    case 4:
+        strTarget = strText.Tokenize(L" ", nPos);
+        strTarget.Trim(L"\"");
+        strMsg = strText.Mid(nPos);
+        strMsg = strMsg.Trim();
+        if (strMsg.IsEmpty())
+            return 0;
+        if (strTarget.IsEmpty())
+        {
+            FUN_1412751f0(FUN_14028de60(0x4e), 1, 1);
+            return 0;
+        }
+        if (bLinks)
+        {
+            strMsg = strHtml;
+            CStringW strPart = strCommand + L" " + strTarget + L" ";
+            if (!FUN_141a14c40(strMsg, strPart))
+                return 0;
+        }
+        if (strMsg.IsEmpty() || strTarget.IsEmpty())
+            return 0;
+        break;
+    case 0x14:
+    {
+        CStringW strClub = strText.Tokenize(L" ", nPos);
+        strClub.Trim(L"\"");
+        strMsg = strText.Mid(nPos);
+        strMsg = strMsg.Trim();
+        if (strMsg.IsEmpty())
+            return 0;
+        nClubId = FUN_140e0d900()->FUN_140b14fc0(CStringW(strClub));
+        if (nClubId == 0)
+        {
+            FUN_1412751f0(FUN_14028de60(0x50), 1, 1);
+            return 0;
+        }
+        if (bLinks)
+        {
+            strMsg = strHtml;
+            CStringW strPart = strCommand + L" " + strClub + L" ";
+            if (!FUN_141a14c40(strMsg, strPart))
+                return 0;
+        }
+        if (strMsg.IsEmpty())
+            return 0;
+        break;
+    }
+    }
+    FUN_141a10660(nType, CStringW(strMsg), CStringW(strTarget), nClubId);
+    return 1;
 }
