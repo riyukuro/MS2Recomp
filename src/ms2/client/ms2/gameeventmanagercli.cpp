@@ -1313,3 +1313,5 @@ EGameMenuSet ParseGameMenuSet(const CStringA& str)
     return GAMEMENU_SET_GAME;
 }
 MS2_REPLACE(0x140CF7B30, ParseGameMenuSet, 129, 0x549128AE);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca45d0-0x142ca4630 .text$yd

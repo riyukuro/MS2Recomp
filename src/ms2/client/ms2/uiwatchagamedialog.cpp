@@ -280,3 +280,5 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, bool a1, bool a2)
 }
 
 // ---- hooks ----
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caab60-0x142caabd0 .text$yd

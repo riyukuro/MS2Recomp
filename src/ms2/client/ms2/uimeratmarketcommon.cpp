@@ -1540,3 +1540,5 @@ int FUN_140ec3950(ASMeratMarketBuyBillData* pBill)
 {
     return pBill->m_n78;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca82a0-0x142ca8310 .text$yd

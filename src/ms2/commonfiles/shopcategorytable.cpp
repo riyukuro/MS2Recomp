@@ -385,3 +385,5 @@ void CShopCategoryTable::CheckInit()
         MessageBoxA(0, msg, "Error", 0);
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9bf60-0x142c9bff0 .text$yd

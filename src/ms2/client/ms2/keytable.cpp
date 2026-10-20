@@ -2773,3 +2773,5 @@ NotifySkillSetMode::NotifySkillSetMode(bool bMode)
 {
     m_bMode = bMode;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb2230-0x142cb2290 .text$yd

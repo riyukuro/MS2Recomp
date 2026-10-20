@@ -473,3 +473,5 @@ int FUN_140dfc090(void* pDst, unsigned __int64 nDstSize, const void* pSrc, unsig
     memmove(pDst, pSrc, nCount);
     return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca6070-0x142ca60f0 .text$yd

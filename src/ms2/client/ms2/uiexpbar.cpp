@@ -320,3 +320,5 @@ MS2_REPLACE_METHOD(0x1419326A0, UIExpBar, OnLoadComplete, 137, 0xB17D5AA5);
 MS2_REPLACE_METHOD(0x141932730, UIExpBar, vfunc_45, 977, 0x4AF454E6);
 MS2_REPLACE_METHOD(0x141932B10, UIExpBar, vfunc_28, 113, 0x94852F62);
 MS2_REPLACE_METHOD(0x141932BC0, UIExpBar, vfunc_41, 99, 0x9DAE5CE0);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbdf40-0x142cbdfa0 .text$yd
