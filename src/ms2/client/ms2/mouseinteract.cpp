@@ -1010,3 +1010,26 @@ Unk_WeaponHit* CMouseInteractWeaponObject::FindTarget(Unk_WeaponHit* pOut, const
 
 
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// The out-of-line ctor of the cursor ray (gap2: ps1 had split it off; the v2525 TU map starts this TU at 0x140a78f00).
+// In the exe the three vectors are efd::Point3 (default ctor 0x1402bd040) and the pick slot starts at Point3::ZERO;
+// Unk_MouseRay (mouseinteract.h) is the trivial view its users still aggregate-initialise (unit_140ad1860), so the
+// ctor is written on a same-layout view here.
+// MS2-RANGE: 0x140a78f00-0x140a78f70 .text$mn
+#include <efd/Point3.h>
+struct Unk_MouseRayInit
+{
+    Unk_MouseRayInit();
+    efd::Point3 vOrigin;        // +0x00
+    efd::Point3 vEnd;           // +0x0c
+    efd::Point3 vPick;          // +0x18
+    int m_pad_24;
+    CStringW strCursor;         // +0x28
+};
+MS2_CHECK_SIZE(Unk_MouseRayInit, sizeof(Unk_MouseRay));
+
+// @0x140a78f00
+Unk_MouseRayInit::Unk_MouseRayInit()
+    : vPick(efd::Point3::ZERO)
+{
+}

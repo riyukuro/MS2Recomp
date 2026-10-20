@@ -584,3 +584,23 @@ bool MS2LightService::CreateQueuedLights()
 #endif
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb2f10-0x142cb2fb0 .text$yd
+
+// The last function of this TU (gap2: ps1 had split it off; the v2525 TU map ends this TU at 0x1414cf980): a flag
+// setter on the post-processing pass objects DepthOfFieldManager toggles (passes 1 and 2 of the list it gets through
+// 0x1414cfbe0). Only the flag byte at +0x20 is known.
+// MS2-RANGE: 0x1414cf920-0x1414cf940 .text$mn
+class Unk_LsPassFlag
+{
+public:
+    void FUN_1414cf920(bool bOn);
+private:
+    char m_pad_00[0x20];
+    bool m_bOn;                                         // +0x20
+};
+
+// @0x1414cf920
+void Unk_LsPassFlag::FUN_1414cf920(bool bOn)
+{
+    m_bOn = bOn;
+}
+MS2_REPLACE_METHOD(0x1414CF920, Unk_LsPassFlag, FUN_1414cf920, 23, 0x698F012D);

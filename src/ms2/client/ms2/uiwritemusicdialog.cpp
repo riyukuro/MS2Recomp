@@ -1779,3 +1779,6 @@ inline const char* FUN_141001a80(TiXmlDocument* pDoc)
 {
     return reinterpret_cast<Unk_WmXmlDocState*>(pDoc)->m_errorDesc.c_str();
 }
+
+// Atexit thunks of this unit's statics (gap2 orphan di sweep: owner listed under its client\ms2 name).
+// MS2-RANGE: 0x142cab100-0x142cab1a0 .text$yd
