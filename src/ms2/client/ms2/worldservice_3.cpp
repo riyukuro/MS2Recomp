@@ -362,6 +362,9 @@
 // MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@1@@Z 0x141bf2590
 // MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@1@@Z 0x141bf2890
 // MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@std@@QEAA@XZ 0x141bf2b00
+// map::operator[] emplace_hint of m_ac0 (int key) and m_ad0 (const __int64& key).
+// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HV?$SmartPointer@VEntity@egf@@@efd@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141bee230
+// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEB_J@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@_JV?$MS2Ptr@VRecad0@WsReal@@@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JV?$MS2Ptr@VRecad0@WsReal@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$MS2Ptr@VRecad0@WsReal@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$MS2Ptr@VRecad0@WsReal@@@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEB_J@1@$$QEAV?$tuple@$$V@1@@Z 0x141bee4b0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "worldservice.h"
@@ -520,6 +523,11 @@ template <class C> static void WsDriveTree()
     typename C::iterator it = c.begin();
     typename C::const_iterator cit = it;
     ++cit;
+    it._Unwrapped();
+}
+template <class Map> static void WsDriveIndex(Map& m, const typename Map::key_type& key)
+{
+    m[key];
 }
 void Unk_WsInst3Trees()
 {
@@ -536,6 +544,20 @@ void Unk_WsInst3Trees()
     WsDriveTree<WsReal::Mapad0>();
     WsDriveTree<Unk_WsTreeA>();
     WsDriveTree<Unk_WsTreeB>();
+}
+void Unk_WsInst3Index(const egf::EntityID& id, WsReal::Map1d8& m1d8, WsReal::Map2e8& m2e8, WsReal::Map980& m980,
+    WsReal::Map990& m990, WsReal::Mapab0& mab0)
+{
+    WsDriveIndex(m1d8, id);
+    WsDriveIndex(m2e8, id);
+    WsDriveIndex(m980, id);
+    WsDriveIndex(m990, id);
+    WsDriveIndex(mab0, id);
+}
+void Unk_WsInst3IndexInt(WsReal::Mapac0& mac0, WsReal::Mapad0& mad0)
+{
+    WsDriveIndex(mac0, 0);
+    WsDriveIndex(mad0, 0);
 }
 
 // The vector::emplace_back instantiations (0x141bedec0-0x141bee0ef).
