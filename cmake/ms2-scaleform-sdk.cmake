@@ -9,7 +9,8 @@
 #   SF_BUILD_SHIPPING     no SF_BUILD_DEBUG (no asserts in Array/Hash), no AMP
 #   SF_BUILD_STATICLIB    SF_EXPORT expands to nothing. The exe itself was built without it (it exports Scaleform symbols), but
 #                         here declarations must not become dllexport of the hook DLL.
-# GFxConfig.h defaults are kept (GFX_AS3_SUPPORT on: Value::DataAux at +0x18, matches the exe).
+# GFxConfig.h defaults are kept (GFX_AS3_SUPPORT on: Value::DataAux at +0x18, matches the exe), except the 4.1.18 mouse /
+# keyboard counts (ms2_scaleform_418_headers).
 set(MS2_SCALEFORM_DEFINITIONS
     "SF_BUILD_SHIPPING"
     "SF_BUILD_STATICLIB"
@@ -25,28 +26,27 @@ if(NOT IS_DIRECTORY "${_ms2_sf_default}")
 endif()
 set(MS2_SCALEFORM_SDK "${_ms2_sf_default}" CACHE PATH "Scaleform GFx SDK root (dir with Include/ and Src/); empty = placeholders only")
 
-# GFx::Value::ObjectInterface of the exe (4.1.18) has no AS3 ByteArray virtuals: the AS3ValueObjectInterface vftable 0x14317eff8
-# has 40 slots (SetElement 13, PushBack 15, RemoveElements 17, GetWorldMatrix 21, GetCxform 26, ToString 35), 4.1.19 declares
-# IsByteArray/GetByteArraySize/ReadFromByteArray/WriteToByteArray as slots 18-21, so every Value inline from
-# IsDisplayObjectActive on called 4 slots too far (Value::GotoAndPlay(const char*): [+0x130] = CreateObjectValue instead of the
-# exe's [+0x110]). <dir>/GFx/GFx_Player.h = the SDK header without those 4 virtuals and Value's AS3 ByteArray inlines (same
-# include guard, searched before the SDK; tools/progress.py generates the same file). Rewritten only when the content changes.
-function(ms2_scaleform_418_player_h dir)
-    file(READ "${MS2_SCALEFORM_SDK}/Src/GFx/GFx_Player.h" h)
-    string(REGEX REPLACE "\n[ ]*GFX_VM_ABSTRACT\\([a-z]+ +(IsByteArray|GetByteArraySize|ReadFromByteArray|WriteToByteArray)\\([^\n]*" "" h "${h}")
-    string(REGEX REPLACE "\n#ifdef GFX_AS3_SUPPORT\r?\n[ ]*SF_INLINE bool +IsByteArray\\(\\)[^#]*#endif[^\n]*" "" h "${h}")
-    if(h MATCHES "ByteArray\\(")
-        message(FATAL_ERROR "ms2_scaleform_418_player_h: GFx_Player.h ByteArray declarations not removed")
+# Scaleform 4.1.18 compatibility headers: tools/sf418_headers.py copies GFx/GFx_Player.h, GFx/GFx_Loader.h and GFxConfig.h
+# from the SDK into <dir> with the exe's 4.1.18 differences (Value::ObjectInterface without the AS3 ByteArray virtuals,
+# MemoryParams without InitialDynamicLimit, the extra State::StateType entry before State_IMEManager, 4 mice/keyboards;
+# see the script). <dir> is searched before the SDK; same include guards. tools/progress.py runs the same script. The
+# printed id of the generated text becomes MS2_SF418=<id> in the flags, so objects rebuild when the headers change.
+get_filename_component(_ms2_sf418_gen "${CMAKE_CURRENT_LIST_DIR}/../tools/sf418_headers.py" ABSOLUTE)
+function(ms2_scaleform_418_headers dir out_id)
+    if(NOT MS2_PYTHON)
+        find_package(Python3 REQUIRED COMPONENTS Interpreter)
+        set(MS2_PYTHON "${Python3_EXECUTABLE}")
     endif()
-    set(out "${dir}/GFx/GFx_Player.h")
-    if(EXISTS "${out}")
-        file(READ "${out}" old)
-    else()
-        set(old "")
+    set(gen "${_ms2_sf418_gen}")
+    execute_process(COMMAND "${MS2_PYTHON}" "${gen}" "${MS2_SCALEFORM_SDK}" "${dir}"
+                    OUTPUT_VARIABLE id ERROR_VARIABLE err RESULT_VARIABLE rc OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if(NOT rc EQUAL 0 OR NOT id MATCHES "^0x[0-9a-f]+$")
+        message(FATAL_ERROR "tools/sf418_headers.py failed (${rc}): ${err}")
     endif()
-    if(NOT old STREQUAL h)
-        file(WRITE "${out}" "${h}")
-    endif()
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${gen}"
+                 "${MS2_SCALEFORM_SDK}/Src/GFx/GFx_Player.h" "${MS2_SCALEFORM_SDK}/Src/GFx/GFx_Loader.h"
+                 "${MS2_SCALEFORM_SDK}/Include/GFxConfig.h")
+    set(${out_id} "${id}" PARENT_SCOPE)
 endfunction()
 
 # clang-cl: src/ms2/sdkshim is searched before the SDK (Kernel/SF_SIMD.h shim, see there). cl 19.16 uses the SDK as is.
@@ -59,10 +59,10 @@ function(ms2_scaleform_flags target)
         # clang-cl builds as C++17: the SDK uses `register` locals (Render_Containers.h) and similar C++03 idioms.
         target_compile_options(${target} PRIVATE -Wno-register -Wno-deprecated-declarations)
     endif()
-    ms2_scaleform_418_player_h("${CMAKE_BINARY_DIR}/ms2-sf418")
+    ms2_scaleform_418_headers("${CMAKE_BINARY_DIR}/ms2-sf418" sf418_id)
     target_include_directories(${target} PRIVATE "${CMAKE_BINARY_DIR}/ms2-sf418")
     foreach(d ${MS2_SCALEFORM_INCLUDE_DIRS})
         target_include_directories(${target} PRIVATE "${MS2_SCALEFORM_SDK}/${d}")
     endforeach()
-    target_compile_definitions(${target} PRIVATE ${MS2_SCALEFORM_DEFINITIONS})
+    target_compile_definitions(${target} PRIVATE ${MS2_SCALEFORM_DEFINITIONS} "MS2_SF418=${sf418_id}")
 endfunction()
