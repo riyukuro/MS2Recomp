@@ -5422,6 +5422,53 @@ void UIMeratMarketDialog::SetOpenTime(const CMsTime& time)
     m_openTime = time;
 }
 
+// @0x14130bf20
+void UIMeratMarketDialog::OnBannerImageLoaded(CStringA strKey, CStringA strPath, bool bOk)
+{
+    MS2Ptr<ShopBannerInfo> spBanner = m_banner.FUN_1413480a0(strKey);
+    if (spBanner == 0)
+        return;
+    spBanner->m_strImgPath = strPath;
+    if (!bOk || FUN_1422dc430() == 0)
+        return;
+    int nType = spBanner->m_nType;
+    if (nType == 0xcc) {
+        if (GetTabCount(0) == 0)
+            return;
+        MS2Ptr<AScript> spPage = GetPage(0);
+        if (spPage.get() != 0)
+            spPage->FUN_1413127f0("setBanner", strKey, strPath);
+        return;
+    }
+    int nTab = 9;
+    int nKind = 0;
+    if (nType == 0xcf) {
+        nTab = 7;
+        nKind = 1;
+    } else if (nType == 0xd2) {
+        nTab = 0;
+        nKind = 2;
+    }
+    if (nTab == 9)
+        return;
+    MS2Ptr<AScript> spPage = GetPage(nTab);
+    if (spPage == 0)
+        return;
+    MS2Ptr<MeratMarketShopBannerInfo> spInfo(dynamic_cast<MeratMarketShopBannerInfo*>((ShopBannerInfo*)spBanner));
+    if (spInfo == 0)
+        return;
+    int nProduct = spInfo->m_nProduct;
+    const Unk_MeratProductKey& key = reinterpret_cast<const Unk_MeratProductKey&>(spInfo->m_key);
+    MS2Ptr<CMeratMarketProduct> spProduct = FindProductInTab(key, nTab);
+    if (spProduct == 0)
+        return;
+    MS2Ptr<ASMeratMarketProductBase> spRow = ASMeratMarketProductBase::FUN_1409bbf30(nKind, FUN_1422db730());
+    if (spRow == 0)
+        return;
+    spRow->vfunc_3(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spProduct), strPath);
+    spPage->FUN_140f0a830("updateBg", Scaleform::GFx::Value(spRow->FUN_1422bb870()), nProduct);
+}
+
 // @0x14130c5b0
 void UIMeratMarketDialog::UpdateNotice(const CStringW& strNotice)
 {
@@ -6145,6 +6192,62 @@ void UIMeratMarketDialog::ClearSearchRequest()
 {
     m_dirty.GetSearch()->Reset();
     m_dirty.UnsetFlag(1);
+}
+
+// @0x141310110
+void UIMeratMarketDialog::ApplySearchAll(MS2Ptr<CMeratMarketSchCond> spCond, ASObj& obj, bool bAll)
+{
+    if (m_30 == 0 || spCond == 0)
+        return;
+    Scaleform::GFx::Value vData = m_30->Invoke("getSearchAllData");
+    CStringW strWord;
+    int nTabIndex = spCond->m_48;
+    int nSaved = spCond->m_38;
+    if (!FUN_1409b0350(&vData) && !FUN_1409b0390(&vData)) {
+        ASObj data(vData, 2);
+        Scaleform::GFx::Value vWord = data.FUN_1422baa20("findWord");
+        strWord = FUN_141277dd0(&vWord);
+        strWord = strWord.Trim();
+        if (strWord.IsEmpty())
+            return;
+        if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker()) {
+            CStringW strMessage;
+            if (pChecker->FUN_1402261e0(strWord, strMessage) != 0) {
+                MS2Ptr<AScript> spPage = GetPage(m_250);
+                if (spPage.get() != 0) {
+                    CStringW strNotice = FUN_14052bd00(0xa13, strMessage);
+                    ASArray rows(2);
+                    spPage->FUN_141312cf0("buildItemList", rows, 0, 1);
+                    spPage->Invoke("updateNoticeText", CStringW(strNotice));
+                }
+                return;
+            }
+        }
+        Scaleform::GFx::Value vDrop = data.FUN_1422baa20("dropDownData");
+        if (!FUN_1409b0350(&vDrop) && !FUN_1409b0390(&vDrop)) {
+            ASObj drop(vDrop, 2);
+            nTabIndex = FUN_1409c1750(drop.FUN_1422baa20(s_strTabIndex));
+        }
+    }
+    if (bAll)
+        spCond->Clear();
+    m_254 = 1;
+    FillSearchData(spCond, obj, bAll);
+    if (bAll) {
+        spCond->m_str = strWord;
+        int nCurrency = 0;
+        if (nTabIndex == 2)
+            nCurrency = 2;
+        else if (nTabIndex == 1 || nTabIndex == 3)
+            nCurrency = 1;
+        spCond->m_38 = nCurrency;
+        spCond->m_48 = nTabIndex;
+    } else {
+        spCond->m_38 = nSaved;
+    }
+    spCond->m_30 = 1;
+    spCond->m_18 = 1;
+    RequestPending(1, true);
 }
 
 // MS2-FUNCTIONAL: the child-bind return temporaries (3 pointer copies) differ

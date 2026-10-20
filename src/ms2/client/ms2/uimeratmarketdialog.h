@@ -421,6 +421,7 @@ public:
     void ClearSearchRequest();                                      // 0x141310920
     void ClearSearchInput();                                        // 0x141310970
     void OpenBanner(int nKind, const CStringA& strTarget);          // 0x141310d30
+    void OnBannerImageLoaded(CStringA strKey, CStringA strPath, bool bOk);  // 0x14130bf20 UGC banner image downloaded (ugcmanager)
     int PreviewColorCode();                                         // 0x141310e10
     void SetModelTime(int nSeconds);                                // 0x141310e50
     bool CheckProduct(MS2Ptr<CMeratMarketProduct> spProduct, int nCount);   // 0x141310f70
