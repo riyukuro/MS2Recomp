@@ -1,4 +1,6 @@
 // skilldatatablecli.h - PLACEHOLDER for SkillDataTableCli (RTTI .?AVSkillDataTableCli@@, 0x1c8 bytes). NOT an original header.
+// The recovered class is ms2/client/ms2/skilldatatablecli.h (?\skilldatatablecli.cpp); it is not included here because
+// commonfiles/skilloverlapcompare.h clashes with gameeventcontext.h in ms2.cpp (duplicate Unk_DungeonGroupType).
 // Bases: SkillDataTable at +0x0, TSingleton<SkillDataTableCli> at +0x140.
 // A TSingleton that CGameApp::InitInstance (?\ms2.cpp) creates; only the ctor is declared, the members are not
 // recovered.
