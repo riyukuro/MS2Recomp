@@ -46,6 +46,7 @@
 #include <set>
 #include <bitset>
 #include <NiCollisionGroup.h>
+#include <NiPick.h>
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -148,7 +149,11 @@ struct Unk_EqApp
     Unk_EqSvcHolder m_spServiceManager;                 // +0x08
 };
 Unk_EqApp* FUN_14086d260();
-double FUN_141473280(Unk_EqApp* pApp);                 // the app time
+double FUN_141473280(Unk_EqApp* pApp);
+int FUN_141424d00(MS2Ptr<CEquipItem> spHair, const NiPoint3& kOrigin, const NiPoint3& kDir, NiPick& kPick, int* pnResult);   // pick the hair
+void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue);   // (unit_1411673f0)
+extern const NiPoint3 DAT_143a08cf8;                    // the cap pick axis
+extern const NiPoint3 DAT_143b01a60;                    // NiPoint3::ZERO                 // the app time
 bool FUN_141b701f0(NiMesh* pMesh, unsigned nMask);     // every sub mesh has the flag (util.cpp)
 void* FUN_140af8310(Unk_EqSvcHolder* pSmart);           // operator->
 Unk_EqAssetSvc* FUN_140998330(void* pMgr);              // the system service (NULL when absent)
@@ -209,6 +214,9 @@ public:
     float m_f5c;                                    // +0x5c
     float m_f60;                                    // +0x60
     float m_f64;                                    // +0x64
+    char m_pad_68[0xc];
+    NiPoint3 m_kCapPos;                             // +0x74 the user cap position
+    NiPoint3 m_kCapRot;                             // +0x80 the user cap rotation (degrees)
 };
 
 class Unk_EquipModelCalls : public CEquipModel
@@ -2483,4 +2491,123 @@ void CEquipment::FUN_1411ec480(bool bForce)
     m_strSetName = strAnimation;
     m_bHasSetName = bShowEffect;
     m_pPC->FUN_141670e50(CString(strGround));
+}
+
+// @0x1411e5c10
+void CEquipment::FUN_1411e5c10()
+{
+    if (FUN_1411e0ee0() == NULL)
+        return;
+    MS2Ptr<CEquipItem> spCap = FUN_1411e1860(6, 6, 0);
+    if (spCap == 0 || spCap->FUN_1411dc0d0() == 0)
+        return;
+    Unk_EquipItemData* pCapData = spCap->FUN_1411dc7f0();
+    if (pCapData == NULL)
+        return;
+    ATL::CAtlArray<MS2Ptr<CEquipModel> > capModels;
+    spCap->FUN_1411dcc80(capModels);
+    if (capModels.IsEmpty())
+        return;
+    Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spCap->FUN_1411dc7a0()->FUN_140527870());
+    if (pRecord == NULL)
+        return;
+    MS2Ptr<CEquipItem> spHair = FUN_1411e1860(1, 6, 0);
+    if (spHair == 0 || spHair->FUN_1411dc0d0() == 0)
+        return;
+    Unk_EquipItemData* pHairData = spHair->FUN_1411dc7f0();
+    if (pHairData == NULL)
+        return;
+    ATL::CAtlArray<MS2Ptr<CEquipModel> > hairModels;
+    spHair->FUN_1411dcc80(hairModels);
+    if (hairModels.IsEmpty())
+        return;
+    float fScale = MODEL(hairModels[0])->FUN_141200ab0()->capscale;
+    if (!pCapData->FUN_14053ec70()->FUN_1405471b0()) {
+        NiPoint3 kRot = pRecord->m_kCapRot;
+        NiPoint3 kPos = pRecord->m_kCapPos;
+        FUN_1411ef2e0(capModels[0].operator->(), kPos, kRot);
+        for (unsigned i = 0; i < capModels.GetCount(); i++) {
+            capModels[i]->vfunc_22(fScale);
+            std::set<NiAVObjectPtr>* pRoots = FUN_141201c90(capModels[i].operator->());
+            for (std::set<NiAVObjectPtr>::iterator it = pRoots->begin(); it != pRoots->end(); ++it) {
+                NiAVObjectPtr spRoot = *it;
+                FUN_141167840(spRoot, CString("Editable Mesh"), pRecord->m_f58);
+            }
+        }
+        return;
+    }
+    for (unsigned i = 0; i < capModels.GetCount(); i++) {
+        MsTransform* pCapTransform = pHairData->FUN_14053ec70()->FUN_140547360();
+        if (pCapTransform == NULL)
+            continue;
+        NiTransform kTransform;
+        kTransform.MakeIdentity();
+        kTransform.m_fScale = fScale;
+        kTransform.m_Rotate.FromEulerAnglesXYZ(pCapTransform->rotation.x, pCapTransform->rotation.y, pCapTransform->rotation.z);
+        kTransform.m_Translate = pHairData->FUN_14053ec70()->handle->position;
+        if (pRecord->m_kCapRot != DAT_143b01a60) {
+            NiPoint3 kRot = pRecord->m_kCapRot;
+            kRot.x = kRot.x * 3.1415927f / 180.0f;
+            kRot.y = kRot.y * 3.1415927f / 180.0f;
+            kRot.z = kRot.z * 3.1415927f / 180.0f;
+            kTransform.m_Rotate.FromEulerAnglesXYZ(kRot.x, kRot.y, kRot.z);
+        }
+        if (pRecord->m_kCapPos != DAT_143b01a60)
+            kTransform.m_Translate = NiPoint3(pRecord->m_kCapPos);
+        std::set<NiAVObjectPtr>* pRoots = FUN_141201c90(capModels[i].operator->());
+        for (std::set<NiAVObjectPtr>::iterator it = pRoots->begin(); it != pRoots->end(); ++it) {
+            NiAVObjectPtr spRoot = *it;
+            if (spRoot == NULL)
+                continue;
+            spRoot->SetLocalTransform(kTransform);
+            spRoot->UpdateWorldData();
+        }
+    }
+    for (unsigned i = 0; i < capModels.GetCount(); i++) {
+        if (!pCapData->FUN_14053ec70()->FUN_1405471b0())
+            continue;
+        int nResult = 0;
+        std::set<NiAVObjectPtr>* pRoots = FUN_141201c90(capModels[i].operator->());
+        for (std::set<NiAVObjectPtr>::iterator it = pRoots->begin(); it != pRoots->end(); ++it) {
+            NiAVObjectPtr spRoot = *it;
+            if (spRoot == NULL)
+                continue;
+            NiTransform kWorld = spRoot->GetWorldTransform();
+            NiPoint3 kDir = kWorld * -DAT_143a08cf8;
+            NiPoint3 kOrigin = kWorld.m_Translate - kDir * 400.0f;
+            NiPick kPick(0, 8);
+            if (FUN_141424d00(spHair, kOrigin, kDir, kPick, &nResult) == 0) {
+                if (nResult == 0) {
+                    NiTransform kTransform;
+                    kTransform.MakeIdentity();
+                    kTransform.m_fScale = fScale;
+                    MsTransform* pCapTransform = pHairData->FUN_14053ec70()->FUN_140547360();
+                    if (pCapTransform != NULL) {
+                        kTransform.m_Rotate.FromEulerAnglesXYZ(pCapTransform->rotation.x, pCapTransform->rotation.y,
+                            pCapTransform->rotation.z);
+                        kTransform.m_Translate = pCapTransform->position;
+                    }
+                    spRoot->SetLocalTransform(kTransform);
+                    spRoot->UpdateWorldData();
+                }
+            } else if (FUN_140a0b000(spRoot) != NULL) {
+                NiPick::Results& kResults = kPick.GetResults();
+                NiPoint3 kNearest = kResults.GetAt(0)->GetIntersection();
+                for (unsigned j = 1; j < kResults.GetSize(); j++) {
+                    NiPoint3 kHit = kResults.GetAt(j)->GetIntersection();
+                    float fBest = (kNearest - kOrigin).Length();
+                    if ((kHit - kOrigin).Length() < fBest)
+                        kNearest = kHit;
+                }
+                NiTransform kTransform;
+                kTransform.MakeIdentity();
+                kTransform.m_fScale = kWorld.m_fScale;
+                kTransform.m_Rotate = kWorld.m_Rotate;
+                kTransform.m_Translate = kNearest;
+                spRoot->SetLocalFromWorldTransform(kTransform);
+                spRoot->UpdateWorldData();
+            }
+        }
+    }
+    spCap->FUN_1411dcf10(s_tagWillUpdatePos);
 }
