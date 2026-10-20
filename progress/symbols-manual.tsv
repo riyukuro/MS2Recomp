@@ -3637,3 +3637,10 @@ __imp_NxGetUtilLib	142cced28	data
 ??1CNMGetGameServerNameFunc@@UEAA@XZ	1415edcd0	func
 ??0CNMDownloadGuildMarkFileFunc@@QEAA@H_KPEBD@Z	141592600	func
 ??1CNMDownloadGuildMarkFileFunc@@UEAA@XZ	1415ed260	func
+??0TDirtyPremiumSale@UIMeratMarketCommon@@QEAA@XZ	1413142f0	func
+?Add@TDirtyPremiumSale@UIMeratMarketCommon@@QEAAXAEBH@Z	1413153b0	func
+?RepurchaseAdded@UIShopDialog@@QEAAXV?$MS2Ptr@VCNpcShopProductCli@@@@@Z	141afb320	func
+?PopulateProduct@UIShopDialog@@QEAAHAEAVAScript@@V?$MS2Ptr@VCNpcShopProductCli@@@@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@PEAX@Z	141b00240	func
+??0Unk_ShopUIMsg@@QEAA@XZ	1422e4490	func
+??1Unk_ShopUIMsg@@QEAA@XZ	140c30570	func
+?DAT_143ab2a90@@3VUnk_ShopInventory@@A	143ab2a90	data
