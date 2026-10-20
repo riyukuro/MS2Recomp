@@ -1,6 +1,22 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). WorldService, part 3 of 4 (owner ws2).
 // MS2-UNIT: ?\worldservice.cpp#3
 // MS2-RANGE: 0x141bedaf0-0x141bf2b70 .text$mn
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??$destroy@UUnk_WsVa00@@@?$_Default_allocator_traits@V?$allocator@UUnk_WsVa00@@@std@@@std@@SAXAEAV?$allocator@UUnk_WsVa00@@@1@QEAUUnk_WsVa00@@@Z 0x141bedcb0 ; prop
+// MS2-PIN: ??$destroy@UUnk_WsVa18@@@?$_Default_allocator_traits@V?$allocator@UUnk_WsVa18@@@std@@@std@@SAXAEAV?$allocator@UUnk_WsVa18@@@1@QEAUUnk_WsVa18@@@Z 0x141bedcd0 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VUnk_RideeFieldObj@@@@QEAA@AEBV0@@Z 0x141bf1330 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VUnk_GoField@@@@QEAA@PEAVUnk_GoField@@@Z 0x141bf13c0 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VUnk_WsB_Lift@@@@QEAA@$$QEAV0@@Z 0x141bf14d0 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VUnk_WsB_Lift@@@@QEAA@H@Z 0x141bf1500 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VUnk_WsB_Lift@@@@QEAA@PEAVUnk_WsB_Lift@@@Z 0x141bf1520 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VUnk_AkoLiftTarget@@@@QEAA@PEAVUnk_AkoLiftTarget@@@Z 0x141bf1580 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VCRegionSkillObject@@@@QEAA@AEBV0@@Z 0x141bf16a0 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VFieldProperty@@@@QEAA@AEBV0@@Z 0x141bf1770 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VUIDebugTooltip@@@@QEAA@AEBV0@@Z 0x141bf1870 ; prop
+// MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV990@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CB_KUUnk_WsV990@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV990@@@std@@@std@@@1@@Z 0x141bf24d0 ; prop
+// MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsVab0@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CB_KUUnk_WsVab0@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsVab0@@@std@@@std@@@1@@Z 0x141bf2510 ; prop
+// MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV1d8@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CB_KUUnk_WsV1d8@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV1d8@@@std@@@std@@@1@@Z 0x141bf2550 ; prop
+// MS2-PINS-END tplpin
 // MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBHV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBHV?$set@_KU?$less@_K@std@@V?$allocator@_K@2@@std@@@std@@PEAX@1@@Z 0x141bedaf0
 // MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBIUUnk_WsVac0@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIUUnk_WsVac0@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIUUnk_WsVac0@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBIUUnk_WsVac0@@@std@@PEAX@1@@Z 0x141bedb00
 // MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CB_KUUnk_WsV1d8@@@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CB_KUUnk_WsV1d8@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CB_KUUnk_WsV1d8@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CB_KUUnk_WsV1d8@@@std@@PEAX@1@@Z 0x141bedb10
@@ -302,3 +318,57 @@
 #include "hook/ms2hook.h"
 #define WS_INST_FN Unk_WsInst3
 #include "worldservice_inst.inl"
+
+// The CU's 16-byte smart pointer constructors (TPtr<T> = our MS2Ptr<T>, and TPtrValue<T>; 0x141bf1170-0x141bf19f2).
+// Their callers are the WorldService methods of the other parts, which still reach them by VA. The pointee classes
+// whose add-ref COMDAT is emitted by this CU (0x141c1f4a0..0x141c1f5f0, part 8) are not recovered: each is named after
+// that add-ref VA. The others are the shared classes whose add-ref another unit already binds.
+#include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/tptrvalue.h"
+#include "ms2/guess/fieldproperty.h"
+#include "ms2/guess/regionskillobject.h"
+#include "ms2/client/ms2/uidebugtooltip.h"
+struct Unk_WsD_EffectCtx : public CPtred {};            // m_848 value: the effect of an effect message (add-ref 0x141c1f4a0)
+class Unk_WsPtrT_141c1f500 : public CPtred {};          // tag-range object (FUN_141bc3560), camera shake (FUN_141bc9020)
+class Unk_WsPtrT_141c1f530 : public CPtred {};          // m_540 / m_570 value (FUN_141bd3920)
+class Unk_WsPtrT_141c1f560 : public CPtred {};
+class Unk_WsPtrT_141c1f590 : public CPtred {};
+class Unk_WsPtrT_141c1f5c0 : public CPtred {};          // FUN_141bcda90
+class Unk_WsPtrT_141c1f5f0 : public CPtred {};          // FUN_141bd0220, m_708 rebuild (FUN_141bda580)
+class Unk_RideeFieldObj : public CPtred {};
+class Unk_GoField : public CPtred {};
+class Unk_WsB_Lift : public CPtred {};
+class Unk_AkoLiftTarget : public CPtred {};
+typedef TPtrValue<ATL::CAtlList<efd::SmartPointer<egf::Entity> > > Unk_WsEntityListPtr;   // m_208 value (TPtredDummy box 0x141bf19b0)
+
+template <class T> static void WsDrivePtr(T* p, int n)
+{
+    MS2Ptr<T> a(p);
+    MS2Ptr<T> b(a);
+    MS2Ptr<T> c(static_cast<MS2Ptr<T>&&>(b));
+    MS2Ptr<T> d(n);
+    MS2Ptr<T> e;
+}
+void Unk_WsInst3Ptrs(int n)
+{
+    WsDrivePtr<Unk_WsD_EffectCtx>(0, n);
+    WsDrivePtr<Unk_WsPtrT_141c1f500>(0, n);
+    WsDrivePtr<Unk_WsPtrT_141c1f530>(0, n);
+    WsDrivePtr<Unk_WsPtrT_141c1f560>(0, n);
+    WsDrivePtr<Unk_WsPtrT_141c1f590>(0, n);
+    WsDrivePtr<Unk_WsPtrT_141c1f5c0>(0, n);
+    WsDrivePtr<Unk_WsPtrT_141c1f5f0>(0, n);
+    WsDrivePtr<Unk_RideeFieldObj>(0, n);
+    WsDrivePtr<Unk_GoField>(0, n);
+    WsDrivePtr<Unk_WsB_Lift>(0, n);
+    WsDrivePtr<Unk_AkoLiftTarget>(0, n);
+    WsDrivePtr<CRegionSkillObject>(0, n);
+    WsDrivePtr<FieldProperty>(0, n);
+    WsDrivePtr<UIDebugTooltip>(0, n);
+    Unk_WsEntityListPtr a(Unk_GrNewTag(0));
+    Unk_WsEntityListPtr b(a);
+    const Unk_WsEntityListPtr& c = b;
+    Unk_WsEntityListPtr d(c);
+    Unk_WsEntityListPtr e(n);
+    Unk_WsEntityListPtr f;
+}
