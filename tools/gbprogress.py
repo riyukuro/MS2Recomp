@@ -15,6 +15,9 @@ Credit (per exe VA, outside the game unit ranges of work/map/units.tsv and not c
   stub        an uncredited function between two credited functions of the same unit (the TU's own range; runs of
               more than STUB_GAP functions are not counted).
 Unit names: gb:<Lib>/<TU> (one name for both recipes of a TU; an exact v2525 obj wins the attribution over stock).
+VA windows (engine/unit-windows.tsv, 2026-10-20 lb2): a unit-name prefix pairs only inside (include) or outside
+(exclude) VA ranges (pairing, not just credit: name, search and callee pairs), for a library the exe links twice
+(Gamebryo's LNUM Lua gb:Lua/ and the stock Lua 5.1.4 gb:Lua2/, mostly byte-identical); part of the match cache key.
 Cache: <cache>/gb/obj/<recipe>/... (incremental: obj mtime vs source + /showIncludes deps), <cache>/gb/results.json
 (per-obj match results keyed by obj mtime/size).
 """
@@ -51,6 +54,7 @@ MATCH_KEY = "static-near"                       # bump to re-match every obj (pa
 LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
 STATIC_NEAR = 0x10000                           # match_obj: a COMDAT caller's static callee only this near the obj's own code
 COPY_ROUNDS = 8                              # assign_copies: offers of an unpaired copy to the next claimant
+LIB_RECIPE = "/obj/lib-"                         # obj path part of the library units' recipes (lib-cef, ...)
 NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
 if NO_CALLEE:
     MATCH_KEY = "nocallee"
@@ -119,6 +123,32 @@ def compile_unit(args):
 # matching (worker processes)
 
 G = {}
+
+
+WINDOWS_TSV = os.path.join(ROOT, "engine", "unit-windows.tsv")
+
+
+def load_windows():
+    """[(unit prefix, include|exclude, lo, hi)] from engine/unit-windows.tsv"""
+    out = []
+    if os.path.exists(WINDOWS_TSV):
+        for ln in open(WINDOWS_TSV):
+            c = ln.split("#")[0].split()
+            if len(c) >= 4:
+                out.append((c[0], c[1], int(c[2], 16), int(c[3], 16)))
+    return out
+
+
+def unit_window(unit, windows):
+    """(include ranges or None, exclude ranges) of a unit name"""
+    rg = lambda kind: [(lo, hi) for p, k, lo, hi in windows if k == kind and unit.startswith(p)]
+    return (rg("include") or None, rg("exclude"))
+
+
+def _allowed(va):
+    inc, exc = G.get("win") or (None, [])
+    return va is None or ((inc is None or any(lo <= va < hi for lo, hi in inc)) and
+                          not any(lo <= va < hi for lo, hi in exc))
 
 
 def _init():
@@ -237,6 +267,8 @@ def match_obj(path):
         if n.startswith(bm.FUNCLET_PREFIXES):
             continue
         va = G["names"].get(n)
+        if not _allowed(va):
+            va = None
         ok = False
         how = "name"
         hits = ()
@@ -245,7 +277,7 @@ def match_obj(path):
             if ok:
                 callees.update(_hints(obj, n, shints))
         if not ok:
-            hits = _search(obj, si)
+            hits = [h for h in _search(obj, si) if _allowed(h)]
             if len(hits) > 1:
                 eng = tuple(h for h in hits if not _in_game(h))      # game-unit copies are never engine credit
                 if eng:
@@ -280,14 +312,15 @@ def match_obj(path):
         _static_hints(obj, out, shints, callees)
         for n in list(vfts):
             va = callees.get(n) or G["dnames"].get(n)
-            if va is not None:
+            if va is not None and _allowed(va):
                 for tn, tgt in _vft_slots(obj, vfts.pop(n), va):
                     callees.setdefault(tn, tgt)
                 grew = True
         nxt = []
         for n in pending:
             va = callees.get(n)
-            if va is None or (va - exe.base not in exe.rf and va - exe.base not in G["leaf"]) or (n, va) in tried:
+            if va is None or not _allowed(va) or (va - exe.base not in exe.rf and va - exe.base not in G["leaf"]) \
+                    or (n, va) in tried:
                 nxt.append(n)
                 continue
             tried.add((n, va))
@@ -299,6 +332,18 @@ def match_obj(path):
         if len(nxt) == len(pending) and not grew:
             break
         pending = nxt
+    # library objs (engine/units-lib-*.json, compiled from the vendor's own sources inside an include window): a hint
+    # that stays non-exact (the vendor built them with another MSVC: EH states, inlining) still names the function at
+    # that VA, so it pairs as functional rather than leaving the function a stub
+    if LIB_RECIPE in path and not NO_CALLEE:
+        used = {va for _, va, _, _ in out}
+        for n in [n for n in pending if n not in copies and n not in weak]:
+            va = callees.get(n)
+            if va is not None and va not in used and _allowed(va) and G["win"] and G["win"][0] \
+                    and (va - exe.base in exe.rf or va - exe.base in G["leaf"]):
+                out.append((n, va, False, "hint"))
+                used.add(va)
+                pending.remove(n)
     # the remaining unpaired functions with several byte-identical exe copies are paired by assign_copies (all objs)
     out += [weak[n] for n in pending if n in weak]
     cands = [[n, list(copies[n])] for n in pending if n in copies]
@@ -335,7 +380,9 @@ def _vft_slots(obj, si, va):
     return out
 
 
-def _match_job(path):
+def _match_job(job):
+    path, win = job
+    G["win"] = win
     return path, match_obj(path)
 
 
@@ -472,23 +519,29 @@ def run(cache, j=8, filters=(), log=print):
     gpath = os.path.join(cache, "gb", "copygroups.json")      # copy group id -> exe VAs (see assign_copies)
     groups = json.load(open(gpath)) if os.path.exists(gpath) else {}
     jobs = []
+    windows = load_windows()
     for u in units:
         o = obj_path(cache, u)
         if u["name"] in failed or not os.path.exists(o):
             res.pop(u["recipe"] + ":" + u["name"], None)
             continue
         key = [os.path.getmtime(o), os.path.getsize(o), MATCH_KEY]
+        if LIB_RECIPE in o:
+            key.append("lib-hint")
+        win = unit_window(u["unit"], windows)
+        if win != (None, []):
+            key.append(json.dumps(win))
         if os.environ.get("MS2_MERGE_INCR"):      # tools/merge.sh: also keyed by the symbol tables the match read
             import mergekey
             key.append(mergekey.engine_stamp())
         c = res.get(u["recipe"] + ":" + u["name"])
         if not c or c.get("key") != key:
-            jobs.append((u, o, key))
+            jobs.append((u, o, key, win))
     if jobs:
         log(f"engine: matching {len(jobs)} obj(s) ...")
-        byobj = {o: (u, key) for u, o, key in jobs}
+        byobj = {o: (u, key) for u, o, key, _ in jobs}
         with Pool(max(1, j), initializer=_init) as p:
-            for o, (rows, cands, own) in p.imap_unordered(_match_job, [o for _, o, _ in jobs], chunksize=2):
+            for o, (rows, cands, own) in p.imap_unordered(_match_job, [(o, w) for _, o, _, w in jobs], chunksize=2):
                 u, key = byobj[o]
                 gc = []
                 for n, hits in cands:                  # copy groups are shared by many objs: stored once
