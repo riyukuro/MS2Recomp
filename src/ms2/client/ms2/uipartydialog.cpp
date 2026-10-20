@@ -4,6 +4,10 @@
 // MS2-UNIT: client\ms2\uipartydialog.cpp
 // MS2-RANGE: 0x14011a360-0x14011aab0 .text$di
 // MS2-RANGE: 0x141a738f0-0x141a8f3a0 .text$mn
+// MS2-PIN: ??$Unk_PdSetData@W4Unk_PdTombType@@@@YAXPEAVASObj@@PEBDW4Unk_PdTombType@@@Z 0x141a7a1c0 ; manual: byte-identical pair, first use first
+// MS2-PIN: ??$Unk_PdSetData@H@@YAXPEAVASObj@@PEBDH@Z 0x141a7a260 ; manual
+// MS2-PIN: ??$Unk_PdSetData@W4Unk_PmMenuType@@@@YAXPEAVASObj@@PEBDW4Unk_PmMenuType@@@Z 0x141a87860 ; manual: byte-identical pair, first use first
+// MS2-PIN: ??$Unk_PdSetData@W4Unk_PmDir@@@@YAXPEAVASObj@@PEBDW4Unk_PmDir@@@Z 0x141a87900 ; manual
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0VASPartyVotePage@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVASPartyVotePage@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x141a79960 ; unique
 // MS2-PIN: ??$?0VUIPartyDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIPartyDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x141a79b00 ; unique
@@ -38,9 +42,9 @@
 // MS2-PIN: ??$?8PEAVUIPopUpMenu@@P80@EAAXXZ@std@@YA_NAEBU?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@0@0@Z 0x141a87600 ; prop
 // MS2-PIN: ??$?8PEAVUIPopUpMenu@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x141a87670 ; prop
 // MS2-PIN: ??$Unk_PmGetDialog@VUIPCInfoDialog@@@@YAPEAVUIPCInfoDialog@@H@Z 0x141a877c0 ; unique
+// MS2-PIN: ??$Unk_PmShowYesNo@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@@YA?AV?$MS2Ptr@VCMsgBoxData@@@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@0@Z 0x141a879a0 ; unique
 // MS2-PIN: ??0CPair@?$CAtlMap@HV?$Delegate@$$A6AXXZ@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Delegate@$$A6AXXZ@@@3@@ATL@@IEAA@H@Z 0x141a88150 ; unique
 // MS2-PIN: ??1CPair@?$CAtlMap@HV?$Delegate@$$A6AXXZ@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Delegate@$$A6AXXZ@@@3@@ATL@@QEAA@XZ 0x141a88490 ; unique
-// MS2-PIN: ??1UIPopUpMenu@@UEAA@XZ 0x141a88510 ; unique
 // MS2-PIN: ??_EUIPopUpMenu@@WHA@EAAPEAXI@Z 0x141a88774 ; unique
 // MS2-PIN: ??_EUIPopUpMenu@@WHI@EAAPEAXI@Z 0x141a88780 ; unique
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@std@@@?$Delegate@$$A6AXXZ@@UEAAPEAXI@Z 0x141a887d0 ; prop
@@ -57,11 +61,10 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89ef0 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@std@@@?$Delegate@$$A6AXXZ@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89f50 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89fb0 ; unique
-// MS2-PIN: ??$Unk_PpLog@HMM@@YAXPEAVCLogString@@HHPEB_WAEBHAEBM3@Z 0x141a8ba80 ; unique
-// MS2-PIN: ??$forward@AEAPEAPEAVGameObject@@@std@@YAAEAPEAPEAVGameObject@@AEAPEAPEAV1@@Z 0x141a8dc70 ; unique
 // MS2-PIN: ??$forward@AEAPEAU?$_List_node@PEAVUnk_GoPickHit@@PEAX@std@@@std@@YAAEAPEAU?$_List_node@PEAVUnk_GoPickHit@@PEAX@0@AEAPEAU10@@Z 0x141a8dc80 ; unique
 // MS2-PIN: ??$forward@AEAPEAVGameObject@@@std@@YAAEAPEAVGameObject@@AEAPEAV1@@Z 0x141a8dc90 ; unique
 // MS2-PIN: ??0?$allocator@PEAVGameObject@@@std@@QEAA@XZ 0x141a8e060 ; unique
+// MS2-PIN: ??0?$allocator@U?$_List_node@PEAVUnk_GoPickHit@@PEAX@std@@@std@@QEAA@XZ 0x141a8e070 ; unique
 // MS2-PIN: ??R<lambda_33b4866407a6444b0fe51dcd18b2ae7a>@@QEBA_NPEAVGameObject@@0@Z 0x141a8e3f0 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@PEAVGameObject@@@std@@V?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@$00@std@@QEAAAEAV?$allocator@PEAVGameObject@@@2@XZ 0x141a8e970 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@PEAVGameObject@@@std@@V?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@$00@std@@QEBAAEBV?$allocator@PEAVGameObject@@@2@XZ 0x141a8e980 ; unique
@@ -532,7 +535,7 @@ void UIPartyDialog::OnLoadComplete()
     m_30->FUN_140bbe640("m_dungeonName", m_dungeonName);
     if (m_dungeonName == 0)
         throw PD_SWF_ERROR(0x81);
-    m_vote = new ASPartyVotePage(GetChild<ASMovieClip>("m_partyVote"));
+    m_vote.AssignRaw(new ASPartyVotePage(GetChild<ASMovieClip>("m_partyVote")));
     m_vote->OnInit();
     m_createClub->FUN_1422ce240(PdParamsDelegate(this, &UIPartyDialog::FUN_141a77ae0), 0);
     m_enterDungeon->FUN_1422ce240(PdParamsDelegate(this, &UIPartyDialog::FUN_141a77ab0), 0);
@@ -2016,7 +2019,7 @@ void UIPopUpMenu::FUN_141a7e280(const Unk_PopupMenuInfo& info, PCBase* pTarget, 
     m_98 = pTarget->FUN_14123c500();
     Unk_PmTarget target;
     if (info.m_a == 2 || info.m_a == 3)
-        target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+        target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     else
         target.m_pos = pTarget->vfunc_18();
     target.m_nLevel = (unsigned short)pTarget->vfunc_78();
@@ -2067,7 +2070,7 @@ void UIPopUpMenu::FUN_141a7e870(const Unk_PopupMenuInfo& info, PCBase* pTarget, 
     Unk_PmTarget target;
     if (info.m_a == 2 || info.m_a == 3)
     {
-        target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+        target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     }
     else
     {
@@ -2099,7 +2102,7 @@ void UIPopUpMenu::FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGame
     m_110 = nType;
     FUN_141a80af0(info);
     Unk_PmTarget target;
-    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     target.m_nLevel = spProxy->FUN_1416c2330();
     target.m_nCharId = (__int64)spProxy->FUN_1416c22f0();
     target.m_strImage = FUN_141028be0((__int64)spProxy->FUN_1416c22f0(), spProxy->FUN_1416c2520(), 1, CString(""));
@@ -2155,7 +2158,7 @@ void UIPopUpMenu::FUN_141a7f190(const Unk_PopupMenuInfo& info, CPartyMember* pMe
     m_110 = 2;
     FUN_141a80af0(info);
     Unk_PmTarget target;
-    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     Unk_UserProxy* pUser = &pMember->user;
     target.m_nLevel = (unsigned short)pMember->user.m_34;
     target.m_nCharId = pMember->user.m_8;
@@ -2186,7 +2189,7 @@ void UIPopUpMenu::FUN_141a7f510(const Unk_PopupMenuInfo& info, CGuildMember* pMe
     m_110 = 3;
     FUN_141a80af0(info);
     Unk_PmTarget target;
-    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     Unk_GuildMemberData* pData = &pMember->data;
     target.m_nLevel = (unsigned short)pMember->data.f1c;
     target.m_nCharId = pMember->data.f08;
@@ -2231,7 +2234,7 @@ void UIPopUpMenu::FUN_141a7f950(const Unk_PopupMenuInfo& info, __int64 nBuddyId)
     FUN_141a80af0(info);
     m_d0 = pBuddy->FUN_1401cc2f0();
     Unk_PmTarget target;
-    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     target.m_nLevel = pBuddy->FUN_1401cc210();
     target.m_nCharId = pBuddy->FUN_1401cc230();
     target.m_strImage = FUN_141028be0(pBuddy->FUN_1401cc230(), *pBuddy->FUN_1401cc530(), 1, CString(""));
@@ -2262,7 +2265,7 @@ void UIPopUpMenu::FUN_141a7fc50(const Unk_PopupMenuInfo& info, __int64 nHomeId)
     FUN_141a80af0(info);
     m_d8 = spHome->m_18;
     Unk_PmTarget target;
-    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     target.m_nLevel = spHome->m_38;
     target.m_nCharId = spHome->m_28;
     target.m_strImage = FUN_141028be0(spHome->m_28, spHome->m_48, 1, CString(""));
@@ -2314,7 +2317,7 @@ void UIPopUpMenu::FUN_141a80210(const Unk_PopupMenuInfo& info, CClubMember* pMem
     m_110 = 0xe;
     FUN_141a80af0(info);
     Unk_PmTarget target;
-    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     target.m_nLevel = (unsigned short)pMember->m_info.m_level;
     target.m_nCharId = pMember->m_info.m_characterId;
     target.m_strImage = FUN_141028be0(pMember->m_info.m_characterId, pMember->m_info.FUN_14020e6c0(), 1, CString(""));
@@ -2351,7 +2354,7 @@ void UIPopUpMenu::FUN_141a80670(const Unk_PopupMenuInfo& info)
     FUN_141a80af0(info);
     m_110 = 0x10;
     Unk_PmTarget target;
-    target.m_pos = NiPoint3(info.m_x, info.m_y, 0);
+    target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
     target.m_nCharId = info.m_infoB.m_18;
     target.m_strName = info.m_infoB.m_20;
     FUN_141a82140(target, info.m_b, 0);
@@ -2787,13 +2790,13 @@ int UIPopUpMenu::FUN_141a83810(unsigned nFlags, int nType, const Unk_PmTarget& t
         {
             if (!target.m_b38)
             {
-                FUN_141a844a0(0x259);
-                FUN_141a844a0(0x25a);
+                FUN_141a844a0((Unk_PmMenuId)0x259);
+                FUN_141a844a0((Unk_PmMenuId)0x25a);
             }
             else
             {
-                FUN_141a844a0(600);
-                FUN_141a844a0(0x25a);
+                FUN_141a844a0((Unk_PmMenuId)600);
+                FUN_141a844a0((Unk_PmMenuId)0x25a);
             }
         }
     }
@@ -2892,7 +2895,7 @@ void UIPopUpMenu::FUN_141a84320(ASArray& menu)
 }
 
 // @0x141a844a0
-void UIPopUpMenu::FUN_141a844a0(unsigned nMenuId)
+void UIPopUpMenu::FUN_141a844a0(Unk_PmMenuId nMenuId)
 {
     if (m_160.Lookup(nMenuId) == 0)
         Unk_PmLog(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::AddPopupMenu NotFound MenuID:{0}", nMenuId);
@@ -2905,14 +2908,14 @@ void UIPopUpMenu::FUN_141a84520(int nType, int bOnline, __int64 nCharId)
 {
     if (nType == 1)
     {
-        FUN_141a844a0(100);
+        FUN_141a844a0((Unk_PmMenuId)100);
     }
     else
     {
         if (nCharId != 0)
-            FUN_141a844a0(0x66);
+            FUN_141a844a0((Unk_PmMenuId)0x66);
         if (bOnline != 0)
-            FUN_141a844a0(0x65);
+            FUN_141a844a0((Unk_PmMenuId)0x65);
     }
 }
 
@@ -2925,9 +2928,9 @@ void UIPopUpMenu::FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, i
     {
         if (pMe->FUN_141527280())
         {
-            FUN_141a844a0(200);
+            FUN_141a844a0((Unk_PmMenuId)200);
             if (FUN_14162ab60(FUN_1409670d0()))
-                FUN_141a844a0(0xcd);
+                FUN_141a844a0((Unk_PmMenuId)0xcd);
         }
         return;
     }
@@ -2936,25 +2939,25 @@ void UIPopUpMenu::FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, i
     if (!pMe->FUN_141527280())
     {
         if (bOnline != 0)
-            FUN_141a844a0(0xc9);
+            FUN_141a844a0((Unk_PmMenuId)0xc9);
     }
     else if (!FUN_14162ab60(FUN_1409670d0()))
     {
         if (FUN_14162ad50(FUN_1409670d0(), strName) != 0 && FUN_140166410()->FUN_14036d570(0xe0))
-            FUN_141a844a0(0xcc);
+            FUN_141a844a0((Unk_PmMenuId)0xcc);
     }
     else if (FUN_14162ad50(FUN_1409670d0(), strName) == 0)
     {
         if (bOnline != 0)
-            FUN_141a844a0(0xc9);
+            FUN_141a844a0((Unk_PmMenuId)0xc9);
     }
     else
     {
-        FUN_141a844a0(0xca);
+        FUN_141a844a0((Unk_PmMenuId)0xca);
         if (bOnline != 0)
-            FUN_141a844a0(0xcb);
+            FUN_141a844a0((Unk_PmMenuId)0xcb);
         if (FUN_140166410()->FUN_14036d570(0xe0))
-            FUN_141a844a0(0xcc);
+            FUN_141a844a0((Unk_PmMenuId)0xcc);
     }
 }
 
@@ -2965,16 +2968,16 @@ void UIPopUpMenu::FUN_141a847c0(int nType, MyPC* pMe, CBuddy* pBuddy)
         return;
     if (pBuddy == 0)
     {
-        FUN_141a844a0(0x12d);
+        FUN_141a844a0((Unk_PmMenuId)0x12d);
     }
     else if (pBuddy->FUN_1401cc5f0() == 0)
     {
         if (pBuddy->FUN_1401cc5b0() == 0 && pBuddy->FUN_1401cc660() == 0)
-            FUN_141a844a0(0x12d);
+            FUN_141a844a0((Unk_PmMenuId)0x12d);
     }
     else
     {
-        FUN_141a844a0(300);
+        FUN_141a844a0((Unk_PmMenuId)300);
     }
 }
 
@@ -2983,74 +2986,74 @@ void UIPopUpMenu::FUN_141a84860(int nType, MyPC* pMe, CBuddy* pBuddy)
 {
     if (pBuddy != 0 && pBuddy->FUN_1401cc5b0() != 0)
     {
-        FUN_141a844a0(0x191);
-        FUN_141a844a0(0x192);
+        FUN_141a844a0((Unk_PmMenuId)0x191);
+        FUN_141a844a0((Unk_PmMenuId)0x192);
         return;
     }
-    FUN_141a844a0(400);
+    FUN_141a844a0((Unk_PmMenuId)400);
 }
 
 // @0x141a848d0
 void UIPopUpMenu::FUN_141a848d0(int nType, int bOnline, __int64 nCharId)
 {
     if (nType != 1 && bOnline != 0 && nCharId != 0 && FUN_1403ed2d0()->FUN_141bd1530(nCharId) != 0)
-        FUN_141a844a0(500);
+        FUN_141a844a0((Unk_PmMenuId)500);
 }
 
 // @0x141a84940
 void UIPopUpMenu::FUN_141a84940(int nType, int bOnline)
 {
     if (nType != 1 && bOnline != 0)
-        FUN_141a844a0(0x1f5);
+        FUN_141a844a0((Unk_PmMenuId)0x1f5);
 }
 
 // @0x141a84980
 void UIPopUpMenu::FUN_141a84980(int nType, int bOnline)
 {
     if (nType == 2 && bOnline != 0)
-        FUN_141a844a0(0x1f6);
+        FUN_141a844a0((Unk_PmMenuId)0x1f6);
 }
 
 // @0x141a849c0
 void UIPopUpMenu::FUN_141a849c0(int nType, __int64 nCharId)
 {
     if (nType == 2 && FUN_1418fd530(nCharId) != 0)
-        FUN_141a844a0(0x1f7);
+        FUN_141a844a0((Unk_PmMenuId)0x1f7);
 }
 
 // @0x141a84a10
 void UIPopUpMenu::FUN_141a84a10(int nType, __int64 nCharId)
 {
     if (nType == 2 && FUN_1418fd5d0(nCharId) != 0)
-        FUN_141a844a0(0x1f8);
+        FUN_141a844a0((Unk_PmMenuId)0x1f8);
 }
 
 // @0x141a84a60
 void UIPopUpMenu::FUN_141a84a60(int nType)
 {
     if (nType == 5)
-        FUN_141a844a0(0x1f9);
+        FUN_141a844a0((Unk_PmMenuId)0x1f9);
 }
 
 // @0x141a84a90
 void UIPopUpMenu::FUN_141a84a90(int nType)
 {
     if (nType == 5)
-        FUN_141a844a0(0x1fa);
+        FUN_141a844a0((Unk_PmMenuId)0x1fa);
 }
 
 // @0x141a84ac0
 void UIPopUpMenu::FUN_141a84ac0(int nType, __int64 nCharId)
 {
     if (nType == 2 && FUN_1418fd670(nCharId) != 0)
-        FUN_141a844a0(0x1fb);
+        FUN_141a844a0((Unk_PmMenuId)0x1fb);
 }
 
 // @0x141a84b10
 void UIPopUpMenu::FUN_141a84b10(int nType)
 {
     if (nType != 1)
-        FUN_141a844a0(0x1fc);
+        FUN_141a844a0((Unk_PmMenuId)0x1fc);
 }
 
 // @0x141a84b40
@@ -3061,7 +3064,7 @@ void UIPopUpMenu::FUN_141a84b40(int nType, MyPC* pMe, const CStringW& strName)
     if (FUN_1413b6160(FUN_1403ed290()) != 0 && nType != 1 && 0 < strName.GetLength())
     {
         if (FUN_1403ed290()->m_info.FUN_1404cf9f0(strName).get() == 0)
-            FUN_141a844a0(0x2bd);
+            FUN_141a844a0((Unk_PmMenuId)0x2bd);
     }
 }
 
@@ -3069,7 +3072,7 @@ void UIPopUpMenu::FUN_141a84b40(int nType, MyPC* pMe, const CStringW& strName)
 void UIPopUpMenu::FUN_141a84c60(int nType, MyPC* pMe, __int64 nCharId)
 {
     if (FUN_140900550() && nType == 2)
-        FUN_141a844a0(0x321);
+        FUN_141a844a0((Unk_PmMenuId)0x321);
 }
 
 // @0x141a84cb0
@@ -3078,12 +3081,12 @@ void UIPopUpMenu::FUN_141a84cb0(int nType, MyPC* pMe, HomeBlockManager::HomePtr 
     if (spHome.get() == 0)
     {
         if (FUN_1409670e0()->FUN_1410c3180() == DAT_143ab2820)
-            FUN_141a844a0(0x385);
+            FUN_141a844a0((Unk_PmMenuId)0x385);
     }
     else
     {
-        FUN_141a844a0(0x386);
-        FUN_141a844a0(0x387);
+        FUN_141a844a0((Unk_PmMenuId)0x386);
+        FUN_141a844a0((Unk_PmMenuId)0x387);
     }
 }
 
@@ -3731,7 +3734,7 @@ void FUN_141a8a990(CSceneStateBase* pState, float x, float y)
     }
     else
     {
-        int nClassId = pState->GetClassID();
+        unsigned int nClassId = pState->GetClassID();
         Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"ETC SceneLoading  Class ID : {0}, mouseX[{1}] mouseY[{2}]", nClassId, x, y);
     }
 }

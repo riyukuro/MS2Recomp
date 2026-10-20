@@ -236,6 +236,8 @@ template <class T> class Unk_PayloadPtr;
 struct HomeBlockInfo;
 class Unk_PmUserEntry;
 
+enum Unk_PmMenuId : unsigned int {};                                // a popup menu entry id
+
 class UIPopUpMenu : public UIHeadUpDisplay, public UIEntityEventListener, public UIUGCEventListener
 {
 public:
@@ -292,7 +294,7 @@ public:
     void FUN_141a84130(int nQuery, int nKind);
     void FUN_141a842f0();
     void FUN_141a84320(ASArray& menu);
-    void FUN_141a844a0(unsigned nMenuId);                       // AddPopupMenu
+    void FUN_141a844a0(Unk_PmMenuId nMenuId);                   // AddPopupMenu (the id is an enum: custom-formatted in its log)
     void FUN_141a84520(int nType, int bOnline, __int64 nCharId);
     void FUN_141a84590(int nType, MyPC* pMe, const CStringW& strName, int bOnline);
     void FUN_141a847c0(int nType, MyPC* pMe, CBuddy* pBuddy);
