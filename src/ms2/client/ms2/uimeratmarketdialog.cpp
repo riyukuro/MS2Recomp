@@ -85,6 +85,10 @@
 // MS2-GUESS-LOOKALIKES
 // File name assumed (the class name). Bodies cross-checked with the v2525 snapshot (tu/1412e8390.cpp); helper names are
 // invented. The TU ends with the template glue (delegates, CAtlArray / CAtlMap, MS2Ptr COMDATs).
+#ifdef __clang__
+// OnClickPreviewSlot passes the address of the temporary MS2Ptr<CItem> from ASEquipIcon::FUN_1409b9550 (an MSVC extension).
+#pragma clang diagnostic ignored "-Waddress-of-temporary"
+#endif
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimeratmarketdialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uimeratmarketdialog.h"
