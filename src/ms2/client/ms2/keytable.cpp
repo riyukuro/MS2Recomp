@@ -104,6 +104,7 @@ CStateService* FUN_140aa6d30();
 CStringTable* FUN_1401a9d70();
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);       // QueryIntAttribute
+int FUN_14086f500(Unk_140165cf0* pElem, const char* pszName, unsigned* pOut);  // QueryIntAttribute (unsigned out)
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);         // Attribute
 void FUN_14086f8d0(Unk_140165cf0* pElem, const char* pszName, const char* pszValue);   // SetAttribute
 void FUN_14086f920(Unk_140165cf0* pElem, const char* pszName, int nValue);     // SetAttribute (int)
@@ -430,7 +431,8 @@ void CKeyTable::FUN_141429600()
         MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
         if (spKey.get() != 0)
         {
-            packet.Encode4(m_keys.GetKeyAt(pos));
+            int nKey = m_keys.GetKeyAt(pos);
+            packet.Encode4(nKey);
             packet.Encode4(spKey->m_nType);
             packet.Encode8(spKey->m_nCode);
             packet.Encode4(spKey->m_nSlot);
@@ -456,9 +458,8 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
     Unk_140165cf0* pConfig = pRoot->FUN_140165cf0("KeyConfig");
     if (pConfig == 0)
     {
-        TiXmlElement* pNew = new TiXmlElement("KeyConfig");
-        pConfig = reinterpret_cast<Unk_140165cf0*>(pNew);
-        FUN_14086e090(pRoot, pNew);
+        pConfig = reinterpret_cast<Unk_140165cf0*>(new TiXmlElement("KeyConfig"));
+        FUN_14086e090(pRoot, reinterpret_cast<TiXmlElement*>(pConfig));
     }
     std::vector<Unk_140165cf0*> nodes;
     FUN_14028faa0(pConfig, "key", "keyCode", &nodes);
@@ -466,19 +467,20 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
     for (size_t i = 0; i < nodes.size(); i++)
     {
         Unk_140165cf0* pNode = nodes[i];
-        if (pNode != 0)
-        {
-            int nKeyCode = 0;
-            FUN_14086f500(pNode, "keyCode", &nKeyCode);
-            byKey[nKeyCode] = pNode;
-        }
+        if (pNode == 0)
+            continue;
+        unsigned nKeyCode = 0;
+        FUN_14086f500(pNode, "keyCode", &nKeyCode);
+        byKey[nKeyCode] = pNode;
     }
-    POSITION pos = m_keys.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_keys.GetHeadPosition(); pos != 0; m_keys.GetNext(pos))
     {
         int nKey = m_keys.GetKeyAt(pos);
         MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
-        if (!spKey.IsNull() && FUN_141431a90(nKey) == 0)
+        if (spKey.IsNull())
+            continue;
+        if (FUN_141431a90(nKey) != 0)
+            continue;
         {
             Unk_140165cf0* pNode = 0;
             std::map<int, Unk_140165cf0*>::iterator it = byKey.find(nKey);
@@ -486,14 +488,12 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
                 pNode = it->second;
             if (pNode == 0)
             {
-                TiXmlElement* pNew = new TiXmlElement("key");
-                Unk_140165cf0* pElem = reinterpret_cast<Unk_140165cf0*>(pNew);
-                pNode = pElem;
-                FUN_14086f8d0(pElem, "code", "");
-                FUN_14086f8d0(pElem, "type", "");
-                FUN_14086f920(pElem, "keyCode", nKey);
-                FUN_14086f8d0(pElem, "priority", "");
-                byKey[nKey] = pElem;
+                pNode = reinterpret_cast<Unk_140165cf0*>(new TiXmlElement("key"));
+                FUN_14086f8d0(pNode, "code", "");
+                FUN_14086f8d0(pNode, "type", "");
+                FUN_14086f920(pNode, "keyCode", nKey);
+                FUN_14086f8d0(pNode, "priority", "");
+                byKey[nKey] = pNode;
             }
             if (FUN_14086f4b0(pNode, "keyCode") != 0)
             {
@@ -506,7 +506,6 @@ int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
                 FUN_141432360((int)spKey->m_nCode);
             }
         }
-        m_keys.GetNext(pos);
     }
     m_bDirty = 1;
     FUN_141429600();
