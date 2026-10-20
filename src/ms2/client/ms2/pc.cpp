@@ -550,6 +550,9 @@ MS2Ptr<Unk_PCBaseComp_aa8> FUN_1418fbdb0(int nActorId);            // UIChatBall
 MS2Ptr<Unk_PCBaseComp_ab8> FUN_141a8fb50(int nActorId);            // UIPopupProfileImage
 MS2Ptr<Unk_PCBaseComp_ac8> FUN_140ba8cf0(int nActorId);
 MS2Ptr<Unk_PCLinkFD8> FUN_141993100(int nActorId);
+#ifdef __clang__
+CString FUN_140298360(const char* psz, const CString& str);             // psz + str (ATL operator+)
+#endif
 void FUN_141a60f00(int nActorId);                                   // the level changed (name tag)
 // The game options (FUN_1409a8b10).
 class Unk_PCOption
@@ -876,7 +879,7 @@ PC::~PC()
 void PC::vfunc_9(void* p)
 {
     PCBase::vfunc_9(p);
-    FUN_14098c6e0(p, 0xa0b6b179, m_bD40 ? false : true);
+    FUN_14098c6e0(p, 0xa0b6b179, !m_bD40 ? true : false);
 }
 
 // @0x141651370
@@ -1292,9 +1295,9 @@ int PC::vfunc_124(int a, int b)
 {
     __int64 nHp = FUN_141670a00(4);
     __int64 nMaxHp = FUN_141670a30(4);
-    if ((FUN_14166ce30() == 0 && (nMaxHp <= 0 || nHp != 0)) || a == 0xc || a == 0x18 || a == 0x3f)
-        return 1;
-    return 0;
+    if (!((FUN_14166ce30() == 0 && (nMaxHp <= 0 || nHp != 0)) || a == 0xc || a == 0x18 || a == 0x3f))
+        return 0;
+    return 1;
 }
 
 
@@ -1403,7 +1406,8 @@ int PC::vfunc_118(const NiPoint3& kPos, float* pDist, CString* pName)
     for (POSITION pos = m_unk_b88.GetHeadPosition(); pos; m_unk_b88.GetNext(pos))
     {
         CString strName = m_unk_b88.GetKeyAt(pos);
-        float fDist = (m_unk_b88.GetValueAt(pos)->GetWorldTranslate() - kPos).Length();
+        NiAVObject* pNode = m_unk_b88.GetValueAt(pos);
+        float fDist = (pNode->GetWorldTranslate() - kPos).Length();
         if (fDist < *pDist)
         {
             *pDist = fDist;
@@ -1547,6 +1551,7 @@ void PC::FUN_141656710()
 {
     FUN_141653f00();
     m_unk_748.FUN_140971150();
+    FUN_141a60f00(m_unk_70);
 }
 
 // @0x141656750
@@ -1560,14 +1565,17 @@ int PC::FUN_1416569b0(CItem* pItem)
 {
     if (pItem->FUN_140527840()->FUN_14053d460())
         return 5;
-    if (pItem->FUN_140527840()->FUN_14053d510())
+    else
     {
-        if (pItem->FUN_140526c30() != 0)
-            return pItem->FUN_140526c30();
+        if (pItem->FUN_140527840()->FUN_14053d510())
+        {
+            if (pItem->FUN_140526c30() != 0)
+                return pItem->FUN_140526c30();
+        }
+        else if (pItem->FUN_140527840()->FUN_14053d2b0())
+            return 8;
+        return pItem->FUN_140527a20();
     }
-    else if (pItem->FUN_140527840()->FUN_14053d2b0())
-        return 8;
-    return pItem->FUN_140527a20();
 }
 
 // @0x141656a50
@@ -1596,8 +1604,11 @@ void PC::vfunc_74(__int64 nCur, __int64 nMax)
 }
 
 // @0x141656ba0
-// MS2-FUNCTIONAL: the exe assigns through a CStringW temporary (two calls); a plain operator= is one
-void PC::vfunc_129(const CStringW& str) { m_strNameDC8 = str; }
+void PC::vfunc_129(const CStringW& str)
+{
+    m_strNameDC8 = str;
+    FUN_141a60f00(m_unk_70);
+}
 
 // @0x141656be0
 CStringW& PC::FUN_141656be0() { return m_strNameDC8; }
@@ -2551,7 +2562,6 @@ bool PC::FUN_1416642a0() { return m_b1224; }
 void PC::FUN_1416642c0(bool b) { m_b1224 = b; }
 
 // @0x141657c80
-// MS2-FUNCTIONAL: the exe frame is 0x10 bytes larger (another loop temporary); same calls
 void PC::FUN_141657c80(bool bEnable)
 {
     if (m_nD80 != bEnable)
@@ -2563,7 +2573,8 @@ void PC::FUN_141657c80(bool bEnable)
         for (size_t i = 0; i < kEffects.GetCount(); i++)
         {
             CEquipModel* pEffect = kEffects[i];
-            FUN_141201d50(pEffect, kNodes[i]);
+            CString& strNode = kNodes[i];
+            FUN_141201d50(pEffect, strNode);
         }
     }
 }
@@ -3622,7 +3633,6 @@ void PC::FUN_141660c20(const CAtlArray<MS2Ptr<CItem> >& aItems, bool bQuick)
     }
 }
 
-// MS2-FUNCTIONAL: structure aligned, the exe destroys the locals per branch
 // @0x1416611b0
 void PC::FUN_1416611b0(CString strKey)
 {
@@ -3632,8 +3642,9 @@ void PC::FUN_1416611b0(CString strKey)
     if (aParts.GetCount() < 4)
         return;
     __int64 nCharId = _atoi64(aParts[3]);
-    if (nCharId == FUN_141656a80())
-        m_str1028 = strKey;
+    if (nCharId != FUN_141656a80())
+        return;
+    m_str1028 = strKey;
 }
 
 // MS2-FUNCTIONAL: structure aligned, return-copy placement differs
@@ -3656,21 +3667,20 @@ CString PC::FUN_14165e010(int nAction)
     return FUN_141425540(FUN_141658e60(), nAction);
 }
 
-// MS2-FUNCTIONAL: structure aligned, codegen differs slightly
 // @0x141660ee0
 void PC::FUN_141660ee0()
 {
-    if (m_bD40 && m_kEquipDE0.FUN_1411e09a0())
-    {
-        m_bD40 = false;
-        if (m_unk_b0 == 0)
-            vfunc_23(0);
-        vfunc_144();
-        FUN_1409f7c90()->FUN_14161cf60(this);
-    }
+    if (!m_bD40)
+        return;
+    if (!m_kEquipDE0.FUN_1411e09a0())
+        return;
+    m_bD40 = false;
+    if (m_unk_b0 == 0)
+        vfunc_23(0);
+    vfunc_144();
+    FUN_1409f7c90()->FUN_14161cf60(this);
 }
 
-// MS2-FUNCTIONAL: structure aligned, the exe keeps the elapsed time in a separate temporary
 // @0x1416616a0
 void PC::FUN_1416616a0(unsigned int nDelay)
 {
@@ -3680,7 +3690,7 @@ void PC::FUN_1416616a0(unsigned int nDelay)
     float fSpeed = 5.0f;
     if (nDelay > 0 && nDelay < nNow - m_n1064)
         fSpeed = (nNow - m_n1064 - nDelay) / 1000.0f + 5.0f;
-    m_n1068 = (unsigned int)(m_n1068 + nElapsed * fSpeed);
+    m_n1068 += nElapsed * fSpeed;
     if (m_n1068 > 1000)
     {
         m_b1070 = !m_b1070;
@@ -4135,8 +4145,14 @@ void PC::FUN_14165cac0()
                 if (spData.get())
                 {
                     kRot = spData->m_ptRotation;
+#ifdef __clang__
+                    // clang emits an unavailable MFC CopyChars import for operator+; bind the exe's copy.
+                    CString strUrn = FUN_140298360("urn:gamebryo-animation:",
+                        FUN_141b6ed00(bBusy != 0 ? spData->m_attrB.m_strKfm : spData->m_attrA.m_strKfm));
+#else
                     CString strUrn = "urn:gamebryo-animation:"
                         + FUN_141b6ed00(bBusy != 0 ? spData->m_attrB.m_strKfm : spData->m_attrA.m_strKfm);
+#endif
                     efd::AssetID kUrn;
                     kUrn.SetURN(efd::utf8string((const char*)FUN_1409a2360(strUrn, 0)));
                     kAsset = kUrn.GetURN();
