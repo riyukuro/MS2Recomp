@@ -152,6 +152,7 @@ public:
     __int64 FUN_140d5a1b0();
     __int64 FUN_140d5a1d0();
     void FUN_140d5a200(const int& nUIClassID);
+    Unk_MeratProductArray& GetBlueprintList() { return m_150; }     // 0x140bc09d0 (inline COMDAT; uiblueprintmarketdialog.cpp)
     void FUN_140d5a290();
     bool FUN_140d5a2e0();
     CStringW FUN_140d5a330(int nError, MS2Ptr<CPendingBuyBase> spBuy);

@@ -63,6 +63,8 @@ public:
         {
             return (p.first->*p.second)(a1, a2, a3);
         }
+        // A free function (uiblueprintmarketdialog.cpp: FUN_140ebe990, Call 0x140bc12a0).
+        static bool Call(Sig& pfn, Scaleform::GFx::Value* a1, ASData& a2, MS2Ptr<TMarketBillDataParam> a3) { return pfn(a1, a2, a3); }
 
         F m_f;
     };
@@ -73,6 +75,7 @@ public:
         : m_pImpl(new DelegateImpl<std::pair<C*, bool (C::*)(Scaleform::GFx::Value*, ASData&, MS2Ptr<TMarketBillDataParam>)> >(std::make_pair(obj, f)))
     {
     }
+    explicit Delegate(Sig f) : m_pImpl(new DelegateImpl<Sig>(f)) {}     // a free function (uiblueprintmarketdialog.cpp 0x140bbef00)
     Delegate(const Delegate& o);
     ~Delegate();
     Delegate& operator=(const Delegate& o);

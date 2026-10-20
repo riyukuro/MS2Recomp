@@ -9,7 +9,7 @@ class TMeratMarketBillDataParam : public TMarketBillDataParam
 {
 public:
     TMeratMarketBillDataParam();                                    // 0x140bbfa10
-    virtual ~TMeratMarketBillDataParam();                           //  0 0x140bbff60
+    // ~TMeratMarketBillDataParam (slot 0, 0x140bbff60) is the implicit one: the exe copy does not reset the vfptr.
 
     void SetSourceKind(int nKind);                                  // 0x140bc0b10 m_nSourceKind = nKind
     bool FUN_140eacf70() const { return m_bGift; }                  // 0x140eacf70 (inline COMDAT, uimarketbilldialog.cpp)

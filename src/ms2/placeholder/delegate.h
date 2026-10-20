@@ -191,6 +191,7 @@ public:
         {
             return (p.first->*p.second)(a1, a2, a3);
         }
+        static R Call(R (*&pfn)(A1, A2, A3), A1 a1, A2 a2, A3 a3) { return pfn(a1, a2, a3); }   // a free function
 
         F m_f;
     };
@@ -199,6 +200,10 @@ public:
     template <class C>
     Delegate(C* const& obj, R (C::*const& f)(A1, A2, A3))
         : m_pImpl(new DelegateImpl<std::pair<C*, R (C::*)(A1, A2, A3)> >(std::make_pair(obj, f)))
+    {
+    }
+    explicit Delegate(R (*f)(A1, A2, A3))
+        : m_pImpl(new DelegateImpl<R (*)(A1, A2, A3)>(f))
     {
     }
     Delegate(const Delegate& o);
@@ -250,6 +255,8 @@ public:
         {
             return (p.first->*p.second)(a1, a2, a3, a4);
         }
+        // A free function (uiblueprintmarketdialog.cpp: the bill's gift callback FUN_140ebef60, Call 0x140bc1380).
+        static R Call(R (*&pfn)(A1, A2, A3, A4), A1 a1, A2 a2, A3 a3, A4 a4) { return pfn(a1, a2, a3, a4); }
 
         F m_f;
     };
@@ -258,6 +265,11 @@ public:
     template <class C>
     Delegate(C* const& obj, R (C::*const& f)(A1, A2, A3, A4))
         : m_pImpl(new DelegateImpl<std::pair<C*, R (C::*)(A1, A2, A3, A4)> >(std::make_pair(obj, f)))
+    {
+    }
+    // A free function (uiblueprintmarketdialog.cpp 0x140bbf040).
+    explicit Delegate(R (*f)(A1, A2, A3, A4))
+        : m_pImpl(new DelegateImpl<R (*)(A1, A2, A3, A4)>(f))
     {
     }
     Delegate(const Delegate& o);

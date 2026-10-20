@@ -137,6 +137,7 @@ public:
     template <class T> MS2Ptr<T> FUN_140be23c0(const CString& strName);                      // child control by name (tab bar; uidailymissiondialog.cpp)
     template <class T> MS2Ptr<T> FUN_140bc7280(const CString& strName);                      // child control by name (list; uidailymissiondialog.cpp)
     template <class T> MS2Ptr<T> FUN_140fe4370(const CString& strName);                      // child control by name (tab button group; uimeratmarketdialog.cpp)
+    template <class T> MS2Ptr<T> FUN_140fafed0(const CString& strName);                      // child control by name (slider; uigroupmessenger.cpp, gameoptionstruct.cpp)
     AScript(const AScript& o);                                                               // 0x1409bb7b0 (inline COMDAT)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1);                         // 0x140acd130 (inline COMDAT, tabcontentspetevolution.cpp)
     // 0x141917bf0 (inline COMDAT, defined in uidamagetext.cpp; all by value: the callee destroys them)
@@ -280,6 +281,9 @@ public:
     MS2Ptr<class ASDropdownMenu> FUN_140bbe700(const CString& strName);                       // 0x140bbe700 bind a dropdown child (uiguilddialog "m_sortDropdown")
 
     Scaleform::GFx::Value FUN_1413125d0(const char* szMethod, const ASArray& a1, int a2, bool a3, Scaleform::GFx::Value a4);   // 0x1413125d0 (inline COMDAT, defined in uimeratmarketdialog.cpp: "buildItemList"; a4 by value)
+
+    Scaleform::GFx::Value FUN_140bbeb40(const char* szMethod, const ASArray& a1, int a2, bool a3, Scaleform::GFx::Value a4);   // 0x140bbeb40 (inline COMDAT of uiblueprintmarketdialog.cpp: "buildItemList"; a4 by value)
+    Scaleform::GFx::Value FUN_140bbec80(const char* szMethod, class ASDataProvider a1, int a2, bool a3);   // 0x140bbec80 (inline COMDAT of uiblueprintmarketdialog.cpp: "buildItemList" of the refused search; a1 by value)
 
     Scaleform::GFx::Value FUN_1413124f0(const char* szMethod, const ASArray& a1, int a2, bool a3);   // 0x1413124f0 (inline COMDAT, uimeratmarketdialog.cpp: "buildItemList" without the info object)
 
