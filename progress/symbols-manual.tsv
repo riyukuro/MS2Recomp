@@ -4184,3 +4184,5 @@ luaopen_Entity	1422416d0	func
 ??$_Copy_nodes@U_Copy_tag@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@VPoint3@2@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@VPoint3@2@@std@@@2@$0A@@std@@@std@@@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@VPoint3@2@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@VPoint3@2@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBVutf8string@efd@@VPoint3@2@@std@@PEAX@1@PEAU21@0U_Copy_tag@01@@Z	14219a090	func
 ?HasMixin@BehaviorAPI@@YA?AW4EntityCheck@1@VEntityID@egf@@AEBVutf8string@efd@@@Z	1428d1670	func
 ??1?$list@PEAVIRenderServiceDelegate@ecr@@V?$CustomAllocator@PEAVIRenderServiceDelegate@ecr@@@efd@@@std@@QEAA@XZ	142019610	func
+?Get@CPCEffectDummy@@QEAA_NHIAEAVCEffectDummy@@@Z	1416845c0	func
+?OnDamage@CDPSMeterSystem@@QEAAXV?$MS2Ptr@VCDamageRecord@@@@@Z	14117d750	func
