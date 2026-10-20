@@ -25,7 +25,7 @@
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCustomize@@@@AEBAXPEAX@Z 0x140f0b830
 // MS2-PIN: ?Release@?$MS2Ptr@VTData@UIBillDialog@@@@AEAAXXZ 0x140f0b930
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VTData@UIBillDialog@@@@AEAAXPEAX@Z 0x140f0b9b0
-// MS2-PIN: ??A?$vector@V?$MS2Ptr@VCItem@@@@V?$allocator@V?$MS2Ptr@VCItem@@@@@std@@@std@@QEAAAEAV?$MS2Ptr@VCItem@@@@_K@Z 0x140f0ba50
+// MS2-PIN: ?at@?$vector@V?$MS2Ptr@VCItem@@@@V?$allocator@V?$MS2Ptr@VCItem@@@@@std@@@std@@QEAAAEAV?$MS2Ptr@VCItem@@@@_K@Z 0x140f0ba50
 // MS2-PIN: ??$format_arg@_WW4Unk_BSResult@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_BSResult@@@Z 0x140f0aab0
 // MS2-PIN: ?reserve@?$vector@V?$MS2Ptr@VCItem@@@@V?$allocator@V?$MS2Ptr@VCItem@@@@@std@@@std@@QEAAX_K@Z 0x140f0be30
 // MS2-PIN: ?_Reallocate_exactly@?$vector@V?$MS2Ptr@VCItem@@@@V?$allocator@V?$MS2Ptr@VCItem@@@@@std@@@std@@AEAAX_K@Z 0x140f0b890
@@ -1561,7 +1561,7 @@ void UIBeautyShopStyleDialog::FUN_140f07e20()
         {
             if (i < nCount)
             {
-                MS2Ptr<CItem> spItem(m_298[i]);
+                MS2Ptr<CItem> spItem(m_298.at(i));
                 if (spItem.get())
                 {
                     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
@@ -1802,7 +1802,7 @@ MS2Ptr<CItem> UIBeautyShopStyleDialog::FUN_140f09020(int nIndex)
 {
     if (nIndex < 0 || nIndex >= (int)m_298.size())
         return MS2Ptr<CItem>(0);
-    return MS2Ptr<CItem>(m_298[nIndex]);
+    return MS2Ptr<CItem>(m_298.at(nIndex));
 }
 
 // @0x140f090d0
@@ -1813,7 +1813,7 @@ MS2Ptr<CItem> UIBeautyShopStyleDialog::FUN_140f090d0(int nSlot)
     {
         for (int i = 0; i < (int)m_298.size(); i++)
         {
-            MS2Ptr<CItem> spItem(m_298[i]);
+            MS2Ptr<CItem> spItem(m_298.at(i));
             if (!(spItem == 0) && spItem->FUN_140526b50() == nSlot)
                 return std::move(spItem);
         }
@@ -2032,8 +2032,8 @@ template <> bool Unk_14102fe10<Unk_140bfc2e0>::operator==(Unk_140bfc2e0* p) cons
     return m_p == p;
 }
 
-// The vector subscript is out of line in the exe (0x140f0ba50).
-template MS2Ptr<CItem>& std::vector<MS2Ptr<CItem> >::operator[](size_t);
+// The range-checked vector::at is out of line in the exe (0x140f0ba50).
+template MS2Ptr<CItem>& std::vector<MS2Ptr<CItem> >::at(size_t);
 
 MS2_EMIT_CRT_MEMMOVE_S();  // memmove_s 0x140f02f70
 
