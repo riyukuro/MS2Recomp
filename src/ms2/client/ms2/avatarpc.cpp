@@ -2004,3 +2004,5 @@ Unk_RideeRow* Unk_RideePtr::get() const
 
 // @0x1409f7f00
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9eae0-0x142c9ec70 .text$yd

@@ -2614,3 +2614,5 @@ efd::UniversalID* FUN_1418debf0(efd::UniversalID* pThis, unsigned __int64 nValue
     *(unsigned __int64*)pThis = nValue;
     return pThis;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbd080-0x142cbd220 .text$yd

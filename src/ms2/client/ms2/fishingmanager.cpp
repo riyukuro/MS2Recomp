@@ -1589,3 +1589,5 @@ MS2_REPLACE_METHOD(0x140CDFD70, CFish, FUN_140cdfd70, 78, 0x96CC443B);
 
 // @0x140ce26d0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(2);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca4300-0x142ca4450 .text$yd
