@@ -244,6 +244,7 @@ class Unk_MeratKeyState { public: bool FUN_14116d9c0(int nKey, int a, int b); bo
 Unk_MeratKeyState* FUN_14025e7c0();
 BlindManager* FUN_1409c1730();                                           // the BlindManager singleton
 void FUN_140d2ce40(MS2Ptr<CMeratMarketProduct> spProduct);               // shift-click: link the product into chat
+void FUN_140ec1340(ASData& data);                                        // report a product (uimeratmarketcommon.cpp)
 struct Unk_MeratFlagSet { int FUN_1402c4c90(int nFlag); };
 struct Unk_MeratConfig { void* m_0; Unk_MeratFlagSet m_flags; };
 Unk_MeratConfig* FUN_14025e7b0();
@@ -354,6 +355,7 @@ public:
     void FUN_140d584c0(int nId);                                            // remove from the basket
     bool FUN_140d5b4c0(MS2Ptr<CMeratMarketProduct> spProduct, bool bLimited);   // the product is on sale
     void FUN_140d544a0();                                                   // request the sale history
+    int FUN_140d56e40();                                                    // the bookmark count
     void FUN_140d54500();                                                   // request the sale restrictions
     CStringW FUN_140d599d0();                                               // the market notice
     MS2Ptr<CMeratMarketProduct> FUN_140d57150(Unk_MeratProductKey key, __int64 nSellerId);   // the product of a key in a seller list
@@ -810,6 +812,223 @@ int UIMeratMarketDialog::vfunc_13()
             return 1;
         }
         return 0;
+    }
+    return 0;
+}
+
+// @0x1412ea0e0
+int UIMeratMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    if ((bool)m_spAvatar.get() && m_spAvatar->vfunc_27(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    if (_stricmp("OnChangeTab", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnChangeTab(args);
+        return 1;
+    }
+    else if (_stricmp("OnChangeModel", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnChangeModel(args);
+        return 1;
+    }
+    else if (_stricmp("onCheckPreviewColoring", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnCheckPreviewColoring(args);
+        return 1;
+    }
+    else if (_stricmp("onClickShowMyEquip", szMethod) == 0) {
+        OnClickShowMyEquip();
+        return 1;
+    }
+    else if (_stricmp("onClickUnequipAll", szMethod) == 0) {
+        OnClickUnequipAll();
+        return 1;
+    }
+    else if (_stricmp("onChangeHomeCategory", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
+            int nCategory = args.FUN_1422b8a10();
+            Scaleform::GFx::Value value = args.FUN_1422b9260();
+            SelectCategory(ShopKindOf(m_250), nCategory);
+            ASObj obj(value, 2);
+            if (!obj.FUN_1422ba9a0()) {
+                CStringA strFrame(nCategory == 0xb ? "new" : "hot");
+                obj.FUN_1407cba60("frame", strFrame);
+            }
+        }
+        return 1;
+    }
+    else if (_stricmp("OnChangeCategory", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnChangeList(args, 0);
+        return 1;
+    }
+    else if (_stricmp("OnChangeCategoryOnly", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            m_254 = args.FUN_1422b8a10();
+        return 1;
+    }
+    else if (_stricmp("OnChangeList", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnChangeList(args, 0);
+        return 1;
+    }
+    else if (_stricmp("OnChangePage", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnChangePage(args);
+        return 1;
+    }
+    else if (_stricmp("onClickBuyMerat", szMethod) == 0) {
+        OnClickBuyMerat();
+        return 1;
+    }
+    else if (_stricmp("OnClickBuy", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
+            CStringA strMethod(szMethod);
+            OnClickBuy(strMethod, args);
+        }
+        return 1;
+    }
+    else if (_stricmp("OnClickRandomSalePick", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
+            CStringA strMethod(szMethod);
+            OnClickRandomSalePick(strMethod, args);
+        }
+        return 1;
+    }
+    else if (_stricmp("OnClickBuyEquipAll", szMethod) == 0) {
+        {
+            CStringA strMethod(szMethod);
+            OnClickBuyEquipAll(strMethod);
+        }
+        return 1;
+    }
+    else if (_stricmp("OnUnEquip", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnUnEquip(args);
+        return 1;
+    }
+    else if (_stricmp("OnClickReport", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            FUN_140ec1340(args);
+        return 1;
+    }
+    else if (_stricmp("OnChangePageRequest", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnChangePageRequest(args);
+        return 1;
+    }
+    else if (_stricmp("OnClickRefresh", szMethod) == 0) {
+        if (IsCurrentShopTab()) {
+            SelectCategory(ShopKindOf(m_250), 10);
+        }
+        else {
+            ASData args;
+            if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+                OnChangeList(args, 1);
+        }
+        return 1;
+    }
+    else if (_stricmp("onClickBookMark", szMethod) == 0) {
+        if (FUN_140939a00()->FUN_140d56e40() >= 0x10) {
+            FUN_140d73aa0(FUN_1408116a0(0xa1e, 0x10), 0, 0, CStringW(L""));
+        }
+        else {
+            ASData args;
+            if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+                OnClickBookMark(args);
+        }
+        return 1;
+    }
+    else if (_stricmp("onClickRecipe", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnClickRecipe(args);
+        return 1;
+    }
+    else if (_stricmp("onClickPreview", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnClickPreview(args);
+        return 1;
+    }
+    else if (_stricmp("OnClickSearchAll", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnClickSearchAll(args);
+        return 1;
+    }
+    else if (_stricmp("OnClickBasket", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnClickBasket(args);
+        return 1;
+    }
+    else if (_stricmp("OnSelectItem", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnSelectItem(args);
+        return 1;
+    }
+    else if (_stricmp("OnGetSearchAttrVisible", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnGetSearchAttrVisible(args);
+        return 1;
+    }
+    else if (_stricmp("onClickBanner", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnClickBanner(args);
+        return 1;
+    }
+    else if (_stricmp("onSearchItemLink", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnSearchItemLink(args);
+        return 1;
+    }
+    else if (_stricmp("onClickRefreshBlueMerat", szMethod) == 0) {
+        OnClickRefreshBlueMerat();
+        return 1;
+    }
+    else if (_stricmp("onClickRefreshRedMerat", szMethod) == 0) {
+        OnClickRefreshRedMerat();
+        return 1;
+    }
+    else if (_stricmp("onClickStarShop", szMethod) == 0) {
+        OnClickStarShop();
+        return 1;
+    }
+    else if (_stricmp("onClickExtraButton", szMethod) == 0) {
+        ASData args;
+        if (args.FUN_1422b9620(pArgs, nArgs) != 0)
+            OnClickExtraButton(args);
+        return 1;
+    }
+    switch (m_250) {
+    case 4:
+        return OnCommandMyShop(szMethod, pArgs, nArgs);
+    case 6:
+        return OnCommandBasket(szMethod, pArgs, nArgs);
+    case 5:
+        return OnCommandBookmark(szMethod, pArgs, nArgs);
+    case 7:
+        return OnCommandLimited(szMethod, pArgs, nArgs);
     }
     return 0;
 }
