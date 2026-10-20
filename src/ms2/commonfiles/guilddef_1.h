@@ -406,6 +406,8 @@ public:
     ATL::CAtlArray<Unk_PayloadPtr<CGuildGrade> > fa0; int fc0,fc4; __int64 fc8,fd0; CStringW fd8; Unk_GuildSeason season;   // MS2: fa0 holds the grades (CAtlArray<Unk_PayloadPtr<CGuildGrade>> RemoveAll 0x1404f86e0 / SetCount 0x1404f9b50 / SetAt 0x1404f9730)
     int f130,f134,f138,f13c,f140,f144,f148,f14c,f150,f154,f158,f15c,f160,f164,f168,f16c;
     Unk_GuildBlob<0x48> f170; CGuildStorage storage; Unk_GuildBlob<0x48> f238,f280,f2c8; Unk_GuildRef f310; Unk_GuildBlob<0x30> f320;
+    // @0x14197dff0
+    CGuildStorage* FUN_14197dff0() { return &storage; }   // the storage (inline; uiguilddialog.cpp)
     int f350; unsigned char f354; int f358; Unk_GuildRef f360;   // f360: MS2Ptr<CGuildNpcShopMgr> (new 0x28, ctor 0x1404ee230)
     MS2_LAYOUT_FRIEND;
 };

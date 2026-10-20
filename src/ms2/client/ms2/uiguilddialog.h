@@ -89,6 +89,7 @@ public:
     void FUN_141971490();                                       // the house page
     void FUN_141971ac0();
     void FUN_141972520();                                       // the storage page
+    void FUN_1419729d0();                                       // the storage history (last 7 days)
     void FUN_141972fc0();                                       // the raid score
     void FUN_141973220();                                       // the raid history
     void FUN_141973610();                                       // the championship info
@@ -98,6 +99,7 @@ public:
     void FUN_141973fd0(int nGrade);                             // grade renamed: refresh its members
     void FUN_141974120(const CString& strCode);                 // set the mark from a code
     void FUN_141974190(const CStringW& strName);                // "setGuildName"
+    void FUN_141974240();                                       // the pvp history page
     MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);
     void FUN_141974640();                                       // the pvp season history
     void FUN_141974930();                                       // confirm the championship guild

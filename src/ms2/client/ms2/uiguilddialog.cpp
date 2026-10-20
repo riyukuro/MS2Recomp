@@ -67,6 +67,9 @@
 #include "ms2/placeholder/uistatuseventdispatcher.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include <vector>
+#include <deque>
+#include "ms2/placeholder/mstime.h"
+#include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/client/ms2/iteminfoslot.h"
 #include "ms2/placeholder/asslot.h"
 #include "ms2/placeholder/citem.h"
@@ -209,6 +212,18 @@ MS2Ptr<AScript> FUN_1409e7dc0(int nLayer, const Scaleform::GFx::Value& v);   // 
 void FUN_140ebaf70(Scaleform::GFx::Value& arr, unsigned nIndex, Scaleform::GFx::Value& out);   // an array element
 int FUN_1409c1750(const Scaleform::GFx::Value& v);              // the value as an int
 void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, unsigned __int64 n);   // the blocked-action notice
+// The guild storage items (CGuildStorage::f18, opaque in guilddef_1.h): std::map<(item id, rank), ItemEntity> (see
+// CGuildStorage::FUN_1404cc210, which builds the key from vfunc_o18_0 / vfunc_o18_1).
+typedef std::map<std::pair<int, int>, ItemEntity> Unk_GdStorageItems;
+void FUN_14141f860(const CString& strName, int nSlots, ATL::CAtlArray<MS2Ptr<CItem> >* pItems, MS2Ptr<ItemSlotBag::CreateParam> spParam);   // register an item slot bag
+MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);          // ItemSlotBag: the item at an index of a CAtlArray<MS2Ptr<CItem>>
+// The guild storage history (CGuildStorage::f38, opaque in guilddef_1.h; guildmanager.cpp clears it as this deque).
+typedef std::deque<Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory> > Unk_GdStorageHistory;
+__int64 FUN_14086be90(int nDays);                               // days -> seconds
+CStringW FUN_1409e8ca0(CStringW strKey, const int& n1, const int& n2, const int& n3, const int& n4, const int& n5);   // string table format
+class Unk_GdTextArea : public ASTextInput { public: void FUN_1422e0bd0(const CStringW& strHtml); };   // a text area: set the html text
+CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);   // string table text, formatted
+FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 
 // ---- the dialog ----
 
@@ -2584,6 +2599,89 @@ void UIGuildDialog::FUN_141975c80()
         }
     }
     m_skillPage2->FUN_140bd2cb0("updateSkillInfo", arrSkill);
+}
+
+// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
+// @0x141972520
+void UIGuildDialog::FUN_141972520()
+{
+    if (FUN_140acd940(&m_storagePage, 0))
+        return;
+    // CGuildStorage keeps the item map opaque (Unk_GuildMapA); view it as the map it is.
+    Unk_GdStorageItems& items = reinterpret_cast<Unk_GdStorageItems&>(CGuildManager::GetInstance()->FUN_14197dff0()->f18);
+    Unk_GdStorageItems::iterator it = items.begin();
+    Unk_GdStorageItems::iterator itEnd = items.end();
+    ATL::CAtlArray<MS2Ptr<CItem> > arrItems;
+    while (it != itEnd)
+    {
+        ItemEntity& entity = it->second;
+        MS2Ptr<CItem> spItem(new CItem());
+        if (spItem->FUN_14052b130(entity.vfunc_o18_0(), entity.vfunc_o18_1(), 0) != 0)
+        {
+            spItem->FUN_14052b340(entity.vfunc_o18_2());
+            arrItems.Add(spItem);
+        }
+        ++it;
+    }
+    FUN_14141f970(m_strStorageName);
+    MS2Ptr<ItemSlotBag::CreateParam> spParam(new ItemSlotBag::CreateParam());
+    spParam->m_pfnGetItem = FUN_141420330;
+    spParam->m_nIconType = 0xc15;
+    spParam->m_nFlags = 0x800;
+    // The slot callback is a Delegate<void(ItemInfoSlot&, ASSlot&)> handle at +0x28 (iteminfoslot.h types it as a
+    // pointer to the pointer-signature delegate; unit_140f6c680.cpp does the same).
+    reinterpret_cast<Delegate<void(ItemInfoSlot&, ASSlot&)>&>(spParam->m_pfnSlot) =
+        Delegate<void(ItemInfoSlot&, ASSlot&)>(this, &UIGuildDialog::FUN_141976420);
+    FUN_14141f860(m_strStorageName, (int)arrItems.GetCount(), &arrItems, spParam);
+    ASObj obj(2);
+    obj.FUN_1407cba60("bagId", CString(m_strStorageName));
+    m_storagePage->Invoke("initItemData", Scaleform::GFx::Value(obj.FUN_1422bb870()));
+}
+
+// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
+// @0x1419729d0
+void UIGuildDialog::FUN_1419729d0()
+{
+    if (FUN_140acd940(&m_storagePage, 0))
+        return;
+    // CGuildStorage keeps the history deque opaque (Unk_GuildMapC); view it as the deque it is.
+    Unk_GdStorageHistory& history = reinterpret_cast<Unk_GdStorageHistory&>(CGuildManager::GetInstance()->FUN_14197dff0()->f38);
+    __int64 nSince = FUN_140869440() - FUN_14086be90(7);
+    Unk_GdStorageHistory::reverse_iterator it = history.rbegin();
+    Unk_GdStorageHistory::reverse_iterator itEnd = history.rend();
+    CStringW strHistory;
+    for (; it != itEnd; ++it)
+    {
+        const Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory>& spEntry = *it;
+        if (spEntry->f78 < nSince)
+            continue;
+        CMsTime time(spEntry->f78);
+        int nMinute = time.GetMinute();
+        int nHour = time.GetHour();
+        int nDay = time.GetDay();
+        int nMonth = time.GetMonth();
+        int nYear = time.GetYear();
+        CStringW strDate = FUN_1409e8ca0(L"s_common_date_month_min", nYear, nMonth, nDay, nHour, nMinute);
+        ItemEntity* pItem = &spEntry->item;
+        int nItemId = pItem->vfunc_o18_0();
+        CStringW strName = CStringTable::GetInstance()->FUN_141811980(1, nItemId);
+        int nRank = pItem->vfunc_o18_1();
+        CStringW strItem = FUN_140656190(L"<FONT color='{0}'>{1}</FONT>", CItemDataTable::GetInstance()->GetTextColorString((ItemGradeKey)nRank), strName);
+        int nCount = pItem->vfunc_o18_2();
+        // f18 / f30: the giver's and the receiver's records; their text member is the CStringW name.
+        CStringW strLine = FUN_14028dfa0(CStringW(L"s_guild_storage_history_gift"), reinterpret_cast<const CStringW&>(spEntry->f18.text), strItem, nCount,
+            reinterpret_cast<const CStringW&>(spEntry->f30.text), strDate);
+        if (strHistory.GetLength() > 0)
+            strHistory += L"\n";
+        strHistory += strLine;
+    }
+    MS2Ptr<ASMovieClip> spHistory = m_storagePage->FUN_1409b4560("m_history");
+    if (spHistory.get() == 0)
+        return;
+    MS2Ptr<Unk_GdTextArea> spText = spHistory->FUN_140c26ea0<Unk_GdTextArea>("m_textArea");
+    if (spText.get() == 0)
+        return;
+    spText->FUN_1422e0bd0(strHistory);
 }
 
 // @0x141972fc0
