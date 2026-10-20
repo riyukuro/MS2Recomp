@@ -426,7 +426,7 @@ void MS2SceneGraphService::AddToUpdate(SceneGraphData* pData)
     {
         int iBucket = pData->m_ms2UpdateBucket;
         NiAVObject* pkSceneGraph = pData->GetSceneGraph();
-        std::set<NiAVObject*>::iterator it = m_alwaysUpdated.find(pkSceneGraph);
+        std::set<NiAVObject*, LessAV>::iterator it = m_alwaysUpdated.find(pkSceneGraph);
         if (it != m_alwaysUpdated.end())
         {
             pData->m_ms2UpdateBucket = 1;
@@ -931,3 +931,5 @@ void MS2SceneGraphService::FUN_1414f3700()
     }
 }
 MS2_REPLACE_METHOD(0x1414F3700, MS2SceneGraphService, FUN_1414f3700, 292, 0xF2EAAB3D);
+// MS2-PIN: ??_GClearCachedShaderFunctor@@UEAAPEAXI@Z 0x1414fc560 ; scalar deleting dtor (no symbols.tsv row)
+// MS2-PIN: ??_GNiTexturePalette@@UEAAPEAXI@Z 0x1414fc6c0 ; NiTexturePalette scalar deleting dtor COMDAT copy kept by this TU
