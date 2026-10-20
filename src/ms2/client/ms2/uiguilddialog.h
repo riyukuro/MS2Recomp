@@ -150,7 +150,7 @@ private:
     bool m_bMarksPending;                                       // +0x1e0
     CLockCriticalSection m_lock;                                // +0x1e8
     CString m_strMarkRequestIds;                                // +0x218 guild ids of the mark web request
-    std::map<unsigned __int64, CString> m_marks;                // +0x220 guild id -> mark image (v2525: pair forwarding ctor 0x141978e60)
+    std::set<std::pair<unsigned __int64, CString> > m_marks;    // +0x220 (guild id, mark image) pairs: std::less<pair> 0x14197dce0, pair < 0x141979620
     bool m_bLoading;                                            // +0x230
     int m_nSearchPage;                                          // +0x234
     int m_nAcceptPage;                                          // +0x238

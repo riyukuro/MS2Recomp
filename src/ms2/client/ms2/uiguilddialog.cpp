@@ -4,8 +4,9 @@
 // MS2-RANGE: 0x141960ce0-0x141980ed0 .text$mn
 // MS2-RANGE: 0x142cbe5b0-0x142cbe640 .text$yd
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@W4Unk_GuildNpcKind@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@W4Unk_GuildNpcKind@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141978db0 ; unique
-// MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_J@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_J@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_J@std@@@std@@@1@$$QEA_N@Z 0x141978e10 ; prop
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1401141b0 ; probe
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x1401142a0 ; probe
+// MS2-PIN: ??__Es_strTooltipAlign@@YAXXZ 0x1401142d0 ; probe
 // MS2-PIN: ??$?0AEAHAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@$0A@@?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@QEAA@AEAHAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z 0x141978f50 ; unique
 // MS2-PIN: ??$?0VUIGuildDialog@@@?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAA@AEBQEAVUIGuildDialog@@AEBQ81@EAAXAEAVItemInfoSlot@@AEAVASSlot@@@Z@Z 0x141979100 ; unique
 // MS2-PIN: ??$?8PEAVUIGuildDialog@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x141979380 ; prop
@@ -13,18 +14,11 @@
 // MS2-PIN: ??$?8PEAVUIGuildDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIGuildDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x141979460 ; prop
 // MS2-PIN: ??$?8PEAVUIGuildDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIGuildDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x1419794d0 ; prop
 // MS2-PIN: ??$FUN_14028dfa0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@HV12@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBV01@1AEBH11@Z 0x141979a50 ; unique
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAU?$_Tree_node@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@1@AEAU?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@PEAU?$_Tree_node@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@1@@Z 0x14197af60 ; unique
-// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAU?$_Tree_node@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@1@PEAU?$_Tree_node@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@1@@Z 0x14197bba0 ; unique
-// MS2-PIN: ??$addressof@V?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@std@@YAPEAV?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@0@AEAV10@@Z 0x14197c310 ; prop
-// MS2-PIN: ??$forward@AEBU?$less@W4Unk_GuildNpcKind@@@std@@@std@@YAAEBU?$less@W4Unk_GuildNpcKind@@@0@AEBU10@@Z 0x14197c7d0 ; unique
-// MS2-PIN: ??$forward@AEBVCMsgBoxData@@@std@@YAAEBVCMsgBoxData@@AEBV1@@Z 0x14197c7f0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x14197caa0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x14197cbe0 ; prop
-// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEAA@XZ 0x14197ced0 ; prop
-// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@QEAA@XZ 0x14197cf50 ; prop
-// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CB_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@QEAA@XZ 0x14197d0e0 ; prop
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@W4Unk_GuildNpcKind@@PEAX@std@@@std@@QEAA@XZ 0x14197d0f0 ; unique
+// MS2-PIN: ??0?$allocator@U?$pair@_KV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAA@XZ 0x14197d100 ; unique
 // MS2-PIN: ?get@?$MS2Ptr@VCGuildPVPHistoryData@@@@QEBAPEAVCGuildPVPHistoryData@@XZ 0x14197d870 ; unique
-// MS2-PIN: ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@W4Unk_GuildNpcKind@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x14197db20 ; unique
 // MS2-PIN: ?vfunc_48@UIGuildDialog@@UEAAHXZ 0x14197e030 ; unique
 // MS2-PIN: ?_Myoff@?$_Deque_alloc@U?$_Deque_base_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@std@@QEAAAEA_KXZ 0x14197f790 ; unique
 // MS2-PIN: ?begin@?$deque@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@2@XZ 0x14197fd50 ; unique
@@ -47,7 +41,11 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIGuildDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141980a20 ; unique
 // MS2-PIN: ?rbegin@?$deque@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@std@@@2@XZ 0x141980b60 ; unique
 // MS2-PIN: ?rend@?$deque@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@V?$allocator@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Deque_iterator@V?$_Deque_val@U?$_Deque_simple_types@V?$Unk_PayloadPtr@VCGuildStroageHistory@CGuildStorage@@@@@std@@@std@@@std@@@2@XZ 0x141980bb0 ; unique
+// MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142cbe5b0 ; probe
+// MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142cbe600 ; probe
+// MS2-PIN: ??__Fs_strTooltipAlign@@YAXXZ 0x142cbe620 ; probe
 // MS2-PINS-END tplpin
+// MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBU?$pair@HH@std@@UItemEntity@@@std@@@std@@SAPEAU?$pair@$$CBU?$pair@HH@std@@UItemEntity@@@2@AEAU32@@Z 0x141980b10 ; manual (w509): callee of the matched _Tree_iterator::operator-> 0x14197d890
 //
 // PARTIAL (w478): the layout, the statics, the small members and the page openers. Not written yet: OnLoadComplete,
 // vfunc_26/28/45/53/67/72, OnMessage, the page builders (FUN_14196b620 .. FUN_141976730, up to 4.7KB each), the mark
@@ -113,6 +111,20 @@ static CString s_strTooltipAlign = "tooltipAlign";
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
+
+// The UCRT's `static __inline memcpy_s` copy of this TU (kept alive by the pointer below).
+// @0x141980c60
+// MS2-FUNCTIONAL: CRT memcpy_s copy: source spelling differs
+static __inline errno_t ms2_gd_memcpy_s(void* const d, size_t const dsz, void const* const s, size_t const ssz)
+{
+    if (ssz == 0) { return 0; }
+    { int e = !!(d != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+    { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+    { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
+    memcpy(d, s, ssz);
+    return 0;
+}
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnGdMemcpyS)(void*, size_t, const void*, size_t) = &ms2_gd_memcpy_s;
 
 // ---- unit-local views of exe objects ----
 
@@ -326,8 +338,8 @@ void UIGuildDialog::vfunc_72()
             return;
         if (m_pvpHistoryPage.get())
         {
-            std::map<unsigned __int64, CString>::iterator it = m_marks.begin();
-            std::map<unsigned __int64, CString>::iterator itEnd = m_marks.end();
+            std::set<std::pair<unsigned __int64, CString> >::iterator it = m_marks.begin();
+            std::set<std::pair<unsigned __int64, CString> >::iterator itEnd = m_marks.end();
             for (; it != itEnd; ++it)
             {
                 CString strMark = FUN_141029590(it->first, it->second, "", "");
@@ -2703,7 +2715,7 @@ void UIGuildDialog::FUN_1419729d0()
         CStringW strName = CStringTable::GetInstance()->FUN_141811980(1, nItemId);
         int nRank = pItem->vfunc_o18_1();
         CStringW strItem = FUN_140656190(L"<FONT color='{0}'>{1}</FONT>", CItemDataTable::GetInstance()->GetTextColorString((ItemGradeKey)nRank), strName);
-        int nCount = pItem->vfunc_o18_2();
+        unsigned nCount = pItem->vfunc_o18_2();   // UINT ArgType 0x14015e5d0 in the exe
         // f18 / f30: the giver's and the receiver's records; their text member is the CStringW name.
         CStringW strLine = FUN_14028dfa0(CStringW(L"s_guild_storage_history_gift"), reinterpret_cast<const CStringW&>(spEntry->f18.text), strItem, nCount,
             reinterpret_cast<const CStringW&>(spEntry->f30.text), strDate);
@@ -3290,7 +3302,8 @@ void UIGuildDialog::FUN_141976e00(CString strXml)
     {
         unsigned __int64 nGuildId = FUN_140718350(CString(FUN_14086f4b0(pGuild, "sn")));
         CString strMark = FUN_1407185b0(CString(FUN_14086f4b0(pGuild, "mark")));
-        marks.push_back(std::pair<unsigned __int64, CString>(nGuildId, strMark));
+        std::pair<unsigned __int64, CString> mark(nGuildId, strMark);
+        marks.push_back(mark);
     }
     if (Unk_LockGuard guard = m_lock) {}
     else
