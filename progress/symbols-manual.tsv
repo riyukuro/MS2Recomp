@@ -3946,3 +3946,5 @@ DAT_143ae2b38	143ae2b38	data
 ?DAT_143b0dc28@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143b0dc28	data
 ?DAT_143b0dc30@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143b0dc30	data
 ?ms_pSingleton@?$SingletonClass@VUniqueSwfIDCreator@@@@2PEAVUniqueSwfIDCreator@@EA	143b0d2d8	data
+??0EntityFactoryRequest@egf@@QEAA@AEBVutf8string@efd@@AEBVCategory@3@AEBVEntityID@1@0_N333@Z	142171090	func
+?kERR3@ILogger@efd@@2EB	1430c3b23	data
