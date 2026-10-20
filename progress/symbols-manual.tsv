@@ -3943,3 +3943,6 @@ DAT_143ae2b38	143ae2b38	data
 ??4Unk_BannerPtr@@QEAAAEAV0@H@Z	1418a6cb0	func
 ?CreateObject@Movie@GFx@Scaleform@@QEAAXPEAVValue@23@PEBDPEBV423@I@Z	14256e8e0	func
 DAT_143ae2b38	143ae2b38	data
+?DAT_143b0dc28@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143b0dc28	data
+?DAT_143b0dc30@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143b0dc30	data
+?ms_pSingleton@?$SingletonClass@VUniqueSwfIDCreator@@@@2PEAVUniqueSwfIDCreator@@EA	143b0d2d8	data
