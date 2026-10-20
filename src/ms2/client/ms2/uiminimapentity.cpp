@@ -47,6 +47,9 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/client/ms2/ridee.h"
+#include "ms2/client/ms2/partymanager.h"
+#include "ms2/placeholder/cpartymember.h"
+#include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/uiserverlistdialog.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
@@ -58,14 +61,6 @@
 
 // The world's per-object proxy (RTTI .?AVCProxyGameObject@@, 0xe8). Unit-local typed view of
 // placeholder/cproxygameobject.h: its +0x18 / +0x28 handles are MS2Ptr<CPortal> / MS2Ptr<NpcDataCli> here.
-struct Unk_MmProxyInfo                                              // the proxy's display info (+0x88)
-{
-    int m_type;                                                     // +0x00 (0xb = npc)
-    int m_04;
-    int m_08;
-    int m_0c;
-    CStringW m_text;                                                // +0x10
-};
 class CProxyGameObject : public CPtred
 {
 public:
@@ -73,7 +68,7 @@ public:
     int FUN_1416c2040();                                            // another player's object
     int FUN_1416c2090();                                            // has a template id
     int FUN_1416c20d0();                                            // has a portal
-    Unk_MmProxyInfo* FUN_1416c2200();
+    Unk_QmNpcQuestState* FUN_1416c2200();                         // the quest guide (+0x88)
     MS2Ptr<NpcDataCli> FUN_1416c2220();                             // the npc data
     __int64 FUN_1416c22f0();                                        // the owner character id
     int FUN_1416c2350();                                            // the template (npc) id
@@ -93,6 +88,8 @@ public:
     __int64 m_48;
     CString m_50;
     CStringW m_name;                                                // +0x58
+    __int64 m_60;
+    int m_68;                                                       // +0x68 dead
 };
 
 // The entity list a world model lookup returns (the same view as uiworldmapdialog.cpp).
@@ -726,8 +723,8 @@ void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& s
             }
         }
     } else if (spProxy->FUN_1416c2090()) {
-        Unk_MmProxyInfo* pInfo = spProxy->FUN_1416c2200();
-        if (pInfo->m_type != 0xb) {
+        Unk_QmNpcQuestState* pInfo = spProxy->FUN_1416c2200();
+        if (pInfo->m_icon != 0xb) {
             strText = pInfo->m_text;
         } else {
             MS2Ptr<NpcDataCli> spNpc = spProxy->FUN_1416c2220();
@@ -3077,6 +3074,105 @@ void UIMinimapDialog::FUN_141a407c0(ProxyPtr spProxy, EntityPtr spEntity)
             spClip->vfunc_4(spEntity->m_visible);
             spEntity->m_clip = spClip;
         }
+    }
+}
+
+class Unk_MmObjectPos { public: efd::Point3 FUN_1409673c0(); };    // CInteractObject: position copy
+
+// @0x141a432a0
+void UIMinimapDialog::FUN_141a432a0(ProxyPtr spProxy, EntityPtr spEntity)
+{
+    if (spProxy == 0 || spEntity == 0)
+        return;
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return;
+    __int64 nId = spProxy->FUN_1416c22f0();
+    if (spProxy->FUN_1416c1ff0()) {
+        spEntity->m_state = s_strIdle;
+        spEntity->m_layer = s_strLayerPlayer;
+    } else if (m_460 == nId) {
+        spEntity->m_state = s_strQuestTarget;
+        spEntity->m_layer = s_strLayerQuestTarget;
+    } else {
+        MS2Ptr<CPartyMember> spMember = CPartyManager::GetInstance()->FUN_14162afc0(nId);
+        if (static_cast<CPartyMember*>(spMember) != 0) {
+            spEntity->m_state = spMember->leader != 0 ? s_strPartyChief : s_strParty;
+            spEntity->m_layer = s_strLayerParty;
+        } else {
+            MS2Ptr<CGuildMember> spGuild = CGuildManager::GetInstance()->FUN_1404cf9f0(spProxy->FUN_1416c23b0());
+            if (static_cast<CGuildMember*>(spGuild) != 0) {
+                spEntity->m_state = s_strGuild;
+                spEntity->m_layer = s_strLayerGuild;
+            } else if (CBuddyManager::GetInstance()->FUN_140ae4d70(nId)) {
+                spEntity->m_state = s_strBuddy;
+                spEntity->m_layer = s_strLayerBuddy;
+            } else {
+                spEntity->m_state = s_strNormal;
+                spEntity->m_layer = s_strLayerPc;
+            }
+        }
+    }
+    if (spProxy->m_68 != 0)
+        spEntity->m_state = s_strDie;
+}
+
+// @0x141a43680
+void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
+{
+    spEntity->m_64 = false;
+    spEntity->m_showGuide = false;
+    const Unk_QmNpcQuestState* pGuide = spProxy->FUN_1416c2200();
+    bool bBoss = false;
+    if (pGuide->m_icon != 0xb) {
+        CString strState;
+        CString strLayer;
+        spEntity->FUN_141a31c80(pGuide, strState, strLayer);
+        spEntity->m_icon = s_strQuest;
+        spEntity->m_state = strState;
+        spEntity->m_layer = strLayer;
+        spEntity->m_visible = FUN_141a45b70(spProxy);
+        spEntity->m_showGuide = true;
+        spEntity->m_guideName = FUN_141a45ed0(reinterpret_cast<const int&>(pGuide->m_questId), pGuide->m_state);
+        return;
+    }
+    MS2Ptr<NpcDataCli> spNpc = spProxy->FUN_1416c2220();
+    if (spNpc == 0)
+        return;
+    spEntity->FUN_141a310e0(spNpc);
+    if (spEntity->m_visible)
+        spEntity->m_visible = FUN_141a45b70(spProxy);
+    if (spProxy->m_68 != 0) {
+        bBoss = FUN_141a45c70(spEntity->m_icon);
+        if (bBoss)
+            spEntity->m_state = s_strDie;
+        else
+            spEntity->m_visible = false;
+    }
+    if (!bBoss) {
+        if (CQuestNavigator::GetInstance()->HasMap(spProxy->FUN_1416c2350())) {
+            spEntity->m_icon = s_strQuestTargetMonster;
+            spEntity->m_layer = s_strLayerNpc;
+            spEntity->m_64 = true;
+        }
+    }
+}
+
+// @0x141a44380
+void UIMinimapDialog::FUN_141a44380(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity)
+{
+    bool bOverlap = CQuestNavigator::GetInstance()->HasNpc(spObject->FUN_140967110()) == 1 && spObject->FUN_1413b5600() == 1;
+    spEntity->m_icon = bOverlap ? s_strQuestTargetObject : spObject->FUN_140966e00()->m_strMinimapIcon;
+    spEntity->m_layer = s_strLayerInteract;
+    spEntity->m_position = reinterpret_cast<Unk_MmObjectPos*>(spObject.operator->())->FUN_1409673c0();
+    spEntity->m_text = FUN_1401a9d70()->FUN_141811980(0x10, spObject->FUN_140967110());
+    spEntity->m_64 = bOverlap;
+    if (!spEntity->m_64)
+        spEntity->m_visible = spObject->FUN_1413b5600() == 1 && !spEntity->m_icon.IsEmpty();
+    if (spObject->vfunc_5() == 9) {
+        spEntity->m_layer = s_strLayerWatchtower;
+        spEntity->m_visible = true;
+        FUN_141a42600(spObject, spEntity);
     }
 }
 
