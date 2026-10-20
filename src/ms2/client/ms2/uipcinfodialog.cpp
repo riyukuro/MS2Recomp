@@ -1961,3 +1961,23 @@ int FUN_141337900(const void* p1, const void* p2)
     return __imp_wcscmp(str1.GetBuffer(0), str2.GetBuffer(0));
 }
 MS2_REPLACE(0x141337900, FUN_141337900, 169, 0xE4127450);
+
+// The equip-layer tab name (also used by the closet dialog); sits just before this TU's .text$mn range in the exe.
+// MS2-RANGE: 0x14132ba90-0x14132bc00 .text$mn
+// @0x14132ba90
+CStringW FUN_14132ba90(const int& nLayer)
+{
+    switch (nLayer)
+    {
+    case 0:
+        return FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_game");
+    case 1:
+        return FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_skin");
+    case 2:
+        if (FUN_140166410()->FUN_14036d570(0x8e))
+            return FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_codi");
+        break;
+    }
+    return L"";
+}
+MS2_REPLACE(0x14132BA90, FUN_14132ba90, 355, 0xEDEB26E7);
