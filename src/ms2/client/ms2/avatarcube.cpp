@@ -175,3 +175,5 @@ unsigned int FUN_1409f2cd0()
 
 // @0x1409f3250
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9ea70-0x142c9eae0 .text$yd

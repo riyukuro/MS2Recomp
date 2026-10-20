@@ -333,3 +333,5 @@ void Unk_PortraitPCMoveAnchor(void* pDst, size_t nDst, void* pSrc, size_t nSrc)
 {
     memmove_s(pDst, nDst, pSrc, nSrc);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb43f0-0x142cb4480 .text$yd

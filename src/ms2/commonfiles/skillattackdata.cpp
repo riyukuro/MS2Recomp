@@ -670,3 +670,5 @@ int SkillAttackData::Save(void* pParent)
     }
     return 1;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9c030-0x142c9c090 .text$yd

@@ -1560,3 +1560,5 @@ static int LoadXml(TiXmlDocument& doc, const char* pszPath)
 {
     return FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9ae90-0x142c9af10 .text$yd

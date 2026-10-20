@@ -6867,3 +6867,5 @@ MS2_REPLACE_METHOD(0x1403D6C10, GameEventGuildEventFund, vfunc_5, 6, 0xA9AF6E37)
 // @0x1403d6c20
 void GameEventGuildEventFund::vfunc_6() {}
 MS2_REPLACE_METHOD(0x1403D6C20, GameEventGuildEventFund, vfunc_6, 6, 0xA9AF6E37);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9a850-0x142c9a8c0 .text$yd

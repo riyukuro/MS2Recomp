@@ -1294,3 +1294,5 @@ void UIMyInfoDialog::FUN_141a5d690(const Scaleform::GFx::FunctionHandler::Params
     if (FUN_140ba28d0(&m_30, 0) == 0 && !m_280.IsNull())
         FUN_1403ed2b0()->FUN_141adc750(0x4f76);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc0dc0-0x142cc0e50 .text$yd

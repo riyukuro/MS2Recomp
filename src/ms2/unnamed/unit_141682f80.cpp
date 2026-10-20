@@ -562,3 +562,5 @@ void FUN_141682f60(void* tracker, PCBase* owner)
 }
 
 // MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400fb8b0
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb40e0-0x142cb4170 .text$yd
