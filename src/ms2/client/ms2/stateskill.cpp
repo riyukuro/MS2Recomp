@@ -2719,7 +2719,8 @@ void StateSkill::FUN_1417f3e80(int nBounce, ATL::CAtlList<Unk_MagicTagPtr>& lstC
     MS2Ptr<CDetectContext> spDetect(new CDetectContext);
     spDetect->m_pOwner = spSearcher;
     spDetect->m_pRange = reinterpret_cast<Unk_DetectRange*>(pAttack);
-    spDetect->m_kPos = SS_PT(spFrom->vfunc_18());
+    NiPoint3 kFrom = spFrom->vfunc_18();
+    spDetect->m_kPos = SS_PT(kFrom);
     spDetect->m_nTargetKind = nKind;
     spDetect->m_nSortMode = 3;
     spDetect->m_bRideToRider = 0;
@@ -2870,7 +2871,8 @@ void StateSkill::FUN_1417edc20(double fTime)
     if (!bMoveInput)
         return;
     float fYaw = m_pOwner->FUN_14166da40();
-    efd::Point3 kDir = m_pOwner->FUN_141674b60(SS_PT(m_pOwner->FUN_14123c360()));
+    NiPoint3 kInput = m_pOwner->FUN_14123c360();
+    efd::Point3 kDir = m_pOwner->FUN_141674b60(SS_PT(kInput));
     efd::Point3 kStep = kDir * m_pOwner->vfunc_95() * (float)fTime;
     if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xca) && m_spRecord->m_spSkill->m_nMoveType == 2)
         m_pOwner->FUN_14166d8b0(fYaw);
