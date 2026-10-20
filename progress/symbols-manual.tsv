@@ -3886,5 +3886,3 @@ __imp_NxGetUtilLib	142cced28	data
 ?DAT_1439f87f0@@3KA	1439f87f0	data
 ?DAT_1439f87f4@@3KA	1439f87f4	data
 ?DAT_1439f87f8@@3KA	1439f87f8	data
-?ApplySearchAll@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCMeratMarketSchCond@@@@AEAVASObj@@_N@Z	141310110	func
-?OnLoadComplete@UIMeratMarketDialog@@UEAAXXZ	1412e9210	func
