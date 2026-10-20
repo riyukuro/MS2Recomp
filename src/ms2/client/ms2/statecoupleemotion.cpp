@@ -1412,3 +1412,5 @@ template bool MS2Ptr<CoupleEmotionAnimInfo>::operator==(CoupleEmotionAnimInfo*) 
 template bool MS2Ptr<StateCoupleEmotionData>::operator==(StateCoupleEmotionData*) const;             // @0x140b85f40
 template bool MS2Ptr<StateSyncObjectCoupleEmotion>::operator==(StateSyncObjectCoupleEmotion*) const; // @0x140b85f80
 // MS2-PIN: ??1CoupleEmotionAnimInfo@@UEAA@XZ 0x140b85be0 ; implicit virtual dtor (no vftable reset, like the exe)
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1160-0x142ca1210 .text$yd

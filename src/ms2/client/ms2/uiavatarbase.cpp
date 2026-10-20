@@ -2553,3 +2553,5 @@ void FUN_1418c1dd0(NiAVObject* pNode, Unk_NiMatrix3* pRot, const Unk_NiPoint3& k
     Unk_StreamPoint kShift = kPosPt.FUN_14097fd50(kPivotPt);
     FUN_140981070(pNode, FUN_14027dcf0(kShift.FUN_140965c40(kRotated)));
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbc950-0x142cbca30 .text$yd

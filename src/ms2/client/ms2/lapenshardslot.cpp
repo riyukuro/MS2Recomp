@@ -464,3 +464,5 @@ int Unk_LsHud::FUN_140a700b0()
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9f710-0x142c9f7c0 .text$yd

@@ -143,3 +143,5 @@ void UIPvPKillLogDialog::vfunc_43()
     if (spEntity.get() != 0)
         spEntity->vfunc_2(5, 0x1e, 300);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb0290-0x142cb0360 .text$yd

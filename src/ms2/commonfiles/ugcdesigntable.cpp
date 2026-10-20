@@ -204,3 +204,5 @@ void FUN_14089fef0(bool bInit)
 
 // @0x1408a0040 (the obj's unreferenced copy of the CRT's static-inline memmove_s)
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9c850-0x142c9c910 .text$yd

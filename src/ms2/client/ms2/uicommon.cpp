@@ -2160,3 +2160,5 @@ MS2_REPLACE(0x141902ac0, FUN_141902ac0, 993, 0x843815CF);
 UICommon::CAlignmentInfo::~CAlignmentInfo()
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbd3e0-0x142cbd4b0 .text$yd
