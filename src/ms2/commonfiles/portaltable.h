@@ -36,8 +36,6 @@ public:
 MS2_CHECK_SIZE(PortalRandomTargetData, 0x40);
 MS2_CHECK_OFFSET(PortalRandomTargetData, m_targets, 0x28);
 
-// The exe's MS2SvrPtr<PortalRandomTargetData>::MS2SvrPtr(MS2SvrPtr&) (0x140734ac0) copies and AddRefs instead of stealing.
-template <> inline MS2SvrPtr<PortalRandomTargetData>::MS2SvrPtr(MS2SvrPtr& o) { m_p = o.m_p; AddRef(); }
 typedef MS2SvrPtr<PortalRandomTargetData> PortalRandomTargetPtr;
 
 // RTTI CPortalTable, 0x28 bytes; vftable 0x142d83cf0 (+ TSingleton at 0x142d83ce0). Keys are

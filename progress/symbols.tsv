@@ -3560,12 +3560,11 @@ wmemmove	140191580	func
 ??$swap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@X@std@@YAXAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@0@Z	1401a84c0	func
 ??$swap@V?$MS2SvrPtr@VCArcadeMainData@@@@X@std@@YAXAEAV?$MS2SvrPtr@VCArcadeMainData@@@@0@Z	1401a8540	func
 ??0<lambda_b1512b83c37c549e73d9fea7ab50b448>@@QEAA@QEAV?$vector@V?$MS2SvrPtr@VCArcadeRewardData@@@@V?$allocator@V?$MS2SvrPtr@VCArcadeRewardData@@@@@std@@@std@@@Z	1401a85b0	func
-??0?$MS2SvrPtr@VCArcadeMainData@@@@QEAA@AEAV0@@Z	1401a85d0	func
+??0?$MS2SvrPtr@VCArcadeMainData@@@@QEAA@$$QEAV0@@Z	1401a85d0	func
 ??0?$MS2SvrPtr@VCArcadeMainData@@@@QEAA@AEBV0@@Z	1401a8600	func
 ??0?$MS2SvrPtr@VCArcadeMainData@@@@QEAA@H@Z	1401a8640	func
 ??0?$MS2SvrPtr@VCArcadeMainData@@@@QEAA@PEAVCArcadeMainData@@@Z	1401a8660	func
 ??0?$MS2SvrPtr@VCArcadeMainData@@@@QEAA@XZ	1401a8690	func
-??0?$MS2SvrPtr@VCArcadeRewardData@@@@QEAA@AEAV0@@Z	1401a86b0	func
 ??0?$MS2SvrPtr@VCArcadeRewardData@@@@QEAA@AEBV0@@Z	1401a86b0	func
 ??0?$MS2SvrPtr@VCArcadeRewardData@@@@QEAA@H@Z	1401a86f0	func
 ??0?$MS2SvrPtr@VCArcadeRewardData@@@@QEAA@PEAVCArcadeRewardData@@@Z	1401a8710	func
@@ -11933,7 +11932,7 @@ vsprintf_s	1402c37e0	func
 ?GetContinent@CContinentRegionTable@@QEAA?AV?$MS2SvrPtr@VContinentInfo@@@@K@Z	1402c5570	func
 ??0?$CAtlMap@KV?$MS2SvrPtr@VContinentInfo@@@@V?$CElementTraits@K@ATL@@V?$CElementTraits@V?$MS2SvrPtr@VContinentInfo@@@@@3@@ATL@@QEAA@IMMMI@Z	1402c55f0	func
 ??0?$CValidData@VCContinentRegionTable@@@@QEAA@XZ	1402c56e0	func
-??0?$MS2SvrPtr@VContinentInfo@@@@QEAA@AEAV0@@Z	1402c5700	func
+??0?$MS2SvrPtr@VContinentInfo@@@@QEAA@$$QEAV0@@Z	1402c5700	func
 ??0?$MS2SvrPtr@VContinentInfo@@@@QEAA@H@Z	1402c5730	func
 ??0?$MS2SvrPtr@VContinentInfo@@@@QEAA@PEAVContinentInfo@@@Z	1402c5750	func
 ??0?$MS2SvrPtr@VContinentInfo@@@@QEAA@XZ	1402c5780	func
@@ -33712,7 +33711,7 @@ sprintf	1403b0860	func
 ?Allocate@?$MS2SvrPtr@VIndividualArenaData@@@@CAPEAVIndividualArenaData@@PEAX@Z	14051aa90	func
 ??0?$CAtlMap@HV?$MS2SvrPtr@VIndividualArenaData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2SvrPtr@VIndividualArenaData@@@@@3@@ATL@@QEAA@IMMMI@Z	14051aaf0	func
 ??0?$CValidData@VCIndividualArenaDataTable@@@@QEAA@XZ	14051abe0	func
-??0?$MS2SvrPtr@VIndividualArenaData@@@@QEAA@AEAV0@@Z	14051ac00	func
+??0?$MS2SvrPtr@VIndividualArenaData@@@@QEAA@$$QEAV0@@Z	14051ac00	func
 ??0?$MS2SvrPtr@VIndividualArenaData@@@@QEAA@AEBUMS2SvrNewTag@@@Z	14051ac30	func
 ??0?$MS2SvrPtr@VIndividualArenaData@@@@QEAA@H@Z	14051ac60	func
 ??0?$MS2SvrPtr@VIndividualArenaData@@@@QEAA@XZ	14051ac80	func
@@ -34095,7 +34094,7 @@ sprintf	1403b0860	func
 ??0?$MS2Ptr@VCItemUgc@@@@QEAA@H@Z	14052c040	func
 ??0?$MS2Ptr@VCItemUgc@@@@QEAA@PEAVCItemUgc@@@Z	14052c060	func
 ??0?$MS2Ptr@VUnk_MusicBookInfo@@@@QEAA@AEBV0@@Z	14052c090	func
-??0?$MS2SvrPtr@VCPtred@@@@QEAA@AEAV0@@Z	14052c090	func
+??0?$MS2SvrPtr@VCPtred@@@@QEAA@AEBV0@@Z	14052c090	func
 ??0Unk_ShopLifeRef@@QEAA@AEBV0@@Z	14052c090	func
 ??0?$MS2SvrPtr@VCPtred@@@@QEAA@XZ	14052c0d0	func
 ??0Unk_ShopLifeRef@@QEAA@XZ	14052c0d0	func
@@ -34314,7 +34313,7 @@ sprintf	1403b0860	func
 ??$_Unfancy@V?$MS2SvrPtr@VGachaBoxData@@@@@std@@YAPEAV?$MS2SvrPtr@VGachaBoxData@@@@PEAV1@@Z	14052eb80	func
 ??$destroy@V?$MS2SvrPtr@VGachaBoxData@@@@@?$_Default_allocator_traits@V?$allocator@V?$MS2SvrPtr@VGachaBoxData@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2SvrPtr@VGachaBoxData@@@@@1@QEAV?$MS2SvrPtr@VGachaBoxData@@@@@Z	14052eb90	func
 ??0?$CAtlMap@HV?$MS2SvrPtr@VCIngredientContainer@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2SvrPtr@VCIngredientContainer@@@@@3@@ATL@@QEAA@IMMMI@Z	14052ebb0	func
-??0?$MS2SvrPtr@VCIngredientContainer@@@@QEAA@AEAV0@@Z	14052eca0	func
+??0?$MS2SvrPtr@VCIngredientContainer@@@@QEAA@$$QEAV0@@Z	14052eca0	func
 ??0?$MS2SvrPtr@VCIngredientContainer@@@@QEAA@H@Z	14052ecd0	func
 ??0?$MS2SvrPtr@VCIngredientContainer@@@@QEAA@PEAVCIngredientContainer@@@Z	14052ecf0	func
 ??0?$MS2SvrPtr@VCIngredientContainer@@@@QEAA@XZ	14052ed20	func
@@ -34609,7 +34608,7 @@ sprintf	1403b0860	func
 ??0?$CAtlMap@W4Unk_ItemDefaultKind@@HV?$CElementTraits@W4Unk_ItemDefaultKind@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAA@IMMMI@Z	140536be0	func
 ??0?$CValidData@VCostumeSetTable@@@@QEAA@XZ	140536cd0	func
 ??0?$MakeValue@V?$BasicFormatter@D@fmt@@@internal@fmt@@QEAA@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	140536cf0	func
-??0?$MS2SvrPtr@VCostumeSet@@@@QEAA@AEAV0@@Z	140536d20	func
+??0?$MS2SvrPtr@VCostumeSet@@@@QEAA@$$QEAV0@@Z	140536d20	func
 ??0?$MS2SvrPtr@VCostumeSet@@@@QEAA@H@Z	140536d50	func
 ??0?$MS2SvrPtr@VCostumeSet@@@@QEAA@PEAVCostumeSet@@@Z	140536d70	func
 ??0?$MS2SvrPtr@VCostumeSet@@@@QEAA@XZ	140536da0	func
@@ -38103,7 +38102,7 @@ sprintf	1403b0860	func
 ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2SvrPtr@VGachaBoxData@@@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2SvrPtr@VGachaBoxData@@@@@std@@@std@@@std@@@0@AEAV10@@Z	1405a14c0	func
 ??$move@AEAV?$MS2SvrPtr@VGachaBoxData@@@@@std@@YA$$QEAV?$MS2SvrPtr@VGachaBoxData@@@@AEAV1@@Z	1405a14d0	func
 ??$try_emplace@$$V@?$map@HV?$MS2SvrPtr@VGachaBoxData@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2SvrPtr@VGachaBoxData@@@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2SvrPtr@VGachaBoxData@@@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z	1405a14e0	func
-??0?$MS2SvrPtr@VGachaBoxData@@@@QEAA@AEAV0@@Z	1405a1520	func
+??0?$MS2SvrPtr@VGachaBoxData@@@@QEAA@$$QEAV0@@Z	1405a1520	func
 ??0?$MS2SvrPtr@VGachaBoxData@@@@QEAA@$$T@Z	1405a1550	func
 ??0?$MS2SvrPtr@VGachaBoxData@@@@QEAA@AEBV0@@Z	1405a1570	func
 ??0?$MS2SvrPtr@VGachaBoxData@@@@QEAA@AEBUMS2SvrNewTag@@@Z	1405a15b0	func
@@ -48040,7 +48039,7 @@ sprintf	1403b0860	func
 ??0?$MS2Ptr@VCBeautyShopItemGroup@@@@QEAA@XZ	1406ee120	func
 ??0?$MS2Ptr@VCBeautyShopItemGroups@@@@QEAA@PEAVCBeautyShopItemGroups@@@Z	1406ee140	func
 ??0?$MS2Ptr@VCBeautyShopItemGroups@@@@QEAA@XZ	1406ee170	func
-??0?$MS2SvrPtr@VCNpcShopBuyPeriod@@@@QEAA@AEAV0@@Z	1406ee190	func
+??0?$MS2SvrPtr@VCNpcShopBuyPeriod@@@@QEAA@$$QEAV0@@Z	1406ee190	func
 ??0?$MS2SvrPtr@VCNpcShopBuyPeriod@@@@QEAA@H@Z	1406ee1c0	func
 ??0?$MS2SvrPtr@VCNpcShopBuyPeriod@@@@QEAA@PEAVCNpcShopBuyPeriod@@@Z	1406ee1e0	func
 ??0?$MS2SvrPtr@VCNpcShopBuyPeriod@@@@QEAA@XZ	1406ee210	func
@@ -48934,7 +48933,7 @@ sprintf	1403b0860	func
 ??0?$CAtlMap@FURewardItem@CObjectData@@V?$CElementTraits@F@ATL@@V?$CElementTraits@URewardItem@CObjectData@@@4@@ATL@@QEAA@IMMMI@Z	140707f10	func
 ??0?$CAtlMap@F_KV?$CElementTraits@F@ATL@@V?$CElementTraits@_K@2@@ATL@@QEAA@IMMMI@Z	140708000	func
 ??0?$CAtlMap@IV?$MS2SvrPtr@VCObjectData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2SvrPtr@VCObjectData@@@@@3@@ATL@@QEAA@IMMMI@Z	1407080f0	func
-??0?$MS2SvrPtr@VCObjectData@@@@QEAA@AEAV0@@Z	1407081e0	func
+??0?$MS2SvrPtr@VCObjectData@@@@QEAA@$$QEAV0@@Z	1407081e0	func
 ??0?$MS2SvrPtr@VCObjectData@@@@QEAA@H@Z	140708210	func
 ??0?$MS2SvrPtr@VCObjectData@@@@QEAA@PEAVCObjectData@@@Z	140708230	func
 ??0?$MS2SvrPtr@VCObjectData@@@@QEAA@XZ	140708260	func
@@ -50292,7 +50291,7 @@ sprintf	1403b0860	func
 ??$move@AEAUPortalRandomTarget@@@std@@YA$$QEAUPortalRandomTarget@@AEAU1@@Z	140734a30	func
 ??$try_emplace@$$V@?$map@_KV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@4@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@_N@1@AEB_K@Z	140734a40	func
 ??$try_emplace@$$V@?$map@_KV?$MS2SvrPtr@VPortalRandomTargetData@@@@U?$less@_K@std@@V?$allocator@U?$pair@$$CB_KV?$MS2SvrPtr@VPortalRandomTargetData@@@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KV?$MS2SvrPtr@VPortalRandomTargetData@@@@@std@@@std@@@std@@@std@@_N@1@AEB_K@Z	140734a80	func
-??0?$MS2SvrPtr@VPortalRandomTargetData@@@@QEAA@AEAV0@@Z	140734ac0	func
+??0?$MS2SvrPtr@VPortalRandomTargetData@@@@QEAA@AEBV0@@Z	140734ac0	func
 ??0?$MS2SvrPtr@VPortalRandomTargetData@@@@QEAA@PEAVPortalRandomTargetData@@@Z	140734b00	func
 ??0?$MS2SvrPtr@VPortalRandomTargetData@@@@QEAA@XZ	140734b30	func
 ??0?$TSingleton@VCPortalTable@@@@QEAA@XZ	140734b50	func
@@ -52928,7 +52927,7 @@ sprintf	1403b0860	func
 ??0?$Unk_SocketPtr@URider@RideeData@@@@QEAA@AEBV0@@Z	140788900	func
 ??0?$Unk_SocketPtr@URider@RideeData@@@@QEAA@AEBUUnk_SocketNew@@@Z	140788940	func
 ??0?$Unk_SocketPtr@URider@RideeData@@@@QEAA@XZ	140788970	func
-??0?$MS2SvrPtr@VCRideeData@@@@QEAA@AEAV0@@Z	140788990	func
+??0?$MS2SvrPtr@VCRideeData@@@@QEAA@$$QEAV0@@Z	140788990	func
 ??0?$MS2Ptr@VUnk_RideeData@@@@QEAA@AEBV0@@Z	1407889c0	func
 ??0?$MS2SvrPtr@VCRideeData@@@@QEAA@AEBV0@@Z	1407889c0	func
 ??0Unk_RideePtr@@QEAA@AEBV0@@Z	1407889c0	func
@@ -57805,7 +57804,7 @@ sprintf	1403b0860	func
 ??0?$MS2SvrPtr@VCAutoActionPricePackage@@@@QEAA@H@Z	140811e40	func
 ??0?$MS2SvrPtr@VCAutoActionPricePackage@@@@QEAA@PEAVCAutoActionPricePackage@@@Z	140811e60	func
 ??0?$MS2SvrPtr@VCAutoActionPricePackage@@@@QEAA@XZ	140811e90	func
-??0?$MS2SvrPtr@VCSmartPushData@@@@QEAA@AEAV0@@Z	140811eb0	func
+??0?$MS2SvrPtr@VCSmartPushData@@@@QEAA@$$QEAV0@@Z	140811eb0	func
 ??0?$MS2SvrPtr@VCSmartPushData@@@@QEAA@AEBV0@@Z	140811ee0	func
 ??0?$MS2SvrPtr@VCSmartPushData@@@@QEAA@H@Z	140811f20	func
 ??0?$MS2SvrPtr@VCSmartPushData@@@@QEAA@PEAVCSmartPushData@@@Z	140811f40	func
@@ -59965,7 +59964,7 @@ sprintf	1403b0860	func
 ?Load@CTailEffectDataTable@@QEAA_NXZ	1408534b0	func
 ?GetData@CTailEffectDataTable@@QEAA?AV?$MS2SvrPtr@VTailEffectData@@@@H@Z	1408537c0	func
 ??0?$CAtlMap@HV?$MS2SvrPtr@VTailEffectData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2SvrPtr@VTailEffectData@@@@@3@@ATL@@QEAA@IMMMI@Z	140853890	func
-??0?$MS2SvrPtr@VTailEffectData@@@@QEAA@AEAV0@@Z	140853980	func
+??0?$MS2SvrPtr@VTailEffectData@@@@QEAA@$$QEAV0@@Z	140853980	func
 ??0?$MS2SvrPtr@VTailEffectData@@@@QEAA@H@Z	1408539b0	func
 ??0?$MS2SvrPtr@VTailEffectData@@@@QEAA@PEAVTailEffectData@@@Z	1408539d0	func
 ??0?$MS2SvrPtr@VTailEffectData@@@@QEAA@XZ	140853a00	func
@@ -62989,7 +62988,7 @@ fprintf	140868660	func
 ??0?$CAtlArray@V?$MS2SvrPtr@VUGCMapPackageInfo@@@@V?$CElementTraits@V?$MS2SvrPtr@VUGCMapPackageInfo@@@@@ATL@@@ATL@@QEAA@XZ	1408ba100	func
 ??0?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2SvrPtr@VCUGCMapPackageData@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2SvrPtr@VCUGCMapPackageData@@@@@2@@ATL@@QEAA@_K@Z	1408ba140	func
 ??0?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2SvrPtr@VCUGCMapPackageData@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2SvrPtr@VCUGCMapPackageData@@@@@2@@ATL@@IEAA@_K@Z	1408ba170	func
-??0?$MS2SvrPtr@VCUGCMapPackageData@@@@QEAA@AEAV0@@Z	1408ba1d0	func
+??0?$MS2SvrPtr@VCUGCMapPackageData@@@@QEAA@$$QEAV0@@Z	1408ba1d0	func
 ??0?$MS2SvrPtr@VCUGCMapPackageData@@@@QEAA@AEBV0@@Z	1408ba200	func
 ??0?$MS2SvrPtr@VCUGCMapPackageData@@@@QEAA@H@Z	1408ba240	func
 ??0?$MS2SvrPtr@VCUGCMapPackageData@@@@QEAA@PEAVCUGCMapPackageData@@@Z	1408ba260	func
@@ -85542,7 +85541,7 @@ IsEqualGUID	140a9a460	func
 ??$try_emplace@$$V@?$map@IV?$MS2SvrPtr@VCUGCMapSetItemInfo@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2SvrPtr@VCUGCMapSetItemInfo@@@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2SvrPtr@VCUGCMapSetItemInfo@@@@@std@@@std@@@std@@@std@@_N@1@AEBI@Z	140ba0850	func
 ??0?$CRBMap@IV?$MS2SvrPtr@VCUGCMapSetItemData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2SvrPtr@VCUGCMapSetItemData@@@@@3@@ATL@@QEAA@_K@Z	140ba0890	func
 ??0?$CRBTree@IV?$MS2SvrPtr@VCUGCMapSetItemData@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2SvrPtr@VCUGCMapSetItemData@@@@@3@@ATL@@IEAA@_K@Z	140ba08c0	func
-??0?$MS2SvrPtr@VCUGCMapSetItemData@@@@QEAA@AEAV0@@Z	140ba0920	func
+??0?$MS2SvrPtr@VCUGCMapSetItemData@@@@QEAA@$$QEAV0@@Z	140ba0920	func
 ??0?$MS2SvrPtr@VCUGCMapSetItemData@@@@QEAA@AEBV0@@Z	140ba0950	func
 ??0Unk_CMISSetRef@@QEAA@AEBU0@@Z	140ba0950	func
 ??0?$MS2SvrPtr@VCUGCMapSetItemData@@@@QEAA@H@Z	140ba0990	func
@@ -155882,7 +155881,7 @@ FUN_141485590	141485590	func
 ?GetFirstServer@CServerListTable@@QEAA?AV?$MS2SvrPtr@VServerInfo@CServerListTable@@@@XZ	141751cb0	func
 ??0?$CAtlMap@KV?$MS2SvrPtr@VServerInfo@CServerListTable@@@@V?$CElementTraits@K@ATL@@V?$CElementTraits@V?$MS2SvrPtr@VServerInfo@CServerListTable@@@@@3@@ATL@@QEAA@IMMMI@Z	141751d80	func
 ??0?$CValidData@VCServerListTable@@@@QEAA@XZ	141751e70	func
-??0?$MS2SvrPtr@VServerInfo@CServerListTable@@@@QEAA@AEAV0@@Z	141751e90	func
+??0?$MS2SvrPtr@VServerInfo@CServerListTable@@@@QEAA@$$QEAV0@@Z	141751e90	func
 ??0?$MS2SvrPtr@VServerInfo@CServerListTable@@@@QEAA@AEBV0@@Z	141751ec0	func
 ??0?$MS2SvrPtr@VServerInfo@CServerListTable@@@@QEAA@H@Z	141751f00	func
 ??0?$MS2SvrPtr@VServerInfo@CServerListTable@@@@QEAA@PEAVServerInfo@CServerListTable@@@Z	141751f20	func
