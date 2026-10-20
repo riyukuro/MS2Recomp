@@ -280,6 +280,8 @@ public:
 
     Scaleform::GFx::Value FUN_140f0a830(const char* szMethod, Scaleform::GFx::Value a1, long a2);   // 0x140f0a830 Invoke(method, value, long) (uimeratmarketdialog.cpp "updateBg"; a1 by value)
 
+    Scaleform::GFx::Value Invoke(const char* szMethod, float a1, float a2, CStringW a3, CStringW a4, CStringW a5, CStringW a6);   // 0x140e6e910 (inline COMDAT, defined in uioxquizdialog.cpp: "setQuizPromoteCooltime"; the strings by value)
+
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {
         void* m_pad_18;                 // not char[8]: an array member makes every local AS object a /GS buffer
