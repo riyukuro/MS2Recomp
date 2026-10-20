@@ -261,7 +261,7 @@
 // MS2-PIN: ??1CNpcShopGivePointContextBase@@UEAA@XZ 0x140410600 ; w203: gameevent.obj caller relocs
 // MS2-PIN: ?begin@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@XZ 0x140419ce0 ; w203: gameevent.obj caller relocs
 // MS2-PIN: ?end@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@XZ 0x14041a420 ; w203: gameevent.obj caller relocs
-// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKH@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140411560 ; w203: the postfix ++ 0x140411510 calls it
+// (dropped pin: 0x140411560 is _Vector_iterator<unsigned>::operator++, not the map<DWORD,int> const_iterator ++)
 // MS2-PINS-END w203
 // MS2-PIN: ??1GameEventAttendGift@@UEAA@XZ 0x1403fc070
 // MS2-PIN: ??1GameEventCashAttend@@UEAA@XZ 0x1403fc0d0
@@ -2719,3 +2719,10 @@ void Unk_GECDriveReleases(void** pp)
     Unk_GECDriveRelease((MS2Ptr<TimeRunEventContext>*)pp[31]);
     Unk_GECDriveRelease((MS2Ptr<TreeWateringContext>*)pp[32]);
 }
+// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x1403f5580 ; ps2: map<int,int> COMDAT copy kept in this TU (gameevent.cpp's _Lbound calls it)
+// MS2-PIN: ?_Erase@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@@Z 0x1403f5950 ; ps2: map<int,int> COMDAT copy
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEBAAEBU?$less@H@2@XZ 0x1403f73d0 ; ps2: map<int,int> COMDAT copy
+// MS2-PIN: ?_Tidy@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@IEAAXXZ 0x1403f9ab0 ; ps2: map<int,int> COMDAT copy
+// MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x1403fa440 ; ps2: map<int,int> COMDAT copy
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140414ec0 ; ps2: this TU's byte-identical copy (0x1404579e0 in the table)
+// MS2-PIN: ?RemoveNode@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140414fb0 ; ps2: this TU's byte-identical copy (0x140458a50 in the table)
