@@ -263,6 +263,7 @@ public:
     Scaleform::GFx::Value FUN_1413127f0(const char* szMethod, CString a1, CString a2);         // 0x1413127f0 (Invoke(string, string); both by value: the callee destroys them; uiguilddialog "setGuildMark")
     Scaleform::GFx::Value FUN_141312a70(const char* szMethod, CString a1, Scaleform::GFx::Value a2, int a3, int a4, CStringW a5);   // 0x141312a70 (inline COMDAT, defined in uimeratmarketdialog.cpp: "buildSellerItemList"; a1/a2/a5 by value)
     Scaleform::GFx::Value FUN_1413128f0(const char* szMethod, CString a1, Scaleform::GFx::Value a2, int a3, int a4, const wchar_t* a5);   // 0x1413128f0 (same, a5 a literal)
+    Scaleform::GFx::Value FUN_1413130e0(const char* szMethod, Scaleform::GFx::Value a1, CStringW a2, int a3);   // 0x1413130e0 (inline COMDAT of uimeratmarketdialog.cpp: "changeState"; a1/a2 by value)
     MS2Ptr<class ASDropdownMenu> FUN_140bbe700(const CString& strName);                       // 0x140bbe700 bind a dropdown child (uiguilddialog "m_sortDropdown")
 
     Scaleform::GFx::Value FUN_1413125d0(const char* szMethod, const ASArray& a1, int a2, int a3, Scaleform::GFx::Value a4);   // 0x1413125d0 (inline COMDAT, defined in uimeratmarketdialog.cpp: "buildItemList"; a4 by value)

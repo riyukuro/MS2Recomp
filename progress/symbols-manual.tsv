@@ -3790,3 +3790,8 @@ __imp_NxGetUtilLib	142cced28	data
 ?g_nLocaleMode@@3HA	143ab0560	data
 ?g_strLocaleFolder@@3V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@A	143ab0568	data
 ?g_strDefaultFolder@@3V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@A	143ab0588	data
+# w495 uimeratmarketdialog: DelegateImplBase ctor/dtor of the two delegates (exe RTTI: Delegate<void(AScript&)> and Delegate<void(CAtlList<TPtr<CEquipItem>>&, CEquipment&)>; clonepc.h spells the second as (CAtlList*, Unk_PCEquipSet*))
+??0DelegateImplBase@?$Delegate@$$A6AXAEAVAScript@@@Z@@QEAA@XZ	1413141d0	func
+??0DelegateImplBase@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEAA@XZ	1413141b0	func
+??1DelegateImplBase@?$Delegate@$$A6AXAEAVAScript@@@Z@@UEAA@XZ	141314780	func
+??1DelegateImplBase@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@UEAA@XZ	141314760	func

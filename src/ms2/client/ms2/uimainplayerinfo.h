@@ -38,6 +38,8 @@ class Unk_MpRideePtr
 public:
     explicit Unk_MpRideePtr(int nNull);                     // 0x141314100
     Unk_MpRideePtr(UIAvatarRidee* p);                       // 0x141314120
+    Unk_MpRideePtr(const Unk_MpRideePtr& o);                // 0x1413140d0 (uimeratmarketdialog.cpp)
+    bool operator==(UIAvatarRidee* p) const;                // 0x141314e40 (uimeratmarketdialog.cpp)
     ~Unk_MpRideePtr();                                      // 0x1413146e0
     Unk_MpRideePtr& operator=(int nNull);                   // 0x1419f41d0
     Unk_MpRideePtr& AssignRaw(UIAvatarRidee* p);            // 0x1419f4200

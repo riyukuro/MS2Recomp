@@ -25,6 +25,8 @@ public:
     void FUN_140e2a6e0(int nVisible);                                   // show / hide the clip
     MS2Ptr<ASEquipIcon> FUN_140e2a740(int nSlot);                       // the slot's icon (0: none)
     int FUN_140e2a7e0(Unk_EquipItemPtr pItem);                          // the hand slot (4 / 5) a weapon goes to
+    int FUN_140e2a7e0(MS2Ptr<CItemData> spData);                        // 0x140e2a7e0 the same, the item handle spelled as it is (uimeratmarketdialog.cpp)
+    ATL::CAtlMap<int, MS2Ptr<ASEquipIcon> >* GetIconMap() { return &m_28; }   // 0x1413157e0 (inline; uimeratmarketdialog.cpp)
     MS2Ptr<ASEquipIcon> FUN_140e2a990(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc);                         // create the slot's icon
     MS2Ptr<ASEquipIcon> FUN_140e2ad70(MS2Ptr<ASEquipIcon> pIcon, int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc);   // change the slot's icon
     void FUN_1412d6ca0(MS2Ptr<ASMovieClip> pClip);                      // 0x1412d6ca0 inline: m_18 = pClip (defined in uiitempreviewdialog.cpp)

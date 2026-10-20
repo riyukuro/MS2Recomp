@@ -20,6 +20,7 @@ public:
     void FUN_1407cba60(const char* szName, CString str);                 // set a string member
     void FUN_1407cbb20(const char* szName, CStringW str);                // set a wide string member
     void FUN_1407cb9c0(const char* szName, int n);                       // set an int member
+    void FUN_1409c10e0(const char* szName, int n);                       // set an int member (uimeratmarketdialog.cpp "saleState")
     void FUN_1409c0d20(const char* szName, unsigned int n);              // set an unsigned member
     void FUN_1409c0dc0(const char* szName, const char* szValue);         // set a string member from a char*
     void FUN_1409c0e60(const char* szName, const wchar_t* szValue);      // set a string member from a wchar_t*
