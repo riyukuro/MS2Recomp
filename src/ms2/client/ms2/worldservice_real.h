@@ -23,6 +23,7 @@
 
 #include "worldservice.h"
 #include "alphaanimation.h"                            // CEntityShower / CEntityHider (NiRefObject)
+#include "gameobject.h"
 #include "ms2actorupdater.h"
 #include "ms2/placeholder/iworldservicecallback.h"
 
@@ -34,6 +35,9 @@ namespace WsReal
 class VisibleObjectRecord
 {
 public:
+    // 0x141bf4740 (user-provided: value-initialization in map::operator[] just calls it)
+    VisibleObjectRecord() : object(NULL), value8(0), entityId(0), value18(-1) {}
+
     NiAVObject* object;                                 // +0x00
     int value8;                                         // +0x08
     egf::EntityID entityId;                             // +0x10
@@ -49,10 +53,13 @@ class Recad0 : public CPtred {};                        // m_ad0 values (held th
 // (0x140b28640). In that order T = MS2ActorUpdater, Rec1f8, Recad0 (= m_aa0's pointee too: ~MS2Ptr 0x141bf55d0), m_a80's,
 // FieldProperty, and two not yet identified (stand-ins below; 0x141bf5660 is used by the m_208 list holder, 0x141bf5690 by
 // the m_708 values in FUN_141bd0220).
+class Rec058 : public CPtred {};                        // m_058 elements (CAtlList<MS2Ptr>; FreeNode 0x141bfccb0, RemoveAll 0x141c16150)
 class RecPtrA : public CPtred {};
 class RecPtrB : public CPtred {};
 
 typedef std::set<IWorldServiceCallback*> Set048;                                         // +0x048
+typedef ATL::CAtlList<MS2Ptr<Rec058> > List058;                                          // +0x058 (ctor 0x141bef200, dtor 0x141bf4960)
+typedef ATL::CAtlList<efd::SmartPointer<GameObject> > List178;                           // +0x178 (shared: ctor 0x140963ae0; RemoveHead 0x141c17660 here)
 typedef std::list<egf::Entity*> List088;                                                 // +0x088, +0x098
 typedef std::map<egf::EntityID, VisibleObjectRecord> Map1d8;                             // +0x1d8
 typedef std::set<egf::EntityID> EntitySet;
