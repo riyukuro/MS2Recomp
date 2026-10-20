@@ -60,6 +60,7 @@ CString UISelectSuperWorldChatDialog::vfunc_1()
 {
     return "SelectSuperWorldChatDialog";
 }
+MS2_REPLACE_METHOD(0x140E8BE80, UISelectSuperWorldChatDialog, vfunc_1, 61, 0xBE9BE37B);
 
 // @0x140e8bed0
 void UISelectSuperWorldChatDialog::vfunc_26()
@@ -70,6 +71,7 @@ void UISelectSuperWorldChatDialog::vfunc_26()
     m_closeButton = 0;
     m_list = 0;
 }
+MS2_REPLACE_METHOD(0x140E8BED0, UISelectSuperWorldChatDialog, vfunc_26, 106, 0xBEDEA49E);
 
 // @0x140e8bf40
 void UISelectSuperWorldChatDialog::OnLoadComplete()
@@ -96,28 +98,26 @@ void UISelectSuperWorldChatDialog::OnLoadComplete()
     ASDataProvider list(2);
     for (size_t i = 0; i < nSlots; i++)
     {
-        if (i < aItems.GetCount())
-        {
-            MS2Ptr<CItem> spItem = aItems[i];
-            if (spItem == 0)
-                continue;
-            int nItemId = spItem->FUN_1405276c0();
-            int nRarity = spItem->FUN_140526bd0();
-            int nAmount = DAT_143ab2a90.FUN_140a5f180(nItemId, nRarity);
-            CString strBind = m_binder.FUN_140d43310(nItemId, nRarity, nAmount);
-            if (strBind.IsEmpty())
-                continue;
-            ASObj entry(2);
-            entry.FUN_1407cba60("bindID", strBind);
-            if (nItemId == pPlayer->FUN_1416639e0())
-                entry.FUN_1407cbbe0("select", true);
-            list.FUN_1422bc050(entry.FUN_1422bb890());
-            m_slotItems.SetAt((unsigned)i, nItemId);
-        }
-        else
+        if (i >= aItems.GetCount())
         {
             list.FUN_1422bc050(ASObj(2).FUN_1422bb890());
+            continue;
         }
+        MS2Ptr<CItem> spItem = aItems[i];
+        if (spItem == 0)
+            continue;
+        int nItemId = spItem->FUN_1405276c0();
+        int nRarity = spItem->FUN_140526bd0();
+        int nAmount = DAT_143ab2a90.FUN_140a5f180(nItemId, nRarity);
+        CString strBind = m_binder.FUN_140d43310(nItemId, nRarity, nAmount);
+        if (strBind.IsEmpty())
+            continue;
+        ASObj entry(2);
+        entry.FUN_1407cba60("bindID", strBind);
+        if (nItemId == pPlayer->FUN_1416639e0())
+            entry.FUN_1407cbbe0("select", true);
+        list.FUN_1422bc050(entry.FUN_1422bb890());
+        m_slotItems.SetAt((unsigned)i, nItemId);
     }
     m_list->Invoke("resetRenderer");
     m_list->vfunc_25(list.FUN_1422bb870());
@@ -133,19 +133,14 @@ int UISelectSuperWorldChatDialog::vfunc_28(const char* szMethod, const Scaleform
         return 1;
     return 0;
 }
+MS2_REPLACE_METHOD(0x140E8C720, UISelectSuperWorldChatDialog, vfunc_28, 101, 0xBE7298CF);
 
 // @0x140e8c790
 void UISelectSuperWorldChatDialog::FUN_140e8c790(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ATL::CAtlArray<unsigned> aSelected;
     m_list->FUN_1422cfa30(aSelected);
-    if (aSelected.GetCount() == 0)
-    {
-        COutPacket packet(0xa7);
-        packet.Encode1(1);
-        FUN_140710590(packet);
-    }
-    else
+    if (aSelected.GetCount() > 0)
     {
         unsigned nItemId = 0;
         if (m_slotItems.Lookup(aSelected[0], nItemId))
@@ -156,21 +151,22 @@ void UISelectSuperWorldChatDialog::FUN_140e8c790(const Scaleform::GFx::FunctionH
             FUN_140710590(packet);
         }
     }
+    else
+    {
+        COutPacket packet(0xa7);
+        packet.Encode1(1);
+        FUN_140710590(packet);
+    }
     vfunc_67();
 }
+MS2_REPLACE_METHOD(0x140E8C790, UISelectSuperWorldChatDialog, FUN_140e8c790, 317, 0xDB510E28);
 
 // @0x140e8c8e0
 void UISelectSuperWorldChatDialog::FUN_140e8c8e0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ATL::CAtlArray<unsigned> aSelected;
     m_list->FUN_1422cfa30(aSelected);
-    if (aSelected.GetCount() == 0)
-    {
-        COutPacket packet(0xa7);
-        packet.Encode1(1);
-        FUN_140710590(packet);
-    }
-    else
+    if (aSelected.GetCount() > 0)
     {
         unsigned nItemId = 0;
         if (m_slotItems.Lookup(aSelected[0], nItemId))
@@ -181,7 +177,14 @@ void UISelectSuperWorldChatDialog::FUN_140e8c8e0(const Scaleform::GFx::FunctionH
             FUN_140710590(packet);
         }
     }
+    else
+    {
+        COutPacket packet(0xa7);
+        packet.Encode1(1);
+        FUN_140710590(packet);
+    }
 }
+MS2_REPLACE_METHOD(0x140E8C8E0, UISelectSuperWorldChatDialog, FUN_140e8c8e0, 292, 0x9AA48589);
 
 // @0x140e8ca10
 void UISelectSuperWorldChatDialog::FUN_140e8ca10(ATL::CAtlArray<MS2Ptr<CItem> >& aOut)
@@ -201,6 +204,7 @@ void UISelectSuperWorldChatDialog::FUN_140e8ca10(ATL::CAtlArray<MS2Ptr<CItem> >&
         aOut.Add(spItem);
     }
 }
+MS2_REPLACE_METHOD(0x140E8CA10, UISelectSuperWorldChatDialog, FUN_140e8ca10, 362, 0x7D369B5E);
 
 // @0x140e8cb80
 void UISelectSuperWorldChatDialog::FUN_140e8cb80(ATL::CAtlArray<MS2Ptr<CItem> >& aOut)
@@ -220,6 +224,7 @@ void UISelectSuperWorldChatDialog::FUN_140e8cb80(ATL::CAtlArray<MS2Ptr<CItem> >&
         aOut.Add(spItem);
     }
 }
+MS2_REPLACE_METHOD(0x140E8CB80, UISelectSuperWorldChatDialog, FUN_140e8cb80, 362, 0x8CEE4E13);
 
 // ---- the GetChild<ASMultiSelectTileCacheList> chain (template COMDATs of this TU) ------------------------------------
 
@@ -246,3 +251,4 @@ MS2Ptr<ASMultiSelectTileCacheList> UISelectSuperWorldChatDialog::FUN_140e8d030(c
     out = GetChild<ASMultiSelectTileCacheList>(strName);
     return out;
 }
+MS2_REPLACE_METHOD(0x140E8D030, UISelectSuperWorldChatDialog, FUN_140e8d030, 138, 0x1C80DD72);

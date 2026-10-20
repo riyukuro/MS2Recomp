@@ -43,6 +43,7 @@ CStringW CSidePopupCondition::vfunc_1()
 {
     return L"CSidePopupCondition";
 }
+MS2_REPLACE_METHOD(0x140E8D7D0, CSidePopupCondition, vfunc_1, 61, 0x1F1409FD);
 
 // @0x140e8d820
 CSidePopupCondition::CSidePopupCondition()
@@ -55,6 +56,7 @@ void CSidePopupCondition::vfunc_2(Unk_140165cf0* pElem)
 {
     FUN_140873220(pElem, "key", m_nId);
 }
+MS2_REPLACE_METHOD(0x140E8D860, CSidePopupCondition, vfunc_2, 48, 0xC403BAA5);
 
 // @0x140e8d8a0
 ClassObject* CSidePopupConditionQuestAccept::CreateObject()
@@ -67,6 +69,7 @@ CStringW CSidePopupConditionQuestAccept::vfunc_1()
 {
     return L"CSidePopupConditionQuestAccept";
 }
+MS2_REPLACE_METHOD(0x140E8D900, CSidePopupConditionQuestAccept, vfunc_1, 61, 0x1A1B9F58);
 
 // @0x140e8d950
 CSidePopupConditionQuestAccept::CSidePopupConditionQuestAccept()
@@ -85,6 +88,7 @@ CStringW CSidePopupConditionQuestSatisfied::vfunc_1()
 {
     return L"CSidePopupConditionQuestSatisfied";
 }
+MS2_REPLACE_METHOD(0x140E8D9F0, CSidePopupConditionQuestSatisfied, vfunc_1, 61, 0x00BA248A);
 
 // @0x140e8da40
 CSidePopupConditionQuestSatisfied::CSidePopupConditionQuestSatisfied()
@@ -100,6 +104,7 @@ int CSidePopupConditionQuestSatisfied::vfunc_4()
         return 0;
     return spQuest->IsComplete();
 }
+MS2_REPLACE_METHOD(0x140E8DA80, CSidePopupConditionQuestSatisfied, vfunc_4, 162, 0x33E45610);
 
 // @0x140e8db30
 ClassObject* CSidePopupConditionQuestComplete::CreateObject()
@@ -112,6 +117,7 @@ CStringW CSidePopupConditionQuestComplete::vfunc_1()
 {
     return L"CSidePopupConditionQuestComplete";
 }
+MS2_REPLACE_METHOD(0x140E8DB90, CSidePopupConditionQuestComplete, vfunc_1, 61, 0xA9D9FFF0);
 
 // @0x140e8dbe0
 CSidePopupConditionQuestComplete::CSidePopupConditionQuestComplete()
@@ -130,6 +136,7 @@ CStringW CSidePopupConditionBossRegen::vfunc_1()
 {
     return L"CSidePopupConditionBossRegen";
 }
+MS2_REPLACE_METHOD(0x140E8DC80, CSidePopupConditionBossRegen, vfunc_1, 61, 0x17139103);
 
 // @0x140e8dcd0
 CSidePopupConditionBossRegen::CSidePopupConditionBossRegen()
@@ -148,6 +155,7 @@ CStringW CSidePopupConditionQuestProgress::vfunc_1()
 {
     return L"CSidePopupConditionQuestProgress";
 }
+MS2_REPLACE_METHOD(0x140E8DD70, CSidePopupConditionQuestProgress, vfunc_1, 61, 0x2C300AF9);
 
 // @0x140e8ddc0
 CSidePopupConditionQuestProgress::CSidePopupConditionQuestProgress()
@@ -161,18 +169,21 @@ void CSidePopupConditionQuestProgress::vfunc_2(Unk_140165cf0* pElem)
     CSidePopupCondition::vfunc_2(pElem);
     XmlTokenList(pElem, "args", m_args);
 }
+MS2_REPLACE_METHOD(0x140E8DE10, CSidePopupConditionQuestProgress, vfunc_2, 63, 0xE19C0415);
 
 // @0x140e8de60
 int CSidePopupConditionQuestProgress::vfunc_3()
 {
     return FUN_140e8dea0();
 }
+MS2_REPLACE_METHOD(0x140E8DE60, CSidePopupConditionQuestProgress, vfunc_3, 24, 0x4DCA262F);
 
 // @0x140e8de80
 int CSidePopupConditionQuestProgress::vfunc_4()
 {
     return FUN_140e8dea0();
 }
+MS2_REPLACE_METHOD(0x140E8DE80, CSidePopupConditionQuestProgress, vfunc_4, 24, 0x56AAF3CF);
 
 // @0x140e8dea0
 int CSidePopupConditionQuestProgress::FUN_140e8dea0()
@@ -187,6 +198,7 @@ int CSidePopupConditionQuestProgress::FUN_140e8dea0()
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x140E8DEA0, CSidePopupConditionQuestProgress, FUN_140e8dea0, 267, 0xF5F7BF4C);
 
 // ---- CSidePopupTalkTable ---------------------------------------------------------------------------------------------
 
@@ -255,6 +267,7 @@ MS2Ptr<SidePopupTalkParam> CSidePopupTalkTable::Find(eSidePopupEvent eKind, unsi
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x140E8E5B0, CSidePopupTalkTable, Find, 475, 0x7B711F9E);
 
 // @0x140e8e7a0
 MS2Ptr<SidePopupTalkParam> CSidePopupTalkTable::FindByMap(int nMapId)
@@ -272,6 +285,7 @@ MS2Ptr<SidePopupTalkParam> CSidePopupTalkTable::FindByMap(int nMapId)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x140E8E7A0, CSidePopupTalkTable, FindByMap, 350, 0x9BCABD96);
 
 // @0x140e90ce0
 SidePopupTalkParam::SidePopupTalkParam()

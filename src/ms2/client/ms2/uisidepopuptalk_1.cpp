@@ -93,6 +93,7 @@ void UISidePopupTalk::OnLoadComplete()
         FUN_140e88010(m_pending[i]);
     m_pending.RemoveAll();
 }
+MS2_REPLACE_METHOD(0x140E872B0, UISidePopupTalk, OnLoadComplete, 181, 0x318E81AB);
 
 // @0x140e87370
 void UISidePopupTalk::vfunc_43()
@@ -102,6 +103,7 @@ void UISidePopupTalk::vfunc_43()
     if (spEntity.get())
         spEntity->vfunc_2(5, 0, 0);
 }
+MS2_REPLACE_METHOD(0x140E87370, UISidePopupTalk, vfunc_43, 164, 0xA237E465);
 
 // @0x140e87420
 int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
@@ -174,6 +176,7 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x140E87420, UISidePopupTalk, vfunc_28, 1181, 0x8026C307);
 
 
 // @0x140e878d0
@@ -181,6 +184,7 @@ void UISidePopupTalk::vfunc_2()
 {
     UIHeadUpDisplay::vfunc_2();
 }
+MS2_REPLACE_METHOD(0x140E878D0, UISidePopupTalk, vfunc_2, 24, 0xCA049B49);
 
 
 // @0x140e878f0
@@ -195,6 +199,7 @@ void UISidePopupTalk::vfunc_3()
     }
     m_voices.RemoveAll();
 }
+MS2_REPLACE_METHOD(0x140E878F0, UISidePopupTalk, vfunc_3, 167, 0xC9B74047);
 
 
 // @0x140e879a0
@@ -226,6 +231,7 @@ void UISidePopupTalk::vfunc_o178_1(void* p)
             FUN_140e879a0(spParam);
     }
 }
+MS2_REPLACE_METHOD_VIA(0x140E87A40, UISidePopupTalk, UIQuestEventListener, vfunc_o178_1, 337, 0x5F70B326);
 
 // @0x140e87ba0
 void UISidePopupTalk::vfunc_o178_3(void* p)
@@ -242,6 +248,7 @@ void UISidePopupTalk::vfunc_o178_3(void* p)
             FUN_140e879a0(spParam);
     }
 }
+MS2_REPLACE_METHOD_VIA(0x140E87BA0, UISidePopupTalk, UIQuestEventListener, vfunc_o178_3, 337, 0x4B164C3C);
 
 // @0x140e87d00
 void UISidePopupTalk::vfunc_o178_2(void* p)
@@ -250,6 +257,7 @@ void UISidePopupTalk::vfunc_o178_2(void* p)
     if (spParam.get())
         FUN_140e879a0(spParam);
 }
+MS2_REPLACE_METHOD_VIA(0x140E87D00, UISidePopupTalk, UIQuestEventListener, vfunc_o178_2, 145, 0xE893A71B);
 
 // @0x140e87da0
 void UISidePopupTalk::vfunc_1(__int64 n, int a, int b)
@@ -277,6 +285,7 @@ void UISidePopupTalk::FUN_140e87ec0(NotifyObject* pNotify)
     if (spParam.get())
         FUN_140e879a0(spParam);
 }
+MS2_REPLACE_METHOD(0x140E87EC0, UISidePopupTalk, FUN_140e87ec0, 138, 0x3BC35300);
 
 // @0x140e87f50
 void UISidePopupTalk::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
@@ -289,6 +298,7 @@ void UISidePopupTalk::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
         pRetVal->SetInt((int)(nExpire - nNow));
     }
 }
+MS2_REPLACE_METHOD(0x140E87F50, UISidePopupTalk, vfunc_45, 181, 0xC6A4F5C2);
 
 
 // @0x140e88010
@@ -342,6 +352,7 @@ int UISidePopupTalk::FUN_140e88690(unsigned nId)
         return 0;
     return 1;
 }
+MS2_REPLACE_METHOD(0x140E88690, UISidePopupTalk, FUN_140e88690, 90, 0x43DD4ACF);
 
 // @0x140e886f0
 void UISidePopupTalk::FUN_140e886f0(int bVisible)
@@ -359,6 +370,7 @@ void UISidePopupTalk::FUN_140e886f0(int bVisible)
             pGuide->vfunc_8(bVisible);
     }
 }
+MS2_REPLACE_METHOD(0x140E886F0, UISidePopupTalk, FUN_140e886f0, 148, 0x698C3076);
 
 // The "type" member of a popup (an int through ASData; the COMDAT is this unit's).
 // @0x140e88a10
