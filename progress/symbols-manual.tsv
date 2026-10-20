@@ -3941,3 +3941,4 @@ __imp_NxGetUtilLib	142cced28	data
 DAT_143ae2b38	143ae2b38	data
 ??0Unk_BannerPtr@@QEAA@XZ	1418a6be0	func
 ??4Unk_BannerPtr@@QEAAAEAV0@H@Z	1418a6cb0	func
+?CreateObject@Movie@GFx@Scaleform@@QEAAXPEAVValue@23@PEBDPEBV423@I@Z	14256e8e0	func
