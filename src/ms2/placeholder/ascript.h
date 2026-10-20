@@ -88,6 +88,7 @@ class ASArray;
 class ASArgList;                        // the argument list of the Invoke back end (defined by the units using it)
 
 enum Unk_UgcOpenType : int;             // the upload kind of the UGC image upload dialog (uiugcimageuploaddialog.h)
+enum Unk_MouseCursorType : int;         // the AS cursor type of ASMouseCursor::changeType (asmousecursor.h)
 
 class AScript : public CPtred
 {
@@ -288,6 +289,20 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, float a1, float a2, CStringW a3, CStringW a4, CStringW a5, CStringW a6);   // 0x140e6e910 (inline COMDAT, defined in uioxquizdialog.cpp: "setQuizPromoteCooltime"; the strings by value)
     Scaleform::GFx::Value FUN_140fa7400(const char* szMethod, CStringW a1, CStringW a2, const wchar_t* a3, const wchar_t* a4);   // 0x140fa7400 (inline COMDAT, defined in uisystemshopdialog.cpp: "setShop"; a1/a2 by value)
     Scaleform::GFx::Value FUN_140fa7540(const char* szMethod, CStringW a1, CStringW a2, CStringW a3, CString a4);   // 0x140fa7540 (inline COMDAT, defined in uisystemshopdialog.cpp: "setShop"; all by value)
+
+    // AS member setters used by ASDisplayObject's width/height (asdisplayobject.cpp; ASObj declares the same COMDATs).
+    void FUN_1407cb9c0(const char* szName, int n);                       // set an int member
+    void FUN_1409c0d20(const char* szName, unsigned int n);              // set an unsigned member
+    void FUN_1409c4a30(const char* szName, float f);                     // set a float member
+    Scaleform::GFx::Value FUN_141a46b60(const char* szMethod, Scaleform::GFx::Value a1, CString a2);   // 0x141a46b60 (Invoke; inline COMDAT, first emitted in uiminimapentity.cpp; both by value: the callee destroys them; astextfieldex.cpp)
+    Scaleform::GFx::Value FUN_1422c1870(const char* szMethod, float a1, float a2, bool a3);   // 0x1422c1870 (Invoke; inline COMDAT, defined in asdisplayobject.cpp: hitTestPoint)
+    // AS member setters used by ASButton (asbutton.cpp; ASObj declares the same COMDATs)
+    void FUN_1407cbbe0(const char* szName, bool b);                      // set a bool member
+    void FUN_1407cba60(const char* szName, CString str);                 // set a string member
+    void FUN_1407cbb20(const char* szName, CStringW str);                // set a wide string member
+    Scaleform::GFx::Value FUN_1422e9170(const char* szMethod, CStringW a1, Scaleform::GFx::Value a2);   // 0x1422e9170 Invoke(method, string, value) (inline COMDAT, defined in asbuttongroup.cpp; both by value)
+    Scaleform::GFx::Value Invoke(const char* szMethod, Unk_MouseCursorType a1);      // 0x1422cef80 (inline COMDAT, defined in asmousecursor.cpp; an Int value)
+    void FUN_141b46a40(const char* szName, class ASFunction fn);         // set a member to an AS function (inline COMDAT, uiugcitemeditdialog.cpp; fn by value; aslistitemrenderer.cpp)
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {
