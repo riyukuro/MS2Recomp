@@ -269,7 +269,7 @@ int ASTooltip::FUN_1409e2750(void* pSkillAttr, int a1, unsigned a2)
     FUN_1409c6ec0(0x198);
     return 1;
 }
-MS2_REPLACE_METHOD(0x1409E2750, ASTooltip, FUN_1409e2750, 1517, 0x92AA5002);
+namespace p5hook { MS2_REPLACE_METHOD(0x1409E2750, ASTooltip, FUN_1409e2750, 1517, 0x92AA5002); }
 
 // @0x1409e2d50
 void ASTooltip::FUN_1409e2d50(int nCount)
@@ -359,7 +359,7 @@ bool ASTooltip::FUN_1409e3190(CMeratMarketPremiumProduct* pProduct, bool bWithNa
     FUN_1409c6dc0(5);
     return true;
 }
-MS2_REPLACE_METHOD(0x1409E3190, ASTooltip, FUN_1409e3190, 833, 0x2635AC39);
+namespace p5hook { MS2_REPLACE_METHOD(0x1409E3190, ASTooltip, FUN_1409e3190, 833, 0x2635AC39); }
 
 // @0x1409e5320
 CStringW FUN_1409e5320(const int& nSeason)
