@@ -74,6 +74,9 @@ public:
     MS2Ptr<NpcDataCli> FUN_1416c2220();                             // the npc data
     __int64 FUN_1416c22f0();                                        // the owner character id
     int FUN_1416c2350();                                            // the template (npc) id
+    CStringW FUN_1416c23b0();                                       // the name
+    CString FUN_1416c2520();                                        // the portrait path
+    CStringW FUN_1416c2570();                                       // the today word
 
     MS2Ptr<CPortal> m_portal;                                       // +0x18
     MS2Ptr<NpcDataCli> m_npc;                                       // +0x28
@@ -2068,3 +2071,102 @@ void UIMinimapDialog::FUN_141a3add0()
     m_maxPanel->Invoke("checkIcons", icons.FUN_1422bb870());
     m_210 = true;
 }
+
+// @0x141a3b130
+void UIMinimapDialog::FUN_141a3b130(unsigned __int64 nId, int nColor, const efd::Point3& kPos)
+{
+    if (FUN_141a45ce0()) {
+        EntityPtr spEntity(0);
+        if (m_pings.Lookup(nId, spEntity)) {
+            FUN_141a3b390(nId, nColor, spEntity, kPos);
+        } else {
+            spEntity.AssignRaw(new UIMinimapEntityPing(kPos));
+            if (FUN_141a3e7d0(spEntity)) {
+                m_30->Invoke("onTabKeyDown");
+                m_30->Invoke("onTabKeyUp");
+                m_pings.SetAt(nId, spEntity);
+                FUN_141a3b390(nId, nColor, spEntity, kPos);
+            }
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141a3b130, UIMinimapDialog, FUN_141a3b130, 0, 0);
+
+// @0x141a3b390
+void UIMinimapDialog::FUN_141a3b390(unsigned __int64 nId, int nColor, EntityPtr spEntity, const efd::Point3& kPos)
+{
+    if (spEntity == 0)
+        return;
+    MS2Ptr<UIMinimapEntityPing> spPing = dynamic_cast<UIMinimapEntityPing*>(static_cast<UIMinimapEntity*>(spEntity));
+    if (spPing == 0)
+        return;
+    spPing->FUN_141a35000(nId, nColor, kPos, FUN_141a45d50(nId));
+}
+
+// @0x141a3b4d0
+void UIMinimapDialog::FUN_141a3b4d0(unsigned int& nQuest, unsigned __int64& nId)
+{
+    nQuest = m_468;
+    nId = m_460;
+}
+MS2_REPLACE_METHOD(0x141a3b4d0, UIMinimapDialog, FUN_141a3b4d0, 0, 0);
+
+// @0x141a3b510
+UIMinimapDialog::EntityPtr UIMinimapDialog::FUN_141a3b510(ProxyPtr spProxy)
+{
+    if (m_30 == 0)
+        return EntityPtr(0);
+    if (spProxy == 0)
+        return EntityPtr(0);
+    EntityPtr spEntity(0);
+    if (m_proxies.Lookup(spProxy, spEntity))
+        return spEntity;
+    return EntityPtr(0);
+}
+
+// @0x141a3b660
+UIMinimapDialog::HomeListPtr UIMinimapDialog::FUN_141a3b660(const int& nField)
+{
+    HomeListPtr spHomes(0);
+    m_homes.Lookup(nField, spHomes);
+    return spHomes;
+}
+MS2_REPLACE_METHOD(0x141a3b660, UIMinimapDialog, FUN_141a3b660, 0, 0);
+
+// @0x141a3b6f0
+void UIMinimapDialog::FUN_141a3b6f0()
+{
+    if (m_showAttrs.IsEmpty()) {
+        m_showAttrs.SetAt(s_strLayerShop, new TShowAttr(1, 0, L"$s_minimap_shop"));
+        m_showAttrs.SetAt(s_strLayerFriendly, new TShowAttr(0, 1, L"$s_minimap_friendly_npc"));
+        if (FUN_140166410()->FUN_14036d570(0x8d))
+            m_showAttrs.SetAt(s_strLayerTamingPet, new TShowAttr(1, 2, L"$s_minimap_taming_pet"));
+        m_showAttrs.SetAt(s_strLayerPortal, new TShowAttr(1, 3, L"$s_minimap_portal"));
+        m_showAttrs.SetAt(s_strLayerBuddy, new TShowAttr(1, 4, L"$s_minimap_buddy"));
+        m_showAttrs.SetAt(s_strLayerPc, new TShowAttr(1, 5, L"$s_minimap_other_pc"));
+        m_showAttrs.SetAt(s_strLayerText, new TShowAttr(1, 6, L"$s_minimap_text"));
+    }
+}
+
+CString FUN_141028be0(__int64 nCharId, const CString& strKey, int nFlag, CString strEmpty);   // the profile image key
+
+// @0x141a3bda0
+bool UIMinimapDialog::FUN_141a3bda0(ASObj& data, ProxyPtr spProxy)
+{
+    if (spProxy == 0)
+        return false;
+    CString strPath = FUN_141028be0(spProxy->FUN_1416c22f0(), spProxy->FUN_1416c2520(), 1, CString(""));
+    CString strId = FUN_140719530(spProxy->FUN_1416c22f0());
+    data.FUN_1407cba60("imgpath", strPath);
+    data.FUN_1407cba60("charid", strId);
+    CStringW strText = FUN_1408f71a0(L"s_tooltip_todayword", spProxy->FUN_1416c23b0(), spProxy->FUN_1416c2570());
+    ASObj tooltip(2);
+    tooltip.FUN_1409c0dc0("className", "export_common_tooltip_tooltipText");
+    tooltip.FUN_1407cbb20("text", strText);
+    tooltip.FUN_1409c0dc0("align", "bottomLeft");
+    tooltip.FUN_1407cb9c0("onDelay", 300);
+    tooltip.FUN_1407cb9c0("offDelay", 60000);
+    data.FUN_1409eb270("tooltipData", tooltip);
+    return true;
+}
+MS2_REPLACE_METHOD(0x141a3bda0, UIMinimapDialog, FUN_141a3bda0, 0, 0);
