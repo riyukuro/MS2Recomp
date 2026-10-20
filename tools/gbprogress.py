@@ -46,8 +46,9 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb1"                                  # bump to recompile everything
-MATCH_KEY = "callee9"                        # bump to re-match every obj (pairing logic changed)
-COPY_ROUNDS = 4                              # assign_copies: offers of an unpaired copy to the next claimant
+MATCH_KEY = "callee9-leaf"                        # bump to re-match every obj (pairing logic changed)
+LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
+COPY_ROUNDS = 8                              # assign_copies: offers of an unpaired copy to the next claimant
 NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
 if NO_CALLEE:
     MATCH_KEY = "nocallee"
@@ -136,13 +137,22 @@ def _init():
     bylen = collections.defaultdict(list)
     for rva, (end, _) in exe.rf.items():
         bylen[end - rva].append(rva)
+    # leaf functions (no stack frame, no calls) have no .pdata entry: their length comes from the function map
+    leaf = set()
+    for line in open(FUNCS):
+        p = line.rstrip("\n").split("\t")
+        if p[0] and not p[0].startswith("#"):
+            rva = int(p[0], 16) - exe.base
+            if rva not in exe.rf and int(p[1]) > 0:
+                bylen[int(p[1])].append(rva)
+                leaf.add(rva)
     game = []
     for line in open(UNITS_TSV):
         p = line.rstrip("\n").split("\t")
         if not p[0].startswith("#") and len(p) > 1:
             game.append((int(p[0], 16), int(p[1], 16)))
     game.sort()
-    G.update(exe=exe, names=names, dnames=dnames, bylen=bylen, game=game, game_lo=[a for a, _ in game])
+    G.update(exe=exe, names=names, dnames=dnames, bylen=bylen, leaf=leaf, game=game, game_lo=[a for a, _ in game])
 
 
 def _in_game(va):
@@ -241,7 +251,7 @@ def match_obj(path):
         nxt = []
         for n in pending:
             va = callees.get(n)
-            if va is None or va - exe.base not in exe.rf or (n, va) in tried:
+            if va is None or (va - exe.base not in exe.rf and va - exe.base not in G["leaf"]) or (n, va) in tried:
                 nxt.append(n)
                 continue
             tried.add((n, va))
@@ -325,6 +335,17 @@ def _verify_job(job):
     return path, xok
 
 
+def _small_leaf():
+    """exe VAs of the leaf functions (no .pdata) shorter than LEAF_SMALL bytes"""
+    exe = bm.Exe(bm.EXE)
+    out = set()
+    for line in open(FUNCS):
+        p = line.rstrip("\n").split("\t")
+        if p[0] and not p[0].startswith("#") and int(p[1]) < LEAF_SMALL and int(p[0], 16) - exe.base not in exe.rf:
+            out.add(int(p[0], 16))
+    return out
+
+
 def assign_copies(res, cgroups, paths, j, log=print):
     """Pair the objs' unpaired functions that have several byte-identical exe copies (template instantiations of
     same-size types, e.g. map<utf8string,int> / map<utf8string,unsigned int>, kept apart by the linker): every copy no
@@ -333,6 +354,7 @@ def assign_copies(res, cgroups, paths, j, log=print):
     first copy that matches exactly; a callee named in the tables tells same-byte copies apart). Writes
     res[key]["xpairs"] (match results cached per obj result in res[key]["xok"])."""
     claimed = {va for c in res.values() for _, va, ok, _ in c["pairs"] if ok}
+    small_leaf = _small_leaf()
     groups = collections.defaultdict(list)
     for k, c in res.items():
         for n, gid in c.get("cands", ()):
@@ -355,6 +377,8 @@ def assign_copies(res, cgroups, paths, j, log=print):
                 if v in claimed or (v, k) in refused:
                     continue
                 d = dist(k, v)
+                if v in small_leaf and d > LEAF_NEAR:     # a few-byte leaf body (ret, return a constant) says
+                    continue                              # nothing about its TU: only near the obj's own code
                 if v not in owner or (d, k) < owner[v]:
                     owner[v] = (d, k)
         todo = collections.defaultdict(list)
