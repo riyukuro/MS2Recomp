@@ -53,6 +53,7 @@ public:
     void FUN_140cfd170(const char* szName, int n);                       // same body, a second instance
     void FUN_140f3f020(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uienchantscrolldialog.cpp)
     void FUN_140fbd930(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uivipgoodsshopdialog.cpp)
+    void FUN_141b62da0(const char* szName, int n);                       // set an int (enum) member via ASData (inline COMDAT, uiworldmapdialog.cpp: "tileType")
     void FUN_141a65c70(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uinpccontroldialog.cpp)
     void FUN_140fe95a0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiweddingpage.cpp)
     void FUN_1412d4860(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiitemoptioncreatedialog.cpp)
@@ -71,6 +72,7 @@ public:
     void FUN_141b46af0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiugcitemeditdialog.cpp)
     void FUN_141b46b90(const char* szName, int n);                       // same body, a second instance
     void FUN_140e88a10(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uisidepopuptalk_1.cpp: the popup "type")
+    void FUN_141a472c0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiminimapentity.cpp: "groupType")
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
 

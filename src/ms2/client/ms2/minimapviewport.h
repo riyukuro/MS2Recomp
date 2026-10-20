@@ -8,6 +8,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/fielddatacli.h"   // Unk_GVec3 / Unk_Rect4 / Unk_Frustum / CMinimap / CFieldDataCli
 #include <NiRefObject.h>
+class NiPoint3;
 
 // NiRect<float>::GetHeight / GetWidth over the 16-byte screen rect. The exe copies are the tail of this unit's range
 // (0x141486d30 / 0x141486d90) and are reached as free functions: a member's thiscall (object in rcx) is the same
@@ -54,6 +55,7 @@ public:
     // Projects a world position onto the minimap with the current zoom.
     void FUN_141486410(const Unk_GVec3& kPos, Unk_GVec3& kOut);                     // 0x141486410
     bool FUN_141486450(const Unk_GVec3& kPos, Unk_GVec3& kOut, float fScale);       // 0x141486450
+    bool FUN_141486410(const NiPoint3& kPos, NiPoint3& kOut);                      // 0x141486410 (NiPoint3 form, returns the in-view flag; uiminimapentity.cpp)
     // Transforms a world position by m_afMatrix; false (and FLT_MAX outputs) when it is behind the camera.
     bool FUN_141486550(const Unk_GVec3& kPos, float& fX, float& fY, float& fZ);     // 0x141486550
 
