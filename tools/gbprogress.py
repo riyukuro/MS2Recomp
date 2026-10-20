@@ -625,7 +625,9 @@ def _drop_foreign_stubs(rows, starts, named):
         for c, n in zip(comps, size):
             if n == big or (c[0] < hi + FOREIGN_FAR and c[-1] > lo - FOREIGN_FAR):
                 continue
-            if any((unit, v) in named for v in c):
+            # a name-table pair only anchors the run when it is exact: a functional one is a game /Od copy of an
+            # inline the engine TU emitted optimised (NiPlane::SetConstant 0x141c1bb10 for NiHalfSpaceBV)
+            if any((unit, v) in named and rows[v][2] == "matched" for v in c):
                 continue
             for v in c:
                 if rows[v][2] == "stub":
