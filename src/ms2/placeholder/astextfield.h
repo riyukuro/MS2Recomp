@@ -25,5 +25,6 @@ public:
     double FUN_1422c5970();                                             // the text width (uivipdialog.cpp)
     void FUN_1422c5170(int nMaxChars);                                  // set the "maxChars" member (uitradedialogex.cpp)
     void FUN_1422de780(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // "focusOut" listener (uitradedialogex.cpp)
+    int FUN_1422c58b0();                                                // "maxScrollV" (uimessenger.cpp)
 };
 MS2_CHECK_SIZE(ASTextField, 0x80);                                      // exe allocates 0x80 bytes
