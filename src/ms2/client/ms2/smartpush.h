@@ -146,6 +146,7 @@ MS2_CHECK_SIZE(CSmartPushSafeWaterRidingToggle, 0x38);
 class CSmartPushAutoInteraction : public CSmartPush
 {
 public:
+    virtual ~CSmartPushAutoInteraction() {}
     virtual void vfunc_4(int nValue);                           // 0x140dd2da0 "s_mastery_autointeraction_result"
     virtual CStringW vfunc_7();                                 // 0x140dd2f10
     virtual void vfunc_3();                                     // 0x140dd2fc0
@@ -159,6 +160,7 @@ MS2_CHECK_SIZE(CSmartPushAutoInteraction, 0x38);
 class CSmartPushAutoInteractObject : public CSmartPushAutoInteraction
 {
 public:
+    virtual ~CSmartPushAutoInteractObject() {}
     virtual int vfunc_6();                                      // 0x140dd3cb0
     virtual int vfunc_13();                                     // 0x140dd3d10
     virtual int vfunc_14();                                     // 0x140dd3d50
@@ -170,6 +172,7 @@ MS2_CHECK_SIZE(CSmartPushAutoInteractObject, 0x38);
 class CSmartPushAutoFunctionCubeObject : public CSmartPushAutoInteraction
 {
 public:
+    virtual ~CSmartPushAutoFunctionCubeObject() {}
     virtual int vfunc_6();                                      // 0x140dd40a0
     virtual int vfunc_13();                                     // 0x140dd4130
     virtual int vfunc_14();                                     // 0x140dd41b0
@@ -180,24 +183,28 @@ MS2_CHECK_SIZE(CSmartPushAutoFunctionCubeObject, 0x38);
 class CSmartPushAutoGathering : public CSmartPushAutoInteractObject
 {
 public:
+    virtual ~CSmartPushAutoGathering() {}
     static ClassObject* CreateObject();                         // 0x140dd44c0
     virtual CStringW vfunc_1();                                 // 0x140dd4520
 };
 class CSmartPushAutoMining : public CSmartPushAutoInteractObject
 {
 public:
+    virtual ~CSmartPushAutoMining() {}
     static ClassObject* CreateObject();                         // 0x140dd4570
     virtual CStringW vfunc_1();                                 // 0x140dd45d0
 };
 class CSmartPushAutoBreeding : public CSmartPushAutoFunctionCubeObject
 {
 public:
+    virtual ~CSmartPushAutoBreeding() {}
     static ClassObject* CreateObject();                         // 0x140dd4620
     virtual CStringW vfunc_1();                                 // 0x140dd4680
 };
 class CSmartPushAutoFarming : public CSmartPushAutoFunctionCubeObject
 {
 public:
+    virtual ~CSmartPushAutoFarming() {}
     static ClassObject* CreateObject();                         // 0x140dd46d0
     virtual CStringW vfunc_1();                                 // 0x140dd4730
 };
@@ -207,6 +214,7 @@ public:
 class CSmartPushAutoInteractObjectBuffItem : public CSmartPushAutoInteractObject
 {
 public:
+    virtual ~CSmartPushAutoInteractObjectBuffItem() {}
     virtual void vfunc_3();                                     // 0x140dd4780
     virtual int vfunc_14();                                     // 0x140dd4b40 the buff item id
     bool FUN_140dd4b70(int nResult, const CMsgBoxData& data);   // message box answer: use the item
@@ -218,6 +226,7 @@ MS2_CHECK_SIZE(CSmartPushAutoInteractObjectBuffItem, 0x40);
 class CSmartPushAutoFunctionCubeObjectBuffItem : public CSmartPushAutoFunctionCubeObject
 {
 public:
+    virtual ~CSmartPushAutoFunctionCubeObjectBuffItem() {}
     virtual void vfunc_3();                                     // 0x140dd4c00
     virtual int vfunc_14();                                     // 0x140dd4fc0
     bool FUN_140dd4ff0(int nResult, const CMsgBoxData& data);
@@ -229,6 +238,7 @@ MS2_CHECK_SIZE(CSmartPushAutoFunctionCubeObjectBuffItem, 0x40);
 class CSmartPushAutoGatheringBuff : public CSmartPushAutoInteractObjectBuffItem
 {
 public:
+    virtual ~CSmartPushAutoGatheringBuff() {}
     CSmartPushAutoGatheringBuff() { m_nAbility = 0x47; }        // 0x140dd6cd0
     static ClassObject* CreateObject();                         // 0x140dd5080
     virtual CStringW vfunc_1();                                 // 0x140dd50e0
@@ -236,6 +246,7 @@ public:
 class CSmartPushAutoMiningBuff : public CSmartPushAutoInteractObjectBuffItem
 {
 public:
+    virtual ~CSmartPushAutoMiningBuff() {}
     CSmartPushAutoMiningBuff() { m_nAbility = 0x43; }           // 0x140dd6dd0
     static ClassObject* CreateObject();                         // 0x140dd5130
     virtual CStringW vfunc_1();                                 // 0x140dd5190
@@ -243,6 +254,7 @@ public:
 class CSmartPushAutoBreedingBuff : public CSmartPushAutoFunctionCubeObjectBuffItem
 {
 public:
+    virtual ~CSmartPushAutoBreedingBuff() {}
     CSmartPushAutoBreedingBuff() { m_nAbility = 0x44; }         // 0x140dd6b90
     static ClassObject* CreateObject();                         // 0x140dd51e0
     virtual CStringW vfunc_1();                                 // 0x140dd5240
@@ -250,6 +262,7 @@ public:
 class CSmartPushAutoFarmingBuff : public CSmartPushAutoFunctionCubeObjectBuffItem
 {
 public:
+    virtual ~CSmartPushAutoFarmingBuff() {}
     CSmartPushAutoFarmingBuff() { m_nAbility = 0x48; }          // 0x140dd6c00
     static ClassObject* CreateObject();                         // 0x140dd5290
     virtual CStringW vfunc_1();                                 // 0x140dd52f0

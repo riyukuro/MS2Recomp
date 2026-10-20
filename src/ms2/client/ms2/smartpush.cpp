@@ -342,19 +342,17 @@ void CSmartPush::vfunc_4(int nValue)
     }
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dcf590
 void CSmartPush::vfunc_5(bool bAccept)
 {
-    if (!(m_data == 0))
-    {
-        COutPacket packet(0x83, 0);
-        packet.vfunc_o10_3(m_nId);
-        packet.vfunc_o10_3(m_n1c);
-        packet.vfunc_o10_3(0);
-        packet.vfunc_o10_0(bAccept);
-        FUN_140710590(packet);
-    }
+    if (m_data == 0)
+        return;
+    COutPacket packet(0x83, 0);
+    packet.vfunc_o10_3(m_nId);
+    packet.vfunc_o10_3(m_n1c);
+    packet.vfunc_o10_3(0);
+    packet.vfunc_o10_0(bAccept);
+    FUN_140710590(packet);
 }
 
 // @0x140dcf640
@@ -401,12 +399,12 @@ bool CSmartPush::vfunc_12()
     return false;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dcf800
 bool CSmartPush::FUN_140dcf800(int nResult, const CMsgBoxData& data)
 {
-    if (nResult == 0)
-        vfunc_5(false);
+    if (nResult != 0)
+        return true;
+    vfunc_5(false);
     return true;
 }
 
@@ -439,7 +437,7 @@ CSmartPushAutoFishing::~CSmartPushAutoFishing()
 // @0x140dcf960
 void CSmartPushAutoFishing::vfunc_2()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return;
     if (CFishingManager::GetInstance()->FUN_140954150() == 0)
@@ -529,25 +527,29 @@ void CSmartPushAutoFishing::vfunc_4(int nValue)
     CGameOption::GetInstance()->FUN_141243540();
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd0470
 int CSmartPushAutoFishing::vfunc_6()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     if (CFishingManager::GetInstance()->FUN_140954150() == 0)
         return 0;
-    return pMy->FUN_1416749a0()->FUN_1409701d0(1) == 0 ? 1 : 2;
+    if (pMy->FUN_1416749a0()->FUN_1409701d0(1))
+        return 2;
+    return 1;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd04e0
 CStringW CSmartPushAutoFishing::vfunc_7()
 {
     if (m_nState == 2)
-        return FUN_14028b8e0(CStringW(L"s_smartpush_autofishing_active"));
-    return FUN_14028b8e0(CStringW(L"s_smartpush_autofishing"));
+    {
+        CStringW strKey(L"s_smartpush_autofishing_active");
+        return FUN_14028b8e0(strKey);
+    }
+    CStringW strKey(L"s_smartpush_autofishing");
+    return FUN_14028b8e0(strKey);
 }
 
 // @0x140dd05a0
@@ -556,15 +558,16 @@ CStringW CSmartPushAutoFishing::vfunc_8()
     return CStringW(L"UISmartPush_autofish");
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd05f0
 CStringW CSmartPushAutoFishing::vfunc_10()
 {
     unsigned nSale = CGameRule::GetInstance()->FUN_140479900();
-    if (nSale == 0)
-        return CStringW(L"");
-    nSale /= 100;
-    return FUN_140938ae0(CStringW(L"s_smartpush_autoaction_sale_popup"), nSale);
+    if (nSale != 0)
+    {
+        unsigned nRate = nSale / 100;
+        return FUN_140938ae0(CStringW(L"s_smartpush_autoaction_sale_popup"), nRate);
+    }
+    return CStringW(L"");
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
@@ -669,7 +672,7 @@ CSmartPushAutoPlayInstrument::~CSmartPushAutoPlayInstrument()
 // @0x140dd0d50
 void CSmartPushAutoPlayInstrument::vfunc_2()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0 || pMy->FUN_14166c930() != 0x2f)
         return;
     int nBlocked = FUN_140c8dac0()->FUN_140d071b0();
@@ -770,11 +773,10 @@ void CSmartPushAutoPlayInstrument::vfunc_4(int nValue)
     CSmartPush::vfunc_4(nValue);
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd1830
 int CSmartPushAutoPlayInstrument::vfunc_6()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     if (pMy->FUN_14166c930() != 0x2f)
@@ -783,16 +785,21 @@ int CSmartPushAutoPlayInstrument::vfunc_6()
         return 0;
     if (FUN_140c8dac0()->FUN_140d07370())
         return 0;
-    return FUN_140c8dac0()->FUN_140d071b0() == 0 ? 1 : 2;
+    if (FUN_140c8dac0()->FUN_140d071b0())
+        return 2;
+    return 1;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd18d0
 CStringW CSmartPushAutoPlayInstrument::vfunc_7()
 {
     if (m_nState == 2)
-        return FUN_14028b8e0(CStringW(L"s_msg_auto_play_instrument_active"));
-    return FUN_14028b8e0(CStringW(L"s_msg_auto_play_instrument"));
+    {
+        CStringW strKey(L"s_msg_auto_play_instrument_active");
+        return FUN_14028b8e0(strKey);
+    }
+    CStringW strKey(L"s_msg_auto_play_instrument");
+    return FUN_14028b8e0(strKey);
 }
 
 // @0x140dd1990
@@ -801,15 +808,16 @@ CStringW CSmartPushAutoPlayInstrument::vfunc_8()
     return CStringW(L"UISmartPush_autofish");
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd19e0
 CStringW CSmartPushAutoPlayInstrument::vfunc_10()
 {
     unsigned nSale = CGameRule::GetInstance()->FUN_140479a20();
-    if (nSale == 0)
-        return CStringW(L"");
-    nSale /= 100;
-    return FUN_140938ae0(CStringW(L"s_smartpush_autoaction_sale_popup"), nSale);
+    if (nSale != 0)
+    {
+        unsigned nRate = nSale / 100;
+        return FUN_140938ae0(CStringW(L"s_smartpush_autoaction_sale_popup"), nRate);
+    }
+    return CStringW(L"");
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
@@ -913,7 +921,7 @@ CSmartPushSafeRiding::~CSmartPushSafeRiding()
 // @0x140dd2140
 int CSmartPushSafeRiding::vfunc_6()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     if (pMy->FUN_1416764d0() == 0)
@@ -925,13 +933,16 @@ int CSmartPushSafeRiding::vfunc_6()
     return pMy->FUN_1416749a0()->FUN_1409701d0(2) == 0 ? 1 : 2;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd22a0
 CStringW CSmartPushSafeRiding::vfunc_7()
 {
     if (m_nState == 2)
-        return FUN_14028b8e0(CStringW(L"s_smartpush_saferiding_active"));
-    return FUN_14028b8e0(CStringW(L"s_smartpush_saferiding"));
+    {
+        CStringW strKey(L"s_smartpush_saferiding_active");
+        return FUN_14028b8e0(strKey);
+    }
+    CStringW strKey(L"s_smartpush_saferiding");
+    return FUN_14028b8e0(strKey);
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
@@ -943,16 +954,15 @@ CStringW CSmartPushSafeRiding::vfunc_9()
     return FUN_140c160b0(CStringW(L"s_smartpush_saferiding_rbmerat_desc"), m_data->m_nRequireMerat);
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd2470
 bool CSmartPushSafeRiding::vfunc_12()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return false;
-    if (!FUN_140ba4fa0()->FUN_1401955f0(pMy->vfunc_141()))
-        return false;
-    return true;
+    if (FUN_140ba4fa0()->FUN_1401955f0(pMy->vfunc_141()))
+        return true;
+    return false;
 }
 
 // ---- CSmartPushSafeWaterRiding ------------------------------------------------------------------------------------------
@@ -983,7 +993,7 @@ CSmartPushSafeWaterRiding::~CSmartPushSafeWaterRiding()
 // @0x140dd2600
 int CSmartPushSafeWaterRiding::vfunc_6()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     if (pMy->FUN_1416764d0() == 0)
@@ -997,13 +1007,16 @@ int CSmartPushSafeWaterRiding::vfunc_6()
     return pMy->FUN_1416749a0()->FUN_1409701d0(3) == 0 ? 1 : 2;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd2790
 CStringW CSmartPushSafeWaterRiding::vfunc_7()
 {
     if (m_nState == 2)
-        return FUN_14028b8e0(CStringW(L"s_smartpush_saferiding_water_active"));
-    return FUN_14028b8e0(CStringW(L"s_smartpush_saferiding_water"));
+    {
+        CStringW strKey(L"s_smartpush_saferiding_water_active");
+        return FUN_14028b8e0(strKey);
+    }
+    CStringW strKey(L"s_smartpush_saferiding_water");
+    return FUN_14028b8e0(strKey);
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
@@ -1039,10 +1052,11 @@ CSmartPushSafeWaterRidingToggle::~CSmartPushSafeWaterRidingToggle()
 {
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd2a80
 void CSmartPushSafeWaterRidingToggle::vfunc_3()
 {
+    if (m_data == 0)
+        return;
     COutPacket packet(0x83, 0);
     packet.vfunc_o10_3(m_nId);
     packet.vfunc_o10_3(m_n1c);
@@ -1060,7 +1074,7 @@ void CSmartPushSafeWaterRidingToggle::vfunc_13()
 // @0x140dd2b30
 int CSmartPushSafeWaterRidingToggle::vfunc_6()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     if (pMy->FUN_1416764d0() == 0)
@@ -1074,13 +1088,16 @@ int CSmartPushSafeWaterRidingToggle::vfunc_6()
     return pMy->FUN_1416749a0()->FUN_1409701d0(3) == 0 ? 1 : 2;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd2cc0
 CStringW CSmartPushSafeWaterRidingToggle::vfunc_7()
 {
     if (m_nState == 2)
-        return FUN_14028b8e0(CStringW(L"s_smartpush_saferiding_water_active"));
-    return FUN_14028b8e0(CStringW(L"s_smartpush_saferiding_water"));
+    {
+        CStringW strKey(L"s_smartpush_saferiding_water_active");
+        return FUN_14028b8e0(strKey);
+    }
+    CStringW strKey(L"s_smartpush_saferiding_water");
+    return FUN_14028b8e0(strKey);
 }
 
 // @0x140dd2d80
@@ -1109,13 +1126,13 @@ void CSmartPushAutoInteraction::vfunc_4(int nValue)
     FUN_140458df0(&DAT_143ab3150, nRecipe, nUsed + nValue);
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd2f10
 CStringW CSmartPushAutoInteraction::vfunc_7()
 {
     CStringW strMastery = m_data->m_strContent;
     strMastery.MakeLower();
-    return FUN_14028b8e0(FUN_1401e8510(L"s_mastery_{0}_button", strMastery));
+    CStringW strKey = FUN_1401e8510(L"s_mastery_{0}_button", strMastery);
+    return FUN_14028b8e0(strKey);
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
@@ -1182,7 +1199,7 @@ bool CSmartPushAutoInteraction::FUN_140dd3a70(int nResult, const CMsgBoxData& da
 {
     if (nResult == 0)
     {
-        MyPC* pMy = Unk_SpGetMyPC();
+        MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
         if (pMy != 0)
         {
             CStringW strCount = data.FUN_141a02d50();
@@ -1212,7 +1229,7 @@ bool CSmartPushAutoInteraction::FUN_140dd3a70(int nResult, const CMsgBoxData& da
 // @0x140dd3cb0
 int CSmartPushAutoInteractObject::vfunc_6()
 {
-    if (Unk_SpGetMyPC() == 0)
+    if (static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0()) == 0)
         return 0;
     CInteractGatheringObject* pObj = FUN_140dd3dd0();
     if (pObj == 0)
@@ -1241,7 +1258,7 @@ int CSmartPushAutoInteractObject::vfunc_14()
 // @0x140dd3dd0
 CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     int nKind = m_data->m_nActionValue;
@@ -1267,17 +1284,19 @@ CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
 
 // ---- CSmartPushAutoFunctionCubeObject -----------------------------------------------------------------------------------
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd40a0
 int CSmartPushAutoFunctionCubeObject::vfunc_6()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
-    if (pMy != 0 && FUN_1416595b0(pMy) == 0 && FUN_1409670e0()->FUN_1410d5640())
-    {
-        CHomemadeCubeObject* pCube = FUN_140dd4230();
-        if (pCube != 0 && pCube->FUN_141229000(1) != 0)
-            return 1;
-    }
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    if (pMy == 0)
+        return 0;
+    if (FUN_1416595b0(pMy) != 0)
+        return 0;
+    if (!FUN_1409670e0()->FUN_1410d5640())
+        return 0;
+    CHomemadeCubeObject* pCube = FUN_140dd4230();
+    if (pCube != 0 && pCube->FUN_141229000(1) != 0)
+        return 1;
     return 0;
 }
 
@@ -1285,7 +1304,7 @@ int CSmartPushAutoFunctionCubeObject::vfunc_6()
 // @0x140dd4130
 int CSmartPushAutoFunctionCubeObject::vfunc_13()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     __int64 nOwner = FUN_141656ad0(pMy);
@@ -1293,21 +1312,28 @@ int CSmartPushAutoFunctionCubeObject::vfunc_13()
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
+// The homemade cube seen through the data copy (statehomemade.cpp owns the COMDAT at 0x140ca6580).
+class Unk_HmCube : public CHomemadeCubeObject
+{
+public:
+    // @0x140ca6580
+    MS2Ptr<FunctionCubeData> FUN_140ca6580() { return m_spData; }
+};
+
 // @0x140dd41b0
 int CSmartPushAutoFunctionCubeObject::vfunc_14()
 {
     CHomemadeCubeObject* pCube = FUN_140dd4230();
     if (pCube == 0)
         return 0;
-    MS2Ptr<FunctionCubeData> spData = pCube->m_spData;
-    return spData->m_n100;
+    return static_cast<Unk_HmCube*>(pCube)->FUN_140ca6580()->m_n100;
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd4230
 CHomemadeCubeObject* CSmartPushAutoFunctionCubeObject::FUN_140dd4230()
 {
-    MyPC* pMy = Unk_SpGetMyPC();
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     int nKind = m_data->m_nActionValue;
