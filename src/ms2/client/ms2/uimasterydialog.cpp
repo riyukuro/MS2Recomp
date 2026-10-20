@@ -414,7 +414,7 @@ int FUN_1406198a0(int n, float f);
 int FUN_1404820b0(int n, float f);
 CStringW FUN_14183e9c0(CStringW str, int nRank);
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW FUN_140bfa7f0(CStringW strKey, CStringW strName, const int* pCount);
+CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nCount);   // string table format (name, count): the FMT_VARIADIC_W <CStringW, int> instance
 int FUN_140930e10();
 CString FUN_140c43630(const char* szFmt, const unsigned __int64& n);
 CStringW FUN_140938ae0(CStringW strKey, const int& n);
@@ -1830,7 +1830,7 @@ CStringW UIMasteryDialog::FUN_140eb7c50(int nType)
     int nRewards = FUN_140e5ca20()->FUN_140b6d140(nType);
     if (nRewards == 0)
         return strName;
-    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, &nRewards);
+    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
 }
 
 // @0x140eb7d40
@@ -1840,7 +1840,7 @@ CStringW UIMasteryDialog::FUN_140eb7d40()
     int nRewards = FUN_140930e10();
     if (nRewards == 0)
         return strName;
-    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, &nRewards);
+    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
 }
 
 // @0x140eb7e30

@@ -405,7 +405,7 @@ CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_1409eec40(int nId);
 void FUN_141276180(const CString& a, const CString& b);
 CStringW FUN_14093b970(unsigned nId);
-CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int* pValue);
+CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nValue);
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);
 extern unsigned int DAT_143af3960;                                      // pending refresh flags of the panel
@@ -994,7 +994,7 @@ void UIMainPlayerInfo::FUN_1419f0bb0(Unk_MpAchieve* pAchieve)
         {
             pAchieve->m_18 = fPercent;
             int nPercent = (int)fPercent;
-            CStringW strMessage = FUN_140bfa7f0(CStringW(L"s_achieve_progress_notify_integer"), FUN_14093b970(pAchieve->FUN_1409399f0()), &nPercent);
+            CStringW strMessage = FUN_140bfa7f0(CStringW(L"s_achieve_progress_notify_integer"), FUN_14093b970(pAchieve->FUN_1409399f0()), nPercent);
             FUN_1419f0ef0(strMessage, "achieve");
         }
     }
