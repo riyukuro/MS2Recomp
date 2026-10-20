@@ -32,6 +32,7 @@ struct Unk_PartyRecruitRequest {
 MS2_CHECK_SIZE(Unk_PartyRecruitRequest, 0x10);
 class CMatchPartyRecruitSchCond : public CPtred {
 public:
+    CMatchPartyRecruitSchCond();                                // 0x1406943b0 (calls Reset)
     int fieldId, category;
     unsigned char kind;
     CStringW text;
