@@ -290,6 +290,7 @@ public:
     void OnClickShowMyEquip();                                      // 0x1412ff7f0
     void OnClickUnequipAll();                                       // 0x1412ff9a0
     void OnClickBuyMerat();                                         // 0x1412ffb40
+    void OnClickBuy(const CStringA& strMovie, ASData& data);         // 0x1412ffb80 "OnClickBuy"
     void OnClickRandomSalePick(const CStringA& strName, ASData& data);   // 0x1413000d0
     // foreign (other fragments)
     void OnSelectLimited(UIMeratMarketDialogUtil::ASOutData& out);  // 0x141305e70 foreign

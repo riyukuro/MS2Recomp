@@ -509,6 +509,9 @@ CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nOption);  // U
 CStringW FormatStringId(int nId, const fmt::ArgList& args);                 // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
 int FUN_140ebf520(MS2Ptr<CMeratMarketProduct> spProduct, AScript* pRow);    // UIMeratMarketCommon: the price kind of a click
+// UIMeratMarketCommon: opens the bill of a product (the common unit models it without the movie / row value)
+void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<TMeratMarketBillDataParam> spParam,
+                   Scaleform::GFx::Value& vRow, __int64 nSeller, int nCount);
 void FUN_140ebf610(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<TMeratMarketBillDataParam> spParam,
                    int nCount);                                             // UIMeratMarketCommon: open the buy bill
 CItemData* FUN_140527840(CItem* pItem);                                     // the item's data record
@@ -3112,6 +3115,52 @@ void UIMeratMarketDialog::OnClickUnequipAll()
 void UIMeratMarketDialog::OnClickBuyMerat()
 {
     FUN_140d86260()->vfunc_45();
+}
+
+// "OnClickBuy": a limited sale buys at once; any other product opens its bill (a random sale product is checked
+// for expiry and requested first).
+// @0x1412ffb80
+void UIMeratMarketDialog::OnClickBuy(const CStringA& strMovie, ASData& data)
+{
+    Scaleform::GFx::Value value = data.FUN_1422b9260();
+    UIMeratMarketDialogUtil::ASClickOutData click(value, FUN_1422db730());
+    if (m_250 == 7)
+    {
+        OnBuyProduct(strMovie, click);
+        return;
+    }
+    MS2Ptr<ASMeratMarketProductBase> spRow = click.FUN_140ec28b0();
+    if (spRow == 0)
+        return;
+    Unk_MeratProductKey key;
+    spRow->FUN_1409bc6a0(reinterpret_cast<Unk_MeratOid*>(&key));   // Unk_MeratOid is the same {premium id, ugc id} pair
+    __int64 nSeller = CurrentSearchId();
+    MS2Ptr<CMeratMarketProduct> spProduct = FindProduct(key, nSeller, IsCurrentShopTab());
+    if (spProduct == 0)
+        return;
+    MS2Ptr<TMeratMarketBillDataParam> spParam = CreateBillParam(strMovie, 1, 1);
+    if (spParam == 0)
+        return;
+    SendRandomSaleRequest(spProduct);
+    int nType = spProduct->m_premium.m_nType;
+    if (nType == 6)
+    {
+        reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(spParam->m_spF8) = spProduct;
+    }
+    else if (nType == 7 || nType == 8)
+    {
+        reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(spParam->m_sp108) = spProduct;
+        if (spProduct->m_premium.FUN_1406a0090())
+        {
+            CStringW strKey(L"s_meratmarket_error_random_expired");
+            FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+            return;
+        }
+    }
+    AScript* pRowObj = click.FUN_140ec2a90();
+    int nCount = FUN_140ebf520(spProduct, pRowObj);
+    FUN_140ec0c70(strMovie, spProduct, spParam, spRow->FUN_1422bb870(), nSeller, nCount);
+    ShowProduct(spProduct);
 }
 
 // MS2-FUNCTIONAL: frame 0x20 larger (string temporaries of the two notices / EH temporaries differ)
