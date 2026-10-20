@@ -285,3 +285,5 @@ void COnlinePatchManagerCli::ReloadTables()
     FUN_141811960(FUN_1401a9d70());
     FUN_140259930(FUN_14025e7d0());
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9f910-0x142c9f930 .text$yd

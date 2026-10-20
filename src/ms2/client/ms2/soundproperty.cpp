@@ -781,3 +781,5 @@ void SoundPropertyMgr::SetInit(bool b)
 {
     s_bInit = b;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb6df0-0x142cb6e80 .text$yd

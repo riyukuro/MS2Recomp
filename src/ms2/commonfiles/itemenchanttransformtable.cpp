@@ -281,3 +281,5 @@ void CItemEnchantTransformTable::SetInit(bool b)
 {
     s_bInit = b;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9afc0-0x142c9b020 .text$yd

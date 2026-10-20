@@ -820,3 +820,5 @@ bool FUN_140e1ce10(const Scaleform::GFx::Value& root, CString strName, unsigned 
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca6490-0x142ca6520 .text$yd

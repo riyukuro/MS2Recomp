@@ -313,3 +313,5 @@ void CFileSearcher::FUN_1412195a0(ATL::CAtlArray<CString>& files) {
         } else { delete[] buffer;CloseHandle(file); }
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cad840-0x142cad860 .text$yd
