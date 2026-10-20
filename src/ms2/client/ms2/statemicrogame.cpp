@@ -1351,3 +1351,8 @@ MS2Ptr<StateData> StateMicroGameRps::vfunc_27()
 {
     return MS2Ptr<StateData>(new StateMicroGameRpsData(0));
 }
+
+// Shared header statics: this TU's .text$di initializers and their atexit thunks (gap2 orphan di sweep).
+// MS2-RANGE: 0x1400c9240-0x1400c93b0 .text$di
+// MS2-RANGE: 0x142ca1210-0x142ca12a0 .text$yd
+#include "ms2/placeholder/header_statics_a.h"

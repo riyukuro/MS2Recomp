@@ -165,3 +165,9 @@ MS2_REPLACE_METHOD(0x140F005F0, UIBeautyListDialog, OnLoadComplete, 24, 0xF14792
 MS2_REPLACE_METHOD(0x140F00610, UIBeautyListDialog, FUN_140f00610, 144, 0x8984A75E);
 MS2_REPLACE_METHOD(0x140F006B0, UIBeautyListDialog, FUN_140f006b0, 122, 0x2A121F15);
 MS2_REPLACE_METHOD(0x140F00730, UIBeautyListDialog, vfunc_28, 986, 0xE0F5361C);
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x1400ddba0-0x1400ddde0 .text$di
+// MS2-RANGE: 0x142ca8d00-0x142ca8dc0 .text$yd
+static CString s_strPremiumSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
+#include "ms2/placeholder/header_statics_a.h"

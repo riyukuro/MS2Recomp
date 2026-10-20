@@ -97,3 +97,10 @@ void MS2VelocityMaterialSwapProcessor::PreRenderProcessList(const NiVisibleArray
     }
 }
 MS2_REPLACE_METHOD(0x1415154D0, MS2VelocityMaterialSwapProcessor, PreRenderProcessList, 462, 0x29241620);
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x1400f98d0-0x1400f9900 .text$di
+#include <NiMaterialSwapProcessor.h>
+#ifndef MS2_HOOK_DLL
+const NiRTTI MS2VelocityMaterialSwapProcessor::ms_RTTI("MS2VelocityMaterialSwapProcessor", &NiMaterialSwapProcessor::ms_RTTI);   // @0x1400f98d0
+#endif

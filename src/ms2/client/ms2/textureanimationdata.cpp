@@ -625,3 +625,8 @@ MS2_REPLACE_METHOD(0x14184B230, TextureLayerManager, vfunc_18, 318, 0x472A89EB);
 // Trailing CRT memmove_s COMDAT of the ATL array growth.
 // @0x14184b420
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x14010db90-0x14010dd00 .text$di
+// MS2-RANGE: 0x142cbbc30-0x142cbbcc0 .text$yd
+#include "ms2/placeholder/header_statics_a.h"

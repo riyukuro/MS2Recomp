@@ -227,3 +227,9 @@ void FUN_14185f0b0(TransitionData* pData, Unk_140165cf0* pNode, float* pfTime)
     *pfTime += pData->m_fDuration;
 }
 MS2_REPLACE(0x14185F0B0, FUN_14185f0b0, 272, 0x9103B1FB);
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x14010e8e0-0x14010e910 .text$di
+#ifndef MS2_HOOK_DLL
+const NiRTTI TransitionEffect::ms_RTTI("TransitionEffect", &CEffect::ms_RTTI);   // @0x14010e8e0
+#endif

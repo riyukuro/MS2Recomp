@@ -180,3 +180,12 @@ int TextureOverrideEffect::vfunc_12()
 
 // Trailing unreferenced CRT memcpy_s COMDAT 0x14184c640.
 __declspec(selectany) extern errno_t(__cdecl* const ms2_texOverrideMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x14010dd00-0x14010dd90 .text$di
+// MS2-RANGE: 0x142cbbcc0-0x142cbbd00 .text$yd
+#ifndef MS2_HOOK_DLL
+const NiRTTI TextureOverrideEffect::ms_RTTI("TextureOverrideEffect", &CEffect::ms_RTTI);   // @0x14010dd00
+#endif
+static CString s_strSkill("skill");                                                    // @0x14010dd30
+static CString s_strStun("stun");                                                      // @0x14010dd60

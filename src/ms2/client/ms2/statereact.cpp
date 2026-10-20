@@ -391,3 +391,8 @@ int StateReact::vfunc_1()
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// Shared header statics: this TU's .text$di initializers and their atexit thunks (gap2 orphan di sweep).
+// MS2-RANGE: 0x1400c93b0-0x1400c9520 .text$di
+// MS2-RANGE: 0x142ca12a0-0x142ca1330 .text$yd
+#include "ms2/placeholder/header_statics_a.h"

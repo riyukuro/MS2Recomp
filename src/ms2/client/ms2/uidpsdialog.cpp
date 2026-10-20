@@ -351,3 +351,8 @@ CToolBaseDialog* FUN_14192a2c0()
 {
     return DAT_143ad0d98;
 }
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x140112b40-0x140112cb0 .text$di
+// MS2-RANGE: 0x142cbdca0-0x142cbdd30 .text$yd
+#include "ms2/placeholder/header_statics_a.h"

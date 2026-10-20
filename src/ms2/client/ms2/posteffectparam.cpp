@@ -402,3 +402,9 @@ errno_t FUN_140dbdca0(void* const dst, rsize_t const dstSize, void const* const 
     memmove(dst, src, srcSize);
     return 0;
 }
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x1400d5270-0x1400d52a0 .text$di
+#ifndef MS2_HOOK_DLL
+const NiRTTI CPostEffect::ms_RTTI("CPostEffect", &CEffect::ms_RTTI);   // @0x1400d5270
+#endif

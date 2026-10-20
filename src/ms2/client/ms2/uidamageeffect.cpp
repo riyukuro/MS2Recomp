@@ -183,3 +183,8 @@ MS2_REPLACE_METHOD(0x1419108E0, UIDamageEffect, vfunc_43, 146, 0xA032B3CD);
 MS2_REPLACE_METHOD(0x141910980, UIDamageEffect, OnLoadComplete, 298, 0xB8AF37B7);
 MS2_REPLACE_METHOD(0x141910B30, UIDamageEffect, FUN_141910b30, 95, 0x606F3A5A);
 MS2_REPLACE_METHOD(0x141910AB0, UIDamageEffect, FUN_141910ab0, 75, 0x13C75809);
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x140111f00-0x140112070 .text$di
+// MS2-RANGE: 0x142cbd6e0-0x142cbd770 .text$yd
+#include "ms2/placeholder/header_statics_a.h"

@@ -370,3 +370,12 @@ void MS2KFMFactory::ResponseData::LoadKFMTool(NiKFMTool* tool,const egmAnimation
 // No hooks: all ordinary methods construct RTTI objects directly or through the actor factory.
 // Keep the cache metadata helpers emitted in this object, as in the original.
 extern efd::ClassInfo::CLASSINFO_FUNC const MS2KFMCache_ClassInfoHelper = &MS2KFMCache::SetupClassInfo;
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x1400d3ad0-0x1400d3c60 .text$di
+// MS2-RANGE: 0x142ca5540-0x142ca55d0 .text$yd
+#include "ms2/placeholder/header_statics_a.h"
+// The ClassInfo ctor (0x1409f2d20) only fills local metadata; the hook DLL binds the exe's object.
+#ifndef MS2_HOOK_DLL
+EE_IMPLEMENT_CONCRETE_CLASS_INFO(MS2KFMCache);
+#endif

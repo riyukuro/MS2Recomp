@@ -121,3 +121,9 @@ errno_t FUN_141b776f0(void* const dst, rsize_t const dstSize, void const* const 
     memmove(dst, src, srcSize);
     return 0;
 }
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x14011fb40-0x14011fb70 .text$di
+#ifndef MS2_HOOK_DLL
+const NiRTTI WeatherEffect::ms_RTTI("WeatherEffect", &CEffect::ms_RTTI);   // @0x14011fb40
+#endif

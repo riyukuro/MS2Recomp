@@ -592,3 +592,9 @@ MS2_REPLACE_METHOD(0x141041E50, ChaosLightEffect, vfunc_9, 50, 0x6D5BDC9F);
 MS2_REPLACE_METHOD(0x1410420D0, ChaosLightEffect, FUN_1410420d0, 747, 0x30F00AC9);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cab8e0-0x142cab980 .text$yd
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x1400e4b60-0x1400e4b90 .text$di
+#ifndef MS2_HOOK_DLL
+const NiRTTI ChaosLightEffect::ms_RTTI("ChaosLightEffect", &TransitionEffect::ms_RTTI);   // @0x1400e4b60
+#endif

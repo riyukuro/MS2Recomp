@@ -195,3 +195,12 @@ MS2TextureDensityProcessor::~MS2TextureDensityProcessor()
 
 // @0x1415120e0
 const NiRTTI* MS2TextureDensityProcessor::GetRTTI() const { return &ms_RTTI; }
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x1400f9730-0x1400f98d0 .text$di
+// MS2-RANGE: 0x142cb32c0-0x142cb3350 .text$yd
+#include "ms2/placeholder/header_statics_a.h"
+#include "ms2/client/ms2/ms2renderlistprocessor.h"
+#ifndef MS2_HOOK_DLL
+const NiRTTI MS2TextureDensityProcessor::ms_RTTI("MS2TextureDensityProcessor", &MS2RenderListProcessor::ms_RTTI);
+#endif

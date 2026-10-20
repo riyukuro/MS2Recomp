@@ -128,3 +128,15 @@ CommonUserEvent::DTRewardEventContext::DTRewardEventContext(int id, const CMsTim
     : m_id(id), m_time(time), m_level(0), m_b32(0), m_b33(0)
 {
 }
+
+// The factory registration of GameEventDTReward (this TU's .text$di, gap2 orphan di sweep). The registry ctor
+// 0x140316aa0 takes the name by value (the callee destroys it); it registers into an exe-wide table, so the hook DLL
+// leaves it to the exe's own copy.
+// MS2-RANGE: 0x1400b86b0-0x1400b8700 .text$di
+struct Unk_GEFactoryRegistry {
+    Unk_GEFactoryRegistry(CStringW name, GameEvent* (*create)());
+    char m_pad;
+};
+#ifndef MS2_HOOK_DLL
+static Unk_GEFactoryRegistry s_regDTReward(L"GameEventDTReward", FUN_14041b140);
+#endif

@@ -107,3 +107,9 @@ const NiRTTI* WeaponAttachTransformNode::GetRTTI() const
 {
     return &ms_RTTI;
 }
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x14011fb10-0x14011fb40 .text$di
+#ifndef MS2_HOOK_DLL
+const NiRTTI WeaponAttachTransformNode::ms_RTTI("WeaponAttachTransformNode", &LightUnaffectedNode::ms_RTTI);   // @0x14011fb10
+#endif

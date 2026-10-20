@@ -147,3 +147,13 @@ void Unk_CameraOwner::FUN_140947940(float f)
     if (m_10)
         m_10->FUN_1409457c0(0x88b558f6, f);
 }
+
+// Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
+// MS2-RANGE: 0x1400bf250-0x1400bf390 .text$di
+// MS2-RANGE: 0x142c9d2f0-0x142c9d360 .text$yd
+static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkill("skill");
+static CString s_strStun("stun");
+class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
+static Unk_Handle1401cd100 s_handle1401cd100(0);
+// MS2-PIN: ??__Es_handle1401cd100@@YAXXZ 0x1400bf370
