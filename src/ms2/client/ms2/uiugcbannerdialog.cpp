@@ -542,7 +542,7 @@ int UIUGCBannerDialog::FUN_141b357e0()
     IUgcViewer* pViewer = spUpload->m_spViewer.get();
     if (pViewer == 0)
         return 0;
-    m_188 = static_cast<CUgcViewerBanner*>(pViewer)->m_nBannerId;
+    m_188 = static_cast<CUgcViewerBanner*>(pViewer)->m_post.m_nBannerId;
     return 1;
 }
 

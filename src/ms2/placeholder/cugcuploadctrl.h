@@ -14,6 +14,9 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/ugcdef.h"
+#include "ms2/unnamed/unit_1401b6d10.h"
+
+class NiTexture;
 
 class CUploadFile;
 class COutPacket;
@@ -206,8 +209,7 @@ public:
 MS2_CHECK_SIZE(CUgcViewerGuildPoster, 0x50);
 
 // The banner viewer. +0x18 is a CUgcBannerPost (m_nBannerId is its id at +0x30), +0x68 the "decal loaded" state,
-// +0x70 the image and +0x78 the banner table record. The overlay is kept as raw storage (ugcmanager.cpp#4 reads
-// m_nBannerId); ugcviewerequip.cpp views it through Body().
+// +0x70 the image and +0x78 the banner table record.
 class CUgcViewerBanner : public IUgcViewer
 {
 public:
@@ -226,15 +228,18 @@ public:
     void FUN_1418a0f90(int nBannerId);                      // the banner to preview
     void FUN_1418a1000();                                   // show the image on the banner object
 
-    char m_pad_18[0x30 - 0x18];
-    int m_nBannerId;                                        // +0x30
-    char m_pad_34[0x88 - 0x34];
+    CUgcBannerPost m_post;                                  // +0x18 the posted banner (its m_nBannerId at +0x30)
+    int m_nLoaded;                                          // +0x68 the decal state
+    efd::SmartPointer<NiTexture> m_spImage;                 // +0x70 the image shown on the banner
+    Unk_BannerPtr m_spBanner;                               // +0x78 the banner row (TPtr<CFieldBannerData>)
 };
 MS2_CHECK_SIZE(CUgcViewerBanner, 0x88);
-MS2_CHECK_OFFSET(CUgcViewerBanner, m_nBannerId, 0x30);
+MS2_CHECK_OFFSET(CUgcViewerBanner, m_post, 0x18);
+MS2_CHECK_OFFSET(CUgcViewerBanner, m_spBanner, 0x78);
+static_assert(offsetof(CUgcViewerBanner, m_post) + offsetof(CUgcBannerPost, m_nBannerId) == 0x30, "banner id at +0x30");
 
-// The blueprint image viewer. +0x18 is a CUgcBlueprintImageProxy (m_n30 / m_itemUid / m_n40 are its m_n18 / m_n20 /
-// m_n28), +0x50 an icon proxy and +0xe8 the "refreshed" flag. Raw overlay for the same reason as the banner viewer.
+// The blueprint image viewer: the image proxy at +0x18, the icon proxy at +0x50, the "refreshed" flag at +0xe8.
+
 class CUgcViewerBlueprintImage : public IUgcViewer
 {
 public:
@@ -248,15 +253,15 @@ public:
     virtual __int64 vfunc_10();
     virtual CString vfunc_11();
 
-    char m_pad_18[0x30 - 0x18];
-    __int64 m_n30;                                          // +0x30 CBlueprintItemData::m_n18
-    __int64 m_itemUid;                                      // +0x38
-    int m_n40;                                              // +0x40 CItem::FUN_1405276c0
-    char m_pad_44[0xf0 - 0x44];
+    CUgcBlueprintImageProxy m_proxy;                        // +0x18 m_n18 = CBlueprintItemData::m_n18, m_n20 = the item
+                                                            //       uid, m_n28 = CItem::FUN_1405276c0
+    CUgcItemIconPC m_icon;                                  // +0x50
+    int m_bRefreshed;                                       // +0xe8
 };
 MS2_CHECK_SIZE(CUgcViewerBlueprintImage, 0xf0);
-MS2_CHECK_OFFSET(CUgcViewerBlueprintImage, m_n30, 0x30);
-MS2_CHECK_OFFSET(CUgcViewerBlueprintImage, m_n40, 0x40);
+MS2_CHECK_OFFSET(CUgcViewerBlueprintImage, m_proxy, 0x18);
+MS2_CHECK_OFFSET(CUgcViewerBlueprintImage, m_icon, 0x50);
+MS2_CHECK_OFFSET(CUgcViewerBlueprintImage, m_bRefreshed, 0xe8);
 
 class CUgcUploadCtrl : public CUgcUpload
 {
