@@ -4267,7 +4267,7 @@ int UIMessenger::vfunc_74(int a1, void* p2, void* p3)
 }
 
 CGuildManager* FUN_1403ed290();
-CClubClientManager* FUN_140e0d900();
+CClubClientManager* FUN_140e0d900(); template <> void MS2Ptr<CClubCli>::AddRef() const; template <> void MS2Ptr<CClubCli>::Release(); // clubcli.cpp (CPtred at +0xd8)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item table record
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);        // str equals psz
 void FUN_141bca010(Unk_MsgWorld* pWorld);                           // the chat sent: resets the idle state
