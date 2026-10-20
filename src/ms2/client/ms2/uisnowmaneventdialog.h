@@ -32,6 +32,7 @@ public:
     bool IsNull() const { return m_p == 0; }
     T* get() const { return m_p; }
     T* operator->() const { return m_p; }
+    bool operator==(T* p) const { return m_p == p; }   // 0x141a48b60 for CAlignmentInfo (uiminimapentity.cpp)
 private:
     void AddRef() const { if (m_p) AddRefImpl(0); }
     static void Reference(T* p) { p->FUN_14015b020(); }

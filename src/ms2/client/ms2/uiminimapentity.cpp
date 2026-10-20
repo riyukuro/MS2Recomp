@@ -77,9 +77,17 @@ public:
     CStringW FUN_1416c23b0();                                       // the name
     CString FUN_1416c2520();                                        // the portrait path
     CStringW FUN_1416c2570();                                       // the today word
+    bool FUN_1416c2b30();                                           // visible on the minimap
+    bool FUN_1416c2b70();                                           // the visibility follows the actor
 
     MS2Ptr<CPortal> m_portal;                                       // +0x18
     MS2Ptr<NpcDataCli> m_npc;                                       // +0x28
+    int m_proxyId;                                                  // +0x38 (object id)
+    int m_pad_3c;
+    __int64 m_charId;                                               // +0x40 owner character id
+    __int64 m_48;
+    CString m_50;
+    CStringW m_name;                                                // +0x58
 };
 
 // The entity list a world model lookup returns (the same view as uiworldmapdialog.cpp).
@@ -91,6 +99,11 @@ struct Unk_MmEntityList
     void* m_0;
     void* m_8;
 };
+struct Unk_MmFieldInfo : public CPtred                              // the current field's settings (world +0x298)
+{
+    char m_pad_18[0x150 - 0x18];
+    bool m_allowPing;                                               // +0x150
+};
 class Unk_MmWorld                                                   // the world service (FUN_1403ed2d0)
 {
 public:
@@ -99,6 +112,10 @@ public:
     MS2Ptr<CProxyGameObject> FUN_141bc9be0(int nId);                // a proxy by object id
     int FUN_141bc80c0(int nChannel);                                // change the channel
     Unk_MmEntityList FUN_141bd0420(unsigned nModel);                // the entities of a model
+    MS2Ptr<Unk_MmFieldInfo> FUN_141bd30a0();                        // the current field settings
+    MS2Ptr<CProxyGameObject> FUN_141bc9c60(unsigned __int64 nUid);  // a proxy by character uid
+    class Unk_MmActor* FUN_141bd1320(int nId);                      // the actor of an object id
+    PCBase* FUN_141bd1530(unsigned __int64 nCharId);                // a player by character id
 };
 Unk_MmWorld* FUN_1403ed2d0();
 
@@ -2170,3 +2187,235 @@ bool UIMinimapDialog::FUN_141a3bda0(ASObj& data, ProxyPtr spProxy)
     return true;
 }
 MS2_REPLACE_METHOD(0x141a3bda0, UIMinimapDialog, FUN_141a3bda0, 0, 0);
+
+// @0x141a44e60
+void UIMinimapDialog::FUN_141a44e60()
+{
+    FUN_141a3abd0();
+    if (m_30.get() != 0)
+        m_30->Invoke("changeStageSize");
+}
+MS2_REPLACE_METHOD(0x141a44e60, UIMinimapDialog, FUN_141a44e60, 0, 0);
+
+// @0x141a44ed0
+void UIMinimapDialog::FUN_141a44ed0()
+{
+    if (m_30.get() != 0)
+        m_30->FUN_1409ba030("setSelectedChannel", m_channel);
+}
+MS2_REPLACE_METHOD(0x141a44ed0, UIMinimapDialog, FUN_141a44ed0, 0, 0);
+
+// @0x141a44f40
+void UIMinimapDialog::FUN_141a44f40()
+{
+    if (m_30 == 0)
+        return;
+    if (m_alignment == 0)
+        return;
+    int nWidth = 0;
+    int nHeight = 0;
+    FUN_141a45ad0(nWidth, nHeight);
+    m_alignment->FUN_141901c10(m_30, nWidth, nHeight);
+}
+MS2_REPLACE_METHOD(0x141a44f40, UIMinimapDialog, FUN_141a44f40, 0, 0);
+
+// @0x141a454d0
+// MS2-FUNCTIONAL: the exe frame is 0x10 smaller (the new-list temporary shares a slot).
+void UIMinimapDialog::FUN_141a454d0(const int& nField, const unsigned __int64& nHome)
+{
+    if (m_homes.IsEmpty())
+        return;
+    HomeListPtr spHomes(0);
+    if (m_homes.Lookup(nField, spHomes)) {
+        if (spHomes == 0)
+            spHomes = HomeListPtr(Unk_GrNewTag(0));
+        spHomes->AddTail(nHome);
+        m_homes.SetAt(nField, spHomes);
+    }
+}
+MS2_REPLACE_METHOD(0x141a454d0, UIMinimapDialog, FUN_141a454d0, 0, 0);
+
+// @0x141a455e0
+void UIMinimapDialog::FUN_141a455e0(const int& nField, const unsigned __int64& nHome)
+{
+    if (m_homes.IsEmpty())
+        return;
+    HomeListPtr spHomes(0);
+    if (m_homes.Lookup(nField, spHomes) && spHomes.get() != 0) {
+        POSITION pos = spHomes->Find(nHome);
+        if (pos)
+            spHomes->RemoveAt(pos);
+    }
+}
+MS2_REPLACE_METHOD(0x141a455e0, UIMinimapDialog, FUN_141a455e0, 0, 0);
+
+class Unk_MmInput;                                                  // the input manager
+Unk_MmInput* FUN_140aadf80();
+int FUN_141b90e30(Unk_MmInput* pInput, float& x, float& y);         // the mouse position on the minimap
+
+// @0x141a456c0
+void UIMinimapDialog::FUN_141a456c0(const Scaleform::GFx::FunctionHandler::Params& params)
+{
+    float x = 0;
+    float y = 0;
+    if (FUN_141b90e30(FUN_140aadf80(), x, y))
+        FUN_141a45020(0, x, y);
+}
+MS2_REPLACE_METHOD(0x141a456c0, UIMinimapDialog, FUN_141a456c0, 0, 0);
+
+// @0x141a45720
+void UIMinimapDialog::FUN_141a45720(const Scaleform::GFx::FunctionHandler::Params& params)
+{
+    float x = 0;
+    float y = 0;
+    if (FUN_141b90e30(FUN_140aadf80(), x, y))
+        FUN_141a45020(1, x, y);
+}
+MS2_REPLACE_METHOD(0x141a45720, UIMinimapDialog, FUN_141a45720, 0, 0);
+
+// @0x141a458d0
+void UIMinimapDialog::FUN_141a458d0(bool b)
+{
+    vfunc_63(b != false);
+}
+MS2_REPLACE_METHOD(0x141a458d0, UIMinimapDialog, FUN_141a458d0, 0, 0);
+
+// @0x141a45ad0
+bool UIMinimapDialog::FUN_141a45ad0(int& nWidth, int& nHeight)
+{
+    nWidth = 0;
+    nHeight = 0;
+    if (m_30.get() != 0) {
+        static_cast<ASObj*>(m_30.operator->())->FUN_1422bae10("m_windowWidth", nWidth);
+        static_cast<ASObj*>(m_30.operator->())->FUN_1422bae10("m_windowHeight", nHeight);
+        return true;
+    }
+    return false;
+}
+MS2_REPLACE_METHOD(0x141a45ad0, UIMinimapDialog, FUN_141a45ad0, 0, 0);
+
+// @0x141a45c70
+bool UIMinimapDialog::FUN_141a45c70(const CString& strIcon)
+{
+    if (strIcon == s_strBoss || strIcon == s_strEliteBoss || strIcon == s_strEventBoss)
+        return 1;
+    return 0;
+}
+
+
+// @0x141a45ce0
+bool UIMinimapDialog::FUN_141a45ce0()
+{
+    bool bAllow = FUN_1403ed2d0()->FUN_141bd30a0()->m_allowPing;
+    if (bAllow)
+        return true;
+    return false;
+}
+MS2_REPLACE_METHOD(0x141a45ce0, UIMinimapDialog, FUN_141a45ce0, 0, 0);
+
+void FUN_140763210(int nId, int nKind, CStringW& strText, CStringW& strExtra, int n);   // the quest guide text
+
+// @0x141a45ed0
+// MS2-FUNCTIONAL: the exe frame is 0x10 smaller (the trailing 0 argument is stored straight to the outgoing slot).
+CStringW UIMinimapDialog::FUN_141a45ed0(const int& nId, int nKind)
+{
+    CStringW strText;
+    CStringW strExtra;
+    FUN_140763210(nId, nKind, strText, strExtra, 0);
+    return strText;
+}
+MS2_REPLACE_METHOD(0x141a45ed0, UIMinimapDialog, FUN_141a45ed0, 0, 0);
+
+void FUN_14020af60(COutPacket* pPacket, const Unk_StreamPoint* pPt);    // writes the three floats of a point
+
+// @0x141a45020
+void UIMinimapDialog::FUN_141a45020(int nKind, float x, float y)
+{
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return;
+    if (m_30 == 0)
+        return;
+    if (!FUN_141a45ce0())
+        return;
+    NiPoint3 kPos(efd::Point3::ZERO);
+    Scaleform::GFx::Value contains = m_30->Invoke("mouseContains");
+    if (contains.IsBool() && FUN_1409c1720(contains) && FUN_141a451b0(true, x, y, kPos)) {
+        COutPacket packet(0xb1, 0);
+        packet.Encode8(pPC->FUN_141656a80());
+        packet.Encode1((unsigned char)nKind);
+        FUN_14020af60(&packet, reinterpret_cast<const Unk_StreamPoint*>(&kPos));
+        FUN_140710590(packet);
+    }
+}
+MS2_REPLACE_METHOD(0x141a45020, UIMinimapDialog, FUN_141a45020, 0, 0);
+
+// The popup menu (uipartydialog.h has the full class; this unit only needs its RTTI and one entry point).
+class Unk_PopupMenuInfo
+{
+public:
+    Unk_PopupMenuInfo(float x, float y, int a, int b, int c, CString str, void* p);   // 0x140c302f0
+    ~Unk_PopupMenuInfo();                                           // 0x140c304c0
+private:
+    float m_x, m_y;                                                 // the members are opaque here (no array: /GS)
+    int m_a, m_b, m_c;
+    void* m_str;                                                    // +0x18 CString
+    void* m_p;
+    __int64 m_28, m_30, m_38, m_40, m_48;                           // +0x28 info A
+    __int64 m_50, m_58, m_60, m_68, m_70, m_78;                     // +0x50 info B
+};
+MS2_CHECK_SIZE(Unk_PopupMenuInfo, 0x80);
+class UIPopUpMenu : public UIDialog
+{
+public:
+    static eUIClassID GetUIClassID() { return (eUIClassID)0x4e39; }   // 0x141a4b230
+    void FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGameObject> spProxy, int nType);   // the menu of a player in the field
+};
+
+// @0x141a45790
+void UIMinimapDialog::FUN_141a45790(float x, float y, unsigned __int64 nId)
+{
+    UIPopUpMenu* pMenu = Unk_MmGetDialog<UIPopUpMenu>();
+    if (pMenu != 0) {
+        ProxyPtr spProxy = FUN_1403ed2d0()->FUN_141bc9c60(nId);
+        if (static_cast<CProxyGameObject*>(spProxy) != 0) {
+            Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 1, CString(""), 0);
+            pMenu->FUN_141a7eb60(info, spProxy, 9);
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141a45790, UIMinimapDialog, FUN_141a45790, 0, 0);
+
+class Unk_MmActor                                                   // a field actor
+{
+public:
+    int FUN_14123c660();                                            // hidden
+};
+
+// @0x141a45b70
+bool UIMinimapDialog::FUN_141a45b70(ProxyPtr spProxy)
+{
+    if (spProxy == 0)
+        return false;
+    if (spProxy->FUN_1416c2b70()) {
+        Unk_MmActor* pActor = FUN_1403ed2d0()->FUN_141bd1320(spProxy->m_proxyId);
+        if (pActor != 0)
+            return pActor->FUN_14123c660() == 0;
+    }
+    return spProxy->FUN_1416c2b30();
+}
+
+// @0x141a45d50
+CStringW UIMinimapDialog::FUN_141a45d50(const unsigned __int64& nId)
+{
+    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1530(nId);
+    if (pActor)
+        return pActor->vfunc_77();
+    for (POSITION pos = m_proxies.GetHeadPosition(); pos; m_proxies.GetNext(pos)) {
+        ProxyPtr spProxy = m_proxies.GetKeyAt(pos);
+        if (static_cast<CProxyGameObject*>(spProxy) != 0 && spProxy->m_charId == nId)
+            return spProxy->m_name;
+    }
+    return L"";
+}
+MS2_REPLACE_METHOD(0x141a45d50, UIMinimapDialog, FUN_141a45d50, 0, 0);
