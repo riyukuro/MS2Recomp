@@ -152,7 +152,7 @@ void FUN_141adc190(void*);
 class Unk_EnButton : public ASDisplayObject
 {
 public:
-    void FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb, size_t n);
+    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, size_t n);
 };
 class Unk_EnBag : public ASObj
 {
@@ -457,7 +457,9 @@ void UIItemModifyDialogBase::vfunc_85(int nType)
 bool UIItemModifyDialogBase::FUN_1419beef0(unsigned __int64 uid)
 {
     MS2Ptr<CItem> item = DAT_143ab2a90.FUN_140a5d680(uid);
-    return item.get() != 0;
+    if (item.get() != 0)
+        return true;
+    return false;
 }
 
 // @0x1419bef70
@@ -988,11 +990,8 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
 {
     FUN_1419c77a0();
     FUN_1419c6420();
-    if (m_enchantAni == 0) {
-        vfunc_67();
-        FUN_140967100()->FUN_141b1feb0();
+    if (m_enchantAni == 0)
         return;
-    }
     MyPC* pc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pc == 0)
         return;
@@ -1043,31 +1042,31 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
     FUN_1419bff60();
     FUN_141276180(s_itemChoice, CString(""));
     MS2Ptr<ASMovieClip> list = m_enchantAni->FUN_1409b4560("enchantListSelected");
-    if (list.get() != 0) {
+    if (list) {
         bool bDebug = FUN_14116d720(FUN_14025e7c0()) != 0;
         m_debugBtnFillIngredientUnit = list->FUN_140acce30<Unk_EnButton>("m_debugBtnFillIngredientUnit");
-        if (m_debugBtnFillIngredientUnit.get() != 0) {
+        if (m_debugBtnFillIngredientUnit) {
             m_debugBtnFillIngredientUnit->vfunc_3(bDebug);
             if (bDebug)
                 m_debugBtnFillIngredientUnit->FUN_1422ce240(
                     Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEnchantDialog::FUN_1419c6270), 0);
         }
         m_debugBtnFillIngredient = list->FUN_140acce30<Unk_EnButton>("m_debugBtnFillIngredient");
-        if (m_debugBtnFillIngredient.get() != 0) {
+        if (m_debugBtnFillIngredient) {
             m_debugBtnFillIngredient->vfunc_3(bDebug);
             if (bDebug)
                 m_debugBtnFillIngredient->FUN_1422ce240(
                     Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEnchantDialog::FUN_1419c6160), 0);
         }
         m_debugBtnFillFailStack = list->FUN_140acce30<Unk_EnButton>("m_debugBtnFillFailStack");
-        if (m_debugBtnFillFailStack.get() != 0) {
+        if (m_debugBtnFillFailStack) {
             m_debugBtnFillFailStack->vfunc_3(bDebug);
             if (bDebug)
                 m_debugBtnFillFailStack->FUN_1422ce240(
                     Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEnchantDialog::FUN_1419c5f60), 0);
         }
         m_debugBtnUseAllFailStack = list->FUN_140acce30<Unk_EnButton>("m_debugBtnUseAllFailStack");
-        if (m_debugBtnUseAllFailStack.get() != 0) {
+        if (m_debugBtnUseAllFailStack) {
             m_debugBtnUseAllFailStack->vfunc_3(bDebug);
             if (bDebug)
                 m_debugBtnUseAllFailStack->FUN_1422ce240(
@@ -1139,21 +1138,21 @@ void UIItemEnchantDialog::FUN_1419c3950(CInPacket& pkt)
     unsigned __int64 uid = pkt.vfunc_o8_4();
     int level = pkt.vfunc_o8_3();
     MS2Ptr<CItem> item = FUN_1419be700(uid);
-    if (!(!item)) {
-        int oldLevel = item->FUN_1405270a0();
-        item->FUN_140527110(level);
-        if (!(m_enchantAni == 0)) {
-            m_failStackUids.RemoveAll();
-            m_2bc = 0;
-            ASObj obj(2);
-            FUN_1419c6cd0(obj, &m_ingredients);
-            FUN_1419c74e0(obj, item.get());
-            FUN_1419c7140(obj);
-            ((Unk_EnScript*)(AScript*)m_enchantAni.operator->())->FUN_1419ca130("onModifiedExp", obj, oldLevel < level);
-            FUN_1419bfd70();
-            FUN_1419bff60();
-        }
-    }
+    if (!item)
+        return;
+    int oldLevel = item->FUN_1405270a0();
+    item->FUN_140527110(level);
+    if (m_enchantAni == 0)
+        return;
+    m_failStackUids.RemoveAll();
+    m_2bc = 0;
+    ASObj obj(2);
+    FUN_1419c6cd0(obj, &m_ingredients);
+    FUN_1419c74e0(obj, item.get());
+    FUN_1419c7140(obj);
+    ((Unk_EnScript*)(AScript*)m_enchantAni.operator->())->FUN_1419ca130("onModifiedExp", obj, oldLevel < level);
+    FUN_1419bfd70();
+    FUN_1419bff60();
 }
 
 // @0x1419c3b90
@@ -1162,20 +1161,20 @@ void UIItemEnchantDialog::FUN_1419c3b90(CInPacket& pkt)
     if (!m_enchantAni)
         return;
     MS2Ptr<CItem> item = FUN_1419bef70(m_selectedUid);
-    if (!(!item)) {
-        m_failStackUids.RemoveAll();
-        m_failStack = pkt.vfunc_o8_3();
-        m_2bc = pkt.vfunc_o8_3();
-        int n = pkt.vfunc_o8_3();
-        for (int i = 0; i < n; i++)
-            m_failStackUids.Add(pkt.vfunc_o8_4());
-        m_228 = pkt.vfunc_o8_5();
-        m_22c = pkt.vfunc_o8_5();
-        m_230 = pkt.vfunc_o8_5();
-        m_234 = pkt.vfunc_o8_5();
-        m_238 = pkt.vfunc_o8_5();
-        FUN_1419c8070(item.get());
-    }
+    if (!item)
+        return;
+    m_failStackUids.RemoveAll();
+    m_failStack = pkt.vfunc_o8_3();
+    m_2bc = pkt.vfunc_o8_3();
+    int n = pkt.vfunc_o8_3();
+    for (int i = 0; i < n; i++)
+        m_failStackUids.Add(pkt.vfunc_o8_4());
+    m_228 = pkt.vfunc_o8_5();
+    m_22c = pkt.vfunc_o8_5();
+    m_230 = pkt.vfunc_o8_5();
+    m_234 = pkt.vfunc_o8_5();
+    m_238 = pkt.vfunc_o8_5();
+    FUN_1419c8070(item.get());
 }
 
 // @0x1419c3e70
@@ -1184,14 +1183,14 @@ void UIItemEnchantDialog::FUN_1419c3e70(CInPacket& pkt)
     if (!m_enchantAni)
         return;
     MS2Ptr<CItem> item = FUN_1419bef70(m_selectedUid);
-    if (!(!item)) {
-        m_failStackUids.RemoveAll();
-        m_2bc = pkt.vfunc_o8_3();
-        int n = pkt.vfunc_o8_3();
-        for (int i = 0; i < n; i++)
-            m_failStackUids.Add(pkt.vfunc_o8_4());
-        FUN_1419c8070(item.get());
-    }
+    if (!item)
+        return;
+    m_failStackUids.RemoveAll();
+    m_2bc = pkt.vfunc_o8_3();
+    int n = pkt.vfunc_o8_3();
+    for (int i = 0; i < n; i++)
+        m_failStackUids.Add(pkt.vfunc_o8_4());
+    FUN_1419c8070(item.get());
 }
 
 // @0x1419c3fd0
@@ -1235,13 +1234,13 @@ void UIItemEnchantDialog::FUN_1419c41b0()
             Unk_EnSlot* slot = FUN_1419c8160(m_bag1[i]);
             if (slot != 0) {
                 MS2Ptr<CItem> item = slot->vfunc_25();
-                if (!(item == 0)) {
-                    int count = item->FUN_140526c50();
-                    if (count != 0) {
-                        int v = DAT_143ab2a90.FUN_140a5f780(ItemData(item)->FUN_14053c6f0(), 0);
-                        slot->FUN_141416740(v, count);
-                    }
-                }
+                if (item == 0)
+                    continue;
+                int count = item->FUN_140526c50();
+                if (count == 0)
+                    continue;
+                int v = DAT_143ab2a90.FUN_140a5f780(ItemData(item.operator->())->FUN_14053c6f0(), 0);
+                slot->FUN_141416740(v, count);
             }
         }
         FUN_1419bff60();
