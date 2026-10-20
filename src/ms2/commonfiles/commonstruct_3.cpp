@@ -19,8 +19,8 @@
 // MS2-PIN: ??E?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14027f550 ; prop
 // MS2-PIN: ??E?$_List_unchecked_const_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x14027f570 ; prop
 // MS2-PIN: ??E?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14027f590 ; prop
-// MS2-PIN: ??F?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UItemEntity@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x14027f5b0 ; prop
-// MS2-PIN: ??F?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UItemEntity@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14027f600 ; prop
+// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x14027f5b0 ; hand: map<int,int> const_iterator++(int) (copies, calls 0x14027f600; caller erase 0x14028ab00)
+// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14027f600 ; hand: calls _Tree_unchecked_const_iterator++ 0x14027f620 (was the vector<ItemEntity> -- look-alike)
 // MS2-PIN: ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x14027f620 ; unique
 // MS2-PIN: ??0?$list@V?$MS2Ptr@VCUserChangeableItemHistory@@@@V?$allocator@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@QEAA@XZ 0x14027f740 ; prop
 // MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x14027f760 ; unique
@@ -184,3 +184,4 @@ MS2_CS_SCALAR_DELETING_DTOR(QuestMask)
 MS2_CS_SCALAR_DELETING_DTOR(RemakeOptionContext)
 // @0x1402801b0
 MS2_CS_SCALAR_DELETING_DTOR(WeddingHallReservationFee)
+// MS2-PIN: ??F?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UItemEntity@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14027f850 ; hand: reverse_iterator<vector<ItemEntity>::iterator>::operator* 0x14027f4b0 calls it; it calls const_iterator-- 0x14027f830 (sub 0x30)
