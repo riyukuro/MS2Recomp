@@ -12,10 +12,23 @@
 
 #include "uimessenger.h"
 
+#include <list>
 #include <utility>
 #include <vector>
 
+#include "ms2/ms2format.h"
+#include "ms2/client/ms2/chatemoticoncli.h"
+#include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/messengerdata.h"
+#include "ms2/client/ms2/uichatemoticondialog.h"
+#include "ms2/client/ms2/uimessageboxdata.h"
+#include "ms2/commonfiles/chatemoticontable.h"
+#include "ms2/guess/usercommandcli.h"
+#include "ms2/placeholder/asobj.h"
+#include "ms2/placeholder/cgameoption.h"
+#include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/coutpacket.h"
+#include "ms2/placeholder/notifygameeventchanged.h"
 #include "ms2/placeholder/asbuttonbar.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/astextarea.h"
@@ -64,6 +77,8 @@ public:
     int FUN_1422c1340();                                            // the width
     int FUN_1422c13b0();                                            // the height
     void FUN_1422c7490(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // "moved"
+    Scaleform::GFx::Value FUN_140ba26d0(const char* szMember, int n);   // set a number member
+    void FUN_1422deb40(bool bActive);                               // the active frame
 };
 
 // "m_subject": the chat type drop-down.
@@ -122,6 +137,23 @@ int FUN_140873360(void* pCfg, const char* szName, float* pf);
 int FUN_1408731e0(void* pCfg, const char* szName, int* pn);
 int FUN_140873420(void* pCfg, const char* szName, CStringW* pstr);
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>& arr, const wchar_t* szDelim);   // split
+void FUN_140988d60(CStringW& str, std::vector<CStringW>& arr, const wchar_t* szDelim);   // split
+bool FUN_140841300(const CStringW& str, const char* sz);           // equals a narrow string
+bool FUN_140d2aa60(CStringW& strHtml);                              // the input has item links
+CStringW FUN_140cde1f0(const wchar_t* szFormat, const unsigned& nId, const int& nVSpace, const CStringW& strSize);
+int FUN_1418fd740(__int64 nParam, __int64 nId, int nType);          // uicommon.cpp: reports a user
+void FUN_1418fdfd0(__int64 nKey);                                   // uicommon.cpp: blocks a user
+
+// The emoticon tables and the per-user emoticon state.
+class Unk_MsgUser { public: MS2Ptr<CChatEmoticonCli> FUN_140d9f8f0(); };
+Unk_MsgUser* FUN_140931510();
+CChatEmoticonTable* FUN_1409eecd0();
+
+// The world and its local player (the selected super world chat item).
+class Unk_MsgPlayer { public: int FUN_1416639e0(); };
+class Unk_MsgWorld { public: Unk_MsgPlayer* FUN_141bd0cc0(); };
+Unk_MsgWorld* FUN_1403ed2d0();
+extern Unk_Inventory DAT_143ab2a90;                                 // the player's inventory
 
 class TiXmlElement
 {
@@ -502,5 +534,516 @@ int UIMessenger::FUN_141a0df10()
         s_debugCommands.clear();
         FUN_141a0d930();
     }
+    return 1;
+}
+
+// @0x141a0df70
+CStringW UIMessenger::FUN_141a0df70()
+{
+    return m_strName;
+}
+
+// @0x141a0dfc0
+CStringW UIMessenger::FUN_141a0dfc0()
+{
+    if (m_buttonBar)
+        return m_buttonBar->FUN_1422e3790();
+    return L"";
+}
+
+// @0x141a0e050
+TalkTab* UIMessenger::FUN_141a0e050()
+{
+    if (m_tabs.GetCount() == 1)
+        return m_tabs[0].get();
+    return FUN_141a0e0f0(FUN_141a0dfc0());
+}
+
+// @0x141a0e0f0
+TalkTab* UIMessenger::FUN_141a0e0f0(const CStringW& strName)
+{
+    for (unsigned i = 0; i < m_tabs.GetCount(); i++)
+    {
+        MS2Ptr<TalkTab> spTab = m_tabs[i];
+        if (spTab)
+        {
+            if (spTab->m_strName == strName)
+                return spTab;
+        }
+    }
+    return 0;
+}
+
+// @0x141a0e1f0
+int UIMessenger::FUN_141a0e1f0(int nIndex)
+{
+    if (m_buttonBar)
+    {
+        m_buttonBar->FUN_1422c7630(1);
+        m_buttonBar->FUN_1422e31e0(nIndex);
+        m_buttonBar->vfunc_24(1);
+    }
+    return 1;
+}
+
+// @0x141a0e2a0
+int UIMessenger::FUN_141a0e2a0(const CStringW& strName)
+{
+    if (m_buttonBar)
+    {
+        m_buttonBar->FUN_1422c7630(1);
+        m_buttonBar->FUN_1422e3590(strName);
+        m_buttonBar->vfunc_24(1);
+    }
+    return 1;
+}
+
+// @0x141a0e350
+int UIMessenger::FUN_141a0e350(const CStringW& strName)
+{
+    MS2Ptr<TalkTab> spTab = FUN_141a0e0f0(strName);
+    if (!spTab)
+        return 0;
+    for (size_t i = 0; i < m_tabs.GetCount(); i++)
+    {
+        if (spTab == m_tabs[i].get())
+        {
+            m_tabs.RemoveAt(i, 1);
+            break;
+        }
+    }
+    if (m_buttonBar)
+    {
+        m_buttonBar->FUN_1422e3a70(strName);
+        m_buttonBar->vfunc_24(1);
+        FUN_141a13ac0();
+    }
+    return 1;
+}
+
+// @0x141a0e4d0
+int UIMessenger::FUN_141a0e4d0(TalkTab* pTab)
+{
+    if (pTab == 0)
+        return 0;
+    if (FUN_141a13070(pTab->m_strName))
+        return 0;
+    m_tabs.Add(pTab);
+    if (m_buttonBar)
+    {
+        ASObj item(2);
+        item.FUN_1407cbb20("label", pTab->m_strName);
+        item.FUN_1407cb9c0("close", pTab->m_nClose);
+        item.FUN_1407cb9c0("detach", pTab->m_nDetach);
+        m_buttonBar->FUN_1422e3460(item);
+    }
+    return 1;
+}
+
+// @0x141a0e650
+int UIMessenger::FUN_141a0e650(TalkTab* pTab)
+{
+    if (pTab == 0)
+        return 0;
+    if (FUN_141a13070(pTab->m_strName))
+        return 0;
+    m_tabs.Add(pTab);
+    if (m_buttonBar)
+    {
+        ASObj item(2);
+        item.FUN_1407cbb20("label", pTab->m_strName);
+        item.FUN_1407cb9c0("close", pTab->m_nClose);
+        item.FUN_1407cb9c0("detach", pTab->m_nDetach);
+        m_buttonBar->FUN_1422e3460(item);
+        m_buttonBar->vfunc_24(1);
+        FUN_141a13ac0();
+    }
+    return 1;
+}
+
+// @0x141a0e810
+int UIMessenger::FUN_141a0e810(const CStringW& strName, int nClose, int nDetach, int nAdditive)
+{
+    MS2Ptr<TalkTab> spTab = new TalkTab(strName, nClose, nDetach, nAdditive);
+    return FUN_141a0e650(spTab);
+}
+
+// @0x141a0e900
+size_t UIMessenger::FUN_141a0e900(ATL::CAtlArray<MS2Ptr<TalkTab> >& tabs)
+{
+    tabs.Copy(m_tabs);
+    return tabs.GetCount();
+}
+
+// @0x141a0e940
+void UIMessenger::FUN_141a0e940(const Scaleform::GFx::FunctionHandler::Params& params)
+{
+    switch (FUN_141a14250())
+    {
+    case 0x18:
+        FUN_141a13210();
+        break;
+    }
+}
+
+// @0x141a0e990
+void UIMessenger::FUN_141a0e990()
+{
+    vfunc_97(FUN_141a0dfc0());
+}
+
+// @0x141a0e9f0
+void UIMessenger::FUN_141a0e9f0(const CStringW& strOld, const CStringW& strNew)
+{
+    if (strOld == strNew)
+        return;
+    TalkTab* pTab = FUN_141a0e0f0(strOld);
+    if (pTab == 0)
+        return;
+    if (m_buttonBar)
+    {
+        m_buttonBar->FUN_1422e3c70(strOld, strNew);
+        m_buttonBar->vfunc_24(1);
+    }
+    pTab->m_strName = strNew;
+}
+
+// @0x141a0ead0
+void UIMessenger::FUN_141a0ead0(unsigned nFontSize, CStringW& strHtml)
+{
+    for (unsigned i = 12; static_cast<int>(i) <= 18; ++i)
+    {
+        CStringW strFrom;
+        strFrom.Format(L"size='%d'", i);
+        CStringW strTo;
+        strTo.Format(L"size='%d'", nFontSize);
+        strHtml.Replace(strFrom, strTo);
+    }
+}
+
+// @0x141a0ebb0
+void UIMessenger::FUN_141a0ebb0(int nAlpha)
+{
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog != 0)
+        pDialog->FUN_140ba26d0("backgroundAlpha", nAlpha);
+}
+
+// @0x141a0ec30
+void UIMessenger::FUN_141a0ec30(const CStringW& strText)
+{
+    if (m_textInput == 0)
+        return;
+    CStringW strCurrent = m_textInput->FUN_1422e0b00();
+    if (strCurrent.GetLength() >= m_textInput->FUN_1422e0da0())
+        return;
+    CStringW strSpace(L" ");
+    CStringW strHtml = m_textInput->FUN_1422e0c20();
+    if (FUN_141a14ce0(strHtml + strText + strSpace, m_textInput->FUN_1422e0da0()))
+    {
+        m_textInput->FUN_1422e0bd0(strHtml + strText + strSpace);
+        m_textInput->vfunc_24(1);
+        int nLength = m_textInput->FUN_1422e0b00().GetLength();
+        if (0 < nLength)
+        {
+            vfunc_78();
+            m_textInput->FUN_1422e1500(nLength, nLength);
+        }
+        m_textInput->vfunc_24(1);
+        m_inputHistory.Add(strText);
+    }
+}
+
+// @0x141a0efa0
+void UIMessenger::vfunc_85(int bActive)
+{
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog != 0)
+    {
+        pDialog->FUN_1422deb40(bActive != 0);
+        pDialog->FUN_1422c6640(bActive != 0);
+    }
+}
+
+// @0x141a0f040
+int UIMessenger::vfunc_86(TalkTab* pExcept, const CStringW& strName)
+{
+    for (size_t i = 0; i < m_tabs.GetCount(); i++)
+    {
+        MS2Ptr<TalkTab> spTab = m_tabs[i];
+        if (spTab.get() != 0 && !(spTab == pExcept))
+        {
+            if (spTab->FUN_141482940() == strName)
+                return 0;
+        }
+    }
+    return 1;
+}
+
+// @0x141a0f180
+void UIMessenger::FUN_141a0f180()
+{
+    FUN_141926620(&m_nAlignType, &m_fOffsetX, &m_fOffsetY);
+}
+
+// @0x141a0f1d0
+void UIMessenger::FUN_141a0f1d0(CStringW strText, CStringW strHtml, bool bHistory)
+{
+    CStringW strSend = strText;
+    bool bLinks = FUN_140d2aa60(strHtml);
+    if (bLinks)
+        strSend = strHtml;
+    if (strText.GetAt(0) == L'/')
+    {
+        if (FUN_141a10fd0(strText, strHtml, bLinks) && bHistory)
+            m_pBrowser->FUN_141a25f70(strText, m_inputHistory);
+        return;
+    }
+    int nType = FUN_141a144a0();
+    if (FUN_141a12380(nType, strSend))
+        return;
+    FUN_141a12e40(nType, strSend, bHistory);
+}
+
+// @0x141a0f430
+void UIMessenger::FUN_141a0f430(CStringW strText, bool bHistory)
+{
+    if (strText.GetAt(0) != L'/')
+        return;
+    if (FUN_141a10fd0(strText, CStringW(L""), 0) && bHistory)
+        m_pBrowser->FUN_141a25f70(strText, m_inputHistory);
+}
+
+// @0x141a0f520
+void UIMessenger::FUN_141a0f520(const Scaleform::GFx::FunctionHandler::Params& params)
+{
+    FUN_141a0f180();
+}
+
+// @0x141a0f550
+void UIMessenger::FUN_141a0f550(NotifyObject* pNotify)
+{
+    NotifyGameEventChanged* pChanged = dynamic_cast<NotifyGameEventChanged*>(pNotify);
+    if (pChanged != 0 && FUN_140841300(pChanged->m_eventName, "SaleChat"))
+        FUN_141a14dc0();
+}
+
+// @0x141a0f5d0
+void UIMessenger::FUN_141a0f5d0(NotifyObject* pNotify)
+{
+    NotifyChatEmoticonSelected* pSelected = dynamic_cast<NotifyChatEmoticonSelected*>(pNotify);
+    if (pSelected == 0)
+        return;
+    if (pSelected->m_strTarget != m_strName)
+    {
+        FUN_141a13940();
+        return;
+    }
+    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(pSelected->m_nEmoticonId);
+    if (!spEmo)
+        return;
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    if (spCli.IsNull())
+    {
+        MS2_ASSERT_AT(0x4c3, 0);
+        return;
+    }
+    if (!spCli->FUN_140a39dd0(spEmo->m_nId))
+        return;
+    std::list<ChatEmoticonDataPtr> emoticons;
+    emoticons.push_back(spEmo);
+    FUN_141a13510(emoticons);
+    FUN_1419235d0();
+}
+
+// @0x141a0f7b0
+void UIMessenger::FUN_141a0f7b0()
+{
+    Unk_MsgPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    FUN_141a14dc0();
+    int nType = FUN_141a14500();
+    if (!m_pBrowser->FUN_141a264c0(0x10))
+    {
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(pPlayer->FUN_1416639e0());
+        if (spItem)
+            nType = 0x10;
+    }
+    FUN_141a146d0(nType);
+}
+
+// @0x141a0f870
+void UIMessenger::FUN_141a0f870()
+{
+    if (!m_pBrowser->FUN_141a26480())
+    {
+        if (m_nHistoryIndex != -1)
+        {
+            m_nTargetSelectedIndex = m_nHistoryIndex;
+            m_nHistoryIndex = -1;
+        }
+    }
+    else
+    {
+        m_nHistoryIndex = m_nTargetSelectedIndex;
+    }
+    FUN_141a14dc0();
+    FUN_141a0e990();
+}
+
+// @0x141a0f900
+bool UIMessenger::FUN_141a0f900(int nButton, const CMsgBoxData& box)
+{
+    if (nButton == 0)
+        FUN_1418fd740(box.FUN_141a02ed0(0, 0), box.FUN_141a02ed0(1, 0), box.FUN_141a02e50(2, 0));
+    return true;
+}
+
+// @0x141a0f980
+bool UIMessenger::FUN_141a0f980(int nButton, const CMsgBoxData& box)
+{
+    if (nButton == 0)
+        FUN_1418fdfd0(box.FUN_141a02f10(0, 0));
+    return true;
+}
+
+// @0x141a0f9d0
+bool UIMessenger::FUN_141a0f9d0(int nButton, const CMsgBoxData& box)
+{
+    if (nButton == 0)
+    {
+        if (const_cast<CMsgBoxData&>(box).FUN_141a04aa0())
+        {
+            CGameOption::GetInstance()->FUN_140ae6540()->m_b[0] = 0;
+            CGameOption::GetInstance()->FUN_1412432d0();
+        }
+        const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
+        FUN_141a12e40(0x10, strText, 1);
+        {
+            CString strNone("");
+            m_textInput->FUN_1422e0b80(strNone);
+        }
+        m_textInput->vfunc_24(1);
+    }
+    return true;
+}
+
+// @0x141a0fb40
+bool UIMessenger::FUN_141a0fb40(int nButton, const CMsgBoxData& box)
+{
+    if (nButton == 0)
+    {
+        if (const_cast<CMsgBoxData&>(box).FUN_141a04aa0())
+        {
+            CGameOption::GetInstance()->FUN_140ae6540()->m_b[1] = 0;
+            CGameOption::GetInstance()->FUN_1412432d0();
+        }
+        const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
+        FUN_141a12e40(0xb, strText, 1);
+        {
+            CString strNone("");
+            m_textInput->FUN_1422e0b80(strNone);
+        }
+        m_textInput->vfunc_24(1);
+    }
+    return true;
+}
+
+// @0x141a0fcb0
+bool UIMessenger::FUN_141a0fcb0(int nButton, const CMsgBoxData& box)
+{
+    if (nButton == 0)
+    {
+        if (const_cast<CMsgBoxData&>(box).FUN_141a04aa0())
+        {
+            CGameOption::GetInstance()->FUN_140ae6540()->m_b[2] = 0;
+            CGameOption::GetInstance()->FUN_1412432d0();
+        }
+        const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
+        FUN_141a12e40(0xc, strText, 1);
+        {
+            CString strNone("");
+            m_textInput->FUN_1422e0b80(strNone);
+        }
+        m_textInput->vfunc_24(1);
+    }
+    return true;
+}
+
+// @0x141a0fe20
+int UIMessenger::FUN_141a0fe20(int nEmoticonId)
+{
+    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    if (!spEmo)
+        return 0;
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    if (spCli.IsNull())
+    {
+        MS2_ASSERT_AT(0x782, 0);
+        return 0;
+    }
+    if (!spCli->FUN_140a39dd0(spEmo->m_nId))
+        return 0;
+    COutPacket packet(0xb7, 0);
+    packet.vfunc_o10_1(3);
+    packet.vfunc_o10_3(nEmoticonId);
+    packet.vfunc_o10_8(FUN_141a0df70());
+    packet.vfunc_o10_1(FUN_141a144a0());
+    FUN_140710590(packet);
+    return 1;
+}
+
+// @0x141a10010
+void UIMessenger::FUN_141a10010(int nType, int nEmoticonId)
+{
+    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    if (!spEmo)
+        return;
+    CStringW strSize(L"");
+    if (spEmo->m_nWidth != 0 || spEmo->m_nHeight != 0)
+        strSize = StringFormat(L"width='{0}' height='{1}'", spEmo->m_nWidth, spEmo->m_nHeight);
+    CStringW strLine = FUN_140cde1f0(L"<img src='img://emoticon:{0}' vspace='{1}' {2} />", spEmo->m_nId,
+                                     spEmo->m_nVSpace, strSize);
+    CStringW strPrefix;
+    if (!m_textInput.IsNull())
+    {
+        CStringW strInput = m_textInput->FUN_1422e0b00().Trim();
+        if (!strInput.IsEmpty() && strInput.GetAt(0) == L'/')
+        {
+            std::vector<CStringW> parts;
+            FUN_140988d60(strInput, parts, L" ");
+            if (parts.size() >= 2)
+            {
+                int nChatType = CUserCommandCli::GetInstance()->ChatType(parts[0]);
+                if (nChatType == 4)
+                    strPrefix = StringFormat(L"{0} {1} ", parts[0], parts[1]);
+            }
+        }
+    }
+    if (strPrefix.IsEmpty())
+        FUN_141a146d0(nType);
+    strLine = strPrefix + strLine;
+    FUN_141a0f1d0(strLine, strLine, 0);
+}
+
+// @0x141a10490
+int UIMessenger::FUN_141a10490(int nEmoticonId, bool bFavorite)
+{
+    ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
+    if (!spEmo)
+        return 0;
+    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
+    if (spCli.IsNull())
+    {
+        MS2_ASSERT_AT(0x7d3, 0);
+        return 0;
+    }
+    if (!spCli->FUN_140a39dd0(spEmo->m_nId))
+        return 0;
+    COutPacket packet(0xb7, 0);
+    packet.vfunc_o10_1(bFavorite ? 5 : 6);
+    packet.vfunc_o10_3(nEmoticonId);
+    FUN_140710590(packet);
     return 1;
 }

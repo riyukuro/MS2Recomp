@@ -25,5 +25,10 @@ public:
     CStringW FUN_1422e0b00();                                           // the text
     MS2Ptr<ASTextField> FUN_1422e1490();                                // the text field child
     void FUN_1422e0d60(int nMaxChars);                                  // the maximum length
+    int FUN_1422e0da0();                                                // 0x1422e0da0 "maxChars" (uimessenger.cpp)
+    CStringW FUN_1422e0c20();                                           // 0x1422e0c20 "htmlText"
+    void FUN_1422e0bd0(const CStringW& strHtml);                        // 0x1422e0bd0 set "htmlText"
+    void FUN_1422e0b80(const CString& strHtml);                         // 0x1422e0b80 set "htmlText" (narrow)
+    void FUN_1422e1500(int nBegin, int nEnd);                           // 0x1422e1500 set the selection
 };
 MS2_CHECK_SIZE(ASTextInput, 0x88);

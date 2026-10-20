@@ -26,6 +26,10 @@ public:
     int FUN_1422e3210();                                                // the selected button (uiguilddialog.cpp)
     void FUN_1422e3400();                                               // clear the data provider
     void FUN_1422e3460(const ASObj& item);                              // append a button (pushed to the data provider)
+    void FUN_1422e3590(const CStringW& strLabel);                       // 0x1422e3590 select the button of a label (uimessenger.cpp)
+    CStringW FUN_1422e3790();                                           // 0x1422e3790 the selected label
+    void FUN_1422e3a70(const CStringW& strLabel);                       // 0x1422e3a70 remove the button of a label
+    void FUN_1422e3c70(const CStringW& strOld, const CStringW& strNew); // 0x1422e3c70 relabel a button
     MS2Ptr<ASDataProvider> FUN_1422e2e00();                             // the data provider (uiclosetdialog.cpp)
     MS2Ptr<ASButton> FUN_1422e32b0(int nIndex);                         // the button of an entry
     void FUN_1422e4060(int nIndex);                                     // refresh an entry from the data provider

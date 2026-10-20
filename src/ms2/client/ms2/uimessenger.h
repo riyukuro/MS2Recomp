@@ -14,6 +14,7 @@
 
 #include <afx.h>
 #include <atlcoll.h>
+#include <list>
 #include <map>
 #include <vector>
 
@@ -33,6 +34,7 @@ class ASUIComponent;
 class NotifyObject;
 class CMsgBoxData;
 class UIMessengerBrowser;
+class ChatEmoticonData;
 
 // One debug chat command (DebugChatCommand.xml <ms2><CommandSet><cmd .../>): the help shown by the chat input.
 struct TDebugCommand : public CPtred
@@ -72,7 +74,7 @@ public:
     virtual int vfunc_74(int a1, void* p2, void* p3);                       // 74 0x141a0cab0 window message
     virtual int vfunc_84();                                                 // 84 0x141a09db0 deletes the settings file
     virtual void vfunc_85(int bActive);                                     // 85 0x141a0efa0
-    virtual int vfunc_86(void* pTab, const CStringW& strName);              // 86 0x141a0f040 the tab name is free
+    virtual int vfunc_86(MessengerData::TalkTab* pExcept, const CStringW& strName);              // 86 0x141a0f040 the tab name is free
     virtual void vfunc_87();                                                // 87 0x141a15ae0
     virtual int vfunc_88(const CStringW& strText, int nType);               // 88 0x141a15dc0 adds a chat line
     virtual void vfunc_89(const CStringW& strText, int nChannel);           // 89 0x141a15d70 adds a line of a channel
@@ -101,25 +103,55 @@ public:
     CStringW FUN_141a0dfc0();                                               // 0x141a0dfc0 the default tab name
     MessengerData::TalkTab* FUN_141a0e050();                                // 0x141a0e050 the selected tab
     MessengerData::TalkTab* FUN_141a0e0f0(const CStringW& strName);         // 0x141a0e0f0 a tab by name
+    int FUN_141a0e1f0(int nIndex);                                          // 0x141a0e1f0 selects a tab by index
     int FUN_141a0e2a0(const CStringW& strName);                             // 0x141a0e2a0 selects a tab
     int FUN_141a0e350(const CStringW& strName);                             // 0x141a0e350 removes a tab
     int FUN_141a0e4d0(MessengerData::TalkTab* pTab);                        // 0x141a0e4d0 adds a tab
+    int FUN_141a0e650(MessengerData::TalkTab* pTab);                        // 0x141a0e650 inserts a tab (refreshes the bar)
     int FUN_141a0e810(const CStringW& strName, int nClose, int nDetach, int nAdditive);   // 0x141a0e810 creates a tab
+    size_t FUN_141a0e900(ATL::CAtlArray<MS2Ptr<MessengerData::TalkTab> >& tabs);   // 0x141a0e900 copies the tabs
     void FUN_141a0e990();                                                   // 0x141a0e990 selects the default tab
-    void FUN_141a0ead0(int nFontSize, CStringW& strHtml);                   // 0x141a0ead0 sets the html font size
+    void FUN_141a0e9f0(const CStringW& strOld, const CStringW& strNew);     // 0x141a0e9f0 renames a tab
+    void FUN_141a0ead0(unsigned nFontSize, CStringW& strHtml);              // 0x141a0ead0 sets the html font size
+    void FUN_141a0ebb0(int nAlpha);                                         // 0x141a0ebb0 the background alpha
+    void FUN_141a0ec30(const CStringW& strText);                            // 0x141a0ec30 appends to the input
     void FUN_141a0f180();                                                   // 0x141a0f180 reads the alignment
+    void FUN_141a0f1d0(CStringW strText, CStringW strHtml, bool bHistory);  // 0x141a0f1d0 submits a line
+    void FUN_141a0f430(CStringW strText, bool bHistory);                    // 0x141a0f430 submits a command
     void FUN_141a0f550(NotifyObject* pNotify);                              // 0x141a0f550 NotifyGameEventChanged
     void FUN_141a0f5d0(NotifyObject* pNotify);                              // 0x141a0f5d0 NotifyChatEmoticonSelected
+    void FUN_141a0f7b0();                                                   // 0x141a0f7b0 the default subject
+    void FUN_141a0f870();                                                   // 0x141a0f870 restores the subject
+    bool FUN_141a0f900(int nButton, const CMsgBoxData& box);                // 0x141a0f900 report confirm
+    bool FUN_141a0f980(int nButton, const CMsgBoxData& box);                // 0x141a0f980 block confirm
+    bool FUN_141a0f9d0(int nButton, const CMsgBoxData& box);                // 0x141a0f9d0 super chat confirm
+    bool FUN_141a0fb40(int nButton, const CMsgBoxData& box);                // 0x141a0fb40 world chat confirm
+    bool FUN_141a0fcb0(int nButton, const CMsgBoxData& box);                // 0x141a0fcb0 channel chat confirm
+    int FUN_141a0fe20(int nEmoticonId);                                     // 0x141a0fe20 sends an emoticon
+    void FUN_141a10010(int nType, int nEmoticonId);                         // 0x141a10010 types an emoticon
+    int FUN_141a10490(int nEmoticonId, bool bFavorite);                     // 0x141a10490 the emoticon favorite
+    int FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks);     // 0x141a10fd0 runs a command
     void FUN_141a0e940(const Scaleform::GFx::FunctionHandler::Params& params);   // the input text changed
     void FUN_141a0f520(const Scaleform::GFx::FunctionHandler::Params& params);   // the dialog was moved
     int FUN_141a12260();                                                    // 0x141a12260 escape: leaves the input
+    bool FUN_141a12380(int nType, CStringW strText);                        // 0x141a12380 the chat actions
+    void FUN_141a12e40(int nType, CStringW strText, bool bHistory);         // 0x141a12e40 sends a chat line
     int FUN_141a12f30();                                                    // 0x141a12f30 has the key focus
+    bool FUN_141a13070(const CStringW& strName);                            // 0x141a13070 a tab exists
+    void FUN_141a13210();                                                   // 0x141a13210 the emoticon aliases
+    void FUN_141a13510(std::list<MS2Ptr<ChatEmoticonData> >& emoticons);    // 0x141a13510 the emoticon preview
+    void FUN_141a13940();                                                   // 0x141a13940 closes the preview
     void FUN_141a13ac0();                                                   // 0x141a13ac0 refreshes the tab bar
     void FUN_141a13c20(int bUp);                                            // 0x141a13c20 input history
     void FUN_141a13d20(CStringW* pName);                                    // 0x141a13d20 a free tab name
     int FUN_141a14110();                                                    // 0x141a14110 the default chat type index
+    int FUN_141a14250();                                                    // 0x141a14250 the chat type of the input
+    int FUN_141a144a0();                                                    // 0x141a144a0 the selected chat type
+    int FUN_141a14500();                                                    // 0x141a14500 the default subject
     void FUN_141a14600();
+    void FUN_141a146d0(int nType);                                          // 0x141a146d0 selects a subject
     void FUN_141a14760();
+    bool FUN_141a14ce0(CStringW strText, int nMax);                         // 0x141a14ce0 fits without the markup
     void FUN_141a14dc0();                                                   // 0x141a14dc0 rebuilds the subject list
     void FUN_141a15970();                                                   // 0x141a15970 orders the tabs as the bar
     void FUN_141a17700();
@@ -160,6 +192,11 @@ class UIMessengerBrowser : public UIDialog, public UIItemEventListener
 public:
     UIMessengerBrowser();                                                   // 0x141a20f90
     virtual ~UIMessengerBrowser();                                          //  0 0x141a215a0
+
+    // ---- non-virtual members (exe order) ----
+    void FUN_141a25f70(const CStringW& strText, ATL::CAtlArray<CStringW>& history);   // 0x141a25f70 records a command
+    bool FUN_141a26480();                                                   // 0x141a26480
+    bool FUN_141a264c0(int nType);                                          // 0x141a264c0 the chat type is hidden
 
     MS2_LAYOUT_FRIEND;
     int m_180;                                                              // +0x180 (1) the windows take key input
