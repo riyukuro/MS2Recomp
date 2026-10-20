@@ -303,11 +303,7 @@ __int64 Unk_AdvCfgExp::FUN_140ba77c0()
 // @0x140ba77e0
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root)
 {
-    ASGameEntity* pRaw = 0;
-    void* pMem = operator new(0x88);
-    if (pMem != 0)
-        pRaw = new (pMem) ASGameEntity(root, nUiId);
-    MS2Ptr<ASGameEntity> pEntity(pRaw);
+    MS2Ptr<ASGameEntity> pEntity(new ASGameEntity(root, nUiId));
     return pEntity;
 }
 
