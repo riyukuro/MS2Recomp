@@ -67,8 +67,6 @@ Unk_StateArg22::~Unk_StateArg22()
 {
 }
 
-// MS2-FUNCTIONAL: the exe news the 0xb8-byte StateSyncObject directly; Unk_StateArg22 omits its +0xb0 field (see
-// statemanager.h), so the base record is placement-constructed in a full-size block.
 // @0x140835450
 MS2Ptr<Unk_StateArg22> FUN_140835450(int nState)
 {
@@ -87,7 +85,7 @@ MS2Ptr<Unk_StateArg22> FUN_140835450(int nState)
         spState.AssignRaw(new StateSyncObjectWeddingEmotion(nState));
         break;
     default:
-        spState.AssignRaw(new (::operator new(0xb8)) Unk_StateArg22(nState));
+        spState.AssignRaw(new Unk_StateArg22(nState));
         break;
     }
     return spState;

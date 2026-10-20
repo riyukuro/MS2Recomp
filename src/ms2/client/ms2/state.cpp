@@ -167,7 +167,6 @@ MS2_CHECK_OFFSET(Unk_StateDataArgDance, m_strC0, 0xc0);
 class StateSyncObjectMicroGameRps : public Unk_StateArg22
 {
 public:
-    char m_pad_b0[8];
     int m_nB8;
     int m_nBC;
     int m_nC0;
@@ -177,7 +176,6 @@ MS2_CHECK_OFFSET(StateSyncObjectMicroGameRps, m_strC8, 0xc8);
 class StateSyncObjectMicroGameCoupleDance : public Unk_StateArg22
 {
 public:
-    char m_pad_b0[8];
     int m_nB8;
     bool m_bBC;
     CStringA m_strC0;                                   // +0xc0
