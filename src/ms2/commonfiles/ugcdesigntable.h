@@ -39,6 +39,8 @@ public:
     int m_nSaleTag;                         // +0x48 "saleTag"
     int m_nCategory;                        // +0x4c "category"
     int m_nDpOrder;                         // +0x50 "dpOrder"
+
+    int FUN_14089e200();                    // the price type of the row (uiugcitemeditdialog.cpp)
 };
 MS2_CHECK_SIZE(CUGCDesignData, 0x58);
 MS2_CHECK_OFFSET(CUGCDesignData, m_nItemGrade, 0x1c);
@@ -61,6 +63,7 @@ public:
 
     bool Load();                                            // 0x14089e950 reloads when the xml changed on disk
     CUGCDesignDataPtr GetData(unsigned int nItemID);        // 0x14089e9f0 the row for an item id (null when missing)
+    ATL::CAtlMap<unsigned int, CUGCDesignDataPtr>& GetMap() { return m_map; }   // 0x141b47790 (inline COMDAT, uiugcitemeditdialog.cpp)
 
     // Both are hooked (MS2_REPLACE_METHOD's thunk derives from this class and calls them), so they stay public.
     bool Reload();                          // 0x14089e630 parses the xml and fills the map

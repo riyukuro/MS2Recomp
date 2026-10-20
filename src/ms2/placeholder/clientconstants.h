@@ -89,6 +89,7 @@ public:
         T* Get();
         const T& Get(const T& kDefault);                    // 0x140967520 (float): the value once loaded, else kDefault
         T Read() { return *Get(); }   // 0x1402bac50 (uint) / bac70 (float) / bac90 (__int64)
+        NiPoint3 FUN_141b49fe0() { return NiPoint3(*Get()); }   // 0x141b49fe0 (efd::Point3 only; inline COMDAT, uiugcitemeditdialog.cpp)
         T* Set(const T& v);
         T m_value;                                          // +0x50
         T m_default;

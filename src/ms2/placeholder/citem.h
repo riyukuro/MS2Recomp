@@ -398,4 +398,5 @@ public:
   __int64 m_nUgcUid;                     // +0x30 compared by CloneCube::vfunc_61
   char m_pad_38[0x38];
   CString m_strName;                     // +0x70 cached UGC file name (avatarcube.cpp)
+  void FUN_140632200(CItemUgc* pSource); // copy the UGC info of a proxy (uiugcitemeditdialog.cpp)
 };

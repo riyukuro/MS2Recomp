@@ -280,6 +280,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
+    friend class UIUGCItemEditDialog;                       // clears m_str1b0 / m_str1b8 on open and close
     CLockCriticalSection m_lock;                            // +0x08
     int m_bInit;                                            // +0x38
     int m_nMode;                                            // +0x3c 1: uploads are disabled

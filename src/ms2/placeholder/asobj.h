@@ -64,6 +64,11 @@ public:
     void FUN_1422bae10(const char* szName, int& n);                      // read an int member (uiitemcreatedialog.cpp)
     void FUN_141b2ffc0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uitriggereditordialog.cpp)
     void FUN_141a07250(const char* szName, int n);                       // set an int member (uimessagebox's range; the trigger state positions)
+    void FUN_1422bad80(const char* szName, int& n);                      // read an int member (uiugcitemeditdialog.cpp)
+    void FUN_1422bafe0(const char* szName, bool& b);                     // read a bool member (uiugcitemeditdialog.cpp)
+    void FUN_141b46a40(const char* szName, class ASFunction fn);         // set a member to an AS function (inline COMDAT, uiugcitemeditdialog.cpp; fn by value)
+    void FUN_141b46af0(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uiugcitemeditdialog.cpp)
+    void FUN_141b46b90(const char* szName, int n);                       // same body, a second instance
 };
 MS2_CHECK_SIZE(ASObj, 0x40);
 
