@@ -175,7 +175,7 @@ public:
     void FUN_140691090();
     void FUN_1406910e0(__int64 value);
     __int64 FUN_140691110() const;
-    bool FUN_140691130();
+    int FUN_140691130();
     __int64 FUN_140691160() const;
     int FUN_140691180() const;
     __int64 FUN_1406911c0() const;
