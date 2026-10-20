@@ -106,6 +106,13 @@ public:
     const std::set<unsigned>* FUN_140aaffb0(unsigned nGroup);   // the effects of an additional effect group
 };
 // The current field data.
+// the caller tests the result as an int (no movzx); the definition in additionalactionadditional.cpp returns bool
+class Unk_AclInvokeEffect : public AdditionalLevelData::InvokeEffectProperty
+{
+public:
+    int FUN_140192ac0();
+};
+
 // the exe passes the entity id by value here (the callee's own header takes it by reference; same ABI)
 class Unk_AclEffect : public CEffectService
 {
@@ -862,11 +869,11 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
             continue;
         if (!sp->FUN_14096d050())
             continue;
-        if (!sp->FUN_14096d810()->m_invokeEffect.FUN_140192ac0())
+        if (!static_cast<Unk_AclInvokeEffect&>(sp->FUN_14096d810()->m_invokeEffect).FUN_140192ac0())
             continue;
         for (unsigned i = 0; i < sp->FUN_14096d810()->m_invokeEffect.m_vTypes.size(); ++i)
         {
-            unsigned nType = sp->FUN_14096d810()->m_invokeEffect.m_vTypes[i];
+            Unk_InvokeOptionType nType = (Unk_InvokeOptionType)sp->FUN_14096d810()->m_invokeEffect.m_vTypes[i];
             ATL::CAtlArray<MS2Ptr<SAInvokeEffectStat> > stats;
             if (sp->FUN_14096d810()->m_invokeEffect.m_nSkillID)
             {

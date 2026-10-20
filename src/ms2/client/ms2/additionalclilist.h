@@ -18,13 +18,16 @@ class CInPacket;
 class CSpecialEffectCtx;
 class SkillAttackData;
 
+// the stat option type key of SAInvokeEffectStat (an enum in the exe: the key is passed by reference)
+enum Unk_InvokeOptionType { INVOKE_OPTION_NONE };
+
 class SAInvokeEffectStat : public CPtred
 {
 public:
     SAInvokeEffectStat();                                   // 0x1409755e0
     virtual ~SAInvokeEffectStat();                          // 0x140975870 (??_G 0x140975d00)
 
-    ATL::CAtlMap<unsigned, MS2Ptr<InvokeEffectOption> > m_18;   // +0x18 stat option type -> option
+    ATL::CAtlMap<Unk_InvokeOptionType, MS2Ptr<InvokeEffectOption> > m_18;   // +0x18 stat option type -> option
 };
 MS2_CHECK_SIZE(SAInvokeEffectStat, 0x60);
 
