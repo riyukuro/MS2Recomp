@@ -3836,3 +3836,7 @@ __imp_NxGetUtilLib	142cced28	data
 ?AddBundle@UIAdPushDialog@@QEAA_NV?$MS2Ptr@VUnk_AdMarketItem@@@@HH_N@Z	140e406c0	func
 ?GetSellDayText@CDBPremiumProduct@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	1406a02c0	func
 ?UpdateBundles@UIAdPushDialog@@QEAAXV?$MS2Ptr@VUnk_AdMarketItem@@@@@Z	140e40de0	func
+??0ReplaceObject@@QEAA@V?$SmartPointer@VNiNode@@@efd@@V?$SmartPointer@VNiMesh@@@2@@Z	1411f71d0	func
+??0NiPick@@QEAA@II@Z	141cb1110	func
+?DAT_143a08cf8@@3VNiPoint3@@B	143a08cf8	data
+??1Unk_MmEntityList@@QEAA@XZ	1409f20e0	func
