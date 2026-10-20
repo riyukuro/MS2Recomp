@@ -100,10 +100,12 @@ template<> Delegate<void(ItemInfoSlot&, ASTooltip&)>::DelegateImplBase::Delegate
 template<> Delegate<void(ItemInfoSlot&, ASTooltip&)>::DelegateImplBase::~DelegateImplBase() {}
 
 // @0x140c628f0 TPtr<> copy: AddRef through the pointee's slot 1
+// (the pointee's first two virtual slots; Unk_UISwfEntity_25 itself is incomplete here)
+class Unk_SwfRefView { public: virtual void vfunc_0(); virtual void vfunc_1(); };
 template <> inline TPtr<Unk_UISwfEntity_25>::TPtr(const TPtr& o)
 {
     if (o.get() != 0)
-        (*reinterpret_cast<void (***)(void*)>(o.operator->()))[1](o.operator->());
+        reinterpret_cast<Unk_SwfRefView*>(o.operator->())->vfunc_1();
     m_p = o.get();
 }
 
