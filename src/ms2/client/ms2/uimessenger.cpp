@@ -4888,3 +4888,7 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
         }
     }
 }
+
+// The UCRT's `static __inline memcpy_s` of this TU (unreferenced in the exe, kept alive by the pointer below).
+// MS2-PIN: memcpy_s 0x141a20e70
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMsgMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
