@@ -46,7 +46,7 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb1"                                  # bump to recompile everything
-MATCH_KEY = "callee7"                        # bump to re-match every obj (pairing logic changed)
+MATCH_KEY = "callee8"                        # bump to re-match every obj (pairing logic changed)
 NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
 if NO_CALLEE:
     MATCH_KEY = "nocallee"
@@ -185,6 +185,7 @@ def match_obj(path):
         return out, [], []
     callees, pending = {}, []    # name -> exe VA called/referenced by this obj's exact functions; unpaired functions
     copies = {}                  # unpaired name -> the exe functions whose bytes equal it (relocations masked), if several
+    weak = {}                    # name -> its non-exact table-name pair, kept if nothing better turns up
     for si in obj.func_symbols():
         n = obj.syms[si][0]
         if n.startswith(bm.FUNCLET_PREFIXES):
@@ -192,13 +193,14 @@ def match_obj(path):
         va = G["names"].get(n)
         ok = False
         how = "name"
+        hits = ()
         if va is not None:
             ok = _match(obj, n, va)
             if ok:
                 callees.update(bm.LAST_TARGETS)
         if not ok:
             hits = _search(obj, si)
-            if va is None and len(hits) > 1:
+            if len(hits) > 1:
                 eng = tuple(h for h in hits if not _in_game(h))      # game-unit copies are never engine credit
                 if eng:
                     copies[n] = eng
@@ -211,6 +213,10 @@ def match_obj(path):
             elif len(hits) == 1:
                 how = "name"
         if va is None:
+            pending.append(n)
+            continue
+        if not ok and n in copies:       # its table name points at another (game) copy: may still pair below
+            weak[n] = (n, va, ok, how)
             pending.append(n)
             continue
         out.append((n, va, ok, how))
@@ -243,6 +249,7 @@ def match_obj(path):
             break
         pending = nxt
     # the remaining unpaired functions with several byte-identical exe copies are paired by assign_copies (all objs)
+    out += [weak[n] for n in pending if n in weak]
     cands = [[n, list(copies[n])] for n in pending if n in copies]
     own = sorted({va for n, va, ok, _ in out if ok and obj.sec(obj.syms[obj.by_name[n]][2]).get("comdat", (0,))[0] != 2})
     return out, cands, own
@@ -281,28 +288,51 @@ def _match_job(path):
     return path, match_obj(path)
 
 
+def _greedy(todo, xok, match=None):
+    """one-to-one pairing of each group's names with its copies, first exact copy wins: [(name, va)]. xok caches
+    match results ("name@va" -> bool); without `match` an uncached trial returns None (a worker must run it)"""
+    out = []
+    for ns, copies in todo:
+        used = set()
+        for n in ns:
+            for v in copies:
+                if v in used:
+                    continue
+                t = f"{n}@{v:x}"
+                if t not in xok:
+                    if match is None:
+                        return None
+                    xok[t] = match(n, v)
+                if xok[t]:
+                    used.add(v)
+                    out.append((n, v))
+                    break
+    return out
+
+
 def _verify_job(job):
-    path, todo = job
+    path, todo, xok = job
     try:
         obj = bm.Obj(path)
     except Exception:
-        return path, []
-    return path, [(n, va, _match(obj, n, va)) for n, va in todo]
+        return path, xok
+    _greedy(todo, xok, lambda n, v: _match(obj, n, v))
+    return path, xok
 
 
 def assign_copies(res, cgroups, paths, j, log=print):
     """Pair the objs' unpaired functions that have several byte-identical exe copies (template instantiations of
     same-size types, e.g. map<utf8string,int> / map<utf8string,unsigned int>, kept apart by the linker): every copy no
     obj pairs exactly goes to the claiming obj whose own (non-COMDAT-any) exact functions lie nearest (the TU whose
-    instantiation the linker placed there), then each obj pairs its functions one to one with its copies, kept if
-    exact. Writes res[key]["xpairs"] (verification cached per obj result in res[key]["xok"])."""
+    instantiation the linker placed there), then each obj pairs its functions one to one with its copies (greedy: the
+    first copy that matches exactly; a callee named in the tables tells same-byte copies apart). Writes
+    res[key]["xpairs"] (match results cached per obj result in res[key]["xok"])."""
     claimed = {va for c in res.values() for _, va, ok, _ in c["pairs"] if ok}
     groups = collections.defaultdict(list)
     for k, c in res.items():
         for n, gid in c.get("cands", ()):
             if gid in cgroups:
                 groups[(k, tuple(cgroups[gid]))].append(n)
-    near = {}
 
     def dist(k, v):
         own = res[k].get("own") or ()
@@ -321,24 +351,18 @@ def assign_copies(res, cgroups, paths, j, log=print):
     todo = collections.defaultdict(list)
     for (k, hits), ns in groups.items():
         mine = sorted(v for v in hits if v not in claimed and owner[v][1] == k)
-        todo[k] += list(zip(ns, mine))
-    jobs = []
-    for k, prs in todo.items():
-        xok = res[k].setdefault("xok", {})
-        need = [(n, v) for n, v in prs if f"{n}@{v:x}" not in xok]
-        if need and k in paths:
-            jobs.append((paths[k], need, k))
+        if mine:
+            todo[k].append((ns, mine))
+    jobs = [(paths[k], prs, res[k].get("xok", {}), k) for k, prs in todo.items()
+            if k in paths and _greedy(prs, res[k].get("xok", {})) is None]
     if jobs:
-        log(f"engine: verifying {sum(len(x[1]) for x in jobs)} copy pair(s) in {len(jobs)} obj(s) ...")
-        byp = {p: k for p, _, k in jobs}
+        log(f"engine: pairing byte-identical copies in {len(jobs)} obj(s) ...")
+        byp = {p: k for p, _, _, k in jobs}
         with Pool(max(1, j), initializer=_init) as p:
-            for path, rows in p.imap_unordered(_verify_job, [(p_, t) for p_, t, _ in jobs]):
-                xok = res[byp[path]]["xok"]
-                for n, v, ok in rows:
-                    xok[f"{n}@{v:x}"] = ok
+            for path, xok in p.imap_unordered(_verify_job, [(p_, t, x) for p_, t, x, _ in jobs]):
+                res[byp[path]]["xok"] = xok
     for k, c in res.items():
-        xok = c.get("xok", {})
-        c["xpairs"] = [[n, v, True, "copy"] for n, v in todo.get(k, ()) if xok.get(f"{n}@{v:x}")]
+        c["xpairs"] = [[n, v, True, "copy"] for n, v in _greedy(todo.get(k, ()), c.get("xok", {})) or ()]
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -441,7 +465,10 @@ def credit(res, game_rows):
         return i >= 0 and va < game[i][1]
     best = {}      # va -> (rank, symbol, unit)   rank: 3 exact v2525, 2 exact stock, 1 paired
     for k, c in sorted(res.items()):
+        better = {x[0] for x in c.get("xpairs", ())}
         for sym, va, ok, how in c["pairs"] + c.get("xpairs", []):
+            if not ok and sym in better:      # a non-exact table-name pair superseded by an exact copy pair
+                continue
             if va not in info or va in game_rows or in_game(va):
                 continue
             rank = (3 if c["recipe"] == "v2525" else 2) if ok else 1
