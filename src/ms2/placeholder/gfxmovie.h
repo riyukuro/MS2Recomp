@@ -62,7 +62,7 @@ public:
     virtual void vfunc_12();                                        // 12 0x1422bddd0 (empty)
     virtual bool vfunc_13();                                        // 13 0x1422bdde0 returns true
     virtual int vfunc_14(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);   // 14 0x1422bddf0 returns 0
-    virtual bool vfunc_15(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);  // 15 0x1422bde10 returns 0
+    virtual int vfunc_15(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);   // 15 0x1422bde10 returns 0
     static const NiRTTI ms_RTTI;                                    // 0x143b0ae40 ("GFxMovie", no parent; vfunc_2 returns it)
 
     // Non-virtual members called by the derived movies' "initializeClass" handlers (GFxMovieHeadUpDisplay/PostDisplay).
@@ -90,7 +90,12 @@ public:
     MS2Ptr<ASMouseCursor> m_30;                                     // +0x30 the mouse cursor (type 6 of the movie manager)
     MS2Ptr<ASMovieClipLoader> m_40;                                 // +0x40 vfunc_11 invokes "shutdown" on it (FUN_140b62350)
     int m_50;                                                       // +0x50 ctor 0
+#if defined(MS2_HAVE_SCALEFORM_SDK)
+    Scaleform::KeyModifiers m_54;                                   // +0x54 the last key modifiers (ctor FUN_14127c3b0)
+    Scaleform::UInt8 m_pad_55[3];
+#else
     int m_54;                                                       // +0x54 (ctor FUN_14127c3b0: a byte at +0x54)
+#endif
     MS2_GFX_LOADER* m_58;                                           // +0x58 ctor 0; vfunc_6 argument
     MS2_GFX_PTR(MS2_GFX_MOVIE) m_60;                                // +0x60 Ptr<GFx::Movie> (accessor FUN_14127c960 / FUN_14127c910 = non-null)
     MS2_GFX_PTR(MS2_GFX_MOVIEDEF) m_68;                             // +0x68 Ptr<GFx::MovieDef> (Loader::CreateMovie result)
@@ -113,10 +118,10 @@ public:
     static const NiRTTI ms_RTTI;                                    // 0x143b0d2e0 (symbols-manual data row; vfunc_2 returns it)
     GFxMovieEventHandler();                                         // 0x1422d8dc0
     virtual ~GFxMovieEventHandler();                                //  0 0x1422d8e20 (scalar deleting 0x1422db0b0)
-    virtual void* vfunc_2();                                        //  2 0x1422db110 returns &DAT_143b0d2e0
+    virtual void* vfunc_2() { return (void*)&ms_RTTI; }             //  2 0x1422db110 (COMDAT)
     virtual void vfunc_11();                                        // 11 0x1422d9f50 GFxMovie::vfunc_11 + FUN_1422d8f90(this, m_88)
     virtual int vfunc_14(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);   // 14 0x1422d9040 the WM_ switch
-    virtual bool vfunc_15(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);  // 15 0x1422d9c30
+    virtual int vfunc_15(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);   // 15 0x1422d9c30 IME pre-processing (1 = handled)
     virtual void vfunc_16();                                        // 16 0x1422d9db0
     virtual void vfunc_17(void* hwnd);                              // 17 0x1422d9e60 (hwnd unused)
     virtual void vfunc_18(void* hwnd);                              // 18 0x1422d9ef0 (hwnd unused)
@@ -138,12 +143,29 @@ public:
     virtual void vfunc_34(void* hwnd, float x, float y);            // 34 0x1422da660
     virtual void vfunc_35(void* hwnd, float x, float y);            // 35 0x1422da720
     virtual void vfunc_36(void* hwnd, float x, float y);            // 36 0x1422da7e0
-    virtual bool vfunc_37(void* hwnd, int n, void* a, void* b);     // 37 0x1422da8a0 key event
-    virtual int vfunc_38(void* hwnd, int n, unsigned __int64 a, unsigned __int64 b);   // 38 0x1422da960
-    virtual void vfunc_39(int a, int b, int c, bool d, bool e);     // 39 0x1422daa40
+    virtual int vfunc_37(void* hwnd, int n, void* a, void* b);      // 37 0x1422da8a0 IME message -> IMEWin32Event (1 = handled)
+    virtual int vfunc_38(void* hwnd, int n, unsigned __int64 wParam, __int64 lParam);  // 38 0x1422da960 WM_KEY*/WM_SYSKEY*
+    // 39 0x1422daa40 OnKey(controller, Key::Code, wchar, down, KeyModifiers): a CharEvent for wchar-only keys, then
+    // SendKeyEvent. The last parameter is a Scaleform::KeyModifiers (one byte by value, the same ABI as bool); it stays
+    // bool here because GFxMovieBackground (client/ms2/gfxmoviebackground.h) overrides the slot with this signature.
+    virtual void vfunc_39(int a, int b, int c, bool d, bool e);
+
+    // The Win32 -> GFx input helpers (the Scaleform Platform_WinAPI.cpp AppImpl code). ?\gfxmovieeventhandler.cpp.
+    void FUN_1422d8f00(CStringW strText);                           // 0x1422d8f00 set the GFx text clipboard (by value)
+    void FUN_1422d8f90(void* hwnd);                                 // 0x1422d8f90 ChangeClipboardChain (WM_DESTROY)
+    void FUN_1422d8fd0(const CStringW& strText);                    // 0x1422d8fd0 FUN_1422d8f00(copy)
+    static void FUN_1422d9020(bool bEnable);                        // 0x1422d9020 ms_bImeEnabled = bEnable
+#if defined(MS2_HAVE_SCALEFORM_SDK)
+    void ProcessKey(unsigned vkCode, bool bDown, bool bExtendedKey);   // 0x1422dab20 processKey: VK -> Key::Code, OnKey
+    void SendKeyEvent(int nKeyboard, int nKeyCode, unsigned nWchar, bool bDown,
+                       Scaleform::KeyModifiers kMods);              // 0x1422dac60 sends the KeyEvent
+    Scaleform::KeyModifiers UpdateModifiers(bool bExtendedKey);       // 0x1422dad70 updateModifiers (also stored at +0x54)
+#endif
 
     // m_88 = SetClipboardViewer(hwnd) (0 when it returns hwnd itself); true if a next viewer is set. GFxMovieMain::vfunc_17.
-    bool FUN_1422d8e80(void* hwnd);                                 // 0x1422d8e80
+    int FUN_1422d8e80(void* hwnd);                                  // 0x1422d8e80
+
+    static bool ms_bImeEnabled;                                     // 0x143a290d0 (initially true; vfunc_15 IME pre-processing)
 
     unsigned m_80;                                                  // +0x80 tick count of the last input
     int m_84;                                                       // +0x84 mouse-tracking flag
