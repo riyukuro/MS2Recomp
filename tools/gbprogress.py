@@ -827,7 +827,10 @@ def main():
     ap.add_argument("--cache", default=os.path.join(ROOT, "build", "progress-" + (os.environ.get("MS2_AGENT") or "report")))
     ap.add_argument("--rows", help="write the status rows here (tsv)")
     a = ap.parse_args()
-    res, failed = run(a.cache, a.j, a.filters)
+    import heavy_lock
+    a.j = heavy_lock.clamp_jobs(a.j)
+    with heavy_lock.heavy():     # no-op when a parent (progress.py, merge) already holds a slot
+        res, failed = run(a.cache, a.j, a.filters)
     rows = credit(res, set())
     if a.rows:
         with open(a.rows, "w") as fo:

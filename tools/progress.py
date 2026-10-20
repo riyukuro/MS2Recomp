@@ -1147,6 +1147,8 @@ def main():
     cache = json.load(open(cache_path)) if os.path.exists(cache_path) else {}
 
     # compile
+    import heavy_lock
+    a.j = heavy_lock.clamp_jobs(a.j)
     todo = [u for u in units if a.force or needs_compile(u)]
     failed = set()
     if todo:
