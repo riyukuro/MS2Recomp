@@ -119,14 +119,14 @@ public:
     int FUN_141430470(__int64 nAction);
     MS2Ptr<CKeySettingParam> FUN_141430590(__int64 nAction) const;     // the setting of the action
     SettingList FUN_141430710(int nCategory);               // the settings of a tab
-    void FUN_14142fff0();
+    int FUN_14142fff0();                                     // load Table/keySetting.xml into m_settings
     void FUN_1414307a0();                                   // build the setting categories
     int FUN_141430b10(__int64 nAction);
     int FUN_141430b90(int nKey);
     int FUN_141430c30(int nKey);
     int FUN_141430cb0(int nKey);
     void FUN_141430d30(__int64 nAction, int nKey, int nPriority, int nOldKey);
-    unsigned* FUN_141430e70(unsigned* pOut, int nFirst, int nSecond, unsigned char nMode);
+    unsigned* FUN_141430e70(unsigned* pOut, int nFirst, int nSecond, int nMode);
     CStringW FUN_141430ee0(int nFirst, int nSecond);
     void FUN_1414310a0(unsigned nKey, int* pFirst, int* pSecond);
     void FUN_1414310f0(int nKey, int nOtherKey, __int64 nAction, __int64 nOtherAction);   // swap the modifier combos
