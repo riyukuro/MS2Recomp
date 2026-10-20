@@ -281,6 +281,7 @@ public:
 class Unk_MmSellerShop : public CPtred
 {
 public:
+    void FUN_140896e50(ATL::CAtlArray<MS2Ptr<Unk_MeratEquipEntry> >& out); // copy of the product list (CUgcCharBookMark)
     MS2Ptr<Unk_MmSellerInfo> m_spSeller;                                    // +0x18
     char m_pad[0x58 - 0x20];
     Unk_MmProductArray m_products;                                          // +0x58
@@ -532,6 +533,7 @@ float FUN_141b48480(int nSet, int nIndex);                              // the d
 CStringW FUN_1418fec00(int nFormat, __int64 nTime, int nZone);              // a time text
 CStringW FUN_141277b90(const CStringW& str);
 CStringW FUN_140ec25e0(__int64 nTime);                                      // UIMeratMarketCommon: the date text
+void FUN_141a01bc0(CMsgBoxData* pBox, int nButtons);
 void FUN_141a02770(CMsgBoxData* pBox, int nWidth, int nHeight);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 CStringW BlockFormat(int, const fmt::ArgList&);
@@ -3760,6 +3762,56 @@ void UIMeratMarketDialog::OnRightClickSeller(ASData& data)
                 pMenu->FUN_141a7f090(info, strName, 0, 0, 5, 1);
         }
     }
+}
+
+// A seller's products: the seller row and the product rows go to the seller page.
+// @0x141304270
+void UIMeratMarketDialog::ShowSellerProducts(const __int64& nSeller)
+{
+    if (m_30 == 0)
+        return;
+    MS2Ptr<Unk_MmSellerShop> spShop = FUN_140939a00()->FUN_140d56cc0(nSeller);
+    if (spShop == 0)
+        return;
+    if (spShop->m_spSeller == 0)
+        return;
+    CStringW strName(spShop->m_spSeller->m_strName);
+    CStringW strMessage = FUN_14052bd00(0xa1d, strName);
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMessage, 0, CStringW(L""));
+        if (spBox.operator CMsgBoxData*() != 0)
+        {
+            FUN_141a01bc0(spBox.operator->(), 3);
+            FUN_140d73c60(spBox);
+        }
+    }
+    FUN_1412751b0(strMessage, 0x14);
+    int bComplete = 1;
+    ATL::CAtlArray<MS2Ptr<Unk_MeratEquipEntry> > products;
+    spShop->FUN_140896e50(products);
+    int nCount = 0;
+    ASArray rows(2);
+    size_t nProducts = products.GetCount();
+    Unk_MmViewScope scope(m_spWeaponType);
+    for (size_t i = 0; i < nProducts; i++)
+    {
+        MS2Ptr<CMeratMarketProduct> spProduct(reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(products[i]));
+        if (spProduct.get() != 0)
+        {
+            ASMeratMarketProduct row(FUN_1422db730());
+            if (FillProductRow(row, spProduct, &scope))
+            {
+                rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+                nCount++;
+            }
+        }
+    }
+    CStringW strCaption = FUN_14028de60(0x9de);
+    ASObj seller(2);
+    BuildSellerRow(seller, spShop, strCaption);
+    MS2Ptr<AScript> spPage = GetPage(5);
+    if (FUN_1409ee240(&spPage))
+        spPage->FUN_141312e20("addSellerComplete", Scaleform::GFx::Value(seller.FUN_1422bb870()), rows, nCount, bComplete);
 }
 
 // MS2-FUNCTIONAL: temporary/cleanup order of the message box copy
