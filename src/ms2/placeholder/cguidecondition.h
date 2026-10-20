@@ -442,25 +442,30 @@ MS2_CHECK_SIZE(CGuideConditionExistItem, 0x38);
 // ---- helper values of the conditions below (layouts proven from the XML readers and the condition checks) ----------------
 
 // The conditions of a nested condition (AnyOne / AllOf): the smart pointers hold the condition built by 0x1413a52c0.
+// A refcounted condition handle: the exe's MS2Ptr<CGuideCondition> (16 bytes, pointer at +8; get 0x141387b90,
+// operator-> 0x141387bb0, AddRef 0x141388ed0). A real RAII value: `return ref;` is the move ctor.
 class Unk_GcCondRef
 {
 public:
+    Unk_GcCondRef();                                        // 0x1413a4750 null
+    explicit Unk_GcCondRef(CGuideCondition* pCond);         // 0x1413b28b0 holds a new pointer (AddRef)
+    Unk_GcCondRef(Unk_GcCondRef&& rhs);                     // 0x1413b2880 move: takes the pointer of rhs
+    ~Unk_GcCondRef();                                       // 0x141387660 release (MS2Ptr<CGuideCondition> dtor)
     CGuideCondition* FUN_141387bb0();                       // the held condition
-    bool FUN_141387b90();                                   // holds one
-    void FUN_141387660();                                   // release
+    CGuideCondition* FUN_141387b90();                       // get(): the held pointer (tested for null)
     void FUN_141388ed0();                                   // creates the refcount block
-    Unk_GcCondRef* FUN_1413b2880(Unk_GcCondRef& rhs);       // takes the pointer of rhs
-    Unk_GcCondRef* FUN_1413b28b0(CGuideCondition* pCond);   // holds a new pointer
     void* m_pRc;
     CGuideCondition* m_p;
 };
 MS2_CHECK_SIZE(Unk_GcCondRef, 0x10);
+// The same 16 bytes as a trivial element (the CAtlArray glue of the condition lists moves them as raw handles).
+struct Unk_GcCondRefRaw { void* m_pRc; CGuideCondition* m_p; };
 
 class Unk_GcCondList
 {
 public:
     unsigned __int64 FUN_1413886d0();                             // count
-    Unk_GcCondRef& FUN_141387b40(unsigned nIdx);            // the nth
+    Unk_GcCondRef& FUN_141387b40(size_t nIdx);              // the nth
     void FUN_141388460(const Unk_GcCondRef& ref);           // append
     CAtlArray<void*> m_arr;
 };

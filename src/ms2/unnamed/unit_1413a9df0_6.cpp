@@ -277,17 +277,15 @@ void Unk_GcOptScratch()
 }
 
 // @0x1413b2880
-Unk_GcCondRef* Unk_GcCondRef::FUN_1413b2880(Unk_GcCondRef& rhs)
+Unk_GcCondRef::Unk_GcCondRef(Unk_GcCondRef&& rhs)
 {
     m_p = rhs.m_p;
     rhs.m_p = 0;
-    return this;
 }
 
 // @0x1413b28b0
-Unk_GcCondRef* Unk_GcCondRef::FUN_1413b28b0(CGuideCondition* pCond)
+Unk_GcCondRef::Unk_GcCondRef(CGuideCondition* pCond)
 {
     m_p = pCond;
     FUN_141388ed0();
-    return this;
 }

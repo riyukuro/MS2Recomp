@@ -53,7 +53,7 @@ void* FUN_1413a4f30(void* pMap);                                        // the n
 void* FUN_141395500(void* pNode);
 Unk_GeActRef FUN_141382b90(Unk_140165cf0* pElem);                       // builds the action of an <action> element
 // The condition / action lists hold 16-byte handles (the shared placeholder declares them as pointer arrays).
-#define GE_REFS(list) reinterpret_cast<ATL::CAtlArray<Unk_GcCondRef>&>((list).m_arr)
+#define GE_REFS(list) reinterpret_cast<ATL::CAtlArray<Unk_GcCondRefRaw>&>((list).m_arr)
 
 // The guide manager: the trigger events that were raised.
 class Unk_GeMgr
@@ -187,10 +187,9 @@ void FUN_1413a4620(void* pAlloc, std::pair<int, int>* pDst, const std::pair<int,
 }
 
 // @0x1413a4750
-Unk_GcCondRef* FUN_1413a4750(Unk_GcCondRef* pRef)
+Unk_GcCondRef::Unk_GcCondRef()
 {
-    pRef->m_p = 0;
-    return pRef;
+    m_p = 0;
 }
 
 // @0x1413a4770
@@ -223,8 +222,22 @@ void* FUN_1413a4810(void* pIter)
 // @0x1413a4a30
 void FUN_1413a4a30(Unk_GcCondRef* pRefs, unsigned __int64 nCount)
 {
-    for (unsigned __int64 i = 0; i < nCount; ++i)
-        FUN_1413a4750(new (pRefs + i) Unk_GcCondRef);
+    // CAtlArray CallConstructors: destroys what was built and rethrows if a constructor throws
+    unsigned __int64 i = 0;
+    try
+    {
+        for (i = 0; i < nCount; ++i)
+            new (pRefs + i) Unk_GcCondRef;
+    }
+    catch (...)
+    {
+        while (i > 0)
+        {
+            --i;
+            pRefs[i].~Unk_GcCondRef();
+        }
+        throw;
+    }
 }
 
 // @0x1413a4ab0
@@ -279,25 +292,18 @@ Unk_GcCondRef FUN_1413a52c0(Unk_140165cf0* pElem)
     CStringA strTag(FUN_14086f4b0(pElem, "type"));
     Unk_GcCondRef ref = FUN_1413a5420(strTag);
     if (ref.FUN_141387b90())
-    {
         ref.FUN_141387bb0()->vfunc_2(pElem);
-        Unk_GcCondRef out;
-        out.FUN_1413b2880(ref);
-        ref.FUN_141387660();
-        return out;
-    }
-    throw std::exception(FUN_140540050("Unknown Guide Condition Tag({0})", strTag));
+    else
+        throw std::exception(FUN_140540050("Unknown Guide Condition Tag({0})", strTag));
+    return ref;
 }
 
 // @0x1413a5420
 Unk_GcCondRef FUN_1413a5420(CStringA strTag)
 {
-    Unk_GcCondRef ref;
-    ref.FUN_1413b28b0(static_cast<CGuideCondition*>(FUN_1401f7f50(FUN_1402a5170(L"CGuideCondition{0}", strTag))));
-    Unk_GcCondRef out;
-    out.FUN_1413b2880(ref);
-    ref.FUN_141387660();
-    return out;
+    CStringW strClass = FUN_1402a5170(L"CGuideCondition{0}", strTag);
+    Unk_GcCondRef ref(static_cast<CGuideCondition*>(FUN_1401f7f50(strClass)));
+    return ref;
 }
 
 // ---- CGuideCondition ------------------------------------------------------------------------------------------------------
@@ -717,15 +723,14 @@ void CGuideEntity::CollectTriggerValues(std::map<int, int>& mapValues)
     for (unsigned i = 0; i < m_condTrigger.FUN_1413886d0(); ++i)
     {
         int nKind = m_condTrigger.FUN_141387b40(i).FUN_141387bb0()->m_n18;
-        if (nKind != 0)
-        {
-            int nValue = m_condTrigger.FUN_141387b40(i).FUN_141387bb0()->vfunc_8();
-            std::map<int, int>::iterator it = mapValues.find(nKind);
-            if (it != mapValues.end())
-                it->second = 0;
-            else
-                mapValues.insert(std::make_pair(nKind, nValue));
-        }
+        if (nKind == 0)
+            continue;
+        int nValue = m_condTrigger.FUN_141387b40(i).FUN_141387bb0()->vfunc_8();
+        std::map<int, int>::iterator it = mapValues.find(nKind);
+        if (it == mapValues.end())
+            mapValues.insert(std::make_pair(nKind, nValue));
+        else
+            it->second = 0;
     }
 }
 
@@ -739,7 +744,6 @@ void CGuideEntity::LoadConditions(Unk_140165cf0* pElem, Unk_GcCondList& list)
             _wassert(L"condition", _CRT_WIDE(MS2_THIS_FILE), 200);
         if (ref.FUN_141387b90())
             list.FUN_141388460(ref);
-        ref.FUN_141387660();
     }
 }
 

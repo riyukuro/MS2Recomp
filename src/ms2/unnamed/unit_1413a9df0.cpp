@@ -105,7 +105,6 @@ void CGuideConditionAnyOne::vfunc_2(Unk_140165cf0* pElem)
         Unk_GcCondRef ref = FUN_1413a52c0(pChild);
         if (ref.FUN_141387b90())
             m_conds.FUN_141388460(ref);
-        ref.FUN_141387660();
     }
 }
 
@@ -150,7 +149,6 @@ void CGuideConditionAllOf::vfunc_2(Unk_140165cf0* pElem)
         Unk_GcCondRef ref = FUN_1413a52c0(pChild);
         if (ref.FUN_141387b90())
             m_conds.FUN_141388460(ref);
-        ref.FUN_141387660();
     }
 }
 
