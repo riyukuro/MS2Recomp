@@ -70,12 +70,11 @@ int UIIntroMovie::vfunc_52(const CString& strPath, float fVolume)
 }
 MS2_REPLACE_METHOD(0x141995190, UIIntroMovie, vfunc_52, 96, 0x50BBA5E3);
 
-// MS2-FUNCTIONAL: UIVideoContents::vfunc_53 result is kept in a dword temp in the exe (base declared bool in the shared placeholder)
 // @0x141995200
-bool UIIntroMovie::vfunc_53()
+int UIIntroMovie::vfunc_53()
 {
     FUN_140b632f0()->FUN_1422d4840(this, 2);
-    bool b = UIVideoContents::vfunc_53();
+    int b = UIVideoContents::vfunc_53();
     FUN_1422dc080();
     return b;
 }
