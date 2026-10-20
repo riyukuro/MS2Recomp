@@ -9,6 +9,14 @@
 // MS2-PIN: ??_7?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@6B@ 0x142ee8650
 // MS2-PIN: ??_7?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@6B@ 0x142ee8678
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@QEAA@AEBV01@@Z 0x141313d00
+// MS2-PIN: ??0DelegateImplBase@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEAA@XZ 0x1413141b0
+// MS2-PIN: ??0DelegateImplBase@?$Delegate@$$A6AXAEAVAScript@@@Z@@QEAA@XZ 0x1413141d0
+// MS2-PIN: ??0DelegateImplBase@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@QEAA@XZ 0x1413141f0
+// MS2-PIN: ??1DelegateImplBase@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@UEAA@XZ 0x141314760
+// MS2-PIN: ??1DelegateImplBase@?$Delegate@$$A6AXAEAVAScript@@@Z@@UEAA@XZ 0x141314780
+// MS2-PIN: ??1DelegateImplBase@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEAA@XZ 0x1413147a0
+// MS2-PIN: ??_7DelegateImplBase@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@6B@ 0x142ee84c0
+// MS2-PIN: ??_7DelegateImplBase@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@6B@ 0x142ee84e8
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0PEAVUIMeratMarketDialog@@P80@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z$0A@@?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ82@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x141311030 ; prop
 // MS2-PIN: ??$?0VUIMeratMarketDialog@@@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x141311070 ; prop
@@ -501,6 +509,14 @@ class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* p
 Unk_MmFiles* FUN_140166420();                                               // the resource file system
 CLogString* FUN_140166440();
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
+
+// The base ctor/dtor COMDATs of the delegates whose exe copies live in this unit (pinned above).
+template <> Delegate<void(ATL::CAtlList<MS2Ptr<CEquipItem> >*, Unk_PCEquipSet*)>::DelegateImplBase::DelegateImplBase() {}
+template <> Delegate<void(ATL::CAtlList<MS2Ptr<CEquipItem> >*, Unk_PCEquipSet*)>::DelegateImplBase::~DelegateImplBase() {}
+template <> Delegate<void(AScript&)>::DelegateImplBase::DelegateImplBase() {}
+template <> Delegate<void(AScript&)>::DelegateImplBase::~DelegateImplBase() {}
+template <> Delegate<bool(MS2Ptr<TMarketBillDataParam>)>::DelegateImplBase::DelegateImplBase() {}
+template <> Delegate<bool(MS2Ptr<TMarketBillDataParam>)>::DelegateImplBase::~DelegateImplBase() {}
 Unk_RideePtr FUN_1407844b0(int nRideeId);                               // the ridee table row of an id
 int FUN_141b48430(int nKind);                                           // the angle set of an avatar kind
 float FUN_141b48480(int nSet, int nIndex);                              // the default angle
