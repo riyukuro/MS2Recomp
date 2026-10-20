@@ -117,9 +117,9 @@ int SetItemTable::LoadSets()
             FUN_1401e0850(FUN_140166440(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[<ms2> {0}] SetID is Duplicated, setID = {1}", strPath, nSetId);
             return 0;
         }
-        std::vector<int>& items = spInfo->FUN_1407ad710();
-        std::vector<int>::iterator itEnd = items.end();
-        for (std::vector<int>::iterator it = items.begin(); it != itEnd; ++it)
+        std::vector<unsigned>& items = spInfo->FUN_1407ad710();
+        std::vector<unsigned>::iterator itEnd = items.end();
+        for (std::vector<unsigned>::iterator it = items.begin(); it != itEnd; ++it)
         {
             int nItemId = *it;
             m_byItem.insert(std::make_pair(nItemId, spInfo));
@@ -152,7 +152,7 @@ void SetItemTable::FUN_1407c50e0(int nSetId, void* pOut)
     CheckInit();
     SetItemInfoPtr spInfo = GetSetItemInfo(nSetId);
     if (spInfo.get() != 0)
-        spInfo->FUN_1407ad670(pOut);
+        spInfo->FUN_1407ad670((ATL::CAtlArray<unsigned>*)pOut);
 }
 
 // @0x1407c5160
