@@ -3831,3 +3831,8 @@ __imp_NxGetUtilLib	142cced28	data
 ?RefreshMyShop@UIMeratMarketDialog@@QEAAXXZ	1412eef70	func
 ?OnAskMoveToModelHouse@UIMeratMarketDialog@@QEAA_NHAEBVCMsgBoxData@@@Z	1413065c0	func
 ?OnRightClickSeller@UIMeratMarketDialog@@QEAAXAEAVASData@@@Z	141304060	func
+??0CWinHttpClient@@QEAA@AEBV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@Z	1409208e0	func
+??0Unk_GdXmlRoot@@QEAA@PEBD@Z	14086f2f0	func
+??1Unk_GdXmlRoot@@QEAA@XZ	14086f450	func
+??1?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAA@XZ	140c4de90	func
+??4?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAAAEAV0@AEBV0@@Z	140c4e0d0	func
