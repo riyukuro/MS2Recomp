@@ -226,6 +226,12 @@ class Obj:
                 pidx.setdefault((fs, fo), (fe, (us, uo)))
         if (secnum, value) in pidx:
             end, unwind = pidx[(secnum, value)]
+            while CHAIN and (secnum, end) in pidx:          # chained chunks (UNW_FLAG_CHAININFO) belong to it
+                ce, (us, uo) = pidx[(secnum, end)]
+                ud = self.sec(us)["data"] if us else b""
+                if not (uo < len(ud) and ud[uo] >> 3 & 4):
+                    break
+                end = ce
         if end is None:                                        # leaf without pdata: up to the next symbol
             nxt = [v for (n, v, s, t, c) in self.syms.values() if s == secnum and v > value and not n.startswith("$")]
             end = min(nxt) if nxt else sec["size"]
@@ -335,6 +341,7 @@ class Exe:
         for o in range(0, len(raw) - 11, 12):
             b, e, u = struct.unpack_from("<III", raw, o)
             self.rf[b] = (e, u)
+        self._chained = {b for b, (e, u) in self.rf.items() if 0 < u < len(self.img) and self.img[u] >> 3 & 4}
         self.names = {}
         self.starts = []
         if os.path.exists(FUNCS):
@@ -362,6 +369,14 @@ class Exe:
                     self.iat[imp.address] = e.dll.decode() + "!" + sym
                 else:
                     self.iat[imp.address] = f"{e.dll.decode()}!#{imp.ordinal}"
+
+    def chain_end(self, rva):
+        """end RVA of the function whose first .pdata chunk starts at rva, following the contiguous chunks whose
+        unwind info is chained (UNW_FLAG_CHAININFO: shrink-wrapped tails); only the first chunk without CHAIN"""
+        e = self.rf[rva][0]
+        while CHAIN and e in self._chained:
+            e = self.rf[e][0]
+        return e
 
     def read(self, va, n):
         o = va - self.base
@@ -579,6 +594,9 @@ HARVEST = {}          # name -> va (this run)
 CONFLICTS = []
 SYMBOL_MISMATCH = []  # (name, table va, exe va): a code-identical function disagrees with the symbol table
 FUNCLET_PAIRS = {}  # unwind-map action funclet symbol (?dtor$N@...) -> exe VA, from every compared FuncInfo
+# MS2_BM_CHAIN=1 (gb10, 2026-10-20, opt-in): a function's code is its first .pdata chunk plus the contiguous chunks
+# with chained unwind info (shrink-wrapped tails); without it only the first chunk is compared
+CHAIN = os.environ.get("MS2_BM_CHAIN") == "1"
 LAST_TARGETS = {}  # every symbol -> exe target of the last match_one call (statics included; empty on mismatch)
 LOCAL_KNOWN = {}   # name -> va pairs of the current unit (statics included), checked like SYMBOLS
 # Statically linked runtime (CRT startup/helpers, import stubs) at the end of .text: never mapped - the hook DLL
@@ -604,7 +622,7 @@ _MD2.detail = True
 def _fn_size(exe, va):
     rva = va - exe.base
     if rva in exe.rf:
-        return exe.rf[rva][0] - rva
+        return exe.chain_end(rva) - rva
     i = bisect.bisect_left(exe.starts, va)
     if i < len(exe.starts) and exe.starts[i] == va and i + 1 < len(exe.starts):
         n = exe.starts[i + 1] - va          # leaf without .pdata: up to the next function, minus int3 padding
@@ -899,7 +917,7 @@ def match_one(obj_or_cod, sym, va, exe, verbose, check_unwind, quiet=False):
     exe_len = None
     rva = va - exe.base
     if rva in exe.rf:
-        exe_len = exe.rf[rva][0] - rva
+        exe_len = exe.chain_end(rva) - rva
     xbytes = exe.read(va, max(len(data), exe_len or 0))
     if exe_len is not None and exe_len != len(data):
         rep.bad(f"length: obj {len(data)} exe {exe_len} (.pdata)")
