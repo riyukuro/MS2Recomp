@@ -184,6 +184,8 @@ public:
     void FUN_1411ed270();
     void FUN_1411edbb0();
     void FUN_1411ee930();                                   // OnSetItemChanged
+    void FUN_1411ee980(int bMissMatch, MS2Ptr<CEquipItem> spA, MS2Ptr<CEquipItem> spB);   // the miss match tag
+    void FUN_1411eebc0();                                   // log the worn items
     void FUN_1411eeda0();                                   // ResetMeshOptimizer
     void FUN_1411ef740();                                   // Reset
     int FUN_1411ef780(MS2Ptr<CEquipItem> spItem, int nLayer);      // CanEquip

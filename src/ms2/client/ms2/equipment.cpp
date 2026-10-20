@@ -22,6 +22,9 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/setitemtable.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/commonfiles/logstring.h"
+#include "ms2/ms2format.h"
 #include "ms2/placeholder/invokeeffectoption.h"
 #include "ms2/placeholder/notifychange.h"
 #include "ms2/placeholder/notifysystem.h"
@@ -118,6 +121,21 @@ public:
     void FUN_140a531f0(Delegate<void(unsigned, CString, bool)> callback);
 };
 unsigned FUN_1411a49c0(CEffectService* pService, NoticeMessage& msg);   // spawn the effect
+int FUN_141420a30(int nType, CItem* pItem, PC* pPC);    // the slot a model group of the item takes off
+int FUN_141420990(int nType, CItem* pItem, PC* pPC);    // the slot a model group of the item goes on
+void FUN_140a0b2a0(NiAVObject* pObj);                   // detach from the parent
+void FUN_1412751b0(const CStringW& strMessage, int nColor);   // the debug chat line
+extern int DAT_143ae2b58;                               // the optimizer debug level
+
+// @0x1411f0ad0 (the unit's three-argument log call: an FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
+template <class A, class B, class C>
+inline void Unk_EquipLog(CLogString* log, int level, int category, const wchar_t* format, const A& a, const B& b,
+    const C& c)
+{
+    const fmt::internal::ArgArray<3>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(a),
+        fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(b), fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(c)};
+    log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(a, b, c), args));
+}
 // CItem::FUN_140527870's record as the skin decal reads it (the decal values at +0x58..+0x67).
 class Unk_EquipSkinRecord : public Unk_UserProxyItemData
 {
@@ -1771,7 +1789,7 @@ void CEquipment::FUN_1411efcb0(unsigned nId, CString strName, bool bInserted)
 }
 
 // @0x1411efd50
-static int FUN_1411efd50(MS2Ptr<CEquipItem> spItem)
+int FUN_1411efd50(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem == 0)
         return 0;
@@ -1786,4 +1804,117 @@ static int FUN_1411efd50(MS2Ptr<CEquipItem> spItem)
         }
     }
     return spItem->FUN_1411dc710();
+}
+
+// @0x1411ebec0
+void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
+{
+    MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
+    if (spData == 0)
+        return;
+    Unk_ItemEquipData* pData = spData->FUN_140527840();
+    if (pData == NULL)
+        return;
+    int nLayer = spData->FUN_14052a170();
+    for (unsigned i = 0; i < pData->FUN_14053eba0()->FUN_14054b3d0(); i++) {
+        MS2Ptr<CEquipmentSlot> spSlot(0);
+        int nSlot = FUN_141420a30(spData->FUN_140527840()->FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0(),
+            spData.get(), m_pPC);
+        if (m_slots.Lookup(nSlot, spSlot) && spSlot->m_items[nLayer] == spItem.get()) {
+            spSlot->m_items[nLayer] = 0;
+            spSlot->m_bShown[nLayer] = 0;
+        }
+    }
+    if (nFlag != 0)
+        FUN_1411e4b30(spItem);
+    FUN_1411e7660();
+}
+
+// @0x1411ec190
+void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
+{
+    MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
+    if (spData == 0)
+        return;
+    MS2Ptr<CItemData> spItemData(spData->FUN_140527840());
+    if (spItemData == 0)
+        return;
+    int nLayer = spData->FUN_14052a170();
+    size_t nCount = spItemData->FUN_14053eba0()->FUN_14054b3d0();
+    for (unsigned i = 0; i < nCount; i++) {
+        MS2Ptr<CEquipmentSlot> spSlot(0);
+        int nSlot = FUN_141420990(spItemData->FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0(), spData.get(), m_pPC);
+        if (nSlot == 0)
+            continue;
+        if (m_slots.Lookup(nSlot, spSlot)) {
+            spSlot->m_items[nLayer] = spItem;
+            spSlot->m_bShown[nLayer] = i == 0;
+        }
+    }
+    if (nFlag != 0)
+        FUN_1411e46b0(spItem);
+    FUN_1411e7660();
+}
+
+// @0x1411ee980
+void CEquipment::FUN_1411ee980(int bMissMatch, MS2Ptr<CEquipItem> spA, MS2Ptr<CEquipItem> spB)
+{
+    if (bMissMatch == 0) {
+        if (spA.get() != NULL) {
+            spA->FUN_1411dcf10(s_tagMissMatch);
+            spA->FUN_1411dd280();
+            FUN_1411e46b0(spA);
+        }
+        if (spB.get() != NULL) {
+            spB->FUN_1411dcf10(s_tagMissMatch);
+            spB->FUN_1411dd280();
+            FUN_1411e46b0(spB);
+        }
+    } else {
+        if (spA.get() != NULL) {
+            spA->FUN_1411dce60(s_tagMissMatch);
+            spA->FUN_1411dd280();
+            FUN_1411e4b30(spA);
+        }
+        if (spB.get() != NULL) {
+            spB->FUN_1411dce60(s_tagMissMatch);
+            spB->FUN_1411dd280();
+            FUN_1411e4b30(spB);
+        }
+    }
+}
+
+// @0x1411eebc0
+void CEquipment::FUN_1411eebc0()
+{
+    for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
+        int nSlot = m_slots.GetKeyAt(pos);
+        MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
+        if (spSlot.get() == NULL)
+            continue;
+        for (int i = 0; i < 6; i++) {
+            MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
+            if (spItem.get() != NULL) {
+                int nItemId = spItem->FUN_1411dc820();
+                Unk_EquipLog(CLogString::GetInstance(), 0xc, 0x13, L"[Slot {0}][Layer {1}][Item {2}]", nSlot, i,
+                    CStringTable::GetInstance()->FUN_141811980(1, nItemId));
+            }
+        }
+    }
+}
+
+// @0x1411eeda0
+void CEquipment::FUN_1411eeda0()
+{
+    if (m_5e == true)
+        return;
+    if (DAT_143ae2b58 > 1)
+        FUN_1412751b0(StringFormat(L"[MeshOptimizer] Reset merge mesh: {0}", m_pPC->vfunc_77()), 0x14);
+    m_5e = true;
+    m_64 = GetTickCountMs2();
+    for (size_t i = 0; i < m_meshes68.GetCount(); i++)
+        FUN_140a0b2a0(m_meshes68[i]);
+    m_meshes68.RemoveAll();
+    for (size_t i = 0; i < m_meshes88.GetCount(); i++)
+        FUN_140a0b300(m_meshes88[i].operator->(), false);
 }
