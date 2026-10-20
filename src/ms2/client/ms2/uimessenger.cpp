@@ -52,6 +52,12 @@
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
+#include "ms2/placeholder/cinpacket.h"
+#include "ms2/placeholder/mstime.h"
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/commonfiles/logstring.h"
+#include "ms2/client/ms2/uiwhispernotifydialog.h"
+#include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -127,6 +133,7 @@ public:
     int FUN_141adbb00();
     void FUN_141adc530(int nUiId);                                  // opens a UI
     int FUN_141adc940(int nUiId);                                   // the UI can open
+    void FUN_141add1f0();                                           // the field chat is blocked
 };
 Unk_MsgField* FUN_1403ed2b0();
 
@@ -179,7 +186,12 @@ Unk_MsgUser* FUN_140931510();
 CChatEmoticonTable* FUN_1409eecd0();
 
 // The world and its local player (the selected super world chat item).
-class Unk_MsgWorld { public: MyPC* FUN_141bd0cc0(); };
+class Unk_MsgWorld
+{
+public:
+    MyPC* FUN_141bd0cc0();
+    PCBase* FUN_141bd1420(CStringW strName);                        // a player by name
+};
 Unk_MsgWorld* FUN_1403ed2d0();
 extern Unk_Inventory DAT_143ab2a90;                                 // the player's inventory
 
@@ -189,6 +201,9 @@ class Unk_MsgState
 public:
     CStringW FUN_1414829e0();                                       // the current window name
     void FUN_141482c80(CStringW strName);                           // make a window the current one
+    CStringW FUN_141482a50();                                       // the whisper window name
+    void FUN_141482b70();                                           // reset
+    void FUN_141482d30(CStringW strName);                           // forget a window
     char m_pad_00[0x38];
     int m_nNewTabMode;                                              // +0x38 why the new tab dialog opened (1 menu, 2 button)
     UIMessenger* m_pNewTabWindow;                                   // +0x40 the window asking for a new tab
@@ -1713,7 +1728,7 @@ void UIMessenger::FUN_141a15970()
 }
 
 // @0x141a15ae0
-void UIMessenger::vfunc_87()
+void UIMessenger::vfunc_87(const CStringW& strMsg, const CString& strWindow)
 {
     if (m_tabs.IsEmpty())
         return;
@@ -2165,4 +2180,1398 @@ void UIMessenger::FUN_141a131f0()
 // @0x141a13200
 void UIMessenger::FUN_141a13200()
 {
+}
+
+// ==== the browser TU (0x141a20f90-) ====
+
+// ---- statics of the browser TU (.text$di, in init order; the same header statics as the window TU) ----
+static CString s_strSortTypeNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkillB = "skill";                              // 0x143af3fd8
+static CString s_strStunB = "stun";                                // 0x143af3fd0
+static Unk_1402a9d70 s_unkTabB(17, 0.75f, 0.25f, 2.25f, 10);       // 0x143af4020
+static CString s_strGuildMegaphoneSound = "System_GuildMegaphone";  // 0x143af4068
+static CString s_strWhisperSound = "system_notice_whisper";        // 0x143af4018
+
+// ---- unit-local views of exe types (browser TU) ----
+
+// The chat line packet body (unit_1407a4f20.cpp's Unk_1407a5330; reader FUN_1407a5500).
+struct Unk_1407a5330
+{
+    Unk_1407a5330()
+        : m_nAccountId(0), m_nCharId(0), m_nType(0), m_28(0), m_30(0), m_34(0), m_40(0), m_nStringId(0), m_4c(0),
+          m_nFieldId(0)
+    {
+    }
+    __int64 m_nAccountId;                                           // +0x00
+    __int64 m_nCharId;                                              // +0x08
+    CStringW m_strName;                                             // +0x10 the speaker
+    CStringW m_strText;                                             // +0x18 (or the string m_nStringId)
+    int m_nType;                                                    // +0x20 the chat type
+    __int64 m_28;                                                   // +0x28
+    int m_30;                                                       // +0x30
+    int m_34;                                                       // +0x34
+    CString m_strWindow;                                            // +0x38 type 3: the whisper window
+    __int64 m_40;                                                   // +0x40 type 0x14
+    int m_nStringId;                                                // +0x48 the system string
+    int m_4c;                                                       // +0x4c
+    int m_nFieldId;                                                 // +0x50 types 0x10 / 0x19: the field
+};
+void FUN_1407a5500(Unk_1407a5330& line, CInputStream& in);
+
+// The extra block of a type 0x19 line (unit_1407a4f20.cpp's Unk_1407a5820).
+struct Unk_1407a5820
+{
+    Unk_1407a5820();                                                // 0x1407a5820
+    __int64 m_00;
+    int m_08;
+    int m_0c;
+    __int64 m_10;
+    CStringW m_18;
+    CStringW m_20;
+};
+void FUN_1407a5960(Unk_1407a5820& extra, CInputStream& in);
+
+// The packet handlers by opcode.
+class Unk_MbPackets
+{
+public:
+    void FUN_140da5180(int nOpcode, Delegate<void(CInPacket&)> cb);   // subscribe
+    void FUN_140da51e0(int nOpcode, Delegate<void(CInPacket&)> cb);   // unsubscribe
+};
+Unk_MbPackets* FUN_140bccd50();
+
+// The inventory item events.
+class Unk_MbItemEvents;
+Unk_MbItemEvents* FUN_140a6a840();
+void FUN_1419cae20(Unk_MbItemEvents* pEvents, UIItemEventListener* pListener);   // add a listener
+void FUN_1419caeb0(Unk_MbItemEvents* pEvents, UIItemEventListener* pListener);   // remove it
+
+// The ban word filters.
+class Unk_MbChecker : public CPtred
+{
+public:
+    void FUN_140226980(CStringW& str);                              // masks the banned words
+    void FUN_140226b10(CStringW& str);                              // filters the reserved words
+};
+class Unk_MbStrings { public: MS2Ptr<Unk_MbChecker> FUN_140229a50(); };
+Unk_MbStrings* FUN_14025e7d0();
+class Unk_MbDynamicBan { public: int FUN_14034a230(const CStringW& str, CStringW& strReplaced); };   // 2: drop, 1: replaced
+Unk_MbDynamicBan* FUN_1414a56d0();
+class Unk_MbBlind { public: bool FUN_140a25840(int nKind, CStringW strName); };   // the user is blinded
+Unk_MbBlind* FUN_1409c1730();
+class Unk_MbBuddies
+{
+public:
+    unsigned FUN_140ae51b0(__int64 nCharId);                        // blocked by id
+    unsigned FUN_140ae5240(const CStringW& strName);                // blocked by name
+};
+Unk_MbBuddies* FUN_14097a780();
+class Unk_MbFeatures { public: bool FUN_14036d570(int nFeature); };
+Unk_MbFeatures* FUN_140166410();
+class Unk_MbReserved { public: void FUN_1416fb340(CStringW& str); };
+Unk_MbReserved* FUN_1403b4750();
+
+// The game options: the community switches and the chat balloon switches.
+class Unk_MbBalloons { public: int FUN_14125c820(int nType); };   // the balloon shows the chat type
+class Unk_MbGameOption
+{
+public:
+    Unk_CommunityStateB* FUN_140ae6540();
+    Unk_MbBalloons* FUN_140b123b0();
+};
+Unk_MbGameOption* FUN_1409a8b10();
+
+class Unk_MbTalk { public: int FUN_141b21220(); };               // UITalkManager: a talk is running
+Unk_MbTalk* FUN_140967100();
+class Unk_MbItemTable { public: int FUN_1405569f0(int nGrade); };   // the grade colour
+Unk_MbItemTable* FUN_140281980();
+class Unk_MbLogs { public: void FUN_141451a60(); };               // ClientLogManager::Flush
+Unk_MbLogs* FUN_1412976a0();
+class Unk_MbConfig { public: char m_pad_00[0x60]; CString m_strRoot; };   // +0x60 the client root
+Unk_MbConfig* FUN_1401d31f0();
+CUserCommandCli* FUN_14135a4d0();
+UIWhisperNotifyDialog* FUN_140e88970(int nUiId);                    // Unk_GetUI<UIWhisperNotifyDialog>
+CLogString* FUN_140166440();
+
+extern MessengerData::ScreenSetting DAT_143adda48;                 // messengerdata.cpp: the shared screen look
+extern int DAT_143ab2864;                                          // the own object id
+extern unsigned long DAT_1439f880c;                                // the system notice colour
+
+CStringW FUN_1401aa6a0(int n);                                      // to string
+CStringW FUN_14052bd00(int nStringId, const CStringW& a);
+CStringW FUN_140632a60(int nStringId, const CStringW& a, const CStringW& b);
+void FUN_141275260(int nStringId, int nA, int nB);                  // a system message by id
+int FUN_141276180(const CString& strSound, const CString& strB);    // plays a system sound
+void FUN_141275150(CItem* pItem, int nCount, int nOld, int nManyId, int nOneId);   // inventory count message
+void FUN_1412750f0(CItem* pItem, int nSlot, int nManyId, int nOneId);
+CStringW FUN_1402758a0(const wchar_t* szFormat, const CStringW& a, const unsigned& b);
+CStringW FUN_141842c40(const wchar_t* szFormat, const CStringW& a, const unsigned __int64& b, const unsigned __int64& c);
+CStringW FUN_1418428c0(const wchar_t* szFormat, const unsigned& a, const CStringW& b, const unsigned& c);
+CStringW FUN_140292a70(const wchar_t* szFormat, const unsigned& a);
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& a);
+CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a, const CStringW& b, const CStringW& c);
+CStringW FUN_141843060(CStringW strKey, const unsigned long& a, const unsigned& b, const CStringW& c);
+CStringW FUN_140cbf840(int nGroupType);                             // the dungeon group name
+CStringW FUN_14183f310(const Unk_1407a5330& line, const CStringW& strText, int nFontSize);   // the html line
+CStringW FUN_141841180(const Unk_1407a5330& line, const Unk_1407a5820& extra, const CStringW& strText, int nFontSize);
+CStringW FUN_14183f080(const CStringW& strText, int n, int nFontSize);   // the html system line
+CStringW FUN_141841fd0(CStringW strText, int nFontSize);            // the html notice line
+CStringW FUN_141841b40(CItem* pItem, const CStringW& strKind, int nFontSize);   // the html item link
+CStringW FUN_141841c60(int nPartyId, CStringW strLeader, __int64 nA, __int64 nCharId, int nRoomId, int nGroupType,
+                       unsigned bFlag, unsigned nMaxUsers, int nFontSize);   // the helper recruit line
+bool FUN_140d2ab10(CStringW& strHtml);
+bool FUN_140d2c080(CStringW strHtml, ATL::CAtlList<CStringW>& links, CStringW strBegin, CStringW strEnd);   // the links
+unsigned __int64 FUN_140d2caf0(const CStringW& strLink);            // the item uid of a link
+CStringW FUN_14183e930(const CStringW& strLink, int nColor);       // the link in a colour
+void FUN_14083d2b0(CStringW& strHtml);                              // html to text
+void FUN_1401d3700(CString& strFile);                               // localizes a file name
+void FUN_140841420(CStringW& strFile);
+CString FUN_140188f50(const char* psz, unsigned n);
+CString FUN_141275750();                                            // the default UI settings directory
+CString FUN_14016a5c0(const char* psz, int n);
+CStringW FUN_14016a730(const char* psz, int n);                     // narrow -> wide
+bool thunk_FUN_1420b1ae0(const char* pszPath);                      // directory exists
+__int64 FUN_140869440();                                            // now
+int FUN_1418dd0c0();                                                // the bottom bar height
+int FUN_1418dd110();
+
+WC_WRAP(7)
+
+// The unit's log calls (FMT_VARIADIC shapes over CLogString::FUN_1406530d0).
+// @0x141a28740
+template <class T0, class T1>
+inline void Unk_MbLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const T0& v0, const T1& v1)
+{
+    const fmt::internal::ArgArray<2>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v0),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v1)};
+    pLog->FUN_1406530d0(nLevel, nCategory, szFormat, fmt::ArgList(fmt::internal::make_type(v0, v1), args));
+}
+// @0x141a28390
+template <class T0, class T1, class T2, class T3>
+inline void Unk_MbLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const T0& v0, const T1& v1,
+                      const T2& v2, const T3& v3)
+{
+    const fmt::internal::ArgArray<4>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v0),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v1),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v2),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(v3)};
+    pLog->FUN_1406530d0(nLevel, nCategory, szFormat, fmt::ArgList(fmt::internal::make_type(v0, v1, v2, v3), args));
+}
+
+// ---- UIMessengerBrowser ----
+
+// @0x141a20f90
+UIMessengerBrowser::UIMessengerBrowser()
+    : m_180(1), m_184(1), m_188(1), m_18c(500), m_190(600), m_194(0), m_198(10), m_strWhisperTarget(""), m_1a8(L""),
+      m_1b0(0)
+{
+    m_80 = 1;
+    m_88 = 1;
+    FUN_141925e70(0, 1);
+    m_itHistory = m_history.end();
+    FUN_141482e80()->m_pBrowser = this;
+    FUN_140bccd50()->FUN_140da5180(0x1d, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_84));
+    FUN_140bccd50()->FUN_140da5180(0x1e, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_85));
+    FUN_140bccd50()->FUN_140da5180(0x90, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22ee0));
+    FUN_140bccd50()->FUN_140da5180(0x92, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22fc0));
+    FUN_140bccd50()->FUN_140da5180(0x109, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a23060));
+}
+
+// @0x141a215a0
+UIMessengerBrowser::~UIMessengerBrowser()
+{
+    m_history.clear();
+    m_itHistory = m_history.end();
+    FUN_141482e80()->m_pBrowser = 0;
+    FUN_140bccd50()->FUN_140da51e0(0x1d, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_84));
+    FUN_140bccd50()->FUN_140da51e0(0x1e, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::vfunc_85));
+    FUN_140bccd50()->FUN_140da51e0(0x90, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22ee0));
+    FUN_140bccd50()->FUN_140da51e0(0x92, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a22fc0));
+    FUN_140bccd50()->FUN_140da51e0(0x109, Delegate<void(CInPacket&)>(this, &UIMessengerBrowser::FUN_141a23060));
+}
+
+// @0x141a21a60
+CString UIMessengerBrowser::vfunc_1()
+{
+    return "MessengerBrowser";
+}
+
+// @0x141a21ab0
+int UIMessengerBrowser::vfunc_65()
+{
+    if (!UIDialog::vfunc_65())
+        return 0;
+    FUN_1419cae20(FUN_140a6a840(), this);
+    return 1;
+}
+
+// @0x141a21b10
+void UIMessengerBrowser::vfunc_67()
+{
+    UIDialog::vfunc_67();
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        UIMessenger* pWindow = m_windows[i];
+        if (pWindow != 0)
+        {
+            pWindow->vfunc_67();
+            FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
+        }
+    }
+    m_windows.RemoveAll();
+    FUN_1419caeb0(FUN_140a6a840(), this);
+}
+
+// @0x141a21c50
+int UIMessengerBrowser::vfunc_9()
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        if (m_windows[i]->vfunc_9())
+            return 1;
+    }
+    return 0;
+}
+
+// @0x141a21ce0
+void UIMessengerBrowser::vfunc_8(int nVisible)
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+        m_windows[i]->vfunc_8(nVisible);
+}
+
+// @0x141a21d60
+int UIMessengerBrowser::vfunc_74(int a1, void* p2, void* p3)
+{
+    if (a1 != 0x10f && a1 != 0x102)
+        return 0;
+    if (m_windows.IsEmpty())
+        return 0;
+    size_t nCount = m_windows.GetCount();
+    bool bHandled = false;
+    for (size_t i = 0; i < nCount; i++)
+        bHandled = bHandled || m_windows[i]->vfunc_74(a1, p2, p3) == 1;
+    return bHandled;
+}
+
+// @0x141a21e90
+void UIMessengerBrowser::vfunc_43()
+{
+    if (m_60 == 0)
+        return;
+    if (m_windows.IsEmpty())
+        return;
+    float fY = (float)(unsigned)(FUN_1418dd0c0() + FUN_1418dd110()) * -1.0f;
+    float fX = 0.0f;
+    int nTop = 0;
+    int nRight = 0;
+    ASDialog* pRoot = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pRoot != 0)
+    {
+        nTop = pRoot->FUN_1422c1530();
+        nTop = 0x32 - nTop;
+        nRight = pRoot->FUN_1422c1500();
+        nRight = nRight - 100;
+    }
+    size_t nCount = m_windows.GetCount();
+    for (size_t i = 0; i < nCount; i++)
+    {
+        UIMessenger* pWindow = m_windows[i];
+        if (pWindow == 0)
+            continue;
+        MS2Ptr<AScript> spMovie = pWindow->FUN_1422dba00();
+        if (spMovie.get() != 0)
+        {
+            ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)spMovie);
+            if (pDialog != 0)
+            {
+                pDialog->vfunc_2(7, (int)fX, (int)fY);
+                pWindow->FUN_141a0f180();
+                fY = fY - (float)(pDialog->FUN_1422c13b0() + 10);
+                if (fY < (float)nTop)
+                {
+                    fX = fX + 100.0f;
+                    if ((float)nRight < fX)
+                        fX = 0.0f;
+                }
+            }
+        }
+    }
+}
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141a22140
+void UIMessengerBrowser::vfunc_84(CInPacket& packet)
+{
+    Unk_1407a5330 line;
+    FUN_1407a5500(line, packet);
+    CStringW strName(line.m_strName);
+    CStringW strText(line.m_strText);
+    __int64 nCharId = line.m_nCharId;
+    FUN_140d2c650(strText);
+    Unk_MbChecker* pChecker = FUN_14025e7d0()->FUN_140229a50().get();
+    if (pChecker != 0)
+    {
+        pChecker->FUN_140226980(strText);
+        pChecker->FUN_140226b10(strText);
+    }
+    if (FUN_1414a56d0() != 0)
+    {
+        CStringW strReplaced;
+        int nResult = FUN_1414a56d0()->FUN_14034a230(strText, strReplaced);
+        if (nResult == 2)
+            return;
+        if (nResult == 1)
+            strText = strReplaced;
+    }
+    if (strText.IsEmpty())
+        return;
+    if (FUN_1409c1730()->FUN_140a25840(0, strName))
+        return;
+    if (line.m_nType == 5)
+    {
+        strText = FUN_14028de60(0x4d);
+        FUN_141275260(0x4d, 1, 0);
+    }
+    else if (line.m_nType == 6)
+    {
+        strText = FUN_14052bd00(0x8cd, strName);
+        FUN_1412751f0(strText, 1, 0);
+    }
+    else if (line.m_nType == 3)
+    {
+        if (FUN_1409a8b10()->FUN_140ae6540()->m_b[7])
+        {
+            // the whisper block option: answer with the block notice
+            Unk_MsgChat chat;
+            chat.m_nType = 6;
+            chat.m_strTarget = strName;
+            FUN_141276f80(chat);
+            return;
+        }
+        CString strWindow(line.m_strWindow);
+        for (unsigned i = 0; i < m_windows.GetCount(); i++)
+        {
+            UIMessenger* pWindow = m_windows[i];
+            if (pWindow != 0)
+                pWindow->vfunc_87(strText, strWindow);
+        }
+        UIWhisperNotifyDialog* pNotify = FUN_140e88970(0x4e5e);
+        if (pNotify != 0)
+            pNotify->FUN_141b51e30(nCharId, strText, strWindow);
+        FUN_141276180(s_strWhisperSound, CString(""));
+    }
+    else if (line.m_nType == 0x11)
+    {
+        FUN_1412751f0(strText, 1, 1);
+    }
+    else if (line.m_nType == 0xd || line.m_nType == 0xe)
+    {
+        if (line.m_nStringId == 0x35)
+            FUN_1403ed2b0()->FUN_141add1f0();
+        else
+            FUN_1412751f0(strText, 1, 1);
+    }
+    else if (line.m_nType == 0xf)
+    {
+        if (!FUN_140d2ab10(strText))
+            return;
+    }
+    else if (line.m_nType == 0x10)
+    {
+        MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pMe != 0 && pMe->FUN_141656a80() == nCharId)
+        {
+            CStringW strMsg = FUN_14052bd00(0xac7, FUN_1401a9d70()->FUN_141811980(1, line.m_nFieldId));
+            FUN_1412751f0(strMsg, 1, 1);
+        }
+    }
+    else if (line.m_nType == 0x19)
+    {
+        MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pMe != 0 && pMe->FUN_141656a80() == nCharId)
+        {
+            CStringW strMsg = FUN_14052bd00(0xaca, FUN_1401a9d70()->FUN_141811980(1, line.m_nFieldId));
+            FUN_1412751f0(strMsg, 1, 1);
+        }
+    }
+    else if (line.m_nType == 0x1a)
+    {
+        FUN_1412751f0(strText, 1, 1);
+    }
+    if (line.m_nType == 10)
+    {
+        FUN_14135a4d0()->ExecuteInternal(strText);
+        return;
+    }
+    if (line.m_nType != 4)
+    {
+        if (FUN_14097a780()->FUN_140ae5240(strName))
+            return;
+        if (nCharId != 0 && FUN_14097a780()->FUN_140ae51b0(nCharId))
+            return;
+    }
+    FUN_141a25ad0(strText);
+    FUN_141a26f10(strName, strText, line.m_nType);
+    if (line.m_nType == 0x12)
+    {
+        FUN_1412751f0(FUN_1408f71a0(CStringW(L"s_guild_chat_mega_phone"), strName, strText), 0xb, 0);
+        FUN_141276180(s_strGuildMegaphoneSound, CString(""));
+    }
+    CStringW strHtml;
+    if (line.m_nType == 0x19)
+    {
+        if (!FUN_140166410()->FUN_14036d570(0x104))
+            return;
+        Unk_1407a5820 extra;
+        FUN_1407a5960(extra, packet);
+        strHtml = FUN_141841180(line, extra, strText, DAT_143adda48.m_nFontSize);
+    }
+    else
+    {
+        strHtml = FUN_14183f310(line, strText, DAT_143adda48.m_nFontSize);
+    }
+    FUN_141a26e00(strHtml, FUN_141482f00(line.m_nType));
+    FUN_141a271b0(strName, strHtml, FUN_141482f00(line.m_nType));
+}
+
+// @0x141a22cd0
+void UIMessengerBrowser::vfunc_85(CInPacket& packet)
+{
+    CInputStream& in = packet;
+    unsigned nCount = in.vfunc_o8_3();
+    for (unsigned i = 0; i < nCount; i++)
+    {
+        __int64 nUid = in.vfunc_o8_4();
+        int nItemId = in.vfunc_o8_3();
+        int nRarity = in.vfunc_o8_3();
+        MS2Ptr<CItem> spItem(new CItem);
+        if (spItem->FUN_140523c40(nItemId, nRarity, 0))
+        {
+            spItem->FUN_140526a70(nUid);
+            spItem->FUN_140526b30(DAT_143ab2864);
+            spItem->FUN_140524eb0(in);
+            m_linkedItems.SetAt(nUid, spItem);
+        }
+    }
+}
+
+// @0x141a22ee0
+void UIMessengerBrowser::FUN_141a22ee0(CInPacket& packet)
+{
+    CInputStream& in = packet;
+    CStringW strName = in.vfunc_o8_8();
+    CStringW strValue = FUN_1401aa6a0(in.vfunc_o8_3());
+    FUN_141a247c0(FUN_140632a60(0x898, strName, strValue), 0x14);
+}
+
+// @0x141a22fc0
+void UIMessengerBrowser::FUN_141a22fc0(CInPacket& packet)
+{
+    CInputStream& in = packet;
+    CStringW strValue = FUN_1401aa6a0(in.vfunc_o8_3());
+    FUN_141a247c0(FUN_14052bd00(0xaf2, strValue), 0x14);
+}
+
+// @0x141a23060
+void UIMessengerBrowser::FUN_141a23060(CInPacket& packet)
+{
+    CInputStream& in = packet;
+    unsigned char nMode = in.vfunc_o8_1();
+    if (nMode == 0)
+        FUN_141a230e0(packet);
+    else if (nMode == 1)
+        FUN_141a233d0(packet);
+}
+
+// @0x141a230e0
+void UIMessengerBrowser::FUN_141a230e0(CInPacket& packet)
+{
+    CInputStream& in = packet;
+    int nPartyId = in.vfunc_o8_3();
+    CStringW strLeader = in.vfunc_o8_8();
+    __int64 nA = in.vfunc_o8_4();
+    __int64 nCharId = in.vfunc_o8_4();
+    int nRoomId = in.vfunc_o8_3();
+    unsigned bFlag = in.vfunc_o8_1();
+    DungeonRoomPtr spRoom = FUN_14031c2a0()->GetRoom(nRoomId);
+    if (spRoom == 0)
+        return;
+    if (FUN_14097a780()->FUN_140ae51b0(nCharId))
+        return;
+    FUN_1409670d0()->FUN_1416312f0(nPartyId);
+    int nFontSize = FUN_141a27de0();
+    CStringW strHtml = FUN_141841c60(nPartyId, strLeader, nA, nCharId, nRoomId, spRoom->m_groupType, bFlag,
+                                     spRoom->m_maxUserCount, nFontSize);
+    FUN_141a26e00(strHtml, 0x1b);
+}
+
+// MS2-FUNCTIONAL: temporaries differ from the exe (functional-first)
+// @0x141a233d0
+void UIMessengerBrowser::FUN_141a233d0(CInPacket& packet)
+{
+    CInputStream& in = packet;
+    unsigned nNeedHelper = in.vfunc_o8_1();
+    unsigned nNeedMember = in.vfunc_o8_1();
+    unsigned nPartyId = in.vfunc_o8_3();
+    CStringW strLeader = in.vfunc_o8_8();
+    unsigned __int64 nAccountId = in.vfunc_o8_4();
+    unsigned __int64 nCharId = in.vfunc_o8_4();
+    unsigned nRoomId = in.vfunc_o8_3();
+    int nMembers = in.vfunc_o8_1();
+    DungeonRoomPtr spRoom = FUN_14031c2a0()->GetRoom(nRoomId);
+    if (spRoom == 0)
+        return;
+    if (FUN_14097a780()->FUN_140ae51b0(nCharId))
+        return;
+    FUN_1409670d0()->FUN_1416312f0(nPartyId);
+    CStringW strUserEvent = FUN_141842c40(L"'event:userSelect,{0},{1},{2}'", strLeader, nAccountId, nCharId);
+    CStringW strUser = FUN_1408f71a0(CStringW(L"s_html_chat_user_dungeon_member"), strUserEvent, strLeader);
+    CStringW strJoinEvent = FUN_1418428c0(L"'event:joinPartyDungeonMember,{0},{1},{2}'", nPartyId, strLeader, nRoomId);
+    CStringW strJoin = FUN_1405c2690(CStringW(L"s_html_chat_join_party"), strJoinEvent);
+    CStringW strRoomEvent = FUN_140292a70(L"'event:dungeonRoom,{0}'", nRoomId);
+    CStringW strRoom = FUN_1409eaa20(CStringW(L"s_html_chat_dungeon_name"), strRoomEvent,
+                                     FUN_140cbf840(spRoom->m_groupType), FUN_1401a9d70()->FUN_141811980(0x14, nRoomId));
+    CStringW strBody = FUN_14028dfa0(CStringW(L"s_html_chat_find_dungeon_member"), strUser, strRoom, nMembers,
+                                     spRoom->m_maxUserCount, nNeedMember, nNeedHelper, strJoin);
+    unsigned nFontSize = FUN_141a27de0();
+    CStringW strHtml = FUN_141843060(CStringW(L"s_html_chat_system_notice"), DAT_1439f880c, nFontSize, strBody);
+    FUN_141a26e00(strHtml, 0x1b);
+}
+
+// @0x141a239e0
+void UIMessengerBrowser::FUN_141a239e0(CStringW strText)
+{
+    CStringW strHtml = FUN_141841fd0(strText, DAT_143adda48.m_nFontSize);
+    FUN_141a26e00(strHtml, 0x19);
+}
+
+// @0x141a23a70
+void UIMessengerBrowser::FUN_141a23a70()
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        if (m_windows[i] != 0)
+            m_windows[i]->FUN_141a0f7b0();
+    }
+}
+
+// @0x141a23af0
+void UIMessengerBrowser::OnLoadInit()
+{
+    UIObject::OnLoadInit();
+    FUN_141a26a00();
+    m_184 = 0;
+}
+
+// @0x141a23b30
+void UIMessengerBrowser::vfunc_15()
+{
+    if (m_68 != 0 || m_4c == 0)
+        return;
+    UISwfEntity::vfunc_15();
+    if (!m_pendingLogs.IsEmpty())
+    {
+        unsigned nShown = m_194;
+        unsigned nPending = (unsigned)m_pendingLogs.GetCount();
+        if ((unsigned)m_pendingLogs.GetCount() < (unsigned)m_198 && nShown + nPending <= (unsigned)m_190)
+            FUN_141a27ca0();
+        else
+            FUN_141a27bf0();
+    }
+    FUN_1412976a0()->FUN_141451a60();
+}
+
+// @0x141a23c20
+void UIMessengerBrowser::FUN_141a23c20()
+{
+    m_184 = 1;
+    m_strWhisperTarget = "";
+    m_1a8 = L"";
+    m_1b0 = 0;
+    m_194 = 0;
+    m_logs.RemoveAll();
+    m_linkedItems.RemoveAll();
+    m_pendingLogs.RemoveAll();
+    m_reports.RemoveAll();
+    m_history.clear();
+    m_itHistory = m_history.end();
+    FUN_141482e80()->FUN_141482b70();
+}
+
+// @0x141a23d50
+int UIMessengerBrowser::FUN_141a23d50()
+{
+    return m_184;
+}
+
+// @0x141a23d70
+int UIMessengerBrowser::FUN_141a23d70(const CStringW& strName)
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        if (m_windows[i] != 0 && m_windows[i]->FUN_141a0df70() == strName)
+            return 1;
+    }
+    return 0;
+}
+
+// @0x141a23e80
+void UIMessengerBrowser::FUN_141a23e80()
+{
+    FUN_141a24490();
+    for (int i = 0; i < 100; i++)
+    {
+        CString strFile;
+        strFile.Format("%s%d.xml", "MessengerDialog", i);
+        FUN_1401d3700(strFile);
+        CString strDefault;
+        strDefault.Format("DefaultMessenger%d.xml", i);
+        FUN_1401d3700(strDefault);
+        TiXmlDocument doc;
+        int bLoaded = FUN_140166420()->FUN_1403974b0(
+            &doc, FUN_140cc2a00(FUN_140188f50(FUN_141275750(), 0), strDefault), 0, true, false);
+        if (bLoaded)
+        {
+            UIMessenger* pWindow = new UIMessenger(this, doc, FUN_14016a730(strFile, 0), m_184);
+            if (pWindow->vfunc_65())
+            {
+                pWindow->vfunc_8(1);
+                m_windows.Add(pWindow);
+            }
+        }
+    }
+}
+
+// @0x141a24160
+void UIMessengerBrowser::FUN_141a24160(const ATL::CAtlArray<MS2Ptr<TalkTab> >& tabs, int nX, int nY, int nWidth,
+                                       int nHeight, int nTarget)
+{
+    TiXmlDocument doc;
+    if (FUN_14081b310(&doc) == 0)
+        FUN_14086e090(&doc, new TiXmlElement("MessengerDialog"));
+    void* pRoot = FUN_14081b310(&doc);
+    if (pRoot == 0)
+        return;
+    FUN_140873ca0(pRoot, "width", nWidth);
+    FUN_140873ca0(pRoot, "height", nHeight);
+    FUN_140873ca0(pRoot, "offsetX", nX);
+    FUN_140873ca0(pRoot, "offsetY", nY);
+    FUN_140873ca0(pRoot, "alignType", 5);
+    FUN_140873ca0(pRoot, "additive", 0);
+    FUN_140873ca0(pRoot, "targetSelectedIndex", nTarget);
+    for (unsigned i = 0; i < tabs.GetCount(); i++)
+    {
+        MS2Ptr<TalkTab> spTab = tabs[i];
+        if (spTab.get() != 0)
+        {
+            Unk_MdXml* pTab = ((Unk_MdXml*)pRoot)->FUN_140872ec0("Tab", false);
+            if (pTab != 0)
+                spTab->FUN_141482880(pTab);
+        }
+    }
+    UIMessenger* pWindow = new UIMessenger(this, doc, FUN_141a26cd0(), 0);
+    if (pWindow->vfunc_65())
+    {
+        pWindow->vfunc_8(1);
+        m_windows.Add(pWindow);
+    }
+}
+
+// @0x141a24490
+void UIMessengerBrowser::FUN_141a24490()
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        UIMessenger* pWindow = m_windows[i];
+        if (pWindow != 0)
+        {
+            FUN_141482e80()->FUN_141482d30(pWindow->FUN_141a0df70());
+            pWindow->vfunc_84();
+            FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
+        }
+    }
+    m_windows.RemoveAll();
+}
+
+// @0x141a245d0
+void UIMessengerBrowser::FUN_141a245d0(const CStringW& strName)
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        UIMessenger* pWindow = m_windows[i];
+        if (pWindow != 0 && pWindow->FUN_141a0df70() == strName && pWindow->m_tabs.IsEmpty())
+        {
+            FUN_141482e80()->FUN_141482d30(pWindow->FUN_141a0df70());
+            pWindow->vfunc_84();
+            m_windows.RemoveAt(i, 1);
+            FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
+        }
+    }
+}
+
+// @0x141a247c0
+void UIMessengerBrowser::FUN_141a247c0(const CStringW& strText, int nType)
+{
+    if (strText.IsEmpty())
+        return;
+    CStringW strLine(strText);
+    FUN_1403b4750()->FUN_1416fb340(strLine);
+    strLine = FUN_14183f080(strLine, 0, DAT_143adda48.m_nFontSize);
+    FUN_141a26e00(strLine, nType);
+}
+
+// MS2-FUNCTIONAL: temporaries differ from the exe (functional-first)
+// @0x141a24890
+void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyId, int nOneId)
+{
+    int nFontSize = DAT_143adda48.m_nFontSize;
+    CStringW strText;
+    CStringW strItem = FUN_141841b40(pItem, CStringW(L"inven"), nFontSize);
+    if (nCount < 2)
+    {
+        CStringW strFormat(L"");
+        if (pItem != 0 && ((CItemData*)pItem->FUN_140527840())->FUN_14053cb80())
+            strFormat = FUN_14028de60(699);
+        else
+            strFormat = FUN_14028de60(nOneId);
+        strText = FUN_1401e8510(strFormat, strItem);
+    }
+    else
+    {
+        CStringW strFormat(L"");
+        if (pItem != 0 && ((CItemData*)pItem->FUN_140527840())->FUN_14053cb80())
+            strFormat = FUN_14028de60(700);
+        else
+            strFormat = FUN_14028de60(nManyId);
+        strText = FUN_1402758a0(strFormat, strItem, nCount);
+    }
+    int nBefore = pItem->FUN_140526c50() - nCount;
+    if (FUN_14025e7c0()->FUN_14116d720())
+    {
+        CStringW strDebug;
+        unsigned nNow = pItem->FUN_140526c50();
+        strDebug = StringFormat(L"[Count:{0}] [ {1} -> {2} ]", nCount, nBefore, nNow);
+        strText.AppendFormat(strDebug);
+    }
+    FUN_141a247c0(strText, 9);
+}
+
+// @0x141a24cb0
+void UIMessengerBrowser::FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta)
+{
+    if (!FUN_14025e7c0()->FUN_14116d720())
+        return;
+    CStringW strItem = FUN_141841b40(pItem, CStringW(L"inven"), DAT_143adda48.m_nFontSize);
+    unsigned nBefore = nCount - nDelta;
+    if (nCount < nBefore)
+    {
+        int nUsed = -nDelta;
+        Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} Item Use:{1}  [{2}->{3}]", strItem, nUsed, nBefore, nCount);
+    }
+    else if (nBefore < nCount)
+    {
+        Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} [Count:{1}] Item Add:{1} [{2}->{3}]", strItem, nDelta, nBefore,
+                  nCount);
+    }
+}
+
+// @0x141a24e10
+void UIMessengerBrowser::FUN_141a24e10(CItem* pItem)
+{
+    if (!FUN_14025e7c0()->FUN_14116d720())
+        return;
+    CStringW strItem = FUN_141841b40(pItem, CStringW(L"inven"), DAT_143adda48.m_nFontSize);
+    unsigned nCount = pItem->FUN_140526c50();
+    Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} [Count:{1}] Item Removed", strItem, nCount);
+}
+
+// @0x141a24ee0
+void UIMessengerBrowser::FUN_141a24ee0(CItem* pItem)
+{
+    if (!FUN_14025e7c0()->FUN_14116d720())
+        return;
+    CStringW strItem = FUN_141841b40(pItem, CStringW(L"inven"), DAT_143adda48.m_nFontSize);
+    unsigned nCount = pItem->FUN_140526c50();
+    Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} [Count:{1}] Item Added", strItem, nCount);
+}
+
+// @0x141a24fb0
+void UIMessengerBrowser::FUN_141a24fb0(CStringW strText)
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        UIMessenger* pWindow = m_windows[i];
+        if (pWindow != 0 && FUN_141482e80()->FUN_1414829e0() == pWindow->FUN_141a0df70())
+            pWindow->FUN_141a0ec30(strText);
+    }
+}
+
+// @0x141a25130
+void UIMessengerBrowser::FUN_141a25130(unsigned nFontSize)
+{
+    FUN_141a27ad0(nFontSize);
+    FUN_141a27bf0();
+}
+
+// @0x141a25160
+void UIMessengerBrowser::FUN_141a25160(unsigned nAlpha)
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        if (m_windows[i] != 0)
+            m_windows[i]->FUN_141a0ebb0(nAlpha);
+    }
+}
+
+// @0x141a251f0
+void UIMessengerBrowser::FUN_141a251f0(int n)
+{
+    m_180 = n;
+}
+
+// @0x141a25210
+void UIMessengerBrowser::FUN_141a25210(int bActive)
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        UIMessenger* pWindow = m_windows[i];
+        if (pWindow != 0)
+            pWindow->vfunc_85(bActive);
+    }
+}
+
+// @0x141a252a0
+void UIMessengerBrowser::FUN_141a252a0(const CStringW& strTarget)
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        UIMessenger* pWindow = m_windows[i];
+        if (pWindow != 0 && FUN_141482e80()->FUN_141482a50() == pWindow->FUN_141a0df70())
+            pWindow->FUN_141a14bb0(strTarget);
+    }
+}
+
+// @0x141a25410
+int UIMessengerBrowser::FUN_141a25410(TalkTab* pExcept, const CStringW& strName)
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        UIMessenger* pWindow = m_windows[i];
+        if (pWindow != 0 && pWindow->vfunc_86(pExcept, strName) == 0)
+            return 0;
+    }
+    return 1;
+}
+
+// @0x141a254c0
+void UIMessengerBrowser::FUN_141a254c0(__int64 nSince, CStringW& strOut)
+{
+    std::multimap<__int64, CStringW>::iterator it = m_timedLogs.lower_bound(nSince);
+    std::multimap<__int64, CStringW>::iterator itEnd = m_timedLogs.end();
+    for (; it != itEnd; ++it)
+    {
+        CMsTime time(it->first);
+        int nHour = time.GetHour();
+        int nMinute = time.GetMinute();
+        int nSecond = time.GetSecond();
+        CStringW strLine(it->second);
+        FUN_14083d2b0(strLine);
+        int nLength = strOut.GetLength();
+        if (nLength + strLine.GetLength() > 2000)
+            break;
+        strOut.AppendFormat(L"[%2d:%2d:%2d] %s\n", nHour, nMinute, nSecond, (const wchar_t*)strLine);
+    }
+}
+
+// @0x141a25660
+void UIMessengerBrowser::FUN_141a25660(CStringW strText, CStringW strTarget)
+{
+    if (m_windows.IsEmpty())
+        return;
+    m_windows[0]->FUN_141a0f1d0(strText, strTarget, true);
+}
+
+// @0x141a25770
+void UIMessengerBrowser::FUN_141a25770(CStringW strText, bool bHistory)
+{
+    if (m_windows.IsEmpty())
+        return;
+    m_windows[0]->FUN_141a0f430(strText, bHistory);
+}
+
+// @0x141a25840
+int UIMessengerBrowser::FUN_141a25840(const CStringW& strText)
+{
+    if (m_188 == 0)
+        return 0;
+    if (strText.IsEmpty())
+        return 0;
+    if (strText[0] == L'/')
+        return 0;
+    return 1;
+}
+
+// @0x141a258a0
+CStringW UIMessengerBrowser::FUN_141a258a0()
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        if (m_windows[i] != 0)
+            return m_windows[i]->FUN_141a0df70();
+    }
+    return L"";
+}
+
+// @0x141a25970
+UIMessenger* UIMessengerBrowser::FUN_141a25970()
+{
+    if (m_windows.IsEmpty())
+        return 0;
+    return m_windows[0];
+}
+
+// @0x141a259c0
+UIMessenger* UIMessengerBrowser::FUN_141a259c0(const CStringW& strName)
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        UIMessenger* pWindow = m_windows[i];
+        if (pWindow != 0 && pWindow->FUN_141a0df70() == strName)
+            return pWindow;
+    }
+    return 0;
+}
+
+// @0x141a25ad0
+void UIMessengerBrowser::FUN_141a25ad0(CStringW& strHtml)
+{
+    ATL::CAtlList<CStringW> links;
+    if (!FUN_140d2c080(strHtml, links, CStringW(L"<A HREF="), CStringW(L"/A>")))
+        return;
+    POSITION pos = links.GetHeadPosition();
+    while (pos != 0)
+    {
+        CStringW strLink(links.GetAt(pos));
+        unsigned __int64 nUid = FUN_140d2caf0(strLink);
+        int nColor = 0xffffff;
+        {
+            MS2Ptr<CItem> spItem = FUN_141a263d0(nUid);
+            if (spItem.get() != 0)
+            {
+                int nGrade = spItem->FUN_140526bd0();
+                nColor = FUN_140281980()->FUN_1405569f0(nGrade);
+            }
+        }
+        strHtml.Replace(strLink, FUN_14183e930(strLink, nColor));
+        links.GetNext(pos);
+    }
+}
+
+// @0x141a25d40
+void UIMessengerBrowser::vfunc_2(void* pItem)
+{
+    FUN_141a24ee0((CItem*)pItem);
+}
+
+// @0x141a25d80
+void UIMessengerBrowser::vfunc_3(void* pItem, bool bMoved)
+{
+    if (!bMoved)
+        FUN_141a24e10((CItem*)pItem);
+}
+
+// @0x141a25dc0
+void UIMessengerBrowser::vfunc_4(void* pItem, int nOld)
+{
+    FUN_141275150((CItem*)pItem, ((CItem*)pItem)->FUN_140526c50(), nOld, 0x2ba, 0x2b9);
+}
+
+// @0x141a25e10
+void UIMessengerBrowser::vfunc_5(void* pItem, int nSlot)
+{
+    if (((CItem*)pItem)->FUN_140526010() == 0)
+        FUN_1412750f0((CItem*)pItem, nSlot, 0x2ba, 0x2b9);
+}
+
+// @0x141a25e60
+void UIMessengerBrowser::vfunc_17(void* pItem, int nSlot)
+{
+    FUN_1412750f0((CItem*)pItem, nSlot, 0x2ba, 0x2b9);
+}
+
+// @0x141a25ea0
+Unk_MsgHistory::Unk_MsgHistory(const Unk_MsgHistory& other)
+{
+    m_strText = other.m_strText;
+    m_keys.Copy(other.m_keys);
+}
+
+// @0x141a25f20
+Unk_MsgHistory& Unk_MsgHistory::operator=(const Unk_MsgHistory& other)
+{
+    m_strText = other.m_strText;
+    m_keys.Copy(other.m_keys);
+    return *this;
+}
+
+// @0x141a25f70
+void UIMessengerBrowser::FUN_141a25f70(const CStringW& strText, ATL::CAtlArray<CStringW>& history)
+{
+    if (strText.IsEmpty())
+        return;
+    if (!m_history.empty() && m_history.rbegin()->m_strText == strText)
+    {
+        m_itHistory = m_history.end();
+        return;
+    }
+    Unk_MsgHistory entry;
+    entry.m_strText = strText;
+    entry.m_keys.Copy(history);
+    m_history.push_back(entry);
+    if (m_history.size() > 10)
+        m_history.pop_front();
+    m_itHistory = m_history.end();
+}
+
+// @0x141a261b0
+int UIMessengerBrowser::FUN_141a261b0(int bUp, Unk_MsgHistory& entry)
+{
+    if (m_history.empty())
+        return 0;
+    if (bUp == 0)
+    {
+        if (m_itHistory == m_history.end())
+            return 0;
+        m_itHistory++;
+    }
+    else
+    {
+        if (m_itHistory == m_history.begin())
+            return 0;
+        m_itHistory--;
+    }
+    if (m_itHistory != m_history.end())
+        entry = *m_itHistory;
+    return 1;
+}
+
+// @0x141a263d0
+MS2Ptr<CItem> UIMessengerBrowser::FUN_141a263d0(unsigned __int64 nUid)
+{
+    MS2Ptr<CItem> spItem;
+    if (!m_linkedItems.Lookup(nUid, spItem))
+        return MS2Ptr<CItem>(0);
+    return MS2Ptr<CItem>(spItem);
+}
+
+// @0x141a26480
+bool UIMessengerBrowser::FUN_141a26480()
+{
+    return m_hiddenTypes.size() != 0;
+}
+
+// @0x141a264c0
+bool UIMessengerBrowser::FUN_141a264c0(int nType)
+{
+    if (nType == 0x10 && !FUN_140166410()->FUN_14036d570(0x19))
+        return true;
+    return m_hiddenTypes.find(nType) != m_hiddenTypes.end();
+}
+
+// @0x141a26560
+void UIMessengerBrowser::FUN_141a26560(int nType)
+{
+    m_hiddenTypes.insert(nType);
+}
+
+// @0x141a265a0
+void UIMessengerBrowser::FUN_141a265a0(int nType)
+{
+    m_hiddenTypes.erase(nType);
+}
+
+// @0x141a265d0
+void UIMessengerBrowser::FUN_141a265d0()
+{
+    m_hiddenTypes.clear();
+}
+
+// @0x141a26600
+void UIMessengerBrowser::FUN_141a26600()
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        if (m_windows[i] != 0)
+            m_windows[i]->FUN_141a0f870();
+    }
+}
+
+// MS2-FUNCTIONAL: exe statically links _mkdir/fopen/fwrite/fclose, build imports them
+// @0x141a26680
+void UIMessengerBrowser::FUN_141a26680()
+{
+    CString strDir;
+    strDir.Format("%s%s", (const char*)FUN_14016a5c0(FUN_1401d31f0()->m_strRoot, 0), "../Debug/");
+    if (!thunk_FUN_1420b1ae0(strDir))
+        _mkdir(strDir);
+    __time64_t nNow;
+    _time64(&nNow);
+    CMsTime time(nNow);
+    int nSecond = time.GetSecond();
+    int nMinute = time.GetMinute();
+    int nHour = time.GetHour();
+    int nDay = time.GetDay();
+    int nMonth = time.GetMonth();
+    int nYear = time.GetYear();
+    CString strFile = Unk_SocketFormat("ChatLog{0:04d}{1:02d}{2:02d}_{3:02d}{4:02d}{5:02d}.txt", nYear, nMonth, nDay,
+                                       nHour, nMinute, nSecond);
+    CString strPath = FUN_140cc2a00(CString("../Debug/"), strFile);
+    FILE* pFile = fopen(strPath, "w");
+    if (pFile != 0)
+    {
+        POSITION pos = m_reports.GetHeadPosition();
+        while (pos != 0)
+        {
+            ReportLog& report = m_reports.GetNext(pos);
+            CStringW strLine;
+            strLine.Format(L"user=[%s] chat=[%s]", (const wchar_t*)report.m_strName, (const wchar_t*)report.m_strMsg);
+            CString strBytes = FUN_14016a600(strLine, 0);
+            size_t nLength = strBytes.GetLength();
+            fwrite((const char*)strBytes, nLength, 1, pFile);
+            fwrite("\n", 1, 1, pFile);
+        }
+        fclose(pFile);
+    }
+}
+
+// @0x141a26a00
+void UIMessengerBrowser::FUN_141a26a00()
+{
+    if (FUN_141a27570())
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            CString strFile;
+            strFile.Format("%s%d.xml", "MessengerDialog", i);
+            FUN_1401d3700(strFile);
+            TiXmlDocument doc;
+            int bLoaded = FUN_140166420()->FUN_1403974b0(
+                &doc, FUN_140cc2a00(FUN_140188f50(FUN_1412755f0(), 0), strFile), 0, false, false);
+            if (bLoaded)
+            {
+                UIMessenger* pWindow = new UIMessenger(this, doc, FUN_14016a730(strFile, 0), m_184);
+                if (pWindow->vfunc_65())
+                {
+                    pWindow->vfunc_8(1);
+                    m_windows.Add(pWindow);
+                }
+            }
+        }
+    }
+    if (m_windows.IsEmpty())
+        FUN_141a23e80();
+}
+
+// @0x141a26cd0
+CStringW UIMessengerBrowser::FUN_141a26cd0()
+{
+    for (int i = 0; i < 100; i++)
+    {
+        CStringW strName;
+        strName.Format(L"%s%d.xml", (const wchar_t*)FUN_14016a730("MessengerDialog", 0), i);
+        FUN_140841420(strName);
+        if (!FUN_141a23d70(strName))
+            return strName;
+    }
+    return L"";
+}
+
+// @0x141a26e00
+int UIMessengerBrowser::FUN_141a26e00(const CStringW& strHtml, int nKind)
+{
+    TalkLog log(strHtml, nKind);
+    m_logs.AddTail(log);
+    m_pendingLogs.AddTail(log);
+    if (m_logs.GetCount() > (unsigned)m_18c)
+        m_logs.RemoveHead();
+    return 1;
+}
+
+// @0x141a26f10
+int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& strText, int nType)
+{
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return 0;
+    PCBase* pSpeaker = FUN_1403ed2d0()->FUN_141bd1420(strName);
+    if (pSpeaker == 0)
+        return 0;
+    if (pSpeaker == pMe && FUN_140967100()->FUN_141b21220())
+        return 1;
+    int bShow = FUN_1409a8b10()->FUN_140b123b0()->FUN_14125c820(nType);
+    CStringW strBalloon;
+    if (nType == 7 && bShow)
+        strBalloon = FUN_14028de60(0xaa7);
+    else if (nType == 8 && bShow)
+        strBalloon = FUN_14028de60(0xaa8);
+    strBalloon += strText;
+    float fDistance = pSpeaker->FUN_140f4a450();
+    if (!bShow)
+        return 0;
+    int bNear = (pSpeaker == pMe || fDistance < *FUN_1401d3200()->ChatBalloonDistance.Get()) ? 1 : 0;
+    if (bNear)
+        pSpeaker->FUN_14166fff0(strBalloon);
+    return 1;
+}
+
+// @0x141a271b0
+int UIMessengerBrowser::FUN_141a271b0(const CStringW& strName, const CStringW& strText, int nType)
+{
+    CStringW strTag;
+    if (nType == 1)
+        strTag = L"[Normal]";
+    else if (nType == 2)
+        strTag = L"[Party]";
+    else if (nType == 3)
+        strTag = L"[Guild]";
+    else if (nType == 0x18)
+        strTag = L"[GuildMegaphone]";
+    else if (nType == 4)
+        strTag = L"[Whisper]";
+    else if (nType == 0x15)
+        strTag = L"[World]";
+    else if (nType == 0x16)
+        strTag = L"[Channel]";
+    else if (nType == 0x17)
+        strTag = L"[Super]";
+    else if (nType == 0x1a)
+        strTag = L"[Club]";
+    else
+        return 0;
+    if (m_timedLogs.size() > 0x32)
+        m_timedLogs.erase(m_timedLogs.begin());
+    CStringW strLine;
+    strLine.Format(L"%s[%s] %s", (const wchar_t*)strTag, (const wchar_t*)strName, (const wchar_t*)strText);
+    __int64 nNow = FUN_140869440();
+    m_timedLogs.insert(std::pair<__int64, CStringW>(nNow, strLine));
+    ReportLog report(strName, strText);
+    m_reports.AddTail(report);
+    if (m_reports.GetCount() > (unsigned)m_18c)
+        m_reports.RemoveHead();
+    return 1;
+}
+
+// @0x141a27570
+int UIMessengerBrowser::FUN_141a27570()
+{
+    bool bValid = true;
+    int bAny = 0;
+    ATL::CAtlList<CStringW> names;
+    for (int i = 0; i < 100 && bValid; i++)
+    {
+        CString strFile;
+        strFile.Format("%s%d.xml", "MessengerDialog", i);
+        FUN_1401d3700(strFile);
+        TiXmlDocument doc;
+        int bLoaded = FUN_140166420()->FUN_1403974b0(
+            &doc, FUN_140cc2a00(FUN_140188f50(FUN_1412755f0(), 0), strFile), 0, false, false);
+        if (!bLoaded)
+            continue;
+        void* pDialog = FUN_140165cf0(&doc, "MessengerDialog");
+        if (pDialog == 0)
+        {
+            bValid = false;
+            break;
+        }
+        void* pTabXml = FUN_140165cf0(pDialog, "Tab");
+        if (pTabXml == 0)
+        {
+            bValid = false;
+            break;
+        }
+        for (; pTabXml != 0; pTabXml = FUN_140168650(pTabXml, "Tab"))
+        {
+            MS2Ptr<TalkTab> spTab(new TalkTab);
+            if (spTab.get() == 0 || !spTab->FUN_1414827c0((Unk_MdXml*)pTabXml))
+            {
+                bValid = false;
+                break;
+            }
+            if (spTab->m_nAdditive != 0)
+                bAny = 1;
+            if (names.Find(spTab->m_strName) != 0)
+            {
+                bValid = false;
+                break;
+            }
+            names.AddTail(spTab->m_strName);
+        }
+    }
+    if (bValid)
+        return bAny;
+    for (int i = 0; i < 100; i++)
+    {
+        CString strFile;
+        strFile.Format("%s%d.xml", "MessengerDialog", i);
+        FUN_1401d3700(strFile);
+        DeleteFileA(FUN_140cc2a00(FUN_1412755f0(), FUN_14016a5c0(strFile, 0)));
+    }
+    return 0;
+}
+
+// @0x141a27ad0
+void UIMessengerBrowser::FUN_141a27ad0(unsigned nFontSize)
+{
+    POSITION pos = m_logs.GetHeadPosition();
+    while (pos != 0)
+    {
+        TalkLog& log = m_logs.GetNext(pos);
+        for (unsigned n = 0xc; (int)n < 0x13; n++)
+        {
+            CStringW strOld;
+            strOld.Format(L"size='%d'", n);
+            CStringW strNew;
+            strNew.Format(L"size='%d'", nFontSize);
+            log.m_strMsg.Replace(strOld, strNew);
+        }
+    }
+}
+
+// @0x141a27bf0
+void UIMessengerBrowser::FUN_141a27bf0()
+{
+    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    {
+        if (m_windows[i] != 0)
+            m_windows[i]->FUN_141a0e990();
+    }
+    m_194 = (int)m_logs.GetCount();
+    m_pendingLogs.RemoveAll();
+}
+
+// @0x141a27ca0
+void UIMessengerBrowser::FUN_141a27ca0()
+{
+    for (unsigned i = 0; i < m_windows.GetCount(); i++)
+    {
+        UIMessenger* pWindow = m_windows[i];
+        if (pWindow != 0)
+        {
+            POSITION pos = m_pendingLogs.GetHeadPosition();
+            while (pos != 0)
+            {
+                TalkLog& log = m_pendingLogs.GetNext(pos);
+                pWindow->vfunc_88(log.m_strMsg, log.m_nKind);
+            }
+        }
+    }
+    m_194 = m_194 + (int)m_pendingLogs.GetCount();
+    m_pendingLogs.RemoveAll();
+}
+
+// @0x141a27de0
+int UIMessengerBrowser::FUN_141a27de0()
+{
+    return DAT_143adda48.m_nFontSize;
 }

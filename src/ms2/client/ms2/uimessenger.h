@@ -36,12 +36,16 @@ class ASUIComponent;
 class NotifyObject;
 class CMsgBoxData;
 class CItem;
+class CInPacket;
 class UIMessengerBrowser;
 class ChatEmoticonData;
 
 // An input history entry of the browser (0x28): the line and the keys of its item links.
 struct Unk_MsgHistory
 {
+    Unk_MsgHistory() {}                                                     // 0x141a1b6f0
+    Unk_MsgHistory(const Unk_MsgHistory& other);                            // 0x141a25ea0
+    Unk_MsgHistory& operator=(const Unk_MsgHistory& other);                 // 0x141a25f20
     CStringW m_strText;                                                     // +0x00
     ATL::CAtlArray<CStringW> m_keys;                                        // +0x08
 };
@@ -85,7 +89,7 @@ public:
     virtual int vfunc_84();                                                 // 84 0x141a09db0 deletes the settings file
     virtual void vfunc_85(int bActive);                                     // 85 0x141a0efa0
     virtual int vfunc_86(MessengerData::TalkTab* pExcept, const CStringW& strName);              // 86 0x141a0f040 the tab name is free
-    virtual void vfunc_87();                                                // 87 0x141a15ae0
+    virtual void vfunc_87(const CStringW& strMsg, const CString& strWindow);   // 87 0x141a15ae0 a whisper came: the whisper tabs
     virtual int vfunc_88(const CStringW& strText, int nType);               // 88 0x141a15dc0 adds a chat line
     virtual void vfunc_89(const CStringW& strText, int nChannel);           // 89 0x141a15d70 adds a line of a channel
     virtual void vfunc_90();                                                // 90 0x141a15e80 focus in: the current window
@@ -230,16 +234,80 @@ class UIMessengerBrowser : public UIDialog, public UIItemEventListener
 public:
     UIMessengerBrowser();                                                   // 0x141a20f90
     virtual ~UIMessengerBrowser();                                          //  0 0x141a215a0
+    virtual CString vfunc_1();                                              //  1 0x141a21a60 "MessengerBrowser"
+    virtual void vfunc_8(int nVisible);                                     //  8 0x141a21ce0 every window
+    virtual int vfunc_9();                                                  //  9 0x141a21c50 any window
+    virtual void vfunc_15();                                                // 15 0x141a23b30 flushes the pending lines
+    virtual void OnLoadInit();                                              // 20 0x141a23af0
+    virtual void vfunc_43();                                                // 43 0x141a21e90 stacks the windows
+    virtual int vfunc_65();                                                 // 65 0x141a21ab0 Open
+    virtual void vfunc_67();                                                // 67 0x141a21b10 Close
+    virtual int vfunc_74(int a1, void* p2, void* p3);                       // 74 0x141a21d60 key messages
+    virtual void vfunc_84(CInPacket& packet);                               // 84 0x141a22140 a chat line (0x1d)
+    virtual void vfunc_85(CInPacket& packet);                               // 85 0x141a22cd0 linked items (0x1e)
+    // UIItemEventListener (+0x178)
+    void vfunc_2(void* pItem) override;                                     // o178 2 0x141a25d40 added
+    void vfunc_3(void* pItem, bool bMoved) override;                        // o178 3 0x141a25d80 removed
+    void vfunc_4(void* pItem, int nOld) override;                           // o178 4 0x141a25dc0 count changed
+    void vfunc_5(void* pItem, int nSlot) override;                          // o178 5 0x141a25e10
+    void vfunc_17(void* pItem, int nSlot) override;                         // o178 17 0x141a25e60
 
     // ---- non-virtual members (exe order) ----
+    void FUN_141a22ee0(CInPacket& packet);                                  // 0x141a22ee0 a notice with a name (0x90)
+    void FUN_141a22fc0(CInPacket& packet);                                  // 0x141a22fc0 a notice (0x92)
+    void FUN_141a23060(CInPacket& packet);                                  // 0x141a23060 a dungeon recruit (0x109)
+    void FUN_141a230e0(CInPacket& packet);                                  // 0x141a230e0 a helper recruit
+    void FUN_141a233d0(CInPacket& packet);                                  // 0x141a233d0 a member recruit
+    void FUN_141a239e0(CStringW strText);                                   // 0x141a239e0 a system line
+    void FUN_141a23a70();                                                   // 0x141a23a70 every window FUN_141a0f7b0
+    void FUN_141a23c20();                                                   // 0x141a23c20 clears the log
+    int FUN_141a23d50();                                                    // 0x141a23d50 m_184
+    int FUN_141a23d70(const CStringW& strName);                             // 0x141a23d70 a window has the name
+    void FUN_141a23e80();                                                   // 0x141a23e80 the default windows
+    void FUN_141a24490();                                                   // 0x141a24490 closes every window
+    void FUN_141a247c0(const CStringW& strText, int nType);                 // 0x141a247c0 a filtered line
+    void FUN_141a24890(CItem* pItem, unsigned nCount, int nManyId, int nOneId);   // 0x141a24890 an item gained/lost line
+    void FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta);          // 0x141a24cb0 debug: count change
+    void FUN_141a24e10(CItem* pItem);                                       // 0x141a24e10 debug: removed
+    void FUN_141a24ee0(CItem* pItem);                                       // 0x141a24ee0 debug: added
+    void FUN_141a24fb0(CStringW strText);                                   // 0x141a24fb0 inserts into the current window
+    void FUN_141a25130(unsigned nFontSize);                                 // 0x141a25130 the font size
+    void FUN_141a25160(unsigned nAlpha);                                    // 0x141a25160 the background alpha
+    void FUN_141a251f0(int n);                                              // 0x141a251f0 m_180
+    void FUN_141a25210(int bActive);                                        // 0x141a25210 every window vfunc_85
+    void FUN_141a252a0(const CStringW& strTarget);                          // 0x141a252a0 whisper in the current window
+    void FUN_141a254c0(__int64 nSince, CStringW& strOut);                   // 0x141a254c0 the lines since a time
+    void FUN_141a25660(CStringW strText, CStringW strTarget);               // 0x141a25660 the first window submits
+    void FUN_141a25770(CStringW strText, bool bHistory);                    // 0x141a25770 the first window sends
+    int FUN_141a25840(const CStringW& strText);                             // 0x141a25840 plain chat
+    CStringW FUN_141a258a0();                                               // 0x141a258a0 the first window's name
+    UIMessenger* FUN_141a25970();                                           // 0x141a25970 the first window
+    UIMessenger* FUN_141a259c0(const CStringW& strName);                    // 0x141a259c0 a window by name
+    void FUN_141a25ad0(CStringW& strHtml);                                  // 0x141a25ad0 colours the item links
     void FUN_141a24160(const ATL::CAtlArray<MS2Ptr<MessengerData::TalkTab> >& tabs, int nX, int nY, int nWidth,
                        int nHeight, int nTarget);                           // 0x141a24160 a new window with the tabs
     void FUN_141a245d0(const CStringW& strName);                            // 0x141a245d0 closes an empty window
     void FUN_141a25f70(const CStringW& strText, ATL::CAtlArray<CStringW>& history);   // 0x141a25f70 records a command
-    int FUN_141a25410(int nKind, const CStringW& strName);                  // 0x141a25410 the window name is free
+    int FUN_141a25410(MessengerData::TalkTab* pExcept, const CStringW& strName);   // 0x141a25410 the tab name is free
     int FUN_141a261b0(int bUp, Unk_MsgHistory& entry);                      // 0x141a261b0 the input history
-    bool FUN_141a26480();                                                   // 0x141a26480
+    MS2Ptr<CItem> FUN_141a263d0(unsigned __int64 nUid);                     // 0x141a263d0 a linked item
+    bool FUN_141a26480();                                                   // 0x141a26480 some type is hidden
     bool FUN_141a264c0(int nType);                                          // 0x141a264c0 the chat type is hidden
+    void FUN_141a26560(int nType);                                          // 0x141a26560 hides a chat type
+    void FUN_141a265a0(int nType);                                          // 0x141a265a0 shows a chat type
+    void FUN_141a265d0();                                                   // 0x141a265d0 shows every chat type
+    void FUN_141a26600();                                                   // 0x141a26600 every window FUN_141a0f870
+    void FUN_141a26680();                                                   // 0x141a26680 dumps the reports to ../Debug
+    void FUN_141a26a00();                                                   // 0x141a26a00 loads the windows
+    CStringW FUN_141a26cd0();                                               // 0x141a26cd0 a free window name
+    int FUN_141a26e00(const CStringW& strHtml, int nKind);                  // 0x141a26e00 adds a line
+    int FUN_141a26f10(const CStringW& strName, const CStringW& strText, int nType);   // 0x141a26f10 the speech balloon
+    int FUN_141a271b0(const CStringW& strName, const CStringW& strText, int nType);   // 0x141a271b0 records a report line
+    static int FUN_141a27570();                                             // 0x141a27570 the saved windows are valid
+    void FUN_141a27ad0(unsigned nFontSize);                                 // 0x141a27ad0 resizes the logged lines
+    void FUN_141a27bf0();                                                   // 0x141a27bf0 refreshes every window
+    void FUN_141a27ca0();                                                   // 0x141a27ca0 flushes the pending lines
+    int FUN_141a27de0();                                                    // 0x141a27de0 the chat colour key
 
     MS2_LAYOUT_FRIEND;
     int m_180;                                                              // +0x180 (1) the windows take key input
@@ -259,7 +327,7 @@ public:
     ATL::CAtlMap<unsigned __int64, MS2Ptr<CItem>> m_linkedItems;            // +0x268 the items linked in chat, by uid
     std::deque<Unk_MsgHistory> m_history;                                   // +0x2b0 the input history (at most 10)
     std::deque<Unk_MsgHistory>::iterator m_itHistory;                       // +0x2d8 the history browse position
-    std::map<__int64, CStringW> m_timedLogs;                                // +0x2f0 lines by time
+    std::multimap<__int64, CStringW> m_timedLogs;                           // +0x2f0 the report lines by time (at most 51)
     std::set<int> m_hiddenTypes;                                            // +0x300 the chat types hidden
 };
 MS2_CHECK_SIZE(UIMessengerBrowser, 0x310);
