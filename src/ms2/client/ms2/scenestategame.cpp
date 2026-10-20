@@ -14,7 +14,6 @@
 // MS2-PIN: ?TypeCast@CSceneStateGame@@UEBA_NIPEAPEAX@Z 0x14174a720 ; unique
 // MS2-PIN: ?TypeCast@CSceneStateGame@@UEBA_NIPEAPEBX@Z 0x14174a770 ; unique
 // MS2-PIN: ?Make@?$Unk_BmPtr@VUserUGCMapInfo@@@@AEAAXXZ 0x14174a9b0 ; unique
-// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@2@@Z 0x14174afc0 ; prop
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCSceneStateGame@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x14174b7f0 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVCSceneStateGame@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x14174bbb0 ; unique
 // MS2-PIN: ??$Call@VCSceneStateGame@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVCSceneStateGame@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVCSceneStateGame@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x14174bbf0 ; unique
@@ -78,35 +77,20 @@
 // MS2-PIN: ??_G?$TPtredDummy@USpecialNPCInfo@@@@UEAAPEAXI@Z 0x1417475b0 ; w131 manual (size 0x38 delete, calls 0x141746800)
 // MS2-FUNCTIONAL 0x141745310: pinned by call-site order (w131); the exe body is a non-leaf wrapper calling 0x141745390,
 //   not the leaf std::forward<const int&> our VS2017 15.9 <utility> emits (map<int,bool> emplace chain of another STL drop)
-// MS2-FUNCTIONAL 0x141740400: _Compressed_pair<allocator,_Tree_val> zero-args ctor: exe 57 B vs 46 B, different STL ctor chain
-// MS2-FUNCTIONAL 0x141744a80: _Default_allocator_traits::construct<node*>: callee set differs at 0x140159860 (forward copy), STL drop
-// MS2-FUNCTIONAL 0x141745ac0: _Tree_comp_alloc(const less<int>&) ctor: exe 73 B vs 62 B, different STL ctor chain
-// MS2-FUNCTIONAL 0x14174b550: allocator<_Tree_node>::allocate: callee set differs at 0x14015fe50/0x14015f9d0 (size/_Allocate
-//   helpers; exe 72 B vs 37 B) -> map<int,bool> node-allocation chain of a different STL version
-// MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x14174acf0 ; w131 manual (call site 0x141745ac0)
+// MS2-PIN: ??$forward@AEBH@std@@YAAEBHAEBH@Z 0x141745310 ; w131 manual (call site 0x1417406d0)
 // MS2-PIN: ?_Erase@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@2@@Z 0x14174aec0 ; w131 manual (call site 0x14174aec0/0x14174b750)
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@V32@@Z 0x14174ba20 ; w131 manual (call site 0x14174b930)
-// MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@2@_K@Z 0x14174b550 ; w131 manual (call site 0x14174aa30)
-// MS2-PIN: ??$construct@PEAU?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@1@AEAPEAU31@@Z 0x141744a80 ; w131 manual (call site 0x14174aa30)
-// MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@IEBAAEBHAEBU?$pair@$$CBH_N@2@@Z 0x14174b1e0 ; w131 manual (call site 0x1417445d0/0x14174b1b0)
-// MS2-PIN: ?_Key@?$_Tree@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@IEBAAEBHPEAU?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@2@@Z 0x14174b1b0 ; w131 manual (call site 0x1417449e0)
 // MS2-PIN: ??$format_arg@_WW4Unk_SSGInteractResult@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_SSGInteractResult@@@Z 0x141744d40 ; w131 manual (call site 0x1417450d0)
 // MS2-PIN: ??$format_arg@_WW4Unk_SSGEnchantExpError@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_SSGEnchantExpError@@@Z 0x141744e60 ; w131 manual (call site 0x141745100)
 // MS2-PIN: ??$format_arg@_WW4Unk_SSGJobError@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_SSGJobError@@@Z 0x141744f80 ; w131 manual (call site 0x141745130)
-// MS2-PIN: ??$forward@AEBH@std@@YAAEBHAEBH@Z 0x141745310 ; w131 manual (call site 0x1417406d0)
 // MS2-PIN: ??1Unk_1407a7d20@@QEAA@XZ 0x141746960 ; w131 manual (call site 0x141728c20)
 // MS2-PIN: ??C?$MS2Ptr@VCEnchantOption@@@@QEBAPEAVCEnchantOption@@XZ 0x141747350 ; w131 manual (call site 0x141732b20)
 // MS2-PIN: ?Find@?$CRBTree@_JHV?$CElementTraits@_J@ATL@@V?$CElementTraits@H@2@@ATL@@IEBAPEAVCNode@12@_J@Z 0x141747bc0 ; w131 manual (call site 0x14174a3d0)
 // MS2-PIN: ?InsertImpl@?$CRBTree@_JHV?$CElementTraits@_J@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@_JH@Z 0x1417484c0 ; w131 manual (call site 0x1417496f0)
-// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x14174acb0 ; w131 manual (call site 0x1417449e0)
 // MS2-PIN: ?ReleaseImpl@?$Unk_BmBoxPtr@USpecialNPCInfo@@@@AEAAXPEAX@Z 0x14174b370 ; w131 manual (call site 0x14174b230)
 // MS2-PIN: ?deallocate@?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVutf8string@efd@@UUnk_PropertyCacheEntry@@@std@@PEAX@std@@@efd@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBVutf8string@efd@@UUnk_PropertyCacheEntry@@@std@@PEAX@std@@_K@Z 0x14174b850 ; w131 manual (call site 0x14174b8a0)
 // MS2-PIN: ??$format_arg@_WW4Unk_SSGSkillUseError@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_SSGSkillUseError@@@Z 0x141744c20 ; w131 manual (call site 0x1417450a0)
-// MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@2@XZ 0x14174aa30 ; w131 manual (call site 0x14174acf0)
 // MS2-PIN: ??$?0IVCAdventureLevelMissionData@@$0A@@?$pair@$$CBIVCAdventureLevelMissionData@@@std@@QEAA@$$QEAU?$pair@IVCAdventureLevelMissionData@@@1@@Z 0x141740530 ; w131 manual (called by construct 0x141744ac0)
-// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@H_NU?$less@H@std@@V?$allocator@U?$pair@$$CBH_N@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141745ac0 ; w131 manual (called by the map<int,bool> _Tree ctor 0x141745a90)
-// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1417404e0 ; w131 manual (called by 0x141745ac0)
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBH_N@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBH_N@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141740400 ; w131 manual (called by 0x1417404e0)
 #define NOMINMAX                        // NxPhysics (interactobject.h)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\scenestategame.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
