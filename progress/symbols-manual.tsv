@@ -3644,3 +3644,16 @@ __imp_NxGetUtilLib	142cced28	data
 ??0Unk_ShopUIMsg@@QEAA@XZ	1422e4490	func
 ??1Unk_ShopUIMsg@@QEAA@XZ	140c30570	func
 ?DAT_143ab2a90@@3VUnk_ShopInventory@@A	143ab2a90	data
+??0CNMChannelMemberInfo@@QEAA@AEBV0@@Z	14157c260	func
+??0CNMCateFriendInfo@@QEAA@AEBV0@@Z	1415e8a40	func
+??0CNMCharacter@@QEAA@AEBV0@@Z	1415e8c60	func
+??0CNMChatRoomMemberInfo@@QEAA@AEBV0@@Z	1415e8f40	func
+??0CNMFileEvent@@QEAA@AEBV0@@Z	1415e92c0	func
+??0CNMFilePath@@QEAA@AEBV0@@Z	1415e93e0	func
+??0CNMFriendInfo@@QEAA@AEBV0@@Z	1415e97b0	func
+??0CNMGameInfo@@QEAA@AEBV0@@Z	1415e9af0	func
+??0CNMGuildMemberInfo@@QEAA@AEBV0@@Z	1415ea080	func
+??0CNMGuildMemberLevelInfo@@QEAA@AEBV0@@Z	1415ea1f0	func
+??0CNMNoteInfo2@@QEAA@AEBV0@@Z	1415ea540	func
+??0CNMRejectedUser@@QEAA@AEBV0@@Z	1415eaf30	func
+??0CNMSessionMemberInfo@@QEAA@AEBV0@@Z	1415eb110	func

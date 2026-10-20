@@ -45,7 +45,116 @@ public:
     int CallNMFunc(CNMFunc* pFunc);                             // 0x1415cb440 (TRUE when the reply arrived)
 };
 
-// Element records of the list replies (RTTI names; 0x18 bytes, CNMSerializable-derived).
+// ---- list elements (std::vector<T> members of the list requests/events) -------------------------------------------
+// The records are CNMSerializable-derived (RTTI names, sizes from their copy constructors and the vector code in
+// unit_1415cf3e0). Only what the vector templates use is declared: the copy constructor, operator= and the virtual
+// destructor; bodies not recovered yet are an opaque m_body. Some derive through intermediate bases in the exe
+// (noted per class); those add no data the templates touch.
+
+// CNMRequestMultiChatSessionFunc target (0x10, trivially copyable; name invented).
+struct NMChatSessionTarget
+{
+    unsigned __int64 uIDCode;
+    unsigned int uVirtualIDCode;
+    unsigned int n0c;
+};
+MS2_CHECK_SIZE(NMChatSessionTarget, 0x10);
+
+// CNMRequestMultiChatSessionExFunc target (0x18, trivially copyable).
+struct NMFriendKey
+{
+    unsigned __int64 uIDCode;
+    unsigned int n08;
+    unsigned int n0c;
+    unsigned int n10;
+    unsigned int n14;
+};
+MS2_CHECK_SIZE(NMFriendKey, 0x18);
+
+class CNMAvatarItemInfo : public CNMSerializable
+{
+public:
+    virtual ~CNMAvatarItemInfo();
+};
+MS2_CHECK_SIZE(CNMAvatarItemInfo, 0x10);
+
+class CNMCateFriendInfo : public CNMSerializable
+{
+public:
+    CNMCateFriendInfo(const CNMCateFriendInfo& r);
+    virtual ~CNMCateFriendInfo();
+    CNMCateFriendInfo& operator=(const CNMCateFriendInfo& r);
+
+    unsigned char m_body[0x48];                       // +0x10 (not recovered) (CNMCategoryInfo-derived)
+};
+MS2_CHECK_SIZE(CNMCateFriendInfo, 0x58);
+
+class CNMChannelMemberInfo : public CNMSerializable
+{
+public:
+    CNMChannelMemberInfo(const CNMChannelMemberInfo& r);
+    virtual ~CNMChannelMemberInfo();
+    CNMChannelMemberInfo& operator=(const CNMChannelMemberInfo& r);
+
+    unsigned char m_body[0x20];                       // +0x10 (not recovered)
+};
+MS2_CHECK_SIZE(CNMChannelMemberInfo, 0x30);
+
+class CNMCharacter : public CNMSerializable
+{
+public:
+    CNMCharacter(const CNMCharacter& r);
+    virtual ~CNMCharacter();
+    CNMCharacter& operator=(const CNMCharacter& r);
+
+    unsigned char m_body[0x88];                       // +0x10 (not recovered)
+};
+MS2_CHECK_SIZE(CNMCharacter, 0x98);
+
+class CNMChatRoomMemberInfo : public CNMSerializable
+{
+public:
+    CNMChatRoomMemberInfo(const CNMChatRoomMemberInfo& r);
+    virtual ~CNMChatRoomMemberInfo();
+    CNMChatRoomMemberInfo& operator=(const CNMChatRoomMemberInfo& r);
+
+    unsigned char m_body[0x210];                       // +0x10 (not recovered) (CNMRealUserInfo/CNMDefaultUserInfo-derived)
+};
+MS2_CHECK_SIZE(CNMChatRoomMemberInfo, 0x220);
+
+class CNMFileEvent : public CNMSerializable
+{
+public:
+    CNMFileEvent(const CNMFileEvent& r);
+    virtual ~CNMFileEvent();
+    CNMFileEvent& operator=(const CNMFileEvent& r);
+
+    unsigned char m_body[0x118];                       // +0x10 (not recovered)
+};
+MS2_CHECK_SIZE(CNMFileEvent, 0x128);
+
+class CNMFilePath : public CNMSerializable
+{
+public:
+    CNMFilePath(const CNMFilePath& r);
+    virtual ~CNMFilePath();
+    CNMFilePath& operator=(const CNMFilePath& r);
+
+    unsigned char m_body[0x108];                       // +0x10 (not recovered)
+};
+MS2_CHECK_SIZE(CNMFilePath, 0x118);
+
+class CNMFriendInfo : public CNMSerializable
+{
+public:
+    CNMFriendInfo(const CNMFriendInfo& r);
+    virtual ~CNMFriendInfo();
+    CNMFriendInfo& operator=(const CNMFriendInfo& r);
+
+    unsigned char m_body[0x570];                       // +0x10 (not recovered) (CNMRealFriendInfo/CNMDefaultUserInfo-derived)
+};
+MS2_CHECK_SIZE(CNMFriendInfo, 0x580);
+
 class CNMGameCode : public CNMSerializable
 {
 public:
@@ -58,6 +167,17 @@ public:
 };
 MS2_CHECK_SIZE(CNMGameCode, 0x18);
 
+class CNMGameInfo : public CNMSerializable
+{
+public:
+    CNMGameInfo(const CNMGameInfo& r);
+    virtual ~CNMGameInfo();
+    CNMGameInfo& operator=(const CNMGameInfo& r);
+
+    unsigned char m_body[0x1498];                       // +0x10 (not recovered)
+};
+MS2_CHECK_SIZE(CNMGameInfo, 0x14a8);
+
 class CNMGameServerCode : public CNMSerializable
 {
 public:
@@ -69,6 +189,81 @@ public:
     int m_n14;                                                  // +0x14
 };
 MS2_CHECK_SIZE(CNMGameServerCode, 0x18);
+
+class CNMGuildMemberInfo : public CNMSerializable
+{
+public:
+    CNMGuildMemberInfo(const CNMGuildMemberInfo& r);
+    CNMGuildMemberInfo(const CNMChannelMemberInfo& r);          // 0x141574aa0
+    virtual ~CNMGuildMemberInfo();
+    CNMGuildMemberInfo& operator=(const CNMGuildMemberInfo& r);
+    CNMGuildMemberInfo& operator=(CNMGuildMemberInfo&& r);      // 0x1415f1180
+
+    unsigned __int64 m_nIDCode;                                 // +0x10
+    char m_szLoginID[0x40];                                     // +0x18
+    char m_szNickName[0x40];                                    // +0x58
+    CNMAvatarItemInfo m_avatar;                                 // +0x98
+    int m_na8;
+    unsigned char m_bac;
+    int m_nb0;
+    int m_nb4;
+};
+MS2_CHECK_SIZE(CNMGuildMemberInfo, 0xb8);
+
+class CNMGuildMemberLevelInfo : public CNMSerializable
+{
+public:
+    CNMGuildMemberLevelInfo(const CNMGuildMemberLevelInfo& r);
+    virtual ~CNMGuildMemberLevelInfo();
+    CNMGuildMemberLevelInfo& operator=(const CNMGuildMemberLevelInfo& r);
+
+    unsigned char m_body[0x48];                       // +0x10 (not recovered)
+};
+MS2_CHECK_SIZE(CNMGuildMemberLevelInfo, 0x58);
+
+class CNMNoteInfo2 : public CNMSerializable
+{
+public:
+    CNMNoteInfo2(const CNMNoteInfo2& r);
+    virtual ~CNMNoteInfo2();
+    CNMNoteInfo2& operator=(const CNMNoteInfo2& r);
+
+    unsigned char m_body[0xad8];                       // +0x10 (not recovered)
+};
+MS2_CHECK_SIZE(CNMNoteInfo2, 0xae8);
+
+class CNMRejectedUser : public CNMSerializable
+{
+public:
+    CNMRejectedUser(const CNMRejectedUser& r);
+    virtual ~CNMRejectedUser();
+    CNMRejectedUser& operator=(const CNMRejectedUser& r);
+
+    unsigned char m_body[0xb8];                       // +0x10 (not recovered)
+};
+MS2_CHECK_SIZE(CNMRejectedUser, 0xc8);
+
+class CNMSessionMemberInfo : public CNMSerializable
+{
+public:
+    CNMSessionMemberInfo(const CNMSessionMemberInfo& r);
+    virtual ~CNMSessionMemberInfo();
+    CNMSessionMemberInfo& operator=(const CNMSessionMemberInfo& r);
+
+    unsigned char m_body[0xe8];                       // +0x10 (not recovered)
+};
+MS2_CHECK_SIZE(CNMSessionMemberInfo, 0xf8);
+
+class CNMVirtualUserInfo : public CNMSerializable
+{
+public:
+    CNMVirtualUserInfo(const CNMVirtualUserInfo& r);
+    virtual ~CNMVirtualUserInfo();
+    CNMVirtualUserInfo& operator=(const CNMVirtualUserInfo& r);
+
+    unsigned char m_body[0x480];                       // +0x10 (not recovered)
+};
+MS2_CHECK_SIZE(CNMVirtualUserInfo, 0x490);
 
 class CNMExecutePatcherFunc : public CNMFunc
 {
