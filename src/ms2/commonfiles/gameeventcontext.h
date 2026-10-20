@@ -107,7 +107,7 @@ MS2_CHECK_OFFSET(BlueMarbleEventContext, m_rewards, 0x38);
 
 // DungeonExtraRewardCountCtx: gameevent.h (GameEventDungeonExtraReward holds a map of them).
 
-enum Unk_DungeonGroupType {};
+enum Unk_DungeonGroupType;                                  // MSVC forward declaration (int-sized); defined in commonfiles/additionalactionadditional.h
 class DungeonBonusRewardCtx : public CPtred {
 public:
     DungeonBonusRewardCtx();                                // 0x1403fd8a0

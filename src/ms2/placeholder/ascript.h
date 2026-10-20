@@ -119,6 +119,7 @@ public:
     template <class T> MS2Ptr<T> FUN_140acce30(const CString& strName);                      // same, one COMDAT per wrapper class (w47: pet evolution)
     template <class T> MS2Ptr<T> FUN_140accfb0(const CString& strName);
     template <class T> MS2Ptr<T> FUN_140bbe880(const CString& strName);    // bind a typed child (uiguilddialog "m_gradeName" as ASTextInput)
+    template <class T> MS2Ptr<T> FUN_140c26ea0(const CString& strName);                      // child control by name (guild mail "m_content"; uiguilddialog.cpp)
     template <class T> MS2Ptr<T> FUN_140c11f50(const CString& strName);                      // child control by name (check box; uirankpvpdialog.cpp)
     template <class T> MS2Ptr<T> FUN_140bfa6a0(const CString& strName);                      // child control by name (alliance quest list)
     template <class T> MS2Ptr<T> FUN_140be23c0(const CString& strName);                      // child control by name (tab bar; uidailymissiondialog.cpp)
@@ -232,6 +233,11 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, bool a1, bool a2);                   // 0x140fc1a70 (inline COMDAT, defined in uiwatchagamedialog.cpp)
     Scaleform::GFx::Value FUN_14197a3e0(const char* szMethod, bool a1, bool a2, bool a3);   // 0x14197a3e0 (inline COMDAT, defined in uiguilddialog.cpp: Invoke with three Booleans)
     Scaleform::GFx::Value FUN_14197a240(const char* szMethod, int a1, bool a2, float a3);   // 0x14197a240 (inline COMDAT, defined in uiguilddialog.cpp: Invoke with an Int, a Boolean and a Number)
+    Scaleform::GFx::Value FUN_141979e60(const char* szMethod, int a1, int a2, const class ASArray& a3);   // 0x141979e60 (inline COMDAT, defined in uiguilddialog.cpp: Invoke with two Ints and an array)
+    Scaleform::GFx::Value FUN_14197a030(const char* szMethod, int a1, int a2, bool a3, const class ASArray& a4);   // 0x14197a030 (inline COMDAT, defined in uiguilddialog.cpp)
+    Scaleform::GFx::Value FUN_14197a320(const char* szMethod, bool a1, const class ASArray& a2);   // 0x14197a320 (inline COMDAT, defined in uiguilddialog.cpp)
+    Scaleform::GFx::Value FUN_14197a120(const char* szMethod, int a1, float a2, int a3, CStringW a4);   // 0x14197a120 (inline COMDAT, defined in uiguilddialog.cpp; a4 by value: the callee destroys it)
+    template <class T> MS2Ptr<T> FUN_140c436d0(const CString& strName);   // child control by name (guild championship "m_participate" as ASLabel; uiguilddialog.cpp)
     Scaleform::GFx::Value FUN_140e6b140(const char* szMethod, int a1, CString a2);          // 0x140e6b140 (a2 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2);                // 0x140e0a8c0 (inline COMDAT, defined in uichapterbook.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, CStringW a2, int a3);        // 0x140e65dd0 (inline COMDAT, defined in uimicrogamecoupledancemessage.cpp; a2 by value: the callee destroys it)
@@ -248,7 +254,23 @@ public:
     Scaleform::GFx::Value FUN_140c1c8c0(const char* szMethod, unsigned __int64 a1);         // 0x140c1c8c0 (UInt value; "setupTabSize")
     Scaleform::GFx::Value FUN_140fdd6b0(const char* szMethod, unsigned __int64 a1, bool a2);   // 0x140fdd6b0 (inline COMDAT, defined in uiweddinghallreservationdialog.cpp; "setTabEnable")
     Scaleform::GFx::Value FUN_1413127f0(const char* szMethod, CString a1, CString a2);         // 0x1413127f0 (Invoke(string, string); both by value: the callee destroys them; uiguilddialog "setGuildMark")
+    Scaleform::GFx::Value FUN_141312a70(const char* szMethod, CString a1, Scaleform::GFx::Value a2, int a3, int a4, CStringW a5);   // 0x141312a70 (inline COMDAT, defined in uimeratmarketdialog.cpp: "buildSellerItemList"; a1/a2/a5 by value)
+    Scaleform::GFx::Value FUN_1413128f0(const char* szMethod, CString a1, Scaleform::GFx::Value a2, int a3, int a4, const wchar_t* a5);   // 0x1413128f0 (same, a5 a literal)
     MS2Ptr<class ASDropdownMenu> FUN_140bbe700(const CString& strName);                       // 0x140bbe700 bind a dropdown child (uiguilddialog "m_sortDropdown")
+
+    Scaleform::GFx::Value FUN_1413125d0(const char* szMethod, const ASArray& a1, int a2, int a3, Scaleform::GFx::Value a4);   // 0x1413125d0 (inline COMDAT, defined in uimeratmarketdialog.cpp: "buildItemList"; a4 by value)
+
+    Scaleform::GFx::Value FUN_1413124f0(const char* szMethod, const ASArray& a1, int a2, bool a3);   // 0x1413124f0 (inline COMDAT, uimeratmarketdialog.cpp: "buildItemList" without the info object)
+
+    Scaleform::GFx::Value FUN_141312710(const char* szMethod, CStringA a1, int a2);   // 0x141312710 (inline COMDAT, uimeratmarketdialog.cpp: "removeItemComplete"; a1 by value)
+
+    Scaleform::GFx::Value FUN_141312c10(const char* szMethod, CStringW a1, int a2);   // 0x141312c10 (inline COMDAT, uimeratmarketdialog.cpp: "removeBasket"; a1 by value)
+
+    Scaleform::GFx::Value FUN_141313220(const char* szMethod, Scaleform::GFx::Value a1, int a2);   // 0x141313220 (inline COMDAT, defined in uimeratmarketdialog.cpp: "appendLimitedTab"; a1 by value)
+
+    Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int a1);   // 0x1409ba030 Invoke(method, int) (uimeratmarketdialog.cpp "changeTab")
+
+    Scaleform::GFx::Value FUN_140f0a830(const char* szMethod, Scaleform::GFx::Value a1, long a2);   // 0x140f0a830 Invoke(method, value, long) (uimeratmarketdialog.cpp "updateBg"; a1 by value)
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {

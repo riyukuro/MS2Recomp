@@ -22,6 +22,8 @@
 class CInPacket;
 class CMsgBoxData;
 class ASButtonBar;
+class ItemInfoSlot;
+class ASSlot;
 
 class UIGuildDialog : public UIDialog, public UIStatusEventListener
 {
@@ -74,20 +76,30 @@ public:
     void FUN_14196c860();
     void FUN_14196cd30();                                       // "setGradeInfo"
     void FUN_14196cf80();                                       // the championship page's guild text
-    void FUN_14196d660();                                       // refresh the join page
+    void FUN_14196d0c0(int nPage);                              // "buildSearchGuild" (9 per page)
+    void FUN_14196d660();                                       // "buildSearchMy": my join requests
     void FUN_14196da70();                                       // the request member page
     void FUN_14196e0a0();                                       // "setGuildExp"
     void FUN_14196e230(bool bEvent);                            // "setGuildExpEvent"
     void FUN_14196e2c0();                                       // "setGuildFund"
     void FUN_14196e590();
     void FUN_14196f830();
+    void FUN_141970f00();                                       // the guild vs-game event panel
     void FUN_141971490();                                       // the house page
     void FUN_141971ac0();
     void FUN_141972520();                                       // the storage page
     void FUN_141972fc0();                                       // the raid score
     void FUN_141973220();                                       // the raid history
     void FUN_141973610();                                       // the championship info
-    void FUN_141973a70();
+    void FUN_141973a70();                                       // show the attendance mark
+    void FUN_141973b20(const CStringW& strName);                // refresh a member's row
+    void FUN_141973df0(const CStringW& strName);                // "removeMember"
+    void FUN_141973fd0(int nGrade);                             // grade renamed: refresh its members
+    void FUN_141974120(const CString& strCode);                 // set the mark from a code
+    void FUN_141974190(const CStringW& strName);                // "setGuildName"
+    MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);
+    void FUN_141974640();                                       // the pvp season history
+    void FUN_141974930();                                       // confirm the championship guild
     bool FUN_141974ba0(int nResult, const CMsgBoxData& box);    // confirm boxes: forward the box's number to the manager
     bool FUN_141974bf0(int nResult, const CMsgBoxData& box);
     bool FUN_141974c40(int nResult, const CMsgBoxData& box);
@@ -100,6 +112,7 @@ public:
     bool FUN_1419754b0();                                       // open the realtime rank page
     bool FUN_141975500();                                       // open the rank page
     bool FUN_141975550();                                       // open the pvp rank page
+    bool FUN_141974ed0();                                       // is the guild mail filled in
     bool FUN_1419751e0();                                       // "sendMail"
     bool FUN_1419755a0(const CStringW& strName);                // "addMember"
     void FUN_141975620();
@@ -109,7 +122,12 @@ public:
     void FUN_1419761f0();                                       // update the buttons
     void FUN_141976380(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_1419763d0(const Scaleform::GFx::FunctionHandler::Params& params);
+    void FUN_141976420(ItemInfoSlot& slot, ASSlot& asSlot);     // a storage slot's count
+    bool FUN_1419764a0();                                       // is a guild exp event running
+    void FUN_1419764f0(unsigned __int64 nGuildId, const CString& strCode);   // a guild's mark arrived
     void FUN_141976730(const CStringW& strMark, int n);         // "setGuildMark"
+    void FUN_1419769d0();                                       // set the own guild's mark
+    void FUN_141970900();
     void FUN_141976980(const CStringW& strMark);                // set the mark unless the dialog is closed
 
 private:

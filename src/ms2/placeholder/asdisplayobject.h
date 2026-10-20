@@ -52,6 +52,7 @@ public:
     void FUN_1422c0ec0(int nHeight);                            // set the height
     void FUN_1422c0e20(int nWidth);                             // set the width (uirankpvpdialog.cpp)
     void FUN_1422c04a0(int y);                                  // set y (int; uirankpvpdialog.cpp)
+    void FUN_1422c03a0(int x);                                  // set x (int; uiguilddialog.cpp)
     // addEventListener: an AS event of the object calls the delegate (uiblackmarketpage.cpp "changeTotalPrice")
     void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, int nPriority, int a5, int a6);
 };
