@@ -5,9 +5,46 @@
 // MS2-UNIT: client\ms2\keytable.cpp
 // MS2-RANGE: 0x1414286a0-0x14143d580 .text$mn
 // MS2-RANGE: 0x1400f6ce0-0x1400f6db0 .text$di
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141432710 ; unique
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHPEAVUnk_140165cf0@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x141432800 ; unique
+// MS2-PIN: ??$StringFormat@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBV01@1@Z 0x1414328e0 ; unique
+// MS2-PIN: ??$FUN_14028dfa0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V12@V12@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBV01@111@Z 0x141432bf0 ; unique
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@1@@Z 0x141433030 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141433050 ; unique
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@1@1@Z 0x1414331b0 ; unique
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@1@PEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@@Z 0x141433510 ; unique
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHPEAVUnk_140165cf0@@@1@PEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@1@@Z 0x141434150 ; unique
+// MS2-PIN: ??$_Try_emplace@AEBH$$V@?$map@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z 0x141434610 ; unique
+// MS2-PIN: ??$construct@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHPEAVUnk_140165cf0@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1414347e0 ; unique
+// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1414348b0 ; unique
+// MS2-PIN: ??$forward@AEAU?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@YAAEAU?$pair@$$CBHPEAVUnk_140165cf0@@@0@AEAU10@@Z 0x141434960 ; prop
+// MS2-PIN: ??0CNode@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@QEAA@AEBHAEBV?$MS2Ptr@VstKeyData@CKeyTable@@@@@Z 0x1414353d0 ; unique
+// MS2-PIN: ??0CPair@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@IEAA@AEBHAEBV?$MS2Ptr@VstKeyData@CKeyTable@@@@@Z 0x141435500 ; unique
+// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141435f30 ; prop
+// MS2-PIN: ?Find@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@IEBAPEAVCNode@12@AEBH@Z 0x1414368d0 ; unique
+// MS2-PIN: ?Find@?$CRBTree@_JHV?$CElementTraits@_J@ATL@@V?$CDefaultElementTraits@H@2@@ATL@@IEBAPEAVCNode@12@_J@Z 0x1414369c0 ; unique
+// MS2-PIN: ?GetNode@?$CAtlMap@HHV?$CDefaultElementTraits@H@ATL@@V12@@ATL@@AEBAPEAVCNode@12@AEBHAEAI1AEAPEAV312@@Z 0x1414375a0 ; unique
+// MS2-PIN: ?InsertImpl@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@AEAAPEAVCNode@12@AEBHAEBV?$MS2Ptr@VstKeyData@CKeyTable@@@@@Z 0x141437f20 ; unique
+// MS2-PIN: ?InsertImpl@?$CRBTree@_JHV?$CElementTraits@_J@ATL@@V?$CDefaultElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@_JAEBH@Z 0x141438020 ; unique
+// MS2-PIN: ?NewNode@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@AEAAPEAVCNode@12@AEBHAEBV?$MS2Ptr@VstKeyData@CKeyTable@@@@@Z 0x141439150 ; unique
+// MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@XZ 0x14143c160 ; unique
+// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x14143c240 ; unique
+// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@@Z 0x14143c2b0 ; unique
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@@Z 0x14143c980 ; unique
+// MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@_K@Z 0x14143d020 ; unique
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@_K@Z 0x14143d050 ; prop
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@2@AEBH@Z 0x14143d280 ; unique
+// MS2-PINS-END tplpin
 // MS2-PIN: ??__Es_pointer@@YAXXZ 0x1400f6d40
+// MS2-PIN: memcpy_s 0x14143d430
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlList@V?$MS2Ptr@VCKeySettingParam@@@@V?$CElementTraits@V?$MS2Ptr@VCKeySettingParam@@@@@ATL@@@ATL@@@@6B@ 0x142f12e20
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\keytable.cpp"    // the _wassert path of FUN_141431ae0
+// The exe's memcpy_s is a plain call (no /Oi expansion); the pragma must precede the inline copy.
+#include <vcruntime_string.h>
+#pragma function(memset, memcpy)
+#include <corecrt_memcpy_s.h>
+#pragma intrinsic(memset)                                   // the ATL array glue clears with the intrinsic
 #include "ms2/placeholder/ms2stdafx.h"
 #include <stdlib.h>
 #include <egf/Entity.h>
@@ -37,6 +74,9 @@
 #include <map>
 #include "hook/ms2hook.h"
 extern template class MS2Ptr<Unk_RideeData>;          // the riding row's pointer glue is another unit's (0x140788ed0)
+
+// The UCRT's `static __inline memcpy_s` of this TU (kept alive by the pointer below).
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
 
 // ---- file statics (.text$di): the shared header statics without the sort type names ----
 #ifndef MS2_HOOK_DLL
