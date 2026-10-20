@@ -106,14 +106,8 @@ class Unk_ItemEquipData : public CItemData { };          // CItem::FUN_140527840
 extern Unk_Inventory DAT_143ab2a90;                       // the player's inventory
 extern bool DAT_143ae9750;                                // the debug switch "SkillSlotNotFind"
 
-// The quick slot entry of a slot index (the saved shortcut): a skill, or an item id + uid.
-struct Unk_SsQuickEntry
-{
-    int m_nSkillId;                                       // +0x00
-    __int64 m_nItemUid;                                   // +0x08
-    int m_nItemId;                                        // +0x10
-    Unk_SsQuickEntry() : m_nSkillId(0), m_nItemUid(0), m_nItemId(0) {}   // 0x141253e20
-};
+// Unk_SsQuickEntry (the quick slot entry of a slot index, the saved shortcut): placeholder/ssquickentry.h.
+#include "ms2/placeholder/ssquickentry.h"
 
 // The quick slot manager (0x1409331f0): the saved entries, the key bindings and the page.
 class Unk_MyPCSkillSet;

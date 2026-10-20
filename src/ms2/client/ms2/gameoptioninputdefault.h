@@ -10,20 +10,12 @@
 #include "ms2/commonfiles/timer.h"
 #include "ms2/placeholder/imessagelistener.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/ssquickentry.h"
 
 class CKeySettingParam;
 class CMsgBoxData;
 
-// The quick slot binding of one slot (0x18 bytes, ctor 0x141253e20): a skill, or an item id + uid. Same name and shape as
-// client\ms2\skillslot.cpp's view.
-struct Unk_SsQuickEntry
-{
-    int m_nSkillId;                                                 // +0x00
-    __int64 m_nItemUid;                                             // +0x08
-    int m_nItemId;                                                  // +0x10
-    Unk_SsQuickEntry() : m_nSkillId(0), m_nItemUid(0), m_nItemId(0) {}   // 0x141253e20
-};
-MS2_CHECK_SIZE(Unk_SsQuickEntry, 0x18);
+// Unk_SsQuickEntry (the quick slot binding of one slot): placeholder/ssquickentry.h.
 
 class CGameOptionInputDefault : public CBaseOption, public IMessageListener
 {
