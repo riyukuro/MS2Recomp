@@ -228,6 +228,7 @@ public:
     Scaleform::GFx::Value FUN_140ed0fd0(const char* szMethod, int a1, bool a2);             // 0x140ed0fd0 (UIQuestGuideDialog setTracingEntity)
     Scaleform::GFx::Value FUN_1422bb3c0();                                                   // 0x1422bb3c0 call the AS function this object wraps
     Scaleform::GFx::Value Invoke(const char* szMethod, const AScript& a1, const char* a2);  // 0x141aafc10 (inline COMDAT, defined in uiquesteventlistener.cpp)
+    Scaleform::GFx::Value Invoke(const char* szMethod, unsigned int a1, bool a2, Scaleform::GFx::Value a3);   // 0x140f1fec0 (inline COMDAT, defined in uiblackmarketpagemeso.cpp; a3 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, float a1);                           // 0x14127bfb0 (inline COMDAT, defined in gfxmoviebackground.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, float a1, float a2, float a3);       // 0x14127c050 (inline COMDAT, defined in gfxmoviebackground.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, Scaleform::GFx::Value a3);   // 0x140f0a3f0 (inline COMDAT, defined in uibeautyshopstyledialog.cpp)

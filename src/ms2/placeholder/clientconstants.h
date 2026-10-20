@@ -105,6 +105,15 @@ public:
         bool Contains(T v);
         bool Get(ATL::CAtlArray<T>& out);                   // 0x140ce06c0 (CString): copy the loaded values
         ATL::CAtlArray<T> m_values;                         // +0x50
+        // The count and the nIndex-th value (0 past the end); inline COMDATs, 0x140f20b90 / 0x140f20bb0 for __int64
+        // (first emitted in uiblackmarketpagemeso.cpp).
+        int FUN_140f20b90() const { return (int)m_values.GetCount(); }
+        T FUN_140f20bb0(unsigned int nIndex) const
+        {
+            if (nIndex < m_values.GetCount())
+                return m_values[nIndex];
+            return 0;
+        }
     };
 
     Constants();

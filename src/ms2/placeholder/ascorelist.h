@@ -126,5 +126,8 @@ public:
     void FUN_1422df9a0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);
     void FUN_1422dfce0(const CStringW& strLabel);                       // append an entry
     void FUN_1422dfc10();                                               // remove every entry
+    void FUN_1422df720(const Scaleform::GFx::Value& v);                 // set "dataProvider" (asdropdownmenu.cpp)
+    MS2Ptr<class ASDataProvider> FUN_1422df770();                       // "dataProvider" (asdropdownmenu.cpp)
+    void FUN_140f1fe00(const CString& strMember, __int64* pOut);        // 0x140f1fe00 the selected entry's member (inline COMDAT, defined in uiblackmarketpagemeso.cpp)
 };
 MS2_CHECK_SIZE(ASDropdownMenu, 0x88);

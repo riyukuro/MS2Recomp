@@ -19,8 +19,12 @@
 #include "ms2/placeholder/astextinput.h"
 #include "ms2/commonfiles/blackmarketitemoption.h"
 #include "ms2/placeholder/cblackmarketman.h"
+#include "ms2/placeholder/uistatuseventlistener.h"
 
 class CInPacket;
+class NotifyObject;
+class ASDropdownMenu;
+class ASButton;
 class CItem;
 class CMsgBoxData;
 class ASTextField;
@@ -186,24 +190,94 @@ MS2_CHECK_OFFSET(BlackMarketPageItemRegister, m_item, 0x68);
 MS2_CHECK_OFFSET(BlackMarketPageItemRegister, m_request, 0x80);
 MS2_CHECK_OFFSET(BlackMarketPageItemRegister, m_spCounter, 0xa0);
 
-class BlackMarketPageMesoSearch : public BlackMarketPage
+// The meso market pages (client\ms2\uiblackmarketpagemeso.cpp; layouts recovered by w562 from the ctors 0x140f18620 /
+// 0x140f1add0 and the dtors 0x140f20860 / 0x140f1af00). Both listen to the status events (UIStatusEventListener at +0x60:
+// search overrides slot 14 = the merat changed, register slot 11 = the mesos changed) and to the packet 0x81 replies
+// (opcode 0x99 of PacketHandlerManager). vftables: search 0x142e71b38 (8 slots, slot 7 = the NotifyChangedTokenMoney
+// handler) / +0x60 table; register 0x142e71b88 (7 slots) / +0x60 table. Member and method names are invented.
+class BlackMarketPageMesoSearch : public BlackMarketPage, public UIStatusEventListener
 {
 public:
-    virtual ~BlackMarketPageMesoSearch();
-    virtual void vfunc_3();
-    virtual int vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
-    explicit BlackMarketPageMesoSearch(const CString& strName);     // 0x140f18620
-    char m_pad_60[0xc8 - 0x60];
+    explicit BlackMarketPageMesoSearch(const CString& strName);     // 0x140f18620 ("m_mesoSearchPage" / "...SingleRange")
+    // implicit virtual dtor 0x140f20860 (no vptr store; ??_G 0x140f20b50)
+    virtual void vfunc_1();                                         //  1 0x140f18720 bind the controls, listen
+    virtual void vfunc_2();                                         //  2 0x140f19320 stop listening, drop the controls
+    virtual void vfunc_3();                                         //  3 0x140f19550 the page was selected
+    virtual int vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 4 0x140f195d0
+    virtual void vfunc_oa0_14(void* a1, int a2);                    // +0x60 slot 14 0x140f19a50 the merat changed
+    virtual void vfunc_7(NotifyObject* pNotify);                    //  7 0x140f19a80 NotifyChangedTokenMoney
+
+    void FUN_140f19ae0(CInPacket& packet);                          // packet 0x81 reply (2 counts, 7 list, 8 bought)
+    void FUN_140f19b80(const Scaleform::GFx::FunctionHandler::Params& params);   // a range dropdown changed
+    void FUN_140f19d00(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_searchButton"
+    void FUN_140f19eb0(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_prevPage" / "m_nextPage"
+    bool FUN_140f19ef0(int nResult, const CMsgBoxData& box);        // buy confirmation: send 0x81/8
+    void RefreshPage();                                             // 0x140f19f80
+    void FUN_140f1a230();                                           // the market list
+    void FUN_140f1a420();                                           // "UpdateMerat"
+    void FUN_140f1a5a0();                                           // "m_myToken"
+    void FUN_140f1a690();                                           // the explanation and the market price
+    void FUN_140f1a8f0();                                           // "m_buyCount"
+    void FUN_140f1aa20();                                           // the page controls
+    void FUN_140f1ac40(int nDelta);                                 // move the page
+    void FUN_140f1ad40(__int64 nBegin, __int64 nEnd);               // send the search 0x81/7
+
+    MS2_LAYOUT_FRIEND;
+    MS2Ptr<ASDropdownMenu> m_spSearchBegin;                         // +0x68 "m_searchBegin"
+    MS2Ptr<ASDropdownMenu> m_spSearchEnd;                           // +0x78 "m_searchEnd"
+    MS2Ptr<ASButton> m_spSearchButton;                              // +0x88 "m_searchButton"
+    MS2Ptr<ASButton> m_spPrevPage;                                  // +0x98 "m_prevPage"
+    MS2Ptr<ASButton> m_spNextPage;                                  // +0xa8 "m_nextPage"
+    bool m_bSearched;                                               // +0xb8 a search was sent
+    int m_nPage;                                                    // +0xbc
+    int m_nLastPage;                                                // +0xc0
 };
 MS2_CHECK_SIZE(BlackMarketPageMesoSearch, 0xc8);
+MS2_CHECK_OFFSET(BlackMarketPageMesoSearch, m_spSearchBegin, 0x68);
+MS2_CHECK_OFFSET(BlackMarketPageMesoSearch, m_bSearched, 0xb8);
 
-class BlackMarketPageMesoRegister : public BlackMarketPage
+class BlackMarketPageMesoRegister : public BlackMarketPage, public UIStatusEventListener
 {
 public:
-    virtual ~BlackMarketPageMesoRegister();
-    virtual void vfunc_3();
-    virtual int vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
-    BlackMarketPageMesoRegister();                                  // 0x140f1add0
-    char m_pad_60[0xe0 - 0x60];
+    BlackMarketPageMesoRegister();                                  // 0x140f1add0 ("m_mesoRegisterPage")
+    virtual ~BlackMarketPageMesoRegister();                         //  0 0x140f1af00 (??_G 0x140f20b10)
+    virtual void vfunc_1();                                         //  1 0x140f1afd0 bind the controls, listen
+    virtual void vfunc_2();                                         //  2 0x140f1bdc0
+    virtual void vfunc_3();                                         //  3 0x140f1bf80
+    virtual int vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 4 0x140f1bfa0
+    virtual void vfunc_oa0_11(void* a1);                            // +0x60 slot 11 0x140f1c2d0 the mesos changed
+
+    void FUN_140f1c300(CInPacket& packet);                          // packet 0x81 reply (2 counts, 4 list, 5 registered, 6 cancelled)
+    void FUN_140f1c3b0(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_register"
+    void FUN_140f1c900(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_mesoDropdown" changed
+    void FUN_140f1c930(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_buyMerat" changed
+    void FUN_140f1ca80(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_prevPage" / "m_nextPage"
+    bool FUN_140f1cac0(int nResult, const CMsgBoxData& box);        // register confirmation: send 0x81/5
+    bool FUN_140f1cb70(int nResult, const CMsgBoxData& box);        // stop-sale confirmation: send 0x81/6
+    void FUN_140f1cc00();                                           // the single range / fee controls
+    void FUN_140f1cf70();                                           // reset the inputs
+    void FUN_140f1d020();                                           // refresh everything
+    void FUN_140f1d1c0();                                           // the own list
+    void FUN_140f1d4e0();                                           // "m_currentMeso"
+    void FUN_140f1d5b0();                                           // the total price
+    void FUN_140f1d730();                                           // the rates, market price and fee notice
+    void FUN_140f1dab0();                                           // "m_registerCount"
+    void FUN_140f1dbe0();                                           // the page controls
+    __int64 FUN_140f1de00();                                        // the merat price input
+    __int64 FUN_140f1dec0();                                        // the total price
+    void FUN_140f1dfa0(int nDelta);                                 // move the page
+
+    MS2_LAYOUT_FRIEND;
+    MS2Ptr<ASDropdownMenu> m_spMesoDropdown;                        // +0x68 "m_mesoDropdown"
+    MS2Ptr<ASTextInput> m_spSingleRange;                            // +0x78 "m_mesoSingleRange"
+    MS2Ptr<ASTextInput> m_spBuyMerat;                               // +0x88 "m_buyMerat"
+    MS2Ptr<ASTextInput> m_spAfterTaxMerat;                          // +0x98 "m_afterTaxMerat"
+    MS2Ptr<ASButton> m_spRegister;                                  // +0xa8 "m_register"
+    MS2Ptr<ASButton> m_spPrevPage;                                  // +0xb8 "m_prevPage"
+    MS2Ptr<ASButton> m_spNextPage;                                  // +0xc8 "m_nextPage"
+    int m_nPage;                                                    // +0xd8
+    int m_nLastPage;                                                // +0xdc
 };
 MS2_CHECK_SIZE(BlackMarketPageMesoRegister, 0xe0);
+MS2_CHECK_OFFSET(BlackMarketPageMesoRegister, m_spMesoDropdown, 0x68);
+MS2_CHECK_OFFSET(BlackMarketPageMesoRegister, m_nPage, 0xd8);

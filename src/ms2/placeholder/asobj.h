@@ -146,6 +146,7 @@ public:
     void FUN_1422df0e0(unsigned int nIndex);                             // invalidate(index)
     void FUN_1422df120();                                                // remove every element: cleanUp() (asdropdownmenu.cpp)
     AScript FUN_1422df140(unsigned nIndex);                              // requestItemAt(index) as an AS object (asdropdownmenu.cpp)
+    void FUN_140f1fd70(unsigned nIndex, const CString& strMember, __int64* pOut);   // 0x140f1fd70 a member of an entry (inline COMDAT, defined in uiblackmarketpagemeso.cpp)
     // The flash.events.IEventDispatcher methods (the same AS calls as ASEventDispatcher's).
     void FUN_1422df1c0(const CString& strType, const Scaleform::GFx::Value& listener, int bUseCapture, int nPriority,
                        int bUseWeakReference);                           // addEventListener
