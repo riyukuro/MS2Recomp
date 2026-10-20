@@ -2,6 +2,7 @@
 // MS2-UNIT: ?\uiminimapentity.cpp
 // MS2-RANGE: 0x141a30f30-0x141a517d0 .text$mn
 // MS2-RANGE: 0x140117c70-0x140118e40 .text$di
+// MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 #define NOMINMAX
@@ -328,14 +329,12 @@ static CStringW s_strStormPreview = L"storm_preview";
 static CString s_strTamingPet = "taming_pet";
 static CString s_strTaxi = "taxi";
 static CString s_strTooltip = "tooltip";
-static egf::EntityID s_entityInvalid(0);
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_strBluePingSound = "System_BluePing_01";
 static CString s_strRedPingSound = "System_RedPing_01";
 static CString s_strSkill2 = "skill";
 static CString s_strStun2 = "stun";
-static egf::EntityID s_entityInvalid2(0);
 static UICommon::CMyPCKeyInputController s_keyInputController2;
 
 // ---- UIMinimapEntity ----
