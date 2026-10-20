@@ -855,3 +855,6 @@ int StateInteraction::vfunc_1() { return 0x19; }
 int StateInteractionNpc::vfunc_1() { return 0x1a; }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb7710-0x142cb7730 .text$yd
+// MS2-RANGE: 0x142cb7750-0x142cb77c0 .text$yd

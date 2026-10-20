@@ -2717,3 +2717,8 @@ void FUN_140c60f40(CString& strBag, ItemArray& items, MS2Ptr<ItemSlotBag::Create
         param->m_pfnGetItem = reinterpret_cast<ItemSlotBag::CreateParam::GetItemFn>(FUN_141420330);
     FUN_14141f860(strBag, static_cast<int>(items.GetCount()), &items, param);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca31f0-0x142ca3260 .text$yd
+// MS2-RANGE: 0x142ca3280-0x142ca32f0 .text$yd
+// MS2-RANGE: 0x142ca3310-0x142ca33a0 .text$yd
+// MS2-RANGE: 0x142ca33c0-0x142ca33e0 .text$yd

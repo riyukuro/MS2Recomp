@@ -378,3 +378,5 @@ void Unk_CmdBitset::FUN_1414b2430()
         return;
     m_bits[(4 - 1) / 8] &= (1 << (4 % 8)) - 1;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb2d20-0x142cb2de0 .text$yd

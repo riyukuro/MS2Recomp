@@ -1517,3 +1517,5 @@ void FUN_140ce9720(void* p)
     for (int i = 2; i >= 0; --i)
         pNames[i].~CStringW();
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca44b0-0x142ca4570 .text$yd

@@ -369,3 +369,5 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74ee0(int nPages)
         return MS2Ptr<PetSystemTabContents>(new TabContentsPetEvolution());
     return MS2Ptr<PetSystemTabContents>(0);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca7450-0x142ca74d0 .text$yd

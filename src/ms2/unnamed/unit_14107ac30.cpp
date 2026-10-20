@@ -666,3 +666,5 @@ NiObject* FUN_14107cc90(Unk_C930Walker& rWalker, bool bDescend)
     else
         return *FUN_14107cbe0(rWalker);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caba10-0x142cabb20 .text$yd

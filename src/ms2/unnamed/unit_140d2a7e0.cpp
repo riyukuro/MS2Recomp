@@ -839,3 +839,5 @@ void FUN_140d2f020(const CStringW& strText, ATL::CAtlArray<__int64>& ids, const 
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca4bc0-0x142ca4c80 .text$yd
