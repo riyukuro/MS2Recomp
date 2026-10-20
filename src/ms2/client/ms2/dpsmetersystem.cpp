@@ -4,8 +4,81 @@
 // MS2-RANGE: 0x141178340-0x14118b420 .text$mn
 // MS2-RANGE: 0x1400e7190-0x1400e7300 .text$di
 // MS2-RANGE: 0x142cac920-0x142caca70 .text$yd
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1400e7250 ; probe
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400e7280 ; probe
+// MS2-PIN: ??$?0AEAHAEAN$0A@@?$pair@HN@std@@QEAA@AEAHAEAN@Z 0x141182d50 ; unique
+// MS2-PIN: ??$?0HN$0A@@?$pair@$$CBIM@std@@QEAA@$$QEAU?$pair@HN@1@@Z 0x141182e90 ; unique
+// MS2-PIN: ??$make_pair@AEAHAEAN@std@@YA?AU?$pair@HN@0@AEAHAEAN@Z 0x141184aa0 ; unique
+// MS2-PIN: ??0?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAA@IMMMI@Z 0x141184cb0 ; unique
+// MS2-PIN: ??0?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSkillMeterData@@@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCSkillMeterData@@@@@2@@ATL@@QEAA@IMMMI@Z 0x141184da0 ; unique
+// MS2-PIN: ??0?$TPtrValue@M@@QEAA@$$T@Z 0x141184e90 ; unique
+// MS2-PIN: ??0CNode@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAA@PEB_WI@Z 0x141185770 ; unique
+// MS2-PIN: ??0CPair@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@IEAA@PEB_W@Z 0x1411857f0 ; unique
+// MS2-PIN: ??1?$CAtlList@V?$MS2Ptr@VCAdditionalEffectMeterData@@@@V?$CElementTraits@V?$MS2Ptr@VCAdditionalEffectMeterData@@@@@ATL@@@ATL@@QEAA@XZ 0x1411859a0 ; unique
+// MS2-PIN: ??1?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAA@XZ 0x141185a20 ; prop
+// MS2-PIN: ??1?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSkillMeterData@@@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCSkillMeterData@@@@@2@@ATL@@QEAA@XZ 0x141185a50 ; prop
+// MS2-PIN: ??1CPair@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAA@XZ 0x141185e00 ; unique
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@VCSkillMeterData@@@@QEAAAEAV1@PEAVCSkillMeterData@@@Z 0x141185fd0 ; unique
+// MS2-PIN: ?IsNull@?$MS2Ptr@VAdditionalCli@@@@QEBA_NXZ 0x141186040 ; probe
+// MS2-PIN: ?IsNull@?$MS2Ptr@VCEquipItem@@@@QEBA_NXZ 0x141186070 ; probe
+// MS2-PIN: ?IsNull@?$MS2Ptr@VCDamageRecord@@@@QEBA_NXZ 0x1411860a0 ; unique
+// MS2-PIN: ?IsNull@?$MS2Ptr@VCDotDamageRecord@@@@QEBA_NXZ 0x1411860d0 ; unique
+// MS2-PIN: ?IsNull@?$MS2Ptr@VCItem@@@@QEBA_NXZ 0x141186100 ; probe
+// MS2-PIN: ?IsNull@?$MS2Ptr@VCSplashDamageRecord@@@@QEBA_NXZ 0x141186130 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VCMeterRecordData@@@@QEBAPEAVCMeterRecordData@@XZ 0x1411862e0 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VCSplashDamageRecord@@@@QEBAPEAVCSplashDamageRecord@@XZ 0x141186350 ; prop
+// MS2-PIN: ??C?$MS2Ptr@VCStatMeterData@@@@QEBAPEAVCStatMeterData@@XZ 0x141186360 ; unique
+// MS2-PIN: ??_GCNode@?$CAtlList@V?$MS2Ptr@VCAdditionalEffectMeterData@@@@V?$CElementTraits@V?$MS2Ptr@VCAdditionalEffectMeterData@@@@@ATL@@@ATL@@QEAAPEAXI@Z 0x141186780 ; unique
+// MS2-PIN: ??_GCNode@?$CAtlList@V?$MS2Ptr@VCDamageMeterData@@@@V?$CElementTraits@V?$MS2Ptr@VCDamageMeterData@@@@@ATL@@@ATL@@QEAAPEAXI@Z 0x1411867c0 ; unique
+// MS2-PIN: ?CreateNode@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@PEB_WII@Z 0x141186b80 ; unique
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAXXZ 0x141186c80 ; prop
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSkillMeterData@@@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCSkillMeterData@@@@@2@@ATL@@QEAAXXZ 0x141186ca0 ; prop
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAXXZ 0x141186cc0 ; prop
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSkillMeterData@@@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCSkillMeterData@@@@@2@@ATL@@QEAAXXZ 0x141186ce0 ; prop
+// MS2-PIN: ?FreeNode@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x141186f80 ; unique
+// MS2-PIN: ?FreePlexes@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@AEAAXXZ 0x141187180 ; unique
+// MS2-PIN: ?Owner@?$TPtrValue@M@@CAPEAV?$TPtredDummy@M@@PEAM@Z 0x141187220 ; unique
+// MS2-PIN: ?GetAt@?$CAtlList@V?$MS2Ptr@VCAdditionalEffectMeterData@@@@V?$CElementTraits@V?$MS2Ptr@VCAdditionalEffectMeterData@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCAdditionalEffectMeterData@@@@PEAU__POSITION@@@Z 0x141187260 ; unique
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEBAIXZ 0x1411876d0 ; unique
+// MS2-PIN: ?GetHeadPosition@?$CAtlList@V?$MS2Ptr@VCAdditionalEffectMeterData@@@@V?$CElementTraits@V?$MS2Ptr@VCAdditionalEffectMeterData@@@@@ATL@@@ATL@@QEBAPEAU__POSITION@@XZ 0x1411876f0 ; unique
+// MS2-PIN: ?GetNext@?$CAtlList@V?$MS2Ptr@VCDamageMeterData@@@@V?$CElementTraits@V?$MS2Ptr@VCDamageMeterData@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCDamageMeterData@@@@AEAPEAU__POSITION@@@Z 0x141187790 ; unique
+// MS2-PIN: ?GetNode@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@AEBAPEAVCNode@12@PEB_WAEAI1AEAPEAV312@@Z 0x141187860 ; unique
+// MS2-PIN: ?GetValueAt@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAAEAHPEAU__POSITION@@@Z 0x141187b30 ; order
+// MS2-PIN: ?GetValueAt@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSkillMeterData@@@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCSkillMeterData@@@@@2@@ATL@@QEAAAEAV?$MS2Ptr@VCSkillMeterData@@@@PEAU__POSITION@@@Z 0x141187ba0 ; order
+// MS2-PIN: ?InitHashTable@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAA_NI_N@Z 0x141187c10 ; unique
+// MS2-PIN: ?IsLocked@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@AEBA_NXZ 0x141187e80 ; unique
+// MS2-PIN: ?Lookup@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAPEAVCPair@12@PEB_W@Z 0x141187ee0 ; unique
+// MS2-PIN: ?NewNode@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@PEB_WII@Z 0x141188290 ; unique
+// MS2-PIN: ?PickSize@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@AEBAI_K@Z 0x1411886b0 ; unique
+// MS2-PIN: ?Rehash@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAXI@Z 0x141188890 ; unique
+// MS2-PIN: ?RemoveAll@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAXXZ 0x141189070 ; unique
+// MS2-PIN: ?RemoveAll@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSkillMeterData@@@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCSkillMeterData@@@@@2@@ATL@@QEAAXXZ 0x141189180 ; unique
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAXPEAU__POSITION@@@Z 0x141189290 ; unique
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSkillMeterData@@@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCSkillMeterData@@@@@2@@ATL@@QEAAXPEAU__POSITION@@@Z 0x141189380 ; unique
+// MS2-PIN: ?RemoveNode@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@AEAAXPEAVCNode@12@0@Z 0x141189470 ; unique
+// MS2-PIN: ?RemoveNode@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSkillMeterData@@@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCSkillMeterData@@@@@2@@ATL@@AEAAXPEAVCNode@12@0@Z 0x141189530 ; unique
+// MS2-PIN: ?SetAt@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAPEAU__POSITION@@PEB_WH@Z 0x1411895f0 ; unique
+// MS2-PIN: ?SetAt@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSkillMeterData@@@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCSkillMeterData@@@@@2@@ATL@@QEAAPEAU__POSITION@@PEB_WAEBV?$MS2Ptr@VCSkillMeterData@@@@@Z 0x141189680 ; unique
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAXMMM_N@Z 0x141189730 ; prop
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSkillMeterData@@@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCSkillMeterData@@@@@2@@ATL@@QEAAXMMM_N@Z 0x1411897e0 ; prop
+// MS2-PIN: ?SetValueAt@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAXPEAU__POSITION@@H@Z 0x141189890 ; unique
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@AEAAXXZ 0x1411898d0 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIM@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIM@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@I@2@XZ 0x14118a6b0 ; unique
+// MS2-PIN: ?ReleaseImpl@?$TPtrValue@M@@AEAAXPEAX@Z 0x14118aae0 ; unique
+// MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142cac950 ; probe
+// MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142cac970 ; probe
+// MS2-PIN: ??__Fs_strLog@?1??GetDamageLog@Aggregation@CMeterRecordData@@QEAAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ@YAXXZ 0x142cac990 ; unique
+// MS2-PIN: ??__Fs_strLog@?1??GetEffectLog@Aggregation@CMeterRecordData@@QEAAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ@YAXXZ 0x142cac9b0 ; unique
+// MS2-PIN: ??__Fs_str@?1??GetItemText@@YAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEAVCItem@@@Z@YAXXZ 0x142cac9d0 ; unique
+// MS2-PIN: ??__Fs_str@?1??FUN_141181540@@YAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ@YAXXZ 0x142cac9f0 ; probe
+// MS2-PIN: ??__Fs_strReport@?1??GetDotReport@Aggregation@CMeterRecordData@@QEAAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ@YAXXZ 0x142caca30 ; probe
+// MS2-PIN: ??__Fs_strReport@?1??GetSkillReport@Aggregation@CMeterRecordData@@QEAAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ@YAXXZ 0x142caca50 ; probe
+// MS2-PINS-END tplpin
 // CDPSDialog::_GetBaseClass (IMPLEMENT_DYNAMIC) is 0x141178340 (moved here from ?\depthoffieldmanager.cpp's range).
 // MS2-PIN: ?_GetBaseClass@CDPSDialog@@KAPEAUCRuntimeClass@@XZ 0x141178340
+// The TSingleton<CDPSDialog> base vftable has no RTTI entry; the ctor (0x141178390) stores it at +0x138.
+// MS2-PIN: ??_7CDPSDialog@@6B?$TSingleton@VCDPSDialog@@@@@ 0x142eb5a80
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\dpsmetersystem.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <process.h>
@@ -114,6 +187,7 @@ static CStringW GetAttributeName(int nAttribute)
     default: return CStringW(L"");
     }
 }
+MS2_REPLACE(0x1411821C0, GetAttributeName, 406, 0x0CD267F1);
 
 // @0x141182380
 static CStringW GetGradeName(int nGrade)
@@ -132,6 +206,7 @@ static CStringW GetGradeName(int nGrade)
     default: return CStringW(L"");
     }
 }
+MS2_REPLACE(0x141182380, GetGradeName, 445, 0x7C22883A);
 
 // The key of a skill level in the per-skill maps ("<id>_<level>").
 // @0x141182570
@@ -141,6 +216,7 @@ static CStringW MakeSkillKey(unsigned nSkillId, unsigned short nLevel)
     str.Format(L"%d_%d", nSkillId, nLevel);
     return str;
 }
+MS2_REPLACE(0x141182570, MakeSkillKey, 127, 0xF9886AD1);
 
 // ---- CDPSDialog ----
 
@@ -170,6 +246,7 @@ BOOL CDPSDialog::OnInitDialog()
     }
     return bRet != 0;
 }
+MS2_REPLACE_METHOD(0x1411784D0, CDPSDialog, OnInitDialog, 297, 0xC56A997A);
 
 // @0x141178600
 void CDPSDialog::DoDataExchange(CDataExchange* pDX)
@@ -178,6 +255,7 @@ void CDPSDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, 0x4d0, m_editText);
     DDX_Control(pDX, 0x406, m_btnSave);
 }
+MS2_REPLACE_METHOD(0x141178600, CDPSDialog, DoDataExchange, 92, 0x14BD945B);
 
 BEGIN_MESSAGE_MAP(CDPSDialog, CDialog)
     ON_WM_WINDOWPOSCHANGING()
@@ -191,11 +269,13 @@ void CDPSDialog::OnWindowPosChanging(WINDOWPOS* lpwndpos)
 {
     CToolBaseDialog::OnWindowPosChanging(lpwndpos);
 }
+MS2_REPLACE_METHOD(0x1411786A0, CDPSDialog, OnWindowPosChanging, 34, 0x0E43BB4A);
 
 // @0x1411786d0
 void CDPSDialog::OnEnChangeText()
 {
 }
+MS2_REPLACE_METHOD(0x1411786D0, CDPSDialog, OnEnChangeText, 6, 0xA9AF6E37);
 
 // @0x1411786e0
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -209,6 +289,7 @@ void CDPSDialog::OnSizing(UINT fwSide, LPRECT pRect)
     m_btnSave.GetClientRect(&rcButton);
     m_btnSave.MoveWindow(10, rcText.bottom + 0x14, rcText.right + 5, 0x32, 1);
 }
+MS2_REPLACE_METHOD(0x1411786E0, CDPSDialog, OnSizing, 319, 0xD572249B);
 
 // @0x141178830
 void CDPSDialog::OnBnClickedSave()
@@ -216,6 +297,7 @@ void CDPSDialog::OnBnClickedSave()
     FUN_14109a6f0()->Flush();
     m_btnSave.EnableWindow(0);
 }
+MS2_REPLACE_METHOD(0x141178830, CDPSDialog, OnBnClickedSave, 48, 0x682FA97F);
 
 // @0x141178870
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -243,6 +325,7 @@ void CDPSDialog::Refresh()
         }
     }
 }
+MS2_REPLACE_METHOD(0x141178870, CDPSDialog, Refresh, 359, 0xB4C07349);
 
 // @0x1411789e0
 void CDPSDialog::OnStop(unsigned nTime)
@@ -255,6 +338,7 @@ void CDPSDialog::OnStop(unsigned nTime)
         m_editText.SetWindowText(FUN_1401d4330(strSummary, 0));
     }
 }
+MS2_REPLACE_METHOD(0x1411789E0, CDPSDialog, OnStop, 198, 0xBF5348DC);
 
 // ---- CMeterRecordData::Aggregation ----
 
@@ -288,6 +372,7 @@ void CMeterRecordData::Aggregation::AddDamage(MS2Ptr<CDamageMeterData> spData)
             m_dotRates[spData->m_nSkillId] = (float)(m_dotRates[spData->m_nSkillId] + spData->m_dRate);
     }
 }
+MS2_REPLACE_METHOD(0x141178DE0, CMeterRecordData::Aggregation, AddDamage, 694, 0x36BB5F74);
 
 // The use count and the per-skill sums of a damage list; one row per skill level.
 static void SumSkills(ATL::CAtlList<MS2Ptr<CDamageMeterData> >& list,
@@ -366,6 +451,7 @@ const CStringW& CMeterRecordData::Aggregation::GetSkillReport()
     }
     return s_strReport;
 }
+MS2_REPLACE_METHOD(0x1411790A0, CMeterRecordData::Aggregation, GetSkillReport, 2579, 0xBF2B6765);
 
 // @0x141179ac0
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -389,6 +475,7 @@ const CStringW& CMeterRecordData::Aggregation::GetDamageLog()
     }
     return s_strLog;
 }
+MS2_REPLACE_METHOD(0x141179AC0, CMeterRecordData::Aggregation, GetDamageLog, 1015, 0xBDE024CB);
 
 // @0x141179ec0
 // MS2-FUNCTIONAL: written from the decompile (the list loop is shared with GetSkillReport through SumSkills)
@@ -418,6 +505,7 @@ const CStringW& CMeterRecordData::Aggregation::GetDotReport()
     }
     return s_strReport;
 }
+MS2_REPLACE_METHOD(0x141179EC0, CMeterRecordData::Aggregation, GetDotReport, 2694, 0xE8292B5D);
 
 // @0x14117a950
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -440,6 +528,7 @@ const CStringW& CMeterRecordData::Aggregation::GetEffectLog()
     }
     return s_strLog;
 }
+MS2_REPLACE_METHOD(0x14117A950, CMeterRecordData::Aggregation, GetEffectLog, 885, 0xA136DC5E);
 
 // ---- CDPSMeterSystem ----
 
@@ -490,6 +579,7 @@ void CDPSMeterSystem::StartThread()
     if (!PathIsDirectoryW(m_szDir))
         CreateDirectoryW(m_szDir, NULL);
 }
+MS2_REPLACE_METHOD(0x14117AE30, CDPSMeterSystem, StartThread, 571, 0xF2C5B042);
 
 // @0x14117b080
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -505,6 +595,7 @@ void CDPSMeterSystem::StopThread()
     CloseHandle(m_hThread);
     m_hThread = INVALID_HANDLE_VALUE;
 }
+MS2_REPLACE_METHOD(0x14117B080, CDPSMeterSystem, StopThread, 152, 0xB6845AB6);
 
 // @0x14117b120
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -514,6 +605,7 @@ unsigned __stdcall CDPSMeterSystem::ThreadEntry(void* ptr)
     static_cast<CDPSMeterSystem*>(ptr)->ThreadProc();
     return 0;
 }
+MS2_REPLACE(0x14117B120, CDPSMeterSystem::ThreadEntry, 70, 0x8338A783);
 
 // Writes one text of a finished record to <dir>\<name><suffix>.
 static void WriteRecordFile(wchar_t* szFile, const wchar_t* szDir, const wchar_t* pszName, const CStringW& strSuffix,
@@ -599,6 +691,7 @@ unsigned CDPSMeterSystem::ThreadProc()
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x14117B170, CDPSMeterSystem, ThreadProc, 5330, 0x0A23EAE6);
 
 // @0x14117c650
 int CDPSMeterSystem::StartRecord(unsigned nTime)
@@ -624,6 +717,7 @@ int CDPSMeterSystem::StartRecord(unsigned nTime)
     }
     return m_bRecording;
 }
+MS2_REPLACE_METHOD(0x14117C650, CDPSMeterSystem, StartRecord, 350, 0xE8032260);
 
 // @0x14117c7c0
 int CDPSMeterSystem::StopRecord(unsigned nTime)
@@ -645,6 +739,7 @@ int CDPSMeterSystem::StopRecord(unsigned nTime)
     }
     return m_bRecording;
 }
+MS2_REPLACE_METHOD(0x14117C7C0, CDPSMeterSystem, StopRecord, 230, 0x7E6E05B7);
 
 // @0x14117c8b0
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -652,6 +747,7 @@ int CDPSMeterSystem::IsRecording()
 {
     return (m_bRecording != 0 && m_spRecord.get() != 0) ? 1 : 0;
 }
+MS2_REPLACE_METHOD(0x14117C8B0, CDPSMeterSystem, IsRecording, 92, 0xC5BF3CB4);
 
 // @0x14117c920
 int CDPSMeterSystem::Reset()
@@ -668,6 +764,7 @@ int CDPSMeterSystem::Reset()
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x14117C920, CDPSMeterSystem, Reset, 136, 0xAD8B1043);
 
 // @0x14117c9b0
 void CDPSMeterSystem::Flush()
@@ -677,6 +774,7 @@ void CDPSMeterSystem::Flush()
     m_bFlush = 1;
     SetEvent(m_hEvent);
 }
+MS2_REPLACE_METHOD(0x14117C9B0, CDPSMeterSystem, Flush, 57, 0x04E998D2);
 
 // @0x14117c9f0
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -713,6 +811,7 @@ void CDPSMeterSystem::Accumulate(CMeterRecordData::Aggregation* pAgg, MS2Ptr<CDa
     if (spData->m_nKind == 1)
         pAgg->m_nDot += spData->m_nDamage;
 }
+MS2_REPLACE_METHOD(0x14117C9F0, CDPSMeterSystem, Accumulate, 699, 0x10746228);
 
 // @0x14117ccc0
 int CDPSMeterSystem::AddDamage(int nSide, int nCasterId, int nTargetId, int nKind, int nAttribute, __int64 nTagId,
@@ -753,6 +852,7 @@ int CDPSMeterSystem::AddDamage(int nSide, int nCasterId, int nTargetId, int nKin
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x14117CCC0, CDPSMeterSystem, AddDamage, 966, 0x244AD59E);
 
 // @0x14117d090
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -805,6 +905,7 @@ int CDPSMeterSystem::AddStat(int nSide, int nList, __int64 nValue, __int64 nEffe
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x14117D090, CDPSMeterSystem, AddStat, 957, 0x18379577);
 
 // @0x14117d460
 int CDPSMeterSystem::AddEffect(CStringW strEvent, int nSide, int nCasterId, int nTargetId, int nEffectId, short nLevel)
@@ -835,6 +936,7 @@ int CDPSMeterSystem::AddEffect(CStringW strEvent, int nSide, int nCasterId, int 
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x14117D460, CDPSMeterSystem, AddEffect, 735, 0xC9DC9D73);
 
 // @0x14117d750
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -871,6 +973,7 @@ void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
             spRecord->m_nSkillId, spRecord->m_nLevel, spRecord->m_types[i], nDamage, fRate);
     }
 }
+MS2_REPLACE_METHOD(0x14117D750, CDPSMeterSystem, OnDamage, 1154, 0xC509C0DD);
 
 // @0x14117dbe0
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -908,6 +1011,7 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
     AddDamage(bTarget, nAttackerId, spRecord->m_nCasterId, 1, spBuff->FUN_14096d810()->m_dotDamage.m_eElement,
         (unsigned)spRecord->m_nEffectLevel, nEffectId, nLevel, nGrade, nDamage, fRate);
 }
+MS2_REPLACE_METHOD(0x14117DBE0, CDPSMeterSystem, OnDotDamage, 1093, 0xE87D6C3E);
 
 // @0x14117e030
 // MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
@@ -944,6 +1048,7 @@ void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
             spRecord->m_nSkillId, spRecord->m_nLevel, spRecord->m_types[i], nDamage, fRate);
     }
 }
+MS2_REPLACE_METHOD(0x14117E030, CDPSMeterSystem, OnSplashDamage, 1154, 0x5CD12C2E);
 
 // @0x14117e4c0
 void CDPSMeterSystem::AddMeso(__int64 nMeso)
@@ -958,6 +1063,7 @@ void CDPSMeterSystem::AddMeso(__int64 nMeso)
         m_spRecord->m_nMeso += nMeso;
     }
 }
+MS2_REPLACE_METHOD(0x14117E4C0, CDPSMeterSystem, AddMeso, 146, 0xEE688D0D);
 
 // @0x14117e560
 void CDPSMeterSystem::AddExp(__int64 nExp)
@@ -972,6 +1078,7 @@ void CDPSMeterSystem::AddExp(__int64 nExp)
         m_spRecord->m_nExp += nExp;
     }
 }
+MS2_REPLACE_METHOD(0x14117E560, CDPSMeterSystem, AddExp, 146, 0x9380F275);
 
 // @0x14117e600
 void CDPSMeterSystem::AddSkillUse()
@@ -986,6 +1093,7 @@ void CDPSMeterSystem::AddSkillUse()
         m_spRecord->m_nSkillUse++;
     }
 }
+MS2_REPLACE_METHOD(0x14117E600, CDPSMeterSystem, AddSkillUse, 136, 0x660F2F66);
 
 // @0x14117e690
 void CDPSMeterSystem::AddHealTarget()
@@ -1000,6 +1108,7 @@ void CDPSMeterSystem::AddHealTarget()
         m_spRecord->m_nHealTargets++;
     }
 }
+MS2_REPLACE_METHOD(0x14117E690, CDPSMeterSystem, AddHealTarget, 136, 0x8072AEF3);
 
 // @0x14117e720
 void CDPSMeterSystem::AddHealedEffective(__int64 nValue)
@@ -1014,6 +1123,7 @@ void CDPSMeterSystem::AddHealedEffective(__int64 nValue)
         m_spRecord->m_nHealedEffective += nValue;
     }
 }
+MS2_REPLACE_METHOD(0x14117E720, CDPSMeterSystem, AddHealedEffective, 146, 0x044F88FF);
 
 // @0x14117e7c0
 void CDPSMeterSystem::AddHealEffective(__int64 nValue)
@@ -1028,6 +1138,7 @@ void CDPSMeterSystem::AddHealEffective(__int64 nValue)
         m_spRecord->m_nHealEffective += nValue;
     }
 }
+MS2_REPLACE_METHOD(0x14117E7C0, CDPSMeterSystem, AddHealEffective, 146, 0x8EA3077A);
 
 // @0x14117e860
 void CDPSMeterSystem::SetCombat(int bCombat)
@@ -1054,6 +1165,7 @@ void CDPSMeterSystem::SetCombat(int bCombat)
         m_bCombat = bCombat;
     }
 }
+MS2_REPLACE_METHOD(0x14117E860, CDPSMeterSystem, SetCombat, 245, 0x8E5FAE11);
 
 // @0x14117e960
 void CDPSMeterSystem::GetSummary(CStringW& str)
@@ -1075,6 +1187,7 @@ void CDPSMeterSystem::GetSummary(CStringW& str)
         str = spRecord->m_strSummary;
     }
 }
+MS2_REPLACE_METHOD(0x14117E960, CDPSMeterSystem, GetSummary, 285, 0x1832DDFF);
 
 // A stat value as text (IsStatKindTwo false: a whole number).
 // @0x141182600
@@ -1084,6 +1197,7 @@ static CStringW GetStatValueString(int nStat, int nValue)
     CStringW str = StringFormat((const wchar_t*)GetStatValueText(nStat), nValue);
     return str;
 }
+MS2_REPLACE(0x141182600, GetStatValueString, 153, 0xA6B66BA4);
 
 // A stat value as text (IsStatKindTwo true: tenths).
 // @0x1411826a0
@@ -1094,6 +1208,7 @@ static CStringW GetStatRateString(int nStat, int nValue)
     CStringW str = StringFormat((const wchar_t*)GetStatValueText(nStat), fValue);
     return str;
 }
+MS2_REPLACE(0x1411826A0, GetStatRateString, 173, 0xDBADBA8D);
 
 // One line of the character sheet: the item id and name, its additional effects and every option of its status.
 // @0x141182760
@@ -1139,6 +1254,7 @@ static const CStringW& GetItemText(CItem* pItem)
     }
     return s_str;
 }
+MS2_REPLACE(0x141182760, GetItemText, 1471, 0xCB4EE308);
 
 // The summary text (and with bCsv the csv line) of the running record at nTime.
 // @0x14117ea90
@@ -1319,7 +1435,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
             strCsv.AppendFormat(L"%d, %d", spRecord->m_nSpentSp, spRecord->m_nSpentEp);
 
         strText.AppendFormat(L"=== 대미지 스킬 정보 ===\r\n");
-        for (std::pair<const int, float> kv : spRecord->m_attack.m_skillRates)
+        for (std::pair<const unsigned, float> kv : spRecord->m_attack.m_skillRates)
         {
             CStringW strName = FUN_1401a9d70()->FUN_141811980(4, kv.first);
             strText.AppendFormat(L"%s(%d) : %.3f\r\n", (const wchar_t*)strName, kv.first, (double)kv.second);
@@ -1327,7 +1443,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
                 strCsv.AppendFormat(L"%s,%d,%.3f", (const wchar_t*)strName, kv.first, (double)kv.second);
         }
         strText.AppendFormat(L"=== 대미지 애디셔널 정보 ===\r\n");
-        for (std::pair<const int, float> kv : spRecord->m_attack.m_dotRates)
+        for (std::pair<const unsigned, float> kv : spRecord->m_attack.m_dotRates)
         {
             CStringW strName = FUN_1401a9d70()->FUN_141812290(kv.first, 1, "name");
             strText.AppendFormat(L"%s(%d) : %.3f\r\n", (const wchar_t*)strName, kv.first, (double)kv.second);
@@ -1336,6 +1452,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
         }
     }
 }
+MS2_REPLACE_METHOD(0x14117EA90, CDPSMeterSystem, FUN_14117ea90, 10915, 0x1CF28555);
 
 // The character sheet of the own player (the "0_캐릭터정보" file): name, job, level and the worn items of both layers.
 // @0x141181540
@@ -1385,6 +1502,7 @@ const CStringW& FUN_141181540()
     }
     return s_str;
 }
+MS2_REPLACE(0x141181540, FUN_141181540, 1175, 0x80BAE760);
 
 // The mean weapon attack of the two hands (slots 4 and 5); the plain stat value when a hand is empty.
 // @0x1411819e0
@@ -1414,6 +1532,7 @@ __int64 CDPSMeterSystem::GetAverageWeaponAttack()
     }
     return (__int64)((float)(nMin + nMax) * 0.5f);
 }
+MS2_REPLACE_METHOD(0x1411819E0, CDPSMeterSystem, GetAverageWeaponAttack, 834, 0xE6264358);
 
 // The text of a basic stat (bPercent: as a percent string 0x98e).
 // @0x141181d30
@@ -1443,6 +1562,7 @@ CStringW CDPSMeterSystem::GetStatText(int nStat, int bPercent)
         str = StringFormat(L"{0}", (__int64)fValue);
     return str;
 }
+MS2_REPLACE_METHOD(0x141181D30, CDPSMeterSystem, GetStatText, 624, 0xCDC470FC);
 
 // The text of a bonus stat of the worn items (bPercent: a rate, as a percent string 0x98e).
 // @0x141181fb0
@@ -1463,6 +1583,7 @@ CStringW CDPSMeterSystem::GetBonusText(int nStat, int bPercent)
         str = StringFormat(L"{0:0.1f}", fValue);
     return str;
 }
+MS2_REPLACE_METHOD(0x141181FB0, CDPSMeterSystem, GetBonusText, 519, 0xCFE6569A);
 
 // ---- the record types ----
 

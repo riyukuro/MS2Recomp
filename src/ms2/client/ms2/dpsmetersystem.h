@@ -119,8 +119,8 @@ public:
 
         ATL::CAtlList<MS2Ptr<CDamageMeterData> > m_damages;            // +0x00 skill hits
         ATL::CAtlList<MS2Ptr<CDamageMeterData> > m_dots;               // +0x30 damage over time
-        std::map<int, float> m_skillRates;                             // +0x60 DamageRate by skill id
-        std::map<int, float> m_dotRates;                               // +0x70 DamageRate by effect id
+        std::map<unsigned, float> m_skillRates;                             // +0x60 DamageRate by skill id
+        std::map<unsigned, float> m_dotRates;                               // +0x70 DamageRate by effect id
         ATL::CAtlList<MS2Ptr<CStatMeterData> > m_heals;                // +0x80
         ATL::CAtlList<MS2Ptr<CStatMeterData> > m_spirits;              // +0xb0
         ATL::CAtlList<MS2Ptr<CAdditionalEffectMeterData> > m_effects;  // +0xe0
