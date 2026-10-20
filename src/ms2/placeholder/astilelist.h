@@ -18,5 +18,6 @@ public:
     void FUN_1422dce60(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);   // ASCoreList: the selection-change callback (uidungeonroomdialog)
     void FUN_1422dd1d0();                                               // ASCoreList: clear
     void FUN_1422dd230(const class ASObj& item);                        // ASCoreList: append an entry (uitriggereditordialog.cpp)
+    MS2Ptr<class ASDataProvider> FUN_1422dcd80();                       // ASCoreList: the data provider (uibeautyshopdevdialog.cpp)
 };
 MS2_CHECK_SIZE(ASTileList, 0x88);

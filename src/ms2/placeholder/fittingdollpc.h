@@ -2,6 +2,9 @@
 #include "ms2/client/ms2/pcbase.h"
 #include <NiFixedString.h>
 #include "ms2/client/ms2/costumemanager.h"   // MS2Ptr<CostumeManager> at PC+0x1130
+#include "ms2/placeholder/pcgemequip.h"     // PCGemEquip at PC+0x1078
+#include <NiColor.h>
+#include <set>
 class CItem;
 class NiAVObject;
 class NiColor;
@@ -27,6 +30,8 @@ class CSetItemManager;   // csetitemmanager.h
 class AdditionalCli;
 struct Unk_PCEquipSet
 {
+    Unk_PCEquipSet(PC* pOwner);                             // 0x1411dfe00
+    ~Unk_PCEquipSet();                                      // 0x1411e06e0
     MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nKind, int n);    // a worn item of the slot (customize.cpp)
     void FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& out, int nKind);   // the worn items of a kind (customize.cpp)
     void FUN_1411e5c10(); void FUN_1411e6ab0(); void FUN_1411e75f0();   // refresh the look (customize.cpp)
@@ -38,14 +43,45 @@ struct Unk_PCEquipSet
     void FUN_1411e46b0(MS2Ptr<CEquipItem> spItem);          // an item's models were loaded (by value; equipitem.cpp)
     void FUN_1411e4b30(MS2Ptr<CEquipItem> spItem);          // an item's models were dropped (by value; equipitem.cpp)
     void FUN_1411e7380();                                   // kind 0x12 items changed (equipitem.cpp)
+    int FUN_1411e09a0();                                    // the equipment is ready (uibeautyshopdevdialog.cpp)
+    void FUN_1411e89d0(int n);                              // battle stance changed (PC::vfunc_66)
+    void FUN_1411e38e0(MS2Ptr<CItem> spItem);               // equip (quick-equip config; PC::vfunc_127)
+    void FUN_1411e3600(MS2Ptr<CItem> spItem);               // equip (PC::vfunc_127)
+    void FUN_1411e3b10(MS2Ptr<CItem> spItem, int n);        // unequip (quick-equip config; PC::vfunc_128)
+    void FUN_1411e3960(MS2Ptr<CItem> spItem, int n);        // unequip (PC::vfunc_128)
+    void FUN_1411e37f0(MS2Ptr<CItem> spItem, __int64 n);
+    void FUN_1411e3bd0(MS2Ptr<CEquipItem> spItem, int n);
+    int FUN_1411e0c30(int nItemId);                         // the item id is worn (uibeautyshopdevdialog.cpp)
     MS2Ptr<CEquipmentSlotLayerInfo> GetTitle();            // 0x140d29440 the codi (outfit) tab period (defined in unit_140d1ae30)
     unsigned char unknown0[0x188];
     MS2Ptr<CEquipmentSlotLayerInfo> m_spTitle;              // +0x188 (new CEquipmentSlotLayerInfo(2))
-    unsigned char unknown198[0x50];
 };   // FUN_1411e1780 (itemgem.cpp): the worn item of an equip slot   // the PC's equipment holder (+0xde0); methods FUN_1411e3de0/e3000/e22c0
 class Unk_PCD88;      // +0xd88 target (ClonePC::vfunc_12 releases it via FUN_140a35900)
 class Unk_PCArg126;   // MS2Ptr<T> by value (get 0x1409f7930, ICF generic dtor 0x1401bfde0)
 class Unk_HsInfo;     // MS2Ptr<T> by value (defined by uihideandseekresultdialog.cpp)
+// PC member types (w539). Complete types only in pc.cpp; the MS2Ptr members need only declarations.
+class Unk_PCStance;   // +0xd70 the weapon stance (create 0x141b74b50, check 0x141b74c30)
+class Unk_PCLinkFD8;  // +0xfd8 (create 0x141993100, release 0x141993180)
+class CGuideObject;   // +0x1228 [3] the cube guide objects (cubecraft_1.h; FUN_1416623d0 sets them)
+class JobSystemCli;
+class CubeItemInfo;
+class CSkillTierOptionManager;
+class CStatPointManager;
+class CoupleEffectSystem;
+class WaterGunBattleInfo;
+class CTailEffectObject;
+class CRandomTargetEffect;
+namespace HideAndSeek { class Info; }
+// PC +0xf78: four item handles (ctor 0x140c86000 = vector ctor + FUN_140c86060; implicit dtor 0x141666a60).
+// The cooldown methods are Unk_PCItemCooldowns' (scenestategame.cpp); FUN_1416561c0 hands this object out as one.
+struct Unk_PCItemSlots4
+{
+    Unk_PCItemSlots4();                                     // 0x140c86000
+    void FUN_140c86060();
+    MS2Ptr<CItem> m_aItems[4];
+};
+MS2_CHECK_SIZE(Unk_PCItemSlots4, 0x40);
+MS2_CHECK_SIZE(Unk_PCEquipSet, 0x198);   // ctor 0x1411dfe00, dtor 0x1411e06e0 (PC +0xde0..+0xf78)
 // The player's interact mode (PC +0x1240): while active it picks the kind of object to interact with (actionkeyobject.cpp).
 // Defined here because PC::FUN_140967420 copies the MS2Ptr inline.
 class Unk_PCInteractMode : public CPtred
@@ -100,6 +136,8 @@ public:
     virtual int vfunc_78();                                 // 78 0x1416578f0
     virtual MS2Ptr<Unk_PCBaseComp_a68> vfunc_81();          // 81 0x141656f80
     virtual MS2Ptr<Unk_PCBaseComp_a98> vfunc_84();          // 84 0x1416572b0
+    virtual MS2Ptr<Unk_PCBaseComp_a88> vfunc_83();          // 83 0x141657670
+    virtual MS2Ptr<Unk_PCBaseComp_ab8> vfunc_86();          // 86 0x141657470
     virtual void vfunc_49();                                // 49 0x141660e00
     virtual int vfunc_64();                                 // 64 0x141654840 (mypc vftable, w97)
     virtual MS2Ptr<Unk_PCBaseComp_a78> vfunc_82();          // 82 0x141657100
@@ -131,6 +169,31 @@ public:
     virtual void vfunc_144();                               // 144 0x141660f80
     virtual int vfunc_145();                                // 145 0x141661be0: return 1 (ClonePC: 0)
     virtual bool vfunc_146();                               // 146 0x141662e50
+    // PC TU members (w539)
+    void FUN_141653740(int nTargetId, void* p, int nKind, int nFlag);   // an effect event of a target
+    JobSystemCli* FUN_1416546d0();                          // the job system
+    int FUN_141654730();
+    int FUN_141654760();
+    void FUN_141654790();                                   // the job changed (reload, notify)
+    MS2Ptr<CEquipItem> FUN_141655c90(int nSlot);            // the worn item of a slot, kind 0
+    MS2Ptr<CEquipItem> FUN_141655cf0(int nSlot);            // kind 1
+    MS2Ptr<CEquipItem> FUN_141655d50(int nSlot);            // kind 5
+    MS2Ptr<CEquipItem> FUN_141655db0(int nSlot);            // kind 4
+    void FUN_141656580(MS2Ptr<CItem> spItem, __int64 n);
+    void FUN_1416565f0(MS2Ptr<CItem> spItem, int n);
+    void FUN_141656660(MS2Ptr<CEquipItem> spItem, int n);
+    void FUN_1416566d0(int n);                              // +0xd68
+    int FUN_1416566f0();                                    // +0xd68
+    void FUN_141656710();                                   // refresh the stance and the buffs after an equip change
+    int FUN_141656750();                                    // the equipment is ready
+    int FUN_141653f00();                                    // rebuild the weapon stance from the worn weapons (changed: 1)
+    __int64 FUN_141656ad0();                                // +0xdc0
+    int FUN_14165ef30();                                    // this is the local player
+    MS2Ptr<Unk_PCLinkFD8> FUN_141657730();                  // the +0xfd8 record, created on demand (none while busy)
+    int FUN_141661970();                                    // busy
+    CStringW& FUN_141656be0();                              // +0xdc8
+    CStringA& FUN_141656c50();                              // +0xdd0
+    CStringW& FUN_141656d90();                              // +0x1030 the displayed name
     // non-virtual members called by scenestategame.cpp (w86)
     MS2Ptr<CItem> FUN_141655b80(__int64 nItemUid);          // 0x141655b80 an owned item by uid
     MS2Ptr<CEquipItem> FUN_141655e10(int nSlot);            // 0x141655e10 the worn item of a slot (customize.cpp)
@@ -228,34 +291,120 @@ public:
     void FUN_141bfaec0(bool bFaded) { m_b1204 = bFaded; }    // (COMDAT in worldservice.cpp)
     // @0x141bfed80
     int FUN_141bfed80() { return m_n1200; }                 // fade delay in ms (COMDAT in worldservice.cpp)
-    // 0xd40..0x12e0. The MS2Ptr at +0xfc8 (an action timer; AvatarPC::vfunc_142 pokes it) is exposed, the rest is opaque.
-    // ClonePC (clonepc.cpp) uses the list at +0xd48, the MS2Ptr at +0xd88 and the equip holder at +0xde0.
-    unsigned char unknownD40[8];
-    unsigned char m_kListD48[0x40];                         // +0xd48 (reset by FUN_1408f3a80)
+    // 0xd40..0x12e0, from the ctor 0x14164dfd0 / dtor 0x141650b10 member sequences (w539; v2525 PC.h agrees). The MS2Ptr
+    // handle types are the exe's per-type instantiations (their COMDATs live in the PC unit's tail).
+    bool m_bD40;                                            // +0xd40 (ctor: true)
+    ATL::CAtlArray<MS2Ptr<CItem> > m_kListD48;              // +0xd48 owned items (FUN_141653d10 adds; MyPC/PortraitPC read)
+    int m_nD68;                                             // +0xd68 (FUN_1416566f0 / FUN_1416566d0)
+    MS2Ptr<Unk_PCStance> m_spStanceD70;                     // +0xd70 the weapon stance (FUN_141653f00 rebuilds it)
+    int m_nD80;                                             // +0xd80 (FUN_141663040)
     MS2Ptr<Unk_PCD88> m_spD88;                              // +0xd88
-    unsigned char unknownD98[0x48];
+    NiColor m_colorD98[2];                                  // +0xd98 (FUN_141659220 / FUN_1416591e0)
+    egf::EntityID m_entityDB0;                              // +0xdb0 (FUN_141658fc0)
+    __int64 m_nCharIdDB8;                                   // +0xdb8 (FUN_141656a50 / FUN_141656a80)
+    __int64 m_nAccountIdDC0;                                // +0xdc0 (FUN_141656aa0 / FUN_141656ad0)
+    CStringW m_strNameDC8;                                  // +0xdc8 (vfunc_129)
+    CStringA m_strDD0;                                      // +0xdd0 (vfunc_130)
+    int m_nGenderDD8;                                       // +0xdd8 (FUN_141658e40 / FUN_141658e60)
+    unsigned short m_nLevelDDC;                             // +0xddc the level (vfunc_131 / vfunc_78; ctor: 1)
     Unk_PCEquipSet m_kEquipDE0;                             // +0xde0 equip holder (FUN_1411e3de0)
+    Unk_PCItemSlots4 m_kItemsF78;                           // +0xf78 (FUN_1416561c0)
+    MS2Ptr<JobSystemCli> m_spJobFB8;                        // +0xfb8 (FUN_1416546d0)
     MS2Ptr<Unk_PCActionTimer> m_spFC8;                      // +0xfc8
-    unsigned char unknownFD8[0x21];
+    MS2Ptr<Unk_PCLinkFD8> m_spFD8;                          // +0xfd8 (FUN_141657730)
+    __int64 m_nFE8;                                         // +0xfe8 (FUN_141658e80 / FUN_141658eb0)
+    int m_nFF0;                                             // +0xff0
+    int m_nFF4;                                             // +0xff4
+    unsigned char m_nFF8;                                   // +0xff8 PC bang grade (FUN_141658ed0 / FUN_141658f10)
     unsigned char m_nFF9;                                   // +0xff9 PC bang bonus flags (FUN_141658f70)
-    unsigned char unknownFFA[0x26];
+    int m_nCubeModeFFC;                                     // +0xffc the cube craft mode (FUN_1416595b0 / FUN_1416595d0)
+    int m_n1000;                                            // +0x1000
+    MS2Ptr<CubeItemInfo> m_spCube1008;                      // +0x1008
+    int m_n1018;                                            // +0x1018
     class Unk_PCCubeCraft* m_pCubeCraft;                    // +0x1020 (FUN_141659700; cube craft mode only)
-    unsigned char unknown1028[0x30];
+    CStringA m_str1028;                                     // +0x1028 the profile image key (FUN_1416612e0)
+    CStringW m_strName1030;                                 // +0x1030 the displayed name (FUN_141661330)
+    int m_n1038;                                            // +0x1038 (FUN_14165f090)
+    MS2Ptr<CItem> m_spItem1040;                             // +0x1040 (FUN_14165f0b0 / FUN_14165f100)
+    int m_n1050;                                            // +0x1050 (FUN_14165f130 / FUN_14165f150; not set by the ctor)
+    int m_n1054;                                            // +0x1054
     int m_n1058;                                            // +0x1058 (non-zero: buffs never resist knock-back)
-    unsigned char unknown105c[0xa4];
+    int m_n105c;                                            // +0x105c
+    int m_n1060;                                            // +0x1060 an effect id (the dtor removes it)
+    int m_n1064;                                            // +0x1064
+    int m_n1068;                                            // +0x1068
+    int m_n106c;                                            // +0x106c
+    __int64 m_n1070;                                        // +0x1070 (not set by the ctor)
+    PCGemEquip m_kGemEquip1078;                             // +0x1078 (FUN_14165f460)
+    unsigned int m_n10e8;                                   // +0x10e8
+    int m_n10ec;                                            // +0x10ec
+    int m_n10f0;                                            // +0x10f0
+    int m_n10f4;                                            // +0x10f4 the title (FUN_141661c70)
+    short m_n10f8;                                          // +0x10f8
+    int m_n10fc;                                            // +0x10fc
     MS2Ptr<CSetItemManager> m_spSetItems;                   // +0x1100 the set item bonuses (FUN_1411f9310)
-    unsigned char unknown1110[0x20];
+    MS2Ptr<CSkillTierOptionManager> m_spSkillTier1110;      // +0x1110 (FUN_1409eee00)
+    MS2Ptr<CStatPointManager> m_spStatPoint1120;            // +0x1120
     MS2Ptr<CostumeManager> m_spCostume;                     // +0x1130 the costume sets (additionalcli.cpp)
-    unsigned char unknown1140[0x88];
+    __int64 m_n1140;                                        // +0x1140
+    int m_n1148;                                            // +0x1148
+    int m_n114c;                                            // +0x114c
+    unsigned int m_aMastery1150[12];                        // +0x1150 mastery exp (FUN_141662750)
+    float m_f1180;                                          // +0x1180 (ctor: 1.0)
+    int m_n1184;                                            // +0x1184
+    int m_n1188;                                            // +0x1188
+    __int64 m_n1190;                                        // +0x1190
+    int m_n1198;                                            // +0x1198
+    int m_n119c;                                            // +0x119c
+    int m_n11a0;                                            // +0x11a0
+    std::set<unsigned int> m_set11a8;                       // +0x11a8 ClonePC ids (the dtor detaches them)
+    MS2Ptr<CItem> m_spItem11b8;                             // +0x11b8
     int m_n11c8;                                            // +0x11c8 (FUN_14174a340)
-    unsigned char unknown11cc[0x34];
+    int m_n11cc;                                            // +0x11cc
+    int m_n11d0;                                            // +0x11d0
+    MS2Ptr<CoupleEffectSystem> m_spCouple11d8;              // +0x11d8
+    __int64 m_n11e8;                                        // +0x11e8
+    int m_n11f0;                                            // +0x11f0
+    int m_n11f4;                                            // +0x11f4
+    __int64 m_n11f8;                                        // +0x11f8
     int m_n1200;                                            // +0x1200 fade delay in ms (WorldService 0x141bd7390)
     unsigned char m_b1204;                                  // +0x1204 faded out (WorldService 0x141bd7390, set by 0x141bfaec0)
-    unsigned char unknown1205[0x3b];
-    MS2Ptr<Unk_PCInteractMode> m_spInteractMode;      // +0x1240 (actionkeyobject.cpp)
-    unsigned char unknown1250[0x90];
+    int m_n1208;                                            // +0x1208
+    short m_n120c;                                          // +0x120c
+    std::set<unsigned int> m_set1210;                       // +0x1210
+    int m_n1220;                                            // +0x1220
+    bool m_b1224;                                           // +0x1224 (FUN_1416642c0)
+    efd::SmartPointer<CGuideObject> m_spGuide1228[3];       // +0x1228 the cube guides (FUN_1416623d0)
+    MS2Ptr<Unk_PCInteractMode> m_spInteractMode;            // +0x1240 (a CPvPInfo; actionkeyobject.cpp)
+    MS2Ptr<HideAndSeek::Info> m_spHideAndSeek1250;          // +0x1250
+    MS2Ptr<WaterGunBattleInfo> m_spWaterGun1260;            // +0x1260
+    MS2Ptr<CTailEffectObject> m_spTailEffect1270;           // +0x1270
+    ATL::CAtlMap<int, MS2Ptr<CTailEffectObject> > m_mapTail1280;   // +0x1280 additional-effect tails
+    MS2Ptr<CRandomTargetEffect> m_spRandomTarget12c8;       // +0x12c8
+    efd::SmartPointer<NiAVObject> m_sp12d8;                 // +0x12d8 (init 0x14097eba0(p,0), as PCBase +0xbe8)
 };
 MS2_CHECK_OFFSET(PC, m_kListD48, 0xd48);
+MS2_CHECK_OFFSET(PC, m_spStanceD70, 0xd70);
+MS2_CHECK_OFFSET(PC, m_colorD98, 0xd98);
+MS2_CHECK_OFFSET(PC, m_strNameDC8, 0xdc8);
+MS2_CHECK_OFFSET(PC, m_kItemsF78, 0xf78);
+MS2_CHECK_OFFSET(PC, m_spJobFB8, 0xfb8);
+MS2_CHECK_OFFSET(PC, m_nFE8, 0xfe8);
+MS2_CHECK_OFFSET(PC, m_spCube1008, 0x1008);
+MS2_CHECK_OFFSET(PC, m_str1028, 0x1028);
+MS2_CHECK_OFFSET(PC, m_spItem1040, 0x1040);
+MS2_CHECK_OFFSET(PC, m_kGemEquip1078, 0x1078);
+MS2_CHECK_OFFSET(PC, m_n10e8, 0x10e8);
+MS2_CHECK_OFFSET(PC, m_n10fc, 0x10fc);
+MS2_CHECK_OFFSET(PC, m_aMastery1150, 0x1150);
+MS2_CHECK_OFFSET(PC, m_f1180, 0x1180);
+MS2_CHECK_OFFSET(PC, m_set11a8, 0x11a8);
+MS2_CHECK_OFFSET(PC, m_spCouple11d8, 0x11d8);
+MS2_CHECK_OFFSET(PC, m_set1210, 0x1210);
+MS2_CHECK_OFFSET(PC, m_spGuide1228, 0x1228);
+MS2_CHECK_OFFSET(PC, m_mapTail1280, 0x1280);
+MS2_CHECK_OFFSET(PC, m_spRandomTarget12c8, 0x12c8);
+MS2_CHECK_OFFSET(PC, m_sp12d8, 0x12d8);
 MS2_CHECK_OFFSET(PC, m_spD88, 0xd88);
 MS2_CHECK_OFFSET(PC, m_kEquipDE0, 0xde0);
 MS2_CHECK_OFFSET(PC, m_spFC8, 0xfc8);
