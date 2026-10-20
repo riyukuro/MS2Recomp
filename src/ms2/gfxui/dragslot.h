@@ -50,6 +50,10 @@ public:
     virtual void vfunc_9();                         // 9 0x1422c8dd0 {}
     CString FUN_1422c89f0();                        // 0x1422c89f0 a copy of m_strName
     Scaleform::GFx::Value& FUN_1422c8d40();         // 0x1422c8d40 &m_value18 (the slot's AS data)
+    void FUN_1422c8be0();                           // 0x1422c8be0 push the slot to its AS binding (DragSlot::vfunc_10)
+    void FUN_1422c8b50();                           // 0x1422c8b50 clear the AS binding (DragSlot::vfunc_11)
+    void FUN_1422c8cb0(const Scaleform::GFx::Value& v);   // 0x1422c8cb0 m_value18 = v; vfunc_9() unless v is null (notifybinding.cpp)
+    void FUN_1422c8d10(const Scaleform::GFx::Value& v);   // 0x1422c8d10 m_value38 = v (notifybinding.cpp)
 
 public:
     MS2_LAYOUT_FRIEND;
