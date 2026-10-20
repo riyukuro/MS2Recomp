@@ -5,6 +5,7 @@
 // MS2-RANGE: 0x1400d3440-0x1400d3940 .text$di
 // MS2-RANGE: 0x140d53ad0-0x140d6d8c0 .text$mn
 // MS2-RANGE: 0x142ca5250-0x142ca54a0 .text$yd
+// MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0PEAVCMeratMarketMan@@P80@EAAXPEAVNotifyObject@@@Z$0A@@?$pair@PEAVCMeratMarketMan@@P81@EAAXPEAVNotifyObject@@@Z@std@@QEAA@AEBQEAVCMeratMarketMan@@AEBQ82@EAAXPEAVNotifyObject@@@Z@Z 0x140d617e0 ; prop
 // MS2-PIN: ??$?0VCMeratMarketMan@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBQEAVCMeratMarketMan@@AEBQ81@EAAXPEAVNotifyObject@@@Z@Z 0x140d61820 ; prop
@@ -66,8 +67,13 @@
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_7?$TPtredDummy@V?$list@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$allocator@V?$MS2Ptr@VCMeratMarketProduct@@@@@std@@@std@@@@6B@ 0x142e2f7f8
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlArray@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$CElementTraits@V?$MS2Ptr@VCMeratMarketProduct@@@@@ATL@@@ATL@@@@6B@ 0x142e2f808
+// MS2-PIN: ??$Unk_MmGetDialog@VUIAdPushDialog@@@@YAPEAVUIAdPushDialog@@H@Z 0x140d61c00
+// MS2-PIN: ??0?$TPtrValue@V?$CAtlArray@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$CElementTraits@V?$MS2Ptr@VCMeratMarketProduct@@@@@ATL@@@ATL@@@@QEAA@AEBV0@@Z 0x140d64140
+// MS2-PIN: ??$Unk_MmGetDialog@VUIRandomCoupon@@@@YAPEAVUIRandomCoupon@@H@Z 0x140d61df0
+// MS2-PIN: ??$Unk_MmGetDialogOf@VUIBlueprintMarketDialog@@@@YAPEAVUIBlueprintMarketDialog@@XZ 0x140d61ca0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\meratmarketman.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include <sstream>
 #include "ms2/placeholder/cmeratmarketman.h"
 #include "ms2/commonfiles/meratmarketbasketinfo.h"
 #include "ms2/commonfiles/ugcdef.h"
@@ -236,6 +242,17 @@ public:
     void FUN_140bbbcf0();                                       // a search was refused
 };
 
+// An open dialog of a class, by the class's own UI type id.
+template <class T> T* Unk_MmGetDialogOf()
+{
+    if (FUN_1403ed2b0() != 0) {
+        MS2Ptr<UIObject> spObject = FUN_1403ed2b0()->FUN_141adcea0(T::FUN_140d66e70());
+        if (spObject.get() != 0)
+            return dynamic_cast<T*>(spObject.get());
+    }
+    return 0;
+}
+
 bool FUN_1406a5040(int nSort);                                  // a valid market sort kind
 void FUN_1418ffec0(int& nFlags, int nBit);                      // set a flag bit
 __int64 FUN_140869440();                                        // the server time
@@ -301,7 +318,32 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);       // system notice
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);   // system notice with arguments
-// A system notice with one argument (the exe instance for an int is 0x140d61af0).
+// The market error code of an error reply (an enum in the exe: fmt formats it as a custom argument).
+enum Unk_MmErrorCode : int { Unk_MmErrorCodeNone = 0 };
+// fmt's ostream formatting of a custom argument with the MS2 enum shortcut in front (as itembreakmanager.cpp): the
+// stream branch is dead code for enums.
+// @0x140d63b20
+template <> inline void fmt::format_arg(BasicFormatter<wchar_t>& f, const wchar_t*& format_str, const Unk_MmErrorCode& value)
+{
+    internal::Arg arg;
+    internal::Value& arg_value = arg;
+    if (std::is_enum<Unk_MmErrorCode>::value)
+    {
+        arg.int_value = value;
+        arg.type = internal::Arg::INT;
+    }
+    else
+    {
+        std::basic_ostringstream<wchar_t> os;
+        os << value;
+        std::basic_string<wchar_t> str = os.str();
+        arg_value = internal::MakeValue<BasicFormatter<wchar_t> >(str);
+        arg.type = internal::Arg::STRING;
+    }
+    format_str = f.format(format_str, arg);
+}
+
+// A system notice with one argument (the exe instance for the error code is 0x140d61af0).
 template <class T> void FUN_140d61af0(int nStringId, int nA, int nB, const T& x)
 {
     const fmt::internal::ArgArray<1>::Type values = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(x)};
@@ -322,7 +364,7 @@ bool FUN_140ebfb90(CMeratMarketPremiumProduct* pProduct, bool bShowError);
 CStringW FUN_140ec01e0(CDBPremiumProduct* pProduct, const CStringW& strKey);
 CStringW FUN_140ec05f0(CDBPremiumProduct* pProduct);            // the option text of a product (empty: none)
 CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nOption);  // the text of a chosen option
-CStringW FUN_1408f71a0(const CStringW& strKey, const CStringW& strA, const CStringW& strB);  // a string by key, 2 args
+CStringW FUN_1408f71a0(CStringW strKey, const CStringW& strA, const CStringW& strB);  // a string by key, 2 args
 int FUN_14069c3e0(int nCurrency);                               // the pay type of a currency
 
 // ---- CMeratMarketMan ----
@@ -1220,7 +1262,7 @@ bool CMeratMarketMan::FUN_140d57a80(unsigned int nCategory, int nTab, Unk_MeratP
             Unk_MeratProductListMap::iterator it = m_lists.find(std::pair<unsigned int, int>(nCategory, nTab));
             if (it == m_lists.end())
                 return false;
-            const TPtrValue<std::list<MS2Ptr<CMeratMarketProduct> > > spList = it->second;
+            const TPtrValue<std::list<MS2Ptr<CMeratMarketProduct> > > spList = static_cast<const TPtrValue<std::list<MS2Ptr<CMeratMarketProduct> > >&>(it->second);
             if (spList == 0 || spList->empty() == true)
                 return false;
             unsigned short nLevel = 0;
@@ -1837,7 +1879,7 @@ __int64 CMeratMarketMan::FUN_140d61530(__int64 nTime, int nDays)
 // @0x140d602f0
 CMeratMarketBuy::CMeratMarketBuy()
 {
-    m_spPacket = new CMeratMarketPacket::BuyPacket();
+    m_spPacket.AssignRaw(new CMeratMarketPacket::BuyPacket());
 }
 
 // @0x140d603c0
@@ -2176,7 +2218,7 @@ void CMeratMarketMan::FUN_140d5c2f0(CInPacket& packet)
     UIAdPushDialog* pAdDialog;
     if (!aPush.IsEmpty() && (pAdDialog = Unk_MmGetDialog<UIAdPushDialog>(0x4f34)) != 0) {
         for (Unk_MeratProductListMap::iterator it = m_lists.begin(); it != m_lists.end(); ++it) {
-            TPtrValue<std::list<MS2Ptr<CMeratMarketProduct> > > spList = it->second;
+            TPtrValue<std::list<MS2Ptr<CMeratMarketProduct> > > spList = static_cast<const TPtrValue<std::list<MS2Ptr<CMeratMarketProduct> > >&>(it->second);
             if (spList == 0)
                 continue;
             int nSize = (int)spList->size();
@@ -2584,7 +2626,7 @@ void CMeratMarketMan::FUN_140d5e540(CInPacket& packet)
         nLast = (int)m_150.GetCount() - 1;
     if (!bMore)
         bMore = nLast < nEnd;
-    UIBlueprintMarketDialog* pDialog = Unk_MmGetDialog<UIBlueprintMarketDialog>(UIBlueprintMarketDialog::FUN_140d66e70());
+    UIBlueprintMarketDialog* pDialog = Unk_MmGetDialogOf<UIBlueprintMarketDialog>();
     if (pDialog != 0)
         pDialog->FUN_140bbb440(nPage, nFirst, nLast, nTotal, bMore);
 }
@@ -2728,7 +2770,7 @@ void CMeratMarketMan::FUN_140d5f330(CMeratMarketPacket::BuyPacket& buy, int nErr
                 if (pDialog != 0)
                     pDialog->FUN_14130ea00(spProduct);
                 UIBlueprintMarketDialog* pBlueprint =
-                    Unk_MmGetDialog<UIBlueprintMarketDialog>(UIBlueprintMarketDialog::FUN_140d66e70());
+                    Unk_MmGetDialogOf<UIBlueprintMarketDialog>();
                 if (pBlueprint != 0)
                     pBlueprint->FUN_140bbbc70(spProduct);
             }
@@ -2805,7 +2847,7 @@ void CMeratMarketMan::FUN_140d60050(const int& nUIType)
                 m_170.RemoveAll();
             }
         }
-        UIBlueprintMarketDialog* pDialog = Unk_MmGetDialog<UIBlueprintMarketDialog>(UIBlueprintMarketDialog::FUN_140d66e70());
+        UIBlueprintMarketDialog* pDialog = Unk_MmGetDialogOf<UIBlueprintMarketDialog>();
         if (pDialog != 0)
             pDialog->FUN_140bbb440(1, 0, 0, 0, false);
     }
@@ -2818,7 +2860,7 @@ void CMeratMarketMan::FUN_140d5f610(CInPacket& packet)
     CMeratMarketPacket::ErrorPacket error;
     error.Read(packet);
     FUN_140d5fea0(error);
-    int nError = error.m_nError;
+    Unk_MmErrorCode nError = (Unk_MmErrorCode)error.m_nError;
     switch (nError) {
     case 0x68:
         FUN_140d61af0(0xa0c, 1, 1, nError);
@@ -2892,7 +2934,7 @@ void CMeratMarketMan::FUN_140d5f610(CInPacket& packet)
     case 0xad:
         if (error.m_n30 == 1) {
             UIBlueprintMarketDialog* pBlueprint =
-                Unk_MmGetDialog<UIBlueprintMarketDialog>(UIBlueprintMarketDialog::FUN_140d66e70());
+                Unk_MmGetDialogOf<UIBlueprintMarketDialog>();
             if (pBlueprint != 0)
                 pBlueprint->FUN_140bbbcf0();
         }
@@ -3095,7 +3137,7 @@ void CMeratMarketBuy::FUN_140d604c0(MS2Ptr<ASMeratMarketBuyBillData> spBill, int
 }
 
 // Product lists by an int key: add a product to the list of a key (made on first use). No exe caller is left.
-typedef ATL::CRBMap<int, TPtrValue<Unk_MeratProductArray> > Unk_MmProductListByKey;
+typedef ATL::CAtlMap<int, TPtrValue<Unk_MeratProductArray> > Unk_MmProductListByKey;
 void FUN_140d61590(Unk_MmProductListByKey& map, int nKey, MS2Ptr<CMeratMarketProduct> spProduct);
 
 // @0x140d61590
