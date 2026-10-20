@@ -30,6 +30,7 @@
 #include "uimeratmarketregisterdialog.h"
 #include "uirandomcoupon.h"
 #include "ms2/placeholder/asmeratmarketbuybilldata.h"
+#include "ms2/placeholder/citem.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -75,6 +76,17 @@ public:
     void FUN_14130eaf0();                                       // the sellers arrived
     void FUN_14130e2e0(MS2Ptr<CMeratMarketProduct> spProduct);  // a product was registered
     void FUN_14130e560(MS2Ptr<CMeratMarketProduct> spProduct);  // a product was removed
+    void FUN_14130e790(MS2Ptr<CMeratMarketProduct> spProduct);  // a product was updated
+    void FUN_14130deb0(MS2Ptr<CMeratMarketProduct> spProduct);  // a product's sale state changed
+    void FUN_14130ed10();                                       // the bookmarks arrived
+    void FUN_14130dd00(__int64 nBookMarkId);                    // a bookmark was added
+    void FUN_14130dd30(__int64 nBookMarkId);                    // a bookmark was removed
+    void FUN_14130de30(__int64 nBookMarkId);                    // a bookmark was updated
+    void FUN_14130ee60();                                       // the promotion time changed
+    void FUN_14130f430(bool bChanged);                          // the sale settings arrived
+    void FUN_14130d390(int nPage, int nFirst, int nLast, int nTotal, bool bMore);   // a page of search results
+    void FUN_14130f960();                                       // the search failed
+    void FUN_14130ea00(MS2Ptr<CMeratMarketProduct> spProduct);  // a product's counts changed
 };
 Unk_MmDialog* FUN_140bd2c00();                                  // the open market dialog (or NULL)
 Unk_MmDialog* FUN_140bfed50(int nUIClassID);                    // a dialog of a class id (0x4ec1: the market)
@@ -117,6 +129,49 @@ static MS2Ptr<Unk_AdMarketItem> Unk_MmAdItem(MS2Ptr<CMeratMarketProduct> spProdu
     return MS2Ptr<Unk_AdMarketItem>(reinterpret_cast<Unk_AdMarketItem*>(spProduct.get()));
 }
 
+// The game menu (UI type 0x4e28, FUN_140938b90); only the call of this unit.
+class Unk_MmGameMenu
+{
+public:
+    void FUN_14193dd50();                                       // refresh the merat market alarm
+};
+Unk_MmGameMenu* FUN_140938b90(int nUIType);
+
+// The shop dialog (UI type 0x4e3b) as FUN_140534780 returns it; only the call of this unit.
+class Unk_MmShopDialog
+{
+public:
+    void FUN_141afb290(int nProductId);                         // a product could not be bought
+};
+
+// Player inventory (global at 0x143ab2a90): item lookup by uid (the same declaration as unit_1406125d0.h).
+class Unk_LockInventory
+{
+public:
+    MS2Ptr<CItem> FUN_140a5d680(__int64 nItemUid);
+};
+extern Unk_LockInventory DAT_143ab2a90;
+
+// The item event hub (uiitemenchantdialog.h's UIItemEventDispatcher, FUN_140a6a840); the slots up to the one called.
+class Unk_MmItemEvents
+{
+public:
+    virtual ~Unk_MmItemEvents();
+    virtual void vfunc_1(void* pItem);
+    virtual void vfunc_2(void* pItem, bool b);
+    virtual void vfunc_3(void* pItem, int n);                   // an item changed
+};
+Unk_MmItemEvents* FUN_140a6a840();
+
+// The blueprint market dialog (RTTI .?AVUIBlueprintMarketDialog@@, UI type 0x4f7f); only the calls of this unit.
+class UIBlueprintMarketDialog : public UIObject
+{
+public:
+    static int FUN_140d66e70() { return 0x4f7f; }               // the UI type id
+    void FUN_140bbb440(int nPage, int nFirst, int nLast, int nTotal, bool bMore);   // a page of blueprints
+    void FUN_140bbbc70(MS2Ptr<CMeratMarketProduct> spProduct);  // a blueprint changed
+};
+
 bool FUN_1406a5040(int nSort);                                  // a valid market sort kind
 void FUN_1418ffec0(int& nFlags, int nBit);                      // set a flag bit
 __int64 FUN_140869440();                                        // the server time
@@ -142,6 +197,7 @@ class Unk_MmUIManager
 public:
     void FUN_141adc5d0(int nClass);                             // close a dialog (if open)
     MS2Ptr<UIObject> FUN_141adcea0(int nId);                    // an open dialog
+    int FUN_141adc890(int nClass);                              // a dialog is open
 };
 Unk_MmUIManager* FUN_1403ed2b0();
 
@@ -180,7 +236,7 @@ void FUN_1412751f0(const CStringW& text, int nA, int nB);       // system notice
 void FUN_141275260(int nStringId, int nA, int nB);
 void* FUN_1408e57f0();
 int FUN_1422b9dc0(void*);                                       // the screen layout id
-void* FUN_140534780(int nUIType);                               // refresh the shop dialog
+Unk_MmShopDialog* FUN_140534780(int nUIType);                   // the shop dialog (refreshes it)
 int FUN_1406a50b0(Unk_MeratProductMap& map);                    // meratmarketbasketinfo.cpp: the product count
 // UIMeratMarketCommon (uimeratmarketcommon.cpp): purchase checks.
 bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError);
@@ -1251,7 +1307,7 @@ void CMeratMarketMan::FUN_140d58650(int nBuyType)
 
 // One queued purchase is answered: store the result and start the next one (or finish).
 // @0x140d58810
-void CMeratMarketMan::FUN_140d58810(void* pUnused, int nResult, int nIndex)
+void CMeratMarketMan::FUN_140d58810(bool bSuccess, int nResult, int nIndex)
 {
     if (m_n2a0 == 0)
         return;
@@ -2181,5 +2237,430 @@ void CMeratMarketMan::FUN_140d5d140(CInPacket& packet)
         Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
         if (pDialog != 0)
             pDialog->FUN_14130e560(spProduct);
+    }
+}
+
+// 0x0f: a product was updated.
+// @0x140d5d2c0
+void CMeratMarketMan::FUN_140d5d2c0(CInPacket& packet)
+{
+    CMeratMarketProduct product(packet);
+    MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d55800(product.m_key);
+    if (spProduct == 0)
+        return;
+    spProduct->m_ugc.CopyFrom(&product.m_ugc);
+    Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
+    if (pDialog != 0)
+        pDialog->FUN_14130e790(spProduct);
+}
+
+// 0x10: the same as 0x0f.
+// @0x140d5d3e0
+void CMeratMarketMan::FUN_140d5d3e0(CInPacket& packet)
+{
+    CMeratMarketProduct product(packet);
+    MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d55800(product.m_key);
+    if (spProduct == 0)
+        return;
+    spProduct->m_ugc.CopyFrom(&product.m_ugc);
+    Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
+    if (pDialog != 0)
+        pDialog->FUN_14130e790(spProduct);
+}
+
+// 0x11: a seller was settled.
+// @0x140d5d500
+void CMeratMarketMan::FUN_140d5d500(CInPacket& packet)
+{
+    __int64 nId = packet.vfunc_o8_4();
+    int nType = packet.vfunc_o8_3();
+    __int64 nAmount = packet.vfunc_o8_4();
+    MS2Ptr<CUgcMarketSeller> spSeller = FUN_140d55f40(nId);
+    if (spSeller == 0)
+        return;
+    FUN_140d55e50(spSeller);
+    if (nType != 0x3fa)
+        return;
+    m_ne0 += nAmount;
+    if (FUN_140d566d0() == 0)
+        return;
+    bool bDone = m_sellers.IsEmpty();
+    if (!bDone) {
+        MS2Ptr<CUgcMarketSeller> spFirst = FUN_140d56000();
+        if (spFirst != 0) {
+            if (!FUN_140d567a0(spFirst))
+                bDone = true;
+            else
+                FUN_140d54a50(spFirst->m_n18);
+        }
+    }
+    if (bDone)
+        FUN_140d56840();
+}
+
+// 0x12: a product's sale state changed.
+// @0x140d5d760
+void CMeratMarketMan::FUN_140d5d760(CInPacket& packet)
+{
+    Unk_MeratProductKey key(0, 0);
+    key.Read(packet);
+    __int64 nUid = packet.vfunc_o8_4();
+    (void)nUid;
+    int nState = packet.vfunc_o8_1();
+    int nKind = packet.vfunc_o8_1();
+    __int64 nEnd = packet.vfunc_o8_4();
+    MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d55800(key);
+    if (spProduct == 0)
+        return;
+    spProduct->m_ugc.m_n28 = nState;
+    spProduct->m_ugc.m_n70 = nKind;
+    spProduct->m_ugc.m_n68 = nEnd;
+    FUN_140d601c0(spProduct);
+    Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
+    if (pDialog != 0)
+        pDialog->FUN_14130deb0(spProduct);
+    if (FUN_1403ed2b0()->FUN_141adc890(0x4ec5) != 0) {
+        UIMeratMarketRegisterDialog* pRegister = Unk_MmGetDialog<UIMeratMarketRegisterDialog>(0x4ec5);
+        if (pRegister != 0)
+            pRegister->FUN_141318a20(spProduct);
+    }
+}
+
+// 0x13: the bookmarks.
+// @0x140d5da10
+void CMeratMarketMan::FUN_140d5da10(CInPacket& packet)
+{
+    unsigned char nCount = packet.vfunc_o8_1();
+    {
+        Unk_LockGuard lock(m_lock);
+        if (!lock) {
+            FUN_140d56c60();
+            for (int i = 0; i < (int)nCount; i++) {
+                MS2Ptr<CUgcBookMark> spBookMark(new CUgcBookMark());
+                spBookMark->Read(packet);
+                FUN_140d56a40(spBookMark);
+            }
+        }
+    }
+    Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
+    if (pDialog != 0)
+        pDialog->FUN_14130ed10();
+}
+
+// 0x14: a bookmark was added.
+// @0x140d5dba0
+void CMeratMarketMan::FUN_140d5dba0(CInPacket& packet)
+{
+    MS2Ptr<CUgcBookMark> spBookMark(new CUgcBookMark());
+    spBookMark->Read(packet);
+    if (FUN_140d56db0(spBookMark->m_n20) != 0)
+        return;
+    FUN_140d56a40(spBookMark);
+    FUN_140d56eb0(spBookMark->m_n20, packet);
+    Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
+    if (pDialog != 0)
+        pDialog->FUN_14130dd00(spBookMark->m_n20);
+}
+
+// 0x15: a bookmark was removed.
+// @0x140d5dcf0
+void CMeratMarketMan::FUN_140d5dcf0(CInPacket& packet)
+{
+    __int64 nId = packet.vfunc_o8_4();
+    if (FUN_140d56db0(nId) == 0)
+        return;
+    FUN_140d56be0(nId);
+    Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
+    if (pDialog != 0)
+        pDialog->FUN_14130dd30(nId);
+}
+
+// 0x16: a bookmark was updated.
+// @0x140d5dd80
+void CMeratMarketMan::FUN_140d5dd80(CInPacket& packet)
+{
+    MS2Ptr<CUgcBookMark> spBookMark(new CUgcBookMark());
+    spBookMark->Read(packet);
+    if (FUN_140d56db0(spBookMark->m_n20) == 0)
+        return;
+    FUN_140d56eb0(spBookMark->m_n20, packet);
+    Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
+    if (pDialog != 0)
+        pDialog->FUN_14130de30(spBookMark->m_n20);
+}
+
+// 0x17: the promotion times.
+// @0x140d5de90
+void CMeratMarketMan::FUN_140d5de90(CInPacket& packet)
+{
+    __int64 nStart = packet.vfunc_o8_4();
+    __int64 nEnd = packet.vfunc_o8_4();
+    m_n1b0 = nStart;
+    m_n1a0 = nEnd;
+    {
+        Unk_LockGuard lock(m_lock);
+        if (!lock) {
+            POSITION pos = m_products.GetHeadPosition();
+            while (pos != 0) {
+                MS2Ptr<CMeratMarketProduct> spProduct = m_products.GetValueAt(pos);
+                if (spProduct.get() != 0)
+                    spProduct->m_ugc.m_n88 = nEnd;
+                m_products.GetNext(pos);
+            }
+        }
+    }
+    Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
+    if (pDialog != 0)
+        pDialog->FUN_14130ee60();
+}
+
+// 0x18: the sale settings.
+// @0x140d5e020
+void CMeratMarketMan::FUN_140d5e020(CInPacket& packet)
+{
+    int nOldDays = m_n1c4;
+    m_n1b8 = packet.vfunc_o8_3();
+    m_n1bc = packet.vfunc_o8_3();
+    m_n1c0 = packet.vfunc_o8_3();
+    m_n1c4 = packet.vfunc_o8_3();
+    bool bChanged = nOldDays != m_n1c4;
+    if (bChanged) {
+        FUN_140d566f0(0);
+        if (m_bf8) {
+            m_bf8 = false;
+            FUN_140d56190();
+        }
+    }
+    Unk_MmDialog* pDialog = FUN_140bd2c00();
+    if (pDialog != 0)
+        pDialog->FUN_14130f430(bChanged);
+}
+
+// 0x19: a page of search results.
+// @0x140d5e190
+void CMeratMarketMan::FUN_140d5e190(CInPacket& packet)
+{
+    int nCount = packet.vfunc_o8_3();
+    int nTotal = packet.vfunc_o8_3();
+    int nPage = packet.vfunc_o8_3();
+    bool bMore = false;
+    if (nPage < 2 || nCount != 0) {
+        Unk_LockGuard lock(m_lock);
+        if (!lock) {
+            m_120.RemoveAll();
+            m_100.RemoveAll();
+        }
+    }
+    else {
+        nPage--;
+        bMore = true;
+    }
+    int nFirst = ((nPage - 1 < 0 ? 0 : nPage - 1) % 5) * 0x12;
+    for (int i = 0; i < nCount; i++) {
+        if (packet.vfunc_o8_1() == 0)
+            continue;
+        MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
+        if (spProduct.get() != 0)
+            FUN_140d57090(spProduct, m_120, m_100);
+    }
+    int nEnd = nFirst + 0x11;
+    int nLast = nEnd;
+    if ((int)m_100.GetCount() - 1 <= nEnd)
+        nLast = (int)m_100.GetCount() - 1;
+    if (!bMore)
+        bMore = nLast < nEnd;
+    Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
+    if (pDialog != 0)
+        pDialog->FUN_14130d390(nPage, nFirst, nLast, nTotal, bMore);
+}
+
+// 0x1a: a page of blueprints.
+// @0x140d5e540
+void CMeratMarketMan::FUN_140d5e540(CInPacket& packet)
+{
+    int nCount = packet.vfunc_o8_3();
+    int nTotal = packet.vfunc_o8_3();
+    unsigned char nPerPage = packet.vfunc_o8_1();
+    int nPage = packet.vfunc_o8_3();
+    bool bMore = false;
+    if (nPage < 2 || nCount != 0) {
+        Unk_LockGuard lock(m_lock);
+        if (!lock) {
+            m_150.RemoveAll();
+            m_170.RemoveAll();
+        }
+    }
+    else {
+        nPage--;
+        bMore = true;
+    }
+    int nFirst = ((nPage - 1 < 0 ? 0 : nPage - 1) % 5) * (int)nPerPage;
+    for (int i = 0; i < nCount; i++) {
+        if (packet.vfunc_o8_1() == 0)
+            continue;
+        MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
+        if (spProduct.get() != 0)
+            FUN_140d57090(spProduct, m_170, m_150);
+    }
+    int nEnd = nFirst - 1 + (int)nPerPage;
+    int nLast = nEnd;
+    if ((int)m_150.GetCount() - 1 <= nEnd)
+        nLast = (int)m_150.GetCount() - 1;
+    if (!bMore)
+        bMore = nLast < nEnd;
+    UIBlueprintMarketDialog* pDialog = Unk_MmGetDialog<UIBlueprintMarketDialog>(UIBlueprintMarketDialog::FUN_140d66e70());
+    if (pDialog != 0)
+        pDialog->FUN_140bbb440(nPage, nFirst, nLast, nTotal, bMore);
+}
+
+// 0x1b: the search failed.
+// @0x140d5e930
+void CMeratMarketMan::FUN_140d5e930(CInPacket& packet)
+{
+    Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
+    if (pDialog != 0)
+        pDialog->FUN_14130f960();
+}
+
+// 0x1c: a random coupon pick.
+// @0x140d5e970
+void CMeratMarketMan::FUN_140d5e970(CInPacket& packet)
+{
+    int nId = packet.vfunc_o8_3();
+    int nSale = packet.vfunc_o8_3();
+    int nRate = packet.vfunc_o8_3();
+    unsigned char nCount = packet.vfunc_o8_1();
+    CMsTime day(packet.vfunc_o8_4());
+    Unk_MeratProductKey key(nId, 0);
+    MS2Ptr<CMeratMarketProduct> spProduct = CMeratMarketMan::GetInstance()->FUN_140d57150(key, 0);
+    if (spProduct == 0)
+        return;
+    int nType = spProduct->GetType();
+    if (nType != 7 && nType != 8)
+        return;
+    spProduct->m_premium.m_n1ac = nSale;
+    spProduct->m_premium.m_n1b0 = nRate;
+    spProduct->m_premium.m_n1b4 = nCount;
+    spProduct->m_premium.m_randomSaleDay = day;
+    UIRandomCoupon* pCoupon = Unk_MmGetDialog<UIRandomCoupon>(0x4f99);
+    if (pCoupon == 0)
+        return;
+    CStringW strDay = spProduct->m_premium.GetSellDayText();
+    if (nType == 7) {
+        __int64 nValue = spProduct->m_premium.FUN_1406a0270();
+        pCoupon->FUN_140bfebf0(spProduct);
+        pCoupon->FUN_140bfeb50(1, (int)nValue, nCount, CStringW(strDay));
+    }
+    else if (nType == 8) {
+        pCoupon->FUN_140bfebf0(spProduct);
+        pCoupon->FUN_140bfeb50(2, nRate, nCount, CStringW(strDay));
+    }
+}
+
+// 0x1d: a purchase succeeded.
+// @0x140d5ed50
+void CMeratMarketMan::FUN_140d5ed50(CInPacket& packet)
+{
+    CMeratMarketPacket::BuyPacket buy;
+    buy.Read(packet);
+    Unk_MeratProductKey key = buy.m_key;
+    int nBuyCount = packet.vfunc_o8_3();
+    int nSoldCount = packet.vfunc_o8_3();
+    int nUgc3c = packet.vfunc_o8_3();
+    int nUgc40 = packet.vfunc_o8_3();
+    __int64 nBookMarkId = buy.m_n38;
+    if (buy.m_n40 >= 0 && buy.m_n40 < (int)m_pending.GetCount()) {
+        MS2Ptr<CPendingBuyBase> spBuy = m_pending[buy.m_n40];
+        if (spBuy.get() != 0) {
+            MS2Ptr<CMeratMarketProduct> spProduct = spBuy->m_spItem;
+            if (spProduct == 0)
+                spProduct = FUN_140d57150(key, nBookMarkId);
+            if (spProduct.get() != 0) {
+                if (!spProduct->IsUgc()) {
+                    CMeratMarketPremiumProduct& premium = spProduct->m_premium;
+                    premium.m_nBuyCount = nBuyCount;
+                    if (premium.m_nType == 6)
+                        premium.m_nHomeSoldCount = nSoldCount;
+                    else
+                        premium.m_nSoldCount = nSoldCount;
+                    if (premium.HasLimit()) {
+                        Unk_MmDialog* pDialog = FUN_140bfed50(0x4ec1);
+                        if (pDialog != 0)
+                            pDialog->FUN_14130ea00(spProduct);
+                        UIAdPushDialog* pAdDialog = Unk_MmGetDialog<UIAdPushDialog>(0x4f34);
+                        if (pAdDialog != 0)
+                            pAdDialog->UpdateBundles(Unk_MmAdItem(spProduct));
+                        Unk_MmGameMenu* pMenu = FUN_140938b90(0x4e28);
+                        if (pMenu != 0)
+                            pMenu->FUN_14193dd50();
+                    }
+                }
+                else {
+                    spProduct->m_ugc.m_n3c = nUgc3c;
+                    spProduct->m_ugc.m_n40 = nUgc40;
+                }
+            }
+        }
+    }
+    FUN_140d58810(true, 0, buy.m_n40);
+}
+
+// 0x1e: a purchase failed.
+// @0x140d5f190
+void CMeratMarketMan::FUN_140d5f190(CInPacket& packet)
+{
+    CMeratMarketPacket::BuyPacket buy;
+    buy.Read(packet);
+    int nError = packet.vfunc_o8_3();
+    FUN_140d58810(false, nError, buy.m_n40);
+    FUN_140d5f330(buy, nError);
+}
+
+// 0x1f: a bought item changed.
+// @0x140d5f250
+void CMeratMarketMan::FUN_140d5f250(CInPacket& packet)
+{
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(packet.vfunc_o8_4());
+    if (spItem.get() != 0) {
+        spItem->FUN_140524eb0(packet);
+        FUN_140a6a840()->vfunc_3(spItem.get(), 0);
+    }
+}
+
+// A failed purchase: refresh what shows the product.
+// @0x140d5f330
+void CMeratMarketMan::FUN_140d5f330(CMeratMarketPacket::BuyPacket& buy, int nError)
+{
+    Unk_MeratProductKey key = buy.m_key;
+    __int64 nBookMarkId = buy.m_n38;
+    if (buy.m_n48 == 0) {
+        MS2Ptr<CMeratMarketProduct> spProduct = CMeratMarketMan::GetInstance()->FUN_140d57150(key, nBookMarkId);
+        if (spProduct == 0)
+            return;
+        if (!spProduct->IsUgc()) {
+            Unk_MmDialog* pDialog;
+            if (spProduct->IsPremium() && (pDialog = FUN_140bfed50(0x4ec1)) != 0)
+                pDialog->FUN_14130ea00(spProduct);
+        }
+        else {
+            int nState = 0;
+            if (nError == 0x6a)
+                nState = 3;
+            if (nState != 0) {
+                spProduct->m_ugc.m_n28 = nState;
+                Unk_MmDialog* pDialog = FUN_140bd2c00();
+                if (pDialog != 0)
+                    pDialog->FUN_14130ea00(spProduct);
+                UIBlueprintMarketDialog* pBlueprint =
+                    Unk_MmGetDialog<UIBlueprintMarketDialog>(UIBlueprintMarketDialog::FUN_140d66e70());
+                if (pBlueprint != 0)
+                    pBlueprint->FUN_140bbbc70(spProduct);
+            }
+        }
+    }
+    else if (nError == 0x9d && m_n2a8 == 4) {
+        Unk_MmShopDialog* pShop = FUN_140534780(0x4e3b);
+        if (pShop != 0)
+            pShop->FUN_141afb290(key.m_nPremiumId);
     }
 }

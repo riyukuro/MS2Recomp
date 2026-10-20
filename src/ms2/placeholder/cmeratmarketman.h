@@ -134,7 +134,8 @@ public:
     void FUN_140d583d0(unsigned int nIndex);
     void FUN_140d584c0(unsigned int nIndex);
     void FUN_140d58650(int nBuyType);
-    void FUN_140d58810(void* pUnused, int nResult, int nIndex);
+    void FUN_140d58810(bool bSuccess, int nResult, int nIndex);
+    void FUN_140d5f330(CMeratMarketPacket::BuyPacket& buy, int nError);
     void FUN_140d589f0(int bCancel);
     void FUN_140d595b0();
     void FUN_140d59810(MS2Ptr<CPendingBuyBase> spBuy, int nBuyType);
