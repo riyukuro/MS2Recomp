@@ -191,9 +191,9 @@ egf::Entity* FUN_14123c410(GameObject* pObject);    // the object's entity
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);    // the entity's scene graph
 NiAVObject* FUN_141b6ef70(egf::EntityID id);        // the scene node of an entity
 bool FUN_14116e080(NiAVObject* pObject);            // the skin decal is set up
-void FUN_14116e3f0(NiMesh* pMesh, float fA, float fB, float fC, float fD, bool bFlag, const CString& strTexture,
-    const Unk_CharEquip& kColor0, const Unk_CharEquip& kColor1, const Unk_CharEquip& kColor2);   // apply the skin decal
-Unk_CharEquip FUN_141b6dea0(unsigned nColor);       // a colour value
+bool FUN_14116e3f0(NiMesh* pMesh, float fA, float fB, float fC, float fD, int bFlag, const CString& strTexture,
+    const NiColor& kColor0, const NiColor& kColor1, const NiColor& kColor2);   // apply the skin decal (unit_14116e3f0)
+NiColor FUN_141b6dea0(unsigned nColor);             // a colour value
 int FUN_140ddcc90(COptimizer* pOptimizer);          // mesh merging is on
 // The world service (WorldService) as the equipment uses it.
 struct Unk_EqWorld
@@ -1781,9 +1781,9 @@ void CEquipment::FUN_1411e6b50()
     Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spItem->FUN_1411dc7a0()->FUN_140527870());
     CharacterDecalData* pDecal = spItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b6b0();
     if (pRecord->m_f60 != 0.0f) {
-        const Unk_CharEquip& kColor2 = FUN_141b6dea0(pRecord->FUN_140599fd0(2));
-        const Unk_CharEquip& kColor1 = FUN_141b6dea0(pRecord->FUN_140599fd0(1));
-        const Unk_CharEquip& kColor0 = FUN_141b6dea0(pRecord->FUN_140599fd0(0));
+        const NiColor& kColor2 = FUN_141b6dea0(pRecord->FUN_140599fd0(2));
+        const NiColor& kColor1 = FUN_141b6dea0(pRecord->FUN_140599fd0(1));
+        const NiColor& kColor0 = FUN_141b6dea0(pRecord->FUN_140599fd0(0));
         const CString& strTexture = pDecal->GetTexture();
         FUN_14116e3f0(pMesh, pRecord->m_f58, pRecord->m_f5c, pRecord->m_f64, pRecord->m_f60,
             spItem->FUN_1411dc7f0()->FUN_14053ec70()->FUN_140547190(), strTexture, kColor0, kColor1, kColor2);
