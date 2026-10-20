@@ -33,6 +33,8 @@
 #include "ms2/placeholder/cusermaidmanager.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/ms2format.h"
+#include "ms2/client/ms2/statedata.h"
+#include "ms2/client/ms2/ridee.h"
 #include "ms2/client/ms2/randomeffectparam.h"
 #include "ms2/client/ms2/physxhelper.h"
 #include "ms2/placeholder/effectquery.h"
@@ -64,6 +66,7 @@ public:
     virtual void vfunc_2();                                         // refresh
     void FUN_141a5e4c0(int nFontSize);
     void FUN_141a5e500(int n);
+    void FUN_141a5e540(CString strNode);                            // the node the tag follows
 };
 class Unk_PCBaseComp_a88 : public CPtred {};
 class Unk_PCBaseComp_a98 : public CPtred {};
@@ -86,6 +89,7 @@ MS2Ptr<Unk_PCBaseComp_aa8> FUN_1418fbdb0(int nObjectId);           // new chat b
 class CObjectShadow : public NiRefObject
 {
 public:
+    CObjectShadow(GameObject* pOwner, int nLodHi, int nLodLo, float fSize, float fAlpha);   // 0x14160fc90
     // @0x14109a720
     bool FUN_14109a720() { return m_bVisible; }
 private:
@@ -100,9 +104,9 @@ public:
     float FUN_140970720();                                          // scale
 };
 
-class Unk_CapWorld { public: void FUN_141bc7f10(const egf::EntityID& kId); };    // WorldService
+class Unk_CapWorld { public: void FUN_141bc8e00(); PCBase* FUN_141bd0cc0(); void FUN_141bc7ec0(const egf::EntityID& kId); void FUN_141bc7f10(const egf::EntityID& kId); };    // WorldService
 Unk_CapWorld* FUN_1403ed2d0();
-class COptimizer { public: int FUN_1409f7ea0(); void FUN_14161d070(const egf::EntityID& kId); };
+class COptimizer { public: int FUN_1409f7ea0(); void FUN_14161d010(const egf::EntityID& kId); void FUN_14161d070(const egf::EntityID& kId); void FUN_14109ac50(int n) { m_n68 = n; } private: char m_pad[0x68]; int m_n68; };
 COptimizer* FUN_1409f7c90();
 class Unk_CsoSpawnMgr { public: Unk_PCBaseFxLib* FUN_1411bf1e0(); };
 Unk_CsoSpawnMgr* FUN_140a50010();
@@ -116,7 +120,6 @@ class Unk_SSG09a700 { public: MS2Ptr<CMaid> FUN_14127e400(__int64 nUid); };   //
 Unk_SSG09a700* FUN_14109a700();
 class Unk_ArcMoverView { public: bool FUN_14160c1c0() const; CStringA FUN_14160c1e0() const; };   // Unk_NpcBeam getters
 class Unk_1401aa6a0 : public CStringW { public: Unk_1401aa6a0(int nNpcId); };   // the npc name of the string table
-class Unk_EqWorld { public: PCBase* FUN_141bd0cc0(); };
 class Unk_Svc7476c0 { public: unsigned char FUN_14074e030(int nNpcId); };
 Unk_Svc7476c0* FUN_1407476c0();
 class Unk_PortalQuestTable { public: int FUN_140764c90(CNpc* pNpc); };
@@ -132,7 +135,6 @@ void FUN_141567330(NiAVObject* pObj, bool b);
 void FUN_1412751b0(const CStringW& str, int nLevel);              // debug log
 void FUN_1410943b0(PCBase* pActor, int n);
 void FUN_14123fbf0(Unk_PCBaseBody* pBody, unsigned short nGroup);  // collision group
-void FUN_141670d50(PCBase* pActor, efd::Point2 kSize);
 
 class Unk_Svc764020;
 Unk_Svc764020* FUN_140764020();
@@ -202,6 +204,34 @@ static float FUN_14109ace0()
 {
     return ((float)FUN_14109a9e0() * 2.0f) / 32767.0f - 1.0f;
 }
+
+class CCameraMode { public: virtual ~CCameraMode(); };
+class CTargetCameraMode : public CCameraMode {};
+class CBossTargetCamera : public CTargetCameraMode { public: void FUN_140a38550(int nObjectId); };
+class Unk_NpcCamera { public: int FUN_140af7e30(); CCameraMode* FUN_140af2520(); };   // CameraMgr (inline getters)
+Unk_NpcCamera* FUN_1409478c0();
+class GameObjectController { public: void FUN_14123fd30(unsigned int nFlags); };
+class Unk_PCBaseCompEmoView2 : public Unk_PCBaseComp_a88
+{
+public:
+    virtual void vfunc_1();
+    virtual void vfunc_2();                                         // refresh
+    void FUN_140f49470();                                           // UIHudEntity::TimerEntity: restart
+    void FUN_14192f8b0(int n);
+    void FUN_14192f8d0(const CString& strIcon);
+};
+class UIUpperHpBar { public: void FUN_141b4c510(CNpc* pNpc, int nTargetId); };
+UIUpperHpBar* FUN_14096e340(int nUiId);
+extern int g_upperTargetId;                                         // 0x143ab2864
+
+class Unk_NpcShadowMgr { public: int FUN_141376880(int nKind); int FUN_1413769d0(int nKind); };   // shadow lod options
+Unk_NpcShadowMgr* FUN_140ae1c00();
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                         // the common npc row
+class SkillDataTableCli;
+SkillDataTableCli* FUN_1401958b0();
+void FUN_140aae720(SkillDataTableCli* pTable, unsigned int nSkillId, unsigned short nLevel, int nFlags);   // preload a skill
+class Unk_PCBaseFxLibView { public: void FUN_1411be510(int nNpcId, CString strUnused); };   // preload the npc's effects
+int FUN_14082f1a0(int nStat);                                       // the stat is 64-bit
 
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };   // zero-initialised pointer holder (0x1401cd100)
 
@@ -327,6 +357,66 @@ CNpc::~CNpc()
     if (m_nE54 != 0)
         FUN_1411a6060(FUN_1403ed280(), m_nE54);
     FUN_141095140();
+}
+
+// @0x14108f0a0
+int CNpc::vfunc_10()
+{
+    if (PCBase::vfunc_10() == 0)
+        return 0;
+    if (FUN_141092ff0()) {
+        if (FUN_1409478c0()->FUN_140af7e30() == 0x12) {
+            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(FUN_1409478c0()->FUN_140af2520());
+            if (pCamera != NULL)
+                pCamera->FUN_140a38550(FUN_14123c580());
+        }
+        FUN_1403ed2d0()->FUN_141bc7ec0(FUN_14123c460());
+        FUN_1409f7c90()->FUN_14161d010(FUN_14123c460());
+        if ((m_spNpcData->m_nClass == 3 || m_spNpcData->m_nClass == 4) && vfunc_116() == 0)
+            FUN_1409f7c90()->FUN_14109ac50(0);
+    }
+    m_strED0 = m_spNpcData->m_dead.GetRandomDefaultAction();
+    reinterpret_cast<GameObjectController*>(m_unk_150)->FUN_14123fd30(0x38d);
+    vfunc_126(m_unk_15c == 0, 0);
+    FUN_141094e60();
+    if (m_unk_15c == 0) {
+        FUN_141096730();
+        if (!m_spNpcData->m_strKeepEffect.IsEmpty()) {
+            NoticeMessage kQuery;
+            kQuery.m_strName = m_spNpcData->m_strKeepEffect;
+            kQuery.SetActor(FUN_14123c580());
+            kQuery.m_nMode48 = m_spNpcData->IsBoss() ? 6 : 5;
+            m_nE54 = reinterpret_cast<Unk_PoEffectSvc*>(FUN_1403ed280())->FUN_1411a49c0(kQuery);
+        }
+        if (!m_spNpcData->m_strCreateEffect.IsEmpty()) {
+            NoticeMessage kQuery;
+            kQuery.m_strName = m_spNpcData->m_strCreateEffect;
+            kQuery.SetActor(FUN_14123c580());
+            kQuery.m_nMode48 = m_spNpcData->IsBoss() ? 6 : 5;
+            reinterpret_cast<Unk_PoEffectSvc*>(FUN_1403ed280())->FUN_1411a4a00(kQuery);
+        }
+        FUN_1410947e0();
+    }
+    Unk_PCBaseCompEmoView2* pEmoticon = static_cast<Unk_PCBaseCompEmoView2*>(vfunc_83().get());
+    if (pEmoticon != NULL) {
+        if (m_spNpcData->m_strIcon.IsEmpty()) {
+            if (0 < m_spNpcData->GetKind()) {
+                pEmoticon->FUN_140f49470();
+                pEmoticon->FUN_14192f8b0(0);
+                pEmoticon->vfunc_2();
+            }
+        } else if (m_spNpcData->m_strIcon != "empty") {
+            pEmoticon->FUN_140f49470();
+            pEmoticon->FUN_14192f8b0(0);
+            pEmoticon->FUN_14192f8d0(m_spNpcData->m_strIcon);
+            pEmoticon->vfunc_2();
+        }
+        FUN_141093c80();
+    }
+    UIUpperHpBar* pUpper;
+    if (m_spNpcData->HasPropertyTag(4) == true && (pUpper = FUN_14096e340(0x4e3d)) != NULL && FUN_14166ce30() == 0)
+        pUpper->FUN_141b4c510(this, g_upperTargetId);
+    return 1;
 }
 
 // @0x14108f710
@@ -1261,5 +1351,140 @@ void CNpc::FUN_141099580()
         int nObjectId = FUN_14123c580();
         Unk_Random kRandom(nObjectId * FUN_140768010(nRandom, 0));
         m_nDE4 = kRandom.FUN_1407684c0() % nRandom;
+    }
+}
+
+// Sets the npc up from its table row: model, name, collision size, quest flag and the random-target effect.
+// MS2-FUNCTIONAL: behaviour-equivalent (the exe keeps the name / ridee temporaries in other frame slots)
+// @0x141090d60
+int CNpc::vfunc_124(int nNpcId)
+{
+    m_posD40 = efd::Point3::ZERO;
+    m_spNpcData = FUN_1406d6e90()->FUN_140a7cab0(nNpcId);
+    if (m_spNpcData.IsNull())
+        return 0;
+    if (m_strED8.IsEmpty())
+        FUN_141095190(m_spNpcData->m_model.m_strKfm);
+    if (m_strED8.IsEmpty())
+        return 0;
+    FUN_14123bb80("urn:gamebryo-animation:" + m_strED8);
+    Unk_1401aa6a0 strName(m_spNpcData->GetId());
+    if (!strName.IsEmpty() && FUN_140a7c8d0(m_spNpcData.operator->()))
+        vfunc_76(CStringW(strName));
+    FUN_141670d50(efd::Point2(m_spNpcData->m_capsule.m_fRadius, m_spNpcData->m_capsule.m_fHeight));
+    vfunc_59(0, 0, 0, 0);
+    m_fScaleAC = m_spNpcData->m_model.m_fScale;
+    if (m_spNpcData->GetFriendly() != 0)
+        m_cE40 = FUN_1407476c0()->FUN_14074e030(nNpcId);
+    m_nEB8 = FUN_14109a710()->FUN_140764c90(this);
+    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer != NULL) {
+        efd::Point3 kPos = pPlayer->vfunc_18();
+        efd::SmartPointer<Ridee> spRidee(pPlayer->FUN_1416764a0());
+        if (spRidee != 0)
+            kPos = spRidee->vfunc_18();
+        FUN_14123daa0(kPos);
+    }
+    FUN_141099580();
+    m_timerEE8.FUN_1408687f0();
+    m_spF28.AssignRaw(new CRandomTargetEffect(this));
+    return 1;
+}
+
+// Dies: the dead state, the dead effect / sound and the corpse collision box.
+// MS2-FUNCTIONAL: behaviour-equivalent (one temporary less in the exe)
+// @0x141091210
+void CNpc::vfunc_125(int bShow)
+{
+    m_unk_15c = 1;
+    FUN_141099ab0();
+    bool bBoss = false;
+    if (bShow == 0 && FUN_141092ff0())
+        bBoss = true;
+    vfunc_59(0xc, new StateDeadNPCData(bBoss), 0, 0);
+    if (bShow != 0) {
+        FUN_141098fb0(0);
+        if (m_spNpcData.get() != 0)
+            FUN_1411a4f40(FUN_1403ed280(), m_spNpcData->m_strSoundDead, vfunc_18());
+    }
+    if (FUN_141093270()->GetCorpseHitAble() != 0) {
+        const Unk_NpcCorpse& kCorpse = m_spNpcData->m_corpse;
+        efd::Point3 kSize(m_spNpcData->m_corpse.m_shape.m_fWidth, m_spNpcData->m_corpse.m_shape.m_fDepth,
+            m_spNpcData->m_corpse.m_shape.m_fHeight);
+        efd::Point3 kOffset(0.0f, m_spNpcData->m_corpse.m_fAdded, 0.0f);
+        FUN_141670fd0(kSize, kOffset);
+        m_f16c = m_spNpcData->m_corpse.m_fOffsetNametag;
+        MS2Ptr<Unk_PCBaseComp_a78> spTag = vfunc_82();
+        if (spTag.get() != 0)
+            spTag->FUN_141a5e540("Eff_Body");
+    }
+    if (FUN_141092ff0())
+        FUN_1403ed2d0()->FUN_141bc7f10(FUN_14123c460());
+    if (m_nEA8 != 0)
+        FUN_141678f50();
+    m_timerEE8.FUN_140868750(Client::Constants::GetInstance()->NameColorDeadDuration.Read());
+}
+
+// @0x1410965d0
+void CNpc::vfunc_49()
+{
+    Unk_NpcShadowMgr* pMgr = FUN_140ae1c00();
+    int nKind = FUN_141092ff0() ? 3 : 2;
+    int nLodHi = pMgr->FUN_141376880(nKind);
+    int nLodLo = pMgr->FUN_1413769d0(nKind);
+    m_spShadow = NiNew CObjectShadow(this, nLodHi, nLodLo, m_spNpcData->m_fShadowScale, 1.0f);
+    FUN_14123cb20(m_bUnkB8);
+}
+
+// The npc's stats from a packet.
+// @0x1410909a0
+void CNpc::vfunc_90(void* p)
+{
+    CInPacket* pPacket = static_cast<CInPacket*>(p);
+    if (pPacket->vfunc_o8_1() == 1) {
+        unsigned char nStat = pPacket->vfunc_o8_1();
+        for (int i = 0; i < 3; i++) {
+            __int64 nValue;
+            if (FUN_14082f1a0(nStat) == 0)
+                nValue = (unsigned int)pPacket->vfunc_o8_3();
+            else
+                nValue = pPacket->vfunc_o8_4();
+            FUN_141670540(i, nStat, nValue);
+        }
+    } else {
+        for (int i = 0; i < 3; i++) {
+            FUN_141670540(i, 4, pPacket->vfunc_o8_4());
+            FUN_141670540(i, 0xd, pPacket->vfunc_o8_3());
+        }
+    }
+}
+
+// Preloads an npc's skills and effects.
+// @0x1410917a0
+void FUN_1410917a0(unsigned int nNpcId)
+{
+    MS2Ptr<CNpcData> spData = FUN_1406cd330(nNpcId);
+    if (spData.get() != 0) {
+        for (unsigned __int64 i = 0; i < spData->m_skill.GetCount(); i++) {
+            std::pair<unsigned int, unsigned short> kSkill = spData->m_skill.GetSkill(i);
+            FUN_140aae720(FUN_1401958b0(), kSkill.first, kSkill.second, 4);
+        }
+        reinterpret_cast<Unk_PCBaseFxLibView*>(FUN_140a50010()->FUN_1411bf1e0())->FUN_1411be510(spData->GetId(), "");
+    }
+}
+
+// Releases the npc's body actor (+0xd68).
+// @0x141099ab0
+void CNpc::FUN_141099ab0()
+{
+    if (m_pD68 != NULL) {
+        NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
+        if (pScene != NULL) {
+            FUN_1409f7ca0()->FUN_14168a540(0);
+            pScene->releaseActor(*m_pD68);
+            FUN_1403ed2d0()->FUN_141bc8e00();
+            FUN_1409f7ca0()->FUN_14168a570();
+            m_pD68 = NULL;
+        }
     }
 }
