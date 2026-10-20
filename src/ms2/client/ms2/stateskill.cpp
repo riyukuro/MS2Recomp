@@ -3015,6 +3015,100 @@ bool StateSkill::FUN_1417eed70(MS2Ptr<CSkillRecord> spNext)
 }
 MS2_REPLACE_METHOD(0x1417eed70, StateSkill, FUN_1417eed70, 1830, 0xCD4C5F92);
 
+// Chains the queued cast in the last motion of the running one (on a combo input, a chain type, a held chain or the
+// charge release): the self combo, the hold attack and the continue rules (as in FUN_1417eed70) or an auto change
+// back into the same skill and level can veto it; else the queued cast is started (its charge flag from its level)
+// and the running cast finishes.
+// MS2-FUNCTIONAL: written from the call sequence.
+// @0x1417ef4a0
+void StateSkill::FUN_1417ef4a0()
+{
+    if (!m_b49 && !m_b116 && m_nChainType == 0 && !m_b112)
+        return;
+    if (m_spRecord->FUN_141759eb0() == 0 || FUN_1417b8340() == 0 || m_spNext == NULL)
+        return;
+    bool bChain = true;
+    int nNextId = m_spNext->m_spSkill->GetId();
+    int nId = m_spRecord->m_spSkill->GetId();
+    SkillMotionData* pMotion = m_spRecord->FUN_141759830();
+    if (pMotion != NULL && !pMotion->m_strSelfInputCombo.IsEmpty())
+    {
+        if ((!m_b49 && !m_b112) || m_b116)
+        {
+            if (!m_b49 && m_b116)
+            {
+                if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xca))
+                {
+                    if (nNextId != nId)
+                        bChain = false;
+                }
+                else if (nNextId != nId)
+                {
+                    if (m_spRecord->m_spSkill->m_blockA4.FUN_140802ff0(nNextId) == 0)
+                        bChain = false;
+                }
+            }
+        }
+        else
+        {
+            if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xca))
+            {
+                if (nNextId == nId)
+                    bChain = false;
+            }
+            else if (nNextId == nId)
+            {
+                bChain = false;
+            }
+            else if (m_spRecord->m_spSkill->m_blockA4.FUN_140802ff0(nNextId) != 0)
+            {
+                bChain = false;
+            }
+        }
+    }
+    if (m_b111 && (m_b112 || m_b49))
+    {
+        if (nNextId == nId)
+            bChain = false;
+        else if (m_bLoop && !m_b112 && m_spRecord->m_spSkill->m_blockA4.FUN_140802ff0(nNextId) != 0)
+            bChain = false;
+    }
+    if (m_b115)
+    {
+        if (nNextId == nId)
+            bChain = false;
+        if (m_spRecord->m_spSkill->m_blockA4.FUN_140802ff0(nNextId) != 0)
+            bChain = false;
+    }
+    if (!m_b11e && m_spRecord->m_spSkill->m_blockB0.m_eAutoChange != 0)
+    {
+        MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        if (pMy != NULL)
+        {
+            int nSkillId = nId;
+            unsigned short nLevel = m_spRecord->m_spLevel->FUN_140803df0();
+            pMy->FUN_141526c80(nSkillId, nLevel);
+            if (nSkillId == nNextId && (unsigned)nLevel == m_spNext->m_spLevel->FUN_140803df0())
+                bChain = false;
+        }
+    }
+    if (!bChain)
+        return;
+    m_pOwner->vfunc_100(m_spNext, 0);
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    if (pMy != NULL && m_spNext->m_nA8 != 0)
+        pMy->FUN_141523bc0()->FUN_141765a70(m_spNext->m_nA8);
+    m_spNext->m_bAD = false;
+    if (m_spNext.get() != NULL && (SkillLevelData*)m_spNext->m_spLevel != NULL)
+        m_spNext->m_bAD = m_spNext->m_spLevel->FUN_140804450();
+    if (m_spNext->m_bAD)
+        m_spRecord->FUN_141759fc0();
+    FUN_1417f2a90(true);
+    if (m_pOwner->vfunc_102(m_spNext))
+        m_spNext = 0;
+}
+MS2_REPLACE_METHOD(0x1417ef4a0, StateSkill, FUN_1417ef4a0, 1843, 0xD30C901D);
+
 // Keeps the caster on the node of the object the cast is attached to (feature 0xae): the caster takes the node's
 // world rotation and position; when the object is gone, dead or not an npc the caster leaves the state (6).
 // MS2-FUNCTIONAL: written from the call sequence.
