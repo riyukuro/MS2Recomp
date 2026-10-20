@@ -50,7 +50,7 @@
 // MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@PEAVNiMesh@@V?$CustomAllocator@PEAVNiMesh@@@efd@@@std@@@std@@QEBAAEBV?$CustomAllocator@PEAVNiMesh@@@efd@@XZ 0x1413f2f70 ; w102 manual prop
 // MS2-PIN: ?_Has_unused_capacity@?$vector@PEAVNiMesh@@V?$CustomAllocator@PEAVNiMesh@@@efd@@@std@@AEBA_NXZ 0x1413f31d0 ; w102 manual unique
 // MS2-PIN: ?_Max_size1@?$_Normal_allocator_traits@V?$CustomAllocator@PEAVNiMesh@@@efd@@@std@@SA_KAEBV?$CustomAllocator@PEAVNiMesh@@@efd@@U?$integral_constant@_N$00@2@@Z 0x1413f4180 ; w102 manual prop
-// MS2-PIN: ?_Max_size1@?$_Normal_allocator_traits@V?$CustomAllocator@D@efd@@@std@@SA_KAEBV?$CustomAllocator@D@efd@@U?$integral_constant@_N$00@2@@Z 0x1413f41a0 ; w102 manual prop
+// MS2-PIN: ?_Max_size1@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBIV?$map@Vutf8string@efd@@UUnk_PropertyCacheEntry@@U?$less@Vutf8string@efd@@@std@@@efd@@@std@@PEAX@std@@@efd@@@std@@SA_KAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBIV?$map@Vutf8string@efd@@UUnk_PropertyCacheEntry@@U?$less@Vutf8string@efd@@@std@@@efd@@@std@@PEAX@std@@@efd@@U?$integral_constant@_N$00@2@@Z 0x1413f41a0 ; w102 manual prop (tx1: the tree-node allocator, calls max_size 0x1413f8af0 = 0x1249249; CustomAllocator<char> is 0x1408769d0)
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@PEAVNiMesh@@V?$CustomAllocator@PEAVNiMesh@@@efd@@@std@@@std@@QEBAAEBQEAPEAVNiMesh@@XZ 0x1413f4400 ; w102 manual prop
 // MS2-PIN: ?_Mysize@?$_List_alloc@U?$_List_base_types@UUnk_HwiCreated@@V?$allocator@UUnk_HwiCreated@@@std@@@std@@@std@@QEAAAEA_KXZ 0x1413f4660 ; w102 manual unique
 // MS2-PIN: ?_Orphan_range@?$vector@PEAVNiMesh@@V?$CustomAllocator@PEAVNiMesh@@@efd@@@std@@AEBAXPEAPEAVNiMesh@@0@Z 0x1413f46c0 ; w102 manual unique
@@ -61,7 +61,7 @@
 // MS2-PIN: ?max_size@?$CustomAllocator@PEAVNiMesh@@@efd@@QEBA_KXZ 0x1413f8ae0 ; w102 manual unique
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_List_node@UUnk_HwiCreated@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_List_node@UUnk_HwiCreated@@PEAX@std@@@2@@Z 0x1413f8b50 ; w102 manual unique
 // MS2-PIN: ?max_size@?$_Normal_allocator_traits@V?$CustomAllocator@PEAVNiMesh@@@efd@@@std@@SA_KAEBV?$CustomAllocator@PEAVNiMesh@@@efd@@@Z 0x1413f8bd0 ; w102 manual prop
-// MS2-PIN: ?max_size@?$_Normal_allocator_traits@V?$CustomAllocator@D@efd@@@std@@SA_KAEBV?$CustomAllocator@D@efd@@@Z 0x1413f8bf0 ; w102 manual prop
+// MS2-PIN: ?max_size@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBIV?$map@Vutf8string@efd@@UUnk_PropertyCacheEntry@@U?$less@Vutf8string@efd@@@std@@@efd@@@std@@PEAX@std@@@efd@@@std@@SA_KAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBIV?$map@Vutf8string@efd@@UUnk_PropertyCacheEntry@@U?$less@Vutf8string@efd@@@std@@@efd@@@std@@PEAX@std@@@efd@@@Z 0x1413f8bf0 ; w102 manual prop (tx1: tree-node instantiation, the <char> copy is 0x140876d30)
 // MS2-PIN: ?max_size@?$list@UUnk_HwiCreated@@V?$allocator@UUnk_HwiCreated@@@std@@@std@@QEBA_KXZ 0x1413f8db0 ; w102 manual unique
 // MS2-PIN: ?max_size@?$vector@PEAVNiMesh@@V?$CustomAllocator@PEAVNiMesh@@@efd@@@std@@QEBA_KXZ 0x1413f8dd0 ; w102 manual unique
 // MS2-PIN: ?pointer_to@?$pointer_traits@PEAUUnk_HwiCreated@@@std@@SAPEAUUnk_HwiCreated@@AEAU3@@Z 0x1413f8f70 ; w102 manual prop
