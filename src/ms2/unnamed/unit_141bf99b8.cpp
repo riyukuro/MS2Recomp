@@ -387,11 +387,11 @@ extern egf::EntityID DAT_143af8278;
 // @0x141bfe700
 unsigned __int64 Camera::FUN_141bfe700()
 {
-    return m_10 == NULL ? DAT_143af8278.GetValue() : m_10->GetEntityIDValue();
+    return m_10 != NULL ? m_10->GetEntityIDValue() : DAT_143af8278.GetValue();
 }
 
 // The rest of the tail over the recovered types (worldservice_tail.h, the std members, the classes WorldService creates).
-void Unk_WsInst6Tail(CEntityShower& shower, MS2ActorUpdater& updater, CameraMgr& camera, NiControllerManager& manager,
+void Unk_WsInst6Tail(PC& pc, CEntityShower& shower, MS2ActorUpdater& updater, CameraMgr& camera, NiControllerManager& manager,
     NiControllerSequence& sequence, const NiFixedString& name)
 {
     // std::pair<const K, V> scalar deleting dtors (node / element destruction)
@@ -434,6 +434,8 @@ void Unk_WsInst6Tail(CEntityShower& shower, MS2ActorUpdater& updater, CameraMgr&
     TSingleton<CDebugHelper>::CreateInstance();
     TSingleton<CDebugHelper>::DestroyInstance();
     // inline getters
+    pc.FUN_141bfaec0(true);
+    pc.FUN_141bfed80();
     shower.GetAlpha();
     shower.GetEntityID();
     updater.FUN_141bfe6d0();

@@ -224,6 +224,10 @@ public:
     MS2Ptr<CostumeManager> FUN_1409763e0() { return m_spCostume; }
     // @0x141c04f70
     unsigned char FUN_141c04f70() { return m_b1204; }       // faded out (?\worldservice.cpp#6)
+    // @0x141bfaec0
+    void FUN_141bfaec0(bool bFaded) { m_b1204 = bFaded; }    // (COMDAT in worldservice.cpp)
+    // @0x141bfed80
+    int FUN_141bfed80() { return m_n1200; }                 // fade delay in ms (COMDAT in worldservice.cpp)
     // 0xd40..0x12e0. The MS2Ptr at +0xfc8 (an action timer; AvatarPC::vfunc_142 pokes it) is exposed, the rest is opaque.
     // ClonePC (clonepc.cpp) uses the list at +0xd48, the MS2Ptr at +0xd88 and the equip holder at +0xde0.
     unsigned char unknownD40[8];
@@ -244,7 +248,8 @@ public:
     MS2Ptr<CostumeManager> m_spCostume;                     // +0x1130 the costume sets (additionalcli.cpp)
     unsigned char unknown1140[0x88];
     int m_n11c8;                                            // +0x11c8 (FUN_14174a340)
-    unsigned char unknown11cc[0x38];
+    unsigned char unknown11cc[0x34];
+    int m_n1200;                                            // +0x1200 fade delay in ms (WorldService 0x141bd7390)
     unsigned char m_b1204;                                  // +0x1204 faded out (WorldService 0x141bd7390, set by 0x141bfaec0)
     unsigned char unknown1205[0x3b];
     MS2Ptr<Unk_PCInteractMode> m_spInteractMode;      // +0x1240 (actionkeyobject.cpp)
@@ -257,6 +262,7 @@ MS2_CHECK_OFFSET(PC, m_spFC8, 0xfc8);
 MS2_CHECK_OFFSET(PC, m_pCubeCraft, 0x1020);
 MS2_CHECK_OFFSET(PC, m_nFF9, 0xff9);
 MS2_CHECK_OFFSET(PC, m_n1058, 0x1058);
+MS2_CHECK_OFFSET(PC, m_n1200, 0x1200);
 MS2_CHECK_OFFSET(PC, m_b1204, 0x1204);
 MS2_CHECK_OFFSET(PC, m_spSetItems, 0x1100);
 MS2_CHECK_OFFSET(PC, m_spCostume, 0x1130);

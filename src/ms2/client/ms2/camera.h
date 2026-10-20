@@ -171,7 +171,9 @@ public:
     // @0x141bfe750
     unsigned __int64 FUN_141bfe750()                                    // the camera entity id value, 0 without a camera
     {
-        return m_pCamera == NULL ? 0 : m_pCamera->FUN_141bfe700();
+        if (m_pCamera != NULL)
+            return m_pCamera->FUN_141bfe700();
+        return 0;
     }
     void FUN_140aeb420(int nMode, const Unk_CameraFlyBy* pFlyBy);       // switch mode, keeping the setting
     void FUN_140aeb730(efd::Point3 ptPos);                              // fixed-position camera at a point
