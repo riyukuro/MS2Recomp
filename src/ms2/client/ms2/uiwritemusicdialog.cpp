@@ -395,6 +395,7 @@ CString UIWriteMusicDialog::vfunc_1()
 }
 
 // @0x140fedde0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 2439 bytes, exe 2330): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -495,6 +496,7 @@ void UIWriteMusicDialog::vfunc_67()
 }
 
 // @0x140fee900
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 2485 bytes, exe 2536): temporaries, stack slots and branch layout
 int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -673,6 +675,7 @@ int UIWriteMusicDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x140fef5d0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 243 bytes, exe 224): temporaries, stack slots and branch layout
 int UIWriteMusicDialog::vfunc_71()
 {
     if (!FUN_140ff33c0())
@@ -682,6 +685,7 @@ int UIWriteMusicDialog::vfunc_71()
 }
 
 // @0x140fef6c0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 143 bytes, exe 147): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::vfunc_72()
 {
     if (!FUN_140a467d0(&m_30) && m_bPlaying)
@@ -705,6 +709,7 @@ MS2Ptr<CItem> UIWriteMusicDialog::FUN_140fef760()
 }
 
 // @0x140fef7b0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 329 bytes, exe 304): temporaries, stack slots and branch layout
 bool UIWriteMusicDialog::FUN_140fef7b0(MS2Ptr<CItem> spItem)
 {
     if (!spItem == false)
@@ -722,6 +727,7 @@ bool UIWriteMusicDialog::FUN_140fef7b0(MS2Ptr<CItem> spItem)
 }
 
 // @0x140fef8f0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1175 bytes, exe 1027): temporaries, stack slots and branch layout
 bool UIWriteMusicDialog::FUN_140fef8f0(MS2Ptr<CItem> spItem)
 {
     if (!spItem == false)
@@ -766,6 +772,7 @@ bool UIWriteMusicDialog::FUN_140fef8f0(MS2Ptr<CItem> spItem)
 }
 
 // @0x140fefd00
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 862 bytes, exe 903): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140fefd00(MS2Ptr<CItem> spItem)
 {
     if (vfunc_55() == 0)
@@ -816,6 +823,7 @@ void UIWriteMusicDialog::FUN_140ff0090(int nResult)
 }
 
 // @0x140ff0260
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 316 bytes, exe 318): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff0260(unsigned __int64 nItemUid, const CString& strMml)
 {
     if (m_texts.find(nItemUid) == m_texts.end())
@@ -832,6 +840,7 @@ void UIWriteMusicDialog::FUN_140ff0260(unsigned __int64 nItemUid, const CString&
 inline MS2Ptr<ASDataProvider> FUN_140ff6b60(int nMovieId, Scaleform::GFx::Value& v);
 
 // @0x140ff03b0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 3971 bytes, exe 3808): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
 {
     if (!m_spItem == false)
@@ -952,6 +961,7 @@ void UIWriteMusicDialog::FUN_140ff12a0()
 }
 
 // @0x140ff12d0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1944 bytes, exe 1854): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
 {
     int nCategory = pArgs->FUN_1422b8a10();
@@ -1040,6 +1050,7 @@ void UIWriteMusicDialog::FUN_140ff1aa0()
 }
 
 // @0x140ff1b10
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 748 bytes, exe 801): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff1b10(int nPage)
 {
     if (!(m_spTabs == 0))
@@ -1084,6 +1095,7 @@ void UIWriteMusicDialog::FUN_140ff1b10(int nPage)
 }
 
 // @0x140ff1e40
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 594 bytes, exe 529): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff1e40()
 {
     if (FUN_140a467d0(&m_30))
@@ -1106,6 +1118,7 @@ void UIWriteMusicDialog::FUN_140ff1e40()
 }
 
 // @0x140ff2060
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 327 bytes, exe 311): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff2060()
 {
     if (FUN_140a467d0(&m_30))
@@ -1123,6 +1136,7 @@ void UIWriteMusicDialog::FUN_140ff2060()
 }
 
 // @0x140ff21a0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 578 bytes, exe 522): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff21a0(ASData* pArgs)
 {
     if (FUN_140a467d0(&m_30))
@@ -1149,6 +1163,7 @@ void UIWriteMusicDialog::FUN_140ff21a0(ASData* pArgs)
 }
 
 // @0x140ff23b0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 306 bytes, exe 325): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff23b0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (params.ArgCount != 0)
@@ -1168,6 +1183,7 @@ void UIWriteMusicDialog::FUN_140ff23b0(const Scaleform::GFx::FunctionHandler::Pa
 }
 
 // @0x140ff2500
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 206 bytes, exe 240): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff2500(unsigned __int64 nItemUid)
 {
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
@@ -1182,6 +1198,7 @@ void UIWriteMusicDialog::FUN_140ff2500(unsigned __int64 nItemUid)
 }
 
 // @0x140ff2600
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 268 bytes, exe 244): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff2600()
 {
     if (!PathIsDirectoryW(L"./Custom/Music"))
@@ -1192,6 +1209,7 @@ void UIWriteMusicDialog::FUN_140ff2600()
 }
 
 // @0x140ff2700
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1578 bytes, exe 1508): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
 {
     if (FUN_140a467d0(&m_30))
@@ -1248,6 +1266,7 @@ void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
 }
 
 // @0x140ff2cf0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1311 bytes, exe 1332): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff2cf0(const CStringW& strPath)
 {
     if (!FUN_140a467d0(&m_30) && !strPath.IsEmpty())
@@ -1302,6 +1321,7 @@ void UIWriteMusicDialog::FUN_140ff2cf0(const CStringW& strPath)
 }
 
 // @0x140ff3230
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 269 bytes, exe 275): temporaries, stack slots and branch layout
 bool UIWriteMusicDialog::FUN_140ff3230(Unk_140165cf0* pElem, int nMax, CString& strOut, int* pnTotal)
 {
     strOut.Empty();
@@ -1379,6 +1399,7 @@ void UIWriteMusicDialog::FUN_140ff35c0(int nOffset, int nLength)
 }
 
 // @0x140ff3610
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 758 bytes, exe 718): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff3610(int nTime)
 {
     if (m_spTimer.IsNull())
@@ -1407,6 +1428,7 @@ void UIWriteMusicDialog::FUN_140ff3610(int nTime)
 }
 
 // @0x140ff38f0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1086 bytes, exe 1043): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff38f0(int nLength)
 {
     if (m_spTotalTimer.IsNull())
@@ -1433,6 +1455,7 @@ void UIWriteMusicDialog::FUN_140ff38f0(int nLength)
 }
 
 // @0x140ff3d10
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 303 bytes, exe 314): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff3d10(unsigned nTime)
 {
     if (!(m_spPlayLine == 0) && FUN_140ff4550())
@@ -1449,6 +1472,7 @@ void UIWriteMusicDialog::FUN_140ff3d10(unsigned nTime)
 }
 
 // @0x140ff3e50
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 597 bytes, exe 592): temporaries, stack slots and branch layout
 bool UIWriteMusicDialog::FUN_140ff3e50(MS2Ptr<ASDataProvider> spTabs, CString& strOut)
 {
     strOut.Empty();
@@ -1485,6 +1509,7 @@ bool UIWriteMusicDialog::FUN_140ff3e50(MS2Ptr<ASDataProvider> spTabs, CString& s
 }
 
 // @0x140ff40b0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 224 bytes, exe 219): temporaries, stack slots and branch layout
 int UIWriteMusicDialog::FUN_140ff40b0()
 {
     if (!m_spItem == false && static_cast<CItem*>(m_spItem)->FUN_140527840() != 0)
@@ -1498,6 +1523,7 @@ int UIWriteMusicDialog::FUN_140ff40b0()
 }
 
 // @0x140ff41a0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 487 bytes, exe 497): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff41a0()
 {
     CStringW strTitle;
@@ -1539,6 +1565,7 @@ void UIWriteMusicDialog::FUN_140ff4500(MS2Ptr<CItem> spItem)
 }
 
 // @0x140ff4550
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 191 bytes, exe 177): temporaries, stack slots and branch layout
 bool UIWriteMusicDialog::FUN_140ff4550()
 {
     MS2Ptr<ASDropdownMenu> spRollType = FUN_140c28560(CString("m_rollType"));
@@ -1550,6 +1577,7 @@ bool UIWriteMusicDialog::FUN_140ff4550()
 }
 
 // @0x140ff4610
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1070 bytes, exe 1116): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff4610(std::map<int, CString>& tabs)
 {
     m_pages.clear();
@@ -1590,6 +1618,7 @@ void UIWriteMusicDialog::FUN_140ff4610(std::map<int, CString>& tabs)
 }
 
 // @0x140ff4a80
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 3342 bytes, exe 3404): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff4a80()
 {
     if (!(m_spPlayLine == 0))
@@ -1670,6 +1699,7 @@ void UIWriteMusicDialog::FUN_140ff4a80()
 }
 
 // @0x140ff57e0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 430 bytes, exe 431): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff57e0()
 {
     FUN_140cff950(FUN_1422dbb40(), CString("m_rollType"), 0);
@@ -1682,6 +1712,7 @@ void UIWriteMusicDialog::FUN_140ff57e0()
 }
 
 // @0x140ff59a0
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 581 bytes, exe 556): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff59a0()
 {
     FUN_140cff950(FUN_1422dbb40(), CString("m_rollType"), 1);
