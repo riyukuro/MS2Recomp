@@ -2656,3 +2656,5 @@ bool ItemPreviewCommon::CLimitCharRotate::FUN_141b49f30(const std::pair<float, f
 MS2_REPLACE_METHOD(0x141B49F30, ItemPreviewCommon::CLimitCharRotate, FUN_141b49f30, 173, 0x97848DA4);
 
 //@@CONTINUE@@
+// CLimitCharRotate's scalar deleting dtor (vftable slot 0; bytematch MATCH, calls ~CLimitCharRotate 0x141b4a010 + delete 0x30): the auto pairing leaves it unpaired
+// MS2-PIN: ??_GCLimitCharRotate@ItemPreviewCommon@@UEAAPEAXI@Z 0x141b4a030

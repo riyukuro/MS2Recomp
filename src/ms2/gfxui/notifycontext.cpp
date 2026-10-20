@@ -29,13 +29,13 @@ using Scaleform::GFx::Value;
 
 CCrashManager* FUN_140a44830();         // the crash manager singleton (its log)
 
-// The exe objects; unit_140135ac0.cpp holds their dynamic initializers (as file statics there). The hook DLL binds
-// the exe's objects (symbols-manual rows).
-#ifndef MS2_HOOK_DLL
-std::set<CString> Unk_NotifyContext::ms_setChanged;
-std::set<CString> Unk_NotifyContext::ms_setPushed;
-CRBMap<CString, efd::SmartPointer<BindData> > Unk_NotifyContext::ms_mapBindings;
-#endif
+// Registry definitions and dynamic initializers live in unit_140135ac0.cpp.
+// The hook DLL binds the exe objects through symbols-manual rows.
+// These definitions belong with the registry initialization order:
+//   bindings at 0x140135b60 (0x143b0b278),
+//   pushed names at 0x140135b90 (0x143b0b268),
+//   changed names at 0x140135bc0 (0x143b0b258).
+// No second registry is constructed by this translation unit.
 
 // ---- NotifyContext::BindData --------------------------------------------------------------------------------------------
 
@@ -264,3 +264,8 @@ void Unk_NotifyContext::FUN_1422c93e0(const CString& strName)
 }
 
 // MS2-PIN: ??_GBindData@NotifyContext@@UEAAPEAXI@Z 0x1422c9a80
+
+// This TU owns the registry map constructor/destructor COMDATs; the globals
+// themselves are defined with their initializers in unit_140135ac0.cpp.
+template ATL::CRBMap<CString, efd::SmartPointer<NotifyContext::BindData> >::CRBMap(size_t);
+template ATL::CRBMap<CString, efd::SmartPointer<NotifyContext::BindData> >::~CRBMap();

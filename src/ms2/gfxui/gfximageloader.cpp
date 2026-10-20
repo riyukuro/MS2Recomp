@@ -1,7 +1,7 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). GFxImageLoader, the Scaleform image creator of the GFx UI
 // library, and its "img://" url Protocol.
 // MS2-UNIT: ?\gfximageloader.cpp
-// MS2-RANGE: 0x1422ed8c0-0x1422ef250 .text$mn
+// MS2-RANGE: 0x1422ece40-0x1422ef250 .text$mn
 //
 // The unit name and directory are assumed (the GFx UI library 0x1422b0000-0x142304000 has no __FILE__ strings). The
 // class is declared in src/ms2/placeholder/gfximageloader.h. The TU starts at the Protocol ctor 0x1422ece40: Protocol's

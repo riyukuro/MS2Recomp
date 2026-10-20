@@ -122,23 +122,14 @@ def scaleform_flags():
 
     def listing(name):
         return re.findall(r'"([^"]+)"', re.search(r"set\(" + name + r"\n(.*?)\n\)", txt, re.S).group(1))
-    # GFx_Player.h without the AS3 ByteArray ObjectInterface virtuals the exe's 4.1.18 lacks (same regexes as cmake's
-    # ms2_scaleform_418_player_h, see there)
+    # Scaleform 4.1.18 compatibility headers (GFx_Player.h, GFx_Loader.h, GFxConfig.h) generated from the SDK by
+    # tools/sf418_headers.py, searched before the SDK; cmake runs the same script. /DMS2_SF418=<id of the generated
+    # text> makes FLAGS_KEY (and cmake's flags) change with them, since SDK headers are not in the deps lists.
     sf418 = os.path.join(ROOT, "build", "ms2-sf418")
-    h = open(os.path.join(sdk, "Src", "GFx", "GFx_Player.h")).read()     # universal newlines, like cmake file(READ)
-    h = re.sub(r"\n[ ]*GFX_VM_ABSTRACT\([a-z]+ +(IsByteArray|GetByteArraySize|ReadFromByteArray|WriteToByteArray)\([^\n]*",
-               "", h)
-    h = re.sub(r"\n#ifdef GFX_AS3_SUPPORT\r?\n[ ]*SF_INLINE bool +IsByteArray\(\)[^#]*#endif[^\n]*", "", h)
-    assert "ByteArray(" not in h, "GFx_Player.h ByteArray declarations not removed"
-    out = os.path.join(sf418, "GFx", "GFx_Player.h")
-    if not os.path.exists(out) or open(out, newline="").read() != h:
-        os.makedirs(os.path.dirname(out), exist_ok=True)
-        tmp = "%s.%d" % (out, os.getpid())
-        with open(tmp, "w", newline="") as f:
-            f.write(h)
-        os.replace(tmp, out)
+    import sf418_headers
+    sf418_id = sf418_headers.generate(sdk, sf418)
     return (["/I" + sf418] + ["/I" + os.path.join(sdk, d) for d in listing("MS2_SCALEFORM_INCLUDE_DIRS")]
-            + ["/D" + d for d in listing("MS2_SCALEFORM_DEFINITIONS")])
+            + ["/D" + d for d in listing("MS2_SCALEFORM_DEFINITIONS")] + ["/DMS2_SF418=" + sf418_id])
 
 
 GAME_FLAGS += scaleform_flags()
