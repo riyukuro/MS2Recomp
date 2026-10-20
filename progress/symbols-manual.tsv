@@ -4001,3 +4001,5 @@ FMOD_System_Create	142303a95	func
 ??0HeapDesc@MemoryHeap@Scaleform@@QEAA@I_K000000@Z	141803930	func
 ?pFMODHeap@GFxSoundFMOD@@2PEAVMemoryHeap@Scaleform@@EA	143b0d810	data
 ?ms_pSingleton@?$SingletonClass@VGFxSceneService@@@@2PEAVGFxSceneService@@EA	143ab25e8	data
+?ms_kXmlLoader@UIAlignWidgetManager@@2V?$Delegate@$$A6A_NAEAVTiXmlDocument@@@Z@@A	143b0d358	data
+?ms_pSingleton@?$SingletonClass@VUIAlignWidgetManager@@@@2PEAVUIAlignWidgetManager@@EA	143ac5d88	data
