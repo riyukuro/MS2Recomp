@@ -28,11 +28,11 @@ public:
     CNpcVibrate();                                          // 0x14108e1e0
     virtual ~CNpcVibrate();                                 // 0x14108e250
     int FUN_14108e280();                                    // armed flag (+0x24)
-    void FUN_14108e2a0(int nAmp, int nDuration, int nScale); // +0x18/+0x1c/+0x20, armed
-    void FUN_14108e300(float fTime, efd::Point3& kPos);     // shakes kPos while armed (disarms after m_nDuration)
-    int m_nAmp;                                             // +0x18
-    int m_nDuration;                                        // +0x1c
-    int m_nScale;                                           // +0x20
+    void FUN_14108e2a0(float fStart, float fEnd, float fAmp); // +0x18/+0x1c/+0x20, armed
+    void FUN_14108e300(float fTime, efd::Point3& kPos);     // shakes kPos while armed (disarms at m_fEnd)
+    float m_fStart;                                         // +0x18
+    float m_fEnd;                                           // +0x1c
+    float m_fAmp;                                           // +0x20
     int m_bActive;                                          // +0x24
 };
 MS2_CHECK_SIZE(CNpcVibrate, 0x28);

@@ -46,6 +46,10 @@
 #include "ms2/commonfiles/itemdatatable.h"
 #include <NiTexturingProperty.h>
 #include <NiMesh.h>
+#include "ms2/commonfiles/skillattackdata.h"
+#include "ms2/client/ms2/skillrecord.h"
+#include "ms2/client/ms2/dpsmetersystem.h"
+#include "ms2/client/ms2/additionalcli.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -137,6 +141,18 @@ class UIDamageText { public: void FUN_141912a80(GameObject* pObj, int nValue, in
 UIDamageText* FUN_140b624b0(int nUiId);
 class CStringTable { public: CStringW FUN_141811980(int nKind, int nId); };
 CStringTable* FUN_1401a9d70();
+// The views of pc.cpp: the world's object relation, the effect service's hit sounds / event effects, the local player.
+class Unk_PCWorld { public: int FUN_141bd19d0(int nObjectId); };   // the relation of an object (1: the local player)
+class Unk_PCFxMgr
+{
+public:
+    void FUN_1411a5770(int nKind, PCBase* pTarget);                 // play an event effect on an actor
+    unsigned FUN_1411a5580(int nMaterial, int nKind, int nRelation, const NiPoint3& kPos, float fVolume);   // hit sound
+};
+class MyPC { public: void FUN_14152e240(unsigned n); int FUN_14152e280(unsigned n); };
+// The green / blue of the hit colour boost (npc.cpp data; the red is the npc's DamagedColorScale).
+static float DAT_1439f6ff4 = 0.1f;
+static float DAT_1439f6ff8 = 0.1f;
 float FUN_14028d3a0(float fValue);                                  // * 0.01 (game units -> PhysX)
 float FUN_140968970(float f);                                       // sqrtf
 struct Unk_ICCEntityLoader;
@@ -380,9 +396,10 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 // @0x14108e1e0
 CNpcVibrate::CNpcVibrate()
 {
-    m_nAmp = 0;
-    m_nDuration = 0;
-    m_nScale = 0;
+    // the exe zeroes the float fields with integer stores
+    reinterpret_cast<int&>(m_fStart) = 0;
+    reinterpret_cast<int&>(m_fEnd) = 0;
+    reinterpret_cast<int&>(m_fAmp) = 0;
     m_bActive = 0;
 }
 
@@ -398,11 +415,11 @@ int CNpcVibrate::FUN_14108e280()
 }
 
 // @0x14108e2a0
-void CNpcVibrate::FUN_14108e2a0(int nAmp, int nDuration, int nScale)
+void CNpcVibrate::FUN_14108e2a0(float fStart, float fEnd, float fAmp)
 {
-    m_nAmp = nAmp;
-    m_nDuration = nDuration;
-    m_nScale = nScale;
+    m_fStart = fStart;
+    m_fEnd = fEnd;
+    m_fAmp = fAmp;
     m_bActive = 1;
 }
 
@@ -410,7 +427,7 @@ void CNpcVibrate::FUN_14108e2a0(int nAmp, int nDuration, int nScale)
 void CNpcVibrate::FUN_14108e300(float fTime, efd::Point3& kPos)
 {
     if (m_bActive != 0) {
-        if ((float)m_nDuration <= fTime) {
+        if (m_fEnd <= fTime) {
             m_bActive = 0;
         } else {
             efd::Point3 kOffset = efd::Point3::ZERO;
@@ -421,7 +438,7 @@ void CNpcVibrate::FUN_14108e300(float fTime, efd::Point3& kPos)
             kOffset.y = FUN_140768090();
             kOffset.y = kOffset.y * ((float)nY - 0.5f) * 2.0f;
             kOffset.Unitize();
-            kPos += kOffset * (float)m_nScale;
+            kPos += kOffset * m_fAmp;
         }
     }
 }
@@ -1623,6 +1640,190 @@ void CNpc::FUN_141097b40(unsigned short nGroup)
             ppShapes[i]->setGroup(nGroup);
         FUN_1409f7ca0()->FUN_14168a570();
     }
+}
+
+// A hit: the hit numbers, buff triggers, the boss camera, the hit effect / colour / shake / sound, the knockback record
+// (+0xd70 / +0xd80), the hit direction basis (+0xd88), the death (corpse actor, boss kill effects), the dps meter.
+// MS2-FUNCTIONAL: written from the decompile
+// @0x141097c40
+void CNpc::vfunc_33(void* a, void* b)
+{
+    CDamageRecord* pRecord = static_cast<CDamageRecord*>(a);
+    float fNow = (float)FUN_141473280(reinterpret_cast<CMainSystem*>(FUN_14086d260()));
+    efd::Point3 kHitDir = *static_cast<efd::Point3*>(b);
+    GameObject::vfunc_33(a, &kHitDir);
+    FUN_141671c20(MS2Ptr<CDamageRecord>(pRecord));
+    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    int nOwnerRel = reinterpret_cast<Unk_PCWorld*>(FUN_1403ed2d0())->FUN_141bd19d0(pRecord->m_nOwnerId);
+    bool bBoss = FUN_141093270()->IsBoss();
+    SkillAttackData* pAttack = pRecord->FUN_14175a8b0();
+    if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
+        m_unk_748.FUN_14096fb20(1);
+    if (bBoss && nOwnerRel == 1) {
+        if (FUN_1409478c0()->FUN_140af7e30() == 0x12) {
+            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(FUN_1409478c0()->FUN_140af2520());
+            if (pCamera != NULL)
+                pCamera->FUN_140a38550(FUN_14123c580());
+        }
+    }
+    if (pRecord->FUN_14175ac30() < 0) {
+        FUN_141098fb0(1);
+        FUN_14166ccb0()->vfunc_6();
+        if (nOwnerRel == 1) {
+            FUN_141673f70(m_spNpcData->m_fDamagedColorScale, DAT_1439f6ff4, DAT_1439f6ff8);
+            float fAmp = m_spNpcData->m_fDamagedVibrateAmp;
+            if (pAttack != 0)
+                fAmp = fAmp * pAttack->m_damage.m_fDamagedVibrateRatio;
+            if (0.0f < m_spNpcData->m_fDamagedVibrateDuration && 0.0f < fAmp)
+                m_vibrate.FUN_14108e2a0(fNow, fNow + m_spNpcData->m_fDamagedVibrateDuration, fAmp);
+            if (bBoss)
+                reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e240(FUN_14123c580());
+        }
+        m_spSkillRow = pRecord->m_spLevel;
+        m_nD80 = pRecord->FUN_14175a8b0()->m_nDirection;
+        if (pPlayer != NULL && pRecord->m_nOwnerId != pPlayer->FUN_14123c580()) {
+            Common::Constants::Value<float>* pVolume;
+            if (nOwnerRel == 1 || nOwnerRel == 2)
+                pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
+            else
+                pVolume = &FUN_1401d3200()->VolumeNpcToPc;
+            float fVolume = pVolume->Read();
+            NiPoint3 kPos = vfunc_18();
+            reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5580(pRecord->FUN_14175ad50(),
+                m_spNpcData->m_nDefenceMaterial, nOwnerRel, kPos, fVolume);
+        }
+    }
+    if (kHitDir != efd::Point3::ZERO) {
+        efd::Point3 kRight = kHitDir.UnitCross(efd::Point3::UNIT_Z);
+        efd::Point3 kForward = -kRight.UnitCross(efd::Point3::UNIT_Z);
+        m_unkD88.SetCol(0, kRight);
+        m_unkD88.SetCol(1, kForward);
+        m_unkD88.SetCol(2, efd::Point3::UNIT_Z);
+    } else {
+        m_unkD88.MakeIdentity();
+    }
+    if (FUN_14166ce30() == 0 && FUN_141670a00(4) == 0) {
+        MakeDeadPhysXActor();
+        vfunc_125(1);
+        if (nOwnerRel == 1) {
+            if (bBoss)
+                reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5770(2, pPlayer);
+        } else if (pPlayer != NULL && bBoss && pPlayer->FUN_14166ce30() == 0) {
+            if (FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
+                if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(FUN_14123c580()) != 0)
+                    reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5770(1, pPlayer);
+            }
+        }
+    }
+    CDPSMeterSystem::GetInstance()->OnDamage(MS2Ptr<CDamageRecord>(pRecord));
+    vfunc_113(pRecord);
+}
+
+// A DoT tick: the tick numbers, buff triggers, the boss camera, the buff's sound, the death, the dps meter.
+// MS2-FUNCTIONAL: written from the decompile
+// @0x141098390
+void CNpc::vfunc_34(void* p)
+{
+    CDotDamageRecord* pRecord = static_cast<CDotDamageRecord*>(p);
+    GameObject::vfunc_34(p);
+    FUN_141672020(MS2Ptr<CDotDamageRecord>(pRecord));
+    m_unk_748.FUN_14096fb20(0);
+    int nOwnerRel = reinterpret_cast<Unk_PCWorld*>(FUN_1403ed2d0())->FUN_141bd19d0(pRecord->m_nOwnerId);
+    bool bBoss = FUN_141093270()->IsBoss();
+    if (bBoss && nOwnerRel == 1) {
+        if (FUN_1409478c0()->FUN_140af7e30() == 0x12) {
+            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(FUN_1409478c0()->FUN_140af2520());
+            if (pCamera != NULL)
+                pCamera->FUN_140a38550(FUN_14123c580());
+        }
+    }
+    MS2Ptr<AdditionalCli> spBuff = m_unk_748.FUN_14096fc80(pRecord->m_nEffectLevel);
+    if (!spBuff.IsNull()) {
+        int nMaterial = spBuff->FUN_14096d810()->m_dotDamage.m_nSoundMaterial;
+        if (nMaterial != 0) {
+            Common::Constants::Value<float>* pVolume;
+            if (nOwnerRel == 1 || nOwnerRel == 2)
+                pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
+            else
+                pVolume = &FUN_1401d3200()->VolumeNpcToPc;
+            float fVolume = pVolume->Read();
+            NiPoint3 kPos = vfunc_18();
+            reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5580(nMaterial, m_spNpcData->m_nDefenceMaterial,
+                nOwnerRel, kPos, fVolume);
+        }
+    }
+    if (FUN_14166ce30() == 0 && FUN_141670a00(4) == 0) {
+        vfunc_125(1);
+        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (nOwnerRel == 1) {
+            if (pPlayer != NULL && FUN_141093270()->IsBoss())
+                reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5770(2, pPlayer);
+        } else if (pPlayer != NULL && FUN_141093270()->IsBoss() && pPlayer->FUN_14166ce30() == 0) {
+            if (FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
+                if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(FUN_14123c580()) != 0)
+                    reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5770(1, pPlayer);
+            }
+        }
+    }
+    CDPSMeterSystem::GetInstance()->OnDotDamage(MS2Ptr<CDotDamageRecord>(pRecord));
+    vfunc_113(pRecord);
+}
+
+// A splash hit: like vfunc_33 without the shake / hit direction (the hit numbers as a normal hit for npcs with
+// property tag 0x1d).
+// MS2-FUNCTIONAL: written from the decompile
+// @0x141098940
+void CNpc::vfunc_35(void* p)
+{
+    CSplashDamageRecord* pRecord = static_cast<CSplashDamageRecord*>(p);
+    GameObject::vfunc_35(p);
+    if (m_spNpcData.get() != 0 && m_spNpcData->HasPropertyTag(0x1d))
+        FUN_141671c20(MS2Ptr<CDamageRecord>(pRecord));
+    else
+        FUN_1416721d0(MS2Ptr<CSplashDamageRecord>(pRecord));
+    int nOwnerRel = reinterpret_cast<Unk_PCWorld*>(FUN_1403ed2d0())->FUN_141bd19d0(pRecord->m_nOwnerId);
+    SkillAttackData* pAttack = pRecord->FUN_14175a8b0();
+    if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
+        m_unk_748.FUN_14096fb20(1);
+    bool bBoss = FUN_141093270()->IsBoss();
+    if (bBoss && nOwnerRel == 1) {
+        if (FUN_1409478c0()->FUN_140af7e30() == 0x12) {
+            CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(FUN_1409478c0()->FUN_140af2520());
+            if (pCamera != NULL)
+                pCamera->FUN_140a38550(FUN_14123c580());
+        }
+    }
+    if (pRecord->FUN_14175ac30() < 0) {
+        FUN_141098fb0(1);
+        FUN_14166ccb0()->vfunc_6();
+        Common::Constants::Value<float>* pVolume;
+        if (nOwnerRel == 1 || nOwnerRel == 2)
+            pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
+        else
+            pVolume = &FUN_1401d3200()->VolumeNpcToPc;
+        float fVolume = pVolume->Read();
+        NiPoint3 kPos = vfunc_18();
+        reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5580(pRecord->FUN_14175ad50(),
+            m_spNpcData->m_nDefenceMaterial, nOwnerRel, kPos, fVolume);
+        m_spSkillRow = pRecord->m_spLevel;
+        m_nD80 = pRecord->FUN_14175a8b0()->m_nDirection;
+    }
+    if (FUN_14166ce30() == 0 && FUN_141670a00(4) == 0) {
+        MakeDeadPhysXActor();
+        vfunc_125(1);
+        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (nOwnerRel == 1) {
+            if (pPlayer != NULL && FUN_141093270()->IsBoss())
+                reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5770(2, pPlayer);
+        } else if (pPlayer != NULL && FUN_141093270()->IsBoss() && pPlayer->FUN_14166ce30() == 0) {
+            if (FUN_140f4a450() <= *Client::Constants::GetInstance()->BossKillSoundRange.Get()) {
+                if (reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e280(FUN_14123c580()) != 0)
+                    reinterpret_cast<Unk_PCFxMgr*>(FUN_1403ed280())->FUN_1411a5770(1, pPlayer);
+            }
+        }
+    }
+    CDPSMeterSystem::GetInstance()->OnSplashDamage(MS2Ptr<CSplashDamageRecord>(pRecord));
+    vfunc_113(pRecord);
 }
 
 // Plays the dead (0) / damage (1) effect of the npc row.
