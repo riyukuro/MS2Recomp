@@ -351,6 +351,17 @@
 // MS2-PIN: ??0?$CRBMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@_K@Z 0x141beff20
 // MS2-PIN: ??0?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEAA@_K@Z 0x141bf0580
 // MS2-PIN: ??0?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA@XZ 0x141bef1c0
+// The two unrecovered trees (Unk_WsTreeA / Unk_WsTreeB, see the driver).
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@HUUnk_WsTreeAValue@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141bf1a50
+// MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@HUUnk_WsTreeAValue@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x141bf1aa0
+// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@1@@Z 0x141bf1ac0
+// MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@1@@Z 0x141bf1b00
+// MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@1@@Z 0x141bf1b40
+// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeAValue@@@std@@@std@@@std@@QEAA@XZ 0x141bf1c00
+// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@1@@Z 0x141bf2310
+// MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@1@@Z 0x141bf2590
+// MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@1@@Z 0x141bf2890
+// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsTreeBValue@@@std@@@std@@@std@@QEAA@XZ 0x141bf2b00
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "worldservice.h"
@@ -494,6 +505,37 @@ void Unk_WsInst3Destroys()
     WsDriveDestroy<std::allocator<std::pair<CStringA, CStringA> > >(static_cast<std::pair<CStringA, CStringA>*>(0));
     WsDriveDestroy<WsReal::Veca00::allocator_type>(static_cast<WsReal::Veca00::value_type*>(0));
     WsDriveDestroy<WsReal::Veca18::allocator_type>(static_cast<WsReal::Veca18::value_type*>(0));
+}
+
+// The tree constructors and iterators of the real containers (0x141bf1a50-0x141bf2b23).
+// Two more trees of the CU whose element types are not recovered (their node helpers live in parts 2 and 8): tree A
+// (0x141bf1a50-0x141bf1c23, constructed by value), tree B (0x141bf2310-0x141bf2b23).
+struct Unk_WsTreeAValue { void* p; };
+struct Unk_WsTreeBValue { void* p; };
+typedef std::map<int, Unk_WsTreeAValue> Unk_WsTreeA;
+typedef std::map<int, Unk_WsTreeBValue> Unk_WsTreeB;
+template <class C> static void WsDriveTree()
+{
+    C c;
+    typename C::iterator it = c.begin();
+    typename C::const_iterator cit = it;
+    ++cit;
+}
+void Unk_WsInst3Trees()
+{
+    WsDriveTree<WsReal::Set048>();
+    WsDriveTree<WsReal::EntitySet>();
+    WsDriveTree<WsReal::Map1d8>();
+    WsDriveTree<WsReal::Map1e8>();
+    WsDriveTree<WsReal::Map1f8>();
+    WsDriveTree<WsReal::Map2e8>();
+    WsDriveTree<WsReal::Map980>();
+    WsDriveTree<WsReal::Map990>();
+    WsDriveTree<WsReal::Mapab0>();
+    WsDriveTree<WsReal::Mapac0>();
+    WsDriveTree<WsReal::Mapad0>();
+    WsDriveTree<Unk_WsTreeA>();
+    WsDriveTree<Unk_WsTreeB>();
 }
 
 // The vector::emplace_back instantiations (0x141bedec0-0x141bee0ef).
