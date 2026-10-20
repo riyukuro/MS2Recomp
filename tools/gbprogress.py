@@ -6,7 +6,9 @@ objs with an exe VA and byte-match it (tools/bytematch.py), credit engine functi
 
 Pairing (per obj function, funclets skipped): the mangled name through progress/symbols{,-engine,-manual}.tsv, else (or
 when that pair does not match) the unique exe function of the same length whose bytes equal the obj's with relocations
-masked. Functions with several identical exe copies and no name pair are left alone.
+masked. Functions with several identical exe copies and no name pair are then paired (2026-10-20, gb5) through an
+exact caller's relocation target or a referenced vftable's slot of the same name (kept only if exact), else one to one
+with the copies when the obj has at least as many such functions as there are free copies (kept only if exact).
 Credit (per exe VA, outside the game unit ranges of work/map/units.tsv and not claimed by a game unit row):
   matched     some obj's function is byte-identical (incl. unwind/EH data);
   functional  paired by name or a unique masked hit, but no obj matches exactly;
@@ -23,6 +25,7 @@ import io
 import json
 import os
 import re
+import struct
 import subprocess
 import sys
 import time
@@ -42,6 +45,10 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb1"                                  # bump to recompile everything
+MATCH_KEY = "callee4"                        # bump to re-match every obj (pairing logic changed)
+NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
+if NO_CALLEE:
+    MATCH_KEY = "nocallee"
 
 
 def _safe(name):
@@ -111,7 +118,7 @@ G = {}
 
 def _init():
     exe = bm.Exe(bm.EXE)
-    names = {}
+    names, dnames = {}, {}
     for f in ("symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv"):
         p = os.path.join(ROOT, "progress", f)
         if not os.path.exists(p):
@@ -120,12 +127,14 @@ def _init():
             c = ln.rstrip("\n").split("\t")
             if ln[0] != "#" and len(c) > 1 and (len(c) < 3 or c[2] == "func"):
                 names.setdefault(c[0], int(c[1], 16))
+            elif ln[0] != "#" and len(c) > 2 and c[0].startswith("??_7"):
+                dnames.setdefault(c[0], int(c[1], 16))
     bm.SYMBOLS.clear()
     bm.SYMBOLS.update(names)      # relocation targets resolve through the same tables
     bylen = collections.defaultdict(list)
     for rva, (end, _) in exe.rf.items():
         bylen[end - rva].append(rva)
-    G.update(exe=exe, names=names, bylen=bylen)
+    G.update(exe=exe, names=names, dnames=dnames, bylen=bylen)
 
 
 def _search(obj, si):
@@ -160,6 +169,8 @@ def match_obj(path):
         obj = bm.Obj(path)
     except Exception:
         return out
+    callees, pending = {}, []    # name -> exe VA called/referenced by this obj's exact functions; unpaired functions
+    copies = {}                  # unpaired name -> the exe functions whose bytes equal it (relocations masked), if several
     for si in obj.func_symbols():
         n = obj.syms[si][0]
         if n.startswith(bm.FUNCLET_PREFIXES):
@@ -169,17 +180,98 @@ def match_obj(path):
         how = "name"
         if va is not None:
             ok = _match(obj, n, va)
+            if ok:
+                callees.update(bm.LAST_TARGETS)
         if not ok:
             hits = _search(obj, si)
+            if va is None and len(hits) > 1:
+                copies[n] = tuple(hits)
             if len(hits) == 1 and hits[0] != va:
                 ok2 = _match(obj, n, hits[0])
+                if ok2:
+                    callees.update(bm.LAST_TARGETS)
                 if ok2 or va is None:
                     va, how, ok = hits[0], "search", ok2
             elif len(hits) == 1:
                 how = "name"
         if va is None:
+            pending.append(n)
             continue
         out.append((n, va, ok, how))
+    # callee pass: a function with no table name and several byte-identical exe copies (template instantiations for
+    # types of the same size, e.g. map<utf8string,__int64> / map<utf8string,unsigned __int64>) is paired with the exe
+    # function an exact caller of this obj references under its name, if it then matches exactly; repeated until no
+    # new exact match appears
+    # vftable pass: a vftable referenced by an exact function (or named in the tables) pairs its slots' functions
+    # (destructors, virtuals nobody calls directly) with the exe vftable's slots
+    exe = G["exe"]
+    vfts = {obj.syms[i][0]: i for i in obj.syms if obj.syms[i][0].startswith("??_7") and obj.syms[i][2] > 0}
+    while (pending or vfts) and not NO_CALLEE:
+        grew = False
+        for n in list(vfts):
+            va = callees.get(n) or G["dnames"].get(n)
+            if va is not None:
+                for tn, tgt in _vft_slots(obj, vfts.pop(n), va):
+                    callees.setdefault(tn, tgt)
+                grew = True
+        nxt = []
+        for n in pending:
+            va = callees.get(n)
+            if va is None or va - exe.base not in exe.rf:
+                nxt.append(n)
+                continue
+            if _match(obj, n, va):          # exact only: the caller itself may be a byte-identical look-alike of
+                callees.update(bm.LAST_TARGETS)     # another type, so its reloc targets are only a hint
+                out.append((n, va, True, "callee"))
+        if len(nxt) == len(pending) and not grew:
+            break
+        pending = nxt
+    # multi-copy pass: the obj's still unpaired functions with the same several byte-identical exe copies, if there are
+    # at least as many of them as free copies, are paired one to one with those copies (which name gets which copy
+    # does not matter: the bytes are the same); fewer would credit instantiations this obj does not have
+    if not NO_CALLEE:
+        taken = {va for _, va, ok, _ in out if ok}
+        groups = collections.defaultdict(list)
+        for n in pending:
+            if n in copies:
+                groups[copies[n]].append(n)
+        for hits, ns in groups.items():
+            free = sorted(v for v in hits if v not in taken)
+            if not free or len(ns) < len(free):
+                continue
+            for n, va in zip(ns, free):
+                if _match(obj, n, va):
+                    out.append((n, va, True, "copy"))
+                    taken.add(va)
+    return out
+
+
+def _vft_slots(obj, si, va):
+    """[(slot symbol, exe target)] of the obj's vftable si placed at exe va (nothing if its unrelocated bytes differ)"""
+    exe = G["exe"]
+    _, value, secnum = obj.syms[si][:3]
+    sec = obj.sec(secnum)
+    nxt = [v for (_, v, sn, _, _) in obj.syms.values() if sn == secnum and v > value]
+    end = min(nxt) if nxt else sec["size"]
+    data = sec["data"][value:end]
+    try:
+        xb = exe.read(va, len(data))
+    except Exception:
+        return []
+    if len(xb) < len(data):
+        return []
+    mask = bytearray(len(data))
+    out = []
+    for r, rsi, ty in sec["relocs"]:
+        if not value <= r < end:
+            continue
+        off = r - value
+        for k in range(off, min(off + bm.RELOC_LEN.get(ty, 4), len(data))):
+            mask[k] = 1
+        if ty == bm.REL_ADDR64 and off + 8 <= len(data):
+            out.append((obj.syms[rsi][0], struct.unpack_from("<Q", xb, off)[0] - struct.unpack_from("<q", data, off)[0]))
+    if any(not mask[k] and data[k] != xb[k] for k in range(len(data))):
+        return []
     return out
 
 
@@ -216,7 +308,7 @@ def run(cache, j=8, filters=(), log=print):
         if u["name"] in failed or not os.path.exists(o):
             res.pop(u["recipe"] + ":" + u["name"], None)
             continue
-        key = [os.path.getmtime(o), os.path.getsize(o)]
+        key = [os.path.getmtime(o), os.path.getsize(o), MATCH_KEY]
         if os.environ.get("MS2_MERGE_INCR"):      # tools/merge.sh: also keyed by the symbol tables the match read
             import mergekey
             key.append(mergekey.engine_stamp())
