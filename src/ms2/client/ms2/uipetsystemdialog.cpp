@@ -334,7 +334,7 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74be0(int nPages)
     if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x37) == 0)
     {
         if (FUN_140166410()->FUN_14036d570(0x8d))
-            return MS2Ptr<PetSystemTabContents>(new TabContentsPetCompose());
+            return MS2Ptr<PetSystemTabContents>(new TabContentsPetCompose());   // ctor 0x140cb3db0 (tabcontentspetcompose.cpp)
         return MS2Ptr<PetSystemTabContents>(0);
     }
     return MS2Ptr<PetSystemTabContents>(0);
