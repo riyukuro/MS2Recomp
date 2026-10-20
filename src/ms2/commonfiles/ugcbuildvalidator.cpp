@@ -1305,3 +1305,9 @@ int CUGCBuildValidatorCli::vfunc_35()
     return 0;
 }
 MS2_REPLACE_METHOD(0x140884d10, CUGCBuildValidatorCli, vfunc_35, 149, 0x436B4840);
+// map<int,MS2Ptr<Cube>> iterator/tree glue: byte-identical to the table's CMIS copies (0x1411291d0/0x141129b50/0x141146820/
+// 0x141148a10); the own-copy pass no longer pairs them (another look-alike name competes), so pin the unit's own copies
+// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1408853c0
+// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1408853e0
+// MS2-PIN: ?_Lmost@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@QEBAAEAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@2@XZ 0x140885a70
+// MS2-PIN: ?_Min@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@SAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@2@PEAU32@@Z 0x140885a80
