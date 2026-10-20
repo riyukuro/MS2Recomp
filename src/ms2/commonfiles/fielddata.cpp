@@ -560,7 +560,6 @@ CFieldData::~CFieldData() {}
 // @0x140373d30
 void CFieldData::FUN_140373d30() { s_fields.RemoveAll(); }
 #endif
-// MS2-FUNCTIONAL: typed XML and logging temporaries differ; virtual loading and insertion conditions are preserved.
 #ifndef MS2_HOOK_DLL
 // @0x140373d50
 void CFieldData::FUN_140373d50()
@@ -577,15 +576,14 @@ void CFieldData::FUN_140373d50()
         unsigned id;
         FUN_140873220(node,"id",id);
         Unk_140165cf0* selected=FUN_14028f8d0(node);
-        if (selected) {
-            MS2Ptr<CFieldData> field(new CFieldDataCli);
-            field->m_nFieldID=id;
-            if (!field->vfunc_1(selected)) {
-                FUN_14015eb90(FUN_140166440(),1,0x13,L"xml 형식이 잘못 되었습니다Ele [{0}]",FUN_14071a5b0("Table","fieldData.xml"));
-            } else {
-                if (Unk_LockGuard guard=s_fieldLock) {} else { s_fields.SetAt(id,field); }
-            }
+        if (!selected) continue;
+        MS2Ptr<CFieldData> field(new CFieldDataCli);
+        field->m_nFieldID=id;
+        if (!field->vfunc_1(selected)) {
+            FUN_14015eb90(FUN_140166440(),1,0x13,L"xml 형식이 잘못 되었습니다Ele [{0}]",FUN_14071a5b0("Table","fieldData.xml"));
+            continue;
         }
+        if (Unk_LockGuard guard=s_fieldLock) {} else { s_fields.SetAt(id,field); }
     }
 }
 #endif
@@ -599,19 +597,20 @@ void CFieldData::FUN_140374090(std::vector<MS2Ptr<CFieldData> >& out)
         }
     }
 }
-// MS2-FUNCTIONAL: null-return construction is scheduled before lock cleanup; it only clears the returned pointer.
 #ifndef MS2_HOOK_DLL
 // @0x140374140
 MS2Ptr<CFieldData> CFieldData::FUN_140374140(int id)
 {
     if (id==0) return MS2Ptr<CFieldData>(0);
     MS2Ptr<CFieldData> field;
-    Unk_FieldLock lock(s_fieldLock,1);
-    if (!s_fields.Lookup(id,field)) {
-        FUN_140177a80(FUN_140166440(),1,0x13,L"FieldID : {0}",id);
-        return MS2Ptr<CFieldData>(nullptr);
+    {
+        Unk_FieldLock lock(s_fieldLock,1);
+        if (s_fields.Lookup(id,field))
+            return field;
+        else
+            FUN_140177a80(FUN_140166440(),1,0x13,L"FieldID : {0}",id);
     }
-    return std::move(field);
+    return nullptr;
 }
 #endif
 // MS2-FUNCTIONAL: typed return and string-comparison temporaries differ; search order and ownership are preserved.
