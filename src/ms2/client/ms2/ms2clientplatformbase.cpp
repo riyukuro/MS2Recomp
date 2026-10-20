@@ -4,7 +4,7 @@
 // its helpers) is not recovered yet.
 // MS2-UNIT: client\ms2\ms2clientplatformbase.cpp
 // MS2-RANGE: 0x1400cecb0-0x1400cef9a .text$di
-// MS2-RANGE: 0x140c74e70-0x140c77990 .text$mn
+// MS2-RANGE: 0x140c74e70-0x140c77ab0 .text$mn
 // MS2-PIN: ?Reference@?$MS2Ptr@VCUserReportData@@@@CAXPEAVCUserReportData@@@Z 0x140c77740 ; merge-bind
 // MS2-PIN: ?Release@?$MS2Ptr@VCUserReportData@@@@AEAAXXZ 0x140c77760 ; merge-bind
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCUserReportData@@@@AEAAXPEAX@Z 0x140c777a0 ; merge-bind
@@ -429,6 +429,7 @@ void CClientPlatformBase::vfunc_62() {}
 // @0x140c765b0
 void CClientPlatformBase::vfunc_63(bool, int, int) {}
 
+// MS2-FUNCTIONAL: the exe frame (0x48) has no /GS cookie for the 40-byte option profile local; the opaque placeholder struct gets one (a pointer member drops it but leaves a 0x58 frame); same callees
 // @0x140c765d0
 void CClientPlatformBase::vfunc_64(int nMode)
 {
@@ -461,6 +462,7 @@ void CClientPlatformBase::vfunc_67()
     }
 }
 
+// MS2-FUNCTIONAL: the exe frame has a /GS cookie (some local of the original is array-typed, not identified among the Nx event/string helpers); same callees and control flow
 // @0x140c76710
 void CClientPlatformBase::vfunc_68()
 {
@@ -691,3 +693,5 @@ Unk_NexonAnalytics* FUN_140c77900()
     static Unk_NexonAnalytics s_kAnalytics;
     return &s_kAnalytics;
 }
+
+MS2_EMIT_CRT_MEMMOVE_S();
