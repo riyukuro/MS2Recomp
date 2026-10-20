@@ -65,7 +65,7 @@ public:
     void FUN_14196a440();                                       // open "guild_accept_request_page"
     void FUN_14196a590();                                       // open "guild_skill_page" (type 0)
     void FUN_14196a640();                                       // open "guild_skill_page" (type 1)
-    void FUN_14196a6f0();                                       // open "guild_event_page" (v2525: CreateEventPage)
+    void CreateEventPage();                                     // 0x14196a6f0 open "UIGuildDialog_EventPage" (name: its GfxError string)
     void FUN_14196b0e0();                                       // open "guild_house_page"
     void FUN_14196b160();                                       // open "guild_storage_page"
     void FUN_14196b1d0();                                       // open "guild_raid_page"

@@ -77,6 +77,8 @@
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/commonfiles/additionalactionadditional.h"
 #include "ms2/placeholder/uipopupmenu.h"
+#include "ms2/placeholder/gfxexception.h"
+#include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -775,7 +777,7 @@ void UIGuildDialog::FUN_141969040(const CStringW& strCategory)
     else if (FUN_140841300(strCategory, "MemberSkill"))
         FUN_14196a640();
     else if (FUN_1403b3c40(strCategory, L"Event"))
-        FUN_14196a6f0();
+        CreateEventPage();
     else if (FUN_1403b3c40(strCategory, L"AcceptMember"))
         FUN_14196a440();
     else if (FUN_1403b3c40(strCategory, L"Manager"))
@@ -989,6 +991,24 @@ void UIGuildDialog::FUN_14196a640()
     }
 }
 MS2_REPLACE_METHOD(0x14196a640, UIGuildDialog, FUN_14196a640, 160, 0x6B802DB1);
+
+// @0x14196a6f0
+void UIGuildDialog::CreateEventPage()
+{
+    if (FUN_141969d10("UIGuildDialog_EventPage", m_eventPage))
+    {
+        do{m_eventPage->FUN_140bc71c0("m_guildEventVsGame",m_eventVsGame);if(m_eventVsGame==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(731),__FUNCTION__));}while(0);
+        do{m_eventVsGame->FUN_140bbe640("m_guildEventVsGameRegisterButton",m_button368);if(m_button368==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(732),__FUNCTION__));}while(0);
+        do{m_eventVsGame->FUN_140bbe640("m_guildEventVsGameUnregisterButton",m_button378);if(m_button378==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(733),__FUNCTION__));}while(0);
+        do{m_eventVsGame->FUN_140bc71c0("m_guildEventImageArea",m_eventImageArea);if(m_eventImageArea==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(734),__FUNCTION__));}while(0);
+        m_eventLoader.AssignRaw(new ASLoader(2));
+        m_eventImageArea->FUN_1422c6900((*m_eventLoader).FUN_1422bb890());
+        m_button368->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIGuildDialog::FUN_141976380), 0);
+        m_button378->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIGuildDialog::FUN_1419763d0), 0);
+        FUN_141970900();
+        FUN_141970f00();
+    }
+}
 
 // @0x14196b0e0
 void UIGuildDialog::FUN_14196b0e0()
