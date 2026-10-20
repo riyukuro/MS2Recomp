@@ -19,9 +19,19 @@
 class ASCoreList : public ASUIComponent
 {
 public:
+    ASCoreList(int nMovieId);                                           // 0x1422dcbe0 (a fresh component; ASTileList(int), astilelist.cpp)
     ASCoreList(const Scaleform::GFx::Value& v, int nMovieId);          // 0x1422dcc20
-    virtual ~ASCoreList();
+    virtual ~ASCoreList();                                              // 0x1422dcc70 (astilelist.cpp)
     void FUN_1422dcf40(int nCount);                                     // the number of rows ("dataProvider" length)
+    MS2Ptr<class ASDataProvider> FUN_1422dcd80();                       // the data provider
+    void FUN_1422dd0d0(int nRows);                                      // the visible row count
+    unsigned FUN_1422dd150();                                           // the entry count (asscrollinglist.cpp: `< 0` is an unsigned test)
+    // Slot 23 override and the new slot 25 (vftable 0x143113210; ASTileCacheList overrides 25). Opt-in with the
+    // ASUIComponent slots (MS2_ASUICOMPONENT_SLOTS): without them slot 25 would land on index 16.
+#ifdef MS2_ASUICOMPONENT_SLOTS
+    virtual void vfunc_23();                                            // 23 0x1422dd090
+    virtual void vfunc_25(const Scaleform::GFx::Value& data);           // 25 0x1422dcd30 set the data provider
+#endif
 };
 MS2_CHECK_SIZE(ASCoreList, 0x88);
 
@@ -29,7 +39,14 @@ class ASScrollingList : public ASCoreList
 {
 public:
     ASScrollingList(const Scaleform::GFx::Value& v, int nMovieId);     // 0x1422e1720
-    virtual ~ASScrollingList();
+    virtual ~ASScrollingList();                                         // 0x1422e1770
+    void FUN_1422e17a0();                                               // show every entry (row count = entry count)
+    void FUN_1422e17f0(int nPosition);                                  // set "scrollPosition"
+    int FUN_1422e1820();                                                // "scrollPosition" (the first visible row)
+    void FUN_1422e1890(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);   // add a "listIndexChange" listener
+    void FUN_1422e1910(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);   // remove the "listIndexChange" listener
+    void FUN_1422e1970(int nIndex, class ASObj& row);                   // replace a data provider entry
+    void FUN_1422e1a00(int nIndex, class ASObj& row);                   // "setData" on the visible renderer of an entry
 };
 MS2_CHECK_SIZE(ASScrollingList, 0x88);
 
