@@ -629,14 +629,13 @@ void UIBeautyShopDialog::OnLoadComplete()
 }
 
 // @0x1418c4170
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UIBeautyShopDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
     if (FUN_14025e7c0()->FUN_14116d840())
     {
-        if (m_2b5 == 0)
+        if ((unsigned char)m_2b5 == 0)
             FUN_1418c9d80();
         return 1;
     }
@@ -666,7 +665,6 @@ void UIBeautyShopDialog::vfunc_26()
 }
 
 // @0x1418c4320
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UIBeautyShopDialog::vfunc_46()
 {
     if (UISwfEntity::vfunc_46() == 0)
@@ -675,8 +673,10 @@ int UIBeautyShopDialog::vfunc_46()
         return 0;
     if (m_290 != 2)
         return 0;
-    CString strName("m_probInfo");
-    FUN_14134a480(*m_30, strName, &m_2e8);
+    {
+        CString strName("m_probInfo");
+        FUN_14134a480(*m_30, strName, &m_2e8);
+    }
     return 1;
 }
 
@@ -940,15 +940,13 @@ void UIBeautyShopDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString&
 
 // UIItemEventListener overrides.
 // @0x1418c57b0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::vfunc_21(void* p)
 {
-    if (!(m_30 == 0))
-    {
-        FUN_1418ca240(p);
-        if (m_290 == 2)
-            m_2c8.AssignRaw(reinterpret_cast<CItem*>(p));
-    }
+    if (m_30 == 0)
+        return;
+    FUN_1418ca240(p);
+    if (m_290 == 2)
+        m_2c8.AssignRaw(reinterpret_cast<CItem*>(p));
 }
 
 // @0x1418c5830
@@ -957,19 +955,19 @@ void UIBeautyShopDialog::vfunc_22(void*)
 }
 
 // @0x1418c5850
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::vfunc_24(void* p)
 {
-    if (!(m_30 == 0))
-        FUN_1418ca240(p);
+    if (m_30 == 0)
+        return;
+    FUN_1418ca240(p);
 }
 
 // @0x1418c58a0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::vfunc_25(void* p)
 {
-    if (!(m_30 == 0))
-        FUN_1418ca240(p);
+    if (m_30 == 0)
+        return;
+    FUN_1418ca240(p);
 }
 
 // IItemCustomizeEventListener overrides.
@@ -977,7 +975,10 @@ void UIBeautyShopDialog::vfunc_25(void* p)
 // MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UIBeautyShopDialog::vfunc_0(void* p, int)
 {
-    if (!(m_1b8 == 0) && m_30.get() && p)
+    if (m_1b8 == 0)
+        return 1;
+    bool bValid = m_30.get() != 0;
+    if (bValid && p)
         FUN_1418c7400(0);
     return 1;
 }
@@ -1042,29 +1043,29 @@ int UIBeautyShopDialog::vfunc_3(void* p, float fValue)
 }
 
 // @0x1418c5dc0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::vfunc_84()
 {
-    if (!(m_1b8 == 0) && m_290 != 0)
-    {
-        if (m_290 == 3)
-            vfunc_86();
-        else
-            vfunc_87();
-    }
+    if (m_1b8 == 0)
+        return;
+    if (m_290 == 0)
+        return;
+    if (m_290 == 3)
+        vfunc_86();
+    else
+        vfunc_87();
 }
 
 // @0x1418c5e40
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::vfunc_85()
 {
-    if (!(m_1b8 == 0) && m_290 != 0)
-    {
-        if (m_290 == 3)
-            vfunc_86();
-        else
-            vfunc_87();
-    }
+    if (m_1b8 == 0)
+        return;
+    if (m_290 == 0)
+        return;
+    if (m_290 == 3)
+        vfunc_86();
+    else
+        vfunc_87();
 }
 
 // Build the current item of the skin page.
@@ -1358,43 +1359,39 @@ Unk_BSFee* UIBeautyShopDialog::FUN_1418c74e0(unsigned* pPrice)
 }
 
 // @0x1418c76d0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418c76d0(int nItemId)
 {
-    if (!(m_1b8 == 0))
-    {
-        if (FUN_1418caf20(nItemId) == 0)
-            m_1b8->FUN_140cd2660(nItemId);
-        FUN_1418c7180(nItemId);
-    }
+    if (m_1b8 == 0)
+        return;
+    if (FUN_1418caf20(nItemId) == 0)
+        m_1b8->FUN_140cd2660(nItemId);
+    FUN_1418c7180(nItemId);
 }
 
 // @0x1418c7750
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418c7750(int nPalette, int nColor)
 {
-    if (!(m_1b8 == 0))
-        m_1b8->FUN_140cd3220(nPalette, nColor, 0);
+    if (m_1b8 == 0)
+        return;
+    m_1b8->FUN_140cd3220(nPalette, nColor, 0);
 }
 
 // @0x1418c77c0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418c77c0(int nA, int nB)
 {
-    if (!(m_1b8 == 0))
-        m_1b8->FUN_140cd32f0(nA, nB, 0);
+    if (m_1b8 == 0)
+        return;
+    m_1b8->FUN_140cd32f0(nA, nB, 0);
 }
 
 // @0x1418c7830
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418c7830(int nPos)
 {
-    if (!(m_1b8 == 0))
-    {
-        Unk_BSPartHandle part = m_1b8->FUN_140cd1a30();
-        if (part.FUN_140cd5210())
-            part.FUN_140cd5240()->vfunc_9(nPos);
-    }
+    if (m_1b8 == 0)
+        return;
+    Unk_BSPartHandle part = m_1b8->FUN_140cd1a30();
+    if (part.FUN_140cd5210())
+        part.FUN_140cd5240()->vfunc_9(nPos);
 }
 
 // @0x1418c78d0
@@ -1416,15 +1413,13 @@ void UIBeautyShopDialog::FUN_1418c78d0(int nIndex, float fSize)
 }
 
 // @0x1418c79f0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418c79f0(float fDegree)
 {
-    if (!(m_1b8 == 0))
-    {
-        Unk_BSPartHandle part = m_1b8->FUN_140cd1a30();
-        if (part.FUN_140cd5210())
-            part.FUN_140cd5240()->vfunc_10(fDegree);
-    }
+    if (m_1b8 == 0)
+        return;
+    Unk_BSPartHandle part = m_1b8->FUN_140cd1a30();
+    if (part.FUN_140cd5210())
+        part.FUN_140cd5240()->vfunc_10(fDegree);
 }
 
 // @0x1418c7aa0
@@ -1482,23 +1477,21 @@ void UIBeautyShopDialog::FUN_1418c7ab0()
 }
 
 // @0x1418c7ce0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418c7ce0()
 {
-    if (vfunc_55() == 0)
-        FUN_1418c7ab0();
+    if (vfunc_55() != 0)
+        return;
+    FUN_1418c7ab0();
 }
 
 // @0x1418c7d20
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418c7d20(int bPreview)
 {
-    if (!(m_30 == 0))
-    {
-        if (m_2ac != bPreview)
-            FUN_1418c7d90(bPreview);
-        m_2ac = bPreview;
-    }
+    if (m_30 == 0)
+        return;
+    if (m_2ac != bPreview)
+        FUN_1418c7d90(bPreview);
+    m_2ac = bPreview;
 }
 
 // @0x1418c7d90
@@ -1540,14 +1533,14 @@ void UIBeautyShopDialog::FUN_1418c7dd0(int nSlot)
 }
 
 // @0x1418c7fe0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418c7fe0(int nSlot)
 {
-    if (!(m_30 == 0) && nSlot != -1)
-    {
-        MS2Ptr<CItem> spItem(nSlot == 0 ? m_2b8 : m_2c8);
-        m_1b8->FUN_140cd1c90(spItem.get());
-    }
+    if (m_30 == 0)
+        return;
+    if (nSlot == -1)
+        return;
+    MS2Ptr<CItem> spItem(nSlot == 0 ? m_2b8 : m_2c8);
+    m_1b8->FUN_140cd1c90(spItem.get());
 }
 
 // The beauty shop packets (0x31).
@@ -1788,8 +1781,9 @@ bool UIBeautyShopDialog::FUN_1418c9960(int nResult, const CMsgBoxData&)
 // MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 bool UIBeautyShopDialog::FUN_1418c9990(int nResult, const CMsgBoxData& data)
 {
-    if (nResult == 0)
-        FUN_140f01250(data.FUN_141a02f10(0, 0));
+    if (nResult != 0)
+        return true;
+    FUN_140f01250(data.FUN_141a02f10(0, 0));
     return true;
 }
 
@@ -1938,12 +1932,12 @@ int UIBeautyShopDialog::FUN_1418ca240(void* p)
 }
 
 // @0x1418ca380
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418ca380()
 {
     m_2d8 = 0;
-    if (!(m_1b8 == 0))
-        FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
+    if (m_1b8 == 0)
+        return;
+    FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
 }
 
 // @0x1418ca400
@@ -2035,19 +2029,19 @@ int UIBeautyShopDialog::FUN_1418ca510(ASObj& out, unsigned* pPrice)
 }
 
 // @0x1418cae60
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418cae60()
 {
-    if (!(m_1b8 == 0))
-        m_1b8->FUN_140cd24a0(6);
+    if (m_1b8 == 0)
+        return;
+    m_1b8->FUN_140cd24a0(6);
 }
 
 // @0x1418caec0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopDialog::FUN_1418caec0()
 {
-    if (!(m_1b8 == 0))
-        m_1b8->FUN_140cd2530(6);
+    if (m_1b8 == 0)
+        return;
+    m_1b8->FUN_140cd2530(6);
 }
 
 // Preview the item unless it is already worn.
@@ -2202,12 +2196,11 @@ int UIBeautyShopDialog::FUN_1418cbbe0()
 
 // The sale event of the coupon is active.
 // @0x1418cbc00
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 bool UIBeautyShopDialog::FUN_1418cbc00(int n)
 {
-    if (n == 0 || m_1d0.m_2c == 0)
-        return false;
-    return DAT_143ab2a90.FUN_140a60ec0(m_1d0.m_2c) == 1;
+    if (n != 0 && m_1d0.m_2c != 0)
+        return DAT_143ab2a90.FUN_140a60ec0(m_1d0.m_2c) == 1;
+    return false;
 }
 
 // The hair shop and the player wears something in the cap slot.
@@ -2436,16 +2429,13 @@ void UIBillDialog::OnLoadComplete()
 }
 
 // @0x1418cd740
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UIBillDialog::vfunc_13()
 {
-    if (UIDialog::vfunc_13() == 0)
-    {
-        if (m_30.IsNull())
-            vfunc_67();
-        return 0;
-    }
-    return 1;
+    if (UIDialog::vfunc_13() != 0)
+        return 1;
+    if (m_30.IsNull())
+        vfunc_67();
+    return 0;
 }
 
 // The player answered the bill.
