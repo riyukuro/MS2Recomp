@@ -30,7 +30,7 @@ class SalesInfo : public CPtred                         // house sale marker rec
 {
 public:
     SalesInfo();
-    virtual ~SalesInfo();
+    virtual ~SalesInfo() = default;                     // 0x141125fe0 (no vptr store)
     int m_nA;                                           // +0x18 (not set by the ctor)
     efd::Point3 m_pos;                                  // +0x1c
     CStringW m_str;                                     // +0x28
@@ -49,7 +49,7 @@ class AutomaticCreateCubeInfo : public CPtred           // ctor 0x141122e70 (0x5
 {
 public:
     AutomaticCreateCubeInfo();
-    virtual ~AutomaticCreateCubeInfo();
+    virtual ~AutomaticCreateCubeInfo() = default;       // 0x141125e20 (no vptr store)
     int m_nId;                                          // +0x18
     Unk_Int3 m_cell;                                    // +0x1c
     float m_fAngle;                                     // +0x28
@@ -61,7 +61,7 @@ class SaleStateData : public CPtred                     // sale state of a house
 {
 public:
     SaleStateData();
-    virtual ~SaleStateData();
+    virtual ~SaleStateData() = default;                 // 0x141125fc0 (no vptr store)
     int m_nState;                                       // +0x18
     void* m_p;                                          // +0x20
 };
@@ -86,7 +86,7 @@ enum Unk_CMISKindC { Unk_CMISKindC_None };             // element of the std::ve
 struct Unk_CMISMarkRec
 {
     Timer m_timer;
-    efd::vector<egf::EntityID> m_marks;
+    efd::vector<egf::EntityPtr> m_marks;                       // the dtor (0x141125e70) calls ~efd::vector<SmartPointer<Entity>> 0x141125d00
 };
 MS2_CHECK_SIZE(Unk_CMISMarkRec, 0x50);
 
