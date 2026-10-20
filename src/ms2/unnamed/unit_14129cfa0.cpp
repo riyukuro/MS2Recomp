@@ -1196,3 +1196,5 @@ int UIItemRemakeOptionDialog::vfunc_48()
 {
     return 0x4eeb;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caef40-0x142caf080 .text$yd

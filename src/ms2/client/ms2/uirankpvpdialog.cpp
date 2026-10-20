@@ -534,3 +534,5 @@ bool UIRankPvPDialog::FUN_140f95750()
     return true;
 }
 MS2_REPLACE_METHOD(0x140F95750, UIRankPvPDialog, FUN_140f95750, 634, 0x2753D075);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caa1e0-0x142caa320 .text$yd

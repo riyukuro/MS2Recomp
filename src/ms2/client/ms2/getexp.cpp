@@ -532,3 +532,5 @@ const Unk_StreamPoint& Unk_ConfigPoint::FUN_141274420() const
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cae6c0-0x142cae800 .text$yd

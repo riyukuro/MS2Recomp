@@ -305,3 +305,5 @@ MS2_REPLACE_METHOD(0x141377420, CGroundEffectDataManager, PlayEffects, 826, 0x9C
 #endif
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb0ef0-0x142cb1040 .text$yd

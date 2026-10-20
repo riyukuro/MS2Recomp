@@ -742,3 +742,5 @@ unsigned __int64 Unk_FbItemArray::FUN_140f43dd0()
 {
     return m_nSize;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9560-0x142ca96a0 .text$yd
