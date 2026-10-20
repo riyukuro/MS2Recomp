@@ -3,8 +3,6 @@
 // MS2-RANGE: 0x140b788d0-0x140b7edf0 .text$mn
 // MS2-RANGE: 0x1400c8d80-0x1400c90a0 .text$di
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$_Emplace_back@UUnk_StreamPoint@@@?$_Uninitialized_backout_al@PEAUUnk_StreamPoint@@V?$allocator@UUnk_StreamPoint@@@std@@@std@@QEAAX$$QEAUUnk_StreamPoint@@@Z 0x140b7bb50 ; unique
-// MS2-PIN: ??$_Uninitialized_move_al_unchecked@PEAUUnk_StreamPoint@@PEAU1@V?$allocator@UUnk_StreamPoint@@@std@@@std@@YAPEAUUnk_StreamPoint@@PEAU1@QEAU1@1AEAV?$allocator@UUnk_StreamPoint@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x140b7c370 ; unique
 // MS2-PIN: ??0?$allocator@UUnk_Int3@@@std@@QEAA@XZ 0x140b7c690 ; prop
 // MS2-PIN: ??C?$MS2Ptr@VReactorCondition@@@@QEBAPEAVReactorCondition@@XZ 0x140b7c970 ; unique
 // MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VReactorStateData@@@@V?$CElementTraits@V?$MS2Ptr@VReactorStateData@@@@@ATL@@@ATL@@QEBA_KXZ 0x140b7cc40 ; unique
@@ -35,6 +33,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include <algorithm>
 #include <vector>
+#include <efd/Point3.h>
 
 // The ClassInfo initializer is the first dynamic initializer of the object, ahead of the shared header statics.
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CReactor);
@@ -702,18 +701,18 @@ int FUN_140b7a650(PCBase* pPc)
     if (grid.FUN_1401cd1a0()->FUN_1410b8b00(nCellId) != 0)
         return 1;
 
-    std::vector<Unk_StreamPoint> samples;
-    samples.push_back(Unk_StreamPoint(ptCenter.x, ptCenter.y, ptCenter.z));
-    samples.push_back(Unk_StreamPoint(ptCenter.x + 75.0f, ptCenter.y, ptCenter.z));
-    samples.push_back(Unk_StreamPoint(ptCenter.x - 75.0f, ptCenter.y, ptCenter.z));
-    samples.push_back(Unk_StreamPoint(ptCenter.x, ptCenter.y + 75.0f, ptCenter.z));
-    samples.push_back(Unk_StreamPoint(ptCenter.x, ptCenter.y - 75.0f, ptCenter.z));
+    std::vector<efd::Point3> samples;   // the exe's glue is vector<efd::Point3> (itemdatastruct's _Umove_if_noexcept etc.)
+    samples.push_back(efd::Point3(ptCenter.x, ptCenter.y, ptCenter.z));
+    samples.push_back(efd::Point3(ptCenter.x + 75.0f, ptCenter.y, ptCenter.z));
+    samples.push_back(efd::Point3(ptCenter.x - 75.0f, ptCenter.y, ptCenter.z));
+    samples.push_back(efd::Point3(ptCenter.x, ptCenter.y + 75.0f, ptCenter.z));
+    samples.push_back(efd::Point3(ptCenter.x, ptCenter.y - 75.0f, ptCenter.z));
     for (size_t i = 0; i < samples.size(); ++i)
     {
-        Unk_StreamPoint* pSample = &samples[i];
+        efd::Point3* pSample = &samples[i];
         pSample->z = pSample->z + 10.0f;
         int nHit = 0;
-        if (FUN_14168a450(FUN_1409f7ca0(), pSample, &nHit, 50.0f) == 0)
+        if (FUN_14168a450(FUN_1409f7ca0(), reinterpret_cast<Unk_StreamPoint*>(pSample), &nHit, 50.0f) == 0)
             return 1;
     }
 
@@ -980,3 +979,25 @@ void FUN_140b7ec60(void* pAlloc, void* pMem, __int64 nCount) { FUN_14015fc80(pMe
 unsigned __int64 FUN_140b7ec90() { return 0x1555555555555555ull; }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca1040-0x142ca1160 .text$yd
+
+// fx24: samples is vector<efd::Point3> (tplpin --simulate pins, hand-applied); the two push_back(T&&) / emplace_back
+// pairs are byte-identical look-alikes told apart by their exe callees: 0x140b7ed20 -> 0x140b7c4c0 -> the Point3
+// _Emplace_reallocate 0x140b7bf80 (calls itemdatastruct's vector<Point3> glue); 0x140b7ecf0 -> 0x140b7c450 -> the
+// in-range vector<Unk_Int3> helpers 0x140b7e810 / 0x140b7e8e0.
+// MS2-PIN: ??$_Emplace_back@VPoint3@efd@@@?$_Uninitialized_backout_al@PEAVPoint3@efd@@V?$allocator@VPoint3@efd@@@std@@@std@@QEAAX$$QEAVPoint3@efd@@@Z 0x140b7bb50
+// MS2-PIN: ??$_Uninitialized_move_al_unchecked@PEAVPoint3@efd@@PEAV12@V?$allocator@VPoint3@efd@@@std@@@std@@YAPEAVPoint3@efd@@PEAV12@QEAV12@1AEAV?$allocator@VPoint3@efd@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x140b7c370
+// MS2-PIN: ??0?$_Uninitialized_backout_al@PEAVPoint3@efd@@V?$allocator@VPoint3@efd@@@std@@@std@@QEAA@PEAVPoint3@efd@@AEAV?$allocator@VPoint3@efd@@@1@@Z 0x140b7c5e0
+// MS2-PIN: ??1?$_Uninitialized_backout_al@PEAVPoint3@efd@@V?$allocator@VPoint3@efd@@@std@@@std@@QEAA@XZ 0x140b7c7c0
+// MS2-PIN: ?_Release@?$_Uninitialized_backout_al@PEAVPoint3@efd@@V?$allocator@VPoint3@efd@@@std@@@std@@QEAAPEAVPoint3@efd@@XZ 0x140b7e9f0
+// MS2-PIN: ?RemoveAll@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HV?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAXXZ 0x140b7de00
+// MS2-PIN: ?SetAt@?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HV?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAAPEAU__POSITION@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@H@Z 0x140b7e170
+// MS2-PIN: ??1?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HV?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEAA@XZ 0x140b7c780
+// MS2-PIN: ?Lookup@?$CRBMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HV?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@QEBA_NAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@AEAH@Z 0x140b7d240
+// MS2-PIN: ?RBDelete@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HV?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@H@2@@ATL@@AEAA_NPEAVCNode@12@@Z 0x140b7d6a0
+// MS2-PIN: ??__Es_unk1402a9d70@@YAXXZ 0x1400c8ee0
+// MS2-PIN: ??__Econdition@Unk_ReactorStatics@@YAXXZ 0x1400c9050
+// MS2-PIN: ?push_back@?$vector@VPoint3@efd@@V?$allocator@VPoint3@efd@@@std@@@std@@QEAAX$$QEAVPoint3@efd@@@Z 0x140b7ed20
+// MS2-PIN: ?push_back@?$vector@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@QEAAX$$QEAUUnk_Int3@@@Z 0x140b7ecf0
+// MS2-PIN: ??$emplace_back@VPoint3@efd@@@?$vector@VPoint3@efd@@V?$allocator@VPoint3@efd@@@std@@@std@@QEAAX$$QEAVPoint3@efd@@@Z 0x140b7c4c0
+// MS2-PIN: ??$emplace_back@UUnk_Int3@@@?$vector@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@QEAAX$$QEAUUnk_Int3@@@Z 0x140b7c450
+// MS2-PIN: ??$_Emplace_reallocate@VPoint3@efd@@@?$vector@VPoint3@efd@@V?$allocator@VPoint3@efd@@@std@@@std@@QEAAPEAVPoint3@efd@@QEAV23@$$QEAV23@@Z 0x140b7bf80

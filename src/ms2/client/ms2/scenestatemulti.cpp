@@ -954,3 +954,8 @@ void CSceneStateMulti::FUN_141750050(CInPacket& packet)
             pSelect->FUN_1418ed6b0(packet);
     }
 }
+
+// Look-alike pairs (fx24): s_pointer's initializer vs the egf header's kENTITY_INVALID one; vector<unsigned __int64>::_Xrange
+// (byte-identical to every _Xrange; this TU's copy is in range).
+// MS2-PIN: ??__Es_pointer@@YAXXZ 0x1401006b0
+// MS2-PIN: ?_Xrange@?$vector@_KV?$allocator@_K@std@@@std@@CAXXZ 0x141750c30

@@ -89,7 +89,10 @@ public:
         TraceTarget() {}                                    // 0x140c94340 (inline)
         int HasTargets();                                   // 0x140c93430
         void AddMaps(int nKind, unsigned nId, ATL::CAtlArray<unsigned>& maps);  // 0x140c93490
-        ATL::CAtlMap<unsigned, Unk_BmBoxPtr<ATL::CAtlArray<unsigned> > > m_targets[3];   // +0x18 map -> ids
+        // DWORD key: the exe has this TU's own copy of the whole map glue (0x140c94220..), byte-identical to
+        // blackmarketitemoption's CAtlMap<unsigned, Unk_BmBoxPtr<CAtlArray<unsigned>>> set but separately emitted, while
+        // the Unk_BmBoxPtr<CAtlArray<unsigned>> members are shared, so the map type itself differs (fx24).
+        ATL::CAtlMap<unsigned long, Unk_BmBoxPtr<ATL::CAtlArray<unsigned> > > m_targets[3];   // +0x18 map -> ids
     };
     typedef ATL::CAtlMap<int, MS2Ptr<TraceTarget> > TargetTable;    // condition index -> targets
 

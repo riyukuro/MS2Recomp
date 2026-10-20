@@ -640,3 +640,7 @@ static __inline errno_t ms2_memcpy_s_copy1(void* const d, size_t const dsz, void
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy1)(void*, size_t, const void*, size_t) = &ms2_memcpy_s_copy1;
 #pragma intrinsic(memset, memcpy)
+// Look-alike CAtlMap glue told apart by exe callers (fx24): FindNextNode 0x140c94f60 <- m_targets' GetNext 0x140c95690;
+// GetNode 0x140c95a00 <- the TraceContext map's Lookup 0x140c965c0 / SetAt 0x140c98870.
+// MS2-PIN: ?FindNextNode@?$CAtlMap@KV?$Unk_BmBoxPtr@V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@K@ATL@@V?$CElementTraits@V?$Unk_BmBoxPtr@V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x140c94f60
+// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VTraceContext@QuestNavigation@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VTraceContext@QuestNavigation@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x140c95a00

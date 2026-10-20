@@ -2,6 +2,8 @@
 // makeup slot (equip slot 3): edits the x / y / angle / scale values of the face mesh's NiFloatsExtraData.
 // MS2-UNIT: ?\makeupcontroller.cpp
 // MS2-RANGE: 0x1414762e0-0x141478090 .text$mn
+// MS2-RANGE: 0x1400f7b70-0x1400f7d10 .text$di
+// MS2-RANGE: 0x142cb27c0-0x142cb2850 .text$yd
 // MS2-PIN: ?GetRTTI@CMakeupController@@UEBAPEBVNiRTTI@@XZ 0x141477ff0 ; manual
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\makeupcontroller.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -14,6 +16,7 @@
 #include <NiFixedString.h>
 #include <NiFloatsExtraData.h>
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -132,6 +135,22 @@ int FUN_141477dd0(MS2Ptr<CEquipItem> spItem);                                   
 // The NiFloatsExtraData of the face mesh. Written out in every use in the exe.
 #define MAKEUP_FACE_EXTRA() \
     ((NiFloatsExtraData*)FUN_14098d8d0((const NiRTTI*)&DAT_143afafe0, FUN_141d17b40(m_spFaceMesh.operator->(), &DAT_143ae50f8)))
+
+// NiImplementRTTI(CMakeupController, CItemCustomizeController). The hook DLL binds the exe's copy (symbols.tsv row),
+// so only the byte-match build defines it.
+#ifndef MS2_HOOK_DLL
+// @0x1400f7b70
+const NiRTTI CMakeupController::ms_RTTI("CMakeupController", &CItemCustomizeController::ms_RTTI);
+#endif
+// The header statics every TU of this group carries (see mainsystem.cpp); atexit thunks 0x142cb27c0-0x142cb2850.
+// @0x1400f7ba0
+static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+// @0x1400f7c60
+static CString s_strSkill = "skill";
+// @0x1400f7c90
+static CString s_strStun = "stun";
+// @0x1400f7cc0
+static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
 // @0x1414762e0
 CMakeupController::CMakeupController()

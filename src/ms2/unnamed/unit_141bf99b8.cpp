@@ -310,6 +310,7 @@
 #include <ecr/CoreRuntimeMessages.h>
 #include "ms2/placeholder/physxpropmessage.h"
 #include <egmAnimation/ActorMessages.h>
+#include "ms2/placeholder/tptreddummy.h"
 
 // The container drivers of worldservice_inst.inl, copied: the CAtlMap value types whose destructors are not trivial in the exe
 // (CAtlMap::FreeNode then calls the CNode scalar deleting dtor) are unit-local stand-ins with an out-of-line dtor.
@@ -569,6 +570,7 @@ void Unk_WsInst6Tail(PC& pc, CEntityShower& shower, MS2ActorUpdater& updater, Ca
     delete new CLiftableTargetGuide();
     NiNew TextureLayerManager();
     delete new TSingleton<WorldService>();
+    delete new TPtredDummy<ATL::CAtlList<efd::SmartPointer<egf::Entity> > >();   // ??_G 0x141bf9e50 (dtor 0x141bf56c0)
     // CAtlMap: FreeNode -> CNode scalar deleting dtor; CreateNode / GetNode of the enum-keyed map
     { Unk_WsM5 m; m.RemoveKey(0); }
     { Unk_WsM10 m; m.RemoveKey(0); }
@@ -617,3 +619,10 @@ EE_HANDLER(WorldService, FUN_141bc0a70, egf::EntityLoadResult);
 EE_HANDLER(WorldService, FUN_141bbfe30, ecr::SceneGraphAddedMessage);
 EE_HANDLER(WorldService, FUN_141bc0290, ecr::SceneGraphRemovedMessage);
 #endif
+// Scalar deleting dtors told apart by their exe users (fx24): the CNode ones are called by the M10 / M11 FreeNode
+// 0x141bfd620 / 0x141bfd720; the ClassFunHandler one calls FunctorImpl's dtor 0x141bf5210, TPtredDummy's its dtor 0x141bf56c0.
+// MS2-PIN: ??_GCNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsMapV10@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV10@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa4b0
+// MS2-PIN: ??_GCNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsMapV11@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV11@@@@@3@@ATL@@QEAAPEAXI@Z 0x141bfa4f0
+// MS2-PIN: ??_G?$ClassFunHandler@V?$TFunctor@XVEmptyParam@@@@PEAVWorldService@@P82@EAAXXZ@@UEAAPEAXI@Z 0x141bf9a10
+// MS2-PIN: ??_G?$TPtredDummy@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@UEAAPEAXI@Z 0x141bf9e50
+// MS2-PIN: ??_GCNode@?$CRBTree@W4Unk_WsKindKey@@HV?$CElementTraits@W4Unk_WsKindKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAPEAXI@Z 0x141bfa8f0

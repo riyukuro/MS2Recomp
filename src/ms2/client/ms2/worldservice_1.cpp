@@ -16,7 +16,7 @@
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CB_KUUnk_WsVad0@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsVad0@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141bdba60
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@_KPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@_K@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141bdba90
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@PEAXPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@PEAX@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141bdbac0
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@UUnk_WsV9a0@@@std@@V?$_Vector_val@U?$_Simple_types@UUnk_WsV9a0@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141bdbaf0
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@UUnk_WsV9a0@@@std@@V?$_Vector_val@U?$_Simple_types@UUnk_WsV9a0@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141bdbb80 ; m_9a0 (fx24: its caller is the m_9a0 _Vector_alloc ctor 0x141bf2d00; 0x141bdbaf0 is FUN_141bdb1b0's pair<CStringA,CStringA>)
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@UUnk_WsVa00@@@std@@V?$_Vector_val@U?$_Simple_types@UUnk_WsVa00@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141bdbb20
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@UUnk_WsVa18@@@std@@V?$_Vector_val@U?$_Simple_types@UUnk_WsVa18@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141bdbb50
 // MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV990@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV990@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsV990@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x141bdbc70
@@ -11780,10 +11780,11 @@ void FUN_1401643b0(Unk_WsD_LockGuard* g);
 Unk_WsK_NamedText* FUN_141bf7b90(std::vector<Unk_WsVa00>* v, unsigned __int64 i);   // m_a00[i]
 Unk_WsK_NamedRank* FUN_141bf7bc0(std::vector<Unk_WsVa18>* v, unsigned __int64 i);   // m_a18[i]
 // apply the queued (name, text) entries to their display-image props, then clear the queue
-// MS2-FUNCTIONAL: vector COMDATs inlined, unused local container omitted
+// MS2-FUNCTIONAL: vector COMDATs inlined
 // @0x141bdb1b0
 void FUN_141bdb1b0(WorldService* self)
 {
+    std::vector<std::pair<CStringA, CStringA> > unused;   // the exe's unused local (ctor 0x141bf3300, dtor 0x141bf5ef0)
     Unk_WsD_LockGuard guard;
     FUN_140163940(&guard, &self->m_lock);
     if (FUN_140164a80(&guard) == 0)
@@ -11957,3 +11958,4 @@ void FUN_141bdb0f0(WorldService* self, CStringA name, MS2Ptr<Unk_WsK_Rank> value
     FUN_1401643b0(&guard);
 }
 MS2_REPLACE(0x141BDB0F0, FUN_141bdb0f0, 184, 0x1042F222);
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@V?$_Vector_val@U?$_Simple_types@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141bdbaf0 ; FUN_141bdb1b0's unused local (fx24)
