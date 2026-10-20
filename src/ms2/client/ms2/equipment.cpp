@@ -3,6 +3,61 @@
 // MS2-RANGE: 0x1411df590-0x1411ff420 .text$mn
 // MS2-RANGE: 0x1400e81b0-0x1400e8680 .text$di
 // MS2-RANGE: 0x142cad030-0x142cad300 .text$yd
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4SAType@@H@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4SAType@@H@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1411effb0 ; prop
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1411f0430 ; unique
+// MS2-PIN: ??$?0V?$tuple@$$QEAW4Unk_EquipAttrType@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBW4Unk_EquipAttrType@@H@std@@QEAA@AEAV?$tuple@$$QEAW4Unk_EquipAttrType@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1411f04d0 ; unique
+// MS2-PIN: ??$?8_JV?$allocator@_J@std@@@std@@YA_NAEBV?$vector@_JV?$allocator@_J@std@@@0@0@Z 0x1411f06e0 ; unique
+// MS2-PIN: ??$_Assign_range@PEA_J@?$vector@_JV?$allocator@_J@std@@@std@@AEAAXPEA_J0Uforward_iterator_tag@1@@Z 0x1411f0ee0 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1411f11c0 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@$$QEAW4Unk_EquipAttrType@@@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Unk_EquipAttrType@@HU?$less@W4Unk_EquipAttrType@@@std@@V?$allocator@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@$$QEAW4Unk_EquipAttrType@@@1@$$QEAV?$tuple@$$V@1@@Z 0x1411f1360 ; unique
+// MS2-PIN: ??$_Copy_unchecked1@PEA_JPEA_J@std@@YAPEA_JPEA_J00U_Trivially_copyable_ptr_iterator_tag@0@@Z 0x1411f1590 ; unique
+// MS2-PIN: ??$_Kfn@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@?$_Tmap_traits@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@SAAEBHAEBU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@1@@Z 0x1411f44d0 ; unique
+// MS2-PIN: ??$_Kfn@$$CBW4Unk_EquipAttrType@@H@?$_Tmap_traits@W4Unk_EquipAttrType@@HU?$less@W4Unk_EquipAttrType@@@std@@V?$allocator@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@3@$0A@@std@@SAAEBW4Unk_EquipAttrType@@AEBU?$pair@$$CBW4Unk_EquipAttrType@@H@1@@Z 0x1411f44e0 ; unique
+// MS2-PIN: ?_Umove_if_noexcept1@?$vector@HV?$allocator@H@std@@@std@@AEAAXPEAH00U?$integral_constant@_N$00@2@@Z 0x1411f5130 ; prop
+// MS2-PIN: ??$assign@PEA_JX@?$vector@_JV?$allocator@_J@std@@@std@@QEAAXPEA_J0@Z 0x1411f5660 ; unique
+// MS2-PIN: ??$construct@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1411f5760 ; unique
+// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x1411f5c20 ; unique
+// MS2-PIN: ??$forward@$$QEAW4SAType@@@std@@YA$$QEAW4SAType@@AEAW41@@Z 0x1411f5f80 ; unique
+// MS2-PIN: ??$forward@$$QEAW4Unk_EquipAttrType@@@std@@YA$$QEAW4Unk_EquipAttrType@@AEAW41@@Z 0x1411f5f90 ; unique
+// MS2-PIN: ??$forward@AEAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@YAAEAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@0@AEAPEAU10@@Z 0x1411f5fa0 ; unique
+// MS2-PIN: ??$forward@AEAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@PEAX@std@@@std@@YAAEAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@PEAX@0@AEAPEAU10@@Z 0x1411f5fb0 ; unique
+// MS2-PIN: ??0?$CRBMap@HV?$MS2Ptr@VCEquipmentSlot@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCEquipmentSlot@@@@@3@@ATL@@QEAA@_K@Z 0x1411f6490 ; unique
+// MS2-PIN: ??0?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VReplaceObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VReplaceObject@@@@@2@@ATL@@IEAA@_K@Z 0x1411f64c0 ; prop
+// MS2-PIN: ??0?$CRBTree@HV?$MS2Ptr@VCEquipmentSlot@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCEquipmentSlot@@@@@3@@ATL@@IEAA@_K@Z 0x1411f6520 ; prop
+// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@std@@@std@@QEAA@XZ 0x1411f6c00 ; unique
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBW4SAType@@H@std@@PEAX@std@@@std@@QEAA@XZ 0x1411f6d90 ; prop
+// MS2-PIN: ??0?$vector@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@QEAA@XZ 0x1411f6ee0 ; unique
+// MS2-PIN: ??1SetEffectInfo@Equipment@@UEAA@XZ 0x1411f77d0 ; unique
+// MS2-PIN: ??4?$MS2Ptr@VCEquipmentSlot@@@@QEAAAEAV0@AEBV0@@Z 0x1411f7880 ; prop
+// MS2-PIN: ??4?$vector@_JV?$allocator@_J@std@@@std@@QEAAAEAV01@AEBV01@@Z 0x1411f79e0 ; unique
+// MS2-PIN: ??Breference@Unk_LayerBits@@QEBA_NXZ 0x1411f7e50 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VReplaceObject@@@@QEBAPEAVReplaceObject@@XZ 0x1411f7eb0 ; unique
+// MS2-PIN: ?CompareElementsOrdered@?$CDefaultCompareTraits@H@ATL@@SAHAEBH0@Z 0x1411f8860 ; unique
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VReplaceObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VReplaceObject@@@@@2@@ATL@@QEBAPEAU__POSITION@@XZ 0x1411f9170 ; unique
+// MS2-PIN: ?GetNext@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VReplaceObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VReplaceObject@@@@@2@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x1411f9240 ; unique
+// MS2-PIN: ?GetValueAt@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VReplaceObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VReplaceObject@@@@@2@@ATL@@QEAAAEAV?$MS2Ptr@VReplaceObject@@@@PEAU__POSITION@@@Z 0x1411f9360 ; unique
+// MS2-PIN: ?IsNil@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBA_NPEAVCNode@12@@Z 0x1411f9730 ; unique
+// MS2-PIN: ?Maximum@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1411f9b40 ; unique
+// MS2-PIN: ?Minimum@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VReplaceObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VReplaceObject@@@@@2@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1411f9bb0 ; unique
+// MS2-PIN: ?Predecessor@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1411fa3b0 ; unique
+// MS2-PIN: ?SetNil@?$CRBTree@HV?$MS2Ptr@VCEquipmentSlot@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCEquipmentSlot@@@@@3@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x1411fb270 ; unique
+// MS2-PIN: ?Successor@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VReplaceObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VReplaceObject@@@@@2@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1411fb390 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@W4Unk_EquipAttrType@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@W4Unk_EquipAttrType@@@2@XZ 0x1411fce80 ; unique
+// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@@std@@QEBAAEBV?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@2@XZ 0x1411fd130 ; unique
+// MS2-PIN: ?_Umove_if_noexcept1@?$vector@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VSetEffectInfo@Equipment@@@@00U?$integral_constant@_N$0A@@2@@Z 0x1411fdec0 ; prop
+// MS2-PIN: ?_Umove_if_noexcept1@?$vector@V?$MS2Ptr@VCEquipItem@@@@V?$allocator@V?$MS2Ptr@VCEquipItem@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VCEquipItem@@@@00U?$integral_constant@_N$0A@@2@@Z 0x1411fdf00 ; unique
+// MS2-PIN: ??AUnk_LayerBits@@QEAA?AVreference@0@H@Z 0x1411fe3c0 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@std@@@?$Delegate@$$A6AXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1411fe720 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@std@@@?$Delegate@$$A6AXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@@UEAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x1411fecf0 ; unique
+// MS2-PIN: ??$Call@VCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@?$DelegateImpl@U?$pair@PEAVCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@std@@@?$Delegate@$$A6AXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@@CAXAEAU?$pair@PEAVCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@std@@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x1411fed60 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVCEquipment@@P81@EAAXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@std@@@?$Delegate@$$A6AXIV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1411fedd0 ; unique
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VCEquipItem@@@@@std@@@std@@SA_KAEBV?$allocator@V?$MS2Ptr@VCEquipItem@@@@@2@@Z 0x1411fef20 ; unique
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@SA_KAEBV?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@2@@Z 0x1411fef30 ; unique
+// MS2-PIN: ?resize@?$vector@V?$MS2Ptr@VCEquipItem@@@@V?$allocator@V?$MS2Ptr@VCEquipItem@@@@@std@@@std@@QEAAX_KAEBV?$MS2Ptr@VCEquipItem@@@@@Z 0x1411ff120 ; prop
+// MS2-PIN: ?Set@Unk_LayerBits@@QEAAAEAV1@H_N@Z 0x1411ff1a0 ; unique
+// MS2-PIN: ?Test@Unk_LayerBits@@QEBA_NH@Z 0x1411ff380 ; unique
+// MS2-PINS-END tplpin
 // The queue row ?\equipitem.cpp also covers this TU (equipitem.cpp holds 0x1411dbc70-0x1411df580).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\equipment.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -44,7 +99,6 @@
 #include <efd/utf8string.h>
 #include <NiMesh.h>
 #include <set>
-#include <bitset>
 #include <NiCollisionGroup.h>
 #include <NiPick.h>
 #include "ms2/commonfiles/fielddata.h"
@@ -180,6 +234,33 @@ public:
     float m_fStatRate;                                  // +0xa8
 };
 class Unk_MyPCEquip : public PCGemEquip {};
+// The changed set effect groups of 0x1411ec480 (commonfiles\bitset.inl, T = 3; as cameramoveeffectparam.h's
+// Unk_CamMoveBits: fill 0x140afee90, all 0x140afc5a0, set / test 0x140314670 / 0x140314790).
+class Unk_SetEffectBits
+{
+public:
+    Unk_SetEffectBits() { FUN_140afee90(0); }
+    Unk_SetEffectBits& FUN_140314670(int nPos, bool bValue);   // Set
+    bool FUN_140314790(int nPos) const;                         // Test
+    void FUN_140afee90(unsigned char ucValue);                  // Fill
+    bool FUN_140afc5a0() const;                                 // All
+    // @0x1411fe0e0
+    bool FUN_1411fe0e0() const                                  // Any
+    {
+        for (int i = 0; i >= 0; --i)
+            if (m_bits[i] != 0)
+                return true;
+        return false;
+    }
+    // @0x1411ff180
+    Unk_SetEffectBits& FUN_1411ff180()                          // Set every bit
+    {
+        FUN_140afee90(0xff);
+        return *this;
+    }
+    unsigned char m_bits[1];
+};
+MS2_CHECK_SIZE(Unk_SetEffectBits, 1);
 void FUN_141656710(PC* pPC);                            // refresh the local player's stats
 eSetItemLayer::T FUN_140222fb0(int nLayer);             // the set item layer of an equip layer
 int FUN_1406198a0(int nValue, float fRate);             // (int)(nValue * fRate + 1e-6)
@@ -2485,7 +2566,7 @@ void CEquipment::FUN_1411ec480(bool bForce)
             }
         }
     }
-    std::bitset<3> changed;
+    Unk_SetEffectBits changed;
     if (!bForce && m_setEffects.size() == effects.size()) {
         int nLast = -1;
         for (size_t i = 0; i < m_setEffects.size(); i++) {
@@ -2494,23 +2575,23 @@ void CEquipment::FUN_1411ec480(bool bForce)
             if (spOld == 0 && spNew == 0)
                 continue;
             if (spOld.get() == NULL || spNew.get() == NULL || !spNew->FUN_1411dfcf0(spOld))
-                changed.set(i, true);
+                changed.FUN_140314670((int)i, true);
             if (spNew.get() != NULL)
                 nLast = (int)i;
         }
         if (nLast >= 0 && nLast < (int)m_setEffects.size()) {
             MS2Ptr<Equipment::SetEffectInfo> spLast = m_setEffects[nLast];
             if (spLast.get() != NULL && spLast->m_nEffect == 0)
-                changed.set(nLast, true);
+                changed.FUN_140314670(nLast, true);
         }
     } else {
-        changed.set();
+        changed.FUN_1411ff180();
     }
-    if (!changed.any())
+    if (!changed.FUN_1411fe0e0())
         return;
-    if (!changed.all()) {
+    if (!changed.FUN_140afc5a0()) {
         for (size_t i = 0; i < effects.size(); i++) {
-            if (changed.test(i)) {
+            if (changed.FUN_140314790((int)i)) {
                 FUN_1411efa00((int)i);
                 FUN_1411eaa00(effects[i]);
             }
@@ -2825,4 +2906,10 @@ ReplaceObject::~ReplaceObject()
 {
     m_spNode = 0;
     m_spMesh = 0;
+}
+
+// @0x1411f9310
+MS2Ptr<CSetItemManager> PC::FUN_1411f9310()
+{
+    return m_spSetItems;
 }
