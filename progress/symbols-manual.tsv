@@ -3833,3 +3833,6 @@ __imp_NxGetUtilLib	142cced28	data
 ??MUnk_MeratProductKey@@QEBA_NAEBU0@@Z	140899d90	func
 ??0CUgcCharBookMark@@QEAA@V?$MS2Ptr@VCUgcBookMark@@@@@Z	140896c50	func
 ??4Unk_ShopLifeRef@@QEAAAEAV0@AEBV0@@Z	14052caa0	func
+?AddBundle@UIAdPushDialog@@QEAA_NV?$MS2Ptr@VUnk_AdMarketItem@@@@HH_N@Z	140e406c0	func
+?GetSellDayText@CDBPremiumProduct@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	1406a02c0	func
+?UpdateBundles@UIAdPushDialog@@QEAAXV?$MS2Ptr@VUnk_AdMarketItem@@@@@Z	140e40de0	func
