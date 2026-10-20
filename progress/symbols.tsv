@@ -89302,8 +89302,8 @@ IsEqualGUID	140a9a460	func
 ?GetCount@?$CAtlArray@V?$Unk_PayloadPtr@VCQuest@@@@V?$CElementTraits@V?$Unk_PayloadPtr@VCQuest@@@@@ATL@@@ATL@@QEBA_KXZ	140c02f00	func
 ?vfunc_48@UIDailyMissionDialog@@UEAAHXZ	140c02f10	func
 ?vfunc_o178_2@UIQuestEventListener@@UEAAXPEAX@Z	140c02f20	func
-?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDailyMissionDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140c02f30	func
-?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDailyMissionDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140c02f90	func
+?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDailyMissionDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140c02f90	func
+?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDailyMissionDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140c02f30	func
 ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIDailyMissionDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z	140c02ff0	func
 ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIDailyMissionDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z	140c03020	func
 ??$Call@VUIDailyMissionDialog@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUIDailyMissionDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUIDailyMissionDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z	140c03050	func
