@@ -9,9 +9,12 @@
 
 #include "ms2/ms2layout.h"
 
+namespace efd { class Point3; }
+
 struct Unk_StreamPoint
 {
     Unk_StreamPoint();                                              // 0x1402bd040 (NiPoint3())
+    explicit Unk_StreamPoint(const efd::Point3& pt);                // 0x14027dcf0 (NiPoint3(const efd::Point3&))
     Unk_StreamPoint(float, float, float);                           // 0x14027dda0 (efd::Point3(x, y, z))
     Unk_StreamPoint& operator=(const Unk_StreamPoint&);             // 0x140194470
     Unk_StreamPoint FUN_140965c40(const Unk_StreamPoint& pt) const; // efd::Point3::operator-
