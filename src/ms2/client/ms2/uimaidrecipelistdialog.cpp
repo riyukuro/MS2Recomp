@@ -67,7 +67,7 @@ public:
     void FUN_141adc530(int nUiId);                          // open it
 };
 Unk_MdUiMgr* FUN_1403ed2b0();
-bool FUN_1403e8a70(Unk_MdUiRef* pRef);                      // the handle is set
+UIObject* FUN_1403e8a70(Unk_MdUiRef* pRef);                 // the held object, 0 = none
 UIObject* FUN_1403ed9e0(Unk_MdUiRef* pRef);                 // the dialog
 
 // The 16 byte table handles (a pad and the pointer): the destructors and copies are COMDATs of other units.
@@ -202,8 +202,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GF
 
 // @0x1412daa40
 UIMaidRecipeListDialog::UIMaidRecipeListDialog()
+    : m_178(0)
 {
-    m_178 = 0;
     FUN_141924170(1);
 }
 
@@ -336,9 +336,11 @@ void UIMaidRecipeListDialog::FUN_1412db660(int nBook, float fX, float fY)
 // @0x1412db6c0
 void UIMaidRecipeListDialog::FUN_1412db6c0()
 {
-    MS2Ptr<ASMovieClip> spClip(dynamic_cast<ASMovieClip*>(static_cast<AScript*>(m_30)));
-    if (spClip.get() != 0)
-        spClip->FUN_1422c00f0(m_17c.x, m_17c.y);
+    {
+        MS2Ptr<ASMovieClip> spClip(dynamic_cast<ASMovieClip*>(static_cast<AScript*>(m_30)));
+        if (spClip.get() != 0)
+            spClip->FUN_1422c00f0(m_17c.x, m_17c.y);
+    }
     FUN_1412dac40();
 }
 
@@ -453,8 +455,13 @@ int FUN_1412dd760(Unk_MdMaidItem* pItem)
 // @0x1412dd780
 MS2Ptr<Unk_MdMaidRec>& Unk_MdMaidList::FUN_1412dd780(void* pos)
 {
-    if (pos == 0)
-        FUN_140159b70(0x80004005);
+    do                                                      // ATLENSURE(pos != NULL)
+    {
+        int nCond = !!(pos != 0);
+        do {} while (0);
+        if (!nCond)
+            FUN_140159b70(0x80004005);
+    } while (0);
     return static_cast<Node*>(pos)->m_data;
 }
 
@@ -798,7 +805,10 @@ struct Unk_SfAtomic
 // @0x1412e1960
 int Unk_SfAtomic::ExchangeAdd_Sync(int* p, int n)
 {
-    return ExchangeAdd_NoSync(p, n);
+    union { int c; int t; } u;                              // Scaleform's AtomicOps C2T_union
+    u.c = n;
+    u.t = ExchangeAdd_NoSync(p, u.t);
+    return u.c;
 }
 // @0x1412e1990
 int Unk_SfAtomic::ExchangeAdd_NoSync(int* p, int n)
@@ -816,7 +826,7 @@ struct Unk_SfStringData
 // @0x1412e1ab0
 void Unk_SfStringData::Release()
 {
-    if (Unk_SfAtomic::ExchangeAdd_Sync(&m_nRef, -1) == 1)
+    if ((Unk_SfAtomic::ExchangeAdd_Sync(&m_nRef, -1) - 1) == 0)
         FUN_140a5c4c0(this);
 }
 class Unk_SfString
@@ -831,7 +841,10 @@ private:
 // @0x1412e1a70
 Unk_SfStringData* Unk_SfString::GetData() const
 {
-    return (Unk_SfStringData*)(m_tagged & ~3ull);
+    union { Unk_SfStringData* pData; unsigned __int64 nBits; } u;   // String::DataDescUnion
+    u.nBits = m_tagged;
+    u.nBits = u.nBits & ~3ull;
+    return u.pData;
 }
 // @0x1412e1770
 Unk_SfString::~Unk_SfString()
@@ -923,10 +936,12 @@ CString UIMDEditDialog::vfunc_1()
 // @0x1412dda40
 int UIMDEditDialog::vfunc_65()
 {
-    int bOk = UIDialog::vfunc_65();
-    if (bOk != 0)
+    if (UIDialog::vfunc_65() != 0)
+    {
         FUN_1412dfc20();
-    return bOk != 0;
+        return 1;
+    }
+    return 0;
 }
 
 // @0x1412dda70
@@ -969,7 +984,9 @@ void UIMDEditDialog::OnLoadComplete()
 // @0x1412ddcd0
 int UIMDEditDialog::vfunc_13()
 {
-    return UIDialog::vfunc_13() != 0;
+    if (UIDialog::vfunc_13() != 0)
+        return 1;
+    return 0;
 }
 
 // @0x1412ddd00
@@ -1034,9 +1051,9 @@ Unk_MdLayoutItem* FUN_1412e1630(Unk_MdLayoutItem* p)
 // @0x1412df3b0
 int FUN_1412df3b0(const CStringW& str)
 {
-    if (str.IsEmpty())
-        return 0;
-    return _wtoi(str);
+    if (!str.IsEmpty())
+        return _wtoi(str);
+    return 0;
 }
 
 void FUN_1412e1bd0(Unk_MdLayoutItem* p, Unk_140165cf0* pElem);
