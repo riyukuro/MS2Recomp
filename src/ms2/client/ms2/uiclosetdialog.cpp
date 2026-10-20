@@ -4,6 +4,81 @@
 // MS2-RANGE: 0x140bd8ca0-0x140be6eb0 .text$mn
 // MS2-RANGE: 0x1400cab40-0x1400cae10 .text$di
 // MS2-RANGE: 0x142ca1c40-0x142ca1d60 .text$yd
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??$?8PEAVUIClosetDialog@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVUIClosetDialog@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x140be1e00 ; prop
+// MS2-PIN: ??$?8PEAVUIClosetDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIClosetDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x140be1e70 ; prop
+// MS2-PIN: ??$?8PEAVUIClosetDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIClosetDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x140be1ee0 ; prop
+// MS2-PIN: ??$FUN_14028dfa0@_J@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEB_J@Z 0x140be2540 ; unique
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x140be2a00 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x140be2aa0 ; prop
+// MS2-PIN: ??0Unk_ClSaveRec@@QEAA@XZ 0x140be31f0 ; unique
+// MS2-PIN: ?AssignRaw@?$MS2Ptr@UTabInfo@ItemCloset@@@@QEAAAEAV1@PEAUTabInfo@ItemCloset@@@Z 0x140be3860 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VCSlotData@UICloset@@@@QEBA_NPEAVCSlotData@UICloset@@@Z 0x140be3bb0 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@UPendingKeyInput@UICloset@@@@QEBAPEAUPendingKeyInput@UICloset@@XZ 0x140be3c70 ; unique
+// MS2-PIN: ??C?$MS2Ptr@USlotInfo@ItemCloset@@@@QEBAPEAUSlotInfo@ItemCloset@@XZ 0x140be3cd0 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VASDataProvider@@@@QEBAPEAVASDataProvider@@XZ 0x140be3d00 ; unique
+// MS2-PIN: ?FUN_140be4700@PendingKeyInput@CGameOptionCommon@@QEAAIXZ 0x140be4700 ; unique
+// MS2-PIN: ?FUN_140be4750@@YA?AW4EquipSlotType@@_J@Z 0x140be4750 ; unique
+// MS2-PIN: ?vfunc_48@UIClosetDialog@@UEAAHXZ 0x140be47c0 ; unique
+// MS2-PIN: ?Ready@PendingKeyInput@CGameOptionCommon@@UEAA_NXZ 0x140be4cb0 ; unique
+// MS2-PIN: ?IsEmpty@?$CAtlArray@V?$MS2Ptr@USlotInfo@ItemCloset@@@@V?$CElementTraits@V?$MS2Ptr@USlotInfo@ItemCloset@@@@@ATL@@@ATL@@QEBA_NXZ 0x140be4e00 ; unique
+// MS2-PIN: ?IsEmpty@?$CAtlArray@V?$MS2Ptr@VCSlotData@UICloset@@@@V?$CElementTraits@V?$MS2Ptr@VCSlotData@UICloset@@@@@ATL@@@ATL@@QEBA_NXZ 0x140be4e30 ; unique
+// MS2-PIN: ?IsEmpty@?$CAtlArray@V?$MS2Ptr@VCTab@UICloset@@@@V?$CElementTraits@V?$MS2Ptr@VCTab@UICloset@@@@@ATL@@@ATL@@QEBA_NXZ 0x140be4e60 ; unique
+// MS2-PIN: ?IsEmpty@?$CAtlArray@W4EquipSlotType@@V?$CElementTraits@W4EquipSlotType@@@ATL@@@ATL@@QEBA_NXZ 0x140be4e90 ; unique
+// MS2-PIN: ?IsEmpty@?$CRBTree@HV?$MS2Ptr@VCSlotData@UICloset@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSlotData@UICloset@@@@@3@@ATL@@QEBA_NXZ 0x140be4ec0 ; unique
+// MS2-PIN: ?IsOwned@CSlotData@UICloset@@QEAA_NXZ 0x140be4ef0 ; unique
+// MS2-PIN: ?FUN_140be4f00@PendingKeyInput@CGameOptionCommon@@QEAA_NXZ 0x140be4f00 ; unique
+// MS2-PIN: ?IsChanged@CSlotData@UICloset@@QEAA_NXZ 0x140be4f50 ; unique
+// MS2-PIN: ?vfunc_33@UIItemEventListener@@UEAAXHH@Z 0x140be53b0 ; unique
+// MS2-PIN: ?vfunc_29@UIItemEventListener@@UEAAXPEAX@Z 0x140be53c0 ; unique
+// MS2-PIN: ?vfunc_28@UIItemEventListener@@UEAAXPEAX@Z 0x140be53d0 ; unique
+// MS2-PIN: ?vfunc_26@UIItemEventListener@@UEAAXH@Z 0x140be53e0 ; unique
+// MS2-PIN: ?vfunc_27@UIItemEventListener@@UEAAXH@Z 0x140be53f0 ; unique
+// MS2-PIN: ?vfunc_34@UIItemEventListener@@UEAAXXZ 0x140be5400 ; unique
+// MS2-PIN: ?vfunc_24@UIItemEventListener@@UEAAXPEAX@Z 0x140be5410 ; unique
+// MS2-PIN: ?vfunc_22@UIItemEventListener@@UEAAXPEAX@Z 0x140be5420 ; unique
+// MS2-PIN: ?vfunc_25@UIItemEventListener@@UEAAXPEAX@Z 0x140be5430 ; unique
+// MS2-PIN: ?vfunc_23@UIItemEventListener@@UEAAXPEAX@Z 0x140be5440 ; unique
+// MS2-PIN: ?vfunc_32@UIItemEventListener@@UEAAXPEAXHH@Z 0x140be5450 ; unique
+// MS2-PIN: ?vfunc_31@UIItemEventListener@@UEAAXPEAX@Z 0x140be5470 ; unique
+// MS2-PIN: ?vfunc_30@UIItemEventListener@@UEAAXPEAX@Z 0x140be5480 ; unique
+// MS2-PIN: ?vfunc_2@UIItemEventListener@@UEAAXPEAX@Z 0x140be5490 ; unique
+// MS2-PIN: ?vfunc_4@UIItemEventListener@@UEAAXPEAXH@Z 0x140be54a0 ; unique
+// MS2-PIN: ?vfunc_5@UIItemEventListener@@UEAAXPEAXH@Z 0x140be54b0 ; unique
+// MS2-PIN: ?vfunc_il6@UIItemEventListener@@UEAAXPEAX@Z 0x140be54c0 ; unique
+// MS2-PIN: ?vfunc_il8@UIItemEventListener@@UEAAXPEAX@Z 0x140be54d0 ; unique
+// MS2-PIN: ?vfunc_il7@UIItemEventListener@@UEAAXPEAX@Z 0x140be54e0 ; unique
+// MS2-PIN: ?vfunc_9@UIItemEventListener@@UEAAXPEAX@Z 0x140be54f0 ; unique
+// MS2-PIN: ?vfunc_il13@UIItemEventListener@@UEAAXXZ 0x140be5500 ; unique
+// MS2-PIN: ?vfunc_il11@UIItemEventListener@@UEAAXPEAX@Z 0x140be5510 ; unique
+// MS2-PIN: ?vfunc_18@UIItemEventListener@@UEAAXPEAX@Z 0x140be5540 ; unique
+// MS2-PIN: ?vfunc_20@UIItemEventListener@@UEAAXPEAX@Z 0x140be5550 ; unique
+// MS2-PIN: ?vfunc_19@UIItemEventListener@@UEAAXPEAX@Z 0x140be5560 ; unique
+// MS2-PIN: ?vfunc_14@UIItemEventListener@@UEAAXPEAX@Z 0x140be5570 ; unique
+// MS2-PIN: ?vfunc_16@UIItemEventListener@@UEAAXPEAX@Z 0x140be5580 ; unique
+// MS2-PIN: ?vfunc_17@UIItemEventListener@@UEAAXPEAXH@Z 0x140be5590 ; unique
+// MS2-PIN: ?vfunc_15@UIItemEventListener@@UEAAXPEAX@Z 0x140be55a0 ; unique
+// MS2-PIN: ?SetTab@PendingKeyInput@UICloset@@QEAAXV?$MS2Ptr@VCTab@UICloset@@@@@Z 0x140be61d0 ; unique
+// MS2-PIN: ?SetOwned@CSlotData@UICloset@@QEAAX_N@Z 0x140be6210 ; unique
+// MS2-PIN: ?FUN_140be6230@PendingKeyInput@CGameOptionCommon@@QEAAXAEBI@Z 0x140be6230 ; unique
+// MS2-PIN: ?FUN_140be6250@PendingKeyInput@CGameOptionCommon@@QEAAX_N@Z 0x140be6250 ; unique
+// MS2-PIN: ?FUN_140be62e0@ASTooltip@@QEAAXPEAX@Z 0x140be62e0 ; unique
+// MS2-PIN: ?SetChanged@CSlotData@UICloset@@QEAAX_N@Z 0x140be6300 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140be69f0 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140be6a50 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140be6ab0 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x140be6b10 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140be6b40 ; unique
+// MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140be6b70 ; unique
+// MS2-PIN: ??$Call@VUIClosetDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIClosetDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x140be6c30 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140be6c70 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140be6cd0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIClosetDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140be6d30 ; unique
+// MS2-PINS-END tplpin
+// MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@USlotInfo@ItemCloset@@@@V?$CElementTraits@V?$MS2Ptr@USlotInfo@ItemCloset@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@USlotInfo@ItemCloset@@@@_K@Z 0x140be4540 ; manual: only caller PopulateItems (TabInfo::m_slots)
+// MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCSlotData@UICloset@@@@V?$CElementTraits@V?$MS2Ptr@VCSlotData@UICloset@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCSlotData@UICloset@@@@_K@Z 0x140be4580 ; manual: exe callers pass this+0x1a0 (m_slots)
+// MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCTab@UICloset@@@@V?$CElementTraits@V?$MS2Ptr@VCTab@UICloset@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCTab@UICloset@@@@_K@Z 0x140be45c0 ; manual: exe callers pass this+0x180 (m_tabs)
+// MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiclosetdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiclosetdialog.h"
@@ -197,7 +272,6 @@ ItemCloset::TabInfo::~TabInfo()
 
 // @0x140be30d0
 UICloset::CTab::CTab()
-    : m_info(0)
 {
 }
 
@@ -326,8 +400,7 @@ bool UICloset::PendingKeyInput::Ready()
 
 // @0x140bd9290
 UIClosetDialog::UIClosetDialog()
-    : m_changed(10), m_save(0), m_clear(0), m_putOn(0), m_inputKey(0), m_tab(0), m_tabAdd(0), m_equipLayer(0),
-      m_symbol(0), m_pendingKey(0), m_pendingSwap(0)
+    : m_changed(10)
 {
     m_nLayer = 3;
     m_88 = 1;

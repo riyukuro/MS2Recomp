@@ -43,7 +43,7 @@ class CTab : public CPtred
 {
 public:
     CTab();                                                     // 0x140be30d0
-    virtual ~CTab() {}                                          // 0x140be3650 (??_G 0x140be3f20)
+    virtual ~CTab() = default;                                  // 0x140be3650 (no vptr store; ??_G 0x140be3f20)
 
     bool Initialize(const CStringW& strName, int nLayer);       // 0x140bd8ca0 new record
     void SetInfo(MS2Ptr<ItemCloset::TabInfo> spInfo);           // 0x140bd8db0
@@ -65,7 +65,7 @@ class CSlotData : public CPtred
 {
 public:
     CSlotData(MS2Ptr<ItemCloset::SlotInfo> spInfo, MS2Ptr<CItem> spItem, bool bOwned);   // 0x140be3030
-    virtual ~CSlotData() {}                                     // 0x140be3610 (??_G 0x140be3ee0)
+    virtual ~CSlotData() = default;                             // 0x140be3610 (no vptr store; ??_G 0x140be3ee0)
 
     void CopyFrom(MS2Ptr<CSlotData> spOther);                   // 0x140bd9140
     MS2Ptr<CItem> RecreateItem();                               // 0x140bd9190 a display item from the record
@@ -85,7 +85,7 @@ public:
 struct PendingKeyInput : public CGameOptionCommon::PendingKeyInput
 {
     PendingKeyInput();                                          // 0x140be31a0
-    virtual ~PendingKeyInput() {}                               // 0x140be36b0 (??_G 0x140be3fa0)
+    virtual ~PendingKeyInput() = default;                       // 0x140be36b0 (no vptr store; ??_G 0x140be3fa0)
     virtual void Clear();                                       // 1 0x140be4380
     virtual bool Ready();                                       // 2 0x140be4cc0
 
