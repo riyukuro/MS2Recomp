@@ -118,6 +118,7 @@ public:
     template <class T> MS2Ptr<T> FUN_140accef0(const CString& strName);                      // child control by name (the adventure level lists)
     template <class T> MS2Ptr<T> FUN_140acce30(const CString& strName);                      // same, one COMDAT per wrapper class (w47: pet evolution)
     template <class T> MS2Ptr<T> FUN_140accfb0(const CString& strName);
+    template <class T> MS2Ptr<T> FUN_140bbe880(const CString& strName);    // bind a typed child (uiguilddialog "m_gradeName" as ASTextInput)
     template <class T> MS2Ptr<T> FUN_140c11f50(const CString& strName);                      // child control by name (check box; uirankpvpdialog.cpp)
     template <class T> MS2Ptr<T> FUN_140bfa6a0(const CString& strName);                      // child control by name (alliance quest list)
     template <class T> MS2Ptr<T> FUN_140be23c0(const CString& strName);                      // child control by name (tab bar; uidailymissiondialog.cpp)
@@ -148,6 +149,8 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, Unk_UgcOpenType a1);          // 0x141b3b610 (inline COMDAT, defined in uiugcimageuploaddialog.cpp; an Int value of the open type)
     Scaleform::GFx::Value Invoke(const char* szMethod, const char* a1, bool a2);             // 0x141aa2d90 (inline COMDAT, defined in uiquestdialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, class ASFunction a1);                 // 0x1409bb370 (inline COMDAT, defined in asitemslot.cpp; a1 by value: the callee destroys it)
+    Scaleform::GFx::Value FUN_141b06d40(const char* szMethod, class ASDataProvider* a1, unsigned char a2);   // 0x141b06d40 (inline COMDAT, defined in uishopdialog.cpp: Invoke with a list and a flag)
+    Scaleform::GFx::Value FUN_141b06e00(const char* szMethod, unsigned __int64 a1, unsigned int a2);        // 0x141b06e00 (inline COMDAT, defined in uishopdialog.cpp: Invoke with a UInt64 and a UInt)
     Scaleform::GFx::Value Invoke(const char* szMethod, class ASSlot a1);                     // 0x1409bb460 (inline COMDAT, defined in asitemslot.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, long a1, int a2);                     // 0x141a004c0 (inline COMDAT, defined in uimessagebox.cpp; Int/Int values, (int, int) is taken by 0x140acd070)
     Scaleform::GFx::Value Invoke(const char* szMethod, const char* a1, CStringW a2);  // 0x141a00580 (inline COMDAT, defined in uimessagebox.cpp)
@@ -173,6 +176,7 @@ public:
     template<class T> MS2Ptr<T> FUN_140bc7340(const CString&, MS2Ptr<T>&); // bind list (debug guide)
     template<class T> MS2Ptr<T> FUN_140c12010(const CString&, MS2Ptr<T>&); // bind check box (party search register)
     template<class T> MS2Ptr<T> FUN_140bc7100(const CString&, MS2Ptr<T>&); // bind icon (DT attendance)
+    template<class T> MS2Ptr<T> FUN_140bc6e60(const CString&, MS2Ptr<T>&); // bind gauge (uidungeonroomdialog "m_summaryGauge")
     template<class T> MS2Ptr<T> FUN_140e159f0(const CString&);               // child control by name, one COMDAT per wrapper class (dungeon helper)
     template<class F> void FUN_1422c2a70(const F&, int); // click callback (DT attendance)
     Scaleform::GFx::Value& FUN_1422bb890(); // root value forwarding accessor
@@ -226,6 +230,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, bool a2);                    // 0x140f356e0 (inline COMDAT, defined in uidarkstreamscoredialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, bool a3);            // 0x140f9d9e0 (inline COMDAT, defined in uishadowexpeditionbossbar.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, bool a1, bool a2);                   // 0x140fc1a70 (inline COMDAT, defined in uiwatchagamedialog.cpp)
+    Scaleform::GFx::Value FUN_14197a3e0(const char* szMethod, bool a1, bool a2, bool a3);   // 0x14197a3e0 (inline COMDAT, defined in uiguilddialog.cpp: Invoke with three Booleans)
     Scaleform::GFx::Value FUN_140e6b140(const char* szMethod, int a1, CString a2);          // 0x140e6b140 (a2 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2);                // 0x140e0a8c0 (inline COMDAT, defined in uichapterbook.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, CStringW a2, int a3);        // 0x140e65dd0 (inline COMDAT, defined in uimicrogamecoupledancemessage.cpp; a2 by value: the callee destroys it)

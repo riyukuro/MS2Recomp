@@ -50,6 +50,9 @@
 #include "ms2/commonfiles/rewardcontentstable.h"
 #include "ms2/commonfiles/userproxy.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/notifysystem.h"
+#include "ms2/commonfiles/achievedata.h"
+#include "ms2/placeholder/astooltip.h"
 #include <algorithm>
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2format.h"
@@ -111,6 +114,19 @@ ItemDropTable* FUN_1405a1fd0();                                                 
 CRewardPreviewTable* FUN_140f26650();                                                   // TSingleton<CRewardPreviewTable>::GetInstance
 CInputKeyHandler* FUN_14025e7c0();                                                      // TSingleton<CInputKeyHandler>::GetInstance
 void* FUN_140764030();                                                                  // TSingleton<RewardContentsTable>::GetInstance
+PacketHandlerManager* FUN_140bccd50();                                                  // TSingleton<PacketHandlerManager>::GetInstance
+NotifySystem* FUN_140939a10();                                                          // TSingleton<NotifySystem>::GetInstance
+void FUN_140d73ff0(CStringW strText);                                                   // a notice box
+void FUN_140d00750(const Scaleform::GFx::Value& root, CString strName, int nGroup);     // unbind a child's tooltip group
+void FUN_1422c6380(Scaleform::GFx::Value& value, int nGroup);                           // bind a tooltip group
+bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<ASItemRendererBase> >& out, unsigned nStart);
+CStringW FUN_140b99450(CStringW strKey, const CStringW& strArg1, const unsigned& nArg2);
+CStringW FUN_140cbf840(int nGroupType);                                                 // the dungeon group name (translateenum)
+bool FUN_140e14520(int nGroupType);                                                     // the group has rooms to list
+CStringW FUN_1409e88d0(int nStringId, const unsigned short& nArg);
+CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
+CStringW FUN_140b8e9a0(const CMsTime& time);                                            // the remaining time text
+extern int DAT_143ab288c;                                                               // the id of the last portal used (mypc.cpp)
 bool FUN_140930b40();                                                                   // the local player is in a dungeon
 // CUIService (uiservice.h) as this unit calls it.
 class Unk_DrUIService
@@ -1669,3 +1685,671 @@ int UIDungeonRoomInfo::IsCooldown()
     return 1;
 }
 MS2_REPLACE_METHOD(0x1412B6BB0, UIDungeonRoomInfo, IsCooldown, 214, 0xE7D9E1CC);
+
+// @0x1412b6c90
+UIDungeonRoomDialog::UIDungeonRoomDialog()
+{
+    m_178 = 0;
+    m_17c = 0;
+    m_80 = 0;
+    FUN_141924170(1);
+    FUN_140bccd50()->RegisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonRoomDialog::OnRoomPacket));
+    FUN_140bccd50()->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonRoomDialog::OnRoomPacket53));
+}
+
+// @0x1412b6f60
+UIDungeonRoomDialog::~UIDungeonRoomDialog()
+{
+    FUN_140bccd50()->UnregisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonRoomDialog::OnRoomPacket));
+    FUN_140bccd50()->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonRoomDialog::OnRoomPacket53));
+}
+
+// @0x1412b71d0
+CString UIDungeonRoomDialog::vfunc_1()
+{
+    return "DungeonRoomDialog";
+}
+MS2_REPLACE_METHOD(0x1412B71D0, UIDungeonRoomDialog, vfunc_1, 61, 0xCFD0FB0C);
+
+// @0x1412b7220
+void UIDungeonRoomDialog::OnLoadComplete()
+{
+    UIDialog::OnLoadComplete();
+    FUN_141925fa0("m_dragBar");
+    FUN_141925ec0("m_closeButton");
+    MS2Ptr<ASMovieClip> spInfoPanel;
+    FUN_140c57ce0("m_dungeonInfo", spInfoPanel);
+    if (spInfoPanel == 0)
+        return;
+    m_spInfo.AssignRaw(new UIDungeonRoomInfo(this, spInfoPanel));
+    do
+    {
+        m_30->FUN_140bbe7c0("m_dungoenGroupCombo", m_dungeonGroupCombo);
+        if (m_dungeonGroupCombo == 0)
+            throw DR_SWF_ERROR(0x6d7);
+    } while (0);
+    do
+    {
+        m_30->FUN_140c57d70("m_dungeonList", m_dungeonList);
+        if (m_dungeonList == 0)
+            throw DR_SWF_ERROR(0x6d8);
+    } while (0);
+    do
+    {
+        m_30->FUN_141009c70("m_seasonSummary", m_1f0);
+        if (m_1f0 == 0)
+            throw DR_SWF_ERROR(0x6d9);
+    } while (0);
+    FUN_1422c6380((*m_1f0).FUN_1422bb890(), 2);
+    FUN_140c123f0((*m_30).FUN_1422bb890(), "m_dungeonListItem", 0x15, m_240, 1);
+    do
+    {
+        static_cast<ASUIComponent*>(m_1f0)->FUN_140bc6e60("m_summaryGauge", m_220);
+        if (m_220 == 0)
+            throw DR_SWF_ERROR(0x6df);
+    } while (0);
+    m_dungeonGroupCombo->FUN_1422df9a0(Delegate<void(const ASParams&)>(this, &UIDungeonRoomDialog::OnGroupChanged), 0);
+    m_dungeonList->FUN_1422dce60(Delegate<void(const ASParams&)>(this, &UIDungeonRoomDialog::OnRoomSelected), 0);
+    for (unsigned i = 0; i < m_240.size(); ++i)
+        m_240[i]->FUN_1422e1f50(Delegate<void(const ASParams&)>(this, &UIDungeonRoomDialog::OnListItemData), FUN_140bd09d0(i));
+    RefreshGroupList();
+    int nGroup = 0;
+    unsigned nRoomId = 0;
+    if (m_17c != 0)
+        nGroup = GroupOfType(m_17c);
+    if (m_spRoom.get() != NULL)
+    {
+        nGroup = GroupOfType(m_spRoom->m_groupType);
+        nRoomId = m_spRoom->GetDungeonRoomID();
+        m_spInfo->FUN_1412b4150(m_spRoom);
+    }
+    if (!SelectGroup(nGroup, nRoomId))
+    {
+        if (TypeOfGroup(nGroup) != 0)
+        {
+            FUN_140d73ff0(L"s_room_dungeon_notFoundList");
+            vfunc_67();
+        }
+        if (!SelectGroup(1, 0) && !SelectGroup(2, 0))
+        {
+            (void)((!!(0)) || (_wassert(L"0", _CRT_WIDE(MS2_THIS_FILE), 0x704), 0));
+            vfunc_67();
+        }
+    }
+    Refresh();
+    FUN_140bccd50()->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonRoomDialog::OnPartyPacket));
+    FUN_140939a10()->RegisterNotify(L"NotifyDebugMode", Delegate<void(NotifyObject*)>(this, &UIDungeonRoomDialog::OnNotifyDebugMode));
+    FUN_140939a10()->RegisterNotify(L"NotifyDungeonEnterState", Delegate<void(NotifyObject*)>(this, &UIDungeonRoomDialog::OnNotifyEnterState));
+}
+MS2_REPLACE_METHOD(0x1412B7220, UIDungeonRoomDialog, OnLoadComplete, 4170, 0x608F77F2);
+
+// @0x1412b82f0
+void UIDungeonRoomDialog::vfunc_26()
+{
+    UIDialog::vfunc_26();
+    FUN_140939a10()->UnregisterNotify(L"NotifyDebugMode", Delegate<void(NotifyObject*)>(this, &UIDungeonRoomDialog::OnNotifyDebugMode));
+    FUN_140939a10()->UnregisterNotify(L"NotifyDungeonEnterState", Delegate<void(NotifyObject*)>(this, &UIDungeonRoomDialog::OnNotifyEnterState));
+    m_178 = 0;
+    FUN_140d00750(FUN_1422dbb40(), "m_partyMembers", 2);
+    FUN_140d00750(FUN_1422dbb40(), "m_cooldownIcon", 2);
+    FUN_140d00750(FUN_1422dbb40(), "m_requireCondition", 2);
+    if (m_1f0)
+        FUN_1422c63f0((*m_1f0).FUN_1422bb890(), 2);
+    m_spInfo = 0;
+    m_dungeonList = 0;
+    m_dungeonGroupCombo = 0;
+    m_1f0 = 0;
+    m_220 = 0;
+    m_240.clear();
+    DAT_143ab288c = 0;
+    SetRoom(MS2Ptr<DungeonRoom>(0));
+    m_17c = 0;
+    FUN_140bccd50()->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonRoomDialog::OnPartyPacket));
+}
+MS2_REPLACE_METHOD(0x1412B82F0, UIDungeonRoomDialog, vfunc_26, 1215, 0xAFD379DC);
+
+// @0x1412b87c0
+void UIDungeonRoomDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
+{
+    if (m_spRoom == 0)
+        return;
+    CString strName = pArgs->FUN_1422b8d30();
+    if (strName == "m_partyMembers")
+    {
+        if (m_spInfo)
+        {
+            CStringW strStatus = m_spInfo->FUN_1412b4100();
+            if (strStatus.IsEmpty())
+                return;
+            ASTooltip tooltip(1, 2);
+            tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
+            tooltip.FUN_1409c6e00(300);
+            tooltip.FUN_1409c6e30(60000);
+            tooltip.FUN_1409c6dc0(5);
+            tooltip.FUN_1409c6cb0(strStatus);
+            *pRetVal = tooltip.FUN_1422bb870();
+        }
+    }
+    else if (strName == "m_requireCondition")
+    {
+        if (m_spRoom->m_limitAchieveID != 0)
+            ShowAchieveTooltip(pRetVal);
+        else if (m_spRoom->m_limitVIP)
+            ShowVipTooltip(pRetVal);
+    }
+    else if (strName == "m_cooldownIcon")
+    {
+        ASTooltip tooltip(*pRetVal, 2);
+        unsigned nRewardRoomId = m_spRoom->GetRewardRoomID();
+        DungeonRecordCliPtr spRecord = FUN_140931510()->FUN_140d9f2c0()->GetRecord(nRewardRoomId);
+        if (spRecord.get() != NULL)
+            tooltip.FUN_1409e26b0(FUN_14052bd00(0x9a4, FUN_140b8e9a0(CMsTime(spRecord->GetExpire()))));
+    }
+    else if (strName == "m_seasonSummary")
+    {
+        FUN_1412b9460();
+        ASTooltip tooltip(1, 2);
+        tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
+        tooltip.FUN_1409c6e00(300);
+        tooltip.FUN_1409c6e30(60000);
+        tooltip.FUN_1409c6dc0(7);
+        tooltip.FUN_1409c6cb0(m_188);
+        *pRetVal = tooltip.FUN_1422bb870();
+    }
+}
+MS2_REPLACE_METHOD(0x1412B87C0, UIDungeonRoomDialog, vfunc_49, 1271, 0x0844F104);
+
+// @0x1412b8cc0
+void UIDungeonRoomDialog::vfunc_43()
+{
+    UIDialog::vfunc_43();
+}
+MS2_REPLACE_METHOD(0x1412B8CC0, UIDungeonRoomDialog, vfunc_43, 24, 0x3D64AD4B);
+
+// @0x1412b8ce0
+void UIDungeonRoomDialog::OnPartyPacket(CInPacket& packet)
+{
+    unsigned char nCmd = packet.vfunc_o8_1();
+    if (nCmd > 1 && (nCmd < 4 || nCmd == 9 || nCmd == 25))
+        Refresh();
+}
+MS2_REPLACE_METHOD(0x1412B8CE0, UIDungeonRoomDialog, OnPartyPacket, 108, 0x3014D536);
+
+// @0x1412b8d60
+void UIDungeonRoomDialog::OnRoomPacket(CInPacket& packet)
+{
+    unsigned char nCmd = packet.vfunc_o8_1();
+    if (nCmd != 6)
+    {
+        if (nCmd == 7)
+        {
+            if (packet.vfunc_o8_1() != 5)
+                return;
+            if (m_180 != 0)
+                return;
+            ShowGroup(0, 0);
+            return;
+        }
+        if (nCmd != 20)
+            return;
+    }
+    if (FUN_141924630())
+        Refresh();
+}
+MS2_REPLACE_METHOD(0x1412B8D60, UIDungeonRoomDialog, OnRoomPacket, 194, 0x9780EBBF);
+
+// @0x1412b8e30
+void UIDungeonRoomDialog::OnRoomPacket53(CInPacket& packet)
+{
+    if (!FUN_141924630())
+        return;
+    unsigned char nCmd = packet.vfunc_o8_1();
+    if ((nCmd == 2 || (nCmd > 6 && (nCmd < 10 || nCmd == 30))) && m_spInfo)
+    {
+        m_spInfo->FUN_1412b3e90();
+        m_spInfo->FUN_1412b3fe0();
+    }
+}
+MS2_REPLACE_METHOD(0x1412B8E30, UIDungeonRoomDialog, OnRoomPacket53, 195, 0x540C14C1);
+
+// @0x1412b8f00
+bool UIDungeonRoomDialog::FUN_1412b8f00(int nId)
+{
+    if ((unsigned)nId <= 100000)
+    {
+        MS2Ptr<DungeonRoom> spRoom = FUN_14031c2a0()->GetFirstRoom(nId);
+        if (!(spRoom == 0))
+        {
+            FUN_1412b8ff0(spRoom->GetDungeonRoomID());
+            return true;
+        }
+        FUN_140d73ff0(L"s_msg_preparing");
+        return false;
+    }
+    return FUN_1412b8ff0(nId);
+}
+MS2_REPLACE_METHOD(0x1412B8F00, UIDungeonRoomDialog, FUN_1412b8f00, 222, 0xF6C57BAE);
+
+// @0x1412b8ff0
+bool UIDungeonRoomDialog::FUN_1412b8ff0(int nRoomId)
+{
+    MS2Ptr<DungeonRoom> spRoom = FUN_14031c2a0()->GetRoom(nRoomId);
+    bool bNull = spRoom == 0;
+    if (!bNull)
+        SetRoom(spRoom);
+    else
+        FUN_140d73ff0(L"s_msg_preparing");
+    return !bNull;
+}
+MS2_REPLACE_METHOD(0x1412B8FF0, UIDungeonRoomDialog, FUN_1412b8ff0, 212, 0x055B9EC8);
+
+// @0x1412b90d0
+void UIDungeonRoomDialog::FUN_1412b90d0(int nType)
+{
+    m_17c = nType;
+}
+MS2_REPLACE_METHOD(0x1412B90D0, UIDungeonRoomDialog, FUN_1412b90d0, 25, 0x7735FA22);
+
+// @0x1412b90f0
+void UIDungeonRoomDialog::FUN_1412b90f0(int n)
+{
+    m_178 = n;
+}
+MS2_REPLACE_METHOD(0x1412B90F0, UIDungeonRoomDialog, FUN_1412b90f0, 25, 0x11D24FAE);
+
+// @0x1412b9110
+void UIDungeonRoomDialog::FUN_1412b9110()
+{
+    m_180 = 0;
+}
+MS2_REPLACE_METHOD(0x1412B9110, UIDungeonRoomDialog, FUN_1412b9110, 21, 0x9F36C97E);
+
+// @0x1412b9130
+void UIDungeonRoomDialog::Refresh()
+{
+    if (m_30 == 0)
+        return;
+    if (FUN_1403ed2d0()->FUN_141bd0cc0() == NULL || m_spRoom == 0)
+        return;
+    m_spInfo->Refresh();
+    RefreshSubTitle();
+    RefreshSeasonSummary();
+}
+MS2_REPLACE_METHOD(0x1412B9130, UIDungeonRoomDialog, Refresh, 147, 0x1A5DA323);
+
+// @0x1412b91d0
+void UIDungeonRoomDialog::RefreshSubTitle()
+{
+    CStringW strTitle = FUN_140b99450(L"s_dungeonRoom_subTitle", FUN_140cbf840(m_spRoom->m_groupType), m_spRoom->m_maxUserCount);
+    FUN_140cfee80(FUN_1422dbb40(), "m_subTitle", strTitle);
+}
+MS2_REPLACE_METHOD(0x1412B91D0, UIDungeonRoomDialog, RefreshSubTitle, 329, 0x5D140529);
+
+// @0x1412b9320
+void UIDungeonRoomDialog::FUN_1412b9320()
+{
+    if (m_spInfo)
+        m_spInfo->RefreshReward();
+}
+MS2_REPLACE_METHOD(0x1412B9320, UIDungeonRoomDialog, FUN_1412b9320, 65, 0xA8D9ECC1);
+
+// @0x1412b9370
+void UIDungeonRoomDialog::RefreshSeasonSummary()
+{
+    if (m_30 == 0)
+        return;
+    if (!FUN_140166410()->FUN_14036d570(0x72))
+        static_cast<ASUIComponent*>(m_1f0)->vfunc_4(false);
+    else if (!m_spRoom->IsSeasonRankRoom())
+        static_cast<ASUIComponent*>(m_1f0)->vfunc_4(false);
+    else
+        static_cast<ASUIComponent*>(m_1f0)->vfunc_4(false);
+}
+MS2_REPLACE_METHOD(0x1412B9370, UIDungeonRoomDialog, RefreshSeasonSummary, 234, 0x76B6D762);
+
+// @0x1412b9460
+void UIDungeonRoomDialog::FUN_1412b9460()
+{
+}
+
+// @0x1412b9470
+void UIDungeonRoomDialog::OnGroupChanged(const ASParams& params)
+{
+    int nIndex = m_dungeonGroupCombo->FUN_1422df6c0();
+    if ((size_t)nIndex < m_dungeonIds.size())
+        ShowGroup(m_dungeonIds[nIndex], 0);
+}
+MS2_REPLACE_METHOD(0x1412B9470, UIDungeonRoomDialog, OnGroupChanged, 120, 0x88ADA732);
+
+// @0x1412b94f0
+void UIDungeonRoomDialog::OnRoomSelected(const ASParams& params)
+{
+    size_t nIndex = m_dungeonList->FUN_1422dccd0();
+    if (nIndex < m_rooms.size() && !(m_spRoom == m_rooms[nIndex].get()))
+    {
+        SetRoom(m_rooms[nIndex]);
+        Refresh();
+    }
+}
+MS2_REPLACE_METHOD(0x1412B94F0, UIDungeonRoomDialog, OnRoomSelected, 222, 0xE1710678);
+
+// @0x1412b95e0
+void UIDungeonRoomDialog::OnListItemData(const ASParams& params)
+{
+    size_t nItem = reinterpret_cast<size_t>(params.pUserData);
+    if (nItem >= m_240.size())
+        return;
+    MS2Ptr<ASItemRendererBase> spItem = m_240[nItem];
+    if (spItem == 0)
+        return;
+    unsigned nRoom = params.pArgs[0].GetUInt();
+    if (nRoom < m_rooms.size())
+    {
+        if (nRoom < m_rooms.size())
+        {
+            CStringW strText = FUN_140e14bd0(m_rooms[nRoom], true);
+            spItem->FUN_1422c1fe0(1);
+            spItem->FUN_1422cdfb0(strText);
+        }
+    }
+    else
+    {
+        spItem->FUN_1422cdfb0(L"");
+        spItem->FUN_1422c1fe0(0);
+    }
+}
+MS2_REPLACE_METHOD(0x1412B95E0, UIDungeonRoomDialog, OnListItemData, 518, 0x8D010782);
+
+// @0x1412b97f0
+void UIDungeonRoomDialog::OnNotifyDebugMode(NotifyObject* pNotify)
+{
+    Refresh();
+}
+MS2_REPLACE_METHOD(0x1412B97F0, UIDungeonRoomDialog, OnNotifyDebugMode, 29, 0x8377CE60);
+
+// @0x1412b9820
+void UIDungeonRoomDialog::OnNotifyEnterState(NotifyObject* pNotify)
+{
+    Refresh();
+}
+MS2_REPLACE_METHOD(0x1412B9820, UIDungeonRoomDialog, OnNotifyEnterState, 29, 0x365DA081);
+
+// @0x1412b9850
+int UIDungeonRoomDialog::FUN_1412b9850()
+{
+    return m_178;
+}
+MS2_REPLACE_METHOD(0x1412B9850, UIDungeonRoomDialog, FUN_1412b9850, 17, 0x24676F72);
+
+// @0x1412b9870
+void FUN_1412b9870(int nRoomId, int nReason)
+{
+    MS2Ptr<DungeonRoom> spRoom = FUN_14031c2a0()->GetRoom(nRoomId);
+    if (spRoom == 0)
+    {
+        FUN_1412751f0(FUN_14028de60(0x99a), 1, 1);
+        return;
+    }
+    switch (nReason)
+    {
+    case 12:
+        FUN_1412751f0(FUN_1409e88d0(0x99b, spRoom->m_limitPlayerLevel), 1, 1);
+        break;
+    case 13:
+        FUN_1412751f0(FUN_14052bd00(0x99c, FUN_14093b970(spRoom->m_limitAchieveID)), 1, 1);
+        break;
+    case 14:
+        FUN_1412751f0(FUN_140298ea0(L"s_field_limit_disable_vip"), 1, 1);
+        break;
+    case 15:
+        FUN_1412751f0(FUN_140298ea0(L"s_field_limit_gearScore"), 1, 1);
+        break;
+    case 16:
+        FUN_1412751f0(FUN_140298ea0(L"s_field_limit_clear_dungeon"), 1, 1);
+        break;
+    case 17:
+    {
+        CStringW strEffects;
+        for (unsigned nEffectId : spRoom->m_limitAdditionalEffects)
+            strEffects += FUN_1401e8510(L"[{0}] ", FUN_1401a9d70()->FUN_141812290(nEffectId, 1, "name"));
+        FUN_1412751f0(FUN_1405c2690(L"s_field_limit_additionalEffect", strEffects), 1, 1);
+        break;
+    }
+    case 18:
+        FUN_1412751f0(FUN_140298ea0(L"s_dungeon_enter_limit_recommend_weapon"), 1, 1);
+        break;
+    }
+}
+MS2_REPLACE(0x1412B9870, FUN_1412b9870, 1558, 0x7EA60062);
+
+// @0x1412b9ec0
+CStringW FUN_1412b9ec0(int nRank)
+{
+    if (nRank == 1)
+        return FUN_140298ea0(L"s_dungeon_rank_reward_c");
+    if (nRank == 2)
+        return FUN_140298ea0(L"s_dungeon_rank_reward_b");
+    if (nRank == 3)
+        return FUN_140298ea0(L"s_dungeon_rank_reward_a");
+    if (nRank == 4)
+        return FUN_140298ea0(L"s_dungeon_rank_reward_s");
+    if (nRank == 5)
+        return FUN_140298ea0(L"s_dungeon_rank_reward_sp");
+    return FUN_140298ea0(L"s_dungeon_rank_reward_unknown");
+}
+MS2_REPLACE(0x1412B9EC0, FUN_1412b9ec0, 561, 0xDF541C67);
+
+// @0x1412ba100
+void UIDungeonRoomDialog::ShowAchieveTooltip(Scaleform::GFx::Value* pRetVal)
+{
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == NULL || m_spRoom == 0)
+        return;
+    MS2Ptr<CAchieveData> spAchieve = GetAchieveData(m_spRoom->m_limitAchieveID);
+    if (spAchieve == 0)
+        return;
+    ASTooltip tooltip(pPlayer, 2, 2);
+    if (tooltip.FUN_1409e21a0(spAchieve->m_nId, spAchieve->m_nMaxGrade) != 0)
+    {
+        tooltip.FUN_1407cbb20("comment", FUN_14028b8e0(L"s_achieve_tooltip_info"));
+        *pRetVal = tooltip.FUN_1422bb870();
+    }
+}
+MS2_REPLACE_METHOD(0x1412BA100, UIDungeonRoomDialog, ShowAchieveTooltip, 384, 0xED187295);
+
+// @0x1412ba290
+void UIDungeonRoomDialog::ShowVipTooltip(Scaleform::GFx::Value* pRetVal)
+{
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == NULL || m_spRoom == 0)
+        return;
+    ASTooltip tooltip(pPlayer, 2, 2);
+    if (tooltip.FUN_1409e26b0(FUN_14028b8e0(L"s_vip_tooltip_info")) != 0)
+        *pRetVal = tooltip.FUN_1422bb870();
+}
+MS2_REPLACE_METHOD(0x1412BA290, UIDungeonRoomDialog, ShowVipTooltip, 264, 0x56A92FD1);
+
+// @0x1412ba3a0
+bool UIDungeonRoomDialog::SelectGroup(int nGroup, unsigned nRoomId)
+{
+    SelectComboGroup(nGroup);
+    ShowGroup(nGroup, nRoomId);
+    if (m_spRoom == 0)
+    {
+        if (m_rooms.empty())
+            return false;
+        SetRoom(*m_rooms.begin());
+        m_dungeonList->FUN_1422dcca0(0);
+    }
+    return true;
+}
+MS2_REPLACE_METHOD(0x1412BA3A0, UIDungeonRoomDialog, SelectGroup, 224, 0x3BD6D799);
+
+// @0x1412ba490
+void UIDungeonRoomDialog::RefreshGroupList()
+{
+    m_dungeonIds.clear();
+    m_dungeonIds.reserve(16);
+    for (size_t i = 0; i < 16; ++i)
+    {
+        int nType = TypeOfGroup((int)i);
+        if (nType == 0 || FUN_140e14520(nType))
+            m_dungeonIds.push_back((int)i);
+    }
+    m_dungeonGroupCombo->FUN_1422dfc10();
+    size_t nCount = m_dungeonIds.size();
+    m_dungeonGroupCombo->FUN_1422df5f0((int)nCount);
+    for (size_t i = 0; i < m_dungeonIds.size(); ++i)
+    {
+        if (m_dungeonIds[i] == 1)
+        {
+            m_dungeonGroupCombo->FUN_1422dfce0(FUN_14028b8e0(L"s_dungeonRoom_groupList_recommand"));
+        }
+        else if (m_dungeonIds[i] == 0)
+        {
+            m_dungeonGroupCombo->FUN_1422dfce0(FUN_14028b8e0(L"s_dungeonRoom_groupList_favorite"));
+        }
+        else
+        {
+            int nType = TypeOfGroup(m_dungeonIds[i]);
+            m_dungeonGroupCombo->FUN_1422dfce0(FUN_140cbf840(nType));
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x1412BA490, UIDungeonRoomDialog, RefreshGroupList, 778, 0x6E1E89BA);
+
+// @0x1412ba7a0
+void UIDungeonRoomDialog::SelectComboGroup(int nGroup)
+{
+    for (size_t i = 0; i < m_dungeonIds.size(); ++i)
+    {
+        if (m_dungeonIds[i] == nGroup)
+        {
+            m_dungeonGroupCombo->FUN_1422df690((int)i);
+            return;
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x1412BA7A0, UIDungeonRoomDialog, SelectComboGroup, 129, 0x5016478E);
+
+// @0x1412ba830
+void UIDungeonRoomDialog::ShowGroup(int nGroup, int nRoomId)
+{
+    m_rooms.clear();
+    m_180 = nGroup;
+    if (nGroup == 1)
+    {
+        unsigned short nLevel = 0;
+        unsigned nGearScore = 0;
+        GetPartyLevel(nLevel, nGearScore);
+        if (nLevel == 0)
+            return;
+        FUN_14031c2a0()->GetGroupMatchRooms(static_cast<DungeonGroupType>(2), nLevel, nGearScore, m_rooms);
+        FUN_14031c2a0()->GetGroupMatchRooms(static_cast<DungeonGroupType>(1), nLevel, nGearScore, m_rooms);
+        std::reverse(m_rooms.begin(), m_rooms.end());
+    }
+    else if (nGroup == 0)
+    {
+        FUN_140931510()->FUN_140d9f2c0()->GetSeasonRooms(m_rooms);
+    }
+    else
+    {
+        int nType = TypeOfGroup(nGroup);
+        FUN_14031c2a0()->GetGroupRooms(static_cast<DungeonGroupType>(nType), m_rooms);
+    }
+    int nSelect = 0;
+    if (nRoomId != 0)
+    {
+        for (int i = 0; i < (int)m_rooms.size(); ++i)
+        {
+            if (m_rooms[i]->GetDungeonRoomID() == nRoomId)
+            {
+                nSelect = i;
+                break;
+            }
+        }
+    }
+    m_dungeonList->FUN_1422dcca0(-1);
+    size_t nCount = m_rooms.size();
+    m_dungeonList->FUN_1422dcf40((int)nCount);
+    static_cast<Unk_ASComponentSlots*>((ASUIComponent*)m_dungeonList.operator->())->vfunc_24(true);
+    m_dungeonList->FUN_1422dcca0(nSelect);
+}
+MS2_REPLACE_METHOD(0x1412BA830, UIDungeonRoomDialog, ShowGroup, 847, 0x22CDA082);
+
+// @0x1412bab90
+void UIDungeonRoomDialog::GetPartyLevel(unsigned short& nLevel, unsigned& nGearScore)
+{
+    MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    if (pPlayer == NULL)
+        return;
+    if (!FUN_1409670d0()->FUN_14162ab20())
+    {
+        nLevel = pPlayer->vfunc_78();
+        nGearScore = pPlayer->FUN_14152ea50();
+    }
+    else
+    {
+        nLevel = FUN_1409670d0()->FUN_14162c0b0();
+        nGearScore = FUN_1409670d0()->FUN_14162c1e0();
+    }
+}
+MS2_REPLACE_METHOD(0x1412BAB90, UIDungeonRoomDialog, GetPartyLevel, 159, 0xE37A50A8);
+
+// @0x1412bac40
+void UIDungeonRoomDialog::SetRoom(MS2Ptr<DungeonRoom> spRoom)
+{
+    m_spRoom = spRoom;
+    if (m_spInfo)
+        m_spInfo->FUN_1412b4150(m_spRoom);
+}
+MS2_REPLACE_METHOD(0x1412BAC40, UIDungeonRoomDialog, SetRoom, 169, 0x33D70A2C);
+
+// @0x1412bacf0
+int UIDungeonRoomDialog::TypeOfGroup(int nGroup)
+{
+    switch (nGroup)
+    {
+    case 2: return 1;
+    case 3: return 2;
+    case 4: return 3;
+    case 5: return 4;
+    case 6: return 5;
+    case 7: return 14;
+    case 8: return 6;
+    case 9: return 7;
+    case 10: return 8;
+    case 11: return 12;
+    case 12: return 13;
+    case 13: return 9;
+    case 14: return 10;
+    case 15: return 11;
+    default: return 0;
+    }
+}
+MS2_REPLACE_METHOD(0x1412BACF0, UIDungeonRoomDialog, TypeOfGroup, 163, 0x2EDD83E7);
+
+// @0x1412bade0
+int UIDungeonRoomDialog::GroupOfType(int nType)
+{
+    switch (nType)
+    {
+    case 1: return 2;
+    case 2: return 3;
+    case 3: return 4;
+    case 4: return 5;
+    case 5: return 6;
+    case 6: return 8;
+    case 7: return 9;
+    case 8: return 10;
+    case 9: return 13;
+    case 10: return 14;
+    case 11: return 15;
+    case 12: return 11;
+    case 13: return 12;
+    case 14: return 7;
+    default: return 1;
+    }
+}
+MS2_REPLACE_METHOD(0x1412BADE0, UIDungeonRoomDialog, GroupOfType, 165, 0x09EA9194);
+

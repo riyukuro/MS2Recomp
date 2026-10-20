@@ -18,6 +18,7 @@
 class ASButton;
 class ASDropdownMenu;
 class ASGaugeControl;
+class ASItemRendererBase;
 class ASItemSlot;
 class ASLabel;
 class ASLoader;
@@ -199,9 +200,36 @@ public:
     virtual int vfunc_48() { return 0x4ebd; }                       // 48 0x1412c0690
     virtual void vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs);   // 49 0x1412b87c0
 
+    void OnPartyPacket(CInPacket& packet);                          // 0x1412b8ce0 packet 0x53 (while loaded): refresh
     void OnRoomPacket(CInPacket& packet);                           // 0x1412b8d60 packet 0x1a
-    void OnRoomPacket53(CInPacket& packet);                         // 0x1412b8e30 packet 0x53
+    void OnRoomPacket53(CInPacket& packet);                         // 0x1412b8e30 packet 0x53: the search buttons
+    bool FUN_1412b8f00(int nId);                                    // 0x1412b8f00 open a dungeon (id <= 100000) or a room
+    bool FUN_1412b8ff0(int nRoomId);                                // 0x1412b8ff0 open a room
+    void FUN_1412b90d0(int nType);                                  // 0x1412b90d0 m_17c (the group type to open)
+    void FUN_1412b90f0(int n);                                      // 0x1412b90f0 m_178
+    void FUN_1412b9110();                                           // 0x1412b9110 m_180 = 0
+    void Refresh();                                                 // 0x1412b9130
+    void RefreshSubTitle();                                         // 0x1412b91d0
+    void FUN_1412b9320();                                           // 0x1412b9320 refresh the reward texts
+    void RefreshSeasonSummary();                                    // 0x1412b9370
+    void FUN_1412b9460();                                           // 0x1412b9460 empty
+    void OnGroupChanged(const ASParams& params);                    // 0x1412b9470 m_dungoenGroupCombo
+    void OnRoomSelected(const ASParams& params);                    // 0x1412b94f0 m_dungeonList
+    void OnListItemData(const ASParams& params);                    // 0x1412b95e0 m_dungeonListItem rows
+    void OnNotifyDebugMode(NotifyObject* pNotify);                  // 0x1412b97f0
+    void OnNotifyEnterState(NotifyObject* pNotify);                 // 0x1412b9820
     int FUN_1412b9850();                                            // 0x1412b9850 m_178
+    void ShowAchieveTooltip(Scaleform::GFx::Value* pRetVal);        // 0x1412ba100
+    void ShowVipTooltip(Scaleform::GFx::Value* pRetVal);            // 0x1412ba290
+    bool SelectGroup(int nGroup, unsigned nRoomId);                 // 0x1412ba3a0
+    void RefreshGroupList();                                        // 0x1412ba490
+    void SelectComboGroup(int nGroup);                              // 0x1412ba7a0
+    void ShowGroup(int nGroup, int nRoomId);                        // 0x1412ba830
+    void GetPartyLevel(unsigned short& nLevel, unsigned& nGearScore);   // 0x1412bab90 the player's or the party's
+    void SetRoom(MS2Ptr<DungeonRoom> spRoom);                       // 0x1412bac40
+    int TypeOfGroup(int nGroup);                                    // 0x1412bacf0 combo group -> DungeonGroupType
+    int GroupOfType(int nType);                                     // 0x1412bade0 DungeonGroupType -> combo group
+    MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out);   // 0x140c57ce0 bind a clip child
 
     int m_178;                                                      // +0x178
     int m_17c;                                                      // +0x17c
@@ -218,7 +246,7 @@ public:
     MS2Ptr<ASDropdownMenu> m_dungeonGroupCombo;                     // +0x210
     MS2Ptr<ASGaugeControl> m_220;                                   // +0x220
     MS2Ptr<ASGaugeControl> m_230;                                   // +0x230
-    std::vector<MS2Ptr<ASUIComponent> > m_240;                      // +0x240
+    std::vector<MS2Ptr<ASItemRendererBase> > m_240;                 // +0x240 "m_dungeonListItem" x21
 };
 MS2_CHECK_SIZE(UIDungeonRoomDialog, 0x258);
 MS2_CHECK_OFFSET(UIDungeonRoomDialog, m_188, 0x188);
