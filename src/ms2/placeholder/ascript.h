@@ -18,6 +18,7 @@
 #include "ms2/placeholder/gfxvalue.h"
 
 template <class T> class MS2Ptr;
+struct Unk_BmNewTag;                   // the new-object tag (0x1401b7b90; blackmarketitemoption.h)
 
 template <class T>
 class MS2Ptr
@@ -29,6 +30,9 @@ public:
     MS2Ptr();
     MS2Ptr(decltype(nullptr)) { m_p = 0; } // fielddata: distinct nullptr overload
     MS2Ptr(int nNull);                  // `MS2Ptr<T> p(0)`: m_p = NULL (0x140c74e10 for T = AScript)
+    // `MS2Ptr<T> p(Unk_BmNewTag(0))`: m_p = NULL, then a fresh pooled T (explicit specializations only, e.g.
+    // worldmapmanager.cpp: 0x141bacbb0 for T = UIWorldMap::MapTile)
+    explicit MS2Ptr(const Unk_BmNewTag& tag);
     MS2Ptr(T* p);                       // m_p = p; AddRef() (0x140f9c100 for T = UISwfEntity)
     MS2Ptr(const MS2Ptr& o);            // 0x1409b9940 for T = AScript
     // Converting copy (U derives from T): m_p = o.m_p; AddRef() (0x1405ace70 for T = CGemDataBase, U = CGemTombStoneData).
@@ -240,6 +244,8 @@ public:
     template <class T> MS2Ptr<T> FUN_140c436d0(const CString& strName);   // child control by name (guild championship "m_participate" as ASLabel; uiguilddialog.cpp)
     Scaleform::GFx::Value FUN_140e6b140(const char* szMethod, int a1, CString a2);          // 0x140e6b140 (a2 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2);                // 0x140e0a8c0 (inline COMDAT, defined in uichapterbook.cpp; a1 by value: the callee destroys it)
+    Scaleform::GFx::Value FUN_141b62c20(const char* szMethod, int a1, const AScript& a2);    // 0x141b62c20 (inline COMDAT, defined in uiworldmapdialog.cpp: Invoke with an Int and an object)
+    Scaleform::GFx::Value FUN_141b62ce0(const char* szMethod, unsigned __int64 a1, unsigned int a2);   // 0x141b62ce0 (inline COMDAT, defined in uiworldmapdialog.cpp: Invoke with a UInt64 and a UInt)
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, CStringW a2, int a3);        // 0x140e65dd0 (inline COMDAT, defined in uimicrogamecoupledancemessage.cpp; a2 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2, CStringW a3, CStringW a4);   // 0x141342280 (inline COMDAT, defined in uipvpguildteamresultdialog.cpp; the strings by value: the callee destroys them)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, const char* a2);        // 0x1413423e0 (inline COMDAT, defined in uipvpguildteamresultdialog.cpp; a1 by value: the callee destroys it)

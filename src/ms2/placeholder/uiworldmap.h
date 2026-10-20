@@ -6,11 +6,16 @@
 // header. The dtors are implicit (each user TU emits its own COMDAT copy, e.g. ~DisplaySetting 0x141b688d0).
 #pragma once
 
+#include <utility>
 #include <vector>
 #include <atlstr.h>
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
+
+template <class T> class MS2Ptr;
+class CQuestData;
+class DungeonRoom;
 
 namespace UIWorldMap {
 
@@ -69,6 +74,8 @@ class DisplaySetting : public CPtred
 public:
     DisplaySetting();                       // 0x141b94fb0
     void FUN_141b95000();                   // 0x141b95000 reset: 1, 1, 1, 0, 0
+    int FUN_141b95080(MS2Ptr<CQuestData> spQuest);      // 0x141b95080 the quest passes the filter (UIWorldMapDialog)
+    int FUN_141b95270(MS2Ptr<DungeonRoom> spRoom);      // 0x141b95270 the dungeon passes the filter (UIWorldMapDialog)
     int m_18[5];                            // +0x18 indexed (/Od imul) flags: [0..2] from the game option bytes
                                             //       +0x20..+0x22, [3] "displayProperQuest", [4] "displayProperDungeon"
 };
@@ -103,8 +110,8 @@ public:
     DungeonInfo m_48;                       // +0x48
     std::vector<int> m_68;                  // +0x68
     std::vector<TooltipEntry> m_80;         // +0x80 the npc lines (FUN_141b58830)
-    std::vector<int> m_98;                  // +0x98 party members
-    std::vector<int> m_b0;                  // +0xb0 buddies
+    std::vector<std::pair<CStringW, CStringW> > m_98;   // +0x98 party members (name line, channel line)
+    std::vector<std::pair<CStringW, CStringW> > m_b0;   // +0xb0 buddies (name line, channel line)
 };
 MS2_CHECK_SIZE(IconInfo, 0xc8);
 MS2_CHECK_OFFSET(IconInfo, m_48, 0x48);
@@ -120,7 +127,7 @@ public:
         int m_0;
         int m_4;
     };
-    AddtionalInfo();                        // 0x141badb80
+    // implicit ctor 0x141badb80 (`new AddtionalInfo()` zero-fills first: factory 0x141b9d8e0)
     int m_18;                               // +0x18
     IntPair m_1c;                           // +0x1c
     std::vector<TooltipEntry> m_28;         // +0x28 the quest lines (FUN_141b58670)
@@ -131,7 +138,7 @@ MS2_CHECK_SIZE(AddtionalInfo, 0x40);
 class FieldSearchInfo : public CPtred
 {
 public:
-    FieldSearchInfo();                      // 0x141badcf0
+    // implicit ctor 0x141badcf0 (`new FieldSearchInfo()` zero-fills first: factory 0x141b9d950)
     int m_18;                               // +0x18 the field id
     CStringW m_20;                          // +0x20 the display name (string table 3)
     int m_28;                               // +0x28 the mapped id
