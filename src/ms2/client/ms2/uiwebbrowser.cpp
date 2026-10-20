@@ -373,3 +373,5 @@ void UIWebBrowser::FUN_141b509b0()
 template<> Delegate<void(const CString&)>::DelegateImplBase::DelegateImplBase() {}
 // @0x141b51250
 template<> Delegate<void(const CString&)>::DelegateImplBase::~DelegateImplBase() {}
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc3460-0x142cc34a0 .text$yd

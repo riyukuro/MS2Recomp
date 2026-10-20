@@ -83,3 +83,5 @@ void ASStat::AddEssentialText(int a1, int a2)
     m_essential.PushBack(row.FUN_1422bb870());
 }
 MS2_REPLACE_METHOD(0x1409F06F0, ASStat, AddEssentialText, 267, 0xB3775FA1);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9e950-0x142c9ea70 .text$yd

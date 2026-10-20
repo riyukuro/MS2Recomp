@@ -2304,3 +2304,5 @@ MS2_REPLACE_METHOD(0x141956220, UIGroupMessengerBrowser, vfunc_48, 11, 0xF77482E
 // The range holds two of the CRT's static-inline memmove_s copies (the window's and the tray's TU tails).
 // @0x141959210
 MS2_EMIT_CRT_MEMMOVE_S_COPY(2);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbe280-0x142cbe500 .text$yd

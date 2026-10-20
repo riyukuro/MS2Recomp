@@ -28,7 +28,7 @@
 // MS2-PIN: ?push_back@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QEAAX$$QEAU?$pair@HH@2@@Z 0x1407ad0d0 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??C?$MS2Ptr@USlotInfo@ItemCloset@@@@QEBAPEAUSlotInfo@ItemCloset@@XZ 0x1407ab200 ; manual: identical-body COMDAT folded in the exe
-// MS2-PIN: ??$make_pair@AEAHAEAH@std@@YA?AU?$pair@HH@0@AEAH0@Z 0x1407aacc0 ; manual: identical-body COMDAT folded in the exe
+// MS2-PIN: ??$make_pair@AEAIAEAPEAVCAdventureLevelMissionData@@@std@@YA?AU?$pair@IPEAVCAdventureLevelMissionData@@@0@AEAIAEAPEAVCAdventureLevelMissionData@@@Z 0x1407aacc0 ; exe: forward<unsigned&> 0x140162e50 + pair<unsigned,CAdventureLevelMissionData*> ctor 0x1407a97b0
 // MS2-PIN: ??A?$CAtlArray@_KV?$CElementTraits@_K@ATL@@@ATL@@QEAAAEA_K_K@Z 0x1407ab720 ; manual: identical-body COMDAT folded in the exe
 // MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIPEAVCAdventureLevelMissionData@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1407ab3b0 ; manual: map const_iterator operator-- (was mispinned as set<unsigned> operator++)
 // MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIPEAVCAdventureLevelMissionData@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x1407ab3f0 ; manual: map unchecked iterator operator-- (was mispinned as set<unsigned>)
@@ -36,7 +36,7 @@
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@IPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@2@$00@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@I@std@@@2@XZ 0x140703ff0 ; manual: set<unsigned> copy lives in fieldmetatable's TU, not here
 // MS2-PIN: ?_Max@?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@SAPEAU?$_Tree_node@IPEAX@2@PEAU32@@Z 0x1407041e0 ; manual: set<unsigned> copy lives in fieldmetatable's TU, not here
 // MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x1406ff750 ; manual: set<unsigned> copy lives in fieldmetatable's TU, not here
-// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tset_traits@IU?$less@I@std@@V?$allocator@I@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@IPEAX@2@@Z 0x1407ac440 ; manual: identical-body COMDAT folded in the exe
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IPEAVCAdventureLevelMissionData@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIPEAVCAdventureLevelMissionData@@@std@@@3@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIPEAVCAdventureLevelMissionData@@@std@@PEAX@2@@Z 0x1407ac440 ; hand: calls this map's _Getal 0x1407ac550 + _Tree_node<pair<const unsigned,CAdventureLevelMissionData*>>::_Freenode0 0x1407aa170 (was the set<unsigned> look-alike: _Freenode0 conflict)
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@IPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_Tree_node@IPEAX@std@@@2@XZ 0x1407ac500 ; manual: identical-body COMDAT folded in the exe
 // MS2-PIN: ?_Get_data@?$_Tree_comp_alloc@V?$_Tset_traits@IU?$less@I@std@@V?$allocator@I@2@$0A@@std@@@std@@QEAAAEAV?$_Tree_val@U?$_Tree_simple_types@I@std@@@2@XZ 0x1407ac580 ; manual: identical-body COMDAT folded in the exe
 // MS2-PIN: ?_Umove@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@AEAAPEAU?$pair@HH@2@PEAU32@00@Z 0x1407ac9f0 ; manual: identical-body COMDAT folded in the exe
@@ -921,33 +921,35 @@ void FUN_1407a8820(Unk_1407a8820& v, COutputStream& out)
 void FUN_1407a8b20(Unk_1407a8820& v, CInputStream& in)
 {
     v.m_00 = in.vfunc_o8_1();
-    if (v.m_00 == 0) {
+    switch (v.m_00) {
+    case 1:
+        v.m_08 = in.vfunc_o8_4();
+        v.m_30 = in.vfunc_o8_4();
+        break;
+    case 2:
+        v.m_3c = in.vfunc_o8_3();
+        v.m_38 = in.vfunc_o8_3();
+        break;
+    case 0: {
         v.m_08 = in.vfunc_o8_4();
         v.m_10 = in.vfunc_o8_3();
         v.m_18 = in.vfunc_o8_4();
         v.m_20.clear();
         int count = in.vfunc_o8_3();
         for (int i = 0; i < count; i = i + 1) {
-            unsigned int id = in.vfunc_o8_3();
-            v.m_20.insert(id);
+            v.m_20.insert(in.vfunc_o8_3());
         }
+        break;
     }
-    else if (v.m_00 == 1) {
-        v.m_08 = in.vfunc_o8_4();
-        v.m_30 = in.vfunc_o8_4();
-    }
-    else if (v.m_00 == 2) {
-        v.m_3c = in.vfunc_o8_3();
-        v.m_38 = in.vfunc_o8_3();
-    }
-    else if (v.m_00 == 4) {
+    case 4: {
         v.m_40 = in.vfunc_o8_1();
         v.m_20.clear();
         int count = in.vfunc_o8_3();
         for (int i = 0; i < count; i = i + 1) {
-            unsigned int id = in.vfunc_o8_3();
-            v.m_20.insert(id);
+            v.m_20.insert(in.vfunc_o8_3());
         }
+        break;
+    }
     }
 }
 

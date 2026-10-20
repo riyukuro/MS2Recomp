@@ -3105,3 +3105,5 @@ void QuestDataTable::CheckInit()
         MessageBoxA(0, msg, "Error", 0);
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9bcc0-0x142c9bd80 .text$yd

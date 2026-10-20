@@ -800,3 +800,5 @@ Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMs
 
 // @0x140b76ee0
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca0ea0-0x142ca0fb0 .text$yd

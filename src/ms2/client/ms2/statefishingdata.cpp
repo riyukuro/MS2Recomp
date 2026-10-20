@@ -739,3 +739,5 @@ int StateFishingFloat::vfunc_1()
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca5c60-0x142ca5c90 .text$yd

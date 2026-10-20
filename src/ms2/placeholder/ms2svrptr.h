@@ -1,7 +1,7 @@
-// ms2svrptr.h - PLACEHOLDER for the exe's 16-byte intrusive smart pointer with an auto_ptr-style steal constructor
+// ms2svrptr.h - PLACEHOLDER for the exe's 16-byte intrusive smart pointer with a move (steal) constructor
 // (RTTI-less template; its COMDATs sort between CValidData and TSingleton in the units that use it). NOT an original
-// header. Same layout and bodies as MS2Ptr<T> (ascript.h), but a non-const copy constructor moves: a function that
-// returns its local through `return p;` picks it. Used by serverlisttable.cpp and continentregiontable.cpp.
+// header. Same layout and bodies as MS2Ptr<T> (ascript.h), plus a real move constructor (steal, e.g. 0x1401a85d0 for
+// T = CArcadeMainData): `return p;`, std::swap and vector moves pick it; copies (const& and non-const lvalues) AddRef.
 #pragma once
 
 #include "ms2/ms2layout.h"
@@ -21,7 +21,7 @@ public:
     MS2SvrPtr(decltype(nullptr)) { m_p = 0; }   // null literal (itemgachaboxtable.cpp: the exe's copy takes a 64-bit argument)
     MS2SvrPtr(T* p) { m_p = p; AddRef(); }
     MS2SvrPtr(const MS2SvrPtr& o) { m_p = o.m_p; AddRef(); }
-    MS2SvrPtr(MS2SvrPtr& o) { m_p = o.m_p; o.m_p = 0; }   // auto_ptr-style steal (non-const lvalue); PortalRandomTargetData specializes it to copy+AddRef (portaltable.h)
+    MS2SvrPtr(MS2SvrPtr&& o) { m_p = o.m_p; o.m_p = 0; }  // move: steal
     ~MS2SvrPtr() { Release(); }
     MS2SvrPtr& operator=(const MS2SvrPtr& o)
     {

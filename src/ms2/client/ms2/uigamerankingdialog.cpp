@@ -1590,3 +1590,5 @@ MS2_REPLACE_METHOD(0x140E2CF40, UIGameRankingDialog, vfunc_67, 24, 0xAEA4F70C);
 MS2_REPLACE_METHOD(0x140E2CF60, UIGameRankingDialog, vfunc_26, 45, 0xB6337DE6);
 MS2_REPLACE_METHOD(0x140E2DC70, UIGameRankingDialog, vfunc_49, 138, 0xB87A410B);
 MS2_REPLACE_METHOD(0x140E359E0, UIGameRankingDialog, FUN_140e359e0, 117, 0xF0541677);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca6720-0x142ca67d0 .text$yd

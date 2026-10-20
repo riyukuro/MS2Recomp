@@ -231,3 +231,13 @@ CStringW CAddressTable::FormatBuddy(__int64 nCharId, int nId, int nType, int nUn
         return FUN_1401e8510(L"{0}", strArg);
     return FUN_140656190(L"{0} \x2014 {1}", strName, strArg);
 }
+
+// Shutdown: empties the address map (called from the client's teardown list in ms2.cpp). The atexit destructor of
+// s_addresses (0x142c9d630) is a separate function that runs ~CRBMap.
+// @0x140978fb0
+void FUN_140978fb0()
+{
+    s_addresses.RemoveAll();
+}
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9d630-0x142c9d720 .text$yd

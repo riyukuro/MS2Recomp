@@ -9,6 +9,9 @@
 
 class UISwfEntity;
 
+// The real class (base ASData, ctors) is in gfxui/uimsg.h; this view is used when that header was not included first.
+#ifndef MS2_UIMSG_DEFINED
+#define MS2_UIMSG_VIEW_DEFINED
 class UIMsg
 {
 public:
@@ -18,6 +21,7 @@ public:
     CStringW FUN_1422b8f40();           // message box tag ("askClose") passed to UIMessageBox
     CString FUN_1422b8d30();            // the AS method name ("OnExit"; uibeautyshopstyledialog.cpp)
 };
+#endif
 
 class IMessageListener
 {

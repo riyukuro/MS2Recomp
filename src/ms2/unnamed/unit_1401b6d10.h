@@ -19,12 +19,14 @@ class CFieldBannerData;
 class Unk_BannerPtr
 {
 public:
+    Unk_BannerPtr();                                        // 0x1418a6be0 (folded TPtr<T> default ctor)
     Unk_BannerPtr(int);                                     // 0x1401b7b00
     Unk_BannerPtr(CFieldBannerData* v);                     // 0x1401b7b20
     Unk_BannerPtr(const Unk_BannerPtr& v);                  // 0x1401b7ac0
     Unk_BannerPtr(Unk_BannerPtr&& v);                       // 0x1401b7a90
     ~Unk_BannerPtr();                                       // 0x1401b7e50
     Unk_BannerPtr& operator=(const Unk_BannerPtr& v);       // 0x1401b7f70
+    Unk_BannerPtr& operator=(int nNull);                    // 0x1418a6cb0 (folded TPtr<T>::operator=(int))
     CFieldBannerData* get() const;                          // 0x1401b8040
     CFieldBannerData* operator->() const;                   // 0x1401b80a0
     bool operator==(const CFieldBannerData* p) const;       // 0x140899ca0 (folded TPtr<T>::operator==)
@@ -102,6 +104,7 @@ MS2_CHECK_SIZE(TPtredDummy<Unk_BannerList>, 0x38);
 MS2_CHECK_OFFSET(TPtredDummy<Unk_BannerList>, value, 0x18);
 
 // Unk_BannerPtr (inline members; one COMDAT each, like the exe's TPtr<CFieldBannerData>).
+inline Unk_BannerPtr::Unk_BannerPtr() { m_p = 0; }
 inline Unk_BannerPtr::Unk_BannerPtr(int) { m_p = 0; }
 inline Unk_BannerPtr::Unk_BannerPtr(CFieldBannerData* v) { m_p = v; AddRef(); }
 inline Unk_BannerPtr::Unk_BannerPtr(const Unk_BannerPtr& v) { m_p = v.m_p; AddRef(); }
@@ -112,6 +115,11 @@ inline Unk_BannerPtr& Unk_BannerPtr::operator=(const Unk_BannerPtr& v)
     v.AddRef();
     Release();
     m_p = v.m_p;
+    return *this;
+}
+inline Unk_BannerPtr& Unk_BannerPtr::operator=(int nNull)
+{
+    Release();
     return *this;
 }
 inline CFieldBannerData* Unk_BannerPtr::get() const { return m_p; }

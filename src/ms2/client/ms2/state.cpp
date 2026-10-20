@@ -167,7 +167,6 @@ MS2_CHECK_OFFSET(Unk_StateDataArgDance, m_strC0, 0xc0);
 class StateSyncObjectMicroGameRps : public Unk_StateArg22
 {
 public:
-    char m_pad_b0[8];
     int m_nB8;
     int m_nBC;
     int m_nC0;
@@ -177,7 +176,6 @@ MS2_CHECK_OFFSET(StateSyncObjectMicroGameRps, m_strC8, 0xc8);
 class StateSyncObjectMicroGameCoupleDance : public Unk_StateArg22
 {
 public:
-    char m_pad_b0[8];
     int m_nB8;
     bool m_bBC;
     CStringA m_strC0;                                   // +0xc0
@@ -2388,3 +2386,7 @@ StateStunData::~StateStunData()
 StateSummonData::~StateSummonData()
 {
 }
+// MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@2@@Z 0x1417bb580 ; this TU's copy (called by ~_Tree_comp_alloc 0x1417ba540; 0x14139e1c0 is another TU's)
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@2@@Z 0x1417bb5b0 ; called from _Buynode's catch(...)
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb6ec0-0x142cb71b0 .text$yd

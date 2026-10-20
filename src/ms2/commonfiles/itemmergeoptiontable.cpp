@@ -451,66 +451,66 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c00e0(int nItemId,
 // @0x1405c03d0
 bool CItemMergeOptionTable::FUN_1405c03d0(int nCategory, int* pNormal)
 {
-    DataPtr spData = FUN_1405c1f40(nCategory, 0);
-    if (!spData.IsNull())
+    DataPtr spData = FUN_1405c1f40(nCategory);
+    if (spData.IsNull())
+        return false;
+    for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
-        for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
+        if (spData->m_aOptions[i]->m_nNormal != -1)
         {
-            if (spData->m_aOptions[i]->m_nNormal != -1)
-            {
-                *pNormal = spData->m_aOptions[i]->m_nNormal;
-                return true;
-            }
+            *pNormal = spData->m_aOptions[i]->m_nNormal;
+            return true;
         }
     }
+
     return false;
 }
 
 // @0x1405c04f0
 bool CItemMergeOptionTable::FUN_1405c04f0(int nCategory, int* pSpecial)
 {
-    DataPtr spData = FUN_1405c1f40(nCategory, 0);
-    if (!spData.IsNull())
+    DataPtr spData = FUN_1405c1f40(nCategory);
+    if (spData.IsNull())
+        return false;
+    for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
-        for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
+        if (spData->m_aOptions[i]->m_nSpecial != 0)
         {
-            if (spData->m_aOptions[i]->m_nSpecial != 0)
-            {
-                *pSpecial = spData->m_aOptions[i]->m_nSpecial;
-                return true;
-            }
+            *pSpecial = spData->m_aOptions[i]->m_nSpecial;
+            return true;
         }
     }
+
     return false;
 }
 
 // @0x1405c0610
-Unk_MergeRange* CItemMergeOptionTable::FUN_1405c0610(int nCategory, int nNormal)
+CItemMergeOptionVariation* CItemMergeOptionTable::FUN_1405c0610(int nCategory, int nNormal)
 {
-    DataPtr spData = FUN_1405c1f40(nCategory, 0);
-    if (!spData.IsNull())
+    DataPtr spData = FUN_1405c1f40(nCategory);
+    if (spData.IsNull())
+        return 0;
+    for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
-        for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
-        {
-            if (spData->m_aOptions[i]->m_nNormal == nNormal)
-                return &spData->m_aOptions[i]->m_kFirst.m_range;
-        }
+        if (spData->m_aOptions[i]->m_nNormal == nNormal)
+            return &spData->m_aOptions[i]->m_kFirst;
     }
+
     return 0;
 }
 
 // @0x1405c0740
-Unk_MergeRange* CItemMergeOptionTable::FUN_1405c0740(int nCategory, int nSpecial)
+CItemMergeOptionVariation* CItemMergeOptionTable::FUN_1405c0740(int nCategory, int nSpecial)
 {
-    DataPtr spData = FUN_1405c1f40(nCategory, 0);
-    if (!spData.IsNull())
+    DataPtr spData = FUN_1405c1f40(nCategory);
+    if (spData.IsNull())
+        return 0;
+    for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
-        for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
-        {
-            if (spData->m_aOptions[i]->m_nSpecial == nSpecial)
-                return &spData->m_aOptions[i]->m_kFirst.m_range;
-        }
+        if (spData->m_aOptions[i]->m_nSpecial == nSpecial)
+            return &spData->m_aOptions[i]->m_kFirst;
     }
+
     return 0;
 }
 
@@ -690,12 +690,12 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1d20(int nItemId,
 }
 
 // @0x1405c1f40
-CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1f40(int nCategory, int nUnused)
+CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1f40(int nCategory)
 {
     std::map<std::pair<int, int>, DataPtr>::iterator it = m_data.find(std::make_pair(nCategory, 0));
-    if (it == m_data.end())
-        return DataPtr(nullptr);
-    return it->second;
+    if (it != m_data.end())
+        return it->second;
+    return DataPtr(nullptr);
 }
 
 // @0x1405c7ba0
@@ -724,3 +724,5 @@ void CItemMergeOptionTable::SetInit(bool b)
 {
     s_bInit = b;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9b190-0x142c9b1f0 .text$yd

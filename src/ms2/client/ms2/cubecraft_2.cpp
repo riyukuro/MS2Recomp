@@ -570,7 +570,7 @@ void Unk_PCCubeCraft::FUN_1410a9630()
     {
         if (m_spItem->FUN_1408b3860() == 1)
         {
-            CString strLook = FUN_1410280d0(2, m_spItem->look->resourcePath);
+            CString strLook = FUN_1410280d0(2, m_spItem->look->m_strUrl);
             if (_access(strLook, 0) != 0)
             {
                 Unk_GuideDownloadId kId;
@@ -1803,3 +1803,5 @@ static __inline errno_t ms2_memcpy_s_copy(void* const d, size_t const dsz, void 
     return 0;
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy)(void*, size_t, const void*, size_t) = &ms2_memcpy_s_copy;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cabf10-0x142cabfe0 .text$yd

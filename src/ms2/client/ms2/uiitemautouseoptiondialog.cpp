@@ -835,3 +835,5 @@ UIItemAutoUseOptionDialog::SlotBag* FUN_140f50800(NotifyContext::BindData* p)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9a10-0x142ca9ac0 .text$yd

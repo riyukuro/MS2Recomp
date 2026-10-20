@@ -2187,3 +2187,5 @@ MS2_REPLACE_METHOD(0x14124D080, CGameOptionGraphicDefault, FUN_14124d080, 1372, 
 MS2_REPLACE_METHOD(0x14124D5F0, CGameOptionGraphicDefault, FUN_14124d5f0, 161, 0x5BC550DC);
 MS2_REPLACE_METHOD(0x14124D6A0, CGameOptionGraphicDefault, vfunc_10, 240, 0xF49F03C5);
 MS2_REPLACE_METHOD(0x14124D890, CGameOptionGraphicDefault, vfunc_14, 106, 0xDC755D9F);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cadf10-0x142cae070 .text$yd

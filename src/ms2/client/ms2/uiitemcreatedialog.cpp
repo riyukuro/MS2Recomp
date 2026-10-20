@@ -1229,3 +1229,5 @@ void Unk_IcCombo::FUN_1419b9990(const CString& strName, int& nOut)
     if ((unsigned)nSelected < provider->FUN_1422bc5d0())
         provider->FUN_1419b9900(nSelected, strName, nOut);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbed80-0x142cbeec0 .text$yd

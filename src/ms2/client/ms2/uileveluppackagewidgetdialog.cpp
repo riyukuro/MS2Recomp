@@ -632,3 +632,5 @@ void UIEventWidgetDialog::vfunc_87()
 void UIEventWidgetDialog::vfunc_86()
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca3090-0x142ca31f0 .text$yd

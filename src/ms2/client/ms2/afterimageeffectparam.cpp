@@ -24,7 +24,7 @@ int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
 
 // "#RRGGBB"-style string to colour.
 Unk_AfterImageColor FUN_140db93e0(const CString& str);
-extern Unk_AfterImageColor DAT_143a09670;                       // default colour
+extern efd::ColorA DAT_143a09670;                               // default colour
 
 // @0x140987430
 CAfterImageEffectParam::CAfterImageEffectParam()
@@ -83,11 +83,11 @@ Unk_AfterImageRef::Unk_AfterImageRef(CAfterImageEffectParam* pParam)
     FUN_140981190();
 }
 
-// @0x140987930
-Unk_AfterImageColor::Unk_AfterImageColor(const Unk_AfterImageColor& kOther)
-{
-    memcpy(this, &kOther, sizeof(*this));
-}
+// 0x140987930 is NiColorA(const efd::ColorA&) (Gamebryo inline, emitted by
+// `Unk_AfterImageColor kDefault(DAT_143a09670)` above)
+//
+//
+//
 
 // @0x140987810
 const Unk_AfterImageColor* CAfterImageEffectParam::GetColor() const

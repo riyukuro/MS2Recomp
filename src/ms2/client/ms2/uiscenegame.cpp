@@ -1882,3 +1882,5 @@ MS2_REPLACE_METHOD(0x141acd7d0, UISceneGameScreenShot, vfunc_28, 67, 0x32BD72BD)
 UISceneGameScreenShot::~UISceneGameScreenShot()
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc20d0-0x142cc23d0 .text$yd

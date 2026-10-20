@@ -612,3 +612,5 @@ int UIVIPGoodsShopDialog::vfunc_48()
 {
     return 0x4f1d;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caaa00-0x142caab60 .text$yd

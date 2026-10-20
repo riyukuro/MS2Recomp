@@ -1415,3 +1415,5 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, bool a2
     return FUN_1422bb8f0(szMethod, args);
 }
 
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbecc0-0x142cbed80 .text$yd

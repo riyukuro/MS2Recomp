@@ -1046,3 +1046,5 @@ inline MS2Ptr<CMsgBoxData> FUN_141b30060(CStringW strText, int nType, Unk_TeBoxD
     FUN_14151f150(spBox);
     return spBox;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc2e70-0x142cc2fd0 .text$yd

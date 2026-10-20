@@ -1918,3 +1918,6 @@ Unk_PartyJoinRequest::~Unk_PartyJoinRequest() {}
 
 // @0x141634280
 Unk_PartyCounters::~Unk_PartyCounters() {}
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb3c10-0x142cb3d10 .text$yd
+// MS2-RANGE: 0x142cb3d30-0x142cb3d50 .text$yd

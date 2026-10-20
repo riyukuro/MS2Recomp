@@ -599,3 +599,5 @@ __int64 StateObserver::FUN_140ac5ea0()
 {
     return m_spObserve->m_nTarget;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9fe70-0x142c9ff40 .text$yd

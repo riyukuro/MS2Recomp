@@ -624,3 +624,5 @@ int UIItemSocketScrollDialog::vfunc_48()
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9c60-0x142ca9ce0 .text$yd

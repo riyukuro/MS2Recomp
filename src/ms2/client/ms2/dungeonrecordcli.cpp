@@ -765,3 +765,5 @@ Unk_MsgBoxCallback FUN_140b240b0()
 {
     return Unk_MsgBoxCallback();
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca0a50-0x142ca0a80 .text$yd

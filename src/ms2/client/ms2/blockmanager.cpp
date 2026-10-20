@@ -204,3 +204,5 @@ void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
         break;
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9ef00-0x142c9ef20 .text$yd

@@ -3265,3 +3265,5 @@ MS2_REPLACE_METHOD(0x141236B10, CFunctionCubeObject, FUN_141236b10, 15, 0x22B700
 // The CRT memmove_s the first original TU of this range carries (0x141239f60 is the second TU copy).
 // @0x14122ee00
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cadbe0-0x142cadd80 .text$yd

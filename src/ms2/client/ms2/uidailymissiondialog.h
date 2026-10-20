@@ -41,7 +41,7 @@ public:
     void FUN_140bffee0(NotifyObject* pNotify);                  // 0x140bffee0 "NotifyGameStart": open once in the lobby
     void FUN_140bfff70(NotifyObject* pNotify);                  // 0x140bfff70 "NotifyChangeMyPC": allow the auto open again
     void FUN_140bfff90(CInPacket& rPacket);                     // 0x140bfff90 packet 0x10b: show the window
-    bool FUN_140bffff0();                                       // 0x140bffff0 the feature is on and the player has a level
+    int FUN_140bffff0();                                        // 0x140bffff0 BOOL: the feature is on and the player has a level
     void FUN_140c00070(int nQuestId);                           // 0x140c00070 request the reward of a finished quest
     void FUN_140c001d0();                                       // 0x140c001d0 fill the recommended list of the selected group
     void FUN_140c00500();                                       // 0x140c00500 fill the level guide bar and the mission point

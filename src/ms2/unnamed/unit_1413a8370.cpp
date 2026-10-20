@@ -573,3 +573,5 @@ static Unk_RegMarker s_init8f78 = (FUN_1401cd100(&s_8f78, 0), Unk_RegMarker());
 static char s_8f80[0x30];
 static Unk_RegMarker s_init8f80 = (FUN_1402a9d70(&s_8f80, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cb1260), Unk_RegMarker());
 #endif
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb11c0-0x142cb1260 .text$yd

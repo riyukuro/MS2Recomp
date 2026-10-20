@@ -257,3 +257,5 @@ efd::SmartPointer<egf::Entity> Unk_ProxyMgr::FUN_1416c37e0(efd::SmartPointer<egf
     }
     return efd::SmartPointer<egf::Entity>(0);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb57b0-0x142cb58b0 .text$yd

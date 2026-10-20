@@ -1449,9 +1449,38 @@ unsigned FUN_140869420();                                            // random s
 void FUN_14028e7c0(CString& strPath);                                // normalize a path in place
 // NiStream accessors of the exe's layout: the header's inline NiStream::GetSearchPath/GetObjectCount/GetObjectAt read the
 // header layout (0x4c8 bytes, search path +0x130) and return null/garbage on the exe's 0x5d0-byte NiStream
-NiSearchPath* FUN_14155d9a0(NiStream* pStream);                      // +0x238
-unsigned FUN_14155d950(NiStream* pStream);                           // object count (array at +0x280)
-NiObject* FUN_14155d900(NiStream* pStream, unsigned nIndex);         // object at index
+struct Unk_NiStreamLayout
+{
+    char pad0[0x238];
+    NiSearchPath* m_pkSearchPath;                                    // +0x238
+    char pad240[0x280 - 0x240];
+    NiTLargeArray<NiObjectPtr, NiTNewInterface<NiObjectPtr> > m_kTopObjects;                     // +0x280
+};
+
+// The NiStream object array accessors (this TU's copies; NiMain's header does not emit them here)
+template unsigned int NiTLargeArray<NiObjectPtr, NiTNewInterface<NiObjectPtr> >::GetSize() const;     // @0x14155d9c0
+template const NiObjectPtr& NiTLargeArray<NiObjectPtr, NiTNewInterface<NiObjectPtr> >::GetAt(unsigned int) const;   // @0x14155d580
+template bool efd::SmartPointer<NiAVObject>::operator!=(NiAVObject*) const;                   // @0x14155be40 (CreateCachedNif)
+
+// @0x14155d9a0
+NiSearchPath* FUN_14155d9a0(NiStream* pStream)
+{
+    return reinterpret_cast<Unk_NiStreamLayout*>(pStream)->m_pkSearchPath;
+}
+
+// @0x14155d950
+unsigned FUN_14155d950(NiStream* pStream)
+{
+    return reinterpret_cast<Unk_NiStreamLayout*>(pStream)->m_kTopObjects.GetSize();
+}
+
+// @0x14155d900
+NiObject* FUN_14155d900(NiStream* pStream, unsigned nIndex)
+{
+    if (nIndex < reinterpret_cast<Unk_NiStreamLayout*>(pStream)->m_kTopObjects.GetSize())
+        return reinterpret_cast<Unk_NiStreamLayout*>(pStream)->m_kTopObjects.GetAt(nIndex);
+    return NULL;
+}
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
 
 CNiStreamLoadThread* TSingleton<CNiStreamLoadThread>::s_instance = 0;
@@ -1673,8 +1702,6 @@ MS2_REPLACE_METHOD(0x1415513E0, CNiStreamLoadThread, Load, 1055, 0xC7CEE07E);
 // ============================================================================================================
 #include "ms2/commonfiles/crashmanager.h"
 
-extern CLockCriticalSection DAT_143ae1f28;                          // guards the nif caches
-extern CLockCriticalSection DAT_143ae1f58;                          // guards the texture cache
 extern int DAT_143ae1f20;                                           // the render device is lost
 extern int DAT_1439ed00c;                                           // the caches are enabled
 extern char DAT_143d6eb58;                                          // class descriptor handed to the lookup FUN_14098d8d0
@@ -1682,6 +1709,13 @@ extern char DAT_143d6eb58;                                          // class des
 CNifLoadingService* TSingleton<CNifLoadingService>::s_instance = 0;
 inline TSingleton<CNifLoadingService>::TSingleton() { s_instance = static_cast<CNifLoadingService*>(this); }
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CNifLoadingService);
+#ifndef MS2_HOOK_DLL
+CLockCriticalSection DAT_143ae1f28;                                 // guards the nif caches (initializer 0x1400fa4e0)
+CLockCriticalSection DAT_143ae1f58;                                 // guards the texture cache (initializer 0x1400fa510)
+#else
+extern CLockCriticalSection DAT_143ae1f28;
+extern CLockCriticalSection DAT_143ae1f58;
+#endif
 
 CCrashManager* FUN_140a44830();
 void* FUN_140994450();
@@ -2756,3 +2790,9 @@ void FUN_141562500(NiSourceTexture* pTexture, NiPixelData* pPixels)
 {
     *reinterpret_cast<NiPixelData**>(&(pTexture->*Unk_NifSrcTexAccess::Member())) = pPixels;
 }
+
+// MS2-PIN: ??__EDAT_143ae1f28@@YAXXZ 0x1400fa4e0 ; generated initializer of the nif cache lock
+// MS2-PIN: ??__EDAT_143ae1f58@@YAXXZ 0x1400fa510 ; generated initializer of the texture cache lock
+// MS2-PIN: ??9?$SmartPointer@VNiAVObject@@@efd@@QEBA_NPEAVNiAVObject@@@Z 0x14155be40 ; hand: this TU's byte-identical copy
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb37d0-0x142cb38a0 .text$yd

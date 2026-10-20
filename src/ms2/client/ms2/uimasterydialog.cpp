@@ -225,7 +225,7 @@ unsigned int FUN_141662750(MyPC* pPc, int nType);           // mastery value of 
 int FUN_141654700(MyPC* pPc);                               // job
 int FUN_14053feb0(int nItemId);                             // default rank of an item
 CStringW FUN_1419021b0(int nHave, int nNeed);               // "have/need" count text
-CStringW FUN_14028b8e0(CStringW strKey);                    // localized
+#include "ms2/commonfiles/commonutil.h"
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
 CStringW FUN_14062b4f0(CStringW strKey, const int* p);
 CStringW FUN_1409e8820(CStringW strKey, const unsigned short& n);
@@ -414,7 +414,7 @@ int FUN_1406198a0(int n, float f);
 int FUN_1404820b0(int n, float f);
 CStringW FUN_14183e9c0(CStringW str, int nRank);
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW FUN_140bfa7f0(CStringW strKey, CStringW strName, const int* pCount);
+CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nCount);   // string table format (name, count): the FMT_VARIADIC_W <CStringW, int> instance
 int FUN_140930e10();
 CString FUN_140c43630(const char* szFmt, const unsigned __int64& n);
 CStringW FUN_140938ae0(CStringW strKey, const int& n);
@@ -1830,7 +1830,7 @@ CStringW UIMasteryDialog::FUN_140eb7c50(int nType)
     int nRewards = FUN_140e5ca20()->FUN_140b6d140(nType);
     if (nRewards == 0)
         return strName;
-    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, &nRewards);
+    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
 }
 
 // @0x140eb7d40
@@ -1840,7 +1840,7 @@ CStringW UIMasteryDialog::FUN_140eb7d40()
     int nRewards = FUN_140930e10();
     if (nRewards == 0)
         return strName;
-    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, &nRewards);
+    return FUN_140bfa7f0(CStringW(L"s_mastery_subtab_mastery_name_and_reward"), strName, nRewards);
 }
 
 // @0x140eb7e30
@@ -2471,3 +2471,5 @@ MS2_REPLACE_METHOD_VIA(0x140EB4F60, UIMasteryDialog, UIItemEventListener, vfunc_
 MS2_REPLACE_METHOD_VIA(0x140EB4FD0, UIMasteryDialog, UIItemEventListener, vfunc_4, 96, 0x85CF0DB2);
 MS2_REPLACE_METHOD_VIA(0x140EAF840, UIMasteryDialog, ICastingEventListener, OnCastingFinished, 443, 0x4DD2CA94);
 MS2_REPLACE_METHOD_VIA(0x140EAFA10, UIMasteryDialog, ICastingEventListener, OnCastingCancelled, 52, 0x5127663B);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca81c0-0x142ca82a0 .text$yd

@@ -1566,3 +1566,5 @@ inline PetInfoBase::~PetInfoBase()
 inline TabContentsPetInfo::~TabContentsPetInfo()
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca3dc0-0x142ca3ef0 .text$yd

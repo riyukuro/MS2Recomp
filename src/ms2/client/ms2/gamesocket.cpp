@@ -699,3 +699,5 @@ inline void Unk_SocketAddress::FUN_14126ced0(unsigned short port,unsigned long a
 
 // No hooks for 141264dd0/141265ae0 (packet wrapper allocation), or
 // 141265420/1412657e0 (socket worker allocation); those construct local RTTI.
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cae240-0x142cae2b0 .text$yd

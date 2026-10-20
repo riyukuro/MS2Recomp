@@ -15,7 +15,7 @@
 // MS2-PIN: ??C?$MS2Ptr@VUIMinimapEntityProxyPortal@@@@QEBAPEAVUIMinimapEntityProxyPortal@@XZ 0x141a48d60 ; unique
 // MS2-PIN: ??C?$MS2Ptr@VUIMinimapEntityTaxi@@@@QEBAPEAVUIMinimapEntityTaxi@@XZ 0x141a48d70 ; unique
 // MS2-PIN: ?get@?$MS2Ptr@VCNpcData@@@@QEBAPEAVCNpcData@@XZ 0x141a48d80 ; unique
-// MS2-PIN: ?GetNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@_JV?$CElementTraits@_J@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@_JV?$CElementTraits@_J@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141a4ac40 ; unique
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@_KV?$CElementTraits@_K@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@_KV?$CElementTraits@_K@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141a4ac40 ; unique
 // MS2-PIN: ?FUN_141a4b020@UIMinimapEntityProxyPortal@@QEBAHXZ 0x141a4b020 ; unique
 // MS2-PIN: ?vfunc_4@UIMinimapEntity@@UEAAHXZ 0x141a4b200 ; unique
 // MS2-PIN: ?vfunc_48@UIMinimapDialog@@UEAAHXZ 0x141a4b210 ; unique
@@ -247,7 +247,8 @@ public:
     virtual MS2Ptr<class CQuestData> vfunc_0();                     // 0 the quest data
     virtual int vfunc_1();                                          // 1 completable
 };
-class CQuest : public CPtred { public: Unk_MmQuestData m_data; };
+class CQuest : public CPtred, public Unk_MmQuestData {};          // the interface is the second base (+0x18)
+CString FUN_1401d2b10(const CString& a, const CString& b);         // a + b (exe operator+; clang would import MFC CopyChars)
 
 // The UI dialogs reached from the markers.
 CUIService* FUN_1403ed2b0();
@@ -396,7 +397,7 @@ void UIMinimapEntity::FUN_141a310e0(NpcDataCli* pNpc)
     m_layer = FUN_141a32aa0(pNpc, m_icon);
     m_visible = !m_icon.IsEmpty() && m_icon != s_strNoIcon;
 }
-MS2_REPLACE_METHOD(0x141a310e0, UIMinimapEntity, FUN_141a310e0, 0, 0);
+MS2_REPLACE_METHOD(0x141a310e0, UIMinimapEntity, FUN_141a310e0, 389, 0x38FD60B2);
 
 // @0x141a31270
 // MS2-FUNCTIONAL: the exe frame is 0x10 larger (an unrecovered extra temp); the code is otherwise identical.
@@ -423,7 +424,7 @@ void UIMinimapEntity::FUN_141a31270(ASObj& data, efd::SmartPointer<MinimapViewpo
     data.FUN_1409adbe0("userFunction", Scaleform::GFx::Value(fn.FUN_1422bb870()));
     vfunc_2(&data);
 }
-MS2_REPLACE_METHOD(0x141a31270, UIMinimapEntity, FUN_141a31270, 0, 0);
+MS2_REPLACE_METHOD(0x141a31270, UIMinimapEntity, FUN_141a31270, 1101, 0x837C432C);
 
 // @0x141a316d0
 int UIMinimapEntity::FUN_141a316d0(const int& nField, bool& bSpecial, CString& strIcon, CString& strLayer)
@@ -460,7 +461,7 @@ int UIMinimapEntity::FUN_141a316d0(const int& nField, bool& bSpecial, CString& s
     }
     return nNpcId;
 }
-MS2_REPLACE_METHOD(0x141a316d0, UIMinimapEntity, FUN_141a316d0, 0, 0);
+MS2_REPLACE_METHOD(0x141a316d0, UIMinimapEntity, FUN_141a316d0, 780, 0x51BBD233);
 
 // @0x141a319f0
 CStringW UIMinimapEntity::FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strAlign, bool bMultiRow)
@@ -475,7 +476,7 @@ CStringW UIMinimapEntity::FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strAli
     }
     return FUN_14028dfa0(L"s_minimap_tooltip_normal", FUN_1401aa6a0(pNpc->GetId()));
 }
-MS2_REPLACE_METHOD(0x141a319f0, UIMinimapEntity, FUN_141a319f0, 0, 0);
+MS2_REPLACE_METHOD(0x141a319f0, UIMinimapEntity, FUN_141a319f0, 648, 0xB42DAA1D);
 
 // @0x141a31c80
 bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& strIcon, CString& strLayer)
@@ -488,7 +489,7 @@ bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& 
         switch (nState) {
         case 1:
             spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
-            if (static_cast<bool>(spQuest.get()) && spQuest->m_data.vfunc_1()) {
+            if (static_cast<bool>(spQuest.get()) && spQuest->vfunc_1()) {
                 strIcon = s_strQuestComplete;
                 bSuffix = true;
             } else {
@@ -505,16 +506,16 @@ bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& 
         default:
             return false;
         }
-        MS2Ptr<CQuestData> spData = spQuest.get() ? spQuest->m_data.vfunc_0() : FUN_14074bc40(nQuestId);
+        MS2Ptr<CQuestData> spData = spQuest.get() ? spQuest->vfunc_0() : FUN_14074bc40(nQuestId);
         const CString& strSuffix = FUN_141082150(spData, "_epic", "_world", "_repeat", "_event");
         if (bSuffix)
             strIcon += strSuffix;
-        strLayer += s_strLayerQuest + strSuffix;
+        strLayer += FUN_1401d2b10(s_strLayerQuest, strSuffix);
         return true;
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a31c80, UIMinimapEntity, FUN_141a31c80, 0, 0);
+MS2_REPLACE_METHOD(0x141a31c80, UIMinimapEntity, FUN_141a31c80, 1165, 0xD673AD64);
 
 // @0x141a32120
 void UIMinimapEntity::FUN_141a32120(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -533,7 +534,7 @@ void UIMinimapEntity::FUN_141a32120(const Scaleform::GFx::FunctionHandler::Param
         FUN_141a32330();
     }
 }
-MS2_REPLACE_METHOD(0x141a32120, UIMinimapEntity, FUN_141a32120, 0, 0);
+MS2_REPLACE_METHOD(0x141a32120, UIMinimapEntity, FUN_141a32120, 312, 0x1DDD54D5);
 
 // @0x141a32260
 bool UIMinimapEntity::FUN_141a32260(ASObj& data)
@@ -546,7 +547,7 @@ bool UIMinimapEntity::FUN_141a32260(ASObj& data)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a32260, UIMinimapEntity, FUN_141a32260, 0, 0);
+MS2_REPLACE_METHOD(0x141a32260, UIMinimapEntity, FUN_141a32260, 190, 0x14DE07A2);
 
 // @0x141a32330
 void UIMinimapEntity::FUN_141a32330()
@@ -559,7 +560,7 @@ void UIMinimapEntity::FUN_141a32330()
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x141a32330, UIMinimapEntity, FUN_141a32330, 0, 0);
+MS2_REPLACE_METHOD(0x141a32330, UIMinimapEntity, FUN_141a32330, 164, 0x87D81A70);
 
 // @0x141a323e0
 void UIMinimapEntity::FUN_141a323e0(MS2Ptr<CPortal> spPortal)
@@ -587,13 +588,13 @@ void UIMinimapEntity::GetText(CStringW& strText, ASObj& data)
         strText.Empty();
     }
 }
-MS2_REPLACE_METHOD(0x141a32500, UIMinimapEntity, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a32500, UIMinimapEntity, GetText, 267, 0x2BEF602D);
 
 // @0x141a32620
 void UIMinimapEntity::vfunc_2(ASObj* pData)
 {
 }
-MS2_REPLACE_METHOD(0x141a32620, UIMinimapEntity, vfunc_2, 0, 0);
+MS2_REPLACE_METHOD(0x141a32620, UIMinimapEntity, vfunc_2, 11, 0x02239C70);
 
 // @0x141a32640
 bool UIMinimapEntity::FUN_141a32640(CNpcData* pNpc)
@@ -608,7 +609,7 @@ bool UIMinimapEntity::FUN_141a32640(CNpcData* pNpc)
         return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x141a32640, UIMinimapEntity, FUN_141a32640, 0, 0);
+MS2_REPLACE_METHOD(0x141a32640, UIMinimapEntity, FUN_141a32640, 264, 0xE39CD148);
 
 // @0x141a32750
 CString UIMinimapEntity::FUN_141a32750(NpcDataCli* pNpc)
@@ -641,7 +642,7 @@ CString UIMinimapEntity::FUN_141a32750(NpcDataCli* pNpc)
         return s_strFriendly;
     return s_strEnemy;
 }
-MS2_REPLACE_METHOD(0x141a32750, UIMinimapEntity, FUN_141a32750, 0, 0);
+MS2_REPLACE_METHOD(0x141a32750, UIMinimapEntity, FUN_141a32750, 638, 0x25D61A8E);
 
 // @0x141a329e0
 CString UIMinimapEntity::FUN_141a329e0(const CString& strIcon)
@@ -650,7 +651,7 @@ CString UIMinimapEntity::FUN_141a329e0(const CString& strIcon)
         return s_strAlive;
     return "";
 }
-MS2_REPLACE_METHOD(0x141a329e0, UIMinimapEntity, FUN_141a329e0, 0, 0);
+MS2_REPLACE_METHOD(0x141a329e0, UIMinimapEntity, FUN_141a329e0, 174, 0xA64ECAAB);
 
 // @0x141a32aa0
 CString UIMinimapEntity::FUN_141a32aa0(NpcDataCli* pNpc, const CString& strIcon)
@@ -665,7 +666,7 @@ CString UIMinimapEntity::FUN_141a32aa0(NpcDataCli* pNpc, const CString& strIcon)
         return s_strLayerFriendly;
     return s_strLayerNpc;
 }
-MS2_REPLACE_METHOD(0x141a32aa0, UIMinimapEntity, FUN_141a32aa0, 0, 0);
+MS2_REPLACE_METHOD(0x141a32aa0, UIMinimapEntity, FUN_141a32aa0, 236, 0x6D436F94);
 
 // @0x141a32ba0
 CStringW UIMinimapEntity::FUN_141a32ba0(Unk_BuddyPtr<CBuddy> spBuddy)
@@ -675,7 +676,7 @@ CStringW UIMinimapEntity::FUN_141a32ba0(Unk_BuddyPtr<CBuddy> spBuddy)
     CStringW strHome = FUN_1409796e0(spBuddy->FUN_1401cc3e0(), spBuddy->FUN_1401cc3a0(), spBuddy->FUN_1401cc3c0(), spBuddy->FUN_1401cc350());
     return FUN_14028dfa0(L"s_worldmap_tooltip_friendhome", strHome);
 }
-MS2_REPLACE_METHOD(0x141a32ba0, UIMinimapEntity, FUN_141a32ba0, 0, 0);
+MS2_REPLACE_METHOD(0x141a32ba0, UIMinimapEntity, FUN_141a32ba0, 390, 0x45717DE1);
 
 // ---- UIMinimapEntityProxy ----
 
@@ -694,7 +695,7 @@ MS2Ptr<CProxyGameObject> UIMinimapEntityProxy::FUN_141a32da0()
         return MS2Ptr<CProxyGameObject>(0);
     return FUN_1403ed2d0()->FUN_141bc9be0(m_id);
 }
-MS2_REPLACE_METHOD(0x141a32da0, UIMinimapEntityProxy, FUN_141a32da0, 0, 0);
+MS2_REPLACE_METHOD(0x141a32da0, UIMinimapEntityProxy, FUN_141a32da0, 111, 0x93351C5B);
 
 // @0x141a32e20
 void UIMinimapEntityProxy::GetText(CStringW& strText, ASObj& data)
@@ -704,7 +705,7 @@ void UIMinimapEntityProxy::GetText(CStringW& strText, ASObj& data)
         return;
     vfunc_5(spProxy, strText, data);
 }
-MS2_REPLACE_METHOD(0x141a32e20, UIMinimapEntityProxy, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a32e20, UIMinimapEntityProxy, GetText, 155, 0xDD25025D);
 
 // @0x141a32ed0
 void UIMinimapEntityProxy::vfunc_3()
@@ -733,14 +734,14 @@ void UIMinimapEntityProxy::vfunc_3()
     }
     }
 }
-MS2_REPLACE_METHOD(0x141a32ed0, UIMinimapEntityProxy, vfunc_3, 0, 0);
+MS2_REPLACE_METHOD(0x141a32ed0, UIMinimapEntityProxy, vfunc_3, 389, 0xE3B4CF7E);
 
 // @0x141a33060
 int UIMinimapEntityProxy::vfunc_4()
 {
     return m_kind;
 }
-MS2_REPLACE_METHOD(0x141a33060, UIMinimapEntityProxy, vfunc_4, 0, 0);
+MS2_REPLACE_METHOD(0x141a33060, UIMinimapEntityProxy, vfunc_4, 14, 0xD1D12A47);
 
 // @0x141a33080
 void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& strText, ASObj& data)
@@ -787,7 +788,7 @@ void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& s
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a33080, UIMinimapEntityProxy, vfunc_5, 0, 0);
+MS2_REPLACE_METHOD(0x141a33080, UIMinimapEntityProxy, vfunc_5, 1357, 0x6DCA8BBE);
 
 // ---- UIMinimapEntityProxyPortal ----
 
@@ -807,7 +808,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33650()
     m_field = 0;
     m_flag = false;
 }
-MS2_REPLACE_METHOD(0x141a33650, UIMinimapEntityProxyPortal, FUN_141a33650, 0, 0);
+MS2_REPLACE_METHOD(0x141a33650, UIMinimapEntityProxyPortal, FUN_141a33650, 39, 0xF292E240);
 
 // @0x141a33680
 void UIMinimapEntityProxyPortal::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& strText, ASObj& data)
@@ -825,7 +826,7 @@ void UIMinimapEntityProxyPortal::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStri
             strText = FUN_14052bd00(0x73d, strName);
     }
 }
-MS2_REPLACE_METHOD(0x141a33680, UIMinimapEntityProxyPortal, vfunc_5, 0, 0);
+MS2_REPLACE_METHOD(0x141a33680, UIMinimapEntityProxyPortal, vfunc_5, 444, 0x1694A5EB);
 
 // @0x141a33850
 void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CStringW& strText)
@@ -875,7 +876,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CString
         strText = FUN_1408f71a0(L"s_minimap_tooltip_function_portal", FUN_1401a9d70()->FUN_141811980(3, nField), strAligned);
     }
 }
-MS2_REPLACE_METHOD(0x141a33850, UIMinimapEntityProxyPortal, FUN_141a33850, 0, 0);
+MS2_REPLACE_METHOD(0x141a33850, UIMinimapEntityProxyPortal, FUN_141a33850, 1494, 0xAD2BDB4B);
 
 // @0x141a33e30
 // MS2-FUNCTIONAL: my frame is 0x10 larger than the exe (an unrecovered temp layout); calls and logic match.
@@ -945,7 +946,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
     }
     strText = FUN_1408f71a0(L"s_minimap_tooltip_function_portal", FUN_1401a9d70()->FUN_141811980(3, nField), strLabel);
 }
-MS2_REPLACE_METHOD(0x141a33e30, UIMinimapEntityProxyPortal, FUN_141a33e30, 0, 0);
+MS2_REPLACE_METHOD(0x141a33e30, UIMinimapEntityProxyPortal, FUN_141a33e30, 1806, 0xFF202207);
 
 // @0x141a34550
 UIMinimapEntityBuddyHome::UIMinimapEntityBuddyHome(Unk_BuddyPtr<CBuddy> spBuddy)
@@ -960,7 +961,7 @@ void UIMinimapEntityBuddyHome::GetText(CStringW& strText, ASObj& data)
         return;
     strText = FUN_141a32ba0(m_buddy);
 }
-MS2_REPLACE_METHOD(0x141a345c0, UIMinimapEntityBuddyHome, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a345c0, UIMinimapEntityBuddyHome, GetText, 161, 0x8388091F);
 
 // @0x141a34670
 UIMinimapEntityMapObject::UIMinimapEntityMapObject(const int& nId, efd::SmartPointer<egf::Entity> spEntity)
@@ -977,7 +978,7 @@ void UIMinimapEntityMapObject::GetText(CStringW& strText, ASObj& data)
     m_entity->GetPropertyValue(0x794e257e, strTooltip);
     strText = FUN_140298ea0(FUN_14016a730(strTooltip.c_str(), 0));
 }
-MS2_REPLACE_METHOD(0x141a34700, UIMinimapEntityMapObject, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a34700, UIMinimapEntityMapObject, GetText, 263, 0xD0921D42);
 
 // @0x141a34810
 UIMinimapEntityTaxi::UIMinimapEntityTaxi(const efd::Point3& kPos)
@@ -1007,21 +1008,21 @@ void UIMinimapEntityTaxi::FUN_141a34890(const efd::Point3& kPos)
     m_visible = true;
     m_text = bBest ? FUN_14028b8e0(L"s_word_besttaxistation") : FUN_14028b8e0(L"s_word_taxistation");
 }
-MS2_REPLACE_METHOD(0x141a34890, UIMinimapEntityTaxi, FUN_141a34890, 0, 0);
+MS2_REPLACE_METHOD(0x141a34890, UIMinimapEntityTaxi, FUN_141a34890, 908, 0x75C22537);
 
 // @0x141a34870
 void UIMinimapEntityTaxi::FUN_141a34870(bool bBest)
 {
     m_best = bBest;
 }
-MS2_REPLACE_METHOD(0x141a34870, UIMinimapEntityTaxi, FUN_141a34870, 0, 0);
+MS2_REPLACE_METHOD(0x141a34870, UIMinimapEntityTaxi, FUN_141a34870, 23, 0x1A4301B5);
 
 // @0x141a34c30
 void UIMinimapEntityTaxi::GetText(CStringW& strText, ASObj& data)
 {
     strText = m_best ? FUN_14028b8e0(L"s_word_besttaxistation") : FUN_14028b8e0(L"s_word_taxistation");
 }
-MS2_REPLACE_METHOD(0x141a34c30, UIMinimapEntityTaxi, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a34c30, UIMinimapEntityTaxi, GetText, 368, 0xC0965097);
 
 // @0x141a34db0
 UIMinimapEntityStorm::UIMinimapEntityStorm(int nId, const efd::Point3& kPos, const CStringW& strIcon)
@@ -1038,14 +1039,14 @@ void UIMinimapEntityStorm::FUN_141a34e30(int nId, const efd::Point3& kPos, const
     m_position = kPos;
     m_visible = true;
 }
-MS2_REPLACE_METHOD(0x141a34e30, UIMinimapEntityStorm, FUN_141a34e30, 0, 0);
+MS2_REPLACE_METHOD(0x141a34e30, UIMinimapEntityStorm, FUN_141a34e30, 113, 0xE51E0043);
 
 // @0x141a34eb0
 void UIMinimapEntityStorm::GetText(CStringW& strText, ASObj& data)
 {
     strText.Empty();
 }
-MS2_REPLACE_METHOD(0x141a34eb0, UIMinimapEntityStorm, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a34eb0, UIMinimapEntityStorm, GetText, 35, 0xFDDC58CE);
 
 // @0x141a34ee0
 UIMinimapEntityPing::UIMinimapEntityPing(const efd::Point3& kPos)
@@ -1066,7 +1067,7 @@ void UIMinimapEntityPing::FUN_141a34f40(const efd::Point3& kPos)
     m_state = "red_flag";
     m_guideName = L"";
 }
-MS2_REPLACE_METHOD(0x141a34f40, UIMinimapEntityPing, FUN_141a34f40, 0, 0);
+MS2_REPLACE_METHOD(0x141a34f40, UIMinimapEntityPing, FUN_141a34f40, 174, 0xC68B0059);
 
 // @0x141a35000
 void UIMinimapEntityPing::FUN_141a35000(unsigned __int64 nId, int nColor, const efd::Point3& kPos, const CStringW& strName)
@@ -1085,14 +1086,14 @@ void UIMinimapEntityPing::FUN_141a35000(unsigned __int64 nId, int nColor, const 
     m_guideName = strName;
     m_text = strName;
 }
-MS2_REPLACE_METHOD(0x141a35000, UIMinimapEntityPing, FUN_141a35000, 0, 0);
+MS2_REPLACE_METHOD(0x141a35000, UIMinimapEntityPing, FUN_141a35000, 471, 0xECE9CD61);
 
 // @0x141a351e0
 void UIMinimapEntityPing::GetText(CStringW& strText, ASObj& data)
 {
     strText = m_text;
 }
-MS2_REPLACE_METHOD(0x141a351e0, UIMinimapEntityPing, GetText, 0, 0);
+MS2_REPLACE_METHOD(0x141a351e0, UIMinimapEntityPing, GetText, 47, 0x85DA9292);
 
 // ---- UIMinimapDialog ----
 
@@ -1127,7 +1128,7 @@ CString UIMinimapDialog::vfunc_1()
 {
     return "MinimapDialog";
 }
-MS2_REPLACE_METHOD(0x141a35ba0, UIMinimapDialog, vfunc_1, 0, 0);
+MS2_REPLACE_METHOD(0x141a35ba0, UIMinimapDialog, vfunc_1, 61, 0xE2400997);
 
 // @0x141a35bf0
 void UIMinimapDialog::OnLoadComplete()
@@ -1160,7 +1161,7 @@ void UIMinimapDialog::OnLoadComplete()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a35bf0, UIMinimapDialog, OnLoadComplete, 0, 0);
+MS2_REPLACE_METHOD(0x141a35bf0, UIMinimapDialog, OnLoadComplete, 992, 0x16529FDF);
 
 // @0x141a35fe0
 void UIMinimapDialog::vfunc_26()
@@ -1196,7 +1197,7 @@ void UIMinimapDialog::vfunc_26()
     m_timer474.FUN_140268840();
     m_47c = 1;
 }
-MS2_REPLACE_METHOD(0x141a35fe0, UIMinimapDialog, vfunc_26, 0, 0);
+MS2_REPLACE_METHOD(0x141a35fe0, UIMinimapDialog, vfunc_26, 707, 0xEB99CE5C);
 
 // @0x141a362b0
 void UIMinimapDialog::vfunc_15()
@@ -1230,7 +1231,7 @@ void UIMinimapDialog::vfunc_15()
     }
     FUN_141a42bb0();
 }
-MS2_REPLACE_METHOD(0x141a362b0, UIMinimapDialog, vfunc_15, 0, 0);
+MS2_REPLACE_METHOD(0x141a362b0, UIMinimapDialog, vfunc_15, 916, 0x744426E4);
 
 // @0x141a36650
 void UIMinimapDialog::vfunc_72()
@@ -1242,7 +1243,7 @@ void UIMinimapDialog::vfunc_72()
         m_460 = target.second;
     }
 }
-MS2_REPLACE_METHOD(0x141a36650, UIMinimapDialog, vfunc_72, 0, 0);
+MS2_REPLACE_METHOD(0x141a36650, UIMinimapDialog, vfunc_72, 119, 0xABF169B7);
 
 // The community dialog (COMDAT 0x141a46630).
 template <class T> T* Unk_MmGetDialog()
@@ -1350,7 +1351,7 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x141a366d0, UIMinimapDialog, vfunc_28, 0, 0);
+MS2_REPLACE_METHOD(0x141a366d0, UIMinimapDialog, vfunc_28, 1862, 0x371BD9E1);
 
 // @0x141a36e50
 bool UIMinimapDialog::vfunc_17()
@@ -1360,7 +1361,7 @@ bool UIMinimapDialog::vfunc_17()
     vfunc_18();
     return true;
 }
-MS2_REPLACE_METHOD(0x141a36e50, UIMinimapDialog, vfunc_17, 0, 0);
+MS2_REPLACE_METHOD(0x141a36e50, UIMinimapDialog, vfunc_17, 56, 0xE31DC9A6);
 
 // @0x141a36e90
 void UIMinimapDialog::vfunc_43()
@@ -1373,7 +1374,7 @@ void UIMinimapDialog::vfunc_43()
     }
     FUN_141a44f40();
 }
-MS2_REPLACE_METHOD(0x141a36e90, UIMinimapDialog, vfunc_43, 0, 0);
+MS2_REPLACE_METHOD(0x141a36e90, UIMinimapDialog, vfunc_43, 108, 0x65931339);
 
 // @0x141a36f10
 int UIMinimapDialog::vfunc_13()
@@ -1394,7 +1395,7 @@ int UIMinimapDialog::vfunc_13()
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x141a36f10, UIMinimapDialog, vfunc_13, 0, 0);
+MS2_REPLACE_METHOD(0x141a36f10, UIMinimapDialog, vfunc_13, 242, 0x0AE9BAF2);
 
 // @0x141a37010
 void UIMinimapDialog::vfunc_18()
@@ -1404,7 +1405,7 @@ void UIMinimapDialog::vfunc_18()
         FUN_141a44f40();
     }
 }
-MS2_REPLACE_METHOD(0x141a37010, UIMinimapDialog, vfunc_18, 0, 0);
+MS2_REPLACE_METHOD(0x141a37010, UIMinimapDialog, vfunc_18, 91, 0x42C557CB);
 
 // MS2-FUNCTIONAL: the result byte is switched as an int (exe jumps straight to the end for 0); 2 attempts
 // @0x141a37080
@@ -1427,7 +1428,7 @@ void UIMinimapDialog::vfunc_79(void* p)
         break;
     }
 }
-MS2_REPLACE_METHOD(0x141a37080, UIMinimapDialog, vfunc_79, 0, 0);
+MS2_REPLACE_METHOD(0x141a37080, UIMinimapDialog, vfunc_79, 190, 0x7B420DBA);
 
 // @0x141a37150
 void UIMinimapDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
@@ -1456,7 +1457,7 @@ void UIMinimapDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         *pRetVal = tooltip.FUN_1422bb870();
     }
 }
-MS2_REPLACE_METHOD(0x141a37150, UIMinimapDialog, vfunc_49, 0, 0);
+MS2_REPLACE_METHOD(0x141a37150, UIMinimapDialog, vfunc_49, 662, 0x279A0D2F);
 
 // The settings xml readers / writers (UIDialog's "transform" section).
 void FUN_1408743d0(void* pCfg, const char* szGroup, const char* szName, bool b, bool bCreate);
@@ -1531,7 +1532,7 @@ int UIMinimapDialog::vfunc_53(void* pCfg)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x141a37480, UIMinimapDialog, vfunc_53, 0, 0);
+MS2_REPLACE_METHOD(0x141a37480, UIMinimapDialog, vfunc_53, 2338, 0x38DA50FE);
 
 // @0x141a37db0
 int UIMinimapDialog::vfunc_54(void* pCfg)
@@ -1577,7 +1578,7 @@ int UIMinimapDialog::vfunc_54(void* pCfg)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x141a37db0, UIMinimapDialog, vfunc_54, 0, 0);
+MS2_REPLACE_METHOD(0x141a37db0, UIMinimapDialog, vfunc_54, 1484, 0xF135E625);
 
 // @0x141a373f0
 int UIMinimapDialog::vfunc_65()
@@ -1592,7 +1593,7 @@ int UIMinimapDialog::vfunc_65()
     FUN_14192e8f0();
     return 1;
 }
-MS2_REPLACE_METHOD(0x141a373f0, UIMinimapDialog, vfunc_65, 0, 0);
+MS2_REPLACE_METHOD(0x141a373f0, UIMinimapDialog, vfunc_65, 85, 0xB26CB77A);
 
 // @0x141a37450
 void UIMinimapDialog::vfunc_67()
@@ -1600,14 +1601,14 @@ void UIMinimapDialog::vfunc_67()
     FUN_141a3abd0();
     UIDialog::vfunc_67();
 }
-MS2_REPLACE_METHOD(0x141a37450, UIMinimapDialog, vfunc_67, 0, 0);
+MS2_REPLACE_METHOD(0x141a37450, UIMinimapDialog, vfunc_67, 34, 0xCF85CBAA);
 
 // @0x141a38390
 int UIMinimapDialog::vfunc_52()
 {
     return 1;
 }
-MS2_REPLACE_METHOD(0x141a38390, UIMinimapDialog, vfunc_52, 0, 0);
+MS2_REPLACE_METHOD(0x141a38390, UIMinimapDialog, vfunc_52, 11, 0x30025ED0);
 
 CString FUN_140719530(unsigned __int64 nId);                        // "%I64u"
 CString FUN_141028a90(CString strId, int bDefault);                 // the UGC profile image path
@@ -1621,7 +1622,7 @@ void UIMinimapDialog::vfunc_ugc_1(void* p, CString str)
         m_30->FUN_1413127f0("changePlayer", strKey, FUN_141028a90(str, 1));
     }
 }
-MS2_REPLACE_METHOD_VIA(0x141a383b0, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_1, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a383b0, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_1, 320, 0x51752DA6);
 
 // @0x141a38500
 void UIMinimapDialog::vfunc_ugc_5()
@@ -1631,7 +1632,7 @@ void UIMinimapDialog::vfunc_ugc_5()
     FUN_141a3a9a0(false);
     FUN_141a39e60();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38500, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_5, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38500, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_5, 102, 0x66758822);
 
 // @0x141a38570
 void UIMinimapDialog::vfunc_ugc_6()
@@ -1641,7 +1642,7 @@ void UIMinimapDialog::vfunc_ugc_6()
     FUN_141a3a9a0(true);
     FUN_141a39e60();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38570, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_6, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38570, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_6, 102, 0x9D9C5CC7);
 
 // MS2-FUNCTIONAL: frame 0x20 larger (temporaries of the by-value entity/buddy copies); 2 attempts
 // @0x141a385e0
@@ -1673,7 +1674,7 @@ void UIMinimapDialog::vfunc_buddy_10(__int64 nId, int n)
             FUN_141a455e0(n, nId);
     }
 }
-MS2_REPLACE_METHOD_VIA(0x141a385e0, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_10, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a385e0, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_10, 666, 0xD25223C1);
 
 // @0x141a38880
 void UIMinimapDialog::vfunc_buddy_5(__int64 nId)
@@ -1683,7 +1684,7 @@ void UIMinimapDialog::vfunc_buddy_5(__int64 nId)
         return;
     FUN_141a3f9f0(spBuddy);
 }
-MS2_REPLACE_METHOD_VIA(0x141a38880, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_5, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38880, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_5, 148, 0xE6AABD87);
 
 // @0x141a38920
 void UIMinimapDialog::vfunc_buddy_4(__int64 nId, int n)
@@ -1695,14 +1696,14 @@ void UIMinimapDialog::vfunc_buddy_4(__int64 nId, int n)
         return;
     FUN_141a3f9f0(spBuddy);
 }
-MS2_REPLACE_METHOD_VIA(0x141a38920, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_4, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38920, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_4, 165, 0xBDF902EA);
 
 // @0x141a389d0
 void UIMinimapDialog::vfunc_buddy_3(__int64 nId)
 {
     vfunc_buddy_10(nId, 0);
 }
-MS2_REPLACE_METHOD_VIA(0x141a389d0, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_3, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a389d0, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_3, 56, 0xAA097725);
 
 // @0x141a38a10
 void UIMinimapDialog::vfunc_oa0_9(unsigned short a1)
@@ -1712,7 +1713,7 @@ void UIMinimapDialog::vfunc_oa0_9(unsigned short a1)
     m_210 = true;
     FUN_141a3a200();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38a10, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_9, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38a10, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_9, 80, 0x1B176E1B);
 
 // @0x141a38a70
 void UIMinimapDialog::vfunc_oa0_7(int a1, CStringW s)
@@ -1721,14 +1722,14 @@ void UIMinimapDialog::vfunc_oa0_7(int a1, CStringW s)
         return;
     m_210 = true;
 }
-MS2_REPLACE_METHOD_VIA(0x141a38a70, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_7, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38a70, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_7, 96, 0x85711457);
 
 // @0x141a38ae0
 void UIMinimapDialog::vfunc_oa0_20(int a1)
 {
     FUN_141a42a70();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38ae0, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_20, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38ae0, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_20, 37, 0x92EE80B3);
 
 // @0x141a38b10
 int UIMinimapDialog::vfunc_oa0_1()
@@ -1737,14 +1738,14 @@ int UIMinimapDialog::vfunc_oa0_1()
         return 0;
     return 1;
 }
-MS2_REPLACE_METHOD_VIA(0x141a38b10, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_1, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38b10, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_1, 69, 0x830FFD61);
 
 // @0x141a38b60
 void UIMinimapDialog::Notify()
 {
     FUN_141a42800();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38b60, UIMinimapDialog, UIServerEventListener, Notify, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38b60, UIMinimapDialog, UIServerEventListener, Notify, 33, 0x1C92923F);
 
 // MS2-FUNCTIONAL: the exe takes the actor as a by-value MS2Ptr (EH frame); the shared slot is declared void*
 // @0x141a38b90
@@ -1757,7 +1758,7 @@ void UIMinimapDialog::vfunc_3(void* pActor)
     FUN_141a3d080(*static_cast<const ProxyPtr*>(pActor));
     FUN_1406c70a0(pActor);
 }
-MS2_REPLACE_METHOD_VIA(0x141a38b90, UIMinimapDialog, UIEntityEventListener, vfunc_3, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38b90, UIMinimapDialog, UIEntityEventListener, vfunc_3, 133, 0xC8D16EBF);
 
 // MS2-FUNCTIONAL: the exe takes the actor as a by-value MS2Ptr (EH frame); the shared slot is declared void*
 // @0x141a38c20
@@ -1770,37 +1771,37 @@ void UIMinimapDialog::vfunc_4(void* pActor)
     FUN_141a3f600(*static_cast<const ProxyPtr*>(pActor));
     FUN_1406c70a0(pActor);
 }
-MS2_REPLACE_METHOD_VIA(0x141a38c20, UIMinimapDialog, UIEntityEventListener, vfunc_4, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38c20, UIMinimapDialog, UIEntityEventListener, vfunc_4, 133, 0xF5478FEC);
 
 // @0x141a38cb0
 void UIMinimapDialog::vfunc_o178_1(void* p)
 {
     if (vfunc_55())
         return;
-    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->m_data.vfunc_0().get()))
+    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
         FUN_141a3ada0();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38cb0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_1, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38cb0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_1, 294, 0xA47B2DEF);
 
 // @0x141a38de0
 void UIMinimapDialog::vfunc_o178_2(void* p)
 {
     if (vfunc_55())
         return;
-    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->m_data.vfunc_0().get()))
+    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
         FUN_141a3ada0();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38de0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_2, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38de0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_2, 294, 0x0513889D);
 
 // @0x141a38f10
 void UIMinimapDialog::vfunc_o178_3(void* p)
 {
     if (vfunc_55())
         return;
-    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->m_data.vfunc_0().get()))
+    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
         FUN_141a3ada0();
 }
-MS2_REPLACE_METHOD_VIA(0x141a38f10, UIMinimapDialog, UIQuestEventListener, vfunc_o178_3, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a38f10, UIMinimapDialog, UIQuestEventListener, vfunc_o178_3, 294, 0xAB5504E1);
 
 // @0x141a39040
 void UIMinimapDialog::vfunc_o178_4(void* p)
@@ -1814,17 +1815,17 @@ void UIMinimapDialog::vfunc_o178_7(int a1, int a2)
         return;
     FUN_141a3ada0();
 }
-MS2_REPLACE_METHOD_VIA(0x141a39060, UIMinimapDialog, UIQuestEventListener, vfunc_o178_7, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a39060, UIMinimapDialog, UIQuestEventListener, vfunc_o178_7, 90, 0xB4E6AB38);
 
 // @0x141a390c0
 void UIMinimapDialog::vfunc_o178_5(void* p)
 {
     if (vfunc_55())
         return;
-    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->m_data.vfunc_0().get()))
+    if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
         FUN_141a3ada0();
 }
-MS2_REPLACE_METHOD_VIA(0x141a390c0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_5, 0, 0);
+MS2_REPLACE_METHOD_VIA(0x141a390c0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_5, 294, 0x33501AE3);
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);   // the child clip of a value
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                 // the value is an object
@@ -1864,7 +1865,7 @@ void UIMinimapDialog::FUN_141a391f0(MS2Ptr<CInteractObject> spObject)
         FUN_141a39770(spObject);
     }
 }
-MS2_REPLACE_METHOD(0x141a391f0, UIMinimapDialog, FUN_141a391f0, 0, 0);
+MS2_REPLACE_METHOD(0x141a391f0, UIMinimapDialog, FUN_141a391f0, 1396, 0xED7D2B0A);
 
 // @0x141a39770
 void UIMinimapDialog::FUN_141a39770(MS2Ptr<CInteractObject> spObject)
@@ -1888,7 +1889,7 @@ void UIMinimapDialog::FUN_141a39770(MS2Ptr<CInteractObject> spObject)
     if (spEntity->m_64)
         m_212 = true;
 }
-MS2_REPLACE_METHOD(0x141a39770, UIMinimapDialog, FUN_141a39770, 0, 0);
+MS2_REPLACE_METHOD(0x141a39770, UIMinimapDialog, FUN_141a39770, 1141, 0x13204261);
 
 // @0x141a39bf0
 void UIMinimapDialog::FUN_141a39bf0(MS2Ptr<CInteractObject> spObject)
@@ -1901,7 +1902,7 @@ void UIMinimapDialog::FUN_141a39bf0(MS2Ptr<CInteractObject> spObject)
         m_named.RemoveKey(spObject->FUN_140967060());
     }
 }
-MS2_REPLACE_METHOD(0x141a39bf0, UIMinimapDialog, FUN_141a39bf0, 0, 0);
+MS2_REPLACE_METHOD(0x141a39bf0, UIMinimapDialog, FUN_141a39bf0, 325, 0xD354B6EA);
 
 // @0x141a39d40
 void UIMinimapDialog::FUN_141a39d40(int nId, int bVisible)
@@ -1914,14 +1915,14 @@ void UIMinimapDialog::FUN_141a39d40(int nId, int bVisible)
             spEntity->m_clip->vfunc_3(bVisible);
     }
 }
-MS2_REPLACE_METHOD(0x141a39d40, UIMinimapDialog, FUN_141a39d40, 0, 0);
+MS2_REPLACE_METHOD(0x141a39d40, UIMinimapDialog, FUN_141a39d40, 240, 0x68BE3E46);
 
 // @0x141a39e40
 void UIMinimapDialog::FUN_141a39e40()
 {
     FUN_1418fd2f0();
 }
-MS2_REPLACE_METHOD(0x141a39e40, UIMinimapDialog, FUN_141a39e40, 0, 0);
+MS2_REPLACE_METHOD(0x141a39e40, UIMinimapDialog, FUN_141a39e40, 19, 0x7CB65D04);
 
 extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
 CBuddyManager* FUN_14097a780();                                    // TSingleton<CBuddyManager>::GetInstance
@@ -1954,7 +1955,7 @@ void UIMinimapDialog::FUN_141a39e60()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a39e60, UIMinimapDialog, FUN_141a39e60, 0, 0);
+MS2_REPLACE_METHOD(0x141a39e60, UIMinimapDialog, FUN_141a39e60, 908, 0xF9B39C94);
 
 // @0x141a3a200
 void UIMinimapDialog::FUN_141a3a200()
@@ -2035,7 +2036,7 @@ void UIMinimapDialog::FUN_141a3a780(int n)
         return;
     static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46a60("changeEntityFrame", m_taxi->m_clip->FUN_1422bb870(), "enabled");
 }
-MS2_REPLACE_METHOD(0x141a3a780, UIMinimapDialog, FUN_141a3a780, 0, 0);
+MS2_REPLACE_METHOD(0x141a3a780, UIMinimapDialog, FUN_141a3a780, 260, 0xD00E0BB7);
 
 // @0x141a3a890
 void UIMinimapDialog::FUN_141a3a890()
@@ -2046,7 +2047,7 @@ void UIMinimapDialog::FUN_141a3a890()
         return;
     static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46a60("changeEntityFrame", m_telescope->m_clip->FUN_1422bb870(), "enabled");
 }
-MS2_REPLACE_METHOD(0x141a3a890, UIMinimapDialog, FUN_141a3a890, 0, 0);
+MS2_REPLACE_METHOD(0x141a3a890, UIMinimapDialog, FUN_141a3a890, 256, 0x45FFD4DF);
 
 // @0x141a3a9a0
 void UIMinimapDialog::FUN_141a3a9a0(bool bRemove)
@@ -2076,7 +2077,7 @@ void UIMinimapDialog::FUN_141a3a9a0(bool bRemove)
         FUN_141a3dda0();
     }
 }
-MS2_REPLACE_METHOD(0x141a3a9a0, UIMinimapDialog, FUN_141a3a9a0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3a9a0, UIMinimapDialog, FUN_141a3a9a0, 539, 0xFC7D3984);
 
 // @0x141a3abd0
 void UIMinimapDialog::FUN_141a3abd0()
@@ -2091,7 +2092,7 @@ void UIMinimapDialog::FUN_141a3abd0()
     FUN_140b632f0()->FUN_1422d4840(this, 3);
     FUN_140b632f0()->FUN_1422d4780(this, m_e0);
 }
-MS2_REPLACE_METHOD(0x141a3abd0, UIMinimapDialog, FUN_141a3abd0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3abd0, UIMinimapDialog, FUN_141a3abd0, 197, 0x23AC8E23);
 
 // @0x141a3aca0
 void UIMinimapDialog::FUN_141a3aca0()
@@ -2108,14 +2109,14 @@ void UIMinimapDialog::FUN_141a3aca0()
     FUN_140b632f0()->FUN_1422d4840(this, m_e0);
     FUN_140b632f0()->FUN_1422d4780(this, 3);
 }
-MS2_REPLACE_METHOD(0x141a3aca0, UIMinimapDialog, FUN_141a3aca0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3aca0, UIMinimapDialog, FUN_141a3aca0, 215, 0x1D15CA91);
 
 // @0x141a3ad80
 void UIMinimapDialog::FUN_141a3ad80(bool b)
 {
     m_1fb = b;
 }
-MS2_REPLACE_METHOD(0x141a3ad80, UIMinimapDialog, FUN_141a3ad80, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ad80, UIMinimapDialog, FUN_141a3ad80, 26, 0x8AB8E1D5);
 
 // @0x141a3ada0
 void UIMinimapDialog::FUN_141a3ada0()
@@ -2124,7 +2125,7 @@ void UIMinimapDialog::FUN_141a3ada0()
     m_211 = true;
     m_212 = true;
 }
-MS2_REPLACE_METHOD(0x141a3ada0, UIMinimapDialog, FUN_141a3ada0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ada0, UIMinimapDialog, FUN_141a3ada0, 42, 0xE470E7BA);
 
 struct Unk_MmQuestIconOptions                                       // the quest icon filter options
 {
@@ -2180,7 +2181,7 @@ void UIMinimapDialog::FUN_141a3b130(unsigned __int64 nId, int nColor, const efd:
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3b130, UIMinimapDialog, FUN_141a3b130, 0, 0);
+MS2_REPLACE_METHOD(0x141a3b130, UIMinimapDialog, FUN_141a3b130, 599, 0x9F70BD80);
 
 // @0x141a3b390
 void UIMinimapDialog::FUN_141a3b390(unsigned __int64 nId, int nColor, EntityPtr spEntity, const efd::Point3& kPos)
@@ -2199,7 +2200,7 @@ void UIMinimapDialog::FUN_141a3b4d0(unsigned int& nQuest, unsigned __int64& nId)
     nQuest = m_468;
     nId = m_460;
 }
-MS2_REPLACE_METHOD(0x141a3b4d0, UIMinimapDialog, FUN_141a3b4d0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3b4d0, UIMinimapDialog, FUN_141a3b4d0, 54, 0x63DECFAD);
 
 // @0x141a3b510
 UIMinimapDialog::EntityPtr UIMinimapDialog::FUN_141a3b510(ProxyPtr spProxy)
@@ -2221,7 +2222,7 @@ UIMinimapDialog::HomeListPtr UIMinimapDialog::FUN_141a3b660(const int& nField)
     m_homes.Lookup(nField, spHomes);
     return spHomes;
 }
-MS2_REPLACE_METHOD(0x141a3b660, UIMinimapDialog, FUN_141a3b660, 0, 0);
+MS2_REPLACE_METHOD(0x141a3b660, UIMinimapDialog, FUN_141a3b660, 126, 0x41232F01);
 
 // @0x141a3b6f0
 void UIMinimapDialog::FUN_141a3b6f0()
@@ -2259,7 +2260,7 @@ bool UIMinimapDialog::FUN_141a3bda0(ASObj& data, ProxyPtr spProxy)
     data.FUN_1409eb270("tooltipData", tooltip);
     return true;
 }
-MS2_REPLACE_METHOD(0x141a3bda0, UIMinimapDialog, FUN_141a3bda0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3bda0, UIMinimapDialog, FUN_141a3bda0, 936, 0xFC9D3AA0);
 
 // @0x141a44e60
 void UIMinimapDialog::FUN_141a44e60()
@@ -2268,7 +2269,7 @@ void UIMinimapDialog::FUN_141a44e60()
     if (m_30.get() != 0)
         m_30->Invoke("changeStageSize");
 }
-MS2_REPLACE_METHOD(0x141a44e60, UIMinimapDialog, FUN_141a44e60, 0, 0);
+MS2_REPLACE_METHOD(0x141a44e60, UIMinimapDialog, FUN_141a44e60, 93, 0xF5D0C6CA);
 
 // @0x141a44ed0
 void UIMinimapDialog::FUN_141a44ed0()
@@ -2276,7 +2277,7 @@ void UIMinimapDialog::FUN_141a44ed0()
     if (m_30.get() != 0)
         m_30->FUN_1409ba030("setSelectedChannel", m_channel);
 }
-MS2_REPLACE_METHOD(0x141a44ed0, UIMinimapDialog, FUN_141a44ed0, 0, 0);
+MS2_REPLACE_METHOD(0x141a44ed0, UIMinimapDialog, FUN_141a44ed0, 95, 0x88554227);
 
 // @0x141a44f40
 void UIMinimapDialog::FUN_141a44f40()
@@ -2290,7 +2291,7 @@ void UIMinimapDialog::FUN_141a44f40()
     FUN_141a45ad0(nWidth, nHeight);
     m_alignment->FUN_141901c10(m_30, nWidth, nHeight);
 }
-MS2_REPLACE_METHOD(0x141a44f40, UIMinimapDialog, FUN_141a44f40, 0, 0);
+MS2_REPLACE_METHOD(0x141a44f40, UIMinimapDialog, FUN_141a44f40, 210, 0x473BA9B2);
 
 template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0 (ridee.cpp)
 template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;                   // 0x1407895d0
@@ -2344,7 +2345,7 @@ void UIMinimapDialog::FUN_141a42550()
     for (size_t i = 0; i < objects.GetCount(); ++i)
         FUN_141a391f0(objects[i]);
 }
-MS2_REPLACE_METHOD(0x141a42550, UIMinimapDialog, FUN_141a42550, 0, 0);
+MS2_REPLACE_METHOD(0x141a42550, UIMinimapDialog, FUN_141a42550, 166, 0x38F4D24D);
 
 extern int DAT_143ab0248;                                           // client country (2: no channel group)
 int FUN_14092f640();                                                // the current channel
@@ -2365,7 +2366,7 @@ void UIMinimapDialog::FUN_141a42800()
         pServerList->FUN_141ad2f60(channels, &nSelected, m_channel);
     static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a468e0("buildChannelList", channels.FUN_1422bb870(), nSelected, FUN_14028b8e0(L"s_word_ch"), strGroup);
 }
-MS2_REPLACE_METHOD(0x141a42800, UIMinimapDialog, FUN_141a42800, 0, 0);
+MS2_REPLACE_METHOD(0x141a42800, UIMinimapDialog, FUN_141a42800, 616, 0x8585C70C);
 
 float FUN_141adbe70(void* pService);                               // the ui scale
 
@@ -2418,7 +2419,7 @@ void UIMinimapDialog::FUN_141a42bb0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a42bb0, UIMinimapDialog, FUN_141a42bb0, 0, 0);
+MS2_REPLACE_METHOD(0x141a42bb0, UIMinimapDialog, FUN_141a42bb0, 1058, 0xAC337C95);
 
 // @0x141a42fe0
 void UIMinimapDialog::FUN_141a42fe0(ATL::CAtlArray<EntityPtr>& entities)
@@ -2441,7 +2442,7 @@ void UIMinimapDialog::FUN_141a42fe0(ATL::CAtlArray<EntityPtr>& entities)
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a42fe0, UIMinimapDialog, FUN_141a42fe0, 0, 0);
+MS2_REPLACE_METHOD(0x141a42fe0, UIMinimapDialog, FUN_141a42fe0, 693, 0xCC18C194);
 
 // @0x141a42a70
 void UIMinimapDialog::FUN_141a42a70()
@@ -2459,7 +2460,7 @@ void UIMinimapDialog::FUN_141a42a70()
     }
     m_30->Invoke("visiblePlayers", bVisible);
 }
-MS2_REPLACE_METHOD(0x141a42a70, UIMinimapDialog, FUN_141a42a70, 0, 0);
+MS2_REPLACE_METHOD(0x141a42a70, UIMinimapDialog, FUN_141a42a70, 310, 0xA88A9455);
 
 // @0x141a43ac0
 void UIMinimapDialog::FUN_141a43ac0(ProxyPtr spProxy, EntityPtr spEntity)
@@ -2501,7 +2502,7 @@ void UIMinimapDialog::FUN_141a454d0(const int& nField, const unsigned __int64& n
         m_homes.SetAt(nField, spHomes);
     }
 }
-MS2_REPLACE_METHOD(0x141a454d0, UIMinimapDialog, FUN_141a454d0, 0, 0);
+MS2_REPLACE_METHOD(0x141a454d0, UIMinimapDialog, FUN_141a454d0, 258, 0x35FA8FE3);
 
 // @0x141a455e0
 void UIMinimapDialog::FUN_141a455e0(const int& nField, const unsigned __int64& nHome)
@@ -2515,7 +2516,7 @@ void UIMinimapDialog::FUN_141a455e0(const int& nField, const unsigned __int64& n
             spHomes->RemoveAt(pos);
     }
 }
-MS2_REPLACE_METHOD(0x141a455e0, UIMinimapDialog, FUN_141a455e0, 0, 0);
+MS2_REPLACE_METHOD(0x141a455e0, UIMinimapDialog, FUN_141a455e0, 206, 0xFF96F73D);
 
 class Unk_MmInput;                                                  // the input manager
 Unk_MmInput* FUN_140aadf80();
@@ -2529,7 +2530,7 @@ void UIMinimapDialog::FUN_141a456c0(const Scaleform::GFx::FunctionHandler::Param
     if (FUN_141b90e30(FUN_140aadf80(), x, y))
         FUN_141a45020(0, x, y);
 }
-MS2_REPLACE_METHOD(0x141a456c0, UIMinimapDialog, FUN_141a456c0, 0, 0);
+MS2_REPLACE_METHOD(0x141a456c0, UIMinimapDialog, FUN_141a456c0, 88, 0x1BA9816C);
 
 // @0x141a45720
 void UIMinimapDialog::FUN_141a45720(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -2539,14 +2540,14 @@ void UIMinimapDialog::FUN_141a45720(const Scaleform::GFx::FunctionHandler::Param
     if (FUN_141b90e30(FUN_140aadf80(), x, y))
         FUN_141a45020(1, x, y);
 }
-MS2_REPLACE_METHOD(0x141a45720, UIMinimapDialog, FUN_141a45720, 0, 0);
+MS2_REPLACE_METHOD(0x141a45720, UIMinimapDialog, FUN_141a45720, 91, 0xCE3BFD94);
 
 // @0x141a458d0
 void UIMinimapDialog::FUN_141a458d0(bool b)
 {
     vfunc_63(b != false);
 }
-MS2_REPLACE_METHOD(0x141a458d0, UIMinimapDialog, FUN_141a458d0, 0, 0);
+MS2_REPLACE_METHOD(0x141a458d0, UIMinimapDialog, FUN_141a458d0, 68, 0xA6155441);
 
 // @0x141a45ad0
 bool UIMinimapDialog::FUN_141a45ad0(int& nWidth, int& nHeight)
@@ -2560,7 +2561,7 @@ bool UIMinimapDialog::FUN_141a45ad0(int& nWidth, int& nHeight)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a45ad0, UIMinimapDialog, FUN_141a45ad0, 0, 0);
+MS2_REPLACE_METHOD(0x141a45ad0, UIMinimapDialog, FUN_141a45ad0, 148, 0xC31D8C09);
 
 // @0x141a45c70
 bool UIMinimapDialog::FUN_141a45c70(const CString& strIcon)
@@ -2579,7 +2580,7 @@ bool UIMinimapDialog::FUN_141a45ce0()
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x141a45ce0, UIMinimapDialog, FUN_141a45ce0, 0, 0);
+MS2_REPLACE_METHOD(0x141a45ce0, UIMinimapDialog, FUN_141a45ce0, 102, 0x620E2CE5);
 
 void FUN_140763210(int nId, int nKind, CStringW& strText, CStringW& strExtra, int n);   // the quest guide text
 
@@ -2592,7 +2593,7 @@ CStringW UIMinimapDialog::FUN_141a45ed0(const int& nId, int nKind)
     FUN_140763210(nId, nKind, strText, strExtra, 0);
     return strText;
 }
-MS2_REPLACE_METHOD(0x141a45ed0, UIMinimapDialog, FUN_141a45ed0, 0, 0);
+MS2_REPLACE_METHOD(0x141a45ed0, UIMinimapDialog, FUN_141a45ed0, 151, 0xFEC1B993);
 
 void FUN_14020af60(COutPacket* pPacket, const Unk_StreamPoint* pPt);    // writes the three floats of a point
 
@@ -2616,7 +2617,7 @@ void UIMinimapDialog::FUN_141a45020(int nKind, float x, float y)
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x141a45020, UIMinimapDialog, FUN_141a45020, 0, 0);
+MS2_REPLACE_METHOD(0x141a45020, UIMinimapDialog, FUN_141a45020, 392, 0xEB54C408);
 
 // The popup menu (uipartydialog.h has the full class; this unit only needs its RTTI and one entry point).
 class Unk_PopupMenuInfo
@@ -2652,7 +2653,7 @@ void UIMinimapDialog::FUN_141a45790(float x, float y, unsigned __int64 nId)
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a45790, UIMinimapDialog, FUN_141a45790, 0, 0);
+MS2_REPLACE_METHOD(0x141a45790, UIMinimapDialog, FUN_141a45790, 310, 0x37E80969);
 
 class Unk_MmActor                                                   // a field actor
 {
@@ -2686,7 +2687,7 @@ CStringW UIMinimapDialog::FUN_141a45d50(const unsigned __int64& nId)
     }
     return L"";
 }
-MS2_REPLACE_METHOD(0x141a45d50, UIMinimapDialog, FUN_141a45d50, 0, 0);
+MS2_REPLACE_METHOD(0x141a45d50, UIMinimapDialog, FUN_141a45d50, 364, 0x1CEEB35C);
 
 class Unk_MmCamera;                                                 // the field camera
 Unk_MmCamera* FUN_1409478c0();
@@ -2730,7 +2731,7 @@ bool UIMinimapDialog::FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOu
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a451b0, UIMinimapDialog, FUN_141a451b0, 0, 0);
+MS2_REPLACE_METHOD(0x141a451b0, UIMinimapDialog, FUN_141a451b0, 787, 0x516BAE6F);
 
 // @0x141a45920
 float UIMinimapDialog::FUN_141a45920(PCBase* pPC)
@@ -2752,7 +2753,7 @@ float UIMinimapDialog::FUN_141a45920(PCBase* pPC)
     }
     return fAngle - fRot + 90.0f;
 }
-MS2_REPLACE_METHOD(0x141a45920, UIMinimapDialog, FUN_141a45920, 0, 0);
+MS2_REPLACE_METHOD(0x141a45920, UIMinimapDialog, FUN_141a45920, 425, 0x27EB4910);
 
 // @0x141a3ced0
 void UIMinimapDialog::FUN_141a3ced0()
@@ -2768,7 +2769,7 @@ void UIMinimapDialog::FUN_141a3ced0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3ced0, UIMinimapDialog, FUN_141a3ced0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ced0, UIMinimapDialog, FUN_141a3ced0, 426, 0x8DA94486);
 
 // @0x141a3dbb0
 void UIMinimapDialog::FUN_141a3dbb0()
@@ -2785,7 +2786,7 @@ void UIMinimapDialog::FUN_141a3dbb0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3dbb0, UIMinimapDialog, FUN_141a3dbb0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3dbb0, UIMinimapDialog, FUN_141a3dbb0, 475, 0x65BF49F1);
 
 // @0x141a3dda0
 void UIMinimapDialog::FUN_141a3dda0()
@@ -2842,7 +2843,7 @@ void UIMinimapDialog::FUN_141a3ed50()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3ed50, UIMinimapDialog, FUN_141a3ed50, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ed50, UIMinimapDialog, FUN_141a3ed50, 377, 0x077301A2);
 
 void FUN_1408a2020(egf::Entity* pEntity, unsigned nProperty, int* pOut);   // reads an int property
 MS2Ptr<CInteractObjectData> FUN_14051f670(int nId);                  // the interact table row
@@ -2876,7 +2877,7 @@ void UIMinimapDialog::FUN_141a3df40()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3df40, UIMinimapDialog, FUN_141a3df40, 0, 0);
+MS2_REPLACE_METHOD(0x141a3df40, UIMinimapDialog, FUN_141a3df40, 906, 0x6C5FA91F);
 
 void FUN_1408a20a0(egf::Entity* pEntity, unsigned nProperty, bool* pOut);  // reads a bool property
 
@@ -2924,7 +2925,7 @@ void UIMinimapDialog::FUN_141a3ef80()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3ef80, UIMinimapDialog, FUN_141a3ef80, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ef80, UIMinimapDialog, FUN_141a3ef80, 567, 0xD23B9533);
 
 void FUN_1401d3700(CString& str);                                    // normalises the symbol name
 
@@ -2958,7 +2959,7 @@ void UIMinimapDialog::FUN_141a3f1c0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3f1c0, UIMinimapDialog, FUN_141a3f1c0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3f1c0, UIMinimapDialog, FUN_141a3f1c0, 927, 0x9CACB9AE);
 
 // @0x141a3ea10
 void UIMinimapDialog::FUN_141a3ea10()
@@ -3000,7 +3001,7 @@ void UIMinimapDialog::FUN_141a3ea10()
     FUN_141a3f1c0();
     m_30->Invoke("buildPlayers");
 }
-MS2_REPLACE_METHOD(0x141a3ea10, UIMinimapDialog, FUN_141a3ea10, 0, 0);
+MS2_REPLACE_METHOD(0x141a3ea10, UIMinimapDialog, FUN_141a3ea10, 816, 0x8461D8E7);
 
 // @0x141a3fe10
 void UIMinimapDialog::FUN_141a3fe10(ProxyPtr spProxy, EntityPtr spEntity, int n)
@@ -3593,6 +3594,7 @@ void UIMinimapDialog::FUN_141a3c150()
     }
     m_30->Invoke("initData", spData->FUN_1422bb870());
 }
+MS2_REPLACE_METHOD(0x141a3c150, UIMinimapDialog, FUN_141a3c150, 3442, 0x5796E527);
 
 // @0x141a3d080
 // MS2-FUNCTIONAL: the npc data conversion temp is copied through extra stack slots in the exe
@@ -3675,7 +3677,7 @@ void UIMinimapDialog::FUN_141a3eed0()
     for (size_t i = 0; i < objects.GetCount(); ++i)
         FUN_141a39770(objects[i]);
 }
-MS2_REPLACE_METHOD(0x141a3eed0, UIMinimapDialog, FUN_141a3eed0, 0, 0);
+MS2_REPLACE_METHOD(0x141a3eed0, UIMinimapDialog, FUN_141a3eed0, 166, 0x633A6A4C);
 
 // @0x141a3f570
 void UIMinimapDialog::FUN_141a3f570()
@@ -3687,7 +3689,7 @@ void UIMinimapDialog::FUN_141a3f570()
         m_clip228 = 0;
     }
 }
-MS2_REPLACE_METHOD(0x141a3f570, UIMinimapDialog, FUN_141a3f570, 0, 0);
+MS2_REPLACE_METHOD(0x141a3f570, UIMinimapDialog, FUN_141a3f570, 134, 0x60F6F4E1);
 
 // @0x141a3f600
 void UIMinimapDialog::FUN_141a3f600(ProxyPtr spProxy)
@@ -3830,7 +3832,7 @@ void UIMinimapDialog::FUN_141a3fb10()
     FUN_141a46c90(m_objects);
     FUN_141a3fd20();
 }
-MS2_REPLACE_METHOD(0x141a3fb10, UIMinimapDialog, FUN_141a3fb10, 0, 0);
+MS2_REPLACE_METHOD(0x141a3fb10, UIMinimapDialog, FUN_141a3fb10, 513, 0xEBDDB7DE);
 
 // @0x141a3fd20
 void UIMinimapDialog::FUN_141a3fd20()
@@ -3847,4 +3849,6 @@ void UIMinimapDialog::FUN_141a3fd20()
     m_objects.RemoveAll();
     m_homes.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x141a3fd20, UIMinimapDialog, FUN_141a3fd20, 0, 0);
+MS2_REPLACE_METHOD(0x141a3fd20, UIMinimapDialog, FUN_141a3fd20, 231, 0x2297E1D9);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc01c0-0x142cc0d10 .text$yd

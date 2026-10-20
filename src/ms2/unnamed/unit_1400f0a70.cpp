@@ -28,3 +28,5 @@ static CString s_strSortTypeNames4[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 
 static CString s_strSortTypeNames5[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static UICommon::CMyPCKeyInputController s_keyInput;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb0840-0x142cb0a10 .text$yd

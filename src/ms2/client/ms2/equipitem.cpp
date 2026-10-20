@@ -740,3 +740,12 @@ MS2_REPLACE_METHOD(0x1411DE030, CEquipItem, FUN_1411de030, 306, 0xA17A0E80);
 // The UCRT's `static __inline memcpy_s` of this TU (kept alive by the pointer below), then its memmove_s.
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// Header statics of the following object, included in this mapped unit.
+// MS2-RANGE: 0x1400e8680-0x1400e8820 .text$di
+// MS2-RANGE: 0x142cad300-0x142cad3b0 .text$yd
+static CString s_tailAll("ALL");
+static CString s_tailSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_tailSkill("skill");
+static CString s_tailStun("stun");
+static ATL::CAtlMap<unsigned int, CString> s_tailConditions(17, .75f, .25f, 2.25f, 10);

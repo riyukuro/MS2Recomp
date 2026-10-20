@@ -604,3 +604,5 @@ void UIGameOptionDialog::FUN_1419445c0(int nKey, int n)
             m_mapPages.RemoveKey(nKey);
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbe180-0x142cbe1f0 .text$yd

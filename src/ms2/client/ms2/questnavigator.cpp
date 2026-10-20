@@ -567,3 +567,5 @@ CQuestNavigationMap* FUN_140c9b8e0()
 {
     return TSingleton<CQuestNavigationMap>::GetInstance();
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca39e0-0x142ca3a70 .text$yd

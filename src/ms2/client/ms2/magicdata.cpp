@@ -3154,3 +3154,5 @@ efd::AsyncResult CMagicService::OnShutdown()
     return efd::AsyncResult_Complete;
 }
 MS2_REPLACE_METHOD(0x14146D0B0, CMagicService, OnShutdown, 36, 0x36A30B21);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb24e0-0x142cb2660 .text$yd

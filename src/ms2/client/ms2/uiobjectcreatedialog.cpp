@@ -277,3 +277,5 @@ void UIObjectCreateDialog::FUN_14131ff70()
         list->vfunc_24(true);
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cafe70-0x142caffc0 .text$yd

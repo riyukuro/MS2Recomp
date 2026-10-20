@@ -1818,7 +1818,7 @@ void UIMessenger::FUN_141a13e00()
         int& nType = *it;
         if (m_pBrowser->FUN_141a264c0(nType))
             continue;
-        m_subjectIndex.insert(std::make_pair(nIndex++, nType));
+        m_subjectIndex.insert(std::pair<int, int>(nIndex++, nType));
     }
 }
 
@@ -4892,3 +4892,5 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced in the exe, kept alive by the pointer below).
 // MS2-PIN: memcpy_s 0x141a20e70
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMsgMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbfeb0-0x142cc01c0 .text$yd

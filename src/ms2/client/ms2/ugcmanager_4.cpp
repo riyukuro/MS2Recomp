@@ -1541,7 +1541,7 @@ void CUgcManager::FUN_141883400(CRBMap<int, int>& hours, const Unk_BannerDay& da
     CUgcViewerBanner* pViewer = (CUgcViewerBanner*)spCtrl->m_spViewer.get();
     if (pViewer == 0)
         return;
-    int nBannerId = pViewer->m_nBannerId;
+    int nBannerId = pViewer->m_post.m_nBannerId;
     Unk_BannerPtr spBanner = CFieldBannerData::GetBanner(nBannerId);
     if (spBanner == NULL)
         return;
@@ -3984,9 +3984,9 @@ void CUgcManager::FUN_14188ff10(CInPacket& packet)
         CBlueprintItemData blueprint;
         blueprint.Read(packet);
         reinterpret_cast<CItemUgc*>(pUgc)->FUN_140632070(&blueprint);
-        pViewer->m_n30 = blueprint.m_n18;
-        pViewer->m_itemUid = itemUid;
-        pViewer->m_n40 = spItem->FUN_1405276c0();
+        pViewer->m_proxy.m_n18 = blueprint.m_n18;
+        pViewer->m_proxy.m_n20 = itemUid;
+        pViewer->m_proxy.m_n28 = spItem->FUN_1405276c0();
         m_spUpload->m_itemUid = itemUid;
         FUN_141882020();
     }

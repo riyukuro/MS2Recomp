@@ -64,6 +64,7 @@
 // MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@I_NU?$less@I@std@@V?$allocator@U?$pair@$$CBI_N@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBI_N@std@@PEAX@2@@Z 0x1406daaf0 ; manual
 // MS2-PIN: ??1CNpcRegionSpawnData@@UEAA@XZ 0x1406d5570
 // MS2-PIN: ??1CRegionSpawnProb@@UEAA@XZ 0x1406d5620
+// MS2-FUNCTIONAL ??1CPair@?$CRBTree@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$Unk_BmBoxPtr@V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$Unk_BmBoxPtr@V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@@@@2@@ATL@@IEAA@XZ: bytes match; the exe linker ICF-folded its Unk_BmBoxPtr<CAtlArray<unsigned>> dtor callee into the shared MS2Ptr dtor copy 0x1406d5390, while that name binds to the identical copy 0x1401c5790 (blackmarket); a compiler-generated COMDAT cannot choose its callee copy
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\npcdata.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "npcdata.h"
@@ -1694,3 +1695,5 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     }
     return true;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9b7e0-0x142c9b860 .text$yd

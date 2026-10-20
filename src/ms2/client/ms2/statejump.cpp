@@ -471,3 +471,5 @@ int StateJump::vfunc_19()
 {
     return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb77e0-0x142cb7800 .text$yd

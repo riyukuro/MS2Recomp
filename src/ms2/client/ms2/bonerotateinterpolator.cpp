@@ -715,3 +715,5 @@ void CBoneRotateManager::FUN_140a35900()
     }
     m_actions.RemoveAll();
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9ef20-0x142c9f040 .text$yd

@@ -1619,3 +1619,5 @@ CString Unk_SocketFormat(const char* format, const fmt::ArgList& args)
 }
 template size_t ATL::CAtlArray<unsigned long, ATL::CElementTraits<unsigned long> >::Append(const ATL::CAtlArray<unsigned long, ATL::CElementTraits<unsigned long> >&);
 
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9a590-0x142c9a5b0 .text$yd

@@ -217,3 +217,5 @@ unsigned char* FUN_140a46860(Unk_PiSettings* p)   // 0x140a46860
 {
     return (unsigned char*)p + 0x1b4;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9f130-0x142c9f170 .text$yd

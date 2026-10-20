@@ -229,7 +229,7 @@ public:
     typedef ATL::CAtlMap<unsigned __int64, EntityPtr> BuddyMap;
     typedef ATL::CAtlMap<CString, EntityPtr, CStringElementTraits<CString> > NamedMap;
     typedef ATL::CAtlMap<int, EntityPtr> EntityMap;
-    typedef TPtrValue<ATL::CAtlList<__int64> > HomeListPtr;
+    typedef TPtrValue<ATL::CAtlList<unsigned __int64> > HomeListPtr;
     typedef ATL::CAtlMap<int, HomeListPtr> HomeMap;
     typedef ATL::CAtlMap<CString, MS2Ptr<TShowAttr>, CStringElementTraits<CString> > ShowAttrMap;
 

@@ -838,3 +838,5 @@ MS2_REPLACE(0x140707DC0, FUN_140707dc0, 155, 0x765EB799);
 MS2_REPLACE(0x140707E70, FUN_140707e70, 155, 0xB43B85B3);
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9ba80-0x142c9bac0 .text$yd

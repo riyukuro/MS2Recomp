@@ -80,3 +80,5 @@ MS2Ptr<CDropItemData> CDropItemData::Get(int nId)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cacb40-0x142cacb80 .text$yd

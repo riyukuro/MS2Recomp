@@ -154,5 +154,6 @@ private:
     Unk_EnchantMap m_kStat;                         // +0x40 the summed stat options of the gemstones
     Unk_SocketSpecialMap m_kSpecial;                // +0x88 the summed special-stat options
     Unk_SocketGemArray m_aD0;                       // +0xd0
+    friend class ASTooltip;                         // astooltip.cpp 0x1409cc800 calls the gem filters FUN_1406221c0/FUN_140622440
 };
 MS2_CHECK_SIZE(CItemSocket, 0xf0);

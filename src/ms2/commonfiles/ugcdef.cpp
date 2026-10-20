@@ -2903,3 +2903,5 @@ void FUN_1408989c0(ATL::CAtlList<MS2Ptr<Unk_BasketNode> >& nodes, Unk_BasketSink
 
 // @0x14089b9d0 (glue: CAtlMap<CStringA,int>::IsEmpty)
 template bool ATL::CAtlMap<CStringA, int, ATL::CStringElementTraits<CStringA>, ATL::CElementTraits<int> >::IsEmpty() const;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9c760-0x142c9c850 .text$yd

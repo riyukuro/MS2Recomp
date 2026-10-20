@@ -1788,3 +1788,5 @@ void CSoundEventMgr::FUN_14177e2e0(int bFlag)
     }
 }
 
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb6d70-0x142cb6df0 .text$yd

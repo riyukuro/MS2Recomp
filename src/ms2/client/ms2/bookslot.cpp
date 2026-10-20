@@ -163,3 +163,5 @@ BookSlotBag* FUN_140a37100(NotifyContext::BindData* p)
     else
         return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9f040-0x142c9f0d0 .text$yd

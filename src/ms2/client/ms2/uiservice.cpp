@@ -1008,7 +1008,7 @@ void CUIService::FUN_141adbbb0()
 // ---- message boxes that confirm opening the market ----
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
-CStringW FUN_14028b8e0(CStringW str);
+#include "ms2/commonfiles/commonutil.h"
 
 // @0x141add1f0
 void CUIService::FUN_141add1f0()
@@ -5066,3 +5066,5 @@ void FUN_141addb30(long long n)
     }
     FUN_1407cd930(&kRet, "text", FUN_1412dd680(strResult));
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc2670-0x142cc27b0 .text$yd

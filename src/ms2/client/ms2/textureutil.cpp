@@ -1305,3 +1305,5 @@ void FUN_141851840(NiDevImageConverter* pkConverter)
     s_kConverterSlot.Set(pkConverter);
 }
 #endif
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbbd00-0x142cbbd20 .text$yd

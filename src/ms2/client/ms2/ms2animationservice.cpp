@@ -572,3 +572,5 @@ MS2KFMCache::MS2KFMCache()
 MS2KFMCache::~MS2KFMCache()
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb2bf0-0x142cb2d20 .text$yd

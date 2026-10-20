@@ -729,3 +729,5 @@ int FUN_14102ac40(const CStringW& strPath, ATL::CAtlArray<CStringW>& parts)
 // the memmove_s the ATL string copies inline
 // @0x14102b3b0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cab560-0x142cab590 .text$yd

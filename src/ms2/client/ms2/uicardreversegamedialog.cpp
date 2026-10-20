@@ -444,3 +444,5 @@ UICardReverseGameDialog::CardReward::CardReward()
     : m_nIndex(0), m_nItemId(0), m_nRank(1), m_nCount(0)
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca90d0-0x142ca9210 .text$yd

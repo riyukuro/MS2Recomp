@@ -530,3 +530,37 @@ bool Unk_PCMove::FUN_141684170(int nKey)
     return FUN_1416840c0(FUN_141684060(nKey));
 }
 MS2_REPLACE_METHOD(0x141684170, Unk_PCMove, FUN_141684170, 44, 0x56BEA03B);
+
+// The preceding constructors and header statics belong to this controller TU.
+// MS2-RANGE: 0x141682e90-0x141682f80 .text$mn
+// MS2-RANGE: 0x1400fb790-0x1400fb920 .text$di
+#include "ms2/client/ms2/pcbase.h"
+#include "ms2/placeholder/unk_1402a9d70.h"
+
+static CString s_moveSortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_moveSkill("skill");
+static CString s_moveStun("stun");
+static Unk_1402a9d70 s_moveCondition(17, .75f, .25f, 2.25f, 10);
+
+// @0x141682e90
+Unk_PCBaseBuffTracker::Unk_PCBaseBuffTracker()
+{
+    m_p00 = 0;
+    m_n50 = 0;
+    m_pos40 = *reinterpret_cast<const efd::Point3*>(&DAT_143b01a60);
+}
+
+// @0x141682f30
+Unk_PCBaseBuffTracker::~Unk_PCBaseBuffTracker()
+{
+}
+
+// @0x141682f60
+void FUN_141682f60(void* tracker, PCBase* owner)
+{
+    static_cast<Unk_PCMove*>(tracker)->m_pOwner = reinterpret_cast<Unk_PCActor*>(owner);
+}
+
+// MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400fb8b0
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb40e0-0x142cb4170 .text$yd

@@ -510,7 +510,13 @@ def credit(res, game_rows):
         return i >= 0 and va < game[i][1]
     best = {}      # va -> (rank, symbol, unit)   rank: 3 exact v2525, 2 exact stock, 1 paired
     named = set()  # (unit, va) paired through a name table
+    # a stock TU and its v2525 twin are one TU whose unit names differ in case (SchedulerLua / schedulerlua): credit
+    # them under the stock name, else a stub gap between their functions is never filled
+    canon = {}
+    for c in sorted(res.values(), key=lambda c: c["recipe"] != "stock"):
+        canon.setdefault(c["unit"].lower(), c["unit"])
     for k, c in sorted(res.items()):
+        c = dict(c, unit=canon[c["unit"].lower()])
         better = {x[0] for x in c.get("xpairs", ())}
         for sym, va, ok, how in c["pairs"] + c.get("xpairs", []):
             if not ok and sym in better:      # a non-exact table-name pair superseded by an exact copy pair

@@ -1207,7 +1207,7 @@ void UIUGCCubePaletteDialog::vfunc_14(void* pItemArg)
             MS2Ptr<CUgcItemLook> spLook = pSel->look;
             if (spLook.get() != 0)
             {
-                if (spLook->ugcId == (__int64)pItem->FUN_1405283d0())
+                if (spLook->m_n18 == (__int64)pItem->FUN_1405283d0())
                     pSel->instanceId = nUid;
             }
         }
@@ -1411,7 +1411,7 @@ void UIUGCCubePaletteDialog::FUN_140eec0b0(unsigned __int64 uid)
                     MS2Ptr<CUgcItemLook> spLook = pSel->look;
                     if (static_cast<bool>(spLook.get()))
                     {
-                        if (spLook->ugcId == (__int64)spItem->FUN_1405283d0())
+                        if (spLook->m_n18 == (__int64)spItem->FUN_1405283d0())
                             pSel->instanceId = nItemUid;
                     }
                 }
@@ -2934,3 +2934,5 @@ MS2_REPLACE_METHOD(0x140EEFE00, UIUGCCubePaletteDialog, FUN_140eefe00, 19, 0x479
 MS2_REPLACE_METHOD(0x140EF0000, ASObj, FUN_140ef0000, 152, 0x0A3D18BD);
 MS2_REPLACE_METHOD(0x140EF00A0, ASObj, FUN_140ef00a0, 152, 0x654F363F);
 MS2_REPLACE_METHOD(0x140EF1C00, UGCKeyMode, vfunc_1, 32, 0x851BA29F);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca88a0-0x142ca8a80 .text$yd

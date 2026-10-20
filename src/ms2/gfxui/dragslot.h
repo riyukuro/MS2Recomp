@@ -43,20 +43,26 @@ public:
     // SetupClassInfo 0x140a36910 (no parents).
     EE_DECLARE_CLASS(BindData, 0x06202734);
 public:
-    virtual void vfunc_5();                         // 5 0x1422c8d60 {}
-    virtual void vfunc_6(void* p);                  // 6 0x1422c8d70 {}
-    virtual int vfunc_7(void* p);                   // 7 0x1422c8d90 return 1
-    virtual int vfunc_8(void* p);                   // 8 0x1422c8db0 return 0
+    virtual void vfunc_5();                         // 5 0x1422c8d60 {} (unbound)
+    virtual void vfunc_6(void* p);                  // 6 0x1422c8d70 {} (p: &m_arr58, after a push)
+    virtual int vfunc_7(void* p);                   // 7 0x1422c8d90 return 1 (p: CString*, a changed binding name)
+    virtual int vfunc_8(void* p);                   // 8 0x1422c8db0 return 0 (p: Value*, the data to push)
     virtual void vfunc_9();                         // 9 0x1422c8dd0 {}
     CString FUN_1422c89f0();                        // 0x1422c89f0 a copy of m_strName
     Scaleform::GFx::Value& FUN_1422c8d40();         // 0x1422c8d40 &m_value18 (the slot's AS data)
+    void FUN_1422c8be0();                           // 0x1422c8be0 push the slot to its AS binding (DragSlot::vfunc_10)
+    void FUN_1422c8b50();                           // 0x1422c8b50 clear the AS binding (DragSlot::vfunc_11)
+    void FUN_1422c8cb0(const Scaleform::GFx::Value& v);   // 0x1422c8cb0 m_value18 = v; vfunc_9() unless v is null (notifybinding.cpp)
+    void FUN_1422c8d10(const Scaleform::GFx::Value& v);   // 0x1422c8d10 m_value38 = v (notifybinding.cpp)
+    void FUN_1422c8a40();                           // 0x1422c8a40 mark m_arr58's names changed and m_strName pushed (NotifyContext)
+    int FUN_1422c8ac0(const CString& strName);      // 0x1422c8ac0 strName is in m_arr58
 
 public:
     MS2_LAYOUT_FRIEND;
     CString m_strName;                              // +0x10
     Scaleform::GFx::Value m_value18;                // +0x18
     Scaleform::GFx::Value m_value38;                // +0x38
-    CAtlArray<void*> m_arr58;                       // +0x58
+    CAtlArray<CString> m_arr58;                     // +0x58 names of the bindings that depend on this one (filled by vfunc_6)
 };
 
 } // namespace NotifyContext
@@ -111,6 +117,8 @@ public:
     int m_bDragging;                                // +0x84
 };
 MS2_CHECK_SIZE(DragSlot, 0x88);
+
+CString FUN_1422cc860(const CString& strName, int nIndex);      // "<strName>.<nIndex>" (dragslot.cpp)
 MS2_CHECK_OFFSET(DragSlot, m_nIndex, 0x80);
 MS2_CHECK_OFFSET(DragSlot, m_bDragging, 0x84);
 
@@ -134,9 +142,24 @@ public:
     virtual CString vfunc_15(int i);                // 15 0x1422cd120 Format("%s.%d", m_strName, i)
     virtual DragSlot* vfunc_16(int n);              // 16 0x1422cd1a0 return 0 (creates the slot for index n; TradeSlotBag: new TradeSlot)
 
+    // ?\dragslotbag.cpp (src/ms2/gfxui/dragslotbag.cpp). The m_slots walks are range-for loops (copying the pair): MSVC
+    // compiles them to the map's _Unchecked_begin/_Unchecked_end (0x14140fe80/0x14140fed0), not begin()/end().
+    void FUN_1422cc9e0();                           // unbind every slot, then clear m_slots
+    void FUN_1422cca90();                           // push every slot to its AS binding (BindData::FUN_1422c8be0)
+    void FUN_1422ccb50(int nIndex);                 // create the slot of nIndex (vfunc_16), bind it, add it to m_slots
+    void FUN_1422ccc60(int nIndex);                 // remove the slot of nIndex
+    void FUN_1422cccc0(CString strName, int nIndex);   // unbind strName, erase nIndex from m_slots
+    size_t FUN_1422ccd20();                         // m_slots.size()
+    CString FUN_1422ccfb0(int nIndex) const;        // the slot name of nIndex ("" if there is none)
+    DragSlot* FUN_1422cd070(int nIndex);            // the slot of nIndex
+    DragSlot* FUN_1422cd0f0(const CString& strName);   // the bound slot of a name (null if it is not a DragSlot)
+
+    // pRetVal = a new AS array of the slot names (m_slots order); NotifyDragSlot "getBagSlotBindings".
+    void FUN_1422cd1c0(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1422cd1c0
+
 public:
     std::map<int, CString> m_slots;                 // +0x78 slot index -> slot name ("<bag name>.<index>"); FUN_1422ccb50 inserts,
-                                                    // vfunc_11/12 walk it (init 0x141000090, dtor 0x1410004f0, clear 0x1410083f0)
+                                                    // vfunc_11/12 walk it (init 0x141000090, dtor 0x1410004f0, size 0x1410083f0)
 };
 MS2_CHECK_SIZE(DragSlotBag, 0x88);
 MS2_CHECK_OFFSET(DragSlotBag, m_slots, 0x78);

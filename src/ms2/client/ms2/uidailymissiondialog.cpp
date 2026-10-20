@@ -103,7 +103,7 @@ template<class T> MS2Ptr<T> AScript::FUN_140bc7280(const CString& strName)
     return MS2Ptr<T>(0);
 }
 
-// The local player: only the level (slot 78) is used.
+struct Unk_DmActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: only the level (slot 78, +0x270) is used
 typedef unsigned short (*Unk_DmLevelFn)(void*);
 inline unsigned short Unk_DmActorLevel(void* pActor) { return reinterpret_cast<Unk_DmLevelFn>((*reinterpret_cast<void***>(pActor))[78])(pActor); }
 
@@ -334,14 +334,14 @@ void UIDailyMissionDialog::FUN_140bfff90(CInPacket& rPacket)
 }
 
 // @0x140bffff0
-bool UIDailyMissionDialog::FUN_140bffff0()
+int UIDailyMissionDialog::FUN_140bffff0()
 {
     if (!FUN_140166410()->FUN_14036d570(0x92))
-        return false;
-    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        return 0;
+    Unk_DmActor* pPlayer = static_cast<Unk_DmActor*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer == 0)
-        return false;
-    return Unk_DmActorLevel(pPlayer) != 0;
+        return 0;
+    return pPlayer->vfunc_78() >= 1;
 }
 
 // Request the reward of a finished quest.
@@ -736,3 +736,5 @@ MS2Ptr<Unk_DmGuideBar> UIDailyMissionDialog::FUN_140c02990(const CString& strNam
 // The default slot of the quest event listener (shared by every listener without an override).
 // @0x140c02f20
 void UIQuestEventListener::vfunc_o178_2(void*) {}
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca2280-0x142ca2310 .text$yd

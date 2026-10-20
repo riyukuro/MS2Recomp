@@ -46,6 +46,8 @@ public:
     virtual int vfunc_5(void*, void*) { return 1; }
     // @0x140f0b710
     void FUN_140f0b710(int n) { m_0c = n; }
+    // @0x141922e80
+    void FUN_141922e80(int n) { m_08 = n; }     // set the shop id (uibeautyshopdevdialog.cpp)
     // Inline getters, first emitted by ?\customize.cpp (Customize::Equipment's packets).
     // @0x140cd60e0
     int GetShopId() { return m_08; }        // the shop id

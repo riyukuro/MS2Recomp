@@ -303,11 +303,7 @@ __int64 Unk_AdvCfgExp::FUN_140ba77c0()
 // @0x140ba77e0
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root)
 {
-    ASGameEntity* pRaw = 0;
-    void* pMem = operator new(0x88);
-    if (pMem != 0)
-        pRaw = new (pMem) ASGameEntity(root, nUiId);
-    MS2Ptr<ASGameEntity> pEntity(pRaw);
+    MS2Ptr<ASGameEntity> pEntity(new ASGameEntity(root, nUiId));
     return pEntity;
 }
 
@@ -364,3 +360,5 @@ MS2_REPLACE_METHOD(0x140BA72B0, UIAdventureLevelExpBar, OnLoadComplete, 169, 0x2
 MS2_REPLACE_METHOD(0x140BA7360, UIAdventureLevelExpBar, vfunc_43, 302, 0x59D7B96F);
 MS2_REPLACE_METHOD(0x140BA74A0, UIAdventureLevelExpBar, vfunc_45, 393, 0xC541FAD8);
 MS2_REPLACE_METHOD(0x140BA7660, UIAdventureLevelExpBar, vfunc_28, 158, 0x9E0791F5);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1560-0x142ca15f0 .text$yd

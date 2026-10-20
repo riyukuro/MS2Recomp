@@ -189,14 +189,14 @@ static CString s_skill("skill");
 static CString s_stun("stun");
 
 #ifndef MS2_HOOK_DLL
-void FUN_142ca92e0();
+void FUN_142cabb00();
 struct Unk_RegMarker {};
 static char s_id[8];
 // @0x1400e5030
 static Unk_RegMarker s_initId = (FUN_1401cd100(&s_id, 0), Unk_RegMarker());
 static char s_marker[0x48];
 // @0x1400e5050
-static Unk_RegMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca92e0), Unk_RegMarker());
+static Unk_RegMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cabb00), Unk_RegMarker());
 #endif
 
 // ---- the functions ----
@@ -666,3 +666,5 @@ NiObject* FUN_14107cc90(Unk_C930Walker& rWalker, bool bDescend)
     else
         return *FUN_14107cbe0(rWalker);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caba10-0x142cabb20 .text$yd

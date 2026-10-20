@@ -743,3 +743,5 @@ MS2_REPLACE_METHOD(0x140BA4A10, UIAdventureLevelDialog, FUN_140ba4a10, 283, 0x76
 MS2_REPLACE_METHOD(0x140BA4B70, UIAdventureLevelDialog, FUN_140ba4b70, 139, 0x05A924CA);
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1440-0x142ca14d0 .text$yd

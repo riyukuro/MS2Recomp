@@ -96,7 +96,7 @@
 // MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x1414b8750
 // 0x1414b7830 is efd::map<EntityID, PendingEntityCreationData>::try_emplace (operator[] 0x1414b87d0 -> it -> _Try_emplace
 // 0x1414b7280), not set<unsigned>::equal_range (that one is 0x1413f7760, hardwareinstancingservice.cpp's range, under
-// egf::Entity::IsDirty 0x1413ec7a0). Stays unpaired until the #if'd-out CreateEntity body that uses operator[] is recovered.
+// egf::Entity::IsDirty 0x1413ec7a0). Both pair through CreateEntity's m_entityIdToPendingDataMap[id] (FUN_1414b4b00).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2entitymanagerservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2entitymanagerservice.h"
@@ -136,10 +136,6 @@ bool FUN_1414b91b0(const egf::Entity*);
 MS2EntityManagerService::MS2EntityManagerService() {}
 // @0x1414b4ad0
 MS2EntityManagerService::~MS2EntityManagerService() {}
-// Pending engine-owner ABI correction: FlatModelFactoryRequest has an extra
-// bool at +0x68 (ctor14217fad0), making EntityFactoryRequest0x80 with ID+0x70.
-// Preserve the reviewed translation, but do not compile an undersized request.
-#if defined(MS2_ENTITY_REQUEST_ABI_RECOVERED)
 MS2_CHECK_SIZE(egf::EntityFactoryRequest,0x80);
 // MS2-FUNCTIONAL: typed synchronous/background creation; mutable warning state and RTTI factories exclude hooks.
 // @0x1414b4b00
@@ -176,7 +172,6 @@ MS2_CHECK_SIZE(egf::EntityFactoryRequest,0x80);
     m_spMessageService->SendLocal(request,efd::AssetFactoryManager::MessageCategory());
     return id;
 }
-#endif
 // @0x1414b5430
 void MS2EntityManagerService::SendEntityUpdateNotification(egf::Entity* entity) {
     if(m_spMessageService) {
@@ -209,3 +204,8 @@ unsigned Unk_EmitEntityManagerNonAtomicDecrement(efd::NonAtomicRefCount& refCoun
 {
     return --refCount;
 }
+// efd::map/efd::set default ctor wrappers of EntityFactoryResponse's by-value defaults (CreateEntity): each calls its std base ctor (0x1414b7dd0 / 0x1414b7e20).
+// MS2-PIN: ??0?$map@Vutf8string@efd@@V?$SmartPointer@VFlatModel@egf@@@2@U?$less@Vutf8string@efd@@@std@@@efd@@QEAA@XZ 0x1414b7db0
+// MS2-PIN: ??0?$set@V?$SmartPointer@VScriptFactoryResponse@egf@@@efd@@U?$less@V?$SmartPointer@VScriptFactoryResponse@egf@@@efd@@@std@@@efd@@QEAA@XZ 0x1414b7e00
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb2e20-0x142cb2e80 .text$yd

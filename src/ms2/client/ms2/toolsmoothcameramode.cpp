@@ -435,3 +435,5 @@ CRuntimeClass* FUN_141858980()
 {
     return CDialog::GetThisClass();
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbbe70-0x142cbbf90 .text$yd

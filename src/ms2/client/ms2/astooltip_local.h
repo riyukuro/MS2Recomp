@@ -3,8 +3,13 @@
 // Each part appends ONLY inside its own section. The part that DEFINES a function owns its signature.
 #pragma once
 
+#include <cmath>
+// The exe imports floor from the UCRT: its <cmath> floor<int> (0x1409ecf20) calls through the IAT.
+extern "C" double (__cdecl* __imp_floor)(double);
+template <> inline double floor<int, void>(int n) { return __imp_floor((double)n); }
+
+
 // ---- part 1 (0x1409c5210-0x1409cc800) ----
-#if !defined(MS2_AT_SOLO) || MS2_AT_SOLO == 1
 #include "ms2/ms2format.h"
 #include "ms2/commonfiles/itemenchantinfo.h"     // Unk_EnchantPtr<BaseOption>
 #include "ms2/commonfiles/citemoptiontable.h"    // CItemOptionTable (the recovered form; NOT placeholder/citemoptiontable.h)
@@ -68,15 +73,35 @@ bool FUN_14081dc50(int nSpecial);                 // the special stat is shown a
 CStringW FUN_14082f000(int nStat);                // GetStatCommonText (stat.cpp)
 CStringW FUN_140630e10(int nSpecial);             // the special stat name (itemsocketsystemutil.cpp)
 void FUN_14083d2b0(CStringW& str);                // trims the trailing line break (unit_14083bab0.cpp)
-#endif
-#if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 1
-class Unk_ItemEquipData : public CItemData {};    // solo build only: part 5 defines it otherwise
-struct Unk_EquipItemData : public CItemData {};   // solo build only: CEquipItem::FUN_1411dc7f0's record (defined by another part)
-#endif
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/commonfiles/itemoption.h"
+#include "ms2/commonfiles/itemsocketsystemutil.h"
+#include "ms2/commonfiles/additionalactionadditional.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+CItemSocketTable* FUN_14052d200();                // TSingleton<CItemSocketTable>::GetInstance (exe copy; as part 2)
+SkillDataTableCli* FUN_1401958b0();               // TSingleton<SkillDataTableCli>::GetInstance (exe copy; as part 2)
+#include <cmath>
+#include "ms2/placeholder/clientconstants.h"
+#include "ms2/placeholder/cpetdatatable.h"
+#include "ms2/placeholder/unlimitedenchantinfo.h"
+#include "ms2/commonfiles/exptable.h"
+#include "ms2/commonfiles/itemenchantlimittable.h"
+CPetDataTable* FUN_14052d210();                   // TSingleton<CPetDataTable>::GetInstance (exe copy; as part 2)
+CExpTable* FUN_1404a1bb0_p1();                    // 0x1404a1bb0 TSingleton<CExpTable>::GetInstance (exe copy)
+int FUN_14082ee80(const CStringA& strName);       // stat name -> id (-1 when none; stat.cpp)
+int FUN_14081d260(const CStringA& strName);       // special option name -> id (0 when none; specialability.cpp)
+const CString& FUN_14082efb0(int nStat);          // the xml name of a stat (stat.cpp)
+const CString& FUN_14081d380(int nSpecial);       // the xml name of a special stat (specialability.cpp)
+int FUN_1406198a0(int nValue, float fRate);       // itemremakescrolldata.cpp
+__int64 FUN_140632990(__int64 nValue, float fRate);   // itemsocketsystemutil.cpp
+CStringW FUN_140631720(int nStat, int nValue, bool bPercent);   // a stat value text (itemsocketsystemutil.cpp)
+CStringW FUN_140631af0(int nStat, Unk_EnchantPtr<BaseOption> spBase, CItemStatus* pStatus);   // an enchant stat row (itemsocketsystemutil.cpp)
+int FUN_14072fd00(int nUnused);                   // the pet option count (unit_14072f7f0.cpp)
+CStringW FUN_14028b8e0(const CStringW& strKey);   // the string-table text of a key (commonutil.cpp)
+CStringW FUN_1409404f0(__int64 nValue);           // a number with separators (achievemanager.cpp)
 // ---- end part 1 ----
 
 // ---- part 2 (0x1409cc800-0x1409d3010) ----
-#if !defined(MS2_AT_SOLO) || MS2_AT_SOLO == 2
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/mstime.h"
@@ -89,7 +114,7 @@ struct Unk_EquipItemData : public CItemData {};   // solo build only: CEquipItem
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
-#include "ms2/placeholder/cubeiteminfo.h"                // CUgcItemLook (the placeholder form other parts use; not commonfiles/ugcdef.h)
+#include "ms2/commonfiles/ugcdef.h"                       // CUgcItemLook (as parts 4/5; not placeholder/cubeiteminfo.h)
 #include "ms2/commonfiles/additionalactionadditional.h"
 #include "ms2/client/ms2/skilldatatablecli.h"       // SkillDataTableCli (commonfiles form, as part 4)
 #include "ms2/client/ms2/mypc.h"
@@ -127,7 +152,6 @@ CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);        // FormatS
 CStringW FUN_1409e0900(int n);                                        // part 5
 CStringW FUN_1409e0b40(int nTenths);                                  // part 5
 int FUN_1409e6c80(CItem* pItem);                                      // part 5
-#include "ms2/commonfiles/item.h"                                     // CItemStatus / CItemUgc
 #include "ms2/commonfiles/ugccubecategorytable.h"
 #include "ms2/client/ms2/achievemanager.h"
 #include <set>
@@ -162,19 +186,16 @@ inline bool operator<(const Unk_SSGHouseKey& a, const Unk_SSGHouseKey& b)
     return a.m_nB < b.m_nB;
 }
 extern std::set<Unk_SSGHouseKey> DAT_143ab32d8;
-#endif
-#if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 2
-class Unk_ItemEquipData : public CItemData {};    // solo build only: part 5 defines it otherwise
-#endif
 // ---- end part 2 ----
 
 // ---- part 3 (0x1409d3010-0x1409d9f30) ----
-#if !defined(MS2_AT_SOLO) || MS2_AT_SOLO == 3
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/commonfiles/itemgachaboxtable.h"
 class Unk_ItemPlusInfo { public: int FUN_1408bbc50(); };    // CItemStatus::FUN_140630d90's record (UnlimitedEnchantInfo)
-class Unk_ItemEnchantData { public: Unk_ItemPlusInfo* FUN_140630d90(); };   // CItem::FUN_1405278a0's record (CItemStatus)
+#include "ms2/commonfiles/itemenchantinfo.h"              // CItemEnchantInfo
+#include "ms2/commonfiles/itemoption.h"
+class Unk_ItemEnchantData { public: CItemEnchantInfo* FUN_140630d60(); Unk_ItemPlusInfo* FUN_140630d90(); CItemOption* FUN_140630d30(); int FUN_14062ffb0(unsigned nType, int nWhich, int nSub); };   // CItem::FUN_1405278a0's record (CItemStatus)
 CStringTable* FUN_1401a9d70_p3();                           // 0x1401a9d70 the string table (astooltip.cpp declares the Unk_CommandStrings form)
 CReservedWordTable* FUN_1403b4750();                        // 0x1403b4750 the reserved word table
 ItemGachaBoxTable* FUN_14052d230();                         // 0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance
@@ -188,7 +209,6 @@ CStringW FUN_14016a730(const char* sz, int nCodePage);              // 0x14016a7
 CFeatureManager* FUN_140166410_p3();                        // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
 CItemDataTable* FUN_140281980_p3();                         // 0x140281980 TSingleton<CItemDataTable>::GetInstance (exe copy)
 bool FUN_140f33250(ASObj& obj, MS2Ptr<ItemColorEx> spColor, MS2Ptr<CItemData> spData, bool bAlt);   // the colour of an item (unit_140f32290.cpp)
-#endif
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/ms2svrptr.h"
@@ -231,13 +251,71 @@ Unk_TooltipBreakManager* FUN_1409c4b20_p3();                // 0x1409c4b20 the b
 // The callers here test CItemData::FUN_14053d740 (enableRegisterMeratMarket) as an int (no movzx): the exe's caller-side
 // prototype returns BOOL.
 struct Unk_ItemDataMeratView : CItemData { int FUN_14053d740(); };
-#if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 3
-class Unk_ItemEquipData : public CItemData {};                       // solo build only: part 5 defines it otherwise
-#endif
+#include "ms2/commonfiles/itemgemstonedata.h"
+CItemGemStoneUpgradeTable* FUN_14062c280_p3();              // 0x14062c280 TSingleton<CItemGemStoneUpgradeTable>::GetInstance (exe copy)
+bool FUN_140627020(MS2Ptr<CItemGemStoneData> spRow);        // the gemstone is at its last level (itemsocketsystemutil.cpp)
+#include "ms2/commonfiles/itemextractiontable.h"
+CItemExtractionTable* FUN_14052d1f0_p3();                   // 0x14052d1f0 TSingleton<CItemExtractionTable>::GetInstance (exe copy)
+bool FUN_140634230(MS2Ptr<CItem> spItem);                   // the item is excluded from repacking (itemsocketsystemutil.cpp)
+bool FUN_140632780_p3(CItemCustomMusicScore* pScore);       // 0x140632780 CItemCustomMusicScore::FUN_140632780 (commonfiles/item.h is not includable here)
+CStringW FUN_1408116a0(int nStringId, const int& n);        // FormatStringId<int>
+CStringW FUN_14028b8e0(const CStringW& strKey);             // the string-table text of a key (commonutil.cpp)
+// CItem::FUN_140526470 returns the count of the asked kind (citem.h declares it void).
+struct Unk_TooltipItemView : CItem { int FUN_140526470(unsigned nKind); };
+#include "ms2/client/ms2/questmanager_2.h"
+CQuestManager* FUN_140764020_p3();                          // 0x140764020 TSingleton<CQuestManager>::GetInstance (exe copy)
+CStringW FUN_1416e5210(unsigned nQuestId, CStringW strKey); // the quest name formatted with a string-table key (by value)
+// the UI string service (0x14025e7a0): "$"-prefixed keys translated by FUN_1422b0570
+class Unk_TooltipUiStrings { public: CStringW FUN_1422b0570(const CString& strKey); };
+Unk_TooltipUiStrings* FUN_14025e7a0_p3();
+bool FUN_14082f250(int nStat);                              // the stat is shown as a rate (stat.cpp)
+bool FUN_14081dcd0(int nSpecial);                           // the special stat is shown as a rate (specialability.cpp)
+CStringW FUN_14082f000(int nStat);                          // GetStatCommonText (stat.cpp)
+CStringW FUN_140630e10(int nSpecial);                       // the special stat name (itemsocketsystemutil.cpp)
+CStringW FUN_1409e0900(int n);                              // part 5: an int option value text
+CStringW FUN_1409e0a90(float fRate);                        // part 5: a rate option value text
+#include "ms2/commonfiles/ugccubecategorytable.h"
+#include "ms2/client/ms2/achievemanager.h"
+CAchieveManager* FUN_1406c7600();                                     // TSingleton<CAchieveManager>::GetInstance (exe copy)
+int FUN_140936640(CAchieveManager* pManager, int nId, int nGrade);    // 0x140936640 CAchieveManager: the trophy grade is reached
+CStringW FUN_14093bd40(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
+int FUN_1407077c0(int nId);                                           // objectdata.cpp: state change permission
+int FUN_140707710(int nId);                                           // objectdata.cpp: trigger control enabled
+CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);        // FormatStringId<CStringW>
+extern unsigned short DAT_143ab291c;                                  // the housing level limit (offline)
+#include "ms2/commonfiles/maid.h"
+CStringW FUN_140763e10(int nPrice);                                   // the price text (questmasktable.cpp)
+#include "ms2/placeholder/termtagmanagercli.h"
+CStringW FUN_14086cfc0(int nStringId, const long& n);                 // FormatStringId<long>
+CStringW FUN_14086d060(int nStringId, const __int64& n);              // FormatStringId<__int64>
+#include "ms2/placeholder/socketptr.h"
+#include "ms2/placeholder/citemremakescrolltable.h"
+// The coupon items of a beauty shop (npcshopdata.cpp): a CAtlArray boxed behind its CPtred (TPtredDummy).
+typedef ATL::CAtlArray<MS2Ptr<CItemData> > Unk_TooltipBeautyItems;
+template<> struct Unk_SocketRef<Unk_TooltipBeautyItems> {
+    static CPtred* Base(Unk_TooltipBeautyItems* p)
+    {
+        CPtred* result;
+        if (p == NULL) result = NULL;
+        else result = CONTAINING_RECORD(p, TPtredDummy<Unk_TooltipBeautyItems>, value);
+        return result;
+    }
+};
+MS2_SOCKETPTR_BOXED(Unk_TooltipBeautyItems)
+Unk_SocketPtr<Unk_TooltipBeautyItems> FUN_1406e5af0(unsigned nShopId);    // the coupon items of a beauty shop (npcshopdata.cpp)
+bool FUN_1405729c0(const Unk_TooltipBeautyItems* pItems);              // the coupon list is empty
+// CItemData::FUN_14053c940 / FUN_14053d660 return an int at the call sites (citemdata.h declares them bool).
+struct Unk_ItemDataIntView : CItemData { int FUN_14053c940(int nGender); int FUN_14053d660(); };
+int FUN_14053feb0(int nItemId);                                       // the default rank of an item (itemdata.cpp)
+void FUN_14183eba0(unsigned nItemId, CStringW& strIcon, unsigned long& nSize, unsigned long& nColor1, unsigned long& nColor2);   // the super chat item look (texttohtml.cpp)
+extern unsigned long DAT_1439f87c0;                                   // texttohtml.cpp s_colors: the super chat colour
+extern unsigned long DAT_1439f87f0;                                   // texttohtml.cpp s_colors: the super chat second colour
+extern CStringW DAT_143aef3b8;                                        // texttohtml.cpp: the default super chat icon
+#include "ms2/commonfiles/itemenchantlimittable.h"
+#include "ms2/commonfiles/itemenchanttransformtable.h"
 // ---- end part 3 ----
 
 // ---- part 4 (0x1409d9f30-0x1409e0450) ----
-#if !defined(MS2_AT_SOLO) || MS2_AT_SOLO == 4
 #include "ms2/commonfiles/itemdatatable.h"          // CItemDataTable::GetMusicScore
 #include "ms2/commonfiles/timeutil.h"               // MsToSeconds
 #include "ms2/commonfiles/masterytable.h"
@@ -257,7 +335,7 @@ bool FUN_141b488c0(MS2Ptr<CItemData> spData);                         // the ite
 // The job system of a player (JobSystemCli; jobsystem.h is not included: it pulls placeholder/skilldata.h, which clashes
 // with the commonfiles SkillData of skilldatatablecli.h). Only the proven slots.
 #include "ms2/commonfiles/jobtable.h"                 // JobData / JobSkillData
-#include "ms2/placeholder/cquestmanagercommon.h"
+#include "ms2/placeholder/fittingdollpc.h"                // PC::FUN_1409eee00
 // A learnt skill of the job system (JobSkill, guess/jobsystem.h; that header is not included here, see below).
 class Unk_TooltipJobSkillP4 : public CPtred
 {
@@ -279,8 +357,8 @@ struct Unk_TooltipSkillTreeDialog
 {
     MS2Ptr<Unk_TooltipSkillSim> FUN_140ec8ad0();                      // UISkillBookTreeDialog::GetSimulator
 };
-class UIDialog;
-UIDialog* FUN_1409eb120(int nDialogId);                               // part 6: a dialog by id
+#include "ms2/client/ms2/uiskillbookautodistributedialog.h"
+UISkillBookTreeDialog* FUN_1409eb120(int nId);                        // the skill book tree dialog if it is open
 // The skill tier option manager behind PC::FUN_1409eee00 (fittingdollpc.h forward-declares it for the user unit).
 class Unk_PCSkillTree : public CPtred
 {
@@ -288,10 +366,14 @@ public:
     unsigned short FUN_14080baf0(unsigned nSkillId);                  // CSkillTierOptionManager::GetSkillLevel
 };
 // The local player's quest state (MyPC::FUN_141523ba0 result; the CQuestManagerCommon sits at +0x10).
+struct Unk_TooltipQuestState                                           // the CQuestManagerCommon (abstract here)
+{
+    int FUN_140745590(int nQuestId);                                  // CQuestManagerCommon: the quest is completed
+};
 struct Unk_TooltipQuestHolder
 {
     unsigned char m_00[0x10];
-    CQuestManagerCommon m_quests;                                     // +0x10
+    Unk_TooltipQuestState m_quests;                                   // +0x10
 };
 struct Unk_TooltipQuestOwner
 {
@@ -346,22 +428,11 @@ CStringW FUN_1409e3050(const CStringW& strPrefix, int nScope, int nReset);
 void FUN_1409e68a0(int nJob, ATL::CAtlArray<unsigned>& jobs, int& nAllowed, CStringW& strOut);   // the job limit text
 void FUN_1409e6aa0(int nJob, ATL::CAtlArray<unsigned>& jobs, CStringW& strOut);                  // the disabled job text
 void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons
-CStringW FUN_1408116a0(int nStringId, const int& n);                  // FormatStringId<int>
-#include "ms2/commonfiles/featuremanager.h"
-CFeatureManager* FUN_140166410_p5();                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
-CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // the item limit text
-void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons
-#endif
 // interface_check reads reasons from the unit .cpp and its own headers, not from the .inl files:
 // MS2-FUNCTIONAL 0x1409db930: the exe keeps the null test of the side tooltip in a bool temp (no source form found)
-#if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 4
-class Unk_ItemEquipData : public CItemData {};                       // solo build only: part 5 defines it otherwise
-class Unk_ItemOwnerRef : public CItemTransfer {};                     // solo build only: part 2 defines it otherwise
-#endif
 // ---- end part 4 ----
 
 // ---- part 5 (0x1409e0450-0x1409e7dc0) ----
-#if !defined(MS2_AT_SOLO) || MS2_AT_SOLO == 5
 #include "ms2/ms2format.h"
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);        // FormatStringId<CStringW> (item.cpp)
 CStringW GetStatValueText(unsigned nId);                              // 0x14082f090 the format of a stat value (stat.cpp)
@@ -423,7 +494,52 @@ JobTable* FUN_1401d7a50_p5();                                         // 0x1401d
 bool FUN_1402226b0(int nJob);                                         // the job code is valid
 void FUN_1409e68a0(int nJob, ATL::CAtlArray<unsigned>& jobs, int& nAllowed, CStringW& strOut);   // the job limit text
 void FUN_1409e6aa0(int nJob, ATL::CAtlArray<unsigned>& jobs, CStringW& strOut);                  // the disabled job text
-#endif
+CStringW FUN_1408116a0(int nStringId, const int& n);                  // FormatStringId<int>
+#include "ms2/commonfiles/featuremanager.h"
+// The no-argument BlockFormat (0x1409eec40, COMDAT in the template range): FMT_VARIADIC_W has no 0-arg form. w534: move to the shared section.
+CStringW BlockFormat(int, const fmt::ArgList&);
+inline CStringW BlockFormat(int nStringId) { return BlockFormat(nStringId, fmt::ArgList()); }
+int FUN_140936640(CAchieveManager* pManager, int nId, int nGrade);    // 0x140936640 CAchieveManager: the trophy grade is reached
+CStringW FUN_14093bd40(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
+const int& FUN_1409e8500(const CAtlArray<int>& arr, int nIndex, const int& nDefault);   // part 6: arr[nIndex], nDefault when out of range
+bool FUN_1409e7080(const ATL::CAtlArray<unsigned long>& ids, const ATL::CAtlArray<int>& grades, CStringW& strOut);   // the unmet trophy requirements
+CFeatureManager* FUN_140166410_p5();                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
+#include "ms2/commonfiles/commonstruct_wa.h"                 // Unk_IngVec (FUN_1409e7460)
+int FUN_14053feb0(int nItemId);                                       // the default rank of an item (itemdata.cpp)
+MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                    // the item data of an id
+int FUN_141654700(PCBase* pPc);                                       // the job of a player
+int FUN_141658e60_p5(PCBase* pPc);                                    // 0x141658e60 the gender of a player
+ItemDropTable* FUN_1405a1fd0_p5();                                    // 0x1405a1fd0 TSingleton<ItemDropTable>::GetInstance
+bool FUN_14052a3f0(int bFollowEndDate, __int64 nExpiry, int nType, int nLifeType, int nItemType);   // a drop expires (item.cpp)
+#include "ms2/commonfiles/itemenchantinfo.h"     // Unk_EnchantPtr<BaseOption> (FUN_1409e4950)
+#include "ms2/commonfiles/citemoptiontable.h"    // CItemOptionTable
+#include "ms2/commonfiles/itemoption.h"
+#include "ms2/commonfiles/item.h"               // CItemStatus
+CItemOptionTable* FUN_140166430();                // TSingleton<CItemOptionTable>::GetInstance (exe copy)
+bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strValue);   // part 1
+bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strValue);   // part 1
+CStringW FUN_140631600(int nStat, BaseOption* pOption);   // a set stat option text (itemsocketsystemutil.cpp)
+CStringW FUN_140631830(int nSpecial, int nValue, CItemData* pData);   // a set special option text (itemsocketsystemutil.cpp)
+int FUN_14082ee80(const CStringA& strName);       // stat name -> id (-1 when none; stat.cpp)
+int FUN_14081d260(const CStringA& strName);       // special option name -> id (0 when none; specialability.cpp)
+const CString& FUN_14082efb0(int nStat);          // the xml name of a stat (stat.cpp)
+const CString& FUN_14081d380(int nSpecial);       // the xml name of a special stat (specialability.cpp)
+void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pBest);   // the random option rows of an item (by value: the callee destroys spItem)
+// MS2-FUNCTIONAL 0x1409e4950: /Od temporaries and frame differ (the .inl marker is not read by interface_check); same calls and control flow
+#include <cmath>
+#include "ms2/placeholder/clientconstants.h"
+#include "ms2/placeholder/cpetdatatable.h"
+CPetDataTable* FUN_14052d210();                   // TSingleton<CPetDataTable>::GetInstance (exe copy; as part 2)
+int FUN_1406198a0(int nValue, float fRate);       // itemremakescrolldata.cpp
+__int64 FUN_140632990(__int64 nValue, float fRate);   // itemsocketsystemutil.cpp
+CStringW FUN_140631720(int nStat, int nValue, bool bPercent);   // a stat value text (itemsocketsystemutil.cpp)
+CStringW FUN_1409e6010(int nKind, CItem* pItem);  // the option kind title (pet kinds use their own text)
+CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem);     // the option text of an item (as tabcontentspetinfo.cpp; the callee destroys spItem)
+// MS2-FUNCTIONAL 0x1409e0d40: /Od frame is 0x10 larger (locals placed differently); same calls and control flow
+// MS2-FUNCTIONAL 0x1409e1770: the shared ASTooltip::FUN_1409d55a0 declaration takes CItem* where the exe passes the item id (unused)
+// MS2-FUNCTIONAL 0x1409e34e0: /Od temporaries differ (written after part 1's FUN_1409c9170 loop); same behaviour
+CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // the item limit text
+void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons
 // ---- end part 5 ----
 
 // ---- part 6 (0x1409e7dc0-0x1409eb4c0) ----

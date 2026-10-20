@@ -2134,3 +2134,5 @@ UIItemTreasureMapDialog* FUN_141b22040(unsigned nUiId)
     }
     return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc2bc0-0x142cc2d30 .text$yd

@@ -285,3 +285,5 @@ void FUN_1401f9e60(Unk_LoginPing* p, COutputStream* out)
     out->vfunc_o10_2(p->m_nCode);
 }
 MS2_REPLACE(0x1401F9E60, FUN_1401f9e60, 68, 0x049D5AFD);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9a2a0-0x142c9a2c0 .text$yd

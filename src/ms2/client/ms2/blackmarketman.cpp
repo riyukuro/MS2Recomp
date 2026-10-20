@@ -534,3 +534,5 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
     if (pDlg != 0)
         pDlg->FUN_1418d0b60(bType, nResult, (void*)qw);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9eee0-0x142c9ef00 .text$yd

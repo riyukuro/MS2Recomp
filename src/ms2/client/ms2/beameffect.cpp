@@ -625,3 +625,5 @@ MS2_REPLACE_METHOD(0x140A0AFC0, CBeamEffect, vfunc_12, 11, 0xB512670C);
 
 // @0x140a0c1e0
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9ede0-0x142c9eee0 .text$yd

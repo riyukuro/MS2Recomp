@@ -166,8 +166,6 @@ CStringW FUN_1413fa9b0(const CStringW& kIn);
 bool FUN_14025cd60(const CStringW&, const CStringW&);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 StoreSlot* FUN_14140e6d0(DragSlot* p);                    // the store slot behind a drag source (null: not one)
-DragSlot* FUN_1422cd0f0(DragSlotBag* pBag, const CString& strName);   // the slot of the bag by name
-DragSlot* FUN_1422cd070(DragSlotBag* pBag, int nIndex);   // the slot of the bag by index
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
 
 // Registry of named bags/slots (GFx bind data).
@@ -690,11 +688,9 @@ StoreSlotBag::~StoreSlotBag()
 int StoreSlotBag::FUN_14180b3e0(CStringW strSearch)
 {
     int nResult = -1;
-    std::map<int, CString>& slots = m_slots;
-    for (std::map<int, CString>::iterator it = slots.begin(), itEnd = slots.end(); it != itEnd; ++it)
+    for (std::pair<const int, CString> entry : m_slots)
     {
-        std::pair<const int, CString> entry = *it;
-        StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd0f0(this, entry.second));
+        StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd0f0(entry.second));
         if (pSlot != 0)
         {
             int nIndex = pSlot->FUN_141808b10(strSearch);
@@ -713,7 +709,7 @@ int StoreSlotBag::FUN_14180b3e0(CStringW strSearch)
 void StoreSlotBag::vfunc_9(void* p)
 {
     CItem* pItem = static_cast<CItem*>(p);
-    StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(this, pItem->FUN_140526b50()));
+    StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(pItem->FUN_140526b50()));
     if (pSlot != 0)
     {
         pSlot->FUN_1418088c0(pItem->FUN_140526a50());
@@ -725,7 +721,7 @@ void StoreSlotBag::vfunc_9(void* p)
 void StoreSlotBag::vfunc_10(void* p)
 {
     CItem* pItem = static_cast<CItem*>(p);
-    DragSlot* pSlot = FUN_1422cd070(this, pItem->FUN_140526b50());
+    DragSlot* pSlot = FUN_1422cd070(pItem->FUN_140526b50());
     if (pSlot != 0)
         pSlot->vfunc_11();
 }
@@ -734,7 +730,7 @@ void StoreSlotBag::vfunc_10(void* p)
 void StoreSlotBag::vfunc_il11(void* p)
 {
     CItem* pItem = static_cast<CItem*>(p);
-    StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(this, pItem->FUN_140526b50()));
+    StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(pItem->FUN_140526b50()));
     if (pSlot != 0)
     {
         pSlot->FUN_1418088c0(pItem->FUN_140526a50());

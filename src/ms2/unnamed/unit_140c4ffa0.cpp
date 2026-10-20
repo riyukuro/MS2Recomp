@@ -790,3 +790,10 @@ MS2_REPLACE_METHOD(0x140C53FC0, ItemSocketSystemPageSocketTransfer, FUN_140c53fc
 MS2_REPLACE_METHOD(0x140C54030, ItemSocketSystemPageSocketTransfer, FUN_140c54030, 200, 0xDE335BE4);
 MS2_REPLACE_METHOD(0x140C54100, ItemSocketSystemPageSocketTransfer, FUN_140c54100, 253, 0x87789B05);
 MS2_REPLACE_METHOD(0x140C54210, ItemSocketSystemPageSocketTransfer, FUN_140c54210, 120, 0xB1E4E0BC);
+
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVItemSocketSystemPageSocketTransfer@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x140c54720
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVItemSocketSystemPageSocketTransfer@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x140c54680
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVItemSocketSystemPageSocketTransfer@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140c54bd0
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVItemSocketSystemPageSocketTransfer@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140c54b70
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca2e40-0x142ca2f10 .text$yd

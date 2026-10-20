@@ -120,6 +120,8 @@ void FUN_140d01be0(Unk_G9Val* pOut, int nIdx, Unk_GcNode* pNode);
 char FUN_140ba28d0(void* pList, void* pNull);
 void* FUN_1409ee290(void* pList);
 
+// MS2-FUNCTIONAL: the exe returns the value handle by value (hidden-return construction flag, EH frame) and its GFx node is
+//   a temporary with dtor 0x140614800; Unk_G9Val / Unk_GcNode are POD scratch types shared across this unit's six parts
 // @0x1413b19d0
 Unk_G9Val* FUN_1413b19d0(void* pInner, Unk_G9Val* pOut, const CString* pName)
 {
@@ -201,7 +203,7 @@ int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut)
     int n;
     int nResult = FUN_1408731e0(pElem, pszName, n);
     if (nResult == 0)
-        new (&oOut) Unk_GcOptInt(n);
+        oOut = n;
     return nResult;
 }
 
@@ -230,7 +232,7 @@ int FUN_1413b1e70(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptVec3& oOut
     Unk_StreamPoint pt;
     int nResult = FUN_140874670(pElem, pszName, pt);
     if (nResult == 0)
-        new (&oOut) Unk_GcOptVec3(pt);
+        oOut = pt;
     return nResult;
 }
 
@@ -241,27 +243,41 @@ int FUN_1413b1ed0(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptBool& oOut
     bool b;
     int nResult = FUN_1408730a0(pElem, pszName, b);
     if (nResult == 0)
-        new (&oOut) Unk_GcOptBool(b);
+        oOut = b;
     return nResult;
 }
 
 // @0x1413b1f30
 int FUN_1413b1f30(Unk_140165cf0* pElem, const char* pszName, int& nOut)
 {
+    // the tinyxmlhelper.h template's compile-time-false guard (ASSERT(FALSE) of its line 231)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 231), 0));
+        return 2;
+    }
     int n = 0;
     int nResult = FUN_140873890(pElem, pszName, n);
-    if (nResult == 0)
-        nOut = n;
+    if (nResult != 0)
+        return nResult;
+    nOut = n;
     return nResult;
 }
 
 // @0x1413b1fc0
 int FUN_1413b1fc0(Unk_140165cf0* pElem, const char* pszName, int& nOut)
 {
+    // the tinyxmlhelper.h template's compile-time-false guard (ASSERT(FALSE) of its line 250)
+    if (false)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
+        return 2;
+    }
     CStringA str;
     int nResult = FUN_1408733e0(pElem, pszName, str);
-    if (nResult == 0)
-        nOut = FUN_14138a170(str);
+    if (nResult != 0)
+        return nResult;
+    nOut = FUN_14138a170(str);
     return nResult;
 }
 
@@ -277,17 +293,15 @@ void Unk_GcOptScratch()
 }
 
 // @0x1413b2880
-Unk_GcCondRef* Unk_GcCondRef::FUN_1413b2880(Unk_GcCondRef& rhs)
+Unk_GcCondRef::Unk_GcCondRef(Unk_GcCondRef&& rhs)
 {
     m_p = rhs.m_p;
     rhs.m_p = 0;
-    return this;
 }
 
 // @0x1413b28b0
-Unk_GcCondRef* Unk_GcCondRef::FUN_1413b28b0(CGuideCondition* pCond)
+Unk_GcCondRef::Unk_GcCondRef(CGuideCondition* pCond)
 {
     m_p = pCond;
     FUN_141388ed0();
-    return this;
 }

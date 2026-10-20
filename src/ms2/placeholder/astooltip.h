@@ -1,4 +1,4 @@
-// astooltip.h - PLACEHOLDER for ASTooltip (RTTI .?AVASTooltip@@, base AScript, 0x60 bytes). NOT an original header.
+// astooltip.h - PLACEHOLDER for ASTooltip (RTTI .?AVASTooltip@@, base AScript, 0x58 bytes). NOT an original header.
 // Ctors 0x1409c63d0 (int, int) and an (owner, int, int) variant, dtor 0x1409b4af0. Units must include this header
 // instead of redefining the class.
 #pragma once
@@ -148,6 +148,15 @@ public:
     void FUN_1409d8bf0(bool bEnable);                                    // itemEquip
     void FUN_1409e72a0(const std::vector<class ItemDropResult>* pResults);    // part 5 (declared by part 3): the package rows
     void FUN_1409e7460(class Unk_IngVec* pIngredients);                       // part 5 (declared by part 3): the break ingredient rows
+    void FUN_1409d3470(CItem* pItem);                                    // extraComment (gemstone upgrade / mastery / emoticon)
+    CStringW FUN_1409d9c50(CItem* pItem);                                // the extra comment of an item
+    void FUN_1409d3a40(CItem* pItem);                                    // itemQuestInfo
+    void FUN_1409d3f10(CItem* pItem);                                    // itemLockInfo / the lock icons
+    void FUN_1409d5b70(int nItemId);                                     // itemGuideDescription
+    void FUN_1409d6120(int nItemId);                                     // the main description as a statDescription
+    void FUN_1409d64a0(int nItemId, int nRank, int nLevel, int nAdditional);   // extraDescription
+    void FUN_1409d6730(int nItemId);                                     // the maid contract description row
+    void FUN_1409d7900(int nItemId);                                     // the package rows of a box item (beauty / couple / remake)
     // ---- end part 3 ----
     // ---- astooltip.cpp part 4 members (owner: part 4 agent; append here only) ----
     CStringW FUN_1409d9f30(MS2Ptr<CItemData> spData);                    // music score play count text
@@ -193,6 +202,7 @@ public:
     // ---- end part 6 ----
 
 private:
-    __int64 m_40; unsigned m_48; unsigned m_pad_4c; CStringW m_50; void* m_pad_58;   // m_50: text (destroyed by ~ASTooltip, aseffect.cpp)
+    __int64 m_40; unsigned m_48; CStringW m_50;   // m_50: text (destroyed by ~ASTooltip, aseffect.cpp). 0x58 bytes: the deleting
+    // dtor 0x1409ee9a0 frees 0x58, the copy ctor 0x140f47c60 / operator= 0x1409eda80 copy +0x40, +0x48, +0x50 only
 };
-MS2_CHECK_SIZE(ASTooltip, 0x60);
+MS2_CHECK_SIZE(ASTooltip, 0x58);

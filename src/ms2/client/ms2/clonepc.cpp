@@ -148,8 +148,6 @@ void FUN_141653d10(PC* pPC, MS2Ptr<CItem> spItem);
 void* FUN_14165f460(PC* pPC);
 void FUN_141270e00(void* pDst, void* pSrc);
 void FUN_141270610(void* pObj);
-void FUN_1416630e0(PC* pPC, int n);
-void FUN_141663120(PC* pPC, int n);
 void FUN_140a35900(Unk_PCD88* pObj);
 char FUN_1401647e0(const CString& strA, const CString& strB);
 void FUN_140526b30(CItem* pItem, int nOwner);
@@ -318,7 +316,7 @@ void ClonePC::vfunc_149()
     {
         if (m_pSourcePC != 0)
         {
-            FUN_1408f3a80(m_kListD48);
+            FUN_1408f3a80(&m_kListD48);
             FUN_1411e3de0(&m_kEquipDE0, 1);
             ATL::CAtlList<MS2Ptr<CEquipItem> > kEquips(10);
             vfunc_152(&kEquips, ::FUN_1416561a0(m_pSourcePC));
@@ -453,7 +451,7 @@ void ClonePC::vfunc_12()
     PC::vfunc_12();
     m_pSourcePC = FUN_1403ed2d0()->FUN_141bd1290(m_nSourceId);
     if (m_pSourcePC)
-        FUN_1416630e0(m_pSourcePC, FUN_14123c580());
+        m_pSourcePC->FUN_1416630e0(FUN_14123c580());
     if (m_spD88.get() != 0)
     {
         FUN_140a35900(m_spD88.operator->());
@@ -468,7 +466,7 @@ void ClonePC::vfunc_14()
     PC::vfunc_14();
     m_pSourcePC = FUN_1403ed2d0()->FUN_141bd1290(m_nSourceId);
     if (m_pSourcePC)
-        FUN_141663120(m_pSourcePC, FUN_14123c580());
+        m_pSourcePC->FUN_141663120(FUN_14123c580());
     m_pSourcePC = 0;
     m_nSourceId = 0;
     m_spModelView = 0;

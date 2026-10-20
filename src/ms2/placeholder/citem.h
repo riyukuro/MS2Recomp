@@ -399,4 +399,6 @@ public:
   char m_pad_38[0x38];
   CString m_strName;                     // +0x70 cached UGC file name (avatarcube.cpp)
   void FUN_140632200(CItemUgc* pSource); // copy the UGC info of a proxy (uiugcitemeditdialog.cpp)
+  int FUN_1406321a0();                   // 0x1406321a0 CItemUgc::FUN_1406321a0 (astooltip.cpp: nonzero = a UGC text exists)
+  CString FUN_140632100();               // 0x140632100 CItemUgc::FUN_140632100 (astooltip.cpp: the UGC text)
 };

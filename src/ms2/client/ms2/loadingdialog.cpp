@@ -389,3 +389,5 @@ LRESULT CALLBACK CLoadingDialog::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
         return DefWindowProcA(hWnd, uMsg, wParam, lParam);
     return pThis->OnMessage(hWnd, uMsg, wParam, lParam);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca5020-0x142ca5060 .text$yd

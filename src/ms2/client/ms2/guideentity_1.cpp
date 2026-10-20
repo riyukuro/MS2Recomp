@@ -269,3 +269,5 @@ static char s_regAchieveTab;
 static Unk_RegMarker s_initAchieveTab =
     (FUN_140316aa0(&s_regAchieveTab, CStringW(L"CGuideConditionAchieveTab"), CGuideConditionAchieveTab::CreateObject), Unk_RegMarker());
 #endif
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb10d0-0x142cb11a0 .text$yd

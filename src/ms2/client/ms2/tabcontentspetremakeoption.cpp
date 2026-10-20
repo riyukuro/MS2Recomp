@@ -2,7 +2,7 @@
 // tabcontentspetcompose.cpp / tabcontentspetevolution.cpp: a pet card list, an ingredient list and a board that shows
 // the current and the remade options; packet 0x75 like the item option remake dialog, unit_14129cfa0.cpp).
 // MS2-UNIT: ?\tabcontentspetremakeoption.cpp
-// MS2-RANGE: 0x140b914f0-0x140b9b470 .text$mn
+// MS2-RANGE: 0x140b914f0-0x140b9b440 .text$mn
 // MS2-RANGE: 0x1400c9520-0x1400c9750 .text$di
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??__Es_itemLevel@@YAXXZ 0x1400c9520 ; probe
@@ -1657,10 +1657,5 @@ MS2_REPLACE_METHOD(0x140B98AD0, TabContentsPetRemakeOption, FUN_140b98ad0, 256, 
 // ---- the option list of the remake record: push_back(const&) is this unit's COMDAT ----
 
 template void Unk_RemakeLockOptList::push_back(const Unk_RemakeLockOpt& val);
-
-// The base class of an MFC dialog of a header (RUNTIME_CLASS(CDialog)); emitted here.
-// @0x140b9b440
-CRuntimeClass* FUN_140b9b440()
-{
-    return CDialog::GetThisClass();
-}
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1330-0x142ca1440 .text$yd

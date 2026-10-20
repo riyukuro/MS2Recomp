@@ -95,21 +95,18 @@ template efd::SmartPointer<efd::IMessage> efd::GenericFactory<efd::SmartPointer<
 template efd::SmartPointer<efd::IMessage> efd::GenericFactory<efd::SmartPointer<efd::IMessage>, unsigned>::GenerateFactoryMethod<ecr::SceneGraphAddedMessage>();
 
 // @0x1410dbf80
-// MS2-FUNCTIONAL: MS2Ptr<UIObject> get/dtor are out-of-line calls here, inlined in the exe; EH state layout differs.
 //   the house demolish dialog (class id given), null when it is not open
 Unk_CMISDemolishUI* FUN_1410dbf80(unsigned nId)
 {
-    CUIService* pUI = FUN_1403ed2b0();
-    if (pUI != 0) {
-        MS2Ptr<UIObject> sp = pUI->FUN_141adcea0((eUIClassID)nId);
+    if (FUN_1403ed2b0() != 0) {
+        MS2Ptr<UIObject> sp = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nId);
         if (sp.get() != 0)
-            return reinterpret_cast<Unk_CMISDemolishUI*>(dynamic_cast<UIHouseDemolishDialog*>(sp.get()));
+            return reinterpret_cast<Unk_CMISDemolishUI*>(dynamic_cast<UIHouseDemolishDialog*>(sp.operator->()));
     }
     return 0;
 }
 
 // @0x1410dc020   the house mark dialog
-// MS2-FUNCTIONAL: same MS2Ptr<UIObject> inlining difference as FUN_1410dbf80.
 unsigned FUN_14112e2a0();
 Unk_CMISHouseMark* FUN_1410dc020()
 {
@@ -117,9 +114,9 @@ Unk_CMISHouseMark* FUN_1410dc020()
     if (pUI == 0)
         return 0;
     MS2Ptr<UIObject> sp = pUI->FUN_141adcea0((eUIClassID)FUN_14112e2a0());
-    if (sp.get() != 0)
-        return reinterpret_cast<Unk_CMISHouseMark*>(dynamic_cast<UIHouseMark*>(sp.get()));
-    return 0;
+    if (sp.IsNull())
+        return 0;
+    return reinterpret_cast<Unk_CMISHouseMark*>(dynamic_cast<UIHouseMark*>(sp.operator->()));
 }
 
 // @0x1410dc0d0 / 0x1410dc0e0
@@ -137,7 +134,9 @@ template <> egf::PropertyResult egf::Entity::SetPropertyValue<int>(egf::Property
 }
 
 // @0x1410dc3b0   house sale marker record factory
-// MS2-FUNCTIONAL: the exe frame carries an unwind handler (UNWIND_INFO.flags 2) around the ctor; behaviour identical.
+// MS2-FUNCTIONAL 0x1410dc3b0: the exe is a value-initializing `new SalesInfo()` (memset 0x38, then the implicit ctor 0x1411232e0 under
+//   the new-expression's EH frame); here SalesInfo's ctor is user-provided (defined out of line by unit_141121cf0), so value-init
+//   would skip the memset - written as operator new + memset + placement new instead.
 void* FUN_1410dc3b0(void* pTag)
 {
     SalesInfo* p = (SalesInfo*)operator new(0x38);

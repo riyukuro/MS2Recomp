@@ -167,3 +167,5 @@ MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9f340-0x142c9f460 .text$yd

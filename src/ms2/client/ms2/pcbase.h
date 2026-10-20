@@ -42,6 +42,8 @@ class Unk_PCBaseComp_ac8;   // slot 87, +0xac8 [0x140ba97e0]
 class Unk_PCBaseComp_b18;   // slots 103/104, +0xb18 [0x141532140 / member init 0x141532470]
 class CStateManager;        // +0x140 actor state machine (0x98 bytes, ctor(actor) 0x1417da7a0, AddState 0x1417daeb0)
 class CEffectDummy;         // effectdummy.h: element of the npc row's part list (+0x588), applied by FUN_141674ef0
+class SkillAttackData;
+class AdditionalCli;
 class Unk_PCBaseBuffs;      // FUN_1416749a0 (ridee.cpp)
 class State;                // state.h
 class StateData;            // state.h (the request record handed to CStateManager::FUN_1417dafa0)
@@ -102,10 +104,16 @@ public:
     Unk_PCBaseBuffList(PCBase* pOwner);                     // 0x14096ef20
     ~Unk_PCBaseBuffList();
     void FUN_140970490();                                   // clear
+    void FUN_140971150();                                   // refresh after an equip change (pc.cpp)
+    bool FUN_140970ad0();                                   // a buff keeps the actor busy (pc.cpp)
     void FUN_140970420(double dTime);                       // per-frame update
     float FUN_1409705d0();                                  // scale
     int FUN_1409701d0(int nKind);
     int FUN_140970eb0(float& fOut);                         // a buff fixes the height
+    void FUN_14096fb20(int nTrigger);                       // fire the buffs triggered by a hit (pc.cpp)
+    int FUN_140970c10(SkillAttackData* pAttack, int n);     // a buff ignores the attack's hit reaction (pc.cpp)
+    unsigned FUN_140970b30();                               // a buff blocks the hit reaction (pc.cpp)
+    MS2Ptr<AdditionalCli> FUN_14096fc80(int nEffectLevel);  // the buff of an effect (pc.cpp)
 private:
     char m_pad[0x1a0];
 };

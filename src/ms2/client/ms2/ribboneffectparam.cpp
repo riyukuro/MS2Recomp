@@ -499,3 +499,5 @@ static __inline errno_t ms2_ribbon_memcpy_s(void* const d, size_t const dsz, voi
     return 0;
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnRibbonMemcpyS)(void*, size_t, const void*, size_t) = &ms2_ribbon_memcpy_s;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb5dc0-0x142cb5e00 .text$yd

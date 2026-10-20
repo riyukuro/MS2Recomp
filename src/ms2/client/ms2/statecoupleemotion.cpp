@@ -375,10 +375,9 @@ CoupleEmotionAnimInfo::CoupleEmotionAnimInfo()
 {
 }
 
-// @0x140b85be0
-CoupleEmotionAnimInfo::~CoupleEmotionAnimInfo()
-{
-}
+// 0x140b85be0 ~CoupleEmotionAnimInfo is implicit (the exe dtor has no vftable reset); pinned at the end
+
+
 
 // @0x140b85910
 Unk_TargetPtr::Unk_TargetPtr(NiObjectNET* p)
@@ -1412,3 +1411,6 @@ int StateCoupleEmotion::vfunc_1()
 template bool MS2Ptr<CoupleEmotionAnimInfo>::operator==(CoupleEmotionAnimInfo*) const;               // @0x140b85f00
 template bool MS2Ptr<StateCoupleEmotionData>::operator==(StateCoupleEmotionData*) const;             // @0x140b85f40
 template bool MS2Ptr<StateSyncObjectCoupleEmotion>::operator==(StateSyncObjectCoupleEmotion*) const; // @0x140b85f80
+// MS2-PIN: ??1CoupleEmotionAnimInfo@@UEAA@XZ 0x140b85be0 ; implicit virtual dtor (no vftable reset, like the exe)
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1160-0x142ca1210 .text$yd

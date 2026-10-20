@@ -1147,3 +1147,5 @@ void* CPetManager::FUN_140c8b5c0(int nObjectId)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca38f0-0x142ca3930 .text$yd

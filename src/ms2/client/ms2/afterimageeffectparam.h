@@ -5,14 +5,10 @@
 #include "ms2/client/ms2/effectparam.h"
 #include <NiColor.h>
 
-// 16-byte RGBA float colour. Ctor(r,g,b,a) 0x14097f1d0, copy ctor 0x140987930 (rep movsb).
-class Unk_AfterImageColor : public NiColorA
-{
-public:
-    Unk_AfterImageColor();                                     // 0x14097f220
-    Unk_AfterImageColor(float r, float g, float b, float a);   // 0x14097f1d0
-    Unk_AfterImageColor(const Unk_AfterImageColor& kOther);    // 0x140987930
-};
+// 16-byte RGBA float colour = Gamebryo's NiColorA: its inline ctors are the exe's NiColorA() 0x14097f220 and
+// NiColorA(float x4) 0x14097f1d0 (both forward to efd::ColorA(float x4) 0x14097f050), NiColorA(const efd::ColorA&)
+// 0x140987930 (rep movsb).
+typedef NiColorA Unk_AfterImageColor;
 MS2_CHECK_SIZE(Unk_AfterImageColor, 0x10);
 
 // Handle passed to the CAfterImageEffect constructor (0x140987900 stores the param at +8 and runs 0x140981190).

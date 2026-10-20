@@ -3240,3 +3240,5 @@ int StateSkill::FUN_1417efef0()
     return 1;
 }
 MS2_REPLACE_METHOD(0x1417efef0, StateSkill, FUN_1417efef0, 373, 0x43743998);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb7de0-0x142cb7f50 .text$yd

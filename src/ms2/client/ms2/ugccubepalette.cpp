@@ -312,7 +312,7 @@ CStringW UGCCube::FUN_140def710()                                               
     MS2Ptr<CUgcItemLook> spLook = info->look;
     if (spLook.get() != 0)
     {
-        CStringW strTitle(spLook->title);
+        CStringW strTitle(spLook->m_str28);
         if (!strTitle.IsEmpty())
             return strTitle;
     }
@@ -326,7 +326,7 @@ CStringW UGCCube::FUN_140def880()                                               
     MS2Ptr<CUgcItemLook> spLook = info->look;
     if (spLook.get() != 0)
     {
-        CStringW strName = FUN_14016a730(spLook->FUN_140892ec0(), 0);
+        CStringW strName = FUN_14016a730(spLook->GetLocalPath(), 0);
         if (!strName.IsEmpty())
             return strName;
     }
@@ -349,7 +349,7 @@ __int64 UGCCube::FUN_140defba0()                                                
 {
     MS2Ptr<CUgcItemLook> spLook = info->look;
     if (spLook.get() != 0)
-        return spLook->ugcId;
+        return spLook->m_n18;
     return 0;
 }
 
@@ -1053,3 +1053,5 @@ MS2_REPLACE_METHOD(0x140DF0140, Unk_CubePaletteFilter, FUN_140df0140, 22, 0x3E62
 MS2_REPLACE_METHOD(0x140DF0160, Unk_CubePaletteFilter, FUN_140df0160, 14, 0x72E52537);
 MS2_REPLACE_METHOD(0x140DF0180, Unk_CubePaletteFilter, FUN_140df0180, 22, 0x068001AB);
 MS2_REPLACE_METHOD(0x140DF01A0, Unk_CubePaletteFilter, FUN_140df01a0, 14, 0x7AB52803);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca5fa0-0x142ca6070 .text$yd

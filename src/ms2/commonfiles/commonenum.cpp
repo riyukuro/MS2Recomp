@@ -1571,3 +1571,7 @@ bool FUN_140222590(int value)
         return false;
     }
 }
+// MS2-PIN: ??$?0AEAY0BG@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0BG@$$CBD$$QEAH@Z 0x14021d060 ; this TU's copy (0x140181380 is another TU's), called by make_pair 0x14021fa70
+// MS2-PIN: ??$?0AEAY0L@$$CBDH$0A@@?$pair@PEBDH@std@@QEAA@AEAY0L@$$CBD$$QEAH@Z 0x14021d240 ; this TU's copy (0x1401818d0 is another TU's), called by make_pair 0x14021fc50
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9a320-0x142c9a340 .text$yd

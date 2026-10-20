@@ -2099,7 +2099,7 @@ bool ASMeratMarketProduct::vfunc_1(MS2Ptr<Unk_MeratEquipEntry> spEntry, const Un
         FUN_1407cbb20("itemName", spEntry->FUN_1406a4770());
         CString strIcon;
         if (ugc.FUN_140896310() == 0)
-            strIcon = ugc.m_look.FUN_140892ec0();
+            strIcon = ugc.m_look.GetLocalPath();
         else
             strIcon = ugc.m_template.FUN_140894060();
         FUN_1407cba60("iconPath", strIcon);

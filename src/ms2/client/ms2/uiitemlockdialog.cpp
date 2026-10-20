@@ -397,3 +397,5 @@ void FUN_140f57f40(Unk_LdLockMgr* pMgr, int nTab)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9af0-0x142ca9b40 .text$yd

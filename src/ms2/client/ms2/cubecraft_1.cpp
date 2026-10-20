@@ -202,8 +202,8 @@ public:
     MS2Ptr<Unk_FishData> FUN_1403b2dc0(int nId);
 };
 Unk_FishTable* FUN_1403b4740();
-struct Unk_FishAmount { char m_pad[0x10]; };
-void FUN_1408a0400(Unk_FishAmount*, int);
+struct Unk_Int3 { int x, y, z; Unk_Int3() {} };                               // an unpacked cube coordinate (returned by value)
+Unk_Int3 FUN_1408a0400(int nPacked);
 class Unk_FishRodState { public: int FUN_1409700d0(int nKind); };
 Unk_FishRodState* FUN_1416749a0(PCBase*);
 class Unk_GemItem : public CPtred { public: char m_pad[0x40]; };
@@ -237,13 +237,13 @@ struct Unk_SkillRow { char m_pad_00[0x154]; float m_fDc8Src; char m_pad_158[4]; 
 class Unk_SkillRowRef
 {
 public:
-    void* m_p;
+    void* m_pad_00; void* m_p;                              // a 16-byte MS2Ptr<SkillData>
     Unk_SkillRow* FUN_14063ed10();
     Unk_SkillRow* FUN_14063ed50();
-    void FUN_14063e5c0();
+    ~Unk_SkillRowRef();                                     // MS2Ptr<SkillData>::~MS2Ptr 0x14063e5c0
 };
-void FUN_1407ee1d0(void*, Unk_SkillRowRef*, int);
-void* FUN_1401958b0();
+class Unk_CsgSkillTable { public: Unk_SkillRowRef FUN_1407ee1d0(int nSkillId); };   // the skill table (returns the row by value)
+Unk_CsgSkillTable* FUN_1401958b0();
 void FUN_1409f7320(efd::Matrix3*);
 float FUN_14123ce70(const efd::Point3&);
 extern long long DAT_143acf618;
@@ -763,7 +763,7 @@ int CConstructionGuideObject::FUN_1410a2a60(void* pCube)
     {
         if (m_spItem->FUN_1408b3860() == 1)
         {
-            CString strLook = FUN_1410280d0(2, m_spItem->look->resourcePath);
+            CString strLook = FUN_1410280d0(2, m_spItem->look->m_strUrl);
             if (_access(strLook, 0) != 0)
             {
                 Unk_GuideDownloadId kId;
@@ -1182,20 +1182,20 @@ void CFishingGuideObject::FUN_1410a4cb0()
 // @0x1410a4d30
 void CFishingGuideObject::FUN_1410a4d30(void* pCatch)
 {
-    Unk_FishCatch* pFish = (Unk_FishCatch*)pCatch;
-    PCBase* pOwner = FUN_1410a1310();
-    const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : NULL;
-    if (efd::ClassInfo::IsKindOf(pInfo, 0x6200004) && pFish != 0 && m_spBirdHead.get())
+    // the catch record is read straight from pCatch (no typed local)
+    if (!efd::ClassInfo::IsKindOf(FUN_1410a1310() ? FUN_1410a1310()->GetClassDesc() : NULL, 0x6200004)) return;
+    if (pCatch == 0) return;
+    if (!m_spBirdHead.get()) return;
     {
-        MS2Ptr<Unk_FishData> spRow = FUN_1403b4740()->FUN_1403b2d30(pFish->m_nFishId);
+        MS2Ptr<Unk_FishData> spRow = FUN_1403b4740()->FUN_1403b2d30(((Unk_FishCatch*)pCatch)->m_nFishId);
         if (!spRow.IsNull())
         {
-            Unk_FishAmount kAmount;
-            FUN_1408a0400(&kAmount, pFish->m_nCount);
-            CStringW strName = FUN_1401a9d70()->FUN_141811980(0x1d, pFish->m_nFishId);
-            CStringW strInfo = FUN_1402758a0(L"{0} {1}cm", strName, pFish->m_nSize);
+            FUN_1408a0400(((Unk_FishCatch*)pCatch)->m_nCount);   // result discarded
+            // (the coordinate temporary is unused)
+            CStringW strName = FUN_1401a9d70()->FUN_141811980(0x1d, ((Unk_FishCatch*)pCatch)->m_nFishId);
+            CStringW strInfo = FUN_1402758a0(L"{0} {1}cm", strName, ((Unk_FishCatch*)pCatch)->m_nSize);
             CStringW strGrade;
-            int nGrade = spRow->FUN_1403b1520(pFish->m_nSize);
+            int nGrade = spRow->FUN_1403b1520(((Unk_FishCatch*)pCatch)->m_nSize);
             if (nGrade == 0)
                 strGrade = FUN_14028de60(0xbec);
             else if (nGrade == 1)
@@ -1373,16 +1373,16 @@ void CFishingGuideObject::FUN_1410a59f0()
 // @0x1410a5c50
 CSkillMagicControlGuide::CSkillMagicControlGuide()
     : m_spInfo(0)
+    , m_kAim(reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
+    , m_bControl(false)
+    , m_fDc8(0.0f)
+    , m_fDcc(0.0f)
+    , m_bReleased(false)
 {
-    m_kAim = DAT_143b01a60;
-    m_bControl = false;
-    m_fDc8 = 0.0f;
-    m_fDcc = 0.0f;
-    m_bReleased = false;
     FUN_141682f60(&m_unk_6d8, this);
     m_spStateMgr.AssignRaw(new CStateManager(this));
-    StateSkillMagicControl* pState = new StateSkillMagicControl(this);
-    m_spStateMgr->FUN_1417daeb0(0x41, pState);
+    // the state is new'd straight into the call (no named local)
+    m_spStateMgr->FUN_1417daeb0(0x41, new StateSkillMagicControl(this));
     vfunc_59(0x41, 0, 0, 0);
     m_ctrl.FUN_1417b7b50(2);
 }
@@ -1397,7 +1397,7 @@ int CSkillMagicControlGuide::FUN_1410a5ea0(int nOwnerId, efd::Point3 kPos, efd::
     MS2Ptr<Unk_SkillMagicInfo> spInfo)
 {
     efd::Matrix3 kRot;
-    FUN_1409f7320(&kRot);
+    // kRot: NiMatrix3 default ctor 0x1409f7320
     float fAngle = FUN_14123ce70(kDir);
     kRot.MakeZRotation(fAngle);
     efd::Point3 kFwd = DAT_143a08d08;
@@ -1405,15 +1405,15 @@ int CSkillMagicControlGuide::FUN_1410a5ea0(int nOwnerId, efd::Point3 kPos, efd::
     if (CGuideObject::vfunc_124(nOwnerId, kPos, kFwd, pOwner) == 0)
         return 0;
     m_spInfo = spInfo;
-    m_kAim = SP(kPos);
-    Unk_SkillRowRef kRow;
-    FUN_1407ee1d0(FUN_1401958b0(), &kRow, m_spInfo->m_nSkillId);
+    m_kAim = kPos;
+    Unk_SkillRowRef kRow = FUN_1401958b0()->FUN_1407ee1d0(m_spInfo->m_nSkillId);
+    // (the row is returned by value)
     if (kRow.FUN_14063ed10() != 0)
     {
         m_fDc8 = kRow.FUN_14063ed50()->m_fDc8Src;
         m_fDcc = kRow.FUN_14063ed50()->m_fDccSrc;
     }
-    kRow.FUN_14063e5c0();
+    // kRow released by its dtor
     return 1;
 }
 
@@ -1598,7 +1598,7 @@ void FUN_1410a77e0(CGuideObject* pActor, float f)
 // @0x1410a7800
 void FUN_1410a7800(NiAVObject* pObj, float x, float y, float z)
 {
-    pObj->SetTranslate(NiPoint3(x, y, z));
+    *reinterpret_cast<NiPoint3*>(reinterpret_cast<char*>(pObj) + 0x74) = NiPoint3(x, y, z);   // the inline SetTranslate: m_kLocal.m_Translate (protected) at +0x74
 }
 
 // @0x1410a77c0
@@ -1705,6 +1705,8 @@ int FUN_140159bc0(void*);                                        // ReleasePtred
 void FUN_140159ba0(void*);                                       // DeletePtred
 void FUN_1410a7db0(void*);
 void FUN_1410a7df0(void*);
+void FUN_1410a7cb0(Unk_SPtr*);
+void FUN_1410a7d10(Unk_SPtr*);
 void FUN_1410a7e90(Unk_SPtr*);
 void FUN_1410a7ef0(Unk_SPtr*);
 void FUN_1410a7fd0(Unk_SPtr*);
@@ -1725,10 +1727,14 @@ void** FUN_1410a69b0(void** p, void* v)
     return p;
 }
 
+// @0x1410a6aa0
+Unk_SPtr* FUN_1410a6aa0(Unk_SPtr* p, void* v) { p->m_p = v; FUN_1410a7cb0(p); return p; }
 // @0x1410a6ad0
 Unk_SPtr* FUN_1410a6ad0(Unk_SPtr* p) { p->m_p = 0; return p; }
 // @0x1410a6af0
 Unk_SPtr* FUN_1410a6af0(Unk_SPtr* p) { p->m_p = 0; return p; }
+// @0x1410a6b10
+Unk_SPtr* FUN_1410a6b10(Unk_SPtr* p, void* v) { p->m_p = v; FUN_1410a7d10(p); return p; }
 // @0x1410a6b90
 Unk_SPtr* FUN_1410a6b90(Unk_SPtr* p) { p->m_p = 0; return p; }
 
@@ -1834,3 +1840,8 @@ void FUN_1410a8210(Unk_SPtr* p)
         FUN_140159ba0(p->m_p);
     }
 }
+// MS2-FUNCTIONAL 0x1410a4d30: CFishingGuideObject catch popup - the exe guards pCatch with a nested if and reads the bird head through MS2Ptr operator-> 0x1410a7170; ours uses early returns and get(), one fewer frame slot
+// MS2-FUNCTIONAL 0x1410a4080: CFishingGuideObject ctor - the exe builds the +0xda8 fishing line with its real ctor/dtor 0x140cd7d80/0x140cd7e40 and installs new StateFishingFloat (0x140ddbf50, max state 6); the member is a local stand-in here
+// MS2-FUNCTIONAL 0x1410a1ee0: CConstructionGuideObject update - the exe goes through the MS2Ptr helpers 0x1410a70a0/0x1410a6ee0/0x1410a7190/0x1410a6fc0 and passes Point3 by value to UIBirdHead::FUN_1418ce8c0 (shared uibirdhead.h declares it by reference)
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cabe80-0x142cabf10 .text$yd

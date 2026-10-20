@@ -235,3 +235,5 @@ int UINameTagSymbolSettingDialog::vfunc_48()
 {
     return 0x4ed5;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cafd30-0x142cafdc0 .text$yd

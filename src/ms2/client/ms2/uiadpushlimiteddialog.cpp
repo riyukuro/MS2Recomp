@@ -542,3 +542,5 @@ int UIAdPushLimitedDialog::vfunc_48()
 {
     return 0x4f35;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca6150-0x142ca6210 .text$yd

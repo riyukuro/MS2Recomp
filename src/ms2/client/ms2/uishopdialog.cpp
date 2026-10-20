@@ -3807,3 +3807,5 @@ void FUN_141b070a0(CMsgBoxData* pBox, const char* szName, Scaleform::GFx::Value 
     pBox->m_values.insert(std::make_pair(szName, data.FUN_1422b9260()));
 }
 MS2_REPLACE(0x141b070a0, FUN_141b070a0, 233, 0x8ECC6B84);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc27b0-0x142cc2950 .text$yd

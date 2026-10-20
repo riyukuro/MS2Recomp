@@ -1133,7 +1133,7 @@ void FUN_140ec0b50(MS2Ptr<CMeratMarketProduct> spProduct)
 // Open the bill dialog for a single product after the checks.
 // MS2-FUNCTIONAL: not byte-matched (unrecovered callee signatures, temporaries)
 // @0x140ec0c70
-void FUN_140ec0c70(MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<TMeratMarketBillDataParam> spParam, __int64 n4, __int64 n5, int nPayType)
+void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<TMeratMarketBillDataParam> spParam, __int64 n4, __int64 n5, int nPayType)
 {
     if (spProduct == 0)
         return;
@@ -1409,9 +1409,9 @@ MS2Ptr<CMeratMarketProduct> FUN_140ec2300(const Unk_MeratProductKey& key, int* p
 
 // The sale end time text.
 // @0x140ec25e0
-CStringW FUN_140ec25e0(int nYear, int nMonth, int nDay)
+CStringW FUN_140ec25e0(__int64 nTime)
 {
-    CMsTime tm(nYear, nMonth, nDay, 0, 0, 0);
+    CMsTime tm(nTime);
     CStringW strOut;
     FUN_141b70f90(tm, FUN_14028de60(0xa28), strOut);
     return strOut;
@@ -1540,3 +1540,5 @@ int FUN_140ec3950(ASMeratMarketBuyBillData* pBill)
 {
     return pBill->m_n78;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca82a0-0x142ca8310 .text$yd

@@ -236,3 +236,5 @@ void CostumeSetTable::CheckInit()
 
 // @0x140539250
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9ac70-0x142c9acc0 .text$yd

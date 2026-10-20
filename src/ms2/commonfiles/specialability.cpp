@@ -520,3 +520,5 @@ SAType FUN_14081dd80(const CStringA& strName)
 {
     return FUN_14081d2f0(strName);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9c330-0x142c9c3b0 .text$yd

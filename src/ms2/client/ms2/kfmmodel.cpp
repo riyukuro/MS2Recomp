@@ -1152,3 +1152,5 @@ void FUN_1414413b0(egf::Entity* e, unsigned id, const efd::utf8string* kKey, efd
     FUN_1414410b0(e, id, kKey, pVal);
     ((Unk_KfmEntityAccess*)e)->SetPropertyValueUnsafe(id, *kKey, pVal, FUN_1408a2000());
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb2290-0x142cb2320 .text$yd

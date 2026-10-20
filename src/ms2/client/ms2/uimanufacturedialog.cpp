@@ -1130,3 +1130,5 @@ int UIManufactureDialog::FUN_1412e7170(int nResult)
 
 // The three CStringW/CString formatters are COMDATs of this unit (FMT_VARIADIC instances of FUN_14028dee0 above).
 
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caf9c0-0x142cafa70 .text$yd

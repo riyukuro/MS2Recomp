@@ -190,3 +190,5 @@ UGCMapPackageDataPtr FUN_1408b9cb0(const CString& strName)
     }
     return data;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9c9b0-0x142c9c9f0 .text$yd

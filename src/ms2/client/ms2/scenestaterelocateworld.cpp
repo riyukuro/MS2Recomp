@@ -69,3 +69,5 @@ void CSceneStateRelocateWorld::SetState(int nState)
 {
     m_nState = nState;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb66a0-0x142cb6710 .text$yd

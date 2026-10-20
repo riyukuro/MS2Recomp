@@ -958,3 +958,5 @@ int FUN_1406198a0(int nValue, float fRate)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9b280-0x142c9b2b0 .text$yd

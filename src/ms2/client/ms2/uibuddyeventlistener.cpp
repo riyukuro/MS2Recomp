@@ -2066,3 +2066,5 @@ Scaleform::GFx::Value Unk_BdScript::FUN_1418dca10(const char* szMethod, int n, C
     return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(szMethod, args);
 }
 
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbcef0-0x142cbd080 .text$yd

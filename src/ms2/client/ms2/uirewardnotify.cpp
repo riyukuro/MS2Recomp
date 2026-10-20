@@ -897,7 +897,7 @@ Unk_RLRewardUI* FUN_140a7b2b0(int nId);
 class Unk_RLHud { public: CStringW FUN_141b20ed0(); void FUN_141b21ae0(const CString& strName); void FUN_141b1feb0(); };
 Unk_RLHud* FUN_140967100();
 UIRewardNotify* FUN_140938cd0(int nId);
-CStringW FUN_14028b8e0(CStringW strKey);
+#include "ms2/commonfiles/commonutil.h"
 void* FUN_14025e7c0();
 unsigned char FUN_14116d720(void*);
 void FUN_141415450(const CString& strName, MS2Ptr<CItem> spItem, int nIndex, int nIconType, int nFlags);

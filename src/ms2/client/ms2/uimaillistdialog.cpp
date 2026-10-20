@@ -1739,3 +1739,5 @@ void UIMailSendDialog::FUN_1419ed7f0(ATL::CAtlMap<unsigned __int64, CStringW>& n
     }
 }
 MS2_REPLACE_METHOD(0x1419ed7f0, UIMailSendDialog, FUN_1419ed7f0, 497, 0x23AD5823); // FUN_1419ed7f0
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbf2c0-0x142cbf3f0 .text$yd

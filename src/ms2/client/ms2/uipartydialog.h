@@ -209,7 +209,7 @@ MS2_CHECK_SIZE(Unk_PopupMenuInfo, 0x80);
 struct Unk_PmTarget
 {
     Unk_PmTarget() : m_pos(DAT_143b01a60), m_nLevel(0), m_nCharId(0), m_bOnline(1), m_nTrophy(0), m_n20(0), m_nJobCode(0), m_b38(false) {}
-    NiPoint3 m_pos;                     // +0x00 world (or screen) position
+    efd::Point3 m_pos;                  // +0x00 world (or screen) position (assigned through efd::Point3::operator= 0x140194470)
     unsigned m_nLevel;                  // +0x0c "level"
     __int64 m_nCharId;                  // +0x10
     int m_bOnline;                      // +0x18

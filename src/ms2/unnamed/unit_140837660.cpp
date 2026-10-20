@@ -66,3 +66,6 @@ void FUN_1408377d0(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> >& ids)
 
 // @0x140838c30
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9c410-0x142c9c430 .text$yd
+// MS2-RANGE: 0x142c9c490-0x142c9c4b0 .text$yd

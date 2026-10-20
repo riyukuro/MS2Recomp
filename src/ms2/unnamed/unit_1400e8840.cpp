@@ -22,3 +22,5 @@ static CString s_strPCBang = "PCBang";
 static CString s_strSlot = "Slot";
 static CString s_strUndo = "Undo";
 static CString s_strVIP = "VIP";
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cad3b0-0x142cad5b0 .text$yd

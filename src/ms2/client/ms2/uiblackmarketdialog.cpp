@@ -485,3 +485,5 @@ void Unk_BlackMarketAnchor(void* pDst, const void* pSrc)
 {
     memmove_s(pDst, 8, pSrc, 8);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbce90-0x142cbcef0 .text$yd

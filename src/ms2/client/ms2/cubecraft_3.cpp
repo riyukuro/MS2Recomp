@@ -248,7 +248,7 @@ int CNifCubeGuide::FUN_1410b0680() {
     if (data == NULL) return 0;
     CString textureName(data->cubeTextureName.mesh);
     if (textureName.GetLength() == 0) return 0;
-    CString path = FUN_1410280d0(2, item->look->resourcePath);
+    CString path = FUN_1410280d0(2, item->look->m_strUrl);
     if (_access(path, 4) == 0) {
         NiPointer<NiSourceTexture> texture = FUN_140a0afd0()->FUN_141553eb0(path, NULL);
         if (!(texture == NULL)) {

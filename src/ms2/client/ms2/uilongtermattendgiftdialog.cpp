@@ -738,3 +738,5 @@ MS2_REPLACE_METHOD(0x140C6D470, UILongTermAttendGiftDialog, FUN_140c6d470, 155, 
 MS2_REPLACE_METHOD(0x140C6D520, UILongTermAttendGiftDialog, FUN_140c6d520, 67, 0xCDC430FA);
 MS2_REPLACE_METHOD(0x140C6D570, UILongTermAttendGiftDialog, FUN_140c6d570, 67, 0xD9995042);
 MS2_REPLACE_METHOD(0x140C6D5C0, UILongTermAttendGiftDialog, FUN_140c6d5c0, 133, 0xD53BE508);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca33e0-0x142ca3540 .text$yd

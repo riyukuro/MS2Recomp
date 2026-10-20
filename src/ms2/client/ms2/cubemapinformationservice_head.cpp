@@ -351,3 +351,5 @@ void Unk_CMISDriveHead()
     efd::vector<int> v;
     (void)v;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cac290-0x142cac3b0 .text$yd

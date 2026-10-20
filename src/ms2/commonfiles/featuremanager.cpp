@@ -1173,3 +1173,5 @@ int CFeatureManager::FUN_14036e700(const CStringW& strName)
         return 1;
     return GetInstance()->FUN_14036d9e0(strName);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9a700-0x142c9a720 .text$yd

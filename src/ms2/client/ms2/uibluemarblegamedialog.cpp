@@ -69,7 +69,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringTable* FUN_1401a9d70();
 extern Unk_Inventory DAT_143ab2a90;                                 // the player inventory
 
-CStringW FUN_14028b8e0(CStringW strKey);                            // localized text
+#include "ms2/commonfiles/commonutil.h"
 CStringW FUN_14028e060(const CString& strKey, const fmt::ArgList& args);
 CStringW FUN_140938ae0(CStringW strKey, const int& n);              // localized text with one number
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);             // localized text with one number (pointer form)
@@ -533,3 +533,5 @@ void UIBlueMarbleGameDialog::FUN_140f24140(int bEnabled)
     if (MS2Ptr<Unk_140acd6e0> spButton = FUN_140bb4b10("m_dice"))
         spButton->FUN_1422c1fe0(bEnabled);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca8f70-0x142ca9020 .text$yd

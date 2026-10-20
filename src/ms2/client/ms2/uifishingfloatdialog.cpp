@@ -277,3 +277,5 @@ int UIFishingFloatDialog::vfunc_48()
     return 0x4ee7;
 }
 MS2_REPLACE_METHOD(0x140F447C0, UIFishingFloatDialog, vfunc_48, 11, 0xA233B848);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca96a0-0x142ca96e0 .text$yd

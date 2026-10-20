@@ -77,12 +77,13 @@ public:
 extern Unk_StreamPoint DAT_143b01a60;                       // the zero point
 void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Unk_StreamPoint* pOut);   // reads a point property
 float FUN_140966f00(NiPoint3 kA, Unk_StreamPoint kB);           // the distance
+float FUN_140966ea0(NiPoint3 kA, Unk_StreamPoint kB);           // the planar distance
 struct Unk_VwConfig { char m_pad[0xd8]; CStringA m_strUploadDir; };   // the client config
 void* FUN_140166410();                                      // the game settings
 bool FUN_14036e510(void* pSettings);                        // a content switch
 void* FUN_1403ed290();                                      // the guild manager (+8: the own guild)
 __int64 FUN_1404ccbd0(void* pGuild);                        // the guild id
-void* FUN_1403ed2b0();                                      // the UI service
+struct Unk_VwUIService; Unk_VwUIService* FUN_1403ed2b0();  // the UI service
 void* FUN_1409eed90();                                      // the singleton of the own character
 struct Unk_VwSummary { char m_pad[0x20]; int m_nState; };   // the own character's summary (+0x20: 2 = wedding done)
 Unk_VwSummary* FUN_140d295d0(void* pSingleton);
@@ -194,7 +195,7 @@ public:
 private: void* unknown; UIObject* object;
 };
 MS2_CHECK_SIZE(Unk_CommandUIRef,0x10);
-Unk_CommandUIRef FUN_141adcea0(void*, int);
+struct Unk_VwUIService { Unk_CommandUIRef FUN_141adcea0(int nId); };  // the UI lookup by class id
 UIObject* FUN_1403ed9e0(Unk_CommandUIRef&);
 bool FUN_140534e80(Unk_CommandUIRef&);
 void FUN_140c381b0(UIItemBlueprintCreateDialog* pDialog, MS2Ptr<CUploadFile> spFile);   // show the uploaded image
@@ -300,9 +301,7 @@ void CUgcViewerEquip::vfunc_5()
     if (spEquip == 0)
         return;
     MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
-    if (spItem == 0)
-        return;
-    if (spItem->FUN_140527840() == 0)
+    if (spItem == 0 || spItem->FUN_140527840() == 0)
         return;
     m_strMesh = spItem->FUN_140527840()->cubeTextureName.mesh;
 }
@@ -502,49 +501,49 @@ void CUgcViewerCube::FUN_1418a0150(const egf::EntityID& id)
 
 // ---- CUgcViewerBanner (the post at +0x18, the decal state at +0x68, the image at +0x70, the banner record at +0x78) ----
 
-static CUgcBannerPost& Unk_VwPost(CUgcViewerBanner* pViewer)
-{
-    return *reinterpret_cast<CUgcBannerPost*>(reinterpret_cast<char*>(pViewer) + 0x18);
-}
-static int& Unk_VwLoaded(CUgcViewerBanner* pViewer)
-{
-    return *reinterpret_cast<int*>(reinterpret_cast<char*>(pViewer) + 0x68);
-}
-static NiTexturePtr& Unk_VwImage(CUgcViewerBanner* pViewer)
-{
-    return *reinterpret_cast<NiTexturePtr*>(reinterpret_cast<char*>(pViewer) + 0x70);
-}
-static Unk_BannerPtr& Unk_VwBanner(CUgcViewerBanner* pViewer)
-{
-    return *reinterpret_cast<Unk_BannerPtr*>(reinterpret_cast<char*>(pViewer) + 0x78);
-}
+// (the members are declared in cugcuploadctrl.h)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // @0x1418a0180
 CUgcViewerBanner::CUgcViewerBanner()
+    : m_spImage(0)
 {
-    new (&Unk_VwPost(this)) CUgcBannerPost();
-    new (&Unk_VwImage(this)) NiTexturePtr(0);
-    new (&Unk_VwBanner(this)) Unk_BannerPtr(0);
-    Unk_VwPost(this).Clear();
-    Unk_VwLoaded(this) = 0;
-    Unk_VwImage(this) = 0;
-    Unk_VwBanner(this) = 0;
+
+
+    m_post.Clear();
+    m_nLoaded = 0;
+    m_spImage = 0;
+    m_spBanner = 0;
 }
 
 // @0x1418a0250
 CUgcViewerBanner::~CUgcViewerBanner()
 {
-    Unk_VwImage(this) = 0;
-    Unk_VwBanner(this) = 0;
-    Unk_VwBanner(this).~Unk_BannerPtr();
-    Unk_VwImage(this).~NiTexturePtr();
-    Unk_VwPost(this).~CUgcBannerPost();
+    m_spImage = 0;
+    m_spBanner = 0;
+
+
+
 }
 
 // @0x1418a02f0
 void CUgcViewerBanner::vfunc_1()
 {
-    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
     GameObject* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -553,19 +552,23 @@ void CUgcViewerBanner::vfunc_1()
     NiPoint3 kPlayer = pPlayer->vfunc_18();
     Unk_StreamPoint kBanner = DAT_143b01a60;
     FUN_1409618c0(spEntity, 0xfd95ca52, &kBanner);
-    float fDistance = FUN_140966f00(kPlayer, kBanner);
+    int bPlanar = 0;
+    float fDistance = bPlanar ? FUN_140966ea0(kPlayer, kBanner) : FUN_140966f00(kPlayer, kBanner);
     float fLimit = FUN_1401d3200()->RegistUgcDistanceClose.Read();
-    if (fLimit < fDistance)
+    if (fDistance > fLimit)
         FUN_14052d220()->FUN_14187f1f0();
 }
 
 // @0x1418a04d0
 int CUgcViewerBanner::vfunc_2()
 {
-    if (Unk_VwImage(this) == 0)
+    if (m_spImage == 0)
         return 0;
     CStringW strError;
-    return FUN_14186d050(Unk_VwImage(this), m_nBannerId, strError) == 0;
+    int nResult = FUN_14186d050(m_spImage, m_post.m_nBannerId, strError);
+    if (nResult != 0)
+        return 0;
+    return 1;
 }
 
 // @0x1418a0580
@@ -576,7 +579,7 @@ int CUgcViewerBanner::vfunc_3(MS2Ptr<CUploadFile> spFile)
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_14052d220()->FUN_141882610();
     if (spCtrl == 0)
         return 0;
-    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
@@ -591,13 +594,15 @@ int CUgcViewerBanner::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x1418a0800
 void CUgcViewerBanner::vfunc_4()
 {
-    int nBannerId = m_nBannerId;
+    int nBannerId = m_post.m_nBannerId;
     NiTexturePtr spTexture;
-    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
     MS2Ptr<CUgcRegistBanner> spRegist = FUN_14052d220()->FUN_141887ce0(nBannerId);
-    if (spRegist != 0)
+    if (spRegist == 0)
+        spTexture = m_spImage;
+    else
     {
         CString strFile = FUN_1410280d0(3, spRegist->m_strUrl);
         if (_access(strFile, 0) == 0)
@@ -610,52 +615,54 @@ void CUgcViewerBanner::vfunc_4()
             }
         }
         else
-            spTexture = Unk_VwImage(this);
+            spTexture = m_spImage;
     }
-    else
-        spTexture = Unk_VwImage(this);
     FUN_14052d220()->FUN_141888770(spEntity, spTexture);
 }
 
 // @0x1418a0b10
 void CUgcViewerBanner::vfunc_5()
 {
-    if (Unk_VwLoaded(this) == 1)
+    if (m_nLoaded == 1)
         return;
-    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
     NiAVObject* pRoot = FUN_141b6efc0(spEntity.data());
-    if (pRoot == 0)
-        return;
-    efd::utf8string strMesh;
-    efd::utf8string strTexture;
-    FUN_141890b60(spEntity, efd::utf8string("Index00MeshName"), strMesh);
-    FUN_141890b60(spEntity, efd::utf8string("Index00TexturePath"), strTexture);
-    if (strMesh.empty())
-        return;
-    NiAVObject* pMesh = pRoot->GetObjectByName(NiFixedString(strMesh.c_str()));
-    if (pMesh == 0)
-        return;
-    NiTexturingProperty* pProperty = NiDynamicCast(NiTexturingProperty, pMesh->GetProperty(NiProperty::TEXTURING));
-    if (pProperty == 0)
-        return;
-    Unk_VwImage(this) = pProperty->GetDecalMap(0)->GetTexture();
-    Unk_VwLoaded(this) = 1;
+    if (pRoot != 0)
+    {
+        efd::utf8string strMesh;
+        FUN_141890b60(spEntity, "Index00MeshName", strMesh);
+        efd::utf8string strTexture;
+        FUN_141890b60(spEntity, "Index00TexturePath", strTexture);
+        if (!strMesh.empty())
+        {
+            if (NiAVObject* pMesh = pRoot->GetObjectByName(strMesh.c_str()))
+            {
+                NiTexturingProperty* pProperty = NiDynamicCast(NiTexturingProperty, pMesh->GetProperty(NiProperty::TEXTURING));
+                if (pProperty != 0)
+                {
+                    NiTexturingProperty::Map* pMap = pProperty->GetDecalMap(0);
+                    m_spImage = pMap->GetTexture();
+                    m_nLoaded = 1;
+                }
+            }
+        }
+    }
 }
 
 // @0x1418a0d70
 CString CUgcViewerBanner::vfunc_11()
 {
     CString str;
-    str = Unk_SocketFormat("[viewer={0}] [bannerSN={1}]", "UgcViewerBanner", VW_U(m_nBannerId));
+    str = Unk_SocketFormat("[viewer={0}] [bannerSN={1}]", "UgcViewerBanner", VW_U(m_post.m_nBannerId));
     return str;
 }
 
 // @0x1418a0e20
 void CUgcViewerBanner::vfunc_6(COutPacket& packet)
 {
-    Unk_VwPost(this).Write(packet);
+    m_post.Write(packet);
 }
 
 // @0x1418a0e60
@@ -666,14 +673,14 @@ int CUgcViewerBanner::vfunc_13(MS2Ptr<IUgcProxy> spProxy)
     IUgcProxy* pProxy = spProxy.get();
     if (pProxy == 0)
         return 0;
-    pProxy->CopyFrom(&Unk_VwPost(this));
+    pProxy->CopyFrom(&m_post);
     return 1;
 }
 
 // @0x1418a0f20
 int CUgcViewerBanner::vfunc_9()
 {
-    CFieldBannerData* pBanner = CFieldBannerData::GetBanner(m_nBannerId).get();
+    CFieldBannerData* pBanner = CFieldBannerData::GetBanner(m_post.m_nBannerId).get();
     if (pBanner == 0)
         return 0;
     return pBanner->m_nSize;
@@ -682,17 +689,17 @@ int CUgcViewerBanner::vfunc_9()
 // @0x1418a0f90
 void CUgcViewerBanner::FUN_1418a0f90(int nBannerId)
 {
-    m_nBannerId = nBannerId;
-    Unk_VwBanner(this) = CFieldBannerData::GetBanner(nBannerId);
+    m_post.m_nBannerId = nBannerId;
+    m_spBanner = CFieldBannerData::GetBanner(nBannerId);
 }
 
 // @0x1418a1000
 void CUgcViewerBanner::FUN_1418a1000()
 {
-    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(m_nBannerId);
+    efd::SmartPointer<egf::Entity> spEntity = FUN_1403ed2d0()->FUN_141bd04d0(m_post.m_nBannerId);
     if (spEntity == 0)
         return;
-    NiTexturePtr spTexture = Unk_VwImage(this);
+    NiTexturePtr spTexture = m_spImage;
     FUN_14052d220()->FUN_141888770(spEntity, spTexture);
 }
 
@@ -1152,18 +1159,18 @@ void CUgcViewerRidee::FUN_1418a3000(const egf::EntityID& id)
 
 // ---- CUgcViewerBlueprintImage (the image proxy at +0x18, the icon proxy at +0x50, the refreshed flag at +0xe8) ----
 
-static CUgcBlueprintImageProxy& Unk_VwBpProxy(CUgcViewerBlueprintImage* pViewer)
-{
-    return *reinterpret_cast<CUgcBlueprintImageProxy*>(reinterpret_cast<char*>(pViewer) + 0x18);
-}
-static CUgcItemIconPC& Unk_VwBpIcon(CUgcViewerBlueprintImage* pViewer)
-{
-    return *reinterpret_cast<CUgcItemIconPC*>(reinterpret_cast<char*>(pViewer) + 0x50);
-}
-static int& Unk_VwBpRefreshed(CUgcViewerBlueprintImage* pViewer)
-{
-    return *reinterpret_cast<int*>(reinterpret_cast<char*>(pViewer) + 0xe8);
-}
+// (the members are declared in cugcuploadctrl.h)
+
+
+
+
+
+
+
+
+
+
+
 
 // The create dialog of a blueprint item (0x4f7b), if it is open.
 UIItemBlueprintCreateDialog* FUN_1418a6920();
@@ -1172,18 +1179,18 @@ int FUN_1418a7190();
 // @0x1418a3030
 CUgcViewerBlueprintImage::CUgcViewerBlueprintImage()
 {
-    new (&Unk_VwBpProxy(this)) CUgcBlueprintImageProxy();
-    new (&Unk_VwBpIcon(this)) CUgcItemIconPC();
-    Unk_VwBpRefreshed(this) = 0;
-    Unk_VwBpProxy(this).Clear();
-    Unk_VwBpIcon(this).Clear();
+
+
+    m_bRefreshed = 0;
+    m_proxy.Clear();
+    m_icon.Clear();
 }
 
 // @0x1418a30f0
 CUgcViewerBlueprintImage::~CUgcViewerBlueprintImage()
 {
-    Unk_VwBpIcon(this).~CUgcItemIconPC();
-    Unk_VwBpProxy(this).~CUgcBlueprintImageProxy();
+
+
 }
 
 // @0x1418a3140
@@ -1219,21 +1226,21 @@ void CUgcViewerBlueprintImage::vfunc_4()
 // @0x1418a33d0
 void CUgcViewerBlueprintImage::vfunc_5()
 {
-    Unk_VwBpRefreshed(this) = 1;
+    m_bRefreshed = 1;
 }
 
 // @0x1418a33f0
 CString CUgcViewerBlueprintImage::vfunc_11()
 {
     CString str;
-    str = Unk_SocketFormat("[viewer={0}] [blueprint_item_sn={1}]", "UgcViewerBlueprintImage", VW_U64(m_n30));
+    str = Unk_SocketFormat("[viewer={0}] [blueprint_item_sn={1}]", "UgcViewerBlueprintImage", VW_U64(m_proxy.m_n18));
     return str;
 }
 
 // @0x1418a34a0
 void CUgcViewerBlueprintImage::vfunc_6(COutPacket& packet)
 {
-    Unk_VwBpProxy(this).Write(packet);
+    m_proxy.Write(packet);
 }
 
 // @0x1418a34e0
@@ -1246,14 +1253,14 @@ int CUgcViewerBlueprintImage::vfunc_8(MS2Ptr<IUgcProxy> spProxy, int nKind)
         IUgcProxy* pProxy = spProxy.get();
         if (pProxy == 0)
             return 0;
-        pProxy->CopyFrom(&Unk_VwBpProxy(this));
+        pProxy->CopyFrom(&m_proxy);
     }
     else if (nKind == 0xd1)
     {
         CUgcItemIconPC* pProxy = static_cast<CUgcItemIconPC*>(spProxy.get());
         if (pProxy == 0)
             return 0;
-        pProxy->CopyFrom(&Unk_VwBpIcon(this));
+        pProxy->CopyFrom(&m_icon);
         pProxy->m_nKind = 4;
     }
     return 1;
@@ -1262,9 +1269,10 @@ int CUgcViewerBlueprintImage::vfunc_8(MS2Ptr<IUgcProxy> spProxy, int nKind)
 // @0x1418a6920
 UIItemBlueprintCreateDialog* FUN_1418a6920()
 {
-    if (FUN_1403ed2b0() == 0)
+    Unk_VwUIService* pService = FUN_1403ed2b0();
+    if (pService == 0)
         return 0;
-    Unk_CommandUIRef ref = FUN_141adcea0(FUN_1403ed2b0(), FUN_1418a7190());
+    Unk_CommandUIRef ref = pService->FUN_141adcea0(FUN_1418a7190());
     if (FUN_140534e80(ref))
         return 0;
     return dynamic_cast<UIItemBlueprintCreateDialog*>(FUN_1403ed9e0(ref));
@@ -1275,13 +1283,13 @@ UIItemBlueprintCreateDialog* FUN_1418a6920()
 // @0x1418a70e0
 __int64 CUgcViewerBanner::vfunc_10()
 {
-    return (unsigned)m_nBannerId;
+    return (unsigned)m_post.m_nBannerId;
 }
 
 // @0x1418a70f0
 __int64 CUgcViewerBlueprintImage::vfunc_10()
 {
-    return m_n30;
+    return m_proxy.m_n18;
 }
 
 // @0x1418a7100
@@ -1461,8 +1469,13 @@ int CUgcUploadCtrl::FUN_1418a3ad0()
 // @0x1418a3af0
 void CUgcUploadCtrl::FUN_1418a3af0(int nResult)
 {
-    if (m_nDialog == nResult && m_spViewer.get() != 0 && m_upload.m_nType != 3)
-        m_spViewer->vfunc_4();
+    if (m_nDialog != nResult)
+        return;
+    if (m_spViewer == 0)
+        return;
+    if (m_upload.m_nType == 3)
+        return;
+    m_spViewer->vfunc_4();
 }
 
 // @0x1418a3b80

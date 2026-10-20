@@ -355,3 +355,5 @@ void SetValid(bool bValid)
 {
     s_valid = bValid;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9c3b0-0x142c9c410 .text$yd

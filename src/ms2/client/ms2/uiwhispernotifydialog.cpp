@@ -388,3 +388,5 @@ int UIWhisperNotifyDialog::FUN_141b52a60(int nId)
 }
 
 
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc34a0-0x142cc3530 .text$yd

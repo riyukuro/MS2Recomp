@@ -195,3 +195,5 @@ void CDynamicActionData::SetInit(bool b)
 // Explicit instantiations: the exe keeps the out-of-line pointer members in this TU.
 template class MS2Ptr<CDynamicActionData>;
 template class TPtrValue<std::set<unsigned> >;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9a650-0x142c9a6d0 .text$yd

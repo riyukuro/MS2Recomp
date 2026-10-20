@@ -71,13 +71,14 @@ public:
         }
         if (NiIsKindOf(NiDynamicEffect, pkObject))
         {
-            const NiTPointerMap<NiNode*, NiNode*>* pkList = &((NiDynamicEffect*)pkObject)->GetAffectedNodeList();
-            NiTMapIterator kPos = pkList->GetFirstPos();
-            while (pkList != 0 && pkList->GetCount() != 0 && kPos != 0)
+            // the exe's Gamebryo keeps the affected nodes in a NiTPointerList<NiNodePtr> (GetHeadPos 0x14098ddb0, IsEmpty
+            // 0x141546cb0, GetNext 0x14098de00, NiPointer -> T* 0x140993f00); this SDK's header declares a pointer map
+            const NiTPointerList<NiNodePtr>* pkList =
+                reinterpret_cast<const NiTPointerList<NiNodePtr>*>(&((NiDynamicEffect*)pkObject)->GetAffectedNodeList());
+            NiTListIterator kPos = pkList->GetHeadPos();
+            while (pkList != 0 && !pkList->IsEmpty() && kPos != 0)
             {
-                NiNode* pkKey = NULL;
-                NiNode* pkNode = NULL;
-                pkList->GetNext(kPos, pkKey, pkNode);
+                NiNode* pkNode = pkList->GetNext(kPos);
                 if (pkList != 0)
                     CollectKeyTimes(pkNode);
             }

@@ -2818,3 +2818,5 @@ __int64 FUN_1406a6d50(Common::Constants::Value<int>& value)
     return *value.Get();
 }
 MS2_REPLACE(0x1406A6D50, FUN_1406a6d50, 27, 0x4C6042D7);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9b630-0x142c9b750 .text$yd

@@ -95,7 +95,7 @@ Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);
 
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-CStringW FUN_14028b8e0(CStringW str);
+#include "ms2/commonfiles/commonutil.h"
 CStringW FUN_14062b4f0(CStringW strKey, const int* pnArg);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
@@ -210,37 +210,36 @@ MS2_REPLACE_METHOD(0x140FAA070, UIHomeSaveSlotDialog, vfunc_28, 592, 0x024C5C3B)
 // @0x140faa2d0
 void UIHomeSaveSlotDialog::FUN_140faa2d0()
 {
-    if (!(m_30 == 0))
+    if (!m_30)
+        return;
+    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (spService->FUN_1410c3600(3))
     {
-        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-        if (spService->FUN_1410c3600(3) == 0)
+        ATL::CAtlArray<MS2Ptr<Unk_BlueprintSlot> >* pSlots = spService->FUN_1410d4920();
+        for (size_t i = 0; i < 5; ++i)
         {
-            ATL::CAtlArray<MS2Ptr<Unk_HomeSlot> >* pSlots = spService->FUN_1410d4660();
-            for (size_t i = 0; i < 5; ++i)
+            CString strName;
+            __int64 nTime = 0;
+            if (i < pSlots->GetCount())
             {
-                CString strName;
-                __int64 nTime = 0;
-                if (i < pSlots->GetCount())
-                {
-                    strName = (*pSlots)[i]->m_strName;
-                    nTime = (*pSlots)[i]->m_nTime;
-                    m_30->Invoke("setSlot", (*pSlots)[i]->m_nId, FUN_14016a730(strName.GetString(), 0), FUN_140fac0a0(nTime));
-                }
+                strName = (*pSlots)[i]->m_strName;
+                nTime = (*pSlots)[i]->m_nTime;
+                m_30->Invoke("setSlot", (*pSlots)[i]->m_nId, FUN_14016a730((LPCSTR)strName, 0), FUN_140fac0a0(nTime));
             }
         }
-        else
+    }
+    else
+    {
+        ATL::CAtlArray<MS2Ptr<Unk_HomeSlot> >* pSlots = spService->FUN_1410d4660();
+        for (size_t i = 0; i < 5; ++i)
         {
-            ATL::CAtlArray<MS2Ptr<Unk_BlueprintSlot> >* pSlots = spService->FUN_1410d4920();
-            for (size_t i = 0; i < 5; ++i)
+            CString strName;
+            __int64 nTime = 0;
+            if (i < pSlots->GetCount())
             {
-                CString strName;
-                __int64 nTime = 0;
-                if (i < pSlots->GetCount())
-                {
-                    strName = (*pSlots)[i]->m_strName;
-                    nTime = (*pSlots)[i]->m_nTime;
-                    m_30->Invoke("setSlot", (*pSlots)[i]->m_nId, FUN_14016a730(strName.GetString(), 0), FUN_140fac0a0(nTime));
-                }
+                strName = (*pSlots)[i]->m_strName;
+                nTime = (*pSlots)[i]->m_nTime;
+                m_30->Invoke("setSlot", (*pSlots)[i]->m_nId, FUN_14016a730((LPCSTR)strName, 0), FUN_140fac0a0(nTime));
             }
         }
     }
@@ -251,10 +250,13 @@ MS2_REPLACE_METHOD(0x140FAA2D0, UIHomeSaveSlotDialog, FUN_140faa2d0, 1017, 0xA6F
 void UIHomeSaveSlotDialog::FUN_140faa6d0()
 {
     m_saveMode = 1;
-    if (vfunc_55() == 0)
+    if (FUN_141924630())
+    {
+        if ((AScript*)m_30 != 0)
+            static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("saveMode", m_saveMode);
+    }
+    else
         FUN_141924680();
-    else if ((AScript*)m_30 != 0)
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("saveMode", m_saveMode);
 }
 MS2_REPLACE_METHOD(0x140FAA6D0, UIHomeSaveSlotDialog, FUN_140faa6d0, 121, 0x4C398FF8);
 
@@ -262,10 +264,13 @@ MS2_REPLACE_METHOD(0x140FAA6D0, UIHomeSaveSlotDialog, FUN_140faa6d0, 121, 0x4C39
 void UIHomeSaveSlotDialog::FUN_140faa750()
 {
     m_saveMode = 0;
-    if (vfunc_55() == 0)
+    if (FUN_141924630())
+    {
+        if ((AScript*)m_30 != 0)
+            static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("saveMode", m_saveMode);
+    }
+    else
         FUN_141924680();
-    else if ((AScript*)m_30 != 0)
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("saveMode", m_saveMode);
 }
 MS2_REPLACE_METHOD(0x140FAA750, UIHomeSaveSlotDialog, FUN_140faa750, 121, 0xDD1169D2);
 

@@ -132,3 +132,4 @@ void Unk_GameEventValueTailInstances(void* p)
         ->CGameEventValueItemTradeRestriction::RestrictionData::~RestrictionData();
     ((CGameEventValueBattlePetSpawn::SpawnContext*)p)->CGameEventValueBattlePetSpawn::SpawnContext::~SpawnContext();
 }
+// MS2-PIN: ??4?$MS2Ptr@VUnk_DayItemContext@@@@QEAAAEAV0@AEBV0@@Z 0x140447460 ; this TU's MS2Ptr<Unk_DayItemContext>::operator= copy

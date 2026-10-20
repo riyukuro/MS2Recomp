@@ -978,3 +978,5 @@ void FUN_140b7ec60(void* pAlloc, void* pMem, __int64 nCount) { FUN_14015fc80(pMe
 // @0x140b7ec90
 // MS2-FUNCTIONAL: std::allocator<Unk_Int3>::max_size stand-in
 unsigned __int64 FUN_140b7ec90() { return 0x1555555555555555ull; }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1040-0x142ca1160 .text$yd

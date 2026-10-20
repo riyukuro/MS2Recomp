@@ -405,7 +405,7 @@ CStringW FUN_140298ea0(CStringW strKey);
 CStringW FUN_1409eec40(int nId);
 void FUN_141276180(const CString& a, const CString& b);
 CStringW FUN_14093b970(unsigned nId);
-CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int* pValue);
+CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strName, const int& nValue);
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);
 extern unsigned int DAT_143af3960;                                      // pending refresh flags of the panel
@@ -994,7 +994,7 @@ void UIMainPlayerInfo::FUN_1419f0bb0(Unk_MpAchieve* pAchieve)
         {
             pAchieve->m_18 = fPercent;
             int nPercent = (int)fPercent;
-            CStringW strMessage = FUN_140bfa7f0(CStringW(L"s_achieve_progress_notify_integer"), FUN_14093b970(pAchieve->FUN_1409399f0()), &nPercent);
+            CStringW strMessage = FUN_140bfa7f0(CStringW(L"s_achieve_progress_notify_integer"), FUN_14093b970(pAchieve->FUN_1409399f0()), nPercent);
             FUN_1419f0ef0(strMessage, "achieve");
         }
     }
@@ -1737,3 +1737,5 @@ MS2_REPLACE_METHOD(0x1419F3590, UIMainPlayerInfo, FUN_1419f3590, 142, 0xCC7D34E8
 MS2_REPLACE_METHOD(0x1419F3630, UIMainPlayerInfo, FUN_1419f3630, 130, 0x0A1506CF);
 MS2_REPLACE_METHOD(0x1419F36C0, UIMainPlayerInfo, FUN_1419f36c0, 114, 0x49D79FEE);
 MS2_REPLACE_METHOD(0x1419F3740, UIMainPlayerInfo, FUN_1419f3740, 156, 0xD5EE2B40);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbf3f0-0x142cbf550 .text$yd

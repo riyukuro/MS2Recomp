@@ -39,6 +39,9 @@ public:
     void NotifySkill(int nSkillId, unsigned short nLevel);          // 0x140a6e430 tell the PC one skill
     int ChangedMainSkills();                                        // 0x140a6e4d0 changed non-sub skills
     int FUN_140a6e640();                                            // the job group, 0 for group 1
+    int FUN_140639340();                                            // (PC::FUN_141654700)
+    int FUN_1406393f0();                                            // (PC::FUN_141654730)
+    int FUN_1406394b0();                                            // (PC::FUN_141654760)
 
 private:
     MS2_LAYOUT_FRIEND;

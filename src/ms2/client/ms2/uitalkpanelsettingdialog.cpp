@@ -556,3 +556,5 @@ void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetti
     if (m_spRoot.get() != 0)
         m_spRoot->Invoke("alignCheckBox");
 }   // MS2-FUNCTIONAL: not byte-matched (temp string locals)
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc2d30-0x142cc2d80 .text$yd

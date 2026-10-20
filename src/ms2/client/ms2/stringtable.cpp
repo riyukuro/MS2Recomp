@@ -1360,3 +1360,5 @@ void CStringTable::FUN_141815b30(LevelDescMap& rMap, Unk_140165cf0* pRoot)
         }
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbb6d0-0x142cbb780 .text$yd

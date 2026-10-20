@@ -1605,3 +1605,5 @@ void Unk_WmAddtionalRecord::Read(CInputStream* pStream)
     m_4 = pStream->vfunc_o8_3();
     m_8 = (unsigned short)pStream->vfunc_o8_2();
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc3a80-0x142cc3aa0 .text$yd

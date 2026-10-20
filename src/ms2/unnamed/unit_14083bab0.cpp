@@ -33,7 +33,7 @@ long long FUN_140718320(const CStringW& str);
 CStringW FUN_140719a00(long long n);                                    // integer text
 CStringW FUN_1405dbf60(const wchar_t* pszFormat, const double& d);      // one double argument
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);        // one int argument
-CStringW FUN_14028b8e0(CStringW strKey);                                // localized string
+#include "ms2/commonfiles/commonutil.h"
 CStringW FUN_1405c2690(CStringW strKey, CStringW strArg);               // localized string with an argument
 
 extern int DAT_143ab0240;                                               // client language

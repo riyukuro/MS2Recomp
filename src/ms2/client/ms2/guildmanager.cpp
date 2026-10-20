@@ -1457,7 +1457,7 @@ bool CGuildManager::FUN_1413bc860(CStringW name)
 MS2_REPLACE_METHOD(0x1413BC860, CGuildManager, FUN_1413bc860, 516, 0x09853FD9);
 
 // @0x1413bca70
-int CGuildManager::FUN_1413bca70(std::map<__int64, PCBase*>& out)
+int CGuildManager::FUN_1413bca70(std::map<unsigned __int64, PCBase*>& out)
 {
     if (FUN_1413b6160()) {
         if (Unk_LockGuard guard = lock) {} else {
@@ -1466,7 +1466,7 @@ int CGuildManager::FUN_1413bca70(std::map<__int64, PCBase*>& out)
                 if (member.get() != 0) {
                     PCBase* pc = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(member->data.f08);
                     if (pc != 0)
-                        out[member->data.f08] = pc;
+                        out[reinterpret_cast<const unsigned __int64&>(member->data.f08)] = pc;   // the key binds the member directly (unsigned map key)
                 }
             }
         }
@@ -1476,7 +1476,7 @@ int CGuildManager::FUN_1413bca70(std::map<__int64, PCBase*>& out)
 MS2_REPLACE_METHOD(0x1413BCA70, CGuildManager, FUN_1413bca70, 315, 0x9513FE17);
 
 // @0x1413bcbc0
-int CGuildManager::FUN_1413bcbc0(std::map<__int64, PCBase*>& out)
+int CGuildManager::FUN_1413bcbc0(std::map<unsigned __int64, PCBase*>& out)
 {
     if (FUN_1413b6160()) {
         if (Unk_LockGuard guard = lock) {} else {
@@ -1485,7 +1485,7 @@ int CGuildManager::FUN_1413bcbc0(std::map<__int64, PCBase*>& out)
                 if (member.get() != 0) {
                     PCBase* pc = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(member->data.f08);
                     if (pc != 0 && FUN_1409613d0(pc) == 0)
-                        out[member->data.f08] = pc;
+                        out[reinterpret_cast<const unsigned __int64&>(member->data.f08)] = pc;   // the key binds the member directly (unsigned map key)
                 }
             }
         }

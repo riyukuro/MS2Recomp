@@ -474,3 +474,5 @@ void Unk_NcAnchor(void* pDst, const void* pSrc, size_t n)
 {
     memmove_s(pDst, n, pSrc, n);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc0f90-0x142cc1020 .text$yd

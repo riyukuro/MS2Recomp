@@ -314,7 +314,8 @@ void FUN_1405340b0(void*,__int64);
 void FUN_141a01d30(void*,int,const CStringW&,unsigned,int,int);
 void FUN_141a027c0(void*,Delegate<bool(int,const CMsgBoxData&)>);
 void FUN_141a01690(void*,const CStringW&,const CStringW&,const CStringW&);
-CStringW FUN_14028b8e0(CStringW);CStringW FUN_14028de60(int);
+#include "ms2/commonfiles/commonutil.h"
+CStringW FUN_14028de60(int);
 CStringW FUN_1408116a0(int,const int&);
 void FUN_141add6e0(void*,int);
 struct Unk_NetworkTransfer {

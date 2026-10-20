@@ -139,3 +139,5 @@ void CSceneStateMove::OnPacket(CInPacket& packet)
 
 // memmove_s 0x14174d260 closes the obj's COMDAT tail.
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb6580-0x142cb65f0 .text$yd

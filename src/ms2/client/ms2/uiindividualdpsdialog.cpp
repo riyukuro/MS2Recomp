@@ -179,3 +179,5 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 MS2_REPLACE_METHOD(0x140F4ACC0, UIIndividualDPSDialog, FUN_140f4acc0, 280, 0xEF98DA96);
 MS2_REPLACE_METHOD(0x140F4ADE0, UIIndividualDPSDialog, FUN_140f4ade0, 440, 0x83C29D4A);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9800-0x142ca9890 .text$yd

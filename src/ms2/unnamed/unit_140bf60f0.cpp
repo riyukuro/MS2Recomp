@@ -19,6 +19,7 @@
 // MS2-PIN: ?IsEmpty@?$CAtlMap@W4Unk_FameAlliance@@HV?$CElementTraits@W4Unk_FameAlliance@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEBA_NXZ 0x140bfc6b0 ; prop
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIAllianceQuestDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140bfc900 ; unique
 // MS2-PIN: ??$Call@VUIAllianceQuestDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIAllianceQuestDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIAllianceQuestDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x140bfc940 ; unique
+// MS2-PIN: ??$FUN_14028dfa0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBV01@AEBH@Z 0x140bfa7f0 ; hand: FMT_VARIADIC_W string table formatter <CStringW, int>
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE ""
@@ -153,7 +154,7 @@ class Unk_AqMsgBox : public CPtred {};
 MS2Ptr<Unk_AqMsgBox> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140534d60(MS2Ptr<Unk_AqMsgBox>* p);                            // handle dtor
-class Unk_AqPane { public: int FUN_141924630(); void FUN_141924680(); virtual void vfunc_0(); };
+class Unk_AqPane : public UIDialog { };                                 // the 0x4e3b dialog
 class Unk_AqShopMgr;
 Unk_AqPane* FUN_140534780(int nUIType);
 void FUN_141afb760(Unk_AqPane* p);
@@ -240,11 +241,9 @@ bool FUN_140bfa2d0(MS2Ptr<CQuestData> spA, MS2Ptr<CQuestData> spB)
     return spA->m_50 < spB->m_50;
 }
 
-// @0x140bfa7f0 "{0} ... {1}" with an item name and a count
-CStringW FUN_140bfa7f0(CStringW strFormat, CStringW strName, const int* pnCount)
-{
-    return StringFormat(static_cast<const wchar_t*>(strFormat), strName, *pnCount);
-}
+// The string table formatter; its <CStringW, int> variadic instance is 0x140bfa7f0 (pinned).
+CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);
+FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 
 typedef Delegate<bool(int, const CMsgBoxData&)> AqAnswerDelegate;
 
@@ -331,18 +330,18 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         }
         return 1;
     }
-    if (_stricmp("onShop", szMethod) == 0)
+    else if (_stricmp("onShop", szMethod) == 0)
     {
         Unk_AqPane* pPane = FUN_140534780(0x4e3b);
         if (pPane != 0)
         {
-            if (pPane->FUN_141924630() == 0)
+            if (pPane->FUN_141924630() != 0)
+                pPane->vfunc_67();
+            else
             {
                 FUN_141afb760(pPane);
                 pPane->FUN_141924680();
             }
-            else
-                pPane->vfunc_0();
         }
     }
     else if (_stricmp("onTalk", szMethod) == 0)
@@ -355,20 +354,21 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_140bf8c30(data.FUN_1422b8b10());
+        {
+            int nQuest = data.FUN_1422b8b10();
+            FUN_140bf8c30(nQuest);
+        }
     }
     else if (_stricmp("onAcceptAll", szMethod) == 0)
     {
         if (FUN_140bf8900() != 0)
         {
-            MS2Ptr<Unk_AqMsgBox> spBox = FUN_140d74090(AqAnswerDelegate(this, &UIAllianceQuestDialog::FUN_140bf9010), L"s_quest_alliance_accept_all_confirm");
-            FUN_140534d60(&spBox);
+            FUN_140d74090(AqAnswerDelegate(this, &UIAllianceQuestDialog::FUN_140bf9010), L"s_quest_alliance_accept_all_confirm");
         }
     }
     else if (_stricmp("onCompleteAll", szMethod) == 0 && FUN_140bf8ab0() != 0)
     {
-        MS2Ptr<Unk_AqMsgBox> spBox = FUN_140d74090(AqAnswerDelegate(this, &UIAllianceQuestDialog::FUN_140bf9090), L"s_quest_alliance_complete_all_confirm");
-        FUN_140534d60(&spBox);
+        FUN_140d74090(AqAnswerDelegate(this, &UIAllianceQuestDialog::FUN_140bf9090), L"s_quest_alliance_complete_all_confirm");
     }
     return 0;
 }
@@ -696,7 +696,7 @@ void UIAllianceQuestDialog::FUN_140bf8c30(unsigned nQuest)
     }
     else
     {
-        CStringW strText = FUN_140bfa7f0(L"s_alliance_quest_completion_ticket_use", FUN_1401a9d70()->FUN_141811980(1, nItem), &nCost);
+        CStringW strText = FUN_14028dfa0(L"s_alliance_quest_completion_ticket_use", FUN_1401a9d70()->FUN_141811980(1, nItem), nCost);
         MS2Ptr<CMsgBoxData> spBox = FUN_140bfab20(CStringW(strText), 1, AqAnswerDelegate(this, &UIAllianceQuestDialog::FUN_140bf9110), nQuest);
         FUN_140534d60(reinterpret_cast<MS2Ptr<Unk_AqMsgBox>*>(&spBox));
     }
@@ -962,3 +962,5 @@ void UIQuestEventListener::vfunc_o178_6(void*) {}
 void UIQuestEventListener::vfunc_o178_4(void*) {}
 // @0x140bfc780
 void UIQuestEventListener::vfunc_o178_12(void*) {}
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1f30-0x142ca2070 .text$yd
