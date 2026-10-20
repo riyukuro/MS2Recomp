@@ -529,3 +529,5 @@ inline void ASObj::FUN_1412d49a0(const char* szName, int n)
     data.FUN_1422b7f70(n);
     FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caf580-0x142caf5d0 .text$yd

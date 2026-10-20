@@ -200,3 +200,5 @@ void UIUGCCubeNoticePopup::vfunc_41(const Scaleform::GFx::Value& root)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caa860-0x142caa8a0 .text$yd

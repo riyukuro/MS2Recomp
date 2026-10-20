@@ -446,3 +446,5 @@ Scaleform::GFx::Value ASDialog::FUN_14134e200(const char* szMethod, CString strB
     FUN_1422bccb0(args.FUN_1409b1f70(3), nTime);
     return FUN_1422bb8f0(szMethod, args);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb07f0-0x142cb0840 .text$yd

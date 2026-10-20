@@ -1570,3 +1570,5 @@ CString FUN_1414218c0(const CString& strPath, const CString& strSuffix)
     return strResult;
 }
 MS2_REPLACE(0x1414218C0, FUN_1414218c0, 477, 0x1EC93043);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb21e0-0x142cb2230 .text$yd

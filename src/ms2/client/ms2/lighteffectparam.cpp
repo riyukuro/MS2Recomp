@@ -460,3 +460,5 @@ int CLightEffect::vfunc_12()
     return 9;
 }
 MS2_REPLACE_METHOD(0x14144B610, CLightEffect, vfunc_12, 11, 0x653B09E8);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb2460-0x142cb24a0 .text$yd

@@ -298,3 +298,5 @@ ItemFunctionArgs::ItemFunctionArgs()
     : values(17, 0.75f, 0.25f, 2.25f, 10)
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9c9f0-0x142c9ca40 .text$yd
