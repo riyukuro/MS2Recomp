@@ -107,7 +107,7 @@ class Unk_ThItemRef
 public:
     bool FUN_1401b5240(int n) const;
     Unk_ThItemRec* FUN_1401b52a0() const;
-    void FUN_1401b50d0();                                       // release
+    ~Unk_ThItemRef();                                           // 0x1401b50d0 (release)
 private:
     void* m_0;
     void* m_8;
@@ -354,16 +354,16 @@ void FUN_14183ea40(unsigned nItemId, CStringW& strIcon)
 {
     strIcon = s_strIconMegaphone6;
     Unk_ThItemRef ref = FUN_14053f870(nItemId);
-    if (!ref.FUN_1401b5240(0) && !ref.FUN_1401b52a0()->m_290.FUN_14034eee0(L"SuperWorldChat"))
+    if (ref.FUN_1401b5240(0))
+        return;
+    if (ref.FUN_1401b52a0()->m_290.FUN_14034eee0(L"SuperWorldChat"))
+        return;
+    if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 0)
     {
-        if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() != 0)
-        {
-            CStringW strName = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(0, CStringW(L""));
-            if (!strName.IsEmpty())
-                strIcon.Format(L"export_super_icon%s", strName.GetString());
-        }
+        CStringW strName = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(0, CStringW(L""));
+        if (!strName.IsEmpty())
+            strIcon.Format(L"export_super_icon%s", (LPCWSTR)strName);
     }
-    ref.FUN_1401b50d0();
 }
 
 // @0x14183eba0
@@ -372,23 +372,23 @@ void FUN_14183eba0(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
     nSize = 1;
     strIcon = s_strIconMegaphone6;
     Unk_ThItemRef ref = FUN_14053f870(nItemId);
-    if (!ref.FUN_1401b5240(0) && !ref.FUN_1401b52a0()->m_290.FUN_14034eee0(L"SuperWorldChat"))
+    if (ref.FUN_1401b5240(0))
+        return;
+    if (ref.FUN_1401b52a0()->m_290.FUN_14034eee0(L"SuperWorldChat"))
+        return;
+    if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 1)
     {
-        if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 1)
-        {
-            CStringW strName = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(0, CStringW(L""));
-            if (!strName.IsEmpty())
-                strIcon.Format(L"export_super_icon%s", strName.GetString());
-            nSize = ref.FUN_1401b52a0()->m_2b0.FUN_1408d1f60(1, 0);
-        }
-        if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 2)
-        {
-            CStringW strColor = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(2, CStringW(L""));
-            nColor2 = (int)_wcstoi64(strColor.GetString(), NULL, 16);
-            nColor1 = nColor2;
-        }
+        CStringW strName = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(0, L"");
+        if (!strName.IsEmpty())
+            strIcon.Format(L"export_super_icon%s", (LPCWSTR)strName);
+        nSize = ref.FUN_1401b52a0()->m_2b0.FUN_1408d1f60(1, 0);
     }
-    ref.FUN_1401b50d0();
+    if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 2)
+    {
+        const CStringW& strColor = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(2, L"");
+        nColor2 = (int)_wcstoi64((LPCWSTR)strColor, NULL, 16);
+        nColor1 = nColor2;
+    }
 }
 
 // @0x14183ee10
@@ -397,23 +397,23 @@ void FUN_14183ee10(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
     nSize = 1;
     strIcon = s_strIconMegaphone6;
     Unk_ThItemRef ref = FUN_14053f870(nItemId);
-    if (!ref.FUN_1401b5240(0) && !ref.FUN_1401b52a0()->m_290.FUN_14034eee0(L"WeddingChat"))
+    if (ref.FUN_1401b5240(0))
+        return;
+    if (ref.FUN_1401b52a0()->m_290.FUN_14034eee0(L"WeddingChat"))
+        return;
+    if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 1)
     {
-        if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 1)
-        {
-            CStringW strName = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(0, CStringW(L""));
-            if (!strName.IsEmpty())
-                strIcon.Format(L"export_super_icon%s", strName.GetString());
-            nSize = ref.FUN_1401b52a0()->m_2b0.FUN_1408d1f60(1, 0);
-        }
-        if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 2)
-        {
-            CStringW strColor = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(2, CStringW(L""));
-            nColor2 = (int)_wcstoi64(strColor.GetString(), NULL, 16);
-            nColor1 = nColor2;
-        }
+        CStringW strName = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(0, L"");
+        if (!strName.IsEmpty())
+            strIcon.Format(L"export_super_icon%s", (LPCWSTR)strName);
+        nSize = ref.FUN_1401b52a0()->m_2b0.FUN_1408d1f60(1, 0);
     }
-    ref.FUN_1401b50d0();
+    if (ref.FUN_1401b52a0()->m_2b0.FUN_1408d2380() > 2)
+    {
+        const CStringW& strColor = ref.FUN_1401b52a0()->m_2b0.FUN_1408d21c0(2, L"");
+        nColor2 = (int)_wcstoi64((LPCWSTR)strColor, NULL, 16);
+        nColor1 = nColor2;
+    }
 }
 
 // @0x14183f080
