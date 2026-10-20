@@ -22,6 +22,13 @@
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/placeholder/ctaximanager.h"
 #include "ms2/placeholder/chomeprivilege.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/placeholder/asgameentity.h"
+#include "ms2/placeholder/uistatuseventdispatcher.h"
+#include "ms2/placeholder/uiugceventdispatcher.h"
+#include "ms2/placeholder/uibuddyeventdispatcher.h"
+#include "ms2/client/ms2/uiquesteventlistener.h"
+#include "ms2/client/ms2/uileveluppackagewidgetdialog.h"
 #include <efd/utf8string.h>
 #include "ms2/fmt/format.h"
 #include "ms2/placeholder/wcformat.h"
@@ -110,8 +117,9 @@ CStringW FUN_1409796e0(int a, int b, int c, CStringW s);           // the home l
 CString FUN_141082150(MS2Ptr<class CQuestData> spQuest, const CString& sEpic, const CString& sWorld, const CString& sRepeat, const CString& sEvent);
 MS2Ptr<class CQuestData> FUN_14074bc40(int nQuestId);
 void FUN_140710590(COutPacket& packet);
-class Unk_MmTextHook { public: unsigned char FUN_14116d720(); };
-Unk_MmTextHook* FUN_14025e7c0();
+CInputKeyHandler* FUN_14025e7c0();                                  // TSingleton<CInputKeyHandler>::GetInstance
+class Unk_MmUIManager { public: int FUN_1422af2d0(int nLayer); };  // the ui layer manager
+Unk_MmUIManager* FUN_14025e7a0();
 class Unk_MmBossTip { public: void FUN_141b99dc0(int nNpcId, ASObj& tip); };
 Unk_MmBossTip* FUN_140cb17d0();
 CFeatureManager* FUN_140166410();
@@ -122,6 +130,24 @@ extern ATL::CAtlArray<int> DAT_143ab3078;                           // the taxi 
 CTaxiManager* FUN_1409f24a0();                                      // TSingleton<CTaxiManager>::GetInstance
 int FUN_141b71c00(unsigned short nValue);                           // the taxi tier of a level
 void FUN_141276180(const CString& strSound, const CString& strArg); // play a ui sound
+int FUN_1418fd2f0();                                                // the minimap is suppressed (uicommon)
+int FUN_14192e8f0();
+extern int DAT_143af7d40;                                           // input enabled
+UIObject* FUN_140ce8310(int nClass);
+UIObject* FUN_140ce8270(int nClass);
+class Unk_MmEntityEvents                                            // UIEntityEventDispatcher (FUN_140c607b0)
+{
+public:
+    void FUN_1419308c0(UIEntityEventListener* pListener);           // register
+    void FUN_141930950(UIEntityEventListener* pListener);           // unregister
+};
+Unk_MmEntityEvents* FUN_140c607b0();
+UIQuestEventDispatcher* FUN_140bfc4b0();
+UIUGCEventDispatcher* FUN_140bc09f0();
+UIStatusEventDispatcher* FUN_140aa6d40();
+UIBuddyEventDispatcher* FUN_140a4a7b0();
+UIServerEventDispatcher* FUN_140933230();
+class ASDialog : public ASMovieClip {};                             // the dialog root clip (UIDialog::m_90)
 
 // The quest payload pointer (Unk_PayloadPtr<CQuest>).
 class CQuest;
@@ -438,7 +464,7 @@ MS2_REPLACE_METHOD(0x141a32260, UIMinimapEntity, FUN_141a32260, 0, 0);
 void UIMinimapEntity::FUN_141a32330()
 {
     vfunc_3();
-    if (FUN_14025e7c0()->FUN_14116d720() && m_position != efd::Point3::ZERO) {
+    if (FUN_14025e7c0()->IsDebugMode() && m_position != efd::Point3::ZERO) {
         COutPacket packet(0x50, 0);
         packet.Encode1(2);
         packet.vfunc_o10_11(reinterpret_cast<const Unk_StreamPoint&>(m_position));
@@ -979,3 +1005,237 @@ void UIMinimapEntityPing::GetText(CStringW& strText, ASObj& data)
     strText = m_text;
 }
 MS2_REPLACE_METHOD(0x141a351e0, UIMinimapEntityPing, GetText, 0, 0);
+
+// ---- UIMinimapDialog ----
+
+// @0x141a35220
+UIMinimapDialog::UIMinimapDialog()
+    : m_forceMinimize(false), m_fullmap(false), m_1fa(false), m_1fb(false), m_1fc(false),
+      m_scale(1.0f), m_channel(0), m_208(NiPoint2::ZERO),
+      m_210(false), m_211(false), m_212(false), m_460(0), m_468(0), m_47c(1)
+{
+    m_viewport = EE_NEW MinimapViewport;
+    m_80 = 1;
+    m_7c = 0;
+    m_88 = 1;
+    FUN_1422dc3b0(1);
+    FUN_141a3b6f0();
+    FUN_141925e70(0, 1);
+    m_alignment = new UICommon::CAlignmentInfo(6, 0, 0);
+}
+
+// @0x141a358a0
+UIMinimapDialog::~UIMinimapDialog()
+{
+    m_viewport = 0;
+    m_data = 0;
+    m_showAttrs.RemoveAll();
+    m_clip228 = 0;
+    FUN_141a3fd20();
+}
+
+// @0x141a35ba0
+CString UIMinimapDialog::vfunc_1()
+{
+    return "MinimapDialog";
+}
+MS2_REPLACE_METHOD(0x141a35ba0, UIMinimapDialog, vfunc_1, 0, 0);
+
+// @0x141a35bf0
+void UIMinimapDialog::OnLoadComplete()
+{
+    UIDialog::OnLoadComplete();
+    if (FUN_1418fd2f0()) {
+        vfunc_8(0);
+        return;
+    }
+    FUN_141923680(1);
+    FUN_141a3c150();
+    FUN_141a3ced0();
+    FUN_140c607b0()->FUN_1419308c0(this);
+    FUN_140bfc4b0()->FUN_141aa87c0(this);
+    FUN_140bc09f0()->FUN_141b38be0(this);
+    FUN_140aa6d40()->FUN_141b0cd00(this);
+    FUN_140a4a7b0()->FUN_1418d9450(this);
+    FUN_140933230()->AddListener(this);
+    if (UIObject* pWindow = FUN_140ce8310(0x4f00))
+        pWindow->FUN_1422dc450();
+    if (UIObject* pWindow = FUN_140ce8270(0x4f01))
+        pWindow->FUN_1422dc450();
+    if (UILevelUpPackageWidgetDialog* pWindow = Unk_MmFindDialog<UILevelUpPackageWidgetDialog>(0x4f5e))
+        pWindow->FUN_1422dc450();
+    FUN_141a42a70();
+    if (FUN_141a45ce0()) {
+        if (m_90.get()) {
+            m_90->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMinimapDialog::FUN_141a456c0), 0);
+            m_90->FUN_1422c2c30(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMinimapDialog::FUN_141a45720), 0);
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141a35bf0, UIMinimapDialog, OnLoadComplete, 0, 0);
+
+// @0x141a35fe0
+void UIMinimapDialog::vfunc_26()
+{
+    UIDialog::vfunc_26();
+    FUN_140aa6d40()->FUN_141b0cd90(this);
+    FUN_140c607b0()->FUN_141930950(this);
+    FUN_140bfc4b0()->FUN_141aa8850(this);
+    FUN_140bc09f0()->FUN_141b38c70(this);
+    FUN_140a4a7b0()->FUN_1418d94e0(this);
+    FUN_140933230()->RemoveListener(this);
+    vfunc_63(0);
+    m_forceMinimize = false;
+    m_fullmap = false;
+    m_1fa = false;
+    m_1fb = false;
+    m_1fc = false;
+    m_scale = 1.0f;
+    m_channel = 0;
+    NiPoint2 kOrigin(NiPoint2::ZERO);
+    m_208 = kOrigin;
+    m_210 = false;
+    m_211 = false;
+    m_212 = false;
+    m_data = 0;
+    m_clip228 = 0;
+    m_clip238 = 0;
+    m_maxPanel = 0;
+    FUN_141a3fd20();
+    m_460 = 0;
+    m_468 = 0;
+    m_timer46c.FUN_140268840();
+    m_timer474.FUN_140268840();
+    m_47c = 1;
+}
+MS2_REPLACE_METHOD(0x141a35fe0, UIMinimapDialog, vfunc_26, 0, 0);
+
+// @0x141a362b0
+void UIMinimapDialog::vfunc_15()
+{
+    UISwfEntity::vfunc_15();
+    if (m_30 == 0 || vfunc_64() == 1 || !m_1fc)
+        return;
+    if (!m_timer474.FUN_140268870(60))
+        return;
+    FUN_141a402b0(m_player);
+    for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos)) {
+        ProxyPtr spProxy(0);
+        EntityPtr spEntity(0);
+        m_proxies.GetAt(pos, spProxy, spEntity);
+        if (spProxy == 0)
+            continue;
+        int nKind = spEntity->vfunc_4();
+        if (nKind == m_47c)
+            FUN_141a3fe10(spProxy, spEntity, nKind);
+        else
+            FUN_141a400d0(spProxy, spEntity, nKind);
+    }
+    if (m_210 && m_47c == 4)
+        m_210 = false;
+    ++m_47c;
+    if (m_47c >= 5)
+        m_47c = 1;
+    if (m_211) {
+        m_211 = false;
+        FUN_141a42550();
+    }
+    FUN_141a42bb0();
+}
+MS2_REPLACE_METHOD(0x141a362b0, UIMinimapDialog, vfunc_15, 0, 0);
+
+// @0x141a36650
+void UIMinimapDialog::vfunc_72()
+{
+    UIDialog::vfunc_72();
+    if (m_timer46c.FUN_140268870(1000)) {
+        const std::pair<unsigned, __int64>& target = FUN_140764020()->FUN_1416d1e90();
+        m_468 = target.first;
+        m_460 = target.second;
+    }
+}
+MS2_REPLACE_METHOD(0x141a36650, UIMinimapDialog, vfunc_72, 0, 0);
+
+// @0x141a36e50
+bool UIMinimapDialog::vfunc_17()
+{
+    if (!UIDialog::vfunc_17())
+        return false;
+    vfunc_18();
+    return true;
+}
+MS2_REPLACE_METHOD(0x141a36e50, UIMinimapDialog, vfunc_17, 0, 0);
+
+// @0x141a36e90
+void UIMinimapDialog::vfunc_43()
+{
+    m_1fa = false;
+    FUN_141a44e60();
+    if (m_60 != 0) {
+        if (m_alignment.get() != 0)
+            m_alignment->FUN_141901cd0();
+    }
+    FUN_141a44f40();
+}
+MS2_REPLACE_METHOD(0x141a36e90, UIMinimapDialog, vfunc_43, 0, 0);
+
+// @0x141a36f10
+int UIMinimapDialog::vfunc_13()
+{
+    if (UIDialog::vfunc_13())
+        return 1;
+    if (m_30 == 0)
+        return 0;
+    if (m_1fb)
+        return 0;
+    if (m_1fa && DAT_143af7d40 == 0) {
+        FUN_141a3abd0();
+    } else if (FUN_14025e7c0()->FUN_14116dd30(0x49407, 0, 0)) {
+        if (!FUN_14025e7a0()->FUN_1422af2d0(m_28))
+            FUN_141a3aca0();
+    } else if (FUN_14025e7c0()->FUN_14116ddb0(0x49407, 0, 0)) {
+        FUN_141a3abd0();
+    }
+    return 0;
+}
+MS2_REPLACE_METHOD(0x141a36f10, UIMinimapDialog, vfunc_13, 0, 0);
+
+// @0x141a37010
+void UIMinimapDialog::vfunc_18()
+{
+    if (static_cast<bool>(m_30.get()) && FUN_1422dc430()) {
+        FUN_141a44e60();
+        FUN_141a44f40();
+    }
+}
+MS2_REPLACE_METHOD(0x141a37010, UIMinimapDialog, vfunc_18, 0, 0);
+
+// @0x141a373f0
+int UIMinimapDialog::vfunc_65()
+{
+    if (!UIDialog::vfunc_65())
+        return 0;
+    if (FUN_1418fd2f0()) {
+        m_80 = 0;
+        return 0;
+    }
+    m_80 = 1;
+    FUN_14192e8f0();
+    return 1;
+}
+MS2_REPLACE_METHOD(0x141a373f0, UIMinimapDialog, vfunc_65, 0, 0);
+
+// @0x141a37450
+void UIMinimapDialog::vfunc_67()
+{
+    FUN_141a3abd0();
+    UIDialog::vfunc_67();
+}
+MS2_REPLACE_METHOD(0x141a37450, UIMinimapDialog, vfunc_67, 0, 0);
+
+// @0x141a38390
+int UIMinimapDialog::vfunc_52()
+{
+    return 1;
+}
+MS2_REPLACE_METHOD(0x141a38390, UIMinimapDialog, vfunc_52, 0, 0);

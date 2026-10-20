@@ -20,6 +20,7 @@
 #include "ms2/client/ms2/minimapviewport.h"
 #include "ms2/client/ms2/uiservereventdispatcher.h"
 #include "ms2/client/ms2/uigalleryeventdialog.h"   // UIQuestEventListener
+#include "ms2/client/ms2/uisnowmaneventdialog.h"   // SnowmanPtr<>
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/cptred.h"
@@ -400,7 +401,7 @@ public:
     Unk_MmRefreshTimer m_timer46c;                              // +0x46c
     Unk_MmRefreshTimer m_timer474;                              // +0x474
     int m_47c;                                                  // +0x47c
-    MS2Ptr<UICommon::CAlignmentInfo> m_alignment;               // +0x480
+    SnowmanPtr<UICommon::CAlignmentInfo> m_alignment;           // +0x480
 };
 MS2_CHECK_SIZE(UIMinimapDialog::TShowAttr, 0x30);
 MS2_CHECK_SIZE(UIMinimapDialog, 0x490);

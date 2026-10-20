@@ -28,6 +28,9 @@ public:
     void FUN_141901b20(int nAlign, float x, float y);
     void FUN_141901b70(MS2Ptr<AScript> spScript);                           // vslot 2 of the dialog root
     void FUN_141901c10(MS2Ptr<AScript> spScript, int nW, int nH);           // vslot 1 of the dialog root
+    void FUN_14015b020();                                                   // SnowmanPtr<> refcount glue (CPtred helpers, same VAs)
+    int FUN_140159bc0();
+    void FUN_140159ba0();
     void FUN_141901cd0();                                                   // back to the defaults
 
 private:
