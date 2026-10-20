@@ -10,7 +10,7 @@
 // MS2-PIN: ??$?8PEAVGameEventItemBuffCli@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVGameEventItemBuffCli@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x140ce7f80 ; prop
 // MS2-PIN: ??$?8PEAVGameEventSnowmanCli@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x140ce7fd0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x140ce8850 ; prop
-// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x140ce88f0 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVGameEventSnowmanCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x140ce8ad0 ; fx13: lea vftable 0x142e20ea8 (Snowman per RTTI); 0x140ce88f0 is BurningLevelup's
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAA@XZ 0x140ce9350 ; order
 // MS2-PIN: ??1?$MS2Ptr@UItemGift@@@@QEAA@XZ 0x140ce93d0 ; prop
 // MS2-PIN: ??8?$MS2Ptr@VUnk_CashAttendEntry@@@@QEBA_NPEAVUnk_CashAttendEntry@@@Z 0x140ce9880 ; unique
