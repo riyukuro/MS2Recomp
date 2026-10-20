@@ -1573,8 +1573,8 @@ int PC::FUN_1416569b0(CItem* pItem)
         }
         else if (pItem->FUN_140527840()->FUN_14053d2b0())
             return 8;
-        return pItem->FUN_140527a20();
     }
+    return pItem->FUN_140527a20();
 }
 
 // @0x141656a50
@@ -1776,48 +1776,48 @@ void PC::vfunc_91(void* p) { vfunc_90(p); }
 int PC::vfunc_133(CItem* pItem, bool bForce) { return vfunc_132(pItem, pItem->FUN_140527a20(), bForce); }
 
 // @0x141657e20
-// MS2-FUNCTIONAL: one smart-pointer temporary too many on the slot 4/5 fallback path
 int PC::vfunc_132(CItem* pItem, int nSlot, bool bForce)
 {
     int nResult = 0;
     MS2Ptr<CItemData> spData(pItem->FUN_140527840());
     if (spData == 0)
         return nResult;
-    if (!bForce && !spData->FUN_14053cf90())
-        return nResult;
-    if (spData->FUN_14053d2f0())
+    if (bForce || spData->FUN_14053cf90())
     {
-        if (spData->FUN_14053d460())
+        if (spData->FUN_14053d2f0())
         {
-            MS2Ptr<CEquipItem> spEquip = FUN_141655c90(5);
-            if (spEquip.get())
-                nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
-            if (nResult == 0)
-            {
-                spEquip = FUN_141655c90(4);
-                if (spEquip.get())
-                    nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
-            }
-        }
-        else if (spData->FUN_14053d510())
-        {
-            MS2Ptr<CEquipItem> spEquip = FUN_141655c90(nSlot);
-            if (spEquip.get())
-                nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
-        }
-        else if (spData->FUN_14053d340())
-        {
-            if (spData->FUN_14053eba0()->FUN_14054b450(5))
+            if (spData->FUN_14053d460())
             {
                 MS2Ptr<CEquipItem> spEquip = FUN_141655c90(5);
                 if (spEquip.get())
                     nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+                if (nResult == 0)
+                {
+                    spEquip = FUN_141655c90(4);
+                    if (spEquip.get())
+                        nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+                }
             }
-            else
+            else if (spData->FUN_14053d510())
             {
-                MS2Ptr<CEquipItem> spEquip = FUN_141655c90(4);
+                MS2Ptr<CEquipItem> spEquip = FUN_141655c90(nSlot);
                 if (spEquip.get())
                     nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+            }
+            else if (spData->FUN_14053d340())
+            {
+                if (spData->FUN_14053eba0()->FUN_14054b450(5))
+                {
+                    MS2Ptr<CEquipItem> spEquip = FUN_141655c90(5);
+                    if (spEquip.get())
+                        nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+                }
+                else
+                {
+                    MS2Ptr<CEquipItem> spEquip = FUN_141655c90(4);
+                    if (spEquip.get())
+                        nResult = spEquip->FUN_1411dc7f0()->FUN_14053c620();
+                }
             }
         }
     }
@@ -3212,21 +3212,20 @@ int PC::vfunc_122(void* p)
     return PCBase::vfunc_122(p);
 }
 
-// MS2-FUNCTIONAL: structure aligned, the exe keeps the points in different temporaries
 // @0x1416599b0
 void PC::FUN_1416599b0()
 {
-    if (m_entityDB0 != egf::EntityID(0ull))
+    egf::EntityID kNone(0ull);
+    if (m_entityDB0 != kNone)
     {
         egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_entityDB0);
-        if (pEntity != 0)
-        {
-            NiPoint3 kPos = vfunc_18();
-            NiPoint3 kEntPos = DAT_143b01a60;
-            FUN_1409618c0(pEntity, 0xfd95ca52, kEntPos);
-            if (FUN_140966ea0(kEntPos, kPos) > 70.0f)
-                m_entityDB0 = egf::EntityID::kENTITY_INVALID;
-        }
+        if (pEntity == 0)
+            return;
+        efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
+        efd::Point3 kEntPos = reinterpret_cast<const efd::Point3&>(DAT_143b01a60);
+        FUN_1409618c0(pEntity, 0xfd95ca52, reinterpret_cast<NiPoint3&>(kEntPos));
+        if (FUN_140966ea0(kEntPos, kPos) > 70.0f)
+            m_entityDB0 = egf::EntityID::kENTITY_INVALID;
     }
 }
 
