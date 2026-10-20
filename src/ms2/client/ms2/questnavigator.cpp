@@ -164,18 +164,16 @@ void CQuestNavigator::vfunc_o178_6(void* pQuest)
 // @0x140c99c40
 void CQuestNavigator::vfunc_o178_1(void* pQuest)
 {
-    CQuest* quest = (CQuest*)pQuest;
     m_68 = 1;
     if (IsSelected(0))
     {
-        if (quest->GetTrackingState() != 0)
+        if (((CQuest*)pQuest)->GetTrackingState() != 0)
         {
-            MS2Ptr<CQuestData> spData = quest->GetData();
-            if (!spData.IsNull())
-            {
-                if (spData->m_flag != 0)
-                    SelectQuest(quest->FUN_140bfc580());
-            }
+            MS2Ptr<CQuestData> spData = ((CQuest*)pQuest)->GetData();
+            if (spData.IsNull())
+                return;
+            if (spData->m_flag != 0)
+                SelectQuest(((CQuest*)pQuest)->FUN_140bfc580());
         }
     }
 }
