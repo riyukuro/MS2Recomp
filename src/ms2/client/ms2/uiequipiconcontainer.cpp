@@ -153,7 +153,7 @@ int UIEquipIconContainer::FUN_140e2a7e0(Unk_EquipItemPtr pItem)
     return (m_70 == 4) ? 5 : 4;
 }
 
-MS2_REPLACE_METHOD(0x140E2A7E0, UIEquipIconContainer, FUN_140e2a7e0, 417, 0x82C0F943);
+// no MS2_REPLACE_METHOD: FUN_140e2a7e0 is overloaded (MS2Ptr<CItemData> spelling in uimeratmarketdialog), the hook macro cannot take &Class::Method
 // @0x140e2a990
 MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a990(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc)
 {

@@ -103,9 +103,9 @@ static CString s_strTabIndex = "tabIndex";
 static CString s_strBuildOpenShop = "System_BuildOpenShop";      // DAT_143ad82b0
 static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
-// Delegate<void(ASObj&)>::operator() (0x14134af00): null check, then slot 2.
+// Delegate<void(AScript&)>::operator() (0x14134af00, exe RTTI .?AUDelegateImplBase@?$Delegate@$$A6AXAEAVAScript@@@Z@@): null check, then slot 2.
 template <>
-void Delegate<void(ASObj&)>::operator()(ASObj& a1) const
+void Delegate<void(AScript&)>::operator()(AScript& a1) const
 {
     if (m_pImpl == 0)
         FUN_140657820();
@@ -340,7 +340,7 @@ void FUN_1413487e0(Unk_ShopTabArray& arr, CShopCategoryTable::TabList& list, MS2
 }
 
 // @0x141348cf0
-void FUN_141348cf0(const Unk_ShopTabArray& arr, MS2Ptr<AScript> spRoot, int nSale, Delegate<void(ASObj&)>* pfnEach)
+void FUN_141348cf0(const Unk_ShopTabArray& arr, MS2Ptr<AScript> spRoot, int nSale, Delegate<void(AScript&)>* pfnEach)
 {
     ASArray arrTabs(2);
     int nMaxDepth = 0;
@@ -352,7 +352,7 @@ MS2_REPLACE(0x141348cf0, FUN_141348cf0, 211, 0xEC8D684F);
 
 // @0x141348dd0
 // MS2-FUNCTIONAL: tab writer loop; temp layout differs
-void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, int nSale, Delegate<void(ASObj&)>* pfnEach)
+void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, int nSale, Delegate<void(AScript&)>* pfnEach)
 {
     *pMaxDepth = 0;
     if (arr.IsEmpty())
