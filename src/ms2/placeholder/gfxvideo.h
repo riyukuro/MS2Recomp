@@ -17,9 +17,9 @@ public:
     GFxVideo();                                                                         // 0x1422ec360
     virtual ~GFxVideo();                                                                // 0x1422ec3d0
     // Creates the video system (texture manager, sound system) and sets it on pLoader; returns 1.
-    int FUN_1422ec460(IDirectSound8* pDS8, Scaleform::GFx::Loader* pLoader);
+    int FUN_1422ec460(HWND hWnd, Scaleform::GFx::Loader* pLoader);
     void FUN_1422ec670();                                                               // drops the sound, pauses
-    bool FUN_1422ec700(IDirectSound8* pDS8);                                            // (re)creates the sound system
+    bool FUN_1422ec700(HWND hWnd);                                                      // (re)creates the sound system
     Scaleform::GFx::Video::Video* FUN_1422ec830();                                      // the video system
     Scaleform::GFx::Video::VideoDecoder* FUN_1422ec860();                               // its decoder (NULL if none)
 

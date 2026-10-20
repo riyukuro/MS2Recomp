@@ -5,7 +5,10 @@
 // (VideoPC ctor 0x140002780, AS2/AS3VideoSupport::CreateInstance 0x1400019f0 / 0x140002730) is not recovered.
 //
 // MS2VideoSoundSystemDX8 (RTTI .?AVMS2VideoSoundSystemDX8@Video@GFx@Scaleform@@, 0x20 bytes, vftable 0x14311b1c8 with 3
-// slots) is the game's DirectSound video sound system, ?\ms2videosoundsystemdx8.cpp (0x1422fe810-0x142300880).
+// slots) is the game's DirectSound video sound system, ?\ms2videosoundsystemdx8.cpp (0x1422fe810-0x142300880): the SDK's
+// VideoSoundSystemDX8 sample, but it creates its own DirectSound device on a game window (HWND) and can re-initialize.
+// VideoSound / VideoSoundStream carry the slots of the exe's video library, which was built with GFX_ENABLE_SOUND
+// (GetSoundChannel / SetSpatialInfo, VideoSoundStream::pChannel); the sound channel is a stand-in here.
 //
 // The SDK compiles the video declarations only with GFX_ENABLE_VIDEO, which GFxConfig.h derives from
 // GFX_USE_VIDEO_WIN32: define that before the first Scaleform include of the TU.
@@ -21,13 +24,26 @@
 #include "Kernel/SF_Threads.h"
 #include "GFx/GFx_VideoBase.h"
 
-struct IDirectSound8;
-
 namespace Scaleform { namespace GFx { namespace Video {
 
 class VideoPlayer;
 class VideoReaderConfig;
 class VideoSound;
+
+// Scaleform::Sound::SoundChannelSystem of the video library (Sound::SoundChannel slots; GFX_ENABLE_SOUND is off here).
+class Unk_VideoSoundChannel : public RefCountBase<Unk_VideoSoundChannel, Stat_Video_Mem>
+{
+public:
+    virtual void* GetSoundRenderer() const = 0;
+    virtual void* GetSample() const = 0;
+    virtual void Stop() = 0;
+    virtual void Pause(bool) = 0;
+    virtual bool IsPlaying() const = 0;
+    virtual void SetPosition(float) = 0;
+    virtual float GetPosition() = 0;
+    virtual void Loop(int, float, float) = 0;
+    virtual float GetVolume() = 0;                              // 9
+};
 
 // Video ActionScript VM support: AS2, AS3 or both.
 struct VideoVMSupport
@@ -56,6 +72,60 @@ public:
     virtual bool IsIORequired() const = 0;
     virtual void PauseDecoding(bool) = 0;                       // 7
     virtual void SetUsableProcessors(int) {}
+};
+
+class VideoSound : public RefCountBaseNTS<VideoSound, Stat_Video_Mem>
+{
+public:
+    enum PCMFormat
+    {
+        PCM_SInt16,
+        PCM_Float
+    };
+    enum Status
+    {
+        Sound_Stopped,
+        Sound_Playing,
+        Sound_Paused,
+        Sound_Error
+    };
+    enum
+    {
+        MaxChannels = 8
+    };
+    class PCMStream
+    {
+    public:
+        virtual ~PCMStream() {}
+        virtual UInt32 GetDataSInt16(UInt32 nch, SInt16* pcmbuf[], UInt32 samplesRequested) = 0;
+        virtual UInt32 GetDataFloat(UInt32 nch, float* pcmbuf[], UInt32 samplesRequested) = 0;
+    };
+
+    virtual ~VideoSound() {}
+    virtual bool CreateOutput(UInt32 channels, UInt32 samplerate) = 0;     // 1
+    virtual void DestroyOutput() = 0;
+    virtual PCMFormat GetPCMFormat() const = 0;
+    virtual void Start(PCMStream* pstream) = 0;
+    virtual void Stop() = 0;
+    virtual void Pause(bool paused) = 0;
+    virtual Status GetStatus() const = 0;
+    virtual void GetTime(UInt64* count, UInt64* unit) const = 0;           // 8
+    virtual Unk_VideoSoundChannel* GetSoundChannel() = 0;                   // 9
+    virtual void SetSpatialInfo(const void* spatinfo) = 0;                 // 10 (const Array<SoundChannel::Vector>[])
+};
+
+class VideoSoundStream : public VideoSound
+{
+public:
+    VideoSoundStream();
+    virtual ~VideoSoundStream();                                            // 0x140002ab0
+    virtual void SetVolume(float volume) = 0;                               // 11
+    virtual float GetVolume() = 0;                                          // 12
+    virtual Unk_VideoSoundChannel* GetSoundChannel();                       // 9 0x140002b00
+    virtual void SetSpatialInfo(const void*) {}                             // 10
+
+protected:
+    Ptr<Unk_VideoSoundChannel> pChannel;                                    // +0x10
 };
 
 class VideoSoundSystem : public RefCountBaseNTS<VideoSoundSystem, Stat_Video_Mem>
@@ -130,18 +200,19 @@ private:
 class MS2VideoSoundSystemDX8 : public VideoSoundSystem
 {
 public:
-    MS2VideoSoundSystemDX8(IDirectSound8* pds8, MemoryHeap* pheap = Memory::GetGlobalHeap());   // 0x1422fe810
-    ~MS2VideoSoundSystemDX8();
-    virtual VideoSound* Create();
-    bool FUN_1422fe9e0();                           // the DirectSound output is up
-    bool FUN_1422fea10(IDirectSound8* pds8);        // (re)initializes the output on a DirectSound device
+    MS2VideoSoundSystemDX8(HWND hWnd, MemoryHeap* pheap = Memory::GetGlobalHeap());   // 0x1422fe810
+    ~MS2VideoSoundSystemDX8();                                              // 0x1422fe8b0
+    virtual VideoSound* Create();                                           // 1 0x1422fe920
+    bool FUN_1422fe9e0();                                                   // the DirectSound output is up
+    bool FUN_1422fea10(HWND hWnd);                                          // (re)initializes it on hWnd, restores a lost buffer
 
 private:
     MS2_LAYOUT_FRIEND;
-    void* m_pImpl;                      // +0x18 (VideoSoundSystemDX8Impl in the SDK sample)
+    class MS2VideoSoundSystemDX8Impl* pImpl;                                // +0x18
 };
 
 }}} // namespace Scaleform::GFx::Video
 
 MS2_CHECK_SIZE(Scaleform::GFx::Video::VideoPC, 0x70);
 MS2_CHECK_SIZE(Scaleform::GFx::Video::MS2VideoSoundSystemDX8, 0x20);
+MS2_CHECK_SIZE(Scaleform::GFx::Video::VideoSoundStream, 0x18);

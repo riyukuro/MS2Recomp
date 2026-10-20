@@ -57,12 +57,12 @@ GFxVideo::~GFxVideo()
 }
 
 // @0x1422ec460
-int GFxVideo::FUN_1422ec460(IDirectSound8* pDS8, Scaleform::GFx::Loader* pLoader)
+int GFxVideo::FUN_1422ec460(HWND hWnd, Scaleform::GFx::Loader* pLoader)
 {
     Scaleform::UInt32 affinityMask[3] = {0xffffffff, 0xffffffff, 0xffffffff};
     m_spVideo = *new VideoPC(VideoVMSupportAll(), m_eDecodePriority, 3, affinityMask);
     m_spVideo->SetTextureManager(FUN_1422cf0f0());
-    m_spSoundSystem = *new MS2VideoSoundSystemDX8(pDS8, Scaleform::Memory::GetGlobalHeap());
+    m_spSoundSystem = *new MS2VideoSoundSystemDX8(hWnd, Scaleform::Memory::GetGlobalHeap());
     if (m_spSoundSystem->FUN_1422fe9e0())
         m_spVideo->SetSoundSystem(m_spSoundSystem);
     SetVideo418(pLoader, m_spVideo);
@@ -85,11 +85,11 @@ void GFxVideo::FUN_1422ec670()
 MS2_REPLACE_METHOD(0x1422EC670, GFxVideo, FUN_1422ec670, 138, 0x5F9876F6);
 
 // @0x1422ec700
-bool GFxVideo::FUN_1422ec700(IDirectSound8* pDS8)
+bool GFxVideo::FUN_1422ec700(HWND hWnd)
 {
     if (!m_spSoundSystem)
-        m_spSoundSystem = *new MS2VideoSoundSystemDX8(pDS8, Scaleform::Memory::GetGlobalHeap());
-    if (!m_spSoundSystem->FUN_1422fe9e0() && m_spSoundSystem->FUN_1422fea10(pDS8))
+        m_spSoundSystem = *new MS2VideoSoundSystemDX8(hWnd, Scaleform::Memory::GetGlobalHeap());
+    if (!m_spSoundSystem->FUN_1422fe9e0() && m_spSoundSystem->FUN_1422fea10(hWnd))
     {
         m_spVideo->SetSoundSystem(m_spSoundSystem);
         return true;
