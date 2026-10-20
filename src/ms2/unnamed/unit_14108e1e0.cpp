@@ -42,6 +42,10 @@
 #include "ms2/client/ms2/physxhelper.h"
 #include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/coutpacket.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/commonfiles/itemdatatable.h"
+#include <NiTexturingProperty.h>
+#include <NiMesh.h>
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -133,10 +137,91 @@ class UIDamageText { public: void FUN_141912a80(GameObject* pObj, int nValue, in
 UIDamageText* FUN_140b624b0(int nUiId);
 class CStringTable { public: CStringW FUN_141811980(int nKind, int nId); };
 CStringTable* FUN_1401a9d70();
+// The maid description table (the row's +0x08 is the maid npc's title); the 16 byte row pointer of the maid tables
+// (uimanufacturedialog.cpp), its members are COMDATs of other units.
+template <class T> class Unk_UmValuePtr
+{
+public:
+    ~Unk_UmValuePtr();                                              // 0x140680b50
+    T* operator->() const;                                          // 0x1406810d0
+    T* get() const;                                                 // 0x14109a370
+private:
+    void* m_pad;
+    T* m_p;
+};
+struct Unk_UmDescRow
+{
+    char m_pad_00[0x8];
+    CStringW m_08;                                                  // +0x08
+};
+class Unk_UmDescTable { public: Unk_UmValuePtr<Unk_UmDescRow> FUN_14067f780(int nMsgId); };
+Unk_UmDescTable* FUN_1409eed10();
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 void FUN_141567330(NiAVObject* pObj, bool b);
 void FUN_1412751b0(const CStringW& str, int nLevel);              // debug log
 void FUN_1410943b0(PCBase* pActor, int n);
+// Talk scripts (FUN_140856fa0(npc id, n), as in cubespawnobject.cpp); the pointer members are COMDATs of other objs.
+class Unk_ScriptContent
+{
+public:
+    char m_pad[0x18];
+    CStringW m_strText;                                             // +0x18
+    CString m_strSound;                                             // +0x20
+};
+struct Unk_ScriptContentPtr
+{
+    Unk_ScriptContent* FUN_14078f3d0() const;                       // operator->
+    void* m_00;
+    void* m_p;
+};
+class Unk_ScriptContentArray
+{
+public:
+    size_t FUN_14078fae0() const;                                   // GetCount
+    const Unk_ScriptContentPtr& FUN_140a4ffc0(size_t i) const;      // GetAt
+    const Unk_ScriptContentPtr& FUN_14078f350(size_t i) const;      // GetAt (other instance)
+    Unk_ScriptContentPtr* m_pData;
+    size_t m_nSize;
+};
+class Unk_TalkScript
+{
+public:
+    char m_pad[0x68];
+    Unk_ScriptContentArray m_contents;                              // +0x68
+};
+struct Unk_TalkScriptPtr
+{
+    ~Unk_TalkScriptPtr();                                           // 0x14078f140
+    Unk_TalkScript* FUN_14078f3a0() const;                          // get
+    Unk_TalkScript* FUN_14085a610() const;                          // operator->
+    void* m_00;
+    void* m_p;
+};
+Unk_TalkScriptPtr FUN_140856fa0(int nNpcId, int n);
+class Unk_CinNpc;
+class Unk_CinNameFilter { public: void FUN_1416fb400(CStringW& name, Unk_CinNpc* npc); };
+Unk_CinNameFilter* FUN_1403b4750();
+MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                  // the item data of an id
+CString FUN_140cc2ba0(const CString& strRoot, const CString& strFile);   // path join
+void FUN_1401d3700(CString& str);                                   // fixes up a resource path
+// The nif / texture cache (nifeffectparam.h).
+class CNifLoadingService
+{
+public:
+    efd::SmartPointer<NiAVObject> Load(CString strPath, bool bFlag, int nClass, int nMyRefs, int nOtherRefs);
+    efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);
+};
+CNifLoadingService* FUN_140a0afd0();
+// Depth-first walker over a scene graph (util.cpp).
+class Unk_SceneWalker
+{
+public:
+    Unk_SceneWalker(NiObject* pkRoot);                              // 0x14098cb80
+    ~Unk_SceneWalker();                                             // 0x14098cf00
+    NiAVObject* Next(bool bDescend);                                // 0x14098e0d0
+private:
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
+};
 void FUN_14123fbf0(Unk_PCBaseBody* pBody, unsigned short nGroup);  // collision group
 
 class Unk_Svc764020;
@@ -188,6 +273,13 @@ int FUN_14028d260(float f);                                         // float -> 
 float FUN_14028d5b0(float fAngle);                                  // normalise an angle
 float FUN_14059d930(float f);                                       // fabs
 extern int DAT_143ae2b4c;                                           // the optimizer's turn-smoothing option
+
+// The maid's profile title.
+// @0x14109a730
+static CStringW FUN_14109a730(CMaid* pMaid)
+{
+    return pMaid->m_profile.title;
+}
 
 // @0x14109a9d0
 static int FUN_14109a9d0()
@@ -921,6 +1013,21 @@ void CNpc::FUN_141093910()
     m_nE60 = 0;
 }
 
+// The name shown for the npc: a maid's own title, else the title of its maid row, else the npc name string.
+// MS2-FUNCTIONAL: the maid temporaries live in different stack slots
+// @0x141093980
+CStringW CNpc::FUN_141093980()
+{
+    if (FUN_141093800().get() != 0) {
+        if (!FUN_14109a730(FUN_141093800().operator->()).IsEmpty())
+            return FUN_14109a730(FUN_141093800().operator->());
+        Unk_UmValuePtr<Unk_UmDescRow> spDesc = FUN_1409eed10()->FUN_14067f780(FUN_141093800()->m_nMaidId);
+        if (spDesc.get() != 0)
+            return spDesc->m_08;
+    }
+    return FUN_1401a9d70()->FUN_141811980(10, FUN_141092fa0());
+}
+
 // @0x141093c20
 unsigned int CNpc::FUN_141093c20()
 {
@@ -1057,6 +1164,29 @@ int CNpc::FUN_141094300()
     return 0;
 }
 
+// Shows the npc's talk script line n: the balloon text (names filled in for a maid) and the line's sound, then restarts
+// the monologue timer.
+// @0x1410943b0
+void FUN_1410943b0(PCBase* pActor, int n)
+{
+    CNpc* pNpc = static_cast<CNpc*>(pActor);
+    Unk_TalkScriptPtr spScript = FUN_140856fa0(pNpc->FUN_141092fa0(), n);
+    if (spScript.FUN_14078f3a0() != 0) {
+        if (spScript.FUN_14085a610()->m_contents.FUN_14078fae0() != 0) {
+            CStringW strText = spScript.FUN_14085a610()->m_contents.FUN_140a4ffc0(0).FUN_14078f3d0()->m_strText;
+            if (strText.GetLength() > 0) {
+                if (pNpc->vfunc_128())
+                    FUN_1403b4750()->FUN_1416fb400(strText, reinterpret_cast<Unk_CinNpc*>(pNpc));
+                pNpc->FUN_14166fff0(strText);
+            }
+            if (spScript.FUN_14085a610()->m_contents.FUN_140a4ffc0(0).FUN_14078f3d0()->m_strSound.GetLength() > 0)
+                FUN_1411a4f40(FUN_1403ed280(),
+                    spScript.FUN_14085a610()->m_contents.FUN_14078f350(0).FUN_14078f3d0()->m_strSound, pNpc->vfunc_18());
+        }
+    }
+    pNpc->FUN_141099580();
+}
+
 // @0x1410945c0
 void CNpc::vfunc_43(float f)
 {
@@ -1100,6 +1230,47 @@ void CNpc::FUN_141094790(__int64 nUid)
 __int64 CNpc::FUN_1410947c0()
 {
     return m_nE48;
+}
+
+// Hangs the reward item box (the item's grade box with the item icon) under "Eff_UI" once.
+// @0x1410947e0
+void CNpc::FUN_1410947e0()
+{
+    if (m_nEA8 == 0 || m_spC40 != 0)
+        return;
+    CString strUnused;
+    MS2Ptr<CItemData> spItem = FUN_14053f870(m_nEA8);
+    if (spItem == 0)
+        return;
+    CString strNif = CItemDataTable::GetInstance()->GetGradeNif((ItemGradeKey)1);
+    strNif += ".nif";
+    m_spC40 = FUN_140a0afd0()->Load(FUN_140cc2ba0(CString("Item"), strNif), false, 5, 0, 0);
+    efd::SmartPointer<NiNode> spRoot = (NiNode*)FUN_141675150(CString("Eff_UI"));
+    {
+        Unk_SceneWalker kWalker(m_spC40);
+        NiAVObject* pObj;
+        while ((pObj = kWalker.Next(true)) != 0) {
+            NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pObj);
+            if (pRender != 0 && pRender->GetName() == "Editable Mesh")
+                pRender->SetName(NiFixedString("Item_Box"));
+        }
+    }
+    if (spRoot != 0 && m_spC40 != 0) {
+        spRoot->AttachChild(m_spC40, false);
+        NiAVObject* pIcon = m_spC40->GetObjectByName(NiFixedString("Item_Icon:0"));
+        if (pIcon != 0 && NiIsKindOf(NiMesh, pIcon)) {
+            NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pIcon->GetProperty(8));
+            NiTexturingProperty::Map* pMap;
+            if (pTexturing != 0 && (pMap = pTexturing->GetBaseMap()) != 0) {
+                CString strIcon = spItem->FUN_14053fdd0();
+                FUN_1401d3700(strIcon);
+                if (!strIcon.IsEmpty())
+                    pMap->SetTexture(FUN_140a0afd0()->GetTexture(CString(strIcon), 5));
+            }
+        }
+        m_spC40->UpdateEffects();
+        m_spC40->UpdateProperties();
+    }
 }
 
 // @0x141094dc0

@@ -177,6 +177,7 @@ public:
     void FUN_141096730();                                   // build the npc's collision
     void FUN_1410947e0();                                   // the reward item model above the npc (+0xea8)
     CStringW FUN_141093310();                               // display name from the npc table
+    CStringW FUN_141093980();                               // display name (maid title / maid row / npc name)
     void FUN_1410979a0();
     void FUN_141099ab0();
 
