@@ -19,7 +19,7 @@
 // MS2-PIN: ??_7DelegateImplBase@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@6B@ 0x142ee84e8
 // MS2-PIN: ??1TDirtyPremiumSale@UIMeratMarketCommon@@UEAA@XZ 0x141314840
 // MS2-PIN: ??1?$Delegate@$$A6AXAEAVAScript@@@Z@@QEAA@XZ 0x1413144a0
-// MS2-PIN: ??$StringFormat@_JH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEB_JAEBH@Z 0x141311bb0
+// MS2-PIN: ??$StringFormat@_KH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEB_KAEBH@Z 0x141311bb0
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0PEAVUIMeratMarketDialog@@P80@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z$0A@@?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ82@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x141311030 ; prop
 // MS2-PIN: ??$?0VUIMeratMarketDialog@@@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x141311070 ; prop
@@ -4660,7 +4660,7 @@ void UIMeratMarketDialog::OnClickSaleCommand(ASData& data)
         if (!(spProduct == 0)) {
             COutPacket packet(0x11, 0);
             Unk_CommandChat chat;
-            chat.message = StringFormat(L"/UgcProductSale {0} {1}", spProduct->m_ugc.m_n20, nCount);
+            chat.message = StringFormat(L"/UgcProductSale {0} {1}", reinterpret_cast<const unsigned __int64&>(spProduct->m_ugc.m_n20), nCount);  // uid formatted unsigned (ArgType 0x140408130)
             chat.target = L"";
             chat.FUN_1401fa700(packet);
             FUN_140710590(packet);

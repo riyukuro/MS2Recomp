@@ -9275,8 +9275,8 @@ wmemmove	140191580	func
 ??$?0W4Unk_WcEnum@@$0A@@?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@QEAA@AEBW4Unk_WcEnum@@@Z	140274db0	func
 ??$?0W4Unk_WcEnum@@@ArgType@internal@fmt@@QEAA@AEBW4Unk_WcEnum@@@Z	140274de0	func
 ?FUN_140274de0@@YAPEA_JPEA_J_J@Z	140274de0	func
-??$?0_J@ArgType@internal@fmt@@QEAA@AEB_J@Z	140408130	func
-??$?0_J@Unk_WcArgType@internal@fmt@@QEAA@AEB_J@Z	140408130	func
+??$?0_J@ArgType@internal@fmt@@QEAA@AEB_J@Z	140274e10	func
+??$?0_J@Unk_WcArgType@internal@fmt@@QEAA@AEB_J@Z	140274e10	func
 ?FUN_140274e10@@YAPEA_JPEA_J_J@Z	140274e10	func
 ??$?0_N@ArgType@internal@fmt@@QEAA@AEB_N@Z	140274e40	func
 ?FUN_140274e40@@YAPEA_JPEA_J_J@Z	140274e40	func
