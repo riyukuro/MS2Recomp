@@ -1,5 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CEquipment: the slots a PC wears its items in.
 // MS2-UNIT: ?\equipment.cpp
+// MS2-GUESS-LOOKALIKES
 // MS2-RANGE: 0x1411df590-0x1411ff420 .text$mn
 // MS2-RANGE: 0x1400e81b0-0x1400e8680 .text$di
 // MS2-RANGE: 0x142cad030-0x142cad300 .text$yd
@@ -107,6 +108,12 @@
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+
+// @0x1411f0e30 (a rate multiply with the epsilon, as FUN_1406198a0 for floats)
+inline float FUN_1411f0e30(float fValue, float fRate)
+{
+    return (float)((double)fValue * (double)fRate + 0.000001);
+}
 
 // The mesh name suffixes the ctor fills once.
 static ATL::CAtlList<CString> s_meshSuffixes(10);
@@ -528,7 +535,7 @@ CEquipment::CEquipment(PC* pPC)
     for (int i = 0; i < 20; i++) {
         MS2Ptr<CEquipmentSlot> spSlot(new CEquipmentSlot);
         spSlot->m_nIndex = i;
-        m_slots.SetAt(spSlot->m_nIndex, spSlot);
+        m_slots.SetAt((Unk_EquipSlotId)spSlot->m_nIndex, spSlot);
     }
     m_spCutting = EE_NEW CPriortyCutting(this);
     if (s_meshSuffixes.IsEmpty()) {
@@ -553,7 +560,7 @@ CEquipment::CEquipment(PC* pPC)
         s_meshSuffixes.AddTail("_Bra");
         s_meshSuffixes.AddTail("_Panty");
     }
-    m_spLayerInfo = new CEquipmentSlotLayerInfo(2);
+    m_spLayerInfo.AssignRaw(new CEquipmentSlotLayerInfo(2));
     FUN_1411ef740();
     m_setEffects.resize(3, MS2Ptr<Equipment::SetEffectInfo>(0));
 }
@@ -669,7 +676,7 @@ PC* CEquipment::FUN_1411e0ee0()
 // @0x1411e0f00
 float CEquipment::FUN_1411e0f00(float f)
 {
-    return (float)((double)f * (double)(FUN_1411e1110((SAType)3) + 1.0f) + 0.000001);
+    return FUN_1411f0e30(f, FUN_1411e1110((SAType)3) + 1.0f);
 }
 
 // @0x1411e0f50
@@ -774,7 +781,7 @@ MS2Ptr<CEquipItem> CEquipment::FUN_1411e1580(__int64 nUid)
 MS2Ptr<CEquipItem> CEquipment::FUN_1411e1780(int nSlot, int nLayer)
 {
     MS2Ptr<CEquipmentSlot> spSlot(0);
-    if (!m_slots.Lookup(nSlot, spSlot))
+    if (!m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot))
         return 0;
     return spSlot->m_items[nLayer];
 }
@@ -859,7 +866,7 @@ void CEquipment::FUN_1411e1e30(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nS
 }
 
 // @0x1411e1fc0
-void CEquipment::FUN_1411e1fc0(std::vector<MS2Ptr<CEquipItem> >& items, int nSkip)
+void CEquipment::FUN_1411e1fc0(std::list<MS2Ptr<CEquipItem> >& items, int nSkip)
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
         MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
@@ -878,7 +885,7 @@ void CEquipment::FUN_1411e1fc0(std::vector<MS2Ptr<CEquipItem> >& items, int nSki
 }
 
 // @0x1411e2150
-void CEquipment::FUN_1411e2150(std::vector<MS2Ptr<CEquipItem> >& items, int nLayer)
+void CEquipment::FUN_1411e2150(std::list<MS2Ptr<CEquipItem> >& items, int nLayer)
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
         MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
@@ -1186,7 +1193,7 @@ void CEquipment::FUN_1411e4150(__int64 nItemUid, int nSlot, int nLayer)
     int nOldSlot = spItem->FUN_1411dc7a0()->FUN_140526c30();
     int nNewSlot = nSlot;
     MS2Ptr<CEquipmentSlot> spSlot(0);
-    if (m_slots.Lookup(nSlot, spSlot)) {
+    if (m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot)) {
         MS2Ptr<CEquipItem> spOther = spSlot->m_items[nLayer != 0 ? nLayer : spItem->FUN_1411dc7a0()->FUN_14052a170()];
         if (spOther.get() == NULL) {
             FUN_1411ebec0(spItem, 1);
@@ -1433,7 +1440,7 @@ void CEquipment::FUN_1411e5940(MS2Ptr<CEquipItem> spItem)
             pData->FUN_14053c620() == 0x10 || pData->FUN_14053c620() == 0x11) {
             int nSlot = spData->FUN_140527a20();
             MS2Ptr<CEquipmentSlot> spSlot(0);
-            if (m_slots.Lookup(nSlot, spSlot)) {
+            if (m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot)) {
                 bool bShown = false;
                 for (int i = 0; i < 6; i++) {
                     MS2Ptr<CEquipItem> spWorn = spSlot->m_items[i];
@@ -1812,7 +1819,7 @@ void CEquipment::FUN_1411e9190(int bShow)
 int CEquipment::FUN_1411e9530(int nSlot, const CString& strName)
 {
     MS2Ptr<CEquipmentSlot> spSlot(0);
-    if (!m_slots.Lookup(nSlot, spSlot))
+    if (!m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot))
         return 0;
     CString strMesh;
     POSITION pos = s_meshSuffixes.GetHeadPosition();
@@ -1830,7 +1837,7 @@ int CEquipment::FUN_1411e9530(int nSlot, const CString& strName)
 int CEquipment::FUN_1411e9760(int nSlot, const CString& strName)
 {
     MS2Ptr<CEquipmentSlot> spSlot(0);
-    if (!m_slots.Lookup(nSlot, spSlot))
+    if (!m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot))
         return 0;
     CString strMesh;
     POSITION pos = s_meshSuffixes.GetHeadPosition();
@@ -1885,7 +1892,7 @@ CString CEquipment::FUN_1411ea5d0(const CString& str)
 void CEquipment::FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd)
 {
     if (m_spLayerInfo == 0)
-        m_spLayerInfo = new CEquipmentSlotLayerInfo(2);
+        m_spLayerInfo.AssignRaw(new CEquipmentSlotLayerInfo(2));
     if (m_spLayerInfo.get() != NULL) {
         bool bWasActive = m_spLayerInfo->FUN_1411df810();
         if (m_spLayerInfo->FUN_1411dfc10(kStart, kEnd) == true && bWasActive != m_spLayerInfo->FUN_1411df810())
@@ -2015,7 +2022,7 @@ void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
         MS2Ptr<CEquipmentSlot> spSlot(0);
         int nSlot = FUN_141420a30(spData->FUN_140527840()->FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0(),
             spData.get(), m_pPC);
-        if (m_slots.Lookup(nSlot, spSlot) && spSlot->m_items[nLayer] == spItem.get()) {
+        if (m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot) && spSlot->m_items[nLayer] == spItem.get()) {
             spSlot->m_items[nLayer] = 0;
             spSlot->m_bShown[nLayer] = 0;
         }
@@ -2041,7 +2048,7 @@ void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
         int nSlot = FUN_141420990(spItemData->FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0(), spData.get(), m_pPC);
         if (nSlot == 0)
             continue;
-        if (m_slots.Lookup(nSlot, spSlot)) {
+        if (m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot)) {
             spSlot->m_items[nLayer] = spItem;
             spSlot->m_bShown[nLayer] = i == 0;
         }
@@ -2124,7 +2131,7 @@ int CEquipment::FUN_1411e9fa0(int nSlot, CString strName, int nType, int bByName
         return 1;
     }
     MS2Ptr<CEquipmentSlot> spSlot(0);
-    if (m_slots.Lookup(nSlot, spSlot)) {
+    if (m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot)) {
         CString strMesh;
         POSITION pos = s_meshSuffixes.GetHeadPosition();
         while (pos != NULL) {
@@ -2340,7 +2347,7 @@ int CEquipment::FUN_1411e99a0(int nSlot, CString strName, int nType, int bByName
     if (pRoot == NULL)
         return 0;
     MS2Ptr<CEquipmentSlot> spSlot(0);
-    if (m_slots.Lookup(nSlot, spSlot)) {
+    if (m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot)) {
         CString strMesh;
         POSITION pos = s_meshSuffixes.GetHeadPosition();
         while (pos != NULL) {
@@ -2520,8 +2527,7 @@ void CEquipment::FUN_1411ec480(bool bForce)
             int nItemId = pData->FUN_14053c560();
             SetItemTable::GetInstance()->GetSetItemInfos(nItemId, sets);
             for (unsigned j = 0; j < sets.size(); j++) {
-                int nSetId = sets[j]->FUN_1407ad550();
-                std::vector<__int64>& uids = setPieces[nSetId];
+                std::vector<__int64>& uids = setPieces[sets[j]->FUN_1407ad550()];
                 if (uids.capacity() < 0x14)
                     uids.reserve(0x14);
                 __int64 nUid = spItem->FUN_1411dc870();

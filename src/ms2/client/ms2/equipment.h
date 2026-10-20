@@ -19,7 +19,10 @@
 #include "ms2/client/ms2/additionalclilist.h" // AdditionalCliList::StatMap, SAType
 #include "ms2/placeholder/cpriortycutting.h"  // Unk_CuttingTarget, IEquipmentCutting
 #include <efd/SmartPointer.h>
+#include <list>
 
+// The slot map key: an enum (the exe passes the key by reference, CDefaultElementTraits; the real name is unknown).
+enum Unk_EquipSlotId : int {};
 class PC;
 class CEquipModel;
 class NiPoint3;
@@ -109,8 +112,8 @@ public:
     void FUN_1411e1b80(ATL::CAtlList<MS2Ptr<CEquipItem> >& items) const;          // CollectItems
     void FUN_1411e1ce0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);    // CollectItemsAt
     void FUN_1411e1e30(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nSkip);     // CollectItemsExcept
-    void FUN_1411e1fc0(std::vector<MS2Ptr<CEquipItem> >& items, int nSkip);       // CollectItemsExcept
-    void FUN_1411e2150(std::vector<MS2Ptr<CEquipItem> >& items, int nLayer);      // CollectItemsAt
+    void FUN_1411e1fc0(std::list<MS2Ptr<CEquipItem> >& items, int nSkip);         // CollectItemsExcept
+    void FUN_1411e2150(std::list<MS2Ptr<CEquipItem> >& items, int nLayer);        // CollectItemsAt
     void FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);    // CollectItemsUpTo
     int FUN_1411e2440(int nLayer);                          // CountItemsAt
     MS2Ptr<CEquipItem> FUN_1411e2610(NiAVObject* pObj, bool bActive, int nLayer, bool bDeep);   // the worn item owning a node
@@ -207,7 +210,7 @@ public:
     int m_00;                                                           // +0x00
     int m_04;                                                           // +0x04
     PC* m_pPC;                                                          // +0x08
-    ATL::CRBMap<int, MS2Ptr<CEquipmentSlot> > m_slots;                  // +0x10 20 slots keyed by index
+    ATL::CRBMap<Unk_EquipSlotId, MS2Ptr<CEquipmentSlot> > m_slots;      // +0x10 20 slots keyed by index
     efd::SmartPointer<IEquipmentCutting> m_spCutting;                   // +0x40 a CPriortyCutting
     int m_48;
     int m_4c;
