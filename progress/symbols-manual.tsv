@@ -4100,3 +4100,4 @@ cef_string_utf16_clear	142778520	func
 cef_string_utf8_to_utf16	14277852c	func
 ?s_bInit@CQuestUIData@@2_NA	143ae65dd	data
 ?s_bInit@CChapterUIData@@2_NA	143ae67e8	data
+?s_bInit@CEmotionManager@@2_NA	143ad1ae9	data
