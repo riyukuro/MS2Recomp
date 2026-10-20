@@ -96732,7 +96732,7 @@ atan2f	140a4e660	func
 ?FUN_140e9e8f0@UIItemLulluBoxDialog@@QEAAHXZ	140e9e8f0	func
 ?FUN_140e9ece0@UIItemLulluBoxDialog@@QEAAXXZ	140e9ece0	func
 ?FUN_140e9f540@UIItemLulluBoxDialog@@QEAAXXZ	140e9f540	func
-??$?0VUIItemLulluBoxDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIItemLulluBoxDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z	140e9fca0	func
+??$?0VUIItemLulluBoxDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIItemLulluBoxDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z	140e9fbd0	func
 ??$?8PEAVUIItemLulluBoxDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z	140e9fd30	func
 ??$?8PEAVUIItemLulluBoxDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z	140e9fda0	func
 ??$FUN_14028dfa0@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@II@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBV01@AEBI2@Z	140e9fe10	func
@@ -96740,9 +96740,9 @@ atan2f	140a4e660	func
 ??$forward@AEBQ8UIItemLulluBoxDialog@@EAA_NHAEBVCMsgBoxData@@@Z@std@@YAAEBQ8UIItemLulluBoxDialog@@EAA_NHAEBVCMsgBoxData@@@ZAEBQ81@EAA_NH0@Z@Z	140ea01b0	func
 ??$forward@AEBQEAVUIItemLulluBoxDialog@@@std@@YAAEBQEAVUIItemLulluBoxDialog@@AEBQEAV1@@Z	140ea01c0	func
 ??0?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z	140ea0270	func
-??0?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z	140ea02c0	func
+??0?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z	140ea0360	func
 ??0?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z	140ea0310	func
-??0?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBU?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@Z	140ea0360	func
+??0?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBU?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@Z	140ea02c0	func
 ??1?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAA@XZ	140ea03b0	func
 ??1?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA@XZ	140ea03d0	func
 ??_G?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAPEAXI@Z	140ea03f0	func
@@ -166988,7 +166988,7 @@ __imp_OpenSurveyWindowA	142cd1488	data
 ??_7UIItemLulluBoxDialog@@6BCPtred@@@	142e5ea10	data
 ??_7UIItemLulluBoxDialog@@6BIMessageListener@@@	142e5ecb8	data
 ??_7?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@6B@	142e5ecc8	data
-??_7?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@6B@	142e5ecc8	data
+??_7?$DelegateImpl@U?$pair@PEAVUIItemLulluBoxDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@6B@	142e5ecf0	data
 ??_7UILearningQuestDialog@@6BCPtred@@@	142e5f3c0	data
 ??_7UILearningQuestDialog@@6BIMessageListener@@@	142e5f668	data
 ??_7UILearningQuestDialog@@6BUIQuestEventListener@@@	142e5f678	data
