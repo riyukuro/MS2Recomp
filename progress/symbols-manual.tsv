@@ -3982,3 +3982,6 @@ DAT_143ae2b38	143ae2b38	data
 ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDailyMissionDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140c02f30	func
 ??0ASVideo@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422f74c0	func
 ??1ASVideo@@UEAA@XZ	1422f7510	func
+?vfunc_17@GFxMovieEventHandler@@UEAAXPEAX@Z	1422d9e60	func
+?vfunc_18@GFxMovieEventHandler@@UEAAXPEAX@Z	1422d9ef0	func
+?vfunc_30@GFxMovieEventHandler@@UEAAXPEAXMMM@Z	1422da360	func
