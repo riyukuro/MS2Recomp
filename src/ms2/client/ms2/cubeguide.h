@@ -12,6 +12,8 @@
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/placeholder/fittingdollpc.h"
 
+extern const NiPoint3 g_kCubeGuideZero;  // 0x143b01a60, the zero vector as a NiPoint3 (trivial 12-byte copy); own name: DAT_143b01a60 has other types in includers
+
 class CubeItemInfo;
 
 // The four wrapper layouts are proved by constructors and deleting destructors.
@@ -23,9 +25,8 @@ public:
     virtual void vfunc_1() {}
     // @0x1410b2480
     virtual void vfunc_2(const NiPoint3&) {}
-    // MS2-FUNCTIONAL: inherited engine ZERO uses the equivalent Point3 converting constructor.
     // @0x1410b23d0
-    virtual NiPoint3 vfunc_3() { return NiPoint3::ZERO; }
+    virtual NiPoint3 vfunc_3() { return g_kCubeGuideZero; }
     // @0x1410b2430
     virtual void vfunc_4(const NiMatrix3&) {}
     // @0x1410b2390
