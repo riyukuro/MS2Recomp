@@ -16,6 +16,10 @@
 // MS2-PIN: ??$_Insertion_sort_unchecked@PEAV?$MS2SvrPtr@VCArcadeMainData@@@@UUnk_ArcadeMainLess@@@std@@YAPEAV?$MS2SvrPtr@VCArcadeMainData@@@@PEAV1@QEAV1@UUnk_ArcadeMainLess@@@Z 0x1401a5790
 // MS2-PIN: ??$_Make_heap_unchecked@PEAV?$MS2SvrPtr@VCArcadeMainData@@@@UUnk_ArcadeMainLess@@@std@@YAXPEAV?$MS2SvrPtr@VCArcadeMainData@@@@0UUnk_ArcadeMainLess@@@Z 0x1401a59b0
 // MS2-PIN: ??$_Pop_heap_unchecked@PEAV?$MS2SvrPtr@VCArcadeMainData@@@@UUnk_ArcadeMainLess@@@std@@YAXPEAV?$MS2SvrPtr@VCArcadeMainData@@@@0UUnk_ArcadeMainLess@@@Z 0x1401a69d0
+// MS2-PIN: ??$swap@V?$MS2SvrPtr@VCArcadeMainData@@@@X@std@@YAXAEAV?$MS2SvrPtr@VCArcadeMainData@@@@0@Z 0x1401a8540
+// MS2-FUNCTIONAL ??$swap@V?$MS2SvrPtr@VCArcadeMainData@@@@X@std@@YAXAEAV?$MS2SvrPtr@VCArcadeMainData@@@@0@Z: T tmp(std::move(a)) calls the exe move ctor 0x1401a85d0; the placeholder has none, so it binds the const& copy (same ms2svrptr.h retype)
+// MS2-FUNCTIONAL ??$construct@V?$MS2SvrPtr@VCArcadeMainData@@@@AEAV1@@?$_Default_allocator_traits@V?$allocator@V?$MS2SvrPtr@VCArcadeMainData@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2SvrPtr@VCArcadeMainData@@@@@1@QEAV?$MS2SvrPtr@VCArcadeMainData@@@@AEAV3@@Z: the exe MS2SvrPtr has no non-const-lvalue steal ctor: construct<T&> calls the const& copy (0x1401a8600), the placeholder (ms2svrptr.h) binds its steal ctor (0x1401a85d0); retyping the steal as a move ctor touches 30 units
+// MS2-FUNCTIONAL ??$construct@V?$MS2SvrPtr@VCArcadeMainData@@@@V1@@?$_Default_allocator_traits@V?$allocator@V?$MS2SvrPtr@VCArcadeMainData@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2SvrPtr@VCArcadeMainData@@@@@1@QEAV?$MS2SvrPtr@VCArcadeMainData@@@@$$QEAV3@@Z: the exe steal ctor 0x1401a85d0 is MS2SvrPtr's move ctor (construct<T&&> calls it), the placeholder has none so the rvalue binds the const& copy (0x1401a8600); same ms2svrptr.h retype
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\arcademaindata.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/carcadedatatable.h"
