@@ -3991,3 +3991,4 @@ DAT_143ae2b38	143ae2b38	data
 ?SetMode@WeaponAttachTransformNode@@QEAAXH@Z	141205a60	func
 ?SetUseMovement@WeaponAttachTransformNode@@QEAAXH@Z	141205a40	func
 ?ms_RTTI@WeaponAttachTransformNode@@2VNiRTTI@@B	143af77a8	data
+?FUN_1422bac00@AScript@@QEAA_NPEBDAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	1422bac00	func
