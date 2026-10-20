@@ -17,6 +17,7 @@ public:
     void FUN_1414a85d0(float fInterval);                            // run the gate with the mode's duration
     float FUN_1414a8750() const;                                    // m_fDistB
     float FUN_1414a8760() const;                                    // m_fDistA
+    void FUN_141c1bb30(float f) { m_fDistB = f; }                  // 0x141c1bb30 (inline; COMDAT in worldservice.cpp)
 
     CMeshUpdateGate* m_pGate;                                       // +0x18
     egf::EntityID m_kId;                                            // +0x20

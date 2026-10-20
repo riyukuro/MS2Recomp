@@ -73,6 +73,7 @@ public:
     float m_fFrameLimit;                                    // +0x60
     int m_nFrameDelay;                                      // +0x64
     int m_nUpdateOn;                                        // +0x68
+    void FUN_141c1ca80(int n) { m_nUpdateOn2 = n; }         // 0x141c1ca80 (inline; COMDAT in worldservice.cpp)
     int m_nUpdateOn2;                                       // +0x6c
     int m_nStartTick;                                       // +0x70
     int m_nFirstLoadTick;                                   // +0x74

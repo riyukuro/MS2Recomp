@@ -323,6 +323,7 @@ public:
     CString m_strAreaEffect;                                    // +0x110 queued area effect
     CString m_strAreaEffectCur;                                 // +0x118
     CString m_strAreaEffectNext;                                // +0x120
+    void FUN_141c1caa0(int n) { m_unk_128 = n; }               // 0x141c1caa0 (inline; COMDAT in worldservice.cpp)
     int m_unk_128;                                              // +0x128 = 1
     bool m_bAreaEffect;                                         // +0x12c
     int m_unk_130;                                              // +0x130

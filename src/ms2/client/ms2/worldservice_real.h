@@ -60,6 +60,16 @@ class RecPtrB : public CPtred {};
 typedef std::set<IWorldServiceCallback*> Set048;                                         // +0x048
 typedef ATL::CAtlList<MS2Ptr<Rec058> > List058;                                          // +0x058 (ctor 0x141bef200, dtor 0x141bf4960)
 typedef ATL::CAtlList<efd::SmartPointer<GameObject> > List178;                           // +0x178 (shared: ctor 0x140963ae0; RemoveHead 0x141c17660 here)
+// +0x738: a 4-byte-keyed CAtlMap of efd::SmartPointer (v2525: CAtlMap<int, SmartPointer<WsEntityC>>); its RemoveAll
+// 0x141c16340 is called by the member dtor 0x141bf49b0 and shares DisableAutoRehash with the other 4-byte-keyed maps.
+class Ent738                                            // pointee (virtual IncRefCount / DecRefCount; real class unknown)
+{
+public:
+    virtual void DeleteThis();
+    virtual void IncRefCount();
+    virtual void DecRefCount();
+};
+typedef ATL::CAtlMap<unsigned, efd::SmartPointer<Ent738> > Map738;
 typedef std::list<egf::Entity*> List088;                                                 // +0x088, +0x098
 typedef std::map<egf::EntityID, VisibleObjectRecord> Map1d8;                             // +0x1d8
 typedef std::set<egf::EntityID> EntitySet;
