@@ -62,6 +62,7 @@ public:
     virtual void OnLoadComplete();                              // 22 0x141ad16b0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141ad1a30
     virtual int vfunc_48() { return 0x4ef0; }                   // 48 0x141ad6460
+    static eUIClassID GetUIClassID() { return (eUIClassID)0x4ef0; }   // 0x141a4b240 (COMDAT in uiminimapentity.cpp)
     virtual void vfunc_67();                                    // 67 0x141ad1cc0
     virtual void vfunc_79(void* pPacket);                       // 79 0x141ad1080 (CInPacket*)
     virtual void ReceiveServerList(CInPacket& packet);          // 84 0x141ad1150 (new virtual; packet 11 handler)

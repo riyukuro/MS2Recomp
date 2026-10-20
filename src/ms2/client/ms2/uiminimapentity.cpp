@@ -46,6 +46,7 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/client/ms2/ridee.h"
+#include "ms2/client/ms2/uiserverlistdialog.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/ms2recover.h"
@@ -120,6 +121,8 @@ public:
     class Unk_MmActor* FUN_141bd1320(int nId);                      // the actor of an object id
     PCBase* FUN_141bd1530(unsigned __int64 nCharId);                // a player by character id
     void FUN_141bc5f10(ATL::CAtlArray<MS2Ptr<CInteractObject> >& objects);   // the interact objects
+    int FUN_141bd98f0();                                            // the channel group
+    MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);  // an interact object by name
     ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject> >& FUN_141bc9fb0();   // the proxy objects by object id
 };
 Unk_MmWorld* FUN_1403ed2d0();
@@ -148,7 +151,15 @@ CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a1, const CStringW& a2, 
 CStringW FUN_14183e930(const CStringW& strText, int nColor);        // a coloured text
 int FUN_140a7c970(NpcDataCli* pNpc);                                // the npc's colour
 class Unk_MmConfig { public: int FUN_140a7d630(); };                // the colour option block
-class Unk_MmGameConfig { public: char m_pad[0xae70]; Unk_MmConfig m_colors; };
+class Unk_MmConfigValue { public: unsigned* FUN_1401d7c10(); };    // Value<unsigned int>::Get
+class Unk_MmGameConfig                                              // Client::Constants (only the members read here)
+{
+public:
+    char m_pad[0xae70];
+    Unk_MmConfig m_colors;                                          // +0xae70 NameTagColorFriendly
+    char m_pad_ae71[0xda48 - 0xae71];
+    Unk_MmConfigValue m_minimapCell;                                // +0xda48 MinimapScaleSkipSplitPixel
+};
 Unk_MmGameConfig* FUN_1401d3200();
 CString FUN_14192ebf0(int nKind);                                   // the minimap icon of an npc function
 CStringW FUN_14052bd00(int nStringId, const CStringW& str);
@@ -1945,9 +1956,24 @@ class Unk_MmScript : public AScript
 public:
     Scaleform::GFx::Value FUN_141a46a60(const char* szMethod, Scaleform::GFx::Value a1, const char* a2);
     Scaleform::GFx::Value FUN_141a46b60(const char* szMethod, Scaleform::GFx::Value a1, CString a2);
+    Scaleform::GFx::Value FUN_141a468e0(const char* szMethod, Scaleform::GFx::Value a1, int a2, CStringW a3, CStringW a4);
 };
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
+void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
+void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
+
+// @0x141a468e0
+inline Scaleform::GFx::Value Unk_MmScript::FUN_141a468e0(const char* szMethod, Scaleform::GFx::Value a1, int a2, CStringW a3, CStringW a4)
+{
+    ASArgList args;
+    args.FUN_1409b2800(4);
+    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
+    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
+    FUN_1422bcea0(args.FUN_1409b1f70(3), a4);
+    return FUN_1422bb8f0(szMethod, args);
+}
 
 // @0x141a46a60
 inline Scaleform::GFx::Value Unk_MmScript::FUN_141a46a60(const char* szMethod, Scaleform::GFx::Value a1, const char* a2)
@@ -2288,6 +2314,106 @@ void UIMinimapDialog::FUN_141a42550()
         FUN_141a391f0(objects[i]);
 }
 MS2_REPLACE_METHOD(0x141a42550, UIMinimapDialog, FUN_141a42550, 0, 0);
+
+extern int DAT_143ab0248;                                           // client country (2: no channel group)
+int FUN_14092f640();                                                // the current channel
+
+// @0x141a42800
+// MS2-FUNCTIONAL: the exe moves the channel group through ecx before the string table call.
+void UIMinimapDialog::FUN_141a42800()
+{
+    if (m_30 == 0)
+        return;
+    CStringW strGroup;
+    if (DAT_143ab0248 != 2) {
+        int nGroup = FUN_1403ed2d0()->FUN_141bd98f0();
+        strGroup = FUN_1401a9d70()->FUN_141811980(0x17, nGroup);
+    }
+    m_channel = FUN_14092f640();
+    int nSelected = 0;
+    ASArray channels(2);
+    UIServerListDialog* pServerList = Unk_MmGetDialog<UIServerListDialog>();
+    if (pServerList != 0)
+        pServerList->FUN_141ad2f60(channels, &nSelected, m_channel);
+    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a468e0("buildChannelList", channels.FUN_1422bb870(), nSelected, FUN_14028b8e0(L"s_word_ch"), strGroup);
+}
+MS2_REPLACE_METHOD(0x141a42800, UIMinimapDialog, FUN_141a42800, 0, 0);
+
+float FUN_141adbe70(void* pService);                               // the ui scale
+
+// @0x141a42bb0
+void UIMinimapDialog::FUN_141a42bb0()
+{
+    if (m_30 == 0)
+        return;
+    if (!m_212)
+        return;
+    if (m_maxPanel == 0)
+        return;
+    double dPanelX = 0.0;
+    double dPanelY = 0.0;
+    if (!m_maxPanel->FUN_1422c2510(&dPanelX, &dPanelY))
+        return;
+    float fScale = FUN_141adbe70(FUN_1403ed2b0());
+    dPanelX /= fScale;
+    dPanelY /= fScale;
+    m_212 = false;
+    ATL::CAtlMap<unsigned __int64, int> occupied;
+    int nCell = *FUN_1401d3200()->m_minimapCell.FUN_1401d7c10();
+    ATL::CAtlArray<EntityPtr> entities;
+    FUN_141a42fe0(entities);
+    for (size_t i = 0; i < entities.GetCount(); ++i) {
+        EntityPtr spEntity = entities[i];
+        if (spEntity == 0)
+            continue;
+        NiPoint3 kOut;
+        NiPoint3 kWorld(spEntity->m_position);
+        if (m_viewport->FUN_141486410(kWorld, kOut)) {
+            double dX = 0.0;
+            double dY = 0.0;
+            if (!spEntity->m_clip->FUN_1422c2510(&dX, &dY))
+                continue;
+            dX /= fScale;
+            dY /= fScale;
+            double dOffX = dX - dPanelX;
+            double dOffY = dY - dPanelY;
+            int nCellX = static_cast<int>(dOffX / nCell);
+            int nCellY = static_cast<int>(dOffY / nCell);
+            unsigned __int64 nKey = (static_cast<__int64>(nCellX) << 32) | static_cast<__int64>(nCellY);
+            if (occupied.Lookup(nKey) != 0) {
+                spEntity->m_visible = false;
+            } else {
+                occupied.SetAt(nKey, 1);
+                spEntity->m_visible = true;
+            }
+            spEntity->m_clip->vfunc_4(spEntity->m_visible);
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141a42bb0, UIMinimapDialog, FUN_141a42bb0, 0, 0);
+
+// @0x141a42fe0
+void UIMinimapDialog::FUN_141a42fe0(ATL::CAtlArray<EntityPtr>& entities)
+{
+    for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos)) {
+        EntityPtr spEntity = m_proxies.GetValueAt(pos);
+        if (static_cast<bool>(static_cast<UIMinimapEntity*>(spEntity)) && spEntity->m_64)
+            entities.Add(m_proxies.GetValueAt(pos));
+    }
+    for (POSITION pos = m_named.GetStartPosition(); pos != 0; m_named.GetNext(pos)) {
+        CString strKey = m_named.GetKeyAt(pos);
+        EntityPtr spEntity = m_named.GetValueAt(pos);
+        if (static_cast<bool>(static_cast<UIMinimapEntity*>(spEntity)) && spEntity->m_64) {
+            MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(strKey);
+            if (spObject == 0)
+                continue;
+            if (spObject->FUN_1413b5600() != 1)
+                continue;
+            entities.Add(m_named.GetValueAt(pos));
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141a42fe0, UIMinimapDialog, FUN_141a42fe0, 0, 0);
 
 // @0x141a42a70
 void UIMinimapDialog::FUN_141a42a70()
