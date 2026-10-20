@@ -3756,7 +3756,6 @@ __imp_NxGetUtilLib	142cced28	data
 ?OnBuyBasketItem@UIMeratMarketDialog@@QEAAXAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@AEAVASData@@@Z	1413035c0	func
 ?OnSelectLimited@UIMeratMarketDialog@@QEAAXAEAVASOutData@UIMeratMarketDialogUtil@@@Z	141305e70	func
 ?OnShowHistory@UIMeratMarketDialog@@QEAAXXZ	141305480	func
-?OpenProduct@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCMeratMarketProduct@@@@@Z	1412f07e0	func
 ?ShowProduct@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCMeratMarketProduct@@@@@Z	1412ebc40	func
 ?ShowSellerProducts@UIMeratMarketDialog@@QEAAXAEB_J@Z	141304270	func
 ?vfunc_28@UIMeratMarketDialog@@UEAAHPEBDPEBVValue@GFx@Scaleform@@I@Z	1412ea0e0	func
@@ -3888,3 +3887,9 @@ __imp_NxGetUtilLib	142cced28	data
 ??$FUN_1422c2a70@V?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@@AScript@@QEAAXAEBV?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@PEAX@Z	1422c2a70	func
 ??0?$MS2Ptr@VCEquipModel@@@@QEAA@PEAVCEquipModel@@@Z	1411de2e0	func
 ??1?$MS2Ptr@VCEquipModel@@@@QEAA@XZ	140b02860	func
+??0Unk_GcCondRef@@QEAA@PEAVCGuideCondition@@@Z	1413b28b0	func
+??0Unk_GcCondRef@@QEAA@$$QEAV0@@Z	1413b2880	func
+??1Unk_GcCondRef@@QEAA@XZ	141387660	func
+??0Unk_GcCondRef@@QEAA@XZ	1413a4750	func
+?GetPaletteColorBySN@CItemDataTable@@QEAA?AV?$MS2Ptr@VItemColorEx@@@@HH@Z	140558960	func
+?GetPetEvolution@CExpTable@@QEAAHGH@Z	1403539d0	func
