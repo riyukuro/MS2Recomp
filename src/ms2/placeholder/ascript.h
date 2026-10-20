@@ -150,7 +150,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, Unk_UgcOpenType a1);          // 0x141b3b610 (inline COMDAT, defined in uiugcimageuploaddialog.cpp; an Int value of the open type)
     Scaleform::GFx::Value Invoke(const char* szMethod, const char* a1, bool a2);             // 0x141aa2d90 (inline COMDAT, defined in uiquestdialog.cpp)
     Scaleform::GFx::Value Invoke(const char* szMethod, class ASFunction a1);                 // 0x1409bb370 (inline COMDAT, defined in asitemslot.cpp; a1 by value: the callee destroys it)
-    Scaleform::GFx::Value FUN_141b06d40(const char* szMethod, class ASDataProvider* a1, unsigned char a2);   // 0x141b06d40 (inline COMDAT, defined in uishopdialog.cpp: Invoke with a list and a flag)
+    Scaleform::GFx::Value FUN_141b06d40(const char* szMethod, class ASDataProvider* a1, bool a2);       // 0x141b06d40 (inline COMDAT, defined in uishopdialog.cpp: Invoke with a list and a flag)
     Scaleform::GFx::Value FUN_141b06e00(const char* szMethod, unsigned __int64 a1, unsigned int a2);        // 0x141b06e00 (inline COMDAT, defined in uishopdialog.cpp: Invoke with a UInt64 and a UInt)
     Scaleform::GFx::Value Invoke(const char* szMethod, class ASSlot a1);                     // 0x1409bb460 (inline COMDAT, defined in asitemslot.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, long a1, int a2);                     // 0x141a004c0 (inline COMDAT, defined in uimessagebox.cpp; Int/Int values, (int, int) is taken by 0x140acd070)
