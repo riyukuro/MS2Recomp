@@ -4,6 +4,7 @@
 #pragma once
 
 #include <afx.h>
+#include <atlcoll.h>                                 // ATL::CAtlList (part 2: FUN_1409dfba0)
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
@@ -99,6 +100,9 @@ public:
     // ---- astooltip.cpp part 1 members (owner: part 1 agent; append here only) ----
     void FUN_1409c72c0(CItem* pItem);                                    // maid item: description, name, manufacture state
     void FUN_1409c7cc0(CItem* pItem);                                    // itemMovie (unless flag 0x40)
+    void FUN_1409c8020(CItem* pItem);                                    // itemStatusSet: the equipment sets of the item
+    void FUN_1409c8df0(int nItemId);                                     // itemStatusSet of an UGC map set item (housing)
+    void FUN_1409cb7b0(CItem* pItem);                                    // itemMerge: the merge option ranges of the item
     // ---- end part 1 ----
     // ---- astooltip.cpp part 2 members (owner: part 2 agent; append here only) ----
     void FUN_1409cc800(CItem* pItem);                                    // itemSocket (the socket rows)
@@ -119,6 +123,9 @@ public:
     // other parts' members called by part 2 (declared from the exe prologues / call sites):
     void FUN_1409d6a40(int nItemId, __int64 nMinutes);                   // part 3: the use period of an item data
     void FUN_1409d98a0(CItem* pItem, CStringW& strText);                 // part 3: append the bind limit text
+    bool FUN_1409d4760(CItem* pItem);                                    // part 3: a special description was set
+    void FUN_1409dfba0(MS2Ptr<CItemData> spData, ATL::CAtlList<CStringW>& list, int* pExpiring, unsigned nMax, __int64 nExpiry);   // part 4: the box contents
+    int FUN_1409e0450(int nItemId, __int64 nExpiry);                     // part 5: the item expires soon
     // ---- end part 2 ----
     // ---- astooltip.cpp part 3 members (owner: part 3 agent; append here only) ----
     void FUN_1409d3010(CItem* pItem);                                    // customizeColorData

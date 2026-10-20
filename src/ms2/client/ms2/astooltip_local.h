@@ -38,9 +38,40 @@ bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind
 CFeatureManager* FUN_140166410();                 // TSingleton<CFeatureManager>::GetInstance (exe copy; also part 2)
 CStringW FUN_1409e5320(const int& nSeason);       // part 5: the season text (also part 3)
 CStringW FUN_14016a730(const char* sz, int nCodePage);   // 0x14016a730 widen (as commonfiles/packet.h)
+#include "ms2/commonfiles/itemdatatable.h"
+#include "ms2/commonfiles/ugcmapsetiteminfo.h"
+#include "ms2/placeholder/cstringtable.h"
+CItemDataTable* FUN_140281980_p1();               // 0x140281980 TSingleton<CItemDataTable>::GetInstance (exe copy)
+CStringTable* FUN_1401a9d70_p1();                 // 0x1401a9d70 the string table
+#include <list>
+#include <algorithm>
+#include "ms2/placeholder/setitemtable.h"
+#include "ms2/commonfiles/setitemoptionpart.h"
+#include "ms2/client/ms2/equipitem.h"
+#include "ms2/client/ms2/equipment.h"
+class PCBase;
+class WorldService;
+WorldService* FUN_1403ed2d0_p1();                 // 0x1403ed2d0 WorldService::GetInstance (exe copy)
+PCBase* FUN_141bd1290(WorldService* pWorld, int nId);   // the player of an object id (worldservice_1.cpp)
+CEquipment* FUN_1416561a0_p1(PCBase* pPc);        // 0x1416561a0 the player's equipment
+int FUN_141658e60_p1(PCBase* pPc);                // 0x141658e60 the player's gender
+CStringW FUN_1406319f0(int nId, unsigned short nLevel);   // the additional-effect text (itemsocketsystemutil.cpp)
+CStringW FUN_140631600(int nStat, BaseOption* pOption);   // a set stat option text (itemsocketsystemutil.cpp)
+CStringW FUN_140631830(int nSpecial, int nValue, CItemData* pData);   // a set special option text (itemsocketsystemutil.cpp)
+extern const int DAT_142dbac18[4];                // the item model classes that make a set piece gender-bound (1, 2, 3, 18)
+#include "ms2/placeholder/citemmergeoptiontable.h"
+class Unk_ItemEnchantData;
+CStringW FUN_1409e0900(int n);                    // part 5: an int option value text
+CStringW FUN_1409e0a90(float fRate);              // part 5: a rate option value text
+bool FUN_14082f1d0(int nStat);                    // the stat is shown as an integer (stat.cpp)
+bool FUN_14081dc50(int nSpecial);                 // the special stat is shown as an integer (specialability.cpp)
+CStringW FUN_14082f000(int nStat);                // GetStatCommonText (stat.cpp)
+CStringW FUN_140630e10(int nSpecial);             // the special stat name (itemsocketsystemutil.cpp)
+void FUN_14083d2b0(CStringW& str);                // trims the trailing line break (unit_14083bab0.cpp)
 #endif
 #if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 1
 class Unk_ItemEquipData : public CItemData {};    // solo build only: part 5 defines it otherwise
+struct Unk_EquipItemData : public CItemData {};   // solo build only: CEquipItem::FUN_1411dc7f0's record (defined by another part)
 #endif
 // ---- end part 1 ----
 
@@ -70,6 +101,7 @@ class Unk_ItemOwnerRef : public CItemTransfer {};                     // CItem::
 CPetDataTable* FUN_14052d210();                                       // TSingleton<CPetDataTable>::GetInstance (exe copy)
 CStringW FUN_14016a730(const char* sz, int nCodePage);                // a multi-byte text as a wide string (achievedata.cpp)
 CFeatureManager* FUN_140166410();                                     // TSingleton<CFeatureManager>::GetInstance (exe copy)
+CReservedWordTable* FUN_1403b4750();                                  // 0x1403b4750 the reserved word table
 CItemSocketTable* FUN_14052d200();                                    // TSingleton<CItemSocketTable>::GetInstance (exe copy)
 CItemDataTable* FUN_140281980_p2();                                   // 0x140281980 TSingleton<CItemDataTable>::GetInstance (exe copy)
 CGameRule* FUN_1401c0d90();                                           // TSingleton<CGameRule>::GetInstance (exe copy)
@@ -95,6 +127,41 @@ CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);        // FormatS
 CStringW FUN_1409e0900(int n);                                        // part 5
 CStringW FUN_1409e0b40(int nTenths);                                  // part 5
 int FUN_1409e6c80(CItem* pItem);                                      // part 5
+#include "ms2/commonfiles/item.h"                                     // CItemStatus / CItemUgc
+#include "ms2/commonfiles/ugccubecategorytable.h"
+#include "ms2/client/ms2/achievemanager.h"
+#include <set>
+class Unk_ItemEnchantData;                                            // CItem::FUN_1405278a0's record (part 3 owns the type)
+CItemEnchantInfo* FUN_140630d60_p2(Unk_ItemEnchantData* pStatus);     // 0x140630d60 CItemStatus::FUN_140630d60 (the enchant record; this in rcx)
+void* FUN_1403ed2d0_p2();                                             // 0x1403ed2d0 the world service
+PCBase* FUN_141bd0cc0_p2(void* pWorld);                               // 0x141bd0cc0 the local player
+CAchieveManager* FUN_1406c7600();                                     // TSingleton<CAchieveManager>::GetInstance (exe copy)
+int FUN_140936640(CAchieveManager* pManager, int nId, int nGrade);    // 0x140936640 CAchieveManager: the trophy grade is reached
+CStringW FUN_14093bd40(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
+bool FUN_140930c50();                                                 // the housing state is local (unit_14092f420.cpp)
+unsigned FUN_141901d20(int nItemId, __int64 nUid, __int64 nUgcUid);   // uicommon.cpp
+unsigned FUN_141901f70(int nItemId, __int64 nUid, __int64 nUgcUid);   // uicommon.cpp
+int FUN_1407077c0(int nId);                                           // objectdata.cpp: state change permission
+int FUN_140707710(int nId);                                           // objectdata.cpp: trigger control enabled
+CStringW FUN_1416e4df0(int nBookId);                                  // the book description
+extern unsigned short DAT_143ab291c;                                  // the housing level limit (offline)
+extern unsigned short DAT_143ab2940;                                  // the housing level limit
+extern unsigned short DAT_143ab2964;                                  // billboard: the required level
+extern unsigned DAT_143ab2970;                                        // billboard: the required adventure level
+// The (trophy id, grade) key of the achieved-trophy set DAT_143ab32d8 (as scenestategame.cpp / mypc.cpp).
+struct Unk_SSGHouseKey
+{
+    Unk_SSGHouseKey() { m_nA = 0; m_nB = 0; }   // 0x1409ed810 (inline COMDAT of this unit)
+    unsigned int m_nA;
+    unsigned int m_nB;
+};
+inline bool operator<(const Unk_SSGHouseKey& a, const Unk_SSGHouseKey& b)
+{
+    if (a.m_nA != b.m_nA)
+        return a.m_nA < b.m_nA;
+    return a.m_nB < b.m_nB;
+}
+extern std::set<Unk_SSGHouseKey> DAT_143ab32d8;
 #endif
 #if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 2
 class Unk_ItemEquipData : public CItemData {};    // solo build only: part 5 defines it otherwise
@@ -143,7 +210,7 @@ struct Unk_TooltipItemOwner
     void FUN_1409aff60();
     __int64 m_nAccount;
     unsigned m_nType;
-    __int64 m_n10;
+    void* m_pCharacter;                                     // the own character id (stored as a pointer-size value)
     __int64 m_n18;
 };
 MS2_CHECK_SIZE(Unk_TooltipItemOwner, 0x20);
@@ -280,6 +347,11 @@ float FUN_14028d280(unsigned nTicks);                                 // millise
 #include "ms2/commonfiles/itemgift.h"                                 // ItemAble
 void FUN_1409e2ed0(Scaleform::GFx::Value* pOut, ItemAble& item);
 #include "ms2/commonfiles/meratmarketbasketinfo.h"                   // CMeratMarketPremiumProduct
+#include "ms2/commonfiles/jobtable.h"
+JobTable* FUN_1401d7a50_p5();                                         // 0x1401d7a50 TSingleton<JobTable>::GetInstance (exe copy)
+bool FUN_1402226b0(int nJob);                                         // the job code is valid
+void FUN_1409e68a0(int nJob, ATL::CAtlArray<unsigned>& jobs, int& nAllowed, CStringW& strOut);   // the job limit text
+void FUN_1409e6aa0(int nJob, ATL::CAtlArray<unsigned>& jobs, CStringW& strOut);                  // the disabled job text
 #endif
 // ---- end part 5 ----
 
