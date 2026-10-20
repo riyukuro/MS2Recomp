@@ -1999,9 +1999,9 @@ int CItemStatus::FUN_14062fea0(unsigned nType)
 MS2_REPLACE_METHOD(0x14062FEA0, CItemStatus, FUN_14062fea0, 189, 0x47444B3B);
 
 // @0x14062ff70
-void CItemStatus::FUN_14062ff70(unsigned nType)
+int CItemStatus::FUN_14062ff70(unsigned nType)
 {
-    m_spOption->FUN_1405cb440(nType);
+    return m_spOption->FUN_1405cb440(nType);
 }
 MS2_REPLACE_METHOD(0x14062FF70, CItemStatus, FUN_14062ff70, 47, 0x04A83391);
 
