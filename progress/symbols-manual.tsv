@@ -3587,3 +3587,7 @@ __imp_NxGetUtilLib	142cced28	data
 ?GetArg@TriggerConditionCli@@QEBA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	140de5970	func
 ?GetOnEnter@TriggerStateCli@@QEAA?AV?$MS2Ptr@VTriggerActionCli@@@@H@Z	140dea510	func
 ?GetTransition@TriggerStateCli@@QEAA?AV?$MS2Ptr@VTriggerTransitionCli@@@@H@Z	140dea570	func
+?DAT_143ab2a90@@3VUnk_UeInventory@@A	143ab2a90	data
+??8?$TPtr@VUnk_UISwfEntity_25@@@@QEBA_NPEAVUnk_UISwfEntity_25@@@Z	140cbe890	func
+?GetFirstError@TriggerCli@@QEAA_NAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	14119aa10	func
+?CheckObjects@TriggerCli@@QEAAHAEAV?$vector@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@Z	14119ab70	func

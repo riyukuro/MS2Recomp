@@ -202,6 +202,7 @@ CString UITriggerEditorDialog::vfunc_1()
 {
     return "TriggerEditorDialog";
 }
+MS2_REPLACE_METHOD(0x141B2A0A0, UITriggerEditorDialog, vfunc_1, 61, 0x0CFDB8C2);
 
 // @0x141b2a0f0
 void UITriggerEditorDialog::vfunc_67()
@@ -213,6 +214,7 @@ void UITriggerEditorDialog::vfunc_67()
     FUN_140710590(packet);
     UIDialog::vfunc_67();
 }
+MS2_REPLACE_METHOD(0x141B2A0F0, UITriggerEditorDialog, vfunc_67, 124, 0xA0383963);
 
 // @0x141b2a180
 void UITriggerEditorDialog::vfunc_26()
@@ -222,6 +224,7 @@ void UITriggerEditorDialog::vfunc_26()
     m_spButton2 = 0;
     m_spButton3 = 0;
 }
+MS2_REPLACE_METHOD(0x141B2A180, UITriggerEditorDialog, vfunc_26, 87, 0x55CD6C86);
 
 // MS2-FUNCTIONAL: method dispatch from the decompile
 // @0x141b2a1e0
@@ -292,6 +295,7 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141B2A1E0, UITriggerEditorDialog, vfunc_28, 2043, 0x281D4036);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2aa10
@@ -325,6 +329,7 @@ void UITriggerEditorDialog::OnLoadComplete()
     if (FUN_140bc6d10("m_clearContentButton", m_spButton3).get())
         m_spButton3->FUN_1422ce240(ParamsDelegate(this, &UITriggerEditorDialog::FUN_141b2bb10), 0);
 }
+MS2_REPLACE_METHOD(0x141B2AA10, UITriggerEditorDialog, OnLoadComplete, 1827, 0x93A07744);
 
 // @0x141b2b140
 bool UITriggerEditorDialog::FUN_141b2b140(int nResult, const CMsgBoxData& data)
@@ -333,6 +338,7 @@ bool UITriggerEditorDialog::FUN_141b2b140(int nResult, const CMsgBoxData& data)
         vfunc_67();
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B2B140, UITriggerEditorDialog, FUN_141b2b140, 51, 0x49202735);
 
 // @0x141b2b180
 bool UITriggerEditorDialog::FUN_141b2b180(int nResult, const CMsgBoxData& data)
@@ -345,6 +351,7 @@ bool UITriggerEditorDialog::FUN_141b2b180(int nResult, const CMsgBoxData& data)
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B2B180, UITriggerEditorDialog, FUN_141b2b180, 111, 0xA5682A69);
 
 // @0x141b2b200
 bool UITriggerEditorDialog::FUN_141b2b200(int nResult, const CMsgBoxData& data)
@@ -353,6 +360,7 @@ bool UITriggerEditorDialog::FUN_141b2b200(int nResult, const CMsgBoxData& data)
         FUN_141b2d570();
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B2B200, UITriggerEditorDialog, FUN_141b2b200, 42, 0xEF2A9723);
 
 // @0x141b2b230
 bool UITriggerEditorDialog::FUN_141b2b230(int nResult, const CMsgBoxData& data)
@@ -366,6 +374,7 @@ bool UITriggerEditorDialog::FUN_141b2b230(int nResult, const CMsgBoxData& data)
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B2B230, UITriggerEditorDialog, FUN_141b2b230, 114, 0x4CC5B095);
 
 // @0x141b2b2b0
 bool UITriggerEditorDialog::FUN_141b2b2b0(int nResult, const CMsgBoxData& data)
@@ -377,6 +386,7 @@ bool UITriggerEditorDialog::FUN_141b2b2b0(int nResult, const CMsgBoxData& data)
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B2B2B0, UITriggerEditorDialog, FUN_141b2b2b0, 221, 0xD3DD425F);
 
 // @0x141b2b3a0
 void UITriggerEditorDialog::vfunc_43()
@@ -384,6 +394,7 @@ void UITriggerEditorDialog::vfunc_43()
     UIDialog::vfunc_43();
     m_bFolded = 0;
 }
+MS2_REPLACE_METHOD(0x141B2B3A0, UITriggerEditorDialog, vfunc_43, 39, 0x6156B88B);
 
 // MS2-FUNCTIONAL: key handling from the decompile
 // @0x141b2b3d0
@@ -411,6 +422,7 @@ int UITriggerEditorDialog::vfunc_13()
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141B2B3D0, UITriggerEditorDialog, vfunc_13, 550, 0xD257927B);
 
 // @0x141b2b600
 void UITriggerEditorDialog::FUN_141b2b600()
@@ -426,6 +438,7 @@ void UITriggerEditorDialog::FUN_141b2b600()
         FUN_140b632f0()->FUN_1422d4780(this, 3);
     }
 }
+MS2_REPLACE_METHOD(0x141B2B600, UITriggerEditorDialog, FUN_141b2b600, 203, 0xC7D7F041);
 
 // @0x141b2b6e0
 void UITriggerEditorDialog::FUN_141b2b6e0()
@@ -441,6 +454,7 @@ void UITriggerEditorDialog::FUN_141b2b6e0()
         FUN_140b632f0()->FUN_1422d4780(this, m_e0);
     }
 }
+MS2_REPLACE_METHOD(0x141B2B6E0, UITriggerEditorDialog, FUN_141b2b6e0, 242, 0x11538C2C);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2b7e0
@@ -456,6 +470,7 @@ int UITriggerEditorDialog::FUN_141b2b7e0(CFileSystem::BufferPtr spBuffer)
     FUN_141b2dd80();
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B2B7E0, UITriggerEditorDialog, FUN_141b2b7e0, 322, 0x6593F73F);
 
 // @0x141b2b930
 void UITriggerEditorDialog::FUN_141b2b930()
@@ -465,6 +480,7 @@ void UITriggerEditorDialog::FUN_141b2b930()
     FUN_141b2d870();
     m_30->Invoke("invalidateInstallObject");
 }
+MS2_REPLACE_METHOD(0x141B2B930, UITriggerEditorDialog, FUN_141b2b930, 97, 0x87D9C935);
 
 // @0x141b2b9a0
 void UITriggerEditorDialog::FUN_141b2b9a0(CString strCube, int nCubeId)
@@ -472,24 +488,28 @@ void UITriggerEditorDialog::FUN_141b2b9a0(CString strCube, int nCubeId)
     m_strCube = strCube;
     m_nCubeId = nCubeId;
 }
+MS2_REPLACE_METHOD(0x141B2B9A0, UITriggerEditorDialog, FUN_141b2b9a0, 84, 0x09BB57A1);
 
 // @0x141b2ba00
 void UITriggerEditorDialog::FUN_141b2ba00(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     FUN_141b2f510();
 }
+MS2_REPLACE_METHOD(0x141B2BA00, UITriggerEditorDialog, FUN_141b2ba00, 29, 0xD7B9B081);
 
 // @0x141b2ba30
 void UITriggerEditorDialog::FUN_141b2ba30(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     FUN_140d74390(FUN_14028de60(0xafe), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b230));
 }
+MS2_REPLACE_METHOD(0x141B2BA30, UITriggerEditorDialog, FUN_141b2ba30, 211, 0x5605CB96);
 
 // @0x141b2bb10
 void UITriggerEditorDialog::FUN_141b2bb10(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     FUN_140d74390(FUN_14028de60(0xaff), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b180));
 }
+MS2_REPLACE_METHOD(0x141B2BB10, UITriggerEditorDialog, FUN_141b2bb10, 211, 0x1ED019CA);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2bbf0
@@ -515,6 +535,11 @@ int UITriggerEditorDialog::FUN_141b2bbf0()
     m_spTrigger->LoadEditorTable();
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B2BBF0, UITriggerEditorDialog, FUN_141b2bbf0, 648, 0x1FFA4F1E);
+
+// ATL operator+(const CString&, const char*) as linked in the exe (0x14038f6d0); the inline one
+// pulls in the dllimport CSimpleStringT<char,1>::CopyChars, which the hook DLL cannot resolve.
+CString FUN_14038f6d0(const CString& str, const char* sz);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2be80
@@ -578,20 +603,20 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         CString strPrefix;
         strPrefix.Format("Cond%d_", i);
         Scaleform::GFx::Value vCond;
-        state.GetMember(strPrefix + "Condition", &vCond);
+        state.GetMember(FUN_14038f6d0(strPrefix, "Condition"), &vCond);
         CStringW strCond = FUN_1408767c0(vCond.GetString());
         Scaleform::GFx::Value vCondArg1;
-        state.GetMember(strPrefix + "ConditionArg1", &vCondArg1);
+        state.GetMember(FUN_14038f6d0(strPrefix, "ConditionArg1"), &vCondArg1);
         CStringW strCondArg1 = FUN_1408767c0(vCondArg1.GetString());
         Scaleform::GFx::Value vCondArg2;
-        state.GetMember(strPrefix + "ConditionArg2", &vCondArg2);
+        state.GetMember(FUN_14038f6d0(strPrefix, "ConditionArg2"), &vCondArg2);
         CStringW strCondArg2 = FUN_1408767c0(vCondArg2.GetString());
         ATL::CAtlArray<CStringW> condArgs;
         condArgs.Add(strCondArg1);
         condArgs.Add(strCondArg2);
         ATL::CAtlArray<CStringW> names;
         Scaleform::GFx::Value vNames;
-        state.GetMember(strPrefix + "CondAction", &vNames);
+        state.GetMember(FUN_14038f6d0(strPrefix, "CondAction"), &vNames);
         for (unsigned int j = 0; j < vNames.GetArraySize(); j++)
         {
             Scaleform::GFx::Value v;
@@ -600,7 +625,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         }
         ATL::CAtlArray<CStringW> args1;
         Scaleform::GFx::Value vArgs1;
-        state.GetMember(strPrefix + "CondActionArg1", &vArgs1);
+        state.GetMember(FUN_14038f6d0(strPrefix, "CondActionArg1"), &vArgs1);
         for (unsigned int j = 0; j < vArgs1.GetArraySize(); j++)
         {
             Scaleform::GFx::Value v;
@@ -609,7 +634,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         }
         ATL::CAtlArray<CStringW> args2;
         Scaleform::GFx::Value vArgs2;
-        state.GetMember(strPrefix + "CondActionArg2", &vArgs2);
+        state.GetMember(FUN_14038f6d0(strPrefix, "CondActionArg2"), &vArgs2);
         for (unsigned int j = 0; j < vArgs2.GetArraySize(); j++)
         {
             Scaleform::GFx::Value v;
@@ -631,7 +656,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         spCond->SetName(strCond);
         spCond->SetArgs(condArgs);
         Scaleform::GFx::Value vNext;
-        state.GetMember(strPrefix + "Next", &vNext);
+        state.GetMember(FUN_14038f6d0(strPrefix, "Next"), &vNext);
         CStringW strNext = FUN_1408767c0(vNext.GetString());
         TriggerCli::StatePtr spNext = m_spTrigger->GetState(strNext);
         if (spNext.get() != 0)
@@ -641,6 +666,7 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         }
     }
 }
+MS2_REPLACE_METHOD(0x141B2BE80, UITriggerEditorDialog, FUN_141b2be80, 4676, 0xC5F16193);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2d0d0
@@ -665,6 +691,7 @@ int UITriggerEditorDialog::FUN_141b2d0d0()
     m_strFileName.Delete(0, strFile.ReverseFind('/') + 1);
     return 1;
 }
+MS2_REPLACE_METHOD(0x141B2D0D0, UITriggerEditorDialog, FUN_141b2d0d0, 618, 0x67870D93);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2d340
@@ -693,6 +720,7 @@ void UITriggerEditorDialog::FUN_141b2d340()
         FUN_140d73bc0(0xaf4, 0, 0, L"");
     }
 }
+MS2_REPLACE_METHOD(0x141B2D340, UITriggerEditorDialog, FUN_141b2d340, 546, 0x538DEAC4);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2d570
@@ -716,6 +744,7 @@ void UITriggerEditorDialog::FUN_141b2d570()
     else
         FUN_140d73bc0(0xb02, 0, 0, L"");
 }
+MS2_REPLACE_METHOD(0x141B2D570, UITriggerEditorDialog, FUN_141b2d570, 747, 0xC7E0F5F8);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2d870
@@ -758,6 +787,7 @@ void UITriggerEditorDialog::FUN_141b2d870()
     m_30->Invoke("initalizeInstallObjects");
     spList->vfunc_24(true);
 }
+MS2_REPLACE_METHOD(0x141B2D870, UITriggerEditorDialog, FUN_141b2d870, 1287, 0x915E55A8);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2dd80
@@ -873,6 +903,7 @@ void UITriggerEditorDialog::FUN_141b2dd80()
     }
     m_30->Invoke("invalidateStates");
 }
+MS2_REPLACE_METHOD(0x141B2DD80, UITriggerEditorDialog, FUN_141b2dd80, 5046, 0xB0B4B67B);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2f140
@@ -901,6 +932,7 @@ void UITriggerEditorDialog::FUN_141b2f140(const std::vector<Message>& messages)
     m_30->Invoke("initalizeDefaultObjects");
     spList->vfunc_24(true);
 }
+MS2_REPLACE_METHOD(0x141B2F140, UITriggerEditorDialog, FUN_141b2f140, 733, 0x2E268709);
 
 // @0x141b2f430
 POINT UITriggerEditorDialog::FUN_141b2f430(int nX, int nY)
@@ -917,6 +949,7 @@ POINT UITriggerEditorDialog::FUN_141b2f430(int nX, int nY)
     }
     return pt;
 }
+MS2_REPLACE_METHOD(0x141B2F430, UITriggerEditorDialog, FUN_141b2f430, 215, 0xC406528F);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2f510
@@ -957,6 +990,7 @@ void UITriggerEditorDialog::FUN_141b2f510()
     }
     static_cast<Unk_TeScript*>(m_30.operator->())->FUN_1412c4930("newState", strName, nX, nY);
 }
+MS2_REPLACE_METHOD(0x141B2F510, UITriggerEditorDialog, FUN_141b2f510, 1279, 0xE813195F);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2fa20
@@ -972,6 +1006,7 @@ bool FUN_141b2fa20(Cube* pLeft, Cube* pRight)
         return true;
     return false;
 }
+MS2_REPLACE(0x141B2FA20, FUN_141b2fa20, 294, 0x29CD6CD2);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMDAT glue
