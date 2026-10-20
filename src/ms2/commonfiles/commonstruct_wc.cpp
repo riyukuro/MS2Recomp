@@ -352,6 +352,7 @@ void FUN_140276d40(i64 vec, i64 first, i64 last)
 }
 // @0x140276fe0
 i64 FUN_140276fe0(i64, i64 b, i64) { return b; }
+// MS2-FUNCTIONAL: std::_Tree::_Buynode written over raw i64 node handles (element type unrecovered); the exe EH try/catch frame and temps differ
 // @0x140277000
 i64 FUN_140277000(i64 list, i64 a, i64 b, i64 c)
 {
@@ -594,6 +595,7 @@ void FUN_140277bd0(i64 vec, i64 v)
     *mylast4 = *mylast4 + 0x10;
 }
 // _Emplace_reallocate: grow, construct the new element at the insertion point, move the two halves, swap buffers
+// MS2-FUNCTIONAL: vector::_Emplace_reallocate (16-byte elements) over raw i64 handles; the exe try/catch frame differs (element type unrecovered)
 // @0x140277c90
 i64 FUN_140277c90(i64 vec, i64 where, i64 v)
 {
@@ -627,6 +629,7 @@ i64 FUN_140277c90(i64 vec, i64 where, i64 v)
     i64* myfirst4 = FUN_140288a40(vec);
     return off * 0x10 + *myfirst4;
 }
+// MS2-FUNCTIONAL: vector::_Emplace_reallocate (0x30-byte elements) over raw i64 handles; the exe try/catch frame differs (element type unrecovered)
 // @0x140277ee0
 i64 FUN_140277ee0(i64 vec, i64 where, i64 v)
 {
@@ -660,6 +663,7 @@ i64 FUN_140277ee0(i64 vec, i64 where, i64 v)
     i64* myfirst4 = FUN_1402889c0(vec);
     return off * 0x30 + *myfirst4;
 }
+// MS2-FUNCTIONAL: vector::_Emplace_reallocate (8-byte elements) over raw i64 handles; the exe try/catch frame differs (element type unrecovered)
 // @0x140278130
 i64 FUN_140278130(i64 vec, i64 where, i64 v)
 {
@@ -694,6 +698,7 @@ i64 FUN_140278130(i64 vec, i64 where, i64 v)
     i64* myfirst4 = FUN_140288a00(vec);
     return *myfirst4 + off * 8;
 }
+// MS2-FUNCTIONAL: vector::_Emplace_reallocate (16-byte elements) over raw i64 handles; the exe try/catch frame differs (element type unrecovered)
 // @0x140278370
 i64 FUN_140278370(i64 vec, i64 where, i64 v)
 {
