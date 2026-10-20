@@ -35,7 +35,7 @@ struct Unk_PCEquipSet
     MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nKind, int n);    // a worn item of the slot (customize.cpp)
     void FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& out, int nKind);   // the worn items of a kind (customize.cpp)
     void FUN_1411e5c10(); void FUN_1411e6ab0(); void FUN_1411e75f0();   // refresh the look (customize.cpp)
-    MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nKind); MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nItemUid); void FUN_1411e4150(__int64 nItemUid, unsigned char nSlot, int nKind); void FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd); void FUN_1411ea7c0(); void FUN_1411e7660();
+    MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nKind); MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nItemUid); MS2Ptr<CEquipItem> FUN_1411e1a50(int nSlot, int nKind); void FUN_1411e4150(__int64 nItemUid, unsigned char nSlot, int nKind); void FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd); void FUN_1411ea7c0(); void FUN_1411e7660();
     void FUN_1411e7640();                                   // the look changed (flag 50; additionalcli.cpp)
     void* FUN_1411e2440(int nKind);                         // the worn items of an equip layer, NULL when none (uiclosetdialog.cpp)
     int FUN_1411e0ba0();                                    // RefreshModel (returns 1; equipitem.cpp)
@@ -203,8 +203,11 @@ public:
     int FUN_1416566f0();                                    // +0xd68
     void FUN_141656710();                                   // refresh the stance and the buffs after an equip change
     int FUN_141656750();                                    // the equipment is ready
-    int FUN_1416538d0(CDamageRecord* pRecord);              // the hit is guarded (no hit reaction)
+    int FUN_1416538d0(CDamageRecord* pRecord);              // the hit grabs this onto the attacker (state 0x2b; no hit reaction)
     int FUN_141653f00();                                    // rebuild the weapon stance from the worn weapons (changed: 1)
+    MS2Ptr<CEquipItem> FUN_141655ee0(int nSlot, bool bKind0Only);   // the worn weapon (slot 4/5): kind 0, or the first of kinds 0..2 holding one
+    int FUN_14165c570();                                    // the normal attack skill of the weapon stance
+    void FUN_14165c720(int nSkillId, short nLevel);         // preload a skill and its combo chain
     __int64 FUN_141656ad0();                                // +0xdc0
     int FUN_14165ef30();                                    // this is the local player
     MS2Ptr<Unk_PCLinkFD8> FUN_141657730();                  // the +0xfd8 record, created on demand (none while busy)

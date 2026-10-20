@@ -98,6 +98,7 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "weaponactiontable.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/mstime.h"
@@ -178,6 +179,7 @@ public:
     void FUN_141bca390(unsigned int nObjectId);                     // the player model is ready (quick equip)
     int FUN_141bd19d0(int nObjectId);                               // the relation of an object (1: the local player)
     int FUN_141bd3060();                                            // the current map id
+    PCBase* FUN_141bd1200(int nObjectId);                           // the actor of an object id
 };
 Unk_PCWorld* FUN_1403ed2d0();
 // The effect service (FUN_1403ed280).
@@ -203,6 +205,16 @@ void FUN_141567330(NiAVObject* pRoot, bool b);                      // (the mode
 extern float DAT_1439f8210;                                         // the hit colour boost (0.7, 0.1, 0.1)
 extern float DAT_1439f8214;
 extern float DAT_1439f8218;
+ClonePC* FUN_1405a7e30(PC* p);                                      // efd::DynamicCast<ClonePC>
+extern int DAT_1439f821c;                                           // the combo preload loop limit
+SkillDataTableCli* FUN_1401958b0();                                 // TSingleton<SkillDataTableCli>::GetInstance
+void* FUN_140166440();                                              // the log
+void FUN_1401859c0(void* pLog, int nLevel, int nCategory, const wchar_t* pszText);
+class Unk_PCBaseBuffs
+{
+public:
+    int FUN_1409709b0();                                            // a buff blocks being grabbed
+};
 // The pvp manager (FUN_140f97ef0).
 class Unk_PCPvPMgr
 {
@@ -2557,6 +2569,171 @@ void PC::FUN_141660d50()
     efd::Point3 kSize(70.0f, 35.0f, 150.0f);
     efd::Point3 kOffset(0.0f, 35.0f, 0.0f);
     FUN_141670fd0(kSize, kOffset);
+}
+
+// MS2-FUNCTIONAL: structure aligned, the exe keeps the attack and the owner in different temporaries
+// @0x1416538d0
+int PC::FUN_1416538d0(CDamageRecord* pRecord)
+{
+    SkillAttackData* pAttack = pRecord->FUN_14175a8b0();
+    if (pAttack == 0)
+        return 0;
+    if (pAttack->m_eGrabTargetType != 1)
+        return 0;
+    if (FUN_14166c930() == 0x2b)
+        return 0;
+    PCBase* pOwner = FUN_1403ed2d0()->FUN_141bd1200(pRecord->m_nOwnerId);
+    if (pOwner == 0)
+        return 0;
+    if (pOwner->FUN_14166ce30() != 0 || pOwner->FUN_1416749a0()->FUN_1409709b0() != 0)
+        return 0;
+    if (pOwner->FUN_141675e60() == 0)
+        return 0;
+    CString strNode;
+    float fNearest = FLT_MAX;
+    for (unsigned i = 0; i < pAttack->m_arrGrabNodeCategory.GetCount(); i++)
+    {
+        CString strCategory(pAttack->m_arrGrabNodeCategory[i]);
+        float fDist = 0.0f;
+        CString strName;
+        if (pOwner->FUN_141675cd0(vfunc_18(), strCategory, &strName, &fDist) != 0 && fDist < fNearest)
+        {
+            fNearest = fDist;
+            strNode = strName;
+        }
+    }
+    if (strNode.IsEmpty())
+        return 0;
+    if (FUN_1416764d0() != 0)
+        return 0;
+    if (FUN_141660120())
+        return 0;
+    MS2Ptr<StateDataGrabTarget> spData(new StateDataGrabTarget);
+    spData->m_nTarget = pRecord->m_nOwnerId;
+    spData->m_strNode = strNode;
+    vfunc_59(0x2b, spData, 0, 0);
+    return 1;
+}
+
+// MS2-FUNCTIONAL: structure aligned, the exe re-fetches the item records for each test
+// @0x141653f00
+int PC::FUN_141653f00()
+{
+    int nRight = 0;
+    int nLeft = 0;
+    MS2Ptr<CEquipItem> spRight = FUN_141655d50(5);
+    if (!spRight)
+        spRight = FUN_141655ee0(5, 1);
+    if (spRight.get())
+        nRight = spRight->FUN_1411dc7f0()->FUN_14053c620();
+    if (spRight.get() && spRight->FUN_1411dc7a0().get())
+    {
+        if (FUN_141662eb0(spRight->FUN_1411dc7a0().get()) == 0)
+            nRight = 0;
+    }
+    MS2Ptr<CEquipItem> spLeft = FUN_141655d50(4);
+    if (!spLeft)
+        spLeft = FUN_141655ee0(4, 1);
+    if (spLeft.get())
+        nLeft = spLeft->FUN_1411dc7f0()->FUN_14053c620();
+    if (spLeft.get() && spLeft->FUN_1411dc7a0().get())
+    {
+        if (FUN_141662eb0(spLeft->FUN_1411dc7a0().get()) == 0)
+            nLeft = 0;
+    }
+    if (spRight == spLeft.get())
+        nLeft = 0;
+    if (!CWeaponActionTable::IsAllowed(nRight, nLeft))
+        nLeft = 0;
+    MS2Ptr<CWeaponAction> spOld(m_spWeaponActionD70);
+    m_spWeaponActionD70 = CWeaponActionTable::FindAction(nRight, nLeft);
+    if (spOld.get() != m_spWeaponActionD70.get() && m_spWeaponActionD70.get())
+        FUN_14165c720(FUN_14165c570(), 1);
+    return spOld.get() != m_spWeaponActionD70.get();
+}
+
+// MS2-FUNCTIONAL: structure aligned, temporary order differs
+// @0x14165c570
+int PC::FUN_14165c570()
+{
+    MS2Ptr<CWeaponAction> spAction(m_spWeaponActionD70);
+    if (!spAction)
+        spAction = CWeaponActionTable::FindAction(0, 0);
+    if (!spAction.get())
+        return 0;
+    if (spAction->m_nNormalAttack == 0)
+    {
+        MS2Ptr<CEquipItem> spRight = FUN_141655d50(5);
+        if (!spRight)
+            spRight = FUN_141655c90(5);
+        if (spRight.get())
+            return spRight->FUN_1411dc7f0()->FUN_14053dc90();
+    }
+    return spAction->m_nNormalAttack;
+}
+
+// MS2-FUNCTIONAL: structure aligned; the loop exit after the MaxCount log is assumed (the decompile drops it)
+// @0x14165c720
+void PC::FUN_14165c720(int nSkillId, short nLevel)
+{
+    if (nSkillId == 0)
+        return;
+    MyPC* pMyPC = FUN_1409613d0(this);
+    FUN_140ab7a10()->FUN_141210540(nSkillId, nLevel, pMyPC ? 2 : 3);
+    MS2Ptr<SkillData> spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
+    if (!spSkill.get())
+        return;
+    FUN_140ab7a10()->FUN_141210540(spSkill->m_nJump, nLevel, pMyPC ? 2 : 3);
+    std::set<int> kFound;
+    std::set<int> kVisited;
+    int nCount = 0;
+    do
+    {
+        kFound.clear();
+        kVisited.insert(nSkillId);
+        FUN_141661820(nSkillId, nLevel, kVisited, kFound);
+        if (kFound.empty())
+            nSkillId = 0;
+        else
+            nSkillId = *kFound.begin();
+        nCount++;
+        if (nCount >= DAT_1439f821c)
+        {
+            FUN_1401859c0(FUN_140166440(), 1, 0x13, L"PreloadComboSkill loopCount >= MaxCount");
+            break;
+        }
+    } while (nSkillId != 0);
+    FUN_141661840(nSkillId, nLevel);
+}
+
+// MS2-FUNCTIONAL: structure aligned, register allocation differs
+// @0x141655ee0
+MS2Ptr<CEquipItem> PC::FUN_141655ee0(int nSlot, bool bKind0Only)
+{
+    if (nSlot != 4 && nSlot != 5)
+        return MS2Ptr<CEquipItem>(0);
+    ClonePC* pClone = FUN_1405a7e30(this);
+    bool bClone = !(pClone == 0 || pClone->FUN_141088590());
+    if (!bKind0Only || bClone)
+    {
+        if (bClone)
+            return m_kEquipDE0.FUN_1411e1a50(nSlot, 0);
+        std::vector<int> kKinds;
+        kKinds.reserve(3);
+        kKinds.push_back(0);
+        kKinds.push_back(1);
+        kKinds.push_back(2);
+        MS2Ptr<CEquipItem> spItem(0);
+        for (size_t i = 0; i < kKinds.size(); i++)
+        {
+            int nKind = kKinds[i];
+            spItem = m_kEquipDE0.FUN_1411e1780(nSlot, nKind);
+            if (spItem.get())
+                break;
+        }
+        return spItem;
+    }
+    return m_kEquipDE0.FUN_1411e1780(nSlot, 0);
 }
 
 // ---- end of code ----
