@@ -2315,37 +2315,35 @@ void CKeyTable::FUN_1414310f0(int nKey, int nOtherKey, __int64 nAction, __int64 
     for (int i = (int)nOtherBase; (unsigned __int64)(__int64)i < (unsigned __int64)(nOtherBase + nCount); i++)
     {
         int nCombo = FUN_14142c940(i, 2);
-        if (nCombo != 0)
+        if (nCombo == 0)
+            continue;
+        int nFirst;
+        int nSecond;
+        FUN_1414310a0(nCombo, &nFirst, &nSecond);
+        unsigned nNewCombo;
+        FUN_141430e70(&nNewCombo, nOtherKey, nSecond, 0xf0);
+        int nSlot = FUN_14142dad0(nCombo);
+        aCombos.Add((Unk_MyPCKeyId)nNewCombo);
+        aSlots.Add(nSlot);
+        aActions.Add(i);
+    }
+    if (bOther)
+    {
+        nCount = nBase == 0x7a131 ? 6 : 8;
+        for (int i = (int)nBase; (unsigned __int64)(__int64)i < (unsigned __int64)(nBase + nCount); i++)
         {
+            int nCombo = FUN_14142c940(i, 2);
+            if (nCombo == 0)
+                continue;
             int nFirst;
             int nSecond;
             FUN_1414310a0(nCombo, &nFirst, &nSecond);
             unsigned nNewCombo;
-            FUN_141430e70(&nNewCombo, nOtherKey, nSecond, 0xf0);
+            FUN_141430e70(&nNewCombo, nKey, nSecond, 0xf0);
             int nSlot = FUN_14142dad0(nCombo);
-            aCombos.Add((Unk_MyPCKeyId)nNewCombo);
-            aSlots.Add(nSlot);
-            aActions.Add(i);
-        }
-    }
-    if (bOther)
-    {
-        int nOtherCount = nBase == 0x7a131 ? 6 : 8;
-        for (int i = (int)nBase; (unsigned __int64)(__int64)i < (unsigned __int64)(nBase + nOtherCount); i++)
-        {
-            int nCombo = FUN_14142c940(i, 2);
-            if (nCombo != 0)
-            {
-                int nFirst;
-                int nSecond;
-                FUN_1414310a0(nCombo, &nFirst, &nSecond);
-                unsigned nNewCombo;
-                FUN_141430e70(&nNewCombo, nKey, nSecond, 0xf0);
-                int nSlot = FUN_14142dad0(nCombo);
-                aOtherCombos.Add((Unk_MyPCKeyId)nNewCombo);
-                aOtherSlots.Add(nSlot);
-                aOtherActions.Add(i);
-            }
+            aOtherCombos.Add((Unk_MyPCKeyId)nNewCombo);
+            aOtherSlots.Add(nSlot);
+            aOtherActions.Add(i);
         }
         FUN_1414316e0(nOtherKey, nAction);
     }
