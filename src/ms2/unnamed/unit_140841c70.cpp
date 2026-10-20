@@ -4,12 +4,11 @@
 // every class/function name is invented (after the v2525 snapshot, work/ext/v2525 src/ms2/tu/140841580.cpp).
 // The TU is [0x140841580, 0x14084cb30): its own code 0x140841580-0x140841c70 is followed by the STL COMDAT tail
 // (unordered_map<string, vector<char>> / <wstring, vector<wchar_t>> internals) that unit_140841c70 covers.
-// 0x140841780-0x140841c70 is queue unit unit_140841780 (blocked on this tail); its functions are tagged here
-// but not counted (outside this file's ranges). The two ctors 0x140841580/0x140841860 sit in no queue row.
+// 0x140841780-0x140841c70 was queue unit unit_140841780; it is the same TU, so its range is merged here (w523).
+// The two ctors 0x140841580/0x140841860 sit in no queue row.
 // No hooks: nothing in the exe calls these functions, and Get/Table read the unit's mutable function-local statics.
 // MS2-UNIT: unit_140841c70
-// MS2-RANGE: 0x140841580-0x140841780 .text$mn
-// MS2-RANGE: 0x140841c70-0x14084cb30 .text$mn
+// MS2-RANGE: 0x140841580-0x14084cb30 .text$mn
 // MS2-RANGE: 0x142c9c450-0x142c9c490 .text$yd
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
