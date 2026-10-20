@@ -355,3 +355,5 @@ UIJobChangeDialog::JobPreview::JobPreview()
 UIJobChangeDialog::JobDescription::JobDescription()
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbf080-0x142cbf0b0 .text$yd

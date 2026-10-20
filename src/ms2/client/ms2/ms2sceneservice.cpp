@@ -257,3 +257,5 @@ void MS2SceneService::vfunc_1(int)
     }
 }
 MS2_REPLACE_METHOD_VIA(0x141504280, MS2SceneService, IWorldServiceCallback, vfunc_1, 230, 0x945C7F3A);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb3210-0x142cb3230 .text$yd
