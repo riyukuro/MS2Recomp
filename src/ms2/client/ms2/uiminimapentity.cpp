@@ -52,6 +52,7 @@
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/commonfiles/pvpinfo.h"
+#include "ms2/client/ms2/hardwareinstancingservice.h"
 #include "ms2/client/ms2/uiserverlistdialog.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
@@ -3307,6 +3308,80 @@ void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
             spEntity->m_64 = true;
         }
     }
+}
+
+class Unk_MmPortalPos { public: efd::Point3 FUN_14169d2f0(); };    // CPortal: the entity position
+extern char DAT_143b059e8;                                          // the entity app framework
+HardwareInstancingService* FUN_14098c5b0(char* pFramework);
+
+// @0x141a43b80
+void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool bInit)
+{
+    if (spProxy == 0 || spEntity == 0)
+        return;
+    MS2Ptr<CPortal> spPortal = spProxy->m_portal;
+    if (spPortal == 0)
+        return;
+    efd::SmartPointer<HardwareInstancingService> spService(FUN_14098c5b0(&DAT_143b059e8));
+    if (static_cast<bool>(spService)) {
+        if (spService->FUN_1413d7d90(spPortal->m_idEntity) != 0)
+            return;
+    }
+    MS2Ptr<UIMinimapEntityProxyPortal> spPortalEntity = dynamic_cast<UIMinimapEntityProxyPortal*>(static_cast<UIMinimapEntity*>(spEntity));
+    if (spPortalEntity == 0)
+        return;
+    spPortalEntity->FUN_141a33650();
+    bool bEnabled = spPortal->FUN_14169d160();
+    bool bVisible = spPortal->FUN_14169d1d0();
+    int nDest = spPortal->FUN_14169d280();
+    bool bHousing = false;
+    if (nDest != 0) {
+        MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nDest);
+        if (spField == 0)
+            return;
+        bHousing = spField->FUN_140375130();
+    }
+    if (!bInit) {
+        bool bChanged = spEntity->m_visible != bVisible;
+        if (!bChanged && !bHousing)
+            return;
+    }
+    if (bInit) {
+        int nField = FUN_1403ed2d0()->FUN_141bd3060();
+        if (nDest == nField)
+            return;
+        spEntity->FUN_141a323e0(spPortal);
+        spEntity->m_position = reinterpret_cast<Unk_MmPortalPos*>(spPortal.operator->())->FUN_14169d2f0();
+    }
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return;
+    if (!bHousing) {
+        spEntity->m_showText = true;
+        spEntity->m_showGuide = true;
+    }
+    if (bHousing && spPortal->m_nType != 4) {
+        bool bSpecial = false;
+        CString strIcon;
+        CString strLayer;
+        int nNpc = spEntity->FUN_141a316d0(nDest, bSpecial, strIcon, strLayer);
+        bool bHandled = false;
+        if (!bSpecial) {
+            if (FUN_141a44850(spEntity, nDest, bEnabled)) {
+                spPortalEntity->FUN_141a51050(2);
+                bHandled = true;
+            }
+        }
+        if (!bHandled && nNpc != 0) {
+            if (FUN_141a44c00(spEntity, nNpc, bSpecial, strIcon, strLayer, bEnabled, bVisible)) {
+                spPortalEntity->FUN_141a51050(1);
+                spPortalEntity->FUN_141a51030(bSpecial);
+                spPortalEntity->FUN_141a50bc0(nNpc);
+            }
+        }
+    }
+    if (spPortalEntity->FUN_141a4b020() == 0)
+        spEntity->FUN_141a323e0(spPortal);
 }
 
 // @0x141a44380
