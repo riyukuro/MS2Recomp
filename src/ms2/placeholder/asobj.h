@@ -94,6 +94,7 @@ public:
     void FUN_1422bbc60(int n);                                           // push an int
     unsigned int FUN_1422bc5d0();                                        // element count
     Scaleform::GFx::Value FUN_1422bc6b0(unsigned nIndex);                // the element at an index (merat market buy rows)
+    void FUN_1422bc660(unsigned nIndex, int nCount);                    // splice(index, count) (asdropdownmenu.cpp: remove a row)
 };
 
 // ASDataProvider: an ASArray with its own vftable (RTTI ASDataProvider : ASArray : AScript : CPtred), same 0x40 layout.
@@ -105,5 +106,7 @@ public:
     ASDataProvider(int nType);
     ASDataProvider(const ASArray& arr);                                  // 0x140bbf7b0 (copies the array; invenslot slot names)
     virtual ~ASDataProvider();
+    void FUN_1422df120();                                                // remove every element (asdropdownmenu.cpp)
+    AScript FUN_1422df140(unsigned nIndex);                              // requestItemAt(index) as an AS object (asdropdownmenu.cpp)
 };
 MS2_CHECK_SIZE(ASDataProvider, 0x40);
