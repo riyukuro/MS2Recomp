@@ -25,7 +25,10 @@
 // (`call [__imp_wcslen]`); the static-CRT headers used here declare it without dllimport.
 extern "C" size_t (__cdecl* __imp_wcslen)(const wchar_t*);
 // MS2: the game's TU is built with _UNICODE, so CAtlRegExp::Match's _TUCHAR casts read wchar_t (`movzx eax, word ptr`).
+// A TU built with _MBCS like the original (client\ms2\webbrowserservice.cpp) defines it as _TUCHAR before including.
+#ifndef MS2_ATLRX_TUCHAR
 #define MS2_ATLRX_TUCHAR wchar_t
+#endif
 
 #ifndef ATL_REGEXP_MIN_STACK
 #define ATL_REGEXP_MIN_STACK 256

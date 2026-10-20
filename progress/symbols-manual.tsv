@@ -4090,3 +4090,7 @@ FMOD_System_Create	142303a95	func
 ?SetValue@NiFloatsExtraData@@QEAA_NIM@Z	141d580c0	func
 ?ToLower@String@Scaleform@@QEBA?AV12@XZ	142587bf0	func
 ?LoadProtocolImage@ImageCreator@GFx@Scaleform@@UEAAPEAVImage@Render@3@AEBVImageCreateInfo@23@AEBVString@3@@Z	142593140	func
+?g_szCefMessageToken@@3PEBDEB	1439f7eb0	data
+cef_string_ascii_to_utf16	142778544	func
+?OnDotDamage@CDPSMeterSystem@@QEAAXV?$MS2Ptr@VCDotDamageRecord@@@@@Z	14117dbe0	func
+?OnSplashDamage@CDPSMeterSystem@@QEAAXV?$MS2Ptr@VCSplashDamageRecord@@@@@Z	14117e030	func
