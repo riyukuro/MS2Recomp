@@ -657,7 +657,10 @@
 140120290	1401206b0	unit_140120290	none	11	di	
 1401206b0	140120860	?\worldservice.cpp	low	6	di	
 140120860	140120880	unit_141bf99b8	none	1	di	
-140120880	1401580a0	unit_140120880	none	3328	di	
+1401208d0	140120be0	unit_1401208d0	none	1	di	w520 split: CMyPCKeyInputController static (0x143af82f0), likely worldservice_1 last di; rest of the old 0x140120880-0x1401580a0 row is library (Gamebryo/AS3/ATL/CRT, see work/coord/w519-unit_140120880.md)
+140135ac0	140135c50	unit_140135ac0	none	10	di	w520 split: gfxui lib di (GFxMovie RTTI, DragSlot/BindData ClassInfo, GFx::Value)
+140135c50	14013acc0	unit_140135c50	none	224	di	w520 split: header-statics TU (src/ms2/unnamed/unit_140135c50.cpp)
+14013acc0	14013b1d0	unit_14013acc0	none	27	di	w520 split: gfxui lib di (GFxMovie* RTTI, uiswfentity 3, NiGFxOverlayClick RTTI)
 1401580a0	14016da90	?\achievecondition.cpp	low	682	mn	
 14016da90	14016fda0	?\adbannerdata.cpp	low	65	mn	
 14016fda0	140195470	?\additionalactionadditional.cpp	low	1452	mn	
