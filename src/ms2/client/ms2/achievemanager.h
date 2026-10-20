@@ -79,6 +79,7 @@ class NotifyClearAchieve : public NotifyObject
 public:
     NotifyClearAchieve(int nId);                                    // 0x140939030
     virtual ~NotifyClearAchieve();                                  // 0x140939240
+    virtual CStringW vfunc_1();                                     // 0x140db50b0 (notifychangebuff.cpp)
 
     int m_nId;                                                      // +0x18
 };
@@ -142,7 +143,7 @@ public:
     static int FindIdByTab(int nTab);                               // 0x14093f0d0
     static int ParseTab(CStringA& strTab);                          // 0x14093f8a0
     static int ParseTree(CStringA& strTree);                        // 0x14093f910
-    bool IsOpen();                                                  // 0x14093f240 (no event filter, or the event is running)
+    int IsOpen();                                                   // 0x14093f240 (no event filter, or the event is running)
     bool Matches(unsigned nAchieveId);                              // 0x14093f2d0
 
     int m_nId;                                                      // +0x20 "id"

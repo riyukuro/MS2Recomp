@@ -940,9 +940,10 @@ CStringW FUN_14093b970(int nId)
 // @0x14093b9c0
 CStringW FUN_14093b9c0(int nId, int nGrade)
 {
-    if (nGrade < 0 || 10 < nGrade)
+    static const wchar_t s_aRoman[] = { L'0', L'Ⅰ', L'Ⅱ', L'Ⅲ', L'Ⅳ', L'Ⅴ', L'Ⅵ', L'Ⅶ', L'Ⅷ', L'Ⅸ', L'Ⅹ' };
+    if (nGrade < 0 || nGrade >= _countof(s_aRoman))
         return CStringW(L"");
-    return FUN_14028dfa0(CStringW(L"s_achieve_title"), (wchar_t)L"0ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ"[nGrade], FUN_14093b970(nId));
+    return FUN_14028dfa0(CStringW(L"s_achieve_title"), s_aRoman[nGrade], FUN_14093b970(nId));
 }
 
 // @0x14093bad0
@@ -1348,8 +1349,9 @@ void CAchieveCategory::GetTabs(List& rOut)
     for (size_t i = 0; i < s_aCategory.GetCount(); i++)
     {
         MS2Ptr<CAchieveCategory> pTab = s_aCategory[i];
-        if (pTab->IsOpen() != 0)
-            rOut.Add(pTab);
+        if (!pTab->IsOpen())
+            continue;
+        rOut.Add(pTab);
     }
 }
 
@@ -1360,15 +1362,15 @@ void CAchieveCategory::GetRows(List& rOut)
     for (size_t i = 0; i < s_aCategory.GetCount(); i++)
     {
         MS2Ptr<CAchieveCategory> pTab = s_aCategory[i];
-        if (pTab->IsOpen() != 0)
+        if (!pTab->IsOpen())
+            continue;
+        rOut.Add(pTab);
+        for (size_t j = 0; j < pTab->m_aChildren.GetCount(); j++)
         {
-            rOut.Add(pTab);
-            for (size_t j = 0; j < pTab->m_aChildren.GetCount(); j++)
-            {
-                MS2Ptr<CAchieveCategory> pChild = pTab->m_aChildren[j];
-                if (pChild->IsOpen() != 0)
-                    rOut.Add(pChild);
-            }
+            MS2Ptr<CAchieveCategory> pChild = pTab->m_aChildren[j];
+            if (!pChild->IsOpen())
+                continue;
+            rOut.Add(pChild);
         }
     }
 }
@@ -1383,19 +1385,17 @@ MS2Ptr<CAchieveCategory> CAchieveCategory::GetRow(int nIndex)
     for (size_t i = 0; i < s_aCategory.GetCount(); i++)
     {
         MS2Ptr<CAchieveCategory> pTab = s_aCategory[i];
-        if (pTab->IsOpen() != 0)
+        if (!pTab->IsOpen())
+            continue;
+        if (nCount++ == nIndex)
+            return pTab;
+        for (size_t j = 0; j < pTab->m_aChildren.GetCount(); j++)
         {
+            MS2Ptr<CAchieveCategory> pChild = pTab->m_aChildren[j];
+            if (!pChild->IsOpen())
+                continue;
             if (nCount++ == nIndex)
-                return pTab;
-            for (size_t j = 0; j < pTab->m_aChildren.GetCount(); j++)
-            {
-                MS2Ptr<CAchieveCategory> pChild = pTab->m_aChildren[j];
-                if (pChild->IsOpen() != 0)
-                {
-                    if (nCount++ == nIndex)
-                        return pChild;
-                }
-            }
+                return pChild;
         }
     }
     return MS2Ptr<CAchieveCategory>(0);
@@ -1445,16 +1445,15 @@ int CAchieveCategory::FindIdByTab(int nTab)
 #endif
 
 // @0x14093f240
-bool CAchieveCategory::IsOpen()
+int CAchieveCategory::IsOpen()
 {
     if (m_strEventFilter.GetLength() != 0)
     {
         if (FUN_14015a050()->FUN_140cead80(m_strEventFilter))
-            return true;
-        else
-            return false;
+            return 1;
+        return 0;
     }
-    return true;
+    return 1;
 }
 
 // @0x14093f2d0
