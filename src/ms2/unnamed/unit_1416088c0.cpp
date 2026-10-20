@@ -211,13 +211,12 @@ extern void FUN_1416041e0(void*);
 extern void** FUN_141604630(void**);
 extern void** FUN_141604650(void**);
 extern void* FUN_141607780(void*, void*);
-extern void FUN_1416088c0(void*);
-extern void* FUN_1416099b0(void*, void*);
+extern void FUN_1416088c0(void*) noexcept;
+extern void* FUN_1416099b0(void*, void*) noexcept;
 extern void* FUN_14160a4c0(void*, void*, void*);
 
 // @0x1416088c0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_1416088c0(void* a)
+void FUN_1416088c0(void* a) noexcept
 {
     void** head = FUN_141600e10(a);
     void* p = *head;
@@ -225,293 +224,227 @@ void FUN_1416088c0(void* a)
     *FUN_141604650(head) = p;
     *FUN_141602850(head) = p;
     *FUN_141604630(head) = p;
-    head[1] = 0;
+    ((Unk_TreeNode*)head)->_Parent = 0;
 }
 
 // @0x141608960
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608960(void* a)
+void FUN_141608960(void* a) noexcept
 {
     FUN_141603f40(a);
     void** x = FUN_141603980(a);
-    void** y = FUN_1416033c0(a);
-    FUN_141600150(a, *y, *x);
+    FUN_141600150(a, *FUN_1416033c0(a), *x);
     void** z = FUN_1416033c0(a);
-    void** w = FUN_141603980(a);
-    *w = *z;
+    *FUN_141603980(a) = *z;
 }
 
 // @0x1416089e0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_1416089e0(void* a)
+void FUN_1416089e0(void* a) noexcept
 {
     FUN_141603f60(a);
     void** x = FUN_1416039c0(a);
-    void** y = FUN_141603400(a);
-    FUN_141600190(a, *y, *x);
+    FUN_141600190(a, *FUN_141603400(a), *x);
     void** z = FUN_141603400(a);
-    void** w = FUN_1416039c0(a);
-    *w = *z;
+    *FUN_1416039c0(a) = *z;
 }
 
 // @0x141608a60
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608a60(void* a)
+void FUN_141608a60(void* a) noexcept
 {
     FUN_141603f80(a);
     void** x = FUN_141603a00(a);
-    void** y = FUN_141603440(a);
-    FUN_1416001d0(a, *y, *x);
+    FUN_1416001d0(a, *FUN_141603440(a), *x);
     void** z = FUN_141603440(a);
-    void** w = FUN_141603a00(a);
-    *w = *z;
+    *FUN_141603a00(a) = *z;
 }
 
 // @0x141608ae0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608ae0(void* a)
+void FUN_141608ae0(void* a) noexcept
 {
     FUN_141603fa0(a);
     void** x = FUN_141603a40(a);
-    void** y = FUN_141603480(a);
-    FUN_141600210(a, *y, *x);
+    FUN_141600210(a, *FUN_141603480(a), *x);
     void** z = FUN_141603480(a);
-    void** w = FUN_141603a40(a);
-    *w = *z;
+    *FUN_141603a40(a) = *z;
 }
 
 // @0x141608b60
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608b60(void* a)
+void FUN_141608b60(void* a) noexcept
 {
     FUN_141603fc0(a);
     void** x = FUN_141603a80(a);
-    void** y = FUN_1416034c0(a);
-    FUN_141600250(a, *y, *x);
+    FUN_141600250(a, *FUN_1416034c0(a), *x);
     void** z = FUN_1416034c0(a);
-    void** w = FUN_141603a80(a);
-    *w = *z;
+    *FUN_141603a80(a) = *z;
 }
 
 // @0x141608be0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608be0(void* a)
+void FUN_141608be0(void* a) noexcept
 {
     FUN_141603fe0(a);
     void** x = FUN_141603ac0(a);
-    void** y = FUN_141603500(a);
-    FUN_141600290(a, *y, *x);
+    FUN_141600290(a, *FUN_141603500(a), *x);
     void** z = FUN_141603500(a);
-    void** w = FUN_141603ac0(a);
-    *w = *z;
+    *FUN_141603ac0(a) = *z;
 }
 
 // @0x141608c60
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608c60(void* a)
+void FUN_141608c60(void* a) noexcept
 {
     FUN_141604000(a);
     void** x = FUN_141603b00(a);
-    void** y = FUN_141603540(a);
-    FUN_1416002d0(a, *y, *x);
+    FUN_1416002d0(a, *FUN_141603540(a), *x);
     void** z = FUN_141603540(a);
-    void** w = FUN_141603b00(a);
-    *w = *z;
+    *FUN_141603b00(a) = *z;
 }
 
 // @0x141608ce0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608ce0(void* a)
+void FUN_141608ce0(void* a) noexcept
 {
     FUN_141604020(a);
     void** x = FUN_141603b40(a);
-    void** y = FUN_141603580(a);
-    FUN_141600310(a, *y, *x);
+    FUN_141600310(a, *FUN_141603580(a), *x);
     void** z = FUN_141603580(a);
-    void** w = FUN_141603b40(a);
-    *w = *z;
+    *FUN_141603b40(a) = *z;
 }
 
 // @0x141608d60
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608d60(void* a)
+void FUN_141608d60(void* a) noexcept
 {
     FUN_141604040(a);
     void** x = FUN_141603b80(a);
-    void** y = FUN_1416035c0(a);
-    FUN_141600350(a, *y, *x);
+    FUN_141600350(a, *FUN_1416035c0(a), *x);
     void** z = FUN_1416035c0(a);
-    void** w = FUN_141603b80(a);
-    *w = *z;
+    *FUN_141603b80(a) = *z;
 }
 
 // @0x141608de0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608de0(void* a)
+void FUN_141608de0(void* a) noexcept
 {
     FUN_141604060(a);
     void** x = FUN_141603bc0(a);
-    void** y = FUN_141603600(a);
-    FUN_141600390(a, *y, *x);
+    FUN_141600390(a, *FUN_141603600(a), *x);
     void** z = FUN_141603600(a);
-    void** w = FUN_141603bc0(a);
-    *w = *z;
+    *FUN_141603bc0(a) = *z;
 }
 
 // @0x141608e60
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608e60(void* a)
+void FUN_141608e60(void* a) noexcept
 {
     FUN_141604080(a);
     void** x = FUN_141603c00(a);
-    void** y = FUN_141603640(a);
-    FUN_1416003d0(a, *y, *x);
+    FUN_1416003d0(a, *FUN_141603640(a), *x);
     void** z = FUN_141603640(a);
-    void** w = FUN_141603c00(a);
-    *w = *z;
+    *FUN_141603c00(a) = *z;
 }
 
 // @0x141608ee0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608ee0(void* a)
+void FUN_141608ee0(void* a) noexcept
 {
     FUN_1416040a0(a);
     void** x = FUN_141603c40(a);
-    void** y = FUN_141603680(a);
-    FUN_141600410(a, *y, *x);
+    FUN_141600410(a, *FUN_141603680(a), *x);
     void** z = FUN_141603680(a);
-    void** w = FUN_141603c40(a);
-    *w = *z;
+    *FUN_141603c40(a) = *z;
 }
 
 // @0x141608f60
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608f60(void* a)
+void FUN_141608f60(void* a) noexcept
 {
     FUN_1416040c0(a);
     void** x = FUN_141603c80(a);
-    void** y = FUN_1416036c0(a);
-    FUN_141600450(a, *y, *x);
+    FUN_141600450(a, *FUN_1416036c0(a), *x);
     void** z = FUN_1416036c0(a);
-    void** w = FUN_141603c80(a);
-    *w = *z;
+    *FUN_141603c80(a) = *z;
 }
 
 // @0x141608fe0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141608fe0(void* a)
+void FUN_141608fe0(void* a) noexcept
 {
     FUN_1416040e0(a);
     void** x = FUN_141603cc0(a);
-    void** y = FUN_141603700(a);
-    FUN_141600490(a, *y, *x);
+    FUN_141600490(a, *FUN_141603700(a), *x);
     void** z = FUN_141603700(a);
-    void** w = FUN_141603cc0(a);
-    *w = *z;
+    *FUN_141603cc0(a) = *z;
 }
 
 // @0x141609060
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141609060(void* a)
+void FUN_141609060(void* a) noexcept
 {
     FUN_141604100(a);
     void** x = FUN_141603d00(a);
-    void** y = FUN_141603740(a);
-    FUN_1416004d0(a, *y, *x);
+    FUN_1416004d0(a, *FUN_141603740(a), *x);
     void** z = FUN_141603740(a);
-    void** w = FUN_141603d00(a);
-    *w = *z;
+    *FUN_141603d00(a) = *z;
 }
 
 // @0x1416090e0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_1416090e0(void* a)
+void FUN_1416090e0(void* a) noexcept
 {
     FUN_141604120(a);
     void** x = FUN_141603d40(a);
-    void** y = FUN_141603780(a);
-    FUN_141600510(a, *y, *x);
+    FUN_141600510(a, *FUN_141603780(a), *x);
     void** z = FUN_141603780(a);
-    void** w = FUN_141603d40(a);
-    *w = *z;
+    *FUN_141603d40(a) = *z;
 }
 
 // @0x141609160
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141609160(void* a)
+void FUN_141609160(void* a) noexcept
 {
     FUN_141604140(a);
     void** x = FUN_141603d80(a);
-    void** y = FUN_1416037c0(a);
-    FUN_141600550(a, *y, *x);
+    FUN_141600550(a, *FUN_1416037c0(a), *x);
     void** z = FUN_1416037c0(a);
-    void** w = FUN_141603d80(a);
-    *w = *z;
+    *FUN_141603d80(a) = *z;
 }
 
 // @0x1416091e0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_1416091e0(void* a)
+void FUN_1416091e0(void* a) noexcept
 {
     FUN_141604160(a);
     void** x = FUN_141603dc0(a);
-    void** y = FUN_141603800(a);
-    FUN_141600590(a, *y, *x);
+    FUN_141600590(a, *FUN_141603800(a), *x);
     void** z = FUN_141603800(a);
-    void** w = FUN_141603dc0(a);
-    *w = *z;
+    *FUN_141603dc0(a) = *z;
 }
 
 // @0x141609260
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141609260(void* a)
+void FUN_141609260(void* a) noexcept
 {
     FUN_141604180(a);
     void** x = FUN_141603e00(a);
-    void** y = FUN_141603840(a);
-    FUN_1416005d0(a, *y, *x);
+    FUN_1416005d0(a, *FUN_141603840(a), *x);
     void** z = FUN_141603840(a);
-    void** w = FUN_141603e00(a);
-    *w = *z;
+    *FUN_141603e00(a) = *z;
 }
 
 // @0x1416092e0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_1416092e0(void* a)
+void FUN_1416092e0(void* a) noexcept
 {
     FUN_1416041a0(a);
     void** x = FUN_141603e40(a);
-    void** y = FUN_141603880(a);
-    FUN_141600610(a, *y, *x);
+    FUN_141600610(a, *FUN_141603880(a), *x);
     void** z = FUN_141603880(a);
-    void** w = FUN_141603e40(a);
-    *w = *z;
+    *FUN_141603e40(a) = *z;
 }
 
 // @0x141609360
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_141609360(void* a)
+void FUN_141609360(void* a) noexcept
 {
     FUN_1416041c0(a);
     void** x = FUN_141603e80(a);
-    void** y = FUN_1416038c0(a);
-    FUN_141600650(a, *y, *x);
+    FUN_141600650(a, *FUN_1416038c0(a), *x);
     void** z = FUN_1416038c0(a);
-    void** w = FUN_141603e80(a);
-    *w = *z;
+    *FUN_141603e80(a) = *z;
 }
 
 // @0x1416093e0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void FUN_1416093e0(void* a)
+void FUN_1416093e0(void* a) noexcept
 {
     FUN_1416041e0(a);
     void** x = FUN_141603ec0(a);
-    void** y = FUN_141603900(a);
-    FUN_141600690(a, *y, *x);
+    FUN_141600690(a, *FUN_141603900(a), *x);
     void** z = FUN_141603900(a);
-    void** w = FUN_141603ec0(a);
-    *w = *z;
+    *FUN_141603ec0(a) = *z;
 }
 
 // @0x141609460
@@ -677,8 +610,7 @@ bool FUN_141609960(void* a)
 }
 
 // @0x1416099b0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_1416099b0(void* a, void* b)
+void* FUN_1416099b0(void* a, void* b) noexcept
 {
     void** h = FUN_141600e10(a);
     FUN_1415e5cf0(b, *h, FUN_1415e1750(h));
@@ -686,262 +618,236 @@ void* FUN_1416099b0(void* a, void* b)
 }
 
 // @0x141609a10
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609a10(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609a10(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1760(FUN_141600e70(a));
-    void** w = FUN_141603980(a);
-    FUN_1415e6db0(b, *w, t);
+    FUN_1415e6db0(b, *FUN_141603980(a), t);
     return b;
 }
 
 // @0x141609a70
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609a70(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609a70(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1770(FUN_141600eb0(a));
-    void** w = FUN_1416039c0(a);
-    FUN_1415e6df0(b, *w, t);
+    FUN_1415e6df0(b, *FUN_1416039c0(a), t);
     return b;
 }
 
 // @0x141609ad0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609ad0(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609ad0(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1780(FUN_14029b840(a));
-    void** w = FUN_14029c010(a);
-    FUN_1415e6e30(b, *w, t);
+    FUN_1415e6e30(b, *FUN_14029c010(a), t);
     return b;
 }
 
 // @0x141609b30
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609b30(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609b30(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1790(FUN_141600ef0(a));
-    void** w = FUN_141603a00(a);
-    FUN_1415e6e70(b, *w, t);
+    FUN_1415e6e70(b, *FUN_141603a00(a), t);
     return b;
 }
 
 // @0x141609b90
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609b90(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609b90(void* a, void* b) noexcept
 {
     void* t = FUN_1415e17a0(FUN_141600f30(a));
-    void** w = FUN_141603a40(a);
-    FUN_1415e6eb0(b, *w, t);
+    FUN_1415e6eb0(b, *FUN_141603a40(a), t);
     return b;
 }
 
 // @0x141609bf0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609bf0(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609bf0(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1600(FUN_141600f50(a));
-    void** w = FUN_141603a60(a);
-    FUN_1415e6870(b, *w, t);
+    FUN_1415e6870(b, *FUN_141603a60(a), t);
     return b;
 }
 
 // @0x141609c50
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609c50(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609c50(void* a, void* b) noexcept
 {
     void* t = FUN_1415e17b0(FUN_141600f70(a));
-    void** w = FUN_141603a80(a);
-    FUN_1415e6ef0(b, *w, t);
+    FUN_1415e6ef0(b, *FUN_141603a80(a), t);
     return b;
 }
 
 // @0x141609cb0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609cb0(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609cb0(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1610(FUN_141600f90(a));
-    void** w = FUN_141603aa0(a);
-    FUN_1415e68b0(b, *w, t);
+    FUN_1415e68b0(b, *FUN_141603aa0(a), t);
     return b;
 }
 
 // @0x141609d10
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609d10(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609d10(void* a, void* b) noexcept
 {
     void* t = FUN_1415e17c0(FUN_141600fb0(a));
-    void** w = FUN_141603ac0(a);
-    FUN_1415e6f30(b, *w, t);
+    FUN_1415e6f30(b, *FUN_141603ac0(a), t);
     return b;
 }
 
 // @0x141609d70
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609d70(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609d70(void* a, void* b) noexcept
 {
     void* t = FUN_1415e17d0(FUN_141600ff0(a));
-    void** w = FUN_141603b00(a);
-    FUN_1415e6f70(b, *w, t);
+    FUN_1415e6f70(b, *FUN_141603b00(a), t);
     return b;
 }
 
 // @0x141609dd0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609dd0(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609dd0(void* a, void* b) noexcept
 {
     void* t = FUN_1415e17e0(FUN_141601030(a));
-    void** w = FUN_141603b40(a);
-    FUN_1415e6fb0(b, *w, t);
+    FUN_1415e6fb0(b, *FUN_141603b40(a), t);
     return b;
 }
 
 // @0x141609e30
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609e30(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609e30(void* a, void* b) noexcept
 {
     void* t = FUN_1415e17f0(FUN_141601070(a));
-    void** w = FUN_141603b80(a);
-    FUN_1415e6ff0(b, *w, t);
+    FUN_1415e6ff0(b, *FUN_141603b80(a), t);
     return b;
 }
 
 // @0x141609e90
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609e90(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609e90(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1800(FUN_1416010b0(a));
-    void** w = FUN_141603bc0(a);
-    FUN_1415e7030(b, *w, t);
+    FUN_1415e7030(b, *FUN_141603bc0(a), t);
     return b;
 }
 
 // @0x141609ef0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609ef0(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609ef0(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1810(FUN_1416010f0(a));
-    void** w = FUN_141603c00(a);
-    FUN_1415e7070(b, *w, t);
+    FUN_1415e7070(b, *FUN_141603c00(a), t);
     return b;
 }
 
 // @0x141609f50
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609f50(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609f50(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1820(FUN_141601130(a));
-    void** w = FUN_141603c40(a);
-    FUN_1415e70b0(b, *w, t);
+    FUN_1415e70b0(b, *FUN_141603c40(a), t);
     return b;
 }
 
 // @0x141609fb0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_141609fb0(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_141609fb0(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1830(FUN_141601170(a));
-    void** w = FUN_141603c80(a);
-    FUN_1415e70f0(b, *w, t);
+    FUN_1415e70f0(b, *FUN_141603c80(a), t);
     return b;
 }
 
 // @0x14160a010
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_14160a010(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_14160a010(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1840(FUN_1416011b0(a));
-    void** w = FUN_141603cc0(a);
-    FUN_1415e7130(b, *w, t);
+    FUN_1415e7130(b, *FUN_141603cc0(a), t);
     return b;
 }
 
 // @0x14160a070
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_14160a070(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_14160a070(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1850(FUN_1416011f0(a));
-    void** w = FUN_141603d00(a);
-    FUN_1415e7170(b, *w, t);
+    FUN_1415e7170(b, *FUN_141603d00(a), t);
     return b;
 }
 
 // @0x14160a0d0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_14160a0d0(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_14160a0d0(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1860(FUN_141601230(a));
-    void** w = FUN_141603d40(a);
-    FUN_1415e71d0(b, *w, t);
+    FUN_1415e71d0(b, *FUN_141603d40(a), t);
     return b;
 }
 
 // @0x14160a130
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_14160a130(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_14160a130(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1870(FUN_141601270(a));
-    void** w = FUN_141603d80(a);
-    FUN_1415e7210(b, *w, t);
+    FUN_1415e7210(b, *FUN_141603d80(a), t);
     return b;
 }
 
 // @0x14160a190
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_14160a190(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_14160a190(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1880(FUN_1416012b0(a));
-    void** w = FUN_141603dc0(a);
-    FUN_1415e7270(b, *w, t);
+    FUN_1415e7270(b, *FUN_141603dc0(a), t);
     return b;
 }
 
 // @0x14160a1f0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_14160a1f0(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_14160a1f0(void* a, void* b) noexcept
 {
     void* t = FUN_1415e1890(FUN_1416012f0(a));
-    void** w = FUN_141603e00(a);
-    FUN_1415e72b0(b, *w, t);
+    FUN_1415e72b0(b, *FUN_141603e00(a), t);
     return b;
 }
 
 // @0x14160a250
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_14160a250(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_14160a250(void* a, void* b) noexcept
 {
     void* t = FUN_1415e18a0(FUN_141601330(a));
-    void** w = FUN_141603e40(a);
-    FUN_1415e72f0(b, *w, t);
+    FUN_1415e72f0(b, *FUN_141603e40(a), t);
     return b;
 }
 
 // @0x14160a2b0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_14160a2b0(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_14160a2b0(void* a, void* b) noexcept
 {
     void* t = FUN_1415e18b0(FUN_141601370(a));
-    void** w = FUN_141603e80(a);
-    FUN_1415e7330(b, *w, t);
+    FUN_1415e7330(b, *FUN_141603e80(a), t);
     return b;
 }
 
 // @0x14160a310
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_14160a310(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_14160a310(void* a, void* b) noexcept
 {
     void* t = FUN_1415e18c0(FUN_1416013b0(a));
-    void** w = FUN_141603ec0(a);
-    FUN_1415e7370(b, *w, t);
+    FUN_1415e7370(b, *FUN_141603ec0(a), t);
     return b;
 }
 
 // @0x14160a370
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
-void* FUN_14160a370(void* a, void* b)
+// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
+void* FUN_14160a370(void* a, void* b) noexcept
 {
     void* t = FUN_1415e18d0(FUN_1416013f0(a));
-    void** w = FUN_141603f00(a);
-    FUN_1415e73b0(b, *w, t);
+    FUN_1415e73b0(b, *FUN_141603f00(a), t);
     return b;
 }
 
@@ -965,7 +871,6 @@ void* FUN_14160a3d0(void* a, void* b, void* c, void* d)
 }
 
 // @0x14160a4c0
-// MS2-FUNCTIONAL: exe frame carries the C++ EH marker (state -2); no unwind object recovered.
 void* FUN_14160a4c0(void* a, void* b, void* c)
 {
     void** head = FUN_141600e10(a);
