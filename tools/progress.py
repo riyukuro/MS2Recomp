@@ -1041,6 +1041,11 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
                     res["notes"].append(f"MS2-PIN {name} 0x{pin:x}: RTTI pairing says 0x{va:x}, pin wins")
                 if pin in set(vft.values()):
                     va = pin
+                elif exe_is_code_ptr(exe, pin):
+                    # vftable of a class compiled without RTTI (/GR- library: Scaleform, CRI): no COL, so it is not in
+                    # the RTTI table; accepted when slot 0 points into .text, still compared slot by slot below
+                    va = pin
+                    res["notes"].append(f"MS2-PIN {name} 0x{pin:x}: non-RTTI vftable, compared slot by slot")
                 else:
                     res["notes"].append(f"MS2-PIN {name} 0x{pin:x}: not an RTTI vftable of the exe, ignored")
             if va is None:
@@ -1062,6 +1067,16 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
     res["multicopy"] = sorted({(n, w, v) for n, w, v in bm.MULTICOPY})
     known.clear()
     return res
+
+
+def exe_is_code_ptr(exe, va):
+    """True if the qword at exe address va points into the exe's .text section (slot 0 of a vftable)."""
+    q = exe.read(va, 8)
+    if len(q) != 8:
+        return False
+    target = struct.unpack("<Q", q)[0] - exe.base
+    return any(sec.Name.rstrip(b"\0") == b".text" and sec.VirtualAddress <= target < sec.VirtualAddress + sec.Misc_VirtualSize
+               for sec in exe.pe.sections)
 
 
 LOOKALIKE_HOW = ("auto-order", "auto-leaf", "auto-guess")
