@@ -73,39 +73,25 @@ bool FUN_141774080(NiRenderClick* pkClick, void* pvData);
 // @0x141773630
 void FUN_141773630(void* viewSystem)
 {
-    SoftParticlesManager* pThis = (SoftParticlesManager*)viewSystem;
+    NiViewRenderClick* pkClick = new (efd::MemHint(efd::MemHint::NONE)) NiViewRenderClick();
 
-    char kHint0[8];
-    void* pvClickMem = FUN_14208a860(0xd0, *(int*)FUN_140876480(kHint0, 0));
-    NiViewRenderClick* pkClick;
-    if (pvClickMem == 0)
-        pkClick = 0;
-    else
-        pkClick = ::new (pvClickMem) NiViewRenderClick();
-
-    pThis->m_spClick = pkClick;
-    pThis->m_spClick->SetName(NiFixedString("SoftParticleClick"));
-    pThis->m_spClick->SetClearAllBuffers(false);
+    ((SoftParticlesManager*)viewSystem)->m_spClick = pkClick;
+    ((SoftParticlesManager*)viewSystem)->m_spClick->SetName(NiFixedString("SoftParticleClick"));
+    ((SoftParticlesManager*)viewSystem)->m_spClick->SetClearAllBuffers(false);
 
     NiDefaultClickRenderStep* pkStep =
         NiDynamicCast(NiDefaultClickRenderStep, FUN_1413f98d0()->GetRenderStep());
-    pkStep->AppendRenderClick(pThis->m_spClick);
+    pkStep->AppendRenderClick(((SoftParticlesManager*)viewSystem)->m_spClick);
 
     Ni3DRenderView* pkMainView = FUN_1413f9a70();
-    char kHint1[8];
-    void* pvViewMem = FUN_14208a860(0x70, *(int*)FUN_140876480(kHint1, 0));
-    Ni3DRenderView* pkView;
-    if (pvViewMem == 0)
-        pkView = 0;
-    else
-        pkView = ::new (pvViewMem) Ni3DRenderView(pkMainView->GetCamera(), pkMainView->GetCullingProcess(),
+    Ni3DRenderView* pkView = new (efd::MemHint(efd::MemHint::NONE)) Ni3DRenderView(pkMainView->GetCamera(), pkMainView->GetCullingProcess(),
                                                   pkMainView->GetAlwaysUseCameraViewport());
 
-    pThis->m_spView = pkView;
-    pThis->m_spClick->AppendRenderView(pThis->m_spView);
-    pThis->m_spClick->SetPreProcessingCallbackFunc(FUN_141774040, pThis);
-    pThis->m_spClick->SetPostProcessingCallbackFunc(FUN_141774080, pThis);
-    pThis->m_spMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae5258);
+    ((SoftParticlesManager*)viewSystem)->m_spView = pkView;
+    ((SoftParticlesManager*)viewSystem)->m_spClick->AppendRenderView(((SoftParticlesManager*)viewSystem)->m_spView);
+    ((SoftParticlesManager*)viewSystem)->m_spClick->SetPreProcessingCallbackFunc(FUN_141774040, viewSystem);
+    ((SoftParticlesManager*)viewSystem)->m_spClick->SetPostProcessingCallbackFunc(FUN_141774080, viewSystem);
+    ((SoftParticlesManager*)viewSystem)->m_spMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae5258);
 }
 
 // Turns the click off/on; turning it on registers every scene of the main view as a soft-particle scene.
@@ -169,25 +155,13 @@ void FUN_141773a90(void* pRegistry, void* pNode)
         NiTexturingProperty* pkTexturing = (NiTexturingProperty*)pkObject->GetProperty(NiProperty::TEXTURING);
         if (pkTexturing == 0)
         {
-            char kHint[8];
-            void* pvMem = FUN_14208a860(0x58, *(int*)FUN_140876480(kHint, 0));
-            NiTexturingProperty* pkNew;
-            if (pvMem == 0)
-                pkNew = 0;
-            else
-                pkNew = ::new (pvMem) NiTexturingProperty();
+            NiTexturingProperty* pkNew = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty();
             pkTexturing = pkNew;
             pkObject->AttachProperty(pkTexturing);
         }
 
         NiRenderedTexture* pkTexture = FUN_1409a8b20()->FUN_1416a23f0(1);
-        char kHint2[8];
-        void* pvMapMem = FUN_14208a860(0x28, *(int*)FUN_140876480(kHint2, 0));
-        NiTexturingProperty::ShaderMap* pkMap;
-        if (pvMapMem == 0)
-            pkMap = 0;
-        else
-            pkMap = ::new (pvMapMem) NiTexturingProperty::ShaderMap(pkTexture, 0);
+        NiTexturingProperty::ShaderMap* pkMap = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap(pkTexture, 0);
         pkTexturing->SetShaderMap(0, pkMap);
         pkObject->UpdateProperties();
     }
