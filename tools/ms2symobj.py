@@ -27,6 +27,14 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DLL_BASE = 0x100000000
 RUNTIME_RANGES = [(0x142748000, 0x1427b6c90)]
+# The CEF 3.3396 wrapper (libcef_dll_wrapper, 0x142778700-0x1427b6870) and its libcef.dll import thunks
+# (`jmp [IAT]`, e.g. cef_string_ascii_to_utf16 0x142778544) share that range but are not CRT: the DLL has no copy of
+# them, so CEF names keep their exe bindings (webbrowserservice calls CefInitialize, CreateBrowser, CefString's C API).
+CEF_NAME_RE = re.compile(r"^cef_|Cef|@cef@@")
+
+
+def runtime_va(name, va):
+    return any(a <= va < b for a, b in RUNTIME_RANGES) and not CEF_NAME_RE.search(name)
 DEFAULT_INPUTS = [os.path.join(ROOT, "progress", "symbols.tsv"), os.path.join(ROOT, "progress", "symbols-manual.tsv")]
 
 IMAGE_SCN_CNT_CODE = 0x20
@@ -57,7 +65,7 @@ def load(paths):
                 continue
             f = line.rstrip("\n").split("\t")
             name, va, kind = f[0], int(f[1], 16), (f[2] if len(f) > 2 else "func")
-            if any(a <= va < b for a, b in RUNTIME_RANGES):
+            if runtime_va(name, va):
                 continue
             if name in syms and syms[name][0] != va:
                 prev = src[name]
