@@ -35,9 +35,9 @@ public:
     Unk_NotifyContext* FUN_1422b0260();                             // the notify context (SmartPointer at +0x98)
     GFxMovie* FUN_1422b01a0(int nMovieId);                          // the movie of a movie id (NULL if not loaded)
     bool FUN_1422b0610(const CString& strSound, const CString& strArg); // play a UI sound (NotifySwfEntity "playSound")
-    int FUN_1422aeed0(int n);
+    int FUN_1422aeed0(int n);                                       // input state query (NotifyDragSlot passes 2: drop outside any slot)
     int FUN_1422af2d0(int nMovieId);                                // the movie takes text input (GFxMovieEventHandler: CharEvent, Insert)
-    int FUN_1422af390(int nMovieId);                                // WM_IME_COMPOSITION handled by the manager                                       // input state query (NotifyDragSlot passes 2: drop outside any slot)
+    int FUN_1422af390(int nMovieId);                                // WM_IME_COMPOSITION handled by the manager
     void FUN_1422b08f0(const char* szFormat, ...);                  // log line (GFxRenderSingleThread reset failures)
     // render device ready flag (inline; COMDAT 0x1422f58f0 in ?\gfxrendersinglethread.cpp: 0 on reset/lost, 1 restored)
     void FUN_1422f58f0(int bReady) { m_180 = bReady; }
