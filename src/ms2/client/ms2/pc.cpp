@@ -572,8 +572,18 @@ bool FUN_14081dc50(int nSpecial);                                   // the speci
 bool FUN_14081dcd0(int nSpecial);                                   // the special ability value is a rate
 int FUN_14086ace0(__int64 nTime);                                   // the time has passed
 // The hide and seek record / the water gun battle info as other TUs see them (fittingdollpc.h returns these types).
-class Unk_HsInfo : public CPtred {};
-class Unk_PCWaterGunInfo : public CPtred {};
+class Unk_HsInfo : public CPtred                                    // HideAndSeek::Info
+{
+public:
+    bool FUN_14050a490();                                           // a hide-and-seek match is on
+    int FUN_14050a6a0();                                            // the player's side (1 seeker, 2 hider)
+};
+class Unk_PCWaterGunInfo : public CPtred                            // WaterGunBattleInfo
+{
+public:
+    bool FUN_1408fe070();                                           // GetFlag: in a water gun battle
+    int FUN_1408fe0b0();                                            // GetValue: the team
+};
 void FUN_141201d50(CEquipModel* pModel, CString strNode);           // attach the model to a node
 int FUN_141202940(CEquipModel* pModel);                             // the equip slot of the model
 void FUN_141200390(CEquipModel* pModel, const CString& strAnim);    // play an animation
@@ -3705,6 +3715,7 @@ void PC::FUN_14165cac0()
 class Unk_PCArg125 : public PCInfo {};
 
 int FUN_14081dd50(int nIndex);
+void FUN_14098b3e0(NiAVObject* pNode, float fAlpha, bool b);       // set the alpha of a node tree
 CLua* FUN_1401c0db0();
 float FUN_14028d3a0(float fValue);                                  // (commonutil.cpp)
 float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                      // distance
@@ -4037,6 +4048,7 @@ class Unk_PCRandomTargetView
 {
 public:
     void FUN_140aab0f0();                                           // per-frame update
+    void FUN_140aab3c0(float fAlpha);                               // set the alpha
 };
 int FUN_14080b8e0(CSkillTierOptionManager* pTier);                  // the skill tier options changed
 UIStatusEventDispatcher* FUN_140aa6d40();
@@ -4099,6 +4111,90 @@ void PC::vfunc_53(float f)
     }
     if (m_spRandomTarget12c8.get())
         reinterpret_cast<Unk_PCRandomTargetView*>((CRandomTargetEffect*)m_spRandomTarget12c8.operator->())->FUN_140aab0f0();
+}
+
+// The team of the player (the PvP team, the hide-and-seek side or the water gun battle team; 1: none).
+int PC::vfunc_116()
+{
+    if (FUN_14165ef30())
+        return reinterpret_cast<CPvPInfo*>(FUN_140967420().operator->())->m_nPoint;
+    if (FUN_141664200()->FUN_14050a490())
+    {
+        if (FUN_141664200()->FUN_14050a6a0() == 1)
+            return 0xc9;
+        if (FUN_141664200()->FUN_14050a6a0() == 2)
+            return 0xca;
+    }
+    if (FUN_140166410()->FUN_14036d570(0x10e) == true)
+    {
+        if (FUN_141664250().get() && FUN_141664250()->FUN_1408fe070() == true)
+            return FUN_141664250()->FUN_1408fe0b0();
+    }
+    return 1;
+}
+
+// Equip the owned items once they are loaded: the equip-flagged items straight away, the rest sorted
+// (kind 2 first, then the outfit layer, then the worn layer).
+void PC::vfunc_143()
+{
+    if (m_kListD48.IsEmpty())
+        return;
+    CAtlArray<MS2Ptr<CItem> > aWorn;
+    CAtlArray<MS2Ptr<CItem> > aOutfit;
+    CAtlArray<MS2Ptr<CItem> > aKind2;
+    bool bQuick = FUN_1416566f0() == 0 && FUN_1409f7c90()->FUN_1409f7ea0();
+    for (size_t i = 0; i < m_kListD48.GetCount(); i++)
+    {
+        MS2Ptr<CItem> spItem = m_kListD48[i];
+        if (spItem == 0 || spItem->FUN_140527840() == 0)
+            continue;
+        if (spItem->FUN_140527840()->FUN_14053d550())
+        {
+            if (bQuick)
+                m_kEquipDE0.FUN_1411e38e0(spItem);
+            else
+                m_kEquipDE0.FUN_1411e3600(spItem);
+        }
+        else if (spItem->FUN_14052a150() == 2)
+            aKind2.Add(spItem);
+        else if (spItem->FUN_1405258b0())
+            aOutfit.Add(spItem);
+        else
+            aWorn.Add(spItem);
+    }
+    FUN_141660c20(aKind2, bQuick);
+    FUN_141660c20(aOutfit, bQuick);
+    FUN_141660c20(aWorn, bQuick);
+    m_kListD48.RemoveAll();
+    FUN_141653f00();
+}
+
+// Fade the player: every equip model's node, the tails and the random target effect follow the alpha.
+void PC::vfunc_42(float f, bool b)
+{
+    GameObject::vfunc_42(f, b);
+    ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
+    m_kEquipDE0.FUN_1411e1b80(kList);
+    for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
+    {
+        ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+        kList.GetAt(pos)->FUN_1411dcc80(aModels);
+        for (unsigned int i = 0; i < aModels.GetCount(); i++)
+        {
+            NiAVObject* pNode = (NiAVObject*)aModels[i]->vfunc_14();
+            FUN_14123e020(pNode);
+            FUN_14098b3e0(pNode, f, b);
+        }
+    }
+    if (m_spTailEffect1270.get())
+        m_spTailEffect1270->FUN_140acffc0(f);
+    for (POSITION posTail = m_mapTail1280.GetStartPosition(); posTail; m_mapTail1280.GetNext(posTail))
+    {
+        MS2Ptr<CTailEffectObject> spTail = m_mapTail1280.GetValueAt(posTail);
+        ((CTailEffectObject*)spTail)->FUN_140acffc0(f);
+    }
+    if (m_spRandomTarget12c8.get())
+        reinterpret_cast<Unk_PCRandomTargetView*>((CRandomTargetEffect*)m_spRandomTarget12c8.operator->())->FUN_140aab3c0(f);
 }
 
 // ---- end of code ----

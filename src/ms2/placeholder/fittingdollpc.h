@@ -64,6 +64,7 @@ struct Unk_PCEquipSet
     int FUN_1411e1160(int nSpecial);                        // the special ability total (CEquipment)
     void FUN_1411e1ce0(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nLayer);   // the equip items of a layer (CEquipment)
     void FUN_1411e76c0(double fTime);                       // Update (CEquipment)
+    void FUN_1411e1b80(ATL::CAtlList<MS2Ptr<CEquipItem> >& items);   // all the equip items (CEquipment)
     float FUN_1411e1250(int nOption, unsigned nKey);        // an invoke effect option rate (CEquipment)
     float FUN_1411e13e0(int nOption, unsigned nKey);        // an invoke effect option count (CEquipment)
     void FUN_1411e7680();                                   // refresh (CEquipment)
