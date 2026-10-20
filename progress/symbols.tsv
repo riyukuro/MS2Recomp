@@ -48563,7 +48563,7 @@ sprintf	1403b0860	func
 ??$Unk_SocketFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@AEBH@Z	140740820	func
 ??$Unk_SocketFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HEH@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@AEBHAEBE2@Z	140740b30	func
 ??$Unk_SocketFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@I@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@AEBI@Z	140740ef0	func
-??$StringFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@1@Z	140741200	func
+??$StringFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@1@Z	140cca160	func
 ??$Unk_SocketFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@1@Z	140741200	func
 ?FUN_140741200@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV12@1@Z	140741200	func
 ??$Unk_SocketFormat@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@HEH@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBV01@1AEBHAEBE2@Z	140741510	func
@@ -87247,7 +87247,7 @@ atan2f	140a4e660	func
 ??4?$MS2Ptr@VRpsGameData@@@@QEAAAEAV0@AEBV0@@Z	140ce9800	func
 ??8?$MS2Ptr@UItemEntity@@@@QEBA_NPEAUItemEntity@@@Z	140ce9840	func
 ??8?$MS2Ptr@VUnk_CashAttendEntry@@@@QEBA_NPEAVUnk_CashAttendEntry@@@Z	140ce9880	func
-??C?$MS2Ptr@VEventIconInfo@@@@QEBAPEAVEventIconInfo@@XZ	140ce9910	func
+??C?$MS2Ptr@VEventIconInfo@@@@QEBAPEAVEventIconInfo@@XZ	140ce9900	func
 ??_9GameEventBurningLevelupCli@@$BFA@AA	140ce9920	func
 ??_G?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAPEAXI@Z	140ce9930	func
 ??_G?$DelegateImpl@U?$pair@PEAVGameEventBurningLevelupCli@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z	140ce9970	func
