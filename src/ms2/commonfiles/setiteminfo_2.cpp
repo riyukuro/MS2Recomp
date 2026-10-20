@@ -6,13 +6,13 @@
 // MS2-RANGE: 0x1407af440-0x1407bc4b0 .text$mn
 // MS2-PIN: ??1CSetItemManager@@UEAA@XZ 0x1407b5ef0
 // MS2-PIN: ??1CSetItemProxy@@UEAA@XZ 0x1407b5f90
-// MS2-PIN: memcpy_s 0x1407bc390
+// MS2-PIN: memmove_s 0x1407bc390
 // The exe RTTI spells both handles TPtr<...> (TPtrValue/MS2Ptr here): pin the two box vftables.
 // MS2-PIN: ??_7?$TPtredDummy@V?$map@U?$pair@IW4T@eSetItemLayer@@@std@@V?$MS2Ptr@VCSetItemProxy@@@@U?$less@U?$pair@IW4T@eSetItemLayer@@@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IW4T@eSetItemLayer@@@std@@V?$MS2Ptr@VCSetItemProxy@@@@@std@@@2@@std@@@@6B@ 0x142d8d410
 // MS2-PIN: ??_7?$TPtredDummy@V?$map@U?$pair@IW4T@eSetItemLayer@@@std@@V?$TPtrValue@V?$CAtlList@_KV?$CElementTraits@_K@ATL@@@ATL@@@@U?$less@U?$pair@IW4T@eSetItemLayer@@@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IW4T@eSetItemLayer@@@std@@V?$TPtrValue@V?$CAtlList@_KV?$CElementTraits@_K@ATL@@@ATL@@@@@std@@@2@@std@@@@6B@ 0x142d8d430
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\setiteminfo.cpp"
 #define MS2_TPTRVALUE_MOVE      // lvalue copies add a reference, moves steal it (the exe pair ctors 0x1407b1590/0x1407b1770)
-// The exe's memcpy_s is a plain call (no /Oi expansion); the pragma must precede the inline copy.
+// The exe's memmove_s is a plain call (no /Oi expansion); the pragma must precede the inline copy.
 #include <vcruntime_string.h>
 #pragma function(memcpy, memset)
 #include "ms2/placeholder/ms2stdafx.h"
@@ -361,5 +361,5 @@ CSetItemProxy::CSetItemProxy() : m_pInfo(0), m_bActive(true)
 {
 }
 
-// memcpy_s 0x1407bc390 closes the obj's COMDAT tail.
-__declspec(selectany) extern errno_t(__cdecl* const ms2_setItemManagerMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+// memmove_s 0x1407bc390 closes the obj's COMDAT tail.
+__declspec(selectany) extern errno_t(__cdecl* const ms2_setItemManagerMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;
