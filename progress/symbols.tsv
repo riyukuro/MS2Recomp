@@ -139161,7 +139161,7 @@ vsprintf	14116bc30	func
 ??4Unk_IoRankPtr@@QEAAAEAV0@AEBV0@@Z	141403ae0	func
 ??4?$MS2Ptr@VCInteractObjectData@@@@QEAAAEAV0@H@Z	141403b20	func
 ??8Unk_IoRankPtr@@QEBA_NPEAUUnk_IoRanking@@@Z	141403b50	func
-??7?$MS2Ptr@VCInteractObjectData@@@@QEBA_NXZ	141403b90	func
+??7?$MS2Ptr@VCInteractObjectData@@@@QEBA_NXZ	140965160	func
 ??8?$MS2Ptr@VCInteractObjectData@@@@QEBA_NPEAVCInteractObjectData@@@Z	141403b90	func
 ??8?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@UUnk_InteractReqItem@@@std@@@std@@@std@@QEBA_NAEBV01@@Z	141403bd0	func
 ??9?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@UUnk_InteractReqItem@@@std@@@std@@@std@@QEBA_NAEBV01@@Z	141403c20	func
