@@ -109,6 +109,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/cshopeventmanager.h"
 #include "ms2/placeholder/cmeratmarketman.h"
+#include "ms2/placeholder/wcformat.h"
 #include "ms2/commonfiles/gameevent.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -214,7 +215,16 @@ class Unk_MeratPreviewEntry : public CPtred
 public:
     MS2Ptr<CMeratMarketProduct> m_spProduct;                                // +0x18
 };
-class Unk_MeratBasketEntry : public CPtred { public: MS2Ptr<CMeratMarketProduct> m_spProduct; };   // a basket row: the product at +0x18
+// A basket row: the product and the chosen option.
+class Unk_MeratBasketEntry : public CPtred
+{
+public:
+    int FUN_1413159c0() { return m_nOption; }
+    MS2Ptr<CMeratMarketProduct> m_spProduct;                                // +0x18
+    int m_n28;
+    int m_pad_2c;
+    int m_nOption;                                                          // +0x30
+};
 class Unk_McBasketList { public: unsigned FUN_140d66b20(); };              // the basket count
 struct Unk_MeratOid : public Unk_MeratProductKey { };
 
@@ -229,6 +239,7 @@ public:
     __int64 FUN_140d56490();                                                // the seller fee
     MS2Ptr<CMeratMarketProduct> FUN_140d578d0(Unk_MeratProductKey key);     // the product of a key
     void FUN_140d54360();                                                   // select the UGC category
+    int FUN_140d56160();                                                    // the product count of my shop
     void FUN_140d5a200(const int& nUiId);
     void FUN_140d54d50(MS2Ptr<CMeratMarketSchCond> spCond);
     void FUN_140d542c0(int nShop, int nType);
@@ -404,6 +415,7 @@ template <> inline Delegate<bool(MS2Ptr<TMarketBillDataParam>)>& Delegate<bool(M
 }
 
 // ---- free callees ----
+CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nOption);  // UIMeratMarketCommon: the text of a chosen option
 CStringW FormatStringId(int nId, const fmt::ArgList& args);                 // 0x14028dee0
 FMT_VARIADIC_W(CStringW, FormatStringId, int)
 int FUN_140ebf520(MS2Ptr<CMeratMarketProduct> spProduct, AScript* pRow);    // UIMeratMarketCommon: the price kind of a click
@@ -1007,6 +1019,47 @@ bool UIMeratMarketDialog::IsCurrentShopTab()
         return FUN_1406a5040(m_254);
     else if (m_250 == 3)
         return m_254 == 10;
+    return false;
+}
+
+// @0x1412eef70
+void UIMeratMarketDialog::RefreshMyShop()
+{
+    if (m_30 == 0 || m_250 != 4)
+        return;
+    if (m_5a0 == 0)
+    {
+        MS2Ptr<AScript> spPage = GetPage(4);
+        if (spPage.get() != 0)
+        {
+            CStringA strName("m_itemCounter");
+            m_5a0 = spPage->FUN_1409b4620(strName);
+        }
+    }
+    if (m_5a0)
+    {
+        int nCount = FUN_140939a00()->FUN_140d56160();
+        int nMax = 100;
+        m_5a0->FUN_1422c4cd0(FUN_14028dfa0(L"s_common_cur_max", nCount, nMax));
+    }
+}
+
+// @0x1412ef150
+bool UIMeratMarketDialog::FillBasketRow(ASMeratMarketProduct& row, MS2Ptr<Unk_MeratBasketEntry> spEntry, int nCount, Unk_MmViewScope* pScope)
+{
+    if (spEntry == 0)
+        return false;
+    int nOption = spEntry->FUN_1413159c0();
+    row.FUN_1409bc480(nOption);
+    if (FillProductRow(row, spEntry->m_spProduct, pScope))
+    {
+        if ((spEntry->m_spProduct.get() ? true : false) && spEntry->m_spProduct->IsPremium())
+        {
+            CStringW strOption = FUN_140ebd520(&spEntry->m_spProduct->m_premium, nOption);
+            row.FUN_1407cbb20("selectedOption", strOption);
+        }
+        return true;
+    }
     return false;
 }
 
