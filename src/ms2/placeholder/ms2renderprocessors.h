@@ -7,6 +7,7 @@
 #include <NiMaterialSwapProcessor.h>
 #include <NiShaderSortProcessor.h>
 #include <NiViewRenderClick.h>
+#include <NiMaterialLibrary.h>
 
 extern NiFixedString DAT_143ae52b0;     // shimmer material name
 extern NiFixedString DAT_143ae52b8;     // shimmer (skinned) material name
@@ -42,8 +43,8 @@ public:
     MS2ShimmerSortProcessor()           // 0x1416ae7e0
         : NiShaderSortProcessor(32, 37, 512, 128)
     {
-        m_spMaterial = NiMaterial::GetMaterial(DAT_143ae52b0);
-        m_spSkinnedMaterial = NiMaterial::GetMaterial(DAT_143ae52b8);
+        m_spMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae52b0);
+        m_spSkinnedMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae52b8);
     }
     virtual ~MS2ShimmerSortProcessor()  // 0x1416af050, ??_G 0x1416b0150
     {

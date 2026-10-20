@@ -19,6 +19,7 @@
 #include <utility>
 #include <NiFixedString.h>
 #include <NiMaterial.h>
+#include <NiMaterialLibrary.h>
 #include "ms2/ms2recover.h"
 
 // Name keys constructed by other TUs.
@@ -185,7 +186,7 @@ void ResetMaterialNames()
 }
 
 #define MS2_REGISTER_MATERIAL(kName) \
-    pkMaterial = NiMaterial::GetMaterial(kName); \
+    pkMaterial = NiMaterialLibrary::CreateMaterial(kName); \
     if (pkMaterial != NULL && bRegister) \
         s_kMaterials.insert(std::make_pair(std::string((const char*)kName), pkMaterial));
 
