@@ -248,6 +248,7 @@ class Unk_ItemEquipData : public CItemData {};                       // solo bui
 #include "ms2/commonfiles/chatemoticontable.h"
 void FUN_1402929a0(const CStringW& str, std::vector<unsigned>& rOut, const wchar_t* pszSep);   // split into ids (commonutil.cpp)
 CStringW FUN_14028b8e0(const CStringW& str);                         // a string table text (commonutil.cpp)
+int FUN_14028e280(CMsTime& kOut, const CString& strFormat, const CString& strText);   // parses a date text (commonutil.cpp)
 class MyPC;
 extern Unk_Inventory DAT_143ab2a90;                                   // the inventory
 CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds);         // a duration text (util.cpp)
@@ -255,11 +256,67 @@ bool FUN_141b48950(MS2Ptr<CItem> spItem);                             // the ite
 bool FUN_141b488c0(MS2Ptr<CItemData> spData);                         // the item data may be previewed
 // The job system of a player (JobSystemCli; jobsystem.h is not included: it pulls placeholder/skilldata.h, which clashes
 // with the commonfiles SkillData of skilldatatablecli.h). Only the proven slots.
+#include "ms2/commonfiles/jobtable.h"                 // JobData / JobSkillData
+#include "ms2/placeholder/cquestmanagercommon.h"
+// A learnt skill of the job system (JobSkill, guess/jobsystem.h; that header is not included here, see below).
+class Unk_TooltipJobSkillP4 : public CPtred
+{
+public:
+    unsigned FUN_140637cc0();                                         // JobSkill::GetID
+    unsigned m_nId;                                                   // +0x18
+    unsigned short m_nLevel;                                          // +0x1c
+    unsigned char m_1e;
+    bool m_bLearnt;                                                   // +0x1f
+};
+MS2_CHECK_OFFSET(Unk_TooltipJobSkillP4, m_bLearnt, 0x1f);
+// CSkillPointSimulator (skillpointsimulator.h pulls jobsystem.h) / UISkillBookTreeDialog: only the called members.
+class Unk_TooltipSkillSim : public CPtred
+{
+public:
+    MS2Ptr<Unk_TooltipJobSkillP4> FUN_140abc980(unsigned nSkillId);   // CSkillPointSimulator::GetEditSkill
+};
+struct Unk_TooltipSkillTreeDialog
+{
+    MS2Ptr<Unk_TooltipSkillSim> FUN_140ec8ad0();                      // UISkillBookTreeDialog::GetSimulator
+};
+class UIDialog;
+UIDialog* FUN_1409eb120(int nDialogId);                               // part 6: a dialog by id
+// The skill tier option manager behind PC::FUN_1409eee00 (fittingdollpc.h forward-declares it for the user unit).
+class Unk_PCSkillTree : public CPtred
+{
+public:
+    unsigned short FUN_14080baf0(unsigned nSkillId);                  // CSkillTierOptionManager::GetSkillLevel
+};
+// The local player's quest state (MyPC::FUN_141523ba0 result; the CQuestManagerCommon sits at +0x10).
+struct Unk_TooltipQuestHolder
+{
+    unsigned char m_00[0x10];
+    CQuestManagerCommon m_quests;                                     // +0x10
+};
+struct Unk_TooltipQuestOwner
+{
+    Unk_TooltipQuestHolder* FUN_141523ba0();                          // MyPC: the quest state
+};
+void* FUN_1403ed2d0_p4();                                             // 0x1403ed2d0 the world service
+Unk_TooltipQuestOwner* FUN_141bd0cc0_p4(void* pWorld);                // 0x141bd0cc0 the local player (MyPC*)
+CStringW FUN_1416e4df0(int nBookId);                                  // the quest/book name (as part 1)
+#include "ms2/commonfiles/itemdroptable.h"
+#include "ms2/commonfiles/commonstruct_wa.h"                 // ItemDropItemLife
+#include <algorithm>
+int FUN_141658e60_p4(PCBase* pPc);                                    // 0x141658e60 the gender of a player
+ItemDropTable* FUN_1405a1fd0_p4();                                    // 0x1405a1fd0 TSingleton<ItemDropTable>::GetInstance
+MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                    // the item data of an id (as astooltip.cpp)
+bool FUN_14052a3f0(int bFollowEndDate, __int64 nExpiry, int nType, int nLifeType, int nItemType);   // a drop expires (item.cpp)
+CStringW FUN_14183e9c0(CStringW strText, int nRank);                  // colours a text by rank (texttohtml.cpp)
+bool FUN_1409e7930(ItemDropResult& lhs, ItemDropResult& rhs);         // part 5: the display order
+bool FUN_1409e7a40(ItemDropResult& lhs, ItemDropResult& rhs);         // part 5: the pick order
 struct Unk_TooltipJobSystem
 {
     virtual ~Unk_TooltipJobSystem();                                  // MS2: slot 0
     virtual MS2Ptr<SkillLevelData> vfunc_1(unsigned nSkillId);        // MS2: slot 1
     virtual bool vfunc_2(unsigned nSkillId);                          // MS2: slot 2 learnt (or granted by a temporary source)
+    MS2Ptr<JobData> FUN_140639bb0();                                  // JobSystem::GetJobData
+    MS2Ptr<Unk_TooltipJobSkillP4> FUN_1406394d0(unsigned nSkillId);   // JobSystem::FindSkill
 };
 Unk_TooltipJobSystem* FUN_1416546d0(MyPC* pPC);                       // the job system of a player (JobSystemCli*)
 MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);   // part 6: wrap a child AS object
@@ -289,6 +346,11 @@ CStringW FUN_1409e3050(const CStringW& strPrefix, int nScope, int nReset);
 void FUN_1409e68a0(int nJob, ATL::CAtlArray<unsigned>& jobs, int& nAllowed, CStringW& strOut);   // the job limit text
 void FUN_1409e6aa0(int nJob, ATL::CAtlArray<unsigned>& jobs, CStringW& strOut);                  // the disabled job text
 void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons
+CStringW FUN_1408116a0(int nStringId, const int& n);                  // FormatStringId<int>
+#include "ms2/commonfiles/featuremanager.h"
+CFeatureManager* FUN_140166410_p5();                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
+CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // the item limit text
+void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons
 #endif
 // interface_check reads reasons from the unit .cpp and its own headers, not from the .inl files:
 // MS2-FUNCTIONAL 0x1409db930: the exe keeps the null test of the side tooltip in a bool temp (no source form found)
@@ -315,6 +377,7 @@ CStringW FUN_1409e0cb0(const CStringW& strFormat, float fRate);
 #include "ms2/commonfiles/chatemoticontable.h"
 void FUN_1402929a0(const CStringW& str, std::vector<unsigned>& rOut, const wchar_t* pszSep);   // split into ids (commonutil.cpp)
 CStringW FUN_14028b8e0(const CStringW& str);                         // a string table text (commonutil.cpp)
+int FUN_14028e280(CMsTime& kOut, const CString& strFormat, const CString& strText);   // parses a date text (commonutil.cpp)
 #include "ms2/placeholder/wcformat.h"
 class Unk_ItemEquipData : public CItemData {};                       // CItem::FUN_140527840's record (as commonfiles\item.cpp)
 CUIService* FUN_1403ed2b0();                                          // CUIService::GetInstance (exe copy)
