@@ -96,6 +96,7 @@ public:
     int FUN_14142dc50(unsigned nSlot);                      // the skill id of a slot of the current page
     int FUN_14142dcb0(int nKey, int& nIndex);               // the quick slot action index of a key
     __int64 FUN_14142ded0(unsigned nSlot);                  // the item uid of the quick slot
+    int FUN_14142dfb0(unsigned nKey);                       // the item id of the key's quick slot
     bool FUN_14142e030(unsigned nSlot, Unk_SsQuickEntry& entry);   // a slot of the current page
     int FUN_14142e090(int nSkillId, __int64 nItemUid);      // the quick slot holding them, -1 = none
     int FUN_14142e150(int nSkillId, int nItemId, __int64 nItemUid);
@@ -104,12 +105,19 @@ public:
     void FUN_14142e2e0(int nPage, unsigned nSlot, const Unk_SsQuickEntry& entry);
     int FUN_14142e340(int n);                               // the key pressed (key capture)
     int FUN_14142e470(int n);                               // the key held (key capture)
+    bool FUN_14142e510(unsigned nCombo);                    // both keys of a modifier combo are known
+    void FUN_14142e600(__int64 nAction, ATL::CAtlArray<Unk_MyPCKeyId>& aOut);   // the keys bound to the action
     int FUN_14142e6f0(int nKey);
     void FUN_14142e730(int nKey);
     void FUN_14142e770(int nKey);
     int FUN_14142e7a0();
+    int FUN_14142e7c0(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount);   // a quick slot of the set holds it
+    void FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount);  // put it into a free quick slot (set mode)
+    void FUN_14142f700();                                   // leave the skill set mode and save
+    int FUN_14142f830(int nSlot);
+    int FUN_14142f870(int nSlot);
     int FUN_141430470(__int64 nAction);
-    MS2Ptr<CKeySettingParam> FUN_141430590(__int64 nAction);       // the setting of the action
+    MS2Ptr<CKeySettingParam> FUN_141430590(__int64 nAction) const;     // the setting of the action
     SettingList FUN_141430710(int nCategory);               // the settings of a tab
     void FUN_14142fff0();
     void FUN_1414307a0();                                   // build the setting categories
@@ -121,19 +129,24 @@ public:
     unsigned* FUN_141430e70(unsigned* pOut, int nFirst, int nSecond, unsigned char nMode);
     CStringW FUN_141430ee0(int nFirst, int nSecond);
     void FUN_1414310a0(unsigned nKey, int* pFirst, int* pSecond);
+    void FUN_1414310f0(int nKey, int nOtherKey, __int64 nAction, __int64 nOtherAction);   // swap the modifier combos
+    void FUN_1414316e0(int nKey, __int64 nAction);          // unbind the modifier combos of a key
     __int64 FUN_1414317b0(__int64 nAction);
+    CStringW FUN_141431820(int nKey);                       // the key's label (gamepad: L1/L2/R1/R2)
     int FUN_1414319f0();                                    // the input layout (2 = gamepad keys >= 0x91)
     int FUN_141431a30(int nKey);
     int FUN_141431a60(int nKey);
     int FUN_141431a90(int nKey);                            // the key is reserved
-    void FUN_141431ae0(int nPage, int bSend);               // switch the quick slot page
+    void FUN_141431ae0(int nPage, bool bSend);               // switch the quick slot page
     QuickSlotPage* FUN_141431c20(int nPage);                // a quick slot page
     int FUN_141431c80(int nKey, int nType, __int64 nCode, int nSlot, int nPriority, int bSave);   // set a binding
+    void FUN_141431f20(int nKey);                           // notify the key (and its twin) changed
     int FUN_141431fc0();
     int FUN_141432010(int nAction);
     void FUN_1414321f0();                                   // rebuild the action index
     void FUN_141432360(int nAction);
     void FUN_1414323f0(int nPage, unsigned nSlot, int nSkillId, int nItemId, __int64 nItemUid);   // set a quick slot
+    static int FUN_141432650(int nCode);
     int FUN_140a700b0();                                    // the current quick slot page
 
     int m_nLoaded;                                          // +0x08 the server's table arrived
@@ -151,9 +164,9 @@ public:
     ATL::CAtlArray<QuickSlotPage> m_quickSlots;             // +0x1a0 quick slot pages
     ATL::CAtlArray<__int64> m_quickSlotActions;             // +0x1c0
     ATL::CAtlArray<__int64> m_1e0;                          // +0x1e0
-    ATL::CAtlArray<int> m_200;                              // +0x200
-    ATL::CAtlArray<int> m_220;                              // +0x220
-    ATL::CAtlArray<int> m_240;                              // +0x240
+    ATL::CAtlArray<Unk_MyPCKeyId> m_200;                              // +0x200
+    ATL::CAtlArray<Unk_MyPCKeyId> m_220;                              // +0x220
+    ATL::CAtlArray<Unk_MyPCKeyId> m_240;                              // +0x240
     ATL::CAtlMap<int, SettingList> m_settings;              // +0x260 category -> settings
 };
 MS2_CHECK_SIZE(CKeyTable, 0x2a8);
