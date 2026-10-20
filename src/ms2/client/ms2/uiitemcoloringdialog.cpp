@@ -47,6 +47,10 @@ static CString s_strItemSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
+// GetChild COMDATs are owned by unit_140ba6b20 (ASMovieClip, 0x140ba7930) and uibingoeventdialog (0x140bb4b10)
+template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
+template <> MS2Ptr<Unk_140acd6e0> UISwfEntity::GetChild<Unk_140acd6e0>(const CString& strName);
+
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- local stand-ins for classes whose units are not recovered yet ----
@@ -1411,9 +1415,3 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, bool a2
     return FUN_1422bb8f0(szMethod, args);
 }
 
-template <class T> MS2Ptr<T> UISwfEntity::GetChild(const CString& strName)
-{
-    if (m_30 == 0)
-        return MS2Ptr<T>(0);
-    return m_30->FUN_140e159f0<T>(strName);
-}
