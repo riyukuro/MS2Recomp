@@ -273,6 +273,34 @@ CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);        // FormatS
 extern unsigned short DAT_143ab291c;                                  // the housing level limit (offline)
 #include "ms2/commonfiles/maid.h"
 CStringW FUN_140763e10(int nPrice);                                   // the price text (questmasktable.cpp)
+#include "ms2/placeholder/termtagmanagercli.h"
+CStringW FUN_14086cfc0(int nStringId, const long& n);                 // FormatStringId<long>
+CStringW FUN_14086d060(int nStringId, const __int64& n);              // FormatStringId<__int64>
+#include "ms2/placeholder/socketptr.h"
+#include "ms2/placeholder/citemremakescrolltable.h"
+// The coupon items of a beauty shop (npcshopdata.cpp): a CAtlArray boxed behind its CPtred (TPtredDummy).
+typedef ATL::CAtlArray<MS2Ptr<CItemData> > Unk_TooltipBeautyItems;
+template<> struct Unk_SocketRef<Unk_TooltipBeautyItems> {
+    static CPtred* Base(Unk_TooltipBeautyItems* p)
+    {
+        CPtred* result;
+        if (p == NULL) result = NULL;
+        else result = CONTAINING_RECORD(p, TPtredDummy<Unk_TooltipBeautyItems>, value);
+        return result;
+    }
+};
+MS2_SOCKETPTR_BOXED(Unk_TooltipBeautyItems)
+Unk_SocketPtr<Unk_TooltipBeautyItems> FUN_1406e5af0(unsigned nShopId);    // the coupon items of a beauty shop (npcshopdata.cpp)
+bool FUN_1405729c0(const Unk_TooltipBeautyItems* pItems);              // the coupon list is empty
+// CItemData::FUN_14053c940 / FUN_14053d660 return an int at the call sites (citemdata.h declares them bool).
+struct Unk_ItemDataIntView : CItemData { int FUN_14053c940(int nGender); int FUN_14053d660(); };
+int FUN_14053feb0(int nItemId);                                       // the default rank of an item (itemdata.cpp)
+void FUN_14183eba0(unsigned nItemId, CStringW& strIcon, unsigned long& nSize, unsigned long& nColor1, unsigned long& nColor2);   // the super chat item look (texttohtml.cpp)
+extern unsigned long DAT_1439f87c0;                                   // texttohtml.cpp s_colors: the super chat colour
+extern unsigned long DAT_1439f87f0;                                   // texttohtml.cpp s_colors: the super chat second colour
+extern CStringW DAT_143aef3b8;                                        // texttohtml.cpp: the default super chat icon
+#include "ms2/commonfiles/itemenchantlimittable.h"
+#include "ms2/commonfiles/itemenchanttransformtable.h"
 #if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 3
 class Unk_ItemEquipData : public CItemData {};                       // solo build only: part 5 defines it otherwise
 #endif
@@ -466,6 +494,9 @@ void FUN_1409e68a0(int nJob, ATL::CAtlArray<unsigned>& jobs, int& nAllowed, CStr
 void FUN_1409e6aa0(int nJob, ATL::CAtlArray<unsigned>& jobs, CStringW& strOut);                  // the disabled job text
 CStringW FUN_1408116a0(int nStringId, const int& n);                  // FormatStringId<int>
 #include "ms2/commonfiles/featuremanager.h"
+// The no-argument BlockFormat (0x1409eec40, COMDAT in the template range): FMT_VARIADIC_W has no 0-arg form. w534: move to the shared section.
+CStringW BlockFormat(int, const fmt::ArgList&);
+inline CStringW BlockFormat(int nStringId) { return BlockFormat(nStringId, fmt::ArgList()); }
 CFeatureManager* FUN_140166410_p5();                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
 CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // the item limit text
 void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons

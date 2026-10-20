@@ -156,6 +156,7 @@ public:
     void FUN_1409d6120(int nItemId);                                     // the main description as a statDescription
     void FUN_1409d64a0(int nItemId, int nRank, int nLevel, int nAdditional);   // extraDescription
     void FUN_1409d6730(int nItemId);                                     // the maid contract description row
+    void FUN_1409d7900(int nItemId);                                     // the package rows of a box item (beauty / couple / remake)
     // ---- end part 3 ----
     // ---- astooltip.cpp part 4 members (owner: part 4 agent; append here only) ----
     CStringW FUN_1409d9f30(MS2Ptr<CItemData> spData);                    // music score play count text

@@ -98,6 +98,89 @@ CStringW ASTooltip::FUN_1409da690(CItem* pItem)
 }
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DA690, ASTooltip, FUN_1409da690, 922, 0x597922AA); }
 
+// @0x1409daa30
+CStringW ASTooltip::FUN_1409daa30(MS2Ptr<CItemData> spData)
+{
+    if (!spData)
+        return L"";
+    if (!spData->FUN_14053dfd0(L"ChatEmoticonAdd"))
+        return L"";
+    CXmlData& xml = spData->function.xml;
+    std::vector<unsigned> ids;
+    {
+        CStringW strIds = xml.FUN_14042cad0(L"id", L"");
+        FUN_1402929a0(strIds, ids, L",");
+    }
+    std::list<MS2Ptr<ChatEmoticonData> > emoticons;
+    std::vector<unsigned>& rIds = ids;
+    std::vector<unsigned>::const_iterator itIdEnd = rIds.end();
+    for (std::vector<unsigned>::const_iterator itId = rIds.begin(); itId != itIdEnd; ++itId)
+    {
+        unsigned nGroupId = *itId;
+        std::list<MS2Ptr<ChatEmoticonData> > group;
+        CChatEmoticonTable::GetInstance()->FUN_1401e73c0(nGroupId, &group);
+        emoticons.insert(emoticons.end(), group.begin(), group.end());
+    }
+    const int nPerRow = 4;
+    CStringW strGap = FUN_14028b8e0(L"s_tooltip_chat_emoticon_extra_comment_image_gap");
+    int nCount = 0;
+    CStringW str;
+    std::list<MS2Ptr<ChatEmoticonData> >& rEmoticons = emoticons;
+    std::list<MS2Ptr<ChatEmoticonData> >::const_iterator itEnd = rEmoticons.end();
+    for (std::list<MS2Ptr<ChatEmoticonData> >::const_iterator it = rEmoticons.begin(); it != itEnd; ++it)
+    {
+        MS2Ptr<ChatEmoticonData> spEmoticon = *it;
+        if (!spEmoticon)
+            continue;
+        CStringW strIcon = StringFormat(L"img://icon:{0}", spEmoticon->m_strImagePath);
+        str += FUN_14028dfa0(CStringW(L"s_tooltip_chat_emoticon_extra_comment_image_tag"), strIcon);
+        nCount++;
+        if (nCount % nPerRow != 0)
+            str += strGap;
+        else
+            str += L"\n";
+    }
+    FUN_1409c0dc0("extraCommentAlign", "center");
+    return str;
+}
+namespace p4hook { MS2_REPLACE_METHOD(0x1409DAA30, ASTooltip, FUN_1409daa30, 1466, 0xEE156D83); }
+
+// @0x1409daff0
+CStringW ASTooltip::FUN_1409daff0(MS2Ptr<CItemData> spData)
+{
+    if (!spData)
+        return L"";
+    CXmlData& xml = spData->function.xml;
+    int nCount = 0;
+    std::vector<int> ids = xml.FUN_1409e8620(L"id", std::vector<int>());
+    for each (int nGroupId in ids)
+    {
+        std::list<MS2Ptr<ChatEmoticonData> > group;
+        CChatEmoticonTable::GetInstance()->FUN_1401e73c0(nGroupId, &group);
+        nCount += static_cast<int>(group.size());
+    }
+    CStringW str = FUN_14028dfa0(CStringW(L"s_tooltip_chat_emoticon_description"), nCount) + L"\n";
+    if (xml.FUN_14092c5f0(L"endDate"))
+    {
+        CString strEndDate = xml.FUN_1409e8560(L"endDate", "");
+        CMsTime time;
+        CString strFormat("%04d-%02d-%02d-%02d-%02d-%02d");
+        if (FUN_14028e280(time, strFormat, strEndDate) == 0)
+            return L"";
+        str += FUN_14028dfa0(CStringW(L"s_tooltip_chat_emoticon_description_enddate"), time.GetYear(), time.GetMonth(),
+            time.GetDay(), time.GetHour(), time.GetMinute());
+    }
+    else if (xml.FUN_14092c5f0(L"durationSec"))
+    {
+        __int64 nSeconds = xml.FUN_1409e86e0(L"durationSec", 0);
+        CTimeSpan span(nSeconds);
+        CStringW strDuration = FormatTimeSpan(span, true, true, true, true);
+        str += FUN_14028dfa0(CStringW(L"s_tooltip_chat_emoticon_description_duration"), strDuration);
+    }
+    return str;
+}
+namespace p4hook { MS2_REPLACE_METHOD(0x1409DAFF0, ASTooltip, FUN_1409daff0, 1710, 0x5BC1D730); }
+
 // @0x1409db6b0
 MS2Ptr<AScript> ASTooltip::FUN_1409db6b0()
 {
@@ -344,6 +427,87 @@ void ASTooltip::FUN_1409dc700(int nSkillId, unsigned short nLevel)
 }
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DC700, ASTooltip, FUN_1409dc700, 2045, 0x705AB547); }
 
+// @0x1409dcf10
+void ASTooltip::FUN_1409dcf10(int nSkillId, unsigned short nLevel, int bFromDialog)
+{
+    MS2Ptr<SkillData> spSkill = SkillDataTableCli::GetInstance()->GetSkillData(nSkillId);
+    if (!spSkill)
+        return;
+    MS2Ptr<JobData> spJob = FUN_1416546d0(reinterpret_cast<MyPC*>(FUN_1409c6540()))->FUN_140639bb0();
+    if (spJob == 0)
+        return;
+    MS2Ptr<JobSkillData> spRequire = spJob->FindSkill(nSkillId);
+    if (spRequire == 0)
+    {
+        spRequire = spJob->FindSkill(spSkill->GetOriginId());
+        if (spRequire == 0)
+            return;
+    }
+    if (!spRequire->HasRequirement())
+        return;
+    ASArray rows(2);
+    {
+        ASObj row(2);
+        row.FUN_1407cbb20("text", FUN_14028b8e0(L"s_word_learn_require_condition"));
+        row.FUN_1409c0dc0("color", "aaaaaa");
+        rows.FUN_1422bc050(row.FUN_1422bb870());
+    }
+    unsigned short nRequireLevel = spRequire->GetRequireLevel(nLevel);
+    if (nRequireLevel > 0)
+    {
+        // vfunc_78 is the level (an unsigned short in the exe's view of this slot)
+        int nAllowed = static_cast<unsigned short>(reinterpret_cast<PCBase*>(FUN_1409c6540())->vfunc_78()) >= nRequireLevel;
+        ASObj row(2);
+        row.FUN_1407cbb20("text", FUN_14028dfa0(CStringW(L"s_word_require_player_level"), nRequireLevel));
+        row.FUN_1409c0dc0("color", nAllowed != 0 ? "ffd400" : "ff4040");
+        rows.FUN_1422bc050(row.FUN_1422bb870());
+    }
+    {
+        MS2Ptr<Unk_TooltipSkillSim> spSim(0);
+        if (bFromDialog != 0)
+        {
+            Unk_TooltipSkillTreeDialog* pDialog = reinterpret_cast<Unk_TooltipSkillTreeDialog*>(FUN_1409eb120(0x4f2d));
+            if (pDialog != 0)
+                spSim = pDialog->FUN_140ec8ad0();
+        }
+        ATL::CAtlArray<unsigned>& ids = spRequire->m_requireSkillIDs;
+        ATL::CAtlArray<unsigned short>& levels = spRequire->m_requireSkillLevels;
+        for (unsigned i = 0; i < ids.GetCount(); i++)
+        {
+            MS2Ptr<Unk_TooltipJobSkillP4> spJobSkill(0);
+            if (spSim.get() != 0)
+                spJobSkill = spSim->FUN_140abc980(ids[i]);
+            else
+                spJobSkill = FUN_1416546d0(reinterpret_cast<MyPC*>(FUN_1409c6540()))->FUN_1406394d0(ids[i]);
+            if (spJobSkill == 0)
+                continue;
+            int nAllowed = 1;
+            if (!spJobSkill->m_bLearnt || spJobSkill->m_nLevel < levels[i])
+                nAllowed = 0;
+            CStringW str = FUN_14028dfa0(CStringW(L"s_word_require_skill_level"),
+                CStringTable::GetInstance()->FUN_141811980(4, spJobSkill->FUN_140637cc0()), levels[i]);
+            if (nAllowed == 0
+                && reinterpret_cast<PC*>(FUN_1409c6540())->FUN_1409eee00()->FUN_14080baf0(spJobSkill->FUN_140637cc0()) > 0)
+                str = FUN_14028dfa0(CStringW(L"s_word_require_skill_level_without_leveloption"), str);
+            ASObj row(2);
+            row.FUN_1407cbb20("text", str);
+            row.FUN_1409c0dc0("color", nAllowed != 0 ? "ffd400" : "ff4040");
+            rows.FUN_1422bc050(row.FUN_1422bb870());
+        }
+    }
+    Unk_TooltipQuestOwner* pPC = FUN_141bd0cc0_p4(FUN_1403ed2d0_p4());
+    if (pPC != 0 && spRequire->m_requireQuestID != 0)
+    {
+        CStringW str = FUN_14028dfa0(CStringW(L"s_word_require_quest_completed"), FUN_1416e4df0(spRequire->m_requireQuestID));
+        int bCompleted = pPC->FUN_141523ba0()->m_quests.FUN_140745590(spRequire->m_requireQuestID);
+        ASObj row(2);
+        row.FUN_1407cbb20("text", str);
+        row.FUN_1409c0dc0("color", bCompleted != 0 ? "ffd400" : "ff4040");
+        rows.FUN_1422bc050(row.FUN_1422bb870());
+    }
+    FUN_1409adbe0("requireDescription", rows.FUN_1422bb870());
+}
+namespace p4hook { MS2_REPLACE_METHOD(0x1409DCF10, ASTooltip, FUN_1409dcf10, 3355, 0x74CB32AB); }
 // The market description of an UGC market product (seller, sale count / date / price).
 // @0x1409ddc40
 void ASTooltip::FUN_1409ddc40(CMeratMarketProduct* pProduct)
@@ -674,3 +838,98 @@ int ASTooltip::FUN_1409dfae0(CItem* pItem)
     return 0;
 }
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DFAE0, ASTooltip, FUN_1409dfae0, 175, 0xE08D17A2); }
+
+// @0x1409dfba0
+// MS2-FUNCTIONAL: CItemData::FUN_14053d660 is declared bool but the exe tests its eax without movzx (as part 1)
+void ASTooltip::FUN_1409dfba0(MS2Ptr<CItemData> spData, ATL::CAtlList<CStringW>& list, int* pExpiring, unsigned nMax,
+    __int64 nExpiry)
+{
+    if (!spData->function.FUN_14054a3d0())
+        return;
+    ItemDropContext ctx;
+    PCBase* pOwner = reinterpret_cast<PCBase*>(FUN_1409c6540());
+    if (pOwner != 0)
+    {
+        ctx.m_gender = FUN_141658e60_p4(pOwner);
+        ctx.m_job = FUN_141654700(pOwner);
+    }
+    std::vector<ItemDropResult> drops;
+    unsigned nBoxId = spData->function.FUN_14054a460();
+    if (nBoxId > 0)
+        FUN_1405a1fd0_p4()->GetBoxItems(nBoxId, ctx, drops, true);
+    if (drops.empty())
+        return;
+    bool bFollowEndDate = false;
+    if (spData->function.FUN_14054a410())
+    {
+        bool bDefault = false;
+        bFollowEndDate = spData->function.xml.FUN_1409e8780(L"isFollowEndDate", bDefault);
+    }
+    std::vector<ItemDropResult> picked;
+    {
+        ATL::CAtlList<CStringW> names(10);
+        std::sort(drops.begin(), drops.end(), FUN_1409e7a40);
+        for (std::vector<ItemDropResult>::iterator it = drops.begin(); it != drops.end(); ++it)
+        {
+            ItemDropResult drop = *it;
+            MS2Ptr<CItemData> spItem = FUN_14053f870(drop.m_itemId);
+            if (spItem == 0)
+                continue;
+            CStringW strName = CStringTable::GetInstance()->FUN_141811980(1, drop.m_itemId);
+            const CStringW& rName = strName;
+            if (names.Find(rName) != 0)
+                continue;
+            if (*pExpiring == 0)
+            {
+                if (drop.HasItemLife() || spData->FUN_14053d660())
+                    *pExpiring = 1;
+                int nLifeType = 0;
+                if (drop.m_itemLife)
+                    nLifeType = drop.m_itemLife->m_type;
+                if (*pExpiring == 0)
+                {
+                    if (FUN_14052a3f0(bFollowEndDate, nExpiry, spData->period.expirationType, nLifeType,
+                            spItem->period.expirationType))
+                        *pExpiring = 1;
+                }
+            }
+            if (drop.m_tooltip != 1)
+            {
+                if (picked.size() >= nMax)
+                    continue;
+            }
+            names.AddTail(rName);
+            picked.push_back(drop);
+        }
+    }
+    std::sort(picked.begin(), picked.end(), FUN_1409e7930);
+    for (std::vector<ItemDropResult>::iterator it = picked.begin(); it != picked.end(); ++it)
+    {
+        ItemDropResult drop = *it;
+        MS2Ptr<CItemData> spItem = FUN_14053f870(drop.m_itemId);
+        if (spItem == 0)
+            continue;
+        CStringW strName = CStringTable::GetInstance()->FUN_141811980(1, drop.m_itemId);
+        const CStringW& rName = strName;
+        CStringW str;
+        bool bExpiring = false;
+        if (drop.HasItemLife() || spData->FUN_14053d660())
+            bExpiring = true;
+        int nLifeType = 0;
+        if (drop.m_itemLife)
+            nLifeType = drop.m_itemLife->m_type;
+        if (!bExpiring)
+        {
+            if (FUN_14052a3f0(bFollowEndDate, nExpiry, spData->period.expirationType, nLifeType,
+                    spItem->period.expirationType))
+                bExpiring = true;
+        }
+        if (bExpiring)
+            str.Format(L"- %s\n",
+                (const wchar_t*)FUN_14028dfa0(CStringW(L"s_item_end_time_tooltip_expiration_prefix"), rName));
+        else
+            str.Format(L"- %s\n", (const wchar_t*)rName);
+        list.AddTail(FUN_14183e9c0(str, drop.vfunc_o18_1()));
+    }
+}
+namespace p4hook { MS2_REPLACE_METHOD(0x1409DFBA0, ASTooltip, FUN_1409dfba0, 2207, 0xAB580EF8); }
