@@ -96,6 +96,10 @@ set(MS2_ENGINE_INCLUDE_DIRS
     "3rdParty/TinyXML"
     # PhysX 2.8.4 headers (the exe was built against 2.8.4; MS2_PHYSX_VERSION=283 swaps them for 2.8.3 below; tools/progress.py
     # reads the literal 2.8.4 paths, or 2.8.3 with MS2_PHYSX=283 in the environment).
+    # MS2: src/ms2/physx2846 shadows NxScene.h/NxPhysics.h (the shipped 2.8.4.6 PhysXCore has one NxScene virtual more, see
+    # there); it reaches the stock headers as <Physics/include/...> through the SDKs dir. Keep both before Physics/include.
+    "../../src/ms2/physx2846"
+    "../../third_party/physx284/PFiles/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs"
     "../../third_party/physx284/PFiles/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Foundation/include"
     "../../third_party/physx284/PFiles/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Physics/include"
     # MS2: NiPhysXMeshDesc.h includes NxCooking.h (EntityWorldManager's real PropService header).

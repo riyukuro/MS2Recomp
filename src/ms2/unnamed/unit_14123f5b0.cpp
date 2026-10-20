@@ -208,7 +208,7 @@ void GameObjectController::FUN_14123ff50()
 MS2_REPLACE_METHOD(0x14123FF50, GameObjectController, FUN_14123ff50, 38, 0x4AB3EC28);
 
 // @0x14123ff80
-// MS2-FUNCTIONAL: NxScene::checkOverlapCapsule is vtable slot 126 in the shipped PhysXCore64 (one more sweep-API virtual between raycastClosestShape and cullShapes) but 125 in third_party NxScene.h; not hooked so the exe body keeps the right slot
+// MS2-FUNCTIONAL: codegen (block layout/EH state numbering differ); NxScene slots are right since src/ms2/physx2846 (checkOverlapCapsule +0x3f0)
 void GameObjectController::FUN_14123ff80(efd::Point3 kDisp, unsigned int nExcludeGroups)
 {
     if (m_pController != 0)
@@ -290,6 +290,7 @@ void GameObjectController::FUN_14123ff80(efd::Point3 kDisp, unsigned int nExclud
         m_hitReport.ClearOtherController();
     }
 }
+MS2_REPLACE_METHOD(0x14123FF80, GameObjectController, FUN_14123ff80, 1422, 0xC51BDA45);
 
 // @0x141240520
 void GameObjectController::FUN_141240520(float fRadius, float fHeight)
@@ -534,7 +535,6 @@ float GameObjectController::FUN_141241090()
 MS2_REPLACE_METHOD(0x141241090, GameObjectController, FUN_141241090, 35, 0xD028E8E5);
 
 // @0x1412410c0
-// MS2-FUNCTIONAL: NxScene::checkOverlapCapsule slot 125 vs exe 126 (see FUN_14123ff80) and capsule store order; not hooked
 bool GameObjectController::FUN_1412410c0(efd::Point3 kPos, float fOffset)
 {
     FUN_1409f7ca0()->FUN_14168a540(0);
@@ -556,6 +556,7 @@ bool GameObjectController::FUN_1412410c0(efd::Point3 kPos, float fOffset)
     FUN_1409f7ca0()->FUN_14168a570();
     return bOverlap;
 }
+MS2_REPLACE_METHOD(0x1412410C0, GameObjectController, FUN_1412410c0, 485, 0x0E4FEF0B);
 
 // @0x1412412b0
 int GameObjectController::FUN_1412412b0()
