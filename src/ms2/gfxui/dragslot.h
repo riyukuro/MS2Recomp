@@ -43,10 +43,10 @@ public:
     // SetupClassInfo 0x140a36910 (no parents).
     EE_DECLARE_CLASS(BindData, 0x06202734);
 public:
-    virtual void vfunc_5();                         // 5 0x1422c8d60 {}
-    virtual void vfunc_6(void* p);                  // 6 0x1422c8d70 {}
-    virtual int vfunc_7(void* p);                   // 7 0x1422c8d90 return 1
-    virtual int vfunc_8(void* p);                   // 8 0x1422c8db0 return 0
+    virtual void vfunc_5();                         // 5 0x1422c8d60 {} (unbound)
+    virtual void vfunc_6(void* p);                  // 6 0x1422c8d70 {} (p: &m_arr58, after a push)
+    virtual int vfunc_7(void* p);                   // 7 0x1422c8d90 return 1 (p: CString*, a changed binding name)
+    virtual int vfunc_8(void* p);                   // 8 0x1422c8db0 return 0 (p: Value*, the data to push)
     virtual void vfunc_9();                         // 9 0x1422c8dd0 {}
     CString FUN_1422c89f0();                        // 0x1422c89f0 a copy of m_strName
     Scaleform::GFx::Value& FUN_1422c8d40();         // 0x1422c8d40 &m_value18 (the slot's AS data)
@@ -54,13 +54,15 @@ public:
     void FUN_1422c8b50();                           // 0x1422c8b50 clear the AS binding (DragSlot::vfunc_11)
     void FUN_1422c8cb0(const Scaleform::GFx::Value& v);   // 0x1422c8cb0 m_value18 = v; vfunc_9() unless v is null (notifybinding.cpp)
     void FUN_1422c8d10(const Scaleform::GFx::Value& v);   // 0x1422c8d10 m_value38 = v (notifybinding.cpp)
+    void FUN_1422c8a40();                           // 0x1422c8a40 mark m_arr58's names changed and m_strName pushed (NotifyContext)
+    int FUN_1422c8ac0(const CString& strName);      // 0x1422c8ac0 strName is in m_arr58
 
 public:
     MS2_LAYOUT_FRIEND;
     CString m_strName;                              // +0x10
     Scaleform::GFx::Value m_value18;                // +0x18
     Scaleform::GFx::Value m_value38;                // +0x38
-    CAtlArray<void*> m_arr58;                       // +0x58
+    CAtlArray<CString> m_arr58;                     // +0x58 names of the bindings that depend on this one (filled by vfunc_6)
 };
 
 } // namespace NotifyContext

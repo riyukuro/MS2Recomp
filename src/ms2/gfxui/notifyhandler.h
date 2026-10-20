@@ -8,6 +8,7 @@
 
 #include <afx.h>
 #include <atlcoll.h>
+#include <set>
 #include <efd/SmartPointer.h>
 #include <NiRefObject.h>
 
@@ -26,6 +27,16 @@ public:
     static NotifyContext::BindData* FUN_1422c8e90(const CString& strName);    // 0x1422c8e90
     static void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pData);   // 0x1422c8f10 bind pData under strName
     static void FUN_1422c8f70(const CString& strName);                         // 0x1422c8f70 clear the binding and unregister it
+    void FUN_1422c8de0();                                                      // 0x1422c8de0 log the bindings left, then FUN_1422c9010
+    static void FUN_1422c9010();                                               // 0x1422c9010 clear and unregister every binding
+    static void FUN_1422c90d0();                                               // 0x1422c90d0 notify the bindings that depend on a changed name
+    static void FUN_1422c9380(const CString& strName);                         // 0x1422c9380 strName changed (keytable.cpp)
+    static void FUN_1422c93e0(const CString& strName);                         // 0x1422c93e0 strName pushed its own data
+
+    // The registry (?\notifycontext.cpp). The exe's dynamic initializers are in unit_140135ac0.cpp (0x140135b60-0x140135bc0).
+    static std::set<CString> ms_setChanged;                                    // 0x143b0b258 names changed since the last FUN_1422c90d0
+    static std::set<CString> ms_setPushed;                                     // 0x143b0b268 names that pushed their own data meanwhile
+    static CRBMap<CString, efd::SmartPointer<NotifyContext::BindData> > ms_mapBindings;   // 0x143b0b278 name -> binding
 };
 
 class NotifyHandler : public Scaleform::GFx::FunctionHandler
