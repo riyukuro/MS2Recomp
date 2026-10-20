@@ -30,7 +30,6 @@
 // MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142ca1db0 ; probe
 // MS2-PIN: ??__Fs_strSortTypeNamesLike@@YAXXZ 0x142ca1e10 ; probe
 // MS2-PINS-END tplpin
-// (_Tidy 0x140be95f0 functional: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::capacity (0x140419f10 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x1404680f0; see 1d85a842)
 // MS2-PIN: ?_Tidy@?$vector@V?$MS2Ptr@VCollectItemGroupContext@@@@V?$allocator@V?$MS2Ptr@VCollectItemGroupContext@@@@@std@@@std@@AEAAXXZ 0x140be95f0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicollectitemgroupeventdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -184,7 +183,6 @@ void UICollectItemGroupEventDialog::vfunc_67()
 }
 MS2_REPLACE_METHOD(0x140BE7860, UICollectItemGroupEventDialog, vfunc_67, 24, 0xE28CF352);
 
-// MS2-FUNCTIONAL: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::size (0x14041afe0 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x14046c6d0; see 1d85a842)
 // @0x140be7880
 void UICollectItemGroupEventDialog::RefreshEvents()
 {
@@ -213,7 +211,6 @@ void UICollectItemGroupEventDialog::RefreshEvents()
 }
 MS2_REPLACE_METHOD(0x140BE7880, UICollectItemGroupEventDialog, RefreshEvents, 723, 0xDEBA9AE8);
 
-// MS2-FUNCTIONAL: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::size (0x14041afe0 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x14046c6d0; see 1d85a842)
 // @0x140be7b60
 void UICollectItemGroupEventDialog::Refresh()
 {
@@ -277,7 +274,6 @@ void UICollectItemGroupEventDialog::Refresh()
 }
 MS2_REPLACE_METHOD(0x140BE7B60, UICollectItemGroupEventDialog, Refresh, 2683, 0xE0B5572C);
 
-// MS2-FUNCTIONAL: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::size (0x14041afe0 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x14046c6d0; see 1d85a842)
 // @0x140be85f0
 void UICollectItemGroupEventDialog::SelectEvent(int nIndex)
 {
@@ -319,7 +315,6 @@ bool UICollectItemGroupEventDialog::HasItem(int nItemId, int nRarity, int nCount
 }
 MS2_REPLACE_METHOD(0x140BE86C0, UICollectItemGroupEventDialog, HasItem, 200, 0xAC1797EA);
 
-// MS2-FUNCTIONAL: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::size (0x14041afe0 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x14046c6d0; see 1d85a842)
 // @0x140be8790
 bool UICollectItemGroupEventDialog::IsComplete(int nIndex)
 {
@@ -408,7 +403,6 @@ void UICollectItemGroupEventDialog::OnEventButton(const Scaleform::GFx::Function
 }
 MS2_REPLACE_METHOD(0x140BE8B60, UICollectItemGroupEventDialog, OnEventButton, 51, 0xAEF86B47);
 
-// MS2-FUNCTIONAL: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::size (0x14041afe0 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x14046c6d0; see 1d85a842)
 // @0x140be8ba0
 void UICollectItemGroupEventDialog::OnReceive(const Scaleform::GFx::FunctionHandler::Params& params)
 {
