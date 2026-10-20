@@ -5360,7 +5360,6 @@ wmemmove	140191580	func
 ??0?$MakeValue@UUnk_MpFormatter@internal@fmt@@@internal@fmt@@QEAA@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1401cfcf0	func
 ??0?$MakeValue@UUnk_WcFormatter@internal@fmt@@@internal@fmt@@QEAA@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1401cfcf0	func
 ??0?$MakeValue@V?$BasicFormatter@_W@fmt@@@internal@fmt@@QEAA@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1401cfcf0	func
-??0?$Delegate@$$A6AXXZ@@QEAA@AEBV0@@Z	1401cfd20	func
 ??0?$TFunctor@XVEmptyParam@@@@QEAA@AEBV0@@Z	1401cfd20	func
 ??0?$_List_alloc@U?$_List_base_types@V?$TFunctor@XVEmptyParam@@@@V?$allocator@V?$TFunctor@XVEmptyParam@@@@@std@@@std@@@std@@QEAA@XZ	1401cfd50	func
 ??0?$_List_buy@V?$TFunctor@XVEmptyParam@@@@V?$allocator@V?$TFunctor@XVEmptyParam@@@@@std@@@std@@QEAA@XZ	1401cfda0	func
@@ -5377,7 +5376,6 @@ wmemmove	140191580	func
 ?FUN_1401cff40@@YAXPEAVUnk_FmtWriterBase@@@Z	1401cff40	func
 ??1?$Array@_W$0BPE@V?$allocator@_W@std@@@internal@fmt@@QEAA@XZ	1401cff60	func
 ??1?$BasicWriter@_WV?$allocator@_W@std@@@fmt@@QEAA@XZ	1401cff90	func
-??1?$Delegate@$$A6AXXZ@@QEAA@XZ	1401cffb0	func
 ??1?$TFunctor@XVEmptyParam@@@@QEAA@XZ	1401cffb0	func
 ??1?$_List_alloc@U?$_List_base_types@V?$TFunctor@XVEmptyParam@@@@V?$allocator@V?$TFunctor@XVEmptyParam@@@@@std@@@std@@@std@@QEAA@XZ	1401cffe0	func
 ??1?$_List_buy@V?$TFunctor@XVEmptyParam@@@@V?$allocator@V?$TFunctor@XVEmptyParam@@@@@std@@@std@@QEAA@XZ	1401d0010	func
@@ -70229,7 +70227,6 @@ swprintf_s	14092c040	func
 ??0?$SmartPointer@VNiFloatData@@@efd@@QEAA@PEAVNiFloatData@@@Z	14098c820	func
 ??0?$SmartPointer@VNiProperty@@@efd@@QEAA@AEBV01@@Z	14098c860	func
 ??0?$Delegate@$$A6AMM@Z@@QEAA@XZ	14098c8a0	func
-??0?$Delegate@$$A6AXXZ@@QEAA@XZ	14098c8c0	func
 ??0?$TFunctor@XVEmptyParam@@@@QEAA@XZ	14098c8c0	func
 ??0?$TInterpolator@M@@QEAA@MAEBM0@Z	14098c8e0	func
 ??0?$TLinearInterpolator@M@@QEAA@MAEBM0@Z	14098c980	func
@@ -70300,7 +70297,6 @@ swprintf_s	14092c040	func
 ??C?$SmartPointer@VNiFloatData@@@efd@@QEBAPEAVNiFloatData@@XZ	14098d100	func
 ??C?$SmartPointer@VNiInterpolator@@@efd@@QEBAPEAVNiInterpolator@@XZ	14098d110	func
 ??R?$Delegate@$$A6AMM@Z@@QEBAMM@Z	14098d120	func
-??R?$Delegate@$$A6AXXZ@@QEBAXXZ	14098d150	func
 ??R?$TFunctor@XVEmptyParam@@@@QEAAXXZ	14098d150	func
 ??_ENiLinFloatKey@@QEAAPEAXI@Z	14098d180	func
 ??_G?$TInterpolator@M@@UEAAPEAXI@Z	14098d280	func
@@ -70331,7 +70327,6 @@ swprintf_s	14092c040	func
 ?FUN_14098d8d0@@YAPEAXPEBDPEAX@Z	14098d8d0	func
 ?FUN_14098d8d0@@YAPEAXPEBXPEAX@Z	14098d8d0	func
 ?IsNull@?$Delegate@$$A6AMM@Z@@QEBA_NXZ	14098d900	func
-?IsNull@?$Delegate@$$A6AXXZ@@QEBA_NXZ	14098d930	func
 ?IsNull@?$TFunctor@XVEmptyParam@@@@QEBA_NXZ	14098d930	func
 ?FindPos@?$NiTPointerListBase@V?$NiTPointerAllocator@_K@@V?$SmartPointer@VNiProperty@@@efd@@@@QEBAPEAXAEBV?$SmartPointer@VNiProperty@@@efd@@PEAX@Z	14098d960	func
 ?Finish@?$TInterpolator@M@@UEAAXXZ	14098d9d0	func
@@ -92552,11 +92547,11 @@ IsEqualGUID	140a9a460	func
 ?max_size@?$vector@V?$MS2Ptr@VCHomemadeCubeObject@@@@V?$allocator@V?$MS2Ptr@VCHomemadeCubeObject@@@@@std@@@std@@QEBA_KXZ	140ca6f00	func
 ?push_back@?$vector@V?$MS2Ptr@VCHomemadeCubeObject@@@@V?$allocator@V?$MS2Ptr@VCHomemadeCubeObject@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VCHomemadeCubeObject@@@@@Z	140ca6f50	func
 ?size@?$vector@V?$MS2Ptr@VCHomemadeCubeObject@@@@V?$allocator@V?$MS2Ptr@VCHomemadeCubeObject@@@@@std@@@std@@QEBA_KXZ	140ca6f80	func
-??0Entry@OnceCallbackTimer@@QEAA@IIV?$Delegate@$$A6AXXZ@@@Z	140ca6fc0	func
+??0Entry@OnceCallbackTimer@@QEAA@IIV?$TFunctor@XVEmptyParam@@@@@Z	140ca6fc0	func
 ??0OnceCallbackTimer@@QEAA@XZ	140ca7030	func
 ??1OnceCallbackTimer@@UEAA@XZ	140ca7090	func
 ?FUN_140ca70d0@OnceCallbackTimer@@QEAAXXZ	140ca70d0	func
-?Add@OnceCallbackTimer@@QEAAHHV?$Delegate@$$A6AXXZ@@@Z	140ca7230	func
+?Add@OnceCallbackTimer@@QEAAHHV?$TFunctor@XVEmptyParam@@@@@Z	140ca7230	func
 ?Cancel@OnceCallbackTimer@@QEAAXI@Z	140ca73a0	func
 ?Clear@OnceCallbackTimer@@QEAAXXZ	140ca7420	func
 ?GetTimeMs@OnceCallbackTimer@@QEAA_KXZ	140ca7450	func
