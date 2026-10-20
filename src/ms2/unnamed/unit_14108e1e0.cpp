@@ -212,6 +212,9 @@ class UIDamageText { public: void FUN_141912a80(GameObject* pObj, int nValue, in
 UIDamageText* FUN_140b624b0(int nUiId);
 class CStringTable { public: CStringW FUN_141811980(int nKind, int nId); };
 CStringTable* FUN_1401a9d70();
+#ifdef __clang__
+CStringA FUN_140298360(const char* psz, const CStringA& str);   // the exe's operator+(const char*, const CStringA&)
+#endif
 // The views of pc.cpp: the world's object relation, the effect service's hit sounds / event effects, the local player.
 class Unk_PCWorld { public: int FUN_141bd19d0(int nObjectId); };   // the relation of an object (1: the local player)
 class Unk_PCFxMgr
@@ -1669,7 +1672,12 @@ void CNpc::FUN_141095190(const CString& strKfm)
 void CNpc::FUN_1410951d0(const CString& strKfm)
 {
     FUN_141095190(strKfm);
+#ifdef __clang__
+    // clang emits an unavailable MFC CopyChars import for operator+; call the exe's operator+.
+    FUN_14123bc20(FUN_140298360("urn:gamebryo-animation:", m_strED8));
+#else
     FUN_14123bc20("urn:gamebryo-animation:" + m_strED8);
+#endif
 }
 
 // @0x141095240
@@ -2176,7 +2184,12 @@ int CNpc::vfunc_124(int nNpcId)
         FUN_141095190(m_spNpcData->m_model.m_strKfm);
     if (m_strED8.IsEmpty())
         return 0;
+#ifdef __clang__
+    // clang emits an unavailable MFC CopyChars import for operator+; call the exe's operator+.
+    FUN_14123bb80(FUN_140298360("urn:gamebryo-animation:", m_strED8));
+#else
     FUN_14123bb80("urn:gamebryo-animation:" + m_strED8);
+#endif
     Unk_1401aa6a0 strName(m_spNpcData->GetId());
     if (!strName.IsEmpty() && FUN_140a7c8d0(m_spNpcData.operator->()))
         vfunc_76(CStringW(strName));
