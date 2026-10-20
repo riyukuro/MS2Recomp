@@ -386,10 +386,10 @@ MS2Ptr<CSeasonData> CSeasonDataTable::GetCurrent(SeasonRankType type)
     MS2Ptr<CSeasonData> spResult(0);
     {
         Unk_LockGuard guard(m_lock);
-        MS2Ptr<CSeasonDataCurrent> spCurrent(0);
+        if (guard) {} else { MS2Ptr<CSeasonDataCurrent> spCurrent(0);
         m_currents.Lookup(type, spCurrent);
         if (spCurrent.get() != 0)
-            spResult = spCurrent->m_spData;
+            spResult = spCurrent->m_spData; }
     }
     return spResult;
 }
@@ -464,14 +464,13 @@ void CSeasonDataTable::GetRecent(SeasonRankType type, ATL::CAtlArray<MS2Ptr<CSea
 SeasonRankType CSeasonDataTable::GetType(CStringA strName)
 {
     SeasonRankType result = static_cast<SeasonRankType>(9);
-    std::map<SeasonRankType, CStringA>::_Unchecked_iterator it = m_typeNames._Unchecked_begin();
-    std::map<SeasonRankType, CStringA>::_Unchecked_iterator end = m_typeNames._Unchecked_end();
-    while (it != end) {
-        if (it->second.CompareNoCase(strName) == 0) {
-            result = it->first;
+    for (auto& kv : m_typeNames) {
+        if (strName.CompareNoCase(kv.second) == 0) {
+            result = kv.first;
             break;
         }
-        ++it;
+
+
     }
     return result;
 }
