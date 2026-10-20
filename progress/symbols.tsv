@@ -139873,9 +139873,9 @@ FUN_141485590	141485590	func
 ??1?$pair@HV?$SmartPointer@VPostProcessEffect@@@efd@@@std@@QEAA@XZ	1416af030	func
 ??1MS2ShimmerSortProcessor@@UEAA@XZ	1416af050	func
 ??1MS2VelocityMaterialSwapProcessor@@UEAA@XZ	1416af0e0	func
-??1NiClickRenderStep@@UEAA@XZ	1416af0e0	func
+??1NiClickRenderStep@@UEAA@XZ	141474db0	func
 ??1NiMaterialSwapProcessor@@UEAA@XZ	1416af100	func
-??1NiRenderStep@@UEAA@XZ	1416af100	func
+??1NiRenderStep@@UEAA@XZ	141474e50	func
 ??1NiRenderListProcessor@@UEAA@XZ	1416af130	func
 ??1OutlineRenderClick@@UEAA@XZ	1416af150	func
 ??1SceneGraphRemovedMessage@ecr@@UEAA@XZ	1416af170	func
