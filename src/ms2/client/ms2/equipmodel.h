@@ -64,7 +64,7 @@ public:
     virtual void vfunc_17();                                // 17 0x1411ffe70
     virtual void vfunc_18() = 0;                            // 18 pure
     virtual void vfunc_19(double fTime) = 0;                // 19 pure (update)
-    virtual bool vfunc_20();                                // 20 0x1411fff90 (+0xc0 list test)
+    virtual int vfunc_20();                                 // 20 0x1411fff90 (+0xc0 list test; bool result zero-extended)
     virtual float vfunc_21();                               // 21 0x1411fffc0 return m_fScale44
     virtual void vfunc_22(float f);                         // 22 0x1411fffe0 m_fScale44 = f
     virtual NiPoint3 vfunc_23();                            // 23 0x141200010 return m_pos48

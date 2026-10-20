@@ -32,6 +32,11 @@ struct Unk_PCEquipSet
     MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nKind); MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nItemUid); void FUN_1411e4150(__int64 nItemUid, unsigned char nSlot, int nKind); void FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd); void FUN_1411ea7c0(); void FUN_1411e7660();
     void FUN_1411e7640();                                   // the look changed (flag 50; additionalcli.cpp)
     void* FUN_1411e2440(int nKind);                         // the worn items of an equip layer, NULL when none (uiclosetdialog.cpp)
+    int FUN_1411e0ba0();                                    // RefreshModel (returns 1; equipitem.cpp)
+    void FUN_1411e3d20(ATL::CAtlList<MS2Ptr<CEquipItem> >& aItems, int n);   // unequip a list of items (equipitem.cpp)
+    void FUN_1411e46b0(MS2Ptr<CEquipItem> spItem);          // an item's models were loaded (by value; equipitem.cpp)
+    void FUN_1411e4b30(MS2Ptr<CEquipItem> spItem);          // an item's models were dropped (by value; equipitem.cpp)
+    void FUN_1411e7380();                                   // kind 0x12 items changed (equipitem.cpp)
     MS2Ptr<CEquipmentSlotLayerInfo> GetTitle();            // 0x140d29440 the codi (outfit) tab period (defined in unit_140d1ae30)
     unsigned char unknown0[0x188];
     MS2Ptr<CEquipmentSlotLayerInfo> m_spTitle;              // +0x188 (new CEquipmentSlotLayerInfo(2))
@@ -160,6 +165,9 @@ public:
     void FUN_1416591e0(int nSlot, const NiColor& kColor);   // +0xd98 + nSlot*0xc = kColor (scenestategame 0x30)
     const NiColor& FUN_141659220(int nSlot);                // the colour at +0xd98 + nSlot*0xc
     void FUN_141656780();                                   // re-apply the appearance (scenestategame 0x30)
+    void FUN_141659000(int n);                              // 0x141659000 (an enchant-effect item was equipped; equipitem.cpp)
+    float FUN_14165eb80();                                  // 0x14165eb80 the animation blend of state 0x2f (equipitem.cpp)
+    CString FUN_141658d20();                                // 0x141658d20 the animation name prefix (equipitem.cpp)
     void FUN_14165d300(int nA, int nB, int nC);             // PCBase member (pcbase.cpp; scenestategame 0x5d)
     void FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot);   // scenestategame 0x141721a30
     MS2Ptr<Unk_PCWaterGunInfo> FUN_141664250();             // the water gun battle info (+0x1260)

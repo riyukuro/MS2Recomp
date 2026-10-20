@@ -365,7 +365,7 @@ void FUN_1411ffee0(CEquipModel* self)
 }
 
 // @0x1411fff90
-bool CEquipModel::vfunc_20()
+int CEquipModel::vfunc_20()
 {
     return m_listC0.IsEmpty();
 }
