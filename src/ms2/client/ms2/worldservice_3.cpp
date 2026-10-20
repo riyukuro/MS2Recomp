@@ -2,8 +2,6 @@
 // MS2-UNIT: ?\worldservice.cpp#3
 // MS2-RANGE: 0x141bedaf0-0x141bf2b70 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$destroy@UUnk_WsVa00@@@?$_Default_allocator_traits@V?$allocator@UUnk_WsVa00@@@std@@@std@@SAXAEAV?$allocator@UUnk_WsVa00@@@1@QEAUUnk_WsVa00@@@Z 0x141bedcb0 ; prop
-// MS2-PIN: ??$destroy@UUnk_WsVa18@@@?$_Default_allocator_traits@V?$allocator@UUnk_WsVa18@@@std@@@std@@SAXAEAV?$allocator@UUnk_WsVa18@@@1@QEAUUnk_WsVa18@@@Z 0x141bedcd0 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VUnk_RideeFieldObj@@@@QEAA@AEBV0@@Z 0x141bf1330 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VUnk_GoField@@@@QEAA@PEAVUnk_GoField@@@Z 0x141bf13c0 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VUnk_WsB_Lift@@@@QEAA@$$QEAV0@@Z 0x141bf14d0 ; prop
@@ -335,6 +333,15 @@
 // MS2-PIN: ??0?$SmartPointer@VEntityManager@egf@@@efd@@QEAA@AEBV01@@Z 0x141bf10e0
 // MS2-PIN: ??0?$TSingleton@VWorldService@@@@QEAA@XZ 0x141bf1a00
 // MS2-PIN: ??0?$MS2Ptr@UUnk_WsD_EffectCtx@@@@QEAA@AEBV0@@Z 0x141bf1170
+// The element destroys over the real container types (worldservice_real.h).
+// MS2-PIN: ??$destroy@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@1@@Z 0x141bedbd0
+// MS2-PIN: ??$destroy@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityHider@@@efd@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityHider@@@efd@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityHider@@@efd@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityHider@@@efd@@@1@@Z 0x141bedbf0
+// MS2-PIN: ??$destroy@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityShower@@@efd@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityShower@@@efd@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityShower@@@efd@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityShower@@@efd@@@1@@Z 0x141bedc10
+// MS2-PIN: ??$destroy@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VEntity@egf@@@efd@@@1@@Z 0x141bedc30
+// MS2-PIN: ??$destroy@U?$pair@$$CB_JV?$MS2Ptr@VRecad0@WsReal@@@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CB_JV?$MS2Ptr@VRecad0@WsReal@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CB_JV?$MS2Ptr@VRecad0@WsReal@@@@@std@@PEAX@std@@@1@QEAU?$pair@$$CB_JV?$MS2Ptr@VRecad0@WsReal@@@@@1@@Z 0x141bedc70
+// MS2-PIN: ??$destroy@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@?$_Default_allocator_traits@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@@std@@SAXAEAV?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@1@QEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@1@@Z 0x141bedc90
+// MS2-PIN: ??$destroy@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@?$_Default_allocator_traits@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@std@@@std@@SAXAEAV?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@1@QEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@1@@Z 0x141bedcb0
+// MS2-PIN: ??$destroy@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@std@@@std@@SAXAEAV?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@1@QEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@1@@Z 0x141bedcd0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "worldservice.h"
@@ -363,7 +370,8 @@
 #include "ms2/placeholder/physxpropmessage.h"
 #include <egmAnimation/ActorMessages.h>
 #include "ms2/placeholder/tfunctor.h"
-#include "ms2/placeholder/coptimizer.h"                            // CEntityShower / CEntityHider (m_980 / m_990 values)
+#include "ms2/placeholder/coptimizer.h"
+#include "worldservice_real.h"                            // CEntityShower / CEntityHider (m_980 / m_990 values)
 struct Unk_WsD_EffectCtx : public CPtred {};            // m_848 value: the effect of an effect message (add-ref 0x141c1f4a0)
 class Unk_WsPtrT_141c1f500 : public CPtred {};          // tag-range object (FUN_141bc3560), camera shake (FUN_141bc9020)
 class Unk_WsPtrT_141c1f530 : public CPtred {};          // m_540 / m_570 value (FUN_141bd3920)
@@ -451,4 +459,26 @@ void Unk_WsInst3Functors(WorldService* pService, COptimizer* pOptimizer)
 {
     TFunctor<void, EmptyParam> fnService(pService, &WorldService::FUN_141bc1640);
     TFunctor<void, EmptyParam> fnOptimizer(pOptimizer, reinterpret_cast<void (COptimizer::*)()>(&COptimizer::FUN_1414a5a30));
+}
+
+// The element destroys of the real containers (0x141bedbd0-0x141bedcef; see worldservice_real.h).
+template <class Alloc, class T> static void WsDriveDestroy(T* p)
+{
+    Alloc al;
+    std::allocator_traits<Alloc>::destroy(al, p);
+}
+template <class Map> static void WsDriveNodeDestroy(typename Map::value_type* p)
+{
+    WsDriveDestroy<std::allocator<std::_Tree_node<typename Map::value_type, void*> > >(p);
+}
+void Unk_WsInst3Destroys()
+{
+    WsDriveNodeDestroy<WsReal::Mapac0>(0);
+    WsDriveNodeDestroy<WsReal::Map990>(0);
+    WsDriveNodeDestroy<WsReal::Map980>(0);
+    WsDriveNodeDestroy<WsReal::Map2e8>(0);
+    WsDriveNodeDestroy<WsReal::Mapad0>(0);
+    WsDriveDestroy<std::allocator<std::pair<CStringA, CStringA> > >(static_cast<std::pair<CStringA, CStringA>*>(0));
+    WsDriveDestroy<WsReal::Veca00::allocator_type>(static_cast<WsReal::Veca00::value_type*>(0));
+    WsDriveDestroy<WsReal::Veca18::allocator_type>(static_cast<WsReal::Veca18::value_type*>(0));
 }
