@@ -106,23 +106,17 @@ void CWarehouseItemTable::FUN_1408fbc70(ATL::CAtlArray<MS2Ptr<CItem> >& out)
 // @0x1408fbd30
 void CWarehouseItemTable::FUN_1408fbd30(void* pArg, ATL::CAtlArray<MS2Ptr<CItem> >& out)
 {
-    POSITION pos = m_items.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
     {
         MS2Ptr<CWarehouseItem> spEntry = m_items.GetValueAt(pos);
-        if (!(spEntry == 0))
+        if (spEntry == 0 || spEntry->m_spItem == 0)
+            continue;
+        MS2Ptr<CItem> spItem = spEntry->m_spItem;
+        if (spItem->FUN_140526060(pArg) != 0)
         {
-            if (spEntry->m_spItem.IsNull() == false)
-            {
-                MS2Ptr<CItem> spItem = spEntry->m_spItem;
-                if (spItem->FUN_140526060(pArg) != 0)
-                {
-                    if (FUN_140633d50(spItem))
-                        out.Add(spItem);
-                }
-            }
+            if (FUN_140633d50(spItem))
+                out.Add(spItem);
         }
-        m_items.GetNext(pos);
     }
 }
 
