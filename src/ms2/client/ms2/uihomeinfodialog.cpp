@@ -605,7 +605,7 @@ void UIHomeInfoDialog::FUN_1412c6b50()
 
 // @0x1412c6e70
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
-void UIHomeInfoDialog::FUN_1412c6e70(CStringW strItemName, CStringW strCreator)
+void UIHomeInfoDialog::FUN_1412c6e70(const CStringW& strItemName, const CStringW& strCreator)
 {
     if (vfunc_55() == 0 && FUN_141902580(false))
     {

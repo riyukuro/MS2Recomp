@@ -561,7 +561,6 @@ int UIBlueprintMarketDialog::FillPage(int nFirst, int nLast, ASArray& rows, Unk_
 MS2_REPLACE_METHOD(0x140bbc620, UIBlueprintMarketDialog, FillPage, 0, 0);
 
 // The model house preview of a blueprint (once per blueprint, with a cool-down).
-// MS2-FUNCTIONAL: calls UIHomeInfoDialog::FUN_1412c6e70, which is declared with by-value CStringW args (uihomeinfodialog.h) while the exe takes const CStringW& - the caller-side temps differ until that header's ABI is fixed
 // @0x140bbc870
 void UIBlueprintMarketDialog::Preview(const Unk_MeratProductKey& key)
 {

@@ -35,7 +35,7 @@ public:
     void FUN_1412c6220();                                       // balance (meso / merat) of the convenience panel
     void FUN_1412c66c0();                                       // the visitors list
     void FUN_1412c6b50();                                       // extension area title / height
-    void FUN_1412c6e70(CStringW strItemName, CStringW strCreator);   // m_itemName / m_creator
+    void FUN_1412c6e70(const CStringW& strItemName, const CStringW& strCreator);   // m_itemName / m_creator
     CStringW FUN_1412c7090();                                   // the notice text
     CStringW FUN_1412c7140();                                   // the address text
     int FUN_1412c72d0();                                        // fill the whole panel; 1 = shown
