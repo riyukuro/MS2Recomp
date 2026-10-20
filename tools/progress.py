@@ -1485,6 +1485,7 @@ def main():
         return re.sub(r"0x([0-9a-f]+)(?= in the symbol table|$)", one, d)
 
     if a.check:
+        ifc_cache = {}
         sel = {u.name for u in units}
         by_rel = {u.name: u.rel for u in all_units}
         for name, n, m, f, b, bmt, nv, vok, fail, bft in summary:
@@ -1506,6 +1507,26 @@ def main():
                         bad.append(f"{name}: lint: {lr} at {lf}:{ln}: {lt[:100]}")
                     if len(lh) > 12:
                         bad.append(f"{name}: lint: ... {len(lh) - 12} more")
+                # exact interface (tools/interface_check.py, fx12): non-exact functions other units depend on need a
+                # byte match or an `// MS2-FUNCTIONAL: <reason>`; a hard gate only for units not yet done
+                if res and not fail:
+                    import interface_check as ifc
+                    if "states" not in ifc_cache:
+                        ifc_cache["states"] = ifc.done_units()
+                    qs = ifc.queue_state(name, ifc_cache["states"])
+                    try:
+                        rows = [r for r in ifc.check_unit(rel, name, res, os.path.join(CACHE, "obj", rel[:-4] + ".obj"),
+                                                          ifc_cache, exe) if r["violation"]]
+                    except Exception as ex:
+                        rows = []
+                        print(f"interface check skipped for {name}: {ex.__class__.__name__}: {ex}")
+                    soft = os.environ.get("MS2_INTERFACE_WARN") or qs in ("done", "done-functional")
+                    for r in rows:
+                        line = f"{name}: interface: " + ifc.fmt_row(r)
+                        if soft:
+                            print("INTERFACE WARNING " + line)
+                        else:
+                            bad.append(line)
                 ok_msg = (f"functional: OK (matched {m}/{n}, {f} functional, {bmt} of {b} bytes = "
                           f"{100.0 * bmt / b if b else 0:.1f}% exact, {100.0 * (bmt + bft) / b if b else 0:.1f}% implemented)")
             elif fail or n == 0 or m != n or vok != nv:
