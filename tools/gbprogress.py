@@ -529,8 +529,10 @@ def credit(res, game_rows):
             if va not in best or rank > best[va][0]:
                 best[va] = (rank, sym, c["unit"])
     rows = {va: (sym, unit, "matched" if r >= 2 else "functional") for va, (r, sym, unit) in best.items()}
-    # stubs: uncredited functions between two credited functions of the same unit
-    cred = sorted(rows)
+    # stubs: uncredited functions between two credited functions of the same unit. A credited function shorter than
+    # LEAF_SMALL (ret, return a constant, an empty virtual: the linker folds such bodies across TUs) is no evidence of
+    # where its TU lies: it neither bounds nor interrupts a run
+    cred = sorted(v for v in rows if info[v][0] >= LEAF_SMALL)
     for a, b in zip(cred, cred[1:]):
         if rows[a][1] != rows[b][1]:
             continue
@@ -541,8 +543,10 @@ def credit(res, game_rows):
             if v in game_rows or in_game(v):
                 gap = None
                 break
-            gap.append(v)
             i += 1
+            if v in rows:
+                continue
+            gap.append(v)
             if len(gap) > STUB_GAP:      # a COMDAT placed elsewhere, not the TU's own range
                 gap = None
                 break
