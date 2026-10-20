@@ -638,36 +638,57 @@ void CKeyTable::FUN_14142a910()
     m_keys.RemoveAll();
     for (int nKey = 1; nKey < 0xd0; nKey++)
     {
-        if (!FUN_1401a9d70()->FUN_1418125b0(nKey).IsEmpty())
-        {
-            int nCode = nKey;
-            m_keys.SetAt(nCode, MS2Ptr<stKeyData>(new stKeyData(FUN_1401a9d70()->FUN_1418125b0(nKey))));
-        }
+        CStringW strName = FUN_1401a9d70()->FUN_1418125b0(nKey);
+        if (!strName.IsEmpty())
+            m_keys.SetAt((Unk_MyPCKeyId)nKey, new stKeyData(FUN_1401a9d70()->FUN_1418125b0(nKey)));
     }
-    for (int nFirst = 0x96; nFirst < 0x9a; nFirst++)
+    int nCount = 0;
+    for (int nFirst = 0x96; nFirst <= 0x99; nFirst++)
     {
         for (int nSecond = 0x92; nSecond < 0xa2; nSecond++)
         {
-            if (nSecond < 0x96 || nSecond > 0x99)
-            {
-                unsigned nCombo;
-                FUN_141430e70(&nCombo, nFirst, nSecond, 0xf0);
-                CStringW strName = FUN_141430ee0(nFirst, nSecond);
-                int nCode = (int)nCombo;
-                m_keys.SetAt(nCode, MS2Ptr<stKeyData>(new stKeyData(strName)));
-            }
+            if (nSecond >= 0x96 && nSecond <= 0x99)
+                continue;
+            unsigned nCombo;
+            FUN_141430e70(&nCombo, nFirst, nSecond, 0xf0);
+            CStringW strName = FUN_141430ee0(nFirst, nSecond);
+            m_keys.SetAt(nCombo, new stKeyData(strName));
+            nCount++;
         }
         for (int nSecond = 0xa3; nSecond < 0xb3; nSecond++)
         {
             unsigned nCombo;
             FUN_141430e70(&nCombo, nFirst, nSecond, 0xf1);
             CStringW strName = FUN_141430ee0(nFirst, nSecond);
-            int nCode = (int)nCombo;
-            m_keys.SetAt(nCode, MS2Ptr<stKeyData>(new stKeyData(strName)));
+            m_keys.SetAt(nCombo, new stKeyData(strName));
+            nCount++;
         }
     }
-    for (__int64 nAction = 0x7a121; nAction <= 0x7a139; nAction++)
-        m_quickSlotActions.Add(nAction);
+    m_quickSlotActions.Add(0x7a121);
+    m_quickSlotActions.Add(0x7a122);
+    m_quickSlotActions.Add(0x7a123);
+    m_quickSlotActions.Add(0x7a124);
+    m_quickSlotActions.Add(0x7a125);
+    m_quickSlotActions.Add(0x7a126);
+    m_quickSlotActions.Add(0x7a127);
+    m_quickSlotActions.Add(0x7a128);
+    m_quickSlotActions.Add(0x7a129);
+    m_quickSlotActions.Add(0x7a12a);
+    m_quickSlotActions.Add(0x7a12b);
+    m_quickSlotActions.Add(0x7a12c);
+    m_quickSlotActions.Add(0x7a12d);
+    m_quickSlotActions.Add(0x7a12e);
+    m_quickSlotActions.Add(0x7a12f);
+    m_quickSlotActions.Add(0x7a130);
+    m_quickSlotActions.Add(0x7a131);
+    m_quickSlotActions.Add(0x7a132);
+    m_quickSlotActions.Add(0x7a133);
+    m_quickSlotActions.Add(0x7a134);
+    m_quickSlotActions.Add(0x7a135);
+    m_quickSlotActions.Add(0x7a136);
+    m_quickSlotActions.Add(0x7a137);
+    m_quickSlotActions.Add(0x7a138);
+    m_quickSlotActions.Add(0x7a139);
     m_pairKeys.RemoveAll();
     m_pairKeys.SetAt(0x82, 0x83);
     m_pairKeys.SetAt(0x83, 0x82);
