@@ -89,6 +89,7 @@ class AdditionalCustomCli : public AdditionalCli
 {
 public:
     AdditionalCustomCli(PCBase* pOwner, int nKey, int nId, unsigned nEndTick, unsigned nCount);   // 0x14096dcb0
+    // MS2-FUNCTIONAL: the exe dtor skips the vftable store (no source form found in 2 tries)
     virtual ~AdditionalCustomCli() {}                       // 0x14096e600 (??_G 0x14096e920)
 };
 MS2_CHECK_SIZE(AdditionalCustomCli, 0x78);
