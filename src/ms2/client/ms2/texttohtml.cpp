@@ -825,3 +825,5 @@ bool FUN_1418473c0(CStringW& str)
     str.MakeUpper();
     return true;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbba60-0x142cbbc30 .text$yd

@@ -21,3 +21,5 @@ static NiFixedString s_fixed10;
 static NiFixedString s_fixed11;
 static NiFixedString s_fixed12;
 static NiFixedString s_fixed13;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb48e0-0x142cb4aa0 .text$yd

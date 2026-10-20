@@ -1059,3 +1059,5 @@ DecoItem* DecoLayer::GetEditableItem()
     }
     return m_aItems.GetAt(0);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cac760-0x142cac920 .text$yd

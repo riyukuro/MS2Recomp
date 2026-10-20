@@ -37,3 +37,5 @@ static efd::MessageHandlerImpl<CubeMapInformationService, ecr::SceneGraphAddedMe
     s_sceneGraphAddedHandler(reinterpret_cast<void (CubeMapInformationService::*)(const ecr::SceneGraphAddedMessage*, efd::Category)>(
         &CubeMapInformationService::FUN_1410cf130));
 #endif
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cabfe0-0x142cac180 .text$yd

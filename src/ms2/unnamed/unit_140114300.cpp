@@ -26,3 +26,5 @@ static CString s_strSlot = "Slot";
 static CString s_strUndo = "Undo";
 static CString s_strVIP = "VIP";
 static CString s_strWillUpdatePos = "WillUpdatePos";
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbe640-0x142cbe880 .text$yd

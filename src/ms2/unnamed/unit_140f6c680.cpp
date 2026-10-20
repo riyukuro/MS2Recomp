@@ -2329,3 +2329,5 @@ ItemSocketSystemPageBase::SaleParam::SaleParam() : enabled(0), value1c(0), rate(
 // @0x140f7bd70
 bool CCItemSocketSystemPacket::GemStoneInEquip::vfunc_0() { return m_nUid > 0 && m_nSlot >= 0; }
 MS2_REPLACE_METHOD(0x140F7BD70, CCItemSocketSystemPacket::GemStoneInEquip, vfunc_0, 57, 0x9021F1E2);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9ce0-0x142ca9ee0 .text$yd

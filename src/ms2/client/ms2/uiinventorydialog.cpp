@@ -3008,3 +3008,5 @@ bool UIItemBreakDonationDialog::vfunc_87(int nResult, const CMsgBoxData& box)
     return true;
 }
 MS2_REPLACE_METHOD(0x1419A5980, UIItemBreakDonationDialog, vfunc_87, 46, 0);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbeaf0-0x142cbecc0 .text$yd

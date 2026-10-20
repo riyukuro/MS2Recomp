@@ -2618,3 +2618,5 @@ Unk_EsEffectGroup::~Unk_EsEffectGroup()
 
 // @0x1411b1f50
 int Unk_EsEffectGroup::FUN_1411b1f50() { return m_sTotalEffectCount; }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cacca0-0x142cace40 .text$yd
