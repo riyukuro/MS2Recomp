@@ -165,7 +165,7 @@ public:
     ATL::CRBMap<unsigned int, unsigned int> m_18;           // +0x18
     KeyMap m_keys;                                          // +0x48 key code -> binding
     KeyMap m_keysBackup;                                    // +0x78 (FUN_14142a510 / FUN_14142a680)
-    ATL::CRBMultiMap<__int64, int, ATL::CElementTraits<__int64>, KeyTraits> m_actionKeys;   // +0xa8 action -> keys
+    ATL::CRBMultiMap<unsigned __int64, int, ATL::CElementTraits<unsigned __int64>, KeyTraits> m_actionKeys; // +0xa8 action -> keys
     ATL::CRBMultiMap<unsigned int, int, ATL::CElementTraits<unsigned int>, KeyTraits> m_d8; // +0xd8 slot -> keys
     KeyPairMap m_pairKeys;                                  // +0x108 left/right modifier twins
     KeyPairMap m_shortKeys;                                 // +0x150

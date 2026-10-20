@@ -22,10 +22,10 @@
 // MS2-PIN: ??0CPair@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@IEAA@AEBHAEBV?$MS2Ptr@VstKeyData@CKeyTable@@@@@Z 0x141435500 ; unique
 // MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141435f30 ; prop
 // MS2-PIN: ?Find@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@IEBAPEAVCNode@12@AEBH@Z 0x1414368d0 ; unique
-// MS2-PIN: ?Find@?$CRBTree@_JHV?$CElementTraits@_J@ATL@@V?$CDefaultElementTraits@H@2@@ATL@@IEBAPEAVCNode@12@_J@Z 0x1414369c0 ; unique
+// MS2-PIN: ?Find@?$CRBTree@_KHV?$CElementTraits@_K@ATL@@V?$CDefaultElementTraits@H@2@@ATL@@IEBAPEAVCNode@12@_K@Z 0x1414369c0 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HHV?$CDefaultElementTraits@H@ATL@@V12@@ATL@@AEBAPEAVCNode@12@AEBHAEAI1AEAPEAV312@@Z 0x1414375a0 ; unique
 // MS2-PIN: ?InsertImpl@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@AEAAPEAVCNode@12@AEBHAEBV?$MS2Ptr@VstKeyData@CKeyTable@@@@@Z 0x141437f20 ; unique
-// MS2-PIN: ?InsertImpl@?$CRBTree@_JHV?$CElementTraits@_J@ATL@@V?$CDefaultElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@_JAEBH@Z 0x141438020 ; unique
+// MS2-PIN: ?InsertImpl@?$CRBTree@_KHV?$CElementTraits@_K@ATL@@V?$CDefaultElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@_KAEBH@Z 0x141438020 ; unique
 // MS2-PIN: ?NewNode@?$CRBTree@HV?$MS2Ptr@VstKeyData@CKeyTable@@@@V?$CDefaultElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VstKeyData@CKeyTable@@@@@3@@ATL@@AEAAPEAVCNode@12@AEBHAEBV?$MS2Ptr@VstKeyData@CKeyTable@@@@@Z 0x141439150 ; unique
 // MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@PEAX@2@XZ 0x14143c160 ; unique
 // MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HPEAVUnk_140165cf0@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHPEAVUnk_140165cf0@@@std@@@3@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x14143c240 ; unique
@@ -1319,15 +1319,20 @@ CStringW CKeyTable::FUN_14142d220(int nKey)
         if (FUN_140166410()->FUN_14036d570(0xb5) == true)
         {
             if (FUN_141431a90(nKey) == 0)
+            {
                 return spKey->m_strName;
-            CStringW strName = spKey->m_strName.MakeLower();
-            CStringW strLayout = FUN_140a58540()->FUN_140d8c690();
-            ATL::CAtlArray<CStringW> aParts;
-            FUN_14025a680(strName, aParts, L",");
-            if (aParts.GetCount() > 1)
-                return FUN_14028dfa0(L"s_gamepad_key_icon_combine", strLayout, aParts[0], strLayout, aParts[1]);
+            }
             else
-                return FUN_1408f71a0(L"s_gamepad_key_icon", strLayout, strName);
+            {
+                CStringW strName = spKey->m_strName.MakeLower();
+                CStringW strLayout = FUN_140a58540()->FUN_140d8c690();
+                ATL::CAtlArray<CStringW> aParts;
+                FUN_14025a680(strName, aParts, L",");
+                if (aParts.GetCount() > 1)
+                    return FUN_14028dfa0(L"s_gamepad_key_icon_combine", strLayout, aParts[0], strLayout, aParts[1]);
+                else
+                    return FUN_1408f71a0(L"s_gamepad_key_icon", strLayout, strName);
+            }
         }
         else
         {
