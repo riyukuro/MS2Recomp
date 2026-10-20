@@ -106,6 +106,13 @@ public:
     const std::set<unsigned>* FUN_140aaffb0(unsigned nGroup);   // the effects of an additional effect group
 };
 // The current field data.
+// the exe passes the entity id by value here (the callee's own header takes it by reference; same ABI)
+class Unk_AclEffect : public CEffectService
+{
+public:
+    void FUN_1411a6f00(egf::EntityID id);
+};
+
 class Unk_AclWorld : public WorldService
 {
 public:
@@ -1028,7 +1035,7 @@ void AdditionalCliList::FUN_140972770()
             m_pOwner->FUN_14166ca20(3);
         else
         {
-            CEffectService::GetInstance()->FUN_1411a6f00(m_pOwner->FUN_14123c460());
+            static_cast<Unk_AclEffect*>(CEffectService::GetInstance())->FUN_1411a6f00(m_pOwner->FUN_14123c460());
             m_pOwner->FUN_14166ca80(3);
             m_pOwner->vfunc_42(fAlpha, true);
         }
@@ -1330,11 +1337,8 @@ void AdditionalCliList::FUN_140974130(MS2Ptr<AdditionalCli> sp)
     if (sp->FUN_14096d810()->m_nEventBuffType == 3)
     {
         efd::SmartPointer<Ridee> spRidee(m_pOwner->FUN_1416764a0());
-        if (spRidee)
-        {
-            if (spRidee->FUN_141675ed0())
-                PCBase::FUN_141677f40(spRidee);
-        }
+        if (static_cast<bool>(spRidee) && spRidee->FUN_141675ed0())
+            PCBase::FUN_141677f40(spRidee.operator->());
     }
 }
 
