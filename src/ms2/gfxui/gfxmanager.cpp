@@ -8,12 +8,6 @@
 // 0x1422b0060 and missed the first 60 functions. The class is declared in src/ms2/placeholder/gfxmanager.h; GFxClipboard
 // (placeholder/gfxclipboard.h; OnTextStore is in ?\gfxvideo.cpp) has its vftable and inline ContainsRichText here. The COMDAT tail (0x1422b2800-) is Scaleform's loader-state glue
 // (Ptr<>, the inline Loader setters / getters, the inline State ctors), NiPointer<>, TFunctor<> and CRBMap<>.
-//
-// Scaleform 4.1.18 vs the 4.1.19 SDK: the exe's State::StateType has one more entry before State_IMEManager (exe 0x18,
-// SDK 23): the inline State ctors / setters / getters from State_IMEManager on (IME manager, XML and zlib support,
-// audio, AS3 support) pass an id one too low when built against the 4.1.19 headers. Those COMDATs are pinned at the end
-// and pair as functional; the functions here that reach them are byte-exact but are not hooked, because the DLL copy
-// would pass the wrong id.
 #define GFX_USE_VIDEO_WIN32               // sfvideo.h (GFxVideo)
 #include "ms2/placeholder/ms2stdafx.h"
 #pragma float_control(precise, on)
@@ -157,6 +151,7 @@ int GFxManager::FUN_1422ad620(HWND hWnd, NiRenderer* pRenderer)
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x1422AD620, GFxManager, FUN_1422ad620, 1361, 0xD8A71BE4);
 
 // @0x1422adb80
 int GFxManager::FUN_1422adb80(unsigned int uiWidth, unsigned int uiHeight)
@@ -531,7 +526,6 @@ void GFxManager::FUN_1422af0b0(int bArchive, int bRelease)
 }
 MS2_REPLACE_METHOD(0x1422AF0B0, GFxManager, FUN_1422af0b0, 531, 0x720498EE);
 
-// Not hooked: the inline GetIMEManager passes the 4.1.19 State_IMEManager (23; the exe's 4.1.18 id is 24)
 // @0x1422af2d0
 int GFxManager::FUN_1422af2d0(int nMovieId)
 {
@@ -546,8 +540,8 @@ int GFxManager::FUN_1422af2d0(int nMovieId)
         return pIME->IsTextFieldFocused();
     return 0;
 }
+MS2_REPLACE_METHOD(0x1422AF2D0, GFxManager, FUN_1422af2d0, 172, 0x46C36A07);
 
-// Not hooked: the inline GetIMEManager passes the 4.1.19 State_IMEManager (23; the exe's 4.1.18 id is 24)
 // @0x1422af390
 int GFxManager::FUN_1422af390(int nMovieId)
 {
@@ -570,6 +564,7 @@ int GFxManager::FUN_1422af390(int nMovieId)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1422AF390, GFxManager, FUN_1422af390, 478, 0x0D52860D);
 
 // @0x1422af580
 int GFxManager::FUN_1422af580(int nMovieId)
@@ -578,8 +573,8 @@ int GFxManager::FUN_1422af580(int nMovieId)
         return 0;
     return GetFocus() == m_hWnd && FUN_1422af2d0(nMovieId);
 }
+MS2_REPLACE_METHOD(0x1422AF580, GFxManager, FUN_1422af580, 97, 0xF47CE5A7);
 
-// Not hooked: the inline GetIMEManager passes the 4.1.19 State_IMEManager (23; the exe's 4.1.18 id is 24)
 // MS2-FUNCTIONAL: the exe calls wcslen through the CRT import table; here it is a direct call (one instruction)
 // @0x1422af5f0
 CStringW GFxManager::FUN_1422af5f0(int nMovieId)
@@ -614,8 +609,8 @@ int GFxManager::FUN_1422af7a0(int nMovieId)
         return 0;
     }
 }
+MS2_REPLACE_METHOD(0x1422AF7A0, GFxManager, FUN_1422af7a0, 227, 0x14288614);
 
-// Not hooked: the inline GetIMEManager passes the 4.1.19 State_IMEManager (23; the exe's 4.1.18 id is 24)
 // @0x1422af8a0
 unsigned GFxManager::FUN_1422af8a0(int nMovieId)
 {
@@ -630,8 +625,8 @@ unsigned GFxManager::FUN_1422af8a0(int nMovieId)
         return static_cast<IME::GFxIMEManagerWin32*>(pIME)->m_dwConversionMode;
     return 0x1000000;
 }
+MS2_REPLACE_METHOD(0x1422AF8A0, GFxManager, FUN_1422af8a0, 179, 0xE8E05E25);
 
-// Not hooked: the inline GetIMEManager passes the 4.1.19 State_IMEManager (23; the exe's 4.1.18 id is 24)
 // @0x1422af960
 CString GFxManager::FUN_1422af960(int nMovieId)
 {
@@ -646,6 +641,7 @@ CString GFxManager::FUN_1422af960(int nMovieId)
         return CString(pIME->GetInputLanguage().ToCStr());
     return CString("UNKNOWN");
 }
+MS2_REPLACE_METHOD(0x1422AF960, GFxManager, FUN_1422af960, 397, 0x04ED31FF);
 
 // @0x1422afb00
 void GFxManager::FUN_1422afb00()
@@ -713,6 +709,7 @@ void GFxManager::FUN_1422afe50()
     m_spSound = 0;
     FUN_1422b22b0();
 }
+MS2_REPLACE_METHOD(0x1422AFE50, GFxManager, FUN_1422afe50, 45, 0x30345DFC);
 
 // @0x1422afe90
 void GFxManager::FUN_1422afe90()
@@ -1048,7 +1045,6 @@ int GFxManager::FUN_1422b0f70(HWND hWnd)
 }
 MS2_REPLACE_METHOD(0x1422B0F70, GFxManager, FUN_1422b0f70, 182, 0x9A186732);
 
-// Not hooked: the inline SetAS3Support passes the 4.1.19 State_AS3Support (34; the exe's 4.1.18 id is 35)
 // @0x1422b1030
 int GFxManager::FUN_1422b1030()
 {
@@ -1078,6 +1074,7 @@ int GFxManager::FUN_1422b1030()
     m_loader.SetXMLSupport(spXMLSupport);
     return 1;
 }
+MS2_REPLACE_METHOD(0x1422B1030, GFxManager, FUN_1422b1030, 1500, 0x64A5C164);
 
 // @0x1422b1620
 int GFxManager::FUN_1422b1620(CString strFontConfig, const CString& strLocale)
@@ -1100,7 +1097,6 @@ int GFxManager::FUN_1422b1750(NiRenderer* pRenderer)
 }
 MS2_REPLACE_METHOD(0x1422B1750, GFxManager, FUN_1422b1750, 192, 0xAB26E2A9);
 
-// Not hooked: the inline SetIMEManager passes the 4.1.19 State_IMEManager (23; the exe's 4.1.18 id is 24)
 // @0x1422b1820
 int GFxManager::FUN_1422b1820(HWND hWnd)
 {
@@ -1114,6 +1110,7 @@ int GFxManager::FUN_1422b1820(HWND hWnd)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1422B1820, GFxManager, FUN_1422b1820, 422, 0xF5C4BD6C);
 
 // @0x1422b19d0
 int GFxManager::FUN_1422b19d0(HWND hWnd, CString strPath)
@@ -1206,7 +1203,6 @@ int GFxManager::FUN_1422b20f0(HWND hWnd, CString strPath)
 }
 MS2_REPLACE_METHOD(0x1422B20F0, GFxManager, FUN_1422b20f0, 442, 0xC65B46FA);
 
-// Not hooked: the inline SetAudio passes the 4.1.19 State_Audio (28; the exe's 4.1.18 id is 29)
 // @0x1422b22b0
 int GFxManager::FUN_1422b22b0()
 {
@@ -1231,6 +1227,7 @@ int GFxManager::FUN_1422b22b0()
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1422B22B0, GFxManager, FUN_1422b22b0, 564, 0x4175898C);
 
 // @0x1422b24f0
 void GFxManager::FUN_1422b24f0()
@@ -1278,17 +1275,12 @@ void GFxManager::FUN_1422b27e0(bool b)
 MS2_REPLACE_METHOD(0x1422B27E0, GFxManager, FUN_1422b27e0, 26, 0xBB8E686C);
 
 
-// COMDATs the auto pairing cannot place (look-alike copies, or bytes that differ because the exe's 4.1.18
-// State::StateType has one more entry before State_IMEManager: IMEManager 0x18, XMLSupport 0x19, ZlibSupport 0x1a,
-// Audio 0x1d, AS3Support 0x23 where the 4.1.19 SDK headers give one less; MovieImpl::GetFocusGroup reads the 4.1.18
-// MovieImpl layout, FocusGroupIndexes +0x3464 / FocusGroups +0x2e60). Those pair as functional.
+// COMDATs the auto pairing cannot place (look-alike copies).
 // MS2-PIN: ??0?$SmartPointer@VGFxRenderer@@@efd@@QEAA@PEAVGFxRenderer@@@Z 0x1422b2fd0
 // MS2-PIN: ??0?$SmartPointer@VGFxSoundFMOD@@@efd@@QEAA@PEAVGFxSoundFMOD@@@Z 0x1422b3010
 // MS2-PIN: ??0?$SmartPointer@VGFxVideo@@@efd@@QEAA@PEAVGFxVideo@@@Z 0x1422b3050
 // MS2-PIN: ??0?$SmartPointer@VNiGFxLocalizeManager@@@efd@@QEAA@PEAVNiGFxLocalizeManager@@@Z 0x1422b3090
 // MS2-PIN: ??0?$SmartPointer@VUnk_NotifyContext@@@efd@@QEAA@PEAVUnk_NotifyContext@@@Z 0x1422b30d0
-// MS2-PIN: ??0SupportBase@XML@GFx@Scaleform@@QEAA@XZ 0x1422b3680
-// MS2-PIN: ??0ZlibSupportBase@GFx@Scaleform@@QEAA@XZ 0x1422b36f0
 // MS2-PIN: ??1ParserExpat@XML@GFx@Scaleform@@UEAA@XZ 0x1422b3fb0
 // MS2-FUNCTIONAL ??_GRefCountNTSImplCore@Scaleform@@UEAAPEAXI@Z: the exe's copy is the vector deleting destructor (??_E, emitted because some TU deletes an array of them); with flag bit 2 clear it runs the same dtor and sized delete as this ??_G
 // MS2-PIN: ??_GRefCountNTSImplCore@Scaleform@@UEAAPEAXI@Z 0x1422b49f0
@@ -1296,14 +1288,8 @@ MS2_REPLACE_METHOD(0x1422B27E0, GFxManager, FUN_1422b27e0, 26, 0xBB8E686C);
 // MS2-PIN: ??_GParser@XML@GFx@Scaleform@@UEAAPEAXI@Z 0x1422b4f20
 // MS2-PIN: ??_GParserExpat@XML@GFx@Scaleform@@UEAAPEAXI@Z 0x1422b4f80
 // MS2-PIN: ??_GRefCountNTSImpl@Scaleform@@UEAAPEAXI@Z 0x1422b4fe0
-// MS2-PIN: ?GetFocusGroup@MovieImpl@GFx@Scaleform@@IEAAAEAUFocusGroupDescr@23@I@Z 0x1422b57a0
-// MS2-PIN: ?GetIMEManager@StateBag@GFx@Scaleform@@QEBA?AV?$Ptr@VIMEManagerBase@GFx@Scaleform@@@3@XZ 0x1422b5870
 // MS2-PIN: ?NewNode@?$CRBTree@HV?$SmartPointer@VGFxMovie@@@efd@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$SmartPointer@VGFxMovie@@@efd@@@4@@ATL@@AEAAPEAVCNode@12@HAEBV?$SmartPointer@VGFxMovie@@@efd@@@Z 0x1422b6340
 // MS2-PIN: ?SFstrcmp@Scaleform@@YAHPEBD0@Z 0x1422b7830
-// MS2-PIN: ?SetAS3Support@StateBag@GFx@Scaleform@@QEAAXPEAVASSupport@23@@Z 0x1422b7860
-// MS2-PIN: ?SetAudio@StateBag@GFx@Scaleform@@QEAAXPEAVAudioBase@23@@Z 0x1422b79b0
-// MS2-PIN: ?SetIMEManager@StateBag@GFx@Scaleform@@QEAAXPEAVIMEManagerBase@23@@Z 0x1422b7a40
-// MS2-PIN: ?SetXMLSupport@StateBag@GFx@Scaleform@@QEAAXPEAVSupportBase@XML@23@@Z 0x1422b7ca0
 // MS2-PIN: ??_7ImageFileHandlerRegistry@GFx@Scaleform@@6BState@12@@ 0x1431094e8
 // MS2-PIN: ??_7ImageFileHandlerRegistry@GFx@Scaleform@@6B0Render@2@@ 0x1431094f8
 // MS2-PIN: ??_7Unk_NotifyContext@@6B@ 0x1431095a0
