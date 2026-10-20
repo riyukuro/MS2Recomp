@@ -279,10 +279,12 @@ UICloset::CTab::CTab()
 bool UICloset::CTab::Initialize(const CStringW& strName, int nLayer)
 {
     m_info.AssignRaw(new ItemCloset::TabInfo);
-    if (m_info.get() == 0)
+    if (m_info == 0)
         return false;
-    m_info->m_name = strName;
     m_info->m_1c = nLayer;
+    m_info->m_18 = 0;
+    m_info->m_20 = 0;
+    m_info->m_name = strName;
     return true;
 }
 
@@ -295,15 +297,17 @@ void UICloset::CTab::SetInfo(MS2Ptr<ItemCloset::TabInfo> spInfo)
 // @0x140bd8e00
 void UICloset::CTab::SetIndex(int nIndex)
 {
-    if (m_info.get() != 0)
-        m_info->m_18 = nIndex;
+    if (m_info == 0)
+        return;
+    m_info->m_18 = nIndex;
 }
 
 // @0x140bd8e50
 void UICloset::CTab::SetName(const CStringW& strName)
 {
-    if (m_info.get() != 0)
-        m_info->m_name = strName;
+    if (m_info == 0)
+        return;
+    m_info->m_name = strName;
 }
 
 // @0x140bd8eb0
@@ -339,7 +343,9 @@ __int64 UICloset::CTab::GetId()
 // @0x140bd9090
 bool UICloset::CTab::IsEmpty()
 {
-    return m_info == 0;
+    if (m_info == 0)
+        return true;
+    return false;
 }
 
 // @0x140bd90d0
@@ -347,7 +353,7 @@ bool UICloset::CTab::ItemsEmpty()
 {
     if (m_info == 0)
         return true;
-    return m_info->m_slots.IsEmpty();
+    return m_info->m_slots.IsEmpty() == true;
 }
 
 // ======== UICloset::CSlotData ========
@@ -1268,9 +1274,11 @@ int UIClosetDialog::GetLayer()
 // @0x140be0270
 MS2Ptr<UICloset::CTab> UIClosetDialog::GetTab(int nIndex)
 {
-    if (nIndex >= 0 && nIndex < static_cast<int>(m_tabs.GetCount()))
-        return m_tabs[nIndex];
-    return MS2Ptr<UICloset::CTab>(0);
+    if (m_tabs.IsEmpty())
+        return MS2Ptr<UICloset::CTab>(0);
+    if (nIndex < 0 || nIndex >= static_cast<int>(m_tabs.GetCount()))
+        return MS2Ptr<UICloset::CTab>(0);
+    return m_tabs[nIndex];
 }
 
 // @0x140be0350
@@ -1324,7 +1332,9 @@ __int64 UIClosetDialog::TabIdentifier(int nIndex)
 bool UIClosetDialog::GetGroup(unsigned nIndex, EquipSlotType& eType)
 {
     eType = EquipSlot_None;
-    if (m_groups.IsEmpty() || nIndex >= m_groups.GetCount())
+    if (m_groups.IsEmpty())
+        return false;
+    if (nIndex >= m_groups.GetCount())
         return false;
     eType = m_groups[nIndex];
     return true;
@@ -1344,9 +1354,11 @@ int UIClosetDialog::FindGroup(EquipSlotType eType)
 // @0x140be0820
 MS2Ptr<UICloset::CSlotData> UIClosetDialog::GetSlot(int nIndex)
 {
-    if (nIndex >= 0 && nIndex < static_cast<int>(m_slots.GetCount()))
-        return m_slots[nIndex];
-    return MS2Ptr<UICloset::CSlotData>(0);
+    if (m_slots.IsEmpty())
+        return MS2Ptr<UICloset::CSlotData>(0);
+    if (nIndex < 0 || nIndex >= static_cast<int>(m_slots.GetCount()))
+        return MS2Ptr<UICloset::CSlotData>(0);
+    return m_slots[nIndex];
 }
 
 // @0x140be0900
