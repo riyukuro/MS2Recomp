@@ -24,6 +24,8 @@ class Unk_NotifyContext : public NiRefObject
 public:
     // The bind data registered under a name (null if none). Static: NotifyDragSlot calls it through m_spContext->.
     static NotifyContext::BindData* FUN_1422c8e90(const CString& strName);    // 0x1422c8e90
+    static void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pData);   // 0x1422c8f10 bind pData under strName
+    static void FUN_1422c8f70(const CString& strName);                         // 0x1422c8f70 clear the binding and unregister it
 };
 
 class NotifyHandler : public Scaleform::GFx::FunctionHandler

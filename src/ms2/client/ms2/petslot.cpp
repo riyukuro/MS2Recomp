@@ -114,7 +114,6 @@ void FUN_140165270(void* pArr, const CString& str);       // append a string to 
 void FUN_141404ce0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
 void FUN_1414050c0(int nType, void* pArr, Scaleform::GFx::Value* pValue);
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);
-DragSlot* FUN_1422cd070(DragSlotBag* pBag, int nIndex);   // the slot of the bag by index
 unsigned FUN_140720ca0(void* pArr);                       // GetCount
 MS2Ptr<CItem>* FUN_140c3c720(void* pArr, unsigned nIndex);   // element access
 
@@ -487,7 +486,7 @@ int PetSlotBag::vfunc_il1()
 void PetSlotBag::vfunc_il6(void* p)
 {
     CItem* pItem = static_cast<CItem*>(p);
-    DragSlot* pSlot = FUN_1422cd070(this, pItem->FUN_140526b50());
+    DragSlot* pSlot = FUN_1422cd070(pItem->FUN_140526b50());
     PetSlot* pPetSlot = FUN_140dbc0d0(pSlot);
     if (pPetSlot != 0)
     {
@@ -503,7 +502,7 @@ void PetSlotBag::vfunc_il6(void* p)
 void PetSlotBag::vfunc_il7(void* p)
 {
     CItem* pItem = static_cast<CItem*>(p);
-    DragSlot* pSlot = FUN_1422cd070(this, pItem->FUN_140526b50());
+    DragSlot* pSlot = FUN_1422cd070(pItem->FUN_140526b50());
     if (pSlot != 0)
         pSlot->vfunc_11();
     Unk_PsPetDialog* pDlg = FUN_140b99ba0(0x4f38);
@@ -515,7 +514,7 @@ void PetSlotBag::vfunc_il7(void* p)
 void PetSlotBag::vfunc_il8(void* p)
 {
     CItem* pItem = static_cast<CItem*>(p);
-    DragSlot* pSlot = FUN_1422cd070(this, pItem->FUN_140526b50());
+    DragSlot* pSlot = FUN_1422cd070(pItem->FUN_140526b50());
     PetSlot* pPetSlot = FUN_140dbc0d0(pSlot);
     if (pPetSlot != 0)
     {

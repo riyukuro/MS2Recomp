@@ -46,7 +46,6 @@ void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
 void FUN_1422cc9e0(DragSlotBag* pBag);
-DragSlot* FUN_1422cd070(DragSlotBag* pBag, int nIndex);     // the slot object at an index
 LapenshardSlot* FUN_140a6fef0(DragSlot* p);                 // the slot as a LapenshardSlot (lapenshardslot.cpp)
 
 LapenshardSlotBag* FUN_140a70b70(NotifyContext::BindData* p);
@@ -157,7 +156,7 @@ int LapenshardSlotBag::FUN_140a70a30()
 // @0x140a70a80
 void LapenshardSlotBag::vfunc_13(int nIndex)
 {
-    LapenshardSlot* pSlot = FUN_140a6fef0(FUN_1422cd070(this, nIndex));
+    LapenshardSlot* pSlot = FUN_140a6fef0(FUN_1422cd070(nIndex));
     if (pSlot != 0)
         pSlot->vfunc_11();
 }
@@ -165,7 +164,7 @@ void LapenshardSlotBag::vfunc_13(int nIndex)
 // @0x140a70ad0
 void LapenshardSlotBag::vfunc_14(int nIndex)
 {
-    LapenshardSlot* pSlot = FUN_140a6fef0(FUN_1422cd070(this, nIndex));
+    LapenshardSlot* pSlot = FUN_140a6fef0(FUN_1422cd070(nIndex));
     if (pSlot != 0)
         pSlot->vfunc_10();
 }
