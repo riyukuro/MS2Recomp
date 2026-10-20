@@ -365,6 +365,13 @@
 // map::operator[] emplace_hint of m_ac0 (int key) and m_ad0 (const __int64& key).
 // MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HV?$SmartPointer@VEntity@egf@@@efd@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141bee230
 // MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEB_J@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@_JV?$MS2Ptr@VRecad0@WsReal@@@@U?$less@_J@std@@V?$allocator@U?$pair@$$CB_JV?$MS2Ptr@VRecad0@WsReal@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$MS2Ptr@VRecad0@WsReal@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$MS2Ptr@VRecad0@WsReal@@@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEB_J@1@$$QEAV?$tuple@$$V@1@@Z 0x141bee4b0
+// Part 1 helpers (see Unk_WsInst3Part1).
+// MS2-PIN: ??$destroy@V?$MS2Ptr@VMS2ActorUpdater@@@@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@1@QEAV?$MS2Ptr@VMS2ActorUpdater@@@@@Z 0x141bedcf0
+// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@PEAVIWorldServiceCallback@@U?$less@PEAVIWorldServiceCallback@@@std@@V?$allocator@PEAVIWorldServiceCallback@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAVIWorldServiceCallback@@@std@@@std@@@std@@_N@1@AEBQEAVIWorldServiceCallback@@@Z 0x141beec10
+// MS2-PIN: ??$insert@$0A@$0A@@?$_Tree@V?$_Tset_traits@PEAXU?$less@PEAX@std@@V?$allocator@PEAX@2@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAX@std@@@std@@@std@@_N@1@AEBQEAX@Z 0x141beec50
+// MS2-PIN: ??$swap@UUnk_WsFieldRefRaw@@X@std@@YAXAEAUUnk_WsFieldRefRaw@@0@Z 0x141bef110
+// MS2-PIN: ??0?$SmartPointer@VGameObject@@@efd@@QEAA@PEAVGameObject@@@Z 0x141bf0fd0
+// MS2-PIN: ??0Unk_WsA_PropPtr@@QEAA@AEBV0@@Z 0x141bf10a0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "worldservice.h"
@@ -396,7 +403,8 @@
 #include "ms2/placeholder/coptimizer.h"
 #include "worldservice_real.h"
 #include "liftableobject.h"
-#include "liftabletarget.h"                            // CEntityShower / CEntityHider (m_980 / m_990 values)
+#include "liftabletarget.h"
+#include "gameobject.h"                            // CEntityShower / CEntityHider (m_980 / m_990 values)
 struct Unk_WsD_EffectCtx : public CPtred {};            // m_848 value: the effect of an effect message (add-ref 0x141c1f4a0)
 class Unk_WsPtrT_141c1f500 : public CPtred {};          // tag-range object (FUN_141bc3560), camera shake (FUN_141bc9020)
 class Unk_WsPtrT_141c1f530 : public CPtred {};          // m_540 / m_570 value (FUN_141bd3920)
@@ -558,6 +566,34 @@ void Unk_WsInst3IndexInt(WsReal::Mapac0& mac0, WsReal::Mapad0& mad0)
 {
     WsDriveIndex(mac0, 0);
     WsDriveIndex(mad0, 0);
+}
+
+// Helpers of part 1 (worldservice_1.cpp): the field object map value (efd::SmartPointer<GameObject>), the PhysX prop
+// pointer (add-ref 0x140ae1dd0), the callback / visible sets and the 16-byte field reference swapped by FUN_141bc2c90.
+class Unk_WsA_PropObj;
+void FUN_140ae1dd0(Unk_WsA_PropObj* p);                 // AddRef
+void FUN_140ae1b60(Unk_WsA_PropObj* p);                 // Release
+class Unk_WsA_PropPtr
+{
+public:
+    Unk_WsA_PropPtr(Unk_WsA_PropObj* p = 0) : m_p(p) { if (m_p) FUN_140ae1dd0(m_p); }
+    Unk_WsA_PropPtr(const Unk_WsA_PropPtr& o) : m_p(o.m_p) { if (m_p) FUN_140ae1dd0(m_p); }
+    ~Unk_WsA_PropPtr() { if (m_p) FUN_140ae1b60(m_p); }
+private:
+    Unk_WsA_PropObj* m_p;
+};
+struct Unk_WsFieldRefRaw { void* p0; void* p1; };
+void Unk_WsInst3Part1(GameObject* pObj, const Unk_WsA_PropPtr& prop, IWorldServiceCallback* pCallback, void* pVisible,
+    Unk_WsFieldRefRaw& a, Unk_WsFieldRefRaw& b)
+{
+    efd::SmartPointer<GameObject> spObj(pObj);
+    Unk_WsA_PropPtr propCopy(prop);
+    WsReal::Set048 callbacks;
+    callbacks.insert(pCallback);
+    std::set<void*> visible;
+    visible.insert(pVisible);
+    std::swap(a, b);
+    WsDriveDestroy<WsReal::Vec9a0::allocator_type>(static_cast<WsReal::Vec9a0::value_type*>(0));
 }
 
 // The vector::emplace_back instantiations (0x141bedec0-0x141bee0ef).
