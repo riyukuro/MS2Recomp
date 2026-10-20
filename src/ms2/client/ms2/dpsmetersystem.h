@@ -209,7 +209,10 @@ public:
     void AddHealEffective(__int64 nValue);                  // 0x14117e7c0
     void SetCombat(int bCombat);                            // 0x14117e860
     void GetSummary(CStringW& str);                         // 0x14117e960
-    void FUN_14117ea90(unsigned nTime, int bCsv);           // 0x14117ea90 builds m_strSummary / m_strCsv (not written yet)
+    void FUN_14117ea90(unsigned nTime, int bCsv);           // 0x14117ea90 builds m_strSummary / m_strCsv
+    __int64 GetAverageWeaponAttack();                       // 0x1411819e0 the mean weapon attack of both hands
+    CStringW GetStatText(int nStat, int bPercent);          // 0x141181d30 a stat of the player as text
+    CStringW GetBonusText(int nStat, int bPercent);         // 0x141181fb0 an item bonus of the player as text
 
     int m_bRunning;                                         // +0x08 the writer thread runs
     HANDLE m_hThread;                                       // +0x10

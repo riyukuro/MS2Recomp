@@ -19,6 +19,10 @@
 #include "ms2/commonfiles/additionalactionadditional.h"
 #include "ms2/commonfiles/skilloverlapcompare.h"
 #include "ms2/placeholder/cstringtable.h"
+#include "ms2/placeholder/cequipitem.h"
+#include "ms2/placeholder/citemdata.h"
+#include "ms2/commonfiles/item.h"
+#include "ms2/ms2format.h"
 #include "ms2/placeholder/tptrvalue.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -37,6 +41,29 @@ int FUN_14123c580(PCBase* pPC);                             // the object id
 int FUN_141654730(PCBase* pPC);                             // the job code
 float FUN_1416628b0(PCBase* pPC, int nKind, int nId);       // a skill stat rate of the player
 
+float FUN_14028d380(float fValue);                          // percent (x100)
+bool FUN_14028d470(float a, float b);                       // nearly equal
+CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // a string-table text with one argument
+CStringW GetStatValueText(unsigned nStat);                  // the format of a stat value (stat.cpp)
+bool IsStatKindTwo(int nStat);                              // stat.cpp
+
+// The worn items of the player (PC::FUN_1416561a0).
+class Unk_DpsEquipSet;
+void FUN_1411e1ce0(Unk_DpsEquipSet* pSet, ATL::CAtlList<MS2Ptr<CEquipItem> >& kOut, int nLayer);   // the worn items of a layer
+float FUN_1411e1110(Unk_DpsEquipSet* pSet, int nStat);      // the summed rate bonus of a stat
+int FUN_1411e1160(Unk_DpsEquipSet* pSet, int nStat);        // the summed value bonus of a stat
+// The own player (a PC) as this unit uses it.
+class Unk_DpsPC : public PCBase
+{
+public:
+    MS2Ptr<CEquipItem> FUN_141655c90(int nSlot);            // a worn item by slot
+    Unk_DpsEquipSet* FUN_1416561a0();                       // the worn items
+};
+// CItem::FUN_1405278a0's record is the item status.
+class Unk_ItemEnchantData : public CItemStatus {};
+// CItem::FUN_140527840's record is the item data.
+class Unk_ItemEquipData : public CItemData {};
+
 // The world service (FUN_1403ed2d0) as this unit uses it.
 class Unk_DpsSummon
 {
@@ -50,6 +77,7 @@ public:
     PCBase* FUN_141bd1200(int nId);                         // an actor by object id
     Unk_DpsSummon* FUN_141bd13a0(int nId);                  // a pet / summon by object id
     CStringW FUN_141bd1830(int nId);                        // the name of an object
+    CStringW* FUN_141bd3080();                              // the field name
 };
 Unk_DpsWorld* FUN_1403ed2d0();
 
@@ -503,7 +531,7 @@ static void WriteRecordFile(wchar_t* szFile, const wchar_t* szDir, const wchar_t
     memset(szFile, 0, sizeof(wchar_t) * MAX_PATH);
 }
 
-const CStringW& FUN_141181540();                            // the character info text (not written yet)
+const CStringW& FUN_141181540();                            // the character info text (below)
 
 // @0x14117b170
 // MS2-FUNCTIONAL: written from the decompile (the ten file writes share WriteRecordFile)
@@ -1046,6 +1074,394 @@ void CDPSMeterSystem::GetSummary(CStringW& str)
         }
         str = spRecord->m_strSummary;
     }
+}
+
+// A stat value as text (IsStatKindTwo false: a whole number).
+// @0x141182600
+// MS2-FUNCTIONAL: written from the decompile; not compared yet
+static CStringW GetStatValueString(int nStat, int nValue)
+{
+    CStringW str = StringFormat((const wchar_t*)GetStatValueText(nStat), nValue);
+    return str;
+}
+
+// A stat value as text (IsStatKindTwo true: tenths).
+// @0x1411826a0
+// MS2-FUNCTIONAL: written from the decompile; not compared yet
+static CStringW GetStatRateString(int nStat, int nValue)
+{
+    float fValue = (float)nValue / 10.0f;
+    CStringW str = StringFormat((const wchar_t*)GetStatValueText(nStat), fValue);
+    return str;
+}
+
+// One line of the character sheet: the item id and name, its additional effects and every option of its status.
+// @0x141182760
+// MS2-FUNCTIONAL: written from the decompile; not compared yet
+static const CStringW& GetItemText(CItem* pItem)
+{
+    static CStringW s_str;
+    s_str.Empty();
+    if (pItem == 0)
+        return s_str;
+    MS2Ptr<CItemOption> spOption = pItem->FUN_1405278a0()->m_spOption;
+    s_str.AppendFormat(L"%d, %s", pItem->FUN_1405276c0(), (const wchar_t*)pItem->FUN_140527b10());
+    if (pItem->FUN_140526390() != 0)
+    {
+        for (unsigned i = 0; i < pItem->FUN_140527840()->additionalEffect.ids.GetCount(); i++)
+        {
+            s_str.AppendFormat(L", %s", (const wchar_t*)FUN_1401a9d70()->FUN_141812290(
+                pItem->FUN_140527840()->additionalEffect.ids[i], pItem->FUN_140527840()->additionalEffect.levels[i],
+                CString("name")));
+        }
+    }
+    for (int nRank = 0; nRank < 5; nRank++)
+    {
+        for (unsigned nStat = 0; nStat < 0x23; nStat++)
+        {
+            Unk_EnchantPtr<BaseOption> spStat(new BaseOption);
+            spStat->FUN_140266e90(pItem->FUN_1405278a0()->FUN_14062ffb0(nStat, 0, nRank));
+            int nValue = spStat->FUN_140266e30();
+            if (nValue != 0)
+            {
+                if (!IsStatKindTwo(nStat))
+                    s_str.AppendFormat(L", %s", (const wchar_t*)GetStatValueString(nStat, nValue));
+                else
+                    s_str.AppendFormat(L", %s", (const wchar_t*)GetStatRateString(nStat, nValue));
+            }
+        }
+        for (unsigned nType = 1; nType < 0xcf; nType++)
+        {
+            Unk_EnchantPtr<BaseOption> spSpecial = spOption->FUN_1405cb800(nRank, nType);
+            if (spSpecial.get() != 0)
+                s_str.AppendFormat(L", %s", (const wchar_t*)pItem->FUN_1405278a0()->FUN_1406305e0(nRank, nType, 0));
+        }
+    }
+    return s_str;
+}
+
+// The summary text (and with bCsv the csv line) of the running record at nTime.
+// @0x14117ea90
+// MS2-FUNCTIONAL: written from the decompile; not compared yet
+void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
+{
+    if (Unk_LockGuard guard = m_lock)
+    {
+    }
+    else
+    {
+        MS2Ptr<CMeterRecordData> spRecord = m_spRecord;
+        if (spRecord == 0)
+            return;
+        CStringW& strText = spRecord->m_strSummary;
+        strText.Empty();
+        CStringW& strCsv = spRecord->m_strCsv;
+        strCsv.Empty();
+        PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (bCsv != 0 && pMe != 0)
+        {
+            strCsv.Format(L"필드, 캐릭터명, 클래스, 레벨, HP, SP, EP, STR, DEX, INT, LUK, 이동속도, 물리 공격력, 마법 공격력, 무기 공격력");
+            strCsv.AppendFormat(L", 명중, 크리티컬 명중, 크리티컬 피해, 공격속도, 방어력, 물리 저항력, 마법 저항력, 회피, 크리티컬 회피");
+            strCsv.AppendFormat(L", 근접 피해 감소, 원거리 피해 감소, 행동 불가 시간 감소, 상태 이상 시간 감소, HP 재생력");
+            strCsv.AppendFormat(L", 방어력 관통, 치유량 증가, 스킬 쿨타임 감소, 완전 방어, 총 대미지, 보스 공격 시 대미지 증가");
+            strCsv.AppendFormat(L", 화염 스킬 대미지 증가, 냉기 스킬 대미지 증가, 전격 스킬 대미지 증가, 독 스킬 대미지 증가, 암흑 스킬 대미지 증가, 신성 스킬 대미지 증가");
+            strCsv.AppendFormat(L", 기록시간, 전투시간, 비전투시간, 획득 경험치, 초당 획득 경험치, 획득 게임 머니, 초당 획득 게임머니");
+            strCsv.AppendFormat(L", (C)스킬 사용 횟수, (C)대미지 총합, (C)명중률, (C)크리티컬률, (C)초당 대미지, (C)몬스터 킬 수, (C)타격 횟수, (C)빗맞힌 횟수");
+            strCsv.AppendFormat(L", (C)크리티컬 횟수, (C)크리티컬 대미지 총합, (C)Dot 대미지 총합, (C)물리 대미지 총합, (C)마법 대미지 총합");
+            strCsv.AppendFormat(L", (C)무속성, (C)화염속성, (C)빙결속성, (C)전격속성, (C)신성속성, (C)암흑속성, (C)독속성, (C)물리속성, (T)대미지 총합");
+            strCsv.AppendFormat(L", (T)회피율, (T)완전방어, (T)사망횟수, (T)피격횟수, (T)회피횟수, (T)크리티컬 대미지 총합, (T)Dot 대미지 총합, (T)물리 대미지 총합, (T)마법 대미지 총합");
+            strCsv.AppendFormat(L", (T)무속성, (T)화염속성, (T)빙결속성, (T)전격속성, (T)신성속성, (T)암흑속성, (T)독속성, (T)물리속성, 스킬회복SP");
+            strCsv.AppendFormat(L", 자연회복SP, 자연회복EP, 스킬로 받은 HP 회복량, 스킬로 받은 유효 HP 회복량, 스킬로 받은 오버 HP 회복량, 회복 시킨 HP 량");
+            strCsv.AppendFormat(L", 회복 시킨 유효 HP 회복 량, 회복 시킨 오버 HP 량, HP 회복 시킨 개체 수, 스킬 소모 SP, 스킬 소모 EP");
+            strCsv.AppendFormat(L"\n");
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)*FUN_1403ed2d0()->FUN_141bd3080());
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)pMe->vfunc_77());
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(6, FUN_141654730(pMe)));
+            strCsv.AppendFormat(L"%d, ", pMe->vfunc_78());
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(4, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(7, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0xa, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(1, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(2, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(3, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0xe, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x17, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x18, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x1b, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0xf, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x11, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x12, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0xd, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x14, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x19, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x1a, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x10, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x13, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x25, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x26, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x22, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x24, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(5, 0));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x1f, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x10, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x23, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0x15, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(7, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0xc, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x13, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x12, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x17, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x16, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x14, 1));
+            strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetBonusText(0x15, 1));
+        }
+        unsigned nNow = nTime;
+        unsigned nRecordTime = nNow - spRecord->m_nStartTime;
+        unsigned nCombatTime = spRecord->m_nCombatTime;
+        if (m_bCombat != 0)
+            nCombatTime += nNow - m_nCombatStart;
+        unsigned nIdleTime = nRecordTime - nCombatTime;
+        strText.AppendFormat(L"기록시간 = %.2f Second\r\n전투시간 = %.2f Second\r\n비전투시간 = %.2f Second\r\n\r\n",
+            (float)nRecordTime / 1000.0f, (float)nCombatTime / 1000.0f, (float)nIdleTime / 1000.0f);
+        if (bCsv != 0)
+            strCsv.AppendFormat(L"%.2f, %.2f, %.2f, ", (float)nRecordTime / 1000.0f, (float)nCombatTime / 1000.0f,
+                (float)nIdleTime / 1000.0f);
+
+        float fExpPerSec = (spRecord->m_nExp != 0 && nRecordTime != 0) ? (float)spRecord->m_nExp / (float)(nRecordTime / 1000) : 0.0f;
+        float fMesoPerSec = (spRecord->m_nMeso != 0 && nRecordTime != 0) ? (float)spRecord->m_nMeso / (float)(nRecordTime / 1000) : 0.0f;
+        strText.AppendFormat(L"획득 경험치 = %lld\r\n초당 획득 경험치 = %.2f\r\n\r\n획득 게임 머니 = %lld\r\n초당 획득 게임머니 = %.2f\r\n\r\n",
+            spRecord->m_nExp, (double)fExpPerSec, spRecord->m_nMeso, (double)fMesoPerSec);
+        if (bCsv != 0)
+            strCsv.AppendFormat(L"%lld, %.2f, %lld, %.2f, ", spRecord->m_nExp, (double)fExpPerSec, spRecord->m_nMeso,
+                (double)fMesoPerSec);
+
+        strText.AppendFormat(L"======= 타격 계열 =======\r\n");
+        unsigned nDamage = (unsigned)spRecord->m_attack.m_nTotal;
+        unsigned nCount = spRecord->m_attack.m_nCount;
+        unsigned nHit = spRecord->m_attack.m_nHit;
+        float fHitRate = nCount != 0 ? 100.0f / (float)nCount * (float)nHit : 0.0f;
+        float fCriticalRate = nHit != 0 ? 100.0f / (float)nHit * (float)(unsigned)spRecord->m_attack.m_nCriticalCount : 0.0f;
+        double dDps = (nDamage != 0 && nRecordTime != 0) ? (double)nDamage / ((double)nRecordTime / 1000.0) : 0.0;
+        double dRate = spRecord->m_attack.m_dRate;
+        double dRatePerSec = (!FUN_14028d470((float)dRate, 0.0f) && nRecordTime != 0)
+            ? dRate / (double)((float)nRecordTime / 1000.0f) : 0.0;
+        strText.AppendFormat(L"스킬 사용 횟수 = %d\r\n", spRecord->m_nSkillUse);
+        strText.AppendFormat(L"대미지 총합 = %d\r\n누적 DamageRate = %.3f\r\n초당 DamageRate = %.3f\r\n명중률 = %.1f\r\n크리티컬률 = %.1f\r\n초당 대미지 = %.2lf\r\n몬스터 킬 수 = %d\r\n\r\n",
+            nDamage, dRate, dRatePerSec, (double)fHitRate, (double)fCriticalRate, dDps, spRecord->m_attack.m_nKill);
+        if (bCsv != 0)
+        {
+            strText.AppendFormat(L"타격 횟수 = %d\r\n빗맞힌 횟수 = %d\r\n크리티컬 횟수 = %d\r\n\r\n", nHit,
+                spRecord->m_attack.m_nMiss, spRecord->m_attack.m_nCriticalCount);
+            strText.AppendFormat(L"====== 타격별 대미지 총합 =======\r\n");
+            strText.AppendFormat(L"크리티컬 대미지 총합 = %d\r\nDot 대미지 총합 = %d\r\n물리 대미지 총합 = %d\r\n마법 대미지 총합= %d\r\n\r\n",
+                spRecord->m_attack.m_nCritical, spRecord->m_attack.m_nDot, spRecord->m_attack.m_nPhysical,
+                spRecord->m_attack.m_nMagic);
+            for (unsigned i = 0; i < 8; i++)
+                strText.AppendFormat(L"%s = %d\r\n", (const wchar_t*)GetAttributeName(i), spRecord->m_attack.m_attributes[i]);
+            strText.AppendFormat(L"\r\n");
+            strCsv.AppendFormat(L"%d, %d, %.1f, %.1f, %.2f, %d, %d, %d, %d, %d, %d, %d, %d, ", spRecord->m_nSkillUse, nDamage,
+                (double)fHitRate, (double)fCriticalRate, dDps, spRecord->m_attack.m_nKill, nHit, spRecord->m_attack.m_nMiss,
+                spRecord->m_attack.m_nCriticalCount, spRecord->m_attack.m_nCritical, spRecord->m_attack.m_nDot,
+                spRecord->m_attack.m_nPhysical, spRecord->m_attack.m_nMagic);
+            for (unsigned i = 0; i < 8; i++)
+                strCsv.AppendFormat(L"%d, ", spRecord->m_attack.m_attributes[i]);
+        }
+
+        strText.AppendFormat(L"======= 피격 계열 =======\r\n");
+        unsigned nTaken = (unsigned)spRecord->m_defense.m_nTotal;
+        unsigned nTakenCount = spRecord->m_defense.m_nCount;
+        unsigned nEvade = spRecord->m_defense.m_nMiss;
+        int nBlock = spRecord->m_defense.m_nBlock;
+        float fEvadeRate = nTakenCount != 0 ? 100.0f / (float)nTakenCount * (float)nEvade : 0.0f;
+        strText.AppendFormat(L"대미지 총합 = %d\r\n회피율 = %.1f\r\n완전방어 = %d\r\n사망횟수 = %d\r\n\r\n", nTaken,
+            (double)fEvadeRate, nBlock, spRecord->m_defense.m_nKill);
+        if (bCsv != 0)
+        {
+            strText.AppendFormat(L"피격 횟수 = %d\r\n회피 횟수 = %d\r\n\r\n", spRecord->m_defense.m_nHit,
+                spRecord->m_defense.m_nMiss);
+            strText.AppendFormat(L"====== 피격별 대미지 총합 =======\r\n");
+            strText.AppendFormat(L"크리티컬 대미지 총합 = %d\r\nDot 대미지 총합 = %d\r\n물리 대미지 총합 = %d\r\n마법 대미지 총합= %d\r\n\r\n",
+                spRecord->m_defense.m_nCritical, spRecord->m_defense.m_nDot, spRecord->m_defense.m_nPhysical,
+                spRecord->m_defense.m_nMagic);
+            for (unsigned i = 0; i < 8; i++)
+                strText.AppendFormat(L"%s = %d\r\n", (const wchar_t*)GetAttributeName(i), spRecord->m_defense.m_attributes[i]);
+            strText.AppendFormat(L"\r\n");
+            strCsv.AppendFormat(L"%d, %.1f, %d, %d, %d, %d, %d, %d, %d, %d, ", nTaken, (double)fEvadeRate, nBlock,
+                spRecord->m_defense.m_nKill, spRecord->m_defense.m_nHit, spRecord->m_defense.m_nMiss,
+                spRecord->m_defense.m_nCritical, spRecord->m_defense.m_nDot, spRecord->m_defense.m_nPhysical,
+                spRecord->m_defense.m_nMagic);
+            for (unsigned i = 0; i < 8; i++)
+                strCsv.AppendFormat(L"%d, ", spRecord->m_defense.m_attributes[i]);
+        }
+
+        strText.AppendFormat(L"======= 회복 계열 =======\r\n");
+        strText.AppendFormat(L"스킬회복SP = %d\r\n자연회복SP = %d\r\n자연회복EP = %d\r\n\r\n", spRecord->m_nSkillSp,
+            spRecord->m_nNaturalSp, spRecord->m_nNaturalEp);
+        __int64 nHealedOver = spRecord->m_nHealed - spRecord->m_nHealedEffective;
+        strText.AppendFormat(L"스킬로 받은 HP 회복량 = %d\r\n스킬로 받은 유효 HP 회복량 = %d\r\n스킬로 받은 오버 HP 회복량 = %d\r\n",
+            spRecord->m_nHealed, spRecord->m_nHealedEffective, nHealedOver);
+        __int64 nHealOver = spRecord->m_nHeal - spRecord->m_nHealEffective;
+        strText.AppendFormat(L"회복 시킨 HP 량 = %d\r\n회복 시킨 유효 HP 회복 량 = %d\r\n회복 시킨 오버 HP 량 = %d\r\n\r\n",
+            spRecord->m_nHeal, spRecord->m_nHealEffective, nHealOver);
+        if (bCsv != 0)
+        {
+            strText.AppendFormat(L"HP 회복시킨 개체 수 = %d\r\n\r\n", spRecord->m_nHealTargets);
+            strCsv.AppendFormat(L"%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, ", spRecord->m_nSkillSp, spRecord->m_nNaturalSp,
+                spRecord->m_nNaturalEp, spRecord->m_nHealed, spRecord->m_nHealedEffective,
+                spRecord->m_nHealed - spRecord->m_nHealedEffective, spRecord->m_nHeal, spRecord->m_nHealEffective,
+                spRecord->m_nHeal - spRecord->m_nHealEffective, spRecord->m_nHealTargets);
+        }
+
+        strText.AppendFormat(L"======= 소모 계열 =======\r\n");
+        strText.AppendFormat(L"스킬소모SP = %d\r\n스킬소모EP = %d\r\n\r\n", spRecord->m_nSpentSp, spRecord->m_nSpentEp);
+        if (bCsv != 0)
+            strCsv.AppendFormat(L"%d, %d", spRecord->m_nSpentSp, spRecord->m_nSpentEp);
+
+        strText.AppendFormat(L"=== 대미지 스킬 정보 ===\r\n");
+        for (std::pair<const int, float> kv : spRecord->m_attack.m_skillRates)
+        {
+            CStringW strName = FUN_1401a9d70()->FUN_141811980(4, kv.first);
+            strText.AppendFormat(L"%s(%d) : %.3f\r\n", (const wchar_t*)strName, kv.first, (double)kv.second);
+            if (bCsv != 0)
+                strCsv.AppendFormat(L"%s,%d,%.3f", (const wchar_t*)strName, kv.first, (double)kv.second);
+        }
+        strText.AppendFormat(L"=== 대미지 애디셔널 정보 ===\r\n");
+        for (std::pair<const int, float> kv : spRecord->m_attack.m_dotRates)
+        {
+            CStringW strName = FUN_1401a9d70()->FUN_141812290(kv.first, 1, "name");
+            strText.AppendFormat(L"%s(%d) : %.3f\r\n", (const wchar_t*)strName, kv.first, (double)kv.second);
+            if (bCsv != 0)
+                strCsv.AppendFormat(L"%s,%d,%.3f", (const wchar_t*)strName, kv.first, (double)kv.second);
+        }
+    }
+}
+
+// The character sheet of the own player (the "0_캐릭터정보" file): name, job, level and the worn items of both layers.
+// @0x141181540
+// MS2-FUNCTIONAL: written from the decompile; not compared yet
+const CStringW& FUN_141181540()
+{
+    static CStringW s_str;
+    s_str.Empty();
+    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe != 0)
+    {
+        s_str.AppendFormat(L"캐릭터명 : %s\r\n", (const wchar_t*)pMe->vfunc_77());
+        s_str.AppendFormat(L"클래스 : %s\r\n", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(6, FUN_141654730(pMe)));
+        s_str.AppendFormat(L"레벨 : %d\r\n", pMe->vfunc_78());
+        s_str.AppendFormat(L"\r\n");
+        s_str.AppendFormat(L"--- 게임 레이어 장착 장비 목록 ---\r\n");
+        ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
+        FUN_1411e1ce0(static_cast<Unk_DpsPC*>(pMe)->FUN_1416561a0(), equips, 0);
+        POSITION pos = equips.GetHeadPosition();
+        while (pos != NULL)
+        {
+            MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
+            if (!spEquip.IsNull())
+            {
+                MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+                if (!spItem.IsNull())
+                    s_str.AppendFormat(L"%s\r\n", (const wchar_t*)GetItemText(spItem.get()));
+            }
+            equips.GetNext(pos);
+        }
+        s_str.AppendFormat(L"\r\n");
+        s_str.AppendFormat(L"--- 스킨 레이어 장착 장비 목록 ---\r\n");
+        ATL::CAtlList<MS2Ptr<CEquipItem> > skins(10);
+        FUN_1411e1ce0(static_cast<Unk_DpsPC*>(pMe)->FUN_1416561a0(), skins, 1);
+        POSITION posSkin = skins.GetHeadPosition();
+        while (posSkin != NULL)
+        {
+            MS2Ptr<CEquipItem> spEquip = skins.GetAt(posSkin);
+            if (!spEquip.IsNull())
+            {
+                MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+                if (!spItem.IsNull())
+                    s_str.AppendFormat(L"%s\r\n", (const wchar_t*)GetItemText(spItem.get()));
+            }
+            skins.GetNext(posSkin);
+        }
+    }
+    return s_str;
+}
+
+// The mean weapon attack of the two hands (slots 4 and 5); the plain stat value when a hand is empty.
+// @0x1411819e0
+// MS2-FUNCTIONAL: written from the decompile; not compared yet
+__int64 CDPSMeterSystem::GetAverageWeaponAttack()
+{
+    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return 0;
+    __int64 nMin = 0;
+    __int64 nMax = 0;
+    MS2Ptr<CEquipItem> spRight = static_cast<Unk_DpsPC*>(pMe)->FUN_141655c90(4);
+    MS2Ptr<CEquipItem> spLeft = static_cast<Unk_DpsPC*>(pMe)->FUN_141655c90(5);
+    if (spRight.get() != 0 && spLeft.get() != 0)
+    {
+        if (spLeft->FUN_1411dc7a0().IsNull())
+            return 0;
+        if (spLeft->FUN_1411dc7a0()->FUN_1405278a0() == 0)
+            return 0;
+        nMin = spLeft->FUN_1411dc7a0()->FUN_1405278a0()->FUN_14062ffb0(0x1b, 3, 5);
+        nMax = spLeft->FUN_1411dc7a0()->FUN_1405278a0()->FUN_14062ffb0(0x1c, 3, 5);
+    }
+    else
+    {
+        nMin = pMe->FUN_141670a00(0x1b);
+        nMax = pMe->FUN_141670a00(0x1c);
+    }
+    return (__int64)((float)(nMin + nMax) * 0.5f);
+}
+
+// The text of a basic stat (bPercent: as a percent string 0x98e).
+// @0x141181d30
+// MS2-FUNCTIONAL: written from the decompile; not compared yet
+CStringW CDPSMeterSystem::GetStatText(int nStat, int bPercent)
+{
+    CStringW str;
+    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return str;
+    float fBase = (float)pMe->FUN_1416709d0(nStat);
+    float fBonus = (float)pMe->FUN_141670a30(nStat) - fBase;
+    float fValue = (float)pMe->FUN_141670a00(nStat);
+    if (nStat == 4 || nStat == 10 || nStat == 7)
+    {
+        fValue = (float)pMe->FUN_141670a30(nStat);
+    }
+    else if (nStat == 0x1b || nStat == 0x1c)
+    {
+        fBase = 0.0f;
+        fBonus = (float)GetAverageWeaponAttack();
+        fValue = fBonus;
+    }
+    if (bPercent != 0)
+        str = FUN_14052bd00(0x98e, StringFormat(L"{0:0.1f}", fValue));
+    else
+        str = StringFormat(L"{0}", (__int64)fValue);
+    return str;
+}
+
+// The text of a bonus stat of the worn items (bPercent: a rate, as a percent string 0x98e).
+// @0x141181fb0
+// MS2-FUNCTIONAL: written from the decompile; not compared yet
+CStringW CDPSMeterSystem::GetBonusText(int nStat, int bPercent)
+{
+    CStringW str;
+    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return str;
+    float fBase = 0.0f;
+    float fBonus = bPercent != 0 ? FUN_14028d380(FUN_1411e1110(static_cast<Unk_DpsPC*>(pMe)->FUN_1416561a0(), nStat))
+                                 : (float)FUN_1411e1160(static_cast<Unk_DpsPC*>(pMe)->FUN_1416561a0(), nStat);
+    float fValue = fBase + fBonus;
+    if (bPercent != 0)
+        str = FUN_14052bd00(0x98e, StringFormat(L"{0:0.1f}", fValue));
+    else
+        str = StringFormat(L"{0:0.1f}", fValue);
+    return str;
 }
 
 // ---- the record types ----
