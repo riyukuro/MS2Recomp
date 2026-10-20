@@ -651,3 +651,5 @@ ASTooltip::ASTooltip(const ASTooltip& o)
     , m_50(o.m_50)
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca96e0-0x142ca9770 .text$yd

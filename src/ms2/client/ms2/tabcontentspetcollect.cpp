@@ -681,3 +681,5 @@ Unk_PcFieldTable* FUN_140cb17d0()
 }
 
 
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca3c20-0x142ca3cb0 .text$yd

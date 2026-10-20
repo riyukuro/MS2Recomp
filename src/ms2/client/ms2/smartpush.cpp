@@ -1568,3 +1568,5 @@ int FUN_140dd5340(int nAbility)
 void CSmartPush::vfunc_2()
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca5bd0-0x142ca5c60 .text$yd

@@ -598,3 +598,5 @@ MS2_REPLACE_METHOD(0x140EA1E00, UILearningQuestDialog, vfunc_12, 24, 0xBB2FC109)
 MS2_REPLACE_METHOD(0x140EA3570, UILearningQuestDialog, FUN_140ea3570, 922, 0x583AF749);
 MS2_REPLACE_METHOD(0x140EA3910, UILearningQuestDialog, FUN_140ea3910, 97, 0xE2A0E4D1);
 MS2_REPLACE_METHOD(0x140EA1D70, UILearningQuestDialog, FUN_140ea1d70, 38, 0xCFBD6CB7);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca7f60-0x142ca7ff0 .text$yd

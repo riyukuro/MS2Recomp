@@ -602,3 +602,5 @@ bool FUN_140b73bc0(MyPC* pMyPC)
         return true;
     return false;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca0e10-0x142ca0ea0 .text$yd

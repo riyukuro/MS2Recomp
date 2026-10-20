@@ -736,3 +736,5 @@ MS2Ptr<Unk_DmGuideBar> UIDailyMissionDialog::FUN_140c02990(const CString& strNam
 // The default slot of the quest event listener (shared by every listener without an override).
 // @0x140c02f20
 void UIQuestEventListener::vfunc_o178_2(void*) {}
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca2280-0x142ca2310 .text$yd

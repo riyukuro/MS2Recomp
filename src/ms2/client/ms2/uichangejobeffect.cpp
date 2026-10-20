@@ -107,3 +107,5 @@ int UIChangeJobEffect::vfunc_48()
     return 0x4f6c;
 }
 MS2_REPLACE_METHOD(0x140BD0E80, UIChangeJobEffect, vfunc_48, 11, 0x321E533C);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca19c0-0x142ca1a50 .text$yd
