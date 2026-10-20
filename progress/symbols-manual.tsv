@@ -4036,3 +4036,17 @@ FMOD_System_Create	142303a95	func
 ?ms_setPushed@Unk_NotifyContext@@2V?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@A	143b0b268	data
 ??0EntityActorData@egfPhysX@@QEAA@V?$SmartPointer@VEntity@egf@@@efd@@@Z	14225f250	func
 ?GetMaterial@NiMaterial@@SAPEAV1@AEBVNiFixedString@@@Z	141d661d0	func
+luaopen_egmAnimation	1422889a0	func
+luaopen_bapiPhysXBase	14226b5c0	func
+luaopen_PhysX	142069d90	func
+luaopen_ecr	142052d60	func
+luaopen_AttachedNifAsset	14205ac20	func
+luaopen_BehaviorAPI	142208670	func
+luaopen_Point2	14220de80	func
+luaopen_Point3	142215920	func
+luaopen_Point4	14221e990	func
+luaopen_Color	142224240	func
+luaopen_ColorA	142229e30	func
+luaopen_Matrix3	142236190	func
+luaopen_Quaternion	14223d2d0	func
+luaopen_Entity	1422416d0	func
