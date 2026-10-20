@@ -4000,3 +4000,4 @@ FMOD_System_Create	142303a95	func
 ?GetGlobalHeap@Memory@Scaleform@@SAPEAVMemoryHeap@2@XZ	1422eccd0	func
 ??0HeapDesc@MemoryHeap@Scaleform@@QEAA@I_K000000@Z	141803930	func
 ?pFMODHeap@GFxSoundFMOD@@2PEAVMemoryHeap@Scaleform@@EA	143b0d810	data
+?ms_pSingleton@?$SingletonClass@VGFxSceneService@@@@2PEAVGFxSceneService@@EA	143ab25e8	data
