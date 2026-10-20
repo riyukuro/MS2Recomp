@@ -107,6 +107,8 @@ public:
     bool FUN_140743550();                                   // active
     void FUN_140743a10(CInPacket& packet);                  // decode (scenestategame OnAddUser)
     int FUN_140743710();                                    // the target kind
+    bool FUN_140743590();                                   // CPvPInfo: mode 1
+    bool FUN_140743690();                                   // CPvPInfo: mode 10
 };
 class PC : public PCBase {
     EE_DECLARE_CLASS1(PC, 0x06200003, PCBase);   // ClassInfo 0x143ae2e20 (setup COMDAT 0x1409f8020 in avatarpc; sb4)

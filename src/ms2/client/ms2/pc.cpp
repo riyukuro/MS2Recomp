@@ -297,6 +297,7 @@ public:
     int FUN_141bc9830(int* pnId, CString* pstrName, float fRange, int n);   // the nearest holdable target
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(__int64 nId);            // the proxy of a player by id
     MS2Ptr<CProxyGameObject> FUN_141bc9be0(int nObjectId);          // the proxy of an object id
+    void FUN_141bd92c0(float fFrom, float fTo, float fDuration, int n);   // slow the time scale
     int FUN_141bca2e0();                                            // the field is loaded
     void FUN_141bca390(unsigned int nObjectId);                     // the player model is ready (quick equip)
     int FUN_141bd19d0(int nObjectId);                               // the relation of an object (1: the local player)
@@ -635,6 +636,10 @@ public:
     void FUN_140adf370(egf::Entity* pEntity, int nObjectId, MS2Ptr<CGemTombStone> spTomb);   // bind as a tomb stone
     virtual void vfunc_1(void* p, int nMode);                       // 1 notify (FUN_14165c970: 2 / 5)
     int FUN_140addea0();                                            // active
+    int FUN_140adea80();                                            // the state
+    void FUN_140adeaf0(int nNow);                                   // per-frame update (timers, movement)
+    int FUN_140adf350();                                            // m_n184
+    void FUN_140adf770(efd::Point3 ptPos);                          // move: position property
 };
 
 // ---- header statics of this TU (.text$di 0x1400fb010-0x1400fb4d0; same groups as unit_140114300 / unit_140102270) ----
@@ -659,7 +664,7 @@ static CString s_sortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 static efd::Category s_category(0);
-static Unk_1401cd100 s_pointer(NULL);
+static Unk_1401cd100 s_pointer(NULL);              // 0x143ae2e18: egf::kENTITY_INVALID (EntityID(0))
 static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- PC ----
@@ -3655,7 +3660,19 @@ bool PC::FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CS
     return false;
 }
 
-// MS2-FUNCTIONAL: the exe's vfunc_18 result lands in kPos directly (vfunc_18 likely returns efd::Point3, pcbase.h says NiPoint3)
+// The actor seen through its primary vftable: slot 18 (GetPosition) really returns efd::Point3 (pcbase.h declares
+// NiPoint3, which costs a slicing copy; afterimageitem.cpp has the same view).
+class Unk_PCPosActor
+{
+public:
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
+    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
+    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
+    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
+    virtual void vfunc_16(); virtual void vfunc_17();
+    virtual efd::Point3 vfunc_18();
+};
+
 // @0x14165cac0
 void PC::FUN_14165cac0()
 {
@@ -3668,7 +3685,7 @@ void PC::FUN_14165cac0()
         kModel = "MS2TombStoneDark";
     else
         kModel = "MS2TombStone";
-    efd::Point3 kPos = vfunc_18();
+    efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
     {
         Unk_PCHousingSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
         if (spSvc.FUN_140885310())
@@ -3716,6 +3733,7 @@ class Unk_PCArg125 : public PCInfo {};
 
 int FUN_14081dd50(int nIndex);
 void FUN_14098b3e0(NiAVObject* pNode, float fAlpha, bool b);       // set the alpha of a node tree
+void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);   // fade a node tree
 CLua* FUN_1401c0db0();
 float FUN_14028d3a0(float fValue);                                  // (commonutil.cpp)
 float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                      // distance
@@ -4195,6 +4213,65 @@ void PC::vfunc_42(float f, bool b)
     }
     if (m_spRandomTarget12c8.get())
         reinterpret_cast<Unk_PCRandomTargetView*>((CRandomTargetEffect*)m_spRandomTarget12c8.operator->())->FUN_140aab3c0(f);
+}
+
+// Fade the equip models with the actor (GameObject::vfunc_40 for the body).
+void PC::vfunc_40(float a, float b, float c, float d)
+{
+    GameObject::vfunc_40(a, b, c, d);
+    ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
+    m_kEquipDE0.FUN_1411e1b80(kList);
+    for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
+    {
+        ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+        kList.GetAt(pos)->FUN_1411dcc80(aModels);
+        for (unsigned int i = 0; i < aModels.GetCount(); i++)
+        {
+            NiAVObject* pNode = (NiAVObject*)aModels[i]->vfunc_14();
+            FUN_14123e020(pNode);
+            FUN_140ae1e80(pNode, a, b, c, d, reinterpret_cast<const egf::EntityID&>(s_pointer));   // s_pointer is this TU's kENTITY_INVALID
+        }
+    }
+}
+
+// Die: the dying state, and the PvP slow motion.
+int PC::vfunc_137()
+{
+    if (FUN_14166c930() != 0xc && FUN_141670a00(4) == 0)
+    {
+        m_nFF4 = 1;
+        if (m_n10ec > 0)
+            m_n10f0 = 1;
+        FUN_14166ce50(1);
+        if (FUN_140967420()->FUN_140743590() || FUN_140967420()->FUN_140743690())
+        {
+            float fScale = *FUN_1401d3200()->TimeScalePCScale.Get();
+            FUN_1403ed2d0()->FUN_141bd92c0(fScale, fScale, *FUN_1401d3200()->TimeScalePCDuration.Get(), 0);
+        }
+        return 1;
+    }
+    return 0;
+}
+
+// Drive the tomb stone: follow the player (snapped onto the housing cube) or drop it once it finished.
+void PC::vfunc_142()
+{
+    if (m_spFC8 == 0)
+        return;
+    int bFinished = m_spFC8->FUN_140adea80() != 3 && FUN_14166c930() != 0xc;
+    if (m_spFC8->FUN_140adf350() || bFinished)
+    {
+        m_spFC8 = 0;
+        return;
+    }
+    efd::Point3 kPos = reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18();
+    {
+        Unk_PCHousingSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+        if (spSvc.FUN_140885310())
+            kPos = spSvc.FUN_1401cd1a0()->FUN_1410b9150(kPos);
+    }
+    m_spFC8->FUN_140adf770(kPos);
+    m_spFC8->FUN_140adeaf0(FUN_140869420());
 }
 
 // ---- end of code ----
