@@ -10,10 +10,13 @@
 #include <afx.h>
 
 class GFxMovie;
+class Unk_NotifyContext;                // ms2/gfxui/notifyhandler.h
 
 class GFxManager
 {
 public:
+    void FUN_1422b0790(int nMovieId);                               // after a movie's stage/loader are set ("initializeClass")
+    Unk_NotifyContext* FUN_1422b0260();                             // the notify context (SmartPointer at +0x98)
     GFxMovie* FUN_1422b01a0(int nMovieId);                          // the movie of a movie id (NULL if not loaded)
     bool FUN_1422b0610(const CString& strSound, const CString& strArg); // play a UI sound (NotifySwfEntity "playSound")
     int FUN_1422aeed0(int n);                                       // input state query (NotifyDragSlot passes 2: drop outside any slot)

@@ -70,6 +70,7 @@ public:
     void FUN_1422be5b0(MS2Ptr<ASMovieClipLoader> spLoader);         // 0x1422be5b0 m_40 = spLoader (by value)
     void FUN_1422be140();                                           // 0x1422be140
     void FUN_1422be2a0();                                           // 0x1422be2a0 (uses m_78)
+    MS2Ptr<ASMovieClipLoader> FUN_1422be4c0();                      // 0x1422be4c0 returns m_40 (GFxMovieMain::vfunc_5)
     void FUN_1422be380(int n);                                      // 0x1422be380 m_10 = n (GFxMovieDamage ctor: 0)
     MS2_GFX_MOVIE* FUN_1422bd0f0();                                 // 0x1422bd0f0 the GFx::Movie (m_60) or null (gfxmoviedamage.cpp)
     // The AS class object of a fully qualified class name ("scaleform.ms2.manager.TooltipManager"; the CString is taken by
@@ -117,8 +118,8 @@ public:
     virtual int vfunc_14(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);   // 14 0x1422d9040 the WM_ switch
     virtual bool vfunc_15(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);  // 15 0x1422d9c30
     virtual void vfunc_16();                                        // 16 0x1422d9db0
-    virtual void vfunc_17();                                        // 17 0x1422d9e60
-    virtual void vfunc_18();                                        // 18 0x1422d9ef0
+    virtual void vfunc_17(void* hwnd);                              // 17 0x1422d9e60 (hwnd unused)
+    virtual void vfunc_18(void* hwnd);                              // 18 0x1422d9ef0 (hwnd unused)
     virtual void vfunc_19(void*);                                   // 19 0x1422d9f90 (empty)
     virtual void vfunc_20(void*);                                   // 20 0x1422d9fb0 (empty)
     virtual void vfunc_21(void*);                                   // 21 0x1422d9fd0 vfunc_19; m_80 = GetTickCount()
@@ -130,7 +131,7 @@ public:
     virtual void vfunc_27(void* hwnd, float x, float y);            // 27 0x1422da2e0 (empty)
     virtual void vfunc_28(void* hwnd, float x, float y);            // 28 0x1422da300 vfunc_20
     virtual void vfunc_29(void* hwnd, float x, float y);            // 29 0x1422da340 (empty)
-    virtual void vfunc_30(void* hwnd, float x, float y, int n);     // 30 0x1422da360 mouse wheel
+    virtual void vfunc_30(void* hwnd, float x, float y, float fDelta);   // 30 0x1422da360 mouse wheel
     virtual void vfunc_31(void* hwnd, float x, float y);            // 31 0x1422da420
     virtual void vfunc_32(void* hwnd, float x, float y);            // 32 0x1422da4e0
     virtual void vfunc_33(void* hwnd, float x, float y);            // 33 0x1422da5a0
@@ -140,6 +141,9 @@ public:
     virtual bool vfunc_37(void* hwnd, int n, void* a, void* b);     // 37 0x1422da8a0 key event
     virtual int vfunc_38(void* hwnd, int n, unsigned __int64 a, unsigned __int64 b);   // 38 0x1422da960
     virtual void vfunc_39(int a, int b, int c, bool d, bool e);     // 39 0x1422daa40
+
+    // m_88 = SetClipboardViewer(hwnd) (0 when it returns hwnd itself); true if a next viewer is set. GFxMovieMain::vfunc_17.
+    bool FUN_1422d8e80(void* hwnd);                                 // 0x1422d8e80
 
     unsigned m_80;                                                  // +0x80 tick count of the last input
     int m_84;                                                       // +0x84 mouse-tracking flag
