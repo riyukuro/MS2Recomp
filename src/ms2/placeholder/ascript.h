@@ -124,7 +124,7 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, const AScript& obj);                  // 0x140ba4cc0 (passes obj's value)
     // ASEventDispatcher (gfxui/aseventdispatcher.cpp): addEventListener / removeEventListener / dispatchEvent
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, Scaleform::GFx::Value a2, bool a3, float a4, bool a5);   // 0x1422c3f80 (a1/a2 by value: the callee destroys them)
-    Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, Scaleform::GFx::Value a2, bool a3);   // 0x1422c3e40 (a1/a2 by value)
+    Scaleform::GFx::Value FUN_1422c3e40(const char* szMethod, CString a1, Scaleform::GFx::Value a2, bool a3);   // 0x1422c3e40 removeEventListener (a1/a2 by value; not an Invoke overload: it made Invoke(m, CString, bool, bool) ambiguous)
     Scaleform::GFx::Value Invoke(const char* szMethod, const class ASEvent& a1);                       // 0x1422c3da0
     Scaleform::GFx::Value Invoke(const char* szMethod, unsigned int a1, float a2);          // 0x140ba4c00 (inline COMDAT, defined in uiadventureleveldialog.cpp)
     template <class T> MS2Ptr<T> FUN_140accef0(const CString& strName);                      // child control by name (the adventure level lists)
