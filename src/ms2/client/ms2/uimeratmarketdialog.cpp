@@ -493,6 +493,7 @@ FMT_VARIADIC_W(CStringW, BlockFormat, int)
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 bool FUN_1409c1720(const Scaleform::GFx::Value& v);
 CStringW FUN_141277dd0(Scaleform::GFx::Value* pValue);                      // the string of a value
+bool FUN_140ebb920(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct);
 bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError);
 bool FUN_140ebfdd0(CDBPremiumProduct* pProduct, bool bShowError);
 bool FUN_140ebfb90(CMeratMarketPremiumProduct* pProduct, bool bShowError);
@@ -801,6 +802,54 @@ int UIMeratMarketDialog::vfunc_46()
         FUN_14134a480(*m_30, strName, &m_600);
     }
     return 1;
+}
+
+// A product changed: refresh its row on the page that shows it.
+// @0x1412ebc40
+void UIMeratMarketDialog::ShowProduct(MS2Ptr<CMeratMarketProduct> spProduct)
+{
+    if (spProduct == 0 || m_30 == 0)
+        return;
+    if (spProduct->GetType() == 3)
+    {
+        MS2Ptr<AScript> spPage = GetPage(7);
+        if (FUN_1409ee240(&spPage))
+        {
+            ASMeratMarketLimitedProduct row(FUN_1422db730());
+            if (row.vfunc_2(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spProduct)))
+                spPage->Invoke("updateItemData", Scaleform::GFx::Value(row.FUN_1422bb870()));
+        }
+    }
+    else if (spProduct->GetType() == 6 || spProduct->GetType() == 7 || spProduct->GetType() == 8)
+    {
+        MS2Ptr<AScript> spPage = GetPage(0);
+        if (FUN_1409ee240(&spPage))
+        {
+            ASMeratMarketHomeProduct row(FUN_1422db730());
+            if (row.vfunc_2(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spProduct)))
+                spPage->Invoke("updateItemData", Scaleform::GFx::Value(row.FUN_1422bb870()));
+        }
+    }
+    else if (m_250 == 0)
+    {
+        MS2Ptr<AScript> spPage = GetPage(0);
+        if (FUN_1409ee240(&spPage))
+        {
+            ASMeratMarketHomeProduct row(FUN_1422db730());
+            if (row.vfunc_2(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spProduct)))
+                spPage->Invoke("updateItemData", Scaleform::GFx::Value(row.FUN_1422bb870()));
+        }
+    }
+    else
+    {
+        MS2Ptr<AScript> spPage = GetPage(m_250);
+        if (FUN_1409ee240(&spPage))
+        {
+            ASObj row(2);
+            if (FUN_140ebb920(&row, spProduct))
+                spPage->Invoke("updateItemData", Scaleform::GFx::Value(row.FUN_1422bb870()));
+        }
+    }
 }
 
 // @0x1412ec7d0
