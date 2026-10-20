@@ -18,11 +18,12 @@
 // MS2-PIN: ?RegisterMessageFactory@?$MessageSubclassHandler@VCTriggerService@@VEntityChangeMessage@egf@@V23@@efd@@UEAAXPEAV?$GenericFactory@V?$SmartPointer@VIMessage@efd@@@efd@@I@2@@Z 0x141867b30 ; unique
 // MS2-PIN: ?RegisterMessageFactory@?$MessageWrapperSubclassHandler@VCTriggerService@@VEntityChangeMessage@egf@@V23@$0CADO@@efd@@UEAAXPEAV?$GenericFactory@V?$SmartPointer@VIMessage@efd@@@efd@@I@2@@Z 0x141867b90 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ??0CPair@?$CRBTree@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@IEAA@HAEBUUnk_TrigHandle@@@Z 0x1418649a0
-// MS2-PIN: ?NewNode@?$CRBTree@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@AEAAPEAVCNode@12@HAEBUUnk_TrigHandle@@@Z 0x1418665d0
-// MS2-PIN: ?InsertImpl@?$CRBTree@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@AEAAPEAVCNode@12@HAEBUUnk_TrigHandle@@@Z 0x141865d70
-// MS2-PIN: ?RBInsert@?$CRBTree@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@IEAAPEAVCNode@12@HAEBUUnk_TrigHandle@@@Z 0x1418675f0
-// MS2-PIN: ?SetAt@?$CRBMap@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBUUnk_TrigHandle@@@Z 0x141868240
+// MS2-PIN: ??0CPair@?$CRBTree@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@IEAA@HUUnk_TrigHandle@@@Z 0x141864a40
+// MS2-PIN: ??0CNode@?$CRBTree@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@QEAA@HUUnk_TrigHandle@@@Z 0x1418649a0
+// MS2-PIN: ?NewNode@?$CRBTree@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@AEAAPEAVCNode@12@HUUnk_TrigHandle@@@Z 0x1418665d0
+// MS2-PIN: ?InsertImpl@?$CRBTree@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@AEAAPEAVCNode@12@HUUnk_TrigHandle@@@Z 0x141865d70
+// MS2-PIN: ?RBInsert@?$CRBTree@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@IEAAPEAVCNode@12@HUUnk_TrigHandle@@@Z 0x1418675f0
+// MS2-PIN: ?SetAt@?$CRBMap@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@QEAAPEAU__POSITION@@HUUnk_TrigHandle@@@Z 0x141868240
 // MS2-PIN: ?Lookup@?$CRBMap@HUUnk_TrigHandle@@V?$CElementTraits@H@ATL@@V?$CElementTraits@UUnk_TrigHandle@@@3@@ATL@@QEBA_NHAEAUUnk_TrigHandle@@@Z 0x141866290
 // MS2-PIN: ??C?$MS2Ptr@VSidePopupTalkParam@@@@QEBAPEAVSidePopupTalkParam@@XZ 0x141864ef0
 // MS2-PIN: ??_7CTriggerService@@6BISystemService@efd@@@ 0x142f88808
@@ -805,7 +806,9 @@ void CTriggerService::FUN_1418631c0()
 // @0x1418631f0
 void CTriggerService::FUN_1418631f0(int nObject, int bStart)
 {
-    Unk_TrigCamStep kStep(nObject, bStart);
+    Unk_TrigCamStep kStep;
+    kStep.m_nObject = nObject;
+    kStep.m_bStart = bStart;
     m_listCamera.AddTail(kStep);
     if (FUN_140af7e30(Unk_CameraManager::FUN_1409478c0()) != 3)
         FUN_141863260();

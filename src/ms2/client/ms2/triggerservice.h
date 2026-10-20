@@ -35,6 +35,7 @@ public:
 // One queued camera step (AddTail 0x141865180): trigger object id and whether the step starts (nonzero) or ends it.
 struct Unk_TrigCamStep
 {
+    Unk_TrigCamStep() = default;                                                        // trivial (filled field by field)
     Unk_TrigCamStep(int nObject, int bStart) : m_nObject(nObject), m_bStart(bStart) {}   // 0x141864a40
     int m_nObject;
     int m_bStart;
@@ -49,6 +50,10 @@ struct Unk_TrigHandle
     operator int() const { return m_n; }
     int m_n;
 };
+// The exe's map passes the handle by value like an int (CNode 0x1418649a0 -> CPair(int, int) 0x141864a40).
+namespace ATL {
+template <> class CElementTraits<Unk_TrigHandle> : public CPrimitiveElementTraits<Unk_TrigHandle> {};
+}
 
 class CTriggerService : public efd::ISystemService, public IWorldServiceCallback, public TSingleton<CTriggerService>
 {
