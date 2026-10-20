@@ -184,9 +184,15 @@ class ASStage : public ASDisplayObjectContainer
 {
 public:
     ASStage(const Scaleform::GFx::Value& v, int nMovieId);     // 0x1422cfcb0 (new 0x80 in gfxmoviedamage.cpp FUN_140b62400)
+    virtual ~ASStage();                                         // 0 0x1422cfd00 (scalar deleting 0x1422cffb0)
+    virtual ASStage* vfunc_5();                                 // 5 0x1422cff80 returns itself
+    // Recovered with ?\asstage.cpp (src/ms2/gfxui/asstage.cpp, 0x1422cfcb0-0x1422cfff0).
+    void FUN_1422cfd30(MS2Ptr<ASInteractiveObject> spFocus);   // set the stage "focus" (by value: the callee destroys it; asuicomponent.cpp)
+    MS2Ptr<ASInteractiveObject> FUN_1422cfe20();               // the focus: always NULL (the exe never reads it back)
+    void FUN_1422cfe60(int nWidth);                             // set "stageWidth"
+    void FUN_1422cfe90(int nHeight);                            // set "stageHeight"
     int FUN_1422cfec0();                                        // "stageWidth"
     int FUN_1422cff20();                                        // "stageHeight"
-    void FUN_1422cfd30(MS2Ptr<ASInteractiveObject> spFocus);   // set the stage "focus" (by value: the callee destroys it; asuicomponent.cpp)
 };
 // ASSprite (RTTI .?AVASSprite@@, 0x80, vftable 0x143115c78: only the dtor is overridden). Recovered with ?\assprite.cpp
 // (src/ms2/gfxui/assprite.cpp, 0x1422e5be0-0x1422e6170); the comments name the AS member each method uses.
