@@ -185,6 +185,7 @@ public:
     template<class T> MS2Ptr<T> FUN_140bc6e60(const CString&, MS2Ptr<T>&); // bind gauge (uidungeonroomdialog "m_summaryGauge")
     template<class T> MS2Ptr<T> FUN_140e159f0(const CString&);               // child control by name, one COMDAT per wrapper class (dungeon helper)
     template<class F> void FUN_1422c2a70(const F&, int); // click callback (DT attendance)
+    template<class F> void FUN_1422c2a70(const F&, void* pUser); // click callback with a user pointer (uimeratmarketdialog.cpp preview slot)
     Scaleform::GFx::Value& FUN_1422bb890(); // root value forwarding accessor
     Scaleform::GFx::Value FUN_140e813f0(const char* szMethod, const ASArray& arr, int n);    // Invoke(method, array, int) (unit_141347b10: "buildCategoryList")
     MS2Ptr<ASMovieClip> FUN_1409b4560(const CString& strName); // bind a movie clip child (w4s10; units may hide it)
