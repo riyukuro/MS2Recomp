@@ -111,7 +111,7 @@
 // MS2-PIN: ??$_Emplace_back@AEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@?$_Uninitialized_backout_al@PEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@std@@QEAAXAEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@Z 0x141b9e340 ; walk
 // MS2-PIN: ??$_Uninitialized_copy@PEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@PEAV1@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@std@@YAPEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@QEAV1@0PEAV1@AEAV?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@0@@Z 0x141bab040 ; walk
 // MS2-PIN: ??$_Uninitialized_copy_al_unchecked@PEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@PEAV1@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@std@@YAPEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@PEAV1@QEAV1@1AEAV?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x141bab110 ; walk
-// MS2-PIN: ??$_Uninitialized_move_al_unchecked@PEAV?$MS2Ptr@VMapTile@UIWorldMap@@@@PEAV1@V?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@std@@@std@@YAPEAV?$MS2Ptr@VMapTile@UIWorldMap@@@@PEAV1@QEAV1@1AEAV?$allocator@V?$MS2Ptr@VMapTile@UIWorldMap@@@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x141bab270 ; walk
+// MS2-PIN: ??$_Uninitialized_move_al_unchecked@PEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@PEAV1@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@std@@YAPEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@PEAV1@QEAV1@1AEAV?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x141bab270 ; walk
 // MS2-PIN: ??$construct@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VAddtionalInfo@UIWorldMap@@@@@std@@PEAX@1@AEAPEAU31@@Z 0x141bab4e0 ; walk
 // MS2-PIN: ??$construct@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@AEAV1@@?$_Default_allocator_traits@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@std@@SAXAEAV?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@1@QEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@AEAV3@@Z 0x141babba0 ; walk
 // MS2-PIN: ??$_Destroy_range1@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@std@@YAXPEAV?$Unk_BmBoxPtr@USpecialNPCInfo@@@@0AEAV?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@0@U?$integral_constant@_N$0A@@0@@Z 0x141b9e230 ; walk
@@ -1607,3 +1607,6 @@ void Unk_WmAddtionalRecord::Read(CInputStream* pStream)
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc3a80-0x142cc3aa0 .text$yd
+// SpecialNPC vector ctor chain (exe 0x141bad790 -> 0x141b9c9a0 -> 0x141bad8c0); 0x141b9c880/0x141b67f10 are _Tree look-alikes
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141b9c9a0
+// MS2-PIN: ??0?$_Vector_val@U?$_Simple_types@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@std@@QEAA@XZ 0x141bad8c0

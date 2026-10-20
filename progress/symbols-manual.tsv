@@ -4053,3 +4053,5 @@ FMOD_System_Create	142303a95	func
 ?GetContextNotify@Renderer2D@Render@Scaleform@@QEBAPEAVRenderNotify@ContextImpl@23@XZ	142582270	func
 ?GetRenderEntry@RTHandle@ContextImpl@Render@Scaleform@@QEBAPEAVEntry@234@XZ	142580250	func
 ?DAT_1439f821c@@3HA	1439f821c	data
+??0?$_Vector_val@U?$_Simple_types@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@std@@QEAA@XZ	141bad8c0	func
+??$?0$$V@?$_Compressed_pair@V?$allocator@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$Unk_BmBoxPtr@USpecialNPCInfo@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z	141b9c9a0	func
