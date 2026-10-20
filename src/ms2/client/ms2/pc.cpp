@@ -157,6 +157,7 @@
 // MS2-PIN: ?TypeCast@PC@@UEBA_NIPEAPEAX@Z 0x141668fc0
 // MS2-PIN: ?capacity@?$vector@HV?$allocator@H@std@@@std@@QEBA_KXZ 0x14166a170
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\pc.cpp"   // assumed (no __FILE__ in the TU)
+#define NOMINMAX   // cbreakableobject.h pulls the PhysX headers
 #include "ms2/placeholder/ms2stdafx.h"
 #include <egmAnimation/AnimationService.h>
 #include "ms2/placeholder/fittingdollpc.h"
@@ -173,6 +174,8 @@
 #include "ms2/placeholder/ms2svrptr.h"
 #include "ms2/placeholder/cubeiteminfo.h"
 #include "ms2/placeholder/cube.h"
+#include "ms2/placeholder/cbreakableobject.h"
+#include <egf/EntityIDFactory.h>
 #include "ms2/placeholder/csetitemmanager.h"
 #include "ms2/client/ms2/statemanager.h"
 #include "ms2/client/ms2/jobsystemcli.h"
@@ -340,7 +343,12 @@ public:
 };
 Unk_PCFeatures* FUN_140166410();
 // The entity manager and the entity property reads (as pcbase.cpp).
-class Unk_PCEntMgr;
+class Unk_PCEntMgr                                                  // EntityWorldManager (entityworldmanager.h)
+{
+public:
+    egf::EntityPtr FUN_1411ce7c0(efd::utf8string kModel, efd::utf8string kAsset, efd::Point3 kPos, efd::Point3 kRot,
+        float fScale, int a, int b);                                // create an entity
+};
 Unk_PCEntMgr* FUN_1409670f0();
 egf::Entity* FUN_1411cf440(Unk_PCEntMgr* pMgr, const egf::EntityID& kId);
 void FUN_1409618c0(egf::Entity* pEntity, unsigned int nPropId, NiPoint3& kValue);   // Entity::GetPropertyValue<efd::Point3>
@@ -356,6 +364,7 @@ class Unk_PCHousingSvc
 public:
     void FUN_1410cc160(int nKind);                                  // the cube build mode UI
     Cube* FUN_1410b8f30(NiPoint3 kFrom, efd::Point3* pHit, float fRange);   // the cube under a point
+    efd::Point3 FUN_1410b9150(efd::Point3 kPos);                    // snap a point onto the cube grid
     Cube* FUN_1410b8a60(Unk_Int3 kCell);                            // the cube of a grid cell
     Cube* FUN_1410b9080(Cube* pBase, int nOffset);                  // the neighbour cube (packed cell offset)
     Cube* FUN_1410b8e60(void* pEntity);                             // the cube of an entity
@@ -562,6 +571,9 @@ class Unk_PCWaterGunInfo : public CPtred {};
 void FUN_141201d50(CEquipModel* pModel, CString strNode);           // attach the model to a node
 int FUN_141202940(CEquipModel* pModel);                             // the equip slot of the model
 void FUN_141200390(CEquipModel* pModel, const CString& strAnim);    // play an animation
+CString FUN_141b6ed00(const CString& strPath);                      // the kfm's animation path
+CString FUN_1409a2360(const char* pszUrn, int n);                   // normalise an asset urn
+ModelPart* FUN_141200ab0(CEquipModel* pModel);                      // the model's part record (m_unk_20)
 extern bool DAT_143aad1e0;                                          // the upper HUD hides the weapon effects (uiupperhuddialog.cpp)
 extern CString DAT_143ae2de8;                                       // the hidden-equip reason (CEquipment::FUN_1411e8eb0 / FUN_1411e9020)
 bool FUN_14028d470(float a, float b);                               // the floats are equal
@@ -591,11 +603,16 @@ Unk_PCNotices* FUN_140939a10();
 // The +0xd88 record is the head CBoneRotateManager (vfunc_12 news it; clonepc.cpp/stateidle.cpp keep the
 // Unk_PCD88 name, which the exe's MS2Ptr COMDAT symbols carry) and the +0xfd8 record (create 0x141993100).
 class Unk_PCD88 : public CBoneRotateManager {};
-class Unk_PCLinkFD8 : public CPtred {};
-// The action timer at +0xfc8 (avatarpc.cpp has the same stand-in).
-class Unk_PCActionTimer : public CPtred
+class Unk_PCLinkFD8 : public CPtred                                 // UITombStoneBar::Entity
 {
 public:
+    void FUN_141992e40();                                           // refresh
+};
+// The action timer at +0xfc8 (avatarpc.cpp has the same stand-in).
+class Unk_PCActionTimer : public CPtred                             // CBreakableObject (the tomb stone; cbreakableobject.h)
+{
+public:
+    void FUN_140adf370(egf::Entity* pEntity, int nObjectId, MS2Ptr<CGemTombStone> spTomb);   // bind as a tomb stone
     virtual void vfunc_1(void* p, int nMode);                       // 1 notify (FUN_14165c970: 2 / 5)
     int FUN_140addea0();                                            // active
 };
@@ -3541,6 +3558,137 @@ int PC::FUN_14165b500(int nKind)
         return 0;
     }
     return 0;
+}
+
+// MS2-FUNCTIONAL: one register hop differs (the exe loads this straight into rcx for FUN_141658e60)
+// @0x141658150
+bool PC::FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CString>& kNodes, int bPrimary)
+{
+    int nRightType = 0;
+    int nLeftType = 0;
+    MS2Ptr<CEquipItem> spRight = m_kEquipDE0.FUN_1411e1860(5, 6, 1);
+    if (spRight.get())
+    {
+        MS2Ptr<CEquipItem> spWeapon = FUN_141655ee0(5, false);
+        if (spWeapon.get())
+            nRightType = spWeapon->FUN_1411dc7f0()->FUN_14053c620();
+        ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+        spRight->FUN_1411dcc80(aModels);
+        for (unsigned int i = 0; i < aModels.GetCount(); i++)
+        {
+            if (FUN_141202940(aModels.GetAt(i).operator->()) == 5)
+            {
+                kEffects.Add(aModels.GetAt(i).get());
+                CString strNode(FUN_141200ab0(aModels.GetAt(i).operator->())->name18);
+                if (!strNode.IsEmpty())
+                    kNodes.Add(bPrimary ? strNode : "");
+                else
+                    kNodes.Add(bPrimary ? "Weapon_Hand_R_Point" : "");
+            }
+        }
+    }
+    if (spRight.IsNull())
+        bPrimary = 0;
+    MS2Ptr<CEquipItem> spLeft = m_kEquipDE0.FUN_1411e1860(4, 6, 1);
+    if (spLeft.get())
+    {
+        MS2Ptr<CEquipItem> spWeapon = FUN_141655ee0(4, false);
+        if (spWeapon.get())
+            nLeftType = spWeapon->FUN_1411dc7f0()->FUN_14053c620();
+        ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+        spLeft->FUN_1411dcc80(aModels);
+        for (unsigned int i = 0; i < aModels.GetCount(); i++)
+        {
+            int nWorld = 0;
+            if (FUN_141202940(aModels.GetAt(i).operator->()) == 4)
+            {
+                CEquipModel* pModel = aModels[i].get();
+                ModelPart* pPart = FUN_141200ab0(pModel);
+                std::vector<ModelNameEntry>& kList = pPart->entries[(unsigned int)FUN_141658e60()];
+                std::vector<ModelNameEntry>::const_iterator it;
+                for (it = kList.begin(); it != kList.end(); ++it)
+                {
+                    nWorld = it->worldMode | it->worldLerp;
+                    if (nWorld != 0)
+                        break;
+                }
+                if (CWeaponActionTable::IsAllowed(nRightType, nLeftType) == 0)
+                {
+                    // a left hand weapon the pair does not allow: no node
+                    kEffects.Add(aModels.GetAt(i).get());
+                    kNodes.Add("");
+                }
+                else
+                {
+                    kEffects.Add(aModels.GetAt(i).get());
+                    CString strNode(FUN_141200ab0(aModels.GetAt(i).operator->())->name18);
+                    if (!strNode.IsEmpty())
+                        kNodes.Add(bPrimary != 0 && nWorld == 0 ? strNode : "");
+                    else
+                        kNodes.Add(bPrimary != 0 && nWorld == 0 ? "Weapon_Hand_L_Point" : "");
+                }
+            }
+        }
+    }
+    if (kEffects.GetCount())
+        return true;
+    return false;
+}
+
+// MS2-FUNCTIONAL: the exe's vfunc_18 result lands in kPos directly (vfunc_18 likely returns efd::Point3, pcbase.h says NiPoint3)
+// @0x14165cac0
+void PC::FUN_14165cac0()
+{
+    // the tomb stone of the dead player (its look from the worn tomb stone gem)
+    efd::utf8string kModel;
+    egf::EntityID kId = egf::EntityIDFactory::GetNextID();
+    egf::EntityPtr spEntity(0);
+    int bBusy = FUN_141661970();
+    if (bBusy)
+        kModel = "MS2TombStoneDark";
+    else
+        kModel = "MS2TombStone";
+    efd::Point3 kPos = vfunc_18();
+    {
+        Unk_PCHousingSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+        if (spSvc.FUN_140885310())
+            kPos = spSvc.FUN_1401cd1a0()->FUN_1410b9150(kPos);
+    }
+    if (efd::ClassInfo::IsKindOf(this != NULL ? GetClassDesc() : NULL, 0x06200044))   // AvatarPC
+        kPos = efd::Point3::ZERO;
+    efd::Point3 kRot = efd::Point3::ZERO;
+    efd::utf8string kAsset;
+    MS2Ptr<CGemTombStone> spTomb(0);
+    if (FUN_140166410()->FUN_14036d570(0x67))
+    {
+        MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(FUN_14165f460())->FUN_141270740(5);
+        if (spGem.get())
+        {
+            spTomb.AssignRaw(dynamic_cast<CGemTombStone*>((CGemBase*)spGem));
+            if (spTomb.get())
+            {
+                MS2Ptr<CGemTombStoneData> spData = spTomb->FUN_1405a53c0();
+                if (spData.get())
+                {
+                    kRot = spData->m_ptRotation;
+                    CString strUrn = "urn:gamebryo-animation:"
+                        + FUN_141b6ed00(bBusy != 0 ? spData->m_attrB.m_strKfm : spData->m_attrA.m_strKfm);
+                    efd::AssetID kUrn;
+                    kUrn.SetURN(efd::utf8string((const char*)FUN_1409a2360(strUrn, 0)));
+                    kAsset = kUrn.GetURN();
+                }
+            }
+        }
+    }
+    spEntity = FUN_1409670f0()->FUN_1411ce7c0(kModel, kAsset, kPos, kRot, 1.0f, 0, 0);
+    if (spEntity == 0)
+        return;
+    int nObjectId = FUN_14123c580();
+    spEntity->SetPropertyValue(0x85b708e6, nObjectId);
+    m_spFC8.AssignRaw(reinterpret_cast<Unk_PCActionTimer*>(new CBreakableObject));
+    m_spFC8->FUN_140adf370(spEntity, FUN_14123c580(), spTomb);
+    if (FUN_141657730().get())
+        FUN_141657730()->FUN_141992e40();
 }
 
 // ---- end of code ----

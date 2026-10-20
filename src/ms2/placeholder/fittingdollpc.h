@@ -209,6 +209,7 @@ public:
     int FUN_14165c570();                                    // the normal attack skill of the weapon stance
     void FUN_14165c720(int nSkillId, short nLevel);         // preload a skill and its combo chain
     int FUN_14165c090(efd::Point3 kPos);                    // there is ground ahead of kPos and room to stand there (by value)
+    void FUN_14165cac0();                                   // create the tomb stone entity (+0xfc8)
     int FUN_14165a540();                                    // step onto the cube under / next to the actor
     int FUN_14165b500(int nKind);                           // climb: 1 onto a wall ahead, 2 down the side of the cube below
     MS2Ptr<class CGemPetSkin> FUN_14165df00();              // the worn pet skin gem (feature 0x6c)
