@@ -13,6 +13,16 @@
 
 // MS2-FUNCTIONAL: unit-wide; the picker bodies (vfunc_1/2/3, FindTarget) and the hit / iterator helpers use opaque externs and
 // Ghidra-level approximations of unrecovered smart-pointer types, so most non-trivial functions are not byte-identical.
+// Picker vfuncs (imported by unnamed/unit_140ad1860): the exe's hit results (Unk_PortalHit / Unk_ObjectHit / Unk_WeaponHit)
+// are 16-byte counted handles with dtors (0x140964a70 / 0x1409649b0 / ...) that FindTarget returns by value (sret, EH frame,
+// IsNull tests return bool); here they are raw structs with explicit helper calls (char results, GS cookie, no EH).
+// MS2-FUNCTIONAL 0x140a79090: CMouseInteractNpc::vfunc_1 - raw PCBase*/hit structs instead of the handle temporaries (2 extra helper calls)
+// MS2-FUNCTIONAL 0x140a79a00: CMouseInteractPortal::vfunc_1 - Unk_PortalHit as a raw struct (GS frame, no EH dtor state)
+// MS2-FUNCTIONAL 0x140a79c00: CMouseInteractPortal::vfunc_2 - same: exe early-returns 0 after the bool IsNull test, hit dtor via EH
+// MS2-FUNCTIONAL 0x140a7a0c0: CMouseInteractObject::vfunc_1 - Unk_ObjectHit as a raw struct (GS frame, no EH dtor state)
+// MS2-FUNCTIONAL 0x140a7a250: CMouseInteractObject::vfunc_2 - same handle-type gap as vfunc_1
+// MS2-FUNCTIONAL 0x140a7ad80: CMouseInteractWeaponObject::vfunc_1 - Unk_WeaponHit as a raw struct (GS frame, no EH dtor state)
+// MS2-FUNCTIONAL 0x140a7ae80: CMouseInteractWeaponObject::vfunc_2 - same handle-type gap as vfunc_1
 // ---- RTTI-only action classes (the picker compares the player's current action against the picked object) ----
 class ActionKeyObject { public: virtual ~ActionKeyObject(); };
 class TalkAction : public ActionKeyObject { public: char m_pad[0x10]; int m_nNpcId; };                  // +0x18
