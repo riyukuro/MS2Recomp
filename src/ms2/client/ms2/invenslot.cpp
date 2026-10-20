@@ -23,6 +23,9 @@
 // MS2-PIN: ??_7InvenSlot@@6B@ 0x142f0ebf8 ; hand
 // MS2-PIN: ?TypeCast@InvenSlot@@UEBA_NIPEAPEAX@Z 0x14140eaf0
 // MS2-PIN: ?TypeCast@InvenSlot@@UEBA_NIPEAPEBX@Z 0x14140eb40
+// MS2-FUNCTIONAL 0x14140fe80: exe map<int,CString>::begin (70 B) builds the const iterator with a null proxy (xor r8d) and
+//   no addressof/_Get_scary calls; the VS2017 15.9 xtree begin() passes addressof(_Get_data()) -> STL header difference
+// MS2-FUNCTIONAL 0x14140fed0: map<int,CString>::end, same null-proxy STL difference as begin (0x14140fe80)
 // MS2-PIN: ?begin@?$_Tree@V?$_Tmap_traits@HV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@XZ 0x14140fe80
 // MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@HV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@XZ 0x14140fed0
 #define NOMINMAX
