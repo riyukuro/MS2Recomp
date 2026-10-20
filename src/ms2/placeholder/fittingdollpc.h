@@ -52,6 +52,9 @@ struct Unk_PCEquipSet
     void FUN_1411e37f0(MS2Ptr<CItem> spItem, __int64 n);
     void FUN_1411e3bd0(MS2Ptr<CEquipItem> spItem, int n);
     int FUN_1411e0c30(int nItemId);                         // the item id is worn (uibeautyshopdevdialog.cpp)
+    void FUN_1411e7610();                                   // mark dirty (CEquipment, equipment.h)
+    CString FUN_1411eabd0();                                // the set name (CEquipment)
+    bool FUN_1411eac20();                                   // the set name is a named one (CEquipment)
     MS2Ptr<CEquipmentSlotLayerInfo> GetTitle();            // 0x140d29440 the codi (outfit) tab period (defined in unit_140d1ae30)
     unsigned char unknown0[0x188];
     MS2Ptr<CEquipmentSlotLayerInfo> m_spTitle;              // +0x188 (new CEquipmentSlotLayerInfo(2))
@@ -60,7 +63,7 @@ class Unk_PCD88;      // +0xd88 target (ClonePC::vfunc_12 releases it via FUN_14
 class Unk_PCArg126;   // MS2Ptr<T> by value (get 0x1409f7930, ICF generic dtor 0x1401bfde0)
 class Unk_HsInfo;     // MS2Ptr<T> by value (defined by uihideandseekresultdialog.cpp)
 // PC member types (w539). Complete types only in pc.cpp; the MS2Ptr members need only declarations.
-class Unk_PCStance;   // +0xd70 the weapon stance (create 0x141b74b50, check 0x141b74c30)
+class CWeaponAction;   // +0xd70 the action prefix row of the worn weapon pair (weaponactiontable.h)
 class Unk_PCLinkFD8;  // +0xfd8 (create 0x141993100, release 0x141993180)
 class CGuideObject;   // +0x1228 [3] the cube guide objects (cubecraft_1.h; FUN_1416623d0 sets them)
 class JobSystemCli;
@@ -226,7 +229,7 @@ public:
     void FUN_141662d60(__int64 nValue);                     // scenestategame packet 0xe6
     int FUN_141661aa0();                                    // scenestategame packet 0x33 (pvp flag)
     void FUN_141661a60(int n);                              // scenestategame packet 0x33
-    void FUN_1416619d0(int n);                              // scenestategame packet 0x33
+    void FUN_1416619d0(unsigned int nEnd);                  // scenestategame packet 0x33 (+0x10e8; the main player info timer)
     void FUN_141661370(int a, int b, int c);                // scenestategame packet 0x34 (also on MyPC)
     void FUN_1416591e0(int nSlot, const NiColor& kColor);   // +0xd98 + nSlot*0xc = kColor (scenestategame 0x30)
     const NiColor& FUN_141659220(int nSlot);                // the colour at +0xd98 + nSlot*0xc
@@ -234,6 +237,40 @@ public:
     void FUN_141659000(int n);                              // 0x141659000 (an enchant-effect item was equipped; equipitem.cpp)
     float FUN_14165eb80();                                  // 0x14165eb80 the animation blend of state 0x2f (equipitem.cpp)
     CString FUN_141658d20();                                // 0x141658d20 the animation name prefix (equipitem.cpp)
+    __int64 FUN_141658eb0();                                // +0xfe8
+    unsigned char FUN_141658f10();                          // the PC bang grade
+    unsigned char FUN_141658fa0();                          // the PC bang bonus flags
+    void FUN_141658fc0(const egf::EntityID& kId);           // +0xdb0
+    int FUN_1416595b0();                                    // the cube craft mode
+    int FUN_141659610();                                    // cube craft mode 1
+    int FUN_141659650();                                    // cube craft mode 2
+    int FUN_141659690();                                    // the cube craft controller moves a cube
+    int FUN_1416596d0();                                    // cube craft mode 1
+    void FUN_141659720();                                   // tick the cube craft controller's second guide
+    void FUN_141659770(bool b, const CString& strKind);     // (empty in the client; vfunc_71 / vfunc_72 pass "Emotion")
+    void FUN_14165ebb0(float f);                            // +0x1180 the animation speed scale
+    int FUN_14165ffe0();                                    // +0x11cc
+    int FUN_141660030();                                    // +0x11e8 is a time of the current month
+    void FUN_14165f0b0(MS2Ptr<CItem> spItem);               // +0x1040 the held item
+    void FUN_14165f130(int n);                              // +0x1050
+    int FUN_14165f150();                                    // +0x1050 an item is held
+    void FUN_14165f170();                                   // put the held item away (packet 0x37/0x12)
+    void FUN_141661820(int nSkillId, short nLevel, std::set<int>& kVisited, std::set<int>& kFound);   // (empty in the client)
+    void FUN_141661840(int nSkillId, short nLevel);         // (empty in the client)
+    int FUN_141661860();                                    // +0x1000
+    unsigned int FUN_141661a80();                           // +0x10e8 the end tick
+    void FUN_141661ac0();                                   // reset +0x10ec / +0x10e8 once the end tick passed
+    int FUN_141661bc0();                                    // +0xff0 the party id
+    int FUN_141661c50();                                    // +0x10f4 the title
+    void FUN_1416623d0(efd::SmartPointer<CGuideObject> spGuide, int nIndex);   // +0x1228[nIndex] (0..2)
+    CGuideObject* FUN_141662440(int nIndex);                // +0x1228[nIndex] (0..2)
+    int FUN_141662490(int nIndex);                          // a guide is set
+    class CConstructionGuideObject* FUN_1416625b0();        // guide 0
+    class CFishingGuideObject* FUN_1416625e0();             // guide 1
+    class CSkillMagicControlGuide* FUN_141662610();         // guide 2
+    __int64 FUN_141662670();                                // +0x1140
+    int FUN_1416626b0();                                    // +0x1148, reset on a new day of +0x1140
+    int FUN_141662730();                                    // +0x114c
     void FUN_14165d300(int nA, int nB, int nC);             // PCBase member (pcbase.cpp; scenestategame 0x5d)
     void FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot);   // scenestategame 0x141721a30
     MS2Ptr<Unk_PCWaterGunInfo> FUN_141664250();             // the water gun battle info (+0x1260)
@@ -298,7 +335,7 @@ public:
     bool m_bD40;                                            // +0xd40 (ctor: true)
     ATL::CAtlArray<MS2Ptr<CItem> > m_kListD48;              // +0xd48 owned items (FUN_141653d10 adds; MyPC/PortraitPC read)
     int m_nD68;                                             // +0xd68 (FUN_1416566f0 / FUN_1416566d0)
-    MS2Ptr<Unk_PCStance> m_spStanceD70;                     // +0xd70 the weapon stance (FUN_141653f00 rebuilds it)
+    MS2Ptr<CWeaponAction> m_spWeaponActionD70;              // +0xd70 the worn weapon pair's action row (FUN_141653f00 rebuilds it)
     int m_nD80;                                             // +0xd80 (FUN_141663040)
     MS2Ptr<Unk_PCD88> m_spD88;                              // +0xd88
     NiColor m_colorD98[2];                                  // +0xd98 (FUN_141659220 / FUN_1416591e0)
@@ -386,7 +423,7 @@ public:
     efd::SmartPointer<NiAVObject> m_sp12d8;                 // +0x12d8 (init 0x14097eba0(p,0), as PCBase +0xbe8)
 };
 MS2_CHECK_OFFSET(PC, m_kListD48, 0xd48);
-MS2_CHECK_OFFSET(PC, m_spStanceD70, 0xd70);
+MS2_CHECK_OFFSET(PC, m_spWeaponActionD70, 0xd70);
 MS2_CHECK_OFFSET(PC, m_colorD98, 0xd98);
 MS2_CHECK_OFFSET(PC, m_strNameDC8, 0xdc8);
 MS2_CHECK_OFFSET(PC, m_kItemsF78, 0xf78);

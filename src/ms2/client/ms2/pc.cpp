@@ -80,7 +80,12 @@
 #include "ms2/commonfiles/itemgem.h"
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/unk_1402a9d70.h"
+#include "weaponactiontable.h"
 #include "ms2/placeholder/cinpacket.h"
+#include "ms2/placeholder/coutpacket.h"
+#include "ms2/placeholder/mstime.h"
+#include "ms2/commonfiles/masterytable.h"
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/client/ms2/statebannerdata.h"
 #include "ms2/client/ms2/statecashcalldata.h"
@@ -253,6 +258,42 @@ public:
 class Unk_PCOptions { public: Unk_PCOption* FUN_140b123b0(); };
 Unk_PCOptions* FUN_1409a8b10();
 unsigned FUN_140a7d630(Common::Constants::Value<Unk_ConstColor>* pColor); // the colour as ARGB (npcdatacli.cpp)
+// The running skill cast (CSkillRecord, skillrecord.h; its SkillMotionData clashes with jobsystem.h's skilldata.h
+// placeholder here). The smart pointer helpers are the exe's shared copies.
+class Unk_PCSkillMotion : public CPtred                             // SkillMotionData
+{
+public:
+    char m_pad_18[0x38];
+    CString m_strWeaponSequenceName;                                // +0x50
+};
+class Unk_PCSkillRecord : public CPtred
+{
+public:
+    Unk_PCSkillMotion* FUN_141759830();                             // the motion
+};
+template <> MS2Ptr<CSkillRecord>::~MS2Ptr();                        // 0x140975740
+template <> CSkillRecord* MS2Ptr<CSkillRecord>::operator->() const; // 0x140975bd0
+template <> bool MS2Ptr<CSkillRecord>::operator!() const;           // 0x141667460
+NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the entity's scene graph
+// The emotion effect set of vfunc_71 (pcbase.cpp has the same stand-in, typed further).
+class Unk_PCBaseFxSet : public CPtred
+{
+public:
+    void* m_pad_18[2];
+    bool m_bLoop28;                                                 // +0x28
+};
+unsigned FUN_141472bc0();                                           // the server tick
+// The main player info dialog (FUN_140931900 = the UI by id).
+class Unk_PCMainPlayerInfo
+{
+public:
+    void FUN_1419f1200(int nId, int nEnd);                          // start a timer
+    void FUN_1419f1370(int nId);                                    // stop it
+};
+Unk_PCMainPlayerInfo* FUN_140931900(int nUiId);
+MyPC* FUN_1409613d0(PCBase* p);                                     // efd::DynamicCast<MyPC>
+int FUN_14086ae10(__int64 nTime);                                   // the time lies before today
+CMasteryTable* FUN_1409670c0();                                     // TSingleton<CMasteryTable>
 // The model resource cache (FUN_140a0afd0) and the file preloader.
 class Unk_PCModelCache
 {
@@ -276,21 +317,38 @@ public:
 };
 Unk_PCNotices* FUN_140939a10();
 
-// The weapon stance of the worn weapons (+0xd70; RTTI unknown).
-class Unk_PCStance : public CPtred
-{
-public:
-    static int FUN_141b74c30(int nPrimary, int nSecondary);                       // the pair is valid
-    static MS2Ptr<Unk_PCStance> FUN_141b74b50(int nPrimary, int nSecondary);      // the stance of a weapon pair
-    int m_n18;                                                      // +0x18
-    int m_nKind;                                                    // +0x20
-    CString m_strName;                                              // +0x28
-};
 // The +0xd88 record (clonepc.cpp has the same stand-in) and the +0xfd8 record (create 0x141993100).
 class Unk_PCD88 : public CPtred {};
 class Unk_PCLinkFD8 : public CPtred {};
 // The action timer at +0xfc8 (avatarpc.cpp has the same stand-in).
 class Unk_PCActionTimer : public CPtred {};
+
+// ---- header statics of this TU (.text$di 0x1400fb010-0x1400fb4d0; same groups as unit_140114300 / unit_140102270) ----
+class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };    // an 8-byte pointer holder
+namespace {
+CString s_strCustomize = "Customize";
+CString s_strDefault = "Default";
+CString s_strEmotion = "Emotion";
+CString s_strExceptRender = "ExceptRender";
+CString s_strExpired = "Expired";
+CString s_strHair = "Hair";
+CString s_strInvalide = "Invalide";
+CString s_strLayerExpired = "layerExpired";
+CString s_strLower = "Lower";
+CString s_strMissMatch = "MissMatch";
+CString s_strOptimizer = "Optimizer";
+CString s_strPCBang = "PCBang";
+CString s_strSlot = "Slot";
+CString s_strUndo = "Undo";
+CString s_strVIP = "VIP";
+CString s_strWillUpdatePos = "WillUpdatePos";
+CString s_sortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+CString s_strSkill = "skill";
+CString s_strStun = "stun";
+efd::Category s_category(0);
+Unk_1401cd100 s_pointer(NULL);
+Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
+}
 
 // ---- PC ----
 
@@ -1006,33 +1064,33 @@ void PC::vfunc_131(short n)
 int PC::vfunc_78() { return m_nLevelDDC; }
 
 // @0x141657910
+// MS2-FUNCTIONAL: the exe frame is 0x30 bytes larger (value temporaries in the 0x23-stat path)
 void PC::vfunc_90(void* p)
 {
-    CInPacket* pPacket = static_cast<CInPacket*>(p);
-    unsigned char nCount = pPacket->vfunc_o8_1();
+    unsigned char nCount = static_cast<CInPacket*>(p)->vfunc_o8_1();
     if (nCount == 0x23)
     {
         for (int i = 0; i < 3; i++)
         {
-            FUN_141670540(i, 4, pPacket->vfunc_o8_4());
-            FUN_141670540(i, 0xd, (unsigned)pPacket->vfunc_o8_3());
-            FUN_141670540(i, 0xe, (unsigned)pPacket->vfunc_o8_3());
-            FUN_141670540(i, 0x20, (unsigned)pPacket->vfunc_o8_3());
-            FUN_141670540(i, 0x16, (unsigned)pPacket->vfunc_o8_3());
+            FUN_141670540(i, 4, static_cast<CInPacket*>(p)->vfunc_o8_4());
+            FUN_141670540(i, 0xd, (unsigned)static_cast<CInPacket*>(p)->vfunc_o8_3());
+            FUN_141670540(i, 0xe, (unsigned)static_cast<CInPacket*>(p)->vfunc_o8_3());
+            FUN_141670540(i, 0x20, (unsigned)static_cast<CInPacket*>(p)->vfunc_o8_3());
+            FUN_141670540(i, 0x16, (unsigned)static_cast<CInPacket*>(p)->vfunc_o8_3());
         }
     }
     else
     {
         for (int n = 0; n < nCount; n++)
         {
-            unsigned char nType = pPacket->vfunc_o8_1();
+            unsigned char nType = static_cast<CInPacket*>(p)->vfunc_o8_1();
             for (int i = 0; i < 3; i++)
             {
                 __int64 nValue;
                 if (FUN_14082f1a0(nType) == 0)
-                    nValue = (unsigned)pPacket->vfunc_o8_3();
+                    nValue = (unsigned)static_cast<CInPacket*>(p)->vfunc_o8_3();
                 else
-                    nValue = pPacket->vfunc_o8_4();
+                    nValue = static_cast<CInPacket*>(p)->vfunc_o8_4();
                 FUN_141670540(i, nType, nValue);
             }
         }
@@ -1092,6 +1150,430 @@ int PC::vfunc_132(CItem* pItem, int nSlot, bool bForce)
         }
     }
     return nResult;
+}
+
+// @0x141658a30
+CString PC::vfunc_60()
+{
+    if (m_nD80 != 0 && (m_spWeaponActionD70.get() ? true : false))
+        return m_spWeaponActionD70->m_strPrefix;
+    else
+    {
+        bool bHasSet = !FUN_1416561a0()->FUN_1411eabd0().IsEmpty();
+        if (bHasSet)
+            return FUN_1416561a0()->FUN_1411eabd0();
+        else
+            return CString("");
+    }
+}
+
+// @0x141658b80
+int PC::vfunc_61()
+{
+    if (m_nD80 != 0 && (m_spWeaponActionD70.get() ? true : false))
+        return 1;
+    else
+    {
+        bool bHasSet = !FUN_1416561a0()->FUN_1411eabd0().IsEmpty();
+        if (bHasSet)
+            return 2;
+    }
+    return 0;
+}
+
+// @0x141658c40
+bool PC::vfunc_62()
+{
+    bool bHasSet = !FUN_1416561a0()->FUN_1411eabd0().IsEmpty();
+    if (bHasSet)
+        return FUN_1416561a0()->FUN_1411eac20();
+    return false;
+}
+
+// @0x141658cd0
+CStringW PC::vfunc_134() { return CStringW(L""); }
+MS2_REPLACE_METHOD(0x141658CD0, PC, vfunc_134, 61, 0xE16DABBF);
+
+// @0x141658d20
+CString PC::FUN_141658d20()
+{
+    CString strPrefix;
+    do
+    {
+        if (FUN_14166c930() != 0x10)
+            break;
+        StateSkill* pState = static_cast<StateSkill*>(FUN_14166ccb0());
+        if (pState == 0)
+            break;
+        MS2Ptr<CSkillRecord> spSkill = pState->FUN_1417ed6f0();
+        if (!spSkill)
+            break;
+        Unk_PCSkillMotion* pMotion = reinterpret_cast<Unk_PCSkillRecord*>(spSkill.operator->())->FUN_141759830();
+        if (pMotion == 0)
+            break;
+        strPrefix = pMotion->m_strWeaponSequenceName;
+    } while (0);
+    return strPrefix;
+}
+
+// @0x141658e40
+void PC::FUN_141658e40(int nGender) { m_nGenderDD8 = nGender; }
+
+// @0x141658e60
+int PC::FUN_141658e60() { return m_nGenderDD8; }
+
+// @0x141658e80
+void PC::FUN_141658e80(__int64 nValue) { m_nFE8 = nValue; }
+
+// @0x141658eb0
+__int64 PC::FUN_141658eb0() { return m_nFE8; }
+
+// @0x141658ed0
+void PC::FUN_141658ed0(unsigned char n)
+{
+    m_nFF8 = n;
+    m_kEquipDE0.FUN_1411e7610();
+}
+
+// @0x141658f10
+unsigned char PC::FUN_141658f10() { return m_nFF8; }
+
+// @0x141658f30
+int PC::FUN_141658f30() { return m_nFF8 > 0; }
+
+// @0x141658f70
+void PC::FUN_141658f70(unsigned char flags) { m_nFF9 |= flags; }
+MS2_REPLACE_METHOD(0x141658F70, PC, FUN_141658f70, 42, 0xE44E913E);
+
+// @0x141658fa0
+unsigned char PC::FUN_141658fa0() { return m_nFF9; }
+
+// @0x141658fc0
+void PC::FUN_141658fc0(const egf::EntityID& kId) { m_entityDB0 = kId; }
+
+// @0x1416591e0
+void PC::FUN_1416591e0(int nSlot, const NiColor& kColor) { m_colorD98[nSlot] = kColor; }
+
+// @0x141659220
+const NiColor& PC::FUN_141659220(int nSlot) { return m_colorD98[nSlot]; }
+
+// @0x1416595b0
+int PC::FUN_1416595b0() { return m_nCubeModeFFC; }
+
+// @0x1416595d0
+int PC::FUN_1416595d0() { return m_nCubeModeFFC != 0; }
+
+// @0x141659610
+int PC::FUN_141659610() { return m_nCubeModeFFC == 1; }
+
+// @0x141659650
+int PC::FUN_141659650() { return m_nCubeModeFFC == 2; }
+
+// @0x141659690
+int PC::FUN_141659690()
+{
+    if (FUN_141659700() == 0)
+        return 0;
+    return FUN_141659700()->FUN_1410a8ab0();
+}
+
+// @0x1416596d0
+int PC::FUN_1416596d0()
+{
+    if (m_nCubeModeFFC == 1)
+        return 1;
+    return 0;
+}
+
+// @0x141659700
+Unk_PCCubeCraft* PC::FUN_141659700() { return m_pCubeCraft; }
+MS2_REPLACE_METHOD(0x141659700, PC, FUN_141659700, 18, 0x829A31E1);
+
+// @0x141659720
+void PC::FUN_141659720()
+{
+    if (FUN_1416595d0() == 0)
+        return;
+    if (m_pCubeCraft == 0)
+        return;
+    m_pCubeCraft->FUN_1410ac960();
+}
+
+// @0x141659770
+void PC::FUN_141659770(bool b, const CString& strKind) {}
+
+// @0x14165eb80
+float PC::FUN_14165eb80() { return FUN_1416713c0() * m_f1180; }
+
+// @0x14165ebb0
+void PC::FUN_14165ebb0(float f) { m_f1180 = f; }
+
+// @0x14165ef30
+int PC::FUN_14165ef30() { return FUN_140967420()->FUN_140743550(); }
+
+// @0x14165efa0
+void PC::vfunc_139()
+{
+    NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410());
+    if (pRoot == 0)
+        return;
+    // the third argument is the colour (FittingDollPC's override declares it as Unk_CharEquip*)
+    vfunc_138(pRoot, 0, reinterpret_cast<const Unk_CharEquip*>(&FUN_141659220(0)));
+    vfunc_138(pRoot, 2, reinterpret_cast<const Unk_CharEquip*>(&FUN_141659220(1)));
+}
+
+// @0x14165f050
+void PC::vfunc_138(NiAVObject* root, int kind, const Unk_CharEquip* equipment)
+{
+    FUN_141b6f220(root, kind, equipment);
+}
+MS2_REPLACE_METHOD(0x14165F050, PC, vfunc_138, 48, 0xB5D4861C);
+
+// @0x14165f090
+void PC::FUN_14165f090(int n) { m_n1038 = n; }
+
+// @0x14165f0b0
+void PC::FUN_14165f0b0(MS2Ptr<CItem> spItem) { m_spItem1040 = spItem; }
+
+// @0x14165f100
+Unk_MyPCEmotion* PC::FUN_14165f100() { return reinterpret_cast<Unk_MyPCEmotion*>(m_spItem1040.get()); }   // the held item
+
+// @0x14165f130
+void PC::FUN_14165f130(int n) { m_n1050 = n; }
+
+// @0x14165f150
+int PC::FUN_14165f150() { return m_n1050; }
+
+// @0x14165f170
+void PC::FUN_14165f170()
+{
+    if (FUN_14165f100() == 0)
+        return;
+    FUN_14165f1f0(0, 0);
+    COutPacket packet(0x37, 0);
+    packet.Encode1(0x12);
+    FUN_140710590(packet);
+}
+
+// @0x14165f460
+Unk_MyPCEquip* PC::FUN_14165f460() { return reinterpret_cast<Unk_MyPCEquip*>(&m_kGemEquip1078); }
+
+// @0x14165fec0
+void PC::vfunc_113(void* data)
+{
+    PCBase::vfunc_113(data);
+    m_n1200 = FUN_140869420();
+}
+MS2_REPLACE_METHOD(0x14165FEC0, PC, vfunc_113, 50, 0x3953A97A);
+
+// @0x14165ff00
+void PC::vfunc_71(MS2Ptr<Unk_PCBaseFxSet> spSet)
+{
+    PCBase::vfunc_71(spSet);
+    FUN_141659770(spSet->m_bLoop28, s_strEmotion);
+}
+
+// @0x14165ff80
+void PC::vfunc_72()
+{
+    PCBase::vfunc_72();
+    FUN_141659770(false, s_strEmotion);
+}
+
+// @0x14165ffc0
+void PC::FUN_14165ffc0(int n) { m_n11cc = n; }
+
+// @0x14165ffe0
+int PC::FUN_14165ffe0() { return m_n11cc; }
+
+// @0x141660000
+void PC::FUN_141660000(__int64 nValue) { m_n11e8 = nValue; }
+
+// @0x141660030
+int PC::FUN_141660030()
+{
+    if (m_n11e8 == 0)
+        return 0;
+    CMsTime kNow(FUN_140869440());
+    CMsTime kStamp(m_n11e8);
+    return kNow.GetMonth() == kStamp.GetMonth();
+}
+
+// @0x1416600c0
+void PC::vfunc_140(int n)
+{
+    m_n1208 = n;
+    FUN_141a60f00(m_unk_70);
+}
+
+// @0x141660100
+int PC::vfunc_141() { return m_n1208; }
+
+// @0x1416612e0
+CString PC::FUN_1416612e0() { return m_str1028; }
+
+// @0x141661330
+void PC::FUN_141661330(const CStringW& strName) { m_strName1030 = strName; }
+
+// @0x141661820
+void PC::FUN_141661820(int nSkillId, short nLevel, std::set<int>& kVisited, std::set<int>& kFound) {}
+
+// @0x141661840
+void PC::FUN_141661840(int nSkillId, short nLevel) {}
+
+// @0x141661860
+int PC::FUN_141661860() { return m_n1000; }
+
+// @0x141661970
+int PC::FUN_141661970()
+{
+    if (m_n10ec > 0 || m_n10f0 != 0)
+        return 1;
+    if (m_unk_748.FUN_140970ad0())
+        return 1;
+    return 0;
+}
+
+// @0x1416619d0
+void PC::FUN_1416619d0(unsigned int nEnd)
+{
+    m_n10e8 = nEnd;
+    if (FUN_1409613d0(this))
+    {
+        if (Unk_PCMainPlayerInfo* pInfo = FUN_140931900(0x4e5f))
+        {
+            if (nEnd > 0)
+                pInfo->FUN_1419f1200(0x5f5e103, FUN_141661a80());
+            else
+                pInfo->FUN_1419f1370(0x5f5e103);
+        }
+    }
+}
+
+// @0x141661a60
+void PC::FUN_141661a60(int n) { m_n10ec = n; }
+
+// @0x141661a80
+unsigned int PC::FUN_141661a80() { return m_n10e8; }
+
+// @0x141661aa0
+int PC::FUN_141661aa0() { return m_n10ec; }
+
+// @0x141661ac0
+void PC::FUN_141661ac0()
+{
+    unsigned int nEnd = FUN_141661a80();
+    if (nEnd == 0)
+        return;
+    unsigned int nNow = FUN_141472bc0();
+    if (nNow >= nEnd)
+    {
+        FUN_141661a60(0);
+        FUN_1416619d0(0);
+    }
+}
+
+// @0x141661ba0
+void PC::FUN_141661ba0(int n) { m_n10f0 = n; }
+
+// @0x141661bc0
+int PC::FUN_141661bc0() { return m_nFF0; }
+
+// @0x141661c00
+void PC::FUN_141661c00(CInPacket& packet) { m_n10f4 = packet.vfunc_o8_3(); }
+
+// @0x141661c50
+int PC::FUN_141661c50() { return m_n10f4; }
+
+// @0x141661dc0
+void PC::FUN_141661dc0(unsigned short nA, int nB)
+{
+    m_n10f8 = nA;
+    m_n10fc = nB;
+}
+
+// @0x141661e00
+unsigned short PCBase::FUN_141661e00() { return static_cast<PC*>(this)->m_n10f8; }
+
+// @0x141661e20
+int PCBase::FUN_141661e20() { return static_cast<PC*>(this)->m_n10fc; }
+
+// @0x1416623d0
+void PC::FUN_1416623d0(efd::SmartPointer<CGuideObject> spGuide, int nIndex)
+{
+    if (nIndex < 0 || nIndex >= 3)
+        return;
+    m_spGuide1228[nIndex] = spGuide;
+}
+
+// @0x141662440
+CGuideObject* PC::FUN_141662440(int nIndex)
+{
+    if (nIndex < 0 || nIndex >= 3)
+        return 0;
+    return m_spGuide1228[nIndex];
+}
+
+// @0x141662490
+int PC::FUN_141662490(int nIndex) { return FUN_141662440(nIndex) != 0; }
+
+// @0x1416625b0
+CConstructionGuideObject* PC::FUN_1416625b0() { return efd::DynamicCast<CConstructionGuideObject>(FUN_141662440(0)); }
+
+// @0x1416625e0
+CFishingGuideObject* PC::FUN_1416625e0() { return efd::DynamicCast<CFishingGuideObject>(FUN_141662440(1)); }
+
+// @0x141662610
+CSkillMagicControlGuide* PC::FUN_141662610() { return efd::DynamicCast<CSkillMagicControlGuide>(FUN_141662440(2)); }
+
+// @0x141662640
+void PC::FUN_141662640(__int64 nValue) { m_n1140 = nValue; }
+
+// @0x141662670
+__int64 PC::FUN_141662670() { return m_n1140; }
+
+// @0x141662690
+void PC::FUN_141662690(int nValue) { m_n1148 = nValue; }
+
+// @0x1416626b0
+int PC::FUN_1416626b0()
+{
+    if (FUN_14086ae10(m_n1140))
+    {
+        m_n1140 = FUN_140869440();
+        m_n1148 = 0;
+    }
+    return m_n1148;
+}
+
+// @0x141662710
+void PC::FUN_141662710(int nValue) { m_n114c = nValue; }
+
+// @0x141662730
+int PC::FUN_141662730() { return m_n114c; }
+
+// @0x141662750
+unsigned int PC::FUN_141662750(int nIndex)
+{
+    if (nIndex < 0 || nIndex >= 12)
+        return 0;
+    return m_aMastery1150[nIndex];
+}
+
+// @0x141662790
+void PC::FUN_141662790(int nIndex, int nValue)
+{
+    if (nIndex < 0 || nIndex >= 12)
+        return;
+    m_aMastery1150[nIndex] = nValue;
+}
+
+// @0x1416627d0
+int PC::FUN_1416627d0(int nIndex)
+{
+    if (nIndex < 0 || nIndex >= 12)
+        return 0;
+    return FUN_1409670c0()->Grade(nIndex, m_aMastery1150[nIndex]);
 }
 
 // ---- end of code ----
