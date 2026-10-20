@@ -4274,6 +4274,55 @@ void PC::vfunc_142()
     m_spFC8->FUN_140adeaf0(FUN_140869420());
 }
 
+// Hide (n != 0) / show the player: the equipment under the default reason, the tails and the random target effect.
+void PC::vfunc_23(int n)
+{
+    PCBase::vfunc_23(n);
+    if (n)
+        m_kEquipDE0.FUN_1411e8eb0(s_strDefault);
+    else
+        m_kEquipDE0.FUN_1411e9020(s_strDefault);
+    if (m_spTailEffect1270.get())
+    {
+        if (n)
+            m_spTailEffect1270->FUN_140acfeb0();
+        else
+            m_spTailEffect1270->FUN_140acfda0();
+    }
+    for (POSITION pos = m_mapTail1280.GetStartPosition(); pos; m_mapTail1280.GetNext(pos))
+    {
+        MS2Ptr<CTailEffectObject> spTail = m_mapTail1280.GetValueAt(pos);
+        if (n)
+            ((CTailEffectObject*)spTail)->FUN_140acfeb0();
+        else
+            ((CTailEffectObject*)spTail)->FUN_140acfda0();
+    }
+    if (m_spRandomTarget12c8.get())
+    {
+        if (n)
+            m_spRandomTarget12c8->Hide();
+        else
+            m_spRandomTarget12c8->Show();
+    }
+}
+
+// Collect the scene nodes of the player: the body and every equip model.
+void PC::vfunc_44(void* p)
+{
+    typedef std::list<NiAVObject*, efd::CustomAllocator<NiAVObject*> > NodeList;
+    static_cast<NodeList*>(p)->clear();
+    static_cast<NodeList*>(p)->push_back(FUN_141b6efc0(FUN_14123c410()));
+    ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
+    m_kEquipDE0.FUN_1411e1b80(kList);
+    for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
+    {
+        ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+        kList.GetAt(pos)->FUN_1411dcc80(aModels);
+        for (unsigned int i = 0; i < aModels.GetCount(); i++)
+            static_cast<NodeList*>(p)->push_back((NiAVObject*)aModels[i]->vfunc_14());
+    }
+}
+
 // ---- end of code ----
 
 // MS2-PIN: ??_7PC@@6BIBase@efd@@@ 0x142f4ae28
