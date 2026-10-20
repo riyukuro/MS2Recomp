@@ -18,6 +18,7 @@
 // MS2-PIN: ??_7DelegateImplBase@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@6B@ 0x142ee84c0
 // MS2-PIN: ??_7DelegateImplBase@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@6B@ 0x142ee84e8
 // MS2-PIN: ??1TDirtyPremiumSale@UIMeratMarketCommon@@UEAA@XZ 0x141314840
+// MS2-PIN: ??1?$Delegate@$$A6AXAEAVAScript@@@Z@@QEAA@XZ 0x1413144a0
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0PEAVUIMeratMarketDialog@@P80@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z$0A@@?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ82@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x141311030 ; prop
 // MS2-PIN: ??$?0VUIMeratMarketDialog@@@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x141311070 ; prop
@@ -445,6 +446,15 @@ struct Unk_McOwner
 MS2_CHECK_SIZE(Unk_McOwner, 0x20);
 
 
+// The enum-valued member setters of an AS object (three template instances with identical bodies, COMDATs of this unit).
+class Unk_MmEnumSetter : public ASObj
+{
+public:
+    void FUN_141313320(const char* szName, int n);                         // 0x141313320
+    void FUN_1413133c0(const char* szName, int n);                         // 0x1413133c0
+    void FUN_141313460(const char* szName, int n);                         // 0x141313460
+};
+
 // The child lookup of an AS container by name (a COMDAT of this unit; the symbol table names its class Unk_1422baa20).
 class Unk_1422baa20 : public AScript
 {
@@ -498,6 +508,9 @@ class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* p
 Unk_MmFiles* FUN_140166420();                                               // the resource file system
 CLogString* FUN_140166440();
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
+void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member of an AS object
+bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                         // the value is an object
+MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);    // wrap a value as an AS object of a movie
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);               // set an Int value
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);              // set a Boolean value
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);      // set a UInt value
@@ -6063,6 +6076,27 @@ void UIMeratMarketDialog::ResetUgcTermsAgreed()
     m_638 = false;
 }
 
+// @0x141311f50
+MS2Ptr<AScript> Unk_1422baa20::FUN_141311f50(const CString& strName)
+{
+    Scaleform::GFx::Value v = FUN_1422baa20(strName);
+    if (FUN_1409b4d40(v))
+        return FUN_1409e7dc0(m_nMovieId, v);
+    return MS2Ptr<AScript>(0);
+}
+
+// @0x141312450
+UIInteriorPreviewDialog* FUN_141312450(int nUiId)
+{
+    if (FUN_1403ed2b0())
+    {
+        MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nUiId);
+        if (spObj.get())
+            return dynamic_cast<UIInteriorPreviewDialog*>((UIObject*)spObj);
+    }
+    return 0;
+}
+
 // @0x1413124f0
 Scaleform::GFx::Value AScript::FUN_1413124f0(const char* szMethod, const ASArray& a1, int a2, bool a3)
 {
@@ -6195,6 +6229,30 @@ Scaleform::GFx::Value AScript::FUN_141313220(const char* szMethod, Scaleform::GF
     FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
     FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
     return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x141313320
+void Unk_MmEnumSetter::FUN_141313320(const char* szName, int n)
+{
+    ASData data;
+    data.FUN_1422b7f70(n);
+    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+}
+
+// @0x1413133c0
+void Unk_MmEnumSetter::FUN_1413133c0(const char* szName, int n)
+{
+    ASData data;
+    data.FUN_1422b7f70(n);
+    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
+}
+
+// @0x141313460
+void Unk_MmEnumSetter::FUN_141313460(const char* szName, int n)
+{
+    ASData data;
+    data.FUN_1422b7f70(n);
+    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
 }
 
 // A bill row of a UGC product (gifts are only offered for UGC rows).
