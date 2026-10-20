@@ -138,6 +138,9 @@ public:
     virtual CString vfunc_15(int i);                // 15 0x1422cd120 Format("%s.%d", m_strName, i)
     virtual DragSlot* vfunc_16(int n);              // 16 0x1422cd1a0 return 0 (creates the slot for index n; TradeSlotBag: new TradeSlot)
 
+    // pRetVal = a new AS object with one member per slot (slot index -> slot name); NotifyDragSlot "getBagSlotBindings".
+    void FUN_1422cd1c0(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1422cd1c0
+
 public:
     std::map<int, CString> m_slots;                 // +0x78 slot index -> slot name ("<bag name>.<index>"); FUN_1422ccb50 inserts,
                                                     // vfunc_11/12 walk it (init 0x141000090, dtor 0x1410004f0, clear 0x1410083f0)

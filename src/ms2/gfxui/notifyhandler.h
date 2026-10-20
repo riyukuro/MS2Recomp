@@ -18,8 +18,12 @@
 // 0x1422b34a0); GFxManager owns one (+0x98, accessor FUN_1422b0260). The name NotifyContext is taken by the namespace
 // dragslot.h declares around NotifyContext::BindData, so this stand-in is used until ?\notifycontext.cpp turns it
 // into the class.
+namespace NotifyContext { class BindData; }
 class Unk_NotifyContext : public NiRefObject
 {
+public:
+    // The bind data registered under a name (null if none). Static: NotifyDragSlot calls it through m_spContext->.
+    static NotifyContext::BindData* FUN_1422c8e90(const CString& strName);    // 0x1422c8e90
 };
 
 class NotifyHandler : public Scaleform::GFx::FunctionHandler
