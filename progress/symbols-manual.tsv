@@ -3993,3 +3993,7 @@ DAT_143ae2b38	143ae2b38	data
 ?ms_RTTI@WeaponAttachTransformNode@@2VNiRTTI@@B	143af77a8	data
 ?FUN_1422bac00@AScript@@QEAA_NPEBDAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z	1422bac00	func
 ?ms_pSingleton@?$SingletonClass@VGFxAtlasCache@@@@2PEAVGFxAtlasCache@@EA	143b0d780	data
+?CreateSoundRenderer@SoundRendererFMOD@Sound@Scaleform@@SAPEAV123@XZ	142744fe0	func
+?init@System@FMOD@@QEAA?AW4FMOD_RESULT@@HIPEAX@Z	142303a9b	func
+FMOD_Memory_Initialize	142303a8f	func
+FMOD_System_Create	142303a95	func
