@@ -4,6 +4,92 @@
 // MS2-UNIT: client\ms2\uipartydialog.cpp
 // MS2-RANGE: 0x14011a360-0x14011aab0 .text$di
 // MS2-RANGE: 0x141a738f0-0x141a8f3a0 .text$mn
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??$?0VASPartyVotePage@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVASPartyVotePage@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x141a79960 ; unique
+// MS2-PIN: ??$?0VUIPartyDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIPartyDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x141a79b00 ; unique
+// MS2-PIN: ??$?8PEAVUIPartyDialog@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVUIPartyDialog@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x141a79cb0 ; prop
+// MS2-PIN: ??$?8PEAVUIPartyDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x141a79d20 ; prop
+// MS2-PIN: ??$?8PEAVUIPartyDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIPartyDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x141a79d90 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x141a7a680 ; prop
+// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAA@XZ 0x141a7a7b0 ; prop
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAPEAXI@Z 0x141a7a970 ; prop
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVASPartyVotePage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7ab90 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7abf0 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7ac50 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a7acb0 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVASPartyVotePage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141a7ad10 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x141a7ad40 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141a7ad70 ; unique
+// MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x141a7ada0 ; unique
+// MS2-PIN: ??$Call@VASPartyVotePage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVASPartyVotePage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVASPartyVotePage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141a7ade0 ; unique
+// MS2-PIN: ??$Call@VUIPartyDialog@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUIPartyDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x141a7ae10 ; prop
+// MS2-PIN: ??$Call@VUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141a7ae50 ; prop
+// MS2-PIN: ??$Call@VUIPartyDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIPartyDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x141a7ae90 ; prop
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVASPartyVotePage@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a7aed0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a7af30 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a7af90 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPartyDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a7aff0 ; unique
+// MS2-PIN: ??_GUIPartyDPSDialog@@UEAAPEAXI@Z 0x141a7c470 ; unique
+// MS2-PIN: ??$StringFormat@MI@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBMAEBI@Z 0x141a7c780 ; unique
+// MS2-PIN: ??_GUIPerformanceDialog@@UEAAPEAXI@Z 0x141a7caa0 ; unique
+// MS2-PIN: ??_GUIPopupEntity@@UEAAPEAXI@Z 0x141a7d410 ; unique
+// MS2-PIN: memmove_s 0x141a7d460 ; unique
+// MS2-PIN: ??$?8PEAVUIPopUpMenu@@P80@EAAXAEAVCInPacket@@@Z@std@@YA_NAEBU?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@0@0@Z 0x141a87590 ; prop
+// MS2-PIN: ??$?8PEAVUIPopUpMenu@@P80@EAAXXZ@std@@YA_NAEBU?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@0@0@Z 0x141a87600 ; prop
+// MS2-PIN: ??$?8PEAVUIPopUpMenu@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x141a87670 ; prop
+// MS2-PIN: ??$Unk_PmGetDialog@VUIPCInfoDialog@@@@YAPEAVUIPCInfoDialog@@H@Z 0x141a877c0 ; unique
+// MS2-PIN: ??0CPair@?$CAtlMap@HV?$Delegate@$$A6AXXZ@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Delegate@$$A6AXXZ@@@3@@ATL@@IEAA@H@Z 0x141a88150 ; unique
+// MS2-PIN: ??1CPair@?$CAtlMap@HV?$Delegate@$$A6AXXZ@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Delegate@$$A6AXXZ@@@3@@ATL@@QEAA@XZ 0x141a88490 ; unique
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@std@@@?$Delegate@$$A6AXXZ@@UEAAPEAXI@Z 0x141a887d0 ; prop
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$Delegate@$$A6AXXZ@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Delegate@$$A6AXXZ@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141a88c50 ; unique
+// MS2-PIN: ?vfunc_48@UIPopUpMenu@@UEAAHXZ 0x141a88d40 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a89c90 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@std@@@?$Delegate@$$A6AXXZ@@UEBAPEAVDelegateImplBase@2@XZ 0x141a89cf0 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a89d50 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAAXAEAVCInPacket@@@Z 0x141a89db0 ; unique
+// MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x141a89e00 ; unique
+// MS2-PIN: ??$Call@VUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@CAXAEAU?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@AEAVCInPacket@@@Z 0x141a89e40 ; prop
+// MS2-PIN: ??$Call@VUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x141a89eb0 ; prop
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89ef0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@std@@@?$Delegate@$$A6AXXZ@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89f50 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89fb0 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141a8b980 ; prop
+// MS2-PIN: ??$?0AEAPEAV?$MS2Ptr@VCPartyMember@@@@AEAPEAV0@$0A@@?$pair@PEAV?$MS2Ptr@VCPartyMember@@@@PEAV1@@std@@QEAA@AEAPEAV?$MS2Ptr@VCPartyMember@@@@0@Z 0x141a8b9e0 ; unique
+// MS2-PIN: ??$_Adl_verify_range1@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@V12@@std@@YAXAEBV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@0@0U?$integral_constant@_N$0A@@0@@Z 0x141a8c460 ; unique
+// MS2-PIN: ??$_Adl_verify_range@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@V12@@std@@YAXAEBV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@0@0@Z 0x141a8c470 ; unique
+// MS2-PIN: ??$_Idl_distance@PEAV?$MS2Ptr@VCPartyMember@@@@PEAV1@@std@@YA_JAEBQEAV?$MS2Ptr@VCPartyMember@@@@0@Z 0x141a8cc70 ; unique
+// MS2-PIN: ??$addressof@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@YAPEAV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@0@AEAV10@@Z 0x141a8da60 ; prop
+// MS2-PIN: ??$emplace_back@V?$MS2Ptr@VCPartyMember@@@@@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VCPartyMember@@@@@Z 0x141a8db80 ; unique
+// MS2-PIN: ??$forward@AEAPEAV?$MS2Ptr@VCPartyMember@@@@@std@@YAAEAPEAV?$MS2Ptr@VCPartyMember@@@@AEAPEAV1@@Z 0x141a8dc70 ; prop
+// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAA@XZ 0x141a8df70 ; unique
+// MS2-PIN: ??0?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAA@PEAV?$MS2Ptr@VCPartyMember@@@@PEBU_Container_base0@1@@Z 0x141a8dfa0 ; prop
+// MS2-PIN: ??0?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAA@PEAV?$MS2Ptr@VCPartyMember@@@@PEBU_Container_base0@1@@Z 0x141a8dfe0 ; prop
+// MS2-PIN: ??0?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEAA@XZ 0x141a8e020 ; unique
+// MS2-PIN: ??0?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@QEAA@XZ 0x141a8e060 ; prop
+// MS2-PIN: ??0?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEAA@XZ 0x141a8e0a0 ; unique
+// MS2-PIN: ?_Calculate_growth@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEBA_K_K@Z 0x141a8e6a0 ; unique
+// MS2-PIN: ?_Destroy@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VCPartyMember@@@@0@Z 0x141a8e850 ; unique
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@XZ 0x141a8e930 ; prop
+// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@XZ 0x141a8e950 ; prop
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@$00@std@@QEAAAEAV?$allocator@V?$MS2Ptr@VCPartyMember@@@@@2@XZ 0x141a8e970 ; prop
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@XZ 0x141a8e9b0 ; prop
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@XZ 0x141a8e9c0 ; prop
+// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAAEAV?$allocator@V?$MS2Ptr@VCPartyMember@@@@@2@XZ 0x141a8ea20 ; prop
+// MS2-PIN: ?_Has_unused_capacity@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEBA_NXZ 0x141a8ea60 ; unique
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VCPartyMember@@@@XZ 0x141a8eb30 ; prop
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEBAAEBQEAV?$MS2Ptr@VCPartyMember@@@@XZ 0x141a8eb50 ; prop
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VCPartyMember@@@@XZ 0x141a8eb70 ; prop
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VCPartyMember@@@@XZ 0x141a8ebd0 ; prop
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEBAAEBQEAV?$MS2Ptr@VCPartyMember@@@@XZ 0x141a8ebf0 ; prop
+// MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAXXZ 0x141a8ec30 ; prop
+// MS2-PIN: ?_Tidy@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEAAXXZ 0x141a8ecb0 ; unique
+// MS2-PIN: ?_Umove@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEAAPEAV?$MS2Ptr@VCPartyMember@@@@PEAV3@00@Z 0x141a8ed80 ; prop
+// MS2-PIN: ?_Umove_if_noexcept1@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VCPartyMember@@@@00U?$integral_constant@_N$0A@@2@@Z 0x141a8edc0 ; prop
+// MS2-PIN: ?_Umove_if_noexcept@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VCPartyMember@@@@00@Z 0x141a8ee00 ; unique
+// MS2-PIN: ?begin@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@2@XZ 0x141a8ef90 ; prop
+// MS2-PIN: ?end@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@2@XZ 0x141a8f200 ; prop
+// MS2-PIN: ?max_size@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEBA_KXZ 0x141a8f2a0 ; unique
+// MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uipartydialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/header_statics_a.h"
