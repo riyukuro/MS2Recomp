@@ -4,6 +4,9 @@
 // MS2-RANGE: 0x1406c3230-0x1406c3700 .text$mn
 // MS2-PIN: ?IsEmpty@?$CAtlArray@EV?$CElementTraits@E@ATL@@@ATL@@QEBA_NXZ 0x1406c3680
 // MS2-PIN: ?IsEmpty@?$CAtlArray@DV?$CElementTraits@D@ATL@@@ATL@@QEBA_NXZ 0x1406c36c0
+// MS2-FUNCTIONAL 0x1406c36c0: not ATL's inline IsEmpty (the 66 other CAtlArray::IsEmpty copies read m_nSize): the exe body is
+// GetCount() == 0 (call 0x140204ee0), likely an unrecovered wrapper class's IsEmpty; bound to CAtlArray<char>::IsEmpty here
+// MS2-FUNCTIONAL 0x1406c3680: the same GetCount() == 0 wrapper body for the unsigned char array
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include <afx.h>
