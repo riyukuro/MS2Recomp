@@ -82,3 +82,5 @@ private:
     UISceneEntity* m_pScene;                                        // +0x38
 };
 MS2_CHECK_SIZE(GFxSceneService, 0x40);
+
+GFxSceneService* FUN_1408e57f0();                                   // the GFxSceneService instance

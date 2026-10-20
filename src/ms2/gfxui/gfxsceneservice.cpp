@@ -14,30 +14,8 @@
 
 #include "ms2/placeholder/gfxservice.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
-#include "ms2/gfxui/uiswfentity.h"
+#include "ms2/gfxui/uisceneentity.h"
 #include "hook/ms2hook.h"
-
-// The unit-local view of UISceneEntity (?\uisceneentity.cpp, not recovered yet): the slots this unit calls.
-class UISceneEntity : public UISwfEntity
-{
-public:
-    virtual bool vfunc_47();
-    virtual void vfunc_48(int nPrevSceneId);                        // 48 0x1422e7b20 shown (the scene it replaces)
-    virtual void vfunc_49(int nNextSceneId);                        // 49 0x1422e7bd0 hidden (the scene replacing it)
-    virtual void vfunc_50();
-    virtual void vfunc_51();
-    virtual void vfunc_52();
-    virtual void vfunc_53();
-    virtual void vfunc_54();
-    virtual void vfunc_55();
-    virtual void vfunc_56();
-    virtual void vfunc_57();
-    virtual void vfunc_58();
-    virtual void vfunc_59(void* p, int a, int b);                  // 59 0x1422e8390
-
-    UISceneEntity* FUN_1422e7a70(int nSceneId);                     // 0x1422e7a70 the child scene of the id
-};
-
 
 void FUN_1411ab770(efd::IDependencyRegistrar* pRegistrar, int nFlags);   // AddDependency<ecr::RenderService> (0x07002001)
 void FUN_1410db4c0(efd::IDependencyRegistrar* pRegistrar, int nFlags);   // AddDependency<0x07000003>
