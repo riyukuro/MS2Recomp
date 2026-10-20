@@ -4135,3 +4135,8 @@ luaopen_Entity	1422416d0	func
 ?BytesToCommaString@efd@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$CustomAllocator@D@efd@@@std@@_K@Z	14207a630	func
 ??0CKfmModel@@QEAA@V?$MS2Ptr@VUnk_EquipModelOwner@@@@PEAX1@Z	14143d580	func
 ??0CNifModel@@QEAA@V?$MS2Ptr@VUnk_EquipModelOwner@@@@PEAX1@Z	141565560	func
+?s_table@CInteractObjectData@@2V?$CAtlMap@HV?$MS2Ptr@VCInteractObjectData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCInteractObjectData@@@@@3@@ATL@@A	143aaf120	data
+?s_lock@CInteractObjectData@@2VCLockCriticalSection@@A	143aaf0e8	data
+?s_bInit@CInteractObjectData@@2_NA	143aaf0a1	data
+??0Unk_CNpcDF0@@QEAA@XZ	140964630	func
+??1Unk_CNpcDF0@@QEAA@XZ	140964e40	func
