@@ -1169,6 +1169,7 @@ def main():
         key = [os.path.getmtime(u.obj), os.path.getsize(u.obj), u.ranges, "multicopy5" + ("g" if u.guess else "") + ("f9" if not os.environ.get("MS2_NO_ICF_FOLD") else "") + ("m" if merge_mode else "") + ("x" if os.environ.get("MS2_NO_MULTICOPY") else "")]
         if os.environ.get("MS2_MERGE_INCR"):      # tools/merge.sh: persistent tree, match results also keyed by their inputs
             key.append(mergekey.game_stamp())
+            key.append(mergekey.rows_stamp(u.obj, manual_tsv))
         c = cache.get(u.rel)
         if not a.force and c and c.get("key") == json.loads(json.dumps(key)) and not a.verbose:
             continue
@@ -1196,12 +1197,12 @@ def main():
     # like their gate (table = committed symbols.tsv) and that result is kept unless it is worse (more stubs, fewer
     # exact, fewer vftables). The output table is still rebuilt from the harvests only. MS2_NO_GATE_PASS=1: old behaviour.
     if merge_mode and os.path.exists(bm.SYMBOLS_TSV) and not os.environ.get("MS2_NO_GATE_PASS"):
-        stamp = hashlib.sha1(open(bm.SYMBOLS_TSV, "rb").read()).hexdigest()
         gate_todo = []
         for u in units:
             c = cache.get(u.rel)
             if not c or not c.get("res"):
                 continue
+            stamp = mergekey.rows_stamp(u.obj, bm.SYMBOLS_TSV)    # only the committed rows this unit can read
             if c.get("key2") == [c["key"], stamp]:
                 continue
             c.pop("res2", None)
@@ -1227,7 +1228,7 @@ def main():
                     kept += 1
                     if s2 < s1:
                         print(f"gate pass: {u.rel}: stubs {s1[0]} -> {s2[0]}, exact {-s1[1]} -> {-s2[1]}")
-                c["key2"] = [c["key"], stamp]
+                c["key2"] = [c["key"], mergekey.rows_stamp(u.obj, bm.SYMBOLS_TSV)]
             bm.load_symbols(manual_tsv)
             print(f"gate pass: {kept} of {len(gate_todo)} unit(s) keep their gate pairing", flush=True)
     # drop cache entries of units that no longer exist

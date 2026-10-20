@@ -37,10 +37,10 @@ def _common():
 
 
 def game_stamp():
-    """what a game unit's match result depends on besides its obj (merge mode: symbols-manual.tsv is the symbol table)"""
+    """what a game unit's match result depends on besides its obj and its symbol-table rows (rows_stamp)"""
     if "game" not in _memo:
         files, es = _common()
-        files += [os.path.join(ROOT, "tools", "progress.py"), os.path.join(ROOT, "progress", "symbols-manual.tsv")]
+        files += [os.path.join(ROOT, "tools", "progress.py")]
         env = "".join(f"{k}={os.environ.get(k, '')};" for k in ("MS2_NO_ICF_FOLD", "MS2_NO_MULTICOPY", "MS2_GUESS_LOOKALIKES"))
         _memo["game"] = _hash(files, es + env)
     return _memo["game"]
@@ -55,3 +55,47 @@ def engine_stamp():
         files += [os.path.join(ROOT, "progress", n) for n in ("symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv")]
         _memo["engine"] = _hash(files, es)
     return _memo["engine"]
+
+
+_tables = {}
+
+
+def _table(path):
+    """name (bytes) -> raw row of a symbol table (rows keyed by their mangled name)"""
+    if path not in _tables:
+        t = {}
+        try:
+            with open(path, "rb") as f:
+                for line in f:
+                    if line.startswith(b"#") or not line.strip():
+                        continue
+                    t[line.split(b"\t", 1)[0]] = line
+        except OSError:
+            pass
+        _tables[path] = (t, [r for n, r in t.items() if len(n) <= 8])
+    return _tables[path]
+
+
+def obj_names(obj):
+    """every symbol name of a COFF object longer than 8 bytes (its string table)"""
+    import struct
+    with open(obj, "rb") as f:
+        d = f.read()
+    if d[:4] == b"\0\0\xff\xff":
+        symoff, nsyms = struct.unpack_from("<II", d, 48)
+        recsz = 20
+    else:
+        symoff, nsyms = struct.unpack_from("<II", d, 8)
+        recsz = 18
+    return set(d[symoff + nsyms * recsz + 4:].split(b"\0"))
+
+
+def rows_stamp(obj, table):
+    """digest of the rows of a symbol table that a unit's match can read: every lookup is by a name of the unit's obj
+    (relocation targets, pairs), plus the fixed CPtred names of bytematch and all names of at most 8 bytes (kept
+    inline in the symbol records, not in the string table). Rows of other names never change the result, so an edit
+    of symbols-manual.tsv / a new symbols.tsv re-matches only the units whose own names it touches."""
+    t, short = _table(table)
+    names = obj_names(obj) | {b"?ReleasePtred@CPtred@@SAHPEAV1@@Z", b"?AddRefPtred@CPtred@@SAXPEAV1@@Z", b"?DeletePtred@CPtred@@SAXPEAV1@@Z"}
+    rows = sorted([t[n] for n in names if n in t] + short)
+    return hashlib.sha1(b"".join(rows)).hexdigest()[:16]

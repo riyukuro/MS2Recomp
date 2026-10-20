@@ -146,7 +146,7 @@ def autobind_fun(syms, objs):
 KEEP_LOCAL_PREFIXES = ("??_", "__imp_", "_TI", "__ImageBase")
 
 
-def rebind_objects(syms, objs):
+def rebind_objects(syms, objs, prev_log=None):
     """Hook-DLL builds only: a data symbol that a recovered unit DEFINES (a TSingleton<T>::s_instance instantiation, an
     s_bInit flag, ms_propertyMap, a DAT_ global ...) and that has an exe VA in the symbol tables would otherwise be a
     DLL-local copy, never the exe's live instance (/alternatename only applies when nothing defines the name). Rewrite
@@ -156,8 +156,18 @@ def rebind_objects(syms, objs):
     Returns the list of rebound names (with repeats across objects)."""
     names = {n for n, (va, k) in syms.items() if k != "func" and not n.startswith(KEEP_LOCAL_PREFIXES)}
     out = []
+    if prev_log and os.path.exists(prev_log):
+        # objects keep their compile mtime (incremental builds), so a rebind done by an earlier run is permanent: if a
+        # symbol left the tables the objects must be recompiled, which only a deleted object forces
+        gone = set(open(prev_log).read().split()) - names
+        if gone:
+            for path in objs:
+                os.remove(path)
+            sys.exit(f"ms2symobj: {len(gone)} previously rebound symbols left the symbol tables (e.g. {sorted(gone)[0]}); "
+                    f"deleted the game objects, rerun the build")
     for path in objs:
         d = bytearray(open(path, "rb").read())
+        st = os.stat(path)
         if d[:4] == b"\0\0\xff\xff":
             symoff, nsyms = struct.unpack_from("<II", d, 48)
             recsz, secbase, secfmt = 20, 56, "<i"
@@ -198,6 +208,7 @@ def rebind_objects(syms, objs):
         if changed:
             tmp = path + ".rb"
             open(tmp, "wb").write(d)
+            os.utime(tmp, ns=(st.st_atime_ns, st.st_mtime_ns))   # keep the compile's mtime: ninja's deps log records it, a newer one marks the object dirty (full rebuild every run)
             os.replace(tmp, path)
     return out
 
@@ -326,7 +337,7 @@ def main():
         return check(a.check, a.inputs)
     syms = load(a.inputs)
     if a.objs and a.rebind:
-        rb = rebind_objects(syms, a.objs)
+        rb = rebind_objects(syms, a.objs, a.rebind_log)
         print(f"rebound {len(rb)} data definitions ({len(set(rb))} distinct symbols) to the exe")
         if a.rebind_log:
             open(a.rebind_log, "w").write("\n".join(sorted(set(rb))) + "\n")
