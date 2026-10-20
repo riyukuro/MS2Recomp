@@ -9,10 +9,24 @@
 #include <vector>
 #include "ms2/ms2layout.h"
 
+class CNMEncoder;
+class CNMStream;
+class CNMSerializableDecoder;
+
+// The library's serializable base, vftable 0x142f3bd18 (8 slots; slot names per the v2525 snapshot). Every record,
+// request and event derives from it.
 class CNMSerializable
 {
 public:
+    CNMSerializable(const CNMSerializable& r) noexcept;         // 0x1415eafb0
     virtual ~CNMSerializable();                                 // 0x1415eec70
+    virtual unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream);
+    virtual unsigned int EncodeFramed(CNMStream* pStream);
+    virtual unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream);
+    virtual unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream);
+    virtual unsigned int DecodeFramed(CNMStream* pStream);
+    virtual unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream);
+    virtual CNMSerializable* CopyFrom(CNMSerializable* pSrc);   // 0x14156c9d0 (never overridden by the records)
 
     unsigned short m_wSignature;                                // +0x08
     unsigned char m_bKind;                                      // +0x0a
@@ -46,12 +60,19 @@ public:
 };
 
 // ---- list elements (std::vector<T> members of the list requests/events) -------------------------------------------
-// The records are CNMSerializable-derived (RTTI names, sizes from their copy constructors and the vector code in
-// unit_1415cf3e0). Only what the vector templates use is declared: the copy constructor, operator= and the virtual
-// destructor; bodies not recovered yet are an opaque m_body. Some derive through intermediate bases in the exe
-// (noted per class); those add no data the templates touch.
+// The records are CNMSerializable-derived (RTTI names and bases). Recovered layouts follow the implicit copy/move
+// constructors (unit_1415e5c20, which defines them) and the third-party v2525 snapshot; member names are offsets.
+// Each record overrides the six serializer slots (vftable slots 1..6; slot 7 stays CNMSerializable::CopyFrom) and
+// declares its destructor and operator= (out of line in the library). Records still marked m_body are not recovered yet.
 
-// CNMRequestMultiChatSessionFunc target (0x10, trivially copyable; name invented).
+// 8-byte user key, two dwords (copied as one qword; 4-byte aligned in the records).
+struct NMKey64
+{
+    unsigned int nLow;
+    unsigned int nHigh;
+};
+MS2_CHECK_SIZE(NMKey64, 0x8);
+
 struct NMChatSessionTarget
 {
     unsigned __int64 uIDCode;
@@ -71,21 +92,207 @@ struct NMFriendKey
 };
 MS2_CHECK_SIZE(NMFriendKey, 0x18);
 
+// Avatar item record (no data of its own), 0x10 bytes, vftable 0x142f3bd60.
 class CNMAvatarItemInfo : public CNMSerializable
 {
 public:
-    virtual ~CNMAvatarItemInfo();
+    CNMAvatarItemInfo(const CNMAvatarItemInfo& r) noexcept;  // 0x1415e8970
+    CNMAvatarItemInfo(CNMAvatarItemInfo&& r) noexcept;       // 0x1415e8930
+    virtual ~CNMAvatarItemInfo();                               // 0x1415ec300
+    CNMAvatarItemInfo& operator=(const CNMAvatarItemInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 };
 MS2_CHECK_SIZE(CNMAvatarItemInfo, 0x10);
 
-class CNMCateFriendInfo : public CNMSerializable
+// Full avatar record (no data of its own), 0x10 bytes, vftable 0x142f3bda8.
+class CNMAvatarFullInfo : public CNMAvatarItemInfo
 {
 public:
-    CNMCateFriendInfo(const CNMCateFriendInfo& r);
-    virtual ~CNMCateFriendInfo();
-    CNMCateFriendInfo& operator=(const CNMCateFriendInfo& r);
+    CNMAvatarFullInfo(const CNMAvatarFullInfo& r) noexcept;  // 0x1415e88f0
+    CNMAvatarFullInfo(CNMAvatarFullInfo&& r) noexcept;       // 0x1415e88b0
+    virtual ~CNMAvatarFullInfo();                               // 0x1415ec2e0
+    CNMAvatarFullInfo& operator=(const CNMAvatarFullInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+};
+MS2_CHECK_SIZE(CNMAvatarFullInfo, 0x10);
 
-    unsigned char m_body[0x48];                       // +0x10 (not recovered) (CNMCategoryInfo-derived)
+// Game character, 0x98 bytes, vftable 0x142f3c130.
+class CNMCharacter : public CNMSerializable
+{
+public:
+    CNMCharacter(const CNMCharacter& r) noexcept;               // 0x1415e8c60
+    CNMCharacter(CNMCharacter&& r) noexcept;                    // 0x1415e8be0
+    virtual ~CNMCharacter();                                    // 0x1415ecdb0
+    CNMCharacter& operator=(const CNMCharacter& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    char m_10[0x40];                                            // +0x10
+    NMKey64 m_50;                                               // +0x50
+    char m_58[0x40];                                            // +0x58
+};
+MS2_CHECK_SIZE(CNMCharacter, 0x98);
+
+// User record base, 0xb0 bytes, vftable 0x142f3bdf0.
+class CNMDefaultUserInfo : public CNMSerializable
+{
+public:
+    CNMDefaultUserInfo(const CNMDefaultUserInfo& r) noexcept;   // 0x1415e9110
+    CNMDefaultUserInfo(CNMDefaultUserInfo&& r) noexcept;        // 0x1415e9020
+    virtual ~CNMDefaultUserInfo();                              // 0x1415ed1c0
+    CNMDefaultUserInfo& operator=(const CNMDefaultUserInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    char m_10[0x40];                                            // +0x10
+    __int64 m_50;                                                // +0x50
+    int m_58;                                                   // +0x58
+    char m_5c[0x40];                                            // +0x5c
+    int m_9c;                                                   // +0x9c
+    int m_a0;                                                   // +0xa0
+    int m_a4;                                                   // +0xa4
+    short m_a8;                                                 // +0xa8
+};
+MS2_CHECK_SIZE(CNMDefaultUserInfo, 0xb0);
+
+// Real (logged-in) user record, 0x1a8 bytes, vftable 0x142f3bf10.
+class CNMRealUserInfo : public CNMDefaultUserInfo
+{
+public:
+    CNMRealUserInfo(const CNMRealUserInfo& r) noexcept;         // 0x1415eacc0
+    CNMRealUserInfo(CNMRealUserInfo&& r) noexcept;              // 0x1415eaad0
+    virtual ~CNMRealUserInfo();                                 // 0x1415ee780
+    CNMRealUserInfo& operator=(const CNMRealUserInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    char m_b0[0x20];                                            // +0xb0
+    char m_d0[0x40];                                            // +0xd0
+    int m_110;                                                  // +0x110
+    int m_114;                                                  // +0x114
+    int m_118;                                                  // +0x118
+    int m_11c;                                                  // +0x11c
+    short m_120;                                                // +0x120
+    int m_124;                                                  // +0x124
+    short m_128;                                                // +0x128
+    SYSTEMTIME m_12a;                                           // +0x12a
+    CNMAvatarFullInfo m_140;                                    // +0x140
+    int m_150;                                                  // +0x150
+    int m_154;                                                  // +0x154
+    int m_158;                                                  // +0x158
+    int m_15c;                                                  // +0x15c
+    unsigned char m_160;                                        // +0x160
+    char m_161[0x40];                                           // +0x161
+};
+MS2_CHECK_SIZE(CNMRealUserInfo, 0x1a8);
+
+// Friend user record, 0xd8 bytes, vftable 0x142f3be38.
+class CNMRealFriendInfo : public CNMDefaultUserInfo
+{
+public:
+    CNMRealFriendInfo(const CNMRealFriendInfo& r) noexcept;     // 0x1415eaa40
+    CNMRealFriendInfo(CNMRealFriendInfo&& r) noexcept;          // 0x1415ea9b0
+    virtual ~CNMRealFriendInfo();                               // 0x1415ee710
+    CNMRealFriendInfo& operator=(const CNMRealFriendInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    CNMAvatarItemInfo m_b0;                                     // +0xb0
+    SYSTEMTIME m_c0;                                            // +0xc0
+    unsigned char m_d0;                                         // +0xd0
+};
+MS2_CHECK_SIZE(CNMRealFriendInfo, 0xd8);
+
+// Friend list entry, 0x580 bytes, vftable 0x142f3bec8.
+class CNMFriendInfo : public CNMRealFriendInfo
+{
+public:
+    CNMFriendInfo(const CNMFriendInfo& r) noexcept;             // 0x1415e97b0
+    CNMFriendInfo(CNMFriendInfo&& r) noexcept;                  // 0x1415e96a0
+    virtual ~CNMFriendInfo();                                   // 0x1415ed5b0
+    CNMFriendInfo& operator=(const CNMFriendInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    NMFriendKey m_key;                                          // +0xd8
+    char m_f0[0x40];                                            // +0xf0
+    char m_130[0x40];                                           // +0x130
+    char m_170[0x3e8];                                          // +0x170
+    char m_558[0x20];                                           // +0x558
+    unsigned int m_578;                                         // +0x578
+    unsigned int m_57c;                                         // +0x57c
+};
+MS2_CHECK_SIZE(CNMFriendInfo, 0x580);
+
+// Friend category, 0x40 bytes, vftable 0x142f3c0a0.
+class CNMCategoryInfo : public CNMSerializable
+{
+public:
+    CNMCategoryInfo(const CNMCategoryInfo& r) noexcept;         // 0x1415e8b40
+    CNMCategoryInfo(CNMCategoryInfo&& r) noexcept;              // 0x1415e8aa0
+    virtual ~CNMCategoryInfo();                                 // 0x1415ec980
+    CNMCategoryInfo& operator=(const CNMCategoryInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    int m_10;                                                   // +0x10
+    NMKey64 m_14;                                               // +0x14
+    char m_1c[0x20];                                            // +0x1c
+    unsigned char m_3c;                                         // +0x3c
+    unsigned char m_3d;                                         // +0x3d
+};
+MS2_CHECK_SIZE(CNMCategoryInfo, 0x40);
+
+// Category with its friends, 0x58 bytes, vftable 0x142f3c0e8.
+class CNMCateFriendInfo : public CNMCategoryInfo
+{
+public:
+    CNMCateFriendInfo(const CNMCateFriendInfo& r);              // 0x1415e8a40
+    CNMCateFriendInfo(CNMCateFriendInfo&& r) noexcept;          // 0x1415e89f0
+    virtual ~CNMCateFriendInfo();                               // 0x1415ec950
+    CNMCateFriendInfo& operator=(const CNMCateFriendInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    std::vector<CNMFriendInfo> m_aFriends;                      // +0x40
 };
 MS2_CHECK_SIZE(CNMCateFriendInfo, 0x58);
 
@@ -100,104 +307,280 @@ public:
 };
 MS2_CHECK_SIZE(CNMChannelMemberInfo, 0x30);
 
-class CNMCharacter : public CNMSerializable
+// Chat-room member, 0x220 bytes, vftable 0x142f3c6d0.
+class CNMChatRoomMemberInfo : public CNMRealUserInfo
 {
 public:
-    CNMCharacter(const CNMCharacter& r);
-    virtual ~CNMCharacter();
-    CNMCharacter& operator=(const CNMCharacter& r);
-
-    unsigned char m_body[0x88];                       // +0x10 (not recovered)
-};
-MS2_CHECK_SIZE(CNMCharacter, 0x98);
-
-class CNMChatRoomMemberInfo : public CNMSerializable
-{
-public:
-    CNMChatRoomMemberInfo(const CNMChatRoomMemberInfo& r);
-    virtual ~CNMChatRoomMemberInfo();
+    CNMChatRoomMemberInfo(const CNMChatRoomMemberInfo& r) noexcept; // 0x1415e8f40
+    CNMChatRoomMemberInfo(CNMChatRoomMemberInfo&& r) noexcept;  // 0x1415e8e60
+    virtual ~CNMChatRoomMemberInfo();                           // 0x1415ecf90
     CNMChatRoomMemberInfo& operator=(const CNMChatRoomMemberInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    unsigned char m_body[0x210];                       // +0x10 (not recovered) (CNMRealUserInfo/CNMDefaultUserInfo-derived)
+    char m_1a8[0x20];                                           // +0x1a8
+    NMKey64 m_1c8;                                              // +0x1c8
+    unsigned int m_1d0;                                         // +0x1d0
+    char m_1d4[0x40];                                           // +0x1d4
+    unsigned int m_214;                                         // +0x214
+    unsigned int m_218;                                         // +0x218
 };
 MS2_CHECK_SIZE(CNMChatRoomMemberInfo, 0x220);
 
+// Guild member level, 0x58 bytes, vftable 0x142f3c760.
+class CNMGuildMemberLevelInfo : public CNMSerializable
+{
+public:
+    CNMGuildMemberLevelInfo(const CNMGuildMemberLevelInfo& r) noexcept; // 0x1415ea1f0
+    CNMGuildMemberLevelInfo(CNMGuildMemberLevelInfo&& r) noexcept; // 0x1415ea180
+    virtual ~CNMGuildMemberLevelInfo();                         // 0x1415ee0f0
+    CNMGuildMemberLevelInfo& operator=(const CNMGuildMemberLevelInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    unsigned char m_10;                                         // +0x10
+    char m_11[0x40];                                            // +0x11
+};
+MS2_CHECK_SIZE(CNMGuildMemberLevelInfo, 0x58);
+
+// Extended chat-room record, 0x4e0 bytes, vftable 0x142f3c7a8.
+class CNMChatRoomInfoEx : public CNMSerializable
+{
+public:
+    CNMChatRoomInfoEx(CNMChatRoomInfoEx&& r) noexcept;          // 0x1415e8ce0
+    CNMChatRoomInfoEx();                                        // 0x1415776c0
+    virtual ~CNMChatRoomInfoEx();                               // 0x1415ecf60
+    CNMChatRoomInfoEx& operator=(const CNMChatRoomInfoEx& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    unsigned int m_10;                                          // +0x10
+    unsigned __int64 m_18;                                      // +0x18
+    unsigned int m_20;                                          // +0x20
+    unsigned int m_24;                                          // +0x24
+    char m_28[0x40];                                            // +0x28
+    char m_68[0x400];                                           // +0x68 room title
+    unsigned int m_468;                                         // +0x468
+    unsigned int m_46c;                                         // +0x46c
+    unsigned int m_470;                                         // +0x470
+    char m_474[0x40];                                           // +0x474
+    unsigned __int64 m_4b8;                                     // +0x4b8
+    std::vector<CNMGuildMemberLevelInfo> m_4c0;                 // +0x4c0
+    unsigned int m_4d8;                                         // +0x4d8
+    unsigned int m_4dc;                                         // +0x4dc
+};
+MS2_CHECK_SIZE(CNMChatRoomInfoEx, 0x4e0);
+
+// File transfer event, 0x128 bytes, vftable 0x142f3c328.
 class CNMFileEvent : public CNMSerializable
 {
 public:
-    CNMFileEvent(const CNMFileEvent& r);
-    virtual ~CNMFileEvent();
+    CNMFileEvent(const CNMFileEvent& r) noexcept;               // 0x1415e92c0
+    CNMFileEvent(CNMFileEvent&& r) noexcept;                    // 0x1415e9200
+    virtual ~CNMFileEvent();                                    // 0x1415ed4b0
     CNMFileEvent& operator=(const CNMFileEvent& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    unsigned char m_body[0x118];                       // +0x10 (not recovered)
+    int m_10;                                                   // +0x10
+    char m_14[0x100];                                           // +0x14
+    int m_114;                                                  // +0x114
+    int m_118;                                                  // +0x118
+    int m_11c;                                                  // +0x11c
+    int m_120;                                                  // +0x120
 };
 MS2_CHECK_SIZE(CNMFileEvent, 0x128);
 
+// File path, 0x118 bytes, vftable 0x142f3c370.
 class CNMFilePath : public CNMSerializable
 {
 public:
-    CNMFilePath(const CNMFilePath& r);
-    virtual ~CNMFilePath();
+    CNMFilePath(const CNMFilePath& r) noexcept;                 // 0x1415e93e0
+    CNMFilePath(CNMFilePath&& r) noexcept;                      // 0x1415e9380
+    virtual ~CNMFilePath();                                     // 0x1415ed4d0
     CNMFilePath& operator=(const CNMFilePath& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    unsigned char m_body[0x108];                       // +0x10 (not recovered)
+    char m_10[0x104];                                           // +0x10
 };
 MS2_CHECK_SIZE(CNMFilePath, 0x118);
 
-class CNMFriendInfo : public CNMSerializable
+// User search result, 0xe0 bytes, vftable 0x142f3c4d8.
+class CNMFindUserInfo : public CNMSerializable
 {
 public:
-    CNMFriendInfo(const CNMFriendInfo& r);
-    virtual ~CNMFriendInfo();
-    CNMFriendInfo& operator=(const CNMFriendInfo& r);
+    CNMFindUserInfo(const CNMFindUserInfo& r) noexcept;         // 0x1415e9570
+    CNMFindUserInfo(CNMFindUserInfo&& r) noexcept;              // 0x1415e9440
+    virtual ~CNMFindUserInfo();                                 // 0x1415ed540
+    CNMFindUserInfo& operator=(const CNMFindUserInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    unsigned char m_body[0x570];                       // +0x10 (not recovered) (CNMRealFriendInfo/CNMDefaultUserInfo-derived)
+    __int64 m_10;                                                // +0x10
+    char m_18[0x40];                                            // +0x18
+    char m_58[0x20];                                            // +0x58
+    char m_78[0x40];                                            // +0x78
+    int m_b8;                                                   // +0xb8
+    int m_bc;                                                   // +0xbc
+    int m_c0;                                                   // +0xc0
+    int m_c4;                                                   // +0xc4
+    CNMAvatarItemInfo m_c8;                                     // +0xc8
+    int m_d8;                                                   // +0xd8
 };
-MS2_CHECK_SIZE(CNMFriendInfo, 0x580);
+MS2_CHECK_SIZE(CNMFindUserInfo, 0xe0);
 
 class CNMGameCode : public CNMSerializable
 {
 public:
-    CNMGameCode(const CNMGameCode& r);
-    virtual ~CNMGameCode();
+    CNMGameCode(const CNMGameCode& r) noexcept;                 // 0x1415e9910
+    CNMGameCode(CNMGameCode&& r) noexcept;                      // 0x1415e98c0
+    virtual ~CNMGameCode();                                     // 0x1415ed9c0
     CNMGameCode& operator=(const CNMGameCode& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_nGameCode;                                            // +0x10
-    int m_n14;                                                  // +0x14
 };
 MS2_CHECK_SIZE(CNMGameCode, 0x18);
 
+// Game record, 0x14a8 bytes, vftable 0x142f3c910.
 class CNMGameInfo : public CNMSerializable
 {
 public:
-    CNMGameInfo(const CNMGameInfo& r);
-    virtual ~CNMGameInfo();
+    CNMGameInfo(const CNMGameInfo& r) noexcept;                 // 0x1415e9af0
+    CNMGameInfo(CNMGameInfo&& r) noexcept;                      // 0x1415e9960
+    virtual ~CNMGameInfo();                                     // 0x1415ed9e0
     CNMGameInfo& operator=(const CNMGameInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    unsigned char m_body[0x1498];                       // +0x10 (not recovered)
+    unsigned int m_10;                                          // +0x10
+    unsigned int m_14;                                          // +0x14
+    char m_18[0x20];                                            // +0x18
+    char m_38[0x40];                                            // +0x38
+    char m_78[0x20];                                            // +0x78
+    char m_98[0x400];                                           // +0x98
+    char m_498[0x400];                                          // +0x498
+    char m_898[0x400];                                          // +0x898
+    unsigned char m_c98;                                        // +0xc98
+    unsigned int m_c9c;                                         // +0xc9c
+    char m_ca0[0x400];                                          // +0xca0
+    char m_10a0[0x400];                                         // +0x10a0
+    unsigned int m_14a0;                                        // +0x14a0
 };
 MS2_CHECK_SIZE(CNMGameInfo, 0x14a8);
 
 class CNMGameServerCode : public CNMSerializable
 {
 public:
-    CNMGameServerCode(const CNMGameServerCode& r);
-    virtual ~CNMGameServerCode();
+    CNMGameServerCode(const CNMGameServerCode& r) noexcept;     // 0x1415e9cd0
+    CNMGameServerCode(CNMGameServerCode&& r) noexcept;          // 0x1415e9c80
+    virtual ~CNMGameServerCode();                               // 0x1415edad0
     CNMGameServerCode& operator=(const CNMGameServerCode& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_nServerCode;                                          // +0x10
-    int m_n14;                                                  // +0x14
 };
 MS2_CHECK_SIZE(CNMGameServerCode, 0x18);
+
+// Guild record, 0x190 bytes, vftable 0x142f3c400.
+class CNMGuildInfoEx : public CNMSerializable
+{
+public:
+    CNMGuildInfoEx(const CNMGuildInfoEx& r) noexcept;           // 0x1415e9e20
+    CNMGuildInfoEx(CNMGuildInfoEx&& r) noexcept;                // 0x1415e9d20
+    virtual ~CNMGuildInfoEx();                                  // 0x1415ee070
+    CNMGuildInfoEx& operator=(const CNMGuildInfoEx& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    __int64 m_10;                                                // +0x10
+    char m_18[0x40];                                            // +0x18
+    char m_58[0x20];                                            // +0x58
+    int m_78;                                                   // +0x78
+    char m_7c[0x100];                                           // +0x7c
+    int m_17c;                                                  // +0x17c
+    int m_180;                                                  // +0x180
+    int m_184;                                                  // +0x184
+    int m_188;                                                  // +0x188
+};
+MS2_CHECK_SIZE(CNMGuildInfoEx, 0x190);
+
+// Guild list, 0x28 bytes, vftable 0x142f3c448.
+class CNMGuildListExInfo : public CNMSerializable
+{
+public:
+    CNMGuildListExInfo(const CNMGuildListExInfo& r);            // 0x1415e9f20
+    virtual ~CNMGuildListExInfo();                              // 0x1415ee090
+    CNMGuildListExInfo& operator=(const CNMGuildListExInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    std::vector<CNMGuildInfoEx> m_aGuilds;                      // +0x10
+};
+MS2_CHECK_SIZE(CNMGuildListExInfo, 0x28);
 
 class CNMGuildMemberInfo : public CNMSerializable
 {
 public:
-    CNMGuildMemberInfo(const CNMGuildMemberInfo& r);
+    CNMGuildMemberInfo(const CNMGuildMemberInfo& r) noexcept;   // 0x1415ea080
+    CNMGuildMemberInfo(CNMGuildMemberInfo&& r) noexcept;        // 0x1415e9f80
     CNMGuildMemberInfo(const CNMChannelMemberInfo& r);          // 0x141574aa0
-    virtual ~CNMGuildMemberInfo();
+    virtual ~CNMGuildMemberInfo();                              // 0x1415ee0c0
     CNMGuildMemberInfo& operator=(const CNMGuildMemberInfo& r);
     CNMGuildMemberInfo& operator=(CNMGuildMemberInfo&& r);      // 0x1415f1180
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     unsigned __int64 m_nIDCode;                                 // +0x10
     char m_szLoginID[0x40];                                     // +0x18
@@ -210,25 +593,92 @@ public:
 };
 MS2_CHECK_SIZE(CNMGuildMemberInfo, 0xb8);
 
-class CNMGuildMemberLevelInfo : public CNMSerializable
+// Guild online state, 0x68 bytes, vftable 0x142f3c568.
+class CNMGuildOnlineInfoEx : public CNMSerializable
 {
 public:
-    CNMGuildMemberLevelInfo(const CNMGuildMemberLevelInfo& r);
-    virtual ~CNMGuildMemberLevelInfo();
-    CNMGuildMemberLevelInfo& operator=(const CNMGuildMemberLevelInfo& r);
+    CNMGuildOnlineInfoEx(const CNMGuildOnlineInfoEx& r);        // 0x1415ea330
+    CNMGuildOnlineInfoEx(CNMGuildOnlineInfoEx&& r) noexcept;    // 0x1415ea260
+    virtual ~CNMGuildOnlineInfoEx();                            // 0x1415ee170
+    CNMGuildOnlineInfoEx& operator=(const CNMGuildOnlineInfoEx& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    unsigned char m_body[0x48];                       // +0x10 (not recovered)
+    unsigned __int64 m_10;                                      // +0x10
+    unsigned int m_18;                                          // +0x18
+    unsigned int m_1c;                                          // +0x1c
+    char m_20[0x20];                                            // +0x20
+    unsigned short m_40;                                        // +0x40
+    std::vector<CNMGuildMemberInfo> m_aMembers;                 // +0x48
+    unsigned int m_60;                                          // +0x60
 };
-MS2_CHECK_SIZE(CNMGuildMemberLevelInfo, 0x58);
+MS2_CHECK_SIZE(CNMGuildOnlineInfoEx, 0x68);
 
+// Note (memo), 0xec8 bytes, vftable 0x142f3c1c0.
+class CNMNoteInfo : public CNMSerializable
+{
+public:
+    CNMNoteInfo(const CNMNoteInfo& r) noexcept;                 // 0x1415ea820
+    CNMNoteInfo(CNMNoteInfo&& r) noexcept;                      // 0x1415ea690
+    virtual ~CNMNoteInfo();                                     // 0x1415ee5d0
+    CNMNoteInfo& operator=(const CNMNoteInfo& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
+    int m_10;                                                   // +0x10
+    int m_14;                                                   // +0x14
+    int m_18;                                                   // +0x18
+    NMKey64 m_1c;                                               // +0x1c
+    union                                                       // +0x24 (the implicit copy copies both members)
+    {
+        int m_24;
+        int m_24b;
+    };
+    SYSTEMTIME m_28;                                            // +0x28
+    char m_38[0x400];                                           // +0x38
+    char m_438[0x40];                                           // +0x438
+    char m_478[0x40];                                           // +0x478
+    char m_4b8[0x800];                                          // +0x4b8
+    char m_cb8[0x100];                                          // +0xcb8
+    char m_db8[0x100];                                          // +0xdb8
+    CNMAvatarFullInfo m_eb8;                                    // +0xeb8
+};
+MS2_CHECK_SIZE(CNMNoteInfo, 0xec8);
+
+// Note box entry, 0xae8 bytes, vftable 0x142f3c250.
 class CNMNoteInfo2 : public CNMSerializable
 {
 public:
-    CNMNoteInfo2(const CNMNoteInfo2& r);
-    virtual ~CNMNoteInfo2();
+    CNMNoteInfo2(const CNMNoteInfo2& r);                        // 0x1415ea540
+    CNMNoteInfo2(CNMNoteInfo2&& r) noexcept;                    // 0x1415ea400
+    virtual ~CNMNoteInfo2();                                    // 0x1415ee590
     CNMNoteInfo2& operator=(const CNMNoteInfo2& r);
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
-    unsigned char m_body[0xad8];                       // +0x10 (not recovered)
+    unsigned int m_10;                                          // +0x10
+    unsigned int m_14;                                          // +0x14
+    unsigned int m_18;                                          // +0x18
+    SYSTEMTIME m_1c;                                            // +0x1c
+    unsigned int m_2c;                                          // +0x2c
+    unsigned int m_30;                                          // +0x30
+    char m_34[0x800];                                           // +0x34
+    char m_834[0x100];                                          // +0x834
+    char m_934[0x100];                                          // +0x934
+    CNMCharacter m_a38;                                         // +0xa38
+    std::vector<CNMCharacter> m_aCharacters;                    // +0xad0
 };
 MS2_CHECK_SIZE(CNMNoteInfo2, 0xae8);
 
@@ -529,3 +979,55 @@ public:
     char m_szPath[0x100];                                       // +0x40
 };
 MS2_CHECK_SIZE(CNMDownloadGuildMarkFileFunc, 0x140);
+
+// Fixed-capacity string holding only a heap pointer (the shared empty string until assigned); bodies in the library.
+template <int N>
+class CNMStr
+{
+public:
+    CNMStr();
+    CNMStr(const CNMStr& r);
+    ~CNMStr();
+    CNMStr& operator=(const CNMStr& r);
+
+    char* m_p;
+};
+
+// Server list request (0x48). Only the nested records the list code needs are declared.
+class CNMSetServerInfoFunc : public CNMFunc
+{
+public:
+    class ServerAddress
+    {
+    public:
+        CNMStr<0x20> m_host;                                    // +0x00
+        unsigned short m_port;                                  // +0x08
+    };
+
+    class RequestInfo
+    {
+    public:
+        unsigned int m_kind;                                    // +0x00
+        unsigned int m_flags;                                   // +0x04
+        ServerAddress m_address;                                // +0x08
+        CNMStr<0x800> m_info;                                   // +0x18
+    };
+
+    CNMSetServerInfoFunc();                                     // 0x141590b00
+    virtual ~CNMSetServerInfoFunc();
+
+    std::vector<RequestInfo> m_requests;                        // +0x30
+};
+MS2_CHECK_SIZE(CNMSetServerInfoFunc::ServerAddress, 0x10);
+MS2_CHECK_SIZE(CNMSetServerInfoFunc::RequestInfo, 0x20);
+MS2_CHECK_SIZE(CNMSetServerInfoFunc, 0x48);
+
+// Scoped critical-section lock (name invented): enters on construction; the destructor (leave) lives elsewhere.
+class CNMCSLock
+{
+public:
+    CNMCSLock(CRITICAL_SECTION* pcs);                           // 0x1415e89b0
+    ~CNMCSLock();
+
+    CRITICAL_SECTION* m_pcs;                                    // +0x00
+};
