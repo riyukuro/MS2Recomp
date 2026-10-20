@@ -71995,10 +71995,10 @@ swprintf_s	14092c040	func
 ?IsEmpty@?$CAtlArray@V?$MS2Ptr@VASBillData@@@@V?$CElementTraits@V?$MS2Ptr@VASBillData@@@@@ATL@@@ATL@@QEBA_NXZ	1409b0320	func
 ?FUN_1409b0350@@YAEPEAVValue@GFx@Scaleform@@@Z	1409b0350	func
 ?FUN_1409b0350@@YA_NPEAVValue@GFx@Scaleform@@@Z	1409b0350	func
-?IsUndefined@Value@GFx@Scaleform@@QEBA_NXZ	1409b0350	func
+?IsUndefined@Value@GFx@Scaleform@@QEBA_NXZ	1409b0390	func
 ?FUN_1409b0390@@YAEPEAVValue@GFx@Scaleform@@@Z	1409b0390	func
 ?FUN_1409b0390@@YA_NPEAVValue@GFx@Scaleform@@@Z	1409b0390	func
-?IsNull@Value@GFx@Scaleform@@QEBA_NXZ	1409b0390	func
+?IsNull@Value@GFx@Scaleform@@QEBA_NXZ	1409b0350	func
 ?FUN_1409b0470@Unk_MeratOid@@QEBA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	1409b0470	func
 ?FUN_1409b0470@Unk_MeratProductKey@@QEBA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	1409b0470	func
 ?AddRef@?$MS2Ptr@VASBillData@@@@AEBAXXZ	1409b05a0	func

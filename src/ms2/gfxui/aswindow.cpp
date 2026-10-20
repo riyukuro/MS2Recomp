@@ -44,7 +44,7 @@ MS2_REPLACE_METHOD(0x1422E6230, ASWindow, FUN_1422e6230, 55, 0xF721A3F4);
 int ASWindow::FUN_1422e6270()
 {
     Scaleform::GFx::Value v = Invoke("getWindowHeight");
-    if (v.IsUndefined() || v.IsNull())
+    if (v.IsNull() || v.IsUndefined())
         return 0;
     return (int)__imp_ceil(v.GetNumber());
 }
@@ -54,7 +54,7 @@ MS2_REPLACE_METHOD(0x1422E6270, ASWindow, FUN_1422e6270, 142, 0x776610A0);
 int ASWindow::FUN_1422e6310()
 {
     Scaleform::GFx::Value v = Invoke("getWindowWidth");
-    if (v.IsUndefined() || v.IsNull())
+    if (v.IsNull() || v.IsUndefined())
         return 0;
     return (int)__imp_ceil(v.GetNumber());
 }
