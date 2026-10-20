@@ -183,7 +183,7 @@ void FUN_140a0b2a0(void* pNode);            // detach the node from its parent
 void FUN_141468cd0(Unk_SocketPtr<CMagicData>* p) { p->~Unk_SocketPtr(); }
 
 // @0x141469a90
-CSkillCollisionManager* FUN_141469a90() { return CSkillCollisionManager::GetInstance(); }
+CSkillCollisionManager* FUN_141469a90() { return CSkillCollisionManager::s_instance; }
 extern float FUN_1407680d0(void* pRandom);
 extern void FUN_140965c40(Unk_StreamPoint* pRange, Unk_StreamPoint* pOut, Unk_StreamPoint* pBase, void* pCtx, float x, float z);
 
