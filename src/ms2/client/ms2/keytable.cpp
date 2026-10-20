@@ -31,6 +31,8 @@
 #include "ms2/client/ms2/skillslot.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/client/ms2/ridee.h"
+#include "ms2/placeholder/cskillsettable.h"
+#include "ms2/placeholder/citemdata.h"
 #include <vector>
 #include <map>
 #include "hook/ms2hook.h"
@@ -67,6 +69,7 @@ void* FUN_14086e090(void* pParent, void* pChild);                              /
 CString FUN_14028d1f0(const char* psz);
 CStringW FUN_14028b8e0(const CStringW& strKey);              // string table text by key
 void FUN_1412751f0(const CStringW& strText, int nA, int nB);  // system notice
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
 extern int DAT_143af7d40;                                   // input enabled
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                   // the element is enabled
@@ -82,6 +85,7 @@ public:
     int FUN_14166c930();                                    // the current state id
     int FUN_1416764d0();                                    // riding
     Ridee* FUN_1416764a0();                                 // the ridee this player rides
+    int FUN_141654700();                                    // the job
 };
 class Unk_KtWorld { public: Unk_KtPlayer* FUN_141bd0cc0(); };   // the local player
 class Unk_KtRestrictions { public: int FUN_14138c900(int nKind); };
@@ -117,6 +121,19 @@ Unk_KtScene* FUN_140a94350();
 class Unk_KtSkill : public CPtred { public: bool FUN_1407e9d30(); };   // SkillData
 class Unk_KtSkillTable { public: MS2Ptr<Unk_KtSkill> FUN_1407ee1d0(int nSkillId); };
 Unk_KtSkillTable* FUN_1401958b0();
+class Unk_KtQuestList { public: int FUN_140745590(int nQuestId); };   // completed
+class Unk_KtQuestMgr                                        // the quest client manager
+{
+public:
+    virtual void vfunc_0();
+    void* m_p08;
+    Unk_KtQuestList m_list;                                 // +0x10
+};
+Unk_KtQuestMgr* FUN_140764020();
+class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527840's record (item.cpp owns the real one)
+class Unk_KtInventory { public: void FUN_140a60880(int nTab, ATL::CAtlArray<MS2Ptr<CItem> >& arrOut); };   // the items of one inventory tab
+extern Unk_KtInventory DAT_143ab2a90;                       // the player's inventory
+void FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // send the quick slot change
 
 // The game TinyXML element (ctor 0x14086f2f0, 0x90 bytes; the document owns and deletes it).
 class TiXmlElement
@@ -126,6 +143,16 @@ public:
 private:
     char m_pad[0x90];
 };
+
+// The game TinyXML declaration node (ctor 0x1408704d0, 0x68 bytes; the document owns and deletes it).
+class TiXmlDeclaration
+{
+public:
+    TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);
+private:
+    char m_pad[0x68];
+};
+bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);   // SaveFile
 
 template <class T> inline int Unk_BreakFind(const ATL::CAtlArray<T>& values, const T& value)
 {
@@ -609,6 +636,32 @@ int CKeyTable::FUN_14142baf0()
     return m_nMode;
 }
 
+// @0x14142c0c0
+int CKeyTable::FUN_14142c0c0(int nSkillId)
+{
+    for (POSITION pos = m_keys.GetHeadPosition(); pos != 0; m_keys.GetNext(pos))
+    {
+        MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
+        int nKey = m_keys.GetKeyAt(pos);
+        if (!FUN_14142cf60(spKey))
+            continue;
+        if (FUN_14142cf10(spKey->m_nCode))
+        {
+            int nIndex = FUN_14142e090(nSkillId, 0);
+            if (nIndex < 0)
+                continue;
+        }
+        else
+        {
+            if (spKey->m_nSlot != nSkillId)
+                continue;
+        }
+        if (FUN_140a58540()->FUN_140d8ac50(nKey, 0))
+            return 1;
+    }
+    return 0;
+}
+
 // @0x14142c270
 int CKeyTable::FUN_14142c270(int nAction)
 {
@@ -618,6 +671,32 @@ int CKeyTable::FUN_14142c270(int nAction)
     {
         int nKey = m_actionKeys.GetNextValueWithKey(pos, nCode);
         if (FUN_140a58540()->FUN_140d8ac50(nKey, 0))
+            return 1;
+    }
+    return 0;
+}
+
+// @0x14142c300
+int CKeyTable::FUN_14142c300(int nSkillId)
+{
+    for (POSITION pos = m_keys.GetHeadPosition(); pos != 0; m_keys.GetNext(pos))
+    {
+        MS2Ptr<stKeyData> spKey = m_keys.GetValueAt(pos);
+        int nKey = m_keys.GetKeyAt(pos);
+        if (!FUN_14142cf60(spKey))
+            continue;
+        if (FUN_14142cf10(spKey->m_nCode))
+        {
+            int nIndex = FUN_14142e090(nSkillId, 0);
+            if (nIndex < 0)
+                continue;
+        }
+        else
+        {
+            if (spKey->m_nSlot != nSkillId)
+                continue;
+        }
+        if (FUN_140a58540()->FUN_140d8ad60(nKey))
             return 1;
     }
     return 0;
@@ -1275,6 +1354,97 @@ int CKeyTable::FUN_14142e7c0(int nSkillId, int nItemId, __int64 nItemUid, unsign
     return 0;
 }
 
+// @0x14142e8c0
+void CKeyTable::FUN_14142e8c0(MS2Ptr<CSkillSet> spSet)
+{
+    static int s_aSlotIndex[25] = { 4, 5, 6, 7, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
+    m_nLocked = 1;
+    unsigned nPages = (unsigned)m_quickSlots.GetCount();
+    m_quickSlots.RemoveAll();
+    m_quickSlots.SetCount(nPages, -1);
+    QuickSlotPage* pPage = FUN_141431c20(m_nQuickSlotPage);
+    if (pPage == 0)
+        return;
+    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifySkillSetMode(true)));
+    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    if (pInfo == 0)
+        return;
+    size_t nSkill = 0;
+    size_t nItem = 0;
+    for (unsigned i = 0; i < 25; i++)
+    {
+        SkillSlot* pSlot = pInfo->FUN_1419f2930(s_aSlotIndex[i]);
+        if (!pSlot)
+            continue;
+        pSlot->vfunc_11();
+        if (nSkill < spSet->m_arrSkillIds.size())
+        {
+            Unk_SsQuickEntry entry;
+            entry.m_nSkillId = spSet->m_arrSkillIds[nSkill];
+            pPage->SetAt(s_aSlotIndex[i], entry);
+            pSlot->FUN_14175cbb0(entry.m_nSkillId);
+            nSkill++;
+        }
+        else if (nItem < spSet->m_arrItemIds.size())
+        {
+            int nItemId = FUN_14142f870(spSet->m_arrItemIds[nItem]);
+            MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
+            if (spItem == 0)
+            {
+                pPage->SetAt(s_aSlotIndex[i], Unk_SsQuickEntry());
+                nItem++;
+                continue;
+            }
+            Unk_SsQuickEntry entry;
+            entry.m_nSkillId = spItem->FUN_14053dc20();
+            entry.m_nItemId = nItemId;
+            entry.m_nItemUid = 0;
+            pPage->SetAt(s_aSlotIndex[i], entry);
+            pSlot->FUN_14175cc40(entry.m_nItemId);
+            pSlot->FUN_14175cbb0(entry.m_nSkillId);
+            nItem++;
+        }
+        if (spSet->m_nSlotLock != 0)
+            pSlot->FUN_14175cdb0(1);
+        pSlot->vfunc_10();
+    }
+}
+
+// @0x14142ece0
+void CKeyTable::FUN_14142ece0(const ATL::CAtlArray<unsigned>& aItemIds)
+{
+    static int s_aSlotIndex[25] = { 4, 5, 6, 7, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
+    m_nLocked = 1;
+    unsigned nPages = (unsigned)m_quickSlots.GetCount();
+    m_quickSlots.RemoveAll();
+    m_quickSlots.SetCount(nPages, -1);
+    QuickSlotPage* pPage = FUN_141431c20(m_nQuickSlotPage);
+    if (pPage == 0)
+        return;
+    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifySkillSetMode(true)));
+    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    if (pInfo == 0)
+        return;
+    for (unsigned i = 0; i < 25; i++)
+    {
+        SkillSlot* pSlot = pInfo->FUN_1419f2930(s_aSlotIndex[i]);
+        if (!pSlot)
+            continue;
+        pSlot->vfunc_11();
+        if (i < aItemIds.GetCount())
+        {
+            Unk_SsQuickEntry entry;
+            entry.m_nSkillId = 0;
+            entry.m_nItemId = aItemIds[i];
+            entry.m_nItemUid = 0;
+            pPage->SetAt(s_aSlotIndex[i], entry);
+            pSlot->FUN_14175cc40(aItemIds[i]);
+        }
+        pSlot->FUN_14175cdb0(1);
+        pSlot->vfunc_10();
+    }
+}
+
 // @0x14142ef50
 void CKeyTable::FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount)
 {
@@ -1321,6 +1491,104 @@ void CKeyTable::FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsig
             FUN_1414321f0();
             return;
         }
+    }
+}
+
+// @0x14142f1c0
+void CKeyTable::FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid)
+{
+    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    if (pInfo == 0)
+        return;
+    int nSlot = FUN_141432650(nItemId);
+    if (nSlot == -1)
+        return;
+    SkillSlot* pSlot = pInfo->FUN_1419f2930(nSlot);
+    if (pSlot == 0)
+        return;
+    if (pSlot->FUN_14175cb90() != 0 || pSlot->FUN_14175cbd0() != 0 || pSlot->FUN_14175cc20() != 0)
+        return;
+    if (FUN_14142e7c0(nSkillId, nItemId, nItemUid, 25))
+        return;
+    Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer)
+    {
+        if (pPlayer->FUN_141654700() == 90)
+        {
+            if (!FUN_140764020()->m_list.FUN_140745590(90000414))
+                return;
+            if (!FUN_140764020()->m_list.FUN_140745590(90000415))
+                return;
+        }
+        if (pPlayer->FUN_141654700() == 110)
+        {
+            if (!FUN_140764020()->m_list.FUN_140745590(90000444))
+                return;
+        }
+        if (pPlayer->FUN_141654700() == 100)
+        {
+            if (!FUN_140764020()->m_list.FUN_140745590(90000431))
+                return;
+        }
+    }
+    QuickSlotPage* pPage = FUN_141431c20(m_nQuickSlotPage);
+    if (pPage == 0)
+        return;
+    Unk_SsQuickEntry entry;
+    entry.m_nSkillId = nSkillId;
+    entry.m_nItemUid = nItemUid;
+    entry.m_nItemId = nItemId;
+    pPage->SetAt(nSlot, entry);
+    pSlot->FUN_14175cbb0(nSkillId);
+    pSlot->FUN_14175cbf0(nItemUid);
+    pSlot->FUN_14175cc40(nItemId);
+    pSlot->FUN_14175cdb0(0);
+    pSlot->vfunc_10();
+    FUN_1414321f0();
+    FUN_14092f690(nSkillId, nItemId, nItemUid, m_nQuickSlotPage, nSlot);
+}
+
+// @0x14142f470
+void CKeyTable::FUN_14142f470(int nPage, int nSlot)
+{
+    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    if (pInfo == 0)
+        return;
+    QuickSlotPage* pPage = FUN_141431c20(nPage);
+    if (pPage == 0)
+        return;
+    ATL::CAtlArray<MS2Ptr<CItem> > items;
+    DAT_143ab2a90.FUN_140a60880(10, items);
+    for (size_t i = 0; i < items.GetCount(); i++)
+    {
+        int nSkillId = items[i]->FUN_140527840()->FUN_14053dc20();
+        __int64 nItemUid = items[i]->FUN_140526a50();
+        int nItemId = items[i]->FUN_1405276c0();
+        int nJobSlot = FUN_141432650(nItemId);
+        if (nJobSlot == -1)
+            continue;
+        if (nSlot != nJobSlot)
+            continue;
+        if (FUN_14142e7c0(nSkillId, nItemId, nItemUid, 25))
+            continue;
+        Unk_SsQuickEntry entry;
+        entry.m_nSkillId = nSkillId;
+        entry.m_nItemUid = nItemUid;
+        entry.m_nItemId = nItemId;
+        pPage->SetAt(nSlot, entry);
+        if (nPage == m_nQuickSlotPage)
+        {
+            SkillSlot* pSlot = pInfo->FUN_1419f2930(nJobSlot);
+            if (pSlot == 0)
+                continue;
+            pSlot->FUN_14175cbb0(nSkillId);
+            pSlot->FUN_14175cbf0(nItemUid);
+            pSlot->FUN_14175cc40(nItemId);
+            pSlot->FUN_14175cdb0(0);
+            pSlot->vfunc_10();
+        }
+        FUN_1414321f0();
+        FUN_14092f690(nSkillId, nItemId, nItemUid, nPage, nSlot);
     }
 }
 
@@ -1893,6 +2161,20 @@ void CKeyTable::FUN_1414323f0(int nPage, unsigned nSlot, int nSkillId, int nItem
     entry.m_nItemId = nItemId;
     entry.m_nItemUid = nItemUid;
     pPage->SetAt(nSlot, entry);
+}
+
+// @0x141432480
+TiXmlDocument CKeyTable::FUN_141432480(const CString& strPath)
+{
+    TiXmlDocument doc;
+    TiXmlDeclaration* pDecl = new TiXmlDeclaration("1.0", "utf-8", "");
+    FUN_14086e090(&doc, pDecl);
+    TiXmlElement* pRoot = new TiXmlElement("ms2");
+    FUN_14086e090(&doc, pRoot);
+    TiXmlElement* pConfig = new TiXmlElement("KeyConfig");
+    FUN_14086e090(pRoot, pConfig);
+    FUN_1408710c0(&doc, strPath);
+    return doc;
 }
 
 // @0x141432650

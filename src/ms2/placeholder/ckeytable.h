@@ -15,6 +15,8 @@
 #include "ms2/placeholder/tptrvalue.h"
 
 class CKeySettingParam;
+class TiXmlDocument;
+class CSkillSet;
 class CInPacket;
 struct Unk_SsQuickEntry;                                    // gameoptioninputdefault.h: one quick slot binding (0x18)
 
@@ -111,8 +113,12 @@ public:
     void FUN_14142e730(int nKey);
     void FUN_14142e770(int nKey);
     int FUN_14142e7a0();
+    void FUN_14142e8c0(MS2Ptr<CSkillSet> spSet);            // enter the skill set mode: the set fills the quick slots
+    void FUN_14142ece0(const ATL::CAtlArray<unsigned>& aItemIds);   // enter the skill set mode with these items in the quick slots
     int FUN_14142e7c0(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount);   // a quick slot of the set holds it
     void FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount);  // put it into a free quick slot (set mode)
+    void FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid);   // put it into its job quick slot
+    void FUN_14142f470(int nPage, int nSlot);              // put the job item of the slot into the page
     void FUN_14142f700();                                   // leave the skill set mode and save
     int FUN_14142f830(int nSlot);
     int FUN_14142f870(int nSlot);
@@ -146,6 +152,7 @@ public:
     void FUN_1414321f0();                                   // rebuild the action index
     void FUN_141432360(int nAction);
     void FUN_1414323f0(int nPage, unsigned nSlot, int nSkillId, int nItemId, __int64 nItemUid);   // set a quick slot
+    TiXmlDocument FUN_141432480(const CString& strPath);    // write an empty key config (ms2/KeyConfig) to the file
     static int FUN_141432650(int nCode);
     int FUN_140a700b0();                                    // the current quick slot page
 
