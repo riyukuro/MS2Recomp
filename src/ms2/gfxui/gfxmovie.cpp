@@ -439,6 +439,3 @@ void* GFxMovie::vfunc_2()
 MS2_REPLACE_METHOD(0x1422BE140, GFxMovie, FUN_1422be140, 314, 0xD12302DD);
 MS2_REPLACE_METHOD(0x1422BE2A0, GFxMovie, FUN_1422be2a0, 180, 0x7F908042);
 MS2_REPLACE_METHOD(0x1422BD250, GFxMovie, FUN_1422bd250, 248, 0x35C7C06A);
-
-// MS2-FUNCTIONAL: SDK MemoryParams ctor (inline): 4.1.19 adds InitialDynamicLimit (+0x4c), which the exe's 4.1.18 lacks.
-// MS2-PIN: ??0MemoryParams@GFx@Scaleform@@QEAA@_K@Z 0x1422bec30
