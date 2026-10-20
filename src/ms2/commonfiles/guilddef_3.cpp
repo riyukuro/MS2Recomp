@@ -18,7 +18,7 @@
 // MS2-PIN: ??$_Lbound@I@?$_Tree@V?$_Tmap_traits@IV?$Unk_PayloadPtr@VCGuildNpcShop@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_PayloadPtr@VCGuildNpcShop@@@@@std@@PEAX@1@AEBI@Z 0x1404e80e0 ; prop
 // MS2-PIN: ??$_Unfancy@U?$pair@HH@std@@@std@@YAPEAU?$pair@HH@0@PEAU10@@Z 0x1404e90c0 ; prop
 // MS2-PIN: ??$_Unfancy@U_Container_proxy@std@@@std@@YAPEAU_Container_proxy@0@PEAU10@@Z 0x1404e90d0 ; prop
-// MS2-PIN: ??$_Uninitialized_move@PEAUItemEntity@@PEAU1@V?$allocator@UItemEntity@@@std@@@std@@YAPEAUItemEntity@@QEAU1@0PEAU1@AEAV?$allocator@UItemEntity@@@0@@Z 0x1404e94c0 ; prop
+// MS2-PIN: ??$_Uninitialized_move@PEAU?$pair@HH@std@@PEAU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAPEAU?$pair@HH@0@QEAU10@0PEAU10@AEAV?$allocator@U?$pair@HH@std@@@0@@Z 0x1404e94c0 ; prop
 // MS2-PIN: ??$_Uninitialized_move@PEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@PEAV1@V?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@std@@@std@@YAPEAV?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@QEAV1@0PEAV1@AEAV?$allocator@V?$Unk_PayloadPtr@UGuildSkill@CGuildXmlData@@@@@0@@Z 0x1404e9590 ; prop
 // MS2-PIN: ??$_Uninitialized_move_al_unchecked@PEAU?$pair@HH@std@@PEAU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAPEAU?$pair@HH@0@PEAU10@QEAU10@1AEAV?$allocator@U?$pair@HH@std@@@0@U_General_ptr_iterator_tag@0@U_Unused_parameter@0@@Z 0x1404e9730 ; unique
 // MS2-PIN: ??$addressof@$$CBV?$vector@HV?$allocator@H@std@@@std@@@std@@YAPEBV?$vector@HV?$allocator@H@std@@@0@AEBV10@@Z 0x1404e99c0 ; prop
