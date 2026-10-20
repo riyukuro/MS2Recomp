@@ -63,7 +63,7 @@ class CoupleEmotionAnimInfo : public CPtred
 {
 public:
     CoupleEmotionAnimInfo();                                // 0x140b85a20
-    virtual ~CoupleEmotionAnimInfo();                       // 0x140b85be0 (??_G 0x140b86040)
+    // implicit virtual dtor 0x140b85be0 (??_G 0x140b86040): no vftable reset, so it must stay compiler-generated
 
     bool Init(int nEmotion, int nGender1, int nGender2, bool bSwap);   // 0x140b7fcc0
     bool Load(int nAni);                                    // 0x140b7ff20 loads the nif of animation nAni
