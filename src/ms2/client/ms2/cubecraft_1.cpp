@@ -157,8 +157,8 @@ void FUN_1409a1fc0(Unk_AnimSvc*, egf::EntityID&, Unk_GuideAnimName*, float);
 void FUN_1408a8900(Unk_GuideAnimName*);
 Unk_AnimSvc* FUN_1410a68d0();
 Unk_AnimSvc* FUN_1410a68f0(void*);
-void FUN_14123c680(GameObject*, int);
-void FUN_14123fbf0(void*, int);
+void FUN_14123c680(GameObject*, bool);
+void FUN_14123fbf0(void*, short);
 void FUN_14123fd30(void*, int);
 CStringW FUN_141277910(MS2Ptr<CItemData> spData);              // by value (exe: copy ctor 0x1403bb3b0 into a temporary)
 class Unk_StringTable
@@ -182,8 +182,8 @@ public:
     void FUN_141087390();
 };
 Unk_GuidePlayer* FUN_1405a7e30(PCBase*);
-int FUN_1409f7c90();
-int FUN_140ddcc90(int);
+void* FUN_1409f7c90();
+int FUN_140ddcc90(void*);
 void FUN_141568d80(NiNode*);
 struct Unk_FishCatch { char m_pad_00[0x18]; int m_nCount; int m_nFishId; int m_nSize; };
 
@@ -295,7 +295,7 @@ public:
     int FUN_141bd1a10(PCBase* p);
 };
 Unk_GuideWorld* FUN_1403ed2d0();
-struct Unk_NullableFloat { char m_bSet; float m_fValue; };
+struct Unk_NullableFloat { bool m_bSet; float m_fValue; };
 bool FUN_1410a82b0(Unk_NullableFloat*);
 const float* FUN_1410a71d0(Unk_NullableFloat*);
 Unk_NullableFloat* FUN_141bd9c00(Unk_GuideWorld*);
@@ -858,14 +858,12 @@ void CConstructionGuideObject::vfunc_128()
 int CConstructionGuideObject::vfunc_10()
 {
     if (m_bLocal)
-        ::FUN_14123c680(this, 1);
-    int nResult = PCBase::vfunc_10();
-    if (nResult != 0)
-    {
-        FUN_14123fbf0(m_unk_150, 4);
-        FUN_14123fd30(m_unk_150, 8);
-    }
-    return nResult != 0;
+        ::FUN_14123c680(this, true);
+    if (!PCBase::vfunc_10())
+        return 0;
+    FUN_14123fbf0(m_unk_150, 4);
+    FUN_14123fd30(m_unk_150, 8);
+    return 1;
 }
 
 // @0x1410a36c0
@@ -1168,8 +1166,7 @@ int CFishingGuideObject::vfunc_10()
 // @0x1410a4cb0
 void CFishingGuideObject::FUN_1410a4cb0()
 {
-    egf::Entity* pEntity = FUN_14123c410();
-    if (pEntity != 0)
+    if (FUN_14123c410() != 0)
     {
         bool bShow = true;
         if (FUN_140ddcc90(FUN_1409f7c90()) == 0 && m_unk_40 != 0)
@@ -1466,8 +1463,11 @@ void CSkillMagicControlGuide::vfunc_128()
 // @0x1410a64d0
 void CSkillMagicControlGuide::vfunc_125(double fTime)
 {
-    if (m_fDcc != 0.0f && !m_bReleased)
-        CGuideObject::vfunc_125(fTime);
+    if (m_fDcc == 0.0f)
+        return;
+    if (m_bReleased)
+        return;
+    CGuideObject::vfunc_125(fTime);
 }
 
 // @0x1410a6520
@@ -1475,15 +1475,14 @@ void CSkillMagicControlGuide::FUN_1410a6520()
 {
     m_bReleased = true;
     PCBase* pOwner = FUN_1410a1310();
-    if (pOwner != 0)
+    if (pOwner == 0)
+        return;
+    FUN_1416623d0(pOwner, efd::SmartPointer<CGuideObject>(0), 2);
+    if (m_bControl)
     {
-        FUN_1416623d0(pOwner, efd::SmartPointer<CGuideObject>(0), 2);
-        if (m_bControl)
-        {
-            Unk_GuideHost* pHost = FUN_1409613d0(pOwner);
-            if (pHost != 0)
-                pHost->FUN_14152a700(this);
-        }
+        Unk_GuideHost* pHost = FUN_1409613d0(pOwner);
+        if (pHost != 0)
+            pHost->FUN_14152a700(this);
     }
 }
 
@@ -1523,7 +1522,12 @@ bool CSkillMagicControlGuide::FUN_1410a6730() { return m_bReleased; }
 efd::Point3 CSkillMagicControlGuide::FUN_1410a6750() { return *(efd::Point3*)&m_kAim; }
 
 // @0x1410a6790
-float CSkillMagicControlGuide::FUN_1410a6790() { return FUN_1410a6730() ? 0.0f : m_fDc8; }
+float CSkillMagicControlGuide::FUN_1410a6790()
+{
+    if (FUN_1410a6730())
+        return 0.0f;
+    return m_fDc8;
+}
 
 // @0x1410a67d0
 float CSkillMagicControlGuide::FUN_1410a67d0() { return m_fDcc; }
@@ -1540,7 +1544,7 @@ long long CSkillMagicControlGuide::FUN_1410a67f0()
 void CSkillMagicControlGuide::vfunc_53(float f)
 {
     CGuideObject::vfunc_53(f);
-    FUN_1410a1310();
+    PCBase* pOwner = FUN_1410a1310();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1617,21 +1621,30 @@ void* FUN_1410a7620(Unk_MagicTargetList* pList)
 // @0x1410a7520
 MS2Ptr<Unk_MagicTarget>* FUN_1410a7520(Unk_MagicTargetList*, void* pos)
 {
-    if (pos != 0)
-        return &((Unk_MagicNode*)pos)->m_spData;
-    FUN_140159b70(0x80004005);
+    do                                                      // ATLENSURE(pos != NULL)
+    {
+        int nCond = !!(pos != 0);
+        do {} while (0);
+        if (!nCond)
+            FUN_140159b70(0x80004005);
+    } while (0);
+    Unk_MagicNode* pNode = (Unk_MagicNode*)pos;
+    return &pNode->m_spData;
 }
 
 // @0x1410a7640
 MS2Ptr<Unk_MagicTarget>* FUN_1410a7640(Unk_MagicTargetList*, void** pos)
 {
-    Unk_MagicNode* pNode = (Unk_MagicNode*)*pos;
-    if (pNode != 0)
+    do                                                      // ATLENSURE(pos != NULL)
     {
-        *pos = pNode->m_pNext;
-        return &pNode->m_spData;
-    }
-    FUN_140159b70(0x80004005);
+        int nCond = !!(*pos != 0);
+        do {} while (0);
+        if (!nCond)
+            FUN_140159b70(0x80004005);
+    } while (0);
+    Unk_MagicNode* pNode = (Unk_MagicNode*)*pos;
+    *pos = pNode->m_pNext;
+    return &pNode->m_spData;
 }
 
 // @0x1410a7630
@@ -1644,8 +1657,7 @@ long long FUN_1410a7630()
 // @0x1410a71d0
 const float* FUN_1410a71d0(Unk_NullableFloat* p)
 {
-    if (p->m_bSet == 0)
-        _wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x55);
+    (void)((!!(p->m_bSet)) || (_wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x55), 0));   // assert(m_isValueSet)
     return &p->m_fValue;
 }
 
@@ -1707,12 +1719,12 @@ void FUN_1410a7db0(void*);
 void FUN_1410a7df0(void*);
 void FUN_1410a7cb0(Unk_SPtr*);
 void FUN_1410a7d10(Unk_SPtr*);
-void FUN_1410a7e90(Unk_SPtr*);
-void FUN_1410a7ef0(Unk_SPtr*);
+void FUN_1410a7e90(Unk_SPtr*, void*);
+void FUN_1410a7ef0(Unk_SPtr*, void*);
 void FUN_1410a7fd0(Unk_SPtr*);
 void FUN_1410a8050(Unk_SPtr*);
-void FUN_1410a8170(Unk_SPtr*);
-void FUN_1410a8210(Unk_SPtr*);
+void FUN_1410a8170(Unk_SPtr*, void*);
+void FUN_1410a8210(Unk_SPtr*, void*);
 Unk_SPtr* FUN_1410a6a70(Unk_SPtr*, void*);
 Unk_SPtr* FUN_1410a6b60(Unk_SPtr*, void*);
 void FUN_1410a6cb0(Unk_SPtr*);
@@ -1730,9 +1742,9 @@ void** FUN_1410a69b0(void** p, void* v)
 // @0x1410a6aa0
 Unk_SPtr* FUN_1410a6aa0(Unk_SPtr* p, void* v) { p->m_p = v; FUN_1410a7cb0(p); return p; }
 // @0x1410a6ad0
-Unk_SPtr* FUN_1410a6ad0(Unk_SPtr* p) { p->m_p = 0; return p; }
+Unk_SPtr* FUN_1410a6ad0(Unk_SPtr* p, int) { p->m_p = 0; return p; }
 // @0x1410a6af0
-Unk_SPtr* FUN_1410a6af0(Unk_SPtr* p) { p->m_p = 0; return p; }
+Unk_SPtr* FUN_1410a6af0(Unk_SPtr* p, int) { p->m_p = 0; return p; }
 // @0x1410a6b10
 Unk_SPtr* FUN_1410a6b10(Unk_SPtr* p, void* v) { p->m_p = v; FUN_1410a7d10(p); return p; }
 // @0x1410a6b90
@@ -1752,9 +1764,9 @@ void FUN_1410a6c40(void** p)
 }
 
 // @0x1410a6ce0
-void FUN_1410a6ce0(Unk_SPtr* p) { FUN_1410a7fd0(p); }
+void FUN_1410a6ce0(Unk_SPtr* p) noexcept { FUN_1410a7fd0(p); }
 // @0x1410a6d40
-void FUN_1410a6d40(Unk_SPtr* p) { FUN_1410a8050(p); }
+void FUN_1410a6d40(Unk_SPtr* p) noexcept { FUN_1410a8050(p); }
 
 // @0x1410a6ee0
 Unk_SPtr* FUN_1410a6ee0(Unk_SPtr* self, void* v)
@@ -1764,8 +1776,9 @@ Unk_SPtr* FUN_1410a6ee0(Unk_SPtr* self, void* v)
     void* pOld = self->m_p;
     self->m_p = kTmp.m_p;
     kTmp.m_p = pOld;
+    Unk_SPtr* pRet = self;                                  // the return value is taken before kTmp's destructor
     FUN_1410a6cb0(&kTmp);
-    return self;
+    return pRet;
 }
 // @0x1410a6fc0
 Unk_SPtr* FUN_1410a6fc0(Unk_SPtr* self, void* v)
@@ -1775,8 +1788,9 @@ Unk_SPtr* FUN_1410a6fc0(Unk_SPtr* self, void* v)
     void* pOld = self->m_p;
     self->m_p = kTmp.m_p;
     kTmp.m_p = pOld;
+    Unk_SPtr* pRet = self;                                  // the return value is taken before kTmp's destructor
     FUN_1410a6d70(&kTmp);
-    return self;
+    return pRet;
 }
 
 // @0x1410a7030
@@ -1793,23 +1807,23 @@ void* FUN_1410a7160(Unk_SPtr* p) { return p->m_p; }
 void* FUN_1410a71a0(Unk_SPtr* p) { return p->m_p; }
 
 // @0x1410a7cb0
-void FUN_1410a7cb0(Unk_SPtr* p) { if (p->m_p != 0) FUN_1410a7e90(p); }
+void FUN_1410a7cb0(Unk_SPtr* p) { if (p->m_p != 0) FUN_1410a7e90(p, 0); }
 // @0x1410a7d10
-void FUN_1410a7d10(Unk_SPtr* p) { if (p->m_p != 0) FUN_1410a7ef0(p); }
+void FUN_1410a7d10(Unk_SPtr* p) { if (p->m_p != 0) FUN_1410a7ef0(p, 0); }
 // @0x1410a7db0
 void FUN_1410a7db0(void* p) { FUN_14015b020(p); }
 // @0x1410a7df0
 void FUN_1410a7df0(void* p) { FUN_14015b020(p); }
 // @0x1410a7e90
-void FUN_1410a7e90(Unk_SPtr* p) { FUN_1410a7db0(p->m_p); }
+void FUN_1410a7e90(Unk_SPtr* p, void*) { FUN_1410a7db0(p->m_p); }
 // @0x1410a7ef0
-void FUN_1410a7ef0(Unk_SPtr* p) { FUN_1410a7df0(p->m_p); }
+void FUN_1410a7ef0(Unk_SPtr* p, void*) { FUN_1410a7df0(p->m_p); }
 // @0x1410a7fd0
 void FUN_1410a7fd0(Unk_SPtr* p)
 {
     if (p->m_p != 0)
     {
-        FUN_1410a8170(p);
+        FUN_1410a8170(p, 0);
         p->m_p = 0;
     }
 }
@@ -1818,12 +1832,12 @@ void FUN_1410a8050(Unk_SPtr* p)
 {
     if (p->m_p != 0)
     {
-        FUN_1410a8210(p);
+        FUN_1410a8210(p, 0);
         p->m_p = 0;
     }
 }
 // @0x1410a8170
-void FUN_1410a8170(Unk_SPtr* p)
+void FUN_1410a8170(Unk_SPtr* p, void*)
 {
     if (FUN_140159bc0(p->m_p) == 0)
     {
@@ -1832,7 +1846,7 @@ void FUN_1410a8170(Unk_SPtr* p)
     }
 }
 // @0x1410a8210
-void FUN_1410a8210(Unk_SPtr* p)
+void FUN_1410a8210(Unk_SPtr* p, void*)
 {
     if (FUN_140159bc0(p->m_p) == 0)
     {
