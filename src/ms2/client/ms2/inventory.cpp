@@ -1503,6 +1503,9 @@ static bool Unk_InventoryPairMismatch(Unk_InventoryPlayer* player, int slotA, in
     }
     return false;
 }
+// MS2-FUNCTIONAL: exe (7258 B, 288 calls) holds MS2Ptr<CEquipItem>/MS2Ptr<CItem>/MS2Ptr<Unk_BankItem> temporaries per branch
+//   (49x ~MS2Ptr<CEquipItem> 0x1405a85f0, 18x ~MS2Ptr<CItem>, 21x ~MS2Ptr<Unk_BankItem>); this body goes through the
+//   Unk_InventoryEquipment placeholder accessors and folds the per-slot branches -> needs the CEquipItem type recovery
 // @0x140a63950
 int Unk_Inventory::FUN_140a63950(CItem* item, int slot, int mode) {
     if (item == nullptr) return 0;
