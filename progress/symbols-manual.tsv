@@ -3980,3 +3980,5 @@ DAT_143ae2b38	143ae2b38	data
 ?FUN_1409b2840@ASArgList@@QEAA_KXZ	1409b2840	func
 ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDailyMissionDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140c02f90	func
 ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIDailyMissionDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ	140c02f30	func
+??0ASVideo@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422f74c0	func
+??1ASVideo@@UEAA@XZ	1422f7510	func
