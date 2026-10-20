@@ -1878,6 +1878,7 @@ void UIMinimapDialog::FUN_141a39e40()
 MS2_REPLACE_METHOD(0x141a39e40, UIMinimapDialog, FUN_141a39e40, 0, 0);
 
 extern Unk_StreamPoint DAT_143b01a60;                               // the zero point
+CBuddyManager* FUN_14097a780();                                    // TSingleton<CBuddyManager>::GetInstance
 void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Unk_StreamPoint* pOut);   // reads a point property
 
 // @0x141a39e60
@@ -2541,6 +2542,97 @@ void UIMinimapDialog::FUN_141a3dbb0()
     }
 }
 MS2_REPLACE_METHOD(0x141a3dbb0, UIMinimapDialog, FUN_141a3dbb0, 0, 0);
+
+// @0x141a3dda0
+void UIMinimapDialog::FUN_141a3dda0()
+{
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC != 0) {
+        efd::Point3 kPos = efd::Point3::ZERO;
+        if (pPC->FUN_141528020(kPos)) {
+            EntityPtr spEntity = new UIMinimapEntity(4);
+            spEntity->m_icon = s_strMyHome;
+            spEntity->m_layer = s_strLayerMyHome;
+            spEntity->m_position = kPos;
+            spEntity->m_visible = true;
+            if (FUN_141a3e7d0(spEntity))
+                m_return = spEntity;
+        }
+    }
+}
+
+// @0x141a3e2d0
+void UIMinimapDialog::FUN_141a3e2d0(Unk_BuddyPtr<CBuddy> spBuddy)
+{
+    if (spBuddy == 0 || !spBuddy->FUN_1401cc5f0())
+        return;
+    Unk_StreamPoint kPos = DAT_143b01a60;
+    if (spBuddy->FUN_1401cc400(&kPos)) {
+        EntityPtr spEntity = new UIMinimapEntityBuddyHome(spBuddy);
+        spEntity->m_icon = s_strFriendHome;
+        spEntity->m_layer = s_strLayerHome;
+        spEntity->m_position = reinterpret_cast<const efd::Point3&>(kPos);
+        spEntity->m_visible = true;
+        if (FUN_141a3e7d0(spEntity))
+            m_buddies.SetAt(spBuddy->FUN_1401cc2f0(), spEntity);
+    }
+}
+
+// @0x141a3ed50
+void UIMinimapDialog::FUN_141a3ed50()
+{
+    ATL::CAtlArray<Unk_BuddyPtr<CBuddy> > buddies;
+    FUN_14097a780()->FUN_140ae4df0(buddies);
+    int nCurrent = FUN_1403ed2d0()->FUN_141bd3060();
+    size_t nCount = buddies.GetCount();
+    for (size_t i = 0; i < nCount; ++i) {
+        Unk_BuddyPtr<CBuddy> spBuddy = buddies[i];
+        if (spBuddy == 0 || !spBuddy->FUN_1401cc5f0())
+            continue;
+        int nField = spBuddy->FUN_1401cc3e0();
+        if (static_cast<unsigned int>(nField) > 0) {
+            unsigned __int64 nHome = spBuddy->FUN_1401cc2f0();
+            FUN_141a454d0(nField, nHome);
+            if (nField == nCurrent)
+                FUN_141a3e2d0(spBuddy);
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141a3ed50, UIMinimapDialog, FUN_141a3ed50, 0, 0);
+
+void FUN_1408a2020(egf::Entity* pEntity, unsigned nProperty, int* pOut);   // reads an int property
+MS2Ptr<CInteractObjectData> FUN_14051f670(int nId);                  // the interact table row
+int FUN_1402bacf0(ATL::CAtlArray<int>& arr, const int& value);       // index of the value or -1
+extern ATL::CAtlArray<int> DAT_143ab3128;                            // the telescopes the player has used
+CStringW FUN_14028de60(int nStringId);                               // a common string by id
+
+// @0x141a3df40
+void UIMinimapDialog::FUN_141a3df40()
+{
+    Unk_MmEntityList list = FUN_1403ed2d0()->FUN_141bd0420(0x62f7a42c);
+    if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
+        for (POSITION pos = list.FUN_1409f2190()->GetHeadPosition(); pos != 0; list.FUN_1409f2190()->GetNext(pos)) {
+            efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(pos);
+            Unk_StreamPoint kPos;
+            int nId = 0;
+            FUN_1409618c0(spObject.operator->(), 0xfd95ca52, &kPos);
+            FUN_1408a2020(spObject.operator->(), 0xd460e9bc, &nId);
+            MS2Ptr<CInteractObjectData> spData = FUN_14051f670(nId);
+            if (static_cast<bool>(spData.get()) && spData->m_nMinimapKind != 3)
+                continue;
+            EntityPtr spEntity = new UIMinimapEntity(3);
+            spEntity->m_icon = "telescope";
+            spEntity->m_layer = s_strLayerTelescope;
+            spEntity->m_position = reinterpret_cast<const efd::Point3&>(kPos);
+            spEntity->m_visible = true;
+            spEntity->m_state = FUN_1402bacf0(DAT_143ab3128, nId) != -1 ? "enabled" : "disabled";
+            spEntity->m_text = FUN_14028de60(0x59b);
+            if (FUN_141a3e7d0(spEntity))
+                m_telescope = spEntity;
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141a3df40, UIMinimapDialog, FUN_141a3df40, 0, 0);
 
 // @0x141a3e7d0
 bool UIMinimapDialog::FUN_141a3e7d0(EntityPtr spEntity)

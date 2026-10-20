@@ -53,7 +53,9 @@ public:
     int m_nGatherId;                    // +0xb8 gathering table id (CInteractGatheringObject)
     int m_nRespawnTime;                 // +0xbc milliseconds
     int m_nCursorType;                  // +0xc0
-    int m_pad_c4[29];                   // +0xc4 .. +0x138 (sub-objects not read by interactobject.cpp)
+    int m_pad_c4[17];                   // +0xc4 .. +0x108 (sub-objects not read by interactobject.cpp)
+    int m_nMinimapKind;                 // +0x108 3: a telescope (uiminimapentity.cpp: BuildTelescope)
+    int m_pad_10c[11];                  // +0x10c .. +0x138
     CString m_strModelA;                // +0x138 effect asset for the first state
     CString m_strModelB;                // +0x140 effect asset for the second state
     int m_pad_148[2];
@@ -92,6 +94,7 @@ MS2_CHECK_OFFSET(CInteractObjectData, m_nShowCollisionA, 0x80);
 MS2_CHECK_OFFSET(CInteractObjectData, m_strMeshPathA, 0x98);
 MS2_CHECK_OFFSET(CInteractObjectData, m_fRange, 0xb4);
 MS2_CHECK_OFFSET(CInteractObjectData, m_nCursorType, 0xc0);
+MS2_CHECK_OFFSET(CInteractObjectData, m_nMinimapKind, 0x108);
 MS2_CHECK_OFFSET(CInteractObjectData, m_strModelA, 0x138);
 MS2_CHECK_OFFSET(CInteractObjectData, m_maskStateA, 0x150);
 MS2_CHECK_OFFSET(CInteractObjectData, m_maskStateB, 0x190);
