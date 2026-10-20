@@ -15,6 +15,8 @@ public:
     virtual ~ASButton();                                            // 0 0x1422ce470
     // Registers the click callback; nUser comes back in Params (homed as a qword by the callee).
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, int nUser);
+    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);   // same callee, a pointer-sized user value (uidungeonroomdialog sub tabs)
+    void FUN_1422ce1f0(int nMode);                                  // the button mode (uidungeonroomdialog: 2)
     void FUN_1422ce090(int bSelected);                              // set "selected"
     bool FUN_1422ce0e0();                                           // "selected"
     void FUN_1422cdf20(bool bVisible);                              // show the label (uidungeonsearchsettingdialog)

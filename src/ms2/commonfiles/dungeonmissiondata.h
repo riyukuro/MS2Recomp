@@ -31,6 +31,7 @@ protected:
     MS2_LAYOUT_FRIEND;
     friend class DungeonMissionCli;
     friend class DungeonMissionEvent;
+    friend class UIDungeonRoomRankPanel;                    // reads m_maxScore (uidungeonroomdialog.cpp)
     unsigned m_id;                                          // +0x18 "id"
     CStringW m_type;                                        // +0x20 "type"
     short m_maxScore;                                       // +0x28 "maxScore"

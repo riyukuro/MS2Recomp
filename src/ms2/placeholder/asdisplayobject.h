@@ -40,6 +40,7 @@ public:
     int FUN_1422c1340();                                        // ceil(width)
     int FUN_1422c13b0();                                        // ceil(height)
     void FUN_1422bffe0(int x, int y);                           // set the position
+    void FUN_1422c0060(int x, int y);                           // set the position (uidungeonroomdialog season rank marks)
     // Registers an AS -> C++ callback under a name (the list lives at +0x60; aseffect.cpp "GetTooltipCallback").
     void FUN_1422c3180(CString strName, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
     void FUN_1422c00f0(float x, float y);                       // set the position (float)
@@ -96,4 +97,12 @@ MS2Ptr<ASDisplayObject> FUN_140d01be0(int n, const Scaleform::GFx::Value& v);
 
 // ASLoader (RTTI .?AVASLoader@@, COL 0x1432d06b0): an ASDisplayObjectContainer (the AS Loader clip that shows an
 // external image; the guild dialog's event image, uiguilddialog.h). Nothing of its own is declared yet.
-class ASLoader : public ASDisplayObjectContainer {};
+class ASLoader : public ASDisplayObjectContainer
+{
+public:
+    ASLoader(int nMovieId);                                     // 0x1422e5300 (the exe allocates 0x90 bytes: uidungeonroomdialog 0x1412ad5f5)
+private:
+    void* m_pad_80;
+    void* m_pad_88;
+};
+MS2_CHECK_SIZE(ASLoader, 0x90);

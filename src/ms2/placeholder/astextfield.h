@@ -21,6 +21,7 @@ public:
     void FUN_1422c5a50(const CString& strText);                         // append text (narrow; uihairphysxdialog.cpp)
     void FUN_1422c4eb0(const CString& strText);                         // set the html text (narrow)
     void FUN_1422c4c80(const CString& strText);                         // set the text (narrow; UICameraDialog)
+    double FUN_1422c59e0();                                             // the text height (uidungeonroomdialog.cpp)
     double FUN_1422c5970();                                             // the text width (uivipdialog.cpp)
     void FUN_1422c5170(int nMaxChars);                                  // set the "maxChars" member (uitradedialogex.cpp)
     void FUN_1422de780(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n1, int n2);   // "focusOut" listener (uitradedialogex.cpp)
