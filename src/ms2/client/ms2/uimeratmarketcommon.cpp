@@ -107,9 +107,7 @@ bool UIMeratMarketCommon::WeaponType::FUN_140ebb780(int nGender, int nJob, MS2Pt
             bRet = bRet | (spData->FUN_14053cae0(nGender, m_n1c) == 1);
         return bRet;
     }
-    if (spData->limit.FUN_140545da0(nJob) && spData->FUN_14053c940(nGender))
-        return true;
-    return false;
+    return spData->limit.FUN_140545da0(nJob) && spData->FUN_14053c940(nGender);
 }
 
 // ---- more unit-local declarations ----
@@ -377,7 +375,9 @@ bool FUN_140ebc630(MS2Ptr<CMeratMarketProduct> spProduct, int nPayType)
         }
         return true;
     }
-    return FUN_1418ff110(FUN_14069c3e0(nPayType), nPrice, 1) != 0;
+    if (FUN_1418ff110(FUN_14069c3e0(nPayType), nPrice, 1) != 0)
+        return true;
+    return false;
 }
 
 // The bag space the items of the bill need (per inventory tab).
@@ -430,20 +430,20 @@ bool FUN_140ebcc20(ATL::CAtlArray<int>& arrItemIds)
     unsigned nItems = (unsigned)arrItemIds.GetCount();
     for (unsigned i = 0; i < nItems; ++i)
     {
-        int nItemId = arrItemIds[i];
-        if (nItemId != 0)
-        {
-            MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
-            if (spData == 0)
-                continue;
-            int nTab = FUN_140ec2ac0(spData);
-            if (-1 < nTab && nTab < 15)
-                counts[nTab] = counts[nTab] + 1;
-        }
+        // exe reads the ids through the CAtlArray<UINT>::GetAt instance (0x1401c0c80)
+        int nItemId = reinterpret_cast<ATL::CAtlArray<unsigned int>&>(arrItemIds).GetAt(i);
+        if (nItemId == 0)
+            continue;
+        MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+        if (spData == 0)
+            continue;
+        int nTab = FUN_140ec2ac0(spData);
+        if (0 <= nTab && nTab < 15)
+            counts.SetAt(nTab, counts.GetAt(nTab) + 1);
     }
     for (int nTab = 0; nTab < 15; ++nTab)
     {
-        int nNeed = counts[nTab];
+        int nNeed = counts.GetAt(nTab);
         if (0 < nNeed && DAT_143ab2a90.FUN_140a615d0(nTab) < nNeed)
         {
             FUN_140d73aa0(FUN_14093fa20(0xa01, FUN_1401a9d70()->FUN_141813300(nTab), nNeed), 0, 0, CStringW(L""));
@@ -501,22 +501,18 @@ CStringW FUN_140ebced0(CMeratMarketPremiumProduct* pProduct, int nSubId)
 CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nSubId)
 {
     CStringW strResult;
-    if (pProduct->HasSubProducts() == 0)
+    if (pProduct->HasSubProducts() != 0)
+        strResult = FUN_140ebced0(pProduct, nSubId);
+    else
     {
         MS2Ptr<CItemData> spData = FUN_14053f870(pProduct->m_nItemId);
-        if (spData == 0 || !(1 < *(unsigned*)((char*)spData.get() + 0x88)))
+        if (spData == 0 || !(1 < *(unsigned*)((char*)spData.operator->() + 0x88)))
             return strResult;
         int nBonus = pProduct->GetB8(0);
-        CStringW strFormat;
-        if (nBonus == 0)
-            strFormat = FUN_14028b8e0(CStringW(L"s_common_count"));
-        else
-            strFormat = FUN_14028b8e0(CStringW(L"s_common_count_bonus"));
+        CStringW strFormat = nBonus == 0 ? FUN_14028b8e0(CStringW(L"s_common_count")) : FUN_14028b8e0(CStringW(L"s_common_count_bonus"));
         int nCount = pProduct->GetB0(0);
         strResult = FUN_14083dc40(strFormat, nCount, nBonus);
     }
-    else
-        strResult = FUN_140ebced0(pProduct, nSubId);
     return strResult;
 }
 
@@ -1118,16 +1114,14 @@ void FUN_140ec0990(ASArray* pArr, int nTab)
 // @0x140ec0b50
 void FUN_140ec0b50(MS2Ptr<CMeratMarketProduct> spProduct)
 {
-    if (spProduct == 0)
-        return;
-    if (FUN_1406ab1d0(spProduct.get()) == 0)
+    if (spProduct == 0 || FUN_1406ab1d0(spProduct.operator->()) == 0)
         return;
     if (FUN_140896350(&spProduct->m_ugc) == 0)
     {
         FUN_140d73ff0(CStringW(L"s_meratmarket_error_ugc_calculate_invalid_blueprint_item"));
         return;
     }
-    void** ppBlueprint = (void**)((char*)spProduct.get() + 0x418);
+    void** ppBlueprint = (void**)((char*)spProduct.operator->() + 0x418);
     if (*ppBlueprint == 0)
     {
         FUN_140d73ff0(CStringW(L"s_meratmarket_error_ugc_calculate_invalid_blueprint_item"));
@@ -1218,11 +1212,14 @@ void FUN_1409c2750(ASObj* pRow, const CString& str);
 void FUN_1409c3860(ASObj* pRow, CItem* pItem, int n, int nId);
 void FUN_140692c90(MS2Ptr<CItem>& sp, MS2Ptr<CItem> spNew);
 Unk_McMarket* FUN_140939a00();
-class Unk_McCategoryTable;
+class Unk_McCategoryTable
+{
+public:
+    MS2Ptr<CPtred> FUN_1407cb520(int nCategory, int nTab);   // CShopCategoryTable::FindTab
+};
 Unk_McCategoryTable* FUN_1406aa4b0();
-MS2Ptr<CItemData> FUN_140527840(CItem* pItem);
+CItemData* FUN_140527840(CItem* pItem);
 bool FUN_141b49b50(MS2Ptr<CItemData> spData);
-MS2Ptr<CPtred> FUN_1407cb520(Unk_McCategoryTable* pTable, int nCategory, int nTab);
 class Unk_McSortTabInfo : public CPtred { public: char m_pad[0x78 - 0x18]; bool m_b78; bool m_b79; };   // CShopCategoryTable::SortTabInfo
 
 // File a user report about the seller from the market (data: report id, target id, reason, name).
@@ -1270,7 +1267,7 @@ int FUN_140ec1950(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return 0;
-    MS2Ptr<CItemData> spData = FUN_140527840(spItem.get());
+    MS2Ptr<CItemData> spData = FUN_140527840(spItem.operator->());
     if (spData == 0)
         return 0;
     if (FUN_141b49b50(spData))
@@ -1319,14 +1316,14 @@ void FUN_140ec1da0(int nCategory, int nTab, bool* pbSortA, bool* pbSortB)
     *pbSortB = false;
     if (nCategory == 0)
         return;
-    MS2Ptr<CPtred> spTab = FUN_1407cb520(FUN_1406aa4b0(), nCategory, nTab);
+    MS2Ptr<CPtred> spTab = FUN_1406aa4b0()->FUN_1407cb520(nCategory, nTab);
     if (spTab == 0)
         return;
-    Unk_McSortTabInfo* pSort = dynamic_cast<Unk_McSortTabInfo*>(spTab.get());
-    if (pSort == 0)
+    MS2Ptr<Unk_McSortTabInfo> spSort(dynamic_cast<Unk_McSortTabInfo*>(spTab.operator->()));
+    if (spSort == 0)
         return;
-    *pbSortA = pSort->m_b78;
-    *pbSortB = pSort->m_b79;
+    *pbSortA = spSort->m_b78;
+    *pbSortB = spSort->m_b79;
 }
 
 // Round down to a whole hundred.
