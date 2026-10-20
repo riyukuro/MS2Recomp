@@ -284,6 +284,7 @@ struct Unk_MeratOid : public Unk_MeratProductKey { };
 // map, the sellers, the product lists, the basket and the requests to the server.
 typedef ATL::CRBMap<Unk_MeratProductKey, MS2Ptr<CMeratMarketProduct> > Unk_MmProductMap;
 typedef ATL::CRBMap<__int64, MS2Ptr<Unk_MmSellerShop> > Unk_MmSellerMap;
+typedef ATL::CRBMap<unsigned __int64, MS2Ptr<CUgcMarketSeller> > Unk_MmHistoryMap;
 class Unk_MeratMarketMan
 {
 public:
@@ -297,6 +298,7 @@ public:
     void FUN_140d54d50(MS2Ptr<CMeratMarketSchCond> spCond);
     void FUN_140d542c0(int nShop, int nType);
     void FUN_140d550c0(MS2Ptr<CMeratMarketSchCond> spCond, int nPage);
+    BOOL FUN_140d567a0(MS2Ptr<CUgcMarketSeller> spSeller);                  // the seller is bookmarked
     bool FUN_140d5b1f0(MS2Ptr<CMeratMarketProduct> spProduct, bool bShowError);   // the product can be bought
     void FUN_140d54fe0(bool bPremium, const unsigned __int64& nId, const int& nUiId);   // request a product by its id
     void FUN_140d551e0(ATL::CAtlArray<int>& ids);                           // request premium products
@@ -321,7 +323,8 @@ public:
     char m_pad_00[0x38];
     Unk_MmProductMap m_productMap;                                          // +0x38
     Unk_MmSellerMap m_sellers;                                              // +0x68
-    char m_pad_98[0x100 - 0x98];
+    Unk_MmHistoryMap m_history;                                             // +0x98 the sellers I bought from
+    char m_pad_c8[0x100 - 0xc8];
     Unk_MmProductArray m_shop;                                              // +0x100
     char m_pad_120[0x1c4 - 0x120];
     int m_n1c4;                                                             // +0x1c4 the seller notice days (7)
@@ -480,6 +483,13 @@ class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* p
 Unk_MmFiles* FUN_140166420();                                               // the resource file system
 CLogString* FUN_140166440();
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
+CStringW FUN_1418fec00(int nFormat, __int64 nTime, int nZone);              // a time text
+CStringW FUN_141277b90(const CStringW& str);
+CStringW FUN_140ec25e0(__int64 nTime);                                      // UIMeratMarketCommon: the date text
+void FUN_141a02770(CMsgBoxData* pBox, int nWidth, int nHeight);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
+CStringW BlockFormat(int, const fmt::ArgList&);
+FMT_VARIADIC_W(CStringW, BlockFormat, int)
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 bool FUN_1409c1720(const Scaleform::GFx::Value& v);
 CStringW FUN_141277dd0(Scaleform::GFx::Value* pValue);                      // the string of a value
@@ -3752,6 +3762,46 @@ void UIMeratMarketDialog::OnClickSaleCommand(ASData& data)
             chat.FUN_1401fa700(packet);
             FUN_140710590(packet);
         }
+    }
+}
+
+// "showHistory": a message box listing the sellers I bought from (name, last trade, bookmark state).
+// @0x141305480
+void UIMeratMarketDialog::OnShowHistory()
+{
+    CStringW strText;
+    Unk_MmHistoryMap& history = FUN_140939a00()->m_history;
+    if (history.IsEmpty())
+    {
+        strText = FUN_14028de60(0xa2d);
+    }
+    else
+    {
+        for (POSITION pos = history.GetHeadPosition(); pos != 0; history.GetNext(pos))
+        {
+            MS2Ptr<CUgcMarketSeller> spSeller = history.GetValueAt(pos);
+            if (spSeller.get() != 0)
+            {
+                int nKey = FUN_140939a00()->FUN_140d567a0(spSeller) ? 0xa2f : 0xa30;
+                __int64 nTime = spSeller->m_n80;
+                CStringW strName;
+                if (spSeller->m_strName.IsEmpty())
+                    strName = FUN_14028de60(0x573);
+                else
+                    strName = FUN_141277b90(spSeller->m_strName);
+                CStringW strLine = BlockFormat(0xa2e, FUN_140ec25e0(spSeller->m_n88), strName, spSeller->m_n78,
+                                               FUN_1418fec00(3, spSeller->m_n90, 0), FUN_14028de60(nKey), FUN_1418fec00(3, nTime, 0));
+                if (!strLine.IsEmpty())
+                    strText.Append(strLine);
+            }
+        }
+    }
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x10, strText, 0, CStringW(L""));
+    if (spBox.operator CMsgBoxData*() != 0)
+    {
+        spBox->FUN_141a015d0(FUN_14028de60(0xa31));
+        FUN_141a02770(spBox.operator->(), 0x26c, 0x226);
+        FUN_140d73c60(spBox);
     }
 }
 
