@@ -4200,3 +4200,6 @@ luaopen_Entity	1422416d0	func
 ?Set@Unk_NpcBeam@@QEAAXAEBVPoint3@efd@@0PEBD@Z	14160bde0	func
 ?Set@Unk_NpcBeam@@QEAAXAEBVPoint3@efd@@0MMPEBD@Z	14160beb0	func
 ?UpdatePosition@CRandomTargetEffect@@QEAAXXZ	140aab0f0	func
+??0cPhysXTriangleMeshWrapper@@QEAA@AEBVNxTriangleMeshShape@@AEBVcCoordinateMapping@@M@Z	14164c5a0	func
+__imp_NxGetCookingLib	142cced30	data
+?build@cBlockConnections@@QEAAXPEAViMesh@@@Z	14163bc10	func
