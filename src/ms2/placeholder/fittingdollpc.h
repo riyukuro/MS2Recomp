@@ -208,7 +208,9 @@ public:
     MS2Ptr<CEquipItem> FUN_141655ee0(int nSlot, bool bKind0Only);   // the worn weapon (slot 4/5): kind 0, or the first of kinds 0..2 holding one
     int FUN_14165c570();                                    // the normal attack skill of the weapon stance
     void FUN_14165c720(int nSkillId, short nLevel);         // preload a skill and its combo chain
-    int FUN_14165c090(const efd::Point3& kPos);             // there is ground ahead of kPos and room to stand there
+    int FUN_14165c090(efd::Point3 kPos);                    // there is ground ahead of kPos and room to stand there (by value)
+    int FUN_14165a540();                                    // step onto the cube under / next to the actor
+    int FUN_14165b500(int nKind);                           // climb: 1 onto a wall ahead, 2 down the side of the cube below
     MS2Ptr<class CGemPetSkin> FUN_14165df00();              // the worn pet skin gem (feature 0x6c)
     MS2Ptr<class CGemSwim> FUN_14165e1b0();                 // the worn swim gem (feature 0x68)
     void FUN_141660ee0();                                   // the equipment finished loading (once: +0xd40)

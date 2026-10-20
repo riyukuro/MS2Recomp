@@ -172,6 +172,7 @@
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/ms2svrptr.h"
 #include "ms2/placeholder/cubeiteminfo.h"
+#include "ms2/placeholder/cube.h"
 #include "ms2/placeholder/csetitemmanager.h"
 #include "ms2/client/ms2/statemanager.h"
 #include "ms2/client/ms2/jobsystemcli.h"
@@ -349,17 +350,26 @@ void FUN_14015f050(CString& str, CAtlArray<CString>& aParts, const char* pszSep)
 CString FUN_141425540(int nGender, int nAction);                    // the default swim effect of an action (itemugcmesh.cpp)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                     // the item record of an id
 // The housing service, looked up from its registry cell (as guildmanager.cpp).
+// The housing service is CubeMapInformationService (efd::SmartPointer<CubeMapInformationService> handle).
 class Unk_PCHousingSvc
 {
 public:
     void FUN_1410cc160(int nKind);                                  // the cube build mode UI
+    Cube* FUN_1410b8f30(NiPoint3 kFrom, efd::Point3* pHit, float fRange);   // the cube under a point
+    Cube* FUN_1410b8a60(Unk_Int3 kCell);                            // the cube of a grid cell
+    Cube* FUN_1410b9080(Cube* pBase, int nOffset);                  // the neighbour cube (packed cell offset)
+    Cube* FUN_1410b8e60(void* pEntity);                             // the cube of an entity
+    int FUN_1410b9330(Cube* pCube, efd::Point3 kHit, float fStep, efd::Point3* pPos, efd::Point3* pRot, int* pnDir,
+        Cube** ppFound);                                            // the climb-on spot of a cube face
 };
+Unk_PCHousingSvc* FUN_1409670e0();                                  // TSingleton<CubeMapInformationService>::GetInstance
 class Unk_PCHousingSvcPtr
 {
 public:
     Unk_PCHousingSvcPtr(Unk_PCHousingSvc* p);                       // 0x1401cd0b0
     ~Unk_PCHousingSvcPtr();                                         // 0x1401cd150
     Unk_PCHousingSvc* FUN_1401cd1a0() const;                        // operator->
+    Unk_PCHousingSvc* FUN_140885310() const;                        // operator CubeMapInformationService*
     Unk_PCHousingSvc* m_p;
 };
 Unk_PCHousingSvc* FUN_1401cd040(char* pCell);
@@ -389,6 +399,8 @@ public:
     bool FUN_1416892f0(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);   // cast the ray
 };
 CPhysXHelper* FUN_1409f7ca0();
+extern float DAT_1439f8220;                                         // the climb reach (3)
+extern float DAT_1439f8224;                                         // the climb probe range (30)
 // The shadow quality settings (?\gameoption.cpp keeps the full view).
 class Unk_PCShadowCfg
 {
@@ -2951,7 +2963,7 @@ bool PC::FUN_141660120()
 }
 
 // @0x14165c090
-int PC::FUN_14165c090(const efd::Point3& kPos)
+int PC::FUN_14165c090(efd::Point3 kPos)
 {
     Unk_RayCastInfo kInfo;
     kInfo.m_origin = kPos + efd::Point3(0.0f, 0.0f, 54.0000038f);
@@ -3194,6 +3206,341 @@ void PC::FUN_1416616a0(unsigned int nDelay)
         m_n1068 = 0;
     }
     vfunc_42(m_b1070 ? 0.5f : 0.9f, false);
+}
+
+// @0x14165a540
+int PC::FUN_14165a540()
+{
+    efd::Point3 kPos;
+    efd::Point3 kRot;
+    Unk_PCHousingSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+    if (spSvc.FUN_140885310())
+    {
+        efd::Point3 kHit;
+        NiPoint3 kMy = vfunc_18();
+        Cube* pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kMy, &kHit, 0.0f);
+        if (pCube == 0)
+        {
+            NiPoint3 kTry = kMy;
+            kTry.y += 25.0f;
+            pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x += 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.y -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x -= 25.0f;
+                kTry.y += 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x += 25.0f;
+                kTry.y += 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x -= 25.0f;
+                kTry.y -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x += 25.0f;
+                kTry.y -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+        }
+        if (pCube != 0)
+        {
+            // the cell above the cube must be free
+            Unk_Int3 kCell = pCube->position;
+            kCell.z += 1;
+            Cube* pAbove = FUN_1409670e0()->FUN_1410b8a60(kCell);
+            if (pAbove != 0)
+                return 0;
+            efd::Point3 kDir(0.0f, 0.0f, 0.0f);
+            Cube* pFound = pCube;
+            egf::Entity* pSideA = 0;
+            egf::Entity* pSideB = 0;
+            egf::Entity** ppSide = &pSideA;
+            int nDir;
+            if (spSvc.FUN_1401cd1a0()->FUN_1410b9330(pCube, kHit, 25.0f, &kPos, &kRot, &nDir, &pFound))
+            {
+                Cube* pSide;
+                switch (nDir)
+                {
+                case 1:
+                    kDir.y = 1.0f;
+                    kDir.x = -1.0f;
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0xff);
+                    if (pSide != 0)
+                    {
+                        *ppSide = pSide->entity;
+                        ppSide = &pSideB;
+                    }
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0x100);
+                    if (pSide != 0)
+                        *ppSide = pSide->entity;
+                    break;
+                case 2:
+                    kDir.y = 1.0f;
+                    break;
+                case 3:
+                    kDir.y = 1.0f;
+                    kDir.x = 1.0f;
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 1);
+                    if (pSide != 0)
+                    {
+                        *ppSide = pSide->entity;
+                        ppSide = &pSideB;
+                    }
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0x100);
+                    if (pSide != 0)
+                        *ppSide = pSide->entity;
+                    break;
+                case 4:
+                    kDir.x = 1.0f;
+                    break;
+                case 5:
+                    kDir.y = -1.0f;
+                    kDir.x = 1.0f;
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 1);
+                    if (pSide != 0)
+                    {
+                        *ppSide = pSide->entity;
+                        ppSide = &pSideB;
+                    }
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0xff00);
+                    if (pSide != 0)
+                        *ppSide = pSide->entity;
+                    break;
+                case 6:
+                    kDir.y = -1.0f;
+                    break;
+                case 7:
+                    kDir.y = -1.0f;
+                    kDir.x = -1.0f;
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0xff);
+                    if (pSide != 0)
+                    {
+                        *ppSide = pSide->entity;
+                        ppSide = &pSideB;
+                    }
+                    pSide = spSvc.FUN_1401cd1a0()->FUN_1410b9080(pFound, 0xff00);
+                    if (pSide != 0)
+                        *ppSide = pSide->entity;
+                    break;
+                case 8:
+                    kDir.x = -1.0f;
+                    break;
+                }
+                kDir.Unitize();
+                // nothing may block the way from the cube's centre to the spot
+                NiPoint3 kEntPos;
+                FUN_1409618c0(pFound->entity.operator->(), 0xfd95ca52, kEntPos);
+                Unk_RayCastInfo kInfo;
+                kInfo.m_origin = kEntPos;
+                kInfo.m_origin.z = kPos.z - 20.0f;
+                kInfo.m_dir = kDir;
+                kInfo.m_maxDist = 150.0f;
+                kInfo.m_groups = 0x28b;
+                kInfo.m_20 = 0;
+                kInfo.m_28 = 0;
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                    return 0;
+                kInfo.m_origin = kEntPos;
+                kInfo.m_origin.z = kPos.z + 20.0f;
+                kInfo.m_groups = 0x28b;
+                kInfo.m_20 = 0;
+                kInfo.m_28 = 0;
+                efd::Point3 kCornerA = kPos;
+                kCornerA.x -= 25.0f;
+                kCornerA.y += 25.0f;
+                kCornerA.z += 20.0f;
+                efd::Point3 kCornerB = kPos;
+                kCornerB.x += 25.0f;
+                kCornerB.y += 25.0f;
+                kCornerB.z += 20.0f;
+                efd::Point3 kCornerC = kPos;
+                kCornerC.x -= 25.0f;
+                kCornerC.y -= 25.0f;
+                kCornerC.z += 20.0f;
+                efd::Point3 kCornerD = kPos;
+                kCornerD.x += 25.0f;
+                kCornerD.y -= 25.0f;
+                kCornerD.z += 20.0f;
+                kInfo.m_dir = kCornerA - kInfo.m_origin;
+                kInfo.m_maxDist = kInfo.m_dir.Unitize();
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                    return 0;
+                kInfo.m_dir = kCornerB - kInfo.m_origin;
+                kInfo.m_maxDist = kInfo.m_dir.Unitize();
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                    return 0;
+                kInfo.m_dir = kCornerC - kInfo.m_origin;
+                kInfo.m_maxDist = kInfo.m_dir.Unitize();
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                    return 0;
+                kInfo.m_dir = kCornerD - kInfo.m_origin;
+                kInfo.m_maxDist = kInfo.m_dir.Unitize();
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                    return 0;
+                vfunc_19(kPos);
+                vfunc_21(kRot);
+                FUN_14166d8b0(kRot.z);
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    }
+    return 0;
+}
+
+// @0x14165b500
+int PC::FUN_14165b500(int nKind)
+{
+    Unk_PCHousingSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
+    if (!spSvc.FUN_140885310())
+        return 0;
+    if (nKind == 1)
+    {
+        // a wall ahead (along +y or +x, whichever the actor faces first): step onto its top
+        efd::Point3 aDirs[2] = { efd::Point3::UNIT_Y, efd::Point3::UNIT_X };
+        if (vfunc_20().z < 135.0f)
+        {
+            aDirs[0] = efd::Point3::UNIT_X;
+            aDirs[1] = efd::Point3::UNIT_Y;
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            efd::Point3 kDir = aDirs[i];
+            Unk_RayCastInfo kInfo;
+            kInfo.m_origin = vfunc_18() + efd::Point3(0.0f, 0.0f, 90.0f);
+            kInfo.m_dir = kDir;
+            kInfo.m_maxDist = 25.0f + DAT_1439f8220 + DAT_1439f8224;
+            kInfo.m_groups = StateClimb::FUN_1417bc010();
+            if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+            {
+                kDir = -kInfo.m_hitNormal;
+                kInfo.m_origin = vfunc_18() + efd::Point3(0.0f, 0.0f, 90.0f);
+                kInfo.m_dir = kDir;
+                kInfo.m_maxDist = 25.0f + DAT_1439f8220 + DAT_1439f8224;
+                kInfo.m_groups = StateClimb::FUN_1417bc010();
+                if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0))
+                {
+                    if (spSvc.FUN_1401cd1a0()->FUN_1410b8e60(kInfo.m_hitEntity) != 0)
+                    {
+                        efd::Point3 kTarget = kInfo.m_hitPoint + kInfo.m_hitNormal * (25.0f + DAT_1439f8220)
+                            - efd::Point3(0.0f, 0.0f, 90.0f);
+                        if (!FUN_14165c090(kTarget))
+                            continue;
+                        vfunc_19(kTarget);
+                        FUN_14166d430(-kInfo.m_hitNormal, 1, 1);
+                        return 1;
+                    }
+                }
+            }
+        }
+    }
+    else if (nKind == 2)
+    {
+        // standing on a cube: climb down its open side
+        efd::Point3 kHit;
+        NiPoint3 kMy = vfunc_18();
+        Cube* pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kMy, &kHit, 0.0f);
+        if (pCube == 0)
+        {
+            NiPoint3 kTry = kMy;
+            kTry.y += 25.0f;
+            pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x += 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.y -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+            if (pCube == 0)
+            {
+                kTry = kMy;
+                kTry.x -= 25.0f;
+                pCube = spSvc.FUN_1401cd1a0()->FUN_1410b8f30(kTry, &kHit, 0.0f);
+            }
+        }
+        if (pCube != 0)
+        {
+            int aOffsets[2] = { 0xff00, 0xff };
+            efd::Point3 aDirs[2] = { efd::Point3::UNIT_Y, efd::Point3::UNIT_X };
+            for (int i = 0; i < 2; i++)
+            {
+                int nOffset = aOffsets[i];
+                efd::Point3 kDir = aDirs[i];
+                if (spSvc.FUN_1401cd1a0()->FUN_1410b9080(pCube, nOffset) == 0)
+                {
+                    efd::Point3 kFrom = kMy;
+                    kFrom += -kDir * 25.0f;
+                    kFrom.z -= 91.0f;
+                    Unk_RayCastInfo kInfo;
+                    kInfo.m_origin = kFrom;
+                    kInfo.m_dir = kDir;
+                    kInfo.m_maxDist = 50.0f;
+                    kInfo.m_groups = StateClimb::FUN_1417bc010();
+                    if (FUN_1409f7ca0()->FUN_1416892f0(&kInfo, 0) && kInfo.m_hitEntity != 0
+                        && kInfo.m_hitEntity == (egf::Entity*)pCube->entity)
+                    {
+                        efd::Point3 kAbove = kMy;
+                        kAbove += -kDir * 25.0f;
+                        Unk_RayCastInfo kDown;
+                        kDown.m_origin = kAbove;
+                        kDown.m_dir = -efd::Point3::UNIT_Z;
+                        kDown.m_maxDist = 90.0f;
+                        kDown.m_groups = StateClimb::FUN_1417bc010() | 0x100;
+                        if (!FUN_1409f7ca0()->FUN_1416892f0(&kDown, 0))
+                        {
+                            efd::Point3 kTarget = kInfo.m_hitPoint + kInfo.m_hitNormal * (25.0f + DAT_1439f8220);
+                            kTarget += efd::Point3(0.0f, 0.0f, 105.0f);
+                            if (!FUN_14165c090(kTarget))
+                                return 0;
+                            vfunc_19(kTarget);
+                            FUN_14166d430(-kInfo.m_hitNormal, 1, 1);
+                            return 1;
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+    return 0;
 }
 
 // ---- end of code ----
