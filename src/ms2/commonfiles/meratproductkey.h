@@ -30,6 +30,6 @@ struct Unk_MeratProductKey
     bool operator<(const Unk_MeratProductKey& other) const;      // 0x140899d90 (body in ugcdef.cpp)
 
     int m_nPremiumId;                                       // +0x00
-    __int64 m_nUgcId;                                       // +0x08
+    unsigned __int64 m_nUgcId;                              // +0x08 (unsigned: the key text formats it as ULONG_LONG, 0x1409b0470)
 };
 MS2_CHECK_SIZE(Unk_MeratProductKey, 0x10);

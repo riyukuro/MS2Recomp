@@ -35,6 +35,18 @@ public:
     char FUN_140d66e60() { return m_b70; }
     int FUN_1409acbe0(int nCurrency);                               // 0x1409acbe0 the pay type of a currency
 
+    // ?\asbilldata.cpp: fill the row from a product / basket line / UGC option (names invented).
+    void FUN_1409ac360(MS2Ptr<CMeratMarketProduct> spProduct, int nOption, int nCurrency);   // 0x1409ac360
+    void FUN_1409ac5e0(MS2Ptr<class CMeratMarketBasket> spBasket);   // 0x1409ac5e0 a basket line
+    void FUN_1409ac6f0(CMeratMarketPremiumProduct* pProduct, int nOption, int nCurrency);    // 0x1409ac6f0 a premium product
+    void FUN_1409aca00(CMeratMarketPremiumProduct* pOption, MS2Ptr<CMeratMarketProduct> spProduct);   // 0x1409aca00
+    bool FUN_1409ad360(MS2Ptr<CMeratMarketProduct> spProduct, int nOption, int nCurrency);   // 0x1409ad360 the options only
+    __int64 FUN_1409adb70(const CString& strName, ASObj* pData);   // 0x1409adb70 a number member of a row object
+    void FUN_1409b03d0(unsigned __int64 n);                         // 0x1409b03d0 m_n58
+    void FUN_1409b03f0(MS2Ptr<CMeratMarketProduct> spProduct);      // 0x1409b03f0 m_spProduct
+    void FUN_1409b0430(int n);                                      // 0x1409b0430 m_n78 (the chosen option)
+    void FUN_1409b0450(bool b);                                     // 0x1409b0450 m_b70 (star points shown)
+
     int m_n50;                                                      // +0x50
     unsigned __int64 m_n58;                                         // +0x58
     MS2Ptr<CMeratMarketProduct> m_spProduct;                        // +0x60 what the row was built from
