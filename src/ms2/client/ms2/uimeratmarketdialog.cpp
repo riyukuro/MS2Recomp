@@ -7,7 +7,6 @@
 // MS2-PIN: ??$?0VUIMeratMarketDialog@@@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x141311070 ; prop
 // MS2-PIN: ??$?0PEAVUIMeratMarketDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z$0A@@?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ82@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x1413111d0 ; prop
 // MS2-PIN: ??$?0VUIMeratMarketDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x141311210 ; prop
-// MS2-PIN: ??0?$MS2Ptr@VUnk_MeratBasketEntry@@@@QEAA@AEBV0@@Z 0x141311780 ; prop
 // MS2-PIN: ??$?8PEAVUIMeratMarketDialog@@P80@EAAXAEAVAScript@@@Z@std@@YA_NAEBU?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEAVAScript@@@Z@0@0@Z 0x141311830 ; prop
 // MS2-PIN: ??$?8PEAVUIMeratMarketDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x1413118a0 ; prop
 // MS2-PIN: ??$?8PEAVUIMeratMarketDialog@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x141311910 ; prop
@@ -23,14 +22,14 @@
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x141313bc0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@QEAA@AEBV01@@Z 0x141313c60 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@QEAA@AEBV01@@Z 0x141313e40 ; prop
-// MS2-PIN: ??0?$MS2Ptr@VCItem@@@@QEAA@PEAVCItem@@@Z 0x141314120 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VTDirtyPremiumSale@UIMeratMarketCommon@@@@QEAA@AEBV0@@Z 0x141313f00 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VUIEquipIconContainer@@@@QEAA@PEAVUIEquipIconContainer@@@Z 0x141314120 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAA@XZ 0x141314540 ; prop
-// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAA@XZ 0x141314560 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA@XZ 0x141314580 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEAA@XZ 0x1413145a0 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEAA@XZ 0x1413145e0 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@UEAA@XZ 0x141314600 ; prop
-// MS2-PIN: ??1?$MS2Ptr@VTMeratMarketBillDataParam@@@@QEAA@XZ 0x1413146b0 ; prop
+// MS2-PIN: ??1?$MS2Ptr@VASDialog@@@@QEAA@XZ 0x1413146e0 ; prop
 // MS2-PIN: ??8?$MS2Ptr@VMeratMarketShopBannerInfo@@@@QEBA_NPEAVMeratMarketShopBannerInfo@@@Z 0x141314e00 ; unique
 // MS2-PIN: ?get@?$MS2Ptr@VCAvatarPackageEquip@@@@QEBAPEAVCAvatarPackageEquip@@XZ 0x141314e80 ; unique
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEAVAScript@@@Z@std@@@?$Delegate@$$A6AXAEAVAScript@@@Z@@UEAAPEAXI@Z 0x141314f30 ; prop
@@ -43,10 +42,7 @@
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEAAPEAXI@Z 0x1413150f0 ; prop
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@UEAAPEAXI@Z 0x141315130 ; prop
 // MS2-PIN: ?GetIconMap@UIEquipIconContainer@@QEAAPEAV?$CAtlMap@HV?$MS2Ptr@VASEquipIcon@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VASEquipIcon@@@@@3@@ATL@@XZ 0x1413157e0 ; unique
-// MS2-PIN: ?AddRef@?$MS2Ptr@VASBillData@@@@AEBAXXZ 0x141316360 ; prop
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VAScript@@@@AEBAXPEAX@Z 0x141316550 ; prop
-// MS2-PIN: ?Release@?$MS2Ptr@VCMeratMarketProduct@@@@AEAAXXZ 0x141316680 ; prop
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCMeratMarketProduct@@@@AEAAXPEAX@Z 0x141316800 ; prop
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCMeratMarketProduct@@@@AEBAXPEAX@Z 0x141316550 ; prop
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEAVAScript@@@Z@std@@@?$Delegate@$$A6AXAEAVAScript@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1413168b0 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141316910 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141316970 ; unique
@@ -137,6 +133,7 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/uipopupmenu.h"
 #include "ms2/placeholder/cproxygameobject.h"
+#include "ms2/commonfiles/itemdata.h"
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/xmlattr.h"
@@ -483,6 +480,9 @@ class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* p
 Unk_MmFiles* FUN_140166420();                                               // the resource file system
 CLogString* FUN_140166440();
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
+Unk_RideePtr FUN_1407844b0(int nRideeId);                               // the ridee table row of an id
+int FUN_141b48430(int nKind);                                           // the angle set of an avatar kind
+float FUN_141b48480(int nSet, int nIndex);                              // the default angle
 CStringW FUN_1418fec00(int nFormat, __int64 nTime, int nZone);              // a time text
 CStringW FUN_141277b90(const CStringW& str);
 CStringW FUN_140ec25e0(__int64 nTime);                                      // UIMeratMarketCommon: the date text
@@ -4303,6 +4303,84 @@ void UIMeratMarketDialog::SetSlotKind(int nKind)
         BOOL bSelected = i == nKind;
         GetEquipIcon(i)->FUN_140e2a6e0(bSelected);
     }
+}
+
+// Shows / hides the preview avatar: with bCamera the model view camera is set to the preset of the avatar kind (the
+// target follows the object, a ridee is scaled by its view size), and a shown avatar turns to the default angle.
+// @0x141308540
+void UIMeratMarketDialog::EquipPreview(UIAvatarBase* pAvatar, MS2Ptr<CItemData> spData, bool bA, bool bB)
+{
+    if (pAvatar == 0)
+        return;
+    GameObject* pObject = pAvatar->vfunc_23();
+    if (pObject == 0)
+        return;
+    float fAngle = 0.0f;
+    int nKind = pAvatar->FUN_1418b9ba0();
+    pAvatar->FUN_1418b9df0(bA, true);
+    if (bB)
+    {
+        Unk_ModelViewCamera kCamera;
+        if (nKind == 2)
+        {
+            kCamera = m_camCube;
+            kCamera.m_kTarget += pObject->vfunc_18();
+            kCamera.m_kPosition += kCamera.m_kTarget;
+            fAngle = FUN_141b48480(6, 0);
+        }
+        else if (nKind == 3)
+        {
+            kCamera = m_camPet;
+            fAngle = FUN_141b48480(9, 0);
+            UIAvatarRidee* pRidee = dynamic_cast<UIAvatarRidee*>(pAvatar);
+            if (pRidee != 0 && (CItemData*)spData != 0)
+            {
+                float fScale = 1.1f;
+                Unk_RideePtr spRow = FUN_1407844b0(spData->FUN_14053dd80());
+                if (spRow.get())
+                    fScale = spRow->m_fViewScale * 0.018f;
+                kCamera.m_fMinDistance = 300.0f;
+                kCamera.m_kTarget += pObject->vfunc_18();
+                kCamera.m_kPosition = kCamera.m_kPosition * fScale;
+            }
+        }
+        else if (nKind == 4)
+        {
+            kCamera = m_camPet;
+            fAngle = FUN_141b48480(0xb, 0);
+            kCamera.m_fMinDistance = 300.0f;
+            kCamera.m_kTarget += pObject->vfunc_18();
+            kCamera.m_kPosition = kCamera.m_kPosition;
+        }
+        else
+        {
+            kCamera = m_camChar;
+            kCamera.m_fMinDistance = 1000.0f;
+            kCamera.m_nSteps = 5;
+            kCamera.m_kTarget += pObject->vfunc_18();
+            kCamera.m_kPosition += kCamera.m_kTarget;
+            if ((CItemData*)spData != 0 && (FUN_141b48710(spData) || spData->FUN_14053cd10()))
+                kCamera.m_nStepsDone = 2;
+            fAngle = FUN_141b48480(1, 0);
+        }
+        if (m_spModelView)
+            m_spModelView->vfunc_13(kCamera);
+    }
+    else
+    {
+        int nSet = FUN_141b48430(nKind);
+        fAngle = FUN_141b48480(nSet, 0);
+    }
+    if (bA && (spData ? true : false))
+    {
+        int nGender = 3;
+        PC* pPC = efd::DynamicCast<PC>(pObject);
+        if (pPC != 0)
+            nGender = FUN_141658e60(pPC);
+        fAngle = FUN_141b48480(spData->FUN_14053c5c0(), spData->FUN_14053eba0()->FUN_14054b400());
+    }
+    if (bA)
+        pAvatar->vfunc_19(fAngle, 0);
 }
 
 // @0x141308ae0
