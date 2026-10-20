@@ -23,5 +23,6 @@ public:
     void FUN_1422e0920(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // "change" listener
     CStringW FUN_1422e0b00();                                           // the text
     MS2Ptr<ASTextField> FUN_1422e1490();                                // the text field child
+    void FUN_1422e0d60(int nMaxChars);                                  // the maximum length
 };
 MS2_CHECK_SIZE(ASTextInput, 0x88);

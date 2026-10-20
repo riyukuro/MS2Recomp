@@ -339,6 +339,7 @@ public:
     void FUN_1404cfe60(const CStringW& name,__int64 value);
     unsigned __int64 FUN_1404cff20();
     int FUN_1404d0020();
+    Unk_PayloadPtr<CGuildMember> FUN_1404d00a0();   // the same function as a value return: the master (uiguilddialog.cpp)
     Unk_GuildRef* FUN_1404d00a0(Unk_GuildRef* ret); void FUN_1404d0130(Unk_GuildRef* v);
     int FUN_1404d01b0(CStringW name);
     void FUN_1404d0330(void* out); void FUN_1404d0420(void* out);
@@ -346,6 +347,7 @@ public:
     int FUN_1404d0600(CStringW name,unsigned mask);
     unsigned FUN_1404d06a0(CStringW name);
     Unk_GuildRef* FUN_1404d0860(Unk_GuildRef* ret,int index);
+    Unk_PayloadPtr<CGuildGrade> FUN_1404d0860(int index);   // the same function as a value return (uiguilddialog.cpp)
     int FUN_1404d0990(int index,Unk_GuildRef* grade);
     CStringW FUN_1404d0af0(int index);
     int FUN_1404d0c00(); int FUN_1404d0d00(); int FUN_1404d0df0(); int FUN_1404d0ee0();

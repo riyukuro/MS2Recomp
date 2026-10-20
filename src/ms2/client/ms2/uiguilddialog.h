@@ -47,25 +47,37 @@ public:
 
     MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);  // 0x140c02870 bind a button bar child ("m_category")
     void FUN_141968140(CInPacket& packet);                      // guild packet 0x8a: refresh the buttons on 0x76 / 0x77
-    void FUN_141969870(MS2Ptr<ASUIComponent> spPage, bool b);   // a page's slot 4
+    void FUN_141969040(const CStringW& strCategory);            // open a category's page and show it
+    void FUN_141969290(const CStringW& strCategory);            // show a category's page
+    void FUN_141969870(MS2Ptr<ASUIComponent> spPage, bool b);
+    void FUN_1419698f0();                                       // hide every page   // a page's slot 4
     bool FUN_141969d10(const CString& strName, MS2Ptr<ASUIComponent>& spPage);   // bind (create) a page
     void FUN_141969e80();                                       // open "guild_create_page"
     void FUN_141969ee0();                                       // open "guild_join_page"
+    void FUN_141969f60();                                       // open "guild_info_page"
+    void FUN_14196a090();                                       // open "guild_member_page"
+    void FUN_14196a1b0();                                       // open "guild_manage_page"
     void FUN_14196a320();                                       // open "guild_champion_ship_page"
     void FUN_14196a3b0();                                       // open "guild_pvp_history_page"
+    void FUN_14196a440();                                       // open "guild_accept_request_page"
     void FUN_14196a590();                                       // open "guild_skill_page" (type 0)
     void FUN_14196a640();                                       // open "guild_skill_page" (type 1)
+    void FUN_14196a6f0();                                       // open "guild_event_page" (v2525: CreateEventPage)
     void FUN_14196b0e0();                                       // open "guild_house_page"
     void FUN_14196b160();                                       // open "guild_storage_page"
     void FUN_14196b1d0();                                       // open "guild_raid_page"
     void FUN_14196b250();
     void FUN_14196b2f0();
     void FUN_14196b3a0();
+    void FUN_14196b620();
     void FUN_14196c1d0();
     void FUN_14196c860();
-    void FUN_14196cd30();
+    void FUN_14196cd30();                                       // "setGradeInfo"
+    void FUN_14196cf80();                                       // the championship page's guild text
     void FUN_14196d660();                                       // refresh the join page
     void FUN_14196da70();                                       // the request member page
+    void FUN_14196e0a0();                                       // "setGuildExp"
+    void FUN_14196e230(bool bEvent);                            // "setGuildExpEvent"
     void FUN_14196e2c0();                                       // "setGuildFund"
     void FUN_14196e590();
     void FUN_14196f830();
@@ -81,11 +93,15 @@ public:
     bool FUN_141974c40(int nResult, const CMsgBoxData& box);
     bool FUN_141974c90(int nResult, const CMsgBoxData& box);
     void FUN_141974ce0();                                       // bind the web guide button and build the static pages
-    void FUN_141974e70(const CStringW& strName);                // request by name
+    bool FUN_141974d90(const CStringW& strName);                // "createGuild"
+    bool FUN_141974df0(const CStringW& strText);                // "changeNotify"
+    bool FUN_141974e70(const CStringW& strName);                // request by name ("changeMemo")
     bool FUN_141974ea0();                                       // request a refresh
     bool FUN_1419754b0();                                       // open the realtime rank page
     bool FUN_141975500();                                       // open the rank page
     bool FUN_141975550();                                       // open the pvp rank page
+    bool FUN_1419751e0();                                       // "sendMail"
+    bool FUN_1419755a0(const CStringW& strName);                // "addMember"
     void FUN_141975620();
     void FUN_1419758a0();
     void FUN_141975c80();

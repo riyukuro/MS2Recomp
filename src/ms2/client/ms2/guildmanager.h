@@ -41,6 +41,7 @@ public:
     void FUN_1413b5f90();
     void FUN_1413b6110();
     int FUN_1413b6160();
+    CStringW FUN_14197df60() { return m_targetGuildName; }   // inline COMDAT (uiguilddialog.cpp: the championship page)
     int FUN_1413b61a0();
     MS2Ptr<CGuildMember> FUN_1413b6200(__int64 characterId);
     void FUN_1413b6370(CInPacket& packet);
