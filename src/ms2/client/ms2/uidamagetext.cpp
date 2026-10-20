@@ -11,6 +11,7 @@
 #include "ms2/client/ms2/gameoptionbattle.h"
 #include "ms2/client/ms2/gameoptioninterface.h"
 #include "ms2/placeholder/cnpc.h"
+#include "ms2/client/ms2/npcdatacli.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/commonfiles/itemgem.h"
@@ -27,6 +28,13 @@
 class Unk_WsC_GameObj : public PCBase {};                                   // the actor lookups of WorldService
 class Unk_MyPCEquip : public PCGemEquip {};                                 // PC::FUN_14165f460: the equipment
 class Unk_PCBaseBuffs { public: unsigned int FUN_140970b10(); };            // the buff flags of an actor
+// CNpc::FUN_141093270 returns the client row: the exe calls the MS2Ptr<NpcDataCli> get / operator-> (cnpc.h types it as
+// MS2Ptr<CNpcData>).
+class Unk_DtNpc : public CNpc { public: MS2Ptr<NpcDataCli> FUN_141093270(); };
+Unk_DtNpc* FUN_14096e110(GameObject* p);                                    // as an npc (0 for a player)
+PC* FUN_140974230(GameObject* p);                                           // as a player character (0 otherwise)
+class Unk_DtParty { public: int FUN_14162ae20(__int64 nCharId); };          // CPartyManager: a party member (int return)
+Unk_DtParty* FUN_1409670d0();                                               // the party manager
 // The "RemoveAni" event dispatched by a dying number (an AS event object; 0x40 bytes, no array: the exe has no GS cookie).
 class Unk_DtAniEvent
 {
@@ -117,7 +125,9 @@ bool UIDamageText::DamageInfo::s_bClearing;
 template <class T>
 void FUN_141917ab0(POSITION pos, POSITION* pLast, ATL::CAtlList<T>& list)
 {
-    if (pos != 0 && !list.IsEmpty())
+    if (pos == 0)
+        return;
+    if (!list.IsEmpty())
     {
         if (pos == *pLast)
         {
@@ -600,6 +610,75 @@ float UIDamageText::FUN_141913af0(GameObject* pTarget)
 float UIDamageText::FUN_141913b80(const NiPoint3& kPos)
 {
     return FUN_1412762d0(kPos);
+}
+
+// @0x141913bd0
+bool UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
+{
+    if (nGrade == 4)
+        return false;
+    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    if (pPlayer == 0)
+        return false;
+    if (m_pBattleOption == 0)
+        return false;
+    bool bShow = false;
+    unsigned int nCasterMask = 0;
+    unsigned int nTargetMask = 0;
+    int nTargetId = pTarget->FUN_14123c580();
+    int nPlayerId = pPlayer->FUN_14123c580();
+    CNpc* pSummon = static_cast<CNpc*>(static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd13a0(nCasterId)));
+    if (pSummon != 0)
+        nCasterId = pSummon->FUN_141094f40();
+    if (nTargetId == nPlayerId)
+        nTargetMask = 1;
+    else
+    {
+        PC* pPC = FUN_140974230(pTarget);
+        if (pPC != 0)
+            nTargetMask = FUN_1409670d0()->FUN_14162ae20(pPC->FUN_141656a80()) ? 2 : 4;
+    }
+    if ((unsigned int)nCasterId > 0)
+    {
+        if (nCasterId == nTargetId)
+            nCasterMask = nTargetMask;
+        else if (nCasterId == nPlayerId)
+            nCasterMask = 1;
+        else
+        {
+            PCBase* pCaster = WorldService::GetInstance()->FUN_141bd1200(nCasterId);
+            PC* pPC = FUN_140974230(pCaster);
+            if (pPC != 0)
+                nCasterMask = FUN_1409670d0()->FUN_14162ae20(pPC->FUN_141656a80()) ? 2 : 4;
+            else
+            {
+                Unk_DtNpc* pNpc = FUN_14096e110(pCaster);
+                if (pNpc != 0 && pNpc->vfunc_116() > 0)
+                {
+                    if (pNpc->FUN_141094f40() == nPlayerId)
+                        bShow = true;
+                    else if (pNpc->FUN_141093270().get() != 0)
+                        bShow = pNpc->FUN_141093270()->m_bAttackDamage ? true : false;
+                }
+            }
+        }
+    }
+    if (bShow)
+        return true;
+    bool bRecover = FUN_141914530(nGrade) == 1;
+    if (bRecover)
+    {
+        if (nTargetMask & 1)
+            return m_pBattleOption->m_b[1];
+        else if (nCasterMask & 1)
+            return m_pBattleOption->m_b[0];
+        else if ((nCasterMask & 2) || (nTargetMask & 2))
+            return m_pBattleOption->m_b[2];
+        return false;
+    }
+    int nCasterFlags = m_pBattleOption->m_n08;
+    int nTargetFlags = m_pBattleOption->m_n0c;
+    return (nTargetMask & nTargetFlags) != 0 || (nCasterMask & nCasterFlags) != 0;
 }
 
 // @0x141914020
