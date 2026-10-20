@@ -12,6 +12,7 @@
 #include "vipgoods.h"
 #include "logstring.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/wcformat.h"   // FUN_14028dfa0: string table text, formatted
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -38,8 +39,6 @@ void FUN_1402a5010(const CString& str, ATL::CAtlArray<__int64>* pOut, const char
 unsigned char FUN_1401d1320(CCacheData*);
 CString FUN_14016a5c0(const char* psz, int n);
 CStringW FUN_14028b8e0(const CStringW& strKey);                     // string table text
-CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);   // string table text, formatted
-FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 CStringW FUN_140b8ec90(CMsTime time);                               // date text
 CStringW FUN_1418fec00(int nType, __int64 nValue, int);        // money text by pay type
 CStringW FUN_1418fef90(int nType, __int64 nValue);
