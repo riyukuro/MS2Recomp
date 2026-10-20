@@ -20,6 +20,7 @@ extern "C" size_t (__cdecl* __imp_wcslen)(const wchar_t*);
 
 #include <cstddef>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <type_traits>
 
@@ -114,7 +115,8 @@ public:
 #define FMT_MAKE_VALUE(Type, field, TYPE) \
     FMT_MAKE_VALUE_(Type, field, TYPE, value)
 
-    FMT_MAKE_VALUE(bool, int_value, BOOL)
+    // MS2: bool formats as INT (type 1: MakeValue::type(bool) 0x14028b5a0, commonstruct.cpp).
+    FMT_MAKE_VALUE(bool, int_value, INT)
     FMT_MAKE_VALUE(short, int_value, INT)
     FMT_MAKE_VALUE(unsigned short, uint_value, UINT)
     FMT_MAKE_VALUE(int, int_value, INT)
@@ -271,14 +273,26 @@ private:
     const Char* start_;                                             // +0x20
 };
 
-// MS2-FUNCTIONAL: enum customization preserves numeric rendering without unused scratch storage.
-// Verified for the wide log-category instance at 0x140657f80.
+// fmt's ostream formatting of a custom argument with the MS2 enum shortcut in front: the stream branch is dead
+// code for enums but still emitted at /Od (exe 0x140657f80, 0x141785c80, 0x140e11560: 282 bytes).
 template<class Char, class T>
 inline void format_arg(BasicFormatter<Char>& formatter, const Char*& format, const T& value)
 {
     internal::Arg arg;
-    arg.int_value = static_cast<int>(value);
-    arg.type = internal::Arg::INT;
+    internal::Value& arg_value = arg;
+    if (std::is_enum<T>::value)
+    {
+        arg.int_value = static_cast<int>(value);
+        arg.type = internal::Arg::INT;
+    }
+    else
+    {
+        std::basic_ostringstream<Char> os;
+        os << static_cast<int>(value);
+        std::basic_string<Char> str = os.str();
+        arg_value = internal::MakeValue<BasicFormatter<Char> >(str);
+        arg.type = internal::Arg::STRING;
+    }
     format = formatter.format(format, arg);
 }
 

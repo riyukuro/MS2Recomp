@@ -906,7 +906,6 @@ const char* FUN_141788f10(FMOD_RESULT nResult)
 }
 
 // Out-of-unit callees of the manager.
-std::string& FUN_1401d2950(std::string& str);                       // normalises a group path (lower case, slashes)
 CString FUN_14038f6d0(const CString& strA, const char* pszB);        // operator+
 void FUN_1403b0310(std::vector<CString>* pVec, const CString& rItem);   // push_back
 void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat);
@@ -1506,19 +1505,21 @@ FMOD::EventGroup* CSoundEventMgr::FUN_14177d6e0(const char* pszName, int bLoad)
 {
     if (m_bReady)
     {
-        std::string strKey(pszName);
-        std::map<std::string, FMOD::EventGroup*>::iterator it = m_mapGroups.find(FUN_1401d2950(strKey));
-        if (it != m_mapGroups.end())
-            return it->second;
-        FMOD::EventGroup* pGroup;
-        FMOD_RESULT nResult = m_pEventSystem->getGroup(pszName, false, &pGroup);
-        if (nResult == FMOD_OK && pszName)
+        std::map<std::string, FMOD::EventGroup*>::iterator it = m_mapGroups.find(pszName);
+        if (it == m_mapGroups.end())
         {
-            if (bLoad)
-                pGroup->loadEventData(FMOD_EVENT_RESOURCE_STREAMS_AND_SAMPLES, FMOD_EVENT_DEFAULT);
-            m_mapGroups.insert(std::make_pair(pszName, pGroup));
-            return pGroup;
+            FMOD::EventGroup* pGroup;
+            FMOD_RESULT nResult = m_pEventSystem->getGroup(pszName, false, &pGroup);
+            if (nResult == FMOD_OK && pszName)
+            {
+                if (bLoad)
+                    pGroup->loadEventData(FMOD_EVENT_RESOURCE_STREAMS_AND_SAMPLES, FMOD_EVENT_DEFAULT);
+                m_mapGroups.insert(std::make_pair(pszName, pGroup));
+                return pGroup;
+            }
         }
+        else
+            return it->second;
     }
     return 0;
 }
@@ -1526,21 +1527,21 @@ FMOD::EventGroup* CSoundEventMgr::FUN_14177d6e0(const char* pszName, int bLoad)
 // @0x14177d860
 void CSoundEventMgr::FUN_14177d860(const char* pszName)
 {
-    if (m_bReady == 0)
-        return;
-    std::string strKey(pszName);
-    std::map<std::string, FMOD::EventGroup*>::iterator it = m_mapGroups.find(FUN_1401d2950(strKey));
-    if (it != m_mapGroups.end())
+    if (m_bReady)
     {
-        FMOD::EventGroup* pGroup = it->second;
-        pGroup->freeEventData(0, true);
-        m_mapGroups.erase(it);
-    }
-    else
-    {
-        FMOD::EventGroup* pGroup;
-        if (m_pEventSystem->getGroup(pszName, false, &pGroup) == FMOD_OK)
+        std::map<std::string, FMOD::EventGroup*>::iterator it = m_mapGroups.find(pszName);
+        if (it == m_mapGroups.end())
+        {
+            FMOD::EventGroup* pGroup;
+            if (m_pEventSystem->getGroup(pszName, false, &pGroup) == FMOD_OK)
+                pGroup->freeEventData(0, true);
+        }
+        else
+        {
+            FMOD::EventGroup* pGroup = it->second;
             pGroup->freeEventData(0, true);
+            m_mapGroups.erase(it);
+        }
     }
 }
 
