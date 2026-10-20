@@ -151,12 +151,6 @@ void FUN_14088e140(Unk_DateParts* pDate, __int64 nTime);
 // The CUgcManager takes the picked hours as CRBMap<int, int> and the day as a record of its own (ugcmanager.cpp#4).
 struct Unk_BannerDay { int m_0; int m_4; int m_nDate; };
 
-// The reservations of the banner of the upload viewer (the post at +0x18 of CUgcViewerBanner).
-static CUgcBannerPost& Unk_ViewerPost(CUgcViewerBanner* pViewer)
-{
-    return *reinterpret_cast<CUgcBannerPost*>(reinterpret_cast<char*>(pViewer) + 0x18);
-}
-
 // @0x141b36aa0
 inline Scaleform::GFx::Value Unk_UgcScript::FUN_141b36aa0(const char* szMethod, int n, ASArray& arr)
 {
@@ -526,13 +520,11 @@ int UIUGCBannerDialog::FUN_141b35540(MS2Ptr<CUgcPreReserve> spReserve)
     IUgcViewer* pViewer = spUpload->m_spViewer.get();
     if (pViewer == 0)
         return 0x11;
-    POSITION pos = spReserve->m_reserves.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = spReserve->m_reserves.GetHeadPosition(); pos != 0; spReserve->m_reserves.GetNext(pos))
     {
         MS2Ptr<CUgcBannerReserve> spBanner = spReserve->m_reserves.GetValueAt(pos);
         if (spBanner.get() != 0)
-            Unk_ViewerPost(static_cast<CUgcViewerBanner*>(pViewer)).m_reserves.SetAt(spBanner->GetKey(), spBanner);
-        spReserve->m_reserves.GetNext(pos);
+            reinterpret_cast<CUgcBannerPost*>(reinterpret_cast<char*>(pViewer) + 0x18)->m_reserves.SetAt(spBanner->GetKey(), spBanner);
     }
     m_1f8.RemoveAll();
     FUN_14052d220()->FUN_141882020();
