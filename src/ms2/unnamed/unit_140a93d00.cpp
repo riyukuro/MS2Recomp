@@ -6,7 +6,44 @@
 // MS2-UNIT: unit_140a93d00
 // MS2-RANGE: 0x1400c4e10-0x1400c5120 .text$di
 // MS2-RANGE: 0x140a93d00-0x140aaadb0 .text$mn
+// MS2-PIN: ?Finalize@ChromaManagerDummy@ChromaSDK@@UEAAXXZ 0x140aaa8b0
+// MS2-PIN: ?GetKeyboardKey@ChromaManagerDummy@ChromaSDK@@UEAAHH@Z 0x140aaaac0
+// MS2-PIN: ?DeleteReservedEffects@ChromaManagerDummy@ChromaSDK@@UEAAXXZ 0x140aaaa80
+// MS2-PIN: ?ReserveDeleteEffect@ChromaManagerDummy@ChromaSDK@@UEAAXU_GUID@@@Z 0x140aaab10
+// MS2-PIN: ?OnKeyName@ChromaManagerDummy@ChromaSDK@@UEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z 0x140aaa900
+// MS2-PIN: ?OnKeySkill@ChromaManagerDummy@ChromaSDK@@UEAAXH_N@Z 0x140aaa910
+// MS2-PIN: ?ResetKeys@ChromaManagerDummy@ChromaSDK@@UEAAX_N@Z 0x140aaaa30
+// MS2-PIN: ?RefreshKeys@ChromaManagerDummy@ChromaSDK@@UEAAXXZ 0x140aaab00
+// MS2-PIN: ?SetState@ChromaManagerDummy@ChromaSDK@@UEAAXH@Z 0x140aaa920
+// MS2-PIN: ?GetState@ChromaManagerDummy@ChromaSDK@@UEAAHXZ 0x140aaaab0
+// MS2-PIN: ?Pause@ChromaManagerDummy@ChromaSDK@@UEAAXXZ 0x140aaaae0
+// MS2-PIN: ?Resume@ChromaManagerDummy@ChromaSDK@@UEAAXXZ 0x140aaab30
+// MS2-PIN: ?SetColorMode@ChromaManagerDummy@ChromaSDK@@UEAAXH@Z 0x140aaaaf0
+// MS2-PIN: ?GetColor@ChromaManagerDummy@ChromaSDK@@UEAAKH@Z 0x140aaaad0
+// MS2-PIN: ?SetCooldown@ChromaManagerDummy@ChromaSDK@@UEAAXHH_JM@Z 0x140aaaa50
+// MS2-PIN: ?ResetCooldown@ChromaManagerDummy@ChromaSDK@@UEAAXH@Z 0x140aaaa40
+// MS2-PIN: ?CreateEffect@ChromaManagerDummy@ChromaSDK@@UEAAJU_GUID@@W4EFFECT_TYPE@2@PEAXPEAU3@@Z 0x140aaa950
+// MS2-PIN: ?CreateChromaLinkEffect@ChromaManagerDummy@ChromaSDK@@UEAAJHPEAXPEAU_GUID@@@Z 0x140aaa930
+// MS2-PIN: ?CreateHeadsetEffect@ChromaManagerDummy@ChromaSDK@@UEAAJHPEAXPEAU_GUID@@@Z 0x140aaa970
+// MS2-PIN: ?CreateKeyboardEffect@ChromaManagerDummy@ChromaSDK@@UEAAJHPEAXPEAU_GUID@@@Z 0x140aaa990
+// MS2-PIN: ?CreateKeypadEffect@ChromaManagerDummy@ChromaSDK@@UEAAJHPEAXPEAU_GUID@@@Z 0x140aaa9b0
+// MS2-PIN: ?CreateMouseEffect@ChromaManagerDummy@ChromaSDK@@UEAAJHPEAXPEAU_GUID@@@Z 0x140aaa9d0
+// MS2-PIN: ?CreateMousepadEffect@ChromaManagerDummy@ChromaSDK@@UEAAJHPEAXPEAU_GUID@@@Z 0x140aaa9f0
+// MS2-PIN: ?SetEffect@ChromaManagerDummy@ChromaSDK@@UEAAJU_GUID@@@Z 0x140aaaa20
+// MS2-PIN: ?DeleteEffect@ChromaManagerDummy@ChromaSDK@@UEAAJU_GUID@@@Z 0x140aaaa10
+// MS2-PIN: ?PlayEffect@ChromaManagerDummy@ChromaSDK@@UEAAJU_GUID@@@Z 0x140aaab20
+// MS2-PIN: ?RemoveEffect@ChromaManagerDummy@ChromaSDK@@UEAAJU_GUID@@@Z 0x140aaaa70
+// MS2-PIN:  0x
+// MS2-PIN: tools/progress.py 0x:46
+// MS2-PIN: ??_7ChromaManagerImpl@ChromaSDK@@6BIChromaManager@1@@ 0x142dcfa20
+// MS2-PIN: memcpy_s 0x140aaab40
+// MS2-PIN: memmove_s 0x140aaac90
 #define MS2_THIS_FILE ""
+// The exe's memcpy_s is a plain call (no /Oi expansion); the pragma must precede the inline copy.
+#include <vcruntime_string.h>
+#pragma function(memset, memcpy)
+#include <corecrt_memcpy_s.h>
+#pragma intrinsic(memset, memcpy)
 #include "ms2/placeholder/ms2stdafx.h"
 #include <process.h>
 #include <math.h>
@@ -69,7 +106,7 @@ ChromaEffectBase::~ChromaEffectBase()
 void ChromaEffectBase::Update()
 {
     DWORD dwNow = GetCurrentTick();
-    if (m_dwNextTick <= dwNow)
+    if (dwNow >= m_dwNextTick)
     {
         Play();
         m_dwNextTick = dwNow + GetInterval();
@@ -162,11 +199,10 @@ void ChromaEffectCharacter::Play()
 // @0x140a94c00
 void ChromaEffectCharacter::UpdateMouse()
 {
-    if (!m_effects.empty())
-    {
-        for (std::vector<RZEFFECTID>::iterator it = m_effects.begin() + 1; it != m_effects.end(); ++it)
-            GetChromaManager()->SetEffect(*it);
-    }
+    if (m_effects.empty())
+        return;
+    for (std::vector<RZEFFECTID>::iterator it = m_effects.begin() + 1; it != m_effects.end(); ++it)
+        GetChromaManager()->SetEffect(*it);
 }
 
 // @0x140a95420
@@ -316,7 +352,7 @@ void ChromaEffectDeath::Create()
     int nRadius = 0;
     m_nCenter = 0x409;
     int nLeft = LOBYTE(m_nCenter);
-    int nRight = Keyboard::MAX_COLUMN - LOBYTE(m_nCenter) - 1;
+    int nRight = 22 - LOBYTE(m_nCenter) - 1;
     nRadius = (std::max)(nRight, nLeft) - m_nFrame;
     RZEFFECTID effectId;
     if (nRadius <= 0)
@@ -454,19 +490,19 @@ COLORREF ChromaEffectLoading::GetPatternColor(int x, int y, COLORREF back, COLOR
     }
     else if (m_nPattern == 4)
     {
-        nCol = Keyboard::MAX_COLUMN - nCol - 1;
+        nCol = 22 - nCol - 1;
         if (nCol == x || nCol == x + 1 || nCol == x - 1)
             return fore;
     }
     else if (m_nPattern == 5)
     {
-        if (Keyboard::MAX_ROW - nRow - 1 == y)
+        if (6 - nRow - 1 == y)
             return fore;
     }
     else if (m_nPattern == 6)
     {
         nCol = nCol % (Keyboard::MAX_COLUMN / 2);
-        if (nCol + Keyboard::MAX_COLUMN / 2 == x || Keyboard::MAX_COLUMN / 2 - nCol - 1 == x)
+        if (nCol + 11 == x || 11 - nCol - 1 == x)
             return fore;
     }
     else if (m_nPattern == 2)
@@ -569,7 +605,7 @@ ChromaEffectPlaying::~ChromaEffectPlaying()
 // @0x140a96eb0
 void ChromaEffectPlaying::SetHp(unsigned nHp, unsigned nMaxHp)
 {
-    if (m_nHp != 0 && m_nMaxHp != 0 && nMaxHp != 0 && nHp < m_nHp)
+    if (m_nHp > 0 && m_nMaxHp > 0 && nMaxHp > 0 && m_nHp > nHp)
     {
         m_bFlash = true;
         ChromaManagerImpl* pImpl = dynamic_cast<ChromaManagerImpl*>(GetChromaManager());
@@ -608,13 +644,12 @@ void ChromaEffectPlaying::ResetCooldown(int nSlot)
 void ChromaEffectPlaying::PressSkill(int nSkill)
 {
     ChromaManagerImpl* pImpl = chroma_cast<ChromaManagerImpl>(GetChromaManager());
-    if (pImpl)
+    if (pImpl == NULL)
+        return;
+    for (int nKey = 1; nKey < KEY_COUNT; nKey++)
     {
-        for (int nKey = 1; nKey < KEY_COUNT; nKey++)
-        {
-            if (nSkill == pImpl->GetKeySkill(nKey))
-                m_bPressed[nKey] = true;
-        }
+        if (nSkill == pImpl->GetKeySkill(nKey))
+            m_bPressed[nKey] = true;
     }
 }
 
@@ -622,13 +657,12 @@ void ChromaEffectPlaying::PressSkill(int nSkill)
 void ChromaEffectPlaying::PressKey(const CStringW& strName)
 {
     ChromaManagerImpl* pImpl = chroma_cast<ChromaManagerImpl>(GetChromaManager());
-    if (pImpl)
-    {
-        if (strName.CompareNoCase(L"esc") == 0)
-            m_bPressed[1] = true;              // DIK_ESCAPE
-        else if (strName.CompareNoCase(L"enter") == 0)
-            m_bPressed[0x1c] = true;           // DIK_RETURN
-    }
+    if (pImpl == NULL)
+        return;
+    if (strName.CompareNoCase(L"esc") == 0)
+        m_bPressed[1] = true;                                   // DIK_ESCAPE
+    else if (strName.CompareNoCase(L"enter") == 0)
+        m_bPressed[0x1c] = true;                                // DIK_RETURN
 }
 
 // @0x140a97160
@@ -642,18 +676,26 @@ COLORREF ChromaEffectPlaying::GetSkillColor(int nSkill)
 {
     if (nSkill >= 500001 && nSkill <= 500025)
     {
-        nSkill -= 500001;
-        if (m_cooldowns[nSkill].IsActive())
+        int nIndex = nSkill - 500001;
+        if (m_cooldowns[nIndex].IsActive())
         {
-            if (m_cooldowns[nSkill].IsExpired())
+            if (m_cooldowns[nIndex].IsExpired())
                 return RGB(255, 255, 255);
-            float fProgress = m_cooldowns[nSkill].GetProgress();
-            return RGB(fProgress * 200.0f, fProgress * 200.0f, fProgress * 200.0f);
+            else
+            {
+                COLORREF color = RGB(200, 200, 200);
+                float fProgress = m_cooldowns[nIndex].GetProgress();
+                return RGB(GetRValue(color) * fProgress, GetGValue(color) * fProgress, GetBValue(color) * fProgress);
+            }
         }
         return m_keyColor;
     }
-    else if (nSkill >= 200001 && nSkill <= 200004)
+    switch (nSkill)
     {
+    case 200001:
+    case 200002:
+    case 200003:
+    case 200004:
         return m_keyColor;
     }
     return m_backColor;
@@ -762,7 +804,7 @@ DWORD ChromaEffectPlaying::GetInterval()
 bool ChromaEffectPlaying::Cooldown::IsExpired()
 {
     CHROMA_ASSERT_H(35, m_fStartTime <= GetCurrentTick());
-    if (m_dwDuration == 0)
+    if (m_dwDuration <= 0)
         return true;
     if (m_fStartTime + m_dwDuration > GetCurrentTick())
         return false;
@@ -774,9 +816,9 @@ bool ChromaEffectPlaying::Cooldown::IsExpired()
 float ChromaEffectPlaying::Cooldown::GetProgress()
 {
     CHROMA_ASSERT_H(46, m_fStartTime <= GetCurrentTick());
-    if (m_dwDuration == 0)
-        return 1.0f;
-    return (float)(GetCurrentTick() - m_fStartTime) / (float)m_dwDuration;
+    if (m_dwDuration > 0)
+        return (float)(GetCurrentTick() - m_fStartTime) / (float)m_dwDuration;
+    return 1.0f;
 }
 
 // @0x140a98750
@@ -1216,36 +1258,41 @@ void ChromaManagerImpl::SetStateDirect(int nState)
 // @0x140a9bc10
 void ChromaManagerImpl::vfunc_oa0_3(int nHp, int nMaxHp)
 {
-    if (m_effects[STATE_PLAYING] != NULL)
-        static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING])->SetHp(nHp, nMaxHp);
+    ChromaEffectPlaying* pEffect = static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING]);
+    if (pEffect != NULL)
+        pEffect->SetHp(nHp, nMaxHp);
 }
 
 // @0x140a9bc70
 void ChromaManagerImpl::vfunc_oa0_4(int nSp, int nMaxSp)
 {
-    if (m_effects[STATE_PLAYING] != NULL)
-        static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING])->SetSp(nSp, nMaxSp);
+    ChromaEffectPlaying* pEffect = static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING]);
+    if (pEffect != NULL)
+        pEffect->SetSp(nSp, nMaxSp);
 }
 
 // @0x140a9bcd0
 void ChromaManagerImpl::vfunc_oa0_9(unsigned short nFieldType)
 {
-    if (m_effects[STATE_RIPPLE] != NULL)
-        static_cast<ChromaEffectRipple*>(m_effects[STATE_RIPPLE])->OnFieldChanged(nFieldType);
+    ChromaEffectRipple* pEffect = static_cast<ChromaEffectRipple*>(m_effects[STATE_RIPPLE]);
+    if (pEffect != NULL)
+        pEffect->OnFieldChanged(nFieldType);
 }
 
 // @0x140a9bd20
 void ChromaManagerImpl::SetCooldown(int nSlot, int a2, __int64 a3, float fTime)
 {
-    if (m_effects[STATE_PLAYING] != NULL)
-        static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING])->StartCooldown(nSlot, a2, a3, fTime);
+    ChromaEffectPlaying* pEffect = static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING]);
+    if (pEffect != NULL)
+        pEffect->StartCooldown(nSlot, a2, a3, fTime);
 }
 
 // @0x140a9bd90
 void ChromaManagerImpl::ResetCooldown(int nSlot)
 {
-    if (m_effects[STATE_PLAYING] != NULL)
-        static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING])->ResetCooldown(nSlot);
+    ChromaEffectPlaying* pEffect = static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING]);
+    if (pEffect != NULL)
+        pEffect->ResetCooldown(nSlot);
 }
 
 // @0x140a9bde0
@@ -1313,9 +1360,10 @@ void ChromaManagerImpl::ReserveDeleteEffect(RZEFFECTID effectId)
 // @0x140a9c0b0
 void ChromaManagerImpl::OnKeySkill(int nSkill, bool bKeep)
 {
-    if (m_effects[STATE_PLAYING] != NULL)
+    ChromaEffectPlaying* pEffect = static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING]);
+    if (pEffect != NULL)
     {
-        static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING])->PressSkill(nSkill);
+        pEffect->PressSkill(nSkill);
         m_bKeyLock = bKeep || m_bKeyLock;
     }
 }
@@ -1323,9 +1371,10 @@ void ChromaManagerImpl::OnKeySkill(int nSkill, bool bKeep)
 // @0x140a9c140
 void ChromaManagerImpl::OnKeyName(const CStringW& strName)
 {
-    if (m_effects[STATE_PLAYING] != NULL)
+    ChromaEffectPlaying* pEffect = static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING]);
+    if (pEffect != NULL)
     {
-        static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING])->PressKey(strName);
+        pEffect->PressKey(strName);
         m_bKeyLock = true;
     }
 }
@@ -1333,12 +1382,12 @@ void ChromaManagerImpl::OnKeyName(const CStringW& strName)
 // @0x140a9c1a0
 void ChromaManagerImpl::ResetKeys(bool bForce)
 {
-    if (!m_bKeyLock || bForce)
-    {
-        m_bKeyLock = false;
-        if (m_effects[STATE_PLAYING] != NULL)
-            static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING])->ResetKeys();
-    }
+    if (m_bKeyLock && !bForce)
+        return;
+    m_bKeyLock = false;
+    ChromaEffectPlaying* pEffect = static_cast<ChromaEffectPlaying*>(m_effects[STATE_PLAYING]);
+    if (pEffect != NULL)
+        pEffect->ResetKeys();
 }
 
 // @0x140a9c210
@@ -2209,6 +2258,145 @@ void ChromaManagerImpl::UnloadSDK()
 
 } // namespace ChromaSDK
 
+// ================================================================================================================
+// UIStatusEventListener: the no-op base slots (inline in the original header; this obj emitted them first, as the
+// ChromaManagerImpl vftable needs them)
+
+// @0x140aa6d50
+void UIStatusEventListener::vfunc_oa0_30(int a1)
+{
+}
+
+// @0x140aa6d60
+void UIStatusEventListener::vfunc_oa0_31(void* a1)
+{
+}
+
+// @0x140aa6d70
+void UIStatusEventListener::vfunc_oa0_2()
+{
+}
+
+// @0x140aa6d80
+void UIStatusEventListener::vfunc_oa0_5(int a1, int a2)
+{
+}
+
+// @0x140aa6d90
+void UIStatusEventListener::vfunc_oa0_6(void* a1, void* a2)
+{
+}
+
+// @0x140aa6da0
+void UIStatusEventListener::vfunc_oa0_10(CStringW s)
+{
+}
+
+// @0x140aa6dc0
+void UIStatusEventListener::vfunc_oa0_19(void* a1, int a2)
+{
+}
+
+// @0x140aa6dd0
+void UIStatusEventListener::vfunc_oa0_16(void* a1, int a2)
+{
+}
+
+// @0x140aa6de0
+void UIStatusEventListener::vfunc_oa0_7(int a1, CStringW s)
+{
+}
+
+// @0x140aa6e10
+void UIStatusEventListener::vfunc_oa0_17(void* a1, int a2)
+{
+}
+
+// @0x140aa6e20
+void UIStatusEventListener::vfunc_oa0_18(void* a1, int a2)
+{
+}
+
+// @0x140aa6e30
+void UIStatusEventListener::vfunc_oa0_14(void* a1, int a2)
+{
+}
+
+// @0x140aa6e40
+void UIStatusEventListener::vfunc_oa0_15(void* a1, int a2)
+{
+}
+
+// @0x140aa6e50
+void UIStatusEventListener::vfunc_oa0_11(void* a1)
+{
+}
+
+// @0x140aa6e60
+void UIStatusEventListener::vfunc_oa0_8(CStringW s)
+{
+}
+
+// @0x140aa6e80
+void UIStatusEventListener::vfunc_oa0_20(int a1)
+{
+}
+
+// @0x140aa6e90
+void UIStatusEventListener::vfunc_oa0_27(int a1, int a2)
+{
+}
+
+// @0x140aa6ea0
+void UIStatusEventListener::vfunc_oa0_28()
+{
+}
+
+// @0x140aa6eb0
+void UIStatusEventListener::vfunc_oa0_21()
+{
+}
+
+// @0x140aa6ec0
+void UIStatusEventListener::vfunc_oa0_29()
+{
+}
+
+// @0x140aa6ed0
+void UIStatusEventListener::vfunc_oa0_12(int a1)
+{
+}
+
+// @0x140aa6ee0
+void UIStatusEventListener::vfunc_oa0_13(void* a1)
+{
+}
+
+// @0x140aa6ef0
+void UIStatusEventListener::vfunc_oa0_26(void* a1)
+{
+}
+
+// @0x140aa6f00
+void UIStatusEventListener::vfunc_oa0_25(void* a1)
+{
+}
+
+// @0x140aa6f10
+void UIStatusEventListener::vfunc_oa0_23()
+{
+}
+
+// @0x140aa6f20
+void UIStatusEventListener::vfunc_oa0_22()
+{
+}
+
+// @0x140aa6f30
+void UIStatusEventListener::vfunc_oa0_24(int a1)
+{
+}
+
 // the plugin's out-of-line ChromaSDKPluginTypes.cpp members
 
 // @0x140aaa620
@@ -2277,6 +2465,10 @@ Unk_GoChroma* CGameOption::FUN_140aaaa90()
 {
     return &m_chroma;
 }
+
+// The UCRT's `static __inline memcpy_s` / memmove_s of the last obj (kept alive by the pointers below).
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+MS2_EMIT_CRT_MEMMOVE_S();
 
 // The second obj's copy of the header statics.
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};

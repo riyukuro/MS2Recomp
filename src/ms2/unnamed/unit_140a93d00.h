@@ -129,7 +129,7 @@ public:
     public:
         Cooldown() { Reset(); }                             // 0x140a98180
         void Reset() { m_dwDuration = 0; m_fStartTime = 0; }   // 0x140a985f0
-        bool IsActive() { return m_dwDuration > 0; }        // 0x140a98610
+        bool IsActive() { return m_dwDuration > 0.0f; }        // 0x140a98610
         bool IsExpired();                                   // 0x140a98650
         float GetProgress();                                // 0x140a986d0
         void Start(float fSecond);                          // 0x140a98750
