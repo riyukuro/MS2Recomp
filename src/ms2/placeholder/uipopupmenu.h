@@ -46,4 +46,5 @@ public:
     void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nCharId, void* pAccount, int nType, int nDir);
     void FUN_141a80910();                                       // copy the own guild
     void FUN_141a809e0(__int64 nGuildId, const CStringW& strGuild, const CString& strMark);
+    void FUN_141a7f510(const Unk_PopupMenuInfo& info, class CGuildMember* pMember);   // the guild member menu (uiguilddialog.cpp)
 };

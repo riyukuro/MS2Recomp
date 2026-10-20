@@ -116,6 +116,8 @@ public:
     int FUN_14197e010() { return m_468; }                                  // the search propensity (inline; uiguilddialog.cpp)
     // @0x14197e040
     void FUN_14197e040(int nValue) { m_468 = nValue; }
+    // @0x14197dfb0
+    __int64 FUN_14197dfb0() { return m_targetGuildId; }                 // the pending join / visit guild (inline; uiguilddialog.cpp)
 
     // packet handlers dispatched by FUN_1413b6370 (exe order)
     void FUN_1413bd680(CInPacket& packet);

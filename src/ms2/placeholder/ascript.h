@@ -241,6 +241,7 @@ public:
     Scaleform::GFx::Value FUN_14197a030(const char* szMethod, int a1, int a2, bool a3, const class ASArray& a4);   // 0x14197a030 (inline COMDAT, defined in uiguilddialog.cpp)
     Scaleform::GFx::Value FUN_14197a320(const char* szMethod, bool a1, const class ASArray& a2);   // 0x14197a320 (inline COMDAT, defined in uiguilddialog.cpp)
     Scaleform::GFx::Value FUN_14197a120(const char* szMethod, int a1, float a2, int a3, CStringW a4);   // 0x14197a120 (inline COMDAT, defined in uiguilddialog.cpp; a4 by value: the callee destroys it)
+    Scaleform::GFx::Value FUN_141979f30(const char* szMethod, int a1, int a2, CStringW a3);   // 0x141979f30 (inline COMDAT, defined in uiguilddialog.cpp; a3 by value: the callee destroys it)
     template <class T> MS2Ptr<T> FUN_140c436d0(const CString& strName);   // child control by name (guild championship "m_participate" as ASLabel; uiguilddialog.cpp)
     Scaleform::GFx::Value FUN_140e6b140(const char* szMethod, int a1, CString a2);          // 0x140e6b140 (a2 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2);                // 0x140e0a8c0 (inline COMDAT, defined in uichapterbook.cpp; a1 by value: the callee destroys it)

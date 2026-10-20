@@ -78,6 +78,14 @@
 #include "ms2/commonfiles/additionalactionadditional.h"
 #include "ms2/placeholder/uipopupmenu.h"
 #include "ms2/placeholder/gfxexception.h"
+#include "ms2/placeholder/clientconstants.h"
+#include "ms2/client/ms2/blockmanager.h"
+#include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/cugcmanager.h"
+#include "ms2/placeholder/cinputkeyhandler.h"
+#include "ms2/commonfiles/commonstringtable.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/commonfiles/itemgift.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -182,6 +190,25 @@ void FUN_140710590(COutPacket& packet);                         // send
 void FUN_14141f970(const CString& strName);                     // drop the item slots registered under a name
 CString FUN_141029590(unsigned __int64 nGuildId, const CString& strMark, const CString& a3, CString a4);   // the mark image path
 CString FUN_140719530(unsigned __int64 n);                      // "%I64u"
+CStringW FUN_1409eec40(int nStringId);                          // a system text
+void FUN_140d73aa0(CStringW text, int nType, IMessageListener* pListener, CStringW tag);   // show a message box
+MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);    // create a confirm box
+CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);   // string table format
+bool FUN_14025cd60(const CStringW& a, const CStringW& b);       // a == b
+bool FUN_140164830(const CStringW& a, const CStringW& b);       // a == b
+void FUN_1412751f0(const CStringW& text, int nA, int nB);       // a notice
+void FUN_141275260(int nStringId, int nA, int nB);              // a notice of a system text
+class Unk_GdRankDialog { public: void FUN_140e2dfc0(int nType, int nSub); };   // UIGameRankingDialog: select a board
+Unk_GdRankDialog* FUN_140b2d030(int nUiId);                     // the ranking dialog of this id
+class Unk_GdDungeonDialog : public UIDialog { public: void FUN_1412b90d0(int nType); };   // UIDungeonRoomDialog
+Unk_GdDungeonDialog* FUN_140961550(int nUiId);                  // the dungeon room dialog of this id
+class Unk_GdBanFlags { public: int FUN_1402c4c90(int nFlag); };  // blocked-action flag set
+struct Unk_GdConfig { char m_pad[8]; Unk_GdBanFlags m_flags; };
+Unk_GdConfig* FUN_14025e7b0();                                  // global client config
+MS2Ptr<AScript> FUN_1409e7dc0(int nLayer, const Scaleform::GFx::Value& v);   // wrap an AS object
+void FUN_140ebaf70(Scaleform::GFx::Value& arr, unsigned nIndex, Scaleform::GFx::Value& out);   // an array element
+int FUN_1409c1750(const Scaleform::GFx::Value& v);              // the value as an int
+void FUN_140a2ff20(const BlockPtr& spBlock, int nAction, unsigned __int64 n);   // the blocked-action notice
 
 // ---- the dialog ----
 
@@ -569,6 +596,598 @@ int UIGuildDialog::vfunc_13()
     return 0;
 }
 MS2_REPLACE_METHOD(0x141962620, UIGuildDialog, vfunc_13, 37, 0x68944FB7);
+
+// MS2-FUNCTIONAL: same calls and control flow as the exe (the early methods share one result variable there); stack-slot/register allocation and temporary-lifetime codegen differ
+// @0x1419634e0
+int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    if (_stricmp("OnCategoryChanged", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+            FUN_141969040(data.FUN_1422b8f40());
+        return 1;
+    }
+    if (_stricmp("onClickInviteMember", szMethod) == 0)
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_1409eec40(0x3da), static_cast<IMessageListener*>(this), CStringW(L"addMember"));
+        if (spBox.get() != 0)
+        {
+            spBox->FUN_141a01d30(2, CStringW(L""), 0, 0, 0);
+            FUN_140d73c60(spBox);
+        }
+        return 1;
+    }
+    if (_stricmp("onClickEnterHouse", szMethod) == 0)
+    {
+        CGuildManager::GetInstance()->FUN_1413ba4b0();
+        return 1;
+    }
+    if (_stricmp("onClickDonate", szMethod) == 0)
+    {
+        if (FUN_140ba28d0(&m_30, 0))
+            return 1;
+        int nDonate = *FUN_1401d3200()->guildDonateMeso.Get();
+        MS2Ptr<CGuildMember> spMe = CGuildManager::GetInstance()->FUN_1404cf9f0(FUN_1403ed2d0()->FUN_141bd0d30());
+        if (spMe == 0)
+            return 0;
+        int nHouseLevel = CGuildManager::GetInstance()->FUN_1404d1ad0();
+        Unk_PayloadPtr<CGuildXmlData::GuildProperty> spProperty = CGuildXmlData::GetInstance()->FUN_1404d7410(nHouseLevel);
+        if (spProperty == 0)
+            return 0;
+        int nCount = spMe->FUN_1404cb3e0();
+        int nMax = spProperty->f30;
+        if (nCount < nMax)
+        {
+            CStringW strText = FUN_140d26a00(L"s_guild_ui_donate_popup", FUN_140763e10(nDonate), nCount, nMax);
+            CReservedWordTable::GetInstance()->FUN_1416fb340(strText);
+            m_30->FUN_141979f30("showDonatePopup", nCount, nMax, strText);
+            return 1;
+        }
+        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_guild_err_donateMax")), 0, 0, CStringW(L""));
+        return 1;
+    }
+    if (_stricmp("onDonate", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            int nCount = data.FUN_1422b8a10();
+            CGuildManager::GetInstance()->FUN_1413b8540(nCount);
+        }
+        return 1;
+    }
+    if (_stricmp("onClickAttend", szMethod) == 0)
+    {
+        CGuildManager::GetInstance()->FUN_1413b8230();
+        return 1;
+    }
+    if (_stricmp("OnClickOpenMayview", szMethod) == 0)
+    {
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0x3f) == true)
+        {
+            Unk_GdRankDialog* pRank = FUN_140b2d030(0x4f24);
+            if (pRank != 0)
+            {
+                pRank->FUN_140e2dfc0(1, 0);
+                CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4f24);
+            }
+        }
+        else if (CFeatureManager::GetInstance()->FUN_14036d570(0x3b) == true)
+            FUN_141975500();
+        return 1;
+    }
+    if (_stricmp("OnClickCreateGuild", szMethod) == 0)
+    {
+        int nAction = 7;
+        BlockPtr spBlock = CBlockManager::GetInstance()->FindBlockedAction(nAction);
+        if (spBlock.get() != 0)
+        {
+            FUN_140a2ff20(spBlock, nAction, 0);
+            return 0;
+        }
+        int nMin = *FUN_1401d3200()->GuildNameLengthMin.Get();
+        int nMax = *FUN_1401d3200()->GuildNameLengthMax.Get();
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_1412e7520(0x3db, *FUN_1401d3200()->GuildCreatePrice.Get(), nMin, nMax), static_cast<IMessageListener*>(this), CStringW(L"createGuild"));
+        if (spBox.get() != 0)
+        {
+            spBox->FUN_141a01d30(0, CStringW(L""), nMax, 0, 0);
+            FUN_140d73c60(spBox);
+        }
+        return 1;
+    }
+    if (_stricmp("OnSend", szMethod) == 0)
+    {
+        if (!FUN_141974ed0())
+            FUN_141275260(0x244, 1, 1);
+        else
+            FUN_140d73aa0(FUN_1409eec40(0x238), 1, static_cast<IMessageListener*>(this), CStringW(L"sendMail"));
+        return 1;
+    }
+    if (_stricmp("OnChangeMark", szMethod) == 0)
+    {
+        CUgcManager::GetInstance()->FUN_14187ffe0();
+        return 1;
+    }
+    if (_stricmp("OnChangeNotify", szMethod) == 0)
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0xb, FUN_1409eec40(0x3dc), static_cast<IMessageListener*>(this), CStringW(L"changeNotify"));
+        if (spBox.get() != 0)
+        {
+            CStringW strNotice = CGuildManager::GetInstance()->FUN_1404cd0b0();
+            spBox->FUN_141a01d30(0, strNotice, 300, 1, 0x14);
+            FUN_140d73c60(spBox);
+        }
+        return 1;
+    }
+    if (_stricmp("OnChangePropensity", szMethod) == 0)
+    {
+        unsigned nPropensity = CGuildManager::GetInstance()->FUN_1404d18d0();
+        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pPlayer == 0)
+            return 1;
+        int nGrade = CGuildManager::GetInstance()->FUN_1404d01b0(pPlayer->vfunc_77());
+        m_30->Invoke("showPropensity", (int)nPropensity, 2, FUN_14028d780((char)nGrade));
+        return 1;
+    }
+    if (_stricmp("OnOpenGuildRank", szMethod) == 0)
+    {
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0x3f) == true)
+        {
+            Unk_GdRankDialog* pRank = FUN_140b2d030(0x4f24);
+            if (pRank != 0)
+            {
+                pRank->FUN_140e2dfc0(1, 0);
+                CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4f24);
+            }
+        }
+        else if (CFeatureManager::GetInstance()->FUN_14036d570(0x3b) == true)
+            FUN_1419754b0();
+        return 1;
+    }
+    if (_stricmp("onBreakGuild", szMethod) == 0)
+    {
+        FUN_140d73aa0(FUN_1409eec40(0x3df), 1, static_cast<IMessageListener*>(this), CStringW(L"breakGuild"));
+        return 1;
+    }
+    if (_stricmp("onLeaveGuild", szMethod) == 0)
+    {
+        FUN_140d73aa0(FUN_1409eec40(0x3e0), 1, static_cast<IMessageListener*>(this), CStringW(L"leaveGuild"));
+        return 1;
+    }
+    if (_stricmp("OnGuildMemberPopupMenu", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            float x = data.FUN_1422b8c10();
+            float y = data.FUN_1422b8c10();
+            CStringW strName = data.FUN_1422b8f40();
+            MS2Ptr<CGuildMember> spMember = CGuildManager::GetInstance()->FUN_1404cf9f0(strName);
+            UIPopUpMenu* pMenu;
+            if (spMember.get() != 0 && (pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39)) != 0)
+            {
+                Unk_PopupMenuInfo info(x, y, 3, 0x63de, 1, CString(""), 0);
+                pMenu->FUN_141a7f510(info, spMember);
+            }
+        }
+        return 1;
+    }
+    if (_stricmp("OnClickMemoButton", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            CStringW strName = data.FUN_1422b8f40();
+            PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+            if (pPlayer == 0)
+                return 1;
+            if (FUN_140164830(pPlayer->vfunc_77(), strName))
+                return 1;
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_140298ea0(CStringW(L"s_guild_ui_memo")), static_cast<IMessageListener*>(this), CStringW(L"changeMemo"));
+            if (spBox.get() != 0)
+            {
+                spBox->FUN_141a01d30(0, CStringW(L""), 0x14, 0, 0);
+                FUN_140d73c60(spBox);
+            }
+        }
+        return 0;
+    }
+    if (_stricmp("onChangeMaster", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            CStringW strName = data.FUN_1422b8f40();
+            if (FUN_14025cd60(strName, CGuildManager::GetInstance()->FUN_1404d00a0()->data.FUN_1404ca890()))
+            {
+                FUN_1412751f0(FUN_1409eec40(0x3e1), 1, 1);
+                return 1;
+            }
+            MS2Ptr<CGuildMember> spMember = CGuildManager::GetInstance()->FUN_1404cf9f0(CStringW(strName));
+            if (spMember == 0)
+                return 1;
+            m_strName = strName;
+            CStringW strMsg = FUN_14052bd00(0x3e2, m_strName);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x14, CStringW(strMsg), static_cast<IMessageListener*>(this), CStringW(L"changeMaster"));
+            if (spBox.get() != 0)
+            {
+                Unk_GuildMemberData* pData = &spMember->data;
+                spBox->FUN_141a022a0(pData->f08, pData->FUN_1404ca890(), pData->f1c, pData->f18, pData->FUN_1404ca980());
+                FUN_140d73c60(spBox);
+            }
+        }
+        return 1;
+    }
+    if (_stricmp("onChangeMemberGrade", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            CStringW strName = data.FUN_1422b8f40();
+            int nGrade = data.FUN_1422b8a10();
+            if (FUN_14025cd60(strName, CGuildManager::GetInstance()->FUN_1404d00a0()->data.FUN_1404ca890()))
+            {
+                FUN_1412751f0(FUN_1409eec40(0x3e1), 1, 1);
+                return 1;
+            }
+            CGuildManager::GetInstance()->FUN_1413b78c0(CStringW(strName), nGrade);
+        }
+        return 1;
+    }
+    if (_stricmp("onExpelMember", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            CStringW strName = data.FUN_1422b8f40();
+            if (FUN_14025cd60(strName, CGuildManager::GetInstance()->FUN_1404d00a0()->data.FUN_1404ca890()))
+            {
+                FUN_1412751f0(FUN_1409eec40(0x3e1), 1, 1);
+                return 1;
+            }
+            MS2Ptr<CGuildMember> spMember = CGuildManager::GetInstance()->FUN_1404cf9f0(CStringW(strName));
+            if (spMember == 0)
+                return 1;
+            m_strDesc = strName;
+            CStringW strMsg = FUN_14052bd00(0x3e3, m_strDesc);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x14, CStringW(strMsg), static_cast<IMessageListener*>(this), CStringW(L"expelMember"));
+            if (spBox.get() != 0)
+            {
+                Unk_GuildMemberData* pData = &spMember->data;
+                spBox->FUN_141a022a0(pData->f08, pData->FUN_1404ca890(), pData->f1c, pData->f18, pData->FUN_1404ca980());
+                FUN_140d73c60(spBox);
+            }
+        }
+        return 1;
+    }
+    if (_stricmp("onChageGradeError", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            int nError = data.FUN_1422b8a10();
+            CStringW strText;
+            if (nError == 1)
+                strText = FUN_1409eec40(999);
+            else if (nError == 2)
+                strText = FUN_1409eec40(0x3e1);
+            if (strText.GetLength() > 0)
+                FUN_1412751f0(strText, 1, 1);
+        }
+        return 0;
+    }
+    if (_stricmp("OnChangeGrade", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            Scaleform::GFx::Value vGrades = data.FUN_1422b9260();
+            unsigned nGrades = vGrades.GetArraySize();
+            CStringW strErrors;
+            for (int i = 0; i < (int)nGrades; i++)
+            {
+                Scaleform::GFx::Value vGrade;
+                FUN_140ebaf70(vGrades, i, vGrade);
+                MS2Ptr<AScript> spGrade = FUN_1409e7dc0(m_28, vGrade);
+                if (spGrade.get() == 0)
+                    continue;
+                CStringW strGradeName = spGrade->FUN_1422bb2b0("gradeName");
+                Scaleform::GFx::Value vAuth = spGrade->FUN_1422baa20("gradeAuth");
+                int nAuth = FUN_1409c1750(vAuth);
+                Unk_PayloadPtr<CGuildGrade> spOld = CGuildManager::GetInstance()->FUN_1404d0860(i);
+                if (spOld == 0)
+                    continue;
+                if (FUN_14025cd60(spOld->name, strGradeName) && spOld->permissions == nAuth)
+                    continue;
+                CBanTextChecker* pChecker = CommonString::GetInstance()->GetChecker().get();
+                if (pChecker != 0)
+                {
+                    CStringW strBan;
+                    if (pChecker->FUN_140225810(strGradeName, strBan) != 0)
+                    {
+                        if (!strBan.IsEmpty())
+                        {
+                            if (!strErrors.IsEmpty())
+                                strErrors.Append(L"\n");
+                            CStringW strLine;
+                            strLine = FUN_140632a60(0x423, CGuildManager::GetInstance()->FUN_1404d0af0(i), strBan);
+                            strErrors.Append(strLine);
+                        }
+                        continue;
+                    }
+                }
+                CGuildGrade grade;
+                grade.FUN_1404c70f0(spOld->grade, CStringW(strGradeName), nAuth);
+                CGuildManager::GetInstance()->FUN_1413b8c40(i, grade);
+            }
+            if (!strErrors.IsEmpty())
+                FUN_140d73aa0(FUN_14052bd00(0x422, strErrors), 0, 0, CStringW(L""));
+        }
+        return 0;
+    }
+    if (_stricmp("OnViewPvpRank", szMethod) == 0)
+    {
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0x3f) == true)
+        {
+            Unk_GdRankDialog* pRank = FUN_140b2d030(0x4f24);
+            if (pRank != 0)
+            {
+                pRank->FUN_140e2dfc0(5, 0);
+                CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4f24);
+            }
+        }
+        else if (CFeatureManager::GetInstance()->FUN_14036d570(0x3b) == true)
+            FUN_141975550();
+        return 1;
+    }
+    if (_stricmp("OnRegistPVP", szMethod) == 0)
+    {
+        if (CInputKeyHandler::GetInstance()->IsDebugMode() == true)
+        {
+            COutPacket packet(0x61, 0);
+            packet.vfunc_o10_1(1);
+            FUN_140710590(packet);
+            return 1;
+        }
+        if (!CGuildManager::GetInstance()->FUN_1404d3180()->FUN_1404c6160())
+        {
+            FUN_140d73aa0(FUN_14028de60(0x3f3), 0, 0, CStringW(L""));
+            return 1;
+        }
+        if (!CGameRule::GetInstance()->FUN_14047e880())
+        {
+            FUN_140d73aa0(FUN_14028de60(0x3f4), 0, 0, CStringW(L""));
+            return 1;
+        }
+        CStringW strMe = FUN_1403ed2d0()->FUN_141bd0d30();
+        if (CGuildManager::GetInstance()->FUN_1404d0600(CStringW(strMe), 0x100) == 0)
+        {
+            FUN_140d73aa0(FUN_14028de60(0x3f2), 0, 0, CStringW(L""));
+            return 1;
+        }
+        if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x19) != 0)
+        {
+            FUN_141275260(0x2f7, 1, 1);
+            return 1;
+        }
+        ATL::CAtlArray<MS2Ptr<CGuildMember>> arrMembers;
+        CGuildManager::GetInstance()->FUN_1404d0420(&arrMembers);
+        for (size_t i = 0; i < arrMembers.GetCount(); i++)
+        {
+            MS2Ptr<CGuildMember> spMember = arrMembers[i];
+            if (spMember == 0)
+                continue;
+            if (spMember->f158 != 0)
+                continue;
+            int nLevel = spMember->data.f1c;
+            if (nLevel < (int)CFeatureManager::GetInstance()->FUN_14036dc60())
+                continue;   // the exe tests the online members' levels but does nothing with the result
+        }
+        COutPacket packet(0x61, 0);
+        packet.vfunc_o10_1(1);
+        FUN_140710590(packet);
+        return 1;
+    }
+    if (_stricmp("OnUnregistPVP", szMethod) == 0)
+    {
+        CStringW strMe = FUN_1403ed2d0()->FUN_141bd0d30();
+        if (CGuildManager::GetInstance()->FUN_1404d0600(CStringW(strMe), 0x100) == 0)
+        {
+            FUN_140d73aa0(FUN_14028de60(0x3f2), 0, 0, CStringW(L""));
+            return 1;
+        }
+        FUN_140d73aa0(FUN_1409eec40(0x3f1), 1, static_cast<IMessageListener*>(this), CStringW(L"unregistPvP"));
+        return 1;
+    }
+    if (_stricmp("OnJoinPVP", szMethod) == 0)
+    {
+        if (CGuildManager::GetInstance()->FUN_14197dfb0() == 0)
+            FUN_141974930();
+        else
+            CGuildManager::GetInstance()->FUN_1413bc050();
+        return 1;
+    }
+    if (_stricmp("OnChangedInformArenaMatching", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            bool bInform = data.FUN_1422b8a90();
+            reinterpret_cast<bool&>(CGameOption::GetInstance()->FUN_140c9b8b0()->m_n00) = bInform;
+            CGameOption::GetInstance()->FUN_141243540();
+        }
+        return 1;
+    }
+    if (_stricmp("OnGuildSkillUse", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            int nSkillId = data.FUN_1422b8a10();
+            int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(nSkillId);
+            Unk_PayloadPtr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->FUN_1404d74e0(nSkillId, nLevel);
+            if (spSkill == 0)
+                return 1;
+            CStringW strMsg;
+            CStringW strCost = FUN_140763e10(CGuildManager::GetInstance()->FUN_1413bd050(spSkill->f18, spSkill->f1c));
+            CStringW strName = CStringTable::GetInstance()->FUN_141812290(spSkill->f34, (unsigned short)spSkill->f38, CString("name"));
+            if (!spSkill->FUN_1404d4e80())
+                strMsg = FUN_1408f71a0(CStringW(L"s_guild_ui_skill_use_skill"), strCost, strName);
+            else
+                strMsg = FUN_1408f71a0(CStringW(L"s_guild_ui_skill_use_skill_event"), strCost, strName);
+            CReservedWordTable::GetInstance()->FUN_1416fb340(strMsg);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1f, CStringW(strMsg), 0, CStringW(L""));
+            if (spBox.get() != 0)
+            {
+                FUN_14151f200();
+                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974ba0));
+                spBox->FUN_140533ff0(nSkillId);
+                spBox->FUN_141a01800(2);
+                spBox->FUN_141a024e0(FUN_14028b8e0(CStringW(L"s_guild_ui_skill_use_skill_term_agree")), 0);
+                spBox->FUN_141a02730(false);
+                FUN_140d73c60(spBox);
+            }
+        }
+        return 1;
+    }
+    if (_stricmp("OnGuildMemberSkillUse", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            int nSkillId = data.FUN_1422b8a10();
+            int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(nSkillId);
+            Unk_PayloadPtr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->FUN_1404d74e0(nSkillId, nLevel);
+            if (spSkill == 0)
+                return 1;
+            if (!spSkill->FUN_1404d4e40())
+                return 1;
+            CStringW strMsg = FUN_1408f71a0(CStringW(L"s_guild_ui_skill_use_personal_skill"),
+                FUN_140763e10(CGuildManager::GetInstance()->FUN_1413bd1a0(nSkillId, nLevel)),
+                CStringTable::GetInstance()->FUN_141812290(spSkill->f34, (unsigned short)spSkill->f38, CString("name")));
+            CReservedWordTable::GetInstance()->FUN_1416fb340(strMsg);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strMsg), 1);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974bf0));
+            spBox->FUN_140533ff0(nSkillId);
+            FUN_140d73c60(spBox);
+        }
+        return 1;
+    }
+    if (_stricmp("OnGuildSkillUpgrade", szMethod) == 0 || _stricmp("OnGuildMemberSkillUpgrade", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            int nSkillId = data.FUN_1422b8a10();
+            int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(nSkillId);
+            int nNextLevel = nLevel + 1;
+            Unk_PayloadPtr<CGuildXmlData::GuildSkill> spSkill = CGuildXmlData::GetInstance()->FUN_1404d74e0(nSkillId, nLevel);
+            if (spSkill == 0)
+                return 1;
+            Unk_PayloadPtr<CGuildXmlData::GuildSkill> spNext = CGuildXmlData::GetInstance()->FUN_1404d74e0(nSkillId, nNextLevel);
+            if (spNext == 0)
+                return 1;
+            CStringW strCost = FUN_140763e10(spNext->f24);
+            CStringW strName = CStringTable::GetInstance()->FUN_141812290(spSkill->f34, (unsigned short)spSkill->f38, CString("name"));
+            CStringW strMsg;
+            if (!spNext->FUN_1404d4e80())
+                strMsg = FUN_141081c60(CStringW(L"s_guild_ui_skill_upgrade_popup"), strCost, strName, &nNextLevel);
+            else
+                strMsg = FUN_141081c60(CStringW(L"s_guild_ui_event_skill_upgrade_popup"), strCost, strName, &nNextLevel);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strMsg), 1);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974c40));
+            spBox->FUN_140533ff0(nSkillId);
+            FUN_140d73c60(spBox);
+        }
+        return 0;
+    }
+    if (_stricmp("onEventOpen", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            int nEventId = data.FUN_1422b8a10();
+            CGuildManager::GetInstance()->FUN_1413ba080(nEventId);
+        }
+        return 0;
+    }
+    if (_stricmp("onEventJoin", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            int nEventId = data.FUN_1422b8a10();
+            CGuildManager::GetInstance()->FUN_1413ba310(nEventId);
+        }
+        return 0;
+    }
+    if (_stricmp("OpenUpgradePopup", szMethod) == 0)
+    {
+        CUIService::GetInstance()->FUN_141adc750((eUIClassID)0x4f2e);
+        return 1;
+    }
+    if (_stricmp("OnUpgradeNpc", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            int nKind = data.FUN_1422b8a10();
+            int nLevel = CGuildManager::GetInstance()->FUN_1404d2990(nKind);
+            int nNextLevel = nLevel + 1;
+            Unk_PayloadPtr<CGuildXmlData::GuildNpc> spNpc = CGuildXmlData::GetInstance()->FUN_1404d7b40((Unk_GuildNpcKind)nKind, nNextLevel);
+            if (spNpc == 0)
+                return 1;
+            CStringW strMsg = FUN_141081c60(CStringW(L"s_guild_ui_house_npc_upgrade_popup"), FUN_1409404f0(spNpc->f20),
+                CStringTable::GetInstance()->FUN_141811980(0x3f, spNpc->f30), &nNextLevel);
+            if (nLevel == 0)
+                strMsg = FUN_1405c2690(CStringW(L"s_guild_ui_house_npc_upgrade_popup_first"), CStringTable::GetInstance()->FUN_141811980(0x3f, spNpc->f30));
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strMsg), 1);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGuildDialog::FUN_141974c90));
+            spBox->FUN_140533ff0(nKind);
+            FUN_140d73c60(spBox);
+        }
+        return 1;
+    }
+    if (_stricmp("onGiftGuildItem", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            CStringW strReceiver = data.FUN_1422b8f40();
+            ItemEntity item;
+            item.m_itemId = data.FUN_1422b8a10();
+            item.FUN_14026b1c0(data.FUN_1422b8a10());
+            item.m_count = data.FUN_1422b8b10();
+            if (CGuildManager::GetInstance()->FUN_1413bb490(item, strReceiver) && m_storagePage.get() != 0)
+                m_storagePage->Invoke("onGiftPopDown");
+        }
+        return 1;
+    }
+    if (_stricmp("RequestStorageHistory", szMethod) == 0)
+    {
+        CGuildManager::GetInstance()->FUN_1413bbb80();
+        return 1;
+    }
+    if (_stricmp("onOpenDungeonDialog", szMethod) == 0)
+    {
+        CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4ebd);
+        Unk_GdDungeonDialog* pDialog = FUN_140961550(0x4ebd);
+        if (pDialog != 0)
+        {
+            if (pDialog->FUN_141924630())
+                pDialog->vfunc_68();
+            pDialog->FUN_1412b90d0(6);
+            pDialog->FUN_141924680();
+        }
+        return 1;
+    }
+    if (FUN_1419681b0(szMethod, pArgs, nArgs))
+        return 1;
+    return 0;
+}
 
 // @0x141968140
 void UIGuildDialog::FUN_141968140(CInPacket& packet)
@@ -2573,6 +3192,17 @@ int FUN_1419771b0(ASObj& obj, const MS2Ptr<CGuildMember>& spMember)
     obj.FUN_1407cb9c0("raid", spMember->raid.FUN_1404cadc0());
     obj.FUN_1407cb9c0("offline", spMember->f158);
     return 1;
+}
+
+// @0x141979f30 (inline COMDAT: Invoke with two Ints and a String)
+Scaleform::GFx::Value AScript::FUN_141979f30(const char* szMethod, int a1, int a2, CStringW a3)
+{
+    ASArgList args;
+    args.FUN_1409b2800(3);
+    FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
+    FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
+    return FUN_1422bb8f0(szMethod, args);
 }
 
 // @0x14197a120 (inline COMDAT: Invoke with an Int, a Number, an Int and a String)
