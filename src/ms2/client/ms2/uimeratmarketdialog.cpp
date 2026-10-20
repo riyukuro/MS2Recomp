@@ -479,6 +479,14 @@ AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
 void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 // The world service seen from here: the field proxy of a character id (worldservice.h types the result otherwise).
 class Unk_MmMyPC { public: void FUN_141529fb0(); };                       // MyPC: request the field leave
+// ASMeratMarketEquipData::FUN_1409b9830 hands out the record as the dialog product (the exe uses the
+// MS2Ptr<CMeratMarketProduct> copy/assign of the result).
+class Unk_MmEquipDataView
+{
+public:
+    MS2Ptr<CMeratMarketProduct> FUN_1409b9830();
+};
+
 class Unk_MmWorld
 {
 public:
@@ -3735,6 +3743,38 @@ void UIMeratMarketDialog::OnEquipIconTooltip(const Scaleform::GFx::FunctionHandl
         {
             MS2Ptr<Unk_MeratEquipEntry> spEntry = spEquip->FUN_1409b9830();
             GetProductTooltip(*params.pRetVal, reinterpret_cast<MS2Ptr<CMeratMarketProduct>&>(spEntry));   // the entry is the product
+        }
+    }
+}
+
+// The click handler of a preview slot icon (the slot is the user data of the callback): opens the product of the
+// slot; a package item opens the product of its picked content item.
+// @0x141306b20
+void UIMeratMarketDialog::OnClickPreviewSlot(const Scaleform::GFx::FunctionHandler::Params& params)
+{
+    ASEquipIcon* pIcon = static_cast<ASEquipIcon*>(params.pUserData);
+    bool bHasItem = pIcon != 0 && (FUN_14052cd70(&pIcon->FUN_1409b9550()) ? true : false);
+    if (bHasItem)
+    {
+        MS2Ptr<CItem> spItem = pIcon->FUN_1409b9550();
+        MS2Ptr<CItemData> spData(FUN_140527840(spItem));
+        if (spData != 0 && spData->FUN_14053c5c0() == 0x19)
+        {
+            ATL::CAtlArray<MS2Ptr<CItemData> > arrFirst;
+            ATL::CAtlArray<MS2Ptr<CItemData> > arrSecond;
+            FUN_1418bf430(spData, &arrFirst, &arrSecond);
+            if (!arrSecond.IsEmpty())
+                spData = PickItem(arrSecond, 1);
+        }
+        if (spData != 0)
+        {
+            MS2Ptr<CMeratMarketProduct> spProduct(0);
+            MS2Ptr<ASMeratMarketEquipData> spEquip(
+                dynamic_cast<ASMeratMarketEquipData*>(pIcon->FUN_1409b9330().operator AScript*()));
+            if (spEquip != 0)
+                spProduct = reinterpret_cast<Unk_MmEquipDataView*>(spEquip.operator->())->FUN_1409b9830();
+            if (spProduct.get() != 0)
+                OpenProduct(spProduct);
         }
     }
 }

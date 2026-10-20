@@ -298,6 +298,7 @@ public:
     void LoadTab(int nTab);                                         // 0x1412ed920 foreign
     void SelectCategory(int nKind, int nCategory);                  // 0x141308d60 foreign
     void RefreshMyShop();                                           // 0x1412eef70 foreign
+    void OnClickPreviewSlot(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141306b20
     void OnModelCheck(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141306ed0 foreign
     void OnModelRefresh(const Scaleform::GFx::FunctionHandler::Params& params); // 0x141306fa0 foreign
     void OnModelReset(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141306ff0 foreign
