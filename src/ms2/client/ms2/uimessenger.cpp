@@ -3575,3 +3575,15 @@ int UIMessengerBrowser::FUN_141a27de0()
 {
     return DAT_143adda48.m_nFontSize;
 }
+
+// @0x141a1caf0
+int UIMessenger::vfunc_48()
+{
+    return 0x4e60;
+}
+
+// @0x141a2cf30
+int UIMessengerBrowser::vfunc_48()
+{
+    return 0x4e61;
+}

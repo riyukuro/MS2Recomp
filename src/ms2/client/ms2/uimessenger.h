@@ -240,6 +240,7 @@ public:
     virtual void vfunc_15();                                                // 15 0x141a23b30 flushes the pending lines
     virtual void OnLoadInit();                                              // 20 0x141a23af0
     virtual void vfunc_43();                                                // 43 0x141a21e90 stacks the windows
+    virtual int vfunc_48();                                                 // 48 0x141a2cf30 UI type id
     virtual int vfunc_65();                                                 // 65 0x141a21ab0 Open
     virtual void vfunc_67();                                                // 67 0x141a21b10 Close
     virtual int vfunc_74(int a1, void* p2, void* p3);                       // 74 0x141a21d60 key messages
