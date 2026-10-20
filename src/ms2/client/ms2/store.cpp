@@ -239,17 +239,15 @@ MS2Ptr<CItem> CStore::Slot(int nSlot)
 {
     MS2Ptr<CItem> pItem(0);
     int nCount = (int)m_slots.GetCount();
-    if (nSlot < 0 || nCount <= nSlot) {
+    if (nSlot < 0 || nSlot >= nCount)
         return MS2Ptr<CItem>(0);
-    } else {
-        {
-            if (Unk_LockGuard guard = m_lock) {
-            } else {
-                pItem = m_slots[nSlot];
-            }
+    {
+        if (Unk_LockGuard guard = m_lock) {
+        } else {
+            pItem = m_slots[nSlot];
         }
-        return pItem;
     }
+    return pItem;
 }
 
 // @0x140de1c00
