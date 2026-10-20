@@ -166,3 +166,6 @@ void CCashUnlockDialog::OnDocumentComplete(LPDISPATCH pDisp, VARIANT* pURL)
     }
     pBrowser->Release();
 }
+
+// IMPLEMENT_DYNAMIC's _GetBaseClass sits just before this TU's range start in the exe.
+// MS2-RANGE: 0x140b0dc40-0x140b0dc70 .text$mn
