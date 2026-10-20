@@ -246,6 +246,45 @@ public:
 };
 MS2_CHECK_SIZE(CBeautyShopItemGroups, 0x28);
 
+// The on-sale group handle that CBeautyShopData::GetShopItemGroup returns: an MS2Ptr-shaped reference (m_p at +0x08)
+// built from an MS2Ptr through its T* conversion (0x1406eddc0), whose null test returns an int (0x1406efcf0) and whose
+// release keeps the pointer in a local (0x1406f7ec0). Real name unknown.
+class Unk_BeautyGroupRef
+{
+public:
+    Unk_BeautyGroupRef(int) { m_p = 0; }                                            // 0x1406ede00
+    Unk_BeautyGroupRef(const MS2Ptr<CBeautyShopItemGroup>& sp) { m_p = sp; AddRef(); }   // 0x1406eddc0
+    Unk_BeautyGroupRef(const Unk_BeautyGroupRef& o) { m_p = o.m_p; AddRef(); }      // 0x1406edd80
+    ~Unk_BeautyGroupRef() { Release(); }                                            // 0x1406eefb0
+    int operator==(CBeautyShopItemGroup* p) const { return m_p == p; }              // 0x1406efcf0
+    CBeautyShopItemGroup* operator->() const { return m_p; }                        // 0x1406f0350
+
+private:
+    void AddRef() const { if (m_p) AddRefImpl(0); }                                 // 0x1406f57a0
+    void AddRefImpl(void*) const { Reference(m_p); }                                // 0x1406f5b90
+    void Release()                                                                  // 0x1406f7b60
+    {
+        if (m_p)
+        {
+            ReleaseImpl(0);
+            m_p = 0;
+        }
+    }
+    void ReleaseImpl(void*)                                                         // 0x1406f7ec0
+    {
+        CBeautyShopItemGroup* p = m_p;
+        if (CPtred::ReleasePtred(p) == 0)
+        {
+            Reference(p);
+            CPtred::DeletePtred(p);
+        }
+    }
+    static void Reference(CBeautyShopItemGroup* p) { CPtred::AddRefPtred(p); }      // 0x1406f5ab0
+
+    void* m_unk_00;
+    CBeautyShopItemGroup* m_p;                                                      // +0x08
+};
+
 // A beauty shop (RTTI .?AVCBeautyShopData@@, 0xb8 bytes, ctor 0x1406e4500).
 class CBeautyShopData : public CBeautyShopDataCommon
 {
@@ -255,7 +294,7 @@ public:
     void FUN_1406e4770(COutputStream& out);
     MS2Ptr<CBeautyShopItem> FUN_1406e4860(int nItemId, unsigned nGender);
     void AddShopItemGroup(MS2Ptr<CBeautyShopItemGroup> spGroup);  // 0x1406e4a70 (name from its log text)
-    MS2Ptr<CBeautyShopItemGroup> GetShopItemGroup();              // 0x1406e4b80
+    Unk_BeautyGroupRef GetShopItemGroup();                        // 0x1406e4b80
     std::vector<MS2Ptr<CBeautyShopItemGroup> >* GetShopItemGroupList(std::vector<MS2Ptr<CBeautyShopItemGroup> >& out);  // 0x1406e4ce0
 
     MS2Ptr<CBeautyShopItemGroups> m_spGroups;        // +0xa8

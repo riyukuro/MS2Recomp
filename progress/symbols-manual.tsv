@@ -3837,3 +3837,5 @@ __imp_NxGetUtilLib	142cced28	data
 ??1Unk_PdChat@@QEAA@XZ	140acd770	func
 ??0Unk_WmCommandChat@@QEAA@XZ	140acd570	func
 ??1Unk_WmCommandChat@@QEAA@XZ	140acd770	func
+??4Unk_ShopLifeRef@@QEAAAEAV0@AEBV0@@Z	14052caa0	func
+??BUnk_ShopLifeRef@@QEBAPEAVNpcShopItemLife@@XZ	14052ce00	func
