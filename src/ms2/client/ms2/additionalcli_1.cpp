@@ -474,15 +474,15 @@ void AdditionalCli::FUN_14096d130()
 {
     if (!m_spLevel->GetParent()->GetFlag49())
         return;
-    MS2Ptr<StanceData> spStance = TSingleton<StanceTable>::GetInstance()->FUN_140829e20(FUN_14096d2a0());
+    MS2Ptr<StanceData> spStance = TSingleton<StanceTable>::GetInstance()->HitCountStance(FUN_14096d2a0());
     if (spStance == 0)
         return;
-    MS2Ptr<StanceLevelData> spLevel = spStance->FUN_140829550(m_nOverlapCount);
+    MS2Ptr<StanceLevelData> spLevel = spStance->LevelData(m_nOverlapCount);
     if (spLevel == 0)
         return;
     UIStanceBar* pBar = Unk_AcFindUI<UIStanceBar>((eUIClassID)20378);
     if (pBar)
-        pBar->FUN_140ba2490(spLevel->m_nStep);
+        pBar->FUN_140ba2490(spLevel->m_nLevel);
 }
 
 // @0x14096d260
