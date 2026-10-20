@@ -125,6 +125,8 @@ class ASInteractiveObject : public ASDisplayObject {};
 class ASDisplayObjectContainer : public ASInteractiveObject
 {
 public:
+    ASDisplayObjectContainer(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422c6570 (asloader.cpp)
+    virtual ~ASDisplayObjectContainer();                                // 0 0x1422c65c0 (scalar deleting 0x1422c7070)
     Scaleform::GFx::Value FUN_1422c6900(Scaleform::GFx::Value child);   // addChild (the argument is destroyed by the callee)
     Scaleform::GFx::Value FUN_1422c6b70(Scaleform::GFx::Value child);   // removeChild
     Scaleform::GFx::Value FUN_1422c6b00(const CString& strName);       // getChildByName (uipvpguildteamdialog)
@@ -141,7 +143,21 @@ public:
     int FUN_1422cff20();                                        // "stageHeight"
     void FUN_1422cfd30(MS2Ptr<ASInteractiveObject> spFocus);   // set the stage "focus" (by value: the callee destroys it; asuicomponent.cpp)
 };
-class ASSprite : public ASDisplayObjectContainer {};
+// ASSprite (RTTI .?AVASSprite@@, 0x80, vftable 0x143115c78: only the dtor is overridden). Recovered with ?\assprite.cpp
+// (src/ms2/gfxui/assprite.cpp, 0x1422e5be0-0x1422e6170); the comments name the AS member each method uses.
+class ASGraphics;
+class ASSprite : public ASDisplayObjectContainer
+{
+public:
+    ASSprite(const Scaleform::GFx::Value& v, int nMovieId);    // 0x1422e5be0 (ASMovieClip's ctors call it)
+    virtual ~ASSprite();                                        // 0 0x1422e5c30 (scalar deleting 0x1422e6020)
+    MS2Ptr<ASGraphics> FUN_1422e5c60();                         // "graphics"
+    void FUN_1422e5cd0(int bUse);                               // set "useHandCursor"
+    int FUN_1422e5d20();                                        // "useHandCursor"
+    void FUN_1422e5d90(int bLockCenter);                        // startDrag(lockCenter)
+    void FUN_1422e5dd0();                                       // stopDrag()
+};
+MS2_CHECK_SIZE(ASSprite, 0x80);
 class ASMovieClip : public ASSprite
 {
 public:
