@@ -3659,3 +3659,12 @@ __imp_NxGetUtilLib	142cced28	data
 ??0CNMSessionMemberInfo@@QEAA@AEBV0@@Z	1415eb110	func
 ??0ASLoader@@QEAA@H@Z	1422e5300	func
 ??0ASLabel@@QEAA@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z	1422e4950	func
+?GetRankReward@DungeonRoomTable@@QEAA?AV?$MS2Ptr@VDungeonRankRewardBase@@@@H@Z	140321b00	func
+?HasProgress@DungeonRecordManagerCli@@QEAA_NI@Z	140b22320	func
+?CanClaimHelperReward@DungeonRecordManagerCli@@QEAA_NI@Z	140b223d0	func
+?IsSeasonRoom@DungeonRecordManagerCli@@QEAA_NI@Z	140b225a0	func
+?GetRoomScore68@DungeonRecordManagerCli@@QEAAGI@Z	140b226f0	func
+?GetRoomValue5c@DungeonRecordManagerCli@@QEAAJI@Z	140b22890	func
+?GetExtraTicketCost@DungeonRecordManagerCli@@QEAAIV?$MS2Ptr@VDungeonRoom@@@@@Z	140b22aa0	func
+?GetRoomBonusCount@DungeonRecordManagerCli@@QEAAEI@Z	140b22b40	func
+?IsCompleted@CAchieveManager@@QEAA_NI@Z	1409365a0	func
