@@ -45,7 +45,7 @@ public:
     MS2Ptr<AdditionalCli> FUN_14096fc80(int nKey);          // a record by key
     MS2Ptr<AdditionalCli> FUN_14096fd30(int nType);         // the first active record of an event buff type
     MS2Ptr<AdditionalCli> FUN_14096fe60(unsigned nId, unsigned short nLevel, unsigned nCount, bool bAll, int nCompare);
-    bool FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare);
+    int FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare);
     int FUN_1409700d0(int nType);                           // an active record of a main type
     int FUN_1409701d0(int nType);                           // an active record of an event buff type
     int FUN_1409702d0(int nGroup);                          // an active record of a group
@@ -58,11 +58,11 @@ public:
     __int64 FUN_1409708a0();                                // shield total
     int FUN_140970990();                                    // hide
     unsigned FUN_1409709b0();                               // stun kind
-    bool FUN_1409709d0();                                   // stunned
+    int FUN_1409709d0();                                    // stunned
     int FUN_140970a00();                                    // no fly
     bool FUN_140970a20();                                   // pvp on
     int FUN_140970a40();                                    // confusion move
-    bool FUN_140970a60(unsigned nSkillId);                  // the skill is disabled
+    int FUN_140970a60(unsigned nSkillId);                   // the skill is disabled
     bool FUN_140970ad0();                                   // revival disabled here
     int FUN_140970af0();                                    // invincible
     int FUN_140970b10();                                    // force apply target
@@ -71,7 +71,7 @@ public:
     int FUN_140970c10(SkillAttackData* pAttack, int nPush); // the super armor resists the attack
     bool FUN_140970d70();                                   // infinity sp
     unsigned FUN_140970d90(unsigned nId, unsigned short nLevel);   // overlap count of a record
-    bool FUN_140970eb0(float& fOut);                        // fixed z rotation
+    int FUN_140970eb0(float& fOut);                         // fixed z rotation
     __int64 FUN_140970f00(int nType, __int64 nValue);       // consume value scaled by the rates
     float FUN_140970fb0();                                  // sp consume -> hp rate
     float FUN_140970fd0();                                  // sp rate
@@ -88,7 +88,7 @@ public:
     void FUN_1409725d0();                                   // dirty
     void FUN_1409725f0(ATL::CAtlList<MS2Ptr<AdditionalCli> >& list);   // all records
     MS2Ptr<AdditionalCli> FUN_140972690();                  // the shield record
-    static bool FUN_1409726e0(unsigned nSuperArmor, ApplyFieldType eField);
+    static int FUN_1409726e0(unsigned nSuperArmor, ApplyFieldType eField);
     void FUN_140972770();                                   // alpha
     void FUN_1409728b0();                                   // update the records, drop the finished ones
     void FUN_140972a00();                                   // sum the active records

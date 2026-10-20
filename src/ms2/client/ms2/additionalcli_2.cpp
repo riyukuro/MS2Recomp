@@ -5,6 +5,12 @@
 // COMDATs. The first part of the unit (AdditionalCli) is additionalcli_1.cpp.
 // MS2-UNIT: ?\additionalcli.cpp#2
 // MS2-RANGE: 0x14096ee00-0x140978f40 .text$mn
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: memmove_s 0x14096ee00 ; unique
+// MS2-PIN: ?GetAt@?$CAtlArray@V?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VSAInvokeEffectStat@@@@_K@Z 0x140975b50 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VCSkillRecord@@@@QEBAPEAVCSkillRecord@@XZ 0x140975ba0 ; unique
+// MS2-PIN: ?IsEmpty@?$CAtlArray@V?$MS2Ptr@VSAInvokeEffectStat@@@@V?$CElementTraits@V?$MS2Ptr@VSAInvokeEffectStat@@@@@ATL@@@ATL@@QEBA_NXZ 0x140976be0 ; unique
+// MS2-PINS-END tplpin
 // MS2-PIN: ??_GSAInvokeEffectStat@@UEAAPEAXI@Z 0x140975d00
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\additionalcli.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -348,11 +354,11 @@ MS2Ptr<AdditionalCli> AdditionalCliList::FUN_14096fe60(unsigned nId, unsigned sh
 }
 
 // @0x140970020
-bool AdditionalCliList::FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare)
+int AdditionalCliList::FUN_140970020(unsigned nId, unsigned short nLevel, unsigned nCount, int nCompare)
 {
     if (FUN_14096fe60(nId, nLevel, nCount, false, nCompare) == 0)
-        return false;
-    return true;
+        return 0;
+    return 1;
 }
 
 // @0x1409700d0
@@ -447,8 +453,8 @@ float AdditionalCliList::FUN_1409705d0()
         MS2Ptr<AdditionalCli> sp = m_map.GetValueAt(pos);
         if (!sp->m_bEnabled)
             continue;
-        if (sp->FUN_14096d810()->m_motion.m_fScale != 0.0f)
-            return sp->FUN_14096d810()->m_motion.m_fScale * sp->m_nOverlapCount + 1.0f;
+        if (0.0f != sp->FUN_14096d810()->m_motion.m_fScale)
+            return 1.0f + sp->FUN_14096d810()->m_motion.m_fScale * sp->m_nOverlapCount;
     }
     return 1.0f;
 }
@@ -514,11 +520,11 @@ unsigned AdditionalCliList::FUN_1409709b0()
 }
 
 // @0x1409709d0
-bool AdditionalCliList::FUN_1409709d0()
+int AdditionalCliList::FUN_1409709d0()
 {
     if (FUN_1409709b0() != 0)
-        return true;
-    return false;
+        return 1;
+    return 0;
 }
 
 // @0x140970a00
@@ -540,7 +546,7 @@ int AdditionalCliList::FUN_140970a40()
 }
 
 // @0x140970a60
-bool AdditionalCliList::FUN_140970a60(unsigned nSkillId)
+int AdditionalCliList::FUN_140970a60(unsigned nSkillId)
 {
     return m_motion.m_setSkillUseDisableIDs.find(nSkillId) != m_motion.m_setSkillUseDisableIDs.end();
 }
@@ -577,7 +583,7 @@ unsigned AdditionalCliList::FUN_140970b30()
                 nValue = spRecord->FUN_14175a210();
         }
     }
-    return m_motion.m_nSuperArmor < nValue ? nValue : m_motion.m_nSuperArmor;
+    return nValue > m_motion.m_nSuperArmor ? nValue : m_motion.m_nSuperArmor;
 }
 
 // @0x140970bf0
@@ -599,23 +605,30 @@ int AdditionalCliList::FUN_140970c10(SkillAttackData* pAttack, int nPush)
     if (pAttack->m_damage.m_nSuperArmorBreak)
         return 0;
     unsigned nArmor = FUN_140970b30();
-    SkillPushType ePush = pAttack->m_damage.GetPush(WorldService::GetInstance()->FUN_141bd3060());
+    int nFieldId = WorldService::GetInstance()->FUN_141bd3060();
+    SkillPushType ePush = pAttack->m_damage.GetPush(nFieldId);
     switch (nArmor)
     {
     case 1:
         if (ePush)
             return 0;
-        return pAttack->m_eGrabTargetType == 1 ? 0 : 1;
+        if (pAttack->m_eGrabTargetType == 1)
+            return 0;
+        return 1;
     case 2:
         if (ePush && !FUN_14028d470(pAttack->m_damage.m_fPushUpDistance, 0.0f))
             return 0;
-        return pAttack->m_eGrabTargetType == 1 ? 0 : 1;
+        if (pAttack->m_eGrabTargetType == 1)
+            return 0;
+        return 1;
     case 3:
         return 1;
     case 4:
         if (nPush)
             return 0;
-        return pAttack->m_eGrabTargetType == 1 ? 0 : 1;
+        if (pAttack->m_eGrabTargetType == 1)
+            return 0;
+        return 1;
     }
     return 0;
 }
@@ -644,27 +657,26 @@ unsigned AdditionalCliList::FUN_140970d90(unsigned nId, unsigned short nLevel)
 }
 
 // @0x140970eb0
-bool AdditionalCliList::FUN_140970eb0(float& fOut)
+int AdditionalCliList::FUN_140970eb0(float& fOut)
 {
-    if (m_motion.m_fFixedZRotation == 0.0f)
-        return false;
+    if (0.0f == m_motion.m_fFixedZRotation)
+        return 0;
     fOut = m_motion.m_fFixedZRotation;
-    return true;
+    return 1;
 }
 
 // @0x140970f00
 __int64 AdditionalCliList::FUN_140970f00(int nType, __int64 nValue)
 {
-    if (nType == 4 || nType == 7)
-    {
-        float fRate = 0.0f;
-        if (nType == 4)
-            fRate = m_consume.m_fHpRate;
-        else if (nType == 7)
-            fRate = m_consume.m_fSpRate;
-        nValue = FUN_140632990(nValue, fRate + 1.0f);
-    }
-    return nValue;
+    if (nType != 4 && nType != 7)
+        return nValue;
+    __int64 nFlat = 0;
+    float fRate = 0.0f;
+    if (nType == 4)
+        fRate = m_consume.m_fHpRate;
+    else if (nType == 7)
+        fRate = m_consume.m_fSpRate;
+    return FUN_140632990(nValue + nFlat, 1.0f + fRate);
 }
 
 // @0x140970fb0
@@ -682,7 +694,7 @@ float AdditionalCliList::FUN_140970fd0()
 // @0x140970ff0
 void AdditionalCliList::FUN_140970ff0(CInPacket& packet)
 {
-    unsigned short nCount = packet.vfunc_o8_2();
+    int nCount = (unsigned short)packet.vfunc_o8_2();
     for (int i = 0; i < nCount; i++)
     {
         Unk_AdditionalOwner owner;
@@ -832,7 +844,7 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
                 MS2Ptr<SAInvokeEffectStat> spStat(0);
                 if (!skills.Lookup(sp->FUN_14096d810()->m_invokeEffect.m_nSkillID, spStat))
                 {
-                    spStat = new SAInvokeEffectStat;
+                    spStat.AssignRaw(new SAInvokeEffectStat);
                     skills.SetAt(sp->FUN_14096d810()->m_invokeEffect.m_nSkillID, spStat);
                 }
                 stats.Add(spStat);
@@ -844,7 +856,7 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
                 MS2Ptr<SAInvokeEffectStat> spStat(0);
                 if (!effects.Lookup(sp->FUN_14096d810()->m_invokeEffect.m_nEffectID, spStat))
                 {
-                    spStat = new SAInvokeEffectStat;
+                    spStat.AssignRaw(new SAInvokeEffectStat);
                     effects.SetAt(sp->FUN_14096d810()->m_invokeEffect.m_nEffectID, spStat);
                 }
                 stats.Add(spStat);
@@ -862,7 +874,7 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
                     MS2Ptr<SAInvokeEffectStat> spStat(0);
                     if (!skills.Lookup(nId, spStat))
                     {
-                        spStat = new SAInvokeEffectStat;
+                        spStat.AssignRaw(new SAInvokeEffectStat);
                         skills.SetAt(nId, spStat);
                     }
                     stats.Add(spStat);
@@ -881,7 +893,7 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
                     MS2Ptr<SAInvokeEffectStat> spStat(0);
                     if (!effects.Lookup(nId, spStat))
                     {
-                        spStat = new SAInvokeEffectStat;
+                        spStat.AssignRaw(new SAInvokeEffectStat);
                         effects.SetAt(nId, spStat);
                     }
                     stats.Add(spStat);
@@ -895,7 +907,7 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
                 MS2Ptr<InvokeEffectOption> spOption;
                 if (!spStat->m_18.Lookup(nType, spOption))
                 {
-                    spOption = new InvokeEffectOption;
+                    spOption.AssignRaw(new InvokeEffectOption);
                     spOption->m_nA = nType;
                     spOption->FUN_140267330(sp->FUN_14096d810()->m_invokeEffect.m_vValues[i] * sp->m_nOverlapCount);
                     spOption->FUN_140267300(sp->FUN_14096d810()->m_invokeEffect.m_vRates[i] * sp->m_nOverlapCount);
@@ -917,7 +929,7 @@ void AdditionalCliList::FUN_140971720(StatMap& skills, StatMap& effects)
 // @0x140972380
 void AdditionalCliList::FUN_140972380(CSpecialEffectCtx* pCtx)
 {
-    if (!FUN_1409735c0())
+    if (!FUN_140973920())
         return;
     if (!pCtx)
         return;
@@ -934,11 +946,12 @@ void AdditionalCliList::FUN_140972380(CSpecialEffectCtx* pCtx)
             continue;
         if (sp->FUN_14096d810()->m_specialEffect.m_eType != pCtx->m_nKind)
             continue;
-        if (FUN_140768090() > sp->FUN_14096d810()->m_specialEffect.m_fProbability)
+        if (sp->FUN_14096d810()->m_specialEffect.m_fProbability < FUN_140768090())
             continue;
         reinterpret_cast<MS2Ptr<CXmlData>&>(pCtx->m_pParam) = sp->FUN_14096d810()->m_specialEffect.m_xml;
-        if (spFn->vfunc_1(pCtx))
-            pCtx->m_n30++;
+        if (!spFn->vfunc_1(pCtx))
+            continue;
+        pCtx->m_n30++;
     }
 }
 
@@ -954,7 +967,7 @@ void AdditionalCliList::FUN_1409725f0(ATL::CAtlList<MS2Ptr<AdditionalCli> >& lis
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
         MS2Ptr<AdditionalCli> sp = m_map.GetValueAt(pos);
-        if (!(sp == 0))
+        if (sp)
             list.AddTail(sp);
     }
 }
@@ -966,13 +979,14 @@ MS2Ptr<AdditionalCli> AdditionalCliList::FUN_140972690()
 }
 
 // @0x1409726e0
-bool AdditionalCliList::FUN_1409726e0(unsigned nSuperArmor, ApplyFieldType eField)
+int AdditionalCliList::FUN_1409726e0(unsigned nSuperArmor, ApplyFieldType eField)
 {
     if (!nSuperArmor)
-        return false;
+        return 0;
     if (!eField)
-        return true;
-    return (eField == 2) == CFieldData::FUN_1403744a0(WorldService::GetInstance()->FUN_141bd3060());
+        return 1;
+    int bField = CFieldData::FUN_1403744a0(WorldService::GetInstance()->FUN_141bd3060());
+    return (eField == 2) == bField;
 }
 
 // @0x140972770
@@ -1102,8 +1116,7 @@ void AdditionalCliList::FUN_140973450()
     if (m_motion.m_nSkillUseDisable != m_nSkillUseDisable)
     {
         m_nSkillUseDisable = m_motion.m_nSkillUseDisable;
-        int nEvent = 5;
-        FUN_1419f37f0(nEvent);
+        FUN_1419f37f0(5);
     }
 }
 
