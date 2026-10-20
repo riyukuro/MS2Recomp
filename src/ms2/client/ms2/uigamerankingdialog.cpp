@@ -1531,7 +1531,7 @@ void ASObj::FUN_140e35d00(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&FUN_1422bb870(), szName, data.FUN_1422b9260());
+    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
 }
 
 // @0x140e35da0
@@ -1539,7 +1539,7 @@ void ASObj::FUN_140e35da0(const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&FUN_1422bb870(), szName, data.FUN_1422b9260());
+    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
 }
 
 // @0x140e37aa0
