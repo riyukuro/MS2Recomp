@@ -30,6 +30,7 @@ endif()
 
 # --- global x64 settings (deviations from the VC90 property sheets are documented in NOTES.md) ---------
 add_compile_definitions(EE_USE_NATIVE_STL)        # STLPort replaced by the MSVC 14.16 STL
+add_compile_definitions(MS2_ENTITY_PROPERTY_CACHE) # MS2: egf::Entity's property cache (egf/Entity.h; the game code keeps its own view)
 add_compile_options(/Z7)                          # CodeView in objects -> PDB at link time
 # Optimisation comes from each project's configuration (gb_set_optimization), not CMake's defaults.
 foreach(lang C CXX)

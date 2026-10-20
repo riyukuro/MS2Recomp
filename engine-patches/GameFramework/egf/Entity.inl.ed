@@ -1,0 +1,59 @@
+158a
+
+#if defined(MS2_ENTITY_PROPERTY_CACHE)
+//------------------------------------------------------------------------------------------------
+// MS2: saves the old value of propID once while caching is on (0x1421c8b00 for SInt8). The
+// copies come from the global operator new (MemObject types too).
+template<typename T>
+void Entity::CachePropertyValue(PropertyID propID, const T& data)
+{
+    if (m_bCaching)
+    {
+        if (m_mapCache.find(propID) == m_mapCache.end())
+        {
+            T old;
+            GetPropertyValueUnsafe(propID, &old, efd::GetClassIDFromType<T>());
+            m_mapCache[propID] = PropertyCacheEntry(propID, ::new T(old), efd::GetClassIDFromType<T>());
+        }
+    }
+}
+
+//------------------------------------------------------------------------------------------------
+// MS2: the keyed variant (0x1421c8bd0 for SInt8).
+template<typename T>
+void Entity::CachePropertyValue(PropertyID propID, const efd::utf8string& key, const T& data)
+{
+    if (m_bCaching)
+    {
+        KeyedPropertyCacheMap::iterator it = m_mapKeyedCache.find(propID);
+        if (it == m_mapKeyedCache.end())
+        {
+            T old;
+            GetPropertyValueUnsafe(propID, key, &old, efd::GetClassIDFromType<T>());
+            m_mapKeyedCache[propID][key] =
+                PropertyCacheEntry(propID, ::new T(old), efd::GetClassIDFromType<T>());
+        }
+        else
+        {
+            KeyedPropertyCacheEntries::iterator itKey = it->second.find(key);
+            if (itKey == it->second.end())
+            {
+                T old;
+                GetPropertyValueUnsafe(propID, key, &old, efd::GetClassIDFromType<T>());
+                it->second[key] = PropertyCacheEntry(propID, ::new T(old), efd::GetClassIDFromType<T>());
+            }
+        }
+    }
+}
+#endif
+.
+156a
+#if defined(MS2_ENTITY_PROPERTY_CACHE)
+    CachePropertyValue(propID, key, data);  // MS2
+#endif
+.
+132a
+#if defined(MS2_ENTITY_PROPERTY_CACHE)
+    CachePropertyValue(propID, data);   // MS2
+#endif
+.

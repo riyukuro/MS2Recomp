@@ -1,3 +1,30 @@
+2937a
+
+//------------------------------------------------------------------------------------------------
+// MS2
+void Entity::ClearPropertyCache()
+{
+    for (PropertyCacheMap::iterator it = m_mapCache.begin(); it != m_mapCache.end(); ++it)
+    {
+        delete it->second.m_pValue;
+    }
+    m_mapCache.clear();
+    for (KeyedPropertyCacheMap::iterator it = m_mapKeyedCache.begin(); it != m_mapKeyedCache.end(); ++it)
+    {
+        for (KeyedPropertyCacheEntries::iterator itKey = it->second.begin(); itKey != it->second.end(); ++itKey)
+        {
+            delete itKey->second.m_pValue;
+        }
+    }
+    m_mapKeyedCache.clear();
+}
+.
+102c
+{   ClearPropertyCache();   // MS2
+.
+77c
+    , m_iterationCount(0), m_bCaching(false)   // MS2: line-neutral (also the ~Entity brace line): the exe keeps the SDK __LINE__s
+.
 15a
 
 

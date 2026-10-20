@@ -35,7 +35,8 @@
 1400b6150	1400b6260	?\fielddata.cpp	low	5	di	was ?\starting.cpp; dir commonfiles
 1400b6260	1400b6380	commonfiles\filebuffer.cpp	medium	3	di	
 1400b6380	1400b8480	commonfiles\gameevent.cpp	medium	105	di	
-1400b8480	1400b8700	commonfiles\gameeventcontext.cpp	medium	5	di	
+1400b8480	1400b86b0	commonfiles\gameeventcontext.cpp	medium	4	di	
+1400b86b0	1400b8700	unit_1400b86b0	none	1	di	ps1 split from commonfiles\gameeventcontext.cpp: registers the GameEventDTReward factory 0x14041b140
 1400b8700	1400b8890	?\gameeventlobbymap.cpp	low	5	di	dir commonfiles
 1400b8890	1400b8cf0	?\gameeventshutdown.cpp	low	14	di	dir commonfiles
 1400b8cf0	1400b8d40	?\gameeventstringboard.cpp	low	1	di	dir commonfiles
@@ -99,7 +100,8 @@
 1400be790	1400bed10	unit_1400be790	none	25	di	
 1400bed10	1400befb0	unit_14092f420	none	7	di	
 1400befb0	1400bf220	?\achievemanager.cpp	low	8	di	
-1400bf220	1400bf390	client\ms2\actioncameradata.cpp	medium	5	di	
+1400bf220	1400bf250	client\ms2\actioncameradata.cpp	medium	1	di	
+1400bf250	1400bf390	unit_1400bf250	none	4	di	ps1 split from client\ms2\actioncameradata.cpp: header-static di set
 1400bf390	1400bf670	client\ms2\actioncontainer.cpp	medium	8	di	
 1400bf670	1400bf7b0	?\actionkeyobject.cpp	low	4	di	was ?\fishingaction.cpp; dir client\ms2
 1400bf7b0	1400bfae0	unit_1400bf7b0	none	9	di	
@@ -113,7 +115,8 @@
 1400c13a0	1400c2000	?\astooltip.cpp	low	58	di	dir client\ms2
 1400c2000	1400c2300	unit_1409f01a0	none	9	di	rejected ?\asstat.cpp (order within gap)
 1400c2300	1400c2440	?\avatarcube.cpp	low	4	di	dir client\ms2
-1400c2440	1400c2b20	?\avatarpc.cpp	low	21	di	dir client\ms2
+1400c2440	1400c28c0	?\avatarpc.cpp	low	15	di	dir client\ms2
+1400c28c0	1400c2b20	unit_1400c28c0	none	6	di	ps1 split from ?\avatarpc.cpp: header-static di sets
 1400c2b20	1400c2cc0	client\ms2\battlerecordmanager.cpp	medium	5	di	
 1400c2cc0	1400c2f90	client\ms2\beameffect.cpp	medium	9	di	
 1400c2f90	1400c2fc0	?\blackmarketman.cpp	low	1	di	dir client\ms2
@@ -158,7 +161,7 @@
 1400c8b90	1400c8d80	?\petcardslot.cpp	low	8	di	dir client\ms2
 1400c8d80	1400c90a0	client\ms2\reactor.cpp	medium	10	di	
 1400c90a0	1400c9240	client\ms2\statecoupleemotion.cpp	medium	5	di	
-1400c9240	1400c9520	client\ms2\statemicrogame.cpp	medium	8	di	
+1400c9240	1400c9520	unit_1400c9240	none	8	di	ps1 split from client\ms2\statemicrogame.cpp: two header-static di sets, owner TU unknown (statemicrogame declares no di)
 1400c9520	1400c9750	?\tabcontentspetremakeoption.cpp	low	8	di	was ?\petremakeoptionpetcard.cpp; dir client\ms2
 1400c9750	1400c98c0	?\uiadventureleveldialog.cpp	low	4	di	dir client\ms2
 1400c98c0	1400c9a30	?\uiadventurelevelolddialog.cpp	low	4	di	dir client\ms2
@@ -233,14 +236,16 @@
 1400d3940	1400d39c0	unit_140d72a60	none	2	di	rejected ?\dailymission.cpp
 1400d39c0	1400d39e0	unit_140d73aa0	none	1	di	
 1400d39e0	1400d3aa0	?\ms2actormanager.cpp	low	4	di	dir client\ms2
-1400d3aa0	1400d3c60	?\ms2fragmentshader.cpp	low	6	di	dir client\ms2
+1400d3aa0	1400d3ad0	?\ms2fragmentshader.cpp	low	1	di	dir client\ms2
+1400d3ad0	1400d3c60	unit_1400d3ad0	none	5	di	ps1 split from ?\ms2fragmentshader.cpp: header-static di set
 1400d3c60	1400d3ca0	client\ms2\ms2kfmfactory.cpp	medium	2	di	
 1400d3ca0	1400d3cd0	?\ms2meshcullingprocess.cpp	low	1	di	dir client\ms2
 1400d3cd0	1400d3d00	?\ms2renderer.cpp	low	1	di	dir client\ms2
 1400d3d00	1400d3d30	?\ms2renderview.cpp	low	1	di	dir client\ms2
 1400d3d30	1400d4e20	unit_140db46d0	none	52	di	rejected ?\notifychangebuff.cpp (order within gap)
 1400d4e20	1400d4fa0	?\npcshopproductbase.cpp	low	2	di	dir client\ms2
-1400d4fa0	1400d52a0	?\petslot.cpp	low	10	di	dir client\ms2
+1400d4fa0	1400d5270	?\petslot.cpp	low	9	di	dir client\ms2
+1400d5270	1400d52a0	unit_1400d5270	none	1	di	ps1 split from ?\petslot.cpp: CPostEffect NiRTTI initializer
 1400d52a0	1400d5740	?\pvprankduelcomponent.cpp	low	21	di	dir client\ms2
 1400d5740	1400d58b0	?\rewardpreviewitem.cpp	low	4	di	dir client\ms2
 1400d58b0	1400d58e0	?\rootrotateinterpolator.cpp	low	1	di	dir client\ms2
@@ -280,10 +285,11 @@
 1400d9ef0	1400d9fb0	?\uiphotostudiomenudialog.cpp	low	1	di	dir client\ms2
 1400d9fb0	1400da2b0	unit_1400d9fb0	none	12	di	
 1400da2b0	1400da440	?\uiquestnavigation.cpp	low	5	di	was ?\questnavigation.cpp; dir client\ms2
-1400da440	1400da6a0	unit_140e7f2e0	none	6	di	rejected ?\uiquestpostboxdialog.cpp (order within gap)
+1400da440	1400da6a0	unit_1400da440	none	6	di	ps1 split from unit_140e7f2e0: header-static di sets
 1400da6a0	1400da6d0	client\ms2\uirpseventdialog.cpp	medium	1	di	
 1400da6d0	1400dacd0	unit_1400da6d0	none	18	di	
-1400dacd0	1400db2e0	?\uisidepopuptalk.cpp	low	18	di	dir client\ms2
+1400dacd0	1400db1c0	?\uisidepopuptalk.cpp	low	15	di	dir client\ms2
+1400db1c0	1400db2e0	unit_1400db2e0	none	3	di	ps1 split from ?\uisidepopuptalk.cpp: sort-name/skill/stun statics whose TU continues with s_condition1 at 0x1400db2e0
 1400db2e0	1400db7c0	unit_1400db2e0	none	15	di	
 1400db7c0	1400dba90	?\uiitemlulluboxdialog.cpp	low	8	di	
 1400dba90	1400dbc00	?\uilearningquestdialog.cpp	low	4	di	
@@ -301,7 +307,8 @@
 1400dd160	1400dd530	?\uiugccubepalettedialog.cpp	low	14	di	
 1400dd530	1400dd850	unit_1400dd530	none	10	di	
 1400dd850	1400ddba0	?\uiarcademaindialog.cpp	low	10	di	
-1400ddba0	1400de020	?\uibeautyshopstyledialog.cpp	low	10	di	
+1400ddba0	1400ddde0	unit_1400ddba0	none	5	di	ps1 split from ?\uibeautyshopstyledialog.cpp: header-static di set of the previous TU
+1400ddde0	1400de020	?\uibeautyshopstyledialog.cpp	low	5	di	
 1400de020	1400de240	client\ms2\uiblackmarketpage.cpp	medium	5	di	
 1400de240	1400de300	client\ms2\uiblackmarketpagemeso.cpp	medium	1	di	
 1400de300	1400de4a0	?\uibluemarblegamedialog.cpp	low	5	di	dir client\ms2
@@ -358,7 +365,8 @@
 1400e4330	1400e43f0	client\ms2\ugcimagepath.cpp	medium	1	di	
 1400e43f0	1400e46a0	client\ms2\uiattendgiftdialog.cpp	medium	8	di	
 1400e46a0	1400e4960	unit_1400e46a0	none	9	di	
-1400e4960	1400e4b90	?\uicashshopdialog.cpp	low	8	di	
+1400e4960	1400e4b60	?\uicashshopdialog.cpp	low	7	di	
+1400e4b60	1400e4b90	unit_1400e4b60	none	1	di	ps1 split from ?\uicashshopdialog.cpp: ChaosLightEffect NiRTTI initializer
 1400e4b90	1400e4c80	?\uichaoslightdialog.cpp	low	5	di	
 1400e4c80	1400e4e20	client\ms2\charactermeshmerger.cpp	medium	5	di	
 1400e4e20	1400e50a0	unit_14107ac30	none	10	di	rejected ?\tcreatecharinfo.cpp
@@ -388,7 +396,8 @@
 1400e9290	1400e9740	client\ms2\fittingdollslot.cpp	medium	16	di	
 1400e9740	1400e9c70	unit_1400e9740	none	17	di	
 1400e9c70	1400ea080	client\ms2\functioncubeobject.cpp	medium	14	di	
-1400ea080	1400ea350	?\fusionslotbag.cpp	low	9	di	dir client\ms2
+1400ea080	1400ea210	?\fusionslotbag.cpp	low	5	di	dir client\ms2
+1400ea210	1400ea350	unit_1400ea210	none	4	di	ps1 split from ?\fusionslotbag.cpp: di (header statics) of another TU
 1400ea350	1400ea4e0	client\ms2\gameobject.cpp	medium	5	di	
 1400ea4e0	1400ea840	client\ms2\gameoption.cpp	medium	11	di	
 1400ea840	1400ea9f0	?\gameoptioninputdefault.cpp	low	3	di	dir client\ms2
@@ -396,7 +405,7 @@
 1400eadb0	1400eaed0	client\ms2\gamesocket.cpp	medium	3	di	
 1400eaed0	1400eb270	?\gemslot.cpp	low	12	di	dir client\ms2
 1400eb270	1400eb5a0	unit_1400eb270	none	17	di	
-1400eb5a0	1400eb710	?\gemslot.cpp	low	4	di	dir client\ms2
+1400eb5a0	1400eb710	unit_1400eb5a0	none	4	di	ps1 split from ?\gemslot.cpp: header-static di set
 1400eb710	1400eba80	?\getexp.cpp	low	11	di	was ?\expeffectinfo.cpp; dir client\ms2
 1400eba80	1400ebd60	unit_141274d10	none	8	di	
 1400ebd60	1400ebf20	?\gfxmoviebackground.cpp	low	6	di	dir client\ms2
@@ -482,7 +491,10 @@
 1400f91f0	1400f93d0	?\ms2renderservice.cpp	low	6	di	dir client\ms2
 1400f93d0	1400f94b0	client\ms2\ms2scenegraphservice.cpp	medium	4	di	
 1400f94b0	1400f94e0	client\ms2\ms2sceneservice.cpp	medium	1	di	
-1400f94e0	1400f9900	?\ms2shadowclickgenerator.cpp	low	15	di	dir client\ms2
+1400f94e0	1400f9510	?\ms2shadowclickgenerator.cpp	low	1	di	dir client\ms2
+1400f9510	1400f96a0	unit_1400f9510	none	5	di	ps1 split from ?\ms2shadowclickgenerator.cpp: header-static di set
+1400f96a0	1400f9700	?\ms2shadowclickgenerator.cpp	none	2	di	ps1 split from unit_1400f9510: header-static di set
+1400f9700	1400f9900	unit_1400f9700	none	7	di	ps1 split from ?\ms2shadowclickgenerator.cpp: header-static di sets
 1400f9900	1400f9ac0	?\ms2visualtrackermanager.cpp	low	6	di	dir client\ms2
 1400f9ac0	1400f9df0	client\ms2\mypc.cpp	medium	14	di	
 1400f9df0	1400fa290	client\ms2\networkservice.cpp	medium	18	di	
@@ -494,9 +506,12 @@
 1400fa870	1400fa940	?\offscreenwebbrowser.cpp	low	1	di	dir client\ms2
 1400fa940	1400fad30	unit_1400fa940	none	14	di	
 1400fad30	1400fb010	?\partymanager.cpp	low	9	di	dir client\ms2
-1400fb010	1400fb920	client\ms2\pcbase.cpp	medium	35	di	
+1400fb010	1400fb4d0	unit_14164dfd0	none	22	di	ps1 split from client\ms2\pcbase.cpp: PC class TU di (pc.cpp?)
+1400fb4d0	1400fb790	client\ms2\pcbase.cpp	medium	8	di	
+1400fb790	1400fb920	unit_141682f80	none	5	di	ps1 split from client\ms2\pcbase.cpp: buff-tracker TU di (mn starts 0x141682e90)
 1400fb920	1400fbab0	client\ms2\physxhelper.cpp	medium	5	di	
-1400fbab0	1400fbb30	?\planereflectionsetting.cpp	low	3	di	dir client\ms2
+1400fbab0	1400fbb00	?\planereflectionsetting.cpp	low	2	di	dir client\ms2
+1400fbb00	1400fbb30	client\ms2\ponytailphysxhelper.cpp	low	1	di	ps1 split from ?\planereflectionsetting.cpp: CPonyTailController NiRTTI initializer
 1400fbb30	1400fbf80	client\ms2\ponytailphysxhelper.cpp	medium	12	di	
 1400fbf80	1400fc110	?\portraitpc.cpp	low	5	di	dir client\ms2
 1400fc110	1400fc2a0	unit_14169afb0	none	5	di	rejected ?\portal.cpp (order within gap)
@@ -553,23 +568,27 @@
 1401073f0	140107420	unit_141803210	none	1	di	rejected ?\efd.cpp
 140107420	14010cbd0	unit_140107420	none	254	di	
 14010cbd0	14010cf80	client\ms2\storeslot.cpp	medium	13	di	
-14010cf80	14010d290	client\ms2\stringtable.cpp	medium	9	di	
+14010cf80	14010d120	client\ms2\stringtable.cpp	medium	5	di	
+14010d120	14010d290	unit_14010d120	none	4	di	ps1 split from client\ms2\stringtable.cpp: header-static di set
 14010d290	14010d320	?\swoosheffectparam.cpp	low	3	di	dir client\ms2
 14010d320	14010d4c0	client\ms2\tableexporter.cpp	medium	5	di	
 14010d4c0	14010d840	unit_14010d4c0	none	12	di	
 14010d840	14010db90	?\texttohtml.cpp	low	14	di	dir client\ms2
-14010db90	14010dd90	?\textureanimationdata.cpp	low	7	di	dir client\ms2
+14010db90	14010dd90	unit_14010db90	none	7	di	ps1 split from ?\textureanimationdata.cpp: header-static di sets of other objs (see textureanimationdata.cpp)
 14010dd90	14010ddc0	client\ms2\textureutil.cpp	medium	1	di	
 14010ddc0	14010e180	unit_14010ddc0	none	10	di	
 14010e180	14010e4a0	?\toolsmoothcameramode.cpp	low	10	di	dir client\ms2
-14010e4a0	14010e910	?\trademanagerex.cpp	low	14	di	dir client\ms2
+14010e4a0	14010e8e0	?\trademanagerex.cpp	low	13	di	dir client\ms2
+14010e8e0	14010e910	unit_14010e8e0	none	1	di	ps1 split from ?\trademanagerex.cpp: TransitionEffect NiRTTI initializer
 14010e910	14010eca0	?\triggerservice.cpp	low	11	di	dir client\ms2
-14010eca0	14010f630	client\ms2\ugcmanager.cpp	medium	31	di	
+14010eca0	14010f440	client\ms2\ugcmanager.cpp	medium	27	di	
+14010f440	14010f630	unit_14010f440	none	4	di	ps1 split from client\ms2\ugcmanager.cpp: header-static di set
 14010f630	14010fa00	unit_14010f630	none	12	di	
 14010fa00	14010fbc0	?\uiachievedialog.cpp	low	6	di	dir client\ms2
 14010fbc0	14010fe10	?\uiadditionalcontroldialog.cpp	low	6	di	dir client\ms2
 14010fe10	140110080	?\uiavatarbase.cpp	low	6	di	dir client\ms2
-140110080	140110a70	?\uibeautyshopdialog.cpp	low	33	di	dir client\ms2
+140110080	1401105f0	?\uibeautyshopdialog.cpp	low	22	di	dir client\ms2
+1401105f0	140110a70	unit_1401105f0	none	11	di	ps1 split from ?\uibeautyshopdialog.cpp: header-static di sets of the next TU(s)
 140110a70	140110b20	?\uiblackmarketdialog.cpp	low	3	di	dir client\ms2
 140110b20	140110f20	?\uibuddyeventlistener.cpp	low	11	di	was ?\uicommunitydialog.cpp; dir client\ms2
 140110f20	140111400	?\uicameraeditdialog.cpp	low	12	di	dir client\ms2
@@ -578,10 +597,13 @@
 1401117c0	1401119b0	client\ms2\uicommon.cpp	medium	7	di	
 1401119b0	140111bf0	unit_1401119b0	none	9	di	
 140111bf0	140111d60	client\ms2\uicutscenecinematic.cpp	medium	4	di	
-140111d60	140112070	client\ms2\uicutscenemovie.cpp	medium	9	di	
+140111d60	140111f00	client\ms2\uicutscenemovie.cpp	medium	5	di	
+140111f00	140112070	unit_140111f00	none	4	di	ps1 split from client\ms2\uicutscenemovie.cpp: header-static di set
 140112070	1401124f0	?\uidamagetext.cpp	low	21	di	dir client\ms2
 1401124f0	140112750	unit_1401124f0	none	9	di	
-140112750	140112cb0	?\uidialog.cpp	low	15	di	was ?\uibeautyshopdevdialog.cpp; dir client\ms2
+140112750	140112990	unit_14191c7d0	none	5	di	ps1 split from ?\uidialog.cpp: UIBeautyShopDevDialog TU di
+140112990	140112b40	?\uidialog.cpp	low	6	di	was ?\uibeautyshopdevdialog.cpp; dir client\ms2
+140112b40	140112cb0	unit_140112b40	none	4	di	ps1 split from ?\uidialog.cpp: header-static di set of the TU after uidialog
 140112cb0	140112e30	unit_14192a2e0	none	2	di	rejected ?\uiitemdropsimulatordialog.cpp
 140112e30	140113000	?\uidynamicactiondialog.cpp	low	6	di	dir client\ms2
 140113000	140113280	?\uiemoticon.cpp	low	6	di	dir client\ms2
@@ -647,7 +669,8 @@
 14011f4c0	14011f630	?\uiwhispernotifydialog.cpp	low	4	di	dir client\ms2
 14011f630	14011f750	?\uiworldmapdialog.cpp	low	3	di	dir client\ms2
 14011f750	14011fa90	unit_14011f750	none	14	di	
-14011fa90	14011fb70	?\weaponactiontable.cpp	low	4	di	dir client\ms2
+14011fa90	14011fb10	?\weaponactiontable.cpp	low	2	di	dir client\ms2
+14011fb10	14011fb70	unit_14011fb10	none	2	di	ps1 split from ?\weaponactiontable.cpp: WeaponAttachTransformNode / WeatherEffect NiRTTI initializers
 14011fb70	14011fc20	client\ms2\webbrowserservice.cpp	medium	4	di	
 14011fc20	14011fe40	?\weddingmanager.cpp	low	8	di	
 14011fe40	14011fff0	?\windowservice.cpp	low	6	di	
@@ -850,7 +873,8 @@
 140693e60	1406943b0	?\manufacture.cpp	low	13	mn	dir commonfiles
 1406943b0	140695130	?\matchpartyrecruitschcond.cpp	low	25	mn	dir commonfiles
 140695130	140696ed0	unit_140695130	none	20	mn	
-140696ed0	14069a0b0	commonfiles\md5checksum.cpp	high	41	mn	
+140696ed0	14069a010	commonfiles\md5checksum.cpp	high	40	mn	
+14069a010	14069a0b0	commonfiles\mentor.cpp	high	1	mn	ps1 split from commonfiles\md5checksum.cpp: called by uiinvitementoringdialog; mentor TU head
 14069a0b0	14069bcb0	commonfiles\mentor.cpp	high	68	mn	
 14069bcb0	14069c3e0	?\mentoringdatatable.cpp	low	16	mn	dir commonfiles
 14069c3e0	1406ae9c0	?\meratmarketbasketinfo.cpp	low	457	mn	dir commonfiles
@@ -892,7 +916,8 @@
 140781d80	14078ced0	unit_140781d80	none	377	mn	rejected ?\rideedata.cpp (order within gap)
 14078ced0	140790bd0	?\scriptcontent.cpp	low	118	mn	dir commonfiles
 140790bd0	1407a1bf0	commonfiles\seasondatatable.cpp	high	506	mn	
-1407a1bf0	1407a4f20	commonfiles\serverpacketdef.cpp	high	83	mn	
+1407a1bf0	1407a3380	commonfiles\seasondatatable.cpp	high	61	mn	ps1 split from commonfiles\serverpacketdef.cpp: seasondatatable COMDAT tail (only seasondatatable calls it; ends with memmove_s 0x1407a3260)
+1407a3380	1407a4f20	commonfiles\serverpacketdef.cpp	high	22	mn	
 1407a4f20	1407ad240	unit_1407a4f20	none	248	mn	rejected ?\outsendnoticepacket.cpp
 1407ad240	1407bc4b0	?\setiteminfo.cpp	low	643	mn	dir commonfiles
 1407bc4b0	1407c4980	?\setitemoptionpart.cpp	low	471	mn	dir commonfiles
@@ -1038,7 +1063,8 @@
 140a6d890	140a6e830	?\jobsystemcli.cpp	low	20	mn	dir client\ms2
 140a6e830	140a702f0	?\lapenshardslot.cpp	low	27	mn	dir client\ms2
 140a702f0	140a71e70	?\lapenshardslotbag.cpp	low	44	mn	dir client\ms2
-140a71e70	140a78f70	?\loginbgbgmdata.cpp	low	283	mn	dir client\ms2
+140a71e70	140a78f00	?\loginbgbgmdata.cpp	low	282	mn	dir client\ms2
+140a78f00	140a78f70	unit_140a78f00	none	1	mn	ps1 split from ?\loginbgbgmdata.cpp: struct ctor called by unit_140ad1860
 140a78f70	140a7bb20	?\mouseinteract.cpp	low	73	mn	dir client\ms2
 140a7bb20	140a7beb0	?\ms2dragslot.cpp	low	11	mn	dir client\ms2
 140a7beb0	140a848a0	?\npcdatacli.cpp	low	402	mn	dir client\ms2
@@ -1072,7 +1098,8 @@
 140b00540	140b03040	?\caprotationcontroller.cpp	low	69	mn	dir client\ms2
 140b03040	140b04a50	?\cashcallmanager.cpp	low	31	mn	dir client\ms2
 140b04a50	140b055c0	?\cashchargedialog.cpp	low	37	mn	dir client\ms2
-140b055c0	140b0dc70	?\cashinventorybag.cpp	low	207	mn	dir client\ms2
+140b055c0	140b0dc40	?\cashinventorybag.cpp	low	206	mn	dir client\ms2
+140b0dc40	140b0dc70	?\cashunlockdialog.cpp	low	1	mn	ps1 split from ?\cashinventorybag.cpp: RUNTIME_CLASS(CDialogEx) _GetBaseClass of CCashUnlockDialog (GetRuntimeClass follows)
 140b0dc70	140b0e5f0	?\cashunlockdialog.cpp	low	17	mn	dir client\ms2
 140b0e5f0	140b0f4c0	unit_140b0e5f0	none	18	mn	rejected ?\coupleeffectsystem.cpp
 140b0f4c0	140b12780	unit_140b0f4c0	none	75	mn	rejected ?\pet.cpp
@@ -1160,7 +1187,8 @@
 140c6e790	140c70480	client\ms2\uimentoringmenteepage.cpp	high	36	mn	
 140c70480	140c71310	?\uimentoringmenteeregisterpage.cpp	low	25	mn	dir client\ms2
 140c71310	140c74e70	client\ms2\uimentoringmentorpage.cpp	high	89	mn	
-140c74e70	140c7cd70	client\ms2\ms2clientplatformbase.cpp	high	233	mn	
+140c74e70	140c77ab0	client\ms2\ms2clientplatformbase.cpp	high	132	mn	
+140c77ab0	140c7cd70	unit_140c77ab0	none	101	mn	ps1 split from client\ms2\ms2clientplatformbase.cpp: CClientPlatformNexonKorea TU (ends with its memmove_s 0x140c7cc50)
 140c7cd70	140c7eea0	client\ms2\ms2clientplatformtencent.cpp	high	80	mn	
 140c7eea0	140c7fc20	?\nodeviewerdlg.cpp	low	25	mn	dir client\ms2
 140c7fc20	140c86000	unit_140c7fc20	none	21	mn	
@@ -1186,7 +1214,8 @@
 140cca6a0	140cca840	?\contentshutdownmanager.cpp	low	8	mn	
 140cca840	140ccac60	?\crash.cpp	low	9	mn	
 140ccac60	140cd73b0	?\customize.cpp	low	270	mn	
-140cd73b0	140cd7e40	?\enchantscrollslot.cpp	low	21	mn	
+140cd73b0	140cd7ce0	?\enchantscrollslot.cpp	low	18	mn	
+140cd7ce0	140cd7e40	unit_140cd7ce0	none	3	mn	ps1 split from ?\enchantscrollslot.cpp: 3 funcs no enchantscrollslot code calls
 140cd7e40	140ce28a0	?\fishingmanager.cpp	low	209	mn	
 140ce28a0	140ceaa70	client\ms2\gameeventcli.cpp	high	322	mn	
 140ceaa70	140cfad00	client\ms2\gameeventmanagercli.cpp	high	312	mn	
@@ -1216,7 +1245,8 @@
 140d72a60	140d73aa0	unit_140d72a60	none	46	mn	rejected ?\dailymission.cpp
 140d73aa0	140d74b20	unit_140d73aa0	none	15	mn	
 140d74b20	140d75430	unit_140d74b20	none	15	mn	
-140d75430	140d7e660	?\midimessage.cpp	low	332	mn	dir client\ms2
+140d75430	140d7e600	?\midimessage.cpp	low	331	mn	dir client\ms2
+140d7e600	140d7e660	?\mmltoken.cpp	low	1	mn	ps1 split from ?\midimessage.cpp: ctor calling mmltoken functions: mmltoken TU head
 140d7e660	140d81400	?\mmltoken.cpp	low	79	mn	dir client\ms2
 140d81400	140d86270	?\ms2actormanager.cpp	low	172	mn	dir client\ms2
 140d86270	140d86560	client\ms2\ms2clientplatform.cpp	high	7	mn	
@@ -1256,7 +1286,8 @@
 140dece80	140def070	?\ugcballobject.cpp	low	36	mn	dir client\ms2
 140def070	140dfa160	?\ugccubepalette.cpp	low	303	mn	dir client\ms2
 140dfa160	140dfc1b0	?\ugchttpclient.cpp	low	23	mn	dir client\ms2
-140dfc1b0	140dfef30	?\ugcmapitem.cpp	low	76	mn	dir client\ms2
+140dfc1b0	140dfee10	?\ugcmapitem.cpp	low	74	mn	dir client\ms2
+140dfee10	140dfef30	unit_140dfef30	none	2	mn	ps1 split from ?\ugcmapitem.cpp: called only from other units: head of the next TU
 140dfef30	140e01f50	unit_140dfef30	none	37	mn	
 140e01f50	140e05260	?\uiadpushlimiteddialog.cpp	low	73	mn	dir client\ms2
 140e05260	140e05460	?\uicameramodehelpdialog.cpp	low	6	mn	dir client\ms2
@@ -1523,7 +1554,8 @@
 141222df0	141225080	?\frustumcollision.cpp	low	15	mn	dir client\ms2
 141225080	14123a080	client\ms2\functioncubeobject.cpp	high	465	mn	
 14123a080	14123b2b0	?\fusionslotbag.cpp	low	46	mn	dir client\ms2
-14123b2b0	14123f5b0	client\ms2\gameobject.cpp	high	147	mn	
+14123b2b0	14123f2d0	client\ms2\gameobject.cpp	high	145	mn	
+14123f2d0	14123f5b0	unit_14123f5b0	none	2	mn	ps1 split from client\ms2\gameobject.cpp: PhysX controller holder: head of the next obj (see gameobject.cpp)
 14123f5b0	141241810	unit_14123f5b0	none	53	mn	rejected ?\nxcapsulecontrollerdesc.cpp
 141241810	141250a80	client\ms2\gameoption.cpp	high	307	mn	
 141250a80	1412558c0	?\gameoptioninputdefault.cpp	low	133	mn	dir client\ms2
@@ -1570,7 +1602,8 @@
 14131e150	14131f690	?\uiobject.cpp	low	30	mn	dir client\ms2
 14131f690	141320660	?\uiobjectcreatedialog.cpp	low	17	mn	dir client\ms2
 141320660	141322c00	client\ms2\uipartysearchregisterdialog.cpp	high	40	mn	
-141322c00	14132bc00	?\uipcbangdialog.cpp	low	264	mn	dir client\ms2
+141322c00	14132ba90	?\uipcbangdialog.cpp	low	263	mn	dir client\ms2
+14132ba90	14132bc00	client\ms2\uipcinfodialog.cpp	low	1	mn	ps1 split from ?\uipcbangdialog.cpp: $s_myInfo_ text helper of uipcinfodialog (see uipcbangdialog.cpp)
 14132bc00	141339640	client\ms2\uipcinfodialog.cpp	high	135	mn	
 141339640	1413405b0	?\uipvpguildteamdialog.cpp	low	161	mn	dir client\ms2
 1413405b0	141342570	?\uipvpguildteamresultdialog.cpp	low	23	mn	dir client\ms2
@@ -1621,7 +1654,8 @@
 141420a70	141420f10	unit_141420a70	none	2	mn	
 141420f10	1414210f0	unit_141420f10	none	3	mn	
 1414210f0	141421740	unit_1414210f0	none	4	mn	
-141421740	141421ab0	unit_141421740	none	2	mn	
+141421740	1414218c0	unit_141421740	none	1	mn	
+1414218c0	141421ab0	?\itemugcmesh.cpp	none	1	mn	ps1 split from unit_141421740: called by itemloadinfo; head of the next TU
 141421ab0	1414286a0	?\itemugcmesh.cpp	low	127	mn	dir client\ms2
 1414286a0	14143d580	client\ms2\keytable.cpp	high	442	mn	
 14143d580	141443550	?\kfmmodel.cpp	low	133	mn	dir client\ms2
@@ -1633,7 +1667,8 @@
 14144b790	14144df10	?\lightningeffectparam.cpp	low	34	mn	dir client\ms2
 14144df10	14144e400	?\lightunaffectednode.cpp	low	9	mn	dir client\ms2
 14144e400	14144fd30	?\loadingdescription.cpp	low	46	mn	dir client\ms2
-14144fd30	14144fec0	?\lockcameramode.cpp	low	10	mn	dir client\ms2
+14144fd30	14144fe90	?\lockcameramode.cpp	low	9	mn	dir client\ms2
+14144fe90	14144fec0	?\logdialog.cpp	low	1	mn	ps1 split from ?\lockcameramode.cpp: RUNTIME_CLASS(CDialog) _GetBaseClass of CLogDialog (GetRuntimeClass follows)
 14144fec0	14145bd70	?\logdialog.cpp	low	529	mn	dir client\ms2
 14145bd70	1414723a0	?\magicdata.cpp	low	384	mn	dir client\ms2
 1414723a0	141472ba0	?\mailitemslot.cpp	low	20	mn	dir client\ms2
@@ -1667,7 +1702,8 @@
 1414b4a90	1414bc310	client\ms2\ms2entitymanagerservice.cpp	high	323	mn	
 1414bc310	1414bc6c0	unit_1414bc310	none	14	mn	rejected ?\elapsedtimeupdate.cpp
 1414bc6c0	1414bfc40	?\ms2javascripthandler.cpp	low	56	mn	dir client\ms2
-1414bfc40	1414cf940	?\ms2lightservice.cpp	low	713	mn	dir client\ms2
+1414bfc40	1414cf920	?\ms2lightservice.cpp	low	712	mn	dir client\ms2
+1414cf920	1414cf940	unit_1414cf920	none	1	mn	ps1 split from ?\ms2lightservice.cpp: byte setter called by depthoffieldmanager
 1414cf940	1414d2460	?\ms2materialswapprocessor.cpp	low	126	mn	was ?\materialswapper.cpp; dir client\ms2
 1414d2460	1414d3120	unit_1414d2460	none	33	mn	
 1414d3120	1414d4e20	?\ms2outlinepreprocessor.cpp	low	40	mn	dir client\ms2
@@ -1967,7 +2003,9 @@
 141649870	14164c5a0	unit_141649870	none	120	mn	rejected ?\cphysxterrainwrapper.cpp
 14164c5a0	14164cc70	unit_14164c5a0	none	11	mn	rejected ?\cphysxtrianglemeshwrapper.cpp
 14164cc70	14164dfd0	unit_14164cc70	none	61	mn	rejected ?\csolidobjects.cpp
-14164dfd0	141682f80	client\ms2\pcbase.cpp	high	1159	mn	
+14164dfd0	14166a650	unit_14164dfd0	none	586	mn	ps1 split from client\ms2\pcbase.cpp: PC class TU (PC::PC .. vector glue; pc.cpp?)
+14166a650	141682e90	client\ms2\pcbase.cpp	high	570	mn	
+141682e90	141682f80	unit_141682f80	none	3	mn	ps1 split from client\ms2\pcbase.cpp: buff-tracker TU head (ctor/dtor 0x141682e90/0x141682f30, see pcbase.h)
 141682f80	1416841a0	unit_141682f80	none	15	mn	
 1416841a0	1416889f0	?\pceffectdummy.cpp	low	148	mn	dir client\ms2
 1416889f0	141689180	?\physxerror.cpp	low	9	mn	dir client\ms2
@@ -2074,7 +2112,8 @@
 1418589b0	141859130	?\tooltreenodesdialog.cpp	low	23	mn	dir client\ms2
 141859130	14185aa10	unit_141859130	none	34	mn	
 14185aa10	14185b1b0	?\tpscameramode.cpp	low	11	mn	dir client\ms2
-14185b1b0	14185f1d0	?\trademanagerex.cpp	low	92	mn	dir client\ms2
+14185b1b0	14185f0b0	?\trademanagerex.cpp	low	91	mn	dir client\ms2
+14185f0b0	14185f1d0	?\transitioneffectparam.cpp	low	1	mn	ps1 split from ?\trademanagerex.cpp: light-transition helper called by chaoslighttransitiondata/lighteffectparam
 14185f1d0	14185ff70	?\transitioneffectparam.cpp	low	23	mn	dir client\ms2
 14185ff70	141860bf0	?\transparencymaterial.cpp	low	11	mn	dir client\ms2
 141860bf0	141860e60	unit_141860bf0	none	4	mn	
@@ -2107,7 +2146,8 @@
 141910bf0	14191a7e0	?\uidamagetext.cpp	low	177	mn	dir client\ms2
 14191a7e0	14191b380	?\uidebugtooltip.cpp	low	20	mn	dir client\ms2
 14191b380	14191c7d0	?\uidecoeditdialog.cpp	low	28	mn	dir client\ms2
-14191c7d0	141927f70	?\uidialog.cpp	low	253	mn	was ?\uibeautyshopdevdialog.cpp; dir client\ms2
+14191c7d0	1419231f0	unit_14191c7d0	none	120	mn	ps1 split from ?\uidialog.cpp: UIBeautyShopDevDialog TU
+1419231f0	141927f70	?\uidialog.cpp	low	133	mn	was ?\uibeautyshopdevdialog.cpp; dir client\ms2
 141927f70	141928c80	?\uidialogeventlistener.cpp	low	28	mn	dir client\ms2
 141928c80	14192a2e0	?\uidpsdialog.cpp	low	22	mn	dir client\ms2
 14192a2e0	14192ac30	unit_14192a2e0	none	12	mn	rejected ?\uiitemdropsimulatordialog.cpp
@@ -2143,7 +2183,8 @@
 1419e3510	1419ee140	?\uimaillistdialog.cpp	low	202	mn	dir client\ms2
 1419ee140	1419f55d0	?\uimainplayerinfo.cpp	low	141	mn	dir client\ms2
 1419f55d0	1419f71e0	?\uimassiveevent.cpp	low	34	mn	dir client\ms2
-1419f71e0	141a034d0	client\ms2\uimessagebox.cpp	high	196	mn	
+1419f71e0	141a00db0	client\ms2\uimessagebox.cpp	high	122	mn	
+141a00db0	141a034d0	unit_141a00db0	none	74	mn	ps1 split from client\ms2\uimessagebox.cpp: CMsgBoxData builder TU (ctor 0x141a00db0, called from ~60 units)
 141a034d0	141a08af0	client\ms2\uimessageboxdata.cpp	high	97	mn	
 141a08af0	141a30f30	client\ms2\uimessenger.cpp	high	1005	mn	
 141a30f30	141a517d0	?\uiminimapentity.cpp	low	528	mn	dir client\ms2
@@ -2226,3 +2267,82 @@
 141bf8d60	141bf98d0	unit_141bf8d60	none	31	mn	
 141bf98d0	141bf99b8	unit_141bf98d0	none	5	mn	
 141bf99b8	141c00000	unit_141bf99b8	none	259	mn	
+1422b0060	1422b7f20	?\gfxmanager.cpp	low	348	mn	gfx1 10-20: gfxui lib TU (head: GFxManager/GFxClipboard/NotifyContext dtors + GFx loader-state templates; no internal TU gap found, may hold >1 TU)
+1422b7f20	1422b9cd0	?\asdata.cpp	low	64	mn	gfx1 10-20: gfxui lib TU (ASData ctor)
+1422b9cd0	1422ba6e0	?\gfxsceneservice.cpp	low	37	mn	gfx1 10-20: gfxui lib TU (GFxSceneService ctor)
+1422ba6e0	1422bbb50	?\ascript.cpp	low	35	mn	gfx1 10-20: gfxui lib TU (AScript ctors)
+1422bbb50	1422bced0	?\asarray.cpp	low	54	mn	gfx1 10-20: gfxui lib TU (ASArray ctors + ASArray template tail)
+1422bced0	1422bf7c0	?\gfxmovie.cpp	low	104	mn	gfx1 10-20: gfxui lib TU (GFxMovie ctor/dtor (0x1422bced0/0x1422bcfe0), GFxMovie vfuncs, ExternalInterface delegate)
+1422bf7c0	1422c1e40	?\asdisplayobject.cpp	low	94	mn	gfx1 10-20: gfxui lib TU (ASDisplayObject ctor/dtor/vfuncs)
+1422c1e40	1422c2fc0	?\asmovieclip.cpp	low	36	mn	gfx1 10-20: gfxui lib TU (ASMovieClip ctors; ends with CRT memmove_s 0x1422c2ea0)
+1422c2fc0	1422c4c00	?\aseventdispatcher.cpp	low	48	mn	gfx1 10-20: gfxui lib TU (ASEventHandlerCtx/ASEventDispatcher (+CAtlArray<void*>, FunctionHandler))
+1422c4c00	1422c6100	?\astextfield.cpp	low	52	mn	gfx1 10-20: gfxui lib TU (ASTextField)
+1422c6100	1422c6570	?\astooltipmanager.cpp	low	13	mn	gfx1 10-20: gfxui lib TU (ASTooltipManager)
+1422c6570	1422c70b0	?\asdisplayobjectcontainer.cpp	low	22	mn	gfx1 10-20: gfxui lib TU (ASDisplayObjectContainer)
+1422c70b0	1422c8390	?\asuicomponent.cpp	low	48	mn	gfx1 10-20: gfxui lib TU (ASUIComponent)
+1422c8390	1422c88e0	?\asfunction.cpp	low	14	mn	gfx1 10-20: gfxui lib TU (ASFunctionHandlerCtx/ASFunction; ends with CRT memmove_s 0x1422c87c0)
+1422c88e0	1422cc350	?\notifycontext.cpp	low	109	mn	gfx1 10-20: gfxui lib TU (NotifyContext(::BindData))
+1422cc350	1422cc8f0	?\dragslot.cpp	low	27	mn	gfx1 10-20: gfxui lib TU (DragSlot (+ITooltip))
+1422cc8f0	1422cdda0	?\dragslotbag.cpp	low	47	mn	gfx1 10-20: gfxui lib TU (DragSlotBag)
+1422cdda0	1422ce4b0	?\asbutton.cpp	low	20	mn	gfx1 10-20: gfxui lib TU (ASButton)
+1422ce4b0	1422ce570	?\asradiobutton.cpp	low	3	mn	gfx1 10-20: gfxui lib TU (ASRadioButton)
+1422ce570	1422ceac0	?\asslider.cpp	low	16	mn	gfx1 10-20: gfxui lib TU (ASSlider)
+1422ceac0	1422ceb80	?\ascheckbox.cpp	low	3	mn	gfx1 10-20: gfxui lib TU (ASCheckBox)
+1422ceb80	1422cf290	?\asmousecursor.cpp	low	18	mn	gfx1 10-20: gfxui lib TU (ASMouseCursor; ends with CRT memmove_s 0x1422cf170)
+1422cf290	1422cfcb0	?\astilelist.cpp	low	31	mn	gfx1 10-20: gfxui lib TU (ASTileList/ASTileCacheList/ASItemBag/ASMultiSelectTileCacheList (dtors grouped in one tail))
+1422cfcb0	1422cfff0	?\asstage.cpp	low	12	mn	gfx1 10-20: gfxui lib TU (ASStage)
+1422cfff0	1422d0960	?\asmoviecliploader.cpp	low	20	mn	gfx1 10-20: gfxui lib TU (ASMovieClipLoader)
+1422d0960	1422d8dc0	?\uiswfentitymanager.cpp	low	181	mn	gfx1 10-20: gfxui lib TU (UISwfEntityManager)
+1422d8dc0	1422db480	?\gfxmovieeventhandler.cpp	low	55	mn	gfx1 10-20: gfxui lib TU (GFxMovieEventHandler (its ms_RTTI di stays in unit_14013acc0))
+1422db480	1422dcbe0	?\uiswfentity.cpp	low	82	mn	gfx1 10-20: gfxui lib TU (existing ?\uiswfentity.cpp range (unchanged))
+1422dcbe0	1422de590	?\ascorelist.cpp	low	45	mn	gfx1 10-20: gfxui lib TU (ASCoreList)
+1422de590	1422de680	?\asgameentity.cpp	low	4	mn	gfx1 10-20: gfxui lib TU (ASGameEntity)
+1422de680	1422deec0	?\asinteractiveobject.cpp	low	22	mn	gfx1 10-20: gfxui lib TU (ASInteractiveObject)
+1422deec0	1422df570	?\asdataprovider.cpp	low	13	mn	gfx1 10-20: gfxui lib TU (ASDataProvider)
+1422df570	1422e07c0	?\asdropdownmenu.cpp	low	30	mn	gfx1 10-20: gfxui lib TU (ASDropdownMenu)
+1422e07c0	1422e1620	?\astextinput.cpp	low	38	mn	gfx1 10-20: gfxui lib TU (ASTextInput)
+1422e1620	1422e1720	?\gfxexception.cpp	low	5	mn	gfx1 10-20: gfxui lib TU (GfxException/GfxExceptionSwfLoad)
+1422e1720	1422e1ba0	?\asscrollinglist.cpp	low	10	mn	gfx1 10-20: gfxui lib TU (ASScrollingList)
+1422e1ba0	1422e2080	?\aslistitemrenderer.cpp	low	15	mn	gfx1 10-20: gfxui lib TU (ASListItemRenderer/ASItemRendererBase)
+1422e2080	1422e2cd0	?\asevent.cpp	low	34	mn	gfx1 10-20: gfxui lib TU (ASEvent/ASTextEvent/ASListEvent/ASIndexEvent)
+1422e2cd0	1422e4490	?\asbuttonbar.cpp	low	36	mn	gfx1 10-20: gfxui lib TU (ASButtonBar)
+1422e4490	1422e4570	?\uimsg.cpp	low	4	mn	gfx1 10-20: gfxui lib TU (UIMsg)
+1422e4570	1422e47c0	?\astextarea.cpp	low	7	mn	gfx1 10-20: gfxui lib TU (ASTextArea)
+1422e47c0	1422e4900	?\asmdragtarget.cpp	low	4	mn	gfx1 10-20: gfxui lib TU (ASMDragTarget)
+1422e4900	1422e4fd0	?\aslabel.cpp	low	18	mn	gfx1 10-20: gfxui lib TU (ASLabel)
+1422e4fd0	1422e5300	?\astextfieldex.cpp	low	6	mn	gfx1 10-20: gfxui lib TU (ASTextFieldEx (setTextAutoSize statics in unit_14013acc0))
+1422e5300	1422e5a70	?\asloader.cpp	low	18	mn	gfx1 10-20: gfxui lib TU (ASLoader (+inline ASURLRequest dtor))
+1422e5a70	1422e5be0	?\asurlrequest.cpp	low	3	mn	gfx1 10-20: gfxui lib TU (ASURLRequest)
+1422e5be0	1422e6170	?\assprite.cpp	low	19	mn	gfx1 10-20: gfxui lib TU (ASSprite)
+1422e6170	1422e63e0	?\aswindow.cpp	low	7	mn	gfx1 10-20: gfxui lib TU (ASWindow)
+1422e63e0	1422e64a0	?\asdialog.cpp	low	3	mn	gfx1 10-20: gfxui lib TU (ASDialog)
+1422e64a0	1422e7770	?\uialignwidget.cpp	low	46	mn	gfx1 10-20: gfxui lib TU (UIAlignWidget/UIAlignWidgetManager)
+1422e7770	1422e8920	?\uisceneentity.cpp	low	42	mn	gfx1 10-20: gfxui lib TU (UISceneEntity)
+1422e8920	1422e92e0	?\asbuttongroup.cpp	low	14	mn	gfx1 10-20: gfxui lib TU (ASButtonGroup)
+1422e92e0	1422e9a40	?\asvideoplayer.cpp	low	24	mn	gfx1 10-20: gfxui lib TU (ASVideoPlayer)
+1422e9a40	1422eab90	?\gfxservice.cpp	low	44	mn	gfx1 10-20: gfxui lib TU (GFxService (efd service))
+1422eab90	1422eaea0	?\gfxsysalloc.cpp	low	6	mn	gfx1 10-20: gfxui lib TU (GFxSysAlloc)
+1422eaea0	1422eb480	?\gfxfileopener.cpp	low	6	mn	gfx1 10-20: gfxui lib TU (GFxFileOpener)
+1422eb480	1422ec360	?\nigfxlocalizemanager.cpp	low	30	mn	gfx1 10-20: gfxui lib TU (NiGFxLocalizeManager)
+1422ec360	1422ed8c0	?\gfxvideo.cpp	low	37	mn	gfx1 10-20: gfxui lib TU (GFxVideo)
+1422ed8c0	1422ef250	?\gfximageloader.cpp	low	50	mn	gfx1 10-20: gfxui lib TU (GFxImageLoader)
+1422ef250	1422f0900	?\gfxmoviemain.cpp	low	33	mn	gfx1 10-20: gfxui lib TU (GFxMovieMain)
+1422f0900	1422f2600	?\gfxmovietooltip.cpp	low	36	mn	gfx1 10-20: gfxui lib TU (GFxMovieTooltip/GFxArrayAdapter/GFxObjectAdapter)
+1422f2600	1422f30b0	?\gfxmoviemousecursor.cpp	low	14	mn	gfx1 10-20: gfxui lib TU (GFxMovieMouseCursor)
+1422f30b0	1422f3990	?\gfxmovieheadupdisplay.cpp	low	6	mn	gfx1 10-20: gfxui lib TU (GFxMovieHeadUpDisplay)
+1422f3990	1422f4270	?\gfxmoviepostdisplay.cpp	low	6	mn	gfx1 10-20: gfxui lib TU (GFxMoviePostDisplay)
+1422f4270	1422f5910	?\gfxrendersinglethread.cpp	low	48	mn	gfx1 10-20: gfxui lib TU (GFxRenderSingleThread)
+1422f5910	1422f69e0	?\gfxsoundfmod.cpp	low	21	mn	gfx1 10-20: gfxui lib TU (GFxSoundFMOD)
+1422f69e0	1422f7190	?\uniqueswfidcreator.cpp	low	12	mn	gfx1 10-20: gfxui lib TU (UniqueSwfIDCreator)
+1422f7190	1422f7250	?\asdragslot.cpp	low	3	mn	gfx1 10-20: gfxui lib TU (ASDragSlot)
+1422f7250	1422f7310	?\asgraphics.cpp	low	3	mn	gfx1 10-20: gfxui lib TU (ASGraphics)
+1422f7310	1422f74c0	?\asscene.cpp	low	7	mn	gfx1 10-20: gfxui lib TU (ASScene)
+1422f74c0	1422f77b0	?\asvideo.cpp	low	10	mn	gfx1 10-20: gfxui lib TU (ASVideo)
+1422f77b0	1422f8c70	unit_1422f77b0	low	37	mn	gfx1 10-20: gfxui lib TU (non-virtual cache class (ctor 0x1422f77b0/dtor 0x1422f77f0 called from GFxService))
+1422f8c70	1422fe810	?\fontconfig.cpp	low	195	mn	gfx1 10-20: gfxui lib TU (FontConfig/FontTranslator/GFx::Translator)
+1422fe810	142300880	?\ms2videosoundsystemdx8.cpp	low	64	mn	gfx1 10-20: gfxui lib TU (Scaleform::GFx::Video::MS2VideoSoundSystemDX8/MS2VideoSoundDX8)
+142300880	142301060	?\notifyhandler.cpp	low	22	mn	gfx1 10-20: gfxui lib TU (NotifyHandler)
+142301060	142301ff0	?\notifybinding.cpp	low	19	mn	gfx1 10-20: gfxui lib TU (NotifyBinding)
+142301ff0	142302df0	?\notifydragslot.cpp	low	24	mn	gfx1 10-20: gfxui lib TU (NotifyDragSlot)
+142302df0	142303440	?\notifyswfentity.cpp	low	7	mn	gfx1 10-20: gfxui lib TU (NotifySwfEntity)
+142303440	142303963	?\nigfxoverlayclick.cpp	low	31	mn	gfx1 10-20: gfxui lib TU (NiGFxOverlayClick ctor/dtor + inline NiRenderClick/GFxRenderer/AtlasRecord tail)

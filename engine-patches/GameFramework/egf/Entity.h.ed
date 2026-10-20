@@ -1,0 +1,36 @@
+1863a
+#if defined(MS2_ENTITY_PROPERTY_CACHE)
+public:
+    // MS2: a property cache (the exe Entity is 0xf0 bytes). While caching is on, the first
+    // SetPropertyValue<T> of a property (or property key) saves a heap copy of its old value; the
+    // client writes the saved values back and frees them (scenestategame.cpp). Names invented, as in
+    // the game's src/ms2/placeholder/propertycache.h view (engine builds define
+    // MS2_ENTITY_PROPERTY_CACHE; the game code still reaches the cache through egf::Entity subclasses).
+    struct PropertyCacheEntry
+    {
+        PropertyCacheEntry() : m_id(0), m_pValue(NULL), m_type(0) {}
+        PropertyCacheEntry(PropertyID id, void* pValue, efd::ClassID type)
+            : m_id(id), m_pValue(pValue), m_type(type) {}
+
+        PropertyID m_id;
+        void* m_pValue;
+        efd::ClassID m_type;
+    };
+    typedef efd::map<PropertyID, PropertyCacheEntry> PropertyCacheMap;
+    typedef efd::map<efd::utf8string, PropertyCacheEntry> KeyedPropertyCacheEntries;
+    typedef efd::map<PropertyID, KeyedPropertyCacheEntries> KeyedPropertyCacheMap;
+
+    /// MS2: frees the saved values without writing them back (0x1421294a0).
+    void ClearPropertyCache();
+
+protected:
+    template<typename T>
+    void CachePropertyValue(PropertyID propID, const T& data);
+    template<typename T>
+    void CachePropertyValue(PropertyID propID, const efd::utf8string& key, const T& data);
+
+    bool m_bCaching;                                // +0xc8
+    PropertyCacheMap m_mapCache;                    // +0xd0
+    KeyedPropertyCacheMap m_mapKeyedCache;          // +0xe0
+#endif
+.
