@@ -33,6 +33,9 @@
 #include "ms2/placeholder/cusermaidmanager.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/cpet.h"
 #include "ms2/client/ms2/statedata.h"
 #include "ms2/client/ms2/ridee.h"
 #include "ms2/client/ms2/randomeffectparam.h"
@@ -104,7 +107,7 @@ public:
     float FUN_140970720();                                          // scale
 };
 
-class Unk_CapWorld { public: void FUN_141bc8e00(); PCBase* FUN_141bd0cc0(); void FUN_141bc7ec0(const egf::EntityID& kId); void FUN_141bc7f10(const egf::EntityID& kId); };    // WorldService
+class Unk_CapWorld { public: void FUN_141bc7d40(const egf::EntityID& kId); void FUN_141bc7fe0(const egf::EntityID& kId); void FUN_141bc8e00(); PCBase* FUN_141bd0cc0(); void FUN_141bc7ec0(const egf::EntityID& kId); void FUN_141bc7f10(const egf::EntityID& kId); };    // WorldService
 Unk_CapWorld* FUN_1403ed2d0();
 class COptimizer { public: int FUN_1409f7ea0(); void FUN_14161d010(const egf::EntityID& kId); void FUN_14161d070(const egf::EntityID& kId); void FUN_14109ac50(int n) { m_n68 = n; } private: char m_pad[0x68]; int m_n68; };
 COptimizer* FUN_1409f7c90();
@@ -118,7 +121,7 @@ int FUN_140a7c970(NpcDataCli* pData);                               // NpcDataCl
 
 class Unk_SSG09a700 { public: MS2Ptr<CMaid> FUN_14127e400(__int64 nUid); };   // the field maids (before the user's own)
 Unk_SSG09a700* FUN_14109a700();
-class Unk_ArcMoverView { public: bool FUN_14160c1c0() const; CStringA FUN_14160c1e0() const; };   // Unk_NpcBeam getters
+class Unk_ArcMoverView { public: bool FUN_14160c1c0() const; CStringA FUN_14160c1e0() const; void FUN_14160bf90(float fTime, efd::Point3& kPos, float* pYaw); };   // Unk_NpcBeam getters
 class Unk_1401aa6a0 : public CStringW { public: Unk_1401aa6a0(int nNpcId); };   // the npc name of the string table
 class Unk_Svc7476c0 { public: unsigned char FUN_14074e030(int nNpcId); };
 Unk_Svc7476c0* FUN_1407476c0();
@@ -142,6 +145,16 @@ void FUN_1416d12d0(Unk_Svc764020* pMgr, int nNpcId, Unk_QmNpcQuestState* pState,
 class Unk_PCBaseCompEmoView : public Unk_PCBaseComp_a88 { public: void FUN_14192f910(); };     // UIEmoticon::Entity refresh
 class Unk_CscWorld { public: PCBase* FUN_141bd1200(int nObjectId); };
 const efd::Point3& FUN_140947900(void* pAVObject);                  // world translate of the node
+const NiMatrix3& FUN_141024c90(void* pAVObject);                    // world rotate of the node
+// The object vfunc_26 places at the actor every frame (as in gameobject.cpp).
+class Unk_GoAttachment
+{
+public:
+    virtual void vfunc_0();
+    virtual void vfunc_1();
+    virtual void vfunc_2();
+    virtual void vfunc_3(NiPoint3 kPos, NiPoint3 kDir, float fScale);
+};
 void FUN_1411a4f40(CEffectService* pService, CStringA strEffect, const efd::Point3& kPos);   // play an effect at a point
 class Unk_EmoNpcTable { public: int FUN_14035b0a0(int nNpcType); };
 Unk_EmoNpcTable* FUN_140764010();
@@ -232,6 +245,18 @@ SkillDataTableCli* FUN_1401958b0();
 void FUN_140aae720(SkillDataTableCli* pTable, unsigned int nSkillId, unsigned short nLevel, int nFlags);   // preload a skill
 class Unk_PCBaseFxLibView { public: void FUN_1411be510(int nNpcId, CString strUnused); };   // preload the npc's effects
 int FUN_14082f1a0(int nStat);                                       // the stat is 64-bit
+
+struct Unk_ICCApp;
+Unk_ICCApp* FUN_14086d260();
+class CMainSystem;
+double FUN_141473280(CMainSystem* pSystem);                         // the frame time
+int FUN_140869420();                                                // tick count (ms)
+unsigned int FUN_140a7d630(Common::Constants::Value<Unk_ConstColor>* pValue);
+CItem* FUN_14052cd70(MS2Ptr<CItem>* pItem);                         // get
+struct Unk_UgcTable;
+Unk_UgcTable* FUN_140281980();
+unsigned int FUN_1405569f0(Unk_UgcTable* pTable, int nGrade);       // the grade's name color
+class Unk_NameTagView : public Unk_PCBaseComp_a78 { public: int FUN_141a5e690(); void FUN_140f48dc0(int bShow); };
 
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };   // zero-initialised pointer holder (0x1401cd100)
 
@@ -1425,6 +1450,92 @@ void CNpc::vfunc_125(int bShow)
     m_timerEE8.FUN_140868750(Client::Constants::GetInstance()->NameColorDeadDuration.Read());
 }
 
+// Places the collision boxes: the model-bound boxes at their named nodes, the free boxes at the actor, and the corpse
+// attachment at the actor turned by the corpse rotation of the dead animation.
+// MS2-FUNCTIONAL: the Point3/NiPoint3 temporaries are built in a different order
+// @0x141095bd0
+void CNpc::vfunc_50()
+{
+    NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
+    if (pRoot != NULL) {
+        for (unsigned i = 0; i < m_arrE68.GetCount(); i++) {
+            MS2Ptr<CBoxCollision> spBox = m_arrE68[i];
+            if (spBox.get() == 0)
+                continue;
+            NiAVObject* pNode = pRoot->GetObjectByName(NiFixedString((const char*)spBox->m_strName));
+            if (pNode != NULL) {
+                CBoxCollision* pBox = spBox.operator->();
+                const NiMatrix3& kRot = FUN_141024c90(pNode);
+                Unk_StreamPoint ptPos = *reinterpret_cast<const Unk_StreamPoint*>(&FUN_140947900(pNode));
+                pBox->vfunc_2(ptPos, kRot, 1.0f);
+            }
+        }
+    }
+    for (unsigned i = 0; i < m_arrE88.GetCount(); i++) {
+        MS2Ptr<CBoxCollision> spBox = m_arrE88[i];
+        if (spBox.get() == 0)
+            continue;
+        CBoxCollision* pBox = spBox.operator->();
+        float fScale = FUN_14123c260();
+        efd::Point3 kDir = vfunc_20();
+        efd::Point3 kPos = static_cast<const efd::Point3&>(vfunc_18()) + efd::Point3(0.0f, 0.0f, m_unk_108);
+        pBox->vfunc_3(Unk_StreamPoint(kPos), Unk_StreamPoint(kDir), fScale);
+    }
+    if (FUN_14166ce30() != 0 && FUN_141093270()->GetCorpseHitAble() != 0) {
+        Unk_GoAttachment* pAttachment = vfunc_26();
+        if (pAttachment != NULL && FUN_14166c930() == 0xc) {
+            State* pState = FUN_14166ccb0();
+            const CStringA& strAnim = *reinterpret_cast<const CStringA*>(reinterpret_cast<const char*>(pState) + 0x40);
+            int nIndex = 0;
+            if (strAnim == "Dead_A")
+                nIndex = 0;
+            else if (strAnim == "Dead_B")
+                nIndex = 1;
+            else if (strAnim == "Dead_C")
+                nIndex = 2;
+            int nCount = (int)m_spNpcData->m_corpse.m_aRotation.GetCount();
+            if (nCount != 0) {
+                if (nIndex >= nCount)
+                    nIndex = nCount - 1;
+                int nRot = m_spNpcData->m_corpse.m_aRotation[nIndex];
+                efd::Point3 kDir = static_cast<const efd::Point3&>(vfunc_20()) + efd::Point3(0.0f, 0.0f, (float)nRot);
+                efd::Point3 kPos = static_cast<const efd::Point3&>(vfunc_18()) + efd::Point3(0.0f, 0.0f, m_unk_108);
+                pAttachment->vfunc_3(NiPoint3(kPos), NiPoint3(kDir), 1.0f);
+            }
+        }
+    } else {
+        GameObject::vfunc_50();
+    }
+}
+
+// The attachment offset: toward the owner object when bound to one, else the npc's collision offset turned to its
+// facing.
+// MS2-FUNCTIONAL: the Point3 temporaries are built in a different order
+// @0x141096340
+void CNpc::vfunc_51(efd::Point3* pOffset)
+{
+    if (m_nF20 != 0) {
+        PCBase* pTarget = reinterpret_cast<Unk_CscWorld*>(FUN_1403ed2d0())->FUN_141bd1200(m_nF20);
+        if (pTarget != NULL) {
+            efd::Point3 kSelf = vfunc_18();
+            *pOffset = static_cast<const efd::Point3&>(pTarget->vfunc_18()) - kSelf;
+            return;
+        }
+    }
+    if (m_spNpcData->m_collision.m_nWidthOffset == 0 && m_spNpcData->m_collision.m_nDepthOffset == 0 &&
+        m_spNpcData->m_collision.m_nHeightOffset == 0) {
+        GameObject::vfunc_51(pOffset);
+        return;
+    }
+    pOffset->x = (float)m_spNpcData->m_collision.m_nWidthOffset;
+    pOffset->y = (float)m_spNpcData->m_collision.m_nDepthOffset;
+    pOffset->z = (float)m_spNpcData->m_collision.m_nHeightOffset + m_unk_108;
+    float fYaw = FUN_14123ce70(FUN_14123cc20());
+    efd::Matrix3 kRot;
+    kRot.MakeZRotation(fYaw + 3.1415927f);
+    *pOffset = kRot * *pOffset;
+}
+
 // @0x1410965d0
 void CNpc::vfunc_49()
 {
@@ -1487,4 +1598,84 @@ void CNpc::FUN_141099ab0()
             m_pD68 = NULL;
         }
     }
+}
+
+// MS2-FUNCTIONAL: behaviour-equivalent (frame layout of the temporaries differs)
+// @0x1410952f0
+void CNpc::vfunc_53(float fTime)
+{
+    PCBase::vfunc_53(fTime);
+    float fNow = (float)FUN_141473280(reinterpret_cast<CMainSystem*>(FUN_14086d260()));
+    if (FUN_141092ff0() && m_unk_15c == 0 && m_spNpcData.get() != 0) {
+        if (m_spNpcData->m_fBossSoundDistance < m_unk_c4) {
+            if (m_spNpcData->m_fBossSoundEndDistance <= m_unk_c4)
+                FUN_1403ed2d0()->FUN_141bc7fe0(FUN_14123c460());
+        } else {
+            FUN_1403ed2d0()->FUN_141bc7d40(FUN_14123c460());
+        }
+    }
+    if (m_pD60 == NULL) {
+        if (!reinterpret_cast<Unk_ArcMoverView*>(&m_unkDB0)->FUN_14160c1c0()) {
+            vfunc_19(vfunc_18() + m_posD40 * fTime);
+        } else {
+            efd::Point3 kPos;
+            float fYaw = FUN_14166da40();
+            reinterpret_cast<Unk_ArcMoverView*>(&m_unkDB0)->FUN_14160bf90(fTime, kPos, &fYaw);
+            vfunc_19(kPos);
+            FUN_14166d8b0(fYaw);
+        }
+    }
+    FUN_141099170(fTime);
+    FUN_141097a30();
+    FUN_141099370(fTime);
+    if (m_cE40 != 0 && 1000 < (unsigned int)(FUN_140869420() - m_nE14)) {
+        m_nE14 = FUN_140869420();
+        m_nE10 = 1;
+    }
+    if (m_nE10 != 0)
+        FUN_141093c80();
+    if (m_spA78.get() == 0) {
+        if (reinterpret_cast<char&>(FUN_1401d3200()->m_unk8) != 0) {
+            if ((m_spA78 = FUN_141a60da0(m_unk_70)).get() != 0) {
+                m_spA78->FUN_141a5e4c0(FUN_141093270()->GetUnknown12());
+                m_spA78->FUN_141a5e500(FUN_140a7c970(FUN_141093270().operator->()));
+                m_spA78->vfunc_2();
+            }
+        }
+    } else if (vfunc_116() != 2) {
+        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pPlayer != NULL) {
+            if (vfunc_122(pPlayer) == 0) {
+                unsigned int nColor = FUN_140a7d630(&Client::Constants::GetInstance()->NameTagColorFriendly);
+                if (EE_DYNAMIC_CAST(CPet, this) != NULL) {
+                    PC* pOwner = static_cast<PC*>(FUN_141094f60());
+                    if (pOwner != NULL) {
+                        MS2Ptr<CItem> spItem = pOwner->FUN_141663450();
+                        if (FUN_14052cd70(&spItem) != NULL && FUN_14052cd70(&spItem) != NULL)
+                            nColor = FUN_1405569f0(FUN_140281980(), ((CItem*)spItem)->FUN_140526bd0());
+                    }
+                }
+                m_spA78->FUN_141a5e500(nColor);
+            } else {
+                Unk_NameTagView* pTag = static_cast<Unk_NameTagView*>(m_spA78.operator->());
+                if (m_timerEE8.FUN_140868c00() != 0 && pTag->FUN_141a5e690() != 0) {
+                    static_cast<Unk_NameTagView*>(m_spA78.operator->())->FUN_140f48dc0(0);
+                    m_timerEE8.FUN_1408687f0();
+                } else if (FUN_14166ce30() == 0) {
+                    m_spA78->FUN_141a5e500(FUN_140a7c970(FUN_141093270().operator->()));
+                } else {
+                    m_spA78->FUN_141a5e500(FUN_140a7d630(&Client::Constants::GetInstance()->NameTagColorDead));
+                }
+            }
+        }
+    }
+    if (m_vibrate.FUN_14108e280() != 0) {
+        efd::Point3 kPos = vfunc_18();
+        m_vibrate.FUN_14108e300(fNow, kPos);
+        if (m_unk_80 != NULL)
+            static_cast<egf::Entity*>(m_unk_80)->SetPropertyValue<efd::Point3>(0xfd95ca52, kPos);
+    }
+    FUN_141093eb0();
+    if (m_spF28.get() != 0)
+        m_spF28->UpdatePosition();
 }
