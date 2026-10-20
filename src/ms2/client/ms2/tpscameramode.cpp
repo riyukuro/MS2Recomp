@@ -7,7 +7,9 @@
 // exe's ATL build had a nothrow CSimpleArray<ATOM> (no EH state) and its dtor call is ICF-folded with
 // CAtlArray<void*>::~CAtlArray (0x1408f2340), hence the cross-unit alias CONFLICT on ??1?$CSimpleArray@G...
 // MS2-PIN: ??0_ATL_WIN_MODULE70@ATL@@QEAA@XZ 0x14185b130
+// MS2-FUNCTIONAL ??0_ATL_WIN_MODULE70@ATL@@QEAA@XZ: the toolchain's ATL header (VS2017 atlbase.h) builds the member array with an EH state; the exe's older ATL constructs it nothrow with an explicit growth argument (ctor 0x140a698a0 with 10) - not reproducible without the original ATL headers
 // MS2-PIN: ??1_ATL_WIN_MODULE70@ATL@@QEAA@XZ 0x14185b170
+// MS2-FUNCTIONAL ??1_ATL_WIN_MODULE70@ATL@@QEAA@XZ: bytes equal the exe; its member-array dtor call binds ~CSimpleArray<ATOM>, which the exe ICF-folded into CAtlArray<void*>::~CAtlArray (0x1408f2340) while symbols.tsv holds 0x14041cf90 (gameeventreturnuser) - cross-unit alias, not a type error
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\tpscameramode.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 
