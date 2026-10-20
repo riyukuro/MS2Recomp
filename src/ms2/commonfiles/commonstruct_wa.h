@@ -207,6 +207,10 @@ public:
     Unk_ShopLifeRef(const Unk_ShopLifeRef&);           // 0x14052c090 (npcshopproductbase.cpp)
     ~Unk_ShopLifeRef();                                // 0x14027e150
     NpcShopItemLife* operator->() const;               // 0x14027f340
+    Unk_ShopLifeRef(int) { m_p = 0; }                  // 0x1406ee480 (inline COMDAT, commonfiles\npcshopdata.cpp)
+    Unk_ShopLifeRef& operator=(const Unk_ShopLifeRef&); // 0x14052caa0
+    operator NpcShopItemLife*() const;                 // 0x14052ce00
+    NpcShopItemLife& operator*() const { return *m_p; } // 0x1406f24f0 (inline COMDAT, commonfiles\npcshopdata.cpp)
     void* m_unknown; NpcShopItemLife* m_p;
 };
 MS2_CHECK_SIZE(Unk_ShopLifeRef, 16);

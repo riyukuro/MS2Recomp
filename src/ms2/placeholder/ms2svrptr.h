@@ -40,6 +40,7 @@ public:
     }
     operator T*() const { return m_p; }
     T* operator->() const { return m_p; }
+    T& operator*() const { return *m_p; }   // 0x1406f24c0 for T = CNpcShopBuyPeriod (npcshopdata.cpp)
     T* get() const { return m_p; }
     bool operator==(T* o) const { return m_p == o; }
     bool operator!() const { return m_p == 0; }   // portaltable.cpp: `if (!p)` is an out-of-line no-arg COMDAT

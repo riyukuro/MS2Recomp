@@ -99,21 +99,7 @@ struct Unk_GEIn {
 #define MS2_GE_READ_INT(in) ((in)->reader.ReadInt())
 #endif
 
-// Start / end second of the day (two Unk_DayTime).
-struct Unk_DayTimeRange {
-    typedef Unk_DayTime ValueType;      // not exe code: the token type of the "a,b" reader
-    // @0x1402e4a60
-    Unk_DayTimeRange() : m_start(0), m_end(0) {}
-    // @0x1402e4a30
-    Unk_DayTimeRange(Unk_DayTime start, Unk_DayTime end) : m_start(start), m_end(end) {}
-    void Init(Unk_DayTime start, Unk_DayTime end);
-    bool Contains(Unk_DayTime time) const;                // 0x1404a4160 (start <= time < end)
-    Unk_DayTime m_start;
-    Unk_DayTime m_end;
-};
-// The code of Unk_GameEventIntRange::Init (identical, folded into 0x1403eeaf0). Defined out of the class so that its
-// first line is outside the tag window of the ctor's @0x1402e4a30 above (tools/progress.py would pair it there).
-inline void Unk_DayTimeRange::Init(Unk_DayTime start, Unk_DayTime end) { m_start = start; m_end = end; }
+#include "ms2/placeholder/daytimerange.h"   // Unk_DayTimeRange (also the NPC shop buy period's part times)
 
 class GameEvent : public ClassObject {
 public:

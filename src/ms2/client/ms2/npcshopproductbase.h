@@ -73,7 +73,7 @@ public:
     void FUN_140db81c0();                                           // m_54 = max(m_5c - m_58, 0)
     unsigned FUN_140db8210();                                       // the most that can be bought at once
     int FUN_140db8400();                                            // the most the player can afford
-    bool FUN_140db8580(int nCount);                                 // pay nCount items; true when the payment can be made
+    int FUN_140db8580(int nCount);                                  // pay nCount items; 1 when the payment can be made (exe: xor eax,eax / mov eax,1; callers test eax)
     bool FUN_140db8600();                                           // the star point event is running
     CString FUN_140db86d0();                                        // debug text
 
@@ -117,7 +117,7 @@ class CNpcShopMeratItemCli : public CNpcShopMeratItemBase
 public:
     CNpcShopMeratItemCli();                                         // 0x140db8920
     virtual ~CNpcShopMeratItemCli();                                //  0 0x140db8980 (??_G 0x140db8c00)
-    virtual void vfunc_1(void* pOut) {}                             //  1 0x140db89e0
+    virtual void vfunc_1(COutputStream* pOut) {}                    //  1 0x140db89e0
     virtual void vfunc_2(CInPacket* pIn);                           //  2 0x140db8a00
 
     void FUN_140db8ac0(MS2Ptr<CItem> spItem);                       // set the preview item

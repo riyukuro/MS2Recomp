@@ -395,11 +395,11 @@ bool CNpcShopProductCli::FUN_140db70a0(CStringW& strError)
                 CStringW strFormat = FUN_14028b8e0(L"s_err_cannot_buy_period_fmt_part_time");
                 for (size_t i = 0; i < nCount; i++)
                 {
-                    Unk_ShopClockPair& pair = m_c8->m_aPartTimes[i];
-                    int nToA = pair.m_to.FUN_14086a4b0();
-                    int nToB = pair.m_to.FUN_14086a490();
-                    int nFromA = pair.m_from.FUN_14086a4b0();
-                    int nFromB = pair.m_from.FUN_14086a490();
+                    Unk_DayTimeRange& pair = m_c8->m_aPartTimes[i];
+                    int nToA = pair.m_end.GetMinute();
+                    int nToB = pair.m_end.GetHour();
+                    int nFromA = pair.m_start.GetMinute();
+                    int nFromB = pair.m_start.GetHour();
                     CStringW strOne = FUN_14086cc00(strFormat, nFromB, nFromA, nToB, nToA);
                     if (strParts.IsEmpty())
                         strParts.Append(strOne);
@@ -499,15 +499,15 @@ int CNpcShopProductCli::FUN_140db8400()
 
 // @0x140db8580
 // MS2-FUNCTIONAL: return value path/temp differs; source form unknown
-bool CNpcShopProductCli::FUN_140db8580(int nCount)
+int CNpcShopProductCli::FUN_140db8580(int nCount)
 {
     __int64 nTotal = FUN_140db8180() * nCount;
     if (FUN_14134a030(m_88, m_8c, (int)nTotal) == 0)
     {
         FUN_14134a120(m_88, m_8c, (int)nTotal);
-        return false;
+        return 0;
     }
-    return true;
+    return 1;
 }
 
 // @0x140db8600
