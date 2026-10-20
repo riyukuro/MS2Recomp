@@ -977,3 +977,11 @@ void MS2ShadowVisitor::SubtractiveListHelperAtl(NiNode* pkNode, MS2CasterList* p
         }
     }
 }
+
+// Shared header statics of this TU (.text$di between the generator RTTI and the validator/visitor RTTIs, plus their
+// atexit thunks; gap2 orphan di sweep). The fourth initializer is egf::kENTITY_INVALID (<egf/EntityID.h>).
+// MS2-RANGE: 0x1400f9510-0x1400f96a0 .text$di
+// MS2-RANGE: 0x142cb3230-0x142cb32c0 .text$yd
+#include <egf/EntityID.h>
+#include "ms2/placeholder/header_statics_a.h"
+// MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400f9630

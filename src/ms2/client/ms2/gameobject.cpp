@@ -1215,3 +1215,13 @@ bool GameObject::vfunc_55(float a, float b)
 MS2_REPLACE_METHOD(0x14123e450, GameObject, vfunc_55, 87, 0x9DAFC821);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(GameObject);
+
+// The GameObject class info and a second set of the shared header statics (.text$di 0x1400ea210-0x1400ea350 and their
+// atexit thunks; gap2 orphan di sweep). The statics sit next to egf::kENTITY_INVALID (0x143ad4c70, initializer
+// 0x1400ea350) in .bss, apart from the header_statics_a.h set above (0x143ad50c0..), so this unit's .text$di may span
+// two original TUs. GameObject::ms_ClassInfo is the EE_IMPLEMENT_CONCRETE_CLASS_INFO above.
+// MS2-RANGE: 0x1400ea210-0x1400ea350 .text$di
+// MS2-RANGE: 0x142cade10-0x142cade80 .text$yd
+static CString s_strSortTypeNames0[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkill0("skill");
+static CString s_strStun0("stun");

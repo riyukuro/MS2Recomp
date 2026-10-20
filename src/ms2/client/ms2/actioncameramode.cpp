@@ -154,6 +154,5 @@ void Unk_CameraOwner::FUN_140947940(float f)
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill("skill");
 static CString s_strStun("stun");
-class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
-static Unk_Handle1401cd100 s_handle1401cd100(0);
-// MS2-PIN: ??__Es_handle1401cd100@@YAXXZ 0x1400bf370
+// The fourth initializer (0x1400bf370) is egf::kENTITY_INVALID of <egf/EntityID.h> (EntityID ctor 0x1401cd100), pinned below.
+// MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400bf370

@@ -487,3 +487,12 @@ void Unk_BlackMarketAnchor(void* pDst, const void* pSrc)
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbce90-0x142cbcef0 .text$yd
+
+// The head of this TU's shared header statics, ahead of s_strStun / s_cond / s_keyController above (.text$di
+// 0x1401108b0-0x140110a70 and their atexit thunks; gap2 orphan di sweep). Appended here so the hook thunk line
+// numbers stay put; pairing does not depend on the definition order.
+// MS2-RANGE: 0x1401108b0-0x140110a70 .text$di
+// MS2-RANGE: 0x142cbce10-0x142cbce90 .text$yd
+static CString s_strPremiumSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
+static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkill = "skill";
