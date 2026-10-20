@@ -577,7 +577,9 @@ public:
 };
 template <> MS2Ptr<CSkillRecord>::~MS2Ptr();                        // 0x140975740
 template <> CSkillRecord* MS2Ptr<CSkillRecord>::operator->() const; // 0x140975bd0
-template <> bool MS2Ptr<CSkillRecord>::operator!() const;           // 0x141667460
+// The CSkillRecord handle's operator! is this TU's own COMDAT (the dtor / operator-> above belong to skillrecord.cpp).
+// @0x141667460
+template <> inline bool MS2Ptr<CSkillRecord>::operator!() const { return m_p == 0; }
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the entity's scene graph
 // The emotion effect set of vfunc_71 (pcbase.cpp has the same stand-in, typed further).
 class Unk_PCBaseFxSet : public CPtred
@@ -4846,6 +4848,26 @@ void PC::FUN_141660fc0(CString str)
 // MS2-PIN: ??0?$MS2Ptr@VCRandomTargetEffect@@@@QEAA@XZ 0x141666160
 // MS2-PIN: ??0?$MS2Ptr@VJobSystemCli@@@@QEAA@XZ 0x141666590
 // MS2-PIN: ??0?$MS2Ptr@VWaterGunBattleInfo@@@@QEAA@PEAVWaterGunBattleInfo@@@Z 0x1416665f0
+// @0x14166a3e0
+// memcpy_s (the CRT's _VALIDATE_RETURN_ERRCODE form, per-TU static __inline copy; the last function of the range).
+#pragma function(memset, memcpy)
+static __inline errno_t ms2_memcpy_s_copy(void* const d, size_t const dsz, void const* const s, size_t const ssz)
+{
+    if (ssz == 0) { return 0; }
+    { int e = !!(d != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+    if (s == NULL || dsz < ssz)
+    {
+        memset(d, 0, dsz);
+        { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+        { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
+        return EINVAL;
+    }
+    memcpy(d, s, ssz);
+    return 0;
+}
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy)(void*, size_t, const void*, size_t) = &ms2_memcpy_s_copy;
+#pragma intrinsic(memset, memcpy)
+
 // tplpin --simulate (w559, after the map/vector retypes), hand-applied:
 // MS2-PIN: ?FUN_141656780@PC@@QEAAXXZ 0x141656780
 // MS2-PIN: ??$?0AEAPEAU?$pair@HH@std@@AEAPEAU01@$0A@@?$pair@PEAU?$pair@HH@std@@PEAU12@@std@@QEAA@AEAPEAU?$pair@HH@1@0@Z 0x141664310
