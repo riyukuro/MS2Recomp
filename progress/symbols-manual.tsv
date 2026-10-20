@@ -3668,3 +3668,6 @@ __imp_NxGetUtilLib	142cced28	data
 ?GetExtraTicketCost@DungeonRecordManagerCli@@QEAAIV?$MS2Ptr@VDungeonRoom@@@@@Z	140b22aa0	func
 ?GetRoomBonusCount@DungeonRecordManagerCli@@QEAAEI@Z	140b22b40	func
 ?IsCompleted@CAchieveManager@@QEAA_NI@Z	1409365a0	func
+?g_gameEventUserValue@@3VGameEventUserValue@@A	143ab2fc0	data
+??0Unk_InventoryItemKey@@QEAA@XZ	140bb5a30	func
+?GetString@CServerStringGroup@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@AEBV23@@Z	14087ede0	func
