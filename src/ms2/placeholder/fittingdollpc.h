@@ -215,7 +215,7 @@ public:
     int FUN_141653f00();                                    // rebuild the weapon stance from the worn weapons (changed: 1)
     MS2Ptr<CEquipItem> FUN_141655ee0(int nSlot, bool bKind0Only);   // the worn weapon (slot 4/5): kind 0, or the first of kinds 0..2 holding one
     int FUN_14165c570();                                    // the normal attack skill of the weapon stance
-    void FUN_14165c720(int nSkillId, short nLevel);         // preload a skill and its combo chain
+    void FUN_14165c720(unsigned int nSkillId, short nLevel);         // preload a skill and its combo chain
     int FUN_14165c090(efd::Point3 kPos);                    // there is ground ahead of kPos and room to stand there (by value)
     void FUN_14165cac0();                                   // create the tomb stone entity (+0xfc8)
     int FUN_14165a540();                                    // step onto the cube under / next to the actor
@@ -298,7 +298,7 @@ public:
     void FUN_14165f130(int n);                              // +0x1050
     int FUN_14165f150();                                    // +0x1050 an item is held
     void FUN_14165f170();                                   // put the held item away (packet 0x37/0x12)
-    void FUN_141661820(int nSkillId, short nLevel, std::set<int>& kVisited, std::set<int>& kFound);   // (empty in the client)
+    void FUN_141661820(int nSkillId, short nLevel, std::set<unsigned int>& kVisited, std::set<unsigned int>& kFound);   // (empty in the client)
     void FUN_141661840(int nSkillId, short nLevel);         // (empty in the client)
     int FUN_141661860();                                    // +0x1000
     unsigned int FUN_141661a80();                           // +0x10e8 the end tick

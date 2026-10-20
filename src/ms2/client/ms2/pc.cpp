@@ -1216,7 +1216,6 @@ void PC::vfunc_16()
 }
 
 // @0x141651d80
-// MS2-FUNCTIONAL: the exe calls a different MS2Ptr helper copy (0x141666800) for one smart-pointer test
 void PC::vfunc_52(double fTime)
 {
     if (GetClassID() != 0x6200016)
@@ -1225,7 +1224,7 @@ void PC::vfunc_52(double fTime)
     if (fScale != m_fScaleA8)
     {
         int bShrink = m_fScaleA8 - fScale > 0.0f ? 0 : 1;
-        float fStep = (float)fTime * 3.0f;
+        float fStep = 3.0f * (float)fTime;
         if (bShrink)
             fStep = -fStep;
         fScale += fStep;
@@ -1241,7 +1240,7 @@ void PC::vfunc_52(double fTime)
         if (spItem.get())
         {
             ATL::CAtlArray<MS2Ptr<CKfmModel> > aModels;
-            spItem.get()->FUN_1411dcbb0(&aModels);
+            spItem->FUN_1411dcbb0(&aModels);
             float fNew = FUN_14123c260();
             for (size_t i = 0; i < aModels.GetCount(); i++)
             {
@@ -2089,7 +2088,7 @@ CString PC::FUN_1416612e0() { return m_str1028; }
 void PC::FUN_141661330(const CStringW& strName) { m_strName1030 = strName; }
 
 // @0x141661820
-void PC::FUN_141661820(int nSkillId, short nLevel, std::set<int>& kVisited, std::set<int>& kFound) {}
+void PC::FUN_141661820(int nSkillId, short nLevel, std::set<unsigned int>& kVisited, std::set<unsigned int>& kFound) {}
 
 // @0x141661840
 void PC::FUN_141661840(int nSkillId, short nLevel) {}
@@ -2953,58 +2952,63 @@ int PC::FUN_141653f00()
     return spOld.get() != m_spWeaponActionD70.get();
 }
 
-// MS2-FUNCTIONAL: structure aligned, temporary order differs
 // @0x14165c570
 int PC::FUN_14165c570()
 {
     MS2Ptr<CWeaponAction> spAction(m_spWeaponActionD70);
     if (!spAction)
         spAction = CWeaponActionTable::FindAction(0, 0);
-    if (!spAction.get())
-        return 0;
-    if (spAction->m_nNormalAttack == 0)
+    if (spAction.get())
     {
-        MS2Ptr<CEquipItem> spRight = FUN_141655d50(5);
-        if (!spRight)
-            spRight = FUN_141655c90(5);
-        if (spRight.get())
-            return spRight->FUN_1411dc7f0()->FUN_14053dc90();
+        if (spAction->m_nNormalAttack == 0)
+        {
+            MS2Ptr<CEquipItem> spRight = FUN_141655d50(5);
+            if (spRight == NULL)
+                spRight = FUN_141655c90(5);
+            if (spRight.get())
+                return spRight->FUN_1411dc7f0()->FUN_14053dc90();
+        }
+        return spAction->m_nNormalAttack;
     }
-    return spAction->m_nNormalAttack;
+    return 0;
 }
 
-// MS2-FUNCTIONAL: structure aligned; the loop exit after the MaxCount log is assumed (the decompile drops it)
 // @0x14165c720
-void PC::FUN_14165c720(int nSkillId, short nLevel)
+void PC::FUN_14165c720(unsigned int nSkillId, short nLevel)
 {
-    if (nSkillId == 0)
-        return;
-    MyPC* pMyPC = FUN_1409613d0(this);
-    FUN_140ab7a10()->FUN_141210540(nSkillId, nLevel, pMyPC ? 2 : 3);
-    MS2Ptr<SkillData> spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
-    if (!spSkill.get())
-        return;
-    FUN_140ab7a10()->FUN_141210540(spSkill->m_nJump, nLevel, pMyPC ? 2 : 3);
-    std::set<int> kFound;
-    std::set<int> kVisited;
-    int nCount = 0;
-    do
+    if (nSkillId != 0)
     {
-        kFound.clear();
-        kVisited.insert(nSkillId);
-        FUN_141661820(nSkillId, nLevel, kVisited, kFound);
-        if (kFound.empty())
-            nSkillId = 0;
-        else
-            nSkillId = *kFound.begin();
-        nCount++;
-        if (nCount >= DAT_1439f821c)
+        bool bMyPC = FUN_1409613d0(this) ? true : false;
+        FUN_140ab7a10()->FUN_141210540(nSkillId, nLevel, bMyPC ? 2 : 3);
+        MS2Ptr<SkillData> spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
+        if (spSkill.get())
         {
-            FUN_1401859c0(FUN_140166440(), 1, 0x13, L"PreloadComboSkill loopCount >= MaxCount");
-            break;
+            FUN_140ab7a10()->FUN_141210540(spSkill->m_nJump, nLevel, bMyPC ? 2 : 3);
+            std::set<unsigned int> kFound;
+            std::set<unsigned int> kVisited;
+            int nCount = 0;
+            do
+            {
+                kFound.clear();
+                kVisited.insert(nSkillId);
+                FUN_141661820(nSkillId, nLevel, kVisited, kFound);
+                if (!kFound.empty())
+                    nSkillId = *kFound.begin();
+                else
+                {
+                    nSkillId = 0;
+                    break;
+                }
+                nCount++;
+                if (nCount >= DAT_1439f821c)
+                {
+                    FUN_1401859c0(FUN_140166440(), 1, 0x13, L"PreloadComboSkill loopCount >= MaxCount");
+                    break;
+                }
+            } while (nSkillId != 0);
+            FUN_141661840(nSkillId, nLevel);
         }
-    } while (nSkillId != 0);
-    FUN_141661840(nSkillId, nLevel);
+    }
 }
 
 // The equip kinds FUN_141655ee0 tries in order (a vector of a unit-local enum: the exe gives this TU its own vector
@@ -3647,7 +3651,6 @@ void PC::FUN_1416611b0(CString strKey)
     m_str1028 = strKey;
 }
 
-// MS2-FUNCTIONAL: structure aligned, return-copy placement differs
 // @0x14165e010
 CString PC::FUN_14165e010(int nAction)
 {
@@ -3659,9 +3662,10 @@ CString PC::FUN_14165e010(int nAction)
         {
             if (nAction == 0x30)
                 return spData->m_strIdleEffect;
-            if (nAction == 0x32)
+            else if (nAction == 0x32)
                 return spData->m_strDashEffect;
-            return spData->m_strRunEffect;
+            else
+                return spData->m_strRunEffect;
         }
     }
     return FUN_141425540(FUN_141658e60(), nAction);
