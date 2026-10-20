@@ -169,10 +169,6 @@ public:
     std::set<unsigned> m_set1c0;                            // +0x1c0 unused (0x20-byte nodes, allocate 0x140a99d50)
     std::map<unsigned, unsigned __int64> m_map1d0;          // +0x1d0 unused (0x30-byte nodes, allocate 0x140a99d20)
 };
-MS2_CHECK_OFFSET(ChromaEffectPlaying, m_bPressed, 0x50);
-MS2_CHECK_OFFSET(ChromaEffectPlaying, m_cooldowns, 0xe4);
-MS2_CHECK_OFFSET(ChromaEffectPlaying, m_effectId, 0x1ac);
-MS2_CHECK_OFFSET(ChromaEffectPlaying, m_set1c0, 0x1c0);
 MS2_CHECK_SIZE(ChromaEffectPlaying, 0x1e0);
 
 // ---- ChromaEffectResurrection (0x38) ----
@@ -370,11 +366,6 @@ public:
     ChromaColorTable* m_pColorTable;                        // +0x398
     int m_nColorMode;                                       // +0x3a0
 };
-MS2_CHECK_OFFSET(ChromaManagerImpl, m_effects, 0x90);
-MS2_CHECK_OFFSET(ChromaManagerImpl, m_linkEffect, 0xf0);
-MS2_CHECK_OFFSET(ChromaManagerImpl, m_reservedDeletes, 0x110);
-MS2_CHECK_OFFSET(ChromaManagerImpl, m_keyboardKeys, 0x370);
-MS2_CHECK_OFFSET(ChromaManagerImpl, m_bPaused, 0x390);
 MS2_CHECK_SIZE(ChromaManagerImpl, 0x3a8);
 
 // ---- ChromaManagerDummy (8 bytes, the default instance 0x143ab89f8): no-op service that creates the real one ----
@@ -415,3 +406,14 @@ public:
 MS2_CHECK_SIZE(ChromaManagerDummy, 8);
 
 } // namespace ChromaSDK
+
+// (MS2LayoutCheck specializations must be at global scope)
+MS2_CHECK_OFFSET(ChromaSDK::ChromaEffectPlaying, m_bPressed, 0x50);
+MS2_CHECK_OFFSET(ChromaSDK::ChromaEffectPlaying, m_cooldowns, 0xe4);
+MS2_CHECK_OFFSET(ChromaSDK::ChromaEffectPlaying, m_effectId, 0x1ac);
+MS2_CHECK_OFFSET(ChromaSDK::ChromaEffectPlaying, m_set1c0, 0x1c0);
+MS2_CHECK_OFFSET(ChromaSDK::ChromaManagerImpl, m_effects, 0x90);
+MS2_CHECK_OFFSET(ChromaSDK::ChromaManagerImpl, m_linkEffect, 0xf0);
+MS2_CHECK_OFFSET(ChromaSDK::ChromaManagerImpl, m_reservedDeletes, 0x110);
+MS2_CHECK_OFFSET(ChromaSDK::ChromaManagerImpl, m_keyboardKeys, 0x370);
+MS2_CHECK_OFFSET(ChromaSDK::ChromaManagerImpl, m_bPaused, 0x390);

@@ -864,6 +864,7 @@ COLORREF ChromaEffectPlaying::GetSkillColor(int nSkill)
     return m_backColor;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a97300
 void ChromaEffectPlaying::Create()
 {
@@ -1088,6 +1089,7 @@ void ChromaEffectRipple::OnEnter(int nPrevState)
     m_nReturnState = nPrevState;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9a9c0
 void ChromaEffectRipple::Create()
 {
@@ -1115,6 +1117,7 @@ void ChromaEffectRipple::Create()
     }
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9ac20
 void ChromaEffectRipple::OnFieldChanged(unsigned short nFieldType)
 {
@@ -1342,6 +1345,7 @@ void ChromaLinkEffect::Create()
     m_nFrame++;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9b860
 void ChromaLinkEffect::CreateRainbow()
 {
@@ -1381,6 +1385,7 @@ ChromaManagerImpl::~ChromaManagerImpl()
 {
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9ba90
 void ChromaManagerImpl::SetState(int nState)
 {
@@ -1479,6 +1484,7 @@ int ChromaManagerImpl::GetKeySkill(int nKey)
     return m_keySkills[nKey];
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9be80
 void ChromaManagerImpl::RefreshKeySkills()
 {
@@ -1872,6 +1878,7 @@ std::vector<FChromaSDKColors> ChromaManagerImpl::CreateRandomColors2D(const EChr
     return result;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9d640
 const std::vector<FChromaSDKColors>& ChromaManagerImpl::SetMouseLEDColor(const EChromaSDKMouseLED& led, COLORREF color, std::vector<FChromaSDKColors>& colors)
 {
@@ -2026,6 +2033,7 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectStatic2D(const EChromaSDKD
     return data;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9dfd0
 FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom1D(const EChromaSDKDevice1DEnum& device, const std::vector<COLORREF>& colors)
 {
@@ -2075,6 +2083,7 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom1D(const EChromaSDKD
     return data;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9e300
 FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom2D(const EChromaSDKDevice2DEnum& device, const std::vector<FChromaSDKColors>& colors)
 {
@@ -2140,6 +2149,7 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom2D(const EChromaSDKD
     return data;
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9e7f0
 FChromaSDKEffectResult ChromaManagerImpl::CreateEffectKeyboardCustom2D(const std::vector<FChromaSDKColors>& colors)
 {
@@ -2209,6 +2219,7 @@ void ChromaManagerImpl::Tick()
     m_linkEffect.Update();
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9ebb0
 bool ChromaManagerImpl::LoadSDK()
 {
@@ -2576,6 +2587,7 @@ ChromaSDK::FChromaSDKColorFrame2D::FChromaSDKColorFrame2D()
 
 namespace ChromaSDK {
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140aaa6a0
 void SetChromaManager(IChromaManager* pManager)
 {
@@ -2597,6 +2609,7 @@ ChromaManagerDummy::~ChromaManagerDummy()
 {
 }
 
+// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140aaa740
 bool ChromaManagerDummy::Initialize()
 {
