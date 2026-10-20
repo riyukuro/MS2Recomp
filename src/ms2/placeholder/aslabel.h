@@ -10,6 +10,7 @@ class ASLabel : public ASUIComponent
 {
 public:
     ASLabel(CString strLinkage, int nMovieId);                      // 0x1422e4950 (the callee destroys the name)
+    void FUN_1422e4a50(const CStringW& strText);                    // set the label text (uiotherpetsystemdialog.cpp "m_title")
     void FUN_1422e4b80(const CStringW& strText);                    // set the label text
     void FUN_1422c6eb0();                                           // ASDisplayObject: remove from the parent clip
     void FUN_1422e4c60(const CString& strAutoSize);                 // set "autoSize" ("none", ...)
