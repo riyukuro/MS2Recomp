@@ -83,12 +83,7 @@
 #include "itempreview.h"
 #include "uimessageboxdata.h"
 #include "ms2/placeholder/unk_blocklist.h"
-// meratmarketbasketinfo.h models CShopCategoryTable with its own placeholder (cshopcategorytable.h) that clashes with
-// commonfiles/shopcategorytable.h (via shoptabinfo.h); the unit uses neither model of it from this header, so the
-// placeholder's copy is renamed while it is read.
-#define CShopCategoryTable Unk_ShopMeratCategoryView
 #include "ms2/commonfiles/meratmarketbasketinfo.h"
-#undef CShopCategoryTable
 #include "ms2/commonfiles/itemsocket.h"
 #include "guildmanager.h"
 #include "uimarketbilldialog.h"

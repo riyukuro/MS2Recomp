@@ -1,7 +1,7 @@
 // shopcategorytable.h - CShopCategoryTable (RTTI name, 0xa0 bytes) and its tab rows TabInfo / SortTabInfo: the tab trees of the
 // shops, read from Table/shopCategory.xml and Table/meratMarketCategory.xml (<ms2><category id tabType><tab name feature symbol
 // category priority static id alwaysOpen sortGender sortJob copyid/>). Header name assumed from the unit path; member names are
-// invented from use. The unit-less placeholder src/ms2/placeholder/cshopcategorytable.h models the same object for its readers.
+// invented from use.
 // Bases: TSingleton<CShopCategoryTable> at +0, CValidData<CShopCategoryTable> at +8, CCacheData at +0x10.
 #pragma once
 #include <afx.h>
@@ -60,6 +60,8 @@ public:
     typedef ATL::CAtlMap<int, TabListPtr> TabMap;
 
     CShopCategoryTable();                                                   // 0x1407ca7a0
+    // @0x1406a9940 (inline COMDAT of meratmarketbasketinfo.cpp)
+    static CShopCategoryTable* CreateInstance() { return s_instance ? GetInstance() : new CShopCategoryTable; }
     virtual ~CShopCategoryTable();                                          // 0x1407caad0
 
     void Load();                                                            // 0x1407cab80 every file in m_caches

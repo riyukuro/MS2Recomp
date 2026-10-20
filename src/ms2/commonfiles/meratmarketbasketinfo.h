@@ -18,7 +18,7 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/cmeratmarketpacket.h"
-#include "ms2/placeholder/cshopcategorytable.h"
+#include "ms2/commonfiles/shopcategorytable.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/meratproductkey.h"
 #include "ms2/placeholder/mstime.h"

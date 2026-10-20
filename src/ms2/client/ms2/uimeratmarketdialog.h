@@ -20,11 +20,7 @@
 #include "ms2/client/ms2/uimodelview.h"
 #include "ms2/client/ms2/uiskillpreviewdialog.h"       // IUIAvatarEventListener
 #include "ms2/client/ms2/shoptabinfo.h"                // ShopBanner
-// meratmarketbasketinfo.h models CShopCategoryTable with its own placeholder (cshopcategorytable.h) that clashes with
-// commonfiles/shopcategorytable.h (via shoptabinfo.h); its copy is renamed while it is read (as in uishopdialog.cpp).
-#define CShopCategoryTable Unk_ShopMeratCategoryView
 #include "ms2/commonfiles/meratmarketbasketinfo.h"      // CMeratMarketProduct, Unk_MeratProductKey
-#undef CShopCategoryTable
 #include "ms2/placeholder/uistatuseventlistener.h"
 #include "ms2/placeholder/uiugceventlistener.h"
 #include "ms2/placeholder/clockcriticalsection.h"

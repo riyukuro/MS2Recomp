@@ -1635,7 +1635,7 @@ int CMeratMarketPremium::LoadCategories()
     if (CShopCategoryTable::GetInstance() == NULL)
         CShopCategoryTable::CreateInstance();
     int nShopType = m_nShopType;
-    Unk_ShopCategoryBoxPtr<CShopCategoryTable::TabList> spTabs = CShopCategoryTable::GetInstance()->FUN_1407cb490(nShopType);
+    CShopCategoryTable::TabListPtr spTabs = CShopCategoryTable::GetInstance()->GetTabs(nShopType);
     if (static_cast<bool>(spTabs.get()) && !spTabs->IsEmpty())
     {
         for (POSITION pos = spTabs->GetHeadPosition(); pos; spTabs->GetNext(pos))
@@ -1669,7 +1669,7 @@ MS2_REPLACE_METHOD(0x1406A2E90, CMeratMarketPremium, LoadCategories, 607, 0x13C3
 void CMeratMarketPremium::AddCategory(MS2Ptr<CShopCategoryTable::TabInfo> tab)
 {
     CAtlArray<CStringA> names;
-    FUN_14015f050(tab->m_strCategories, names, ",");
+    FUN_14015f050(tab->m_strCategory, names, ",");
     for (unsigned i = 0; i < names.GetCount(); i++)
     {
         CStringA strName(names[i]);
