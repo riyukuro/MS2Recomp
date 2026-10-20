@@ -265,20 +265,20 @@ public:
     void FUN_141adc530(int nId);
     void FUN_141adc5d0(int nId);
     int FUN_141adc890(int nId);
-    void FUN_141adcea0(Unk_UIRef* pRet, int nId);
+    Unk_UIRef FUN_141adcea0(int nId);
     void FUN_141adbdc0(int n);
 };
 
 class Unk_CubeEditDlg : public UIDialog
 {
 public:
-    void FUN_1419f1d10(int a, int b);
+    void FUN_1419f1d10(int a, bool b);
 };
 
 class UIHomeMenuDialog : public UIDialog
 {
 public:
-    void FUN_140c29600(int n);
+    void FUN_140c29600(bool b);
 };
 
 class UIUGCHousingPointDialog : public UIDialog
@@ -463,7 +463,7 @@ public:
     int FUN_1410cdd80(Unk_StreamPoint a, Unk_StreamPoint b, float f, Unk_StreamPoint c);
 };
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
-int FUN_1403e8a70(Unk_UIRef* p);
+UIObject* FUN_1403e8a70(Unk_UIRef* p);                          // the held object
 UIObject* FUN_1403ed9e0(Unk_UIRef* p);
 void FUN_140ef2fb0();
 int FUN_140ef4970();
@@ -614,7 +614,7 @@ int FUN_1401b5240(RItemInfo* p, int n);
 Unk_InfoRec* FUN_1401b52a0(RItemInfo* p);
 int FUN_140203c60(RItemInfo* p);
 void FUN_14053f870(RItemInfo* pRet, int nItemId);
-int FUN_14053cde0(Unk_ItemEquipData* p);
+bool FUN_14053cde0(Unk_ItemEquipData* p);
 int FUN_14053feb0(int nItemId);
 void FUN_1405566e0(void* pMgr, RItemMeta* pRet, int nItemId);
 int FUN_140885250(RItemMeta* p, int n);
@@ -665,7 +665,7 @@ int FUN_140ad21b0(void* p);
 int FUN_140d40670(void* p);
 void FUN_140d40120(void* p, MS2Ptr<CItem> sp, int n);
 void* FUN_140bbea00(int nId);
-struct Unk_PartyDlg { void FUN_140e6e610(int n); };
+struct Unk_PartyDlg { void FUN_140e6e610(bool b); };
 Unk_PartyDlg* FUN_140e01930(int nId);
 
 // ---- world / editor ----
@@ -1384,7 +1384,9 @@ int UIUGCCubePaletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 void UIUGCCubePaletteDialog::FUN_140eec0b0(unsigned __int64 uid)
 {
     void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pPlayer == 0 || FUN_1416595d0(pPlayer) == 0)
+    if (pPlayer == 0)
+        return;
+    if (FUN_1416595d0(pPlayer) == 0)
         return;
     MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(uid);
     if (spItem == (CItem*)0)
@@ -1392,37 +1394,40 @@ void UIUGCCubePaletteDialog::FUN_140eec0b0(unsigned __int64 uid)
     Unk_CubeHolder* pHolder = FUN_141530290(pPlayer);
     if (pHolder == 0)
         return;
-    if (FUN_14053cde0(spItem->FUN_140527840()) == 0)
+    if (FUN_14053cde0(spItem->FUN_140527840()))
+    {
+        FUN_140eed620(0);
+        UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b5a70(uid);
+        if (spCube.get() != 0)
+        {
+            int nItemId = spItem->FUN_1405276c0();
+            __int64 nItemUid = spItem->FUN_140526a50();
+            FUN_140eef560(spCube->FUN_140defff0());
+            CubeItemInfo* pSel = pHolder->FUN_1410ad670();
+            if (pSel != 0 && pSel->itemId == nItemId)
+            {
+                if (spItem->FUN_140525f10())
+                {
+                    MS2Ptr<CUgcItemLook> spLook = pSel->look;
+                    if (static_cast<bool>(spLook.get()))
+                    {
+                        if (spLook->ugcId == (__int64)spItem->FUN_1405283d0())
+                            pSel->instanceId = nItemUid;
+                    }
+                }
+                else
+                {
+                    pSel->instanceId = nItemUid;
+                }
+            }
+            FUN_140ef37d0();
+        }
+    }
+    else
     {
         FUN_140ef0b20()->FUN_1410b54d0(uid);
         FUN_140ef37d0();
-        return;
     }
-    FUN_140eed620(0);
-    UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b5a70(uid);
-    if (spCube.get() == 0)
-        return;
-    int nItemId = spItem->FUN_1405276c0();
-    __int64 nItemUid = spItem->FUN_140526a50();
-    FUN_140eef560(spCube->FUN_140defff0());
-    CubeItemInfo* pSel = pHolder->FUN_1410ad670();
-    if (pSel != 0 && pSel->itemId == nItemId)
-    {
-        if (spItem->FUN_140525f10() == 0)
-        {
-            pSel->instanceId = nItemUid;
-        }
-        else
-        {
-            MS2Ptr<CUgcItemLook> spLook = pSel->look;
-            if (spLook.get() != 0)
-            {
-                if (spLook->ugcId == (__int64)spItem->FUN_1405283d0())
-                    pSel->instanceId = nItemUid;
-            }
-        }
-    }
-    FUN_140ef37d0();
 }
 
 // @0x140eec330 (delegate callback: the buy-cube message box was answered)
@@ -2104,8 +2109,7 @@ UIUGCItemEditDialog* FUN_140eeff60(int nId)
 {
     if (FUN_1403ed2b0() != 0)
     {
-        Unk_UIRef ref;
-        FUN_1403ed2b0()->FUN_141adcea0(&ref, nId);
+        Unk_UIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
         if (FUN_1403e8a70(&ref) != 0)
             return dynamic_cast<UIUGCItemEditDialog*>(FUN_1403ed9e0(&ref));
     }
@@ -2694,30 +2698,30 @@ void FUN_140ef4330()
         return;
     if (FUN_1416595d0(pWorld) == 0 || FUN_141659690(pWorld) != 0)
     {
-        if (FUN_140e01930(0x4f7d) != 0)
-            FUN_140e01930(0x4f7d)->FUN_140e6e610(0);
-        if (FUN_140ef49b0(0x4f7c) != 0)
-            FUN_140ef49b0(0x4f7c)->FUN_140c29600(0);
+        if (Unk_PartyDlg* pParty = FUN_140e01930(0x4f7d))
+            pParty->FUN_140e6e610(false);
+        if (UIHomeMenuDialog* pHome = FUN_140ef49b0(0x4f7c))
+            pHome->FUN_140c29600(false);
         FUN_1403ed2b0()->FUN_141adc5d0(0x4f16);
         FUN_1403ed2b0()->FUN_141adc530(0x4e28);
-        if (FUN_140931900(0x4e5f) != 0)
-            FUN_140931900(0x4e5f)->FUN_1419f1d10(1, 1);
+        if (Unk_CubeEditDlg* pEdit = FUN_140931900(0x4e5f))
+            pEdit->FUN_1419f1d10(1, true);
     }
     else
     {
-        if (FUN_140e01930(0x4f7d) != 0)
-            FUN_140e01930(0x4f7d)->FUN_140e6e610(1);
-        if (FUN_140ef49b0(0x4f7c) != 0)
-            FUN_140ef49b0(0x4f7c)->FUN_140c29600(1);
+        if (Unk_PartyDlg* pParty = FUN_140e01930(0x4f7d))
+            pParty->FUN_140e6e610(true);
+        if (UIHomeMenuDialog* pHome = FUN_140ef49b0(0x4f7c))
+            pHome->FUN_140c29600(true);
         FUN_1403ed2b0()->FUN_141adc5d0(0x4e28);
         FUN_1403ed2b0()->FUN_141adc530(0x4f16);
-        if (FUN_140931900(0x4e5f) != 0)
-            FUN_140931900(0x4e5f)->FUN_1419f1d10(1, 0);
+        if (Unk_CubeEditDlg* pEdit = FUN_140931900(0x4e5f))
+            pEdit->FUN_1419f1d10(1, false);
     }
-    if (FUN_140bbea00(0x4ed8) != 0)
-        FUN_1412c72d0(FUN_140bbea00(0x4ed8));
-    if (FUN_140ef4af0(0x4f28) != 0)
-        FUN_140ef4af0(0x4f28)->FUN_140fae0f0();
+    if (void* pDlg = FUN_140bbea00(0x4ed8))
+        FUN_1412c72d0(pDlg);
+    if (UIUGCHousingPointDialog* pPoint = FUN_140ef4af0(0x4f28))
+        pPoint->FUN_140fae0f0();
 }
 
 // @0x140ef44f0
@@ -2774,8 +2778,7 @@ UIHomeMenuDialog* FUN_140ef49b0(int nId)
 {
     if (FUN_1403ed2b0() != 0)
     {
-        Unk_UIRef ref;
-        FUN_1403ed2b0()->FUN_141adcea0(&ref, nId);
+        Unk_UIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
         if (FUN_1403e8a70(&ref) != 0)
             return dynamic_cast<UIHomeMenuDialog*>(FUN_1403ed9e0(&ref));
     }
@@ -2787,8 +2790,7 @@ UIUGCCubePaletteDialog* FUN_140ef4a50(int nId)
 {
     if (FUN_1403ed2b0() != 0)
     {
-        Unk_UIRef ref;
-        FUN_1403ed2b0()->FUN_141adcea0(&ref, nId);
+        Unk_UIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
         if (FUN_1403e8a70(&ref) != 0)
             return dynamic_cast<UIUGCCubePaletteDialog*>(FUN_1403ed9e0(&ref));
     }
@@ -2800,8 +2802,7 @@ UIUGCHousingPointDialog* FUN_140ef4af0(int nId)
 {
     if (FUN_1403ed2b0() != 0)
     {
-        Unk_UIRef ref;
-        FUN_1403ed2b0()->FUN_141adcea0(&ref, nId);
+        Unk_UIRef ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
         if (FUN_1403e8a70(&ref) != 0)
             return dynamic_cast<UIUGCHousingPointDialog*>(FUN_1403ed9e0(&ref));
     }
