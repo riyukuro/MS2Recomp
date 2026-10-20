@@ -51,11 +51,6 @@
 // MS2-PIN: ?resize@?$vector@V?$MS2Ptr@VCEquipItem@@@@V?$allocator@V?$MS2Ptr@VCEquipItem@@@@@std@@@std@@QEAAX_KAEBV?$MS2Ptr@VCEquipItem@@@@@Z 0x1411ff120 ; prop
 // MS2-PIN: ?Test@Unk_LayerBits@@QEBA_NH@Z 0x1411ff380 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ??$Unk_EquipLog@HHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@@YAXPEAVCLogString@@HHPEB_WAEBH2AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z 0x1411f0ad0 ; manual: the slot / layer / item name log of 0x1411eebc0 (the float form is 0x140e68a40)
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@1@@Z 0x1411f2430 ; manual: the in-range copy of the look-alike pair belongs to the set piece map (caller chain 0x1411f7c90 -> 0x1411f61f0)
-// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@1@@Z 0x1411f3cb0 ; manual: the in-range copy of the look-alike pair belongs to the set piece map (caller chain 0x1411f7c90 -> 0x1411f61f0)
-// MS2-PIN: ??$_Try_emplace@H$$V@?$map@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@_N@1@$$QEAH@Z 0x1411f4d40 ; manual: the in-range copy of the look-alike pair belongs to the set piece map (caller chain 0x1411f7c90 -> 0x1411f61f0)
-// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x1411fbd90 ; manual: the in-range copy of the look-alike pair belongs to the set piece map (caller chain 0x1411f7c90 -> 0x1411f61f0)
 // The queue row ?\equipitem.cpp also covers this TU (equipitem.cpp holds 0x1411dbc70-0x1411df580).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\equipment.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -2098,7 +2093,7 @@ void CEquipment::FUN_1411ee980(int bMissMatch, MS2Ptr<CEquipItem> spA, MS2Ptr<CE
 void CEquipment::FUN_1411eebc0()
 {
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
-        int nSlot = m_slots.GetKeyAt(pos);
+        Unk_EquipSlotId nSlot = m_slots.GetKeyAt(pos);
         MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
         if (spSlot.get() == NULL)
             continue;
@@ -2517,13 +2512,13 @@ void CEquipment::FUN_1411edbb0()
 // @0x1411ec480
 void CEquipment::FUN_1411ec480(bool bForce)
 {
-    std::map<int, std::vector<__int64> > pieces[3];
+    std::map<unsigned, std::vector<__int64> > pieces[3];
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
         MS2Ptr<CEquipmentSlot> spSlot = m_slots.GetValueAt(pos);
         for (int i = 0; i < 3; i++) {
             if (spSlot->m_bShown[i] == 0)
                 continue;
-            std::map<int, std::vector<__int64> >& setPieces = pieces[i];
+            std::map<unsigned, std::vector<__int64> >& setPieces = pieces[i];
             MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
             if (spItem == 0)
                 continue;
@@ -2550,8 +2545,8 @@ void CEquipment::FUN_1411ec480(bool bForce)
     CString strAnimation;
     bool bShowEffect = false;
     for (unsigned i = 0; i < 3; i++) {
-        std::map<int, std::vector<__int64> >& setPieces = pieces[i];
-        for (std::map<int, std::vector<__int64> >::iterator it = setPieces.begin(); it != setPieces.end(); it++) {
+        std::map<unsigned, std::vector<__int64> >& setPieces = pieces[i];
+        for (std::map<unsigned, std::vector<__int64> >::iterator it = setPieces.begin(); it != setPieces.end(); it++) {
             SetItemInfoPtr spSet = SetItemTable::GetInstance()->GetSetItemInfo(it->first);
             if (spSet == 0)
                 continue;
