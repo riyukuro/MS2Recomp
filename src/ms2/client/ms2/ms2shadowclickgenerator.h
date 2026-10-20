@@ -48,7 +48,7 @@ class MS2ShadowClickValidator : public NiTerrainShadowClickValidator
     NiDeclareRTTI;
 
 public:
-    MS2ShadowClickValidator();                                                              // 0x14150b160
+    // implicit default ctor (0x14150b160): NiNew T() value-initializes (zero-fills 0x38 bytes) before calling it
     virtual ~MS2ShadowClickValidator();                                                     // 0x14150b1c0, ??_G 0x14150b270
     virtual bool ValidateClick(NiRenderClick* pkRenderClick, unsigned int uiFrameID);       // 0x14150adb0
 
