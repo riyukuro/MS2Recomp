@@ -2425,7 +2425,7 @@ void UIGameMenuDialog::FUN_14193dd70()
 }
 
 // @0x14193dd90
-void UIGameMenuDialog::FUN_14193dd90(Scaleform::GFx::Value* pOut, int nId, CStringW strFmt, int nTipId)
+void UIGameMenuDialog::FUN_14193dd90(Scaleform::GFx::Value* pOut, int nId, const CStringW& strFmt, int nTipId)
 {
     CStringW strTip = FUN_1409331f0()->FUN_14142d760(nTipId, 0);
     CStringW strBracket;

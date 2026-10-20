@@ -9483,8 +9483,8 @@ MS2_REPLACE_METHOD(0x141BDAC80, WorldService, FUN_141bdac80, 108, 0x2545F22D);
 
 bool FUN_141bf71d0(void* ptr);                          // pointer is null
 void* FUN_141bf7d80(void* ptr);                         // operator->
-void FUN_140aab5b0(void* target, CAtlArray<int>* ids, const CStringA& name);
-void FUN_140aab720(void* target, CAtlArray<int>* ids, const CStringA& name);
+void FUN_140aab5b0(void* target, CAtlArray<int>* ids, CStringA name);
+void FUN_140aab720(void* target, CAtlArray<int>* ids, CStringA name);
 void FUN_140aab950(void* target);
 // forward the contents of a message (kind 0x17 / 0x18 / 0x19) to the m_aa0 target
 // MS2-FUNCTIONAL: opaque COMDATs by VA, EH sentinel
