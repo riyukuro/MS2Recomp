@@ -3738,6 +3738,10 @@ int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& s
     return 1;
 }
 
+// The implicit copy ctors of the log lines (out of line here; CPtred's copy is inline in cptred.h, so not exact).
+// MS2-PIN: ??0ReportLog@MessengerData@@QEAA@AEBV01@@Z 0x141a2ba30
+// MS2-PIN: ??0TalkLog@MessengerData@@QEAA@AEBV01@@Z 0x141a2bb30
+
 // @0x141a271b0
 int UIMessengerBrowser::FUN_141a271b0(const CStringW& strName, const CStringW& strText, int nType)
 {
@@ -3767,7 +3771,7 @@ int UIMessengerBrowser::FUN_141a271b0(const CStringW& strName, const CStringW& s
     CStringW strLine;
     strLine.Format(L"%s[%s] %s", (const wchar_t*)strTag, (const wchar_t*)strName, (const wchar_t*)strText);
     __int64 nNow = FUN_140869440();
-    m_timedLogs.insert(std::pair<__int64, CStringW>(nNow, strLine));
+    m_timedLogs.insert(std::pair<const __int64, CStringW>(nNow, strLine));
     ReportLog report(strName, strText);
     m_reports.AddTail(report);
     if (m_reports.GetCount() > (unsigned)m_18c)
