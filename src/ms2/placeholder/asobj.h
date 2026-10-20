@@ -90,6 +90,7 @@ public:
     void FUN_1422bbf70(const char* sz);                                  // push a string (uimainplayerinfo empty slot names)
     void FUN_1422bbfe0(const wchar_t* sz);                               // push a wide string
     void FUN_1422bbf00(const ASObj& obj);                                // push an AS object
+    void FUN_1422bbf00(const AScript& obj);                              // push an AS object (the same callee; ascorelist.cpp)
     void FUN_1422bbcd0(bool b);                                          // push a bool
     void FUN_1422bbc60(int n);                                           // push an int
     unsigned int FUN_1422bc5d0();                                        // element count

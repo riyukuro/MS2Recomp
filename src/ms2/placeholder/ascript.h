@@ -320,6 +320,7 @@ public:
     // ASTileList (gfxui/astilelist.cpp)
     void FUN_140e06d60(const char* szName, double d);                    // set a double member (ASObj declares the same COMDAT)
     Scaleform::GFx::Value FUN_140caf140(const char* szMethod, ASArray a1);   // 0x140caf140 Invoke with an AS array (a1 by value: the callee destroys it)
+    template <class T> MS2Ptr<T> FUN_1422de460(const CString& strName);  // child object by name (inline COMDAT, defined in ascorelist.cpp for T = ASDataProvider)
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {
