@@ -116,6 +116,7 @@ public:
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(unsigned __int64 nUid);  // a proxy by character uid
     class Unk_MmActor* FUN_141bd1320(int nId);                      // the actor of an object id
     PCBase* FUN_141bd1530(unsigned __int64 nCharId);                // a player by character id
+    void FUN_141bc5f10(ATL::CAtlArray<MS2Ptr<CInteractObject> >& objects);   // the interact objects
 };
 Unk_MmWorld* FUN_1403ed2d0();
 
@@ -1880,7 +1881,6 @@ extern Unk_StreamPoint DAT_143b01a60;                               // the zero 
 void FUN_1409618c0(egf::Entity* pEntity, unsigned nProperty, Unk_StreamPoint* pOut);   // reads a point property
 
 // @0x141a39e60
-// MS2-FUNCTIONAL: the exe materializes the list test in a different frame-slot/branch shape (2 attempts).
 void UIMinimapDialog::FUN_141a39e60()
 {
     int nField = FUN_1403ed2d0()->FUN_141bd3060();
@@ -1893,13 +1893,13 @@ void UIMinimapDialog::FUN_141a39e60()
     Unk_MmEntityList list = FUN_1403ed2d0()->FUN_141bd0420(0x85359406);
     if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
         efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(list.FUN_1409f2190()->GetHeadPosition());
-        if (spObject != 0) {
+        if (spObject) {
             if (bDisabled) {
                 FUN_141a3f930(m_taxi);
                 m_taxi = 0;
             } else if (m_taxi == 0 || m_taxi->m_clip == 0) {
                 Unk_StreamPoint kPos = DAT_143b01a60;
-                FUN_1409618c0(spObject, 0xfd95ca52, &kPos);
+                FUN_1409618c0(spObject.operator->(), 0xfd95ca52, &kPos);
                 EntityPtr spEntity = new UIMinimapEntityTaxi(reinterpret_cast<const efd::Point3&>(kPos));
                 if (FUN_141a3e7d0(spEntity))
                     m_taxi = spEntity;
@@ -1939,12 +1939,23 @@ class Unk_MmScript : public AScript
 {
 public:
     Scaleform::GFx::Value FUN_141a46a60(const char* szMethod, Scaleform::GFx::Value a1, const char* a2);
+    Scaleform::GFx::Value FUN_141a46b60(const char* szMethod, Scaleform::GFx::Value a1, CString a2);
 };
 void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 
 // @0x141a46a60
 inline Scaleform::GFx::Value Unk_MmScript::FUN_141a46a60(const char* szMethod, Scaleform::GFx::Value a1, const char* a2)
+{
+    ASArgList args;
+    args.FUN_1409b2800(2);
+    FUN_1422bcc70(args.FUN_1409b1f70(0), a1);
+    FUN_1422bce70(args.FUN_1409b1f70(1), a2);
+    return FUN_1422bb8f0(szMethod, args);
+}
+
+// @0x141a46b60
+inline Scaleform::GFx::Value Unk_MmScript::FUN_141a46b60(const char* szMethod, Scaleform::GFx::Value a1, CString a2)
 {
     ASArgList args;
     args.FUN_1409b2800(2);
@@ -2497,3 +2508,160 @@ float UIMinimapDialog::FUN_141a45920(PCBase* pPC)
     return fAngle - fRot + 90.0f;
 }
 MS2_REPLACE_METHOD(0x141a45920, UIMinimapDialog, FUN_141a45920, 0, 0);
+
+// @0x141a3ced0
+void UIMinimapDialog::FUN_141a3ced0()
+{
+    FUN_141a3f570();
+    int nField = FUN_1403ed2d0()->FUN_141bd3060();
+    MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nField);
+    if (static_cast<bool>(spField.get())) {
+        if (static_cast<bool>(spField->m_spMinimap.get())) {
+            Scaleform::GFx::Value value = m_30->FUN_140e6b140("createFieldEntity", 0, spField->m_spMinimap->m_strImageName);
+            if (FUN_1409b4d40(value))
+                m_clip228 = FUN_1409b40c0(m_28, value);
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141a3ced0, UIMinimapDialog, FUN_141a3ced0, 0, 0);
+
+// @0x141a3dbb0
+void UIMinimapDialog::FUN_141a3dbb0()
+{
+    Unk_MmEntityList list = FUN_1403ed2d0()->FUN_141bd0420(0x85359406);
+    if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
+        efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(list.FUN_1409f2190()->GetHeadPosition());
+        if (spObject) {
+            Unk_StreamPoint kPos = DAT_143b01a60;
+            FUN_1409618c0(spObject.operator->(), 0xfd95ca52, &kPos);
+            EntityPtr spEntity = new UIMinimapEntityTaxi(reinterpret_cast<const efd::Point3&>(kPos));
+            if (FUN_141a3e7d0(spEntity))
+                m_taxi = spEntity;
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141a3dbb0, UIMinimapDialog, FUN_141a3dbb0, 0, 0);
+
+// @0x141a3e7d0
+bool UIMinimapDialog::FUN_141a3e7d0(EntityPtr spEntity)
+{
+    if (m_30 == 0)
+        return false;
+    if (spEntity == 0 || spEntity->m_icon.IsEmpty())
+        return false;
+    ASObj data(2);
+    spEntity->FUN_141a31270(data, m_viewport);
+    Scaleform::GFx::Value value = m_30->Invoke("createEntity", data);
+    if (FUN_1409b4d40(value)) {
+        spEntity->m_clip = FUN_1409b40c0(m_28, value);
+        if (static_cast<ASMovieClip*>(spEntity->m_clip) != 0)
+            return true;
+    }
+    return false;
+}
+
+// @0x141a3eed0
+void UIMinimapDialog::FUN_141a3eed0()
+{
+    ATL::CAtlArray<MS2Ptr<CInteractObject> > objects;
+    FUN_1403ed2d0()->FUN_141bc5f10(objects);
+    for (size_t i = 0; i < objects.GetCount(); ++i)
+        FUN_141a39770(objects[i]);
+}
+MS2_REPLACE_METHOD(0x141a3eed0, UIMinimapDialog, FUN_141a3eed0, 0, 0);
+
+// @0x141a3f570
+void UIMinimapDialog::FUN_141a3f570()
+{
+    if (m_30 == 0)
+        return;
+    if (static_cast<ASMovieClip*>(m_clip228) != 0) {
+        m_30->Invoke("removeField");
+        m_clip228 = 0;
+    }
+}
+MS2_REPLACE_METHOD(0x141a3f570, UIMinimapDialog, FUN_141a3f570, 0, 0);
+
+// @0x141a3f600
+void UIMinimapDialog::FUN_141a3f600(ProxyPtr spProxy)
+{
+    if (spProxy == 0)
+        return;
+    EntityPtr spEntity(0);
+    if (m_proxies.Lookup(spProxy, spEntity)) {
+        FUN_141a3f730(spEntity->m_clip, spProxy);
+        m_proxies.RemoveKey(spProxy);
+    }
+}
+
+// @0x141a3f730
+// MS2-FUNCTIONAL: the exe frame is 0x10 larger (one more argument temporary).
+void UIMinimapDialog::FUN_141a3f730(MS2Ptr<ASMovieClip> spClip, ProxyPtr spProxy)
+{
+    if (m_30 == 0 || spClip == 0)
+        return;
+    CString strChar;
+    if (static_cast<CProxyGameObject*>(spProxy) != 0 && spProxy->FUN_1416c22f0() != 0)
+        strChar = FUN_140719530(spProxy->FUN_1416c22f0());
+    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46b60("removeEntity", spClip->FUN_1422bb870(), strChar);
+}
+
+// @0x141a3f930
+void UIMinimapDialog::FUN_141a3f930(EntityPtr spEntity)
+{
+    if (spEntity == 0)
+        return;
+    FUN_141a3f730(spEntity->m_clip, ProxyPtr(0));
+}
+
+// @0x141a3f9f0
+void UIMinimapDialog::FUN_141a3f9f0(Unk_BuddyPtr<CBuddy> spBuddy)
+{
+    if (spBuddy == 0)
+        return;
+    int nField = spBuddy->FUN_1401cc3e0();
+    if (static_cast<unsigned int>(nField) > 0) {
+        unsigned __int64 nHome = spBuddy->FUN_1401cc2f0();
+        EntityPtr spEntity(0);
+        if (m_buddies.Lookup(nHome, spEntity))
+            FUN_141a3f930(spEntity);
+        else
+            FUN_141a455e0(nField, nHome);
+    }
+}
+
+// @0x141a3fb10
+void UIMinimapDialog::FUN_141a3fb10()
+{
+    FUN_141a3f930(m_taxi);
+    FUN_141a3f930(m_return);
+    FUN_141a3f930(m_telescope);
+    FUN_141a3f930(m_player);
+    m_clip238 = 0;
+    FUN_141a46ef0(m_proxies);
+    FUN_141a47190(m_pings);
+    FUN_141a46ef0(m_proxies);
+    FUN_141a47060(m_buddies);
+    FUN_141a46dc0(m_named);
+    FUN_141a46c90(m_triggers);
+    FUN_141a46c90(m_objects);
+    FUN_141a3fd20();
+}
+MS2_REPLACE_METHOD(0x141a3fb10, UIMinimapDialog, FUN_141a3fb10, 0, 0);
+
+// @0x141a3fd20
+void UIMinimapDialog::FUN_141a3fd20()
+{
+    m_taxi = 0;
+    m_return = 0;
+    m_telescope = 0;
+    m_player = 0;
+    m_pings.RemoveAll();
+    m_proxies.RemoveAll();
+    m_buddies.RemoveAll();
+    m_named.RemoveAll();
+    m_triggers.RemoveAll();
+    m_objects.RemoveAll();
+    m_homes.RemoveAll();
+}
+MS2_REPLACE_METHOD(0x141a3fd20, UIMinimapDialog, FUN_141a3fd20, 0, 0);
