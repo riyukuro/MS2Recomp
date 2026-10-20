@@ -4052,3 +4052,4 @@ FMOD_System_Create	142303a95	func
 ?EndFrameContextNotify@RenderNotify@ContextImpl@Render@Scaleform@@QEAAXXZ	14257ff00	func
 ?GetContextNotify@Renderer2D@Render@Scaleform@@QEBAPEAVRenderNotify@ContextImpl@23@XZ	142582270	func
 ?GetRenderEntry@RTHandle@ContextImpl@Render@Scaleform@@QEBAPEAVEntry@234@XZ	142580250	func
+?DAT_1439f821c@@3HA	1439f821c	data
