@@ -211,6 +211,7 @@ public:
     int FUN_14165c090(const efd::Point3& kPos);             // there is ground ahead of kPos and room to stand there
     MS2Ptr<class CGemPetSkin> FUN_14165df00();              // the worn pet skin gem (feature 0x6c)
     MS2Ptr<class CGemSwim> FUN_14165e1b0();                 // the worn swim gem (feature 0x68)
+    void FUN_141660ee0();                                   // the equipment finished loading (once: +0xd40)
     void FUN_1416599b0();                                   // drop the followed entity (+0xdb0) beyond 70 units
     void FUN_141660c20(const CAtlArray<MS2Ptr<CItem> >& aItems, bool bQuick);   // equip the items (bQuick: FUN_1411e38e0)
     void FUN_1416611b0(CString strKey);                     // take the profile image key if it names this character
@@ -338,7 +339,7 @@ public:
     void FUN_141660d50();                                   // the default collision box
     void FUN_141660df0();                                   // (empty)
     void FUN_1416615f0(float fDelta);                       // the +0x1054 timer tick
-    void FUN_1416616a0(unsigned int nDelay);                // schedule the +0x1054 timer
+    void FUN_1416616a0(unsigned int nDelay);                // blink the model alpha (faster nDelay ms after +0x1064)
     void FUN_141661880(int bEnable, int nValue, const CubeItemInfo* pInfo);   // enter / leave the cube mode (+0x1000 / +0x1008)
     void FUN_14165d300(int nA, int nB, int nC);             // PCBase member (pcbase.cpp; scenestategame 0x5d)
     void FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot);   // scenestategame 0x141721a30
@@ -442,9 +443,10 @@ public:
     int m_n105c;                                            // +0x105c
     int m_n1060;                                            // +0x1060 an effect id (the dtor removes it)
     int m_n1064;                                            // +0x1064
-    int m_n1068;                                            // +0x1068
-    int m_n106c;                                            // +0x106c
-    __int64 m_n1070;                                        // +0x1070 (not set by the ctor)
+    unsigned int m_n1068;                                   // +0x1068 the blink phase (FUN_1416616a0, 0..1000)
+    unsigned int m_n106c;                                   // +0x106c the last blink tick
+    bool m_b1070;                                           // +0x1070 the blink state (not set by the ctor)
+    char m_pad_1071[7];
     PCGemEquip m_kGemEquip1078;                             // +0x1078 (FUN_14165f460)
     unsigned int m_n10e8;                                   // +0x10e8
     int m_n10ec;                                            // +0x10ec
@@ -521,6 +523,7 @@ MS2_CHECK_OFFSET(PC, m_spFC8, 0xfc8);
 MS2_CHECK_OFFSET(PC, m_pCubeCraft, 0x1020);
 MS2_CHECK_OFFSET(PC, m_nFF9, 0xff9);
 MS2_CHECK_OFFSET(PC, m_n1058, 0x1058);
+MS2_CHECK_OFFSET(PC, m_b1070, 0x1070);
 MS2_CHECK_OFFSET(PC, m_n1200, 0x1200);
 MS2_CHECK_OFFSET(PC, m_b1204, 0x1204);
 MS2_CHECK_OFFSET(PC, m_spSetItems, 0x1100);

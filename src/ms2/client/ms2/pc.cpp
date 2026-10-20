@@ -3163,6 +3163,39 @@ CString PC::FUN_14165e010(int nAction)
     return FUN_141425540(FUN_141658e60(), nAction);
 }
 
+// MS2-FUNCTIONAL: structure aligned, codegen differs slightly
+// @0x141660ee0
+void PC::FUN_141660ee0()
+{
+    if (m_bD40 && m_kEquipDE0.FUN_1411e09a0())
+    {
+        m_bD40 = false;
+        if (m_unk_b0 == 0)
+            vfunc_23(0);
+        vfunc_144();
+        FUN_1409f7c90()->FUN_14161cf60(this);
+    }
+}
+
+// MS2-FUNCTIONAL: structure aligned, the exe keeps the elapsed time in a separate temporary
+// @0x1416616a0
+void PC::FUN_1416616a0(unsigned int nDelay)
+{
+    unsigned int nNow = FUN_140869420();
+    unsigned int nElapsed = nNow - m_n106c;
+    m_n106c = nNow;
+    float fSpeed = 5.0f;
+    if (nDelay > 0 && nDelay < nNow - m_n1064)
+        fSpeed = (nNow - m_n1064 - nDelay) / 1000.0f + 5.0f;
+    m_n1068 = (unsigned int)(m_n1068 + nElapsed * fSpeed);
+    if (m_n1068 > 1000)
+    {
+        m_b1070 = !m_b1070;
+        m_n1068 = 0;
+    }
+    vfunc_42(m_b1070 ? 0.5f : 0.9f, false);
+}
+
 // ---- end of code ----
 
 // MS2-PIN: ??_7PC@@6BIBase@efd@@@ 0x142f4ae28
