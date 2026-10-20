@@ -25,6 +25,7 @@
 #include "ms2/client/ms2/renderedtexturerenderclick.h"
 
 class GameObject;
+class NiActorManager;
 class NiRenderedTexture;
 class NiRenderTargetGroup;
 class Unk_UISwfEntity_25;
@@ -46,7 +47,7 @@ public:
     virtual void vfunc_8(float fDist);                      // 8 0x141ab7570 set the near limit
     virtual void vfunc_9(float fDist);                      // 9 0x141ab7590 set the far limit
     virtual void vfunc_10(int nObjectId);                   // 10 0x141ab75b0
-    virtual void vfunc_11(void* pUnused);                             // 11 0x141ab7620
+    virtual void vfunc_11(ATL::CAtlArray<efd::SmartPointer<NiActorManager> >& arrActors);   // 11 0x141ab7620 show actors (UIPortrait)
     virtual void vfunc_12(const ATL::CAtlArray<NiNode*>& arrNodes, NiNodePtr spRoot);   // 12 0x141ab75f0
     virtual int vfunc_13(const Unk_ModelViewCamera& kCamera);   // 13 0x141ab7640
     virtual int vfunc_14();                                 // 14 0x141ab7bb0 create the lights
