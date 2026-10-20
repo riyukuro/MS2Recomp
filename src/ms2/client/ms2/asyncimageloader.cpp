@@ -174,7 +174,10 @@ void CAsyncImageLoader::FUN_140a58b90()
 {
     {
         Unk_LockGuard guard(m_38);
-        if (guard == 0)
+        if (guard != 0)
+        {
+        }
+        else
             m_88.splice(m_88.end(), m_78);
     }
     ParamList::iterator it = m_88.begin();
@@ -184,8 +187,9 @@ void CAsyncImageLoader::FUN_140a58b90()
         if (!spParam)
         {
             MS2_ASSERT_AT(0x48, 0);
+            continue;
         }
-        else if (FUN_140a59540(ParamPtr(spParam)))
+        if (FUN_140a59540(ParamPtr(spParam)))
             it = m_88.erase(it);
         else
             ++it;
@@ -203,26 +207,37 @@ unsigned int CAsyncImageLoader::vfunc_1(void*, Unk_140659080& start)
     }
     start.FUN_1401d42d0();
     srand(FUN_140869420());
-    while (WaitForSingleObject(m_30, INFINITE), m_20 == 0)
+    while (0 != 1)
     {
+        WaitForSingleObject(m_30, INFINITE);
+        if (m_20)
+            break;
         ParamList pending;
         {
             Unk_LockGuard guard(m_38);
-            if (guard == 0)
+            if (guard != 0)
+            {
+            }
+            else
                 pending.splice(pending.end(), m_68);
         }
         ParamList loaded;
         MS2_FOR_EACH(ParamPtr spParam, pending)
         {
-            if (FUN_140a59090(ParamPtr(spParam)))
-                loaded.push_back(spParam);
+            if (!FUN_140a59090(ParamPtr(spParam)))
+                continue;
+            loaded.push_back(spParam);
         }
         {
             Unk_LockGuard guard(m_38);
-            if (guard == 0)
+            if (guard != 0)
+            {
+            }
+            else
                 m_78.splice(m_78.end(), loaded);
         }
-        if (WaitForSingleObject(m_28, 10) == 0)
+        DWORD dwWait = WaitForSingleObject(m_28, 10);
+        if (dwWait == 0)
             break;
     }
     return 0;
