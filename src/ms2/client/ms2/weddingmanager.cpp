@@ -1289,3 +1289,5 @@ int Unk_IndexPool::Pick()
     unsigned int nPick = nRand % nCount;
     return m_indices[nPick];
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc3790-0x142cc38a0 .text$yd

@@ -1336,3 +1336,5 @@ MS2_REPLACE_METHOD(0x140ACB810, TabContentsPetEvolution, FUN_140acb810, 22, 0x06
 MS2_REPLACE_METHOD(0x140ACB830, TabContentsPetEvolution, FUN_140acb830, 14, 0x72E52537);
 MS2_REPLACE_METHOD(0x140ACBD40, TabContentsPetEvolution, FUN_140acbd40, 31, 0x6D578E79);
 MS2_REPLACE_METHOD(0x140ACC7D0, TabContentsPetEvolution, FUN_140acc7d0, 57, 0xDB3DD032);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9ff40-0x142ca0030 .text$yd

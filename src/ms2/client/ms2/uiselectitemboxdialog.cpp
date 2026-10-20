@@ -328,3 +328,5 @@ void UISelectItemBoxDialog::FUN_140f9a700()
     }
     m_okButton->FUN_1422c1fe0(selected.GetCount() == m_nSelectCount);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caa320-0x142caa420 .text$yd

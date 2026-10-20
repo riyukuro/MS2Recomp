@@ -431,3 +431,5 @@ Unk_PtMember** FUN_141346670(Unk_PtVec* pVec, size_t nIndex)
         FUN_141346650();
     return *(Unk_PtMember***)pVec->FUN_14101f900() + nIndex;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb0570-0x142cb0660 .text$yd
