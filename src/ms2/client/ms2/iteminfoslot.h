@@ -127,13 +127,13 @@ public:
         typedef MS2Ptr<CItem> (*GetItemFn)(void* pItems, int nIndex);
 
         CreateParam();                                  // 0x14141f6e0
-        virtual ~CreateParam();                         // 0x141420480
+        virtual ~CreateParam() = default;               // 0x141420480 (implicit: no vptr store)
 
         GetItemFn m_pfnGetItem;                         // +0x18 (0 in the ctor; FUN_141420330 for the gacha dialog)
         int m_nIconType;                                // +0x20 -> ItemInfoSlot m_nIconType (0x415 for the gacha dialog)
         int m_nFlags;                                   // +0x24 -> ItemInfoSlot m_nFlags (0x800)
-        ItemInfoSlotSlotFn* m_pfnSlot;                  // +0x28 owned Delegate handle (deleting dtor on destruction)
-        ItemInfoSlotTipFn* m_pfnTip;                    // +0x30 owned Delegate handle
+        ItemInfoSlotSlotFn m_pfnSlot;                   // +0x28 (ctor 0x1414168a0, dtor 0x140c4de90, copy 0x1414203c0)
+        ItemInfoSlotTipFn m_pfnTip;                     // +0x30 (ctor 0x1414168c0, dtor 0x140f7b310, copy 0x141420410)
         bool m_bEnabled;                                // +0x38 -> MS2DragSlot::FUN_140a7bd80 (m_bEnabled)
     };
 
