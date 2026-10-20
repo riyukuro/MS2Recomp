@@ -2222,14 +2222,17 @@ inline int GFxService::FUN_141b47780()
 // @0x141b48430
 int FUN_141b48430(int nAvatarKind)
 {
-    if (nAvatarKind == 2)
+    switch (nAvatarKind)
+    {
+    case 2:
         return 6;
-    else if (nAvatarKind == 3)
+    case 3:
         return 9;
-    else if (nAvatarKind == 4)
+    case 4:
         return 11;
-    else
+    default:
         return 1;
+    }
 }
 MS2_REPLACE_OVERLOAD(0x141B48430, int(int), FUN_141b48430, 66, 0x4C40EB92);
 
