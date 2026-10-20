@@ -1384,3 +1384,5 @@ void CGuideActionClearTutorial::vfunc_3()
 MS2_REPLACE_METHOD(0x141386600, CGuideActionClearTutorial, vfunc_3, 63, 0x1975E45B);
 
 // ---- template glue (the CAtlArray / MS2Ptr / Delegate instances pair through the symbol harvest) -------------------------
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb1040-0x142cb10d0 .text$yd

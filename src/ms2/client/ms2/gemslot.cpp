@@ -389,3 +389,5 @@ GemSlotBag* FUN_14126e9a0(NotifyContext::BindData* p)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cae2b0-0x142cae340 .text$yd

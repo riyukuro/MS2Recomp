@@ -1843,3 +1843,5 @@ void FUN_1410a8210(Unk_SPtr* p)
 // MS2-FUNCTIONAL 0x1410a4d30: CFishingGuideObject catch popup - the exe guards pCatch with a nested if and reads the bird head through MS2Ptr operator-> 0x1410a7170; ours uses early returns and get(), one fewer frame slot
 // MS2-FUNCTIONAL 0x1410a4080: CFishingGuideObject ctor - the exe builds the +0xda8 fishing line with its real ctor/dtor 0x140cd7d80/0x140cd7e40 and installs new StateFishingFloat (0x140ddbf50, max state 6); the member is a local stand-in here
 // MS2-FUNCTIONAL 0x1410a1ee0: CConstructionGuideObject update - the exe goes through the MS2Ptr helpers 0x1410a70a0/0x1410a6ee0/0x1410a7190/0x1410a6fc0 and passes Point3 by value to UIBirdHead::FUN_1418ce8c0 (shared uibirdhead.h declares it by reference)
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cabe80-0x142cabf10 .text$yd

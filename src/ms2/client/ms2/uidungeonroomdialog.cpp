@@ -2500,3 +2500,5 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // vector<MS2Ptr<ASLabel>>::begin / end (look-alikes of the ASButton vector's; pinned so the pairing stays exact)
 // MS2-PIN: ?begin@?$vector@V?$MS2Ptr@VASLabel@@@@V?$allocator@V?$MS2Ptr@VASLabel@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VASLabel@@@@@std@@@std@@@2@XZ 0x1412c14c0
 // MS2-PIN: ?end@?$vector@V?$MS2Ptr@VASLabel@@@@V?$allocator@V?$MS2Ptr@VASLabel@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VASLabel@@@@@std@@@std@@@2@XZ 0x1412c18f0
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caf140-0x142caf1d0 .text$yd

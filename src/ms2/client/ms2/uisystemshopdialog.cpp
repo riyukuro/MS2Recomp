@@ -591,3 +591,5 @@ int UISystemShopDialog::vfunc_48()
     return 0x4f07;
 }
 MS2_REPLACE_METHOD(0x140FA7F30, UISystemShopDialog, vfunc_48, 11, 0x05A98189);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caa4e0-0x142caa570 .text$yd
