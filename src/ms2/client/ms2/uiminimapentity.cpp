@@ -50,6 +50,8 @@
 #include "ms2/client/ms2/partymanager.h"
 #include "ms2/placeholder/cpartymember.h"
 #include "ms2/client/ms2/guildmanager.h"
+#include "ms2/placeholder/astextfield.h"
+#include "ms2/commonfiles/pvpinfo.h"
 #include "ms2/client/ms2/uiserverlistdialog.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
@@ -90,6 +92,9 @@ public:
     CStringW m_name;                                                // +0x58
     __int64 m_60;
     int m_68;                                                       // +0x68 dead
+    int m_6c;
+    char m_pad_70[0xcc - 0x70];
+    int m_cc;                                                       // +0xcc the actor state (0x3f: hidden)
 };
 
 // The entity list a world model lookup returns (the same view as uiworldmapdialog.cpp).
@@ -105,6 +110,7 @@ struct Unk_MmFieldInfo : public CPtred                              // the curre
 {
     char m_pad_18[0x150 - 0x18];
     bool m_allowPing;                                               // +0x150
+    int FUN_1403754d0();                                            // the pk mode
 };
 class Unk_MmWorld                                                   // the world service (FUN_1403ed2d0)
 {
@@ -117,7 +123,7 @@ public:
     MS2Ptr<Unk_MmFieldInfo> FUN_141bd30a0();                        // the current field settings
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(unsigned __int64 nUid);  // a proxy by character uid
     class Unk_MmActor* FUN_141bd1320(int nId);                      // the actor of an object id
-    PCBase* FUN_141bd1530(unsigned __int64 nCharId);                // a player by character id
+    PC* FUN_141bd1530(unsigned __int64 nCharId);                    // a player by character id
     void FUN_141bc5f10(ATL::CAtlArray<MS2Ptr<CInteractObject> >& objects);   // the interact objects
     int FUN_141bd98f0();                                            // the channel group
     MS2Ptr<CInteractObject> FUN_141bc66b0(const CString& strName);  // an interact object by name
@@ -3078,6 +3084,151 @@ void UIMinimapDialog::FUN_141a407c0(ProxyPtr spProxy, EntityPtr spEntity)
 }
 
 class Unk_MmObjectPos { public: efd::Point3 FUN_1409673c0(); };    // CInteractObject: position copy
+
+// @0x141a40d90
+void UIMinimapDialog::FUN_141a40d90(ProxyPtr spProxy, EntityPtr spEntity)
+{
+    if (m_30 == 0)
+        return;
+    if (spProxy == 0 || !spProxy->FUN_1416c2090() || spEntity == 0)
+        return;
+    CString strIcon = spEntity->m_icon;
+    CString strState = spEntity->m_state;
+    CString strLayer = spEntity->m_layer;
+    CStringW strGuide = spEntity->m_guideName;
+    FUN_141a43680(spProxy, spEntity);
+    unsigned int nChanged = 0;
+    if (!spEntity->m_icon.IsEmpty()) {
+        if (strIcon != spEntity->m_icon)
+            nChanged |= 1;
+        if (strState != spEntity->m_state)
+            nChanged |= 2;
+        if (strLayer != spEntity->m_layer)
+            nChanged |= 8;
+        if (strGuide != spEntity->m_guideName)
+            nChanged |= 0x10;
+    }
+    if (nChanged != 0) {
+        if (nChanged == 2) {
+            spEntity->m_clip->vfunc_15(spEntity->m_state);
+        } else {
+            ASObj data(2);
+            data.FUN_1407cba60(s_strMcName, spEntity->m_icon);
+            data.FUN_1407cba60(s_strFrame, spEntity->m_state);
+            data.FUN_1407cba60(s_strLayer, spEntity->m_layer);
+            data.FUN_1407cbbe0(s_strShowGuide, spEntity->m_showGuide);
+            data.FUN_1407cbb20(s_strGuideName, spEntity->m_guideName);
+            Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
+            if (FUN_1409b4d40(value))
+                spEntity->m_clip = FUN_1409b40c0(m_28, value);
+        }
+    }
+    if (spEntity->m_visible) {
+        if (!FUN_141a44730(spProxy->FUN_1416c2270(), spEntity->m_clip))
+            spEntity->m_visible = false;
+    }
+    if (!spEntity->m_64)
+        spEntity->m_clip->vfunc_4(spEntity->m_visible);
+}
+
+class Unk_MmPvPPlayer { public: MS2Ptr<CPvPInfo> FUN_140967420(); };   // PC: the pvp info (+0x1240)
+class Unk_HsInfo : public CPtred { public: int FUN_14050a6a0(); };   // hide and seek: the player is a seeker
+class Unk_MmPvPRankEntry { public: bool FUN_141343860(); };         // the player has a rank
+class Unk_MmPvPRank                                                 // the pvp ranking service (FUN_140f97ef0)
+{
+public:
+    int FUN_1413437e0(__int64 nCharId);                             // the rank of a character
+    Unk_MmPvPRankEntry* FUN_141343810(int nRank);                   // the row of a rank
+};
+Unk_MmPvPRank* FUN_140f97ef0();
+CStringW FUN_140719630(int n);
+
+// @0x141a41560
+void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
+{
+    if (m_30 == 0)
+        return;
+    if (spProxy == 0 || !spProxy->FUN_1416c2040() || spEntity == 0)
+        return;
+    MS2Ptr<ASMovieClip> spClip = spEntity->m_clip;
+    if (spClip == 0)
+        return;
+    CString strState = spEntity->m_state;
+    FUN_141a432a0(spProxy, spEntity);
+    if (strState != spEntity->m_state) {
+        ASObj data(2);
+        data.FUN_1407cba60(s_strFrame, spEntity->m_state);
+        data.FUN_1407cba60(s_strLayer, spEntity->m_layer);
+        Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
+        if (!FUN_1409b4d40(value))
+            return;
+        spEntity->m_clip = FUN_1409b40c0(m_28, value);
+        spClip = spEntity->m_clip;
+    }
+    bool bVisible = true;
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC != 0) {
+        int nPkMode = FUN_1403ed2d0()->FUN_141bd30a0()->FUN_1403754d0();
+        if (nPkMode != 0) {
+            bVisible = pPC != 0 ? pPC->FUN_1415278d0(reinterpret_cast<void*>(spProxy->FUN_1416c22f0())) == 1 : false;
+        } else {
+            MS2Ptr<CPvPInfo> spPvP = reinterpret_cast<Unk_MmPvPPlayer*>(pPC)->FUN_140967420();
+            if (spPvP.get() != 0) {
+                if (spPvP->FUN_1407435d0() || spPvP->FUN_1407436d0()) {
+                    __int64 nCharId = spProxy->FUN_1416c22f0();
+                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    if (pOther != 0) {
+                        bVisible = false;
+                        int nRank = FUN_140f97ef0()->FUN_1413437e0(nCharId);
+                        if (nRank > 0) {
+                            Unk_MmPvPRankEntry* pEntry = FUN_140f97ef0()->FUN_141343810(nRank);
+                            if (nRank <= 3 && pEntry != 0 && pEntry->FUN_141343860())
+                                bVisible = true;
+                            if (bVisible) {
+                                {
+                                    CString strFrame("rank");
+                                    spClip->vfunc_15(strFrame);
+                                }
+                                MS2Ptr<ASTextField> spText = spClip->FUN_1409b4620("textField");
+                                if (spText.get() != 0)
+                                    spText->FUN_1422c4cd0(FUN_140719630(nRank));
+                            }
+                        }
+                    }
+                } else if (spPvP->FUN_140743610()) {
+                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    if (pOther != 0) {
+                        bVisible = reinterpret_cast<Unk_MmPvPPlayer*>(pOther)->FUN_140967420()->FUN_140743710() == reinterpret_cast<Unk_MmPvPPlayer*>(pPC)->FUN_140967420()->FUN_140743710();
+                        if (bVisible) {
+                            const CString& strTeam = spPvP->FUN_140743710() == 0xc9 ? s_strLayerRedTeam : s_strLayerBlueTeam;
+                            spClip->vfunc_15(strTeam);
+                        }
+                    }
+                } else if (spPvP->FUN_140743590() || spPvP->FUN_140743690()) {
+                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    if (pOther != 0)
+                        bVisible = pOther->FUN_141674bc0() == 0;
+                } else if (spPvP->FUN_140743550()) {
+                    PC* pOther = FUN_1403ed2d0()->FUN_141bd1530(spProxy->FUN_1416c22f0());
+                    if (pOther != 0) {
+                        bVisible = pOther->vfunc_116() == pPC->vfunc_116() ? true : pOther->FUN_141674bc0() == 0;
+                    }
+                }
+            }
+            MS2Ptr<Unk_HsInfo> spHs = pPC->FUN_141664200();
+            if (static_cast<bool>(spHs.get()) && spHs->FUN_14050a6a0() != 0)
+                bVisible = pPC != 0 ? pPC->FUN_1415278d0(reinterpret_cast<void*>(spProxy->FUN_1416c22f0())) == 1 : false;
+        }
+    }
+    if (spProxy->m_cc == 0x3f)
+        bVisible = false;
+    if (bVisible) {
+        if (!FUN_141a44730(spProxy->FUN_1416c2270(), spClip))
+            bVisible = false;
+    }
+    spEntity->m_visible = bVisible;
+    spClip->vfunc_4(bVisible);
+}
 
 // @0x141a432a0
 void UIMinimapDialog::FUN_141a432a0(ProxyPtr spProxy, EntityPtr spEntity)
