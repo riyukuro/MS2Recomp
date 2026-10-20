@@ -8,9 +8,9 @@
 // MS2-RANGE: 0x1400dc6d0-0x1400dc9e0 .text$di
 // MS2-RANGE: 0x140ec41e0-0x140ed74c0 .text$mn
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlArray@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@V?$CElementTraits@V?$MS2Ptr@VAutoDistribute@UISkillBookTreeDialog@@@@@ATL@@@ATL@@@@6B@ 0x142e66dc0
-// MS2-PIN: ??$FUN_14028dfa0@HHHH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBH111@Z 0x140ed0300
-// MS2-PIN: ??$FUN_14028dfa0@HHHHG@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBH111AEBG@Z 0x140ed06e0
-// MS2-PIN: ??$FUN_14028dfa0@GG@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBG1@Z 0x140ed0b00
+// MS2-PIN: ??$FUN_14028dfa0@IIII@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBI111@Z 0x140ed0300
+// MS2-PIN: ??$FUN_14028dfa0@IIIIG@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBI111AEBG@Z 0x140ed06e0
+// MS2-PIN: ??$FUN_14028dfa0@IV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V01@AEBIAEBV01@@Z 0x140ed0b00
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?vfunc_48@UISkillBookAutoDistributeDialog@@UEAAHXZ 0x140ec4d20 ; unique
 // MS2-PIN: ??$?0AEBH$0A@@?$tuple@AEBH@std@@QEAA@AEBH@Z 0x140ecfdf0 ; unique
@@ -85,6 +85,7 @@
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/jobtable.h"
+#include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -499,8 +500,6 @@ template <class T> T* Unk_SkillDialog(int nId)
     return 0;
 }
 
-CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);        // string table text, formatted
-FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 CStringW FUN_1418fe870(int nType, int* pnValue, int nFlag);                 // money text by pay type
 __int64 FUN_140718370(const CStringW& str);                                 // the uid in the text
 void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);  // pOut = v
@@ -1464,14 +1463,14 @@ void UISkillBookTreeDialog::OnPointClick(const Scaleform::GFx::FunctionHandler::
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    int nBase = JobSystem::GetLevelSkillPoint(pPlayer->vfunc_78(), m_nJobLevel);
-    int nExtra = DAT_143ab32f8[m_nJobLevel];
+    unsigned nBase = JobSystem::GetLevelSkillPoint(pPlayer->vfunc_78(), m_nJobLevel);
+    unsigned nExtra = DAT_143ab32f8[m_nJobLevel];
     CStringW strText;
     if (!FUN_140166410()->FUN_14036d570(0xca))
     {
-        int nTotal = nBase + nExtra;
-        int nSecond = GetJobSkillPoint(2);
-        int nFirst = GetJobSkillPoint(1);
+        unsigned nTotal = nBase + nExtra;
+        unsigned nSecond = GetJobSkillPoint(2);
+        unsigned nFirst = GetJobSkillPoint(1);
         nTotal += FUN_140ed47e0(pPlayer);
         strText = FUN_14028dfa0(CStringW(L"s_msg_skillbook_skillpoint_tooltip"), nTotal, nBase, nSecond, nFirst);
     }
@@ -1480,9 +1479,9 @@ void UISkillBookTreeDialog::OnPointClick(const Scaleform::GFx::FunctionHandler::
         unsigned short nLimit = *(unsigned short*)(FUN_1401d3200() + 0x9718);
         if (m_nJobLevel == 2)
             nLimit = *(unsigned short*)(FUN_1401d3200() + 0x971a);
-        int nFirst = GetJobSkillPoint(1);
-        int nSecond = GetJobSkillPoint(2);
-        int nTotal = nBase + nExtra;
+        unsigned nFirst = GetJobSkillPoint(1);
+        unsigned nSecond = GetJobSkillPoint(2);
+        unsigned nTotal = nBase + nExtra;
         nTotal += FUN_140ed47e0(pPlayer);
         strText = FUN_14028dfa0(CStringW(L"s_msg_skillbook_skillpoint_tooltip_jobchange"), nTotal, nBase, nSecond, nFirst, nLimit);
     }
