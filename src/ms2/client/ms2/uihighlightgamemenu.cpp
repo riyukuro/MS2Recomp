@@ -1097,3 +1097,5 @@ P FUN_140c24650()
     FUN_1403e5630(&h);
     return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca2700-0x142ca27e0 .text$yd

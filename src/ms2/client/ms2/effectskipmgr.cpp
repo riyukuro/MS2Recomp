@@ -408,3 +408,5 @@ void EffectSkipMgr::SetInit(bool b)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cace40-0x142cacf00 .text$yd

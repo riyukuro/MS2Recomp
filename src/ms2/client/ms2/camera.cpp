@@ -2479,3 +2479,5 @@ void CameraMgr::FUN_140aefb20(const Unk_CameraPathRow* pRow)
     }
 }
 MS2_REPLACE_METHOD(0x140AEFB20, CameraMgr, FUN_140aefb20, 1189, 0x2179FBDC);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca0330-0x142ca0400 .text$yd

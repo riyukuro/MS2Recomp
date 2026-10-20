@@ -538,3 +538,5 @@ void UIGamePadMenuDialog::FUN_140c1c530(int nKey)
     }
     FUN_1409ee290(&m_30)->FUN_1409ba0d0("moveMenu", m_nPage, m_nItem);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca2600-0x142ca26e0 .text$yd

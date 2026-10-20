@@ -935,3 +935,5 @@ int StateEmotionIdle::vfunc_1()
 {
     return 0xf;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb71b0-0x142cb72b0 .text$yd
