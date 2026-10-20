@@ -7,6 +7,8 @@
 // MS2-RANGE: 0x140103f20-0x140104310 .text$di
 // MS2-RANGE: 0x1417e47d0-0x1417f6050 .text$mn
 // MS2-PIN: ??A?$CAtlArray@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAAAEAV?$SmartPointer@VGameObject@@@efd@@_K@Z 0x1417f5e30
+// MS2-PIN: ??A?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAAEAHH@Z 0x1417f5c80
+// MS2-PIN: ??__Es_pointer1@@YAXXZ 0x140104040
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\stateskill.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -19,7 +21,6 @@
 
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/chomeprivilege.h"
-#include "ms2/client/ms2/costumemanager.h"   // TEMP: fittingdollpc.h (uncommitted edit by another worker) needs it
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/client/ms2/statemanager.h"
 #include "ms2/placeholder/cbasecollision.h"
