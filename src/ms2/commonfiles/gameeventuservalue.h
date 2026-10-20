@@ -88,9 +88,9 @@ public:
     {
         GameEventVariable::Key key(type, id);
         VariablePtr variable;
-        if (!m_variables.Lookup(key, variable))
-            return nDefault;
-        return variable->GetValue(nDefault);
+        if (m_variables.Lookup(key, variable))
+            return variable->GetValue(nDefault);
+        return nDefault;
     }
 
     VariableMap m_variables;    // +0x18

@@ -6,6 +6,32 @@
 // MS2-RANGE: 0x140be6eb0-0x140be99c0 .text$mn
 // MS2-RANGE: 0x1400cae10-0x1400cb070 .text$di
 // MS2-RANGE: 0x142ca1d60-0x142ca1e40 .text$yd
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??__Es_strSortTypeNamesLike2@@YAXXZ 0x1400cae10 ; probe
+// MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1400caed0 ; probe
+// MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400caf00 ; probe
+// MS2-PIN: ??__Es_strSortTypeNamesLike@@YAXXZ 0x1400cafb0 ; probe
+// MS2-PIN: ??$?8PEAVUICollectItemGroupEventDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x140be8ea0 ; prop
+// MS2-PIN: ??$?8PEAVUICollectItemGroupEventDialog@@P80@EAAXPEAVGameEventVariable@@@Z@std@@YA_NAEBU?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@0@0@Z 0x140be8f10 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x140be9160 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@QEAA@AEBV01@@Z 0x140be9200 ; prop
+// MS2-PIN: ??A?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@QEAAAEAUItemEntity@@_K@Z 0x140be9400 ; unique
+// MS2-PIN: ?vfunc_48@UICollectItemGroupEventDialog@@UEAAHXZ 0x140be95d0 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140be9740 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140be97a0 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140be9800 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@UEAAXPEAVGameEventVariable@@@Z 0x140be9830 ; unique
+// MS2-PIN: ??$Call@VUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140be9860 ; prop
+// MS2-PIN: ??$Call@VUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@CAXAEAU?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@PEAVGameEventVariable@@@Z 0x140be98a0 ; prop
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140be98e0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUICollectItemGroupEventDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x140be9940 ; unique
+// MS2-PIN: ??__Fs_strSortTypeNamesLike2@@YAXXZ 0x142ca1d60 ; probe
+// MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142ca1d90 ; probe
+// MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142ca1db0 ; probe
+// MS2-PIN: ??__Fs_strSortTypeNamesLike@@YAXXZ 0x142ca1e10 ; probe
+// MS2-PINS-END tplpin
+// (_Tidy 0x140be95f0 functional: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::capacity (0x140419f10 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x1404680f0; see 1d85a842)
+// MS2-PIN: ?_Tidy@?$vector@V?$MS2Ptr@VCollectItemGroupContext@@@@V?$allocator@V?$MS2Ptr@VCollectItemGroupContext@@@@@std@@@std@@AEAAXXZ 0x140be95f0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicollectitemgroupeventdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uicollectitemgroupeventdialog.h"
@@ -158,6 +184,7 @@ void UICollectItemGroupEventDialog::vfunc_67()
 }
 MS2_REPLACE_METHOD(0x140BE7860, UICollectItemGroupEventDialog, vfunc_67, 24, 0xE28CF352);
 
+// MS2-FUNCTIONAL: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::size (0x14041afe0 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x14046c6d0; see 1d85a842)
 // @0x140be7880
 void UICollectItemGroupEventDialog::RefreshEvents()
 {
@@ -186,6 +213,7 @@ void UICollectItemGroupEventDialog::RefreshEvents()
 }
 MS2_REPLACE_METHOD(0x140BE7880, UICollectItemGroupEventDialog, RefreshEvents, 723, 0xDEBA9AE8);
 
+// MS2-FUNCTIONAL: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::size (0x14041afe0 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x14046c6d0; see 1d85a842)
 // @0x140be7b60
 void UICollectItemGroupEventDialog::Refresh()
 {
@@ -249,6 +277,7 @@ void UICollectItemGroupEventDialog::Refresh()
 }
 MS2_REPLACE_METHOD(0x140BE7B60, UICollectItemGroupEventDialog, Refresh, 2683, 0xE0B5572C);
 
+// MS2-FUNCTIONAL: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::size (0x14041afe0 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x14046c6d0; see 1d85a842)
 // @0x140be85f0
 void UICollectItemGroupEventDialog::SelectEvent(int nIndex)
 {
@@ -290,6 +319,7 @@ bool UICollectItemGroupEventDialog::HasItem(int nItemId, int nRarity, int nCount
 }
 MS2_REPLACE_METHOD(0x140BE86C0, UICollectItemGroupEventDialog, HasItem, 200, 0xAC1797EA);
 
+// MS2-FUNCTIONAL: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::size (0x14041afe0 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x14046c6d0; see 1d85a842)
 // @0x140be8790
 bool UICollectItemGroupEventDialog::IsComplete(int nIndex)
 {
@@ -378,6 +408,7 @@ void UICollectItemGroupEventDialog::OnEventButton(const Scaleform::GFx::Function
 }
 MS2_REPLACE_METHOD(0x140BE8B60, UICollectItemGroupEventDialog, OnEventButton, 51, 0xAEF86B47);
 
+// MS2-FUNCTIONAL: byte-identical; only the stale progress/symbols.tsv row for vector<MS2Ptr<CollectItemGroupContext>>::size (0x14041afe0 = the 8-byte-element vector<unsigned __int64> copy, exe calls 0x14046c6d0; see 1d85a842)
 // @0x140be8ba0
 void UICollectItemGroupEventDialog::OnReceive(const Scaleform::GFx::FunctionHandler::Params& params)
 {
