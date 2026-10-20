@@ -245,6 +245,9 @@ class Unk_ItemEquipData : public CItemData {};                       // solo bui
 #include "ms2/client/ms2/skilldatatablecli.h"       // SkillDataTableCli / SkillData / SkillLevelData (commonfiles form)
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/ckeytable.h"
+#include "ms2/commonfiles/chatemoticontable.h"
+void FUN_1402929a0(const CStringW& str, std::vector<unsigned>& rOut, const wchar_t* pszSep);   // split into ids (commonutil.cpp)
+CStringW FUN_14028b8e0(const CStringW& str);                         // a string table text (commonutil.cpp)
 class MyPC;
 extern Unk_Inventory DAT_143ab2a90;                                   // the inventory
 CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds);         // a duration text (util.cpp)
@@ -287,6 +290,8 @@ void FUN_1409e68a0(int nJob, ATL::CAtlArray<unsigned>& jobs, int& nAllowed, CStr
 void FUN_1409e6aa0(int nJob, ATL::CAtlArray<unsigned>& jobs, CStringW& strOut);                  // the disabled job text
 void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons
 #endif
+// interface_check reads reasons from the unit .cpp and its own headers, not from the .inl files:
+// MS2-FUNCTIONAL 0x1409db930: the exe keeps the null test of the side tooltip in a bool temp (no source form found)
 #if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 4
 class Unk_ItemEquipData : public CItemData {};                       // solo build only: part 5 defines it otherwise
 class Unk_ItemOwnerRef : public CItemTransfer {};                     // solo build only: part 2 defines it otherwise
@@ -307,6 +312,9 @@ CStringW FUN_1409e0bf0(int nStat, int nTenths);
 CStringW FUN_1409e0cb0(const CStringW& strFormat, float fRate);
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/ckeytable.h"
+#include "ms2/commonfiles/chatemoticontable.h"
+void FUN_1402929a0(const CStringW& str, std::vector<unsigned>& rOut, const wchar_t* pszSep);   // split into ids (commonutil.cpp)
+CStringW FUN_14028b8e0(const CStringW& str);                         // a string table text (commonutil.cpp)
 #include "ms2/placeholder/wcformat.h"
 class Unk_ItemEquipData : public CItemData {};                       // CItem::FUN_140527840's record (as commonfiles\item.cpp)
 CUIService* FUN_1403ed2b0();                                          // CUIService::GetInstance (exe copy)
