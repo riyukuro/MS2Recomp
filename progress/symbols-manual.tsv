@@ -4094,3 +4094,5 @@ FMOD_System_Create	142303a95	func
 cef_string_ascii_to_utf16	142778544	func
 ?OnDotDamage@CDPSMeterSystem@@QEAAXV?$MS2Ptr@VCDotDamageRecord@@@@@Z	14117dbe0	func
 ?OnSplashDamage@CDPSMeterSystem@@QEAAXV?$MS2Ptr@VCSplashDamageRecord@@@@@Z	14117e030	func
+?s_bInit@CChapterUIData@@2_NA	143ae67e8	data
+?s_bInit@CQuestUIData@@2_NA	143ae65dd	data
