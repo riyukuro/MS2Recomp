@@ -3671,3 +3671,6 @@ __imp_NxGetUtilLib	142cced28	data
 ?g_gameEventUserValue@@3VGameEventUserValue@@A	143ab2fc0	data
 ??0Unk_InventoryItemKey@@QEAA@XZ	140bb5a30	func
 ?GetString@CServerStringGroup@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@AEBV23@@Z	14087ede0	func
+??0ASButtonBar@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422e2cd0	func
+??0ASIndexEvent@@QEAA@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z	1422e2a60	func
+?DAT_142d34e50@@3QBUUnk_ClEquipSlotEntry@@B	142d34e50	data
