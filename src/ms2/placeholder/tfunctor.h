@@ -56,8 +56,14 @@ public:
         implementation = Clone(other.implementation);
         return *this;
     }
+    R operator()(A a, B b, C c, D d, E e) { return implementation->Invoke(a, b, c, d, e); }
 private:
-    static Impl* Clone(Impl* source) { return source ? static_cast<Impl*>(source->Clone()) : nullptr; }
+    static Impl* Clone(Impl* source) {
+        if (!source)
+            return nullptr;
+        Impl* clone = static_cast<Impl*>(source->Clone());
+        return clone;
+    }
     void Clear() { if (implementation) { delete implementation; implementation = nullptr; } }
     Impl* implementation;
 };
