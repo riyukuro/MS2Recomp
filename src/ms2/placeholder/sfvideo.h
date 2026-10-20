@@ -2,7 +2,8 @@
 // 4.1.19 SDK has only GFx_VideoBase.h; Video / VideoPC / VideoDecoder / VideoSoundSystem follow the 4.3 SDK's
 // Src/Video/Video_Video.h and Video_VideoPC.h (work/scaleform/4.3), whose layout matches the exe (new VideoPC is 0x70
 // bytes; Video::pTextureManager +0x20, pDecoder +0x28, pSoundSystem +0x38). Declarations only: the Video library itself
-// (VideoPC ctor 0x140002780, AS2/AS3VideoSupport::CreateInstance 0x1400019f0 / 0x140002730) is not recovered.
+// (AS2/AS3VideoSupport::CreateInstance 0x1400019f0 / 0x140002730, Video 0x14001c000..) is not recovered; VideoPC is in
+// src/ms2/unnamed/unit_140002780.cpp.
 //
 // MS2VideoSoundSystemDX8 (RTTI .?AVMS2VideoSoundSystemDX8@Video@GFx@Scaleform@@, 0x20 bytes, vftable 0x14311b1c8 with 3
 // slots) is the game's DirectSound video sound system, ?\ms2videosoundsystemdx8.cpp (0x1422fe810-0x142300880): the SDK's
@@ -148,8 +149,8 @@ public:
           bool autoInit = true);
     ~Video();
 
-    virtual AS2VideoSupport* GetAS2Support() const;
-    virtual AS3VideoSupport* GetAS3Support() const;
+    virtual AS2VideoSupport* GetAS2Support() const { return pAS2VSupport; }     // VideoPC copy 0x140002800
+    virtual AS3VideoSupport* GetAS3Support() const { return pAS3VSupport; }     // VideoPC copy 0x140002810
     virtual VideoPlayer* CreateVideoPlayer(MemoryHeap*, TaskManager*, FileOpenerBase*, Log*);
     virtual void SetReadCallback(ReadCallback*);
     virtual bool IsIORequired() const;
@@ -160,8 +161,8 @@ public:
     virtual void ApplySystemSettings(VideoReaderConfig*);
 
     void SetTextureManager(Render::TextureManager* ptexman) { pTextureManager = ptexman; }
-    virtual Render::TextureManager* GetTextureManager() const;
-    virtual MemoryHeap* GetHeap() const;
+    virtual Render::TextureManager* GetTextureManager() const { return pTextureManager; }   // VideoPC copy 0x1400028b0
+    virtual MemoryHeap* GetHeap() const { return pHeap; }                       // VideoPC copy 0x1400028c0
 
     void SetSoundSystem(VideoSoundSystem* psoundSystem) { pSoundSystem = psoundSystem; }
     VideoSoundSystem* GetSoundSystem() const { return pSoundSystem; }
@@ -187,9 +188,9 @@ public:
     VideoPC(const VideoVMSupport& vmSupport, Thread::ThreadPriority decodingThreadsPriority = Thread::NormalPriority,
             int decodingThreadsNumber = 3, UInt32* affinityMask = NULL);    // 0x140002780
 
-    virtual void ApplySystemSettings(VideoPlayer* pvideoPlayer);
-    virtual void ApplySystemSettings(VideoDecoder*);
-    virtual void ApplySystemSettings(VideoReaderConfig*);
+    virtual void ApplySystemSettings(VideoPlayer* pvideoPlayer);                // 12 0x140002850
+    virtual void ApplySystemSettings(VideoDecoder*) {}                          // 11 0x140002820
+    virtual void ApplySystemSettings(VideoReaderConfig*) {}                     // 10 0x140002830
 
 private:
     int DecodingThreadNumber;           // +0x60
