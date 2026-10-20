@@ -10004,7 +10004,7 @@ wmemmove	140191580	func
 ??E?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@@std@@QEAAAEAV01@XZ	14027f590	func
 ?FUN_14027f590@@YAXPEAUUnk_It@@@Z	14027f590	func
 ??F?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UItemEntity@@@std@@@std@@@std@@QEAA?AV01@H@Z	14027f5b0	func
-??F?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UItemEntity@@@std@@@std@@@std@@QEAAAEAV01@XZ	14027f600	func
+??F?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UItemEntity@@@std@@@std@@@std@@QEAAAEAV01@XZ	14027f850	func
 ??E?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@UItemEntity@@@std@@@std@@@std@@QEAAAEAV01@XZ	14027f6b0	func
 ??E?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@UItemEntity@@@std@@@std@@@std@@QEAAAEAV01@XZ	14027f6b0	func
 ??EUnk_RewardItemIter@@QEAAAEAV0@XZ	14027f6b0	func
