@@ -22,6 +22,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiweddingdialog.cpp"    // assumed
 
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/wcformat.h"
 #include "uiweddingdialog.h"
 #include "uiweddingpage.h"
 #include "uimessageboxdata.h"
@@ -86,7 +87,6 @@ __int64 FUN_140869440();                                        // the current t
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a1, const CStringW& a2);   // string table text, two args
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& a1);    // string table text, one arg
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);
-CStringW FUN_140cb6660(CStringW strKey, const __int64* pn1, const __int64* pn2);
 CString FUN_1410291d0(__int64 nCharacterId, const CString& strKey);   // a UGC profile path
 MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
@@ -387,7 +387,7 @@ void UIWeddingDialog::FUN_140fc86c0(ASObj& data)
     data.FUN_1407cb9c0("minExp", 0);
     data.FUN_1409c1180("maxExp", nRange);
     data.FUN_1409c1180("current", nCurrent);
-    data.FUN_1407cbb20("exp", FUN_140cb6660(CStringW(L"s_wedding_dialog_wedding_exp"), &nCurrent, &nRange));
+    data.FUN_1407cbb20("exp", FUN_14028dfa0(CStringW(L"s_wedding_dialog_wedding_exp"), nCurrent, nRange));
     data.FUN_1407cbb20("grade", FUN_14062b4f0(CStringW(L"s_wedding_dialog_wedding_grade"), &nGrade));
 }
 MS2_REPLACE_METHOD(0x140fc86c0, UIWeddingDialog, FUN_140fc86c0, 522, 0xD56FAB4F);
