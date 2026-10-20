@@ -51,6 +51,7 @@
 // MS2-PIN: ?resize@?$vector@V?$MS2Ptr@VCEquipItem@@@@V?$allocator@V?$MS2Ptr@VCEquipItem@@@@@std@@@std@@QEAAX_KAEBV?$MS2Ptr@VCEquipItem@@@@@Z 0x1411ff120 ; prop
 // MS2-PIN: ?Test@Unk_LayerBits@@QEBA_NH@Z 0x1411ff380 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??$Unk_EquipLog@HHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@@YAXPEAVCLogString@@HHPEB_WAEBH2AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z 0x1411f0ad0 ; manual: the slot / layer / item name log of 0x1411eebc0 (the float form is 0x140e68a40)
 // MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@1@@Z 0x1411f2430 ; manual: the in-range copy of the look-alike pair belongs to the set piece map (caller chain 0x1411f7c90 -> 0x1411f61f0)
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@1@@Z 0x1411f3cb0 ; manual: the in-range copy of the look-alike pair belongs to the set piece map (caller chain 0x1411f7c90 -> 0x1411f61f0)
 // MS2-PIN: ??$_Try_emplace@H$$V@?$map@HV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@_N@1@$$QEAH@Z 0x1411f4d40 ; manual: the in-range copy of the look-alike pair belongs to the set piece map (caller chain 0x1411f7c90 -> 0x1411f61f0)
@@ -288,6 +289,9 @@ public:
     void FUN_14098cf00();                               // destroy
     NiAVObject* FUN_14098e0d0(int n);                   // the next object (NULL at the end)
     void FUN_1411f88a0(bool bCulled, NiAVObject* pObject, int nDepth);   // dump (recursive)
+    bool FUN_14098df00();                               // done (no current object)
+    NiAVObject** FUN_14107cbe0();                       // the current object
+    void FUN_1411fa480(const NiTransform& kTransform);  // log a transform
 private:
     char m_buf[0x38];
 };
@@ -310,6 +314,14 @@ inline void Unk_EquipLog1(CLogString* log, int level, int category, const wchar_
 {
     const fmt::internal::ArgArray<1>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(a)};
     log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(a), args));
+}
+// @0x1411f07d0 (the unit's two-argument log call).
+template <class A, class B>
+inline void Unk_EquipLog2(CLogString* log, int level, int category, const wchar_t* format, const A& a, const B& b)
+{
+    const fmt::internal::ArgArray<2>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(a),
+        fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(b)};
+    log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(a, b), args));
 }
 // @0x1411f0ad0 (the unit's three-argument log call: an FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
 template <class A, class B, class C>
@@ -2914,4 +2926,61 @@ ReplaceObject::~ReplaceObject()
 MS2Ptr<CSetItemManager> PC::FUN_1411f9310()
 {
     return m_spSetItems;
+}
+
+// @0x1411f88a0
+void Unk_EqSceneDump::FUN_1411f88a0(bool bCulled, NiAVObject* pObject, int nDepth)
+{
+    if (pObject == NULL) {
+        if (FUN_14098df00())
+            return;
+        pObject = *FUN_14107cbe0();
+    }
+    if (pObject == NULL)
+        return;
+    NiTransform kLocal = pObject->GetLocalTransform();
+    NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
+    if (pMesh != NULL) {
+        if (!pMesh->GetAppCulled()) {
+            if (CLogString::GetInstance() != NULL)
+                Unk_EquipLog2(CLogString::GetInstance(), 0xb, 0x134, L"Height : {0}, Mesh Name(Not Culled) : {1}", nDepth,
+                    (const char*)pMesh->GetName());
+        } else {
+            if (CLogString::GetInstance() != NULL)
+                Unk_EquipLog2(CLogString::GetInstance(), 0xb, 0x134, L"Height : {0}, Mesh Name(Culled) : {1}", nDepth,
+                    (const char*)pMesh->GetName());
+        }
+        FUN_1411fa480(kLocal);
+        return;
+    }
+    NiNode* pNode = NiDynamicCast(NiNode, pObject);
+    if (pNode == NULL) {
+        if (CLogString::GetInstance() != NULL)
+            Unk_EquipLog2(CLogString::GetInstance(), 0xb, 0x134, L"Height : {0}, NiAV Name : {1}", nDepth,
+                (const char*)pObject->GetName());
+        FUN_1411fa480(kLocal);
+        return;
+    }
+    if (CLogString::GetInstance() != NULL)
+        Unk_EquipLog2(CLogString::GetInstance(), 0xb, 0x134, L"Height : {0}, Node Name : {1}", nDepth,
+            (const char*)pNode->GetName());
+    FUN_1411fa480(kLocal);
+    unsigned nCount = pNode->GetArrayCount();
+    for (unsigned i = 0; i < nCount; i++) {
+        NiAVObject* pChild = pNode->GetAt(i);
+        if (pChild != NULL)
+            FUN_1411f88a0(bCulled, pChild, nDepth + 1);
+    }
+}
+
+// @0x1411fa480
+void Unk_EqSceneDump::FUN_1411fa480(const NiTransform& kTransform)
+{
+    NiPoint3 kRot;
+    kTransform.m_Rotate.ToEulerAnglesXYZ(kRot.x, kRot.y, kRot.z);
+    if (CLogString::GetInstance() != NULL)
+        Unk_EquipLog(CLogString::GetInstance(), 0xb, 0x134, L"Translate : {0}, {1}, {2}", kTransform.m_Translate.x,
+            kTransform.m_Translate.y, kTransform.m_Translate.z);
+    if (CLogString::GetInstance() != NULL)
+        Unk_EquipLog(CLogString::GetInstance(), 0xb, 0x134, L"Rotate : {0}, {1}, {2}", kRot.x, kRot.y, kRot.z);
 }
