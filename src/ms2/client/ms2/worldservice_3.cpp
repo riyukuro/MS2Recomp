@@ -323,6 +323,18 @@
 // MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsVad0@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CB_KUUnk_WsVad0@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsVad0@@@std@@@std@@@1@@Z 0x141bf22b0
 // MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsVad0@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CB_KUUnk_WsVad0@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_KUUnk_WsVad0@@@std@@@std@@@1@@Z 0x141bf23d0
 // MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsV1f8@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHUUnk_WsV1f8@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_WsV1f8@@@std@@@std@@@1@@Z 0x141bf2410
+// The smart pointer ctors over NiRefObject (add-ref NiRefObject::IncRefCount, bound elsewhere).
+// MS2-PIN: ??0?$SmartPointer@VCEntityHider@@@efd@@QEAA@AEBV01@@Z 0x141bf0e90
+// MS2-PIN: ??0?$SmartPointer@VCEntityHider@@@efd@@QEAA@PEAVCEntityHider@@@Z 0x141bf0ed0
+// MS2-PIN: ??0?$SmartPointer@VCEntityShower@@@efd@@QEAA@AEBV01@@Z 0x141bf0f10
+// MS2-PIN: ??0?$SmartPointer@VCEntityShower@@@efd@@QEAA@PEAVCEntityShower@@@Z 0x141bf0f50
+// MS2-PIN: ??0?$Unk_WsNiPtr@UUnk_WsElem@@@@QEAA@PEAUUnk_WsElem@@@Z 0x141bf0f90
+// MS2-PIN: ??0?$Unk_WsNiPtr@VCWireframeManager@@@@QEAA@PEAVCWireframeManager@@@Z 0x141bf1020
+// MS2-PIN: ??0?$Unk_WsNiPtr@VChaosLightEffectLayerManager@@@@QEAA@PEAVChaosLightEffectLayerManager@@@Z 0x141bf1060
+// MS2-PIN: ??0?$Unk_WsNiPtr@VTextureLayerManager@@@@QEAA@PEAVTextureLayerManager@@@Z 0x141bf1130
+// MS2-PIN: ??0?$SmartPointer@VEntityManager@egf@@@efd@@QEAA@AEBV01@@Z 0x141bf10e0
+// MS2-PIN: ??0?$TSingleton@VWorldService@@@@QEAA@XZ 0x141bf1a00
+// MS2-PIN: ??0?$MS2Ptr@UUnk_WsD_EffectCtx@@@@QEAA@AEBV0@@Z 0x141bf1170
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "worldservice.h"
@@ -340,6 +352,18 @@
 #include "ms2/guess/fieldproperty.h"
 #include "ms2/guess/regionskillobject.h"
 #include "ms2/client/ms2/uidebugtooltip.h"
+#include "alphaanimation.h"
+#include <new>
+#include <efd/MessageService.h>
+#include <efd/AssetLoadResponse.h>
+#include <egf/EntityChangeMessage.h>
+#include <egf/EntityLoaderMessages.h>
+#include <egf/FlatModelFactoryResponse.h>
+#include <ecr/CoreRuntimeMessages.h>
+#include "ms2/placeholder/physxpropmessage.h"
+#include <egmAnimation/ActorMessages.h>
+#include "ms2/placeholder/tfunctor.h"
+#include "ms2/placeholder/coptimizer.h"                            // CEntityShower / CEntityHider (m_980 / m_990 values)
 struct Unk_WsD_EffectCtx : public CPtred {};            // m_848 value: the effect of an effect message (add-ref 0x141c1f4a0)
 class Unk_WsPtrT_141c1f500 : public CPtred {};          // tag-range object (FUN_141bc3560), camera shake (FUN_141bc9020)
 class Unk_WsPtrT_141c1f530 : public CPtred {};          // m_540 / m_570 value (FUN_141bd3920)
@@ -383,4 +407,48 @@ void Unk_WsInst3Ptrs(int n)
     Unk_WsEntityListPtr d(c);
     Unk_WsEntityListPtr e(n);
     Unk_WsEntityListPtr f;
+}
+
+// The other smart pointer constructors of the CU (0x141bf0e70-0x141bf1130): the m_980 / m_990 map values and the
+// NiPointer-like members of WorldService.
+void Unk_WsInst3NiPtrs(CEntityHider* pHider, CEntityShower* pShower)
+{
+    efd::SmartPointer<CEntityHider> spHider(pHider);
+    efd::SmartPointer<CEntityHider> spHider2(spHider);
+    efd::SmartPointer<CEntityShower> spShower(pShower);
+    efd::SmartPointer<CEntityShower> spShower2(spShower);
+    Unk_WsNiPtr<CWireframeManager> spWireframe(0);
+    Unk_WsNiPtr<Unk_WsElem> spElem(0);
+    Unk_WsNiPtr<TextureLayerManager> spTextureLayer(0);
+    Unk_WsNiPtr<ChaosLightEffectLayerManager> spChaosLight(0);
+    Unk_WsOptional<float> optional;
+}
+void Unk_WsInst3Bases(const efd::SmartPointer<egf::EntityManager>& spEntityManager)
+{
+    efd::SmartPointer<egf::EntityManager> spCopy(spEntityManager);    // m_268 copy (FUN_141bc16d0)
+    TSingleton<WorldService> singleton;
+}
+
+// The message handler constructors (0x141bf07d0-0x141bf0e6d) of the EE_HANDLER statics of worldservice_1.cpp. Placement
+// new instantiates them without a second set of self-registering statics.
+void Unk_WsInst3Handlers(void* p)
+{
+    new (p) efd::MessageHandlerImpl<WorldService, egmAnimation::ActorAddedMessage>(&WorldService::FUN_141bbfb50);
+    new (p) efd::MessageHandlerImpl<WorldService, egmAnimation::ActorRemovedMessage>(&WorldService::FUN_141bbfde0);
+    new (p) efd::MessageHandlerImpl<WorldService, efd::AssetLoadResponse>(&WorldService::FUN_141bbf9f0);
+    new (p) efd::MessageHandlerImpl<WorldService, egf::EntityLoadResult>(&WorldService::FUN_141bc0a70);
+    new (p) efd::MessageHandlerImpl<WorldService, ecr::SceneGraphAddedMessage>(&WorldService::FUN_141bbfe30);
+    new (p) efd::MessageHandlerImpl<WorldService, ecr::SceneGraphRemovedMessage>(&WorldService::FUN_141bc0290);
+    new (p) efd::MessageSubclassHandler<WorldService, efd::AssetLoadResponse, egf::FlatModelFactoryResponse>(&WorldService::FUN_141bc0f50);
+    new (p) efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8196>(&WorldService::FUN_141bbfa50);
+    new (p) efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8253>(&WorldService::FUN_141bbd640);
+    new (p) efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8254>(&WorldService::FUN_141bbf2f0);
+    new (p) efd::MessageWrapperSubclassHandler<WorldService, ecrPhysX::PhysXPropMessage, ecrPhysX::PhysXPropMessage, 12299>(&WorldService::FUN_141bc0530);
+}
+
+// The ClassFunHandler constructors (0x141bf0640-0x141bf07c4: object/method and copy) of the two functors of the CU.
+void Unk_WsInst3Functors(WorldService* pService, COptimizer* pOptimizer)
+{
+    TFunctor<void, EmptyParam> fnService(pService, &WorldService::FUN_141bc1640);
+    TFunctor<void, EmptyParam> fnOptimizer(pOptimizer, reinterpret_cast<void (COptimizer::*)()>(&COptimizer::FUN_1414a5a30));
 }
