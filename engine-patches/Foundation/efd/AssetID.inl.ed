@@ -1,0 +1,16 @@
+62c
+EE_MS2_ASSETID_COPY_INLINE AssetID& AssetID::operator=(const efd::AssetID& other)
+.
+48c
+EE_MS2_ASSETID_COPY_INLINE AssetID::AssetID(const efd::AssetID& other)
+.
+16a
+// MS2: the exe calls the copy ctor / copy assignment out of line (the game's /Od copies 0x140de8c90 / 0x1411d6ee0;
+// MS2's operator= also strips a trailing ':' from m_urn) from the engine TUs that define EE_MS2_ASSETID_COPY_CALL
+#if defined(EE_MS2_ASSETID_COPY_CALL)
+#define EE_MS2_ASSETID_COPY_INLINE inline __declspec(noinline)
+#else
+#define EE_MS2_ASSETID_COPY_INLINE inline
+#endif
+
+.

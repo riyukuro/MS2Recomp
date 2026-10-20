@@ -1,2 +1,11 @@
+701,704c
+            // MS2: no elr_EntityDestructionCompleted result here (the exe sends it from the canceled-load
+            // path of lds_Initial instead)
+            //
+            //
+.
+605c
+                SendResult(els->m_callbacks, EntityLoadResult::elr_EntityDestructionCompleted, requestId);  // MS2: not elr_LoadCancelSuccess
+.
 337@40s "" ")"
 337@31s "" "efd::AssetID("

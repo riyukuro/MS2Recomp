@@ -1,0 +1,3 @@
+18c
+const NiFixedString NiSemanticAdapterTable::ms_kNullSemanticName;  // MS2
+.

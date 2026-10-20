@@ -1,0 +1,28 @@
+737a
+
+        // MS2: a file flagged in m_ms2Set while it was loading leaves the cache again
+        efd::set<efd::utf8string>::iterator ms2Iter = m_ms2Set.find(spData->m_filePath);
+        if (ms2Iter != m_ms2Set.end())
+        {
+            m_cache.erase(spData->m_filePath);
+            m_ms2Set.erase(ms2Iter);
+        }
+.
+632a
+                // MS2: a file requested again is no longer flagged in m_ms2Set
+                efd::set<efd::utf8string>::iterator ms2Iter = m_ms2Set.find(spFileData->m_filePath);
+                if (ms2Iter != m_ms2Set.end())
+                {
+                    m_ms2Set.erase(ms2Iter);
+                }
+.
+425a
+// MS2: 2 more lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+//
+.
+290a
+        // MS2: a file requested again is no longer flagged in m_ms2Set
+        efd::set<efd::utf8string>::iterator ms2Iter = m_ms2Set.find(fileName);
+        if (ms2Iter != m_ms2Set.end())
+            m_ms2Set.erase(ms2Iter);
+.

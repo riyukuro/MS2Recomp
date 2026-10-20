@@ -1,3 +1,18 @@
+151a
+#if defined(MS2_NIACTORMANAGER_PENDING_LOOKUP)
+    // MS2: the game's copy (out of line at 0x140999740, inlined by egmAnimation's AnimationService)
+    // first moves pending sequence data into the controller manager, like SetTargetAnimation. The
+    // NiAnimation lib was built with the SDK lookup below, so only TUs that define the macro get it.
+    if (m_kMS2PendingSeqDataMap.GetAt(eSequenceID, spSeqData))
+    {
+        NiActorManager* pkThis = const_cast<NiActorManager*>(this);
+        pkThis->m_spManager->AddSequenceData(spSeqData);
+        pkThis->m_kSeqDataMap.SetAt(eSequenceID, spSeqData);
+        pkThis->m_kMS2PendingSeqDataMap.RemoveAt(eSequenceID);
+        return spSeqData;
+    }
+#endif
+.
 47c
             m_spManager->AddSequenceData(spPending);
             m_kSeqDataMap.SetAt(eSequenceID, spPending);

@@ -1,0 +1,23 @@
+38@54s "" "  // MS2"
+38@3s "" " MS2_NISLB_RETURN"
+36c
+MS2_NISLB_RESULT NiStreamLoadBinary(efd::BinaryStream& binstream, T* value, unsigned int uiNumEls)  // MS2: returns the load result
+.
+31c
+    MS2_NISLB_RETURN efd::BinaryStreamLoad(binstream, &value, 1);  // MS2
+.
+29c
+MS2_NISLB_RESULT NiStreamLoadBinary(efd::BinaryStream& binstream, T& value)  // MS2: returns the load result
+.
+26a
+// MS2: most libs see the bool-returning loaders; NiKFMTool (NiAnimation) was built against the
+// SDK's void form and defines MS2_NISTREAMLOADBINARY_VOID before its includes.
+#if defined(MS2_NISTREAMLOADBINARY_VOID)
+#define MS2_NISLB_RESULT void
+#define MS2_NISLB_RETURN
+#else
+#define MS2_NISLB_RESULT bool
+#define MS2_NISLB_RETURN return
+#endif
+
+.

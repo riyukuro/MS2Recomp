@@ -5,11 +5,16 @@
 #ifndef NISTUDIOSHADERCONTEXT_H
 #define NISTUDIOSHADERCONTEXT_H
 
+#include <map>
+#include "NiString.h"
+
 class NiAVObject;
 
 struct NiStudioShaderContext
 {
     const NiAVObject* m_pkCurrentObject;
+    void RemoveNifPath(NiAVObject* pkObject) { m_kNifPaths.erase(pkObject); }
+    std::map<NiAVObject*, NiString> m_kNifPaths;  // +0x08: nif path of each loaded object (game Unk_NifPathRegistry, insert 0x14154ff90); ~NiAVObject erases
 };
 
 NiStudioShaderContext& NiGetStudioShaderContext();

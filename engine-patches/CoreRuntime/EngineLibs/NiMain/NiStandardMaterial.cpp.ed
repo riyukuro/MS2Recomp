@@ -89,6 +89,12 @@ bool NiStandardMaterial::HandleCalculateHeightFog(Context& kContext,
 4046c
             "TransformPosition"); if (!pkProjFrag) return false;  // MS2: v2525
 .
+4007c
+                GetAttachableNodeFromLibrary("TransformNBT"); if (!pkNormFrag) return false;  // MS2: v2525
+.
+3983c
+                GetAttachableNodeFromLibrary("TransformNormal"); if (!pkNormFrag) return false;  // MS2: v2525
+.
 3636a
     {  // MS2: v2525
         return false;
@@ -110,6 +116,9 @@ bool NiStandardMaterial::HandleCalculateHeightFog(Context& kContext,
     pkVertexDesc->SetHEIGHTFOG(pkMatlDesc->GetHEIGHTFOG());  // MS2: v2525
     pkPixelDesc->SetHEIGHTFOG(pkMatlDesc->GetHEIGHTFOG());
 
+.
+930c
+        const NiFixedString& kGenericSemantic =  // MS2: by reference
 .
 684a
     NiGlobalConstantEntry* pkHeightFogEnable =  // MS2: v2525

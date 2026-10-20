@@ -1,0 +1,30 @@
+1389c
+#line 1412  // MS2: 4 more MS2 lines above
+.
+928c
+        else if (pEntityData->m_spAssetData)  // MS2: no preload record without asset data
+.
+883c
+#line 902  // MS2: 6 more MS2 lines above
+.
+862c
+    if (g_pfnMS2SceneGraphCacheFilter && !g_pfnMS2SceneGraphCacheFilter(pMessage)) return;  // MS2
+.
+855c
+bool (*g_pfnMS2SceneGraphCacheFilter)(const SceneGraphCacheResponse*) = NULL;  // MS2: response filter (0x143b09498, set by MS2AnimationService::OnInit)
+.
+685c
+#line 698  // MS2: 3 more MS2 lines above
+.
+398c
+#line 408  // MS2: 9 more lines of MS2 source above this point in the exe build (EE_LOG __LINE__s)
+.
+236c
+    if (g_pfnMS2CreateKFMCache) m_spKFMCache = g_pfnMS2CreateKFMCache(); else m_spKFMCache = EE_NEW KFMCache();  // MS2
+.
+214c
+KFMCache* (*g_pfnMS2CreateKFMCache)() = NULL;  // MS2: KFMCache factory hook (0x143b094a0, set by the game's FUN_1414a6230)
+.
+13c
+#define MS2_NIACTORMANAGER_PENDING_LOOKUP  // MS2: this TU sees the game's NiActorManager::GetSequenceData (NiActorManager.inl)
+.

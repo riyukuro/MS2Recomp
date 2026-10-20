@@ -45,7 +45,7 @@
     if (!m_kAffectedNodeList.RemoveAt(pkAffectedNode))  // MS2: v2525
 .
 79,82c
-    NiNode* pkExisting;  // MS2: v2525
-    if (m_kAffectedNodeList.GetAt(pkAffectedNode, pkExisting)) return false;
+    // MS2: the lookup result is written back into pkAffectedNode itself
+    if (m_kAffectedNodeList.GetAt(pkAffectedNode, pkAffectedNode)) return false;
     m_kAffectedNodeList.SetAt(pkAffectedNode, pkAffectedNode);
 .

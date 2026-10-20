@@ -1,0 +1,4 @@
+670,671c
+        NiMemcpy((NiUInt8*)pvTempOldIndexData, uiSize, pvData, uiSize);  // MS2: sized form
+
+.

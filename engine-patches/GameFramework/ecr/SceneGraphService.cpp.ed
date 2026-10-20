@@ -26,6 +26,53 @@ void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
 }
 
 .
+2736a
+// MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+//
+//
+.
+2189a
+// MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+//
+//
+.
+1740a
+            pSceneGraphData->m_ms2UpdateBucketIndex = SceneGraphData::kInvalidUpdateIndex;  // MS2
+.
+849a
+// MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+//
+//
+.
+667a
+// MS2: 24 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+.
+646a
+// MS2: 1 line of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
+.
 33c
 #include <NiMemStream.h>
 .

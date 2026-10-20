@@ -1,0 +1,6 @@
+207c
+        const NiFixedString& kGenericSemantic =  // MS2: by reference
+.
+122c
+        const NiFixedString& kGenericSemantic =  // MS2: by reference
+.

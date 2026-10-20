@@ -1,0 +1,7 @@
+33,34c
+    return ms_kNullSemanticName;  // MS2
+
+.
+27@68s "" "  // MS2: by reference"
+27@20s "" "&"
+27@6s "" " const"

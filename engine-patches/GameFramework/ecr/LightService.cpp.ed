@@ -1,11 +1,127 @@
-519,520c
-        NiNode* pNode = NULL;
-        NiNode* pNodeVal = NULL;
-        NiTMapIterator kPos = affectedNodeList.GetFirstPos();
-        affectedNodeList.GetNext(kPos, pNode, pNodeVal);
-        affectedNodeList.RemoveAt(pNode);
-.
-516c
+1990a
+// MS2: the kMSGID_OwnedEntityRemoved handler (a copy of HandleEntityRemovedMessage).
+EE_HANDLER_WRAP(LightService, HandleEntityDeletedMessage, EntityChangeMessage,
+                kMSGID_OwnedEntityRemoved);
+
+//------------------------------------------------------------------------------------------------
+void LightService::HandleEntityDeletedMessage(const egf::EntityChangeMessage* pMessage,
+    efd::Category targetChannel)
+{
+    EE_ASSERT(pMessage);
+    EE_UNUSED_ARG(targetChannel);
+
+    Entity* pEntity = pMessage->GetEntity();
+    EE_ASSERT(pEntity);
+    egf::EntityID entityID = pEntity->GetEntityID();
+
+    // Look for a node that represents the entity.
+    efd::map<egf::EntityID, LightData*>::iterator itLight = m_entityLightMap.find(entityID);
+
+    // If the entity being removed isn't a light, return.
+    if (itLight == m_entityLightMap.end())
+        return;
+
+    NiLight* pLight = itLight->second->m_spLight;
+
+    NiShadowGenerator* pShadowGenerator = pLight->GetShadowGenerator();
+
+    NiPSSMShadowClickGenerator* pPSSMClickGenerator = NiDynamicCast(NiPSSMShadowClickGenerator,
+        NiShadowManager::GetActiveShadowClickGenerator());
+
+    if (pPSSMClickGenerator && pShadowGenerator)
+    {
+        if (pPSSMClickGenerator->GetActiveGenerator() == pShadowGenerator)
+            pPSSMClickGenerator->SetActiveGenerator(NULL);
+
+        // Force the PSSM to rebuild the shadowing frustums.
+        NiPSSMConfiguration* pConfiguration =
+            pPSSMClickGenerator->GetConfiguration(pShadowGenerator);
+        pConfiguration->SetRebuildFrustums(true);
+    }
+
     NiTPointerMap<NiNode*, NiNode*>& affectedNodeList =
         const_cast<NiTPointerMap<NiNode*, NiNode*>&>(pLight->GetAffectedNodeList());
+    NiTMapIterator kPos = affectedNodeList.GetFirstPos();  // MS2: one pass, then RemoveAll
+    while (kPos)
+    {
+        NiNode* pNode = NULL;
+        NiNode* pNodeVal = NULL;
+        affectedNodeList.GetNext(kPos, pNode, pNodeVal);
+        if (pNodeVal)
+        {
+            pNodeVal->DetachEffect(pLight);
+            pNodeVal->UpdateEffects();
+        }
+    }
+    affectedNodeList.RemoveAll();
+
+    pLight->DetachAllAffectedNodes();
+    pLight->DetachAllUnaffectedNodes();
+    pLight->Update(0.0f);
+
+    // Remove light from light entity map and light range map.
+    m_entityLightMap.erase(entityID);
+
+    // Remove light from the light list.
+    efd::vector<LightData*>::iterator itCurrLight;
+    for (itCurrLight = m_lightList.begin(); itCurrLight != m_lightList.end(); itCurrLight++)
+    {
+        if ((*itCurrLight)->m_entityID == entityID)
+        {
+            EE_DELETE(*itCurrLight);
+            m_lightList.erase(itCurrLight);
+            break;
+        }
+    }
+
+    // Remove light from the list of updates.
+    for (itCurrLight = m_changedLightList.begin(); itCurrLight != m_changedLightList.end();
+        itCurrLight++)
+    {
+        if ((*itCurrLight)->m_entityID == entityID)
+        {
+            m_changedLightList.erase(itCurrLight);
+            break;
+        }
+    }
+}
+//------------------------------------------------------------------------------------------------
+// MS2: see LightService.h
+void (*g_pfnLightAdded)(const egf::EntityID& entityID) = NULL;
+.
+1900a
+    if (pModel->ContainsModel(0x48235E30u)) return;  // MS2: an MS2 model (name unknown) is never lit
+.
+1454a
+#endif
+.
+1417a
+#if 0  // MS2: the precomputed-lighting checks are gone (the exe inlines only the range test below)
+.
+879a
+// MS2: 97 more lines of MS2 source above this point in the exe build (UpdateShadowCaster's EE_LOG __LINE__ is 0x40d)
+#line 982
+.
+526a
+    affectedNodeList.RemoveAll();
+.
+524@17s "" "Val"
+523@17s "" "Val"
+519,521c
+        NiNode* pNode = NULL;
+        NiNode* pNodeVal = NULL;
+        affectedNodeList.GetNext(kPos, pNode, pNodeVal);
+        if (pNodeVal)
+.
+516,517c
+    NiTPointerMap<NiNode*, NiNode*>& affectedNodeList =
+        const_cast<NiTPointerMap<NiNode*, NiNode*>&>(pLight->GetAffectedNodeList());
+    NiTMapIterator kPos = affectedNodeList.GetFirstPos();  // MS2: one pass, then RemoveAll
+    while (kPos)
+.
+397a
+    if (g_pfnLightAdded) { g_pfnLightAdded(entityID); return; }  // MS2: deferred light creation
+.
+84c
+    pDependencyRegistrar->AddDependency<egf::EntityManager>(efd::sdf_RequiredReverse);  // MS2: reverse
 .

@@ -1,4 +1,4 @@
-22a
+21a
 
 
 
@@ -6,4 +6,7 @@
 
 
 
+.
+10c
+#define EE_MS2_TCPSOCKET_TU  // MS2: see Socket.h getErrorMessage (replaces a blank comment line: keeps __LINE__)
 .

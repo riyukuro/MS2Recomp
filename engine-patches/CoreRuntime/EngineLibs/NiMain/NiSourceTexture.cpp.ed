@@ -1,0 +1,17 @@
+296,299d
+239a
+    // MS2: the format prefs are read before the texture palette / disk lookup
+    NiStreamLoadEnum(kStream, m_kFormatPrefs.m_ePixelLayout);
+    NiStreamLoadEnum(kStream, m_kFormatPrefs.m_eMipMapped);
+    NiStreamLoadEnum(kStream, m_kFormatPrefs.m_eAlphaFmt);
+
+.
+99c
+    if (!spTexture) return 0;  // MS2
+.
+76c
+    if (!pkTexture) return 0;  // MS2
+.
+45c
+    if (!pkTexture) return 0;  // MS2
+.

@@ -1,3 +1,6 @@
+31c
+,m_pFlatModelManager(pFlatModelManager), m_studioFlag(false)  // MS2: same line (__LINE__s below stay the SDK's)
+.
 15a
 
 .

@@ -1,0 +1,6 @@
+93c
+    static const NiFixedString ms_kNullSemanticName;  // MS2: returned for out-of-range entries (exe 0x143afafc8; name invented)
+.
+38@72s "" "  // MS2: by reference"
+38@24s "" "&"
+38@10s "" " const"

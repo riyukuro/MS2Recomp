@@ -1,0 +1,8 @@
+332a
+    }
+.
+317c
+    // MS2: children via the IS_NODE flag (inside the NiAVObject branch) instead of NiIsKindOf(NiNode)
+    if (pkAVObj->IsNode())
+.
+315d

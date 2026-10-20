@@ -1,8 +1,11 @@
-1653a
-
-
-
-
-
+1545c
+        if (!pResponse) return;  // MS2: in place of EE_ASSERT(pResponse) (same line)
+.
+1540a
+    // MS2: early out on a NULL response (6 more lines up to LoadScriptFromBuffer, whose blank lines give them back)
+    if (!pLoadResponse)
+    {
+        return;
+    }
 
 .

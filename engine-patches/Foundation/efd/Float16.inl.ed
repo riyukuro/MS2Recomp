@@ -1,0 +1,3 @@
+24c
+__forceinline void Float16::Set(efd::Float32 i_f)  // MS2: inlined into the skinning kernels in the exe
+.

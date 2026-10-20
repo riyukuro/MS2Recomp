@@ -1,0 +1,67 @@
+862c
+        if (stLength >= stBufferSize || !NiStreamLoadBinary(kStream, pcBuffer, stLength)) return false;  // MS2
+.
+768,771c
+            if (!NiStreamLoadBinary(kStream, uiValue)) { NiGPUProgramDescPtr spDelete = pkDesc; return false; }  // MS2 // COUNT
+            if (!NiStreamLoadBinary(kStream, uiValue)) { NiGPUProgramDescPtr spDelete = pkDesc; return false; }  // MS2 // SOURCE
+            if (!NiStreamLoadBinary(kStream, uiValue)) { NiGPUProgramDescPtr spDelete = pkDesc; return false; }  // MS2 // EXTRADATA
+            if (!NiStreamLoadBinary(kStream, uiValue)) { NiGPUProgramDescPtr spDelete = pkDesc; return false; }  // MS2 // OBJECT_TYPE
+.
+762,766c
+            if (!LoadString(kStream, acBuffer, 512)) { NiGPUProgramDescPtr spDelete = pkDesc; return false; }  // MS2 //TYPE
+            if (!LoadString(kStream, acBuffer, 512)) { NiGPUProgramDescPtr spDelete = pkDesc; return false; }  // MS2 //SEMANTIC
+            if (!LoadString(kStream, acBuffer, 512)) { NiGPUProgramDescPtr spDelete = pkDesc; return false; }  // MS2 //LABEL
+            if (!LoadString(kStream, acBuffer, 512)) { NiGPUProgramDescPtr spDelete = pkDesc; return false; }  // MS2 //VARIABLE
+            if (!LoadString(kStream, acBuffer, 512)) { NiGPUProgramDescPtr spDelete = pkDesc; return false; }  // MS2 //DEFAULT VALUE
+.
+755c
+            if (!NiStreamLoadBinary(kStream, uiValue)) { NiGPUProgramDescPtr spDelete = pkDesc; NiMaterialResourcePtr spDeleteRes = pkRes; return false; }  // MS2 // OBJECT_TYPE
+.
+752c
+            if (!NiStreamLoadBinary(kStream, uiValue)) { NiGPUProgramDescPtr spDelete = pkDesc; NiMaterialResourcePtr spDeleteRes = pkRes; return false; }  // MS2 // EXTRADATA
+.
+749c
+            if (!NiStreamLoadBinary(kStream, uiValue)) { NiGPUProgramDescPtr spDelete = pkDesc; NiMaterialResourcePtr spDeleteRes = pkRes; return false; }  // MS2 // SOURCE
+.
+746c
+            if (!NiStreamLoadBinary(kStream, uiValue)) { NiGPUProgramDescPtr spDelete = pkDesc; NiMaterialResourcePtr spDeleteRes = pkRes; return false; }  // MS2 // COUNT
+.
+742c
+            if (!LoadString(kStream, acBuffer, 512)) { NiGPUProgramDescPtr spDelete = pkDesc; NiMaterialResourcePtr spDeleteRes = pkRes; return false; }  // MS2 //DEFAULT VALUE
+.
+739c
+            if (!LoadString(kStream, acBuffer, 512)) { NiGPUProgramDescPtr spDelete = pkDesc; NiMaterialResourcePtr spDeleteRes = pkRes; return false; }  // MS2 //VARIABLE
+.
+736c
+            if (!LoadString(kStream, acBuffer, 512)) { NiGPUProgramDescPtr spDelete = pkDesc; NiMaterialResourcePtr spDeleteRes = pkRes; return false; }  // MS2 //LABEL
+.
+733c
+            if (!LoadString(kStream, acBuffer, 512)) { NiGPUProgramDescPtr spDelete = pkDesc; NiMaterialResourcePtr spDeleteRes = pkRes; return false; }  // MS2 //SEMANTIC
+.
+730c
+            if (!LoadString(kStream, acBuffer, 512)) { NiGPUProgramDescPtr spDelete = pkDesc; NiMaterialResourcePtr spDeleteRes = pkRes; return false; }  // MS2 //TYPE
+.
+704@58s "" "  // MS2"
+704@57s "" ") return false"
+704@4s "" "if (!"
+703c
+    bool bDidNotCompilePreviously = false;  // MS2: one byte
+.
+669c
+    if (!LoadString(kStream, acBuffer, 512)) return false;  // MS2
+.
+666c
+    if (!NiStreamLoadBinary(kStream, uiVersion)) return false;  // MS2
+.
+439c
+        for (unsigned int uiFileSize; uiFileSize = pkFile->GetFileSize(), pkFile->GetPosition() < uiFileSize; )  // MS2: the file size is read first
+.
+370c
+        if (!NiStreamLoadBinary(*(pkFile), uiCacheFileVersion)) { NiDelete pkFile; return false; }  // MS2
+.
+363c
+        if (!NiStreamLoadBinary(*(pkFile), kBool)) { NiDelete pkFile; return false; }  // MS2
+.
+349c
+        if (!NiStreamLoadBinary(*(pkFile), acBuffer, (unsigned int)(strlen(pcHeader) + 1))) { NiDelete pkFile; return false; }  // MS2
+.

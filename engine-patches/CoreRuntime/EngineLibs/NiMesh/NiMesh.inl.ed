@@ -1,0 +1,20 @@
+362a
+#ifdef MS2_THIS_FILE
+        if (DAT_143afbba0)
+            DAT_143afbba0();
+#endif
+.
+361a
+#ifdef MS2_THIS_FILE
+        if (DAT_143afbb98)
+            DAT_143afbb98();
+#endif
+.
+356a
+#ifdef MS2_THIS_FILE
+// MS2: the game's copy (exe 0x140adc720) brackets each delete with the renderer lock / unlock hooks that
+// MS2RenderService::OnPreInit installs (ms2renderservice.cpp); the engine libs keep the stock body.
+extern void (*DAT_143afbb98)();
+extern void (*DAT_143afbba0)();
+#endif
+.

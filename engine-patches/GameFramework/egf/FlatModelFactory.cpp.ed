@@ -1,3 +1,6 @@
+150c
+    if (flatModel) { const FlatModelFactoryRequest* pFMRequest = DynamicCast<FlatModelFactoryRequest>(request); if (pFMRequest) flatModel->SetStudioFlag(pFMRequest->GetStudioFlag()); }  // MS2: on the SDK's blank line (the exe keeps the SDK __LINE__s)
+.
 15a
 
 

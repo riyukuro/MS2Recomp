@@ -14,8 +14,14 @@
 96@9s "id" "ol"
 96@7s "v" "b"
 89,92c
+#if defined(EE_MS2_BINSAVE_COUNT_LOCAL)
+    // MS2: the exe's NiPhysX desc TUs keep the byte count in a local (as in Load); NiMesh etc. use the v2525 form
+    unsigned int uiBytesToWrite = sizeof(T) * uiNumEls;
+    return os.BinaryWrite(pValue, uiBytesToWrite, &uiSize, 1) == uiBytesToWrite;
+#else
     return os.BinaryWrite(pValue, uiSize * uiNumEls, &uiSize, 1) ==  // MS2: v2525
         uiSize * uiNumEls;
+#endif
 .
 84@57s "" "  // MS2: v2525"
 84@2s "id" "ol"

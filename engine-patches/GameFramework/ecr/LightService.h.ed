@@ -1,0 +1,13 @@
+510a
+
+/// MS2: called with the id of every new light entity instead of creating its light when set
+/// (0x143afe760; MS2LightService sets it while a world loads and creates the queued lights itself).
+extern EE_ECR_ENTRY void (*g_pfnLightAdded)(const egf::EntityID& entityID);
+.
+139a
+    /// MS2: handler for kMSGID_OwnedEntityRemoved, a copy of HandleEntityRemovedMessage (the exe has
+    /// two byte-identical bodies; the name is unknown, it sorts between the Added and Removed handlers).
+    void HandleEntityDeletedMessage(const egf::EntityChangeMessage* pMessage,
+        efd::Category targetChannel);
+
+.

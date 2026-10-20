@@ -1,0 +1,10 @@
+544a
+
+    // MS2: copied from the loading FlatModelFactoryRequest's studio flag (+0xc8, the exe FlatModel is
+    // 0xd0 bytes; name inferred)
+    bool m_studioFlag;
+
+public:
+    void SetStudioFlag(bool studioFlag) { m_studioFlag = studioFlag; }  // MS2
+    bool GetStudioFlag() const { return m_studioFlag; }  // MS2
+.

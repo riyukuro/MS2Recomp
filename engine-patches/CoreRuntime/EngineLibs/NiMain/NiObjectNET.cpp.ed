@@ -1,0 +1,8 @@
+212c
+        else if ((const char*)m_ppkExtra[i - 1]->GetName() > (const char*)m_ppkExtra[i]->GetName())  // MS2
+.
+197,200c
+        // MS2: two pointer comparisons instead of one difference (names re-read for each)
+        const char* pcPrev = m_ppkExtra[i - 1]->GetName();
+        if (pcPrev == (const char*)m_ppkExtra[i]->GetName())  // Equal keys are a problem.  Reset.
+.

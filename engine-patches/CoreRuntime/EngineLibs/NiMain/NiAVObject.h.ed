@@ -11,6 +11,9 @@
         // MS2: v2525 (studio, name inferred): object is a NiPSParticleSystem
         IS_PARTICLE_SYSTEM              = 0x0400
 .
+204c
+    void SetSwitchNodeBit() { SetBit(true, 0x0200); }  // MS2: set by the NiSwitchNode ctor and LoadBinary (name inferred)
+.
 111a
     // MS2: Nexon added this virtual (vtable slot 21, right after
     // GetObjectByName). Same as GetObjectByName, but objects whose flags

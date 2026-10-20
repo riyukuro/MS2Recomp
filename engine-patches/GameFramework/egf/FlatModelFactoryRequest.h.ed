@@ -6,4 +6,6 @@ protected:  // MS2: v2525
 66c
         bool isReload = false,  // MS2: v2525
         bool studioFlag = false);  // studio: name inferred
+
+    bool GetStudioFlag() const { return m_studioFlag0x68; }  // MS2
 .

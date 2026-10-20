@@ -1,9 +1,12 @@
+422c
+    efd::set<efd::utf8string> m_ms2Set;  // MS2: 0x10 more before m_cache (exe offsets, e.g. HandleReloadRequest / GetIdentifierCount); on the SDK's blank line
+.
 405c
     // MS2: RemoveFilePaths is declared public above.
 .
 341a
     // MS2: accessor of the MS2 engine build (inline COMDAT 0x1414fcea0, logged as "SceneGraphCached count").
-    inline efd::UInt32 GetIdentifierCount() const { return (efd::UInt32)m_identifierCache.size(); }
+    inline efd::UInt32 GetIdentifierCount() const { return (efd::UInt32)m_cache.size(); }  // MS2: +0x60 = m_cache after m_ms2Set (map::size copies are byte-identical)
 
     // MS2: public in the MS2 engine build (MS2SceneGraphService::RemoveUnusedCacheAssetData calls it).
     void RemoveFilePaths(const efd::utf8string& identifier);

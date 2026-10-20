@@ -1,0 +1,30 @@
+637c
+EE_MS2_UTF8_EQ_INLINE bool operator==(
+.
+461c
+EE_MS2_UTF8_APPEND_INLINE utf8string& utf8string::append(const char* src_sz)
+.
+243@0s "inline" "EE_MS2_UTF8_ASSIGN_INLINE"
+17a
+// MS2: the exe calls the game's /Od copies of these out of line from some engine TUs and inlines them in others;
+// the TUs that call them define the switch (engine/units-gb.json)
+// MS2: operator=(const utf8string&) 0x1409a10d0
+#if defined(EE_MS2_UTF8_ASSIGN_CALL)
+#define EE_MS2_UTF8_ASSIGN_INLINE inline __declspec(noinline)
+#else
+#define EE_MS2_UTF8_ASSIGN_INLINE inline
+#endif
+// MS2: append(const char*) 0x14114d9b0
+#if defined(EE_MS2_UTF8_APPEND_CALL)
+#define EE_MS2_UTF8_APPEND_INLINE inline __declspec(noinline)
+#else
+#define EE_MS2_UTF8_APPEND_INLINE inline
+#endif
+// MS2: operator==(const utf8string&, const utf8string&) 0x1409a1140
+#if defined(EE_MS2_UTF8_EQ_CALL)
+#define EE_MS2_UTF8_EQ_INLINE inline __declspec(noinline)
+#else
+#define EE_MS2_UTF8_EQ_INLINE inline
+#endif
+
+.
