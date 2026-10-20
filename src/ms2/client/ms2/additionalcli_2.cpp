@@ -1081,7 +1081,7 @@ void AdditionalCliList::FUN_140972a00()
             m_nInvincible = sp->FUN_14096d810()->m_nInvincible;
         unsigned nArmor = sp->FUN_14096d810()->m_motion.m_nSuperArmor;
         if (FUN_1409726e0(nArmor, sp->FUN_14096d810()->m_motion.m_eSuperArmorApplyFieldType) &&
-            m_motion.m_nSuperArmor < nArmor)
+            nArmor > m_motion.m_nSuperArmor)
             m_motion.m_nSuperArmor = nArmor;
         if (sp->FUN_14096d810()->m_bPvpOnOff)
             m_bPvpOnOff = true;
@@ -1104,7 +1104,7 @@ void AdditionalCliList::FUN_140972a00()
             m_motion.m_fFixedZRotation = sp->FUN_14096d810()->m_motion.m_fFixedZRotation;
         if (sp->FUN_14096d810()->m_bDisableRevivalHere)
             m_bDisableRevivalHere = true;
-        m_status.m_nDeathResistanceHP = sp->FUN_14096d810()->m_status.m_nDeathResistanceHP < m_status.m_nDeathResistanceHP
+        m_status.m_nDeathResistanceHP = m_status.m_nDeathResistanceHP > sp->FUN_14096d810()->m_status.m_nDeathResistanceHP
                                             ? m_status.m_nDeathResistanceHP
                                             : sp->FUN_14096d810()->m_status.m_nDeathResistanceHP;
         if (sp->FUN_14096d810()->m_nItemSlotDisable)
