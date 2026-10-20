@@ -296,6 +296,7 @@ public:
     void FUN_1409c4a30(const char* szName, float f);                     // set a float member
     Scaleform::GFx::Value FUN_141a46b60(const char* szMethod, Scaleform::GFx::Value a1, CString a2);   // 0x141a46b60 (Invoke; inline COMDAT, first emitted in uiminimapentity.cpp; both by value: the callee destroys them; astextfieldex.cpp)
     Scaleform::GFx::Value FUN_1422c1870(const char* szMethod, float a1, float a2, bool a3);   // 0x1422c1870 (Invoke; inline COMDAT, defined in asdisplayobject.cpp: hitTestPoint)
+    Scaleform::GFx::Value FUN_1422c6f70(const char* szMethod, Scaleform::GFx::Value a1, float a2);   // 0x1422c6f70 (Invoke; inline COMDAT, defined in asdisplayobjectcontainer.cpp; a1 by value: the callee destroys it)
     // AS member setters used by ASButton (asbutton.cpp; ASObj declares the same COMDATs)
     void FUN_1407cbbe0(const char* szName, bool b);                      // set a bool member
     void FUN_1407cba60(const char* szName, CString str);                 // set a string member
@@ -303,6 +304,16 @@ public:
     Scaleform::GFx::Value FUN_1422e9170(const char* szMethod, CStringW a1, Scaleform::GFx::Value a2);   // 0x1422e9170 Invoke(method, string, value) (inline COMDAT, defined in asbuttongroup.cpp; both by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, Unk_MouseCursorType a1);      // 0x1422cef80 (inline COMDAT, defined in asmousecursor.cpp; an Int value)
     void FUN_141b46a40(const char* szName, class ASFunction fn);         // set a member to an AS function (inline COMDAT, uiugcitemeditdialog.cpp; fn by value; aslistitemrenderer.cpp)
+    // ASUIComponent (asuicomponent.cpp)
+    void FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v);     // set a member to a value (v by value; ASObj declares the same COMDAT)
+    Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg);   // 0x140e262c0 Invoke with one string argument
+    void FUN_1418adf60(const char* szName, AScript obj);                 // set a member to an AS object (obj by value: the callee destroys it)
+    template <class T> MS2Ptr<T> FUN_141311f50(const CString& strName);  // child by name (0x141311f50 for T = AScript)
+    template <class T> MS2Ptr<T> FUN_1422c81c0(const CString& strName, MS2Ptr<T>& out);   // bind a child (inline COMDAT, defined in asuicomponent.cpp for T = AScript)
+    // ASLoader (gfxui/asloader.cpp)
+    template <class T> MS2Ptr<T> FUN_140eb9cf0(const CString& strName);  // child by name (0x140eb9cf0 for T = ASEventDispatcher: new ASEventDispatcher(v, movie))
+    template <class T> MS2Ptr<T> FUN_1422e5780(const CString& strName, MS2Ptr<T>& out);   // bind a child (inline COMDAT, defined in asloader.cpp for T = ASEventDispatcher)
+    Scaleform::GFx::Value Invoke(const char* szMethod, class ASURLRequest a1);  // 0x1422e5810 (inline COMDAT, defined in asloader.cpp; a1 by value: the callee destroys it)
 
 protected:   // cr4: was private; derived AS helpers (ASCommonDepth) read the movie id and the value
     union {
