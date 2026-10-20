@@ -78,8 +78,14 @@ template void std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<un
 template std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<unsigned char> > >
     std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<unsigned char> > >::_Unwrapped() const;
 
-// map::find is not part of the explicit map instantiations above (it lives in the _Tree base), so the two the exe keeps are named here.
+// find is not part of the explicit set/map instantiations above (it lives in the _Tree base), so the two the exe keeps are named here: the
+// TexNode map's (0x1410799d0 -> lower_bound 0x141079d10 -> less<CString>) and set<NiAVObject*>'s (0x141079ab0 -> 0x141079d70 -> the set's less 0x14106a330).
 typedef std::map<CString, CCharacterMeshMerger::TexNode*, std::less<CString>, efd::CustomAllocator<std::pair<const CString, CCharacterMeshMerger::TexNode*> > > Unk_TexNodeMap;
-typedef std::map<NiAVObject*, Unk_UVRect, std::less<NiAVObject*>, efd::CustomAllocator<std::pair<NiAVObject* const, Unk_UVRect> > > Unk_UVRectMap;
+typedef std::set<NiAVObject*, std::less<NiAVObject*>, efd::CustomAllocator<NiAVObject*> > Unk_AVObjectSet;
 template Unk_TexNodeMap::iterator Unk_TexNodeMap::_Mybase::find(const CString&);
-template Unk_UVRectMap::iterator Unk_UVRectMap::_Mybase::find(NiAVObject* const&);
+template Unk_AVObjectSet::iterator Unk_AVObjectSet::_Mybase::find(NiAVObject* const&);
+// fx17: the finds and lower_bounds by call graph (find -> lower_bound -> _Lbound -> comparator), so the look-alike pairing cannot rotate them between gates
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@@std@@@std@@@std@@@2@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x1410799d0
+// MS2-PIN: ?find@?$_Tree@V?$_Tset_traits@PEAVNiAVObject@@U?$less@PEAVNiAVObject@@@std@@V?$CustomAllocator@PEAVNiAVObject@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@PEAVNiAVObject@@@std@@@std@@@2@AEBQEAVNiAVObject@@@Z 0x141079ab0
+// MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@@std@@@std@@@std@@@2@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x141079d10
+// MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@PEAVNiAVObject@@UUnk_UVRect@@U?$less@PEAVNiAVObject@@@std@@V?$CustomAllocator@U?$pair@QEAVNiAVObject@@UUnk_UVRect@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@QEAVNiAVObject@@UUnk_UVRect@@@std@@@std@@@std@@@2@AEBQEAVNiAVObject@@@Z 0x141079cb0
