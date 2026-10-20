@@ -544,19 +544,18 @@ int FUN_141423120(const CString& strName, NiAVObjectPtr spRoot, NiAVObjectPtr* p
 }
 
 // @0x1414232f0 - sets the UGC texture as the decal map of a mesh
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
 int FUN_1414232f0(NiAVObjectPtr spMesh, NiTexturePtr spTexture)
 {
-    if (spMesh != 0)
+    if (spMesh)
     {
         NiTexturingProperty* pTex = NiDynamicCast(NiTexturingProperty, spMesh->GetProperty(8));
         if (pTex != 0)
         {
             NiTexturingProperty::Map* pMap = NiNew NiTexturingProperty::Map;
-            if (spTexture != 0)
+            if (spTexture)
             {
+                pMap->SetFilterMode(pTex->GetBaseMap()->GetFilterMode());
                 pMap->SetTexture(spTexture);
-                pMap->SetClampMode(pTex->GetBaseMap()->GetClampMode());
             }
             pTex->SetDecalMap(0, pMap);
             spMesh->UpdateProperties();
@@ -567,19 +566,20 @@ int FUN_1414232f0(NiAVObjectPtr spMesh, NiTexturePtr spTexture)
 }
 
 // @0x141423480 - finds the named child of a model; a node without a mesh is resolved to its first child
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
+// MS2-FUNCTIONAL: same calls/order; exe frame 0x78 vs 0x58: after the GetObjectByName result ctor the exe spills the
+//   NiAVObjectPtr ctor's return through three stack slots (+0x48/+0x50/+0x60, a reference-binding chain) not reproduced
 NiAVObjectPtr FUN_141423480(NiAVObjectPtr spRoot, const CString& strName)
 {
-    if (spRoot != 0)
+    if (spRoot)
     {
-        NiAVObjectPtr spObj = ((NiNode*)(NiAVObject*)spRoot)->GetObjectByName(NiFixedString((const char*)strName));
-        if (spObj != 0)
+        NiAVObjectPtr spObj = spRoot->GetObjectByName((const char*)strName);
+        if (spObj)
         {
             if (!FUN_141427d60(spObj))
             {
-                NiNode* pNode = NiDynamicCast(NiNode, spObj);
-                if (pNode != 0)
-                    spObj = pNode->GetAt(0);
+                NiNodePtr spNode = NiDynamicCast(NiNode, spObj);
+                if (spNode)
+                    spObj = spNode->GetAt(0);
             }
             return spObj;
         }
