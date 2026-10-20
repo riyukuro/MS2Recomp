@@ -17,6 +17,7 @@
 // MS2-PIN: ??1DelegateImplBase@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEAA@XZ 0x1413147a0
 // MS2-PIN: ??_7DelegateImplBase@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@6B@ 0x142ee84c0
 // MS2-PIN: ??_7DelegateImplBase@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@6B@ 0x142ee84e8
+// MS2-PIN: ??1TDirtyPremiumSale@UIMeratMarketCommon@@UEAA@XZ 0x141314840
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0PEAVUIMeratMarketDialog@@P80@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z$0A@@?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ82@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x141311030 ; prop
 // MS2-PIN: ??$?0VUIMeratMarketDialog@@@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x141311070 ; prop
@@ -5717,7 +5718,7 @@ void UIMeratMarketDialog::ApplyPremiumSale()
     MS2Ptr<UIMeratMarketCommon::TDirtyPremiumSale> spSale = m_dirty.m_spSale;
     if (spSale == 0)
         return;
-    ATL::CAtlArray<int>& ids = spSale->m_ids;
+    ATL::CAtlArray<unsigned>& ids = spSale->m_ids;
     if (ids.IsEmpty())
         return;
     std::set<int> tabs;
@@ -6079,6 +6080,17 @@ UIMeratMarketDialog::DirtyState::DirtyState()
     Reset();
 }
 
+// @0x1413142f0
+UIMeratMarketCommon::TDirtyPremiumSale::TDirtyPremiumSale()
+{
+}
+
+// @0x1413153b0
+void UIMeratMarketCommon::TDirtyPremiumSale::Add(const unsigned& nId)
+{
+    m_ids.Add(nId);
+}
+
 // @0x141314330
 UIMeratMarketDialog::TDirtySearch::TDirtySearch()
     : m_nType(0), m_bSet(false)
@@ -6216,5 +6228,5 @@ void UIMeratMarketDialog::DirtyState::AddPremiumSale(const int& nId)
     if (m_spSale == 0)
         m_spSale.AssignRaw(new UIMeratMarketCommon::TDirtyPremiumSale);
     if (m_spSale.get() != 0)
-        m_spSale->Add(nId);
+        m_spSale->Add(reinterpret_cast<const unsigned&>(nId));
 }
