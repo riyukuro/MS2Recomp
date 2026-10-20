@@ -3760,7 +3760,6 @@ __imp_NxGetUtilLib	142cced28	data
 # w495 uimeratmarketdialog: TEMPORARY bindings of the 29 dialog methods not yet recovered (partial unit) to the exe; delete each row when its body is written.
 ?AddPreviewSlot@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCItem@@@@V?$MS2Ptr@VCMeratMarketProduct@@@@HHHV?$MS2Ptr@VCItemData@@@@@Z	1412efee0	func
 ?ApplySearchAll@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCMeratMarketSchCond@@@@AEAVASObj@@_N@Z	141310110	func
-?BuildSellerInfo@UIMeratMarketDialog@@QEAA_NAEAVASObj@@@Z	141305b40	func
 ?BuildSellerRow@UIMeratMarketDialog@@QEAAHAEAVASObj@@V?$MS2Ptr@VCUgcMarketSeller@@@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1412ef960	func
 ?EquipPreview@UIMeratMarketDialog@@QEAAXPEAVUIAvatarBase@@V?$MS2Ptr@VCItemData@@@@_N2@Z	141308540	func
 ?FillBannerProducts@UIMeratMarketDialog@@QEAAHAEBHAEAVASArray@@AEAV?$CAtlArray@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$CElementTraits@V?$MS2Ptr@VCMeratMarketProduct@@@@@ATL@@@ATL@@PEBVUnk_MmViewScope@@@Z	1412fa370	func
@@ -3775,9 +3774,6 @@ __imp_NxGetUtilLib	142cced28	data
 ?OnShowHistory@UIMeratMarketDialog@@QEAAXXZ	141305480	func
 ?OpenProduct@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCMeratMarketProduct@@@@@Z	1412f07e0	func
 ?RefreshMyShop@UIMeratMarketDialog@@QEAAXXZ	1412eef70	func
-?RunQuery@UIMeratMarketDialog@@QEAAXXZ	141308de0	func
-?SelectCategory@UIMeratMarketDialog@@QEAAXHH@Z	141308d60	func
-?SetSlotKind@UIMeratMarketDialog@@QEAAXH@Z	141308440	func
 ?ShowProduct@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCMeratMarketProduct@@@@@Z	1412ebc40	func
 ?ShowSellerProducts@UIMeratMarketDialog@@QEAAXAEB_J@Z	141304270	func
 ?vfunc_28@UIMeratMarketDialog@@UEAAHPEBDPEBVValue@GFx@Scaleform@@I@Z	1412ea0e0	func
@@ -3814,9 +3810,24 @@ __imp_NxGetUtilLib	142cced28	data
 ?SetEventScript@WorldMapManager@@QEAAXIPEAVASObj@@@Z	141b9a390	func
 ?Parse@MMLParser@@QEAAXXZ	140d7e780	func
 ?DAT_143ab2a90@@3VUnk_ImInventory@@A	143ab2a90	data
+??1TiXmlElement@@QEAA@XZ	14086f450	func
+??0TiXmlText@@QEAA@PEBD@Z	1408723d0	func
+??1TiXmlText@@QEAA@XZ	140872500	func
+??1TiXmlDeclaration@@QEAA@XZ	14081ad20	func
+?IsPercussion@CInstrumentCategoryData@@QEBA_NXZ	14072c500	func
+?DAT_143ab2a90@@3VUnk_WmInventory@@A	143ab2a90	data
+??0CAtlComModule@ATL@@QEAA@XZ	141803560	func
+??0CAtlWinModule@ATL@@QEAA@XZ	141803610	func
+?_AtlComModule@ATL@@3VCAtlComModule@1@A	143aec410	data
+?_AtlWinModule@ATL@@3VCAtlWinModule@1@A	143aec460	data
+?InitializeCAtlStringMgr@ATLImplementationDetails@ATL@@3UCAtlStringMgrStaticInitializer@12@A	143aec4a8	data
 ??0CWinHttpClient@@QEAA@AEBV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@Z	1409208e0	func
 ??0Unk_GdXmlRoot@@QEAA@PEBD@Z	14086f2f0	func
 ??1Unk_GdXmlRoot@@QEAA@XZ	14086f450	func
 ??1Unk_InvListEventBase@@UEAA@XZ	1422e22a0	func
 ??0Unk_IbUIMsg@@QEAA@XZ	1422e4490	func
 ??1Unk_IbUIMsg@@QEAA@XZ	140c30570	func
+?BuildSellerInfo@UIMeratMarketDialog@@QEAA_NAEAVASObj@@@Z	141305b40	func
+?RunQuery@UIMeratMarketDialog@@QEAAXXZ	141308de0	func
+?SelectCategory@UIMeratMarketDialog@@QEAAXHH@Z	141308d60	func
+?SetSlotKind@UIMeratMarketDialog@@QEAAXH@Z	141308440	func
