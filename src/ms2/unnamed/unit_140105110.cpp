@@ -271,3 +271,5 @@ static int NiTCBFloatKeyregisterloaderreturn = NiTCBFloatKey::RegisterLoader();
 static int NiTCBPosKeyregisterloaderreturn = NiTCBPosKey::RegisterLoader();
 static int NiTCBRotKeyregisterloaderreturn = NiTCBRotKey::RegisterLoader();
 static NiTerrainSDM NiTerrainSDMObject;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb84e0-0x142cb9920 .text$yd

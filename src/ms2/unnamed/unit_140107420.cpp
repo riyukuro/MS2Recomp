@@ -573,3 +573,5 @@ static CString s_str214 = "ugc_setblock";
 static CString s_str215 = "PC_use_telescope";
 static CString s_str216 = "PC_win_game";
 static CString s_str217 = "store_itemout";
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb9940-0x142cbb550 .text$yd
