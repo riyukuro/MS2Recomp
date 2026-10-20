@@ -886,7 +886,7 @@ int CInstrumentManager::PlayScoreFile(const CString& strName, int nTime, int nPr
     int nMin = nElapsed / 1000 / 60;
     int nSec = nElapsed / 1000 % 60;
     if (FUN_14116d720(FUN_14025e7c0()))
-        FUN_1412751b0(StringFormat(L"[디버그용] 악보 시간 {0}분 {1}초 ({2} msec)", nMin, nSec, nElapsed), 0x11);
+        FUN_1412751b0(StringFormat(L"[디버그용] 악보 시간 {0}분 {1}초 ({2} msec)", nMin, nSec, (unsigned long)nElapsed), 0x11);
     if (nPercussion == 0)
     {
         m_midi.SetChannelTrack(nChannel, track);
@@ -929,7 +929,7 @@ int CInstrumentManager::PlayScoreText(const CString& strText, int nTime, int nPr
         int nElapsed = nLast - nTime;
         int nMin = nElapsed / 1000 / 60;
         int nSec = nElapsed / 1000 % 60;
-        FUN_1412751b0(StringFormat(L"[디버그용] 악보 시간 {0}분 {1}초 ({2} msec)", nMin, nSec, nElapsed), 0x11);
+        FUN_1412751b0(StringFormat(L"[디버그용] 악보 시간 {0}분 {1}초 ({2} msec)", nMin, nSec, (unsigned long)nElapsed), 0x11);
     }
     if (nPercussion == 0)
     {
