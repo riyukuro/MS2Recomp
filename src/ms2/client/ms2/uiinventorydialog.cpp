@@ -4,6 +4,8 @@
 // MS2-RANGE: 0x141996ec0-0x1419abdd0 .text$mn
 // MS2-RANGE: 0x140114d00-0x140115140 .text$di
 // MS2-PINS-BEGIN tplpin
+// MS2-PIN: ?vfunc_84@UIItemBreakBase@@UEAAXPEAVCInPacket@@@Z 0x1419a94c0 ; inline empty, byte-identical to the destroy below
+// MS2-PIN: ??$destroy@PEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@1@@Z 0x1419a8250 ; called by _Freenode0
 // MS2-PIN: ??$?0VUIInventoryDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIInventoryDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x14199e610 ; prop
 // MS2-PIN: ??$?8PEAVUIInventoryDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x14199e6d0 ; prop
 // MS2-PIN: ??$make_pair@AEBQEAVUIInventoryDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA?AU?$pair@PEAVUIInventoryDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@AEBQEAVUIInventoryDialog@@AEBQ82@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x14199f190 ; prop
@@ -963,7 +965,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             }
             else
             {
-                unsigned nPrice = FUN_140a5d0f0();
+                __int64 nPrice = FUN_140a5d0f0();
                 CStringW strMsg = FUN_14028dee0(0x266, nPrice, strArg, 6);
                 FUN_140d73aa0(CStringW(strMsg), 1, this, CStringW(L"expandSlot"));
             }
@@ -1783,7 +1785,7 @@ MS2_REPLACE_METHOD(0x14199D9C0, UIInventoryDialog, FUN_14199d9c0, 1030, 0);
 CStringW UIInventoryDialog::FUN_14199ddd0()
 {
     CStringW strFormat = FUN_14025e7a0()->FUN_1422b0570("$s_inventory_slotexpand_tooltip");
-    int nSlots = FUN_140a66510(m_194) + FUN_140a66750(m_194);
+    unsigned nSlots = FUN_140a66510(m_194) + FUN_140a66750(m_194);
     int nStep = 6;
     return StringFormat(strFormat, nStep, nSlots);
 }
