@@ -78,6 +78,7 @@ public:
     MS2Ptr<ExtendHeightInfo> GetHeight(int nHeight);    // 0x140663ab0
     MS2Ptr<ExtendHeightInfo> GetPreviousHeight(int nHeight);    // 0x140663b30
     MS2Ptr<ExtendHeightInfo> GetNextHeight(int nHeight);        // 0x140663c80
+    int FUN_140ebb020();                                // 0x140ebb020 m_nMaxGrade (inline COMDAT in uimasterydialog's range)
 
     int m_nMaxGrade;                                    // +0x08
     ATL::CRBMap<int, MS2Ptr<MasteryInteriorInfo> > m_mapMastery;        // +0x10 by grade
