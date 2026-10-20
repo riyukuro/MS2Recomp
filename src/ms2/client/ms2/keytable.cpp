@@ -73,6 +73,8 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table re
 extern int DAT_143af7d40;                                   // input enabled
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                   // the element is enabled
+int FUN_140197350(Unk_140165cf0* pElem, const char* pszName, int nDefault);           // int attribute
+unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);  // unsigned attribute
 void FUN_1422c9380(const CString& str);                     // the action's binding changed (UI notice)
 class Unk_KtHeldData { public: int FUN_14053dc90(); };     // CItemData: the item's skill id
 class Unk_KtHeldItem { public: Unk_KtHeldData* FUN_140527840(); };   // CItem: its data
@@ -141,7 +143,7 @@ class TiXmlElement
 public:
     TiXmlElement(const char* szName);
 private:
-    char m_pad[0x90];
+    void* m_pad[0x90 / sizeof(void*)];
 };
 
 // The game TinyXML declaration node (ctor 0x1408704d0, 0x68 bytes; the document owns and deletes it).
@@ -149,10 +151,17 @@ class TiXmlDeclaration
 {
 public:
     TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);
+    ~TiXmlDeclaration();
 private:
-    char m_pad[0x68];
+    void* m_pad[0x68 / sizeof(void*)];
 };
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);   // SaveFile
+void FUN_14086e000(TiXmlDocument* pDoc, const TiXmlDeclaration& decl);   // InsertEndChild (a copy)
+void FUN_140873ce0(TiXmlElement* pElem, const char* pszName, int nValue);         // SetAttribute (int)
+void FUN_140873f20(TiXmlElement* pElem, const char* pszName, const size_t& nValue);   // SetAttribute (size_t)
+CString FUN_140540050(const char* pszFormat, const CString& strArg);   // StringFormat<CString>
+CString FUN_1412755f0();                                    // the user setting directory
+CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
 
 template <class T> inline int Unk_BreakFind(const ATL::CAtlArray<T>& values, const T& value)
 {
@@ -1631,6 +1640,88 @@ template <class T> void Unk_KtLogFormat(Unk_KtLog* pLog, int nLevel, int nCatego
 {
     const fmt::internal::ArgArray<1>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(first)};
     pLog->FUN_1406530d0(nLevel, nCategory, pszFormat, fmt::ArgList(fmt::internal::make_type(first), args));
+}
+
+// @0x14142f8b0
+void CKeyTable::FUN_14142f8b0(CString strName)
+{
+    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    if (pInfo == 0)
+        return;
+    TiXmlDocument doc;
+    TiXmlDeclaration decl("1.0", "utf-8", "");
+    FUN_14086e000(&doc, decl);
+    TiXmlElement* pRoot = new TiXmlElement("ms2");
+    for (size_t i = 0; i < 25; i++)
+    {
+        SkillSlot* pSlot = pInfo->FUN_1419f2930((int)i);
+        if (!pSlot)
+            continue;
+        int nItemId = pSlot->FUN_14175cc20();
+        int nSkillId = pSlot->FUN_14175cb90();
+        int nJobItemId = FUN_14142f830(nItemId);
+        if (nJobItemId != nItemId)
+        {
+            MS2Ptr<CItemData> spItem = FUN_14053f870(nJobItemId);
+            if (spItem)
+                nSkillId = spItem->FUN_14053dc20();
+        }
+        TiXmlElement* pSetting = new TiXmlElement("setting");
+        FUN_140873f20(pSetting, "index", i);
+        FUN_140873ce0(pSetting, "itemId", nJobItemId);
+        FUN_140873ce0(pSetting, "skillId", nSkillId);
+        FUN_14086e090(pRoot, pSetting);
+    }
+    FUN_14086e090(&doc, pRoot);
+    CString strFile = FUN_140540050("keySetting_{0}.xml", strName);
+    FUN_1408710c0(&doc, FUN_140cc2a00(FUN_1412755f0(), strFile));
+}
+
+// @0x14142fc10
+void CKeyTable::FUN_14142fc10(CString strName)
+{
+    Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    if (pInfo == 0)
+        return;
+    CString strFile = FUN_140540050("keySetting_{0}.xml", strName);
+    TiXmlDocument doc;
+    if (!doc.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), strFile), 0))
+        return;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
+        return;
+    unsigned nPages = (unsigned)m_quickSlots.GetCount();
+    m_quickSlots.RemoveAll();
+    m_quickSlots.SetCount(nPages, -1);
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("setting"); pNode != 0; pNode = pNode->FUN_140168650("setting"))
+    {
+        int nIndex = FUN_140197350(pNode, "index", -1);
+        int nItemId = FUN_140197390(pNode, "itemId", 0);
+        int nSkillId = FUN_140197390(pNode, "skillId", 0);
+        if (nIndex > 25 || nIndex < 0)
+            continue;
+        int nJobItemId = FUN_14142f870(nItemId);
+        if (nJobItemId != nItemId)
+        {
+            MS2Ptr<CItemData> spItem = FUN_14053f870(nJobItemId);
+            if (spItem)
+                nSkillId = spItem->FUN_14053dc20();
+        }
+        SkillSlot* pSlot = pInfo->FUN_1419f2930(nIndex);
+        if (!pSlot)
+            continue;
+        pSlot->vfunc_11();
+        if (nJobItemId == 0 && nSkillId == 0)
+            continue;
+        Unk_SsQuickEntry entry;
+        entry.m_nSkillId = nSkillId;
+        entry.m_nItemId = nJobItemId;
+        entry.m_nItemUid = 0;
+        FUN_14142e2a0(nIndex, entry);
+        pSlot->FUN_14175cbb0(nSkillId);
+        pSlot->FUN_14175cc40(nJobItemId);
+        pSlot->vfunc_10();
+    }
 }
 
 // @0x14142fff0
