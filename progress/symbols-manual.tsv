@@ -4088,3 +4088,4 @@ FMOD_System_Create	142303a95	func
 ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VItemDropDataGlobal@@@@V?$allocator@V?$MS2Ptr@VItemDropDataGlobal@@@@@std@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VItemDropDataGlobal@@@@@std@@@2@XZ	140309710	func
 ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VItemDropDataGlobal@@@@V?$allocator@V?$MS2Ptr@VItemDropDataGlobal@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VItemDropDataGlobal@@@@XZ	14030c0a0	func
 ?SetValue@NiFloatsExtraData@@QEAA_NIM@Z	141d580c0	func
+?ToLower@String@Scaleform@@QEBA?AV12@XZ	142587bf0	func
