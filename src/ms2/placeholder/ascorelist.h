@@ -36,18 +36,28 @@ MS2_CHECK_SIZE(ASScrollingList, 0x88);
 class ASListItemRenderer : public ASButton
 {
 public:
+    ASListItemRenderer(CString strLinkage, int nMovieId);              // 0x1422e1ba0 (a new clip of the linkage class)
     ASListItemRenderer(const Scaleform::GFx::Value& v, int nMovieId);  // 0x1422e1c50
-    virtual ~ASListItemRenderer();                                      // 0x1422e1ca0
+    virtual ~ASListItemRenderer();                                      // 0x1422e1ca0 (scalar deleting 0x1422e2040)
+    // recovered with ?\aslistitemrenderer.cpp (src/ms2/gfxui/aslistitemrenderer.cpp)
+    bool FUN_1422e1cd0();                                               // "focusable" (the exe tests IsBool(), not the value)
+    void FUN_1422e1d30(bool bFocusable);                                // set "focusable"
+    unsigned int FUN_1422e1d60();                                       // "index"
+    void FUN_1422e1dc0(unsigned int nIndex);                            // set "index"
+    bool FUN_1422e1df0();                                               // "selectable" (IsBool(), as above)
+    void FUN_1422e1e50(bool bSelectable);                               // set "selectable"
 };
 MS2_CHECK_SIZE(ASListItemRenderer, 0x88);
 
 class ASItemRendererBase : public ASListItemRenderer
 {
 public:
+    ASItemRendererBase(CString strLinkage, int nMovieId);              // 0x1422e1e80
     ASItemRendererBase(const Scaleform::GFx::Value& v, int nMovieId);  // 0x1422e1f00
-    virtual ~ASItemRendererBase();
-    // Registers the row's "set data" callback; pUser comes back in Params::pUserData.
-    void FUN_1422e1f50(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onData, void* pUser);
+    // implicit virtual dtor 0x1422e1fe0 (no vptr store: it only calls ~ASListItemRenderer; scalar deleting 0x1422e2000)
+    // Registers the row's "set data" callback (the AS "fnSetData" member); pUser comes back in Params::pUserData.
+    // onData by value: the callee destroys it.
+    void FUN_1422e1f50(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> onData, void* pUser);
 };
 MS2_CHECK_SIZE(ASItemRendererBase, 0x88);
 
