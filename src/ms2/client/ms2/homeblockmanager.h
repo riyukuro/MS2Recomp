@@ -31,17 +31,17 @@ public:
     void FUN_140a470d0(CInPacket&);
     void FUN_140a47130(CInPacket&);
     void FUN_140a47360(CInPacket&);
-    HomePtr FUN_140a47490(__int64);
-    HomePtr FUN_140a47580(__int64);
+    HomePtr FUN_140a47490(unsigned __int64);
+    HomePtr FUN_140a47580(unsigned __int64);
     void FUN_140a47670(std::vector<BuddyPtr>&);
     BuddyPtr FUN_140a477f0(__int64);
     void FUN_140a47940();
     void FUN_140a479a0(HomePtr);
-    void FUN_140a47b30(__int64);
+    void FUN_140a47b30(unsigned __int64);
     void FUN_140a47c80(__int64, CStringW);
     BuddyPtr FUN_140a47d10(HomePtr);
     CLockCriticalSection m_lock;
-    std::map<__int64, HomePtr> m_byId, m_byAccount;
+    std::map<unsigned __int64, HomePtr> m_byId, m_byAccount;   // unsigned keys: less<unsigned __int64> 0x14044a540
 };
 MS2_CHECK_SIZE(HomeBlockManager, 0x58);
 MS2_CHECK_OFFSET(HomeBlockManager,m_lock,8);
