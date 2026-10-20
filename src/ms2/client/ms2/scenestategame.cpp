@@ -77,7 +77,7 @@
 // MS2-PIN: ??_G?$TPtredDummy@USpecialNPCInfo@@@@UEAAPEAXI@Z 0x1417475b0 ; w131 manual (size 0x38 delete, calls 0x141746800)
 // MS2-FUNCTIONAL 0x141745310: pinned by call-site order (w131); the exe body is a non-leaf wrapper calling 0x141745390,
 //   not the leaf std::forward<const int&> our VS2017 15.9 <utility> emits (map<int,bool> emplace chain of another STL drop)
-// MS2-PIN: ??$forward@AEBH@std@@YAAEBHAEBH@Z 0x141745310 ; w131 manual (call site 0x1417406d0)
+// MS2-PIN: ??$make_type@W4Unk_SSGJobError@@@internal@fmt@@YA_KAEBW4Unk_SSGJobError@@@Z 0x141745310 ; fx24: calls MakeValue::type<Unk_SSGJobError> 0x141745390 (0x141745370 calls the SkillUseError one); was a forward<int const &> filler
 // MS2-PIN: ?_Erase@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@2@@Z 0x14174aec0 ; w131 manual (call site 0x14174aec0/0x14174b750)
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@V32@@Z 0x14174ba20 ; w131 manual (call site 0x14174b930)
 // MS2-PIN: ??$format_arg@_WW4Unk_SSGInteractResult@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_SSGInteractResult@@@Z 0x141744d40 ; w131 manual (call site 0x1417450d0)
@@ -143,6 +143,7 @@
 #include <efd/Helpers.h>
 #include <efd/ISystemService.h>
 #include <efd/ServiceManager.h>
+#include <efd/StdContainers.h>
 #include <atlcoll.h>
 #include <map>
 #include <set>
@@ -2287,9 +2288,13 @@ void CSceneStateGame::FUN_14170dd60(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x14170dd60, CSceneStateGame, FUN_14170dd60, 2707, 0x78081C2A);
 
+// The option kind keying the house option tables (as cubemapinformationservice_tail.h / ugcmapoptions.h).
+enum Unk_CMISKindB { Unk_CMISKindB_None };
+
 // @0x14170e800
-// MS2-FUNCTIONAL: code bytes match; map<int,int>::map / map<int,bool>::begin,end auto-pair with the byte-identical in-range
-// copies of another instantiation (0x141745b30/0x14174b5a0/0x14174b8d0) until that user is written; the exe calls 0x141122830/0x14114e5c0/0x141152270
+// MS2-FUNCTIONAL: code bytes match; the two option tables are the CubeMapInformationService efd::map<Unk_CMISKindB, ...>
+// family (ctor/dtor wrappers 0x141122880/0x141122830, 0x141125870/0x141125830, operator[] 0x141128310/0x141128290), whose
+// glue symbols.tsv still names after the Unk_CMISTree<280>/<281> stand-ins (fx24)
 void CSceneStateGame::FUN_14170e800(CInPacket& packet)
 {
     if (FUN_1403ed2d0()->FUN_141bcfd10() != 4)
@@ -2311,8 +2316,8 @@ void CSceneStateGame::FUN_14170e800(CInPacket& packet)
     int nG = 10;
     int nH = 5;
     Unk_SSGHouseRule rule;
-    std::map<int, bool> mapFlags;
-    std::map<int, int> mapValues;
+    efd::map<Unk_CMISKindB, unsigned char> mapFlags;
+    efd::map<Unk_CMISKindB, int> mapValues;
     ATL::CAtlArray<MS2Ptr<UGCMapDesignInfo> > arrDesign;
     ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> > arrBlueprint;
     if (bHasInfo != 0)
@@ -2334,11 +2339,11 @@ void CSceneStateGame::FUN_14170e800(CInPacket& packet)
         {
             int nKey = (int)i;
             bool bSet = static_cast<CInputStream&>(packet).vfunc_o8_1() == 1 ? true : false;
-            mapFlags[nKey] = bSet;
+            mapFlags[(Unk_CMISKindB)nKey] = bSet;
             if (bSet)
             {
                 int nValue = static_cast<CInputStream&>(packet).vfunc_o8_1();
-                mapValues[nKey] = nValue;
+                mapValues[(Unk_CMISKindB)nKey] = nValue;
             }
         }
         if (nOwner == DAT_143ab2820)
@@ -2392,13 +2397,13 @@ void CSceneStateGame::FUN_14170e800(CInPacket& packet)
                     spService->FUN_1410d4680(arrBlueprint);
                 }
             }
-            for (std::map<int, bool>::iterator it = mapFlags.begin(); it != mapFlags.end(); ++it)
+            for (efd::map<Unk_CMISKindB, unsigned char>::iterator it = mapFlags.begin(); it != mapFlags.end(); ++it)
             {
                 int nKey = it->first;
                 bool bValue = it->second;
                 spService->FUN_1410c3e40(nKey, bValue);
             }
-            for (std::map<int, int>::iterator it = mapValues.begin(); it != mapValues.end(); ++it)
+            for (efd::map<Unk_CMISKindB, int>::iterator it = mapValues.begin(); it != mapValues.end(); ++it)
             {
                 int nKey = it->first;
                 int nValue = it->second;
@@ -2438,13 +2443,13 @@ void CSceneStateGame::FUN_14170e800(CInPacket& packet)
                     spService->FUN_1410d4680(arrBlueprint);
                 }
             }
-            for (std::map<int, bool>::iterator it = mapFlags.begin(); it != mapFlags.end(); ++it)
+            for (efd::map<Unk_CMISKindB, unsigned char>::iterator it = mapFlags.begin(); it != mapFlags.end(); ++it)
             {
                 int nKey = it->first;
                 bool bValue = it->second;
                 spService->FUN_1410c3e40(nKey, bValue);
             }
-            for (std::map<int, int>::iterator it = mapValues.begin(); it != mapValues.end(); ++it)
+            for (efd::map<Unk_CMISKindB, int>::iterator it = mapValues.begin(); it != mapValues.end(); ++it)
             {
                 int nKey = it->first;
                 int nValue = it->second;
