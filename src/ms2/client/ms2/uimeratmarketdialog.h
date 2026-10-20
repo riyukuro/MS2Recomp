@@ -171,7 +171,7 @@ public:
     void ResetPreview();                                            // 0x1412f7f10
     void ResetModels();                                             // 0x1412f8190
     void OnChangeEnableFeature(NotifyObject* pNotify);              // 0x14130be10
-    int BuildSellerRow(ASObj& row, MS2Ptr<CUgcMarketSeller> spSeller, const CStringW& strTooltipKey);   // 0x1412ef960
+    int BuildSellerRow(ASObj& row, MS2Ptr<Unk_MmSellerShop> spShop, const CStringW& strTooltipKey);   // 0x1412ef960
     int BuildQuery(ASObj& data, SearchQuery& query);                // 0x1412efc30
     void ShowUgcTerms(int nParam, int nKind);                       // 0x1412ee460
     void OpenBannerProduct(const CStringA& strBanner);              // 0x1412ee920

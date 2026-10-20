@@ -239,7 +239,23 @@ Unk_ConfigPaths* FUN_1401d31f0();
 
 
 // The shop of one seller: the product array is at +0x58.
-class Unk_MmSellerShop : public CPtred { public: char m_pad[0x58 - 0x18]; Unk_MmProductArray m_products; };
+// The seller of a shop: character id, name and profile image.
+class Unk_MmSellerInfo : public CPtred
+{
+public:
+    __int64 m_n18;
+    __int64 m_nCharId;                                                      // +0x20
+    CStringW m_strName;                                                     // +0x28
+    CString m_strProfile;                                                   // +0x30
+};
+// A seller's shop: the seller and the products on sale.
+class Unk_MmSellerShop : public CPtred
+{
+public:
+    MS2Ptr<Unk_MmSellerInfo> m_spSeller;                                    // +0x18
+    char m_pad[0x58 - 0x20];
+    Unk_MmProductArray m_products;                                          // +0x58
+};
 // A banner of the market (asmeratmarketproduct.h forward declares it).
 class Unk_MeratBanner : public CPtred { public: CStringA m_strBackground; };
 // The market product record the equip icon data carries: ASMeratMarketEquipData (asequipicon.h) only forward declares
@@ -267,7 +283,7 @@ struct Unk_MeratOid : public Unk_MeratProductKey { };
 
 // map, the sellers, the product lists, the basket and the requests to the server.
 typedef ATL::CRBMap<Unk_MeratProductKey, MS2Ptr<CMeratMarketProduct> > Unk_MmProductMap;
-typedef ATL::CRBMap<__int64, MS2Ptr<CUgcMarketSeller> > Unk_MmSellerMap;
+typedef ATL::CRBMap<__int64, MS2Ptr<Unk_MmSellerShop> > Unk_MmSellerMap;
 class Unk_MeratMarketMan
 {
 public:
@@ -455,6 +471,7 @@ template <> inline Delegate<bool(MS2Ptr<TMarketBillDataParam>)>& Delegate<bool(M
 }
 
 // ---- free callees ----
+CString FUN_141028be0(__int64 nCharId, const CString& strProfile, int bNoDownload, CString strUrl);   // the local file of a profile image
 class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
 Unk_MmFiles* FUN_140166420();                                               // the resource file system
 CLogString* FUN_140166440();
@@ -1117,6 +1134,23 @@ bool UIMeratMarketDialog::FillBasketRow(ASMeratMarketProduct& row, MS2Ptr<Unk_Me
         return true;
     }
     return false;
+}
+
+// @0x1412ef960
+int UIMeratMarketDialog::BuildSellerRow(ASObj& row, MS2Ptr<Unk_MmSellerShop> spShop, const CStringW& strTooltipKey)
+{
+    if (spShop == 0)
+        return 0;
+    MS2Ptr<Unk_MmSellerInfo> spSeller(spShop->m_spSeller);
+    if (spShop->m_spSeller == 0)
+        return 0;
+    CStringW strName = spSeller->m_strName;
+    row.FUN_1407cbb20("name", strName);
+    row.FUN_1407cba60("charSN", FUN_140719530(spSeller->m_nCharId));
+    row.FUN_1407cbb20("tooltip", StringFormat(strTooltipKey, strName));
+    CString strImage = FUN_141028be0(spSeller->m_nCharId, spSeller->m_strProfile, 0, "");
+    row.FUN_1407cba60("imgpath", strImage);
+    return 1;
 }
 
 // @0x1412efc30
@@ -2372,11 +2406,11 @@ void UIMeratMarketDialog::BuildSellerList(ASArray& rows)
     CStringW strCaption = FUN_14028de60(0x9de);
     for (POSITION pos = pSellers->GetHeadPosition(); pos != 0; pSellers->GetNext(pos))
     {
-        MS2Ptr<CUgcMarketSeller> spSeller = pSellers->GetValueAt(pos);
-        if (spSeller.get() != 0)
+        MS2Ptr<Unk_MmSellerShop> spShop = pSellers->GetValueAt(pos);
+        if (spShop.get() != 0)
         {
             ASObj row(2);
-            if (BuildSellerRow(row, spSeller, strCaption) != 0)
+            if (BuildSellerRow(row, spShop, strCaption) != 0)
                 rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
         }
     }

@@ -3760,7 +3760,6 @@ __imp_NxGetUtilLib	142cced28	data
 # w495 uimeratmarketdialog: TEMPORARY bindings of the 29 dialog methods not yet recovered (partial unit) to the exe; delete each row when its body is written.
 ?AddPreviewSlot@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCItem@@@@V?$MS2Ptr@VCMeratMarketProduct@@@@HHHV?$MS2Ptr@VCItemData@@@@@Z	1412efee0	func
 ?ApplySearchAll@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCMeratMarketSchCond@@@@AEAVASObj@@_N@Z	141310110	func
-?BuildSellerRow@UIMeratMarketDialog@@QEAAHAEAVASObj@@V?$MS2Ptr@VCUgcMarketSeller@@@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1412ef960	func
 ?EquipPreview@UIMeratMarketDialog@@QEAAXPEAVUIAvatarBase@@V?$MS2Ptr@VCItemData@@@@_N2@Z	141308540	func
 ?FillBannerProducts@UIMeratMarketDialog@@QEAAHAEBHAEAVASArray@@AEAV?$CAtlArray@V?$MS2Ptr@VCMeratMarketProduct@@@@V?$CElementTraits@V?$MS2Ptr@VCMeratMarketProduct@@@@@ATL@@@ATL@@PEBVUnk_MmViewScope@@@Z	1412fa370	func
 ?FillProductRow@UIMeratMarketDialog@@QEAAHAEAVASMeratMarketProduct@@V?$MS2Ptr@VCMeratMarketProduct@@@@PEAVUnk_MmViewScope@@@Z	1412ef330	func
@@ -3836,3 +3835,4 @@ __imp_NxGetUtilLib	142cced28	data
 ??1Unk_GdXmlRoot@@QEAA@XZ	14086f450	func
 ??1?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAA@XZ	140c4de90	func
 ??4?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAAAEAV0@AEBV0@@Z	140c4e0d0	func
+?BuildSellerRow@UIMeratMarketDialog@@QEAAHAEAVASObj@@V?$MS2Ptr@VCUgcMarketSeller@@@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1412ef960	func
