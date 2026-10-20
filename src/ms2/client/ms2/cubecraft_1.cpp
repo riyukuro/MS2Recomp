@@ -1705,6 +1705,8 @@ int FUN_140159bc0(void*);                                        // ReleasePtred
 void FUN_140159ba0(void*);                                       // DeletePtred
 void FUN_1410a7db0(void*);
 void FUN_1410a7df0(void*);
+void FUN_1410a7cb0(Unk_SPtr*);
+void FUN_1410a7d10(Unk_SPtr*);
 void FUN_1410a7e90(Unk_SPtr*);
 void FUN_1410a7ef0(Unk_SPtr*);
 void FUN_1410a7fd0(Unk_SPtr*);
@@ -1725,10 +1727,14 @@ void** FUN_1410a69b0(void** p, void* v)
     return p;
 }
 
+// @0x1410a6aa0
+Unk_SPtr* FUN_1410a6aa0(Unk_SPtr* p, void* v) { p->m_p = v; FUN_1410a7cb0(p); return p; }
 // @0x1410a6ad0
 Unk_SPtr* FUN_1410a6ad0(Unk_SPtr* p) { p->m_p = 0; return p; }
 // @0x1410a6af0
 Unk_SPtr* FUN_1410a6af0(Unk_SPtr* p) { p->m_p = 0; return p; }
+// @0x1410a6b10
+Unk_SPtr* FUN_1410a6b10(Unk_SPtr* p, void* v) { p->m_p = v; FUN_1410a7d10(p); return p; }
 // @0x1410a6b90
 Unk_SPtr* FUN_1410a6b90(Unk_SPtr* p) { p->m_p = 0; return p; }
 
