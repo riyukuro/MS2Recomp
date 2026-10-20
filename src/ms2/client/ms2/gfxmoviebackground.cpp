@@ -709,7 +709,7 @@ void GFxMovieBackground::vfunc_16()
 // @0x14127b040
 void GFxMovieBackground::vfunc_39(int a, int b, int c, bool d, bool e)
 {
-    if (m_60 != 0)
+    if (m_60)
     {
         if (b == 0 && c != 0)
         {
