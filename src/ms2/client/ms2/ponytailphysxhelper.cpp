@@ -1125,3 +1125,11 @@ void CPonyTailPhysXHelper::UpdateModelPhysXValues(Unk_PickTarget* pModel, const 
         }
     }
 }
+
+// NiImplementRTTI(CPonyTailController, CItemCustomizeController): its initializer sits just before this TU's .text$di
+// range. The hook DLL binds the exe's copy (symbols-manual row), so only the byte-match build defines it.
+// MS2-RANGE: 0x1400fbb00-0x1400fbb30 .text$di
+#ifndef MS2_HOOK_DLL
+// @0x1400fbb00
+const NiRTTI CPonyTailController::ms_RTTI("CPonyTailController", &CItemCustomizeController::ms_RTTI);
+#endif
