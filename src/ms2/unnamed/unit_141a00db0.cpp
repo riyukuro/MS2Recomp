@@ -563,7 +563,7 @@ MS2_REPLACE_METHOD(0x141A02E50, CMsgBoxData, FUN_141a02e50, 46, 0x49ECCABD);
 // @0x141a02e90
 unsigned int CMsgBoxData::FUN_141a02e90(int nIndex, unsigned int nDefault) const
 {
-    FUN_140961900(nIndex, nDefault);
+    FUN_140961900(nIndex, reinterpret_cast<int&>(nDefault));   // GetArg<unsigned> 0x140961900 is declared once (int&): an unsigned& overload made actionkeyobject's hook &CMsgBoxData::FUN_140961900 ambiguous
     return nDefault;
 }
 MS2_REPLACE_METHOD(0x141A02E90, CMsgBoxData, FUN_141a02e90, 46, 0x12726095);

@@ -272,7 +272,6 @@ public:
     void FUN_141a02b00(const CStringW& strDefault, ATL::CAtlList<CStringW>& list);   // the drop-down list
     CStringW FUN_141a02d00() const;                                 // the drop-down default text
     CString FUN_141a02f50(int nIndex, CString strDefault) const;    // the nIndex-th argument as a string
-    bool FUN_140961900(unsigned int nIndex, unsigned int& nOut) const;   // GetArg<unsigned> (outside COMDAT)
     static long s_nLastId;                                          // 0x1439f9b54 (starts at 1): the box ids
     // 0x141a00450 below: inline COMDAT, defined in uimessagebox.cpp
     bool FUN_141a00450(unsigned int nIndex, int& nOut) const;
