@@ -233,7 +233,8 @@ void CSidePopupTalkTable::Init()
             FUN_1408733e0(pElem, "sound", spData->m_spParam->m_strScript);
             spData->m_spCond = spCond;
             FUN_140873220(pElem, "map", spData->m_nMapId);
-            m_popups[std::make_pair(spCond->m_eKind, spCond->m_nId)] = spData;
+            PopupMap::key_type key = std::make_pair(spCond->m_eKind, spCond->m_nId);
+            m_popups[key] = spData;
         }
     }
 }
@@ -241,17 +242,15 @@ void CSidePopupTalkTable::Init()
 // @0x140e8e5b0
 MS2Ptr<SidePopupTalkParam> CSidePopupTalkTable::Find(eSidePopupEvent eKind, unsigned nId)
 {
-    PopupMap::iterator it = m_popups.find(std::make_pair(eKind, nId));
+    PopupMap::key_type key = std::make_pair(eKind, nId);
+    PopupMap::iterator it = m_popups.find(key);
     if (it != m_popups.end())
     {
-        MS2Ptr<PopupData> spData = (*it).second;
+        MS2Ptr<PopupData> spData = it->second;
         if (spData->m_spCond->vfunc_3() == 0)
             return 0;
-        if (spData->m_nMapId != 0)
-        {
-            if (spData->m_nMapId != TSingleton<WorldService>::GetInstance()->FUN_141bd3060())
-                return 0;
-        }
+        if (spData->m_nMapId != 0 && spData->m_nMapId != TSingleton<WorldService>::GetInstance()->FUN_141bd3060())
+            return 0;
         return spData->m_spParam;
     }
     return 0;
@@ -260,17 +259,16 @@ MS2Ptr<SidePopupTalkParam> CSidePopupTalkTable::Find(eSidePopupEvent eKind, unsi
 // @0x140e8e7a0
 MS2Ptr<SidePopupTalkParam> CSidePopupTalkTable::FindByMap(int nMapId)
 {
-    for (PopupMap::value_type& entry : m_popups)
+    for (PopupMap::iterator it = m_popups.begin(), itEnd = m_popups.end(); it != itEnd; ++it)
     {
-        MS2Ptr<PopupData> spData = entry.second;
-        if (spData->m_nMapId != 0)
-        {
-            if (spData->m_nMapId == nMapId)
-            {
-                if (spData->m_spCond->vfunc_4())
-                    return spData->m_spParam;
-            }
-        }
+        MS2Ptr<PopupData> spData = it->second;
+        if (spData->m_nMapId == 0)
+            continue;
+        if (spData->m_nMapId != nMapId)
+            continue;
+        if (spData->m_spCond->vfunc_4() == 0)
+            continue;
+        return spData->m_spParam;
     }
     return 0;
 }
