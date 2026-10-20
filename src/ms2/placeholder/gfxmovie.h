@@ -63,6 +63,17 @@ public:
     virtual bool vfunc_15(void* hwnd, unsigned msg, unsigned __int64 wParam, __int64 lParam);  // 15 0x1422bde10 returns 0
     static const NiRTTI ms_RTTI;                                    // 0x143b0ae40 ("GFxMovie", no parent; vfunc_2 returns it)
 
+    // Non-virtual members called by the derived movies' "initializeClass" handlers (GFxMovieHeadUpDisplay/PostDisplay).
+    void FUN_1422be510(MS2Ptr<ASStage> spStage);                    // 0x1422be510 m_20 = spStage (by value: the callee destroys it)
+    void FUN_1422be5b0(MS2Ptr<ASMovieClipLoader> spLoader);         // 0x1422be5b0 m_40 = spLoader (by value)
+    void FUN_1422be140();                                           // 0x1422be140
+    void FUN_1422be2a0();                                           // 0x1422be2a0 (uses m_78)
+    void FUN_1422be380(int n);                                      // 0x1422be380 m_10 = n (GFxMovieDamage ctor: 0)
+    MS2_GFX_MOVIE* FUN_1422bd0f0();                                 // 0x1422bd0f0 the GFx::Movie (m_60) or null (gfxmoviedamage.cpp)
+    // The AS class object of a fully qualified class name ("scaleform.ms2.manager.TooltipManager"; the CString is taken by
+    // value: the callee destroys it). astooltipmanager.cpp.
+    Scaleform::GFx::Value FUN_1422bd120(CString strClassName);      // 0x1422bd120
+
     // 0x10..0x80, ctor 0x1422bced0. The three 16-byte handles are MS2Ptr<T> (pointer at +8, intrusive CPtred count:
     // ctor FUN_1422b31e0/b31a0/b31c0 zero +8, dtors FUN_140b62a60/140a58400/140b62a30). The two Scaleform handles are
     // Ptr<> with the SDK's AddRef/Release (FUN_14257dc30/142573e70 for the Movie, FUN_1425a3850/1425a4030 for the MovieDef).
@@ -84,6 +95,11 @@ public:
     void* m_78;                                                     // +0x78 ctor 0
 };
 MS2_CHECK_SIZE(GFxMovie, 0x80);
+
+// Wrap an AS object of movie nMovieId in a new ASStage / ASMovieClipLoader (new 0x80 + ctor 0x1422cfcb0 / 0x1422cfff0).
+// Template-looking COMDAT pair in the ?\gfxmoviedamage.cpp range; the names are invented.
+MS2Ptr<ASStage> FUN_140b62400(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASMovieClipLoader> FUN_140b62350(int nMovieId, const Scaleform::GFx::Value& v);
 MS2_CHECK_OFFSET(GFxMovie, m_20, 0x20);
 MS2_CHECK_OFFSET(GFxMovie, m_60, 0x60);
 MS2_CHECK_OFFSET(GFxMovie, m_78, 0x78);
