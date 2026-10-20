@@ -23,6 +23,8 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/cgamemenutable.h"
+#include "ms2/placeholder/citem.h"
 
 #include "ms2/placeholder/header_statics_a.h"
 
@@ -55,12 +57,16 @@ struct Unk_HlH
 
 class ASDialog : public ASDisplayObject {};
 
+class CItem;
+CItem* FUN_14052cd70(MS2Ptr<CItem>* p);
+int UseItem(MS2Ptr<CItem> spItem, int n);                  // 0x140d1bd60
+
 // The item / record tables (DAT_143ab2a90) and their callees.
 class Unk_HlDb
 {
 public:
     Unk_HlH FUN_140a5e2e0(int nId);                         // item by id
-    Unk_HlH FUN_140a5d680(__int64 nId);                     // item by instance id
+    MS2Ptr<CItem> FUN_140a5d680(__int64 nId);               // item by instance id
     void FUN_140a60880(int nBag, ATL::CAtlArray<void*>& out);   // the items of a bag
     int FUN_140a65770(P pId);
 };
@@ -192,7 +198,7 @@ public:
     int m_nUiId;                                            // +0x68
 };
 struct Unk_HlMenuRef { void* m_unk_00; Unk_HlMenu* m_p; };
-P FUN_140c1d2f0();
+CGameMenuTable* FUN_140c1d2f0();
 void FUN_140cf7470(P pDb, Unk_HlMenuRef* pOut, CString strName);
 P FUN_140c1cd90(Unk_HlMenuRef* p);
 Unk_HlMenu* FUN_140c1cda0(Unk_HlMenuRef* p);
@@ -560,10 +566,10 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     if (_stricmp(szMethod, "enchantscroll") == 0)
     {
-        Unk_HlH item = DAT_143ab2a90.FUN_140a5d680(m_nScrollItem);
-        if (FUN_14052cd70(&item) != 0)
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nScrollItem);
+        if (FUN_14052cd70(&spItem) != 0)
         {
-            FUN_140d1bd60(item, 0);
+            UseItem(spItem, 0);
             UIDialog* pInv = FUN_1405344f0(0x4e2d);
             if (pInv != 0)
             {
@@ -572,10 +578,9 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                     pInv->FUN_141924680();
             }
         }
-        FUN_1401bfde0(&item);
         return 1;
     }
-    if (_stricmp(szMethod, "gemstone") == 0)
+    else if (_stricmp(szMethod, "gemstone") == 0)
     {
         P pDlg = FUN_140c24650();
         if (pDlg != 0)
@@ -585,28 +590,28 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         }
         return 1;
     }
-    Unk_HlMenuRef spMenu;
-    FUN_140cf7470(FUN_140c1d2f0(), &spMenu, CString(szMethod));
-    if (FUN_140c1cd90(&spMenu) == 0)
+    else
     {
-        FUN_140c1ccf0(&spMenu);
-        return 0;
-    }
-    if (FUN_140c1cda0(&spMenu)->m_nUiId == 0x4e2d)
-    {
-        if (FUN_141adc940(FUN_1403ed2b0(), 0x4e2d) != 0)
+        MS2Ptr<CGameMenuDef> spMenu = FUN_140c1d2f0()->FindByName(CString(szMethod));
+        if (spMenu.get() != 0)
         {
-            UIDialog* pInv = FUN_1405344f0(0x4e2d);
-            if (pInv != 0)
-                FUN_141999d40(pInv, 0);
+            if (spMenu->m_nUiId == 0x4e2d)
+            {
+                if (FUN_141adc940(FUN_1403ed2b0(), 0x4e2d) != 0)
+                {
+                    UIDialog* pInv = FUN_1405344f0(0x4e2d);
+                    if (pInv != 0)
+                        FUN_141999d40(pInv, 0);
+                }
+            }
+            if (!spMenu->m_onClick.IsNull())
+                spMenu->m_onClick();
+            else if (spMenu->m_nUiId != 0)
+                FUN_141adc750(FUN_1403ed2b0(), spMenu->m_nUiId);
+            return 1;
         }
     }
-    if (FUN_14098d930(FUN_140c1cda0(&spMenu)->m_tail) == 0)
-        FUN_14098d150(FUN_140c1cda0(&spMenu)->m_tail);
-    else if (FUN_140c1cda0(&spMenu)->m_nUiId != 0)
-        FUN_141adc750(FUN_1403ed2b0(), FUN_140c1cda0(&spMenu)->m_nUiId);
-    FUN_140c1ccf0(&spMenu);
-    return 1;
+    return 0;
 }
 
 // @0x140c22ae0
