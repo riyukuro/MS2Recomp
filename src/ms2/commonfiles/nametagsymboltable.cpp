@@ -446,3 +446,5 @@ void CNametagSymbolTable::SetInit(bool b)
 {
     s_bInit = b;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9b750-0x142c9b7e0 .text$yd

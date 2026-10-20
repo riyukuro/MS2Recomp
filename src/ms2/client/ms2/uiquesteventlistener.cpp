@@ -1468,3 +1468,5 @@ inline bool Unk_RewardEntryList::FUN_141ab1ca0()
 
 // @0x141ab1fc0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(2);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc1a40-0x142cc1af0 .text$yd

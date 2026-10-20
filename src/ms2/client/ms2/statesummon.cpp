@@ -917,3 +917,5 @@ int StateSummonPortal::vfunc_1() { return 0x38; }
 
 // @0x1417fa140
 int StateSummonRevive::vfunc_1() { return 0x30; }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb7f90-0x142cb8040 .text$yd

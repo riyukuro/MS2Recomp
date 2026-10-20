@@ -331,3 +331,5 @@ unsigned UIAdditionalControlDialog::FUN_1418b3ac0()
 UIAdditionalControlDialog::~UIAdditionalControlDialog()
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbc890-0x142cbc950 .text$yd
