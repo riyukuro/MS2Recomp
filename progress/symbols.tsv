@@ -23875,7 +23875,7 @@ sprintf	1403b0860	func
 ?begin@?$vector@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@2@XZ	140419e10	func
 ?begin@?$vector@V?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@V?$allocator@V?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@@2@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@@std@@@std@@@2@XZ	140419e70	func
 ?capacity@?$vector@V?$MS2Ptr@VBonusGameBlueMarbleSlot@@@@V?$allocator@V?$MS2Ptr@VBonusGameBlueMarbleSlot@@@@@std@@@std@@QEBA_KXZ	140419ed0	func
-?capacity@?$vector@V?$MS2Ptr@VCollectItemGroupContext@@@@V?$allocator@V?$MS2Ptr@VCollectItemGroupContext@@@@@std@@@std@@QEBA_KXZ	140419f10	func
+?capacity@?$vector@V?$MS2Ptr@VCollectItemGroupContext@@@@V?$allocator@V?$MS2Ptr@VCollectItemGroupContext@@@@@std@@@std@@QEBA_KXZ	1404680f0	func
 ?capacity@?$vector@_KV?$allocator@_K@std@@@std@@QEBA_KXZ	140419f10	func
 ?clear@?$_Tree@V?$_Tmap_traits@HV?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAXXZ	140419f50	func
 ?clear@?$_Tree@V?$_Tmap_traits@U?$pair@IH@std@@IU?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@I@std@@@2@$0A@@std@@@std@@QEAAXXZ	140419ff0	func
@@ -23933,7 +23933,7 @@ sprintf	1403b0860	func
 ?size@?$vector@V?$MS2Ptr@VBonusGameBlueMarbleSlot@@@@V?$allocator@V?$MS2Ptr@VBonusGameBlueMarbleSlot@@@@@std@@@std@@QEBA_KXZ	14041af50	func
 ?size@?$vector@V?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@V?$allocator@V?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@@2@@std@@QEBA_KXZ	14041af90	func
 ?size@?$vector@V?$vector@UUnk_RewardEntry@@V?$allocator@UUnk_RewardEntry@@@std@@@std@@V?$allocator@V?$vector@UUnk_RewardEntry@@V?$allocator@UUnk_RewardEntry@@@std@@@std@@@2@@std@@QEBA_KXZ	14041af90	func
-?size@?$vector@V?$MS2Ptr@VCollectItemGroupContext@@@@V?$allocator@V?$MS2Ptr@VCollectItemGroupContext@@@@@std@@@std@@QEBA_KXZ	14041afe0	func
+?size@?$vector@V?$MS2Ptr@VCollectItemGroupContext@@@@V?$allocator@V?$MS2Ptr@VCollectItemGroupContext@@@@@std@@@std@@QEBA_KXZ	14046c6d0	func
 ?size@?$vector@_KV?$allocator@_K@std@@@std@@QEBA_KXZ	14041afe0	func
 ?FUN_14041b140@@YAPEAVGameEvent@@XZ	14041b140	func
 ?vfunc_1@GameEventDTReward@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	14041b1a0	func
