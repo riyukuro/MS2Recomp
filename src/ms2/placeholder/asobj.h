@@ -26,6 +26,7 @@ public:
     void FUN_1409c1180(const char* szName, __int64 n);                   // set a 64-bit member
     void FUN_1409c48f0(const char* szName, short n);                     // set a short member
     void FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v);     // set a member to a value
+    void FUN_140be2660(const char* szName, int n);                       // 0x140be2660 set an int member through an ASData (inline COMDAT, defined in uiclosetdialog.cpp)
     void FUN_140ef0000(const char* szName, int n);                       // same (uiugccubepalettedialog.cpp copy)
     void FUN_140ef00a0(const char* szName, int n);                       // same (second copy)
     void FUN_140f8f970(const char* szName, int n);                       // set an int member via ASData (inline COMDAT, uipartysearchdialog.cpp)
@@ -81,12 +82,14 @@ public:
     ASArray(const ASArray& o);                                           // 0x140bbf770 (copy; passed by value to Invoke(.., int, AScript, ASArray))
     virtual ~ASArray();
     bool FUN_1422bc050(Scaleform::GFx::Value v);                         // push
+    void FUN_1422bc730(unsigned nIndex, const Scaleform::GFx::Value& v);   // set an element (uiclosetdialog.cpp)
     void FUN_1422bbf70(const char* sz);                                  // push a string (uimainplayerinfo empty slot names)
     void FUN_1422bbfe0(const wchar_t* sz);                               // push a wide string
     void FUN_1422bbf00(const ASObj& obj);                                // push an AS object
     void FUN_1422bbcd0(bool b);                                          // push a bool
     void FUN_1422bbc60(int n);                                           // push an int
     unsigned int FUN_1422bc5d0();                                        // element count
+    Scaleform::GFx::Value FUN_1422bc6b0(unsigned nIndex);                // the element at an index (merat market buy rows)
 };
 
 // ASDataProvider: an ASArray with its own vftable (RTTI ASDataProvider : ASArray : AScript : CPtred), same 0x40 layout.

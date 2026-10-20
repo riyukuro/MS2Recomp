@@ -9,6 +9,8 @@
 #include "ms2/placeholder/asuicomponent.h"
 
 class ASObj;
+class ASButton;
+class ASDataProvider;
 
 class ASButtonBar : public ASUIComponent
 {
@@ -24,5 +26,10 @@ public:
     int FUN_1422e3210();                                                // the selected button (uiguilddialog.cpp)
     void FUN_1422e3400();                                               // clear the data provider
     void FUN_1422e3460(const ASObj& item);                              // append a button (pushed to the data provider)
+    MS2Ptr<ASDataProvider> FUN_1422e2e00();                             // the data provider (uiclosetdialog.cpp)
+    MS2Ptr<ASButton> FUN_1422e32b0(int nIndex);                         // the button of an entry
+    void FUN_1422e4060(int nIndex);                                     // refresh an entry from the data provider
+    void FUN_1422e4190(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, int nUser);    // selection change listener
+    void FUN_1422e4270(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onMenu, int nUser);      // entry menu listener
 };
 MS2_CHECK_SIZE(ASButtonBar, 0x88);

@@ -212,6 +212,8 @@ public:
     void FUN_141a02560(CStringW str, int n);                        // the second choice text (skill window reset)
     void FUN_141a026f0(int n);                                      // choice mode (skill window reset)
     void FUN_140533ff0(int n);                                      // appends an int argument (COMDAT outside this class' range)
+    // Reads argument nIndex back (int: 0x140be25f0, defined in uiclosetdialog.cpp); false when there are fewer arguments.
+    template <class T> bool GetArg(unsigned nIndex, T& out) const;
     void FUN_1405340b0(__int64 n);                                  // appends an __int64 argument (scenestategame.cpp, w97)
     void FUN_141a01e60(MS2Ptr<CMsgBoxDataItem> spItem);             // add an item entry (the callee destroys it; uiblackmarketpage.cpp)
     void FUN_140534050(int n);                                      // appends an unsigned argument (Append<unsigned>; actionkeyobject.cpp)

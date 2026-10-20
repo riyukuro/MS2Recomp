@@ -57,6 +57,7 @@ public:
     void FUN_1409dbc30(const CStringW& str);                             // set m_50
     void FUN_1409d74a0(int nItemId);
     __int64 FUN_1409c6540();                                             // m_40
+    void FUN_140be62e0(void* pOwner) { m_40 = reinterpret_cast<__int64>(pOwner); }   // 0x140be62e0 set m_40 (the player; uiclosetdialog.cpp)
     unsigned FUN_1409c6560();                                            // m_48 (flags; 0x100 = no extra buttons)
     void FUN_1409c6580(unsigned n);
     void FUN_1409c65a0();                                                // enableUseDbClick = string 0x762

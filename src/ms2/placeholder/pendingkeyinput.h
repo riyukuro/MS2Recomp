@@ -16,6 +16,11 @@ struct PendingKeyInput : public CPtred
     virtual ~PendingKeyInput() {}                           // slot 0 (??_G 0x140be3f60)
     virtual void Clear();                                   // slot 1 0x1412530b0
     virtual bool Ready() { return false; }                  // slot 2 0x140be4cb0
+    // Inline accessors (COMDATs first used by client\ms2\uiclosetdialog.cpp).
+    bool FUN_140be4f00() { return m_bBusy; }                // 0x140be4f00 waiting for the key
+    void FUN_140be6250(bool b) { m_bBusy = b; }             // 0x140be6250
+    unsigned FUN_140be4700() { return m_nKey; }             // 0x140be4700 the key
+    void FUN_140be6230(const unsigned& nKey) { m_nKey = nKey; }   // 0x140be6230
 
     bool m_bBusy;                                           // +0x18
     unsigned m_nKey;                                        // +0x1c
