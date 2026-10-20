@@ -31,6 +31,7 @@ class CMsgBoxData;
 class NotifyObject;
 class CInPacket;
 class ASMeratMarketBuyBillData;
+class CMeratMarketBasketInfo;
 
 // A basket line: a product with its quantity (ctor 0x140d61300, dtor 0x140d61380).
 class CMeratMarketBasket : public CPtred
@@ -138,6 +139,7 @@ public:
     void FUN_140d5f330(CMeratMarketPacket::BuyPacket& buy, int nError);
     void FUN_140d589f0(int bCancel);
     void FUN_140d595b0();
+    int FUN_140d59e20(MS2Ptr<CMeratMarketBasketInfo> spInfo, MS2Ptr<CMeratMarketBasket> spLine, int nPayType);
     void FUN_140d59810(MS2Ptr<CPendingBuyBase> spBuy, int nBuyType);
     void FUN_140d59930();
     __int64 FUN_140d59970();
@@ -157,6 +159,10 @@ public:
     bool FUN_140d5b1f0(MS2Ptr<CMeratMarketProduct> spProduct, bool bShowError);
     bool FUN_140d5b280(CMeratMarketPremiumProduct* pProduct, bool bShowError);
     bool FUN_140d5b370(MS2Ptr<CMeratMarketProduct> spProduct);
+    bool FUN_140d5b4c0(MS2Ptr<CMeratMarketProduct> spProduct, bool bStrict);
+    bool FUN_140d5b6b0();
+    bool FUN_140d5b710();
+    bool FUN_140d5b880(unsigned int nCategory, int nTab);
     bool FUN_140d5ba70();                                   // push the ad products to the ad dialog (0x4f34)
     // The server answers (sub-opcodes of the market packet, see FUN_140d53fb0).
     void FUN_140d5bc30(CInPacket& packet);
@@ -190,6 +196,8 @@ public:
     void FUN_140d5f5b0(CInPacket& packet);
     void FUN_140d5f5e0(CInPacket& packet);
     void FUN_140d5f610(CInPacket& packet);
+    void FUN_140d5fea0(CMeratMarketPacket::ErrorPacket& error);
+    void FUN_140d60050(const int& nUIType);
     bool FUN_140d60280(int nResult, const CMsgBoxData& box);
     static __int64 FUN_140d61530(__int64 nTime, int nDays);
 

@@ -24,6 +24,9 @@ public:
     // @0x140d66da0 (inline COMDAT, meratmarketman.cpp)
     MS2Ptr<CMeratMarketPremiumProduct> FUN_140d66da0() { return m_spPremium; }
     int FUN_1409acb50();                                            // 0x1409acb50 m_n78 (under the bill lock)
+    // @0x140d66e60
+    char FUN_140d66e60() { return m_b70; }
+    int FUN_1409acbe0(int nCurrency);                               // 0x1409acbe0 the pay type of a currency
 
     int m_n50;                                                      // +0x50
     unsigned __int64 m_n58;                                         // +0x58

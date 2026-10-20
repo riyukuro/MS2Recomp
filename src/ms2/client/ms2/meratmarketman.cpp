@@ -31,6 +31,8 @@
 #include "uirandomcoupon.h"
 #include "ms2/placeholder/asmeratmarketbuybilldata.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/client/ms2/uimessagebox.h"
+#include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -87,6 +89,7 @@ public:
     void FUN_14130d390(int nPage, int nFirst, int nLast, int nTotal, bool bMore);   // a page of search results
     void FUN_14130f960();                                       // the search failed
     void FUN_14130ea00(MS2Ptr<CMeratMarketProduct> spProduct);  // a product's counts changed
+    void FUN_141310970();                                       // a search was refused
 };
 Unk_MmDialog* FUN_140bd2c00();                                  // the open market dialog (or NULL)
 Unk_MmDialog* FUN_140bfed50(int nUIClassID);                    // a dialog of a class id (0x4ec1: the market)
@@ -170,6 +173,7 @@ public:
     static int FUN_140d66e70() { return 0x4f7f; }               // the UI type id
     void FUN_140bbb440(int nPage, int nFirst, int nLast, int nTotal, bool bMore);   // a page of blueprints
     void FUN_140bbbc70(MS2Ptr<CMeratMarketProduct> spProduct);  // a blueprint changed
+    void FUN_140bbbcf0();                                       // a search was refused
 };
 
 bool FUN_1406a5040(int nSort);                                  // a valid market sort kind
@@ -198,6 +202,7 @@ public:
     void FUN_141adc5d0(int nClass);                             // close a dialog (if open)
     MS2Ptr<UIObject> FUN_141adcea0(int nId);                    // an open dialog
     int FUN_141adc890(int nClass);                              // a dialog is open
+    void FUN_141add1f0();                                       // close the merat market dialogs
 };
 Unk_MmUIManager* FUN_1403ed2b0();
 
@@ -215,6 +220,7 @@ class Unk_MmWorld
 {
 public:
     PCBase* FUN_141bd0cc0();                                    // the local player
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                      // the current field
 };
 Unk_MmWorld* FUN_1403ed2d0();
 
@@ -234,6 +240,16 @@ MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW t
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);       // system notice
 void FUN_141275260(int nStringId, int nA, int nB);
+void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);   // system notice with arguments
+// A system notice with one argument (the exe instance for an int is 0x140d61af0).
+template <class T> void FUN_140d61af0(int nStringId, int nA, int nB, const T& x)
+{
+    const fmt::internal::ArgArray<1>::Type values = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(x)};
+    FUN_141275460(nStringId, nA, nB, fmt::ArgList(fmt::internal::make_type(x), values));
+}
+void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);  // pop a system message
+void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag); // pop a message
+UIMessageBox* FUN_14151f890();                                  // the open message box
 void* FUN_1408e57f0();
 int FUN_1422b9dc0(void*);                                       // the screen layout id
 Unk_MmShopDialog* FUN_140534780(int nUIType);                   // the shop dialog (refreshes it)
@@ -2663,4 +2679,357 @@ void CMeratMarketMan::FUN_140d5f330(CMeratMarketPacket::BuyPacket& buy, int nErr
         if (pShop != 0)
             pShop->FUN_141afb290(key.m_nPremiumId);
     }
+}
+
+// 0x20: the same as 0x19.
+// @0x140d5f5b0
+void CMeratMarketMan::FUN_140d5f5b0(CInPacket& packet)
+{
+    FUN_140d5e190(packet);
+}
+
+// 0x21: the same as 0x19.
+// @0x140d5f5e0
+void CMeratMarketMan::FUN_140d5f5e0(CInPacket& packet)
+{
+    FUN_140d5e190(packet);
+}
+
+// The request side of an error reply.
+// @0x140d5fea0
+void CMeratMarketMan::FUN_140d5fea0(CMeratMarketPacket::ErrorPacket& error)
+{
+    int nKind = error.m_nKind;
+    if (nKind == 0x14) {
+        FUN_140d56840();
+        FUN_140d73bc0(0xa04, 0, 0, CStringW(L""));
+        return;
+    }
+    if (nKind == 0x1b || nKind == 0x20 || nKind == 0x21 || nKind == 0x1d || nKind == 0x68 || nKind == 0x69 || nKind == 0x1c) {
+        int nUIType = 0x4ec1;
+        if (error.m_n30 == 1)
+            nUIType = 0x4f7f;
+        FUN_140d60050(nUIType);
+    }
+    if (nKind == 0x17) {
+        UIMessageBox* pBox = FUN_14151f890();
+        if (pBox != 0) {
+            MS2Ptr<CMsgBoxData> spBox = pBox->FUN_1419f8470();
+            if (spBox.get() != 0 && spBox->FUN_141a02ce0().Find(L"inputSeller", 0) != -1)
+                pBox->FUN_1419f82b0(FUN_14028de60(0xa20));
+        }
+    }
+}
+
+// Clear the search results of a dialog (the market or the blueprint market).
+// @0x140d60050
+void CMeratMarketMan::FUN_140d60050(const int& nUIType)
+{
+    if (nUIType == 0x4ec1) {
+        {
+            Unk_LockGuard lock(m_lock);
+            if (!lock) {
+                m_100.RemoveAll();
+                m_120.RemoveAll();
+            }
+        }
+        Unk_MmDialog* pDialog = FUN_140bd2c00();
+        if (pDialog != 0)
+            pDialog->FUN_14130d390(1, 0, 0, 0, false);
+    }
+    else if (nUIType == 0x4f7f) {
+        {
+            Unk_LockGuard lock(m_lock);
+            if (!lock) {
+                m_150.RemoveAll();
+                m_170.RemoveAll();
+            }
+        }
+        UIBlueprintMarketDialog* pDialog = Unk_MmGetDialog<UIBlueprintMarketDialog>(UIBlueprintMarketDialog::FUN_140d66e70());
+        if (pDialog != 0)
+            pDialog->FUN_140bbb440(1, 0, 0, 0, false);
+    }
+}
+
+// 0x22: an error reply.
+// @0x140d5f610
+void CMeratMarketMan::FUN_140d5f610(CInPacket& packet)
+{
+    CMeratMarketPacket::ErrorPacket error;
+    error.Read(packet);
+    FUN_140d5fea0(error);
+    int nError = error.m_nError;
+    switch (nError) {
+    case 0x68:
+        FUN_140d61af0(0xa0c, 1, 1, nError);
+        break;
+    default:
+        FUN_140d61af0(0xa0c, 1, 1, nError);
+        break;
+    case 0x6a:
+        FUN_141275260(0x88, 1, 1);
+        break;
+    case 0x77:
+        FUN_140d73bc0(0xa0e, 0, 0, CStringW(L""));
+        break;
+    case 0x79:
+        FUN_140d73aa0(FormatStringId(0xa29, 100), 0, 0, CStringW(L""));
+        break;
+    case 0x7c:
+        FUN_140d61af0(0xa0c, 1, 1, nError);
+        break;
+    case 0x7d:
+        FUN_140d73bc0(0xa05, 0, 0, CStringW(L""));
+        break;
+    case 0x82:
+        FUN_140d73aa0(FormatStringId(0xa06, nError), 0, 0, CStringW(L""));
+        break;
+    case 0x88:
+        FUN_1403ed2b0()->FUN_141add1f0();
+        break;
+    case 0x89:
+        FUN_141275260(0x43, 1, 1);
+        FUN_141276180(s_warningBag, CString(""));
+        break;
+    case 0x8a:
+        FUN_140d73bc0(0xa09, 0, 0, CStringW(L""));
+        break;
+    case 0x8b: {
+        UIMeratMarketRegisterDialog* pRegister = Unk_MmGetDialog<UIMeratMarketRegisterDialog>(0x4ec5);
+        if (pRegister != 0)
+            pRegister->FUN_141318cc0();
+        FUN_140d73bc0(0xa0a, 0, 0, CStringW(L""));
+        break;
+    }
+    case 0x8c:
+        FUN_140d73bc0(0xa0b, 0, 0, CStringW(L""));
+        break;
+    case 0x8d:
+        FUN_140d73bc0(0x444, 0, 0, CStringW(L""));
+        break;
+    case 0x8e:
+        FUN_140d73bc0(0xa0d, 0, 0, CStringW(L""));
+        break;
+    case 0x8f:
+        FUN_140d73bc0(0xa0d, 0, 0, CStringW(L""));
+        break;
+    case 0x98:
+        FUN_140d73bc0(0xa3f, 0, 0, CStringW(L""));
+        break;
+    case 0x99:
+        FUN_140d73bc0(0x9f1, 0, 0, CStringW(L""));
+        break;
+    case 0x9a:
+    case 0xb9:
+        FUN_140d73bc0(0xa07, 0, 0, CStringW(L""));
+        break;
+    case 0x9b:
+        FUN_140d73bc0(0xa08, 0, 0, CStringW(L""));
+        break;
+    case 0xaa:
+        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_meratmarket_error_search_ing")), 1, 1);
+        break;
+    case 0xad:
+        if (error.m_n30 == 1) {
+            UIBlueprintMarketDialog* pBlueprint =
+                Unk_MmGetDialog<UIBlueprintMarketDialog>(UIBlueprintMarketDialog::FUN_140d66e70());
+            if (pBlueprint != 0)
+                pBlueprint->FUN_140bbbcf0();
+        }
+        else {
+            Unk_MmDialog* pDialog = FUN_140bd2c00();
+            if (pDialog != 0)
+                pDialog->FUN_141310970();
+        }
+        FUN_140d73bc0(0x8b7, 0, 0, CStringW(L""));
+        break;
+    case 0xb6: {
+        CStringW strName = FUN_1409eec40(0x5a7);
+        FUN_1412751f0(FUN_140a228f0(0x688, *FUN_1402056b0(&FUN_1401d3200()->m_pcBangLevel), strName), 1, 1);
+        break;
+    }
+    case 0xbc:
+        break;
+    }
+    m_n2a0 = 0;
+}
+
+// Can the product be pushed in the ad dialog (bStrict: only when it can be bought now)?
+// @0x140d5b4c0
+bool CMeratMarketMan::FUN_140d5b4c0(MS2Ptr<CMeratMarketProduct> spProduct, bool bStrict)
+{
+    if (!spProduct->IsPremium())
+        return false;
+    CMeratMarketPremiumProduct* pProduct = &spProduct->m_premium;
+    if (pProduct->m_b108)
+        return false;
+    if (bStrict == true || !pProduct->m_bf0) {
+        if (!FUN_140ebfdd0(pProduct, false))
+            return false;
+        if (!FUN_140ebff70(pProduct, false))
+            return false;
+        if (!FUN_140ebfb90(pProduct, false))
+            return false;
+    }
+    if (pProduct->IsSoldOut() || pProduct->IsNotSelling(0)) {
+        if (bStrict == true)
+            return false;
+        if (!pProduct->FUN_14069ff50())
+            return false;
+    }
+    else if (pProduct->IsEventPeriod(0)) {
+        return false;
+    }
+    return true;
+}
+
+// Is there an ad product that can be bought?
+// @0x140d5b6b0
+bool CMeratMarketMan::FUN_140d5b6b0()
+{
+    if (m_270.GetCount() != 0 && FUN_140d5b710() == true)
+        return true;
+    return false;
+}
+
+// @0x140d5b710
+bool CMeratMarketMan::FUN_140d5b710()
+{
+    if (!m_270.IsEmpty()) {
+        int nCount = (int)m_270.GetCount();
+        for (int i = 0; i < nCount; i++) {
+            MS2Ptr<CMeratMarketProduct> spProduct = m_270[i];
+            if (spProduct == 0)
+                continue;
+            if (spProduct->m_premium.m_b108 == true)
+                continue;
+            if (CMeratMarketMan::GetInstance()->FUN_140d5b1f0(spProduct, false))
+                return true;
+        }
+    }
+    return false;
+}
+
+// Push the ad products of a category and tab to the ad dialog (0x4f34).
+// @0x140d5b880
+bool CMeratMarketMan::FUN_140d5b880(unsigned int nCategory, int nTab)
+{
+    if (nCategory == 0 || nTab == 0)
+        return false;
+    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    bool bMinimized = false;
+    if (spField.get() != 0 && spField->FUN_140375660(0x80) != 0)
+        bMinimized = true;
+    Unk_MeratProductArray aProducts;
+    UIAdPushDialog* pAdDialog;
+    if (!FUN_140d57a80(nCategory, nTab, aProducts) || (pAdDialog = Unk_MmGetDialog<UIAdPushDialog>(0x4f34)) == 0)
+        return false;
+    int nCount = (int)aProducts.GetCount();
+    for (int i = 0; i < nCount; i++) {
+        MS2Ptr<CMeratMarketProduct> spProduct = aProducts[i];
+        pAdDialog->AddBundle(Unk_MmAdItem(spProduct), i, nCount, bMinimized);
+    }
+    pAdDialog->Refresh(7);
+    return true;
+}
+
+// Push the ad products to the ad dialog (0x4f34).
+// @0x140d5ba70
+bool CMeratMarketMan::FUN_140d5ba70()
+{
+    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    bool bMinimized = false;
+    if (spField.get() != 0 && spField->FUN_140375660(0x80) != 0)
+        bMinimized = true;
+    Unk_MeratProductArray aProducts;
+    UIAdPushDialog* pAdDialog;
+    if (!FUN_140d57a80(0, 0, aProducts) || (pAdDialog = Unk_MmGetDialog<UIAdPushDialog>(0x4f34)) == 0)
+        return false;
+    int nCount = (int)aProducts.GetCount();
+    for (int i = 0; i < nCount; i++) {
+        MS2Ptr<CMeratMarketProduct> spProduct = aProducts[i];
+        pAdDialog->AddBundle(Unk_MmAdItem(spProduct), i, nCount, bMinimized);
+    }
+    pAdDialog->Refresh(7);
+    return true;
+}
+
+// Fill a basket packet entry from a basket line.
+// @0x140d59e20
+int CMeratMarketMan::FUN_140d59e20(MS2Ptr<CMeratMarketBasketInfo> spInfo, MS2Ptr<CMeratMarketBasket> spLine, int nPayType)
+{
+    if (spInfo == 0 || spLine == 0 || spLine->m_spProduct == 0)
+        return 0;
+    MS2Ptr<CMeratMarketProduct> spProduct = spLine->m_spProduct;
+    spInfo->m_n38 = 2;
+    spInfo->m_nKind = spProduct->m_nKind;
+    spInfo->m_key = spProduct->m_key;
+    spInfo->m_n30 = spLine->m_n28;
+    if (spProduct->m_nKind == 0) {
+        spInfo->m_n3c = spProduct->m_premium.m_nId;
+        spInfo->m_n40 = spProduct->m_premium.m_nItemId;
+        spInfo->m_n44 = spProduct->m_premium.m_nGrade;
+        spInfo->m_n48 = nPayType;
+    }
+    else if (spProduct->m_nKind == 1) {
+        spInfo->m_n50 = spProduct->m_ugc.m_n20;
+        spInfo->m_n58 = spProduct->m_ugc.m_n50;
+    }
+    return 1;
+}
+
+// Fill the request from a bill row (nBuyType 4: a premium product of the shop).
+// @0x140d604c0
+void CMeratMarketBuy::FUN_140d604c0(MS2Ptr<ASMeratMarketBuyBillData> spBill, int nBuyType, int nFlag)
+{
+    if (spBill == 0)
+        return;
+    __int64 nPrice = spBill->vfunc_2();
+    if (nBuyType == 4) {
+        MS2Ptr<CMeratMarketPremiumProduct> spPremium = spBill->FUN_140d66da0();
+        if (spPremium == 0)
+            return;
+        CMeratMarketPacket::BuyPacket* pPacket = m_spPacket.get();
+        pPacket->m_nKind = 4;
+        pPacket->m_key = Unk_MeratProductKey(spPremium->m_nId, 0);
+        pPacket->m_n30 = spBill->FUN_1409acb50();
+        pPacket->m_n34 = nFlag;
+        pPacket->m_n60 = nPrice;
+        pPacket->m_b68 = spBill->FUN_140d66e60() != 0;
+        pPacket->m_n6c = spBill->FUN_1409acbe0(spPremium->GetCurrency());
+        m_strName = spPremium->GetName();
+        m_spItem = 0;
+    }
+    else {
+        MS2Ptr<CMeratMarketProduct> spProduct = spBill->FUN_140a8e4e0();
+        if (spProduct == 0 || m_spPacket == 0)
+            return;
+        CMeratMarketPacket::BuyPacket* pPacket = m_spPacket.get();
+        pPacket->m_nKind = nBuyType;
+        pPacket->m_key = spProduct->m_key;
+        pPacket->m_n60 = nPrice;
+        pPacket->m_b68 = spBill->FUN_140d66e60() != 0;
+        if (spProduct.get() != 0 && spProduct->IsPremium()) {
+            pPacket->m_n30 = spBill->FUN_1409acb50();
+            pPacket->m_n34 = nFlag;
+            CMeratMarketPremiumProduct& premium = spProduct->m_premium;
+            if (premium.m_nType == 6) {
+                pPacket->m_n74 = premium.m_n170;
+                pPacket->m_n70 = premium.m_n16c;
+                pPacket->m_n78 = premium.GetRemainCount();
+            }
+            if (premium.m_nType == 7 || premium.m_nType == 8)
+                pPacket->m_n88 = premium.m_n1b0;
+        }
+        else {
+            pPacket->m_n34 = nFlag;
+            pPacket->m_n38 = spBill->FUN_140d66b10();
+        }
+        pPacket->m_n6c = spBill->FUN_1409acbe0(spProduct->GetCurrency());
+        m_strName = spProduct->GetName();
+        m_spItem = spBill->FUN_140a8e4e0();
+    }
+    m_spBill = spBill;
+    m_nCount = nBuyType;
+    m_n30 = nPrice;
 }
