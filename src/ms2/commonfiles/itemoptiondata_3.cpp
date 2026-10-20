@@ -38,6 +38,11 @@
 // MS2-PIN: ??$make_pair@AEAHAEAV?$MS2Ptr@VItemOptionVariationData@@@@@std@@YA?AU?$pair@HV?$MS2Ptr@VItemOptionVariationData@@@@@0@AEAHAEAV?$MS2Ptr@VItemOptionVariationData@@@@@Z 0x140602050
 // MS2-PIN: ??$?0AEAHAEAV?$MS2Ptr@VItemOptionVariationData@@@@$0A@@?$pair@HV?$MS2Ptr@VItemOptionVariationData@@@@@std@@QEAA@AEAHAEAV?$MS2Ptr@VItemOptionVariationData@@@@@Z 0x1405f9290
 // MS2-PIN: ??$make_pair@HPEAVItemOptionRandom@@@std@@YA?AU?$pair@HPEAVItemOptionRandom@@@0@$$QEAH$$QEAPEAVItemOptionRandom@@@Z 0x1406020b0
+// MS2-PIN: ?Ms2PowFI@@YAMMH@Z 0x1406122f0
+// map<unsigned long, unsigned long> glue: symbols.tsv binds these names to byte-identical copies elsewhere
+// MS2-PIN: ??0?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBKK@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@1@@Z 0x140603830
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@$0A@@std@@@std@@QEBAAEBU?$less@K@2@XZ 0x14060da00
+// MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tmap_traits@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@$0A@@std@@@std@@QEAAAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBKK@std@@PEAX@std@@@2@XZ 0x14060d2d0
 // MS2-PIN: ??0?$MS2Ptr@VItemOptionConstant@@@@QEAA@$$QEAV0@@Z 0x1406029c0
 // MS2-PIN: ?_Get_data@?$_List_alloc@U?$_List_base_types@U?$pair@$$CBHV?$MS2Ptr@VItemOptionRandom@@@@@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VItemOptionRandom@@@@@std@@@2@@std@@@std@@QEBAAEBV?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VItemOptionRandom@@@@@std@@@std@@@2@XZ 0x14060d1c0
 // MS2-PIN: ?_Myhead@?$_List_alloc@U?$_List_base_types@U?$pair@$$CBHV?$MS2Ptr@VItemOptionRandom@@@@@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VItemOptionRandom@@@@@std@@@2@@std@@@std@@QEBAAEBQEAU?$_List_node@U?$pair@$$CBHV?$MS2Ptr@VItemOptionRandom@@@@@std@@PEAX@2@XZ 0x14060ea20
@@ -117,6 +122,16 @@ int FUN_14053feb0(int nItemId);                         // the fixed rank of an 
 int FUN_1406516b0();                                    // the language / region id
 float FUN_14028aaf0();                                  // FLT_EPSILON-like constant (2^-23)
 float FUN_14028aed0(float f);                           // floorf
+extern "C" float(__cdecl* __imp_powf)(float, float);
+
+// <cmath> pow(float, int) (0x1406122f0); the exe calls powf through the CRT import table, which the cmath inline
+// (powf as an /Oi intrinsic) does not, so this copy calls __imp_powf directly.
+inline float Ms2PowFI(float _Xx, int _Yx)
+{
+    if (_Yx == 2)
+        return (_Xx * _Xx);
+    return (__imp_powf(_Xx, static_cast<float>(_Yx)));
+}
 class Unk_GameRule { public: unsigned FUN_14047f720(unsigned nMeso); };   // CGameRule: the meso cost rate
 Unk_GameRule* FUN_1401c0d90();
 class Unk_EnchantRates { public: int FUN_140594810(int nItemId); };    // the remake cost rates (item.cpp)
@@ -208,7 +223,7 @@ void CItemOptionTable::FUN_1405f47a0(int nItemId, int nLevel, int nRank, unsigne
     if (nLevel < 10)
         fBase = 1.25f;
     nStone = (unsigned)(nStone * ((nLv - 50.0) / 10.0 + 1.0)) * nRate;
-    nMeso = (unsigned)(FUN_14028aed0((pow(fBase, nLevel) + fEpsilon) * 200.0f) * (float)nRate);
+    nMeso = (unsigned)(FUN_14028aed0((Ms2PowFI(fBase, nLevel) + fEpsilon) * 200.0f) * (float)nRate);
     nSecond = (nLevel + 11 + (std::max)(0u, nLv - 50)) * nRate;
     if (nRegion == 0)
     {
