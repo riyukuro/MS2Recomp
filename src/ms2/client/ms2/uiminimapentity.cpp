@@ -108,10 +108,18 @@ struct Unk_MmEntityList
     void* m_0;
     void* m_8;
 };
+struct Unk_MmMinimapInfo : public CPtred                            // the field's minimap settings
+{
+    CString m_image;                                                // +0x18 the minimap image
+};
 struct Unk_MmFieldInfo : public CPtred                              // the current field's settings (world +0x298)
 {
-    char m_pad_18[0x150 - 0x18];
+    char m_pad_18[0x64 - 0x18];
+    int m_64;                                                       // +0x64 nonzero: the minimap is forced minimized
+    char m_pad_68[0x150 - 0x68];
     bool m_allowPing;                                               // +0x150
+    char m_pad_151[0x160 - 0x151];
+    MS2Ptr<Unk_MmMinimapInfo> m_minimap;                            // +0x160
     int FUN_1403754d0();                                            // the pk mode
 };
 class Unk_MmWorld                                                   // the world service (FUN_1403ed2d0)
@@ -2323,16 +2331,13 @@ extern int DAT_143ab0248;                                           // client co
 int FUN_14092f640();                                                // the current channel
 
 // @0x141a42800
-// MS2-FUNCTIONAL: the exe moves the channel group through ecx before the string table call.
 void UIMinimapDialog::FUN_141a42800()
 {
     if (m_30 == 0)
         return;
     CStringW strGroup;
-    if (DAT_143ab0248 != 2) {
-        int nGroup = FUN_1403ed2d0()->FUN_141bd98f0();
-        strGroup = FUN_1401a9d70()->FUN_141811980(0x17, nGroup);
-    }
+    if (DAT_143ab0248 != 2)
+        strGroup = FUN_1401a9d70()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
     m_channel = FUN_14092f640();
     int nSelected = 0;
     ASArray channels(2);
@@ -3480,6 +3485,94 @@ bool UIMinimapDialog::FUN_141a44c00(EntityPtr spEntity, const int& nField, bool 
     spEntity->m_visible = bVisible;
     spEntity->m_inFieldNpc = true;
     return true;
+}
+
+class Unk_MmHome;
+Unk_MmHome* FUN_1409670e0();                                        // the home service
+void FUN_1410c3330(Unk_MmHome* pHome, CStringW& strOut);            // the home name
+__int64 FUN_1410c3180(Unk_MmHome* pHome);                           // the home owner's account id
+extern __int64 DAT_143ab2820;                                       // the own account id
+
+// @0x141a3c150
+void UIMinimapDialog::FUN_141a3c150()
+{
+    if (m_30 == 0)
+        return;
+    bool bForceMinimize = true;
+    MS2Ptr<Unk_MmFieldInfo> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+    if (static_cast<bool>(spField.get()) && static_cast<bool>(spField->m_minimap.get()))
+        bForceMinimize = spField->m_64 != 0 || spField->m_minimap->m_image.IsEmpty();
+    m_forceMinimize = bForceMinimize;
+    CStringW strName;
+    FUN_1410c3330(FUN_1409670e0(), strName);
+    bool bReport = false;
+    __int64 nOwner = FUN_1410c3180(FUN_1409670e0());
+    if (nOwner != 0 && nOwner != DAT_143ab2820)
+        bReport = true;
+    m_maxPanel = FUN_140ede180("m_maxpanel");
+    MS2Ptr<AScript> spData = m_data;
+    if (spData == 0)
+        spData.AssignRaw(new AScript(2));
+    if (spData.get() != 0) {
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("fieldname", strName);
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("minimize", vfunc_64() == 1);
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("fullmap", m_fullmap);
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("forceMinimize", bForceMinimize);
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("reportVisible", bReport);
+        if (m_78 == 0) {
+            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("width", 0);
+            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("height", 0);
+            static_cast<ASObj*>(spData.operator->())->FUN_1409c4a30("scale", 1.0f);
+            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("bgAlpha", 30);
+            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("mapAlpha", 100);
+        }
+        else {
+            float fScale = 1.0f;
+            int nBgAlpha = 30;
+            int nMapAlpha = 100;
+            int nWidth = 0;
+            int nHeight = 0;
+            nWidth = FUN_1409c1750(spData->FUN_1422baa20("width"));
+            nHeight = FUN_1409c1750(spData->FUN_1422baa20("height"));
+            nMapAlpha = FUN_1409c1750(spData->FUN_1422baa20("mapAlpha"));
+            nBgAlpha = FUN_1409c1750(spData->FUN_1422baa20("bgAlpha"));
+            fScale = static_cast<float>(FUN_140f17ed0(spData->FUN_1422baa20("scale")));
+        }
+        ASArray showEntities(2);
+        for (POSITION pos = m_showAttrs.GetStartPosition(); pos != 0; m_showAttrs.GetNext(pos)) {
+            ASObj entry(2);
+            ShowAttrMap::CPair* pPair = m_showAttrs.GetAt(pos);
+            if (pPair != 0) {
+                MS2Ptr<TShowAttr> spAttr = pPair->m_value;
+                if (spAttr == 0)
+                    continue;
+                const CString& strKey = pPair->m_key;
+                entry.FUN_1407cba60("layer", strKey);
+                entry.FUN_1407cb9c0("state", spAttr->m_state);
+                entry.FUN_1407cbb20("textKey", spAttr->m_key);
+                entry.FUN_1407cb9c0("displayOrder", spAttr->m_order);
+                entry.FUN_1407cba60("iconSuffix", strKey);
+            }
+            showEntities.FUN_1422bc050(entry.FUN_1422bb870());
+        }
+        static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("showentity", Scaleform::GFx::Value(showEntities.FUN_1422bb870()));
+        int nSelected = 0;
+        ASArray channels(2);
+        m_channel = FUN_14092f640();
+        UIServerListDialog* pServerList = Unk_MmGetDialog<UIServerListDialog>();
+        if (pServerList != 0)
+            pServerList->FUN_141ad2f60(channels, &nSelected, m_channel);
+        static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("channel", Scaleform::GFx::Value(channels.FUN_1422bb870()));
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("selectedchannel", nSelected);
+        CStringW strGroup;
+        if (DAT_143ab0248 != 2)
+            strGroup = FUN_1401a9d70()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("channelprefix", FUN_14028b8e0(L"s_word_ch"));
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("channelgroup", strGroup);
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("mapAlphaPrefix", FUN_14028b8e0(L"s_word_minimap_alpha"));
+        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("bgAlphaPrefix", FUN_14028b8e0(L"s_word_mapbg_alpha"));
+    }
+    m_30->Invoke("initData", spData->FUN_1422bb870());
 }
 
 // @0x141a3d080
