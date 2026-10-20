@@ -15,6 +15,13 @@ class ASMeratMarketBuyBillData : public ASBillData
 {
 public:
     ASMeratMarketBuyBillData();                                     // ctor called by uimeratmarketcommon.cpp (VA by symbols.tsv)
+    // The ctor 0x140e70220, the dtor 0x140e70310 (it drops both pointers) and ??_G 0x140e70410 are defined by
+    // uipaybackdialog.cpp (the first obj that built one); the overrides live in ?\asbilldata.cpp.
+    virtual ~ASMeratMarketBuyBillData();                            //  0 0x140e70310
+    virtual int vfunc_1();                                          //  1 0x1409acc30 the item id
+    virtual __int64 vfunc_6();                                      //  6 0x1409accb0 the payback
+    virtual __int64 vfunc_7();                                      //  7 0x1409acdc0 the payback discount
+    virtual __int64 vfunc_9();                                      //  9 0x1409aced0 the random payback
     // @0x140a8e4e0 (inline COMDAT, paybackmanagerclient.cpp)
     MS2Ptr<CMeratMarketProduct> FUN_140a8e4e0() { return m_spProduct; }
     // @0x140d66b00 (inline COMDAT, meratmarketman.cpp)
