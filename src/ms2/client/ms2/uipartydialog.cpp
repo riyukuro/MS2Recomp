@@ -37,6 +37,7 @@
 #include "ms2/client/ms2/roomstagedungeoncli.h"
 #include "ms2/placeholder/cmycharacter.h"
 #include "ms2/placeholder/uipopupentity.h"
+#include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/asgameentity.h"
 #include "ms2/client/ms2/camera.h"
 #include "ms2/client/ms2/gameobject.h"
@@ -1058,6 +1059,12 @@ int UIPartyDialog::vfunc_48()
     return 0x4e45;
 }
 
+// The header statics of the next original TU (header_statics_a.h's list; each TU has its own copies).
+static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkill2 = "skill";
+static CString s_strStun2 = "stun";
+static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
+
 // ======== UIPartyDPSDialog ========
 
 // The sort key shared by the ranking comparator and the rebuild (0x143af5008).
@@ -1278,6 +1285,12 @@ int UIPartyDPSDialog::vfunc_48()
     return 0x4e8c;
 }
 
+// The header statics of the next original TU (header_statics_a.h's list; each TU has its own copies).
+static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkill3 = "skill";
+static CString s_strStun3 = "stun";
+static Unk_1402a9d70 s_unk1402a9d70_3(17, 0.75f, 0.25f, 2.25f, 10);
+
 // ======== UIPerformanceDialog ========
 
 // @0x141a7c4c0
@@ -1330,6 +1343,13 @@ int UIPerformanceDialog::vfunc_48()
 {
     return 0x4e7d;
 }
+
+// The header statics of the next original TU (header_statics_a.h's list; each TU has its own copies).
+static CString s_strSortTypeNames4[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkill4 = "skill";
+static CString s_strStun4 = "stun";
+static Unk_1402a9d70 s_unk1402a9d70_4(17, 0.75f, 0.25f, 2.25f, 10);
+static UICommon::CMyPCKeyInputController s_pePopupKeyInput;            // 0x14011a960
 
 // ======== UIPopupEntity (the fourth TU of this range) ========
 
@@ -1563,6 +1583,12 @@ int UIPopupEntity::vfunc_48()
 
 // @0x141a7d460
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// The header statics of the next original TU (header_statics_a.h's list; each TU has its own copies).
+static CString s_strSortTypeNames5[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkill5 = "skill";
+static CString s_strStun5 = "stun";
+// (its condition map initializer follows at 0x14011aab0, outside this range)
 
 // ======== UIPopUpMenu (the fifth TU of this range) ========
 
