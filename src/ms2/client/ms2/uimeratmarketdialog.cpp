@@ -475,6 +475,7 @@ CString FUN_141028be0(__int64 nCharId, const CString& strProfile, int bNoDownloa
 class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
 Unk_MmFiles* FUN_140166420();                                               // the resource file system
 CLogString* FUN_140166440();
+AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
 void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 // The world service seen from here: the field proxy of a character id (worldservice.h types the result otherwise).
 class Unk_MmMyPC { public: void FUN_141529fb0(); };                       // MyPC: request the field leave
@@ -3585,6 +3586,41 @@ void UIMeratMarketDialog::OnBuyProduct(const CStringA& strMovie, UIMeratMarketDi
     AScript* pRow = click.FUN_140ec2a90();
     int nCount = FUN_140ebf520(spProduct, pRow);
     ShowBuyBill(strMovie, spProduct, nCount);
+}
+
+// A limited-sale row was selected: a row whose sold-out / limit state is stale gets the fresh product data, and an
+// available product is previewed.
+// @0x141305e70
+void UIMeratMarketDialog::OnSelectLimited(UIMeratMarketDialogUtil::ASOutData& out)
+{
+    if (m_spModelView == 0)
+        return;
+    MS2Ptr<ASMeratMarketProductBase> spRow = out.FUN_140ec28b0();
+    if (spRow == 0)
+        return;
+    Unk_MeratProductKey key;
+    spRow->FUN_1409bc6a0(reinterpret_cast<Unk_MeratOid*>(&key));   // Unk_MeratOid is the same {premium id, ugc id} pair
+    MS2Ptr<CMeratMarketProduct> spProduct = FUN_140939a00()->FUN_140d578d0(key);
+    if (spProduct == 0)
+        return;
+    CMeratMarketPremiumProduct* pPremium = &spProduct->m_premium;
+    bool bSoldOut = pPremium->IsSoldOut();
+    bool bNotSelling = pPremium->IsNotSelling(0);
+    bool bRowSoldOut = spRow->vfunc_4();
+    bool bRowExpired = spRow->vfunc_5();
+    if (bSoldOut != bRowSoldOut || bNotSelling != bRowExpired)
+    {
+        ASMeratMarketLimitedProduct item(FUN_1422db730());
+        if (item.vfunc_2(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spProduct)))
+        {
+            MS2Ptr<AScript> spRenderer = out.FUN_140ec2900();
+            if (FUN_1409ee240(&spRenderer))
+                spRenderer->Invoke("updateItemData", Scaleform::GFx::Value(item.FUN_1422bb870()));
+        }
+    }
+    if (bSoldOut || bNotSelling)
+        return;
+    PreviewBundle(spProduct);
 }
 
 // @0x1413061b0

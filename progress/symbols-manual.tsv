@@ -1515,8 +1515,6 @@ __imp_CrashReporter_SetClientExit	142cce1c0	data
 ?DAT_143ae5128@@3VNiFixedString@@A	143ae5128	data
 ?FUN_1410479a0@@YAXPEAVNiAVObject@@PEAXAEBUUnk_Colc@@@Z	1410479a0	func
 ??0Unk_ChaosTick@@QEAA@XZ	140517b00	func
-??0Unk_ChaosChat@@QEAA@XZ	140acd570	func
-??1Unk_ChaosChat@@QEAA@XZ	140acd770	func
 ?vfunc_10@GFxMovie@@UEAAXPEAX0@Z	1422bdc50	func
 ?vfunc_11@GFxMovieEventHandler@@UEAAXXZ	1422d9f50	func
 ?vfunc_12@GFxMovie@@UEAAXXZ	1422bddd0	func
@@ -3389,8 +3387,6 @@ __imp_CrashReporter_RegisterCallback_AfterDump	142cce1d0	data
 ??1Unk_BrmList@@QEAA@XZ	140dc5fd0	func
 ??0Unk_AasImage@@QEAA@H@Z	1422e5300	func
 ??0Unk_AasSource@@QEAA@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z	1422e5a70	func
-??0Unk_DpChat@@QEAA@XZ	140acd570	func
-??1Unk_DpChat@@QEAA@XZ	140acd770	func
 ?s_bInit@CDynamicActionData@@2_NA	143aad201	data
 ?s_lock@CDynamicActionData@@2VCLockCriticalSection@@A	143aad208	data
 ?s_rows@CDynamicActionData@@2V?$CAtlList@V?$MS2Ptr@VCDynamicActionData@@@@V?$CElementTraits@V?$MS2Ptr@VCDynamicActionData@@@@@ATL@@@ATL@@A	143aad238	data
@@ -3639,8 +3635,6 @@ __imp_NxGetUtilLib	142cced28	data
 ??1CNMDownloadGuildMarkFileFunc@@UEAA@XZ	1415ed260	func
 ??0TDirtyPremiumSale@UIMeratMarketCommon@@QEAA@XZ	1413142f0	func
 ?Add@TDirtyPremiumSale@UIMeratMarketCommon@@QEAAXAEBH@Z	1413153b0	func
-?RepurchaseAdded@UIShopDialog@@QEAAXV?$MS2Ptr@VCNpcShopProductCli@@@@@Z	141afb320	func
-?PopulateProduct@UIShopDialog@@QEAAHAEAVAScript@@V?$MS2Ptr@VCNpcShopProductCli@@@@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@PEAX@Z	141b00240	func
 ??0Unk_ShopUIMsg@@QEAA@XZ	1422e4490	func
 ??1Unk_ShopUIMsg@@QEAA@XZ	140c30570	func
 ?DAT_143ab2a90@@3VUnk_ShopInventory@@A	143ab2a90	data
@@ -3712,8 +3706,6 @@ __imp_NxGetUtilLib	142cced28	data
 ??0Unk_InvGroupEntry@@QEAA@AEAVCPartyMember@@@Z	141483580	func
 ??0Unk_InvGroupEntry@@QEAA@AEAVCGuildMember@@@Z	141483830	func
 ??1Unk_InvGuildRef@@QEAA@XZ	1404eead0	func
-??0Unk_PdChat@@QEAA@XZ	140acd570	func
-??1Unk_PdChat@@QEAA@XZ	140acd770	func
 ?DAT_142fd11d4@@3QB_WB	142fd11d4	data
 ?DAT_142fd1144@@3QBDB	142fd1144	data
 ?DAT_142fd116c@@3QBDB	142fd116c	data
@@ -3786,8 +3778,6 @@ __imp_NxGetUtilLib	142cced28	data
 ??1DelegateImplBase@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEAA@XZ	1413147a0	func
 ??1?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@QEAA@XZ	140bbfbb0	func
 ??4?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@QEAAAEAV0@AEBV0@@Z	140bc0160	func
-??0Unk_WmCommandChat@@QEAA@XZ	140acd570	func
-??1Unk_WmCommandChat@@QEAA@XZ	140acd770	func
 ?DAT_143ab3058@@3V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@A	143ab3058	data
 ?DAT_143ab3078@@3V?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@A	143ab3078	data
 ?GetMaxRound@CFieldMissionTable@@QEAAHXZ	14037c610	func
@@ -3836,3 +3826,14 @@ __imp_NxGetUtilLib	142cced28	data
 ??1?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAA@XZ	140c4de90	func
 ??4?$Delegate@$$A6AXAEAVItemInfoSlot@@AEAVASSlot@@@Z@@QEAAAEAV0@AEBV0@@Z	140c4e0d0	func
 ?BuildSellerRow@UIMeratMarketDialog@@QEAAHAEAVASObj@@V?$MS2Ptr@VCUgcMarketSeller@@@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	1412ef960	func
+?GetID@GameEvent@@QEAAHXZ	1402e1d00	func
+??0Unk_ChaosChat@@QEAA@XZ	140acd570	func
+??1Unk_ChaosChat@@QEAA@XZ	140acd770	func
+??0Unk_DpChat@@QEAA@XZ	140acd570	func
+??1Unk_DpChat@@QEAA@XZ	140acd770	func
+?RepurchaseAdded@UIShopDialog@@QEAAXV?$MS2Ptr@VCNpcShopProductCli@@@@@Z	141afb320	func
+?PopulateProduct@UIShopDialog@@QEAAHAEAVAScript@@V?$MS2Ptr@VCNpcShopProductCli@@@@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@PEAX@Z	141b00240	func
+??0Unk_PdChat@@QEAA@XZ	140acd570	func
+??1Unk_PdChat@@QEAA@XZ	140acd770	func
+??0Unk_WmCommandChat@@QEAA@XZ	140acd570	func
+??1Unk_WmCommandChat@@QEAA@XZ	140acd770	func
