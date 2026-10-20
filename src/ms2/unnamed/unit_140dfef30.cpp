@@ -895,3 +895,28 @@ bool FUN_140e01f10(Unk_140165cf0* pElem)
     }
     return bMinimize;
 }
+
+// MS2-RANGE: 0x140dfee10-0x140dfef30 .text$mn
+// @0x140dfee10
+void FUN_140dfee10(__int64 quizId, int first, int second)
+{
+    COutPacket packet(0x90, 0);
+    packet.vfunc_o10_1(10);
+    packet.vfunc_o10_1(0);
+    packet.vfunc_o10_4(quizId);
+    packet.vfunc_o10_3(first);
+    packet.vfunc_o10_3(second);
+    FUN_140710590(packet);
+}
+
+// @0x140dfeeb0
+void FUN_140dfeeb0()
+{
+    MyPC* player = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    if (player == 0)
+        return;
+    COutPacket packet(0x90, 0);
+    packet.vfunc_o10_1(10);
+    packet.vfunc_o10_1(2);
+    FUN_140710590(packet);
+}
