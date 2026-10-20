@@ -4047,3 +4047,8 @@ FMOD_System_Create	142303a95	func
 ?GetOSPriority@Thread@Scaleform@@SAHW4ThreadPriority@12@@Z	14258b060	func
 ?SetUsableProcessors_PC@CriMvEasyPlayer@@QEAAXHPEBKHAEAW4CriError@@@Z	140024c40	func
 ?GetMaterial@NiMaterial@@SAPEAV1@AEBVNiFixedString@@@Z	141d661d0	func
+??1RTHandle@ContextImpl@Render@Scaleform@@QEAA@XZ	14257ec50	func
+?Display@Renderer2D@Render@Scaleform@@QEAAXPEAVTreeRoot@23@@Z	142582230	func
+?EndFrameContextNotify@RenderNotify@ContextImpl@Render@Scaleform@@QEAAXXZ	14257ff00	func
+?GetContextNotify@Renderer2D@Render@Scaleform@@QEBAPEAVRenderNotify@ContextImpl@23@XZ	142582270	func
+?GetRenderEntry@RTHandle@ContextImpl@Render@Scaleform@@QEBAPEAVEntry@234@XZ	142580250	func
