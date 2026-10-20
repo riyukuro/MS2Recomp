@@ -47,6 +47,8 @@ private:
     ItemSlotBinder m_missionBinder;                                         // +0x180 "<name>_mission"
     ItemSlotBinder m_mapBinder;                                             // +0x1c0 "<name>_map"
     Unk_DTTick m_tick;                                                      // +0x200 1 s refresh timer
+public:
+    int FUN_140ee3290();                                    // 0x140ee3290 as bound by the game menu table (ClassFunHandler RTTI)
 };
 MS2_CHECK_SIZE(UITimeRunEventDialog, 0x208);
 MS2_CHECK_OFFSET(UITimeRunEventDialog, m_missionBinder, 0x180);
