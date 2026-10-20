@@ -757,10 +757,12 @@ static bool FUN_140b768a0(const CStringW& strTag)
 }
 
 // Appends a string argument.
+CStringW FUN_140719900(CStringW str);          // string-argument filter (by value)
+CStringW FUN_140718600(const CStringW& str);   // its inverse on read
 // @0x140b76940
 void CMsgBoxData::FUN_140b76940(CStringW str)
 {
-    m_args.Add(str);
+    m_args.Add(FUN_140719900(str));
 }
 
 // The couple dance event dialog (UI type 0x4f71) if it is open.
@@ -780,14 +782,16 @@ UICoupleDanceEventDialog* FUN_140b769d0(int nId)
 // @0x140b76a70
 bool CMsgBoxData::FUN_140b76a70(unsigned int nIndex, CStringW& strOut) const
 {
-    bool bHas = nIndex < m_args.GetCount();
-    if (bHas)
-        strOut = m_args[nIndex];
-    return bHas;
+    if (nIndex >= m_args.GetCount())
+        return false;
+    strOut = FUN_140718600(m_args[nIndex]);
+    return true;
 }
 
 // ---- Delegate<bool(int, const CMsgBoxData&)> over a free function ----
 
+// MS2-FUNCTIONAL: 0x140b76b10 is the Delegate<bool(int,const CMsgBoxData&)>(pfn) ctor itself (our ctor COMDAT matches it
+//   byte-exact); this free-function name (imported by 5 units, same rcx=ret/rdx=pfn ABI) only forwards to that ctor
 // @0x140b76b10
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMsgBoxData&))
 {
