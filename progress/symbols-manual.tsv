@@ -3814,3 +3814,9 @@ __imp_NxGetUtilLib	142cced28	data
 ?SetEventScript@WorldMapManager@@QEAAXIPEAVASObj@@@Z	141b9a390	func
 ?Parse@MMLParser@@QEAAXXZ	140d7e780	func
 ?DAT_143ab2a90@@3VUnk_ImInventory@@A	143ab2a90	data
+??0CWinHttpClient@@QEAA@AEBV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@@Z	1409208e0	func
+??0Unk_GdXmlRoot@@QEAA@PEBD@Z	14086f2f0	func
+??1Unk_GdXmlRoot@@QEAA@XZ	14086f450	func
+??1Unk_InvListEventBase@@UEAA@XZ	1422e22a0	func
+??0Unk_IbUIMsg@@QEAA@XZ	1422e4490	func
+??1Unk_IbUIMsg@@QEAA@XZ	140c30570	func
