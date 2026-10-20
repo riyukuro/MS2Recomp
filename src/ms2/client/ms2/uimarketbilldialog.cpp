@@ -256,8 +256,9 @@ bool Delegate<bool(MS2Ptr<TMarketBillDataParam>, const ATL::CAtlMap<ePayType, __
 }
 
 // @0x140eac620
-bool Delegate<bool(MS2Ptr<TMarketBillDataParam>, const ATL::CAtlMap<ePayType, __int64>&, CStringW, CStringW)>::operator()(
-    MS2Ptr<TMarketBillDataParam> a1, const PaymentMap& a2, CStringW a3, CStringW a4) const
+template <>
+bool Delegate<bool(MS2Ptr<TMarketBillDataParam>, const ATL::CAtlMap<ePayType, __int64>&, const CStringW&, const CStringW&)>::operator()(
+    MS2Ptr<TMarketBillDataParam> a1, const ATL::CAtlMap<ePayType, __int64>& a2, const CStringW& a3, const CStringW& a4) const
 {
     if (!m_pImpl)
         FUN_1405625e0();

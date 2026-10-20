@@ -371,66 +371,8 @@ bool FUN_141b04ed0(CNpcShopProductCli* pProduct, bool bNotify);
 bool FUN_141b04fd0(CNpcShopProductCli* pProduct, bool bNotify);
 void FUN_141b05100(__int64 nSeconds, int& nDays, long& nHours, int& nMinutes, long& nSecs);
 
-// The gift callback in its real shape: the recipient and the message by const reference (tmarketbilldataparam.h
-// declares them by value; the object is the same 8 bytes; the same local specialization as uicashshopdialog.cpp).
+// The gift callback: TMarketBillDataParam::GiftCallback (the generic four-argument Delegate of delegate.h).
 typedef TMarketBillDataParam::PaymentMap Unk_ShopPayMap;
-template <>
-class Delegate<bool(MS2Ptr<TMarketBillDataParam>, const Unk_ShopPayMap&, const CStringW&, const CStringW&)>
-{
-public:
-    class DelegateImplBase
-    {
-    public:
-        DelegateImplBase();
-        virtual ~DelegateImplBase();                                // 0
-        virtual DelegateImplBase* vfunc_1() const = 0;              // 1 clone
-        virtual bool vfunc_2(MS2Ptr<TMarketBillDataParam> a1, const Unk_ShopPayMap& a2, const CStringW& a3, const CStringW& a4) = 0;   // 2 Invoke
-        virtual bool vfunc_3(const DelegateImplBase* p) const = 0;  // 3 equals
-    };
-
-    template <class F>
-    class DelegateImpl : public DelegateImplBase
-    {
-    public:
-        DelegateImpl(const DelegateImpl& o) : m_f(o.m_f) {}
-        DelegateImpl(const F& f) : m_f(f) {}
-        virtual DelegateImplBase* vfunc_1() const { return new DelegateImpl(*this); }
-        virtual bool vfunc_2(MS2Ptr<TMarketBillDataParam> a1, const Unk_ShopPayMap& a2, const CStringW& a3, const CStringW& a4)
-        {
-            return Call(m_f, a1, a2, a3, a4);
-        }
-        virtual bool vfunc_3(const DelegateImplBase* p) const
-        {
-            const DelegateImpl* o = dynamic_cast<const DelegateImpl*>(p);
-            if (!o)
-                return false;
-            return m_f == o->m_f;
-        }
-
-    private:
-        template <class C, class M>
-        static bool Call(std::pair<C*, M>& p, MS2Ptr<TMarketBillDataParam> a1, const Unk_ShopPayMap& a2, const CStringW& a3, const CStringW& a4)
-        {
-            return (p.first->*p.second)(a1, a2, a3, a4);
-        }
-
-        F m_f;
-    };
-
-    Delegate() : m_pImpl(0) {}
-    template <class C>
-    Delegate(C* const& obj, bool (C::*const& f)(MS2Ptr<TMarketBillDataParam>, const Unk_ShopPayMap&, const CStringW&, const CStringW&))
-        : m_pImpl(new DelegateImpl<std::pair<C*, bool (C::*)(MS2Ptr<TMarketBillDataParam>, const Unk_ShopPayMap&, const CStringW&, const CStringW&)> >(std::make_pair(obj, f)))
-    {
-    }
-    Delegate(const Delegate& o);
-    ~Delegate();
-    Delegate& operator=(const Delegate& o);
-    bool IsNull() const { return m_pImpl == 0; }
-
-private:
-    DelegateImplBase* m_pImpl;          // +0x00
-};
 typedef Delegate<bool(MS2Ptr<TMarketBillDataParam>, const Unk_ShopPayMap&, const CStringW&, const CStringW&)> Unk_ShopGiftDelegate;
 
 

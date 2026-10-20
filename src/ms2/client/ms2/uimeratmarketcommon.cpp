@@ -540,7 +540,7 @@ public:
     void FUN_140d58650(int nSourceKind);
 };
 bool FUN_140d5b1f0(Unk_McMan* pMan, MS2Ptr<CMeratMarketProduct> spProduct, int n);
-void FUN_140d60dd0(CMeratMarketBuy* pBuy, CStringW strA, CStringW strB);
+void FUN_140d60dd0(CMeratMarketBuy* pBuy, const CStringW& strA, const CStringW& strB);   // the strings by reference
 int FUN_140ec3950(ASMeratMarketBuyBillData* pBill);
 void FUN_1409e3190(AScript* pTip, CMeratMarketPremiumProduct* pProduct, int n);
 void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);
@@ -690,7 +690,8 @@ bool FUN_140ebe990(Scaleform::GFx::Value* pOut, ASData& data, MS2Ptr<TMarketBill
 // The gift / basket buy callback: one buy request per marked bill row.
 // MS2-FUNCTIONAL: not byte-matched (unrecovered callee signatures, temporaries)
 // @0x140ebef60
-bool FUN_140ebef60(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataParam::PaymentMap& mapPay, CStringW strA, CStringW strB)
+bool FUN_140ebef60(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataParam::PaymentMap& mapPay, const CStringW& strA,
+                   const CStringW& strB)
 {
     if (spBase == 0)
         return false;

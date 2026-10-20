@@ -83,35 +83,9 @@ private:
     DelegateImplBase* m_pImpl;          // +0x00
 };
 
-// The gift callback (+0xc8): Delegate<bool(MS2Ptr<TMarketBillDataParam>, const PaymentMap&, CStringW, CStringW)> (the recipient
-// name and the message). Four-argument form, specialized here like the tooltip one; operator() is defined by the unit that
-// owns the COMDAT (uimarketbilldialog.cpp).
-template <>
-class Delegate<bool(MS2Ptr<TMarketBillDataParam>, const ATL::CAtlMap<ePayType, __int64>&, CStringW, CStringW)>
-{
-public:
-    typedef ATL::CAtlMap<ePayType, __int64> PaymentMap;
-
-    class DelegateImplBase
-    {
-    public:
-        DelegateImplBase();
-        virtual ~DelegateImplBase();                                // 0
-        virtual DelegateImplBase* vfunc_1() const = 0;              // 1 clone
-        virtual bool vfunc_2(MS2Ptr<TMarketBillDataParam> a1, const PaymentMap& a2, CStringW a3, CStringW a4) = 0;   // 2 Invoke
-        virtual bool vfunc_3(const DelegateImplBase* p) const = 0;  // 3 equals
-    };
-
-    Delegate() : m_pImpl(0) {}
-    Delegate(const Delegate& o);
-    ~Delegate();
-    Delegate& operator=(const Delegate& o);
-    bool IsNull() const { return m_pImpl == 0; }
-    bool operator()(MS2Ptr<TMarketBillDataParam> a1, const PaymentMap& a2, CStringW a3, CStringW a4) const;
-
-private:
-    DelegateImplBase* m_pImpl;          // +0x00
-};
+// The gift callback (+0xc8): the generic four-argument Delegate of delegate.h with the strings by const reference (exe RTTI
+// .?AUDelegateImplBase@?$Delegate@$$A6A_NV?$TPtr@UTMarketBillDataParam@@@@AEBV?$CAtlMap@...@AEBV?$CStringT@...@2@Z@@;
+// operator() 0x140eac620 never destroys them). operator() is defined by the unit that owns the COMDAT (uimarketbilldialog.cpp).
 
 class TMarketBillDataParam : public CPtred
 {
@@ -119,7 +93,7 @@ public:
     typedef ATL::CAtlMap<ePayType, __int64> PaymentMap;
     typedef Delegate<bool(MS2Ptr<TMarketBillDataParam>, const PaymentMap&)> BuyCallback;
     typedef Delegate<bool(Scaleform::GFx::Value*, ASData&, MS2Ptr<TMarketBillDataParam>)> TooltipCallback;
-    typedef Delegate<bool(MS2Ptr<TMarketBillDataParam>, const PaymentMap&, CStringW, CStringW)> GiftCallback;
+    typedef Delegate<bool(MS2Ptr<TMarketBillDataParam>, const PaymentMap&, const CStringW&, const CStringW&)> GiftCallback;
     typedef Delegate<bool(MS2Ptr<TMarketBillDataParam>)> CancelCallback;
 
     TMarketBillDataParam();                                         // 0x140bbf8d0

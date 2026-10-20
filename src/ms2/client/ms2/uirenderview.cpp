@@ -197,7 +197,7 @@ void UIRenderView::vfunc_12(const ATL::CAtlArray<NiNode*>&, NiNodePtr)
 }
 
 // @0x141ab7620
-void UIRenderView::vfunc_11(ATL::CAtlArray<efd::SmartPointer<NiActorManager> >&)
+void UIRenderView::vfunc_11(void*)
 {
 }
 
