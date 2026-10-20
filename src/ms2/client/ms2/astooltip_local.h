@@ -68,6 +68,13 @@ bool FUN_14081dc50(int nSpecial);                 // the special stat is shown a
 CStringW FUN_14082f000(int nStat);                // GetStatCommonText (stat.cpp)
 CStringW FUN_140630e10(int nSpecial);             // the special stat name (itemsocketsystemutil.cpp)
 void FUN_14083d2b0(CStringW& str);                // trims the trailing line break (unit_14083bab0.cpp)
+#include "ms2/placeholder/wcformat.h"
+#include "ms2/commonfiles/itemoption.h"
+#include "ms2/commonfiles/itemsocketsystemutil.h"
+#include "ms2/commonfiles/additionalactionadditional.h"
+#include "ms2/client/ms2/skilldatatablecli.h"
+CItemSocketTable* FUN_14052d200();                // TSingleton<CItemSocketTable>::GetInstance (exe copy; as part 2)
+SkillDataTableCli* FUN_1401958b0();               // TSingleton<SkillDataTableCli>::GetInstance (exe copy; as part 2)
 #endif
 #if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 1
 class Unk_ItemEquipData : public CItemData {};    // solo build only: part 5 defines it otherwise
@@ -174,7 +181,8 @@ class Unk_ItemEquipData : public CItemData {};    // solo build only: part 5 def
 #include "ms2/commonfiles/itemgachaboxtable.h"
 class Unk_ItemPlusInfo { public: int FUN_1408bbc50(); };    // CItemStatus::FUN_140630d90's record (UnlimitedEnchantInfo)
 #include "ms2/commonfiles/itemenchantinfo.h"              // CItemEnchantInfo
-class Unk_ItemEnchantData { public: CItemEnchantInfo* FUN_140630d60(); Unk_ItemPlusInfo* FUN_140630d90(); };   // CItem::FUN_1405278a0's record (CItemStatus)
+#include "ms2/commonfiles/itemoption.h"
+class Unk_ItemEnchantData { public: CItemEnchantInfo* FUN_140630d60(); Unk_ItemPlusInfo* FUN_140630d90(); CItemOption* FUN_140630d30(); int FUN_14062ffb0(unsigned nType, int nWhich, int nSub); };   // CItem::FUN_1405278a0's record (CItemStatus)
 CStringTable* FUN_1401a9d70_p3();                           // 0x1401a9d70 the string table (astooltip.cpp declares the Unk_CommandStrings form)
 CReservedWordTable* FUN_1403b4750();                        // 0x1403b4750 the reserved word table
 ItemGachaBoxTable* FUN_14052d230();                         // 0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance
@@ -248,6 +256,23 @@ CStringW FUN_1416e5210(unsigned nQuestId, CStringW strKey); // the quest name fo
 // the UI string service (0x14025e7a0): "$"-prefixed keys translated by FUN_1422b0570
 class Unk_TooltipUiStrings { public: CStringW FUN_1422b0570(const CString& strKey); };
 Unk_TooltipUiStrings* FUN_14025e7a0_p3();
+bool FUN_14082f250(int nStat);                              // the stat is shown as a rate (stat.cpp)
+bool FUN_14081dcd0(int nSpecial);                           // the special stat is shown as a rate (specialability.cpp)
+CStringW FUN_14082f000(int nStat);                          // GetStatCommonText (stat.cpp)
+CStringW FUN_140630e10(int nSpecial);                       // the special stat name (itemsocketsystemutil.cpp)
+CStringW FUN_1409e0900(int n);                              // part 5: an int option value text
+CStringW FUN_1409e0a90(float fRate);                        // part 5: a rate option value text
+#include "ms2/commonfiles/ugccubecategorytable.h"
+#include "ms2/client/ms2/achievemanager.h"
+CAchieveManager* FUN_1406c7600();                                     // TSingleton<CAchieveManager>::GetInstance (exe copy)
+int FUN_140936640(CAchieveManager* pManager, int nId, int nGrade);    // 0x140936640 CAchieveManager: the trophy grade is reached
+CStringW FUN_14093bd40(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
+int FUN_1407077c0(int nId);                                           // objectdata.cpp: state change permission
+int FUN_140707710(int nId);                                           // objectdata.cpp: trigger control enabled
+CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);        // FormatStringId<CStringW>
+extern unsigned short DAT_143ab291c;                                  // the housing level limit (offline)
+#include "ms2/commonfiles/maid.h"
+CStringW FUN_140763e10(int nPrice);                                   // the price text (questmasktable.cpp)
 #if defined(MS2_AT_SOLO) && MS2_AT_SOLO == 3
 class Unk_ItemEquipData : public CItemData {};                       // solo build only: part 5 defines it otherwise
 #endif

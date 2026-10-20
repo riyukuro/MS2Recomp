@@ -91,6 +91,104 @@ void ASTooltip::FUN_1409d3470(CItem* pItem)
 }
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D3470, ASTooltip, FUN_1409d3470, 1471, 0xBE16A635); }
 
+// @0x1409d3a40
+void ASTooltip::FUN_1409d3a40(CItem* pItem)
+{
+    PCBase* pPc = FUN_141bd0cc0_p3(FUN_1403ed2d0_p3());
+    if (pPc == 0)
+        return;
+    ATL::CAtlArray<Unk_QuestItemLink> arrLinks;
+    FUN_140764020_p3()->FUN_1416ce860(MS2Ptr<CItem>(pItem), arrLinks);
+    if (arrLinks.GetCount() != 0)
+    {
+        int bEquipQuest = 0;
+        CStringW strQuests;
+        for (size_t i = 0; i < arrLinks.GetCount(); i++)
+        {
+            if (arrLinks[i].m_kind == 0)
+            {
+                CStringW strKey;
+                switch (arrLinks[i].m_state)
+                {
+                case 1:
+                    strKey = L"s_msg_tooltip_quest_name_progress";
+                    break;
+                case 0:
+                    strKey = L"s_msg_tooltip_quest_name";
+                    break;
+                case 2:
+                    strKey = L"s_msg_tooltip_quest_name_complete";
+                    break;
+                }
+                if (strQuests.GetLength() != 0)
+                    strQuests += L", ";
+                strQuests += FUN_1416e5210(arrLinks[i].m_questId, strKey);
+            }
+            else if (arrLinks[i].m_kind == 1)
+                bEquipQuest = 1;
+        }
+        CStringW strInfo;
+        if (strQuests.GetLength() != 0)
+            strInfo = FUN_14028dfa0(L"s_msg_tooltip_quest_info", strQuests);
+        if (bEquipQuest != 0)
+        {
+            if (strInfo.GetLength() != 0)
+                strInfo += "\n";
+            strInfo += FUN_14028b8e0(L"s_msg_tooltip_equip_quest_info");
+        }
+        if (strInfo.GetLength() != 0)
+        {
+            FUN_1407cbb20("itemQuestInfo", strInfo);
+            int nState = FUN_140764020_p3()->FUN_1416ce6a0(MS2Ptr<CItem>(pItem));
+            if (nState == 0)
+                FUN_1407cb9c0("questBeginAble", 1);
+            else if (nState == 1)
+                FUN_1407cb9c0("questProgress", 1);
+        }
+    }
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D3A40, ASTooltip, FUN_1409d3a40, 1219, 0x3120A701); }
+
+// @0x1409d3f10
+void ASTooltip::FUN_1409d3f10(CItem* pItem)
+{
+    int nState = pItem->FUN_140528ca0();
+    __int64 nUnlockTime = pItem->FUN_140528e00();
+    if (nState == 0 && nUnlockTime > FUN_140869440())
+    {
+        FUN_1407cbbe0(s_strItemIconLock, false);
+        FUN_1407cbbe0(s_strItemIconUnLock, true);
+        CStringW strText;
+        CMsTime remain(pItem->FUN_140528e00() - FUN_140869440());
+        int nHours = (int)(remain.Get() / 3600);
+        int nMinutes = (std::max)((int)(remain.Get() % 3600 / 60), 1);
+        if (nHours > 0)
+        {
+            strText = FUN_14025e7a0_p3()->FUN_1422b0570("$s_itemlock_tooltip_msg_unlock");
+            strText = StringFormat(strText, nHours, nMinutes);
+        }
+        else
+        {
+            strText = FUN_14025e7a0_p3()->FUN_1422b0570("$s_itemlock_tooltip_msg_unlock2");
+            strText = StringFormat(strText, nMinutes);
+        }
+        FUN_1407cbb20("itemLockInfo", strText);
+        return;
+    }
+    if (nState == 1)
+    {
+        FUN_1407cbbe0(s_strItemIconLock, true);
+        FUN_1407cbbe0(s_strItemIconUnLock, false);
+        FUN_1407cbb20("itemLockInfo", FUN_14025e7a0_p3()->FUN_1422b0570("$s_itemlock_tooltip_msg_lock"));
+    }
+    else
+    {
+        FUN_1407cbbe0(s_strItemIconLock, false);
+        FUN_1407cbbe0(s_strItemIconUnLock, false);
+    }
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D3F10, ASTooltip, FUN_1409d3f10, 1072, 0x005C7805); }
+
 // @0x1409d4490
 // MS2-FUNCTIONAL: the exe loads nRank through ecx and compares the max level with the operands swapped (source form not found)
 void ASTooltip::FUN_1409d4490(CItem* pItem)
@@ -132,6 +230,91 @@ void ASTooltip::FUN_1409d46e0(CItem* pItem)
         FUN_1407cb9c0("unlimited", pInfo->FUN_1408bbc50());
 }
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D46E0, ASTooltip, FUN_1409d46e0, 121, 0x0809F9B2); }
+
+// @0x1409d4760
+bool ASTooltip::FUN_1409d4760(CItem* pItem)
+{
+    if (pItem->FUN_140527840()->FUN_14053d760())
+    {
+        if (pItem->FUN_140527840()->FUN_14053efd0() == 0)
+            return true;
+        __int64 nMin = pItem->FUN_1405278a0()->FUN_14062ffb0(0x1b, 3, 0);
+        __int64 nMax = pItem->FUN_1405278a0()->FUN_14062ffb0(0x1c, 3, 0);
+        ASObj obj(2);
+        obj.FUN_1407cb9c0("type", 2);
+        obj.FUN_1407cbb20("title", FUN_14082f000(0x1b));
+        obj.FUN_1407cb9c0("extraup", 0);
+        obj.FUN_1407cbb20("min", FUN_1409e0900((int)nMin));
+        obj.FUN_1407cbb20("max", FUN_1409e0900((int)nMax));
+        FUN_1409adbe0("statDescription", obj.FUN_1422bb870());
+        return true;
+    }
+    if (pItem->FUN_140527840()->FUN_14053c5c0() == 0xd)
+    {
+        if (pItem->FUN_140527840()->FUN_14053efd0() == 0)
+            return true;
+        std::pair<Unk_SocketSpecialStat, int> special = pItem->FUN_1405278a0()->FUN_140630d30()->FUN_1405cb620(0);
+        if (special.first != 0)
+        {
+            ASObj obj(2);
+            obj.FUN_1407cb9c0("type", 2);
+            obj.FUN_1407cbb20("title", FUN_140630e10(special.first));
+            obj.FUN_1407cb9c0("extraup", 0);
+            CStringW strValue;
+            if (FUN_14081dcd0(special.first))
+                strValue = FUN_1409e0a90((float)special.second / 1000.0f);
+            else
+                strValue = FUN_1409e0900(special.second);
+            obj.FUN_1407cbb20("min", strValue);
+            obj.FUN_1407cbb20("max", strValue);
+            FUN_1409adbe0("statDescription", obj.FUN_1422bb870());
+        }
+        std::pair<Unk_StatType, int> stat = pItem->FUN_1405278a0()->FUN_140630d30()->FUN_1405cb4e0(0);
+        if (stat.first != -1)
+        {
+            ASObj obj(2);
+            obj.FUN_1407cb9c0("type", 2);
+            obj.FUN_1407cbb20("title", FUN_14082f000(stat.first));
+            obj.FUN_1407cb9c0("extraup", 0);
+            CStringW strValue;
+            if (FUN_14082f250(stat.first))
+                strValue = FUN_1409e0a90((float)stat.second / 1000.0f);
+            else
+                strValue = FUN_1409e0900(stat.second);
+            obj.FUN_1407cbb20("min", strValue);
+            obj.FUN_1407cbb20("max", strValue);
+            FUN_1409adbe0("statDescription", obj.FUN_1422bb870());
+        }
+    }
+    int nStat = pItem->FUN_140527840()->FUN_14053f7c0();
+    if (nStat != -1)
+    {
+        if (pItem->FUN_140527840()->FUN_14053efd0() == 0)
+            return true;
+        __int64 nValue = pItem->FUN_1405278a0()->FUN_14062ffb0(nStat, 3, 0);
+        if (nValue != 0)
+        {
+            ASObj obj(2);
+            obj.FUN_1407cb9c0("type", 2);
+            obj.FUN_1407cbb20("title", FUN_14082f000(nStat));
+            obj.FUN_1407cb9c0("extraup", 0);
+            if (FUN_14082f250(nStat))
+            {
+                obj.FUN_1407cbb20("min", FUN_1409e0a90((float)nValue / 1000.0f));
+                obj.FUN_1407cbb20("max", FUN_1409e0a90((float)nValue / 1000.0f));
+            }
+            else
+            {
+                obj.FUN_1407cbb20("min", FUN_1409e0900((int)nValue));
+                obj.FUN_1407cbb20("max", FUN_1409e0900((int)nValue));
+            }
+            FUN_1409adbe0("statDescription", obj.FUN_1422bb870());
+        }
+        return true;
+    }
+    return false;
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D4760, ASTooltip, FUN_1409d4760, 2550, 0x405341EB); }
 
 // @0x1409d5610
 void ASTooltip::FUN_1409d5610(int nItemId)
@@ -213,6 +396,155 @@ void ASTooltip::FUN_1409d5aa0(int nItemId)
     FUN_1407cbb20("itemDescription", str);
 }
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D5AA0, ASTooltip, FUN_1409d5aa0, 189, 0xA32EDB32); }
+
+// @0x1409d5b70
+// MS2-FUNCTIONAL: the housing id argument is staged through ecx in the exe (unsolved /Od idiom)
+void ASTooltip::FUN_1409d5b70(int nItemId)
+{
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (spData == 0)
+        return;
+    CStringW strGuide = FUN_1401a9d70_p3()->FUN_141811c90(nItemId, "guideDescription");
+    int nObjCode = spData->install.objCode;
+    if (nObjCode != 0)
+    {
+        if (FUN_1407077c0(nObjCode) != 0)
+            strGuide = FUN_14052bd00(0xafa, strGuide);
+        if (FUN_140707710(nObjCode) != 0)
+            strGuide = FUN_14052bd00(0xaf9, strGuide);
+    }
+    if (spData->FUN_14053cb80())
+    {
+        int nHousingId = spData->FUN_14053c510();
+        MS2Ptr<ItemHousing> spHousing = FUN_140281980_p3()->GetHousing(nHousingId);
+        if (spHousing == 0)
+            return;
+        unsigned short nLevel = spHousing->interiorLevel;
+        unsigned nTrophyId = spHousing->trophyID;
+        unsigned nTrophyLevel = spHousing->trophyLevel;
+        int nPriceCount = spHousing->priceCount;
+        if (FUN_140166410_p3()->FUN_14036d570(0xdb) && nLevel > 0 && nPriceCount == 1)
+        {
+            UGCCubeCategoryTable::InteriorPtr spInterior = TSingleton<UGCCubeCategoryTable>::GetInstance()->GetInterior(spHousing->categoryIndex);
+            if (spInterior.get() != 0)
+            {
+                int nCurrent = nLevel;
+                nLevel = nCurrent > spInterior->m_nRequireLevel ? nLevel : spInterior->m_nRequireLevel;
+            }
+            if (nLevel > DAT_143ab291c)
+            {
+                if (!strGuide.IsEmpty())
+                    strGuide.Append(L"\n");
+                strGuide.Append(BlockFormat(0x6fa, nLevel));
+            }
+        }
+        if (FUN_140936640(FUN_1406c7600(), nTrophyId, nTrophyLevel) == 0)
+        {
+            CStringW strTrophy = FUN_14093bd40(nTrophyId, nTrophyLevel, CStringW(L""));
+            if (!strTrophy.IsEmpty())
+            {
+                if (!strGuide.IsEmpty())
+                    strGuide.Append(L"\n");
+                strGuide.Append(FUN_14028dfa0(CStringW(L"s_construct_require_trophy"), strTrophy));
+            }
+        }
+    }
+    if (!m_50.IsEmpty())
+    {
+        if (!strGuide.IsEmpty())
+            strGuide.Append(L"\n");
+        strGuide.Append(m_50);
+    }
+    FUN_1407cbb20("itemGuideDescription", strGuide);
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D5B70, ASTooltip, FUN_1409d5b70, 1438, 0x2F4EEABA); }
+
+// @0x1409d6120
+// MS2-FUNCTIONAL: the exe destroys the main description before the emoticon branch inside one if/else (frame layout differs)
+void ASTooltip::FUN_1409d6120(int nItemId)
+{
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (spData == 0)
+        return;
+    {
+        CStringW strMain = FUN_1401a9d70_p3()->FUN_141811c90(nItemId, "mainDescription");
+        if (strMain.GetLength() != 0)
+        {
+            ASObj obj(2);
+            obj.FUN_1407cb9c0("type", 0);
+            obj.FUN_1407cbb20("text", strMain);
+            FUN_1409adbe0("statDescription", obj.FUN_1422bb870());
+            return;
+        }
+    }
+    CStringW strText;
+    if (spData->FUN_14053dfd0(CStringW(L"ChatEmoticonAdd")))
+        strText = FUN_1409daff0(spData);
+    if (strText.GetLength() != 0)
+    {
+        ASObj obj(2);
+        obj.FUN_1407cb9c0("type", 0);
+        obj.FUN_1407cbb20("text", strText);
+        FUN_1409adbe0("statDescription", obj.FUN_1422bb870());
+    }
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D6120, ASTooltip, FUN_1409d6120, 876, 0x748328C9); }
+
+// @0x1409d64a0
+void ASTooltip::FUN_1409d64a0(int nItemId, int nRank, int nLevel, int nAdditional)
+{
+    if (FUN_1409c6540() == 0)
+        return;
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (!spData)
+        return;
+    ASArray arr(2);
+    FUN_1409deea0(&arr, nItemId, nRank, nLevel, nAdditional);
+    FUN_1409df180(&arr, nItemId);
+    if (spData->FUN_14053cb80())
+    {
+        FUN_1409de140(&arr, nItemId, nRank);
+        FUN_1409de630(&arr, nItemId);
+        FUN_1409dea00(&arr, nItemId);
+    }
+    else if (spData->FUN_14053d840())
+    {
+        FUN_1409de140(&arr, nItemId, nRank);
+        FUN_1409df760(&arr, spData);
+    }
+    else
+    {
+        FUN_1409de140(&arr, nItemId, nRank);
+    }
+    FUN_1409deb80(&arr, nItemId);
+    FUN_1409df400(&arr, nItemId);
+    FUN_1409df5b0(&arr, nItemId);
+    FUN_1409adbe0("extraDescription", arr.FUN_1422bb870());
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D64A0, ASTooltip, FUN_1409d64a0, 650, 0x9A297696); }
+
+// @0x1409d6730
+void ASTooltip::FUN_1409d6730(int nItemId)
+{
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (spData == 0)
+        return;
+    if (spData->FUN_14053dd30() <= 0)
+        return;
+    TPtrValue<MaidDesc> spDesc = CMaidDescTable::GetInstance()->Find(spData->FUN_14053dd30());
+    if (!spDesc)
+        return;
+    TPtrValue<MaidInfo> spInfo = CMaidInfoTable::GetInstance()->Find(spData->FUN_14053dd30());
+    if (!spInfo)
+        return;
+    CStringW strIcon(spInfo->FUN_1409eee80() != 0 ? L"export_common_icon_meso" : L"export_common_icon_merat");
+    CStringW strText = BlockFormat(0x7a2, spDesc->specialty, FUN_140763e10(spInfo->salary), strIcon);
+    ASObj row(2);
+    row.FUN_1407cb9c0("type", 0);
+    row.FUN_1407cbb20("text", strText);
+    FUN_1409adbe0("statDescription", row.FUN_1422bb870());
+}
+namespace p3hook { MS2_REPLACE_METHOD(0x1409D6730, ASTooltip, FUN_1409d6730, 763, 0x6733EB1B); }
 
 // @0x1409d7560
 void ASTooltip::FUN_1409d7560(int nItemId, int nRank)

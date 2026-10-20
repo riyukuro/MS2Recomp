@@ -152,6 +152,10 @@ public:
     CStringW FUN_1409d9c50(CItem* pItem);                                // the extra comment of an item
     void FUN_1409d3a40(CItem* pItem);                                    // itemQuestInfo
     void FUN_1409d3f10(CItem* pItem);                                    // itemLockInfo / the lock icons
+    void FUN_1409d5b70(int nItemId);                                     // itemGuideDescription
+    void FUN_1409d6120(int nItemId);                                     // the main description as a statDescription
+    void FUN_1409d64a0(int nItemId, int nRank, int nLevel, int nAdditional);   // extraDescription
+    void FUN_1409d6730(int nItemId);                                     // the maid contract description row
     // ---- end part 3 ----
     // ---- astooltip.cpp part 4 members (owner: part 4 agent; append here only) ----
     CStringW FUN_1409d9f30(MS2Ptr<CItemData> spData);                    // music score play count text
