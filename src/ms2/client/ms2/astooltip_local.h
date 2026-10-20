@@ -357,8 +357,8 @@ struct Unk_TooltipSkillTreeDialog
 {
     MS2Ptr<Unk_TooltipSkillSim> FUN_140ec8ad0();                      // UISkillBookTreeDialog::GetSimulator
 };
-class UIDialog;
-UIDialog* FUN_1409eb120(int nDialogId);                               // part 6: a dialog by id
+#include "ms2/client/ms2/uiskillbookautodistributedialog.h"
+UISkillBookTreeDialog* FUN_1409eb120(int nId);                        // the skill book tree dialog if it is open
 // The skill tier option manager behind PC::FUN_1409eee00 (fittingdollpc.h forward-declares it for the user unit).
 class Unk_PCSkillTree : public CPtred
 {

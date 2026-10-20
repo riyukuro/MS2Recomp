@@ -1,4 +1,4 @@
-// astooltip.h - PLACEHOLDER for ASTooltip (RTTI .?AVASTooltip@@, base AScript, 0x60 bytes). NOT an original header.
+// astooltip.h - PLACEHOLDER for ASTooltip (RTTI .?AVASTooltip@@, base AScript, 0x58 bytes). NOT an original header.
 // Ctors 0x1409c63d0 (int, int) and an (owner, int, int) variant, dtor 0x1409b4af0. Units must include this header
 // instead of redefining the class.
 #pragma once
@@ -202,6 +202,7 @@ public:
     // ---- end part 6 ----
 
 private:
-    __int64 m_40; unsigned m_48; unsigned m_pad_4c; CStringW m_50; void* m_pad_58;   // m_50: text (destroyed by ~ASTooltip, aseffect.cpp)
+    __int64 m_40; unsigned m_48; CStringW m_50;   // m_50: text (destroyed by ~ASTooltip, aseffect.cpp). 0x58 bytes: the deleting
+    // dtor 0x1409ee9a0 frees 0x58, the copy ctor 0x140f47c60 / operator= 0x1409eda80 copy +0x40, +0x48, +0x50 only
 };
-MS2_CHECK_SIZE(ASTooltip, 0x60);
+MS2_CHECK_SIZE(ASTooltip, 0x58);

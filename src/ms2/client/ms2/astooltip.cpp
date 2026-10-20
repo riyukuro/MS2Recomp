@@ -8,6 +8,8 @@
 // MS2-PIN: ??_GASTooltip@@UEAAPEAXI@Z 0x1409ee9a0
 // MS2-PIN: ??4AScript@@QEAAAEAV0@AEBV0@@Z 0x1409edaf0
 // MS2-PIN: ?GetCount@?$CAtlArray@W4Unk_StatType@@V?$CDefaultElementTraits@W4Unk_StatType@@@ATL@@@ATL@@QEBA_KXZ 0x1409eecc0
+// MS2-PIN: ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2SvrPtr@VCUGCMapSetItemInfo@@@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x1409edfd0
+// MS2-PIN: ?Find@?$CAtlList@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@@ATL@@QEBAPEAU__POSITION@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@PEAU3@@Z 0x1409eea60
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\astooltip.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/astooltip.h"
@@ -3812,7 +3814,7 @@ CStringW ASTooltip::FUN_1409daff0(MS2Ptr<CItemData> spData)
     CXmlData& xml = spData->function.xml;
     int nCount = 0;
     std::vector<int> ids = xml.FUN_1409e8620(L"id", std::vector<int>());
-    for each (int nGroupId in ids)
+    MS2_FOR_EACH(int nGroupId, ids)
     {
         std::list<MS2Ptr<ChatEmoticonData> > group;
         CChatEmoticonTable::GetInstance()->FUN_1401e73c0(nGroupId, &group);
@@ -5678,15 +5680,18 @@ namespace p5hook { MS2_REPLACE_METHOD(0x1409E72A0, ASTooltip, FUN_1409e72a0, 431
 
 // Fills the itemBreakIngredientList rows (the ingredients with a count that are not plain materials).
 // @0x1409e7460
-// MS2-FUNCTIONAL: the exe iterates the ingredients as std::vector<MS2Ptr<CIngredientInfo>> const_iterators (Unk_IngVec has no typed iterator) and passes a temporary ItemDropResult
+// MS2-FUNCTIONAL: passes a temporary ItemDropResult
 void ASTooltip::FUN_1409e7460(Unk_IngVec* pIngredients)
 {
     if (!pIngredients->FUN_14028a8c0())
     {
         ASArray rows(2);
-        for (size_t i = 0; i < pIngredients->FUN_14028b500(); i++)
+        // Unk_IngVec is the opaque stand-in of std::vector<MS2Ptr<CIngredientInfo>> (same 24-byte layout)
+        const std::vector<MS2Ptr<CIngredientInfo> >& vIngredients =
+            reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo> >&>(*pIngredients);
+        for (std::vector<MS2Ptr<CIngredientInfo> >::const_iterator it = vIngredients.begin(); it != vIngredients.end(); ++it)
         {
-            Unk_IngRef spIng(*pIngredients->FUN_14027f1f0(i));
+            MS2Ptr<CIngredientInfo> spIng(*it.operator->());
             if (spIng == 0)
                 continue;
             if (spIng->m_c == 0)
@@ -5856,3 +5861,17 @@ MS2Ptr<Unk_PCSkillTree> PC::FUN_1409eee00()
 {
     return reinterpret_cast<const MS2Ptr<Unk_PCSkillTree>&>(m_spSkillTier1110);   // the member is typed by its real class in fittingdollpc.h
 }
+
+// The skill book tree dialog if it is open (UI id 0x4f2d at the callers).
+// @0x1409eb120
+UISkillBookTreeDialog* FUN_1409eb120(int nId)
+{
+    if (FUN_1403ed2b0())
+    {
+        MS2Ptr<UIObject> p = FUN_1403ed2b0()->FUN_141adcea0((eUIClassID)nId);
+        if (p.get())
+            return dynamic_cast<UISkillBookTreeDialog*>((UIObject*)p);
+    }
+    return 0;
+}
+
