@@ -7,8 +7,8 @@ objs with an exe VA and byte-match it (tools/bytematch.py), credit engine functi
 Pairing (per obj function, funclets skipped): the mangled name through progress/symbols{,-engine,-manual}.tsv, else (or
 when that pair does not match) the unique exe function of the same length whose bytes equal the obj's with relocations
 masked. Functions with several identical exe copies and no name pair are then paired (2026-10-20, gb5) through an
-exact caller's relocation target or a referenced vftable's slot of the same name (kept only if exact), else one to one
-with the copies when the obj has at least as many such functions as there are free copies (kept only if exact).
+exact caller's relocation target or a referenced vftable's slot of the same name (kept only if exact), else
+(assign_copies, over all objs) one to one with the free copies nearest the obj's own functions (kept only if exact).
 Credit (per exe VA, outside the game unit ranges of work/map/units.tsv and not claimed by a game unit row):
   matched     some obj's function is byte-identical (incl. unwind/EH data);
   functional  paired by name or a unique masked hit, but no obj matches exactly;
@@ -21,6 +21,7 @@ Cache: <cache>/gb/obj/<recipe>/... (incremental: obj mtime vs source + /showIncl
 import argparse
 import collections
 import contextlib
+import hashlib
 import io
 import json
 import os
@@ -45,7 +46,7 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb1"                                  # bump to recompile everything
-MATCH_KEY = "callee4"                        # bump to re-match every obj (pairing logic changed)
+MATCH_KEY = "callee7"                        # bump to re-match every obj (pairing logic changed)
 NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
 if NO_CALLEE:
     MATCH_KEY = "nocallee"
@@ -134,7 +135,19 @@ def _init():
     bylen = collections.defaultdict(list)
     for rva, (end, _) in exe.rf.items():
         bylen[end - rva].append(rva)
-    G.update(exe=exe, names=names, dnames=dnames, bylen=bylen)
+    game = []
+    for line in open(UNITS_TSV):
+        p = line.rstrip("\n").split("\t")
+        if not p[0].startswith("#") and len(p) > 1:
+            game.append((int(p[0], 16), int(p[1], 16)))
+    game.sort()
+    G.update(exe=exe, names=names, dnames=dnames, bylen=bylen, game=game, game_lo=[a for a, _ in game])
+
+
+def _in_game(va):
+    import bisect
+    i = bisect.bisect_right(G["game_lo"], va) - 1
+    return i >= 0 and va < G["game"][i][1]
 
 
 def _search(obj, si):
@@ -163,12 +176,13 @@ def _match(obj, n, va):
 
 
 def match_obj(path):
-    """[(symbol, va, ok, how)] for the obj's functions that pair with an exe VA"""
+    """([(symbol, va, ok, how)] for the obj's functions that pair with an exe VA, [[symbol, [exe copies]]] of the
+    unpaired functions whose bytes several exe functions have, exe VAs of the obj's exact non-template functions)"""
     out = []
     try:
         obj = bm.Obj(path)
     except Exception:
-        return out
+        return out, [], []
     callees, pending = {}, []    # name -> exe VA called/referenced by this obj's exact functions; unpaired functions
     copies = {}                  # unpaired name -> the exe functions whose bytes equal it (relocations masked), if several
     for si in obj.func_symbols():
@@ -185,7 +199,9 @@ def match_obj(path):
         if not ok:
             hits = _search(obj, si)
             if va is None and len(hits) > 1:
-                copies[n] = tuple(hits)
+                eng = tuple(h for h in hits if not _in_game(h))      # game-unit copies are never engine credit
+                if eng:
+                    copies[n] = eng
             if len(hits) == 1 and hits[0] != va:
                 ok2 = _match(obj, n, hits[0])
                 if ok2:
@@ -226,24 +242,10 @@ def match_obj(path):
         if len(nxt) == len(pending) and not grew:
             break
         pending = nxt
-    # multi-copy pass: the obj's still unpaired functions with the same several byte-identical exe copies, if there are
-    # at least as many of them as free copies, are paired one to one with those copies (which name gets which copy
-    # does not matter: the bytes are the same); fewer would credit instantiations this obj does not have
-    if not NO_CALLEE:
-        taken = {va for _, va, ok, _ in out if ok}
-        groups = collections.defaultdict(list)
-        for n in pending:
-            if n in copies:
-                groups[copies[n]].append(n)
-        for hits, ns in groups.items():
-            free = sorted(v for v in hits if v not in taken)
-            if not free or len(ns) < len(free):
-                continue
-            for n, va in zip(ns, free):
-                if _match(obj, n, va):
-                    out.append((n, va, True, "copy"))
-                    taken.add(va)
-    return out
+    # the remaining unpaired functions with several byte-identical exe copies are paired by assign_copies (all objs)
+    cands = [[n, list(copies[n])] for n in pending if n in copies]
+    own = sorted({va for n, va, ok, _ in out if ok and obj.sec(obj.syms[obj.by_name[n]][2]).get("comdat", (0,))[0] != 2})
+    return out, cands, own
 
 
 def _vft_slots(obj, si, va):
@@ -279,6 +281,66 @@ def _match_job(path):
     return path, match_obj(path)
 
 
+def _verify_job(job):
+    path, todo = job
+    try:
+        obj = bm.Obj(path)
+    except Exception:
+        return path, []
+    return path, [(n, va, _match(obj, n, va)) for n, va in todo]
+
+
+def assign_copies(res, cgroups, paths, j, log=print):
+    """Pair the objs' unpaired functions that have several byte-identical exe copies (template instantiations of
+    same-size types, e.g. map<utf8string,int> / map<utf8string,unsigned int>, kept apart by the linker): every copy no
+    obj pairs exactly goes to the claiming obj whose own (non-COMDAT-any) exact functions lie nearest (the TU whose
+    instantiation the linker placed there), then each obj pairs its functions one to one with its copies, kept if
+    exact. Writes res[key]["xpairs"] (verification cached per obj result in res[key]["xok"])."""
+    claimed = {va for c in res.values() for _, va, ok, _ in c["pairs"] if ok}
+    groups = collections.defaultdict(list)
+    for k, c in res.items():
+        for n, gid in c.get("cands", ()):
+            if gid in cgroups:
+                groups[(k, tuple(cgroups[gid]))].append(n)
+    near = {}
+
+    def dist(k, v):
+        own = res[k].get("own") or ()
+        if own:
+            return min(abs(v - a) for a in own)
+        ex = [va for _, va, ok, _ in res[k]["pairs"] if ok]
+        return (min(abs(v - a) for a in ex) if ex else 1 << 40) + (1 << 32)
+    owner = {}
+    for (k, hits), ns in groups.items():
+        for v in hits:
+            if v in claimed:
+                continue
+            d = dist(k, v)
+            if v not in owner or (d, k) < owner[v]:
+                owner[v] = (d, k)
+    todo = collections.defaultdict(list)
+    for (k, hits), ns in groups.items():
+        mine = sorted(v for v in hits if v not in claimed and owner[v][1] == k)
+        todo[k] += list(zip(ns, mine))
+    jobs = []
+    for k, prs in todo.items():
+        xok = res[k].setdefault("xok", {})
+        need = [(n, v) for n, v in prs if f"{n}@{v:x}" not in xok]
+        if need and k in paths:
+            jobs.append((paths[k], need, k))
+    if jobs:
+        log(f"engine: verifying {sum(len(x[1]) for x in jobs)} copy pair(s) in {len(jobs)} obj(s) ...")
+        byp = {p: k for p, _, k in jobs}
+        with Pool(max(1, j), initializer=_init) as p:
+            for path, rows in p.imap_unordered(_verify_job, [(p_, t) for p_, t, _ in jobs]):
+                xok = res[byp[path]]["xok"]
+                for n, v, ok in rows:
+                    xok[f"{n}@{v:x}"] = ok
+    for k, c in res.items():
+        xok = c.get("xok", {})
+        c["xpairs"] = [[n, v, True, "copy"] for n, v in todo.get(k, ()) if xok.get(f"{n}@{v:x}")]
+
+
 # ---------------------------------------------------------------------------------------------------------------
 
 def run(cache, j=8, filters=(), log=print):
@@ -302,6 +364,8 @@ def run(cache, j=8, filters=(), log=print):
     t1 = time.time()
     rpath = os.path.join(cache, "gb", "results.json")
     res = json.load(open(rpath)) if os.path.exists(rpath) else {}
+    gpath = os.path.join(cache, "gb", "copygroups.json")      # copy group id -> exe VAs (see assign_copies)
+    groups = json.load(open(gpath)) if os.path.exists(gpath) else {}
     jobs = []
     for u in units:
         o = obj_path(cache, u)
@@ -319,12 +383,26 @@ def run(cache, j=8, filters=(), log=print):
         log(f"engine: matching {len(jobs)} obj(s) ...")
         byobj = {o: (u, key) for u, o, key in jobs}
         with Pool(max(1, j), initializer=_init) as p:
-            for o, rows in p.imap_unordered(_match_job, [o for _, o, _ in jobs], chunksize=2):
+            for o, (rows, cands, own) in p.imap_unordered(_match_job, [o for _, o, _ in jobs], chunksize=2):
                 u, key = byobj[o]
+                gc = []
+                for n, hits in cands:                  # copy groups are shared by many objs: stored once
+                    gid = hashlib.sha1(" ".join("%x" % h for h in hits).encode()).hexdigest()[:16]
+                    groups.setdefault(gid, hits)
+                    gc.append([n, gid])
                 res[u["recipe"] + ":" + u["name"]] = {"key": key, "unit": u["unit"], "recipe": u["recipe"],
-                                                       "pairs": [list(r) for r in rows]}
+                                                       "pairs": [list(r) for r in rows], "cands": gc, "own": own}
     live = {u["recipe"] + ":" + u["name"] for u in gbtree.load_units(tree)}
     res = {k: v for k, v in res.items() if k in live}
+    if not NO_CALLEE:
+        t2 = time.time()
+        allu = gbtree.load_units(tree)
+        assign_copies(res, groups, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, j, log)
+        used = {g for c in res.values() for _, g in c.get("cands", ())}
+        groups = {g: h for g, h in groups.items() if g in used}
+        json.dump(groups, open(gpath + ".tmp", "w"))
+        os.replace(gpath + ".tmp", gpath)
+        log(f"engine: copy pairs {sum(len(c['xpairs']) for c in res.values())} ({time.time() - t2:.0f}s)")
     os.makedirs(os.path.dirname(rpath), exist_ok=True)
     json.dump(res, open(rpath + ".tmp", "w"))
     os.replace(rpath + ".tmp", rpath)
@@ -363,7 +441,7 @@ def credit(res, game_rows):
         return i >= 0 and va < game[i][1]
     best = {}      # va -> (rank, symbol, unit)   rank: 3 exact v2525, 2 exact stock, 1 paired
     for k, c in sorted(res.items()):
-        for sym, va, ok, how in c["pairs"]:
+        for sym, va, ok, how in c["pairs"] + c.get("xpairs", []):
             if va not in info or va in game_rows or in_game(va):
                 continue
             rank = (3 if c["recipe"] == "v2525" else 2) if ok else 1
