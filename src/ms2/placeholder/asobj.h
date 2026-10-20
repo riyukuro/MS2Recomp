@@ -100,14 +100,33 @@ public:
 
 // ASDataProvider: an ASArray with its own vftable (RTTI ASDataProvider : ASArray : AScript : CPtred), same 0x40 layout.
 // vftable 0x142defc98 (slot 0 = the scalar deleting dtor 0x140bc0740 -> FUN_1422df070, shared with the trivial Unk_*Array
-// subclasses), ctor 0x140bbf7b0. Handed to the AS data-provider properties of list components.
+// subclasses), ctor 0x140bbf7b0. Handed to the AS data-provider properties of list components. Wraps a CLIK
+// scaleform.clik.data.DataProvider; its own code is ?\asdataprovider.cpp (0x1422deec0-0x1422df570).
 class ASDataProvider : public ASArray
 {
 public:
-    ASDataProvider(int nType);
+    ASDataProvider(int nMovieId);                                        // 0x1422deec0 a new empty DataProvider
+    ASDataProvider(MS2Ptr<ASArray> spArr, int nMovieId);                // 0x1422def60 a DataProvider over spArr (by value: destroyed here)
+    ASDataProvider(Scaleform::GFx::Value& v, int nMovieId);              // 0x1422df020 wraps an existing DataProvider value
     ASDataProvider(const ASArray& arr);                                  // 0x140bbf7b0 (copies the array; invenslot slot names)
-    virtual ~ASDataProvider();
-    void FUN_1422df120();                                                // remove every element (asdropdownmenu.cpp)
+    virtual ~ASDataProvider();                                           // 0x1422df070
+    void FUN_1422df0a0();                                                // cleanUp()
+    void FUN_1422df0e0(unsigned int nIndex);                             // invalidate(index)
+    void FUN_1422df120();                                                // remove every element: cleanUp() (asdropdownmenu.cpp)
     AScript FUN_1422df140(unsigned nIndex);                              // requestItemAt(index) as an AS object (asdropdownmenu.cpp)
+    // The flash.events.IEventDispatcher methods (the same AS calls as ASEventDispatcher's).
+    void FUN_1422df1c0(const CString& strType, const Scaleform::GFx::Value& listener, int bUseCapture, int nPriority,
+                       int bUseWeakReference);                           // addEventListener
+    void FUN_1422df2e0(const CString& strType, const Scaleform::GFx::Value& listener, int bUseCapture);   // removeEventListener
+    int FUN_1422df3c0(const CString& strType);                           // hasEventListener
+    int FUN_1422df460(const CString& strType);                           // willTrigger
+    int FUN_1422df500(const class ASEvent& ev);                          // dispatchEvent
+
+    // AScript::Invoke COMDAT instances (one per argument list, in ?\aseventdispatcher.cpp's range), declared here until
+    // that unit moves them to AScript (ascript.h).
+    using AScript::Invoke;
+    Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, Scaleform::GFx::Value a2, bool a3, float a4, bool a5);   // 0x1422c3f80 (a1/a2 by value)
+    Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, Scaleform::GFx::Value a2, bool a3);   // 0x1422c3e40 (a1/a2 by value)
+    Scaleform::GFx::Value Invoke(const char* szMethod, const class ASEvent& a1);                       // 0x1422c3da0
 };
 MS2_CHECK_SIZE(ASDataProvider, 0x40);
