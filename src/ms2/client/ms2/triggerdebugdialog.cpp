@@ -232,3 +232,6 @@ BEGIN_MESSAGE_MAP(TriggerDebugDialog, CDialog)
     ON_WM_DESTROY()
     ON_CONTROL(BN_CLICKED, 0x4f7, &TriggerDebugDialog::OnClear)
 END_MESSAGE_MAP()
+
+// IMPLEMENT_DYNAMIC's _GetBaseClass sits just before this TU's range start in the exe.
+// MS2-RANGE: 0x140b9b440-0x140b9b470 .text$mn
