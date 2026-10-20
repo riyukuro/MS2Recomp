@@ -381,3 +381,6 @@ void Unk_CMISDriveTail2()
 // MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@std@@@0@AEAV10@@Z 0x141117680 ; freeze
 // MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@_J@std@@@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@_J@std@@@std@@@0@AEAV10@@Z 0x141117690 ; freeze
 // MS2-PINS-END fx22
+// w560: allocator_traits destroy of the SmartPointer<Entity> / EntityID vectors, by the exe destroy chain (0x14111a810 -> 0x1410e28f0 -> 0x141151660 calls ??_G SmartPointer)
+// MS2-PIN: ??$destroy@V?$SmartPointer@VEntity@egf@@@efd@@@?$_Normal_allocator_traits@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@SAXAEAV?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@PEAV?$SmartPointer@VEntity@egf@@@3@@Z 0x14111a810
+// MS2-PIN: ??$destroy@VEntityID@egf@@@?$_Normal_allocator_traits@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@SAXAEAV?$CustomAllocator@VEntityID@egf@@@efd@@PEAVEntityID@egf@@@Z 0x14111a8c0

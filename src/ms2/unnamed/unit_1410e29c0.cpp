@@ -3,8 +3,8 @@
 // _Uninitialized_backout_al::_Emplace_back and vector::_Emplace_reallocate instances of the service's containers.
 // MS2-UNIT: unit_1410e29c0
 // MS2-RANGE: 0x1410e29c0-0x1410e4e80 .text$mn
-// MS2-PIN: ??$_Destroy_range1@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@YAXPEAVEntityID@egf@@0AEAV?$CustomAllocator@VEntityID@egf@@@efd@@U?$integral_constant@_N$0A@@0@@Z 0x1410e2a20
-// MS2-PIN: ??$_Destroy_range1@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@YAXPEAV?$SmartPointer@VEntity@egf@@@efd@@0AEAV?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@U?$integral_constant@_N$0A@@0@@Z 0x1410e2a80
+// MS2-PIN: ??$_Destroy_range1@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@YAXPEAVEntityID@egf@@0AEAV?$CustomAllocator@VEntityID@egf@@@efd@@U?$integral_constant@_N$0A@@0@@Z 0x1410e2a80 ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ??$_Destroy_range1@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@YAXPEAV?$SmartPointer@VEntity@egf@@@efd@@0AEAV?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@U?$integral_constant@_N$0A@@0@@Z 0x1410e2a20 ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ??$_Destroy_range1@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@YAXPEAUUnk_CMISElem52@@0AEAV?$CustomAllocator@UUnk_CMISElem52@@@efd@@U?$integral_constant@_N$0A@@0@@Z 0x1410e2ae0
 // MS2-PIN: ??$_Destroy_range1@V?$allocator@PEAVCube@@@std@@@std@@YAXPEAPEAVCube@@0AEAV?$allocator@PEAVCube@@@0@U?$integral_constant@_N$00@0@@Z 0x1410e2b40
 // MS2-PIN: ??$_Destroy_range@V?$allocator@PEAVCube@@@std@@@std@@YAXPEAPEAVCube@@0AEAV?$allocator@PEAVCube@@@0@@Z 0x1410e2cc0
@@ -104,3 +104,6 @@ void Unk_CMISDrive1410e29c0()
 // MS2-PIN: ??$_Emplace_back@V?$SmartPointer@VEntity@egf@@@efd@@@?$_Uninitialized_backout_al@PEAV?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@QEAAX$$QEAV?$SmartPointer@VEntity@egf@@@efd@@@Z 0x1410e34e0 ; the rvalue (_Uninitialized_move) copy; the lvalue one is byte-identical but sits at 0x1410e3360-0x1410e3420
 // MS2-PIN: ??$_Emplace_back@V?$SmartPointer@VEntity@egf@@@efd@@@?$_Uninitialized_backout_al@PEAV?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@QEAAX$$QEAV?$SmartPointer@VEntity@egf@@@efd@@@Z 0x1410e3540 ; the rvalue (_Uninitialized_move) copy; the lvalue one is byte-identical but sits at 0x1410e3360-0x1410e3420
 // MS2-PIN: ??$_Emplace_back@VEntityID@egf@@@?$_Uninitialized_backout_al@PEAVEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAAX$$QEAVEntityID@egf@@@Z 0x1410e35a0 ; the rvalue (_Uninitialized_move) copy; the lvalue one is byte-identical but sits at 0x1410e3360-0x1410e3420
+// w560: the SmartPointer<Entity> / EntityID vector rollback chains, by the exe destroy chain (0x1410e2bd0 -> 0x1410e2a20 -> 0x14111a810 -> 0x1410e28f0 -> 0x141151660 calls ??_G SmartPointer)
+// MS2-PIN: ??$_Destroy_range@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@YAXPEAV?$SmartPointer@VEntity@egf@@@efd@@0AEAV?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@Z 0x1410e2bd0
+// MS2-PIN: ??$_Destroy_range@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@YAXPEAVEntityID@egf@@0AEAV?$CustomAllocator@VEntityID@egf@@@efd@@@Z 0x1410e2c20

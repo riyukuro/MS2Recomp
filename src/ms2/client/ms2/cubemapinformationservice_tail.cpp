@@ -88,7 +88,7 @@
 // MS2-PIN: ?_Tidy@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VCFunctionCubeObject@@@@U?$less@V?$MS2Ptr@VCFunctionCubeObject@@@@@std@@V?$allocator@V?$MS2Ptr@VCFunctionCubeObject@@@@@3@$0A@@std@@@std@@IEAAXXZ 0x14114c230 ; prop
 // MS2-PIN: ?_Tidy@?$_Tree@V?$_Tset_traits@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@VEntityID@egf@@@efd@@$0A@@std@@@std@@IEAAXXZ 0x14114c280 ; prop
 // MS2-PIN: ?_Tidy@?$vector@HV?$CustomAllocator@H@efd@@@std@@AEAAXXZ 0x14114c2d0 ; prop
-// MS2-PIN: ?_Tidy@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@AEAAXXZ 0x14114c470 ; prop
+// MS2-PIN: ?_Tidy@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@AEAAXXZ 0x14114c3a0 ; prop ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ?_Tidy@?$vector@UUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@AEAAXXZ 0x14114c540 ; prop
 // MS2-PIN: ?_Umove@?$vector@HV?$CustomAllocator@H@efd@@@std@@AEAAPEAHPEAH00@Z 0x14114c6e0 ; probe
 // MS2-PIN: ?_Umove@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@AEAAPEAV?$SmartPointer@VEntity@egf@@@efd@@PEAV34@00@Z 0x14114c760 ; probe
@@ -106,7 +106,7 @@
 // MS2-PIN: ?_Umove_if_noexcept@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@AEAAXPEAVEntityID@egf@@00@Z 0x14114cbe0 ; probe
 // MS2-PIN: ?_Umove_if_noexcept@?$vector@UUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@AEAAXPEAUUnk_CMISElem52@@00@Z 0x14114cc40 ; probe
 // MS2-PIN: ?_Xlength@?$vector@HV?$CustomAllocator@H@efd@@@std@@CAXXZ 0x14114cd50 ; order
-// MS2-PIN: ?_Xlength@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@CAXXZ 0x14114cd90 ; order
+// MS2-PIN: ?_Xlength@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@CAXXZ 0x14114cdd0 ; order ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ?_Xlength@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@CAXXZ 0x14114cdb0 ; order
 // MS2-PIN: ?allocate@?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@@efd@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@std@@_KPEBX@Z 0x14114cf80 ; probe
 // MS2-PIN: ?allocate@?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@efd@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@_KPEBX@Z 0x14114cfd0 ; probe
@@ -136,8 +136,8 @@
 // MS2-PIN: ?begin@?$_Tree@V?$_Tmap_traits@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@_J@std@@@std@@@std@@@2@XZ 0x14114e320 ; order
 // MS2-PIN: ?begin@?$_Tree@V?$_Tmap_traits@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@XZ 0x14114e400 ; order
 // MS2-PIN: ?begin@?$vector@HV?$CustomAllocator@H@efd@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@H@std@@@std@@@2@XZ 0x14114e8d0 ; prop
-// MS2-PIN: ?begin@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@2@XZ 0x14114e9f0 ; order
-// MS2-PIN: ?capacity@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@QEBA_KXZ 0x14114eb10 ; prop
+// MS2-PIN: ?begin@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@2@XZ 0x14114e930 ; order ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?capacity@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@QEBA_KXZ 0x14114ead0 ; prop ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@HIU?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHI@std@@@efd@@$0A@@std@@@std@@QEAAXXZ 0x14114ebe0 ; order
 // MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@HUUnk_Int3@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_Int3@@@std@@@3@$0A@@std@@@std@@QEAAXXZ 0x14114ed20 ; order
 // MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@HV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x14114f400 ; order
@@ -164,8 +164,8 @@
 // MS2-PIN: ?deallocate@?$CustomAllocator@U?$_Tree_node@U?$pair@HH@std@@PEAX@std@@@efd@@QEAAXPEAU?$_Tree_node@U?$pair@HH@std@@PEAX@std@@_K@Z 0x141150b60 ; probe
 // MS2-PIN: ?deallocate@?$CustomAllocator@U?$_Tree_node@VEntityID@egf@@PEAX@std@@@efd@@QEAAXPEAU?$_Tree_node@VEntityID@egf@@PEAX@std@@_K@Z 0x141150c00 ; probe
 // MS2-PIN: ?deallocate@?$CustomAllocator@U?$_Tree_node@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@PEAX@std@@@efd@@QEAAXPEAU?$_Tree_node@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@PEAX@std@@_K@Z 0x141150c50 ; order
-// MS2-PIN: ?deallocate@?$CustomAllocator@VEntityID@egf@@@efd@@QEAAXPEAVEntityID@egf@@_K@Z 0x141150cf0 ; prop
-// MS2-PIN: ?deallocate@?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@QEAAXPEAV?$SmartPointer@VEntity@egf@@@2@_K@Z 0x141150d40 ; prop
+// MS2-PIN: ?deallocate@?$CustomAllocator@VEntityID@egf@@@efd@@QEAAXPEAVEntityID@egf@@_K@Z 0x141150d40 ; prop ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?deallocate@?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@QEAAXPEAV?$SmartPointer@VEntity@egf@@@2@_K@Z 0x141150cf0 ; prop ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHUUnk_Int3@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHUUnk_Int3@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHUUnk_Int3@@@std@@PEAX@2@_K@Z 0x141150de0 ; order
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@2@_K@Z 0x141150e10 ; order
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$map@IV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@@std@@@2@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$map@IV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@@std@@@2@@std@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHV?$map@IV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$set@HU?$less@H@std@@V?$allocator@H@2@@std@@@std@@@2@@std@@@std@@PEAX@2@_K@Z 0x141150e70 ; order
@@ -214,7 +214,7 @@
 // MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@_J@std@@@std@@@std@@@2@XZ 0x141152030 ; order
 // MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@VEntityID@egf@@V?$MS2Ptr@VCube@@@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@V?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@XZ 0x1411520f0 ; order
 // MS2-PIN: ?end@?$vector@HV?$CustomAllocator@H@efd@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@H@std@@@std@@@2@XZ 0x141152510 ; order
-// MS2-PIN: ?end@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@2@XZ 0x141152630 ; order
+// MS2-PIN: ?end@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@2@XZ 0x141152570 ; order ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ??$try_emplace@$$V@?$map@HIU?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHI@std@@@efd@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHI@std@@@std@@@std@@@std@@_N@1@AEBH@Z 0x141152690 ; probe
 // MS2-PIN: ?equal_range@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VUICubeUGCHead@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VUICubeUGCHead@@@@@std@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VUICubeUGCHead@@@@@std@@@std@@@std@@@std@@V12@@2@AEBH@Z 0x141152810 ; order
 // MS2-PIN: ?equal_range@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@U?$less@U?$pair@HH@std@@@2@V?$CustomAllocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@@efd@@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@@std@@@std@@@std@@@std@@V12@@2@AEBU?$pair@HH@2@@Z 0x1411528d0 ; order
@@ -434,17 +434,17 @@
 // MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@W4Unk_CMISKindB@@HU?$less@W4Unk_CMISKindB@@@std@@V?$CustomAllocator@U?$pair@$$CBW4Unk_CMISKindB@@H@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindB@@H@std@@@std@@@std@@@2@AEBW4Unk_CMISKindB@@@Z 0x1411595d0 ; w151 family
 // MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@W4Unk_CMISKindB@@EU?$less@W4Unk_CMISKindB@@@std@@V?$CustomAllocator@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@@std@@@std@@@2@AEBW4Unk_CMISKindB@@@Z 0x141159630 ; w151 family
 // MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@QEAAAEAPEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148db0 ; w151 family
-// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEAAAEAPEAVEntityID@egf@@XZ 0x141148df0 ; w151 family
-// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEAAAEAPEAVEntityID@egf@@XZ 0x141148f70 ; w151 family
-// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEAAAEAPEAVEntityID@egf@@XZ 0x1411490f0 ; w151 family
-// MS2-PIN: ?_Tidy@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@AEAAXXZ 0x14114c3a0 ; w151 family
-// MS2-PIN: ?end@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@VEntityID@egf@@@std@@@std@@@2@XZ 0x141152570 ; w151 family
-// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEBAAEBQEAVEntityID@egf@@XZ 0x141149110 ; w151 family
-// MS2-PIN: ?capacity@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEBA_KXZ 0x14114ead0 ; w151 family
-// MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEAAXXZ 0x141149230 ; w151 family
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEAAAEAPEAVEntityID@egf@@XZ 0x141148e30 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEAAAEAPEAVEntityID@egf@@XZ 0x141148fb0 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEAAAEAPEAVEntityID@egf@@XZ 0x141149130 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Tidy@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@AEAAXXZ 0x14114c470 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?end@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@VEntityID@egf@@@std@@@std@@@2@XZ 0x141152630 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEBAAEBQEAVEntityID@egf@@XZ 0x141149150 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?capacity@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEBA_KXZ 0x14114eb10 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEAAXXZ 0x141149250 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@HV?$CustomAllocator@H@efd@@@std@@@std@@QEAAXXZ 0x1411491f0 ; w151 family
 // MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@QEAAXXZ 0x141149210 ; w151 family
-// MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEAAXXZ 0x141149250 ; w151 family
+// MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEAAXXZ 0x141149230 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@UUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@@std@@QEAAXXZ 0x141149270 ; w151 family
 // MS2-PIN: ?_Tidy@?$_Tree@V?$_Tmap_traits@HV?$SmartPointer@VEntity@egf@@@efd@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@2@$0A@@std@@@std@@IEAAXXZ 0x14114b6d0 ; w151 family
 // MS2-PIN: ?begin@?$_Tree@V?$_Tmap_traits@HV?$SmartPointer@VEntity@egf@@@efd@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@2@XZ 0x14114dbb0 ; w151 family
@@ -475,8 +475,8 @@
 // MS2-PIN: ?_Tidy@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$CustomAllocator@H@efd@@$0A@@std@@@std@@IEAAXXZ 0x14114c0f0 ; w151 family
 // MS2-PIN: ?find@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$CustomAllocator@H@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@AEBH@Z 0x141158620 ; w151 family
 // MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@VEntityID@egf@@VUnk_CMISPropPtr@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVEntityID@egf@@VUnk_CMISPropPtr@@@std@@@std@@@std@@@2@AEBVEntityID@egf@@@Z 0x141159450 ; w151 family
-// MS2-PIN: ?begin@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@VEntityID@egf@@@std@@@std@@@2@XZ 0x14114e930 ; w151 family
-// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEBAAEBQEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141149150 ; w151 family
+// MS2-PIN: ?begin@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@VEntityID@egf@@@std@@@std@@@2@XZ 0x14114e9f0 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEBAAEBQEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141149110 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@UUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@@std@@QEBAAEBQEAUUnk_CMISElem52@@XZ 0x141149190 ; w151 family
 // MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@HV?$CustomAllocator@H@efd@@@std@@@std@@QEAAAEAPEAHXZ 0x141148d70 ; w151 family
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@HV?$CustomAllocator@H@efd@@@std@@@std@@QEAAAEAPEAHXZ 0x141148ef0 ; w151 family
@@ -487,13 +487,13 @@
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@QEAAAEAPEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148f30 ; w151 family
 // MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@QEBAAEBQEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148dd0 ; w151 family
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@QEBAAEBQEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148f50 ; w151 family
-// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEBAAEBQEAVEntityID@egf@@XZ 0x141148e10 ; w151 family
-// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEBAAEBQEAVEntityID@egf@@XZ 0x141148f90 ; w151 family
-// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEAAAEAPEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148e30 ; w151 family
-// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEAAAEAPEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148fb0 ; w151 family
-// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEAAAEAPEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141149130 ; w151 family
-// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEBAAEBQEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148e50 ; w151 family
-// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEBAAEBQEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148fd0 ; w151 family
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEBAAEBQEAVEntityID@egf@@XZ 0x141148e50 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEBAAEBQEAVEntityID@egf@@XZ 0x141148fd0 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEAAAEAPEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148df0 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEAAAEAPEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148f70 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEAAAEAPEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x1411490f0 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEBAAEBQEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148e10 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
+// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@@std@@QEBAAEBQEAV?$SmartPointer@VEntity@egf@@@efd@@XZ 0x141148f90 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@UUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@@std@@QEAAAEAPEAUUnk_CMISElem52@@XZ 0x141148e70 ; w151 family
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@UUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@@std@@QEAAAEAPEAUUnk_CMISElem52@@XZ 0x141148ff0 ; w151 family
 // MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@UUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@@std@@QEAAAEAPEAUUnk_CMISElem52@@XZ 0x141149170 ; w151 family
@@ -520,7 +520,7 @@
 // MS2-PIN: ?_Tidy@?$_Tree@V?$_Tmap_traits@W4Unk_CMISKindB@@HU?$less@W4Unk_CMISKindB@@@std@@V?$CustomAllocator@U?$pair@$$CBW4Unk_CMISKindB@@H@std@@@efd@@$0A@@std@@@std@@IEAAXXZ 0x14114bf70 ; w151 family
 // MS2-PIN: ?_Tidy@?$_Tree@V?$_Tmap_traits@W4Unk_CMISKindB@@EU?$less@W4Unk_CMISKindB@@@std@@V?$CustomAllocator@U?$pair@$$CBW4Unk_CMISKindB@@E@std@@@efd@@$0A@@std@@@std@@IEAAXXZ 0x14114bfd0 ; w151 family
 // MS2-PIN: ?_Lmost@?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@QEBAAEAPEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@XZ 0x14114cd00 ; w151 family
-// MS2-PIN: ?_Xlength@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@CAXXZ 0x14114cdd0 ; w151 family
+// MS2-PIN: ?_Xlength@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@CAXXZ 0x14114cd90 ; w151 family ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ?allocate@?$CustomAllocator@H@efd@@QEAAPEAH_KPEBX@Z 0x14114cdf0 ; w151 family
 // MS2-PIN: ?allocate@?$CustomAllocator@U?$_Tree_node@HPEAX@std@@@efd@@QEAAPEAU?$_Tree_node@HPEAX@std@@_KPEBX@Z 0x14114ce40 ; w151 family
 // MS2-PIN: ?allocate@?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@PEAX@std@@@efd@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@PEAX@std@@_KPEBX@Z 0x14114cee0 ; w151 family
@@ -556,7 +556,7 @@
 // MS2-PIN: ?clear@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@U?$less@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@std@@V?$CustomAllocator@V?$MS2Ptr@VAutomaticCreateCubeInfo@@@@@efd@@$0A@@std@@@std@@QEAAXXZ 0x141150080 ; w151 family
 // MS2-PIN: ?clear@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VCFunctionCubeObject@@@@U?$less@V?$MS2Ptr@VCFunctionCubeObject@@@@@std@@V?$allocator@V?$MS2Ptr@VCFunctionCubeObject@@@@@3@$0A@@std@@@std@@QEAAXXZ 0x141150120 ; w151 family
 // MS2-PIN: ?clear@?$_Tree@V?$_Tset_traits@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$CustomAllocator@VEntityID@egf@@@efd@@$0A@@std@@@std@@QEAAXXZ 0x1411501c0 ; w151 family
-// MS2-PIN: ?clear@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAAXXZ 0x141150260 ; w151 family
+// MS2-PIN: ?clear@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@QEAAXXZ 0x141150260 ; w151 family ; w560: the exe copy calls _Destroy<SmartPointer> 0x141135a40
 // MS2-PIN: ?construct@?$CustomAllocator@H@efd@@QEAAXPEAHAEBH@Z 0x1411502e0 ; w151 family
 // MS2-PIN: ?construct@?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@QEAAXPEAV?$SmartPointer@VEntity@egf@@@2@AEBV32@@Z 0x141150320 ; w151 family
 // MS2-PIN: ?construct@?$CustomAllocator@VEntityID@egf@@@efd@@QEAAXPEAVEntityID@egf@@AEBV34@@Z 0x141150390 ; w151 family
@@ -659,9 +659,9 @@
 // MS2-PIN: ?_Xlength@?$vector@PEAVCube@@V?$allocator@PEAVCube@@@std@@@std@@CAXXZ 0x14114cd30 ; w203 the vector<Cube*> _Emplace_reallocate 0x1410e3ea0/0x1410e4a00 call it
 // MS2-PIN: ?_Xlength@?$vector@UUnk_CMISElem52@@V?$CustomAllocator@UUnk_CMISElem52@@@efd@@@std@@CAXXZ 0x14114cd50 ; w203 name order
 // MS2-PIN: ?_Xlength@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$CustomAllocator@V?$SmartPointer@VEntity@egf@@@efd@@@2@@std@@CAXXZ 0x14114cd70 ; w203 name order
-// MS2-PIN: ?_Xlength@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@CAXXZ 0x14114cd90 ; w203 name order
+// MS2-PIN: ?_Xlength@?$vector@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@CAXXZ 0x14114cdd0 ; w203 name order ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PIN: ?_Xlength@?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@CAXXZ 0x14114cdb0 ; w203 name order
-// MS2-PIN: ?_Xlength@?$vector@W4Unk_CMISKindC@@V?$allocator@W4Unk_CMISKindC@@@std@@@std@@CAXXZ 0x14114cdd0 ; w203 name order
+// MS2-PIN: ?_Xlength@?$vector@W4Unk_CMISKindC@@V?$allocator@W4Unk_CMISKindC@@@std@@@std@@CAXXZ 0x14114cd90 ; w203 name order ; w560: SmartPointer/EntityID vector swap (exe destroy chain)
 // MS2-PINS-END w203
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\cubemapinformationservice.cpp"
