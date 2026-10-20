@@ -127,7 +127,8 @@ class TalkLog : public CPtred
 public:
     TalkLog();                                      // 0x141482500
     TalkLog(CStringW strMsg, int nKind);            // 0x141482570
-    virtual ~TalkLog() = default;                   //  0 0x1414845c0 (??_G 0x1414846a0)
+    // implicit virtual dtor                        //  0 0x1414845c0 (??_G 0x1414846a0); none declared, so the implicit move
+    //                                                 ctor exists (CAtlList::RemoveHead returns by move, 0x141a2bb30)
     CStringW m_strMsg;                              // +0x18
     int m_nKind;                                    // +0x20
 };
@@ -137,7 +138,8 @@ class ReportLog : public CPtred
 {
 public:
     ReportLog(CStringW strName, CStringW strMsg);   // 0x1414825f0
-    virtual ~ReportLog() = default;                 //  0 0x141484520 (??_G 0x141484620)
+    // implicit virtual dtor                        //  0 0x141484520 (??_G 0x141484620); none declared, so the implicit move
+    //                                                 ctor exists (CAtlList::RemoveHead returns by move, 0x141a2ba30)
     CStringW m_strName;                             // +0x18
     CStringW m_strMsg;                              // +0x20
 };
