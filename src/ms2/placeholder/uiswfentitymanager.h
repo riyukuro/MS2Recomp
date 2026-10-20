@@ -23,6 +23,7 @@ public:
     void FUN_1422d4840(UISwfEntity* p, int n);
     void FUN_1422d48f0(UISwfEntity* p, int nLayer);                                             // bring to the top (uimessagebox.cpp)
     void FUN_1422d4b70(bool bShow);
+    UISwfEntity* FUN_1422d40b0(int nId);                                                        // the entity of an id (scene ids: gfxsceneservice.cpp)
     UISwfEntity* FUN_1422d4980(int nLayer);                                                     // the dialog on a layer (0x1422d4980)
     MS2Ptr<UISwfEntity> FUN_1422d41b0(const CString& strName);                                 // a movie by name (ugcmanager.cpp#2)                                                             // show/hide all movies (scenestategame.cpp)
     void FUN_1422d4dd0(CString strKey);                                                         // bring the movie to the top most layer (uiworldmapdialog.cpp; by value)
