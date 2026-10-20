@@ -8,29 +8,62 @@
 #pragma once
 
 #include <afx.h>
+#include <atlcoll.h>
 
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/delegate.h"
 
+// ASEventHandlerCtx (RTTI .?AVASEventHandlerCtx@@, 0x40 bytes, base Scaleform::GFx::FunctionHandler): an AS function
+// object (m_func, created by Movie::CreateFunction with the context as its handler) that calls a C++ delegate. ASEventDispatcher
+// keeps them alive as Scaleform::Ptr in its two arrays. Code in ?\aseventdispatcher.cpp.
+class ASEventHandlerCtx : public Scaleform::GFx::FunctionHandler
+{
+public:
+    typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> Callback;
+
+    ASEventHandlerCtx(CString strType, Callback cb);                    // 0x1422c2fc0 (both by value: destroyed here)
+    // ~ASEventHandlerCtx is implicit (0x1422c42b0; ??_G 0x1422c4520)
+    virtual void Call(const Params& params);                            // 1 0x1422c3060 m_cb(params)
+
+    CString m_strType;                                                  // +0x10 event type / member name
+    Scaleform::GFx::Value m_func;                                       // +0x18 the AS function object
+    Callback m_cb;                                                      // +0x38
+};
+
+// ASEventDispatcher: the flash.events.EventDispatcher wrapper. Code in ?\aseventdispatcher.cpp (0x1422c2fc0-0x1422c4c00).
 class ASEventDispatcher : public AScript
 {
 public:
+    typedef ASEventHandlerCtx::Callback Callback;
+
     ASEventDispatcher(const Scaleform::GFx::Value& v, int nMovieId);    // 0x1422c3090 (AScript ctor 0x1422ba780)
-    virtual ~ASEventDispatcher();
+    virtual ~ASEventDispatcher();                                       // 0 0x1422c3100 (??_G 0x1422c44e0)
+    // Defines the AS member strName as a function calling cb (once per name).
+    void FUN_1422c3180(CString strName, const Callback& cb);            // 0x1422c3180 (strName by value)
+    void FUN_1422c33c0(CString strName);                                // 0x1422c33c0 undo FUN_1422c3180 (member := undefined)
+    void FUN_1422c34f0();                                               // 0x1422c34f0 undo every FUN_1422c3180
     // addEventListener (0x1422c3600; ASDisplayObject redeclares it): pUser is the AS function object's user data
-    // (asbuttongroup.cpp)
+    // (asbuttongroup.cpp). Once per delegate.
     void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, int nPriority, int a5, void* pUser);
-    void FUN_1422c3d30(class ASEvent& ev);                              // dispatchEvent (asuicomponent.cpp)
     // removeEventListener (0x1422c3820; ASDisplayObject redeclares it; asloader.cpp "complete")
     void FUN_1422c3820(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
+    void FUN_1422c3940();                                               // 0x1422c3940 remove every listener
+    // The flash.events.IEventDispatcher methods on an AS function value.
+    void FUN_1422c3a30(const CString& strType, const Scaleform::GFx::Value& listener, bool bUseCapture, int nPriority,
+                       int bUseWeakReference);                          // addEventListener
+    void FUN_1422c3b30(const CString& strType, const Scaleform::GFx::Value& listener, bool bUseCapture);   // removeEventListener
+    int FUN_1422c3bf0(const CString& strType);                          // hasEventListener
+    int FUN_1422c3c90(const CString& strType);                          // willTrigger
+    int FUN_1422c3d30(class ASEvent& ev);                               // dispatchEvent (asuicomponent.cpp)
 private:
-    // +0x40 / +0x60: two 0x20 members built by 0x1422c4100 (the +0x60 one is the callback list, see FUN_1422c3180).
-    // Pointers, not a char array: an array member makes every local AS object a /GS buffer (the exe frames have none).
-    void* m_unrecovered_40; void* m_unrecovered_48; void* m_unrecovered_50; void* m_unrecovered_58;
-    void* m_unrecovered_60; void* m_unrecovered_68; void* m_unrecovered_70; void* m_unrecovered_78;
+    MS2_LAYOUT_FRIEND;
+    ATL::CAtlArray<Scaleform::Ptr<ASEventHandlerCtx> > m_listeners;    // +0x40 FUN_1422c3600's AS listeners
+    ATL::CAtlArray<Scaleform::Ptr<ASEventHandlerCtx> > m_members;      // +0x60 FUN_1422c3180's AS member functions
 };
 MS2_CHECK_SIZE(ASEventDispatcher, 0x80);
+MS2_CHECK_OFFSET(ASEventDispatcher, m_listeners, 0x40);
+MS2_CHECK_OFFSET(ASEventDispatcher, m_members, 0x60);
 
 class ASStage;
 
