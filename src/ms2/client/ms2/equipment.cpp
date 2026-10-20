@@ -47,6 +47,9 @@
 #include <bitset>
 #include <NiCollisionGroup.h>
 #include <NiPick.h>
+#include "ms2/commonfiles/fielddata.h"
+#include "ms2/placeholder/cpet.h"
+#include "ms2/placeholder/pcgemequip.h"
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -116,6 +119,7 @@ int FUN_140ddcc90(COptimizer* pOptimizer);          // mesh merging is on
 // The world service (WorldService) as the equipment uses it.
 struct Unk_EqWorld
 {
+    unsigned FUN_141bd3060();                       // the current field id
     PCBase* FUN_141bd3620();                        // the local player
     int FUN_141bd1a10(GameObject* pObject);         // the object's actor id
 };
@@ -152,6 +156,34 @@ Unk_EqApp* FUN_14086d260();
 double FUN_141473280(Unk_EqApp* pApp);
 int FUN_141424d00(MS2Ptr<CEquipItem> spHair, const NiPoint3& kOrigin, const NiPoint3& kDir, NiPick& kPick, int* pnResult);   // pick the hair
 void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue);   // (unit_1411673f0)
+// The item's status (CItemStatus) as the update sums it: the PvP option value returns int.
+class Unk_EqItemStatus : public CItemStatus
+{
+public:
+    int FUN_14062ff70(unsigned nType);                  // the PvP special ability value (item.h declares it void)
+};
+class Unk_EqItem : public CItem
+{
+public:
+    Unk_EqItemStatus* FUN_1405278a0();                  // the item status
+};
+#define EQITEM(sp) static_cast<Unk_EqItem*>((sp).operator->())
+class Unk_EqPC : public PC
+{
+public:
+    MS2Ptr<CItem> FUN_141663450();                      // the summoned pet's item
+};
+// The pet row's stat growth rate (+0xa8, past cpet.h's Unk_PetRow).
+class Unk_EqPetRow : public Unk_PetRow
+{
+public:
+    float m_fStatRate;                                  // +0xa8
+};
+class Unk_MyPCEquip : public PCGemEquip {};
+void FUN_141656710(PC* pPC);                            // refresh the local player's stats
+eSetItemLayer::T FUN_140222fb0(int nLayer);             // the set item layer of an equip layer
+int FUN_1406198a0(int nValue, float fRate);             // (int)(nValue * fRate + 1e-6)
+extern int DAT_143ae2b50;                               // the mesh optimizer is on
 extern const NiPoint3 DAT_143a08cf8;                    // the cap pick axis
 extern const NiPoint3 DAT_143b01a60;                    // NiPoint3::ZERO                 // the app time
 bool FUN_141b701f0(NiMesh* pMesh, unsigned nMask);     // every sub mesh has the flag (util.cpp)
@@ -2610,4 +2642,162 @@ void CEquipment::FUN_1411e5c10()
         }
     }
     spCap->FUN_1411dcf10(s_tagWillUpdatePos);
+}
+
+// @0x1411e76c0
+void CEquipment::FUN_1411e76c0(double fTime)
+{
+    int bExpired = 0;
+    int bGems = 0;
+    int bStats = 0;
+    bool bPvp = CFieldData::FUN_1403744a0(FUN_1403ed2d0()->FUN_141bd3060());
+    if (m_50 != 0) {
+        m_skillStats.RemoveAll();
+        m_effectStats.RemoveAll();
+    }
+    if (m_54 != 0) {
+        FUN_1411ef740();
+        m_pPC->FUN_1411f9310()->Clear();
+    }
+    FUN_1411ebde0();
+    for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
+        int nSlot = m_slots.GetKeyAt(pos);
+        const MS2Ptr<CEquipmentSlot>& spSlot = m_slots.GetValueAt(pos);
+        for (int i = 0; i < 6; i++) {
+            const MS2Ptr<CEquipItem>& spItem = spSlot->m_items[i];
+            if (spItem == 0)
+                continue;
+            if (spSlot->m_bShown[i] == 0)
+                continue;
+            spItem->FUN_1411dd400(fTime);
+            MS2Ptr<CItem> spCItem = spItem->FUN_1411dc7a0();
+            if (spCItem == 0)
+                continue;
+            if (spCItem->FUN_1405269b0() == 0 && spCItem->FUN_140525c60() != 0 && spCItem->FUN_140528930()) {
+                bExpired = 1;
+                FUN_1411e4b30(spItem);
+                m_48 = 1;
+                bGems = 1;
+                bStats = 1;
+                spCItem->FUN_140526990(1);
+            }
+            if (m_4c != 0 && spCItem->FUN_14052a2d0()) {
+                if (m_pPC->FUN_141658f30() == 0)
+                    FUN_1411e4b30(spItem);
+                else
+                    FUN_1411e46b0(spItem);
+                m_48 = 1;
+                bGems = 1;
+                bStats = 1;
+            }
+            if (m_58 != 0 && spCItem->FUN_14052a330()) {
+                if (m_pPC->FUN_141662de0() == 0)
+                    FUN_1411e4b30(spItem);
+                else
+                    FUN_1411e46b0(spItem);
+                m_48 = 1;
+                bGems = 1;
+                if (spCItem->FUN_140527840()->FUN_14053cbc0())
+                    bStats = 1;
+            }
+            if (i == 2) {
+                bool bChanged = false;
+                eSetItemLayer::T nLayer = FUN_140222fb0(2);
+                bool bActive = m_spLayerInfo.get() != NULL && m_spLayerInfo->FUN_1411df810();
+                if (!m_5c) {
+                    if (m_54 != 0 && m_pPC->FUN_141662eb0(spCItem.get()) != 0 && bActive)
+                        m_pPC->FUN_1411f9310()->AddItemCount(spCItem->FUN_1405276c0(), spCItem->FUN_140526a50(), nLayer, false);
+                } else {
+                    if (!bActive) {
+                        FUN_1411e4b30(spItem);
+                        m_pPC->FUN_1411f9310()->RemoveItem(spCItem->FUN_1405276c0(), spCItem->FUN_140526a50(), nLayer);
+                    } else {
+                        FUN_1411e46b0(spItem);
+                        m_pPC->FUN_1411f9310()->AddItemCount(spCItem->FUN_1405276c0(), spCItem->FUN_140526a50(), nLayer, false);
+                    }
+                    bChanged = true;
+                }
+                if (bChanged) {
+                    m_48 = 1;
+                    bGems = 1;
+                    if (spCItem->FUN_140527840()->FUN_14053cbc0())
+                        bStats = 1;
+                }
+                continue;
+            }
+            if (m_54 == 0 || m_pPC->FUN_141662eb0(spCItem.get()) == 0)
+                continue;
+            if (!spCItem->FUN_140526810((unsigned short)m_pPC->vfunc_78()))
+                continue;
+            int nItemId = spCItem->FUN_1405276c0();
+            eSetItemLayer::T nLayer = FUN_140222fb0(i);
+            m_pPC->FUN_1411f9310()->AddItemCount(nItemId, spCItem->FUN_140526a50(), nLayer, true);
+            if (m_pPC->FUN_1416749a0()->FUN_1409703d0(spCItem->FUN_140527a20()))
+                continue;
+            CItemData* pData = spCItem->FUN_140527840();
+            if (pData->FUN_14053d2b0() && nSlot == 9)
+                continue;
+            if (pData->FUN_14053d460() && nSlot == 4)
+                continue;
+            for (int k = 0; k < 0x23; k++) {
+                if (!bPvp)
+                    m_attrs[(Unk_EquipAttrType)k] += EQITEM(spCItem)->FUN_1405278a0()->FUN_14062ffb0(k, 3, 5);
+                else
+                    m_attrs[(Unk_EquipAttrType)k] += EQITEM(spCItem)->FUN_1405278a0()->FUN_14062fea0(k);
+            }
+            for (int k = 0; k < 0xcf; k++) {
+                if (!bPvp)
+                    m_abilities[(SAType)k] += EQITEM(spCItem)->FUN_1405278a0()->FUN_140630290(k, 3, 5);
+                else
+                    m_abilities[(SAType)k] += EQITEM(spCItem)->FUN_1405278a0()->FUN_14062ff70(k);
+            }
+        }
+    }
+    CPet* pPet = static_cast<CPet*>(m_pPC->FUN_141676a10());
+    MS2Ptr<CItem> spPetItem = static_cast<Unk_EqPC*>(m_pPC)->FUN_141663450();
+    if (spPetItem.get() != NULL && pPet != NULL && pPet->FUN_140b102b0().get() != NULL) {
+        float fRate = static_cast<Unk_EqPetRow*>(pPet->FUN_140b102b0().operator->())->m_fStatRate;
+        for (int k = 0; k < 0x23; k++) {
+            Unk_EquipAttrType eType = (Unk_EquipAttrType)k;
+            m_attrs[eType] += EQITEM(spPetItem)->FUN_1405278a0()->FUN_14062ffb0(eType, 3, 5);
+            int nBase = EQITEM(spPetItem)->FUN_1405278a0()->FUN_14062ffb0(eType, 0, 0);
+            if (nBase != 0) {
+                double fGrowth = floor((double)FUN_1406198a0(nBase, fRate));
+                m_attrs[eType] = (int)((double)m_attrs[eType] + fGrowth * (double)(int)(spPetItem->FUN_140528c20() - 1));
+            }
+        }
+        for (int k = 0; k < 0xcf; k++) {
+            SAType eType = (SAType)k;
+            m_abilities[eType] += EQITEM(spPetItem)->FUN_1405278a0()->FUN_140630290(eType, 3, 5);
+            int nBase = EQITEM(spPetItem)->FUN_1405278a0()->FUN_140630290(eType, 0, 0);
+            if (nBase != 0) {
+                double fGrowth = floor((double)FUN_1406198a0(nBase, fRate));
+                m_abilities[eType] = (int)((double)m_abilities[eType] + fGrowth * (double)(int)(spPetItem->FUN_140528c20() - 1));
+            }
+        }
+    }
+    m_pPC->FUN_1411f9310()->Refresh();
+    if (m_50 != 0)
+        FUN_1411e7320();
+    m_4c = 0;
+    m_58 = 0;
+    m_50 = 0;
+    m_54 = 0;
+    m_5c = false;
+    if (m_48 != 0) {
+        m_48 = 0;
+        FUN_1411e0b30();
+    }
+    if (bStats != 0)
+        FUN_141656710(FUN_1411e0ee0());
+    if (bGems != 0)
+        static_cast<Unk_MyPCEquip*>(m_pPC->FUN_14165f460())->FUN_1412704d0();
+    if (bExpired != 0) {
+        FUN_1411e7660();
+        m_bSetDirty = true;
+    }
+    if (DAT_143ae2b50 != 0 && m_5e)
+        FUN_1411eef60();
+    if (m_5f)
+        FUN_1411e6e70();
 }

@@ -154,7 +154,7 @@ public:
     void FUN_1411e7660();                                   // m_54 = 1
     void FUN_1411e7680();
     void FUN_1411e76a0();                                   // m_5f = true
-    void FUN_1411e76c0();
+    void FUN_1411e76c0(double fTime);                       // Update
     void FUN_1411e89d0(int n);                              // slot 32 of the shown items' models
     void FUN_1411e8b60(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend);
     void FUN_1411e8eb0(const CString& strTag);              // tag the shown items
