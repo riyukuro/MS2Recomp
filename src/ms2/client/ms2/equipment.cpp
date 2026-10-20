@@ -2801,3 +2801,28 @@ void CEquipment::FUN_1411e76c0(double fTime)
     if (m_5f)
         FUN_1411e6e70();
 }
+
+// @0x1411f6f10
+CEquipmentSlotLayerInfo::CEquipmentSlotLayerInfo(int nKind)
+    : m_start(0), m_end(0), m_bActive(false), m_3c(0), m_nKind(nKind), m_bBusy(false), m_48(0)
+{
+}
+
+// @0x1411f7140
+template <> Delegate<void(unsigned, CString, bool)>::DelegateImplBase::DelegateImplBase() {}
+
+// @0x1411f71d0
+ReplaceObject::ReplaceObject(efd::SmartPointer<NiNode> spNode, efd::SmartPointer<NiMesh> spMesh)
+    : m_spNode(spNode), m_spMesh(spMesh)
+{
+}
+
+// @0x1411f7710
+template <> Delegate<void(unsigned, CString, bool)>::DelegateImplBase::~DelegateImplBase() {}
+
+// @0x1411f7750
+ReplaceObject::~ReplaceObject()
+{
+    m_spNode = 0;
+    m_spMesh = 0;
+}
