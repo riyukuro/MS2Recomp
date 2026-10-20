@@ -211,6 +211,7 @@ public:
     int FUN_14165c090(const efd::Point3& kPos);             // there is ground ahead of kPos and room to stand there
     MS2Ptr<class CGemPetSkin> FUN_14165df00();              // the worn pet skin gem (feature 0x6c)
     MS2Ptr<class CGemSwim> FUN_14165e1b0();                 // the worn swim gem (feature 0x68)
+    void FUN_141659250(int nValue, CubeItemInfo* pInfo);   // recreate the cube craft controller for the mode
     __int64 FUN_141656ad0();                                // +0xdc0
     int FUN_14165ef30();                                    // this is the local player
     MS2Ptr<Unk_PCLinkFD8> FUN_141657730();                  // the +0xfd8 record, created on demand (none while busy)

@@ -100,6 +100,8 @@
 #include "weaponactiontable.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/client/ms2/stateholddata.h"
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/commonfiles/itemdefaultdata.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/mstime.h"
@@ -181,6 +183,7 @@ public:
     int FUN_141bd19d0(int nObjectId);                               // the relation of an object (1: the local player)
     int FUN_141bd3060();                                            // the current map id
     PCBase* FUN_141bd1200(int nObjectId);                           // the actor of an object id
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                          // the current field
 };
 Unk_PCWorld* FUN_1403ed2d0();
 // The effect service (FUN_1403ed280).
@@ -217,6 +220,7 @@ class Unk_PCBaseBuffs
 public:
     int FUN_1409701d0(int nKind);
     int FUN_1409709b0();                                            // a buff blocks being grabbed
+    bool FUN_140970a20();                                           // a buff protects from pk attacks
 };
 // The content switches (FUN_140166410).
 class Unk_PCFeatures
@@ -225,6 +229,23 @@ public:
     bool FUN_14036d570(int nFeature);                               // the feature is enabled
 };
 Unk_PCFeatures* FUN_140166410();
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);                     // the item record of an id
+// The housing service, looked up from its registry cell (as guildmanager.cpp).
+class Unk_PCHousingSvc
+{
+public:
+    void FUN_1410cc160(int nKind);                                  // the cube build mode UI
+};
+class Unk_PCHousingSvcPtr
+{
+public:
+    Unk_PCHousingSvcPtr(Unk_PCHousingSvc* p);                       // 0x1401cd0b0
+    ~Unk_PCHousingSvcPtr();                                         // 0x1401cd150
+    Unk_PCHousingSvc* FUN_1401cd1a0() const;                        // operator->
+    Unk_PCHousingSvc* m_p;
+};
+Unk_PCHousingSvc* FUN_1401cd040(char* pCell);
+extern char DAT_143b059e8;
 // Physics: the ray cast record and the PhysX helper (physxhelper.h needs NOMINMAX; state.cpp has the same view).
 struct Unk_RayCastInfo
 {
@@ -2856,6 +2877,105 @@ void PC::vfunc_49()
     int nLodLo = pCfg->FUN_1413769d0(1);
     m_spShadow = NiNew CObjectShadow(this, nLodHi, nLodLo);
     FUN_14123cb20(m_bUnkB8);
+}
+
+// @0x141659250
+void PC::FUN_141659250(int nValue, CubeItemInfo* pInfo)
+{
+    if (FUN_1416595d0())
+    {
+        if (m_pCubeCraft != 0)
+        {
+            m_pCubeCraft->FUN_1410a8af0(false);
+            delete m_pCubeCraft;
+            m_pCubeCraft = 0;
+        }
+        if (FUN_141b6efc0(FUN_14123c410()) == 0)
+            FUN_141661880(1, nValue, pInfo);
+        else
+        {
+            m_pCubeCraft = new Unk_PCCubeCraft(this, nValue, pInfo);
+            m_pCubeCraft->FUN_1410a8af0(true);
+        }
+    }
+    else
+    {
+        if (m_pCubeCraft != 0)
+        {
+            m_pCubeCraft->FUN_1410a8af0(false);
+            delete m_pCubeCraft;
+            m_pCubeCraft = 0;
+        }
+    }
+}
+
+// @0x141659450
+void PC::vfunc_135(int nMode, int nValue, void* pInfo)
+{
+    if (FUN_14166ce30() != 0)
+        return;
+    if (FUN_1416595d0() == 0)
+    {
+        if (FUN_14123bea0() == 0)
+            vfunc_59(5, 0, 0, 0);
+        else
+            vfunc_59(1, 0, 0, 0);
+    }
+    m_nCubeModeFFC = nMode;
+    FUN_141659250(nValue, static_cast<CubeItemInfo*>(pInfo));
+    FUN_141659000(0);
+    PC* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (this == pLocal)
+    {
+        Unk_PCHousingSvcPtr spHousing(FUN_1401cd040(&DAT_143b059e8));
+        if (nMode == 0)
+            spHousing.FUN_1401cd1a0()->FUN_1410cc160(0);
+        else if (nValue != 2)
+            spHousing.FUN_1401cd1a0()->FUN_1410cc160(1);
+    }
+}
+
+// @0x14165f480
+int PC::vfunc_69()
+{
+    MS2Ptr<CEquipItem> spEquip = FUN_141655e10(2);
+    if (spEquip.get())
+    {
+        CAtlArray<CString> aParts;
+        spEquip->FUN_1411dca30(2, aParts);
+        if (aParts.GetCount() > 0)
+            return spEquip->FUN_1411dc7f0()->FUN_14053c510();
+    }
+    int nItemId = CItemDefaultData::FUN_140583f00(FUN_141658e60());
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (!spData)
+        return 0;
+    return nItemId;
+}
+
+// @0x14165f5d0
+int PC::vfunc_122(void* p)
+{
+    PC* pOther = efd::DynamicCast<PC>(static_cast<PCBase*>(p));
+    if (pOther != 0)
+    {
+        int bPk = FUN_1403ed2d0()->FUN_141bd30a0()->FUN_1403754d0();
+        if (bPk != 0)
+        {
+            if (p == this)
+                return 0;
+            if (FUN_141661bc0() != 0 && FUN_141661bc0() == pOther->FUN_141661bc0())
+                return 0;
+            if (FUN_1416749a0()->FUN_140970a20())
+                return 0;
+            if (pOther->FUN_1416749a0()->FUN_140970a20())
+                return 0;
+            return 1;
+        }
+        if (FUN_14165ef30() != pOther->FUN_14165ef30())
+            return 0;
+    }
+    return PCBase::vfunc_122(p);
 }
 
 // ---- end of code ----
