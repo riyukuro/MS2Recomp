@@ -82,7 +82,7 @@ bool DungeonRoomShutdownContext::FUN_1403440d0(unsigned nRoomId)
 // @0x140344140
 bool DungeonRoomShutdownContext::FUN_140344140(Unk_DungeonGroupType eGroup)
 {
-    return m_groups.find(eGroup) == m_groups.end();
+    return m_groups.find(eGroup) != m_groups.end();
 }
 
 // @0x1403441a0
