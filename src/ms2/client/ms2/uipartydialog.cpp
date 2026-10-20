@@ -40,7 +40,11 @@
 // MS2-PIN: ??$Unk_PmGetDialog@VUIPCInfoDialog@@@@YAPEAVUIPCInfoDialog@@H@Z 0x141a877c0 ; unique
 // MS2-PIN: ??0CPair@?$CAtlMap@HV?$Delegate@$$A6AXXZ@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Delegate@$$A6AXXZ@@@3@@ATL@@IEAA@H@Z 0x141a88150 ; unique
 // MS2-PIN: ??1CPair@?$CAtlMap@HV?$Delegate@$$A6AXXZ@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Delegate@$$A6AXXZ@@@3@@ATL@@QEAA@XZ 0x141a88490 ; unique
+// MS2-PIN: ??1UIPopUpMenu@@UEAA@XZ 0x141a88510 ; unique
+// MS2-PIN: ??_EUIPopUpMenu@@WHA@EAAPEAXI@Z 0x141a88774 ; unique
+// MS2-PIN: ??_EUIPopUpMenu@@WHI@EAAPEAXI@Z 0x141a88780 ; unique
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@std@@@?$Delegate@$$A6AXXZ@@UEAAPEAXI@Z 0x141a887d0 ; prop
+// MS2-PIN: ??_GUIPopUpMenu@@UEAAPEAXI@Z 0x141a888d0 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$Delegate@$$A6AXXZ@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$Delegate@$$A6AXXZ@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141a88c50 ; unique
 // MS2-PIN: ?vfunc_48@UIPopUpMenu@@UEAAHXZ 0x141a88d40 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141a89c90 ; unique
@@ -53,42 +57,18 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89ef0 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@std@@@?$Delegate@$$A6AXXZ@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89f50 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89fb0 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141a8b980 ; prop
-// MS2-PIN: ??$?0AEAPEAV?$MS2Ptr@VCPartyMember@@@@AEAPEAV0@$0A@@?$pair@PEAV?$MS2Ptr@VCPartyMember@@@@PEAV1@@std@@QEAA@AEAPEAV?$MS2Ptr@VCPartyMember@@@@0@Z 0x141a8b9e0 ; unique
-// MS2-PIN: ??$_Adl_verify_range1@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@V12@@std@@YAXAEBV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@0@0U?$integral_constant@_N$0A@@0@@Z 0x141a8c460 ; unique
-// MS2-PIN: ??$_Adl_verify_range@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@V12@@std@@YAXAEBV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@0@0@Z 0x141a8c470 ; unique
-// MS2-PIN: ??$_Idl_distance@PEAV?$MS2Ptr@VCPartyMember@@@@PEAV1@@std@@YA_JAEBQEAV?$MS2Ptr@VCPartyMember@@@@0@Z 0x141a8cc70 ; unique
-// MS2-PIN: ??$addressof@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@YAPEAV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@0@AEAV10@@Z 0x141a8da60 ; prop
-// MS2-PIN: ??$emplace_back@V?$MS2Ptr@VCPartyMember@@@@@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VCPartyMember@@@@@Z 0x141a8db80 ; unique
-// MS2-PIN: ??$forward@AEAPEAV?$MS2Ptr@VCPartyMember@@@@@std@@YAAEAPEAV?$MS2Ptr@VCPartyMember@@@@AEAPEAV1@@Z 0x141a8dc70 ; prop
-// MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAA@XZ 0x141a8df70 ; unique
-// MS2-PIN: ??0?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAA@PEAV?$MS2Ptr@VCPartyMember@@@@PEBU_Container_base0@1@@Z 0x141a8dfa0 ; prop
-// MS2-PIN: ??0?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAA@PEAV?$MS2Ptr@VCPartyMember@@@@PEBU_Container_base0@1@@Z 0x141a8dfe0 ; prop
-// MS2-PIN: ??0?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEAA@XZ 0x141a8e020 ; unique
-// MS2-PIN: ??0?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@QEAA@XZ 0x141a8e060 ; prop
-// MS2-PIN: ??0?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEAA@XZ 0x141a8e0a0 ; unique
-// MS2-PIN: ?_Calculate_growth@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEBA_K_K@Z 0x141a8e6a0 ; unique
-// MS2-PIN: ?_Destroy@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VCPartyMember@@@@0@Z 0x141a8e850 ; unique
-// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@XZ 0x141a8e930 ; prop
-// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@XZ 0x141a8e950 ; prop
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@$00@std@@QEAAAEAV?$allocator@V?$MS2Ptr@VCPartyMember@@@@@2@XZ 0x141a8e970 ; prop
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@XZ 0x141a8e9b0 ; prop
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@2@XZ 0x141a8e9c0 ; prop
-// MS2-PIN: ?_Getal@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAAEAV?$allocator@V?$MS2Ptr@VCPartyMember@@@@@2@XZ 0x141a8ea20 ; prop
-// MS2-PIN: ?_Has_unused_capacity@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEBA_NXZ 0x141a8ea60 ; unique
-// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VCPartyMember@@@@XZ 0x141a8eb30 ; prop
-// MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEBAAEBQEAV?$MS2Ptr@VCPartyMember@@@@XZ 0x141a8eb50 ; prop
-// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VCPartyMember@@@@XZ 0x141a8eb70 ; prop
-// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAAEAPEAV?$MS2Ptr@VCPartyMember@@@@XZ 0x141a8ebd0 ; prop
-// MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEBAAEBQEAV?$MS2Ptr@VCPartyMember@@@@XZ 0x141a8ebf0 ; prop
-// MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@std@@QEAAXXZ 0x141a8ec30 ; prop
-// MS2-PIN: ?_Tidy@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEAAXXZ 0x141a8ecb0 ; unique
-// MS2-PIN: ?_Umove@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEAAPEAV?$MS2Ptr@VCPartyMember@@@@PEAV3@00@Z 0x141a8ed80 ; prop
-// MS2-PIN: ?_Umove_if_noexcept1@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VCPartyMember@@@@00U?$integral_constant@_N$0A@@2@@Z 0x141a8edc0 ; prop
-// MS2-PIN: ?_Umove_if_noexcept@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@AEAAXPEAV?$MS2Ptr@VCPartyMember@@@@00@Z 0x141a8ee00 ; unique
-// MS2-PIN: ?begin@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@2@XZ 0x141a8ef90 ; prop
-// MS2-PIN: ?end@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@@2@XZ 0x141a8f200 ; prop
-// MS2-PIN: ?max_size@?$vector@V?$MS2Ptr@VCPartyMember@@@@V?$allocator@V?$MS2Ptr@VCPartyMember@@@@@std@@@std@@QEBA_KXZ 0x141a8f2a0 ; unique
+// MS2-PIN: ??$Unk_PpLog@HMM@@YAXPEAVCLogString@@HHPEB_WAEBHAEBM3@Z 0x141a8ba80 ; unique
+// MS2-PIN: ??$forward@AEAPEAPEAVGameObject@@@std@@YAAEAPEAPEAVGameObject@@AEAPEAPEAV1@@Z 0x141a8dc70 ; unique
+// MS2-PIN: ??$forward@AEAPEAU?$_List_node@PEAVUnk_GoPickHit@@PEAX@std@@@std@@YAAEAPEAU?$_List_node@PEAVUnk_GoPickHit@@PEAX@0@AEAPEAU10@@Z 0x141a8dc80 ; unique
+// MS2-PIN: ??$forward@AEAPEAVGameObject@@@std@@YAAEAPEAVGameObject@@AEAPEAV1@@Z 0x141a8dc90 ; unique
+// MS2-PIN: ??0?$allocator@PEAVGameObject@@@std@@QEAA@XZ 0x141a8e060 ; unique
+// MS2-PIN: ??R<lambda_33b4866407a6444b0fe51dcd18b2ae7a>@@QEBA_NPEAVGameObject@@0@Z 0x141a8e3f0 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@PEAVGameObject@@@std@@V?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@$00@std@@QEAAAEAV?$allocator@PEAVGameObject@@@2@XZ 0x141a8e970 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@PEAVGameObject@@@std@@V?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@$00@std@@QEBAAEBV?$allocator@PEAVGameObject@@@2@XZ 0x141a8e980 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_List_node@PEAVUnk_GoPickHit@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@PEAVUnk_GoPickHit@@@std@@@2@$00@std@@QEAAAEAV?$allocator@U?$_List_node@PEAVUnk_GoPickHit@@PEAX@std@@@2@XZ 0x141a8e990 ; unique
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@PEAVGameObject@@@std@@V?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@XZ 0x141a8e9b0 ; unique
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@PEAVGameObject@@@std@@V?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@XZ 0x141a8e9c0 ; unique
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_List_node@PEAVUnk_GoPickHit@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@PEAVUnk_GoPickHit@@@std@@@2@$00@std@@QEAAAEAV?$_List_val@U?$_List_simple_types@PEAVUnk_GoPickHit@@@std@@@2@XZ 0x141a8e9d0 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uipartydialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -129,6 +109,15 @@
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/client/ms2/ridee.h"
 #include "ms2/placeholder/cpet.h"
+#include "ms2/client/ms2/portraitpc.h"
+#include "ms2/client/ms2/scenestatebase.h"
+#include "ms2/placeholder/cugcmanager.h"
+#include "ms2/placeholder/cinteractobjectdata.h"
+#include <ecr/PickService.h>
+#include <ecr/SceneGraphService.h>
+#include <egf/Entity.h>
+#include <list>
+#include <vector>
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/placeholder/cproxygameobject.h"
 #include "ms2/commonfiles/ugcdef.h"
@@ -245,6 +234,7 @@ struct Unk_PdScript : AScript
     Scaleform::GFx::Value FUN_140f0c520(const char* szMethod, CString a1, Scaleform::GFx::Value a2);   // Invoke(method, string, value)
     Scaleform::GFx::Value FUN_140e06cc0(const char* szMethod, double d);   // Invoke(method, number) (uichaosdpsdialog.cpp)
     Scaleform::GFx::Value FUN_1422bb330(const char* szMethod);             // Invoke(method)
+    using AScript::m_value;
 };
 
 // ASObj member setters through an ASData argument (one COMDAT per value type in this unit).
@@ -252,7 +242,7 @@ template <class T> void Unk_PdSetData(ASObj* pObj, const char* szName, T value)
 {
     ASData data;
     data.FUN_1422b7f70(value);
-    FUN_1407cd930(&pObj->FUN_1422bb870(), szName, data.FUN_1422b9260());
+    FUN_1407cd930(&static_cast<Unk_PdScript*>(static_cast<AScript*>(pObj))->m_value, szName, data.FUN_1422b9260());
 }
 enum Unk_PdTombType : int { Unk_PdTombNone = 0 };
 
@@ -3508,4 +3498,410 @@ void UIPopUpMenu::FUN_141a871a0()
         FUN_1422b82b0(&msg, strHome);
         static_cast<IMessageListener*>(pDialog)->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
     }
+}
+
+// ======== the popup dispatch (the sixth TU of this range: right click on the scene) ========
+
+// The pick result of CameraMgr::FUN_140af0850 (camera.cpp layout; dtor 0x140a16120 bound in symbols-manual.tsv).
+class Unk_GoPickHit;
+void* FUN_140a17cb0(Unk_GoPickHit* pHit);                               // the picked mesh
+class Unk_GoPickVec
+{
+public:
+    unsigned int FUN_140a17ea0();                                       // size
+    Unk_GoPickHit* FUN_140a17d70(unsigned int nIndex);
+};
+Unk_GoPickVec* FUN_140a17e00(ecr::PickService::PickRecord* pRecord);    // the hits
+class Unk_GoPickListPtr
+{
+public:
+    ~Unk_GoPickListPtr();                                               // 0x140a16120
+    ecr::PickService::PickRecord* FUN_140a16c00() const;
+    ecr::PickService::PickRecord* FUN_140a16c30() const;
+    ecr::PickService::PickRecord* m_p;
+};
+class Unk_PpCamera : public Unk_PmCamera
+{
+public:
+    Unk_GoPickListPtr FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly, NiAVObject* pRoot);
+};
+class Unk_PpScene;
+Unk_PpScene* FUN_1408e57f0();                                           // the ui scene manager
+int FUN_1422b9e00(Unk_PpScene* pScene);                                 // the focused scene id
+int FUN_1422b9dc0(Unk_PpScene* pScene);                                 // the current scene id
+class Unk_PpKeyState : public Unk_PeUiScale { public: int FUN_1422aeed0(int nKey); };   // a mouse button state
+ecr::SceneGraphService* FUN_140ad4ba0();
+int FUN_140ae11a0(egf::Entity* pEntity, unsigned int nPropId, int* pValue);   // an int property
+void FUN_1408a2020(egf::Entity* pEntity, unsigned int nPropId, int* pValue);  // an int property
+void FUN_1413fb630(egf::Entity* pEntity, std::vector<unsigned __int64>& meshes);   // the meshes of an entity
+float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                          // the distance
+class Unk_PpStates { public: efd::SmartPointer<CSceneStateBase> FUN_1417e26d0(); };   // CStateService
+Unk_PpStates* FUN_140aa6d30();
+CUgcManager* FUN_14052d220();
+MS2Ptr<CInteractObjectData> FUN_14051f670(int nId);                    // the interact table row
+extern int DAT_143ab0248;                                               // the client country
+struct Unk_PpGuild : Unk_PmGuild { MS2Ptr<CGuildMember> FUN_1413b6200(__int64 nCharId); };
+struct Unk_PpInteract : CInteractObjectData
+{
+    // @0x141a8e590
+    bool FUN_141a8e590() { return m_nKind == 7; }                       // a guild poster
+};
+
+// The entities of a world type hash (worldservice_1.cpp: a 16-byte box pointer to a list of entity references).
+typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_PpEntityList;
+void FUN_1409f20e0(void* pTagPtr);                                      // release
+struct Unk_PpTagPtr
+{
+    ~Unk_PpTagPtr() { FUN_1409f20e0(this); }
+    Unk_PpEntityList* operator->() const { return m_list; }
+    void* m_unk;
+    Unk_PpEntityList* m_list;
+};
+struct Unk_PpWorld : Unk_PdWorld
+{
+    Unk_PpTagPtr FUN_141bd0420(unsigned int nKey);
+    GameObject* FUN_141bd1050(void* pMesh);                             // the game object of a mesh
+    GameObject* FUN_141bd1180(int nId);
+    PCBase* FUN_141bd1290(int nId);                                     // a player by object id
+};
+
+// The log calls with two and three arguments (0x141a8bdf0 / 0x141a8ba80 / 0x141a8c0f0).
+template <class A, class B> void Unk_PpLog(CLogString* log, int level, int category, const wchar_t* format, const A& a, const B& b)
+{
+    const fmt::internal::ArgArray<2>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(a),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(b)};
+    log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(a, b), args));
+}
+template <class A, class B, class C> void Unk_PpLog(CLogString* log, int level, int category, const wchar_t* format, const A& a, const B& b, const C& c)
+{
+    const fmt::internal::ArgArray<3>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(a),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(b),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(c)};
+    log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(a, b, c), args));
+}
+
+bool FUN_141a8ab90(GameObject* pObject, float x, float y);
+bool FUN_141a8b460(Unk_GoPickHit* pHit, float x, float y);
+bool FUN_141a8b670(Unk_GoPickHit* pHit, float x, float y);
+void FUN_141a8a990(CSceneStateBase* pState, float x, float y);
+void FUN_141a8a730();
+bool FUN_141a8b910();
+
+// @0x141a8a010
+// MS2-FUNCTIONAL: the sort predicate is a lambda (the exe's is a COMDAT functor of the same shape)
+void FUN_141a8a010(float x, float y)
+{
+    if (FUN_1403ed2b0() == 0)
+        return;
+    if (FUN_14025e7a0() == 0)
+        return;
+    if (!FUN_141a8b910())
+        return;
+    if (static_cast<Unk_PpKeyState*>(FUN_14025e7a0())->FUN_1422aeed0(2) == 0)
+    {
+        if (FUN_1409478c0()->FUN_140a18070() == 0)
+            return;
+        Unk_GoPickListPtr spPick = static_cast<Unk_PpCamera*>(FUN_1409478c0())->FUN_140af0850(x, y, true, true, false, 0);
+        if (spPick.FUN_140a16c00() == 0)
+            return;
+        if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001f)
+            return;
+        std::vector<GameObject*> objects;
+        std::list<Unk_GoPickHit*> hits;
+        for (unsigned int i = 0; i < FUN_140a17e00(spPick.FUN_140a16c30())->FUN_140a17ea0(); i++)
+        {
+            Unk_GoPickHit* pHit = FUN_140a17e00(spPick.FUN_140a16c30())->FUN_140a17d70(i);
+            if (pHit == 0)
+                continue;
+            void* pMesh = FUN_140a17cb0(pHit);
+            GameObject* pObject = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd1050(pMesh);
+            if (pObject == 0)
+                hits.push_back(pHit);
+            else if (std::find(objects.begin(), objects.end(), pObject) == objects.end())
+                objects.push_back(pObject);
+        }
+        NiPoint3 kCursor(x, y, 0);
+        std::sort(objects.begin(), objects.end(), [kCursor](GameObject* pA, GameObject* pB) -> bool {
+            if (pA == 0 || pB == 0)
+                return false;
+            NiPoint3 kScreenA;
+            NiPoint3 kScreenB;
+            if (!FUN_1409478c0()->FUN_140af0700(pA->vfunc_18(), kScreenA))
+                return false;
+            if (!FUN_1409478c0()->FUN_140af0700(pB->vfunc_18(), kScreenB))
+                return false;
+            return FUN_140966f00(kCursor, kScreenA) < FUN_140966f00(kCursor, kScreenB);
+        });
+        for (std::vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
+        {
+            if (FUN_141a8ab90(*it, x, y))
+                return;
+        }
+        for (std::list<Unk_GoPickHit*>::iterator it = hits.begin(); it != hits.end(); ++it)
+        {
+            Unk_GoPickHit* pHit = *it;
+            if (pHit == 0)
+                continue;
+            if (FUN_141a8b460(pHit, x, y))
+                return;
+            if (FUN_141a8b670(pHit, x, y))
+                return;
+        }
+        for (unsigned int i = 0; i < FUN_140a17e00(spPick.FUN_140a16c30())->FUN_140a17ea0(); i++)
+        {
+            Unk_GoPickHit* pHit = FUN_140a17e00(spPick.FUN_140a16c30())->FUN_140a17d70(i);
+            GameObject* pObject = 0;
+            NiAVObject* pNode = static_cast<NiAVObject*>(FUN_140a17cb0(pHit));
+            egf::Entity* pEntity = FUN_140ad4ba0()->GetEntityFromSceneGraphNode(pNode);
+            int nId = 0;
+            if (FUN_140ae11a0(pEntity, 0x85b708e6, &nId) == 0)
+                pObject = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd1180(nId);
+            if (pObject != 0 && FUN_141a8ab90(pObject, x, y))
+                return;
+        }
+        efd::SmartPointer<CSceneStateBase> spState = FUN_140aa6d30()->FUN_1417e26d0();
+        FUN_141a8a990(spState, x, y);
+    }
+    else
+    {
+        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup UISwfEntity mouseX[{0}] mouseY[{1}]", x, y);
+    }
+    FUN_141a8a730();
+}
+
+// @0x141a8a730
+void FUN_141a8a730()
+{
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    if (pMenu != 0)
+        pMenu->FUN_141a80770();
+}
+
+// @0x141a8a760
+int FUN_141a8a760()
+{
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    if (pMenu == 0)
+        return false;
+    return pMenu->FUN_141a80880() == 0;
+}
+
+// @0x141a8a7b0
+void FUN_141a8a7b0(UIDialog* pDialog, float x, float y)
+{
+    Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup UIDialog name[{0}] mouseX[{1}] mouseY[{2}]", (const char*)pDialog->vfunc_1(), x, y);
+}
+
+// @0x141a8a870
+void FUN_141a8a870(UISwfEntity* pEntity, float x, float y)
+{
+    UIDialog* pDialog = dynamic_cast<UIDialog*>(pEntity);
+    if (pDialog != 0)
+    {
+        FUN_141a8a7b0(pDialog, x, y);
+    }
+    else if (pEntity != 0)
+    {
+        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup UIEntity name[{0}] mouseX[{1}] mouseY[{2}]", (const char*)pEntity->vfunc_1(), x, y);
+    }
+}
+
+// @0x141a8a990
+void FUN_141a8a990(CSceneStateBase* pState, float x, float y)
+{
+    if (pState->GetClassID() == 0x620000b)
+    {
+        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup SceneLogo mouseX[{0}] mouseY[{1}]", x, y);
+    }
+    else if (pState->GetClassID() == 0x6200009)
+    {
+        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup SceneLogin mouseX[{0}] mouseY[{1}]", x, y);
+    }
+    else if (pState->GetClassID() == 0x620000d)
+    {
+        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup SceneMulti mouseX[{0}] mouseY[{1}]", x, y);
+    }
+    else if (pState->GetClassID() == 0x620000c)
+    {
+        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup SceneGame mouseX[{0}] mouseY[{1}]", x, y);
+    }
+    else if (pState->GetClassID() == 0x620000a)
+    {
+        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup SceneLoading mouseX[{0}] mouseY[{1}]", x, y);
+    }
+    else
+    {
+        int nClassId = pState->GetClassID();
+        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"ETC SceneLoading  Class ID : {0}, mouseX[{1}] mouseY[{2}]", nClassId, x, y);
+    }
+}
+
+// @0x141a8ab90
+// MS2-FUNCTIONAL: FUN_141a7e870's target is a common base of PCBase and CPet (passed as PCBase here)
+bool FUN_141a8ab90(GameObject* pObject, float x, float y)
+{
+    if (FUN_1422b9dc0(FUN_1408e57f0()) != 0x620000c)
+        return false;
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return false;
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    if (pMenu == 0)
+        return false;
+    if (efd::DynamicCast<PortraitPC>(pObject) != 0)
+        return false;
+    PC* pPC = efd::DynamicCast<PC>(pObject);
+    if (pPC != 0)
+    {
+        Unk_PopupMenuInfo info(x, y, 1, 0x3f3fe, 1, CString(""), 0);
+        pMenu->FUN_141a7e280(info, pPC, 10);
+        return true;
+    }
+    CPet* pPet = efd::DynamicCast<CPet>(pObject);
+    if (pPet == 0)
+        return false;
+    PCBase* pPetTarget = static_cast<PCBase*>(static_cast<GameObject*>(pPet));
+    if (pMe->FUN_141676a10() == pPet)
+    {
+        Unk_PopupMenuInfo info(x, y, 1, 0xc00, 0, CString(""), 0);
+        info.m_infoA.m_00 = FUN_141656ad0(pMe);
+        info.m_infoA.m_08 = FUN_141656a80(pMe);
+        info.m_infoA.m_10 = pMe->vfunc_77();
+        info.m_infoA.m_18 = pPet->FUN_140b10290();
+        info.m_infoA.m_20 = FUN_1416769f0(pMe);
+        pMenu->FUN_141a7e870(info, pPetTarget, 0xf);
+        return true;
+    }
+    PCBase* pOwner = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd1290(pPet->FUN_141094f40());
+    if (pOwner == 0)
+        return false;
+    Unk_PopupMenuInfo info(x, y, 1, 0x440, 0, CString(""), 0);
+    info.m_infoA.m_00 = FUN_141656ad0(pOwner);
+    info.m_infoA.m_08 = FUN_141656a80(pOwner);
+    info.m_infoA.m_10 = pOwner->vfunc_77();
+    info.m_infoA.m_18 = pPet->FUN_140b10290();
+    info.m_infoA.m_20 = FUN_1416769f0(pOwner);
+    pMenu->FUN_141a7e870(info, pPetTarget, 0xf);
+    return true;
+}
+
+// @0x141a8b020
+void FUN_141a8b020(int nBannerId, float x, float y)
+{
+    if (FUN_1422b9dc0(FUN_1408e57f0()) != 0x620000c)
+        return;
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    if (pMenu == 0)
+        return;
+    MS2Ptr<CUgcRegistBanner> spBanner = FUN_14052d220()->FUN_141887ce0(nBannerId);
+    if (spBanner == 0)
+        return;
+    Unk_PopupMenuInfo info(x, y, 2, 0x40, 0, CString(""), 0);
+    pMenu->FUN_141a7ff60(info, nBannerId, spBanner);
+}
+
+// @0x141a8b190
+bool FUN_141a8b190(MS2Ptr<CInteractObjectData> spData, float x, float y)
+{
+    if (FUN_1422b9dc0(FUN_1408e57f0()) != 0x620000c)
+        return false;
+    UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+    if (pMenu == 0 || DAT_143ab0248 != 3)
+        return false;
+    if (static_cast<Unk_PpInteract*>(spData.get())->FUN_141a8e590() != 1)
+        return false;
+    Unk_PopupMenuInfo info;
+    info.m_a = 2;
+    info.m_b = 0x40;
+    info.m_c = 0;
+    info.m_x = x;
+    info.m_y = y;
+    int nPosterId = spData->m_nPosterId;
+    info.m_infoB.m_08 = nPosterId;
+    info.m_infoB.m_10 = FUN_1403ed290()->m_info.FUN_1404d2220(nPosterId);
+    info.m_infoB.m_18 = FUN_1403ed290()->m_info.FUN_1404d2330(nPosterId);
+    info.m_infoB.m_20 = FUN_1403ed290()->m_info.FUN_1404d2400(nPosterId);
+    info.m_infoB.m_28 = 0;
+    info.m_infoB.m_00 = FUN_1403ed290()->m_info.FUN_1404ccbd0();
+    MS2Ptr<CGuildMember> spMember = static_cast<Unk_PpGuild*>(FUN_1403ed290())->FUN_1413b6200(info.m_infoB.m_18);
+    if (spMember.get() != 0)
+        info.m_infoB.m_28 = spMember->data.f00;   // the member's account id
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe != 0 && FUN_141656a80(pMe) != info.m_infoB.m_18)
+    {
+        pMenu->FUN_141a80670(info);
+        return true;
+    }
+    return false;
+}
+
+// @0x141a8b460
+bool FUN_141a8b460(Unk_GoPickHit* pHit, float x, float y)
+{
+    Unk_PpTagPtr spList = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd0420(0xc7f9dd65);
+    if (spList.m_list == 0)
+        return false;
+    for (POSITION pos = spList->GetHeadPosition(); pos != 0; spList->GetNext(pos))
+    {
+        efd::SmartPointer<egf::Entity> spEntity = spList->GetAt(pos);
+        if (spEntity == 0)
+            continue;
+        std::vector<unsigned __int64> meshes;
+        FUN_1413fb630(spEntity, meshes);
+        for (unsigned __int64 i = 0; i < meshes.size(); i++)
+        {
+            if ((unsigned __int64)FUN_140a17cb0(pHit) == meshes.at(i))
+            {
+                int nBannerId = 0;
+                FUN_1408a2020(spEntity, 0x819a96c0, &nBannerId);
+                FUN_141a8b020(nBannerId, x, y);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// @0x141a8b670
+bool FUN_141a8b670(Unk_GoPickHit* pHit, float x, float y)
+{
+    Unk_PpTagPtr spList = static_cast<Unk_PpWorld*>(FUN_1403ed2d0())->FUN_141bd0420(0x72f49865);
+    if (spList.m_list == 0)
+        return false;
+    for (POSITION pos = spList->GetHeadPosition(); pos != 0; spList->GetNext(pos))
+    {
+        efd::SmartPointer<egf::Entity> spEntity = spList->GetAt(pos);
+        if (spEntity == 0)
+            continue;
+        std::vector<unsigned __int64> meshes;
+        FUN_1413fb630(spEntity, meshes);
+        for (unsigned __int64 i = 0; i < meshes.size(); i++)
+        {
+            if ((unsigned __int64)FUN_140a17cb0(pHit) == meshes.at(i))
+            {
+                int nRowId = 0;
+                FUN_1408a2020(spEntity, 0xd460e9bc, &nRowId);
+                MS2Ptr<CInteractObjectData> spData = FUN_14051f670(nRowId);
+                if (spData != 0 && FUN_141a8b190(spData, x, y) == true)
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+
+// @0x141a8b910
+bool FUN_141a8b910()
+{
+    if (FUN_1403ed2d0() == 0)
+        return true;
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return true;
+    int nState = pMe->FUN_14166c930();
+    if (nState == 0xe)
+        return false;
+    if (nState == 0x3f)
+        return false;
+    return true;
 }

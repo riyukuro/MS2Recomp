@@ -174,15 +174,24 @@ class Unk_PopupMenuInfo
 {
 public:
     Unk_PopupMenuInfo(float x, float y, int a, int b, int c, CString str, void* p);   // 0x140c302f0
+    Unk_PopupMenuInfo() : m_x(0), m_y(0), m_a(0), m_b(0x3f3fe), m_c(0), m_p(0) {}   // 0x141a8e0d0
     ~Unk_PopupMenuInfo() {}                                         // 0x140c304c0
     struct Unk_PmA                                                  // ctor 0x140c30440, dtor 0x140c30550
     {
         Unk_PmA() : m_00(0), m_08(0), m_10(L""), m_18(0), m_20(0) {}
+        void operator=(Unk_PmA o)                                   // 0x141a889a0 (by value, no return)
+        {
+            m_00 = o.m_00; m_08 = o.m_08; m_10 = o.m_10; m_18 = o.m_18; m_20 = o.m_20;
+        }
         __int64 m_00; __int64 m_08; CStringW m_10; int m_18; __int64 m_20;
     };
     struct Unk_PmB                                                  // ctor 0x140c303c0, dtor 0x140c30510
     {
         Unk_PmB() : m_00(0), m_08(0), m_10(L""), m_18(0), m_20(L"") {}
+        void operator=(Unk_PmB o)                                   // 0x141a88910 (by value, no return; m_28 not copied)
+        {
+            m_00 = o.m_00; m_08 = o.m_08; m_10 = o.m_10; m_18 = o.m_18; m_20 = o.m_20;
+        }
         __int64 m_00; int m_08; CStringW m_10; __int64 m_18; CStringW m_20;
         __int64 m_28;                                                 // not set by the ctor
     };
