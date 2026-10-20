@@ -1220,3 +1220,4 @@ size_t FUN_1418311c0(Unk_RefArrayA* pArray)
 {
     return pArray->m_nSize;
 }
+// MS2-PIN: ??0?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA@XZ 0x14182e480 ; hand: this TU's byte-identical copy (0x140658210 in the table)
