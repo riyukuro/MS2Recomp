@@ -29,6 +29,7 @@
 #include "ms2/placeholder/uibuddyeventdispatcher.h"
 #include "ms2/client/ms2/uiquesteventlistener.h"
 #include "ms2/client/ms2/uileveluppackagewidgetdialog.h"
+#include "ms2/client/ms2/uicommunitydialog.h"
 #include <efd/utf8string.h>
 #include "ms2/fmt/format.h"
 #include "ms2/placeholder/wcformat.h"
@@ -75,6 +76,7 @@ public:
     class MyPC* FUN_141bd0cc0();                                    // the local player
     int FUN_141bd3060();                                            // the current map id
     MS2Ptr<CProxyGameObject> FUN_141bc9be0(int nId);                // a proxy by object id
+    int FUN_141bc80c0(int nChannel);                                // change the channel
 };
 Unk_MmWorld* FUN_1403ed2d0();
 
@@ -1155,6 +1157,111 @@ void UIMinimapDialog::vfunc_72()
     }
 }
 MS2_REPLACE_METHOD(0x141a36650, UIMinimapDialog, vfunc_72, 0, 0);
+
+// The community dialog (COMDAT 0x141a46630).
+template <class T> T* Unk_MmGetDialog()
+{
+    CUIService* pService = FUN_1403ed2b0();
+    if (pService == 0)
+        return 0;
+    MS2Ptr<UIObject> obj = pService->FUN_141adcea0(T::GetUIClassID());
+    if (!obj)
+        return 0;
+    return dynamic_cast<T*>(obj.operator->());
+}
+
+int FUN_1418fcee0();                                                // OnReport (uicommon)
+bool FUN_1409b0350(Scaleform::GFx::Value* pValue);                  // the value is undefined
+
+// @0x141a366d0
+int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
+        return 1;
+    if (_stricmp("OnToggleMode", szMethod) == 0) {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            bool bEnabled = data.FUN_1422b8a90();
+            FUN_141a458d0(bEnabled);
+        }
+        return 1;
+    } else if (_stricmp("OnChangeMode", szMethod) == 0) {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            m_fullmap = data.FUN_1422b8a90();
+            m_212 = true;
+        }
+        return 1;
+    } else if (_stricmp("OnWorldMap", szMethod) == 0) {
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4e42);
+        return 1;
+    } else if (_stricmp("OnMorePlayers", szMethod) == 0) {
+        if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4e4d)) {
+            UICommunityDialog* pDialog = Unk_MmGetDialog<UICommunityDialog>();
+            if (pDialog != 0)
+                pDialog->FUN_1418d6930(0);
+        }
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4e4d);
+        return 1;
+    } else if (_stricmp("OnCheckIcon", szMethod) == 0) {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            CString strName = data.FUN_1422b8d30();
+            unsigned int nChecked = data.FUN_1422b8a90() != false ? 1 : 0;
+            MS2Ptr<TShowAttr> spAttr(0);
+            if (m_showAttrs.Lookup(strName, spAttr))
+                spAttr->m_state = nChecked;
+        }
+        return 1;
+    } else if (_stricmp("OnChangeChannel", szMethod) == 0) {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            int nChannel = data.FUN_1422b8a10();
+            if (!FUN_1403ed2d0()->FUN_141bc80c0(nChannel))
+                FUN_141a44ed0();
+        }
+        return 1;
+    } else if (_stricmp("OnPopupMenu", szMethod) == 0) {
+        if (!m_1fa) {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs)) {
+                float x = data.FUN_1422b8c10();
+                float y = data.FUN_1422b8c10();
+                unsigned __int64 nId = _atoi64(data.FUN_1422b8d30());
+                FUN_141a45790(x, y, nId);
+            }
+        }
+        return 1;
+    } else if (_stricmp("OnUpdateCenter", szMethod) == 0) {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            m_208.x = data.FUN_1422b8c10();
+            m_208.y = data.FUN_1422b8c10();
+            m_scale = data.FUN_1422b8c10();
+        }
+        return 1;
+    } else if (_stricmp("OnReport", szMethod) == 0) {
+        return FUN_1418fcee0();
+    } else if (_stricmp("OnWheelStepChange", szMethod) == 0) {
+        m_212 = true;
+        return 1;
+    } else if (_stricmp("onFieldLoadComplete", szMethod) == 0) {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            Scaleform::GFx::Value value = data.FUN_1422b9260();
+            if (!FUN_1409b0350(&value)) {
+                ASMovieClip clip(value, 2);
+                if (static_cast<MinimapViewport*>(m_viewport) != 0)
+                    m_viewport->FUN_141485770(clip.FUN_1422c1340());
+                m_1fc = true;
+                FUN_141a3ea10();
+            }
+        }
+        return 1;
+    }
+    return 0;
+}
+MS2_REPLACE_METHOD(0x141a366d0, UIMinimapDialog, vfunc_28, 0, 0);
 
 // @0x141a36e50
 bool UIMinimapDialog::vfunc_17()

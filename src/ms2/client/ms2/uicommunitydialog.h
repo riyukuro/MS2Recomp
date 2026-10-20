@@ -59,6 +59,7 @@ public:
     bool FUN_1418d6390(int nButton, const CMsgBoxData& data);   // 0x1418d6390 the home-visit box answer
     void FUN_1418d6430(int nTab);                               // build the buddy list of a tab
     void FUN_1418d6930(int nTab);                               // m_190 = nTab (0..4)
+    static eUIClassID GetUIClassID() { return (eUIClassID)0x4e4d; }   // COMDAT (0x141a4b220, uiminimapentity.cpp)
     int FUN_1418d6960();                                        // m_190
     void FUN_1418d6980();                                       // "initData"
     void FUN_1418d69f0(int nTab);                               // change the tab
