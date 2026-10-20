@@ -812,31 +812,30 @@ void CSoundService::FUN_1417aff20(CStringA strMediaPath)
 // @0x1417b03d0
 bool CSoundService::FUN_1417b03d0(const CStringA& strName)
 {
-    return m_mapTags.find(strName) != m_mapTags.end();
+    std::map<CStringA, Unk_SoundTag>::iterator it = m_mapTags.find(strName);
+    if (it == m_mapTags.end())
+        return false;
+    return true;
 }
 
 // @0x1417b0440
 int CSoundService::FUN_1417b0440(const CStringA& strName, size_t* pBank)
 {
     std::map<CStringA, Unk_SoundTag>::iterator it = m_mapTags.find(strName);
-    if (it != m_mapTags.end())
-    {
-        *pBank = it->second.m_nBank;
-        return it->second.m_nSubSound;
-    }
-    return -1;
+    if (it == m_mapTags.end())
+        return -1;
+    *pBank = it->second.m_nBank;
+    return it->second.m_nSubSound;
 }
 
 // @0x1417b04d0
 int CSoundService::FUN_1417b04d0(const CStringA& strName, size_t* pBank)
 {
     std::map<CStringA, Unk_SoundTag>::iterator it = m_mapTags.find(strName);
-    if (it != m_mapTags.end())
-    {
-        *pBank = it->second.m_nBank;
-        return it->second.m_uLength;
-    }
-    return -1;
+    if (it == m_mapTags.end())
+        return -1;
+    *pBank = it->second.m_nBank;
+    return it->second.m_uLength;
 }
 
 // @0x1417b0560
