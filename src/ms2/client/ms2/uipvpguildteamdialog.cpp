@@ -555,8 +555,8 @@ MS2_REPLACE_METHOD(0x14133BEC0, UIPvPGuildTeamDialog, FUN_14133bec0, 149, 0x6373
 // @0x14133bf60
 void UIPvPGuildTeamDialog::FUN_14133bf60(PCBase* pTarget)
 {
-    std::map<__int64, MS2Ptr<ASUIComponent> >::iterator it = m_slots.begin();
-    std::map<__int64, MS2Ptr<ASUIComponent> >::iterator itEnd = m_slots.end();
+    std::map<unsigned __int64, MS2Ptr<ASUIComponent> >::iterator it = m_slots.begin();
+    std::map<unsigned __int64, MS2Ptr<ASUIComponent> >::iterator itEnd = m_slots.end();
     for (; it != itEnd; ++it) {
         MS2Ptr<Unk_140acd6e0> spButton = it->second->FUN_140acce30<Unk_140acd6e0>("m_observeButton");
         if (spButton == 0)
