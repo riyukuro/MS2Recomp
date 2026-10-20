@@ -288,6 +288,7 @@ public:
     void OnClickBuyMerat();                                         // 0x1412ffb40
     void OnClickBuy(const CStringA& strMovie, ASData& data);         // 0x1412ffb80 "OnClickBuy"
     void OnClickRandomSalePick(const CStringA& strName, ASData& data);   // 0x1413000d0
+    void OnClickBuyEquipAll(const CStringA& strMovie);              // 0x141300470 buy everything on the preview model
     // foreign (other fragments)
     void OnSelectLimited(UIMeratMarketDialogUtil::ASOutData& out);  // 0x141305e70 foreign
     void OnShowHistory();                                           // 0x141305480 foreign
@@ -430,6 +431,7 @@ public:
     void ShowProduct(MS2Ptr<CMeratMarketProduct> spProduct);        // 0x1412ebc40 foreign
     bool IsPlaceableItem(MS2Ptr<CItemData> spData);                 // 0x14130b670
     int MarkTab(int nTab);                                          // 0x14130b730
+    template <class T> MS2Ptr<T> FUN_141311ec0(const CString& strName);   // 0x141311ec0 a child of the movie (null before load)
 
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                                    // +0x198
