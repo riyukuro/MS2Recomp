@@ -38,6 +38,7 @@ class MapTile : public CPtred
 {
 public:
     MapTile();                              // 0x141badd30
+    int FUN_141b94b90();                    // 0x141b94b90 the tile is shown (UIWorldMapDialog "createMap")
 
     int m_18;                               // +0x18 tile type
     int m_1c;                               // +0x1c
@@ -63,9 +64,6 @@ public:
     CString m_78;                           // +0x78
 };
 MS2_CHECK_SIZE(MapTile, 0x80);
-MS2_CHECK_OFFSET(MapTile, m_40, 0x40);
-MS2_CHECK_OFFSET(MapTile, m_50, 0x50);
-MS2_CHECK_OFFSET(MapTile, m_70, 0x70);
 
 // The display filter of the world map (embedded in UIWorldMapDialog at +0x1d8). RTTI .?AVDisplaySetting@UIWorldMap@@,
 // 0x30 bytes, vftable 0x142ffa088, ctor 0x141b94fb0 (calls Reset), ??_G 0x141bb0200.
@@ -108,14 +106,12 @@ public:
     int m_18;                               // +0x18 the field id
     Rect m_20;                              // +0x20 the boss: +0x20 npc id, +0x28 channels, +0x40 kind (1 field boss, 2)
     DungeonInfo m_48;                       // +0x48
-    std::vector<int> m_68;                  // +0x68
+    std::vector<std::pair<CStringW, CStringW> > m_68;   // +0x68 portals (line, times line)
     std::vector<TooltipEntry> m_80;         // +0x80 the npc lines (FUN_141b58830)
     std::vector<std::pair<CStringW, CStringW> > m_98;   // +0x98 party members (name line, channel line)
     std::vector<std::pair<CStringW, CStringW> > m_b0;   // +0xb0 buddies (name line, channel line)
 };
 MS2_CHECK_SIZE(IconInfo, 0xc8);
-MS2_CHECK_OFFSET(IconInfo, m_48, 0x48);
-MS2_CHECK_OFFSET(IconInfo, m_98, 0x98);
 
 // RTTI .?AVAddtionalInfo@UIWorldMap@@ (sic), 0x40 bytes, vftable 0x142ffa048, ctor 0x141badb80, ??_G 0x141bb0180.
 class AddtionalInfo : public CPtred
@@ -146,4 +142,12 @@ public:
 };
 MS2_CHECK_SIZE(FieldSearchInfo, 0x30);
 
+bool FUN_141b94e70(const TooltipEntry& a, const TooltipEntry& b);   // 0x141b94e70 the tooltip line order (UIWorldMapDialog sorts IconInfo::m_80)
+
 }  // namespace UIWorldMap
+// member offset checks specialise a global template, so they sit outside the namespace
+MS2_CHECK_OFFSET(UIWorldMap::MapTile, m_40, 0x40);
+MS2_CHECK_OFFSET(UIWorldMap::MapTile, m_50, 0x50);
+MS2_CHECK_OFFSET(UIWorldMap::MapTile, m_70, 0x70);
+MS2_CHECK_OFFSET(UIWorldMap::IconInfo, m_48, 0x48);
+MS2_CHECK_OFFSET(UIWorldMap::IconInfo, m_98, 0x98);

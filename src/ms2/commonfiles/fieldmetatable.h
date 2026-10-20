@@ -187,6 +187,7 @@ public:
     Unk_FieldIdListPtr FUN_1406fc3c0(unsigned int nField);
     Unk_FieldIdListMap& FUN_1406fc450();
     Unk_FieldIdListMap& FUN_140c955c0() { return m_portalTargets; }   // inline (COMDAT 0x140c955c0, questnavigation.cpp)
+    Unk_FieldIdListMap& FUN_141b69360() { return m_fieldNpcs; }       // inline (COMDAT 0x141b69360, uiworldmapdialog.cpp)
     void FUN_1406fc480(int nFieldId, int nNpcId, const CMsTime& t);
     void FUN_1406fc590(int nFieldId);
     int FUN_1406fc620(int nNpcId, CMsTime& out);
