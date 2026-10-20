@@ -71,6 +71,7 @@ public:
     int FUN_1416c2040();                                            // another player's object
     int FUN_1416c2090();                                            // has a template id
     int FUN_1416c20d0();                                            // has a portal
+    int FUN_1416c2110();                                            // the portal is shown on the minimap
     Unk_QmNpcQuestState* FUN_1416c2200();                         // the quest guide (+0x88)
     MS2Ptr<NpcDataCli> FUN_1416c2220();                             // the npc data
     __int64 FUN_1416c22f0();                                        // the owner character id
@@ -3479,6 +3480,61 @@ bool UIMinimapDialog::FUN_141a44c00(EntityPtr spEntity, const int& nField, bool 
     spEntity->m_visible = bVisible;
     spEntity->m_inFieldNpc = true;
     return true;
+}
+
+// @0x141a3d080
+// MS2-FUNCTIONAL: the npc data conversion temp is copied through extra stack slots in the exe
+void UIMinimapDialog::FUN_141a3d080(ProxyPtr spProxy)
+{
+    if (m_30 == 0)
+        return;
+    if (m_proxies.Lookup(spProxy) != 0)
+        return;
+    if (spProxy->FUN_1416c2040() || spProxy->FUN_1416c1ff0()) {
+        ASObj data(2);
+        if (FUN_141a3bda0(data, spProxy))
+            m_30->Invoke("createPlayer", data.FUN_1422bb870());
+    }
+    EntityPtr spEntity(0);
+    if (spProxy->FUN_1416c1ff0()) {
+        spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 0));
+        spEntity->m_icon = s_strPlayer;
+        spEntity->m_layer = s_strLayerPlayer;
+        spEntity->m_position = spProxy->FUN_1416c2270();
+        spEntity->m_visible = true;
+        spEntity->m_state = s_strIdle;
+        m_player = spEntity;
+    } else if (spProxy->FUN_1416c2040()) {
+        spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 1));
+        spEntity->m_icon = s_strOther;
+        spEntity->m_position = spProxy->FUN_1416c2270();
+        spEntity->m_visible = true;
+        spEntity->m_text = spProxy->FUN_1416c23b0();
+        spEntity->m_showText = false;
+        spEntity->m_showGuide = false;
+        FUN_141a432a0(spProxy, spEntity);
+    } else if (spProxy->FUN_1416c2090()) {
+        spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 2));
+        MS2Ptr<CNpcData> spNpc = spProxy->FUN_1416c2220();
+        if (static_cast<CNpcData*>(spNpc) != 0) {
+            spEntity->m_text = spProxy->FUN_1416c23b0();
+            spEntity->m_position = spProxy->FUN_1416c2270();
+            FUN_141a43680(spProxy, spEntity);
+        }
+    } else if (spProxy->FUN_1416c21c0()) {
+        spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 3));
+        spEntity->m_text = spProxy->FUN_1416c23b0();
+        spEntity->m_position = spProxy->FUN_1416c2270();
+        FUN_141a43ac0(spProxy, spEntity);
+    } else if (spProxy->FUN_1416c20d0()) {
+        spEntity.AssignRaw(new UIMinimapEntityProxyPortal(spProxy->m_proxyId));
+        if (spProxy->FUN_1416c2110())
+            FUN_141a43b80(spProxy, spEntity, true);
+    }
+    if (FUN_141a3e7d0(spEntity))
+        m_proxies.SetAt(spProxy, spEntity);
+    if (spEntity->m_64)
+        m_212 = true;
 }
 
 // @0x141a3e7d0
