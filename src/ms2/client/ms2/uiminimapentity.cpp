@@ -45,6 +45,7 @@
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
+#include "ms2/client/ms2/ridee.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
 #include "ms2/ms2recover.h"
@@ -2232,6 +2233,75 @@ void UIMinimapDialog::FUN_141a44f40()
 }
 MS2_REPLACE_METHOD(0x141a44f40, UIMinimapDialog, FUN_141a44f40, 0, 0);
 
+template <> MS2Ptr<Unk_RideeData>::~MS2Ptr();                                           // 0x140788ed0 (ridee.cpp)
+template <> Unk_RideeData* MS2Ptr<Unk_RideeData>::operator->() const;                   // 0x1407895d0
+
+// The ridden mount of an actor, held while it is read.
+class Unk_MmRideeRef
+{
+public:
+    Unk_MmRideeRef(Ridee* p);
+    ~Unk_MmRideeRef();                                              // 0x1409648b0
+    Ridee* FUN_140965790() const;                                   // get
+    Ridee* FUN_140975bc0() const;                                   // operator->
+private:
+    Ridee* m_p;
+};
+
+// @0x141a42550
+void UIMinimapDialog::FUN_141a42550()
+{
+    ATL::CAtlArray<MS2Ptr<CInteractObject> > objects;
+    FUN_1403ed2d0()->FUN_141bc5f10(objects);
+    for (size_t i = 0; i < objects.GetCount(); ++i)
+        FUN_141a391f0(objects[i]);
+}
+MS2_REPLACE_METHOD(0x141a42550, UIMinimapDialog, FUN_141a42550, 0, 0);
+
+// @0x141a42a70
+void UIMinimapDialog::FUN_141a42a70()
+{
+    if (m_30 == 0)
+        return;
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return;
+    bool bVisible = true;
+    Unk_MmRideeRef spRidee(pPC->FUN_1416764a0());
+    if (spRidee.FUN_140965790()) {
+        if (spRidee.FUN_140975bc0()->FUN_141707750()->m_nSeats != 0)
+            bVisible = false;
+    }
+    m_30->Invoke("visiblePlayers", bVisible);
+}
+MS2_REPLACE_METHOD(0x141a42a70, UIMinimapDialog, FUN_141a42a70, 0, 0);
+
+// @0x141a43ac0
+void UIMinimapDialog::FUN_141a43ac0(ProxyPtr spProxy, EntityPtr spEntity)
+{
+    spEntity->m_64 = false;
+    spEntity->m_showGuide = false;
+    spEntity->m_icon = s_strTamingPet;
+    spEntity->m_state = s_strAlive;
+    spEntity->m_layer = s_strLayerTamingPet;
+    spEntity->m_visible = true;
+}
+
+// @0x141a44730
+bool UIMinimapDialog::FUN_141a44730(const efd::Point3& kPos, MS2Ptr<ASMovieClip> spClip)
+{
+    if (spClip == 0)
+        return false;
+    NiPoint3 kOut;
+    NiPoint3 kWorld(kPos);
+    if (m_viewport->FUN_141486410(kWorld, kOut)) {
+        spClip->vfunc_4(true);
+        spClip->FUN_1422c00f0(kOut.x, kOut.y);
+        return true;
+    }
+    return false;
+}
+
 // @0x141a454d0
 // MS2-FUNCTIONAL: the exe frame is 0x10 smaller (the new-list temporary shares a slot).
 void UIMinimapDialog::FUN_141a454d0(const int& nField, const unsigned __int64& nHome)
@@ -2476,18 +2546,6 @@ bool UIMinimapDialog::FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOu
     return false;
 }
 MS2_REPLACE_METHOD(0x141a451b0, UIMinimapDialog, FUN_141a451b0, 0, 0);
-
-// The ridden mount of an actor, held while it is read.
-class Unk_MmRideeRef
-{
-public:
-    Unk_MmRideeRef(Ridee* p);
-    ~Unk_MmRideeRef();                                              // 0x1409648b0
-    PCBase* FUN_140965790() const;                                  // get
-    PCBase* FUN_140975bc0() const;                                  // operator->
-private:
-    Ridee* m_p;
-};
 
 // @0x141a45920
 float UIMinimapDialog::FUN_141a45920(PCBase* pPC)
