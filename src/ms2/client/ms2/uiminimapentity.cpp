@@ -4,6 +4,25 @@
 // MS2-RANGE: 0x140117c70-0x140118e40 .text$di
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMinimapDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x141a47ab0 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VUIMinimapEntityPing@@@@QEAA@PEAVUIMinimapEntityPing@@@Z 0x141a47e30 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VUIMinimapEntityProxyPortal@@@@QEAA@PEAVUIMinimapEntityProxyPortal@@@Z 0x141a47e60 ; unique
+// MS2-PIN: ??1?$MS2Ptr@VUIMinimapEntityProxyPortal@@@@QEAA@XZ 0x141a48610 ; unique
+// MS2-PIN: ??1?$MS2Ptr@VUIMinimapEntityTaxi@@@@QEAA@XZ 0x141a48640 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VUIMinimapEntityPing@@@@QEBA_NPEAVUIMinimapEntityPing@@@Z 0x141a48c20 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VUIMinimapEntityProxyPortal@@@@QEBA_NPEAVUIMinimapEntityProxyPortal@@@Z 0x141a48c60 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VUIMinimapEntityPing@@@@QEBAPEAVUIMinimapEntityPing@@XZ 0x141a48d50 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VUIMinimapEntityProxyPortal@@@@QEBAPEAVUIMinimapEntityProxyPortal@@XZ 0x141a48d60 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VUIMinimapEntityTaxi@@@@QEBAPEAVUIMinimapEntityTaxi@@XZ 0x141a48d70 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VCNpcData@@@@QEBAPEAVCNpcData@@XZ 0x141a48d80 ; unique
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@_JV?$CElementTraits@_J@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@_JV?$CElementTraits@_J@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x141a4ac40 ; unique
+// MS2-PIN: ?FUN_141a4b020@UIMinimapEntityProxyPortal@@QEBAHXZ 0x141a4b020 ; unique
+// MS2-PIN: ?vfunc_4@UIMinimapEntity@@UEAAHXZ 0x141a4b200 ; unique
+// MS2-PIN: ?vfunc_48@UIMinimapDialog@@UEAAHXZ 0x141a4b210 ; unique
+// MS2-PIN: ?Lookup@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAPEAVCPair@12@_K@Z 0x141a4c6d0 ; unique
+// MS2-PIN: ?FUN_141a50bc0@UIMinimapEntityProxyPortal@@QEAAXAEBH@Z 0x141a50bc0 ; unique
+// MS2-PIN: ?FUN_141a51030@UIMinimapEntityProxyPortal@@QEAAX_N@Z 0x141a51030 ; unique
+// MS2-PIN: ?FUN_141a51050@UIMinimapEntityProxyPortal@@QEAAXH@Z 0x141a51050 ; unique
 // MS2-PINS-END tplpin
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiminimapentity.cpp"    // assumed
@@ -3700,6 +3719,82 @@ void UIMinimapDialog::FUN_141a3f930(EntityPtr spEntity)
     if (spEntity == 0)
         return;
     FUN_141a3f730(spEntity->m_clip, ProxyPtr(0));
+}
+
+// @0x141a46c90
+void UIMinimapDialog::FUN_141a46c90(EntityMap& map)
+{
+    if (map.IsEmpty())
+        return;
+    for (POSITION pos = map.GetStartPosition(); pos != 0; map.GetNext(pos)) {
+        EntityPtr spEntity = map.GetValueAt(pos);
+        if (spEntity == 0)
+            continue;
+        FUN_141a3f730(spEntity->m_clip, ProxyPtr(0));
+    }
+}
+
+// @0x141a46dc0
+void UIMinimapDialog::FUN_141a46dc0(NamedMap& map)
+{
+    if (map.IsEmpty())
+        return;
+    for (POSITION pos = map.GetStartPosition(); pos != 0; map.GetNext(pos)) {
+        EntityPtr spEntity = map.GetValueAt(pos);
+        if (spEntity == 0)
+            continue;
+        FUN_141a3f730(spEntity->m_clip, ProxyPtr(0));
+    }
+}
+
+// @0x141a46ef0
+void UIMinimapDialog::FUN_141a46ef0(ProxyMap& map)
+{
+    if (map.IsEmpty())
+        return;
+    for (POSITION pos = map.GetHeadPosition(); pos != 0; map.GetNext(pos)) {
+        ProxyPtr spProxy = map.GetKeyAt(pos);
+        EntityPtr spEntity = map.GetValueAt(pos);
+        if (spEntity == 0)
+            continue;
+        FUN_141a3f730(spEntity->m_clip, spProxy);
+    }
+}
+
+// @0x141a47060
+void UIMinimapDialog::FUN_141a47060(BuddyMap& map)
+{
+    if (map.IsEmpty())
+        return;
+    for (POSITION pos = map.GetStartPosition(); pos != 0; map.GetNext(pos)) {
+        EntityPtr spEntity = map.GetValueAt(pos);
+        if (spEntity == 0)
+            continue;
+        FUN_141a3f730(spEntity->m_clip, ProxyPtr(0));
+    }
+}
+
+// @0x141a47190
+void UIMinimapDialog::FUN_141a47190(PingMap& map)
+{
+    if (map.IsEmpty())
+        return;
+    for (POSITION pos = map.GetHeadPosition(); pos != 0; map.GetNext(pos)) {
+        EntityPtr spEntity = map.GetValueAt(pos);
+        if (spEntity == 0)
+            continue;
+        FUN_141a3f730(spEntity->m_clip, ProxyPtr(0));
+    }
+}
+
+void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member
+
+// @0x141a472c0
+void ASObj::FUN_141a472c0(const char* szName, int n)
+{
+    ASData data;
+    data.FUN_1422b7f70(n);
+    FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
 }
 
 // @0x141a3f9f0
