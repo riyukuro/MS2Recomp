@@ -26,7 +26,6 @@
 // MS2-PIN: ??C?$MS2Ptr@UUnk_PickTarget@@@@QEBAPEAUUnk_PickTarget@@XZ 0x140b02a50 ; manual (identical group)
 // MS2-PIN: ?GetRTTI@CCapRotationController@@UEBAPEBVNiRTTI@@XZ 0x140b02c30 ; manual
 // MS2-PIN: ?vfunc_16@CItemCustomizeController@@UEAAXXZ 0x140b02d60 ; manual (vftable slot 16)
-// MS2-PIN: ?Release@?$MS2Ptr@VCEquipItem@@@@AEAAXXZ 0x140b02e20 ; manual
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\caprotationcontroller.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
