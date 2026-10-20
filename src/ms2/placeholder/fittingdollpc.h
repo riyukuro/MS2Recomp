@@ -55,6 +55,11 @@ struct Unk_PCEquipSet
     void FUN_1411e7610();                                   // mark dirty (CEquipment, equipment.h)
     CString FUN_1411eabd0();                                // the set name (CEquipment)
     bool FUN_1411eac20();                                   // the set name is a named one (CEquipment)
+    float FUN_1411e1110(int nSpecial);                      // the special ability rate (CEquipment)
+    int FUN_1411e1160(int nSpecial);                        // the special ability total (CEquipment)
+    float FUN_1411e1250(int nOption, unsigned nKey);        // an invoke effect option rate (CEquipment)
+    float FUN_1411e13e0(int nOption, unsigned nKey);        // an invoke effect option count (CEquipment)
+    void FUN_1411e7680();                                   // refresh (CEquipment)
     MS2Ptr<CEquipmentSlotLayerInfo> GetTitle();            // 0x140d29440 the codi (outfit) tab period (defined in unit_140d1ae30)
     unsigned char unknown0[0x188];
     MS2Ptr<CEquipmentSlotLayerInfo> m_spTitle;              // +0x188 (new CEquipmentSlotLayerInfo(2))
@@ -63,6 +68,7 @@ class Unk_PCD88;      // +0xd88 target (ClonePC::vfunc_12 releases it via FUN_14
 class Unk_PCArg126;   // MS2Ptr<T> by value (get 0x1409f7930, ICF generic dtor 0x1401bfde0)
 class Unk_HsInfo;     // MS2Ptr<T> by value (defined by uihideandseekresultdialog.cpp)
 // PC member types (w539). Complete types only in pc.cpp; the MS2Ptr members need only declarations.
+class CEquipModel;     // equipmodel.h (the attach-effect models of the worn weapons)
 class CWeaponAction;   // +0xd70 the action prefix row of the worn weapon pair (weaponactiontable.h)
 class Unk_PCLinkFD8;  // +0xfd8 (create 0x141993100, release 0x141993180)
 class CGuideObject;   // +0x1228 [3] the cube guide objects (cubecraft_1.h; FUN_1416623d0 sets them)
@@ -196,6 +202,7 @@ public:
     MS2Ptr<Unk_PCLinkFD8> FUN_141657730();                  // the +0xfd8 record, created on demand (none while busy)
     int FUN_141661970();                                    // busy
     void FUN_141657c80(bool bEnable);                       // apply the attach effects of the equipment
+    bool FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CString>& kNodes, int bPrimary);   // collect the weapons' attach effects and their nodes
     CStringW& FUN_141656be0();                              // +0xdc8
     CStringA& FUN_141656c50();                              // +0xdd0
     CStringW& FUN_141656d90();                              // +0x1030 the displayed name
@@ -271,6 +278,39 @@ public:
     __int64 FUN_141662670();                                // +0x1140
     int FUN_1416626b0();                                    // +0x1148, reset on a new day of +0x1140
     int FUN_141662730();                                    // +0x114c
+    int FUN_141662830();                                    // +0x1184 the last bank call time
+    int FUN_141662870();                                    // +0x1188
+    float FUN_1416628b0(int nOption, unsigned nKey);        // an invoke effect option rate of the equipment
+    float FUN_1416628f0(int nOption, unsigned nKey);        // an invoke effect option count of the equipment
+    float FUN_141662930(int nSpecial);                      // a special ability rate of the equipment
+    int FUN_141662980(int nSpecial);                        // a special ability total of the equipment
+    void FUN_141662da0(int n);                              // +0x1198 (refreshes the equipment)
+    __int64 FUN_141662e90();                                // +0x1190 the VIP end time
+    int FUN_141663040();                                    // +0xd80
+    int FUN_141663080();                                    // +0x119c
+    int FUN_1416630c0();                                    // +0x11a0
+    void FUN_1416630e0(unsigned int nId);                   // attach a ClonePC id (+0x11a8)
+    void FUN_141663120(unsigned int nId);                   // detach a ClonePC id
+    void FUN_141663400(MS2Ptr<CItem> spItem);               // +0x11b8
+    MS2Ptr<CItem> FUN_141663450();                          // +0x11b8
+    void FUN_141663500(int nObjectId);                      // the couple effect: an object
+    void FUN_141663620();                                   // start the couple effect (or remember it)
+    void FUN_141663680();                                   // stop the couple effect
+    void FUN_141663870();                                   // drop the couple effect
+    CStringW FUN_1416638b0();                               // the couple effect name
+    int FUN_141663940();                                    // the couple type (0: none)
+    __int64 FUN_141663990();                                // the couple partner id (0: none)
+    int FUN_141663a20();                                    // +0x11f4, reset when +0x11f8 expired
+    int FUN_141663ac0();                                    // +0x11f8 is unset or expired
+    short FUN_141663b50();                                  // +0x120c
+    void FUN_141663b70(unsigned int nId);                   // add an effect id (+0x1210)
+    void FUN_141663bb0(unsigned int nId);                   // remove an effect id
+    void FUN_141663be0(const NiFixedString& kSequence, float fSpeed, const NiFixedString& kTextKey);   // play a sequence on the effects
+    void FUN_141663d00(efd::Point3 kDir);                   // turn the effects
+    void FUN_141663e20(int nCount, int nTailId);            // the tail effect length / row
+    void FUN_141663ea0();                                   // stop the tail effect
+    bool FUN_1416642a0();                                   // +0x1224
+    void FUN_141659790(const CString& strAnim);             // play an animation on the weapons' attach models
     void FUN_14165d300(int nA, int nB, int nC);             // PCBase member (pcbase.cpp; scenestategame 0x5d)
     void FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot);   // scenestategame 0x141721a30
     MS2Ptr<Unk_PCWaterGunInfo> FUN_141664250();             // the water gun battle info (+0x1260)

@@ -14,6 +14,8 @@
 
 class PCBase;
 // A buff record (?\additionalcli.cpp, new(0x78)); only its size and the shared MS2Ptr instances are needed here.
+#ifndef MS2_ADDITIONALCLI_DEFINED   // also defined by additionalcli.h (w539: both may be included)
+#define MS2_ADDITIONALCLI_DEFINED
 class AdditionalCli : public CPtred
 {
 public:
@@ -22,6 +24,7 @@ public:
     int m_pad_1c, m_pad_20, m_pad_24, m_pad_28, m_pad_2c, m_pad_30, m_pad_34, m_pad_38, m_pad_3c;
     void* m_pad_40; void* m_pad_48; void* m_pad_50; void* m_pad_58; void* m_pad_60; void* m_pad_68; void* m_pad_70;
 };
+#endif
 MS2_CHECK_SIZE(AdditionalCli, 0x78);
 class Unk_MDamage;
 class Unk_SSGNpc;

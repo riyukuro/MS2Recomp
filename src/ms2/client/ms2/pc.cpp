@@ -50,6 +50,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\pc.cpp"   // assumed (no __FILE__ in the TU)
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/client/ms2/additionalcli.h"
 #include "ms2/placeholder/state.h"
 #include "ms2/placeholder/clientconstants.h"
 #include "ms2/placeholder/ms2svrptr.h"
@@ -63,6 +64,10 @@
 #include "ms2/client/ms2/statpointmanager.h"
 #include "ms2/guess/watergunbattleinfo.h"
 #include "ms2/client/ms2/taileffectobject.h"
+#include "ms2/client/ms2/effectobject.h"
+#include "ms2/client/ms2/equipmodel.h"
+#include "ms2/commonfiles/additionalactionadditional.h"
+#include "ms2/client/ms2/taileffectobjectfromadditional.h"
 #include "ms2/commonfiles/taileffectdatatable.h"
 #include "ms2/client/ms2/randomtargeteffect.h"
 #include "ms2/unnamed/unit_140b0e5f0.h"
@@ -155,6 +160,7 @@ public:
     GameObject* FUN_141bd0fa0(egf::EntityID kId);                   // the object of an entity
     void FUN_141bbb7f0(GameObject* pObj, int n);                    // unregister an object
     int FUN_141bdb5a0(int nObserveMode);
+    GameObject* FUN_141bd1180(int nObjectId);                       // the object of an id
 };
 Unk_PCWorld* FUN_1403ed2d0();
 // The effect service (FUN_1403ed280).
@@ -294,6 +300,16 @@ Unk_PCMainPlayerInfo* FUN_140931900(int nUiId);
 MyPC* FUN_1409613d0(PCBase* p);                                     // efd::DynamicCast<MyPC>
 int FUN_14086ae10(__int64 nTime);                                   // the time lies before today
 CMasteryTable* FUN_1409670c0();                                     // TSingleton<CMasteryTable>
+bool FUN_14081dc50(int nSpecial);                                   // the special ability is an integer
+bool FUN_14081dcd0(int nSpecial);                                   // the special ability value is a rate
+int FUN_14086ace0(__int64 nTime);                                   // the time has passed
+// The hide and seek record / the water gun battle info as other TUs see them (fittingdollpc.h returns these types).
+class Unk_HsInfo : public CPtred {};
+class Unk_PCWaterGunInfo : public CPtred {};
+void FUN_141201d50(CEquipModel* pModel, CString strNode);           // attach the model to a node
+int FUN_141202940(CEquipModel* pModel);                             // the equip slot of the model
+void FUN_141200390(CEquipModel* pModel, const CString& strAnim);    // play an animation
+extern bool DAT_143aad1e0;                                          // the upper HUD hides the weapon effects (uiupperhuddialog.cpp)
 // The model resource cache (FUN_140a0afd0) and the file preloader.
 class Unk_PCModelCache
 {
@@ -1574,6 +1590,398 @@ int PC::FUN_1416627d0(int nIndex)
     if (nIndex < 0 || nIndex >= 12)
         return 0;
     return FUN_1409670c0()->Grade(nIndex, m_aMastery1150[nIndex]);
+}
+
+// @0x141662830
+int PC::FUN_141662830() { return m_n1184; }
+
+// @0x141662850
+void PC::FUN_141662850(__int64 nValue) { m_n1184 = nValue; }
+
+// @0x141662870
+int PC::FUN_141662870() { return m_n1188; }
+
+// @0x141662890
+void PC::FUN_141662890(__int64 nValue) { m_n1188 = nValue; }
+
+// @0x1416628b0
+float PC::FUN_1416628b0(int nOption, unsigned nKey) { return m_kEquipDE0.FUN_1411e1250(nOption, nKey); }
+
+// @0x1416628f0
+float PC::FUN_1416628f0(int nOption, unsigned nKey) { return m_kEquipDE0.FUN_1411e13e0(nOption, nKey); }
+
+// @0x141662930
+float PC::FUN_141662930(int nSpecial)
+{
+    if (!FUN_14081dcd0(nSpecial))
+        return 0;
+    return m_kEquipDE0.FUN_1411e1110(nSpecial);
+}
+
+// @0x141662980
+int PC::FUN_141662980(int nSpecial)
+{
+    if (!FUN_14081dc50(nSpecial))
+        return 0;
+    return m_kEquipDE0.FUN_1411e1160(nSpecial);
+}
+
+// @0x141662d60
+void PC::FUN_141662d60(__int64 nValue)
+{
+    m_n1190 = nValue;
+    FUN_1416561a0()->FUN_1411e7680();
+}
+
+// @0x141662da0
+void PC::FUN_141662da0(int n)
+{
+    m_n1198 = n;
+    FUN_1416561a0()->FUN_1411e7680();
+}
+
+// @0x141662de0
+unsigned PC::FUN_141662de0()
+{
+    return m_n1198 != 0 || m_n1190 > FUN_140869440();
+}
+
+// @0x141662e30
+void PC::FUN_141662e30(int n) { m_n1220 = n; }
+
+// @0x141662e50
+bool PC::vfunc_146()
+{
+    switch (m_n1220)
+    {
+    case 2:
+    case 3:
+    case 4:
+        return true;
+    }
+    return false;
+}
+
+// @0x141662e90
+__int64 PC::FUN_141662e90() { return m_n1190; }
+
+// @0x141663040
+int PC::FUN_141663040() { return m_nD80; }
+
+// @0x141663060
+void PC::FUN_141663060(int n) { m_n119c = n; }
+
+// @0x141663080
+int PC::FUN_141663080() { return m_n119c; }
+
+// @0x1416630a0
+void PC::FUN_1416630a0(int n) { m_n11a0 = n; }
+
+// @0x1416630c0
+int PC::FUN_1416630c0() { return m_n11a0; }
+
+// @0x1416630e0
+void PC::FUN_1416630e0(unsigned int nId) { m_set11a8.insert(nId); }
+
+// @0x141663120
+void PC::FUN_141663120(unsigned int nId) { m_set11a8.erase(nId); }
+
+// @0x141663400
+void PC::FUN_141663400(MS2Ptr<CItem> spItem) { m_spItem11b8 = spItem; }
+
+// @0x141663450
+MS2Ptr<CItem> PC::FUN_141663450() { return m_spItem11b8; }
+
+// @0x1416634a0
+void PC::FUN_1416634a0(__int64 nCharId)
+{
+    if (m_spCouple11d8.get() != 0)
+        m_spCouple11d8->FUN_140b0ead0(nCharId);
+}
+
+// @0x141663500
+void PC::FUN_141663500(int nObjectId)
+{
+    if (m_spCouple11d8.get() != 0)
+        m_spCouple11d8->FUN_140b0eba0(nObjectId);
+}
+
+// @0x141663620
+void PC::FUN_141663620()
+{
+    if (m_spCouple11d8.get())
+        m_spCouple11d8->FUN_140b0ed30();
+    else
+        m_n11d0 = 1;
+}
+
+// @0x141663680
+void PC::FUN_141663680()
+{
+    if (m_spCouple11d8.get())
+        m_spCouple11d8->FUN_140b0eed0();
+    else
+        m_n11d0 = 0;
+}
+
+// @0x141663870
+void PC::FUN_141663870()
+{
+    m_spCouple11d8 = 0;
+    m_n11d0 = 0;
+}
+
+// @0x1416638b0
+CStringW PC::FUN_1416638b0()
+{
+    if (m_spCouple11d8.get())
+        return m_spCouple11d8->FUN_140b0ec30();
+    return CStringW(L"");
+}
+
+// @0x141663940
+int PC::FUN_141663940()
+{
+    if (m_spCouple11d8.get())
+        return m_spCouple11d8->FUN_140b0ec10();
+    return 0;
+}
+
+// @0x141663990
+__int64 PC::FUN_141663990()
+{
+    if (m_spCouple11d8.get())
+        return m_spCouple11d8->FUN_140b0ec80();
+    return 0;
+}
+
+// @0x1416639e0
+int PC::FUN_1416639e0() { return m_n11f0; }
+
+// @0x141663a00
+void PC::FUN_141663a00(int n) { m_n11f0 = n; }
+
+// @0x141663a20
+int PC::FUN_141663a20()
+{
+    if (FUN_141663ac0())
+    {
+        m_n11f4 = 0;
+        m_n11f8 = FUN_140869440();
+    }
+    return m_n11f4;
+}
+
+// @0x141663a70
+void PC::FUN_141663a70(int n) { m_n11f4 = n; }
+
+// @0x141663a90
+void PC::FUN_141663a90(__int64 n) { m_n11f8 = n; }
+
+// @0x141663ac0
+int PC::FUN_141663ac0()
+{
+    if (m_n11f8 == 0)
+        return 1;
+    if (FUN_14086ace0(m_n11f8))
+        return 1;
+    return 0;
+}
+
+// @0x141663b10
+void PC::FUN_141663b10(short n)
+{
+    m_n120c = n;
+    FUN_141a60f00(FUN_14123c580());
+}
+
+// @0x141663b50
+short PC::FUN_141663b50() { return m_n120c; }
+
+// @0x141663b70
+void PC::FUN_141663b70(unsigned int nId) { m_set1210.insert(nId); }
+
+// @0x141663bb0
+void PC::FUN_141663bb0(unsigned int nId) { m_set1210.erase(nId); }
+
+// @0x141663be0
+void PC::FUN_141663be0(const NiFixedString& kSequence, float fSpeed, const NiFixedString& kTextKey)
+{
+    std::set<unsigned int>::iterator it;
+    for (it = m_set1210.begin(); it != m_set1210.end(); ++it)
+    {
+        GameObject* pObj = FUN_1403ed2d0()->FUN_141bd1180(*it);
+        if (pObj == 0)
+            continue;
+        CEffectObject* pEffect = dynamic_cast<CEffectObject*>(pObj);
+        if (pEffect == 0)
+            continue;
+        pEffect->FUN_140a539d0(kSequence, fSpeed, kTextKey);
+    }
+}
+
+// @0x141663d00
+void PC::FUN_141663d00(efd::Point3 kDir)
+{
+    std::set<unsigned int>::iterator it;
+    for (it = m_set1210.begin(); it != m_set1210.end(); ++it)
+    {
+        GameObject* pObj = FUN_1403ed2d0()->FUN_141bd1180(*it);
+        if (pObj == 0)
+            continue;
+        CEffectObject* pEffect = dynamic_cast<CEffectObject*>(pObj);
+        if (pEffect == 0)
+            continue;
+        pEffect->FUN_140a53b30(kDir);
+    }
+}
+
+// @0x141663e20
+void PC::FUN_141663e20(int nCount, int nTailId)
+{
+    if (m_spTailEffect1270 == 0)
+        return;
+    m_spTailEffect1270->FUN_140ad00e0(nCount);
+    m_spTailEffect1270->FUN_140ad0120(nTailId);
+}
+
+// @0x141663ea0
+void PC::FUN_141663ea0()
+{
+    if (m_spTailEffect1270 == 0)
+        return;
+    m_spTailEffect1270->FUN_140ad01d0();
+}
+
+// @0x141663ef0
+void PC::FUN_141663ef0(AdditionalCli* pCli)
+{
+    if (pCli->FUN_14096d810()->m_nTailEffect == 0)
+        return;
+    AdditionalLevelData* pData = pCli->FUN_14096d810();
+    MS2SvrPtr<TailEffectData> spData = FUN_140ad0da0()->GetData(pData->m_nTailEffect);
+    if (spData == 0)
+        return;
+    MS2Ptr<CTailEffectObject> spTail(0);
+    m_mapTail1280.Lookup(pCli->FUN_14096d2a0(), spTail);
+    if (spTail.get())
+        return;
+    spTail.AssignRaw(new CTailEffectObjectFromAdditional(this, spData, pCli->FUN_14096d2a0()));
+    spTail->FUN_140ad00e0(pCli->m_nOverlapCount);
+    m_mapTail1280.SetAt(pCli->FUN_14096d2a0(), spTail);
+}
+
+// @0x1416640d0
+void PC::FUN_1416640d0(AdditionalCli* pCli)
+{
+    MS2Ptr<CTailEffectObject> spTail(0);
+    m_mapTail1280.Lookup(pCli->FUN_14096d2a0(), spTail);
+    if (spTail.get())
+        spTail->FUN_140ad00e0(pCli->m_nOverlapCount);
+}
+
+// @0x141664160
+void PC::FUN_141664160(AdditionalCli* pCli)
+{
+    MS2Ptr<CTailEffectObject> spTail(0);
+    m_mapTail1280.Lookup(pCli->FUN_14096d2a0(), spTail);
+    if (spTail.get())
+    {
+        spTail->FUN_140ad01d0();
+        m_mapTail1280.RemoveKey(pCli->FUN_14096d2a0());
+    }
+}
+
+// @0x141664200
+MS2Ptr<Unk_HsInfo> PC::FUN_141664200() { return reinterpret_cast<const MS2Ptr<Unk_HsInfo>&>(m_spHideAndSeek1250); }
+
+// @0x141664250
+MS2Ptr<Unk_PCWaterGunInfo> PC::FUN_141664250() { return reinterpret_cast<const MS2Ptr<Unk_PCWaterGunInfo>&>(m_spWaterGun1260); }
+
+// @0x1416642a0
+bool PC::FUN_1416642a0() { return m_b1224; }
+
+// @0x1416642c0
+void PC::FUN_1416642c0(bool b) { m_b1224 = b; }
+
+// @0x141657c80
+// MS2-FUNCTIONAL: the exe frame is 0x10 bytes larger (another loop temporary); same calls
+void PC::FUN_141657c80(bool bEnable)
+{
+    if (m_nD80 != bEnable)
+        m_nD80 = bEnable;
+    ATL::CAtlArray<CEquipModel*> kEffects;
+    ATL::CAtlArray<CString> kNodes;
+    if (FUN_141658150(kEffects, kNodes, bEnable))
+    {
+        for (size_t i = 0; i < kEffects.GetCount(); i++)
+        {
+            CEquipModel* pEffect = kEffects[i];
+            FUN_141201d50(pEffect, kNodes[i]);
+        }
+    }
+}
+
+// @0x141659000
+void PC::FUN_141659000(int bForce)
+{
+    int bActive = vfunc_65() && m_spStateMgr->FUN_1417db1c0()->vfunc_15();
+    if (FUN_1416595d0())
+        bActive = 0;
+    if (m_spStateMgr->FUN_1417db1c0()->vfunc_16())
+        bActive = 1;
+    if (bActive && (m_spWeaponActionD70 == 0 || m_spWeaponActionD70->m_nRightHand == 0))
+        bActive = 0;
+    if (!bForce && m_nD80 == bActive)
+        return;
+    if (bActive)
+    {
+        ATL::CAtlArray<CEquipModel*> kEffects;
+        ATL::CAtlArray<CString> kNodes;
+        if (FUN_141658150(kEffects, kNodes, 1))
+            FUN_141657c80(true);
+    }
+    else
+        FUN_141657c80(false);
+}
+
+// @0x141659790
+void PC::FUN_141659790(const CString& strAnim)
+{
+    if (DAT_143aad1e0)
+        return;
+    if (m_spWeaponActionD70 == 0)
+        return;
+    {
+        MS2Ptr<CEquipItem> spRight = FUN_141655e10(5);
+        if (spRight.get())
+        {
+            ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+            spRight->FUN_1411dcc80(aModels);
+            for (unsigned int i = 0; i < aModels.GetCount(); i++)
+            {
+                CEquipModel* pModel = aModels[i].operator->();
+                if (FUN_141202940(pModel) != 5)
+                    continue;
+                FUN_141200390(pModel, strAnim);
+            }
+        }
+    }
+    {
+        MS2Ptr<CEquipItem> spLeft = FUN_141655e10(4);
+        if (spLeft.get())
+        {
+            ATL::CAtlArray<MS2Ptr<CEquipModel> > aModels;
+            spLeft->FUN_1411dcc80(aModels);
+            for (unsigned int i = 0; i < aModels.GetCount(); i++)
+            {
+                CEquipModel* pModel = aModels[i].operator->();
+                if (FUN_141202940(pModel) != 4)
+                    continue;
+                FUN_141200390(pModel, strAnim);
+            }
+        }
+    }
 }
 
 // ---- end of code ----

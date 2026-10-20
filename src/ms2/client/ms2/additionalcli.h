@@ -15,6 +15,8 @@
 class PCBase;
 class CInPacket;
 
+#ifndef MS2_ADDITIONALCLI_DEFINED   // notifychangebuff.h has a size-only stand-in (w539: include this header first)
+#define MS2_ADDITIONALCLI_DEFINED
 class AdditionalCli : public CPtred
 {
 public:
@@ -80,6 +82,7 @@ public:
     unsigned m_nKeepEffect;                                 // +0x60 CEffectService id of the keep effect
     MS2Ptr<AdditionalLevelData> m_spLevel;                  // +0x68
 };
+#endif
 MS2_CHECK_SIZE(AdditionalCli, 0x78);
 MS2_CHECK_OFFSET(AdditionalCli, m_nShieldValue, 0x30);
 MS2_CHECK_OFFSET(AdditionalCli, m_pOwner, 0x50);

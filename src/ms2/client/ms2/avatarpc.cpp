@@ -410,7 +410,6 @@ float FUN_14166da40(PCBase* pPC);
 int FUN_141673ef0(PCBase* pPC);                             // skill id of the running state
 float FUN_141671940(PC* pPC);
 void FUN_14166d8e0(PCBase* pPC, efd::Point3 kDir);
-void FUN_141663e20(PC* pPC, unsigned a, unsigned b);
 void FUN_141661ba0(PC* pPC, int n);
 void FUN_14165cac0(PC* pPC);
 void* FUN_14165f460(PC* pPC);
@@ -732,7 +731,7 @@ void AvatarPC::FUN_1409f4cf0(unsigned a, unsigned b)
 {
     vfunc_59(1, 0, 0, 0);
     vfunc_19(m_kPos);
-    FUN_141663e20(this, a, b);
+    FUN_141663e20(a, b);
 }
 
 // @0x1409f4d80
