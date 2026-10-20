@@ -70,6 +70,8 @@
 #include "ms2/client/ms2/ridee.h"
 #include "ms2/placeholder/cskillsettable.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/client/ms2/uiservice.h"
+#include "ms2/client/ms2/uiscenegame.h"
 #include <vector>
 #include <map>
 #include "hook/ms2hook.h"
@@ -128,6 +130,7 @@ public:
     int FUN_1416764d0();                                    // riding
     Ridee* FUN_1416764a0();                                 // the ridee this player rides
     int FUN_141654700();                                    // the job
+    int FUN_14166ce30();                                    // busy (a cutscene/state blocks input)
 };
 class Unk_KtWorld { public: Unk_KtPlayer* FUN_141bd0cc0(); };   // the local player
 class Unk_KtRestrictions { public: int FUN_14138c900(int nKind); };
@@ -172,6 +175,21 @@ public:
     Unk_KtQuestList m_list;                                 // +0x10
 };
 Unk_KtQuestMgr* FUN_140764020();
+class Unk_KtSceneMgr                                        // the scene sound/UI scene controller
+{
+public:
+    UISceneEntity* FUN_1422b9e80();                         // the current UI scene
+    void FUN_1422b9fd0(int nSceneId);                       // toggle a sub scene
+};
+Unk_KtSceneMgr* FUN_1408e57f0();
+class Unk_KtPopup { public: void FUN_14193bbe0(); void FUN_14193bdf0(); };   // the 0x4e28 popup menu
+Unk_KtPopup* FUN_140938b90(int nUiId);
+class Unk_KtRuleFlags { public: int FUN_1402c4c90(int nRule); };
+class Unk_KtRules { public: unsigned char m_pad[8]; Unk_KtRuleFlags m_flags; };
+Unk_KtRules* FUN_14025e7b0();
+CUIService* FUN_1403ed2b0();
+CStringW FUN_140298ea0(CStringW strKey);                    // string table text (second table)
+void FUN_140d73aa0(CStringW strMsg, int nType, int nTarget, CStringW strTag);   // message box
 class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527840's record (item.cpp owns the real one)
 class Unk_KtInventory { public: void FUN_140a60880(int nTab, ATL::CAtlArray<MS2Ptr<CItem> >& arrOut); };   // the items of one inventory tab
 extern Unk_KtInventory DAT_143ab2a90;                       // the player's inventory
@@ -671,6 +689,181 @@ int CKeyTable::FUN_14142b300(int nKey)
     if (FUN_14142b340(nKey))
         return 1;
     return 0;
+}
+
+// @0x14142b340
+int CKeyTable::FUN_14142b340(int nAction)
+{
+    if (!FUN_141431fc0())
+        return 0;
+    if (!FUN_141432010(nAction))
+        return 0;
+    switch (nAction)
+    {
+    case 400001:
+        FUN_1403ed2b0()->FUN_141adc750(eUI_4e2d);
+        break;
+    case 400002:
+        FUN_1403ed2b0()->FUN_141adc750(eUI_2711);
+        break;
+    case 400005:
+        FUN_1403ed2b0()->FUN_141adc750(eUI_4f2d);
+        break;
+    case 400006:
+        FUN_1403ed2b0()->FUN_141adc750(eUI_4e42);
+        break;
+    case 400007:
+        FUN_1403ed2b0()->FUN_141adc750(eUI_4e3e);
+        break;
+    case 400009:
+        FUN_1403ed2b0()->FUN_141adc750(eUI_4e73);
+        break;
+    case 400010:
+    {
+        Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pPlayer != 0 && !pPlayer->FUN_14166ce30())
+        {
+            UISceneEntity* pScene = FUN_1408e57f0()->FUN_1422b9e80();
+            if (pScene != 0)
+            {
+                UISceneGameBeautyShop* pShop = dynamic_cast<UISceneGameBeautyShop*>(pScene->FUN_1422e7a70(0x620001f));
+                if (pShop != 0)
+                    pShop->FUN_141ac8e70(1);
+            }
+            FUN_1408e57f0()->FUN_1422b9fd0(0x620001f);
+        }
+        break;
+    }
+    case 400011:
+    {
+        Unk_KtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pPlayer != 0 && !pPlayer->FUN_14166ce30())
+            FUN_1408e57f0()->FUN_1422b9fd0(0x620001f);
+        break;
+    }
+    case 300014:
+    {
+        COutPacket packet(0x2f, 0);
+        packet.Encode1(4);
+        FUN_140710590(packet);
+        break;
+    }
+    case 400012:
+        FUN_1403ed2b0()->FUN_141adc750(eUI_4e4d);
+        break;
+    case 400008:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4e5b);
+        break;
+    case 400013:
+        FUN_1403ed2b0()->FUN_141adc750(eUI_4e49);
+        break;
+    case 400014:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4e4f);
+        break;
+    case 400015:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4e6a);
+        break;
+    case 400016:
+        FUN_1403ed2b0()->FUN_141adc750(eUI_4ec1);
+        break;
+    case 400017:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4ebc);
+        break;
+    case 400018:
+        if (FUN_140166410()->FUN_14036d570(0xf9))
+            FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f84);
+        else
+            FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f1c);
+        break;
+    case 400019:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4ec9);
+        break;
+    case 400020:
+        if (FUN_140166410()->FUN_14036d570(0x4e))
+            FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f04);
+        else
+            FUN_140d73aa0(FUN_140298ea0(L"s_pvp_arena_close_test_season_msg"), 0, 0, L"");
+        break;
+    case 400021:
+        FUN_1403ed2b0()->FUN_141adc750(eUI_4e97);
+        break;
+    case 400022:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4efa);
+        break;
+    case 400036:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f53);
+        break;
+    case 400037:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4ebd);
+        break;
+    case 400038:
+        if (FUN_140166410()->FUN_14036d570(0xd3))
+        {
+            if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x5b))
+            {
+                FUN_141275260(0x2f7, 1, 1);
+                break;
+            }
+            FUN_1403ed2b0()->FUN_141adc750(eUI_4f6d);
+        }
+        break;
+    case 800004:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f63);
+        break;
+    case 400023:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4efd);
+        break;
+    case 400024:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4efe);
+        break;
+    case 400025:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f0c);
+        break;
+    case 400026:
+        if (FUN_140166410()->FUN_14036d570(0x4a))
+            FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f1b);
+        break;
+    case 400027:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4eda);
+        break;
+    case 400028:
+    {
+        Unk_KtPopup* pPopup = FUN_140938b90(0x4e28);
+        if (pPopup != 0)
+            pPopup->FUN_14193bbe0();
+        break;
+    }
+    case 400029:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f1e);
+        break;
+    case 400030:
+        if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f18))
+            FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4f18);
+        else
+        {
+            Unk_KtPopup* pPopup = FUN_140938b90(0x4e28);
+            if (pPopup != 0)
+                pPopup->FUN_14193bdf0();
+        }
+        break;
+    case 400031:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4ef6);
+        break;
+    case 400032:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f0b);
+        break;
+    case 400033:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f24);
+        break;
+    case 400034:
+        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f25);
+        break;
+    case 400035:
+        if (FUN_140166410()->FUN_14036d570(0x8c))
+            FUN_1403ed2b0()->FUN_141adc750(eUI_4f38);
+        break;
+    }
+    return 1;
 }
 
 // @0x14142bad0

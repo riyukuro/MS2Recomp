@@ -73,6 +73,7 @@ public:
 
     void FUN_1422e7950();                                       // 0x1422e7950 the presentation ref has changed
     void FUN_1422e7a40(int nSceneId);                           // 0x1422e7a40
+    UISceneEntity* FUN_1422e7a70(int nSceneId);                 // 0x1422e7a70 the child scene of the id
 
 public:
     char m_pad68[4];
