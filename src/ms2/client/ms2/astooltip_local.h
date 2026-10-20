@@ -520,10 +520,41 @@ int FUN_140936640(CAchieveManager* pManager, int nId, int nGrade);    // 0x14093
 CStringW FUN_14093bd40(int nId, int nGrade, CStringW strDefault);     // the trophy requirement text (achievemanager.cpp)
 const int& FUN_1409e8500(const CAtlArray<int>& arr, int nIndex, const int& nDefault);   // part 6: arr[nIndex], nDefault when out of range
 bool FUN_1409e7080(const ATL::CAtlArray<unsigned long>& ids, const ATL::CAtlArray<int>& grades, CStringW& strOut);   // the unmet trophy requirements
-CFeatureManager* FUN_140166410_p5();
+CFeatureManager* FUN_140166410_p5();                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
 #include "ms2/commonfiles/commonstruct_wa.h"                 // Unk_IngVec (FUN_1409e7460)
 int FUN_14053feb0(int nItemId);                                       // the default rank of an item (itemdata.cpp)
-MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                    // the item data of an id                                  // 0x140166410 TSingleton<CFeatureManager>::GetInstance (exe copy)
+MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                    // the item data of an id
+int FUN_141654700(PCBase* pPc);                                       // the job of a player
+int FUN_141658e60_p5(PCBase* pPc);                                    // 0x141658e60 the gender of a player
+ItemDropTable* FUN_1405a1fd0_p5();                                    // 0x1405a1fd0 TSingleton<ItemDropTable>::GetInstance
+bool FUN_14052a3f0(int bFollowEndDate, __int64 nExpiry, int nType, int nLifeType, int nItemType);   // a drop expires (item.cpp)
+#include "ms2/commonfiles/itemenchantinfo.h"     // Unk_EnchantPtr<BaseOption> (FUN_1409e4950)
+#include "ms2/commonfiles/citemoptiontable.h"    // CItemOptionTable
+#include "ms2/commonfiles/itemoption.h"
+#include "ms2/commonfiles/item.h"               // CItemStatus
+CItemOptionTable* FUN_140166430();                // TSingleton<CItemOptionTable>::GetInstance (exe copy)
+bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strValue);   // part 1
+bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nIndex, int nKind, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strValue);   // part 1
+CStringW FUN_140631600(int nStat, BaseOption* pOption);   // a set stat option text (itemsocketsystemutil.cpp)
+CStringW FUN_140631830(int nSpecial, int nValue, CItemData* pData);   // a set special option text (itemsocketsystemutil.cpp)
+int FUN_14082ee80(const CStringA& strName);       // stat name -> id (-1 when none; stat.cpp)
+int FUN_14081d260(const CStringA& strName);       // special option name -> id (0 when none; specialability.cpp)
+const CString& FUN_14082efb0(int nStat);          // the xml name of a stat (stat.cpp)
+const CString& FUN_14081d380(int nSpecial);       // the xml name of a special stat (specialability.cpp)
+void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pBest);   // the random option rows of an item (by value: the callee destroys spItem)
+// MS2-FUNCTIONAL 0x1409e4950: /Od temporaries and frame differ (the .inl marker is not read by interface_check); same calls and control flow
+#include <cmath>
+#include "ms2/placeholder/clientconstants.h"
+#include "ms2/placeholder/cpetdatatable.h"
+CPetDataTable* FUN_14052d210();                   // TSingleton<CPetDataTable>::GetInstance (exe copy; as part 2)
+int FUN_1406198a0(int nValue, float fRate);       // itemremakescrolldata.cpp
+__int64 FUN_140632990(__int64 nValue, float fRate);   // itemsocketsystemutil.cpp
+CStringW FUN_140631720(int nStat, int nValue, bool bPercent);   // a stat value text (itemsocketsystemutil.cpp)
+CStringW FUN_1409e6010(int nKind, CItem* pItem);  // the option kind title (pet kinds use their own text)
+CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem);     // the option text of an item (as tabcontentspetinfo.cpp; the callee destroys spItem)
+// MS2-FUNCTIONAL 0x1409e0d40: /Od frame is 0x10 larger (locals placed differently); same calls and control flow
+// MS2-FUNCTIONAL 0x1409e1770: the shared ASTooltip::FUN_1409d55a0 declaration takes CItem* where the exe passes the item id (unused)
+// MS2-FUNCTIONAL 0x1409e34e0: /Od temporaries differ (written after part 1's FUN_1409c9170 loop); same behaviour
 CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // the item limit text
 void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons
 #endif
