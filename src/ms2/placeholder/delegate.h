@@ -178,3 +178,62 @@ public:
 private:
     DelegateImplBase* m_pImpl;          // +0x00
 };
+
+// ---- four-argument form (appended by the uimeratmarketdialog.cpp agent) ----
+// Delegate<bool(TPtr<TMarketBillDataParam>, const CAtlMap<ePayType, __int64>&, const CStringW&, const CStringW&)>: the
+// gift callback of the market bill (exe RTTI of UIMeratMarketDialog's DelegateImpl, 0x141313e40). Bound-member form
+// as in the one- and two-argument forms.
+template <class R, class A1, class A2, class A3, class A4>
+class Delegate<R(A1, A2, A3, A4)>
+{
+public:
+    class DelegateImplBase
+    {
+    public:
+        DelegateImplBase();
+        virtual ~DelegateImplBase();                            // 0
+        virtual DelegateImplBase* vfunc_1() const = 0;          // 1 clone
+        virtual R vfunc_2(A1 a1, A2 a2, A3 a3, A4 a4) = 0;      // 2 Invoke
+        virtual bool vfunc_3(const DelegateImplBase* p) const = 0;     // 3 equals
+    };
+
+    template <class F>
+    class DelegateImpl : public DelegateImplBase
+    {
+    public:
+        DelegateImpl(const DelegateImpl& o) : m_f(o.m_f) {}
+        DelegateImpl(const F& f) : m_f(f) {}
+        virtual DelegateImplBase* vfunc_1() const { return new DelegateImpl(*this); }
+        virtual R vfunc_2(A1 a1, A2 a2, A3 a3, A4 a4) { return Call(m_f, a1, a2, a3, a4); }
+        virtual bool vfunc_3(const DelegateImplBase* p) const
+        {
+            const DelegateImpl* o = dynamic_cast<const DelegateImpl*>(p);
+            if (!o)
+                return false;
+            return m_f == o->m_f;
+        }
+
+    private:
+        template <class C, class M> static R Call(std::pair<C*, M>& p, A1 a1, A2 a2, A3 a3, A4 a4)
+        {
+            return (p.first->*p.second)(a1, a2, a3, a4);
+        }
+
+        F m_f;
+    };
+
+    Delegate() : m_pImpl(0) {}
+    template <class C>
+    Delegate(C* const& obj, R (C::*const& f)(A1, A2, A3, A4))
+        : m_pImpl(new DelegateImpl<std::pair<C*, R (C::*)(A1, A2, A3, A4)> >(std::make_pair(obj, f)))
+    {
+    }
+    Delegate(const Delegate& o);
+    ~Delegate();
+    Delegate& operator=(const Delegate& o);
+    bool IsNull() const { return m_pImpl == 0; }
+    R operator()(A1 a1, A2 a2, A3 a3, A4 a4) const;     // body specialized by the unit that owns the COMDAT
+
+private:
+    DelegateImplBase* m_pImpl;          // +0x00
+};

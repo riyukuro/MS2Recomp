@@ -13,6 +13,7 @@ class ASSlider : public ASUIComponent
 public:
     ASSlider(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422ce570
     virtual ~ASSlider();
+    float FUN_1422ce630();                                          // 0x1422ce630 "value" (read as a double, narrowed)
     float FUN_1422ce840();                                          // 0x1422ce840 the current value
     void FUN_1422ce800(float fValue);                               // 0x1422ce800 set the current value
     void FUN_1422ce6a0(float fMax);                                 // 0x1422ce6a0 set the maximum

@@ -33,6 +33,7 @@
 #include "ms2/placeholder/uimeratmarketweapontype.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/cadbannermanager.h"
+#include "ms2/client/ms2/tmarketbilldataparam.h"
 
 class ASArray;
 class ASObj;
@@ -62,6 +63,11 @@ class Unk_MpRideePtr;                                               // uimainpla
 class Unk_MmSellerShop;
 class Unk_MeratBasketEntry;
 namespace UIMeratMarketDialogUtil { class ASOutData; }
+
+// The payment map of the market bill and its gift callback (exe RTTI: the strings by const reference; the shared
+// TMarketBillDataParam::GiftCallback spells them by value).
+typedef ATL::CAtlMap<ePayType, __int64> Unk_MmPayMap;
+typedef Delegate<bool(MS2Ptr<TMarketBillDataParam>, const Unk_MmPayMap&, const CStringW&, const CStringW&)> Unk_MmGiftCallback;
 
 // A list of market products (the CMeratMarketMan product lists).
 typedef ATL::CAtlArray<MS2Ptr<CMeratMarketProduct> > Unk_MmProductArray;
@@ -295,6 +301,14 @@ public:
     void OnModelCheck(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141306ed0 foreign
     void OnModelRefresh(const Scaleform::GFx::FunctionHandler::Params& params); // 0x141306fa0 foreign
     void OnModelReset(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141306ff0 foreign
+    void SetMusicPlayTime(int nStart, int nLength);                 // 0x141307080
+    bool StartMusicPreview();                                       // 0x1413070d0
+    void StopMusicPreview(bool bApply);                             // 0x141307600
+    bool OnBillBuy(MS2Ptr<TMarketBillDataParam> spParam, const Unk_MmPayMap& prices);   // 0x141307f30
+    bool OnBillGift(MS2Ptr<TMarketBillDataParam> spParam, const Unk_MmPayMap& prices, const CStringW& strTo,
+                    const CStringW& strMessage);                    // 0x141307fc0
+    bool OnBillToBasket(MS2Ptr<TMarketBillDataParam> spParam);      // 0x141308070
+    bool OnBillTooltip(Scaleform::GFx::Value* pValue, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);   // 0x141308390
     void ApplySearchAll(MS2Ptr<CMeratMarketSchCond> spCond, ASObj& obj, bool bAll);  // 0x141310110
     int FillProductRow(ASMeratMarketProduct& row, MS2Ptr<CMeratMarketProduct> spProduct, Unk_MmViewScope* pScope);   // 0x1412ef330 foreign
     void RefreshSellerInfo();                                       // 0x141305a20
@@ -323,7 +337,7 @@ public:
     void OnRemoveBasketItem(ASData& data);                          // 0x141303580
     bool OnAskMoveToModelHouse(int nButton, const CMsgBoxData& box);   // 0x1413065c0
     void OnClickBasket(ASData& data);                               // 0x1413019e0
-    MS2Ptr<TMeratMarketBillDataParam> CreateBillParam(const CStringA& strWho, int nSourceKind, int nMode);   // 0x141307ac0
+    MS2Ptr<TMeratMarketBillDataParam> CreateBillParam(const CStringA& strMovie, int nType, int nSourceKind);   // 0x141307ac0
     void OnClickBookMark(ASData& data);                             // 0x141301260
     void OnClickRecipe(ASData& data);                               // 0x141301360
     void OnClickPreview(ASData& data);                              // 0x141301710

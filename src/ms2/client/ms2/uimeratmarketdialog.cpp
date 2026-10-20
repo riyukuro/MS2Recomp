@@ -108,6 +108,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/cshopeventmanager.h"
+#include "ms2/placeholder/cmeratmarketman.h"
 #include "ms2/commonfiles/gameevent.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -223,6 +224,7 @@ typedef ATL::CRBMap<__int64, MS2Ptr<CUgcMarketSeller> > Unk_MmSellerMap;
 class Unk_MeratMarketMan
 {
 public:
+    int FUN_140d58130(MS2Ptr<CMeratMarketBasket> spLine);                   // add a line to the basket
     void FUN_140d5a200(const int& nUiId);
     void FUN_140d54d50(MS2Ptr<CMeratMarketSchCond> spCond);
     void FUN_140d542c0(int nShop, int nType);
@@ -274,7 +276,16 @@ class Unk_MeratStatusEvents { public: void FUN_141b0cd90(UIStatusEventListener* 
 Unk_MeratStatusEvents* FUN_140aa6d40();
 class Unk_MeratUgcEvents { public: void FUN_141b38c70(UIUGCEventListener* pListener); };
 Unk_MeratUgcEvents* FUN_140bc09f0();
-class Unk_MeratSound { public: void FUN_140d09cf0(int nBgm); void FUN_140d09d40(int nBgm); };   // play / stop a background track
+// CInstrumentManager (instrumentmanager.h is not committed yet): the flags and the score preview.
+class Unk_MeratSound
+{
+public:
+    void FUN_140d09cf0(int nBgm);                                           // AddFlags
+    void FUN_140d09d40(int nBgm);                                           // RemoveFlags
+    bool FUN_140d099c0(const CString& strScore, int nCategory, int nStart, int* pnLength);   // PreviewScore
+    void FUN_140d09bc0();                                                   // StopPreview
+    bool FUN_140d09d90(unsigned nFlags);                                    // HasOtherFlags
+};
 Unk_MeratSound* FUN_140c8dac0();
 struct Unk_MmStrings { CStringW FUN_141811980(int nTable, int nId); };
 Unk_MmStrings* FUN_1401a9d70();
@@ -359,7 +370,40 @@ public:
     int m_nFeature;                                                         // +0x18
 };
 
+// The head of CItemCustomMusicScore (commonfiles/item.h; that header's placeholder CUgcItemLook clashes with the
+// ugcdef.h one this unit includes).
+class Unk_MmMusicScore : public CPtred
+{
+public:
+    int m_n18;
+    int m_n1c;                  // the instrument category of the score
+    CStringW m_str20;
+    CStringW m_str28;
+    CString m_str30;            // the score text
+};
+
+// The bill's cancel callback assignment (COMDAT of this unit).
+// @0x1413148e0
+template <> inline Delegate<bool(MS2Ptr<TMarketBillDataParam>)>& Delegate<bool(MS2Ptr<TMarketBillDataParam>)>::operator=(const Delegate& o)
+{
+    if (this == &o)
+        return *this;
+    if (m_pImpl != 0)
+        delete m_pImpl;
+    if (o.m_pImpl == 0)
+        m_pImpl = 0;
+    else
+        m_pImpl = o.m_pImpl->vfunc_1();
+    return *this;
+}
+
 // ---- free callees ----
+CItemData* FUN_140527840(CItem* pItem);                                     // the item's data record
+bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spParam, const Unk_MmPayMap& prices);   // UIMeratMarketCommon: pay the bill
+bool FUN_140ebef60(MS2Ptr<TMarketBillDataParam> spParam, const Unk_MmPayMap& prices, const CStringW& strTo,
+                   const CStringW& strMessage);                             // UIMeratMarketCommon: pay the bill as a gift
+bool FUN_140ebe990(Scaleform::GFx::Value* pValue, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);   // the bill tooltip
+void FUN_1409abfa0(ATL::CAtlArray<int>& ids, ATL::CAtlArray<MS2Ptr<ASBillData> >& bills);   // the ids of the bill rows
 CFeatureManager* FUN_140166410();                                           // the feature manager
 bool FUN_14036d570(void* pFeatures, int nFeature);                          // a feature is on
 CUIService* FUN_1403ed2b0();                                                // the UI manager
@@ -3390,6 +3434,225 @@ void UIMeratMarketDialog::OnModelLoaded(const Scaleform::GFx::FunctionHandler::P
     if (m_30 == 0)
         return;
     m_2f3 = true;
+}
+
+// @0x141306ed0
+void UIMeratMarketDialog::OnModelCheck(const Scaleform::GFx::FunctionHandler::Params&)
+{
+    if (m_30 == 0 || m_5b0 == 0)
+        return;
+    bool bChecked = m_5b0->FUN_1422ce0e0();
+    if (bChecked)
+    {
+        m_620 = StartMusicPreview();
+        if (m_620 == true)
+            ApplyPreviewChanges(false);
+        else
+            StopMusicPreview(false);
+    }
+    else
+    {
+        StopMusicPreview(false);
+    }
+}
+
+// @0x141306fa0
+void UIMeratMarketDialog::OnModelRefresh(const Scaleform::GFx::FunctionHandler::Params&)
+{
+    if (m_30 == 0)
+        return;
+    Refresh7710(false);
+}
+
+// @0x141306ff0
+void UIMeratMarketDialog::OnModelReset(const Scaleform::GFx::FunctionHandler::Params&)
+{
+    if (m_30 == 0 || m_spSlider == 0)
+        return;
+    StopMusicPreview(false);
+    int nTime = (int)FloatSecondsToMs(m_spSlider->FUN_1422ce630());
+    SetModelTime(nTime);
+}
+
+// @0x141307080
+void UIMeratMarketDialog::SetMusicPlayTime(int nStart, int nLength)
+{
+    m_624 = FUN_140869420() - nStart;
+    m_628 = m_624 + nLength;
+}
+
+// Starts the music preview of the selected item: a music score item plays its score, an instrument plays the
+// default octave of its category followed by the product's sample text.
+// @0x1413070d0
+bool UIMeratMarketDialog::StartMusicPreview()
+{
+    if (m_spItem == 0 || FUN_140527840(m_spItem) == 0)
+        return false;
+    if (!FUN_140527840(m_spItem)->FUN_14053cd10() && !FUN_140527840(m_spItem)->FUN_14053cd50())
+        return false;
+    if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4eec) != 0)
+    {
+        {
+            CStringW strKey(L"s_play_instrument_cant_while_play_instrument");
+            FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        }
+        return false;
+    }
+    if (FUN_140c8dac0()->FUN_140d09d90(2))
+    {
+        {
+            CStringW strKey(L"s_play_instrument_cant_while_pre_listening");
+            FUN_1412751f0(FUN_14028b8e0(strKey), 1, 1);
+        }
+        return false;
+    }
+    bool bPlaying = false;
+    bool bScore = false;
+    int nStart = 0;
+    int nLength = 0;
+    nStart = (int)FloatSecondsToMs(m_spSlider->FUN_1422ce630());
+    if (FUN_140527840(m_spItem)->FUN_14053cd10())
+    {
+        Unk_MmMusicScore* pScore = reinterpret_cast<Unk_MmMusicScore*>(((CItem*)m_spItem)->FUN_140527990());
+        if (pScore == 0)
+            return false;
+        int nCategory = pScore->m_n1c;
+        nLength = 0;
+        bPlaying = FUN_140c8dac0()->FUN_140d099c0(pScore->m_str30, nCategory, nStart, &nLength);
+        bScore = true;
+    }
+    else
+    {
+        MS2Ptr<CItemData> spData(FUN_140527840(m_spItem));
+        int nInstrument = spData->FUN_14053de80();
+        MS2Ptr<CInstrumentCategoryData> spCategory = FUN_14052d1d0()->GetInstrumentCategory(nInstrument);
+        if (spCategory == 0)
+            return false;
+        CStringA strScore = StringFormat("{0}{1}", spCategory->m_strDefaultOctave, m_630);
+        bPlaying = FUN_140c8dac0()->FUN_140d099c0(strScore, spCategory->m_nId, nStart, &nLength);
+        bScore = false;
+    }
+    if (!bPlaying)
+        return false;
+    SetMusicPlayTime(nStart, nLength);
+    if (m_5f0)
+    {
+        m_5f0->vfunc_4(bScore);
+        if (bScore)
+            m_5f0->vfunc_12(1);
+        else
+            m_5f0->vfunc_7();
+    }
+    return true;
+}
+
+// @0x141307600
+void UIMeratMarketDialog::StopMusicPreview(bool bApply)
+{
+    if (m_620 == true)
+        FUN_140c8dac0()->FUN_140d09bc0();
+    m_620 = false;
+    if (m_5b0)
+        m_5b0->FUN_1422ce090(0);
+    if (m_5f0)
+    {
+        m_5f0->vfunc_4(false);
+        m_5f0->vfunc_7();
+    }
+    if (bApply || m_29c == 5)
+        ApplyPreviewChanges(false);
+}
+
+// @0x141307710
+void UIMeratMarketDialog::Refresh7710(bool bApply)
+{
+    m_624 = 0;
+    m_628 = 0;
+    if (m_spSlider)
+        m_spSlider->FUN_1422ce800(0);
+    if (m_5d0)
+        m_5d0->FUN_1422c4cd0(L"00:00");
+    StopMusicPreview(bApply);
+}
+
+// @0x141307ac0
+MS2Ptr<TMeratMarketBillDataParam> UIMeratMarketDialog::CreateBillParam(const CStringA& strMovie, int nType, int nSourceKind)
+{
+    MS2Ptr<TMeratMarketBillDataParam> spParam(new TMeratMarketBillDataParam());
+    if (spParam == 0)
+        return MS2Ptr<TMeratMarketBillDataParam>(0);
+    spParam->m_nDialogId = vfunc_48();
+    spParam->m_strMovie = strMovie;
+    spParam->m_nCurrency = FUN_14069c3e0(CurrencyOf(m_250));
+    spParam->m_nType = nType;
+    if (nType == 4)
+    {
+        spParam->m_dgCancel = TMarketBillDataParam::CancelCallback(this, &UIMeratMarketDialog::OnBillToBasket);
+    }
+    else
+    {
+        spParam->m_dgBuy = TMarketBillDataParam::BuyCallback(this, &UIMeratMarketDialog::OnBillBuy);
+        // m_dgGift is declared with the strings by value; the exe's delegate takes them by const reference
+        reinterpret_cast<Unk_MmGiftCallback&>(spParam->m_dgGift) = Unk_MmGiftCallback(this, &UIMeratMarketDialog::OnBillGift);
+        spParam->SetSourceKind(nSourceKind);
+    }
+    spParam->m_dgTooltip = TMarketBillDataParam::TooltipCallback(this, &UIMeratMarketDialog::OnBillTooltip);
+    spParam->SetGift(false);
+    return spParam;
+}
+
+// @0x141307f30
+bool UIMeratMarketDialog::OnBillBuy(MS2Ptr<TMarketBillDataParam> spParam, const Unk_MmPayMap& prices)
+{
+    if (spParam == 0)
+        return false;
+    return FUN_140ebded0(spParam, prices);
+}
+
+// @0x141307fc0
+bool UIMeratMarketDialog::OnBillGift(MS2Ptr<TMarketBillDataParam> spParam, const Unk_MmPayMap& prices, const CStringW& strTo,
+                                     const CStringW& strMessage)
+{
+    if (spParam == 0)
+        return false;
+    return FUN_140ebef60(spParam, prices, strTo, strMessage);
+}
+
+// The bill was left in basket mode: every product row of the bill goes to the basket.
+// @0x141308070
+bool UIMeratMarketDialog::OnBillToBasket(MS2Ptr<TMarketBillDataParam> spParam)
+{
+    if (spParam == 0)
+        return false;
+    ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
+    if (bills.IsEmpty())
+        return false;
+    ATL::CAtlArray<int> ids;
+    FUN_1409abfa0(ids, bills);
+    size_t nCount = bills.GetCount();
+    for (size_t i = 0; i < nCount; i++)
+    {
+        MS2Ptr<ASBillData> spBill(bills[i]);
+        if (spBill == 0)
+            continue;
+        MS2Ptr<ASMeratMarketBuyBillData> spBuy(dynamic_cast<ASMeratMarketBuyBillData*>(spBill.get()));
+        if (spBuy == 0)
+            continue;
+        MS2Ptr<CMeratMarketBasket> spLine(new CMeratMarketBasket());
+        if (spLine == 0)
+            continue;
+        spLine->FUN_140d61450(spBuy);
+        FUN_140939a00()->FUN_140d58130(spLine);
+    }
+    return true;
+}
+
+// @0x141308390
+bool UIMeratMarketDialog::OnBillTooltip(Scaleform::GFx::Value* pValue, ASData& data, MS2Ptr<TMarketBillDataParam> spParam)
+{
+    if (m_30 == 0)
+        return false;
+    return FUN_140ebe990(pValue, data, spParam);
 }
 
 // @0x141308fc0
