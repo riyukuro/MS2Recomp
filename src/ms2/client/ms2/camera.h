@@ -268,6 +268,12 @@ public:
     void FUN_140af9930(int n) { m_1d0 = n; }
     // @0x140af7be0
     void FUN_140af7be0(int n) { m_244 = n; }
+    // 0x140947860 (inline, ?\actioncameramode.cpp obj)
+    void FUN_140947860(int n) { m_108 = n; }
+    // 0x140947980 (inline, ?\actioncameramode.cpp obj)
+    void FUN_140947980(int n) { m_nPendingMode = n; }
+    // 0x1409478a0 (inline, ?\actioncameramode.cpp obj)
+    Unk_CameraEffectState* FUN_1409478a0() { return &m_effect; }
 
     int m_bFlyBy;                                                       // +0x08
     Unk_CameraSetting m_setting;                                        // +0x0c

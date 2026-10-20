@@ -44,15 +44,5 @@ public:
 };
 MS2_CHECK_SIZE(CEditCameraMode, 0x88);
 
-// 0x80 bytes: 8 bytes of its own that the ctor leaves uninitialized.
-class CActionCameraMode : public CCameraMode
-{
-public:
-    CActionCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<CCameraMode> pPrev);   // 0x140944f30
-    virtual int vfunc_1();                                              // 0x140947890
-    virtual bool vfunc_2();                                             // 0x140947920
-
-    float m_78;
-    float m_7c;
-};
-MS2_CHECK_SIZE(CActionCameraMode, 0x80);
+// CActionCameraMode is recovered: ms2/client/ms2/actioncameramode.h.
+#include "ms2/client/ms2/actioncameramode.h"
