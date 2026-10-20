@@ -3760,7 +3760,6 @@ __imp_NxGetUtilLib	142cced28	data
 ?ShowProduct@UIMeratMarketDialog@@QEAAXV?$MS2Ptr@VCMeratMarketProduct@@@@@Z	1412ebc40	func
 ?ShowSellerProducts@UIMeratMarketDialog@@QEAAXAEB_J@Z	141304270	func
 ?vfunc_28@UIMeratMarketDialog@@UEAAHPEBDPEBVValue@GFx@Scaleform@@I@Z	1412ea0e0	func
-?vfunc_49@UIMeratMarketDialog@@UEAAXPEAVValue@GFx@Scaleform@@PEAVASData@@@Z	1412ec1e0	func
 ?g_nLocaleMode@@3HA	143ab0560	data
 ?g_strLocaleFolder@@3V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@A	143ab0568	data
 ?g_strDefaultFolder@@3V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@A	143ab0588	data
