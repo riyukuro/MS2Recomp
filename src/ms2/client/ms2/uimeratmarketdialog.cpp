@@ -3,42 +3,67 @@
 // MS2-RANGE: 0x1400ee9d0-0x1400eed20 .text$di
 // MS2-RANGE: 0x1412e84b0-0x141317690 .text$mn
 // MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??$?0PEAVUIMeratMarketDialog@@P80@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z$0A@@?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ82@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x141311030 ; prop
+// MS2-PIN: ??$?0VUIMeratMarketDialog@@@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x141311070 ; prop
 // MS2-PIN: ??$?0PEAVUIMeratMarketDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z$0A@@?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ82@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x1413111d0 ; prop
 // MS2-PIN: ??$?0VUIMeratMarketDialog@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBQEAVUIMeratMarketDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x141311210 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VUnk_MeratBasketEntry@@@@QEAA@AEBV0@@Z 0x141311780 ; prop
+// MS2-PIN: ??$?8PEAVUIMeratMarketDialog@@P80@EAAXAEAVAScript@@@Z@std@@YA_NAEBU?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEAVAScript@@@Z@0@0@Z 0x141311830 ; prop
 // MS2-PIN: ??$?8PEAVUIMeratMarketDialog@@P80@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA_NAEBU?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@0@Z 0x1413118a0 ; prop
 // MS2-PIN: ??$?8PEAVUIMeratMarketDialog@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x141311910 ; prop
 // MS2-PIN: ??$?8PEAVUIMeratMarketDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x141311980 ; prop
 // MS2-PIN: ??$forward@AEBQ8UIMeratMarketDialog@@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YAAEBQ8UIMeratMarketDialog@@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@ZAEBQ81@EAAX0@Z@Z 0x141313520 ; prop
+// MS2-PIN: ??$make_pair@AEBQEAVUIMeratMarketDialog@@AEBQ81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@YA?AU?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@0@AEBQEAVUIMeratMarketDialog@@AEBQ82@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@Z 0x1413135a0 ; prop
 // MS2-PIN: ??$make_pair@AEBQEAVUIMeratMarketDialog@@AEBQ81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@YA?AU?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@0@AEBQEAVUIMeratMarketDialog@@AEBQ82@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@Z 0x141313640 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@QEAA@AEBU?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@@Z 0x141313990 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEAVAScript@@@Z@std@@@?$Delegate@$$A6AXAEAVAScript@@@Z@@QEAA@AEBV01@@Z 0x1413139e0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBV01@@Z 0x141313a80 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@QEAA@AEBU?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@Z 0x141313ad0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x141313b20 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z 0x141313bc0 ; prop
-// MS2-PIN: ??0?$MS2Ptr@VUIEquipIconContainer@@@@QEAA@PEAVUIEquipIconContainer@@@Z 0x141314120 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@QEAA@AEBV01@@Z 0x141313c60 ; prop
+// MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@QEAA@AEBV01@@Z 0x141313e40 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VCItem@@@@QEAA@PEAVCItem@@@Z 0x141314120 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAA@XZ 0x141314540 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAA@XZ 0x141314560 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA@XZ 0x141314580 ; prop
-// MS2-PIN: ??1?$MS2Ptr@VUIAvatarPet@@@@QEAA@XZ 0x1413146e0 ; prop
+// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEAA@XZ 0x1413145a0 ; prop
+// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEAA@XZ 0x1413145e0 ; prop
+// MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@UEAA@XZ 0x141314600 ; prop
+// MS2-PIN: ??1?$MS2Ptr@VTMeratMarketBillDataParam@@@@QEAA@XZ 0x1413146b0 ; prop
 // MS2-PIN: ??8?$MS2Ptr@VMeratMarketShopBannerInfo@@@@QEBA_NPEAVMeratMarketShopBannerInfo@@@Z 0x141314e00 ; unique
 // MS2-PIN: ?get@?$MS2Ptr@VCAvatarPackageEquip@@@@QEBAPEAVCAvatarPackageEquip@@XZ 0x141314e80 ; unique
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEAVAScript@@@Z@std@@@?$Delegate@$$A6AXAEAVAScript@@@Z@@UEAAPEAXI@Z 0x141314f30 ; prop
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@UEAAPEAXI@Z 0x141314f70 ; prop
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAPEAXI@Z 0x141314fb0 ; prop
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAPEAXI@Z 0x141314ff0 ; prop
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x141315030 ; prop
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEAAPEAXI@Z 0x141315070 ; prop
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEAAPEAXI@Z 0x1413150b0 ; prop
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEAAPEAXI@Z 0x1413150f0 ; prop
+// MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@UEAAPEAXI@Z 0x141315130 ; prop
 // MS2-PIN: ?GetIconMap@UIEquipIconContainer@@QEAAPEAV?$CAtlMap@HV?$MS2Ptr@VASEquipIcon@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VASEquipIcon@@@@@3@@ATL@@XZ 0x1413157e0 ; unique
-// MS2-PIN: ?AddRef@?$MS2Ptr@VCMeratMarketSchCond@@@@AEBAXXZ 0x141316360 ; prop
-// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VWeaponType@UIMeratMarketCommon@@@@AEBAXPEAX@Z 0x141316550 ; prop
-// MS2-PIN: ?Release@?$MS2Ptr@VWeaponType@UIMeratMarketCommon@@@@AEAAXXZ 0x141316640 ; prop
+// MS2-PIN: ?AddRef@?$MS2Ptr@VASBillData@@@@AEBAXXZ 0x141316360 ; prop
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VAScript@@@@AEBAXPEAX@Z 0x141316550 ; prop
+// MS2-PIN: ?Release@?$MS2Ptr@VCMeratMarketProduct@@@@AEAAXXZ 0x141316680 ; prop
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCMeratMarketProduct@@@@AEAAXPEAX@Z 0x141316800 ; prop
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEAVAScript@@@Z@std@@@?$Delegate@$$A6AXAEAVAScript@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1413168b0 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141316910 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141316970 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1413169d0 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141316a30 ; prop
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141316af0 ; prop
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141316b50 ; prop
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@UEAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z 0x141316bb0 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEAVAScript@@@Z@std@@@?$Delegate@$$A6AXAEAVAScript@@@Z@@UEAAXAEAVAScript@@@Z 0x141316bf0 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x141316c20 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEAAXPEAVNotifyObject@@@Z 0x141316c50 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x141316c80 ; unique
+// MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z 0x141316db0 ; unique
 // MS2-PIN: ??$Call@VUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@@?$Delegate@$$A6AXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@@CAXAEAU?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z@std@@PEAV?$CAtlList@V?$MS2Ptr@VCEquipItem@@@@V?$CElementTraits@V?$MS2Ptr@VCEquipItem@@@@@ATL@@@ATL@@PEAUUnk_PCEquipSet@@@Z 0x141316eb0 ; unique
 // MS2-PIN: ??$Call@VUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x141316fb0 ; unique
+// MS2-PIN: ??$Call@VUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@CA_NAEAU?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@V?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z 0x1413170f0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEAVAScript@@@Z@std@@@?$Delegate@$$A6AXAEAVAScript@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141317270 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1413172d0 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141317330 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIMeratMarketDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141317390 ; unique
@@ -112,6 +137,9 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/uipopupmenu.h"
 #include "ms2/placeholder/cproxygameobject.h"
+#include "ms2/commonfiles/logstring.h"
+#include "ms2/placeholder/tixmldocument.h"
+#include "ms2/placeholder/xmlattr.h"
 #include "ms2/commonfiles/gameevent.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -199,7 +227,14 @@ Unk_MeratKeyState* FUN_14025e7c0();
 struct Unk_MeratFlagSet { int FUN_1402c4c90(int nFlag); };
 struct Unk_MeratConfig { void* m_0; Unk_MeratFlagSet m_flags; };
 Unk_MeratConfig* FUN_14025e7b0();
-struct Unk_ConfigPaths { char m_pad[0xc8]; CStringA m_strDefaultImage; };    // the config singleton (members not recovered)
+// The config singleton (members not recovered).
+struct Unk_ConfigPaths
+{
+    char m_pad[0xc8];
+    CStringA m_strDefaultImage;                                             // +0xc8
+    char m_pad_d0[0x5a8 - 0xd0];
+    CString m_strSampleScore;                                               // +0x5a8 the sample score of the instrument preview
+};
 Unk_ConfigPaths* FUN_1401d31f0();
 
 
@@ -304,6 +339,9 @@ public:
     bool FUN_140d099c0(const CString& strScore, int nCategory, int nStart, int* pnLength);   // PreviewScore
     void FUN_140d09bc0();                                                   // StopPreview
     bool FUN_140d09d90(unsigned nFlags);                                    // HasOtherFlags
+    unsigned FUN_140d08660(int nChannel, int nProgram, int nPercussion, std::multimap<unsigned, unsigned>* pTrack,
+                           std::multimap<unsigned, std::pair<int, int> >* pEvents, unsigned nTime, unsigned nNow,
+                           const CString& strMml, bool bFirst);             // parse one MML tab, returns its end time
 };
 Unk_MeratSound* FUN_140c8dac0();
 struct Unk_MmStrings { CStringW FUN_141811980(int nTable, int nId); };
@@ -417,6 +455,10 @@ template <> inline Delegate<bool(MS2Ptr<TMarketBillDataParam>)>& Delegate<bool(M
 }
 
 // ---- free callees ----
+class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
+Unk_MmFiles* FUN_140166420();                                               // the resource file system
+CLogString* FUN_140166440();
+void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 // The world service seen from here: the field proxy of a character id (worldservice.h types the result otherwise).
 class Unk_MmMyPC { public: void FUN_141529fb0(); };                       // MyPC: request the field leave
 class Unk_MmWorld
@@ -3766,6 +3808,43 @@ void UIMeratMarketDialog::Refresh7710(bool bApply)
     StopMusicPreview(bApply);
 }
 
+// @0x1413077f0
+void UIMeratMarketDialog::LoadSampleScore()
+{
+    if (!FUN_140166410()->FUN_14036d570(0xac))
+        return;
+    m_630.Empty();
+    m_62c = 0;
+    TiXmlDocument doc;
+    const CString& strPath = FUN_1401d31f0()->m_strSampleScore;
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
+    {
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        return;
+    }
+    Unk_140165cf0* pHarmony = pRoot->FUN_140165cf0("harmony");
+    if (pHarmony != 0)
+    {
+        CStringA strChord;
+        FUN_1408733e0(pHarmony, "chord", strChord);
+        strChord.Remove(' ');
+        strChord.Remove('\n');
+        strChord.Remove('\t');
+        m_630 = strChord;
+    }
+    if (!m_630.IsEmpty())
+    {
+        std::multimap<unsigned, unsigned> track;
+        std::multimap<unsigned, std::pair<int, int> > events;
+        int nNow = FUN_140869420();
+        int nEnd = FUN_140c8dac0()->FUN_140d08660(0, 0, 0, &track, &events, nNow, nNow, m_630, true);
+        m_62c = nEnd - nNow;
+    }
+}
+
 // @0x141307ac0
 MS2Ptr<TMeratMarketBillDataParam> UIMeratMarketDialog::CreateBillParam(const CStringA& strMovie, int nType, int nSourceKind)
 {
@@ -3857,6 +3936,23 @@ void UIMeratMarketDialog::SetSlotKind(int nKind)
         BOOL bSelected = i == nKind;
         GetEquipIcon(i)->FUN_140e2a6e0(bSelected);
     }
+}
+
+// @0x141308ae0
+void UIMeratMarketDialog::ChangeModel(int nSlot, int nKind, MS2Ptr<CMeratMarketProduct> spProduct)
+{
+    if (nSlot < 0 || nSlot >= 5)
+        return;
+    if (m_30 == 0)
+        return;
+    MS2Ptr<ASMovieClip> spCharView = m_30->FUN_1409b4560("m_charView");
+    if (spCharView == 0)
+        return;
+    ASObj data(2);
+    SetPreviewControls(data, nKind, spProduct);
+    SetMusicInfo(data, spProduct);
+    SetBlueprintInfo(data, spProduct);
+    spCharView->Invoke("changeModel", nSlot, Scaleform::GFx::Value(data.FUN_1422bb870()));
 }
 
 // @0x141308d60

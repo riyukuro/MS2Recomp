@@ -352,6 +352,8 @@ public:
     void SetPreviewControls(ASObj& data, int nKind, MS2Ptr<CMeratMarketProduct> spProduct);   // 0x141309320
     void SetMusicInfo(ASObj& data, MS2Ptr<CMeratMarketProduct> spProduct);                    // 0x141309600
     void SetBlueprintInfo(ASObj& data, MS2Ptr<CMeratMarketProduct> spProduct);                // 0x141309c60
+    void ChangeModel(int nSlot, int nKind, MS2Ptr<CMeratMarketProduct> spProduct);            // 0x141308ae0 show a product on a preview model slot
+    void LoadSampleScore();                                         // 0x1413077f0 the instrument preview sample score (m_630) and its length (m_62c)
     ATL::CAtlArray<MS2Ptr<CMeratMarketProduct> >& GetProductList(int nCategory);   // 0x141309f20
     MS2Ptr<CMeratMarketProduct> FindProduct(const Unk_MeratProductKey& key, __int64 nId, bool bShop);   // 0x141309f60
     MS2Ptr<CMeratMarketProduct> FindProductInTab(const Unk_MeratProductKey& key, int nTab);         // 0x14130a000
