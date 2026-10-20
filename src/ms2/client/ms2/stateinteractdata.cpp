@@ -203,9 +203,6 @@ struct Unk_SiSyncRecord
 void* FUN_1409331e0();
 void FUN_14138bf00(void* pSvc, int nKind, int nId, int nFlag);
 
-void FUN_1402a9d70(void*, int, float, float, float, int);
-void FUN_142cb7730();                                                   // the exe's atexit destructor of the marker
-void FUN_142cb77c0();
 struct Unk_RegMarker {};
 
 // ---- dynamic initializers (.text$di) ----
@@ -215,8 +212,8 @@ static CString s_stun0("stun");
 
 #ifndef MS2_HOOK_DLL
 // @0x140102e30
-static char s_marker0[0x48];
-static Unk_RegMarker s_initMarker0 = (FUN_1402a9d70(&s_marker0, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cb7730), Unk_RegMarker());
+#include "ms2/placeholder/unk_1402a9d70.h"
+static Unk_1402a9d70 s_marker0(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142cb7730
 #endif
 
 // @0x140102e80
@@ -230,8 +227,7 @@ static CString s_stun("stun");
 
 #ifndef MS2_HOOK_DLL
 // @0x140102fa0
-static char s_marker1[0x48];
-static Unk_RegMarker s_initMarker1 = (FUN_1402a9d70(&s_marker1, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cb77c0), Unk_RegMarker());
+static Unk_1402a9d70 s_marker1(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142cb77c0
 #endif
 
 // ---- StateInteractData ----
@@ -858,3 +854,6 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb7710-0x142cb7730 .text$yd
 // MS2-RANGE: 0x142cb7750-0x142cb77c0 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142cb7730-0x142cb7750 .text$yd
+// MS2-RANGE: 0x142cb77c0-0x142cb77e0 .text$yd

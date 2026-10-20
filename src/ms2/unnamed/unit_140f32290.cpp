@@ -42,7 +42,6 @@ CItemDataTable* FUN_140281980();
 CStringTable* FUN_1401a9d70();
 int FUN_140f02bc0();                                            // the hair palette id
 CStringW FUN_141b71990(unsigned nValue);
-void FUN_1402a9d70(void*, int, float, float, float, int);
 
 // The item an equipped slot shows; the model block of an item row.
 ItemModelHead* FUN_14053ec70(CItemData* pData);                 // &model.head
@@ -87,11 +86,10 @@ static CString s_skill("skill");
 static CString s_stun("stun");
 
 #ifndef MS2_HOOK_DLL
-void FUN_142ca92e0();
 // @0x1400deb40
 struct Unk_RegMarker {};
-static char s_marker[0x48];
-static Unk_RegMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca92e0), Unk_RegMarker());
+#include "ms2/placeholder/unk_1402a9d70.h"
+static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142ca92e0
 #endif
 
 // @0x1400deb90
@@ -533,3 +531,5 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca9270-0x142ca92e0 .text$yd
 // MS2-RANGE: 0x142ca9300-0x142ca9380 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142ca92e0-0x142ca9300 .text$yd

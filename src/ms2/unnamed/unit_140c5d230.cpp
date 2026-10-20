@@ -109,23 +109,20 @@ template <> inline TPtr<Unk_UISwfEntity_25>::TPtr(const TPtr& o)
     m_p = o.get();
 }
 
+#include "ms2/placeholder/unk_1402a9d70.h"
 // ---- statics of the headers this unit includes (three translation units folded into one: the .di of each constructs them
 // in this order; the third and fourth sets also carry a CMyPCKeyInputController) ----
 
-void FUN_1402a9d70(void*, int, float, float, float, int);
 void FUN_142ca31f0();
 void FUN_142ca3220();
 void FUN_142ca3240();
-void FUN_142ca3260();
 void FUN_142ca3280();
 void FUN_142ca32b0();
 void FUN_142ca32d0();
-void FUN_142ca32f0();
 void FUN_142ca3310();
 void FUN_142ca3330();
 void FUN_142ca3360();
 void FUN_142ca3380();
-void FUN_142ca33a0();
 void FUN_142ca33c0();
 struct Unk_RegMarker {};
 
@@ -139,8 +136,7 @@ static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 #ifndef MS2_HOOK_DLL
 // @0x1400ce170
-static char s_marker[0x48];
-static Unk_RegMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca3260), Unk_RegMarker());
+static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142ca3260
 #endif
 }
 
@@ -154,8 +150,7 @@ static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 #ifndef MS2_HOOK_DLL
 // @0x1400ce2e0
-static char s_marker[0x48];
-static Unk_RegMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca32f0), Unk_RegMarker());
+static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142ca32f0
 #endif
 // @0x1400ce330
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -171,8 +166,7 @@ static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 #ifndef MS2_HOOK_DLL
 // @0x1400ce480
-static char s_marker[0x48];
-static Unk_RegMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca33a0), Unk_RegMarker());
+static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142ca33a0
 #endif
 // @0x1400ce4d0
 static UICommon::CMyPCKeyInputController s_keyInput;
@@ -2722,3 +2716,7 @@ void FUN_140c60f40(CString& strBag, ItemArray& items, MS2Ptr<ItemSlotBag::Create
 // MS2-RANGE: 0x142ca3280-0x142ca32f0 .text$yd
 // MS2-RANGE: 0x142ca3310-0x142ca33a0 .text$yd
 // MS2-RANGE: 0x142ca33c0-0x142ca33e0 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142ca3260-0x142ca3280 .text$yd
+// MS2-RANGE: 0x142ca32f0-0x142ca3310 .text$yd
+// MS2-RANGE: 0x142ca33a0-0x142ca33c0 .text$yd

@@ -17,6 +17,7 @@
 #include "ms2/guess/skilltieroptionmanager.h"
 #include "ms2/commonfiles/jobtable.h"
 #include "ms2/commonfiles/logstring.h"
+#include "ms2/commonfiles/specialability.h"
 #include "ms2/placeholder/ccachedata.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/xmlattr.h"
@@ -39,11 +40,6 @@ int FUN_14081d9e0(unsigned nTier);                                       // the 
 unsigned FUN_14081da20(CSkillTierOptionManager::TierId nTier);                                       // the tier's skill group id
 unsigned short FUN_141662980(PC* pOwner, CSkillTierOptionManager::TierId nTier);                     // the owner's level of a tier
 int FUN_141654700(PC* pOwner);                                           // the owner's job
-void FUN_1402a9d70(void*, int, float, float, float, int);
-void FUN_142c9c2f0();
-void FUN_140821660(void*);
-void FUN_142c9c310();
-struct Unk_SaTable { };                                  // the special ability table (see itemsocketsystemutil.cpp)
 struct Unk_RegMarker {};
 
 typedef MS2Ptr<CSkillTierOption> CSkillTierOptionPtr;
@@ -78,13 +74,13 @@ static CString s_stun("stun");
 
 #ifndef MS2_HOOK_DLL
 // @0x1400bcff0
-static char s_marker[0x48];
-static Unk_RegMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142c9c2f0), Unk_RegMarker());
+#include "ms2/placeholder/unk_1402a9d70.h"
+static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142c9c2f0
 #endif
 
 // @0x1400bd040 (the table is built by specialability.cpp; this unit only initialises its storage)
 #ifndef MS2_HOOK_DLL
-Unk_SaTable DAT_143ab1a40 = (FUN_140821660(&DAT_143ab1a40), atexit(FUN_142c9c310), Unk_SaTable());
+std::vector<SpecialAbilityInfo> DAT_143ab1a40;           // ctor 0x140821660, atexit thunk 0x142c9c310 (dtor 0x140821a90)
 #endif
 
 // ---- .text$mn ----
@@ -287,3 +283,5 @@ CSkillTierOptionManager::~CSkillTierOptionManager()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9c200-0x142c9c2f0 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142c9c2f0-0x142c9c330 .text$yd

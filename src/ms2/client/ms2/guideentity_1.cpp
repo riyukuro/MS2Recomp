@@ -251,13 +251,11 @@ bool GuideTriggerEventGroup::HasSubValue(int nValue)
 #ifndef MS2_HOOK_DLL
 ClassObject* FUN_1413aa580();
 void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
-void FUN_1402a9d70(void*, int, float, float, float, int);
-void FUN_142cb11a0();   // the exe's atexit destructor of the object
 struct Unk_RegMarker {};
 
 // @0x1400f2de0
-static char s_8ee0[0x30];
-static Unk_RegMarker s_init8ee0 = (FUN_1402a9d70(&s_8ee0, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cb11a0), Unk_RegMarker());
+#include "ms2/placeholder/unk_1402a9d70.h"
+static Unk_1402a9d70 s_8ee0(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142cb11a0
 
 // @0x1400f2e30
 static char s_regAchieveExistTrophy;
@@ -271,3 +269,5 @@ static Unk_RegMarker s_initAchieveTab =
 #endif
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb10d0-0x142cb11a0 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142cb11a0-0x142cb11c0 .text$yd

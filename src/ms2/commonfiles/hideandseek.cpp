@@ -39,8 +39,6 @@ int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned& rOut);
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text (null = absent)
 void FUN_1401783d0(const CString* pText, std::vector<int>* pOut, const char* pszSep);   // split into ints
 __int64 FUN_140475ff0(unsigned short nRule);                            // the rule's limit
-void FUN_1402a9d70(void*, int, float, float, float, int);
-void FUN_142c9aa30();                                                   // the exe's atexit destructor of the marker
 struct Unk_RegMarker {};
 
 // ---- dynamic initializers (.text$di) ----
@@ -62,8 +60,8 @@ static CString s_stun("stun");
 
 #ifndef MS2_HOOK_DLL
 // @0x1400b9040
-static char s_marker[0x48];
-static Unk_RegMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142c9aa30), Unk_RegMarker());
+#include "ms2/placeholder/unk_1402a9d70.h"
+static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142c9aa30
 #endif
 
 // @0x14050a120
@@ -232,3 +230,5 @@ void HideAndSeek::FUN_14050a830()
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9a980-0x142c9aa30 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142c9aa30-0x142c9aa50 .text$yd

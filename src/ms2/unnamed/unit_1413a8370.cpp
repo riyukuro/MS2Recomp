@@ -529,8 +529,6 @@ ClassObject* FUN_1413aaed0();
 ClassObject* FUN_1413ad660();
 void FUN_140316aa0(void* pSlot, CStringW strName, ClassObject* (*pfnFactory)());
 void FUN_1401cd100(void*, int);
-void FUN_142cb1260();   // the exe's atexit destructor of the map
-void FUN_1402a9d70(void*, int, float, float, float, int);
 struct Unk_RegMarker {};
 
 // @0x1400f4460
@@ -570,8 +568,10 @@ static char s_8f78[8];
 static Unk_RegMarker s_init8f78 = (FUN_1401cd100(&s_8f78, 0), Unk_RegMarker());
 
 // @0x1400f47b0
-static char s_8f80[0x30];
-static Unk_RegMarker s_init8f80 = (FUN_1402a9d70(&s_8f80, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cb1260), Unk_RegMarker());
+#include "ms2/placeholder/unk_1402a9d70.h"
+static Unk_1402a9d70 s_8f80(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142cb1260
 #endif
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb11c0-0x142cb1260 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142cb1260-0x142cb1280 .text$yd

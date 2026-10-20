@@ -74,12 +74,10 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
 
-void FUN_1402a9d70(void*, int, float, float, float, int);
-void FUN_142ca3da0();                                                   // the exe's atexit destructor of the marker
 struct Unk_RegMarker {};
 #ifndef MS2_HOOK_DLL
-static char s_marker[0x48];
-static Unk_RegMarker s_initMarker = (FUN_1402a9d70(&s_marker, 0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca3da0), Unk_RegMarker());
+#include "ms2/placeholder/unk_1402a9d70.h"
+static Unk_1402a9d70 s_marker(17, 0.75f, 0.25f, 2.25f, 10);   // atexit thunk FUN_142ca3da0
 #endif
 
 // ---- unit-local placeholders (the names of the classes shared with tabcontentspetevolution.cpp must stay identical:
@@ -1212,3 +1210,5 @@ int TabContentsPetCompose::FUN_140cb6450(unsigned __int64 id)
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca3cb0-0x142ca3da0 .text$yd
+// Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
+// MS2-RANGE: 0x142ca3da0-0x142ca3dc0 .text$yd
