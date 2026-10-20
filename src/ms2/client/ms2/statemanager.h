@@ -325,6 +325,7 @@ public:
     TSingleton();                                   // 0x1417e33a0 (inline, in the cpp)
     virtual ~TSingleton() { s_instance = 0; }       // 0x1417e34c0
     static CStateService* s_instance;               // 0x143ab89e8
+    static CStateService* GetInstance() { return s_instance; }  // 0x140aa6d30 (first emitted by unit_140a93d00)
 };
 
 // 0x60, class id 0x06100007. TSingleton at +0, ISystemService at +8.

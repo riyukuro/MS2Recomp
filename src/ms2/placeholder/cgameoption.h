@@ -40,7 +40,7 @@ struct Unk_GoAutoLoot { int m_n[5]; };                              // 0x14 byte
 // +0x10 / +0x18: the server times of the item box "do not ask again" check boxes (open confirm / currency overflow);
 // the reset 0x141261780 stores qwords there (unit_140d1ae30 reads and writes them).
 struct Unk_GoEtc { int m_n00; int m_n04; __int64 m_n08; __int64 m_n10Time; __int64 m_n18Time; int m_n20[6]; };   // 0x38 bytes (ctor 0x141261750)
-struct Unk_GoChroma { int m_n; };                                   // 4 bytes (ctor 0x141261670)
+struct Unk_GoChroma { union { int m_n; bool m_bDisable; }; };     // 4 bytes (ctor 0x141261670); "chroma" "disable" (byte read by ChromaManagerDummy::Initialize)
 
 class CGameOption : public TSingleton<CGameOption>
 {
@@ -78,6 +78,7 @@ public:
     TiXmlDocument* FUN_1412442e0();                         // &m_docGame
     TiXmlDocument* FUN_141244300();                         // &m_docCharacter
     Unk_GpState* FUN_140a58500();                           // &m_gamepad (0x140a58500, stateskill.cpp)
+    Unk_GoChroma* FUN_140aaaa90();                          // &m_chroma (0x140aaaa90, unit_140a93d00)
 public:
     Unk_CameraState m_camera;                               // +0x08 ctor 0x14125b400
     Unk_InterfaceState m_interface;                         // +0x18 ctor 0x14125b770
