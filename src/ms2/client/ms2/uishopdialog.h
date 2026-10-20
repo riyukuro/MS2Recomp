@@ -25,6 +25,8 @@
 class ASData;
 class ASDataProvider;
 class ASLabel;
+class ASObj;
+class ASSlot;
 class ASMovieClip;
 class ASTextField;
 class CInPacket;
@@ -101,9 +103,10 @@ public:
     virtual int vfunc_o178_1(void* pAvatar);                        // IUIAvatarEventListener 1 0x141af7e10
 
     void OnShopPacket(CInPacket& packet);                           // 0x141af8710 packet 0x51
-    int ConfirmUgcPurchase(int nButton, const CMsgBoxData& data);   // 0x141af8660
+    bool ConfirmUgcPurchase(int nButton, const CMsgBoxData& data);  // 0x141af8660
     bool BuyBill(MS2Ptr<TMarketBillDataParam> spBill, const PaymentMap& payments);         // 0x141af82b0
-    bool GiftBill(MS2Ptr<TMarketBillDataParam> spBill, const PaymentMap& payments, CStringW strTo, CStringW strMsg);
+    bool GiftBill(MS2Ptr<TMarketBillDataParam> spBill, const PaymentMap& payments, const CStringW& strTo,
+                  const CStringW& strMsg);
                                                                     // 0x141af8370
     bool BillTooltip(Scaleform::GFx::Value* pOut, ASData& args, MS2Ptr<TMarketBillDataParam> spBill);   // 0x141af8440
     void ReadShopInfo(CInPacket& packet);                           // 0x141af88d0
@@ -159,14 +162,14 @@ public:
     MS2Ptr<CNpcShopMeratItemCli> FindMeratItem(int nSerial);        // 0x141affd40
     int RequestRepurchase(int nSerial);                             // 0x141affeb0
     int SendPurchase(int nSerial, int nQuantity);                   // 0x141b00060
-    int PopulateProduct(AScript& data, MS2Ptr<CNpcShopProductCli> spProduct,
+    int PopulateProduct(ASSlot& data, MS2Ptr<CNpcShopProductCli> spProduct,
                         MS2Ptr<CNpcShopGivePointContextBase> spEvent, void* pPlayer);      // 0x141b00240
-    int PopulateMerat(AScript& data, MS2Ptr<CNpcShopMeratItemCli> spItem, void* pPlayer);  // 0x141b01480
-    int PopulateNewProduct(AScript& data, MS2Ptr<CNpcShopProductNewCli> spProduct,
+    int PopulateMerat(ASSlot& data, MS2Ptr<CNpcShopMeratItemCli> spItem, void* pPlayer);  // 0x141b01480
+    int PopulateNewProduct(ASSlot& data, MS2Ptr<CNpcShopProductNewCli> spProduct,
                            MS2Ptr<CNpcShopGivePointContextBase> spEvent, void* pPlayer);   // 0x141b01e90
-    bool SetProductPoints(AScript& data, MS2Ptr<CNpcShopGivePointContextBase> spEvent,
+    bool SetProductPoints(ASObj& data, MS2Ptr<CNpcShopGivePointContextBase> spEvent,
                           MS2Ptr<CNpcShopProductCli> spProduct);                         // 0x141b02260
-    void SetProductBackground(AScript& data, MS2Ptr<CNpcShopProductBase> spProduct,
+    void SetProductBackground(ASObj& data, MS2Ptr<CNpcShopProductBase> spProduct,
                               MS2Ptr<CNpcShopGivePointContextBase> spEvent);             // 0x141b02450
     CStringW ProductPriceText(__int64 nPrice, MS2Ptr<CNpcShopProductCli> spProduct);     // 0x141b02640
     void ShowPurchaseBill(MS2Ptr<CNpcShopProductCli> spProduct, unsigned nQuantity);     // 0x141b02770
