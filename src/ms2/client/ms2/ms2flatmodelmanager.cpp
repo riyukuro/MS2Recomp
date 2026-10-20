@@ -115,33 +115,26 @@ unsigned FUN_140d868f0(char* p)
     return r;
 }
 
-// @0x140d86950  remove every non-built-in model whose refcount < 3
+// remove every non-built-in model whose refcount < 3
+// @0x140d86950
 void FUN_140d86950(egf::FlatModelManager* mgr)
 {
-    char* p = (char*)mgr;
     FlatModelList list(10);
-    char it[8], endIt[16];
-    FUN_140d852c0(p + 0x108);
-    FUN_140d877a0(p + 0x48, it);
-    for (;;) {
-        void* e = FUN_140d87810(p + 0x48, endIt);
-        if (!FUN_140d86e40(it, e))
-            break;
-        char* node = (char*)FUN_140d86ea0(it);
-        char* model = (char*)FUN_140d86e80(node + 8);
-        if (FUN_140d873f0(model) < 3 && *(model + 200) == 0)
-            list.AddTail((const egf::FlatModel*)model);
-        FUN_140d86f20(it);
+    FUN_140d852c0((char*)mgr + 0x108);
+    void* it;
+    void* endIt;
+    for (FUN_140d877a0((char*)mgr + 0x48, &it); FUN_140d86e40(&it, FUN_140d87810((char*)mgr + 0x48, &endIt)); FUN_140d86f20(&it)) {
+        const egf::FlatModel* model = (const egf::FlatModel*)FUN_140d86e80((char*)FUN_140d86ea0(&it) + 8);
+        if (FUN_140d873f0((void*)model) <= 2 && !*((const bool*)model + 200))
+            list.AddTail(model);
     }
     if (!list.IsEmpty()) {
-        POSITION pos = list.GetHeadPosition();
-        while (pos) {
+        for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos)) {
             const egf::FlatModel* m = list.GetAt(pos);
             mgr->RemoveModel((egf::FlatModel*)m);
-            list.GetNext(pos);
         }
     }
-    FUN_140d86210(p + 0x108);
+    FUN_140d86210((char*)mgr + 0x108);
 }
 
 // ---- GetSystemServiceAs<T> style lookups: service = sm->vfunc14(classId), then TypeCast(classId) ----
