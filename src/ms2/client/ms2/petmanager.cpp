@@ -392,7 +392,7 @@ unsigned CPetInventory::FUN_140c87b90()
     for (unsigned i = 0; i < m_slots.GetCount(); ++i)
     {
         ItemPtr spItem = m_slots[i];
-        if (spItem.get() == 0)
+        if (spItem == 0)
             return i;
     }
     return 0xffffffff;
