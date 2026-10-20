@@ -3887,3 +3887,5 @@ __imp_NxGetUtilLib	142cced28	data
 ?g_kCubeGuideZero@@3VNiPoint3@@B	143b01a60	data
 # w531 uimeratmarketdialog: AScript click callback with a user pointer (the preview slot icon; same COMDAT as the int overload)
 ??$FUN_1422c2a70@V?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@@AScript@@QEAAXAEBV?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@PEAX@Z	1422c2a70	func
+??0?$MS2Ptr@VCEquipModel@@@@QEAA@PEAVCEquipModel@@@Z	1411de2e0	func
+??1?$MS2Ptr@VCEquipModel@@@@QEAA@XZ	140b02860	func
