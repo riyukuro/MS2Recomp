@@ -231,8 +231,7 @@ CDropItem::CDropItem(int nType, int nRarity)
     m_f22c = Client::Constants::GetInstance()->DropItemPickUpCompleteRotateTime.Read();
     m_f230 = Client::Constants::GetInstance()->DropItemPickUpCompleteRotateVel.Read();
     m_f27c = m_f21c;
-    NiPoint3 kPos = vfunc_18();
-    m_posOrigin = SP(kPos);
+    reinterpret_cast<NiPoint3&>(m_posOrigin) = vfunc_18();    // NiPoint3 move-assign (0x140194470) of the returned temp
     m_n294 = 0;
 }
 
