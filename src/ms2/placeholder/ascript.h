@@ -113,6 +113,9 @@ public:
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, CString a2);             // 0x1412cc450 (inline COMDAT, defined in uiindividualpvpdialog.cpp; both by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1);            // 0x1409b13b0 (a1 by value: callee destroys)
     Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2);   // 0x1409b1490 (ascommondepth.cpp)
+    // Invoke(method, Value, unsigned) (inline COMDAT 0x1422e4350, defined in asbuttonbar.cpp; a1 by value). Not an Invoke
+    // overload here: callers passing unsigned to Invoke(method, Value, int) 0x1409b1490 would switch to it.
+    Scaleform::GFx::Value FUN_1422e4350(const char* szMethod, Scaleform::GFx::Value a1, unsigned a2);
     Scaleform::GFx::Value Invoke(const char* szMethod, CString a1, bool a2, Scaleform::GFx::Value a3, Scaleform::GFx::Value a4);   // 0x14131cc10 (inline COMDAT, defined in uimeratmarketregisterdialog.cpp; all by value)
     void FUN_1422bac00(const char* szMember, CString& strOut);                               // read a narrow string member (uimeratmarketregisterdialog.cpp)
     Scaleform::GFx::Value FUN_140e5bf20(const char* szMethod, float a1, float a2);          // 0x140e5bf20 (inline COMDAT, defined in uimasteryobjectmark.cpp)
