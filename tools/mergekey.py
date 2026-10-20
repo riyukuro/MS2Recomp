@@ -52,7 +52,8 @@ def engine_stamp():
     if "engine" not in _memo:
         files, es = _common()
         files += [os.path.join(ROOT, "tools", n) for n in ("gbprogress.py", "gbtree.py")]
-        files += [os.path.join(ROOT, "progress", n) for n in ("symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv")]
+        files += [os.path.join(ROOT, "progress", n) for n in ("symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv",
+                                                          "symbols-engine-manual.tsv")]
         _memo["engine"] = _hash(files, es)
     return _memo["engine"]
 
