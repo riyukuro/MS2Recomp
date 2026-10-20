@@ -36,7 +36,7 @@ void NotifyDragSlot::SlotUse(const Params& params)
     if (params.ArgCount < 1)
         return;
     const Value& vName = params.pArgs[0];
-    if (vName.IsUndefined() || vName.IsNull())
+    if (vName.IsNull() || vName.IsUndefined())
         return;
     int bShift = GetKeyState(VK_SHIFT) & 0x8000;
     CString strName(vName.GetString());
@@ -66,7 +66,7 @@ void NotifyDragSlot::SlotShiftClick(const Params& params)
     if (params.ArgCount < 1)
         return;
     const Value& vName = params.pArgs[0];
-    if (vName.IsUndefined() || vName.IsNull())
+    if (vName.IsNull() || vName.IsUndefined())
         return;
     CString strName(vName.GetString());
     efd::SmartPointer<DragSlot> spSlot = FUN_1422cd480(Unk_NotifyContext::FUN_1422c8e90(strName));
@@ -81,7 +81,7 @@ void NotifyDragSlot::SlotDragStart(const Params& params)
     if (params.ArgCount < 1)
         return;
     const Value& vName = params.pArgs[0];
-    if (vName.IsUndefined() || vName.IsNull())
+    if (vName.IsNull() || vName.IsUndefined())
         return;
     CString strName(vName.GetString());
     efd::SmartPointer<DragSlot> spSlot = FUN_1422cd480(Unk_NotifyContext::FUN_1422c8e90(strName));
@@ -96,7 +96,7 @@ void NotifyDragSlot::SlotDragEnd(const Params& params)
     if (params.ArgCount < 2)
         return;
     const Value& vSrc = params.pArgs[0];
-    if (vSrc.IsUndefined() || vSrc.IsNull())
+    if (vSrc.IsNull() || vSrc.IsUndefined())
         return;
     CString strSrc(vSrc.GetString());
     CString strDst(params.pArgs[1].IsString() ? params.pArgs[1].GetString() : NULL);
@@ -130,7 +130,7 @@ void NotifyDragSlot::GetSlotTooltip(const Params& params)
     if (params.ArgCount < 1)
         return;
     const Value& vName = params.pArgs[0];
-    if (vName.IsUndefined() || vName.IsNull())
+    if (vName.IsNull() || vName.IsUndefined())
         return;
     CString strName(vName.GetString());
     efd::SmartPointer<DragSlot> spSlot = FUN_1422cd480(Unk_NotifyContext::FUN_1422c8e90(strName));
@@ -152,7 +152,7 @@ void NotifyDragSlot::GetBagSlotBindings(const Params& params)
     if (params.ArgCount < 1)
         return;
     const Value& vName = params.pArgs[0];
-    if (vName.IsUndefined() || vName.IsNull())
+    if (vName.IsNull() || vName.IsUndefined())
         return;
     CString strName(vName.GetString());
     efd::SmartPointer<DragSlotBag> spBag = FUN_140c544d0(m_spContext->FUN_1422c8e90(strName));
