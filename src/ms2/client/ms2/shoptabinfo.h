@@ -107,7 +107,7 @@ void FUN_141348610(int nShop, Unk_ShopTabArray& arr, std::map<int, MS2Ptr<CNpcSh
 void FUN_1413487e0(Unk_ShopTabArray& arr, CShopCategoryTable::TabList& list, MS2Ptr<CNpcShopProductBase> spProduct,
                    int nDepth);
 void FUN_141348cf0(const Unk_ShopTabArray& arr, MS2Ptr<AScript> spRoot, int nSale, Delegate<void(AScript&)>* pfnEach);   // exe RTTI: Delegate<void(AScript&)>
-void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, int nSale, Delegate<void(ASObj&)>* pfnEach);
+void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, int nSale, Delegate<void(AScript&)>* pfnEach);
 
 // Item tooltips compared with the equipped item.
 void FUN_1413490b0(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCaption, int nLhsFlags, int nRhsFlags);
