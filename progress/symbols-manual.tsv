@@ -3707,3 +3707,8 @@ __imp_NxGetUtilLib	142cced28	data
 ??0?$CNMStr@$0IAA@@@QEAA@AEBV0@@Z	1415e5b80	func
 ??1?$CNMStr@$0CA@@@QEAA@XZ	1415eb720	func
 ??1?$CNMStr@$0IAA@@@QEAA@XZ	1415eb7b0	func
+?s_nAlignMode@UIInventoryDialog@@2HA	143af2f60	data
+??0Unk_InvGroupEntry@@QEAA@AEAVCBuddy@@@Z	141483300	func
+??0Unk_InvGroupEntry@@QEAA@AEAVCPartyMember@@@Z	141483580	func
+??0Unk_InvGroupEntry@@QEAA@AEAVCGuildMember@@@Z	141483830	func
+??1Unk_InvGuildRef@@QEAA@XZ	1404eead0	func
