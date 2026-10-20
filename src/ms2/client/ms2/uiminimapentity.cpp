@@ -30,6 +30,10 @@
 #include "ms2/client/ms2/uiquesteventlistener.h"
 #include "ms2/client/ms2/uileveluppackagewidgetdialog.h"
 #include "ms2/client/ms2/uicommunitydialog.h"
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/placeholder/cinpacket.h"
+#include "ms2/placeholder/astooltip.h"
+#include "ms2/placeholder/asuicomponent.h"
 #include <efd/utf8string.h>
 #include "ms2/fmt/format.h"
 #include "ms2/placeholder/wcformat.h"
@@ -149,7 +153,7 @@ UIUGCEventDispatcher* FUN_140bc09f0();
 UIStatusEventDispatcher* FUN_140aa6d40();
 UIBuddyEventDispatcher* FUN_140a4a7b0();
 UIServerEventDispatcher* FUN_140933230();
-class ASDialog : public ASMovieClip {};                             // the dialog root clip (UIDialog::m_90)
+class ASDialog : public ASUIComponent {};                             // the dialog root clip (UIDialog::m_90)
 
 // The quest payload pointer (Unk_PayloadPtr<CQuest>).
 class CQuest;
@@ -1171,6 +1175,9 @@ template <class T> T* Unk_MmGetDialog()
 }
 
 int FUN_1418fcee0();                                                // OnReport (uicommon)
+CStringW FUN_140b99450(CStringW strKey, const CStringW& a1, const unsigned& a2);   // a formatted string table text
+class Unk_MmFishing { public: CStringW FUN_140cdc000(unsigned nFieldId); };     // the fishing spot text of a field
+Unk_MmFishing* FUN_140953f20();
 bool FUN_1409b0350(Scaleform::GFx::Value* pValue);                  // the value is undefined
 
 // @0x141a366d0
@@ -1316,6 +1323,179 @@ void UIMinimapDialog::vfunc_18()
     }
 }
 MS2_REPLACE_METHOD(0x141a37010, UIMinimapDialog, vfunc_18, 0, 0);
+
+// MS2-FUNCTIONAL: the result byte is switched as an int (exe jumps straight to the end for 0); 2 attempts
+// @0x141a37080
+void UIMinimapDialog::vfunc_79(void* p)
+{
+    UIDialog::vfunc_79(p);
+    if (vfunc_55() || m_30.IsNull())
+        return;
+    switch (static_cast<CInPacket*>(p)->FUN_14070fe80()) {
+    case 0x10:
+        if (m_30.IsNull())
+            return;
+        switch (static_cast<CInPacket*>(p)->vfunc_o8_1()) {
+        case 0:
+            break;
+        default:
+            FUN_141a44ed0();
+            break;
+        }
+        break;
+    }
+}
+MS2_REPLACE_METHOD(0x141a37080, UIMinimapDialog, vfunc_79, 0, 0);
+
+// @0x141a37150
+void UIMinimapDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
+{
+    UIObject::vfunc_49(pRetVal, pArgs);
+    CString strTarget = pArgs->FUN_1422b8d30();
+    if (strTarget == "m_fieldname") {
+        ASTooltip tooltip(1, 2);
+        {
+            int nField = FUN_1403ed2d0()->FUN_141bd3060();
+            MS2Ptr<CFieldDataCli> spData = CFieldDataCli::Find(nField);
+            if (!spData)
+                return;
+            CStringW strText = FUN_140b99450(CStringW(L"s_minimap_tooltip_field_info"), FUN_1401a9d70()->FUN_141811980(3, nField), spData->m_nMapLevel);
+            CStringW strExtra = FUN_140953f20()->FUN_140cdc000(nField);
+            if (strExtra.GetLength() > 0) {
+                strText += L"\n";
+                strText += strExtra;
+            }
+            tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
+            tooltip.FUN_1409c6e00(300);
+            tooltip.FUN_1409c6e30(60000);
+            tooltip.FUN_1409c6dc0(7);
+            tooltip.FUN_1409c6cb0(strText);
+        }
+        *pRetVal = tooltip.FUN_1422bb870();
+    }
+}
+MS2_REPLACE_METHOD(0x141a37150, UIMinimapDialog, vfunc_49, 0, 0);
+
+// The settings xml readers / writers (UIDialog's "transform" section).
+void FUN_1408743d0(void* pCfg, const char* szGroup, const char* szName, bool b, bool bCreate);
+void FUN_140874440(void* pCfg, const char* szGroup, const char* szName, int n, bool bCreate);
+void FUN_1408744b0(void* pCfg, const char* szGroup, const char* szName, float f, bool bCreate);
+void FUN_140874130(void* pCfg, const char* szGroup, const char* szName, bool* pb);
+void FUN_1408741a0(void* pCfg, const char* szGroup, const char* szName, int* pn);
+void FUN_140874210(void* pCfg, const char* szGroup, const char* szName, float* pf);
+void* FUN_140165cf0(void* pCfg, const char* szName);                // the child element
+float FUN_141276490(float fWidth, float fHeight);                   // UI scale
+struct Unk_MmScaleInfo { __int64 m_pad_00; float m_fValue; };
+void* FUN_1409a8b10();
+Unk_MmScaleInfo* FUN_140e09150(void* p);
+extern unsigned DAT_143af62d4;                                      // client area width
+extern unsigned DAT_143af62d8;                                      // client area height
+double FUN_140f17ed0(const Scaleform::GFx::Value& v);               // Value::GetNumber
+int FUN_1409c1750(const Scaleform::GFx::Value& v);                  // the value as an int
+bool FUN_1409c1720(const Scaleform::GFx::Value& v);                 // the value as a bool
+
+// @0x141a37480
+int UIMinimapDialog::vfunc_53(void* pCfg)
+{
+    if (m_80 == 0)
+        return 1;
+    if (m_30.get() != 0) {
+        float x = 0;
+        float y = 0;
+        float fScale = 1.0f;
+        int nBgAlpha = 30;
+        int nMapAlpha = 100;
+        int nWidth = 0;
+        int nHeight = 0;
+        bool bFullmap = m_fullmap;
+        bool bMinimize = vfunc_64() == 1;
+        Scaleform::GFx::Value saveData = m_30->Invoke("getSaveData");
+        AScript save(saveData, 2);
+        if (!save.FUN_1422ba9a0()) {
+            x = static_cast<float>(FUN_140f17ed0(save.FUN_1422baa20("x")));
+            y = static_cast<float>(FUN_140f17ed0(save.FUN_1422baa20("y")));
+            nWidth = FUN_1409c1750(save.FUN_1422baa20("width"));
+            nHeight = FUN_1409c1750(save.FUN_1422baa20("height"));
+            nMapAlpha = FUN_1409c1750(save.FUN_1422baa20("mapAlpha"));
+            nBgAlpha = FUN_1409c1750(save.FUN_1422baa20("bgAlpha"));
+            fScale = static_cast<float>(FUN_140f17ed0(save.FUN_1422baa20("scale")));
+            bFullmap = FUN_1409c1720(save.FUN_1422baa20("fullmap"));
+            bMinimize = FUN_1409c1720(save.FUN_1422baa20("minimize"));
+        }
+        FUN_1408744b0(pCfg, "transform", "x", x, 1);
+        FUN_1408744b0(pCfg, "transform", "y", y, 1);
+        float fRatio = FUN_141276490(static_cast<float>(DAT_143af62d4), FUN_140e09150(FUN_1409a8b10())->m_fValue);
+        FUN_1408744b0(pCfg, "transform", "rateX", x / (static_cast<float>(DAT_143af62d4) * fRatio), 1);
+        FUN_1408744b0(pCfg, "transform", "rateY", y / (static_cast<float>(DAT_143af62d8) * fRatio), 1);
+        FUN_140874440(pCfg, "transform", "width", nWidth, 1);
+        FUN_140874440(pCfg, "transform", "height", nHeight, 1);
+        FUN_1408744b0(pCfg, "transform", s_strScale, fScale, 1);
+        FUN_140874440(pCfg, "transform", s_strBgAlpha, nBgAlpha, 1);
+        FUN_140874440(pCfg, "transform", s_strMapAlpha, nMapAlpha, 1);
+        FUN_1408743d0(pCfg, "transform", s_strFullmap, bFullmap, 1);
+        FUN_1408743d0(pCfg, "transform", s_strMinimize, bMinimize, 1);
+        if (static_cast<bool>(m_alignment.get()) && static_cast<bool>(m_90.get())) {
+            float fLeft = static_cast<float>(m_90->FUN_1422c1500());
+            float fTop = static_cast<float>(m_90->FUN_1422c1530());
+            m_alignment->FUN_141901880(m_30, static_cast<float>(nWidth), static_cast<float>(nHeight), fLeft, fTop);
+            m_alignment->FUN_1419015e0(static_cast<Unk_140165cf0*>(pCfg));
+        }
+        for (POSITION pos = m_showAttrs.GetStartPosition(); pos != 0; m_showAttrs.GetNext(pos)) {
+            MS2Ptr<TShowAttr> spAttr = m_showAttrs.GetValueAt(pos);
+            if (spAttr == 0)
+                continue;
+            FUN_140874440(pCfg, s_strIconCheck, m_showAttrs.GetKeyAt(pos), spAttr->m_state, 1);
+        }
+    }
+    return 1;
+}
+MS2_REPLACE_METHOD(0x141a37480, UIMinimapDialog, vfunc_53, 0, 0);
+
+// @0x141a37db0
+int UIMinimapDialog::vfunc_54(void* pCfg)
+{
+    if (!UIDialog::vfunc_54(pCfg))
+        return 0;
+    FUN_140874130(pCfg, "transform", s_strFullmap, &m_fullmap);
+    FUN_1408741a0(pCfg, "transform", s_strMinimize, &m_6c);
+    float fScale = 1.0f;
+    int nBgAlpha = 30;
+    int nMapAlpha = 100;
+    int nWidth = 0;
+    int nHeight = 0;
+    FUN_140874210(pCfg, "transform", s_strScale, &fScale);
+    FUN_1408741a0(pCfg, "transform", "width", &nWidth);
+    FUN_1408741a0(pCfg, "transform", "height", &nHeight);
+    FUN_1408741a0(pCfg, "transform", s_strBgAlpha, &nBgAlpha);
+    FUN_1408741a0(pCfg, "transform", s_strMapAlpha, &nMapAlpha);
+    m_data.AssignRaw(new AScript(2));
+    static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("width", nWidth);
+    static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("height", nHeight);
+    static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("mapAlpha", nMapAlpha);
+    static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("bgAlpha", nBgAlpha);
+    static_cast<ASObj*>(m_data.operator->())->FUN_1409c4a30("scale", fScale);
+    void* pSection = FUN_140165cf0(pCfg, s_strIconCheck);
+    if (pSection != 0) {
+        for (POSITION pos = m_showAttrs.GetStartPosition(); pos != 0; m_showAttrs.GetNext(pos)) {
+            ShowAttrMap::CPair* pPair = m_showAttrs.GetAt(pos);
+            if (pPair == 0)
+                continue;
+            MS2Ptr<TShowAttr> spAttr = pPair->m_value;
+            if (spAttr == 0)
+                continue;
+            FUN_1408741a0(pCfg, s_strIconCheck, pPair->m_key, &spAttr->m_state);
+        }
+    }
+    if (static_cast<bool>(m_alignment.get()) && static_cast<bool>(m_90.get())) {
+        if (!m_alignment->FUN_141901660(static_cast<Unk_140165cf0*>(pCfg))) {
+            float fLeft = static_cast<float>(m_90->FUN_1422c1500());
+            float fTop = static_cast<float>(m_90->FUN_1422c1530());
+            m_alignment->FUN_141901880(m_30, static_cast<float>(nWidth), static_cast<float>(nHeight), fLeft, fTop);
+        }
+    }
+    return 1;
+}
+MS2_REPLACE_METHOD(0x141a37db0, UIMinimapDialog, vfunc_54, 0, 0);
 
 // @0x141a373f0
 int UIMinimapDialog::vfunc_65()
