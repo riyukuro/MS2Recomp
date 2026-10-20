@@ -1,69 +1,81 @@
-1287a
+1117a
+                }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                // MS2: measure again and print "OnShutdown [<KB freed>][<service>]".
+                // A service that grew is reported as 0 KB freed.
+                PROCESS_MEMORY_COUNTERS_EX kPmcAfter;
+                memset(&kPmcAfter, 0, sizeof(kPmcAfter));
+                kPmcAfter.cb = sizeof(kPmcAfter);
+                if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&kPmcAfter,
+                    sizeof(kPmcAfter)))
+                {
+                    uiMS2After = kPmcAfter.PrivateUsage;
+                    if (uiMS2After > uiMS2Before)
+                        uiMS2After = uiMS2Before;
+                }
+                {
+                    efd::string kKB = BytesToCommaString((uiMS2Before - uiMS2After) >> 10);
+                    char acText[256];
+                    sprintf_s(acText, sizeof(acText), "OnShutdown [%s KB][%s]\n", kKB.c_str(),
+                        pServiceInfo->m_spSysSer->GetDisplayName());
+                    OutputDebugStringA(acText);
+.
+1114a
+                    if (DAT_143b03490)   // MS2: forward to the client
+                        DAT_143b03490(efd::kServiceManager, efd::ILogger::kERR0, efd::LogHelper(
+                            "OnShutdown critical failure in service %s (0x%08X), shutting down.",
+                            pServiceInfo->m_spSysSer->GetDisplayName(), pServiceInfo->m_idSysSer));
+.
+1094a
+                // MS2: the private bytes each OnShutdown frees are printed to the debugger
+                // (PrivateUsage before and after the call, in KB)
+                SIZE_T uiMS2After = 0;
+                PROCESS_MEMORY_COUNTERS_EX kPmcBefore;
+                memset(&kPmcBefore, 0, sizeof(kPmcBefore));
+                kPmcBefore.cb = sizeof(kPmcBefore);
+                SIZE_T uiMS2Before = 0;
+                if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&kPmcBefore,
+                    sizeof(kPmcBefore)))
+                {
+                    uiMS2Before = kPmcBefore.PrivateUsage;
+                }
+.
+1014a
+                    if (DAT_143b03490)   // MS2: forward to the client
+                        DAT_143b03490(efd::kServiceManager, efd::ILogger::kERR0, efd::LogHelper(
+                            "OnTick critical failure in service %s (0x%08X), shutting down.",
+                            pServiceInfo->m_spSysSer->GetDisplayName(), pServiceInfo->m_idSysSer));
+.
+920a
+                    if (DAT_143b03490)   // MS2: forward to the client
+                        DAT_143b03490(efd::kServiceManager, efd::ILogger::kERR0, efd::LogHelper(
+                            "OnInit critical failure in service %s (0x%08X), shutting down.",
+                            pServiceInfo->m_spSysSer->GetDisplayName(), pServiceInfo->m_idSysSer));
+.
+849a
+                // MS2: critical failures are forwarded to the client's log hook
+                if (DAT_143b03490)
+                    DAT_143b03490(efd::kServiceManager, efd::ILogger::kERR0, efd::LogHelper(
+                        "OnPreInit critical failure in service %s (0x%08X), shutting down.",
+                        pServiceInfo->m_spSysSer->GetDisplayName(), pServiceInfo->m_idSysSer));
+.
+753a
+        // MS2: the first time the main loop reaches Complete, log it and post WM_QUIT so the
+        // client's message loop ends too (the flag starts set, it is cleared after the post).
+        if (s_bMS2PostQuitOnComplete)
+        {
+            EE_LOG(efd::kServiceManager, efd::ILogger::kLVL0,
+                ("ServiceManager kSysServState_Complete."));
+            PostQuitMessage(0);
+            s_bMS2PostQuitOnComplete = false;
+        }
 
 .
-536a
-
-
-
-
+480a
+    if (m_inRunOnce)   // MS2: a nested call returns instead of re-entering
+    {
+        return;
+    }
 .
 181a
 
@@ -77,65 +89,67 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.
+145a
+    // MS2: release the services one by one and print the private bytes each one frees
+    SIZE_T uiMS2Before = 0;
+    SIZE_T uiMS2After = 0;
+    for (SystemServiceMap::iterator iter = m_SysSerMap.begin(); iter != m_SysSerMap.end(); ++iter)
+    {
+        PROCESS_MEMORY_COUNTERS_EX kPmc;
+        memset(&kPmc, 0, sizeof(kPmc));
+        kPmc.cb = sizeof(kPmc);
+        if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&kPmc, sizeof(kPmc)))
+            uiMS2Before = kPmc.PrivateUsage;
+        efd::string kName = iter->second->m_spSysSer->GetDisplayName();
+        iter->second = NULL;
+        kPmc.cb = sizeof(kPmc);
+        if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&kPmc, sizeof(kPmc)))
+        {
+            uiMS2After = kPmc.PrivateUsage;
+            if (uiMS2After > uiMS2Before)
+                uiMS2After = uiMS2Before;
+        }
+        efd::string kKB = BytesToCommaString((uiMS2Before - uiMS2After) >> 10);
+        char acText[256];
+        sprintf_s(acText, sizeof(acText), "~ServiceManager [%s KB][%s]\n", kKB.c_str(), kName.c_str());
+        OutputDebugStringA(acText);
+    }
 .
 44a
 
+#include <psapi.h>   // MS2: GetProcessMemoryInfo for the shutdown memory prints
 
+// MS2: the client's error-log hook (game: scenestategame.cpp); Nexon forwards the critical service failures to it
+extern void (*DAT_143b03490)(short, unsigned char, const char*);
 
+namespace efd
+{
+// MS2: post WM_QUIT once when the ServiceManager main loop completes
+static bool s_bMS2PostQuitOnComplete = true;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//------------------------------------------------------------------------------------------------
+// MS2: "1234567" -> "1,234,567" for the OnShutdown / ~ServiceManager memory prints
+static efd::string BytesToCommaString(efd::UInt64 uiValue)
+{
+    char acBuffer[64];
+    sprintf_s(acBuffer, "%I64u", uiValue);
+    efd::string kResult;
+    efd::string kDigits(acBuffer);
+    size_t uiGroup = 0;
+    for (size_t ui = kDigits.length(); ui > 0; )
+    {
+        kResult = kDigits[ui - 1] + kResult;
+        ++uiGroup;
+        if (--ui > 0 && uiGroup == 3)
+        {
+            kResult = "," + kResult;
+            uiGroup = 0;
+        }
+    }
+    return kResult;
+}
+} // namespace efd
 
 
 

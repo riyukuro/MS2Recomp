@@ -1,0 +1,48 @@
+393a
+    static FILECREATEFUNCW ms_pfnFileCreateFuncW;
+    static FILEACCESSFUNCW ms_pfnFileAccessFuncW;
+    static CREATEDIRFUNCW  ms_pfnCreateDirFuncW;
+    static DIREXISTSFUNCW  ms_pfnDirExistsFuncW;
+.
+373a
+    static bool DefaultDirectoryExistsFunc(const wchar_t* pcDir);
+.
+371a
+    static bool DefaultFileAccessFunc(const wchar_t *pcName, OpenMode eMode);
+    static bool DefaultCreateDirectoryFunc(const wchar_t* pcDir);
+.
+365a
+    /// MS2: wide-path variant (opens an efd::Win32FileW; the game calls it directly).
+    static File* DefaultFileCreateFunc(
+        const wchar_t *pcName,
+        OpenMode eMode,
+        unsigned int uiBufferSize,
+        bool flushOnWrite=false);
+.
+273a
+    static bool CreateDirectoryRecursive(const wchar_t* pcFullPath);
+.
+262a
+    static bool DirectoryExists(const wchar_t* pcDirName);
+    typedef bool (*DIREXISTSFUNCW)(const wchar_t* pcName);
+    static void SetDirectoryExistsFunc(DIREXISTSFUNCW pfnFunc);
+.
+238a
+    /// (MS2 named it CreateDirectoryW: the exe's name-sorted COMDATs put it after CreateDirectoryRecursive.)
+    static bool CreateDirectoryW(const wchar_t* pcDirName);
+    typedef bool (*CREATEDIRFUNCW)(const wchar_t* pcName);
+    static void SetCreateDirectoryFunc(CREATEDIRFUNCW pfnFunc);
+.
+212a
+    static bool Access(const wchar_t* pcName, OpenMode eMode);
+    typedef bool (*FILEACCESSFUNCW)(const wchar_t* pcName, OpenMode eMode);
+    static void SetFileAccessFunc(FILEACCESSFUNCW pfnFunc);
+.
+173a
+    /// MS2: wide-path overloads.
+    static File* GetFile(const wchar_t *pcName, OpenMode eMode, unsigned int uiBufferSize = 32768,
+        bool flushOnWrite=false);
+    typedef File* (*FILECREATEFUNCW)(const wchar_t *pcName, OpenMode eMode, unsigned int uiBufferSize,
+        bool flushOnWrite);
+    static void SetFileCreateFunc(FILECREATEFUNCW pfnFunc);
+.

@@ -1,3 +1,18 @@
+1011a
+
+//------------------------------------------------------------------------------------------------
+// MS2 (see AssetLocatorService.h)
+bool AssetLocatorService::HasAsset(const efd::utf8string& uri)
+{
+    if (m_dataState != ASSETS_NONE)
+    {
+        TripleSet triples;
+        m_metastore.findAllAssets(uri, triples);
+        return triples.size() != 0;
+    }
+    return false;
+}
+.
 702a
 
 

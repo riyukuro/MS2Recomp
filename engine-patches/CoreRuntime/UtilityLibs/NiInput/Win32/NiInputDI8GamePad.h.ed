@@ -1,0 +1,20 @@
+62a
+    // MS2: force feedback (0x198..0x1b8)
+    DWORD m_dwMS2FFAxisCount;
+    LPDIRECTINPUTEFFECT m_pkMS2FFEffect;
+    unsigned int m_auiMS2RumbleRange[2];
+    unsigned int m_auiMS2RumbleValue[2];
+.
+59a
+    LPDIRECTINPUTDEVICE8 m_pkMS2FFDevice;   // MS2
+.
+51a
+    void InitForceFeedback();   // MS2
+    static BOOL CALLBACK EnumFFAxesCallback(
+        LPCDIDEVICEOBJECTINSTANCE pkDIDOI, LPVOID pvRef);   // MS2
+.
+49a
+    // MS2: Nexon drives the rumble through the device's force-feedback driver
+    void SetFFDevice(LPDIRECTINPUTDEVICE8 pkFFDevice);
+
+.

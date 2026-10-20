@@ -1,0 +1,12 @@
+155@0s "inline" "EE_MS2_MEMCPY_INLINE"
+136@0s "inline" "EE_MS2_MEMCPY_INLINE"
+134a
+// MS2: some engine TUs inline efd::Memcpy and the UCRT inline memcpy_s where ours calls them; those TUs define the
+// switch and _CRT_MEMCPY_S_INLINE=static __forceinline (engine/units-gb.json).
+#if defined(EE_MS2_MEMCPY_FORCE)
+#define EE_MS2_MEMCPY_INLINE __forceinline
+#else
+#define EE_MS2_MEMCPY_INLINE inline
+#endif
+
+.

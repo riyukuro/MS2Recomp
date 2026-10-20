@@ -1,0 +1,230 @@
+213a
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2: Nexon's force feedback, after the DirectX SDK FFConst sample
+//--------------------------------------------------------------------------------------------------
+void NiInputDI8GamePad::SetFFDevice(LPDIRECTINPUTDEVICE8 pkFFDevice)
+{
+    if (!pkFFDevice)
+        return;
+
+    m_pkMS2FFDevice = pkFFDevice;
+    HRESULT hr = m_pkMS2FFDevice->SetCooperativeLevel(
+        NiDI8InputSystem::GetOwnerWindow(), DISCL_EXCLUSIVE | DISCL_BACKGROUND);
+    if (FAILED(hr))
+    {
+        NILOG(NIMESSAGE_GENERAL_1, "DI8GamePad> Warning - Set "
+            "SetCooperativeLevel failed!\n");
+    }
+
+    hr = m_pkMS2FFDevice->SetDataFormat(&c_dfDIJoystick);
+    if (FAILED(hr))
+    {
+        NILOG(NIMESSAGE_GENERAL_1, "DI8GamePad> Warning - Set "
+            "c_dfDIJoystick failed!\n");
+    }
+
+    // The FFConst sample turns the auto-center spring off
+    DIPROPDWORD kDIPDW;
+    kDIPDW.diph.dwSize = sizeof(DIPROPDWORD);
+    kDIPDW.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+    kDIPDW.diph.dwObj = 0;
+    kDIPDW.diph.dwHow = DIPH_DEVICE;
+    kDIPDW.dwData = FALSE;
+    hr = m_pkMS2FFDevice->SetProperty(DIPROP_AUTOCENTER, &kDIPDW.diph);
+    if (FAILED(hr))
+    {
+        NILOG(NIMESSAGE_GENERAL_1, "DI8GamePad> Warning - Set "
+            "DIPROP_AUTOCENTER failed!\n");
+        return;
+    }
+
+    InitForceFeedback();
+    m_pkMS2FFDevice->Acquire();
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiInputDI8GamePad::InitForceFeedback()
+{
+    if (!m_pkMS2FFDevice)
+        return;
+
+    if (FAILED(m_pkMS2FFDevice->EnumObjects(EnumFFAxesCallback,
+        (void*)&m_dwMS2FFAxisCount, DIDFT_AXIS)))
+    {
+        return;
+    }
+
+    if (m_dwMS2FFAxisCount > 2)
+        m_dwMS2FFAxisCount = 2;
+
+    DWORD adwAxes[2] = { DIJOFS_X, DIJOFS_Y };
+    LONG alDirection[2] = { 0, 0 };
+    DICONSTANTFORCE kCF = { 0 };
+
+    DIEFFECT kEffect;
+    ZeroMemory(&kEffect, sizeof(kEffect));
+    kEffect.dwSize = sizeof(DIEFFECT);
+    kEffect.dwFlags = DIEFF_CARTESIAN | DIEFF_OBJECTOFFSETS;
+    kEffect.dwDuration = INFINITE;
+    kEffect.dwSamplePeriod = 0;
+    kEffect.dwGain = DI_FFNOMINALMAX;
+    kEffect.dwTriggerButton = DIEB_NOTRIGGER;
+    kEffect.dwTriggerRepeatInterval = 0;
+    kEffect.cAxes = m_dwMS2FFAxisCount;
+    kEffect.rgdwAxes = adwAxes;
+    kEffect.rglDirection = alDirection;
+    kEffect.lpEnvelope = 0;
+    kEffect.cbTypeSpecificParams = sizeof(DICONSTANTFORCE);
+    kEffect.lpvTypeSpecificParams = &kCF;
+    kEffect.dwStartDelay = 0;
+
+    m_pkMS2FFDevice->CreateEffect(GUID_ConstantForce, &kEffect,
+        &m_pkMS2FFEffect, NULL);
+}
+
+//--------------------------------------------------------------------------------------------------
+BOOL CALLBACK NiInputDI8GamePad::EnumFFAxesCallback(
+    LPCDIDEVICEOBJECTINSTANCE pkDIDOI, LPVOID pvRef)
+{
+    DWORD* pdwNumForceFeedbackAxis = (DWORD*)pvRef;
+    if ((pkDIDOI->dwFlags & DIDOI_FFACTUATOR) != 0)
+        (*pdwNumForceFeedbackAxis)++;
+    return DIENUM_CONTINUE;
+}
+
+//--------------------------------------------------------------------------------------------------
+unsigned int NiInputDI8GamePad::GetMotorCount() const
+{
+    return 2;
+}
+
+//--------------------------------------------------------------------------------------------------
+unsigned int NiInputDI8GamePad::GetRumbleRange(unsigned int uiMotor) const
+{
+    if (uiMotor < 2)
+        return m_auiMS2RumbleRange[uiMotor];
+    return 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiInputDI8GamePad::SetRumbleValue(unsigned int uiMotor,
+    unsigned int uiValue, bool bCommit)
+{
+    if (uiMotor < 2)
+    {
+        m_auiMS2RumbleValue[uiMotor] = uiValue;
+        if (bCommit)
+            StartRumble();
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiInputDI8GamePad::GetRumbleValue(unsigned int uiMotor,
+    unsigned int& uiValue) const
+{
+    if (uiMotor < 2)
+        uiValue = m_auiMS2RumbleValue[uiMotor];
+    else
+        uiValue = 0;
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiInputDI8GamePad::StartRumble()
+{
+    if (!m_pkMS2FFEffect)
+        return;
+
+    // The motor values run 0..20000; 10000 is the rest position
+    int iX = (int)m_auiMS2RumbleValue[0];
+    int iY = (int)m_auiMS2RumbleValue[1];
+    LONG lX = (iX > 10000) ? iX - 10000 : -iX;
+
+    DICONSTANTFORCE kCF;
+    if (m_dwMS2FFAxisCount == 1)
+    {
+        kCF.lMagnitude = lX;
+    }
+    else
+    {
+        LONG lY = (iY > 10000) ? iY - 10000 : -iY;
+        kCF.lMagnitude = (DWORD)sqrt((double)lX * (double)lX +
+            (double)lY * (double)lY);
+    }
+
+    DIEFFECT kEffect;
+    ZeroMemory(&kEffect, sizeof(kEffect));
+    kEffect.dwSize = sizeof(DIEFFECT);
+    kEffect.dwFlags = DIEFF_CARTESIAN | DIEFF_OBJECTOFFSETS;
+    kEffect.cAxes = m_dwMS2FFAxisCount;
+    kEffect.rglDirection = (LONG*)m_auiMS2RumbleValue;
+    kEffect.lpEnvelope = 0;
+    kEffect.cbTypeSpecificParams = sizeof(DICONSTANTFORCE);
+    kEffect.lpvTypeSpecificParams = &kCF;
+    kEffect.dwStartDelay = 0;
+
+    HRESULT hr = m_pkMS2FFEffect->SetParameters(&kEffect,
+        DIEP_DIRECTION | DIEP_TYPESPECIFICPARAMS | DIEP_START);
+    if (FAILED(hr))
+    {
+        NILOG(NIMESSAGE_GENERAL_1, "DI8GamePad> Warning - DIEP_START failed!\n");
+        return;
+    }
+    m_pkMS2FFEffect->Start(1, 0);
+}
+
+//--------------------------------------------------------------------------------------------------
+void NiInputDI8GamePad::StopRumble(bool)
+{
+    m_auiMS2RumbleValue[0] = 0;
+    m_auiMS2RumbleValue[1] = 0;
+    if (m_pkMS2FFEffect)
+        m_pkMS2FFEffect->Stop();
+.
+212a
+    if (m_pkMS2FFDevice)   // MS2
+        m_pkMS2FFDevice->Acquire();
+.
+187a
+    if (m_pkMS2FFDevice)   // MS2
+        m_pkMS2FFDevice->Unacquire();
+.
+180a
+    // MS2
+    if (m_pkMS2FFDevice)
+    {
+        m_pkMS2FFDevice->Acquire();
+        m_pkMS2FFDevice->Poll();
+    }
+
+.
+78a
+    // MS2
+    if (m_pkMS2FFEffect)
+    {
+        m_pkMS2FFEffect->Release();
+        m_pkMS2FFEffect = 0;
+    }
+    if (m_pkMS2FFDevice)
+    {
+        m_pkMS2FFDevice->Unacquire();
+        m_pkMS2FFDevice->Release();
+        m_pkMS2FFDevice = 0;
+    }
+
+.
+73a
+
+    // MS2
+    m_auiMS2RumbleRange[0] = 20000;
+    m_auiMS2RumbleRange[1] = 20000;
+    m_auiMS2RumbleValue[0] = 0;
+    m_auiMS2RumbleValue[1] = 0;
+.
+27c
+    m_pkDIDevice(pkDIDevice),
+    m_pkMS2FFDevice(0),
+    m_dwMS2FFAxisCount(1),
+    m_pkMS2FFEffect(0)
+.

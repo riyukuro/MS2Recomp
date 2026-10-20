@@ -1,0 +1,10 @@
+49c
+MS2_NIVISARRAY_INLINE void NiVisibleArray::Add(NiRenderObject& kObj)
+.
+2,6c
+#if defined(MS2_NIVISARRAY_FORCEINLINE) && !defined(MS2_NIVISARRAY_INLINE)
+#define MS2_NIVISARRAY_INLINE __forceinline   // MS2: NiDX9Renderer::Do_RenderMesh in the exe inlines Add
+#elif !defined(MS2_NIVISARRAY_INLINE)
+#define MS2_NIVISARRAY_INLINE inline
+#endif
+.

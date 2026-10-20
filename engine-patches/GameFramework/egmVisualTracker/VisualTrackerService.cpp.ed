@@ -1,0 +1,9 @@
+778a
+#line 840 // MS2 __LINE__ (linefix)
+.
+750a
+#line 752 // MS2 __LINE__ (linefix)
+.
+68c
+    , m_memoryMax(2000000.0f)   // MS2: exe 0x1422a4e10 stores 2000000.0f
+.

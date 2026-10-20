@@ -98,6 +98,12 @@ void (*g_pfnLightAdded)(const egf::EntityID& entityID) = NULL;
 1417a
 #if 0  // MS2: the precomputed-lighting checks are gone (the exe inlines only the range test below)
 .
+1115a
+#line 1120 // MS2 __LINE__ (linefix)
+.
+880a
+#line 983 // MS2 __LINE__ (linefix)
+.
 879a
 // MS2: 97 more lines of MS2 source above this point in the exe build (UpdateShadowCaster's EE_LOG __LINE__ is 0x40d)
 #line 982

@@ -1,0 +1,73 @@
+106a
+//--------------------------------------------------------------------------------------------------
+// MS2: a wide-path twin of Win32File (ExpandEnvironmentStringsW + _wfsopen), with its own vftable. The exe
+// has no RTTI for it, so the class name is ours.
+class EE_EFD_ENTRY Win32FileW : public efd::FileCommon
+{
+    /// @cond EMERGENT_INTERNAL
+
+     EE_DeclareDerivedBinaryStream();
+
+    /// @endcond
+
+public:
+    Win32FileW(
+        const wchar_t* pcName,
+        OpenMode eMode,
+        unsigned int uiBufferSize = 32768,
+        bool flushOnWrite = false);
+
+    /// Virtual destructor.
+    virtual ~Win32FileW();
+
+    // Overridden virtual functions inherit base documentation and thus are not documented here.
+    virtual bool Seek(int offset, SeekOrigin seekFrom);
+    virtual bool Flush();
+    virtual unsigned int GetFileSize() const;
+    virtual void SetEndianSwap(bool bDoSwap);
+
+protected:
+
+    /*
+        These two methods are passed to the BinaryStreamMacro code to perform
+        the raw reads and writes between the file and a buffer.
+    */
+    virtual unsigned int FileRead(void* pvBuffer, unsigned int uiBytes);
+    virtual unsigned int FileWrite(const void* pvBuffer, unsigned int uiBytes);
+
+    /*
+        Read a specified number of bytes of data from a File to a buffer.
+          pvBuffer : Buffer into which to stream data from the File.
+          uiBytes : Number of bytes of data to be read.
+          return : Number of bytes actually read (may be less than uiBytes).
+    */
+    unsigned int DiskRead(void* pvBuffer, unsigned int uiBytes);
+
+    /*
+        Write a specified number of bytes of data from a buffer to a File.
+          pvBuffer : Buffer of data to be written.
+          uiBytes : Number of bytes of data to be written.
+          return : Number of bytes actually written (may be less than uiBytes).
+    */
+    unsigned int DiskWrite(const void* pvBuffer, unsigned int uiBytes);
+
+
+    // Buffer allocation size.
+    unsigned int m_uiBufferAllocSize;
+
+    // Size of how many bytes have been read.
+    unsigned int m_uiBufferReadSize;
+
+    // Position in the File.
+    unsigned int m_uiPos;
+
+    // Pointer to buffer to hold data streamed in from a File (or streamed out to a File).
+    char* m_pBuffer;
+
+    // Pointer to File instance.
+    FILE* m_pFile;
+
+    bool m_bFlushOnWrite;
+};
+
+.

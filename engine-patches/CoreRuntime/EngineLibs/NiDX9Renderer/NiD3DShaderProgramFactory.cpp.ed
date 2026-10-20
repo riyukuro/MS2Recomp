@@ -1,0 +1,9 @@
+645c
+                if (!efd::File::DefaultFileAccessFunc(pcTrueName, efd::File::READ_ONLY))   // MS2: the exe calls the default directly
+.
+599c
+                if (efd::File::DefaultFileAccessFunc(kPath, efd::File::READ_ONLY))   // MS2: the exe calls the default directly
+.
+576c
+    if (efd::File::DefaultFileAccessFunc(pcOriginalName, efd::File::READ_ONLY))   // MS2: the exe calls the default directly
+.

@@ -1,4 +1,97 @@
 4778@37s "" "(const char*)"
+4008a
+// MS2: fullscreen display mode switching (exe 0x1427cb2a0, 0x1427d5390) and the game's device-lost hold
+// (exe 0x1427d5c10)
+bool NiDX9Renderer::SetDisplayMode(unsigned int uiWidth, unsigned int uiHeight)
+{
+    unsigned int uiOldWidth = m_kMS2DisplayMode.dmPelsWidth;
+    if (uiOldWidth == uiWidth && m_kMS2DisplayMode.dmPelsHeight == uiHeight)
+        return true;
+
+    unsigned int uiOldHeight = m_kMS2DisplayMode.dmPelsHeight;
+    m_kMS2DisplayMode.dmPelsWidth = uiWidth;
+    m_kMS2DisplayMode.dmPelsHeight = uiHeight;
+    m_bMS2DisplayModeChanged = true;
+    m_kMS2DisplayMode.dmBitsPerPel = 32;
+    m_kMS2DisplayMode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+    if (ChangeDisplaySettingsA(&m_kMS2DisplayMode, CDS_UPDATEREGISTRY) != DISP_CHANGE_SUCCESSFUL)
+    {
+        m_kMS2DisplayMode.dmPelsWidth = uiOldWidth;
+        m_kMS2DisplayMode.dmPelsHeight = uiOldHeight;
+        return false;
+    }
+    return true;
+}
+
+//------------------------------------------------------------------------------------------------
+__declspec(noinline) void NiDX9Renderer::RestoreDisplayMode()   // MS2: called, not inlined, in the exe
+{
+    if (m_bMS2DisplayModeChanged)
+    {
+        if (m_kMS2DisplayMode.dmPelsWidth != m_kMS2OriginalMode.dmPelsWidth ||
+            m_kMS2DisplayMode.dmPelsHeight != m_kMS2OriginalMode.dmPelsHeight)
+        {
+            SetDisplayMode(m_kMS2OriginalMode.dmPelsWidth, m_kMS2OriginalMode.dmPelsHeight);
+        }
+        m_bMS2DisplayModeChanged = false;
+    }
+}
+
+//------------------------------------------------------------------------------------------------
+void NiDX9Renderer::SetDeviceLostHeld(bool bHeld)
+{
+    m_bMS2DeviceLostHeld = bHeld;
+    m_bDeviceLost = bHeld;
+}
+
+//------------------------------------------------------------------------------------------------
+.
+4000a
+    else if (eD3dRet == D3DERR_DRIVERINTERNALERROR)
+    {
+        // MS2: MS2RenderService hook
+        if (DAT_143d6eb48)
+            DAT_143d6eb48();
+        return false;
+    }
+.
+3978a
+            NiMesh::SetUsePreloading(false);
+            NiSourceTexture::SetUsePreloading(false);
+.
+3977a
+            // MS2: leave the fullscreen display mode and stop preloading until the device is back
+            if (m_uiCreationUseFlags & USE_FULLSCREEN)
+                RestoreDisplayMode();
+.
+3971a
+        if (DAT_143d6eb50)  // MS2: MS2RenderService hook
+            DAT_143d6eb50(bSuccess);
+.
+3391c
+    return false;
+.
+3388a
+
+        return true;    // MS2: moved here, a lost or unrestored device now fails the frame
+.
+3386a
+        // MS2: MS2RenderService hook
+        if (DAT_143d6eb38)
+            DAT_143d6eb38(this);
+
+.
+3383a
+            m_pkD3DDevice9->Present(NULL, NULL, NULL, NULL);    // MS2
+.
+3367a
+    // MS2: per-frame counters cleared, no frame while the game holds the device lost
+    m_uiMS2Unknown_1074 = 0;
+    m_uiMS2Unknown_1078 = 0;
+    if (m_bMS2DeviceLostHeld)
+        return false;
+
+.
 2323a
 // MS2: v2525 (studio, name inferred; exe 0x1427cf790)
 const char* NiDX9Renderer::GetDriverName() const
@@ -17,4 +110,39 @@ const char* NiDX9Renderer::GetDriverName() const
     return m_acStudioDriverName;
 }
 //--------------------------------------------------------------------------------------------------
+.
+1415a
+    // MS2: re-enable mesh/texture preloading after a device reset (Do_BeginFrame clears both)
+    NiMesh::SetUsePreloading(true);
+    NiSourceTexture::SetUsePreloading(true);
+
+.
+1256c
+        // MS2: the exe logs the D3D error name
+        Error("NiDX9Renderer::Recreate> Device reset failed - [%s]\n",
+            NiDX9ErrorString((unsigned int)eD3dRet));
+.
+1250a
+    // MS2: fullscreen switches the display mode before the reset (and fails without releasing the locks)
+    if (!pkOnscreenBuffData->GetPresentParams().Windowed &&
+        !SetDisplayMode(pkOnscreenBuffData->GetPresentParams().BackBufferWidth,
+            pkOnscreenBuffData->GetPresentParams().BackBufferHeight))
+    {
+        return false;
+    }
+
+.
+1244a
+    // MS2: drop the default visible array's entries and the deferred resources before the reset
+    if (ms_pkDefaultVisibleArray)
+        ms_pkDefaultVisibleArray->RemoveAll();
+    ReleaseDeferredResources();
+
+.
+73a
+// MS2: device hooks installed by MS2RenderService::OnInit (game: ms2renderservice.cpp)
+extern void (*DAT_143d6eb38)(void*);
+extern void (*DAT_143d6eb48)();
+extern void (*DAT_143d6eb50)(bool);
+
 .

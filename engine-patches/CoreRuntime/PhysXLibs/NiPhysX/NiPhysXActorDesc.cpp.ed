@@ -1,0 +1,100 @@
+349c
+    // MS2: NaN guard before setGlobalPose.
+    if (kPose.isFinite())
+    {
+        m_pkActor->setGlobalPose(kPose);
+    }
+    else
+    {
+#line 592 // MS2 __LINE__
+        EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXActorDesc::RestoreState m_pkActor->setGlobalPose(kPose)"));
+        if (DAT_143afc898)
+            throw 13;
+    }
+.
+320c
+    // MS2: NaN guards on both poses (log, throw 13 if the game asks for it, else give up).
+    if (!kXform.isFinite())
+    {
+#line 539 // MS2 __LINE__
+        EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXActorDesc::AddState !kXform.isFinite()"));
+        if (DAT_143afc898)
+            throw 13;
+        return 0;
+    }
+    NxMat34 globalPose = m_pkActor->getGlobalPose();
+    if (!globalPose.isFinite())
+    {
+#line 550 // MS2 __LINE__
+        EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1, ("NiPhysXActorDesc::AddState !globalPose.isFinite()"));
+        if (DAT_143afc898)
+            throw 13;
+        return 0;
+    }
+
+    NxMat34 kPose = kXform * globalPose;
+.
+298a
+
+        for (efd::list<NxConvexMesh*>::iterator kIter = kConvexMeshes.begin();
+            kIter != kConvexMeshes.end(); ++kIter)
+        {
+            NxConvexMesh* pkMesh = *kIter;
+            if (pkMesh && pkMesh->getReferenceCount() == 0)
+                pkSDK->releaseConvexMesh(*pkMesh);
+        }
+        for (efd::list<NxTriangleMesh*>::iterator kIter = kTriangleMeshes.begin();
+            kIter != kTriangleMeshes.end(); ++kIter)
+        {
+            NxTriangleMesh* pkMesh = *kIter;
+            if (pkMesh && pkMesh->getReferenceCount() == 0)
+                pkSDK->releaseTriangleMesh(*pkMesh);
+        }
+.
+296a
+        // MS2: collect the actor's convex/triangle meshes, detach the shape descs, release the actor and
+        // then release every mesh nothing references any more.
+        efd::list<NxConvexMesh*> kConvexMeshes;
+        efd::list<NxTriangleMesh*> kTriangleMeshes;
+        NxPhysicsSDK* pkSDK = efdPhysX::PhysXSDKManager::GetManager()->m_pPhysXSDK;
+        NxConvexMesh* pkConvexMesh = 0;
+        NxTriangleMesh* pkTriangleMesh = 0;
+        NxU32 uiNumShapes = m_pkActor->getNbShapes();
+        if (uiNumShapes > 0)
+        {
+            for (NxU32 ui = 0; ui < uiNumShapes; ui++)
+            {
+                NxShape* pkShape = m_pkActor->getShapes()[ui];
+                if (pkShape->isConvexMesh())
+                    pkConvexMesh = &pkShape->isConvexMesh()->getConvexMesh();
+                else if (pkShape->isTriangleMesh())
+                    pkTriangleMesh = &pkShape->isTriangleMesh()->getTriangleMesh();
+
+                if (pkConvexMesh)
+                {
+                    kConvexMeshes.push_back(pkConvexMesh);
+                    pkConvexMesh = 0;
+                }
+                if (pkTriangleMesh)
+                {
+                    kTriangleMeshes.push_back(pkTriangleMesh);
+                    pkTriangleMesh = 0;
+                }
+            }
+        }
+
+        NiUInt32 uiCount = m_kActorShapes.GetEffectiveSize();
+        for (NiUInt32 ui = 0; ui < uiCount; ui++)
+        {
+            NiPhysXShapeDesc* pkShapeDesc = m_kActorShapes.GetAt(ui);
+            if (pkShapeDesc)
+                pkShapeDesc->SetShape(0);
+        }
+
+.
+31a
+// MS2: the game's "assertions throw" switch (exe 0x143afc898, a char): when set, the NaN guards in
+// AddState/RestoreState throw 13 after logging.
+extern char DAT_143afc898;
+
+.

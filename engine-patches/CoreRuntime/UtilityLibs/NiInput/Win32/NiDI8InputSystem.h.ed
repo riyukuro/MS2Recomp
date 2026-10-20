@@ -1,0 +1,14 @@
+177a
+        LPVOID pvRef);
+    // MS2: finds the device behind a gamepad's force-feedback driver
+    static BOOL CALLBACK DIEnumFFDriverCallback(LPCDIDEVICEINSTANCE pkDDI,
+.
+123a
+        GUID m_kMS2FFDriverGUID;   // MS2
+.
+121a
+        // MS2: Nexon keeps the force-feedback driver GUID (DIDEVICEINSTANCE::guidFFDriver)
+        inline const GUID* GetMS2FFDriverGUID() const;
+        inline void SetMS2FFDriverGUID(const GUID& kGUID);
+
+.

@@ -1,0 +1,4 @@
+363a
+        /// MS2: wide-path variant.
+        EE_EFD_ENTRY efd::Bool Standardize(wchar_t* pcPath);
+.

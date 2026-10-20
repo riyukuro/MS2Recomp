@@ -1,0 +1,6 @@
+149a
+    /// MS2: an extra virtual after AssetTagsInfo (exe 0x142097790, vftable slot 21; the name is ours): whether the
+    /// local asset web knows any asset matching uri (false before any metadata is opened).
+    virtual bool HasAsset(const efd::utf8string& uri);
+
+.

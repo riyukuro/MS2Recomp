@@ -1,0 +1,147 @@
+166a
+            return false;
+        EE_ASSERT(DirectoryExists(acFullPathCopy));
+    }
+
+    EE_ASSERT(DirectoryExists(pcFullPath));
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2: wide-path overloads of the above.
+File* File::GetFile(const wchar_t *pcName, OpenMode eMode, unsigned int uiSize, bool flushOnWrite)
+{
+    return ms_pfnFileCreateFuncW(pcName, eMode, uiSize, flushOnWrite);
+}
+
+//--------------------------------------------------------------------------------------------------
+void File::SetFileCreateFunc(FILECREATEFUNCW pfnFunc)
+{
+    ms_pfnFileCreateFuncW = (pfnFunc == NULL) ? (FILECREATEFUNCW)DefaultFileCreateFunc : pfnFunc;
+}
+
+//--------------------------------------------------------------------------------------------------
+bool File::Access(const wchar_t *pcName, OpenMode eMode)
+{
+    return ms_pfnFileAccessFuncW(pcName, eMode);
+}
+
+//--------------------------------------------------------------------------------------------------
+void File::SetFileAccessFunc(FILEACCESSFUNCW pfnFunc)
+{
+    ms_pfnFileAccessFuncW = (pfnFunc == NULL) ? (FILEACCESSFUNCW)DefaultFileAccessFunc : pfnFunc;
+}
+
+//--------------------------------------------------------------------------------------------------
+bool File::CreateDirectoryW(const wchar_t* pcDirName)
+{
+    return ms_pfnCreateDirFuncW(pcDirName);
+}
+
+//--------------------------------------------------------------------------------------------------
+void File::SetCreateDirectoryFunc(CREATEDIRFUNCW pfnFunc)
+{
+    ms_pfnCreateDirFuncW = (pfnFunc == NULL) ? (CREATEDIRFUNCW)DefaultCreateDirectoryFunc :
+        pfnFunc;
+}
+
+//--------------------------------------------------------------------------------------------------
+bool File::DirectoryExists(const wchar_t* pcDirName)
+{
+    return ms_pfnDirExistsFuncW(pcDirName);
+}
+
+//--------------------------------------------------------------------------------------------------
+void File::SetDirectoryExistsFunc(DIREXISTSFUNCW pfnFunc)
+{
+    ms_pfnDirExistsFuncW = (pfnFunc == NULL) ? (DIREXISTSFUNCW)DefaultDirectoryExistsFunc :
+        pfnFunc;
+}
+
+//--------------------------------------------------------------------------------------------------
+bool File::CreateDirectoryRecursive(const wchar_t* pcFullPath)
+{
+    if (DirectoryExists(pcFullPath))
+        return true;
+
+    if (wcslen(pcFullPath) > EE_MAX_PATH)
+        return false;
+
+    wchar_t acFullPathCopy[EE_MAX_PATH];
+
+    wcscpy_s(acFullPathCopy, EE_MAX_PATH, pcFullPath);
+    efd::PathUtils::Standardize(acFullPathCopy);
+
+    unsigned int uiStart = 0;
+
+    // Check for drive start path
+    if (acFullPathCopy[uiStart + 1] == ':')
+    {
+        uiStart += 2;
+    }
+
+    // Consume the leading slash characters
+    while (uiStart < EE_MAX_PATH &&
+        (acFullPathCopy[uiStart] == '\\' || acFullPathCopy[uiStart] == '/'))
+    {
+        uiStart++;
+    }
+
+    // Search through the string buffer for any '\\' or '/' and
+    // make sure that the directory exists. If not, create it.
+    bool bDealtWithNetworkPath = false;
+    for (unsigned int ui = uiStart; ui < EE_MAX_PATH; ui++)
+    {
+        wchar_t cCurChar = acFullPathCopy[ui];
+        if ((cCurChar == '/' || cCurChar == '\\')
+#ifdef EE_PLATFORM_PS3
+            // handle paths such as /app_home/c:/foo/bar
+            // We will skip this code block if the current and last char
+            // are ":/" or "//"
+            // that will save us from attempting /app_home/c:
+            //
+            && !(ui == 0 || acFullPathCopy[ui-1] == ':' ||
+            acFullPathCopy[ui-1] == '/' || acFullPathCopy[ui+1] == '/')
+#endif
+           )
+        {
+            acFullPathCopy[ui] = L'\0';
+
+            if (uiStart == 2 && bDealtWithNetworkPath == false &&
+                acFullPathCopy[0] == '\\' && acFullPathCopy[1] == '\\')
+            {
+                // A network path such as "\\CPU1" would fail the
+                // DirectoryExists test below since no directory is
+                // technically being specified. That case is detected by the
+                // condition above and the DirectoryExists test is skipped
+                // because it is a network path only.
+                bDealtWithNetworkPath = true;
+            }
+            else if (!DirectoryExists(acFullPathCopy))
+            {
+                if (!CreateDirectoryW(acFullPathCopy))
+                    return false;
+                EE_ASSERT(DirectoryExists(acFullPathCopy));
+            }
+            acFullPathCopy[ui] = cCurChar;
+        }
+    }
+
+    // Assume that the last characters of the array may define a directory as
+    // well even though the string was not necessarily
+    // terminated with a seperator.
+    if (!DirectoryExists(acFullPathCopy))
+    {
+        if (!CreateDirectoryW(acFullPathCopy))
+.
+88@46s "" "(DIREXISTSFUNC)"
+75@46s "" "(CREATEDIRFUNC)"
+63@47s "" "(FILEACCESSFUNC)"
+51@47s "" "(FILECREATEFUNC)"
+29a
+// MS2: the wide-path set.
+File::FILECREATEFUNCW File::ms_pfnFileCreateFuncW = File::DefaultFileCreateFunc;
+File::FILEACCESSFUNCW File::ms_pfnFileAccessFuncW = File::DefaultFileAccessFunc;
+File::CREATEDIRFUNCW File::ms_pfnCreateDirFuncW = File::DefaultCreateDirectoryFunc;
+File::DIREXISTSFUNCW File::ms_pfnDirExistsFuncW = File::DefaultDirectoryExistsFunc;
+.

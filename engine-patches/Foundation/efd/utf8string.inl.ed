@@ -1,3 +1,22 @@
+881a
+// MS2: std::less<utf8string>::operator() is called out of line (the game's /Od copy 0x140999060) by the map<utf8string, ..>
+// code of some engine TUs; those TUs define the switch (engine/units-gb.json). Explicit specialization: same mangled name.
+#if defined(EE_MS2_LESS_UTF8_CALL)
+namespace std
+{
+template<> struct less<efd::utf8string>
+{
+    typedef efd::utf8string first_argument_type;
+    typedef efd::utf8string second_argument_type;
+    typedef bool result_type;
+    __declspec(noinline) bool operator()(const efd::utf8string& _Left, const efd::utf8string& _Right) const
+    {
+        return _Left < _Right;
+    }
+};
+}
+#endif
+.
 637c
 EE_MS2_UTF8_EQ_INLINE bool operator==(
 .

@@ -1,0 +1,179 @@
+1574a
+
+            // MS2: open the device's force-feedback driver for the rumble
+            GUID kFFDriver = *pkNiDesc->GetMS2FFDriverGUID();
+            if (kFFDriver != GUID_NULL)
+            {
+                MS2FFDriverEnum kEnum;
+                kEnum.pkGamePad = pkDI8GamePad;
+                kEnum.pkDI8 = m_pkDirectInput8;
+                kEnum.kGUIDFFDriver = kFFDriver;
+                if (SUCCEEDED(m_pkDirectInput8->EnumDevices(DI8DEVCLASS_GAMECTRL,
+                    DIEnumFFDriverCallback, &kEnum,
+                    DIEDFL_ATTACHEDONLY | DIEDFL_FORCEFEEDBACK)))
+                {
+                    pkDI8GamePad->SetFFDevice(kEnum.pkDevice);
+                }
+            }
+.
+1536a
+        MS2_INPUT_LOG("AddDefaultActionMappedDevice NIIERR_NOOPENPORTS");   // MS2
+.
+986a
+    pkNiDesc->SetMS2FFDriverGUID(pkDDI->guidFFDriver);   // MS2
+.
+935a
+        MS2_INPUT_LOG("INITFAILED CreateDI8Interface3");   // MS2
+.
+926a
+        MS2_INPUT_LOG("INITFAILED CreateDI8Interface2");   // MS2
+.
+916a
+        MS2_INPUT_LOG("INITFAILED CreateDI8Interface1");   // MS2
+.
+904a
+        MS2_INPUT_LOG("EnumerateDevices NIIERR_INVALIDPARAMS");   // MS2
+.
+781a
+// MS2: finds the device behind a gamepad's force-feedback driver
+struct MS2FFDriverEnum
+{
+    NiInputDI8GamePad* pkGamePad;
+    LPDIRECTINPUT8 pkDI8;
+    GUID kGUIDFFDriver;
+    LPDIRECTINPUTDEVICE8 pkDevice;
+};
+
+BOOL CALLBACK NiDI8InputSystem::DIEnumFFDriverCallback(
+    LPCDIDEVICEINSTANCE pkDDI, LPVOID pvRef)
+{
+    if (IsXInputDevice(&pkDDI->guidProduct))
+        return DIENUM_STOP;
+
+    MS2FFDriverEnum* pkEnum = (MS2FFDriverEnum*)pvRef;
+    if (!pkEnum->pkGamePad || !pkEnum->pkDI8)
+        return DIENUM_STOP;
+    if (pkDDI->guidFFDriver != pkEnum->kGUIDFFDriver)
+        return DIENUM_STOP;
+
+    LPDIRECTINPUTDEVICE8 pkDevice = NULL;
+    if (FAILED(pkEnum->pkDI8->CreateDevice(pkDDI->guidInstance, &pkDevice,
+        NULL)))
+    {
+        return DIENUM_STOP;
+    }
+    pkEnum->pkDevice = pkDevice;
+    return DIENUM_CONTINUE;
+}
+
+//--------------------------------------------------------------------------------------------------
+.
+725a
+        MS2_INPUT_LOG("SYSTEM MOUSE FOUND.");   // MS2
+        bMS2SystemDevice = true;
+    }
+    // MS2: Nexon also accepts the joystick the control panel marks as preferred
+    if (memcmp((const void*)&GUID_Joystick,
+        (const void*)&(pkDDI->guidInstance), sizeof(GUID)) == 0)
+    {
+        NILOG(NIMESSAGE_GENERAL_1, "Joystick FOUND.");
+    }
+    if (!bMS2SystemDevice)
+    {
+        DIJOYCONFIG kJoyConfig = {0};
+        LPDIRECTINPUTJOYCONFIG8 pkJoyConfig = NULL;
+        if (SUCCEEDED(pkDI8->QueryInterface(IID_IDirectInputJoyConfig8,
+            (void**)&pkJoyConfig)))
+        {
+            kJoyConfig.dwSize = sizeof(kJoyConfig);
+            pkJoyConfig->GetConfig(0, &kJoyConfig, DIJC_GUIDINSTANCE);
+            if (memcmp((const void*)&kJoyConfig.guidInstance,
+                (const void*)&(pkDDI->guidInstance), sizeof(GUID)) == 0)
+            {
+                NILOG(NIMESSAGE_GENERAL_1, "JOYSTICK FOUND.");
+                MS2_INPUT_LOG("SYSTEM Joystick FOUND.");
+                bValidDevice = true;
+            }
+            if (pkJoyConfig)
+                pkJoyConfig->Release();
+        }
+.
+720a
+        MS2_INPUT_LOG("SYSTEM KEYBOARD FOUND.");   // MS2
+        bMS2SystemDevice = true;
+.
+710a
+    bool bMS2SystemDevice = false;   // MS2
+.
+696a
+        MS2_INPUT_LOG("EnumDevicesCallback --> No valid DI8 interface!");   // MS2
+.
+689a
+        MS2_INPUT_LOG("EnumDevicesCallback --> No valid input system!");   // MS2
+.
+450a
+        MS2_INPUT_LOG("INITFAILED CreateDI8Interface0");   // MS2
+.
+355a
+        MS2_INPUT_LOG("OpenKeyboard NIIERR_DEVICECREATEFAIL1");   // MS2
+.
+345a
+        MS2_INPUT_LOG("OpenKeyboard NIIERR_DEVICECREATEFAIL0");   // MS2
+.
+333a
+        MS2_INPUT_LOG("OpenKeyboard NIIERR_DEVICENOTFOUND");   // MS2
+.
+314a
+        MS2_INPUT_LOG("OpenKeyboard NIIERR_INVALIDPARAMS");   // MS2
+.
+311a
+    m_eLastError = NIIERR_OK;   // MS2
+.
+296a
+        MS2_INPUT_LOG("OpenMouse NIIERR_DEVICECREATEFAIL1");   // MS2
+.
+287a
+        MS2_INPUT_LOG("OpenMouse NIIERR_DEVICECREATEFAIL0");   // MS2
+.
+275a
+        MS2_INPUT_LOG("OpenMouse NIIERR_DEVICENOTFOUND");   // MS2
+.
+255a
+        MS2_INPUT_LOG("OpenMouse NIIERR_INVALIDPARAMS");   // MS2
+.
+253a
+    m_eLastError = NIIERR_OK;   // MS2
+.
+230a
+        MS2_INPUT_LOG("OpenGamePad NIIERR_INVALIDPARAMS");   // MS2
+.
+228a
+    m_eLastError = NIIERR_OK;   // MS2
+.
+116a
+        MS2_INPUT_LOG("Initializing NiDI8InputSystem w/ incorrect CreateParams!");   // MS2
+.
+111a
+            pkDI8IS->m_eLastError = NIIERR_OK;   // MS2
+.
+92a
+                    MS2_INPUT_LOG("NiInputSystem::Create NIIERR_INVALIDDEVICE");   // MS2
+.
+72a
+                MS2_INPUT_LOG("NiInputErr : [%x] Failed to pkDI8IS->Initialize()", eMS2Err);   // MS2
+.
+71c
+            NiInputErr eMS2Err = pkDI8IS->Initialize(pkParams);
+            if (eMS2Err != NIIERR_OK)
+.
+28a
+#include <dinputd.h>   // MS2: IDirectInputJoyConfig8 for the preferred-joystick check
+#include <efd/Helpers.h>
+#include <efd/ILogger.h>
+#include <efd/efdLogIDs.h>
+
+// MS2: Nexon forwards the input errors to the client's error-log hook (see efd/ServiceManager.cpp)
+extern void (*DAT_143b03490)(short, unsigned char, const char*);
+#define MS2_INPUT_LOG(...) \
+    do { if (DAT_143b03490) DAT_143b03490(efd::kApp, efd::ILogger::kERR0, efd::LogHelper(__VA_ARGS__)); } while (0)
+.

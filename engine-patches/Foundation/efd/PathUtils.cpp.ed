@@ -1,3 +1,53 @@
+501a
+
+        //  convert NI_PATH_DELIMITER_INCORRECT_CHAR to NI_PATH_DELIMITER_CHAR
+        if (c == EE_PATH_DELIMITER_INCORRECT_CHAR)
+        {
+            bModified = true;
+            c = EE_PATH_DELIMITER_CHAR;
+        }
+
+        bool bThisCharIsSlash = (c == EE_PATH_DELIMITER_CHAR);
+
+        // Drop duplicate slashes
+        if (bThisCharIsSlash && bLastCharWasSlash)
+        {
+            // Unless this is a network resource name, e.g. "\\share"
+            // which is true only in first two characters of string.
+            if (uiRead > 1)
+            {
+                bModified = true;
+                continue; // skip this char
+            }
+        }
+
+        bLastCharWasSlash = bThisCharIsSlash;
+
+        // write char
+        pcPath[uiWrite++] = c;
+    }
+
+    // Terminate (string may have shrunk)
+    pcPath[uiWrite] = 0;
+    return bModified;
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2: wide-path variant.
+bool PathUtils::Standardize(wchar_t* pcPath)
+{
+    bool bModified = false;
+    if (!pcPath)
+        return bModified;
+
+    size_t stLen = wcslen(pcPath);
+    bool bLastCharWasSlash = false;
+
+    unsigned int uiWrite = 0;
+    for (unsigned int uiRead = 0; uiRead < stLen; uiRead++)
+    {
+        wchar_t c = pcPath[uiRead];
+.
 20a
 #endif
 .

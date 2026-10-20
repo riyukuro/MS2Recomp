@@ -1,0 +1,13 @@
+81c
+template <class T> MS2_NIPOOL_INLINE
+.
+17c
+template <class T> MS2_NIPOOL_INLINE
+.
+2,6c
+#if defined(MS2_NIPOOL_FORCEINLINE) && !defined(MS2_NIPOOL_INLINE)
+#define MS2_NIPOOL_INLINE __forceinline   // MS2: the exe inlines the pool Allocate/Deallocate/CreateFreeMem in some TUs
+#elif !defined(MS2_NIPOOL_INLINE)
+#define MS2_NIPOOL_INLINE inline
+#endif
+.

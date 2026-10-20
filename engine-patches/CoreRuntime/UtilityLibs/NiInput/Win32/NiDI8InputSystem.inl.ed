@@ -1,0 +1,27 @@
+122a
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2
+inline const GUID* NiDI8InputSystem::DI8Description::GetMS2FFDriverGUID() const
+{
+    return &m_kMS2FFDriverGUID;
+}
+
+//--------------------------------------------------------------------------------------------------
+// MS2
+inline void NiDI8InputSystem::DI8Description::SetMS2FFDriverGUID(
+    const GUID& kGUID)
+{
+    unsigned int uiSize = sizeof(GUID);
+    if (kGUID == GUID_NULL)
+        memset((void*)&m_kMS2FFDriverGUID, 0, uiSize);
+    else
+        NiMemcpy((void*)&m_kMS2FFDriverGUID, (const void*)&kGUID, uiSize);
+.
+100a
+    memset((void*)&m_kMS2FFDriverGUID, 0, sizeof(GUID));   // MS2
+.
+91a
+    memset((void*)&m_kMS2FFDriverGUID, 0, sizeof(GUID));   // MS2
+.

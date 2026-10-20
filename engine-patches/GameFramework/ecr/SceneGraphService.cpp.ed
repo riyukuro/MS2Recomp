@@ -26,7 +26,7 @@ void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
 }
 
 .
-2736a
+2582a
 // MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
 //
 //

@@ -1,6 +1,12 @@
 862c
         if (stLength >= stBufferSize || !NiStreamLoadBinary(kStream, pcBuffer, stLength)) return false;  // MS2
 .
+799c
+        if (efd::File::DefaultFileAccessFunc(m_kPathAndFilename, efd::File::WRITE_ONLY))   // MS2: the exe calls the default directly
+.
+797c
+    if (!efd::File::DefaultFileAccessFunc(m_kPathAndFilename, efd::File::READ_ONLY))   // MS2: the exe calls the default directly
+.
 768,771c
             if (!NiStreamLoadBinary(kStream, uiValue)) { NiGPUProgramDescPtr spDelete = pkDesc; return false; }  // MS2 // COUNT
             if (!NiStreamLoadBinary(kStream, uiValue)) { NiGPUProgramDescPtr spDelete = pkDesc; return false; }  // MS2 // SOURCE
