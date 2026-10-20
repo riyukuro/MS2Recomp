@@ -17,6 +17,7 @@
 class SkillLevelData;
 class NxActor;
 class CMaid;                 // commonfiles/maid.h
+class CByteBuffer;       // commonfiles/stream.h (FUN_1410918e0)
 class CInPacket;        // commonfiles/skilloverlapcompare.h (+0xd70)
 class CRandomTargetEffect;   // randomtargeteffect.h (+0xf28; MS2Ptr(int) 0x140aac100, dtor 0x140aac190)
 
@@ -180,6 +181,7 @@ public:
     void FUN_1410947e0();                                   // the reward item model above the npc (+0xea8)
     CStringW FUN_141093310();                               // display name from the npc table
     CStringW FUN_141093980();                               // display name (maid title / maid row / npc name)
+    void FUN_1410918e0(CByteBuffer& buf);                   // apply a sync block (scenestategame)
     void FUN_1410979a0();
     void FUN_141099ab0();
 

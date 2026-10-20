@@ -50,6 +50,8 @@
 #include "ms2/client/ms2/skillrecord.h"
 #include "ms2/client/ms2/dpsmetersystem.h"
 #include "ms2/client/ms2/additionalcli.h"
+#include "ms2/client/ms2/additionalclilist.h"
+#include "ms2/commonfiles/stream.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -150,6 +152,9 @@ public:
     unsigned FUN_1411a5580(int nMaterial, int nKind, int nRelation, const NiPoint3& kPos, float fVolume);   // hit sound
 };
 class MyPC { public: void FUN_14152e240(unsigned n); int FUN_14152e280(unsigned n); };
+struct Unk_WsC_NpcAnim;
+// The world service: the spawn animation of a spawn id (worldservice.h).
+class WorldService { public: int FUN_141bcfff0(int id, Unk_WsC_NpcAnim* out); };
 // The green / blue of the hit colour boost (npc.cpp data; the red is the npc's DamagedColorScale).
 static float DAT_1439f6ff4 = 0.1f;
 static float DAT_1439f6ff8 = 0.1f;
@@ -295,6 +300,7 @@ Unk_UisSceneMgr* FUN_1408e57f0();
 int FUN_1422b9ea0(Unk_UisSceneMgr* pMgr);                           // a full-screen ui is open
 class Unk_TalkMgrView { public: void FUN_141b20790(int nObjectId, int nFriendly); };   // UITalkManager: monologue
 Unk_TalkMgrView* FUN_140967100();
+class UITalkManager { public: int FUN_141b21220(); };                // a talk is open
 int FUN_14028d260(float f);                                         // float -> int (ms)
 float FUN_14028d5b0(float fAngle);                                  // normalise an angle
 float FUN_14059d930(float f);                                       // fabs
@@ -842,6 +848,181 @@ int CNpc::vfunc_127()
 bool CNpc::vfunc_128()
 {
     return m_nE48 != 0;
+}
+
+// The index of a value in an array (-1: none).
+// @0x141099bd0
+static int FUN_141099bd0(const ATL::CAtlArray<int>& arr, const int& nValue)
+{
+    for (int i = 0; i < (int)arr.GetCount(); i++) {
+        if (arr[i] == nValue)
+            return i;
+    }
+    return -1;
+}
+
+// Applies a sync block of the npc: the animation (or a jump arc), the position / rotation / velocity, then the state
+// change when the state serial moved on.
+// MS2-FUNCTIONAL: written from the decompile
+// @0x1410918e0
+void CNpc::FUN_1410918e0(CByteBuffer& buf)
+{
+    if (m_unk_b4 == 0)
+        return;
+    CInputStream& in = buf;
+    CString strAnim;
+    unsigned char nFlags = in.vfunc_o8_1();
+    int bRotate = (nFlags & 1) == 1;
+    int bEmotion = (nFlags & 2) == 2;
+    Unk_StreamPoint ptPos = in.vfunc_o8_11();
+    efd::Point3 kPos = reinterpret_cast<const efd::Point3&>(ptPos);
+    float fRotZ = in.vfunc_o8_15();
+    Unk_StreamPoint ptVel = in.vfunc_o8_11();
+    efd::Point3 kVel = reinterpret_cast<const efd::Point3&>(ptVel);
+    float fSpeed = in.vfunc_o8_16(100);
+    int nOwnerActor = 0;
+    if (FUN_141092ff0())
+        nOwnerActor = in.vfunc_o8_3();
+    int nState = in.vfunc_o8_1();
+    m_nDE8 = in.vfunc_o8_2();
+    unsigned nSerial = (unsigned short)in.vfunc_o8_2();
+    if ((short)m_nDE8 == -2) {
+        strAnim = "Jump_A";
+    } else if ((short)m_nDE8 == -3) {
+        strAnim = "Jump_B";
+    } else {
+        egf::EntityID kId;
+        efd::SmartPointer<NiActorManager> spManager = FUN_140999440(FUN_141b6f910(), FUN_14123c460(kId));
+        if (spManager != 0) {
+            int nSeq = (short)m_nDE8;
+            NiSequenceData* pSeq = spManager->GetSequenceData(nSeq);
+            if (pSeq != NULL)
+                strAnim = (const char*)pSeq->GetName();
+        }
+    }
+    kPos.z = kPos.z + 4.0f;
+    bool bPlace = true;
+    if (!strAnim.IsEmpty()) {
+        if ((short)m_nDE8 == -2 || (short)m_nDE8 == -3) {
+            if (in.vfunc_o8_1() == 0) {
+                Unk_StreamPoint ptTo = in.vfunc_o8_10();
+                efd::Point3 kTo = reinterpret_cast<const efd::Point3&>(ptTo);
+                kTo.z = kTo.z + 2.0f;
+                m_unkDB0.Set(kPos, kTo, strAnim);
+                FUN_14166dd20(efd::utf8string((const char*)strAnim), fSpeed, true, false);
+            } else {
+                Unk_StreamPoint ptFrom = in.vfunc_o8_10();
+                Unk_StreamPoint ptTo = in.vfunc_o8_10();
+                float fWidth = in.vfunc_o8_5();
+                float fScale = in.vfunc_o8_5();
+                efd::Point3 kTo = reinterpret_cast<const efd::Point3&>(ptTo);
+                kTo.z = kTo.z + 2.0f;
+                m_unkDB0.Set(reinterpret_cast<const efd::Point3&>(ptFrom), kTo, fWidth, fScale, strAnim);
+            }
+        } else {
+            if (strAnim.Find("Run_", 0) == 0) {
+                float fRunSpeed = FUN_141093270()->m_model.m_fAniSpeed * vfunc_97();
+                fSpeed = fRunSpeed;
+                float fDist = (static_cast<const efd::Point3&>(vfunc_18()) - kPos).Length();
+                if (30.0f < fDist) {
+                    efd::Point3 kAhead = kPos + kVel * 0.3f;
+                    float fFromSelf = (kAhead - static_cast<const efd::Point3&>(vfunc_18())).Length();
+                    float fFromPos = (kAhead - kPos).Length();
+                    float fRatio = fFromSelf / fFromPos;
+                    if (fRatio < 2.0f) {
+                        float fMax = 1.2f;
+                        float fScale = std::min(fMax, fRatio);
+                        float fMin = 0.8f;
+                        fScale = std::max(fMin, fScale);
+                        if (1.03f < fScale || fScale < 0.97f) {
+                            fSpeed = fSpeed * fRatio;
+                            kVel *= fScale;
+                            bPlace = false;
+                        }
+                    }
+                }
+            }
+            if (reinterpret_cast<AdditionalCliList*>(FUN_1416749a0())->FUN_1409709b0() == 0 && nState != 0x11) {
+                FUN_141092d40(CString(strAnim));
+                FUN_14166dd20(efd::utf8string((const char*)strAnim), fSpeed, false, false);
+            }
+        }
+    }
+    FUN_141094ff0(nOwnerActor);
+    FUN_14166ce70(bEmotion);
+    if (!reinterpret_cast<Unk_ArcMoverView*>(&m_unkDB0)->FUN_14160c1c0() && m_pD60 == NULL) {
+        if (FUN_14166c930() == 0xd)
+            kPos.z = static_cast<const efd::Point3&>(vfunc_18()).z;
+        if (!bPlace)
+            FUN_14166d260();
+        else
+            vfunc_19(kPos);
+        FUN_14166d8b0(fRotZ);
+        if (bRotate)
+            vfunc_21(efd::Point3(0.0f, 0.0f, fRotZ));
+    }
+    m_posD40 = kVel;
+    if (nSerial == (unsigned)m_nDAC)
+        return;
+    m_nDAC = nSerial;
+    if (nState == 0x11) {
+        int nSpawn = in.vfunc_o8_3();
+        if (nSpawn != 0 && FUN_14166c930() != nState) {
+            MS2Ptr<StateSpawnData> spData(new StateSpawnData);
+            if (reinterpret_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bcfff0(nSpawn,
+                    reinterpret_cast<Unk_WsC_NpcAnim*>(spData.get())) != 0) {
+                vfunc_59(nState, spData.get(), 0, 0);
+                return;
+            }
+        }
+    } else if (nState == 0x16) {
+        int nTalking = reinterpret_cast<UITalkManager*>(FUN_140967100())->FUN_141b21220();
+        if (FUN_14166cc80() == 0x49 && nTalking == 0) {
+            if (FUN_141093270()->m_bLookAtMyPCWhenTalking) {
+                CQuestManager* pQuest = reinterpret_cast<CQuestManager*>(FUN_140764020());
+                if (pQuest->FUN_1416d0610() != 0) {
+                    Unk_StreamPoint ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0690();
+                    if (reinterpret_cast<const efd::Point3&>(ptTarget) != efd::Point3::ZERO)
+                        FUN_14166d2d0(reinterpret_cast<const efd::Point3&>(ptTarget), 0);
+                }
+            }
+            return;
+        }
+        if (FUN_14166cc80() == 0x48 && nTalking != 0) {
+            if (FUN_141093270()->m_bLookAtMyPCWhenTalking) {
+                PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+                if (pPlayer != NULL)
+                    FUN_14166d2d0(static_cast<const efd::Point3&>(pPlayer->vfunc_18()), 0);
+            }
+            return;
+        }
+        vfunc_59(nState, 0, 0, 1);
+        return;
+    } else if (nState == 0x38) {
+        if (reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0610() != 0) {
+            if (FUN_141093270()->m_bLookAtMyPCWhenTalking) {
+                Unk_StreamPoint ptTarget = reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_1416d0690();
+                if (reinterpret_cast<const efd::Point3&>(ptTarget) != efd::Point3::ZERO)
+                    FUN_14166d2d0(reinterpret_cast<const efd::Point3&>(ptTarget), 0);
+            }
+        }
+    } else if (nState == 0xd) {
+        MS2Ptr<StateHitData> spData(new StateHitData);
+        spData->m_f1c = in.vfunc_o8_5();
+        spData->m_f24 = in.vfunc_o8_5();
+        spData->m_f28 = in.vfunc_o8_5();
+        spData->m_n2c = in.vfunc_o8_1() != 0;
+        FUN_14166dd20(efd::utf8string((const char*)strAnim), fSpeed, true, false);
+        vfunc_59(nState, spData.get(), 0, 1);
+        return;
+    } else if (nState == 0x12 || reinterpret_cast<AdditionalCliList*>(FUN_1416749a0())->FUN_1409709b0() != 0) {
+        return;
+    }
+    ATL::CAtlArray<int> aSkip;
+    int nNone = 0;
+    aSkip.Add(nNone);
+    if (FUN_141099bd0(aSkip, nState) == -1)
+        vfunc_59(nState, 0, 0, 0);
 }
 
 // @0x141092c50
