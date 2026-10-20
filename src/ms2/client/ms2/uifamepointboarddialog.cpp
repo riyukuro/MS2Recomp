@@ -11,6 +11,7 @@
 #include <atlcoll.h>
 #include <atltime.h>
 #include "ms2/ms2format.h"
+#include "ms2/placeholder/wcformat.h"
 #include "ms2/commonfiles/famegradedata.h"
 #include "ms2/client/ms2/questmanager_2.h"
 #include "ms2/placeholder/asdata.h"
@@ -58,8 +59,6 @@ CStringW FUN_140762ee0(int nAlliance, int nGrade);                      // the g
 int FUN_140931210(int nAlliance);                                       // the player's grade
 void FUN_140762fc0(int nAlliance, int* pnCurrent, int* pnMax, CStringW& strPoint);    // the fame points
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
-CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);     // string table text, formatted
-FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 
 extern ATL::CRBMap<__int64, int> DAT_143ab31e8;                         // time -> fame log id
 
