@@ -117,6 +117,7 @@ public:
     class Unk_MmActor* FUN_141bd1320(int nId);                      // the actor of an object id
     PCBase* FUN_141bd1530(unsigned __int64 nCharId);                // a player by character id
     void FUN_141bc5f10(ATL::CAtlArray<MS2Ptr<CInteractObject> >& objects);   // the interact objects
+    ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject> >& FUN_141bc9fb0();   // the proxy objects by object id
 };
 Unk_MmWorld* FUN_1403ed2d0();
 
@@ -2633,6 +2634,130 @@ void UIMinimapDialog::FUN_141a3df40()
     }
 }
 MS2_REPLACE_METHOD(0x141a3df40, UIMinimapDialog, FUN_141a3df40, 0, 0);
+
+void FUN_1408a20a0(egf::Entity* pEntity, unsigned nProperty, bool* pOut);  // reads a bool property
+
+// @0x141a3e4e0
+void UIMinimapDialog::FUN_141a3e4e0(efd::SmartPointer<egf::Entity> spEntity)
+{
+    if (spEntity == 0)
+        return;
+    efd::utf8string strIcon;
+    spEntity->GetPropertyValue(0x6814a50e, strIcon);
+    if (strIcon.length() == 0)
+        return;
+    Unk_StreamPoint kPos = DAT_143b01a60;
+    int nId = 0;
+    bool bVisible = false;
+    FUN_1409618c0(spEntity.operator->(), 0xfd95ca52, &kPos);
+    FUN_1408a2020(spEntity.operator->(), 0x6c37a861, &nId);
+    FUN_1408a20a0(spEntity.operator->(), 0xa0b6b179, &bVisible);
+    EntityPtr spMinimap = new UIMinimapEntity(7);
+    spMinimap->m_icon = "triggerobject";
+    spMinimap->m_layer = s_strLayerTriggerObject;
+    spMinimap->m_position = reinterpret_cast<const efd::Point3&>(kPos);
+    spMinimap->m_visible = bVisible;
+    spMinimap->m_state = strIcon.c_str();
+    spMinimap->m_text = L"";
+    if (FUN_141a3e7d0(spMinimap))
+        m_triggers.SetAt(nId, spMinimap);
+}
+
+// @0x141a3ef80
+void UIMinimapDialog::FUN_141a3ef80()
+{
+    Unk_MmEntityList first = FUN_1403ed2d0()->FUN_141bd0420(0x74b363a7);
+    if (static_cast<bool>(first.FUN_1409f2170()) && !first.FUN_1409f2190()->IsEmpty()) {
+        for (POSITION pos = first.FUN_1409f2190()->GetHeadPosition(); pos != 0; first.FUN_1409f2190()->GetNext(pos)) {
+            efd::SmartPointer<egf::Entity> spObject = first.FUN_1409f2190()->GetAt(pos);
+            FUN_141a3e4e0(spObject);
+        }
+    }
+    Unk_MmEntityList second = FUN_1403ed2d0()->FUN_141bd0420(0x4714f9ea);
+    if (static_cast<bool>(second.FUN_1409f2170()) && !second.FUN_1409f2190()->IsEmpty()) {
+        for (POSITION pos = second.FUN_1409f2190()->GetHeadPosition(); pos != 0; second.FUN_1409f2190()->GetNext(pos)) {
+            efd::SmartPointer<egf::Entity> spObject = second.FUN_1409f2190()->GetAt(pos);
+            FUN_141a3e4e0(spObject);
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141a3ef80, UIMinimapDialog, FUN_141a3ef80, 0, 0);
+
+void FUN_1401d3700(CString& str);                                    // normalises the symbol name
+
+// @0x141a3f1c0
+void UIMinimapDialog::FUN_141a3f1c0()
+{
+    Unk_MmEntityList list = FUN_1403ed2d0()->FUN_141bd0420(0x6fb4d420);
+    if (static_cast<bool>(list.FUN_1409f2170()) && !list.FUN_1409f2190()->IsEmpty()) {
+        int nId = 0;
+        for (POSITION pos = list.FUN_1409f2190()->GetHeadPosition(); pos != 0; list.FUN_1409f2190()->GetNext(pos)) {
+            efd::SmartPointer<egf::Entity> spObject = list.FUN_1409f2190()->GetAt(pos);
+            if (spObject == 0)
+                continue;
+            Unk_StreamPoint kPos = DAT_143b01a60;
+            efd::utf8string strIcon;
+            efd::utf8string strUnused;
+            FUN_1409618c0(spObject.operator->(), 0xfd95ca52, &kPos);
+            spObject->GetPropertyValue(0x6814a50e, strIcon);
+            CString strSymbol(strIcon.c_str());
+            FUN_1401d3700(strSymbol);
+            EntityPtr spEntity = new UIMinimapEntityMapObject(nId, spObject);
+            spEntity->m_icon = strSymbol;
+            spEntity->m_layer = s_strLayerInteract;
+            spEntity->m_position = reinterpret_cast<const efd::Point3&>(kPos);
+            spEntity->m_visible = true;
+            spEntity->m_state = strSymbol;
+            spEntity->m_text = L"";
+            if (FUN_141a3e7d0(spEntity))
+                m_objects.SetAt(nId, spEntity);
+            ++nId;
+        }
+    }
+}
+MS2_REPLACE_METHOD(0x141a3f1c0, UIMinimapDialog, FUN_141a3f1c0, 0, 0);
+
+// @0x141a3ea10
+void UIMinimapDialog::FUN_141a3ea10()
+{
+    if (m_30 == 0)
+        return;
+    FUN_141a3fb10();
+    int nField = FUN_1403ed2d0()->FUN_141bd3060();
+    ATL::CAtlArray<ProxyPtr> portals;
+    ATL::CAtlMap<unsigned int, ProxyPtr>& proxies = FUN_1403ed2d0()->FUN_141bc9fb0();
+    for (POSITION pos = proxies.GetStartPosition(); pos != 0; proxies.GetNext(pos)) {
+        ProxyPtr spProxy = proxies.GetValueAt(pos);
+        if (spProxy.get()) {
+            if (!spProxy->FUN_1416c20d0()) {
+                FUN_141a3d080(spProxy);
+            } else {
+                {
+                    int nDest = spProxy->m_portal->FUN_14169d280();
+                    MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nDest);
+                    if (spField.get() && spField->FUN_140375130()) {
+                        HomeListPtr spHomes(0);
+                        m_homes.SetAt(nDest, spHomes);
+                    }
+                }
+                portals.Add(spProxy);
+            }
+        }
+    }
+    FUN_141a3ed50();
+    size_t nCount = portals.GetCount();
+    for (size_t i = 0; i < nCount; ++i)
+        FUN_141a3d080(portals[i]);
+    if (FUN_1409f24a0()->FUN_14085f6e0(nField))
+        FUN_141a3dbb0();
+    FUN_141a3df40();
+    FUN_141a3dda0();
+    FUN_141a3eed0();
+    FUN_141a3ef80();
+    FUN_141a3f1c0();
+    m_30->Invoke("buildPlayers");
+}
+MS2_REPLACE_METHOD(0x141a3ea10, UIMinimapDialog, FUN_141a3ea10, 0, 0);
 
 // @0x141a3e7d0
 bool UIMinimapDialog::FUN_141a3e7d0(EntityPtr spEntity)
