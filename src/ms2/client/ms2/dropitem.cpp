@@ -575,10 +575,10 @@ void CDropItem::FUN_14118d9a0(int nState)
                     bProp = pProp->FUN_140966e00().get() != 0;
                 if (bProp)
                 {
-                    if (pProp->FUN_140966e00()->m_nDropHeight != 0)
-                        fDropHeight = (float)pProp->FUN_140966e00()->m_nDropHeight;
-                    if (pProp->FUN_140966e00()->m_nDropBase != 0)
-                        fDropBase = (float)pProp->FUN_140966e00()->m_nDropBase;
+                    if (pProp->FUN_140966e00()->m_drop.m_nDropHeight != 0)
+                        fDropHeight = (float)pProp->FUN_140966e00()->m_drop.m_nDropHeight;
+                    if (pProp->FUN_140966e00()->m_drop.m_nDropDistance != 0)
+                        fDropBase = (float)pProp->FUN_140966e00()->m_drop.m_nDropDistance;
                 }
             }
         }

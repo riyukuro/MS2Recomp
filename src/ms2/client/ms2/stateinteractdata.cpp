@@ -401,7 +401,7 @@ void StateInteraction::vfunc_8(double fTime)
             {
                 if (m_n48 == 0)
                 {
-                    float fRange = spObject->FUN_140966e00()->m_fRange;
+                    float fRange = spObject->FUN_140966e00()->m_validate.m_fInteractionDistance;
                     float fDist = spObject->FUN_1409673c0().FUN_140965c40(reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18()).FUN_140967ac0();
                     if (fRange < fDist)
                     {

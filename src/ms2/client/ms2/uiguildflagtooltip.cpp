@@ -122,7 +122,7 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
         int nRank = pImage->FUN_1414021c0();
         int nImageType = 0;
         if (pImage->FUN_140966e00().get() != 0)
-            nImageType = pImage->FUN_140966e00()->m_nImageType;
+            nImageType = pImage->FUN_140966e00()->m_displayUrl.m_nType;
         if (strCaption.GetLength() > 0)
         {
             m_70 = 1;

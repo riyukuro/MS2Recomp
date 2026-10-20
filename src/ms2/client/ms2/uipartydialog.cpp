@@ -3579,7 +3579,7 @@ struct Unk_PpGuild : Unk_PmGuild { MS2Ptr<CGuildMember> FUN_1413b6200(__int64 nC
 struct Unk_PpInteract : CInteractObjectData
 {
     // @0x141a8e590
-    bool FUN_141a8e590() { return m_nKind == 7; }                       // a guild poster
+    bool FUN_141a8e590() { return m_eType == 7; }                       // a guild poster
 };
 
 // The entities of a world type hash (worldservice_1.cpp: a 16-byte box pointer to a list of entity references).
@@ -3851,7 +3851,7 @@ bool FUN_141a8b190(MS2Ptr<CInteractObjectData> spData, float x, float y)
     info.m_c = 0;
     info.m_x = x;
     info.m_y = y;
-    int nPosterId = spData->m_nPosterId;
+    int nPosterId = spData->m_guild.m_nHousePosterId;
     info.m_infoB.m_08 = nPosterId;
     info.m_infoB.m_10 = FUN_1403ed290()->m_info.FUN_1404d2220(nPosterId);
     info.m_infoB.m_18 = FUN_1403ed290()->m_info.FUN_1404d2330(nPosterId);

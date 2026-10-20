@@ -256,11 +256,11 @@ void UIObjectCreateDialog::FUN_14131ff70()
         for (size_t i = 0; i < aData.GetCount(); i++)
         {
             MS2Ptr<CInteractObjectData> data = aData[i];
-            CStringW strName = FUN_1401a9d70()->FUN_141811980(11, data->m_nBanMapType);
+            CStringW strName = FUN_1401a9d70()->FUN_141811980(11, data->m_nId);
             bool bAdd = strSearch.GetLength() == 0;
             if (!bAdd)
             {
-                unsigned nId = data->m_nBanMapType;
+                unsigned nId = data->m_nId;
                 CStringW strId = StringFormat(L"{0}", nId);
                 if (strName.Find(strSearch, 0) != -1 || strId.Find(strSearch, 0) != -1)
                     bAdd = true;
@@ -268,9 +268,9 @@ void UIObjectCreateDialog::FUN_14131ff70()
             if (bAdd)
             {
                 ASObj row(2);
-                unsigned nId = data->m_nBanMapType;
+                unsigned nId = data->m_nId;
                 row.FUN_1407cbb20("label", StringFormat(L"{0} \t{1}", nId, strName));
-                row.FUN_1409c0d20("code", data->m_nBanMapType);
+                row.FUN_1409c0d20("code", data->m_nId);
                 list->FUN_1422dd230(row);
             }
         }

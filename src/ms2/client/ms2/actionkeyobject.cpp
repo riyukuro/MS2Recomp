@@ -1639,12 +1639,12 @@ void InteractAction::vfunc_2()
         return;
     if (pObject->FUN_1413fde40() == 0)
     {
-        Unk_AkoMessage(0x7c9, 1, 1, FUN_1401a9d70()->FUN_141811980(1, spData->m_nCostItemId));
+        Unk_AkoMessage(0x7c9, 1, 1, FUN_1401a9d70()->FUN_141811980(1, spData->m_item.m_nCode));
         return;
     }
     if (pObject->FUN_1413fe220() == 0)
     {
-        if (spData->m_aReqItem.size() == 1)
+        if (spData->m_aReqItem.m_aItem.size() == 1)
             FUN_1412751f0(FUN_1405c2690(L"s_interact_err_additional_effect",
                 FUN_1401a9d70()->FUN_141812290(
                     FUN_140966f40(reinterpret_cast<const Unk_AkoReqItemList&>(spData->m_aReqItem)),
@@ -1654,19 +1654,19 @@ void InteractAction::vfunc_2()
             FUN_1412751f0(FUN_14028b8e0(L"s_interact_err_additional_effect_multi"), 1, 1);
         return;
     }
-    if (*(spData->m_pad_240 + 18) != 0 && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())   // +0x288 (in the pad): needs a party
+    if (spData->m_room.m_nPartyPortal != 0 && !TSingleton<CPartyManager>::GetInstance()->FUN_14162ab60())   // <room> "partyPortal": needs a party
     {
         FUN_141275260(0x893, 1, 1);
         return;
     }
     if (pObject->FUN_1413fdd80() == 0)
     {
-        CStringW strMastery = FUN_1409670c0()->FUN_14066bdd0(spData->m_nGatherNeedA);
-        CStringW strGrade = FUN_1409670c0()->FUN_14066c690(spData->m_nGatherNeedA, spData->m_nGatherNeedB);
+        CStringW strMastery = FUN_1409670c0()->FUN_14066bdd0(spData->m_mastery.m_eType);
+        CStringW strGrade = FUN_1409670c0()->FUN_14066c690(spData->m_mastery.m_eType, spData->m_mastery.m_nValue);
         Unk_AkoMessage(0x896, 1, 1, strMastery, strGrade);
         return;
     }
-    if (spData->m_nCursorType != 0)
+    if (spData->m_nReactTime != 0)
     {
         if (pPlayer->FUN_141527160(0x19) == 0)
             return;
@@ -3389,7 +3389,7 @@ unsigned FUN_140966f40(const Unk_AkoReqItemList& list)
 {
     if (list.m_v.empty())
         return 0;
-    return list.m_v[0].m_nItemId;
+    return list.m_v[0].first;
 }
 
 // @0x140966f80 the first required item's rarity (0 without one)
@@ -3397,7 +3397,7 @@ unsigned short FUN_140966f80(const Unk_AkoReqItemList& list)
 {
     if (list.m_v.empty())
         return 0;
-    return list.m_v[0].m_nRarity;
+    return list.m_v[0].second;
 }
 
 // @0x140966db0

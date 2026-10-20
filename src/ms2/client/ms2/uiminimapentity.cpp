@@ -1877,7 +1877,7 @@ void UIMinimapDialog::FUN_141a39770(MS2Ptr<CInteractObject> spObject)
     if (spObject == 0 || spObject->FUN_140966e00() == 0)
         return;
     bool bQuestObject = CQuestNavigator::GetInstance()->HasNpc(spObject->FUN_140967110()) == 1;
-    if (spObject->FUN_140966e00()->m_strMinimapIcon.IsEmpty() && !bQuestObject)
+    if (spObject->FUN_140966e00()->m_display.m_strMinimapIcon.IsEmpty() && !bQuestObject)
         return;
     NamedMap::CPair* pPair = m_named.Lookup(spObject->FUN_140967060());
     if (pPair != 0)
@@ -2863,7 +2863,7 @@ void UIMinimapDialog::FUN_141a3df40()
             FUN_1409618c0(spObject.operator->(), 0xfd95ca52, &kPos);
             FUN_1408a2020(spObject.operator->(), 0xd460e9bc, &nId);
             MS2Ptr<CInteractObjectData> spData = FUN_14051f670(nId);
-            if (static_cast<bool>(spData.get()) && spData->m_nMinimapKind != 3)
+            if (static_cast<bool>(spData.get()) && spData->m_reward.m_firstExp.m_eType != 3)
                 continue;
             EntityPtr spEntity = new UIMinimapEntity(3);
             spEntity->m_icon = "telescope";
@@ -3414,7 +3414,7 @@ void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool b
 void UIMinimapDialog::FUN_141a44380(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity)
 {
     bool bOverlap = CQuestNavigator::GetInstance()->HasNpc(spObject->FUN_140967110()) == 1 && spObject->FUN_1413b5600() == 1;
-    spEntity->m_icon = bOverlap ? s_strQuestTargetObject : spObject->FUN_140966e00()->m_strMinimapIcon;
+    spEntity->m_icon = bOverlap ? s_strQuestTargetObject : spObject->FUN_140966e00()->m_display.m_strMinimapIcon;
     spEntity->m_layer = s_strLayerInteract;
     spEntity->m_position = reinterpret_cast<Unk_MmObjectPos*>(spObject.operator->())->FUN_1409673c0();
     spEntity->m_text = FUN_1401a9d70()->FUN_141811980(0x10, spObject->FUN_140967110());

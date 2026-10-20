@@ -481,7 +481,7 @@ int CInteractObject::vfunc_4()
     if (m_spRow == 0)
         return 0;
     unsigned nMapId = FUN_1403ed2d0()->FUN_141bd3060();
-    int nBan = m_spRow->m_nBanMapType;
+    int nBan = m_spRow->m_nId;
     if (FUN_1403f3230(FUN_140302b00())->FUN_1407d05e0(nMapId, nBan) == 1)
     {
         FUN_141275260(0x2f7, 1, 1);
@@ -532,7 +532,7 @@ void CInteractObject::vfunc_6(Unk_InteractCursor* pOut)
 {
     int nId = FUN_140967110();
     pOut->m_strHint = FUN_1401a9d70()->FUN_141811980(0xb, nId);
-    pOut->m_nCursor = m_spRow->m_nCursorType;
+    pOut->m_nCursor = m_spRow->m_nReactTime;
 }
 
 // @0x1413fda50
@@ -595,10 +595,10 @@ int CInteractObject::FUN_1413fdd80()
     Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    if (m_spRow->m_nGatherNeedA != 0)
+    if (m_spRow->m_mastery.m_eType != 0)
     {
-        int nItemId = m_spRow->m_nGatherNeedA;
-        int nNeed = m_spRow->m_nGatherNeedB;
+        int nItemId = m_spRow->m_mastery.m_eType;
+        int nNeed = m_spRow->m_mastery.m_nValue;
         if (pPlayer->FUN_1416627d0(nItemId) < nNeed)
             return 0;
     }
@@ -611,20 +611,20 @@ int CInteractObject::FUN_1413fde40()
 {
     if (m_spRow == 0)
         return 0;
-    if (m_spRow->m_nCostItemId != 0)
+    if (m_spRow->m_item.m_nCode != 0)
     {
-        int nRarity = m_spRow->m_nCostItemRarity;
+        int nRarity = m_spRow->m_item.m_nRank;
         if (nRarity == 0)
-            nRarity = FUN_14053feb0(m_spRow->m_nCostItemId);
+            nRarity = FUN_14053feb0(m_spRow->m_item.m_nCode);
         Unk_IoItemRef item;
-        DAT_143ab2a90.FUN_140a5e5c0(&item, m_spRow->m_nCostItemId, nRarity);
+        DAT_143ab2a90.FUN_140a5e5c0(&item, m_spRow->m_item.m_nCode, nRarity);
         if (item.FUN_140534e50() != 0)
         {
             item.FUN_1401bfde0();
             return 0;
         }
         unsigned nLevel = item.FUN_1401c0180()->FUN_140526c50();
-        if (nLevel < m_spRow->m_nCostItemLevel)
+        if (nLevel < m_spRow->m_item.m_nConsume)
         {
             item.FUN_1401bfde0();
             return 0;
@@ -657,7 +657,7 @@ int CInteractObject::FUN_1413fe040()
         return 0;
     if (m_spRow == 0)
         return 0;
-    if (m_spRow->m_nNeedCond == 0)
+    if (m_spRow->m_homePrivilege.m_nCheck == 0)
         return 1;
     unsigned nId = FUN_140967110();
     return pPlayer->FUN_140967010()->FUN_14050d890(nId);
@@ -671,7 +671,7 @@ int CInteractObject::FUN_1413fe120()
         return 0;
     if (m_spRow == 0)
         return 0;
-    int nNeed = m_spRow->m_nNeedValue;
+    int nNeed = m_spRow->m_arena.m_nCanInteractTeamId;
     if (nNeed == 0)
         return 1;
     bool bSame = FUN_140743710(pPlayer->FUN_140967420().operator->()) == nNeed;
@@ -688,14 +688,14 @@ int CInteractObject::FUN_1413fe220()
         return 0;
     if (m_spRow == 0)
         return 0;
-    if (FUN_141404030(m_spRow->m_aReqItem))
+    if (FUN_141404030(m_spRow->m_aReqItem.m_aItem))
     {
-        std::vector<Unk_InteractReqItem>& aReq = m_spRow->m_aReqItem;
+        std::vector<Unk_InteractReqItem>& aReq = m_spRow->m_aReqItem.m_aItem;
         std::vector<Unk_InteractReqItem>::iterator itEnd = aReq.end();
         for (std::vector<Unk_InteractReqItem>::iterator it = aReq.begin(); it != itEnd; ++it)
         {
             Unk_InteractReqItem req = *it;
-            if (pPlayer->FUN_1416749a0()->FUN_140970020(req.m_nItemId, req.m_nRarity, 0, 1) == 1)
+            if (pPlayer->FUN_1416749a0()->FUN_140970020(req.first, req.second, 0, 1) == 1)
                 return 1;
         }
         return 0;
@@ -763,7 +763,7 @@ void CInteractObject::vfunc_11()
 // @0x1413fe5d0
 void CInteractObject::vfunc_12()
 {
-    if (m_spRow->m_strEffect.GetLength() != 0)
+    if (m_spRow->m_effect.m_strSuccess.GetLength() != 0)
     {
         Unk_IoXform xf;
         FUN_140a332d0(&xf);
@@ -776,7 +776,7 @@ void CInteractObject::vfunc_12()
         xf.m_fScale = 1.0f;
         Unk_IoFxRequest request;
         FUN_140a52ef0(&request);
-        request.m_strName = m_spRow->m_strEffect;
+        request.m_strName = m_spRow->m_effect.m_strSuccess;
         request.m_nOwnerId = 1;
         request.m_pXform = &xf;
         Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -791,9 +791,9 @@ void CInteractObject::vfunc_12()
 CString CInteractObject::vfunc_13()
 {
     if (m_nState == 0)
-        return m_spRow->m_strModelA;
+        return m_spRow->m_effect.m_strNormal;
     if (m_nState == 1)
-        return m_spRow->m_strModelB;
+        return m_spRow->m_effect.m_strReactable;
     return CString();
 }
 
@@ -801,9 +801,9 @@ CString CInteractObject::vfunc_13()
 QuestMask* CInteractObject::FUN_1413fe8a0()
 {
     if (m_nState == 0)
-        return &m_spRow->m_maskStateA;
+        return &m_spRow->m_effect.m_maskNormal;
     if (m_nState == 1)
-        return &m_spRow->m_maskStateB;
+        return &m_spRow->m_effect.m_maskReactable;
     return &DAT_143aacd50;
 }
 
@@ -938,9 +938,9 @@ void CInteractMeshObject::vfunc_3(int nState)
             FUN_1413ff690(*pAsset);
             int nCollision;
             if (bFirst == 0)
-                nCollision = m_spRow->m_nShowCollisionB;
+                nCollision = m_spRow->m_mesh.m_nReactableCollision;
             else
-                nCollision = m_spRow->m_nShowCollisionA;
+                nCollision = m_spRow->m_mesh.m_nNormalCollision;
             FUN_1413ff800(nCollision);
         }
     }
@@ -978,7 +978,7 @@ void CInteractMeshObject::MakeNxBoxController()
     Unk_StreamPoint ptPos;
     ptPos = m_vPos;
     NxBoxShapeDesc box;
-    box.dimensions.set(m_spRow->m_fBoxX, m_spRow->m_fBoxY, m_spRow->m_fBoxZ);
+    box.dimensions.set(m_spRow->m_mesh.m_shapeDimension.x, m_spRow->m_mesh.m_shapeDimension.y, m_spRow->m_mesh.m_shapeDimension.z);
     box.dimensions *= 0.01f;
     box.dimensions *= 0.5f;
     box.groupsMask.bits0 = 0xffffffff;
@@ -990,7 +990,7 @@ void CInteractMeshObject::MakeNxBoxController()
     actorDesc.globalPose.t = vPose;
     actorDesc.globalPose.M.rotZ((m_vRot.z * 3.1415927f) / 180.0f);
     NxVec3 vSet(m_vPos.x * 0.01f, m_vPos.y * 0.01f, m_vPos.z * 0.01f);
-    vSet.z += m_spRow->m_fBoxZ * 0.01f * 0.5f;
+    vSet.z += m_spRow->m_mesh.m_shapeDimension.z * 0.01f * 0.5f;
     FUN_1409f7ca0()->FUN_14168a540(0);
     m_pActor = pScene->createActor(actorDesc);
     if (m_pActor != 0)
@@ -1057,8 +1057,8 @@ void CInteractMeshObject::FUN_1413ff800(int nCollision)
 // @0x1413ff840
 void CInteractMeshObject::FUN_1413ff840()
 {
-    if (m_spRow->m_strMeshPathA.GetLength() > 0)
-        FUN_1413ff690(m_spRow->m_strMeshPathA);
+    if (m_spRow->m_mesh.m_strReactObjectAni.GetLength() > 0)
+        FUN_1413ff690(m_spRow->m_mesh.m_strReactObjectAni);
 }
 
 // @0x1413ff8a0
@@ -1173,13 +1173,13 @@ void CInteractUIObject::vfunc_2(Unk_InteractMsg* pMsg)
     CInteractObject::vfunc_2(pMsg);
     char ref[16];
     UISwfEntity* pEntity = reinterpret_cast<UISwfEntity*>(
-        FUN_140b634c0(FUN_140b632f0()->FUN_1422d41b0(ref, m_spRow->m_strUiName)));
+        FUN_140b634c0(FUN_140b632f0()->FUN_1422d41b0(ref, m_spRow->m_ui.m_strSwf)));
     UIDialog* pDialog = dynamic_cast<UIDialog*>(pEntity);
     FUN_140b62af0(ref);
     if (pDialog != 0)
     {
-        if (m_spRow->m_strUiTitle.GetLength() != 0)
-            pDialog->FUN_1419265e0(m_spRow->m_strUiTitle);
+        if (m_spRow->m_ui.m_strValue.GetLength() != 0)
+            pDialog->FUN_1419265e0(m_spRow->m_ui.m_strValue);
         FUN_1403ed2b0()->FUN_141adc530(pDialog->vfunc_48());
         m_nDialogId = pDialog->vfunc_48();
     }
@@ -1200,7 +1200,7 @@ void CInteractUIObject::vfunc_11()
         }
         else
         {
-            float fRange = FUN_140966e00()->m_fRange;
+            float fRange = FUN_140966e00()->m_validate.m_fInteractionDistance;
             Unk_StreamPoint ptSelf = FUN_1409673c0();
             Unk_StreamPoint ptPlayer;
             pPlayer->FUN_1416767d0(&ptPlayer);
@@ -1255,7 +1255,7 @@ int CInteractDisplayImage::vfunc_1(Unk_Entity* pEntity, int nState)
     if (FUN_140166410()->FUN_14036e4c0() != 0)
     {
         m_strUrl = "";
-        FUN_141b794e0(FUN_140cc18a0(), m_strUrl, (const char*)m_spRow->m_strUrl);
+        FUN_141b794e0(FUN_140cc18a0(), m_strUrl, (const char*)m_spRow->m_displayUrl.m_strIndirectUrl);
         if (m_strUrl.GetLength() > 0)
             m_pThread = AfxBeginThread(GetURLFromIndirectURL, this, 0, 0, 0, 0);
     }
@@ -1346,7 +1346,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
     if (spRow == 0)
         return;
     CString strKey = FUN_140390ea0(strName, 0);
-    if (spRow->m_nImageType == 1 || m_spRow->m_nImageType == 3)
+    if (spRow->m_displayUrl.m_nType == 1 || m_spRow->m_displayUrl.m_nType == 3)
     {
         Unk_IoXmlElem elem;
         FUN_14086f2f0(&elem, "guild");
@@ -1371,7 +1371,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
             FUN_1414017b0(strPath);
         FUN_14086f450(&elem);
     }
-    else if (spRow->m_nImageType == 2)
+    else if (spRow->m_displayUrl.m_nType == 2)
     {
         Unk_IoXmlElem elem;
         FUN_14086f2f0(&elem, "character");
@@ -1390,7 +1390,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
             FUN_1414017b0(strPath);
         FUN_14086f450(&elem);
     }
-    else if (spRow->m_nImageType == 4)
+    else if (spRow->m_displayUrl.m_nType == 4)
     {
         Unk_IoXmlElem elem;
         FUN_14086f2f0(&elem, "character");
@@ -1409,7 +1409,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
             FUN_1414017b0(strPath);
         FUN_14086f450(&elem);
     }
-    else if (spRow->m_nImageType == 5)
+    else if (spRow->m_displayUrl.m_nType == 5)
     {
         Unk_IoXmlElem elem;
         FUN_14086f2f0(&elem, "character");
@@ -1457,7 +1457,7 @@ void CInteractDisplayImage::FUN_141401380(Unk_IoRankPtr spRank)
     m_nCharBuildPoint = spRank.FUN_140b2e1e0()->m_nScore;
     m_nCharScore = spRank.FUN_140b2e1e0()->m_nScore;
     CString strPath("");
-    int nType = m_spRow->m_nImageType;
+    int nType = m_spRow->m_displayUrl.m_nType;
     if (nType == 1 || nType == 3)
     {
         strPath = FUN_141029590(nGuildSn, strKey, FUN_140967060(), CString(""));
@@ -1543,12 +1543,12 @@ UINT CInteractDisplayImage::GetURLFromGameRanking(LPVOID pParam)
         return 0;
     }
     CString strName = pThis->FUN_140967060();
-    int nImageType = pThis->m_spRow->m_nImageType;
+    int nImageType = pThis->m_spRow->m_displayUrl.m_nType;
     int nRankType = 0;
-    CString strUrl(pThis->m_spRow->m_strUrl);
+    CString strUrl(pThis->m_spRow->m_displayUrl.m_strIndirectUrl);
     CString strTag("rank=");
     int nPos = strUrl.Find(strTag, 0);
-    char chRank = pThis->m_spRow->m_strUrl.GetAt(nPos + strTag.GetLength());
+    char chRank = pThis->m_spRow->m_displayUrl.m_strIndirectUrl.GetAt(nPos + strTag.GetLength());
     if (nImageType == 1)
         nRankType = 1;
     else if (nImageType == 2)
@@ -1600,9 +1600,9 @@ CStringW CInteractDisplayImage::FUN_141402060()
 {
     if (m_spRow == 0)
         return CStringW();
-    if (m_spRow->m_nImageType != 1 && m_spRow->m_nImageType != 3)
+    if (m_spRow->m_displayUrl.m_nType != 1 && m_spRow->m_displayUrl.m_nType != 3)
     {
-        if (m_spRow->m_nImageType != 2 && m_spRow->m_nImageType != 4 && m_spRow->m_nImageType != 5)
+        if (m_spRow->m_displayUrl.m_nType != 2 && m_spRow->m_displayUrl.m_nType != 4 && m_spRow->m_displayUrl.m_nType != 5)
             return CStringW();
         return m_strCharName;
     }
@@ -1614,9 +1614,9 @@ int CInteractDisplayImage::FUN_1414021c0()
 {
     if (m_spRow == 0)
         return 0;
-    if (m_spRow->m_nImageType != 1 && m_spRow->m_nImageType != 3)
+    if (m_spRow->m_displayUrl.m_nType != 1 && m_spRow->m_displayUrl.m_nType != 3)
     {
-        if (m_spRow->m_nImageType != 2 && m_spRow->m_nImageType != 4 && m_spRow->m_nImageType != 5)
+        if (m_spRow->m_displayUrl.m_nType != 2 && m_spRow->m_displayUrl.m_nType != 4 && m_spRow->m_displayUrl.m_nType != 5)
             return 0;
         return m_nCharRank;
     }
@@ -1628,15 +1628,15 @@ int CInteractDisplayImage::FUN_1414022a0()
 {
     if (m_spRow == 0)
         return 0;
-    if (m_spRow->m_nImageType == 1)
+    if (m_spRow->m_displayUrl.m_nType == 1)
         return m_nGuildTrophy;
-    if (m_spRow->m_nImageType == 2)
+    if (m_spRow->m_displayUrl.m_nType == 2)
         return m_nCharTrophy;
-    if (m_spRow->m_nImageType == 3)
+    if (m_spRow->m_displayUrl.m_nType == 3)
         return m_nGuildScore;
-    if (m_spRow->m_nImageType == 4)
+    if (m_spRow->m_displayUrl.m_nType == 4)
         return m_nCharBuildPoint;
-    if (m_spRow->m_nImageType == 5)
+    if (m_spRow->m_displayUrl.m_nType == 5)
         return m_nCharScore;
     return 0;
 }
@@ -1674,7 +1674,7 @@ void CInteractGatheringObject::vfunc_2(Unk_InteractMsg* pMsg)
     int nCount = pMsg->Stream()->ReadInt();
     vfunc_3(0);
     int nNow = FUN_140869420();
-    m_nRespawnTick = nNow + m_spRow->m_nRespawnTime;
+    m_nRespawnTick = nNow + m_spRow->m_nResetTime;
     Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
@@ -1693,7 +1693,7 @@ void CInteractGatheringObject::vfunc_2(Unk_InteractMsg* pMsg)
         pPlayer->SendState(0x19, FUN_140965870(&spData), nMsg, 0);
         FUN_140964bc0(&spData);
     }
-    int nGatherId = m_spRow->m_nGatherId;
+    int nGatherId = m_spRow->m_gathering.m_nReceipeId;
     if (nGatherId != 0 && sType == 0)
     {
         int nHave = 0;
@@ -1744,11 +1744,11 @@ int CInteractGatheringObject::vfunc_7()
     Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    int nGatherId = m_spRow->m_nGatherId;
+    int nGatherId = m_spRow->m_gathering.m_nReceipeId;
     if (nGatherId != 0)
     {
         Unk_IoGatherIt it;
-        FUN_1409670c0()->FUN_14066aa00(&it, m_spRow->m_nGatherId);
+        FUN_1409670c0()->FUN_14066aa00(&it, m_spRow->m_gathering.m_nReceipeId);
         if (it.FUN_14066d900() != 0)
         {
             it.FUN_14066d5b0();
@@ -1760,7 +1760,7 @@ int CInteractGatheringObject::vfunc_7()
             it.FUN_14066d5b0();
             return 0;
         }
-        if (FUN_140e5ca20()->FUN_140b6d330(m_spRow->m_nGatherId) == 0)
+        if (FUN_140e5ca20()->FUN_140b6d330(m_spRow->m_gathering.m_nReceipeId) == 0)
         {
             it.FUN_14066d5b0();
             return 0;
@@ -1775,7 +1775,7 @@ int CInteractGatheringObject::vfunc_16()
 {
     if (FUN_141402c90() == 0)
         return 0;
-    int nId = m_spRow->m_nGatherId;
+    int nId = m_spRow->m_gathering.m_nReceipeId;
     if (FUN_1409670c0()->FUN_14066bc40(nId) == 3)
         return 0;
     return 1;
@@ -1787,16 +1787,16 @@ int CInteractGatheringObject::FUN_141402b40()
 {
     if (vfunc_15() != 0)
         return 0;
-    if (m_spRow->m_nGatherId != 0)
+    if (m_spRow->m_gathering.m_nReceipeId != 0)
     {
         Unk_IoGatherIt it;
-        FUN_1409670c0()->FUN_14066aa00(&it, m_spRow->m_nGatherId);
+        FUN_1409670c0()->FUN_14066aa00(&it, m_spRow->m_gathering.m_nReceipeId);
         if (it.FUN_14066d900() != 0)
         {
             it.FUN_14066d5b0();
             return 0;
         }
-        if (FUN_140e5ca20()->FUN_140b6d330(m_spRow->m_nGatherId) == 0)
+        if (FUN_140e5ca20()->FUN_140b6d330(m_spRow->m_gathering.m_nReceipeId) == 0)
         {
             it.FUN_14066d5b0();
             return 0;
@@ -1817,7 +1817,7 @@ int CInteractGatheringObject::FUN_141402c50()
 // @0x141402c90
 bool CInteractGatheringObject::FUN_141402c90()
 {
-    return FUN_140e5ca20()->FUN_140b6d470(m_spRow->m_nGatherId) == 0;
+    return FUN_140e5ca20()->FUN_140b6d470(m_spRow->m_gathering.m_nReceipeId) == 0;
 }
 
 // ================================================================================================================
@@ -1860,7 +1860,7 @@ int CInteractGuildPosterObject::FUN_141402e60()
 {
     if (m_spRow == 0)
         return 0;
-    return m_spRow->m_nPosterId;
+    return m_spRow->m_guild.m_nHousePosterId;
 }
 
 // MS2-FUNCTIONAL: string temporaries differ: the exe builds the CStringW copy for FUN_140a25840 after the URL and keeps the texture handle as a by-value object (one CStringA dtor fewer, EH states shifted); the raw texture handle here is released by hand

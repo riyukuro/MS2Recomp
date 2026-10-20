@@ -1234,7 +1234,7 @@ int CSmartPushAutoInteractObject::vfunc_14()
     CInteractGatheringObject* pObj = FUN_140dd3dd0();
     if (pObj == 0)
         return 0;
-    return pObj->FUN_140966e00()->m_nGatherId;
+    return pObj->FUN_140966e00()->m_gathering.m_nReceipeId;
 }
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
@@ -1250,12 +1250,12 @@ CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
     for (size_t i = 0; i < objects.GetCount(); i++)
     {
         CInteractObject* pObj = objects[i].get();
-        MS2Ptr<Unk_SpRecipe> spRecipe = FUN_1409670c0()->FUN_14066aa00(pObj->FUN_140966e00()->m_nGatherId);
+        MS2Ptr<Unk_SpRecipe> spRecipe = FUN_1409670c0()->FUN_14066aa00(pObj->FUN_140966e00()->m_gathering.m_nReceipeId);
         if (!spRecipe)
             continue;
         if (spRecipe->m_nMastery != nKind)
             continue;
-        float fRange = pObj->FUN_140966e00()->m_fRange;
+        float fRange = pObj->FUN_140966e00()->m_validate.m_fInteractionDistance;
         Unk_StreamPoint ptObj = pObj->FUN_1409673c0();
         NiPoint3 pt = pMy->vfunc_18();
         Unk_StreamPoint ptMy(pt.x, pt.y, pt.z);

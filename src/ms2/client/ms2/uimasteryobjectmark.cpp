@@ -411,7 +411,7 @@ void UIMasteryObjectMark::FUN_140e5b450(const CStringA& strKey)
 // @0x140e5b520
 int UIMasteryObjectMark::FUN_140e5b520(CInteractObject* pObject, EntityContext* pContext)
 {
-    int nChanged = FUN_140e5b720(pObject->FUN_140966e00()->m_nGatherId, pContext);
+    int nChanged = FUN_140e5b720(pObject->FUN_140966e00()->m_gathering.m_nReceipeId, pContext);
     CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, pObject->FUN_140967110());
     if (pContext->m_strObjName != strName)
     {

@@ -6417,7 +6417,7 @@ void CSceneStateGame::FUN_14172d0f0(CInPacket& packet)
             if (spObj->vfunc_5() != nKind)
                 return;
             spObj->vfunc_12();
-            int nNotice = spObj->FUN_140966e00()->m_nFirstUseNotice;
+            int nNotice = spObj->FUN_140966e00()->m_nCollection;
             if (nNotice != 0)
             {
                 int nTemplate = spObj->FUN_140967110();
@@ -6448,7 +6448,7 @@ void CSceneStateGame::FUN_14172d0f0(CInPacket& packet)
                 return;
             if (spObj->FUN_140966e00().IsNull())
                 return;
-            Unk_AkoMessage(0x7c9, 1, 1, FUN_1401a9d70()->FUN_141811980(1, spObj->FUN_140966e00()->m_nCostItemId));
+            Unk_AkoMessage(0x7c9, 1, 1, FUN_1401a9d70()->FUN_141811980(1, spObj->FUN_140966e00()->m_item.m_nCode));
         }
         else if (nResult == 13)
         {
@@ -6458,8 +6458,8 @@ void CSceneStateGame::FUN_14172d0f0(CInPacket& packet)
             MS2Ptr<CInteractObjectData> spData = spObj->FUN_140966e00();
             if (spData.IsNull())
                 return;
-            CStringW strMastery = FUN_1409670c0()->FUN_14066bdd0(spData->m_nGatherNeedA);
-            CStringW strGrade = FUN_1409670c0()->FUN_14066c690(spData->m_nGatherNeedA, spData->m_nGatherNeedB);
+            CStringW strMastery = FUN_1409670c0()->FUN_14066bdd0(spData->m_mastery.m_eType);
+            CStringW strGrade = FUN_1409670c0()->FUN_14066c690(spData->m_mastery.m_eType, spData->m_mastery.m_nValue);
             Unk_AkoMessage(0x896, 1, 1, strMastery, strGrade);
         }
         else
