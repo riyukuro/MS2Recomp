@@ -342,6 +342,12 @@
 // MS2-PIN: ??$destroy@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@?$_Default_allocator_traits@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@@std@@SAXAEAV?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@1@QEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@1@@Z 0x141bedc90
 // MS2-PIN: ??$destroy@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@?$_Default_allocator_traits@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@std@@@std@@SAXAEAV?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@1@QEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@1@@Z 0x141bedcb0
 // MS2-PIN: ??$destroy@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@?$_Default_allocator_traits@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@std@@@std@@SAXAEAV?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@1@QEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@1@@Z 0x141bedcd0
+// The vector::emplace_back COMDATs (sorted by mangled name).
+// MS2-PIN: ??$emplace_back@AEAV?$MS2Ptr@VCLiftableTargetBox@@@@@?$vector@V?$MS2Ptr@VCLiftableTargetBox@@@@V?$allocator@V?$MS2Ptr@VCLiftableTargetBox@@@@@std@@@std@@QEAAXAEAV?$MS2Ptr@VCLiftableTargetBox@@@@@Z 0x141bedec0
+// MS2-PIN: ??$emplace_back@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@2@@std@@QEAAX$$QEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@1@@Z 0x141bedf30
+// MS2-PIN: ??$emplace_back@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@2@@std@@QEAAX$$QEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@1@@Z 0x141bedfa0
+// MS2-PIN: ??$emplace_back@V?$MS2Ptr@VCLiftableObject@@@@@?$vector@V?$MS2Ptr@VCLiftableObject@@@@V?$allocator@V?$MS2Ptr@VCLiftableObject@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VCLiftableObject@@@@@Z 0x141bee010
+// MS2-PIN: ??$emplace_back@V?$MS2Ptr@VMS2ActorUpdater@@@@@?$vector@V?$MS2Ptr@VMS2ActorUpdater@@@@V?$allocator@V?$MS2Ptr@VMS2ActorUpdater@@@@@std@@@std@@QEAAX$$QEAV?$MS2Ptr@VMS2ActorUpdater@@@@@Z 0x141bee080
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "worldservice.h"
@@ -371,7 +377,9 @@
 #include <egmAnimation/ActorMessages.h>
 #include "ms2/placeholder/tfunctor.h"
 #include "ms2/placeholder/coptimizer.h"
-#include "worldservice_real.h"                            // CEntityShower / CEntityHider (m_980 / m_990 values)
+#include "worldservice_real.h"
+#include "liftableobject.h"
+#include "liftabletarget.h"                            // CEntityShower / CEntityHider (m_980 / m_990 values)
 struct Unk_WsD_EffectCtx : public CPtred {};            // m_848 value: the effect of an effect message (add-ref 0x141c1f4a0)
 class Unk_WsPtrT_141c1f500 : public CPtred {};          // tag-range object (FUN_141bc3560), camera shake (FUN_141bc9020)
 class Unk_WsPtrT_141c1f530 : public CPtred {};          // m_540 / m_570 value (FUN_141bd3920)
@@ -481,4 +489,19 @@ void Unk_WsInst3Destroys()
     WsDriveDestroy<std::allocator<std::pair<CStringA, CStringA> > >(static_cast<std::pair<CStringA, CStringA>*>(0));
     WsDriveDestroy<WsReal::Veca00::allocator_type>(static_cast<WsReal::Veca00::value_type*>(0));
     WsDriveDestroy<WsReal::Veca18::allocator_type>(static_cast<WsReal::Veca18::value_type*>(0));
+}
+
+// The vector::emplace_back instantiations (0x141bedec0-0x141bee0ef).
+void Unk_WsInst3Emplaces(MS2Ptr<CLiftableTargetBox>& box)
+{
+    std::vector<MS2Ptr<CLiftableTargetBox> > boxes;
+    boxes.emplace_back(box);
+    WsReal::Veca00 a00;
+    a00.emplace_back(WsReal::Veca00::value_type());
+    WsReal::Veca18 a18;
+    a18.emplace_back(WsReal::Veca18::value_type());
+    std::vector<MS2Ptr<CLiftableObject> > lifts;
+    lifts.emplace_back(MS2Ptr<CLiftableObject>());
+    WsReal::Vec9a0 updaters;
+    updaters.emplace_back(MS2Ptr<MS2ActorUpdater>());
 }
