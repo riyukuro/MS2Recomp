@@ -123,9 +123,21 @@
 // MS2-PIN: ?GetNode@?$CAtlMap@_KUUnk_W6V468@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@UUnk_W6V468@@@3@@ATL@@AEBAPEAVCNode@12@_KAEAI1AEAPEAV312@@Z 0x141bffcf0 ; prop
 // MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x141bffe10 ; order
 // MS2-PINS-END tplpin
+#define NOMINMAX                                // worldservice_tail.h -> interactobject.h -> NxPhysics.h
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/client/ms2/worldservice_tail.h"
+#include "ms2/client/ms2/alphaanimation.h"
+#include "ms2/client/ms2/ms2actorupdater.h"
+#include "ms2/client/ms2/camera.h"
+#include "ms2/client/ms2/textureanimationdata.h"
+#include "ms2/client/ms2/uidebugtooltip.h"
+#include "ms2/placeholder/cinteractwebobject.h"
+#include "ms2/placeholder/cdebughelper.h"
+#include "ms2/placeholder/notifyworld.h"
+#include <NiControllerManager.h>
+#include <NiControllerSequence.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/tfunctor.h"
@@ -216,12 +228,6 @@ struct Unk_W6V5a0 { ~Unk_W6V5a0(); void* p; };               // dtor 0x1410a6c00
 struct Unk_W6V420 { ~Unk_W6V420(); void* p0; void* p1; };   // dtor 0x140a00490
 struct Unk_W6V2f8 { ~Unk_W6V2f8(); void* p0; void* p1; };   // dtor 0x14123ebe0
 struct Unk_W6V468 { ~Unk_W6V468(); void* p0; void* p1; };   // dtor 0x1410b4290
-// The Notify* messages WorldService posts (vftable slot 1 = the name, an exe COMDAT of another range): constructing them here emits the
-// vftable and the scalar deleting dtors this tail holds.
-class NotifyChangeServer : public NotifyObject { public: NotifyChangeServer() {} virtual CStringW vfunc_1(); };
-class NotifyCreateMyPC : public NotifyObject { public: NotifyCreateMyPC() {} virtual CStringW vfunc_1(); };
-class NotifyGameStart : public NotifyObject { public: NotifyGameStart() {} virtual CStringW vfunc_1(); };
-class NotifyRemoveGameObject : public NotifyObject { public: NotifyRemoveGameObject() {} virtual CStringW vfunc_1(); };
 struct Unk_W6Access : WorldService { Unk_W6Access(); static void Del(WorldService* w) { static_cast<Unk_W6Access*>(w)->WorldService::DeleteThis(); } };   // reaches the protected DeleteThis
 void Unk_WsInst6(WorldService* w)
 {
@@ -268,7 +274,7 @@ void Unk_WsInst6(WorldService* w)
     delete new NotifyChangeServer;
     delete new NotifyCreateMyPC;
     delete new NotifyGameStart;
-    delete new NotifyRemoveGameObject;
+    delete new NotifyRemoveGameObject(0);
     // inline virtuals of the class macros, emitted here as COMDATs
     w->WorldService::DecRefCount();
     Unk_W6Access::Del(w);
@@ -350,6 +356,90 @@ void Unk_WsInst6(WorldService* w)
     WsDestroy(w->m_a00);
     WsConstruct(w->m_a18);
     WsDestroy(w->m_a18);
+}
+
+// The compiler-generated WorldService scalar deleting dtor and its TSingleton<WorldService> thunk. MSVC emits them with
+// WorldService's vftables in the TU that defines its ctor (worldservice_1.cpp), so they are written out here.
+// @0x141bfaad0
+// MS2-FUNCTIONAL: ??_GWorldService (efd::MemObject sized delete unless bit 4 asks for the global one)
+void* Unk_WsScalarDeletingDtor(WorldService* pService, unsigned int nFlags)
+{
+    pService->WorldService::~WorldService();
+    if (nFlags & 1)
+    {
+        if ((nFlags & 4) == 0)
+            efd::MemObject::operator delete(pService, sizeof(WorldService));
+        else
+            ::operator delete(pService, sizeof(WorldService));
+    }
+    return pService;
+}
+// @0x141bf99b8
+// MS2-FUNCTIONAL: the vftable 0x142ffec20 thunk (this - 0x18) into ??_GWorldService
+void* Unk_WsSingletonDeletingDtor(TSingleton<WorldService>* pSingleton, unsigned int nFlags)
+{
+    return Unk_WsScalarDeletingDtor(static_cast<WorldService*>(pSingleton), nFlags);
+}
+
+// The camera's entity id value. Inline in the original, its COMDAT reads the including TU's copy of the header static
+// egf::kENTITY_INVALID (worldservice.cpp's is 0x143af8278).
+extern egf::EntityID DAT_143af8278;
+// @0x141bfe700
+unsigned __int64 Camera::FUN_141bfe700()
+{
+    return m_10 == NULL ? DAT_143af8278.GetValue() : m_10->GetEntityIDValue();
+}
+
+// The rest of the tail over the recovered types (worldservice_tail.h, the std members, the classes WorldService creates).
+void Unk_WsInst6Tail(CEntityShower& shower, MS2ActorUpdater& updater, CameraMgr& camera, NiControllerManager& manager,
+    NiControllerSequence& sequence, const NiFixedString& name)
+{
+    // std::pair<const K, V> scalar deleting dtors (node / element destruction)
+    { std::map<int, efd::SmartPointer<egf::Entity> > m; m.clear(); }                       // m_ac0
+    { std::map<egf::EntityID, efd::SmartPointer<CEntityHider> > m; m.clear(); }            // m_990
+    { std::map<egf::EntityID, efd::SmartPointer<CEntityShower> > m; m.clear(); }           // m_980
+    { std::map<egf::EntityID, efd::SmartPointer<egf::Entity> > m; m.clear(); }             // m_2e8
+    { std::map<__int64, MS2Ptr<UIDebugTooltip> > m; m.clear(); }                           // m_ad0
+    { std::vector<std::pair<CStringA, CStringA> > v; v.clear(); }                          // FUN_141bdb1b0's local
+    { std::vector<std::pair<CStringA, CStringW> > v; v.clear(); }                          // m_a00
+    { std::vector<std::pair<CStringA, MS2Ptr<Unk_WsK_Rank> > > v; v.clear(); }             // m_a18
+    // classes WorldService creates: their implicit ctors emit the vftables and the scalar deleting dtors
+    { egmAnimation::ActorRemovedMessage msg; }
+    delete new CInteractWebObject();
+    delete new CLiftableTargetBox();
+    delete new CLiftableTargetGuide();
+    NiNew TextureLayerManager();
+    delete new TSingleton<WorldService>();
+    // CAtlMap: FreeNode -> CNode scalar deleting dtor; CreateNode / GetNode of the enum-keyed map
+    { Unk_WsM5 m; m.RemoveKey(0); }
+    { Unk_WsM10 m; m.RemoveKey(0); }
+    { Unk_WsM11 m; m.RemoveKey(0); }
+    { Unk_WsM7 m; m.SetAt(Unk_WsMapKey7(), MS2Ptr<Unk_WsMapV7>()); m.Lookup(Unk_WsMapKey7()); }
+    // CRBTree: Find, FreeNode -> CNode scalar deleting dtor
+    { Unk_WsF8 m; m.Lookup(0); m.RemoveKey(0); }
+    { Unk_WsF9 m; m.Lookup(0); m.RemoveKey(0); }
+    { Unk_WsF10 m; m.Lookup(CStringA()); m.RemoveKey(CStringA()); }
+    { Unk_WsF13 m; m.Lookup(CStringA()); m.RemoveKey(CStringA()); }
+    { Unk_WsF15 m; m.Lookup(egf::EntityID()); m.RemoveKey(egf::EntityID()); }
+    { Unk_WsF16 m; m.Lookup(Unk_WsKindKey()); m.RemoveKey(Unk_WsKindKey()); }
+    // CAtlArray::Add, CAtlList::AddTail (-> NewNode -> GetFreeNode), CAtlArray<void*>::CallDestructors
+    { ATL::CAtlArray<GameObject*> a; a.Add(0); }
+    { ATL::CAtlArray<MS2Ptr<CInteractObject> > a; a.Add(MS2Ptr<CInteractObject>()); }
+    { ATL::CAtlArray<MS2Ptr<CPortal> > a; a.Add(MS2Ptr<CPortal>()); }
+    { Unk_WsL1 l; l.AddTail(NiPointer<Unk_WsProp058>()); }
+    { Unk_WsL2 l; l.AddTail(efd::SmartPointer<GameObject>()); }
+    { Unk_WsL3 l; l.AddTail(efd::SmartPointer<PC>()); }
+    { ATL::CAtlArray<void*> a; }
+    // the debug helper singleton (created / destroyed by WorldService 0x141bcb370 / 0x141bcd5a0)
+    TSingleton<CDebugHelper>::CreateInstance();
+    TSingleton<CDebugHelper>::DestroyInstance();
+    // inline getters
+    shower.GetAlpha();
+    shower.GetEntityID();
+    updater.FUN_141bfe6d0();
+    camera.FUN_141bfe750();
+    manager.GetSequenceByName(name);
+    sequence.GetLastScaledTime();
 }
 
 #ifndef MS2_HOOK_DLL  // MS2: instantiates the handler classes (and their scalar deleting dtors) whose COMDATs sit in this tail; the same

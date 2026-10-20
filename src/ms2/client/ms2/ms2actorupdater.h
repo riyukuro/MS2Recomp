@@ -18,6 +18,8 @@ public:
     float FUN_1414a8750() const;                                    // m_fDistB
     float FUN_1414a8760() const;                                    // m_fDistA
     void FUN_141c1bb30(float f) { m_fDistB = f; }                  // 0x141c1bb30 (inline; COMDAT in worldservice.cpp)
+    // @0x141bfe6d0
+    egf::EntityID FUN_141bfe6d0() { return m_kId; }                 // (inline; COMDAT in worldservice.cpp)
 
     CMeshUpdateGate* m_pGate;                                       // +0x18
     egf::EntityID m_kId;                                            // +0x20

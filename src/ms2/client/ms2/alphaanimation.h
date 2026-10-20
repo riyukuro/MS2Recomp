@@ -155,6 +155,10 @@ public:
     virtual ~CEntityShower();
     virtual bool vfunc_2();                         // false = finished
     void SetAlpha(float fAlpha);                    // 0x14098beb0
+    // @0x141bfe630
+    float GetAlpha() { return m_fAlpha; }           // (COMDAT in worldservice.cpp)
+    // @0x141bffde0
+    egf::EntityID GetEntityID() { return m_idEntity; }   // (COMDAT in worldservice.cpp)
 
     bool m_bWasShown;                               // +0x10
     float m_fAlpha;                                 // +0x14
