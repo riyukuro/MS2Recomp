@@ -33,13 +33,6 @@ Unk_GFxUIManager* FUN_14025e7a0();
 
 Scaleform::Render::TextureManager* FUN_1422cf0f0();   // the GFx renderer's texture manager
 
-// StateBag::SetVideo of the exe's Scaleform 4.1.18 (COMDAT 0x1422ecd40): its State::StateType has one more entry before
-// State_Video than the 4.1.19 headers (State_Video is 0x1e there, 0x1d in 4.1.19), so the SDK inline sets the wrong state.
-inline void SetVideo418(Scaleform::GFx::StateBag* pStateBag, Scaleform::GFx::Video::VideoBase* pVideo)
-{
-    pStateBag->SetState((Scaleform::GFx::State::StateType)(Scaleform::GFx::State::State_Video + 1), pVideo);
-}
-
 // ---- GFxVideo -----------------------------------------------------------------------------------------------------------
 
 // @0x1422ec360
@@ -65,7 +58,7 @@ int GFxVideo::FUN_1422ec460(HWND hWnd, Scaleform::GFx::Loader* pLoader)
     m_spSoundSystem = *new MS2VideoSoundSystemDX8(hWnd, Scaleform::Memory::GetGlobalHeap());
     if (m_spSoundSystem->FUN_1422fe9e0())
         m_spVideo->SetSoundSystem(m_spSoundSystem);
-    SetVideo418(pLoader, m_spVideo);
+    pLoader->SetVideo(m_spVideo);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1422EC460, GFxVideo, FUN_1422ec460, 511, 0x55EE505C);
