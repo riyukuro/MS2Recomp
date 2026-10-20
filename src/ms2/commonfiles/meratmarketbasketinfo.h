@@ -20,31 +20,13 @@
 #include "ms2/placeholder/cmeratmarketpacket.h"
 #include "ms2/placeholder/cshopcategorytable.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/commonfiles/meratproductkey.h"
 #include "ms2/placeholder/mstime.h"
 
 class Unk_140165cf0;
 class CUgcPremiumProduct;
 
-// The key of a market product: a premium product id, or a UGC product serial (asitemslot.cpp: Unk_MeratOid).
-struct Unk_MeratProductKey
-{
-    // @0x1402038a0
-    Unk_MeratProductKey() { Reset(); }
-    // @0x1406a8510
-    Unk_MeratProductKey(int nPremiumId, __int64 nUgcId) : m_nPremiumId(nPremiumId), m_nUgcId(nUgcId) {}
-    // @0x140207730
-    void Reset() { m_nPremiumId = 0; m_nUgcId = 0; }
-    // @0x1406ad6b0
-    void Set(int nPremiumId, __int64 nUgcId) { m_nPremiumId = nPremiumId; m_nUgcId = nUgcId; }
-    // @0x1406a9c70
-    void Write(COutputStream& stream) const { stream.vfunc_o10_3(m_nPremiumId); stream.vfunc_o10_4(m_nUgcId); }
-    // @0x1406a9b40
-    void Read(CInPacket& packet) { m_nPremiumId = packet.vfunc_o8_3(); m_nUgcId = packet.vfunc_o8_4(); }
-
-    int m_nPremiumId;                                       // +0x00
-    __int64 m_nUgcId;                                       // +0x08
-};
-MS2_CHECK_SIZE(Unk_MeratProductKey, 0x10);
+// Unk_MeratProductKey: ms2/commonfiles/meratproductkey.h
 
 // One basket (cart) entry.
 class CMeratMarketBasketInfo : public CPtred

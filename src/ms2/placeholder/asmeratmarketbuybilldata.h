@@ -17,6 +17,13 @@ public:
     ASMeratMarketBuyBillData();                                     // ctor called by uimeratmarketcommon.cpp (VA by symbols.tsv)
     // @0x140a8e4e0 (inline COMDAT, paybackmanagerclient.cpp)
     MS2Ptr<CMeratMarketProduct> FUN_140a8e4e0() { return m_spProduct; }
+    // @0x140d66b00 (inline COMDAT, meratmarketman.cpp)
+    int FUN_140d66b00() { return m_n74; }
+    // @0x140d66b10 (inline COMDAT, meratmarketman.cpp)
+    unsigned __int64 FUN_140d66b10() { return m_n58; }
+    // @0x140d66da0 (inline COMDAT, meratmarketman.cpp)
+    MS2Ptr<CMeratMarketPremiumProduct> FUN_140d66da0() { return m_spPremium; }
+    int FUN_1409acb50();                                            // 0x1409acb50 m_n78 (under the bill lock)
 
     int m_n50;                                                      // +0x50
     unsigned __int64 m_n58;                                         // +0x58

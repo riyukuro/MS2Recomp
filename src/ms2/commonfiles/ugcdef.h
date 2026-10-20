@@ -728,6 +728,8 @@ MS2_CHECK_SIZE(UGCMapBlueprintInfo, 0x30);
 // entry key. Unk_MeratEquipEntry is the market product record (see placeholder/asmeratmarketproduct.h); the owner type
 // (the 0x140899880 smart pointer) is not recovered either.
 class Unk_MeratEquipEntry;
+class CMeratMarketProduct;
+struct Unk_MeratProductKey;
 class Unk_CharBookMarkOwner;
 struct Unk_MeratOid;
 
@@ -742,6 +744,11 @@ public:
     void FUN_140896e50(ATL::CAtlArray<MS2Ptr<Unk_MeratEquipEntry> >& out);  // copy of the list
     MS2Ptr<Unk_MeratEquipEntry> FUN_140896e80(const Unk_MeratOid& oid);         // the entry of a key
     MS2Ptr<Unk_MeratEquipEntry> FUN_140896f00(__int64 nId);                 // the entry whose +0x288 is nId
+    // The same exe functions typed with the recovered classes (Unk_CharBookMarkOwner = CUgcBookMark, Unk_MeratEquipEntry =
+    // CMeratMarketProduct, Unk_MeratOid = Unk_MeratProductKey; client\ms2\meratmarketman.cpp calls these).
+    explicit CUgcCharBookMark(MS2Ptr<CUgcBookMark> spOwner);                        // 0x140896c50
+    void FUN_140896dd0(MS2Ptr<CMeratMarketProduct> spProduct);                      // 0x140896dd0
+    MS2Ptr<CMeratMarketProduct> FUN_140896e80(const Unk_MeratProductKey& key);      // 0x140896e80
 
     MS2Ptr<Unk_CharBookMarkOwner> m_spOwner;                // +0x18
     ATL::CRBMap<Unk_MeratOid, MS2Ptr<Unk_MeratEquipEntry> > m_map;               // +0x28
