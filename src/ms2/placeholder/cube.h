@@ -12,6 +12,7 @@ class CubeItemInfo;
 class ObjectWeaponInfo;
 class NoticeCubeInfo;
 struct Unk_CubeTextRecord {
+    Unk_CubeTextRecord() : field0(0), field10(0), field14(0) {}   // 0x1408b6b50
     int field0;
     CStringW text8;
     int field10,field14;
@@ -42,6 +43,12 @@ public:
     struct Unk_StreamPoint FUN_1408b5370();                 // the world position of the cube
     int FUN_1408b4f20();                                    // the item id (ugcmanager.cpp#4)
     class CUgcItemLook* FUN_1408b4f80();                    // the UGC look of the item (ugcmanager.cpp#4)
+    unsigned FUN_1408b4e90() const;                         // field5c
+    bool FUN_1408b4eb0(const CubeItemInfo* pInfo) const;     // holds this item (0: holds no valid item)
+    __int64 FUN_1408b4f50() const;                          // the item uid
+    void FUN_1408b4fd0(egf::Entity* pEntity);               // entity created: apply or download the look image
+    int FUN_1408b51d0();                                    // apply the downloaded look image (0: not downloaded)
+    static long ms_nCount;                                  // 0x143ab2440 live instances (ctor/dtor)
 };
 MS2_CHECK_SIZE(Cube,0x110);
 MS2_CHECK_OFFSET(Cube,entity,0x20);
