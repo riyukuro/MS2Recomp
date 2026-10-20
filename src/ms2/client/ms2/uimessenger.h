@@ -14,8 +14,10 @@
 
 #include <afx.h>
 #include <atlcoll.h>
+#include <deque>
 #include <list>
 #include <map>
+#include <set>
 #include <vector>
 
 #include "ms2/ms2layout.h"
@@ -33,6 +35,7 @@ class ASMovieClip;
 class ASUIComponent;
 class NotifyObject;
 class CMsgBoxData;
+class CItem;
 class UIMessengerBrowser;
 class ChatEmoticonData;
 
@@ -93,7 +96,7 @@ public:
     virtual void vfunc_95(const CStringW& strTarget);                       // 95 0x141a162e0 the whisper target
     virtual void vfunc_96(int nMenu);                                       // 96 0x141a16310 the tab menu
     virtual void vfunc_97(const CStringW& strName);                         // 97 0x141a16400 select a tab
-    virtual void vfunc_98(const CStringW& strName, void* pArg);             // 98 0x141a165c0 attach a tab
+    virtual void vfunc_98(const CStringW& strName, const CString& strWindow);   // 98 0x141a165c0 moves a tab to a window
 
     // ---- child lookups (UISwfEntity::GetChild<T> COMDATs, ICF'd with other classes' copies) ----
     MS2Ptr<ASTextInput> FUN_140e35bd0(const CString& strName);             // 0x140e35bd0
@@ -176,10 +179,22 @@ public:
     void FUN_141a14dc0();                                                   // 0x141a14dc0 rebuilds the subject list
     void FUN_141a15890();                                                   // 0x141a15890 the super world chat effect
     void FUN_141a15970();                                                   // 0x141a15970 orders the tabs as the bar
-    void FUN_141a17700();
+    void FUN_141a131f0();                                                   // 0x141a131f0 shows the whisper list (empty)
+    void FUN_141a13200();                                                   // 0x141a13200 hides the whisper list (empty)
+    void FUN_141a16730(const CStringW& strName, int nX, int nY, int nWidth, int nHeight, int nTarget);
+                                                                            // 0x141a16730 detaches a tab to a new window
+    void FUN_141a168a0(const ATL::CAtlArray<CStringW>& args);               // 0x141a168a0 a party link of a chat line
+    void FUN_141a16bb0(int nProductId);                                     // 0x141a16bb0 opens the user bill
+    void FUN_141a16c50(int nRoomId);                                        // 0x141a16c50 opens a dungeon room
+    void FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId);      // 0x141a16cc0 joins as a dungeon helper
+    void FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId);      // 0x141a172a0 joins as a dungeon member
+    void FUN_141a17690(CStringW strName);                                   // 0x141a17690 invites to the party
+    void FUN_141a17700();                                                   // 0x141a17700 Enter: an emoticon or the chat
     void FUN_141a17830(const CStringW& strText, int bSelectEnd);            // 0x141a17830 sets the input text
     void FUN_141a17900(const CStringW& strTarget);                          // 0x141a17900 begins a whisper
     void FUN_141a17a60(const CStringW& strTarget);                          // 0x141a17a60 begins a talk
+    bool FUN_141a17bc0(int nButton, const CMsgBoxData& box);                // 0x141a17bc0 the dungeon helper prompt
+    bool FUN_141a17c90(int nButton, const CMsgBoxData& box);                // 0x141a17c90 the dungeon member prompt
 
     MS2_LAYOUT_FRIEND;
     int m_178;                                                              // +0x178
@@ -217,6 +232,9 @@ public:
     virtual ~UIMessengerBrowser();                                          //  0 0x141a215a0
 
     // ---- non-virtual members (exe order) ----
+    void FUN_141a24160(const ATL::CAtlArray<MS2Ptr<MessengerData::TalkTab> >& tabs, int nX, int nY, int nWidth,
+                       int nHeight, int nTarget);                           // 0x141a24160 a new window with the tabs
+    void FUN_141a245d0(const CStringW& strName);                            // 0x141a245d0 closes an empty window
     void FUN_141a25f70(const CStringW& strText, ATL::CAtlArray<CStringW>& history);   // 0x141a25f70 records a command
     int FUN_141a25410(int nKind, const CStringW& strName);                  // 0x141a25410 the window name is free
     int FUN_141a261b0(int bUp, Unk_MsgHistory& entry);                      // 0x141a261b0 the input history
@@ -234,7 +252,14 @@ public:
     CStringW m_strWhisperTarget;                                            // +0x1a0 the last whisper target
     CStringW m_1a8;                                                         // +0x1a8
     int m_1b0;                                                              // +0x1b0
-    // +0x1b8 .. +0x310: unrecovered (the browser's containers, recovered with its half of the unit)
-    void* m_unrecovered[(0x310 - 0x1b8) / 8];
+    ATL::CAtlArray<UIMessenger*> m_windows;                                 // +0x1b8 every messenger window
+    ATL::CAtlList<MessengerData::TalkLog> m_logs;                           // +0x1d8 the chat lines (at most m_18c)
+    ATL::CAtlList<MessengerData::TalkLog> m_pendingLogs;                    // +0x208 lines not shown yet
+    ATL::CAtlList<MessengerData::ReportLog> m_reports;                      // +0x238
+    ATL::CAtlMap<unsigned __int64, MS2Ptr<CItem>> m_linkedItems;            // +0x268 the items linked in chat, by uid
+    std::deque<Unk_MsgHistory> m_history;                                   // +0x2b0 the input history (at most 10)
+    std::deque<Unk_MsgHistory>::iterator m_itHistory;                       // +0x2d8 the history browse position
+    std::map<__int64, CStringW> m_timedLogs;                                // +0x2f0 lines by time
+    std::set<int> m_hiddenTypes;                                            // +0x300 the chat types hidden
 };
 MS2_CHECK_SIZE(UIMessengerBrowser, 0x310);

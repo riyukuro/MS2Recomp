@@ -21,6 +21,14 @@
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/client/ms2/messengerdata.h"
 #include "ms2/client/ms2/mypc.h"
+#include "ms2/client/ms2/partymanager.h"
+#include "ms2/client/ms2/dungeonrecordcli.h"
+#include "ms2/client/ms2/uicashshopdialog.h"
+#include "ms2/client/ms2/uidungeonroomdialog.h"
+#include "ms2/commonfiles/dungeonroom.h"
+#include "ms2/placeholder/cashshopref.h"
+#include "ms2/placeholder/iclientplatform.h"
+#include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/placeholder/tusercommandinfo.h"
 #include "ms2/client/ms2/uichatemoticondialog.h"
@@ -113,7 +121,13 @@ public:
 Unk_MsgKeys* FUN_14025e7c0();
 
 // The own field state.
-class Unk_MsgField { public: int FUN_141adbb00(); };
+class Unk_MsgField
+{
+public:
+    int FUN_141adbb00();
+    void FUN_141adc530(int nUiId);                                  // opens a UI
+    int FUN_141adc940(int nUiId);                                   // the UI can open
+};
 Unk_MsgField* FUN_1403ed2b0();
 
 // The notify manager.
@@ -154,7 +168,13 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType);          // uicommon.
 void FUN_1418fdfd0(__int64 nKey);                                   // uicommon.cpp: blocks a user
 
 // The emoticon tables and the per-user emoticon state.
-class Unk_MsgUser { public: MS2Ptr<CChatEmoticonCli> FUN_140d9f8f0(); };
+class Unk_MsgUser
+{
+public:
+    MS2Ptr<DungeonRecordManagerCli> FUN_140d9f2c0();                // the dungeon records
+    int FUN_140d9f880(int nRoomId);                                 // the room's entry state (10+: refused)
+    MS2Ptr<CChatEmoticonCli> FUN_140d9f8f0();
+};
 Unk_MsgUser* FUN_140931510();
 CChatEmoticonTable* FUN_1409eecd0();
 
@@ -169,7 +189,9 @@ class Unk_MsgState
 public:
     CStringW FUN_1414829e0();                                       // the current window name
     void FUN_141482c80(CStringW strName);                           // make a window the current one
-    char m_pad_00[0x48];
+    char m_pad_00[0x38];
+    int m_nNewTabMode;                                              // +0x38 why the new tab dialog opened (1 menu, 2 button)
+    UIMessenger* m_pNewTabWindow;                                   // +0x40 the window asking for a new tab
     UIMessengerBrowser* m_pBrowser;                                 // +0x48
 };
 Unk_MsgState* FUN_141482e80();
@@ -207,6 +229,21 @@ void FUN_140d2c650(CStringW& strHtml);                              // encodes t
 void FUN_140d2c2a0(MS2Ptr<ASTextInput> spInput, ATL::CAtlArray<CStringW>& history);   // the input history keys
 void* FUN_1422bb8b0(int nMovieId);                                  // the movie of a UI layer
 void FUN_14256e3e0(void* pMovie, Scaleform::GFx::Value* pValue);   // movie->CreateArray
+CStringW FUN_140298ea0(CStringW strKey);                            // the string of a key
+CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
+CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& a, const int& b);
+CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);  // StringFormat
+CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
+int FUN_140718200(const CStringW& str);                             // to int
+void FUN_1412751f0(const CStringW& strText, int nA, int nB);        // a system message
+void FUN_1412b9870(int nRoomId, int nState);                        // the room entry refusal message
+MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);   // a yes/no box
+CPartyManager* FUN_1409670d0();
+DungeonRoomTable* FUN_14031c2a0();
+UIDungeonRoomDialog* FUN_140961550(int nUiId);                      // Unk_GetUI<UIDungeonRoomDialog>
+class Unk_MsgNames { public: CStringW FUN_141811980(int nKind, int nId); };   // names of ids
+Unk_MsgNames* FUN_1401a9d70();
+UIMessenger* FUN_141a184c0(CString strName);                       // Unk_GetUI<UIMessenger> by name
 
 class TiXmlElement
 {
@@ -1673,4 +1710,459 @@ void UIMessenger::FUN_141a15970()
     }
     m_tabs.RemoveAll();
     m_tabs.Copy(tabs);
+}
+
+// @0x141a15ae0
+void UIMessenger::vfunc_87()
+{
+    if (m_tabs.IsEmpty())
+        return;
+    void* pMovie = FUN_1422bb8b0(m_28);
+    if (pMovie == 0)
+        return;
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog == 0)
+        return;
+    Scaleform::GFx::Value names;
+    FUN_14256e3e0(pMovie, &names);
+    for (unsigned i = 0; i < m_tabs.GetCount(); i++)
+    {
+        MS2Ptr<TalkTab> spTab = m_tabs[i];
+        if (spTab.get() == 0)
+            continue;
+        if (spTab->m_panel.FUN_141482200()->m_nWhisper == 0)
+            continue;
+        if (spTab == FUN_141a0e050())
+            continue;
+        names.PushBack(Scaleform::GFx::Value((const wchar_t*)spTab->m_strName));
+    }
+    if (names.GetArraySize() != 0)
+        pDialog->Invoke("whisperFrom", Scaleform::GFx::Value(names));
+}
+
+// @0x141a15d70
+void UIMessenger::vfunc_89(const CStringW& strText, int nChannel)
+{
+    vfunc_88(strText, FUN_141482f00(nChannel));
+}
+
+// @0x141a15dc0
+int UIMessenger::vfunc_88(const CStringW& strText, int nType)
+{
+    TalkTab* pTab = FUN_141a0e050();
+    if (pTab == 0)
+        return 0;
+    if (!FUN_141a131a0(pTab, nType))
+    {
+        CStringW strLine(strText);
+        FUN_141a0ead0(pTab->m_panel.FUN_1414821b0()->m_nFontSize, strLine);
+        FUN_141a139c0(strLine, 0);
+    }
+    return 1;
+}
+
+// @0x141a15e80
+void UIMessenger::vfunc_90()
+{
+    FUN_141482e80()->FUN_141482c80(m_strName);
+}
+
+// @0x141a15ef0
+void UIMessenger::vfunc_91()
+{
+    m_pBrowser->m_itHistory = m_pBrowser->m_history.end();
+}
+
+// @0x141a15f60
+void UIMessenger::vfunc_92()
+{
+    if (FUN_1403ed2b0()->FUN_141adc940(0x4e62))
+    {
+        CStringW strName = FUN_141a13d20();
+        if (FUN_141a0e810(strName, 1, 1, 0))
+        {
+            FUN_141a0e2a0(strName);
+            vfunc_4();
+            FUN_141482e80()->m_nNewTabMode = 2;
+            FUN_141482e80()->m_pNewTabWindow = this;
+            FUN_1403ed2b0()->FUN_141adc530(0x4e62);
+        }
+    }
+}
+
+// @0x141a16030
+void UIMessenger::vfunc_93()
+{
+    if (FUN_1422dc2d0())
+    {
+        CStringW strHtml = m_textInput->FUN_1422e0c20();
+        CStringW strText = m_textInput->FUN_1422e0b00();
+        if (strText.GetAt(0) == L'/')
+        {
+            int nSpace = strText.Find(L" ", 0);
+            if (nSpace == -1)
+            {
+                strHtml = L"";
+            }
+            else
+            {
+                strText = strText.Mid(0, nSpace);
+                FUN_141a14c40(strHtml, strText);
+            }
+        }
+        FUN_141a17830(strHtml, 1);
+        if (m_subject)
+        {
+            m_nTargetSelectedIndex = m_subject->FUN_1422df6c0();
+            const int& nType = FUN_141a14580(m_nTargetSelectedIndex);
+            if (!m_pBrowser->FUN_141a264c0(nType) && (nType == 0x10 || nType == 0xb || nType == 0xc))
+                GetClientPlatform()->vfunc_43(2, false, 1000);
+            FUN_141a15890();
+        }
+    }
+}
+
+// @0x141a162a0
+void UIMessenger::vfunc_94(const CStringW& strText)
+{
+    if (FUN_141a14250() == 4)
+        FUN_141a131f0();
+    else
+        FUN_141a13200();
+}
+
+// @0x141a162e0
+void UIMessenger::vfunc_95(const CStringW& strTarget)
+{
+    FUN_141a14bb0(strTarget);
+}
+
+// @0x141a16310
+void UIMessenger::vfunc_96(int nMenu)
+{
+    if (nMenu == 0)
+    {
+        FUN_141482e80()->m_nNewTabMode = 1;
+        FUN_141482e80()->m_pNewTabWindow = this;
+        FUN_1403ed2b0()->FUN_141adc530(0x4e62);
+    }
+    else if (nMenu == 1)
+    {
+        if (FUN_141a0e350(FUN_141a0dfc0()))
+        {
+            if (FUN_141482e80()->m_pBrowser != 0)
+                FUN_141482e80()->m_pBrowser->FUN_141a245d0(m_strName);
+            vfunc_4();
+        }
+    }
+}
+
+// @0x141a16400
+void UIMessenger::vfunc_97(const CStringW& strName)
+{
+    TalkTab* pTab = FUN_141a0e0f0(strName);
+    if (pTab == 0)
+        return;
+    CStringW strHtml;
+    POSITION pos = m_pBrowser->m_logs.GetHeadPosition();
+    while (pos != 0)
+    {
+        MessengerData::TalkLog& log = m_pBrowser->m_logs.GetNext(pos);
+        if (!FUN_141a131a0(pTab, log.m_nKind))
+            strHtml += log.m_strMsg;
+    }
+    FUN_141a0ead0(pTab->m_panel.FUN_1414821b0()->m_nFontSize, strHtml);
+    FUN_141a0ebb0(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
+    FUN_141a139c0(strHtml, 1);
+    if (m_buttonBar)
+        m_nTabSelectedIndex = m_buttonBar->FUN_1422e3210();
+    m_pBrowser->m_194 = (int)m_pBrowser->m_logs.GetCount();
+    m_pBrowser->m_pendingLogs.RemoveAll();
+}
+
+// @0x141a165c0
+void UIMessenger::vfunc_98(const CStringW& strName, const CString& strWindow)
+{
+    MS2Ptr<TalkTab> spTab = FUN_141a0e0f0(strName);
+    if (!spTab)
+        return;
+    UIMessenger* pWindow = FUN_141a184c0(CString(strWindow));
+    if (pWindow == 0)
+        return;
+    if (FUN_141a0e350(spTab->m_strName))
+    {
+        if (pWindow->FUN_141a0e650(spTab.get()))
+        {
+            pWindow->FUN_141a0e2a0(spTab->m_strName);
+            pWindow->vfunc_4();
+        }
+        if (FUN_141482e80()->m_pBrowser != 0)
+            FUN_141482e80()->m_pBrowser->FUN_141a245d0(m_strName);
+        vfunc_4();
+    }
+}
+
+// @0x141a16730
+void UIMessenger::FUN_141a16730(const CStringW& strName, int nX, int nY, int nWidth, int nHeight, int nTarget)
+{
+    MS2Ptr<TalkTab> spTab = FUN_141a0e0f0(strName);
+    if (!spTab)
+        return;
+    if (m_tabs.GetCount() < 2)
+        return;
+    if (FUN_141a0e350(spTab->m_strName))
+    {
+        ATL::CAtlArray<MS2Ptr<TalkTab> > tabs;
+        tabs.Add(spTab);
+        if (FUN_141482e80()->m_pBrowser != 0)
+            FUN_141482e80()->m_pBrowser->FUN_141a24160(tabs, nX, nY, nWidth, nHeight, nTarget);
+        FUN_141a0e990();
+        vfunc_4();
+    }
+}
+
+// @0x141a168a0
+void UIMessenger::FUN_141a168a0(const ATL::CAtlArray<CStringW>& args)
+{
+    if (FUN_140841300(args[0], "dungeonRoom"))
+    {
+        if (args.GetCount() == 2)
+            FUN_141a16c50(FUN_140718200(args[1]));
+    }
+    else if (FUN_140841300(args[0], "joinPartyDungeonHelper"))
+    {
+        if (args.GetCount() == 4)
+        {
+            int nPartyId = FUN_140718200(args[1]);
+            CStringW strLeader(args[2]);
+            int nRoomId = FUN_140718200(args[3]);
+            FUN_141a16cc0(nPartyId, strLeader, nRoomId);
+        }
+    }
+    else if (FUN_140841300(args[0], "joinPartyDungeonMember"))
+    {
+        if (args.GetCount() == 4)
+        {
+            int nPartyId = FUN_140718200(args[1]);
+            CStringW strLeader(args[2]);
+            int nRoomId = FUN_140718200(args[3]);
+            FUN_141a172a0(nPartyId, strLeader, nRoomId);
+        }
+    }
+    else if (FUN_140841300(args[0], "inviteParty") && args.GetCount() == 2)
+    {
+        FUN_141a17690(args[1]);
+    }
+}
+
+// @0x141a16bb0
+void UIMessenger::FUN_141a16bb0(int nProductId)
+{
+    UICashShopDialog* pShop = FUN_140b04f80(0x4ebc);
+    if (pShop != 0)
+    {
+        ATL::CAtlArray<int> ids;
+        ids.Add(nProductId);
+        pShop->FUN_141035990(CString("OnUserBillDialog"), ids, false);
+    }
+}
+
+// @0x141a16c50
+void UIMessenger::FUN_141a16c50(int nRoomId)
+{
+    UIDungeonRoomDialog* pDialog = FUN_140961550(0x4ebd);
+    if (pDialog != 0)
+    {
+        if (pDialog->FUN_141924630())
+            pDialog->vfunc_68();
+        pDialog->FUN_1412b8ff0(nRoomId);
+        pDialog->FUN_141924680();
+    }
+}
+
+// @0x141a16cc0
+void UIMessenger::FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId)
+{
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return;
+    if (pMe->vfunc_77() == strLeader)
+    {
+        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_is_my_dungeon_help")), 1, 1);
+        return;
+    }
+    if (FUN_1409670d0()->FUN_14162ab20())
+    {
+        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_has_party")), 1, 1);
+        return;
+    }
+    int nState = FUN_140931510()->FUN_140d9f880(nRoomId);
+    if (nState >= 10)
+    {
+        FUN_1412b9870(nRoomId, nState);
+        return;
+    }
+    if (!FUN_140931510()->FUN_140d9f2c0()->CanClaimHelperReward(nRoomId))
+    {
+        DungeonRoomPtr spRoom = FUN_14031c2a0()->GetRoom(nRoomId);
+        if (!(spRoom == 0))
+        {
+            const int& nClears = spRoom->m_dungeonHelperRequireClearCount;
+            FUN_1412751f0(FUN_140bfa7f0(CStringW(L"s_party_join_only_dungeon_expert"),
+                                        FUN_1401a9d70()->FUN_141811980(0x14, nRoomId), nClears), 1, 1);
+        }
+        return;
+    }
+    CStringW strMsg = FUN_1408f71a0(CStringW(L"s_party_join_dungeon_helper_msg"), strLeader,
+                                    FUN_1401a9d70()->FUN_141811980(0x14, nRoomId));
+    MS2Ptr<CMsgBoxData> box = FUN_140d74230(
+        Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a17bc0), CStringW(strMsg));
+    if (box.get() != 0)
+    {
+        box->FUN_140534050(nPartyId);
+        box->FUN_140534050(nRoomId);
+    }
+}
+
+// @0x141a172a0
+void UIMessenger::FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId)
+{
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return;
+    if (pMe->vfunc_77() == strLeader)
+    {
+        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_is_my_dungeon_help")), 1, 1);
+        return;
+    }
+    if (FUN_1409670d0()->FUN_14162ab20())
+    {
+        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_has_party")), 1, 1);
+        return;
+    }
+    int nState = FUN_140931510()->FUN_140d9f880(nRoomId);
+    if (nState >= 10)
+    {
+        FUN_1412b9870(nRoomId, nState);
+        return;
+    }
+    CStringW strMsg = FUN_1408f71a0(CStringW(L"s_party_join_dungeon_member_msg"), strLeader,
+                                    FUN_1401a9d70()->FUN_141811980(0x14, nRoomId));
+    MS2Ptr<CMsgBoxData> box = FUN_140d74230(
+        Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a17c90), CStringW(strMsg));
+    if (box.get() != 0)
+    {
+        box->FUN_140534050(nPartyId);
+        box->FUN_140534050(nRoomId);
+    }
+}
+
+// @0x141a17690
+void UIMessenger::FUN_141a17690(CStringW strName)
+{
+    FUN_1409670d0()->FUN_14162ba50(CStringW(strName));
+}
+
+// @0x141a17700
+void UIMessenger::FUN_141a17700()
+{
+    if (m_30.IsNull())
+        return;
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog == 0 || m_textInput.IsNull())
+        return;
+    if (!m_chatEmoticonPreview.IsNull() && m_textInput->FUN_1422c76c0() && m_chatEmoticonPreview->FUN_1422bfca0())
+    {
+        pDialog->Invoke("pushChatEmoticon");
+        return;
+    }
+    FUN_141a11e30();
+}
+
+// @0x141a17830
+void UIMessenger::FUN_141a17830(const CStringW& strText, int bSelectEnd)
+{
+    if (m_textInput == 0)
+        return;
+    m_textInput->FUN_1422e0bd0(strText);
+    int nLength = strText.GetLength();
+    if (bSelectEnd != 0 && nLength > 0)
+        m_textInput->FUN_1422e1500(nLength, nLength);
+    m_textInput->vfunc_24(1);
+}
+
+// @0x141a17900
+void UIMessenger::FUN_141a17900(const CStringW& strTarget)
+{
+    CStringW strText;
+    if (strTarget.IsEmpty())
+        strText = FUN_1401e8510(L"{0} ", FUN_14028de60(0xaa5));
+    else
+        strText = FUN_140656190(L"{0} {1} ", FUN_14028de60(0xaa5), strTarget);
+    FUN_141a17830(strText, 1);
+}
+
+// @0x141a17bc0
+bool UIMessenger::FUN_141a17bc0(int nButton, const CMsgBoxData& box)
+{
+    if (nButton == 0)
+    {
+        unsigned nPartyId = box.FUN_141a02e90(0, 0);
+        unsigned nRoomId = box.FUN_141a02e90(1, 0);
+        if (nPartyId != 0 && nRoomId != 0)
+        {
+            COutPacket packet(0x2c, 0);
+            packet.vfunc_o10_1(0x27);
+            packet.vfunc_o10_3(nPartyId);
+            packet.vfunc_o10_3(nRoomId);
+            FUN_140710590(packet);
+        }
+    }
+    return true;
+}
+
+// @0x141a17c90
+bool UIMessenger::FUN_141a17c90(int nButton, const CMsgBoxData& box)
+{
+    if (nButton == 0)
+    {
+        unsigned nPartyId = box.FUN_141a02e90(0, 0);
+        unsigned nRoomId = box.FUN_141a02e90(1, 0);
+        if (nPartyId != 0 && nRoomId != 0)
+        {
+            COutPacket packet(0x2c, 0);
+            packet.vfunc_o10_1(0x2b);
+            packet.vfunc_o10_3(nPartyId);
+            packet.vfunc_o10_3(nRoomId);
+            FUN_140710590(packet);
+        }
+    }
+    return true;
+}
+
+// @0x141a184c0
+UIMessenger* FUN_141a184c0(CString strName)
+{
+    return dynamic_cast<UIMessenger*>(FUN_140b632f0()->FUN_1422d41b0(strName).get());
+}
+
+// @0x141a17a60
+void UIMessenger::FUN_141a17a60(const CStringW& strTarget)
+{
+    CStringW strText;
+    if (strTarget.IsEmpty())
+        strText = FUN_1401e8510(L"{0} ", FUN_14028de60(0xaa6));
+    else
+        strText = FUN_140656190(L"{0} {1} ", FUN_14028de60(0xaa6), strTarget);
+    FUN_141a17830(strText, 1);
+}
+
+// @0x141a131f0
+void UIMessenger::FUN_141a131f0()
+{
+}
+
+// @0x141a13200
+void UIMessenger::FUN_141a13200()
+{
 }
