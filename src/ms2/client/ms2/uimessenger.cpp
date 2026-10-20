@@ -1818,7 +1818,7 @@ void UIMessenger::FUN_141a13e00()
         int& nType = *it;
         if (m_pBrowser->FUN_141a264c0(nType))
             continue;
-        m_subjectIndex.insert(std::make_pair(nIndex++, nType));
+        m_subjectIndex.insert(std::pair<int, int>(nIndex++, nType));
     }
 }
 
