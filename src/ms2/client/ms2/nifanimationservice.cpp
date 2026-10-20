@@ -245,3 +245,4 @@ static __inline errno_t ms2_memcpy_s(void* const dst, size_t const dstSize, void
 #pragma intrinsic(memset, memcpy)
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_t, const void*, size_t) = &ms2_memcpy_s;
 MS2_EMIT_CRT_MEMMOVE_S();
+// MS2-PIN: ?IsEmpty@?$NiTListBase@V?$NiTPointerAllocator@_K@@V?$SmartPointer@VNiNode@@@efd@@@@QEBA_NXZ 0x141546cb0 ; affected-node list IsEmpty (twin of the effect-list copy 0x141546c80)
