@@ -3657,3 +3657,5 @@ __imp_NxGetUtilLib	142cced28	data
 ??0CNMNoteInfo2@@QEAA@AEBV0@@Z	1415ea540	func
 ??0CNMRejectedUser@@QEAA@AEBV0@@Z	1415eaf30	func
 ??0CNMSessionMemberInfo@@QEAA@AEBV0@@Z	1415eb110	func
+??0ASLoader@@QEAA@H@Z	1422e5300	func
+??0ASLabel@@QEAA@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z	1422e4950	func
