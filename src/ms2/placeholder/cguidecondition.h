@@ -475,14 +475,14 @@ MS2_CHECK_SIZE(Unk_GcCondList, 0x20);
 struct Unk_GcOptInt
 {
     Unk_GcOptInt() : m_bSet(false) {}
-    Unk_GcOptInt(const int& nValue);                        // 0x1413b4010 (Nullable<int>(value))
+    Unk_GcOptInt& operator=(const int& nValue);             // 0x1413b4010 (Nullable<int>::operator=(value))
     bool m_bSet; int m_nValue;
 };
 MS2_CHECK_SIZE(Unk_GcOptInt, 8);
 struct Unk_GcOptVec3
 {
     Unk_GcOptVec3() : m_bSet(false) {}
-    Unk_GcOptVec3(const Unk_StreamPoint& pt);               // 0x1413b4040 (Nullable<Point3>(value))
+    Unk_GcOptVec3& operator=(const Unk_StreamPoint& pt);    // 0x1413b4040 (Nullable<Point3>::operator=(value))
     Unk_StreamPoint& GetValue();                            // 0x1413b4180 (asserts m_isValueSet)
     const Unk_StreamPoint& GetValue() const;                // 0x1413b4140
     bool m_bSet; float m_x; float m_y; float m_z;
@@ -491,7 +491,7 @@ MS2_CHECK_SIZE(Unk_GcOptVec3, 0x10);
 struct Unk_GcOptBool
 {
     Unk_GcOptBool() : m_bSet(false) {}
-    Unk_GcOptBool(const bool& bValue);                      // 0x1413b4080 (Nullable<bool>(value))
+    Unk_GcOptBool& operator=(const bool& bValue);           // 0x1413b4080 (Nullable<bool>::operator=(value))
     bool& GetValue();                                       // 0x1413b41c0 (asserts m_isValueSet)
     bool m_bSet; bool m_bValue;
 };
