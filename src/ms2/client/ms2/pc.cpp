@@ -3700,7 +3700,11 @@ void PC::FUN_14165cac0()
 class Unk_PCArg125 : public PCInfo {};
 
 int FUN_14081dd50(int nIndex);
-CLua* FUN_1401c0db0();                                      // the special ability is shown (specialability.cpp)
+CLua* FUN_1401c0db0();
+float FUN_14028d3a0(float fValue);                                  // (commonutil.cpp)
+float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                      // distance
+float FUN_140a0fde0(float fValue, float fMax);                      // min(value, max)
+void FUN_140a01250(efd::Point3 kDir, efd::Point3* pForward, efd::Point3* pRight);                                      // the special ability is shown (specialability.cpp)
 
 // The proxy object view: FUN_1416c2920 returns an int here (the shared header declares it void).
 class Unk_PCProxyView
@@ -3862,6 +3866,83 @@ void PC::vfunc_126(MS2Ptr<Unk_PCArg125> spInfo, int nLayer)
     }
     spInfo->m_3cc += nAttackMin;
     spInfo->m_3d0 += nAttackMax;
+}
+
+// The damage record's points as efd::Point3 (skillrecord.h keeps them as Unk_StreamPoint).
+#define PC_RECORD_PT(f) reinterpret_cast<efd::Point3&>(spRecord->f)
+
+// Knock-back from a hit (PCBase::vfunc_107 plus the PC's state / hold checks and the equipment's push resistance).
+void PC::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
+{
+    if (FUN_14028d470(fScale, 0.0f))
+        return;
+    if (m_unk_748.FUN_140970c10(spRecord->FUN_14175a8b0(), 1) != 0)
+        return;
+    if (FUN_14166c930() == 0xc)
+        return;
+    if (spRecord->FUN_14175ac30() == 0)
+        return;
+    if (FUN_141660120() == true)
+        return;
+    SkillAttackData* pAttack = spRecord->FUN_14175a8b0();
+    if (pAttack == 0)
+        return;
+    int nKind = pAttack->m_damage.GetPush(FUN_1403ed2d0()->FUN_141bd3060());
+    if (nKind == 0)
+        return;
+    if (m_pushControl.m_kDir != efd::Point3::ZERO && m_pushControl.m_nPriority >= pAttack->m_damage.m_nPushPriority)
+        return;
+    float fSpeed = FUN_14028d3a0(pAttack->m_damage.m_fPushDistance);
+    efd::Point3 kDir;
+    if (nKind == 2) {
+        kDir = PC_RECORD_PT(m_ptPos) - vfunc_18();
+    }
+    else if (nKind == 1) {
+        kDir = vfunc_18() - PC_RECORD_PT(m_ptPos);
+    }
+    else if (nKind == 5) {
+        if (PC_RECORD_PT(m_ptDir) == efd::Point3::ZERO) {
+            PCBase* pAttacker = FUN_1403ed2d0()->FUN_141bd1200(spRecord->m_nOwnerId);
+            if (pAttacker)
+                kDir = pAttacker->FUN_14123cc20();
+        }
+        else {
+            kDir = PC_RECORD_PT(m_ptDir);
+        }
+    }
+    else if (nKind == 6) {
+        efd::Point3 kFacing = PC_RECORD_PT(m_ptHit);
+        efd::Point3 kForward;
+        efd::Point3 kRight;
+        FUN_140a01250(kFacing, &kForward, &kRight);
+        kDir = -kForward;
+    }
+    kDir.Unitize();
+    PC_RECORD_PT(m_ptDir) = kDir;
+    fSpeed = FUN_1416561a0()->FUN_1411e0f90(fSpeed);
+    fSpeed *= fScale;
+    if (nKind == 2) {
+        PCBase* pAttacker = FUN_1403ed2d0()->FUN_141bd1200(spRecord->m_nOwnerId);
+        if (pAttacker)
+            fSpeed = FUN_140a0fde0((FUN_140966f00(pAttacker->vfunc_18(), vfunc_18()) - 150.0f) * 0.01f, fSpeed);
+    }
+    else if (nKind == 4) {
+        PC_RECORD_PT(m_ptDir) = PC_RECORD_PT(m_ptPos) - vfunc_18();
+        PC_RECORD_PT(m_ptDir).z = 0.0f;
+        fSpeed = FUN_14028d3a0(PC_RECORD_PT(m_ptDir).Length());
+        PC_RECORD_PT(m_ptDir).Unitize();
+    }
+    if (FUN_14028d470(fSpeed, 0.0f))
+        return;
+    m_pushControl.FUN_1413fcf90();
+    m_pushControl.m_kDir = PC_RECORD_PT(m_ptDir);
+    m_pushControl.m_fSpeed = fSpeed;
+    m_pushControl.m_f28 = pAttack->m_damage.m_fPushDuration;
+    m_pushControl.m_f2c = 0.0f;
+    m_pushControl.m_b30 = FUN_14028d470(pAttack->m_damage.m_fPushUpDistance, 0.0f) ? 0 : 1;
+    m_pushControl.m_n34 = pAttack->m_damage.m_nPushFall;
+    m_pushControl.m_nPriority = pAttack->m_damage.m_nPushPriority;
+    m_pushControl.FUN_1413fd050(pAttack->m_damage.m_ePushEaseType);
 }
 
 // ---- end of code ----
