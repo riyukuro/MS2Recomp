@@ -40,6 +40,7 @@ public:
     int FUN_1422c1340();                                        // ceil(width)
     int FUN_1422c13b0();                                        // ceil(height)
     void FUN_1422bffe0(int x, int y);                           // set the position
+    void FUN_1422c0320(int x);                                  // set x (uiwritemusicdialog playing line)
     void FUN_1422c0060(int x, int y);                           // set the position (uidungeonroomdialog season rank marks)
     // Registers an AS -> C++ callback under a name (the list lives at +0x60; aseffect.cpp "GetTooltipCallback").
     void FUN_1422c3180(CString strName, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);

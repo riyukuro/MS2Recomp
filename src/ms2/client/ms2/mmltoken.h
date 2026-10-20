@@ -33,6 +33,7 @@ MS2_CHECK_OFFSET(MMLToken, m_dTime, 0x28);
 class MMLParser
 {
 public:
+    MMLParser();                                        // 0x140d7e600
     explicit MMLParser(const CString& strMml);          // 0x140d7e660
     void Reset();                                       // 0x140d7e6d0 default octave / tempo / length / volume, drops the tokens
     void SetText(const CString& strMml);                // 0x140d7e730
