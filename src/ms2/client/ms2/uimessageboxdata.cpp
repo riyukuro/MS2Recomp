@@ -11,7 +11,7 @@
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@2@$00@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@2@XZ 0x141a08610 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCItem@@@@QEAA@XZ 0x141a07330 ; look-alike group (CItem/Unk_MsgCheck/Unk_MsgInput default ctors)
 // MS2-PIN: ??8?$MS2Ptr@VCItem@@@@QEBA_NPEAVCItem@@@Z 0x141a07980 ; unique
-// MS2-PIN: ??1?$MS2Ptr@VCItem@@@@QEAA@XZ 0x141a07950 ; unique
+// MS2-PIN: ??4?$MS2Ptr@VCItem@@@@QEAAAEAV0@H@Z 0x141a07950 ; unique (p = NULL of ~CMsgBoxData, uimessagebox.cpp)
 // MS2-PIN: ??R?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEBA_NHAEBVCMsgBoxData@@@Z 0x141a07c10 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uimessageboxdata.cpp"
@@ -25,6 +25,10 @@
 #include "ms2/client/ms2/iteminfoslot.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+
+// 0x141a07950 is MS2Ptr<CItem>::operator=(int) (Release; return *this), the `= NULL` of ~CMsgBoxData; it lands in
+// this unit's range, so the instance is emitted here.
+template MS2Ptr<CItem>& MS2Ptr<CItem>::operator=(int);
 
 // ---- statics (.text$di) ----
 // The sort type names of the shared statics header (without the skill / stun strings after them).
