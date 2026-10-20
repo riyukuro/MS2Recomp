@@ -122,7 +122,7 @@ G = {}
 def _init():
     exe = bm.Exe(bm.EXE)
     names, dnames = {}, {}
-    for f in ("symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv"):
+    for f in ("symbols-manual.tsv", "symbols.tsv", "symbols-engine.tsv", "symbols-engine-manual.tsv"):
         p = os.path.join(ROOT, "progress", f)
         if not os.path.exists(p):
             continue
