@@ -95,7 +95,7 @@ Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* framework);
 
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-CStringW FUN_14028b8e0(CStringW str);
+#include "ms2/commonfiles/commonutil.h"
 CStringW FUN_14062b4f0(CStringW strKey, const int* pnArg);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);

@@ -225,7 +225,7 @@ unsigned int FUN_141662750(MyPC* pPc, int nType);           // mastery value of 
 int FUN_141654700(MyPC* pPc);                               // job
 int FUN_14053feb0(int nItemId);                             // default rank of an item
 CStringW FUN_1419021b0(int nHave, int nNeed);               // "have/need" count text
-CStringW FUN_14028b8e0(CStringW strKey);                    // localized
+#include "ms2/commonfiles/commonutil.h"
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
 CStringW FUN_14062b4f0(CStringW strKey, const int* p);
 CStringW FUN_1409e8820(CStringW strKey, const unsigned short& n);
