@@ -147,6 +147,7 @@ public:
     bool ParseDayOfWeek(const CStringW& text, std::set<int>& days);    // 0x1402e3810
     void FUN_1402e3480(int kind);               // sets the flag `kind` in the set at +0x8c
     int FUN_1402e1d00();                        // the event id (m_id)
+    int GetID();                                // 0x1402e1d00 (= FUN_1402e1d00; named by the gameeventmanagercli asserts)
     CMsTime FUN_1402e26f0();                    // the begin time (gameeventbase.cpp)
     CMsTime FUN_1402e2730();                    // the end time (gameeventbase.cpp)
 
