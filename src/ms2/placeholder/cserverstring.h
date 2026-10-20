@@ -51,6 +51,7 @@ public:
     bool LoadTrigger();                                     // 0x14087f350
     bool LoadNpcAi();                                       // 0x14087f380
     bool LoadGameEvent();                                   // 0x14087f3b0
+    CServerStringGroup* GetGameEvent() { return &m_gameEvent; }   // inline (0x140be95b0, ?\uicollectitemgroupeventdialog.cpp)
 
 private:
     MS2_LAYOUT_FRIEND;

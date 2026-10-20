@@ -45,6 +45,9 @@ public:
     void SetDirty(bool dirty);                  // 0x14041f4e0
     bool IsDirty();                             // 0x14041f500
     bool IsEmpty();                             // 0x14041f520
+    // The value read as T, or nDefault once m_time has passed (inline; one COMDAT per T, the specialisations live with
+    // their users: <__int64> 0x140be9030 in ?\uicollectitemgroupeventdialog.cpp).
+    template <class T> T GetValue(const T& nDefault);
 
     Key m_key;          // +0x18
     CStringW m_value;   // +0x20
@@ -80,7 +83,19 @@ public:
     void Insert(VariablePtr variable);                          // 0x14041fb90
     VariablePtr Get(int type, unsigned int id);                 // 0x14041fc20
     void Set(int type, unsigned int id, CStringW value, const CMsTime& time);   // 0x14041fda0
+    // The variable (type, id) read as T, nDefault when it is missing or expired (inline; <__int64> 0x140be8f80).
+    template <class T> T GetValue(int type, unsigned int id, const T& nDefault)
+    {
+        GameEventVariable::Key key(type, id);
+        VariablePtr variable;
+        if (!m_variables.Lookup(key, variable))
+            return nDefault;
+        return variable->GetValue(nDefault);
+    }
 
     VariableMap m_variables;    // +0x18
 };
 MS2_CHECK_SIZE(GameEventUserValue, 0x48);
+
+// The user values of the local player (0x143ab2fc0; a second instance follows at 0x143ab3010). Name invented.
+extern GameEventUserValue g_gameEventUserValue;
