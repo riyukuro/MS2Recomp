@@ -715,7 +715,7 @@ int CUGCBuildValidatorCli::vfunc_9(unsigned* pErr)
         {
             if (m_pCubeService->FUN_1410c3600(3) && m_pItem->look.get() != 0)
             {
-                __int64 nLookOwner = m_pItem->look->unknown34;
+                __int64 nLookOwner = m_pItem->look->m_n34;
                 if (nLookOwner != FUN_141656ad0(pPC))
                 {
                     *pErr = 0x6f;

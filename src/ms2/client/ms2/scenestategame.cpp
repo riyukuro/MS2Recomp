@@ -8755,8 +8755,8 @@ void CSceneStateGame::FUN_14173b220(CInPacket& packet)
     CUgcItemLook* pLook = ((CItem*)spItem)->FUN_140528380();
     if (pLook != 0)
     {
-        pLook->unknown60 = nValue;
-        pLook->title = strTitle;
+        pLook->m_n60 = nValue;
+        pLook->m_str28 = strTitle;
     }
 }
 MS2_REPLACE_METHOD(0x14173b220, CSceneStateGame, FUN_14173b220, 334, 0xD2E16AC7);
@@ -11868,9 +11868,9 @@ void CSceneStateGame::FUN_141721cd0(CInPacket& packet)
                         if (pInfo != 0)
                         {
                             CUgcItemLook* pLook = &reinterpret_cast<Unk_SSGItemUgc*>(pInfo)->m_look;
-                            pLook->unknown30 = 1;
-                            pLook->resourcePath = gift.m_strUgcPath;
-                            pLook->title = gift.m_strUgcTitle;
+                            pLook->m_n30 = 1;
+                            pLook->m_strUrl = gift.m_strUgcPath;
+                            pLook->m_str28 = gift.m_strUgcTitle;
                         }
                     }
                     else if (spItem->FUN_140525680())

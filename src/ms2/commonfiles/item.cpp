@@ -1439,7 +1439,7 @@ int CItem::FUN_140526060(void* pArg)
         return 0;
     CUgcItemLook* pItemLook = FUN_140528380();
     MS2_ASSERT_MSG_AT(0x296, L"pItemLook != NULL", pItemLook != NULL);
-    if (FUN_14026d4d0(pArg, pItemLook->unknown34, pItemLook->unknown38))
+    if (FUN_14026d4d0(pArg, pItemLook->m_n34, pItemLook->m_n38))
         return 1;
     return 0;
 }
@@ -2294,9 +2294,9 @@ CStringW CItem::FUN_140528010()
     CStringW strName = FUN_1401a9d70()->FUN_141811980(1, FUN_1405276c0());
     if (static_cast<CItemUgc*>(m_spUgc) != 0)
     {
-        bool bNamed = m_spUgc->m_look.FUN_140892ec0().GetLength() > 0;
+        bool bNamed = m_spUgc->m_look.GetLocalPath().GetLength() > 0;
         if (bNamed)
-            return m_spUgc->m_look.title;
+            return m_spUgc->m_look.m_str28;
     }
     return strName;
 }

@@ -1207,7 +1207,7 @@ void UIUGCCubePaletteDialog::vfunc_14(void* pItemArg)
             MS2Ptr<CUgcItemLook> spLook = pSel->look;
             if (spLook.get() != 0)
             {
-                if (spLook->ugcId == (__int64)pItem->FUN_1405283d0())
+                if (spLook->m_n18 == (__int64)pItem->FUN_1405283d0())
                     pSel->instanceId = nUid;
             }
         }
@@ -1411,7 +1411,7 @@ void UIUGCCubePaletteDialog::FUN_140eec0b0(unsigned __int64 uid)
                     MS2Ptr<CUgcItemLook> spLook = pSel->look;
                     if (static_cast<bool>(spLook.get()))
                     {
-                        if (spLook->ugcId == (__int64)spItem->FUN_1405283d0())
+                        if (spLook->m_n18 == (__int64)spItem->FUN_1405283d0())
                             pSel->instanceId = nItemUid;
                     }
                 }

@@ -763,7 +763,7 @@ int CConstructionGuideObject::FUN_1410a2a60(void* pCube)
     {
         if (m_spItem->FUN_1408b3860() == 1)
         {
-            CString strLook = FUN_1410280d0(2, m_spItem->look->resourcePath);
+            CString strLook = FUN_1410280d0(2, m_spItem->look->m_strUrl);
             if (_access(strLook, 0) != 0)
             {
                 Unk_GuideDownloadId kId;

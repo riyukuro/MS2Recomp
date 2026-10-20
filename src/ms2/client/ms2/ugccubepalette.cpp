@@ -312,7 +312,7 @@ CStringW UGCCube::FUN_140def710()                                               
     MS2Ptr<CUgcItemLook> spLook = info->look;
     if (spLook.get() != 0)
     {
-        CStringW strTitle(spLook->title);
+        CStringW strTitle(spLook->m_str28);
         if (!strTitle.IsEmpty())
             return strTitle;
     }
@@ -326,7 +326,7 @@ CStringW UGCCube::FUN_140def880()                                               
     MS2Ptr<CUgcItemLook> spLook = info->look;
     if (spLook.get() != 0)
     {
-        CStringW strName = FUN_14016a730(spLook->FUN_140892ec0(), 0);
+        CStringW strName = FUN_14016a730(spLook->GetLocalPath(), 0);
         if (!strName.IsEmpty())
             return strName;
     }
@@ -349,7 +349,7 @@ __int64 UGCCube::FUN_140defba0()                                                
 {
     MS2Ptr<CUgcItemLook> spLook = info->look;
     if (spLook.get() != 0)
-        return spLook->ugcId;
+        return spLook->m_n18;
     return 0;
 }
 
