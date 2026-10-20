@@ -516,8 +516,7 @@ DragSlot* UIItemAutoUseOptionDialog::SlotBag::vfunc_16(int nIndex)
     Unk_PetOption opt;
     if (!FUN_140535320()->FUN_140c8b450()->options.map.Lookup(nIndex, opt))
         return new (efd::MemHint(efd::MemHint::NONE)) Slot(strName, nIndex, 0);
-    else
-        return new (efd::MemHint(efd::MemHint::NONE)) Slot(strName, nIndex, opt.enabled);
+    return new (efd::MemHint(efd::MemHint::NONE)) Slot(strName, nIndex, opt.enabled);
 }
 
 // @0x140f4f460
