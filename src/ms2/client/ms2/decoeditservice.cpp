@@ -887,7 +887,7 @@ DecoLayer::~DecoLayer()
     {
         egf::EntityID kId;
         m_aItems[i]->FUN_14123c460(kId);
-        FUN_1403ed2d0()->FUN_141bbbc60(kId.GetValue(), 0);
+        FUN_1403ed2d0()->FUN_141bbbc60(kId, 0);
     }
     m_aItems.RemoveAll();
 }
@@ -1001,7 +1001,7 @@ bool DecoLayer::ChangeAsset(CString strAsset)
         aOld[i]->CollectTransforms(aXf);
         egf::EntityID kId;
         aOld[i]->FUN_14123c460(kId);
-        FUN_1403ed2d0()->FUN_141bbbc60(kId.GetValue(), 0);
+        FUN_1403ed2d0()->FUN_141bbbc60(kId, 0);
         DecoItem* pItem = AddItem(aXf);
         if (pItem != 0)
         {

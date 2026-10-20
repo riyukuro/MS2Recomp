@@ -130,6 +130,7 @@ WorldService::WorldService()
       m_8f0(true), m_8f4(0), m_8f8(0), m_910(0), m_914(false), m_915(false), m_918(0), m_91c(true), m_928(0),
       m_978(0), m_97c(0), m_9b8(0), m_9bc(0), m_9c0(1.0f), m_9c4(1.0f), m_9c8(0), m_a60(""), m_a70(0), m_a74(0),
       m_a78(false), m_a98(false), m_aa0(0), m_ae0(0), m_ae4(0), m_ae8(0), m_aec(0)
+// MS2-FUNCTIONAL: member containers/pointers still typed as raw placeholders without their ctors/dtors: exe FuncInfo maxState 0x4d vs 0x49, 4413 vs 3963 bytes
 // @0x141bb9720
 {
     int hint;
@@ -360,11 +361,9 @@ int FUN_140d94390(const efd::AssetLoadResponse*);       // response code
 // @0x141bbf9f0
 void WorldService::FUN_141bbf9f0(const efd::AssetLoadResponse* pMsg, efd::Category targetChannel)
 {
-    switch (FUN_140d94390(pMsg))
-    {
-    case 9:
-        break;
-    }
+    int nResult = FUN_140d94390(pMsg);
+    if (nResult != 9)
+        return;
 }
 MS2_REPLACE_METHOD(0x141BBF9F0, WorldService, FUN_141bbf9f0, 76, 0xFD49B56F);
 
@@ -2901,6 +2900,7 @@ struct Unk_WsA_Val16 { unsigned char raw[16]; };
 void FUN_141bf48b0(Unk_WsA_Val16* v);
 void FUN_140af6ce0(Unk_WsA_Val16* v, void* o);
 void FUN_141bf6870(Unk_WsA_Val16* v);
+// MS2-FUNCTIONAL: raw-byte (unsigned char[16]) smart-pointer locals: GS cookie the exe lacks and 3 missing dtor EH states (maxState 0xa vs 0x7)
 // @0x141bbb1e0
 int WorldService::FUN_141bbb1e0(GameObject* obj, int bFullInit, unsigned cameraArg)
 {
@@ -2996,6 +2996,7 @@ void* FUN_14123c410(GameObject* o);                     // o->m_unk_80
 void FUN_14098c6e0(void* p, unsigned key, char* pValue);
 void* FUN_14133ede0(void* sp);                          // m_2d8.get
 void FUN_141b6fc50(const CString& what, const CString& where, int n);
+// MS2-FUNCTIONAL: raw-byte smart-pointer locals: GS cookie the exe lacks and one missing dtor EH state (maxState 6 vs 5)
 // @0x141bbb7f0
 void WorldService::FUN_141bbb7f0(GameObject* obj, int bImmediate)
 {
@@ -3052,10 +3053,10 @@ MS2_REPLACE_METHOD(0x141BBB7F0, WorldService, FUN_141bbb7f0, 1124, 0x52B96AA2);
 
 bool FUN_141c07410(void* map, unsigned __int64 key, Unk_WsA_ObjPtr& out);       // m_0b8.Lookup
 // @0x141bbbc60
-void WorldService::FUN_141bbbc60(const unsigned __int64& id, int bImmediate)
+void WorldService::FUN_141bbbc60(const egf::EntityID& id, int bImmediate)
 {
     Unk_WsA_ObjPtr obj;
-    if (FUN_141c07410(&m_0b8, id, obj))
+    if (FUN_141c07410(&m_0b8, id.GetValue(), obj))
         FUN_141bbb7f0(obj.data(), bImmediate);
 }
 MS2_REPLACE_METHOD(0x141BBBC60, WorldService, FUN_141bbbc60, 127, 0xD63A2406);
@@ -3269,6 +3270,7 @@ void FUN_141c187b0(void* map, unsigned __int64 key);                // m_2f8.Rem
 void FUN_141c189d0(void* map, egf::Entity* const* key);             // m_6d8.RemoveKey
 void FUN_140aed540(void* camera, egf::Entity* ent);
 void FUN_1408a2020(egf::Entity* e, unsigned propId, int* out);
+// MS2-FUNCTIONAL: raw-byte locals: GS cookie at a different frame slot (0x142 vs 0x10a) and one extra callee from a placeholder copy
 // @0x141bbf2f0
 void WorldService::FUN_141bbf2f0(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel)
 {
@@ -3369,10 +3371,18 @@ void WorldService::FUN_141bbf2f0(const egf::EntityChangeMessage* pMsg, efd::Cate
 }
 MS2_REPLACE_METHOD(0x141BBF2F0, WorldService, FUN_141bbf2f0, 1776, 0xA72361FD);
 
-bool FUN_141c06e60(void* map, unsigned __int64 key, Unk_WsA_Val16* out);        // m_2f8.Lookup
-void FUN_14123eb50(Unk_WsA_Val16* v);
-void* FUN_14123ed70(Unk_WsA_Val16* v);
-void FUN_14123ebe0(Unk_WsA_Val16* v);
+// The 16-byte m_2f8 value (the game smart pointer of gameobject.cpp: ctor 0x14123eb50, dtor 0x14123ebe0, -> 0x14123ed70).
+class Unk_WsA_GoFieldRef
+{
+public:
+    Unk_WsA_GoFieldRef();
+    ~Unk_WsA_GoFieldRef();
+    void* FUN_14123ed70();
+private:
+    void* m_p0;
+    void* m_p1;
+};
+bool FUN_141c06e60(void* map, unsigned __int64 key, Unk_WsA_GoFieldRef* out);     // m_2f8.Lookup
 void* FUN_141b6efc0(egf::Entity* e);                    // the entity's scene graph root
 void FUN_141bc7490(WorldService* self, egf::Entity* e, void* sceneNode);
 bool FUN_1413ec7a0(egf::Entity* e, unsigned hash);
@@ -3382,11 +3392,9 @@ void WorldService::FUN_141bbfa50(const egf::EntityChangeMessage* pMsg, efd::Cate
     egf::Entity* ent = pMsg->GetEntity();
     if (ent->GetModel()->ContainsModel(0x100ee292))
     {
-        Unk_WsA_Val16 slot;
-        FUN_14123eb50(&slot);
+        Unk_WsA_GoFieldRef slot;
         if (FUN_141c06e60(&m_2f8, ent->GetEntityIDValue(), &slot))
-            ((Unk_WsA_EntityListener*)FUN_14123ed70(&slot))->OnEntityChanged(ent);
-        FUN_14123ebe0(&slot);
+            ((Unk_WsA_EntityListener*)slot.FUN_14123ed70())->OnEntityChanged(ent);
     }
     FUN_141bc7490(ent, static_cast<NiNode*>(FUN_141b6efc0(ent)));
     if (FUN_1413ec7a0(ent, 0x213f5f94))
@@ -3406,6 +3414,7 @@ void* FUN_141bf7d60(Unk_WsA_Val16* v);
 void* FUN_1409ffcb0(const Unk_WsA_ObjPtr& obj);                         // cast to class 0x6200013
 void FUN_141678ad0(void* node, CString name, char flag, float scale, float rotation);
 void FUN_1409649b0(Unk_WsA_Val16* v);
+// MS2-FUNCTIONAL: raw-byte smart-pointer locals: GS cookie the exe lacks and 2 missing dtor EH states (maxState 4 vs 2)
 // @0x141bbfb50
 void WorldService::FUN_141bbfb50(const egmAnimation::ActorAddedMessage* pMsg, efd::Category targetChannel)
 {
@@ -3509,6 +3518,7 @@ void FUN_141773e30(void* svc, const ecr::SceneGraphRemovedMessage* pMsg, efd::Ca
 void FUN_140a0d450(void* mgr, egf::Entity* e);
 void* FUN_14123ee80();
 void FUN_141b941f0(CWireframeManager* mgr, egf::Entity* e);
+// MS2-FUNCTIONAL: 4 smart-pointer temps of the scene graph lookup are raw placeholders without ctor/dtor (callee count 29 vs 33)
 // @0x141bc0290
 void WorldService::FUN_141bc0290(const ecr::SceneGraphRemovedMessage* pMsg, efd::Category targetChannel)
 {
@@ -3615,6 +3625,7 @@ Unk_WsA_View* FUN_1416892a0(void* mgr, int i);           // returns the slot own
 Unk_WsA_View* FUN_14151e890(void* slot);                 // the view at +0x70
 void FUN_140ae1580(Unk_WsA_Color4* c);
 void FUN_140ae1790(Unk_WsA_Color4* c);
+// MS2-FUNCTIONAL: raw-byte smart-pointer local: GS cookie the exe lacks and one missing dtor EH state (maxState 2 vs 1)
 // @0x141bc0a70
 void WorldService::FUN_141bc0a70(const egf::EntityLoadResult* pMsg, efd::Category targetChannel)
 {
@@ -3764,6 +3775,7 @@ unsigned __int64 FUN_140a01230(ATL::CAtlArray<void*>* a);         // count
 void* FUN_140a010d0(ATL::CAtlArray<void*>* a, unsigned __int64 i);   // element address
 void FUN_140a00180(Unk_WsA_Ptr16* dst, void* src);                // copy (adds a ref)
 void FUN_140a00490(Unk_WsA_Ptr16* p);                             // release
+// MS2-FUNCTIONAL: raw-byte smart-pointer locals: GS cookie the exe lacks and 3 missing dtor EH states (maxState 5 vs 2)
 // @0x141bc12b0
 void WorldService::FUN_141bc12b0()
 {
@@ -4144,6 +4156,7 @@ Unk_WsA_FieldRef* FUN_140965690(void* refs, unsigned i);               // CAtlAr
 Unk_StreamPoint* FUN_14169d2f0(Unk_WsA_FieldObj* o, Unk_StreamPoint* out);   // the object's position
 float FUN_140966f00(Unk_StreamPoint a, Unk_StreamPoint b);             // distance between two points
 void FUN_141bef110(Unk_WsA_FieldRef* a, Unk_WsA_FieldRef* b);          // swap
+// MS2-FUNCTIONAL: Unk_StreamPoint by-value arg and its temps are placeholders: 2 extra copy callees (23 vs exe 21) and frame 0xe8 vs exe 0xd8
 // @0x141bc2c90
 void WorldService::FUN_141bc2c90(Unk_StreamPoint pt, void* outRefs)
 {
