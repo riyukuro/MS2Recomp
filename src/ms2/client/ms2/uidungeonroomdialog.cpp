@@ -517,7 +517,7 @@ MS2_REPLACE_METHOD(0x1412A9610, UIDungeonRoomLimitTextGroup, GetBottom, 14, 0x7A
 // @0x1412a9630
 void UIDungeonRoomLimitTextGroup::AddText(const CStringW& strText, int nColor, const CStringW& strTooltip)
 {
-    MS2Ptr<ASLabel> spLabel(new ASLabel("UIDungeonRoomLimitLabel", 2));
+    MS2Ptr<ASLabel> spLabel(new ASLabel(CString("UIDungeonRoomLimitLabel"), 2));
     spLabel->FUN_1422e4c60("none");
     m_labels.push_back(spLabel);
     m_spPanel->FUN_1422c6900((*spLabel).FUN_1422bb890());
@@ -2496,3 +2496,7 @@ MS2_REPLACE_METHOD(0x1412BADE0, UIDungeonRoomDialog, GroupOfType, 165, 0x09EA919
 // The CRT memmove_s copy of this unit (unreferenced, last in the COMDAT tail).
 // @0x1412c1f00
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// vector<MS2Ptr<ASLabel>>::begin / end (look-alikes of the ASButton vector's; pinned so the pairing stays exact)
+// MS2-PIN: ?begin@?$vector@V?$MS2Ptr@VASLabel@@@@V?$allocator@V?$MS2Ptr@VASLabel@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VASLabel@@@@@std@@@std@@@2@XZ 0x1412c14c0
+// MS2-PIN: ?end@?$vector@V?$MS2Ptr@VASLabel@@@@V?$allocator@V?$MS2Ptr@VASLabel@@@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VASLabel@@@@@std@@@std@@@2@XZ 0x1412c18f0
