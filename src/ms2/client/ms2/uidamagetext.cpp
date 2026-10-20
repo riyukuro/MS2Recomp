@@ -176,6 +176,7 @@ void UIDamageText::DamageInfo::FUN_141910e60(const unsigned int& nNow)
     else
         m_nElapsed = nNow - m_nStart;
 }
+MS2_REPLACE_METHOD(0x141910E60, UIDamageText::DamageInfo, FUN_141910e60, 107, 0xFB81DCAE);
 
 // @0x141910ee0
 void UIDamageText::DamageInfo::FUN_141910ee0(const unsigned int& nNow)
@@ -183,12 +184,14 @@ void UIDamageText::DamageInfo::FUN_141910ee0(const unsigned int& nNow)
     if (m_nStart == 0)
         m_nStart = nNow;
 }
+MS2_REPLACE_METHOD(0x141910EE0, UIDamageText::DamageInfo, FUN_141910ee0, 37, 0xF7E00DBF);
 
 // @0x141910f10
 bool UIDamageText::DamageInfo::FUN_141910f10(const unsigned int& nNow)
 {
     return m_nElapsed > 0 && m_nElapsed > 1000;
 }
+MS2_REPLACE_METHOD(0x141910F10, UIDamageText::DamageInfo, FUN_141910f10, 64, 0x95077869);
 
 // @0x141910f60
 bool UIDamageText::DamageInfo::FUN_141910f60(const unsigned int& nNow)
@@ -197,6 +200,7 @@ bool UIDamageText::DamageInfo::FUN_141910f60(const unsigned int& nNow)
         return false;
     return m_nElapsed > 0 && m_nElapsed > 100;
 }
+MS2_REPLACE_METHOD(0x141910F60, UIDamageText::DamageInfo, FUN_141910f60, 76, 0x62C5DCB2);
 
 // @0x141910fc0
 bool UIDamageText::DamageInfo::FUN_141910fc0(const unsigned int& nNow)
@@ -205,6 +209,7 @@ bool UIDamageText::DamageInfo::FUN_141910fc0(const unsigned int& nNow)
         return false;
     return m_nElapsed > 0 && m_nElapsed > 200;
 }
+MS2_REPLACE_METHOD(0x141910FC0, UIDamageText::DamageInfo, FUN_141910fc0, 79, 0x50921854);
 
 // @0x141911020
 void UIDamageText::DamageInfo::FUN_141911020(const int& nMovieId)
@@ -243,6 +248,7 @@ CString UIDamageText::vfunc_1()
 {
     return "DamageText";
 }
+MS2_REPLACE_METHOD(0x1419114D0, UIDamageText, vfunc_1, 61, 0x693D82EF);
 
 // @0x141911520
 void UIDamageText::vfunc_3()
@@ -250,6 +256,7 @@ void UIDamageText::vfunc_3()
     FUN_1419135c0();
     UIHeadUpDisplay::vfunc_3();
 }
+MS2_REPLACE_METHOD(0x141911520, UIDamageText, vfunc_3, 34, 0x74F08FAB);
 
 // @0x141911550
 void UIDamageText::OnLoadComplete()
@@ -266,6 +273,7 @@ void UIDamageText::OnLoadComplete()
     m_pBattleOption = FUN_1409a8b10()->FUN_141248630();
     m_pInterfaceOption = FUN_1409a8b10()->FUN_140e09150();
 }
+MS2_REPLACE_METHOD(0x141911550, UIDamageText, OnLoadComplete, 1294, 0x526C0A8E);
 
 // @0x141911a70
 void UIDamageText::vfunc_15()
@@ -300,6 +308,7 @@ int UIDamageText::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         return 1;
     return 0;
 }
+MS2_REPLACE_METHOD(0x141911C20, UIDamageText, vfunc_28, 67, 0xA56CCDD6);
 
 // @0x141911c70
 void UIDamageText::vfunc_43()
@@ -308,6 +317,7 @@ void UIDamageText::vfunc_43()
     if (spRoot.get() != 0)
         spRoot->vfunc_2(5, 0, 0);
 }
+MS2_REPLACE_METHOD(0x141911C70, UIDamageText, vfunc_43, 154, 0xB919F2A2);
 
 // @0x141911d10
 void UIDamageText::vfunc_26()
@@ -333,7 +343,9 @@ void UIDamageText::vfunc_26()
     m_spDamageGarbage = 0;
     FUN_141913a20();
 }
+MS2_REPLACE_METHOD(0x141911D10, UIDamageText, vfunc_26, 366, 0x9617A9C3);
 
+// MS2-FUNCTIONAL: obj saves rsi/rdi (extra nonvolatiles) and allocates locals differently; body flow equivalent
 // @0x141911e90
 void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, int nCasterId, const efd::Point3& kHitPos)
 {
@@ -449,6 +461,7 @@ void UIDamageText::FUN_141912a80(GameObject* pTarget, int nValue, int nType)
     FUN_141912b20(pTarget, nValue, nType, kPos);
 }
 
+// MS2-FUNCTIONAL: obj saves rsi/rdi (extra nonvolatiles) and allocates locals differently; body flow equivalent
 // @0x141912b20
 void UIDamageText::FUN_141912b20(GameObject* pTarget, int nValue, int nType, const NiPoint3& kPos)
 {
@@ -489,6 +502,7 @@ void UIDamageText::FUN_141912b20(GameObject* pTarget, int nValue, int nType, con
     }
 }
 
+// MS2-FUNCTIONAL: obj saves rsi/rdi (extra nonvolatiles) and allocates locals differently; body flow equivalent
 // @0x141913060
 void UIDamageText::FUN_141913060(GameObject* pTarget, int nCount, const CString& strIcon)
 {
@@ -520,6 +534,7 @@ void UIDamageText::FUN_1419134a0(const CString& strFont)
     v.SetString((const char*)strFont);
     m_loadFont.InvokeSelf(0, &v, 1);
 }
+MS2_REPLACE_METHOD(0x1419134A0, UIDamageText, FUN_1419134a0, 134, 0x773B987B);
 
 // @0x141913530
 void UIDamageText::FUN_141913530(const CString& strFont)
@@ -530,6 +545,7 @@ void UIDamageText::FUN_141913530(const CString& strFont)
     v.SetString((const char*)strFont);
     m_unloadFont.InvokeSelf(0, &v, 1);
 }
+MS2_REPLACE_METHOD(0x141913530, UIDamageText, FUN_141913530, 134, 0x45A8EDE9);
 
 // @0x1419135c0
 void UIDamageText::FUN_1419135c0()
@@ -545,25 +561,25 @@ void UIDamageText::FUN_1419135c0()
     if (!m_bClearing && m_30.get() != 0)
         m_30->Invoke("ClearContainer");
 }
+MS2_REPLACE_METHOD(0x1419135C0, UIDamageText, FUN_1419135c0, 241, 0xFDBBADA7);
 
 // @0x1419136c0
 bool UIDamageText::FUN_1419136c0(CStringW& strOut)
 {
-    if (!(m_30 == 0))
+    if (m_30 == 0)
+        return false;
+    Scaleform::GFx::Value v = m_30->Invoke("getMovieCount");
+    strOut = CStringW(v.GetString());
+    if (!strOut.IsEmpty())
     {
-        Scaleform::GFx::Value v = m_30->Invoke("getMovieCount");
-        strOut = CStringW(v.GetString());
-        if (!strOut.IsEmpty())
-        {
-            strOut.Append(StringFormat(L"\nm_normals: {0}", m_normals.GetCount()));
-            strOut.Append(StringFormat(L"\nm_ownerFollowers: {0}", m_ownerFollowers.GetCount()));
-            strOut.Append(StringFormat(L"\nm_counter: {0}", m_counter.GetCount()));
-            strOut.Append(StringFormat(L"\nm_ownerFollowerCounter: {0}", m_ownerFollowerCounter.GetCount()));
-        }
-        return !strOut.IsEmpty();
+        strOut.Append(StringFormat(L"\nm_normals: {0}", m_normals.GetCount()));
+        strOut.Append(StringFormat(L"\nm_ownerFollowers: {0}", m_ownerFollowers.GetCount()));
+        strOut.Append(StringFormat(L"\nm_counter: {0}", m_counter.GetCount()));
+        strOut.Append(StringFormat(L"\nm_ownerFollowerCounter: {0}", m_ownerFollowerCounter.GetCount()));
     }
-    return false;
+    return !strOut.IsEmpty();
 }
+MS2_REPLACE_METHOD(0x1419136C0, UIDamageText, FUN_1419136c0, 709, 0x3BA9612D);
 
 // @0x141913990
 void UIDamageText::FUN_141913990(bool bClearing)
@@ -577,12 +593,14 @@ void UIDamageText::FUN_1419139d0(bool b)
 {
     m_bObserver = b;
 }
+MS2_REPLACE_METHOD(0x1419139D0, UIDamageText, FUN_1419139d0, 26, 0x17DDE11B);
 
 // @0x1419139f0
 void UIDamageText::FUN_1419139f0(__int64 n)
 {
     m_nObservedId = n;
 }
+MS2_REPLACE_METHOD(0x1419139F0, UIDamageText, FUN_1419139f0, 28, 0x4BB4D3D1);
 
 // @0x141913a20
 void UIDamageText::FUN_141913a20()
@@ -593,6 +611,7 @@ void UIDamageText::FUN_141913a20()
     m_nMaxList = m_nMaxShown + 10;
     m_nMaxIndex = 1000;
 }
+MS2_REPLACE_METHOD(0x141913A20, UIDamageText, FUN_141913a20, 190, 0x2A0CED2F);
 
 // @0x141913af0
 float UIDamageText::FUN_141913af0(GameObject* pTarget)
@@ -605,13 +624,16 @@ float UIDamageText::FUN_141913af0(GameObject* pTarget)
         fHeight += pActor->FUN_141670430();
     return fHeight;
 }
+MS2_REPLACE_METHOD(0x141913AF0, UIDamageText, FUN_141913af0, 128, 0xF6F52AFD);
 
 // @0x141913b80
 float UIDamageText::FUN_141913b80(const NiPoint3& kPos)
 {
     return FUN_1412762d0(kPos);
 }
+MS2_REPLACE_METHOD(0x141913B80, UIDamageText, FUN_141913b80, 29, 0x5D2D3D01);
 
+// MS2-FUNCTIONAL: shared Unk_BattleState uses bool m_b[6] (imul indexing) where the exe reads separate bool fields
 // @0x141913bd0
 int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
 {
@@ -680,13 +702,16 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
     int nTargetFlags = m_pBattleOption->m_n0c;
     return (nTargetFlags & nTargetMask) != 0 || (nCasterFlags & nCasterMask) != 0;
 }
+MS2_REPLACE_METHOD(0x141913BD0, UIDamageText, FUN_141913bd0, 1094, 0x593B0E73);
 
+// MS2-FUNCTIONAL: NiPoint3 return temp lands 4 bytes higher on the stack (0x40 vs 0x3c)
 // @0x141914020
 int UIDamageText::FUN_141914020(GameObject* pTarget, NiPoint3& kPos, const CString& strNode)
 {
     if (pTarget == 0)
         return 0;
-    kPos = NiPoint3(static_cast<const efd::Point3&>(pTarget->vfunc_18()));
+    NiPoint3 kTargetPos(static_cast<const efd::Point3&>(pTarget->vfunc_18()));
+    kPos = kTargetPos;
     if (strNode.IsEmpty())
         return 1;
     PCBase* pActor = FUN_1409ffd30(pTarget);
@@ -698,6 +723,7 @@ int UIDamageText::FUN_141914020(GameObject* pTarget, NiPoint3& kPos, const CStri
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x141914020, UIDamageText, FUN_141914020, 200, 0x994C8D00);
 
 // @0x1419140f0
 int UIDamageText::FUN_1419140f0(GameObject* pTarget, int& nIndex, CounterMap& map)
@@ -713,6 +739,7 @@ int UIDamageText::FUN_1419140f0(GameObject* pTarget, int& nIndex, CounterMap& ma
     }
     return 1;
 }
+MS2_REPLACE_METHOD(0x1419140F0, UIDamageText, FUN_1419140f0, 162, 0x3E527376);
 
 // @0x1419141a0
 int UIDamageText::FUN_1419141a0(GameObject* pTarget)
@@ -732,6 +759,7 @@ int UIDamageText::FUN_1419141a0(GameObject* pTarget)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1419141A0, UIDamageText, FUN_1419141a0, 244, 0xBDDE2484);
 
 // @0x1419142a0
 int UIDamageText::FUN_1419142a0(GameObject* pTarget)
@@ -749,6 +777,7 @@ int UIDamageText::FUN_1419142a0(GameObject* pTarget)
     }
     return nKind;
 }
+MS2_REPLACE_METHOD(0x1419142A0, UIDamageText, FUN_1419142a0, 278, 0xA4962AB5);
 
 // @0x1419143c0
 CString UIDamageText::FUN_1419143c0(int nTargetKind, bool bUser)
@@ -768,12 +797,14 @@ CString UIDamageText::FUN_1419143c0(int nTargetKind, bool bUser)
     }
     return str;
 }
+MS2_REPLACE_METHOD(0x1419143C0, UIDamageText, FUN_1419143c0, 192, 0x44112EB6);
 
 // @0x141914490
 int UIDamageText::FUN_141914490(GameObject* pTarget)
 {
     return 0;
 }
+MS2_REPLACE_METHOD(0x141914490, UIDamageText, FUN_141914490, 13, 0x370AB719);
 
 // @0x1419144b0
 int UIDamageText::FUN_1419144b0(int nGrade)
@@ -787,6 +818,7 @@ int UIDamageText::FUN_1419144b0(int nGrade)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x1419144B0, UIDamageText, FUN_1419144b0, 48, 0x4AE2E2C0);
 
 // @0x1419144f0
 bool UIDamageText::FUN_1419144f0(int nGrade)
@@ -801,6 +833,7 @@ bool UIDamageText::FUN_1419144f0(int nGrade)
     }
     return false;
 }
+MS2_REPLACE_METHOD(0x1419144F0, UIDamageText, FUN_1419144f0, 45, 0x77063B16);
 
 // @0x141914530
 int UIDamageText::FUN_141914530(int nGrade)
@@ -814,6 +847,7 @@ int UIDamageText::FUN_141914530(int nGrade)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141914530, UIDamageText, FUN_141914530, 48, 0x4AE2E2C0);
 
 // @0x141914570
 CString UIDamageText::FUN_141914570(int nGrade)
@@ -837,7 +871,9 @@ CString UIDamageText::FUN_141914570(int nGrade)
     }
     return str;
 }
+MS2_REPLACE_METHOD(0x141914570, UIDamageText, FUN_141914570, 193, 0x55B28405);
 
+// MS2-FUNCTIONAL: exe has an extra dead jmp after case 5 whose source form is unknown
 // @0x141914660
 CString UIDamageText::FUN_141914660(__int64 nValue, int nGrade)
 {
@@ -860,6 +896,7 @@ CString UIDamageText::FUN_141914660(__int64 nValue, int nGrade)
     }
     return str;
 }
+MS2_REPLACE_METHOD(0x141914660, UIDamageText, FUN_141914660, 366, 0x28219061);
 
 // @0x1419147e0
 CString UIDamageText::FUN_1419147e0()
@@ -869,6 +906,7 @@ CString UIDamageText::FUN_1419147e0()
         nFlags = m_pBattleOption->m_n10;
     return Name_140219830(nFlags);
 }
+MS2_REPLACE_METHOD(0x1419147E0, UIDamageText, FUN_1419147e0, 99, 0x2BBD4420);
 
 // @0x141914850
 int UIDamageText::FUN_141914850(int nType)
@@ -883,6 +921,7 @@ int UIDamageText::FUN_141914850(int nType)
     }
     return 0;
 }
+MS2_REPLACE_METHOD(0x141914850, UIDamageText, FUN_141914850, 58, 0x1015100C);
 
 // @0x141914890
 CString UIDamageText::FUN_141914890(int nValue, int nType)
@@ -900,6 +939,7 @@ CString UIDamageText::FUN_141914890(int nValue, int nType)
     }
     return str;
 }
+MS2_REPLACE_METHOD(0x141914890, UIDamageText, FUN_141914890, 304, 0x2205B6F5);
 
 // @0x1419149d0
 CString UIDamageText::FUN_1419149d0(int nType)
@@ -919,6 +959,7 @@ CString UIDamageText::FUN_1419149d0(int nType)
     }
     return str;
 }
+MS2_REPLACE_METHOD(0x1419149D0, UIDamageText, FUN_1419149d0, 185, 0x278A2D2D);
 
 // @0x141914a90
 float UIDamageText::FUN_141914a90(const NiPoint3& kPos)
@@ -941,6 +982,7 @@ float UIDamageText::FUN_141914a90(const NiPoint3& kPos)
     }
     return 1.0f;
 }
+MS2_REPLACE_METHOD(0x141914A90, UIDamageText, FUN_141914a90, 411, 0x30A6C047);
 
 // @0x141914c40
 float UIDamageText::FUN_141914c40(GameObject* pTarget)
@@ -958,6 +1000,7 @@ float UIDamageText::FUN_141914c40(GameObject* pTarget)
         return FUN_141914a90(*FUN_140947900((NiAVObject*)pRoot));
     return 1.0f;
 }
+MS2_REPLACE_METHOD(0x141914C40, UIDamageText, FUN_141914c40, 240, 0xC525D00F);
 
 // @0x141914d40
 int UIDamageText::FUN_141914d40(GameObject* pTarget)
@@ -970,7 +1013,9 @@ int UIDamageText::FUN_141914d40(GameObject* pTarget)
         return 1;
     return 0;
 }
+MS2_REPLACE_METHOD(0x141914D40, UIDamageText, FUN_141914d40, 89, 0x4CFCD192);
 
+// MS2-FUNCTIONAL: temp/EH state layout differs (dispUnwindHelp 0x80 vs 0x88); same calls and flow
 // @0x141914da0
 void UIDamageText::FUN_141914da0(int bAppend, POSITION* pLast, DamageList& list, CounterMap& map,
                                  MS2Ptr<DamageInfo> spInfo, int nMax)
@@ -1025,6 +1070,7 @@ void UIDamageText::FUN_141915090(POSITION pos)
         return;
     FUN_141917ab0(pos, &m_posOwnerFollowers, m_ownerFollowers);
 }
+MS2_REPLACE_METHOD(0x141915090, UIDamageText, FUN_141915090, 86, 0x8191F121);
 
 // @0x1419150f0
 void UIDamageText::FUN_1419150f0(POSITION pos)
@@ -1033,6 +1079,7 @@ void UIDamageText::FUN_1419150f0(POSITION pos)
         return;
     FUN_141917ab0(pos, &m_posNormals, m_normals);
 }
+MS2_REPLACE_METHOD(0x1419150F0, UIDamageText, FUN_1419150f0, 86, 0x00CD1F29);
 
 // @0x141915150
 void UIDamageText::FUN_141915150(const unsigned __int64& nOwnerId, int nCount, CounterMap& map)
@@ -1052,26 +1099,31 @@ void UIDamageText::FUN_141915150(const unsigned __int64& nOwnerId, int nCount, C
         }
     }
 }
+MS2_REPLACE_METHOD(0x141915150, UIDamageText, FUN_141915150, 232, 0x2B03A287);
 
 // @0x141915240
 MS2Ptr<UIDamageText::CounterInfo> UIDamageText::FUN_141915240(unsigned __int64 nOwnerId, CounterMap& map, int nGrade)
 {
     MS2Ptr<CounterInfo> spCounter(0);
-    if (!map.Lookup(nOwnerId, spCounter))
+    if (map.Lookup(nOwnerId, spCounter))
+    {
+        if (spCounter.get() != 0)
+        {
+            spCounter->m_nCount++;
+            spCounter->m_nIndex++;
+            if (spCounter->m_nIndex >= m_nMaxIndex)
+                spCounter->m_nIndex = 0;
+        }
+    }
+    else
     {
         spCounter.AssignRaw(new CounterInfo(1, 0));
         map.SetAt(nOwnerId, spCounter);
     }
-    else if (spCounter.get() != 0)
-    {
-        spCounter->m_nCount++;
-        spCounter->m_nIndex++;
-        if (m_nMaxIndex <= spCounter->m_nIndex)
-            spCounter->m_nIndex = 0;
-    }
     return spCounter;
 }
 
+// MS2-FUNCTIONAL: temp/EH state layout differs (ip2state offsets); same calls and flow
 // @0x1419153d0
 void UIDamageText::FUN_1419153d0()
 {
@@ -1156,7 +1208,9 @@ void UIDamageText::FUN_1419153d0()
     else if (!m_ownerFollowerCounter.IsEmpty())
         m_ownerFollowerCounter.RemoveAll();
 }
+MS2_REPLACE_METHOD(0x1419153D0, UIDamageText, FUN_1419153d0, 1457, 0x8F16367D);
 
+// MS2-FUNCTIONAL: temp/EH state layout differs (dispUnwindHelp 0x130 vs 0x120); same calls and flow
 // @0x141915990
 void UIDamageText::FUN_141915990()
 {
@@ -1289,6 +1343,7 @@ void UIDamageText::FUN_141915990()
     else if (!m_counter.IsEmpty())
         m_counter.RemoveAll();
 }
+MS2_REPLACE_METHOD(0x141915990, UIDamageText, FUN_141915990, 2469, 0xC5EF7552);
 
 // @0x141916340
 void UIDamageText::FUN_141916340()
@@ -1304,6 +1359,7 @@ void UIDamageText::FUN_141916340()
     m_nLastQueueTime = nNow;
 }
 
+// MS2-FUNCTIONAL: temp/EH state layout differs (ip2state offsets); same calls and flow
 // @0x141916430
 void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
 {
@@ -1381,7 +1437,9 @@ void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
         }
     }
 }
+MS2_REPLACE_METHOD(0x141916430, UIDamageText, FUN_141916430, 1669, 0x29E50C8E);
 
+// MS2-FUNCTIONAL: temp/EH state layout differs (dispUnwindHelp 0x158 vs 0x160); same calls and flow
 // @0x141916ac0
 void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
 {
@@ -1514,7 +1572,9 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
         }
     }
 }
+MS2_REPLACE_METHOD(0x141916AC0, UIDamageText, FUN_141916ac0, 2804, 0x61338552);
 
+// MS2-FUNCTIONAL: temp/EH state layout differs (ip2state states); same calls and flow
 // @0x1419175c0
 int UIDamageText::FUN_1419175c0(MS2Ptr<DamageInfo> spInfo, NiPoint3 kPos, GameObject* pTarget,
                                 const Scaleform::GFx::Value& clip, const efd::Point3& kScreen, int bAppend)
@@ -1547,12 +1607,14 @@ void UIDamageText::vfunc_41(const Scaleform::GFx::Value& root)
 {
     m_30 = FUN_140ba77e0(m_28, root);
 }
+MS2_REPLACE_METHOD(0x141917A20, UIDamageText, vfunc_41, 99, 0x9A0FF887);
 
 // @0x141917a90
 void UIDamageText::vfunc_16()
 {
     FUN_1419135c0();
 }
+MS2_REPLACE_METHOD(0x141917A90, UIDamageText, vfunc_16, 24, 0x78A52482);
 
 // @0x141917bf0
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, CString a2, CString a3, CString a4)
