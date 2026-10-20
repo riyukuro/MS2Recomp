@@ -8,6 +8,7 @@
 #include <efd/SmartPointer.h>
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/notifyobject.h"
+#include "ms2/placeholder/notifykeytable.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/notifychangeactivemycoditab.h"
 
@@ -175,9 +176,7 @@ class NotifySurvivalGameFinish : public NotifyObject { public: virtual CStringW 
 
 class NotifyDungeonEnterState : public NotifyObject { public: virtual CStringW vfunc_1(); static ClassObject* CreateObject(); };   // 0x140db53a0 / 0x140db5390
 
-class NotifySkillSetMode : public NotifyObject { public: virtual CStringW vfunc_1(); static ClassObject* CreateObject(); };   // 0x140db5400 / 0x140db53f0
-
-class NotifyShortkeyPage : public NotifyObject { public: virtual CStringW vfunc_1(); static ClassObject* CreateObject(); };   // 0x140db5460 / 0x140db5450
+// NotifySkillSetMode (0x140db5400 / 0x140db53f0), NotifyShortkeyPage (0x140db5460 / 0x140db5450): placeholder/notifykeytable.h.
 
 class NotifyBlindTarget : public NotifyObject { public: virtual CStringW vfunc_1(); static ClassObject* CreateObject(); };   // 0x140db54c0 / 0x140db54b0
 
