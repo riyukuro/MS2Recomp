@@ -3850,3 +3850,5 @@ void UIMinimapDialog::FUN_141a3fd20()
     m_homes.RemoveAll();
 }
 MS2_REPLACE_METHOD(0x141a3fd20, UIMinimapDialog, FUN_141a3fd20, 231, 0x2297E1D9);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc01c0-0x142cc0d10 .text$yd

@@ -366,3 +366,7 @@ void FUN_1416bc0f0()
     DAT_143ae52d0 = "MS2PoisonMaterial";
     DAT_143ae52d8 = "MS2DarkMaterial";
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb4760-0x142cb4780 .text$yd
+// MS2-RANGE: 0x142cb48a0-0x142cb48e0 .text$yd
+// MS2-RANGE: 0x142cb4aa0-0x142cb4ba0 .text$yd
