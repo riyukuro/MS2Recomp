@@ -513,3 +513,12 @@ MMLToken::MMLToken()
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// The default constructor sits just before this TU's range start in the exe.
+// MS2-RANGE: 0x140d7e600-0x140d7e660 .text$mn
+// @0x140d7e600
+MMLParser::MMLParser()
+{
+    Reset();
+    m_bFixedTempo = false;
+}

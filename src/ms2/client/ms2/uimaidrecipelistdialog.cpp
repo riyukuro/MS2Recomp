@@ -1691,3 +1691,8 @@ CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix)
         strRet = FUN_1401d0080(strRet, FUN_14028de60(0x7b6));
     return strRet;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caf7d0-0x142caf7f0 .text$yd
+// MS2-RANGE: 0x142caf820-0x142caf840 .text$yd
+// MS2-RANGE: 0x142caf880-0x142caf8b0 .text$yd
+// MS2-RANGE: 0x142caf940-0x142caf960 .text$yd

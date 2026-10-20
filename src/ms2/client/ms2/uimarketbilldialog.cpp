@@ -1142,3 +1142,5 @@ bool UIMarketBillDialog::FUN_140eab7b0(int nButton, const CMsgBoxData& box)
     }
     return true;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca8080-0x142ca81c0 .text$yd

@@ -3280,3 +3280,5 @@ CItemTransfer& CItemTransfer::operator=(const CItemTransfer& o)
 
 template class MS2Ptr<CItemTransfer>;
 MS2_REPLACE_METHOD(0x140635CF0, CItemTransfer, operator=, 367, 0xBAC8BFAA);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9b310-0x142c9b490 .text$yd

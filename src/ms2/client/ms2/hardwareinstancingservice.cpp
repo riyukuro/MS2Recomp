@@ -1529,3 +1529,7 @@ bool HardwareInstancingService::FUN_1413d84e0(egf::Entity* pEntity, NiTransform*
     return false;
 }
 MS2_REPLACE_METHOD(0x1413D84E0, HardwareInstancingService, FUN_1413d84e0, 1246, 0xEF4D8B6E);
+// MS2-PIN: ?begin@?$vector@VEntityID@egf@@V?$allocator@VEntityID@egf@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@VEntityID@egf@@@std@@@std@@@2@XZ 0x1413f6150 ; vector<EntityID> iterator accessor copy (strict auto-pairing misses it)
+// MS2-PIN: ?end@?$vector@VEntityID@egf@@V?$allocator@VEntityID@egf@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@VEntityID@egf@@@std@@@std@@@2@XZ 0x1413f7700 ; vector<EntityID> iterator accessor copy (strict auto-pairing misses it)
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb1430-0x142cb1580 .text$yd

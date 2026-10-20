@@ -663,3 +663,5 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy)(void*, s
 
 // @0x1406524c0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(2);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9b4b0-0x142c9b520 .text$yd

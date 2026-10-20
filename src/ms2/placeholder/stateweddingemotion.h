@@ -45,9 +45,12 @@ MS2_CHECK_OFFSET(Unk_SyncWeddingEmotion, m_nC0, 0xc0);
 MS2_CHECK_OFFSET(Unk_SyncWeddingEmotion, m_bC4, 0xc4);
 
 // The argument of State slots 22/28 (a state request); the exe hands the same sync record through both paths.
+#ifndef MS2_UNK_STATEARG22_DEFINED   // also defined by another header (w539: both may be included)
+#define MS2_UNK_STATEARG22_DEFINED
 class Unk_StateArg22 : public Unk_StateDataArg
 {
 };
+#endif
 
 #include "ms2/placeholder/state.h"
 

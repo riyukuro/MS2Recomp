@@ -937,3 +937,5 @@ static bool CompareAlpha(AlphaComponent* pkA, AlphaComponent* pkB)
     return pkA->GetAlpha() > pkB->GetAlpha();
 }
 MS2_REPLACE(0x1414DEE00, CompareAlpha, 79, 0x89149BAE);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb2fb0-0x142cb30c0 .text$yd

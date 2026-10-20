@@ -196,3 +196,5 @@ void UIMoveFieldDialog::FUN_141a55e30(const CStringW& strFilter)
     }
     ((Unk_MoveFieldList*)list)->vfunc_24(true);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc0d10-0x142cc0dc0 .text$yd

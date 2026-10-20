@@ -363,3 +363,5 @@ void UITypingGameDialog::FUN_140ee6240()
 // The UCRT header-inline memmove_s (corecrt_memcpy_s.h) ends the unit; the pointer keeps the unreferenced COMDAT.
 // @0x140ee74f0
 __declspec(selectany) extern errno_t(__cdecl* const g_pTypingGameMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca8720-0x142ca8810 .text$yd

@@ -3496,3 +3496,5 @@ MS2_REPLACE_METHOD(0x140961900, CMsgBoxData, FUN_140961900, 103, 0x99208798);
 // is pinned at the top).
 // @0x14096b1e0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(2);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9d480-0x142c9d4f0 .text$yd

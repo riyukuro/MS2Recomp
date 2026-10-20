@@ -581,3 +581,5 @@ static __inline errno_t ms2_gem_memcpy_s(void* const d, size_t const dsz, void c
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnGemMemcpyS)(void*, size_t, const void*, size_t) = &ms2_gem_memcpy_s;
 #pragma intrinsic(memcpy, memset)
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cae340-0x142cae410 .text$yd

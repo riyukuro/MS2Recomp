@@ -28,8 +28,10 @@ class COutputStream;
 
 // A queued state request (the record PCBase/the network feed the state machine): CPtred-derived, held in MS2Ptr<>.
 // RTTI StateSyncObject (defined in ?\statesyncobject.cpp, subclasses in commonfiles/statesyncobject.h). The exe object
-// is 0xb8: its last field (void* +0xb0, not set by the ctor) is left out here because ?\state.cpp's local subclasses pad it.
+// is 0xb8; its last field (void* +0xb0) is not set by the ctor.
 // Fields proven from CStateManager::FUN_1417db550 (applies one request to the actor) and the packet coders.
+#ifndef MS2_UNK_STATEARG22_DEFINED   // also defined by another header (w539: both may be included)
+#define MS2_UNK_STATEARG22_DEFINED
 class Unk_StateArg22 : public CPtred
 {
 public:
@@ -68,8 +70,9 @@ public:
     float m_fA4;                        // +0xa4
     int m_nA8;                          // +0xa8 already-fired flag
     int m_nAC;                          // +0xac server tick (Ridee::FUN_141706650)
+    void* m_pB0;                        // +0xb0
 };
-MS2_CHECK_SIZE(Unk_StateArg22, 0xb0);
+MS2_CHECK_SIZE(Unk_StateArg22, 0xb8);
 MS2_CHECK_OFFSET(Unk_StateArg22, m_optional, 0x60);
 MS2_CHECK_OFFSET(Unk_StateArg22, m_str70, 0x70);
 MS2_CHECK_OFFSET(Unk_StateArg22, m_str98, 0x98);
@@ -81,6 +84,7 @@ MS2_CHECK_OFFSET(Unk_StateArg22, m_pos78, 0x78);
 MS2_CHECK_OFFSET(Unk_StateArg22, m_str88, 0x88);
 MS2_CHECK_OFFSET(Unk_StateArg22, m_nA8, 0xa8);
 MS2_CHECK_OFFSET(Unk_StateArg22, m_fA4, 0xa4);
+#endif
 
 // The owner state whose slots 36/37 CStateManager::FUN_1417daaa0 drives (state id 2).
 class Unk_SMStateSlots : public State

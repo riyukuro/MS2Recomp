@@ -250,3 +250,5 @@ UIMeratMarketDialog* FUN_140bfed50(int nId)
 
 // @0x140bfef40
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca2170-0x142ca2280 .text$yd

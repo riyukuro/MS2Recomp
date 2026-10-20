@@ -920,3 +920,5 @@ void FUN_140dfeeb0()
     packet.vfunc_o10_1(2);
     FUN_140710590(packet);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca60f0-0x142ca6150 .text$yd

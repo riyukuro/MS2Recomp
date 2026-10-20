@@ -108,3 +108,5 @@ bool ScreenMaskingRenderStep::vfunc_14() { return false; }
 
 // @0x1416ba7e0
 bool ScreenMaskingRenderStep::vfunc_13() { return false; }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb4740-0x142cb4760 .text$yd

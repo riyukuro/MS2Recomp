@@ -274,3 +274,5 @@ int CFieldMission::GetQuestType() { return 4; }
 int CMentoringMission::GetQuestType() { return 7; }
 // @0x140d73940
 int CWeddingMission::GetQuestType() { return 10; }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca54a0-0x142ca54e0 .text$yd

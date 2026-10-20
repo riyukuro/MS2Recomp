@@ -927,3 +927,5 @@ CFieldSpawnTag::CFieldSpawnTag()
     petPopulation = 0;
     petSpawnProbability = 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9a720-0x142c9a7c0 .text$yd

@@ -50,3 +50,5 @@ static char s_regTriggerAction;
 static Unk_RegMarker s_initTriggerAction =
     (FUN_140316aa0(&s_regTriggerAction, CStringW(L"TriggerActionCli"), FUN_140de4cb0), Unk_RegMarker());
 #endif
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca5c90-0x142ca5ed0 .text$yd

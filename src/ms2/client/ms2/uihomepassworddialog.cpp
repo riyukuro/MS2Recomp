@@ -230,3 +230,5 @@ void UIHomePasswordDialog::FUN_1412c97c0()
 {
     FUN_1412c96d0(0, L"", 0);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caf410-0x142caf4c0 .text$yd

@@ -617,3 +617,5 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9c10-0x142ca9c60 .text$yd

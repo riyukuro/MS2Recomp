@@ -285,3 +285,5 @@ CSkillTierOption::~CSkillTierOption()
 CSkillTierOptionManager::~CSkillTierOptionManager()
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9c200-0x142c9c2f0 .text$yd

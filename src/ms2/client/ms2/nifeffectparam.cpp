@@ -2794,3 +2794,5 @@ void FUN_141562500(NiSourceTexture* pTexture, NiPixelData* pPixels)
 // MS2-PIN: ??__EDAT_143ae1f28@@YAXXZ 0x1400fa4e0 ; generated initializer of the nif cache lock
 // MS2-PIN: ??__EDAT_143ae1f58@@YAXXZ 0x1400fa510 ; generated initializer of the texture cache lock
 // MS2-PIN: ??9?$SmartPointer@VNiAVObject@@@efd@@QEBA_NPEAVNiAVObject@@@Z 0x14155be40 ; hand: this TU's byte-identical copy
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb37d0-0x142cb38a0 .text$yd

@@ -1235,3 +1235,5 @@ template<unsigned flags> void ImageJsonReader::ParseNumber(ImageJsonStringStream
     else handler.Uint(i);
     input = stream;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9aa50-0x142c9aaa0 .text$yd

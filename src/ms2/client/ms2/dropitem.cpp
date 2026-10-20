@@ -1384,3 +1384,5 @@ void CDropItem::FUN_1411925e0(efd::Point3 kAxis, float fDegrees)
 
 // @0x141192840
 void CDropItem::FUN_141192840(int nValue) { m_n294 = nValue; }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caca70-0x142cacb40 .text$yd

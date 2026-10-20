@@ -549,3 +549,5 @@ static Unk_1418036b0 s_zero;
 static Unk_1401cd100 s_pointer(NULL);
 static Unk_1418036e0 s_pointer2(NULL);
 static CString s_str_empty3("");
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc7460-0x142cc8970 .text$yd

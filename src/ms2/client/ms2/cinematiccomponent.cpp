@@ -1395,3 +1395,5 @@ void CStopCinematicComponent::vfunc_5(ASObj& obj)
     CCinematicComponent::vfunc_5(obj);
     obj.FUN_1407cbb20("button", FUN_14107dfa0(0x958));
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cabb20-0x142cabc60 .text$yd

@@ -735,3 +735,4 @@ MS2_REPLACE(0x1418FC760, FUN_1418fc760, 161, 0x7370E97D);
 MS2_REPLACE(0x1418FC810, FUN_1418fc810, 27, 0x8EBD5165);
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// MS2-PIN: ??__Es_pointer1401cd100@@YAXXZ 0x140111720 ; header static (uichatballoon_ptr.h) dynamic initializer

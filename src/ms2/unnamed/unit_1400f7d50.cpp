@@ -34,3 +34,6 @@ NiImplementRTTI(CMirrored3DRenderView, Ni3DRenderView);
 // fourth TU
 static CString s_strSkill4 = "skill";
 static CString s_strStun4 = "stun";
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb2850-0x142cb2920 .text$yd
+// MS2-RANGE: 0x142cb2940-0x142cb29c0 .text$yd

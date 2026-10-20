@@ -174,7 +174,7 @@ int CItemEnchantLimitTable::Load()
 
 // The item may start an enchant: the item level inside the band of its slot and the grade below the limit.
 #define ITEM_DATA(p) reinterpret_cast<CItemData*>((p)->FUN_140527840())
-#define ITEM_DATA_BYTE(p, off) (*(reinterpret_cast<const char*>((p)->FUN_140527840()) + (off)))
+#define ITEM_DATA_BYTE(p, off) (*(reinterpret_cast<const unsigned char*>((p)->FUN_140527840()) + (off)))
 
 // @0x14058df90
 int CItemEnchantLimitTable::FUN_14058df90(CItem* pItem)
@@ -188,23 +188,25 @@ int CItemEnchantLimitTable::FUN_14058df90(CItem* pItem)
         return 0;
     if (pItem->FUN_140525c60() == 1)
         return 0;
-    if (pItem->FUN_140527270() >= 1)
+    if (pItem->FUN_140527270() > 0)
         return 0;
     MS2Ptr<EnchantLimit> spLimit(0);
     if (!m_map.Lookup(ITEM_DATA(pItem)->FUN_14053c620(), spLimit))
         return 0;
-    unsigned nLevel = pItem->FUN_140527710();
-    if (nLevel < spLimit->m_nMinLv)
+    if (pItem->FUN_140527710() < spLimit->m_nMinLv)
         return 0;
-    unsigned nLevelMax = pItem->FUN_140527710();
-    if (spLimit->m_nMaxLv < nLevelMax)
+
+    if (pItem->FUN_140527710() > spLimit->m_nMaxLv)
         return 0;
+
     Unk_EnchantPtr<CItemEnchantInfo> spInfo(reinterpret_cast<CItemStatus*>(pItem->FUN_1405278a0())->FUN_140630d60());
     if (!spInfo)
         return 0;
-    if (spInfo->FUN_14058c5f0() < spLimit->m_nMaxGrade)
-        return ITEM_DATA_BYTE(pItem, 0x1a1) == 0;
-    return 0;
+    if (spInfo->FUN_14058c5f0() >= spLimit->m_nMaxGrade)
+        return 0;
+    if (ITEM_DATA_BYTE(pItem, 0x1a1) != 0)
+        return 0;
+    return 1;
 }
 
 // @0x14058e230

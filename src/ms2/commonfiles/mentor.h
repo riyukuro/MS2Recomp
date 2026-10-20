@@ -93,6 +93,7 @@ public:
     void FUN_14069a0b0(Unk_MentorReader& stream);
     void FUN_14069a290(Unk_MentorReader& stream);
     void FUN_14069a1f0(Unk_MentorWriter& stream);
+    void FUN_14069a010(Unk_MentorWriter& stream);
     unsigned char nProtocol; ATL::CAtlArray<Unk_MentorPtr<CMentor>> entries;
 };
 class Unk_MentorResultPacket {

@@ -543,3 +543,5 @@ int UICharacterCreateSelectDialog::vfunc_48()
 {
     return 0x4eea;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9210-0x142ca9270 .text$yd

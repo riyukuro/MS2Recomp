@@ -86,7 +86,8 @@ public:
 public:
     MS2_LAYOUT_FRIEND;
     bool m_bPauseUpdate;                                                    // +0x148
-    std::set<NiAVObject*> m_alwaysUpdated;                                   // +0x150 scene graphs forced into bucket 1 (std::allocator)
+    struct LessAV { bool operator()(NiAVObject* const& a, NiAVObject* const& b) const { return a < b; } };   // = std::less<NiAVObject*>; the exe calls the copy at 0x14106a330
+    std::set<NiAVObject*, LessAV> m_alwaysUpdated;                           // +0x150 scene graphs forced into bucket 1 (std::allocator)
     efd::vector<SceneGraphData*> m_buckets[kBucketCount];                   // +0x160
     ATL::CAtlMap<efd::UInt64, int> m_bucketOverrides;                       // +0x1f0 entity id -> bucket
     efd::UInt32 m_uiThreadCount;                                            // +0x238

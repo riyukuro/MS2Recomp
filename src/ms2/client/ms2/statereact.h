@@ -17,6 +17,8 @@ class PCBase;
 class Unk_ReactRef;     // counted reference to an actor looked up by name (8 bytes)
 
 // 0x30. The target actor's name and the animation to play.
+#ifndef MS2_STATEREACTDATA_DEFINED   // also defined by another header (w539: both may be included)
+#define MS2_STATEREACTDATA_DEFINED
 class StateReactData : public StateData
 {
 public:
@@ -33,6 +35,7 @@ MS2_CHECK_SIZE(StateReactData, 0x30);
 MS2_CHECK_OFFSET(StateReactData, m_nId, 0x18);
 MS2_CHECK_OFFSET(StateReactData, m_strTarget, 0x20);
 MS2_CHECK_OFFSET(StateReactData, m_strAnim, 0x28);
+#endif
 
 // 0x60.
 class StateReact : public State, public ICastingEventListener

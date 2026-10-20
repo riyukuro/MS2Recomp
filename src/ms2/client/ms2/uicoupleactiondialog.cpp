@@ -673,3 +673,5 @@ int UICoupleActionDialog::FUN_140bee5e0(int nKey, unsigned __int64 nEmotion)
 MS2_REPLACE_METHOD(0x140BEE5E0, UICoupleActionDialog, FUN_140bee5e0, 108, 0x19D8ECF5);
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1ed0-0x142ca1f30 .text$yd

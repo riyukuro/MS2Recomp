@@ -252,3 +252,5 @@ int FUN_1417f7430(void* const d, size_t const dsz, void const* const s, size_t c
     return 0;
 }
 #pragma intrinsic(memcpy)
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb7f50-0x142cb7f90 .text$yd

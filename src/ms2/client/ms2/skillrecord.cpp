@@ -714,3 +714,6 @@ int CSplashDamageRecord::Init(int nCasterId, int nOwnerId, unsigned long long nT
         return 0;
     return 1;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb6850-0x142cb6870 .text$yd
+// MS2-RANGE: 0x142cb6890-0x142cb68d0 .text$yd

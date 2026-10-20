@@ -2471,3 +2471,5 @@ MS2_REPLACE_METHOD_VIA(0x140EB4F60, UIMasteryDialog, UIItemEventListener, vfunc_
 MS2_REPLACE_METHOD_VIA(0x140EB4FD0, UIMasteryDialog, UIItemEventListener, vfunc_4, 96, 0x85CF0DB2);
 MS2_REPLACE_METHOD_VIA(0x140EAF840, UIMasteryDialog, ICastingEventListener, OnCastingFinished, 443, 0x4DD2CA94);
 MS2_REPLACE_METHOD_VIA(0x140EAFA10, UIMasteryDialog, ICastingEventListener, OnCastingCancelled, 52, 0x5127663B);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca81c0-0x142ca82a0 .text$yd

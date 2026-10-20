@@ -18,3 +18,5 @@ static CString s_strMissMatch = "MissMatch";
 static CString s_strOptimizer = "Optimizer";
 static CString s_strPCBang = "PCBang";
 static CString s_strSlot = "Slot";
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca3f10-0x142ca4090 .text$yd

@@ -134,3 +134,5 @@ int UIBirthdayCardDialog::vfunc_48()
 
 // @0x140bb9bd0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1870-0x142ca1890 .text$yd

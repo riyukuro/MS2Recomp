@@ -261,3 +261,5 @@ void UIInteriorBuildDialog::FUN_140f4bc40()
     }
     FUN_140d73bc0(0xb9d, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorSizeDifferent"));
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9890-0x142ca9920 .text$yd

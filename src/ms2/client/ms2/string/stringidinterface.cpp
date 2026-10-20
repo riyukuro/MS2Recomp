@@ -274,3 +274,5 @@ CStringW FUN_141026920(int nKind)
 // ---- statics (.text$di) -----------------------------------------------------------------------------------------
 
 CString DAT_143accfc0("ua-maplestory2.nexon.com");
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cab540-0x142cab560 .text$yd

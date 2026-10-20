@@ -88,3 +88,5 @@ void MS2DragSlot::FUN_140a7bd80(bool b)
     m_bEnabled = b;
 }
 MS2_REPLACE_METHOD(0x140a7bd80, MS2DragSlot, FUN_140a7bd80, 26, 0xF01D1BED);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9f8e0-0x142c9f910 .text$yd

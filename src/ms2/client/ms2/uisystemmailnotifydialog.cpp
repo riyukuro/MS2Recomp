@@ -513,3 +513,5 @@ void UISystemMailNotifyDialog::FUN_1412a6390()
         FUN_140cfefe0(m_onTimeEvent->FUN_1422bb890(), "content", "m_remainTime", strText);
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caf080-0x142caf140 .text$yd

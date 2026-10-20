@@ -391,3 +391,5 @@ Scaleform::GFx::Value Unk_LgRoot::FUN_140ea5e70(const char* szMethod, unsigned s
 void Unk_SSGDlg4e28::FUN_140ea5f80() { m_nDirty = 1; }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca7ff0-0x142ca8080 .text$yd

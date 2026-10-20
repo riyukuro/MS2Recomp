@@ -207,3 +207,5 @@ void PostProcessSetting::ApplyShaderConstants(float fTime)
     kColor.Assign(m_f4c, m_f58, m_f54, m_f50);
     FUN_14135dba0(DAT_143ae5428, &kColor, 1);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb4720-0x142cb4740 .text$yd

@@ -215,7 +215,7 @@ public:
     long long FUN_1410a67f0();
 
     MS2Ptr<Unk_SkillMagicInfo> m_spInfo;                    // +0xda8
-    Unk_StreamPoint m_kAim;                                 // +0xdb8
+    efd::Point3 m_kAim;                                     // +0xdb8 (assigned with Point3::operator= 0x140194470)
     bool m_bControl;                                        // +0xdc4
     float m_fDc8;                                           // +0xdc8
     float m_fDcc;                                           // +0xdcc

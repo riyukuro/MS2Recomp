@@ -162,3 +162,5 @@ bool UIWeddingHallReservationPageConfirm::vfunc_12()
         return false;
     return true;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caae90-0x142caaf50 .text$yd

@@ -595,3 +595,5 @@ MS2Ptr<ASMovieClip> FUN_1409b6610(int nMovieId, CString strClass, __int64 a1, in
     MS2Ptr<ASMovieClip> sp(new ASMovieClip(v, nMovieId));
     return sp;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9d9b0-0x142c9daa0 .text$yd

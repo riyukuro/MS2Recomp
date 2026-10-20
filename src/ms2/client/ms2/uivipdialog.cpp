@@ -403,3 +403,5 @@ int UIVIPDialog::vfunc_48()
 {
     return 0x4f1b;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caa9e0-0x142caaa00 .text$yd

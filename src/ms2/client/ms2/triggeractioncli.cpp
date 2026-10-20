@@ -1524,3 +1524,5 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(2);
 MS2_EMIT_CRT_MEMMOVE_S_COPY(3);
 
 
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca5ed0-0x142ca5f10 .text$yd

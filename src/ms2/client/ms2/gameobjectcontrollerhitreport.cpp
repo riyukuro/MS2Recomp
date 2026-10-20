@@ -163,3 +163,5 @@ int FUN_140cfb1e0(const NxVec3& v)
 {
     return v.isFinite();
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca4630-0x142ca4750 .text$yd

@@ -40,3 +40,5 @@ static Unk_1402a9d70 s_condition4(17, 0.75f, 0.25f, 2.25f, 10);
 static CString s_strJobCode = "jobCode";
 static CString s_strSortValue = "sortValue";
 static CString s_strTabIndex = "tabIndex";
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc1b60-0x142cc1e00 .text$yd

@@ -220,3 +220,5 @@ void UIInteriorPreviewDialog::FUN_140f4dac0()
         FUN_141415600(m_188[i]);
     m_188.RemoveAll();
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9920-0x142ca9a10 .text$yd

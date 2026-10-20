@@ -225,3 +225,13 @@ void CMentor::FUN_14069af00(Unk_MentorReader& stream) {
     stream.FUN_14070f480(x); stream.FUN_14070f300(online); stream.FUN_14070f480(y);
 }
 MS2_REPLACE_METHOD(0x14069AF00, CMentor, FUN_14069af00, 217, 0x42428FFF);
+
+// The MENTOR_LIST writer, the twin of FUN_14069a1f0 (sits just before this TU's range start in the exe).
+// MS2-RANGE: 0x14069a010-0x14069a0b0 .text$mn
+// @0x14069a010
+void Unk_MentorListPacket::FUN_14069a010(Unk_MentorWriter& stream) {
+    stream.FUN_14070f860(nProtocol);
+    unsigned int count=static_cast<unsigned int>(entries.GetCount()); stream.FUN_14070f9a0(count);
+    for(unsigned int i=0;i<count;++i) stream.FUN_14070fc40(*entries[i].operator->());
+}
+MS2_REPLACE_METHOD(0x14069A010, Unk_MentorListPacket, FUN_14069a010, 149, 0xBE8887DB);

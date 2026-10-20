@@ -1695,3 +1695,5 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     }
     return true;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9b7e0-0x142c9b860 .text$yd

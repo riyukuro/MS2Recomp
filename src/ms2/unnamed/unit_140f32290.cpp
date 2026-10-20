@@ -530,3 +530,6 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
         }
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9270-0x142ca92e0 .text$yd
+// MS2-RANGE: 0x142ca9300-0x142ca9380 .text$yd

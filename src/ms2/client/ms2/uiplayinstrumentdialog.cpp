@@ -1334,3 +1334,5 @@ int UIPlayInstrumentDialog::vfunc_48()
 {
     return 0x4eec;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cab1a0-0x142cab2e0 .text$yd

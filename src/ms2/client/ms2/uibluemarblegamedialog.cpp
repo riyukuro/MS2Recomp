@@ -533,3 +533,5 @@ void UIBlueMarbleGameDialog::FUN_140f24140(int bEnabled)
     if (MS2Ptr<Unk_140acd6e0> spButton = FUN_140bb4b10("m_dice"))
         spButton->FUN_1422c1fe0(bEnabled);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca8f70-0x142ca9020 .text$yd

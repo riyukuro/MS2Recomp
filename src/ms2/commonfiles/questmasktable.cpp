@@ -1226,3 +1226,5 @@ unsigned FUN_140767ff0()
     return s_random.FUN_1407684c0();
 }
 #endif
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9bd80-0x142c9be60 .text$yd

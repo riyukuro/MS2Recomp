@@ -70,6 +70,7 @@
 #include <string.h>
 #include <vector>
 #include <efd/Category.h>
+#include <egf/EntityID.h>
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/equipitem.h"
@@ -278,7 +279,7 @@ bool FUN_141200ad0(CEquipModel* self);
 void FUN_141200b30(CEquipModel* self);
 void FUN_141200ca0(CEquipModel* self);
 void FUN_141200e30(CEquipModel* self, int n);
-void FUN_141200390(CEquipModel* self, CString kName);
+void FUN_141200390(CEquipModel* self, const CString& kName);
 void* FUN_141201920(CEquipModel* self, void* out, CString kName);
 void* FUN_141201bd0(CEquipModel* self, void* out, CString kName);
 void* FUN_1412018c0(CEquipModel* self);
@@ -476,8 +477,9 @@ void FUN_141200230(CEquipModel* self)
 }
 
 // Hangs the "dummy" attach nodes described by the part's attach list on the parent of the attach node.
+// MS2-FUNCTIONAL: attach-list loop codegen differs (iterator COMDAT order and the Left/mask temps; 53 vs 51 callees); same calls and effects
 // @0x141200390
-void FUN_141200390(CEquipModel* self, CString kName)
+void FUN_141200390(CEquipModel* self, const CString& kName)
 {
     void* pEnt = FUN_141200820(self);
     if (pEnt == 0 || FUN_1409f77a0(NODE(self), 0) != 0)
@@ -916,6 +918,13 @@ void FUN_141201cb0(CEquipModel* self, std::set<NiAVObjectPtr>& kSet)
     }
 }
 
+// Views of callees this function uses with value semantics: the part-name getter (returns the CString) and the entity
+// loader's model path lookup (returns an efd::utf8string).
+class CItemData;
+struct Unk_EmPartSelf { CString FUN_1412029d0(); };
+struct Unk_EmModelLoader { efd::utf8string FUN_141206030(const egf::EntityID& kId); };
+struct Unk_EmEntity { egf::EntityID FUN_14123c460(); };
+
 // Re-parents the attach node onto the mesh named kName (mirrors the "_L_" / "_R_" naming of the part).
 // @0x141201d50
 void FUN_141201d50(CEquipModel* self, CString kName)
@@ -923,43 +932,35 @@ void FUN_141201d50(CEquipModel* self, CString kName)
     void* pEnt = FUN_141200820(self);
     if (pEnt == 0)
         return;
-    alignas(8) char kId[16];
-    FUN_1401bf970(kId, FUN_1412009d0(self));
-    if (FUN_1401b5240(kId, 0) == 0 && FUN_1409f77a0(NODE(self), 0) == 0) {
-        if (FUN_140184310(&kName, &DAT_142ec05ba) != 0) {
-            CString kPart;
-            FUN_1412029d0(self, &kPart);
-            kName = kPart;
-        }
-        CString kCur;
-        if (FUN_140a0b000(FUN_1409475f0(NODE(self))) != 0)
-            kCur = FUN_142087e50(FUN_1409a8b90(FUN_140a0b000(FUN_1409475f0(NODE(self)))));
-        if (FUN_1401c0090(&kCur, &kName) == 0) {
-            void* pRoot = FUN_1412008e0(self);
-            if (pRoot != 0) {
-                NiNode* pNode = (NiNode*)FUN_1409f7cb0(pRoot);
-                if (pNode != 0) {
-                    alignas(8) char fs[8];
-                    FUN_140984450(fs, kName);
-                    NiNode* pTarget = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, V1(void*, pNode, 0xa0, void*, fs));
-                    FUN_1409845a0(fs);
-                    if (pTarget != 0) {
-                        V2(void, pTarget, 0x120, void*, FUN_1409475d0(NODE(self)), int, 1);
-                        alignas(8) char kEntId[8], kTmp[32];
-                        CString kModel(FUN_1408ac310(FUN_141206030(FUN_141b6f910(), kTmp, FUN_14123c460(pEnt, kEntId))));
-                        FUN_1408a8900(kTmp);
-                        FUN_141200390(self, kModel);
-                        NiAVObject* pAV = (NiAVObject*)FUN_1409f7cb0(pRoot);
-                        if (pAV != 0) {
-                            pAV->UpdateProperties();
-                            pAV->UpdateEffects();
-                        }
-                    }
-                }
-            }
-        }
+    MS2Ptr<CItemData> spData((CItemData*)FUN_1412009d0(self));
+    if (spData == 0)
+        return;
+    if (self->m_spNode == (NiNode*)0)
+        return;
+    if (kName == &DAT_142ec05ba)
+        kName = ((Unk_EmPartSelf*)self)->FUN_1412029d0();
+    CString kCur;
+    if (FUN_140a0b000(FUN_1409475f0(NODE(self))) != 0)
+        kCur = FUN_142087e50(FUN_1409a8b90(FUN_140a0b000(FUN_1409475f0(NODE(self)))));
+    if (kCur == kName)
+        return;
+    void* pRoot = FUN_1412008e0(self);
+    if (pRoot == 0)
+        return;
+    NiNode* pNode = (NiNode*)FUN_1409f7cb0(pRoot);
+    if (pNode == 0)
+        return;
+    NiNode* pTarget = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, pNode->GetObjectByName((const char*)kName));
+    if (pTarget == 0)
+        return;
+    pTarget->AttachChild(self->m_spNode, true);
+    CString kModel(((Unk_EmModelLoader*)FUN_141b6f910())->FUN_141206030(((Unk_EmEntity*)pEnt)->FUN_14123c460()).c_str());
+    FUN_141200390(self, kModel);
+    NiAVObject* pAV = (NiAVObject*)FUN_1409f7cb0(pRoot);
+    if (pAV != 0) {
+        pAV->UpdateProperties();
+        pAV->UpdateEffects();
     }
-    FUN_1401b50d0(kId);
 }
 
 // @0x1412021a0
@@ -1631,3 +1632,5 @@ MS2_REPLACE(0x141207F40, FUN_141207f40, 40, 0xF6CFED15);
 MS2_REPLACE(0x141207F70, FUN_141207f70, 64, 0x6C076CC3);
 MS2_REPLACE(0x141207FB0, FUN_141207fb0, 28, 0x2F87969E);
 MS2_REPLACE(0x141207FD0, FUN_141207fd0, 60, 0x5B49E748);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cad5b0-0x142cad6f0 .text$yd

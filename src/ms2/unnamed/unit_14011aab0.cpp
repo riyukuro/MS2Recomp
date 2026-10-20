@@ -33,3 +33,5 @@ static CString s_strStun3 = "stun";
 // fourth TU
 static Unk_1402a9d70 s_condition4(17, 0.75f, 0.25f, 2.25f, 10);
 static UICommon::CMyPCKeyInputController s_keyInput;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc1640-0x142cc1830 .text$yd

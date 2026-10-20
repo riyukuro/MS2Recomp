@@ -39,3 +39,5 @@ static Unk_1401cd100 s_pointer3(NULL);
 
 // fourth TU
 static Unk_1402a9d70 s_condition4(17, 0.75f, 0.25f, 2.25f, 10);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cada10-0x142cadbe0 .text$yd

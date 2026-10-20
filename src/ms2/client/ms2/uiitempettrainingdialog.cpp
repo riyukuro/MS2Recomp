@@ -327,3 +327,5 @@ void UIItemPetTrainingDialog::FUN_140e58300(ItemScrollSlot& slot, DragSlot* pDra
         m_30->Invoke("selectPet", obj.FUN_1422bb870());
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca6c80-0x142ca6cd0 .text$yd

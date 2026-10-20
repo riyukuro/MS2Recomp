@@ -1540,3 +1540,5 @@ static void FUN_1418adf60(ASObj& rObj, const CString& strName, const AScript& v)
 {
     rObj.FUN_1409eb270(strName, static_cast<const ASObj&>(v));
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbc7e0-0x142cbc890 .text$yd

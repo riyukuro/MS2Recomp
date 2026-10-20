@@ -45,3 +45,5 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 // The TU's registration record; only its address is taken here.
 static char s_registrarRecord[1];
 static Unk_ScpRegistrar s_registrar("OutlineRenderStep", s_registrarRecord);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb3a70-0x142cb3c10 .text$yd

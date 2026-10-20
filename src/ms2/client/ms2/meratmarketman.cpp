@@ -2021,7 +2021,7 @@ int CMeratMarketBuy::vfunc_3()
 // ---- CMeratMarketBasket ----
 
 // @0x140d61300
-CMeratMarketBasket::CMeratMarketBasket()
+CMeratMarketBasket::CMeratMarketBasket() : m_spProduct(0)
 {
     m_n28 = 0;
     m_n30 = 0;

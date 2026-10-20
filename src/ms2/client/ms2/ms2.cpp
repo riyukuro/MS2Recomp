@@ -2,6 +2,7 @@
 // MS2-UNIT: ?\ms2.cpp
 // MS2-RANGE: 0x1400f82a0-0x1400f8710 .text$di
 // MS2-RANGE: 0x141489aa0-0x14149fd50 .text$mn
+// MS2-RANGE: 0x1414a6250-0x1414a6b50 .text$mn   (ub1 2026-10-20: the COMDAT tail split off as unit_1414a6250)
 // MS2-RANGE: 0x142cb2a50-0x142cb2bf0 .text$yd
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0AEBU?$less@_J@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@_J@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CB_JV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CB_JV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@_J@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1414928c0 ; unique

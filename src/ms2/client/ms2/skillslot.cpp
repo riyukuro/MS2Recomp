@@ -320,7 +320,6 @@ void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
 void FUN_1422cc9e0(DragSlotBag* pBag);
-DragSlot* FUN_1422cd0f0(DragSlotBag* pBag, const CString& strName);   // the slot of the bag by name
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
 void FUN_1419f37f0(int n);                                // refresh the skill ui
 void* FUN_140aa6d40();                                    // the skill bar ui (or null)
@@ -1636,10 +1635,9 @@ SkillSlotBag::~SkillSlotBag()
 // @0x141763640
 void SkillSlotBag::FUN_141763640(int nFlags)
 {
-    for (std::map<int, CString>::iterator it = m_slots.begin(); it != m_slots.end(); ++it)
+    for (std::pair<const int, CString> entry : m_slots)
     {
-        std::pair<const int, CString> entry = *it;
-        SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(this, entry.second));
+        SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(entry.second));
         if (pSlot != 0)
             pSlot->FUN_14175f280(nFlags);
     }
@@ -1648,10 +1646,9 @@ void SkillSlotBag::FUN_141763640(int nFlags)
 // @0x141763710
 SkillSlot* SkillSlotBag::FUN_141763710(int nItemId)
 {
-    for (std::map<int, CString>::iterator it = m_slots.begin(); it != m_slots.end(); ++it)
+    for (std::pair<const int, CString> entry : m_slots)
     {
-        std::pair<const int, CString> entry = *it;
-        SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(this, entry.second));
+        SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(entry.second));
         if (pSlot != 0 && pSlot->FUN_14175cc20() == nItemId)
             return pSlot;
     }
@@ -1661,10 +1658,9 @@ SkillSlot* SkillSlotBag::FUN_141763710(int nItemId)
 // @0x141763800
 SkillSlot* SkillSlotBag::FUN_141763800(__int64 nItemUid)
 {
-    for (std::map<int, CString>::iterator it = m_slots.begin(); it != m_slots.end(); ++it)
+    for (std::pair<const int, CString> entry : m_slots)
     {
-        std::pair<const int, CString> entry = *it;
-        SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(this, entry.second));
+        SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(entry.second));
         if (pSlot != 0 && pSlot->FUN_14175cbd0() == nItemUid)
             return pSlot;
     }
@@ -1694,10 +1690,9 @@ DragSlot* SkillSlotBag::vfunc_16(int nIndex)
 // @0x141763b00
 void SkillSlotBag::FUN_141763b00(int nFlags)
 {
-    for (std::map<int, CString>::iterator it = m_slots.begin(); it != m_slots.end(); ++it)
+    for (std::pair<const int, CString> entry : m_slots)
     {
-        std::pair<const int, CString> entry = *it;
-        SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(this, entry.second));
+        SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(entry.second));
         if (pSlot != 0)
             pSlot->FUN_14175e310(nFlags);
     }
@@ -1706,10 +1701,9 @@ void SkillSlotBag::FUN_141763b00(int nFlags)
 // @0x141763bd0
 void SkillSlotBag::FUN_141763bd0(int nSkillId, int nFlags)
 {
-    for (std::map<int, CString>::iterator it = m_slots.begin(); it != m_slots.end(); ++it)
+    for (std::pair<const int, CString> entry : m_slots)
     {
-        std::pair<const int, CString> entry = *it;
-        SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(this, entry.second));
+        SkillSlot* pSlot = FUN_141761e60(FUN_1422cd0f0(entry.second));
         if (pSlot != 0)
         {
             if (pSlot->FUN_14175cb90() == nSkillId)
@@ -3617,3 +3611,5 @@ CSEReduceSkillGroupCooltimeCtx::CSEReduceSkillGroupCooltimeCtx()
 CSEReduceSkillGroupCooltimeCtx::~CSEReduceSkillGroupCooltimeCtx()
 {
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb68d0-0x142cb6d70 .text$yd

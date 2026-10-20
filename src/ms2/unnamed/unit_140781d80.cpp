@@ -1062,3 +1062,5 @@ void FUN_140784de0(CRideeDataPtr spData)
 
 // @0x14078cdb0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9be60-0x142c9bf00 .text$yd

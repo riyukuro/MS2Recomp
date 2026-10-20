@@ -35,3 +35,5 @@ static CString s_strStun2 = "stun";
 static Unk_1401cd100 s_pointer3(NULL);
 static CString s_strSkill3 = "skill";
 static CString s_strStun3 = "stun";
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc35a0-0x142cc36f0 .text$yd

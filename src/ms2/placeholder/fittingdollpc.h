@@ -39,12 +39,15 @@ struct Unk_PCEquipSet
     void FUN_1411e7640();                                   // the look changed (flag 50; additionalcli.cpp)
     void* FUN_1411e2440(int nKind);                         // the worn items of an equip layer, NULL when none (uiclosetdialog.cpp)
     int FUN_1411e0ba0();                                    // RefreshModel (returns 1; equipitem.cpp)
+    float FUN_1411e0f90(float fDistance);                   // the knock-back distance after the equipment's resistances
     void FUN_1411e3d20(ATL::CAtlList<MS2Ptr<CEquipItem> >& aItems, int n);   // unequip a list of items (equipitem.cpp)
     void FUN_1411e46b0(MS2Ptr<CEquipItem> spItem);          // an item's models were loaded (by value; equipitem.cpp)
     void FUN_1411e4b30(MS2Ptr<CEquipItem> spItem);          // an item's models were dropped (by value; equipitem.cpp)
     void FUN_1411e7380();                                   // kind 0x12 items changed (equipitem.cpp)
     int FUN_1411e09a0();                                    // the equipment is ready (uibeautyshopdevdialog.cpp)
     void FUN_1411e89d0(int n);                              // battle stance changed (PC::vfunc_66)
+    void FUN_1411e8eb0(const CString& strReason);           // hide the equip models for a reason (CEquipment)
+    void FUN_1411e9020(const CString& strReason);           // show them again (CEquipment)
     void FUN_1411e38e0(MS2Ptr<CItem> spItem);               // equip (quick-equip config; PC::vfunc_127)
     void FUN_1411e3600(MS2Ptr<CItem> spItem);               // equip (PC::vfunc_127)
     void FUN_1411e3b10(MS2Ptr<CItem> spItem, int n);        // unequip (quick-equip config; PC::vfunc_128)
@@ -52,6 +55,16 @@ struct Unk_PCEquipSet
     void FUN_1411e37f0(MS2Ptr<CItem> spItem, __int64 n);
     void FUN_1411e3bd0(MS2Ptr<CEquipItem> spItem, int n);
     int FUN_1411e0c30(int nItemId);                         // the item id is worn (uibeautyshopdevdialog.cpp)
+    void FUN_1411e7610();                                   // mark dirty (CEquipment, equipment.h)
+    CString FUN_1411eabd0();                                // the set name (CEquipment)
+    bool FUN_1411eac20();                                   // the set name is a named one (CEquipment)
+    float FUN_1411e0f00(float f);                           // scale by special ability 3 (CEquipment)
+    void FUN_1411e8b60(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend);   // (CEquipment)
+    float FUN_1411e1110(int nSpecial);                      // the special ability rate (CEquipment)
+    int FUN_1411e1160(int nSpecial);                        // the special ability total (CEquipment)
+    float FUN_1411e1250(int nOption, unsigned nKey);        // an invoke effect option rate (CEquipment)
+    float FUN_1411e13e0(int nOption, unsigned nKey);        // an invoke effect option count (CEquipment)
+    void FUN_1411e7680();                                   // refresh (CEquipment)
     MS2Ptr<CEquipmentSlotLayerInfo> GetTitle();            // 0x140d29440 the codi (outfit) tab period (defined in unit_140d1ae30)
     unsigned char unknown0[0x188];
     MS2Ptr<CEquipmentSlotLayerInfo> m_spTitle;              // +0x188 (new CEquipmentSlotLayerInfo(2))
@@ -60,7 +73,8 @@ class Unk_PCD88;      // +0xd88 target (ClonePC::vfunc_12 releases it via FUN_14
 class Unk_PCArg126;   // MS2Ptr<T> by value (get 0x1409f7930, ICF generic dtor 0x1401bfde0)
 class Unk_HsInfo;     // MS2Ptr<T> by value (defined by uihideandseekresultdialog.cpp)
 // PC member types (w539). Complete types only in pc.cpp; the MS2Ptr members need only declarations.
-class Unk_PCStance;   // +0xd70 the weapon stance (create 0x141b74b50, check 0x141b74c30)
+class CEquipModel;     // equipmodel.h (the attach-effect models of the worn weapons)
+class CWeaponAction;   // +0xd70 the action prefix row of the worn weapon pair (weaponactiontable.h)
 class Unk_PCLinkFD8;  // +0xfd8 (create 0x141993100, release 0x141993180)
 class CGuideObject;   // +0x1228 [3] the cube guide objects (cubecraft_1.h; FUN_1416623d0 sets them)
 class JobSystemCli;
@@ -115,6 +129,7 @@ public:
     virtual void vfunc_15();                                // 15 0x141651d00
     virtual void vfunc_16();                                // 16 0x141651d40
     virtual void vfunc_23(int n);                           // 23 0x14165c320
+    virtual void vfunc_24(int nFlags);                      // 24 0x141662160 the visibility flags
     virtual void vfunc_31(bool b);                          // 31 0x141652030
     virtual void vfunc_33(void* a, void* b);                // 33 0x141652080
     virtual void vfunc_34(void* p);                         // 34 0x1416529f0
@@ -134,6 +149,7 @@ public:
     virtual void vfunc_74(__int64 nCur, __int64 nMax);      // 74 0x141656af0
     virtual CStringW vfunc_77();                            // 77 0x141656c70
     virtual int vfunc_78();                                 // 78 0x1416578f0
+    virtual MS2Ptr<Unk_PCBaseComp_a58> vfunc_80();          // 80 0x141656db0
     virtual MS2Ptr<Unk_PCBaseComp_a68> vfunc_81();          // 81 0x141656f80
     virtual MS2Ptr<Unk_PCBaseComp_a98> vfunc_84();          // 84 0x1416572b0
     virtual MS2Ptr<Unk_PCBaseComp_a88> vfunc_83();          // 83 0x141657670
@@ -143,7 +159,8 @@ public:
     virtual MS2Ptr<Unk_PCBaseComp_a78> vfunc_82();          // 82 0x141657100
     virtual MS2Ptr<Unk_PCBaseComp_aa8> vfunc_85();          // 85 0x1416573b0
     virtual MS2Ptr<Unk_PCBaseComp_ac8> vfunc_87();          // 87 0x1416575b0
-    virtual void vfunc_90(void* p);                         // 90 0x141657910
+    virtual void vfunc_90(void* p);                         // 90 0x141657910 the stats packet
+    virtual void vfunc_91(void* p);                         // 91 0x141657c40 = vfunc_90
     virtual float vfunc_95();                               // 95 0x14165e4a0 (PCBase 0x141671620)
     virtual int vfunc_99(int n);                            // 99 0x141654850
     virtual int vfunc_124(int a, int b);                    // 124 0x141653840 (1/0; homes edx and r8d)
@@ -158,7 +175,7 @@ public:
     virtual int vfunc_133(CItem* pItem, bool b);            // 133 0x141657dc0: vfunc_132(pItem, pItem->FUN_140527a20(), b)
     virtual CStringW vfunc_134();                           // 134 0x141658cd0 (hidden return; PC: L"")
     virtual void vfunc_135(int a, int b, void* p);          // 135 0x141659450
-    virtual void vfunc_136(void* a, void* b, float f);      // 136 0x14165c240 (xmm3)
+    virtual void vfunc_136(const CString& strModel, const efd::utf8string& kAnim, float fBlend);   // 136 0x14165c240 play an animation on the equipment
     virtual int vfunc_137();                                // 137 0x14165d6d0
     virtual void vfunc_138(NiAVObject* pRoot, int n, const Unk_CharEquip* pEquip);  // 138 0x14165f050
     virtual void vfunc_139();                               // 139 0x14165efa0
@@ -170,7 +187,7 @@ public:
     virtual int vfunc_145();                                // 145 0x141661be0: return 1 (ClonePC: 0)
     virtual bool vfunc_146();                               // 146 0x141662e50
     // PC TU members (w539)
-    void FUN_141653740(int nTargetId, void* p, int nKind, int nFlag);   // an effect event of a target
+    void FUN_141653740(int nTargetId, int nCasterId, int nKind, int nFlag);   // an effect event of a target
     JobSystemCli* FUN_1416546d0();                          // the job system
     int FUN_141654730();
     int FUN_141654760();
@@ -186,11 +203,14 @@ public:
     int FUN_1416566f0();                                    // +0xd68
     void FUN_141656710();                                   // refresh the stance and the buffs after an equip change
     int FUN_141656750();                                    // the equipment is ready
+    int FUN_1416538d0(CDamageRecord* pRecord);              // the hit is guarded (no hit reaction)
     int FUN_141653f00();                                    // rebuild the weapon stance from the worn weapons (changed: 1)
     __int64 FUN_141656ad0();                                // +0xdc0
     int FUN_14165ef30();                                    // this is the local player
     MS2Ptr<Unk_PCLinkFD8> FUN_141657730();                  // the +0xfd8 record, created on demand (none while busy)
     int FUN_141661970();                                    // busy
+    void FUN_141657c80(bool bEnable);                       // apply the attach effects of the equipment
+    bool FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CString>& kNodes, int bPrimary);   // collect the weapons' attach effects and their nodes
     CStringW& FUN_141656be0();                              // +0xdc8
     CStringA& FUN_141656c50();                              // +0xdd0
     CStringW& FUN_141656d90();                              // +0x1030 the displayed name
@@ -224,7 +244,7 @@ public:
     void FUN_141662d60(__int64 nValue);                     // scenestategame packet 0xe6
     int FUN_141661aa0();                                    // scenestategame packet 0x33 (pvp flag)
     void FUN_141661a60(int n);                              // scenestategame packet 0x33
-    void FUN_1416619d0(int n);                              // scenestategame packet 0x33
+    void FUN_1416619d0(unsigned int nEnd);                  // scenestategame packet 0x33 (+0x10e8; the main player info timer)
     void FUN_141661370(int a, int b, int c);                // scenestategame packet 0x34 (also on MyPC)
     void FUN_1416591e0(int nSlot, const NiColor& kColor);   // +0xd98 + nSlot*0xc = kColor (scenestategame 0x30)
     const NiColor& FUN_141659220(int nSlot);                // the colour at +0xd98 + nSlot*0xc
@@ -232,6 +252,83 @@ public:
     void FUN_141659000(int n);                              // 0x141659000 (an enchant-effect item was equipped; equipitem.cpp)
     float FUN_14165eb80();                                  // 0x14165eb80 the animation blend of state 0x2f (equipitem.cpp)
     CString FUN_141658d20();                                // 0x141658d20 the animation name prefix (equipitem.cpp)
+    __int64 FUN_141658eb0();                                // +0xfe8
+    unsigned char FUN_141658f10();                          // the PC bang grade
+    unsigned char FUN_141658fa0();                          // the PC bang bonus flags
+    void FUN_141658fc0(const egf::EntityID& kId);           // +0xdb0
+    int FUN_1416595b0();                                    // the cube craft mode
+    int FUN_141659610();                                    // cube craft mode 1
+    int FUN_141659650();                                    // cube craft mode 2
+    int FUN_141659690();                                    // the cube craft controller moves a cube
+    int FUN_1416596d0();                                    // cube craft mode 1
+    void FUN_141659720();                                   // tick the cube craft controller's second guide
+    void FUN_141659770(bool b, const CString& strKind);     // (empty in the client; vfunc_71 / vfunc_72 pass "Emotion")
+    void FUN_14165ebb0(float f);                            // +0x1180 the animation speed scale
+    int FUN_14165ffe0();                                    // +0x11cc
+    int FUN_141660030();                                    // +0x11e8 is a time of the current month
+    void FUN_14165f0b0(MS2Ptr<CItem> spItem);               // +0x1040 the held item
+    void FUN_14165f130(int n);                              // +0x1050
+    int FUN_14165f150();                                    // +0x1050 an item is held
+    void FUN_14165f170();                                   // put the held item away (packet 0x37/0x12)
+    void FUN_141661820(int nSkillId, short nLevel, std::set<int>& kVisited, std::set<int>& kFound);   // (empty in the client)
+    void FUN_141661840(int nSkillId, short nLevel);         // (empty in the client)
+    int FUN_141661860();                                    // +0x1000
+    unsigned int FUN_141661a80();                           // +0x10e8 the end tick
+    void FUN_141661ac0();                                   // reset +0x10ec / +0x10e8 once the end tick passed
+    int FUN_141661bc0();                                    // +0xff0 the party id
+    int FUN_141661c50();                                    // +0x10f4 the title
+    void FUN_1416623d0(efd::SmartPointer<CGuideObject> spGuide, int nIndex);   // +0x1228[nIndex] (0..2)
+    CGuideObject* FUN_141662440(int nIndex);                // +0x1228[nIndex] (0..2)
+    int FUN_141662490(int nIndex);                          // a guide is set
+    class CConstructionGuideObject* FUN_1416625b0();        // guide 0
+    class CFishingGuideObject* FUN_1416625e0();             // guide 1
+    class CSkillMagicControlGuide* FUN_141662610();         // guide 2
+    __int64 FUN_141662670();                                // +0x1140
+    int FUN_1416626b0();                                    // +0x1148, reset on a new day of +0x1140
+    int FUN_141662730();                                    // +0x114c
+    int FUN_141662830();                                    // +0x1184 the last bank call time
+    int FUN_141662870();                                    // +0x1188
+    float FUN_1416628b0(int nOption, unsigned nKey);        // an invoke effect option rate of the equipment
+    float FUN_1416628f0(int nOption, unsigned nKey);        // an invoke effect option count of the equipment
+    float FUN_141662930(int nSpecial);                      // a special ability rate of the equipment
+    int FUN_141662980(int nSpecial);                        // a special ability total of the equipment
+    void FUN_141662da0(int n);                              // +0x1198 (refreshes the equipment)
+    __int64 FUN_141662e90();                                // +0x1190 the VIP end time
+    int FUN_141663040();                                    // +0xd80
+    int FUN_141663080();                                    // +0x119c
+    int FUN_1416630c0();                                    // +0x11a0
+    void FUN_1416630e0(unsigned int nId);                   // attach a ClonePC id (+0x11a8)
+    void FUN_141663120(unsigned int nId);                   // detach a ClonePC id
+    void FUN_141663400(MS2Ptr<CItem> spItem);               // +0x11b8
+    MS2Ptr<CItem> FUN_141663450();                          // +0x11b8
+    void FUN_141663500(int nObjectId);                      // the couple effect: an object
+    void FUN_141663620();                                   // start the couple effect (or remember it)
+    void FUN_141663680();                                   // stop the couple effect
+    void FUN_141663870();                                   // drop the couple effect
+    CStringW FUN_1416638b0();                               // the couple effect name
+    int FUN_141663940();                                    // the couple type (0: none)
+    __int64 FUN_141663990();                                // the couple partner id (0: none)
+    int FUN_141663a20();                                    // +0x11f4, reset when +0x11f8 expired
+    int FUN_141663ac0();                                    // +0x11f8 is unset or expired
+    short FUN_141663b50();                                  // +0x120c
+    void FUN_141663b70(unsigned int nId);                   // add an effect id (+0x1210)
+    void FUN_141663bb0(unsigned int nId);                   // remove an effect id
+    void FUN_141663be0(const NiFixedString& kSequence, float fSpeed, const NiFixedString& kTextKey);   // play a sequence on the effects
+    void FUN_141663d00(efd::Point3 kDir);                   // turn the effects
+    void FUN_141663e20(int nCount, int nTailId);            // the tail effect length / row
+    void FUN_141663ea0();                                   // stop the tail effect
+    bool FUN_1416642a0();                                   // +0x1224
+    void FUN_141659790(const CString& strAnim);             // play an animation on the weapons' attach models
+    int FUN_14165c1b0(int* pnId, CString* pstrName, float fRange);   // the nearest holdable target (0: FindHoldTargetRange)
+    MS2Ptr<Unk_PCD88> FUN_14165c2d0();                      // +0xd88
+    MS2Ptr<CWeaponAction> FUN_14165c520();                  // +0xd70
+    Unk_PCActionTimer* FUN_14165ca20();                     // +0xfc8
+    Unk_PCActionTimer* FUN_14165ca50();                     // +0xfc8 while active
+    void FUN_141660d50();                                   // the default collision box
+    void FUN_141660df0();                                   // (empty)
+    void FUN_1416615f0(float fDelta);                       // the +0x1054 timer tick
+    void FUN_1416616a0(unsigned int nDelay);                // schedule the +0x1054 timer
+    void FUN_141661880(int bEnable, int nValue, const CubeItemInfo* pInfo);   // enter / leave the cube mode (+0x1000 / +0x1008)
     void FUN_14165d300(int nA, int nB, int nC);             // PCBase member (pcbase.cpp; scenestategame 0x5d)
     void FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot);   // scenestategame 0x141721a30
     MS2Ptr<Unk_PCWaterGunInfo> FUN_141664250();             // the water gun battle info (+0x1260)
@@ -268,6 +365,8 @@ public:
     void FUN_141662e30(int n);
     void FUN_1416634a0(__int64 nCharId);
     void FUN_141663550();
+    void FUN_14165c970(void* p);                            // notify the action timer (+0xfc8)
+    void FUN_1416624e0(int nIndex);                         // remove the cube guide nIndex
     void FUN_141662850(__int64 nValue);
     void FUN_141662890(__int64 nValue);
     MS2Ptr<Unk_HsInfo> FUN_141664200();                     // the hide and seek record (scenestategame 0x12b)
@@ -296,7 +395,7 @@ public:
     bool m_bD40;                                            // +0xd40 (ctor: true)
     ATL::CAtlArray<MS2Ptr<CItem> > m_kListD48;              // +0xd48 owned items (FUN_141653d10 adds; MyPC/PortraitPC read)
     int m_nD68;                                             // +0xd68 (FUN_1416566f0 / FUN_1416566d0)
-    MS2Ptr<Unk_PCStance> m_spStanceD70;                     // +0xd70 the weapon stance (FUN_141653f00 rebuilds it)
+    MS2Ptr<CWeaponAction> m_spWeaponActionD70;              // +0xd70 the worn weapon pair's action row (FUN_141653f00 rebuilds it)
     int m_nD80;                                             // +0xd80 (FUN_141663040)
     MS2Ptr<Unk_PCD88> m_spD88;                              // +0xd88
     NiColor m_colorD98[2];                                  // +0xd98 (FUN_141659220 / FUN_1416591e0)
@@ -384,7 +483,7 @@ public:
     efd::SmartPointer<NiAVObject> m_sp12d8;                 // +0x12d8 (init 0x14097eba0(p,0), as PCBase +0xbe8)
 };
 MS2_CHECK_OFFSET(PC, m_kListD48, 0xd48);
-MS2_CHECK_OFFSET(PC, m_spStanceD70, 0xd70);
+MS2_CHECK_OFFSET(PC, m_spWeaponActionD70, 0xd70);
 MS2_CHECK_OFFSET(PC, m_colorD98, 0xd98);
 MS2_CHECK_OFFSET(PC, m_strNameDC8, 0xdc8);
 MS2_CHECK_OFFSET(PC, m_kItemsF78, 0xf78);

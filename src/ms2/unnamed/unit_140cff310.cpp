@@ -853,3 +853,5 @@ MS2_UNK_PTR_IMPL(Unk_TextFieldExPtr, Unk_TextFieldEx)
 MS2_UNK_PTR_IMPL(Unk_AasSourcePtr, Unk_AasSource)
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca4800-0x142ca4940 .text$yd

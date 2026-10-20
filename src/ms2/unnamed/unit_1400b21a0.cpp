@@ -14,3 +14,5 @@ CLockCriticalSection DAT_143aab3b0;                         // the global lock
 #else
 extern CLockCriticalSection DAT_143aab3b0;
 #endif
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c99fa0-0x142c99fc0 .text$yd

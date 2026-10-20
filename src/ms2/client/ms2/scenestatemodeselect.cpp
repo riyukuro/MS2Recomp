@@ -113,3 +113,5 @@ void* FUN_140aae430()
 {
     return DAT_143ab8f48;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9fb70-0x142c9fbe0 .text$yd

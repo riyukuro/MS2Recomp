@@ -425,3 +425,5 @@ void CMaidRecipeTable::SetInit(bool b)
 {
     s_bInit = b;
 }
+// MS2-PIN: ??1?$CAtlArray@NV?$CElementTraits@N@ATL@@@ATL@@QEAA@XZ 0x1406892f0 ; byte-identical to ~CAtlArray<int> (ICF); TPtredDummy<CAtlArray<double>> dtor 0x140689680 calls it
+// MS2-PIN: ?CallDestructors@?$CAtlArray@NV?$CElementTraits@N@ATL@@@ATL@@CAXPEAN_K@Z 0x14068a2c0 ; byte-identical to CallDestructors<int> (ICF), called by 0x1406892f0

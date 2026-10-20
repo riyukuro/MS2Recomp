@@ -119,7 +119,7 @@ public:
     efd::SmartPointer<MS2EntityLoaderService> loader;
     efd::SmartPointer<ecr::SceneGraphService> sceneGraphs;
     efd::SmartPointer<egf::FlatModelManager> models;
-    std::map<unsigned, std::set<int>> mapGroups;
+    std::map<unsigned, std::set<unsigned>> mapGroups;  // set<unsigned>: FUN_1411d0a60 calls the less<unsigned> insert 0x1403455f0
     unsigned __int64 unknownC0;
     std::list<efd::AssetID> unusedAssets;
     efd::SmartPointer<Unk_PhysXSceneView> scenes;

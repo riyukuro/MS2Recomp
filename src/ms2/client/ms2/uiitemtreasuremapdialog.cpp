@@ -500,3 +500,5 @@ MS2Ptr<ASMovieClip> UIItemTreasureMapDialog::FUN_140c57ce0(const CString& strNam
     out = FUN_140ba7930(strName);
     return out;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca2f10-0x142ca3000 .text$yd

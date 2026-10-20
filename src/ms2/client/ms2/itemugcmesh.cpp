@@ -1546,3 +1546,29 @@ MS2_REPLACE_METHOD(0x141426980, CItemUgcMeshContainer, FUN_141426980, 355, 0x097
 MS2_REPLACE_METHOD(0x141426AF0, CItemUgcMeshContainer, FUN_141426af0, 574, 0x0C2F36BD);
 MS2_REPLACE_METHOD(0x141426D40, CItemUgcMeshContainer, FUN_141426d40, 234, 0xA6B44080);
 MS2_REPLACE_METHOD(0x141426E30, CItemUgcMeshContainer, FUN_141426e30, 476, 0x58A38968);
+
+// Model path with its variant letter replaced (the letter FUN_141421740 finds); sits just before this TU's range start.
+// MS2-RANGE: 0x1414218c0-0x141421ab0 .text$mn
+CString FUN_141421740(const CString& strPath, int* pnFlag);            // the variant letter of a model path
+
+// @0x1414218c0
+CString FUN_1414218c0(const CString& strPath, const CString& strSuffix)
+{
+    int nIndex = 0;
+    FUN_141421740(strPath, &nIndex);
+    CString strLetter(strSuffix);
+    CString strResult;
+    strResult = strPath.Left(nIndex);
+#ifdef __clang__
+    // clang otherwise emits an unavailable CopyChars DLL import; bind the exe's operator+.
+    strResult = FUN_1401d2b10(strResult, strLetter);
+    strResult = FUN_1401d2b10(strResult, strPath.Right(strPath.GetLength() - nIndex - 1));
+#else
+    strResult = strResult + strLetter;
+    strResult = strResult + strPath.Right(strPath.GetLength() - nIndex - 1);
+#endif
+    return strResult;
+}
+MS2_REPLACE(0x1414218C0, FUN_1414218c0, 477, 0x1EC93043);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb21e0-0x142cb2230 .text$yd

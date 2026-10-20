@@ -4,13 +4,13 @@
 // MS2-RANGE: 0x1401174d0-0x140117620 .text$di
 // MS2-RANGE: 0x141a034d0-0x141a08af0 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??4?$MS2Ptr@VCItem@@@@QEAAAEAV0@AEBV0@@Z 0x141a07910 ; unique
+// MS2-PIN: ??4?$MS2Ptr@VCMsgBoxDataItem@@@@QEAAAEAV0@AEBV0@@Z 0x141a07910 ; unique (fx18: CMsgBoxData::m_spItem = , not CItem's 0x140692c90)
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141a07af0 ; prop
 // MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x141a07b10 ; prop
 // MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141a07b60 ; prop
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@2@$00@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@VValue@GFx@Scaleform@@@std@@@std@@@2@XZ 0x141a08610 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCItem@@@@QEAA@XZ 0x141a07330 ; look-alike group (CItem/Unk_MsgCheck/Unk_MsgInput default ctors)
-// MS2-PIN: ??8?$MS2Ptr@VCItem@@@@QEBA_NPEAVCItem@@@Z 0x141a07980 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VCMsgBoxDataItem@@@@QEBA_NPEAVCMsgBoxDataItem@@@Z 0x141a07980 ; unique (fx18: not CItem's 0x1401c0050)
 // MS2-PIN: ??4?$MS2Ptr@VCItem@@@@QEAAAEAV0@H@Z 0x141a07950 ; unique (p = NULL of ~CMsgBoxData, uimessagebox.cpp)
 // MS2-PIN: ??R?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEBA_NHAEBVCMsgBoxData@@@Z 0x141a07c10 ; unique
 // MS2-PINS-END tplpin
@@ -899,17 +899,17 @@ template <> inline Delegate<bool(int, const CMsgBoxData&)>& Delegate<bool(int, c
     return *this;
 }
 
-// The exe's tail of this unit holds COMDAT glue that the (unrecovered) CMsgBoxData members at 0x141a00db0-0x141a034d0
-// instantiate: the std::map of extra values (ctor/dtor/erase), the item array copy and the result callback.
-// This unit-local function stands in for those instantiations so the glue gets paired.
+// COMDAT glue of the CMsgBoxData members at 0x141a00db0-0x141a034d0 (map of extra values, item array copy, callback): the stand-in below pairs it.
+template <class R> R ThrowInvalidCall();    // <bool> 0x1405625e0 (itemdatatable.cpp); the callback's operator() 0x141a07c10 null-checks first
+template <> inline bool Delegate<bool(int, const CMsgBoxData&)>::operator()(int a1, const CMsgBoxData& a2) const { if (m_pImpl == 0) ThrowInvalidCall<bool>(); return m_pImpl->Invoke(a1, a2); }
 void Unk_MsgBoxGlueAnchor(CMsgBoxData* pData, Delegate<bool(int, const CMsgBoxData&)>& cbDst,
                           const Delegate<bool(int, const CMsgBoxData&)>& cbSrc, ATL::CAtlArray<ItemEntity>& dst,
                           const ATL::CAtlArray<ItemEntity>& src)
 {
     std::map<CString, Scaleform::GFx::Value> values;
-    MS2Ptr<CItem> spItem;
-    spItem == (CItem*)0;
-    cbDst = cbSrc;
+    MS2Ptr<CMsgBoxDataItem> spItem, spItem2;   // m_spItem / m_spItem2 of the setters 0x141a01e60 / 0x141a02220
+    spItem == (CMsgBoxDataItem*)0;
+    cbDst = cbSrc, spItem = spItem2;
     cbDst(1, *pData);
     dst.Copy(src);
     delete pData;
@@ -949,3 +949,5 @@ MS2_REPLACE_METHOD(0x141A063E0, CMsgBoxData, FUN_141a063e0, 245, 0xCDB086A7);
 MS2_REPLACE_METHOD(0x141A07140, CMsgBoxData, FUN_141a07140, 153, 0x45E471F0);
 MS2_REPLACE_METHOD(0x141A071E0, CMsgBoxData, FUN_141a071e0, 103, 0xC313FF72);
 MS2_REPLACE_METHOD(0x141A06630, CMsgBoxDataItem, FUN_141a06630, 161, 0x524A9354);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbfe20-0x142cbfeb0 .text$yd

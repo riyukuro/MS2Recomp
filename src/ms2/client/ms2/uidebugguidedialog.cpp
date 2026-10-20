@@ -541,3 +541,5 @@ MS2_REPLACE_METHOD(0x141288570, UIDebugGuideDialog, ShowExplain, 500, 0x08318E2B
 MS2_REPLACE_METHOD(0x141288770, UIDebugGuideDialog, PrintCommand, 755, 0x894A9C52);
 MS2_REPLACE_METHOD(0x141288A70, UIDebugGuideDialog, SendCommand, 641, 0xADFD931B);
 MS2_REPLACE_METHOD(0x141288D00, UIDebugGuideDialog, PrintLine, 222, 0x9B4D9414);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caec60-0x142caed60 .text$yd

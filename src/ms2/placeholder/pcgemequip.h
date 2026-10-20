@@ -51,6 +51,8 @@ public:
     void FUN_141271780(int nGemType, MS2Ptr<CItem> spItem); // 0x141271780 register a skin gem item
     void FUN_141271870(int nGemType, MS2Ptr<CItem> spItem); // 0x141271870 unregister it
 
+    void FUN_141668230(PC* pOwner) { m_pOwner = pOwner; }   // set the owner (inline; first emitted by the PC ctor)
+
     PC* m_pOwner;                                           // +0x00
     ATL::CAtlArray<MS2Ptr<CItem> > m_items;                 // +0x08 one per gem type
     ATL::CAtlMap<__int64, int> m_mapEffect;                 // +0x28 item uid -> effect handle

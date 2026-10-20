@@ -364,3 +364,5 @@ MS2_REPLACE_METHOD(0x140DB5520, NotifyChatEmoticonSelected, vfunc_1, 61, 0x543D2
 MS2_REPLACE_METHOD(0x140DB5580, NotifyChangeGameOptionInput, vfunc_1, 61, 0xB3705849);
 MS2_REPLACE_METHOD(0x140DB55E0, NotifyChangeUIBuildingCount, vfunc_1, 61, 0x13599739);
 MS2_REPLACE_METHOD(0x140DB5640, NotifyChangeEnableFeature, vfunc_1, 61, 0x75EC97C8);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca55d0-0x142ca5690 .text$yd

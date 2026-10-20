@@ -301,8 +301,7 @@ int FittingDollSlot::FUN_14121ddc0()
     if (pDoll == 0)
         return 0;
     Unk_FdCubeSvc* pSvc = FUN_1401cd040(&DAT_143b059e8);
-    egf::EntityID kId;
-    Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460(kId));
+    Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460());
     if (pCube == 0)
         return 0;
     __int64 nOwner = pSvc->FUN_1410c8030(pCube->m_n50, pCube->m_n54);
@@ -333,8 +332,8 @@ int FittingDollSlot::FUN_14121ddc0()
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strText, 0, s_strDestroyDollItem);
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_141a01600(spItem.get()->FUN_140526a50());
-                    spBox->FUN_141a01ee0(spItem, spItem.get()->FUN_140527b10(), 1, spItem.get()->FUN_140526c50(), -1, -1, 1);
+                    spBox->FUN_141a01600(((CItem*)spItem)->FUN_140526a50());
+                    spBox->FUN_141a01ee0(spItem, ((CItem*)spItem)->FUN_140527b10(), 1, ((CItem*)spItem)->FUN_140526c50(), -1, -1, 1);
                     spBox->FUN_141a01800(1);
                     spBox->FUN_141a026f0(1);
                     spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);

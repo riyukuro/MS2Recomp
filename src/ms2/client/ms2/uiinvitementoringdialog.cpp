@@ -532,3 +532,5 @@ Unk_PopupMenuInfo::Unk_PopupMenuInfo(float x, float y, int a, int b, int c, CStr
 
 // @0x140c30610
 int UIInviteMentoringDialog::vfunc_48() { return 0x4f4c; }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca2950-0x142ca29e0 .text$yd

@@ -755,3 +755,5 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
     }
     return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca8ba0-0x142ca8d00 .text$yd

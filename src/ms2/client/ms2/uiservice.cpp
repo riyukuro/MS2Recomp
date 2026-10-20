@@ -5066,3 +5066,5 @@ void FUN_141addb30(long long n)
     }
     FUN_1407cd930(&kRet, "text", FUN_1412dd680(strResult));
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc2670-0x142cc27b0 .text$yd

@@ -354,3 +354,5 @@ int FUN_140c902f0(const efd::Point2& k)
     else
         return 1;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca3930-0x142ca39e0 .text$yd

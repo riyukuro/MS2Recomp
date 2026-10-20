@@ -322,3 +322,5 @@ template<class T> MS2Ptr<T> UIGuildHouseUpgradeDialog::FUN_140bc6d10(const CStri
     out = GetChild<T>(strName);
     return out;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca67d0-0x142ca6810 .text$yd

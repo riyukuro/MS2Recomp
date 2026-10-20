@@ -482,3 +482,5 @@ MS2Ptr<ExtendHeightInfo> CMasteryInteriorTable::GetNextHeight(int nHeight)
     }
     return MS2Ptr<ExtendHeightInfo>(0);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9b520-0x142c9b580 .text$yd

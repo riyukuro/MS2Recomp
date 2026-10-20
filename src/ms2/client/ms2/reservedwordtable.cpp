@@ -1222,3 +1222,5 @@ UIRouletteDialog* FUN_1416ffcb0(int nId)
     }
     return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb5d30-0x142cb5dc0 .text$yd

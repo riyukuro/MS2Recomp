@@ -267,7 +267,7 @@ int FittingDollPC::FUN_14121bab0(int nItemId)
     index = 0;
     unknown12e8 = nItemId;
     FUN_141658ed0(1);
-    FUN_141662da0(this, 1);
+    ::FUN_141662da0(this, 1);   // the free extern: PC::FUN_141662da0(int) (fittingdollpc.h) hides it inside the class
     vfunc_59(1, 0, 0, 0);
     FUN_14166cce0(4);
     MS2SvrPtr<Unk_FdItemRec> spItem = FUN_14053f870(nItemId);

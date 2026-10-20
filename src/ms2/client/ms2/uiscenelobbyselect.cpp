@@ -579,3 +579,5 @@ void UISceneLobbyServer::FUN_141ace9e0()
     }
 }
 MS2_REPLACE_METHOD(0x141ACE9E0, UISceneLobbyServer, FUN_141ace9e0, 137, 0xB3007A1B);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc23d0-0x142cc25c0 .text$yd

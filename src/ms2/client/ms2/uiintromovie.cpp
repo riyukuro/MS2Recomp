@@ -270,3 +270,5 @@ UIIntroMovie::MovieInfo::MovieInfo() : m_fEndTime(0)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbeac0-0x142cbeaf0 .text$yd

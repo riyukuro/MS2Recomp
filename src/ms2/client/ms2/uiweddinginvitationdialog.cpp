@@ -264,3 +264,5 @@ UIWeddingGuestDialog* FUN_140fe6700(int nId)
 
 // @0x140fe7270
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caaf50-0x142caafe0 .text$yd

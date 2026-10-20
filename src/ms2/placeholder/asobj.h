@@ -1,7 +1,7 @@
 // asobj.h - PLACEHOLDER for ASObj and ASArray. NOT an original header.
 // ASObj: an AS object created on the C++ side (AScript itself with type 2; ctor 0x1422ba6e0, dtor 0x1422ba860), 0x40 bytes.
-// ASArray: the AS array derived from it (ctor 0x1422bbb50, dtor 0x1422bbc30). The Set helpers are COMDAT template
-// instances (one per value type). Units must include this header instead of redefining the classes.
+// ASArray: the AS array derived from it (ctor 0x1422bbb50, dtor 0x1422bbc30; gfxui/asarray.cpp). The Set helpers are COMDAT
+// template instances (one per value type). Units must include this header instead of redefining the classes.
 #pragma once
 
 #include <afx.h>
@@ -81,29 +81,77 @@ MS2_CHECK_SIZE(ASObj, 0x40);
 class ASArray : public ASObj
 {
 public:
-    ASArray(int nType);
+    ASArray(int nMovieId);                                               // 0x1422bbb50 a new empty AS array
     ASArray(const Scaleform::GFx::Value& v, int nMovieId);               // 0x1422bbbe0 (wraps an existing AS array value)
     ASArray(const ASArray& o);                                           // 0x140bbf770 (copy; passed by value to Invoke(.., int, AScript, ASArray))
-    virtual ~ASArray();
-    bool FUN_1422bc050(Scaleform::GFx::Value v);                         // push
-    void FUN_1422bc730(unsigned nIndex, const Scaleform::GFx::Value& v);   // set an element (uiclosetdialog.cpp)
-    void FUN_1422bbf70(const char* sz);                                  // push a string (uimainplayerinfo empty slot names)
-    void FUN_1422bbfe0(const wchar_t* sz);                               // push a wide string
-    void FUN_1422bbf00(const ASObj& obj);                                // push an AS object
-    void FUN_1422bbcd0(bool b);                                          // push a bool
-    void FUN_1422bbc60(int n);                                           // push an int
-    unsigned int FUN_1422bc5d0();                                        // element count
+    virtual ~ASArray();                                                  // 0x1422bbc30
+    // push(x): the new length (gfxui/asarray.cpp)
+    unsigned int FUN_1422bbc60(int n);                                   // push an int
+    unsigned int FUN_1422bbcd0(bool b);                                  // push a bool
+    unsigned int FUN_1422bbd40(unsigned int n);                          // push a UInt
+    unsigned int FUN_1422bbdb0(unsigned long n);                         // push a UInt (unsigned long)
+    unsigned int FUN_1422bbe20(float f);                                 // push a Number
+    unsigned int FUN_1422bbe90(double d);                                // push a Number
+    unsigned int FUN_1422bbf00(const ASObj& obj);                        // push an AS object
+    unsigned int FUN_1422bbf00(const AScript& obj);                      // push an AS object (the same callee; ascorelist.cpp)
+    unsigned int FUN_1422bbf70(const char* sz);                          // push a string (uimainplayerinfo empty slot names)
+    unsigned int FUN_1422bbfe0(const wchar_t* sz);                       // push a wide string
+    int FUN_1422bc050(Scaleform::GFx::Value v);                          // push a value (Value::PushBack as an int; v by value)
+    // unshift(x): the new length
+    unsigned int FUN_1422bc0a0(int n);
+    unsigned int FUN_1422bc110(bool b);
+    unsigned int FUN_1422bc180(unsigned int n);
+    unsigned int FUN_1422bc1f0(unsigned long n);
+    unsigned int FUN_1422bc260(float f);
+    unsigned int FUN_1422bc2d0(double d);
+    unsigned int FUN_1422bc340(const ASObj& obj);
+    unsigned int FUN_1422bc3b0(const char* sz);
+    unsigned int FUN_1422bc420(const wchar_t* sz);
+    unsigned int FUN_1422bc490(Scaleform::GFx::Value v);                 // (v by value: destroyed here)
+    Scaleform::GFx::Value FUN_1422bc530();                               // pop()
+    Scaleform::GFx::Value FUN_1422bc580();                               // shift()
+    unsigned int FUN_1422bc5d0();                                        // element count ("length")
+    void FUN_1422bc630();                                                // remove every element (Value::ClearElements)
+    void FUN_1422bc660(unsigned nIndex, int nCount);                    // splice(index, count) (asdropdownmenu.cpp: remove a row)
     Scaleform::GFx::Value FUN_1422bc6b0(unsigned nIndex);                // the element at an index (merat market buy rows)
+    void FUN_1422bc730(unsigned nIndex, const Scaleform::GFx::Value& v);   // set an element if the index is in range (uiclosetdialog.cpp)
+    // the element at an index, converted
+    void FUN_1422bc780(unsigned nIndex, int& nOut);
+    void FUN_1422bc7f0(unsigned nIndex, bool& bOut);
+    void FUN_1422bc860(unsigned nIndex, unsigned& nOut);                // (astilelist.cpp)
+    void FUN_1422bc8d0(unsigned nIndex, unsigned long& nOut);
+    void FUN_1422bc940(unsigned nIndex, float& fOut);
+    void FUN_1422bc9b0(unsigned nIndex, double& dOut);
+    void FUN_1422bca20(unsigned nIndex, CString& strOut);
+    void FUN_1422bca90(unsigned nIndex, CStringW& strOut);
+    // AScript::Invoke overloads called here (members of ASArray so AScript's overload set stays unchanged)
+    Scaleform::GFx::Value FUN_140e06cc0(const char* szMethod, double a1);              // 0x140e06cc0 Invoke(method, Number)
+    Scaleform::GFx::Value FUN_140cbe3a0(const char* szMethod, const wchar_t* a1);      // 0x140cbe3a0 Invoke(method, wide string)
+    Scaleform::GFx::Value FUN_1422bcb00(const char* szMethod, int a1, unsigned int a2);   // 0x1422bcb00 Invoke(method, Int, UInt) (inline COMDAT, defined in asarray.cpp)
 };
 
 // ASDataProvider: an ASArray with its own vftable (RTTI ASDataProvider : ASArray : AScript : CPtred), same 0x40 layout.
 // vftable 0x142defc98 (slot 0 = the scalar deleting dtor 0x140bc0740 -> FUN_1422df070, shared with the trivial Unk_*Array
-// subclasses), ctor 0x140bbf7b0. Handed to the AS data-provider properties of list components.
+// subclasses), ctor 0x140bbf7b0. Handed to the AS data-provider properties of list components. Wraps a CLIK
+// scaleform.clik.data.DataProvider; its own code is ?\asdataprovider.cpp (0x1422deec0-0x1422df570).
 class ASDataProvider : public ASArray
 {
 public:
-    ASDataProvider(int nType);
+    ASDataProvider(int nMovieId);                                        // 0x1422deec0 a new empty DataProvider
+    ASDataProvider(MS2Ptr<ASArray> spArr, int nMovieId);                // 0x1422def60 a DataProvider over spArr (by value: destroyed here)
+    ASDataProvider(Scaleform::GFx::Value& v, int nMovieId);              // 0x1422df020 wraps an existing DataProvider value
     ASDataProvider(const ASArray& arr);                                  // 0x140bbf7b0 (copies the array; invenslot slot names)
-    virtual ~ASDataProvider();
+    virtual ~ASDataProvider();                                           // 0x1422df070
+    void FUN_1422df0a0();                                                // cleanUp()
+    void FUN_1422df0e0(unsigned int nIndex);                             // invalidate(index)
+    void FUN_1422df120();                                                // remove every element: cleanUp() (asdropdownmenu.cpp)
+    AScript FUN_1422df140(unsigned nIndex);                              // requestItemAt(index) as an AS object (asdropdownmenu.cpp)
+    // The flash.events.IEventDispatcher methods (the same AS calls as ASEventDispatcher's).
+    void FUN_1422df1c0(const CString& strType, const Scaleform::GFx::Value& listener, int bUseCapture, int nPriority,
+                       int bUseWeakReference);                           // addEventListener
+    void FUN_1422df2e0(const CString& strType, const Scaleform::GFx::Value& listener, int bUseCapture);   // removeEventListener
+    int FUN_1422df3c0(const CString& strType);                           // hasEventListener
+    int FUN_1422df460(const CString& strType);                           // willTrigger
+    int FUN_1422df500(const class ASEvent& ev);                          // dispatchEvent
 };
 MS2_CHECK_SIZE(ASDataProvider, 0x40);

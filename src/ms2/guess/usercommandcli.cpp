@@ -566,20 +566,23 @@ int CUserCommandCli::ChatType(const CStringW& name) {
 }
 // @0x141362480
 CStringW CUserCommandCli::Tooltip() {
-    tooltip.IsEmpty();
-    tooltip=L"";
-    CStringW key=L"s_chattooltip_fmt";
-    CStringW format=FUN_14061ad70(key,L"_{0}");
-    for(POSITION p=ordered.GetHeadPosition();p;ordered.GetNext(p)) {
-        MS2Ptr<TUserCommandInfo> info=ordered.GetValueAt(p);
-        if(info==0 || info->suffix.IsEmpty()) continue;
-        if(info->chatType==21 || info->chatType==10) continue;
-        CStringW suffix=StringFormat(format,info->suffix);
-        CStringW names=FUN_1401a9d70()->FUN_141811980(0x38,info->stringId);
-        names.Replace(L"\n",L", ");
-        tooltip.Append(FUN_1408f71a0(suffix,names,info->firstAlias));
+    bool bBuild=tooltip.IsEmpty();
+    bBuild=true;    // the exe rebuilds every time (the empty check is overridden)
+    if(bBuild) {
+        tooltip=L"";
+        const CStringW& key=CStringW(L"s_chattooltip_fmt");
+        const CStringW& format=FUN_14061ad70(key,L"_{0}");
+        for(POSITION p=ordered.GetHeadPosition();p;ordered.GetNext(p)) {
+            MS2Ptr<TUserCommandInfo> info=ordered.GetValueAt(p);
+            if(info==0 || info->suffix.IsEmpty()) continue;
+            int chatType=info->chatType; if(chatType==21 || chatType==10) continue;
+            CStringW suffix=StringFormat((LPCWSTR)format,info->suffix);
+            CStringW names=FUN_1401a9d70()->FUN_141811980(0x38,info->stringId);
+            names.Replace(L"\n",L", ");
+            tooltip.Append(FUN_1408f71a0(suffix,names,info->firstAlias));
+        }
+        tooltip=FUN_1405c2690(key,tooltip);
     }
-    tooltip=FUN_1405c2690(key,tooltip);
     return tooltip;
 }
 // @0x141362860

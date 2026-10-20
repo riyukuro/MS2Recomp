@@ -87,7 +87,9 @@ public:
     CString m_str90;                                        // +0x90 (vfunc_123 0x1e)
     CString m_str98;                                        // +0x98 (vfunc_123 0x1f)
     __int64 m_nA0;                                          // +0xa0 stamina needed to run (0: none)
-    char m_pad_a8[0x10];
+    char m_pad_a8[4];
+    int m_nAC;                                              // +0xac nonzero: the ride name replaces the rider's (PC::vfunc_77)
+    char m_pad_b0[8];
     CString m_strB8;                                        // +0xb8 run start effect
     CString m_strC0;                                        // +0xc0 run start effect (stamina)
     char m_pad_c8[8];

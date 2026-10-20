@@ -2726,3 +2726,5 @@ void Unk_GECDriveReleases(void** pp)
 // MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x1403fa440 ; ps2: map<int,int> COMDAT copy
 // MS2-PIN: ?RemoveAtPos@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140414ec0 ; ps2: this TU's byte-identical copy (0x1404579e0 in the table)
 // MS2-PIN: ?RemoveNode@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140414fb0 ; ps2: this TU's byte-identical copy (0x140458a50 in the table)
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9a8c0-0x142c9a920 .text$yd

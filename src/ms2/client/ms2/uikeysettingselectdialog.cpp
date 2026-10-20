@@ -129,3 +129,5 @@ void* FUN_140c58ac0(Unk_KsInputState* p)
 {
     return p->m_mouse;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca3000-0x142ca3090 .text$yd

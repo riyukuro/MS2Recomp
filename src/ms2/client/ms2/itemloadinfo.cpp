@@ -409,3 +409,5 @@ void CItemLoader::RefreshItem(MS2Ptr<CItemLoadInfo> info)
         }
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca4c80-0x142ca4cd0 .text$yd

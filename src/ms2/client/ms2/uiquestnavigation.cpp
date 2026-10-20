@@ -725,3 +725,5 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, c
 
 // @0x140e7daf0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(16);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca7670-0x142ca7700 .text$yd

@@ -2232,7 +2232,7 @@ class Unk_IbDropdown : public ASDropdownMenu
 {
 public:
     INV_V(16) INV_V(17) INV_V(18) INV_V(19) INV_V(20) INV_V(21) INV_V(22) INV_V(23)
-    virtual void vfunc_24(int bRefresh);                            // 24 (+0xc0)
+    virtual void vfunc_24(bool bRefresh);                           // 24 (+0xc0) validateNow (bool: the exe passes dl)
     void FUN_1422dfc70(const ASObj& item);                          // add an item
     int FUN_1422dfb90();                                            // the item count
 };
@@ -3008,3 +3008,5 @@ bool UIItemBreakDonationDialog::vfunc_87(int nResult, const CMsgBoxData& box)
     return true;
 }
 MS2_REPLACE_METHOD(0x1419A5980, UIItemBreakDonationDialog, vfunc_87, 46, 0);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cbeaf0-0x142cbecc0 .text$yd

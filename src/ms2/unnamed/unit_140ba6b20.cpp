@@ -360,3 +360,5 @@ MS2_REPLACE_METHOD(0x140BA72B0, UIAdventureLevelExpBar, OnLoadComplete, 169, 0x2
 MS2_REPLACE_METHOD(0x140BA7360, UIAdventureLevelExpBar, vfunc_43, 302, 0x59D7B96F);
 MS2_REPLACE_METHOD(0x140BA74A0, UIAdventureLevelExpBar, vfunc_45, 393, 0xC541FAD8);
 MS2_REPLACE_METHOD(0x140BA7660, UIAdventureLevelExpBar, vfunc_28, 158, 0x9E0791F5);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1560-0x142ca15f0 .text$yd

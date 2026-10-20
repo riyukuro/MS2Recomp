@@ -6424,3 +6424,5 @@ void CubeMapInformationService::FUN_1410ccc00(int nGroup, int nA, int nB)
         }
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cac180-0x142cac290 .text$yd

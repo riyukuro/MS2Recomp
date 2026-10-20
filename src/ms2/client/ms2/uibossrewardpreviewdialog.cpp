@@ -355,3 +355,5 @@ Unk_SingletonObj* FUN_140f26650()
 {
     return DAT_143ac48f8;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca9020-0x142ca90d0 .text$yd

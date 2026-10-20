@@ -23,11 +23,6 @@
 // MS2-PIN: ??_7InvenSlot@@6B@ 0x142f0ebf8 ; hand
 // MS2-PIN: ?TypeCast@InvenSlot@@UEBA_NIPEAPEAX@Z 0x14140eaf0
 // MS2-PIN: ?TypeCast@InvenSlot@@UEBA_NIPEAPEBX@Z 0x14140eb40
-// MS2-FUNCTIONAL 0x14140fe80: exe map<int,CString>::begin (70 B) builds the const iterator with a null proxy (xor r8d) and
-//   no addressof/_Get_scary calls; the VS2017 15.9 xtree begin() passes addressof(_Get_data()) -> STL header difference
-// MS2-FUNCTIONAL 0x14140fed0: map<int,CString>::end, same null-proxy STL difference as begin (0x14140fe80)
-// MS2-PIN: ?begin@?$_Tree@V?$_Tmap_traits@HV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@XZ 0x14140fe80
-// MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@HV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@4@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@XZ 0x14140fed0
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\invenslot.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -295,8 +290,6 @@ MS2_CHECK_SIZE(Unk_IsScript, 0x48);
 InvenSlot* FUN_140a50b50(DragSlot* pSlot);                // the inventory slot behind a drag source
 EquipSlot* FUN_14120d560(NotifyContext::BindData* p);
 PetSlot* FUN_140dbc0d0(DragSlot* p);
-DragSlot* FUN_1422cd0f0(const DragSlotBag* pBag, const CString& strName);   // the slot of the bag by name
-DragSlot* FUN_1422cd070(DragSlotBag* pBag, int nIndex);   // the slot of the bag by index
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
 
 // Registry of named bags/slots (GFx bind data).
@@ -2427,7 +2420,7 @@ void InventorySlotBag::vfunc_ugc_2(void* p, CString str)
         return;
     if (FUN_14140f990(spItem.get()) == 0)
         return;
-    InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(this, spItem->FUN_140526b50()));
+    InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(spItem->FUN_140526b50()));
     if (pSlot != 0)
         pSlot->vfunc_10();
 }
@@ -2441,7 +2434,7 @@ void InventorySlotBag::vfunc_2(void* p)
         FUN_140c3fe30(pDlg, 2);
     if (FUN_14140f990(static_cast<CItem*>(p)) != 0)
     {
-        InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(this, static_cast<CItem*>(p)->FUN_140526b50()));
+        InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50()));
         if (pSlot != 0)
         {
             pSlot->FUN_141405a30(static_cast<CItem*>(p)->FUN_140526a50());
@@ -2459,7 +2452,7 @@ void InventorySlotBag::vfunc_3(void* p, bool b)
         FUN_140c3fe30(pDlg, 2);
     if (FUN_14140f990(static_cast<CItem*>(p)) != 0)
     {
-        DragSlot* pSlot = FUN_1422cd070(this, static_cast<CItem*>(p)->FUN_140526b50());
+        DragSlot* pSlot = FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50());
         if (pSlot != 0)
             pSlot->vfunc_11();
     }
@@ -2471,7 +2464,7 @@ void InventorySlotBag::vfunc_4(void* p, int n)
 {
     if (FUN_14140f990(static_cast<CItem*>(p)) != 0)
     {
-        InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(this, static_cast<CItem*>(p)->FUN_140526b50()));
+        InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50()));
         if (pSlot != 0)
         {
             pSlot->FUN_141405a30(static_cast<CItem*>(p)->FUN_140526a50());
@@ -2490,7 +2483,7 @@ void InventorySlotBag::vfunc_5(void* p, int n)
         FUN_140c3fe30(pDlg, 1);
     if (FUN_14140f990(static_cast<CItem*>(p)) != 0)
     {
-        InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(this, static_cast<CItem*>(p)->FUN_140526b50()));
+        InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50()));
         if (pSlot != 0)
         {
             MS2Ptr<CItem> spCur = DAT_143ab2a90.FUN_140a5d680(static_cast<CItem*>(p)->FUN_140526a50());
@@ -2510,7 +2503,7 @@ void InventorySlotBag::vfunc_21(void* p)
 {
     if (FUN_14140f990(static_cast<CItem*>(p)) != 0 && m_nPendingSlot > -1)
     {
-        InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(this, m_nPendingSlot));
+        InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(m_nPendingSlot));
         if (pSlot != 0)
             pSlot->vfunc_10();
         m_nPendingSlot = -1;
@@ -2537,7 +2530,7 @@ void InventorySlotBag::FUN_14140f5b0(CItem* pItem)
 {
     if (FUN_14140f990(pItem) == 0)
         return;
-    InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(this, pItem->FUN_140526b50()));
+    InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(pItem->FUN_140526b50()));
     if (pSlot != 0)
         pSlot->vfunc_10();
 }
@@ -2548,10 +2541,9 @@ MS2_REPLACE_METHOD(0x14140F5B0, InventorySlotBag, FUN_14140f5b0, 99, 0x1FDD6D27)
 int InventorySlotBag::FUN_14140f620(CStringW strSearch)
 {
     int nResult = -1;
-    for (std::map<int, CString>::iterator it = m_slots.begin(); it != m_slots.end(); ++it)
+    for (std::pair<const int, CString> entry : m_slots)
     {
-        std::pair<const int, CString> entry = *it;
-        InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd0f0(this, entry.second));
+        InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd0f0(entry.second));
         if (pSlot != 0)
         {
             int nIndex = pSlot->FUN_14140bc50(strSearch);
@@ -2571,10 +2563,9 @@ MS2_REPLACE_METHOD(0x14140F620, InventorySlotBag, FUN_14140f620, 363, 0x78F08648
 // @0x14140f7a0
 ASDataProvider InventorySlotBag::FUN_14140f7a0()
 {
-    ASArray arrNames(2);
-    for (std::map<int, CString>::iterator it = m_slots.begin(); it != m_slots.end(); ++it)
+    ASDataProvider arrNames(2);
+    for (std::pair<const int, CString> entry : m_slots)
     {
-        std::pair<const int, CString> entry = *it;
         arrNames.FUN_1422bbf70(entry.second);
     }
     return ASDataProvider(arrNames);
@@ -2618,3 +2609,5 @@ static __int64 FUN_14140fa00(int nIndex, int nTab)
     return 0;
 }
 MS2_REPLACE(0x14140FA00, FUN_14140fa00, 303, 0x1FA59440);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb1740-0x142cb1ab0 .text$yd

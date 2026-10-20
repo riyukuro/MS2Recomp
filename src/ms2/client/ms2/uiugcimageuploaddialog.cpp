@@ -525,7 +525,7 @@ __int64 UIUGCImageUploadDialog::FUN_141b3b390()
     IUgcViewer* pViewer = spUpload->m_spViewer.get();
     if (pViewer == 0)
         return 0;
-    Unk_BannerPtr banner = CFieldBannerData::GetBanner(static_cast<CUgcViewerBanner*>(pViewer)->m_nBannerId);
+    Unk_BannerPtr banner = CFieldBannerData::GetBanner(static_cast<CUgcViewerBanner*>(pViewer)->m_post.m_nBannerId);
     if (banner == 0)
         return 0;
     return banner->GetCurrentHourly();

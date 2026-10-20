@@ -607,3 +607,5 @@ void CMainSystem::FUN_141474490()
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb26f0-0x142cb27c0 .text$yd

@@ -251,3 +251,5 @@ void Unk_GuildDriveNpcKindSet7(SetNpcKind& a, SetNpcKind& b, const Unk_GuildNpcK
     b = a; SetNpcKind c(a); c.swap(a); (void)a.lower_bound(k); (void)a.upper_bound(k); (void)a.size(); (void)a.empty();
     for(SetNpcKind::iterator it=a.begin(); it!=a.end(); ++it){ (void)*it; }
 }
+// MS2-PIN: ?pointer_to@?$pointer_traits@PEBU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@SAPEBU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildEvent@CGuildXmlData@@@@@2@AEBU32@@Z 0x1405013b0 ; hand: calls addressof<const pair<const int, GuildEvent>> 0x1405019e0
+// MS2-PIN: ?pointer_to@?$pointer_traits@PEBU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@SAPEBU?$pair@$$CBHV?$Unk_PayloadPtr@UGuildProperty@CGuildXmlData@@@@@2@AEBU32@@Z 0x1405013d0 ; hand: calls addressof<const pair<const int, GuildProperty>> 0x1405019f0

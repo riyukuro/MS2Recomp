@@ -92,13 +92,11 @@ struct Unk_PtVec3 : public Unk_StreamPoint
 extern char DAT_143acdb20;                                  // set while the avatar previews are disabled
 extern Unk_StreamPoint DAT_143b01a60;                              // the zero point
 
-int FUN_141656750(PC* pPC);
 void FUN_1411e1b80(Unk_PCEquipSet* pEquipSet, ATL::CAtlList<MS2Ptr<CEquipItem> >& kOut);   // the worn items
 void FUN_1411e3de0(Unk_PCEquipSet* pEquipSet, int n);       // clears the equip set
 void FUN_1411e3600(Unk_PCEquipSet* pEquipSet, MS2Ptr<CEquipItem> spEquip);   // adds a worn item (callee-destroyed arg)
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);          // 0x140ccac60 a copy of the item
 int FUN_141658e60(PC* pPC);
-void FUN_141653f00(PC* pPC);
 Unk_PtVec3 FUN_14169a860();
 unsigned char FUN_141658f10(PC* pPC);
 unsigned __int64 FUN_141662e90(PC* pPC);
@@ -238,7 +236,7 @@ void PortraitPC::vfunc_143()
     }
     vfunc_139();
     reinterpret_cast<Unk_PtItemList&>(m_kListD48).FUN_1408f3a80();
-    FUN_141653f00(this);
+    FUN_141653f00();
 }
 
 // @0x14169a4f0
@@ -262,7 +260,7 @@ void PortraitPC::FUN_14169a5e0()
 {
     if (static_cast<UIModelView*>(m_spModelView) == 0)
         return;
-    if (FUN_141656750(this) == 0)
+    if (FUN_141656750() == 0)
         return;
     ATL::CAtlArray<efd::SmartPointer<NiActorManager> > kEquip;
     FUN_1410879c0(kEquip);
@@ -335,3 +333,5 @@ void Unk_PortraitPCMoveAnchor(void* pDst, size_t nDst, void* pSrc, size_t nSrc)
 {
     memmove_s(pDst, nDst, pSrc, nSrc);
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cb43f0-0x142cb4480 .text$yd

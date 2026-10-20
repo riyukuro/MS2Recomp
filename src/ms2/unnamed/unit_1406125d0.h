@@ -110,28 +110,6 @@ MS2_CHECK_OFFSET(CItemLockManager, m_locked, 8);
 MS2_CHECK_OFFSET(CItemLockManager, m_pending, 0x28);
 MS2_CHECK_OFFSET(CItemLockManager, m_mode, 0x48);
 
-// The argument queue of ASData (the 0x30 bytes at +0x18): a FIFO of value nodes with a free list. Inferred from
-// ASData::~ASData (0x1406147b0) and the helpers behind it; only the teardown is in this unit.
-class Unk_ValueNode
-{
-public:
-    ~Unk_ValueNode();                                       // 0x1406147e0
-    Unk_ValueNode* m_pNext;
-    void* m_pad_08;
-    Scaleform::GFx::Value m_value;                          // +0x10
-};
-class Unk_ValueQueue
-{
-public:
-    void RemoveAll();                                       // 0x140614720
-    void Clear();                                           // 0x140614be0
-    void FreeNode(Unk_ValueNode* pNode);                    // 0x140614ae0
-    Unk_ValueNode* m_pHead;
-    Unk_ValueNode* m_pTail;
-    size_t m_nCount;
-    void* m_pPool;
-    Unk_ValueNode* m_pFree;
-};
 void FUN_140159e70(void* p);
 
 // Message box data (RTTI .?AVCMsgBoxData@@): only the extra GFx value map at +0x290 is used here.

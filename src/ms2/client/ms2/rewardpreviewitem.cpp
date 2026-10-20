@@ -460,3 +460,5 @@ void CRewardPreviewTable::SetInit(bool b)
 
 // The UCRT's `static __inline memcpy_s` of this TU (kept alive by the pointer below).
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca5aa0-0x142ca5b30 .text$yd

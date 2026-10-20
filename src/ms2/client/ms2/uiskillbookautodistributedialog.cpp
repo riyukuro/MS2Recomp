@@ -2340,3 +2340,5 @@ int UISkillBookTreeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca8460-0x142ca85a0 .text$yd

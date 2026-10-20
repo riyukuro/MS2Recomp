@@ -80,15 +80,17 @@ int UIMicroGameCoupleDanceMessage::vfunc_28(const char* szMethod, const Scalefor
 // @0x140e65c00
 void UIMicroGameCoupleDanceMessage::FUN_140e65c00(CStringW strMessage, int nTime)
 {
-    if (!m_30.IsNull())
-        m_30->Invoke("showMessage", strMessage, nTime);
+    if (m_30.IsNull())
+        return;
+    m_30->Invoke("showMessage", strMessage, nTime);
 }
 
 // @0x140e65ce0
 void UIMicroGameCoupleDanceMessage::FUN_140e65ce0(int nType, CStringW strMessage, int nTime)
 {
-    if (!m_30.IsNull())
-        m_30->Invoke("showStageMessage", nType, strMessage, nTime);
+    if (m_30.IsNull())
+        return;
+    m_30->Invoke("showStageMessage", nType, strMessage, nTime);
 }
 
 // @0x140e65dd0 (the "showStageMessage" Invoke: an Int, a String and an Int argument)

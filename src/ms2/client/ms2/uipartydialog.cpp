@@ -3940,3 +3940,5 @@ bool FUN_141a8b910()
         return false;
     return true;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc1190-0x142cc1640 .text$yd

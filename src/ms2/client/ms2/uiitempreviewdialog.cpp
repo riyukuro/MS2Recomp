@@ -273,3 +273,5 @@ void UIEquipIconContainer::FUN_1412d6ca0(MS2Ptr<ASMovieClip> pClip)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142caf5d0-0x142caf6f0 .text$yd

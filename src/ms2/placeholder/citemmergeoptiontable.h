@@ -28,15 +28,15 @@ public:
     DataPtr FUN_1405c00e0(int nItemId, int nMaterialId);   // the slot data of a merge pair, null when it cannot merge
     bool FUN_1405c03d0(int nCategory, int* pNormal);          // the first normal option of an item's slot
     bool FUN_1405c04f0(int nCategory, int* pSpecial);         // the first special option of an item's slot
-    Unk_MergeRange* FUN_1405c0610(int nItemId, int nNormal);    // the range of a normal option (null: none)
-    Unk_MergeRange* FUN_1405c0740(int nItemId, int nSpecial);   // the range of a special option (null: none)
+    CItemMergeOptionVariation* FUN_1405c0610(int nItemId, int nNormal);   // the whole-range variation of a normal option (null: none)
+    CItemMergeOptionVariation* FUN_1405c0740(int nItemId, int nSpecial);  // the whole-range variation of a special option (null: none)
     bool FUN_1405c0870(int nItemId, int nMaterialId, bool bSpecial, int nOption, Unk_EnchantPtr<BaseOption> spValue);
     bool FUN_1405c0a70(int nItemId, int nMaterialId, bool bSpecial, int nOption, Unk_EnchantPtr<BaseOption> spValue);
     bool FUN_1405c0c70(int nItemId, int nMaterialId, bool bSpecial, int nOption, Unk_EnchantPtr<BaseOption> spValue);
     bool FUN_1405c0e80(int nItemId, int nMaterialId, bool bSpecial, int nOption, Unk_EnchantPtr<BaseOption> spValue);
     CStringW FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag);    // the description of an item's merge options
     DataPtr FUN_1405c1d20(int nItemId, int nMaterialId);
-    DataPtr FUN_1405c1f40(int nCategory, int nUnused);
+    DataPtr FUN_1405c1f40(int nCategory);
 
     static bool s_bInit;                                    // the "initialized" flag of CValidData
     static void CheckInit();                                // 0x1405c53b0

@@ -1053,3 +1053,5 @@ MS2_REPLACE_METHOD(0x140DF0140, Unk_CubePaletteFilter, FUN_140df0140, 22, 0x3E62
 MS2_REPLACE_METHOD(0x140DF0160, Unk_CubePaletteFilter, FUN_140df0160, 14, 0x72E52537);
 MS2_REPLACE_METHOD(0x140DF0180, Unk_CubePaletteFilter, FUN_140df0180, 22, 0x068001AB);
 MS2_REPLACE_METHOD(0x140DF01A0, Unk_CubePaletteFilter, FUN_140df01a0, 14, 0x7AB52803);
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca5fa0-0x142ca6070 .text$yd
