@@ -99616,9 +99616,9 @@ atan2f	140a4e660	func
 ??0?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBU?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@Z	140f603c0	func
 ??0?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@QEAA@AEBV01@@Z	140f60410	func
 ??0?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@QEAA@AEBU?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@Z	140f60460	func
-??0?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@QEAA@AEBU?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@Z	140f60460	func
+??0?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@QEAA@AEBU?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@Z	140f60500	func
 ??0?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@QEAA@AEBV01@@Z	140f604b0	func
-??0?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z	140f60500	func
+??0?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBU?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@Z	140f605a0	func
 ??0?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@AEBV01@@Z	140f60550	func
 ??1?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEAA@XZ	140f60630	func
 ??1?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@UEAA@XZ	140f60650	func
@@ -157879,7 +157879,7 @@ FUN_141485590	141485590	func
 ?FindProduct@UIShopDialog@@QEAA?AV?$MS2Ptr@VCNpcShopProductBase@@@@HH@Z	141affbe0	func
 ?FindCurrentProduct@UIShopDialog@@QEAA?AV?$MS2Ptr@VCNpcShopProductBase@@@@H@Z	141affce0	func
 ?FindMeratItem@UIShopDialog@@QEAA?AV?$MS2Ptr@VCNpcShopMeratItemCli@@@@H@Z	141affd40	func
-?PopulateProduct@UIShopDialog@@QEAAHAEAVAScript@@V?$MS2Ptr@VCNpcShopProductCli@@@@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@PEAX@Z	141b00240	func
+?PopulateProduct@UIShopDialog@@QEAAHAEAVASSlot@@V?$MS2Ptr@VCNpcShopProductCli@@@@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@PEAX@Z	141b00240	func
 ?HasShop@UIShopDialog@@QEAA_NXZ	141b031c0	func
 ?GetTalk@UIShopDialog@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H_N@Z	141b03470	func
 ?SetTalk@UIShopDialog@@QEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z	141b035c0	func
@@ -167160,8 +167160,8 @@ __imp_OpenSurveyWindowA	142cd1488	data
 ??_7UIItemRemakeScrollDialog@@6BIMessageListener@@@	142e7fe78	data
 ??_7?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@6B@	142e7fe88	data
 ??_7?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@@Z@@6B@	142e7feb0	data
-??_7?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@6B@	142e7feb0	data
-??_7?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@6B@	142e7fed8	data
+??_7?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAAXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@std@@@?$Delegate@$$A6AXAEAVItemScrollSlot@@PEAVDragSlot@@@Z@@6B@	142e7fed8	data
+??_7?$DelegateImpl@U?$pair@PEAVUIItemRemakeScrollDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@6B@	142e7ff00	data
 ??_7UIItemRePackingScrollDialog@@6BCPtred@@@	142e80a50	data
 ??_7UIItemRePackingScrollDialog@@6BIMessageListener@@@	142e80cf8	data
 ??_7?$DelegateImpl@U?$pair@PEAVUIItemRePackingScrollDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@6B@	142e80d08	data
