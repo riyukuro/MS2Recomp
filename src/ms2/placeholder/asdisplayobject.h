@@ -22,8 +22,6 @@ public:
     // (asbuttongroup.cpp)
     void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, int nPriority, int a5, void* pUser);
     void FUN_1422c3d30(class ASEvent& ev);                              // dispatchEvent (asuicomponent.cpp)
-    // removeEventListener (0x1422c3820; ASDisplayObject redeclares it; asloader.cpp "complete")
-    void FUN_1422c3820(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
 private:
     // +0x40 / +0x60: two 0x20 members built by 0x1422c4100 (the +0x60 one is the callback list, see FUN_1422c3180).
     // Pointers, not a char array: an array member makes every local AS object a /GS buffer (the exe frames have none).
@@ -158,27 +156,15 @@ public:
     virtual void vfunc_9();                                     // 9 0x1422c2160 nextFrame
     virtual void vfunc_10();                                    // 10 0x1422c21a0 prevScene
     virtual void vfunc_11();                                    // 11 0x1422c21e0 nextScene
-    virtual void vfunc_12(int nFrame);                          // 12 0x1422c2260 gotoAndPlay(frame)
-    virtual void vfunc_13(const CString& strLabel);             // 13 0x1422c2220 gotoAndPlay(label)
-    virtual void vfunc_14(int nFrame);                          // 14 0x1422c22d0 gotoAndStop(frame)
-    virtual void vfunc_15(const CString& strLabel);             // 15 0x1422c2290 gotoAndStop(label)
-    int FUN_1422c2300();                                        // "currentFrame"
-    CString FUN_1422c2360();                                    // "currentFrameLabel" ("" if it is not a string)
-    CString FUN_1422c2420();                                    // "currentLabel"
-    int FUN_1422c24b0();                                        // "totalFrames"
-    int FUN_1422c2510(double* pX, double* pY);                  // localToGlobal(new Point): the stage position
-    int FUN_1422c2700(float* pX, float* pY);                    // globalToLocal(0, 0)
-    int FUN_1422c2740(float x, float y, float* pX, float* pY);  // globalToLocal(x, y)
-    bool FUN_1422c29c0(float x, float y, bool bShapeFlag);      // hitTestPoint (false unless the result is a bool)
-    // "click" / "doubleClick" / "rightClick" listeners (pUser: the pointer-sized user data handed back with the call)
-    void FUN_1422c2a70(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
-    void FUN_1422c2af0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
-    void FUN_1422c2b50(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
-    void FUN_1422c2bd0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
-    void FUN_1422c2c30(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);   // asitemslot.cpp
-    void FUN_1422c2cb0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
-    // sets "externalTooltipFunction" to an ASFunction of the delegate (cb by value: the callee destroys it)
-    void FUN_1422c2d10(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb, void* pUser);
+    virtual void vfunc_12(int nFrame);                          // 12 0x1422c2260
+    virtual void vfunc_13(const CString& strLabel);             // 13 0x1422c2220
+    virtual void vfunc_14(int nFrame);                          // 14 0x1422c22d0
+    virtual void vfunc_15(const CString& strLabel);             // 15 0x1422c2290
+    int FUN_1422c2300();                                        // the "currentFrame" member
+    void FUN_1422c1fe0(int bEnabled);                           // the "enabled" member (uiweddinghallreservationdialog)
+    int FUN_1422c2030();                                        // the "enabled" member (uibeautyshopdevdialog)
+    void FUN_1422c2c30(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int nUser);   // add a "rightClick" listener (asitemslot.cpp)
+    void FUN_1422c2cb0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);              // remove the "rightClick" listener
 };
 MS2_CHECK_SIZE(ASMovieClip, 0x80);                              // exe allocates 0x80 bytes (asequipicon 0x1409b93ed)
 
@@ -191,15 +177,6 @@ class ASLoader : public ASDisplayObjectContainer
 {
 public:
     ASLoader(int nMovieId);                                     // 0x1422e5300 (the exe allocates 0x90 bytes: uidungeonroomdialog 0x1412ad5f5)
-    ASLoader(const Scaleform::GFx::Value& v, int nMovieId);     // 0x1422e53d0
-    virtual ~ASLoader();                                        // 0x1422e5440 (scalar deleting 0x1422e59f0)
-    void BindContentLoaderInfo();                               // 0x1422e54a0 m_spContentLoaderInfo = "contentLoaderInfo"
-    void Load(MS2Ptr<ASURLRequest> spRequest);                  // 0x1422e5530 load(request) (by value: the callee destroys it)
-    void UnloadAndStop(bool bGC);                               // 0x1422e55c0 unloadAndStop(bGC)
-    // addEventListener / removeEventListener "complete" on the loader info (pUser: the AS function object's user data)
-    void AddCompleteListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);   // 0x1422e5600
-    void RemoveCompleteListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);              // 0x1422e56a0
-    Scaleform::GFx::Value GetContent();                         // 0x1422e5730 the "content" member
 private:
     void* m_pad_80;
     void* m_pad_88;
