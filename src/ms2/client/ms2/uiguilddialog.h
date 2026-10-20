@@ -49,6 +49,7 @@ public:
 
     MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);  // 0x140c02870 bind a button bar child ("m_category")
     void FUN_141968140(CInPacket& packet);                      // guild packet 0x8a: refresh the buttons on 0x76 / 0x77
+    int FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // the join / request pages' AS callbacks (vfunc_28)
     void FUN_141969040(const CStringW& strCategory);            // open a category's page and show it
     void FUN_141969290(const CStringW& strCategory);            // show a category's page
     void FUN_141969870(MS2Ptr<ASUIComponent> spPage, bool b);

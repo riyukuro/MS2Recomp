@@ -76,6 +76,7 @@
 #include "ms2/placeholder/aslabel.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/commonfiles/additionalactionadditional.h"
+#include "ms2/placeholder/uipopupmenu.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -120,6 +121,9 @@ public:
 };
 Unk_GdEventMgr* FUN_140302b00();
 extern __int64 DAT_143ab2898;                                   // the money
+unsigned __int64 FUN_140718350(const CString& str);                // _atoi64-style id parse
+unsigned __int64 FUN_140718370(const CStringW& str);               // _wtoi64-style id parse
+bool FUN_14028d760(bool b);
 class ASDialog : public ASDisplayObjectContainer {};            // the movie root (UIDialog::m_90): only addChild is used
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);    // str == psz
 bool FUN_140841300(const CStringW& str, const char* psz);       // str == psz
@@ -577,6 +581,182 @@ void UIGuildDialog::FUN_141968140(CInPacket& packet)
     }
 }
 MS2_REPLACE_METHOD(0x141968140, UIGuildDialog, FUN_141968140, 94, 0x7485E7B2);
+
+// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
+// @0x1419681b0
+int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (_stricmp("OnSearchGuild", szMethod) == 0)
+    {
+        m_30->Invoke("showPropensity", CGuildManager::GetInstance()->FUN_14197e010(), 1, true);
+        return 1;
+    }
+    if (_stricmp("OnSearchGuildByName", szMethod) == 0)
+    {
+        CStringW strMsg = FUN_14028b8e0(L"s_guild_ui_search_search_name");
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, strMsg, static_cast<IMessageListener*>(this), CStringW(L"serachGuildName"));
+        if (spBox.get() != 0)
+        {
+            spBox->FUN_141a01800(2);
+            FUN_140d73c60(spBox);
+        }
+    }
+    else
+    {
+        if (_stricmp("OnSearchPrePage", szMethod) == 0)
+        {
+            m_nSearchPage--;
+            if (m_nSearchPage < 1)
+                m_nSearchPage = 1;
+            FUN_14196d0c0(0);
+            return 1;
+        }
+        if (_stricmp("OnSearchNextPage", szMethod) == 0)
+        {
+            m_nSearchPage++;
+            FUN_14196d0c0(0);
+            return 1;
+        }
+        if (_stricmp("OnRequestJoin", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                __int64 nGuildId = FUN_140718350(data.FUN_1422b8d30());
+                CGuildManager::GetInstance()->FUN_1413bc4a0(nGuildId);
+            }
+            return 1;
+        }
+        if (_stricmp("OnRequestCancelJoin", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                __int64 nGuildId = FUN_140718350(data.FUN_1422b8d30());
+                CGuildManager::GetInstance()->FUN_1413bc540(nGuildId);
+            }
+            return 1;
+        }
+        if (_stricmp("OnSearchGuildMasterPopupMenu", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                float x = data.FUN_1422b8c10();
+                float y = data.FUN_1422b8c10();
+                CStringW strName = data.FUN_1422b8f40();
+                UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+                if (pMenu != 0)
+                {
+                    MS2Ptr<CSearchGuildJoin> spGuild = CGuildManager::GetInstance()->FUN_1413c7dc0(strName);
+                    __int64 nMasterId = 0;
+                    __int64 nMasterAccount = 0;
+                    __int64 nGuildId = 0;
+                    CStringW strGuild;
+                    CString strMark;
+                    if (spGuild.get() != 0)
+                    {
+                        nMasterId = spGuild->f48;
+                        nMasterAccount = spGuild->f50;
+                        nGuildId = spGuild->f18;
+                        strGuild = spGuild->f20;
+                        strMark = spGuild->f28;
+                    }
+                    Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 0, CString(""), 0);
+                    pMenu->FUN_141a809e0(nGuildId, strGuild, strMark);
+                    pMenu->FUN_141a7f090(info, strName, nMasterAccount, (void*)nMasterId, 0xd, 1);
+                }
+            }
+            return 1;
+        }
+        if (_stricmp("OnAcceptMemberPrevPage", szMethod) == 0)
+        {
+            m_nAcceptPage--;
+            if (m_nAcceptPage < 1)
+                m_nAcceptPage = 1;
+            FUN_14196da70();
+            return 1;
+        }
+        if (_stricmp("OnAcceptMemberNextPage", szMethod) == 0)
+        {
+            m_nAcceptPage++;
+            FUN_14196da70();
+            return 1;
+        }
+        if (_stricmp("OnAcceptMemeber", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                __int64 nCharId = FUN_140718350(data.FUN_1422b8d30());
+                CGuildManager::GetInstance()->FUN_1413bc5b0(nCharId, 1);
+            }
+            return 1;
+        }
+        if (_stricmp("OnRejectMember", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                __int64 nCharId = FUN_140718350(data.FUN_1422b8d30());
+                CGuildManager::GetInstance()->FUN_1413bc5b0(nCharId, 0);
+            }
+            return 1;
+        }
+        if (_stricmp("OnAcceptGuildMemeberPopupMenu", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                float x = data.FUN_1422b8c10();
+                float y = data.FUN_1422b8c10();
+                __int64 nCharId = FUN_140718370(data.FUN_1422b8f40());
+                CStringW strName = data.FUN_1422b8f40();
+                UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+                if (pMenu != 0)
+                {
+                    Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 0, CString(""), 0);
+                    __int64 nAccount = 0;
+                    MS2Ptr<CGuildMember> spMember = CGuildManager::GetInstance()->FUN_1413b6200(nCharId);
+                    if (spMember.get() != 0)
+                        nAccount = spMember->data.f00;
+                    pMenu->FUN_141a80910();
+                    pMenu->FUN_141a7f090(info, strName, nCharId, (void*)nAccount, 0xd, 1);
+                }
+            }
+            return 1;
+        }
+        if (_stricmp("onSetPropensity", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                int nType = data.FUN_1422b8a10();
+                int nValue = data.FUN_1422b8a10();
+                if (nType == 1)
+                {
+                    CGuildManager::GetInstance()->FUN_14197e040(nValue);
+                    CGuildManager::GetInstance()->FUN_1413bc710(false);
+                    return 1;
+                }
+                if (nType == 2)
+                    CGuildManager::GetInstance()->FUN_1413b8e60(CGuildManager::GetInstance()->FUN_1404d1860(), nValue);
+            }
+            return 1;
+        }
+        if (_stricmp("OnChageRegistSearch", szMethod) == 0)
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs))
+            {
+                bool bRegist = FUN_14028d760(data.FUN_1422b8a90());
+                CGuildManager::GetInstance()->FUN_1413b8e60(bRegist, CGuildManager::GetInstance()->FUN_1404d18d0());
+            }
+            return 1;
+        }
+    }
+    return 0;
+}
 
 // @0x141969040
 void UIGuildDialog::FUN_141969040(const CStringW& strCategory)
