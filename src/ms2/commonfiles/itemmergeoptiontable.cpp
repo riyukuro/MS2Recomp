@@ -724,3 +724,5 @@ void CItemMergeOptionTable::SetInit(bool b)
 {
     s_bInit = b;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9b190-0x142c9b1f0 .text$yd

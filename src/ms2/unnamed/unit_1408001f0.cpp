@@ -229,3 +229,5 @@ void Unk_RangeProperty::FUN_140800de0(void* pParent, CString strName)
         FUN_14086e000(pParent, &elem);
     }
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142c9c0d0-0x142c9c110 .text$yd

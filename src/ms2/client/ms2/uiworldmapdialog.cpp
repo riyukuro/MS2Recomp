@@ -2644,3 +2644,5 @@ inline Scaleform::GFx::Value AScript::FUN_141b62ce0(const char* szMethod, unsign
 
 // memcpy_s 0x141b6d9f0 closes the obj's COMDAT tail.
 __declspec(selectany) extern errno_t(__cdecl* const ms2_worldMapMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc3530-0x142cc35a0 .text$yd
