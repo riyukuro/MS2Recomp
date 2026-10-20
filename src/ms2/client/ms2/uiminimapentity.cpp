@@ -4,6 +4,7 @@
 // MS2-RANGE: 0x140117c70-0x140118e40 .text$di
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
+#define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiminimapentity.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiminimapentity.h"
@@ -34,6 +35,8 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asuicomponent.h"
+#include "ms2/client/ms2/interactobject.h"
+#include "ms2/placeholder/cquestnavigator.h"
 #include <efd/utf8string.h>
 #include "ms2/fmt/format.h"
 #include "ms2/placeholder/wcformat.h"
@@ -1743,3 +1746,100 @@ void UIMinimapDialog::vfunc_o178_5(void* p)
         FUN_141a3ada0();
 }
 MS2_REPLACE_METHOD_VIA(0x141a390c0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_5, 0, 0);
+
+MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);   // the child clip of a value
+bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                 // the value is an object
+
+// @0x141a391f0
+void UIMinimapDialog::FUN_141a391f0(MS2Ptr<CInteractObject> spObject)
+{
+    if (FUN_1418fd2f0())
+        return;
+    EntityPtr spEntity(0);
+    if (m_named.Lookup(spObject->FUN_140967060(), spEntity)) {
+        if (spEntity == 0)
+            return;
+        CString strIcon = spEntity->m_icon;
+        FUN_141a44380(spObject, spEntity);
+        if (strIcon != spEntity->m_icon) {
+            if (spEntity->m_icon.IsEmpty()) {
+                spEntity->m_visible = false;
+                spEntity->m_clip->vfunc_4(false);
+            } else {
+                if (!strIcon.IsEmpty()) {
+                    ASObj data(2);
+                    spEntity->FUN_141a31270(data, m_viewport);
+                    Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
+                    if (!FUN_1409b4d40(value))
+                        return;
+                    spEntity->m_clip = FUN_1409b40c0(m_28, value);
+                }
+                spEntity->m_clip->vfunc_4(spEntity->m_visible);
+            }
+            if (spEntity->m_64)
+                m_212 = true;
+        } else {
+            spEntity->m_clip->vfunc_4(spEntity->m_visible);
+        }
+    } else {
+        FUN_141a39770(spObject);
+    }
+}
+MS2_REPLACE_METHOD(0x141a391f0, UIMinimapDialog, FUN_141a391f0, 0, 0);
+
+// @0x141a39770
+void UIMinimapDialog::FUN_141a39770(MS2Ptr<CInteractObject> spObject)
+{
+    if (FUN_1418fd2f0())
+        return;
+    if (m_30 == 0)
+        return;
+    if (spObject == 0 || spObject->FUN_140966e00() == 0)
+        return;
+    bool bQuestObject = CQuestNavigator::GetInstance()->HasNpc(spObject->FUN_140967110()) == 1;
+    if (spObject->FUN_140966e00()->m_strMinimapIcon.IsEmpty() && !bQuestObject)
+        return;
+    NamedMap::CPair* pPair = m_named.Lookup(spObject->FUN_140967060());
+    if (pPair != 0)
+        return;
+    EntityPtr spEntity = new UIMinimapEntity(6);
+    FUN_141a44380(spObject, spEntity);
+    if (FUN_141a3e7d0(spEntity))
+        m_named.SetAt(spObject->FUN_140967060(), spEntity);
+    if (spEntity->m_64)
+        m_212 = true;
+}
+MS2_REPLACE_METHOD(0x141a39770, UIMinimapDialog, FUN_141a39770, 0, 0);
+
+// @0x141a39bf0
+void UIMinimapDialog::FUN_141a39bf0(MS2Ptr<CInteractObject> spObject)
+{
+    if (FUN_1418fd2f0())
+        return;
+    EntityPtr spEntity;
+    if (m_named.Lookup(spObject->FUN_140967060(), spEntity)) {
+        FUN_141a3f930(spEntity);
+        m_named.RemoveKey(spObject->FUN_140967060());
+    }
+}
+MS2_REPLACE_METHOD(0x141a39bf0, UIMinimapDialog, FUN_141a39bf0, 0, 0);
+
+// @0x141a39d40
+void UIMinimapDialog::FUN_141a39d40(int nId, int bVisible)
+{
+    if (FUN_1418fd2f0())
+        return;
+    EntityPtr spEntity(0);
+    if (m_triggers.Lookup(nId, spEntity) && static_cast<bool>(static_cast<UIMinimapEntity*>(spEntity))) {
+        if (static_cast<bool>(spEntity->m_clip.get()))
+            spEntity->m_clip->vfunc_3(bVisible);
+    }
+}
+MS2_REPLACE_METHOD(0x141a39d40, UIMinimapDialog, FUN_141a39d40, 0, 0);
+
+// @0x141a39e40
+void UIMinimapDialog::FUN_141a39e40()
+{
+    FUN_1418fd2f0();
+}
+MS2_REPLACE_METHOD(0x141a39e40, UIMinimapDialog, FUN_141a39e40, 0, 0);

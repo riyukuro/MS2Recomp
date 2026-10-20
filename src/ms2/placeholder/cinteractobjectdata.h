@@ -75,7 +75,8 @@ public:
     CString m_strUrl;                   // +0x2a8 web address of the display image
     int m_nImageType;                   // +0x2b0 1 guild, 2/4/5 character, 3 guild score
     int m_pad_2b4;
-    int m_pad_2b8[4];
+    CString m_strMinimapIcon;           // +0x2b8 minimap icon (uiminimapentity.cpp: AddNamed)
+    int m_pad_2c0[2];
     int m_nNeedValue;                   // +0x2c8
     int m_pad_2cc;
     int m_nPosterId;                    // +0x2d0 guild poster id
