@@ -11,9 +11,12 @@
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/timer.h"
 #include "ms2/client/ms2/npcdatacli.h"          // NpcDataCli (+0xd50, the npc table row)
+#include "ms2/client/ms2/questmanager_2.h"       // Unk_QmNpcQuestState (+0xdf0)
 #include <efd/Matrix3.h>
 
-class SkillLevelData;        // commonfiles/skilloverlapcompare.h (+0xd70)
+class SkillLevelData;
+class CMaid;                 // commonfiles/maid.h
+class CInPacket;        // commonfiles/skilloverlapcompare.h (+0xd70)
 class CRandomTargetEffect;   // randomtargeteffect.h (+0xf28; MS2Ptr(int) 0x140aac100, dtor 0x140aac190)
 
 // +0xe18 (0x28): the hit-shake record (ctor 0x14108e1e0, dtor 0x14108e250). FUN_14108e2a0 arms it, FUN_14108e300(time,
@@ -51,17 +54,6 @@ struct Unk_NpcBeam
 };
 MS2_CHECK_SIZE(Unk_NpcBeam, 0x30);
 
-// +0xdf0 (0x1c): the value block cproxygameobject.h calls Unk_ProxyValue88 (ctor 0x140964630, dtor 0x140964e40; that
-// header can't be included here: worldservice_4.cpp defines its own CProxyGameObject). Bound by symbols-manual rows.
-class Unk_CNpcDF0
-{
-public:
-    Unk_CNpcDF0();                                          // 0x140964630
-    ~Unk_CNpcDF0();                                         // 0x140964e40
-private:
-    int m_pad[7];
-};
-MS2_CHECK_SIZE(Unk_CNpcDF0, 0x1c);
 
 class CNpc : public PCBase
 {
@@ -121,7 +113,7 @@ public:
 
     // non-virtual members called from other units
     MS2Ptr<NpcDataCli> FUN_141093270();                     // copy of the npc row (+0xd50)
-    void FUN_1410932c0(int n);                              // forwarded to the object's UI entity
+    void FUN_1410932c0(bool b);                             // forwarded to the object's UI entity
     int FUN_141092fa0();                                    // npc id of the row (0: no row)
     void FUN_141094f20(int nOwnerId);                       // m_nOwnerId = nOwnerId
     int FUN_141094f40();                                    // m_nOwnerId
@@ -131,6 +123,36 @@ public:
     void FUN_141095140();                                   // release the owner effect handle (+0xec4)
 
     // unit_14108e1e0 internals
+    void FUN_141092c50(CInPacket& packet);                  // +0xf20 update (mode byte)
+    void FUN_141092d40(CString strAnim);                    // bore animation debug trace
+    bool FUN_141092ff0();                                   // the row is a boss
+    int FUN_141093030();                                    // class 4 or 6
+    bool FUN_141093070();                                   // shown on the minimap
+    int FUN_141093160();                                    // kind 2
+    int FUN_1410931c0();                                    // kind 3
+    bool FUN_141093220();                                   // shop kind
+    unsigned short FUN_141093510();                         // m_nDE8
+    CStringA FUN_141093530();                               // the marker label (empty when inactive)
+    int FUN_141093760();                                    // npc type (0: no row)
+    int FUN_1410937b0();                                    // kind (0: no row)
+    MS2Ptr<CMaid> FUN_141093800();                          // the maid behind the npc (+0xe48 uid)
+    void FUN_141093910();                                   // flush the accumulated damage text (+0xe60)
+    void FUN_141095240(__int64 n);
+    unsigned int FUN_141093c20();                           // quest state: quest id
+    int FUN_141093c40();                                    // quest state: icon
+    int FUN_141093c60();                                    // quest state: state
+    void FUN_141093c80();                                   // refresh the quest state
+    void FUN_141093e90();                                   // m_nE10 = 1
+    void FUN_141093eb0();                                   // face the owner's model
+    void FUN_141093fa0();                                   // play the start sound
+    void FUN_141094050();                                   // play the end sound
+    int FUN_141094170();                                    // the ui the npc type opens
+    int FUN_141094200();                                    // open it
+    void FUN_1410942c0();                                   // close it
+    int FUN_141094300();                                    // in talk range
+    void FUN_141094730();                                   // send packet 0x32 (talk)
+    void FUN_141094790(__int64 nUid);                       // m_nE48 (maid uid)
+    __int64 FUN_1410947c0();
     CStringW FUN_141093310();                               // display name from the npc table
     void FUN_1410979a0();
     void FUN_141099ab0();
@@ -150,8 +172,7 @@ public:
     unsigned short m_nDE8;                                  // +0xde8
     unsigned short m_padDEA;
     int m_padDEC;
-    Unk_CNpcDF0 m_unkDF0;                                   // +0xdf0
-    int m_padE0C;
+    Unk_QmNpcQuestState m_questState;                       // +0xdf0 the quest icon state (FUN_141093c80)
     int m_nE10;                                             // +0xe10
     int m_nE14;                                             // +0xe14
     CNpcVibrate m_vibrate;                                  // +0xe18
@@ -185,7 +206,7 @@ MS2_CHECK_OFFSET(CNpc, m_spNpcData, 0xd50);
 MS2_CHECK_OFFSET(CNpc, m_spSkillRow, 0xd70);
 MS2_CHECK_OFFSET(CNpc, m_unkD88, 0xd88);
 MS2_CHECK_OFFSET(CNpc, m_unkDB0, 0xdb0);
-MS2_CHECK_OFFSET(CNpc, m_unkDF0, 0xdf0);
+MS2_CHECK_OFFSET(CNpc, m_questState, 0xdf0);
 MS2_CHECK_OFFSET(CNpc, m_vibrate, 0xe18);
 MS2_CHECK_OFFSET(CNpc, m_nE54, 0xe54);
 MS2_CHECK_OFFSET(CNpc, m_arrE68, 0xe68);
