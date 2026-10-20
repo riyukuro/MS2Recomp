@@ -530,14 +530,18 @@ MS2_REPLACE_METHOD(0x141997190, UIInventoryDialog, vfunc_1, 61, 0);
 // @0x1419971e0
 int UIInventoryDialog::vfunc_il1()
 {
-    return vfunc_55() == 0;
+    if (vfunc_55() != 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD_VIA(0x1419971E0, UIInventoryDialog, UIItemEventListener, vfunc_il1, 69, 0);
 
 // @0x141997230
 int UIInventoryDialog::vfunc_oa0_1()
 {
-    return vfunc_55() == 0;
+    if (vfunc_55() != 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD_VIA(0x141997230, UIInventoryDialog, UIStatusEventListener, vfunc_oa0_1, 69, 0);
 
@@ -584,15 +588,15 @@ MS2_REPLACE_METHOD(0x141997330, UIInventoryDialog, vfunc_67, 420, 0);
 // @0x1419974e0
 void UIInventoryDialog::vfunc_43()
 {
-    if (s_nAlignMode == 0)
-    {
-        UIDialog::vfunc_43();
-    }
-    else
+    if (s_nAlignMode != 0)
     {
         if (ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30))
             pDlg->vfunc_2(4, -200, 0);
         FUN_141923710(0);
+    }
+    else
+    {
+        UIDialog::vfunc_43();
     }
 }
 MS2_REPLACE_METHOD(0x1419974E0, UIInventoryDialog, vfunc_43, 139, 0);
@@ -601,7 +605,9 @@ MS2_REPLACE_METHOD(0x1419974E0, UIInventoryDialog, vfunc_43, 139, 0);
 void UIInventoryDialog::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (vfunc_55() == 0 && 0 < m_19c)
+    if (vfunc_55() != 0)
+        return;
+    if (0 < m_19c)
     {
         if ((m_19c & 1) != 0)
             FUN_14199bc00();
@@ -646,11 +652,10 @@ MS2_REPLACE_METHOD_VIA(0x1419976E0, UIInventoryDialog, UIStatusEventListener, vf
 // @0x141997800
 void UIInventoryDialog::vfunc_oa0_9(unsigned short a1)
 {
-    if (vfunc_55() == 0)
-    {
-        if (InventorySlotBag* pBag = FUN_14140fb30(FUN_1422c8e90(m_188)))
-            FUN_1422cca90(pBag);
-    }
+    if (vfunc_55() != 0)
+        return;
+    if (InventorySlotBag* pBag = FUN_14140fb30(FUN_1422c8e90(m_188)))
+        FUN_1422cca90(pBag);
 }
 MS2_REPLACE_METHOD_VIA(0x141997800, UIInventoryDialog, UIStatusEventListener, vfunc_oa0_9, 115, 0);
 
@@ -1079,14 +1084,14 @@ MS2_REPLACE(0x141999D20, UIInventoryDialog::FUN_141999d20, 15, 0);
 // @0x141999d40
 void UIInventoryDialog::FUN_141999d40(int nTab)
 {
-    if (m_1c8.get() == 0)
-    {
-        m_194 = nTab;
-    }
-    else
+    if (m_1c8.get())
     {
         m_1c8->FUN_1422e31e0(FUN_14199d920(nTab));
         m_1c8->vfunc_24(true);
+    }
+    else
+    {
+        m_194 = nTab;
     }
 }
 MS2_REPLACE_METHOD(0x141999D40, UIInventoryDialog, FUN_141999d40, 153, 0);
@@ -1526,12 +1531,11 @@ MS2_REPLACE_METHOD(0x14199BED0, UIInventoryDialog, FUN_14199bed0, 232, 0);
 // @0x14199bfc0
 int UIInventoryDialog::FUN_14199bfc0()
 {
-    if (FUN_14185d8b0(FUN_14140ea30()) != 0)
-    {
-        MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPc != 0 && pPc->FUN_14166ce30() == 0)
-            return 1;
-    }
+    if (FUN_14185d8b0(FUN_14140ea30()) == 0)
+        return 0;
+    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPc != 0 && pPc->FUN_14166ce30() == 0)
+        return 1;
     return 0;
 }
 MS2_REPLACE(0x14199BFC0, UIInventoryDialog::FUN_14199bfc0, 84, 0);
@@ -1839,10 +1843,10 @@ MS2_REPLACE_METHOD(0x14199DEB0, UIInventoryDialog, FUN_14199deb0, 991, 0);
 // @0x14199e2a0
 void UIInventoryDialog::FUN_14199e2a0()
 {
-    if (FUN_140d86260()->vfunc_40(FUN_140a5d0f0()))
-        DAT_143ab2a90.FUN_140a62cc0((unsigned char)m_194);
-    else
+    if (!FUN_140d86260()->vfunc_40(FUN_140a5d0f0()))
         FUN_1403ed2b0()->FUN_141add1f0();
+    else
+        DAT_143ab2a90.FUN_140a62cc0((unsigned char)m_194);
 }
 MS2_REPLACE_METHOD(0x14199E2A0, UIInventoryDialog, FUN_14199e2a0, 113, 0);
 
@@ -2008,40 +2012,45 @@ MS2_REPLACE_METHOD(0x14199FCF0, UIInviteGroupDialog, FUN_14199fcf0, 25, 0);
 // @0x14199fd10
 void UIInviteGroupDialog::FUN_14199fd10(int nGroupId, const CStringW& strName, const CStringW& strText)
 {
-    if (vfunc_55() == 0)
-        FUN_1419a0240();
+    if (vfunc_55() != 0)
+        return;
+    FUN_1419a0240();
 }
 MS2_REPLACE_METHOD(0x14199FD10, UIInviteGroupDialog, FUN_14199fd10, 63, 0);
 
 // @0x14199fd60
 void UIInviteGroupDialog::FUN_14199fd60(int nGroupId, const CStringW& strName, const CStringW& strOther)
 {
-    if (vfunc_55() == 0)
-        FUN_1419a0240();
+    if (vfunc_55() != 0)
+        return;
+    FUN_1419a0240();
 }
 MS2_REPLACE_METHOD(0x14199FD60, UIInviteGroupDialog, FUN_14199fd60, 63, 0);
 
 // @0x14199fdb0
 void UIInviteGroupDialog::FUN_14199fdb0(int nGroupId, const CStringW& strName)
 {
-    if (vfunc_55() == 0)
-        FUN_1419a0240();
+    if (vfunc_55() != 0)
+        return;
+    FUN_1419a0240();
 }
 MS2_REPLACE_METHOD(0x14199FDB0, UIInviteGroupDialog, FUN_14199fdb0, 58, 0);
 
 // @0x14199fdf0
 void UIInviteGroupDialog::FUN_14199fdf0(int nGroupId, const CStringW& strName)
 {
-    if (vfunc_55() == 0)
-        FUN_1419a0240();
+    if (vfunc_55() != 0)
+        return;
+    FUN_1419a0240();
 }
 MS2_REPLACE_METHOD(0x14199FDF0, UIInviteGroupDialog, FUN_14199fdf0, 58, 0);
 
 // @0x14199fe30
 void UIInviteGroupDialog::FUN_14199fe30(int nGroupId, const CStringW& strName)
 {
-    if (vfunc_55() == 0)
-        FUN_1419a0240();
+    if (vfunc_55() != 0)
+        return;
+    FUN_1419a0240();
 }
 MS2_REPLACE_METHOD(0x14199FE30, UIInviteGroupDialog, FUN_14199fe30, 58, 0);
 
@@ -2263,7 +2272,9 @@ UIItemBreakBase::~UIItemBreakBase()
 // @0x1419a1400
 int UIItemBreakBase::vfunc_46()
 {
-    return UISwfEntity::vfunc_46() != 0;
+    if (UISwfEntity::vfunc_46() == 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x1419A1400, UIItemBreakBase, vfunc_46, 37, 0);
 
@@ -2371,15 +2382,18 @@ MS2_REPLACE_METHOD(0x1419A19D0, UIItemBreakBase, vfunc_45, 21, 0);
 // @0x1419a19f0
 int UIItemBreakBase::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    return UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0;
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
+        return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1419A19F0, UIItemBreakBase, vfunc_28, 67, 0);
 
 // @0x1419a1a40
 void UIItemBreakBase::vfunc_15()
 {
-    if (vfunc_55() == 0)
-        FUN_1409c4b20()->FUN_140531ed0();
+    if (vfunc_55() != 0)
+        return;
+    FUN_1409c4b20()->FUN_140531ed0();
 }
 MS2_REPLACE_METHOD(0x1419A1A40, UIItemBreakBase, vfunc_15, 52, 0);
 
@@ -2608,7 +2622,8 @@ int UIItemBreakDialog::vfunc_86()
 {
     if (FUN_1405352d0(this) != 0)
         return 0;
-    return FUN_1419a1660();
+    else
+        return FUN_1419a1660();
 }
 MS2_REPLACE_METHOD(0x1419A2DD0, UIItemBreakDialog, vfunc_86, 42, 0);
 
@@ -2791,8 +2806,9 @@ MS2_REPLACE_METHOD(0x1419A3A80, UIItemBreakDialog, vfunc_28, 2436, 0);
 // @0x1419a4420
 bool UIItemBreakDialog::vfunc_87(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0)
-        FUN_1419a2060();
+    if (nResult != 0)
+        return true;
+    FUN_1419a2060();
     return true;
 }
 MS2_REPLACE_METHOD(0x1419A4420, UIItemBreakDialog, vfunc_87, 46, 0);
@@ -2918,7 +2934,8 @@ int UIItemBreakDonationDialog::vfunc_86()
 {
     if (FUN_1405352d0(this) != 0)
         return 0;
-    return FUN_1419a1660();
+    else
+        return FUN_1419a1660();
 }
 MS2_REPLACE_METHOD(0x1419A4FD0, UIItemBreakDonationDialog, vfunc_86, 42, 0);
 
@@ -3012,8 +3029,9 @@ MS2_REPLACE_METHOD(0x1419A51B0, UIItemBreakDonationDialog, vfunc_28, 1989, 0);
 // @0x1419a5980
 bool UIItemBreakDonationDialog::vfunc_87(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0)
-        FUN_1419a2060();
+    if (nResult != 0)
+        return true;
+    FUN_1419a2060();
     return true;
 }
 MS2_REPLACE_METHOD(0x1419A5980, UIItemBreakDonationDialog, vfunc_87, 46, 0);
