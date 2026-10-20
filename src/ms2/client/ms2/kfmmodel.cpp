@@ -196,11 +196,11 @@ struct Unk_KfmVec3 { float x, y, z; };
 
 void* FUN_1414424f0(void* pIn, void* pOut, float fScale)   // pOut = *pIn * fScale
 {
-    Unk_KfmVec3 v = *(Unk_KfmVec3*)pIn;
+    NiPoint3 v = *(NiPoint3*)pIn;
     v.x *= fScale;
     v.y *= fScale;
     v.z *= fScale;
-    *(Unk_KfmVec3*)pOut = v;
+    *(Unk_KfmVec3*)pOut = *(Unk_KfmVec3*)&v;
     return pOut;
 }
 
@@ -825,12 +825,9 @@ egf::EntityPtr CKfmModel::FUN_14143ff20()
 // @0x14143ff70
 egf::EntityID CKfmModel::FUN_14143ff70()
 {
-    alignas(8) char buf[8];
-    if (FUN_1408a9090(&m_spEntity) == 0)
-        FUN_1401cd100(buf, 0);
-    else
-        FUN_1408b6b20(buf, FUN_1408b76f0(FUN_1408a9280(&m_spEntity)));
-    return *(egf::EntityID*)buf;
+    if (FUN_1408a9090(&m_spEntity) != 0)
+        return FUN_1408a9280(&m_spEntity)->GetEntityID();
+    return egf::EntityID((efd::UInt64)0);
 }
 
 // @0x14143fff0
