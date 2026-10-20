@@ -3080,6 +3080,85 @@ void UIMinimapDialog::FUN_141a407c0(ProxyPtr spProxy, EntityPtr spEntity)
     }
 }
 
+// @0x141a44850
+bool UIMinimapDialog::FUN_141a44850(EntityPtr spEntity, const int& nField, bool b)
+{
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return false;
+    CString strIcon;
+    int nHome = 0;
+    bool bMine = false;
+    if (pPC->FUN_141527f80(&nHome) && nHome == nField) {
+        bMine = true;
+        strIcon = s_strMyHome;
+    }
+    HomeListPtr spHomes(0);
+    if (m_homes.Lookup(nField, spHomes) && spHomes.get()) {
+        bool bFound = false;
+        CStringW strUnused;
+        size_t nTotal = spHomes->GetCount();
+        size_t nCount = nTotal < 5 ? nTotal : 5;
+        POSITION pos = spHomes->GetHeadPosition();
+        for (size_t i = 0; i < nCount; i++) {
+            __int64 nId = spHomes->GetAt(pos);
+            Unk_BuddyPtr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FUN_140ae4b70(nId);
+            if (spBuddy.get()) {
+                bFound = true;
+                break;
+            }
+            spHomes->GetNext(pos);
+        }
+        if (bFound && strIcon.IsEmpty())
+            strIcon = s_strFriendHome;
+    }
+    if (!strIcon.IsEmpty()) {
+        spEntity->m_icon = strIcon;
+        spEntity->m_text = "";
+        spEntity->m_state = "";
+        spEntity->m_layer = s_strLayerHome;
+        spEntity->m_showText = false;
+        spEntity->m_showGuide = false;
+        spEntity->m_visible = b;
+        spEntity->m_inFieldNpc = true;
+        return true;
+    }
+    return false;
+}
+
+// @0x141a44c00
+bool UIMinimapDialog::FUN_141a44c00(EntityPtr spEntity, const int& nField, bool b1, const CString& strIcon, const CString& strLayer, bool b2, bool b3)
+{
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return false;
+    CStringW strText;
+    bool bVisible = false;
+    if (b1) {
+        Unk_QmNpcQuestState guide;
+        FUN_140764020()->FUN_1416d12d0(nField, &guide, 0);
+        bVisible = b2;
+        strText = FUN_141a45ed0(reinterpret_cast<const int&>(guide.m_questId), guide.m_state);
+    } else {
+        bVisible = b3;
+    }
+    spEntity->m_icon = strIcon;
+    if (b1) {
+        spEntity->m_icon = s_strQuest;
+        spEntity->m_showText = true;
+        spEntity->m_showGuide = true;
+        spEntity->m_guideName = strText;
+    } else {
+        spEntity->m_showText = true;
+        spEntity->m_showGuide = false;
+    }
+    spEntity->m_state = strIcon;
+    spEntity->m_layer = strLayer;
+    spEntity->m_visible = bVisible;
+    spEntity->m_inFieldNpc = true;
+    return true;
+}
+
 // @0x141a3e7d0
 bool UIMinimapDialog::FUN_141a3e7d0(EntityPtr spEntity)
 {
