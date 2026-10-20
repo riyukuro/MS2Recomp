@@ -39,8 +39,8 @@ struct Unk_MiTextMgr { CStringW FUN_141811980(int nType, int nId); };
 Unk_MiTextMgr* FUN_1401a9d70();
 CStringW FUN_14028de60(int nStringId);
 CStringW FUN_14028b8e0(const CStringW& str);
-CStringW FUN_1405c2690(const CStringW& fmt, const CStringW& arg);
-CStringW FUN_1408f71a0(const CStringW& fmt, const CStringW& a, const CStringW& b);
+CStringW FUN_1405c2690(CStringW fmt, const CStringW& arg);
+CStringW FUN_1408f71a0(CStringW fmt, const CStringW& a, const CStringW& b);
 struct Unk_MiNpcView { CStringW FUN_141093310(); };       // npc name (member: this=rcx, hidden return=rdx)
 unsigned FUN_141092fa0(PCBase* pNpc);                    // npc id
 int FUN_141093c60(PCBase* pNpc);

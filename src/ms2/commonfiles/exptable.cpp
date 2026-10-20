@@ -60,7 +60,7 @@ int FUN_1408732e0(Unk_140165cf0* pElem, const char* pszName, __int64* pOut);
 int FUN_1408733a0(Unk_140165cf0* pElem, const char* pszName, double* pOut);
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CStringA* pOut);
 int FUN_14021af40(CStringA* pStr);                                          // the string as a number
-void FUN_14015f710(CStringA* pOut, Unk_140165cf0* pElem, const char* pszName, const CStringA& strDefault);
+void FUN_14015f710(CStringA* pOut, Unk_140165cf0* pElem, const char* pszName, CStringA strDefault);
 unsigned short FUN_140197350(Unk_140165cf0* pElem, const char* pszName, unsigned short nDefault);
 unsigned FUN_140197390(Unk_140165cf0* pElem, const char* pszName, unsigned nDefault);
 class Unk_1401c0db0 { public: __int64 FUN_140678cd0(__int64 nValue, unsigned short nArg); };

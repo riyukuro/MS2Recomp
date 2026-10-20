@@ -199,7 +199,7 @@ class Unk_140acd6e0 : public ASDisplayObject { public:
 // The gift row clip (0x88 bytes, ctor 0x1422e1f00).
 class Unk_CadGiftClip : public ASUIComponent { public:
     Unk_CadGiftClip(const Scaleform::GFx::Value& v,int nMovieId);
-    void FUN_1422e1f50(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&,void*);
+    void FUN_1422e1f50(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>,void*);
 };
 // The day list (0x88 bytes, ctor 0x1422e1720).
 class Unk_CadGiftList : public ASUIComponent { public:

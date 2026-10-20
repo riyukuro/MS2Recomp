@@ -82,6 +82,9 @@ public:
 Unk_RxFxMgr* FUN_1403ed280();
 void FUN_140a52ef0(Unk_RxFxRequest* p);
 void FUN_1405a89e0(Unk_RxFxRequest* p);
+#ifdef __clang__
+CString FUN_140298360(const char* psz, const CString& str);             // psz + str (ATL operator+)
+#endif
 
 WorldService* FUN_1403ed2d0();
 class Unk_WsB_Spawn { public: virtual void DeleteThis(); virtual void IncRefCount(); virtual void DecRefCount(); };   // spawn point (worldservice_1.cpp)
@@ -389,7 +392,12 @@ bool CReactor::FUN_140b79490(CInPacket* pPacket)
     MS2Ptr<ReactorStateData> spState = FUN_140b78c00(m_nStateIdx);
     if (spState.IsNull())
         return false;
+#ifdef __clang__
+    // clang emits an unavailable MFC CopyChars import for operator+; bind the exe's copy.
+    CString strAnim = FUN_140298360("urn:gamebryo-animation:", spState->m_strKfmName);
+#else
     CString strAnim = "urn:gamebryo-animation:" + spState->m_strKfmName;
+#endif
     m_str88 = "MS2Actor";
     m_strName = strName;
     FUN_14123c5a0(nObjId);

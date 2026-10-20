@@ -628,7 +628,7 @@ static inline void FUN_14146aa10(Unk_EfdMatrix3* pMatrix, unsigned nRow, unsigne
 
 // ---- callees of the projectile logic (unit-local declarations; names invented) ----
 struct Unk_MagicCullCfg { const float* FUN_1410a71d0(); };          // the cull distance (exe returns this+4)
-class Unk_MagicEffectFiles { public: Unk_MagicEffectFile FUN_14119f870(const CString& strName); };
+class Unk_MagicEffectFiles { public: Unk_MagicEffectFile FUN_14119f870(CString strName); };
 void FUN_14101ac20(void* pSet);                                     // clear the hit set
 int FUN_14028d260(float fMs);                                       // float -> int (rounds)
 bool FUN_14028d470(float a, float b);                               // approx equal

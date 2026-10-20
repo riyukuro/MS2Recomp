@@ -460,7 +460,7 @@ bool FUN_140f096f0(ASObj& obj, MS2Ptr<CItemData> spData, int nIndex, unsigned nM
 bool FUN_140f09810(ASObj& obj, bool bEnabled);
 // ---- more stand-ins ----
 CStringW FUN_140275590(const wchar_t* szFormat, const CStringW& a1, const int& a2);
-CStringW FUN_141081c60(const CStringW& strKey, const CStringW& a, const CStringW& b, const int& n);
+CStringW FUN_141081c60(CStringW strKey, const CStringW& a, const CStringW& b, const int& n);
 CStringW FUN_140292a70(const wchar_t* szFormat, const int& n0);
 CStringW FUN_1418fe870(int nKind, int* pnZero, int nItemId);                 // the item icon url
 void FUN_140961010(int nStringId, int nA, int nB, const CStringW& strArg);

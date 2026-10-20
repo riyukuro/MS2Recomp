@@ -164,9 +164,9 @@ Unk_AttendUIMgr* FUN_140d86260();
 class CMsgBoxData { public: bool FUN_141a04aa0() const; __int64 FUN_141a02f10(int,__int64) const; };
 class Unk_AttendMsgBox { public:
     void FUN_141a01800(int);
-    void FUN_141a024e0(const CStringW&,int);
+    void FUN_141a024e0(CStringW,int);
     void FUN_141a02670(int);
-    void FUN_141a027c0(const Delegate<bool(int,const CMsgBoxData&)>&);
+    void FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>);
     void FUN_1405340b0(__int64);
 };
 MS2Ptr<Unk_AttendMsgBox> FUN_140d73f20(CStringW,int);

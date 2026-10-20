@@ -105,8 +105,8 @@ public:
     Unk_DictRequest(int nId);                               // 0x1401baa00
     Unk_DictRequest(const void* pSource);                   // 0x1401baaa0
     ~Unk_DictRequest();                                     // 0x1401baaf0
-    void FUN_1401bac80(const CString& strName, CStringW strValue, int n);
-    int FUN_1401bab90(const CString& strName, void* pOut);
+    void FUN_1401bac80(CString strName, CStringW strValue, int n);
+    int FUN_1401bab90(CString strName, void* pOut);
 private:
     char m_pad[0x38];
 };
@@ -133,7 +133,7 @@ Unk_DictTextHook* FUN_1403b4750();
 CStringW FUN_14028de60(int nStringId);                      // common string by id
 CStringW FUN_14028b8e0(const CStringW& strKey);             // common string by key
 CStringW FUN_1409eec40(int nStringId);
-void FUN_140d73aa0(const CStringW& str, int a, int b, CStringW strExtra);
+void FUN_140d73aa0(CStringW str, int a, int b, CStringW strExtra);
 int FUN_14083fec0(CStringW strText, CStringW strSearch);    // find the search text (-1 = none)
 struct Unk_DictStrings { CStringW FUN_141811980(int, int); };
 Unk_DictStrings* FUN_1401a9d70();

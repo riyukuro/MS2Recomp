@@ -96,6 +96,7 @@ template<> TraceContext* MS2Ptr<TraceContext>::operator->() const;
 template<> bool MS2Ptr<TraceContext>::operator==(TraceContext* p) const;
 template<> CString Unk_SocketFormat<unsigned>(const char* format, const unsigned& v0);
 template<> CString Unk_SocketFormat<int>(const char* format, const int& v0);
+template<> CString Unk_SocketFormat<CString>(const char* format, const CString& v0);     // 0x140536a50
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NavigationEntity
@@ -316,7 +317,7 @@ InteractNavigationEntity::~InteractNavigationEntity()
 // @0x140e79230
 CString InteractNavigationEntity::vfunc_1()
 {
-    return StringFormat<CString>("interact_{0}", m_38);
+    return Unk_SocketFormat<CString>("interact_{0}", m_38);
 }
 
 // @0x140e79280
@@ -381,7 +382,7 @@ LiftableNavigationEntity::~LiftableNavigationEntity()
 // @0x140e79760
 CString LiftableNavigationEntity::vfunc_1()
 {
-    return StringFormat<CString>("liftable_{0}", m_38);
+    return Unk_SocketFormat<CString>("liftable_{0}", m_38);
 }
 
 // @0x140e797b0
@@ -655,7 +656,7 @@ void UIQuestNavigation::FUN_140e7b430(NotifyObject* pNotify)
     if (pAdd)
     {
         CLiftableObject* pObject = static_cast<CLiftableObject*>(pAdd->m_pObj);
-        CStringA strKey = StringFormat<CString>("liftable_{0}", pObject->FUN_1414472a0());
+        CStringA strKey = Unk_SocketFormat<CString>("liftable_{0}", pObject->FUN_1414472a0());
         if (!m_entities.Lookup(strKey))
         {
             MS2Ptr<NavigationEntity> spEntity(new LiftableNavigationEntity(pObject));

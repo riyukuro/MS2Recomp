@@ -171,7 +171,7 @@ Unk_MgPhysics* FUN_1409f7ca0();
 class Unk_MgEntity { public: egf::FlatModel* FUN_1408a9bd0(); void FUN_1408a2060(unsigned nProp, efd::utf8string& s); };
 struct Unk_MgRayHit { char m_pad[0x30]; Unk_MgEntity* m_pObject; };
 const char* FUN_1408ac310(const efd::utf8string& s);
-int FUN_1408a01e0(const CStringA& s);
+int FUN_1408a01e0(CStringA s);
 class Unk_MgWorldQuery { public: int FUN_141bcafa0(egf::Entity* pEntity); };
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).

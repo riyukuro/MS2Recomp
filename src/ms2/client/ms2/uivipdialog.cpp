@@ -92,7 +92,7 @@ void FUN_140710590(COutPacket& packet);                         // send the pack
 class Unk_VdStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_VdStrings* FUN_1401a9d70();
 CStringW FUN_14028b8e0(const CStringW& strKey);
-CStringW FUN_1405c2690(const CStringW& strKey, const CStringW& strArg);
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_14086aec0(ATL::CTimeSpan span, int nA, int nB, bool bDays, bool bHours);   // format a time span
 bool FUN_140e452e0(const ATL::CTimeSpan& a, ATL::CTimeSpan b);  // a < b
 bool FUN_140841300(const CStringW& str, const char* sz);        // the string equals sz

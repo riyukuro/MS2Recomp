@@ -57,7 +57,7 @@ class Unk_SdRow : public ASDisplayObject
 {
 public:
     void FUN_1422c6640(int bVisible);
-    void FUN_1422e1f50(const ParamsDelegate& onClick, void* pUserData);
+    void FUN_1422e1f50(ParamsDelegate onClick, void* pUserData);
     template <class T> MS2Ptr<T> FUN_140c12010(const CString& strName, MS2Ptr<T>& outChild);   // bind a check box
 };
 

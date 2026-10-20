@@ -157,8 +157,8 @@ public:
     Unk_AcRequest(int nId);                                     // 0x1401baa00
     Unk_AcRequest(const void* pSource);                         // 0x1401baaa0
     ~Unk_AcRequest();                                           // 0x1401baaf0
-    void FUN_1401bac80(const CString& strName, CStringW strValue, int n);
-    int FUN_1401bab90(const CString& strName, void* pOut);
+    void FUN_1401bac80(CString strName, CStringW strValue, int n);
+    int FUN_1401bab90(CString strName, void* pOut);
 private:
     char m_pad[0x38];
 };

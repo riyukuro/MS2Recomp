@@ -102,7 +102,7 @@ CStringW FUN_14028b8e0(const CStringW& str);
 CStringW FUN_14062b4f0(CStringW fmt, const int& n);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_140938ae0(CStringW strKey, const unsigned& n);
-CStringW FUN_14183e9c0(const CStringW& str, int n);
+CStringW FUN_14183e9c0(CStringW str, int n);
 bool FUN_140184310(const CString& str, const char* psz);        // str == psz
 class Unk_PcNpcData : public CPtred { };
 MS2Ptr<Unk_PcNpcData> FUN_1406cd330(int nNpcId);                 // the npc table row of an id

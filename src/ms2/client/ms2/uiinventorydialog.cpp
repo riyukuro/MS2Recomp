@@ -310,7 +310,7 @@ class Unk_InvSwfManager : public UISwfEntityManager
 {
 public:
     int FUN_1422d4e20(CString strKey);                              // has the key focus
-    void FUN_1422d4dd0(const CString& strKey);                      // take the key focus
+    void FUN_1422d4dd0(CString strKey);                      // take the key focus
 };
 
 // The local player.
@@ -434,7 +434,10 @@ CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);         // str == sz
 CStringW FUN_1408116a0(int nId, const int& nArg);                   // the system text formatted with one int (FormatStringId<int>)
-CStringW FUN_1405c2690(const CStringW& strKey, const CStringW& strArg);
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
+#ifdef __clang__
+CString FUN_1401d2b10(const CString& a, const CString& b);              // a + b (ATL operator+)
+#endif
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& nArg);
 CStringW FUN_1413fa9b0(const CStringW& str);                        // lower case
 CStringW FUN_1409404f0(__int64 n);                                  // a number with thousand separators
@@ -470,7 +473,7 @@ enum Unk_InvTab
     INV_TAB_PIECE = 14,
 };
 
-// UISwfEntity::GetChild<T> (uiswfentity.inl), one COMDAT per wrapper class.
+template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString& strName); template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName); // owned by uibingoeventdialog (0x140bb4cf0) / unit_140ba6b20 (0x140ba7930); the generic GetChild<T> (uiswfentity.inl) below, one COMDAT per wrapper class.
 template <class T> MS2Ptr<T> UISwfEntity::GetChild(const CString& strName)
 {
     if (m_30 == 0)
@@ -1688,8 +1691,14 @@ void UIInventoryDialog::FUN_14199ca90()
         CString strName(tab.first);
         int nTab = tab.second;
         ASObj item(2);
+#ifdef __clang__
+        // clang emits an unavailable MFC CopyChars import for operator+; bind the exe's copy.
+        CString strTooltipId = FUN_1401d2b10(strTooltipPrefix, strName);
+        CString strText = FUN_1401d2b10(strTabPrefix, strName);
+#else
         CString strTooltipId = strTooltipPrefix + strName;
         CString strText = strTabPrefix + strName;
+#endif
         ASObj tooltip(2);
         tooltip.FUN_1407cba60(strClassName, CString(strTooltipClass));
         tooltip.FUN_1407cba60(strId, CString(strTooltipId));

@@ -889,3 +889,6 @@ CGlobalKeyTextCallback::~CGlobalKeyTextCallback()
 // ---- UCRT memmove_s (static inline per TU; RelocateElements of CAtlArray<NiPoint2>) ----
 // @0x140ae2c00
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+
+// fx25: the 15-byte MS2Ptr<T>::get look-alike pair; FUN_140adf370 calls 0x140ae1930 on its MS2Ptr<CGemTombStone> param
+// MS2-PIN: ?get@?$MS2Ptr@VCGemTombStone@@@@QEBAPEAVCGemTombStone@@XZ 0x140ae1930

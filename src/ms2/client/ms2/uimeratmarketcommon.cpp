@@ -800,7 +800,7 @@ __int64 FUN_140166410();
 unsigned short FUN_14036db20(__int64 p);
 CStringW FUN_140ec01e0(CDBPremiumProduct* pProduct, const CStringW& strKey);
 CStringW FUN_14061ad70(const CStringW& strKey, const wchar_t* szSuffix);
-CStringW FUN_1409e8820(const CStringW& strFormat, const short& n);
+CStringW FUN_1409e8820(CStringW strFormat, const short& n);
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 unsigned char FUN_141658f10(PCBase* pPlayer);
@@ -965,7 +965,7 @@ int FUN_140ec04b0(CMeratMarketPremiumProduct* pProduct)
 }
 
 // ---- sort drop downs, UGC checks and the bill dialog start ----
-CStringW FUN_140c160b0(const CStringW& strFormat, __int64* pValue, const CStringW& strArg, int n);
+CStringW FUN_140c160b0(CStringW strFormat, __int64* pValue, const CStringW& strArg, int n);
 void FUN_140d73ff0(CStringW strText);
 void FUN_140d73bc0(int nId, int a, int b, CStringW strTag);
 void FUN_141275260(int nStringId, int a, int b);

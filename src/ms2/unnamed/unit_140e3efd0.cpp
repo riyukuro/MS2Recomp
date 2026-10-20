@@ -141,7 +141,7 @@ int FUN_1422e6310(ASDisplayObject* p);
 int FUN_1422e6270(ASDisplayObject* p);
 int FUN_1422c2510(ASMovieClip* p, double* pX, void* pY);
 void FUN_1422c8120(ASMovieClip* p, bool b);
-void FUN_1407cba60(AScript* p, const CString& szName, const CStringA& v);
+void FUN_1407cba60(AScript* p, const CString& szName, CStringA v);
 void FUN_1407cbbe0(AScript* p, const char* szName, bool v);
 void FUN_1407cb9c0(AScript* p, const char* szName, int v);
 // Bit flags of the XML/refresh state (m_nFlags): 1 default loaded, 2 my-pc complete, 4 swf loaded.

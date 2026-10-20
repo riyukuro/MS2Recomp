@@ -201,7 +201,7 @@ int FUN_140873600(Unk_140165cf0* pElem, const char* pszName, Unk_GcTime& tOut);
 int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut);
 int FUN_1413b1e70(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptVec3& oOut);
 int FUN_1413b1ed0(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptBool& oOut);
-CStringW FUN_14083bdc0(const Unk_GcTime& t, int nFlag, const CStringW& strDateSep, const CStringW& strTimeSep);
+CStringW FUN_14083bdc0(const Unk_GcTime& t, int nFlag, CStringW strDateSep, CStringW strTimeSep);
 CStringW FUN_140719730(bool b);
 unsigned __int64 FUN_140869440();                       // the server time
 void FUN_1412751b0(const CStringW& text, int a);

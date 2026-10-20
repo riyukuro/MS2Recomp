@@ -198,8 +198,8 @@ CStringW FUN_1408116a0(int nId, int* pnArg);
 CStringW FUN_140811740(int nId, int* pnA, int* pnB);
 CStringW FUN_140a228f0(int nId, int* pnArg, const CStringW& str);
 CStringW FUN_140c348b0(int nId, short* pnArg, const CStringW& str);
-CString FUN_141028be0(unsigned __int64 nId, const CStringA* pstrImage, int a, const CString& str);
-CStringW FUN_1409796e0(int a, int b, int c, const CStringW& str);
+CString FUN_141028be0(unsigned __int64 nId, const CStringA* pstrImage, int a, CString str);
+CStringW FUN_1409796e0(int a, int b, int c, CStringW str);
 unsigned __int64 FUN_141b71960(const char* sz);
 CStringTable* FUN_1401a9d70();
 

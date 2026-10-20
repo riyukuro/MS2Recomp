@@ -230,7 +230,7 @@ class Unk_GuideInventory : public UISwfEntity {
 public:
     int FUN_141999de0(); int FUN_141999f10();
     MS2Ptr<ASDisplayObject> FUN_14199aad0();                         // tab strip
-    int FUN_14199ab20(const CString&);                               // tab index by name
+    int FUN_14199ab20(CString);                               // tab index by name
 };
 class Unk_GuideItem { public: bool FUN_140525f10(); bool FUN_140525f60(); void* FUN_140527840(); bool FUN_140528980(); };
 class Unk_GuideItemInfo { public: int FUN_14053c5c0(); int FUN_14053c600(); };

@@ -379,9 +379,9 @@ __int64 FUN_141b71960(const char* sz);                                      // t
 CStringW FUN_141b71910(__int64 nUid);                                       // uid -> text
 CString FUN_1402bb1c0(const char* szFormat, const int* pn);                 // format one int
 CStringW FUN_14028b8e0(const CStringW& strKey);                             // string table text
-CStringW FUN_140298ea0(const CStringW& strKey);                             // notice text
+CStringW FUN_140298ea0(CStringW strKey);                             // notice text
 CStringW FUN_14083dc40(const wchar_t* szFormat, int n1, int n2);            // format two ints
-CStringW FUN_1405c2690(const CStringW& strKey, const CStringW& strArg);     // string table format
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);     // string table format
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a0, const CStringW& a1);
 void FUN_1412751f0(const CStringW& str, int a, int b);                      // notice
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);       // message box

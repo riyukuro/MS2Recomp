@@ -1786,7 +1786,7 @@ public:
     void FUN_1401ce2b0(const char* szText);
 };   // debug log (printf-style)
 Unk_UisLog* FUN_140a44830();
-void FUN_1401ce3d0(Unk_UisLog* p, TFunctor<void, EmptyParam>& fn);
+void FUN_1401ce3d0(Unk_UisLog* p, TFunctor<void, EmptyParam> fn);   // the exe callee destroys fn
 void* FUN_141aee920();
 void FUN_140cf10d0(void* p);
 extern char DAT_143d6eb58;
@@ -1836,8 +1836,7 @@ efd::AsyncResult CUIService::OnInit()
     void* pEvt = FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
     FUN_1411d7c70(pEvt, &CUIService::FUN_141ade1f0, this);
     FUN_1411d7c10(pEvt, &CUIService::FUN_141ade2d0, this);
-    TFunctor<void, EmptyParam> fnReset(this, &CUIService::FUN_141aece70);
-    FUN_1401ce3d0(FUN_140a44830(), fnReset);
+    FUN_1401ce3d0(FUN_140a44830(), TFunctor<void, EmptyParam>(this, &CUIService::FUN_141aece70));
     FUN_140cf10d0(FUN_141aee920());
     return efd::AsyncResult_Complete;
 }
