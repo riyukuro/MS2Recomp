@@ -397,28 +397,26 @@ void UIAdPushLimitedDialog::vfunc_43()
 // @0x140e03440
 void UIAdPushLimitedDialog::FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle> spOwner)
 {
-    if (m_30.get() == 0)
+    if (m_30.get() != 0)
+        return;
+    m_spOwner = spOwner;
+    if (m_spOwner == 0)
+        return;
+    m_bBannerEmpty = false;
+    if (m_spOwner->m_item.get() != 0)
     {
-        m_spOwner = spOwner;
-        if (!(m_spOwner == 0))
+        Unk_LpInfo* pInfo = reinterpret_cast<Unk_LpInfo*>(&m_spOwner->m_item.operator->()->m_info);
+        if (pInfo->FUN_1406a0fe0())
         {
-            m_bBannerEmpty = false;
-            if (m_spOwner->m_item.get() != 0)
+            CStringW strName((const char*)*reinterpret_cast<CStringA*>((char*)pInfo + 0xa0));
+            Unk_AdBannerPtr spBanner = FUN_1409fb930()->FUN_14096b5b0(2, strName);
+            if (spBanner.get() != 0)
             {
-                Unk_AdMarketItem* pItem = m_spOwner->m_item.operator->();
-                if (reinterpret_cast<Unk_LpInfo*>(&pItem->m_info)->FUN_1406a0fe0())
-                {
-                    CStringW strName((const char*)*reinterpret_cast<CStringA*>((char*)pItem + 0xd0));
-                    Unk_AdBannerPtr spBanner = FUN_1409fb930()->FUN_14096b5b0(2, strName);
-                    if (spBanner.get() != 0)
-                    {
-                        m_spBanner.AssignRaw(new ShopBannerInfo());
-                        if (m_spBanner.get() != 0)
-                            m_spBanner->FUN_141347c30(spBanner, 0xcf, FUN_1422db6e0());
-                        if (m_spBanner->m_strImgPath.IsEmpty())
-                            m_bBannerEmpty = true;
-                    }
-                }
+                m_spBanner.AssignRaw(new ShopBannerInfo());
+                if (m_spBanner.get() != 0)
+                    m_spBanner->FUN_141347c30(spBanner, 0xcf, FUN_1422db6e0());
+                if (m_spBanner->m_strImgPath.IsEmpty())
+                    m_bBannerEmpty = true;
             }
         }
     }
