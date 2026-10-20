@@ -154,6 +154,7 @@ void CSkillPointSimulator::Recalc()
     }
 }
 
+// MS2-FUNCTIONAL: exe reloads the skill id via ecx->r8d and keeps one fewer 4-byte local (register/temp allocation; same callees and control flow)
 // @0x140abcd70
 int CSkillPointSimulator::Validate(unsigned* pnBadSkill)
 {
@@ -161,24 +162,20 @@ int CSkillPointSimulator::Validate(unsigned* pnBadSkill)
     for (POSITION pos = m_mapEdit.GetStartPosition(); pos != 0; m_mapEdit.GetNext(pos))
     {
         JobSkillPtr sp = m_mapEdit.GetValueAt(pos);
-        if (!(sp == 0))
-        {
-            if (sp->m_bLearned)
-            {
-                *pnBadSkill = sp->GetID();
-                int nSkillId = sp->GetID();
-                MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
-                if (spSkill == 0)
-                    return 0;
-                int nMaxLevel = spSkill->FUN_1407e9ac0();
-                if (nMaxLevel < sp->m_nLevel)
-                    return 0;
-                JobSkill* pSkill = sp.operator->();
-                if (!CheckRequirements(sp->GetID(), pSkill->m_nLevel))
-                    return 0;
-                nSum += sp->GetUsedPoint();
-            }
-        }
+        if (sp == 0)
+            continue;
+        if (!sp->m_bLearned)
+            continue;
+        *pnBadSkill = sp->GetID();
+        int nSkillId = sp->GetID();
+        MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+        if (spSkill == 0)
+            return 0;
+        if (spSkill->FUN_1407e9ac0() < sp->m_nLevel)
+            return 0;
+        if (!CheckRequirements(sp->GetID(), sp->m_nLevel))
+            return 0;
+        nSum += sp->GetUsedPoint();
     }
     return nSum <= m_nSpent;
 }
@@ -273,25 +270,19 @@ int CSkillPointSimulator::CanLevelUp(unsigned nSkillId)
 int CSkillPointSimulator::CanLevelDown(unsigned nSkillId)
 {
     JobSkillPtr sp = GetEditSkill(nSkillId);
-    if (!(sp == 0))
+    if (sp == 0)
+        return 0;
+    if (!sp->m_bLearned)
+        return 0;
+    if (sp->GetJobLevel() > m_nJobRank)
+        return 0;
+    if (sp->IsLearn() || sp->m_bExtra)
     {
-        if (sp->m_bLearned)
-        {
-            if (!(m_nJobRank < sp->GetJobLevel()))
-            {
-                if (!sp->IsLearn() && !sp->m_bExtra)
-                {
-                    if (sp->m_nLevel != 0)
-                        return 1;
-                }
-                else
-                {
-                    if (1 < sp->m_nLevel)
-                        return 1;
-                }
-            }
-        }
+        if (sp->m_nLevel > 1)
+            return 1;
     }
+    else if (sp->m_nLevel >= 1)
+        return 1;
     return 0;
 }
 
@@ -442,6 +433,7 @@ void CSkillPointSimulator::ResetRank(int nRank)
     Recalc();
 }
 
+// MS2-FUNCTIONAL: exe scopes the JobSkillPtr per while-iteration with separate destructor calls on the break/remove paths (674 vs 688 bytes; same callees and logic)
 // @0x140abe1e0
 int CSkillPointSimulator::AutoDistribute(ATL::CAtlArray<unsigned>& order, ATL::CAtlArray<unsigned>& counts)
 {
@@ -450,43 +442,48 @@ int CSkillPointSimulator::AutoDistribute(ATL::CAtlArray<unsigned>& order, ATL::C
         return 0;
     for (int nRank = 1; nRank < 3; nRank++)
     {
-        int nPoints = GetRemainPoints(nRank);
-        while (nPoints != 0)
+        unsigned nPoints = GetRemainPoints(nRank);
+        while (nPoints > 0)
         {
-            bool bFound = false;
+            unsigned i = 0;
+            int bFound = 0;
             JobSkillPtr sp(0);
-            unsigned i;
             for (i = 0; i < order.GetCount(); i++)
             {
                 unsigned nId = order[i];
                 sp = GetEditSkill(nId);
-                if (!(sp == 0))
+                if (sp == 0)
+                    continue;
+                if (sp->GetJobLevel() != nRank)
+                    continue;
+                if (CanLevelUp(nId))
                 {
-                    if (sp->GetJobLevel() == nRank && CanLevelUp(nId))
+                    if (!sp->m_bLearned)
                     {
-                        if (!sp->m_bLearned)
-                        {
-                            sp->m_bLearned = true;
-                            bFound = true;
-                        }
-                        else
-                        {
-                            sp->m_nLevel += 1;
-                            bFound = true;
-                        }
+                        sp->m_bLearned = true;
+                        bFound = 1;
+                        break;
+                    }
+                    else
+                    {
+                        sp->m_nLevel += 1;
+                        bFound = 1;
                         break;
                     }
                 }
             }
-            if (!bFound)
-                break;
-            nPoints--;
-            int nTarget = counts[i];
-            if (sp->GetUsedPoint() == nTarget)
+            if (bFound == 1)
             {
-                order.RemoveAt(i, 1);
-                counts.RemoveAt(i, 1);
+                nPoints--;
+                int nTarget = counts[i];
+                if (sp->GetUsedPoint() == nTarget)
+                {
+                    order.RemoveAt(i, 1);
+                    counts.RemoveAt(i, 1);
+                }
             }
+            else
+                break;
         }
     }
     Recalc();
