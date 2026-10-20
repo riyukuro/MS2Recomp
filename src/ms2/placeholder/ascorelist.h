@@ -21,16 +21,52 @@ class ASCoreList : public ASUIComponent
 public:
     ASCoreList(int nMovieId);                                           // 0x1422dcbe0 (a fresh component; ASTileList(int), astilelist.cpp)
     ASCoreList(const Scaleform::GFx::Value& v, int nMovieId);          // 0x1422dcc20
-    virtual ~ASCoreList();                                              // 0x1422dcc70 (astilelist.cpp)
-    void FUN_1422dcf40(int nCount);                                     // the number of rows ("dataProvider" length)
-    MS2Ptr<class ASDataProvider> FUN_1422dcd80();                       // the data provider
-    void FUN_1422dd0d0(int nRows);                                      // the visible row count
-    unsigned FUN_1422dd150();                                           // the entry count (asscrollinglist.cpp: `< 0` is an unsigned test)
+    virtual ~ASCoreList();                                              // 0x1422dcc70 (scalar deleting 0x1422de550)
+    // ---- recovered with ?\ascorelist.cpp (src/ms2/gfxui/ascorelist.cpp, 0x1422dcbe0-0x1422de590); names are Ghidra's,
+    // the comments name the CLIK CoreList member each one uses ----
+    void FUN_1422dcca0(int nIndex);                                     // set "selectedIndex" (-1: none)
+    int FUN_1422dccd0();                                                // "selectedIndex"
+    MS2Ptr<class ASDataProvider> FUN_1422dcd80();                       // "dataProvider" (null if it is not an object)
+    void FUN_1422dcdf0(Scaleform::GFx::Value list);                     // set "itemRendererList" (by value: the callee destroys it)
+    void FUN_1422dce60(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);   // add a "listIndexChange" listener
+    void FUN_1422dcee0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);                // remove the "listIndexChange" listener
+    void FUN_1422dcf40(int nCount);                                     // a data provider of nCount undefined entries (slot 25)
+    void FUN_1422dd000(unsigned nRows);                                 // set "rowCount"
+    unsigned FUN_1422dd030();                                           // "rowCount"
+    void FUN_1422dd0d0(int nIndex);                                     // scrollToIndex(index)
+    void FUN_1422dd110();                                               // scrollToSelected()
+    unsigned FUN_1422dd150();                                           // the entry count (0 without a data provider; asscrollinglist.cpp: `< 0` is an unsigned test)
+    void FUN_1422dd1d0();                                               // remove every entry
+    void FUN_1422dd230(const class ASObj& item);                        // append an entry
+    void FUN_1422dd2a0(const CString& strLabel);                        // append a { label } entry (narrow text)
+    void FUN_1422dd310(const CStringW& strLabel);                       // append a { label } entry
+    void FUN_1422dd3d0(const CString& strLabel);                        // select the entry with this label (narrow text)
+    void FUN_1422dd440(const CStringW& strLabel);                       // select the entry with this label
+    CString FUN_1422dd4a0();                                            // the selected entry's label (narrow text)
+    CStringW FUN_1422dd520();                                           // the selected entry's label ("" if none)
+    bool FUN_1422dd760(AScript& item);                                  // the selected entry (false if none)
+    void FUN_1422dd880(const CString& strMember, int nValue);           // select the first entry whose member is a string with GetInt() == nValue
+    void FUN_1422dd9e0(const CString& strMember, int nValue);           // the same with GetUInt()
+    void FUN_1422ddb40(const CString& strMember, const CStringW& strValue);   // select the first entry whose member equals strValue
+    void FUN_1422ddd50(int nIndex);                                     // remove the entry at an index
+    void FUN_1422dddc0(const CString& strLabel);                        // remove the first entry with this label
+    // "itemPress" / "itemClick" / "itemRollOver" / "itemRollOut" / "itemDoubleClick" listeners: add (pUser: the AS
+    // function object's user data), remove
+    void FUN_1422de000(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
+    void FUN_1422de080(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
+    void FUN_1422de0e0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
+    void FUN_1422de160(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
+    void FUN_1422de1c0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
+    void FUN_1422de240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
+    void FUN_1422de2a0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
+    void FUN_1422de320(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
+    void FUN_1422de380(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
+    void FUN_1422de400(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
     // Slot 23 override and the new slot 25 (vftable 0x143113210; ASTileCacheList overrides 25). Opt-in with the
     // ASUIComponent slots (MS2_ASUICOMPONENT_SLOTS): without them slot 25 would land on index 16.
 #ifdef MS2_ASUICOMPONENT_SLOTS
-    virtual void vfunc_23();                                            // 23 0x1422dd090
-    virtual void vfunc_25(const Scaleform::GFx::Value& data);           // 25 0x1422dcd30 set the data provider
+    virtual void vfunc_23();                                            // 23 0x1422dd090 invalidateSelectedIndex()
+    virtual void vfunc_25(const Scaleform::GFx::Value& data);           // 25 0x1422dcd30 set "dataProvider"
 #endif
 };
 MS2_CHECK_SIZE(ASCoreList, 0x88);
