@@ -101,6 +101,7 @@
 #include "uiequipiconcontainer.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/blindmanager.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/placeholder/gfxvalue.h"
 #include "ms2/placeholder/asobj.h"
@@ -239,8 +240,10 @@ void UIMeratMarketDialog::OnLoadInit()
 
 // ---- unit-local stand-ins for the services this dialog calls (only the proven members) ----
 
-class Unk_MeratKeyState { public: bool FUN_14116d9c0(int nKey, int a, int b); };           // 0x1c = Enter, 0xf = Tab
+class Unk_MeratKeyState { public: bool FUN_14116d9c0(int nKey, int a, int b); bool FUN_14116d950(int nKey, bool b, int n); };           // 0x1c = Enter, 0xf = Tab
 Unk_MeratKeyState* FUN_14025e7c0();
+BlindManager* FUN_1409c1730();                                           // the BlindManager singleton
+void FUN_140d2ce40(MS2Ptr<CMeratMarketProduct> spProduct);               // shift-click: link the product into chat
 struct Unk_MeratFlagSet { int FUN_1402c4c90(int nFlag); };
 struct Unk_MeratConfig { void* m_0; Unk_MeratFlagSet m_flags; };
 Unk_MeratConfig* FUN_14025e7b0();
@@ -1530,6 +1533,56 @@ void UIMeratMarketDialog::OpenProductByKey(Unk_MeratProductKey key, bool bShop)
     if (spProduct == 0)
         return;
     OpenProduct(spProduct);
+}
+
+// @0x1412f07e0
+void UIMeratMarketDialog::OpenProduct(MS2Ptr<CMeratMarketProduct> spProduct)
+{
+    if (spProduct == 0)
+        return;
+    if (spProduct->IsUgc() != 0) {
+        if (FUN_1409c1730()->IsBlockedId(3, spProduct->m_ugc.m_n20))
+            return;
+    }
+    if (FUN_14025e7c0()->FUN_14116d950(0x2a, 0, 0)) {
+        FUN_140d2ce40(spProduct);
+        return;
+    }
+    int nItemId = spProduct->GetItemId();
+    MS2Ptr<CItemData> spData(0);
+    if ((bool)m_spItem.get() && m_spItem->FUN_1405276c0() == nItemId) {
+        MS2Ptr<CItemData> spCur(FUN_140527840(m_spItem.operator->()));
+        if (spCur == 0)
+            return;
+        spData = spCur;
+        if (!FUN_141b48710(spCur) && (m_spItem->FUN_140525f10() || m_spItem->FUN_140526010())) {
+            if (m_spItem->FUN_1405278d0() != 0 && m_spItem->FUN_1405278d0()->m_nUgcUid == spProduct->m_ugc.m_look.m_n18)
+                return;
+        }
+    }
+    else {
+        spData = FUN_14053f870(nItemId);
+    }
+    if (spData == 0)
+        return;
+    if (IsPlaceableItem(spData))
+        PreviewBoxProduct(spProduct, spData);
+    else if (spData->FUN_14053ce40())
+        ShowLapenshardItem(spProduct, spData);
+    else if (spData->FUN_14053cb40())
+        ShowFurnitureItem(spProduct, spData);
+    else if (spData->FUN_14053cd50())
+        ShowBlueprintItem(spProduct, spData);
+    else if (spData->FUN_14053cb80())
+        PreviewCubeProduct(spProduct, spData);
+    else if (spData->FUN_14053cc80())
+        PreviewProductItem(spProduct, spData);
+    else if (spData->FUN_14053cd10())
+        ShowKind5Item(spProduct, spData);
+    else if (spData->FUN_14053d900())
+        ShowKind6Item(spProduct, spData);
+    else
+        PreviewEquipProduct(spProduct, spData);
 }
 
 // MS2-FUNCTIONAL: large body, frame/branch layout differs after 2 attempts
