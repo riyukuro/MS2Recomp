@@ -655,3 +655,5 @@ static CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cc1020-0x142cc1190 .text$yd

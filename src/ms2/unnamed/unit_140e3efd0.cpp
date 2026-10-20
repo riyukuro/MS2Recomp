@@ -1185,3 +1185,5 @@ unsigned long long FUN_140e47420(void* pDst, unsigned long long nDstSize, void* 
     memmove(pDst, pSrc, nCount);
     return 0;
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca6810-0x142ca6970 .text$yd

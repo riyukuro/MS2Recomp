@@ -7365,3 +7365,5 @@ void UIMeratMarketDialog::DirtyState::AddPremiumSale(const int& nId)
     if (m_spSale.get() != 0)
         m_spSale->Add(reinterpret_cast<const unsigned&>(nId));
 }
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142cafa70-0x142cafbd0 .text$yd

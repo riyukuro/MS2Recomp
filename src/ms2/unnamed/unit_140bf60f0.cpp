@@ -962,3 +962,5 @@ void UIQuestEventListener::vfunc_o178_6(void*) {}
 void UIQuestEventListener::vfunc_o178_4(void*) {}
 // @0x140bfc780
 void UIQuestEventListener::vfunc_o178_12(void*) {}
+// Atexit thunks of this unit's statics (gap1 yd sweep).
+// MS2-RANGE: 0x142ca1f30-0x142ca2070 .text$yd
