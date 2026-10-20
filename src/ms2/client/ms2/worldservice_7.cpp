@@ -518,3 +518,5 @@ template class efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChang
 template class efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8253>;
 template class efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8254>;
 template class efd::MessageWrapperSubclassHandler<WorldService, ecrPhysX::PhysXPropMessage, ecrPhysX::PhysXPropMessage, 12299>;
+// MS2-FUNCTIONAL 0x141c17740: look-alike pairing of the Unk_WsTargetF7 stand-in map - the exe RemoveAt here calls RBDelete 0x141c0d660 (the Unk_WsObjectEntry tree's), ours the F7 tree's RBDelete; the real value type of this tree is not recovered
+// MS2-FUNCTIONAL 0x141c1b490: look-alike pairing of the Unk_WsTargetF7 stand-in map - the exe SetAt here calls Find 0x141bfb9c0 + RBInsert 0x141c11fa0 (the CRBTree<int, MS2Ptr<CLiftableTargetGuide>> family), ours the F7 tree's; real value type not recovered
