@@ -104,7 +104,7 @@ public:
     int FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCache);
     int FUN_141814a20(CString strFile, DescMap& rMap, CCacheData& rCache, ATL::CAtlArray<CString>& rTags);
     int FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache);
-    CStringW FUN_141815160(LevelDescMap& rMap, int* pnId, unsigned short* pnLevel, CString strTag);
+    CStringW FUN_141815160(LevelDescMap& rMap, int* pnId, unsigned short* pnLevel, const CString& strTag);
     CStringW FUN_141815330(LevelDescPtr& spLevels, unsigned short* pnLevel, CString strTag);
     DescPtr FUN_1418154e0(Unk_140165cf0* pNode);            // a description row of the item tags
     DescPtr FUN_141815650(Unk_140165cf0* pNode, ATL::CAtlArray<CString>& rTags);
