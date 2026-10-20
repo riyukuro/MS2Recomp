@@ -26,8 +26,6 @@
 CInputKeyHandler* FUN_14025e7c0();
 CPhysXHelper* FUN_1409f7ca0();                                      // the physics helper singleton
 int FUN_14109a9e0();                                                // rand()
-void FUN_1410b2450(NiMesh* pkMesh);                                 // prepare the mesh for the next draw
-void FUN_140981070(NiMesh* pkMesh, const Unk_StreamPoint& pt);      // NiAVObject::SetTranslate
 const NiTransform& FUN_140a33f90(NiAVObject* pObject);              // GetLocalTransform
 void FUN_140aacb60(NiAVObject* pObject, const NiTransform& xf);     // SetLocalTransform
 NiNode* FUN_140a0b000(NiAVObject* pkObject);                        // parent of the object
@@ -147,8 +145,8 @@ void PaintBrush::vfunc_2()
     EditBrush::vfunc_2();
     if (m_spMesh)
     {
-        FUN_1410b2450(m_spMesh);
-        FUN_140981070(m_spMesh, m_ptPos);
+        m_spMesh->SetScale(m_fRadius);
+        m_spMesh->SetTranslate(reinterpret_cast<const efd::Point3&>(m_ptPos));    // NiPoint3(const efd::Point3&) temp
         m_spMesh->Update(0.0f, true);
     }
 }
@@ -246,8 +244,8 @@ void NoiseBrush::vfunc_2()
     EditBrush::vfunc_2();
     if (m_spMesh)
     {
-        FUN_1410b2450(m_spMesh);
-        FUN_140981070(m_spMesh, m_ptPos);
+        m_spMesh->SetScale(m_fRadius);
+        m_spMesh->SetTranslate(reinterpret_cast<const efd::Point3&>(m_ptPos));    // NiPoint3(const efd::Point3&) temp
         m_spMesh->Update(0.0f, true);
     }
 }
