@@ -3891,7 +3891,7 @@ __imp_NxGetUtilLib	142cced28	data
 ??0Unk_GcCondRef@@QEAA@XZ	1413a4750	func
 ?GetPaletteColorBySN@CItemDataTable@@QEAA?AV?$MS2Ptr@VItemColorEx@@@@HH@Z	140558960	func
 ?GetPetEvolution@CExpTable@@QEAAHGH@Z	1403539d0	func
-??7?$MS2Ptr@VCInteractObjectData@@@@QEBA_NXZ	141403b90	func
+??7?$MS2Ptr@VCInteractObjectData@@@@QEBA_NXZ	140965160	func
 ?DAT_1439f87c0@@3KA	1439f87c0	data
 ?DAT_143aef3b8@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A	143aef3b8	data
 ?DAT_142dbac18@@3QBHB	142dbac18	data
