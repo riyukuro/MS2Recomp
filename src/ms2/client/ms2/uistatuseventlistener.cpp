@@ -330,15 +330,14 @@ MS2_REPLACE_METHOD(0x141B0CD00, UIStatusEventDispatcher, FUN_141b0cd00, 125, 0x5
 // @0x141b0cd90
 void UIStatusEventDispatcher::FUN_141b0cd90(UIStatusEventListener* pListener)
 {
-    size_t i = 0;
-    while (i < m_listeners.GetCount())
+    for (size_t i = 0; i < m_listeners.GetCount(); ++i)
     {
         if (pListener == m_listeners.GetAt(i))
-            break;
-        ++i;
+        {
+            m_listeners.RemoveAt(i, 1);
+            return;
+        }
     }
-    if (i < m_listeners.GetCount())
-        m_listeners.RemoveAt(i, 1);
 }
 MS2_REPLACE_METHOD(0x141B0CD90, UIStatusEventDispatcher, FUN_141b0cd90, 131, 0x46B00969);
 
