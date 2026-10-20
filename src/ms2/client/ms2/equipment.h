@@ -21,6 +21,8 @@
 #include <efd/SmartPointer.h>
 
 class PC;
+class CEquipModel;
+class NiPoint3;
 namespace efd { class utf8string; }
 class CItem;
 class CEquipItem;
@@ -171,9 +173,9 @@ public:
     void FUN_1411ea7c0();
     void FUN_1411ea8c0();
     void FUN_1411eaa00(MS2Ptr<Equipment::SetEffectInfo> spInfo);    // ApplySetEffect
-    int FUN_1411eacf0();
+    int FUN_1411eacf0();                                    // apply the ear / face variant
     int FUN_1411eb3c0();
-    int FUN_1411eb550();
+    int FUN_1411eb550(CString strName);                     // apply the hair variant
     CString FUN_1411eabd0();                                // the set name
     bool FUN_1411eac20();                                   // HasSetName
     void FUN_1411eac40(bool b);
@@ -181,8 +183,11 @@ public:
     void FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag);   // RemoveEquipItem
     void FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag);   // ApplyEquipItem
     void FUN_1411ec480(bool bForce);                        // RefreshSetEffect
+    int FUN_1411e9fa0(int nSlot, CString strName, int nType, int bByName);   // re-attach the slot's replaced meshes
+    void FUN_1411ef2e0(CEquipModel* pModel, const NiPoint3& kPos, const NiPoint3& kRot);   // move a kind 13 model
     void FUN_1411ed270();
     void FUN_1411edbb0();
+    void FUN_1411eef60();                                   // merge the meshes (MeshOptimizer)
     void FUN_1411ee930();                                   // OnSetItemChanged
     void FUN_1411ee980(int bMissMatch, MS2Ptr<CEquipItem> spA, MS2Ptr<CEquipItem> spB);   // the miss match tag
     void FUN_1411eebc0();                                   // log the worn items

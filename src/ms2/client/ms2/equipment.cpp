@@ -38,6 +38,9 @@
 #include "ms2/client/ms2/gameobject.h"
 #include "ms2/client/ms2/effectservice.h"
 #include <NiNode.h>
+#include <NiActorManager.h>
+#include <NiTransform.h>
+#include <efd/utf8string.h>
 #include <NiMesh.h>
 #include <set>
 #include "ms2/ms2recover.h"
@@ -113,7 +116,53 @@ struct Unk_EqWorld
 };
 Unk_EqWorld* FUN_1403ed2d0();
 PCBase* FUN_141bd0cc0(Unk_EqWorld* pWorld);         // the local player
-CString FUN_1414253b0(const CString& str, int n);
+CString FUN_1414253b0(const CString& strPath, int bDiffuse);   // the face model path of a variant (the exe passes it by reference)
+CString FUN_141425220(const CString& strPath, int bDiffuse);  // the ear model path of a variant
+CString FUN_141421740(const CString& strPath, int* pnFlag);   // the variant letter of a model path
+CString FUN_141421ab0(MS2Ptr<CEquipItem> spItem, const CString& strSuffix);   // the hair model path of a variant
+char FUN_1420b1b20(const char* pszPath, int n);         // the file exists
+int FUN_1405451c0(const CString& strName);              // the slot of a slot name
+void FUN_141049240(NiAVObject* pRoot, ATL::CAtlArray<efd::SmartPointer<NiMesh> >& aSource,
+    ATL::CAtlArray<efd::SmartPointer<NiMesh> >& aMerged);   // merge the meshes (MeshOptimizer)
+void FUN_141567330(NiAVObject* pRoot, bool bShadow);    // set up the shadow casters (unit_141567000)
+// The asset locator the hair variant asks (the ServiceManager's system service of FUN_140998330).
+class Unk_EqAssetSvc
+{
+public:
+    virtual void vfunc_0() = 0; virtual void vfunc_1() = 0; virtual void vfunc_2() = 0; virtual void vfunc_3() = 0;
+    virtual void vfunc_4() = 0; virtual void vfunc_5() = 0; virtual void vfunc_6() = 0; virtual void vfunc_7() = 0;
+    virtual void vfunc_8() = 0; virtual void vfunc_9() = 0; virtual void vfunc_10() = 0; virtual void vfunc_11() = 0;
+    virtual void vfunc_12() = 0; virtual void vfunc_13() = 0; virtual void vfunc_14() = 0; virtual void vfunc_15() = 0;
+    virtual void vfunc_16() = 0; virtual void vfunc_17() = 0; virtual void vfunc_18() = 0; virtual void vfunc_19() = 0;
+    virtual void vfunc_20() = 0;
+    virtual bool vfunc_21(const efd::utf8string& strPath) = 0;     // 21 the asset is known
+};
+struct Unk_EqSvcHolder { void* m_p; };
+struct Unk_EqApp
+{
+    void* m_00;
+    Unk_EqSvcHolder m_spServiceManager;                 // +0x08
+};
+Unk_EqApp* FUN_14086d260();
+void* FUN_140af8310(Unk_EqSvcHolder* pSmart);           // operator->
+Unk_EqAssetSvc* FUN_140998330(void* pMgr);              // the system service (NULL when absent)
+// The animation service (WorldService's actor cache).
+class Unk_EqAnimSvc
+{
+public:
+    NiActorManager* FUN_140999440(const egf::EntityID& kId);   // the actor manager of an entity
+};
+Unk_EqAnimSvc* FUN_141b6f910();
+// The scene graph dump of 0x1411eac40 (a 0x38-byte walker over the actor's NIF root).
+class Unk_EqSceneDump
+{
+public:
+    void FUN_14098cb80(NiAVObject* pRoot);              // init
+    void FUN_14098cf00();                               // destroy
+    void FUN_1411f88a0(bool bCulled, NiAVObject* pObject, int nDepth);   // dump (recursive)
+private:
+    char m_buf[0x38];
+};
 // NoticeMessage::SetCallback with the callback typed as the 3-argument delegate it is.
 class Unk_EqNotice : public NoticeMessage
 {
@@ -127,6 +176,13 @@ void FUN_140a0b2a0(NiAVObject* pObj);                   // detach from the paren
 void FUN_1412751b0(const CStringW& strMessage, int nColor);   // the debug chat line
 extern int DAT_143ae2b58;                               // the optimizer debug level
 
+// @0x14036e770 (the one-argument log call, as featuremanager.cpp's Unk_FeatureLog).
+template <class A>
+inline void Unk_EquipLog1(CLogString* log, int level, int category, const wchar_t* format, const A& a)
+{
+    const fmt::internal::ArgArray<1>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(a)};
+    log->FUN_1406530d0(level, category, format, fmt::ArgList(fmt::internal::make_type(a), args));
+}
 // @0x1411f0ad0 (the unit's three-argument log call: an FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
 template <class A, class B, class C>
 inline void Unk_EquipLog(CLogString* log, int level, int category, const wchar_t* format, const A& a, const B& b,
@@ -152,6 +208,12 @@ class Unk_EquipModelCalls : public CEquipModel
 {
 public:
     ModelPart* FUN_141200ab0();                                     // the <asset> record
+    MS2Ptr<CEquipItem> FUN_141200a40();                             // the owner item
+    NiPoint3 FUN_1412000d0();                                       // the rotation (degrees)
+    void FUN_141200100(NiPoint3 kRot);
+    NiPoint3 FUN_141200130();                                       // the position
+    void FUN_141200160(NiPoint3 kPos);
+    CString FUN_1412028f0();                                        // the loaded file
 };
 #define MODEL(sp) static_cast<Unk_EquipModelCalls*>((sp).operator->())
 
@@ -1917,4 +1979,208 @@ void CEquipment::FUN_1411eeda0()
     m_meshes68.RemoveAll();
     for (size_t i = 0; i < m_meshes88.GetCount(); i++)
         FUN_140a0b300(m_meshes88[i].operator->(), false);
+}
+
+// @0x1411e9fa0
+int CEquipment::FUN_1411e9fa0(int nSlot, CString strName, int nType, int bByName)
+{
+    if (bByName == 0) {
+        if (nSlot != 1 && FUN_1411e1860(nSlot, 6, 0).get() != NULL)
+            return 1;
+    } else if (FUN_1411e1860(FUN_1405451c0(strName), 6, 0).get() != NULL) {
+        return 1;
+    }
+    MS2Ptr<CEquipmentSlot> spSlot(0);
+    if (m_slots.Lookup(nSlot, spSlot)) {
+        CString strMesh;
+        POSITION pos = s_meshSuffixes.GetHeadPosition();
+        while (pos != NULL) {
+            strMesh = strName + s_meshSuffixes.GetNext(pos);
+            MS2Ptr<ReplaceObject> spReplace(0);
+            if (spSlot->m_replaced.Lookup(strMesh, spReplace) && spReplace->m_spNode != NULL && spReplace->m_spMesh != NULL)
+                spReplace->m_spNode->AttachChild(spReplace->m_spMesh, true);
+        }
+    }
+    if (m_pPC != NULL)
+        m_pPC->vfunc_139();
+    return 1;
+}
+
+// @0x1411eac40
+void CEquipment::FUN_1411eac40(bool b)
+{
+    NiActorManager* pActor = FUN_141b6f910()->FUN_140999440(m_pPC->FUN_14123c460());
+    if (pActor != NULL && pActor->GetNIFRoot() != NULL) {
+        Unk_EqSceneDump kDump;
+        kDump.FUN_14098cb80(pActor->GetNIFRoot());
+        kDump.FUN_1411f88a0(b, NULL, 0);
+        kDump.FUN_14098cf00();
+    }
+}
+
+// @0x1411eacf0
+int CEquipment::FUN_1411eacf0()
+{
+    MS2Ptr<CEquipItem> spEar = FUN_1411e1860(0x12, 6, 0);
+    if (spEar == 0)
+        return 1;
+    ATL::CAtlArray<MS2Ptr<CEquipModel> > models;
+    spEar->FUN_1411dcc80(models);
+    if (models.IsEmpty())
+        return 0;
+    ATL::CAtlArray<CString> names;
+    spEar->FUN_1411dca30(0x12, names);
+    if (names.GetCount() == 0)
+        return 0;
+    int nVariant = 0;
+    MS2Ptr<CEquipItem> spHair = FUN_1411e1860(1, 6, 0);
+    if (spHair.get() != NULL)
+        nVariant = spHair->FUN_1411dc710();
+    MS2Ptr<CEquipItem> spCap = FUN_1411e1860(6, 6, 0);
+    if (spCap.get() != NULL)
+        nVariant = FUN_1411efd50(spCap);
+    if (m_00 == nVariant)
+        return 1;
+    CString strPath = FUN_141425220(names[0], nVariant);
+    if (FUN_1420b1b20(strPath, 0) != 0) {
+        models[0]->vfunc_4(strPath);
+        m_00 = nVariant;
+    }
+    MS2Ptr<CEquipItem> spFace = FUN_1411e1860(0xe, 6, 0);
+    if (spFace == 0)
+        return 1;
+    ATL::CAtlArray<MS2Ptr<CEquipModel> > faceModels;
+    spFace->FUN_1411dcc80(faceModels);
+    if (faceModels.IsEmpty())
+        return 0;
+    ATL::CAtlArray<CString> faceNames;
+    spFace->FUN_1411dca30(0xe, faceNames);
+    if (faceNames.GetCount() == 0)
+        return 0;
+    CString strFace = FUN_1414253b0(faceNames[0], nVariant);
+    if (FUN_1420b1b20(strFace, 0) != 0)
+        faceModels[0]->vfunc_4(strFace);
+    return 1;
+}
+
+// @0x1411eb3c0
+int CEquipment::FUN_1411eb3c0()
+{
+    CString strName("A");
+    MS2Ptr<CEquipItem> spCap = FUN_1411e1860(6, 6, 0);
+    if (spCap.get() != NULL && spCap->FUN_1411dc670() != 0) {
+        ATL::CAtlArray<MS2Ptr<CEquipModel> > models;
+        spCap->FUN_1411dcc80(models);
+        if (!models.IsEmpty())
+            strName = FUN_141421740(MODEL(models[0])->FUN_141200ab0()->name0, NULL);
+    }
+    return FUN_1411eb550(strName);
+}
+
+// @0x1411eb550
+int CEquipment::FUN_1411eb550(CString strName)
+{
+    MS2Ptr<CEquipItem> spHair = FUN_1411e1860(1, 6, 0);
+    if (spHair == 0)
+        return 0;
+    ATL::CAtlArray<MS2Ptr<CEquipModel> > models;
+    spHair->FUN_1411dcc80(models);
+    if (models.IsEmpty())
+        return 0;
+    ATL::CAtlArray<CString> names;
+    spHair->FUN_1411dca30(1, names);
+    if (names.IsEmpty())
+        return 0;
+    if (models[0]->vfunc_9() == 0)
+        return 0;
+    CString strDefault = FUN_141421740(names[0], NULL);
+    if (strName.IsEmpty())
+        strName = strDefault;
+    CString strPath = FUN_141421ab0(FUN_1411e1860(1, 6, 0), strName);
+    if (MODEL(models[0])->FUN_1412028f0() == strPath)
+        return 1;
+    if (MODEL(models[0])->FUN_141200ab0()->isNif == 1) {
+        if (!FUN_1420b1b20(strPath, 0)) {
+            if (strName == strDefault)
+                return 1;
+            strName = strDefault;
+            strPath = names[0];
+            if (!FUN_1420b1b20(strPath, 0))
+                return 1;
+        }
+    } else {
+        Unk_EqAssetSvc* pAssets = FUN_140998330(FUN_140af8310(&FUN_14086d260()->m_spServiceManager));
+        if (pAssets == NULL)
+            return 1;
+        if (!pAssets->vfunc_21(efd::utf8string((const char*)strPath))) {
+            if (strName == strDefault)
+                return 1;
+            strName = strDefault;
+            strPath = names[0];
+            if (!pAssets->vfunc_21(efd::utf8string((const char*)strPath)))
+                return 1;
+        }
+    }
+    models[0]->vfunc_4(strPath);
+    return 1;
+}
+
+// @0x1411eef60
+void CEquipment::FUN_1411eef60()
+{
+    if (!m_bOptimize || GetTickCountMs2() - m_64 <= 4999)
+        return;
+    NiAVObject* pRoot = FUN_141b6efc0(m_pPC->FUN_14123c410());
+    NiNode* pNode = NiDynamicCast(NiNode, pRoot);
+    if (pNode == NULL)
+        return;
+    for (unsigned i = 0; i < m_meshes68.GetCount(); i++)
+        FUN_140a0b2a0(m_meshes68[i]);
+    m_meshes68.RemoveAll();
+    FUN_141049240(pRoot, m_meshes88, m_meshes68);
+    for (unsigned i = 0; i < m_meshes68.GetCount(); i++) {
+        pNode->AttachChild(m_meshes68[i], false);
+        FUN_141567330(m_meshes68[i], true);
+    }
+    for (unsigned i = 0; i < m_meshes88.GetCount(); i++)
+        FUN_140a0b300(m_meshes88[i].operator->(), true);
+    pNode->UpdateEffects();
+    m_5e = false;
+    Unk_EquipLog1(CLogString::GetInstance(), 0xc, 0x13, L"[MeshOptimizer] Merge mesh complete: {0}", m_pPC->vfunc_77());
+    if (DAT_143ae2b58 > 1)
+        FUN_1412751b0(StringFormat(L"[MeshOptimizer] Merge mesh complete: {0}", m_pPC->vfunc_77()), 0x14);
+    FUN_1411e6b50();
+}
+
+// @0x1411ef2e0
+void CEquipment::FUN_1411ef2e0(CEquipModel* pModel, const NiPoint3& kPos, const NiPoint3& kRot)
+{
+    if (pModel == NULL)
+        return;
+    Unk_EquipModelCalls* pCalls = static_cast<Unk_EquipModelCalls*>(pModel);
+    MS2Ptr<CEquipItem> spItem = pCalls->FUN_141200a40();
+    if (spItem == 0)
+        return;
+    if (spItem->FUN_1411dc7f0()->FUN_14053c620() != 0xd)
+        return;
+    if (spItem->FUN_1411dc7a0()->FUN_140527870() == NULL)
+        return;
+    NiPoint3 kOldPos = pCalls->FUN_141200130();
+    NiPoint3 kOldRot = pCalls->FUN_1412000d0();
+    NiMatrix3 kNew;
+    NiMatrix3 kOld;
+    kNew.FromEulerAnglesXYZ(kRot.x * 3.1415927f / 180.0f, kRot.y * 3.1415927f / 180.0f, kRot.z * 3.1415927f / 180.0f);
+    kOld.FromEulerAnglesXYZ(kOldRot.x * 3.1415927f / 180.0f, kOldRot.y * 3.1415927f / 180.0f,
+        kOldRot.z * 3.1415927f / 180.0f);
+    NiTransform kDelta;
+    kDelta.MakeIdentity();
+    kDelta.m_Rotate = kOld.Inverse() * kNew;
+    kDelta.m_Translate = -kOldPos + kPos;
+    std::set<NiAVObjectPtr>* pRoots = FUN_141201c90(pModel);
+    for (std::set<NiAVObjectPtr>::iterator it = pRoots->begin(); it != pRoots->end(); ++it) {
+        NiAVObjectPtr spRoot = *it;
+        spRoot->SetLocalTransform(spRoot->GetLocalTransform() * kDelta);
+    }
+    pCalls->FUN_141200160(kPos);
+    pCalls->FUN_141200100(kRot);
 }
