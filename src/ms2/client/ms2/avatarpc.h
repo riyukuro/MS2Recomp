@@ -217,8 +217,8 @@ public:
     NiNodePtr m_spExternalRoot;                             // +0x1358 "UI External Root"
     NiNodePtr m_spEffectRoot;                               // +0x1360 "UI Effect Root"
     efd::SmartPointer<AvatarRidee> m_spRidee;               // +0x1368
-    NiPoint3 m_kPos;                                        // +0x1370
-    NiPoint3 m_kDir;                                        // +0x137c
+    efd::Point3 m_kPos;                                     // +0x1370
+    efd::Point3 m_kDir;                                     // +0x137c
     bool m_bDirty;                                          // +0x1388 view must be rebuilt (vfunc_53)
     bool m_bEnabled;                                        // +0x1389 = 1
     bool m_bFishing;                                        // +0x138a

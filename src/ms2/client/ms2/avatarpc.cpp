@@ -237,7 +237,8 @@ public:
 extern Unk_AvPhysicsSvc* DAT_143ab50b8;
 Unk_AvModeSvc* FUN_1409f7c90();
 Unk_AvPhysicsSvc* FUN_1409f7ca0();
-void FUN_1409f7320(efd::Matrix3* pMat);
+efd::Matrix3* FUN_1409f7320(efd::Matrix3* pMat);   // identity-constructs (0x1409f72e0) and returns the matrix
+void* FUN_1409f72e0(void* p);                       // efd::Matrix3 ctor
 Unk_CharEquip* FUN_1406c4340(Unk_CharEquip* p, float a, float b, float c);
 extern char DAT_143acdb20;                                  // set while the avatar previews are disabled
 
@@ -322,7 +323,7 @@ struct Unk_InventorySkillRequest
     unsigned __int64 tick;
     unsigned serial, unknown14;
     NiPoint3 origin;                                        // +0x18
-    float direction[3];
+    float directionX, directionY, directionZ;               // +0x24 (no array: the exe frame has no GS cookie)
     float fValue;                                           // +0x30 (the pc's speed scale)
     unsigned unknown34;
     bool remap, suppressDispatch, itemUse;
@@ -369,7 +370,7 @@ public:
 class StatePlayInstrumentData : public StateData
 {
 public:
-    StatePlayInstrumentData(MS2Ptr<CItemData> spData, int n);   // 0x140dde0b0
+    StatePlayInstrumentData(MS2Ptr<CItemData> spData, __int64 n);   // 0x140dde0b0
     char m_pad_18[0x18];
 };
 class Unk_McState;
@@ -421,7 +422,7 @@ void FUN_141653d10(PC* pPC, MS2Ptr<CItem> spItem);
 void FUN_1417083a0(PCBase* pRider, NiAVObjectPtr spAttach, Unk_RideeInfoPtr kInfo);
 int FUN_141088660();
 int FUN_14107c5f0(int nId, PC* pSource, AvatarPC* pAvatar);
-char FUN_14107c030(int nId, MS2Ptr<Unk_PCArg125> spSrc, AvatarPC* pAvatar);
+bool FUN_14107c030(int nId, MS2Ptr<Unk_PCArg125> spSrc, AvatarPC* pAvatar);
 int FUN_14107c2d0(int nId, unsigned nType, unsigned nSex, AvatarPC* pAvatar);
 CString FUN_14107b3d0(unsigned nSex);
 Unk_CharEquip FUN_141b6dea0(unsigned nEquipId);
@@ -597,29 +598,28 @@ AvatarPC* FUN_1409f3650(int nGender, int nPreset)
 // @0x1409f3fd0
 AvatarPC* FUN_1409f3fd0(MS2Ptr<Unk_PCArg125> spSrc)
 {
-    if (DAT_143acdb20 == 0)
+    if ((unsigned char)DAT_143acdb20 != 0)
+        return 0;
+    int nId = FUN_1409f6ee0();
+    if (nId == 0)
+        return 0;
+    AvatarPC* pAvatar = new (efd::MemHint(efd::MemHint::NONE)) AvatarPC(0);
+    if (pAvatar != 0)
     {
-        int nId = FUN_1409f6ee0();
-        if (nId == 0)
-            return 0;
-        AvatarPC* pAvatar = new (efd::MemHint(efd::MemHint::NONE)) AvatarPC(0);
-        if (pAvatar != 0)
+        PC* pSource = FUN_1403ed2d0()->FUN_141bd1530(spSrc->m_nPcId);
+        if (pSource != 0)
         {
-            PC* pSource = FUN_1403ed2d0()->FUN_141bd1530(spSrc->m_nPcId);
-            if (pSource == 0)
-            {
-                FUN_141658ed0(pAvatar, 1);
-                FUN_141662da0(pAvatar, 1);
-            }
-            else
-            {
-                FUN_141658ed0(pAvatar, FUN_141658f10(pSource));
-                FUN_141662da0(pAvatar, FUN_141662de0(pSource));
-            }
-            pAvatar->FUN_1409f6280(0);
-            if (FUN_14107c030(nId, MS2Ptr<Unk_PCArg125>(spSrc), pAvatar) != 0)
-                return pAvatar;
+            FUN_141658ed0(pAvatar, FUN_141658f10(pSource));
+            FUN_141662da0(pAvatar, FUN_141662de0(pSource));
         }
+        else
+        {
+            FUN_141658ed0(pAvatar, 1);
+            FUN_141662da0(pAvatar, 1);
+        }
+        pAvatar->FUN_1409f6280(0);
+        if (FUN_14107c030(nId, MS2Ptr<Unk_PCArg125>(spSrc), pAvatar) != 0)
+            return pAvatar;
     }
     return 0;
 }
@@ -662,7 +662,8 @@ void AvatarPC::FUN_1409f43d0(int nSkillId, short nLevel)
     MS2Ptr<CSkillRecord> spSkill(new CSkillRecord());
     if (spSkill->FUN_1417595d0(kReq))
     {
-        bool bStart = !(::FUN_141673ef0(this) == nSkillId && nSkillId != 0);
+        int nCurrent = ::FUN_141673ef0(this);
+        bool bStart = !(nCurrent == nSkillId && nSkillId != 0);
         if (bStart)
             vfunc_59(1, 0, 0, 0);
         vfunc_102(MS2Ptr<CSkillRecord>(spSkill));
@@ -672,20 +673,19 @@ void AvatarPC::FUN_1409f43d0(int nSkillId, short nLevel)
 // @0x1409f45a0
 void AvatarPC::FUN_1409f45a0(MS2Ptr<CItemData> spData)
 {
-    if (!(spData == 0))
+    if (spData == 0)
+        return;
+    int nInstrument = FUN_14053de80(spData.operator->());
+    if (::FUN_14166c930(this) == 0x2f)
     {
-        int nInstrument = FUN_14053de80(spData.operator->());
-        if (::FUN_14166c930(this) == 0x2f)
-        {
-            Unk_McState* pState = ::FUN_14166ccb0(this);
-            if (pState != 0 && FUN_140ddfbb0(pState) == nInstrument)
-                return;
-        }
-        vfunc_59(1, 0, 0, 0);
-        StatePlayInstrumentData* pData = new StatePlayInstrumentData(MS2Ptr<CItemData>(spData), 0);
-        vfunc_59(0x2f, pData, 0x7d, 0);
-        ::FUN_14166cc40(this, 0x7f);
+        Unk_McState* pState = ::FUN_14166ccb0(this);
+        if (pState != 0 && FUN_140ddfbb0(pState) == nInstrument)
+            return;
     }
+    vfunc_59(1, 0, 0, 0);
+    __int64 nItemUid = 0;
+    vfunc_59(0x2f, new StatePlayInstrumentData(MS2Ptr<CItemData>(spData), nItemUid), 0x7d, 0);
+    ::FUN_14166cc40(this, 0x7f);
 }
 
 // @0x1409f4750
@@ -695,7 +695,15 @@ void AvatarPC::FUN_1409f4750(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
         return;
     if (!FUN_14053cc80(spData.operator->()))
         return;
-    if (m_spRidee == 0)
+    if (m_spRidee)
+    {
+        bool bChanged = m_spRidee->FUN_141085880() &&
+                        m_spRidee->FUN_141085880()->FUN_14053c510() != spData->FUN_14053c510();
+        m_spRidee->vfunc_58(MS2Ptr<CItemData>(spData), MS2Ptr<CItem>(spItem));
+        if (!bChanged)
+            return;
+    }
+    else
     {
         AvatarRidee* pRidee = FUN_1409f92d0(MS2Ptr<CItemData>(spData), MS2Ptr<CItem>(spItem));
         if (pRidee != 0)
@@ -706,19 +714,10 @@ void AvatarPC::FUN_1409f4750(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
                 pRidee->FUN_141085ab0(this);
         }
     }
-    else
-    {
-        bool bChanged = false;
-        if (m_spRidee->FUN_141085880().get() != 0)
-            bChanged = m_spRidee->FUN_141085880()->FUN_14053c510() != spData->FUN_14053c510();
-        m_spRidee->vfunc_58(MS2Ptr<CItemData>(spData), MS2Ptr<CItem>(spItem));
-        if (!bChanged)
-            return;
-    }
     vfunc_59(1, 0, 0, 0);
     vfunc_19(m_kPos);
     ::FUN_14166d8e0(this, m_kDir);
-    if (m_spRidee != 0)
+    if (m_spRidee)
     {
         m_spRidee->vfunc_19(m_kPos);
         m_spRidee->vfunc_21(m_kDir);
@@ -741,20 +740,16 @@ void AvatarPC::FUN_1409f4cf0(unsigned a, unsigned b)
 // @0x1409f4d80
 void AvatarPC::FUN_1409f4d80(MS2Ptr<CItem> spItem)
 {
-    if (!(spItem == 0))
-    {
-        if (FUN_140527840(spItem.operator->()) != 0)
-        {
-            FUN_141270bf0(::FUN_14165f460(this), MS2Ptr<CItem>(spItem));
-            int nKind = FUN_14053e900(FUN_140527840(spItem.operator->()));
-            if (nKind == 5)
-                FUN_1409f68e0(MS2Ptr<CItem>(spItem));
-            else if (nKind == 8)
-                FUN_1409f6950(MS2Ptr<CItem>(spItem));
-            else if (nKind == 6)
-                FUN_1409f6db0(MS2Ptr<CItem>(spItem));
-        }
-    }
+    if (spItem == 0 || FUN_140527840(spItem.operator->()) == 0)
+        return;
+    FUN_141270bf0(::FUN_14165f460(this), MS2Ptr<CItem>(spItem));
+    int nKind = FUN_14053e900(FUN_140527840(spItem.operator->()));
+    if (nKind == 5)
+        FUN_1409f68e0(MS2Ptr<CItem>(spItem));
+    else if (nKind == 8)
+        FUN_1409f6950(MS2Ptr<CItem>(spItem));
+    else if (nKind == 6)
+        FUN_1409f6db0(MS2Ptr<CItem>(spItem));
 }
 
 // @0x1409f4f20
@@ -890,7 +885,7 @@ void AvatarPC::FUN_1409f5560(NiNodePtr spNode)
         FUN_1409f67a0(NiNodePtr(m_spExternalRoot));
         FUN_141568d80(m_spExternalRoot);
     }
-    if (m_spExternalRoot != 0)
+    if (m_spExternalRoot)
     {
         m_spExternalRoot->AttachChild(spNode, false);
         FUN_141568d80(spNode);
@@ -912,8 +907,8 @@ void AvatarPC::FUN_1409f5750(NiNodePtr spNode)
 // @0x1409f5830
 void AvatarPC::FUN_1409f5830()
 {
-    if (m_spExternalRoot != 0)
-        FUN_140980530(m_spExternalRoot);
+    if (m_spExternalRoot)
+        FUN_140980530(m_spExternalRoot.operator->());
     FUN_141087390();
 }
 
@@ -1711,9 +1706,10 @@ Unk_UgcDownloadInfo::Unk_UgcDownloadInfo(int nKind)
 // ---- small exe functions of the range that other units only declare ----
 
 // @0x1409f7320
-void FUN_1409f7320(efd::Matrix3* pMat)
+efd::Matrix3* FUN_1409f7320(efd::Matrix3* pMat)
 {
-    new (pMat) efd::Matrix3();
+    FUN_1409f72e0(pMat);
+    return pMat;
 }
 
 // @0x1409f72f0
