@@ -43,16 +43,19 @@ MinimapViewport::MinimapViewport()
     FUN_1414863e0();
 }
 
+// MS2-FUNCTIONAL: exe copies m_vecCamRot twice with rep movsb (local + by-value arg: a trivially copyable point,
+//   NiPoint3/efd::Point3) while Unk_GVec3 (fielddatacli.h) declares a copy ctor 0x14027dcf0 -> 2 extra calls and a
+//   different local slot order; needs the camera-vector type recovery in fielddatacli.h
 // @0x141485770
 unsigned MinimapViewport::FUN_141485770(int nScale)
 {
     FUN_1414863e0();
     MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (spField.get() != 0)
+    if (spField ? true : false)
     {
-        MS2Ptr<CMinimap> spMinimap = spField->m_spMinimap;
-        if (spMinimap.get() != 0)
+        if (spField->m_spMinimap ? true : false)
         {
+            MS2Ptr<CMinimap> spMinimap = spField->m_spMinimap;
             m_kFrustum = spMinimap->m_frustum;
             m_rcImage = spMinimap->m_rcImage;
             m_rcScreen = spMinimap->m_rcScreen;
@@ -68,7 +71,7 @@ unsigned MinimapViewport::FUN_141485770(int nScale)
                 return 0;
             if (nScale > 0)
                 m_fScale = (float)nScale / FUN_141486d90(spMinimap->m_rcImage);
-            return 1;
+                return 1;
         }
     }
     return 0;
