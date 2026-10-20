@@ -39,6 +39,7 @@ struct Unk_PCEquipSet
     void FUN_1411e7640();                                   // the look changed (flag 50; additionalcli.cpp)
     void* FUN_1411e2440(int nKind);                         // the worn items of an equip layer, NULL when none (uiclosetdialog.cpp)
     int FUN_1411e0ba0();                                    // RefreshModel (returns 1; equipitem.cpp)
+    float FUN_1411e0f90(float fDistance);                   // the knock-back distance after the equipment's resistances
     void FUN_1411e3d20(ATL::CAtlList<MS2Ptr<CEquipItem> >& aItems, int n);   // unequip a list of items (equipitem.cpp)
     void FUN_1411e46b0(MS2Ptr<CEquipItem> spItem);          // an item's models were loaded (by value; equipitem.cpp)
     void FUN_1411e4b30(MS2Ptr<CEquipItem> spItem);          // an item's models were dropped (by value; equipitem.cpp)
@@ -186,7 +187,7 @@ public:
     virtual int vfunc_145();                                // 145 0x141661be0: return 1 (ClonePC: 0)
     virtual bool vfunc_146();                               // 146 0x141662e50
     // PC TU members (w539)
-    void FUN_141653740(int nTargetId, void* p, int nKind, int nFlag);   // an effect event of a target
+    void FUN_141653740(int nTargetId, int nCasterId, int nKind, int nFlag);   // an effect event of a target
     JobSystemCli* FUN_1416546d0();                          // the job system
     int FUN_141654730();
     int FUN_141654760();
@@ -202,6 +203,7 @@ public:
     int FUN_1416566f0();                                    // +0xd68
     void FUN_141656710();                                   // refresh the stance and the buffs after an equip change
     int FUN_141656750();                                    // the equipment is ready
+    int FUN_1416538d0(CDamageRecord* pRecord);              // the hit is guarded (no hit reaction)
     int FUN_141653f00();                                    // rebuild the weapon stance from the worn weapons (changed: 1)
     __int64 FUN_141656ad0();                                // +0xdc0
     int FUN_14165ef30();                                    // this is the local player
@@ -322,6 +324,7 @@ public:
     MS2Ptr<CWeaponAction> FUN_14165c520();                  // +0xd70
     Unk_PCActionTimer* FUN_14165ca20();                     // +0xfc8
     Unk_PCActionTimer* FUN_14165ca50();                     // +0xfc8 while active
+    void FUN_141660d50();                                   // the default collision box
     void FUN_141660df0();                                   // (empty)
     void FUN_1416615f0(float fDelta);                       // the +0x1054 timer tick
     void FUN_1416616a0(unsigned int nDelay);                // schedule the +0x1054 timer

@@ -49,7 +49,15 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\pc.cpp"   // assumed (no __FILE__ in the TU)
 #include "ms2/placeholder/ms2stdafx.h"
+#include <egmAnimation/AnimationService.h>
 #include "ms2/placeholder/fittingdollpc.h"
+#include "ms2/commonfiles/skillattackdata.h"
+#include "ms2/client/ms2/skillrecord.h"
+#include "ms2/client/ms2/dpsmetersystem.h"
+#include "ms2/client/ms2/autofindtaxistation.h"
+#include "ms2/placeholder/pcgemequip.h"
+#include "ms2/placeholder/cpceffectdummy.h"
+#include "ms2/client/ms2/bonerotateinterpolator.h"
 #include "ms2/client/ms2/additionalcli.h"
 #include "ms2/placeholder/state.h"
 #include "ms2/placeholder/clientconstants.h"
@@ -167,6 +175,9 @@ public:
     int FUN_141bc9830(int* pnId, CString* pstrName, float fRange, int n);   // the nearest holdable target
     MS2Ptr<CProxyGameObject> FUN_141bc9c60(__int64 nId);            // the proxy of a player by id
     int FUN_141bca2e0();                                            // the field is loaded
+    void FUN_141bca390(unsigned int nObjectId);                     // the player model is ready (quick equip)
+    int FUN_141bd19d0(int nObjectId);                               // the relation of an object (1: the local player)
+    int FUN_141bd3060();                                            // the current map id
 };
 Unk_PCWorld* FUN_1403ed2d0();
 // The effect service (FUN_1403ed280).
@@ -175,8 +186,23 @@ class Unk_PCFxMgr
 public:
     void FUN_1411a5770(int nKind, PCBase* pTarget);                 // play an event effect on an actor
     void FUN_1411a6060(unsigned nId);                               // stop the effects of an id
+    unsigned FUN_1411a5580(int nMaterial, int nKind, int nRelation, const NiPoint3& kPos, float fVolume);   // play a hit sound
 };
 Unk_PCFxMgr* FUN_1403ed280();
+// The controller body (PCBase +0x150; unit_14123f5b0.cpp's GameObjectController).
+class Unk_PCBaseBody
+{
+public:
+    void FUN_14123fbf0(unsigned short nGroup);                      // collision group of every shape
+    void FUN_14123fd30(unsigned int nGroups);                       // the active groups
+};
+// The animation service singleton (statefall.h declares the global FUN_141b6f910 with a unit-local view type).
+namespace PCAnim { egmAnimation::AnimationService* FUN_141b6f910(); }
+NiAVObject* FUN_141b6ef70(egf::EntityID kId);                       // the scene graph of an entity
+void FUN_141567330(NiAVObject* pRoot, bool b);                      // (the model was loaded)
+extern float DAT_1439f8210;                                         // the hit colour boost (0.7, 0.1, 0.1)
+extern float DAT_1439f8214;
+extern float DAT_1439f8218;
 // The pvp manager (FUN_140f97ef0).
 class Unk_PCPvPMgr
 {
@@ -220,6 +246,7 @@ public:
     int FUN_141622790() const;                                      // the visibility limit is on
     int FUN_14161cf40() const;                                      // others are shown
     int FUN_140ddcc90();                                            // the low-spec mode
+    void FUN_14161cf60(PCBase* pPC);                                // register a loaded player
 };
 Unk_PCEquipConfig* FUN_1409f7c90();
 // The dialogs 0x4e96 / 0x4ec4 (FUN_141531c80 / FUN_141531be0): the hp of a party member changed.
@@ -347,8 +374,9 @@ public:
 };
 Unk_PCNotices* FUN_140939a10();
 
-// The +0xd88 record (clonepc.cpp has the same stand-in) and the +0xfd8 record (create 0x141993100).
-class Unk_PCD88 : public CPtred {};
+// The +0xd88 record is the head CBoneRotateManager (vfunc_12 news it; clonepc.cpp/stateidle.cpp keep the
+// Unk_PCD88 name, which the exe's MS2Ptr COMDAT symbols carry) and the +0xfd8 record (create 0x141993100).
+class Unk_PCD88 : public CBoneRotateManager {};
 class Unk_PCLinkFD8 : public CPtred {};
 // The action timer at +0xfc8 (avatarpc.cpp has the same stand-in).
 class Unk_PCActionTimer : public CPtred
@@ -550,6 +578,305 @@ void PC::vfunc_9(void* p)
     FUN_14098c6e0(p, 0xa0b6b179, m_bD40 ? false : true);
 }
 
+// @0x141651370
+int PC::vfunc_10()
+{
+    PCBase::vfunc_10();
+    m_unk_150->FUN_14123fbf0(2);
+    m_unk_150->FUN_14123fd30(0x399);
+    FUN_141660d50();
+    bool bHurt = FUN_141670a00(4) != FUN_141670a30(4);
+    if (bHurt)
+        FUN_141670180(false);
+    const int& nClassID = GetClassID();
+    if (nClassID == 0x6200003 || nClassID == 0x6200004)
+    {
+        efd::AssetID kId((const char*)FUN_14123bbd0(), 0, efd::AssetID::NEVER_CACHE);
+        efd::vector<egmAnimation::KFMCache::KFMCacheHandle> kHandles;
+        if (!PCAnim::FUN_141b6f910()->Cache(kId, 0, s_category, kHandles))
+            PCAnim::FUN_141b6f910()->UnCacheHandles(kHandles);
+    }
+    return 1;
+}
+
+// MS2-FUNCTIONAL: written from the decompile (temporaries and the effect-dummy loop differ)
+// @0x1416515a0
+void PC::vfunc_12()
+{
+    PCBase::vfunc_12();
+    NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410());
+    if (pRoot != 0)
+    {
+        vfunc_138(pRoot, 0, reinterpret_cast<const Unk_CharEquip*>(&m_colorD98[0]));
+        vfunc_138(pRoot, 2, reinterpret_cast<const Unk_CharEquip*>(&m_colorD98[1]));
+        if (vfunc_145())
+        {
+            m_spD88.AssignRaw(static_cast<Unk_PCD88*>(new CBoneRotateManager));
+            m_spD88->FUN_140a34b80(this, CString("Bip01 Head"));
+        }
+        FUN_141567330(pRoot, true);
+    }
+    vfunc_143();
+    size_t nCount = CPCEffectDummy::GetInstance()->GetCount(FUN_141658e60());
+    CEffectDummy kDummy;
+    for (size_t i = 0; i < nCount; i++)
+    {
+        if (CPCEffectDummy::GetInstance()->Get(FUN_141658e60(), (unsigned int)i, kDummy))
+            FUN_141674ef0(kDummy);
+    }
+    if (FUN_141661860())
+    {
+        if (m_pCubeCraft != 0)
+            delete m_pCubeCraft;
+        m_pCubeCraft = new Unk_PCCubeCraft(this, m_n1018, m_spCube1008.get());
+        m_pCubeCraft->FUN_1410a8af0(true);
+        FUN_141661880(0, 0, 0);
+    }
+    if (FUN_14165f100() == 0 && m_n1038 != 0)
+        FUN_14165f1f0(m_n1038, 1);
+    m_n1038 = 0;
+    m_kGemEquip1078.FUN_141270610();
+    MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(FUN_14165f460())->FUN_141270740(2);
+    if (spGem.get())
+        spGem->vfunc_8();
+    FUN_1409f7c90()->FUN_14161cf60(this);
+    if (DAT_143ae2b38 != 0)
+    {
+        if (NiAVObject* pModel = FUN_141b6ef70(FUN_14123c460()))
+        {
+            NiFixedString kName("Bip01 HeadNub");
+            m_sp12d8 = pModel->GetObjectByName(kName);
+        }
+    }
+    if (FUN_1409f7c90()->FUN_1409f7ea0())
+        FUN_1403ed2d0()->FUN_141bca390(FUN_14123c580());
+    MS2Ptr<Unk_PCBaseComp_ab8> spComp = vfunc_86();
+    if (spComp)
+        spComp->vfunc_2();
+}
+
+// MS2-FUNCTIONAL: written from the decompile
+// @0x141652080
+void PC::vfunc_33(void* a, void* b)
+{
+    CDamageRecord* pRecord = static_cast<CDamageRecord*>(a);
+    GameObject::vfunc_33(a, b);
+    vfunc_107(MS2Ptr<CDamageRecord>(pRecord), 1.0f);
+    SkillAttackData* pAttack = pRecord->FUN_14175a8b0();
+    if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
+        m_unk_748.FUN_14096fb20(1);
+    int nOwnerRel = FUN_1403ed2d0()->FUN_141bd19d0(pRecord->m_nOwnerId);
+    int nCasterRel = FUN_1403ed2d0()->FUN_141bd19d0(pRecord->m_nCasterId);
+    if (nCasterRel == 1)
+        CAutoFindTaxiStation::GetInstance()->FUN_1409f1a00();
+    bool bReact = m_unk_748.FUN_140970c10(pRecord->FUN_14175a8b0(), 0) == 0;
+    int nMapId = FUN_1403ed2d0()->FUN_141bd3060();
+    bool bPush = false;
+    if (FUN_14166c930() == 0x2b)
+    {
+        if (pRecord->FUN_14175a8b0()->m_damage.GetPush(nMapId) != 0 && pRecord->FUN_14175a8b0()->m_eGrabTargetType != 1)
+            bPush = true;
+        else if (pRecord->FUN_14175a8b0()->m_eGrabTargetType == 2)
+            bPush = true;
+    }
+    else
+    {
+        if (FUN_14166c930() == 0xd)
+        {
+            StateHit* pHit = static_cast<StateHit*>(FUN_14166ccb0());
+            if (pHit->FUN_1417cb2a0() && pRecord->FUN_14175a8b0()->m_damage.m_nPushPriorityHitImmune != 0)
+            {
+                int nPriority = pHit->FUN_1417cb2f0();
+                if (pRecord->FUN_14175a8b0()->m_damage.m_nPushPriority <= nPriority)
+                    bReact = false;
+            }
+        }
+        bool bNoGuard = false;
+        if (bReact)
+            bNoGuard = FUN_1416538d0(pRecord) == 0;
+        bReact = false;
+        if (bNoGuard)
+            bReact = !FUN_141660120();
+    }
+    if (pRecord->FUN_14175ac30() < 0 || bPush)
+    {
+        State* pState = FUN_14166ccb0();
+        bool bHit = false;
+        if (bReact)
+        {
+            int nPush = pRecord->FUN_14175a8b0()->m_damage.GetPush(nMapId);
+            if ((pState->vfunc_14() != 0 && pRecord->vfunc_1() > vfunc_64()) || nPush != 0)
+            {
+                MS2Ptr<StateHitData> spData(new StateHitData);
+                spData->m_f18 = pRecord->FUN_14175a8b0()->m_damage.m_fHitSpeedRate;
+                spData->m_f1c = pRecord->FUN_14175a8b0()->m_damage.m_fHitPauseTime;
+                spData->m_f24 = pRecord->FUN_14175a8b0()->m_damage.m_fPushDuration;
+                SkillAttackData* pPush = pRecord->FUN_14175a8b0();
+                spData->m_f20 = FUN_1416561a0()->FUN_1411e0f90(pPush->m_damage.m_fPushDistance);
+                spData->m_f28 = pRecord->FUN_14175a8b0()->m_damage.m_fPushUpDistance;
+                spData->m_n2c = pRecord->FUN_14175a8b0()->m_damage.m_nPushDown;
+                spData->m_n30 = pRecord->FUN_14175a8b0()->m_damage.m_nPushPriority;
+                spData->m_str = pRecord->FUN_14175a8b0()->m_damage.m_strPushAnimation;
+                vfunc_59(0xd, spData, 0, spData->m_f24 > 0.0f);
+                pState = FUN_14166ccb0();
+                bHit = true;
+            }
+        }
+        if (!bHit && (bPush || FUN_14166c930() == 0x2f))
+        {
+            vfunc_59(1, 0, 0, 0);
+            pState = FUN_14166ccb0();
+        }
+        pState->vfunc_6();
+        FUN_141673f70(DAT_1439f8210, DAT_1439f8214, DAT_1439f8218);
+        Common::Constants::Value<float>* pVolume;
+        if (nCasterRel == 1 || nCasterRel == 2)
+            pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
+        else
+            pVolume = &FUN_1401d3200()->VolumeNpcToPc;
+        float fVolume = pVolume->Read();
+        NiPoint3 kPos = vfunc_18();
+        int nMaterial = pRecord->FUN_14175ad50();
+        FUN_1403ed280()->FUN_1411a5580(nMaterial, 1, nOwnerRel, kPos, fVolume);
+    }
+    FUN_141671c20(MS2Ptr<CDamageRecord>(pRecord));
+    if (FUN_14166ce30())
+        FUN_141653740(pRecord->m_nOwnerId, pRecord->m_nCasterId, nOwnerRel, nCasterRel);
+    CDPSMeterSystem::GetInstance()->OnDamage(MS2Ptr<CDamageRecord>(pRecord));
+    vfunc_113(pRecord);
+}
+
+// MS2-FUNCTIONAL: written from the decompile
+// @0x1416529f0
+void PC::vfunc_34(void* p)
+{
+    CDotDamageRecord* pRecord = static_cast<CDotDamageRecord*>(p);
+    GameObject::vfunc_34(p);
+    int nOwnerRel = FUN_1403ed2d0()->FUN_141bd19d0(pRecord->m_nOwnerId);
+    int nCasterRel = FUN_1403ed2d0()->FUN_141bd19d0(pRecord->m_nCasterId);
+    if (pRecord->FUN_14175ac30() < 0)
+    {
+        State* pState = FUN_14166ccb0();
+        if (m_unk_748.FUN_140970b30() == 0 && pState->vfunc_14() != 0 && pRecord->vfunc_1() > vfunc_64())
+        {
+            vfunc_59(0xd, 0, 0, 0);
+            FUN_14166ccb0();
+        }
+    }
+    FUN_141673f70(DAT_1439f8210, DAT_1439f8214, DAT_1439f8218);
+    m_unk_748.FUN_14096fb20(0);
+    MS2Ptr<AdditionalCli> spBuff = m_unk_748.FUN_14096fc80(pRecord->m_nEffectLevel);
+    bool bNone = !spBuff;
+    if (!bNone)
+    {
+        int nMaterial = spBuff->FUN_14096d810()->m_dotDamage.m_nSoundMaterial;
+        if (nMaterial != 0)
+        {
+            Common::Constants::Value<float>* pVolume;
+            if (nCasterRel == 1 || nCasterRel == 2)
+                pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
+            else
+                pVolume = &FUN_1401d3200()->VolumeNpcToPc;
+            float fVolume = pVolume->Read();
+            NiPoint3 kPos = vfunc_18();
+            FUN_1403ed280()->FUN_1411a5580(nMaterial, 1, nOwnerRel, kPos, fVolume);
+        }
+    }
+    FUN_141672020(MS2Ptr<CDotDamageRecord>(pRecord));
+    if (FUN_14166ce30())
+        FUN_141653740(pRecord->m_nOwnerId, pRecord->m_nCasterId, nOwnerRel, nCasterRel);
+    CDPSMeterSystem::GetInstance()->OnDotDamage(MS2Ptr<CDotDamageRecord>(pRecord));
+    vfunc_113(pRecord);
+}
+
+// @0x141652e20
+void PC::vfunc_35(void* p)
+{
+    CSplashDamageRecord* pRecord = static_cast<CSplashDamageRecord*>(p);
+    GameObject::vfunc_35(p);
+    vfunc_107(MS2Ptr<CDamageRecord>(pRecord), 1.0f);
+    SkillAttackData* pAttack = pRecord->FUN_14175a8b0();
+    if (pAttack != 0 && pAttack->m_damage.m_nInvokeEffectDisable == 0)
+        m_unk_748.FUN_14096fb20(1);
+    int nOwnerRel = FUN_1403ed2d0()->FUN_141bd19d0(pRecord->m_nOwnerId);
+    int nCasterRel = FUN_1403ed2d0()->FUN_141bd19d0(pRecord->m_nCasterId);
+    bool bReact = m_unk_748.FUN_140970c10(pRecord->FUN_14175a8b0(), 0) == 0;
+    int nMapId = FUN_1403ed2d0()->FUN_141bd3060();
+    bool bPush = false;
+    if (FUN_14166c930() == 0x2b)
+    {
+        if (pRecord->FUN_14175a8b0()->m_damage.GetPush(nMapId) != 0 && pRecord->FUN_14175a8b0()->m_eGrabTargetType != 1)
+            bPush = true;
+        else if (pRecord->FUN_14175a8b0()->m_eGrabTargetType == 2)
+            bPush = true;
+    }
+    else
+    {
+        if (FUN_14166c930() == 0xd)
+        {
+            StateHit* pHit = static_cast<StateHit*>(FUN_14166ccb0());
+            if (pHit->FUN_1417cb2a0() && pRecord->FUN_14175a8b0()->m_damage.m_nPushPriorityHitImmune != 0)
+            {
+                int nPriority = pHit->FUN_1417cb2f0();
+                if (pRecord->FUN_14175a8b0()->m_damage.m_nPushPriority <= nPriority)
+                    bReact = false;
+            }
+        }
+        bool bNoGuard = false;
+        if (bReact)
+            bNoGuard = FUN_1416538d0(pRecord) == 0;
+        bReact = false;
+        if (bNoGuard)
+            bReact = !FUN_141660120();
+    }
+    if (pRecord->FUN_14175ac30() < 0 || bPush)
+    {
+        State* pState = FUN_14166ccb0();
+        bool bHit = false;
+        if (bReact)
+        {
+            int nPush = pRecord->FUN_14175a8b0()->m_damage.GetPush(nMapId);
+            if ((pState->vfunc_14() != 0 && pRecord->vfunc_1() > vfunc_64()) || nPush != 0)
+            {
+                MS2Ptr<StateHitData> spData(new StateHitData);
+                spData->m_f18 = pRecord->FUN_14175a8b0()->m_damage.m_fHitSpeedRate;
+                spData->m_f1c = pRecord->FUN_14175a8b0()->m_damage.m_fHitPauseTime;
+                SkillAttackData* pPush = pRecord->FUN_14175a8b0();
+                spData->m_f20 = FUN_1416561a0()->FUN_1411e0f90(pPush->m_damage.m_fPushDistance);
+                spData->m_f24 = pRecord->FUN_14175a8b0()->m_damage.m_fPushDuration;
+                spData->m_f28 = pRecord->FUN_14175a8b0()->m_damage.m_fPushUpDistance;
+                spData->m_n2c = pRecord->FUN_14175a8b0()->m_damage.m_nPushDown;
+                spData->m_n30 = pRecord->FUN_14175a8b0()->m_damage.m_nPushPriority;
+                spData->m_str = pRecord->FUN_14175a8b0()->m_damage.m_strPushAnimation;
+                vfunc_59(0xd, spData, 0, spData->m_f24 > 0.0f);
+                pState = FUN_14166ccb0();
+                bHit = true;
+            }
+        }
+        if (!bHit && bPush)
+        {
+            vfunc_59(1, 0, 0, 0);
+            pState = FUN_14166ccb0();
+        }
+        pState->vfunc_6();
+        FUN_141673f70(DAT_1439f8210, DAT_1439f8214, DAT_1439f8218);
+        Common::Constants::Value<float>* pVolume;
+        if (nCasterRel == 1 || nCasterRel == 2)
+            pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
+        else
+            pVolume = &FUN_1401d3200()->VolumeNpcToPc;
+        float fVolume = pVolume->Read();
+        NiPoint3 kPos = vfunc_18();
+        int nMaterial = pRecord->FUN_14175ad50();
+        FUN_1403ed280()->FUN_1411a5580(nMaterial, 1, nOwnerRel, kPos, fVolume);
+    }
+    FUN_1416721d0(MS2Ptr<CSplashDamageRecord>(pRecord));
+    if (FUN_14166ce30())
+        FUN_141653740(pRecord->m_nOwnerId, pRecord->m_nCasterId, nOwnerRel, nCasterRel);
+    CDPSMeterSystem::GetInstance()->OnSplashDamage(MS2Ptr<CSplashDamageRecord>(pRecord));
+    vfunc_113(pRecord);
+}
+
 // @0x141651bb0
 void PC::vfunc_14()
 {
@@ -634,7 +961,7 @@ void PC::vfunc_31(bool enabled)
 MS2_REPLACE_METHOD(0x141652030, PC, vfunc_31, 61, 0x5A226AF8);
 
 // @0x141653740
-void PC::FUN_141653740(int nTargetId, void* p, int nKind, int nFlag)
+void PC::FUN_141653740(int nTargetId, int nCasterId, int nKind, int nFlag)
 {
     if (nKind == 6)
     {
@@ -2222,6 +2549,14 @@ MS2Ptr<Unk_PCBaseComp_a58> PC::vfunc_80()
         return m_spA58;
     }
     return MS2Ptr<Unk_PCBaseComp_a58>(0);
+}
+
+// @0x141660d50
+void PC::FUN_141660d50()
+{
+    efd::Point3 kSize(70.0f, 35.0f, 150.0f);
+    efd::Point3 kOffset(0.0f, 35.0f, 0.0f);
+    FUN_141670fd0(kSize, kOffset);
 }
 
 // ---- end of code ----
