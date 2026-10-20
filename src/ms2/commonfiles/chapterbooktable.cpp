@@ -34,6 +34,7 @@
 // MS2-PIN: ??1ItemEntity@@UEAA@XZ 0x1401dc170
 // MS2-PIN: ??$StringFormat@_K@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEB_K@Z 0x1401d9af0 ; hand
 // MS2-PIN: ??$?0AEAHAEAH$0A@@?$pair@HH@std@@QEAA@AEAH0@Z 0x1401d9970 ; hand
+// MS2-FUNCTIONAL ??$?0AEAHAEAH$0A@@?$pair@HH@std@@QEAA@AEAH0@Z: the exe copy at 0x1401d9970 (called by make_pair<int&,int&> 0x1401db630) is a leaf that stores both ints without std::forward calls; the toolchain pair<int,int>(int&,int&) forwards through 2 calls (the forwarding copy other units bind is 0x1404d9610)
 // MS2-PIN: ??$forward@AEAH@std@@YAAEAHAEAH@Z 0x1401db5b0 ; hand
 // MS2-PIN: ??$forward@H@std@@YA$$QEAHAEAH@Z 0x1401db5a0 ; hand
 // MS2-PIN: ??0?$MakeValue@V?$BasicFormatter@D@fmt@@@internal@fmt@@QEAA@_K@Z 0x1401db8f0 ; hand
