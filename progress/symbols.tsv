@@ -183861,7 +183861,7 @@ _stricmp	14209b200	func
 ?GetSenderCategory@IMessage@efd@@UEBAAEBVCategory@2@XZ	1420b12c0	func
 ?Serialize@AssetLoadResponse@efd@@UEAAXAEAVArchive@2@@Z	1420b1a20	func
 ?GetPerformanceCounter@efd@@YAIXZ	1420b1a40	func
-?DirectoryExists@File@efd@@SA_NPEBD@Z	1420b1ae0	func
+?DirectoryExists@File@efd@@SA_NPEBD@Z	1420b18a0	func
 ?Standardize@PathUtils@efd@@YA_NPEAD@Z	1420b4140	func
 ??0ConfigManager@efd@@QEAA@AEBVutf8string@1@HPEAPEAD_N@Z	1420b4300	func
 ??0DebugOutDestination@efd@@QEAA@AEBVutf8string@1@_N11@Z	1420b52f0	func

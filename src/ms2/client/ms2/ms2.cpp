@@ -2374,7 +2374,7 @@ MS2_REPLACE_METHOD(0x141491D00, CGameApp, ExitInstance, 61, 0x9C90861C);
 EngineLog::EngineLog()
 {
     s_strEngineLogFile = "MS2Log.txt";
-    if (!efd::File::DirectoryExists("ms2log"))
+    if (!efd::File::DefaultDirectoryExistsFunc("ms2log"))
         FUN_1414a5a40(CStringW(L"ms2log"));
     Unk_EngineLogLock lock(s_engineLogLock, 1);
     if (s_pEngineLogFile == 0) {
