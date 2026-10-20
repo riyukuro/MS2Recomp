@@ -21,6 +21,7 @@ public:
     bool FUN_1422ce0e0();                                           // "selected"
     void FUN_1422cdf20(bool bVisible);                              // show the label (uidungeonsearchsettingdialog)
     void FUN_1422cdfb0(const CStringW& strText);                    // set the label text
+    void FUN_1422cdf50(const CString& strLabel);                    // set the label from a "$key" text (uidungeonroomdialog)
     // Registers the click callback with a pointer-sized user value (Params::pUserData).
     void FUN_1422ce320(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);
 };

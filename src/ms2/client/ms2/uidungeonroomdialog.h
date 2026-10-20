@@ -114,8 +114,8 @@ public:
     void FUN_1412b3b40();                                           // 0x1412b3b40
     void FUN_1412b3e90();                                           // 0x1412b3e90
     void FUN_1412b3fe0();                                           // 0x1412b3fe0
-    void FUN_1412b4100();                                           // 0x1412b4100
-    void FUN_1412b4150();                                           // 0x1412b4150
+    CStringW FUN_1412b4100();                                       // 0x1412b4100 the party status text (m_strBanner)
+    void FUN_1412b4150(MS2Ptr<DungeonRoom> spRoom);                 // 0x1412b4150 set the room
     void OnEnterSolo(const ASParams& params);                       // 0x1412b41a0
     void OnEnterParty(const ASParams& params);                      // 0x1412b4220
     void OnPartySearch(const ASParams& params);                     // 0x1412b4330
@@ -145,7 +145,7 @@ public:
     int GetClearCount();                                            // 0x1412b6360
     int GetMemberClearCount(MS2Ptr<CPartyMember> spMember);         // 0x1412b63d0
     CString GetCountColor(int nState);                              // 0x1412b6480
-    void FUN_1412b6530();                                           // 0x1412b6530
+    CStringW FUN_1412b6530(int nState, CStringW strName);           // 0x1412b6530 a party member's status tooltip line
     int IsCooldown();                                               // 0x1412b6bb0
 
     UIDungeonRoomDialog* m_pOwner;                                  // +0x18
