@@ -55,6 +55,7 @@ MS2_CHECK_SIZE(Unk_NiPoint3, 12);
 struct Unk_EfdMatrix3
 {
     Unk_EfdMatrix3() {}
+    Unk_EfdMatrix3(const Unk_NiPoint3& col0, const Unk_NiPoint3& col1, const Unk_NiPoint3& col2);   // 0x142083420
     void FUN_142083420(const Unk_NiPoint3& col0, const Unk_NiPoint3& col1, const Unk_NiPoint3& col2);
     void FUN_142083d40(float fX, float fY, float fZ);               // efd::Matrix3::FromEulerAnglesXYZ (radians)
     bool FUN_142085840(float& fX, float& fY, float& fZ) const;      // efd::Matrix3::ToEulerAnglesXYZ
@@ -75,8 +76,8 @@ struct Unk_NiMatrix3 : public Unk_EfdMatrix3
     Unk_NiMatrix3() {}
     // 0x140a0a480 -> efd::Matrix3::Matrix3(col0, col1, col2) 0x142083420
     Unk_NiMatrix3(const Unk_NiPoint3& col0, const Unk_NiPoint3& col1, const Unk_NiPoint3& col2)
+        : Unk_EfdMatrix3(col0, col1, col2)
     {
-        FUN_142083420(col0, col1, col2);
     }
     // 0x140a33240: converts an efd::Matrix3 (memcpy)
     Unk_NiMatrix3(const Unk_EfdMatrix3& m)
