@@ -410,6 +410,10 @@ public:
     unsigned FUN_1422df620();                                       // the entry count
     void FUN_1422df690(int nIndex);                                 // select an entry
     int FUN_1422df6c0();                                            // the selected entry
+    void FUN_1422df5f0(int nRowCount);                              // the number of visible rows
+    unsigned FUN_1422dfb90();                                       // the item count
+    void FUN_1422dfc10();                                           // remove every entry
+    void FUN_1422dfc70(const ASObj& item);                          // add an item
 };
 
 // The messenger settings element (messengerdata.cpp's view): children by name.
@@ -541,7 +545,12 @@ public:
 };
 MS2Ptr<Unk_MsgEmotionKeywords> FUN_140347050(int nEmotionId);
 
-class Unk_MsgStrings { public: CStringW FUN_1422af5f0(int nId); };   // the UI string table
+class Unk_MsgStrings
+{
+public:
+    CStringW FUN_1422af5f0(int nId);                                // the UI string table
+    CStringW FUN_1422b0570(const CString& strKey);                  // the text of a "$..." key
+};
 Unk_MsgStrings* FUN_14025e7a0();
 CStringW FUN_14028de60(int nStringId);
 CStringW FUN_1409e97f0(int nStringId, const int& n);                // a string with one number
@@ -2572,7 +2581,12 @@ public:
     unsigned FUN_140ae5240(const CStringW& strName);                // blocked by name
 };
 Unk_MbBuddies* FUN_14097a780();
-class Unk_MbFeatures { public: bool FUN_14036d570(int nFeature); };
+class Unk_MbFeatures
+{
+public:
+    bool FUN_14036d570(int nFeature);
+    bool FUN_14036e5b0();                                           // the meret market is off
+};
 Unk_MbFeatures* FUN_140166410();
 class Unk_MbReserved { public: void FUN_1416fb340(CStringW& str); };
 Unk_MbReserved* FUN_1403b4750();
@@ -4403,4 +4417,167 @@ int UIMessenger::FUN_141a10fd0(CStringW strText, CStringW strHtml, bool bLinks)
     }
     FUN_141a10660(nType, CStringW(strMsg), CStringW(strTarget), nClubId);
     return 1;
+}
+
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);   // a message box
+void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                      // shows a message box
+int FUN_1403bb830();                                                // the world chat price
+int FUN_1403bb850();                                                // the channel chat price
+
+// MS2-FUNCTIONAL: temporaries differ from the exe (functional-first)
+// @0x141a12380
+bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
+{
+    if (nType == 0x10 && FUN_1409a8b10()->FUN_140ae6540()->m_b[0])
+    {
+        MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pMe == 0)
+            return false;
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(pMe->FUN_1416639e0());
+        if (spItem == 0)
+            return false;
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, FUN_14028de60(0xaa1), 0, CStringW(L""));
+        if (spBox.get() != 0)
+        {
+            spBox->FUN_140b76940(CStringW(strText));
+            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            CStringW strName = spItem->FUN_140527b10();
+            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), strName, 1, 1, 1, -1, 1);
+            spBox->FUN_141a01800(1);
+            spBox->FUN_141a02670(!FUN_140166410()->FUN_14036e5b0());
+            spBox->FUN_141a024e0(FUN_14028de60(0xaa4), 0);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0f9d0));
+            FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
+            return true;
+        }
+    }
+    if (nType == 0xb && FUN_1409a8b10()->FUN_140ae6540()->m_b[1])
+    {
+        int nPrice = FUN_1403bb830();
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, FUN_1409e97f0(0xaa2, nPrice), 0, CStringW(L""));
+        if (spBox.get() != 0)
+        {
+            spBox->FUN_140b76940(CStringW(strText));
+            spBox->FUN_141a01800(1);
+            spBox->FUN_141a02670(!FUN_140166410()->FUN_14036e5b0());
+            spBox->FUN_141a024e0(FUN_14028de60(0xaa4), 0);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fb40));
+            FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
+            return true;
+        }
+    }
+    if (nType == 0xc && FUN_1409a8b10()->FUN_140ae6540()->m_b[2])
+    {
+        int nPrice = FUN_1403bb850();
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, FUN_1409e97f0(0xaa3, nPrice), 0, CStringW(L""));
+        if (spBox.get() != 0)
+        {
+            spBox->FUN_140b76940(CStringW(strText));
+            spBox->FUN_141a01800(1);
+            spBox->FUN_141a02670(!FUN_140166410()->FUN_14036e5b0());
+            spBox->FUN_141a024e0(FUN_14028de60(0xaa4), 0);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0fcb0));
+            FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
+            return true;
+        }
+    }
+    return false;
+}
+
+template <class T> inline T Unk_HpxMin(T a, T b) { return a < b ? a : b; }
+void FUN_14183ea40(int nItemId, CStringW& strIconPath);             // the icon of an item
+int FUN_1403bb8a0();                                                // the world chat original price
+int FUN_1403bb8d0();                                                // the channel chat original price
+extern unsigned long DAT_1439f87d0;                                 // the subject colours: social
+extern unsigned long DAT_1439f87e8;                                 // party
+extern unsigned long DAT_1439f87ec;                                 // guild
+extern unsigned long DAT_1439f87f0;                                 // super
+extern unsigned long DAT_1439f87f4;                                 // world
+extern unsigned long DAT_1439f87f8;                                 // channel
+
+// MS2-FUNCTIONAL: temporaries differ from the exe (functional-first)
+// @0x141a14dc0
+void UIMessenger::FUN_141a14dc0()
+{
+    MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return;
+    FUN_141a13e00();
+    MS2Ptr<ASDropdownMenu> spSubject = m_subject;
+    if (spSubject == 0)
+        return;
+    spSubject->FUN_1422dfc10();
+    spSubject->FUN_1422c1fe0(1);
+    if (!m_pBrowser->FUN_141a264c0(0x10))
+    {
+        int nItemId = pMe->FUN_1416639e0();
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(nItemId);
+        if (spItem == 0)
+            nItemId = 0;
+        CStringW strIcon;
+        FUN_14183ea40(nItemId, strIcon);
+        ASObj item(2);
+        item.FUN_1409c0dc0(s_strFrame, "super");
+        item.FUN_1407cbb20(s_strIconPath, CStringW(strIcon));
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_super")));
+        item.FUN_1409c4990(s_strColor, DAT_1439f87f0);
+        spSubject->FUN_1422dfc70(item);
+    }
+    if (!m_pBrowser->FUN_141a264c0(0xb))
+    {
+        ASObj item(2);
+        item.FUN_1409c0dc0(s_strFrame, "world");
+        item.FUN_1409c0d20(s_strPrice, FUN_1403bb830());
+        item.FUN_1409c0d20(s_strOriginPrice, FUN_1403bb8a0());
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_world")));
+        item.FUN_1409c4990(s_strColor, DAT_1439f87f4);
+        spSubject->FUN_1422dfc70(item);
+    }
+    if (!m_pBrowser->FUN_141a264c0(0xc))
+    {
+        ASObj item(2);
+        item.FUN_1409c0dc0(s_strFrame, "channel");
+        item.FUN_1409c0d20(s_strPrice, FUN_1403bb850());
+        item.FUN_1409c0d20(s_strOriginPrice, FUN_1403bb8d0());
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_channel")));
+        item.FUN_1409c4990(s_strColor, DAT_1439f87f8);
+        spSubject->FUN_1422dfc70(item);
+    }
+    if (!m_pBrowser->FUN_141a264c0(0))
+    {
+        ASObj item(2);
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_social")));
+        item.FUN_1409c4990(s_strColor, DAT_1439f87d0);
+        spSubject->FUN_1422dfc70(item);
+    }
+    if (!m_pBrowser->FUN_141a264c0(7))
+    {
+        ASObj item(2);
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_party")));
+        item.FUN_1409c4990(s_strColor, DAT_1439f87e8);
+        spSubject->FUN_1422dfc70(item);
+    }
+    if (!m_pBrowser->FUN_141a264c0(8))
+    {
+        ASObj item(2);
+        item.FUN_1407cbb20(s_strLabel, FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_guild")));
+        item.FUN_1409c4990(s_strColor, DAT_1439f87ec);
+        spSubject->FUN_1422dfc70(item);
+    }
+    if (!m_pBrowser->FUN_141a264c0(0x12))
+    {
+        ASObj item(2);
+        item.FUN_1409c0dc0(s_strFrame, "guildMegaphone");
+        item.FUN_1407cbb20(s_strLabel,
+                           FUN_14025e7a0()->FUN_1422b0570(CString("$s_talkpanelsetting_guild_megaphone")));
+        item.FUN_1409c4990(s_strColor, DAT_1439f87ec);
+        spSubject->FUN_1422dfc70(item);
+    }
+    if (m_subjectIndex.find(m_nTargetSelectedIndex) == m_subjectIndex.end())
+        m_nTargetSelectedIndex = FUN_141a14110();
+    unsigned nRows = Unk_HpxMin(spSubject->FUN_1422dfb90(), 8u);
+    spSubject->FUN_1422df5f0(nRows);
+    spSubject->FUN_1422df690(m_nTargetSelectedIndex);
+    ((Unk_MsgPopup*)(ASUIComponent*)spSubject)->vfunc_24(true);
+    FUN_141a15890();
 }
