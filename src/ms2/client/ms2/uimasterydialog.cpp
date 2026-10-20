@@ -4,7 +4,7 @@
 // MS2-RANGE: 0x140eadd70-0x140ebb6c0 .text$mn
 // MS2-RANGE: 0x1400dc070-0x1400dc300 .text$di
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$StringFormat@H$$BY00_W@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBHAEAY00$$CB_W@Z 0x140eb96d0 ; order
+// MS2-PIN: ??$StringFormat@H$$BY00D@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBHAEAY00$$CBD@Z 0x140eb96d0 ; order
 // MS2-PIN: ??$StringFormat@H$$BY0M@D@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBHAEAY0M@$$CBD@Z 0x140eb99e0 ; order
 // MS2-PIN: ??0?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAA@XZ 0x140eba630 ; order
 // MS2-PIN: ??0?$CAtlArray@UItemEntity@@V?$CElementTraits@UItemEntity@@@ATL@@@ATL@@QEAA@XZ 0x140eba670 ; order
@@ -694,7 +694,7 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             int nTab = FUN_140eb5040();
             if (nTab == 1) {
                 int nId = data.FUN_1422b8a10();
-                strCommand = StringFormat((const wchar_t*)strFormat, nId, L"");
+                strCommand = StringFormat((const wchar_t*)strFormat, nId, "");
             } else if (nTab == 3) {
                 int nId = data.FUN_1422b8a10();
                 strCommand = StringFormat((const wchar_t*)strFormat, nId, "magicscroll");
@@ -903,13 +903,13 @@ void UIMasteryDialog::FUN_140eb0bf0(int nType, int nIndex)
     if (!pPc)
         return;
     MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990(CString("m_levelControl"));
-    if (!spLevel.get())
-        return;
-    MS2Ptr<Unk_MGuide> spGuide = spLevel->FUN_140accfb0<Unk_MGuide>(CString("m_guideBar"));
-    if (spGuide.get()) {
-        ASObj obj(2);
-        FUN_140eb6920(nType, nIndex, obj);
-        spGuide->Invoke("addLevelGuide", obj);
+    if (spLevel.get()) {
+        MS2Ptr<Unk_MGuide> spGuide = spLevel->FUN_140accfb0<Unk_MGuide>(CString("m_guideBar"));
+        if (spGuide.get()) {
+            ASObj obj(2);
+            FUN_140eb6920(nType, nIndex, obj);
+            spGuide->Invoke("addLevelGuide", obj);
+        }
     }
 }
 
@@ -1345,12 +1345,12 @@ void UIMasteryDialog::FUN_140eb4be0()
 // @0x140eb4c10
 void UIMasteryDialog::FUN_140eb4c10(int nType, int bRefreshTabs)
 {
-    if (vfunc_46()) {
-        if (bRefreshTabs)
-            FUN_140eb4be0();
-        if (nType == FUN_140eb8a90())
-            FUN_140eb5260(nType);
-    }
+    if (!FUN_141924630())
+        return;
+    if (bRefreshTabs)
+        FUN_140eb4be0();
+    if (nType == FUN_140eb8a90())
+        FUN_140eb5260(nType);
 }
 
 // @0x140eb4c70
