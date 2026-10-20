@@ -24,6 +24,7 @@ public:
     virtual void vfunc_19(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);   // 0x1422e9df0 sees every message
     void FUN_1422ea230(CString strFont);                            // +0x28
     static int FUN_141b47780();                                     // s_nCaptureBlock (inline COMDAT, uiugcitemeditdialog.cpp)
+    bool FUN_1422ea2a0();                                           // 0x1422ea2a0 (GFxMovieMouseCursor::vfunc_5: no cursor show/hide while set)
     static int s_nCaptureBlock;                                     // 0x143b0d360 screenshots blocked while set
 private:
     MS2_LAYOUT_FRIEND;

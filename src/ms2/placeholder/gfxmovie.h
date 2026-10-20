@@ -46,7 +46,9 @@ public:
     virtual ~GFxMovie();                                            //  0 0x1422bcfe0 (scalar deleting 0x1422bf490)
     // 1 = NiRefObject::DeleteThis (0x141d16bf0)
     virtual void* vfunc_2();                                        //  2 0x1422bf590 returns &DAT_143b0ae40 (a static descriptor)
-    virtual void vfunc_3(void*, void*, int);                        //  3 0x1422bd350 (empty)
+    // 3 0x1422bd350 (empty): an AS call of the movie (method name, arguments); GFxMovieMouseCursor forwards three of them
+    virtual void vfunc_3(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs);
+    void FUN_1422be560(MS2Ptr<ASMouseCursor> spCursor);             // 0x1422be560 m_30 = spCursor (by value: the callee destroys it)
     virtual void vfunc_4(void*, const char*, const Scaleform::GFx::Value*, unsigned);   //  4 0x1422bd370 (empty)
     virtual void vfunc_5(bool);                                     //  5 0x1422bd390 movie slot +0x40(!b)
     // 6 0x1422bd3f0: stores the loader at +0x58, CreateMovie(path, flags) -> MovieDef (+0x68), CreateInstance -> Movie (+0x60);
