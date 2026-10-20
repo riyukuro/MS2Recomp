@@ -268,7 +268,10 @@
 #include "ms2/placeholder/statecoupleemotion.h"
 #include "ms2/placeholder/stateweddingemotion.h"
 #include "ms2/unnamed/unit_140ad5280.h"
+#include "ms2/unnamed/unit_140ad1860.h"
 #include "ms2/placeholder/propertycache.h"
+#include "ms2/placeholder/tptreddummy.h"
+#include "ms2/commonfiles/itemenchantinfo.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -280,6 +283,37 @@ void FUN_141b6f220(NiAVObject* pRoot, int nKind, const Unk_CharEquip* pEquip);
 int FUN_140869420();                                                // the current second
 CTailEffectDataTable* FUN_140ad0da0();                              // the tail effect table
 void FUN_140a35900(Unk_PCD88* p);                                   // close the +0xd88 record
+typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_PCEntList;
+// 16-byte smart pointer to a boxed entity list (TPtredDummy<T>; scenestategame.cpp's Unk_SSGEntListPtr, the same COMDATs:
+// operator-> 0x1409f2190, dtor 0x1409f20e0).
+struct Unk_PCEntListPtr
+{
+    Unk_PCEntList* operator->() const { return m_p; }
+    ~Unk_PCEntListPtr() { Release(); }
+    void Release()
+    {
+        if (m_p)
+        {
+            ReleaseImpl(0);
+            m_p = 0;
+        }
+    }
+    void ReleaseImpl(void*)
+    {
+        CPtred* owner = Owner(m_p);
+        if (CPtred::ReleasePtred(owner) == 0)
+        {
+            CPtred::AddRefPtred(owner);
+            CPtred::DeletePtred(owner);
+        }
+    }
+    static TPtredDummy<Unk_PCEntList>* Owner(Unk_PCEntList* p)
+    {
+        return p == NULL ? NULL : reinterpret_cast<TPtredDummy<Unk_PCEntList>*>(reinterpret_cast<char*>(p) - offsetof(TPtredDummy<Unk_PCEntList>, value));
+    }
+    void* m_00;
+    Unk_PCEntList* m_p;
+};
 // The world (WorldService; FUN_1403ed2d0).
 class Unk_PCLocalPlayer : public PC                                 // the MyPC
 {
@@ -306,8 +340,39 @@ public:
     int FUN_141bd3060();                                            // the current map id
     PCBase* FUN_141bd1200(int nObjectId);                           // the actor of an object id
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();                          // the current field
+    struct Unk_PCEntListPtr FUN_141bd0420(unsigned int nModel);     // the entities of a model
+    egf::Entity* FUN_141bcfd30(unsigned int nModel, NiPoint3 kPos, float fRange, int a, int b);  // the nearest entity of a model
 };
 Unk_PCWorld* FUN_1403ed2d0();
+// CItem::FUN_1405278a0's record (CItemStatus, commonfiles/item.h): the enchant record.
+class Unk_PCItemStatus { public: CItemEnchantInfo* FUN_140630d60(); };
+// The movement keys of the local player (PCBase +0x6d8; unit_141682f80.cpp's Unk_PCMove).
+class Unk_PCMoveKeys
+{
+public:
+    bool FUN_141682fe0(int nKey);                                   // the key is down
+    bool FUN_141683100(int nKey);                                   // the key was pressed
+};
+// PCBase::FUN_1416767d0 (the position; the ride's when riding) really returns efd::Point3 (pcbase.h says NiPoint3).
+class Unk_PCRideView { public: efd::Point3 FUN_1416767d0(); };
+// The actor seen through its primary vftable: slot 18 (GetPosition) really returns efd::Point3 (pcbase.h declares
+// NiPoint3, which costs a slicing copy; afterimageitem.cpp has the same view).
+class Unk_PCPosActor
+{
+public:
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
+    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
+    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
+    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
+    virtual void vfunc_16(); virtual void vfunc_17();
+    virtual efd::Point3 vfunc_18();
+};
+efd::Point3 FUN_14123cc80(efd::Point3 kRot);                        // GameObject: the direction of a rotation (static)
+void FUN_140a01250(efd::Point3 kRot, efd::Point3* pForward, efd::Point3* pRight);   // the forward / right axes of a rotation
+float FUN_140b02b90(float f);                                       // CCapRotationController::SafeAcos
+float FUN_1409f2310(float f);                                       // sin
+void FUN_140e68a40(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const float* pA, const float* pB,
+    const float* pC);                                               // Log<float, float, float> (uimodelview.cpp)
 // The effect service (FUN_1403ed280).
 class Unk_PCFxMgr
 {
@@ -3171,6 +3236,165 @@ void PC::FUN_1416599b0()
     }
 }
 
+// @0x141659af0
+egf::Entity* PC::FUN_141659af0(int nKind)
+{
+    if (FUN_1416595d0())
+        return 0;
+    egf::Entity* pEntity = FUN_141659b80(nKind, 0xbadf0a13, 90.0f);
+    if (pEntity)
+        return pEntity;
+    pEntity = FUN_141659b80(nKind, 0xc13e30c8, 90.0f);
+    if (pEntity)
+        return pEntity;
+    return 0;
+}
+
+// @0x141659b80
+egf::Entity* PC::FUN_141659b80(int nKind, unsigned int nModel, float fHeight)
+{
+    if (FUN_1416595d0())
+        return 0;
+    efd::Point3 kMy = reinterpret_cast<Unk_PCRideView*>(this)->FUN_1416767d0();
+    float fRange = 50.0f;
+    if (nKind == 2)
+    {
+        kMy.z -= 75.0f;
+        fRange = 70.0f;
+    }
+    else
+        kMy.z += fHeight;
+    Unk_PCEntListPtr spList = FUN_1403ed2d0()->FUN_141bd0420(nModel);
+    for (POSITION pos = spList->GetHeadPosition(); pos != 0; spList->GetNext(pos))
+    {
+        efd::SmartPointer<egf::Entity> spEntity = spList->GetAt(pos);
+        efd::Point3 kPos = DAT_143b01a60;
+        efd::Point3 kRot = DAT_143b01a60;
+        float fScale = 0.0f;
+        spEntity->GetPropertyValue(0xfd95ca52, kPos);
+        spEntity->GetPropertyValue(0x68c7c29d, kRot);
+        spEntity->GetPropertyValue(0xf8b99313, fScale);
+        efd::Point3 kDir = ::FUN_14123cc80(kRot);
+        kDir.Unitize();
+        kPos += kDir * fScale;
+        if (FUN_140966ea0(kMy, kPos) >= fRange)
+            continue;
+        if (nKind == 0 && nModel == 0xc13e30c8 &&
+            !static_cast<Unk_PCMoveKeys*>(FUN_14166d240())->FUN_141683100(0x30d41) &&
+            CMouseController::GetInstance()->FUN_140ad2220() == 0)
+            continue;
+        if (nKind == 0 && nModel == 0xbadf0a13 &&
+            !static_cast<Unk_PCMoveKeys*>(FUN_14166d240())->FUN_141682fe0(0x30d41) &&
+            CMouseController::GetInstance()->FUN_140ad2220() == 0)
+            continue;
+        if (kMy.z < kPos.z)
+            continue;
+        if (kMy.z > kPos.z + 150.0f)
+            continue;
+        bool bUsable;
+        spEntity->GetPropertyValue(0x4df0c0de, bUsable);
+        if (!bUsable)
+            continue;
+        return spEntity;
+    }
+    return 0;
+}
+
+// @0x141659f80
+egf::Entity* PC::FUN_141659f80()
+{
+    egf::Entity* pEntity = FUN_1403ed2d0()->FUN_141bcfd30(0xd116ab46, vfunc_18(), 500.0f, 1, 0);
+    if (pEntity)
+    {
+        efd::Point3 kPos;
+        efd::Point3 kRot;
+        pEntity->GetPropertyValue(0xfd95ca52, kPos);
+        pEntity->GetPropertyValue(0x68c7c29d, kRot);
+        efd::Point3 kSize;
+        pEntity->GetPropertyValue(0x9dc22aea, kSize);
+        efd::Point3 kForward;
+        efd::Point3 kRight;
+        FUN_140a01250(kRot, &kForward, &kRight);
+        efd::Point3 kTo = vfunc_18() - kPos;
+        float fDist = FUN_140966ea0(kPos, reinterpret_cast<Unk_PCPosActor*>(this)->vfunc_18());
+        kForward.Unitize();
+        kTo.Unitize();
+        kRight.Unitize();
+        float fDot = kTo.Dot(kRight);
+        float fAngle = FUN_140b02b90(fDot);
+        bool bOneSided = false;
+        pEntity->GetPropertyValue(0x48b9328e, bOneSided);
+        bool bFront = false;
+        bFront = kForward.Dot(kTo) >= 0.0f;
+        if (bOneSided && !bFront)
+            return 0;
+        float fSide = fDist * FUN_1409f2310(fAngle);
+        float fSin = FUN_1409f2310(fAngle);
+        float fDegree = fAngle * 180.0f / 3.1415927f;
+        FUN_140e68a40(FUN_140166440(), 0xc, 0x13, L"Degree = {0}, {1}, {2}", &fDegree, &fSide, &fSin);
+        if (efd::Abs(fSide) > kSize.x * 0.5f)
+            return 0;
+        kPos = kPos + kRight * fSide;
+        float fReach = 100.0f;
+        pEntity->GetPropertyValue(0x4871503b, fReach);
+        efd::Point3 kDelta = vfunc_18() - kPos;
+        if (efd::Abs(kDelta.Length()) > fReach)
+            return 0;
+        kPos = kPos + (bFront ? kForward : -kForward) * kSize.y * 0.68f;
+        kPos.z += kSize.z * 0.5f;
+        if (!bFront)
+            kRot.z += 180.0f;
+        vfunc_19(kPos);
+        vfunc_21(kRot);
+        FUN_14166d8b0(kRot.z);
+        return pEntity;
+    }
+    return 0;
+}
+
+// The order of the worn items' (enchant level, grade) pairs: highest first (name invented; a functor with its own ctor).
+struct Unk_PCEnchantOrder
+{
+    Unk_PCEnchantOrder() {}
+    bool operator()(const std::pair<int, int>& a, const std::pair<int, int>& b) const
+    {
+        if (a.first == b.first)
+            return a.second >= b.second;
+        return a.first >= b.first;
+    }
+};
+
+// @0x141661e40
+BOOL PC::FUN_141661e40(int* pnEnchant, int* pnGrade)
+{
+    ATL::CAtlList<MS2Ptr<CEquipItem> > kList;
+    FUN_1416561a0()->FUN_1411e1ce0(kList, 0);
+    std::vector<std::pair<int, int> > aEnchants;
+    for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
+    {
+        MS2Ptr<CEquipItem> spEquip = kList.GetAt(pos);
+        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        if (!spItem)
+            continue;
+        if (spItem->FUN_140526bd0() < *Client::Constants::GetInstance()->ShowNameTagEnchantItemGrade.Get())
+            continue;
+        CItemEnchantInfo* pEnchant = reinterpret_cast<Unk_PCItemStatus*>(spItem->FUN_1405278a0())->FUN_140630d60();
+        if (pEnchant == 0)
+            continue;
+        if (pEnchant->FUN_14058c5f0() < *Client::Constants::GetInstance()->ShowNameTagEnchantLevel.Get())
+            continue;
+        aEnchants.push_back(std::make_pair(pEnchant->FUN_14058c5f0(), spItem->FUN_140526bd0()));
+    }
+    std::sort(aEnchants.begin(), aEnchants.end(), Unk_PCEnchantOrder());
+    if (aEnchants.size() > 0)
+    {
+        *pnEnchant = aEnchants[0].first;
+        *pnGrade = aEnchants[0].second;
+        return 1;
+    }
+    return 0;
+}
+
 // @0x141660c20
 void PC::FUN_141660c20(const CAtlArray<MS2Ptr<CItem> >& aItems, bool bQuick)
 {
@@ -3663,18 +3887,6 @@ bool PC::FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CS
     return false;
 }
 
-// The actor seen through its primary vftable: slot 18 (GetPosition) really returns efd::Point3 (pcbase.h declares
-// NiPoint3, which costs a slicing copy; afterimageitem.cpp has the same view).
-class Unk_PCPosActor
-{
-public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
-    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
-    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
-    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17();
-    virtual efd::Point3 vfunc_18();
-};
 
 // @0x14165cac0
 void PC::FUN_14165cac0()

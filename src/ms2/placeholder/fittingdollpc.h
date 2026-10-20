@@ -223,6 +223,9 @@ public:
     MS2Ptr<class CGemSwim> FUN_14165e1b0();                 // the worn swim gem (feature 0x68)
     void FUN_141660ee0();                                   // the equipment finished loading (once: +0xd40)
     void FUN_1416599b0();                                   // drop the followed entity (+0xdb0) beyond 70 units
+    egf::Entity* FUN_141659af0(int nKind);                  // the ladder / rope entity at hand (models 0xbadf0a13, 0xc13e30c8)
+    egf::Entity* FUN_141659b80(int nKind, unsigned int nModel, float fHeight);   // the nearest entity of a model in reach
+    egf::Entity* FUN_141659f80();                           // snap onto the nearest 0xd116ab46 entity (within 500)
     void FUN_141660c20(const CAtlArray<MS2Ptr<CItem> >& aItems, bool bQuick);   // equip the items (bQuick: FUN_1411e38e0)
     void FUN_1416611b0(CString strKey);                     // take the profile image key if it names this character
     CString FUN_14165e010(int nAction);                     // the swim effect of an action (0x30 idle, 0x32 dash, else run)
@@ -231,6 +234,7 @@ public:
     int FUN_14165ef30();                                    // this is the local player
     MS2Ptr<Unk_PCLinkFD8> FUN_141657730();                  // the +0xfd8 record, created on demand (none while busy)
     int FUN_141661970();                                    // busy
+    BOOL FUN_141661e40(int* pnEnchant, int* pnGrade);       // the best enchant level / grade of the worn items (name tag)
     void FUN_141657c80(bool bEnable);                       // apply the attach effects of the equipment
     bool FUN_141658150(ATL::CAtlArray<CEquipModel*>& kEffects, ATL::CAtlArray<CString>& kNodes, int bPrimary);   // collect the weapons' attach effects and their nodes
     CStringW& FUN_141656be0();                              // +0xdc8
