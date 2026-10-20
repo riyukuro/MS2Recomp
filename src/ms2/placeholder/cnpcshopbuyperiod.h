@@ -40,7 +40,7 @@ public:
     CMsTime m_tmStart;                                      // +0x38 first buyable moment (0: open)
     CMsTime m_tmEnd;                                        // +0x48 last buyable moment (0: open)
     ATL::CAtlArray<Unk_DayTimeRange> m_aPartTimes;          // +0x58 daily buy windows
-    std::set<unsigned> m_setDays;                           // +0x78 week days
+    std::set<int> m_setDays;                           // +0x78 week days
     bool m_bVisible;                                        // +0x88
 };
 MS2_CHECK_SIZE(CNpcShopBuyPeriod, 0x90);
