@@ -3855,3 +3855,9 @@ __imp_NxGetUtilLib	142cced28	data
 ?DAT_1439f87f0@@3KA	1439f87f0	data
 ?DAT_1439f87f4@@3KA	1439f87f4	data
 ?DAT_1439f87f8@@3KA	1439f87f8	data
+?AddItemCount@CSetItemManager@@QEAAXH_JW4T@eSetItemLayer@@_N@Z	1407af660	func
+?Clear@CSetItemManager@@QEAAXXZ	1407af5b0	func
+?GetOptionParts@SetItemInfo@@QEAAXIAEAV?$CAtlArray@V?$MS2Ptr@VSetItemOptionPart@@@@V?$CElementTraits@V?$MS2Ptr@VSetItemOptionPart@@@@@ATL@@@ATL@@@Z	1407ad900	func
+?GetSetItemInfos@SetItemTable@@QEAAXIAEAV?$vector@V?$MS2Ptr@VSetItemInfo@@@@V?$allocator@V?$MS2Ptr@VSetItemInfo@@@@@std@@@std@@@Z	1407c5250	func
+?Refresh@CSetItemManager@@QEAAXXZ	1407b0750	func
+?RemoveItem@CSetItemManager@@QEAAXH_JW4T@eSetItemLayer@@@Z	1407afa80	func
