@@ -363,6 +363,10 @@
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/clubcli.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/commandchat.h"
+#include "ms2/placeholder/astooltip.h"
+#include "ms2/placeholder/uipopupmenu.h"
+#include "ms2/client/ms2/itempreview.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -522,18 +526,7 @@ public:
 Unk_MsgState* FUN_141482e80();
 int FUN_141482f00(int nChannel);                                    // the line type of a chat channel
 
-// The chat line request (usercommandcli.cpp's Unk_CommandChat).
-struct Unk_MsgChat
-{
-    Unk_MsgChat();                                                  // 0x140acd570
-    ~Unk_MsgChat();                                                 // 0x140acd770
-    int m_nState;                                                   // +0x00
-    int m_nType;                                                    // +0x04
-    CStringW m_strText;                                             // +0x08
-    CStringW m_strTarget;                                           // +0x10
-    __int64 m_nValue;                                               // +0x18
-};
-void FUN_141276f80(const Unk_MsgChat& chat);                       // sends a chat line
+void FUN_141276f80(const Unk_CommandChat& chat);                       // sends a chat line
 
 // The search keywords of an emotion (uidynamicactiondialog.cpp's Unk_EmotionKeywords).
 class Unk_MsgEmotionKeywords : public CPtred
@@ -1471,9 +1464,9 @@ int UIMessenger::FUN_141a10490(int nEmoticonId, bool bFavorite)
 // @0x141a11be0
 void UIMessenger::FUN_141a11be0(int nType, const CStringW& strText)
 {
-    Unk_MsgChat chat;
-    chat.m_nType = nType;
-    chat.m_strText = strText;
+    Unk_CommandChat chat;
+    chat.kind = nType;
+    chat.message = strText;
     FUN_141276f80(chat);
     m_pBrowser->m_1b0 = FUN_141482f00(nType);
 }
@@ -2286,7 +2279,7 @@ void UIMessenger::FUN_141a168a0(const ATL::CAtlArray<CStringW>& args)
 }
 
 // @0x141a16bb0
-void UIMessenger::FUN_141a16bb0(int nProductId)
+void UIMessenger::FUN_141a16bb0(int nProductId, int nA, int nB)
 {
     UICashShopDialog* pShop = FUN_140b04f80(0x4ebc);
     if (pShop != 0)
@@ -2863,9 +2856,9 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
         if (FUN_1409a8b10()->FUN_140ae6540()->m_b[7])
         {
             // the whisper block option: answer with the block notice
-            Unk_MsgChat chat;
-            chat.m_nType = 6;
-            chat.m_strTarget = strName;
+            Unk_CommandChat chat;
+            chat.kind = 6;
+            chat.target = strName;
             FUN_141276f80(chat);
             return;
         }
@@ -4196,10 +4189,10 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     {
     case 1:
     {
-        Unk_MsgChat chat;
-        chat.m_nType = nType;
-        chat.m_strText = strText;
-        chat.m_strTarget = strTarget;
+        Unk_CommandChat chat;
+        chat.kind = nType;
+        chat.message = strText;
+        chat.target = strTarget;
         FUN_141276f80(chat);
         m_pBrowser->m_1b0 = nChannel;
         break;
@@ -4213,10 +4206,10 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
             }
             else
             {
-                Unk_MsgChat chat;
-                chat.m_nType = 7;
-                chat.m_strText = strText;
-                chat.m_strTarget = strTarget;
+                Unk_CommandChat chat;
+                chat.kind = 7;
+                chat.message = strText;
+                chat.target = strTarget;
                 FUN_141276f80(chat);
                 m_pBrowser->m_1b0 = nChannel;
             }
@@ -4231,10 +4224,10 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
             }
             else
             {
-                Unk_MsgChat chat;
-                chat.m_nType = 8;
-                chat.m_strText = strText;
-                chat.m_strTarget = strTarget;
+                Unk_CommandChat chat;
+                chat.kind = 8;
+                chat.message = strText;
+                chat.target = strTarget;
                 FUN_141276f80(chat);
                 m_pBrowser->m_1b0 = nChannel;
             }
@@ -4243,10 +4236,10 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     case 4:
         if (!strText.IsEmpty())
         {
-            Unk_MsgChat chat;
-            chat.m_nType = 4;
-            chat.m_strText = strText;
-            chat.m_strTarget = strTarget;
+            Unk_CommandChat chat;
+            chat.kind = 4;
+            chat.message = strText;
+            chat.target = strTarget;
             FUN_141276f80(chat);
             m_pBrowser->m_strWhisperTarget = strTarget;
             m_pBrowser->m_1b0 = nChannel;
@@ -4255,10 +4248,10 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     case 0x15:
         if (!strText.IsEmpty())
         {
-            Unk_MsgChat chat;
-            chat.m_nType = nType;
-            chat.m_strText = strText;
-            chat.m_strTarget = strTarget;
+            Unk_CommandChat chat;
+            chat.kind = nType;
+            chat.message = strText;
+            chat.target = strTarget;
             FUN_141276f80(chat);
             m_pBrowser->m_1b0 = nChannel;
         }
@@ -4266,10 +4259,10 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
     case 0x16:
         if (!strText.IsEmpty())
         {
-            Unk_MsgChat chat;
-            chat.m_nType = nType;
-            chat.m_strText = strText;
-            chat.m_strTarget = strTarget;
+            Unk_CommandChat chat;
+            chat.kind = nType;
+            chat.message = strText;
+            chat.target = strTarget;
             FUN_141276f80(chat);
             m_pBrowser->m_1b0 = nChannel;
         }
@@ -4282,10 +4275,10 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
             if (FUN_140166410()->FUN_14036d570(0x104) && spData.get() != 0
                 && FUN_1403b3c40(spData->function.name, L"WeddingChat"))
                 nSendType = 0x19;
-            Unk_MsgChat chat;
-            chat.m_nType = nSendType;
-            chat.m_strText = strText;
-            chat.m_strTarget = strTarget;
+            Unk_CommandChat chat;
+            chat.kind = nSendType;
+            chat.message = strText;
+            chat.target = strTarget;
             FUN_141276f80(chat);
             m_pBrowser->m_1b0 = nChannel;
         }
@@ -4303,10 +4296,10 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
             }
             else
             {
-                Unk_MsgChat chat;
-                chat.m_nType = 0x12;
-                chat.m_strText = strText;
-                chat.m_strTarget = strTarget;
+                Unk_CommandChat chat;
+                chat.kind = 0x12;
+                chat.message = strText;
+                chat.target = strTarget;
                 FUN_141276f80(chat);
                 m_pBrowser->m_1b0 = nChannel;
             }
@@ -4322,11 +4315,11 @@ void UIMessenger::FUN_141a10660(int nType, CStringW strText, CStringW strTarget,
             }
             else
             {
-                Unk_MsgChat chat;
-                chat.m_nType = 0x14;
-                chat.m_strText = strText;
-                chat.m_strTarget = strTarget;
-                chat.m_nValue = nClubId;
+                Unk_CommandChat chat;
+                chat.kind = 0x14;
+                chat.message = strText;
+                chat.target = strTarget;
+                chat.value = nClubId;
                 FUN_141276f80(chat);
                 m_pBrowser->m_1a8 = spClub->FUN_14020f1a0();
                 m_pBrowser->m_1b0 = nChannel;
@@ -4580,4 +4573,217 @@ void UIMessenger::FUN_141a14dc0()
     spSubject->FUN_1422df690(m_nTargetSelectedIndex);
     ((Unk_MsgPopup*)(ASUIComponent*)spSubject)->vfunc_24(true);
     FUN_141a15890();
+}
+
+class UIMeratMarketDialog                                            // view: the merat market (ui id 0x4ec1)
+{
+public:
+    void SearchByKey(const CStringA& strKey, bool bExact, const CStringW& strText, int nValue);   // 0x14130f9e0
+};
+
+class Unk_MsgWedding
+{
+public:
+    bool FUN_141b867e0(__int64 nWeddingId);                         // the hall is open
+};
+Unk_MsgWedding* FUN_1409eed90();
+void* FUN_1409b4bc0(Scaleform::GFx::Value* pRetVal, Scaleform::GFx::Value& v);
+int FUN_1418fd330(__int64 nCharId);
+void FUN_1418fde20(__int64 nAccountId, __int64 nCharId, int nKind, const CStringW& strName, Delegate<bool(int, const CMsgBoxData&)> callback);
+void FUN_140dff3a0(__int64 nId, const CStringW& strName, __int64 nFee, int nMax, int nShareRate);   // joins a UGC event
+UIMeratMarketDialog* FUN_140bfed50(int nUiId);
+__int64 FUN_140718320(const CStringW& str);
+int FUN_1407181a0(const CStringW& str);
+
+// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
+// @0x141a0a900
+void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
+{
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    if (strMethod == "getTooltip")
+    {
+        MS2Ptr<CItem> spItem(0);
+        __int64 nUid = _atoi64(pArgs->FUN_1422b8d30());
+        if (m_pBrowser->m_linkedItems.Lookup(nUid, spItem))
+        {
+            ASTooltip tooltip(pPlayer, 2, 2);
+            if (tooltip.FUN_1409e0d40(spItem.get()))
+            {
+                tooltip.FUN_1409c6c80();
+                tooltip.FUN_1409db7b0(spItem);
+                FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+            }
+        }
+    }
+    else if (strMethod == "itemPreview")
+    {
+        MS2Ptr<CItem> spItem(0);
+        __int64 nUid = _atoi64(pArgs->FUN_1422b8d30());
+        if (m_pBrowser->m_linkedItems.Lookup(nUid, spItem))
+        {
+            if (ItemPreviewMgr::GetInstance()->FUN_140d40670())
+                ItemPreviewMgr::GetInstance()->FUN_140d40120(spItem, 0);
+        }
+    }
+    else if (strMethod == "getAchieve")
+    {
+        int nId = atoi(pArgs->FUN_1422b8d30());
+        int nGrade = atoi(pArgs->FUN_1422b8d30());
+        ASTooltip tooltip(pPlayer, 2, 2);
+        if (tooltip.FUN_1409e21a0(nId, nGrade))
+        {
+            tooltip.FUN_1409c6c80();
+            CStringW strState = pArgs->FUN_1422b8f40();
+            CStringW strDate = pArgs->FUN_1422b8f40();
+            if (strDate.GetLength() > 0)
+                strState = FUN_140656190(L"{0} ({1})", strState, strDate);
+            tooltip.FUN_1407cbb20("state", CStringW(strState));
+            FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+        }
+    }
+    else if (_stricmp("whisper", strMethod) == 0)
+    {
+        FUN_141a14bb0(pArgs->FUN_1422b8f40());
+    }
+    else if (_stricmp("menu", strMethod) == 0)
+    {
+        CStringW strName = pArgs->FUN_1422b8f40();
+        CStringW strAccount = pArgs->FUN_1422b8f40();
+        CStringW strChar = pArgs->FUN_1422b8f40();
+        float x = pArgs->FUN_1422b8c10();
+        float y = pArgs->FUN_1422b8c10();
+        __int64 nAccountId = 0;
+        if (strAccount.GetLength() > 0)
+            nAccountId = _wtoi64(strAccount);
+        if (pPlayer->vfunc_77() != strName)
+        {
+            __int64 nCharId = 0;
+            if (strChar.GetLength() > 0)
+                nCharId = _wtoi64(strChar);
+            UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+            if (pMenu != 0)
+            {
+                Unk_PopupMenuInfo info(x, y, 3, 0x635e, 0, "", (void*)nAccountId);
+                CStringW strHistory;
+                m_pBrowser->FUN_141a254c0(FUN_140869440(), strHistory);
+                pMenu->FUN_141a805f0(info, (void*)nAccountId, nCharId, strName, strHistory, 4);
+            }
+        }
+    }
+    else if (_stricmp("moveToHome", strMethod) == 0)
+    {
+        CStringW strName = pArgs->FUN_1422b8f40();
+        CStringW strAccount = pArgs->FUN_1422b8f40();
+        CStringW strChar = pArgs->FUN_1422b8f40();
+        __int64 nAccountId = 0;
+        if (strAccount.GetLength() > 0)
+            nAccountId = _wtoi64(strAccount);
+        __int64 nCharId = 0;
+        if (strChar.GetLength() > 0)
+            nCharId = _wtoi64(strChar);
+        if (FUN_1418fd330(nCharId))
+            FUN_1418fde20(nAccountId, nCharId, 4, strName, Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0f900));
+    }
+    else if (_stricmp("billDialog", strMethod) == 0)
+    {
+        int nProductId = FUN_1407181d0(pArgs->FUN_1422b8d30());
+        int nA = FUN_1407181d0(pArgs->FUN_1422b8d30());
+        FUN_140718170(pArgs->FUN_1422b8d30());
+        int nB = FUN_140718170(pArgs->FUN_1422b8d30());
+        FUN_141a16bb0(nProductId, nA, nB);
+    }
+    else if (_stricmp("searchFromMeratmarket", strMethod) == 0)
+    {
+        CString strKey = pArgs->FUN_1422b8d30();
+        bool bExact = FUN_140718390(pArgs->FUN_1422b8d30());
+        CStringW strText = pArgs->FUN_1422b8f40();
+        int nValue = FUN_1407181d0(pArgs->FUN_1422b8d30());
+        UIMeratMarketDialog* pMarket = FUN_140bfed50(0x4ec1);
+        if (pMarket != 0)
+            pMarket->SearchByKey(strKey, bExact, strText, nValue);
+    }
+    else if (_stricmp("itemSelect", strMethod) == 0)
+    {
+        CStringW strArg = pArgs->FUN_1422b8f40();
+        ATL::CAtlArray<CStringW> args;
+        FUN_14025a680(strArg, args, L",");
+        if (args.GetCount() < 2)
+            return;
+        CStringW strKind(args[1]);
+        if (!FUN_140841300(strKind, "HongBao"))
+            return;
+        if (args.GetCount() < 3)
+            return;
+        int nId = FUN_1407181a0(args[2]);
+        COutPacket packet(0x9e, 0);
+        packet.Encode1(1);
+        packet.Encode4(nId);
+        FUN_140710590(packet);
+    }
+    else if (_stricmp("hyperLinkLeft", strMethod) == 0)
+    {
+        CStringW strArg = pArgs->FUN_1422b8f40();
+        ATL::CAtlArray<CStringW> args;
+        FUN_14025a680(strArg, args, L",");
+        if (args.GetCount() != 0)
+            FUN_141a168a0(args);
+    }
+    else if (_stricmp("hyperLinkRight", strMethod) == 0)
+    {
+        CStringW strArg = pArgs->FUN_1422b8f40();
+        ATL::CAtlArray<CStringW> args;
+        FUN_14025a680(strArg, args, L",");
+        if (args.GetCount() != 0)
+            FUN_141a16b90(args);
+    }
+    else if (_stricmp("joinUGCEvent", strMethod) == 0)
+    {
+        CStringW strName = pArgs->FUN_1422b8f40();
+        CStringW strId = pArgs->FUN_1422b8f40();
+        CStringW strChar = pArgs->FUN_1422b8f40();
+        CStringW strFee = pArgs->FUN_1422b8f40();
+        CStringW strMax = pArgs->FUN_1422b8f40();
+        CStringW strShare = pArgs->FUN_1422b8f40();
+        __int64 nId = 0;
+        if (strId.GetLength() > 0)
+            nId = _wtoi64(strId);
+        __int64 nCharId = 0;
+        if (strChar.GetLength() > 0)
+            nCharId = _wtoi64(strChar);
+        __int64 nFee = FUN_140718320(strFee);
+        int nMax = FUN_1407181a0(strMax);
+        int nShare = FUN_1407181a0(strShare);
+        if (FUN_1418fd330(nCharId))
+            FUN_140dff3a0(nId, strName, nFee, nMax, nShare);
+    }
+    else if (_stricmp("moveToWeddingHall", strMethod) == 0)
+    {
+        if (!FUN_140166410()->FUN_14036d570(0x104))
+            return;
+        CStringW strId = pArgs->FUN_1422b8f40();
+        CStringW strA = pArgs->FUN_1422b8f40();
+        CStringW strB = pArgs->FUN_1422b8f40();
+        CStringW strGroom = pArgs->FUN_1422b8f40();
+        CStringW strBride = pArgs->FUN_1422b8f40();
+        __int64 nWeddingId = 0;
+        if (strId.GetLength() > 0)
+            nWeddingId = _wtoi64(strId);
+        int nA = 0;
+        if (strA.GetLength() > 0)
+            nA = _wtoi(strA);
+        int nB = 0;
+        if (strB.GetLength() > 0)
+            nB = _wtoi(strB);
+        CStringW strText = FUN_140632a60(0xbfb, strGroom, strBride);
+        if (FUN_1409eed90() != 0 && FUN_1409eed90()->FUN_141b867e0(nWeddingId))
+        {
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
+            spBox->FUN_141a01800(1);
+            spBox->FUN_1405340b0(nWeddingId);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMessenger::FUN_141a0f980));
+            FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
+        }
+    }
 }

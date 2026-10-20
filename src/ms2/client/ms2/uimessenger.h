@@ -188,7 +188,8 @@ public:
     void FUN_141a16730(const CStringW& strName, int nX, int nY, int nWidth, int nHeight, int nTarget);
                                                                             // 0x141a16730 detaches a tab to a new window
     void FUN_141a168a0(const ATL::CAtlArray<CStringW>& args);               // 0x141a168a0 a party link of a chat line
-    void FUN_141a16bb0(int nProductId);                                     // 0x141a16bb0 opens the user bill
+    void FUN_141a16bb0(int nProductId, int nA, int nB);                     // 0x141a16bb0 opens the user bill
+    void FUN_141a16b90(const ATL::CAtlArray<CStringW>& args) {}             // 0x141a16b90 a right click on a chat link (empty)
     void FUN_141a16c50(int nRoomId);                                        // 0x141a16c50 opens a dungeon room
     void FUN_141a16cc0(int nPartyId, CStringW strLeader, int nRoomId);      // 0x141a16cc0 joins as a dungeon helper
     void FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId);      // 0x141a172a0 joins as a dungeon member
