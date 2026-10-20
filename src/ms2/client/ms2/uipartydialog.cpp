@@ -542,8 +542,9 @@ void UIPartyDialog::FUN_141a75a00(unsigned int nDeadline)
 // @0x141a75a20
 void UIPartyDialog::FUN_141a75a20()
 {
-    if (!(m_30 == 0))
-        static_cast<Unk_PdScript*>(m_30.get())->FUN_1422bb330("arrangeBottomButton");
+    if (m_30 == 0)
+        return;
+    static_cast<Unk_PdScript*>(m_30.get())->FUN_1422bb330("arrangeBottomButton");
 }
 
 // MS2-FUNCTIONAL: written from the decompile (binder temporaries)
@@ -758,12 +759,11 @@ bool UIPartyDialog::FUN_141a77600(int nResult, const CMsgBoxData& box)
 // @0x141a776e0
 bool UIPartyDialog::FUN_141a776e0(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0)
-    {
-        COutPacket packet(0x9d, 0);
-        packet.Encode1(5);
-        FUN_140710590(packet);
-    }
+    if (nResult != 0)
+        return true;
+    COutPacket packet(0x9d, 0);
+    packet.Encode1(5);
+    FUN_140710590(packet);
     return true;
 }
 
@@ -1674,9 +1674,9 @@ void UIPopupEntity::FUN_141a7d300()
 // @0x141a7d360
 float UIPopupEntity::vfunc_61()
 {
-    if (m_68 == 0)
-        return 1e9f;
-    return static_cast<Unk_PeOwner*>(m_68)->FUN_140f4a450();
+    if (m_68 != 0)
+        return static_cast<Unk_PeOwner*>(m_68)->FUN_140f4a450();
+    return 1e9f;
 }
 
 // @0x141a7d3a0
@@ -2003,8 +2003,9 @@ bool UIPopUpMenu::FUN_141a7e020(int nButton, const CMsgBoxData& data)
 // @0x141a7e0a0
 bool UIPopUpMenu::FUN_141a7e0a0(int nButton, const CMsgBoxData& data)
 {
-    if (nButton == 0)
-        FUN_14162b8b0(FUN_1409670d0(), data.FUN_141a02f10(0, 0));
+    if (nButton != 0)
+        return true;
+    FUN_14162b8b0(FUN_1409670d0(), data.FUN_141a02f10(0, 0));
     return true;
 }
 
@@ -3010,13 +3011,13 @@ void UIPopUpMenu::FUN_141a847c0(int nType, MyPC* pMe, CBuddy* pBuddy)
 // @0x141a84860
 void UIPopUpMenu::FUN_141a84860(int nType, MyPC* pMe, CBuddy* pBuddy)
 {
-    if (pBuddy != 0 && pBuddy->FUN_1401cc5b0() != 0)
+    if (pBuddy == 0 || pBuddy->FUN_1401cc5b0() == 0)
     {
-        FUN_141a844a0((Unk_PmMenuId)0x191);
-        FUN_141a844a0((Unk_PmMenuId)0x192);
+        FUN_141a844a0((Unk_PmMenuId)400);
         return;
     }
-    FUN_141a844a0((Unk_PmMenuId)400);
+    FUN_141a844a0((Unk_PmMenuId)0x191);
+    FUN_141a844a0((Unk_PmMenuId)0x192);
 }
 
 // @0x141a848d0
@@ -3043,14 +3044,18 @@ void UIPopUpMenu::FUN_141a84980(int nType, int bOnline)
 // @0x141a849c0
 void UIPopUpMenu::FUN_141a849c0(int nType, __int64 nCharId)
 {
-    if (nType == 2 && FUN_1418fd530(nCharId) != 0)
+    if (nType != 2)
+        return;
+    if (FUN_1418fd530(nCharId) != 0)
         FUN_141a844a0((Unk_PmMenuId)0x1f7);
 }
 
 // @0x141a84a10
 void UIPopUpMenu::FUN_141a84a10(int nType, __int64 nCharId)
 {
-    if (nType == 2 && FUN_1418fd5d0(nCharId) != 0)
+    if (nType != 2)
+        return;
+    if (FUN_1418fd5d0(nCharId) != 0)
         FUN_141a844a0((Unk_PmMenuId)0x1f8);
 }
 
@@ -3071,15 +3076,18 @@ void UIPopUpMenu::FUN_141a84a90(int nType)
 // @0x141a84ac0
 void UIPopUpMenu::FUN_141a84ac0(int nType, __int64 nCharId)
 {
-    if (nType == 2 && FUN_1418fd670(nCharId) != 0)
+    if (nType != 2)
+        return;
+    if (FUN_1418fd670(nCharId) != 0)
         FUN_141a844a0((Unk_PmMenuId)0x1fb);
 }
 
 // @0x141a84b10
 void UIPopUpMenu::FUN_141a84b10(int nType)
 {
-    if (nType != 1)
-        FUN_141a844a0((Unk_PmMenuId)0x1fc);
+    if (nType == 1)
+        return;
+    FUN_141a844a0((Unk_PmMenuId)0x1fc);
 }
 
 // @0x141a84b40
@@ -3097,8 +3105,11 @@ void UIPopUpMenu::FUN_141a84b40(int nType, MyPC* pMe, const CStringW& strName)
 // @0x141a84c60
 void UIPopUpMenu::FUN_141a84c60(int nType, MyPC* pMe, __int64 nCharId)
 {
-    if (FUN_140900550() && nType == 2)
-        FUN_141a844a0((Unk_PmMenuId)0x321);
+    if (!FUN_140900550())
+        return;
+    if (nType != 2)
+        return;
+    FUN_141a844a0((Unk_PmMenuId)0x321);
 }
 
 // @0x141a84cb0
@@ -3122,7 +3133,9 @@ void UIPopUpMenu::FUN_141a84cb0(int nType, MyPC* pMe, HomeBlockManager::HomePtr 
 void UIPopUpMenu::FUN_141a84d40()
 {
     MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pMe != 0 && FUN_141656a80(pMe) == m_a8)
+    if (pMe == 0)
+        return;
+    if (FUN_141656a80(pMe) == m_a8)
         FUN_1403ed2b0()->FUN_141adc530(0x2711);
 }
 
@@ -3413,8 +3426,9 @@ void UIPopUpMenu::FUN_141a86ad0()
 void UIPopUpMenu::FUN_141a86b80()
 {
     MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pMe != 0)
-        pMe->FUN_14152b800(FUN_1416769f0(pMe));
+    if (pMe == 0)
+        return;
+    pMe->FUN_14152b800(FUN_1416769f0(pMe));
 }
 
 // @0x141a86bd0
@@ -3479,8 +3493,9 @@ void UIPopUpMenu::FUN_141a86e40()
 // @0x141a86ed0
 void UIPopUpMenu::FUN_141a86ed0()
 {
-    if (!m_90.IsEmpty())
-        FUN_1413b71c0(FUN_1403ed290(), m_90);
+    if (m_90.IsEmpty() == true)
+        return;
+    FUN_1413b71c0(FUN_1403ed290(), m_90);
 }
 
 // @0x141a86f50
@@ -3716,9 +3731,9 @@ void FUN_141a8a730()
 int FUN_141a8a760()
 {
     UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
-    if (pMenu == 0)
-        return false;
-    return pMenu->FUN_141a80880() == 0;
+    if (pMenu != 0)
+        return pMenu->FUN_141a80880() == 0;
+    return false;
 }
 
 // @0x141a8a7b0

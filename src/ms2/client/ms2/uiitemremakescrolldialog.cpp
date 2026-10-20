@@ -124,7 +124,7 @@ CStringW FUN_1409eaa20(CStringW strKey, const CStringW& strA, const CStringW& st
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);
 CStringW FUN_14183e9c0(CStringW strName, int nRank);
-CStringW FUN_140b99450(const CStringW& strKey, const CStringW& strA, const unsigned& nB);
+CStringW FUN_140b99450(CStringW strKey, const CStringW& strA, const unsigned& nB);
 CStringW FUN_140b99780(CStringW strKey, const unsigned __int64* pA, const unsigned* pB, const CStringW& strC,
                        const CStringW& strD, const unsigned* pE);
 CString FUN_140540050(const char* szFormat, const CString& strArg);

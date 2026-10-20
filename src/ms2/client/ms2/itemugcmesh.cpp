@@ -961,7 +961,7 @@ int FUN_141425130(NiAVObject* pRoot)
 
 // @0x141425220 - strips the extension of a model path, adds the suffix and the ".nif"-style tail
 // MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
-CString FUN_141425220(CString strPath, int bDiffuse)
+CString FUN_141425220(const CString& strPath, int bDiffuse)
 {
     CString strName(strPath);
     CString strSuffix(bDiffuse == 0 ? "" : "_D");
@@ -972,7 +972,7 @@ CString FUN_141425220(CString strPath, int bDiffuse)
 
 // @0x1414253b0
 // MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
-CString FUN_1414253b0(CString strPath, int bDiffuse)
+CString FUN_1414253b0(const CString& strPath, int bDiffuse)
 {
     CString strName(strPath);
     CString strSuffix(bDiffuse == 0 ? "" : "_D");

@@ -32,7 +32,7 @@ int FUN_140873890(Unk_140165cf0*, const char*, int&);
 CString FUN_140188f50(Unk_140165cf0*, int);                              // node text
 void FUN_141b6ed40(const CString&, Unk_GVec3*);                          // parse "x,y,z"
 void FUN_14028d1a0(const CString&, int*);                                // parse int
-void FUN_14028c2d0(const CString&, float*);
+void FUN_14028c2d0(CString, float*);
 unsigned FUN_14028c0d0(const char*);                                     // parse colour
 void FUN_140203800(float*);
 void FUN_1408850f0(MS2Ptr<CFieldDataCli>*);                              // MS2Ptr<CFieldDataCli>::~MS2Ptr

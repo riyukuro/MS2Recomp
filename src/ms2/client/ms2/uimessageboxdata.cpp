@@ -915,11 +915,11 @@ void Unk_MsgBoxGlueAnchor(CMsgBoxData* pData, Delegate<bool(int, const CMsgBoxDa
     delete pData;
 }
 
-// 0x141a01170 (outside this unit's range): defining it here emits the vftable and the scalar deleting destructor
-// (0x141a07ca0) in this unit's COMDAT tail.
+// 0x141a01170 is owned by unit_141a00db0: defined here only outside the DLL, to emit the vftable and ??_G (0x141a07ca0) in this unit's COMDAT tail.
+#ifndef MS2_HOOK_DLL
 CMsgBoxData::~CMsgBoxData()
-{
-}
+{ }
+#endif
 
 MS2_EMIT_CRT_MEMMOVE_S();
 

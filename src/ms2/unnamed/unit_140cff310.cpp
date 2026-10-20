@@ -189,12 +189,12 @@ int FUN_1409c4510(ASSlot* p, unsigned a, unsigned b, unsigned c);
 Scaleform::GFx::Value FUN_1409bb460(AScript* p, const char* szMethod, ASSlot slot);
 
 void FUN_1422e55c0(Unk_AasImage* p, bool b);
-void FUN_1422e5530(Unk_AasImage* p, const Unk_AasSourcePtr& sp);
+void FUN_1422e5530(Unk_AasImage* p, Unk_AasSourcePtr sp);   // by value: the exe callee destroys sp
 CStringW FUN_1422e5b80(CStringW str);
 void* FUN_1422e5a70(void* pMem, CStringW strUrl, int nMovieId);
 void FUN_1422e5060(Unk_TextFieldEx* p, const Scaleform::GFx::Value& v, unsigned n);
 void FUN_1422e5110(Unk_TextFieldEx* p, const Scaleform::GFx::Value& v, const CString& strMode);
-Unk_TextFieldEx* FUN_1422e4fd0(void* pMem, const Scaleform::GFx::Value& v, int nMovieId);
+Unk_TextFieldEx* FUN_1422e4fd0(void* pMem, Scaleform::GFx::Value v, int nMovieId);   // by value: the exe callee destroys v
 
 class Unk_UiMgr
 {
@@ -206,7 +206,7 @@ Unk_UiMgr* FUN_14025e7a0();
 class Unk_GfxMovie
 {
 public:
-    Scaleform::GFx::Value FUN_1422bd120(const CString& strClass);   // the AS class object of a name
+    Scaleform::GFx::Value FUN_1422bd120(CString strClass);   // the AS class object of a name
 };
 class Unk_AsEx : public AScript
 {
@@ -595,8 +595,7 @@ void FUN_140d011c0(Unk_AasImagePtr spImage, CStringW strUrl, bool bFlag)
     FUN_1422e55c0(spImage.operator->(), bFlag);
     void* pMem = operator new(0x40);
     Unk_AasSource* pSource = pMem ? (Unk_AasSource*)FUN_1422e5a70(pMem, FUN_1422e5b80(CStringW(strUrl)), 2) : 0;
-    Unk_AasSourcePtr sp(pSource);
-    FUN_1422e5530(spImage.operator->(), sp);
+    FUN_1422e5530(spImage.operator->(), Unk_AasSourcePtr(pSource));
 }
 
 extern CString DAT_143b0d350;                                   // "shrink"

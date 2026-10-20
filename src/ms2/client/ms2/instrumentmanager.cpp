@@ -11,7 +11,7 @@
 // MS2-PIN: ??$Unk_ImGetDialog@VUIPlayInstrumentDialog@@@@YAPEAVUIPlayInstrumentDialog@@H@Z 0x140d0c040
 // MS2-PIN: ??$Unk_ImGetDialog@VUIWriteMusicDialog@@@@YAPEAVUIWriteMusicDialog@@H@Z 0x140d0c0e0
 // MS2-PIN: ??_7CInstrumentManager@@6B?$TSingleton@VCInstrumentManager@@@@@ 0x142e26940
-// MS2-PIN: ??$StringFormat@HHH@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBH11@Z 0x140d0bcc0
+// MS2-PIN: ??$StringFormat@HHK@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBH1AEBK@Z 0x140d0bcc0
 // MS2-PIN: ??$?0AEAHAEBH$0A@@?$pair@HH@std@@QEAA@AEAHAEBH@Z 0x140d0b6c0
 // MS2-PIN: ??$?0HH$0A@@?$pair@$$CBIH@std@@QEAA@$$QEAU?$pair@HH@1@@Z 0x140d0b9a0
 // MS2-PIN: ??$?0II$0A@@?$pair@$$CBII@std@@QEAA@$$QEAU?$pair@II@1@@Z 0x140d0ba40
@@ -1470,3 +1470,5 @@ int& Unk_ImNullableInt::Value()
     (void)((!!m_isValueSet) || (_wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x41), 0));
     return m_value;
 }
+// fx25: the const _Eqrange (0x140d0cd50) builds its pair<const_iterator,const_iterator> via the look-alike 0x140d0b3a0 (the table maps it with the iterator twin 0x140d0b4e0)
+// MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@std@@@std@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@std@@@std@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@std@@@std@@@std@@@std@@@1@0@Z 0x140d0b3a0

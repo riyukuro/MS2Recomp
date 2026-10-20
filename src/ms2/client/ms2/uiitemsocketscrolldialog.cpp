@@ -146,11 +146,11 @@ CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);       // notice
 void FUN_1412752d0(const CStringW& strKey, int nType);          // notice by string key
 // StringFormat instances of the neighbouring units (key by value in the exe, arguments by reference).
-CStringW FUN_140938ae0(const CStringW& strKey, const unsigned& nA);
-CStringW FUN_1409e8820(const CStringW& strKey, const unsigned short& nA);
-CStringW FUN_140ec2f00(const CStringW& strKey, const unsigned short& nA, const unsigned short& nB);
-CStringW FUN_140b99450(const CStringW& strKey, const CStringW& strA, const unsigned& nB);
-CStringW FUN_140e63450(const CStringW& strKey, const unsigned& nA, const unsigned& nB, const unsigned& nC);
+CStringW FUN_140938ae0(CStringW strKey, const unsigned& nA);
+CStringW FUN_1409e8820(CStringW strKey, const unsigned short& nA);
+CStringW FUN_140ec2f00(CStringW strKey, const unsigned short& nA, const unsigned short& nB);
+CStringW FUN_140b99450(CStringW strKey, const CStringW& strA, const unsigned& nB);
+CStringW FUN_140e63450(CStringW strKey, const unsigned& nA, const unsigned& nB, const unsigned& nC);
 CStringW FUN_14183e9c0(CString strKey, unsigned nRank);        // rank text
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);

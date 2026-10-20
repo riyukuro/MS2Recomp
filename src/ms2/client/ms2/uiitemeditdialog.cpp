@@ -172,7 +172,7 @@ void* FUN_1405a8e70(void* pHandle);
 void FUN_1405a85f0(void* pHandle);
 int FUN_14053e210(CItemData* pData);
 int FUN_1414124a0(void* pPart);                 // the item id of a part
-void FUN_140d73aa0(const CStringW& strText, int nType, IMessageListener* pListener, CStringW strTag);
+void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
 CStringW FUN_140f09f90(int nId, const int& nArg);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);

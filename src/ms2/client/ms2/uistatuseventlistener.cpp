@@ -203,8 +203,8 @@ public:
     Unk_DictRequest(int nId);                               // 0x1401baa00
     Unk_DictRequest(const void* pSource);                   // 0x1401baaa0
     ~Unk_DictRequest();                                     // 0x1401baaf0
-    void FUN_1401bac80(const CString& strName, CStringW strValue, int n);
-    int FUN_1401bab90(const CString& strName, void* pOut);
+    void FUN_1401bac80(CString strName, CStringW strValue, int n);
+    int FUN_1401bab90(CString strName, void* pOut);
 private:
     char m_pad[0x38];
 };
@@ -227,7 +227,7 @@ int FUN_1402c4c90(void* p, int n);
 class Unk_StUiSvc;
 Unk_StUiSvc* FUN_1403ed2b0();
 void FUN_141add1f0(Unk_StUiSvc* p);          // tell why the expansion is not possible
-class Unk_StUiMgr { public: int FUN_1422d4e20(const CString& strKey); void FUN_1422d4dd0(const CString& strKey); };
+class Unk_StUiMgr { public: int FUN_1422d4e20(const CString& strKey); void FUN_1422d4dd0(CString strKey); };
 Unk_StUiMgr* FUN_140b632f0();
 class Unk_StStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_StStrings* FUN_1401a9d70();
@@ -242,7 +242,7 @@ void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int, int, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, const Delegate<bool(int, const CMsgBoxData&)>& cb);
+MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_14199e740(int nStringId, int nA, int nB, const int* pnKind, const CStringW& str);
 void FUN_140961010(int nStringId, int nA, int nB, const CStringW& str);
@@ -818,8 +818,7 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         else
         {
             CStringW strQuestion = FUN_14028dee0(0x2a8, (__int64)DAT_143ab2d80.FUN_140de2ae0(), 6);
-            Delegate<bool(int, const CMsgBoxData&)> onResult(this, &UIStoreDialog::FUN_141b11c90);
-            MS2Ptr<CMsgBoxData> box = FUN_140d74390(CStringW(strQuestion), 1, onResult);
+            MS2Ptr<CMsgBoxData> box = FUN_140d74390(CStringW(strQuestion), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UIStoreDialog::FUN_141b11c90));
         }
         return 1;
     }

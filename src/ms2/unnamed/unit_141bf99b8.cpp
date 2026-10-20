@@ -281,7 +281,6 @@
 // MS2-PIN: ??_GNotifyCreateMyPC@@UEAAPEAXI@Z 0x141bfa9b0
 // MS2-PIN: ?Clone@?$ClassFunHandler@V?$TFunctor@XVEmptyParam@@@@PEAVCOptimizer@@P82@EAAXXZ@@UEBAPEAV1@XZ 0x141bfb7c0
 // MS2-PIN: ?Clone@?$ClassFunHandler@V?$TFunctor@XVEmptyParam@@@@PEAVWorldService@@P82@EAAXXZ@@UEBAPEAV1@XZ 0x141bfb810
-// MS2-PIN: ?CreateNode@?$CAtlMap@W4Unk_WsMapKey7@@V?$MS2Ptr@VUnk_WsMapV7@@@@V?$CElementTraits@W4Unk_WsMapKey7@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV7@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4Unk_WsMapKey7@@II@Z 0x141bfb4f0
 #define NOMINMAX                                // worldservice_tail.h -> interactobject.h -> NxPhysics.h
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -574,8 +573,8 @@ void Unk_WsInst6Tail(PC& pc, CEntityShower& shower, MS2ActorUpdater& updater, Ca
     // CAtlMap: FreeNode -> CNode scalar deleting dtor; CreateNode / GetNode of the enum-keyed map
     { Unk_WsM5 m; m.RemoveKey(0); }
     { Unk_WsM10 m; m.RemoveKey(0); }
-    { Unk_WsM11 m; m.RemoveKey(0); }
-    { Unk_WsM7 m; m.SetAt(Unk_WsMapKey7(), MS2Ptr<Unk_WsMapV7>()); m.Lookup(Unk_WsMapKey7()); }
+    { Unk_WsM11 m; m.RemoveKey(0); m.SetAt(0, MS2Ptr<Unk_WsMapV11>()); }   // CreateNode<__int64, V11> 0x141bfb4f0
+    { Unk_WsM7 m; m.Lookup(Unk_WsMapKey7()); }   // GetNode; its CreateNode is SetAt 0x141c1b120's 0x141bfb2f0 (W6V2f8 look-alike)
     // CRBTree: Find, FreeNode -> CNode scalar deleting dtor
     { Unk_WsF8 m; m.Lookup(0); m.RemoveKey(0); }
     { Unk_WsF9 m; m.Lookup(0); m.RemoveKey(0); }
@@ -626,3 +625,6 @@ EE_HANDLER(WorldService, FUN_141bc0290, ecr::SceneGraphRemovedMessage);
 // MS2-PIN: ??_G?$ClassFunHandler@V?$TFunctor@XVEmptyParam@@@@PEAVWorldService@@P82@EAAXXZ@@UEAAPEAXI@Z 0x141bf9a10
 // MS2-PIN: ??_G?$TPtredDummy@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@UEAAPEAXI@Z 0x141bf9e50
 // MS2-PIN: ??_GCNode@?$CRBTree@W4Unk_WsKindKey@@HV?$CElementTraits@W4Unk_WsKindKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAPEAXI@Z 0x141bfa8f0
+
+// fx25: the pair<const int, SmartPointer<Entity>> node's scalar deleting dtor (dtor 0x141bf5dd0, delete 0x10)
+// MS2-PIN: ??_G?$pair@$$CBHV?$SmartPointer@VEntity@egf@@@efd@@@std@@QEAAPEAXI@Z 0x141bf9f10

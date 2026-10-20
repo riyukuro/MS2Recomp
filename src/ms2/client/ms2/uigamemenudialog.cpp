@@ -685,7 +685,7 @@ int FUN_140d5b6b0(void*);
 bool FUN_14071b9c0(void*);
 bool FUN_140a8be20(void*, int);
 int FUN_1413bd560(void*);
-bool FUN_14185d8b0(void*);
+int FUN_14185d8b0(void*);
 int FUN_140a6e4d0(void*);
 int FUN_140c8b320(void*);
 int FUN_140c8b340(void*);
@@ -808,32 +808,7 @@ bool FUN_1409c1720(const Scaleform::GFx::Value& v);
 
 // ---- free functions of this unit (opened by the menu table) ----
 int FUN_14193a010();
-void FUN_14193b5b0();
-void FUN_14193b630();
-void FUN_14193b670();
-void FUN_14193bda0();
-void FUN_14193bdf0();
-void FUN_14193c3c0();
-void FUN_14193c550();
-void FUN_14193c630();
-void FUN_14193c660();
-void FUN_14193c730();
-void FUN_14193c780();
-void FUN_14193c800();
-void FUN_14193c930();
-void FUN_14193cea0();
-void FUN_14193cf60();
-void FUN_14193d250();
-void FUN_14193d320();
-void FUN_14193d3d0();
-void FUN_14193d400();
 void FUN_14193d450();
-void FUN_14193d520();
-void FUN_14193d560();
-void FUN_14193d590();
-void FUN_14193d5c0();
-void FUN_14193d5e0();
-void FUN_14193d700();
 void FUN_14193e760();
 void FUN_14193e790();
 bool FUN_14193e9c0();
@@ -876,7 +851,9 @@ CString UIGameMenuDialog::vfunc_1()
 // @0x141936680
 int UIGameMenuDialog::vfunc_65()
 {
-    return UIDialog::vfunc_65() != 0;
+    if (!UIDialog::vfunc_65())
+        return 0;
+    return 1;
 }
 
 // @0x1419366b0
@@ -932,7 +909,9 @@ void UIGameMenuDialog::vfunc_43()
 // @0x141936e00
 int UIGameMenuDialog::vfunc_13()
 {
-    return UIDialog::vfunc_13() != 0;
+    if (UIDialog::vfunc_13())
+        return 1;
+    return 0;
 }
 
 // @0x141936e30
@@ -1105,8 +1084,9 @@ void UIGameMenuDialog::vfunc_22(void*)
 // @0x1419378d0
 void UIGameMenuDialog::vfunc_33(int n, int)
 {
-    if (n == 0x6200004)
-        FUN_14193b360();
+    if (n != 0x6200004)
+        return;
+    FUN_14193b360();
 }
 
 // @0x141937910
@@ -1119,10 +1099,10 @@ void UIGameMenuDialog::vfunc_16()
 // @0x141937940
 bool UIGameMenuDialog::vfunc_17()
 {
-    bool b = UIDialog::vfunc_17();
-    if (b)
-        FUN_14193ab80();
-    return b;
+    if (!UIDialog::vfunc_17())
+        return false;
+    FUN_14193ab80();
+    return true;
 }
 
 // @0x141937980
@@ -1863,7 +1843,7 @@ int UIGameMenuDialog::FUN_14193b570(int nId)
 }
 
 // @0x14193b5b0
-void FUN_14193b5b0()
+void UIGameMenuDialog::FUN_14193b5b0()
 {
     if (FUN_140b06000(FUN_140b05bf0()))
         FUN_1403ed2b0()->FUN_141adc750(0x4ebc);
@@ -1872,14 +1852,15 @@ void FUN_14193b5b0()
 }
 
 // @0x14193b630
-void FUN_14193b630()
+void UIGameMenuDialog::FUN_14193b630()
 {
-    if (FUN_14185d8b0(FUN_14140ea30()) != 0)
-        FUN_1403ed2b0()->FUN_141adc750(0x4ec1);
+    if (FUN_14185d8b0(FUN_14140ea30()) == 0)
+        return;
+    FUN_1403ed2b0()->FUN_141adc750(0x4ec1);
 }
 
 // @0x14193b670
-void FUN_14193b670()
+void UIGameMenuDialog::FUN_14193b670()
 {
     if (FUN_14036d570(FUN_140166410(), 0x4e) == 0)
         FUN_140d73aa0(FUN_140298ea0(CStringW(L"s_pvp_arena_close_test_season_msg")), 0, 0, CStringW(L""));
@@ -1960,14 +1941,15 @@ void UIGameMenuDialog::FUN_14193bbe0()
 }
 
 // @0x14193bda0
-void FUN_14193bda0()
+void UIGameMenuDialog::FUN_14193bda0()
 {
-    if (FUN_14036d570(FUN_140166410(), 0x4a))
-        FUN_1403ed2b0()->FUN_141adc750(0x4f1b);
+    if (!FUN_14036d570(FUN_140166410(), 0x4a))
+        return;
+    FUN_1403ed2b0()->FUN_141adc750(0x4f1b);
 }
 
 // @0x14193bdf0
-void FUN_14193bdf0()
+void UIGameMenuDialog::FUN_14193bdf0()
 {
     if (FUN_1403ed2b0()->FUN_141adc890(0x4f18) == 0) {
         if (!FUN_140930b70()) {
@@ -2029,7 +2011,7 @@ void UIGameMenuDialog::FUN_14193c000()
 }
 
 // @0x14193c3c0
-void FUN_14193c3c0()
+void UIGameMenuDialog::FUN_14193c3c0()
 {
     void* pDlg = FUN_140cf82e0(0x4f2f);
     if (pDlg == 0)
@@ -2040,12 +2022,12 @@ void FUN_14193c3c0()
     } else if (FUN_140ea4b70(pDlg) == 0) {
         FUN_1412751f0(FUN_1405c2690(CStringW(L"s_quest_scroll_package_use_item_warn"), FUN_1401a9d70()->FUN_141811980(1, nItem)), 1, 1);
     } else {
-        FUN_141924680(pDlg);
+        ::FUN_141924680(pDlg);
     }
 }
 
 // @0x14193c550
-void FUN_14193c550()
+void UIGameMenuDialog::FUN_14193c550()
 {
     Unk_GmEvtList list;
     FUN_14047ca40(FUN_1401c0d90(), &list, &DAT_143ab2fc0);
@@ -2059,13 +2041,13 @@ void FUN_14193c550()
 }
 
 // @0x14193c630
-void FUN_14193c630()
+void UIGameMenuDialog::FUN_14193c630()
 {
     FUN_1403ed2b0()->FUN_141adc750(0x4eb8);
 }
 
 // @0x14193c660
-void FUN_14193c660()
+void UIGameMenuDialog::FUN_14193c660()
 {
     Unk_GmEvtList list;
     FUN_14047ce70(FUN_1401c0d90(), &list);
@@ -2079,25 +2061,26 @@ void FUN_14193c660()
 }
 
 // @0x14193c730
-void FUN_14193c730()
+void UIGameMenuDialog::FUN_14193c730()
 {
-    if (FUN_14036d570(FUN_140166410(), 0x8c))
-        FUN_1403ed2b0()->FUN_141adc750(0x4f38);
+    if (!FUN_14036d570(FUN_140166410(), 0x8c))
+        return;
+    FUN_1403ed2b0()->FUN_141adc750(0x4f38);
 }
 
 // @0x14193c780
-void FUN_14193c780()
+void UIGameMenuDialog::FUN_14193c780()
 {
-    if (FUN_14036d570(FUN_140166410(), 0x81)) {
-        if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x3f) == 0)
-            FUN_140d86260()->vfunc_66();
-        else
-            FUN_141275260(0x2f7, 1, 1);
-    }
+    if (!FUN_14036d570(FUN_140166410(), 0x81))
+        return;
+    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x3f) != 0)
+        FUN_141275260(0x2f7, 1, 1);
+    else
+        FUN_140d86260()->vfunc_66();
 }
 
 // @0x14193c800
-void FUN_14193c800()
+void UIGameMenuDialog::FUN_14193c800()
 {
     if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x3c) == 1) {
         FUN_141275260(0x2f7, 1, 1);
@@ -2113,14 +2096,14 @@ void FUN_14193c800()
                 FUN_1403e5540(&list);
                 return;
             }
-            FUN_141924680(pDlg);
+            ::FUN_141924680(pDlg);
         }
     }
     FUN_1403e5540(&list);
 }
 
 // @0x14193c930
-void FUN_14193c930()
+void UIGameMenuDialog::FUN_14193c930()
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == NULL)
@@ -2171,7 +2154,7 @@ void FUN_14193c930()
 }
 
 // @0x14193cea0
-void FUN_14193cea0()
+void UIGameMenuDialog::FUN_14193cea0()
 {
     void* pDlg = FUN_14193f170(0x4f54);
     if (pDlg != 0) {
@@ -2183,7 +2166,7 @@ void FUN_14193cea0()
 }
 
 // @0x14193cf60
-void FUN_14193cf60()
+void UIGameMenuDialog::FUN_14193cf60()
 {
     Unk_GmEvtList list;
     FUN_14047cf60(FUN_1401c0d90(), &list);
@@ -2209,7 +2192,7 @@ void UIGameMenuDialog::FUN_14193d030()
 }
 
 // @0x14193d250
-void FUN_14193d250()
+void UIGameMenuDialog::FUN_14193d250()
 {
     Unk_GmEvtList list;
     FUN_14047d140(FUN_1401c0d90(), &list);
@@ -2223,7 +2206,7 @@ void FUN_14193d250()
 }
 
 // @0x14193d320
-void FUN_14193d320()
+void UIGameMenuDialog::FUN_14193d320()
 {
     Unk_GmEvtList list;
     FUN_140428700(FUN_1403ed140(FUN_140302b00()), &list);
@@ -2237,13 +2220,13 @@ void FUN_14193d320()
 }
 
 // @0x14193d3d0
-void FUN_14193d3d0()
+void UIGameMenuDialog::FUN_14193d3d0()
 {
     FUN_141538820(FUN_140714f90());
 }
 
 // @0x14193d400
-void FUN_14193d400()
+void UIGameMenuDialog::FUN_14193d400()
 {
     FUN_140d73bc0(0x288, 0x17, 0, CStringW(s_gameExit));
 }
@@ -2263,38 +2246,39 @@ void FUN_14193d450()
 }
 
 // @0x14193d520
-void FUN_14193d520()
+void UIGameMenuDialog::FUN_14193d520()
 {
     void* pDlg = FUN_14193f2b0(0x4f68);
-    if (pDlg != 0)
-        FUN_140feb5b0(pDlg);
+    if (pDlg == 0)
+        return;
+    FUN_140feb5b0(pDlg);
 }
 
 // @0x14193d560
-void FUN_14193d560()
+void UIGameMenuDialog::FUN_14193d560()
 {
     FUN_1403ed2b0()->FUN_141adc750(0x4eb9);
 }
 
 // @0x14193d590
-void FUN_14193d590()
+void UIGameMenuDialog::FUN_14193d590()
 {
     FUN_1403ed2b0()->FUN_141adc750(0x4f6b);
 }
 
 // @0x14193d5c0
-void FUN_14193d5c0()
+void UIGameMenuDialog::FUN_14193d5c0()
 {
     FUN_1413499b0(9);
 }
 
 // @0x14193d5e0
-void FUN_14193d5e0()
+void UIGameMenuDialog::FUN_14193d5e0()
 {
-    if (FUN_14036d570(FUN_140166410(), 0xf9) == 0)
-        FUN_1403ed2b0()->FUN_141adc750(0x4f1c);
-    else
+    if (FUN_14036d570(FUN_140166410(), 0xf9))
         FUN_1403ed2b0()->FUN_141adc750(0x4f84);
+    else
+        FUN_1403ed2b0()->FUN_141adc750(0x4f1c);
 }
 
 // @0x14193d640
@@ -2312,7 +2296,7 @@ void UIGameMenuDialog::vfunc_ugc_6()
 }
 
 // @0x14193d700
-void FUN_14193d700()
+void UIGameMenuDialog::FUN_14193d700()
 {
     if (FUN_14036d570(FUN_140166410(), 0x109)) {
         if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x6f) == 0) {
@@ -2363,30 +2347,31 @@ bool UIGameMenuDialog::FUN_14193d900(int nResult, const CMsgBoxData& box)
 // @0x14193d9e0
 bool UIGameMenuDialog::FUN_14193d9e0(int nResult, const CMsgBoxData&)
 {
-    if (nResult == 0) {
-        PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPc != NULL)
-            FUN_14152a240(pPc, 0);
-    }
+    if (nResult != 0)
+        return true;
+    PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPc != NULL)
+        FUN_14152a240(pPc, 0);
     return true;
 }
 
 // @0x14193da30
 bool UIGameMenuDialog::FUN_14193da30(int nResult, const CMsgBoxData&)
 {
-    if (nResult == 0) {
-        COutPacket packet(0x29, 0);
-        packet.vfunc_o10_1(0x11);
-        FUN_140710590(packet);
-    }
+    if (nResult != 0)
+        return true;
+    COutPacket packet(0x29, 0);
+    packet.vfunc_o10_1(0x11);
+    FUN_140710590(packet);
     return true;
 }
 
 // @0x14193dab0
 bool UIGameMenuDialog::FUN_14193dab0(int nResult, const CMsgBoxData&)
 {
-    if (nResult == 0)
-        FUN_1416d0c10(FUN_140764020());
+    if (nResult != 0)
+        return true;
+    FUN_1416d0c10(FUN_140764020());
     return true;
 }
 
@@ -2425,7 +2410,7 @@ void UIGameMenuDialog::FUN_14193dd70()
 }
 
 // @0x14193dd90
-void UIGameMenuDialog::FUN_14193dd90(Scaleform::GFx::Value* pOut, int nId, CStringW strFmt, int nTipId)
+void UIGameMenuDialog::FUN_14193dd90(Scaleform::GFx::Value* pOut, int nId, const CStringW& strFmt, int nTipId)
 {
     CStringW strTip = FUN_1409331f0()->FUN_14142d760(nTipId, 0);
     CStringW strBracket;
@@ -2724,41 +2709,41 @@ MS2_REPLACE_METHOD(0x14193B360, UIGameMenuDialog, FUN_14193b360, 309, 0xB6F6E411
 MS2_REPLACE_METHOD(0x14193B4A0, UIGameMenuDialog, FUN_14193b4a0, 125, 0x2CA745A9);
 MS2_REPLACE_METHOD(0x14193B530, UIGameMenuDialog, FUN_14193b530, 51, 0x4FE30AD6);
 MS2_REPLACE_METHOD(0x14193B570, UIGameMenuDialog, FUN_14193b570, 51, 0x9BB5C91F);
-MS2_REPLACE(0x14193B5B0, FUN_14193b5b0, 107, 0x779767E2);
-MS2_REPLACE(0x14193B630, FUN_14193b630, 51, 0x1C815201);
-MS2_REPLACE(0x14193B670, FUN_14193b670, 213, 0x79425BB5);
+MS2_REPLACE_METHOD(0x14193B5B0, UIGameMenuDialog, FUN_14193b5b0, 107, 0x779767E2);
+MS2_REPLACE_METHOD(0x14193B630, UIGameMenuDialog, FUN_14193b630, 51, 0x1C815201);
+MS2_REPLACE_METHOD(0x14193B670, UIGameMenuDialog, FUN_14193b670, 213, 0x79425BB5);
 MS2_REPLACE_METHOD(0x14193B750, UIGameMenuDialog, FUN_14193b750, 1148, 0xAB2CD6C4);
 MS2_REPLACE_METHOD(0x14193BBE0, UIGameMenuDialog, FUN_14193bbe0, 433, 0x95F3792E);
-MS2_REPLACE(0x14193BDA0, FUN_14193bda0, 59, 0x783E8AE9);
-MS2_REPLACE(0x14193BDF0, FUN_14193bdf0, 376, 0xF2C28B82);
+MS2_REPLACE_METHOD(0x14193BDA0, UIGameMenuDialog, FUN_14193bda0, 59, 0x783E8AE9);
+MS2_REPLACE_METHOD(0x14193BDF0, UIGameMenuDialog, FUN_14193bdf0, 376, 0xF2C28B82);
 MS2_REPLACE_METHOD(0x14193BF70, UIGameMenuDialog, FUN_14193bf70, 29, 0xFA7E2BA4);
 MS2_REPLACE_METHOD(0x14193BFA0, UIGameMenuDialog, FUN_14193bfa0, 29, 0x24414396);
 MS2_REPLACE_METHOD(0x14193BFD0, UIGameMenuDialog, FUN_14193bfd0, 29, 0x06E2DDC1);
 MS2_REPLACE_METHOD(0x14193C000, UIGameMenuDialog, FUN_14193c000, 949, 0xF04480EF);
-MS2_REPLACE(0x14193C3C0, FUN_14193c3c0, 384, 0xA9FF3BD6);
-MS2_REPLACE(0x14193C550, FUN_14193c550, 204, 0x7146862F);
-MS2_REPLACE(0x14193C630, FUN_14193c630, 32, 0xB9E6E07F);
-MS2_REPLACE(0x14193C660, FUN_14193c660, 197, 0xE3923B78);
-MS2_REPLACE(0x14193C730, FUN_14193c730, 59, 0x72C727C9);
-MS2_REPLACE(0x14193C780, FUN_14193c780, 119, 0xEB072632);
-MS2_REPLACE(0x14193C800, FUN_14193c800, 298, 0xBBFBA13B);
-MS2_REPLACE(0x14193C930, FUN_14193c930, 1380, 0x917568F4);
-MS2_REPLACE(0x14193CEA0, FUN_14193cea0, 179, 0x865D907D);
-MS2_REPLACE(0x14193CF60, FUN_14193cf60, 197, 0xC5764CBB);
+MS2_REPLACE_METHOD(0x14193C3C0, UIGameMenuDialog, FUN_14193c3c0, 384, 0xA9FF3BD6);
+MS2_REPLACE_METHOD(0x14193C550, UIGameMenuDialog, FUN_14193c550, 204, 0x7146862F);
+MS2_REPLACE_METHOD(0x14193C630, UIGameMenuDialog, FUN_14193c630, 32, 0xB9E6E07F);
+MS2_REPLACE_METHOD(0x14193C660, UIGameMenuDialog, FUN_14193c660, 197, 0xE3923B78);
+MS2_REPLACE_METHOD(0x14193C730, UIGameMenuDialog, FUN_14193c730, 59, 0x72C727C9);
+MS2_REPLACE_METHOD(0x14193C780, UIGameMenuDialog, FUN_14193c780, 119, 0xEB072632);
+MS2_REPLACE_METHOD(0x14193C800, UIGameMenuDialog, FUN_14193c800, 298, 0xBBFBA13B);
+MS2_REPLACE_METHOD(0x14193C930, UIGameMenuDialog, FUN_14193c930, 1380, 0x917568F4);
+MS2_REPLACE_METHOD(0x14193CEA0, UIGameMenuDialog, FUN_14193cea0, 179, 0x865D907D);
+MS2_REPLACE_METHOD(0x14193CF60, UIGameMenuDialog, FUN_14193cf60, 197, 0xC5764CBB);
 MS2_REPLACE_METHOD(0x14193D030, UIGameMenuDialog, FUN_14193d030, 523, 0x9DCD409F);
-MS2_REPLACE(0x14193D250, FUN_14193d250, 197, 0xDFF06827);
-MS2_REPLACE(0x14193D320, FUN_14193d320, 157, 0x7F80820D);
-MS2_REPLACE(0x14193D3D0, FUN_14193d3d0, 27, 0x8762DE36);
-MS2_REPLACE(0x14193D400, FUN_14193d400, 70, 0xB1286B0A);
+MS2_REPLACE_METHOD(0x14193D250, UIGameMenuDialog, FUN_14193d250, 197, 0xDFF06827);
+MS2_REPLACE_METHOD(0x14193D320, UIGameMenuDialog, FUN_14193d320, 157, 0x7F80820D);
+MS2_REPLACE_METHOD(0x14193D3D0, UIGameMenuDialog, FUN_14193d3d0, 27, 0x8762DE36);
+MS2_REPLACE_METHOD(0x14193D400, UIGameMenuDialog, FUN_14193d400, 70, 0xB1286B0A);
 MS2_REPLACE(0x14193D450, FUN_14193d450, 193, 0xB4642BB9);
-MS2_REPLACE(0x14193D520, FUN_14193d520, 49, 0x1F026EC1);
-MS2_REPLACE(0x14193D560, FUN_14193d560, 32, 0xE23E0543);
-MS2_REPLACE(0x14193D590, FUN_14193d590, 32, 0xA9D322C4);
-MS2_REPLACE(0x14193D5C0, FUN_14193d5c0, 24, 0xEB12FC8A);
-MS2_REPLACE(0x14193D5E0, FUN_14193d5e0, 77, 0x3C93A562);
+MS2_REPLACE_METHOD(0x14193D520, UIGameMenuDialog, FUN_14193d520, 49, 0x1F026EC1);
+MS2_REPLACE_METHOD(0x14193D560, UIGameMenuDialog, FUN_14193d560, 32, 0xE23E0543);
+MS2_REPLACE_METHOD(0x14193D590, UIGameMenuDialog, FUN_14193d590, 32, 0xA9D322C4);
+MS2_REPLACE_METHOD(0x14193D5C0, UIGameMenuDialog, FUN_14193d5c0, 24, 0xEB12FC8A);
+MS2_REPLACE_METHOD(0x14193D5E0, UIGameMenuDialog, FUN_14193d5e0, 77, 0x3C93A562);
 MS2_REPLACE_METHOD_VIA(0x14193D640, UIGameMenuDialog, UIUGCEventListener, vfunc_ugc_5, 81, 0x28566F71);
 MS2_REPLACE_METHOD_VIA(0x14193D6A0, UIGameMenuDialog, UIUGCEventListener, vfunc_ugc_6, 81, 0x283C8D26);
-MS2_REPLACE(0x14193D700, FUN_14193d700, 395, 0xD653C4D5);
+MS2_REPLACE_METHOD(0x14193D700, UIGameMenuDialog, FUN_14193d700, 395, 0xD653C4D5);
 MS2_REPLACE_METHOD(0x14193D8A0, UIGameMenuDialog, FUN_14193d8a0, 83, 0x69D7EC77);
 MS2_REPLACE_METHOD(0x14193D900, UIGameMenuDialog, FUN_14193d900, 203, 0x961AF19C);
 MS2_REPLACE_METHOD(0x14193D9E0, UIGameMenuDialog, FUN_14193d9e0, 74, 0x77F8E0A9);

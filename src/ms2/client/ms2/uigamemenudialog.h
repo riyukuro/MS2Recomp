@@ -175,7 +175,7 @@ public:
     void FUN_14193daf0(bool bEvent);
     void FUN_14193dd50();
     void FUN_14193dd70();
-    void FUN_14193dd90(Scaleform::GFx::Value* pOut, int nId, CStringW strFmt, int nTipId);
+    void FUN_14193dd90(Scaleform::GFx::Value* pOut, int nId, const CStringW& strFmt, int nTipId);
     void FUN_14193df10(Scaleform::GFx::Value* pOut);
     void FUN_14193e0e0(Scaleform::GFx::Value* pOut);
     void FUN_14193e2e0(int nMapType);

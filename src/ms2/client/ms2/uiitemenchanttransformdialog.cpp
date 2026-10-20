@@ -143,7 +143,7 @@ MS2Ptr<CItem> FUN_141420330(void* pItems, int nIndex);
 void FUN_141415600(const CString& strSlot);                         // unbind a slot
 void FUN_141415450(const CString& strSlot, MS2Ptr<CItem> item, int a, int nIcon, int nFlags);
 CStringW FUN_14028b8e0(const CStringW& strKey);                     // localized text
-CStringW FUN_1405c2690(const CStringW& strKey, const CStringW& strArg);
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409404f0(__int64 n);                                  // number text
 CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_140c16160(ASObj& obj, const char* szName, ASArray arr);

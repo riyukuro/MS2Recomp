@@ -222,7 +222,7 @@ CString FUN_14016a600(const wchar_t* psz, int n);
 CStringW FUN_14028de60(int nId);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_140811740(int nId, const int& a, const int& b);
-CStringW FUN_14062b4f0(const CStringW& strFormat, const int& n);
+CStringW FUN_14062b4f0(CStringW strFormat, const int& n);
 int FUN_14028cb70(const CStringW& str, CAtlArray<CStringW>& arr, const wchar_t* szDelim, int nMax);
 __int64 FUN_140de2a80(void* p);
 int FUN_1412772f0(__int64 nValue, int bGrouped);

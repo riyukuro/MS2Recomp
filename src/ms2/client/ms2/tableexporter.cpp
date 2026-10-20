@@ -6,53 +6,53 @@
 // MS2-PIN: ??__Eg_mapTaxi@@YAXXZ 0x14010d470
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1418265b0 ; unique
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1418265e0 ; prop
-// MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141826990 ; unique
-// MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_NpcInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_NpcInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_NpcInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_NpcInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1418269e0 ; unique
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1418265e0 ; prop
+// MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141826990 ; unique
+// MS2-PIN: ??$?0AEBU?$less@I@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@I@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x1418269e0 ; unique
 // MS2-PIN: ??$StringFormat@IHV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HHHH@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBIAEBHAEBV01@2222@Z 0x141827590 ; unique
-// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@1@@Z 0x141827b60 ; unique
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@1@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@1@1@Z 0x141828960 ; unique
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@1@@Z 0x14182a8a0 ; unique
-// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@1@@Z 0x14182c940 ; unique
-// MS2-PIN: ??$forward@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@YAAEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@0@AEAU10@@Z 0x14182e2d0 ; prop
+// MS2-PIN: ??$_Buy_if_not_node@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@1@PEAU21@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@1@@Z 0x141827b60 ; unique
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@1@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@1@1@Z 0x141828960 ; unique
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@1@@Z 0x14182a8a0 ; unique
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@1@@Z 0x14182c940 ; unique
+// MS2-PIN: ??$forward@AEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@YAAEAU?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@0@AEAU10@@Z 0x14182e2d0 ; prop
 // MS2-PIN: ??0?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEAA@XZ 0x14182e4c0 ; order
-// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@QEAA@XZ 0x14182eb70 ; prop
+// MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@QEAA@XZ 0x14182eb70 ; prop
 // MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@std@@@std@@@std@@QEAA@XZ 0x14182ee70 ; unique
 // MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@std@@@std@@@std@@QEAA@XZ 0x14182eea0 ; prop
-// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@QEAA@XZ 0x14182eed0 ; prop
-// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_NpcInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_NpcInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@QEAA@XZ 0x14182ef00 ; prop
+// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@QEAA@XZ 0x14182eed0 ; prop
+// MS2-PIN: ??0?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@QEAA@XZ 0x14182ef00 ; prop
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@QEAA@XZ 0x14182ef70 ; unique
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@QEAA@XZ 0x14182ef80 ; prop
-// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@QEAA@XZ 0x14182ef90 ; prop
-// MS2-PIN: ??1?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@QEAA@XZ 0x14182f780 ; unique
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@QEAA@XZ 0x14182ef90 ; prop
+// MS2-PIN: ??1?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@QEAA@XZ 0x14182f780 ; unique
 // MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1418301f0 ; prop
-// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_NpcInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_NpcInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141830230 ; prop
-// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1418304d0 ; prop
-// MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141830550 ; prop
-// MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x141830730 ; unique
-// MS2-PIN: ?GetAt@?$CAtlList@UUnk_NpcInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_NpcInfo@?A0x82dadc2e@@@ATL@@@ATL@@QEAAAEAUUnk_NpcInfo@?A0x82dadc2e@@PEAU__POSITION@@@Z 0x141831150 ; unique
+// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141830230 ; prop
+// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x1418304d0 ; prop
+// MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141830550 ; prop
+// MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x141830730 ; unique
+// MS2-PIN: ?GetAt@?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@QEAAAEAU_NpcInfo@Unk_TableExporter@@PEAU__POSITION@@@Z 0x141831150 ; unique
 // MS2-PIN: ?GetKeyAt@?$CAtlMap@IV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@I@2@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@QEBAAEBIPEAU__POSITION@@@Z 0x1418313c0 ; order
 // MS2-PIN: ?GetKeyAt@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEBAAEBIPEAU__POSITION@@@Z 0x141831430 ; order
-// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@2@@Z 0x1418326d0 ; unique
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@2@$00@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@2@XZ 0x141834bc0 ; prop
-// MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@2@_K@Z 0x141836700 ; unique
+// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@2@@Z 0x1418326d0 ; unique
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@2@$00@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@2@XZ 0x141834bc0 ; prop
+// MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@2@_K@Z 0x141836700 ; unique
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@2@_K@Z 0x141836790 ; order
-// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@2@@Z 0x1418377e0 ; unique
-// MS2-PIN: ?size@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@QEBA_KXZ 0x1418379a0 ; unique
+// MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@2@@Z 0x1418377e0 ; unique
+// MS2-PIN: ?size@?$_Tree@V?$_Tmap_traits@IV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@3@$0A@@std@@@std@@QEBA_KXZ 0x1418379a0 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ??1?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@QEAA@XZ 0x14182f340
-// MS2-PIN: ??1?$TPtredDummy@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@UEAA@XZ 0x14182f3e0
-// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141830210
-// MS2-PIN: ?FreeNode@?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@AEAAXPEAVCNode@12@@Z 0x141830ff0
+// MS2-PIN: ??1?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@QEAA@XZ 0x14182f340
+// MS2-PIN: ??1?$TPtredDummy@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@UEAA@XZ 0x14182f3e0
+// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x141830210
+// MS2-PIN: ?FreeNode@?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@AEAAXPEAVCNode@12@@Z 0x141830ff0
 // MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x1418311d0
-// MS2-PIN: ?RemoveAll@?$CAtlList@UUnk_PortalInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_PortalInfo@?A0x82dadc2e@@@ATL@@@ATL@@QEAAXXZ 0x1418318a0
+// MS2-PIN: ?RemoveAll@?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@QEAAXXZ 0x1418318a0
 // MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@std@@PEAX@2@_K@Z 0x1418367c0
 // MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@2@_K@Z 0x141836820
-// MS2-PIN: ??0Unk_NpcInfo@?A0x82dadc2e@@QEAA@XZ 0x14182f220
-// MS2-PIN: ??_G?$TPtredDummy@V?$CAtlList@UUnk_NpcInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_NpcInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@UEAAPEAXI@Z 0x141830950
+// MS2-PIN: ??0_NpcInfo@Unk_TableExporter@@QEAA@XZ 0x14182f220
+// MS2-PIN: ??_G?$TPtredDummy@V?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@@@UEAAPEAXI@Z 0x141830950
 // MS2-PIN: ?GetNext@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x1418315a0
 // MS2-PIN: ?deallocate@?$allocator@U?$_List_node@UCSoundDataEntry@@PEAX@std@@@std@@QEAAXQEAU?$_List_node@UCSoundDataEntry@@PEAX@2@_K@Z 0x141836760
-// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_NpcInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_NpcInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@UUnk_NpcInfo@?A0x82dadc2e@@V?$CElementTraits@UUnk_NpcInfo@?A0x82dadc2e@@@ATL@@@ATL@@@@@std@@PEAX@2@_K@Z 0x1418367f0
+// MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@std@@@std@@QEAAXQEAU?$_Tree_node@U?$pair@$$CBIV?$Unk_FieldPtr@V?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@@@@std@@PEAX@2@_K@Z 0x1418367f0
 // MS2-PIN: ?FindNextNode@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x141830f30
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\tableexporter.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -147,31 +147,32 @@ typedef std::map<CStringA, Unk_SoundTag> Unk_SoundTagMap;
 
 // the sound service's tag map, +0x58
 // ---- the field meta table export (editor side) ----------------------------------------------------------------
-namespace {
-struct Unk_PortalInfo                           // <portal> row collected per field, 0x10 bytes
+namespace Unk_TableExporter {                   // the exe has these in an anonymous namespace (RTTI: PortalInfo / _NpcInfo @?A0xb97b5ba5); named here because ?A0x<hash> mangling depends on the source path (the pins broke in the merge worktree)
+struct PortalInfo                           // <portal> row collected per field, 0x10 bytes
 {
     unsigned int m_nId;
     unsigned int m_nTargetField;
     unsigned int m_nTargetPortal;
     int m_nType;
-    bool operator==(const Unk_PortalInfo& o) const;
+    bool operator==(const PortalInfo& o) const;
 };
 
-struct Unk_NpcInfo                              // npc spawn of a field, 0x20 bytes
+struct _NpcInfo                              // npc spawn of a field, 0x20 bytes
 {
-    Unk_NpcInfo() { m_pos = NiPoint3(0.0f, 0.0f, 0.0f); }
-    bool operator==(const Unk_NpcInfo& o) const;
+    _NpcInfo() { m_pos = NiPoint3(0.0f, 0.0f, 0.0f); }
+    bool operator==(const _NpcInfo& o) const;
     unsigned int m_nFieldId;
     NiPoint3 m_pos;                             // spawn position
     CStringW m_strStart;                        // event start / end (gameEvent spawns)
     CStringW m_strEnd;
 };
 }
+using namespace Unk_TableExporter;
 
-typedef ATL::CAtlList<Unk_PortalInfo> Unk_PortalList;
+typedef ATL::CAtlList<PortalInfo> Unk_PortalList;
 typedef Unk_FieldPtr<Unk_PortalList> Unk_PortalListPtr;
 typedef std::map<unsigned int, Unk_PortalListPtr> Unk_PortalMap;
-typedef ATL::CAtlList<Unk_NpcInfo> Unk_NpcList;
+typedef ATL::CAtlList<_NpcInfo> Unk_NpcList;
 typedef Unk_FieldPtr<Unk_NpcList> Unk_NpcListPtr;
 typedef std::map<unsigned int, Unk_NpcListPtr> Unk_NpcMap;
 
@@ -248,7 +249,7 @@ Unk_RegionData* FUN_140377940(Unk_Ref* pRef);
 void FUN_1403775a0(Unk_Ref* pRef);
 struct Unk_SpawnMgr { char m_pad[8]; char m_groups[1]; };
 Unk_SpawnMgr* FUN_1406d6e90();
-void FUN_1406cd840(void* pGroups, Unk_Ref* pOut, const CStringW& strName, int nIndex);
+void FUN_1406cd840(void* pGroups, Unk_Ref* pOut, CStringW strName, int nIndex);
 void* FUN_14182fd90(Unk_Ref* pRef);
 Unk_SpawnGroup* FUN_1406d5cb0(Unk_Ref* pRef);
 unsigned long long FUN_1406d6e40(Unk_EntryArray* pArr);
@@ -264,7 +265,7 @@ char FUN_1409f90f0(Unk_Ref* pRef, int n);
 Unk_NpcRow* FUN_140965990(Unk_Ref* pRef);
 void FUN_1406d5390(Unk_Ref* pRef);
 void* FUN_14052d210();
-void FUN_1407291c0(void* pMgr, Unk_Ref* pOut, const CString& strModel);
+void FUN_1407291c0(void* pMgr, Unk_Ref* pOut, CString strModel);
 long long FUN_14052cde0(Unk_Ref* pRef);
 void* FUN_14052ceb0(Unk_Ref* pRef);
 unsigned int FUN_140728820(void* pObj);
@@ -626,7 +627,7 @@ bool FUN_141826e40(unsigned int nKey, unsigned int nId, Unk_FieldMapA& rMap)
 
 // Adds an npc spawn / portal to the list of a field (creating the list when the field is new).
 // @0x141826f80
-bool FUN_141826f80(unsigned int nField, Unk_PortalInfo info, Unk_PortalMap& rMap)
+bool FUN_141826f80(unsigned int nField, PortalInfo info, Unk_PortalMap& rMap)
 {
     if (rMap.find(nField) == rMap.end()) {
         Unk_PortalListPtr fresh(0);
@@ -641,7 +642,7 @@ bool FUN_141826f80(unsigned int nField, Unk_PortalInfo info, Unk_PortalMap& rMap
 }
 
 // @0x1418270c0
-bool FUN_1418270c0(unsigned int nNpc, Unk_NpcInfo info, Unk_NpcMap& rMap)
+bool FUN_1418270c0(unsigned int nNpc, _NpcInfo info, Unk_NpcMap& rMap)
 {
     if (rMap.find(nNpc) == rMap.end()) {
         Unk_NpcListPtr fresh(0);
@@ -739,7 +740,7 @@ bool FUN_1418226b0(bool bLog)
                     if (FUN_140a2a920(&mgr, strModel, CString("SpawnPointNPC")) != 0) {
                         Unk_PtrArray npcs;
                         FUN_140a2aab0(&mgr, pEntity, CString(strModel), "NpcList", &npcs);
-                        Unk_NpcInfo npc;
+                        _NpcInfo npc;
                         npc.m_nFieldId = nFieldId;
                         FUN_140a2afd0(&mgr, pEntity, strModel, "Position", &npc.m_pos);
                         for (size_t i = 0; i < npcs.GetCount(); i++) {
@@ -753,7 +754,7 @@ bool FUN_1418226b0(bool bLog)
                         FUN_140a2b9d0(&mgr, pEntity, strModel, "IsHomePrivilege", &bHome);
                         g_mapTaxi.SetAt(nFieldId, bHome);
                     } else if (FUN_140a2a920(&mgr, strModel, CString("Portal")) != 0) {
-                        Unk_PortalInfo portal;
+                        PortalInfo portal;
                         int nTargetField = 0;
                         FUN_140a2b550(&mgr, pEntity, strModel, "PortalID", &portal.m_nId);
                         FUN_140a2b270(&mgr, pEntity, strModel, "TargetFieldSN", &nTargetField);
@@ -769,7 +770,7 @@ bool FUN_1418226b0(bool bLog)
                                 Unk_Ref ref;
                                 FUN_140331af0(&ref, regions[i]);
                                 for (size_t j = 0; j < FUN_1403347d0(&ref)->m_arrPoints.GetCount(); j++) {
-                                    Unk_PortalInfo copy = portal;
+                                    PortalInfo copy = portal;
                                     copy.m_nTargetField = FUN_1403347d0(&ref)->m_arrPoints[j];
                                     FUN_141826f80(nFieldId, copy, mapPortals);
                                 }
@@ -795,7 +796,7 @@ bool FUN_1418226b0(bool bLog)
                                         Unk_Ref npcRow;
                                         FUN_140a7cab0(FUN_1406d6e90(), &npcRow, nNpcId);
                                         if (FUN_1409f90f0(&npcRow, 0) == 0) {
-                                            Unk_NpcInfo npc;
+                                            _NpcInfo npc;
                                             npc.m_nFieldId = nFieldId;
                                             FUN_1418270c0(nNpcId, npc, g_mapNpc);
                                             Unk_Ref model;
@@ -870,7 +871,7 @@ bool FUN_1418226b0(bool bLog)
             FUN_140177e10(strFields, fieldIds, L",");
             for (size_t i = 0; i < npcIds.GetCount(); i++) {
                 for (size_t j = 0; j < fieldIds.GetCount(); j++) {
-                    Unk_NpcInfo npc;
+                    _NpcInfo npc;
                     npc.m_nFieldId = fieldIds[j];
                     FUN_1418270c0(npcIds[i], npc, g_mapNpc);
                 }
@@ -913,7 +914,7 @@ bool FUN_1418226b0(bool bLog)
         if (pNpcRoot == NULL)
             continue;
         unsigned int nNpcId = 0;
-        Unk_NpcInfo npc;
+        _NpcInfo npc;
         FUN_140873220(pNpcRoot, "npcID", nNpcId);
         FUN_140873220(pNpcRoot, "fieldID", npc.m_nFieldId);
         FUN_140873420(pEvent, "eventStart", npc.m_strStart);
@@ -950,7 +951,7 @@ bool FUN_1418226b0(bool bLog)
             FUN_140873ce0(&elemNpc, "id", it->first);
             Unk_NpcList* pList = it->second.get();
             for (POSITION pos = pList->GetHeadPosition(); pos != NULL;) {
-                Unk_NpcInfo& rInfo = pList->GetAt(pos);
+                _NpcInfo& rInfo = pList->GetAt(pos);
                 Unk_XmlNodeBuf elemField;
                 FUN_14086f2f0(&elemField, "field");
                 FUN_140873ce0(&elemField, "id", rInfo.m_nFieldId);
@@ -994,7 +995,7 @@ bool FUN_1418226b0(bool bLog)
             FUN_140873ca0(&elemPortals, "indoor", bIndoor);
         }
         for (POSITION pos = pList->GetHeadPosition(); pos != NULL;) {
-            Unk_PortalInfo& rPortal = pList->GetNext(pos);
+            PortalInfo& rPortal = pList->GetNext(pos);
             Unk_XmlNodeBuf elemPortal;
             FUN_14086f2f0(&elemPortal, "portal");
             FUN_140873ce0(&elemPortal, "id", rPortal.m_nId);
@@ -1147,7 +1148,7 @@ int FUN_14182f9b0(const efd::Point3* pFirst, const efd::Point3* pSecond)
 }
 
 // @0x14182fa20
-bool Unk_PortalInfo::operator==(const Unk_PortalInfo& o) const
+bool PortalInfo::operator==(const PortalInfo& o) const
 {
     if (m_nId == o.m_nId && m_nTargetField == o.m_nTargetField)
         return true;
@@ -1155,7 +1156,7 @@ bool Unk_PortalInfo::operator==(const Unk_PortalInfo& o) const
 }
 
 // @0x14182fa70
-bool Unk_NpcInfo::operator==(const Unk_NpcInfo& o) const
+bool _NpcInfo::operator==(const _NpcInfo& o) const
 {
     if (m_nFieldId == o.m_nFieldId && FUN_14182f9b0(&m_pos, &o.m_pos) != 0)
         return true;
@@ -1223,3 +1224,6 @@ size_t FUN_1418311c0(Unk_RefArrayA* pArray)
 // MS2-PIN: ??0?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA@XZ 0x14182e480 ; hand: this TU's byte-identical copy (0x140658210 in the table)
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbb850-0x142cbb900 .text$yd
+// fx25: the TPtredDummy<CAtlList<...>> vftables (external now that the namespace is named; RTTI names carry the exe's anonymous hash)
+// MS2-PIN: ??_7?$TPtredDummy@V?$CAtlList@UPortalInfo@Unk_TableExporter@@V?$CElementTraits@UPortalInfo@Unk_TableExporter@@@ATL@@@ATL@@@@6B@ 0x142f82280
+// MS2-PIN: ??_7?$TPtredDummy@V?$CAtlList@U_NpcInfo@Unk_TableExporter@@V?$CElementTraits@U_NpcInfo@Unk_TableExporter@@@ATL@@@ATL@@@@6B@ 0x142f82290

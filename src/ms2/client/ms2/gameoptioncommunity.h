@@ -6,13 +6,39 @@
 
 struct Unk_CommunityStateA
 {
+    union
+    {
     bool m_b[3];                                                    // +0x00 (default 1,1,0)
+        struct
+        {
+            bool m_bDisplayMyChatBalloon;
+            bool m_bDisplayOtherChatBalloon;
+            bool m_bDisableSingleRiding;
+        };
+    };
 };
 MS2_CHECK_SIZE(Unk_CommunityStateA, 0x3);
 
 struct Unk_CommunityStateB
 {
+    union
+    {
     bool m_b[0xc];                                                  // +0x00 (default 1,1,1 then 0; bytes 0..10 set by the ctor)
+        struct
+        {
+            bool m_bDisplayChatComfirmSuper;
+            bool m_bDisplayChatComfirmWorld;
+            bool m_bDisplayChatComfirmChannel;
+            bool m_bDisablePartyRequest;
+            bool m_bDisableBuddyRequest;
+            bool m_bDisableGuildRequest;
+            bool m_bDisableGroupRequest;
+            bool m_bDisableWhisperNotify;
+            bool m_bDisableTradeRequest;
+            bool m_bDisableHomeRequest;
+            bool m_bDisableCouplemotionRequest;
+        };
+    };
 };
 MS2_CHECK_SIZE(Unk_CommunityStateB, 0xc);
 

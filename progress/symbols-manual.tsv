@@ -4197,3 +4197,6 @@ luaopen_Entity	1422416d0	func
 ?push_back@?$vector@UUnk_Int3@@V?$allocator@UUnk_Int3@@@std@@@std@@QEAAX$$QEAUUnk_Int3@@@Z	140b7ecf0	func
 ??$make_type@W4Unk_SSGJobError@@@internal@fmt@@YA_KAEBW4Unk_SSGJobError@@@Z	141745310	func
 ??1LogMessage@logging@cef@@QEAA@XZ	142778a10	func
+?Set@Unk_NpcBeam@@QEAAXAEBVPoint3@efd@@0PEBD@Z	14160bde0	func
+?Set@Unk_NpcBeam@@QEAAXAEBVPoint3@efd@@0MMPEBD@Z	14160beb0	func
+?UpdatePosition@CRandomTargetEffect@@QEAAXXZ	140aab0f0	func

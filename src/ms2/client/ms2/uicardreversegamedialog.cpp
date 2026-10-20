@@ -48,7 +48,7 @@ Scaleform::GFx::Value FUN_1406146a0(const Scaleform::GFx::Value& v);   // copy a
 class Unk_CRNames { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_CRNames* FUN_1401a9d70();
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
-CStringW FUN_140b99450(const CStringW& strKey, const CStringW& strA, const unsigned& nB);
+CStringW FUN_140b99450(CStringW strKey, const CStringW& strA, const unsigned& nB);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
 CStringW FUN_14028de60(int nId);
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);

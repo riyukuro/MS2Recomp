@@ -577,19 +577,19 @@ bool CItemData::FUN_14053c810()
 // @0x14053c870
 bool CItemData::FUN_14053c870()
 {
-    if (!FUN_14053d550())
-    {
-        if (FUN_14053c620() == 0)
-            return false;
-        return true;
-    }
-    return false;
+    if (FUN_14053d550())
+        return false;
+    if (FUN_14053c620() == 0)
+        return false;
+    return true;
 }
 
 // @0x14053c8b0
 bool CItemData::FUN_14053c8b0()
 {
-    return FUN_14053c5c0() != 0x13;
+    if (FUN_14053c5c0() == 0x13)
+        return false;
+    return true;
 }
 
 // @0x14053c8e0
@@ -677,12 +677,9 @@ bool CItemData::FUN_14053cc80()
 // @0x14053ccc0
 bool CItemData::FUN_14053ccc0()
 {
-    bool bResult;
     if (!FUN_14053cc80())
-        bResult = false;
-    else
-        bResult = FUN_14053c5e0() == 1;
-    return bResult;
+        return false;
+    return FUN_14053c5e0() == 1;
 }
 
 // @0x14053cd10
@@ -700,9 +697,7 @@ bool CItemData::FUN_14053cd50()
 // @0x14053cd90
 bool CItemData::FUN_14053cd90()
 {
-    bool bNotEmpty = function.name.IsEmpty();
-    bNotEmpty = !bNotEmpty;
-    return bNotEmpty;
+    return !function.name.IsEmpty();
 }
 
 // @0x14053cde0
@@ -844,9 +839,7 @@ bool CItemData::FUN_14053d2b0()
 // @0x14053d2f0
 bool CItemData::FUN_14053d2f0()
 {
-    if (!FUN_14053d340() && !FUN_14053d460())
-        return false;
-    return true;
+    return FUN_14053d340() || FUN_14053d460();
 }
 
 // @0x14053d340
@@ -903,36 +896,50 @@ bool CItemData::FUN_14053d460()
 // @0x14053d510
 bool CItemData::FUN_14053d510()
 {
-    int nSub = FUN_14053c620();
-    if (nSub == 0x1f || nSub == 0x22)
+    switch (FUN_14053c620())
+    {
+    case 0x1f:
+    case 0x22:
         return true;
+    }
     return false;
 }
 
 // @0x14053d550
 bool CItemData::FUN_14053d550()
 {
-    if (!FUN_14053cf40() && !FUN_14053d070() && !FUN_14053d020() && !FUN_14053cfd0())
-        return false;
-    return true;
+    return FUN_14053cf40() || FUN_14053d070() || FUN_14053d020() || FUN_14053cfd0();
 }
 
 // @0x14053d5c0
 bool CItemData::FUN_14053d5c0()
 {
-    int nSub = FUN_14053c620();
-    if (nSub == 0xc || (0x11 < nSub && nSub < 0x16))
+    switch (FUN_14053c620())
+    {
+    case 0xc:
+    case 0x12:
+    case 0x13:
+    case 0x14:
+    case 0x15:
         return true;
+    }
     return false;
 }
 
 // @0x14053d600
 bool CItemData::FUN_14053d600()
 {
-    int nSub = FUN_14053c620();
-    if (nSub < 0xd || (0x11 < nSub && nSub != 0x16))
-        return false;
-    return true;
+    switch (FUN_14053c620())
+    {
+    case 0xd:
+    case 0xe:
+    case 0xf:
+    case 0x10:
+    case 0x11:
+    case 0x16:
+        return true;
+    }
+    return false;
 }
 
 // @0x14053d640
@@ -955,9 +962,7 @@ bool CItemData::FUN_14053d660()
 // @0x14053d6f0
 bool CItemData::FUN_14053d6f0()
 {
-    bool bNotEmpty = cubeTextureName.mesh.IsEmpty();
-    bNotEmpty = !bNotEmpty;
-    return bNotEmpty;
+    return !cubeTextureName.mesh.IsEmpty();
 }
 
 // @0x14053d740
@@ -969,11 +974,12 @@ bool CItemData::FUN_14053d740()
 // @0x14053d760
 bool CItemData::FUN_14053d760()
 {
-    if (FUN_14053c5c0() == 1)
+    if (FUN_14053c5c0() != 1)
+        return false;
+    switch (FUN_14053c620())
     {
-        int nSub = FUN_14053c620();
-        if (nSub < 0x1e || (0x22 < nSub && (nSub < 0x32 || 0x38 < nSub)))
-            return false;
+    case 0x1e: case 0x1f: case 0x20: case 0x21: case 0x22:
+    case 0x32: case 0x33: case 0x34: case 0x35: case 0x36: case 0x37: case 0x38:
         return true;
     }
     return false;
@@ -982,18 +988,25 @@ bool CItemData::FUN_14053d760()
 // @0x14053d7c0
 bool CItemData::FUN_14053d7c0()
 {
-    int nType = limit.transferType;
-    if (nType < 2 || 4 < nType)
-        return false;
-    return true;
+    switch (limit.transferType)
+    {
+    case 2:
+    case 3:
+    case 4:
+        return true;
+    }
+    return false;
 }
 
 // @0x14053d800
 bool CItemData::FUN_14053d800()
 {
-    int nType = limit.transferType;
-    if (nType == 3 || nType == 5)
+    switch (limit.transferType)
+    {
+    case 3:
+    case 5:
         return true;
+    }
     return false;
 }
 
@@ -1024,9 +1037,7 @@ bool CItemData::FUN_14053d900()
 // @0x14053d940
 bool CItemData::FUN_14053d940()
 {
-    if (FUN_14053c5c0() == 6 && FUN_14053c5e0() == 4)
-        return true;
-    return false;
+    return FUN_14053c5c0() == 6 && FUN_14053c5e0() == 4;
 }
 
 // @0x14053d990
@@ -1099,78 +1110,72 @@ unsigned short CItemData::FUN_14053dc40()
 // @0x14053dc60
 int CItemData::FUN_14053dc60()
 {
-    if (FUN_14053c5c0() == 0xb)
-        return param1;
-    return 0;
+    if (FUN_14053c5c0() != 0xb)
+        return 0;
+    return param1;
 }
 
 // @0x14053dc90
 int CItemData::FUN_14053dc90()
 {
-    if (FUN_14053c5c0() == 1)
-    {
-        int nSub = FUN_14053c5e0();
-        if (nSub < 0x50 || 0x53 < nSub)
-            return 0;
-        return param1;
-    }
-    return 0;
+    if (FUN_14053c5c0() != 1)
+        return 0;
+    int nSub = FUN_14053c5e0();
+    if (nSub < 0x50 || 0x53 < nSub)
+        return 0;
+    return param1;
 }
 
 // @0x14053dce0
 int CItemData::FUN_14053dce0()
 {
-    if (FUN_14053c5c0() == 6)
-    {
-        if (FUN_14053c5e0() == 6)
-            return param2;
+    if (FUN_14053c5c0() != 6)
         return 0;
-    }
-    return 0;
+    if (FUN_14053c5e0() != 6)
+        return 0;
+    return param2;
 }
 
 // @0x14053dd30
 int CItemData::FUN_14053dd30()
 {
-    if (FUN_14053c5c0() == 6)
-    {
-        if (FUN_14053c5e0() == 7)
-            return param2;
+    if (FUN_14053c5c0() != 6)
         return 0;
-    }
-    return 0;
+    if (FUN_14053c5e0() != 7)
+        return 0;
+    return param2;
 }
 
 // @0x14053dd80
 int CItemData::FUN_14053dd80()
 {
-    if (FUN_14053c5c0() == 9)
-        return param1;
-    return 0;
+    if (FUN_14053c5c0() != 9)
+        return 0;
+    return param1;
 }
 
 // @0x14053ddb0
 int CItemData::FUN_14053ddb0()
 {
-    if (FUN_14053c5c0() == 0x14)
-        return param1;
-    return 0;
+    if (FUN_14053c5c0() != 0x14)
+        return 0;
+    return param1;
 }
 
 // @0x14053dde0
 int CItemData::FUN_14053dde0()
 {
-    if (FUN_14053c5c0() == 5)
-        return param1;
-    return 0;
+    if (FUN_14053c5c0() != 5)
+        return 0;
+    return param1;
 }
 
 // @0x14053de10
 int CItemData::FUN_14053de10()
 {
-    if (FUN_14053c5c0() == 0x13)
-        return param1;
-    return 0;
+    if (FUN_14053c5c0() != 0x13)
+        return 0;
+    return param1;
 }
 
 // @0x14053de40
@@ -1196,22 +1201,18 @@ int CItemData::FUN_14053de80()
 // @0x14053dec0
 int CItemData::FUN_14053dec0()
 {
-    int nResult;
-    if (!(function.name != L"OpenGachaBox"))
-        nResult = function.parameter.FUN_1408d1fd0(0, 0);
-    else
-        nResult = 0;
+    if (function.name != L"OpenGachaBox")
+        return 0;
+    int nResult = function.parameter.FUN_1408d1fd0(0, 0);
     return nResult;
 }
 
 // @0x14053df20
 int CItemData::FUN_14053df20()
 {
-    int nResult;
-    if (!(function.name != L"OpenGachaBox"))
-        nResult = function.parameter.FUN_1408d1fd0(1, 0);
-    else
-        nResult = 0;
+    if (function.name != L"OpenGachaBox")
+        return 0;
+    int nResult = function.parameter.FUN_1408d1fd0(1, 0);
     return nResult;
 }
 
@@ -1323,9 +1324,9 @@ int CItemData::FUN_14053e410()
 {
     if (FUN_14053c620() == 0x16)
         return 2;
-    if (!FUN_14053d460())
-        return 1;
-    return 2;
+    if (FUN_14053d460())
+        return 2;
+    return 1;
 }
 
 // @0x14053e460
@@ -1410,7 +1411,7 @@ int CItemData::FUN_14053e530()
 // @0x14053e670
 bool CItemData::FUN_14053e670()
 {
-    return additionalEffect.ids.GetCount() != 0;
+    return additionalEffect.ids.GetCount() > 0;
 }
 
 // @0x14053e6c0

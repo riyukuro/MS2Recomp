@@ -1450,7 +1450,7 @@ CStringW UIGroupMessenger::FUN_14194d8f0(const CStringW& strName, int bSystem)
         return L"me";
     return L"other";
 }
-MS2_REPLACE_METHOD(0x14194D8F0, UIGroupMessenger, FUN_14194d8f0, 299, 0xBD408FB8);
+MS2_REPLACE(0x14194D8F0, UIGroupMessenger::FUN_14194d8f0, 299, 0xBD408FB8);
 
 // MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194da30
@@ -1465,7 +1465,7 @@ bool UIGroupMessenger::FUN_14194da30(CStringW strMsg)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x14194DA30, UIGroupMessenger, FUN_14194da30, 189, 0xD3318D3F);
+MS2_REPLACE(0x14194DA30, UIGroupMessenger::FUN_14194da30, 189, 0xD3318D3F);
 
 // @0x14194dd10
 UIInviteGroupDialog* FUN_14194dd10(int nUiId)

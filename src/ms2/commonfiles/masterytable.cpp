@@ -55,7 +55,7 @@ CStringA FUN_140cc2ad0(const CString& strCategory, const CString& strFile);   //
 class Unk_MtTextMgr { public: CStringW FUN_1416fbfe0(unsigned nId, CStringW strColor); };
 Unk_MtTextMgr* FUN_1403b4750();
 CStringW FUN_14028b8e0(const CStringW& strKey);                              // string table lookup
-CStringW FUN_1405c2690(const CStringW& strKey, const CStringW& strArg);      // string table format
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);      // string table format
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CLua* FUN_1401c0db0();
 bool FUN_14028d470(float fValue, float fTolerance);                          // commonutil: nearly equal
@@ -741,3 +741,5 @@ void CMasteryTable::SetInit(bool b)
 {
     s_bInit = b;
 }
+// fx25: the 1-load GetCount look-alike; FUN_14066aa90 (and uimasterydialog's 0x140eb0da0) call 0x14066e7e0
+// MS2-PIN: ?GetCount@?$CAtlArray@V?$MS2Ptr@VCMasteryReceipe@@@@V?$CElementTraits@V?$MS2Ptr@VCMasteryReceipe@@@@@ATL@@@ATL@@QEBA_KXZ 0x14066e7e0

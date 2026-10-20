@@ -7,7 +7,22 @@
 struct Unk_SoundState
 {
     bool m_b00, m_b01;                                              // +0x00/+0x01 (default 0)
+    union
+    {
     int m_n[9];                                                     // +0x04..+0x27 (default 0)
+        struct
+        {
+            int m_nMainSoundStep;                              // +0x04
+            int m_nEffectSoundStep;                            // +0x08
+            int m_nEnviromentSoundStep;                        // +0x0c
+            int m_nUiSoundStep;                                // +0x10
+            int m_nNpcSoundStep;                               // +0x14
+            int m_nBossSoundStep;                              // +0x18
+            int m_nBgmSoundStep;                               // +0x1c
+            int m_nSystemSoundStep;                            // +0x20
+            int m_nMovieSoundStep;                             // +0x24
+        };
+    };
     int m_n28;                                                      // +0x28 (default 7)
     int m_n2c;                                                      // +0x2c (default 10)
     bool m_b30;                                                     // +0x30 (default 1)

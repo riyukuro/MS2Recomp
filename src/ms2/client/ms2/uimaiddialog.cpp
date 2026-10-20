@@ -210,7 +210,7 @@ const int& FUN_1404eb7e0(const int& a, const int& b);           // std::max<int>
 int FUN_14053feb0(int nItemId);                                 // default rank of an item
 __int64 FUN_140869440();                                        // the server time
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);   // pop the system message
-void FUN_140d73aa0(const CStringW& text, int nA, int nB, CStringW strTag);     // pop the notice
+void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW strTag);     // pop the notice
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs, int n);
 void FUN_14151f200();
 int FUN_1403b3c40(const CStringW& str, const wchar_t* psz);

@@ -331,7 +331,7 @@
 // MS2-PIN: ?ReleaseImpl@?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@AEAAXPEAX@Z 0x140465ed0
 // The vector reallocation the GetAll outputs grow through.
 // MS2-PIN: ?_Change_array@?$vector@V?$MS2Ptr@VBurningLevelupContext@@@@V?$allocator@V?$MS2Ptr@VBurningLevelupContext@@@@@std@@@std@@AEAAXQEAV?$MS2Ptr@VBurningLevelupContext@@@@_K1@Z 0x14045d010
-// MS2-PIN: ?_Reallocate_exactly@?$vector@V?$MS2Ptr@VCollectItemGroupContext@@@@V?$allocator@V?$MS2Ptr@VCollectItemGroupContext@@@@@std@@@std@@AEAAX_K@Z 0x140465b80
+// MS2-PIN: ?_Reallocate_exactly@?$vector@_KV?$allocator@_K@std@@@std@@AEAAX_K@Z 0x140465b80
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\gameeventvalue.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <afx.h>
@@ -378,6 +378,8 @@ template class std::vector<MS2Ptr<BurningLevelupContext> >;
 template class std::vector<MS2Ptr<CollectItemGroupContext> >;
 // An id set (insert / erase only).
 template class std::set<__int64>;
+// The exe keeps vector<unsigned __int64>::reserve here (0x14046c510; its _Reallocate_exactly 0x140465b80 calls the vector<_K> members).
+template void std::vector<unsigned __int64>::reserve(size_t);
 
 // The context pointers the value classes keep in their CAtlMaps (their release COMDATs sort into this part).
 template void MS2Ptr<NpcEventDropEventContext>::Release();
@@ -415,3 +417,5 @@ void Unk_GameEventValueIdSetAdd(std::set<__int64>& ids, __int64 id)
     ids.insert(id);
     ids.erase(ids.begin());
 }
+// fx25: vector<__int64>/<unsigned __int64>::reserve are look-alikes of the one exe copy in range (both table rows say 0x14046c510)
+// MS2-PIN: ?reserve@?$vector@_KV?$allocator@_K@std@@@std@@QEAAX_K@Z 0x14046c510

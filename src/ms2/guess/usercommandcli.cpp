@@ -219,7 +219,7 @@ class Unk_CommandActor { public:
     virtual void vfunc_20();
     virtual void vfunc_21();
     virtual void vfunc_22();
-    virtual void vfunc_23(bool);
+    virtual void vfunc_23(int);
 };
 class Unk_CommandItemData { public:
     void* m_0;
@@ -330,7 +330,6 @@ void* FUN_140953f20();
 // @0x141371ac0
 inline void* FUN_141371ac0(void* p) { return (char*)p+0x160; }
 void FUN_140cd8f10(void*);
-void* FUN_140cd8f60(void*,CString*);
 void* FUN_140963ae0(void*,int);
 void FUN_1409647c0(void*);
 void FUN_141274b10(void*);
@@ -484,6 +483,8 @@ void FUN_1411eac40(void*,bool);
 extern bool DAT_143ae9750;
 #include "ms2/client/ms2/uicommunitypopup.h"
 #include "ms2/client/ms2/uiguideeventarrow.h"
+#include "ms2/client/ms2/inventory.h"
+#include "ms2/placeholder/fishingmanager.h"
 class UICutSceneCinematic : public UIObject {};
 class UIGameMenuDialog : public UIObject {};
 class UIGuildDialog : public UIObject {};
@@ -499,7 +500,6 @@ CStringW FUN_141b720b0(int,int);
 void* FUN_140764020();
 void FUN_140746fe0(void*,int);
 extern int DAT_143ab2a90;
-void FUN_140a66fa0(void*,bool);
 void* FUN_1401958b0();
 void FUN_140aae640(void*);
 extern bool DAT_143aac548;
@@ -815,8 +815,7 @@ int CUserCommandCli::FUN_141365630(Unk_CommandArgs&) {
 // @0x1413656a0
 int CUserCommandCli::FUN_1413656a0(Unk_CommandArgs&) {
     if(DAT_143ab2914<50) return 0;
-    bool old=FUN_1401d3200()->enabled;
-    FUN_1401d3200()->enabled=!old;
+    FUN_1401d3200()->enabled=!FUN_1401d3200()->enabled;
     if(FUN_1401d3200()->enabled) FUN_141a60d40(2); else FUN_141a60d40(1);
     return 1;
 }
@@ -980,7 +979,7 @@ int CUserCommandCli::FUN_141366770(Unk_CommandArgs& args) {
 // @0x1413669a0
 int CUserCommandCli::FUN_1413669a0(Unk_CommandArgs&) { void* actor=FUN_141bd0cc0(FUN_1403ed2d0()); if(actor) FUN_141529d90(actor); return 1; }
 // @0x1413669f0
-int CUserCommandCli::FUN_1413669f0(Unk_CommandArgs&) { if(FUN_14036d570(FUN_140166410(),0x4a)) FUN_141adc750(FUN_1403ed2b0(),0x4f1b); return 1; }
+int CUserCommandCli::FUN_1413669f0(Unk_CommandArgs&) { if(!FUN_14036d570(FUN_140166410(),0x4a)) return 1; FUN_141adc750(FUN_1403ed2b0(),0x4f1b); return 1; }
 // @0x141366a40
 int CUserCommandCli::FUN_141366a40(Unk_CommandArgs& args) {
     if(args.FUN_1408d2380()!=0) return 0;
@@ -1021,7 +1020,7 @@ int CUserCommandCli::FUN_141366eb0(Unk_CommandArgs& args) {
     COutPacket packet(0x37,0); packet.vfunc_o10_1(0x3a); packet.vfunc_o10_6(FUN_14016a600(name,0)); FUN_140710590(packet); return 1;
 }
 // @0x141366fc0
-int CUserCommandCli::FUN_141366fc0(Unk_CommandArgs&) { { COutPacket packet(0x37,0); packet.vfunc_o10_1(6); FUN_140710590(packet); } return 1; }
+int CUserCommandCli::FUN_141366fc0(Unk_CommandArgs&) { COutPacket packet(0x37,0); packet.vfunc_o10_1(6); FUN_140710590(packet); return 1; }
 // @0x141367030
 int CUserCommandCli::FUN_141367030(Unk_CommandArgs&) { return 1; } // Original command intentionally does nothing.
 // @0x141367050
@@ -1054,8 +1053,7 @@ int CUserCommandCli::FUN_141367240(Unk_CommandArgs& args) {
     unsigned changed=old!=kind;
     int prev=old;
     const wchar_t* result=changed?L"Done!":L"Oops!";
-    CStringW message=StringFormat(L"Client {0} itemID:{1}, trasferType[now:{2}, prev:{3}]",result,id,kind,prev);
-    FUN_1412751b0(message,20); return 1;
+    FUN_1412751b0(StringFormat(L"Client {0} itemID:{1}, trasferType[now:{2}, prev:{3}]",result,id,kind,prev),20); return 1;
 }
 // @0x1413674f0
 int CUserCommandCli::FUN_1413674f0(Unk_CommandArgs& args) {
@@ -1090,7 +1088,8 @@ int CUserCommandCli::FUN_141367840(Unk_CommandArgs& args) {
     if(DAT_143ab0248==2&&DAT_143ab2914<51) return 0;
     Unk_CommandActor* actor=static_cast<Unk_CommandActor*>(FUN_141bd0cc0(FUN_1403ed2d0()));
     if(!actor) return 0;
-    if(args.FUN_1408d1fd0(0,0)==0) actor->vfunc_23(false); else actor->vfunc_23(true);
+    int flag=args.FUN_1408d1fd0(0,0);
+    if(flag==0) actor->vfunc_23(0); else actor->vfunc_23(1);
     return 1;
 }
 // @0x1413678e0
@@ -1169,8 +1168,7 @@ int CUserCommandCli::FUN_141367f20(Unk_CommandArgs& args) {
     if(keys!=0) {
         unsigned combined;
         FUN_141430e70(keys,&combined,first,second,0xf0);
-        CStringW message=StringFormat(L"CombinKey : {0} + {1} = {2}",(Unk_CommandKeyCode)first,(Unk_CommandKeyCode)second,combined);
-        FUN_1412751b0(message,20);
+        FUN_1412751b0(StringFormat(L"CombinKey : {0} + {1} = {2}",(Unk_CommandKeyCode)first,(Unk_CommandKeyCode)second,combined),20);
     }
     return 1;
 }
@@ -1228,17 +1226,14 @@ int CUserCommandCli::FUN_141368000(Unk_CommandArgs& args) {
 int CUserCommandCli::FUN_1413686b0(Unk_CommandArgs&) {
     void* fishing=FUN_141371ac0(FUN_140953f20());
     FUN_140cd8f10(fishing);
-    CStringW text(L"FishRecord");
-    FUN_1412751b0(text,20);
+    { CStringW text(L"FishRecord"); FUN_1412751b0(text,20); }
     return 1;
 }
 // @0x141368730
 int CUserCommandCli::FUN_141368730(Unk_CommandArgs&) {
     void* fishing=FUN_141371ac0(FUN_140953f20());
-    CString report;
-    FUN_140cd8f60(fishing,&report);
-    CStringW message=StringFormat(L"FishReport >> {0}",report);
-    FUN_1412751b0(message,20);
+    CString report=((Unk_FishRecord*)fishing)->FUN_140cd8f60();
+    FUN_1412751b0(StringFormat(L"FishReport >> {0}",report),20);
     return 1;
 }
 // @0x1413687d0
@@ -1267,8 +1262,7 @@ int CUserCommandCli::FUN_1413688f0(Unk_CommandArgs& args) {
     int unused=5;
     int reason=args.FUN_1408d1f60(0,5);
     FUN_140aad9b0(FUN_140e800e0(),reason);
-    CStringW message=StringFormat(L"TestDisconnect {0}",reason);
-    FUN_1412751b0(message,20);
+    FUN_1412751b0(StringFormat(L"TestDisconnect {0}",reason),20);
     return 1;
 }
 // @0x141368990
@@ -1327,21 +1321,18 @@ int CUserCommandCli::FUN_141368ce0(Unk_CommandArgs& args) {
                 DAT_143ae2b54=enable;
                 const wchar_t* text;
                 if(enable==0) text=L"disable"; else text=L"enable";
-                CStringW message=StringFormat(L"optimizer merge item {0}",text);
-                FUN_1412751b0(message,20);
+                FUN_1412751b0(StringFormat(L"optimizer merge item {0}",text),20);
             }
         } else {
             unsigned enable=(value==1);
             DAT_143ae2b50=enable;
             const wchar_t* text;
             if(enable==0) text=L"disable"; else text=L"enable";
-            CStringW message=StringFormat(L"optimizer merge skin {0}",text);
-            FUN_1412751b0(message,20);
+            FUN_1412751b0(StringFormat(L"optimizer merge skin {0}",text),20);
         }
     } else {
         DAT_143ae2b58=value;
-        CStringW message=StringFormat(L"optimizer debug level: {0}",DAT_143ae2b58);
-        FUN_1412751b0(message,20);
+        FUN_1412751b0(StringFormat(L"optimizer debug level: {0}",DAT_143ae2b58),20);
     }
     return 1;
 }
@@ -1381,17 +1372,15 @@ int CUserCommandCli::FUN_1413691f0(Unk_CommandArgs& args) {
         }
     } else {
         FUN_141374920((unsigned char*)FUN_140c8dac0()+0x6b8,id);
-        CStringW message=StringFormat(L"Set ForceGM ID : {0}",id);
-        FUN_1412751b0(message,20);
+        FUN_1412751b0(StringFormat(L"Set ForceGM ID : {0}",id),20);
     }
     return 1;
 }
 // @0x141369330
 int CUserCommandCli::FUN_141369330(Unk_CommandArgs& args) {
-    int npcId=args.FUN_1408d1fd0(0,0);
-    int oid=FUN_141bd3fe0(FUN_1403ed2d0(),npcId);
-    CStringW message=StringFormat(L"NpcID:{0}'s GameOID is {1}",npcId,oid);
-    FUN_1412751b0(message,20);
+    unsigned npcId=args.FUN_1408d1fd0(0,0);
+    unsigned oid=FUN_141bd3fe0(FUN_1403ed2d0(),npcId);
+    FUN_1412751b0(StringFormat(L"NpcID:{0}'s GameOID is {1}",npcId,oid),20);
     return 1;
 }
 // @0x1413693d0
@@ -1401,8 +1390,7 @@ int CUserCommandCli::FUN_1413693d0(Unk_CommandArgs& args) {
     if(npc!=0) {
         FUN_141094e40(npc,args.FUN_1408d2140(1,true));
         bool mode=args.FUN_1408d2140(1,true);
-        CStringW message=StringFormat(L"GameOID:{0}'s DebugMode is :{1}",oid,mode);
-        FUN_1412751b0(message,20);
+        FUN_1412751b0(StringFormat(L"GameOID:{0}'s DebugMode is :{1}",oid,mode),20);
     }
     return 1;
 }
@@ -1412,8 +1400,7 @@ int CUserCommandCli::FUN_1413694b0(Unk_CommandArgs& args) {
     bool mode=args.FUN_1408d2140(1,true);
     FUN_141bd3ec0(FUN_1403ed2d0(),npcId,mode);
     bool shown=args.FUN_1408d2140(1,true);
-    CStringW message=StringFormat(L"OnNpcDebugModeByID Set:{0}",shown);
-    FUN_1412751b0(message,20);
+    FUN_1412751b0(StringFormat(L"OnNpcDebugModeByID Set:{0}",shown),20);
     return 1;
 }
 // @0x141369570
@@ -1807,8 +1794,7 @@ int CUserCommandCli::FUN_14136bf10(Unk_CommandArgs&) {
 // @0x14136bf50
 int CUserCommandCli::FUN_14136bf50(Unk_CommandArgs&) {
     int one=1;
-    char* obj=(char*)FUN_1401d3200();
-    FUN_1402be3c0(obj+0xcfe0,&one);
+    FUN_1402be3c0((char*)FUN_1401d3200()+0xcfe0,&one);
     FUN_1412751b0(FUN_1402a61e0(L"OnNoWaitRoomExit"),20);
     return 1;
 }
@@ -1820,8 +1806,7 @@ int CUserCommandCli::FUN_14136bfe0(Unk_CommandArgs&) {
         const wchar_t* label;
         if(obj->m_2c0==1) label=L"On"; else label=L"Off";
         CStringW state(label);
-        CStringW message=StringFormat(L"OnDamageUseOld : {0}",state);
-        FUN_1412751b0(message,20);
+        FUN_1412751b0(StringFormat(L"OnDamageUseOld : {0}",state),20);
     }
     return 1;
 }
@@ -1831,15 +1816,13 @@ int CUserCommandCli::FUN_14136c0f0(Unk_CommandArgs& args) {
     Unk_DamageTest* obj=(Unk_DamageTest*)FUN_140b624b0(0x4e32);
     if(obj) {
         obj->m_2c4=value;
-        CStringW message=StringFormat(L"OnDamageTestLoop : {0}",obj->m_2c4);
-        FUN_1412751b0(message,20);
+        FUN_1412751b0(StringFormat(L"OnDamageTestLoop : {0}",obj->m_2c4),20);
     }
     return 1;
 }
 // @0x14136c1a0
 int CUserCommandCli::FUN_14136c1a0(Unk_CommandArgs& args) {
-    bool value=args.FUN_1408d2140(0,true);
-    FUN_141087400(value);
+    FUN_141087400(args.FUN_1408d2140(0,true));
     return 1;
 }
 // @0x14136c1e0
@@ -1859,8 +1842,7 @@ int CUserCommandCli::FUN_14136c260(Unk_CommandArgs& args) {
     if(maxDelay<minDelay) maxDelay=minDelay;
     *(unsigned*)((char*)FUN_140714f90()+0x340)=minDelay;
     *(unsigned*)((char*)FUN_140714f90()+0x344)=maxDelay;
-    CStringW message=StringFormat(L"Set Send Packet Delay Min : {0}, Max : {1}",minDelay,maxDelay);
-    FUN_1412751b0(message,20);
+    FUN_1412751b0(StringFormat(L"Set Send Packet Delay Min : {0}, Max : {1}",minDelay,maxDelay),20);
     return 1;
 }
 // @0x14136c330
@@ -1870,8 +1852,7 @@ int CUserCommandCli::FUN_14136c330(Unk_CommandArgs& args) {
     if(maxDelay<minDelay) maxDelay=minDelay;
     *(unsigned*)((char*)FUN_140714f90()+0x348)=minDelay;
     *(unsigned*)((char*)FUN_140714f90()+0x34c)=maxDelay;
-    CStringW message=StringFormat(L"Set Recv Packet Delay Min : {0}, Max : {1}",minDelay,maxDelay);
-    FUN_1412751b0(message,20);
+    FUN_1412751b0(StringFormat(L"Set Recv Packet Delay Min : {0}, Max : {1}",minDelay,maxDelay),20);
     return 1;
 }
 // @0x14136c400
@@ -1880,8 +1861,7 @@ int CUserCommandCli::FUN_14136c400(Unk_CommandArgs&) {
     if(obj) {
         CStringW result;
         if(FUN_1419136c0(obj,result)) {
-            CStringW message=StringFormat(L"-----OnGetDamageMovieCount-----\n{0}",result);
-            FUN_1412751b0(message,20);
+            FUN_1412751b0(StringFormat(L"-----OnGetDamageMovieCount-----\n{0}",result),20);
         }
     }
     return 1;
@@ -1889,8 +1869,7 @@ int CUserCommandCli::FUN_14136c400(Unk_CommandArgs&) {
 // @0x14136c4b0
 int CUserCommandCli::FUN_14136c4b0(Unk_CommandArgs&) {
     DAT_143ae9750=DAT_143ae9750==false;
-    CStringW message=StringFormat(L"toggle SkillSlotNotFind {0}",DAT_143ae9750);
-    FUN_1412751b0(message,20);
+    FUN_1412751b0(StringFormat(L"toggle SkillSlotNotFind {0}",DAT_143ae9750),20);
     return 1;
 }
 // @0x14136c550
@@ -1899,8 +1878,7 @@ int CUserCommandCli::FUN_14136c550(Unk_CommandArgs&) {
     if(a) FUN_141310fe0(a);
     void* b=FUN_14136f330();
     if(b) FUN_14193dd70(b);
-    CStringW text(L"reset 'OpenedUgcTerms'.");
-    FUN_1412751b0(text,20);
+    { CStringW text(L"reset 'OpenedUgcTerms'."); FUN_1412751b0(text,20); }
     return 1;
 }
 // @0x14136c5e0
@@ -1916,8 +1894,7 @@ int CUserCommandCli::FUN_14136c5e0(Unk_CommandArgs&) {
 int CUserCommandCli::FUN_14136c660(Unk_CommandArgs& args) {
     bool skip=args.FUN_1408d2140(0,false);
     FUN_1406af0e0(FUN_1406aeee0(),skip);
-    CStringW message=StringFormat(L"SkipLoadingUGCCube {0}",skip);
-    FUN_1412751b0(message,20);
+    FUN_1412751b0(StringFormat(L"SkipLoadingUGCCube {0}",skip),20);
     return 1;
 }
 // @0x14136c6f0
@@ -2083,17 +2060,16 @@ int CUserCommandCli::FUN_14136d300(Unk_CommandArgs& args) {
 // @0x14136d460
 int CUserCommandCli::FUN_14136d460(Unk_CommandArgs& args) {
     void* actor=FUN_141bd0cc0(FUN_1403ed2d0());
-    if(actor) {
-        unsigned value=args.FUN_1408d20b0(0,0);
-        FUN_141530910(value);
-    }
-    return actor!=0;
+    if(!actor) return 0;
+    FUN_141530910(args.FUN_1408d20b0(0,0));
+    return 1;
 }
 // @0x14136d4c0
 int CUserCommandCli::FUN_14136d4c0(Unk_CommandArgs&) { return 1; }
 // @0x14136d4e0
 int CUserCommandCli::FUN_14136d4e0(Unk_CommandArgs& args) {
-    FUN_140cca840(args.FUN_1408d1f60(0,0));
+    int v=args.FUN_1408d1f60(0,0);
+    FUN_140cca840(v);
     return 1;
 }
 // @0x14136d520
@@ -2109,7 +2085,8 @@ int CUserCommandCli::FUN_14136d520(Unk_CommandArgs&) {
 // @0x14136d620
 int CUserCommandCli::FUN_14136d620(Unk_CommandArgs& args) {
     unsigned char level=(unsigned char)args.FUN_1408d1f60(0,0);
-    FUN_1412751b0(StringFormat(L"Success Command. pcBangLevel={0}",level),20);
+    CStringW message=StringFormat(L"Success Command. pcBangLevel={0}",level);
+    FUN_1412751b0(message,20);
     return 1;
 }
 // @0x14136d6a0
@@ -2150,21 +2127,20 @@ int CUserCommandCli::FUN_14136d870(Unk_CommandArgs& args) {
 // @0x14136d970
 int CUserCommandCli::FUN_14136d970(Unk_CommandArgs& args) {
     int seed=args.FUN_1408d1fd0(0,0);
-    char* p=(char*)FUN_140764020();
-    FUN_140746fe0(p+0x10,seed);
+    FUN_140746fe0((char*)FUN_140764020()+0x10,seed);
     return 1;
 }
 // @0x14136d9c0
 int CUserCommandCli::FUN_14136d9c0(Unk_CommandArgs& args) {
-    unsigned v=args.FUN_1408d20b0(0,0);
-    FUN_140a66fa0(&DAT_143ab2a90,v!=0);
+    int v=args.FUN_1408d20b0(0,0)!=0;
+    ((Unk_Inventory*)&DAT_143ab2a90)->FUN_140a66fa0(v);
     return 1;
 }
 // @0x14136da20
 int CUserCommandCli::FUN_14136da20(Unk_CommandArgs&) {
-    FUN_1412751b0(CStringW(L"Start Client ReloadSKill"),20);
+    { CStringW text(L"Start Client ReloadSKill"); FUN_1412751b0(text,20); }
     FUN_140aae640(FUN_1401958b0());
-    FUN_1412751b0(CStringW(L"Complete Client ReloadSKill"),20);
+    { CStringW text(L"Complete Client ReloadSKill"); FUN_1412751b0(text,20); }
     return 1;
 }
 // @0x14136dab0

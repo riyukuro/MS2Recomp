@@ -854,7 +854,7 @@ CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);  // a + b
 CStringW FUN_14028de60(unsigned nStringId);
 void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // message box
 void FUN_14151f200();
-int FUN_14083d890(const CStringW& str);                     // show a notice
+int FUN_14083d890(CStringW str);                     // show a notice
 
 // The AS controls the edit window binds.
 class Unk_MdText : public AScript { public: void FUN_1422c4cd0(CStringW str); };

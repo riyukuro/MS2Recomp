@@ -7,9 +7,67 @@
 // MS2-RANGE: 0x14108e1e0-0x14109b6b0 .text$mn
 // MS2-RANGE: 0x1400e56b0-0x1400e59d0 .text$di
 // MS2-RANGE: 0x142cabd60-0x142cabe80 .text$yd
+// MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??__Es_strSortTypeNames1@@YAXXZ 0x1400e56b0 ; probe
+// MS2-PIN: ??__Es_strSkill1@@YAXXZ 0x1400e5770 ; probe
+// MS2-PIN: ??__Es_strSkill2@@YAXXZ 0x1400e57a0 ; probe
+// MS2-PIN: ??__Es_condition1@@YAXXZ 0x1400e57f0 ; prop
+// MS2-PIN: ??__Es_strSortTypeNames2@@YAXXZ 0x1400e5840 ; probe
+// MS2-PIN: ??__Es_strStun1@@YAXXZ 0x1400e5900 ; probe
+// MS2-PIN: ??__Es_strStun2@@YAXXZ 0x1400e5930 ; probe
+// MS2-PIN: ??__Es_condition2@@YAXXZ 0x1400e5980 ; prop
+// MS2-PIN: ??$?4VNpcDataCli@@@?$MS2Ptr@VCNpcData@@@@QEAAAEAV0@AEBV?$MS2Ptr@VNpcDataCli@@@@@Z 0x141099b40 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VUnk_PCBaseComp_a78@@@@QEAA@AEBV0@@Z 0x141099e00 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VStateSpawnData@@@@QEAA@PEAVStateSpawnData@@@Z 0x141099e70 ; prop
+// MS2-PIN: ??4?$MS2Ptr@VUnk_PCBaseComp_a58@@@@QEAAAEAV0@AEBV0@@Z 0x14109a150 ; prop
+// MS2-PIN: ?IsNull@?$MS2Ptr@VNpcDataCli@@@@QEBA_NXZ 0x14109a230 ; unique
+// MS2-PIN: ??8?$MS2Ptr@VUnk_PCBaseComp_a58@@@@QEBA_NPEAVUnk_PCBaseComp_a58@@@Z 0x14109a2e0 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VUnk_PCBaseComp_a58@@@@QEBAPEAVUnk_PCBaseComp_a58@@XZ 0x14109a390 ; prop
+// MS2-PIN: ??C?$MS2Ptr@VUnk_PCBaseComp_a58@@@@QEBAPEAVUnk_PCBaseComp_a58@@XZ 0x14109a3d0 ; prop
+// MS2-PIN: ?GetBaseMap@NiTexturingProperty@@QEAAPEAVMap@1@XZ 0x14109a6b0 ; unique
+// MS2-PIN: ?GetClassDesc@CNpc@@UEBAPEBVClassInfo@efd@@XZ 0x14109a6e0 ; unique
+// MS2-PIN: ?GetInstance@?$TSingleton@VCDPSMeterSystem@@@@SAPEAVCDPSMeterSystem@@XZ 0x14109a6f0 ; prop
+// MS2-PIN: ?FUN_14109ac50@COptimizer@@QEAAXH@Z 0x14109ac50 ; unique
+// MS2-PIN: ?TypeCast@CNpc@@UEBA_NIPEAPEAX@Z 0x14109ad20 ; unique
+// MS2-PIN: ?TypeCast@CNpc@@UEBA_NIPEAPEBX@Z 0x14109ad70 ; unique
+// MS2-PIN: ?UnitCross@Point3@efd@@QEBA?AV12@AEBV12@@Z 0x14109adc0 ; unique
+// MS2-PIN: ?AddRef@?$MS2Ptr@VUnk_PCBaseComp_a98@@@@AEBAXXZ 0x14109af90 ; prop
+// MS2-PIN: ?AddRef@?$MS2Ptr@VStateSpawnData@@@@AEBAXXZ 0x14109b080 ; prop
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCDotDamageRecord@@@@AEBAXPEAX@Z 0x14109b1a0 ; unique
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_PCBaseComp_a98@@@@AEBAXPEAX@Z 0x14109b230 ; prop
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VStateSpawnData@@@@AEBAXPEAX@Z 0x14109b320 ; prop
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCDotDamageRecord@@@@AEAAXPEAX@Z 0x14109b520 ; unique
+// MS2-PIN: ??__Fs_strSortTypeNames1@@YAXXZ 0x142cabd60 ; probe
+// MS2-PIN: ??__Fs_strSkill1@@YAXXZ 0x142cabd90 ; probe
+// MS2-PIN: ??__Fs_strSkill2@@YAXXZ 0x142cabdb0 ; probe
+// MS2-PIN: ??__Fs_strSortTypeNames2@@YAXXZ 0x142cabdf0 ; probe
+// MS2-PIN: ??__Fs_strStun1@@YAXXZ 0x142cabe20 ; probe
+// MS2-PIN: ??__Fs_strStun2@@YAXXZ 0x142cabe40 ; probe
+// MS2-PINS-END tplpin
 // MS2-PIN: ??_7CNpc@@6BIBase@efd@@@ 0x142ea8b58
 // MS2-PIN: ??_7CNpc@@6BCallbackObject@NiActorManager@@@ 0x142ea8f68
 // MS2-PIN: ??_7CNpcVibrate@@6B@ 0x142ea8b48
+// The byte-identical MS2Ptr instantiations, told apart by the exe call graph (FUN_1410918e0's hit data, the splash
+// record of vfunc_35) and the header statics' initializer order.
+// MS2-PIN: ??0?$MS2Ptr@VStateHitData@@@@QEAA@PEAVStateHitData@@@Z 0x141099e40
+// MS2-PIN: ?AddRef@?$MS2Ptr@VStateHitData@@@@AEBAXXZ 0x14109b050
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VStateHitData@@@@AEBAXPEAX@Z 0x14109b2f0
+// MS2-PIN: ?Reference@?$MS2Ptr@VStateHitData@@@@CAXPEAVStateHitData@@@Z 0x14109b130
+// MS2-PIN: ??1?$MS2Ptr@VStateHitData@@@@QEAA@XZ 0x141099f60
+// MS2-PIN: ?Release@?$MS2Ptr@VStateHitData@@@@AEAAXXZ 0x14109b450
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VStateHitData@@@@AEAAXPEAX@Z 0x14109b610
+// MS2-PIN: ??C?$MS2Ptr@VStateHitData@@@@QEBAPEAVStateHitData@@XZ 0x14109a3e0
+// MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCSplashDamageRecord@@@@AEBAXPEAX@Z 0x14109b200
+// MS2-PIN: ?Reference@?$MS2Ptr@VCSplashDamageRecord@@@@CAXPEAVCSplashDamageRecord@@@Z 0x14109b0f0
+// MS2-PIN: ??0?$MS2Ptr@VUnk_PCBaseComp_a58@@@@QEAA@AEBV0@@Z 0x141099dc0
+// MS2-PIN: ??4?$MS2Ptr@VUnk_PCBaseComp_a78@@@@QEAAAEAV0@AEBV0@@Z 0x14109a190
+// MS2-PIN: ??B?$SmartPointer@VCObjectShadow@@@efd@@QEBAPEAVCObjectShadow@@XZ 0x14109a360
+// MS2-PIN: ?get@?$Unk_UmValuePtr@UUnk_UmDescRow@@@@QEBAPEAUUnk_UmDescRow@@XZ 0x14109a370
+// MS2-PIN: ?get@?$MS2Ptr@VUnk_PCBaseComp_a88@@@@QEBAPEAVUnk_PCBaseComp_a88@@XZ 0x14109a380
+// MS2-PIN: ?get@?$MS2Ptr@VStateHitData@@@@QEBAPEAVStateHitData@@XZ 0x14109a3a0
+// MS2-PIN: ?get@?$MS2Ptr@VStateSpawnData@@@@QEBAPEAVStateSpawnData@@XZ 0x14109a3b0
+// MS2-PIN: ??__Es_pointer1@@YAXXZ 0x1400e57d0
+// MS2-PIN: ??__Es_pointer2@@YAXXZ 0x1400e5960
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\npc.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -130,19 +188,33 @@ unsigned char FUN_140a7c8d0(NpcDataCli* pData);                     // NpcDataCl
 int FUN_140a7c970(NpcDataCli* pData);                               // NpcDataCli::GetClassConstant
 
 class Unk_SSG09a700 { public: MS2Ptr<CMaid> FUN_14127e400(__int64 nUid); };   // the field maids (before the user's own)
-Unk_SSG09a700* FUN_14109a700();
+extern void* DAT_143ace478;                                         // TSingleton<CFieldMaidManager>::s_instance
+// @0x14109a700
+static Unk_SSG09a700* FUN_14109a700()
+{
+    return (Unk_SSG09a700*)DAT_143ace478;
+}
 class Unk_ArcMoverView { public: bool FUN_14160c1c0() const; CStringA FUN_14160c1e0() const; void FUN_14160bf90(float fTime, efd::Point3& kPos, float* pYaw); };   // Unk_NpcBeam getters
 class Unk_1401aa6a0 : public CStringW { public: Unk_1401aa6a0(int nNpcId); };   // the npc name of the string table
 class Unk_Svc7476c0 { public: unsigned char FUN_14074e030(int nNpcId); };
 Unk_Svc7476c0* FUN_1407476c0();
 class Unk_PortalQuestTable { public: int FUN_140764c90(CNpc* pNpc); };
-Unk_PortalQuestTable* FUN_14109a710();
+class Unk_SingletonObj;
+extern Unk_SingletonObj* DAT_143ab0d68;                             // TSingleton<CQuestMaskTable>::s_instance
+// @0x14109a710
+static Unk_PortalQuestTable* FUN_14109a710()
+{
+    return (Unk_PortalQuestTable*)DAT_143ab0d68;
+}
 class Unk_MmNpcTable { public: MS2Ptr<NpcDataCli> FUN_140a7cab0(int nNpcId); };
 Unk_MmNpcTable* FUN_1406d6e90();
 class UIDamageText { public: void FUN_141912a80(GameObject* pObj, int nValue, int n); };
 UIDamageText* FUN_140b624b0(int nUiId);
 class CStringTable { public: CStringW FUN_141811980(int nKind, int nId); };
 CStringTable* FUN_1401a9d70();
+#ifdef __clang__
+CStringA FUN_140298360(const char* psz, const CStringA& str);   // the exe's operator+(const char*, const CStringA&)
+#endif
 // The views of pc.cpp: the world's object relation, the effect service's hit sounds / event effects, the local player.
 class Unk_PCWorld { public: int FUN_141bd19d0(int nObjectId); };   // the relation of an object (1: the local player)
 class Unk_PCFxMgr
@@ -175,7 +247,8 @@ template <class T> class Unk_UmValuePtr
 public:
     ~Unk_UmValuePtr();                                              // 0x140680b50
     T* operator->() const;                                          // 0x1406810d0
-    T* get() const;                                                 // 0x14109a370
+    // @0x14109a370
+    T* get() const { return m_p; }
 private:
     void* m_pad;
     T* m_p;
@@ -389,6 +462,7 @@ class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };   // 
 static CString s_strSortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill1 = "skill";
 static CString s_strStun1 = "stun";
+static Unk_1401cd100 s_pointer1(NULL);
 static Unk_1402a9d70 s_condition1(17, 0.75f, 0.25f, 2.25f, 10);
 
 static CString s_strSortTypeNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -818,7 +892,7 @@ CStringW CNpc::vfunc_77()
 // @0x141090cd0
 void CNpc::vfunc_32(bool b)
 {
-    if (m_spShadow != 0 && m_spShadow->FUN_14109a720()) {
+    if (m_spShadow && m_spShadow->FUN_14109a720()) {
         if (FUN_140f4a450() < 200000.0f)
             vfunc_93(false);
     }
@@ -1466,7 +1540,7 @@ void CNpc::FUN_1410947e0()
     if (spRoot != 0 && m_spC40 != 0) {
         spRoot->AttachChild(m_spC40, false);
         NiAVObject* pIcon = m_spC40->GetObjectByName(NiFixedString("Item_Icon:0"));
-        if (pIcon != 0 && NiIsKindOf(NiMesh, pIcon)) {
+        if (pIcon != 0 && NiIsExactKindOf(NiMesh, pIcon)) {
             NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pIcon->GetProperty(8));
             NiTexturingProperty::Map* pMap;
             if (pTexturing != 0 && (pMap = pTexturing->GetBaseMap()) != 0) {
@@ -1598,7 +1672,12 @@ void CNpc::FUN_141095190(const CString& strKfm)
 void CNpc::FUN_1410951d0(const CString& strKfm)
 {
     FUN_141095190(strKfm);
+#ifdef __clang__
+    // clang emits an unavailable MFC CopyChars import for operator+; call the exe's operator+.
+    FUN_14123bc20(FUN_140298360("urn:gamebryo-animation:", m_strED8));
+#else
     FUN_14123bc20("urn:gamebryo-animation:" + m_strED8);
+#endif
 }
 
 // @0x141095240
@@ -2105,7 +2184,12 @@ int CNpc::vfunc_124(int nNpcId)
         FUN_141095190(m_spNpcData->m_model.m_strKfm);
     if (m_strED8.IsEmpty())
         return 0;
+#ifdef __clang__
+    // clang emits an unavailable MFC CopyChars import for operator+; call the exe's operator+.
+    FUN_14123bb80(FUN_140298360("urn:gamebryo-animation:", m_strED8));
+#else
     FUN_14123bb80("urn:gamebryo-animation:" + m_strED8);
+#endif
     Unk_1401aa6a0 strName(m_spNpcData->GetId());
     if (!strName.IsEmpty() && FUN_140a7c8d0(m_spNpcData.operator->()))
         vfunc_76(CStringW(strName));

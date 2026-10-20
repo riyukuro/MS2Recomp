@@ -174,7 +174,7 @@ void FUN_1401fa4f0(const Unk_ClReqDelete& req, COutPacket& packet);
 void FUN_1401fa2c0(const Unk_ClReqRename& req, COutPacket& packet);
 class Unk_ClBox : public CMsgBoxData { public: void FUN_141a02a70(CStringW strText, CString strUrl); void FUN_141a015d0(const CStringW& str); __int64 FUN_141a02f10(int n, __int64 nDefault); void FUN_141a015a0(const CStringW& str); };
 void FUN_14151f4e0(CStringW strTag, MS2Ptr<CMsgBoxData> spBox);     // replace the box of that tag
-CStringW FUN_140298ea0(const CStringW& strKey);                     // string table text (second table)
+CStringW FUN_140298ea0(CStringW strKey);                     // string table text (second table)
 struct Unk_ClSettingU16 { char m_p[0x58]; unsigned short* FUN_1402056b0(); };
 struct Unk_ClSettingU32 { char m_p[0x58]; unsigned* FUN_1402056b0(); };
 struct Unk_ClOptions

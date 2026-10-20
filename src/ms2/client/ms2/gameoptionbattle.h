@@ -6,7 +6,19 @@
 
 struct Unk_BattleState
 {
+    union
+    {
     bool m_b[6];                                                    // +0x00..+0x05 (default 1)
+        struct
+        {
+            bool m_bDisplayMyGiveRecovery;
+            bool m_bDisplayMyTakeRecovery;
+            bool m_bDisplayPartyRecovery;
+            bool m_bDisplayGetMeso;
+            bool m_bDisplayGetExp;
+            bool m_bDisplayEpGauge;
+        };
+    };
     int m_n08;                                                      // +0x08 (default 7)
     int m_n0c;                                                      // +0x0c (default 3)
     int m_n10;                                                      // +0x10 (default 3)

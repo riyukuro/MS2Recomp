@@ -631,12 +631,12 @@ public:
     CStringW FUN_141811980(int nTable, int nId);   // string table lookup (exe member: this=rcx, hidden return=rdx)
 };
 Unk_PalStrings* FUN_1401a9d70();
-CStringW FUN_1408f71a0(const CStringW& strKey, const CStringW& strA, const CStringW& strB);
-CStringW FUN_1405c2690(const CStringW& strKey, const CStringW& strA);
+CStringW FUN_1408f71a0(CStringW strKey, const CStringW& strA, const CStringW& strB);
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strA);
 bool FUN_140375130(void* p);
 int FUN_14036e5b0(Unk_UserSvc* p);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, const CStringW& strText, int n, const CStringW& strTag);
-void FUN_140d73c60(const MS2Ptr<CMsgBoxData>& sp);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int n, const CStringW& strTag);
+void FUN_140d73c60(MS2Ptr<CMsgBoxData> sp);
 void FUN_140d73aa0(CStringW strMsg, int n, void* pOwner, CStringW strTag);
 void FUN_140d73bc0(int nStringId, int n, void* pOwner, CStringW strTag);
 void FUN_1416fb340(void* pChat, const CStringW& strMsg);

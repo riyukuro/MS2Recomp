@@ -147,7 +147,7 @@ bool FUN_1409a7f70(const NiNodePtr& sp, int nNull);                        // 0x
 float FUN_140967ac0(const NiPoint3& kVec);                                 // 0x140967ac0 length
 void FUN_1406530d0(void* pLogger, int nLevel, int nId, const CStringW& strText);   // 0x1406530d0 log
 const char* FUN_1408ac310(const efd::utf8string& s);                       // 0x1408ac310 c string
-int FUN_1408a01e0(const CStringA& s);                                      // 0x1408a01e0 string -> id
+int FUN_1408a01e0(CStringA s);                                      // 0x1408a01e0 string -> id
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                      // 0x14151f820 the message box currently shown
 struct Unk_RayHit { char m_pad[0x30]; Unk_CeEntity* m_pObject; };                                    // 0x14097eba0 smart-pointer copy of a node
 NiNode* FUN_14098d0f0(const NiNodePtr& spNode);
