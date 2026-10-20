@@ -383,7 +383,7 @@ def assign_copies(res, cgroups, paths, j, log=print):
                     owner[v] = (d, k)
         todo = collections.defaultdict(list)
         for (k, hits), ns in groups.items():
-            mine = sorted(v for v in hits if v in owner and owner[v][1] == k)
+            mine = sorted((v for v in hits if v in owner and owner[v][1] == k), key=lambda v: (owner[v][0], v))  # nearest first
             left = [n for n in ns if (k, n) not in done]
             if mine and left:
                 todo[k].append((left, mine))
