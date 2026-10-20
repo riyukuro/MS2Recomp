@@ -121,7 +121,35 @@ public:
 };
 MS2_CHECK_SIZE(ASDisplayObject, 0x80);
 
-class ASInteractiveObject : public ASDisplayObject {};
+// ASInteractiveObject (RTTI .?AVASInteractiveObject@@, 0x80, vftable 0x143113738: only the dtor is overridden). Recovered
+// with ?\asinteractiveobject.cpp (src/ms2/gfxui/asinteractiveobject.cpp, 0x1422de680-0x1422deec0). The listeners take
+// (bCapture, pUser: the AS function object's user data); the int setters / getters read the AS member as a Boolean.
+class ASInteractiveObject : public ASDisplayObject
+{
+public:
+    ASInteractiveObject(const Scaleform::GFx::Value& v, int nMovieId);      // 0x1422de680 (asinteractiveobject.cpp)
+    virtual ~ASInteractiveObject();                                         // 0 0x1422de6d0 (scalar deleting 0x1422dee80)
+    // "focusIn" / "focusOut" / "rollOver" / "rollOut" listeners: add, remove (asinteractiveobject.cpp)
+    void FUN_1422de700(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
+    void FUN_1422de780(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
+    void FUN_1422de800(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
+    void FUN_1422de880(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, void* pUser);
+    void FUN_1422de900(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);   // (asinteractiveobject.cpp: bCapture unused)
+    void FUN_1422de960(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
+    void FUN_1422de9c0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
+    void FUN_1422dea20(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
+    void FUN_1422dea80(int bEnabled);                                       // set "doubleClickEnabled" (asinteractiveobject.cpp)
+    int FUN_1422dead0();                                                    // "doubleClickEnabled"
+    void FUN_1422deb40(bool bEnabled);                                      // set "mouseEnabled"
+    int FUN_1422deb70();                                                    // "mouseEnabled"
+    void FUN_1422debe0(int bNeeds);                                         // set "needsSoftKeyboard"
+    int FUN_1422dec30();                                                    // "needsSoftKeyboard"
+    void FUN_1422deca0(int bEnabled);                                       // set "tabEnabled"
+    int FUN_1422decf0();                                                    // "tabEnabled"
+    void FUN_1422ded60(int nIndex);                                         // set "tabIndex" (as a Boolean: the exe passes nIndex != 0)
+    int FUN_1422dedb0();                                                    // "tabIndex" (read as a Boolean)
+    int FUN_1422dee20();                                                    // requestSoftKeyboard() (asinteractiveobject.cpp)
+};
 class ASDisplayObjectContainer : public ASInteractiveObject
 {
 public:
