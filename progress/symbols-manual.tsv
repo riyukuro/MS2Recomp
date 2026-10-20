@@ -3985,3 +3985,9 @@ DAT_143ae2b38	143ae2b38	data
 ?vfunc_17@GFxMovieEventHandler@@UEAAXPEAX@Z	1422d9e60	func
 ?vfunc_18@GFxMovieEventHandler@@UEAAXPEAX@Z	1422d9ef0	func
 ?vfunc_30@GFxMovieEventHandler@@UEAAXPEAXMMM@Z	1422da360	func
+?SetBasePosition@WeaponAttachTransformNode@@QEAAXAEBVNiPoint3@@@Z	141207fd0	func
+?SetBaseRotate@WeaponAttachTransformNode@@QEAAXAEBVNiMatrix3@@@Z	141207f70	func
+?SetFollowNode@WeaponAttachTransformNode@@QEAAXPEAVNiAVObject@@@Z	141207f40	func
+?SetMode@WeaponAttachTransformNode@@QEAAXH@Z	141205a60	func
+?SetUseMovement@WeaponAttachTransformNode@@QEAAXH@Z	141205a40	func
+?ms_RTTI@WeaponAttachTransformNode@@2VNiRTTI@@B	143af77a8	data
