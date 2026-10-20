@@ -89,6 +89,16 @@ typedef ATL::CAtlMap<__int64, efd::SmartPointer<Unk_WsMapV8> > Unk_WsM8;  // 0x1
 typedef ATL::CAtlMap<__int64, MS2Ptr<Unk_WsMapV9> > Unk_WsM9;             // 0x141bffb10
 typedef ATL::CAtlMap<__int64, MS2Ptr<Unk_WsMapV10> > Unk_WsM10;           // 0x141bffc00
 typedef ATL::CAtlMap<__int64, MS2Ptr<Unk_WsMapV11> > Unk_WsM11;           // 0x141bffcf0
+// m_738: the movers by id (SetAt 0x141c1adb0 -> CreateNode 0x141bfb070 -> NewNode 0x141c08480 -> CPair(key) 0x141bf3ef0,
+// whose value is default-constructed by efd::SmartPointer(T* = 0) 0x141bf0fd0: IncRefCount is the pointee's slot 1).
+class Unk_WsMover
+{
+public:
+    virtual void DeleteThis();
+    virtual void IncRefCount();
+    virtual void DecRefCount();
+};
+typedef ATL::CAtlMap<unsigned, efd::SmartPointer<Unk_WsMover> > Unk_WsM12;
 
 // m_890 (+0x890, 0x38 bytes): the proxy manager of proxyobject.cpp (Unk_ProxyMgr there: ctor 0x1416c3150, dtor
 // 0x1416c3190; its class is local to that unit). This view adds the inline enabled getter WorldService 0x141bc12b0 /
@@ -103,3 +113,11 @@ public:
     int m_nEnabled;                                                 // +0x30
 };
 MS2_CHECK_OFFSET(Unk_WsProxyMgr, m_nEnabled, 0x30);
+
+// CAtlList families (NewNode 0x141c08030 ..; CNode 0x18 bytes, so 8-byte smart pointer elements).
+// m_058: the PhysX prop records (AddTail 0x141bfad40 from FUN_141bc0530); element copy 0x141bf10a0 -> the pointee's
+// non-virtual IncRefCount 0x140ae1dd0 (atomic increment at +8: an NiRefObject).
+class Unk_WsProp058 : public NiRefObject {};
+typedef ATL::CAtlList<NiPointer<Unk_WsProp058> > Unk_WsL1;                    // m_058 NewNode 0x141c08030
+typedef ATL::CAtlList<efd::SmartPointer<GameObject> > Unk_WsL2;               // m_178 NewNode 0x141c080f0 (AddTail 0x141bfadc0)
+typedef ATL::CAtlList<efd::SmartPointer<PC> > Unk_WsL3;                       // NewNode 0x141c081b0 (AddTail 0x141bfae40, FUN_141bd1750)

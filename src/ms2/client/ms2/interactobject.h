@@ -81,6 +81,8 @@ public:
     void FUN_14174a4a0(const CString& strName) { m_strName = strName; }
     // @0x14174a4d0
     void FUN_14174a4d0() { m_bSpawned = 1; }
+    // @0x141c04fc0
+    unsigned char FUN_141c04fc0() { return m_bSpawned; }   // WorldService 0x141bbfb50 (?\worldservice.cpp#6)
 
     Unk_EntRef FUN_1413fd890();                                 // copy of the entity handle
     egf::EntityID FUN_1413fd8e0();                              // id of the entity (0 when unbound)

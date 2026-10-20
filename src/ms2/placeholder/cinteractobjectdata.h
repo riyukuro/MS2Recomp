@@ -33,6 +33,19 @@ public:
     int FUN_1417486f0() { return m_nKind == 1; }    // a mesh object
     // @0x1417486c0
     int FUN_1417486c0() { return m_nKind == 8; }    // a bill board
+    // The interact object factory's kind tests (WorldService 0x141bcda90; COMDATs in ?\worldservice.cpp#6).
+    // @0x141c05790
+    int FUN_141c05790() { return m_nKind == 2; }
+    // @0x141c057c0
+    int FUN_141c057c0() { return m_nKind == 3; }
+    // @0x141c05820
+    int FUN_141c05820() { return m_nKind == 4; }    // a web object (CInteractWebObject)
+    // @0x141c04f90
+    int FUN_141c04f90() { return m_nKind == 5; }
+    // @0x141c051c0
+    int FUN_141c051c0() { return m_nKind == 6; }
+    // @0x141c057f0
+    int FUN_141c057f0() { return m_nKind == 9; }
 
     int m_nBanMapType;                  // +0x30 map type in which the object may not be used
     int m_nKind;                        // +0x34 object kind (1 mesh, 8 bill board; scenestategame 0x63 mode 9)
