@@ -3839,3 +3839,7 @@ __imp_NxGetUtilLib	142cced28	data
 ??1Unk_WmCommandChat@@QEAA@XZ	140acd770	func
 ??4Unk_ShopLifeRef@@QEAAAEAV0@AEBV0@@Z	14052caa0	func
 ??BUnk_ShopLifeRef@@QEBAPEAVNpcShopItemLife@@XZ	14052ce00	func
+??0CEquipmentSlotLayerInfo@@QEAA@H@Z	1411f6f10	func
+??MUnk_MeratProductKey@@QEBA_NAEBU0@@Z	140899d90	func
+??0CUgcCharBookMark@@QEAA@V?$MS2Ptr@VCUgcBookMark@@@@@Z	140896c50	func
+??4Unk_ShopLifeRef@@QEAAAEAV0@AEBV0@@Z	14052caa0	func
