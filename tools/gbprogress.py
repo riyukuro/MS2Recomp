@@ -46,7 +46,8 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb1"                                  # bump to recompile everything
-MATCH_KEY = "callee8"                        # bump to re-match every obj (pairing logic changed)
+MATCH_KEY = "callee9"                        # bump to re-match every obj (pairing logic changed)
+COPY_ROUNDS = 4                              # assign_copies: offers of an unpaired copy to the next claimant
 NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
 if NO_CALLEE:
     MATCH_KEY = "nocallee"
@@ -228,6 +229,7 @@ def match_obj(path):
     # (destructors, virtuals nobody calls directly) with the exe vftable's slots
     exe = G["exe"]
     vfts = {obj.syms[i][0]: i for i in obj.syms if obj.syms[i][0].startswith("??_7") and obj.syms[i][2] > 0}
+    tried = set()
     while (pending or vfts) and not NO_CALLEE:
         grew = False
         for n in list(vfts):
@@ -239,12 +241,15 @@ def match_obj(path):
         nxt = []
         for n in pending:
             va = callees.get(n)
-            if va is None or va - exe.base not in exe.rf:
+            if va is None or va - exe.base not in exe.rf or (n, va) in tried:
                 nxt.append(n)
                 continue
+            tried.add((n, va))
             if _match(obj, n, va):          # exact only: the caller itself may be a byte-identical look-alike of
                 callees.update(bm.LAST_TARGETS)     # another type, so its reloc targets are only a hint
                 out.append((n, va, True, "callee"))
+            else:                           # a wrong hint: still unpaired (a copy candidate below)
+                nxt.append(n)
         if len(nxt) == len(pending) and not grew:
             break
         pending = nxt
@@ -340,29 +345,45 @@ def assign_copies(res, cgroups, paths, j, log=print):
             return min(abs(v - a) for a in own)
         ex = [va for _, va, ok, _ in res[k]["pairs"] if ok]
         return (min(abs(v - a) for a in ex) if ex else 1 << 40) + (1 << 32)
-    owner = {}
-    for (k, hits), ns in groups.items():
-        for v in hits:
-            if v in claimed:
-                continue
-            d = dist(k, v)
-            if v not in owner or (d, k) < owner[v]:
-                owner[v] = (d, k)
-    todo = collections.defaultdict(list)
-    for (k, hits), ns in groups.items():
-        mine = sorted(v for v in hits if v not in claimed and owner[v][1] == k)
-        if mine:
-            todo[k].append((ns, mine))
-    jobs = [(paths[k], prs, res[k].get("xok", {}), k) for k, prs in todo.items()
-            if k in paths and _greedy(prs, res[k].get("xok", {})) is None]
-    if jobs:
-        log(f"engine: pairing byte-identical copies in {len(jobs)} obj(s) ...")
-        byp = {p: k for p, _, _, k in jobs}
-        with Pool(max(1, j), initializer=_init) as p:
-            for path, xok in p.imap_unordered(_verify_job, [(p_, t, x) for p_, t, x, _ in jobs]):
-                res[byp[path]]["xok"] = xok
+    xpairs = collections.defaultdict(list)
+    refused = set()       # (va, key): the obj had the copy and none of its names matched it exactly
+    for _ in range(COPY_ROUNDS):    # a copy its nearest obj cannot pair goes to the next nearest claimant
+        done = {(k, n) for k in xpairs for n, _ in xpairs[k]}
+        owner = {}
+        for (k, hits), ns in groups.items():
+            for v in hits:
+                if v in claimed or (v, k) in refused:
+                    continue
+                d = dist(k, v)
+                if v not in owner or (d, k) < owner[v]:
+                    owner[v] = (d, k)
+        todo = collections.defaultdict(list)
+        for (k, hits), ns in groups.items():
+            mine = sorted(v for v in hits if v in owner and owner[v][1] == k)
+            left = [n for n in ns if (k, n) not in done]
+            if mine and left:
+                todo[k].append((left, mine))
+        if not todo:
+            break
+        jobs = [(paths[k], prs, res[k].get("xok", {}), k) for k, prs in todo.items()
+                if k in paths and _greedy(prs, res[k].get("xok", {})) is None]
+        if jobs:
+            log(f"engine: pairing byte-identical copies in {len(jobs)} obj(s) ...")
+            byp = {p: k for p, _, _, k in jobs}
+            with Pool(max(1, j), initializer=_init) as p:
+                for path, xok in p.imap_unordered(_verify_job, [(p_, t, x) for p_, t, x, _ in jobs]):
+                    res[byp[path]]["xok"] = xok
+        grew, r0 = False, len(refused)
+        for k, prs in todo.items():
+            got = _greedy(prs, res[k].get("xok", {})) or ()
+            xpairs[k] += got
+            claimed |= {v for _, v in got}
+            grew |= bool(got)
+            refused |= {(v, k) for _, mine in prs for v in mine if v not in claimed}
+        if not grew and len(refused) == r0:
+            break
     for k, c in res.items():
-        c["xpairs"] = [[n, v, True, "copy"] for n, v in _greedy(todo.get(k, ()), c.get("xok", {})) or ()]
+        c["xpairs"] = [[n, v, True, "copy"] for n, v in xpairs.get(k, ())]
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -464,11 +485,14 @@ def credit(res, game_rows):
         i = bisect.bisect_right(gs, va) - 1
         return i >= 0 and va < game[i][1]
     best = {}      # va -> (rank, symbol, unit)   rank: 3 exact v2525, 2 exact stock, 1 paired
+    named = set()  # (unit, va) paired through a name table
     for k, c in sorted(res.items()):
         better = {x[0] for x in c.get("xpairs", ())}
         for sym, va, ok, how in c["pairs"] + c.get("xpairs", []):
             if not ok and sym in better:      # a non-exact table-name pair superseded by an exact copy pair
                 continue
+            if how == "name":
+                named.add((c["unit"], va))
             if va not in info or va in game_rows or in_game(va):
                 continue
             rank = (3 if c["recipe"] == "v2525" else 2) if ok else 1
@@ -494,7 +518,48 @@ def credit(res, game_rows):
                 break
         for v in gap or ():
             rows[v] = (None, rows[a][1], "stub")
+    _drop_foreign_stubs(rows, starts, named)
     return [(va, sym if sym else info[va][1], unit, st, info[va][0]) for va, (sym, unit, st) in sorted(rows.items())]
+
+
+FOREIGN_FAR = 0x40000
+
+
+def _drop_foreign_stubs(rows, starts, named):
+    """A TU's code is contiguous: a unit's credited functions linked by stub runs form components. A minor component
+    (fewer credited functions than the unit's largest) far from the largest one and without a name-table pair is a
+    run of byte-identical copies in another library or TU (a second Lua build, template COMDATs a game TU placed),
+    so the functions between them are not this unit's stubs."""
+    pos = {v: i for i, v in enumerate(starts)}
+    cred = {}
+    for va, (sym, unit, st) in rows.items():
+        if st != "stub":
+            cred.setdefault(unit, []).append(va)
+    for unit, cv in cred.items():
+        cv.sort()
+        comps = [[cv[0]]]
+        for a, b in zip(cv, cv[1:]):
+            between = starts[pos[a] + 1:pos[b]] if a in pos and b in pos else [None]
+            if between and all(v in rows and rows[v][1] == unit and rows[v][2] == "stub" for v in between):
+                comps[-1] += between + [b]
+            elif not between:
+                comps[-1].append(b)
+            else:
+                comps.append([b])
+        if len(comps) < 2:
+            continue
+        size = [sum(1 for v in c if rows[v][2] != "stub") for c in comps]
+        big = max(size)
+        lo = min(c[0] for c, n in zip(comps, size) if n == big)
+        hi = max(c[-1] for c, n in zip(comps, size) if n == big)
+        for c, n in zip(comps, size):
+            if n == big or (c[0] < hi + FOREIGN_FAR and c[-1] > lo - FOREIGN_FAR):
+                continue
+            if any((unit, v) in named for v in c):
+                continue
+            for v in c:
+                if rows[v][2] == "stub":
+                    del rows[v]
 
 
 def summary(rows):
