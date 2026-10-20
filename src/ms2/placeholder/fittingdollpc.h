@@ -45,6 +45,8 @@ struct Unk_PCEquipSet
     void FUN_1411e7380();                                   // kind 0x12 items changed (equipitem.cpp)
     int FUN_1411e09a0();                                    // the equipment is ready (uibeautyshopdevdialog.cpp)
     void FUN_1411e89d0(int n);                              // battle stance changed (PC::vfunc_66)
+    void FUN_1411e8eb0(const CString& strReason);           // hide the equip models for a reason (CEquipment)
+    void FUN_1411e9020(const CString& strReason);           // show them again (CEquipment)
     void FUN_1411e38e0(MS2Ptr<CItem> spItem);               // equip (quick-equip config; PC::vfunc_127)
     void FUN_1411e3600(MS2Ptr<CItem> spItem);               // equip (PC::vfunc_127)
     void FUN_1411e3b10(MS2Ptr<CItem> spItem, int n);        // unequip (quick-equip config; PC::vfunc_128)
@@ -55,6 +57,8 @@ struct Unk_PCEquipSet
     void FUN_1411e7610();                                   // mark dirty (CEquipment, equipment.h)
     CString FUN_1411eabd0();                                // the set name (CEquipment)
     bool FUN_1411eac20();                                   // the set name is a named one (CEquipment)
+    float FUN_1411e0f00(float f);                           // scale by special ability 3 (CEquipment)
+    void FUN_1411e8b60(const CString& strA, const CString& strB, const efd::utf8string& kDefault, float fBlend);   // (CEquipment)
     float FUN_1411e1110(int nSpecial);                      // the special ability rate (CEquipment)
     int FUN_1411e1160(int nSpecial);                        // the special ability total (CEquipment)
     float FUN_1411e1250(int nOption, unsigned nKey);        // an invoke effect option rate (CEquipment)
@@ -124,6 +128,7 @@ public:
     virtual void vfunc_15();                                // 15 0x141651d00
     virtual void vfunc_16();                                // 16 0x141651d40
     virtual void vfunc_23(int n);                           // 23 0x14165c320
+    virtual void vfunc_24(int nFlags);                      // 24 0x141662160 the visibility flags
     virtual void vfunc_31(bool b);                          // 31 0x141652030
     virtual void vfunc_33(void* a, void* b);                // 33 0x141652080
     virtual void vfunc_34(void* p);                         // 34 0x1416529f0
@@ -143,6 +148,7 @@ public:
     virtual void vfunc_74(__int64 nCur, __int64 nMax);      // 74 0x141656af0
     virtual CStringW vfunc_77();                            // 77 0x141656c70
     virtual int vfunc_78();                                 // 78 0x1416578f0
+    virtual MS2Ptr<Unk_PCBaseComp_a58> vfunc_80();          // 80 0x141656db0
     virtual MS2Ptr<Unk_PCBaseComp_a68> vfunc_81();          // 81 0x141656f80
     virtual MS2Ptr<Unk_PCBaseComp_a98> vfunc_84();          // 84 0x1416572b0
     virtual MS2Ptr<Unk_PCBaseComp_a88> vfunc_83();          // 83 0x141657670
@@ -168,7 +174,7 @@ public:
     virtual int vfunc_133(CItem* pItem, bool b);            // 133 0x141657dc0: vfunc_132(pItem, pItem->FUN_140527a20(), b)
     virtual CStringW vfunc_134();                           // 134 0x141658cd0 (hidden return; PC: L"")
     virtual void vfunc_135(int a, int b, void* p);          // 135 0x141659450
-    virtual void vfunc_136(void* a, void* b, float f);      // 136 0x14165c240 (xmm3)
+    virtual void vfunc_136(const CString& strModel, const efd::utf8string& kAnim, float fBlend);   // 136 0x14165c240 play an animation on the equipment
     virtual int vfunc_137();                                // 137 0x14165d6d0
     virtual void vfunc_138(NiAVObject* pRoot, int n, const Unk_CharEquip* pEquip);  // 138 0x14165f050
     virtual void vfunc_139();                               // 139 0x14165efa0
@@ -311,6 +317,15 @@ public:
     void FUN_141663ea0();                                   // stop the tail effect
     bool FUN_1416642a0();                                   // +0x1224
     void FUN_141659790(const CString& strAnim);             // play an animation on the weapons' attach models
+    int FUN_14165c1b0(int* pnId, CString* pstrName, float fRange);   // the nearest holdable target (0: FindHoldTargetRange)
+    MS2Ptr<Unk_PCD88> FUN_14165c2d0();                      // +0xd88
+    MS2Ptr<CWeaponAction> FUN_14165c520();                  // +0xd70
+    Unk_PCActionTimer* FUN_14165ca20();                     // +0xfc8
+    Unk_PCActionTimer* FUN_14165ca50();                     // +0xfc8 while active
+    void FUN_141660df0();                                   // (empty)
+    void FUN_1416615f0(float fDelta);                       // the +0x1054 timer tick
+    void FUN_1416616a0(unsigned int nDelay);                // schedule the +0x1054 timer
+    void FUN_141661880(int bEnable, int nValue, const CubeItemInfo* pInfo);   // enter / leave the cube mode (+0x1000 / +0x1008)
     void FUN_14165d300(int nA, int nB, int nC);             // PCBase member (pcbase.cpp; scenestategame 0x5d)
     void FUN_1416629d0(Unk_StreamPoint kPos, Unk_StreamPoint kRot);   // scenestategame 0x141721a30
     MS2Ptr<Unk_PCWaterGunInfo> FUN_141664250();             // the water gun battle info (+0x1260)
@@ -347,6 +362,8 @@ public:
     void FUN_141662e30(int n);
     void FUN_1416634a0(__int64 nCharId);
     void FUN_141663550();
+    void FUN_14165c970(void* p);                            // notify the action timer (+0xfc8)
+    void FUN_1416624e0(int nIndex);                         // remove the cube guide nIndex
     void FUN_141662850(__int64 nValue);
     void FUN_141662890(__int64 nValue);
     MS2Ptr<Unk_HsInfo> FUN_141664200();                     // the hide and seek record (scenestategame 0x12b)

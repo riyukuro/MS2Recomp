@@ -72,6 +72,9 @@
 #include "ms2/client/ms2/randomtargeteffect.h"
 #include "ms2/unnamed/unit_140b0e5f0.h"
 #include "ms2/client/ms2/cubecraft_1.h"
+#include "ms2/placeholder/cproxygameobject.h"
+#include "ms2/client/ms2/guildmanager.h"
+#include "ms2/client/ms2/partymanager.h"
 #include "ms2/client/ms2/cubecraft_2.h"
 #include "ms2/client/ms2/equipitem.h"
 #include "ms2/client/ms2/kfmmodel.h"
@@ -146,7 +149,7 @@ int FUN_140869420();                                                // the curre
 CTailEffectDataTable* FUN_140ad0da0();                              // the tail effect table
 void FUN_140a35900(Unk_PCD88* p);                                   // close the +0xd88 record
 // The world (WorldService; FUN_1403ed2d0).
-class Unk_PCLocalPlayer                                             // the MyPC
+class Unk_PCLocalPlayer : public PC                                 // the MyPC
 {
 public:
     void FUN_14152a960();                                           // stop observing
@@ -161,6 +164,9 @@ public:
     void FUN_141bbb7f0(GameObject* pObj, int n);                    // unregister an object
     int FUN_141bdb5a0(int nObserveMode);
     GameObject* FUN_141bd1180(int nObjectId);                       // the object of an id
+    int FUN_141bc9830(int* pnId, CString* pstrName, float fRange, int n);   // the nearest holdable target
+    MS2Ptr<CProxyGameObject> FUN_141bc9c60(__int64 nId);            // the proxy of a player by id
+    int FUN_141bca2e0();                                            // the field is loaded
 };
 Unk_PCWorld* FUN_1403ed2d0();
 // The effect service (FUN_1403ed280).
@@ -206,11 +212,14 @@ Unk_PCKfmActor* FUN_14141c720(const MS2Ptr<CKfmModel>& spModel);
 class Unk_ItemEquipData : public CItemData {};
 struct Unk_EquipItemData : public CItemData {};                     // CEquipItem::FUN_1411dc7f0's record (as astooltip_local.h)
 int FUN_14082f1a0(int nType);                                       // the stat is a 64-bit value                     // CItem::FUN_140527840's record (as astooltip_local.h)
-// The quick-equip option (FUN_1409f7c90).
+// The optimizer (COptimizer, FUN_1409f7c90).
 class Unk_PCEquipConfig
 {
 public:
     int FUN_1409f7ea0();                                            // quick equip is on
+    int FUN_141622790() const;                                      // the visibility limit is on
+    int FUN_14161cf40() const;                                      // others are shown
+    int FUN_140ddcc90();                                            // the low-spec mode
 };
 Unk_PCEquipConfig* FUN_1409f7c90();
 // The dialogs 0x4e96 / 0x4ec4 (FUN_141531c80 / FUN_141531be0): the hp of a party member changed.
@@ -245,6 +254,8 @@ public:
     virtual void vfunc_2();                                         // refresh
 };
 class Unk_PCBaseComp_ac8 : public CPtred {};
+class Unk_PCBaseComp_a58 : public CPtred {};                        // UIHpBar::Entity
+MS2Ptr<Unk_PCBaseComp_a58> FUN_141992920(int nActorId);            // UIHpBar::Entity
 MS2Ptr<Unk_PCBaseComp_a68> FUN_140e86320(int nActorId);
 MS2Ptr<Unk_PCBaseComp_a78> FUN_141a60da0(int nActorId);            // UINameTag
 MS2Ptr<Unk_PCBaseComp_a88> FUN_14192fd40(int nActorId);
@@ -258,7 +269,8 @@ void FUN_141a60f00(int nActorId);                                   // the level
 class Unk_PCOption
 {
 public:
-    char m_pad_00[0xd];
+    char m_pad_00[0xc];
+    bool m_bShowHpBar;                                              // +0xc
     bool m_bShowPartyHp;                                            // +0xd
 };
 class Unk_PCOptions { public: Unk_PCOption* FUN_140b123b0(); };
@@ -310,6 +322,8 @@ void FUN_141201d50(CEquipModel* pModel, CString strNode);           // attach th
 int FUN_141202940(CEquipModel* pModel);                             // the equip slot of the model
 void FUN_141200390(CEquipModel* pModel, const CString& strAnim);    // play an animation
 extern bool DAT_143aad1e0;                                          // the upper HUD hides the weapon effects (uiupperhuddialog.cpp)
+extern CString DAT_143ae2de8;                                       // the hidden-equip reason (CEquipment::FUN_1411e8eb0 / FUN_1411e9020)
+bool FUN_14028d470(float a, float b);                               // the floats are equal
 // The model resource cache (FUN_140a0afd0) and the file preloader.
 class Unk_PCModelCache
 {
@@ -337,34 +351,37 @@ Unk_PCNotices* FUN_140939a10();
 class Unk_PCD88 : public CPtred {};
 class Unk_PCLinkFD8 : public CPtred {};
 // The action timer at +0xfc8 (avatarpc.cpp has the same stand-in).
-class Unk_PCActionTimer : public CPtred {};
+class Unk_PCActionTimer : public CPtred
+{
+public:
+    virtual void vfunc_1(void* p, int nMode);                       // 1 notify (FUN_14165c970: 2 / 5)
+    int FUN_140addea0();                                            // active
+};
 
 // ---- header statics of this TU (.text$di 0x1400fb010-0x1400fb4d0; same groups as unit_140114300 / unit_140102270) ----
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };    // an 8-byte pointer holder
-namespace {
-CString s_strCustomize = "Customize";
-CString s_strDefault = "Default";
-CString s_strEmotion = "Emotion";
-CString s_strExceptRender = "ExceptRender";
-CString s_strExpired = "Expired";
-CString s_strHair = "Hair";
-CString s_strInvalide = "Invalide";
-CString s_strLayerExpired = "layerExpired";
-CString s_strLower = "Lower";
-CString s_strMissMatch = "MissMatch";
-CString s_strOptimizer = "Optimizer";
-CString s_strPCBang = "PCBang";
-CString s_strSlot = "Slot";
-CString s_strUndo = "Undo";
-CString s_strVIP = "VIP";
-CString s_strWillUpdatePos = "WillUpdatePos";
-CString s_sortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
-CString s_strSkill = "skill";
-CString s_strStun = "stun";
-efd::Category s_category(0);
-Unk_1401cd100 s_pointer(NULL);
-Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
-}
+static CString s_strCustomize = "Customize";
+static CString s_strDefault = "Default";
+static CString s_strEmotion = "Emotion";
+static CString s_strExceptRender = "ExceptRender";
+static CString s_strExpired = "Expired";
+static CString s_strHair = "Hair";
+static CString s_strInvalide = "Invalide";
+static CString s_strLayerExpired = "layerExpired";
+static CString s_strLower = "Lower";
+static CString s_strMissMatch = "MissMatch";
+static CString s_strOptimizer = "Optimizer";
+static CString s_strPCBang = "PCBang";
+static CString s_strSlot = "Slot";
+static CString s_strUndo = "Undo";
+static CString s_strVIP = "VIP";
+static CString s_strWillUpdatePos = "WillUpdatePos";
+static CString s_sortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static CString s_strSkill = "skill";
+static CString s_strStun = "stun";
+static efd::Category s_category(0);
+static Unk_1401cd100 s_pointer(NULL);
+static Unk_1402a9d70 s_condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- PC ----
 
@@ -1984,9 +2001,234 @@ void PC::FUN_141659790(const CString& strAnim)
     }
 }
 
+// @0x14165c1b0
+int PC::FUN_14165c1b0(int* pnId, CString* pstrName, float fRange)
+{
+    if (FUN_14028d470(fRange, 0))
+        fRange = static_cast<Client::Constants*>(FUN_1401d3200())->FindHoldTargetRange.Get(150.0f);
+    return FUN_1403ed2d0()->FUN_141bc9830(pnId, pstrName, fRange, 0);
+}
+
+// @0x14165c240
+void PC::vfunc_136(const CString& strModel, const efd::utf8string& kAnim, float fBlend)
+{
+    m_kEquipDE0.FUN_1411e8b60(FUN_141658d20(), strModel, kAnim, fBlend);
+}
+
+// @0x14165c2d0
+MS2Ptr<Unk_PCD88> PC::FUN_14165c2d0() { return m_spD88; }
+
+// @0x14165c4e0
+void PC::vfunc_114(void* p) { m_spStateMgr->FUN_1417db2e0(static_cast<Unk_StateArg22*>(p)); }   // a state sync record
+
+// @0x14165c520
+MS2Ptr<CWeaponAction> PC::FUN_14165c520() { return m_spWeaponActionD70; }
+
+// @0x14165ca20
+Unk_PCActionTimer* PC::FUN_14165ca20() { return m_spFC8.get(); }
+
+// @0x14165ca50
+Unk_PCActionTimer* PC::FUN_14165ca50()
+{
+    if (m_spFC8 == 0)
+        return 0;
+    if (!m_spFC8->FUN_140addea0())
+        return 0;
+    return m_spFC8.get();
+}
+
+// @0x14165e4a0
+float PC::vfunc_95()
+{
+    float f = PCBase::vfunc_95();
+    if (FUN_141675ed0())
+        f = m_kEquipDE0.FUN_1411e0f00(f);
+    return f;
+}
+
+// @0x141660df0
+void PC::FUN_141660df0() {}
+
+// @0x141660f80
+void PC::vfunc_144()
+{
+    FUN_14166ccb0()->vfunc_23();
+}
+MS2_REPLACE_METHOD(0x141660F80, PC, vfunc_144, 48, 0x840E7B21);
+
+// @0x141661be0
+int PC::vfunc_145() { return 1; }
+MS2_REPLACE_METHOD(0x141661BE0, PC, vfunc_145, 11, 0x30025ED0);
+
+// @0x1416615f0
+void PC::FUN_1416615f0(float fDelta)
+{
+    if (FUN_140976c10())
+    {
+        if ((unsigned int)(m_n1054 + m_n1058) < (unsigned int)FUN_140869420())
+        {
+            FUN_141661370(0, 0, 0);
+            vfunc_42(1.0f, true);
+        }
+        else
+            FUN_1416616a0((unsigned int)m_n1058 / 2);
+    }
+}
+
+// @0x141661880
+void PC::FUN_141661880(int bEnable, int nValue, const CubeItemInfo* pInfo)
+{
+    if (bEnable)
+    {
+        m_n1000 = 1;
+        m_spCube1008.AssignRaw(new CubeItemInfo());
+        m_spCube1008->FUN_1408b3700(pInfo);
+        m_n1018 = nValue;
+    }
+    else
+    {
+        m_n1000 = 0;
+        m_spCube1008 = 0;
+    }
+}
+
+// @0x141661b20
+void PC::FUN_141661b20(CInPacket& packet)
+{
+    FUN_1416619d0(packet.vfunc_o8_3());
+    FUN_141661a60(packet.vfunc_o8_3());
+}
+
+// @0x141661c70
+void PC::FUN_141661c70(int n)
+{
+    m_n10f4 = n;
+    FUN_141a60f00(m_unk_70);
+    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyChangeTitle(this)));
+}
+
+// @0x141661d40
+void PC::FUN_141661d40(CInPacket& packet)
+{
+    m_n10f8 = packet.vfunc_o8_2();
+    m_n10fc = packet.vfunc_o8_1();
+}
+
+// @0x14165c970
+void PC::FUN_14165c970(void* p)
+{
+    if (m_spFC8 == 0)
+        return;
+    if (m_nFF4 != 0)
+        m_spFC8->vfunc_1(p, 5);
+    else
+        m_spFC8->vfunc_1(p, 2);
+}
+
+// @0x1416624e0
+void PC::FUN_1416624e0(int nIndex)
+{
+    CGuideObject* pGuide = FUN_141662440(nIndex);
+    if (!pGuide)
+        return;
+    pGuide->vfunc_128();
+    GameObject* pObj = FUN_1403ed2d0()->FUN_141bd0fa0(pGuide->FUN_14123c460());
+    if (pObj)
+        FUN_1403ed2d0()->FUN_141bbb7f0(pGuide, 0);
+    FUN_1416623d0(efd::SmartPointer<CGuideObject>(0), nIndex);
+}
+
+// @0x141663550
+void PC::FUN_141663550()
+{
+    Unk_PCWorld* pWorld = FUN_1403ed2d0();
+    if (!pWorld)
+        return;
+    do
+    {
+        MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60(FUN_141656a80());
+        if (spProxy.IsNull())
+            break;
+        int nState = spProxy->m_cc;
+        if (nState != 0x3f)
+            break;
+        vfunc_59(0x3f, 0, 0, 0);
+    } while (0);
+}
+
+// @0x141662160
+void PC::vfunc_24(int nFlags)
+{
+    if (FUN_1403ed2d0()->FUN_141bca2e0())
+    {
+        int bShow = 1;
+        int bVisible = 1;
+        if (FUN_1409f7c90()->FUN_141622790())
+        {
+            bVisible = FUN_1409f7c90()->FUN_14161cf40();
+            if (bVisible == 0)
+                bShow = 0;
+        }
+        if (nFlags == 0)
+        {
+            bShow = 0;
+            bVisible = 0;
+        }
+        if (bVisible)
+        {
+            if (bShow && (nFlags & 2) && CPartyManager::GetInstance()->FUN_14162ae20(m_nCharIdDB8))
+                bShow = 0;
+            if (bShow && (nFlags & 4))
+            {
+                if (CGuildManager::GetInstance()->FUN_1404cf9f0(vfunc_77()).get())
+                    bShow = 0;
+            }
+        }
+        m_unk_40 = bShow;
+        if (FUN_1409f7c90()->FUN_140ddcc90() == 0 && m_unk_80)
+        {
+            if (m_unk_40)
+            {
+                bool bValue = false;
+                FUN_14098c6e0(m_unk_80, 0xa0b6b179, bValue);
+                m_kEquipDE0.FUN_1411e8eb0(DAT_143ae2de8);
+            }
+            else
+            {
+                if (m_unk_b0 == 0)
+                {
+                    bool bValue = true;
+                    FUN_14098c6e0(m_unk_80, 0xa0b6b179, bValue);
+                }
+                m_kEquipDE0.FUN_1411e9020(DAT_143ae2de8);
+            }
+        }
+    }
+}
+
+// @0x141656db0
+MS2Ptr<Unk_PCBaseComp_a58> PC::vfunc_80()
+{
+    if (FUN_1409f7c90()->FUN_1409f7ea0() && FUN_14123dbd0() == 0)
+        return MS2Ptr<Unk_PCBaseComp_a58>(0);
+    if (!FUN_1409a8b10()->FUN_140b123b0()->m_bShowHpBar)
+        return MS2Ptr<Unk_PCBaseComp_a58>(0);
+    if (Unk_PCLocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0())
+    {
+        if (FUN_14165ef30() == 0 && pPlayer->FUN_1415278d0(FUN_141656a80()) == 0 && pPlayer->vfunc_122(this) == 0)
+            return MS2Ptr<Unk_PCBaseComp_a58>(0);
+        if (m_spA58 == 0)
+            m_spA58 = FUN_141992920(m_unk_70);
+        return m_spA58;
+    }
+    return MS2Ptr<Unk_PCBaseComp_a58>(0);
+}
+
 // ---- end of code ----
 
 // MS2-PIN: ??_7PC@@6BIBase@efd@@@ 0x142f4ae28
 // MS2-PIN: ??_7PC@@6BCallbackObject@NiActorManager@@@ 0x142f4b2c8
 // MS2-PIN: ??_GPC@@UEAAPEAXI@Z 0x1416678b0
 // MS2-PIN: ??_EPC@@W7EAAPEAXI@Z 0x1416677f8
+// MS2-PIN: ??__Es_category@@YAXXZ 0x1400fb430
+// MS2-PIN: ??__Es_pointer@@YAXXZ 0x1400fb460
