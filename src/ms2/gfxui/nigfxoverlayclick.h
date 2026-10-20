@@ -10,6 +10,9 @@
 #include "GFxConfig.h"
 #include "Render/Render_Types2D.h"
 
+class Ni2DBuffer;
+class Unk_GFxUIRenderer2D;                                          // ms2/placeholder/gfxrenderer2d.h
+
 // The render click that draws the GFx UI overlay (0xd8 bytes, vftable 0x14311b658, 8 slots). ms_RTTI (0x143b0dc38,
 // parent NiRenderClick) is initialized in unit_14013acc0's .text$di.
 class NiGFxOverlayClick : public NiViewRenderClick
@@ -41,7 +44,7 @@ public:
     GFxRenderer();                                                  // 0x142303600
     virtual ~GFxRenderer();                                         // 0x142303640 (scalar deleting 0x142303770)
 
-    virtual int vfunc_2();                                          // 0x142303670
+    virtual Unk_GFxUIRenderer2D* vfunc_2();                         // 0x142303670 the Renderer2D
     virtual int vfunc_3();                                          // 0x142303680
     virtual int vfunc_4();                                          // 0x142303690
     virtual void vfunc_5();                                         // 0x1423036a0
@@ -53,7 +56,7 @@ public:
     virtual void vfunc_11();                                        // 0x142303720
     virtual bool vfunc_12();                                        // 0x142303730 (always true)
     virtual void vfunc_13(void* p);                                 // 0x142303740
-    virtual int vfunc_14();                                         // 0x142303760
+    virtual Ni2DBuffer* vfunc_14();                                 // 0x142303760 the render texture's buffer
 };
 MS2_CHECK_SIZE(GFxRenderer, 0x10);
 

@@ -14,9 +14,11 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/singletonclass.h"
 
+class ASMovieClipLoader;
 class GFxMovie;
 class NiRenderer;
 class Unk_NotifyContext;                // ms2/gfxui/notifyhandler.h
+template <class T> class MS2Ptr;       // ms2/placeholder/ascript.h
 
 class GFxManager : public efd::MemObject, public SingletonClass<GFxManager>
 {
@@ -37,6 +39,9 @@ public:
     bool FUN_1422b0610(const CString& strSound, const CString& strArg); // play a UI sound (NotifySwfEntity "playSound")
     int FUN_1422aeed0(int n);                                       // input state query (NotifyDragSlot passes 2: drop outside any slot)
     int FUN_1422af2d0(int nMovieId);                                // the movie takes text input (GFxMovieEventHandler: CharEvent, Insert)
+    int FUN_1422af7a0(int nMovieId);                                // input state of a movie (UISwfEntityManager::FUN_1422d1c20 passes 2)
+    void FUN_1422aed30(bool b);                                     // UISwfEntityManager::FUN_1422d4a30's flag
+    MS2Ptr<ASMovieClipLoader> FUN_1422b03f0(int nGroup);            // the movie clip loader of a GFX_* group (by value)
     int FUN_1422af390(int nMovieId);                                // WM_IME_COMPOSITION handled by the manager
     void FUN_1422b08f0(const char* szFormat, ...);                  // log line (GFxRenderSingleThread reset failures)
     // render device ready flag (inline; COMDAT 0x1422f58f0 in ?\gfxrendersinglethread.cpp: 0 on reset/lost, 1 restored)

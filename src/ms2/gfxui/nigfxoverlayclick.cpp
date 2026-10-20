@@ -78,7 +78,7 @@ GFxRenderer::~GFxRenderer()
 }
 
 // @0x142303670
-int GFxRenderer::vfunc_2() { return 0; }
+Unk_GFxUIRenderer2D* GFxRenderer::vfunc_2() { return 0; }
 // @0x142303680
 int GFxRenderer::vfunc_3() { return 0; }
 // @0x142303690
@@ -102,7 +102,7 @@ bool GFxRenderer::vfunc_12() { return true; }
 // @0x142303740
 void GFxRenderer::vfunc_13(void* p) {}
 // @0x142303760
-int GFxRenderer::vfunc_14() { return 0; }
+Ni2DBuffer* GFxRenderer::vfunc_14() { return 0; }
 
 // @0x1423037d0
 AtlasRecord::AtlasRecord(Unk_GfxImage* pImage)
