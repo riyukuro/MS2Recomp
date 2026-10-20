@@ -95,6 +95,19 @@ public:
     void FUN_1409db7b0(MS2Ptr<CItem> spItem);                            // compare against this item (by value: callee destroys)
     void FUN_1409db930(MS2Ptr<CItem> spCompare, MS2Ptr<CItem> spItem);   // item tooltip with an optional comparison item (by value: callee destroys)
 
+    // ---- astooltip.cpp part 1 members (owner: part 1 agent; append here only) ----
+    // ---- end part 1 ----
+    // ---- astooltip.cpp part 2 members (owner: part 2 agent; append here only) ----
+    // ---- end part 2 ----
+    // ---- astooltip.cpp part 3 members (owner: part 3 agent; append here only) ----
+    // ---- end part 3 ----
+    // ---- astooltip.cpp part 4 members (owner: part 4 agent; append here only) ----
+    // ---- end part 4 ----
+    // ---- astooltip.cpp part 5 members (owner: part 5 agent; append here only) ----
+    // ---- end part 5 ----
+    // ---- astooltip.cpp part 6 members (owner: part 6 agent; append here only) ----
+    // ---- end part 6 ----
+
 private:
     __int64 m_40; unsigned m_48; unsigned m_pad_4c; CStringW m_50; void* m_pad_58;   // m_50: text (destroyed by ~ASTooltip, aseffect.cpp)
 };
