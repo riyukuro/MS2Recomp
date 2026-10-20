@@ -61,10 +61,10 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89ef0 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAAXXZ@std@@@?$Delegate@$$A6AXXZ@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89f50 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIPopUpMenu@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141a89fb0 ; unique
+// MS2-PIN: ??$forward@AEAPEAPEAVGameObject@@@std@@YAAEAPEAPEAVGameObject@@AEAPEAPEAV1@@Z 0x141a8dc70 ; unique
 // MS2-PIN: ??$forward@AEAPEAU?$_List_node@PEAVUnk_GoPickHit@@PEAX@std@@@std@@YAAEAPEAU?$_List_node@PEAVUnk_GoPickHit@@PEAX@0@AEAPEAU10@@Z 0x141a8dc80 ; unique
 // MS2-PIN: ??$forward@AEAPEAVGameObject@@@std@@YAAEAPEAVGameObject@@AEAPEAV1@@Z 0x141a8dc90 ; unique
 // MS2-PIN: ??0?$allocator@PEAVGameObject@@@std@@QEAA@XZ 0x141a8e060 ; unique
-// MS2-PIN: ??0?$allocator@U?$_List_node@PEAVUnk_GoPickHit@@PEAX@std@@@std@@QEAA@XZ 0x141a8e070 ; unique
 // MS2-PIN: ??R<lambda_33b4866407a6444b0fe51dcd18b2ae7a>@@QEBA_NPEAVGameObject@@0@Z 0x141a8e3f0 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@PEAVGameObject@@@std@@V?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@$00@std@@QEAAAEAV?$allocator@PEAVGameObject@@@2@XZ 0x141a8e970 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@PEAVGameObject@@@std@@V?$_Vector_val@U?$_Simple_types@PEAVGameObject@@@std@@@2@$00@std@@QEBAAEBV?$allocator@PEAVGameObject@@@2@XZ 0x141a8e980 ; unique
