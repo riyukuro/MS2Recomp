@@ -3308,6 +3308,144 @@ void FUN_141977050(CStringW& strText, std::vector<std::pair<int, CStringW>>& out
     }
 }
 
+// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
+// @0x141977b70 (fill a pvp history row; the own guild is shown on the left)
+int FUN_141977b70(ASObj& obj, const MS2Ptr<CGuildPVPHistoryData>& spHistory)
+{
+    CStringW strTime;
+    __int64 tNow = FUN_140869440();
+    __int64 tElapsed = tNow - spHistory->fb8;
+    if (tElapsed > 0)
+    {
+        ATL::CTimeSpan span(tElapsed);
+        if (span.GetDays() > 0)
+        {
+            __int64 nDays = span.GetDays();
+            strTime = FUN_14086d060(0x3d2, nDays);
+        }
+        else if (span.GetHours() > 0)
+        {
+            int nHours = span.GetHours();
+            strTime = FUN_14086cfc0(0x3d3, nHours);
+        }
+        else if (span.GetMinutes() > 0)
+        {
+            int nMinutes = span.GetMinutes();
+            strTime = FUN_14086cfc0(0x3d4, nMinutes);
+        }
+        else
+        {
+            strTime = FUN_14028de60(0x3d5);
+        }
+    }
+    // fa8: the five rounds' results ('W'/'L') of the f28 guild.
+    int nWin = 0;
+    int nLose = 0;
+    for (int i = 0; i < 5; i++)
+    {
+        if (spHistory->fa8[i] == 'W')
+            nWin++;
+        else if (spHistory->fa8[i] == 'L')
+            nLose++;
+    }
+    if (spHistory->f28 == CGuildManager::GetInstance()->FUN_1404ccbd0())
+    {
+        bool bNoFight = false;
+        bool bWin = true;
+        CStringW strScore = FUN_140811740(0x3e9, nWin, nLose);
+        if (nWin == 0 && nLose == 0)
+        {
+            bNoFight = true;
+            strScore = FUN_14028de60(0x3ea);
+            if (spHistory->f20 == 1)
+            {
+                strScore = FUN_14028de60(0x3eb);
+                bWin = false;
+            }
+        }
+        obj.FUN_1407cba60("leftSn", FUN_140719530(spHistory->f28));
+        obj.FUN_1407cba60("rightSn", FUN_140719530(spHistory->f30));
+        obj.FUN_1407cbbe0("isWin", bWin);
+        obj.FUN_1407cbb20("leftGuildName", spHistory->f38);
+        obj.FUN_1407cbb20("rightGuildName", spHistory->f40);
+        obj.FUN_1407cbb20("score", strScore);
+        obj.FUN_1407cbbe0("isNofight", bNoFight);
+        for (int i = 0; i < 5; i++)
+        {
+            CStringW strLeft;
+            std::vector<std::pair<int, CStringW>> arrLeft;
+            FUN_141977050(spHistory->f58[i], arrLeft);
+            for (size_t j = 0; j < arrLeft.size(); j++)
+            {
+                if (strLeft.GetLength() > 0)
+                    strLeft += L",";
+                strLeft += arrLeft[j].second;
+            }
+            obj.FUN_1407cbb20(FUN_1402bb1c0("left{0}", i + 1), strLeft);
+            CStringW strRight;
+            std::vector<std::pair<int, CStringW>> arrRight;
+            FUN_141977050(spHistory->f80[i], arrRight);
+            for (size_t j = 0; j < arrRight.size(); j++)
+            {
+                if (strRight.GetLength() > 0)
+                    strRight += L",";
+                strRight += arrRight[j].second;
+            }
+            obj.FUN_1407cbb20(FUN_1402bb1c0("right{0}", i + 1), strRight);
+            bool bRoundWin = false;
+            if (spHistory->fa8[i] == 'W')
+                bRoundWin = true;
+            obj.FUN_1407cbbe0(FUN_1402bb1c0("result{0}", i + 1), bRoundWin);
+        }
+    }
+    else
+    {
+        CStringW strScore = FUN_140811740(0x3e9, nLose, nWin);
+        bool bNoFight = false;
+        if (nWin == 0 && nLose == 0)
+        {
+            bNoFight = true;
+            strScore = FUN_14028de60(0x3eb);
+        }
+        obj.FUN_1407cba60("leftSn", FUN_140719530(spHistory->f30));
+        obj.FUN_1407cba60("rightSn", FUN_140719530(spHistory->f28));
+        obj.FUN_1407cbbe0("isWin", false);
+        obj.FUN_1407cbb20("leftGuildName", spHistory->f40);
+        obj.FUN_1407cbb20("rightGuildName", spHistory->f38);
+        obj.FUN_1407cbb20("score", strScore);
+        obj.FUN_1407cbbe0("isNofight", bNoFight);
+        for (int i = 0; i < 5; i++)
+        {
+            CStringW strRight;
+            std::vector<std::pair<int, CStringW>> arrLeft;
+            FUN_141977050(spHistory->f58[i], arrLeft);
+            for (size_t j = 0; j < arrLeft.size(); j++)
+            {
+                if (strRight.GetLength() > 0)
+                    strRight += L",";
+                strRight += arrLeft[j].second;
+            }
+            obj.FUN_1407cbb20(FUN_1402bb1c0("right{0}", i + 1), strRight);
+            CStringW strLeft;
+            std::vector<std::pair<int, CStringW>> arrRight;
+            FUN_141977050(spHistory->f80[i], arrRight);
+            for (size_t j = 0; j < arrRight.size(); j++)
+            {
+                if (strLeft.GetLength() > 0)
+                    strLeft += L",";
+                strLeft += arrRight[j].second;
+            }
+            obj.FUN_1407cbb20(FUN_1402bb1c0("left{0}", i + 1), strLeft);
+            bool bRoundWin = false;
+            if (spHistory->fa8[i] == 'L')
+                bRoundWin = true;
+            obj.FUN_1407cbbe0(FUN_1402bb1c0("result{0}", i + 1), bRoundWin);
+        }
+    }
+    obj.FUN_1407cbb20("time", strTime);
+    return 1;
+}
+
 // @0x141978bb0 (fill a pvp season history row)
 int FUN_141978bb0(ASObj& obj, const MS2Ptr<CGuildPVPSeasonHistoryData>& spHistory)
 {
