@@ -24,6 +24,7 @@ public:
     CString FUN_1409e8560(const CStringW& strKey, const CString& strDefault);     // value as an ansi string (scenestategame.cpp)
     CStringW FUN_14042cad0(const CStringW& strKey, const CStringW& strDefault);   // value as a wide string
     bool FUN_14092c5c0();                           // no values parsed
+    float FUN_1408276a0(const CStringW& strKey, float* pfDefault);   // value as a float (0x1408276a0)
     typedef ATL::CAtlMap<CStringW, CStringW, ATL::CStringElementTraits<CStringW> > Values;
     CStringW FUN_14092c630() const;                 // serializes to "<v key="value".../>"
     bool FUN_14092c5f0(const CStringW& strKey) const;   // the key is present
