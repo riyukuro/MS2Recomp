@@ -7818,3 +7818,6 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?MakeViewAndPersp3D@MovieImpl@GFx@Scaleform@@SAXPEAV?$Matrix3x4@M@Render@3@PEAV?$Matrix4x4@M@53@AEBV?$Rect@M@53@AEBV?$Point@M@53@MM_N@Z	1425718d0	func
 ?TreeContainerNodeDataVTable@Render@Scaleform@@3QBQEBXB	143183280	data
 ?UpdateRenderNode@DrawingContext@GFx@Scaleform@@QEBAXXZ	1426006a0	func
+??0StrFormatter@Scaleform@@QEAA@AEAVMsgFormat@1@AEBVStringDataPtr@1@@Z	1425af2a0	func
+?PopPage@?$PagedStack@VValue@AS2@GFx@Scaleform@@$0CA@@AS2@GFx@Scaleform@@QEAAXXZ	140006cf0	func
+?PushPage@?$PagedStack@VValue@AS2@GFx@Scaleform@@$0CA@@AS2@GFx@Scaleform@@QEAAXXZ	140006a40	func
