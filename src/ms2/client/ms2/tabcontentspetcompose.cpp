@@ -361,8 +361,14 @@ void PetComposePetCard::vfunc_4()
 // @0x140cb2060
 void PetComposePetCard::vfunc_5(int nTab)
 {
-    if (0 < nTab && (nTab < 3 || nTab == 0xc))
+    switch (nTab)
+    {
+    case 1:
+    case 2:
+    case 0xc:
         vfunc_4();
+        break;
+    }
 }
 
 // ---- PetComposePetIngredient ----
@@ -402,8 +408,16 @@ void PetComposePetIngredient::vfunc_4()
 // @0x140cb2350
 void PetComposePetIngredient::vfunc_5(int nTab)
 {
-    if (0 < nTab && (nTab < 3 || (9 < nTab && nTab < 0xd)))
+    switch (nTab)
+    {
+    case 1:
+    case 2:
+    case 10:
+    case 11:
+    case 0xc:
         vfunc_4();
+        break;
+    }
 }
 
 // ---- PetComposePetEnchant ----
@@ -507,26 +521,25 @@ void PetComposePetEnchant::vfunc_4()
 // @0x140cb2ee0
 void PetComposePetEnchant::vfunc_5(int nTab)
 {
-    if (0 < nTab)
+    switch (nTab)
     {
-        if (nTab < 3 || nTab == 10)
-        {
-            vfunc_4();
-            vfunc_3();
-            FUN_140cb2fb0();
-        }
-        else if (nTab == 0xb)
-        {
-            vfunc_4();
-            vfunc_3();
-            FUN_140cb34b0();
-        }
-        else if (nTab == 0xc)
-        {
-            vfunc_4();
-            vfunc_3();
-            FUN_140cb3a30();
-        }
+    case 1:
+    case 2:
+    case 10:
+        vfunc_4();
+        vfunc_3();
+        FUN_140cb2fb0();
+        break;
+    case 0xb:
+        vfunc_4();
+        vfunc_3();
+        FUN_140cb34b0();
+        break;
+    case 0xc:
+        vfunc_4();
+        vfunc_3();
+        FUN_140cb3a30();
+        break;
     }
 }
 
@@ -738,24 +751,33 @@ int TabContentsPetCompose::vfunc_6(const char* szEvent, const Scaleform::GFx::Va
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_140cb5c00(data.FUN_1422b8a10());
+        {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_140cb5c00(nIndex);
+        }
         return 1;
     }
-    if (_stricmp("OnSelectPetIngredient", szEvent) == 0)
+    else if (_stricmp("OnSelectPetIngredient", szEvent) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_140cb5c90(data.FUN_1422b8a10());
+        {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_140cb5c90(nIndex);
+        }
         return 1;
     }
-    if (_stricmp("OnSelectPetEnchant", szEvent) == 0)
+    else if (_stricmp("OnSelectPetEnchant", szEvent) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_140cb5fd0(data.FUN_1422b8a10());
+        {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_140cb5fd0(nIndex);
+        }
         return 1;
     }
-    if (_stricmp("OnPetEnchant", szEvent) == 0)
+    else if (_stricmp("OnPetEnchant", szEvent) == 0)
     {
         FUN_140cb48a0(0);
         return 1;
@@ -1039,7 +1061,7 @@ void TabContentsPetCompose::FUN_140cb5bd0()
 // @0x140cb5c00
 void TabContentsPetCompose::FUN_140cb5c00(int nIndex)
 {
-    if (!(-1 < nIndex && nIndex < (int)m_petCards.GetCount()))
+    if (nIndex < 0 || nIndex >= (int)m_petCards.GetCount())
         return;
     m_uidPet = m_petCards[nIndex];
     FUN_140cb5970();
@@ -1096,7 +1118,7 @@ void TabContentsPetCompose::FUN_140cb5c90(int nIndex)
 // @0x140cb5fd0
 void TabContentsPetCompose::FUN_140cb5fd0(int nIndex)
 {
-    if (!(-1 < nIndex && nIndex < (int)m_selected.GetCount()))
+    if (nIndex < 0 || nIndex >= (int)m_selected.GetCount())
         return;
     ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)
@@ -1110,7 +1132,8 @@ int TabContentsPetCompose::FUN_140cb6080(ATL::CAtlArray<IdCount>& arr, unsigned 
 {
     for (size_t i = 0; i < arr.GetCount(); i++)
     {
-        if (id == arr[i].first)
+        IdCount& entry = arr[i];
+        if (id == entry.first)
             return (int)i;
     }
     return -1;
@@ -1119,12 +1142,14 @@ int TabContentsPetCompose::FUN_140cb6080(ATL::CAtlArray<IdCount>& arr, unsigned 
 // @0x140cb6100
 unsigned __int64 TabContentsPetCompose::FUN_140cb6100(ATL::CAtlArray<IdCount>& arr, int nIndex)
 {
-    if (-1 < nIndex)
+    if (nIndex < 0)
+        return 0;
+    for (size_t i = 0; i < arr.GetCount(); i++)
     {
-        for (size_t i = 0; i < arr.GetCount(); i++)
+        if (i == (size_t)nIndex)
         {
-            if (i == (size_t)nIndex)
-                return arr[i].first;
+            IdCount& entry = arr[i];
+            return entry.first;
         }
     }
     return 0;
