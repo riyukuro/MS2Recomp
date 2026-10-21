@@ -50,7 +50,9 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb1"                                  # bump to recompile everything
-MATCH_KEY = "static-near"                       # bump to re-match every obj (pairing logic changed)
+MATCH_KEY = "callee-dup"                        # bump to re-match every obj (pairing logic changed)
+if bm.CHAIN:
+    MATCH_KEY += "-chain"
 LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
 STATIC_NEAR = 0x10000                           # match_obj: a COMDAT caller's static callee only this near the obj's own code
 COPY_ROUNDS = 8                              # assign_copies: offers of an unpaired copy to the next claimant
@@ -174,7 +176,9 @@ def _init():
     bm.SYMBOLS.update(names)      # relocation targets resolve through the same tables
     bylen = collections.defaultdict(list)
     for rva, (end, _) in exe.rf.items():
-        bylen[end - rva].append(rva)
+        if bm.CHAIN and rva in exe._chained:
+            continue
+        bylen[exe.chain_end(rva) - rva].append(rva)
     # leaf functions (no stack frame, no calls) have no .pdata entry: their length comes from the function map
     leaf = set()
     for line in open(FUNCS):
@@ -190,7 +194,8 @@ def _init():
         if not p[0].startswith("#") and len(p) > 1:
             game.append((int(p[0], 16), int(p[1], 16)))
     game.sort()
-    G.update(exe=exe, names=names, dnames=dnames, bylen=bylen, leaf=leaf, game=game, game_lo=[a for a, _ in game])
+    G.update(exe=exe, names=names, dnames=dnames, bylen=bylen, leaf=leaf, game=game, game_lo=[a for a, _ in game],
+             named_vas=set(names.values()))
 
 
 def _in_game(va):
@@ -331,7 +336,11 @@ def match_obj(path):
                 continue
             tried.add((n, va))
             if _match(obj, n, va):          # exact only: the caller itself may be a byte-identical look-alike of
-                callees.update(_hints(obj, n, shints))      # another type, so its reloc targets are only a hint
+                if n in copies and (va in G["named_vas"] or va in {v for _, v, ok, _ in out if ok}):
+                    weak[n] = (n, va, True, "callee")   # another type, so its reloc targets are only a hint: a VA
+                    nxt.append(n)       # the tables or another name of this obj hold leaves a name with several
+                    continue            # copies to assign_copies
+                callees.update(_hints(obj, n, shints))
                 out.append((n, va, True, "callee"))
             else:                           # a wrong hint: still unpaired (a copy candidate below)
                 nxt.append(n)
@@ -393,24 +402,34 @@ def _match_job(job):
 
 
 def _greedy(todo, xok, match=None):
-    """one-to-one pairing of each group's names with its copies, first exact copy wins: [(name, va)]. xok caches
+    """one-to-one pairing of each group's names with its exact copies (maximum matching): [(name, va)]. xok caches
     match results ("name@va" -> bool); without `match` an uncached trial returns None (a worker must run it)"""
     out = []
     for ns, copies in todo:
-        used = set()
         for n in ns:
             for v in copies:
-                if v in used:
-                    continue
                 t = f"{n}@{v:x}"
                 if t not in xok:
                     if match is None:
                         return None
                     xok[t] = match(n, v)
-                if xok[t]:
-                    used.add(v)
-                    out.append((n, v))
-                    break
+        # maximum matching (augmenting paths, names and copies in the given order): a name whose callees are not in
+        # the tables matches every copy, and first-fit let it take the one copy a callee-pinned name could use
+        adj = {n: [v for v in copies if xok[f"{n}@{v:x}"]] for n in ns}
+        mate = {}
+
+        def augment(n, seen):
+            for v in adj[n]:
+                if v not in seen:
+                    seen.add(v)
+                    if v not in mate or augment(mate[v], seen):
+                        mate[v] = n
+                        return True
+            return False
+        for n in ns:
+            augment(n, set())
+        got = {n: v for v, n in mate.items()}
+        out += [(n, got[n]) for n in ns if n in got]
     return out
 
 
