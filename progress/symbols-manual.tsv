@@ -7829,3 +7829,6 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?TryBlocks_Resize@AS2@GFx@Scaleform@@YAXPEAV?$ArrayLH@UTryDescr@Environment@AS2@GFx@Scaleform@@$01UArrayDefaultPolicy@5@@3@_K@Z	14297e060	func
 ?CountLayers@ShapeDataFloatMP@Render@Scaleform@@QEAAXXZ	1426786e0	func
 ?TreeShapeNodeDataVTable@Render@Scaleform@@3QBQEBXB	14317bc40	data
+?IsEqual@Value@AS2@GFx@Scaleform@@QEBA_NPEAVEnvironment@234@AEBV1234@@Z	142965570	func
+?ObjectPtrArray_PushBack@AS2@GFx@Scaleform@@YAXPEAV?$Array@PEAVObject@AS2@GFx@Scaleform@@$01UArrayDefaultPolicy@4@@3@AEBQEAVObject@123@@Z	142971a50	func
+?ObjectPtrArray_Resize@AS2@GFx@Scaleform@@YAXPEAV?$Array@PEAVObject@AS2@GFx@Scaleform@@$01UArrayDefaultPolicy@4@@3@_K@Z	14297e230	func
