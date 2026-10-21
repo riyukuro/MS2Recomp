@@ -98,7 +98,7 @@ public:
     MS2Ptr<Unk_AdMarketItem> FUN_140d578d0(const Unk_AdSn& id);
 };
 UIAdPushDialog* FUN_140d61c00(eUIClassID nClass);
-void FUN_1409e3190(ASTooltip* p, Unk_AdItemInfo* pInfo, bool b, ASData* pData);
+void FUN_1409e3190(ASTooltip* p, Unk_AdItemInfo* pInfo, bool b);
 Unk_AdWorld* FUN_140939a00();
 class Unk_AdNotices {
 public:
@@ -585,25 +585,31 @@ bool UIAdPushDialog::MaximizeAll()
 }
 
 // @0x140e41280
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 Unk_AdXmlNode* UIAdPushDialog::FindLoadedEntry(const CStringA& strName, bool bAccount)
 {
     if (strName.IsEmpty())
         return 0;
     Unk_AdXmlNode* pRoot = GetLoadedRoot(bAccount);
-    if (!bAccount)
-        return FindByName(pRoot, strName);
-    Unk_AdXmlNode* pNode = FindByName(pRoot, strName);
-    if (!pNode)
-        pNode = FindByName(GetLoadedRoot(false), strName);
+    Unk_AdXmlNode* pNode = 0;
+    if (bAccount)
+    {
+        pNode = FindByName(pRoot, strName);
+        if (pNode == 0)
+        {
+            Unk_AdXmlNode* pDefault = GetLoadedRoot(false);
+            pNode = FindByName(pDefault, strName);
+        }
+    }
+    else
+        pNode = FindByName(pRoot, strName);
     return pNode;
 }
 
 // @0x140e41350
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 Unk_AdXmlNode* UIAdPushDialog::GetLoadedRoot(bool bAccount)
 {
-    return bAccount ? FUN_14081b310(&m_xmlAccountLoaded) : FUN_14081b310(&m_xmlLoaded);
+    Unk_AdXmlNode* pRoot = bAccount ? FUN_14081b310(&m_xmlAccountLoaded) : FUN_14081b310(&m_xmlLoaded);
+    return pRoot;
 }
 
 // @0x140e413c0
@@ -618,10 +624,10 @@ Unk_AdXmlNode* UIAdPushDialog::FindSaveEntry(const CStringA& strName, bool bAcco
 }
 
 // @0x140e41430
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 Unk_AdXmlNode* UIAdPushDialog::GetSaveRoot(bool bAccount)
 {
-    return bAccount ? FUN_14081b310(&m_xmlAccountSave) : FUN_14081b310(&m_xmlSave);
+    Unk_AdXmlNode* pRoot = bAccount ? FUN_14081b310(&m_xmlAccountSave) : FUN_14081b310(&m_xmlSave);
+    return pRoot;
 }
 
 // @0x140e414a0
@@ -681,13 +687,12 @@ bool UIAdPushDialog::RemoveBadge(MS2Ptr<ASMovieClip> badge)
 }
 
 // @0x140e41a50
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 bool UIAdPushDialog::RemoveEntityById(const int& nId)
 {
     MS2Ptr<AdPushEntityBase> entity(0);
-    if (!m_entities.Lookup(nId, entity))
-        return false;
-    return LoadEntity(entity);
+    if (m_entities.Lookup(nId, entity))
+        return LoadEntity(entity);
+    return false;
 }
 
 // @0x140e41b00
@@ -843,7 +848,6 @@ AdPushEntityLimitedBundle::AdPushEntityLimitedBundle(const int& nId)
 }
 
 // @0x140e42670
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void AdPushEntityLimitedBundle::Reset()
 {
     m_bMinimized = false;
@@ -857,7 +861,7 @@ void AdPushEntityLimitedBundle::Reset()
     m_badge = 0;
     m_item = 0;
     m_remain = 0;
-    m_max = NiPoint2(efd::Point2::ZERO);
+    reinterpret_cast<efd::Point2&>(m_max) = efd::Point2::ZERO;   // the exe copies the efd::Point2 global straight in
 }
 
 // @0x140e42740
@@ -1082,37 +1086,37 @@ CStringA AdPushEntityLimitedBundle::vfunc_6()
 }
 
 // @0x140e439a0
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 bool AdPushEntityLimitedBundle::vfunc_7()
 {
-    return m_item.get() && m_item->m_nB8 == 1;
+    if ((m_item.get() ? true : false) && m_item->m_nB8 == 1)
+        return true;
+    return false;
 }
 
 // @0x140e43a00
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void AdPushEntityLimitedBundle::vfunc_8(Scaleform::GFx::Value* pValue, ASData* pData)
 {
-    if (!(m_item == 0))
-    {
-        ASTooltip tip(4, 2);
-        FUN_1409e3190(&tip, &m_item->m_info, m_bMinimized, pData);
-        *pValue = tip.FUN_1422bb870();
-    }
+    if (m_item == 0)
+        return;
+    ASTooltip tip(4, 2);
+    bool bMinimized = m_bMinimized;
+    FUN_1409e3190(&tip, &m_item->m_info, bMinimized);
+    *pValue = tip.FUN_1422bb870();
 }
 
 // @0x140e43ad0
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void AdPushEntityLimitedBundle::vfunc_9()
 {
-    if (m_bMinimized && !(m_remain == 0) && m_badge.get())
+    if (!m_bMinimized || m_remain == 0)
+        return;
+    if (m_badge.get())
         UpdateRemainTime();
 }
 
 // @0x140e43b30
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 bool AdPushEntityLimitedBundle::vfunc_10()
 {
-    if (!m_bMinimized && m_dlg.get())
+    if (!m_bMinimized && (m_dlg.get() ? true : false))
         return m_dlg->FUN_IsFloating() == 1;
     return false;
 }
