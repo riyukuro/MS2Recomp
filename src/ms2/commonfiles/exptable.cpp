@@ -82,10 +82,16 @@ inline void Unk_ExpLog(CLogString* log, int level, int category, const wchar_t* 
 // @0x140354050
 int Unk_ExpGetInt(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 {
+    if (0)
+    {
+        (void)((!!(0)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
+        return 2;
+    }
     CStringA str;
     int nRet = FUN_1408733e0(pElem, pszName, &str);
-    if (nRet == 0)
-        *pOut = FUN_14021af40(&str);
+    if (nRet != 0)
+        return nRet;
+    *pOut = FUN_14021af40(&str);
     return nRet;
 }
 
@@ -94,7 +100,7 @@ double Unk_ExpGetDouble(Unk_140165cf0* pElem, const char* pszName, double fDefau
 {
     double fValue;
     if (FUN_1408733a0(pElem, pszName, &fValue) != 0)
-        fValue = fDefault;
+        return fDefault;
     return fValue;
 }
 
@@ -103,7 +109,7 @@ __int64 Unk_ExpGetInt64(Unk_140165cf0* pElem, const char* pszName, __int64 nDefa
 {
     __int64 nValue;
     if (FUN_1408732e0(pElem, pszName, &nValue) != 0)
-        nValue = nDefault;
+        return nDefault;
     return nValue;
 }
 
@@ -116,16 +122,15 @@ Unk_ExpCurve::Unk_ExpCurve()
 // @0x140352390
 void Unk_ExpCurve::SetValue(unsigned short nLevel, __int64 nValue)
 {
-    if (nLevel < 100)
+    if (nLevel > 99)
+        return;
+    if (nLevel == 0)
+        m_nBase = nValue;
+    else
     {
-        if (nLevel == 0)
-            m_nBase = nValue;
-        else
-        {
-            if (m_values.empty())
-                m_values.resize(99, 0);
-            m_values[nLevel - 1] = nValue;
-        }
+        if (m_values.empty())
+            m_values.resize(99, 0);
+        m_values[nLevel - 1] = nValue;
     }
 }
 
@@ -134,9 +139,9 @@ __int64 Unk_ExpCurve::GetValue(unsigned short nLevel) const
 {
     if (m_values.empty())
         return m_nBase;
-    if (nLevel != 0 && nLevel <= m_values.size())
-        return m_values[nLevel - 1];
-    return 0;
+    if (nLevel <= 0 || nLevel > m_values.size())
+        return 0;
+    return const_cast<std::vector<__int64>&>(m_values)[nLevel - 1];
 }
 
 // @0x1403524b0
@@ -146,8 +151,8 @@ void Unk_ExpCurve::Scale(const Unk_ExpCurve& src, double fFactor)
     m_values.resize(src.m_values.size(), 0);
     for (size_t i = 0; i < m_values.size(); ++i)
     {
-        __int64 nValue = (__int64)((double)src.m_values[i] * fFactor + 0.5);
         __int64 nMin = 1;
+        __int64 nValue = (__int64)((double)src.m_values[i] * fFactor + 0.5);
         m_values[i] = (std::max)(nValue, nMin);
     }
 }
@@ -155,7 +160,11 @@ void Unk_ExpCurve::Scale(const Unk_ExpCurve& src, double fFactor)
 // @0x1403525a0
 bool Unk_ExpCurve::IsValid() const
 {
-    return m_nBase != 0 || !m_values.empty();
+    if (m_nBase != 0)
+        return true;
+    if (m_values.size() > 0)
+        return true;
+    return false;
 }
 
 // @0x1403525e0
@@ -208,12 +217,11 @@ bool CExpTable::Reserved()
 #define MS2_EXP_XML_ERR L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]"
 
 // @0x140352840
-// MS2-FUNCTIONAL: XML loader temp layout differs
 bool CExpTable::LoadNextExp()
 {
     for (int i = 0; i < 99; ++i)
         m_nextExp[i] = 0x7fffffffffffffffLL;
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("nextExp.xml"));
+    CString strPath = FUN_14071a5b0("Table", "nextExp.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
@@ -225,13 +233,14 @@ bool CExpTable::LoadNextExp()
     }
     for (Unk_140165cf0* pExp = pRoot->FUN_140165cf0("exp"); pExp != 0; pExp = pExp->FUN_140168650("exp"))
     {
-        if (FUN_14028f710(pExp))
-        {
-            int nLevel = 0;
-            FUN_14086f500(pExp, "level", &nLevel);
-            if (0 < nLevel && nLevel < 100)
-                m_nextExp[nLevel] = Unk_ExpGetInt64(pExp, "value", 0);
-        }
+        if (!FUN_14028f710(pExp))
+            continue;
+        int nLevel = 0;
+        FUN_14086f500(pExp, "level", &nLevel);
+        if (nLevel < 1 || nLevel > 99)
+            continue;
+        __int64 nValue = Unk_ExpGetInt64(pExp, "value", 0);
+        m_nextExp[nLevel] = nValue;
     }
     return true;
 }
@@ -239,9 +248,9 @@ bool CExpTable::LoadNextExp()
 // @0x140352ac0
 bool CExpTable::LoadReward()
 {
-    if (!ReadExpTable(CString("ExpBaseTable.xml")))
+    if (!ReadExpTable("ExpBaseTable.xml"))
         return false;
-    if (!ReadExpTable(CString("RewardContentExpStaticTable.xml")))
+    if (!ReadExpTable("RewardContentExpStaticTable.xml"))
         return false;
     return true;
 }
@@ -250,7 +259,7 @@ bool CExpTable::LoadReward()
 // MS2-FUNCTIONAL: XML loader temp layout differs
 bool CExpTable::LoadCommonExp()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("commonExpTable.xml"));
+    CString strPath = FUN_14071a5b0("Table", "commonExpTable.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
@@ -262,18 +271,17 @@ bool CExpTable::LoadCommonExp()
     }
     for (Unk_140165cf0* pExp = pRoot->FUN_140165cf0("exp"); pExp != 0; pExp = pExp->FUN_140168650("exp"))
     {
-        if (FUN_14028f710(pExp))
-        {
-            int nTableId = 0;
-            int nType = -1;
-            Unk_ExpGetInt(pExp, "expType", &nType);
-            double fFactor = Unk_ExpGetDouble(pExp, "factor", 0);
-            FUN_140873220(pExp, "expTableID", &nTableId);
-            CStringA strTableType;
-            FUN_14015f710(&strTableType, pExp, "tableType", CStringA(""));
-            if (nType != -1 && nTableId != 0)
-                m_typeCurves[nType].Scale(m_curves[nTableId], fFactor);
-        }
+        if (!FUN_14028f710(pExp))
+            continue;
+        int nTableId = 0;
+        int nType = -1;
+        Unk_ExpGetInt(pExp, "expType", &nType);
+        double fFactor = Unk_ExpGetDouble(pExp, "factor", 0);
+        FUN_140873220(pExp, "expTableID", &nTableId);
+        CStringA strTableType;
+        FUN_14015f710(&strTableType, pExp, "tableType", "");
+        if (nType != -1 && nTableId != 0)
+            m_typeCurves[nType].Scale(m_curves[nTableId], fFactor);
     }
     return true;
 }
@@ -282,7 +290,7 @@ bool CExpTable::LoadCommonExp()
 // MS2-FUNCTIONAL: XML loader temp layout differs
 bool CExpTable::LoadPetExp()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("petExp.xml"));
+    CString strPath = FUN_14071a5b0("Table", "petExp.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
@@ -295,18 +303,16 @@ bool CExpTable::LoadPetExp()
     static const char* const s_pszGrades[6] = {"normal", "rare", "elite", "excellent", "legendary", "artifact"};
     for (Unk_140165cf0* pExp = pRoot->FUN_140165cf0("exp"); pExp != 0; pExp = pExp->FUN_140168650("exp"))
     {
-        if (FUN_14028f710(pExp))
+        if (!FUN_14028f710(pExp))
+            continue;
+        int nLevel = 0;
+        FUN_14086f500(pExp, "level", &nLevel);
+        if (nLevel < 1 || nLevel > 99)
+            continue;
+        for (int i = 0; i < 6; ++i)
         {
-            int nLevel = 0;
-            FUN_14086f500(pExp, "level", &nLevel);
-            if (0 < nLevel && nLevel < 100)
-            {
-                for (int i = 0; i < 6; ++i)
-                {
-                    if (FUN_1408732e0(pExp, s_pszGrades[i], &m_petExp[1 + i][nLevel]) != 0)
-                        Unk_ExpLog(CLogString::GetInstance(), 1, 0x13, L"[Isn't normal EXP level : {0}]", nLevel);
-                }
-            }
+            if (FUN_1408732e0(pExp, s_pszGrades[i], &m_petExp[1 + i][nLevel]) != 0)
+                Unk_ExpLog(CLogString::GetInstance(), 1, 0x13, L"[Isn't normal EXP level : {0}]", nLevel);
         }
     }
     return true;
@@ -317,7 +323,7 @@ bool CExpTable::LoadPetExp()
 bool CExpTable::LoadPetEvolution()
 {
     m_petEvolution.RemoveAll();
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("petEvolution.xml"));
+    CString strPath = FUN_14071a5b0("Table", "petEvolution.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
@@ -353,7 +359,7 @@ bool CExpTable::LoadPetEvolution()
 // MS2-FUNCTIONAL: XML loader temp layout differs
 bool CExpTable::ReadExpTable(const CString& strFile)
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), strFile);
+    CString strPath = FUN_14071a5b0("Table", strFile);
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
@@ -396,7 +402,7 @@ bool CExpTable::ReadExpTable(const CString& strFile)
 __int64 CExpTable::GetNextExp(unsigned short nLevel)
 {
     CheckInit();
-    if (nLevel == 0 || nLevel > 99)
+    if (nLevel < 1 || nLevel > 99)
         return 0x7fffffffffffffffLL;
     return m_nextExp[nLevel];
 }
@@ -405,18 +411,18 @@ __int64 CExpTable::GetNextExp(unsigned short nLevel)
 __int64 CExpTable::GetBaseValue(unsigned short nLevel, int nType)
 {
     CheckInit();
-    if (nLevel == 0 || nLevel > 99)
+    if (nLevel < 1 || nLevel > 99)
         return 0;
     const Unk_ExpBase& base = m_base[nLevel];
     if (nType == 1)
         return base.m_n1;
-    if (nType == 3)
+    else if (nType == 3)
         return base.m_n3;
-    if (nType == 7)
+    else if (nType == 7)
         return base.m_n7;
-    if (nType == 4)
+    else if (nType == 4)
         return base.m_n4;
-    if (nType == 6)
+    else if (nType == 6)
         return base.m_n6;
     return 0;
 }
@@ -425,7 +431,7 @@ __int64 CExpTable::GetBaseValue(unsigned short nLevel, int nType)
 __int64 CExpTable::GetTypeValue(unsigned short nLevel, int nType)
 {
     CheckInit();
-    if (nType < 0 || nType > 0x2f)
+    if (nType < 0 || nType >= 0x30)
         return 0;
     if (nType == 8)
         return GetBaseValue(nLevel, 6);
@@ -437,7 +443,8 @@ __int64 CExpTable::GetScaledValue(unsigned short nLevel, int nId, double fFactor
 {
     if (nId == 0)
         return 0;
-    __int64 nValue = (__int64)((double)m_curves[nId].GetValue(nLevel) * fFactor + 0.5);
+    Unk_ExpCurve& curve = m_curves[reinterpret_cast<const unsigned&>(nId)];
+    __int64 nValue = (__int64)((double)curve.GetValue(nLevel) * fFactor + 0.5);
     __int64 nMin = 1;
     return (std::max)(nValue, nMin);
 }
@@ -448,11 +455,11 @@ __int64 CExpTable::GetPetValue(unsigned short nLevel, int nGrade)
     CheckInit();
     if (nGrade == 1)
         return m_typeCurves[9].GetValue(nLevel);
-    if (nGrade == 2)
+    else if (nGrade == 2)
         return m_typeCurves[10].GetValue(nLevel);
-    if (nGrade == 3)
+    else if (nGrade == 3)
         return m_typeCurves[11].GetValue(nLevel);
-    if (nGrade == 4)
+    else if (nGrade == 4)
         return m_typeCurves[12].GetValue(nLevel);
     return 0;
 }
@@ -460,13 +467,11 @@ __int64 CExpTable::GetPetValue(unsigned short nLevel, int nGrade)
 // @0x140353930
 __int64 CExpTable::GetPetExp(unsigned short nLevel, int nRow, unsigned short nArg)
 {
-    if (nRow < 7)
-    {
-        if (nLevel < 0x33)
-            return FUN_1401c0db0()->FUN_140678cd0(m_petExp[nRow][nLevel], nArg);
+    if (nRow >= 7)
         return 0x7fffffffffffffffLL;
-    }
-    return 0x7fffffffffffffffLL;
+    if (nLevel > 0x32)
+        return 0x7fffffffffffffffLL;
+    return FUN_1401c0db0()->FUN_140678cd0(m_petExp[nRow][nLevel], nArg);
 }
 
 // @0x1403539d0
@@ -478,7 +483,7 @@ int CExpTable::GetPetEvolution(unsigned short nId, int nGrade)
     m_petEvolution.Lookup(nId, spGrades);
     if (!spGrades)
         return 0;
-    if ((size_t)nGrade < spGrades->GetCount())
-        return spGrades->GetAt(nGrade);
-    return 0;
+    if (spGrades->GetCount() <= (size_t)nGrade)
+        return 0;
+    return spGrades->GetAt(nGrade);
 }
