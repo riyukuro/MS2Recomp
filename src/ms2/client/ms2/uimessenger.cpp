@@ -582,6 +582,12 @@ private:
 
 // ---- UIMessenger ----
 
+// The chat-confirm flags of the community option state (named bytes; m_b[n] indexing is codegen-different).
+struct Unk_MsgCommunityFlags {
+    bool m_b0, m_b1, m_b2, m_b3, m_b4, m_b5, m_b6, m_b7;
+};
+#define MSG_COMMUNITY_FLAGS(p) ((Unk_MsgCommunityFlags*)(p))
+
 // @0x141a08af0
 UIMessenger::UIMessenger(UIMessengerBrowser* pBrowser, const TiXmlDocument& doc, CStringW strName, int bFirst)
     : m_178(0), m_bFirst(bFirst), m_bScrollEnd(0), m_fOffsetX(0), m_fOffsetY(0), m_nAlignType(7),
@@ -632,7 +638,6 @@ void UIMessenger::vfunc_67()
     m_subject = 0;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a09320
 int UIMessenger::vfunc_4()
 {
@@ -647,9 +652,9 @@ int UIMessenger::vfunc_4()
     if (!pRoot)
         return 0;
     FUN_141a15970();
-    if (!vfunc_53(pRoot))
-        return 0;
-    return FUN_1408710c0(&doc, FUN_140cc2a00(FUN_1412755f0(), FUN_14016a600(m_strName, 0)));
+    if (vfunc_53(pRoot))
+        return FUN_1408710c0(&doc, FUN_140cc2a00(FUN_1412755f0(), FUN_14016a600(m_strName, 0)));
+    return 0;
 }
 
 // MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
@@ -697,7 +702,7 @@ int UIMessenger::vfunc_53(void* pCfg)
     FUN_140873ca0(pCfg, "alignType", m_nAlignType);
     FUN_140873ca0(pCfg, "tabSelectedIndex", m_nTabSelectedIndex);
     FUN_140873ca0(pCfg, "targetSelectedIndex", m_nTargetSelectedIndex);
-    for (size_t i = 0; i < m_tabs.GetCount(); i++)
+    for (unsigned int i = 0; i < m_tabs.GetCount(); i++)
     {
         MS2Ptr<TalkTab> spTab = m_tabs[i];
         if (spTab.get() != 0)
@@ -710,7 +715,6 @@ int UIMessenger::vfunc_53(void* pCfg)
     return 1;
 }
 
-// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141a09af0
 int UIMessenger::vfunc_54(void* pCfg)
 {
@@ -980,14 +984,13 @@ TalkTab* UIMessenger::FUN_141a0e050()
     return FUN_141a0e0f0(FUN_141a0dfc0());
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0e0f0
 TalkTab* UIMessenger::FUN_141a0e0f0(const CStringW& strName)
 {
     for (unsigned i = 0; i < m_tabs.GetCount(); i++)
     {
         MS2Ptr<TalkTab> spTab = m_tabs[i];
-        if (spTab)
+        if (spTab.get() ? true : false)
         {
             if (spTab->m_strName == strName)
                 return spTab;
@@ -1020,14 +1023,13 @@ int UIMessenger::FUN_141a0e2a0(const CStringW& strName)
     return 1;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0e350
 int UIMessenger::FUN_141a0e350(const CStringW& strName)
 {
     MS2Ptr<TalkTab> spTab = FUN_141a0e0f0(strName);
     if (!spTab)
         return 0;
-    for (size_t i = 0; i < m_tabs.GetCount(); i++)
+    for (unsigned int i = 0; i < m_tabs.GetCount(); i++)
     {
         if (spTab == m_tabs[i].get())
         {
@@ -1044,24 +1046,25 @@ int UIMessenger::FUN_141a0e350(const CStringW& strName)
     return 1;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0e4d0
 int UIMessenger::FUN_141a0e4d0(TalkTab* pTab)
 {
     if (pTab == 0)
         return 0;
-    if (FUN_141a13070(pTab->m_strName))
-        return 0;
-    m_tabs.Add(pTab);
-    if (m_buttonBar)
+    if (!FUN_141a13070(pTab->m_strName))
     {
-        ASObj item(2);
-        item.FUN_1407cbb20("label", pTab->m_strName);
-        item.FUN_1407cb9c0("close", pTab->m_nClose);
-        item.FUN_1407cb9c0("detach", pTab->m_nDetach);
-        m_buttonBar->FUN_1422e3460(item);
+        m_tabs.Add(pTab);
+        if (m_buttonBar)
+        {
+            ASObj item(2);
+            item.FUN_1407cbb20("label", pTab->m_strName);
+            item.FUN_1407cb9c0("close", pTab->m_nClose);
+            item.FUN_1407cb9c0("detach", pTab->m_nDetach);
+            m_buttonBar->FUN_1422e3460(item);
+        }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 // MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
@@ -1155,7 +1158,6 @@ void UIMessenger::FUN_141a0ebb0(unsigned nAlpha)
         pDialog->Invoke("backgroundAlpha", nAlpha);
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0ec30
 void UIMessenger::FUN_141a0ec30(const CStringW& strText)
 {
@@ -1199,15 +1201,16 @@ void UIMessenger::vfunc_85(int bActive)
     }
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0f040
 int UIMessenger::vfunc_86(TalkTab* pExcept, const CStringW& strName)
 {
-    for (size_t i = 0; i < m_tabs.GetCount(); i++)
+    for (unsigned int i = 0; i < m_tabs.GetCount(); i++)
     {
         MS2Ptr<TalkTab> spTab = m_tabs[i];
-        if (spTab.get() != 0 && !(spTab == pExcept))
+        if (spTab.get() != 0)
         {
+            if (spTab == pExcept)
+                continue;
             if (spTab->FUN_141482940() == strName)
                 return 0;
         }
@@ -1351,7 +1354,6 @@ bool UIMessenger::FUN_141a0f980(int nButton, const CMsgBoxData& box)
     return true;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0f9d0
 bool UIMessenger::FUN_141a0f9d0(int nButton, const CMsgBoxData& box)
 {
@@ -1359,7 +1361,7 @@ bool UIMessenger::FUN_141a0f9d0(int nButton, const CMsgBoxData& box)
     {
         if (const_cast<CMsgBoxData&>(box).FUN_141a04aa0())
         {
-            CGameOption::GetInstance()->FUN_140ae6540()->m_b[0] = 0;
+            MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b0 = 0;
             CGameOption::GetInstance()->FUN_1412432d0();
         }
         const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
@@ -1373,7 +1375,6 @@ bool UIMessenger::FUN_141a0f9d0(int nButton, const CMsgBoxData& box)
     return true;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0fb40
 bool UIMessenger::FUN_141a0fb40(int nButton, const CMsgBoxData& box)
 {
@@ -1381,7 +1382,7 @@ bool UIMessenger::FUN_141a0fb40(int nButton, const CMsgBoxData& box)
     {
         if (const_cast<CMsgBoxData&>(box).FUN_141a04aa0())
         {
-            CGameOption::GetInstance()->FUN_140ae6540()->m_b[1] = 0;
+            MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b1 = 0;
             CGameOption::GetInstance()->FUN_1412432d0();
         }
         const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
@@ -1395,7 +1396,6 @@ bool UIMessenger::FUN_141a0fb40(int nButton, const CMsgBoxData& box)
     return true;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a0fcb0
 bool UIMessenger::FUN_141a0fcb0(int nButton, const CMsgBoxData& box)
 {
@@ -1403,7 +1403,7 @@ bool UIMessenger::FUN_141a0fcb0(int nButton, const CMsgBoxData& box)
     {
         if (const_cast<CMsgBoxData&>(box).FUN_141a04aa0())
         {
-            CGameOption::GetInstance()->FUN_140ae6540()->m_b[2] = 0;
+            MSG_COMMUNITY_FLAGS(CGameOption::GetInstance()->FUN_140ae6540())->m_b2 = 0;
             CGameOption::GetInstance()->FUN_1412432d0();
         }
         const CStringW& strText = box.FUN_141a02fd0(0, CStringW());
@@ -1479,7 +1479,6 @@ void UIMessenger::FUN_141a10010(int nType, int nEmoticonId)
     FUN_141a0f1d0(strLine, strLine, 0);
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a10490
 int UIMessenger::FUN_141a10490(int nEmoticonId, bool bFavorite)
 {
@@ -1494,8 +1493,9 @@ int UIMessenger::FUN_141a10490(int nEmoticonId, bool bFavorite)
     }
     if (!spCli->FUN_140a39dd0(spEmo->m_nId))
         return 0;
+    int nOp = bFavorite ? 5 : 6;
     COutPacket packet(0xb7, 0);
-    packet.vfunc_o10_1(bFavorite ? 5 : 6);
+    packet.vfunc_o10_1(nOp);
     packet.vfunc_o10_3(nEmoticonId);
     FUN_140710590(packet);
     return 1;
@@ -1585,7 +1585,6 @@ void UIMessenger::FUN_141a11e30()
     FUN_141a12260();
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a12260
 int UIMessenger::FUN_141a12260()
 {
@@ -1595,7 +1594,7 @@ int UIMessenger::FUN_141a12260()
         {
             m_inputHistory.RemoveAll();
             spInput->FUN_1422c7630(0);
-            spInput->FUN_1422e0bd0(CStringW(L"<FONT></FONT>"));
+            spInput->FUN_1422e0bd0(L"<FONT></FONT>");
             spInput->vfunc_24(1);
             FUN_141a0d880(0);
             return 1;
@@ -1612,7 +1611,6 @@ void UIMessenger::FUN_141a12e40(int nType, CStringW strText, bool bHistory)
         m_pBrowser->FUN_141a25f70(strText, m_inputHistory);
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a12f30
 int UIMessenger::FUN_141a12f30()
 {
@@ -1620,7 +1618,7 @@ int UIMessenger::FUN_141a12f30()
         return 0;
     {
         MS2Ptr<ASTextInput> spInput = m_textInput;
-        if (spInput && spInput->FUN_1422c76c0() != 0)
+        if (spInput.get() != 0 && spInput->FUN_1422c76c0() != 0)
             return 1;
     }
     if (FUN_14025e7c0()->FUN_14116d7a0(0xf))
@@ -1636,19 +1634,18 @@ bool UIMessenger::FUN_141a13030(CStringW& strText)
     return strText.IsEmpty();
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a13070
-bool UIMessenger::FUN_141a13070(const CStringW& strName)
+int UIMessenger::FUN_141a13070(const CStringW& strName)
 {
-    for (size_t i = 0; i < m_tabs.GetCount(); i++)
+    for (unsigned int i = 0; i < m_tabs.GetCount(); i++)
     {
         MS2Ptr<TalkTab> spTab = m_tabs[i];
         if (!spTab)
             continue;
         if (spTab->m_strName == strName)
-            return true;
+            return 1;
     }
-    return false;
+    return 0;
 }
 
 // @0x141a13160
@@ -1967,30 +1964,32 @@ void UIMessenger::FUN_141a146d0(int nType)
     }
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a14760
 void UIMessenger::FUN_141a14760()
 {
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer == 0 || !m_subject)
+    if (pPlayer == 0)
         return;
-    unsigned nCount = m_subject->FUN_1422df620();
-    unsigned nNext = m_subject->FUN_1422df6c0() + 1;
-    if (nCount <= nNext)
-        nNext = 0;
-    int nType = FUN_141a14580(nNext);
-    if (nType == 0x10)
+    if (m_subject.get() != 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(pPlayer->FUN_1416639e0());
-        if (spItem == 0)
+        unsigned nCount = m_subject->FUN_1422df620();
+        unsigned nNext = m_subject->FUN_1422df6c0() + 1;
+        if (nNext >= nCount)
+            nNext = 0;
+        int nType = FUN_141a14580(nNext);
+        if (nType == 0x10)
         {
-            if (!m_pBrowser->FUN_141a264c0(0xb))
-                nType = 0xb;
-            else
-                nType = FUN_141a14500();
+            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e2e0(pPlayer->FUN_1416639e0());
+            if (spItem == 0)
+            {
+                if (m_pBrowser->FUN_141a264c0(0xb))
+                    nType = FUN_141a14500();
+                else
+                    nType = 0xb;
+            }
         }
+        FUN_141a146d0(nType);
     }
-    FUN_141a146d0(nType);
 }
 
 // MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
@@ -2014,12 +2013,12 @@ int UIMessenger::FUN_141a148b0(const CStringW& strText)
         nEnd = strLine.GetLength();
     CStringW strCommand = strLine.Mid(nBegin, nEnd);
     strCommand.TrimRight();
-    for (size_t i = 0; i < emotions.GetCount(); i++)
+    for (unsigned int i = 0; i < emotions.GetCount(); i++)
     {
         MS2Ptr<Unk_MsgEmotionKeywords> spKeywords = FUN_140347050(emotions[i]->m_id);
         if (spKeywords == 0)
             return 0;
-        for (size_t j = 0; j < spKeywords->m_keywords.GetCount(); j++)
+        for (unsigned int j = 0; j < spKeywords->m_keywords.GetCount(); j++)
         {
             CStringW strKeyword = spKeywords->m_keywords[j];
             if (strKeyword.CompareNoCase(strCommand) == 0)
@@ -2054,30 +2053,28 @@ bool UIMessenger::FUN_141a14c40(CStringW& strText, CStringW strPart)
     return true;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a14ce0
 bool UIMessenger::FUN_141a14ce0(CStringW strText, int nMax)
 {
-    int nOpen;
-    int nClose;
+    int nOpen = 0;
     while ((nOpen = strText.Find(L"<", 0)) != -1)
     {
-        nClose = strText.Find(L">", nOpen + 1);
+        int nClose = strText.Find(L">", nOpen + 1);
         if (nClose == -1)
             break;
         strText.Delete(nOpen, nClose - nOpen + 1);
     }
-    int nLength = strText.GetLength();
-    return nLength <= nMax;
+    if (strText.GetLength() > nMax)
+        return false;
+    return true;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a15890
 void UIMessenger::FUN_141a15890()
 {
     bool bEffect = false;
     const int& nType = FUN_141a14580(m_nTargetSelectedIndex);
-    if (nType == 0x10 && !m_pBrowser->FUN_141a264c0(0x10))
+    if (nType == 0x10 && !m_pBrowser->FUN_141a264c0(nType))
         bEffect = true;
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
@@ -2249,7 +2246,6 @@ void UIMessenger::vfunc_96(int nMenu)
     }
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a16400
 void UIMessenger::vfunc_97(const CStringW& strName)
 {
@@ -2261,8 +2257,9 @@ void UIMessenger::vfunc_97(const CStringW& strName)
     while (pos != 0)
     {
         MessengerData::TalkLog& log = m_pBrowser->m_logs.GetNext(pos);
-        if (!FUN_141a131a0(pTab, log.m_nKind))
-            strHtml += log.m_strMsg;
+        if (FUN_141a131a0(pTab, log.m_nKind))
+            continue;
+        strHtml += log.m_strMsg;
     }
     FUN_141a0ead0(pTab->m_panel.FUN_1414821b0()->m_nFontSize, strHtml);
     FUN_141a0ebb0(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
@@ -2475,7 +2472,6 @@ void UIMessenger::FUN_141a17700()
     FUN_141a11e30();
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a17830
 void UIMessenger::FUN_141a17830(const CStringW& strText, int bSelectEnd)
 {
@@ -2790,12 +2786,11 @@ int UIMessengerBrowser::vfunc_65()
     return 1;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a21b10
 void UIMessengerBrowser::vfunc_67()
 {
     UIDialog::vfunc_67();
-    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0)
@@ -2826,7 +2821,6 @@ void UIMessengerBrowser::vfunc_8(int nVisible)
         m_windows[i]->vfunc_8(nVisible);
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a21d60
 int UIMessengerBrowser::vfunc_74(int a1, void* p2, void* p3)
 {
@@ -2838,7 +2832,7 @@ int UIMessengerBrowser::vfunc_74(int a1, void* p2, void* p3)
     bool bHandled = false;
     for (size_t i = 0; i < nCount; i++)
         bHandled = bHandled || m_windows[i]->vfunc_74(a1, p2, p3) == 1;
-    return bHandled;
+    return bHandled == true;
 }
 
 // MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
@@ -2928,7 +2922,7 @@ void UIMessengerBrowser::vfunc_84(CInPacket& packet)
     }
     else if (line.m_nType == 3)
     {
-        if (FUN_1409a8b10()->FUN_140ae6540()->m_b[7])
+        if (MSG_COMMUNITY_FLAGS(FUN_1409a8b10()->FUN_140ae6540())->m_b7)
         {
             // the whisper block option: answer with the block notice
             Unk_CommandChat chat;
@@ -3203,24 +3197,23 @@ int UIMessengerBrowser::FUN_141a23d50()
     return m_184;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a23d70
 int UIMessengerBrowser::FUN_141a23d70(const CStringW& strName)
 {
-    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
-        if (m_windows[i] != 0 && m_windows[i]->FUN_141a0df70() == strName)
+        UIMessenger* pWindow = m_windows[i];
+        if (pWindow != 0 && pWindow->FUN_141a0df70() == strName)
             return 1;
     }
     return 0;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a23e80
 void UIMessengerBrowser::FUN_141a23e80()
 {
     FUN_141a24490();
-    for (int i = 0; i < 100; i++)
+    for (unsigned int i = 0; i < 100; i++)
     {
         CString strFile;
         strFile.Format("%s%d.xml", "MessengerDialog", i);
@@ -3278,11 +3271,10 @@ void UIMessengerBrowser::FUN_141a24160(const ATL::CAtlArray<MS2Ptr<TalkTab> >& t
     }
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a24490
 void UIMessengerBrowser::FUN_141a24490()
 {
-    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0)
@@ -3299,7 +3291,7 @@ void UIMessengerBrowser::FUN_141a24490()
 // @0x141a245d0
 void UIMessengerBrowser::FUN_141a245d0(const CStringW& strName)
 {
-    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0 && pWindow->FUN_141a0df70() == strName && pWindow->m_tabs.IsEmpty())
@@ -3329,7 +3321,7 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
 {
     int nFontSize = DAT_143adda48.m_nFontSize;
     CStringW strText;
-    CStringW strItem = FUN_141841b40(pItem, CStringW(L"inven"), nFontSize);
+    CStringW strItem = FUN_141841b40(pItem, L"inven", nFontSize);
     if (nCount < 2)
     {
         CStringW strFormat(L"");
@@ -3359,17 +3351,16 @@ void UIMessengerBrowser::FUN_141a24890(CItem* pItem, unsigned nCount, int nManyI
     FUN_141a247c0(strText, 9);
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a24cb0
 void UIMessengerBrowser::FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta)
 {
     if (!FUN_14025e7c0()->FUN_14116d720())
         return;
-    CStringW strItem = FUN_141841b40(pItem, CStringW(L"inven"), DAT_143adda48.m_nFontSize);
+    CStringW strItem = FUN_141841b40(pItem, L"inven", DAT_143adda48.m_nFontSize);
     unsigned nBefore = nCount - nDelta;
-    if (nCount < nBefore)
+    if (nBefore > nCount)
     {
-        int nUsed = -nDelta;
+        int nUsed = nDelta * -1;
         Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} Item Use:{1}  [{2}->{3}]", strItem, nUsed, nBefore, nCount);
     }
     else if (nBefore < nCount)
@@ -3379,33 +3370,30 @@ void UIMessengerBrowser::FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta
     }
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a24e10
 void UIMessengerBrowser::FUN_141a24e10(CItem* pItem)
 {
     if (!FUN_14025e7c0()->FUN_14116d720())
         return;
-    CStringW strItem = FUN_141841b40(pItem, CStringW(L"inven"), DAT_143adda48.m_nFontSize);
+    CStringW strItem = FUN_141841b40(pItem, L"inven", DAT_143adda48.m_nFontSize);
     unsigned nCount = pItem->FUN_140526c50();
     Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} [Count:{1}] Item Removed", strItem, nCount);
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a24ee0
 void UIMessengerBrowser::FUN_141a24ee0(CItem* pItem)
 {
     if (!FUN_14025e7c0()->FUN_14116d720())
         return;
-    CStringW strItem = FUN_141841b40(pItem, CStringW(L"inven"), DAT_143adda48.m_nFontSize);
+    CStringW strItem = FUN_141841b40(pItem, L"inven", DAT_143adda48.m_nFontSize);
     unsigned nCount = pItem->FUN_140526c50();
     Unk_MbLog(FUN_140166440(), 2, 0x21, L"{0} [Count:{1}] Item Added", strItem, nCount);
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a24fb0
 void UIMessengerBrowser::FUN_141a24fb0(CStringW strText)
 {
-    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0 && FUN_141482e80()->FUN_1414829e0() == pWindow->FUN_141a0df70())
@@ -3448,11 +3436,10 @@ void UIMessengerBrowser::FUN_141a25210(int bActive)
     }
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a252a0
 void UIMessengerBrowser::FUN_141a252a0(const CStringW& strTarget)
 {
-    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0 && FUN_141482e80()->FUN_141482a50() == pWindow->FUN_141a0df70())
@@ -3543,11 +3530,10 @@ UIMessenger* UIMessengerBrowser::FUN_141a25970()
     return 0;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a259c0
 UIMessenger* UIMessengerBrowser::FUN_141a259c0(const CStringW& strName)
 {
-    for (size_t i = 0; i < m_windows.GetCount(); i++)
+    for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0 && pWindow->FUN_141a0df70() == strName)
@@ -3630,7 +3616,6 @@ Unk_MsgHistory& Unk_MsgHistory::operator=(const Unk_MsgHistory& other)
     return *this;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a25f70
 void UIMessengerBrowser::FUN_141a25f70(const CStringW& strText, ATL::CAtlArray<CStringW>& history)
 {
@@ -3641,11 +3626,12 @@ void UIMessengerBrowser::FUN_141a25f70(const CStringW& strText, ATL::CAtlArray<C
         m_itHistory = m_history.end();
         return;
     }
+    const int nMax = 10;
     Unk_MsgHistory entry;
     entry.m_strText = strText;
     entry.m_keys.Copy(history);
     m_history.push_back(entry);
-    if (m_history.size() > 10)
+    if (m_history.size() > nMax)
         m_history.pop_front();
     m_itHistory = m_history.end();
 }
@@ -3773,7 +3759,7 @@ void UIMessengerBrowser::FUN_141a26a00()
 {
     if (FUN_141a27570())
     {
-        for (int i = 0; i < 100; i++)
+        for (unsigned int i = 0; i < 100; i++)
         {
             CString strFile;
             strFile.Format("%s%d.xml", "MessengerDialog", i);
@@ -3796,17 +3782,17 @@ void UIMessengerBrowser::FUN_141a26a00()
         FUN_141a23e80();
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a26cd0
 CStringW UIMessengerBrowser::FUN_141a26cd0()
 {
-    for (int i = 0; i < 100; i++)
+    for (unsigned int i = 0; i < 100; i++)
     {
         CStringW strName;
         strName.Format(L"%s%d.xml", (const wchar_t*)FUN_14016a730("MessengerDialog", 0), i);
         FUN_140841420(strName);
-        if (!FUN_141a23d70(strName))
-            return strName;
+        if (FUN_141a23d70(strName))
+            continue;
+        return strName;
     }
     return L"";
 }
@@ -3949,7 +3935,6 @@ int UIMessengerBrowser::FUN_141a27570()
     return 0;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a27ad0
 void UIMessengerBrowser::FUN_141a27ad0(unsigned nFontSize)
 {
@@ -3957,7 +3942,7 @@ void UIMessengerBrowser::FUN_141a27ad0(unsigned nFontSize)
     while (pos != 0)
     {
         TalkLog& log = m_logs.GetNext(pos);
-        for (unsigned n = 0xc; (int)n < 0x13; n++)
+        for (unsigned n = 0xc; (int)n <= 0x12; n++)
         {
             CStringW strOld;
             strOld.Format(L"size='%d'", n);
@@ -3981,7 +3966,6 @@ void UIMessengerBrowser::FUN_141a27bf0()
     m_pendingLogs.RemoveAll();
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a27ca0
 void UIMessengerBrowser::FUN_141a27ca0()
 {
@@ -3998,7 +3982,7 @@ void UIMessengerBrowser::FUN_141a27ca0()
             }
         }
     }
-    m_194 = m_194 + (int)m_pendingLogs.GetCount();
+    m_194 = (unsigned)m_194 + m_pendingLogs.GetCount();
     m_pendingLogs.RemoveAll();
 }
 
@@ -4551,7 +4535,7 @@ int FUN_1403bb850();                                                // the chann
 // @0x141a12380
 bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
 {
-    if (nType == 0x10 && FUN_1409a8b10()->FUN_140ae6540()->m_b[0])
+    if (nType == 0x10 && MSG_COMMUNITY_FLAGS(FUN_1409a8b10()->FUN_140ae6540())->m_b0)
     {
         MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pMe == 0)
@@ -4574,7 +4558,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
             return true;
         }
     }
-    if (nType == 0xb && FUN_1409a8b10()->FUN_140ae6540()->m_b[1])
+    if (nType == 0xb && MSG_COMMUNITY_FLAGS(FUN_1409a8b10()->FUN_140ae6540())->m_b1)
     {
         int nPrice = FUN_1403bb830();
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, FUN_1409e97f0(0xaa2, nPrice), 0, CStringW(L""));
@@ -4589,7 +4573,7 @@ bool UIMessenger::FUN_141a12380(int nType, CStringW strText)
             return true;
         }
     }
-    if (nType == 0xc && FUN_1409a8b10()->FUN_140ae6540()->m_b[2])
+    if (nType == 0xc && MSG_COMMUNITY_FLAGS(FUN_1409a8b10()->FUN_140ae6540())->m_b2)
     {
         int nPrice = FUN_1403bb850();
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x19, FUN_1409e97f0(0xaa3, nPrice), 0, CStringW(L""));

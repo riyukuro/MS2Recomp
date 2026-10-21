@@ -156,7 +156,7 @@ public:
     void FUN_141a12e40(int nType, CStringW strText, bool bHistory);         // 0x141a12e40 sends a chat line
     int FUN_141a12f30();                                                    // 0x141a12f30 has the key focus
     bool FUN_141a13030(CStringW& strText);                                  // 0x141a13030 blank
-    bool FUN_141a13070(const CStringW& strName);                            // 0x141a13070 a tab exists
+    int FUN_141a13070(const CStringW& strName);                            // 0x141a13070 a tab exists
     int FUN_141a13160(MessengerData::TalkTab* pTab, int nChannel);          // 0x141a13160 the tab hides a channel
     int FUN_141a131a0(MessengerData::TalkTab* pTab, int nType);             // 0x141a131a0 the tab hides a line type
     void FUN_141a13210();                                                   // 0x141a13210 the emoticon aliases
