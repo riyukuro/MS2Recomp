@@ -332,9 +332,9 @@ unsigned CFilePreload::vfunc_1(void* user,Unk_140659080& startup) {
     while(state!=3) {
         WaitForSingleObject(semaphore,INFINITE);
         if(state==1) {
-            { if(Unk_LockGuard guard=stateLock) {} else { state=2; } }
+            { if(Unk_LockGuard guard=stateLock) { __assume(0); } else { state=2; } }
             if(!job.IsNull()) job(user);
-            { if(Unk_LockGuard guard=stateLock) {} else {
+            { if(Unk_LockGuard guard=stateLock) { __assume(0); } else {
                 if(state==3) return 0;
                 state=0;
             } }
@@ -377,7 +377,7 @@ void CFilePreload::FUN_14120fe80() {
 void CFilePreload::FUN_1412102e0() {
     if(stopped==0) {
         stopped=1;
-        { if(Unk_LockGuard guard=stateLock) {} else { state=3; } }
+        { if(Unk_LockGuard guard=stateLock) { __assume(0); } else { state=3; } }
         if(backgroundThread!=0) {
             if(WaitForSingleObject(backgroundThread->m_hThread,0)==WAIT_TIMEOUT) {
                 TerminateThread(backgroundThread->m_hThread,0);
@@ -394,7 +394,7 @@ MS2_REPLACE_METHOD(0x1412102e0, CFilePreload, FUN_1412102e0, 306, 0x14F19F7E);
 // @0x141210420
 void CFilePreload::FUN_141210420(int ignored) {
     preloadIds=0;
-    if(Unk_LockGuard guard=idsLock) {} else { ids.clear(); }
+    if(Unk_LockGuard guard=idsLock) { __assume(0); } else { ids.clear(); }
 }
 MS2_REPLACE_METHOD(0x141210420, CFilePreload, FUN_141210420, 110, 0xC342E578);
 // @0x1412104a0
@@ -402,7 +402,7 @@ void CFilePreload::FUN_1412104a0(int ignored) { preloadIds=1; }
 MS2_REPLACE_METHOD(0x1412104a0, CFilePreload, FUN_1412104a0, 22, 0x6EA4C275);
 // @0x1412104c0
 void CFilePreload::FUN_1412104c0(unsigned id) {
-    if(Unk_LockGuard guard=idsLock) {} else { ids.insert(id); }
+    if(Unk_LockGuard guard=idsLock) { __assume(0); } else { ids.insert(id); }
 }
 MS2_REPLACE_METHOD(0x1412104c0, CFilePreload, FUN_1412104c0, 108, 0x3223B7B3);
 // @0x141210540
@@ -410,7 +410,7 @@ void CFilePreload::FUN_141210540(unsigned id,unsigned short level,int priority) 
     if(id!=0) {
         if(priority==3 && FUN_1409f7c90()->FUN_141215630()==1 && FUN_1403ed2d0()!=0 && FUN_141bca2e0(FUN_1403ed2d0())!=0) return;
         Unk_PreloadId request(id,level,priority);
-        if(Unk_LockGuard guard=itemLock) {} else {
+        if(Unk_LockGuard guard=itemLock) { __assume(0); } else {
             auto found=itemRequests.find(request);
             if(found!=itemRequests.end()) { if(found->priority>priority) (*found).priority=priority; }
             else itemRequests.insert(request);
@@ -423,20 +423,20 @@ void CFilePreload::FUN_1412106a0(Unk_PreloadKey key,int priority) {
     if(key.first!=0) {
         if(priority==3 && FUN_1409f7c90()->FUN_141215630()==1 && FUN_1403ed2d0()!=0 && FUN_141bca2e0(FUN_1403ed2d0())!=0) return;
         Unk_PreloadId request(key,priority);
-        if(Unk_LockGuard guard=itemLock) {} else { itemRequests.insert(request); }
+        if(Unk_LockGuard guard=itemLock) { __assume(0); } else { itemRequests.insert(request); }
     }
 }
 MS2_REPLACE_METHOD(0x1412106a0, CFilePreload, FUN_1412106a0, 199, 0x000AA8EB);
 // @0x141210770
 void CFilePreload::FUN_141210770(unsigned id) {
     if(id==0) return;
-    if(Unk_LockGuard guard=itemIdsLock) {} else { itemIds.insert(id); }
+    if(Unk_LockGuard guard=itemIdsLock) { __assume(0); } else { itemIds.insert(id); }
 }
 MS2_REPLACE_METHOD(0x141210770, CFilePreload, FUN_141210770, 117, 0xCCD192E8);
 // @0x1412107f0
 void CFilePreload::FUN_1412107f0(CString path,int priority) {
     if(!path.IsEmpty()) {
-        if(Unk_LockGuard guard=effectLock) {} else {
+        if(Unk_LockGuard guard=effectLock) { __assume(0); } else {
             Unk_PreloadPath request(path,priority);
             auto found=effectRequests.find(request);
             if(found!=effectRequests.end()) { if(found->priority>priority) (*found).priority=priority; }
@@ -447,7 +447,7 @@ void CFilePreload::FUN_1412107f0(CString path,int priority) {
 MS2_REPLACE_METHOD(0x1412107f0, CFilePreload, FUN_1412107f0, 361, 0x99CB4735);
 // @0x141210960
 void CFilePreload::FUN_141210960(CString path,int priority) {
-    if(Unk_LockGuard guard=nifLock) {} else {
+    if(Unk_LockGuard guard=nifLock) { __assume(0); } else {
         Unk_PreloadPath request(path,priority);
         auto found=nifRequests.find(request);
         if(found!=nifRequests.end()) { if(found->priority>priority) (*found).priority=priority; }
@@ -457,13 +457,12 @@ void CFilePreload::FUN_141210960(CString path,int priority) {
 MS2_REPLACE_METHOD(0x141210960, CFilePreload, FUN_141210960, 336, 0x073C4155);
 // @0x141210ac0
 void CFilePreload::FUN_141210ac0(CString path) {
-    if(!path.IsEmpty()) { if(Unk_LockGuard guard=pathLock) {} else { paths.insert(path); } }
+    if(!path.IsEmpty()) { if(Unk_LockGuard guard=pathLock) { __assume(0); } else { paths.insert(path); } }
 }
 MS2_REPLACE_METHOD(0x141210ac0, CFilePreload, FUN_141210ac0, 139, 0x4E4DCC81);
-// MS2-FUNCTIONAL: The original failed-lock cleanup has one extra NOP; int return ABI is preserved.
 // @0x141210b60
 int CFilePreload::FUN_141210b60(unsigned id) {
-    if(Unk_LockGuard guard=idsLock) {} else { return ids.find(id)!=ids.end(); }
+    if(Unk_LockGuard guard=idsLock) { __assume(0); } else { return ids.find(id)!=ids.end(); }
     // Original has no defined return on a failed lock; lock guards always succeed here.
 
 }
@@ -486,7 +485,7 @@ MS2_REPLACE_METHOD(0x141210cc0, CFilePreload, FUN_141210cc0, 23, 0x397CC0E5);
 // @0x141210ce0
 void CFilePreload::FUN_141210ce0(Job next) {
     if(asynchronous) {
-        { if(Unk_LockGuard guard=stateLock) {} else { job=next; state=1; } }
+        { if(Unk_LockGuard guard=stateLock) { __assume(0); } else { job=next; state=1; } }
         ReleaseSemaphore(semaphore,1,0);
     } else next(this);
 }
@@ -601,7 +600,7 @@ MS2_REPLACE_METHOD(0x141211240, CFilePreload, FUN_141211240, 307, 0xA3D8BB95);
 // @0x141211380
 void CFilePreload::FUN_141211380(void*) {
     std::set<unsigned> pending;
-    { if(Unk_LockGuard guard=idsLock) {} else { pending=ids; ids.clear(); } }
+    { if(Unk_LockGuard guard=idsLock) { __assume(0); } else { pending=ids; ids.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
         if(stopped==0) { FUN_1410917a0(*it); }
         else return;
@@ -611,7 +610,7 @@ MS2_REPLACE_METHOD(0x141211380, CFilePreload, FUN_141211380, 250, 0x321844C5);
 // @0x141211480
 void CFilePreload::FUN_141211480(void*) {
     std::set<Unk_PreloadId> pending;
-    { if(Unk_LockGuard guard=itemLock) {} else { pending=itemRequests; itemRequests.clear(); } }
+    { if(Unk_LockGuard guard=itemLock) { __assume(0); } else { pending=itemRequests; itemRequests.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
         if(stopped==0) { FUN_140aae720(FUN_1401958b0(),it->key.first,it->key.second,it->priority); }
         else return;
@@ -621,7 +620,7 @@ MS2_REPLACE_METHOD(0x141211480, CFilePreload, FUN_141211480, 332, 0xE2D2878C);
 // @0x1412115e0
 void CFilePreload::FUN_1412115e0(void*) {
     std::set<Unk_PreloadPath> pending;
-    { if(Unk_LockGuard guard=effectLock) {} else { pending=effectRequests; effectRequests.clear(); } }
+    { if(Unk_LockGuard guard=effectLock) { __assume(0); } else { pending=effectRequests; effectRequests.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
         if(stopped==0) { FUN_1411a4800(it->path,it->priority); }
         else return;
@@ -632,7 +631,7 @@ MS2_REPLACE_METHOD(0x1412115e0, CFilePreload, FUN_1412115e0, 274, 0x12FA9D57);
 // @0x141211700
 void CFilePreload::FUN_141211700(void*) {
     std::set<Unk_PreloadPath> pending;
-    { if(Unk_LockGuard guard=nifLock) {} else { pending=nifRequests; nifRequests.clear(); } }
+    { if(Unk_LockGuard guard=nifLock) { __assume(0); } else { pending=nifRequests; nifRequests.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
         if(stopped!=0 || FUN_140a0afd0()==0) return;
         efd::SmartPointer<NiTexture> texture;
@@ -644,7 +643,7 @@ MS2_REPLACE_METHOD(0x141211700, CFilePreload, FUN_141211700, 375, 0x74A47ED7);
 // @0x141211880
 void CFilePreload::FUN_141211880(void*) {
     std::set<CString> pending;
-    { if(Unk_LockGuard guard=pathLock) {} else { pending=paths; paths.clear(); } }
+    { if(Unk_LockGuard guard=pathLock) { __assume(0); } else { pending=paths; paths.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
         if(stopped!=0 || FUN_140a0afd0()==0) return;
         FUN_1415525d0(FUN_140a0afd0(),CString(*it),0,5);
@@ -655,7 +654,7 @@ MS2_REPLACE_METHOD(0x141211880, CFilePreload, FUN_141211880, 335, 0x0F68167A);
 // @0x1412119e0
 void CFilePreload::FUN_1412119e0(void*) {
     std::set<unsigned> pending;
-    { if(Unk_LockGuard guard=itemIdsLock) {} else { pending=itemIds; itemIds.clear(); } }
+    { if(Unk_LockGuard guard=itemIdsLock) { __assume(0); } else { pending=itemIds; itemIds.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
         if(stopped!=0 || FUN_140a0afd0()==0) return;
         if(FUN_1401958b0()!=0) {
