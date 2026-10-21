@@ -7758,3 +7758,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?SetProperties@RectangleObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@QEBVValue@234@@Z	142989e90	func
 ?SetProperties@RectangleObject@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEBV?$Rect@N@Render@4@@Z	14298a040	func
 ?ValidateRect@AS2@GFx@Scaleform@@YAXPEAV?$Rect@N@Render@3@@Z	142992e30	func
+?PointTestLocal@DisplayObjContainer@GFx@Scaleform@@UEBA_NAEBV?$Point@M@Render@3@E@Z	1425fcfa0	func
