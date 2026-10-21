@@ -264,7 +264,7 @@ public:
 
     bool FUN_140784390(const CRideeData& o);                // differs
     CString FUN_140784880(int nLevel);                      // animation (kfm) name for the rider's level
-    CString FUN_140784920();                                // scene graph (nif) name
+    CString FUN_140784920(int nLevel);                      // scene graph (nif) name (nLevel unused)
     Unk_RiderPtr FUN_140784970();                           // the default seat
     Unk_RiderPtr FUN_1407849c0(int nIndex);                 // seat nIndex of the passengers
 
@@ -289,7 +289,7 @@ typedef ATL::CAtlMap<int, CRideeDataPtr> CRideeDataMap;
 class Unk_EffectDummyTable
 {
 public:
-    int FUN_140a40200();                                    // row count
+    size_t FUN_140a40200();                                 // row count
     bool FUN_140a40230(int nIndex, CEffectDummy* pOut);     // read row nIndex
 };
 Unk_140165cf0* FUN_1403f0510(Unk_140165cf0*);               // next <dummy>
@@ -408,15 +408,13 @@ void RideeData::Rider::FUN_140782110(Unk_140165cf0* pNode)
 MS2_REPLACE_METHOD(0x140782110, RideeData::Rider, FUN_140782110, 1860, 0x7CF12148);
 
 // @0x140785190
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 static int FUN_140785190(CString strType)
 {
     if (strType.CompareNoCase("default") == 0)
         return 0;
-    if (strType.CompareNoCase("battle") == 0)
+    else if (strType.CompareNoCase("battle") == 0)
         return 1;
-    if (strType.CompareNoCase("object") == 0)
+    else if (strType.CompareNoCase("object") == 0)
         return 2;
     return 0;
 }
@@ -456,8 +454,6 @@ RideeData::Basic::Basic()
 }
 
 // @0x140782b10
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 bool RideeData::Basic::FUN_140782b10(const Basic& o)
 {
     if (m_nId != o.m_nId)
@@ -526,8 +522,7 @@ bool RideeData::Basic::FUN_140782b10(const Basic& o)
         return 1;
     if ((*m_spRider).FUN_140781ef0(*o.m_spRider))
         return 1;
-    else
-        return 0;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140782b10, RideeData::Basic, FUN_140782b10, 1142, 0xBC49FD66);
 
@@ -622,18 +617,15 @@ int RideeData::Collision::vfunc_0()
 MS2_REPLACE_METHOD(0x1407837e0, RideeData::Collision, vfunc_0, 11, 0x30025ED0);
 
 // @0x140783800
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 int RideeData::Collision::FUN_140783800(Unk_140165cf0* pRoot)
 {
     Unk_140165cf0* pNode = pRoot->FUN_140165cf0("collision");
-    if (pNode != 0)
-    {
-        FUN_140873360(pNode, "width", m_fWidth);
-        FUN_140873360(pNode, "height", m_fHeight);
-        FUN_140873360(pNode, "depth", m_fDepth);
-        FUN_1408730a0(pNode, "physic", m_bPhysic);
-    }
+    if (pNode == 0)
+        return 1;
+    FUN_140873360(pNode, "width", m_fWidth);
+    FUN_140873360(pNode, "height", m_fHeight);
+    FUN_140873360(pNode, "depth", m_fDepth);
+    FUN_1408730a0(pNode, "physic", m_bPhysic);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140783800, RideeData::Collision, FUN_140783800, 177, 0xEB27F6C1);
@@ -651,14 +643,11 @@ RideeData::Shadow::Shadow() : m_fScale(150.0f)
 }
 
 // @0x140783930
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 bool RideeData::Shadow::FUN_140783930(const Shadow& o)
 {
     if (m_fScale != o.m_fScale)
         return 1;
-    else
-        return 0;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140783930, RideeData::Shadow, FUN_140783930, 38, 0x42D57E72);
 
@@ -670,13 +659,12 @@ int RideeData::Shadow::vfunc_0()
 MS2_REPLACE_METHOD(0x140783960, RideeData::Shadow, vfunc_0, 11, 0x30025ED0);
 
 // @0x140783980
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 int RideeData::Shadow::FUN_140783980(Unk_140165cf0* pRoot)
 {
     Unk_140165cf0* pNode = pRoot->FUN_140165cf0("shadow");
-    if (pNode != 0)
-        FUN_140873360(pNode, "scale", m_fScale);
+    if (pNode == 0)
+        return 1;
+    FUN_140873360(pNode, "scale", m_fScale);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140783980, RideeData::Shadow, FUN_140783980, 90, 0x7F1DFB79);
@@ -712,25 +700,27 @@ int RideeData::FaceCamera::vfunc_0()
 MS2_REPLACE_METHOD(0x140783ae0, RideeData::FaceCamera, vfunc_0, 11, 0x30025ED0);
 
 // @0x140783b00
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 int RideeData::FaceCamera::FUN_140783b00(Unk_140165cf0* pRoot)
 {
     Unk_140165cf0* pNode = pRoot->FUN_140165cf0("faceCamera");
     if (pNode == 0)
         return 1;
-    CString strLookAt = FUN_140188f50(FUN_14086f4b0(pNode, "lookAtPosition"), 0);
-    ATL::CAtlArray<float> lookAt;
-    FUN_140177e40(strLookAt, lookAt, ",");
-    if (lookAt.GetCount() != 3)
-        return 0;
-    m_vLookAtPosition = efd::Point3(lookAt[0], lookAt[1], lookAt[2]);
-    CString strCamera = FUN_140188f50(FUN_14086f4b0(pNode, "cameraPosition"), 0);
-    ATL::CAtlArray<float> camera;
-    FUN_140177e40(strCamera, camera, ",");
-    if (camera.GetCount() != 3)
-        return 0;
-    m_vCameraPosition = efd::Point3(camera[0], camera[1], camera[2]);
+    {
+        CString strLookAt = FUN_140188f50(FUN_14086f4b0(pNode, "lookAtPosition"), 0);
+        ATL::CAtlArray<float> lookAt;
+        FUN_140177e40(strLookAt, lookAt, ",");
+        if (lookAt.GetCount() != 3)
+            return 0;
+        m_vLookAtPosition = efd::Point3(lookAt[0], lookAt[1], lookAt[2]);
+    }
+    {
+        CString strCamera = FUN_140188f50(FUN_14086f4b0(pNode, "cameraPosition"), 0);
+        ATL::CAtlArray<float> camera;
+        FUN_140177e40(strCamera, camera, ",");
+        if (camera.GetCount() != 3)
+            return 0;
+        m_vCameraPosition = efd::Point3(camera[0], camera[1], camera[2]);
+    }
     return 1;
 }
 MS2_REPLACE_METHOD(0x140783b00, RideeData::FaceCamera, FUN_140783b00, 613, 0x86249F24);
@@ -767,18 +757,15 @@ int RideeData::Stat::vfunc_0()
 MS2_REPLACE_METHOD(0x140783e40, RideeData::Stat, vfunc_0, 11, 0x30025ED0);
 
 // @0x140783e60
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 int RideeData::Stat::FUN_140783e60(Unk_140165cf0* pRoot)
 {
     Unk_140165cf0* pNode = pRoot->FUN_140165cf0("stat");
-    if (pNode != 0)
+    if (pNode == 0)
+        return 1;
+    for (int i = 0; i < 0x23; i++)
     {
-        for (int i = 0; i < 0x23; i++)
-        {
-            CString strName = FUN_14082efb0(i);
-            FUN_1408732e0(pNode, strName, m_values[i]);
-        }
+        CString strName = FUN_14082efb0(i);
+        FUN_1408732e0(pNode, strName, m_values[i]);
     }
     return 1;
 }
@@ -792,18 +779,17 @@ int RideeData::Passengers::FUN_140783f30(Unk_140165cf0*)
 MS2_REPLACE_METHOD(0x140783f30, RideeData::Passengers, FUN_140783f30, 16, 0x32804D89);
 
 // @0x140783f50
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 RideeData::Passengers::Passengers()
 {
+    m_seats.clear();
 }
 
 // @0x140783fb0
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 bool RideeData::Passengers::FUN_140783fb0(const Passengers& o)
 {
-    return !(m_seats == o.m_seats);
+    if (m_seats == o.m_seats)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x140783fb0, RideeData::Passengers, FUN_140783fb0, 58, 0xFB3C5E5E);
 
@@ -815,22 +801,18 @@ int RideeData::Passengers::vfunc_0()
 MS2_REPLACE_METHOD(0x140783ff0, RideeData::Passengers, vfunc_0, 11, 0x30025ED0);
 
 // @0x140784010
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 int RideeData::Passengers::FUN_140784010(Unk_140165cf0* pRoot)
 {
     Unk_140165cf0* pNode = pRoot->FUN_140165cf0("passengers");
-    if (pNode != 0)
+    if (pNode == 0)
+        return 1;
+    for (Unk_140165cf0* pSeat = pNode->FUN_140165cf0("passenger"); pSeat != 0; pSeat = pSeat->FUN_140168650("passenger"))
     {
-        for (Unk_140165cf0* pSeat = pNode->FUN_140165cf0("passenger"); pSeat != 0; pSeat = pSeat->FUN_140168650("passenger"))
-        {
-            if (FUN_14028f710(pSeat))
-            {
-                Unk_RiderPtr spRider(Unk_SocketNew(0));
-                spRider->FUN_140782110(pSeat);
-                m_seats[spRider->m_nPassengerId] = spRider;
-            }
-        }
+        if (!FUN_14028f710(pSeat))
+            continue;
+        Unk_RiderPtr spRider(Unk_SocketNew(0));
+        spRider->FUN_140782110(pSeat);
+        m_seats[spRider->m_nPassengerId] = spRider;
     }
     return 1;
 }
@@ -844,8 +826,6 @@ int RideeData::Passengers::FUN_140784120(Unk_140165cf0*)
 MS2_REPLACE_METHOD(0x140784120, RideeData::Passengers, FUN_140784120, 16, 0x32804D89);
 
 // @0x140784140
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 int RideeData::Passengers::FUN_140784140()
 {
     return m_seats.size() > 0;
@@ -860,8 +840,6 @@ size_t RideeData::Passengers::FUN_140784180()
 MS2_REPLACE_METHOD(0x140784180, RideeData::Passengers, FUN_140784180, 31, 0x452D3D45);
 
 // @0x1407841b0
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 Unk_RiderPtr RideeData::Passengers::FUN_1407841b0(int nIndex)
 {
     if (m_seats.size() <= (size_t)nIndex)
@@ -881,8 +859,6 @@ CRideeData::~CRideeData()
 }
 
 // @0x140784390
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 bool CRideeData::FUN_140784390(const CRideeData& o)
 {
     if (m_basic.FUN_140782b10(o.m_basic))
@@ -897,8 +873,7 @@ bool CRideeData::FUN_140784390(const CRideeData& o)
         return 1;
     if (m_passengers.FUN_140783fb0(o.m_passengers))
         return 1;
-    else
-        return 0;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140784390, CRideeData, FUN_140784390, 277, 0x98E2C4B7);
 
@@ -912,9 +887,7 @@ CString CRideeData::FUN_140784880(int nLevel)
 MS2_REPLACE_METHOD(0x140784880, CRideeData, FUN_140784880, 144, 0xD6E811E9);
 
 // @0x140784920
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-CString CRideeData::FUN_140784920()
+CString CRideeData::FUN_140784920(int nLevel)
 {
     return m_basic.m_strNif;
 }
@@ -947,8 +920,6 @@ CRideeDataPtr FUN_1407844b0(unsigned nId)
 }
 
 // @0x1407845b0
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 bool FUN_1407845b0(CString strPath, std::vector<CRideeDataPtr>& rOut)
 {
     TiXmlDocument doc;
@@ -976,12 +947,10 @@ bool FUN_1407845b0(CString strPath, std::vector<CRideeDataPtr>& rOut)
 
 #ifndef MS2_HOOK_DLL
 // @0x140784a20
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 CRideeDataPtr FUN_140784a20(unsigned nId)
 {
     CString strPath;
-    strPath.Format("./Data/Xml/Riding/%08d.xml", (unsigned __int64)nId);
+    strPath.Format("./Data/Xml/Riding/%08d.xml", nId);
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return CRideeDataPtr(0);
@@ -1010,23 +979,20 @@ CRideeDataPtr FUN_140784a20(unsigned nId)
 #endif
 
 // @0x140784de0
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
-// MS2-FUNCTIONAL: behaviour-equivalent; compiler codegen differs from the exe (branch/frame-slot shape or glue-call pairing)
 void FUN_140784de0(CRideeDataPtr spData)
 {
     if (spData == 0)
         return;
-    Unk_EffectDummyTable* pTable = reinterpret_cast<Unk_EffectDummyTable*>(CommonEffectDummy::GetInstance());   // 0x140789c40
-    unsigned __int64 nCount = pTable->FUN_140a40200();
+    unsigned __int64 nCount = reinterpret_cast<Unk_EffectDummyTable*>(CommonEffectDummy::GetInstance())->FUN_140a40200();   // 0x140789c40
     spData->m_effectDummies.reserve(nCount);
     for (unsigned __int64 i = 0; i < nCount; i++)
     {
         CEffectDummy dummy;
-        if (pTable->FUN_140a40230((int)i, &dummy))
+        if (reinterpret_cast<Unk_EffectDummyTable*>(CommonEffectDummy::GetInstance())->FUN_140a40230((int)i, &dummy))
             spData->m_effectDummies.push_back(dummy);
     }
     CString strPath;
-    strPath.Format("./Data/Xml/Riding/EffectDummy/%08d.xml", (unsigned __int64)spData->m_basic.m_nId);
+    strPath.Format("./Data/Xml/Riding/EffectDummy/%08d.xml", spData->m_basic.m_nId);
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
         return;
@@ -1034,28 +1000,29 @@ void FUN_140784de0(CRideeDataPtr spData)
     if (pRoot == 0)
         return;
     Unk_140165cf0* pList = pRoot->FUN_140165cf0("effectdummy");
-    if (pList == 0)
-        return;
-    for (Unk_140165cf0* pDummy = pList->FUN_140165cf0("dummy"); pDummy != 0; pDummy = FUN_1403f0510(pDummy))
+    if (pList != 0)
     {
-        bool bFound = false;
-        CString strName;
-        FUN_1408733e0(pDummy, "name", strName);
-        for (unsigned __int64 i = 0; i < spData->m_effectDummies.size(); i++)
+        for (Unk_140165cf0* pDummy = pList->FUN_140165cf0("dummy"); pDummy != 0; pDummy = FUN_1403f0510(pDummy))
         {
-            CEffectDummy* pExisting = &spData->m_effectDummies[i];
-            if (FUN_1401c0090(pExisting->GetName(), strName))
+            bool bFound = false;
+            CString strName;
+            FUN_1408733e0(pDummy, "name", strName);
+            for (unsigned __int64 i = 0; i < spData->m_effectDummies.size(); i++)
             {
-                pExisting->Parse(pDummy);
-                bFound = true;
-                break;
+                CEffectDummy* pExisting = &spData->m_effectDummies[i];
+                if (FUN_1401c0090(pExisting->GetName(), strName))
+                {
+                    pExisting->Parse(pDummy);
+                    bFound = true;
+                    break;
+                }
             }
-        }
-        if (!bFound)
-        {
-            CEffectDummy dummy;
-            dummy.Parse(pDummy);
-            spData->m_effectDummies.push_back(dummy);
+            if (!bFound)
+            {
+                CEffectDummy dummy;
+                dummy.Parse(pDummy);
+                spData->m_effectDummies.push_back(dummy);
+            }
         }
     }
 }
