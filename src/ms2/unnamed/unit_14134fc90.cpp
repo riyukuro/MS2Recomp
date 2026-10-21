@@ -265,26 +265,32 @@ void UIHouseDemolishDialog::AddDirty(const unsigned* pnFlags)
 MS2_REPLACE_METHOD(0x141350740, UIHouseDemolishDialog, AddDirty, 42, 0xDB6FDCAE);
 
 // @0x141350770
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe's dynamic_cast temporaries differ
 void UIHouseDemolishDialog::OnNotifyChangeGameOptionInput(NotifyObject* pNotify)
 {
-    NotifyChangeGameOptionInput* pOption;
-    if (FUN_140ba28d0(&m_30, 0) == 0 && m_bShown != 0 &&
-        (pOption = dynamic_cast<NotifyChangeGameOptionInput*>(pNotify)) != 0 && pOption->m_nOption == 9)
-    {
-        unsigned nFlags = 2;
-        AddDirty(&nFlags);
-    }
+    if (FUN_140ba28d0(&m_30, 0))
+        return;
+    if (!m_bShown)
+        return;
+    NotifyChangeGameOptionInput* pOption = dynamic_cast<NotifyChangeGameOptionInput*>(pNotify);
+    if (!pOption)
+        return;
+    if (pOption->m_nOption != 9)
+        return;
+    unsigned nFlags = 2;
+    AddDirty(&nFlags);
 }
 
 // @0x141350810
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe's dynamic_cast temporaries differ
 void UIHouseDemolishDialog::OnNotifyChangeUIBuildingCount(NotifyObject* pNotify)
 {
-    NotifyChangeUIBuildingCount* pCount;
-    if (FUN_140ba28d0(&m_30, 0) == 0 && m_bShown != 0 &&
-        (pCount = dynamic_cast<NotifyChangeUIBuildingCount*>(pNotify)) != 0 &&
-        (pCount->m_nCount == 0 || FUN_14053f9c0(pCount->m_nCount) != 0))
+    if (FUN_140ba28d0(&m_30, 0))
+        return;
+    if (!m_bShown)
+        return;
+    NotifyChangeUIBuildingCount* pCount = dynamic_cast<NotifyChangeUIBuildingCount*>(pNotify);
+    if (!pCount)
+        return;
+    if (pCount->m_nCount == 0 || FUN_14053f9c0(pCount->m_nCount) != 0)
     {
         unsigned nFlags = 1;
         AddDirty(&nFlags);
