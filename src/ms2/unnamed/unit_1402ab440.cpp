@@ -219,14 +219,11 @@ void Constants::Object::vfunc_1()
     m_loaded = false;
 }
 // @0x1402b7370
-// MS2-FUNCTIONAL: exe keeps the result in a 4-byte local slot; same behaviour
 bool Constants::Object::IsValid() const
 {
     if (m_defined && m_hasKey && m_forced)
         return true;
-    if (m_defined && m_hasKey && m_loaded)
-        return true;
-    return false;
+    return m_defined && m_hasKey && m_loaded;
 }
 // @0x1402b73f0
 const char* Constants::Object::GetTypeName() const { return m_typeName.c_str(); }
@@ -348,13 +345,11 @@ template<class T> T* Constants::Value<T>::Set(const T& v)
     return &m_value;
 }
 // @0x1402bc3b0
-// MS2-FUNCTIONAL: varargs forwarder: exe spills the va_list setup differently
 static void FormatKey(char* out, const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
     _vsnprintf(out, 0x100, fmt, args);
-    va_end(args);
 }
 // MS2-FUNCTIONAL: the Values<T> collectors, Add/SetCount/ctor/vfunc_1 instantiations for colour/string/int64 elements differ from the exe in temporaries; same behaviour
 template unsigned int Constants::Value<unsigned int>::Read();
@@ -438,12 +433,11 @@ template<class T> void Constants::Values<T>::vfunc_1()
     m_values.RemoveAll();
 }
 // @0x1402bacf0
-// MS2-FUNCTIONAL: exe compares the 32-bit count/index; same behaviour
 template<class T> static int FindElement(const ATL::CAtlArray<T>& arr, const T& v)
 {
-    for (size_t i = 0; i < arr.GetCount(); i++)
+    for (int i = 0; i < (int)arr.GetCount(); i++)
         if (arr[i] == v)
-            return (int)i;
+            return i;
     return -1;
 }
 template<class T> bool Constants::Values<T>::Contains(T v)
@@ -696,10 +690,10 @@ MS2Colors::MS2Colors() {}
 // @0x1402be360
 MS2Colors::~MS2Colors() {}
 // @0x1402be530
-// MS2-FUNCTIONAL: exe assigns through CAtlArray::Copy with a different temporary order
 MS2Colors& MS2Colors::operator=(const MS2Colors& o)
 {
-    Copy(o);
+    RemoveAll();
+    Append(o);
     return *this;
 }
 
@@ -1402,13 +1396,13 @@ bool Common::Constants::LoadFiles()
     return true;
 }
 // @0x1402b7200
-// MS2-FUNCTIONAL: exe returns the saved flag through a bool compare
 bool Common::Constants::Load()
 {
     bool ok = LoadFiles();
-    if (ok)
-        vfunc_0();
-    return ok;
+    if (!ok)
+        return false;
+    vfunc_0();
+    return true;
 }
 // @0x1402b7240
 void Common::Constants::Reload()
