@@ -24,7 +24,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <errno.h>
 #include <string.h>
-#include "ms2/guess/loadingimagetable.h"
+#include "ms2/client/ms2/loadingimagetable.h"
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/xmlattr.h"

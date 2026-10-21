@@ -14,7 +14,7 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "uimessageboxdata.h"
 #include "buddymanager.h"
-#include "ms2/guess/menteesearch.h"
+#include "ms2/client/ms2/menteesearch.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"

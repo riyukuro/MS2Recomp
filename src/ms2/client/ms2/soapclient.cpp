@@ -19,7 +19,7 @@
 #include "soapclient.h"
 #include "ugchttpclient.h"
 #include "gamerankingcli.h"
-#include "ms2/guess/menteesearch.h"
+#include "ms2/client/ms2/menteesearch.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/placeholder/csoapclient.h"
