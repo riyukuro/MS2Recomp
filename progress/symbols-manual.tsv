@@ -4298,3 +4298,17 @@ cef_string_utf8_clear	142778538	func
 ?Stream_LogBytes@AS3@GFx@Scaleform@@YAXPEAVStream@23@I@Z	1425c20d0	func
 ?FUN_1411f61b0@@YAAEAHAEAH@Z	1411f61b0	func
 ??0Unk_HudStreamPoint@@QEAA@PEBX@Z	14027dcf0	func
+??0VideoDecoderThrd@Video@GFx@Scaleform@@QEAA@PEAVMemoryHeap@3@W4ThreadPriority@Thread@3@@Z	14002b270	func
+??0VideoPlayerImpl@Video@GFx@Scaleform@@QEAA@PEAVMemoryHeap@3@@Z	14002c810	func
+??0VideoReaderConfigThrd@Video@GFx@Scaleform@@QEAA@PEAVMemoryHeap@3@PEAVFileOpenerBase@23@@Z	14002e450	func
+?HandleWorkSize@Video@1GFx@Scaleform@@2IA	143b277b0	data
+?Init@VideoPlayerImpl@Video@GFx@Scaleform@@QEAA_NPEAV2234@PEAVTaskManager@34@PEAVFileOpenerBase@34@PEAVLog@4@@Z	14002b530	func
+?Initialize@CriMv@@YAXAEAW4CriError@@@Z	140026ed0	func
+?Initialized@Video@1GFx@Scaleform@@2IA	143b277b4	data
+?LogParse@?$LogBase@VLoadProcess@GFx@Scaleform@@@GFx@Scaleform@@QEAAXPEBDZZ	1423dce80	func
+?Read@VideoCharacterDef@Video@GFx@Scaleform@@QEAAXPEAVLoadProcess@34@H@Z	14000f2d0	func
+?pHandleWorkBuf@Video@1GFx@Scaleform@@2PEAXEA	143b277a8	data
+MS2_SF_Resource_vftable	143149880	data
+MS2_SF_VideoCharacterDef_vftable	14318b778	data
+criHeap_Finalize	140027ea4	func
+criHeap_Initialize	1400282e0	func
