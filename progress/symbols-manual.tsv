@@ -4453,3 +4453,11 @@ criHeap_Initialize	1400282e0	func
 ?InitPage@AllocBitSet2MH@HeapMH@Scaleform@@QEAAXPEAUPageMH@23@K@Z	1426cc080	func
 ?ReallocInPlace@AllocBitSet2MH@HeapMH@Scaleform@@QEAAPEAXPEAUPageMH@23@PEAX_KPEA_KPEAUMagicHeadersInfo@23@@Z	1426cc5c0	func
 ?ReleasePage@AllocBitSet2MH@HeapMH@Scaleform@@QEAAXPEAE@Z	1426cc850	func
+??1?$CSimpleArray@GV?$CSimpleArrayEqualHelper@G@ATL@@@ATL@@QEAA@XZ	141803c20	func
+??1?$SmartPointer@VNiSPWorkflow@@@efd@@QEAA@XZ	141803f20	func
+??1?$SmartPointer@VNiTextKeyMatch@@@efd@@QEAA@XZ	141803f80	func
+??1CComCriticalSection@ATL@@QEAA@XZ	141804190	func
+??1TextKeyCallbackData@NiControllerSequence@@QEAA@XZ	141804410	func
+??1_ATL_WIN_MODULE70@ATL@@QEAA@XZ	141804470	func
+?DecRefCount@NiSPWorkflow@@QEAAXXZ	141807120	func
+?RemoveAll@?$CSimpleArray@GV?$CSimpleArrayEqualHelper@G@ATL@@@ATL@@QEAAXXZ	141807b40	func
