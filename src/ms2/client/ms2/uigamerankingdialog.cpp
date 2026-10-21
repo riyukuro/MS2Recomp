@@ -34,7 +34,7 @@
 // MS2-PIN: ??1?$CAtlArray@UUnk_RankSeasonPtr@@V?$CElementTraits@UUnk_RankSeasonPtr@@@ATL@@@ATL@@QEAA@XZ 0x140e368f0
 // MS2-PIN: ??0?$Unk_RankPtr@VGameRankingTabData@@@@QEAA@XZ 0x140e362f0
 // MS2-PIN: ??0?$Unk_RankBoxPtr@V?$CAtlArray@V?$Unk_RankPtr@VGameRankingTabData@@@@V?$CElementTraits@V?$Unk_RankPtr@VGameRankingTabData@@@@@ATL@@@ATL@@@@QEAA@H@Z 0x140e36310
-// MS2-PIN: ??0?$Unk_RankPtr@VGameRankingCategory@@@@QEAA@H@Z 0x140e364b0
+// Category null construction is pinned at the end of this unit (caller 0x140e350c0).
 // MS2-PIN: ??7?$MS2Ptr@VUnk_RankChartRec@@@@QEBA_NXZ 0x140e36c70
 // MS2-PIN: ??7?$MS2Ptr@VUnk_RankTab@@@@QEBA_NXZ 0x140e36ca0
 // MS2-PIN: ??8?$MS2Ptr@VAScript@@@@QEBA_NPEAVAScript@@@Z 0x140e36d50
@@ -1584,3 +1584,7 @@ MS2_REPLACE_METHOD(0x140E2DC70, UIGameRankingDialog, vfunc_49, 138, 0xB87A410B);
 MS2_REPLACE_METHOD(0x140E359E0, UIGameRankingDialog, FUN_140e359e0, 117, 0xF0541677);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca6720-0x142ca67d0 .text$yd
+
+// MS2-PIN: ??0?$Unk_RankPtr@VGameRankingCategory@@@@QEAA@H@Z 0x140e363b0
+// MS2-PIN: ??0?$Unk_RankPtr@VGameRankingCategory@@@@QEAA@$$QEAV0@@Z 0x140e36310
+// MS2-PIN: ??0?$Unk_RankPtr@VGameRankingCategory@@@@QEAA@AEBV0@@Z 0x140e36340

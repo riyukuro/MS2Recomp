@@ -71,7 +71,7 @@ class Unk_RankPtr
 {
 public:
     Unk_RankPtr();                                          // m_p = NULL (0x140e362f0 for GameRankingCategory)
-    Unk_RankPtr(Unk_RankPtr& o);                            // steal from a non-const lvalue (0x140e36310)
+    Unk_RankPtr(Unk_RankPtr&& o);                            // move from an rvalue (0x140e36310)
     Unk_RankPtr(const Unk_RankPtr& o);                      // copy + AddRef (0x140e36340)
     Unk_RankPtr(const Unk_RankNewTag&);                     // a fresh object (0x140e36380)
     Unk_RankPtr(int);                                       // NULL (0x140e363b0)
@@ -96,7 +96,7 @@ private:
 };
 
 template <class T> Unk_RankPtr<T>::Unk_RankPtr() { m_p = 0; }
-template <class T> Unk_RankPtr<T>::Unk_RankPtr(Unk_RankPtr& o) { m_p = o.m_p; o.m_p = 0; }
+template <class T> Unk_RankPtr<T>::Unk_RankPtr(Unk_RankPtr&& o) { m_p = o.m_p; o.m_p = 0; }
 template <class T> Unk_RankPtr<T>::Unk_RankPtr(const Unk_RankPtr& o) { m_p = o.m_p; AddRef(); }
 template <class T> Unk_RankPtr<T>::Unk_RankPtr(const Unk_RankNewTag&) { m_p = 0; Make(); }
 template <class T> Unk_RankPtr<T>::Unk_RankPtr(int) { m_p = 0; }
