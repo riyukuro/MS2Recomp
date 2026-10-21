@@ -1,6 +1,6 @@
 // talkscript.h - CTalkScript (RTTI .?AVCTalkScript@@, 0x90 bytes, bases CPtred and CValidData<CTalkScript>): one talk of
 // an NPC or quest, loaded from Script/Npc and Script/Quest xml or read from a packet. NOT an original header; member
-// names come from the xml attribute names (the loaders 0x140857f20 / 0x140858440). Typed over guess/scriptcontent.h; the
+// names come from the xml attribute names (the loaders 0x140857f20 / 0x140858440). Typed over commonfiles/scriptcontent.h; the
 // read-only view src/ms2/placeholder/ctalkscript.h serves the talk UI units and is the same 0x90 layout.
 #pragma once
 
@@ -16,7 +16,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cvaliddata.h"
-#include "ms2/guess/scriptcontent.h"
+#include "ms2/commonfiles/scriptcontent.h"
 
 class CInPacket;
 

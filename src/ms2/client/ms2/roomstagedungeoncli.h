@@ -9,7 +9,7 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/commonfiles/dungeonroom.h"
-#include "ms2/guess/dungeonmissioncli.h"
+#include "ms2/client/ms2/dungeonmissioncli.h"
 
 class CInPacket;
 

@@ -34,7 +34,7 @@
 #include "ms2/commonfiles/itemdatatable.h"
 #include "ms2/commonfiles/itemoption.h"
 #include "ms2/commonfiles/filesystem.h"
-#include "ms2/guess/usercommandcli.h"
+#include "ms2/client/ms2/usercommandcli.h"
 #include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"

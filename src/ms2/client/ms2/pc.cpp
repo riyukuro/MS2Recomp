@@ -133,7 +133,7 @@
 #include "ms2/client/ms2/jobsystemcli.h"
 #include "ms2/commonfiles/pvpinfo.h"
 #include "ms2/commonfiles/hideandseek.h"
-#include "ms2/guess/skilltieroptionmanager.h"
+#include "ms2/client/ms2/skilltieroptionmanager.h"
 #include "ms2/client/ms2/statpointmanager.h"
 #include "ms2/guess/watergunbattleinfo.h"
 #include "ms2/client/ms2/taileffectobject.h"

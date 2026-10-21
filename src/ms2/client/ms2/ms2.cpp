@@ -237,7 +237,7 @@
 #include "ms2/commonfiles/trafficoptimizer.h"
 #include "ms2/commonfiles/ugccubecategorytable.h"
 #include "ms2/commonfiles/ugcmapsetiteminfo.h"
-#include "ms2/guess/usercommandcli.h"
+#include "ms2/client/ms2/usercommandcli.h"
 #include "ms2/placeholder/applyeffect.h"
 #include "ms2/placeholder/attendgiftdatatable.h"
 #include "ms2/placeholder/blindmanager.h"

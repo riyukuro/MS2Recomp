@@ -201,7 +201,7 @@
 #include <iterator>
 #include "logdialog.h"
 #include "ms2/placeholder/clientlogmanager.h"
-#include "ms2/guess/usercommandcli.h"
+#include "ms2/client/ms2/usercommandcli.h"
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"

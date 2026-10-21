@@ -14,7 +14,7 @@
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\skilltieroptionmanager.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
-#include "ms2/guess/skilltieroptionmanager.h"
+#include "ms2/client/ms2/skilltieroptionmanager.h"
 #include "ms2/commonfiles/jobtable.h"
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/commonfiles/specialability.h"

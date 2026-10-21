@@ -335,7 +335,7 @@
 #include "ms2/client/ms2/uichatemoticondialog.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/commonfiles/chatemoticontable.h"
-#include "ms2/guess/usercommandcli.h"
+#include "ms2/client/ms2/usercommandcli.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/placeholder/citem.h"
