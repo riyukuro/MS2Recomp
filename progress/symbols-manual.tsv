@@ -7807,3 +7807,7 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?Trace@GFxPlaceObjectUnpacked@GFx@Scaleform@@UEAAXPEBD@Z	1425d89e0	func
 ?ToAvmCharacter@Value@AS2@GFx@Scaleform@@QEBAPEAVAvmCharacter@234@PEBVEnvironment@234@@Z	142990d60	func
 ?AddMarker@ViewStats@AMP@GFx@Scaleform@@QEAAXPEBD@Z	1426204e0	func
+?UnicodeAlnumBits@Scaleform@@3QBGB	1431859b0	data
+?UnicodeAlphaBits@Scaleform@@3QBGB	143186050	data
+?UnicodeDigitBits@Scaleform@@3QBGB	1431866f0	data
+?UnicodeXDigitBits@Scaleform@@3QBGB	143186d30	data
