@@ -7894,3 +7894,5 @@ sfr_atan2f_thunk	14280f28e	func
 ?GetMember@NetStream@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z	14000aab0	func
 ?OpenUrl@VideoProviderNetStream@AS2@GFx@Scaleform@@QEAAXPEBDPEAVEnvironment@234@@Z	14000c4b0	func
 ?SetMember@NetStream@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z	140008250	func
+?SetSoundSpatial@NetStreamProto@AS2@GFx@Scaleform@@SAXAEBVFnCall@234@@Z	1400085c0	func
+?SetSwfSync@VideoProviderNetStream@AS2@GFx@Scaleform@@QEAAX_NPEAVSprite@34@@Z	1400064f0	func
