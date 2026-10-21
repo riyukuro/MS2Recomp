@@ -1637,15 +1637,16 @@ void Unk_UserProxy::FUN_1408f0ca0(int i, Unk_UserProxyLabel &p) {
 }
 
 // @0x1408f0d30
-// MS2-FUNCTIONAL: equivalent locked early return; compiler cleanup branch differs.
 int Unk_UserProxy::FUN_1408f0d30(int i) {
-  if (i < 0 || i > 2)
+  if (i < 0 || i >= 3)
     return 0;
   Unk_UserProxyWriteLock lock(m_290, 1);
-  if (m_e0[i].m_18 == 0)
+  if (m_e0[i].m_18) {
+    m_e0[i].Clear();
+    return 1;
+  } else {
     return 0;
-  m_e0[i].Clear();
-  return 1;
+  }
 }
 
 // @0x1408f0e00
@@ -1689,7 +1690,7 @@ void Unk_UserProxy::FUN_1408f1090(CString p) {
 }
 
 // @0x1408f1110
-void Unk_UserProxy::FUN_1408f1110(__int64 p) {
+void Unk_UserProxy::FUN_1408f1110(unsigned __int64 p) {
   if (Unk_LockGuard lock = m_290) {
       __assume(0);
   } else {
@@ -1698,7 +1699,7 @@ void Unk_UserProxy::FUN_1408f1110(__int64 p) {
 }
 
 // @0x1408f1190
-void Unk_UserProxy::FUN_1408f1190(__int64 p) {
+void Unk_UserProxy::FUN_1408f1190(unsigned __int64 p) {
   if (Unk_LockGuard lock = m_290) {
       __assume(0);
   } else {
@@ -1721,22 +1722,20 @@ void Unk_UserProxy::FUN_1408f1270(ATL::CAtlArray<unsigned __int64> &out) {
       __assume(0);
   } else {
     // const begin/end 0x1408f48f0 / 0x1408f4960 (the non-const end is 0x140341f40, used by find).
-    const std::set<unsigned __int64> &ids = m_170;
-    for (auto it = ids.begin(); it != ids.end(); ++it)
+    for (auto it = static_cast<const std::set<unsigned __int64> &>(m_170).begin();
+         it != static_cast<const std::set<unsigned __int64> &>(m_170).end(); ++it)
       out.Add(*it);
   }
 }
 
 // @0x1408f1330
-// MS2-FUNCTIONAL: equivalent locked early return; compiler cleanup branch differs.
 __int64 Unk_UserProxy::FUN_1408f1330() {
   if (Unk_LockGuard lock = m_290) {
       __assume(0);
   } else {
-    const std::set<unsigned __int64> &ids = m_170;
-    if (ids.empty())
+    if (m_170.empty())
       return 0;
-    return *ids.begin();
+    return *static_cast<const std::set<unsigned __int64> &>(m_170).begin();
   }
 }
 
@@ -1922,8 +1921,7 @@ void Unk_UserProxy::FUN_1408f2020(unsigned char value) {
 }
 
 // @0x1408f2070
-// MS2-FUNCTIONAL: equivalent byte-to-bool conversion; compiler temporary differs.
-bool Unk_UserProxy::FUN_1408f2070() { return static_cast<char>(m_24) != 0; }
+int Unk_UserProxy::FUN_1408f2070() { return m_24 > 0; }
 
 // @0x1408f20b0
 bool Unk_UserProxy::FUN_1408f20b0(int bit) { return m_94[bit]; }

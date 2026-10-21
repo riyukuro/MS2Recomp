@@ -216,7 +216,7 @@ public:
   void FUN_1408ec3c0(COutputStream &s);
   void FUN_1408f20e0(int bit, bool value);
   bool FUN_1408f20b0(int bit);
-  bool FUN_1408f2070();
+  int FUN_1408f2070();
   void FUN_1408f2020(unsigned char value);
   unsigned char FUN_1408f2000();
   int FUN_1408f1db0();
@@ -239,8 +239,8 @@ public:
   __int64 FUN_1408f1330();
   void FUN_1408f1270(ATL::CAtlArray<unsigned __int64> &out);
   void FUN_1408f1200();
-  void FUN_1408f1190(__int64 p);
-  void FUN_1408f1110(__int64 p);
+  void FUN_1408f1190(unsigned __int64 p);
+  void FUN_1408f1110(unsigned __int64 p);
   void FUN_1408f1090(CString p);
   void FUN_1408f1040(__int64 p);
   void FUN_1408f0fb0();
