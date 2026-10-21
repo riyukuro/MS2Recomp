@@ -76,8 +76,9 @@ public:
 class Unk_LgPlayer;
 void* FUN_1403ed2d0();                                          // the world service
 void* FUN_141bd0cc0(void* pWorld);                              // its local player
-typedef unsigned short (*Unk_LgLevelFn)(void*);
-#define Unk_LgActorLevel(pActor) reinterpret_cast<Unk_LgLevelFn>((*reinterpret_cast<void***>(pActor))[78])(pActor)
+// the local player: only the level (slot 78, +0x270) is used
+struct Unk_LgActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };
+#define Unk_LgActorLevel(pActor) static_cast<Unk_LgActor*>(pActor)->vfunc_78()
 class Unk_LgSelf { public: int FUN_141654700(); };               // the job of the player
 
 // listener registries
@@ -100,10 +101,13 @@ class Unk_LgStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_LgStrings* FUN_1401a9d70();
 CStringW FUN_14028b8e0(const CStringW& strKey);
 CStringW FUN_1409e8820(CStringW strKey, const short& a1);
+CStringW FUN_1409e8820(CStringW strKey, const unsigned short& n);
 CStringW FUN_140ec2f00(CStringW strKey, const short& a1, const short& a2);
 CStringW FUN_1409e9ed0(CStringW strKey, const CStringW& a1, const unsigned short& a2);
 CStringW FUN_1401aa6a0(int nId);                                // npc name
-int FUN_140841300(const CString& str, const char* sz);
+int FUN_14074b030(CQuestData* pData);                           // the quest id
+AScript* FUN_1409ee290(MS2Ptr<AScript>* p);                     // the script behind the pointer
+bool FUN_140841300(const CStringW& str, const char* sz);   // the string equals sz
 
 // message boxes and packets
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, void* listener, CStringW tag);
@@ -197,9 +201,8 @@ UILevelUpGuideDialog::UILevelUpGuideDialog() : m_1e0(10)
 {
     FUN_141924170(1);
     FUN_140f85ba0();
-    m_1cc[0] = 1;
-    m_1cc[1] = 1;
-    m_1cc[2] = 1;
+    for (size_t i = 0; i < 3; i++)
+        m_1cc[i] = 1;
 }
 
 // @0x140f84450
@@ -225,12 +228,12 @@ void UILevelUpGuideDialog::vfunc_67()
     FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     for (size_t i = 0; i < m_1a8.GetCount(); i++)
         FUN_141415600(m_1a8.GetAt(i));
-    MS2Ptr<Unk_LgCheck> spEtc = FUN_140e52670("m_contentsEtc");
-    m_1cc[0] = spEtc->FUN_1422ce0e0();
-    MS2Ptr<Unk_LgCheck> spBoss = FUN_140e52670("m_contentsBoss");
-    m_1cc[1] = spBoss->FUN_1422ce0e0();
-    MS2Ptr<Unk_LgCheck> spDungeon = FUN_140e52670("m_contentsDungeon");
-    m_1cc[2] = spDungeon->FUN_1422ce0e0();
+    if (MS2Ptr<Unk_LgCheck> spEtc = FUN_140e52670("m_contentsEtc"))
+        m_1cc[0] = spEtc->FUN_1422ce0e0();
+    if (MS2Ptr<Unk_LgCheck> spBoss = FUN_140e52670("m_contentsBoss"))
+        m_1cc[1] = spBoss->FUN_1422ce0e0();
+    if (MS2Ptr<Unk_LgCheck> spDungeon = FUN_140e52670("m_contentsDungeon"))
+        m_1cc[2] = spDungeon->FUN_1422ce0e0();
     UIDialog::vfunc_67();
 }
 
@@ -241,13 +244,14 @@ void UILevelUpGuideDialog::OnLoadComplete()
     void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPlayer == 0)
         return;
-    FUN_140f85330(Unk_LgActorLevel(pPlayer));
-    MS2Ptr<Unk_LgCheck> spEtc = FUN_140e52670("m_contentsEtc");
-    spEtc->FUN_1422ce090(m_1cc[0]);
-    MS2Ptr<Unk_LgCheck> spBoss = FUN_140e52670("m_contentsBoss");
-    spBoss->FUN_1422ce090(m_1cc[1]);
-    MS2Ptr<Unk_LgCheck> spDungeon = FUN_140e52670("m_contentsDungeon");
-    spDungeon->FUN_1422ce090(m_1cc[2]);
+    unsigned short nLevel = Unk_LgActorLevel(pPlayer);
+    FUN_140f85330(nLevel);
+    if (MS2Ptr<Unk_LgCheck> spEtc = FUN_140e52670("m_contentsEtc"))
+        spEtc->FUN_1422ce090(m_1cc[0]);
+    if (MS2Ptr<Unk_LgCheck> spBoss = FUN_140e52670("m_contentsBoss"))
+        spBoss->FUN_1422ce090(m_1cc[1]);
+    if (MS2Ptr<Unk_LgCheck> spDungeon = FUN_140e52670("m_contentsDungeon"))
+        spDungeon->FUN_1422ce090(m_1cc[2]);
     FUN_140f85f90();
     FUN_140f861c0();
     FUN_140f869f0();
@@ -260,13 +264,17 @@ int UILevelUpGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp(szMethod, "onReceiveItem") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_140f857e0(data.FUN_1422b8b10());
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            int nItem = data.FUN_1422b8b10();
+            FUN_140f857e0(nItem);
+        }
     }
     else if (_stricmp(szMethod, "onClickContents") == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_140f854b0(data.FUN_1422b8b10());
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            int nId = data.FUN_1422b8a10();
+            FUN_140f854b0(nId);
+        }
     }
     else if (_stricmp(szMethod, "onContentsFilter") == 0) {
         FUN_140f861c0();
@@ -274,7 +282,8 @@ int UILevelUpGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     else if (_stricmp(szMethod, "onLevelSelect") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
-            FUN_140f87af0((unsigned short)data.FUN_1422b8b10());
+            unsigned short nLevel = data.FUN_1422b8a10();
+            FUN_140f87af0(nLevel);
             FUN_140f861c0();
         }
     }
@@ -285,39 +294,51 @@ int UILevelUpGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 void UILevelUpGuideDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    CString strType = pArgs->FUN_1422b8d30();
-    if (FUN_140841300(strType, "contents") != 0)
-        return;
-    int nId = pArgs->FUN_1422b8b10();
-    MS2Ptr<RecommendContnets> spRow;
-    if (!m_1e0.Lookup(nId, spRow))
-        return;
-    if (spRow->m_kind == 0)
-        FUN_140f878e0(spRow, pRetVal);
-    else if (spRow->m_kind == 1)
-        FUN_140f876b0(spRow, pRetVal);
+    CStringW strType = pArgs->FUN_1422b8f40();
+    if (FUN_140841300(strType, "contents"))
+    {
+        int nId = pArgs->FUN_1422b8a10();
+        MS2Ptr<RecommendContnets> spRow(0);
+        if (m_1e0.Lookup(nId, spRow))
+        {
+            switch (spRow->m_kind)
+            {
+            case 1:
+                FUN_140f876b0(spRow, pRetVal);
+                break;
+            case 0:
+                FUN_140f878e0(spRow, pRetVal);
+                break;
+            }
+        }
+    }
 }
 
 // @0x140f84f30 a quest was updated
 void UILevelUpGuideDialog::vfunc_o178_8(void* pQuestRaw)
 {
-    CQuest* pQuest = static_cast<CQuest*>(pQuestRaw);
-    MS2Ptr<CQuestData> spData = pQuest->GetData();
-    if (spData.get() == 0)
+    if (FUN_141924630() == 0)
         return;
-    if (spData->m_338.m_value == 1) {
+    if (pQuestRaw == 0)
+        return;
+    if (!static_cast<CQuest*>(pQuestRaw)->GetData())
+        return;
+    MS2Ptr<CQuestData> spData = static_cast<CQuest*>(pQuestRaw)->GetData();
+    switch (spData->m_338.m_value) {
+    case 1: {
         ASObj obj(2);
-        FUN_140f86dd0(obj, pQuest->FUN_140bfc580());
-        m_30->Invoke("addLevelGuide", obj);
+        if (FUN_140f86dd0(obj, static_cast<CQuest*>(pQuestRaw)->FUN_140bfc580()) != 0)
+            m_30->Invoke("addLevelGuide", obj);
     }
-    else if (spData->m_338.m_value == 2) {
-        MS2Ptr<Unk_LgEvent> spEvent = FUN_140f880c0("m_eventDialog");
-        if (spEvent.get() == 0)
-            return;
-        ASObj obj(2);
-        obj.FUN_1409c0d20("disableEvent", 1);
-        FUN_140f86dd0(obj, pQuest->FUN_140bfc580());
-        spEvent->Invoke("addLevelGuide", obj);
+        break;
+    case 2: {
+        if (MS2Ptr<Unk_LgEvent> spEvent = FUN_140f880c0("m_eventDialog")) {
+            ASObj obj(2);
+            if (FUN_140f86dd0(obj, static_cast<CQuest*>(pQuestRaw)->FUN_140bfc580()) != 0)
+                spEvent->Invoke("addLevelGuide", obj);
+        }
+        break;
+    }
     }
 }
 
@@ -353,12 +374,12 @@ void UILevelUpGuideDialog::FUN_140f85330(unsigned short nLevel)
     FUN_1407476c0()->FUN_14074cca0(quests, 1);
     for (size_t i = 0; i < quests.GetCount(); i++) {
         MS2Ptr<CQuestData> spData = quests[i];
-        if (spData->m_conditions.GetCount() == 0)
-            continue;
-        unsigned short nQuestLevel = LgQuestLevel(spData.get());
-        if (nQuestLevel > m_1d8)
-            m_1d8 = nQuestLevel;
-        m_188.Add(nQuestLevel);
+        if (spData->m_conditions.GetCount() > 0) {
+            unsigned short nQuestLevel = LgQuestLevel(spData.get());
+            if (nQuestLevel > m_1d8)
+                m_1d8 = nQuestLevel;
+            m_188.Add(nQuestLevel);
+        }
     }
     FUN_140f87af0(nLevel);
 }
@@ -366,10 +387,10 @@ void UILevelUpGuideDialog::FUN_140f85330(unsigned short nLevel)
 // @0x140f854b0
 void UILevelUpGuideDialog::FUN_140f854b0(int nId)
 {
-    MS2Ptr<RecommendContnets> spRow;
+    MS2Ptr<RecommendContnets> spRow(0);
     if (!m_1e0.Lookup(nId, spRow))
         return;
-    if (spRow->m_link.IsEmpty())
+    if (spRow->m_link.GetLength() == 0)
         return;
     if (spRow->m_link == "DungeonRoomDialog") {
         Unk_LgRoomDlg* pDialog = FUN_140961550(0x4ebd);
@@ -381,25 +402,24 @@ void UILevelUpGuideDialog::FUN_140f854b0(int nId)
     }
     else if (spRow->m_link == "WorldMapDialog") {
         Unk_LgWorldMap* pDialog = FUN_140961730(0x4e42);
-        if (pDialog != 0) {
-            if (spRow->m_kind == 0 || spRow->m_kind == 2) {
-                if (spRow->m_code != 0)
-                    pDialog->FUN_141b5bc70(spRow->m_code);
-                CStringW strText = FUN_1401a9d70()->FUN_141811980(0x24, spRow->m_id);
-                if (!strText.IsEmpty())
-                    pDialog->FUN_141b5bcc0(strText);
-            }
-            else {
-                unsigned nField = 0;
-                FUN_140700390()->FUN_1406fb700(spRow->m_code, &nField);
-                pDialog->FUN_141b5bc70(nField);
-            }
-            pDialog->FUN_141924680();
+        if (pDialog == 0)
+            return;
+        if (spRow->m_kind == 0 || spRow->m_kind == 2) {
+            if (spRow->m_code != 0)
+                pDialog->FUN_141b5bc70(spRow->m_code);
+            CStringW strText = FUN_1401a9d70()->FUN_141811980(0x24, spRow->m_id);
+            if (strText.GetLength() != 0)
+                pDialog->FUN_141b5bcc0(strText);
         }
+        else {
+            unsigned nField;
+            if (FUN_140700390()->FUN_1406fb700(spRow->m_code, &nField))
+                pDialog->FUN_141b5bc70(nField);
+        }
+        pDialog->FUN_141924680();
     }
     else {
-        Unk_CommandUIRef ref = reinterpret_cast<Unk_LgUiMgr*>(FUN_1403ed2b0())->FUN_141adcf50(spRow->m_link);
-        UIDialog* pDialog = dynamic_cast<UIDialog*>(FUN_1403ed9e0(ref));
+        UIDialog* pDialog = dynamic_cast<UIDialog*>(FUN_1403ed9e0(const_cast<Unk_CommandUIRef&>(static_cast<const Unk_CommandUIRef&>(reinterpret_cast<Unk_LgUiMgr*>(FUN_1403ed2b0())->FUN_141adcf50(spRow->m_link)))));
         if (pDialog != 0)
             pDialog->FUN_141924680();
     }
@@ -409,17 +429,22 @@ void UILevelUpGuideDialog::FUN_140f854b0(int nId)
 void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
 {
     Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuest);
-    if (spQuest.IsNull() || spQuest->IsComplete() == 0)
+    if (spQuest.IsNull())
+        return;
+    if (spQuest->IsComplete() == 0)
         return;
     MS2Ptr<CQuestData> spData = spQuest->GetData();
-    if (spData.get() == 0)
+    if (!spData)
         return;
     Unk_LgSelf* pSelf = static_cast<Unk_LgSelf*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+    if (pSelf == 0)
+        return;
     if (spData->m_338.m_value == 1 && pSelf->FUN_141654700() == 1) {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_recommend_contents_newbie_warn"), 0, L"");
-        spBox->FUN_140534050(nQuest);
-        spBox->FUN_141a027c0(LgAnswerDelegate(this, &UILevelUpGuideDialog::FUN_140f85290));
-        FUN_140d73c60(spBox);
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_recommend_contents_newbie_warn"), 0, L"")) {
+            spBox->FUN_140534050(nQuest);
+            spBox->FUN_141a027c0(LgAnswerDelegate(this, &UILevelUpGuideDialog::FUN_140f85290));
+            FUN_140d73c60(spBox);
+        }
     }
     else {
         COutPacket packet(0x29, 0);
@@ -470,21 +495,21 @@ void UILevelUpGuideDialog::FUN_140f85f90()
 {
     if (FUN_140a467d0(&m_30))
         return;
-    void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pPlayer == 0)
-        return;
     ATL::CAtlArray<MS2Ptr<CQuestData> > quests;
     FUN_1407476c0()->FUN_14074cca0(quests, 1);
     qsort(quests.GetData(), quests.GetCount(), sizeof(MS2Ptr<CQuestData>), LgQuestOrder);
     for (size_t i = 0; i < quests.GetCount(); i++) {
         MS2Ptr<CQuestData> spData = quests[i];
-        if (spData->m_conditions.GetCount() == 0)
-            continue;
-        ASObj row(2);
-        if (FUN_140f86dd0(row, spData->m_id) != 0)
-            m_30->Invoke("addLevelGuide", row);
+        if (spData->m_conditions.GetCount() > 0) {
+            ASObj row(2);
+            if (FUN_140f86dd0(row, FUN_14074b030(spData.operator->())) != 0)
+                m_30->Invoke("addLevelGuide", row);
+        }
     }
-    LG_ROOT(m_30)->FUN_140ea5e70("setPC", Unk_LgActorLevel(pPlayer));
+    void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    if (pPlayer == 0)
+        return;
+    static_cast<Unk_LgRoot*>(FUN_1409ee290(&m_30))->FUN_140ea5e70("setPC", Unk_LgActorLevel(pPlayer));
 }
 
 // @0x140f861c0
@@ -545,65 +570,69 @@ void UILevelUpGuideDialog::FUN_140f861c0()
 // @0x140f869f0
 void UILevelUpGuideDialog::FUN_140f869f0()
 {
-    MS2Ptr<Unk_LgEvent> spEvent = FUN_140f880c0("m_eventDialog");
-    if (spEvent.get() == 0)
-        return;
     void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPlayer == 0)
         return;
-    ATL::CAtlArray<MS2Ptr<CQuestData> > quests;
-    FUN_1407476c0()->FUN_14074cca0(quests, 2);
-    int nAdded = 0;
-    for (size_t i = 0; i < quests.GetCount(); i++) {
-        MS2Ptr<CQuestData> spData = quests[i];
-        Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(spData->m_id);
-        if (spQuest.IsNull())
-            continue;
-        if (spQuest->FUN_1407447c0() != 0)
-            continue;
-        int nState = spQuest->FUN_1407476d0();
-        if (nState != 1 && nState != 2)
-            continue;
-        ASObj row(2);
-        row.FUN_1409c0d20("disableEvent", 1);
-        if (FUN_140f86dd0(row, spData->m_id) == 0)
-            continue;
-        spEvent->Invoke("addLevelGuide", row);
-        nAdded++;
+    if (MS2Ptr<Unk_LgEvent> spEvent = FUN_140f880c0("m_eventDialog")) {
+        int bAdded = 0;
+        ATL::CAtlArray<MS2Ptr<CQuestData> > quests;
+        FUN_1407476c0()->FUN_14074cca0(quests, 2);
+        for (size_t i = 0; i < quests.GetCount(); i++) {
+            MS2Ptr<CQuestData> spData = quests[i];
+            Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(FUN_14074b030(spData.operator->()));
+            if (spQuest.IsNull())
+                continue;
+            if (spQuest->FUN_1407447c0() != 0)
+                continue;
+            if (spQuest->FUN_1407476d0() != 1 && spQuest->FUN_1407476d0() != 2)
+                continue;
+            if (spData->m_conditions.GetCount() > 0) {
+                ASObj row(2);
+                row.FUN_1407cb9c0("disableEvent", 1);
+                if (FUN_140f86dd0(row, FUN_14074b030(spData.operator->())) != 0) {
+                    spEvent->Invoke("addLevelGuide", row);
+                    bAdded = 1;
+                }
+            }
+        }
+        if (bAdded != 0) {
+            static_cast<Unk_LgRoot*>(static_cast<AScript*>(spEvent.operator->()))->FUN_140ea5e70("setPC", Unk_LgActorLevel(pPlayer));
+            spEvent->vfunc_3(1);
+        }
+        else
+            spEvent->vfunc_3(0);
     }
-    if (nAdded != 0) {
-        static_cast<Unk_LgRoot*>(static_cast<AScript*>(spEvent.get()))->FUN_140ea5e70("setPC", Unk_LgActorLevel(pPlayer));
-        spEvent->vfunc_3(1);
-    }
-    else
-        spEvent->vfunc_3(0);
 }
 
 // @0x140f86dd0
 int UILevelUpGuideDialog::FUN_140f86dd0(ASObj& rObj, int nQuest)
 {
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-    if (spData.get() == 0 || spData->m_conditions.GetCount() == 0)
+    if (!spData)
+        return 0;
+    if (FUN_140a467d0(&m_30))
         return 0;
     Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuest);
-    CString strState("lock");
-    if (!spQuest.IsNull()) {
-        if (spQuest->IsComplete() != 0)
-            strState = "active";
-        if (spQuest->IsRewarded() != 0)
-            strState = "inactive";
-    }
-    unsigned short nLevel = LgQuestLevel(spData.get());
+    CString strState;
+    if ((spQuest.get() ? true : false) && spQuest->IsComplete() != 0)
+        strState = "active";
+    else if ((spQuest.get() ? true : false) && spQuest->IsRewarded() != 0)
+        strState = "inactive";
+    else
+        strState = "lock";
+    if (spData->m_conditions.GetCount() == 0)
+        return 0;
+    unsigned short nLevel = LgQuestLevel(spData);
     CStringW strLevel;
     if (nLevel == m_1d8)
-        strLevel = FUN_1409e8820(CStringW(L"s_recommend_contents_max_level"), (short)nLevel);
+        strLevel = FUN_1409e8820(CStringW(L"s_recommend_contents_max_level"), nLevel);
     else
-        strLevel = FUN_1409e8820(CStringW(L"s_recommend_contents_level"), (short)nLevel);
-    rObj.FUN_1409c0d20("id", nQuest);
+        strLevel = FUN_1409e8820(CStringW(L"s_recommend_contents_level"), nLevel);
+    rObj.FUN_1409c0d20("id", FUN_14074b030(spData.operator->()));
     rObj.FUN_1407cba60("state", strState);
-    rObj.FUN_1409c48f0("level", (short)nLevel);
+    rObj.FUN_1409c48f0("level", nLevel);
     rObj.FUN_1407cbb20("levelStr", strLevel);
-    FUN_140f87270(rObj, nQuest, 0);
+    FUN_140f87270(rObj, FUN_14074b030(spData.operator->()), 0);
     return 1;
 }
 
@@ -611,32 +640,36 @@ int UILevelUpGuideDialog::FUN_140f86dd0(ASObj& rObj, int nQuest)
 void UILevelUpGuideDialog::FUN_140f87270(ASObj& rObj, int nQuest, int bName)
 {
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-    if (spData.get() == 0)
-        return;
-    if (spData->m_338.m_value < 1 || spData->m_338.m_value > 2)
+    if (!spData)
         return;
     Unk_LgSelf* pSelf = static_cast<Unk_LgSelf*>(FUN_141bd0cc0(FUN_1403ed2d0()));
     if (pSelf == 0)
         return;
-    for (size_t i = 0; i < spData->m_complete.m_choiceRewards.GetCount(); i++) {
-        CQuestData::QuestRewardItem& item = spData->m_complete.m_choiceRewards[i];
-        if (item.m_itemId == 0)
-            continue;
-        if (FUN_140748050(&item, pSelf->FUN_141654700()) == 0)
-            continue;
-        MS2Ptr<CItem> spItem(new CItem);
-        if (spItem->FUN_14052b130(item.m_itemId, item.m_count, 0) == 0)
-            continue;
-        spItem->FUN_140526c70(item.m_job);
-        CString strBindID;
-        strBindID.Format("%s.%d", (LPCSTR)vfunc_1(), m_1a8.GetCount() + 1);
-        FUN_141415450(strBindID, spItem, 0, 0x415, 0x800);
-        rObj.FUN_1407cba60("binding", strBindID);
-        if (bName != 0)
-            rObj.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, item.m_itemId));
-        m_1a8.Add(strBindID);
-        return;
+    CQuestData::QuestRewardItem* pItem = 0;
+    switch (spData->m_338.m_value) {
+    case 1:
+    case 2:
+        for (size_t i = 0; i < spData->m_complete.m_choiceRewards.GetCount(); i++) {
+            CQuestData::QuestRewardItem& item = spData->m_complete.m_choiceRewards[i];
+            if (item.m_itemId != 0 && FUN_140748050(&item, pSelf->FUN_141654700()) != 0)
+                pItem = &spData->m_complete.m_choiceRewards[i];
+        }
+        break;
     }
+    if (pItem == 0)
+        return;
+    MS2Ptr<CItem> spItem(new CItem);
+    if (spItem->FUN_14052b130(pItem->m_itemId, pItem->m_count, 0) == 0)
+        return;
+    spItem->FUN_140526c70(pItem->m_job);
+    int nSlot = 0x415;
+    CString strBindID;
+    strBindID.Format("%s.%d", (LPCSTR)vfunc_1(), m_1a8.GetCount() + 1);
+    FUN_141415450(strBindID, spItem, 0, nSlot, 0x800);
+    rObj.FUN_1407cba60("binding", strBindID);
+    if (bName != 0)
+        rObj.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, pItem->m_itemId));
+    m_1a8.Add(strBindID);
 }
 
 // @0x140f876b0 boss tooltip
@@ -644,12 +677,11 @@ void UILevelUpGuideDialog::FUN_140f876b0(MS2Ptr<RecommendContnets> spRow, Scalef
 {
     int nNpc = spRow->m_code;
     MS2Ptr<Unk_LgNpc> spNpc = FUN_1406cd330(nNpc);
-    if (spNpc.get() == 0)
+    if (!spNpc)
         return;
     ASTooltip tip(1, 2);
     FUN_140cb17d0()->FUN_141b99dc0(nNpc, &tip);
-    unsigned short nLevel = FUN_1406cd060(spNpc.get());
-    tip.FUN_1407cbb20("text", FUN_1409e9ed0(CStringW(L"s_recommend_contents_tooltip_boss"), FUN_1401aa6a0(nNpc), nLevel));
+    tip.FUN_1407cbb20("text", FUN_1409e9ed0(CStringW(L"s_recommend_contents_tooltip_boss"), FUN_1401aa6a0(nNpc), FUN_1406cd060(spNpc.get())));
     tip.FUN_1409c0e60("enableLClick", L"");
     tip.FUN_1409c6d70("WorldMapTooltip_Boss");
     tip.FUN_1409c6e00(300);
@@ -662,7 +694,7 @@ void UILevelUpGuideDialog::FUN_140f876b0(MS2Ptr<RecommendContnets> spRow, Scalef
 void UILevelUpGuideDialog::FUN_140f878e0(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal)
 {
     CStringW strText = FUN_1401a9d70()->FUN_141811980(0x25, spRow->m_id);
-    if (strText.IsEmpty())
+    if (strText.GetLength() == 0)
         return;
     ASTooltip tip(1, 2);
     tip.FUN_1409c6d70("export_common_tooltip_tooltipText");
@@ -689,30 +721,31 @@ void UILevelUpGuideDialog::FUN_140f87af0(unsigned short nLevel)
     unsigned short nLo = 1;
     unsigned short nHi = m_1d8;
     for (size_t i = 0; i < m_188.GetCount(); i++) {
-        unsigned short nStep = m_188[i];
-        if (nStep <= nLevel) {
-            if (nStep > nLo)
-                nLo = nStep;
+        if (m_188[i] <= nLevel) {
+            if (nLo < m_188[i])
+                nLo = m_188[i];
         }
-        else if (nStep < nHi)
-            nHi = nStep;
+        else if (nHi > m_188[i])
+            nHi = m_188[i];
     }
-    m_1c8.FUN_14075bc80(nLo, nHi - 1);
-    if (nLo == m_1d8)
-        m_1c8.FUN_14075bc80(nLo, m_1d8);
+    m_1c8.m_nLow = nLo;
+    m_1c8.m_nHigh = nHi - 1;
+    if (m_1c8.m_nLow == m_1d8)
+        m_1c8.m_nHigh = m_1d8;
 }
 
 // @0x140f87c80 the order of the level steps
 static int LgQuestOrder(const void* pA, const void* pB)
 {
-    const MS2Ptr<CQuestData>& spA = *static_cast<const MS2Ptr<CQuestData>*>(pA);
-    const MS2Ptr<CQuestData>& spB = *static_cast<const MS2Ptr<CQuestData>*>(pB);
-    if (spA->m_conditions.GetCount() == 1) {
-        if (spB->m_conditions.GetCount() == 1)
-            return LgQuestLevel(spA.get()) < LgQuestLevel(spB.get()) ? -1 : 1;
+    MS2Ptr<CQuestData> spA = *static_cast<const MS2Ptr<CQuestData>*>(pA);
+    MS2Ptr<CQuestData> spB = *static_cast<const MS2Ptr<CQuestData>*>(pB);
+    if (spA->m_conditions.GetCount() != 1)
+        return 1;
+    if (spB->m_conditions.GetCount() != 1)
         return -1;
-    }
-    return 1;
+    unsigned short nA = LgQuestLevel(spA);
+    unsigned short nB = LgQuestLevel(spB);
+    return nA < nB ? -1 : 1;
 }
 
 // @0x140f87e00 the order of the contents rows
