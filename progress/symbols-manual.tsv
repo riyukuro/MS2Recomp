@@ -7675,3 +7675,7 @@ tan	14280f480	func
 ??0ShapeDataBase@GFx@Scaleform@@QEAA@W4EmptyShape@012@@Z	142659740	func
 ?InitEmptyClipDef@SpriteDef@GFx@Scaleform@@QEAAXXZ	1425d80c0	func
 MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
+?ConstructCopyCalls@ContextImpl@Render@Scaleform@@3IA	143b15f78	data
+?CopyCalls@ContextImpl@Render@Scaleform@@3IA	143b15f80	data
+?DestroyCalls@ContextImpl@Render@Scaleform@@3IA	143b15f7c	data
+?InterfaceImpl@FilterState@Render@Scaleform@@2VInterface_RefCountImpl@StateData@23@A	143b172e8	data
