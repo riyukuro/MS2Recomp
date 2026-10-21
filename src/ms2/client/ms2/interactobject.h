@@ -244,7 +244,7 @@ public:
 
     int FUN_141402b40();                                        // the node can be used (gathering table check)
     int FUN_141402c50();                                        // milliseconds until the node respawns
-    bool FUN_141402c90();                                       // the gathering id is a valid node
+    int FUN_141402c90();                                        // BOOL: the gathering id is a valid node
 
     int m_nRespawnTick;                                         // +0xd8 tick at which the node comes back (0: present)
     int m_pad_dc;

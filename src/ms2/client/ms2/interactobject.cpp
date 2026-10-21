@@ -44,7 +44,12 @@ extern CString s_strUseTelescope;
 
 // ---- exe callees (unit-local stand-ins) ----
 // @0x141404030
-static bool FUN_141404030(std::vector<Unk_InteractReqItem>& aItems) { return !aItems.empty(); }
+static bool FUN_141404030(std::vector<Unk_InteractReqItem>& aItems)
+{
+    if (aItems.empty())
+        return false;
+    return true;
+}
 class Unk_IoPlayerBase
 {
 public:
@@ -238,10 +243,10 @@ extern QuestMask DAT_143aacd50;                                 // empty mask
 class Unk_IoSession
 {
 public:
-    char FUN_14036d570(int n);
+    unsigned char FUN_14036d570(int n);
     char FUN_14036e4c0();
 };
-class Unk_IoMapRules { public: char FUN_1407d05e0(unsigned nMapId, int nBanType); };
+class Unk_IoMapRules { public: unsigned char FUN_1407d05e0(unsigned nMapId, int nBanType); };
 class Unk_IoGameCtx { public: Unk_IoMapRules* FUN_1403f3230(); };
 void* FUN_140302b00();
 Unk_IoMapRules* FUN_1403f3230(void* pCtx);
@@ -463,11 +468,12 @@ void CInteractObject::vfunc_2(Unk_InteractMsg*)
 // @0x1413fd6d0
 void CInteractObject::vfunc_3(int nState)
 {
-    if (!m_ent.FUN_1408b70b0(0) && !(m_spRow == 0))
-    {
-        m_nState = nState;
-        FUN_1413fe500();
-    }
+    if (m_ent.FUN_1408b70b0(0))
+        return;
+    if (m_spRow == 0)
+        return;
+    m_nState = nState;
+    FUN_1413fe500();
 }
 
 // @0x1413fd740
@@ -481,8 +487,7 @@ int CInteractObject::vfunc_4()
     if (m_spRow == 0)
         return 0;
     unsigned nMapId = FUN_1403ed2d0()->FUN_141bd3060();
-    int nBan = m_spRow->m_nId;
-    if (FUN_1403f3230(FUN_140302b00())->FUN_1407d05e0(nMapId, nBan) == 1)
+    if (FUN_1403f3230(FUN_140302b00())->FUN_1407d05e0(nMapId, m_spRow->m_nId) == 1)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
@@ -511,27 +516,23 @@ Unk_EntRef CInteractObject::FUN_1413fd890()
 // @0x1413fd8e0
 egf::EntityID CInteractObject::FUN_1413fd8e0()
 {
-    egf::EntityID id;
-    if (!m_ent.FUN_1408b70b0(0))
-        FUN_1408b6b20(&id, FUN_1408b76f0(m_ent.FUN_1408a9280()));
-    else
-        FUN_1401cd100(&id, 0);
-    return id;
+    if (m_ent.FUN_1408b70b0(0))
+        return egf::EntityID(0);
+    return *FUN_1408b76f0(m_ent.FUN_1408a9280());
 }
 
 // @0x1413fd960
 unsigned __int64 CInteractObject::FUN_1413fd960()
 {
-    if (!m_ent.FUN_1408b70b0(0))
-        return FUN_140affe40(m_ent.FUN_1408a9280());
-    return 0;
+    if (m_ent.FUN_1408b70b0(0))
+        return 0;
+    return FUN_140affe40(m_ent.FUN_1408a9280());
 }
 
 // @0x1413fd9b0
 void CInteractObject::vfunc_6(Unk_InteractCursor* pOut)
 {
-    int nId = FUN_140967110();
-    pOut->m_strHint = FUN_1401a9d70()->FUN_141811980(0xb, nId);
+    pOut->m_strHint = FUN_1401a9d70()->FUN_141811980(0xb, FUN_140967110());
     pOut->m_nCursor = m_spRow->m_nReactTime;
 }
 
@@ -648,7 +649,6 @@ int CInteractObject::FUN_1413fdfc0()
     return pEval->CheckMask(&m_spRow->m_maskUse);
 }
 
-// MS2-FUNCTIONAL: the exe reloads the template id through ecx (mov ecx,[id]; mov edx,ecx) before CHomePrivilege::FUN_14050d890(int), an argument conversion not reproduced with int/long/unsigned locals; otherwise identical
 // @0x1413fe040
 int CInteractObject::FUN_1413fe040()
 {
@@ -659,8 +659,7 @@ int CInteractObject::FUN_1413fe040()
         return 0;
     if (m_spRow->m_homePrivilege.m_nCheck == 0)
         return 1;
-    unsigned nId = FUN_140967110();
-    return pPlayer->FUN_140967010()->FUN_14050d890(nId);
+    return pPlayer->FUN_140967010()->FUN_14050d890(FUN_140967110());
 }
 
 // @0x1413fe120
@@ -688,19 +687,17 @@ int CInteractObject::FUN_1413fe220()
         return 0;
     if (m_spRow == 0)
         return 0;
-    if (FUN_141404030(m_spRow->m_aReqItem.m_aItem))
+    if (!FUN_141404030(m_spRow->m_aReqItem.m_aItem))
+        return 1;
+    std::vector<Unk_InteractReqItem>& aReq = m_spRow->m_aReqItem.m_aItem;
+    std::vector<Unk_InteractReqItem>::const_iterator itEnd = aReq.end();
+    for (std::vector<Unk_InteractReqItem>::const_iterator it = aReq.begin(); it != itEnd; ++it)
     {
-        std::vector<Unk_InteractReqItem>& aReq = m_spRow->m_aReqItem.m_aItem;
-        std::vector<Unk_InteractReqItem>::iterator itEnd = aReq.end();
-        for (std::vector<Unk_InteractReqItem>::iterator it = aReq.begin(); it != itEnd; ++it)
-        {
-            Unk_InteractReqItem req = *it;
-            if (pPlayer->FUN_1416749a0()->FUN_140970020(req.first, req.second, 0, 1) == 1)
-                return 1;
-        }
-        return 0;
+        Unk_InteractReqItem req = *it;
+        if (pPlayer->FUN_1416749a0()->FUN_140970020(req.first, req.second, 0, 1) == 1)
+            return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x1413fe370
@@ -737,16 +734,11 @@ void CInteractObject::vfunc_10()
 // @0x1413fe500
 void CInteractObject::FUN_1413fe500()
 {
-    if (FUN_1413fdfc0() != 0)
-    {
-        Unk_IoQuestMgr* pMgr = FUN_140764020();
-        if (reinterpret_cast<Unk_IoQuestEval*>(&pMgr->m_pEvalVptr)->CheckMask(FUN_1413fe8a0()) != 0)
-        {
-            FUN_1413fda50();
-            return;
-        }
-    }
-    FUN_1413fdc50();
+    if (FUN_1413fdfc0() == 0 ||
+        reinterpret_cast<Unk_IoQuestEval*>(&FUN_140764020()->m_pEvalVptr)->CheckMask(FUN_1413fe8a0()) == 0)
+        FUN_1413fdc50();
+    else
+        FUN_1413fda50();
 }
 
 // @0x1413fe580
@@ -790,54 +782,62 @@ void CInteractObject::vfunc_12()
 // @0x1413fe7d0
 CString CInteractObject::vfunc_13()
 {
-    if (m_nState == 0)
+    switch (m_nState)
+    {
+    case 0:
         return m_spRow->m_effect.m_strNormal;
-    if (m_nState == 1)
+    case 1:
         return m_spRow->m_effect.m_strReactable;
+    }
     return CString();
 }
 
 // @0x1413fe8a0
 QuestMask* CInteractObject::FUN_1413fe8a0()
 {
-    if (m_nState == 0)
+    switch (m_nState)
+    {
+    case 0:
         return &m_spRow->m_effect.m_maskNormal;
-    if (m_nState == 1)
+    case 1:
         return &m_spRow->m_effect.m_maskReactable;
+    }
     return &DAT_143aacd50;
 }
 
 // @0x1413fe910
 void CInteractObject::FUN_1413fe910()
 {
-    if (m_bHighlight == 0 && !m_ent.FUN_1408b70b0(0) && vfunc_5() != 8)
-    {
-        Unk_Entity* pEnt = m_ent.FUN_1408a9090();
-        FUN_140ad4ba0()->FUN_1414f11d0(pEnt);
-        m_bHighlight = 1;
-    }
+    if (m_bHighlight != 0)
+        return;
+    if (m_ent.FUN_1408b70b0(0))
+        return;
+    if (vfunc_5() == 8)
+        return;
+    FUN_140ad4ba0()->FUN_1414f11d0(m_ent.FUN_1408a9090());
+    m_bHighlight = 1;
 }
 
 // @0x1413fe9a0
 void CInteractObject::FUN_1413fe9a0(int nDelay)
 {
-    if (m_bHighlight != 0 && !m_ent.FUN_1408b70b0(0) && vfunc_5() != 8)
+    if (m_bHighlight == 0)
+        return;
+    if (m_ent.FUN_1408b70b0(0))
+        return;
+    if (vfunc_5() == 8)
+        return;
+    bool bFlag = false;
+    if (FUN_1408a20a0(m_ent.FUN_1408a9280(), 0x2e0ec6f3, &bFlag) == 0 && bFlag)
+        return;
+    if (nDelay != 0)
     {
-        bool bFlag = false;
-        int nRet = FUN_1408a20a0(m_ent.FUN_1408a9280(), 0x2e0ec6f3, &bFlag);
-        if (nRet != 0 || !bFlag)
-        {
-            if (nDelay == 0)
-            {
-                Unk_Entity* pEnt = m_ent.FUN_1408a9090();
-                FUN_140ad4ba0()->FUN_1414f1240(pEnt);
-                m_bHighlight = 0;
-            }
-            else
-            {
-                m_timer.FUN_140868750(nDelay);
-            }
-        }
+        m_timer.FUN_140868750(nDelay);
+    }
+    else
+    {
+        FUN_140ad4ba0()->FUN_1414f1240(m_ent.FUN_1408a9090());
+        m_bHighlight = 0;
     }
 }
 
@@ -1048,10 +1048,10 @@ void CInteractMeshObject::FUN_1413ff690(const CString& strAsset)
 // @0x1413ff800
 void CInteractMeshObject::FUN_1413ff800(int nCollision)
 {
-    if (nCollision == 0)
-        FUN_1413ff5f0();
-    else
+    if (nCollision != 0)
         MakeNxBoxController();
+    else
+        FUN_1413ff5f0();
 }
 
 // @0x1413ff840
@@ -1290,7 +1290,7 @@ static unsigned __int64 FUN_1414038e0(Unk_IoXmlElem* p, const char* pszName, uns
 {
     unsigned __int64 nValue;
     if (FUN_140873320(p, pszName, &nValue) != 0)
-        nValue = nDefault;
+        return nDefault;
     return nValue;
 }
 CString FUN_140390ea0(const wchar_t* psz, unsigned nCodePage);
@@ -1309,7 +1309,7 @@ void FUN_14097ed60(Unk_IoTexPtr* p, void* pRaw);            // ctor from a raw p
 void FUN_14097f4a0(Unk_IoTexPtr* p);
 void* FUN_14097fbf0(Unk_IoTexPtr* p);
 void FUN_14186bd30(Unk_IoTexPtr* pOut, const CStringW& strPath, int nFlag, int nZero);
-char FUN_1410b21a0(Unk_IoTexPtr* p, int nZero);
+unsigned char FUN_1410b21a0(Unk_IoTexPtr* p, int nZero);
 class Unk_IoTexMgr
 {
 public:
@@ -1600,13 +1600,11 @@ CStringW CInteractDisplayImage::FUN_141402060()
 {
     if (m_spRow == 0)
         return CStringW();
-    if (m_spRow->m_displayUrl.m_nType != 1 && m_spRow->m_displayUrl.m_nType != 3)
-    {
-        if (m_spRow->m_displayUrl.m_nType != 2 && m_spRow->m_displayUrl.m_nType != 4 && m_spRow->m_displayUrl.m_nType != 5)
-            return CStringW();
+    if (m_spRow->m_displayUrl.m_nType == 1 || m_spRow->m_displayUrl.m_nType == 3)
+        return m_strGuildName;
+    else if (m_spRow->m_displayUrl.m_nType == 2 || m_spRow->m_displayUrl.m_nType == 4 || m_spRow->m_displayUrl.m_nType == 5)
         return m_strCharName;
-    }
-    return m_strGuildName;
+    return CStringW();
 }
 
 // @0x1414021c0
@@ -1614,13 +1612,11 @@ int CInteractDisplayImage::FUN_1414021c0()
 {
     if (m_spRow == 0)
         return 0;
-    if (m_spRow->m_displayUrl.m_nType != 1 && m_spRow->m_displayUrl.m_nType != 3)
-    {
-        if (m_spRow->m_displayUrl.m_nType != 2 && m_spRow->m_displayUrl.m_nType != 4 && m_spRow->m_displayUrl.m_nType != 5)
-            return 0;
+    if (m_spRow->m_displayUrl.m_nType == 1 || m_spRow->m_displayUrl.m_nType == 3)
+        return m_nGuildRank;
+    else if (m_spRow->m_displayUrl.m_nType == 2 || m_spRow->m_displayUrl.m_nType == 4 || m_spRow->m_displayUrl.m_nType == 5)
         return m_nCharRank;
-    }
-    return m_nGuildRank;
+    return 0;
 }
 
 // @0x1414022a0
@@ -1630,13 +1626,13 @@ int CInteractDisplayImage::FUN_1414022a0()
         return 0;
     if (m_spRow->m_displayUrl.m_nType == 1)
         return m_nGuildTrophy;
-    if (m_spRow->m_displayUrl.m_nType == 2)
+    else if (m_spRow->m_displayUrl.m_nType == 2)
         return m_nCharTrophy;
-    if (m_spRow->m_displayUrl.m_nType == 3)
+    else if (m_spRow->m_displayUrl.m_nType == 3)
         return m_nGuildScore;
-    if (m_spRow->m_displayUrl.m_nType == 4)
+    else if (m_spRow->m_displayUrl.m_nType == 4)
         return m_nCharBuildPoint;
-    if (m_spRow->m_displayUrl.m_nType == 5)
+    else if (m_spRow->m_displayUrl.m_nType == 5)
         return m_nCharScore;
     return 0;
 }
@@ -1708,8 +1704,7 @@ void CInteractGatheringObject::vfunc_11()
     CInteractObject::vfunc_11();
     if (m_nRespawnTick != 0)
     {
-        unsigned nNow = FUN_140869420();
-        if ((unsigned)m_nRespawnTick <= nNow)
+        if ((unsigned)m_nRespawnTick <= FUN_140869420())
         {
             vfunc_3(1);
             m_nRespawnTick = 0;
@@ -1775,8 +1770,7 @@ int CInteractGatheringObject::vfunc_16()
 {
     if (FUN_141402c90() == 0)
         return 0;
-    int nId = m_spRow->m_gathering.m_nReceipeId;
-    if (FUN_1409670c0()->FUN_14066bc40(nId) == 3)
+    if (FUN_1409670c0()->FUN_14066bc40(m_spRow->m_gathering.m_nReceipeId) == 3)
         return 0;
     return 1;
 }
@@ -1809,13 +1803,13 @@ int CInteractGatheringObject::FUN_141402b40()
 // @0x141402c50
 int CInteractGatheringObject::FUN_141402c50()
 {
-    if (m_nRespawnTick == 0)
-        return 0;
-    return m_nRespawnTick - FUN_140869420();
+    if (m_nRespawnTick != 0)
+        return m_nRespawnTick - FUN_140869420();
+    return 0;
 }
 
 // @0x141402c90
-bool CInteractGatheringObject::FUN_141402c90()
+int CInteractGatheringObject::FUN_141402c90()
 {
     return FUN_140e5ca20()->FUN_140b6d470(m_spRow->m_gathering.m_nReceipeId) == 0;
 }
@@ -1848,11 +1842,9 @@ int CInteractGuildPosterObject::vfunc_1(Unk_Entity* pEntity, int nState)
 // @0x141402dd0
 void CInteractGuildPosterObject::vfunc_10()
 {
-    if (vfunc_4() != 0)
-    {
-        int nPoster = FUN_141402e60();
-        FUN_14052d220()->FUN_141880230(FUN_140967060(), nPoster);
-    }
+    if (vfunc_4() == 0)
+        return;
+    FUN_14052d220()->FUN_141880230(FUN_140967060(), FUN_141402e60());
 }
 
 // @0x141402e60
@@ -1984,19 +1976,16 @@ int CInteractWatchTowerObject::vfunc_4()
 // @0x1414034e0
 void CInteractWatchTowerObject::vfunc_3(int nState)
 {
-    if (!m_ent.FUN_1408b70b0(0) && !(m_spRow == 0))
+    if (m_ent.FUN_1408b70b0(0))
+        return;
+    if (m_spRow == 0)
+        return;
+    m_nState = nState;
+    if (m_bNear != 0)
     {
-        m_nState = nState;
-        if (m_bNear != 0)
-        {
-            const CString* pAsset;
-            if (m_nState == 0)
-                pAsset = &m_strAssetA;
-            else
-                pAsset = &m_strAssetB;
-            FUN_1413ff690(*pAsset);
-            FUN_1413fda50();
-        }
+        int bFirst = m_nState == 0;
+        FUN_1413ff690(bFirst ? m_strAssetA : m_strAssetB);
+        FUN_1413fda50();
     }
 }
 
