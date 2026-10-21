@@ -239,13 +239,11 @@ int StateMicroGameRps::vfunc_22(MS2Ptr<Unk_StateArg22> p)
         MS2_ASSERT_AT(0xd3, 0);
         return 0;
     }
-    if (p->m_nSub == FUN_1417b7e40())
-    {
-        if (!FUN_140b87210(p))
-            return 1;
-        return 0;
-    }
-    return 1;
+    if (p->m_nSub != FUN_1417b7e40())
+        return 1;
+    if (!FUN_140b87210(p))
+        return 1;
+    return 0;
 }
 
 // @0x140b86ad0
@@ -294,22 +292,18 @@ void StateMicroGameRps::EndOfSequence(NiActorManager*, unsigned int, NiControlle
 // @0x140b86d80
 void StateMicroGameRps::vfunc_8(double fTime)
 {
-    switch (FUN_1417b7e40())
-    {
-    case 0x9d:
-        State::vfunc_8(fTime);
-        if (FUN_1417b8560() == 0)
-            return;
-        Unk_MgBuffMgr* pBuff = FUN_14166d240(m_pOwner);
-        Unk_StreamPoint kPos = pBuff->FUN_141683290();
-        Unk_StreamPoint kArg = kPos;
-        m_pOwner->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
-        if (FUN_1416749c0(m_pOwner))
-            m_pOwner->vfunc_59(2, 0, 0, 0);
-        else
-            FUN_1417b9460();
-        break;
-    }
+    if (FUN_1417b7e40() != 0x9d)
+        return;
+    State::vfunc_8(fTime);
+    if (FUN_1417b8560() == 0)
+        return;
+    Unk_MgBuffMgr* pBuff = FUN_14166d240(m_pOwner);
+    efd::Point3 kArg = reinterpret_cast<const efd::Point3&>(static_cast<const Unk_StreamPoint&>(pBuff->FUN_141683290()));
+    m_pOwner->vfunc_22(kArg);
+    if (FUN_1416749c0(m_pOwner))
+        m_pOwner->vfunc_59(2, 0, 0, 0);
+    else
+        FUN_1417b9460();
 }
 
 // @0x140b86ea0
@@ -551,20 +545,17 @@ void StateMicroGameRps::FUN_140b87cc0()
 {
     MyPC* pRider = FUN_1417b84b0();
     PCBase* pPartner = FUN_140b879d0();
-    if (pRider != 0 && pPartner != 0)
+    if (pRider == 0 || pPartner == 0)
+        return;
+    MS2Ptr<Unk_PCBaseComp_a88> spShow = pRider->vfunc_83();
+    MS2Ptr<Unk_PCBaseComp_a88> spPartnerShow = pPartner->vfunc_83();
+    if (spShow == 0 || spPartnerShow == 0)
     {
-        MS2Ptr<Unk_PCBaseComp_a88> spShow = pRider->vfunc_83();
-        MS2Ptr<Unk_PCBaseComp_a88> spPartnerShow = pPartner->vfunc_83();
-        if (spShow == 0 || spPartnerShow == 0)
-        {
-            MS2_ASSERT_AT(0x19c, 0);
-        }
-        else
-        {
-            spShow->vfunc_3();
-            spPartnerShow->vfunc_3();
-        }
+        MS2_ASSERT_AT(0x19c, 0);
+        return;
     }
+    spShow->vfunc_3();
+    spPartnerShow->vfunc_3();
 }
 
 // @0x140b87e00
@@ -623,28 +614,26 @@ bool StateMicroGameRps::FUN_140b87e00()
 }
 
 // @0x140b88290
-// MS2-FUNCTIONAL: branch layout of the null guards differs from the exe
 void StateMicroGameRps::FUN_140b88290(double)
 {
     MyPC* pRider = FUN_1417b84b0();
-    if (pRider)
+    if (pRider == 0)
+        return;
+    PCBase* pPartner = FUN_140b879d0();
+    if (pPartner == 0)
     {
-        PCBase* pPartner = FUN_140b879d0();
-        if (pPartner == 0)
-        {
+        pRider->vfunc_59(1, 0, 0, 0);
+    }
+    else if (pPartner->FUN_14166c930() != 0x3c && pPartner->FUN_14166c930() != 0x3b)
+    {
+        if (FUN_1417b7e40() == 0x9a)
+            FUN_141275260(0xd05, 1, 1);
+        pRider->vfunc_59(1, 0, 0, 0);
+    }
+    else
+    {
+        if (FUN_1417b7e40() == 0x9a && FUN_140b883c0() == false)
             pRider->vfunc_59(1, 0, 0, 0);
-        }
-        else if (pPartner->FUN_14166c930() != 0x3c && pPartner->FUN_14166c930() != 0x3b)
-        {
-            if (FUN_1417b7e40() == 0x9a)
-                FUN_141275260(0xd05, 1, 1);
-            pRider->vfunc_59(1, 0, 0, 0);
-        }
-        else
-        {
-            if (FUN_1417b7e40() == 0x9a && FUN_140b883c0() == false)
-                pRider->vfunc_59(1, 0, 0, 0);
-        }
     }
 }
 
@@ -791,13 +780,11 @@ int StateMicroGameCoupleDance::vfunc_22(MS2Ptr<Unk_StateArg22> p)
         MS2_ASSERT_AT(0x2fc, 0);
         return 0;
     }
-    if (p->m_nSub == FUN_1417b7e40())
-    {
-        if (!FUN_140b89410(p))
-            return 1;
-        return 0;
-    }
-    return 1;
+    if (p->m_nSub != FUN_1417b7e40())
+        return 1;
+    if (!FUN_140b89410(p))
+        return 1;
+    return 0;
 }
 
 // @0x140b88f30
@@ -817,22 +804,18 @@ void StateMicroGameCoupleDance::EndOfSequence(NiActorManager*, unsigned int, NiC
 // @0x140b89040
 void StateMicroGameCoupleDance::vfunc_8(double fTime)
 {
-    switch (FUN_1417b7e40())
-    {
-    case 0xb1:
-        State::vfunc_8(fTime);
-        if (FUN_1417b8560() == 0)
-            return;
-        Unk_MgBuffMgr* pBuff = FUN_14166d240(m_pOwner);
-        Unk_StreamPoint kPos = pBuff->FUN_141683290();
-        Unk_StreamPoint kArg = kPos;
-        m_pOwner->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
-        if (FUN_1416749c0(m_pOwner))
-            m_pOwner->vfunc_59(2, 0, 0, 0);
-        else
-            FUN_1417b9460();
-        break;
-    }
+    if (FUN_1417b7e40() != 0xb1)
+        return;
+    State::vfunc_8(fTime);
+    if (FUN_1417b8560() == 0)
+        return;
+    Unk_MgBuffMgr* pBuff = FUN_14166d240(m_pOwner);
+    efd::Point3 kArg = reinterpret_cast<const efd::Point3&>(static_cast<const Unk_StreamPoint&>(pBuff->FUN_141683290()));
+    m_pOwner->vfunc_22(kArg);
+    if (FUN_1416749c0(m_pOwner))
+        m_pOwner->vfunc_59(2, 0, 0, 0);
+    else
+        FUN_1417b9460();
 }
 
 // @0x140b89160
@@ -840,7 +823,7 @@ void StateMicroGameCoupleDance::vfunc_8(double fTime)
 void StateMicroGameCoupleDance::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    if (!(m_spDance == 0))
+    if (m_spDance != 0)
     {
         if (!m_spDance->m_str.IsEmpty())
         {
