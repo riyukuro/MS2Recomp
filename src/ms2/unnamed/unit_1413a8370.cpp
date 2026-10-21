@@ -189,16 +189,12 @@ CStringW CGuideConditionAchieveTab::vfunc_1()
 MS2_REPLACE_METHOD(0x1413A8830, CGuideConditionAchieveTab, vfunc_1, 61, 0xAB9433D3);
 
 // @0x1413a8880
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionAchieveTab::vfunc_3()
 {
     void* pDialog = FUN_1412bcec0(0x4e73);
-    int nResult;
-    if (pDialog == 0 || DialogSlot55(pDialog) != 0)
-        nResult = 0;
-    else
-        nResult = FUN_1413a5600(m_n20 == FUN_1413b5610(pDialog));
-    return nResult;
+    if (pDialog != 0 && DialogSlot55(pDialog) == 0)
+        return FUN_1413a5600(m_n20 == FUN_1413b5610(pDialog));
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1413A8880, CGuideConditionAchieveTab, vfunc_3, 111, 0xAD3B536C);
 
@@ -234,7 +230,6 @@ void CGuideConditionEquipItem::vfunc_2(Unk_140165cf0* pElem)
 MS2_REPLACE_METHOD(0x1413A89B0, CGuideConditionEquipItem, vfunc_2, 227, 0xCCAFD1BD);
 
 // @0x1413a8aa0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionEquipItem::vfunc_3()
 {
     void* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -245,20 +240,14 @@ int CGuideConditionEquipItem::vfunc_3()
         return FUN_1413a55a0(0);
     if (m_nItemID != 0 && spEquip->FUN_1411dc820() != (int)m_nItemID)
         return FUN_1413a55a0(0);
-    bool bNoItem;
-    if (spEquip->FUN_1411dc7a0() == 0)
-        bNoItem = true;
-    else
-        bNoItem = !spEquip->FUN_1411dc7a0()->FUN_140528980();
-    if (!bNoItem)
-    {
-        if (m_nItemRangeBegin != 0 && (unsigned)spEquip->FUN_1411dc820() < m_nItemRangeBegin)
-            return FUN_1413a55a0(0);
-        if (m_nItemRangeLast != 0 && m_nItemRangeLast < (unsigned)spEquip->FUN_1411dc820())
-            return FUN_1413a55a0(0);
-        return FUN_1413a55a0(1);
-    }
-    return FUN_1413a55a0(0);
+    bool bNoItem = spEquip->FUN_1411dc7a0() == 0 || !spEquip->FUN_1411dc7a0()->FUN_140528980();
+    if (bNoItem)
+        return FUN_1413a55a0(0);
+    if (m_nItemRangeBegin != 0 && (unsigned)spEquip->FUN_1411dc820() < m_nItemRangeBegin)
+        return FUN_1413a55a0(0);
+    if (m_nItemRangeLast != 0 && (unsigned)spEquip->FUN_1411dc820() > m_nItemRangeLast)
+        return FUN_1413a55a0(0);
+    return FUN_1413a55a0(1);
 }
 MS2_REPLACE_METHOD(0x1413A8AA0, CGuideConditionEquipItem, vfunc_3, 757, 0x78B4A17E);
 
@@ -288,15 +277,14 @@ CStringW CGuideConditionUgcManagementTab::vfunc_1()
 MS2_REPLACE_METHOD(0x1413A8F10, CGuideConditionUgcManagementTab, vfunc_1, 61, 0xA7946A55);
 
 // @0x1413a8f60
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionUgcManagementTab::vfunc_3()
 {
     void* pDialog = FUN_140d61d50(0x4ec5);
     if (pDialog == 0)
         return 0;
-    if (DialogSlot55(pDialog) == 0)
-        return FUN_1413a55a0(1);
-    return 0;
+    if (DialogSlot55(pDialog) != 0)
+        return 0;
+    return FUN_1413a55a0(1);
 }
 MS2_REPLACE_METHOD(0x1413A8F60, CGuideConditionUgcManagementTab, vfunc_3, 83, 0x25D67B3A);
 
@@ -326,7 +314,6 @@ void CGuideConditionDesignItem::vfunc_2(Unk_140165cf0* pElem)
 MS2_REPLACE_METHOD(0x1413A9070, CGuideConditionDesignItem, vfunc_2, 87, 0xE90182AD);
 
 // @0x1413a90d0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionDesignItem::vfunc_3()
 {
     ATL::CAtlArray<MS2Ptr<CItem> > arrItems;
@@ -340,15 +327,15 @@ int CGuideConditionDesignItem::vfunc_3()
             continue;
         if (spItem->FUN_140525f60() != 0)
             continue;
-        if (m_nItemType == 0 || ((Unk_ItemEquipData*)spItem->FUN_140527840())->FUN_14053c5c0() == m_nItemType)
-            return FUN_1413a55a0(1);
+        if (m_nItemType != 0 && ((Unk_ItemEquipData*)spItem->FUN_140527840())->FUN_14053c5c0() != m_nItemType)
+            continue;
+        return FUN_1413a55a0(1);
     }
     return FUN_1413a55a0(0);
 }
 MS2_REPLACE_METHOD(0x1413A90D0, CGuideConditionDesignItem, vfunc_3, 386, 0xD184D0EF);
 
 // @0x1413a9260
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionDesignItem::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
@@ -406,7 +393,6 @@ int CGuideConditionExistItem::vfunc_3()
 MS2_REPLACE_METHOD(0x1413A9480, CGuideConditionExistItem, vfunc_3, 182, 0x3855BA85);
 
 // @0x1413a9540
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionExistItem::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
@@ -445,29 +431,21 @@ void CGuideConditionCountItem::vfunc_2(Unk_140165cf0* pElem)
 MS2_REPLACE_METHOD(0x1413A96C0, CGuideConditionCountItem, vfunc_2, 169, 0x72FECE38);
 
 // @0x1413a9770
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionCountItem::vfunc_3()
 {
     void* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     int nCount = DAT_143ab2a90.FUN_140a60c20(m_nItemType);
-    int nResult;
-    if (m_nMin == -1 || m_nMin <= nCount)
-    {
-        if (m_nMax == -1 || nCount <= m_nMax)
-            nResult = FUN_1413a55a0(1);
-        else
-            nResult = FUN_1413a55a0(0);
-    }
-    else
-        nResult = FUN_1413a55a0(0);
-    return nResult;
+    if (m_nMin != -1 && m_nMin > nCount)
+        return FUN_1413a55a0(0);
+    if (m_nMax != -1 && m_nMax < nCount)
+        return FUN_1413a55a0(0);
+    return FUN_1413a55a0(1);
 }
 MS2_REPLACE_METHOD(0x1413A9770, CGuideConditionCountItem, vfunc_3, 161, 0x33243481);
 
 // @0x1413a9820
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionCountItem::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
@@ -499,24 +477,17 @@ CStringW CGuideConditionCountInDoorInstallItem::vfunc_1()
 MS2_REPLACE_METHOD(0x1413A9960, CGuideConditionCountInDoorInstallItem, vfunc_1, 61, 0x73F62C34);
 
 // @0x1413a99b0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionCountInDoorInstallItem::vfunc_3()
 {
     void* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     int nCount = FUN_1413a9ac0();
-    int nResult;
-    if (m_nMin == -1 || m_nMin <= nCount)
-    {
-        if (m_nMax == -1 || nCount <= m_nMax)
-            nResult = FUN_1413a55a0(1);
-        else
-            nResult = FUN_1413a55a0(0);
-    }
-    else
-        nResult = FUN_1413a55a0(0);
-    return nResult;
+    if (m_nMin != -1 && m_nMin > nCount)
+        return FUN_1413a55a0(0);
+    if (m_nMax != -1 && m_nMax < nCount)
+        return FUN_1413a55a0(0);
+    return FUN_1413a55a0(1);
 }
 MS2_REPLACE_METHOD(0x1413A99B0, CGuideConditionCountInDoorInstallItem, vfunc_3, 151, 0x15929663);
 
