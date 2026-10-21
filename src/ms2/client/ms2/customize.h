@@ -201,7 +201,7 @@ public:
     void FUN_140cd3750(ItemMap& out);           // the added items
     bool FUN_140cd3800();                       // m_bPreview
     void FUN_140cd3820();                       // forget the kept previews
-    int FUN_140cd38b0();                        // m_nPalette
+    unsigned FUN_140cd38b0();                    // m_nPalette
     void FUN_140cd38d0(int nPalette);
     void FUN_140cd38f0(MS2Ptr<BeautyShopContext> spContext);
     MS2Ptr<BeautyShopContext> FUN_140cd3940();

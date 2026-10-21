@@ -143,14 +143,12 @@ inline int FUN_140cd4460(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB)
 }
 
 // @0x140cd4560 the colours of two items are the same
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 inline int FUN_140cd4560(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB)
 {
     if (spA == 0 || spB == 0 || spA->FUN_140527870() == 0 || spB->FUN_140527870() == 0)
         return 0;
     CItemExtraData* pB = static_cast<CItemExtraData*>(static_cast<CPtred*>(spB->FUN_140527870()));
-    CItemExtraData* pA = static_cast<CItemExtraData*>(static_cast<CPtred*>(spA->FUN_140527870()));
-    return pA->FUN_140599830(pB);
+    return static_cast<CItemExtraData*>(static_cast<CPtred*>(spA->FUN_140527870()))->FUN_140599830(pB);
 }
 
 // @0x140cd3e30
@@ -178,7 +176,6 @@ inline void FUN_140cd3e50(PC* pPc)
 }
 
 // @0x140cd3fe0 tags the preview items "Undo" (bRemove: untags them)
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 inline void FUN_140cd3fe0(PC* pPc, int bRemove)
 {
     if (pPc == 0)
@@ -193,11 +190,11 @@ inline void FUN_140cd3fe0(PC* pPc, int bRemove)
         if (spItem == 0)
             continue;
         if (FUN_141421690(spItem.get()) == 0) {
-            if (bRemove == 0) {
+            if (bRemove != 0) {
+                spEquip->FUN_1411dcf10(s_strUndo);
+            } else {
                 spEquip->FUN_1411dce60(s_strUndo);
                 spEquip->FUN_1411dd280();
-            } else {
-                spEquip->FUN_1411dcf10(s_strUndo);
             }
         }
     }
@@ -339,18 +336,18 @@ MS2_REPLACE_METHOD(0x140CCB1E0, Customize::EditItems, GetController, 65, 0x3E32A
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 void Customize::EditItems::Update()
 {
-    if (FUN_1403ed2b0()->FUN_141adbd10() == 0 && m_spController) {
-        int bDragging = 0;
-        UICameraEditDialog* pCamera = FUN_140cd47b0(eUI_4ef2);
-        if (pCamera)
-            bDragging = pCamera->FUN_1418dead0();
-        if (bDragging == 0) {
-            efd::Point3 kHit = reinterpret_cast<efd::Point3&>(DAT_143b01a60);
-            int bPick = m_spController->IsPickable(&kHit);
-            m_spController->vfunc_38(bPick, kHit);
-        }
-        m_spController->vfunc_4();
+    if (!(FUN_1403ed2b0()->FUN_141adbd10() == 0 && m_spController))
+        return;
+    int bDragging = 0;
+    UICameraEditDialog* pCamera = FUN_140cd47b0(eUI_4ef2);
+    if (pCamera)
+        bDragging = pCamera->FUN_1418dead0();
+    if (bDragging == 0) {
+        efd::Point3 kHit = reinterpret_cast<efd::Point3&>(DAT_143b01a60);
+        int bPick = m_spController->IsPickable(&kHit);
+        m_spController->vfunc_38(bPick, kHit);
     }
+    m_spController->vfunc_4();
 }
 
 // @0x140ccb340
@@ -429,7 +426,6 @@ int Customize::EditItems::GetDragging()
 MS2_REPLACE_METHOD(0x140CCB860, Customize::EditItems, GetDragging, 92, 0xA06624A9);
 
 // @0x140ccb8d0
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 int Customize::EditItems::ApplyColor(int nIndex, int n)
 {
     if (m_spData == 0 || nIndex < 0)
@@ -438,7 +434,7 @@ int Customize::EditItems::ApplyColor(int nIndex, int n)
     if (pPc == 0)
         return 0;
     int nPalette = m_spData->FUN_14053e260();
-    if (m_pOwner && m_pOwner->FUN_140cd38b0())
+    if (m_pOwner && m_pOwner->FUN_140cd38b0() > 0)
         nPalette = m_pOwner->FUN_140cd38b0();
     MS2Ptr<ItemColorEx> spColor = FUN_140f022f0(nPalette, nIndex);
     if (spColor == 0)
@@ -458,7 +454,7 @@ int Customize::EditItems::ApplyPalette(int nPalette, int nIndex, int n)
     PC* pPc = GetPC();
     if (pPc == 0)
         return 0;
-    if (m_pOwner && m_pOwner->FUN_140cd38b0() && nPalette != FUN_140f02bc0())
+    if (m_pOwner && m_pOwner->FUN_140cd38b0() > 0 && nPalette != FUN_140f02bc0())
         nPalette = m_pOwner->FUN_140cd38b0();
     MS2Ptr<ItemColorEx> spColor = FUN_140281980()->FUN_1405587f0(nPalette, nIndex);
     if (spColor == 0)
@@ -584,10 +580,10 @@ void Customize::CloneItems::RestoreUid(__int64 nUid)
         }
     }
     MS2Ptr<CItem> spItem = pPc->FUN_141655b80(nUid);
-    if (spItem.get() && spItem->FUN_140527840()) {
-        if (!spItem->FUN_140527840()->FUN_14053cf00())
-            pPc->vfunc_128(spItem.get(), 1);
-    }
+    if (!(spItem.get() && spItem->FUN_140527840()))
+        return;
+    if (!spItem->FUN_140527840()->FUN_14053cf00())
+        pPc->vfunc_128(spItem.get(), 1);
 }
 
 // @0x140ccc470
@@ -851,12 +847,11 @@ int Customize::CloneItems::GetAdded(ItemMap& out)
         if (!m_mapItems.Lookup(spItem->FUN_140526a50(), spClone))
             out.SetAt(spItem->FUN_140526a50(), FUN_140cd4650(spItem));
     }
-    return out.GetCount() != 0;
+    return out.GetCount() > 0;
 }
 MS2_REPLACE_METHOD(0x140CCDC90, Customize::CloneItems, GetAdded, 558, 0xBBBDECE1);
 
 // @0x140ccded0 the worn items that differ from their clone
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 int Customize::CloneItems::GetModified(ItemMap& out)
 {
     PC* pPc = GetPC();
@@ -873,12 +868,11 @@ int Customize::CloneItems::GetModified(ItemMap& out)
             continue;
         out.SetAt(spCur->FUN_140526a50(), spCur);
     }
-    return out.GetCount() != 0;
+    return out.GetCount() > 0;
 }
 MS2_REPLACE_METHOD(0x140CCDED0, Customize::CloneItems, GetModified, 486, 0xE07C47F4);
 
 // @0x140cce0c0 the clones whose item is gone
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 int Customize::CloneItems::GetRemoved(ItemMap& out)
 {
     PC* pPc = GetPC();
@@ -892,7 +886,7 @@ int Customize::CloneItems::GetRemoved(ItemMap& out)
         if (spCur == 0)
             out.SetAt(spItem->FUN_140526a50(), spItem);
     }
-    return out.GetCount() != 0;
+    return out.GetCount() > 0;
 }
 MS2_REPLACE_METHOD(0x140CCE0C0, Customize::CloneItems, GetRemoved, 315, 0x016A8354);
 
@@ -2113,7 +2107,7 @@ void Customize::FUN_140cd3820()
 }
 
 // @0x140cd38b0
-int Customize::FUN_140cd38b0()
+unsigned Customize::FUN_140cd38b0()
 {
     return m_nPalette;
 }
