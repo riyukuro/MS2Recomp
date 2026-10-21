@@ -7812,3 +7812,9 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?UnicodeDigitBits@Scaleform@@3QBGB	1431866f0	data
 ?UnicodeXDigitBits@Scaleform@@3QBGB	143186d30	data
 ??$HitTestSingleStroke@V?$Matrix2x4@M@Render@Scaleform@@@Render@Scaleform@@YA_NAEBVShapeDataInterface@01@PEAUShapePosInfo@01@IAEBV?$Matrix2x4@M@01@MMPEAUStrokeGenerator@01@AEBUToleranceParams@01@@Z	1426299a0	func
+?BeginSolidFill@DrawingContext@GFx@Scaleform@@QEAAXI@Z	1425fe8f0	func
+?CreateDrawingContext@MovieImpl@GFx@Scaleform@@QEAAPEAVDrawingContext@23@XZ	14256e3f0	func
+?EndFill@DrawingContext@GFx@Scaleform@@QEAAXXZ	1425ff3e0	func
+?MakeViewAndPersp3D@MovieImpl@GFx@Scaleform@@SAXPEAV?$Matrix3x4@M@Render@3@PEAV?$Matrix4x4@M@53@AEBV?$Rect@M@53@AEBV?$Point@M@53@MM_N@Z	1425718d0	func
+?TreeContainerNodeDataVTable@Render@Scaleform@@3QBQEBXB	143183280	data
+?UpdateRenderNode@DrawingContext@GFx@Scaleform@@QEBAXXZ	1426006a0	func
