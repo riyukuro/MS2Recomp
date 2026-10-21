@@ -527,9 +527,9 @@ CGFxLanguage::~CGFxLanguage()
 // @0x141815de0
 bool CGFxLanguage::FUN_141815de0(TiXmlDocument* pDoc)
 {
-    CString strPath = FUN_14071ae20(CString("korFlash.xml"));
+    CString strPath = FUN_14071ae20("korFlash.xml");
     CCacheData::FUN_1401d1160(CString(strPath));
-    return FUN_140166420()->FUN_1403974b0(pDoc, strPath, 0, true, false) != 0;
+    return FUN_140166420()->FUN_1403974b0(pDoc, strPath, 0, true, false) ? true : false;
 }
 
 // @0x141815db0
@@ -752,9 +752,9 @@ CStringW CStringTable::FUN_141811c90(int nItemId, CString strTag)
     Unk_CriticalSectionLock lock(m_lock, 1);
     if (FUN_1401d1320(&m_itemDescStamp))
         FUN_141814750(CString("korItemDescription.xml"), m_itemDescs, m_itemDescStamp);
-    if (!m_itemDescs.Lookup(nItemId, spDesc))
-        return CStringW(L"");
-    return spDesc->FUN_141813a30(strTag);
+    if (m_itemDescs.Lookup(nItemId, spDesc))
+        return spDesc->FUN_141813a30(strTag);
+    return CStringW(L"");
 }
 
 // @0x141811e50
@@ -791,10 +791,10 @@ CStringW CStringTable::FUN_141812290(int nBuffId, unsigned short nLevel, CString
     if (strTag.CompareNoCase("tooltipDescription") == 0)
     {
         MS2Ptr<Unk_StEffectAttr> spAttr = FUN_1401958b0()->FUN_140aafef0(nBuffId, nLevel);
-        if (spAttr.get() != 0)
+        if ((bool)spAttr.get())
         {
             if (!spAttr->m_strArgs.IsEmpty())
-                strText = FUN_141813790(CStringW(spAttr->m_strArgs), CStringW(strText));
+                strText = FUN_141813790(strText, CStringW(spAttr->m_strArgs));
         }
     }
     if (strTag.CompareNoCase("name") == 0)
@@ -807,7 +807,9 @@ CStringW CStringTable::FUN_141812290(int nBuffId, unsigned short nLevel, CString
 // @0x1418125b0
 CStringW CStringTable::FUN_1418125b0(int nId)
 {
-    if (nId >= 0x56057c1 && nId < 90300000)
+    const int nMin = 0x56057c1;
+    const int nMax = 90300000;
+    if (nId >= nMin && nId < nMax)
         return FUN_141811980(4, nId);
     if (nId >= 0xaae61 && nId <= 0xaae63)
     {
@@ -819,7 +821,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
                 return FUN_1401e8510(FUN_141811980(5, nId), strName);
         }
     }
-    else if (nId > 900000 && nId < 0xdbbab)
+    else if (nId >= 0xdbba1 && nId <= 0xdbbaa)
     {
         CStringW strExtra;
         UIClosetDialog* pCloset = FUN_141815ed0();
@@ -838,9 +840,9 @@ CStringW CStringTable::FUN_1418128c0(int nSetId, CString strTag)
         FUN_141814750(CString("SetItemName.xml"), m_setItemNames, m_setItemNameStamp);
     DescPtr spDesc;
     Unk_CriticalSectionLock lock(m_lock, 1);
-    if (!m_setItemNames.Lookup(nSetId, spDesc))
-        return CStringW(L"");
-    return spDesc->FUN_141813a30(strTag);
+    if (m_setItemNames.Lookup(nSetId, spDesc))
+        return spDesc->FUN_141813a30(strTag);
+    return CStringW(L"");
 }
 
 // @0x141812a80
@@ -851,9 +853,9 @@ CStringW CStringTable::FUN_141812a80(int nSetId, CString strTag)
         FUN_141814750(CString("UGCMapSetItemName.xml"), m_ugcSetItemNames, m_ugcSetItemNameStamp);
     DescPtr spDesc;
     Unk_CriticalSectionLock lock(m_lock, 1);
-    if (!m_ugcSetItemNames.Lookup(nSetId, spDesc))
-        return CStringW(L"");
-    return spDesc->FUN_141813a30(strTag);
+    if (m_ugcSetItemNames.Lookup(nSetId, spDesc))
+        return spDesc->FUN_141813a30(strTag);
+    return CStringW(L"");
 }
 
 // @0x141812c40
@@ -907,9 +909,9 @@ CStringW CStringTable::FUN_141813060(int nRank, int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return CStringW(L"");
-    if (spItem->FUN_14053c5a0() == 0)
-        return FUN_141813150(nRank);
-    return FUN_14028de60(0);
+    if (spItem->FUN_14053c5a0() != 0)
+        return FUN_14028de60(0);
+    return FUN_141813150(nRank);
 }
 
 // @0x141813150
@@ -929,9 +931,9 @@ CStringW CStringTable::FUN_141813200(__int64 nItemUid)
     if (pPlayer == 0)
         return FUN_14028de60(0);
     MS2Ptr<CItem> spItem = pPlayer->FUN_141655b80(nItemUid);
-    if (spItem.get() == 0)
-        return FUN_14028de60(0);
-    return FUN_141813150(spItem->FUN_140526bd0());
+    if (spItem.get() != 0)
+        return FUN_141813150(spItem->FUN_140526bd0());
+    return FUN_14028de60(0);
 }
 
 // @0x141813300
@@ -940,20 +942,20 @@ CStringW CStringTable::FUN_141813300(int nTab)
     switch (nTab)
     {
     case 0: return FUN_14028de60(0x259);
-    case 1: return FUN_14028de60(0x25d);
-    case 2: return FUN_14028de60(0x25c);
-    case 3: return FUN_14028de60(0x260);
     case 4: return FUN_14028de60(0x25a);
-    case 5: return FUN_14028de60(0x25f);
-    case 6: return FUN_14028de60(0x25e);
     case 7: return FUN_14028de60(0x25b);
+    case 2: return FUN_14028de60(0x25c);
+    case 1: return FUN_14028de60(0x25d);
+    case 6: return FUN_14028de60(0x25e);
+    case 5: return FUN_14028de60(0x25f);
+    case 3: return FUN_14028de60(0x260);
     case 8: return FUN_14028de60(0x261);
     case 9: return FUN_14028de60(0x262);
     case 10: return FUN_14028de60(0x263);
-    case 0xb: return FUN_14028de60(0x264);
-    case 0xc: return FUN_14028de60(0x265);
-    case 0xd: return FUN_14028b8e0(CStringW(L"s_inventory_tab_lapenshard"));
-    case 0xe: return FUN_14028b8e0(CStringW(L"s_inventory_tab_piece"));
+    case 11: return FUN_14028de60(0x264);
+    case 12: return FUN_14028de60(0x265);
+    case 0xd: return FUN_14028b8e0(L"s_inventory_tab_lapenshard");
+    case 0xe: return FUN_14028b8e0(L"s_inventory_tab_piece");
     default: return FUN_14028de60(0);
     }
 }
@@ -971,13 +973,13 @@ CStringW CStringTable::FUN_141813610(int a, int b, int c)
             return FUN_14028de60(0x2d1);
         return FUN_14028de60(0x2d2);
     }
-    if (b == 0)
+    else if (b == 0)
     {
         if (c == 0)
             return FUN_14028de60(0x2d3);
         return FUN_14028de60(0x2d4);
     }
-    if (c == 0)
+    else if (c == 0)
         return FUN_14028de60(0x2d5);
     return FUN_14028de60(0);
 }
@@ -1036,7 +1038,7 @@ int CStringTable::FUN_141813c80(CachePtr spCache, CString strParser, CString str
 {
     if (FUN_140184310(strParser, "raceName"))
         return FUN_141813f10(CachePtr(spCache));
-    if (FUN_140184310(strParser, "customValue"))
+    else if (FUN_140184310(strParser, "customValue"))
         return FUN_141814310(CachePtr(spCache), CString(strParserValue));
     return FUN_141813e70(CachePtr(spCache));
 }
@@ -1141,16 +1143,14 @@ int CStringTable::FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCac
     }
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
-        if (FUN_14028f710(pKey))
-        {
-            DescPtr spDesc = FUN_1418154e0(pKey);
-            if (!(spDesc == 0))
-            {
-                int nId = 0;
-                FUN_1408731e0(pKey, "id", nId);
-                rMap.SetAt(nId, spDesc);
-            }
-        }
+        if (!FUN_14028f710(pKey))
+            continue;
+        DescPtr spDesc = FUN_1418154e0(pKey);
+        if (spDesc == 0)
+            continue;
+        int nId = 0;
+        FUN_1408731e0(pKey, "id", nId);
+        rMap.SetAt(nId, spDesc);
     }
     rCache.FUN_1401d1160(CString(strPath));
     return 1;
@@ -1172,16 +1172,14 @@ int CStringTable::FUN_141814a20(CString strFile, DescMap& rMap, CCacheData& rCac
     }
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
-        if (FUN_14028f710(pKey))
-        {
-            DescPtr spDesc = FUN_141815650(pKey, rTags);
-            if (!(spDesc == 0))
-            {
-                int nId = 0;
-                FUN_1408731e0(pKey, "id", nId);
-                rMap.SetAt(nId, spDesc);
-            }
-        }
+        if (!FUN_14028f710(pKey))
+            continue;
+        DescPtr spDesc = FUN_141815650(pKey, rTags);
+        if (spDesc == 0)
+            continue;
+        int nId = 0;
+        FUN_1408731e0(pKey, "id", nId);
+        rMap.SetAt(nId, spDesc);
     }
     rCache.FUN_1401d1160(CString(strPath));
     return 1;
@@ -1217,16 +1215,16 @@ int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
             int nLevel = 1;
             FUN_1408731e0(pNode, "level", nLevel);
             DescPtr spDesc = FUN_1418158b0(pNode);
-            if (!(spDesc == 0))
+            if (spDesc == 0)
             {
-                LevelDescPtr spLevels;
-                if (!rMap.Lookup(nId, spLevels))
-                    spLevels.AssignRaw(new CLevelDesc());
-                spLevels->m_levels.SetAt((unsigned short)nLevel, spDesc);
-                rMap.SetAt(nId, spLevels);
+                (void)((!!(0)) || (_wassert(L"FALSE", _CRT_WIDE(MS2_THIS_FILE), 0x327), 0));
+                continue;
             }
-            else
-                _wassert(L"FALSE", _CRT_WIDE(MS2_THIS_FILE), 0x327);
+            LevelDescPtr spLevels;
+            if (!rMap.Lookup(nId, spLevels))
+                spLevels.AssignRaw(new CLevelDesc());
+            spLevels->m_levels.SetAt((unsigned short)nLevel, spDesc);
+            rMap.SetAt(nId, spLevels);
         }
     }
     return 1;
@@ -1238,25 +1236,27 @@ CStringW CStringTable::FUN_141815160(LevelDescMap& rMap, int* pnId, unsigned sho
     LevelDescPtr spLevels;
     DescPtr spDesc;
     Unk_CriticalSectionLock lock(m_lock, 1);
-    if (!rMap.Lookup(*pnId, spLevels))
-        return CStringW(L"");
-    if (!spLevels->m_levels.Lookup(*pnLevel, spDesc))
-        return FUN_141815330(spLevels, pnLevel, strTag);
-    return spDesc->FUN_141813a30(strTag);
+    if (rMap.Lookup(*pnId, spLevels))
+    {
+        if (!spLevels->m_levels.Lookup(*pnLevel, spDesc))
+            return FUN_141815330(spLevels, pnLevel, strTag);
+        return spDesc->FUN_141813a30(strTag);
+    }
+    return CStringW(L"");
 }
 
-// MS2-FUNCTIONAL: the exe lays the break's return block after the loop; any source form we tried puts it inline
 // @0x141815330
-CStringW CStringTable::FUN_141815330(LevelDescPtr& spLevels, unsigned short* pnLevel, CString strTag)
+CStringW CStringTable::FUN_141815330(LevelDescPtr& spLevels, unsigned short* pnLevel, const CString& strTag)
 {
     CStringW strText(L"");
     for (POSITION pos = spLevels->m_levels.GetHeadPosition(); pos; spLevels->m_levels.GetNext(pos))
     {
         const DescPtr& rDesc = spLevels->m_levels.GetValueAt(pos);
         const unsigned short& rLevel = spLevels->m_levels.GetKeyAt(pos);
-        if (*pnLevel < rLevel)
+        if (*pnLevel >= rLevel)
+            strText = rDesc->FUN_141813a30(strTag);
+        else
             return strText;
-        strText = rDesc->FUN_141813a30(strTag);
     }
     return strText;
 }
@@ -1265,11 +1265,11 @@ CStringW CStringTable::FUN_141815330(LevelDescPtr& spLevels, unsigned short* pnL
 CStringTable::DescPtr CStringTable::FUN_1418154e0(Unk_140165cf0* pNode)
 {
     ATL::CAtlArray<CString> aTags;
-    aTags.Add(CString("mainDescription"));
-    aTags.Add(CString("functionDescription"));
-    aTags.Add(CString("tooltipDescription"));
-    aTags.Add(CString("guideDescription"));
-    aTags.Add(CString("name"));
+    aTags.Add("mainDescription");
+    aTags.Add("functionDescription");
+    aTags.Add("tooltipDescription");
+    aTags.Add("guideDescription");
+    aTags.Add("name");
     return FUN_141815650(pNode, aTags);
 }
 
@@ -1283,7 +1283,7 @@ CStringTable::DescPtr CStringTable::FUN_141815650(Unk_140165cf0* pNode, ATL::CAt
         if (!strText.IsEmpty())
         {
             strText.Replace(L"\\n", L"\n");
-            spDesc->FUN_141813b80(CString("name"), strText);
+            spDesc->FUN_141813b80("name", strText);
         }
     }
     if (!rTags.IsEmpty())
@@ -1307,11 +1307,11 @@ CStringTable::DescPtr CStringTable::FUN_141815650(Unk_140165cf0* pNode, ATL::CAt
 CStringTable::DescPtr CStringTable::FUN_1418158b0(Unk_140165cf0* pNode)
 {
     ATL::CAtlArray<CString> aTags;
-    aTags.Add(CString("uiDescription"));
-    aTags.Add(CString("mainDescription"));
-    aTags.Add(CString("functionDescription"));
-    aTags.Add(CString("tooltipDescription"));
-    aTags.Add(CString("guideDescription"));
+    aTags.Add("uiDescription");
+    aTags.Add("mainDescription");
+    aTags.Add("functionDescription");
+    aTags.Add("tooltipDescription");
+    aTags.Add("guideDescription");
     return FUN_141815650(pNode, aTags);
 }
 
@@ -1321,16 +1321,14 @@ void CStringTable::FUN_141815a20(DescMap& rMap, Unk_140165cf0* pRoot)
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
-        if (FUN_14028f710(pKey))
-        {
-            DescPtr spDesc = FUN_1418154e0(pKey);
-            if (!(spDesc == 0))
-            {
-                int nId = 0;
-                FUN_1408731e0(pKey, "id", nId);
-                rMap.SetAt(nId, spDesc);
-            }
-        }
+        if (!FUN_14028f710(pKey))
+            continue;
+        DescPtr spDesc = FUN_1418154e0(pKey);
+        if (spDesc == 0)
+            continue;
+        int nId = 0;
+        FUN_1408731e0(pKey, "id", nId);
+        rMap.SetAt(nId, spDesc);
     }
 }
 
@@ -1340,24 +1338,23 @@ void CStringTable::FUN_141815b30(LevelDescMap& rMap, Unk_140165cf0* pRoot)
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
-        if (FUN_14028f710(pKey))
+        if (!FUN_14028f710(pKey))
+            continue;
+        int nId = 0;
+        FUN_1408731e0(pKey, "id", nId);
+        int nLevel = 1;
+        FUN_1408731e0(pKey, "level", nLevel);
+        DescPtr spDesc = FUN_1418158b0(pKey);
+        if (spDesc == 0)
         {
-            int nId = 0;
-            FUN_1408731e0(pKey, "id", nId);
-            int nLevel = 1;
-            FUN_1408731e0(pKey, "level", nLevel);
-            DescPtr spDesc = FUN_1418158b0(pKey);
-            if (!(spDesc == 0))
-            {
-                LevelDescPtr spLevels;
-                if (!rMap.Lookup(nId, spLevels))
-                    spLevels.AssignRaw(new CLevelDesc());
-                spLevels->m_levels.SetAt((unsigned short)nLevel, spDesc);
-                rMap.SetAt(nId, spLevels);
-            }
-            else
-                _wassert(L"FALSE", _CRT_WIDE(MS2_THIS_FILE), 0x298);
+            (void)((!!(0)) || (_wassert(L"FALSE", _CRT_WIDE(MS2_THIS_FILE), 0x298), 0));
+            continue;
         }
+        LevelDescPtr spLevels;
+        if (!rMap.Lookup(nId, spLevels))
+            spLevels.AssignRaw(new CLevelDesc());
+        spLevels->m_levels.SetAt((unsigned short)nLevel, spDesc);
+        rMap.SetAt(nId, spLevels);
     }
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
