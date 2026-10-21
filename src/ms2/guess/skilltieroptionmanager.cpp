@@ -102,7 +102,7 @@ int CSkillTierOptionManager::Update()
             continue;
         unsigned short nLevel = FUN_141662980(m_pOwner, nTier);
         int bTierChanged = 0;
-        if (Unk_LockGuard guard = m_lock) {} else
+        if (Unk_LockGuard guard = m_lock) { __assume(0); } else
         {
             unsigned short nOld = 0;
             m_tierLevels.Lookup(nTier, nOld);
@@ -118,7 +118,7 @@ int CSkillTierOptionManager::Update()
             FUN_14080c370(FUN_14081da20(nTier), eJob, &aSkills);
             for (unsigned j = 0; j < aSkills.GetCount(); j++)
             {
-                if (Unk_LockGuard guard = m_lock) {} else
+                if (Unk_LockGuard guard = m_lock) { __assume(0); } else
                     m_skillLevels.SetAt(aSkills[j], nLevel);
             }
         }
@@ -129,7 +129,7 @@ int CSkillTierOptionManager::Update()
 // @0x14080baf0
 unsigned short CSkillTierOptionManager::GetSkillLevel(unsigned int nSkillId)
 {
-    if (Unk_LockGuard guard = m_lock) {} else
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else
     {
         unsigned short nLevel = 0;
         m_skillLevels.Lookup(nSkillId, nLevel);
@@ -140,7 +140,7 @@ unsigned short CSkillTierOptionManager::GetSkillLevel(unsigned int nSkillId)
 // @0x14080bb80
 void CSkillTierOptionManager::Clear()
 {
-    if (Unk_LockGuard guard = m_lock) {} else
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else
     {
         m_skillLevels.RemoveAll();
         m_tierLevels.RemoveAll();
@@ -154,7 +154,7 @@ int FUN_14080bc00()
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
-    if (Unk_LockGuard guard = s_lock) {} else
+    if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         s_options.RemoveAll();
         s_spCache.AssignRaw(new CCacheData);
@@ -194,7 +194,7 @@ int FUN_14080bc00()
         }
         CSkillTierOptionPtr spOption(new CSkillTierOption);
         spOption->m_skills = spMap;
-        if (Unk_LockGuard guard = s_lock) {} else
+        if (Unk_LockGuard guard = s_lock) { __assume(0); } else
             s_options.SetAt(nId, spOption);
     }
     return 1;
@@ -204,7 +204,7 @@ int FUN_14080bc00()
 int FUN_14080c1c0(unsigned nTier, ATL::CAtlArray<unsigned int>* pOut)
 {
     TPtrValue<Unk_SkillJobMap> spMap = 0;
-    if (Unk_LockGuard guard = s_lock) {} else
+    if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         if (FUN_1401d1320(s_spCache.get()))
             FUN_14080bc00();
@@ -228,7 +228,7 @@ int FUN_14080c1c0(unsigned nTier, ATL::CAtlArray<unsigned int>* pOut)
 int FUN_14080c370(unsigned nTier, eJobCode eJob, ATL::CAtlArray<unsigned int>* pOut)
 {
     TPtrValue<Unk_SkillJobMap> spMap = 0;
-    if (Unk_LockGuard guard = s_lock) {} else
+    if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         if (FUN_1401d1320(s_spCache.get()))
             FUN_14080bc00();
@@ -251,14 +251,14 @@ int FUN_14080c370(unsigned nTier, eJobCode eJob, ATL::CAtlArray<unsigned int>* p
 // @0x14080c530
 unsigned FUN_14080c530()
 {
-    if (Unk_LockGuard guard = s_lock) {} else
+    if (Unk_LockGuard guard = s_lock) { __assume(0); } else
         return (unsigned)s_tierIds.GetCount();
 }
 
 // @0x14080c5a0
 unsigned FUN_14080c5a0(unsigned nIndex)
 {
-    if (Unk_LockGuard guard = s_lock) {} else
+    if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         if (nIndex < s_tierIds.GetCount())
             return s_tierIds[nIndex];
