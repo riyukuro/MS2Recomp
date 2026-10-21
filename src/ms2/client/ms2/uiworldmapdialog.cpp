@@ -468,6 +468,15 @@ int UIWorldMapDialog::vfunc_53(void* pCfg)
 }
 MS2_REPLACE_METHOD(0x141B55120, UIWorldMapDialog, vfunc_53, 141, 0xE15B5A3A);
 
+// The world-map flags of the game option block (CGameOption::FUN_140c9b8b0 + 0x20, one byte each).
+struct Unk_WmMapFlags
+{
+    unsigned char m_pad[0x20];
+    unsigned char m_b20;
+    unsigned char m_b21;
+    unsigned char m_b22;
+};
+
 // @0x141b551c0
 int UIWorldMapDialog::vfunc_54(void* pCfg)
 {
@@ -475,9 +484,9 @@ int UIWorldMapDialog::vfunc_54(void* pCfg)
     m_display.FUN_141b95000();
     if (pCfg != 0 && FUN_140165cf0(pCfg, "setting") != 0)
     {
-        m_display.m_18[0] = ((unsigned char*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n20)[0];
-        m_display.m_18[1] = ((unsigned char*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n20)[1];
-        m_display.m_18[2] = ((unsigned char*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n20)[2];
+        m_display.m_18[0] = reinterpret_cast<Unk_WmMapFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_b20;
+        m_display.m_18[1] = reinterpret_cast<Unk_WmMapFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_b21;
+        m_display.m_18[2] = reinterpret_cast<Unk_WmMapFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_b22;
         FUN_1408741a0(pCfg, "setting", "displayProperQuest", &m_display.m_18[3]);
         FUN_1408741a0(pCfg, "setting", "displayProperDungeon", &m_display.m_18[4]);
     }
@@ -1016,9 +1025,12 @@ MS2_REPLACE_METHOD(0x141B58200, UIWorldMapDialog, FUN_141b58200, 24, 0x7DF05EEB)
 // @0x141b58220
 void UIWorldMapDialog::FUN_141b58220()
 {
-    if (!m_tiles.empty() || !m_30)
+    if (!m_tiles.empty())
         return;
-    if (TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0() == 0)
+    if (!m_30)
+        return;
+    MyPC* pPlayer = static_cast<MyPC*>(TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0());
+    if (pPlayer == 0)
         return;
     TileVector& tiles = FUN_140cb17d0()->GetWorldTiles(FUN_141b69340());
     for (size_t i = 0; i < tiles.size(); i++)
@@ -1625,9 +1637,9 @@ MS2_REPLACE_METHOD(0x141B5BCC0, UIWorldMapDialog, FUN_141b5bcc0, 98, 0x76119B01)
 // @0x141b5bd30
 void UIWorldMapDialog::FUN_141b5bd30()
 {
-    m_display.m_18[0] = ((unsigned char*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n20)[0];
-    m_display.m_18[1] = ((unsigned char*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n20)[1];
-    m_display.m_18[2] = ((unsigned char*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n20)[2];
+    m_display.m_18[0] = reinterpret_cast<Unk_WmMapFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_b20;
+    m_display.m_18[1] = reinterpret_cast<Unk_WmMapFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_b21;
+    m_display.m_18[2] = reinterpret_cast<Unk_WmMapFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_b22;
     FUN_140cb17d0()->ClearIconInfoTooltips();
     FUN_140cb17d0()->ClearDungeonInfos();
     FUN_140cb17d0()->ClearAddtionalInfoTooltips();
@@ -1826,28 +1838,25 @@ void UIWorldMapDialog::FUN_141b5d390()
         return;
     switch (m_nMode)
     {
-    case 0:
-        break;
     case 1:
     {
         COutPacket packet(0x4a);
         packet.Encode1(1);
         packet.Encode4(FUN_141b69340());
         FUN_140710590(packet);
-        return;
+        break;
     }
     case 2:
         FUN_140cb17d0()->ClearAddtionalInfos();
         FUN_141b59d40();
         FUN_141b58220();
-        return;
+        break;
+    case 0:
     case 3:
     case 4:
+        FUN_141b58220();
         break;
-    default:
-        return;
     }
-    FUN_141b58220();
 }
 MS2_REPLACE_METHOD(0x141B5D390, UIWorldMapDialog, FUN_141b5d390, 260, 0x20B4035F);
 
@@ -2227,9 +2236,9 @@ void UIWorldMapDialog::FUN_141b60000(MS2Ptr<UIWorldMap::AddtionalInfo> spInfo, A
     MyPC* pPlayer = static_cast<MyPC*>(TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    int nDiff = (int)spField->m_nMapLevel - (unsigned short)pPlayer->vfunc_78();
-    if (abs(nDiff) < 4)
-        pObj->FUN_1407cb9c0("recommendMap", 1);
+    if (abs((int)spField->m_nMapLevel - (unsigned short)pPlayer->vfunc_78()) > 3)
+        return;
+    pObj->FUN_1407cb9c0("recommendMap", 1);
 }
 
 // @0x141b60170
@@ -2242,8 +2251,9 @@ void UIWorldMapDialog::FUN_141b60170(MS2Ptr<UIWorldMap::AddtionalInfo> spInfo, A
     if (pPlayer == 0)
         return;
     unsigned int nMastery = FUN_141662750(pPlayer, 1);
-    if (spSpot->m_nMinMastery <= nMastery && nMastery <= spSpot->m_nMaxMastery)
-        pObj->FUN_1407cb9c0("recommendMap", 1);
+    if (nMastery < spSpot->m_nMinMastery || nMastery > spSpot->m_nMaxMastery)
+        return;
+    pObj->FUN_1407cb9c0("recommendMap", 1);
 }
 
 // @0x141b602a0
@@ -2260,7 +2270,9 @@ MS2_REPLACE_METHOD(0x141B602A0, UIWorldMapDialog, FUN_141b602a0, 74, 0xC44179A1)
 // @0x141b602f0
 void UIWorldMapDialog::FUN_141b602f0()
 {
-    if (!m_30 || m_1c0 == 0)
+    if (!m_30)
+        return;
+    if (m_1c0 == 0)
         return;
     MS2Ptr<UIWorldMap::MapTile> spTile = FUN_140cb17d0()->FindMapTileByKey(m_1c4);
     if (!spTile)
@@ -2275,7 +2287,7 @@ MS2_REPLACE_METHOD(0x141B602F0, UIWorldMapDialog, FUN_141b602f0, 408, 0x9979B2B8
 // @0x141b60490
 void UIWorldMapDialog::FUN_141b60490(CStringW strText)
 {
-    if (strText.IsEmpty())
+    if (strText.IsEmpty() == true)
         return;
     Unk_BlockList request(0x4e42);
     request.Add("m_fieldSearch", CStringW(strText), false);
@@ -2569,10 +2581,16 @@ static CStringW FUN_141b621d0(int nChannel)
 static CStringW FUN_141b622d0(unsigned short nLevel, int nKind)
 {
     CStringW strLine;
-    if (nKind == 5 || nKind == 10)
+    switch (nKind)
+    {
+    case 5:
+    case 10:
         strLine = FUN_1409e88d0(0x714, nLevel);
-    else
+        break;
+    default:
         strLine = FUN_1409e88d0(0x713, nLevel);
+        break;
+    }
     return strLine;
 }
 
