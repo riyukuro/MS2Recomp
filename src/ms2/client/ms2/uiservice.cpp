@@ -155,7 +155,7 @@ public:
     void FUN_1422aebe0(int nSlot, bool bOn);
     void FUN_1422aeaa0(int nMode);
     void FUN_1422b0060(float f);
-    void FUN_1422aef20(int n, char b);
+    void FUN_1422aef20(int n, int b);
     char FUN_1422b2760();
     void FUN_1422b27e0(char b);
     char FUN_1422b27c0();
@@ -196,7 +196,7 @@ public:
     virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); virtual void vfunc_48();
     virtual Unk_UisRootsOwner* vfunc_49();                          // MS2: slot 49 (0x188)
 };
-class Unk_UisMovieSlot { public: char FUN_14151e150(); Unk_UisMovieObj* FUN_14151e170(); };
+class Unk_UisMovieSlot { public: void* FUN_14151e150(); Unk_UisMovieObj* FUN_14151e170(); };
 class Unk_UisMovie
 {
 public:
@@ -208,7 +208,7 @@ public:
     virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29();
     virtual void vfunc_30(); virtual void vfunc_31(); virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34();
     virtual void vfunc_35(); virtual void vfunc_36();
-    virtual char vfunc_37(int x, int y, int n, int m);              // MS2: slot 37 (0x128) hit test
+    virtual bool vfunc_37(float x, float y, int n, int m);              // MS2: slot 37 (0x128) hit test
     char m_unk08[0x10];
     Unk_UisMovieSlot m_slot;                                        // +0x18
     bool FUN_142571030(const char* szMethod, Scaleform::GFx::Value* pResult, const Scaleform::GFx::Value* pArgs, int nArgs);
@@ -216,7 +216,7 @@ public:
 Unk_UisMovie* FUN_1422bb8b0(int nMovieId);
 class Unk_UisPlayerInfo { public: void FUN_1410c3330(CStringW& strOut); };   // the local player's name
 Unk_UisPlayerInfo* FUN_1409670e0();
-char FUN_1410c3600(void* p, int n);
+bool FUN_1410c3600(void* p, int n);
 void* FUN_140166410();
 unsigned char FUN_14036d570(void* p, int n);
 class UIMeratMarketDialog;                                          // unit-local in uichatemoticondialog.cpp; only used by pointer here
@@ -232,7 +232,7 @@ UIGroupMessengerBrowser* FUN_140a3aad0(eUIClassID nClass);          // find the 
 int FUN_141952840(UIGroupMessengerBrowser* pDlg);
 void FUN_141952780(UIGroupMessengerBrowser* pDlg);
 UIAdPushDialog* FUN_140d61c00(eUIClassID nClass);                   // find the dialog (dynamic_cast)
-char FUN_140e41110(UIAdPushDialog* pDlg);
+bool FUN_140e41110(UIAdPushDialog* pDlg);
 void FUN_140e411d0(UIAdPushDialog* pDlg);
 void* FUN_140939a00();
 void FUN_140d5a290(void* p);
@@ -967,8 +967,8 @@ bool CUIService::FUN_141adcd40()
 }
 
 // ---- player toggles ----
-char FUN_14036e510(void* p);
-char FUN_1410af770(void* p);
+bool FUN_14036e510(void* p);
+bool FUN_1410af770(void* p);
 void* FUN_1416625b0(PCBase* p);
 void* FUN_141530290(PCBase* p);
 void FUN_1410aa380(void* p, bool b);
@@ -981,7 +981,7 @@ public:
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22();
-    virtual void vfunc_23(char b);                                  // MS2: slot 23 (0xb8)
+    virtual void vfunc_23(int b);                                   // MS2: slot 23 (0xb8)
 };
 
 // @0x141adbbb0
@@ -992,7 +992,7 @@ void CUIService::FUN_141adbbb0()
         FUN_1422d49f0(FUN_140b632f0());
         if (FUN_14036e510(FUN_140166410()))
         {
-            char bOn = FUN_1410af770(FUN_140b632f0());
+            bool bOn = FUN_1410af770(FUN_140b632f0());
             PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
             if (pPlayer)
             {
@@ -1164,7 +1164,6 @@ void CUIService::FUN_141adbf70(int n)
 MS2_REPLACE_METHOD(0x141adbf70, CUIService, FUN_141adbf70, 55, 0xAE0BC1C7);
 
 // @0x141adcbb0
-// MS2-FUNCTIONAL: GetNext/GetValueAt order and the MS2Ptr temporaries are reconstructed from the decompile
 int CUIService::FUN_141adcbb0(int (*pfn)(MS2Ptr<UIDialog>))
 {
     POSITION pos = m_mapDlg.GetStartPosition();
@@ -1172,7 +1171,7 @@ int CUIService::FUN_141adcbb0(int (*pfn)(MS2Ptr<UIDialog>))
         POSITION cur = pos;
         m_mapDlg.GetNext(pos);
         MS2Ptr<UIDialog> spDlg = m_mapDlg.GetValueAt(cur);
-        if (!spDlg.IsNull()) {
+        if (spDlg) {
             if (spDlg->vfunc_55() == 0) {
                 if (pfn(spDlg) != 0) {
                     return 1;
@@ -1775,13 +1774,14 @@ void* FUN_14168ab40(void* pSvcMgr);
 void* FUN_140af7da0(void* pWorld);
 NiRenderer* FUN_140994450();
 void* FUN_14098d8d0(void* pTable, void* p);
-void FUN_1411d7c70(void* p, bool (*pfn)(char), void* pSelf);
+void FUN_1411d7c70(void* p, bool (*pfn)(bool, void*), void* pSelf);
 void FUN_1411d7c10(void* p, bool (*pfn)(void*), void* pSelf);
 class Unk_UisLog
 {
 public:
     void FUN_1401ce2f0(const char* szFormat, const char* szArg);
     void FUN_1401ce2f0(const char* szFormat, int n);
+    void FUN_1401ce2f0(const char* szFormat, unsigned __int64 n);
     void FUN_1401ce2f0(const char* szFormat, const char* szName, int a, int b, int c);
     void FUN_1401ce2b0(const char* szText);
 };   // debug log (printf-style)
@@ -1798,7 +1798,7 @@ int FUN_1419244c0(void* pDlg, int n);
 void FUN_141aef370(void* pMap, void* pPos);
 void FUN_141aee3b0(void* p, int n);
 void FUN_141e30f30(NiDebugVisualizationClick* p);
-char FUN_1401d1320(void* pCache);
+bool FUN_1401d1320(void* pCache);
 void* FUN_140e45740();
 void FUN_1422e6960(void* p);
 void FUN_1422e6d00(void* p, int n);
@@ -1899,7 +1899,7 @@ efd::AsyncResult CUIService::OnShutdown()
             }
         }
     }
-    if (m_spDebugClick != 0)
+    if (m_spDebugClick)
         m_spDebugClick = 0;
     FUN_141aece70();
     return efd::AsyncResult_Complete;
@@ -1909,7 +1909,6 @@ efd::AsyncResult CUIService::OnShutdown()
 // ---- FUN_141adf580: every dialog's construction (the ctors are unrecovered-signature exe functions) ----
 void FUN_1422d4b40(void* pObj, unsigned long long (*pfn)());
 unsigned long long FUN_141adda20();
-void FUN_141aecc30();
 void FUN_141addb30(long long n);
 void FUN_1422aee20(Unk_UisMovieMgr* pMgr, void (*pfn)(long long));
 void FUN_1422aeea0(Unk_UisMovieMgr* pMgr, void (*pfn)(void*, int));
@@ -4465,11 +4464,11 @@ Unk_UisHousingSvc* FUN_1401cd040(char* pCell);
 extern char DAT_143b059e8;
 void FUN_1410bc320(Unk_UisHousingSvc* p);
 void* FUN_140a58540();
-char FUN_140d8ac50(void* p, int n, int m);
-char FUN_140d8ad60(void* p, int n);
+bool FUN_140d8ac50(void* p, int n, int m);
+bool FUN_140d8ad60(void* p, int n);
 void* FUN_14025e7c0();
-char FUN_14116d840(void* p);
-char FUN_1410af770(void* p);
+bool FUN_14116d840(void* p);
+bool FUN_1410af770(void* p);
 unsigned long long FUN_1418fcb70();
 void FUN_1422d4b70(void* p, int n);
 void FUN_1422d4d10(void* p);
@@ -4478,7 +4477,6 @@ float FUN_141276460();
 void FUN_1401ce270(Unk_UisLog* pMgr, const CString& strName, void* pArg1, void* pArg2);
 
 // @0x141adda20
-// MS2-FUNCTIONAL: the exe re-reads the scene id for the second test
 unsigned long long FUN_141adda20()
 {
     int nScene = FUN_1422b9e00(FUN_1408e57f0());
@@ -4487,7 +4485,7 @@ unsigned long long FUN_141adda20()
         && FUN_140d8ac50(FUN_140a58540(), 0x38, 0)
         && FUN_140d8ad60(FUN_140a58540(), 0x13))
     {
-        FUN_141aecc30();
+        FUN_1403ed2b0()->FUN_141aecc30();
         return 1;
     }
     if (FUN_14116d840(FUN_14025e7c0()) && FUN_1410af770(FUN_140b632f0()) && nScene == 0x620001d)
@@ -4502,7 +4500,7 @@ unsigned long long FUN_141adda20()
 
 // @0x141aecc30
 // MS2-FUNCTIONAL: the housing service reference is held through a raw pointer
-void FUN_141aecc30()
+void CUIService::FUN_141aecc30()
 {
     if (FUN_14025e7a0()->FUN_1422b27c0() != 0)
         return;
@@ -4527,10 +4525,12 @@ void FUN_141aecc30()
 }
 
 // @0x141ade1f0
-// MS2-FUNCTIONAL: the screen size is read through the renderer's default target group
-bool CUIService::FUN_141ade1f0(char bFlag)
+bool CUIService::FUN_141ade1f0(bool bFlag, void* pUnused)
 {
-    if (bFlag == 0)
+    if (bFlag)
+    {
+    }
+    else
     {
         FUN_1403ed2b0()->FUN_141adcbb0(&CUIService::FUN_141aed000);
         NiRenderTargetGroup* pGroup = FUN_140994450()->GetDefaultRenderTargetGroup();
@@ -4548,12 +4548,12 @@ void CUIService::FUN_141ade300(CString strName, void* pUnused, void* pArg1, void
 }
 
 // ---- per-tick and mode helpers ----
-char FUN_14116d7a0(void* p, int n);
-char FUN_14116d9c0(void* p, int a, int b, int c);
-char FUN_14116d950(void* p, int a, int b, int c);
+bool FUN_14116d7a0(void* p, int n);
+bool FUN_14116d9c0(void* p, int a, bool b, int c);
+bool FUN_14116d950(void* p, int a, bool b, int c);
 int FUN_140869420();
 void* FUN_140aadf80();
-void FUN_141b90e30(void* p, int* pX, int* pY);
+void FUN_141b90e30(void* p, float* pX, float* pY);
 int FUN_141277f40();
 int FUN_141277f50();
 void FUN_141e2f970(NiDebugVisualizationClick* p);
@@ -4565,7 +4565,7 @@ int FUN_1422db750(void* p);
 struct Unk_UisSceneView { CString FUN_1422db790(); };   // scene name (member: this=rcx, hidden return=rdx)
 void FUN_1422dbf80(void* p, const CString& str, int n, int a, int b);
 void FUN_1410bc1c0(Unk_UisHousingSvc* p);
-int FUN_14151e8c0(void* p);
+unsigned __int64 FUN_14151e8c0(void* p);
 int FUN_1422dc430(UIDialog* p);
 
 // The dialog's state fields are protected; the unit reads them through these two inline accessors.
@@ -4592,7 +4592,6 @@ void CUIService::FUN_141aec690()
 }
 
 // @0x141aec760
-// MS2-FUNCTIONAL: the cursor position temporaries are laid out per call in the exe
 void CUIService::FUN_141aec760(float fDelta)
 {
     if (Unk_UisDlg4e52* pDlg = FUN_14136f290(0x4e52))
@@ -4601,11 +4600,11 @@ void CUIService::FUN_141aec760(float fDelta)
     if ((unsigned)(nNow - m_n130) > 0x32)
     {
         m_n130 = nNow;
-        int x, y;
+        float x, y;
         FUN_141b90e30(FUN_140aadf80(), &x, &y);
         if (Unk_UisMovie* pMovie = FUN_1422bb8b0(2))
         {
-            char bHit = pMovie->vfunc_37(x, y, 3, 0);
+            int bHit = pMovie->vfunc_37(x, y, 3, 0);
             FUN_14025e7a0()->FUN_1422aef20(2, bHit);
             if (bHit)
             {
@@ -4666,19 +4665,21 @@ void CUIService::FUN_141aecd70()
     for (POSITION pos = m_mapDlg.GetStartPosition(); pos != 0; m_mapDlg.GetNext(pos))
     {
         MS2Ptr<UIDialog> spDlg = m_mapDlg.GetValueAt(pos);
-        if (spDlg && spDlg->vfunc_55() == 0)
-            spDlg->vfunc_68();
+        if (spDlg)
+        {
+            if (spDlg->vfunc_55() == 0)
+                spDlg->vfunc_68();
+        }
     }
 }
 
 // @0x141aece70
-// MS2-FUNCTIONAL: the log lines are formatted through the debug log's printf helper
 void CUIService::FUN_141aece70()
 {
     FUN_140a44830()->FUN_1401ce2b0("\n--- CUIService Log ---");
     if (Unk_UisMovie* pMovie = FUN_1422bb8b0(2))
     {
-        if (pMovie->m_slot.FUN_14151e150() != 0)
+        if (pMovie->m_slot.FUN_14151e150() ? true : false)
         {
             if (Unk_UisRootsOwner* pOwner = pMovie->m_slot.FUN_14151e170()->vfunc_49())
                 FUN_140a44830()->FUN_1401ce2f0("MaxCollectionRoots: %d", FUN_14151e8c0(pOwner->m_sub.FUN_14151e180()));
@@ -4884,34 +4885,30 @@ private:
 // MS2-FUNCTIONAL: string temporaries of the formatter calls differ from the exe
 static void FUN_141ade740(const Unk_UisAsParams& params)
 {
-    if (params.ArgCount > 0 && params.pArgs != 0)
-    {
-        ASData data;
-        if (data.FUN_1422b9620(params.pArgs, params.ArgCount) != 0)
-        {
-            Scaleform::GFx::Value val = data.FUN_1422b9260();
-            CStringW strArg(data.FUN_1422b8d30());
-            ASObj obj(val, 2);
-            obj.FUN_1407cbb20("text", CStringW(FUN_140e70010(CStringW(strArg))));
-        }
-    }
+    if (!(params.ArgCount > 0 && params.pArgs != 0))
+        return;
+    ASData data;
+    if (data.FUN_1422b9620(params.pArgs, params.ArgCount) == 0)
+        return;
+    Scaleform::GFx::Value val = data.FUN_1422b9260();
+    CStringW strArg(data.FUN_1422b8d30());
+    ASObj obj(val, 2);
+    obj.FUN_1407cbb20("text", CStringW(FUN_140e70010(CStringW(strArg))));
 }
 
 // @0x141ade900
 // MS2-FUNCTIONAL: string temporaries of the formatter calls differ from the exe
 static void FUN_141ade900(const Unk_UisAsParams& params)
 {
-    if (params.ArgCount > 0 && params.pArgs != 0)
-    {
-        ASData data;
-        if (data.FUN_1422b9620(params.pArgs, params.ArgCount) != 0)
-        {
-            Scaleform::GFx::Value val = data.FUN_1422b9260();
-            CStringW strArg(data.FUN_1422b8d30());
-            ASObj obj(val, 2);
-            obj.FUN_1407cbb20("text", CStringW(FUN_14083ccf0(strArg)));
-        }
-    }
+    if (!(params.ArgCount > 0 && params.pArgs != 0))
+        return;
+    ASData data;
+    if (data.FUN_1422b9620(params.pArgs, params.ArgCount) == 0)
+        return;
+    Scaleform::GFx::Value val = data.FUN_1422b9260();
+    CStringW strArg(data.FUN_1422b8d30());
+    ASObj obj(val, 2);
+    obj.FUN_1407cbb20("text", CStringW(FUN_14083ccf0(strArg)));
 }
 
 // @0x141ade430

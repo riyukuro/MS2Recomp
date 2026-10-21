@@ -132,6 +132,7 @@ public:
     void FUN_141aebed0();                           // 0x141aebed0 register the camera dialog and the callbacks
     static int FUN_141aed0a0(MS2Ptr<UIDialog> spDlg);   // 0x141aed0a0 log one dialog
     void FUN_141aecd70();                           // 0x141aecd70 close-request every dialog that is open
+    void FUN_141aecc30();                           // 0x141aecc30 rebuilds the scene UI (field enter)
     void FUN_141adafd0(int nScene);                 // 0x141adafd0 hide the world UI for a scene change
     void FUN_141adb2a0(int nScene);                 // 0x141adb2a0 show it again (argument unused)
     void FUN_141adbbb0();                           // 0x141adbbb0
@@ -159,7 +160,7 @@ public:
     void FUN_141adf250();                           // 0x141adf250 create the click render steps
     void FUN_141adf580();                           // 0x141adf580 create every dialog
     static void FUN_141ade300(CString strName, void* pUnused, void* pArg1, void* pArg2);   // 0x141ade300
-    static bool FUN_141ade1f0(char bFlag);          // 0x141ade1f0
+    static bool FUN_141ade1f0(bool bFlag, void* p); // 0x141ade1f0
     static bool FUN_141ade2d0(void* pContext);                  // 0x141ade2d0
     static void FUN_141ade400();                    // 0x141ade400
     static int FUN_141aecf60(MS2Ptr<UIDialog> spDlg);   // 0x141aecf60
