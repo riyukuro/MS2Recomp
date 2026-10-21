@@ -6181,3 +6181,4 @@ png_write_info	14270f2a0	func
 ?xvalueSet@GamePadAnalogEvent@fl_gfx@Instances@AS3@GFx@Scaleform@@QEAAXAEBVValue@456@N@Z	1424cca10	func
 ?yvalueGet@GamePadAnalogEvent@fl_gfx@Instances@AS3@GFx@Scaleform@@QEAAXAEAN@Z	1424cca20	func
 ?yvalueSet@GamePadAnalogEvent@fl_gfx@Instances@AS3@GFx@Scaleform@@QEAAXAEBVValue@456@N@Z	1424cca30	func
+?ToUpper@String@Scaleform@@QEBA?AV12@XZ	142587e00	func
