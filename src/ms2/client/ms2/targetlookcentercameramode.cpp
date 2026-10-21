@@ -545,3 +545,9 @@ inline float FUN_140a4e660(float fY, float fX)
 {
     return atan2f(fY, fX);
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x140a4e560, Unk_StreamPoint, FUN_140a4e560, 103, 0xF0625B3A);
+MS2_REPLACE_METHOD(0x140a4e630, Unk_Point2, FUN_140a4e630, 48, 0xD7D57138);
+MS2_REPLACE(0x140a4e660, FUN_140a4e660, 39, 0x14F80A4A);
+

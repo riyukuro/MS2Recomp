@@ -356,3 +356,19 @@ int FUN_140c902f0(const efd::Point2& k)
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca3930-0x142ca39e0 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x140c8f680, FUN_140c8f680, 14, 0x82C92E11);
+MS2_REPLACE(0x140c8f690, FUN_140c8f690, 14, 0x82C92E11);
+MS2_REPLACE_METHOD(0x140c8f810, PostProcessEffect, vfunc_18, 33, 0x18687747);
+MS2_REPLACE_METHOD(0x140c8f840, PostProcessEffect, vfunc_17, 33, 0xC66B17F2);
+MS2_REPLACE_METHOD(0x140c8f870, PostShimmerRenderStep, GetRTTI, 13, 0xB3657143);
+MS2_REPLACE_METHOD(0x140c8f890, PostShimmerRenderStep, vfunc_14, 8, 0x41132FCD);
+MS2_REPLACE_METHOD(0x140c8f900, PostShimmerRenderStep, vfunc_13, 8, 0x41132FCD);
+MS2_REPLACE_METHOD(0x140c8f910, PostProcessEffect, vfunc_21, 6, 0xA9AF6E37);
+MS2_REPLACE_METHOD(0x140c8f920, PostProcessEffect, vfunc_19, 6, 0xA9AF6E37);
+MS2_REPLACE_METHOD(0x140c8f930, PostProcessEffect, vfunc_20, 6, 0xA9AF6E37);
+MS2_REPLACE_METHOD(0x140c8f940, PostProcessEffect, vfunc_22, 6, 0xA9AF6E37);
+MS2_REPLACE_METHOD(0x140c902e0, PostShimmerEffect, vfunc_5, 11, 0xF06BEBEF);
+MS2_REPLACE(0x140c902f0, FUN_140c902f0, 72, 0x5A45716E);
+

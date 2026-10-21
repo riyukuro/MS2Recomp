@@ -94,3 +94,9 @@ void CMirrored3DRenderView::SetMirrorPoints(const NiPoint3& kPoint, const NiPoin
 CMirrored3DRenderView::~CMirrored3DRenderView()
 {
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+#include "hook/ms2hook.h"
+MS2_REPLACE_METHOD(0x141486e70, CMirrored3DRenderView, SetCameraData, 893, 0xEDD2FDC1);
+MS2_REPLACE_METHOD(0x141487200, CMirrored3DRenderView, SetMirrorPoints, 68, 0x3F507DF3);
+

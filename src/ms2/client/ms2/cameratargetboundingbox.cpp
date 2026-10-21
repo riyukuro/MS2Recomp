@@ -296,3 +296,10 @@ bool Unk_CtbMat34::FUN_140b00260(Unk_CtbMat34* pOut) const
 // The exe's CRT memcpy_s / memmove_s copies close the obj's COMDAT tail.
 __declspec(selectany) extern errno_t(__cdecl* const ms2_ctbMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
 __declspec(selectany) extern errno_t(__cdecl* const ms2_ctbMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x140affe70, Unk_Point2, FUN_140affe70, 61, 0x39BB8533);
+MS2_REPLACE_METHOD(0x140affeb0, Unk_Point2, FUN_140affeb0, 157, 0xABEDF44D);
+MS2_REPLACE_METHOD(0x140afff50, Unk_CtbMat33, FUN_140afff50, 777, 0xB05E510B);
+MS2_REPLACE_METHOD(0x140b00260, Unk_CtbMat34, FUN_140b00260, 108, 0xB288BF53);
+

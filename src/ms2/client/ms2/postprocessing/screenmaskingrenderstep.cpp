@@ -110,3 +110,12 @@ bool ScreenMaskingRenderStep::vfunc_14() { return false; }
 bool ScreenMaskingRenderStep::vfunc_13() { return false; }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb4740-0x142cb4760 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x1416ba600, FUN_1416ba600, 13, 0xC078F4D1);
+MS2_REPLACE(0x1416ba620, FUN_1416ba620, 13, 0xC078F4D1);
+MS2_REPLACE_METHOD(0x1416ba750, ScreenMaskingRenderStep, vfunc_22, 6, 0xA9AF6E37);
+MS2_REPLACE_METHOD(0x1416ba7c0, ScreenMaskingRenderStep, GetRTTI, 13, 0x9687C7E9);
+MS2_REPLACE_METHOD(0x1416ba7d0, ScreenMaskingRenderStep, vfunc_14, 8, 0x41132FCD);
+MS2_REPLACE_METHOD(0x1416ba7e0, ScreenMaskingRenderStep, vfunc_13, 8, 0x41132FCD);
+

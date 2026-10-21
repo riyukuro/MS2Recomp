@@ -209,3 +209,7 @@ void PostProcessSetting::ApplyShaderConstants(float fTime)
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb4720-0x142cb4740 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x1416b53c0, PostProcessSetting, ApplyShaderConstants, 372, 0x871770F5);
+

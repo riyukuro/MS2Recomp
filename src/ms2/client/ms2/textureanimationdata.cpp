@@ -630,3 +630,8 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 // MS2-RANGE: 0x14010db90-0x14010dd00 .text$di
 // MS2-RANGE: 0x142cbbc30-0x142cbbcc0 .text$yd
 #include "ms2/placeholder/header_statics_a.h"
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x141848740, CTextureAnimation, FUN_141848740, 317, 0x045812FE);
+MS2_REPLACE_METHOD(0x141849060, CTextureAnimation, FUN_141849060, 225, 0xB11A85E2);
+

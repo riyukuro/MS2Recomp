@@ -1533,3 +1533,16 @@ MS2_REPLACE_METHOD(0x1413D84E0, HardwareInstancingService, FUN_1413d84e0, 1246, 
 // MS2-PIN: ?end@?$vector@VEntityID@egf@@V?$allocator@VEntityID@egf@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@VEntityID@egf@@@std@@@std@@@2@XZ 0x1413f7700 ; vector<EntityID> iterator accessor copy (strict auto-pairing misses it)
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb1430-0x142cb1580 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x1413eb720, Unk_MeshInstancingConfig, FUN_1413eb720, 24, 0x83E9AC83);
+MS2_REPLACE_METHOD(0x1413eb740, MeshInstancing, FUN_1413eb740, 31, 0xCCFBBD0B);
+MS2_REPLACE_METHOD(0x1413ebb30, MeshInstancing, FUN_1413ebb30, 17, 0xB518FD33);
+MS2_REPLACE_METHOD(0x1413ebb70, MeshInstancing, FUN_1413ebb70, 31, 0xF5647058);
+MS2_REPLACE_METHOD(0x1413ebb90, MeshInstancing, FUN_1413ebb90, 14, 0xA25B27BF);
+MS2_REPLACE_METHOD(0x1413ec820, MeshInstancing, FUN_1413ec820, 61, 0xDAF38CA1);
+MS2_REPLACE_METHOD(0x1413ec890, MeshInstancing, FUN_1413ec890, 15, 0x32C862F5);
+MS2_REPLACE_METHOD(0x1413ed2f0, MeshInstancing, FUN_1413ed2f0, 15, 0x7CF2C742);
+MS2_REPLACE_METHOD(0x1413ed300, MeshInstancing, FUN_1413ed300, 25, 0x9EB3CF4F);
+MS2_REPLACE_METHOD(0x1413d68d0, HardwareInstancingService, FUN_1413d68d0, 66, 0xFE5168AF);
+

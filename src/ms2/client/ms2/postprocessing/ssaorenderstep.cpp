@@ -74,3 +74,7 @@ const NiRTTI* SSAORenderStep::GetRTTI() const { return &ms_RTTI; }
 MS2_REPLACE_METHOD(0x1416BA980, SSAORenderStep, vfunc_15, 294, 0x9B87AF64);
 MS2_REPLACE_METHOD(0x1416BAAB0, SSAORenderStep, vfunc_16, 45, 0x3FCC2CC7);
 MS2_REPLACE_METHOD(0x1416BAAF0, SSAORenderStep, vfunc_23, 402, 0xA84A7E34);
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x1416bacf0, SSAORenderStep, GetRTTI, 13, 0x027E8B5A);
+

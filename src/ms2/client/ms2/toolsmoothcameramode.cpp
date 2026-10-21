@@ -437,3 +437,9 @@ CRuntimeClass* FUN_141858980()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbbe70-0x142cbbf90 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x1418588c0, FUN_1418588c0, 162, 0x1E8F04A1);
+MS2_REPLACE_METHOD(0x141857480, CToolSmoothCameraMode, vfunc_8, 2134, 0x211EFDDB);
+MS2_REPLACE(0x141858980, FUN_141858980, 14, 0xFC327C3B);
+

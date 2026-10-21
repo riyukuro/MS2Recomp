@@ -2481,3 +2481,17 @@ void CameraMgr::FUN_140aefb20(const Unk_CameraPathRow* pRow)
 MS2_REPLACE_METHOD(0x140AEFB20, CameraMgr, FUN_140aefb20, 1189, 0x2179FBDC);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca0330-0x142ca0400 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x140ae8d40, CMapCameraData, vfunc_1, 164, 0xE859B609);
+MS2_REPLACE_METHOD(0x140ae9070, CBossTargetCameraData, vfunc_1, 266, 0x8439EAC2);
+MS2_REPLACE_METHOD(0x140ae9200, Unk_StreamPoint, FUN_140ae9200, 103, 0x45B786DE);
+MS2_REPLACE_METHOD(0x140ae9270, Unk_StreamPoint, FUN_140ae9270, 117, 0x9974293E);
+MS2_REPLACE_METHOD(0x140ae9400, CCameraEffect, vfunc_1, 68, 0xFF2FBAB8);
+MS2_REPLACE_METHOD(0x140ae9550, CVibrateCameraEffect, vfunc_1, 699, 0x7790AEBC);
+MS2_REPLACE_METHOD(0x140aea4c0, CameraMgr, FUN_140aea4c0, 808, 0xBE964AC8);
+MS2_REPLACE_METHOD(0x140aeb070, CameraMgr, FUN_140aeb070, 294, 0x09E27492);
+MS2_REPLACE_METHOD(0x140aeb1a0, CameraMgr, FUN_140aeb1a0, 619, 0x19B75919);
+MS2_REPLACE_METHOD(0x140aeb950, CameraMgr, FUN_140aeb950, 471, 0xA1F130D2);
+MS2_REPLACE_METHOD(0x140aec0e0, CameraMgr, FUN_140aec0e0, 977, 0x6A60A4CF);
+

@@ -462,3 +462,7 @@ int CLightEffect::vfunc_12()
 MS2_REPLACE_METHOD(0x14144B610, CLightEffect, vfunc_12, 11, 0x653B09E8);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb2460-0x142cb24a0 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x14144b630, FUN_14144b630, 54, 0x526C0295);
+

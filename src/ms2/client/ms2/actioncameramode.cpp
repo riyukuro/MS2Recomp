@@ -155,4 +155,9 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 static CString s_strSkill("skill");
 static CString s_strStun("stun");
 // The fourth initializer (0x1400bf370) is egf::kENTITY_INVALID of <egf/EntityID.h> (EntityID ctor 0x1401cd100), pinned below.
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x140947880, FUN_140947880, 15, 0x5731F599);
+MS2_REPLACE_METHOD(0x140947940, Unk_CameraOwner, FUN_140947940, 56, 0x68C8F089);
+
 // MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400bf370

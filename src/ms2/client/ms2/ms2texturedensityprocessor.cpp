@@ -204,3 +204,9 @@ const NiRTTI* MS2TextureDensityProcessor::GetRTTI() const { return &ms_RTTI; }
 #ifndef MS2_HOOK_DLL
 const NiRTTI MS2TextureDensityProcessor::ms_RTTI("MS2TextureDensityProcessor", &MS2RenderListProcessor::ms_RTTI);
 #endif
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x14150d360, MS2TextureDensityProcessor, FUN_14150d360, 25, 0xA8D572C7);
+MS2_REPLACE_METHOD(0x14150d380, MS2TextureDensityProcessor, FUN_14150d380, 17, 0x690E246B);
+MS2_REPLACE_METHOD(0x1415120e0, MS2TextureDensityProcessor, GetRTTI, 13, 0xB0C3BA1A);
+

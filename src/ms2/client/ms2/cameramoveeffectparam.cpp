@@ -155,3 +155,8 @@ int CCameraMoveEffect::vfunc_12()
 {
     return 0x11;
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x140afed50, CCameraMoveEffect, vfunc_7, 6, 0xA9AF6E37);
+MS2_REPLACE_METHOD(0x140afee70, CCameraMoveEffect, vfunc_12, 11, 0x1A761180);
+

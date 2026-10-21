@@ -130,3 +130,10 @@ errno_t FUN_141626ae0(void* const dst, rsize_t const dstSize, void const* const 
 MS2_REPLACE_METHOD(0x1416264B0, OutlineRenderStep, vfunc_15, 409, 0x9E9695B6);
 MS2_REPLACE_METHOD(0x141626650, OutlineRenderStep, vfunc_23, 787, 0x00EA1A97);
 MS2_REPLACE_METHOD(0x141626970, OutlineRenderStep, vfunc_16, 66, 0x5D0A5722);
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x141626a90, OutlineRenderStep, GetRTTI, 13, 0xE04CAFAB);
+MS2_REPLACE_METHOD(0x141626aa0, ReloadablePostProcess, vfunc_14, 8, 0x41132FCD);
+MS2_REPLACE_METHOD(0x141626ab0, ReloadablePostProcess, vfunc_13, 8, 0x41132FCD);
+MS2_REPLACE(0x141626ac0, FUN_141626ac0, 31, 0xC6A21E5A);
+

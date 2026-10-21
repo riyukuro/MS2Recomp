@@ -189,3 +189,8 @@ const NiRTTI TextureOverrideEffect::ms_RTTI("TextureOverrideEffect", &CEffect::m
 #endif
 static CString s_strSkill("skill");                                                    // @0x14010dd30
 static CString s_strStun("stun");                                                      // @0x14010dd60
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x14184bb80, TextureOverrideEffect, vfunc_7, 34, 0x74E4BC82);
+MS2_REPLACE_METHOD(0x14184c290, TextureOverrideEffect, vfunc_12, 11, 0x7688D63A);
+

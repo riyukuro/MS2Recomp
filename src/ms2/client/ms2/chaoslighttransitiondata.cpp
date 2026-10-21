@@ -338,3 +338,11 @@ LayerManager::LayerManager()
 
 // Trailing unreferenced CRT memcpy_s COMDAT 0x141048fd0.
 __declspec(selectany) extern errno_t(__cdecl* const ms2_chaosMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x141046540, FUN_141046540, 349, 0xDFBF407A);
+MS2_REPLACE_METHOD(0x1410463e0, ChaosLightEffectLayer, vfunc_18, 31, 0xA2375BA2);
+MS2_REPLACE_METHOD(0x141046410, ChaosLightEffectLayer, FUN_141046410, 283, 0x7A89813F);
+MS2_REPLACE_METHOD(0x141046820, ChaosLightEffectLayer, vfunc_20, 36, 0x940ECF8A);
+MS2_REPLACE_METHOD(0x1410469c0, ChaosLightEffectLayerManager, FUN_1410469c0, 31, 0xA7D371F2);
+

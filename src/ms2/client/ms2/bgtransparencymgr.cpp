@@ -755,3 +755,23 @@ TransparencyElement::TransparencyElement()
 
 // @0x140a1f130
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x140a17da0, GameObject, FUN_140a17da0, 19, 0x3A8D58F9);
+MS2_REPLACE_METHOD(0x140a17dc0, GameObject, FUN_140a17dc0, 19, 0xD529AE85);
+MS2_REPLACE_METHOD(0x140a18070, CameraMgr, FUN_140a18070, 17, 0xF1B8F21A);
+MS2_REPLACE_METHOD(0x140a0cee0, BGTransparencyMgr, Init, 167, 0x9450441D);
+MS2_REPLACE_METHOD(0x140a0cf90, BGTransparencyMgr, Shutdown, 103, 0xD8877191);
+MS2_REPLACE_METHOD(0x140a0d130, BGTransparencyMgr, AddObject, 82, 0x9479868C);
+MS2_REPLACE_METHOD(0x140a0d190, BGTransparencyMgr, RemoveObject, 151, 0x9E9E7CB8);
+MS2_REPLACE_METHOD_VIA(0x140a0d230, BGTransparencyMgr, IWorldServiceCallback, vfunc_3, 536, 0xE2169CFE);
+MS2_REPLACE_METHOD(0x140a0d450, BGTransparencyMgr, EraseEntity, 528, 0xFA013C55);
+MS2_REPLACE_METHOD(0x140a0d670, BGTransparencyMgr, IsTarget, 296, 0x706F7CBD);
+MS2_REPLACE_METHOD(0x140a0db00, BGTransparencyMgr, vfunc_1, 2087, 0x0C0F44E6);
+MS2_REPLACE_METHOD(0x140a0ebf0, BGTransparencyMgr, UpdateFadeOut, 382, 0x360C1663);
+MS2_REPLACE_METHOD(0x140a0ed80, BGTransparencyMgr, UpdateFadeIn, 651, 0xFFB6C417);
+MS2_REPLACE_METHOD(0x140a0f020, BGTransparencyMgr, ReleaseMaterials, 270, 0x630D92CC);
+MS2_REPLACE(0x140a0f140, BGTransparencyMgr::DeleteMaterials, 186, 0xA24BC03D);
+MS2_REPLACE_METHOD(0x140a0f2d0, BGTransparencyMgr, MoveMissingToFadeIn, 383, 0x9B2EDDD8);
+MS2_REPLACE(0x140a0f460, BGTransparencyMgr::CompareDistance, 234, 0x97E118CA);
+

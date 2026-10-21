@@ -971,3 +971,21 @@ static void Unk_RsCollectFade(NiAVObject* pRoot)
         FUN_141d2c900(pObject, 1);
     }
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x1414f0480, Unk_RsGetFailure, 7, 0x398B5D1C);
+MS2_REPLACE(0x1414f0750, Unk_RsSetFailure, 15, 0x716D61E1);
+MS2_REPLACE(0x1414f07b0, Unk_RsSetHookA, 18, 0x708AB386);
+MS2_REPLACE(0x1414f07d0, Unk_RsSetHookB, 18, 0xB60CAB9E);
+MS2_REPLACE(0x1414f0ac0, Unk_RsGetShaderSource, 42, 0xDF4B6D0F);
+MS2_REPLACE(0x1414f0540, Unk_RsGetCollector, 51, 0x5BAF357E);
+MS2_REPLACE_METHOD(0x1414ea710, MS2RenderService, OnPreInit, 403, 0xD83C13D2);
+MS2_REPLACE_METHOD(0x1414ea8b0, MS2RenderService, CheckRenderState, 8599, 0x757AA2B5);
+MS2_REPLACE(0x1414ecec0, Unk_RsLockHook, 37, 0x4B389766);
+MS2_REPLACE(0x1414ecef0, Unk_RsUnlockHook, 37, 0xC856A5B6);
+MS2_REPLACE_METHOD(0x1414ecf80, MS2RenderService, CreateRendererSized, 1046, 0xA0872AB7);
+MS2_REPLACE(0x1414ee4c0, Unk_RsNoopHook, 6, 0xA9AF6E37);
+MS2_REPLACE(0x1414ee4d0, Unk_RsResetHook, 94, 0xBD38532B);
+MS2_REPLACE(0x1414ee540, Unk_RsDriverErrorHook, 225, 0xE2470B7A);
+MS2_REPLACE(0x1414ee850, Unk_RsCollectFade, 211, 0x6188DCA2);
+

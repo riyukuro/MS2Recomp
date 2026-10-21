@@ -198,3 +198,28 @@ void MS2Renderer::SetRenderShadowCasterBackfaces(bool bRenderBackfaces) { FUN_14
 
 // @0x140d9db80
 void MS2Renderer::SetStencilClear(unsigned int uiClear) { m_uiStencilClear = uiClear; }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x1400d3cd0, FUN_1400d3cd0, 35, 0xB607932C);
+MS2_REPLACE_METHOD(0x140d9d3e0, MS2Renderer, Do_RenderMesh, 206, 0x7B72FAC8);
+MS2_REPLACE_METHOD(0x140d9d4c0, MS2Renderer, GetFragmentShader, 121, 0xD9701CE9);
+MS2_REPLACE_METHOD(0x140d9d690, MS2Renderer, Do_LockRenderer, 6, 0xA9AF6E37);
+MS2_REPLACE_METHOD(0x140d9d6a0, MS2Renderer, Do_UnlockRenderer, 6, 0xA9AF6E37);
+MS2_REPLACE_METHOD(0x140d9d6b0, MS2Renderer, GetBackgroundColor, 204, 0xEA89A596);
+MS2_REPLACE_METHOD(0x140d9d780, MS2Renderer, GetCurrentRenderTargetGroup, 18, 0xE9DD51AE);
+MS2_REPLACE_METHOD(0x140d9d7a0, MS2Renderer, GetDepthClear, 19, 0xD07FE45F);
+MS2_REPLACE_METHOD(0x140d9d7c0, MS2Renderer, GetErrorShader, 31, 0x610C7DB9);
+MS2_REPLACE_METHOD(0x140d9d7e0, MS2Renderer, GetFlags, 17, 0x9099A0EC);
+MS2_REPLACE_METHOD(0x140d9d830, MS2Renderer, GetLeftRightSwap, 31, 0x1C42EEA9);
+MS2_REPLACE_METHOD(0x140d9d870, MS2Renderer, GetMaxFogValue, 31, 0xCF9C8C39);
+MS2_REPLACE_METHOD(0x140d9d890, MS2Renderer, GetRTTI, 13, 0x6771C7E5);
+MS2_REPLACE_METHOD(0x140d9d8a0, MS2Renderer, GetStencilClear, 17, 0xF498F658);
+MS2_REPLACE_METHOD(0x140d9d8c0, MS2Renderer, PreloadTexture, 13, 0xC078F4D1);
+MS2_REPLACE_METHOD(0x140d9da50, MS2Renderer, SetDepthClear, 31, 0x59D81CDB);
+MS2_REPLACE_METHOD(0x140d9da70, MS2Renderer, SetErrorShader, 49, 0xFE5B089D);
+MS2_REPLACE_METHOD(0x140d9daf0, MS2Renderer, SetLeftRightSwap, 42, 0x76F7D3A0);
+MS2_REPLACE_METHOD(0x140d9db20, MS2Renderer, SetMaxFogValue, 43, 0x243EBFB8);
+MS2_REPLACE(0x140d9db50, FUN_140d9db50, 16, 0x3A4B02C9);
+MS2_REPLACE_METHOD(0x140d9db60, MS2Renderer, SetRenderShadowCasterBackfaces, 28, 0x00A045DA);
+MS2_REPLACE_METHOD(0x140d9db80, MS2Renderer, SetStencilClear, 25, 0x0E7C0D3C);
+

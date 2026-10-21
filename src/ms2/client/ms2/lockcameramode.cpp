@@ -46,3 +46,7 @@ float CLockCameraMode::vfunc_22()
     return 90.0f;
 }
 MS2_REPLACE_METHOD(0x14144fe20, CLockCameraMode, vfunc_22, 14, 0xB9A998B4);
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x14144fe10, FUN_14144fe10, 6, 0xA9AF6E37);
+

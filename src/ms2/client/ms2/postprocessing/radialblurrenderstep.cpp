@@ -45,3 +45,9 @@ bool RadialBlurRenderStep::vfunc_14() { return false; }
 // @0x1416ba100
 bool RadialBlurRenderStep::vfunc_13() { return false; }
 MS2_REPLACE_METHOD(0x1416B9F00, RadialBlurRenderStep, vfunc_15, 378, 0xF9A64C48);
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x1416ba0e0, RadialBlurRenderStep, GetRTTI, 13, 0x3683DBAE);
+MS2_REPLACE_METHOD(0x1416ba0f0, RadialBlurRenderStep, vfunc_14, 8, 0x41132FCD);
+MS2_REPLACE_METHOD(0x1416ba100, RadialBlurRenderStep, vfunc_13, 8, 0x41132FCD);
+

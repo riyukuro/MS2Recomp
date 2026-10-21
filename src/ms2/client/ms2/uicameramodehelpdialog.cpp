@@ -50,3 +50,8 @@ int UICameraModeHelpDialog::vfunc_48()
 {
     return 0x4f3e;
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x140e05360, UICameraModeHelpDialog, vfunc_43, 167, 0xAC5A83F4);
+MS2_REPLACE_METHOD(0x140e05450, UICameraModeHelpDialog, vfunc_48, 11, 0x95668B3E);
+

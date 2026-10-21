@@ -370,3 +370,11 @@ void FUN_1416bc0f0()
 // MS2-RANGE: 0x142cb4760-0x142cb4780 .text$yd
 // MS2-RANGE: 0x142cb48a0-0x142cb48e0 .text$yd
 // MS2-RANGE: 0x142cb4aa0-0x142cb4ba0 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x1416bb2b0, WorldFadeOutRenderStep, GetRTTI, 13, 0x6B2BF7C8);
+MS2_REPLACE_METHOD(0x1416bb2c0, WorldFadeOutRenderStep, vfunc_14, 8, 0x41132FCD);
+MS2_REPLACE_METHOD(0x1416bb2d0, WorldFadeOutRenderStep, vfunc_13, 8, 0x41132FCD);
+MS2_REPLACE(0x1416bb5f0, FUN_1416bb5f0, 2795, 0xCB9A0617);
+MS2_REPLACE(0x1416bc0f0, FUN_1416bc0f0, 636, 0x77CB25AB);
+

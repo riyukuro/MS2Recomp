@@ -1307,3 +1307,15 @@ void FUN_141851840(NiDevImageConverter* pkConverter)
 #endif
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbbd00-0x142cbbd20 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x14184d0a0, BlitTexturePixels, 1145, 0x0B64B412);
+MS2_REPLACE(0x14184d520, FillPixelRect, 229, 0xE0746CE5);
+MS2_REPLACE(0x14184d8c0, ConvertToRGBA32, 138, 0x0D55B2EE);
+MS2_REPLACE(0x14184d950, CopyPixelRect, 363, 0x6E9ED4C2);
+MS2_REPLACE(0x14184e230, CaptureDeviceState, 105, 0x6C83F76A);
+MS2_REPLACE(0x14184e2a0, RestoreDeviceState, 54, 0x3D13B4F0);
+MS2_REPLACE(0x14184e2e0, ApplyColorKeyToSurface, 742, 0xD780E1C8);
+MS2_REPLACE(0x14184e5d0, GetScreenshotBuffer, 102, 0xFD4CA42A);
+MS2_REPLACE(0x141851320, CountMipLevels, 148, 0x44BB3F0F);
+

@@ -984,4 +984,13 @@ void MS2ShadowVisitor::SubtractiveListHelperAtl(NiNode* pkNode, MS2CasterList* p
 // MS2-RANGE: 0x142cb3230-0x142cb32c0 .text$yd
 #include <egf/EntityID.h>
 #include "ms2/placeholder/header_statics_a.h"
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x14150c290, IsLeafGroup, 28, 0x9B39B78E);
+MS2_REPLACE(0x14150baf0, MS2ExcludeFromShadows, 54, 0x1C4DF93D);
+MS2_REPLACE_METHOD(0x14150adb0, MS2ShadowClickValidator, ValidateClick, 793, 0xEAA0387D);
+MS2_REPLACE_METHOD(0x14150b600, MS2ShadowVisitor, PopulateCasterList, 454, 0x03CFC609);
+MS2_REPLACE_METHOD(0x14150b7d0, MS2ShadowVisitor, PopulateCasterListAtl, 276, 0xA39666FB);
+MS2_REPLACE_METHOD(0x14150b8f0, MS2ShadowVisitor, PopulateReceiverListAtl, 386, 0x5D4F4B6C);
+
 // MS2-PIN: ??__EkENTITY_INVALID@egf@@YAXXZ 0x1400f9630

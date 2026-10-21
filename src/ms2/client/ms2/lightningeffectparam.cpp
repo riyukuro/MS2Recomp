@@ -502,3 +502,14 @@ int LightningEffect::vfunc_12()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb24a0-0x142cb24e0 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x14144b880, LightningEffectParam, vfunc_1, 623, 0x10D3A731);
+MS2_REPLACE_METHOD(0x14144c9e0, LightningEffect, vfunc_9, 126, 0xCD7206DD);
+MS2_REPLACE_METHOD(0x14144ca70, LightningEffect, vfunc_4, 203, 0x2B931FA5);
+MS2_REPLACE_METHOD(0x14144cb50, LightningEffect, vfunc_7, 39, 0x13C258DE);
+MS2_REPLACE_METHOD(0x14144cb80, LightningEffect, vfunc_10, 69, 0x07968EFD);
+MS2_REPLACE_METHOD(0x14144cbd0, LightningEffect, vfunc_8, 88, 0x4DB0CF7F);
+MS2_REPLACE_METHOD(0x14144cc30, LightningEffect, Rebuild, 2605, 0x023C7402);
+MS2_REPLACE_METHOD(0x14144ddc0, LightningEffect, vfunc_12, 11, 0x55CF9663);
+

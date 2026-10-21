@@ -598,3 +598,6 @@ MS2_REPLACE_METHOD(0x1410420D0, ChaosLightEffect, FUN_1410420d0, 747, 0x30F00AC9
 #ifndef MS2_HOOK_DLL
 const NiRTTI ChaosLightEffect::ms_RTTI("ChaosLightEffect", &TransitionEffect::ms_RTTI);   // @0x1400e4b60
 #endif
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+

@@ -280,3 +280,6 @@ void MS2RenderContext::CaptureRecodeFrame()
     MarkRecodeFrameReady(index);
 }
 MS2_REPLACE_METHOD(0x1414DB8A0, MS2RenderContext, CaptureRecodeFrame, 501, 0xADFD84AF);
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+

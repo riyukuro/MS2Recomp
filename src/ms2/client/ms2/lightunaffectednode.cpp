@@ -107,3 +107,7 @@ errno_t FUN_14144e2e0(void* const dst, rsize_t const dstSize, void const* const 
     memmove(dst, src, srcSize);
     return 0;
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x14144e2d0, LightUnaffectedNode, GetRTTI, 13, 0x978D2C99);
+

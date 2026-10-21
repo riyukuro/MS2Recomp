@@ -604,3 +604,9 @@ void Unk_LsPassFlag::FUN_1414cf920(bool bOn)
     m_bOn = bOn;
 }
 MS2_REPLACE_METHOD(0x1414CF920, Unk_LsPassFlag, FUN_1414cf920, 23, 0x698F012D);
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD_VIA(0x1414c00f0, MS2LightService, IWorldServiceCallback, vfunc_0, 39, 0x8B87FAD3);
+MS2_REPLACE_METHOD_VIA(0x1414c0400, MS2LightService, IWorldServiceCallback, vfunc_1, 56, 0xD84A9179);
+MS2_REPLACE_METHOD_VIA(0x1414c0440, MS2LightService, IWorldServiceCallback, vfunc_5, 10, 0x96F6F902);
+

@@ -146,3 +146,6 @@ void UIRimLightDialog::FUN_141709870(ASData& data)
     Unk_RimLight::FUN_14107b320(color, fPower);
 }
 MS2_REPLACE_METHOD(0x141709870, UIRimLightDialog, FUN_141709870, 109, 0xE8BFE176);
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+

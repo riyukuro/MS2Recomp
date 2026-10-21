@@ -436,3 +436,9 @@ bool CLocalTargetCameraMode::FUN_140d4fa60(const Unk_CameraSetup& setup)
     return false;
 }
 MS2_REPLACE_METHOD(0x140d4fa60, CLocalTargetCameraMode, FUN_140d4fa60, 476, 0xFF9E4AA5);
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x140d4fc90, FUN_140d4fc90, 17, 0xDF751E83);
+MS2_REPLACE(0x140d4fcb0, FUN_140d4fcb0, 17, 0xAA3C736B);
+MS2_REPLACE_METHOD(0x140d4e390, CLocalTargetCameraMode, vfunc_8, 4482, 0x0FA598F0);
+
