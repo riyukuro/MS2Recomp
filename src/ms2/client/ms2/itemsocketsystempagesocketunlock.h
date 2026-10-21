@@ -38,7 +38,7 @@ public:
     void FUN_140f81a40(ASObj&, int);                    // the socket rows of the item
     void FUN_140f81f00(CInPacket*);                     // select item result
     void FUN_140f82340(CInPacket*);                     // unlock result
-    void FUN_140f826b0();                               // refresh the ingredient prices
+    void FUN_140f826b0(CInPacket* packet);              // refresh the ingredient prices (packet unused)
     void FUN_140f82940(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: unlock
     void FUN_140f82a50(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: fill ingredients
     void FUN_140f82ba0(const Scaleform::GFx::FunctionHandler::Params&);   // multi select list change

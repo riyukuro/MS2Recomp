@@ -323,33 +323,34 @@ void ItemSocketSystemPageSocketUnlock::vfunc_2()
 void ItemSocketSystemPageSocketUnlock::vfunc_5(CInPacket* packet)
 {
     ItemSocketSystemPageBase::vfunc_5(packet);
-    unsigned char operation = packet->vfunc_o8_1();
+    int operation = packet->vfunc_o8_1();
     FUN_140f6d620(1);
     if (operation == 1)
         FUN_140f82340(packet);
     else if (operation == 3)
         FUN_140f81f00(packet);
     else if (operation == 16)
-        FUN_140f826b0();
+        FUN_140f826b0(packet);
     else if (operation == 18)
         vfunc_8(packet);
 }
 
 // @0x140f7e440
-// MS2-FUNCTIONAL: typed ASData event decoding and smart-pointer temporary layout.
 int ItemSocketSystemPageSocketUnlock::vfunc_3(const char* event, const Scaleform::GFx::Value* args, int count)
 {
     if (_stricmp("onIndexChangeSlot0", event) == 0) {
         ASData data;
         if (data.FUN_1422b9620(args, count) != 0) {
-            MS2Ptr<CItem> item = FUN_140f6d840(m_sourceItems, data.FUN_1422b8a10());
+            int index = data.FUN_1422b8a10();
+            MS2Ptr<CItem> item = FUN_140f6d840(m_sourceItems, index);
             FUN_140f7ef70(item);
         }
         return 1;
     } else if (_stricmp("onIndexChangeSlot1", event) == 0) {
         ASData data;
         if (data.FUN_1422b9620(args, count) != 0) {
-            MS2Ptr<CItem> item = FUN_140f6d840(m_ingredientEquips, data.FUN_1422b8a10());
+            int index = data.FUN_1422b8a10();
+            MS2Ptr<CItem> item = FUN_140f6d840(m_ingredientEquips, index);
             FUN_140f7f420(item);
         }
         return 1;
@@ -366,21 +367,21 @@ int ItemSocketSystemPageSocketUnlock::vfunc_3(const char* event, const Scaleform
 // The item listener's item removed / changed: redraw the slot of the item in both lists.
 void ItemSocketSystemPageSocketUnlock::vfunc_3(void* p, bool bFlag)
 {
-    CItem* item = static_cast<CItem*>(p);
-    if (item == 0)
+    if (p == 0)
         return;
     if (m_root == 0 || m_sourceItems.IsEmpty())
         return;
-    if (bFlag)
-        return;
-    int index = -1;
-    FUN_140f6d6b0(item->FUN_140526a50(), m_sourceItems, &index);
-    if (index >= 0)
-        FUN_140f6d9a0(index, m_slots0Name, m_sourceItems, m_sourceControl);
-    index = -1;
-    FUN_140f6d6b0(item->FUN_140526a50(), m_ingredientEquips, &index);
-    if (index >= 0)
-        FUN_140f6d9a0(index, m_slots1Name, m_ingredientEquips, m_ingredientControl);
+    if (!bFlag)
+    {
+        int index = -1;
+        FUN_140f6d6b0(static_cast<CItem*>(p)->FUN_140526a50(), m_sourceItems, &index);
+        if (index >= 0)
+            FUN_140f6d9a0(index, m_slots0Name, m_sourceItems, m_sourceControl);
+        index = -1;
+        FUN_140f6d6b0(static_cast<CItem*>(p)->FUN_140526a50(), m_ingredientEquips, &index);
+        if (index >= 0)
+            FUN_140f6d9a0(index, m_slots1Name, m_ingredientEquips, m_ingredientControl);
+    }
 }
 
 // @0x140f7e8d0
@@ -731,12 +732,9 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80d70()
 {
     if (m_selectedUid != 0) {
         MS2Ptr<CItem> found = FUN_141425750(m_selectedUid, 0);
-        if (found.get() != 0) {
-            CItemSocket* socket = found->FUN_1405279c0();
-            if (socket != 0 && socket->FUN_140620a70() != 0) {
-                FUN_140f832f0();
-                return;
-            }
+        if ((bool)found.get() && found->FUN_1405279c0() != 0 && (unsigned)found->FUN_1405279c0()->FUN_140620a70() > 0) {
+            FUN_140f832f0();
+            return;
         }
     }
     m_selectedUid = 0;
@@ -941,8 +939,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82340(CInPacket* packet)
 }
 
 // @0x140f826b0
-// MS2-FUNCTIONAL: refresh of the ingredient prices with the typed sale record.
-void ItemSocketSystemPageSocketUnlock::FUN_140f826b0()
+void ItemSocketSystemPageSocketUnlock::FUN_140f826b0(CInPacket*)
 {
     if (m_root == 0 || m_selected == 0 || m_selected->FUN_140527840() == 0)
         return;
@@ -957,7 +954,8 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f826b0()
         Unk_TrPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
         if (player != 0)
             bonus = (unsigned)(FUN_1411e1110(FUN_1416561a0(player), 0xb3) * 10000.0f);
-        sale->enabled = FUN_140627ac0(m_selected->FUN_140527840()->FUN_14053de40(), reinterpret_cast<unsigned*>(&sale->rate), bonus);
+        int flag = m_selected->FUN_140527840()->FUN_14053de40();
+        sale->enabled = FUN_140627ac0(flag, reinterpret_cast<unsigned*>(&sale->rate), bonus);
     }
     __int64 price = 0;
     FUN_140f6e250(m_ingredientName, m_ingredients, MS2Ptr<CItem>(m_selected), &price, MS2Ptr<SaleParam>(sale));
