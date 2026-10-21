@@ -109,8 +109,9 @@ efd::AsyncResult MS2FlatModelManager::OnInit()
 // @0x140d868f0
 unsigned FUN_140d868f0(char* p)
 {
+    unsigned r = 0;
     FUN_140d852c0(p + 0x108);
-    unsigned r = (unsigned)(u64)FUN_140d87890(p + 0x48);
+    r = (unsigned)(u64)FUN_140d87890(p + 0x48);
     FUN_140d86210(p + 0x108);
     return r;
 }
@@ -138,45 +139,60 @@ void FUN_140d86950(egf::FlatModelManager* mgr)
 }
 
 // ---- GetSystemServiceAs<T> style lookups: service = sm->vfunc14(classId), then TypeCast(classId) ----
-typedef void* (*SvcFind)(void*, unsigned);
-typedef char (*SvcCast)(void*, unsigned, void**);
+// the two efd vtable slots they go through: IBase::TypeCast (slot 5) and ServiceManager::GetSystemService (slot 14)
+struct Unk_FmBase
+{
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
+    virtual bool TypeCast(unsigned id, void** ppValue);
+};
+struct Unk_FmServiceManager
+{
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
+    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
+    virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13();
+    virtual Unk_FmBase* GetSystemService(unsigned id);
+};
 
 // @0x140d86ac0
 void* FUN_140d86ac0(void** p)
 {
     void* out = 0;
-    if (!p || !((SvcCast)((void**)*p)[5])(p, 0x7000022, &out))
-        out = 0;
-    return out;
+    if (p && ((Unk_FmBase*)p)->TypeCast(0x7000022, &out))
+        return out;
+    else
+        return 0;
 }
 // @0x140d86b10
-void* FUN_140d86b10(void* pv)
+void* FUN_140d86b10(void* p)
 {
-    void** p = (void**)pv;
     void* out = 0;
-    if (!p || !((SvcCast)((void**)*p)[5])(p, 0xe0010024, &out))
-        out = 0;
-    return out;
+    if (p && ((Unk_FmBase*)p)->TypeCast(0xe0010024, &out))
+        return out;
+    else
+        return 0;
 }
 // @0x140d86b60
 void* FUN_140d86b60(void** p)
 {
     void* out = 0;
-    if (!p || !((SvcCast)((void**)*p)[5])(p, 0x7001002, &out))
-        out = 0;
-    return out;
+    if (p && ((Unk_FmBase*)p)->TypeCast(0x7001002, &out))
+        return out;
+    else
+        return 0;
 }
 // @0x140d86bb0
 void* FUN_140d86bb0(void* sm)
 {
-    void* s = ((SvcFind)((void**)*(void***)sm)[14])(sm, 0x7000022);
-    return FUN_140d86ac0((void**)s);
+    Unk_FmBase* pService = ((Unk_FmServiceManager*)sm)->GetSystemService(0x7000022);
+    void* pResult = FUN_140d86ac0((void**)pService);
+    return pResult;
 }
 // @0x140d86bf0
 void* FUN_140d86bf0(void* sm)
 {
-    void* s = ((SvcFind)((void**)*(void***)sm)[14])(sm, 0x7001002);
-    return FUN_140d86b60((void**)s);
+    Unk_FmBase* pService = ((Unk_FmServiceManager*)sm)->GetSystemService(0x7001002);
+    void* pResult = FUN_140d86b60((void**)pService);
+    return pResult;
 }
 
 // @0x140d86c30
@@ -198,7 +214,7 @@ bool FUN_140d86e40(void* a, void* b) { return !FUN_140d86e00((long long*)a, (lon
 // @0x140d86da0
 void* FUN_140d86da0(void* a, void* b) { FUN_1401cd130(a, b); return a; }
 // @0x140d86df0
-void FUN_140d86df0() {}
+void FUN_140d86df0(void* p) {}
 // @0x140d873f0
 unsigned FUN_140d873f0(void* model) { return FUN_140d86e90((unsigned*)((char*)model + 8)); }
 // @0x140d86e80
@@ -216,26 +232,29 @@ void* FUN_140d86f00(void* it) { FUN_140d86f40((long long*)it); return it; }
 // @0x140d86f20
 void* FUN_140d86f20(void* it) { FUN_140d86f00(it); return it; }
 
+// std::_Tree node layout (left, parent, right, color, isnil)
+struct Unk_FmNode { Unk_FmNode* m_pLeft; Unk_FmNode* m_pParent; Unk_FmNode* m_pRight; char m_Color; char m_Isnil; };
 // @0x140d86f40  std::_Tree_const_iterator::operator++
 long long* FUN_140d86f40(long long* it)
 {
-    long long* node = (long long*)*it;
-    if (*((char*)((long long*)node)[2] + 0x19) == 0) {
-        *it = (long long)FUN_140d87770((void*)node[2]);
-    } else {
-        long long parent;
-        while (parent = ((long long*)*it)[1], *((char*)parent + 0x19) == 0 && *it == ((long long*)parent)[2])
-            *it = parent;
-        *it = parent;
+    if ((*(Unk_FmNode**)it)->m_pRight->m_Isnil != 0)
+    {
+        Unk_FmNode* p;
+        while ((p = (*(Unk_FmNode**)it)->m_pParent)->m_Isnil == 0 && *(Unk_FmNode**)it == p->m_pRight)
+            *(Unk_FmNode**)it = p;
+        *(Unk_FmNode**)it = p;
     }
+    else
+        *(Unk_FmNode**)it = (Unk_FmNode*)FUN_140d87770((*(Unk_FmNode**)it)->m_pRight);
     return it;
 }
 
 // @0x140d86fd0  scalar deleting destructor of the (empty) list-node type
 void* FUN_140d86fd0(void* p, unsigned flags)
 {
+    FUN_140d86df0(p);
     if (flags & 1)
-        operator delete(p);
+        operator delete(p, 0x18);
     return p;
 }
 
@@ -249,20 +268,20 @@ void* FUN_140d87730(void* p) { return p; }
 void* FUN_140d87740(void* p) { return p; }
 // @0x140d87750
 void* FUN_140d87750(void* p) { return p; }
+struct Unk_FmHead { void* m_0; };   // the first field of the tree/list the two helpers below forward
 // @0x140d876c0
-void* FUN_140d876c0(void* t) { return FUN_140d87740(FUN_140d87720(t)); }
+void* FUN_140d876c0(void* t) { return FUN_140d87740(FUN_140d87720(&((Unk_FmHead*)t)->m_0)); }
 // @0x140d876f0
-void* FUN_140d876f0(void* t) { return FUN_140d87750(FUN_140d87730(t)); }
+void* FUN_140d876f0(void* t) { return FUN_140d87750(FUN_140d87730(&((Unk_FmHead*)t)->m_0)); }
 // @0x140d87760
 u64 FUN_140d87760(u64* p) { return *p; }
 
 // @0x140d87770  leftmost node of a subtree
 void* FUN_140d87770(void* p)
 {
-    long long* n = (long long*)p;
-    for (; *((char*)*n + 0x19) == 0; n = (long long*)*n) {
-    }
-    return n;
+    while (((Unk_FmNode*)p)->m_pLeft->m_Isnil == 0)
+        p = ((Unk_FmNode*)p)->m_pLeft;
+    return p;
 }
 
 // @0x140d877a0  begin()
