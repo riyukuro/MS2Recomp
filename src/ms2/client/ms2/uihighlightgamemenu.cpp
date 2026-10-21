@@ -219,7 +219,7 @@ void FUN_140f69c10(P pDlg, int* pArg);
 P FUN_140c24650();
 int FUN_140c25190();
 
-char FUN_140ba28d0(void* p, int n);
+bool FUN_140ba28d0(void* p, int n);
 P FUN_140ba7c60(MS2Ptr<AScript>* p);
 
 // item handles / records
@@ -236,8 +236,8 @@ char FUN_1402ffd90(void* pRec);
 P FUN_1401b52a0(void* pRec);
 P FUN_140527840(P p);
 P FUN_1405279c0(P p);
-char FUN_14053d840(P p);
-char FUN_140621340(P p);
+bool FUN_14053d840(P p);
+bool FUN_140621340(P p);
 
 // the player
 P FUN_141654730(P);
@@ -345,7 +345,7 @@ void FUN_140c25e30(P p)
 }
 
 // @0x140c25e50
-void FUN_140c25e50(Unk_HlRef* p)
+void FUN_140c25e50(Unk_HlRef* p, void*)
 {
     FUN_140c25e30(p->m_p);
 }
@@ -354,11 +354,11 @@ void FUN_140c25e50(Unk_HlRef* p)
 void FUN_140c25e00(Unk_HlRef* p)
 {
     if (p->m_p != 0)
-        FUN_140c25e50(p);
+        FUN_140c25e50(p, 0);
 }
 
 // @0x140c25ec0
-void FUN_140c25ec0(Unk_HlRef* p)
+void FUN_140c25ec0(Unk_HlRef* p, void*)
 {
     if (FUN_140159bc0(p->m_p) == 0)
     {
@@ -372,7 +372,7 @@ void FUN_140c25e80(Unk_HlRef* p)
 {
     if (p->m_p != 0)
     {
-        FUN_140c25ec0(p);
+        FUN_140c25ec0(p, 0);
         p->m_p = 0;
     }
 }
@@ -410,10 +410,12 @@ bool FUN_140c25330(void* p)
     return *(__int64*)((char*)p + 0x10) == 0;
 }
 
+struct Unk_HlArr { __int64 m_pData; unsigned __int64 m_nSize; };
+
 // @0x140c24ea0
 P FUN_140c24ea0(__int64* pArr, unsigned __int64 n)
 {
-    if ((unsigned __int64)pArr[1] <= n)
+    if (!(n < ((Unk_HlArr*)pArr)->m_nSize))
         FUN_140159b70(0x80070057);
     return (P)(n * 0x10 + *pArr);
 }
@@ -424,7 +426,7 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #define HL_BITSET_ASSERT(line) _wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\bitset.inl", line)
 
 // @0x140c249d0
-void Unk_HlBitRef::FUN_140c249d0(Unk_HlBits* pBits, int nPos)
+Unk_HlBitRef::Unk_HlBitRef(Unk_HlBits* pBits, int nPos)
 {
     m_pBits = pBits;
     m_nPos = nPos;
@@ -439,9 +441,7 @@ bool Unk_HlBitRef::FUN_140c24ac0()
 // @0x140c25f10
 Unk_HlBitRef Unk_HlBits::FUN_140c25f10(int nPos)
 {
-    Unk_HlBitRef ref;
-    ref.FUN_140c249d0(this, nPos);
-    return ref;
+    return Unk_HlBitRef(this, nPos);
 }
 
 // @0x140c260a0
@@ -450,51 +450,58 @@ Unk_HlBits& Unk_HlBits::FUN_140c260a0(int nPos, bool bSet)
     if (nPos != 0)
         HL_BITSET_ASSERT(0xf3);
     if (!bSet)
-        (&m_b)[nPos / 8] &= ~(unsigned char)(1 << (nPos % 8));
+        m_a[nPos / 8] &= ~(unsigned char)(1 << (nPos % 8));
     else
-        (&m_b)[nPos / 8] |= (unsigned char)(1 << (nPos % 8));
+        m_a[nPos / 8] |= (unsigned char)(1 << (nPos % 8));
     return *this;
 }
 
 // @0x140c261e0
 bool Unk_HlBits::FUN_140c261e0(int nPos) const
 {
-    if (nPos == 0)
-        return (m_b & 1) != 0;
-    HL_BITSET_ASSERT(0x194);
-    return false;
+    if ((unsigned)nPos >= 1)
+    {
+        (void)((!!0) || (HL_BITSET_ASSERT(0x194), 0));
+        return false;
+    }
+    return (m_a[nPos / 8] & (1 << nPos % 8)) != 0;
 }
 
 // @0x140c262e0
 void Unk_HlBits::FUN_140c262e0()
 {
+    if (0 != 1) {} else
+        m_a[0] &= (1 << 1 % 8) - 1;
 }
 
 // @0x140c26280
-void Unk_HlBits::FUN_140c26280(char nFill)
+void Unk_HlBits::FUN_140c26280(unsigned char nFill)
 {
-    for (int i = 0; -1 < i; --i)
-        (&m_b)[i] = nFill;
+    for (int i = 0; 0 <= i; --i)
+        m_a[i] = nFill;
     if (nFill != 0)
         FUN_140c262e0();
 }
 
 // @0x140c24770
-void Unk_HlBits::FUN_140c24770()
+Unk_HlBits& Unk_HlBits::FUN_140c24770()
 {
     FUN_140c26280(0);
+    return *this;
 }
 
 // @0x140c261c0
-void Unk_HlBits::FUN_140c261c0()
+Unk_HlBits& Unk_HlBits::FUN_140c261c0()
 {
-    FUN_140c26280((char)0xff);
+    FUN_140c26280((unsigned char)0xff);
+    return *this;
 }
 
 // @0x140c26080
-void Unk_HlBits::FUN_140c26080()
+Unk_HlBits& Unk_HlBits::FUN_140c26080()
 {
     FUN_140c26280(0);
+    return *this;
 }
 
 // ---- the dialog -------------------------------------------------------------------------------------------------------
@@ -556,7 +563,10 @@ void UIHighlightGameMenu::vfunc_43()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
-        pDlg->vfunc_2(2, 8, m_nMargin - (FUN_1418dd0d0() + 0x24));
+    {
+        int nHeight = FUN_1418dd0d0() + 0x24;
+        pDlg->vfunc_2(2, 8, -1 * nHeight + m_nMargin);
+    }
 }
 
 // @0x140c22800
@@ -646,9 +656,9 @@ void UIHighlightGameMenu::vfunc_26()
 // @0x140c22d00
 void UIHighlightGameMenu::vfunc_5(void* pItem, int nCount)
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0 && nCount != 0 && pItem != 0)
+    if (FUN_140ba28d0(&m_30, 0) != 0) {} else
     {
-        if (FUN_14053d840(FUN_140527840(pItem)) != 0)
+        if (nCount == 0 || pItem == 0 || !FUN_14053d840(FUN_140527840(pItem))) {} else
             m_bitsGem.FUN_140c260a0(0, true);
     }
 }
@@ -656,9 +666,9 @@ void UIHighlightGameMenu::vfunc_5(void* pItem, int nCount)
 // @0x140c22d80
 void UIHighlightGameMenu::vfunc_2(void* pItem)
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0 && pItem != 0)
+    if (FUN_140ba28d0(&m_30, 0) != 0) {} else
     {
-        if (FUN_14053d840(FUN_140527840(pItem)) != 0)
+        if (pItem == 0 || !FUN_14053d840(FUN_140527840(pItem))) {} else
             m_bitsGem.FUN_140c260a0(0, true);
     }
 }
@@ -666,12 +676,15 @@ void UIHighlightGameMenu::vfunc_2(void* pItem)
 // @0x140c22df0
 void UIHighlightGameMenu::vfunc_21(void* pItem)
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0)
+    if (FUN_140ba28d0(&m_30, 0) != 0) {} else
     {
-        if (m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0() != true && pItem != 0 && FUN_1405279c0(pItem) != 0)
+        if (m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0() == true) {} else
         {
-            if (FUN_140621340(FUN_1405279c0(pItem)) != 0)
-                m_bitsGem.FUN_140c260a0(0, true);
+            if (pItem == 0 || FUN_1405279c0(pItem) == 0) {} else
+            {
+                if (!FUN_140621340(FUN_1405279c0(pItem))) {} else
+                    m_bitsGem.FUN_140c260a0(0, true);
+            }
         }
     }
 }
@@ -679,12 +692,15 @@ void UIHighlightGameMenu::vfunc_21(void* pItem)
 // @0x140c22ea0
 void UIHighlightGameMenu::vfunc_22(void* pItem)
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0)
+    if (FUN_140ba28d0(&m_30, 0) != 0) {} else
     {
-        if (m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0() && pItem != 0 && FUN_1405279c0(pItem) != 0)
+        if (!m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0()) {} else
         {
-            if (FUN_140621340(FUN_1405279c0(pItem)) != 0)
-                m_bitsGem.FUN_140c260a0(0, true);
+            if (pItem == 0 || FUN_1405279c0(pItem) == 0) {} else
+            {
+                if (!FUN_140621340(FUN_1405279c0(pItem))) {} else
+                    m_bitsGem.FUN_140c260a0(0, true);
+            }
         }
     }
 }
@@ -1053,7 +1069,7 @@ bool UIHighlightGameMenu::FUN_140c22ce0()
 // @0x140c244b0
 void UIHighlightGameMenu::FUN_140c244b0(int* pPos, bool bSet)
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0)
+    if (FUN_140ba28d0(&m_30, 0) != 0) {} else
         m_bitsSocket.FUN_140c260a0(*pPos, bSet);
 }
 
@@ -1114,7 +1130,7 @@ MS2_REPLACE(0x140c25e80, FUN_140c25e80, 51, 0x0B73E489);
 MS2_REPLACE(0x140c24a50, FUN_140c24a50, 34, 0x1248047C);
 MS2_REPLACE(0x140c24920, FUN_140c24920, 52, 0x30756183);
 MS2_REPLACE(0x140c25330, FUN_140c25330, 46, 0xDB14FB29);
-MS2_REPLACE_METHOD(0x140c249d0, Unk_HlBitRef, FUN_140c249d0, 46, 0xDE5FA628);
+MS2_REPLACE_IMPL(0x140c249d0, static_cast<Unk_HlBitRef* (*)(Unk_HlBitRef*, Unk_HlBits*, int)>([](Unk_HlBitRef* self, Unk_HlBits* pBits, int nPos) -> Unk_HlBitRef* { return ::new (static_cast<void*>(self)) Unk_HlBitRef(pBits, nPos); }), "Unk_HlBitRef::Unk_HlBitRef", 46, 0xDE5FA628);
 MS2_REPLACE_METHOD(0x140c24ac0, Unk_HlBitRef, FUN_140c24ac0, 35, 0x60FDC12E);
 MS2_REPLACE_METHOD(0x140c260a0, Unk_HlBits, FUN_140c260a0, 286, 0xA1414E44);
 MS2_REPLACE_METHOD(0x140c261e0, Unk_HlBits, FUN_140c261e0, 159, 0x5962585B);

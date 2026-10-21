@@ -35,17 +35,17 @@ struct Unk_HlBitRef
     Unk_HlBits* m_pBits;
     int m_nPos;
     bool FUN_140c24ac0();                               // 0x140c24ac0 the bit
-    void FUN_140c249d0(Unk_HlBits* pBits, int nPos);    // 0x140c249d0
+    Unk_HlBitRef(Unk_HlBits* pBits, int nPos);          // 0x140c249d0
 };
 struct Unk_HlBits
 {
-    unsigned char m_b;
-    void FUN_140c24770();                               // 0x140c24770 ctor (all clear)
-    void FUN_140c261c0();                               // 0x140c261c0 set all
-    void FUN_140c26080();                               // 0x140c26080 clear all
+    unsigned char m_a[1];
+    Unk_HlBits& FUN_140c24770();                        // 0x140c24770 ctor (all clear)
+    Unk_HlBits& FUN_140c261c0();                        // 0x140c261c0 set all
+    Unk_HlBits& FUN_140c26080();                        // 0x140c26080 clear all
     Unk_HlBits& FUN_140c260a0(int nPos, bool bSet);     // 0x140c260a0 Set
     bool FUN_140c261e0(int nPos) const;                 // 0x140c261e0 Test
-    void FUN_140c26280(char nFill);                     // 0x140c26280 Fill
+    void FUN_140c26280(unsigned char nFill);            // 0x140c26280 Fill
     void FUN_140c262e0();                               // 0x140c262e0 clear the unused bits
     Unk_HlBitRef FUN_140c25f10(int nPos);               // 0x140c25f10 operator[]
 };
