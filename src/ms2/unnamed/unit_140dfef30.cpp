@@ -176,22 +176,21 @@ UIOxQuizDialog* FUN_140e01930(int nId);
 void FUN_140dfef30(CInPacket& packet)
 {
     MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pMyPC != 0)
-    {
-        CStringW strName = packet.vfunc_o8_8();
-        __int64 nFee = packet.vfunc_o8_4();
-        int nMax = packet.vfunc_o8_3();
-        int nShareRate = packet.vfunc_o8_3();
-        CStringW strMsg;
-        FUN_140e011c0(strMsg, strName, nFee, nMax, nShareRate);
-        CStringW strTitle = FUN_140298ea0(CStringW(L"s_ugcox_create_confirm"));
-        MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x27));
-        spBox->FUN_141a01570(strMsg);
-        spBox->FUN_141a01800(1);
-        spBox->FUN_141a015d0(strTitle);
-        spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dff210));
-        FUN_140d73c60(spBox);
-    }
+    if (pMyPC == 0)
+        return;
+    CStringW strName = packet.vfunc_o8_8();
+    __int64 nFee = packet.vfunc_o8_4();
+    int nMax = packet.vfunc_o8_3();
+    int nShareRate = packet.vfunc_o8_3();
+    CStringW strMsg;
+    FUN_140e011c0(strMsg, strName, nFee, nMax, nShareRate);
+    CStringW strTitle = FUN_140298ea0(CStringW(L"s_ugcox_create_confirm"));
+    MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x27));
+    spBox->FUN_141a01570(strMsg);
+    spBox->FUN_141a01800(1);
+    spBox->FUN_141a015d0(strTitle);
+    spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dff210));
+    FUN_140d73c60(spBox);
 }
 
 // @0x140dff210
