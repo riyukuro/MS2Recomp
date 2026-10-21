@@ -378,14 +378,13 @@ bool UIUGCImageUploadDialog::FUN_141b3a780(const int* pnKind)
 // @0x141b3ab90
 void UIUGCImageUploadDialog::FUN_141b3ab90()
 {
-    if (FUN_140a467d0(&m_30) == 0)
-    {
-        FUN_14052d220()->FUN_141889ce0(m_188);
-        ASArray arr(2);
-        FUN_14052d220()->FUN_141889e20(0x10, 0, &arr);
-        int nCount = FUN_14052d220()->FUN_14188a480();
-        ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildUGCFiles", nCount, arr);
-    }
+    if (FUN_140a467d0(&m_30) != 0)
+        return;
+    FUN_14052d220()->FUN_141889ce0(m_188);
+    ASArray arr(2);
+    FUN_14052d220()->FUN_141889e20(0x10, 0, &arr);
+    int nCount = FUN_14052d220()->FUN_14188a480();
+    ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildUGCFiles", nCount, arr);
 }
 
 // @0x141b3ac80
@@ -395,43 +394,43 @@ void UIUGCImageUploadDialog::FUN_141b3ac80()
 }
 
 // @0x141b3acb0
-bool UIUGCImageUploadDialog::FUN_141b3acb0(int nIndex)
+int UIUGCImageUploadDialog::FUN_141b3acb0(int nIndex)
 {
     if (nIndex == -1)
     {
         FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
-        return false;
+        return 0;
     }
     if (FUN_14052d220()->FUN_141881a40(nIndex) == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
-        return false;
+        return 0;
     }
     if (FUN_14052d220()->FUN_141881800(m_188, nIndex) == 0)
     {
         FUN_141275260(0x2e1, 1, 1);
-        return false;
+        return 0;
     }
-    return true;
+    return 1;
 }
 
 // @0x141b3adc0
-bool UIUGCImageUploadDialog::FUN_141b3adc0(int nIndex)
+int UIUGCImageUploadDialog::FUN_141b3adc0(int nIndex)
 {
     if (nIndex == -1)
     {
         FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
-        return false;
+        return 0;
     }
     if (m_188 == 3 && FUN_141b3b390() > DAT_143ab2898)
     {
         FUN_140d73bc0(0x34, 0, 0, CStringW(L""));
-        return false;
+        return 0;
     }
     if (FUN_14052d220()->FUN_141881890(nIndex) == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
-        return false;
+        return 0;
     }
     if (m_188 == 9 || m_188 == 0xd1)
     {
@@ -439,7 +438,7 @@ bool UIUGCImageUploadDialog::FUN_141b3adc0(int nIndex)
         if (pDialog != 0)
             pDialog->FUN_140c38400();
         vfunc_67();
-        return true;
+        return 1;
     }
     int nBit = 3;
     int nIdA = 0x9d5;
@@ -454,26 +453,26 @@ bool UIUGCImageUploadDialog::FUN_141b3adc0(int nIndex)
         nIdA = 0x9d7;
     }
     FUN_140d74640(static_cast<IMessageListener*>(this), nBit, nIdA, 0x9cf);
-    return true;
+    return 1;
 }
 
 // @0x141b3b020
-bool UIUGCImageUploadDialog::FUN_141b3b020()
+int UIUGCImageUploadDialog::FUN_141b3b020()
 {
-    int nResult = FUN_14052d220()->FUN_141880fc0();
-    if (nResult != 0)
-        FUN_141b3ab90();
-    return nResult != 0;
+    if (FUN_14052d220()->FUN_141880fc0() == 0)
+        return 0;
+    FUN_141b3ab90();
+    return 1;
 }
 
 // @0x141b3b060
-bool UIUGCImageUploadDialog::FUN_141b3b060()
+int UIUGCImageUploadDialog::FUN_141b3b060()
 {
-    CStringW strDir(L"./");
-    int nResult = FUN_14052d220()->FUN_1418810c0(strDir, L"Image Files (*.dds, *.png, *.jpg)");
-    if (nResult != 0)
-        FUN_141b3a600();
-    return nResult != 0;
+    int nResult = FUN_14052d220()->FUN_1418810c0(CStringW(L"./"), L"Image Files (*.dds, *.png, *.jpg)");
+    if (nResult == 0)
+        return 0;
+    FUN_141b3a600();
+    return 1;
 }
 
 // @0x141b3b0e0
@@ -505,13 +504,12 @@ void UIUGCImageUploadDialog::FUN_141b3b1d0()
 // @0x141b3b2c0
 void UIUGCImageUploadDialog::FUN_141b3b2c0()
 {
-    if (m_188 == 3)
-    {
-        __int64 nPrice = FUN_141b3b390();
-        ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-        if (pDialog != 0)
-            pDialog->Invoke("changePrice", FUN_140719a00(nPrice));
-    }
+    if (m_188 != 3)
+        return;
+    __int64 nPrice = FUN_141b3b390();
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog != 0)
+        pDialog->Invoke("changePrice", FUN_140719a00(nPrice));
 }
 
 // @0x141b3b390

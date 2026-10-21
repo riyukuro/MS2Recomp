@@ -48,10 +48,10 @@ public:
     bool FUN_141b3a780(const int* pnKind);                      // the running upload is one of this kind
     void FUN_141b3ab90();                                       // rebuild the file list
     void FUN_141b3ac80();                                       // open the upload directory
-    bool FUN_141b3acb0(int nIndex);                             // preview a file
-    bool FUN_141b3adc0(int nIndex);                             // upload a file
-    bool FUN_141b3b020();                                       // OnNewTemplate: clear the upload
-    bool FUN_141b3b060();                                       // OnAddImage: pick an image file
+    int  FUN_141b3acb0(int nIndex);                             // preview a file
+    int  FUN_141b3adc0(int nIndex);                             // upload a file
+    int  FUN_141b3b020();                                       // OnNewTemplate: clear the upload
+    int  FUN_141b3b060();                                       // OnAddImage: pick an image file
     int FUN_141b3b0e0(int nIndex);                              // scroll the list
     void FUN_141b3b1d0();                                       // update the thumbnail image
     void FUN_141b3b2c0();                                       // show the banner price
