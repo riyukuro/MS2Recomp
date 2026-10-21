@@ -20,12 +20,13 @@
 #include "ms2/placeholder/iclientplatform.h"
 #include "hook/ms2hook.h"
 
-// The CrashReporter_64.dll imports; the exe calls through the IAT slots.
+// The CrashReporter_64.dll imports; the exe calls through the IAT slots (SetDumpFileName/SetFullDumpPath
+// as dllimport functions: the IAT-pointer form spills the converted CString argument through an extra slot).
 extern "C" void (__cdecl* __imp_CrashReporter_Init)(const wchar_t*, int);
 extern "C" void (__cdecl* __imp_CrashReporter_RegisterCallback_BeforeDump)(void (__cdecl*)());
 extern "C" void (__cdecl* __imp_CrashReporter_RegisterCallback_AfterDump)(void (__cdecl*)());
-extern "C" void (__cdecl* __imp_CrashReporter_SetDumpFileName)(const wchar_t*);
-extern "C" void (__cdecl* __imp_CrashReporter_SetFullDumpPath)(const wchar_t*);
+extern "C" __declspec(dllimport) void __cdecl CrashReporter_SetDumpFileName(const wchar_t*);
+extern "C" __declspec(dllimport) void __cdecl CrashReporter_SetFullDumpPath(const wchar_t*);
 
 // The modal "the game crashed" dialog (a global instance); the message text sits behind the CDialog base.
 class Unk_CrashDialog : public CDialog
@@ -56,7 +57,6 @@ LONG WINAPI FUN_140a43fa0(EXCEPTION_POINTERS* pException);
 #define SIGABRT_COMPAT 22
 
 // @0x140a435a0
-// MS2-FUNCTIONAL: frame 0x50 vs 0x48: the exe keeps the CString temporaries in named locals
 void CrashManagerCli::FUN_140a435a0()
 {
     g_dwCrashMainThreadId = GetCurrentThreadId();
@@ -64,15 +64,12 @@ void CrashManagerCli::FUN_140a435a0()
     int nReportMode = 3;
     const wchar_t* apszProduct[9] = {L"ms2_kr",  L"ms2_krcenter", L"ms2_krlogin",   L"ms2_krgame",   L"ms2_dev",
                                      L"ms2_dev_64", L"ms2_devserver", L"ms2_devserver", L"ms2_devserver"};
-    (void)nPlatform;
-    (void)apszProduct;
-    __imp_CrashReporter_Init(L"ms2_kr", nReportMode);
+    __imp_CrashReporter_Init(apszProduct[nPlatform], nReportMode);
     __imp_CrashReporter_RegisterCallback_BeforeDump(FUN_140a43b20);
     m_nLogId = TSingleton<CFileLogger>::GetInstance()->FUN_140392110(L"MS2Log.txt");
     __imp_CrashReporter_RegisterCallback_AfterDump(FUN_140a43d40);
     g_pfnPrevExceptionFilter = SetUnhandledExceptionFilter(FUN_140a43fa0);
-    CStringW strMessage = FUN_14028de60(0xc3d);
-    g_dlgCrash.FUN_140a45970(FUN_14016a600(strMessage, 0));
+    g_dlgCrash.FUN_140a45970(FUN_14016a600(FUN_14028de60(0xc3d), 0));
     FUN_140a43f00();
 }
 
@@ -91,23 +88,18 @@ void CrashManagerCli::FUN_140a437d0(DWORD nId)
 }
 
 // @0x140a43830
-// MS2-FUNCTIONAL: iterator locals / ATL accessors order differs
 void CrashManagerCli::FUN_140a43830()
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    POSITION pos = m_map.GetHeadPosition();
-    while (pos != NULL)
+    for (POSITION pos = m_map.GetHeadPosition(); pos != NULL; m_map.GetNext(pos))
     {
-        const CString& strValue = m_map.GetValueAt(pos);
-        const DWORD& nKey = m_map.GetKeyAt(pos);
-        FUN_1401ce270(Unk_SocketFormat("{0} {1}", nKey, strValue));
-        m_map.GetNext(pos);
+        CString strLine = Unk_SocketFormat("{0} {1}", m_map.GetKeyAt(pos), m_map.GetValueAt(pos));
+        FUN_1401ce270(strLine);
     }
 }
 
 // @0x140a43920
-// MS2-FUNCTIONAL: exe copies the Lookup result through a char local; no source form found
-bool CrashManagerCli::FUN_140a43920(DWORD nId, CString& strText)
+BOOL CrashManagerCli::FUN_140a43920(DWORD nId, CString& strText)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     return m_map.Lookup(nId, strText) != 0;
@@ -155,16 +147,10 @@ void FUN_140a43b10(void*)
 }
 
 // @0x140a43b20
-// MS2-FUNCTIONAL: wide CString temporaries (operator+ chain) order
 void FUN_140a43b20()
 {
     FUN_140a439d0();
-    if (!FUN_140166410()->FUN_14036e510())
-    {
-        CStringW strPath = TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce460();
-        __imp_CrashReporter_SetFullDumpPath(strPath.GetBuffer());
-    }
-    else
+    if (FUN_140166410()->FUN_14036e510())
     {
         int nStart = 0;
         CStringW strPath = TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce460();
@@ -177,11 +163,16 @@ void FUN_140a43b20()
         strFull.Append(strName);
         strFull.Append(StringFormat(L"_{0}.", nIndex));
         strFull.Append(strExt);
-        __imp_CrashReporter_SetFullDumpPath(strFull.GetString());
+        CrashReporter_SetFullDumpPath(strFull.GetString());
 #else
-        __imp_CrashReporter_SetFullDumpPath(L"./FullDump/Full" + strName + StringFormat(L"_{0}.", nIndex) + strExt);
+        CrashReporter_SetFullDumpPath(L"./FullDump/Full" + strName + StringFormat(L"_{0}.", nIndex) + strExt);
 #endif
-        __imp_CrashReporter_SetDumpFileName(StringFormat(L"dump{0}", nIndex));
+        CrashReporter_SetDumpFileName(StringFormat(L"dump{0}", nIndex));
+    }
+    else
+    {
+        CStringW strPath = TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce460();
+        CrashReporter_SetFullDumpPath(strPath.GetBuffer());
     }
 }
 

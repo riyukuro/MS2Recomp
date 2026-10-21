@@ -22,7 +22,7 @@ public:
     void FUN_140a43750(DWORD nId, CString strText);           // set the text of a crash-log entry
     void FUN_140a437d0(DWORD nId);                            // remove a crash-log entry
     void FUN_140a43830();                                   // write every entry to the crash log
-    bool FUN_140a43920(DWORD nId, CString& strText);          // read a crash-log entry
+    BOOL FUN_140a43920(DWORD nId, CString& strText);          // read a crash-log entry
     std::list<TFunctor<void, EmptyParam> >& FUN_140a44800();    // the shutdown callbacks
 private:
     MS2_LAYOUT_FRIEND;
