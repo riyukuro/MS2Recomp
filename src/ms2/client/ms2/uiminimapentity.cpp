@@ -294,7 +294,7 @@ static CString s_strBoss = "boss";
 static CString s_strBuddy = "buddy";
 static CString s_strDie = "die";
 namespace { extern CString s_strEmptyIcon; }                         // defined below (the exe copies it before its own init)
-static CString s_strNoIcon = s_strEmptyIcon;
+static CString s_strNoIcon = MS2_MINIMAP_NOICON_SRC;
 static CString s_strEliteBoss = "elite_boss";
 namespace { CString s_strEmptyIcon = "empty"; }
 static CString s_strEnemy = "enemy";

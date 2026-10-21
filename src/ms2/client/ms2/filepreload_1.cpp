@@ -596,7 +596,7 @@ void CFilePreload::FUN_141211240(void*) {
     FUN_141211b30(0x2000);
     callback.Clear();
 }
-MS2_REPLACE_METHOD(0x141211240, CFilePreload, FUN_141211240, 307, 0xA3D8BB95);
+// hk1 2026-10-20: not hooked - the DLL talk-script loader (talkscript.cpp FUN_140855540) it starts ends in a null CAtlMap in exe FUN_14085b850 (work/hk1/report.md). MS2_REPLACE_METHOD(0x141211240, CFilePreload, FUN_141211240, 307, 0xA3D8BB95);
 // @0x141211380
 void CFilePreload::FUN_141211380(void*) {
     std::set<unsigned> pending;

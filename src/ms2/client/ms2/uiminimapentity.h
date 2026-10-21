@@ -10,6 +10,15 @@
 
 #include <efd/Point3.h>
 #include <efd/SmartPointer.h>
+
+// Source of the s_strNoIcon initializer (uiminimapentity.cpp). The exe copies the anonymous s_strEmptyIcon ("empty") before
+// that string's own initializer runs; in the hook DLL the copy reads the still-zero CString and faults in DllMain
+// (mfc140 CloneData at -0x18, hk1 2026-10-20), so the DLL build copies a fresh "empty" instead.
+#ifdef MS2_HOOK_DLL
+#define MS2_MINIMAP_NOICON_SRC CString("empty")
+#else
+#define MS2_MINIMAP_NOICON_SRC s_strEmptyIcon
+#endif
 #include <NiPoint2.h>
 #include <NiPoint3.h>
 

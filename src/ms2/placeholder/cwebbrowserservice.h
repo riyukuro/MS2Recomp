@@ -8,6 +8,16 @@
 // units call are kept: their units bind them by those names).
 #pragma once
 
+// Storage class of webbrowserservice.cpp's s_app (the CCefMS2ClientApp, exe 0x143af7bd8). In the hook DLL it must be the
+// exe's object: the hooked MS2::RegisterServices runs the DLL copy of FUN_141b77e10 -> InitializeCef, and a DLL-private
+// s_app left the exe's null (null deref in FUN_141b78650 at the title screen, hk1 2026-10-20). The DLL declares it extern
+// and progress/symbols-manual.tsv binds ?s_app@@3V?$scoped_refptr@VCCefMS2ClientApp@@@@A to 0x143af7bd8.
+#ifdef MS2_HOOK_DLL
+#define MS2_WBS_APP_STORAGE extern
+#else
+#define MS2_WBS_APP_STORAGE static
+#endif
+
 #include <efd/ISystemService.h>
 #include <efd/ReferenceCounting.h>
 #include <atlcoll.h>

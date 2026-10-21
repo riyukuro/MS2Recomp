@@ -3,6 +3,14 @@
 // names come from the xml attribute names (the loaders 0x140857f20 / 0x140858440). Typed over guess/scriptcontent.h; the
 // read-only view src/ms2/placeholder/ctalkscript.h serves the talk UI units and is the same 0x90 layout.
 #pragma once
+
+// hk1 2026-10-20: storage class of talkscript.cpp's file statics that stand for exe globals (the `// 0x...` ones). The hook DLL
+// declares them extern and progress/symbols-manual.tsv binds them to the exe objects, so hooked and exe code share them.
+#ifdef MS2_HOOK_DLL
+#define MS2_TALKSCRIPT_STATIC extern
+#else
+#define MS2_TALKSCRIPT_STATIC static
+#endif
 #include <afx.h>
 #include <atlcoll.h>
 #include "ms2/ms2layout.h"

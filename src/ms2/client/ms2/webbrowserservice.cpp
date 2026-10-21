@@ -33,7 +33,7 @@ CStringA g_strMaviewURL("http://ms2plan:8000");                 // 0x143af7be0
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CWebBrowserService);
 
 // The CEF application object (CefInitialize); null until CEF runs.
-static CefRefPtr<CCefMS2ClientApp> s_app;                       // 0x143af7bd8
+MS2_WBS_APP_STORAGE CefRefPtr<CCefMS2ClientApp> s_app;                       // 0x143af7bd8
 
 // @0x141b77810
 CWebBrowserService::CWebBrowserService(HINSTANCE hInstance)

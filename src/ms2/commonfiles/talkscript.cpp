@@ -137,14 +137,14 @@ TalkArrayPtr FUN_140857660(int nNpcId);
 
 // ---- the script tables (static initializers in .text$di, in this order) ----
 
-static TalkPickMap s_pick[2];                         // 0x143ab1ea0 [0] select, [1] job: npc id -> talk
-static ATL::CAtlMap<int, TalkArrayPtr> s_npcAlt;    // 0x143ab1e10 npc id -> monologues
-static ATL::CAtlMap<int, TalkArrayPtr> s_npcTalks;  // 0x143ab1dc0 npc id -> talks
-static ATL::CAtlArray<CachePtr> s_npcFiles;         // 0x143ab1e78 loaded Script/Npc files
-static ATL::CAtlMap<int, TalkIdMapPtr> s_questTalks;// 0x143ab1d70 quest id -> talks by id
-static ATL::CAtlArray<CachePtr> s_questFiles;       // 0x143ab1e58 loaded Script/Quest files
-static CLockCriticalSection s_lock;                 // 0x143ab1d40
-static bool s_valid;                                // 0x143ab1d30
+MS2_TALKSCRIPT_STATIC TalkPickMap s_pick[2];                         // 0x143ab1ea0 [0] select, [1] job: npc id -> talk
+MS2_TALKSCRIPT_STATIC ATL::CAtlMap<int, TalkArrayPtr> s_npcAlt;    // 0x143ab1e10 npc id -> monologues
+MS2_TALKSCRIPT_STATIC ATL::CAtlMap<int, TalkArrayPtr> s_npcTalks;  // 0x143ab1dc0 npc id -> talks
+MS2_TALKSCRIPT_STATIC ATL::CAtlArray<CachePtr> s_npcFiles;         // 0x143ab1e78 loaded Script/Npc files
+MS2_TALKSCRIPT_STATIC ATL::CAtlMap<int, TalkIdMapPtr> s_questTalks;// 0x143ab1d70 quest id -> talks by id
+MS2_TALKSCRIPT_STATIC ATL::CAtlArray<CachePtr> s_questFiles;       // 0x143ab1e58 loaded Script/Quest files
+MS2_TALKSCRIPT_STATIC CLockCriticalSection s_lock;                 // 0x143ab1d40
+MS2_TALKSCRIPT_STATIC bool s_valid;                                // 0x143ab1d30
 
 // @0x14085aa40
 static void CheckValid()
