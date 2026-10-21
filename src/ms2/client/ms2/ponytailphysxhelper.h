@@ -36,9 +36,8 @@ MS2_CHECK_SIZE(Unk_PonyPart, 0xc0);
 // A texture-like handle (8 bytes, NiRefObject pointer: IncRefCount 0x140980460 / DecRefCount 0x1405a93d0).
 struct Unk_PonyHandle
 {
-    Unk_PonyHandle() { FUN_141065070(0); }                      // init with NULL
+    Unk_PonyHandle(void* p = 0);                                // 0x141065070 init with p (AddRef)
     ~Unk_PonyHandle() { FUN_140a5a930(); }                      // drop (DecRef)
-    void FUN_141065070(void* p);                                // init with p (AddRef)
     void FUN_141068540(void* p);                                // assign (AddRef new, DecRef old)
     void FUN_140a5a930();                                       // drop (DecRef)
     void* m_p;

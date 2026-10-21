@@ -22,6 +22,7 @@
 #include "kfmmodel.h"
 #include "ms2/placeholder/citem.h"
 #include <atlcoll.h>
+#include <set>
 #include <efd/MemObject.h>
 #include <efd/ILogger.h>
 #include <efd/LoggerMacros.h>
@@ -122,9 +123,10 @@ Unk_PickPartInfo* FUN_141200ab0(Unk_PickTarget* pPart);
 
 // Preset list inside the part facts (+0x58).
 struct Unk_PonyPresets;
-char FUN_14059da70(Unk_PonyPresets* p);                         // empty
+bool FUN_14059da70(Unk_PonyPresets* p);                         // empty
 int FUN_1401e5720(Unk_PonyPresets* p);                          // count
 void* FUN_14059ce40(Unk_PonyPresets* p, size_t nIndex);         // element holder
+#define PONY_PRESETS(pInfo) ((Unk_PonyPresets*)((char*)(pInfo) + 0x58)) // the part info's preset array
 struct Unk_PonyPresetEntry { char m_pad[0x18]; Unk_StreamPoint m_kPos; Unk_StreamPoint m_kEuler; };
 Unk_PonyPresetEntry* FUN_14059cf20(void* pHolder);                             // element data
 
@@ -146,7 +148,7 @@ void* FUN_14106b9b0(void* pProp);                               // NiTexturingPr
 void* FUN_140d89f40(void* pMap);                                // the map's texture
 const NiFixedString& FUN_14116f570(void* pTexture);             // the texture's file name
 CString FUN_14038f6d0(const CString& strBase, const char* pszSuffix);   // path concatenation
-char FUN_1420b1b20(const char* pszPath, int n);                 // the file exists
+bool FUN_1420b1540(const char* pszPath, int n);                 // efd::File::Access: the file exists
 void* FUN_141d33230(NiFixedString* pName, void* pFormat, int a, int b, bool c);   // NiSourceTexture::Create
 
 // PhysX glue (?\kfmmodel.cpp, ?\equipmodelforceapplier.cpp, client\ms2\physxhelper.cpp).
@@ -198,20 +200,12 @@ MS2_CHECK_SIZE(Unk_PonyJointEntry, 0x18);
 
 // The loaded meshes of a part model: std::set<NiAVObjectPtr> at +0xf8 (equipmodel.h), iterated by the shared
 // iterator wrappers (the iterator is 8 bytes; begin/end return it through a hidden pointer).
-struct Unk_MeshSet;
-struct Unk_MeshIter { void* m_pNode; };
+typedef std::set<efd::SmartPointer<NiAVObject> > Unk_MeshSet;   // the part's mesh objects
 Unk_MeshSet* FUN_141201c90(Unk_PickTarget* pPart);
-void* FUN_140b02fe0(Unk_MeshSet* pSet, Unk_MeshIter* pOut);     // end
-void* FUN_140b02f70(Unk_MeshSet* pSet, Unk_MeshIter* pOut);     // begin
-bool FUN_140b029f0(Unk_MeshIter* pIt, Unk_MeshIter* pEnd);      // !=
-efd::SmartPointer<NiAVObject>* FUN_140b02a60(Unk_MeshIter* pIt);   // *it
-void* FUN_140b02a80(Unk_MeshIter* pIt);                         // ++it
 
 static inline const NiPoint3& N3(const Unk_StreamPoint& p) { return reinterpret_cast<const NiPoint3&>(p); }
 static inline Unk_StreamPoint SPV(const NiPoint3& p) { return Unk_StreamPoint(p.x, p.y, p.z); }
 static inline Unk_StreamPoint& SP(Unk_FcPoint3& p) { return reinterpret_cast<Unk_StreamPoint&>(p); }
-static inline CEquipModel* EM(Unk_PickTarget* p) { return reinterpret_cast<CEquipModel*>(p); }
-static inline Unk_PonyListener* LS(Unk_ItemCustomizeListener* p) { return static_cast<Unk_PonyListener*>(p); }
 
 void* FUN_1412018c0(void* self);
 class Unk_PonyPlayer;
@@ -297,9 +291,9 @@ int CPonyTailController::vfunc_3()
 {
     FUN_141694650();
     ReadValues();
-    if (m_kFirst.m_spModel.get())
+    if ((bool)m_kFirst.m_spModel.get())
     {
-        if (EM(m_kFirst.m_spModel.operator->())->vfunc_9() != 0)
+        if (reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_9() != 0)
         {
             FUN_141695220();
             m_kFirst.m_kStart.m_fScale = vfunc_21();
@@ -354,9 +348,9 @@ void CPonyTailController::vfunc_6()
             FUN_141200190(spPart.operator->(), &apPart[i]->m_kRest);
             NiPoint3 kPos, kEuler, kA, kB;
             spPart->FUN_141202480(&kPos, &kEuler, &kA, &kB, &apPart[i]->m_kRest);
-            EM(spPart.operator->())->vfunc_24(kPos);
-            EM(spPart.operator->())->vfunc_26(kEuler);
-            EM(spPart.operator->())->vfunc_31();
+            reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_24(kPos);
+            reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_26(kEuler);
+            reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_31();
         }
     }
 }
@@ -376,7 +370,8 @@ float CPonyTailController::vfunc_20()
 // @0x141692440
 const Unk_CustomizeRange* CPonyTailController::vfunc_23()
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
+    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer != 0)
     {
         MS2Ptr<Unk_PickTarget> spFirst = m_kFirst.m_spModel;
         if (spFirst.get())
@@ -405,7 +400,10 @@ int CPonyTailController::vfunc_17()
 // @0x1416925e0
 void CPonyTailController::vfunc_14(float fValue)
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0 || m_bBusy != 0)
+    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    if (m_bBusy != 0)
         return;
     MS2Ptr<Unk_PickTarget> spFirst = m_kFirst.m_spModel;
     if (spFirst == (Unk_PickTarget*)0)
@@ -422,7 +420,7 @@ void CPonyTailController::vfunc_14(float fValue)
     FUN_1414225d0(spFirst, 0, fCur);
     FUN_1416955b0(1, 0, &CPonyTailController::FUN_141694fb0, 0);
     if (m_pListener)
-        LS(m_pListener)->vfunc_2(this, fCur, 0);
+        static_cast<Unk_PonyListener*>(m_pListener)->vfunc_2(this, fCur, 0);
 }
 
 // @0x141692850
@@ -435,7 +433,8 @@ void CPonyTailController::vfunc_9(int nIndex)
     FUN_141695220();
     FUN_1416955b0(0, 1, &CPonyTailController::FUN_141695120, nIndex);
     m_nValue = nIndex;
-    Unk_UserProxyItemData* pData = ((CItem*)m_spEquipItem->FUN_1411dc7a0())->FUN_140527870();
+    Unk_UserProxyItemData* pData;
+    Unk_UserProxyItemData* pCopy = pData = ((CItem*)m_spEquipItem->FUN_1411dc7a0())->FUN_140527870();
     if (pData)
         FUN_14059a1f0(pData, nIndex);
 }
@@ -443,7 +442,8 @@ void CPonyTailController::vfunc_9(int nIndex)
 // @0x1416929b0
 int CPonyTailController::vfunc_29()
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    Unk_PonyPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return 0;
     Unk_PickTarget* pFirst = 0;
     Unk_PickTarget* pSecond = 0;
@@ -475,14 +475,19 @@ float CPonyTailController::vfunc_40()
 // @0x141692b60
 void CPonyTailController::vfunc_37()
 {
-    NiAVObject* pNode = FUN_141167cf0(CString("HR"));
+    NiAVObject* pNode = FUN_141167cf0("HR");
     if (pNode == 0)
         return;
-    void* pTexProp = FUN_14098d8d0(&DAT_143afa4f0, pNode->GetProperty(8));
+    void* pTexProp = 0;
+    pTexProp = FUN_14098d8d0(&DAT_143afa4f0, pNode->GetProperty(8));
     if (pTexProp == 0)
         return;
     void* pMap = FUN_14106be30(pTexProp, 0);
-    if (pMap == 0)
+    if (pMap)
+    {
+        m_kControlMap.FUN_141068540(FUN_14098d8d0(&DAT_143afa930, FUN_140d89f40(pMap)));
+    }
+    else
     {
         void* pSrc = FUN_14098d8d0(&DAT_143afa930, FUN_14106b9b0(pTexProp));
         CString strPath((const char*)FUN_14116f570(pSrc));
@@ -492,16 +497,12 @@ void CPonyTailController::vfunc_37()
         {
             CString strControl = FUN_14038f6d0(strPath, "_control.dds");
             Unk_PonyHandle kTemp;
-            if (FUN_1420b1b20((const char*)strControl, 0) != 0)
+            if (FUN_1420b1540((const char*)strControl, 0))
             {
                 NiFixedString kName((const char*)strControl);
                 m_kControlMap.FUN_141068540(FUN_141d33230(&kName, &DAT_1439fc800, 0, 0, true));
             }
         }
-    }
-    else
-    {
-        m_kControlMap.FUN_141068540(FUN_14098d8d0(&DAT_143afa930, FUN_140d89f40(pMap)));
     }
 }
 
@@ -514,8 +515,7 @@ Unk_StreamPoint CPonyTailController::FUN_141695bc0(const Unk_StreamPoint& kOrigi
     Unk_StreamPoint kPlane = kOrigin;
     kPlane.z = kPoint.z;
     kPlane = kPoint.FUN_140965c40(kPlane);
-    float fDot = FUN_140a00f20(kPlane, kAxis);
-    return kPoint.FUN_140965c40(kAxis.FUN_14097fc90(2.0f).FUN_14097fc90(fDot));
+    return kPoint.FUN_140965c40(kAxis.FUN_14097fc90(2.0f).FUN_14097fc90(FUN_140a00f20(kPlane, kAxis)));
 }
 
 // Applies the pose of a drag to one part: the look-at (kind 1) or the surface frame (other kinds) of the part's
@@ -523,7 +523,7 @@ Unk_StreamPoint CPonyTailController::FUN_141695bc0(const Unk_StreamPoint& kOrigi
 static void ApplyPartPose(CPonyTailController* pThis, Unk_PonyPart& kPart, Unk_PickTarget* pPart, const Unk_StreamPoint& kPos,
                           const Unk_StreamPoint& kDir, int nPickIndex)
 {
-    CEquipModel* pModel = EM(pPart);
+    CEquipModel* pModel = reinterpret_cast<CEquipModel*>(pPart);
     int nKind = FUN_141200ab0(pPart)->m_nKind;
     Unk_NiMatrix3 mRot;
     if (nKind == 1)
@@ -605,7 +605,7 @@ void CPonyTailController::vfunc_30(const NiPoint3& kPos)
             m_nValue = FUN_1401e5720((Unk_PonyPresets*)((char*)pInfo + 0x58));
     }
     if (m_pListener)
-        LS(m_pListener)->vfunc_1(this);
+        static_cast<Unk_PonyListener*>(m_pListener)->vfunc_1(this);
 }
 
 // @0x141693210
@@ -659,14 +659,15 @@ void CPonyTailController::vfunc_33()
         pPlayer->FUN_14123d7a0(CString("TailController"), 0);
     MS2Ptr<Unk_PickTarget> spFirst = m_kFirst.m_spModel;
     if (spFirst.get())
-        EM(spFirst.operator->())->vfunc_28(&m_kFirst.m_kPose.m_Translate, &m_kFirst.m_kPose.m_Rotate, m_kFirst.m_kPose.m_fScale);
+        reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_28(&m_kFirst.m_kPose.m_Translate, &m_kFirst.m_kPose.m_Rotate, m_kFirst.m_kPose.m_fScale);
     MS2Ptr<Unk_PickTarget> spSecond = m_kSecond.m_spModel;
     if (spSecond.get())
-        EM(spSecond.operator->())->vfunc_28(&m_kSecond.m_kPose.m_Translate, &m_kSecond.m_kPose.m_Rotate, m_kSecond.m_kPose.m_fScale);
+        reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_28(&m_kSecond.m_kPose.m_Translate, &m_kSecond.m_kPose.m_Rotate, m_kSecond.m_kPose.m_fScale);
     FUN_1416955b0(0, 0, &CPonyTailController::FUN_141694fb0, 0);
     if (m_spEquipItem.get())
     {
-        Unk_UserProxyItemData* pData = ((CItem*)m_spEquipItem->FUN_1411dc7a0())->FUN_140527870();
+        Unk_UserProxyItemData* pData;
+        Unk_UserProxyItemData* pCopy = pData = ((CItem*)m_spEquipItem->FUN_1411dc7a0())->FUN_140527870();
         if (pData)
         {
             m_nValue = -1;
@@ -692,7 +693,7 @@ void CPonyTailController::FUN_141694650()
     m_kSecond.m_fValue = 0;
     if (m_kFirst.m_spModel.get())
     {
-        CEquipModel* pModel = EM(m_kFirst.m_spModel.operator->());
+        CEquipModel* pModel = reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->());
         if (pModel->vfunc_9() != 0)
         {
             NiPoint3 kPos, kEuler, kAnchor, kUnused;
@@ -705,8 +706,8 @@ void CPonyTailController::FUN_141694650()
     }
     if (m_kFirst.m_spModel.get() && m_kSecond.m_spModel.get())
     {
-        CEquipModel* pModel1 = EM(m_kFirst.m_spModel.operator->());
-        CEquipModel* pModel2 = EM(m_kSecond.m_spModel.operator->());
+        CEquipModel* pModel1 = reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->());
+        CEquipModel* pModel2 = reinterpret_cast<CEquipModel*>(m_kSecond.m_spModel.operator->());
         if (pModel1->vfunc_9() != 0 && pModel2->vfunc_9() != 0)
         {
             m_kSecond.m_kAnchor = Unk_NiPoint3(DAT_143b01a60);
@@ -743,15 +744,14 @@ void CPonyTailController::FUN_141694ea0(Unk_PickTarget** ppFirst, Unk_PickTarget
     Unk_PickTarget* pA = 0;
     Unk_PickTarget* pB = 0;
     ::FUN_141695f10(pPlayer, &pA, &pB);
-    if (m_spPicker.operator CItemPickingHelper*() && pB)
+    if ((bool)m_spPicker.operator CItemPickingHelper*() && pB)
     {
         if (m_spPicker->GetPickedTarget() == pB)
         {
             if (ppFirst)
                 *ppFirst = pB;
-            if (ppSecond == 0)
-                return;
-            *ppSecond = pA;
+            if (ppSecond)
+                *ppSecond = pA;
             return;
         }
     }
@@ -765,20 +765,19 @@ void CPonyTailController::FUN_141694ea0(Unk_PickTarget** ppFirst, Unk_PickTarget
 void CPonyTailController::FUN_141694fb0(MS2Ptr<Unk_PickTarget> spPart, NiNode* pRoot, int nValue, int nSecond,
                                         Unk_StreamPoint& kPos, Unk_StreamPoint& kEuler, float& fScale)
 {
-    if (spPart.get() != 0 && pRoot != 0)
+    if ((bool)spPart.get() && pRoot != 0)
     {
         NiTransform kInverse;
         ((NiTransform*)FUN_1409478e0(pRoot))->Invert(kInverse);
-        NiTransform kModel = FUN_141695ca0(spPart.get());
-        NiTransform kLocal = kInverse * kModel;
+        NiTransform kLocal = FUN_141695ca0(spPart.get());
+        kLocal = kInverse * kLocal;
         kPos = reinterpret_cast<const Unk_StreamPoint&>(kLocal.m_Translate);
         FUN_141422950(kLocal, &kEuler);
         fScale = kLocal.m_fScale;
     }
     else
     {
-        kEuler = DAT_143b01a60;
-        kPos = kEuler;
+        kPos = kEuler = DAT_143b01a60;
         fScale = 0;
     }
 }
@@ -790,12 +789,11 @@ void CPonyTailController::FUN_141695120(MS2Ptr<Unk_PickTarget> spPart, NiNode* p
     Unk_PickPartInfo* pInfo = FUN_141200ab0(spPart.operator->());
     if (pInfo != 0)
     {
-        Unk_PonyPresets* pPresets = (Unk_PonyPresets*)((char*)pInfo + 0x58);
-        if (FUN_14059da70(pPresets) == 0)
+        if (FUN_14059da70(PONY_PRESETS(pInfo)) == 0)
         {
-            if (nIndex < FUN_1401e5720(pPresets))
+            if (nIndex < FUN_1401e5720(PONY_PRESETS(pInfo)))
             {
-                Unk_PonyPresetEntry* pEntry = FUN_14059cf20(FUN_14059ce40(pPresets, nIndex));
+                Unk_PonyPresetEntry* pEntry = FUN_14059cf20(FUN_14059ce40(PONY_PRESETS(pInfo), nIndex));
                 kPos = pEntry->m_kPos;
                 kEuler = pEntry->m_kEuler;
             }
@@ -829,22 +827,19 @@ void CPonyTailController::FUN_1416952c0(Unk_PonyPart* pPart)
     FUN_1412024f0(spPart.operator->(), &kB, &kC, &fScale, &kA, &kD, 0);
     FUN_1412021a0(spPart.operator->(), &pPart->m_kStart);
     FUN_141200e30(spPart.operator->(), 0);
-    EM(spPart.operator->())->vfunc_29(&kB, &kC, fScale);
+    reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_29(&kB, &kC, fScale);
     if (*(int*)((char*)FUN_141200ab0(spPart.operator->()) + 0x20) != 0)
     {
         NiNode* pScene = FUN_1411a6b10(FUN_1403ed280());
         float fTime = (float)FUN_14086d260()->FUN_141473280();
         Unk_MeshSet* pSet = FUN_141201c90(spPart.operator->());
-        Unk_MeshIter itEnd;
-        FUN_140b02fe0(pSet, &itEnd);
-        Unk_MeshIter it;
-        FUN_140b02f70(pSet, &it);
-        while (FUN_140b029f0(&it, &itEnd))
+        Unk_MeshSet& kSet = *pSet;
+        Unk_MeshSet::iterator itEnd = kSet.end();
+        for (Unk_MeshSet::iterator it = kSet.begin(); it != itEnd; ++it)
         {
-            efd::SmartPointer<NiAVObject> spMesh(*FUN_140b02a60(&it));
+            efd::SmartPointer<NiAVObject> spMesh = *it;
             pScene->AttachChild((NiAVObject*)spMesh, true);
-            ((NiAVObject*)spMesh)->Update(fTime, true);
-            FUN_140b02a80(&it);
+            spMesh->Update(fTime, true);
         }
     }
 }
@@ -852,13 +847,12 @@ void CPonyTailController::FUN_1416952c0(Unk_PonyPart* pPart)
 // @0x1416955b0
 void CPonyTailController::FUN_1416955b0(int nMode, int nIndex, Unk_PonyPoseFn pFn, int nValue)
 {
-    if (m_bBusy != 0)
-    {
-        FUN_141695710(&m_kFirst, nMode, nIndex, pFn, nValue, 0);
-        FUN_141695710(&m_kSecond, nMode, nIndex, pFn, nValue, 1);
-        vfunc_39(nIndex != 0);
-        m_bBusy = 0;
-    }
+    if (m_bBusy == 0)
+        return;
+    FUN_141695710(&m_kFirst, nMode, nIndex, pFn, nValue, 0);
+    FUN_141695710(&m_kSecond, nMode, nIndex, pFn, nValue, 1);
+    vfunc_39(nIndex != 0 ? true : false);
+    m_bBusy = 0;
 }
 
 // @0x141695710
@@ -903,22 +897,19 @@ void CPonyTailController::FUN_141695710(Unk_PonyPart* pPart, int nMode, int nInd
     }
     FUN_141422840(spPart.operator->(), kPos, kEuler, fScale);
     if (m_pListener)
-        LS(m_pListener)->vfunc_5(this, spPart.get());
+        static_cast<Unk_PonyListener*>(m_pListener)->vfunc_5(this, spPart.get());
     pRoot->AttachChild(pNode, true);
-    EM(spPart.operator->())->vfunc_31();
+    reinterpret_cast<CEquipModel*>(spPart.operator->())->vfunc_31();
 }
 
 // @0x141695ca0
 NiTransform CPonyTailController::FUN_141695ca0(Unk_PickTarget* pModel)
 {
     NiTransform kXf;
-    CEquipModel* p = EM(pModel);
-    reinterpret_cast<NiPoint3&>(kXf.m_Translate) = p->vfunc_23();
-    NiPoint3 kEuler = p->vfunc_25();
-    Unk_NiMatrix3 mRot;
-    mRot.FUN_142083d40(kEuler.x * 3.1415927f / 180.0f, kEuler.y * 3.1415927f / 180.0f, kEuler.z * 3.1415927f / 180.0f);
-    memcpy(&kXf.m_Rotate, &mRot, sizeof(mRot));
-    kXf.m_fScale = p->vfunc_21();
+    kXf.m_Translate = NiPoint3(static_cast<const efd::Point3&>(reinterpret_cast<CEquipModel*>(pModel)->vfunc_23()));
+    NiPoint3 kEuler = reinterpret_cast<CEquipModel*>(pModel)->vfunc_25();
+    reinterpret_cast<Unk_NiMatrix3&>(kXf.m_Rotate).FUN_142083d40(kEuler.x * 3.1415927f / 180.0f, kEuler.y * 3.1415927f / 180.0f, kEuler.z * 3.1415927f / 180.0f);
+    kXf.m_fScale = reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
     return kXf;
 }
 
@@ -1092,13 +1083,13 @@ void CPonyTailPhysXHelper::UpdateModelPhysXValues(Unk_PickTarget* pModel, const 
                     float v[3] = {kDesc.localAnchor[l].x, kDesc.localAnchor[l].y, kDesc.localAnchor[l].z};
                     pExtra = EE_NEW NiFloatsExtraData(3, v);
                     pNode->AddExtraData(NiFixedString((const char*)strKey), pExtra);
-                    kDesc.localAnchor[l] = kDesc.localAnchor[l] * EM(pModel)->vfunc_21();
+                    kDesc.localAnchor[l] = kDesc.localAnchor[l] * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
                 }
                 else
                 {
-                    kDesc.localAnchor[l].x = FUN_141d57ca0(pExtra, 0) * EM(pModel)->vfunc_21();
-                    kDesc.localAnchor[l].y = FUN_141d57ca0(pExtra, 1) * EM(pModel)->vfunc_21();
-                    kDesc.localAnchor[l].z = FUN_141d57ca0(pExtra, 2) * EM(pModel)->vfunc_21();
+                    kDesc.localAnchor[l].x = FUN_141d57ca0(pExtra, 0) * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
+                    kDesc.localAnchor[l].y = FUN_141d57ca0(pExtra, 1) * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
+                    kDesc.localAnchor[l].z = FUN_141d57ca0(pExtra, 2) * reinterpret_cast<CEquipModel*>(pModel)->vfunc_21();
                 }
             }
             bool bBad = false;
