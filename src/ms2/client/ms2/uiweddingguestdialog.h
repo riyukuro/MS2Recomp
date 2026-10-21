@@ -120,7 +120,7 @@ public:
     void FUN_140fcdc50(PagePtr spPage);                                     // 0x140fcdc50 register a page by its key
     void FUN_140fcdcf0();                                                   // 0x140fcdcf0 fill the "m_tab" strip
     bool FUN_140fcdf30(const CStringW& strName);                            // 0x140fcdf30 may that name be added
-    static int FUN_140fce0a0();                                             // 0x140fce0a0 invitations still allowed
+    int FUN_140fce0a0();                                                    // 0x140fce0a0 invitations still allowed
 
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);              // 0x140bb4cf0 text field child lookup
     MS2Ptr<Unk_GsTab> FUN_140c02870(const CString& strName);                // 0x140c02870 tab strip child lookup

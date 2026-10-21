@@ -113,9 +113,9 @@ public:
 struct Unk_GsFound
 {
     __int64 m_unk_00;
-    void* m_vftable;                                            // +0x8 the info sub-object (Unk_GsFoundInfo)
-    Unk_GsFoundInfo& Info() { return *(Unk_GsFoundInfo*)&m_vftable; }
+    void* m_info;                                               // +0x8 the info sub-object (an Unk_GsFoundInfo; its vfptr)
 };
+MS2_CHECK_OFFSET(Unk_GsFound, m_info, 0x8);
 
 void* FUN_1409eed90();                                          // the singleton of the own character
 CStringTable* FUN_1401a9d70();
@@ -183,8 +183,7 @@ void UIWeddingGuestDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140fcdcf0();
-    MS2Ptr<ASTextField> spCounter = FUN_140bb4cf0("m_counter");
-    if (spCounter.get() != 0)
+    if (MS2Ptr<ASTextField> spCounter = FUN_140bb4cf0("m_counter"))
     {
         int nMax = FUN_140fce0a0();
         size_t nCount = m_guests.size();
@@ -196,21 +195,23 @@ void UIWeddingGuestDialog::OnLoadComplete()
 void UIWeddingGuestDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    Unk_UiDock* pRef;
-    if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
+    if (pDialog != 0)
     {
-        int nX = pRef->FUN_141b1d3d0();
-        int nY = pRef->FUN_141b1d460() - 0x50;
-        if (nX != -1 && nY != -1)
+        Unk_UiDock* pRef = FUN_140a7b2b0(0x4e40);
+        if (pRef != 0)
         {
-            int nWidth = pDialog->FUN_1422c13b0();
-            pDialog->vfunc_2(5, nY, nX - nWidth);
-            return;
+            int nX = pRef->FUN_141b1d3d0();
+            int nY = pRef->FUN_141b1d460() - 0x50;
+            if (nX != -1 && nY != -1)
+            {
+                pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0());
+                return;
+            }
         }
     }
-    pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog != 0)
-        pDialog->vfunc_2(1, 0, 0);
+    ASDialog* pDefault = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDefault != 0)
+        pDefault->vfunc_2(1, 0, 0);
 }
 
 // @0x140fcce80
@@ -295,17 +296,16 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 }
 
 // @0x140fcd5b0
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void UIWeddingGuestDialog::FUN_140fcd5b0(Unk_GsFound* pFound)
 {
     GuestPtr spGuest(new WeddingGuest());
-    spGuest->m_n20 = pFound->Info().vfunc_4();
-    spGuest->m_n28 = pFound->Info().vfunc_4();
-    spGuest->m_strName = pFound->Info().vfunc_8();
+    spGuest->m_n20 = ((Unk_GsFoundInfo*)&pFound->m_info)->vfunc_4();
+    spGuest->m_n28 = ((Unk_GsFoundInfo*)&pFound->m_info)->vfunc_4();
+    spGuest->m_strName = ((Unk_GsFoundInfo*)&pFound->m_info)->vfunc_8();
     spGuest->m_nKind = 2;
     if (spGuest->m_n28 == 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_wedding_result_err_not_find_character")), 1, 1);
+        FUN_1412751f0(FUN_14028b8e0(L"s_wedding_result_err_not_find_character"), 1, 1);
     }
     else
     {
@@ -317,12 +317,10 @@ void UIWeddingGuestDialog::FUN_140fcd5b0(Unk_GsFound* pFound)
 }
 
 // @0x140fcd850
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void UIWeddingGuestDialog::FUN_140fcd850(GuestPtr spGuest)
 {
     m_guests[spGuest->m_strName] = spGuest;
-    MS2Ptr<ASTextField> spCounter = FUN_140bb4cf0("m_counter");
-    if (spCounter.get() != 0)
+    if (MS2Ptr<ASTextField> spCounter = FUN_140bb4cf0("m_counter"))
     {
         int nMax = FUN_140fce0a0();
         size_t nCount = m_guests.size();
@@ -331,12 +329,10 @@ void UIWeddingGuestDialog::FUN_140fcd850(GuestPtr spGuest)
 }
 
 // @0x140fcd9d0
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void UIWeddingGuestDialog::FUN_140fcd9d0(const CStringW& strName)
 {
     m_guests.erase(strName);
-    MS2Ptr<ASTextField> spCounter = FUN_140bb4cf0("m_counter");
-    if (spCounter.get() != 0)
+    if (MS2Ptr<ASTextField> spCounter = FUN_140bb4cf0("m_counter"))
     {
         int nMax = FUN_140fce0a0();
         size_t nCount = m_guests.size();
@@ -365,11 +361,9 @@ void UIWeddingGuestDialog::FUN_140fcdc50(PagePtr spPage)
 }
 
 // @0x140fcdcf0
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void UIWeddingGuestDialog::FUN_140fcdcf0()
 {
-    MS2Ptr<Unk_GsTab> spTab = FUN_140c02870("m_tab");
-    if (spTab.get() != 0)
+    if (MS2Ptr<Unk_GsTab> spTab = FUN_140c02870("m_tab"))
     {
         spTab->FUN_1422e3400();
         for (std::map<CString, PagePtr>::iterator it = m_pages.begin(); it != m_pages.end(); ++it)
@@ -385,18 +379,19 @@ void UIWeddingGuestDialog::FUN_140fcdcf0()
 }
 
 // @0x140fcdf30
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 bool UIWeddingGuestDialog::FUN_140fcdf30(const CStringW& strName)
 {
+    int nGuests;                                    // declared first: the exe gives it the first frame slot
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
     if (strName == pProxy->m_groom.m_strName || strName == pProxy->m_bride.m_strName)
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_wedding_invitation_error_user")), 1, 1);
+        FUN_1412751f0(FUN_14028b8e0(L"s_wedding_invitation_error_user"), 1, 1);
         return false;
     }
-    if (FUN_140900f00() < (int)m_guests.size())
+    nGuests = (int)m_guests.size();
+    if (nGuests > FUN_140900f00())
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_wedding_invitation_error_max_user")), 1, 1);
+        FUN_1412751f0(FUN_14028b8e0(L"s_wedding_invitation_error_max_user"), 1, 1);
         return false;
     }
     return true;
@@ -440,12 +435,10 @@ bool UIWeddingGuestPage::vfunc_1()
     if (FUN_140a467d0(m_pDialog->FUN_1422dba00()))
         return false;
     Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->FUN_1422baa20("m_currentPage");
-    if (FUN_1409b0350(&kPage) == 0)
-    {
-        m_pScript = FUN_140acca70(m_pDialog->FUN_1422db730(), kPage);
-        return true;
-    }
-    return false;
+    if (FUN_1409b0350(&kPage) != 0)
+        return false;
+    m_pScript = FUN_140acca70(m_pDialog->FUN_1422db730(), kPage);
+    return true;
 }
 
 // @0x140fd6dd0
@@ -499,8 +492,7 @@ bool UIWeddingGuestPageFriend::vfunc_1()
     CBuddyManager::GetInstance()->FUN_140ae4df0(buddies);
     if (buddies.GetCount() == 0)
         return true;
-    MS2Ptr<Unk_GsList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list");
-    if (spList.get() != 0)
+    if (MS2Ptr<Unk_GsList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
     {
         spList->FUN_1422dd1d0();
         for (size_t i = 0; i < buddies.GetCount(); i++)
@@ -536,38 +528,40 @@ CString UIWeddingGuestPageFriend::vfunc_6()
 // @0x140fd7500
 CStringW UIWeddingGuestPageFriend::vfunc_7()
 {
-    return FUN_14028b8e0(CStringW(L"s_wedding_guest_tab_friend"));
+    return FUN_14028b8e0(L"s_wedding_guest_tab_friend");
 }
 
 // @0x140fd7570
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 bool UIWeddingGuestPageFriend::vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (_stricmp(szMethod, "onSelectCheckbox") != 0)
-        return false;
-    ASData data;
-    if (data.FUN_1422b9620(pArgs, nArgs) == 0)
-        return false;
-    bool bSelected = data.FUN_1422b8a90();
-    CStringW strName = data.FUN_1422b8f40();
-    CBuddyManager::Ptr spBuddy = CBuddyManager::GetInstance()->FUN_140ae4950(strName);
-    if (spBuddy.get() != 0)
+    if (_stricmp(szMethod, "onSelectCheckbox") == 0)
     {
-        if (!bSelected)
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            m_pDialog->FUN_140fcd9d0(strName);
-        }
-        else
-        {
-            UIWeddingGuestDialog::GuestPtr spGuest(new WeddingGuest());
-            spGuest->m_nKind = 1;
-            spGuest->m_strName = strName;
-            spGuest->m_n28 = spBuddy->FUN_1401cc230();
-            spGuest->m_n20 = spBuddy->FUN_1401cc250();
-            m_pDialog->FUN_140fcd850(spGuest);
+            bool bSelected = data.FUN_1422b8a90();
+            CStringW strName = data.FUN_1422b8f40();
+            CBuddyManager::Ptr spBuddy = CBuddyManager::GetInstance()->FUN_140ae4950(strName);
+            if (spBuddy.get() != 0)
+            {
+                if (!bSelected)
+                {
+                    m_pDialog->FUN_140fcd9d0(strName);
+                }
+                else
+                {
+                    UIWeddingGuestDialog::GuestPtr spGuest(new WeddingGuest());
+                    spGuest->m_nKind = 1;
+                    spGuest->m_strName = strName;
+                    spGuest->m_n28 = spBuddy->FUN_1401cc230();
+                    spGuest->m_n20 = spBuddy->FUN_1401cc250();
+                    m_pDialog->FUN_140fcd850(spGuest);
+                }
+            }
+            return true;
         }
     }
-    return true;
+    return false;
 }
 
 // ---- guild ----
@@ -587,8 +581,7 @@ bool UIWeddingGuestPageGuild::vfunc_1()
     CGuildManager::GetInstance()->FUN_1404d0420(&members);
     if (members.GetCount() == 0)
         return true;
-    MS2Ptr<Unk_GsList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list");
-    if (spList.get() != 0)
+    if (MS2Ptr<Unk_GsList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
     {
         spList->FUN_1422dd1d0();
         for (size_t i = 0; i < members.GetCount(); i++)
@@ -620,38 +613,40 @@ CString UIWeddingGuestPageGuild::vfunc_6()
 // @0x140fd7e20
 CStringW UIWeddingGuestPageGuild::vfunc_7()
 {
-    return FUN_14028b8e0(CStringW(L"s_wedding_guest_tab_guild"));
+    return FUN_14028b8e0(L"s_wedding_guest_tab_guild");
 }
 
 // @0x140fd7e90
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 bool UIWeddingGuestPageGuild::vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (_stricmp(szMethod, "onSelectCheckbox") != 0)
-        return false;
-    ASData data;
-    if (data.FUN_1422b9620(pArgs, nArgs) == 0)
-        return false;
-    bool bSelected = data.FUN_1422b8a90();
-    CStringW strName = data.FUN_1422b8f40();
-    MS2Ptr<CGuildMember> spMember = FUN_140fd80e0(strName);
-    if (spMember.get() != 0)
+    if (_stricmp(szMethod, "onSelectCheckbox") == 0)
     {
-        if (!bSelected)
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            m_pDialog->FUN_140fcd9d0(strName);
-        }
-        else
-        {
-            UIWeddingGuestDialog::GuestPtr spGuest(new WeddingGuest());
-            spGuest->m_nKind = 0;
-            spGuest->m_strName = strName;
-            spGuest->m_n28 = spMember->data.f08;
-            spGuest->m_n20 = spMember->data.f00;
-            m_pDialog->FUN_140fcd850(spGuest);
+            bool bSelected = data.FUN_1422b8a90();
+            CStringW strName = data.FUN_1422b8f40();
+            MS2Ptr<CGuildMember> spMember = FUN_140fd80e0(strName);
+            if (spMember.get() != 0)
+            {
+                if (!bSelected)
+                {
+                    m_pDialog->FUN_140fcd9d0(strName);
+                }
+                else
+                {
+                    UIWeddingGuestDialog::GuestPtr spGuest(new WeddingGuest());
+                    spGuest->m_nKind = 0;
+                    spGuest->m_strName = strName;
+                    spGuest->m_n28 = spMember->data.f08;
+                    spGuest->m_n20 = spMember->data.f00;
+                    m_pDialog->FUN_140fcd850(spGuest);
+                }
+            }
+            return true;
         }
     }
-    return true;
+    return false;
 }
 
 // @0x140fd80e0
@@ -690,13 +685,11 @@ UIWeddingGuestPageStranger::UIWeddingGuestPageStranger(UIWeddingGuestDialog* pDi
 }
 
 // @0x140fd8290
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 bool UIWeddingGuestPageStranger::vfunc_1()
 {
     if (!UIWeddingGuestPage::vfunc_1())
         return false;
-    MS2Ptr<Unk_GsList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list");
-    if (spList.get() != 0)
+    if (MS2Ptr<Unk_GsList> spList = static_cast<Unk_GsPageScript*>(m_pScript.operator->())->FUN_140bc7280("m_list"))
     {
         spList->FUN_1422dd1d0();
         for (std::map<CStringW, GuestPtr>::iterator it = m_strangers.begin(); it != m_strangers.end(); ++it)
@@ -724,7 +717,7 @@ CString UIWeddingGuestPageStranger::vfunc_6()
 // @0x140fd85d0
 CStringW UIWeddingGuestPageStranger::vfunc_7()
 {
-    return FUN_14028b8e0(CStringW(L"s_wedding_guest_tab_stranger"));
+    return FUN_14028b8e0(L"s_wedding_guest_tab_stranger");
 }
 
 // @0x140fd8640
@@ -734,7 +727,6 @@ void UIWeddingGuestPageStranger::vfunc_3()
 }
 
 // @0x140fd8670
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 bool UIWeddingGuestPageStranger::vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (_stricmp(szMethod, "onFind") == 0)
@@ -760,10 +752,10 @@ bool UIWeddingGuestPageStranger::vfunc_4(const char* szMethod, const Scaleform::
             if (it != m_strangers.end())
             {
                 GuestPtr spGuest = it->second;
-                if (!bSelected)
-                    m_pDialog->FUN_140fcd9d0(strName);
-                else
+                if (bSelected)
                     m_pDialog->FUN_140fcd850(spGuest);
+                else
+                    m_pDialog->FUN_140fcd9d0(strName);
             }
             return true;
         }
@@ -772,10 +764,10 @@ bool UIWeddingGuestPageStranger::vfunc_4(const char* szMethod, const Scaleform::
 }
 
 // @0x140fd88e0
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void UIWeddingGuestPageStranger::FUN_140fd88e0(GuestPtr spGuest)
 {
-    if (m_strangers.find(spGuest->m_strName) == m_strangers.end())
+    std::map<CStringW, GuestPtr>::iterator it = m_strangers.find(spGuest->m_strName);
+    if (it == m_strangers.end())
     {
         m_strangers[spGuest->m_strName] = spGuest;
         ASObj row(2);
