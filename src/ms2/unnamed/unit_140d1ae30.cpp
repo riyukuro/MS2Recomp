@@ -1740,7 +1740,7 @@ int QuestStart(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73aa0(FUN_14028b8e0(L"s_quest_start_err_invalid"), 0, 0, L"");
         return 0;
     }
-    MS2Ptr<Unk_IuQuest> spQuest = FUN_141523ba0(pPlayer)->m_list.vfunc_3(nQuestId);
+    MS2Ptr<Unk_IuQuest> spQuest = (&FUN_141523ba0(pPlayer)->m_list)->vfunc_3(nQuestId);
     if (spQuest.get() != 0 && FUN_141523ba0(pPlayer)->vfunc_1(nQuestId, 0) == 0)
     {
         FUN_140d73aa0(FUN_14028b8e0(L"s_quest_start_err_completed"), 0, 0, L"");
