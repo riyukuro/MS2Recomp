@@ -7800,3 +7800,8 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?CleanupFrameTags@LoadProcess@GFx@Scaleform@@QEAAXXZ	1426381a0	func
 ?Resize@RootArray@?$RefCountCollector@$0BED@@AS2@GFx@Scaleform@@QEAAX_K@Z	142592860	func
 ?UpdateLocal@DateObject@AS2@GFx@Scaleform@@QEAAXXZ	142992b00	func
+??0ImageShapeCharacterDef@GFx@Scaleform@@QEAA@PEAVImageResource@12@PEAVImageCreator@12@_N@Z	142658f20	func
+?AddToTimelineSnapshot@GFxPlaceObjectUnpacked@GFx@Scaleform@@UEAAXPEAVTimelineSnapshot@23@I@Z	1425d5a80	func
+?CreateSubImage@Image@Render@Scaleform@@UEAAPEAV123@AEBV?$Rect@I@23@PEAVMemoryHeap@3@@Z	14257aa60	func
+?Execute@GFxPlaceObjectUnpacked@GFx@Scaleform@@UEAAXPEAVDisplayObjContainer@23@@Z	1425d7180	func
+?Trace@GFxPlaceObjectUnpacked@GFx@Scaleform@@UEAAXPEBD@Z	1425d89e0	func
