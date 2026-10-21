@@ -241,13 +241,17 @@ UIMyInfoDialog::UIMyInfoDialog()
 // @0x141a58270
 int UIMyInfoDialog::vfunc_il1()
 {
-    return vfunc_55() == 0;
+    if (vfunc_55() != 0)
+        return 0;
+    return 1;
 }
 
 // @0x141a582c0
 int UIMyInfoDialog::vfunc_oa0_1()
 {
-    return vfunc_55() == 0;
+    if (vfunc_55() != 0)
+        return 0;
+    return 1;
 }
 
 // @0x141a58310
@@ -307,15 +311,17 @@ void UIMyInfoDialog::vfunc_26()
 // @0x141a58be0
 void UIMyInfoDialog::vfunc_43()
 {
-    if (s_nUseOpenAnim == 0)
+    if (s_nUseOpenAnim != 0)
+    {
+        ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+        if (pDialog != 0)
+            pDialog->vfunc_2(3, 200, 0);
+        FUN_141923710(0);
+    }
+    else
     {
         UIDialog::vfunc_43();
-        return;
     }
-    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog != 0)
-        pDialog->vfunc_2(3, 200, 0);
-    FUN_141923710(0);
 }
 
 // @0x141a58c80
@@ -665,27 +671,27 @@ void UIMyInfoDialog::vfunc_dl_4(void* p)
 // @0x141a5a560
 void UIMyInfoDialog::FUN_141a5a560()
 {
-    if (vfunc_55() == 0)
-    {
-        m_208 = 1;
-        m_218.FUN_140868750(100);
-    }
+    if (vfunc_55() != 0)
+        return;
+    m_208 = 1;
+    m_218.FUN_140868750(100);
 }
 
 // @0x141a5a5c0
 void UIMyInfoDialog::FUN_141a5a5c0()
 {
-    if (vfunc_55() == 0)
-    {
-        FUN_141a5a560();
-        m_20c = 1;
-    }
+    if (vfunc_55() != 0)
+        return;
+    FUN_141a5a560();
+    m_20c = 1;
 }
 
 // @0x141a5a610
 int UIMyInfoDialog::vfunc_46()
 {
-    return UIPCInfoDialog::vfunc_46() != 0;
+    if (UIPCInfoDialog::vfunc_46() == 0)
+        return 0;
+    return 1;
 }
 
 // @0x141a5a640
@@ -1060,27 +1066,23 @@ void UIMyInfoDialog::FUN_141a5c080()
 // @0x141a5c1a0
 void UIMyInfoDialog::FUN_141a5c1a0(NotifyObject* pNotify)
 {
-    if (m_spAvatar.IsNull())
+    if (m_spAvatar == 0 || m_spAvatar->vfunc_24() == 0)
         return;
-    if (m_spAvatar->vfunc_24() != 0)
-        FUN_141a5b6c0();
+    FUN_141a5b6c0();
 }
 
 // @0x141a5c220
 void UIMyInfoDialog::FUN_141a5c220(NotifyObject* pNotify)
 {
-    if (m_spAvatar.IsNull())
+    if (m_spAvatar == 0 || m_spAvatar->vfunc_24() == 0)
         return;
-    if (m_spAvatar->vfunc_24() != 0)
-        FUN_141a5bed0();
+    FUN_141a5bed0();
 }
 
 // @0x141a5c2a0
 void UIMyInfoDialog::FUN_141a5c2a0(NotifyObject* pNotify)
 {
-    if (m_spAvatar.IsNull())
-        return;
-    if (m_spAvatar->vfunc_24() == 0)
+    if (m_spAvatar == 0 || m_spAvatar->vfunc_24() == 0)
         return;
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
@@ -1218,8 +1220,9 @@ void UIMyInfoDialog::FUN_141a5cf30(int nStat)
 // @0x141a5d060
 void UIMyInfoDialog::vfunc_87()
 {
-    if (m_254 != true)
-        UIPCInfoDialog::vfunc_87();
+    if (m_254 == true)
+        return;
+    UIPCInfoDialog::vfunc_87();
 }
 
 // @0x141a5d0c0
@@ -1247,10 +1250,10 @@ void UIMyInfoDialog::vfunc_16()
 // @0x141a5d410
 bool UIMyInfoDialog::vfunc_17()
 {
-    bool b = UIPCInfoDialog::vfunc_17();
-    if (b)
-        FUN_141a5d5d0();
-    return b;
+    if (!UIPCInfoDialog::vfunc_17())
+        return false;
+    FUN_141a5d5d0();
+    return true;
 }
 
 // @0x141a5d450
@@ -1277,22 +1280,25 @@ int UIMyInfoDialog::vfunc_o178_1(void* pAvatar)
 // @0x141a5d5d0
 void UIMyInfoDialog::FUN_141a5d5d0()
 {
-    if (FUN_140a467d0(&m_30) == 0)
-        m_30->Invoke("loadRenderTarget");
+    if (FUN_140a467d0(&m_30) != 0)
+        return;
+    m_30->Invoke("loadRenderTarget");
 }
 
 // @0x141a5d630
 void UIMyInfoDialog::FUN_141a5d630()
 {
-    if (FUN_140a467d0(&m_30) == 0)
-        m_30->Invoke("unloadRenderTarget");
+    if (FUN_140a467d0(&m_30) != 0)
+        return;
+    m_30->Invoke("unloadRenderTarget");
 }
 
 // @0x141a5d690
 void UIMyInfoDialog::FUN_141a5d690(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0 && !m_280.IsNull())
-        FUN_1403ed2b0()->FUN_141adc750(0x4f76);
+    if (FUN_140ba28d0(&m_30, 0) != 0 || m_280 == 0)
+        return;
+    FUN_1403ed2b0()->FUN_141adc750(0x4f76);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc0dc0-0x142cc0e50 .text$yd
