@@ -4432,3 +4432,4 @@ criHeap_Initialize	1400282e0	func
 ?SetupSlotValues@Traits@AS3@GFx@Scaleform@@UEBA?AVCheckResult@234@AEAVObject@234@@Z	14252c4e0	func
 ?SupportsInterface@CTraits@InstanceTraits@AS3@GFx@Scaleform@@UEBA_NAEBVTraits@2345@@Z	14252e480	func
 ?Unk15@Object@AS3@GFx@Scaleform@@UEAAPEAXXZ	1423df580	func
+?StripExtension@String@Scaleform@@QEAAXXZ	1425a5180	func
