@@ -291,27 +291,27 @@ template <class T> inline MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::
 template <> MS2Ptr<Unk_PetButton> AScript::FUN_140acce30<Unk_PetButton>(const CString& strName)
 {
     Scaleform::GFx::Value v = FUN_1422baa20(strName);
-    if (!reinterpret_cast<const Unk_PetValueView*>(&v)->FUN_1409b4d40())
-        return MS2Ptr<Unk_PetButton>(0);
-    return Unk_ASCreate<Unk_PetButton>(m_nMovieId, v);
+    if (reinterpret_cast<const Unk_PetValueView*>(&v)->FUN_1409b4d40())
+        return Unk_ASCreate<Unk_PetButton>(m_nMovieId, v);
+    return MS2Ptr<Unk_PetButton>(0);
 }
 
 // @0x140accef0
 template <> MS2Ptr<Unk_PetItemBag> AScript::FUN_140accef0<Unk_PetItemBag>(const CString& strName)
 {
     Scaleform::GFx::Value v = FUN_1422baa20(strName);
-    if (!reinterpret_cast<const Unk_PetValueView*>(&v)->FUN_1409b4d40())
-        return MS2Ptr<Unk_PetItemBag>(0);
-    return Unk_ASCreate<Unk_PetItemBag>(m_nMovieId, v);
+    if (reinterpret_cast<const Unk_PetValueView*>(&v)->FUN_1409b4d40())
+        return Unk_ASCreate<Unk_PetItemBag>(m_nMovieId, v);
+    return MS2Ptr<Unk_PetItemBag>(0);
 }
 
 // @0x140accfb0
 template <> MS2Ptr<ASUIComponent> AScript::FUN_140accfb0<ASUIComponent>(const CString& strName)
 {
     Scaleform::GFx::Value v = FUN_1422baa20(strName);
-    if (!reinterpret_cast<const Unk_PetValueView*>(&v)->FUN_1409b4d40())
-        return MS2Ptr<ASUIComponent>(0);
-    return Unk_ASCreate<ASUIComponent>(m_nMovieId, v);
+    if (reinterpret_cast<const Unk_PetValueView*>(&v)->FUN_1409b4d40())
+        return Unk_ASCreate<ASUIComponent>(m_nMovieId, v);
+    return MS2Ptr<ASUIComponent>(0);
 }
 
 // @0x140acd070
@@ -441,8 +441,15 @@ void PetEvolutionPetCard::vfunc_4()
 // @0x140ac7a10
 void PetEvolutionPetCard::vfunc_5(int nTab)
 {
-    if (0 < nTab && (nTab < 3 || (6 < nTab && nTab < 9)))
+    switch (nTab)
+    {
+    case 1:
+    case 2:
+    case 7:
+    case 8:
         vfunc_4();
+        break;
+    }
 }
 
 // ---- PetEvolutionPetIngredient ----
@@ -1146,13 +1153,12 @@ void TabContentsPetEvolution::FUN_140acbd40()
 // @0x140acbd70
 void TabContentsPetEvolution::FUN_140acbd70(int nIndex)
 {
-    if (-1 < nIndex && nIndex < (int)m_petCards.GetCount())
-    {
-        m_uidPet = m_petCards[nIndex];
-        FUN_140acba80();
-        FUN_140acbd40();
-        vfunc_2(10);
-    }
+    if (nIndex < 0 || nIndex >= (int)m_petCards.GetCount())
+        return;
+    m_uidPet = m_petCards[nIndex];
+    FUN_140acba80();
+    FUN_140acbd40();
+    vfunc_2(10);
 }
 
 // @0x140acbe00
@@ -1213,15 +1219,13 @@ void TabContentsPetEvolution::FUN_140acbe00(int nIndex)
 // @0x140acc1d0
 void TabContentsPetEvolution::FUN_140acc1d0(int nIndex)
 {
-    if (-1 < nIndex && nIndex < (int)m_selected.GetCount())
-    {
-        ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
-        if (!(pet == 0))
-        {
-            FUN_140acc380(nIndex);
-            vfunc_2(0xb);
-        }
-    }
+    if (nIndex < 0 || nIndex >= (int)m_selected.GetCount())
+        return;
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
+    if (pet == 0)
+        return;
+    FUN_140acc380(nIndex);
+    vfunc_2(0xb);
 }
 
 // @0x140acc280
@@ -1229,7 +1233,8 @@ int TabContentsPetEvolution::FUN_140acc280(ATL::CAtlArray<IdCount>& arr, unsigne
 {
     for (size_t i = 0; i < arr.GetCount(); i++)
     {
-        if (id == arr[i].first)
+        IdCount& e = arr[i];
+        if (id == e.first)
             return (int)i;
     }
     return -1;
@@ -1238,12 +1243,14 @@ int TabContentsPetEvolution::FUN_140acc280(ATL::CAtlArray<IdCount>& arr, unsigne
 // @0x140acc300
 unsigned __int64 TabContentsPetEvolution::FUN_140acc300(ATL::CAtlArray<IdCount>& arr, int nIndex)
 {
-    if (-1 < nIndex)
+    if (nIndex < 0)
+        return 0;
+    for (size_t i = 0; i < arr.GetCount(); i++)
     {
-        for (size_t i = 0; i < arr.GetCount(); i++)
+        if (i == (size_t)nIndex)
         {
-            if (i == (size_t)nIndex)
-                return arr[i].first;
+            IdCount& e = arr[i];
+            return e.first;
         }
     }
     return 0;
