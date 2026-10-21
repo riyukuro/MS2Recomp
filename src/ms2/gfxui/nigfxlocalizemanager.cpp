@@ -37,8 +37,10 @@ NiGFxLocalizeManager::~NiGFxLocalizeManager()
 // @0x1422eb570
 bool NiGFxLocalizeManager::FUN_1422eb570(Scaleform::GFx::Loader* pLoader, const char* szPath, const CString& strConfig)
 {
-    Scaleform::Ptr<Scaleform::GFx::FontLib> spFontLib = pLoader->GetFontLib();
-    if (spFontLib.GetPtr() == 0)
+    // The exe asks for state 9 (State_FileOpener). The font lib (state 17) is not set before Apply, so testing it here
+    // returned false in the hook DLL and the translator was never set up ($s_* keys showed in the UI).
+    Scaleform::Ptr<Scaleform::GFx::FileOpenerBase> spOpener = pLoader->GetFileOpener();
+    if (spOpener.GetPtr() == 0)
         return false;
     if (szPath == 0)
         return false;
