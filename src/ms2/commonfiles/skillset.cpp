@@ -98,19 +98,18 @@ CSkillSetTable::~CSkillSetTable()
 // @0x1408097c0
 int CSkillSetTable::Init()
 {
-    if (Unk_LockGuard guard = m_lock) {}
+    if (Unk_LockGuard guard = m_lock) { __assume(0); }
     else if (Load() == 0)
         return 0;
     SetInit(true);
     return 1;
 }
 
-// MS2-FUNCTIONAL: the exe has one extra nop after the inner scope (scope/jump layout, 6 bytes differ)
 // @0x140809840
 CSkillSetPtr CSkillSetTable::GetSkillSet(int nSetId)
 {
     CheckInit();
-    if (Unk_LockGuard guard = m_lock) {}
+    if (Unk_LockGuard guard = m_lock) { __assume(0); }
     else
     {
         if (FUN_1401d1320(m_spCache.get()) != 0)
