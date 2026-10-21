@@ -663,7 +663,7 @@ void UIAdPushDialog::OnNotifyCompleteMyPC(NotifyObject*)
 {
     Refresh(2);
 }
-
+#include "ms2/placeholder/asuicomponent.h"
 // @0x140e41720
 // MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 MS2Ptr<ASMovieClip> UIAdPushDialog::AddBadge(MS2Ptr<AScript> value)
@@ -671,7 +671,7 @@ MS2Ptr<ASMovieClip> UIAdPushDialog::AddBadge(MS2Ptr<AScript> value)
     if (m_30 == 0 || value == 0)
         return MS2Ptr<ASMovieClip>(0);
     Scaleform::GFx::Value v = m_30->Invoke("addLimitedBundle", value->FUN_1422bb870());
-    MS2Ptr<ASMovieClip> clip(new ASMovieClip(v, 2));
+    MS2Ptr<ASMovieClip> clip(new ASUIComponent(v, 2));   // exe 0x1422c7100, 0x88 bytes
     if (clip == 0 || value->FUN_1422ba9a0())
         return MS2Ptr<ASMovieClip>(0);
     return clip;
