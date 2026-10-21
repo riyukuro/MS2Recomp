@@ -7883,3 +7883,5 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?SetRendererFloat@Sprite@GFx@Scaleform@@QEAAXM@Z	1425dcf10	func
 ?SetRendererMatrix@Sprite@GFx@Scaleform@@QEAAXPEAMI@Z	1425dcf20	func
 ?SetRendererString@Sprite@GFx@Scaleform@@QEAAXVASString@23@@Z	1425dcf30	func
+?GetMovieClipObject@AvmSprite@AS2@GFx@Scaleform@@AEAAPEAVMovieClipObject@234@XZ	142953da0	func
+?SetLevelMovie@MovieImpl@GFx@Scaleform@@QEAA_NHPEAVDisplayObjContainer@23@@Z	142575f20	func
