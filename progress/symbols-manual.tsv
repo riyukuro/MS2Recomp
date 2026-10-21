@@ -7851,3 +7851,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ??0Unk_PonyHandle@@QEAA@PEAX@Z	141065070	func
 ?MemberHash_FindIndex@AS2@GFx@Scaleform@@YA_JPEBV?$ASStringHash_GC@VMember@AS2@GFx@Scaleform@@@23@AEBVASString@23@@Z	142917340	func
 ??0Unk_FcUIMsg@@QEAA@XZ	1422e4490	func
+?FunctionTable@AsBroadcasterProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213460	data
