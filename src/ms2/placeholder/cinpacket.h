@@ -44,7 +44,7 @@ public:
     CString FUN_140710300() const;                                 // hex dump "%02x " of the buffer, @0x140710300
     short FUN_1407140a0();                                         // Decode2 through the secondary vtable
     Unk_StreamPoint FUN_1407140d0();                               // three int reads -> point
-    unsigned FUN_141269940(unsigned key) { return (unsigned)m_opcode ^ (key >> 16); }
+    unsigned FUN_141269940(unsigned key) { return m_opcode ^ (unsigned short)((key >> 16) & 0xffff); }
     void FUN_14126c7b0(int n) { m_sequence=n; }
     int m_flags,m_nState;
     ATL::CAtlArray<unsigned char> m_data;
@@ -55,7 +55,7 @@ MS2_CHECK_SIZE(CInPacket,0x50);
 MS2_CHECK_OFFSET(CInPacket,m_data,0x18);
 MS2_CHECK_OFFSET(CInPacket,m_opcode,0x3c);
 // Definitions of Unk_SocketRef<CInPacket> (declared in socketptr.h, needs the complete CInPacket).
-inline CPtred* Unk_SocketRef<CInPacket>::Base(CInPacket* p) { return p ? reinterpret_cast<TPtredDummy<CInPacket>*>(reinterpret_cast<char*>(p)-0x18) : 0; }
+inline CPtred* Unk_SocketRef<CInPacket>::Base(CInPacket* p) { CPtred* result; if(p==NULL) result=NULL; else result=reinterpret_cast<TPtredDummy<CInPacket>*>(reinterpret_cast<char*>(p)-0x18); return result; }
 inline TPtredDummy<CInPacket>* Unk_SocketRef<CInPacket>::New(void*) { return new TPtredDummy<CInPacket>(); }
-inline CInPacket* Unk_SocketRef<CInPacket>::Value(TPtredDummy<CInPacket>* p) { return p ? &p->value : 0; }
-inline CInPacket* Unk_SocketRef<CInPacket>::Create(void* p) { return Value(static_cast<TPtredDummy<CInPacket>*>(FUN_1401ba820(New(p)))); }
+inline CInPacket* Unk_SocketRef<CInPacket>::Value(TPtredDummy<CInPacket>* p) { CInPacket* result; if(p==NULL) result=NULL; else result=&p->value; return result; }
+inline CInPacket* Unk_SocketRef<CInPacket>::Create(void*) { return Value(static_cast<TPtredDummy<CInPacket>*>(FUN_1401ba820(New(NULL)))); }

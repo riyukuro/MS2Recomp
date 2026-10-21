@@ -12,6 +12,8 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #pragma comment(lib,"ws2_32.lib")
+// The exe passes a null placement argument to New, not the Create argument.
+template<> inline CSocketThread* Unk_SocketRef<CSocketThread>::Create(void*) { return static_cast<CSocketThread*>(FUN_1401ba820(New(NULL))); }
 // This unit uses the three-argument forwarding formatter at 0x1402bf9a0.
 template CString Unk_SocketFormat<CString,unsigned long>(const char*,const CString&,const unsigned long&);
 static CStringW s_forceLogin=L"forcelogin";
@@ -118,7 +120,7 @@ struct Unk_ResponseVersion {
 MS2_CHECK_SIZE(Unk_ResponseVersion,20);
 enum class Unk_SocketState : int { Connecting=0,Connected=1,Closed=2 };
 // @0x1412646a0
-CGameSocket::CGameSocket():m_packets(10),m_receiveQueue(10),m_sendQueue(10),m_logger(nullptr)
+CGameSocket::CGameSocket():m_packets(10),m_receiveQueue(10),m_sendQueue(10),m_logger(0)
 {
     m_state=2; m_received=0; m_receiveBuffer=nullptr;
     m_sent=0; m_disconnect=0; m_specialConnect=0; m_retryPort=0; m_showErrors=0;
@@ -132,7 +134,7 @@ CGameSocket::~CGameSocket() { FUN_141265850(); }
 void CGameSocket::vfunc_1(CSimpleSocket*,int error)
 {
     Unk_LockGuard guard(m_lock);
-    if(guard==0) {
+    if(guard!=0) {} else {
         if(error==0) {
             if(m_specialConnect) {
                 int result=-1,last=-1; char buffer[1024];
@@ -157,7 +159,7 @@ void CGameSocket::vfunc_2(CSimpleSocket*,int error)
     for(;;) {
         {
             Unk_LockGuard guard(m_lock);
-            if(guard==0) {
+            if(guard!=0) {} else {
                 m_state=1;
                 if(m_receiveBuffer==NULL || m_receiveBuffer->FUN_140714fa0()==m_received) {
                     m_receiveBuffer=FUN_1407138b0(0x5b4,Unk_SocketNew(0)); m_received=0;
@@ -185,7 +187,7 @@ void CGameSocket::vfunc_5(CSimpleSocket*,int error)
     CString text=Unk_SocketFormat("[D] CGameSocket::OnClose : nError = {0}",error);
     FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730(text,0));
     Unk_LockGuard guard(m_lock);
-    if(guard==0) {
+    if(guard!=0) {} else {
         if(m_disconnect==0 && error!=0 && m_state==1) {
             if(g_socketClosing==0 && FUN_140aa6d30()!=0) {
                 FUN_141266500(error); PostMessageA(FUN_14209c720(FUN_140aadf80()),0x465,error,0);
@@ -204,7 +206,7 @@ int CGameSocket::FUN_141265420(CString host,int port,int showError,int special)
 {
     {
         Unk_LockGuard guard(m_lock);
-        if(guard==0) {
+        if(guard!=0) {} else {
             if(m_state!=2) return 0;
             m_disconnect=0; m_state=0;
             m_socket.FUN_14126c8b0(SOCK_STREAM,AF_INET,0); m_socket.FUN_14126c680(1); m_socket.FUN_14126c5a0(this);
@@ -223,13 +225,12 @@ int CGameSocket::FUN_141265420(CString host,int port,int showError,int special)
 }
 // @0x1412657e0
 void CGameSocket::FUN_1412657e0() { FUN_141265420(m_retryHost,m_retryPort,m_showErrors,0); }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141265850
 void CGameSocket::FUN_141265850()
 {
     m_socket.FUN_141269750();
-    { Unk_LockGuard guard(m_lock); if(guard==0) { m_state=2; m_received=0; m_receiveBuffer=nullptr; m_packets.RemoveAll(); m_receiveQueue.RemoveAll(); } }
-    { Unk_LockGuard guard(m_lock); if(guard==0) { m_sendQueue.RemoveAll(); m_sent=0; } }
+    { Unk_LockGuard guard(m_lock); if(guard!=0) {} else { m_state=2; m_received=0; m_receiveBuffer=nullptr; m_packets.RemoveAll(); m_receiveQueue.RemoveAll(); } }
+    { Unk_LockGuard guard(m_lock); if(guard!=0) {} else { m_sendQueue.RemoveAll(); m_sent=0; } }
 }
 MS2_REPLACE_METHOD(0x141265850, CGameSocket, FUN_141265850, 262, 0x37CE21CB);
 // @0x141265960
@@ -255,11 +256,11 @@ void CGameSocket::FUN_141265ae0()
     ATL::CAtlList<Unk_InPtr> ready(10);
     {
         Unk_LockGuard guard(m_lock);
-        if(guard==0) {
+        if(guard!=0) {} else {
             while(!m_receiveQueue.IsEmpty() && !stopped) {
                 Unk_BufferPtr buffer(m_receiveQueue.GetHead());
                 while(buffer.get()!=0 && !stopped) {
-                    Unk_InPtr packet=m_packets.IsEmpty() ? Unk_InPtr(nullptr) : Unk_InPtr(m_packets.GetHead());
+                    Unk_InPtr packet=m_packets.IsEmpty() ? Unk_InPtr(0) : Unk_InPtr(m_packets.GetHead());
                     if(packet==NULL) { packet=Unk_SocketNew(0); m_packets.AddTail(packet); }
                     int framing[2];
                     int state=packet->FUN_14070ff00(&buffer,framing,0);
@@ -278,7 +279,7 @@ void CGameSocket::FUN_141265ae0()
                             else if(op==8) { int sequence=packet->vfunc_o8_3(); int framingSequence=packet->vfunc_o8_3(); m_sequence=sequence; framing[1]=framingSequence; }
                             ready.AddTail(packet);
                             if((unsigned short)packet->FUN_141269940(m_receiveKey)!=0x9dd) stopped=true;
-                            buffer=m_receiveQueue.IsEmpty() ? Unk_BufferPtr(nullptr) : Unk_BufferPtr(m_receiveQueue.GetHead());
+                            buffer=m_receiveQueue.IsEmpty() ? Unk_BufferPtr(0) : Unk_BufferPtr(m_receiveQueue.GetHead());
                         }
                     }
                 }
@@ -292,9 +293,8 @@ void CGameSocket::FUN_141265ae0()
         m_logger->LogReceive(op,*reinterpret_cast<Unk_LogInPacket*>(packet.get()));
     }
 }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141266480
-void CGameSocket::FUN_141266480(unsigned sendKey,unsigned receiveKey) { Unk_LockGuard guard(m_lock); if(guard==0) { m_sendKey=sendKey; m_receiveKey=receiveKey; } }
+void CGameSocket::FUN_141266480(unsigned sendKey,unsigned receiveKey) { Unk_LockGuard guard(m_lock); if(guard!=0) {} else { m_sendKey=sendKey; m_receiveKey=receiveKey; } }
 MS2_REPLACE_METHOD(0x141266480, CGameSocket, FUN_141266480, 111, 0x563F9D04);
 // MS2-FUNCTIONAL: preserve every Winsock error message using a shared logging epilogue.
 // @0x141266500
@@ -327,16 +327,15 @@ void CGameSocket::FUN_141266500(int error)
     FUN_1401859c0(FUN_140166440(),12,19,FUN_14016a730(message,0));
 }
 MS2_REPLACE_METHOD(0x141266500, CGameSocket, FUN_141266500, 2633, 0x5E518EA6);
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141267000
-void CGameSocket::FUN_141267000(int value) { Unk_LockGuard guard(m_lock); if(guard==0) m_disconnect=value; }
+void CGameSocket::FUN_141267000(int value) { Unk_LockGuard guard(m_lock); if(guard!=0) {} else m_disconnect=value; }
 MS2_REPLACE_METHOD(0x141267000, CGameSocket, FUN_141267000, 91, 0x454E3B49);
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141267070
 void CGameSocket::FUN_141267070()
 {
     Unk_LockGuard guard(m_lock);
-    if(guard==0) {
+    if(guard!=0) {} else {
         if((SOCKET)m_socket==0 || (SOCKET)m_socket==INVALID_SOCKET) return;
         while(m_sendQueue.GetHeadPosition()) {
             CPacketBuffer* buffer=m_sendQueue.GetHead().get();
@@ -376,7 +375,7 @@ void CGameSocket::FUN_141267410(COutPacket& packet)
     unsigned op=FUN_14020ba20(&packet);
     {
         Unk_LockGuard guard(m_lock);
-        if(guard==0) {
+        if(guard!=0) {} else {
             if(FUN_14020bc40(&packet)!=0) _wassert(L"oPacket.IsLoopback() == FALSE",_CRT_WIDE(MS2_THIS_FILE),496);
             FUN_140d86260()->vfunc_34(packet);
             unsigned key=m_sendKey; FUN_140710b90(&packet,FUN_14153a230(FUN_140714f90()),&key);
@@ -443,38 +442,36 @@ inline void CSimpleSocket::FUN_1412694d0(int events,CSocketThread* worker)
     if(worker==0) m_worker=Unk_SocketNew(0); else m_worker=worker;
     m_worker->FUN_1412696b0();
     HANDLE done=WSACreateEvent(); Unk_SocketCommand command={this,events,done};
-    { Unk_LockGuard guard(m_worker->m_lock); if(guard==0) m_worker->m_commands.AddTail(command); }
+    { Unk_LockGuard guard(m_worker->m_lock); if(guard!=0) {} else m_worker->m_commands.AddTail(command); }
     WSASetEvent(m_worker->m_events[0]);
     HANDLE waits[2]={done,m_worker->FUN_14126a990()};
     DWORD result=WaitForMultipleObjectsEx(2,waits,FALSE,INFINITE,FALSE);
     WSACloseEvent(done); if(result==0) return; throw Exception(WSAEINVAL);
 }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x1412696b0
 inline void CSocketThread::FUN_1412696b0()
 {
-    if(FUN_14126a990()) return;
-    HANDLE event=WSACreateEvent(); m_events.Add(event);
-    if(event && FUN_141215220(0,0,0,0,0)) return;
-    throw Exception(GetLastError());
+    if(!FUN_14126a990()) {
+        HANDLE event=WSACreateEvent(); m_events.Add(event);
+        if(!event || !FUN_141215220(0,0,0,0,0)) throw Exception(GetLastError());
+    }
 }
 // @0x141269750
 inline void CSimpleSocket::FUN_141269750() { FUN_141269990(); FUN_141269780(); }
 // @0x141269780
 inline void CSocketBase::FUN_141269780() { if(m_socket!=INVALID_SOCKET) { closesocket(m_socket); m_socket=INVALID_SOCKET; } }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141269820
-inline int CSimpleSocket::FUN_141269820(const sockaddr* addr,int size) { if(connect((SOCKET)*this,addr,size)==SOCKET_ERROR && WSAGetLastError()!=WSAEWOULDBLOCK) return 0; return 1; }
+inline int CSimpleSocket::FUN_141269820(const sockaddr* addr,int size) { return connect((SOCKET)*this,addr,size)!=SOCKET_ERROR || WSAGetLastError()==WSAEWOULDBLOCK ? 1 : 0; }
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x141269990
 inline void CSimpleSocket::FUN_141269990()
 {
     if(m_worker.get()) {
         HANDLE done=WSACreateEvent(); Unk_SocketCommand command={this,-1,done};
-        { Unk_LockGuard guard(m_worker->m_lock); if(guard==0) m_worker->m_commands.AddTail(command); }
+        { Unk_LockGuard guard(m_worker->m_lock); if(guard!=0) {} else m_worker->m_commands.AddTail(command); }
         WSASetEvent(m_worker->m_events[0]);
         HANDLE waits[2]={done,m_worker->FUN_14126a990()}; WaitForMultipleObjectsEx(2,waits,FALSE,INFINITE,FALSE);
-        WSACloseEvent(done); m_worker=nullptr;
+        WSACloseEvent(done); m_worker=0;
     }
 }
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
@@ -501,7 +498,7 @@ inline void CSocketThread::FUN_141269dc0()
 {
     for(;;) {
         Unk_LockGuard guard(m_lock);
-        if(guard==0) {
+        if(guard!=0) {} else {
             if(m_commands.IsEmpty()) return;
             Unk_SocketCommand command=m_commands.GetHead(); m_commands.RemoveHead();
             if(command.events==-1) FUN_14126b250(command.socket);
@@ -519,13 +516,13 @@ inline void CSocketThread::FUN_14126a000(CSimpleSocket* socket,int error)
 }
 // @0x14126a990
 inline HANDLE CThread::FUN_14126a990() const { return m_thread; }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x14126b1c0
 inline HANDLE CSocketThread::FUN_14126b1c0(CSimpleSocket* socket)
 {
-    HANDLE event;
-    if(m_sockets.GetCount()+1<64) { event=WSACreateEvent(); if(event) { m_sockets.SetAt(event,socket); m_events.Add(event); } }
-    else event=0;
+    if(m_sockets.GetCount()+1>=64) return 0;
+    HANDLE event=WSACreateEvent();
+    if(!event) return event;
+    m_sockets.SetAt(event,socket); m_events.Add(event);
     return event;
 }
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
@@ -540,11 +537,14 @@ inline int CSocketThread::FUN_14126b250(CSimpleSocket* socket)
     while(--index) if(m_events[index]==event) { WSACloseEvent(event); m_events.RemoveAt(index,1); return true; }
     return true;
 }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x14126b3a0
 inline int CSimpleSocket::vfunc_1(char* data,int size)
 {
-    for(;;) { int n=recv((SOCKET)*this,data,size,0); if(n!=SOCKET_ERROR) { if(!n) throw Exception(WSAENOTCONN); return n; } int error=WSAGetLastError(); if(error!=WSAEWOULDBLOCK) throw Exception(error); Sleep(10); }
+    for(;;) {
+        int n=recv((SOCKET)*this,data,size,0);
+        if(n==SOCKET_ERROR) { int error=WSAGetLastError(); if(error==WSAEWOULDBLOCK) { Sleep(10); continue; } else throw Exception(error); }
+        else { if(n==0) throw Exception(WSAENOTCONN); else return n; }
+    }
 }
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x14126b470
@@ -568,29 +568,25 @@ inline unsigned int CSocketThread::vfunc_1(void*,Unk_140659080& start)
         for(HANDLE* event=begin+result;event<end;++event) if(WSAWaitForMultipleEvents(1,event,FALSE,0,FALSE)==0 && !FUN_141269b30(*event)) break;
     }
 }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x14126c3d0
 inline int CSimpleSocket::FUN_14126c3d0(const char* data,int size,int outOfBand)
 {
-    int n=send((SOCKET)*this,data,size,outOfBand!=0); if(n==SOCKET_ERROR) { int error=WSAGetLastError(); if(error!=WSAEWOULDBLOCK) throw Exception(error); n=0; } return n;
+    int n=send((SOCKET)*this,data,size,outOfBand?1:0);
+    if(n==SOCKET_ERROR) { int error=WSAGetLastError(); if(error==WSAEWOULDBLOCK) return 0; else throw Exception(error); }
+    else return n;
 }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x14126c5c0
-inline void CSocketBase::FUN_14126c5c0(int value) { setsockopt((SOCKET)*this,6,5,reinterpret_cast<char*>(&value),4); }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
+inline void CSocketBase::FUN_14126c5c0(int value) { int nValue=value; setsockopt((SOCKET)*this,6,5,reinterpret_cast<char*>(&nValue),4); }
 // @0x14126c610
-inline void CSocketBase::FUN_14126c610(int value) { if(setsockopt((SOCKET)*this,6,1,reinterpret_cast<char*>(&value),4)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
+inline void CSocketBase::FUN_14126c610(int value) { int nValue=value; if(setsockopt((SOCKET)*this,6,1,reinterpret_cast<char*>(&nValue),4)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
 // @0x14126c680
 inline void CSocketBase::FUN_14126c680(int value) { u_long nonblocking=value!=0; if(ioctlsocket((SOCKET)*this,FIONBIO,&nonblocking)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
 // @0x14126c7d0
-inline void CSocketBase::FUN_14126c7d0(int value) { if(setsockopt((SOCKET)*this,SOL_SOCKET,SO_RCVBUF,reinterpret_cast<char*>(&value),4)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
+inline void CSocketBase::FUN_14126c7d0(int value) { int nValue=value; if(setsockopt((SOCKET)*this,SOL_SOCKET,SO_RCVBUF,reinterpret_cast<char*>(&nValue),4)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
 // @0x14126c840
-inline void CSocketBase::FUN_14126c840(int value) { if(setsockopt((SOCKET)*this,SOL_SOCKET,SO_SNDBUF,reinterpret_cast<char*>(&value),4)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
+inline void CSocketBase::FUN_14126c840(int value) { int nValue=value; if(setsockopt((SOCKET)*this,SOL_SOCKET,SO_SNDBUF,reinterpret_cast<char*>(&nValue),4)==SOCKET_ERROR) throw Exception(WSAGetLastError()); }
 // @0x14126c8b0
-inline void CSocketBase::FUN_14126c8b0(int type,int family,int protocol) { m_socket=socket(family,type,protocol); if(m_socket==INVALID_SOCKET) throw Exception(WSAGetLastError()); }
+inline void CSocketBase::FUN_14126c8b0(int type,int family,int protocol) { SOCKET s=socket(family,type,protocol); m_socket=s; if(s==INVALID_SOCKET) throw Exception(WSAGetLastError()); }
 // @0x14126ca60
 inline int CSimpleSocket::vfunc_2(const char* data,int size) { return FUN_14126c3d0(data,size,0); }
 // MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
@@ -603,9 +599,10 @@ inline int CSimpleSocket::vfunc_4(const char* data,int size)
 }
 // @0x14126ce80
 inline void Unk_SocketAddress::FUN_14126ce80(int port,unsigned long address) { FUN_14126ced0(htons(port),htonl(address)); }
-// MS2-FUNCTIONAL: equivalent control flow; local temporaries and cleanup code differ.
+#pragma function(memset)
 // @0x14126ced0
 inline void Unk_SocketAddress::FUN_14126ced0(unsigned short port,unsigned long address) { memset(this,0,16); sin_family=AF_INET; sin_port=port; sin_addr.s_addr=address; }
+#pragma intrinsic(memset)
 
 
 
@@ -623,9 +620,9 @@ inline void Unk_SocketAddress::FUN_14126ced0(unsigned short port,unsigned long a
 // MS2-PIN: ??$format_arg@DW4Unk_SocketState@@@fmt@@YAXAEAV?$BasicFormatter@D@0@AEAPEBDAEBW4Unk_SocketState@@@Z 0x141268010
 // MS2-PIN: ??$make_type@$$CCH@internal@fmt@@YA_KAEDH@Z 0x141268160
 // MS2-PIN: ??$Unk_SocketMin@_K@@YA_K_K0@Z 0x1412681a0
-// MS2-PIN: ??0?$Unk_SocketPtr@VCInPacket@@@@QEAA@$$T@Z 0x141268470
-// MS2-PIN: ??0?$Unk_SocketPtr@VCPacketBuffer@@@@QEAA@$$T@Z 0x141268510
-// MS2-PIN: ??0?$Unk_SocketPtr@VCPacketLogger@@@@QEAA@$$T@Z 0x141268530
+// MS2-PIN: ??0?$Unk_SocketPtr@VCInPacket@@@@QEAA@H@Z 0x141268470
+// MS2-PIN: ??0?$Unk_SocketPtr@VCPacketBuffer@@@@QEAA@H@Z 0x141268510
+// MS2-PIN: ??0?$Unk_SocketPtr@VCPacketLogger@@@@QEAA@H@Z 0x141268530
 // MS2-PIN: ??0?$Unk_SocketPtr@VCPacketLogger@@@@QEAA@PEAVCPacketLogger@@@Z 0x141268550
 // MS2-PIN: ??0?$Unk_SocketPtr@VCSocketThread@@@@QEAA@PEAVCSocketThread@@@Z 0x141268580
 // MS2-PIN: ??0?$TPtredDummy@VCInPacket@@@@QEAA@XZ 0x1412685d0
@@ -635,7 +632,7 @@ inline void Unk_SocketAddress::FUN_14126ced0(unsigned short port,unsigned long a
 // MS2-PIN: ??1Unk_SocketAddress@@QEAA@XZ 0x141268cf0
 // MS2-PIN: ??4?$Unk_SocketPtr@VCOutPacketBuffer@@@@QEAAAEAV0@PEAVCOutPacketBuffer@@@Z 0x141268f20
 // MS2-PIN: ??4?$Unk_SocketPtr@VCPacketLogger@@@@QEAAAEAV0@PEAVCPacketLogger@@@Z 0x141268fd0
-// MS2-PIN: ??4?$Unk_SocketPtr@VCSocketThread@@@@QEAAAEAV0@$$T@Z 0x141269040
+// MS2-PIN: ??4?$Unk_SocketPtr@VCSocketThread@@@@QEAAAEAV0@H@Z 0x141269040
 // MS2-PIN: ??4?$Unk_SocketPtr@VCSocketThread@@@@QEAAAEAV0@PEAVCSocketThread@@@Z 0x141269070
 // MS2-PIN: ??8?$Unk_SocketPtr@VCInPacket@@@@QEBA_NPEAVCInPacket@@@Z 0x1412690e0
 // MS2-PIN: ?get@?$Unk_SocketPtr@VCSocketThread@@@@QEBAPEAVCSocketThread@@XZ 0x141269120
