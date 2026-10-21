@@ -7849,3 +7849,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?MoveStartedConditions@CGuideEntity@@QEAAXXZ	1413a3720	func
 ??0FontHandle@GFx@Scaleform@@QEAA@PEAVFontManagerBase@Text@Render@2@PEAVFont@52@PEBDIPEAVMovieDef@12@@Z	1425b5800	func
 ??0Unk_PonyHandle@@QEAA@PEAX@Z	141065070	func
+?MemberHash_FindIndex@AS2@GFx@Scaleform@@YA_JPEBV?$ASStringHash_GC@VMember@AS2@GFx@Scaleform@@@23@AEBVASString@23@@Z	142917340	func
