@@ -7738,3 +7738,12 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?SetScale9Grid@DisplayObjectBase@GFx@Scaleform@@QEAAXAEBV?$Rect@M@Render@3@@Z	1425f5a50	func
 ?SetViewMatrix3D@DisplayObjectBase@GFx@Scaleform@@UEAAXAEBV?$Matrix3x4@M@Render@3@@Z	1425f5e70	func
 ?UpdateTransform3D@DisplayObjectBase@GFx@Scaleform@@UEAAXXZ	1425f75c0	func
+??0PointObject@AS2@GFx@Scaleform@@QEAA@PEAVEnvironment@123@@Z	14291fc10	func
+??0Value@AS2@GFx@Scaleform@@QEAA@AEBV0123@@Z	1429237f0	func
+??4Value@AS2@GFx@Scaleform@@QEAAAEBV0123@AEBV0123@@Z	1429267a0	func
+?Add@Value@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEBV1234@@Z	14292e180	func
+?GFxObject_GetPointProperties@AS2@GFx@Scaleform@@YAXPEAVEnvironment@123@PEAVObject@123@AEAV?$Point@N@Render@3@@Z	1429484e0	func
+?GetProperties@PointObject@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEAV?$Point@N@Render@4@@Z	142954590	func
+?Point_NanParams@AS2@GFx@Scaleform@@3QBVValue@123@B	143d747b0	data
+?SetProperties@PointObject@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEBV?$Point@N@Render@4@@Z	142989db0	func
+?ToObject@Value@AS2@GFx@Scaleform@@QEBAPEAVObject@234@PEBVEnvironment@234@@Z	142991660	func
