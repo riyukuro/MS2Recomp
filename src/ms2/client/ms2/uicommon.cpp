@@ -351,16 +351,21 @@ int FUN_1418fd280()
 MS2_REPLACE(0x1418fd280, FUN_1418fd280, 54, 0x87D9BB8C);
 
 // @0x1418fd2c0
-bool FUN_1418fd2c0()
+int FUN_1418fd2c0()
 {
-    return FUN_1409670e0()->FUN_1410c3180() == 0;
+    if (FUN_1409670e0()->FUN_1410c3180() == 0)
+        return 1;
+    return 0;
 }
 MS2_REPLACE(0x1418fd2c0, FUN_1418fd2c0, 36, 0x67A6D87B);
 
 // @0x1418fd2f0
-bool FUN_1418fd2f0()
+int FUN_1418fd2f0()
 {
-    return FUN_140374410(FUN_1403ed2d0()->FUN_141bd3060()) != 0;
+    int nMapId = FUN_1403ed2d0()->FUN_141bd3060();
+    if (FUN_140374410(nMapId))
+        return 1;
+    return 0;
 }
 MS2_REPLACE(0x1418fd2f0, FUN_1418fd2f0, 51, 0x4EE65DC8);
 
@@ -676,15 +681,16 @@ Unk_UcUiMgr* FUN_1403ed2b0();
 // @0x1418fdfd0
 void FUN_1418fdfd0(__int64 nKey)
 {
-    if (FUN_140166410()->FUN_14036d570(0x104))
-    {
-        MyPC* pPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-        if (pPC != 0 && FUN_1409eed90() != 0)
-        {
-            if (FUN_1409eed90()->FUN_141b867e0(nKey))
-                FUN_1409eed90()->FUN_141b86750(nKey);
-        }
-    }
+    if (!FUN_140166410()->FUN_14036d570(0x104))
+        return;
+    MyPC* pPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    if (pPC == 0)
+        return;
+    if (FUN_1409eed90() == 0)
+        return;
+    if (!FUN_1409eed90()->FUN_141b867e0(nKey))
+        return;
+    FUN_1409eed90()->FUN_141b86750(nKey);
 }
 MS2_REPLACE(0x1418fdfd0, FUN_1418fdfd0, 126, 0x943A0D11);
 
@@ -719,27 +725,29 @@ bool FUN_1418fe120()
     if (FUN_14152e950(pPC) == 0)
         return false;
     Unk_UcStatRef stat(FUN_141523c50(pPC));
-    return !stat.FUN_141532fa0(0);
+    if (stat.FUN_141532fa0(0))
+        return false;
+    return true;
 }
 MS2_REPLACE(0x1418fe120, FUN_1418fe120, 151, 0xF42737FD);
 
 // @0x1418fe1c0
 void FUN_1418fe1c0(const CString& strUrl)
 {
-    if (!strUrl.IsEmpty())
-        ShellExecuteA(0, "open", strUrl, 0, 0, SW_SHOWNORMAL);
+    if (strUrl.IsEmpty())
+        return;
+    ShellExecuteA(0, "open", strUrl, 0, 0, SW_SHOWNORMAL);
 }
 MS2_REPLACE(0x1418fe1c0, FUN_1418fe1c0, 83, 0xD59F7ECF);
 
 // @0x1418fe220
 void FUN_1418fe220(const CString& strUrl)
 {
-    if (!strUrl.IsEmpty())
-    {
-        void* pBrowser = FUN_140c43790(0x4e6a);
-        if (pBrowser != 0)
-            FUN_14135ec00(pBrowser, strUrl, true);
-    }
+    if (strUrl.IsEmpty())
+        return;
+    void* pBrowser = FUN_140c43790(0x4e6a);
+    if (pBrowser != 0)
+        FUN_14135ec00(pBrowser, strUrl, true);
 }
 MS2_REPLACE(0x1418fe220, FUN_1418fe220, 75, 0xC9CFD09F);
 
@@ -1126,11 +1134,13 @@ MS2_REPLACE(0x1418ff710, FUN_1418ff710, 1061, 0x2880CDF3);
 // @0x1418ff180
 bool FUN_1418ff180(int nCurrency, __int64 nAmount, int nItemId, bool bMessage, int nOpt)
 {
-    if (FUN_1418ff1f0(nCurrency, nAmount, nItemId))
-        return true;
-    if (bMessage)
-        FUN_1418ff710(nCurrency, nAmount, nItemId, nOpt);
-    return false;
+    if (FUN_1418ff1f0(nCurrency, nAmount, nItemId) == 0)
+    {
+        if (bMessage)
+            FUN_1418ff710(nCurrency, nAmount, nItemId, nOpt);
+        return false;
+    }
+    return true;
 }
 MS2_REPLACE(0x1418ff180, FUN_1418ff180, 93, 0xEC334497);
 
@@ -1566,19 +1576,16 @@ UICommon::CMyPCKeyInputController::~CMyPCKeyInputController()
 // @0x141900ed0
 int UICommon::CMyPCKeyInputController::FUN_141900ed0(int nRelease, int* pCount, int nDefault)
 {
-    if (nRelease == 0)
-    {
-        *pCount = *pCount + 1;
-    }
-    else
+    if (nRelease != 0)
     {
         *pCount = *pCount - 1;
         *pCount = *pCount < 0 ? 0 : *pCount;
     }
-    int nResult = nDefault;
-    if (0 < *pCount)
-        nResult = 0;
-    return nResult;
+    else
+    {
+        *pCount = *pCount + 1;
+    }
+    return *pCount > 0 ? 0 : nDefault;
 }
 
 // @0x141901170
@@ -1604,21 +1611,19 @@ int UICommon::CMyPCKeyInputController::FUN_141901170(int nRelease, int nLayer, s
 // @0x141900f70
 void UICommon::CMyPCKeyInputController::FUN_141900f70(int nRelease, int nLayer)
 {
-    if (FUN_141901170(nRelease, nLayer, &m_skill) != 0)
-    {
-        int nBlock = FUN_141900ed0(nRelease, &m_nSkill, 1);
-        FUN_1403ed2b0()->FUN_141adbdc0(nBlock);
-    }
+    if (FUN_141901170(nRelease, nLayer, &m_skill) == 0)
+        return;
+    int nBlock = FUN_141900ed0(nRelease, &m_nSkill, 1);
+    FUN_1403ed2b0()->FUN_141adbdc0(nBlock);
 }
 
 // @0x141900ff0
 void UICommon::CMyPCKeyInputController::FUN_141900ff0(int nRelease, int nLayer)
 {
-    if (FUN_141901170(nRelease, nLayer, &m_attack) != 0)
-    {
-        int nBlock = FUN_141900ed0(nRelease, &m_nAttack, 1);
-        FUN_1409331f0()->FUN_14142bad0(nBlock);
-    }
+    if (FUN_141901170(nRelease, nLayer, &m_attack) == 0)
+        return;
+    int nBlock = FUN_141900ed0(nRelease, &m_nAttack, 1);
+    FUN_1409331f0()->FUN_14142bad0(nBlock);
 }
 
 // @0x141901070
@@ -1732,12 +1737,11 @@ UICommon::CAlignmentInfo::CAlignmentInfo(int nAlign, float x, float y)
 // @0x1419015e0
 void UICommon::CAlignmentInfo::FUN_1419015e0(Unk_140165cf0* pNode)
 {
-    if (pNode != 0)
-    {
-        FUN_140873e30(pNode, "offsetX", m_x);
-        FUN_140873e30(pNode, "offsetY", m_y);
-        FUN_140873ca0(pNode, "alignType", m_align);
-    }
+    if (pNode == 0)
+        return;
+    FUN_140873e30(pNode, "offsetX", m_x);
+    FUN_140873e30(pNode, "offsetY", m_y);
+    FUN_140873ca0(pNode, "alignType", m_align);
 }
 MS2_REPLACE_METHOD(0x1419015e0, UICommon::CAlignmentInfo, FUN_1419015e0, 109, 0x52121057);
 
@@ -1746,10 +1750,11 @@ bool UICommon::CAlignmentInfo::FUN_141901660(Unk_140165cf0* pNode)
 {
     if (pNode == 0)
         return false;
-    int nX = FUN_140873360(pNode, "offsetX", m_x);
-    int nY = FUN_140873360(pNode, "offsetY", m_y);
-    int nAlign = FUN_1408731e0(pNode, "alignType", m_align);
-    return nX == 0 && nY == 0 && nAlign == 0;
+    bool bOk = true;
+    bOk &= FUN_140873360(pNode, "offsetX", m_x) == 0;
+    bOk &= FUN_140873360(pNode, "offsetY", m_y) == 0;
+    bOk &= FUN_1408731e0(pNode, "alignType", m_align) == 0;
+    return bOk;
 }
 MS2_REPLACE_METHOD(0x141901660, UICommon::CAlignmentInfo, FUN_141901660, 236, 0x62D5D5F2);
 
@@ -1967,7 +1972,7 @@ void* FUN_1408e57f0();
 Unk_UcSceneObj* FUN_1422b9e50(void* p);
 
 // @0x141902530
-bool FUN_141902530()
+bool FUN_141902530(int nButton, const CMsgBoxData& box)
 {
     Unk_UcSceneObj* pScene = FUN_1422b9e50(FUN_1408e57f0());
     if (pScene != 0)
@@ -1984,22 +1989,26 @@ Unk_UcFlags* FUN_14025e7b0();
 // @0x141902580
 bool FUN_141902580(bool bMessage)
 {
-    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x65) == 0)
-        return FUN_140166410()->FUN_14036d570(0xe9);
-    if (bMessage)
-        FUN_141275260(0x2f7, 1, 1);
-    return false;
+    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x65))
+    {
+        if (bMessage)
+            FUN_141275260(0x2f7, 1, 1);
+        return false;
+    }
+    return FUN_140166410()->FUN_14036d570(0xe9);
 }
 MS2_REPLACE(0x141902580, FUN_141902580, 91, 0x9349350F);
 
 // @0x1419025f0
 bool FUN_1419025f0(bool bMessage)
 {
-    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x66) == 0)
-        return FUN_140166410()->FUN_14036d570(0xec);
-    if (bMessage)
-        FUN_141275260(0x2f7, 1, 1);
-    return false;
+    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x66))
+    {
+        if (bMessage)
+            FUN_141275260(0x2f7, 1, 1);
+        return false;
+    }
+    return FUN_140166410()->FUN_14036d570(0xec);
 }
 MS2_REPLACE(0x1419025f0, FUN_1419025f0, 91, 0xD61ABD29);
 
@@ -2017,14 +2026,13 @@ Unk_UcItemExtra* FUN_1405278a0(CItem* pItem);
 // Refund box callback: button 0 sends the confirmation packet.
 bool FUN_1419028d0(int nButton, const CMsgBoxData& box)
 {
-    if (nButton == 0)
-    {
-        __int64 nItemUid = box.FUN_141a02f10(0, 0);
-        COutPacket packet(0x5e, 0);
-        packet.vfunc_o10_1(9);
-        packet.vfunc_o10_4(nItemUid);
-        FUN_140710590(packet);
-    }
+    if (nButton != 0)
+        return true;
+    __int64 nItemUid = box.FUN_141a02f10(0, 0);
+    COutPacket packet(0x5e, 0);
+    packet.vfunc_o10_1(9);
+    packet.vfunc_o10_4(nItemUid);
+    FUN_140710590(packet);
     return true;
 }
 MS2_REPLACE(0x1419028d0, FUN_1419028d0, 140, 0xDDD7FCD0);
@@ -2076,16 +2084,16 @@ Unk_UcMsgBox* FUN_14151f890();
 
 // @0x141902a50
 // A modal dialog or message box blocks the player.
-bool FUN_141902a50()
+int FUN_141902a50()
 {
     if (FUN_141adcbb0(FUN_1403ed2b0(), FUN_141902970) != 0)
-        return true;
+        return 1;
     if (FUN_141a8a760() != 0)
-        return true;
+        return 1;
     Unk_UcMsgBox* pBox = FUN_14151f890();
     if (pBox != 0 && pBox->FUN_1419f8270() == 0)
-        return true;
-    return false;
+        return 1;
+    return 0;
 }
 MS2_REPLACE(0x141902a50, FUN_141902a50, 97, 0x8262FEB4);
 
