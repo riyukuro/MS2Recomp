@@ -1558,7 +1558,7 @@ void UIBeautyShopStyleDialog::FUN_140f07cc0()
 void UIBeautyShopStyleDialog::FUN_140f07e20()
 {
     Unk_BSPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    ASArray arr(2);
+    ASDataProvider arr(2);
     unsigned nFee = FUN_140f08160();
     unsigned nCount = (unsigned)m_298.size();
     unsigned nMax = FUN_140f011b0();

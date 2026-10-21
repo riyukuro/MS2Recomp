@@ -1650,7 +1650,7 @@ void UIGameMenuDialog::FUN_14193a140()
             continue;
         arrAdded.Add(ref.FUN_140c1cdb0()->m_18);
         if (ref.FUN_140c1cdb0()->m_children.FUN_140c1d2c0() != 0) {
-            ASArray children(2);
+            ASDataProvider children(2);   // exe 0x1422deec0: addEntity wants a CLIK DataProvider
             for (size_t j = 0; j < ref.FUN_140c1cdb0()->m_children.FUN_140c1d2c0(); ++j) {
                 Unk_GmNodeRef child(ref.FUN_140c1cdb0()->m_children.FUN_140c1cd50(j));
                 if (!child.FUN_140c1cdb0()->FUN_140cf0bf0())

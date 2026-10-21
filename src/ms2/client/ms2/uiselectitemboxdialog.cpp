@@ -192,7 +192,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
     unsigned nMax = 0x12;
     unsigned nSize = (unsigned)m_rewards.FUN_140314170();
     nMax = (std::min)(nSize, nMax);
-    ASArray list(2);
+    ASDataProvider list(2);
     for (unsigned i = 0; i < nMax; ++i) {
         if (i < m_rewards.FUN_140314170()) {
             CString strBind = m_binder.FUN_140d43510(m_rewards.FUN_140c461b0(i));

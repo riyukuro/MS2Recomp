@@ -1044,7 +1044,7 @@ void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params&
         return;
     strText.TrimRight();
     CStringW strSearch = FUN_1413fa9b0(strText);
-    ASArray aCandidates(2);                                                 // the exe builds an ASDataProvider-like list (0x1422deec0)
+    ASDataProvider aCandidates(2);                                          // exe 0x1422deec0
     if (strSearch.GetLength() > 0)
     {
         Unk_StCandSet set;

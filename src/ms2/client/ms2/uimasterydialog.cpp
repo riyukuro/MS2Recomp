@@ -1177,7 +1177,7 @@ void UIMasteryDialog::FUN_140eb3010(int nId)
     Unk_MFurnArray furn;
     MFurnTable()->FUN_140557920(nId, furn);
     qsort(furn.GetData(), furn.GetCount(), 0x10, &UIMasteryDialog::FUN_140eb8f40);
-    ASArray page(2);
+    ASDataProvider page(2);
     for (size_t i = 0; i < furn.GetCount(); i++) {
         MS2Ptr<Unk_MFurn> spFurn(furn[i]);
         MS2Ptr<Unk_MItemDef> spDef = FUN_14053f870(spFurn->FUN_1405494e0());

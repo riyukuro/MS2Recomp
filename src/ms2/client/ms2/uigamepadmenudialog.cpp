@@ -350,7 +350,7 @@ void UIGamePadMenuDialog::FUN_140c1b620()
             }
             else
             {
-                ASArray children(2);
+                ASDataProvider children(2);
                 for (size_t i = 0; i < spNode->m_children.GetCount(); i++)
                 {
                     MS2Ptr<Unk_GpNode> spChild(spNode->m_children[i]);

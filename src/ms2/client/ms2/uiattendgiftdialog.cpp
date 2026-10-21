@@ -543,7 +543,7 @@ void UIAttendGiftDialog::FUN_14102da40()
     unsigned int attended=m_selected->FUN_140ce3690();
     bool checked=m_selected->FUN_140ce35c0();
     if(!checked) attended=attended+1;
-    ASArray slots(2);
+    ASDataProvider slots(2);
     int maxSlots=0x1c;
     for(unsigned int i=0;i<0x1c;i++) {
         if(i>=m_selected->FUN_140ce3660()) {
