@@ -399,8 +399,13 @@ void LapenshardItemSlotBagPanel::vfunc_4()
 // @0x140c5d580
 void LapenshardItemSlotBagPanel::vfunc_5(int nEvent)
 {
-    if (-1 < nEvent && nEvent < 3)
+    switch (nEvent)
+    {
+    case 0:
+    case 1:
+    case 2:
         vfunc_3();
+    }
 }
 
 // ---- LapenshardEquipSlotPanel ----
@@ -504,14 +509,18 @@ void LapenshardEquipSlotPanel::vfunc_4()
 // @0x140c5d950
 void LapenshardEquipSlotPanel::vfunc_5(int nEvent)
 {
-    if (-1 < nEvent)
+    switch (nEvent)
     {
-        if (nEvent < 3)
-            vfunc_3();
-        else if (nEvent == 10)
-            FUN_140c5d9c0(1);
-        else if (nEvent == 0xb)
-            FUN_140c5d9c0(0);
+    case 0:
+    case 1:
+    case 2:
+        vfunc_3();
+        break;
+    case 10:
+        FUN_140c5d9c0(1);
+        break;
+    case 0xb:
+        FUN_140c5d9c0(0);
     }
 }
 
@@ -585,13 +594,12 @@ void UILapenshardEquipTab::vfunc_1()
 // @0x140c5de10
 void UILapenshardEquipTab::vfunc_4()
 {
-    POSITION pos = m_panels.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_panels.GetHeadPosition(); pos != 0; m_panels.GetNext(pos))
     {
         LapenshardPanelPtr p = m_panels.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_2();
-        m_panels.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_2();
     }
 }
 
@@ -666,13 +674,18 @@ void UILapenshardEquipTab::vfunc_9(CInPacket& packet)
 {
     if (packet.FUN_14070fe80() == 0x11b)
     {
-        char nKind = packet.vfunc_o8_1();
-        if (nKind == 0)
+        int nKind = (unsigned char)packet.vfunc_o8_1();
+        switch (nKind)
+        {
+        case 0:
             vfunc_2(2);
-        else if (nKind == 1)
+            break;
+        case 1:
             vfunc_2(0);
-        else if (nKind == 2)
+            break;
+        case 2:
             vfunc_2(1);
+        }
     }
 }
 
@@ -843,12 +856,13 @@ void UILapenshardSystemDialog::vfunc_79(void* p)
 // @0x140c61f60
 void UILapenshardSystemDialog::vfunc_3(void* pItem, bool b)
 {
-    if (pItem != 0 && static_cast<CItem*>(pItem)->FUN_140526100() != 0)
-    {
-        FUN_140c623c0(2);
-        if (m_spPage.get() != 0)
-            m_spPage->vfunc_10(pItem, b);
-    }
+    if (pItem == 0)
+        return;
+    if (static_cast<CItem*>(pItem)->FUN_140526100() == 0)
+        return;
+    FUN_140c623c0(2);
+    if (m_spPage.get() != 0)
+        m_spPage->vfunc_10(pItem, b);
 }
 
 // @0x140c62390
@@ -860,7 +874,9 @@ bool UILapenshardSystemDialog::vfunc_75()
 // @0x140c623c0
 void UILapenshardSystemDialog::FUN_140c623c0(int nEvent)
 {
-    if (vfunc_55() == 0 && m_spPage.get() != 0)
+    if (vfunc_55() != 0)
+        return;
+    if (m_spPage.get() != 0)
         m_spPage->vfunc_2(nEvent);
 }
 
@@ -1051,13 +1067,12 @@ int UILapenshardShieldBar::vfunc_28(const char* szMethod, const Scaleform::GFx::
 // @0x140c5f8f0
 void UILapenshardShieldBar::FUN_140c5f8f0(MS2Ptr<Unk_LsBuff> spBuff)
 {
-    if (m_spBuff.get() != spBuff.get())
-    {
-        if (FUN_141986d30() == 0)
-            vfunc_2();
-        m_spBuff = spBuff;
-        m_nPending = 1;
-    }
+    if (m_spBuff == spBuff.get())
+        return;
+    if (FUN_141986d30() == 0)
+        vfunc_2();
+    m_spBuff = spBuff;
+    m_nPending = 1;
 }
 
 // @0x140c5f990
@@ -1090,11 +1105,14 @@ CStringW UILapenshardShieldBar::FUN_140c5f9e0()
 // @0x140c5faf0
 void UILapenshardShieldBar::FUN_140c5faf0()
 {
-    if (m_bEnded == 0 && !(m_30 == 0) && !(m_spBuff == 0))
-    {
-        m_bEnded = 1;
-        m_30->Invoke("end", m_spBuff->m_nId);
-    }
+    if (m_bEnded != 0)
+        return;
+    if (!m_30)
+        return;
+    if (m_spBuff == 0)
+        return;
+    m_bEnded = 1;
+    m_30->Invoke("end", m_spBuff->m_nId);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -1235,8 +1253,15 @@ void LapenshardSourceItemSlotBagPanel::vfunc_4()
 // @0x140c63a70
 void LapenshardSourceItemSlotBagPanel::vfunc_5(int nEvent)
 {
-    if ((nEvent == 2 || nEvent == 8 || nEvent == 0xc) && m_pTab->FUN_140c68e20() != 3)
+    switch (nEvent)
+    {
+    case 2:
+    case 8:
+    case 0xc:
+        if (m_pTab->FUN_140c68e20() == 3)
+            return;
         vfunc_3();
+    }
 }
 
 // @0x140c63ad0
@@ -1261,11 +1286,12 @@ int LapenshardSourceItemSlotBagPanel::vfunc_8(const char* szMethod, const Scalef
 // @0x140c63bb0
 void LapenshardSourceItemSlotBagPanel::FUN_140c63bb0(int nIndex)
 {
-    if (m_pTab != 0 && -1 < nIndex && nIndex < (int)m_items.GetCount())
-    {
-        MS2Ptr<CItem> spItem = m_items[nIndex];
-        m_pTab->FUN_140c68bd0(spItem);
-    }
+    if (m_pTab == 0)
+        return;
+    if (nIndex < 0 || nIndex >= (int)m_items.GetCount())
+        return;
+    MS2Ptr<CItem> spItem = m_items[nIndex];
+    m_pTab->FUN_140c68bd0(spItem);
 }
 
 // ---- LapenshardIngredientItemSlotBagPanel ----
@@ -1347,11 +1373,10 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_4()
         m_strBag.Empty();
     }
     m_items.RemoveAll();
-    if (m_pTab != 0)
-    {
-        m_pTab->FUN_140c68f90();
-        m_pTab->vfunc_2(0xd);
-    }
+    if (m_pTab == 0)
+        return;
+    m_pTab->FUN_140c68f90();
+    m_pTab->vfunc_2(0xd);
 }
 
 // @0x140c64200
@@ -1364,8 +1389,9 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_5(int nEvent)
     case 8:
     case 9:
     case 0xc:
-        if (m_pTab->FUN_140c68e20() != 3)
-            vfunc_3();
+        if (m_pTab->FUN_140c68e20() == 3)
+            return;
+        vfunc_3();
         break;
     case 6:
     case 7:
@@ -1469,7 +1495,8 @@ bool LapenshardIngredientItemSlotBagPanel::FUN_140c64b10(int nResult, const CMsg
     if (nResult == 0)
     {
         int nCount = _wtoi(box.FUN_141a02d50().Trim(L','));
-        FUN_140c64960(box.FUN_141a02e50(0, 0), nCount);
+        int nIndex = box.FUN_141a02e50(0, 0);
+        FUN_140c64960(nIndex, nCount);
     }
     FUN_14151f200();
     return true;
@@ -1714,13 +1741,12 @@ void UILapenshardUpgradeTab::vfunc_1()
 // @0x140c68190
 void UILapenshardUpgradeTab::vfunc_4()
 {
-    POSITION pos = m_panels.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_panels.GetHeadPosition(); pos != 0; m_panels.GetNext(pos))
     {
         LapenshardPanelPtr p = m_panels.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_2();
-        m_panels.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_2();
     }
     FUN_140c68a50();
 }
@@ -2014,7 +2040,8 @@ int UILapenshardUpgradeTab::FUN_140c69650()
 void FUN_140c60ed0(CString& strBag, const ItemArray& items, int nIconType, int nFlags)
 {
     FUN_14141f970(&strBag);
-    FUN_14141f770(strBag, items.GetCount(), items, FUN_141420330, nIconType, nFlags);
+    MS2Ptr<CItem> (*pfnGetItem)(const ItemArray&, int) = FUN_141420330;
+    FUN_14141f770(strBag, items.GetCount(), items, pfnGetItem, nIconType, nFlags);
 }
 
 // @0x140c61010
@@ -2027,9 +2054,9 @@ void FUN_140c61010(CString& strSlot, MS2Ptr<CItem> spItem, int nIconType, int nF
 // @0x140c65d60
 MS2Ptr<Unk_LsRecord> LapenshardUpgradeSlotPanel::FUN_140c65d60()
 {
-    if (!(m_spSource == 0))
-        return FUN_1409c4b30()->FUN_1405b56a0(m_spSource->FUN_1405276c0());
-    return MS2Ptr<Unk_LsRecord>(0);
+    if (m_spSource == 0)
+        return MS2Ptr<Unk_LsRecord>(0);
+    return FUN_1409c4b30()->FUN_1405b56a0(m_spSource->FUN_1405276c0());
 }
 
 // @0x140c65e00
@@ -2212,25 +2239,25 @@ public:
 extern char DAT_143ab2a90;                                              // the inventory
 extern __int64 DAT_143ab2898;                                           // the money
 
+// Unk_Inventory::FUN_140a5f780 returns the count (inventory.h declares it void).
+int FUN_140a5f780(Unk_Inventory* pInv, int nTag, int nGrade);
+
 // @0x140c69670
-int FUN_140c69670(unsigned nItemId, int nGrade, int* pnUnused)
+int FUN_140c69670(unsigned nItemId, int nGrade, int* pnTag)
 {
     int nCount = reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90)->FUN_140a5f180(nItemId, nGrade);
-    if (*pnUnused != 0)
-    {
-    }
+    if (*pnTag != 0)
+        nCount = FUN_140a5f780(reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90), *pnTag, 0);
     return nCount;
 }
 
 // @0x140c69a30
 static void Unk_LsCopyMap(ATL::CAtlMap<unsigned __int64, int>& dst, ATL::CAtlMap<unsigned __int64, int>& src)
 {
-    POSITION pos = src.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = src.GetStartPosition(); pos != 0; src.GetNext(pos))
     {
         const int& rValue = src.GetValueAt(pos);
         dst.SetAt(src.GetKeyAt(pos), rValue);
-        src.GetNext(pos);
     }
 }
 
@@ -2696,9 +2723,10 @@ MS2Ptr<LapenshardSystemTabContents> UILapenshardSystemDialog::FUN_140c62440()
 ItemInfoSlot* FUN_140c69ab0(NotifyContext::BindData* pEntry)
 {
     void* pResult = 0;
-    if (pEntry == 0 || !pEntry->TypeCast(0x620002f, &pResult))
-        pResult = 0;
-    return static_cast<ItemInfoSlot*>(pResult);
+    if (pEntry != 0 && pEntry->TypeCast(0x620002f, &pResult))
+        return static_cast<ItemInfoSlot*>(pResult);
+    else
+        return 0;
 }
 
 void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>);
@@ -2707,7 +2735,7 @@ void FUN_14141f860(const CString&, int, void*, MS2Ptr<ItemSlotBag::CreateParam>)
 void FUN_140c60f40(CString& strBag, ItemArray& items, MS2Ptr<ItemSlotBag::CreateParam> param)
 {
     FUN_14141f970(&strBag);
-    if (param.get() != 0 && param->m_pfnGetItem == 0)
+    if ((bool)(param.get() != 0) && param->m_pfnGetItem == 0)
         param->m_pfnGetItem = reinterpret_cast<ItemSlotBag::CreateParam::GetItemFn>(FUN_141420330);
     FUN_14141f860(strBag, static_cast<int>(items.GetCount()), &items, param);
 }
