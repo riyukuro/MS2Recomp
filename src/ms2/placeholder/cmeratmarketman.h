@@ -85,12 +85,12 @@ public:
     void FUN_140d54d50(MS2Ptr<CMeratMarketSchCond> spCond);
     void FUN_140d54e50(MS2Ptr<CMeratMarketSchCond> spCond);
     void FUN_140d54fe0(bool bLike, const __int64& nUgcId, const int& nUIClassID);
-    void FUN_140d550c0(MS2Ptr<CMeratMarketSchCond> spCond, unsigned char nSort);
+    void FUN_140d550c0(MS2Ptr<CMeratMarketSchCond> spCond, int nSort);
     void FUN_140d551e0(ATL::CAtlArray<int>& ids);
     void FUN_140d552c0(ATL::CAtlArray<unsigned __int64>& ids);
     void FUN_140d553a0();
-    bool FUN_140d55620(MS2Ptr<CMeratMarketProduct> spProduct);
-    void FUN_140d55790(const Unk_MeratProductKey& key);
+    int FUN_140d55620(MS2Ptr<CMeratMarketProduct> spProduct);
+    void FUN_140d55790(Unk_MeratProductKey key);
     MS2Ptr<CMeratMarketProduct> FUN_140d55800(Unk_MeratProductKey key);
     MS2Ptr<CMeratMarketProduct> FUN_140d558c0(__int64 nUid);
     MS2Ptr<CMeratMarketProduct> FUN_140d55a10(__int64 nUgcUid);
@@ -110,7 +110,7 @@ public:
     int FUN_140d566d0();
     void FUN_140d566f0(int nState);
     __int64 FUN_140d56780();
-    bool FUN_140d567a0(MS2Ptr<CUgcMarketSeller> spSeller);
+    int FUN_140d567a0(MS2Ptr<CUgcMarketSeller> spSeller);
     int FUN_140d56840();
     void FUN_140d56a40(MS2Ptr<CUgcBookMark> spOwner);
     void FUN_140d56be0(__int64 nId);
