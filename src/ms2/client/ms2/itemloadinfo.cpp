@@ -143,6 +143,7 @@ void CItemLoader::ClearPending()
 {
     if (Unk_LockGuard guard = s_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -157,12 +158,12 @@ int CItemLoader::IsStopping()
 }
 MS2_REPLACE_METHOD(0x140D31AC0, CItemLoader, IsStopping, 14, 0x620CA41F);
 
-// MS2-FUNCTIONAL: the exe's lock-error path returns the guard destructor's rax and emits a trailing nop after it; not expressible in source
 // @0x140d31ae0
 size_t CItemLoader::GetPendingCount()
 {
     if (Unk_LockGuard guard = s_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -175,6 +176,7 @@ void CItemLoader::TakeLoaded(ItemLoadInfoMap& loaded)
 {
     if (Unk_LockGuard guard = s_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -188,6 +190,7 @@ void CItemLoader::Complete(unsigned nId, MS2Ptr<CItemLoadInfo> info)
 {
     if (Unk_LockGuard guard = s_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -223,6 +226,7 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
     MS2Ptr<CItemLoadInfo> info(0);
     if (Unk_LockGuard guard = s_lock)
     {
+        __assume(0);
     }
     else if (!m_pending.empty())
     {
@@ -309,6 +313,7 @@ void CItemLoader::Request(unsigned nId, MS2Ptr<CItem> item)
         return;
     if (Unk_LockGuard guard = s_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -338,6 +343,7 @@ void CItemLoader::Request(unsigned nId, MS2Ptr<CItem> item, int nValue)
         return;
     if (Unk_LockGuard guard = s_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -369,6 +375,7 @@ void CItemLoader::Request(unsigned nId, MS2Ptr<CPtred> target, int nValue)
         return;
     if (Unk_LockGuard guard = s_lock)
     {
+        __assume(0);
     }
     else
     {
