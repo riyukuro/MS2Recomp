@@ -246,7 +246,7 @@ struct Unk_PiPetData
     int m_nState;                                                       // +0x34 0 = the pet is out
 };
 MS2_CHECK_OFFSET(Unk_PiPetData, m_nState, 0x34);
-class Unk_PiBag { public: __int64 FUN_140c874f0(); __int64 FUN_140c875e0(); };
+class Unk_PiBag { public: __int64 FUN_140c874f0(); int FUN_140c875e0(); };
 class Unk_PetSelected
 {
 public:
@@ -310,7 +310,7 @@ NotifyContext::BindData* FUN_1422c8e90(const CString& strName);
 void FUN_1422c8f70(const CString& strName);
 void FUN_1422cc9e0(DragSlotBag* pBag);
 void FUN_140dbc420(CString* pBag);                                      // release the inventory bag
-void FUN_140dbc370(CString* pBag, __int64 nSlots);                      // fill the inventory bag
+void FUN_140dbc370(const CString& strBag, int nSlots);                      // fill the inventory bag
 void* FUN_140a50b50(DragSlot* pSlot);                                   // the item slot behind a drag source
 __int64 FUN_141405a10(void* pItemSlot);                                 // its item uid
 
@@ -382,18 +382,17 @@ UIItemGetOptionDialog* FUN_140cbe260(int nId);
 UIOtherPetSystemDialog* FUN_140cbe300(int nId);
 
 // @0x140cbd900
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 MS2Ptr<CItem> FUN_140cbd900(int nPet)
 {
-    if (nPet == 0)
+    if (nPet != 0)
     {
-        UIOtherPetSystemDialog* pDlg = FUN_140cbe300(0x4f41);
+        Unk_PetDialog* pDlg = FUN_140b99ba0(0x4f38);
         if (pDlg != 0)
             return pDlg->vfunc_85();
     }
     else
     {
-        Unk_PetDialog* pDlg = FUN_140b99ba0(0x4f38);
+        UIOtherPetSystemDialog* pDlg = FUN_140cbe300(0x4f41);
         if (pDlg != 0)
             return pDlg->vfunc_85();
     }
@@ -401,15 +400,14 @@ MS2Ptr<CItem> FUN_140cbd900(int nPet)
 }
 
 // @0x140cbd9d0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 int FUN_140cbd9d0(int nPet)
 {
     MS2Ptr<CItem> pet = FUN_140cbd900(nPet);
     if (pet == 0)
         return 0;
-    if (pet->FUN_140526a50() == 0)
-        return 0;
-    return 1;
+    if ((unsigned __int64)pet->FUN_140526a50() > 0)
+        return 1;
+    return 0;
 }
 
 // @0x140cbda70
@@ -425,38 +423,33 @@ MS2Ptr<Unk_PetRow> FUN_140cbda70(int nPet)
 }
 
 // @0x140cbdba0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 Unk_PiPetData* FUN_140cbdba0(int nPet)
 {
     MS2Ptr<CItem> pet = FUN_140cbd900(nPet);
     if (pet == 0)
         return 0;
-    if (nPet == 0)
-        return 0;
-    return FUN_140535320()->FUN_140c8b450();
+    if (nPet != 0)
+        return FUN_140535320()->FUN_140c8b450();
+    return 0;
 }
 
 // @0x140cbdc40
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 __int64 FUN_140cbdc40(int nPet)
 {
-    if (nPet == 0)
-        return 0;
-    return FUN_140535320()->FUN_140c8b410()->FUN_140c874f0();
+    if (nPet != 0)
+        return FUN_140535320()->FUN_140c8b410()->FUN_140c874f0();
+    return 0;
 }
 
 // @0x140cbdc80
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-unsigned __int64 FUN_140cbdc80(int nPet)
+unsigned FUN_140cbdc80(int nPet)
 {
-    if (nPet == 0)
-    {
-        MS2Ptr<Unk_PetRow> row = FUN_140cbda70(0);
-        if (row == 0)
-            return 0;
-        return row->m_nSlotMax;
-    }
-    return FUN_140535320()->FUN_140c8b410()->FUN_140c875e0();
+    if (nPet != 0)
+        return FUN_140535320()->FUN_140c8b410()->FUN_140c875e0();
+    MS2Ptr<Unk_PetRow> row = FUN_140cbda70(nPet);
+    if (row == 0)
+        return 0;
+    return row->m_nSlotMax;
 }
 
 // @0x140cbe1c0
@@ -670,14 +663,15 @@ void PetInfoBasic::vfunc_5(int nTab)
 MS2_REPLACE_METHOD(0x140cb9790, PetInfoBasic, vfunc_5, 212, 0xFCDD3E5A);
 
 // @0x140cb9870
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 int PetInfoBasic::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs)
 {
     ASData data;
-    int nCmp = _stricmp("OnChangeName", szEvent);
-    if (nCmp == 0)
+    if (_stricmp("OnChangeName", szEvent) == 0)
+    {
         FUN_140cb9900();
-    return nCmp == 0;
+        return 1;
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140cb9870, PetInfoBasic, vfunc_6, 138, 0x1274197A);
 
@@ -779,10 +773,11 @@ bool PetInfoBasic::FUN_140cba0f0(int nResult, const CMsgBoxData& box)
 MS2_REPLACE_METHOD(0x140cba0f0, PetInfoBasic, FUN_140cba0f0, 250, 0x9A9E6D77);
 
 // @0x140cba1f0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 int PetInfoBasic::FUN_140cba1f0()
 {
-    return FUN_140cbd9d0(m_nPet) == 0;
+    if (FUN_140cbd9d0(m_nPet) != 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x140cba1f0, PetInfoBasic, FUN_140cba1f0, 40, 0x6D7EA769);
 
@@ -868,11 +863,11 @@ void PetInfoInventory::vfunc_4()
     MS2Ptr<ASUIComponent> inv = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_inventory"));
     if (inv == 0)
         return;
-    __int64 nSlots = FUN_140cbdc80(m_nPet);
+    int nSlots = FUN_140cbdc80(m_nPet);
     MS2Ptr<Unk_PetItemBag> bag = inv->FUN_140accef0<Unk_PetItemBag>(CString("m_itemBag"));
     if (bag.get() != 0)
     {
-        FUN_140dbc370(&m_strBag, nSlots);
+        FUN_140dbc370(m_strBag, nSlots);
         bag->FUN_1407cba60("bagId", m_strBag);
         bag->vfunc_24(1);
     }
@@ -933,16 +928,20 @@ void PetInfoSkill::vfunc_3()
 MS2_REPLACE_METHOD(0x140cbade0, PetInfoSkill, vfunc_3, 428, 0x4BEDBB40);
 
 // @0x140cbafa0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void PetInfoSkill::vfunc_5(int nTab)
 {
-    if (-1 < nTab && nTab < 3)
+    switch (nTab)
+    {
+    case 0:
+    case 1:
+    case 2:
         vfunc_3();
+        break;
+    }
 }
 MS2_REPLACE_METHOD(0x140cbafa0, PetInfoSkill, vfunc_5, 58, 0x11111BFC);
 
 // @0x140cbafe0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 int PetInfoSkill::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs)
 {
     if (_stricmp("OnAutoItemUse", szEvent) == 0)
@@ -950,7 +949,7 @@ int PetInfoSkill::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArg
         FUN_140cbb720();
         return 1;
     }
-    if (_stricmp("OnAutoItemPick", szEvent) == 0)
+    else if (_stricmp("OnAutoItemPick", szEvent) == 0)
     {
         FUN_140cbb750();
         return 1;
@@ -1027,18 +1026,16 @@ void PetInfoSkill::FUN_140cbb720()
 MS2_REPLACE_METHOD(0x140cbb720, PetInfoSkill, FUN_140cbb720, 32, 0x17AA8321);
 
 // @0x140cbb750
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void PetInfoSkill::FUN_140cbb750()
 {
     UIItemAutoUseOptionDialog* pAuto = FUN_140cbe1c0(0x4ef4);
-    if (pAuto == 0 || pAuto->vfunc_55() != 0)
+    if (pAuto != 0 && pAuto->vfunc_55() == 0)
+        return;
+    UIItemGetOptionDialog* pGet = FUN_140cbe260(0x4e6c);
+    if (pGet != 0)
     {
-        UIItemGetOptionDialog* pGet = FUN_140cbe260(0x4e6c);
-        if (pGet != 0)
-        {
-            pGet->FUN_1419da620(0);
-            FUN_1403ed2b0()->FUN_141adc530(0x4e6c);
-        }
+        pGet->FUN_1419da620(0);
+        FUN_1403ed2b0()->FUN_141adc530(0x4e6c);
     }
 }
 MS2_REPLACE_METHOD(0x140cbb750, PetInfoSkill, FUN_140cbb750, 115, 0xF0ADC00D);
@@ -1073,11 +1070,16 @@ void PetInfoStat::vfunc_3()
 }
 
 // @0x140cbba70
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void PetInfoStat::vfunc_5(int nTab)
 {
-    if (-1 < nTab && nTab < 3)
+    switch (nTab)
+    {
+    case 0:
+    case 1:
+    case 2:
         vfunc_3();
+        break;
+    }
 }
 MS2_REPLACE_METHOD(0x140cbba70, PetInfoStat, vfunc_5, 58, 0x11111BFC);
 
@@ -1139,29 +1141,26 @@ void PetInfoPreview::vfunc_4()
 MS2_REPLACE_METHOD(0x140cbbe20, PetInfoPreview, vfunc_4, 206, 0xAB204F86);
 
 // @0x140cbbf00
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void PetInfoPreview::vfunc_5(int nTab)
 {
-    if (-1 < nTab)
+    switch (nTab)
     {
-        if (nTab < 2)
-        {
-            vfunc_4();
-            vfunc_3();
-        }
-        else if (nTab == 2)
-        {
-            vfunc_4();
-        }
+    case 0:
+    case 1:
+        vfunc_4();
+        vfunc_3();
+        break;
+    case 2:
+        vfunc_4();
+        break;
     }
 }
 MS2_REPLACE_METHOD(0x140cbbf00, PetInfoPreview, vfunc_5, 99, 0xF5492657);
 
 // @0x140cbbf70
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 int PetInfoPreview::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs)
 {
-    if (m_avatar.get() != 0)
+    if ((bool)(m_avatar.get() != 0))
     {
         if (m_avatar->vfunc_27(szEvent, pArgs, nArgs) != 0)
             return 1;
@@ -1197,36 +1196,32 @@ void PetInfoPreview::vfunc_7(void* a1, TPtr<Unk_UISwfEntity_25> a2, void* a3, vo
 }
 
 // @0x140cbc2b0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 int PetInfoPreview::vfunc_o178_1(void* pAvatar)
 {
-    if (pAvatar != 0)
-        FUN_140cbc2f0();
-    return pAvatar != 0;
+    if (pAvatar == 0)
+        return 0;
+    FUN_140cbc2f0();
+    return 1;
 }
 MS2_REPLACE_METHOD(0x140cbc2b0, PetInfoPreview, vfunc_o178_1, 53, 0x7BF5F3B7);
 
 // @0x140cbc2f0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void PetInfoPreview::FUN_140cbc2f0()
 {
-    MS2Ptr<ASUIComponent> preview = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_preview"));
+    MS2Ptr<ASUIComponent> preview = m_ui->FUN_140accfb0<ASUIComponent>("m_preview");
     if (preview == 0)
-    {
-        preview->Invoke("loadRenderTarget");
-    }
+        return;
+    preview->Invoke("loadRenderTarget");
 }
 MS2_REPLACE_METHOD(0x140cbc2f0, PetInfoPreview, FUN_140cbc2f0, 171, 0xCB55F5EA);
 
 // @0x140cbc3b0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void PetInfoPreview::FUN_140cbc3b0()
 {
-    MS2Ptr<ASUIComponent> preview = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_preview"));
+    MS2Ptr<ASUIComponent> preview = m_ui->FUN_140accfb0<ASUIComponent>("m_preview");
     if (preview == 0)
-    {
-        preview->Invoke("unloadRenderTarget");
-    }
+        return;
+    preview->Invoke("unloadRenderTarget");
 }
 MS2_REPLACE_METHOD(0x140cbc3b0, PetInfoPreview, FUN_140cbc3b0, 171, 0xFA72F638);
 
@@ -1339,13 +1334,12 @@ MS2Ptr<CItem> TabContentsPetInfo::EquipSlot::vfunc_25()
 }
 
 // @0x140cbcb00
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-int TabContentsPetInfo::EquipSlot::FUN_140cbcb00()
+__int64 TabContentsPetInfo::EquipSlot::FUN_140cbcb00()
 {
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
     if (pet == 0)
         return 0;
-    return (int)pet->FUN_140526a50();
+    return pet->FUN_140526a50();
 }
 
 // ---- TabContentsPetInfo::EquipSlotBag ----
@@ -1392,32 +1386,28 @@ TabContentsPetInfo::TabContentsPetInfo(int nPet)
 }
 
 // @0x140cbd1e0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void TabContentsPetInfo::vfunc_1()
 {
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetInfoBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_1();
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_1();
     }
     m_ui = 0;
 }
 MS2_REPLACE_METHOD(0x140cbd1e0, TabContentsPetInfo, vfunc_1, 210, 0x17B51641);
 
 // @0x140cbd2c0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void TabContentsPetInfo::vfunc_4()
 {
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetInfoBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_2();
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_2();
     }
 }
 MS2_REPLACE_METHOD(0x140cbd2c0, TabContentsPetInfo, vfunc_4, 191, 0x7C10A29A);
@@ -1504,11 +1494,13 @@ int TabContentsPetInfo::vfunc_8()
 MS2_REPLACE_METHOD(0x140cbd860, TabContentsPetInfo, vfunc_8, 8, 0x7F371472);
 
 // @0x140cbd870
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void TabContentsPetInfo::FUN_140cbd870()
 {
     if (m_ui.get() != 0)
-        m_ui->Invoke("summon", FUN_140cbd9d0(m_nPet) != 0);
+    {
+        bool bSummon = FUN_140cbd9d0(m_nPet) ? true : false;
+        m_ui->Invoke("summon", bSummon);
+    }
 }
 MS2_REPLACE_METHOD(0x140cbd870, TabContentsPetInfo, FUN_140cbd870, 127, 0x4557D135);
 

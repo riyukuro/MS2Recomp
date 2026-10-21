@@ -141,7 +141,7 @@ public:
         virtual MS2Ptr<CItem> vfunc_25();               // 25 0x140cbcab0 the pet item
         virtual int vfunc_0(void* p);                   // ITooltip 0x140cbc7d0 build the tooltip into p
 
-        int FUN_140cbcb00();                            // the pet item's uid, 0 when there is none
+        __int64 FUN_140cbcb00();                        // the pet item's uid, 0 when there is none
 
     public:
         MS2_LAYOUT_FRIEND;
