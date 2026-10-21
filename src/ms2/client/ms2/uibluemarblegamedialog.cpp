@@ -75,7 +75,7 @@ CStringW FUN_140938ae0(CStringW strKey, const int& n);              // localized
 CStringW FUN_14062b4f0(CStringW strKey, const int* pn);             // localized text with one number (pointer form)
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);    // localized text with one text
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // StringFormat with one text argument
-CStringW FUN_140218290(short n);                                    // number text
+CStringW FUN_140218290(int n);                                      // number text
 CStringW FUN_140298ea0(CStringW strKey);                            // localized text, tooltip form
 CStringW FUN_14016a730(const char* sz, int nCodePage);              // multibyte to wide
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
@@ -87,12 +87,12 @@ MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, c
 // ---- shared COMDATs first instantiated here ----
 
 // @0x140f24320
-CStringW FUN_140f24320(CString strKey, CStringW strName, const int& nCount)
+CStringW FUN_140f24320(CString strKey, const CStringW& strName, const int& nCount)
 {
     return FUN_14028e060(strKey, fmt::ArgList(fmt::internal::make_type(strName, nCount),
         fmt::internal::ArgArray<2>::Type{fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(strName),
                                          fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(nCount)}));
-}   // MS2-FUNCTIONAL: fmt argument array layout
+}
 
 // @0x140f24650
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a2, int a3)
@@ -113,22 +113,22 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a
     FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
     FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
     FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bcea0(args.FUN_1409b1f70(3), a4.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(3), a4);
     FUN_1422bccb0(args.FUN_1409b1f70(4), a5);
     return FUN_1422bb8f0(szMethod, args);
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f24850
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, CStringW a2, int a3, int a4)
 {
     ASArgList args;
     args.FUN_1409b2800(4);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), a1.GetString());
-    FUN_1422bcea0(args.FUN_1409b1f70(1), a2.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcea0(args.FUN_1409b1f70(1), a2);
     FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
     FUN_1422bccb0(args.FUN_1409b1f70(3), a4);
     return FUN_1422bb8f0(szMethod, args);
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -264,9 +264,9 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
                 FUN_1403b4750()->FUN_1416fb300(strText);
                 FUN_1412751f0(strText, 1, 1);
             } else if (nResult == 4) {
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_bluemarble_result_dice_complete")), 1, 1);
+                FUN_1412751f0(FUN_14028b8e0(L"s_bluemarble_result_dice_complete"), 1, 1);
             } else if (nResult == 5) {
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_bluemarble_result_dice_not_complete")), 1, 1);
+                FUN_1412751f0(FUN_14028b8e0(L"s_bluemarble_result_dice_not_complete"), 1, 1);
             }
             FUN_140f24140(1);
             m_bIdle = 1;
@@ -316,7 +316,7 @@ int UIBlueMarbleGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 int UIBlueMarbleGameDialog::vfunc_71()
 {
     if (m_bIdle == 0) {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d74390(FUN_14028b8e0(CStringW(L"s_bluemarble_close")), 1,
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d74390(FUN_14028b8e0(L"s_bluemarble_close"), 1,
             Delegate<bool(int, const CMsgBoxData&)>(this, &UIBlueMarbleGameDialog::FUN_140f22760));
         return 1;
     }
@@ -382,7 +382,7 @@ void UIBlueMarbleGameDialog::FUN_140f22bb0(int nPosition)
                 row.FUN_1407cbbe0("receive", bReceive);
                 CStringW strRound;
                 if (nRound == 0)
-                    strRound = FUN_14028b8e0(CStringW(L"s_bluemarble_reward_default"));
+                    strRound = FUN_14028b8e0(L"s_bluemarble_reward_default");
                 else
                     strRound = FUN_14062b4f0(CStringW(L"s_bluemarble_reward_repeat"), &nRound);
                 row.FUN_1407cbb20("round", strRound);
@@ -400,124 +400,129 @@ void UIBlueMarbleGameDialog::FUN_140f22fe0(int nDice1, int nDice2, int nKind)
 {
     CStringW strMessage;
     if (nKind == 2)
-        strMessage = FUN_14028b8e0(CStringW(L"s_bluemarble_result_trap_escape_fail"));
+        strMessage = FUN_14028b8e0(L"s_bluemarble_result_trap_escape_fail");
     else if (nKind == 3)
-        strMessage = FUN_14028b8e0(CStringW(L"s_bluemarble_result_trap_escape_success"));
+        strMessage = FUN_14028b8e0(L"s_bluemarble_result_trap_escape_success");
     unsigned int nContinue = (unsigned int)(nKind != 2);
     int nRemain = m_nPosition - (nDice1 + nDice2);
     m_30->Invoke("onDice", nRemain, nDice1, nDice2, CStringW(strMessage), nContinue);
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f23200
 void UIBlueMarbleGameDialog::FUN_140f23200(int nAction, int nArg, int nPrevPosition)
 {
     CStringW strMessage;
-    if (nAction == 1) {
+    switch (nAction) {
+    case 1:
         m_30->Invoke("onActionNotifyFail");
-    } else if (nAction == 7) {
+        break;
+    case 7:
         m_30->Invoke("onActionNotifyTrap", nArg);
-    } else if (nAction == 8) {
+        break;
+    case 8:
         m_30->Invoke("onActionNotifyTour", nArg);
-    } else if (nAction == 9) {
+        break;
+    case 9:
         m_30->Invoke("onActionNotifyParadise", nArg);
-    } else {
+        break;
+    default:
         strMessage = FUN_14062b4f0(FUN_1401e8510(L"s_bluemarble_action_{0}", FUN_140218290(nAction)), &nArg);
         if (strMessage.GetLength() > 0)
             m_30->Invoke("onActionNotify", CStringW(strMessage));
+        break;
     }
-    if (1 < nAction) {
-        if (nAction < 4) {
-            m_30->Invoke("onActionWalk", m_nPosition, nPrevPosition, 1);
-        } else if (nAction == 4 || nAction == 8) {
-            m_30->FUN_1409ba0d0("onActionFly", m_nPosition, 0);
-        }
+    switch (nAction) {
+    case 2:
+    case 3:
+        m_30->Invoke("onActionWalk", m_nPosition, nPrevPosition, 1);
+        break;
+    case 4:
+    case 8:
+        m_30->FUN_1409ba0d0("onActionFly", m_nPosition, 0);
+        break;
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f23590
 void UIBlueMarbleGameDialog::FUN_140f23590(int nItemId, int nRarity, int nCount)
 {
-    if (m_30.IsNull() == 0) {
-        MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
-        if (spData.get()) {
-            CStringW strMessage = FUN_1405c2690(CStringW(L"s_bluemarble_get_item"),
-                                                FUN_1401a9d70()->FUN_141811980(1, nItemId));
-            m_30->Invoke("onRewardNotify", CStringW(strMessage),
-                         FUN_14016a730(spData->FUN_14053fdd0().GetString(), 0), spData->FUN_14053c5a0(), nCount);
-        }
+    if (m_30.IsNull())
+        return;
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (spData.get()) {
+        CStringW strMessage = FUN_1405c2690(CStringW(L"s_bluemarble_get_item"),
+                                            FUN_1401a9d70()->FUN_141811980(1, nItemId));
+        m_30->Invoke("onRewardNotify", CStringW(strMessage),
+                     FUN_14016a730(spData->FUN_14053fdd0(), 0), spData->FUN_14053c5a0(), nCount);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f237e0
 void UIBlueMarbleGameDialog::FUN_140f237e0(int nPrevPosition, int nPosition)
 {
-    if (nPrevPosition / 0x1c != nPosition / 0x1c) {
-        MS2Ptr<BlueMarbleEventContext> spContext = FUN_1401c0d90()->FUN_14047b940();
-        if (spContext.get()) {
-            MS2Ptr<ItemEntity> spReward(0);
-            if (spContext->m_rewards.Lookup(0, spReward))
-                FUN_140f23590(spReward->m_itemId, spReward->m_count, 1);
-            if (spContext->m_rewards.Lookup(nPosition / 0x1c, spReward))
-                FUN_140f23590(spReward->m_itemId, spReward->m_count, 1);
-        }
+    int nPrevLap = nPrevPosition / 0x1c;
+    int nLap = nPosition / 0x1c;
+    if (nPrevLap == nLap)
+        return;
+    MS2Ptr<BlueMarbleEventContext> spContext = FUN_1401c0d90()->FUN_14047b940();
+    if (spContext.get()) {
+        MS2Ptr<ItemEntity> spReward(0);
+        if (spContext->m_rewards.Lookup(0, spReward))
+            FUN_140f23590(spReward->m_itemId, spReward->m_count, 1);
+        if (spContext->m_rewards.Lookup(nLap, spReward))
+            FUN_140f23590(spReward->m_itemId, spReward->m_count, 1);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f23940
 void UIBlueMarbleGameDialog::FUN_140f23940()
 {
-    bool bNoFree = m_nFreeDice < 1;
-    CStringW strText = bNoFree ? FUN_14028b8e0(CStringW(L"s_bluemarble_dice"))
-                               : FUN_14062b4f0(CStringW(L"s_bluemarble_free_dice"), &m_nFreeDice);
+    CStringW strText = m_nFreeDice > 0 ? FUN_14062b4f0(CStringW(L"s_bluemarble_free_dice"), &m_nFreeDice)
+                                       : FUN_14028b8e0(L"s_bluemarble_dice");
     if (m_30.get())
         m_30->Invoke("updateDiceButton", CStringW(strText), m_nFreeDice);
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f23b90
 void UIBlueMarbleGameDialog::FUN_140f23b90()
 {
     if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_coinCount")) {
         int nCoins = DAT_143ab2a90.FUN_140a5f180(m_nConsumeItemId, 0);
-        spText->FUN_1422c4cd0(FUN_14062b4f0(CStringW(L"s_bluemarble_coin_count"), &nCoins));
+        CStringW strText = FUN_14062b4f0(CStringW(L"s_bluemarble_coin_count"), &nCoins);
+        spText->FUN_1422c4cd0(strText);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f23ca0
 void UIBlueMarbleGameDialog::FUN_140f23ca0()
 {
     if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_finishCount")) {
         int nFinish = m_nPosition / 0x1c;
-        spText->FUN_1422c4cd0(FUN_14062b4f0(CStringW(L"s_bluemarble_finish_count"), &nFinish));
+        CStringW strText = FUN_14062b4f0(CStringW(L"s_bluemarble_finish_count"), &nFinish);
+        spText->FUN_1422c4cd0(strText);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f23da0
 void UIBlueMarbleGameDialog::FUN_140f23da0()
 {
     ASArray flags(2);
-    MS2Ptr<BlueMarbleEventContext> spContext = FUN_1401c0d90()->FUN_14047b940();
-    if (spContext.get()) {
-        POSITION pos = spContext->m_rewards.GetHeadPosition();
-        while (pos) {
+    if (MS2Ptr<BlueMarbleEventContext> spContext = FUN_1401c0d90()->FUN_14047b940()) {
+        for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != 0; spContext->m_rewards.GetNext(pos)) {
             int nRound = spContext->m_rewards.GetKeyAt(pos);
-            bool bReceive;
-            if (m_nPosition < nRound * 0x1c || nRound == 0)
-                bReceive = false;
-            else
-                bReceive = true;
+            bool bReceive = m_nPosition >= nRound * 0x1c && nRound != 0;
             flags.FUN_1422bbcd0(bReceive);
-            spContext->m_rewards.GetNext(pos);
         }
     }
     if (m_30.get())
         m_30->FUN_140bd2cb0("updateReward", flags);
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f23f10
 CString UIBlueMarbleGameDialog::FUN_140f23f10(int nItemId, int nRarity, int nCount)
 {
     size_t nIndex = m_boundIds.GetCount();
-    CString strId = StringFormat("{0}_{1}", vfunc_1(), nIndex);
+    CString strId = Unk_SocketFormat("{0}_{1}", vfunc_1(), nIndex);
     MS2Ptr<CItem> spItem(new CItem);
     if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
         return "";
