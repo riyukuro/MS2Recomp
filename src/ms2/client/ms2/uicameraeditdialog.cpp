@@ -196,10 +196,7 @@ NiPoint3 UICameraEditDialog::CameraData::GetCameraPos() const
         return NiPoint3(0.0f, 0.0f, 0.0f);
     if (CameraMgr::GetInstance()->FUN_140a18070() == 0)
         return NiPoint3(0.0f, 0.0f, 0.0f);
-    float fDistance = GetDistance();
-    efd::Point3 kOffset = m_vDirection * fDistance;
-    NiPoint3 kPos = pTarget->vfunc_18();
-    return NiPoint3(kPos + kOffset);
+    return NiPoint3(pTarget->vfunc_18() + m_vDirection * GetDistance());
 }
 
 // @0x1418dd560
@@ -365,27 +362,18 @@ void UICameraEditDialog::vfunc_38(void* p, float x, float y)
 // @0x1418dded0
 void UICameraEditDialog::vfunc_39(void* p, float x, float y, float f)
 {
-    if (FUN_1418de260() == 0 && m_1f0 != 0)
+    if (FUN_1418de260() != 0)
+        return;
+    if (m_1f0 != 0)
     {
         int nState = 0;
-        if (m_1f4 == 0)
+        if (m_1f4 != 0)
         {
-            int nStep;
-            if (f <= 0.0f)
-                nStep = 5;
-            else
-                nStep = 4;
-            nState = nStep;
+            if (FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
+                nState = f > 0.0f ? 4 : 5;
         }
-        else if (FUN_14025e7a0()->FUN_1422aeed0(2) == 0)
-        {
-            int nStep;
-            if (f <= 0.0f)
-                nStep = 5;
-            else
-                nStep = 4;
-            nState = nStep;
-        }
+        else
+            nState = f > 0.0f ? 4 : 5;
         if (nState != m_nState)
             m_nState = nState;
     }
@@ -412,31 +400,33 @@ void UICameraEditDialog::vfunc_33(void* p, float x, float y)
 // @0x1418de060
 void UICameraEditDialog::vfunc_35(void* p, float x, float y)
 {
-    if (FUN_1418de260() == 0)
-    {
-        m_bDragging = 0;
-        Unk_CamCursorPtr spCursor = FUN_14025e7a0()->FUN_1422b0370(6);
-        if (!(spCursor == 0))
-            spCursor->FUN_1422cee50(0);
-    }
+    if (FUN_1418de260() != 0)
+        return;
+    m_bDragging = 0;
+    Unk_CamCursorPtr spCursor = FUN_14025e7a0()->FUN_1422b0370(6);
+    if (!(spCursor == 0))
+        spCursor->FUN_1422cee50(0);
 }
 
 // @0x1418de110
 void UICameraEditDialog::vfunc_36(void* p, float x, float y)
 {
-    GameObject* pTarget;
-    if (FUN_1418de260() == 0 && (pTarget = FUN_1418dea40()) != 0)
+    if (FUN_1418de260() != 0)
+        return;
+    GameObject* pTarget = FUN_1418dea40();
+    if (pTarget == 0)
+        return;
+    if (CameraMgr::GetInstance()->FUN_140a18070() == 0)
+        return;
+    if (m_bEnable != 0)
     {
-        if (CameraMgr::GetInstance()->FUN_140a18070() != 0 && m_bEnable != 0)
-        {
-            m_bDragging = 1;
-            NiPoint3 kDir = pTarget->vfunc_20();
-            m_vDragRotation = Unk_StreamPoint(kDir.x, kDir.y, kDir.z);
-            m_ptDrag.SetPoint((int)x, (int)y);
-            Unk_CamCursorPtr spCursor = FUN_14025e7a0()->FUN_1422b0370(6);
-            if (!(spCursor == 0))
-                spCursor->FUN_1422cee50(4);
-        }
+        m_bDragging = 1;
+        m_vDragRotation = reinterpret_cast<const Unk_StreamPoint&>(static_cast<const NiPoint3&>(pTarget->vfunc_20()));
+        m_ptDrag.SetPoint((int)x, (int)y);
+        Unk_CamCursorPtr spCursor = FUN_14025e7a0()->FUN_1422b0370(6);
+        if (spCursor == 0)
+            return;
+        spCursor->FUN_1422cee50(4);
     }
 }
 
@@ -479,34 +469,31 @@ unsigned UICameraEditDialog::FUN_1418de2b0()
             }
         }
     }
-    unsigned nLoaded = (m_aPresets.GetCount() != 0);
-    return nLoaded;
+    return m_aPresets.GetCount() > 0;
 }
 
 // @0x1418de570
 void UICameraEditDialog::FUN_1418de570()
 {
     GameObject* pTarget = FUN_1418dea40();
-    if (pTarget != 0)
+    if (pTarget == 0)
+        return;
+    if (CameraMgr::GetInstance()->FUN_140a18070() == 0)
+        return;
+    NiPoint3 kPos = pTarget->vfunc_18();
+    Unk_StreamPoint vTop(kPos.x, kPos.y, kPos.z + 100.0f);
+    Unk_StreamPoint vCamera = CameraMgr::GetInstance()->FUN_140a17e10();
+    float fLength = vTop.FUN_140965c40(vCamera).FUN_140967ac0();
+    if (fLength <= s_fMinArrive)
     {
-        if (CameraMgr::GetInstance()->FUN_140a18070() != 0)
-        {
-            NiPoint3 kPos = pTarget->vfunc_18();
-            Unk_StreamPoint vTop(kPos.x, kPos.y, kPos.z + 100.0f);
-            Unk_StreamPoint vCamera = CameraMgr::GetInstance()->FUN_140a17e10();
-            float fLength = vTop.FUN_140965c40(vCamera).FUN_140967ac0();
-            if (fLength <= s_fMinArrive)
-            {
-                m_nState = 0;
-            }
-            else
-            {
-                double fStep = s_fStepSpeed;
-                double fFrame = FUN_14086d260()->FUN_141473260();
-                fStep = ceil(fStep * fFrame);
-                FUN_1418de7b0(vTop, (float)fStep);
-            }
-        }
+        m_nState = 0;
+    }
+    else
+    {
+        double fStep = s_fStepSpeed;
+        double fFrame = FUN_14086d260()->FUN_141473260();
+        fStep = ceil(fStep * fFrame);
+        FUN_1418de7b0(vTop, (float)fStep);
     }
 }
 
@@ -514,26 +501,24 @@ void UICameraEditDialog::FUN_1418de570()
 void UICameraEditDialog::FUN_1418de690()
 {
     GameObject* pTarget = FUN_1418dea40();
-    if (pTarget != 0)
+    if (pTarget == 0)
+        return;
+    if (CameraMgr::GetInstance()->FUN_140a18070() == 0)
+        return;
+    NiPoint3 kPos = pTarget->vfunc_18();
+    Unk_StreamPoint vTop(kPos.x, kPos.y, kPos.z + 100.0f);
+    Unk_StreamPoint vCamera = CameraMgr::GetInstance()->FUN_140a17e10();
+    float fLength = vTop.FUN_140965c40(vCamera).FUN_140967ac0();
+    if (s_fArrive <= fLength)
     {
-        if (CameraMgr::GetInstance()->FUN_140a18070() != 0)
-        {
-            NiPoint3 kPos = pTarget->vfunc_18();
-            Unk_StreamPoint vTop(kPos.x, kPos.y, kPos.z + 100.0f);
-            Unk_StreamPoint vCamera = CameraMgr::GetInstance()->FUN_140a17e10();
-            float fLength = vTop.FUN_140965c40(vCamera).FUN_140967ac0();
-            if (s_fArrive <= fLength)
-            {
-                m_nState = 0;
-            }
-            else
-            {
-                double fStep = s_fStepSpeed;
-                double fFrame = FUN_14086d260()->FUN_141473260();
-                fStep = ceil(fStep * fFrame);
-                FUN_1418de7b0(vTop, -(float)fStep);
-            }
-        }
+        m_nState = 0;
+    }
+    else
+    {
+        double fStep = s_fStepSpeed;
+        double fFrame = FUN_14086d260()->FUN_141473260();
+        fStep = ceil(fStep * fFrame);
+        FUN_1418de7b0(vTop, -(float)fStep);
     }
 }
 
@@ -565,14 +550,12 @@ void UICameraEditDialog::FUN_1418de980()
     {
         Unk_StreamPoint vDirection;
         Unk_StreamPoint vPosition;
-        if (FUN_1403ed2d0()->FUN_141bd0dd0(&vPosition, &vDirection) != 0)
-        {
-            Unk_StreamPoint vApply = vDirection;
-            pTarget->vfunc_21(efd::Point3(vApply.x, vApply.y, vApply.z));
-            PCBase* pPlayer = FUN_14099eef0(pTarget);
-            if (pPlayer != 0)
-                pPlayer->FUN_14166d8b0(vDirection.z);
-        }
+        if (FUN_1403ed2d0()->FUN_141bd0dd0(&vPosition, &vDirection) == 0)
+            return;
+        pTarget->vfunc_21(*reinterpret_cast<efd::Point3*>(&vDirection));
+        PCBase* pPlayer = FUN_14099eef0(pTarget);
+        if (pPlayer != 0)
+            pPlayer->FUN_14166d8b0(vDirection.z);
     }
 }
 
@@ -774,10 +757,10 @@ void UICartoonDialog::FUN_1418dfc60(CInPacket& packet)
         return;
     if (spBook->m_nType == 0)
         return;
-    if (FUN_141924630() == 0)
-        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4e87);
-    else
+    if (FUN_141924630() != 0)
         FUN_1418dfd50();
+    else
+        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4e87);
 }
 
 // @0x1418dfd50
@@ -786,29 +769,28 @@ void UICartoonDialog::FUN_1418dfd50()
     if (m_nBookId == 0)
         vfunc_67();
     CStoryBookDataPtr spBook = CStoryBookTable::GetInstance()->GetData(m_nBookId);
-    if (!spBook.IsNull())
+    if (spBook.IsNull())
+        return;
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog != 0)
     {
-        ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-        if (pDialog != 0)
+        pDialog->Invoke("removeAll");
+        pDialog->Invoke("setType", (long)spBook->m_nType);
+        ASObj kPage(2);
+        if (FUN_1418e0070(m_nPage + 1, &kPage) != 0)
+            pDialog->Invoke("setLeftPage", kPage);
+        m_nPage = m_nPage + 1;
+        if (spBook->m_nType != 2)
         {
-            pDialog->Invoke("removeAll");
-            pDialog->Invoke("setType", (long)spBook->m_nType);
-            ASObj kPage(2);
-            if (FUN_1418e0070(m_nPage + 1, &kPage) != 0)
-                pDialog->Invoke("setLeftPage", kPage);
-            m_nPage = m_nPage + 1;
-            if (spBook->m_nType != 2)
+            if (spBook->m_nType != 4)
             {
-                if (spBook->m_nType != 4)
-                {
-                    if (FUN_1418e0070(m_nPage + 1, &kPage) != 0)
-                        pDialog->Invoke("setRightPage", kPage);
-                    m_nPage = m_nPage + 1;
-                }
+                if (FUN_1418e0070(m_nPage + 1, &kPage) != 0)
+                    pDialog->Invoke("setRightPage", kPage);
+                m_nPage = m_nPage + 1;
             }
         }
-        FUN_1418e0230();
     }
+    FUN_1418e0230();
 }
 
 // @0x1418dffc0
@@ -849,8 +831,7 @@ int UICartoonDialog::FUN_1418e0070(int nPage, ASObj* pPage)
 // @0x1418e0230
 void UICartoonDialog::FUN_1418e0230()
 {
-    MS2Ptr<Unk_CtButton> spPrev = FUN_140bb4b10("m_prev");
-    if (spPrev.get() != 0)
+    if (MS2Ptr<Unk_CtButton> spPrev = FUN_140bb4b10("m_prev"))
     {
         int nStep = FUN_1418e0480();
         int nFirst = m_nPage - nStep;
@@ -862,8 +843,7 @@ void UICartoonDialog::FUN_1418e0230()
             fAlpha = 100.0f;
         spPrev->FUN_1422bfe00(fAlpha);
     }
-    MS2Ptr<Unk_CtButton> spNext = FUN_140bb4b10("m_next");
-    if (spNext.get() != 0)
+    if (MS2Ptr<Unk_CtButton> spNext = FUN_140bb4b10("m_next"))
     {
         int nMaxPage = CStoryBookTable::GetInstance()->GetMaxPage(m_nBookId);
         spNext->FUN_1422c1fe0(m_nPage < nMaxPage);
@@ -1075,12 +1055,11 @@ void UICastingBar::FUN_1418e15d0(Unk_CastingListener* pListener, const Unk_Casti
     m_strEnd = pParam->m_str30;
     m_bFinished = false;
     m_timer.FUN_140868750(pParam->m_nDuration);
-    if (m_30.get() != 0 && pParam->m_bActive)
-    {
-        FUN_1418e1b20(pParam->m_bShowTime);
-        m_30->Invoke("startCasting", pParam->m_fStart, pParam->m_fScale, pParam->m_str28, pParam->m_nDuration,
-            pParam->m_bShowTime, pParam->m_str18, pParam->m_str20, pParam->m_n10);
-    }
+    if (!(m_30.get() != 0 && pParam->m_bActive))
+        return;
+    FUN_1418e1b20(pParam->m_bShowTime);
+    m_30->Invoke("startCasting", pParam->m_fStart, pParam->m_fScale, pParam->m_str28, pParam->m_nDuration,
+        pParam->m_bShowTime, pParam->m_str18, pParam->m_str20, pParam->m_n10);
 }
 
 // @0x1418e18a0
@@ -1357,30 +1336,29 @@ void UICharacterCreateDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPc != 0)
+    if (pPc == 0)
+        return;
+    FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
+    FUN_140f0b710(0);
+    m_spCustomize.AssignRaw(new Customize(pPc->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
+    for (int i = 0; i < 7; i++)
+        m_aLoaded.Add(0);
+    if (pPc->FUN_14166c930() != 0xe)
+        pPc->vfunc_59(0xe, 0, 0, 0);
+    m_pCamera = FUN_140cd47b0(0x4ef2);
+    unsigned nGender = ((Unk_CcPlayer*)pPc)->FUN_141658e60();
+    m_nChangedMask |= FUN_140222b30(nGender, 0);
+    ASObj kInit(2);
+    FUN_141900750(kInit);
+    m_30->Invoke("initData", nGender, Scaleform::GFx::Value(kInit.FUN_1422bb870()));
+    UIDialog* pSelect = FUN_140b72de0(0x4ef1);
+    if (pSelect != 0 && FUN_1418f1c20(pSelect) == 0 && m_bGuideOpened == 0)
     {
-        FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
-        FUN_140f0b710(0);
-        m_spCustomize.AssignRaw(new Customize(pPc->FUN_14123c580(), static_cast<IItemCustomizeEventListener*>(this), 0));
-        for (int i = 0; i < 7; i++)
-            m_aLoaded.Add(0);
-        if (pPc->FUN_14166c930() != 0xe)
-            pPc->vfunc_59(0xe, 0, 0, 0);
-        m_pCamera = FUN_140cd47b0(0x4ef2);
-        unsigned nGender = ((Unk_CcPlayer*)pPc)->FUN_141658e60();
-        m_nChangedMask |= FUN_140222b30(nGender, 0);
-        ASObj kInit(2);
-        FUN_141900750(kInit);
-        m_30->Invoke("initData", nGender, Scaleform::GFx::Value(kInit.FUN_1422bb870()));
-        UIDialog* pSelect = FUN_140b72de0(0x4ef1);
-        if (pSelect != 0 && FUN_1418f1c20(pSelect) == 0 && m_bGuideOpened == 0)
-        {
-            FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4ea7);
-            m_bGuideOpened = 1;
-        }
-        m_dOpenTime = FUN_14086d260()->FUN_141473280();
-        m_nState = 1;
+        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4ea7);
+        m_bGuideOpened = 1;
     }
+    m_dOpenTime = FUN_14086d260()->FUN_141473280();
+    m_nState = 1;
 }
 
 // @0x1418e2770
@@ -1494,16 +1472,17 @@ int UICharacterCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
 // @0x1418e2e90
 void UICharacterCreateDialog::vfunc_15()
 {
-    if (vfunc_55() == 0 && !(m_spCustomize == 0))
+    if (vfunc_55() != 0)
+        return;
+    if (m_spCustomize == 0)
+        return;
+    m_spCustomize->FUN_140cd1bf0();
+    if (m_pCamera != 0)
+        m_pCamera->FUN_1418dda30(m_spCustomize->FUN_140cd27f0() == 0);
+    if (m_nCurItemId != 0)
     {
-        m_spCustomize->FUN_140cd1bf0();
-        if (m_pCamera != 0)
-            m_pCamera->FUN_1418dda30(m_spCustomize->FUN_140cd27f0() == 0);
-        if (m_nCurItemId != 0)
-        {
-            FUN_1418e7380(m_nCurItemId);
-            m_nCurItemId = 0;
-        }
+        FUN_1418e7380(m_nCurItemId);
+        m_nCurItemId = 0;
     }
 }
 
@@ -1557,43 +1536,42 @@ void UICharacterCreateDialog::vfunc_26()
 // @0x1418e3160
 void UICharacterCreateDialog::vfunc_12()
 {
-    if (vfunc_55() == 0 && !(m_30 == 0))
-    {
-        UISwfEntity::vfunc_12();
-        void* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPc != 0)
-        {
-            m_spCustomize.AssignRaw(new Customize(static_cast<PCBase*>(pPc)->FUN_14123c580(),
-                                                  static_cast<IItemCustomizeEventListener*>(this), 0));
-            vfunc_84();
-        }
-    }
+    if (!(vfunc_55() == 0 && !(m_30 == 0)))
+        return;
+    UISwfEntity::vfunc_12();
+    void* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPc == 0)
+        return;
+    m_spCustomize.AssignRaw(new Customize(static_cast<PCBase*>(pPc)->FUN_14123c580(),
+                                          static_cast<IItemCustomizeEventListener*>(this), 0));
+    vfunc_84();
 }
 
 // @0x1418e3280
 void UICharacterCreateDialog::vfunc_26(int nItemId)
 {
-    if (vfunc_55() == 0 && m_bTabChanged == 0 && m_nTab != -1 && m_nCategory != -1)
-    {
-        PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-        if (pPc != 0)
-        {
-            if (pPc->FUN_14166c930() != 0xe)
-                pPc->vfunc_59(0xe, 0, 0, 0);
-            MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
-            CItemData* pData = spData;
-            if (pData == 0 || !pData->FUN_14053d2f0())
-                pPc->FUN_14166cc40(0x4d);
-            else
-                pPc->FUN_14166cc40(0x54);
-        }
-    }
+    if (vfunc_55() != 0)
+        return;
+    if (m_bTabChanged != 0)
+        return;
+    if (m_nTab == -1 || m_nCategory == -1)
+        return;
+    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    if (pPc == 0)
+        return;
+    if (pPc->FUN_14166c930() != 0xe)
+        pPc->vfunc_59(0xe, 0, 0, 0);
+    CItemData* pData = FUN_14053f870(nItemId);
+    if (pData != 0 && pData->FUN_14053d2f0())
+        pPc->FUN_14166cc40(0x54);
+    else
+        pPc->FUN_14166cc40(0x4d);
 }
 
 // @0x1418e33e0
 int UICharacterCreateDialog::vfunc_1(void* p)
 {
-    if (!(m_spCustomize == 0))
+    if (m_spCustomize != 0)
     {
         if (m_30.get() != 0 && p != 0)
         {
@@ -1635,21 +1613,20 @@ int UICharacterCreateDialog::vfunc_2(void* p, float fValue, int nIndex)
 // @0x1418e36b0
 int UICharacterCreateDialog::vfunc_3(void* p, float fValue)
 {
-    if (!(m_spCustomize == 0))
+    if (m_spCustomize == 0)
+        return 0;
+    if ((m_30.get() ? true : false) && p != 0)
     {
-        if (m_30.get() != 0 && p != 0)
+        if (m_spCustomize->FUN_140cd17e0() == FUN_1414124a0(p))
         {
-            if (m_spCustomize->FUN_140cd17e0() == FUN_1414124a0(p))
-            {
-                int nDegree = (int)fValue;
-                if (nDegree < 0)
-                    nDegree += 0x168;
-                m_30->Invoke("changeCustomDegree", nDegree % 0x168);
-            }
+            int nDegree = (int)fValue;
+            if (nDegree < 0)
+                nDegree += 0x168;
+            nDegree %= 0x168;
+            m_30->Invoke("changeCustomDegree", nDegree);
         }
-        return 1;
     }
-    return 0;
+    return 1;
 }
 
 // @0x1418e37d0
@@ -1818,44 +1795,29 @@ void UICharacterCreateDialog::FUN_1418e4250(CItemData* pData, int* pnTab, int* p
 }
 
 // @0x1418e4380
-bool UICharacterCreateDialog::FUN_1418e4380(int nTab, int nCategory, MS2Ptr<CItemData> spData)
+int UICharacterCreateDialog::FUN_1418e4380(int nTab, int nCategory, MS2Ptr<CItemData> spData)
 {
-    bool bResult;
-    if (nTab != 0)
-        return false;
-    switch (nCategory)
+    if (nTab == 0)
     {
-    case 0:
-        bResult = spData->FUN_14053cfd0();
-        break;
-    case 1:
-        bResult = spData->FUN_14053d020();
-        break;
-    case 2:
-        bResult = spData->FUN_14053d0c0();
-        break;
-    case 3:
-        bResult = spData->FUN_14053cf00();
-        break;
-    case 4:
-        if (spData->FUN_14053c620() == 0xe || spData->FUN_14053d2b0())
-            bResult = true;
-        else
-            bResult = false;
-        break;
-    case 5:
-        if (spData->FUN_14053c620() == 0xf || spData->FUN_14053d2b0())
-            bResult = true;
-        else
-            bResult = false;
-        break;
-    case 6:
-        bResult = spData->FUN_14053c620() == 0x11;
-        break;
-    default:
-        return false;
+        switch (nCategory)
+        {
+        case 0:
+            return spData->FUN_14053cfd0();
+        case 1:
+            return spData->FUN_14053d020();
+        case 2:
+            return spData->FUN_14053d0c0();
+        case 3:
+            return spData->FUN_14053cf00();
+        case 4:
+            return spData->FUN_14053c620() == 0xe || spData->FUN_14053d2b0();
+        case 5:
+            return spData->FUN_14053c620() == 0xf || spData->FUN_14053d2b0();
+        case 6:
+            return spData->FUN_14053c620() == 0x11;
+        }
     }
-    return bResult;
+    return 0;
 }
 
 // @0x1418e4600
@@ -1947,52 +1909,50 @@ void UICharacterCreateDialog::FUN_1418e4a80(int nTab, int nCategory)
     if (m_aRows.IsEmpty())
         return;
     Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPc != 0 && !m_aRows.IsEmpty())
+    if (!(pPc != 0 && !m_aRows.IsEmpty()))
+        return;
+    int nSelect;
+    if (nCategory == 3)
+        nSelect = 0;
+    else
+        nSelect = -1;
+    ASArray aItems(2);
+    size_t nCount = m_aRows.GetCount();
+    for (size_t i = 0; i < nCount; i++)
     {
-        int nSelect;
-        if (nCategory == 3)
-            nSelect = 0;
-        else
-            nSelect = -1;
-        ASArray aItems(2);
-        size_t nCount = m_aRows.GetCount();
-        for (size_t i = 0; i < nCount; i++)
+        MS2Ptr<DefaultItemData> spRow(m_aRows[i]);
+        if (spRow == 0)
+            continue;
+        MS2Ptr<CItemData> spData = FUN_14053f870(spRow->m_nItemId);
+        if (!spData)
+            continue;
+        CStringW strName;
+        if (!spData->FUN_14053cf00())
         {
-            MS2Ptr<DefaultItemData> spRow(m_aRows[i]);
-            if (spRow == 0)
-                continue;
-            MS2Ptr<CItemData> spData = FUN_14053f870(spRow->m_nItemId);
-            if (!spData)
-                continue;
-            CStringW strName;
-            if (!spData->FUN_14053cf00())
+            if (MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->FUN_14053eba0()->FUN_14054b400(), pPc))
             {
-                MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->FUN_14053eba0()->FUN_14054b400(), pPc);
-                if (spEquip.get() != 0)
-                {
-                    MS2Ptr<CItem> spWorn = spEquip->FUN_1411dc7a0();
-                    bool bSame = spWorn->FUN_1405276c0() == spRow->m_nItemId;
-                    if (bSame)
-                        nSelect = (int)i;
-                }
-                strName = FUN_1401a9d70()->FUN_141811980(1, spRow->m_nItemId);
+                MS2Ptr<CItem> spWorn = spEquip->FUN_1411dc7a0();
+                bool bSame = spWorn->FUN_1405276c0() == spRow->m_nItemId;
+                if (bSame)
+                    nSelect = (int)i;
             }
-            ASObj kRow(2);
-            FUN_140f324f0(kRow, MS2Ptr<CItemData>(spData), 1);
-            if (spData->FUN_14053d2b0())
-            {
-                int nLink;
-                if (nCategory == 4)
-                    nLink = 5;
-                else
-                    nLink = 4;
-                kRow.FUN_1407cb9c0("linkCategory", nLink);
-            }
-            kRow.FUN_1407cb9c0("saleTag", spRow->m_nSaleTag);
-            aItems.FUN_1422bc050(Scaleform::GFx::Value(kRow.FUN_1422bb870()));
+            strName = FUN_1401a9d70()->FUN_141811980(1, spRow->m_nItemId);
         }
-        static_cast<Unk_CcScript*>(m_30.get())->FUN_140e813f0("buildItems", aItems, nSelect);
+        ASObj kRow(2);
+        FUN_140f324f0(kRow, MS2Ptr<CItemData>(spData), 1);
+        if (spData->FUN_14053d2b0())
+        {
+            int nLink;
+            if (nCategory == 4)
+                nLink = 5;
+            else
+                nLink = 4;
+            kRow.FUN_1407cb9c0("linkCategory", nLink);
+        }
+        kRow.FUN_1407cb9c0("saleTag", spRow->m_nSaleTag);
+        aItems.FUN_1422bc050(Scaleform::GFx::Value(kRow.FUN_1422bb870()));
     }
+    static_cast<Unk_CcScript*>(m_30.get())->FUN_140e813f0("buildItems", aItems, nSelect);
 }
 
 // buildCurrentItems
@@ -2002,82 +1962,81 @@ void UICharacterCreateDialog::FUN_1418e4f50()
     if (m_30.get() == 0 || m_spCustomize == 0)
         return;
     Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPc != 0)
+    if (pPc == 0)
+        return;
+    ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
+    FUN_1411e1b80(pPc->FUN_1416561a0(), aEquips);
+    ASArray aItems(2);
+    POSITION pos = aEquips.GetHeadPosition();
+    while (pos != 0)
     {
-        ATL::CAtlList<MS2Ptr<CEquipItem> > aEquips(10);
-        FUN_1411e1b80(pPc->FUN_1416561a0(), aEquips);
-        ASArray aItems(2);
-        POSITION pos = aEquips.GetHeadPosition();
-        while (pos != 0)
+        MS2Ptr<CEquipItem> spEquip(aEquips.GetAt(pos));
+        if (!spEquip)
         {
-            MS2Ptr<CEquipItem> spEquip(aEquips.GetAt(pos));
-            if (!spEquip)
-            {
-                aEquips.GetNext(pos);
-                continue;
-            }
-            MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
-            if (!spItem)
-            {
-                aEquips.GetNext(pos);
-                continue;
-            }
-            CItemData* pData = (CItemData*)spEquip->FUN_1411dc7f0();
-            if (pData == 0)
-            {
-                aEquips.GetNext(pos);
-                continue;
-            }
-            int nTab;
-            int nCategory;
-            FUN_1418e4250(pData, &nTab, &nCategory);
-            if (nTab == -1)
-            {
-                aEquips.GetNext(pos);
-                continue;
-            }
-            int nItemId = spItem->FUN_1405276c0();
-            m_items.SetAt(nItemId, spItem);
-            int nColor;
-            FUN_141424580(MS2Ptr<CEquipItem>(spEquip), &nColor, 0);
-            ASObj kRow(2);
-            CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
-            kRow.FUN_1407cbb20("itemname", CStringW(strName));
-            kRow.FUN_1409c0d20("itemid", nItemId);
-            if (pData->FUN_14053e260() != 0)
-            {
-                FUN_1414248a0(pData, &nColor, &nColor);
-                kRow.FUN_1409c4990("itemcolor", nColor);
-            }
-            kRow.FUN_1407cb9c0("tab", nTab);
-            kRow.FUN_1407cb9c0("category", nCategory);
-            int nLink = -1;
-            if (pData->FUN_14053d2b0())
-                nLink = 5;
-            kRow.FUN_1407cb9c0("linkCategory", nLink);
-            aItems.FUN_1422bc050(Scaleform::GFx::Value(kRow.FUN_1422bb870()));
             aEquips.GetNext(pos);
+            continue;
         }
-        MS2Ptr<CItemData> spDefault = FUN_14053f870(0x9a1d21);
-        if (spDefault.get() != 0)
+        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        if (!spItem)
         {
-            int nColor;
-            FUN_1414239e0(&nColor, 0, pPc);
-            FUN_1414248a0(spDefault, &nColor, &nColor);
-            int nTab;
-            int nCategory;
-            FUN_1418e4250(spDefault, &nTab, &nCategory);
-            ASObj kRow(2);
-            kRow.FUN_1409c0e60("itemname", L"");
-            kRow.FUN_1407cb9c0("itemid", 0x9a1d21);
-            kRow.FUN_1409c4990("itemcolor", nColor);
-            kRow.FUN_1407cb9c0("tab", nTab);
-            kRow.FUN_1407cb9c0("category", nCategory);
-            aItems.FUN_1422bc050(Scaleform::GFx::Value(kRow.FUN_1422bb870()));
+            aEquips.GetNext(pos);
+            continue;
         }
-        m_30->FUN_140bd2cb0("buildCurrentItems", aItems);
-        m_bCurrentBuilt = 1;
+        CItemData* pData = (CItemData*)spEquip->FUN_1411dc7f0();
+        if (pData == 0)
+        {
+            aEquips.GetNext(pos);
+            continue;
+        }
+        int nTab;
+        int nCategory;
+        FUN_1418e4250(pData, &nTab, &nCategory);
+        if (nTab == -1)
+        {
+            aEquips.GetNext(pos);
+            continue;
+        }
+        int nItemId = spItem->FUN_1405276c0();
+        m_items.SetAt(nItemId, spItem);
+        int nColor;
+        FUN_141424580(MS2Ptr<CEquipItem>(spEquip), &nColor, 0);
+        ASObj kRow(2);
+        CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
+        kRow.FUN_1407cbb20("itemname", CStringW(strName));
+        kRow.FUN_1409c0d20("itemid", nItemId);
+        if (pData->FUN_14053e260() != 0)
+        {
+            FUN_1414248a0(pData, &nColor, &nColor);
+            kRow.FUN_1409c4990("itemcolor", nColor);
+        }
+        kRow.FUN_1407cb9c0("tab", nTab);
+        kRow.FUN_1407cb9c0("category", nCategory);
+        int nLink = -1;
+        if (pData->FUN_14053d2b0())
+            nLink = 5;
+        kRow.FUN_1407cb9c0("linkCategory", nLink);
+        aItems.FUN_1422bc050(Scaleform::GFx::Value(kRow.FUN_1422bb870()));
+        aEquips.GetNext(pos);
     }
+    MS2Ptr<CItemData> spDefault = FUN_14053f870(0x9a1d21);
+    if (spDefault.get() != 0)
+    {
+        int nColor;
+        FUN_1414239e0(&nColor, 0, pPc);
+        FUN_1414248a0(spDefault, &nColor, &nColor);
+        int nTab;
+        int nCategory;
+        FUN_1418e4250(spDefault, &nTab, &nCategory);
+        ASObj kRow(2);
+        kRow.FUN_1409c0e60("itemname", L"");
+        kRow.FUN_1407cb9c0("itemid", 0x9a1d21);
+        kRow.FUN_1409c4990("itemcolor", nColor);
+        kRow.FUN_1407cb9c0("tab", nTab);
+        kRow.FUN_1407cb9c0("category", nCategory);
+        aItems.FUN_1422bc050(Scaleform::GFx::Value(kRow.FUN_1422bb870()));
+    }
+    m_30->FUN_140bd2cb0("buildCurrentItems", aItems);
+    m_bCurrentBuilt = 1;
 }
 
 // buildColors
@@ -2217,29 +2176,26 @@ void UICharacterCreateDialog::FUN_1418e5a10(MS2Ptr<CItemData> spData)
 // @0x1418e61d0
 void UICharacterCreateDialog::FUN_1418e61d0()
 {
-    if (m_nState == 1)
-    {
-        FUN_1418e6b10();
-        FUN_1418e3910();
-    }
+    if (!(m_nState == 1))
+        return;
+    FUN_1418e6b10();
+    FUN_1418e3910();
 }
 
 // OnCreate: ask for the name.
 // @0x1418e6210
 void UICharacterCreateDialog::FUN_1418e6210()
 {
-    if (!(m_30 == 0) && m_nState == 1)
-    {
-        if (m_dElapsed < 1.1920928955078125e-07)
-            m_dElapsed = FUN_14086d260()->FUN_141473280() - m_dOpenTime;
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(10, 1, 0, CStringW(L""));
-        if (spBox.get() != 0)
-        {
-            spBox->FUN_141a01d30(2, CStringW(L""), 0xc, 0, 0);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterCreateDialog::FUN_1418e7790));
-            FUN_140d73c60(spBox);
-        }
-    }
+    if (!(!(m_30 == 0) && m_nState == 1))
+        return;
+    if (m_dElapsed < 1.1920928955078125e-07)
+        m_dElapsed = FUN_14086d260()->FUN_141473280() - m_dOpenTime;
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(10, 1, 0, CStringW(L""));
+    if (spBox.get() == 0)
+        return;
+    spBox->FUN_141a01d30(2, CStringW(L""), 0xc, 0, 0);
+    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterCreateDialog::FUN_1418e7790));
+    FUN_140d73c60(spBox);
 }
 
 // Validate the name, then create.
@@ -2340,12 +2296,11 @@ int UICharacterCreateDialog::FUN_1418e6950(int nItemId, int nTab, int nCategory)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (!spData)
         return 0;
-    int nGender = pPc->FUN_141658e60();
-    if (*(int*)((char*)spData.get() + 0x13c) != nGender && *(int*)((char*)spData.get() + 0x13c) != 2)
+    if (*(int*)((char*)spData.get() + 0x13c) != pPc->FUN_141658e60() && *(int*)((char*)spData.get() + 0x13c) != 2)
         return 0;
-    if (FUN_1418e4380(nTab, nCategory, MS2Ptr<CItemData>(spData)) == 0)
-        return 0;
-    return 1;
+    if (FUN_1418e4380(nTab, nCategory, MS2Ptr<CItemData>(spData)))
+        return 1;
+    return 0;
 }
 
 // @0x1418e6ab0
@@ -2365,134 +2320,127 @@ void UICharacterCreateDialog::FUN_1418e6b10()
 // @0x1418e6b20
 void UICharacterCreateDialog::FUN_1418e6b20(int nTab)
 {
-    if (m_30.get() != 0)
+    if (m_30.get() == 0)
+        return;
+    if (m_bCurrentBuilt == 0)
+        FUN_1418e4f50();
+    else
     {
-        if (m_bCurrentBuilt == 0)
-            FUN_1418e4f50();
-        else
+        if (nTab == -1)
+            return;
+        PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        if (pPc != 0)
         {
-            if (nTab == -1)
-                return;
-            PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-            if (pPc != 0)
-            {
-                if (pPc->FUN_14166c930() != 0xe)
-                    pPc->vfunc_59(0xe, 0, 0, 0);
-                pPc->FUN_14166cc40(0x52);
-            }
+            if (pPc->FUN_14166c930() != 0xe)
+                pPc->vfunc_59(0xe, 0, 0, 0);
+            pPc->FUN_14166cc40(0x52);
         }
-        m_bTabChanged = 1;
     }
+    m_bTabChanged = 1;
 }
 
 // OnChangeCategory
 // @0x1418e6bf0
 void UICharacterCreateDialog::FUN_1418e6bf0(int nTab, int nCategory)
 {
-    if (m_30.get() != 0 && !(m_spCustomize == 0) && nTab != -1 && nCategory != -1)
+    if (!m_30)
+        return;
+    if (m_spCustomize == 0)
+        return;
+    if (nTab == -1 || nCategory == -1)
+        return;
+    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    if (pPc == 0)
+        return;
+    if (pPc->FUN_14166c930() != 0xe)
+        pPc->vfunc_59(0xe, 0, 0, 0);
+    if (m_bTabChanged == 0)
+        pPc->FUN_14166cc40(0x4d);
+    if (m_pCamera != 0)
+        m_pCamera->FUN_1418de980();
+    if (FUN_1418e6ab0(nTab, nCategory) == 0)
     {
-        PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-        if (pPc != 0)
-        {
-            if (pPc->FUN_14166c930() != 0xe)
-                pPc->vfunc_59(0xe, 0, 0, 0);
-            if (m_bTabChanged == 0)
-                pPc->FUN_14166cc40(0x4d);
-            if (m_pCamera != 0)
-                m_pCamera->FUN_1418de980();
-            if (FUN_1418e6ab0(nTab, nCategory) == 0)
-            {
-                FUN_1418e47e0(nTab, nCategory);
-                FUN_1418e4a80(nTab, nCategory);
-                m_aLoaded.SetAt(nCategory, 1);
-            }
-            m_spCustomize->FUN_140cd25c0(FUN_1418e46c0(nCategory));
-        }
+        FUN_1418e47e0(nTab, nCategory);
+        FUN_1418e4a80(nTab, nCategory);
+        m_aLoaded.SetAt(nCategory, 1);
     }
+    int nIndex = FUN_1418e46c0(nCategory);
+    m_spCustomize->FUN_140cd25c0(nIndex);
 }
 
 // OnChangeItem
 // @0x1418e6d80
 void UICharacterCreateDialog::FUN_1418e6d80(int nItemId)
 {
-    if (!(m_spCustomize == 0))
-    {
-        MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
-        if (!(spData == 0))
-        {
-            FUN_1418e7380(m_spCustomize->FUN_140cd17e0());
-            MS2Ptr<CItem> spItem;
-            if (!m_items.Lookup(nItemId, spItem))
-                m_spCustomize->FUN_140cd1d50(nItemId);
-            else
-                m_spCustomize->FUN_140cd1c90(spItem.get());
-            m_spCustomize->FUN_140cd2660(nItemId);
-            FUN_1418e5580(MS2Ptr<CItemData>(spData));
-            FUN_1418e5a10(MS2Ptr<CItemData>(spData));
-            m_bTabChanged = 0;
-            m_nCurItemId = nItemId;
-            FUN_1418e74c0(MS2Ptr<CItemData>(spData));
-        }
-    }
+    if (m_spCustomize == 0)
+        return;
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (spData == 0)
+        return;
+    FUN_1418e7380(m_spCustomize->FUN_140cd17e0());
+    MS2Ptr<CItem> spItem;
+    if (m_items.Lookup(nItemId, spItem))
+        m_spCustomize->FUN_140cd1c90(spItem.get());
+    else
+        m_spCustomize->FUN_140cd1d50(nItemId);
+    m_spCustomize->FUN_140cd2660(nItemId);
+    FUN_1418e5580(MS2Ptr<CItemData>(spData));
+    FUN_1418e5a10(MS2Ptr<CItemData>(spData));
+    m_bTabChanged = 0;
+    m_nCurItemId = nItemId;
+    FUN_1418e74c0(MS2Ptr<CItemData>(spData));
 }
 
 // OnChangeColor
 // @0x1418e6fc0
 void UICharacterCreateDialog::FUN_1418e6fc0(int nColor)
 {
-    if (!(m_spCustomize == 0))
-    {
-        FUN_140cd3160(m_spCustomize, nColor, 0);
-        m_nCurItemId = m_spCustomize->FUN_140cd17e0();
-    }
+    if (m_spCustomize == 0)
+        return;
+    FUN_140cd3160(m_spCustomize, nColor, 0);
+    m_nCurItemId = m_spCustomize->FUN_140cd17e0();
 }
 
 // OnChangePosition
 // @0x1418e7040
 void UICharacterCreateDialog::FUN_1418e7040(int nPos)
 {
-    if (!(m_spCustomize == 0))
-    {
-        Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
-        if (pPart != 0)
-        {
-            pPart->vfunc_9(nPos);
-            m_nCurItemId = m_spCustomize->FUN_140cd17e0();
-        }
-    }
+    if (m_spCustomize == 0)
+        return;
+    Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
+    if (pPart == 0)
+        return;
+    pPart->vfunc_9(nPos);
+    m_nCurItemId = m_spCustomize->FUN_140cd17e0();
 }
 
 // OnChangeSize
 // @0x1418e7110
 void UICharacterCreateDialog::FUN_1418e7110(int nIndex, float fSize)
 {
-    if (!(m_spCustomize == 0))
-    {
-        Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
-        if (pPart != 0)
-        {
-            const float* pRange = pPart->vfunc_24(nIndex);
-            if (pRange[2] != 0.0f)
-                fSize = (pRange[0] - fSize) + pRange[1];
-            pPart->vfunc_8(nIndex, fSize);
-            m_nCurItemId = m_spCustomize->FUN_140cd17e0();
-        }
-    }
+    if (m_spCustomize == 0)
+        return;
+    Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
+    if (pPart == 0)
+        return;
+    const float* pRange = pPart->vfunc_24(nIndex);
+    if (pRange[2] != 0.0f)
+        fSize = (pRange[0] - fSize) + pRange[1];
+    pPart->vfunc_8(nIndex, fSize);
+    m_nCurItemId = m_spCustomize->FUN_140cd17e0();
 }
 
 // OnChangeDegree
 // @0x1418e7260
 void UICharacterCreateDialog::FUN_1418e7260(float fDegree)
 {
-    if (!(m_spCustomize == 0))
-    {
-        Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
-        if (pPart != 0)
-        {
-            pPart->vfunc_10(fDegree);
-            m_nCurItemId = m_spCustomize->FUN_140cd17e0();
-        }
-    }
+    if (m_spCustomize == 0)
+        return;
+    Unk_BSPartObj* pPart = m_spCustomize->FUN_140cd1a30().FUN_140cd5210();
+    if (pPart == 0)
+        return;
+    pPart->vfunc_10(fDegree);
+    m_nCurItemId = m_spCustomize->FUN_140cd17e0();
 }
 
 // @0x1418e7340
@@ -2506,20 +2454,17 @@ void UICharacterCreateDialog::FUN_1418e7340()
 void UICharacterCreateDialog::FUN_1418e7380(int nItemId)
 {
     Unk_CcPlayer* pPc = static_cast<Unk_CcPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPc != 0)
-    {
-        MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
-        if (!(spData == 0))
-        {
-            MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->FUN_14053eba0()->FUN_14054b400(), pPc);
-            if (spEquip.get() != 0)
-            {
-                MS2Ptr<CItem> spWorn = spEquip->FUN_1411dc7a0();
-                if (spWorn.get() != 0)
-                    m_items.SetAt(spWorn->FUN_1405276c0(), spWorn->FUN_140524250());
-            }
-        }
-    }
+    if (pPc == 0)
+        return;
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+    if (spData == 0)
+        return;
+    MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->FUN_14053eba0()->FUN_14054b400(), pPc);
+    if (spEquip.get() == 0)
+        return;
+    MS2Ptr<CItem> spWorn = spEquip->FUN_1411dc7a0();
+    if (spWorn.get() != 0)
+        m_items.SetAt(spWorn->FUN_1405276c0(), spWorn->FUN_140524250());
 }
 
 // updateCurrentItem
@@ -2582,12 +2527,11 @@ bool UICharacterCreateDialog::FUN_1418e7790(int nResult, const CMsgBoxData& data
 // @0x1418e7830
 void UICharacterCreateDialog::vfunc_84()
 {
-    if (!(m_spCustomize == 0))
-    {
-        FUN_1418e4750();
-        FUN_1418e4f50();
-        m_30->Invoke("onChangeGenderComplete");
-    }
+    if (m_spCustomize == 0)
+        return;
+    FUN_1418e4750();
+    FUN_1418e4f50();
+    m_30->Invoke("onChangeGenderComplete");
 }
 
 // @0x1418e78b0
