@@ -103,8 +103,7 @@ void Unk_WeddingPartner::SetOnline(bool bOnline)
 bool Unk_WeddingPartner::IsOnline()
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    bool bOnline = m_bOnline;
-    return bOnline;
+    return m_bOnline;
 }
 
 // ---- Unk_WeddingLog / Unk_WeddingLogList ---------------------------------------------------------------------------
@@ -159,8 +158,8 @@ void Unk_WeddingLogList::Read(CInPacket& in)
 void Unk_WeddingLogList::Add(unsigned int nType, __int64 nAmount, __int64 nTime)
 {
     Unk_WeddingLog log;
-    log.m_nType = nType;
     log.m_nTime = nTime;
+    log.m_nType = nType;
     log.m_nAmount = nAmount;
     m_list.push_back(log);
     if (m_list.size() > 0x19)
@@ -241,23 +240,15 @@ void WeddingProxy::Read(CInPacket& in)
     m_log.Read(in);
 }
 // @0x1408ff3b0
-Unk_WeddingPartner* WeddingProxy::GetPartner(__int64 nCharacterId)
+Unk_WeddingPartner* WeddingProxy::GetSelf(__int64 nCharacterId)
 {
-    Unk_WeddingPartner* pPartner;
-    if (m_groom.m_nCharacterId == nCharacterId)
-        pPartner = &m_bride;
-    else
-        pPartner = &m_groom;
+    Unk_WeddingPartner* pPartner = m_groom.m_nCharacterId == nCharacterId ? &m_bride : &m_groom;
     return pPartner;
 }
 // @0x1408ff410
-Unk_WeddingPartner* WeddingProxy::GetSelf(__int64 nCharacterId)
+Unk_WeddingPartner* WeddingProxy::GetPartner(__int64 nCharacterId)
 {
-    Unk_WeddingPartner* pPartner;
-    if (m_groom.m_nCharacterId == nCharacterId)
-        pPartner = &m_groom;
-    else
-        pPartner = &m_bride;
+    Unk_WeddingPartner* pPartner = m_groom.m_nCharacterId == nCharacterId ? &m_groom : &m_bride;
     return pPartner;
 }
 // @0x1408ff470
@@ -274,8 +265,7 @@ bool WeddingProxy::IsGroom(__int64 nCharacterId)
 __int64 WeddingProxy::GetMeso()
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    __int64 nMeso = m_nMeso;
-    return nMeso;
+    return m_nMeso;
 }
 // @0x1408ff560
 void WeddingProxy::SetMeso(__int64 nMeso)
@@ -286,15 +276,16 @@ void WeddingProxy::SetMeso(__int64 nMeso)
 // @0x1408ff5c0
 void WeddingProxy::AddMeso(unsigned int nType, __int64 nAmount)
 {
+    __int64 nLogAmount = nAmount;
     if (nAmount < 0) {
+        __int64 nNeg = nAmount * -1;
         __int64 nExp = GetExp();
-        if (nExp < -nAmount)
-            nAmount = -nExp;
+        if (nNeg > nExp)
+            nAmount = nExp * -1;
     }
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_nMeso = m_nMeso + nAmount;
-    __int64 nTime = GetServerTime();
-    m_log.Add(nType, nAmount, nTime);
+    m_log.Add(nType, nLogAmount, GetServerTime());
 }
 // @0x1408ff6a0
 void WeddingProxy::ClearMeso()
@@ -307,40 +298,32 @@ void WeddingProxy::ClearMeso()
 void WeddingProxy::SetMessageW(const CStringW& str, bool bFirst)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    if (bFirst == false)
-        m_strMessageW0 = str;
-    else
+    if (bFirst)
         m_strMessageW1 = str;
+    else
+        m_strMessageW0 = str;
 }
 // @0x1408ff7a0
 void WeddingProxy::SetMessageA(const CString& str, bool bFirst)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    if (bFirst == false)
-        m_strMessageA0 = str;
-    else
+    if (bFirst)
         m_strMessageA1 = str;
+    else
+        m_strMessageA0 = str;
 }
 // @0x1408ff830
 CStringW WeddingProxy::GetMessageW(bool bFirst)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    CStringW* pStr;
-    if (bFirst == false)
-        pStr = &m_strMessageW0;
-    else
-        pStr = &m_strMessageW1;
+    CStringW* pStr = bFirst ? &m_strMessageW1 : &m_strMessageW0;
     return *pStr;
 }
 // @0x1408ff8e0
 CString WeddingProxy::GetMessageA(bool bFirst)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    CString* pStr;
-    if (bFirst == false)
-        pStr = &m_strMessageA0;
-    else
-        pStr = &m_strMessageA1;
+    CString* pStr = bFirst ? &m_strMessageA1 : &m_strMessageA0;
     return *pStr;
 }
 
@@ -490,144 +473,117 @@ void WeddingGuest::Read(CInPacket& in)
 // @0x140900550
 bool FUN_140900550()
 {
-    CFeatureManager* pFeatures = FUN_140166410();
-    return pFeatures->FUN_14036d570(0x104) != false;
+    if (FUN_140166410()->FUN_14036d570(0x104) == false)
+        return false;
+    return true;
 }
 // @0x140900580
-int FUN_140900580(bool bFlag)
+bool FUN_140900580(bool bFlag)
 {
-    int nResult;
-    CFeatureManager* pFeatures = FUN_140166410();
-    if (pFeatures->FUN_14036d570(0x106) == false || bFlag != false)
-        nResult = 1;
-    else
-        nResult = 0;
-    return nResult;
+    if (FUN_140166410()->FUN_14036d570(0x106) != false && bFlag == false)
+        return false;
+    return true;
 }
 // @0x1409005c0
-int FUN_1409005c0(bool bA, bool bB)
+bool FUN_1409005c0(unsigned char nGenderA, unsigned char nGenderB)
 {
-    int nResult;
-    CFeatureManager* pFeatures = FUN_140166410();
-    if (pFeatures->FUN_14036d570(0x105) == false || bA != bB)
-        nResult = 1;
-    else
-        nResult = 0;
-    return nResult;
+    if (FUN_140166410()->FUN_14036d570(0x105) != false && nGenderA == nGenderB)
+        return false;
+    return true;
 }
 // @0x140900610
 int WeddingProxy::CheckPropose()
 {
-    int nResult;
-    int nState = m_nState;
-    if (nState == 1) {
-        nResult = 0x17;
-    } else if (nState == 2) {
-        nResult = 0x18;
-    } else {
-        if (2 < nState) {
-            if (nState < 5)
-                return 0x19;
-            if (nState == 5 && IsProposeCooldownOver() == false)
-                return 0x1a;
-        }
-        nResult = 0;
+    switch (m_nState) {
+    case 1:
+        return 0x17;
+    case 2:
+        return 0x18;
+    case 3:
+    case 4:
+        return 0x19;
+    case 5:
+        if (IsProposeCooldownOver() == false)
+            return 0x1a;
+        break;
     }
-    return nResult;
+    return 0;
 }
 // @0x140900690
 int WeddingProxy::CheckProposeEnd()
 {
-    int nResult;
-    int nState = m_nState;
-    if (nState == 1) {
-        nResult = 0x1b;
-    } else if (nState == 2) {
-        nResult = 0x1c;
-    } else {
-        if (2 < nState) {
-            if (nState < 5)
-                return 0x1d;
-            if (nState == 5 && IsProposeCooldownOver() == false)
-                return 0x1e;
-        }
-        nResult = 0;
+    switch (m_nState) {
+    case 1:
+        return 0x1b;
+    case 2:
+        return 0x1c;
+    case 3:
+    case 4:
+        return 0x1d;
+    case 5:
+        if (IsProposeCooldownOver() == false)
+            return 0x1e;
+        break;
     }
-    return nResult;
+    return 0;
 }
 // @0x140900710
 int WeddingProxy::CheckBase()
 {
-    int nResult;
-    if (FUN_140900550() == false) {
-        nResult = 0x12;
-    } else if (m_nState == 1) {
+    if (FUN_140900550() == false)
+        return 0x12;
+    if (m_nState == 1) {
         __int64 nLimit = GetPromiseLimit();
         __int64 nNow = GetServerTime();
-        if (nNow < nLimit)
-            nResult = 0;
-        else
-            nResult = 0x29;
-    } else {
-        nResult = 0x23;
+        if (nNow >= nLimit)
+            return 0x29;
+        return 0;
     }
-    return nResult;
+    return 0x23;
 }
 // @0x140900780
 int WeddingProxy::CheckVisit(WeddingHallTicket& ticket, __int64 nLimit)
 {
     int nResult = CheckBase();
-    if (nResult == 0) {
-        if (ticket.m_nTime == 0 || ticket.m_nTime <= GetServerTime()) {
-            CMsTime kTime(GetServerTime());
-            AddHours(kTime, *TSingleton<Client::Constants>::GetInstance()->WeddingHallModifyLimitHour.Get());
-            if (nLimit < kTime.Get())
-                nResult = 0x36;
-            else
-                nResult = 0;
-        } else {
-            nResult = 0x2b;
-        }
-    }
-    return nResult;
+    if (nResult != 0)
+        return nResult;
+    if (ticket.m_nTime != 0 && ticket.m_nTime > GetServerTime())
+        return 0x2b;
+    CMsTime kTime(GetServerTime());
+    AddHours(kTime, *TSingleton<Client::Constants>::GetInstance()->WeddingHallModifyLimitHour.Get());
+    if (nLimit < kTime.Get())
+        return 0x36;
+    return 0;
 }
 // @0x140900830
 int WeddingProxy::CheckReservation(WeddingHallTicket& ticket, __int64 nCharacterId)
 {
     int nResult = CheckBase();
-    if (nResult == 0) {
-        if ((__int64)ticket.m_nBookingCharSN == nCharacterId) {
-            CMsTime kTime(ticket.m_nTime);
-            AddHours(kTime, -(int)*TSingleton<Client::Constants>::GetInstance()->WeddingHallModifyLimitHour.Get());
-            __int64 nNow = GetServerTime();
-            if (nNow < kTime.Get())
-                nResult = 0;
-            else
-                nResult = 0x2a;
-        } else {
-            nResult = 0x3e;
-        }
-    }
-    return nResult;
+    if (nResult != 0)
+        return nResult;
+    if ((__int64)ticket.m_nBookingCharSN != nCharacterId)
+        return 0x3e;
+    CMsTime kTime(ticket.m_nTime);
+    AddHours(kTime, *TSingleton<Client::Constants>::GetInstance()->WeddingHallModifyLimitHour.Get() * -1);
+    __int64 nNow = GetServerTime();
+    if (nNow >= kTime.Get())
+        return 0x2a;
+    return 0;
 }
 // @0x1409008e0
 int WeddingProxy::CheckReservationCancel(WeddingHallTicket& ticket, __int64 nCharacterId)
 {
     int nResult = CheckBase();
-    if (nResult == 0) {
-        if ((__int64)ticket.m_nBookingCharSN == nCharacterId) {
-            CMsTime kTime(ticket.m_nTime);
-            AddHours(kTime, -(int)*TSingleton<Client::Constants>::GetInstance()->WeddingHallModifyLimitHour.Get());
-            __int64 nNow = GetServerTime();
-            if (nNow < kTime.Get())
-                nResult = 0;
-            else
-                nResult = 0x2a;
-        } else {
-            nResult = 0x3e;
-        }
-    }
-    return nResult;
+    if (nResult != 0)
+        return nResult;
+    if ((__int64)ticket.m_nBookingCharSN != nCharacterId)
+        return 0x3e;
+    CMsTime kTime(ticket.m_nTime);
+    AddHours(kTime, *TSingleton<Client::Constants>::GetInstance()->WeddingHallModifyLimitHour.Get() * -1);
+    __int64 nNow = GetServerTime();
+    if (nNow >= kTime.Get())
+        return 0x2a;
+    return 0;
 }
 // @0x140900990
 int WeddingProxy::CheckReservationChange(WeddingHallTicket& current, WeddingHallTicket& wanted, __int64 nCharacterId)
@@ -647,68 +603,53 @@ int WeddingProxy::CheckReservationChange(WeddingHallTicket& current, WeddingHall
 // @0x140900a80
 int WeddingProxy::CheckDivorce()
 {
-    int nResult;
-    if (m_nState == 2) {
-        if (IsOlderThanDays(m_n30, *TSingleton<Client::Constants>::GetInstance()->WeddingDivorceRequireMarriageDay.Get()) == 0)
-            nResult = 0x2e;
-        else
-            nResult = 0;
-    } else {
-        nResult = 0x2d;
-    }
-    return nResult;
+    if (m_nState != 2)
+        return 0x2d;
+    if (IsOlderThanDays(m_n30, *TSingleton<Client::Constants>::GetInstance()->WeddingDivorceRequireMarriageDay.Get()) == 0)
+        return 0x2e;
+    return 0;
 }
 // @0x140900ae0
 int WeddingProxy::CheckLeave(__int64 nCharacterId)
 {
-    int nResult;
-    if (IsPartner(nCharacterId) == true) {
-        nResult = 0x31;
-    } else if (m_nState < 3 || 4 < m_nState) {
-        nResult = 0x2d;
-    } else {
-        nResult = 0;
+    if (IsPartner(nCharacterId) == true)
+        return 0x31;
+    switch (m_nState) {
+    case 3:
+    case 4:
+        return 0;
+    default:
+        return 0x2d;
     }
-    return nResult;
 }
 // @0x140900b40
 int WeddingProxy::CheckEnter(__int64 nCharacterId)
 {
-    int nResult;
-    if (IsPartner(nCharacterId) == false) {
-        nResult = 0x37;
-    } else {
-        __int64 nDivorceTime = GetDivorceTime();
-        __int64 nNow = GetServerTime();
-        if (nDivorceTime < nNow)
-            nResult = 0x37;
-        else
-            nResult = 0;
-    }
-    return nResult;
+    if (IsPartner(nCharacterId) == false)
+        return 0x37;
+    __int64 nDivorceTime = GetDivorceTime();
+    if (GetServerTime() > nDivorceTime)
+        return 0x37;
+    return 0;
 }
 // @0x140900ba0
-int WeddingProxy::CheckState2()
+int WeddingProxy::CheckState2(__int64 nCharacterId)
 {
-    int nResult;
-    if (m_nState == 2)
-        nResult = 0;
-    else
-        nResult = 0x32;
-    return nResult;
+    if (m_nState != 2)
+        return 0x32;
+    return 0;
 }
 // @0x140900bd0
 bool WeddingProxy::IsPartner(__int64 nCharacterId)
 {
-    bool bResult;
-    int nState = m_nState;
-    if (nState == 3)
-        bResult = IsGroom(nCharacterId);
-    else if (nState == 4)
-        bResult = IsBride(nCharacterId);
-    else
-        bResult = false;
-    return bResult;
+    switch (m_nState) {
+    case 3:
+        return IsGroom(nCharacterId);
+    case 4:
+        return IsBride(nCharacterId);
+    default:
+        return false;
+    }
 }
 // @0x140900c30
 __int64 WeddingProxy::GetPromiseLimit()
@@ -720,28 +661,20 @@ __int64 WeddingProxy::GetPromiseLimit()
 // @0x140900c80
 __int64 WeddingProxy::GetDivorceTime()
 {
-    __int64 nResult;
-    if (m_nState == 3 || m_nState == 4) {
-        CMsTime kTime(m_n28);
-        AddDays(kTime, *TSingleton<Client::Constants>::GetInstance()->WeddingCoolingOffDay.Get());
-        nResult = kTime.Get();
-    } else {
-        nResult = 0;
-    }
-    return nResult;
+    if (m_nState != 3 && m_nState != 4)
+        return 0;
+    CMsTime kTime(m_n28);
+    AddDays(kTime, *TSingleton<Client::Constants>::GetInstance()->WeddingCoolingOffDay.Get());
+    return kTime.Get();
 }
 // @0x140900cf0
 __int64 WeddingProxy::GetCoolingOffTime()
 {
-    __int64 nResult;
-    if (m_nState == 2) {
-        CMsTime kTime(m_n28);
-        AddDays(kTime, 0x1e);
-        nResult = kTime.Get();
-    } else {
-        nResult = 0;
-    }
-    return nResult;
+    if (m_nState != 2)
+        return 0;
+    CMsTime kTime(m_n28);
+    AddDays(kTime, 0x1e);
+    return kTime.Get();
 }
 // @0x140900d40
 unsigned int FUN_140900d40()
@@ -766,32 +699,30 @@ unsigned int FUN_140900dd0()
 // @0x140900e00
 bool WeddingProxy::IsProposeCooldownOver()
 {
-    bool bResult;
-    if (m_nState == 5) {
-        if (IsOlderThanDays(m_n28, *TSingleton<Client::Constants>::GetInstance()->WeddingProposeCooltime.Get()) == 0)
-            bResult = false;
-        else
-            bResult = true;
-    } else {
-        bResult = false;
-    }
-    return bResult;
+    if (m_nState != 5)
+        return false;
+    if (IsOlderThanDays(m_n28, *TSingleton<Client::Constants>::GetInstance()->WeddingProposeCooltime.Get()) == 0)
+        return false;
+    return true;
 }
 // @0x140900e50
 __int64 WeddingProxy::GetExp()
 {
-    __int64 nExp;
-    if (m_nState < 2 || 4 < m_nState) {
-        nExp = 0;
-    } else {
-        __int64 nPerDay = TSingleton<WeddingTable>::GetInstance()->FUN_140908e60(1, 0);
-        int nDays = GetDayNumberDifference(m_n30, GetServerTime());
-        nExp = GetMeso();
-        nExp = nPerDay * nDays + nExp;
-        if (nExp < 0)
-            nExp = 0;
+    switch (m_nState) {
+    case 2:
+    case 3:
+    case 4:
+        break;
+    default:
+        return 0;
     }
-    return nExp;
+    __int64 nExp = TSingleton<WeddingTable>::GetInstance()->FUN_140908e60(1, 0);
+    int nDays = GetDayNumberDifference(m_n30, GetServerTime());
+    nExp = nExp * nDays;
+    __int64 nTotal = nExp + GetMeso();
+    if (nTotal < 0)
+        nTotal = 0;
+    return nTotal;
 }
 // @0x140900f00
 unsigned int FUN_140900f00()
@@ -801,14 +732,14 @@ unsigned int FUN_140900f00()
 // @0x140900f30
 bool FUN_140900f30(__int64 nTime)
 {
+    int nHour;
+    const int nStart = 6;
+    const int nEnd = 0x11;
     CMsTime kTime(nTime);
-    int nHour = kTime.GetHour();
-    bool bNight;
-    if (nHour < 6 || 0x11 < nHour)
-        bNight = true;
-    else
-        bNight = false;
-    return bNight;
+    nHour = kTime.GetHour();
+    if (nHour >= nStart && nHour <= nEnd)
+        return false;
+    return true;
 }
 // @0x140900f90
 bool FUN_140900f90(int nPackageId, WeddingHallTicket* pTicket)

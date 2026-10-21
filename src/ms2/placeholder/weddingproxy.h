@@ -73,8 +73,8 @@ public:
     void Assign(WeddingProxy& other);                       // 0x1408fec60
     void Write(COutputStream& out);                         // 0x1408feda0
     void Read(CInPacket& in);                               // 0x1408ff040
-    Unk_WeddingPartner* GetPartner(__int64 nCharacterId);   // 0x1408ff3b0 the other partner of the couple
-    Unk_WeddingPartner* GetSelf(__int64 nCharacterId);      // 0x1408ff410
+    Unk_WeddingPartner* GetSelf(__int64 nCharacterId);      // 0x1408ff3b0 the other partner of the couple (exe symbol name)
+    Unk_WeddingPartner* GetPartner(__int64 nCharacterId);   // 0x1408ff410
     bool IsBride(__int64 nCharacterId);                     // 0x1408ff470
     bool IsGroom(__int64 nCharacterId);                     // 0x1408ff4c0
     __int64 GetMeso();                                      // 0x1408ff500
@@ -95,7 +95,7 @@ public:
     int CheckDivorce();                                     // 0x140900a80
     int CheckLeave(__int64 nCharacterId);                   // 0x140900ae0
     int CheckEnter(__int64 nCharacterId);                   // 0x140900b40
-    int CheckState2();                                      // 0x140900ba0
+    int CheckState2(__int64 nCharacterId);                  // 0x140900ba0
     bool IsPartner(__int64 nCharacterId);                   // 0x140900bd0
     __int64 GetPromiseLimit();                              // 0x140900c30
     __int64 GetDivorceTime();                               // 0x140900c80
