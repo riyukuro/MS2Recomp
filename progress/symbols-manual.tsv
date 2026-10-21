@@ -7555,3 +7555,9 @@ jpeg_start_decompress	1426f4b10	func
 ?Method@?$ThunkFunc2@VVector_uint@fl_vec@Instances@AS3@GFx@Scaleform@@$0M@VValue@456@IPEBV7456@@AS3@GFx@Scaleform@@2Q8Vector_uint@fl_vec@Instances@234@EAAXAEAVValue@234@IPEBV8234@@ZEQ567234@	143b15b48	data
 ?Method@?$ThunkFunc2@VVector_uint@fl_vec@Instances@AS3@GFx@Scaleform@@$0N@VValue@456@IPEBV7456@@AS3@GFx@Scaleform@@2Q8Vector_uint@fl_vec@Instances@234@EAAXAEAVValue@234@IPEBV8234@@ZEQ567234@	143b15b58	data
 ?Method@?$ThunkFunc2@VVector_uint@fl_vec@Instances@AS3@GFx@Scaleform@@$0O@V?$SPtr@VVector_uint@fl_vec@Instances@AS3@GFx@Scaleform@@@456@AEBVValue@456@AEBV8456@@AS3@GFx@Scaleform@@2Q8Vector_uint@fl_vec@Instances@234@EAAXAEAV?$SPtr@VVector_uint@fl_vec@Instances@AS3@GFx@Scaleform@@@234@AEBVValue@234@1@ZEQ567234@	143b15b68	data
+??0SoundFile@Sound@Scaleform@@QEAA@PEBDII_N@Z	142747cf0	func
+??1SoundInfo@Sound@Scaleform@@UEAA@XZ	142748430	func
+?GetRate@SoundInfo@Sound@Scaleform@@UEBAIXZ	142748490	func
+?GetSoundSample@SoundInfo@Sound@Scaleform@@UEAAPEAVSoundSample@23@PEAVSoundRenderer@23@@Z	1427484a0	func
+?ReleaseResource@SoundInfo@Sound@Scaleform@@UEAAXXZ	142748540	func
+?SetSoundData@SoundInfo@Sound@Scaleform@@UEAA_NPEAVSoundDataBase@23@@Z	142748580	func
