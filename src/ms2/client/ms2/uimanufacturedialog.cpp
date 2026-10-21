@@ -237,7 +237,7 @@ void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, int c);
 void FUN_141415600(const CString& strKey);
 void FUN_14151f200();
-int FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
+bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs, int n);
 UITalkCinematic* FUN_140a7b2b0(int nId);                        // a dialog by UI id
 
@@ -299,9 +299,9 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, CStri
     ASArgList args;
     args.FUN_1409b2800(6);
     FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), a2.GetString());
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3.GetString());
-    FUN_1422bcea0(args.FUN_1409b1f70(3), a4.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
+    FUN_1422bcea0(args.FUN_1409b1f70(3), a4);
     FUN_1422bccb0(args.FUN_1409b1f70(4), a5);
     FUN_1422bcce0(args.FUN_1409b1f70(5), a6);
     return FUN_1422bb8f0(szMethod, args);
@@ -312,9 +312,9 @@ inline Scaleform::GFx::Value AScript::FUN_1412e80d0(const char* szMethod, CStrin
 {
     ASArgList args;
     args.FUN_1409b2800(3);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), a1.GetString());
-    FUN_1422bcea0(args.FUN_1409b1f70(1), a2.GetString());
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(0), a1);
+    FUN_1422bcea0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -324,8 +324,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned __in
     ASArgList args;
     args.FUN_1409b2800(3);
     FUN_1422bce00(args.FUN_1409b1f70(0), a1);
-    FUN_1422bce70(args.FUN_1409b1f70(1), a2.GetString());
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3.GetString());
+    FUN_1422bce70(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -465,7 +465,6 @@ int UIManufactureDialog::vfunc_13()
 }
 
 // @0x1412e2d30
-// MS2-FUNCTIONAL: not byte-exact yet (call-result temporaries / frame-slot order differ)
 void UIManufactureDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -473,20 +472,19 @@ void UIManufactureDialog::vfunc_43()
     if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
     {
         int nX = pRef->FUN_141b1d3d0();
-        int nY = pRef->FUN_141b1d460();
-        if (nX != -1 && nY - 0x14 != -1)
+        int nY = pRef->FUN_141b1d460() - 0x14;
+        if (nX != -1 && nY != -1)
         {
-            pDialog->vfunc_2(5, nY - 0x14, nX - pDialog->FUN_1422c13b0() - 2);
+            pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0() - 2);
             return;
         }
     }
-    pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog != 0)
-        pDialog->vfunc_2(1, 0, 0);
+    ASDialog* pDefault = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDefault != 0)
+        pDefault->vfunc_2(1, 0, 0);
 }
 
 // @0x1412e2e70
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 int UIManufactureDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (UIDialog::OnMessage(pSender, pMsg) != 0)
@@ -495,10 +493,13 @@ int UIManufactureDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     {
         int nResult = pMsg->FUN_1422b8a10();
         CStringW strTag = pMsg->FUN_1422b8f40();
-        ATL::CAtlArray<void*> kArr;
+        ATL::CAtlArray<CStringW> kArr;
         FUN_14151f200();
-        if (nResult == 0 && FUN_1403b3c40(strTag, L"OnCancel") != 0)
+        if (nResult == 0 && FUN_1403b3c40(strTag, L"OnCancel"))
+        {
             FUN_1412e69a0();
+            return 1;
+        }
         return 1;
     }
     return 0;
@@ -559,7 +560,6 @@ void UIManufactureDialog::FUN_1412e3480(int nNpcId, unsigned __int64 nManufactur
 }
 
 // @0x1412e34c0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIManufactureDialog::FUN_1412e34c0()
 {
     if (m_30.IsNull())
@@ -860,7 +860,7 @@ void UIManufactureDialog::FUN_1412e5c90()
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(0, pNpc);
     UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
     if (pTalk != 0)
-        pTalk->FUN_141b1a8e0(strText, CString(""), CString(""));
+        pTalk->FUN_141b1a8e0(strText, "", "");
 }
 
 // @0x1412e5dd0
@@ -882,7 +882,7 @@ void UIManufactureDialog::FUN_1412e5dd0(int nRow)
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, CString(""), CString(""));
+            pTalk->FUN_141b1a8e0(strText, "", "");
     }
 }
 
@@ -905,7 +905,7 @@ void UIManufactureDialog::FUN_1412e5f70(int nRow)
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, CString(""), CString(""));
+            pTalk->FUN_141b1a8e0(strText, "", "");
     }
 }
 
@@ -921,7 +921,7 @@ void UIManufactureDialog::FUN_1412e6110(int nResult)
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
     UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
     if (pTalk != 0)
-        pTalk->FUN_141b1a8e0(strText, CString(""), CString(""));
+        pTalk->FUN_141b1a8e0(strText, "", "");
     if (nResult == 1)
     {
         FUN_1412e4240();
@@ -945,7 +945,7 @@ void UIManufactureDialog::FUN_1412e6250()
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, CString(""), CString(""));
+            pTalk->FUN_141b1a8e0(strText, "", "");
     }
 }
 
@@ -993,7 +993,7 @@ void UIManufactureDialog::FUN_1412e63b0()
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, CString(""), CString(""));
+            pTalk->FUN_141b1a8e0(strText, "", "");
     }
 }
 
@@ -1013,7 +1013,7 @@ void UIManufactureDialog::FUN_1412e66f0()
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, CString(""), CString(""));
+            pTalk->FUN_141b1a8e0(strText, "", "");
     }
 }
 
@@ -1029,7 +1029,7 @@ void UIManufactureDialog::FUN_1412e6850(int nResult)
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
     UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
     if (pTalk != 0)
-        pTalk->FUN_141b1a8e0(strText, CString(""), CString(""));
+        pTalk->FUN_141b1a8e0(strText, "", "");
     if (FUN_1412e7170(nResult) != 0)
     {
         FUN_1412e4240();
@@ -1053,7 +1053,7 @@ void UIManufactureDialog::FUN_1412e69a0()
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
         UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, CString(""), CString(""));
+            pTalk->FUN_141b1a8e0(strText, "", "");
     }
 }
 
@@ -1069,7 +1069,7 @@ void UIManufactureDialog::FUN_1412e6af0(int nResult)
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, pNpc);
     UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
     if (pTalk != 0)
-        pTalk->FUN_141b1a8e0(strText, CString(""), CString(""));
+        pTalk->FUN_141b1a8e0(strText, "", "");
     if (nResult == 4)
     {
         FUN_1412e4240();
