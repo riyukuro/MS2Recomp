@@ -390,7 +390,7 @@ template <class T> void Unk_AppendVector(const std::vector<T>& src, std::vector<
 // @0x140474af0
 CGameRule::CGameRule()
     : m_d0(0), m_d4(0), m_368(0), m_36c(0), m_3b0(0), m_690(-1), m_698(0), m_6a0(0), m_6a8(0), m_6f0(0), m_6f4(0),
-      m_700(0), m_8d8(0), m_8e8(0), m_910(false), m_9d0(false), m_transferItemBound(false), m_b30(0), m_b40(0),
+      m_700(0), m_8d8(0), m_8e8(0), m_910(false), m_998(false), m_9d0(false), m_transferItemBound(false), m_b30(0), m_b40(0),
       m_bb0(0), m_bc0(0), m_bd0(0), m_be0(0), m_bf0(0), m_c00(0), m_c10(0), m_c14(0), m_c60(false), m_d10(false),
       m_e98(0), m_ef8(0)
 {

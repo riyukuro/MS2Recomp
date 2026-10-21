@@ -165,7 +165,7 @@ public:
     bool FUN_14109a720() { return m_bVisible; }
 private:
     char m_pad_10[0x35 - sizeof(NiRefObject)];
-    bool m_bVisible;                                                // +0x35
+    bool m_bVisible; char m_pad_36[0x58 - 0x36];                  // +0x35 (the exe allocates 0x58 at 0x141096664)
 };
 
 // The buffs (AdditionalCliList, pcbase.h's Unk_PCBaseBuffs view).
@@ -527,7 +527,7 @@ void CNpcVibrate::FUN_14108e300(float fTime, efd::Point3& kPos)
 
 // @0x14108e420
 CNpc::CNpc()
-    : m_cEAC(0), m_nEB0(0), m_nEB4(0), m_nOwnerId(0), m_nEC0(0), m_nEC4(0), m_spF28(0), m_cF38(0)
+    : m_pD60(0), m_pD68(0), m_cEAC(0), m_nEB0(0), m_nEB4(0), m_nOwnerId(0), m_nEC0(0), m_nEC4(0), m_spF28(0), m_cF38(0)
 {
     m_spSkillRow = 0;
     m_nD80 = 3;
