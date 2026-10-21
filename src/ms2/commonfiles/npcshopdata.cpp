@@ -332,13 +332,12 @@ MS2_REPLACE_METHOD(0x1406DC2C0, TShopPaymentAttr, FUN_1406dc2c0, 249, 0xFA616EDA
 void TShopPaymentAttr::FUN_1406dc3c0(Unk_140165cf0* pElem, const CString& strType, const CString& strItem,
                                      const CString& strIcon, const CString& strPrice)
 {
-    if (pElem)
-    {
-        XmlValue(pElem, strType, m_eType);
-        FUN_140873220(pElem, strItem, m_nItemId);
-        FUN_1408733e0(pElem, strIcon, m_strIconTag);
-        FUN_1408732e0(pElem, strPrice, m_nAmount);
-    }
+    if (!(pElem))
+        return;
+    XmlValue(pElem, strType, m_eType);
+    FUN_140873220(pElem, strItem, m_nItemId);
+    FUN_1408733e0(pElem, strIcon, m_strIconTag);
+    FUN_1408732e0(pElem, strPrice, m_nAmount);
 }
 MS2_REPLACE_METHOD(0x1406DC3C0, TShopPaymentAttr, FUN_1406dc3c0, 226, 0xD6E6362F);
 
@@ -1073,7 +1072,6 @@ MS2SvrPtr<CNpcShopBuyPeriod> FUN_1406e2fb0(Unk_140165cf0* pElem, unsigned nItemI
 Unk_ShopLifeRef FUN_1406e3310(Unk_140165cf0* pElem);
 
 // Reads the <shop> rows of a shop info table (shop_*_info.xml) into shops.
-// MS2-FUNCTIONAL: written from the decompile and v2525; the exe's temporaries differ.
 // @0x1406e0390
 int FUN_1406e0390(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
 {
@@ -1573,19 +1571,18 @@ int FUN_1406e2d20(unsigned nShopId, int nDay, __int64 nValue)
 // @0x1406e2ee0
 void FUN_1406e2ee0(int nGroupId, Unk_MeratItemArray& out)
 {
-    if (nGroupId != 0)
+    if (nGroupId == 0)
+        return;
+    if (Unk_LockGuard guard = s_npcShopLock)
     {
-        if (Unk_LockGuard guard = s_npcShopLock)
-        {
-        }
-        else
-        {
-            if (s_meratGroups.IsEmpty())
-                return;
-            Unk_MeratItemArrayPtr spItems(0);
-            if (s_meratGroups.Lookup(nGroupId, spItems))
-                out.Copy(*spItems);
-        }
+    }
+    else
+    {
+        if (s_meratGroups.IsEmpty())
+            return;
+        Unk_MeratItemArrayPtr spItems(0);
+        if (s_meratGroups.Lookup(nGroupId, spItems))
+            out.Copy(*spItems);
     }
 }
 
@@ -1932,10 +1929,10 @@ void CBeautyShopItemGroups::FUN_1406e4260(std::vector<MS2Ptr<CBeautyShopItemGrou
 bool CBeautyShopItemGroups::FUN_1406e4350(MS2Ptr<CBeautyShopItemGroup> spGroup)
 {
     __int64 nKey = spGroup->FUN_1406e4040();
-    bool bAdd = !(m_groups.find(nKey) != m_groups.end());
-    if (bAdd)
-        m_groups[nKey] = spGroup;
-    return bAdd;
+    if (m_groups.find(nKey) != m_groups.end())
+        return false;
+    m_groups[nKey] = spGroup;
+    return true;
 }
 
 // yyyymmddhhmmss of a time (the item group keys).
@@ -1961,7 +1958,6 @@ CBeautyShopData::CBeautyShopData()
 }
 
 // Checks the coupons after reading (FALSE: strError says why).
-// MS2-FUNCTIONAL: written from the decompile and v2525; the exe's temporaries differ.
 // @0x1406e45b0
 int CBeautyShopData::FUN_1406e45b0(CString& strError)
 {
@@ -2004,7 +2000,6 @@ void CBeautyShopData::FUN_1406e4770(COutputStream& out)
 MS2_REPLACE_METHOD(0x1406E4770, CBeautyShopData, FUN_1406e4770, 234, 0x72386D0D);
 
 // The product of the group on sale now.
-// MS2-FUNCTIONAL: written from the decompile and v2525; the exe's temporaries differ.
 // @0x1406e4860
 MS2Ptr<CBeautyShopItem> CBeautyShopData::FUN_1406e4860(int nItemId, unsigned nGender)
 {
@@ -2019,7 +2014,7 @@ MS2Ptr<CBeautyShopItem> CBeautyShopData::FUN_1406e4860(int nItemId, unsigned nGe
     for (size_t i = 0; i < items.GetCount(); i++)
     {
         MS2Ptr<CBeautyShopItem> spItem(items[i]);
-        if (!spItem || spItem->m_nWeight == 0)
+        if (spItem == 0 || spItem->m_nWeight == 0)
             continue;
         if (spItem->m_nItemId == nItemId)
             return spItem;
@@ -2030,7 +2025,8 @@ MS2Ptr<CBeautyShopItem> CBeautyShopData::FUN_1406e4860(int nItemId, unsigned nGe
 // @0x1406e4a70
 void CBeautyShopData::AddShopItemGroup(MS2Ptr<CBeautyShopItemGroup> spGroup)
 {
-    if (!m_spGroups->FUN_1406e4350(spGroup))
+    bool bAdded = m_spGroups->FUN_1406e4350(spGroup);
+    if (!bAdded)
     {
         __int64 nKey = spGroup->FUN_1406e4040();
         static_cast<Unk_NpcShopLog*>(CLogString::GetInstance())->Log(0, 0, 0x2d, L"{0} failed. shopid={1}, itemGroupKey={2}", L"CBeautyShopData::AddShopItemGroup",
@@ -2087,13 +2083,10 @@ bool FUN_1406e4dd0()
         for (size_t i = 0; i < s_aBeautyShopCaches.GetCount(); i++)
         {
             MS2Ptr<CCacheData> spCache(s_aBeautyShopCaches[i]);
-            if (spCache == 0)
+            if (spCache == 0 || !FUN_1401d1320(spCache.operator->()))
                 continue;
-            if (FUN_1401d1320(spCache.operator->()))
-            {
-                FUN_1406e4db0(*spCache->FUN_1401d1140());
-                bChanged = true;
-            }
+            FUN_1406e4db0(*spCache->FUN_1401d1140());
+            bChanged = true;
         }
     }
     return bChanged;
@@ -2189,7 +2182,6 @@ __int64 FUN_1406e55b0()
 }
 
 // Reads the beauty coupon table: the coupon items per shop.
-// MS2-FUNCTIONAL: written from the decompile and v2525; the exe's temporaries differ.
 // @0x1406e56d0
 bool FUN_1406e56d0(const CString& strPath)
 {
@@ -2323,30 +2315,28 @@ bool FUN_1406e5bf0(const CStringW& str, ATL::CAtlArray<Unk_DayTimeRange>& out)
 }
 
 // Parses a dayOfWeek list ("1,2,...", 1..7, no repeats).
-// MS2-FUNCTIONAL: written from the decompile; the exe's temporaries differ.
 // @0x1406e5ea0
 bool FUN_1406e5ea0(const CStringW& str, std::set<int>& out)
 {
     out.clear();
-    if (!str.IsEmpty())
+    if (str.IsEmpty())
+        return true;
+    ATL::CAtlArray<int> days;
+    FUN_1401d9a30(str, days, L",");
+    for (int i = 0; i < (int)days.GetCount(); i++)
     {
-        ATL::CAtlArray<int> days;
-        FUN_1401d9a30(str, days, L",");
-        for (int i = 0; i < (int)days.GetCount(); i++)
+        int nDay = days[i];
+        if (nDay < 1 || nDay > 7)
         {
-            int nDay = days[i];
-            if (nDay < 1 || nDay > 7)
-            {
-                MS2_ASSERT_AT(0x75, FALSE);
-                return false;
-            }
-            if (out.find(nDay) != out.end())
-            {
-                MS2_ASSERT_AT(0x7b, FALSE);
-                return false;
-            }
-            out.insert(nDay);
+            MS2_ASSERT_AT(0x75, FALSE);
+            return false;
         }
+        if (out.find(nDay) != out.end())
+        {
+            MS2_ASSERT_AT(0x7b, FALSE);
+            return false;
+        }
+        out.insert(nDay);
     }
     return true;
 }
@@ -2385,11 +2375,10 @@ CNpcShopMeratItemBase::~CNpcShopMeratItemBase()
 void CNpcShopMeratItemBase::vfunc_2(CInPacket* pIn)
 {
     m_spProduct.AssignRaw(new CMeratMarketPremiumProduct);
-    if (!(m_spProduct == 0))
-    {
-        m_spProduct->ReadBrief(*pIn);
-        m_nDisplayOrder = pIn->vfunc_o8_1();
-    }
+    if (m_spProduct == 0)
+        return;
+    m_spProduct->ReadBrief(*pIn);
+    m_nDisplayOrder = pIn->vfunc_o8_1();
 }
 
 // @0x1406f1930
@@ -2400,11 +2389,10 @@ void CNpcShopMeratItemSvr::vfunc_2(CInPacket* pIn)
 // @0x1406f1980
 void CNpcShopMeratItemBase::vfunc_1(COutputStream* pOut)
 {
-    if (!(m_spProduct == 0))
-    {
-        m_spProduct->WriteBrief(*pOut);
-        pOut->vfunc_o10_1((unsigned char)m_nDisplayOrder);
-    }
+    if (m_spProduct == 0)
+        return;
+    m_spProduct->WriteBrief(*pOut);
+    pOut->vfunc_o10_1((unsigned char)m_nDisplayOrder);
 }
 
 // @0x1406f1a00
