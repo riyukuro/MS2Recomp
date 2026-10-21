@@ -152,7 +152,7 @@ CStopWatchEx::CStopWatchEx() { m_callback = 0; }
 CStopWatchEx::~CStopWatchEx() { m_callback = 0; }
 // @0x1408698c0
 void CStopWatchEx::vfunc_1(const char* format, ...) {
-    if(Unk_LockGuard guard = m_lock) {} else {
+    if(Unk_LockGuard guard = m_lock) { __assume(0); } else {
         va_list args;
         va_start(args, format);
         m_message.FormatV(format, args);
@@ -162,10 +162,9 @@ void CStopWatchEx::vfunc_1(const char* format, ...) {
     FUN_140166440()->Log(12, 19, L"{0} {1} {2}", elapsed, m_name, m_message);
     if(m_callback != 0) m_callback->Invoke();
 }
-// MS2-FUNCTIONAL: /Od emits a trailing nop after the lock-guard else path that is not reproduced.
 // @0x140869a00
 CString CStopWatchEx::GetMessageText() {
-    { if(Unk_LockGuard guard = m_lock) {} else { return m_message; } }
+    { if(Unk_LockGuard guard = m_lock) { __assume(0); } else { return m_message; } }
 }
 // @0x140869a90
 int CStopWatchEx::GetStartTick() { return m_start; }
