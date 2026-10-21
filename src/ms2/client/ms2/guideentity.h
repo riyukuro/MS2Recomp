@@ -38,7 +38,7 @@ class Unk_GeActList
 {
 public:
     unsigned __int64 FUN_1413886c0();                             // count
-    Unk_GeActRef& FUN_141387b00(unsigned nIdx);             // the nth
+    Unk_GeActRef& FUN_141387b00(size_t nIdx);               // the nth
     void FUN_1413883b0(const Unk_GeActRef& ref);            // append
     CAtlArray<void*> m_arr;
 };

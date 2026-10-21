@@ -330,17 +330,20 @@ int FUN_1413a5570(CGuideCondition* pCond)
 // @0x1413a55a0
 int CGuideCondition::FUN_1413a55a0(int nResult)
 {
+    int nRet;
     if (m_b1c)
-        nResult = (nResult == 0);
-    return nResult;
+        nRet = nResult == 0 ? 1 : 0;
+    else
+        nRet = nResult;
+    return nRet;
 }
 
 // @0x1413a5600
 int CGuideCondition::FUN_1413a5600(bool bResult)
 {
     if (m_b1c)
-        return !bResult;
-    return bResult;
+        return bResult ? 0 : 1;
+    return bResult ? 1 : 0;
 }
 
 // @0x1413a5670
@@ -364,7 +367,8 @@ void CGuideCondition::vfunc_4()
 // @0x1413a56f0
 void CGuideCondition::vfunc_5()
 {
-    FUN_1412751b0(CStringW(L"Nothing TestCase"), 20);
+    CStringW str(L"Nothing TestCase");
+    FUN_1412751b0(str, 20);
 }
 
 // @0x1413a5740
@@ -495,7 +499,7 @@ int CGuideConditionTimeout::vfunc_3()
 {
     if (m_n28 == 0)
         m_n28 = FUN_140869420() + m_n20;
-    return FUN_1413a5600((unsigned)m_n28 <= FUN_140869420());
+    return FUN_1413a5600(FUN_140869420() >= (unsigned)m_n28);
 }
 
 // @0x1413a5fe0
@@ -607,15 +611,17 @@ void CGuideEntity::GetFailedText(CStringW& strOut, bool bTrigger, unsigned nIdx)
 // @0x1413a30a0
 void CGuideEntity::GetCloseText(CStringW& strOut, unsigned nIdx)
 {
-    if (nIdx < m_condClose.FUN_1413886d0())
-        strOut = m_condClose.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
+    if (nIdx >= m_condClose.FUN_1413886d0())
+        return;
+    strOut = m_condClose.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
 }
 
 // @0x1413a3150
 void CGuideEntity::GetCancelText(CStringW& strOut, unsigned nIdx)
 {
-    if (nIdx < m_condCancel.FUN_1413886d0())
-        strOut = m_condCancel.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
+    if (nIdx >= m_condCancel.FUN_1413886d0())
+        return;
+    strOut = m_condCancel.FUN_141387b40(nIdx).FUN_141387bb0()->vfunc_7();
 }
 
 // @0x1413a3210
@@ -673,10 +679,10 @@ void CGuideEntity::Clear(bool bNotify)
 {
     if (m_nState == 1 || m_nState == 2)
         StopActions();
-    if (!bNotify)
-        m_nState = 0;
-    else
+    if (bNotify)
         SetState(0);
+    else
+        m_nState = 0;
     ResetConditions(m_condOpen);
     ResetConditions(m_condClose);
     ResetConditions(m_condCancel);
@@ -740,8 +746,7 @@ void CGuideEntity::LoadConditions(Unk_140165cf0* pElem, Unk_GcCondList& list)
     for (Unk_140165cf0* pCond = pElem->FUN_140165cf0("condition"); pCond != 0; pCond = pCond->FUN_140168650("condition"))
     {
         Unk_GcCondRef ref = FUN_1413a52c0(pCond);
-        if (FUN_1413a47e0(ref))
-            _wassert(L"condition", _CRT_WIDE(MS2_THIS_FILE), 200);
+        (void)((FUN_1413a47e0(ref) == 0) || (_wassert(L"condition", _CRT_WIDE(MS2_THIS_FILE), 200), 0));
         if (ref.FUN_141387b90())
             list.FUN_141388460(ref);
     }
