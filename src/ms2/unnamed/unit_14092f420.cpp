@@ -974,7 +974,7 @@ unsigned FUN_140931210(Unk_SlotKey nKey)
 int FUN_140931250(Unk_SlotKey nKey)
 {
     int nValue = FUN_140931210(nKey);
-    return FUN_14035a870(FUN_140764010(), nKey, (unsigned)nValue);
+    return FUN_14035a870(FUN_140764010(), nKey, nValue);
 }
 
 // @0x140931290
@@ -1263,7 +1263,7 @@ void FUN_1409330a0(Unk_TailTreeA* pTree, Unk_TailNodeA* pNode);
 void FUN_140933140(Unk_TailTreeB* pTree, Unk_TailNodeB* pNode);
 void FUN_140159e70(void* pBlocks);
 void FUN_140934c70(Unk_TailBoxPtr* pBox);
-void FUN_140934cd0(Unk_TailBoxPtr* pBox, int nFlag);
+void FUN_140934cd0(Unk_TailBoxPtr* pBox, void* pTag);
 void FUN_1409334e0(CPtred* p);
 void FUN_14015b020(CPtred* p);
 struct Unk_TailTreeVal { void* m_pHead; size_t m_nSize; };
@@ -1733,8 +1733,7 @@ void FUN_140934c70(Unk_TailBoxPtr* pThis)
 }
 
 // @0x140934cd0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
-void FUN_140934cd0(Unk_TailBoxPtr* pThis, int)
+void FUN_140934cd0(Unk_TailBoxPtr* pThis, void*)
 {
     if (FUN_140159bc0((CPtred*)pThis->m_p) == 0)
     {
@@ -1889,10 +1888,9 @@ void FUN_1409334e0(CPtred* pPtr)
 }
 
 // @0x140934710
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailVecVal* FUN_140934710(Unk_TailVecVal* pThis)
 {
-    return FUN_1409347d0(pThis);
+    return FUN_1409347d0(reinterpret_cast<Unk_TailVecVal*>(&pThis->m_pFirst));
 }
 
 // @0x140934760
