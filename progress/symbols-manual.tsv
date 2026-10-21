@@ -7797,3 +7797,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?GetPrimitiveFillManager@TreeCacheNode@Render@Scaleform@@QEBAAEAVPrimitiveFillManager@23@XZ	142681800	func
 ?MatrixElementSizeTable@HMatrixConstants@MatrixPoolImpl@Render@Scaleform@@2PAUElementsInfo@1234@A	143a2fc60	data
 ?updateCulling@TreeCacheNode@Render@Scaleform@@QEAAXPEBVNodeData@TreeNode@23@AEBUTransformArgs@23@PEAV?$Rect@M@23@W4TransformFlags@23@@Z	142685210	func
+?CleanupFrameTags@LoadProcess@GFx@Scaleform@@QEAAXXZ	1426381a0	func
