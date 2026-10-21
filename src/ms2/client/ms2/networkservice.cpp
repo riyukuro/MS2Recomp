@@ -581,7 +581,9 @@ efd::AsyncResult CNetworkService::OnInit() { return efd::AsyncResult_Complete; }
 efd::AsyncResult CNetworkService::OnTick() {
     if(FUN_140c77550()!=0) FUN_140c77550()->FUN_1409a33d0();
     unsigned now=FUN_140869420();
-    while(!m_sends.empty()&&m_sends.front().first<=now) {
+    while(!m_sends.empty()) {
+        const unsigned& due=m_sends.front().first;
+        if(due>now) break;
         COutPacket* packet=m_sends.front().second;
         m_socket.FUN_141265990(*packet); delete packet; m_sends.pop();
     }
@@ -605,8 +607,8 @@ void CNetworkService::FUN_1415396b0(Unk_InPtr packet) {
     if(Unk_LockGuard guard=m_receiveLock) {} else {
         m_received.AddTail(packet);
         unsigned time=FUN_140869420();
-        if(m_receiveMin<m_receiveMax) time+=FUN_140768010(m_receiveMax-m_receiveMin,m_receiveMin);
-        else if(m_receiveMin==m_receiveMax) time+=m_receiveMin;
+        if(m_receiveMax>m_receiveMin) time+=FUN_140768010(m_receiveMax-m_receiveMin,m_receiveMin);
+        else if(m_receiveMax==m_receiveMin) time+=m_receiveMin;
         m_receiveTimes.AddTail(time);
     }
 }
@@ -681,16 +683,16 @@ void CNetworkService::FUN_1415397d0(CInPacket& packet) {
 }
 // @0x14153a020
 void CNetworkService::FUN_14153a020(COutPacket& input) {
-    if(m_sendMin==m_sendMax) m_socket.FUN_141265990(input);
-    else {
+    if(m_sendMin!=m_sendMax) {
         unsigned time=FUN_140869420();
-        if(m_sendMin<m_sendMax) time+=FUN_140768010(m_sendMax-m_sendMin,m_sendMin);
-        else time+=m_sendMin;
+        if(m_sendMin>=m_sendMax) time+=m_sendMin;
+        else time+=FUN_140768010(m_sendMax-m_sendMin,m_sendMin);
         COutPacket* packet=new COutPacket(input.FUN_14020ba20(),0);
         FUN_14020aa30(packet,input,2);
-        if(!m_sends.empty()&&time<m_sends.back().first) time=m_sends.back().first;
+        if(!m_sends.empty()&&m_sends.back().first>time) time=m_sends.back().first;
         m_sends.push(std::make_pair(time,packet));
     }
+    else m_socket.FUN_141265990(input);
 }
 // @0x14153a1d0
 void CNetworkService::FUN_14153a1d0(unsigned first,unsigned second) { m_socket.FUN_141266480(first,second); }
@@ -843,10 +845,12 @@ void CNetworkService::FUN_14153b3b0(CInPacket& input) {
 }
 // @0x14153b440
 void CNetworkService::FUN_14153b440(CInPacket& input) {
-    unsigned char result=static_cast<CInputStream&>(input).vfunc_o8_1();
+    int result=static_cast<CInputStream&>(input).vfunc_o8_1();
     if(result==0) {
-        if(DAT_1439f4a78==1) { FUN_1417e25a0(FUN_140aa6d30(),0x620000d);FUN_141539260(); }
-        else if(DAT_1439f4a78==2) FUN_1417e25a0(FUN_140aa6d30(),0x620000c);
+        switch(DAT_1439f4a78) {
+        case 1: FUN_1417e25a0(FUN_140aa6d30(),0x620000d);FUN_141539260(); break;
+        case 2: FUN_1417e25a0(FUN_140aa6d30(),0x620000c); break;
+        }
         FUN_140d86260()->vfunc_8();
     } else FUN_140d73aa0(FUN_140cc20a0(result),0,0,L"");
 }
@@ -875,7 +879,7 @@ void CNetworkService::FUN_14153b570(CInPacket& input) {
 }
 // @0x14153bc00
 void CNetworkService::FUN_14153bc00(CInPacket& input) {
-    unsigned char result=static_cast<CInputStream&>(input).vfunc_o8_1();
+    int result=static_cast<CInputStream&>(input).vfunc_o8_1();
     if(result==0) {
         unsigned ip=static_cast<CInputStream&>(input).vfunc_o8_3();
         unsigned short port=static_cast<CInputStream&>(input).vfunc_o8_2();
@@ -883,13 +887,13 @@ void CNetworkService::FUN_14153bc00(CInPacket& input) {
         int token2=static_cast<CInputStream&>(input).vfunc_o8_3();
         DAT_143ab2874=0;FUN_141bbc580(FUN_1403ed2d0(),0,2);
         CString address=FUN_14028bd10(ip);DAT_143ab2a48=address;
-        DAT_1439f4a78=1;DAT_143ab2848=port;DAT_143ab284c=token1;DAT_143ab2850=token2;
+        DAT_143ab2848=port;DAT_143ab284c=token1;DAT_143ab2850=token2;DAT_1439f4a78=1;
         FUN_1415308d0();FUN_140d86260()->vfunc_10();
     } else FUN_140d73aa0(FUN_140cc20a0(result),0,0,L"");
 }
 // @0x14153be30
 void CNetworkService::FUN_14153be30(CInPacket& input) {
-    unsigned char result=static_cast<CInputStream&>(input).vfunc_o8_1();
+    int result=static_cast<CInputStream&>(input).vfunc_o8_1();
     if(result==0) {
         int token1=static_cast<CInputStream&>(input).vfunc_o8_3();
         int token2=static_cast<CInputStream&>(input).vfunc_o8_3();
@@ -898,7 +902,7 @@ void CNetworkService::FUN_14153be30(CInPacket& input) {
         int field=static_cast<CInputStream&>(input).vfunc_o8_3();
         unsigned char kind=static_cast<CInputStream&>(input).vfunc_o8_1();
         CString address=FUN_14028bd10(ip);DAT_143ab2a48=address;
-        DAT_1439f4a78=2;DAT_143ab2848=port;DAT_143ab284a=kind;DAT_143ab284c=token1;DAT_143ab2850=token2;DAT_143ab2890=field;
+        DAT_143ab2848=port;DAT_143ab284c=token1;DAT_143ab2850=token2;DAT_1439f4a78=2;DAT_143ab2890=field;DAT_143ab284a=kind;
         FUN_141bbc580(FUN_1403ed2d0(),0,field);FUN_1417e25a0(FUN_140aa6d30(),0x620003b);FUN_1415308d0();
     } else FUN_140d73aa0(FUN_140cc20a0(result),0,0,L"");
 }
