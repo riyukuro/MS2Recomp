@@ -7694,3 +7694,7 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?CreateMemoryContext@MovieDefImpl@GFx@Scaleform@@UEAAPEAVMemoryContext@23@PEBDAEBUMemoryParams@23@_N@Z	1425cea00	func
 ?Destroy@ResourceBinding@GFx@Scaleform@@QEAAXXZ	1426366b0	func
 ?GetFontResource@MovieDefImpl@GFx@Scaleform@@UEAAPEAVFontResource@23@PEBDIPEAUSearchInfo@123@@Z	1425cfbd0	func
+?AppendChar@StringBuffer@Scaleform@@QEAAXI@Z	1425860b0	func
+?CreateStringNode@ASStringManager@GFx@Scaleform@@QEAAPEAUASStringNode@23@PEBD_K@Z	1425c0a80	func
+?LocaleCompare_CaseCheck@ASConstString@GFx@Scaleform@@QEBAHPEBD_K_N@Z	1425c1090	func
+?StringSubstring@StringProto@AS2@GFx@Scaleform@@SA?AVASString@34@AEBV534@HH@Z	142990960	func
