@@ -41,7 +41,7 @@ public:
     void FUN_14074cf20(ATL::CAtlArray<unsigned>& out);                           // chapter ids
     void FUN_14074cfd0(int nChapter, ATL::CAtlArray<unsigned>& out);
     void FUN_14074d080(int nMapId, ATL::CAtlArray<unsigned>& out);
-    void FUN_14074d140(unsigned short nLevel, int nJob, ATL::CAtlArray<int>& out);
+    void FUN_14074d140(unsigned short nLevel, int nJob, std::vector<unsigned>& out);
     void FUN_14074d2b0(Unk_FameAlliance nAlliance, ATL::CAtlArray<unsigned>& out);
     void FUN_14074d360(unsigned nKey, ATL::CAtlArray<unsigned>& out);
     void FUN_14074d410(ATL::CAtlArray<unsigned>& out);

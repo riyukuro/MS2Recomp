@@ -648,23 +648,26 @@ int CQuestManagerCommon::FUN_140746ba0(int questId, int npcId, int bSkip)
 }
 MS2_REPLACE_METHOD(0x140746BA0, CQuestManagerCommon, FUN_140746ba0, 694, 0x244F7842);
 
-// MS2-FUNCTIONAL: statement order and result temporaries differ from the exe.
 // @0x140746e60
 int CQuestManagerCommon::FUN_140746e60(int questId)
 {
     MS2Ptr<CQuestData> data = FUN_14074bc40(questId);
-    if (data.operator==(0))
+    if (data.IsNull())
         return 0;
     if (!data->m_2d)
         return 0;
-    int nType = FUN_14074b050(data.operator->());
-    if (nType == 3)
-        return FUN_140747400(questId, data->m_338.m_value);
-    if (nType == 5)
-        return FUN_140747440(questId, data->m_350.m_value);
-    if (nType == 8 || nType == 10)
+    switch (FUN_14074b050(data.operator->()))
+    {
+    case 8:
+    case 10:
         return 0;
-    return FUN_140747350(questId);
+    case 3:
+        return FUN_140747400(questId, data->m_338.m_value);
+    case 5:
+        return FUN_140747440(questId, data->m_350.m_value);
+    default:
+        return FUN_140747350(questId);
+    }
 }
 MS2_REPLACE_METHOD(0x140746E60, CQuestManagerCommon, FUN_140746e60, 358, 0xB747E45D);
 
@@ -1692,15 +1695,17 @@ int FUN_14074b790(int nQuestId)
 // @0x14074b840
 int FUN_14074b840(int nQuestId)
 {
-    if (!FUN_14036d570(FUN_140166410(), 0x6e))
-        return 0;
-    MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
-    if (data.IsNull())
-        return 0;
-    if (data->m_conditions.GetCount() != 0)
-        return 0;
-    if (data->m_2e8 == data->m_2ec)
+    if (FUN_14036d570(FUN_140166410(), 0x6e))
+    {
+        MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
+        if (data.IsNull())
+            return 0;
+        if (data->m_conditions.GetCount() != 0)
+            return 0;
+        if (data->m_2e8 != data->m_2ec)
+            return 0;
         return 1;
+    }
     return 0;
 }
 
@@ -1732,14 +1737,13 @@ int FUN_14074bae0(unsigned nQuestA, unsigned nQuestB)
     {
         MS2Ptr<CQuestData> a = FUN_14074bc40(nQuestA);
         MS2Ptr<CQuestData> b = FUN_14074bc40(nQuestB);
-        if (!a.IsNull() && !b.IsNull())
-        {
-            if (FUN_140408410(&b->m_require.m_quest, &nQuestA) == -1)
-                return 0;
-            if (b->m_2e8 == a->m_2ec)
-                return 1;
+        if (a.IsNull() || b.IsNull())
             return 0;
-        }
+        if (FUN_140408410(&b->m_require.m_quest, &nQuestA) == -1)
+            return 0;
+        if (b->m_2e8 != a->m_2ec)
+            return 0;
+        return 1;
     }
     return 0;
 }
@@ -1860,7 +1864,7 @@ MS2Ptr<CQuestData> QuestDataTable::FUN_14074c9d0(int nQuestId)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
-    std::map<unsigned, MS2Ptr<CQuestData> >::iterator it = m_quests.find(nQuestId);
+    std::map<unsigned, MS2Ptr<CQuestData> >::iterator it = m_quests.find(reinterpret_cast<const unsigned&>(nQuestId));
     if (it == m_quests.end())
         return MS2Ptr<CQuestData>(nullptr);
     return it->second;
@@ -1956,24 +1960,23 @@ void QuestDataTable::FUN_14074d080(int nMapId, ATL::CAtlArray<unsigned>& out)
         out.Append(*spIds.operator->());
 }
 
-// MS2-FUNCTIONAL: frame has an extra unwritten 8-byte local before the loop counter that the source cannot reproduce.
 // @0x14074d140
-void QuestDataTable::FUN_14074d140(unsigned short nLevel, int nJob, ATL::CAtlArray<int>& out)
+void QuestDataTable::FUN_14074d140(unsigned short nLevel, int nJob, std::vector<unsigned>& out)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
     for (size_t i = 0; i < m_378.size(); ++i)
     {
         MS2Ptr<CQuestData> spData = m_378[i];
-        if ((unsigned short)spData->m_require.m_level < nLevel)
+        unsigned short nReqLevel = (unsigned short)spData->m_require.m_level;
+        if (nReqLevel >= nLevel)
+            continue;
+        if (spData->m_require.m_job.GetCount() != 0)
         {
-            if (spData->m_require.m_job.GetCount() != 0)
-            {
-                if (FUN_1407474d0(&spData->m_require.m_job, &nJob) == -1)
-                    continue;
-            }
-            out.Add(FUN_14074b030(spData.operator->()));
+            if (FUN_1407474d0(&spData->m_require.m_job, &nJob) == -1)
+                continue;
         }
+        out.push_back(FUN_14074b030(spData.operator->()));
     }
 }
 MS2_REPLACE_METHOD(0x14074D140, QuestDataTable, FUN_14074d140, 350, 0x3F8920CF);
@@ -2166,7 +2169,7 @@ std::vector<unsigned>* QuestDataTable::FUN_14074e0f0(int nNpcId)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
-    std::map<unsigned, std::vector<unsigned> >::iterator it = m_430.find(nNpcId);
+    std::map<unsigned, std::vector<unsigned> >::iterator it = m_430.find(reinterpret_cast<const unsigned&>(nNpcId));
     if (it == m_430.end())
         return 0;
     return &it->second;
@@ -2336,11 +2339,10 @@ void QuestDataTable::FUN_14074ebc0(int nChain, IdsPtr spIds, MS2Ptr<CQuestData> 
     if (FUN_140408410(spIds.operator->(), (const unsigned*)&nQuestId) != -1)
         return;
     int nAddId = FUN_14074b030(spData.operator->());
-    spIds.get()->Add(nAddId);
+    spIds.get()->Add((unsigned)nAddId);
     for (size_t i = 0; i < spData->m_require.m_followingQuests.GetCount(); ++i)
     {
-        ++nDepth;
-        FUN_14074ebc0(nChain, spIds, FUN_14074c9d0(spData->m_require.m_followingQuests[i]), nDepth);
+        FUN_14074ebc0(nChain, spIds, FUN_14074c9d0(spData->m_require.m_followingQuests[i]), ++nDepth);
     }
 }
 MS2_REPLACE_METHOD(0x14074EBC0, QuestDataTable, FUN_14074ebc0, 604, 0x6D4ED568);
@@ -2689,9 +2691,8 @@ struct Unk_QuestIdOrder : public Unk_BinaryFunction
 void QuestDataTable::FUN_140750d90()
 {
     Unk_1401b4ec0 guard(m_lock, 1);
-    Unk_QuestIdOrder pred;
-    std::map<unsigned, std::vector<unsigned> >& npcs = m_430;
-    for (std::pair<const unsigned, std::vector<unsigned> >& entry : npcs)
+    Unk_QuestIdOrder pred = Unk_QuestIdOrder();
+    for (std::pair<const unsigned, std::vector<unsigned> >& entry : m_430)
     {
         std::sort(entry.second.begin(), entry.second.end(), pred);
     }
@@ -2843,7 +2844,6 @@ int FUN_140751650(int nValue)
     return 4;
 }
 
-// MS2-FUNCTIONAL: local slot order of the exe not reproduced.
 // @0x140751690
 int __cdecl FUN_140751690(const void* pA, const void* pB)
 {
@@ -2851,28 +2851,13 @@ int __cdecl FUN_140751690(const void* pA, const void* pB)
     const int* pSecond = (const int*)pB;
     int nTypeA = FUN_14074bc90(*pFirst);
     int nTypeB = FUN_14074bc90(*pSecond);
-    int nResult;
     if (nTypeA == nTypeB)
     {
         unsigned short nFirst = FUN_14074bd10(*pFirst);
         unsigned short nSecond = FUN_14074bd10(*pSecond);
-        int nCmp;
-        if (nFirst < nSecond)
-            nCmp = -1;
-        else
-            nCmp = 1;
-        nResult = nCmp;
+        return nFirst < nSecond ? -1 : 1;
     }
-    else
-    {
-        int nRankA = FUN_140751650(nTypeA);
-        int nRankB = FUN_140751650(nTypeB);
-        if (nRankA < nRankB)
-            nResult = -1;
-        else
-            nResult = 1;
-    }
-    return nResult;
+    return FUN_140751650(nTypeA) < FUN_140751650(nTypeB) ? -1 : 1;
 }
 MS2_REPLACE(0x140751690, FUN_140751690, 205, 0xE5D8EB85);
 
