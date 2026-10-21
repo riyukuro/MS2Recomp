@@ -7788,3 +7788,7 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?Resize@ArrayObject@AS2@GFx@Scaleform@@QEAAXH@Z	14297e330	func
 ?SetElement@ArrayObject@AS2@GFx@Scaleform@@QEAAXHAEBVValue@234@@Z	1429814c0	func
 ?ToInt32@Value@AS2@GFx@Scaleform@@QEBAHPEAVEnvironment@234@@Z	142991210	func
+?CloneForImport@LoadStates@GFx@Scaleform@@QEBAPEAV123@XZ	1426382f0	func
+?CreateMovie_LoadState@LoaderImpl@GFx@Scaleform@@SAPEAVMovieDefImpl@23@PEAVLoadStates@23@AEBULocationInfo@URLBuilder@23@IPEAULoadStackItem@123@_K@Z	1425a9680	func
+?GFx_GenerateFontBitmaps@GFx@Scaleform@@YAXPEAVFontPackParams@12@AEBV?$Array@PEAVFontResource@GFx@Scaleform@@$01UArrayDefaultPolicy@3@@2@PEAVImageCreator@12@PEAVLog@2@PEAVResourceId@12@PEAVMemoryHeap@2@_N@Z	1426612b0	func
+?ResolveTextureGlyphs@FontResource@GFx@Scaleform@@QEAAXXZ	142657940	func
