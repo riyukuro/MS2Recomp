@@ -160,6 +160,7 @@ int CVIPTable::Load()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -323,12 +324,12 @@ int CVIPTable::LoadBenefitEffects()
 }
 
 // @0x1408f6c90
-// MS2-FUNCTIONAL: lock-guard/EH frame layout of the MS2Ptr return differs
 CVIPGoodsPtr CVIPTable::GetGoods(unsigned nId)
 {
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -341,12 +342,12 @@ CVIPGoodsPtr CVIPTable::GetGoods(unsigned nId)
 }
 
 // @0x1408f6d80
-// MS2-FUNCTIONAL: lock-guard/EH frame layout of the MS2Ptr return differs
 CVIPBenefitItemPtr CVIPTable::GetBenefitItem(unsigned nId)
 {
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -364,6 +365,7 @@ void CVIPTable::GetBenefitEffects(ATL::CAtlArray<CVIPBenefitEffectPtr>& rOut)
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -380,6 +382,7 @@ void CVIPTable::GetBenefitItems(ATL::CAtlArray<CVIPBenefitItemPtr>& rOut)
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -400,6 +403,7 @@ void CVIPTable::GetGoodsList(ATL::CAtlArray<CVIPGoodsPtr>& rOut)
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
