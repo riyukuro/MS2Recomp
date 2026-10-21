@@ -7638,3 +7638,6 @@ jpeg_start_decompress	1426f4b10	func
 ?isQueueEmpty_NTS@DICommandQueue@Render@Scaleform@@IEBA_NXZ	142671490	func
 ?popCommandSet@DICommandQueue@Render@Scaleform@@IEAAXPEAVDICommandSet@23@W4DICommandSetType@23@@Z	142671660	func
 ?releaseTexture@Image@Render@Scaleform@@IEAAXXZ	14257db10	func
+??0AppendableSoundData@Sound@Scaleform@@QEAA@II@Z	142747bc0	func
+?LockDataForAppend@AppendableSoundData@Sound@Scaleform@@QEAAPEAEII@Z	142748230	func
+?UnlockData@AppendableSoundData@Sound@Scaleform@@QEAAXXZ	142748420	func
