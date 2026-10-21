@@ -7891,3 +7891,6 @@ sfr_atan2f_thunk	14280f28e	func
 ?ClassHash_RemoveCaseCheck@AS2@GFx@Scaleform@@YAXPEAV?$ASStringHash@VFunctionRef@AS2@GFx@Scaleform@@@23@AEBVASString@23@_N@Z	14297cd20	func
 ?LogParse@?$LogBase@VLoadProcess@GFx@Scaleform@@@GFx@Scaleform@@QEBAXPEBDZZ	1423dce80	func
 ?ReadFontInfo@FontData@GFx@Scaleform@@QEAAXPEAVStream@23@W4TagType@23@@Z	142657290	func
+?GetMember@NetStream@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@PEAVValue@234@@Z	14000aab0	func
+?OpenUrl@VideoProviderNetStream@AS2@GFx@Scaleform@@QEAAXPEBDPEAVEnvironment@234@@Z	14000c4b0	func
+?SetMember@NetStream@AS2@GFx@Scaleform@@UEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@AEBVPropFlags@234@@Z	140008250	func
