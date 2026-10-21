@@ -7877,3 +7877,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?Object_NotsetVal@AS2@GFx@Scaleform@@3VValue@123@B	143a51b50	data
 ??0Unk_PopupPos@@QEAA@AEBVPoint3@efd@@@Z	14027dcf0	func
 ?InvokeWatchpoint@Object@AS2@GFx@Scaleform@@QEAA_NPEAVEnvironment@234@AEBVASString@34@AEBVValue@234@PEAV7234@@Z	142964b90	func
+?GetTicks@Timer@Scaleform@@SA_KXZ	1425e3590	func
