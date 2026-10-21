@@ -2777,7 +2777,6 @@ MS2_REPLACE_METHOD(0x14095E430, HomemadeCubeAction, vfunc_3, 6, 0xA9AF6E37);
 // ---- NurturingCubeAction ---------------------------------------------------------------------------------------------
 // @0x14095e490
 NurturingCubeAction::NurturingCubeAction() : m_n30(0) {}
-// MS2-FUNCTIONAL: the exe stores CNurturingCubeObject::FUN_14122c340's result without movzx (int return); the shared header declares unsigned char
 // @0x14095e4d0
 int NurturingCubeAction::vfunc_1()
 {

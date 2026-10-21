@@ -267,7 +267,7 @@ public:
     void FUN_141227100(int nSound);                               // 0x141227100
     void FUN_1412271c0(int nState);                               // 0x1412271c0
     int FUN_1412271f0();                                          // 0x1412271f0
-    unsigned char FUN_141227270();                                         // 0x141227270
+    int FUN_141227270();                                                   // 0x141227270
     Unk_FcSkillText FUN_1412272b0();                              // 0x1412272b0
     void FUN_141227310();                                         // 0x141227310
     void FUN_141227360();                                         // 0x141227360
@@ -343,7 +343,7 @@ public:
 
     void FUN_141228fb0(__int64 n);                                // 0x141228fb0
     __int64 FUN_141228fe0();                                      // 0x141228fe0
-    int FUN_141229000(char bWatch);                               // 0x141229000
+    int FUN_141229000(bool bWatch);                               // 0x141229000
     int FUN_141229080();                                          // 0x141229080
     int FUN_141229120();                                          // 0x141229120
     int FUN_140e5cc00();                                          // exe member of another unit
@@ -411,7 +411,7 @@ public:
     virtual void vfunc_14(MS2Ptr<Unk_FcStateMsg> sp);       // 14 0x14122b530
 
     int FUN_14122bda0();                                          // 0x14122bda0 may the player use it
-    unsigned char FUN_14122c340();                                // 0x14122c340 is it the player's own
+    int FUN_14122c340();                                          // 0x14122c340 is it the player's own
     int FUN_14122c410();                                          // 0x14122c410 npc id of the level
     void FUN_14122c460(int nMode);                                // 0x14122c460 success notice
     void FUN_14122c7b0(int nError);                               // 0x14122c7b0 error notice

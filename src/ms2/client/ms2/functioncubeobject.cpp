@@ -275,7 +275,7 @@ void FUN_1409989e0(Unk_FcAnimName*, const char*);
 void FUN_1409a1fc0(Unk_FcAnimSvc*, const egf::EntityID&, Unk_FcAnimName*, float);
 void FUN_1408a8900(Unk_FcAnimName*);
 
-unsigned char FUN_1402a5b40(const CString& a, const char* b);                // CString != C string
+bool FUN_1402a5b40(const CString& a, const char* b);                // CString != C string
 unsigned char FUN_1401647e0(const CString& a, const CString& b);             // CString == CString
 
 // The use-request the cube sends (CString id + count); constructed / destroyed by exe helpers.
@@ -695,7 +695,6 @@ void CFunctionCubeObject::vfunc_11(int nState)
 }
 
 // @0x141226a90
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CFunctionCubeObject::vfunc_12(int nState, bool bFlag)
 {
     if (nState < 0 || nState >= 6)
@@ -704,8 +703,9 @@ void CFunctionCubeObject::vfunc_12(int nState, bool bFlag)
         return;
     }
     m_nState = nState;
-    if (!m_ent.FUN_1408b70b0(0))
-        FUN_141226c20(bFlag);
+    if (m_ent.FUN_1408b70b0(0))
+        return;
+    FUN_141226c20(bFlag);
 }
 
 // @0x141226b20
@@ -727,16 +727,20 @@ CString CFunctionCubeObject::FUN_141226bd0()
 }
 
 // @0x141226c20
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CFunctionCubeObject::FUN_141226c20(bool bFlag)
 {
-    int nState = m_nState;
-    if (nState >= 0)
+    switch (m_nState)
     {
-        if (nState <= 2)
-            vfunc_10(m_nState, false);
-        else if (nState > 2 && nState <= 5)
-            vfunc_10(m_nState, true);
+    case 0:
+    case 1:
+    case 2:
+        vfunc_10(m_nState, false);
+        break;
+    case 3:
+    case 4:
+    case 5:
+        vfunc_10(m_nState, true);
+        break;
     }
     if (!bFlag)
     {
@@ -841,8 +845,7 @@ int CFunctionCubeObject::FUN_1412271f0()
 }
 
 // @0x141227270
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
-unsigned char CFunctionCubeObject::FUN_141227270()
+int CFunctionCubeObject::FUN_141227270()
 {
     return FUN_1402a5b40(m_spData->m_skill.m_strA, "");
 }
@@ -917,22 +920,27 @@ void CFunctionCubeObject::FUN_1412277d0(unsigned char bOn)
 }
 
 // @0x1412278b0
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CFunctionCubeObject::FUN_1412278b0()
 {
-    if (FUN_14122e6d0() != 0)
+    if (FUN_14122e6d0() == 0)
+        return;
+    switch (m_spData->m_nSubKind)
     {
-        int nSubKind = m_spData->m_nSubKind;
-        if (nSubKind == 1)
-            FUN_141228060();
-        else if (nSubKind == 4)
-            FUN_141228100();
-        else if (nSubKind == 5)
-            FUN_141228200();
-        else if (nSubKind == 6)
-            FUN_1412282d0();
-        else if (nSubKind == 7)
-            FUN_141228340();
+    case 1:
+        FUN_141228060();
+        break;
+    case 4:
+        FUN_141228100();
+        break;
+    case 5:
+        FUN_141228200();
+        break;
+    case 6:
+        FUN_1412282d0();
+        break;
+    case 7:
+        FUN_141228340();
+        break;
     }
 }
 
@@ -1388,19 +1396,16 @@ __int64 CHomemadeCubeObject::FUN_141228fe0()
 }
 
 // @0x141229000
-// MS2-FUNCTIONAL: nested conditions folded
-int CHomemadeCubeObject::FUN_141229000(char bWatch)
+int CHomemadeCubeObject::FUN_141229000(bool bWatch)
 {
     Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pActor == 0)
         return 0;
-    if (bWatch == 0 || m_nState != 1)
-    {
-        if (FUN_1410c35c0(FUN_1409670e0()) == 0)
-            return vfunc_17();
+    if (bWatch && m_nState == 1)
         return 0;
-    }
-    return 0;
+    if (FUN_1410c35c0(FUN_1409670e0()))
+        return 0;
+    return vfunc_17();
 }
 
 // @0x141229080
@@ -1458,10 +1463,9 @@ Unk_FcAnimName* FUN_140b7cc50(Unk_FcAnimSvc* pSvc, Unk_FcAnimName* pOut, egf::En
 unsigned char FUN_140de8e30(Unk_FcAnimName* pName, const char* psz);                         // names are equal
 
 // @0x14122e000
-// MS2-FUNCTIONAL: negated name compare; the exe keeps this out of line
 unsigned char FUN_14122e000(Unk_FcAnimName* pName, const char* psz)
 {
-    return !FUN_140de8e30(pName, psz);
+    return FUN_140de8e30(pName, psz) == 0 ? 1 : 0;
 }
 struct Unk_FcAnimRow
 {
@@ -2065,20 +2069,18 @@ int CNurturingCubeObject::FUN_14122bda0()
 }
 
 // @0x14122c340
-// MS2-FUNCTIONAL: branch layout differs from the exe (equivalent behaviour)
-unsigned char CNurturingCubeObject::FUN_14122c340()
+int CNurturingCubeObject::FUN_14122c340()
 {
     Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pActor == 0)
         return 0;
-    __int64 nOwner = FUN_1410c3180(FUN_1409670e0());
-    if (nOwner != FUN_141656ad0(pActor))
+    if (FUN_1410c3180(FUN_1409670e0()) != FUN_141656ad0(pActor))
         return 0;
-    if (m_nMaxLevel < m_nLevel)
+    if (m_nLevel > m_nMaxLevel)
         return 1;
-    if (m_nE0 < m_nE8 || m_nLevel != m_nMaxLevel)
-        return 0;
-    return 1;
+    if (m_nE0 >= m_nE8 && m_nLevel == m_nMaxLevel)
+        return 1;
+    return 0;
 }
 
 // @0x14122c410
@@ -2259,7 +2261,6 @@ int CNurturingCubeObject::FUN_14122d190()
 }
 
 // @0x14122d200
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 int CNurturingCubeObject::FUN_14122d200()
 {
     Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
@@ -2269,9 +2270,10 @@ int CNurturingCubeObject::FUN_14122d200()
         return 0;
     if (FUN_1410c3180(FUN_1409670e0()) == FUN_141656ad0(pActor))
     {
-        if (FUN_14122c340() == 0)
+        if (FUN_14122c340() != 0)
+            return 0xa7;
+        else
             return 0xa5;
-        return 0xa7;
     }
     return 0xa6;
 }
@@ -2451,12 +2453,8 @@ efd::AsyncResult CFunctionCubeService::OnInit()
 // @0x141230950
 efd::AsyncResult CFunctionCubeService::OnTick()
 {
-    POSITION pos = m_mapCubes.GetHeadPosition();
-    while (pos)
-    {
+    for (POSITION pos = m_mapCubes.GetHeadPosition(); pos != 0; m_mapCubes.GetNext(pos))
         m_mapCubes.GetValueAt(pos)->vfunc_3();
-        m_mapCubes.GetNext(pos);
-    }
     FUN_141231730();
     return efd::AsyncResult_Pending;
 }
@@ -2508,12 +2506,15 @@ void CFunctionCubeService::FUN_14122f240(const efd::IMessage*, efd::Category)
 // @0x141239e40
 static int FUN_141239e40(int nState)
 {
-    if (nState == 0)
-        nState = 3;
-    else if (nState == 1)
-        nState = 4;
-    else if (nState == 2)
-        nState = 5;
+    switch (nState)
+    {
+    case 1:
+        return 4;
+    case 0:
+        return 3;
+    case 2:
+        return 5;
+    }
     return nState;
 }
 
@@ -2747,12 +2748,11 @@ void CFunctionCubeService::FUN_141230310(CInPacket* pPacket)
     }
 }
 
-// MS2-FUNCTIONAL: the key string and the new object are temporaries of different shape than the exe's
 // @0x1412304e0
 void CFunctionCubeService::FUN_1412304e0(unsigned nA, unsigned nB, int nKind)
 {
     CString strKey;
-    strKey.Format("%d_%d", (unsigned __int64)nB, (unsigned __int64)nA);
+    strKey.Format("%d_%d", nB, nA);
     MS2Ptr<CFunctionCubeObject> spCube(FUN_141225470(nKind));
     m_mapPending.SetAt(strKey, spCube);
 }
@@ -3072,17 +3072,15 @@ int CFunctionCubeService::FUN_141231eb0(int nKey, int* pnItem)
     return 0;
 }
 
-// MS2-FUNCTIONAL: the map walk differs from the exe
 // @0x141232260
 void CFunctionCubeService::FUN_141232260()
 {
-    POSITION pos = m_mapCubes.GetHeadPosition();
-    while (pos)
+    for (POSITION pos = m_mapCubes.GetHeadPosition(); pos != 0; m_mapCubes.GetNext(pos))
     {
         MS2Ptr<CFunctionCubeObject> spCube = m_mapCubes.GetValueAt(pos);
-        if (!(spCube == 0))
-            spCube->vfunc_4();
-        m_mapCubes.GetNext(pos);
+        if (spCube == 0)
+            continue;
+        spCube->vfunc_4();
     }
 }
 
