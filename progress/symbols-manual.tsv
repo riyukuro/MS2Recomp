@@ -7698,3 +7698,6 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?CreateStringNode@ASStringManager@GFx@Scaleform@@QEAAPEAUASStringNode@23@PEBD_K@Z	1425c0a80	func
 ?LocaleCompare_CaseCheck@ASConstString@GFx@Scaleform@@QEBAHPEBD_K_N@Z	1425c1090	func
 ?StringSubstring@StringProto@AS2@GFx@Scaleform@@SA?AVASString@34@AEBV534@HH@Z	142990960	func
+?ReleaseInternal@?$RefCountBaseGC@$0BED@@AS2@GFx@Scaleform@@IEAAXXZ	1425925f0	func
+?SetAsObject@Value@AS2@GFx@Scaleform@@QEAAXPEAVObject@234@@Z	14297fcb0	func
+?StringSplit@StringProto@AS2@GFx@Scaleform@@SA?AV?$Ptr@VArrayObject@AS2@GFx@Scaleform@@@4@PEAVEnvironment@234@AEBVASString@34@PEBDH@Z	1429902c0	func
