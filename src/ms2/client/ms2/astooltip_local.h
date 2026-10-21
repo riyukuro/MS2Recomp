@@ -535,8 +535,6 @@ __int64 FUN_140632990(__int64 nValue, float fRate);   // itemsocketsystemutil.cp
 CStringW FUN_140631720(int nStat, int nValue, bool bPercent);   // a stat value text (itemsocketsystemutil.cpp)
 CStringW FUN_1409e6010(int nKind, CItem* pItem);  // the option kind title (pet kinds use their own text)
 CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem);     // the option text of an item (as tabcontentspetinfo.cpp; the callee destroys spItem)
-// MS2-FUNCTIONAL 0x1409e0d40: /Od frame is 0x10 larger (locals placed differently); same calls and control flow
-// MS2-FUNCTIONAL 0x1409e1770: the shared ASTooltip::FUN_1409d55a0 declaration takes CItem* where the exe passes the item id (unused)
 // MS2-FUNCTIONAL 0x1409e34e0: /Od temporaries differ (written after part 1's FUN_1409c9170 loop); same behaviour
 CStringW FUN_1409e6120(CItem* pItem, int nTradeable, int nPersonal, int nBindable, int nBindOnGet, const CStringW& strSeparator, int nCount, CStringW strBindName, int nRemainOnly);   // the item limit text
 void FUN_1409e6d00(int nRight, int nLeft, ATL::CAtlArray<Unk_SkillWeapon>& weapons, int& nAllowed, CStringW& strOut);   // the required weapons

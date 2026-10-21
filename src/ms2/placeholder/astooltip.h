@@ -44,7 +44,7 @@ public:
     void FUN_1409d4460(CItem* pItem);
     void FUN_1409d46a0(CItem* pItem);
     void FUN_1409d5530(unsigned nId);
-    void FUN_1409d55a0(CItem* pItem, int n);
+    void FUN_1409d55a0(int nId, int n);
     void FUN_1409d8300(int n);
     void FUN_1409d77b0(int n);
     void FUN_1409d5160(unsigned nItemId);
