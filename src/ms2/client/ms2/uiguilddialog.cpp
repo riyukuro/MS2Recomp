@@ -1766,7 +1766,6 @@ void UIGuildDialog::FUN_14196b3a0()
     }
 }
 
-// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
 // @0x14196b620
 void UIGuildDialog::FUN_14196b620()
 {
@@ -1782,36 +1781,38 @@ void UIGuildDialog::FUN_14196b620()
         int nTrophy = CGuildManager::GetInstance()->FUN_1404d0c00();
         int nItemLevel = CGuildManager::GetInstance()->FUN_1404d0df0();
         int nCharLevel = CGuildManager::GetInstance()->FUN_1404d0d00();
-        FUN_140cfee80(m_infoPage->FUN_1422bb890(), "m_guildNameText", strName);
-        FUN_140cfee80(m_infoPage->FUN_1422bb890(), "m_createdDayText", strCreated);
-        FUN_140cfee80(m_infoPage->FUN_1422bb890(), "m_guildMemberCountText", strCount);
-        FUN_140cfee80(m_infoPage->FUN_1422bb890(), "m_guildNotifyText", strNotify);
-        MS2Ptr<ASMovieClip> spTrophy = m_infoPage->FUN_1409b4560("m_totalTrophy");
-        MS2Ptr<ASMovieClip> spItemLevel = m_infoPage->FUN_1409b4560("m_totalItemLevel");
-        MS2Ptr<ASMovieClip> spCharLevel = m_infoPage->FUN_1409b4560("m_totalCharLevel");
-        if (spTrophy.get() != 0)
+        FUN_140cfee80((*m_infoPage).FUN_1422bb890(), "m_guildNameText", strName);
+        FUN_140cfee80((*m_infoPage).FUN_1422bb890(), "m_createdDayText", strCreated);
+        FUN_140cfee80((*m_infoPage).FUN_1422bb890(), "m_guildMemberCountText", strCount);
+        FUN_140cfee80((*m_infoPage).FUN_1422bb890(), "m_guildNotifyText", strNotify);
         {
-            CStringW strTotal = FUN_1401e8510(L"{0}", FUN_140763e10(nTrophy));
-            MS2Ptr<ASMovieClip> spIcon = spTrophy->FUN_1409b4560("m_totalIcon");
-            if (spIcon.get() != 0)
-                spIcon->vfunc_15("trophy");
-            FUN_140cfee80((*spTrophy).FUN_1422bb890(), "m_totalText", strTotal);
-        }
-        if (spItemLevel.get() != 0)
-        {
-            CStringW strTotal = FUN_1401e8510(L"{0}", FUN_140763e10(nItemLevel));
-            MS2Ptr<ASMovieClip> spIcon = spItemLevel->FUN_1409b4560("m_totalIcon");
-            if (spIcon.get() != 0)
-                spIcon->vfunc_15("itemLevel");
-            FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "m_totalText", strTotal);
-        }
-        if (spCharLevel.get() != 0)
-        {
-            CStringW strTotal = FUN_1401e8510(L"{0}", FUN_140763e10(nCharLevel));
-            MS2Ptr<ASMovieClip> spIcon = spCharLevel->FUN_1409b4560("m_totalIcon");
-            if (spIcon.get() != 0)
-                spIcon->vfunc_15("charLevel");
-            FUN_140cfee80((*spCharLevel).FUN_1422bb890(), "m_totalText", strTotal);
+            MS2Ptr<ASMovieClip> spTrophy = m_infoPage->FUN_1409b4560("m_totalTrophy");
+            MS2Ptr<ASMovieClip> spItemLevel = m_infoPage->FUN_1409b4560("m_totalItemLevel");
+            MS2Ptr<ASMovieClip> spCharLevel = m_infoPage->FUN_1409b4560("m_totalCharLevel");
+            if (spTrophy.get() != 0)
+            {
+                CStringW strTotal = FUN_1401e8510(L"{0}", FUN_140763e10(nTrophy));
+                MS2Ptr<ASMovieClip> spIcon = spTrophy->FUN_1409b4560("m_totalIcon");
+                if (spIcon.get() != 0)
+                    spIcon->vfunc_15("trophy");
+                FUN_140cfee80((*spTrophy).FUN_1422bb890(), "m_totalText", strTotal);
+            }
+            if (spItemLevel.get() != 0)
+            {
+                CStringW strTotal = FUN_1401e8510(L"{0}", FUN_140763e10(nItemLevel));
+                MS2Ptr<ASMovieClip> spIcon = spItemLevel->FUN_1409b4560("m_totalIcon");
+                if (spIcon.get() != 0)
+                    spIcon->vfunc_15("itemLevel");
+                FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "m_totalText", strTotal);
+            }
+            if (spCharLevel.get() != 0)
+            {
+                CStringW strTotal = FUN_1401e8510(L"{0}", FUN_140763e10(nCharLevel));
+                MS2Ptr<ASMovieClip> spIcon = spCharLevel->FUN_1409b4560("m_totalIcon");
+                if (spIcon.get() != 0)
+                    spIcon->vfunc_15("charLevel");
+                FUN_140cfee80((*spCharLevel).FUN_1422bb890(), "m_totalText", strTotal);
+            }
         }
         FUN_14196e230(FUN_1419764a0());
     }
@@ -1977,7 +1978,6 @@ void UIGuildDialog::FUN_14196d0c0(int nPage)
     m_joinPage->FUN_141979e60("buildSearchGuild", m_nSearchPage, nPages, arrGuilds);
 }
 
-// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
 // @0x14196d660
 void UIGuildDialog::FUN_14196d660()
 {
@@ -1989,21 +1989,20 @@ void UIGuildDialog::FUN_14196d660()
     for (size_t i = 0; i < arrRequests.GetCount(); i++)
     {
         MS2Ptr<CGuildJoinRequestForChar> spRequest = arrRequests[i];
-        if (!(spRequest == 0))
-        {
-            int nLevel = CGuildXmlData::GetInstance()->FUN_1404d7130(spRequest->f30);
-            ASObj objGuild(2);
-            objGuild.FUN_1407cbb20("guildName", spRequest->f28);
-            objGuild.FUN_1407cba60("guildSn", FUN_140719530(spRequest->f20));
-            objGuild.FUN_1407cb9c0("guildLevel", nLevel);
-            objGuild.FUN_1407cba60("requestSn", FUN_140719530(spRequest->f18));
-            objGuild.FUN_1407cbb20("masterName", spRequest->f58);
-            objGuild.FUN_1407cb9c0("state", 1);
-            objGuild.FUN_1407cb9c0("trophy", spRequest->f44.FUN_140267c10());
-            CStringW strCapacity = FUN_14083dc40(L"{0} / {1}", spRequest->f50, spRequest->f40);
-            objGuild.FUN_1407cbb20("capacityText", strCapacity);
-            arrGuilds.FUN_1422bc050(objGuild.FUN_1422bb870());
-        }
+        if (spRequest == 0)
+            continue;
+        int nLevel = CGuildXmlData::GetInstance()->FUN_1404d7130(spRequest->f30);
+        ASObj objGuild(2);
+        objGuild.FUN_1407cbb20("guildName", spRequest->f28);
+        objGuild.FUN_1407cba60("guildSn", FUN_140719530(spRequest->f20));
+        objGuild.FUN_1407cb9c0("guildLevel", nLevel);
+        objGuild.FUN_1407cba60("requestSn", FUN_140719530(spRequest->f18));
+        objGuild.FUN_1407cbb20("masterName", spRequest->f58);
+        objGuild.FUN_1407cb9c0("state", 1);
+        objGuild.FUN_1407cb9c0("trophy", spRequest->f44.FUN_140267c10());
+        CStringW strCapacity = FUN_14083dc40(L"{0} / {1}", spRequest->f50, spRequest->f40);
+        objGuild.FUN_1407cbb20("capacityText", strCapacity);
+        arrGuilds.FUN_1422bc050(objGuild.FUN_1422bb870());
     }
     m_joinPage->FUN_140bd2cb0("buildSearchMy", arrGuilds);
 }
@@ -2105,7 +2104,6 @@ void UIGuildDialog::FUN_14196e2c0()
     }
 }
 
-// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
 // @0x141973220
 void UIGuildDialog::FUN_141973220()
 {
@@ -2124,7 +2122,9 @@ void UIGuildDialog::FUN_141973220()
             continue;
         const unsigned& nRaidId = spRaid->f18;
         int nCount = spMe->raid.FUN_1404cae90(nRaidId);
-        bool bComplete = 0 < nCount;
+        bool bComplete = false;
+        if (nCount > 0)
+            bComplete = true;
         CStringW strDesc = FUN_141081c60(L"s_guild_raid_history_desc", CStringTable::GetInstance()->FUN_141811980(0x14, nRaidId),
                                          FUN_1403ed2d0()->FUN_141bd0d30(), &nCount);
         ASObj objHistory(2);
@@ -2396,7 +2396,6 @@ void UIGuildDialog::FUN_14196f830()
     m_skillPage2->FUN_140bd2cb0("setSimpleActiveIcon", arrActive);
 }
 
-// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
 // @0x141970900
 void UIGuildDialog::FUN_141970900()
 {
@@ -2417,9 +2416,12 @@ void UIGuildDialog::FUN_141970900()
         MS2Ptr<CFieldDataCli> spField = FUN_140a55460(spEvent->f1c);
         if (spField == 0)
             return;
-        bool bOpen = spCustom->FUN_1404cbee0();
-        if (bOpen)
+        int nState = 0;
+        bool bOpen = false;
+        if (spCustom->FUN_1404cbee0())
         {
+            nState = 1;
+            bOpen = true;
             __int64 tNow = FUN_140869440();
             unsigned __int64 nTick = FUN_140869420();
             int nExpire = (int)(nTick + (30 - (tNow - spCustom->f20)) * 1000);
@@ -2433,14 +2435,13 @@ void UIGuildDialog::FUN_141970900()
         objEvent.FUN_1407cbb20("maxUserText", strMaxUser);
         objEvent.FUN_1407cbb20("eventDesc", CStringTable::GetInstance()->FUN_141811980(0x26, spEvent->f18));
         objEvent.FUN_1407cbb20("imgpath", spEvent->f20);
-        objEvent.FUN_1407cb9c0("state", bOpen);
+        objEvent.FUN_1407cb9c0("state", nState);
         objEvent.FUN_1407cbbe0("isOpenTag", bOpen);
         arrEvents.FUN_1422bc050(objEvent.FUN_1422bb870());
     }
     m_eventPage->FUN_140bd2cb0("buildGuildEvent", arrEvents);
 }
 
-// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
 // @0x141970f00
 void UIGuildDialog::FUN_141970f00()
 {
@@ -2452,10 +2453,10 @@ void UIGuildDialog::FUN_141970f00()
     if (spName.get() != 0)
     {
         double fX = spName->FUN_1422c10a0();
-        double fRight = fX + spName->FUN_1422c5970();
+        unsigned int nRight = (unsigned int)(fX + spName->FUN_1422c5970() + 10.0);
         MS2Ptr<ASMovieClip> spInfo = m_eventVsGame->FUN_1409b4560("m_eventInfo");
         if (spInfo.get() != 0)
-            spInfo->FUN_1422c03a0((int)(fRight + 10.0));
+            spInfo->FUN_1422c03a0(nRight);
     }
     if (CFeatureManager::GetInstance()->FUN_14036d570(0x78))
         FUN_140cfee80((*m_eventVsGame).FUN_1422bb890(), "m_eventDesc", FUN_140298ea0(L"s_guild_ui_vsGame_description"));
@@ -2465,45 +2466,45 @@ void UIGuildDialog::FUN_141970f00()
     FUN_1419761f0();
 }
 
-// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
 // @0x141971490
 void UIGuildDialog::FUN_141971490()
 {
-    if (CFeatureManager::GetInstance()->FUN_14036d570(0x5b) && !FUN_140acd940(&m_housePage, 0))
+    if (!CFeatureManager::GetInstance()->FUN_14036d570(0x5b))
+        return;
+    if (FUN_140acd940(&m_housePage, 0))
+        return;
+    int nTheme = CGuildManager::GetInstance()->FUN_1404d1f90();
+    int nLevel = CGuildManager::GetInstance()->FUN_1404d2030();
+    Unk_PayloadPtr<CGuildXmlData::GuildHouse> spHouse = CGuildXmlData::GetInstance()->FUN_1404d79b0(nTheme, nLevel);
+    if (spHouse == 0)
+        return;
+    MS2Ptr<ASMovieClip> spHouseClip = m_housePage->FUN_1409b4560("m_house");
+    if (spHouseClip.get() != 0)
     {
-        int nTheme = CGuildManager::GetInstance()->FUN_1404d1f90();
-        int nLevel = CGuildManager::GetInstance()->FUN_1404d2030();
-        Unk_PayloadPtr<CGuildXmlData::GuildHouse> spHouse = CGuildXmlData::GetInstance()->FUN_1404d79b0(nTheme, nLevel);
-        if (spHouse == 0)
-            return;
-        MS2Ptr<ASMovieClip> spHouseClip = m_housePage->FUN_1409b4560("m_house");
-        if (spHouseClip.get() != 0)
+        MS2Ptr<ASTextField> spTheme = spHouseClip->FUN_1409b4620("m_themeTitle");
+        if (spTheme.get() != 0)
+            spTheme->FUN_1422c4cd0(CStringTable::GetInstance()->FUN_141811980(0x36, spHouse->f20));
+        MS2Ptr<ASMovieClip> spInfo = spHouseClip->FUN_1409b4560("m_houseInfo");
+        if (spInfo.get() != 0)
         {
-            MS2Ptr<ASTextField> spTheme = spHouseClip->FUN_1409b4620("m_themeTitle");
-            if (spTheme.get() != 0)
-                spTheme->FUN_1422c4cd0(CStringTable::GetInstance()->FUN_141811980(0x36, spHouse->f20));
-            MS2Ptr<ASMovieClip> spInfo = spHouseClip->FUN_1409b4560("m_houseInfo");
-            if (spInfo.get() != 0)
+            MS2Ptr<ASTextField> spArea = spInfo->FUN_1409b4620("m_areaText");
+            if (spArea.get() != 0)
+                spArea->FUN_1422c4cd0(FUN_14062b4f0(L"s_home_info_area", &spHouse->f24));
+            ASArray arrFacility(2);
+            std::vector<int>& arrIds = spHouse->f38;
+            size_t i = 0;
+            while (i < arrIds.size())
             {
-                MS2Ptr<ASTextField> spArea = spInfo->FUN_1409b4620("m_areaText");
-                if (spArea.get() != 0)
-                    spArea->FUN_1422c4cd0(FUN_14062b4f0(L"s_home_info_area", &spHouse->f24));
-                ASArray arrFacility(2);
-                std::vector<int>& arrIds = spHouse->f38;
-                size_t i = 0;
-                while (i < arrIds.size())
-                {
-                    ASObj objFacility(2);
-                    objFacility.FUN_1407cbb20("facility1", CStringTable::GetInstance()->FUN_141811980(0x37, arrIds[i]));
-                    if (i + 1 < arrIds.size())
-                        objFacility.FUN_1407cbb20("facility2", CStringTable::GetInstance()->FUN_141811980(0x37, arrIds[i + 1]));
-                    arrFacility.FUN_1422bc050(objFacility.FUN_1422bb870());
-                    i += 2;
-                }
-                m_housePage->FUN_140bd2cb0("setHouseFacility", arrFacility);
+                ASObj objFacility(2);
+                objFacility.FUN_1407cbb20("facility1", CStringTable::GetInstance()->FUN_141811980(0x37, arrIds[i]));
+                if (i + 1 < arrIds.size())
+                    objFacility.FUN_1407cbb20("facility2", CStringTable::GetInstance()->FUN_141811980(0x37, arrIds[i + 1]));
+                arrFacility.FUN_1422bc050(objFacility.FUN_1422bb870());
+                i += 2;
             }
-            m_housePage->Invoke("setPreviewImage", spHouse->f60);
+            m_housePage->FUN_140bd2cb0("setHouseFacility", arrFacility);
         }
+        m_housePage->Invoke("setPreviewImage", spHouse->f60);
     }
 }
 
@@ -2606,17 +2607,18 @@ void UIGuildDialog::FUN_1419758a0()
     m_skillPage->FUN_140bd2cb0("updateSkillInfo", arrSkill);
 }
 
-// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
 // @0x141975c80
 void UIGuildDialog::FUN_141975c80()
 {
-    if (FUN_140acd940(&m_skillPage2, 0) || m_1c0.empty())
+    if (FUN_140acd940(&m_skillPage2, 0))
+        return;
+    if (m_1c0.empty())
         return;
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     ASArray arrSkill(2);
-    for (std::set<int>::iterator it = m_1c0.begin(); it != m_1c0.end(); ++it)
+    for (std::set<int>::iterator it = m_1c0.begin(), itEnd = m_1c0.end(); it != itEnd; ++it)
     {
         int nLevel = CGuildManager::GetInstance()->FUN_1404d26f0(*it);
         Unk_PayloadPtr<CGuildXmlData::GuildSkill> spData = CGuildXmlData::GetInstance()->FUN_1404d74e0(*it, nLevel);
@@ -2649,7 +2651,6 @@ void UIGuildDialog::FUN_141975c80()
     m_skillPage2->FUN_140bd2cb0("updateSkillInfo", arrSkill);
 }
 
-// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
 // @0x141972520
 void UIGuildDialog::FUN_141972520()
 {
@@ -2660,7 +2661,7 @@ void UIGuildDialog::FUN_141972520()
     Unk_GdStorageItems::iterator it = items.begin();
     Unk_GdStorageItems::iterator itEnd = items.end();
     ATL::CAtlArray<MS2Ptr<CItem> > arrItems;
-    while (it != itEnd)
+    for (; it != itEnd; ++it)
     {
         ItemEntity& entity = it->second;
         MS2Ptr<CItem> spItem(new CItem());
@@ -2669,7 +2670,6 @@ void UIGuildDialog::FUN_141972520()
             spItem->FUN_14052b340(entity.vfunc_o18_2());
             arrItems.Add(spItem);
         }
-        ++it;
     }
     FUN_14141f970(m_strStorageName);
     MS2Ptr<ItemSlotBag::CreateParam> spParam(new ItemSlotBag::CreateParam());
@@ -2820,7 +2820,6 @@ void UIGuildDialog::FUN_141974190(const CStringW& strName)
     m_infoPage->Invoke("setGuildName", strName);
 }
 
-// MS2-FUNCTIONAL: same calls and control flow as the exe; stack-slot/register allocation and temporary-lifetime codegen differ
 // @0x141974240
 void UIGuildDialog::FUN_141974240()
 {
@@ -2833,7 +2832,7 @@ void UIGuildDialog::FUN_141974240()
     for (size_t i = 0; i < arr.GetCount(); i++)
     {
         ASObj objHistory(2);
-        if (arr[i].get() != 0)
+        if ((bool)arr[i].get())
         {
             if (FUN_141977b70(objHistory, arr[i]))
             {
