@@ -27,7 +27,7 @@ public:
     ~GameObjectController();                                                        // 0x14123f460
 
     // Creates the capsule controller at kPos (game units, feet) for an actor fHeight tall with radius fRadius.
-    void FUN_14123f5b0(PCBase* pOwner, egf::EntityPtr spEntity, efd::Point3 kPos, float fHeight, float fRadius);
+    void FUN_14123f5b0(PCBase* pOwner, egf::Entity* pEntity, efd::Point3 kPos, float fHeight, float fRadius);   // raw entity: the exe builds the EntityActorData SmartPointer itself
     void FUN_14123fa70(NxActor* pActor);                                            // give the shape a restitution-1 material
     void FUN_14123fbf0(NxCollisionGroup nGroup);                                    // collision group of every shape
     void FUN_14123fd30(unsigned int nGroups);                                       // the active groups (and groups mask)

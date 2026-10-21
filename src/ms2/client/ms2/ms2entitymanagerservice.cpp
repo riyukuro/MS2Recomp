@@ -115,10 +115,17 @@ static egf::EntityID g_invalidEntity(0);
 static CString g_skill("skill"),g_stun("stun");
 static bool g_backgroundWarning=false;
 
-class EntityWorldManager;
+// The real members (not free functions taking the manager): a by-value EntityPtr return puts the hidden return pointer
+// after `this` for a member, first for a free function, so the old declaration swapped rcx/rdx in the hook DLL and the
+// exe ran FlatModelManager::FindModel on a garbage this (c0000008 at character select, no entity created).
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max
+#include "entityworldmanager.h"
+#pragma pop_macro("max")
+#pragma pop_macro("min")
 EntityWorldManager* FUN_1409670f0();
-egf::EntityPtr FUN_1411cec80(EntityWorldManager*,const efd::utf8string&,egf::EntityID,bool);
-void FUN_1411cf5a0(EntityWorldManager*,egf::EntityID,egf::Entity*);
 void FUN_140de8bd0(egf::Entity*,unsigned,efd::AssetID*);
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 extern Unk_EntityAppFramework DAT_143b059e8;
@@ -156,12 +163,12 @@ MS2_CHECK_SIZE(egf::EntityFactoryRequest,0x80);
         data.m_category=callback;data.m_pCreationArgs=creationArgs;data.m_pInitialPropertyValues=initialProps;
         data.m_spFactoryResponse=EE_NEW egf::EntityFactoryResponse(efd::utf8string(efd::Formatted,"urn:emergent-flat-model:%s",model.c_str()),callback,efd::AssetLoadResponse::ALR_Success,id);
         m_entityIdToPendingDataMap[id]=data;
-        egf::EntityPtr entity=FUN_1411cec80(FUN_1409670f0(),model,id,isMaster);
+        egf::EntityPtr entity=FUN_1409670f0()->FUN_1411cec80(model,id,isMaster);
         if(initialProps)entity->ApplyProperties(initialProps);
         FUN_140de8bd0(entity,0x770e5fc6,&asset);
         efd::SmartPointer<HardwareInstancingService> instancing(FUN_14098c5b0(&DAT_143b059e8));
         if(instancing)instancing->FUN_1413d7d10(id);
-        if(addToWorld)FUN_1411cf5a0(FUN_1409670f0(),id,entity);
+        if(addToWorld)FUN_1409670f0()->FUN_1411cf5a0(id,entity);
         AddEntity(entity,creationArgs);
         return id;
     }

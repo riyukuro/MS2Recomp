@@ -235,6 +235,54 @@ bool IsInstalled(uintptr_t va) {
 extern "C" IMAGE_DOS_HEADER __ImageBase;
 
 // MS2HOOK_AVLOG=1: log the first access violations (rip, module+offset, fault address, a few stack qwords).
+// Logs the call chain of a context (unwind data of the exe, the DLL and the system DLLs), outermost last.
+static void LogChain(CONTEXT uc) {
+    for (int i = 0; i < 48 && uc.Rip; ++i) {
+        HMODULE m = nullptr;
+        char nm[MAX_PATH] = "?";
+        if (uc.Rip >= 0x140000000ull && uc.Rip < 0x143c00000ull) Log("   unwind[%d] exe 0x%llx", i, (unsigned long long)uc.Rip);
+        else if (GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                                    reinterpret_cast<LPCSTR>(uc.Rip), &m)) {
+            GetModuleFileNameA(m, nm, MAX_PATH);
+            const char* b = strrchr(nm, '\\');
+            Log("   unwind[%d] %s+0x%llx", i, b ? b + 1 : nm, (unsigned long long)(uc.Rip - reinterpret_cast<uintptr_t>(m)));
+        } else Log("   unwind[%d] %p", i, reinterpret_cast<void*>(uc.Rip));
+        DWORD64 base = 0;
+        PRUNTIME_FUNCTION fe = nullptr;
+        __try { fe = RtlLookupFunctionEntry(uc.Rip, &base, nullptr); } __except (EXCEPTION_EXECUTE_HANDLER) { break; }
+        if (!fe) {   // leaf function: the return address is at [rsp]
+            __try { uc.Rip = *reinterpret_cast<DWORD64*>(uc.Rsp); } __except (EXCEPTION_EXECUTE_HANDLER) { break; }
+            uc.Rsp += 8;
+            continue;
+        }
+        void* hd = nullptr;
+        DWORD64 ef = 0;
+        __try { RtlVirtualUnwind(UNW_FLAG_NHANDLER, base, uc.Rip, fe, &uc, &hd, &ef, nullptr); }
+        __except (EXCEPTION_EXECUTE_HANDLER) { break; }
+    }
+}
+
+// MS2HOOK_MSGBOX: log every MessageBoxA/W (text, caption, call chain), e.g. to find the code behind an empty box.
+static int (WINAPI* g_realMessageBoxA)(HWND, LPCSTR, LPCSTR, UINT) = MessageBoxA;
+static int (WINAPI* g_realMessageBoxW)(HWND, LPCWSTR, LPCWSTR, UINT) = MessageBoxW;
+static int WINAPI LogMessageBoxA(HWND h, LPCSTR text, LPCSTR caption, UINT type) {
+    Log("MessageBoxA text=\"%s\" caption=\"%s\" type=%x", text ? text : "(null)", caption ? caption : "(null)", type);
+    CONTEXT c;
+    RtlCaptureContext(&c);
+    LogChain(c);
+    return g_realMessageBoxA(h, text, caption, type);
+}
+static int WINAPI LogMessageBoxW(HWND h, LPCWSTR text, LPCWSTR caption, UINT type) {
+    char t[512] = "(null)", cap[128] = "(null)";
+    if (text) WideCharToMultiByte(CP_UTF8, 0, text, -1, t, sizeof t, nullptr, nullptr);
+    if (caption) WideCharToMultiByte(CP_UTF8, 0, caption, -1, cap, sizeof cap, nullptr, nullptr);
+    Log("MessageBoxW text=\"%s\" (%d chars) caption=\"%s\" type=%x", t, text ? (int)wcslen(text) : -1, cap, type);
+    CONTEXT c;
+    RtlCaptureContext(&c);
+    LogChain(c);
+    return g_realMessageBoxW(h, text, caption, type);
+}
+
 static LONG CALLBACK AvLogHandler(EXCEPTION_POINTERS* ep) {
     static volatile LONG count = 0;
     if (ep->ExceptionRecord->ExceptionCode == 0x406D1388 || ep->ExceptionRecord->ExceptionCode == 0x40010006 || ep->ExceptionRecord->ExceptionCode == 0x4001000A || InterlockedIncrement(&count) > 60) return EXCEPTION_CONTINUE_SEARCH;
@@ -261,6 +309,7 @@ static LONG CALLBACK AvLogHandler(EXCEPTION_POINTERS* ep) {
     const uintptr_t dllLo = reinterpret_cast<uintptr_t>(&__ImageBase);
     const uintptr_t dllHi = dllLo + reinterpret_cast<const IMAGE_NT_HEADERS*>(
         reinterpret_cast<const char*>(&__ImageBase) + __ImageBase.e_lfanew)->OptionalHeader.SizeOfImage;
+    LogChain(*c);
     auto* sp = reinterpret_cast<uintptr_t*>(c->Rsp);
     for (int i = 0; i < 700; ++i) {
         uintptr_t v = 0;
@@ -282,6 +331,12 @@ void OpenLog() {
     g_log = CreateFileW(path, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, CREATE_ALWAYS,
                         FILE_ATTRIBUTE_NORMAL, nullptr);
     if (getenv("MS2HOOK_AVLOG")) AddVectoredExceptionHandler(1, AvLogHandler);
+    if (getenv("MS2HOOK_MSGBOX")) {
+        DetourTransactionBegin();
+        DetourAttach(reinterpret_cast<PVOID*>(&g_realMessageBoxA), reinterpret_cast<PVOID>(LogMessageBoxA));
+        DetourAttach(reinterpret_cast<PVOID*>(&g_realMessageBoxW), reinterpret_cast<PVOID>(LogMessageBoxW));
+        Log("MS2HOOK_MSGBOX: MessageBoxA/W logging %s", DetourTransactionCommit() == NO_ERROR ? "on" : "FAILED");
+    }
 }
 
 int InstallAll() {

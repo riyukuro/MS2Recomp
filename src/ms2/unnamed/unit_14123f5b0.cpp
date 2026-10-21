@@ -73,7 +73,7 @@ GameObjectController::~GameObjectController()
 
 // @0x14123f5b0
 // MS2-FUNCTIONAL: EH state numbering / frame layout of the desc + setName temporaries differ from exe
-void GameObjectController::FUN_14123f5b0(PCBase* pOwner, egf::EntityPtr spEntity, efd::Point3 kPos, float fHeight, float fRadius)
+void GameObjectController::FUN_14123f5b0(PCBase* pOwner, egf::Entity* pEntity, efd::Point3 kPos, float fHeight, float fRadius)
 {
     m_pOwner = pOwner;
     m_pManager = static_cast<NxControllerManager*>(FUN_1409f7ca0()->FUN_14168a750());
@@ -110,7 +110,7 @@ void GameObjectController::FUN_14123f5b0(PCBase* pOwner, egf::EntityPtr spEntity
     if (m_pController != 0)
     {
         m_pController->setInteraction(NXIF_INTERACTION_USE_FILTER);
-        m_spActorData = EE_NEW egfPhysX::EntityActorData(spEntity);
+        m_spActorData = EE_NEW egfPhysX::EntityActorData(pEntity);
         NxActor* pActor = m_pController->getActor();
         if (pActor != 0)
             pActor->userData = m_spActorData;
