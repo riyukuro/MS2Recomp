@@ -176,8 +176,8 @@ int UIDailyMissionDialog::vfunc_65()
     }
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140bfc4b0()->FUN_141aa87c0(this ? static_cast<UIQuestEventListener*>(this) : 0);
-    FUN_140aa6d40()->FUN_141b0cd00(this ? static_cast<UIStatusEventListener*>(this) : 0);
+    FUN_140bfc4b0()->FUN_141aa87c0(this);
+    FUN_140aa6d40()->FUN_141b0cd00(this);
     m_1b0 = 0;
     return 1;
 }
@@ -185,8 +185,8 @@ int UIDailyMissionDialog::vfunc_65()
 // @0x140bff7d0
 void UIDailyMissionDialog::vfunc_67()
 {
-    FUN_140bfc4b0()->FUN_141aa8850(this ? static_cast<UIQuestEventListener*>(this) : 0);
-    FUN_140aa6d40()->FUN_141b0cd90(this ? static_cast<UIStatusEventListener*>(this) : 0);
+    FUN_140bfc4b0()->FUN_141aa8850(this);
+    FUN_140aa6d40()->FUN_141b0cd90(this);
     for (size_t i = 0; i < m_188.GetCount(); i++)
         FUN_141415600(m_188[i]);
     m_188.RemoveAll();
@@ -226,7 +226,10 @@ int UIDailyMissionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_140c00070(data.FUN_1422b8b10());
+        {
+            int nItem = data.FUN_1422b8b10();
+            FUN_140c00070(nItem);
+        }
     }
     else if (_stricmp(szMethod, "onChangeIndex") == 0)
     {
@@ -234,7 +237,7 @@ int UIDailyMissionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             int nIndex = data.FUN_1422b8a10();
-            if (m_1b0 > -1 && m_1b0 < 6)
+            if (m_1b0 >= 0 && m_1b0 < 6)
             {
                 m_1b0 = nIndex;
                 FUN_140c001d0();
@@ -251,17 +254,18 @@ int UIDailyMissionDialog::vfunc_48() { return 0x4f53; }
 void UIDailyMissionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return;
     CStringW strType = pArgs->FUN_1422b8f40();
     int nId = pArgs->FUN_1422b8b10();
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nId);
-    if (spData.IsNull())
+    if (!spData)
         return;
-    if (FUN_140841300(strType, "point") == 0)
+    if (FUN_140841300(strType, "point") != 0)
     {
         ASTooltip tip(2);
-        if (tip.FUN_1409e26b0(FUN_1409404f0(FUN_140761ba0(nId, 1))))
+        if (tip.FUN_1409e26b0(FUN_140763e10(spData->m_complete.m_missionPoint)))
         {
             tip.FUN_1409c6dc0(1);
             *pRetVal = tip.FUN_1422bb870();
@@ -270,7 +274,7 @@ void UIDailyMissionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     else
     {
         ASTooltip tip(2);
-        if (tip.FUN_1409e26b0(FUN_140763e10(spData->m_complete.m_missionPoint)))
+        if (tip.FUN_1409e26b0(FUN_1409404f0(FUN_140761ba0(nId, 1))))
         {
             tip.FUN_1409c6dc0(1);
             *pRetVal = tip.FUN_1422bb870();
@@ -282,25 +286,24 @@ void UIDailyMissionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
 // @0x140bffd70
 void UIDailyMissionDialog::vfunc_o178_8(void* pQuestPtr)
 {
-    CQuest* pQuest = (CQuest*)pQuestPtr;
-    if (FUN_141924630() != 0 && pQuest)
+    if (FUN_141924630() == 0)
+        return;
+    if (pQuestPtr == 0)
+        return;
+    if (((CQuest*)pQuestPtr)->GetData().IsNull())
+        return;
+    MS2Ptr<CQuestData> spData = ((CQuest*)pQuestPtr)->GetData();
+    switch (spData->m_338.m_value)
     {
-        if (!pQuest->GetData().IsNull())
-        {
-            MS2Ptr<CQuestData> spData = pQuest->GetData();
-            int nKind = spData->m_338.m_value;
-            if (nKind > 2)
-            {
-                if (nKind < 5)
-                {
-                    DAT_143abdf50 |= 4;
-                    if (spData->m_338.m_4 == m_1b0)
-                        FUN_140c00c10(pQuest);
-                }
-                else if (nKind == 5)
-                    DAT_143abdf50 |= 1;
-            }
-        }
+    case 3:
+    case 4:
+        DAT_143abdf50 |= 4;
+        if (spData->m_338.m_4 == m_1b0)
+            FUN_140c00c10((CQuest*)pQuestPtr);
+        break;
+    case 5:
+        DAT_143abdf50 |= 1;
+        break;
     }
 }
 
@@ -349,19 +352,17 @@ int UIDailyMissionDialog::FUN_140bffff0()
 void UIDailyMissionDialog::FUN_140c00070(int nQuestId)
 {
     Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
-    if (!spQuest.IsNull())
-    {
-        if (spQuest->IsComplete() != 0)
-        {
-            if (!spQuest->GetData().IsNull())
-            {
-                COutPacket packet(0x29, 0);
-                packet.vfunc_o10_1(0x18);
-                packet.vfunc_o10_3(nQuestId);
-                FUN_140710590(packet);
-            }
-        }
-    }
+    if (spQuest.IsNull())
+        return;
+    if (spQuest->IsComplete() == 0)
+        return;
+    MS2Ptr<CQuestData> spData = spQuest->GetData();
+    if (!spData)
+        return;
+    COutPacket packet(0x29, 0);
+    packet.vfunc_o10_1(0x18);
+    packet.vfunc_o10_3(nQuestId);
+    FUN_140710590(packet);
 }
 
 // Fill the recommended list with the quests of the selected group.
@@ -474,11 +475,17 @@ void UIDailyMissionDialog::FUN_140c00cd0()
 {
     ASArray clear(2);
     for (size_t i = 0; i < 6; i++)
-        clear.FUN_1422bbc60(FUN_140c01b50((int)i));
+    {
+        int nGroup = (int)i;
+        clear.FUN_1422bbc60(FUN_140c01b50(nGroup));
+    }
     FUN_1409ee290(&m_30)->FUN_140bd2cb0("refreshClearCount", clear);
     ASArray satisfied(2);
     for (size_t i = 0; i < 6; i++)
-        satisfied.FUN_1422bbc60(FUN_140c01d30((int)i));
+    {
+        int nGroup = (int)i;
+        satisfied.FUN_1422bbc60(FUN_140c01d30(nGroup));
+    }
     FUN_1409ee290(&m_30)->FUN_140bd2cb0("refreshSatisfiedCount", satisfied);
     MS2Ptr<ASMovieClip> spPoint = FUN_140ba7930("m_missionPoint");
     if (spPoint.operator->() != 0)
@@ -498,22 +505,21 @@ void UIDailyMissionDialog::FUN_140c00cd0()
 // @0x140c01040
 void UIDailyMissionDialog::FUN_140c01040(ASObj& rRow, CQuest* pQuest)
 {
-    if (pQuest != 0)
-    {
-        if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
-        {
-            CString strIcon = pQuest->GetData()->m_338.m_8;
-            CStringW strDesc = FUN_1416e5350(pQuest->FUN_140bfc580(), 0);
-            strDesc.Replace(L"#5c2b00", L"#000000");
-            rRow.FUN_1409c0d20("id", pQuest->FUN_140bfc580());
-            rRow.FUN_1407cba60("icon", strIcon);
-            rRow.FUN_1407cbb20("desc", strDesc);
-            rRow.FUN_1407cb9c0("satisfied", pQuest->IsComplete());
-            rRow.FUN_1407cb9c0("completed", pQuest->IsRewarded());
-            rRow.FUN_1409c1180("exp", FUN_140761ba0(pQuest->FUN_140bfc580(), 1));
-            FUN_140c01790(rRow, pQuest->FUN_140bfc580(), 1);
-        }
-    }
+    if (pQuest == 0)
+        return;
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    CString strIcon = pQuest->GetData()->m_338.m_8;
+    CStringW strDesc = FUN_1416e5350(pQuest->FUN_140bfc580(), 0);
+    strDesc.Replace(L"#5c2b00", L"#000000");
+    rRow.FUN_1409c0d20("id", pQuest->FUN_140bfc580());
+    rRow.FUN_1407cba60("icon", strIcon);
+    rRow.FUN_1407cbb20("desc", strDesc);
+    rRow.FUN_1407cb9c0("satisfied", pQuest->IsComplete());
+    rRow.FUN_1407cb9c0("completed", pQuest->IsRewarded());
+    rRow.FUN_1409c1180("exp", FUN_140761ba0(pQuest->FUN_140bfc580(), 1));
+    FUN_140c01790(rRow, pQuest->FUN_140bfc580(), 1);
 }
 
 // Fill the row of a level guide entry; 0 when the quest is not shown.
@@ -559,14 +565,19 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
     if (spData.IsNull())
         return;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return;
     CQuestData::QuestRewardItem* pReward = 0;
-    if (spData->m_338.m_value > 2 && spData->m_338.m_value < 6)
+    switch (spData->m_338.m_value)
     {
+    case 3:
+    case 4:
+    case 5:
         if (spData->m_complete.m_choiceRewards.GetCount() == 0)
             return;
         pReward = &spData->m_complete.m_choiceRewards[0];
+        break;
     }
     if (pReward == 0)
         return;
@@ -595,11 +606,11 @@ int UIDailyMissionDialog::FUN_140c01b50(int nGroup)
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         Unk_PayloadPtr<CQuest> spQuest = quests[i];
-        if (!spQuest->GetData().IsNull())
-        {
-            if (spQuest->GetData()->m_338.m_4 == nGroup)
-                nCount = nCount + 1;
-        }
+        if (spQuest->GetData().IsNull())
+            continue;
+        if (spQuest->GetData()->m_338.m_4 != nGroup)
+            continue;
+        nCount = nCount + 1;
     }
     return nCount;
 }
@@ -614,14 +625,13 @@ int UIDailyMissionDialog::FUN_140c01d30(int nGroup)
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         Unk_PayloadPtr<CQuest> spQuest = quests[i];
-        if (!spQuest->GetData().IsNull())
-        {
-            if (spQuest->GetData()->m_338.m_4 == nGroup)
-            {
-                if (spQuest->IsComplete() != 0)
-                    nCount = nCount + 1;
-            }
-        }
+        if (spQuest->GetData().IsNull())
+            continue;
+        if (spQuest->GetData()->m_338.m_4 != nGroup)
+            continue;
+        if (spQuest->IsComplete() == 0)
+            continue;
+        nCount = nCount + 1;
     }
     return nCount;
 }
@@ -637,15 +647,13 @@ int UIDailyMissionDialog::FUN_140c01f50()
     {
         Unk_PayloadPtr<CQuest> spQuest = quests[i];
         MS2Ptr<CQuestData> spData = spQuest->GetData();
-        if (!spData.IsNull())
-        {
-            if (spData->m_338.m_value == 5)
-            {
-                int nProgress = spQuest->GetProgress(0);
-                if (nBest < nProgress)
-                    nBest = nProgress;
-            }
-        }
+        if (spData.IsNull())
+            continue;
+        if (spData->m_338.m_value != 5)
+            continue;
+        int nProgress = spQuest->GetProgress(0);
+        if (nProgress > nBest)
+            nBest = nProgress;
     }
     return nBest;
 }
@@ -654,7 +662,8 @@ int UIDailyMissionDialog::FUN_140c01f50()
 // @0x140c020d0
 int UIDailyMissionDialog::FUN_140c020d0()
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
     FUN_140764020()->FUN_1416cfc70(quests, 4, 5);
@@ -662,18 +671,15 @@ int UIDailyMissionDialog::FUN_140c020d0()
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         Unk_PayloadPtr<CQuest> spQuest = quests[i];
-        if (spQuest->IsActive() != 0 || spQuest->IsRewarded() != 0)
-        {
-            MS2Ptr<CQuestData> spData = spQuest->GetData();
-            if (!spData.IsNull())
-            {
-                if (spData->m_conditions.GetCount() == 1)
-                {
-                    if ((__int64)nBest < spData->m_conditions[0]->m_nGoal)
-                        nBest = (int)spData->m_conditions[0]->m_nGoal;
-                }
-            }
-        }
+        if (spQuest->IsActive() == 0 && spQuest->IsRewarded() == 0)
+            continue;
+        MS2Ptr<CQuestData> spData = spQuest->GetData();
+        if (!spData)
+            continue;
+        if (spData->m_conditions.GetCount() != 1)
+            continue;
+        if ((__int64)nBest < spData->m_conditions[0]->m_nGoal)
+            nBest = (int)spData->m_conditions[0]->m_nGoal;
     }
     return nBest;
 }
@@ -687,23 +693,19 @@ int UIDailyMissionDialog::FUN_140c02320(int nGroup)
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         Unk_PayloadPtr<CQuest> spQuest = quests[i];
-        if (!spQuest->GetData().IsNull())
-        {
-            MS2Ptr<CQuestData> spData = spQuest->GetData();
-            if (!spData.IsNull())
-            {
-                if (spData->m_338.m_value == 4 || spData->m_338.m_value == 3)
-                {
-                    if (spData->m_338.m_4 == nGroup)
-                    {
-                        if (spQuest->IsActive() != 0)
-                            return 1;
-                        if (spQuest->IsRewarded() != 0)
-                            return 1;
-                    }
-                }
-            }
-        }
+        if (spQuest->GetData().IsNull())
+            continue;
+        MS2Ptr<CQuestData> spData = spQuest->GetData();
+        if (!spData)
+            continue;
+        if (spData->m_338.m_value != 4 && spData->m_338.m_value != 3)
+            continue;
+        if (spData->m_338.m_4 != nGroup)
+            continue;
+        if (spQuest->IsActive() != 0)
+            return 1;
+        if (spQuest->IsRewarded() != 0)
+            return 1;
     }
     return 0;
 }
