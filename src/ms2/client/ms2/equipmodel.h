@@ -78,6 +78,10 @@ public:
     virtual void vfunc_31();                                // 31 0x141200b20 (empty)
     virtual void vfunc_32(int n);                           // 32 0x141201750 (calls 0x141202bd0)
 
+    NiPoint3 FUN_1412000d0();                               // 0x1412000d0 return m_pos6c
+    NiPoint3 FUN_141200130();                               // 0x141200130 return m_pos60
+    CString FUN_1412028f0();                                // 0x1412028f0 return m_str38
+
 public:
     MS2_LAYOUT_FRIEND;
     void* m_unk_18;                                 // +0x18 ctor arg 2

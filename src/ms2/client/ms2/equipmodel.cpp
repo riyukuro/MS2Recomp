@@ -285,11 +285,11 @@ void* FUN_141201bd0(CEquipModel* self, void* out, CString kName);
 void* FUN_1412018c0(CEquipModel* self);
 void FUN_1412029d0(CEquipModel* self, CString* out);
 void FUN_141202bd0(CEquipModel* self);
-void FUN_141202d20(CEquipModel* self, int nSlot, CString* pName, char bKeep, char bWorld);
+void FUN_141202d20(CEquipModel* self, int nSlot, CString* pName, unsigned char bKeep, unsigned char bWorld);
 void FUN_141202dc0(CEquipModel* self, int nSlot);
 bool FUN_141202e30(CEquipModel* self, int nSlot);
 void FUN_1412034e0(CEquipModel* self);
-void FUN_141203570(CEquipModel* self, int nSlot, CString kName, char bWorld);
+void FUN_141203570(CEquipModel* self, int nSlot, CString kName, unsigned char bWorld);
 void FUN_141203660(CEquipModel* self, int nSlot, CString kName, void* pNode);
 CString FUN_141203830(CEquipModel* self);
 bool FUN_141203cf0(CEquipModel* self, void* pEnt);
@@ -338,15 +338,7 @@ void CEquipModel::vfunc_5()
 // @0x1411ffe70
 void CEquipModel::vfunc_17()
 {
-    bool bVisible;
-    if (m_nState != 0) {
-        if (vfunc_20()) {
-            bVisible = true;
-            goto L_done;
-        }
-    }
-    bVisible = false;
-L_done:
+    bool bVisible = (bool)(m_nState != 0 && vfunc_20());
     if (bVisible)
         FUN_141202bd0(this);
     else
@@ -408,9 +400,9 @@ void CEquipModel::vfunc_26(const NiPoint3& p)
 }
 
 // @0x1412000d0
-NiPoint3 FUN_1412000d0(CEquipModel* self)
+NiPoint3 CEquipModel::FUN_1412000d0()
 {
-    return self->m_pos6c;
+    return m_pos6c;
 }
 
 // @0x141200100
@@ -420,9 +412,9 @@ void FUN_141200100(CEquipModel* self, const NiPoint3& p)
 }
 
 // @0x141200130
-NiPoint3 FUN_141200130(CEquipModel* self)
+NiPoint3 CEquipModel::FUN_141200130()
 {
-    return self->m_pos60;
+    return m_pos60;
 }
 
 // @0x141200160
@@ -636,25 +628,27 @@ void FUN_141200b30(CEquipModel* self)
 }
 
 // @0x141200bb0
-bool FUN_141200bb0(CEquipModel* self, CString* pName)
+int FUN_141200bb0(CEquipModel* self, CString* pName)
 {
-    ATL::CRBMap<CString, int>::CPair* pPair = self->m_listC0.Lookup(*pName);
-    if (pPair == 0)
-        self->m_listC0.SetAt(*pName, 1);
-    return pPair == 0;
+    if (self->m_listC0.Lookup(*pName))
+        return 0;
+    self->m_listC0.SetAt(*pName, 1);
+    return 1;
 }
 
 // @0x141200c10
-char FUN_141200c10(CEquipModel* self, CString* pName)
+int FUN_141200c10(CEquipModel* self, CString* pName)
 {
     return self->m_listC0.RemoveKey(*pName);
 }
 
 // @0x141200c50
-bool FUN_141200c50(CEquipModel* self, CString* pName)
+int FUN_141200c50(CEquipModel* self, CString* pName)
 {
     int nVal = 0;
-    return self->m_listC0.Lookup(*pName, nVal);
+    if (self->m_listC0.Lookup(*pName, nVal))
+        return 1;
+    return 0;
 }
 
 // Re-applies the part after a (re)load: visibility, equip callbacks and the transform refresh.
@@ -1020,10 +1014,10 @@ void FUN_141202280(CEquipModel* self, NiTransform* pOut)
 }
 
 // @0x141202480
-void FUN_141202480(CEquipModel* self, NiPoint3* pPos, float* pEuler, void* p5, void* p6)
+void FUN_141202480(CEquipModel* self, NiPoint3* pPos, float* pEuler, void* pLocal, void* pTrans, void* pRot)
 {
     float fScale = 1.0f;
-    FUN_1412024f0(self, pPos, pEuler, &fScale, p5, p6, 0);
+    FUN_1412024f0(self, pPos, pEuler, &fScale, pLocal, pTrans, pRot);
 }
 
 // World position / Euler angles (degrees) / scale of the named attach point of the loaded model.
@@ -1082,9 +1076,9 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pSca
 }
 
 // @0x1412028f0
-CString FUN_1412028f0(CEquipModel* self)
+CString CEquipModel::FUN_1412028f0()
 {
-    return self->m_str38;
+    return m_str38;
 }
 
 // @0x141202940
@@ -1157,14 +1151,14 @@ void FUN_141202bd0(CEquipModel* self)
 }
 
 // @0x141202d20
-void FUN_141202d20(CEquipModel* self, int nSlot, CString* pName, char bKeep, char bWorld)
+void FUN_141202d20(CEquipModel* self, int nSlot, CString* pName, unsigned char bKeep, unsigned char bWorld)
 {
-    if (bKeep == 0 || FUN_141202e30(self, nSlot) == 0) {
-        if (pName->IsEmpty())
-            FUN_141202dc0(self, nSlot);
-        else
-            FUN_141203570(self, nSlot, CString(*pName), bWorld);
-    }
+    if (bKeep != 0 && FUN_141202e30(self, nSlot) != 0)
+        return;
+    if (pName->IsEmpty())
+        FUN_141202dc0(self, nSlot);
+    else
+        FUN_141203570(self, nSlot, CString(*pName), bWorld);
 }
 
 // Releases the effect bound to nSlot.
@@ -1172,10 +1166,9 @@ void FUN_141202d20(CEquipModel* self, int nSlot, CString* pName, char bKeep, cha
 void FUN_141202dc0(CEquipModel* self, int nSlot)
 {
     int nHandle = 0;
-    Unk_EquipEffectSlot eSlot = (Unk_EquipEffectSlot)nSlot;
-    if (self->m_map78.Lookup(eSlot, nHandle)) {
+    if (self->m_map78.Lookup(reinterpret_cast<Unk_EquipEffectSlot&>(nSlot), nHandle)) {
         FUN_1411a6060(FUN_1403ed280(), nHandle);
-        self->m_map78.RemoveKey(eSlot);
+        self->m_map78.RemoveKey(reinterpret_cast<Unk_EquipEffectSlot&>(nSlot));
     }
 }
 
@@ -1183,7 +1176,9 @@ void FUN_141202dc0(CEquipModel* self, int nSlot)
 bool FUN_141202e30(CEquipModel* self, int nSlot)
 {
     int nHandle = 0;
-    return self->m_map78.Lookup((Unk_EquipEffectSlot)nSlot, nHandle) && nHandle != 0;
+    if (self->m_map78.Lookup(reinterpret_cast<Unk_EquipEffectSlot&>(nSlot), nHandle))
+        return nHandle != 0;
+    return false;
 }
 
 // Creates the "Equip_Attach_Transform" / "Weapon_Attach_Transform{L,R}H" node under the loaded model for the part.
@@ -1272,17 +1267,15 @@ bool FUN_1412033e0(CEquipModel* self)
 // @0x1412034e0
 void FUN_1412034e0(CEquipModel* self)
 {
-    POSITION pos = self->m_map78.GetStartPosition();
-    while (pos != 0) {
+    for (POSITION pos = self->m_map78.GetStartPosition(); pos != 0; self->m_map78.GetNext(pos)) {
         int nHandle = self->m_map78.GetValueAt(pos);
         FUN_1411a6060(FUN_1403ed280(), nHandle);
-        self->m_map78.GetNext(pos);
     }
     self->m_map78.RemoveAll();
 }
 
 // @0x141203570
-void FUN_141203570(CEquipModel* self, int nSlot, CString kName, char bWorld)
+void FUN_141203570(CEquipModel* self, int nSlot, CString kName, unsigned char bWorld)
 {
     void* pEnt = FUN_141200820(self);
     if (pEnt == 0)
@@ -1558,7 +1551,7 @@ void* FUN_141208da0(void* p);
 void* FUN_141208dc0(void* p);
 void FUN_141205170(void* a, void* b);
 void FUN_141205570(void* p);
-char FUN_141205640(void* a, void* b);
+bool FUN_141205640(void* a, void* b);
 void* FUN_141204a10(void* a, void* b, void* c, void* d, char e);
 void* FUN_1410431d0(void* p);
 extern char DAT_143ad2288[];
