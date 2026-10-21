@@ -4608,3 +4608,5 @@ criHeap_Initialize	1400282e0	func
 ?ReleaseInternal@Value@AS3@GFx@Scaleform@@AEAAXXZ	142521f00	func
 ?SetProperty@Array@fl@Instances@AS3@GFx@Scaleform@@UEAA?AVCheckResult@456@AEBVMultiname@456@AEBVValue@456@@Z	142421ff0	func
 ?SetProperty@XMLList@fl@Instances@AS3@GFx@Scaleform@@UEAA?AVCheckResult@456@AEBVMultiname@456@AEBVValue@456@@Z	142422a20	func
+?AppendString@String@Scaleform@@QEAAXPEB_W_J@Z	142586230	func
+?GetHtml@StyledText@Text@Render@Scaleform@@QEBAAEAVStringBuffer@4@PEAV54@@Z	142596c80	func
