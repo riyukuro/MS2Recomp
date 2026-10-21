@@ -82,7 +82,7 @@ class CMouseInteractDynamicModel : public CMouseInteract
 {
 public:
     CMouseInteractDynamicModel();                       // 0x140a7b4b0
-    virtual ~CMouseInteractDynamicModel();              // 0x140a7b570 (deleting 0x140a7b6f0)
+    virtual ~CMouseInteractDynamicModel() = default;    // 0x140a7b570 (deleting 0x140a7b6f0)
     virtual int vfunc_1(Unk_MouseRay* pRay);           // 0x140a7a780
     virtual int vfunc_2(Unk_MouseRay* pRay);           // 0x140a7a810
     virtual int vfunc_3();                             // 0x140a7a880
@@ -98,7 +98,7 @@ class CMouseInteractTaxi : public CMouseInteractDynamicModel
 {
 public:
     CMouseInteractTaxi();                               // 0x140a7aad0
-    virtual ~CMouseInteractTaxi();                      // 0x140a7b5a0 (deleting 0x140a7b730)
+    virtual ~CMouseInteractTaxi() = default;            // 0x140a7b5a0 (deleting 0x140a7b730)
     virtual int vfunc_6();                              // 0x140a7b8c0
 };
 
@@ -106,7 +106,7 @@ class CMouseInteractUgcBanner : public CMouseInteractDynamicModel
 {
 public:
     CMouseInteractUgcBanner();                          // 0x140a7ab50
-    virtual ~CMouseInteractUgcBanner();                 // 0x140a7b5c0 (deleting 0x140a7b770)
+    virtual ~CMouseInteractUgcBanner() = default;       // 0x140a7b5c0 (deleting 0x140a7b770)
     virtual int vfunc_6();                              // 0x140a7b8d0
 };
 

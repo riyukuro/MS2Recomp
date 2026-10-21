@@ -133,8 +133,13 @@ Unk_NpcNode* Unk_NpcTree::GetNext(Unk_NpcNode*& pos)
 // @0x140a7b8e0
 PCBaseRef* Unk_NpcTree::GetAt(Unk_NpcNode* pos)
 {
-    if (pos == 0)
-        AtlThrow(0x80004005L);
+    do                                                      // ATLENSURE(pos != NULL)
+    {
+        int nCond = !!(pos != 0);
+        do {} while (0);
+        if (!nCond)
+            AtlThrow(0x80004005L);
+    } while (0);
     return reinterpret_cast<PCBaseRef*>(reinterpret_cast<char*>(pos) + 8);
 }
 // @0x140a7b940
@@ -145,9 +150,9 @@ bool Unk_NpcTree::IsNil(Unk_NpcNode* p)
 // @0x140a7b980
 Unk_NpcNode* Unk_NpcTree::Minimum(Unk_NpcNode* p)
 {
-    Unk_NpcNode* pCur = p;
     if (p == 0 || IsNil(p))
         return 0;
+    Unk_NpcNode* pCur = p;
     while (!IsNil(pCur->m_pLeft))
         pCur = pCur->m_pLeft;
     return pCur;
@@ -160,9 +165,12 @@ Unk_NpcNode* Unk_NpcTree::Successor(Unk_NpcNode* p)
         return 0;
     if (!IsNil(p->m_pRight))
         return Minimum(p->m_pRight);
+    pNext = p->m_pParent;
     Unk_NpcNode* pChild = p;
-    for (pNext = p->m_pParent; !IsNil(pNext) && pChild == pNext->m_pRight; pNext = pNext->m_pParent)
+    while (!IsNil(pNext) && pChild == pNext->m_pRight) {
         pChild = pNext;
+        pNext = pNext->m_pParent;
+    }
     if (IsNil(pNext))
         pNext = 0;
     return pNext;
@@ -223,7 +231,7 @@ void FUN_1409618c0(void* pObj, unsigned nHash, Unk_Vec3* pOut);
 struct Unk_WeaponEnt { char m_pad_00[0x18]; unsigned long long m_qwId; char m_pad_20[0x28]; int m_n48; char m_pad_4c[4]; int m_n50; };
 struct Unk_WeaponHit { void* m_pad; Unk_WeaponEnt* m_p; };
 Unk_WeaponHit* FUN_140884f70(Unk_WeaponHit* pDst, void* pSrc);
-char FUN_140885220(void* p);
+bool FUN_140885220(void* p);                            // MS2Ptr<Cube>::operator!
 Unk_WeaponEnt* FUN_140885350(void* p);
 Unk_WeaponEnt* FUN_140885330(void* p);
 void FUN_140885120(Unk_WeaponHit* p);
@@ -275,7 +283,7 @@ size_t Unk_WeaponArray::GetCount()
 // @0x140a7b610
 Unk_WeaponHit* Unk_WeaponArray::GetAt(size_t i)
 {
-    if (!(m_nSize > i))
+    if (i >= m_nSize)
         FUN_140159b70(0x80070057L);
     return m_pData + i;
 }
@@ -290,7 +298,7 @@ Unk_WeaponHit* Unk_WeaponHitDelDtor(Unk_WeaponHit* p, unsigned nFlags)
 {
     FUN_140885120(p);
     if ((nFlags & 1) != 0)
-        operator delete(p);
+        operator delete(p, sizeof(Unk_WeaponHit));
     return p;
 }
 
@@ -331,7 +339,7 @@ bool Unk_ObjectHitIsNil(Unk_ObjectHit* p)
 }
 void FUN_140968e90(Unk_ObjectEnt* p);
 // @0x140a7baf0
-void Unk_ObjectHitAddRef(Unk_ObjectHit* p)
+void Unk_ObjectHitAddRef(Unk_ObjectHit* p, void* pUnused)
 {
     FUN_140968e90(p->m_p);
 }
@@ -339,7 +347,7 @@ void Unk_ObjectHitAddRef(Unk_ObjectHit* p)
 void Unk_ObjectHitAddRefIfSet(Unk_ObjectHit* p)
 {
     if (p->m_p != 0)
-        Unk_ObjectHitAddRef(p);
+        Unk_ObjectHitAddRef(p, 0);
 }
 
 struct Unk_MiPlayer { char m_pad[0x1338]; char m_actionState[8]; };
@@ -415,16 +423,16 @@ int CMouseInteractNpc::vfunc_1(Unk_MouseRay* pRay)
 int CMouseInteractNpc::vfunc_2(Unk_MouseRay* pRay)
 {
     PCBase* pNpc = FindTarget(&pRay->vOrigin, &pRay->vEnd);
-    if (pNpc == 0)
-        return false;
-    NiPoint3 vTmp = pNpc->vfunc_18();
-    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&vTmp));
-    if (pNpc->vfunc_117() == 0)
-        m_nAction = 0x14;
-    else
-        m_nAction = 6;
-    m_nNpcId = FUN_141092fa0(pNpc);
-    return true;
+    if (pNpc != 0) {
+        FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(pNpc->vfunc_18())));
+        if (pNpc->vfunc_117() != 0)
+            m_nAction = 6;
+        else
+            m_nAction = 0x14;
+        m_nNpcId = FUN_141092fa0(pNpc);
+        return true;
+    }
+    return false;
 }
 // @0x140a79400
 int CMouseInteractNpc::vfunc_3()
@@ -759,18 +767,19 @@ Unk_ObjectHit* CMouseInteractObject::FindTarget(Unk_ObjectHit* pOut, const Unk_V
 // @0x140a7a780
 int CMouseInteractDynamicModel::vfunc_1(Unk_MouseRay* pRay)
 {
-    bool bHit = vfunc_2(pRay);
-    if (bHit)
-        pRay->strCursor = FUN_14028b8e0(m_strCursor);
-    return bHit;
+    if (!vfunc_2(pRay))
+        return 0;
+    pRay->strCursor = FUN_14028b8e0(m_strCursor);
+    return 1;
 }
 // @0x140a7a810
 int CMouseInteractDynamicModel::vfunc_2(Unk_MouseRay* pRay)
 {
     void* pModel = FindTarget(&pRay->vOrigin, &pRay->vEnd);
-    if (pModel != 0)
-        FUN_1409618c0(pModel, 0xfd95ca52, &pRay->vPick);
-    return pModel != 0;
+    if (pModel == 0)
+        return 0;
+    FUN_1409618c0(pModel, 0xfd95ca52, &pRay->vPick);
+    return 1;
 }
 // @0x140a7a880
 int CMouseInteractDynamicModel::vfunc_3()
@@ -778,7 +787,9 @@ int CMouseInteractDynamicModel::vfunc_3()
     Unk_MiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
-    return FUN_140953530(Unk_PlayerActionState(pPlayer)) == m_nAction;
+    if (FUN_140953530(Unk_PlayerActionState(pPlayer)) != m_nAction)
+        return false;
+    return true;
 }
 // @0x140a7a8e0
 void* CMouseInteractDynamicModel::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
@@ -818,10 +829,6 @@ void* CMouseInteractDynamicModel::FindTarget(const Unk_Vec3* pOrigin, const Unk_
 CMouseInteractDynamicModel::CMouseInteractDynamicModel()
 {
 }
-// @0x140a7b570
-CMouseInteractDynamicModel::~CMouseInteractDynamicModel()
-{
-}
 // @0x140a7b8b0
 int CMouseInteractDynamicModel::vfunc_6()
 {
@@ -835,10 +842,6 @@ CMouseInteractTaxi::CMouseInteractTaxi()
     m_nAction = 8;
     m_strCursor = L"s_mouse_interact_taxi";
 }
-// @0x140a7b5a0
-CMouseInteractTaxi::~CMouseInteractTaxi()
-{
-}
 // @0x140a7b8c0
 int CMouseInteractTaxi::vfunc_6()
 {
@@ -851,10 +854,6 @@ CMouseInteractUgcBanner::CMouseInteractUgcBanner()
     m_fPickSize = 225.0f;
     m_nAction = 0x10;
     m_strCursor = L"s_mouse_interact_ugcbanner";
-}
-// @0x140a7b5c0
-CMouseInteractUgcBanner::~CMouseInteractUgcBanner()
-{
 }
 // @0x140a7b8d0
 int CMouseInteractUgcBanner::vfunc_6()
@@ -883,10 +882,10 @@ void FUN_141b1feb0(void* p);
 // @0x140a7abd0
 int CMouseInteractTalkCancel::vfunc_1(Unk_MouseRay* pRay)
 {
-    bool bHit = vfunc_2(pRay);
-    if (bHit)
-        pRay->strCursor = FUN_14028b8e0(CStringW(L"s_mouse_interact_talk_end"));
-    return bHit;
+    if (!vfunc_2(pRay))
+        return 0;
+    pRay->strCursor = FUN_14028b8e0(L"s_mouse_interact_talk_end");
+    return 1;
 }
 // @0x140a7ac80
 int CMouseInteractTalkCancel::vfunc_2(Unk_MouseRay* pRay)
@@ -901,8 +900,7 @@ int CMouseInteractTalkCancel::vfunc_2(Unk_MouseRay* pRay)
     PCBase* pPlayer = reinterpret_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
-    NiPoint3 vTmp = pPlayer->vfunc_18();
-    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&vTmp));
+    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(pPlayer->vfunc_18())));
     return true;
 }
 // @0x140a7ad30
