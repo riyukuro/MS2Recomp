@@ -88,12 +88,14 @@ CPremiumProductLimitInfo::~CPremiumProductLimitInfo()
 }
 
 // @0x1402699d0
-// MS2-FUNCTIONAL: 1 byte longer in the exe (branch layout of the entry cleanup); behaviour-equivalent
 void CPremiumProductLimitInfo::FUN_1402699d0()
 {
     __int64 tNow = FUN_140869440();
     Unk_140163940 guard(m_lock);
-    if (guard == 0)
+    if (guard != 0)
+    {
+    }
+    else
     {
         int nTotal = 0;
         void* pos = FUN_140281940(&m_list);
@@ -102,17 +104,17 @@ void CPremiumProductLimitInfo::FUN_1402699d0()
             void* posCur = pos;
             FUN_140281af0(&m_list, &pos);
             Unk_PplRef ref(*FUN_140281540(&m_list, posCur));
-            if (FUN_14027ed60(&ref, 0) == 0)
+            if (FUN_14027ed60(&ref, 0) != 0)
             {
-                if (FUN_14027f310(&ref)->m_tExpire < tNow)
-                {
-                    FUN_140284f90(&m_list, posCur);
-                    continue;
-                }
-                nTotal = nTotal + FUN_14027f310(&ref)->m_nCount;
+                FUN_140284f90(&m_list, posCur);
                 continue;
             }
-            FUN_140284f90(&m_list, posCur);
+            if (FUN_14027f310(&ref)->m_tExpire < tNow)
+            {
+                FUN_140284f90(&m_list, posCur);
+                continue;
+            }
+            nTotal = nTotal + FUN_14027f310(&ref)->m_nCount;
         }
         if (nTotal != m_nTotal)
             m_nTotal = nTotal;
@@ -120,22 +122,20 @@ void CPremiumProductLimitInfo::FUN_1402699d0()
 }
 
 // @0x140269b50
-// MS2-FUNCTIONAL: the exe frame holds an extra 8-byte temporary and 4 more unwind states; behaviour-equivalent
 void CPremiumProductLimitInfo::FUN_140269b50(Unk_PplRef ref)
 {
-    if (FUN_14027ed60(&ref, 0) == 0)
-    {
-        if (FUN_14027f310(&ref)->m_nProductId == m_nProductId)
-        {
-            Unk_140163940 guard(m_lock);
-            if (guard == 0)
-            {
-                FUN_1402805b0(&m_list, &ref);
-                m_nTotal = m_nTotal + FUN_14027f310(&ref)->m_nCount;
-            }
-            return;
-        }
+    if (FUN_14027ed60(&ref, 0) != 0)
         return;
+    int nProductId = FUN_14027f310(&ref)->m_nProductId;
+    if (nProductId != m_nProductId)
+        return;
+    Unk_140163940 guard(m_lock);
+    if (guard != 0)
+    {
     }
-    return;
+    else
+    {
+        FUN_1402805b0(&m_list, &ref);
+        m_nTotal = m_nTotal + FUN_14027f310(&ref)->m_nCount;
+    }
 }
