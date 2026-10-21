@@ -4471,3 +4471,9 @@ criHeap_Initialize	1400282e0	func
 ?GetMeshCacheConfig@Renderer2DImpl@Render@Scaleform@@QEBAPEAVMeshCacheConfig@23@XZ	14263ee50	func
 ?SetEvent@Event@Scaleform@@QEAAXXZ	1425842b0	func
 ?Wait@Event@Scaleform@@QEAA_NI@Z	142584540	func
+?HeadFreeTable@BitSet1@HeapPT@Scaleform@@0QBKB	143193410	data
+?HeadUsedTable@BitSet1@HeapPT@Scaleform@@0QBKB	143193310	data
+?LastFreeBlock@BitSet1@HeapPT@Scaleform@@0QBEB	143193510	data
+?LastUsedBlock@BitSet1@HeapPT@Scaleform@@0QBEB	143193610	data
+?TailFreeTable@BitSet1@HeapPT@Scaleform@@0QBKB	143193490	data
+?TailUsedTable@BitSet1@HeapPT@Scaleform@@0QBKB	143193390	data
