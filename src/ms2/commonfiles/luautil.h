@@ -106,7 +106,7 @@ public:
     int Round(double dValue, int nDigits);              // 0x140673fb0
     int Round(double dValue);                           // 0x140674040
     int Truncate(double dValue, int nDigits);           // 0x140674080
-    static double Clamp(double dValue, double dMin, double dMax);   // 0x14067b7c0
+    double Clamp(double dValue, double dMin, double dMax);          // 0x14067b7c0
     bool LoadScripts(lua_State* pLuaState);             // 0x1406737a0
     void Update();                                      // 0x140673330 reload when a script changed
 

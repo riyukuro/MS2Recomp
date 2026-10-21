@@ -51,6 +51,7 @@ int LuaPrintInfo(lua_State*);
 int LuaPrintError(lua_State*);
 int LuaPrintWarn(lua_State*);
 void LuaPrint(lua_State*, int);
+extern "C" double (__cdecl* __imp_floor)(double);          // the exe imports floor from the UCRT
 
 // @0x140672770
 CLua::CLua() : m_bError(false) {}
@@ -141,15 +142,23 @@ void CLua::CLuaContext::Push(bool bValue)
 // @0x140672c30
 bool CLua::CLuaContext::Call()
 {
-    if (lua_pcall(m_pState, m_nNumParam, LUA_MULTRET, 0) != 0)
-    Error();
+    try
+    {
+        if (lua_pcall(m_pState, m_nNumParam, LUA_MULTRET, 0))
+            Error();
+    }
+    catch (...)
+    {
+        return false;
+    }
     return true;
 }
 
 // @0x140672c90
 double CLua::CLuaContext::Number(int nIndex)
 {
-    if (lua_gettop(m_pState) < nIndex)
+    int nTop = lua_gettop(m_pState);
+    if (nIndex > nTop)
     {
         MS2_ASSERT_AT(0x11f, 0);
         return 0;
@@ -160,7 +169,8 @@ double CLua::CLuaContext::Number(int nIndex)
 // @0x140672d00
 long long CLua::CLuaContext::Integer(int nIndex)
 {
-    if (lua_gettop(m_pState) < nIndex)
+    int nTop = lua_gettop(m_pState);
+    if (nIndex > nTop)
     {
         MS2_ASSERT_AT(299, 0);
         return 0;
@@ -171,7 +181,8 @@ long long CLua::CLuaContext::Integer(int nIndex)
 // @0x140672d70
 const char* CLua::CLuaContext::String(int nIndex)
 {
-    if (lua_gettop(m_pState) < nIndex)
+    int nTop = lua_gettop(m_pState);
+    if (nIndex > nTop)
     {
         MS2_ASSERT_AT(0x137, 0);
         return "";
@@ -182,7 +193,8 @@ const char* CLua::CLuaContext::String(int nIndex)
 // @0x140672df0
 bool CLua::CLuaContext::Boolean(int nIndex)
 {
-    if (lua_gettop(m_pState) < nIndex)
+    int nTop = lua_gettop(m_pState);
+    if (nIndex > nTop)
     {
         MS2_ASSERT_AT(0x143, 0);
         return false;
@@ -194,22 +206,24 @@ bool CLua::CLuaContext::Boolean(int nIndex)
 void CLua::CLuaContext::Initialize()
 {
     m_pState = luaL_newstate();
-    if (m_pState == 0)
+    if (m_pState != 0)
+    {
+        luaL_openlibs(m_pState);
+        lua_pushcclosure(m_pState, LuaPrintInfo, 0);
+        lua_setfield(m_pState, LUA_GLOBALSINDEX, "print");
+        lua_pushcclosure(m_pState, LuaPrintError, 0);
+        lua_setfield(m_pState, LUA_GLOBALSINDEX, "printErr");
+        lua_pushcclosure(m_pState, LuaPrintWarn, 0);
+        lua_setfield(m_pState, LUA_GLOBALSINDEX, "printWarn");
+        lua_pushcclosure(m_pState, LuaPrintError, 0);
+        lua_setfield(m_pState, LUA_GLOBALSINDEX, "printError");
+        FUN_1401c0db0()->LoadScripts(m_pState);
+        SetLocale();
+    }
+    else
     {
         MS2_ASSERT_AT(0xad, 0);
-        return;
     }
-    luaL_openlibs(m_pState);
-    lua_pushcclosure(m_pState, LuaPrintInfo, 0);
-    lua_setfield(m_pState, LUA_GLOBALSINDEX, "print");
-    lua_pushcclosure(m_pState, LuaPrintError, 0);
-    lua_setfield(m_pState, LUA_GLOBALSINDEX, "printErr");
-    lua_pushcclosure(m_pState, LuaPrintWarn, 0);
-    lua_setfield(m_pState, LUA_GLOBALSINDEX, "printWarn");
-    lua_pushcclosure(m_pState, LuaPrintError, 0);
-    lua_setfield(m_pState, LUA_GLOBALSINDEX, "printError");
-    FUN_1401c0db0()->LoadScripts(m_pState);
-    SetLocale();
 }
 
 // @0x140672fd0
@@ -422,17 +436,19 @@ CString CLua::GetLocale()
 // @0x140673fb0
 int CLua::Round(double dValue, int nDigits)
 {
-    double dScaled = floor(dValue * FUN_1405e6d60(10, nDigits) + 0.5 + 1e-06);
+    double dEps = 1e-06;
+    double dScaled = __imp_floor(dValue * FUN_1405e6d60(10, nDigits) + 0.5 + dEps);
     return (int)(dScaled / FUN_1405e6d60(10, nDigits));
 }
 
 // @0x140674040
-int CLua::Round(double dValue) { return (int)floor(dValue + 0.9); }
+int CLua::Round(double dValue) { return (int)__imp_floor(dValue + 0.9); }
 
 // @0x140674080
 int CLua::Truncate(double dValue, int nDigits)
 {
-    double dScaled = floor(dValue * FUN_1405e6d60(10, nDigits) + 1e-06);
+    double dEps = 1e-06;
+    double dScaled = __imp_floor(dValue * FUN_1405e6d60(10, nDigits) + dEps);
     return (int)(dScaled / FUN_1405e6d60(10, nDigits));
 }
 
@@ -1440,7 +1456,8 @@ bool CLua::FUN_14067a260(int* item,long long* price) {
         __assume(0);
     } else {
         context->Select("calc_blueprintCreateCost"); if(!context->Call()) return false;
-        *item = FUN_14088da20((int)context->Integer(1));
+        int nItem = (int)context->Integer(1);
+        *item = FUN_14088da20(nItem);
         *price = context->Integer(2);
         return true;
     }
@@ -1621,10 +1638,10 @@ int LuaPrintWarn(lua_State* pState)
 // @0x14067b7c0
 double CLua::Clamp(double dValue, double dMin, double dMax)
 {
-    if (!(dValue >= dMin))
-    return dMin;
+    if (dValue < dMin)
+        return dMin;
     if (dValue > dMax)
-    return dMax;
+        return dMax;
     return dValue;
 }
 
