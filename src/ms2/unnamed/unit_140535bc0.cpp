@@ -110,6 +110,7 @@ int CostumeSetTable::Load()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -121,7 +122,6 @@ int CostumeSetTable::Load()
 }
 
 // @0x1405360b0
-// MS2-FUNCTIONAL: one trailing nop in the lock-held path (the exe returns the unfilled result there)
 CostumeSetPtr CostumeSetTable::GetSet(unsigned nSetId, int nGender)
 {
     if (nGender < 0 && 2 < nGender)
@@ -129,6 +129,7 @@ CostumeSetPtr CostumeSetTable::GetSet(unsigned nSetId, int nGender)
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
