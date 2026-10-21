@@ -85,7 +85,7 @@ int CSkillCompactControlTable::Load()
 {
     if (!FUN_140166410()->FUN_14036d570(0x10))
         return 1;
-    if (Unk_LockGuard guard = s_lock) {} else
+    if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         s_skills.RemoveAll();
         s_jobSkills.RemoveAll();
@@ -123,13 +123,13 @@ int CSkillCompactControlTable::Load()
                 FUN_140873220(pSkill, "id", spSkill->m_nSkillId);
                 FUN_140873220(pSkill, "repeatCount", spSkill->m_nRepeatCount);
                 spList->AddTail(spSkill);
-                if (Unk_LockGuard guard = s_lock) {} else
+                if (Unk_LockGuard guard = s_lock) { __assume(0); } else
                 {
                     s_skills.SetAt(spSkill->m_nSkillId, spSkill);
                 }
             }
         }
-        if (Unk_LockGuard guard = s_lock) {} else
+        if (Unk_LockGuard guard = s_lock) { __assume(0); } else
         {
             s_jobSkills.SetAt(nCode, spList);
             s_baseSP.SetAt(nCode, nBaseSP);
@@ -143,7 +143,7 @@ int CSkillCompactControlTable::Load()
 Unk_CcSkillPtr CSkillCompactControlTable::GetSkill(unsigned nSkillId)
 {
     CheckInit();
-    if (Unk_LockGuard guard = s_lock) {} else
+    if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         if (FUN_1401d1320(&s_cache))
             Load();
@@ -157,7 +157,7 @@ Unk_CcSkillPtr CSkillCompactControlTable::GetSkill(unsigned nSkillId)
 Unk_CcSkillListPtr CSkillCompactControlTable::GetJobSkills(Unk_CcJob nJob)
 {
     CheckInit();
-    if (Unk_LockGuard guard = s_lock) {} else
+    if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         if (FUN_1401d1320(&s_cache))
             Load();
@@ -172,7 +172,7 @@ __int64 CSkillCompactControlTable::GetBaseSP(Unk_CcJob nJob)
 {
     CheckInit();
     __int64 nBaseSP;
-    if (Unk_LockGuard guard = s_lock) {} else
+    if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         if (FUN_1401d1320(&s_cache))
             Load();
