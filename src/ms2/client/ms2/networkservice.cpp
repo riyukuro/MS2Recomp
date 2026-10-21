@@ -32,7 +32,7 @@
 // MS2-PIN: ??0Unk_NetworkLoadingPtr@@QEAA@PEAVCSceneStateBase@@@Z 0x1415409a0
 // MS2-PIN: ?Get@Unk_NetworkLoadingPtr@@QEBAPEAVCSceneStateBase@@XZ 0x141541250
 // MS2-PIN: ??C?$SmartPointer@VCSceneStateBase@@@efd@@QEBAPEAVCSceneStateBase@@XZ 0x141541270
-// MS2-PIN: ??CUnk_NetworkLoggerPtr@@QEBAPEAVCPacketLogger@@XZ 0x141541260
+// MS2-PIN: ??B?$Unk_SocketPtr@VCPacketLogger@@@@QEBAPEAVCPacketLogger@@XZ 0x141541260
 // MS2-PIN: ?GetNext@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@QEBAPEBVCPair@12@AEAPEAU__POSITION@@@Z 0x141541b80
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\networkservice.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -43,11 +43,8 @@
 #include "ms2/placeholder/cclienthardwareinfo.h"
 #include <shellapi.h>
 
-// Unit-local view of m_logger (Unk_SocketPtr<CPacketLogger>): networkservice has its own operator-> COMDAT copy at
-// 0x141541260 (gamesocket has another at 0x1412691b0), so it needs a distinct symbol name.
-struct Unk_NetworkLoggerPtr { void* pad; CPacketLogger* p;
-    bool operator==(CPacketLogger* v) const { return p==v; }
-    CPacketLogger* operator->() const { return p; } };
+// m_socket.m_logger's null tests go through Unk_SocketPtr<CPacketLogger>'s operator T* (0x141541260, this unit's COMDAT),
+// the member calls through the operator-> gamesocket instantiates (0x1412691b0).
 void FUN_141543190(void*,int);
 void* FUN_140166410();
 int FUN_14036d8b0(void*); int FUN_1406516b0();
@@ -162,7 +159,7 @@ Unk_NetworkWorld* FUN_1403ed2d0();
 class Unk_NetworkTick { public: void FUN_1409a33d0(); };
 Unk_NetworkTick* FUN_140c77550();
 void* FUN_140e800e0();
-bool FUN_140aada20(void*,CInPacket&);
+void FUN_140aada20(void*,CInPacket&);  // CReconnectionManagerCli::FUN_140aada20
 void* FUN_1414a5730();
 void FUN_140a84960(void*,CInPacket&);
 void FUN_1417b7450(void*);
@@ -493,8 +490,9 @@ void CNetworkService::FUN_141538a20(__int64 id) { COutPacket packet(0x18,0); pac
 void CNetworkService::FUN_141538a90(__int64 first,__int64 second) { COutPacket packet(0x42,0);packet.vfunc_o10_1(9);packet.vfunc_o10_4(first);packet.vfunc_o10_4(second);FUN_140710590(packet); }
 // @0x141538b10
 void CNetworkService::FUN_141538b10(int flag) {
+    if(DAT_143ab2904==0) return;
     int value=DAT_143ab2904;
-    if(value!=0) { DAT_143ab2904=0;COutPacket packet(0x5d,0);packet.vfunc_o10_1(4);packet.vfunc_o10_3(value);packet.vfunc_o10_1(flag);FUN_140710590(packet); }
+    DAT_143ab2904=0;COutPacket packet(0x5d,0);packet.vfunc_o10_1(4);packet.vfunc_o10_3(value);packet.vfunc_o10_1(flag);FUN_140710590(packet);
 }
 // @0x141538bb0
 void CNetworkService::FUN_141538bb0(CStringW text,int flag) { COutPacket packet(0x5d,0);packet.vfunc_o10_1(7);packet.vfunc_o10_8(text);packet.vfunc_o10_1(flag);FUN_140710590(packet); }
@@ -541,12 +539,17 @@ void CNetworkService::FUN_141538f80() {
     }
 }
 // @0x141539130
-void CNetworkService::FUN_141539130() { DAT_143ab2a50=DAT_143ab2a48;DAT_143ab2854=DAT_143ab2848; }
+void CNetworkService::FUN_141539130() {
+    CString& strHost=DAT_143ab2a48; unsigned short& nPort=DAT_143ab2848;
+    DAT_143ab2a50=strHost; DAT_143ab2854=nPort;
+}
 // @0x141539180
-bool CNetworkService::FUN_141539180() {
-    if(DAT_143ab2a50.IsEmpty()||DAT_143ab2854==0) return false;
-    if(DAT_143ab284a==0x11) { DAT_143ab2a48=DAT_143ab2a50;DAT_143ab2848=DAT_143ab2854;return true; }
-    return false;
+int CNetworkService::FUN_141539180() {
+    CString& strHost=DAT_143ab2a50; unsigned short& nPort=DAT_143ab2854;
+    if(strHost.IsEmpty()||nPort==0) return 0;
+    if(DAT_143ab284a!=0x11) return 0;
+    DAT_143ab2a48=strHost; DAT_143ab2848=nPort;
+    return 1;
 }
 // @0x141539210
 int CNetworkService::FUN_141539210() { return m_connectionCount; }
@@ -558,23 +561,24 @@ void CNetworkService::FUN_141539260() { COutPacket packet(0xb0,0);packet.vfunc_o
 CGameSocket& CNetworkService::FUN_1415392c0() { return m_socket; }
 // @0x1415392e0
 void CNetworkService::FUN_1415392e0() {
-    auto& logger=*reinterpret_cast<Unk_NetworkLoggerPtr*>(reinterpret_cast<char*>(this)+0x270);
-    if(!(logger==nullptr)) logger->Update();
+    if(m_socket.m_logger) m_socket.m_logger->Update();
 }
 // @0x141539330
 const float* CNetworkService::FUN_141539330() {
-    auto& logger=*reinterpret_cast<Unk_NetworkLoggerPtr*>(reinterpret_cast<char*>(this)+0x270);
-    if(logger==nullptr) return 0;
-    return &logger->SendRate();
+    if(m_socket.m_logger) return &m_socket.m_logger->SendRate();
+    return 0;
 }
 // @0x141539380
 const float* CNetworkService::FUN_141539380() {
-    auto& logger=*reinterpret_cast<Unk_NetworkLoggerPtr*>(reinterpret_cast<char*>(this)+0x270);
-    if(logger==nullptr) return 0;
-    return &logger->ReceiveRate();
+    if(m_socket.m_logger) return &m_socket.m_logger->ReceiveRate();
+    return 0;
 }
 // @0x1415393d0
-efd::SyncResult CNetworkService::OnPreInit(efd::IDependencyRegistrar*) { WSADATA data;return WSAStartup(0x202,&data)==0 ? efd::SyncResult_Success : efd::SyncResult_Failure; }
+efd::SyncResult CNetworkService::OnPreInit(efd::IDependencyRegistrar*) {
+    WSADATA data;
+    if(WSAStartup(0x202,&data)!=0) return efd::SyncResult_Failure;
+    else return efd::SyncResult_Success;
+}
 // @0x141539430
 efd::AsyncResult CNetworkService::OnInit() { return efd::AsyncResult_Complete; }
 // @0x141539450
@@ -702,7 +706,7 @@ void CNetworkService::FUN_14153a210(int state) { m_connectionState=state; }
 int CNetworkService::FUN_14153a230() { return m_connectionState; }
 // @0x14153a250
 void CNetworkService::FUN_14153a250() {
-    unsigned sequence=InterlockedIncrement(&m_pingSequence);
+    unsigned sequence=CPtred::InterlockedInc(&m_pingSequence);
     m_latency.Sent(sequence);
     COutPacket packet(0xb,0);packet.vfunc_o10_3(sequence);FUN_140710590(packet);
 }
@@ -751,7 +755,8 @@ void CNetworkService::FUN_14153a780(CInPacket& input) {
 }
 // @0x14153a820
 void CNetworkService::FUN_14153a820(CInPacket& input) {
-    DAT_143ab2856=static_cast<CInputStream&>(input).vfunc_o8_1();
+    unsigned char value=static_cast<CInputStream&>(input).vfunc_o8_1();
+    DAT_143ab2856=value;
     Unk_NetworkPlayer* player=FUN_1403ed2d0()->FUN_141bd0cc0();
     if(player) FUN_1417b7450(player->FUN_141523be0());
 }
@@ -817,25 +822,24 @@ void CNetworkService::FUN_14153b010(CInPacket&) {
     }
 }
 // @0x14153b1c0
-bool CNetworkService::FUN_14153b1c0(CInPacket& input) {
-    if(FUN_140e800e0()==0) { MS2_ASSERT_AT(0x26a,FALSE);return false; }
-    return FUN_140aada20(FUN_140e800e0(),input);
+void CNetworkService::FUN_14153b1c0(CInPacket& input) {
+    if(FUN_140e800e0()==0) { MS2_ASSERT_AT(0x26a,FALSE);return; }
+    FUN_140aada20(FUN_140e800e0(),input);
 }
 // @0x14153b220
 void CNetworkService::FUN_14153b220(CInPacket& input) {
     unsigned sequence=static_cast<CInputStream&>(input).vfunc_o8_3();
-    auto& out=*reinterpret_cast<Unk_SocketPtr<COutPacketBuffer>*>(reinterpret_cast<char*>(this)+0x260);
-    FUN_140209050(out.operator->(),sequence);
-    COutPacket packet(6,0);packet.vfunc_o10_3(*reinterpret_cast<int*>(reinterpret_cast<char*>(this)+0x258));FUN_140710590(packet);
+    FUN_140209050(m_socket.m_out.operator->(),sequence);
+    COutPacket packet(6,0);packet.vfunc_o10_3(m_socket.m_sequence);FUN_140710590(packet);
 }
 // @0x14153b2d0
-void CNetworkService::FUN_14153b2d0(CInPacket& input) { static_cast<CInputStream&>(input).vfunc_o8_3(); }
+void CNetworkService::FUN_14153b2d0(CInPacket& input) { int nUnused=static_cast<CInputStream&>(input).vfunc_o8_3(); }
 // @0x14153b310
 void CNetworkService::FUN_14153b310(CInPacket& input) {
-    static_cast<CInputStream&>(input).vfunc_o8_3();
-    unsigned sequence=static_cast<CInputStream&>(input).vfunc_o8_3();
-    auto& out=*reinterpret_cast<Unk_SocketPtr<COutPacketBuffer>*>(reinterpret_cast<char*>(this)+0x260);
-    FUN_140208ab0(out.operator->(),&m_socket,sequence);
+    unsigned sequence;
+    int nUnused=static_cast<CInputStream&>(input).vfunc_o8_3();
+    sequence=static_cast<CInputStream&>(input).vfunc_o8_3();
+    FUN_140208ab0(m_socket.m_out.operator->(),&m_socket,sequence);
 }
 // @0x14153b3b0
 void CNetworkService::FUN_14153b3b0(CInPacket& input) {
@@ -1022,7 +1026,8 @@ void CNetworkService::FUN_14153c670(CInPacket& input) {
 // @0x14153e050
 void CNetworkService::FUN_14153e050(CInPacket& input) {
     int value=static_cast<CInputStream&>(input).vfunc_o8_3();
-    DAT_1439f4a88=static_cast<CInputStream&>(input).vfunc_o8_3();DAT_1439f4a84=value;
+    int value2=static_cast<CInputStream&>(input).vfunc_o8_3();
+    DAT_1439f4a84=value;DAT_1439f4a88=value2;
 }
 // @0x14153e0d0
 void CNetworkService::FUN_14153e0d0(CInPacket& input) {
@@ -1193,8 +1198,7 @@ void Unk_NetworkLatency::Received(unsigned sequence) {
 
 // @0x141540130
 inline void FUN_141540130(ATL::CRBMap<unsigned,unsigned>& target,const ATL::CRBMap<unsigned,unsigned>& source) {
-    POSITION pos=source.GetHeadPosition();
-    while(pos) { const unsigned& value=source.GetValueAt(pos);target.SetAt(source.GetKeyAt(pos),value);source.GetNext(pos); }
+    for(POSITION pos=source.GetHeadPosition();pos;source.GetNext(pos)) { const unsigned& value=source.GetValueAt(pos);target.SetAt(source.GetKeyAt(pos),value); }
 }
 // @0x1415401b0
 inline Unk_NetworkLoadingPtr FUN_1415401b0(const efd::SmartPointer<CSceneStateBase>& source) {
@@ -1214,8 +1218,7 @@ inline UIObject* FUN_141540270(int id) {
 }
 // @0x1415415f0
 inline CBufferCryptManager* FUN_1415415f0() {
-    if(DAT_143aac528==0) return new CBufferCryptManager;
-    return FUN_140714f80();
+    return DAT_143aac528!=0 ? FUN_140714f80() : new CBufferCryptManager;
 }
 // @0x141541700
 inline void FUN_141541700() {

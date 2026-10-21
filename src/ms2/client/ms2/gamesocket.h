@@ -111,6 +111,7 @@ public:
     int FUN_1412673f0(); void FUN_141267410(COutPacket&); int FUN_1412675d0(); int FUN_1412675f0(); CString FUN_141267630(); int FUN_141267680();
 private:
     MS2_LAYOUT_FRIEND;
+    friend class CNetworkService;   // its logger getters test and use m_logger directly
     CSimpleSocket m_socket;
     CLockCriticalSection m_lock,m_sendLock;
     int m_state;
