@@ -22,7 +22,7 @@ public:
     void FUN_140f29ad0(CInPacket& packet);                  // packet 0xdf: 0 all abilities, 1 nothing, 2 one learned
     void FUN_140f29b70(CInPacket& packet);                  // mode 0: the learned ids, the reset time, the points
     void FUN_140f29cc0(CInPacket& packet);                  // mode 2: one ability learned
-    void FUN_140f29de0();                                   // mode 1: empty
+    void FUN_140f29de0(CInPacket& packet);                  // mode 1: empty
     int FUN_140f29e00();                                    // the points left
     unsigned FUN_140f29e40();                               // the points of the level
     ATL::CTimeSpan FUN_140f29ea0();                         // the time left until the next reset

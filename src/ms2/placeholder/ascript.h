@@ -257,6 +257,8 @@ public:
     Scaleform::GFx::Value FUN_1422c5e40(const char* szMethod, int a1, int a2, CString a3);    // 0x1422c5e40 (inline COMDAT, defined in astextfield.cpp: replaceText; a3 by value: the callee destroys it)
     template <class T> MS2Ptr<T> FUN_140c436d0(const CString& strName);   // child control by name (guild championship "m_participate" as ASLabel; uiguilddialog.cpp)
     Scaleform::GFx::Value FUN_140e6b140(const char* szMethod, int a1, CString a2);          // 0x140e6b140 (a2 by value: the callee destroys it)
+    Scaleform::GFx::Value FUN_140f2c5d0(const char* szMethod, int a1, ASArray& a2);         // 0x140f2c5d0 (inline COMDAT, defined in uicharacterabilitydialog.cpp)
+    Scaleform::GFx::Value FUN_140f2c690(const char* szMethod, int a1, CStringW a2);         // 0x140f2c690 (inline COMDAT, defined in uicharacterabilitydialog.cpp; a2 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2);                // 0x140e0a8c0 (inline COMDAT, defined in uichapterbook.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value FUN_141b62c20(const char* szMethod, int a1, const AScript& a2);    // 0x141b62c20 (inline COMDAT, defined in uiworldmapdialog.cpp: Invoke with an Int and an object)
     Scaleform::GFx::Value FUN_141b62ce0(const char* szMethod, unsigned __int64 a1, unsigned int a2);   // 0x141b62ce0 (inline COMDAT, defined in uiworldmapdialog.cpp: Invoke with a UInt64 and a UInt)

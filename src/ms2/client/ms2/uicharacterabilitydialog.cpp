@@ -84,7 +84,7 @@ CStringW FUN_14028b8e0(const CStringW& str);
 CStringW FUN_14028dee0(int nStringId, const fmt::ArgList& args);
 CStringW FUN_1409e9bc0(int nStringId, const int& nA, const unsigned& nB);
 CStringW FUN_14093fd30(int nStringId, const int* pDays, const __int64* pMeso);
-CStringW FUN_14086aec0(ATL::CTimeSpan span, int nA, int nB, bool bDays, bool bHours);
+CStringW FUN_14086aec0(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_14151f200();
 __time64_t FUN_140869440();
@@ -159,25 +159,23 @@ template <class A, class B, class C, class D> CStringW FUN_140f2c170(int nString
 // ---- the Invoke forms of the ability movie -----------------------------------------------------------------------------
 
 // @0x140f2c5d0
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
-Scaleform::GFx::Value FUN_140f2c5d0(AScript* pDlg, const char* szMethod, int n, ASArray& arr)
+Scaleform::GFx::Value AScript::FUN_140f2c5d0(const char* szMethod, int n, ASArray& arr)
 {
     ASArgList args;
     args.FUN_1409b2800(2);
     FUN_1422bcd10(args.FUN_1409b1f70(0), n);
     FUN_1422bce40(args.FUN_1409b1f70(1), arr);
-    return pDlg->FUN_1422bb8f0(szMethod, args);
+    return FUN_1422bb8f0(szMethod, args);
 }
 
 // @0x140f2c690
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
-Scaleform::GFx::Value FUN_140f2c690(AScript* pDlg, const char* szMethod, int n, CStringW str)
+Scaleform::GFx::Value AScript::FUN_140f2c690(const char* szMethod, int n, CStringW str)
 {
     ASArgList args;
     args.FUN_1409b2800(2);
     FUN_1422bcd10(args.FUN_1409b1f70(0), n);
     FUN_1422bcea0(args.FUN_1409b1f70(1), (const wchar_t*)str);
-    return pDlg->FUN_1422bb8f0(szMethod, args);
+    return FUN_1422bb8f0(szMethod, args);
 }
 
 // @0x140f2d240
@@ -220,32 +218,33 @@ CCharacterAbilityManager::~CCharacterAbilityManager()
 }
 
 // @0x140f29ad0
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 void CCharacterAbilityManager::FUN_140f29ad0(CInPacket& packet)
 {
-    unsigned char nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    int nMode = static_cast<CInputStream&>(packet).vfunc_o8_1();
     switch (nMode)
     {
     case 0:
         FUN_140f29b70(packet);
         break;
-    case 1:
-        FUN_140f29de0();
-        break;
     case 2:
         FUN_140f29cc0(packet);
+        break;
+    case 1:
+        FUN_140f29de0(packet);
         break;
     }
 }
 
 // @0x140f29b70
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 void CCharacterAbilityManager::FUN_140f29b70(CInPacket& packet)
 {
     m_abilities.RemoveAll();
-    int nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
-    for (int i = 0; i < nCount; i++)
-        m_abilities.AddTail(static_cast<CInputStream&>(packet).vfunc_o8_3());
+    unsigned nCount = static_cast<CInputStream&>(packet).vfunc_o8_3();
+    for (unsigned i = 0; i < nCount; i++)
+    {
+        int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
+        m_abilities.AddTail(nId);
+    }
     m_nResetTime = static_cast<CInputStream&>(packet).vfunc_o8_4();
     m_nPoints = static_cast<CInputStream&>(packet).vfunc_o8_3();
     if (UICharacterAbilityDialog* pDlg = FUN_140f2c530(0x4f0c))
@@ -255,24 +254,21 @@ void CCharacterAbilityManager::FUN_140f29b70(CInPacket& packet)
 }
 
 // @0x140f29cc0
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 void CCharacterAbilityManager::FUN_140f29cc0(CInPacket& packet)
 {
     int nId = static_cast<CInputStream&>(packet).vfunc_o8_3();
     MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
-    if (!(ref == NULL))
-    {
-        m_abilities.AddTail(nId);
-        if (UICharacterAbilityDialog* pDlg = FUN_140f2c530(0x4f0c))
-            pDlg->FUN_140f2b110(ref);
-        if (UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28))
-            pMenu->FUN_141938850();
-    }
+    if (ref == NULL)
+        return;
+    m_abilities.AddTail(nId);
+    if (UICharacterAbilityDialog* pDlg = FUN_140f2c530(0x4f0c))
+        pDlg->FUN_140f2b110(ref);
+    if (UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28))
+        pMenu->FUN_141938850();
 }
 
 // @0x140f29de0
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
-void CCharacterAbilityManager::FUN_140f29de0()
+void CCharacterAbilityManager::FUN_140f29de0(CInPacket& packet)
 {
 }
 
@@ -292,7 +288,6 @@ unsigned CCharacterAbilityManager::FUN_140f29e40()
 }
 
 // @0x140f29ea0
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 ATL::CTimeSpan CCharacterAbilityManager::FUN_140f29ea0()
 {
     if (m_nResetTime == 0)
@@ -301,13 +296,12 @@ ATL::CTimeSpan CCharacterAbilityManager::FUN_140f29ea0()
     CMsTime tNow(FUN_140869440());
     ATL::CTimeSpan elapsed = tNow - tReset;
     ATL::CTimeSpan cooldown((unsigned)(*FUN_1401d7c10(&FUN_1401d3200()->m_cooldown) * 0x3c));
-    if (elapsed.GetTotalMinutes() < cooldown.GetTotalMinutes())
-        return cooldown - elapsed;
-    return ATL::CTimeSpan(0);
+    if (elapsed.GetTotalMinutes() >= cooldown.GetTotalMinutes())
+        return ATL::CTimeSpan(0);
+    return cooldown - elapsed;
 }
 
 // @0x140f29f90
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 int CCharacterAbilityManager::FUN_140f29f90(MS2Ptr<Unk_CaAbilityRow> ref)
 {
     if (FUN_140f29e00() == 0)
@@ -315,9 +309,11 @@ int CCharacterAbilityManager::FUN_140f29f90(MS2Ptr<Unk_CaAbilityRow> ref)
     PCBase* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == NULL)
         return 0;
-    if ((short)ref->m_nRequireLevel == (short)pPc->vfunc_78() && FUN_140f2a0b0(ref->m_nId) == 0)
-        return 1;
-    return 0;
+    if (ref->m_nRequireLevel != (unsigned short)pPc->vfunc_78())
+        return 0;
+    if (FUN_140f2a0b0(ref->m_nId) != 0)
+        return 0;
+    return 1;
 }
 
 // @0x140f2a0b0
@@ -327,7 +323,6 @@ int CCharacterAbilityManager::FUN_140f2a0b0(int nId)
 }
 
 // @0x140f2a100
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 int CCharacterAbilityManager::FUN_140f2a100(int nId)
 {
     MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
@@ -336,7 +331,7 @@ int CCharacterAbilityManager::FUN_140f2a100(int nId)
     PCBase* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == NULL)
         return 1;
-    if ((unsigned short)pPc->vfunc_78() < ref->m_nRequireLevel)
+    if (ref->m_nRequireLevel > (unsigned short)pPc->vfunc_78())
         return 1;
     return 0;
 }
@@ -384,15 +379,18 @@ void UICharacterAbilityDialog::vfunc_67()
 }
 
 // @0x140f2a4a0
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 void UICharacterAbilityDialog::vfunc_72()
 {
-    if (vfunc_55() != 1 && m_bBuilt != 0 && m_timer.FUN_140268870(1000) != 0)
-        FUN_140f2b850();
+    if (vfunc_55() == 1)
+        return;
+    if (m_bBuilt == 0)
+        return;
+    if (m_timer.FUN_140268870(1000) == 0)
+        return;
+    FUN_140f2b850();
 }
 
 // @0x140f2a510
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 void UICharacterAbilityDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -400,17 +398,16 @@ void UICharacterAbilityDialog::OnLoadComplete()
     m_bBuilt = 0;
     FUN_140f2ba20();
     PCBase* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pPc != NULL)
-    {
-        if (FUN_1401e0800((unsigned short)pPc->vfunc_78()) != 0
-            && FUN_140764020()->m_state.FUN_140745590(*FUN_1401d7c10(&FUN_1401d3200()->m_quest)) != 0)
-        {
-            UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
-            if (pMenu)
-                pMenu->FUN_141938ae0(0x4f0c, 0);
-            FUN_140f2b1e0();
-        }
-    }
+    if (pPc == NULL)
+        return;
+    if (FUN_1401e0800((unsigned short)pPc->vfunc_78()) == 0)
+        return;
+    if (FUN_140764020()->m_state.FUN_140745590(*FUN_1401d7c10(&FUN_1401d3200()->m_quest)) == 0)
+        return;
+    UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
+    if (pMenu)
+        pMenu->FUN_141938ae0(0x4f0c, 0);
+    FUN_140f2b1e0();
 }
 
 // @0x140f2a620
@@ -474,7 +471,6 @@ void UICharacterAbilityDialog::vfunc_15()
 }
 
 // @0x140f2abc0
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
@@ -484,7 +480,8 @@ void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* 
     CString strKind = pArgs->FUN_1422b8d30();
     if (strKind == "ability")
     {
-        MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(pArgs->FUN_1422b8b10());
+        int nId = pArgs->FUN_1422b8b10();
+        MS2Ptr<Unk_CaAbilityRow> ref = FUN_140f2d250()->FUN_1401e0670(nId);
         if (ref == NULL)
             return;
         Unk_CaSkillRef skill = FUN_1401958b0()->FUN_140aafef0(ref->m_nSkillId, ref->m_nSkillLevel);
@@ -495,7 +492,8 @@ void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* 
     }
     else if (strKind == "CategoryIcon")
     {
-        MS2Ptr<Unk_CaCategoryRow> cat = FUN_140f2d250()->FUN_1401e0560(pArgs->FUN_1422b8b10());
+        int nId = pArgs->FUN_1422b8b10();
+        MS2Ptr<Unk_CaCategoryRow> cat = FUN_140f2d250()->FUN_1401e0560(nId);
         if (cat == NULL)
             return;
         ASTooltip tip(*pRetVal, 2);
@@ -530,17 +528,21 @@ int UICharacterAbilityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x140f2b000
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 void UICharacterAbilityDialog::FUN_140f2b000(NotifyObject* pNotify)
 {
     NotifyChangeMyLevel* p = dynamic_cast<NotifyChangeMyLevel*>(pNotify);
-    if (p && FUN_1401e0800(p->m_nLevel) != 0
-        && FUN_140764020()->m_state.FUN_140745590(*FUN_1401d7c10(&FUN_1401d3200()->m_quest)) != 0)
-    {
-        FUN_140f2bee0(p->m_nLevel);
-        if (!(m_30 == NULL) && vfunc_55() == 0)
-            FUN_140f2b1e0();
-    }
+    if (p == NULL)
+        return;
+    if (FUN_1401e0800(p->m_nLevel) == 0)
+        return;
+    if (FUN_140764020()->m_state.FUN_140745590(*FUN_1401d7c10(&FUN_1401d3200()->m_quest)) == 0)
+        return;
+    FUN_140f2bee0(p->m_nLevel);
+    if (m_30 == NULL)
+        return;
+    if (vfunc_55() != 0)
+        return;
+    FUN_140f2b1e0();
 }
 
 // @0x140f2b0f0
@@ -570,7 +572,7 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
             for (POSITION pos = cats.GetHeadPosition(); pos != NULL; cats.GetNext(pos))
             {
                 MS2Ptr<Unk_CaCategoryRow> cat = cats.GetAt(pos);
-                FUN_140f2c690(FUN_1409ee290(&m_30), "buildCategory", cat->m_nId, CStringW(cat->m_strName));
+                FUN_1409ee290(&m_30)->FUN_140f2c690("buildCategory", cat->m_nId, CStringW(cat->m_strName));
                 if (!cat->m_abilities.FUN_1401e2540())
                 {
                     ATL::CRBMap<unsigned short, MS2Ptr<Unk_CaAbilityRow> > byLevel(10);
@@ -596,7 +598,7 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
                             arr.FUN_1422bbf00(item);
                         }
                     }
-                    FUN_140f2c5d0(FUN_1409ee290(&m_30), "buildAbility", cat->m_nId, arr);
+                    FUN_1409ee290(&m_30)->FUN_140f2c5d0("buildAbility", cat->m_nId, arr);
                 }
             }
             FUN_140f2b760();
@@ -607,36 +609,31 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
 }
 
 // @0x140f2b760
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 void UICharacterAbilityDialog::FUN_140f2b760()
 {
-    if (!(m_30 == NULL))
-    {
-        unsigned nTotal = FUN_140f2d240()->FUN_140f29e40();
-        int nRemain = FUN_140f2d240()->FUN_140f29e00();
-        CStringW strText = FUN_1409e9bc0(0xc5a, nRemain, nTotal);
-        FUN_1409ee290(&m_30)->Invoke("SetPointInfoText", CStringW(strText));
-    }
+    if (m_30 == NULL)
+        return;
+    unsigned nTotal = FUN_140f2d240()->FUN_140f29e40();
+    int nRemain = FUN_140f2d240()->FUN_140f29e00();
+    CStringW strText = FUN_1409e9bc0(0xc5a, nRemain, nTotal);
+    FUN_1409ee290(&m_30)->Invoke("SetPointInfoText", CStringW(strText));
 }
 
 // @0x140f2b850
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 void UICharacterAbilityDialog::FUN_140f2b850()
 {
-    if (!(m_30 == NULL))
+    if (m_30 == NULL)
+        return;
+    int bCooling = 0;
+    CStringW strRemain;
+    ATL::CTimeSpan remain = FUN_140f2d240()->FUN_140f29ea0();
+    if (remain > 0)
     {
-        CStringW strRemain;
-        ATL::CTimeSpan remain = FUN_140f2d240()->FUN_140f29ea0();
-        bool bCooling = remain > ATL::CTimeSpan(0);
-        if (bCooling)
-        {
-            LONGLONG nHours = remain.GetHours();
-            LONGLONG nDays = remain.GetDays();
-            strRemain = FUN_14086aec0(remain, 1, 1, nDays == 0, nHours == 0);
-        }
-        int nIntermediate = FUN_140f2d240()->FUN_140f2a210();
-        FUN_1409ee290(&m_30)->Invoke("SetRemainCoolButton", bCooling, CStringW(strRemain), nIntermediate);
+        bCooling = 1;
+        strRemain = FUN_14086aec0(remain, true, true, remain.GetDays() == 0, remain.GetHours() == 0);
     }
+    int nIntermediate = FUN_140f2d240()->FUN_140f2a210();
+    FUN_1409ee290(&m_30)->Invoke("SetRemainCoolButton", bCooling, CStringW(strRemain), nIntermediate);
 }
 
 // @0x140f2ba20
@@ -681,24 +678,23 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
 }
 
 // @0x140f2bee0
-// MS2-FUNCTIONAL: residual diff (MS2Ptr/CTimeSpan temporaries and EH funclet order)
 void UICharacterAbilityDialog::FUN_140f2bee0(unsigned short nLevel)
 {
     ATL::CAtlList<MS2Ptr<Unk_CaAbilityRow> > abilities(10);
     FUN_140f2d250()->FUN_1401e0450(&abilities);
-    bool bNew = false;
+    int bNew = 0;
     for (POSITION pos = abilities.GetHeadPosition(); pos != NULL; abilities.GetNext(pos))
     {
         MS2Ptr<Unk_CaAbilityRow> a = abilities.GetAt(pos);
         if (a->m_nRequireLevel == nLevel && !FUN_140f2d240()->FUN_140f2a0b0(a->m_nId))
         {
-            bNew = true;
+            bNew = 1;
             break;
         }
     }
     UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
     if (pMenu)
-        pMenu->FUN_141938ae0(0x4f0c, bNew);
+        pMenu->FUN_141938ae0(0x4f0c, bNew ? 1 : 0);
 }
 
 // The CRT's header-inline memcpy_s of this TU (0x140f2e3b0), kept alive through the pointer below.
