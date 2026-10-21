@@ -4253,3 +4253,7 @@ __imp_NxGetCookingLib	142cced30	data
 ?UnicodeSpaceBits@Scaleform@@3QBGB	143186ab0	data
 ?UpperBitTable@Alg@Scaleform@@3QBEB	1431891f0	data
 ?DAT_1439f7358@@3HA	1439f7358	data
+cef_string_utf16_cmp	142778526	func
+cef_string_utf16_set	142778532	func
+cef_string_utf16_to_utf8	14277853e	func
+cef_string_utf8_clear	142778538	func
