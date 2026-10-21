@@ -245,7 +245,7 @@ private:
 };
 Unk_McInstSvc* FUN_14098c5b0(char* pCell);
 
-class Unk_McEntityRules { public: char FUN_1418638d0(egf::Entity* pEntity); };
+class Unk_McEntityRules { public: bool FUN_1418638d0(egf::Entity* pEntity); };
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
 void FUN_1408a20a0(egf::Entity* pEntity, unsigned nHash, bool* pbOut);
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
@@ -393,7 +393,6 @@ CMouseController::~CMouseController()
 }
 
 // @0x140ad1da0
-// MS2-FUNCTIONAL: transliterated from the decompile
 void CMouseController::FUN_140ad1da0(int nMsg, int nX, int nY)
 {
     if (m_nMode == 0)
@@ -406,21 +405,27 @@ void CMouseController::FUN_140ad1da0(int nMsg, int nX, int nY)
     int nKey = FUN_14025e7a0()->FUN_1422aeed0(2);
     if (nMsg == 0x201)
         m_nIgnoreRelease = nKey;
-    if (nKey == 0)
+    if (nKey != 0)
     {
-        if ((nMsg != 0x202 || m_nIgnoreRelease == 0) && FUN_140ad3dd0(nX, nY) != 0)
-        {
-            if (nMsg == 0x200)
-                FUN_140ad26d0(nX, nY);
-            else if (nMsg == 0x201)
-                FUN_140ad2660(nX, nY);
-            else if (nMsg == 0x202)
-                FUN_140ad23f0(nX, nY);
-        }
+        if (nMsg == 0x202 && m_nMode != 1)
+            FUN_140ad23f0(nX, nY);
+        return;
     }
-    else if (nMsg == 0x202 && m_nMode != 1)
+    if (nMsg == 0x202 && m_nIgnoreRelease != 0)
+        return;
+    if (FUN_140ad3dd0(nX, nY) == 0)
+        return;
+    switch (nMsg)
     {
+    case 0x201:
+        FUN_140ad2660(nX, nY);
+        break;
+    case 0x202:
         FUN_140ad23f0(nX, nY);
+        break;
+    case 0x200:
+        FUN_140ad26d0(nX, nY);
+        break;
     }
 }
 MS2_REPLACE_METHOD(0x140AD1DA0, CMouseController, FUN_140ad1da0, 320, 0x6E449FA6);
@@ -473,11 +478,10 @@ int CMouseController::FUN_140ad20f0(int bEnable)
 {
     if (!FUN_140166410()->FUN_14036d570(0xaf))
         return 0;
-    m_nMode = (bEnable != 0);
+    m_nMode = bEnable ? 1 : 0;
     float fScale = FUN_1403ed2d0()->FUN_141bcfc50();
-    Unk_CameraManager* pCam = Unk_CameraManager::FUN_1409478c0();
-    if (pCam->FUN_140ad4b40() != fScale)
-        FUN_140ad4ff0(pCam, fScale);
+    if (Unk_CameraManager::FUN_1409478c0()->FUN_140ad4b40() != fScale)
+        FUN_140ad4ff0(Unk_CameraManager::FUN_1409478c0(), fScale);
     if (bEnable == 0)
     {
         FUN_140ad2070();
@@ -599,22 +603,25 @@ void CMouseController::FUN_140ad2660(int nX, int nY)
 MS2_REPLACE_METHOD(0x140AD2660, CMouseController, FUN_140ad2660, 97, 0xBF848A36);
 
 // @0x140ad26d0
-// MS2-FUNCTIONAL: transliterated from the decompile
 void CMouseController::FUN_140ad26d0(int nX, int nY)
 {
-    if (m_nMode != 3 || m_tmHold.FUN_140268870(100) == 0)
+    if (m_nMode != 3)
+        return;
+    if (m_tmHold.FUN_140268870(100) == 0)
         return;
     if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0)
     {
         m_nMode = 1;
         return;
     }
-    unsigned long long nWidth = DAT_143af62d4;
-    unsigned long long nHeight = DAT_143af62d8;
+    float fHalfWidth = (float)DAT_143af62d4 / 2.0f;
+    float fHalfHeight = (float)DAT_143af62d8 / 2.0f;
     Unk_StreamPoint v;
+    v.x = (float)nX - fHalfWidth;
+    v.y = (float)nY - fHalfHeight;
     v.z = 0;
-    v.x = ((float)nX - (float)nWidth / 2.0f) * -1.0f;
-    v.y = ((float)nY - (float)nHeight / 2.0f) * -1.0f;
+    v.x *= -1.0f;
+    v.y *= -1.0f;
     v.FUN_140968990();
     m_vMove = v;
     m_vDown = DAT_143b01a60;
@@ -811,24 +818,24 @@ Unk_StreamPoint CMouseController::FUN_140ad3260(Unk_StreamPoint pt)
 MS2_REPLACE_METHOD(0x140AD3260, CMouseController, FUN_140ad3260, 401, 0x0F977D87);
 
 // @0x140ad3400
-// MS2-FUNCTIONAL: transliterated from the decompile
 Unk_StreamPoint CMouseController::FUN_140ad3400(Unk_StreamPoint pt)
 {
     Unk_McPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     Unk_StreamPoint vFacing = pPc->FUN_14123cc20();
     Unk_StreamPoint vPos = FUN_140ad3c70();
     Unk_StreamPoint v = DAT_143b01a60;
-    if (!FUN_14028d470(vFacing.x, 1.0f))
-    {
-        v.y = pt.z - vPos.z;
-        v.x = (pt.x - vPos.x) * -1.0f;
-        v.FUN_140968990();
-    }
-    else
+    if (FUN_14028d470(vFacing.x, 1.0f))
     {
         v = DAT_143b01a60;
         v.x = pt.y - vPos.y;
         v.y = pt.z - vPos.z;
+        v.FUN_140968990();
+    }
+    else
+    {
+        v.x = pt.x - vPos.x;
+        v.y = pt.z - vPos.z;
+        v.x *= -1.0f;
         v.FUN_140968990();
     }
     return v;
@@ -940,9 +947,9 @@ Unk_StreamPoint CMouseController::FUN_140ad3c70()
     if (pPc == 0)
         return DAT_143b01a60;
     Unk_McAttachPtr spAttach(pPc->FUN_141662440(1));
-    if (spAttach.FUN_140ad4750() == 0)
-        return pPc->vfunc_18();
-    return spAttach.FUN_140ad4770()->vfunc_18();
+    if (spAttach.FUN_140ad4750() != 0)
+        return spAttach.FUN_140ad4770()->vfunc_18();
+    return pPc->vfunc_18();
 }
 MS2_REPLACE_METHOD(0x140AD3C70, CMouseController, FUN_140ad3c70, 231, 0x6697DFE8);
 
@@ -969,9 +976,11 @@ int CMouseController::FUN_140ad3dd0(int nX, int nY)
     if (nY < 0)
         return 0;
     RECT rc = FUN_140aadf80()->FUN_140ad4c30();
-    if (rc.right - rc.left < nX)
+    int nWidth = rc.right - rc.left;
+    if (nX > nWidth)
         return 0;
-    if (rc.bottom - rc.top < nY)
+    int nHeight = rc.bottom - rc.top;
+    if (nY > nHeight)
         return 0;
     return 1;
 }
@@ -984,24 +993,22 @@ bool CMouseController::FUN_140ad3e80(egf::Entity* pEntity)
     bool bFlagA = false;
     bool bResult = false;
     FUN_1408a20a0(pEntity, 0x23f9860e, &bFlagA);
-    if (!bFlagA)
-    {
-        FUN_1408a20a0(pEntity, 0xa0b6b179, &bResult);
-    }
-    else
+    if (bFlagA)
     {
         Unk_McInstSvcPtr spSvc(FUN_14098c5b0(&DAT_143b059e8));
         Unk_McInstancing* pInst = spSvc.FUN_14098d0e0()->FUN_1413d66b0(pEntity);
-        if (pInst == 0 || pInst->FUN_140ad4bb0() != 0)
+        if (pInst != 0 && pInst->FUN_140ad4bb0() == 0)
         {
-            bResult = DAT_143ab9510->FUN_1418638d0(pEntity) != 0;
+            bResult = pInst->FUN_1411c6a50(egf::EntityID(*FUN_1408b76f0(pEntity))) ? false : true;
         }
         else
         {
-            egf::EntityID id;
-            FUN_1408b6b20(&id, FUN_1408b76f0(pEntity));
-            bResult = !pInst->FUN_1411c6a50(id);
+            bResult = FUN_140ad4b90()->FUN_1418638d0(pEntity);
         }
+    }
+    else
+    {
+        FUN_1408a20a0(pEntity, 0xa0b6b179, &bResult);
     }
     return bResult;
 }
@@ -1043,11 +1050,14 @@ MS2_REPLACE_METHOD(0x140AD40B0, CMouseController, FUN_140ad40b0, 134, 0xECB67440
 int CMouseController::FUN_140ad4140(int nMapId)
 {
     Unk_McMapPtr spMap = FUN_140a55460(nMapId);
-    if (!spMap.FUN_1408851f0())
-    {
-        if (nMapId == 0x1e8625 || nMapId == 0x3199c37 || nMapId == 0x3199c4a)
-            return 1;
+    if (spMap.FUN_1408851f0())
         return 0;
+    switch (nMapId)
+    {
+    case 0x1e8625:
+    case 0x3199c37:
+    case 0x3199c4a:
+        return 1;
     }
     return 0;
 }
@@ -1101,9 +1111,9 @@ CMouseInteractWeaponObject::~CMouseInteractWeaponObject()
 // @0x140ad4b40
 float Unk_CameraManager::FUN_140ad4b40()
 {
-    return reinterpret_cast<Unk_McCameraView*>(this)->m_mode.FUN_1409f2180() != 0
-               ? reinterpret_cast<Unk_McCameraView*>(this)->m_mode.FUN_1409f21a0()->FUN_140ad4b30()
-               : 0.0f;
+    if (reinterpret_cast<Unk_McCameraView*>(this)->m_mode.FUN_1409f2180() != 0)
+        return reinterpret_cast<Unk_McCameraView*>(this)->m_mode.FUN_1409f21a0()->FUN_140ad4b30();
+    return 0.0f;
 }
 MS2_REPLACE_METHOD(0x140AD4B40, Unk_CameraManager, FUN_140ad4b40, 70, 0x8A6FD2BB);
 
