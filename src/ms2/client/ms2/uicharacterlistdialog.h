@@ -138,10 +138,10 @@ public:
     __int64 FUN_1418f1c50();                                // 0x1418f1c50
     int FUN_1418f1c70();                                    // 0x1418f1c70
     void FUN_1418f1cb0();                                   // 0x1418f1cb0 preview the selected character
-    static void FUN_1418f1e90();                            // 0x1418f1e90
+    void FUN_1418f1e90();                                   // 0x1418f1e90
     void FUN_1418f1f10();                                   // 0x1418f1f10
     void FUN_1418f1fd0();                                   // 0x1418f1fd0
-    void FUN_1418f2030(unsigned __int64 nId, CStringW str);   // 0x1418f2030 send the rename of a character
+    void FUN_1418f2030(unsigned __int64 nId, const CStringW& str); // 0x1418f2030 send the rename of a character
     void FUN_1418f20d0();                                   // 0x1418f20d0
     void FUN_1418f2190();                                   // 0x1418f2190 the delete account box, step 1
     void FUN_1418f2480(CStringW str1, CStringW str2);       // 0x1418f2480
