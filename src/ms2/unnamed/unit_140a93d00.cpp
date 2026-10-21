@@ -864,13 +864,13 @@ COLORREF ChromaEffectPlaying::GetSkillColor(int nSkill)
     return m_backColor;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a97300
 void ChromaEffectPlaying::Create()
 {
-    m_nFrame = (m_nFrame == 0);
+    m_nFrame = m_nFrame == 0 ? 1 : 0;
     ChromaManagerImpl* pImpl = dynamic_cast<ChromaManagerImpl*>(GetChromaManager());
-    if (pImpl)
+    if (pImpl == NULL)
+        return;
     {
         m_keyColor = pImpl->GetColor(1);
         m_blinkColor = pImpl->GetColor(2);
@@ -888,43 +888,41 @@ void ChromaEffectPlaying::Create()
                     else
                         effect.Key[HIBYTE(nRzKey)][LOBYTE(nRzKey)] = m_blinkColor | 0x01000000;
                 }
+                continue;
             }
-            else
+            int nSkill = pImpl->GetKeySkill(nKey);
+            if (nSkill > 0)
             {
-                int nSkill = pImpl->GetKeySkill(nKey);
-                if (nSkill > 0)
-                {
-                    int nRzKey = pImpl->GetKeyboardKey(nKey);
-                    COLORREF color;
-                    if (nRzKey != -1 && m_backColor != (color = GetSkillColor(nSkill)))
-                        effect.Key[HIBYTE(nRzKey)][LOBYTE(nRzKey)] = color | 0x01000000;
-                }
+                int nRzKey = pImpl->GetKeyboardKey(nKey);
+                COLORREF color;
+                if (nRzKey != -1 && m_backColor != (color = GetSkillColor(nSkill)))
+                    effect.Key[HIBYTE(nRzKey)][LOBYTE(nRzKey)] = color | 0x01000000;
             }
         }
-        if (m_nMaxHp != 0)
+        if (m_nMaxHp > 0)
         {
             unsigned nCount = (m_nHp << 3) / m_nMaxHp;
             for (int i = 0; i < 8; i++)
             {
-                if (i < (int)nCount)
+                if ((int)nCount > i)
                     effect.Key[0][LOBYTE(i + 3)] = pImpl->GetColor(3) | 0x01000000;
                 else
                     effect.Key[0][LOBYTE(i + 3)] = m_backColor | 0x01000000;
             }
         }
-        if (m_nMaxSp != 0)
+        if (m_nMaxSp > 0)
         {
             unsigned nCount = (m_nSp * 7) / m_nMaxSp;
             for (int i = 0; i < 7; i++)
             {
-                if (i < (int)nCount)
+                if ((int)nCount > i)
                     effect.Key[0][LOBYTE(i + 11)] = pImpl->GetColor(4) | 0x01000000;
                 else
                     effect.Key[0][LOBYTE(i + 11)] = m_backColor | 0x01000000;
             }
         }
         bool bLowHp = false;
-        if (m_nFrame % 2 == 1 && m_nMaxHp != 0 && m_nHp != 0)
+        if (m_nFrame % 2 == 1 && m_nMaxHp > 0 && m_nHp > 0)
         {
             pImpl->RemoveLinkFlag(ChromaLinkEffect::FLAG_LOW_HP);
             if ((float)m_nHp / (float)m_nMaxHp < 0.3f)
@@ -935,10 +933,10 @@ void ChromaEffectPlaying::Create()
         }
         if (bLowHp || m_bFlash)
         {
-            for (unsigned row = 0; row < Keyboard::MAX_ROW; row++)
+            for (int row = 0; row < Keyboard::MAX_ROW; row++)
             {
-                for (unsigned col = 0; col < Keyboard::MAX_COLUMN; col++)
-                    effect.Color[(int)row][(int)col] = RGB(255, 0, 0);
+                for (int col = 0; col < Keyboard::MAX_COLUMN; col++)
+                    effect.Color[row][col] = RGB(255, 0, 0);
             }
             m_bFlash = false;
         }
@@ -1089,7 +1087,6 @@ void ChromaEffectRipple::OnEnter(int nPrevState)
     m_nReturnState = nPrevState;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9a9c0
 void ChromaEffectRipple::Create()
 {
@@ -1113,17 +1110,16 @@ void ChromaEffectRipple::Create()
     {
         m_nFrame = 0;
         if (--m_nRepeat <= 0)
-            pImpl->SetStateDirect(m_nReturnState);
+            pImpl->SetStateDirect(STATE_PLAYING);
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9ac20
 void ChromaEffectRipple::OnFieldChanged(unsigned short nFieldType)
 {
     ChromaManagerImpl* pImpl = chroma_cast<ChromaManagerImpl>(GetChromaManager());
     int nState = pImpl->GetState();
-    if (nFieldType != 0 && m_nFieldType != 0 && m_nFieldType != nFieldType && (nState == STATE_PLAYING || nState == STATE_TALKING))
+    if (nFieldType > 0 && m_nFieldType > 0 && m_nFieldType != nFieldType && (nState == STATE_PLAYING || nState == STATE_TALKING))
     {
         pImpl->SetState(STATE_RIPPLE);
         pImpl->AddLinkFlag(ChromaLinkEffect::FLAG_RAINBOW);
@@ -1345,12 +1341,12 @@ void ChromaLinkEffect::Create()
     m_nFrame++;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9b860
 void ChromaLinkEffect::CreateRainbow()
 {
     ChromaLink::CUSTOM_EFFECT_TYPE effect = {};
-    switch ((m_nFrame / 2) % ChromaLink::MAX_LEDS + 1)
+    int nLeds = (m_nFrame / 2) % (ChromaLink::MAX_LEDS + 1);
+    switch (nLeds)
     {
     case 5:
         effect.Color[4] = RGB(0, 0, 200);
@@ -1385,16 +1381,19 @@ ChromaManagerImpl::~ChromaManagerImpl()
 {
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9ba90
 void ChromaManagerImpl::SetState(int nState)
 {
     if (nState == m_nState)
         return;
-    if (m_nState == STATE_RIPPLE && nState != STATE_RIPPLE && m_effects[STATE_RIPPLE] != NULL)
+    if (m_nState == STATE_RIPPLE && nState != STATE_RIPPLE)
     {
-        static_cast<ChromaEffectRipple*>(m_effects[STATE_RIPPLE])->SetReturnState(nState);
-        return;
+        ChromaEffectRipple* pRipple = static_cast<ChromaEffectRipple*>(m_effects[STATE_RIPPLE]);
+        if (pRipple != NULL)
+        {
+            pRipple->SetReturnState(nState);
+            return;
+        }
     }
     if (nState < STATE_COUNT && nState > -1 && m_effects[nState] != NULL)
         m_effects[nState]->OnEnter(m_nState);
@@ -1484,7 +1483,6 @@ int ChromaManagerImpl::GetKeySkill(int nKey)
     return m_keySkills[nKey];
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9be80
 void ChromaManagerImpl::RefreshKeySkills()
 {
@@ -1495,11 +1493,9 @@ void ChromaManagerImpl::RefreshKeySkills()
     for (int nKey = 1; nKey < KEY_SKILL_COUNT; nKey++)
     {
         unsigned __int64 nSkill = pKeyTable->FUN_14142d190(nKey);
-        if (nSkill != 0 && nSkill <= 500025)
-        {
-            int nId = (int)nSkill;
-            m_keySkills[nKey] = nId;
-        }
+        if (nSkill == 0 || nSkill > 500025)
+            continue;
+        m_keySkills[nKey] = (int)nSkill;
     }
 }
 
@@ -1878,12 +1874,11 @@ std::vector<FChromaSDKColors> ChromaManagerImpl::CreateRandomColors2D(const EChr
     return result;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9d640
 const std::vector<FChromaSDKColors>& ChromaManagerImpl::SetMouseLEDColor(const EChromaSDKMouseLED& led, COLORREF color, std::vector<FChromaSDKColors>& colors)
 {
-    int maxRow = Mouse::MAX_ROW;
-    int maxColumn = Mouse::MAX_COLUMN;
+    size_t maxRow = Mouse::MAX_ROW;
+    size_t maxColumn = Mouse::MAX_COLUMN;
     if (maxRow != colors.size() || colors.size() == 0 || maxColumn != colors[0].Colors.size())
         return colors;
     Mouse::RZLED2 rzled = m_mouseLeds[led];
@@ -2033,7 +2028,6 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectStatic2D(const EChromaSDKD
     return data;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9dfd0
 FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom1D(const EChromaSDKDevice1DEnum& device, const std::vector<COLORREF>& colors)
 {
@@ -2041,7 +2035,7 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom1D(const EChromaSDKD
 
     RZRESULT result = 0;
     RZEFFECTID effectId = RZEFFECTID();
-    int maxLeds = 0;
+    size_t maxLeds = 0;
     switch (device)
     {
     case EChromaSDKDevice1DEnum::DE_ChromaLink:
@@ -2050,7 +2044,7 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom1D(const EChromaSDKD
         if (maxLeds != colors.size())
             break;
         ChromaLink::CUSTOM_EFFECT_TYPE pParam = {};
-        for (int i = 0; i < maxLeds; i++)
+        for (size_t i = 0; i < maxLeds; i++)
             pParam.Color[i] = colors[i];
         result = CreateChromaLinkEffect(ChromaLink::CHROMA_CUSTOM, &pParam, &effectId);
     }
@@ -2061,7 +2055,7 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom1D(const EChromaSDKD
         if (maxLeds != colors.size())
             break;
         Headset::CUSTOM_EFFECT_TYPE pParam = {};
-        for (int i = 0; i < maxLeds; i++)
+        for (size_t i = 0; i < maxLeds; i++)
             pParam.Color[i] = colors[i];
         result = CreateHeadsetEffect(Headset::CHROMA_CUSTOM, &pParam, &effectId);
     }
@@ -2072,7 +2066,7 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom1D(const EChromaSDKD
         if (maxLeds != colors.size())
             break;
         Mousepad::CUSTOM_EFFECT_TYPE pParam = {};
-        for (int i = 0; i < maxLeds; i++)
+        for (size_t i = 0; i < maxLeds; i++)
             pParam.Color[i] = colors[i];
         result = CreateMousepadEffect(Mousepad::CHROMA_CUSTOM, &pParam, &effectId);
     }
@@ -2083,7 +2077,6 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom1D(const EChromaSDKD
     return data;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9e300
 FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom2D(const EChromaSDKDevice2DEnum& device, const std::vector<FChromaSDKColors>& colors)
 {
@@ -2091,21 +2084,21 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom2D(const EChromaSDKD
 
     RZRESULT result = 0;
     RZEFFECTID effectId = RZEFFECTID();
-    int maxRow = 0;
-    int maxColumn = 0;
+    size_t maxRow = 0;
+    size_t maxColumn = 0;
     switch (device)
     {
     case EChromaSDKDevice2DEnum::DE_Keyboard:
     {
         maxRow = Keyboard::MAX_ROW;
         maxColumn = Keyboard::MAX_COLUMN;
-        if (maxRow != colors.size() || colors.size() == 0 || maxColumn != colors[0].Colors.size())
+        if (maxRow != colors.size() || (colors.size() > 0 && maxColumn != colors[0].Colors.size()))
             break;
         Keyboard::CUSTOM_EFFECT_TYPE pParam = {};
-        for (int i = 0; i < maxRow; i++)
+        for (size_t i = 0; i < maxRow; i++)
         {
             const FChromaSDKColors& row = colors[i];
-            for (int j = 0; j < maxColumn; j++)
+            for (size_t j = 0; j < maxColumn; j++)
                 pParam.Color[i][j] = row.Colors[j];
         }
         result = CreateKeyboardEffect(Keyboard::CHROMA_CUSTOM, &pParam, &effectId);
@@ -2115,13 +2108,13 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom2D(const EChromaSDKD
     {
         maxRow = Keypad::MAX_ROW;
         maxColumn = Keypad::MAX_COLUMN;
-        if (maxRow != colors.size() || colors.size() == 0 || maxColumn != colors[0].Colors.size())
+        if (maxRow != colors.size() || (colors.size() > 0 && maxColumn != colors[0].Colors.size()))
             break;
         Keypad::CUSTOM_EFFECT_TYPE pParam = {};
-        for (int i = 0; i < maxRow; i++)
+        for (size_t i = 0; i < maxRow; i++)
         {
             const FChromaSDKColors& row = colors[i];
-            for (int j = 0; j < maxColumn; j++)
+            for (size_t j = 0; j < maxColumn; j++)
                 pParam.Color[i][j] = row.Colors[j];
         }
         result = CreateKeypadEffect(Keypad::CHROMA_CUSTOM, &pParam, &effectId);
@@ -2131,13 +2124,13 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom2D(const EChromaSDKD
     {
         maxRow = Mouse::MAX_ROW;
         maxColumn = Mouse::MAX_COLUMN;
-        if (maxRow != colors.size() || colors.size() == 0 || maxColumn != colors[0].Colors.size())
+        if (maxRow != colors.size() || (colors.size() > 0 && maxColumn != colors[0].Colors.size()))
             break;
         Mouse::CUSTOM_EFFECT_TYPE2 pParam = {};
-        for (int i = 0; i < maxRow; i++)
+        for (size_t i = 0; i < maxRow; i++)
         {
             const FChromaSDKColors& row = colors[i];
-            for (int j = 0; j < maxColumn; j++)
+            for (size_t j = 0; j < maxColumn; j++)
                 pParam.Color[i][j] = row.Colors[j];
         }
         result = CreateMouseEffect(Mouse::CHROMA_CUSTOM2, &pParam, &effectId);
@@ -2149,7 +2142,6 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectCustom2D(const EChromaSDKD
     return data;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9e7f0
 FChromaSDKEffectResult ChromaManagerImpl::CreateEffectKeyboardCustom2D(const std::vector<FChromaSDKColors>& colors)
 {
@@ -2157,18 +2149,18 @@ FChromaSDKEffectResult ChromaManagerImpl::CreateEffectKeyboardCustom2D(const std
 
     RZRESULT result = 0;
     RZEFFECTID effectId = RZEFFECTID();
-    int maxRow = Keyboard::MAX_ROW;
-    int maxColumn = Keyboard::MAX_COLUMN;
-    if (maxRow != colors.size() || colors.size() == 0 || maxColumn != colors[0].Colors.size())
+    size_t maxRow = Keyboard::MAX_ROW;
+    size_t maxColumn = Keyboard::MAX_COLUMN;
+    if (maxRow != colors.size() || (colors.size() > 0 && maxColumn != colors[0].Colors.size()))
     {
     }
     else
     {
         Keyboard::CUSTOM_KEY_EFFECT_TYPE pParam = {};
-        for (int i = 0; i < maxRow; i++)
+        for (size_t i = 0; i < maxRow; i++)
         {
             const FChromaSDKColors& row = colors[i];
-            for (int j = 0; j < maxColumn; j++)
+            for (size_t j = 0; j < maxColumn; j++)
                 pParam.Key[i][j] = row.Colors[j];
         }
         result = CreateKeyboardEffect(Keyboard::CHROMA_CUSTOM_KEY, &pParam, &effectId);
@@ -2219,13 +2211,12 @@ void ChromaManagerImpl::Tick()
     m_linkEffect.Update();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140a9ebb0
 bool ChromaManagerImpl::LoadSDK()
 {
+    m_bInitialized = false;
     try
     {
-        m_bInitialized = false;
         if (m_hModule == NULL)
         {
             m_hModule = LoadLibraryA("RzChromaSDK64.dll");
@@ -2587,12 +2578,12 @@ ChromaSDK::FChromaSDKColorFrame2D::FChromaSDKColorFrame2D()
 
 namespace ChromaSDK {
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140aaa6a0
 void SetChromaManager(IChromaManager* pManager)
 {
-    g_pChromaManager = pManager;
-    if (pManager == NULL)
+    if (pManager != NULL)
+        g_pChromaManager = pManager;
+    else
         g_pChromaManager = &g_chromaManagerDummy;
 }
 
@@ -2609,7 +2600,6 @@ ChromaManagerDummy::~ChromaManagerDummy()
 {
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent, codegen differs (stack-slot/branch layout); left to the permuter lane
 // @0x140aaa740
 bool ChromaManagerDummy::Initialize()
 {
@@ -2622,13 +2612,13 @@ bool ChromaManagerDummy::Initialize()
         {
             ChromaManagerImpl* pImpl = new ChromaManagerImpl();
             pImpl->SetModule(hModule);
-            if (pImpl->Initialize())
+            if (!pImpl->Initialize())
             {
-                SetChromaManager(pImpl);
-                return true;
+                delete pImpl;
+                return false;
             }
-            delete pImpl;
-            return false;
+            SetChromaManager(pImpl);
+            return true;
         }
     }
     return false;
