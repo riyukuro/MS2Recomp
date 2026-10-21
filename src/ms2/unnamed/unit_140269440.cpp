@@ -54,8 +54,14 @@ MS2_CHECK_SIZE(Unk_UlgBucket, 0x10);
 bool FUN_14027eca0(Unk_UlgBucket* pRef, void* p);               // pRef->m_p == p
 __int64 FUN_14027f260(Unk_UlgBucket* pRef);                     // the raw pointer
 Unk_UlgList* FUN_14027f2d0(Unk_UlgBucket* pRef);                // the object
-Unk_UlgBucket* FUN_1401b7b90(Unk_UlgBucket* pOut, void* p);     // makes a fresh bucket
-void FUN_140280740(Unk_UlgBucket* pDst, Unk_UlgBucket* pSrc);   // assign
+// The fresh-bucket handle FUN_1401b7b90 returns (8 bytes, returned through a hidden pointer, no dtor).
+struct Unk_UlgNew
+{
+    Unk_UlgNew(const Unk_UlgNew& other);
+    void* m_p;
+};
+Unk_UlgNew FUN_1401b7b90(void* p);                              // makes a fresh bucket
+void FUN_140280740(Unk_UlgBucket* pDst, const Unk_UlgNew& src);  // assign
 
 // The map from key to bucket (CAtlMap-like, 0x30 bytes).
 struct Unk_UlgMap { __int64 m_data[6]; };
@@ -98,7 +104,6 @@ CUserLimitGroup::~CUserLimitGroup()
 }
 
 // @0x1402694f0
-// MS2-FUNCTIONAL: exe duplicates the bucket dtor into each branch (nop after remove, 4 more IP-map entries); behaviour-equivalent
 void CUserLimitGroup::FUN_1402694f0(__int64 tNow)
 {
     void* pos = FUN_140281960(&m_map);
@@ -110,45 +115,43 @@ void CUserLimitGroup::FUN_1402694f0(__int64 tNow)
         if (FUN_14027eca0(&bucket, 0) != 0)
         {
             FUN_140285070(&m_map, posCur);
+            continue;
         }
-        else
+        void* posIn = FUN_140281940(FUN_14027f2d0(&bucket));
+        while (posIn != 0)
         {
-            void* posIn = FUN_140281940(FUN_14027f2d0(&bucket));
-            while (posIn != 0)
+            void* posInCur = posIn;
+            FUN_140281af0(FUN_14027f2d0(&bucket), &posIn);
+            Unk_PplRef ref(*FUN_140281540(FUN_14027f2d0(&bucket), posInCur));
+            if (FUN_14027ed60(&ref, 0) != 0)
             {
-                void* posInCur = posIn;
-                FUN_140281af0(FUN_14027f2d0(&bucket), &posIn);
-                Unk_PplRef ref(*FUN_140281540(FUN_14027f2d0(&bucket), posInCur));
-                if (FUN_14027ed60(&ref, 0) == 0)
-                {
-                    if (FUN_14027f310(&ref)->m_tExpire <= tNow)
-                        FUN_140284f90(FUN_14027f2d0(&bucket), posInCur);
-                }
-                else
-                {
-                    FUN_140284f90(FUN_14027f2d0(&bucket), posInCur);
-                }
+                FUN_140284f90(FUN_14027f2d0(&bucket), posInCur);
+                continue;
+            }
+            if (FUN_14027f310(&ref)->m_tExpire <= tNow)
+            {
+                FUN_140284f90(FUN_14027f2d0(&bucket), posInCur);
+                continue;
             }
         }
     }
 }
 
 // @0x1402696c0
+// MS2-FUNCTIONAL: frame slot order only (the exe puts the FUN_1401b7b90 temporary below nKey and the unwind slot above both)
 void CUserLimitGroup::FUN_1402696c0(Unk_PplRef ref)
 {
-    if (FUN_14027ed60(&ref, 0) == 0)
+    if (FUN_14027ed60(&ref, 0) != 0)
+        return;
+    __int64 nKey = FUN_14027f310(&ref)->m_nKey;
+    Unk_UlgBucket bucket(0);
+    FUN_140283050(&m_map, nKey, &bucket);
+    if (FUN_14027eca0(&bucket, 0) != 0)
     {
-        __int64 nKey = FUN_14027f310(&ref)->m_nKey;
-        Unk_UlgBucket bucket(0);
-        FUN_140283050(&m_map, nKey, &bucket);
-        if (FUN_14027eca0(&bucket, 0) != 0)
-        {
-            Unk_UlgBucket fresh(0);
-            FUN_140280740(&bucket, FUN_1401b7b90(&fresh, 0));
-            FUN_140285850(&m_map, nKey, &bucket);
-        }
-        FUN_1402805b0(FUN_14027f2d0(&bucket), &ref);
+        FUN_140280740(&bucket, FUN_1401b7b90(0));
+        FUN_140285850(&m_map, nKey, &bucket);
     }
+    FUN_1402805b0(FUN_14027f2d0(&bucket), &ref);
 }
 
 // @0x1402697c0
@@ -159,13 +162,11 @@ int CUserLimitGroup::FUN_1402697c0(__int64 nKey)
     FUN_140283050(&m_map, nKey, &bucket);
     if (FUN_14027f260(&bucket) != 0)
     {
-        void* pos = FUN_140281940(FUN_14027f2d0(&bucket));
-        while (pos != 0)
+        for (void* pos = FUN_140281940(FUN_14027f2d0(&bucket)); pos != 0; FUN_140281af0(FUN_14027f2d0(&bucket), &pos))
         {
             Unk_PplRef ref(*FUN_140281540(FUN_14027f2d0(&bucket), pos));
             if (FUN_14027f270(&ref) != 0)
                 nTotal = nTotal + FUN_14027f310(&ref)->m_nCount;
-            FUN_140281af0(FUN_14027f2d0(&bucket), &pos);
         }
     }
     return nTotal;
