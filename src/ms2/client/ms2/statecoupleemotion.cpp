@@ -171,7 +171,7 @@ void FUN_140b850d0(void* pLogger, int nLevel, int nId, const wchar_t* pszFmt, co
 void FUN_140a53190(Unk_EffectTarget& kTarget, int nOwnerId);               // 0x140a53190 set the owner id
 void FUN_140353fc0(void* pLogger, int nLevel, int nId, const wchar_t* pszFmt, const int* pnArg);   // 0x140353fc0 log
 void* FUN_140166440();                                                     // 0x140166440 the logger
-int FUN_1402fbd20(const int* pA, const int* pB);                           // placeholder for std::min
+const int* FUN_1402fbd20(const int* pA, const int* pB);                    // placeholder for std::min
 
 // ---- local helpers declared early ---------------------------------------------------------------------------------------
 static bool FUN_140b83fa0(const NiPoint3& kA, const NiPoint3& kB);         // 0x140b83fa0
@@ -233,9 +233,9 @@ void StateCoupleEmotionData::vfunc_2(Unk_StateDataArg* p)
 // @0x140b85080
 static bool FUN_140b85080(int nGender1, int nGender2, bool bSwap)
 {
-    if (nGender1 != nGender2)
-        bSwap = nGender1 != 0;
-    return bSwap;
+    if (nGender1 == nGender2)
+        return bSwap;
+    return nGender1 != 0;
 }
 
 // Picks the table row of nEmotion, copies its teleport effect and the animation set of the gender pairing.
@@ -342,8 +342,8 @@ bool CoupleEmotionAnimInfo::Load(int nAni)
 // @0x140b80630
 void CoupleEmotionAnimInfo::UpdateNif()
 {
-    float fNow = (float)FUN_141473280(FUN_14086d260());
-    ((NiAVObject*)m_spNifRoot)->Update((float)((double)fNow - (double)m_fStartTime), true);
+    double dTime = FUN_141473280(FUN_14086d260()) - m_fStartTime;
+    ((NiAVObject*)m_spNifRoot)->Update((float)dTime, true);
 }
 
 // The partner's animation name of animation nAni ("" when out of range).
@@ -409,9 +409,9 @@ Unk_TargetPtr& Unk_TargetPtr::operator=(NiObjectNET* p)
 }
 
 // @0x140b85fc0
-bool Unk_TargetPtr::operator!=(int nNull) const
+bool Unk_TargetPtr::operator!=(NiObjectNET* p) const
 {
-    return m_p != (void*)(__int64)nNull;
+    return m_p != p;
 }
 
 // ---- StateCoupleEmotion -----------------------------------------------------------------------------------------------
@@ -548,18 +548,23 @@ void StateCoupleEmotion::vfunc_3(double fTime)
 void StateCoupleEmotion::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    egf::EntityID kEntity = m_pOwner->FUN_14123c460();
-    int nActorId = FUN_141b6f910()->FUN_140b7f6a0(kEntity);
-    if (FUN_1417b7e40() == 0x93)
+    int nActorId = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    switch (FUN_1417b7e40())
     {
-        int nKey = m_pOwner->vfunc_65();
-        if (!m_pOwner->FUN_14166de90(nKey != 0, nActorId))
+    case 0x93:
+    {
+        int nKey = 0;
+        if (m_pOwner->vfunc_65())
+            nKey = 1;
+        if (!m_pOwner->FUN_14166de90(nKey, nActorId))
         {
-            m_pOwner->FUN_14166dda0(nKey != 0);
+            m_pOwner->FUN_14166dda0(nKey);
             m_pOwner->FUN_14166f8f0(0, 1);
         }
+        break;
     }
-    SyncWithPartner();
+    }
+    SyncWithPartner(fTime);
 }
 
 // Drops the actor onto the ground below it, aligns it with the nif's owner node and plays the teleport effect.
@@ -660,19 +665,19 @@ void StateCoupleEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int e
 void StateCoupleEmotion::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
-    if (FUN_1417b8560() != 0)
+    if (FUN_1417b8560() == 0)
+        return;
+    Unk_CeBuffMgr* pMgr = static_cast<Unk_CeBuffMgr*>(m_pOwner->FUN_14166d240());
+    efd::Point3 kPos = pMgr->FUN_141683290();
+    m_pOwner->vfunc_22(kPos);
+    if (m_pOwner->FUN_1416749c0())
     {
-        efd::Point3 kPos = static_cast<Unk_CeBuffMgr*>(m_pOwner->FUN_14166d240())->FUN_141683290();
-        m_pOwner->vfunc_22(kPos);
-        if (m_pOwner->FUN_1416749c0() == 0)
-        {
-            FUN_1417b9460();
-        }
-        else
-        {
-            Stop(0);
-            m_pOwner->vfunc_59(2, 0, 0, 0);
-        }
+        Stop(0);
+        m_pOwner->vfunc_59(2, 0, 0, 0);
+    }
+    else
+    {
+        FUN_1417b9460();
     }
 }
 
@@ -765,39 +770,41 @@ bool StateCoupleEmotion::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 // @0x140b81fe0
 int StateCoupleEmotion::GetEmotionId()
 {
-    if (m_spCoupleData.get() == 0)
-        return 0;
-    return m_spCoupleData->m_nEmotion;
+    if (m_spCoupleData.get() != 0)
+        return m_spCoupleData->m_nEmotion;
+    return 0;
 }
 
 // @0x140b82030
 int StateCoupleEmotion::GetPartnerId()
 {
-    if (m_spCoupleData.get() == 0)
-        return 0;
-    return m_spCoupleData->m_nPartnerId;
+    if (m_spCoupleData.get() != 0)
+        return m_spCoupleData->m_nPartnerId;
+    return 0;
 }
 
 // @0x140b82080
 int StateCoupleEmotion::GetRequesterId()
 {
-    if (m_spCoupleData.get() == 0)
-        return 0;
-    return m_spCoupleData->m_nRequesterId;
+    if (m_spCoupleData.get() != 0)
+        return m_spCoupleData->m_nRequesterId;
+    return 0;
 }
 
 // @0x140b820d0
 void StateCoupleEmotion::SetStartPos(const efd::Point3& pos)
 {
-    if (!m_spCoupleData.IsNull())
-        m_spCoupleData->m_posStart = pos;
+    if (m_spCoupleData == 0)
+        return;
+    m_spCoupleData->m_posStart = pos;
 }
 
 // @0x140b82130
 void StateCoupleEmotion::SetEndPos(const efd::Point3& pos)
 {
-    if (!m_spCoupleData.IsNull())
-        m_spCoupleData->m_posEnd = pos;
+    if (m_spCoupleData == 0)
+        return;
+    m_spCoupleData->m_posEnd = pos;
 }
 
 // @0x140b82190
@@ -905,7 +912,7 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
 // @0x140b82a00
 PCBase* StateCoupleEmotion::GetPartner()
 {
-    if (m_spCoupleData.IsNull())
+    if (m_spCoupleData == 0)
         return 0;
     WorldService* pWorldService = FUN_1403ed2d0();
     if (pWorldService == 0)
@@ -942,7 +949,7 @@ void StateCoupleEmotion::Stop(int bNotify)
 // Keeps this state in step with the partner's: same animation, the loop effect node follows the nif's centre node.
 // MS2-FUNCTIONAL: transform arithmetic written from the call sequence.
 // @0x140b82c40
-bool StateCoupleEmotion::SyncWithPartner()
+bool StateCoupleEmotion::SyncWithPartner(double fTime)
 {
     PCBase* pOwnerPC = FUN_1417b8370();
     if (pOwnerPC == 0)
@@ -1033,7 +1040,7 @@ CStringA StateCoupleEmotion::GetCurAniName()
 // @0x140b833a0
 int StateCoupleEmotion::GetAniIndex()
 {
-    if (m_spCoupleData.IsNull())
+    if (m_spCoupleData == 0)
         return -1;
     return m_spCoupleData->m_nAni;
 }
@@ -1131,11 +1138,10 @@ bool StateCoupleEmotion::RemoveEffect(CStringA strName)
         return false;
     }
     int nHandle = 0;
-    if (m_effects.Lookup(strName, nHandle))
-    {
-        FUN_1403ed280()->FUN_1411a6060(nHandle);
-        m_effects.RemoveKey(strName);
-    }
+    if (!m_effects.Lookup(strName, nHandle))
+        return true;
+    FUN_1403ed280()->FUN_1411a6060(nHandle);
+    m_effects.RemoveKey(strName);
     return true;
 }
 
@@ -1161,10 +1167,13 @@ bool StateCoupleEmotion::PlayNextAni()
 {
     int nCur = m_spCoupleData->m_nAni;
     int nLast = m_spAnimInfo->GetLastAni();
-    if (!m_spAnimInfo->m_bLoop && nLast <= m_spCoupleData->m_nAni)
+    if (!m_spAnimInfo->m_bLoop && m_spCoupleData->m_nAni >= nLast)
         return false;
     int nNext = nCur + 1;
-    return PlayAni(FUN_1402fbd20(&nNext, &nLast));
+    int nAni = *FUN_1402fbd20(&nNext, &nLast);
+    if (!PlayAni(nAni))
+        return false;
+    return true;
 }
 
 // Plays animation nAni on the owner and restarts the nif clock.
@@ -1206,7 +1215,16 @@ bool FUN_140b83ec0()
 // @0x140b83f60
 static bool FUN_140b83f60(int nState)
 {
-    return nState >= 1 && (nState <= 2 || nState == 4 || (nState >= 6 && nState <= 7));
+    switch (nState)
+    {
+    case 1:
+    case 2:
+    case 4:
+    case 6:
+    case 7:
+        return true;
+    }
+    return false;
 }
 
 // The two actors are within the table's maximum distance of each other.

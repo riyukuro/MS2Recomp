@@ -52,7 +52,7 @@ public:
     Unk_TargetPtr(NiObjectNET* p);                                 // 0x140b85910
     ~Unk_TargetPtr();                                       // 0x140b85b20
     Unk_TargetPtr& operator=(NiObjectNET* p);                      // 0x140b85cd0
-    bool operator!=(int nNull) const;                       // 0x140b85fc0
+    bool operator!=(NiObjectNET* p) const;                 // 0x140b85fc0
     void* m_p;
 };
 MS2_CHECK_SIZE(Unk_TargetPtr, 8);
@@ -132,7 +132,7 @@ public:
     bool FindPlacement(efd::Point3& posA, efd::Point3& posB, float* pfYaw);   // 0x140b82230
     PCBase* GetPartner();                                   // 0x140b82a00
     void Stop(int bNotify);                                 // 0x140b82aa0 leave the state, tell the server
-    bool SyncWithPartner();                                 // 0x140b82c40
+    bool SyncWithPartner(double fTime);                     // 0x140b82c40
     CStringA GetCurAniName();                                // 0x140b83260
     int GetAniIndex();                                      // 0x140b833a0 (-1 without a payload)
     bool AddEffect(CStringA strName);                        // 0x140b833f0
