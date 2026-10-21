@@ -686,6 +686,7 @@ __int64 CClub::FUN_14020f0c0()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -699,6 +700,7 @@ void CClub::FUN_14020f130(__int64 n)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -711,6 +713,7 @@ CStringW CClub::FUN_14020f1a0()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -724,6 +727,7 @@ void CClub::FUN_14020f230(const CStringW& strName)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -736,6 +740,7 @@ __int64 CClub::FUN_14020f2a0()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -749,6 +754,7 @@ void CClub::FUN_14020f310(__int64 n)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -761,6 +767,7 @@ unsigned CClub::FUN_14020f380()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -774,6 +781,7 @@ void CClub::FUN_14020f3f0(__int64 n)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -786,6 +794,7 @@ __int64 CClub::FUN_14020f460()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -799,6 +808,7 @@ void CClub::FUN_14020f4e0(int nState)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -811,6 +821,7 @@ unsigned CClub::FUN_14020f540()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -825,6 +836,7 @@ void CClub::FUN_14020f5b0(int nBuffId, int nBuffLevel)
     {
         if (Unk_LockGuard guard = m_lock)
         {
+            __assume(0);
         }
         else
         {
@@ -840,6 +852,7 @@ int CClub::FUN_14020f640()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -853,6 +866,7 @@ unsigned CClub::FUN_14020f6b0()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -867,6 +881,7 @@ void CClub::FUN_14020f720(__int64 nAccountId, __int64 nCharacterId, CStringW str
     {
         if (Unk_LockGuard guard = m_lock)
         {
+            __assume(0);
         }
         else
         {
@@ -883,6 +898,7 @@ __int64 CClub::FUN_14020f7e0()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -896,6 +912,7 @@ __int64 CClub::FUN_14020f850()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -909,6 +926,7 @@ CStringW CClub::FUN_14020f8c0()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -922,6 +940,7 @@ __int64 CClub::FUN_14020f950()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -935,6 +954,7 @@ void CClub::FUN_14020f9c0(__int64 n)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -947,6 +967,7 @@ __int64 CClub::FUN_14020fa30()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -960,6 +981,7 @@ void CClub::FUN_14020fab0(__int64 n)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -972,6 +994,7 @@ void CClub::FUN_14020fb20(COutputStream& out)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -994,6 +1017,7 @@ void CClub::FUN_14020fd80(CInPacket& packet)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1023,6 +1047,7 @@ void CClub::FUN_1402100e0(COutputStream& out)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1040,6 +1065,7 @@ void CClub::FUN_1402101e0(CInPacket& packet)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1060,6 +1086,7 @@ int CClub::vfunc_4(MS2Ptr<CClubMember> spMember)
         return 0;
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1083,6 +1110,7 @@ void CClub::vfunc_5(CStringW strName)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1096,6 +1124,7 @@ MS2Ptr<CClubMember> CClub::FUN_140210560(CStringW strName)
     MS2Ptr<CClubMember> sp(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1110,6 +1139,7 @@ MS2Ptr<CClubMember> CClub::FUN_140210630(__int64 nId)
     MS2Ptr<CClubMember> spFound(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1132,6 +1162,7 @@ void CClub::FUN_1402107a0(const CStringW& strOldName, const CStringW& strNewName
     MS2Ptr<CClubMember> sp(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1149,6 +1180,7 @@ void CClub::FUN_1402108e0(ATL::CAtlArray<__int64>& ids)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1166,6 +1198,7 @@ void CClub::FUN_1402109d0(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1184,6 +1217,7 @@ void CClub::FUN_140210ad0(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1207,6 +1241,7 @@ void CClub::FUN_140210be0(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1230,6 +1265,7 @@ unsigned CClub::FUN_140210cf0()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1250,6 +1286,7 @@ int CClub::FUN_140210df0()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1264,6 +1301,7 @@ int CClub::FUN_140210e70()
     int n = 0;
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1282,6 +1320,7 @@ MS2Ptr<CClubMember> CClub::FUN_140210f70()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1295,6 +1334,7 @@ void CClub::FUN_140211000(MS2Ptr<CClubMember> spLeader)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1307,6 +1347,7 @@ int CClub::FUN_140211080(CStringW strName)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1400,6 +1441,7 @@ int CClubDataTable::FUN_1402113f0()
         sp->FUN_140211280(pNode);
         if (Unk_LockGuard guard = m_lock)
         {
+            __assume(0);
         }
         else
         {
@@ -1415,6 +1457,7 @@ CClubDataTable::BuffPtr CClubDataTable::FUN_1402116a0(unsigned nId)
     BuffPtr sp(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1429,6 +1472,7 @@ CClubDataTable::BuffPtr CClubDataTable::FUN_140211760(int nEffectId, int nEffect
     BuffPtr spFound(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1456,6 +1500,7 @@ void CClubDataTable::FUN_1402118e0(ATL::CAtlArray<unsigned>& ids)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1469,6 +1514,7 @@ void CClubDataTable::FUN_140211990(ATL::CAtlArray<BuffPtr>& buffs)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1483,6 +1529,7 @@ CClubDataTable::BuffPtr CClubDataTable::FUN_140211a40()
     BuffPtr spFirst(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
