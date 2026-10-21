@@ -44,7 +44,7 @@ public:
     virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
     virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(int n);
+    virtual void vfunc_24(bool b);
 };
 // "m_items": the rows list.
 class Unk_DictList : public Unk_DictCtl
@@ -53,7 +53,7 @@ public:
     void FUN_1422dd1d0();                                   // clear
     void FUN_1422dcca0(int n);                              // select the row
     void FUN_1422dd230(const ASObj& row);                   // append a row
-    ASArray FUN_1422dcd80();                                // the data provider
+    MS2Ptr<ASDataProvider> FUN_1422dcd80();                 // the data provider (ASCoreList, 0x1422dcd80)
 };
 // "m_tab": the tab strip.
 class Unk_DictTab : public Unk_DictCtl
@@ -106,25 +106,25 @@ public:
     Unk_DictRequest(const void* pSource);                   // 0x1401baaa0
     ~Unk_DictRequest();                                     // 0x1401baaf0
     void FUN_1401bac80(CString strName, CStringW strValue, int n);
-    int FUN_1401bab90(CString strName, void* pOut);
+    unsigned char FUN_1401bab90(CString strName, void* pOut);
 private:
-    char m_pad[0x38];
+    void* m_pad[5];                                         // ctor 0x1401baa00 writes +0x18 / +0x1c / +0x20
 };
 struct Unk_DictRequestValue
 {
     Unk_DictRequestValue();                                 // 0x1401ba840
     ~Unk_DictRequestValue();                                // 0x1401ba940
-    char m_pad_00[8];
+    void* m_pad_00;                                         // ctor 0x1401ba840: strings at +0 / +8 / +0x10
     CStringW m_text;                                        // +0x08
-    char m_pad_10[8];
+    void* m_pad_10;
     int m_code;                                             // +0x18
-    char m_pad_1c[0x1c];
+    int m_pad_1c;
 };
 
 // Input state, the movie manager, the player and the text hooks.
-class Unk_DictInputState { public: char FUN_14116d9c0(int a, int b, int c); };
+class Unk_DictInputState { public: unsigned char FUN_14116d9c0(int a, int b, int c); };
 Unk_DictInputState* FUN_14025e7c0();
-class Unk_DictUiMgr { public: int FUN_1422d4e20(const CString& strKey); };
+class Unk_DictUiMgr { public: int FUN_1422d4e20(CString strKey); };
 Unk_DictUiMgr* FUN_140b632f0();
 class Unk_DictPlayerMgr { public: void* FUN_141bd0cc0(); };
 Unk_DictPlayerMgr* FUN_1403ed2d0();
@@ -233,23 +233,19 @@ void UIGameDictionaryDialog::vfunc_67()
 }
 
 // @0x140f449a0
-// MS2-FUNCTIONAL: frame layout of the child-handle temporaries differs
 void UIGameDictionaryDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_140f452e0();
-    MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0(CString("m_inputSearch"));
-    if (spInput.get() != 0)
+    if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
         spInput->FUN_1422e0ab0(m_180);
-    MS2Ptr<Unk_DictTab> spTab = FUN_140c02870(CString("m_tab"));
-    if (spTab.get() != 0)
+    if (MS2Ptr<Unk_DictTab> spTab = FUN_140c02870("m_tab"))
         spTab->FUN_1422e31e0(m_178);
     if (m_17c != 0)
     {
-        MS2Ptr<Unk_DictList> spItems = FUN_140c02900(CString("m_items"));
-        if (spItems.get() != 0)
+        if (MS2Ptr<Unk_DictList> spItems = FUN_140c02900("m_items"))
         {
-            if (spItems->FUN_1422dcd80().FUN_1422bc5d0() != 0)
+            if (spItems->FUN_1422dcd80()->FUN_1422bc5d0() > 0)
             {
                 spItems->FUN_1422dcca0(0);
                 spItems->vfunc_24(1);
@@ -260,7 +256,6 @@ void UIGameDictionaryDialog::OnLoadComplete()
 }
 
 // @0x140f44c70
-// MS2-FUNCTIONAL: frame layout of the string temporaries differs
 int UIGameDictionaryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
@@ -269,6 +264,7 @@ int UIGameDictionaryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
             FUN_140f46c90(data.FUN_1422b8f40());
+        return 1;
     }
     else if (_stricmp("OnChangeTab", szMethod) == 0)
     {
@@ -279,49 +275,40 @@ int UIGameDictionaryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
             FUN_140f45870();
         }
     }
-    else if (_stricmp("OnItemChange", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
+    else if (_stricmp("OnItemChange", szMethod) == 0)
     {
-        int nId = data.FUN_1422b8a10();
-        int nType = data.FUN_1422b8a10();
-        CStringW strName = data.FUN_1422b8f40();
-        int nGrade = data.FUN_1422b8a10();
-        FUN_140f45c20(nId, nType, CStringW(strName), nGrade);
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        {
+            int nId = data.FUN_1422b8a10();
+            int nType = data.FUN_1422b8a10();
+            CStringW strName = data.FUN_1422b8f40();
+            int nGrade = data.FUN_1422b8a10();
+            FUN_140f45c20(nId, nType, CStringW(strName), nGrade);
+        }
     }
     return 1;
 }
 
 // @0x140f44f20
-// MS2-FUNCTIONAL: frame layout of the temporaries differs
 int UIGameDictionaryDialog::vfunc_13()
 {
-    if (UIDialog::vfunc_13() == 0)
-    {
-        if (vfunc_55() == 0 && !m_30.IsNull())
-        {
-            ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-            if (pDlg != 0)
-            {
-                if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
-                {
-                    if (FUN_140b632f0() != 0)
-                    {
-                        CString strKey(m_20);
-                        if (FUN_140b632f0()->FUN_1422d4e20(strKey) == 0)
-                            return 0;
-                    }
-                    MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0(CString("m_inputSearch"));
-                    if (spInput.get() != 0)
-                    {
-                        if (FUN_1422c76c0(spInput.operator->()) != 0)
-                            FUN_140f46c90(spInput->FUN_1422e0b00());
-                    }
-                    return 1;
-                }
-            }
-        }
+    if (UIDialog::vfunc_13() != 0)
+        return 1;
+    if (vfunc_55() != 0 || m_30.IsNull())
         return 0;
+    ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
+    if (pDlg != 0 && FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    {
+        if (FUN_140b632f0() != 0 && FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) == 0)
+            return 0;
+        if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
+        {
+            if (FUN_1422c76c0(spInput.operator->()) != 0)
+                FUN_140f46c90(spInput->FUN_1422e0b00());
+        }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x140f45140
@@ -331,7 +318,6 @@ void UIGameDictionaryDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
 }
 
 // @0x140f45180
-// MS2-FUNCTIONAL: frame layout of the request temporaries differs
 void UIGameDictionaryDialog::vfunc_80(void* pRequest)
 {
     Unk_DictRequest request(pRequest);
@@ -405,11 +391,10 @@ void UIGameDictionaryDialog::FUN_140f452e0()
 }
 
 // @0x140f45870
-// MS2-FUNCTIONAL: frame layout of the list temporaries differs
 void UIGameDictionaryDialog::FUN_140f45870()
 {
-    MS2Ptr<Unk_DictList> spItems = FUN_140c02900(CString("m_items"));
-    if (!spItems.IsNull())
+    MS2Ptr<Unk_DictList> spItems = FUN_140c02900("m_items");
+    if (spItems.IsNull())
         return;
     spItems->FUN_1422dd1d0();
     spItems->FUN_1422dcca0(-1);
@@ -422,7 +407,7 @@ void UIGameDictionaryDialog::FUN_140f45870()
         Entry entry = *it;
         if ((FUN_140f46e40(entry.m_type) & nMask) != 0)
         {
-            if (FUN_14083fec0(CStringW(m_180), CStringW(entry.m_name)) != -1)
+            if (FUN_14083fec0(CStringW(entry.m_name), CStringW(m_180)) != -1)
             {
                 ASObj item(2);
                 item.FUN_1407cbb20("label", CStringW(entry.m_name));
@@ -459,10 +444,9 @@ unsigned UIGameDictionaryDialog::FUN_140f46e40(int nTab)
 }
 
 // @0x140f46c90
-// MS2-FUNCTIONAL: frame layout of the request temporaries differs
 void UIGameDictionaryDialog::FUN_140f46c90(CStringW strSearch)
 {
-    if (strSearch.IsEmpty())
+    if (strSearch.IsEmpty() == 1)
     {
         m_180 = L"";
         FUN_140f45870();
@@ -483,18 +467,15 @@ void UIGameDictionaryDialog::FUN_140f46c90(CStringW strSearch)
 }
 
 // @0x140f46ea0
-// MS2-FUNCTIONAL: frame layout of the child-handle temporaries differs
 void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSelectFirst)
 {
     m_17c = bSelectFirst;
     m_180 = strSearch;
-    MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0(CString("m_inputSearch"));
-    if (spInput.get() != 0)
+    if (MS2Ptr<Unk_DictInput> spInput = FUN_140e35bd0("m_inputSearch"))
         spInput->FUN_1422e0ab0(m_180);
     if (vfunc_55() == 0)
     {
-        MS2Ptr<Unk_DictTab> spTab = FUN_140c02870(CString("m_tab"));
-        if (spTab.get() != 0)
+        if (MS2Ptr<Unk_DictTab> spTab = FUN_140c02870("m_tab"))
         {
             if (m_178 == nTab)
                 FUN_140f45870();
@@ -503,10 +484,9 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
         }
         if (m_17c != 0)
         {
-            MS2Ptr<Unk_DictList> spItems = FUN_140c02900(CString("m_items"));
-            if (spItems.get() != 0)
+            if (MS2Ptr<Unk_DictList> spItems = FUN_140c02900("m_items"))
             {
-                if (spItems->FUN_1422dcd80().FUN_1422bc5d0() != 0)
+                if (spItems->FUN_1422dcd80()->FUN_1422bc5d0() > 0)
                 {
                     spItems->FUN_1422dcca0(0);
                     spItems->vfunc_24(1);
@@ -643,7 +623,6 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
 }
 
 // @0x140f47c60
-// MS2-FUNCTIONAL: the exe's copy goes straight to AScript's copy constructor (0x1409bb7b0), not through ASObj's.
 ASTooltip::ASTooltip(const ASTooltip& o)
     : ASObj(o)
     , m_40(o.m_40)
