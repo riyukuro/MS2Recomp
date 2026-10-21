@@ -26,7 +26,12 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
 class ASDialog : public ASDisplayObject { public: void FUN_1422c00f0(float fX, float fY); };   // set the position
-struct Unk_IpIdSet { char m_pad[0x38]; };                           // a hash set of item ids (ctor 0x140203150, dtor 0x1402038f0)
+struct Unk_IpIdSet                                                   // a hash set of item ids
+{
+    Unk_IpIdSet(unsigned nBuckets);                                  // 0x140203150
+    ~Unk_IpIdSet();                                                  // 0x1402038f0
+    void* m_pad[7];
+};
 struct Unk_IpArgs { CStringW FUN_1408d21c0(int nIndex, CStringW strDefault); };   // ItemFunctionArgs::GetString
 class Unk_IpReg { public: Unk_IpReg(void (*pfnCallback)(void*, void*)); };   // registers a callback in a global table
 void FUN_140f50a40(void*, void*);
@@ -34,10 +39,8 @@ class Unk_IpWorld;
 class Unk_IpActor;
 class Unk_IpUIMgr { public: void FUN_141adc530(int nClass); };
 
-void FUN_140203150(Unk_IpIdSet* pSet, unsigned nBuckets);
 void* FUN_140204740(Unk_IpIdSet* pSet, int nKey, int nDefault);     // lookup: the value or 0
 void FUN_140203f00(Unk_IpIdSet* pSet, int nKey);                    // insert
-void FUN_1402038f0(Unk_IpIdSet* pSet);
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);          // narrow copy
 CStringW FUN_14028de60(int nStringId);
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int nIndex, int nFlags, int nMask);   // bind the item to a name
@@ -76,13 +79,20 @@ CString UIInteriorPreviewDialog::vfunc_1()
 }
 
 // @0x140f4cd90
-// MS2-FUNCTIONAL: the MS2Ptr<CItemData> temp / null test (FUN_1401b5240) compiles to a different frame
 void UIInteriorPreviewDialog::FUN_140f4cd90(int nItemId)
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == (CItemData*)0)
         return;
-    if (vfunc_55() == 0)
+    if (vfunc_55() != 0)
+    {
+        if (m_178 != nItemId)
+        {
+            m_178 = nItemId;
+            FUN_1403ed2b0()->FUN_141adc530(0x4ee3);
+        }
+    }
+    else
     {
         if (m_178 != nItemId)
         {
@@ -90,11 +100,6 @@ void UIInteriorPreviewDialog::FUN_140f4cd90(int nItemId)
             FUN_140f4d110();
         }
         FUN_1419235d0();
-    }
-    else if (m_178 != nItemId)
-    {
-        m_178 = nItemId;
-        FUN_1403ed2b0()->FUN_141adc530(0x4ee3);
     }
 }
 
@@ -136,19 +141,19 @@ void UIInteriorPreviewDialog::OnLoadComplete()
 }
 
 // @0x140f4d010
-// MS2-FUNCTIONAL: temp / frame layout differs around the ASTooltip local
 void UIInteriorPreviewDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
     Unk_IpActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pActor == 0)
         return;
-    if (_stricmp("getTooltipFromItemID", (const char*)strMethod) != 0)
-        return;
-    int nItemId = pArgs->FUN_1422b8b10();
-    int nRank = pArgs->FUN_1422b8b10();
-    ASTooltip tooltip(pActor, 8, m_28);
-    if (tooltip.FUN_1409e1770(nItemId, nRank) != 0)
-        *pRetVal = tooltip.FUN_1422bb870();
+    if (_stricmp("getTooltipFromItemID", (const char*)strMethod) == 0)
+    {
+        int nItemId = pArgs->FUN_1422b8b10();
+        int nRank = pArgs->FUN_1422b8b10();
+        ASTooltip tooltip(pActor, 8, m_28);
+        if (tooltip.FUN_1409e1770(nItemId, nRank) != 0)
+            *pRetVal = tooltip.FUN_1422bb870();
+    }
 }
 
 #ifndef MS2_HOOK_DLL
@@ -168,8 +173,7 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
     if (spPackage == (CUGCMapPackageData*)0)
         return;
     ASArray arrItems(m_28);
-    Unk_IpIdSet seen;
-    FUN_140203150(&seen, 10);
+    Unk_IpIdSet seen(10);
     unsigned nBound = 0;
     for (unsigned i = 0; i < spPackage->m_cubes.GetCount(); ++i)
     {
@@ -209,7 +213,6 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
     objData.FUN_1409adbe0((const char*)s_strItemPackageList, arrItems.FUN_1422bb870());
     objData.FUN_1407cba60((const char*)s_strItemMovie, spData->property.movie);
     pDialog->FUN_140acd1f0("setData", objData);
-    FUN_1402038f0(&seen);
 }
 #endif
 
