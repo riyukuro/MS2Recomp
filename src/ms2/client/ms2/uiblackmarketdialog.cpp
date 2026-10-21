@@ -121,17 +121,16 @@ CString UIBlackMarketDialog::vfunc_1()
 }
 
 // @0x1418cf620
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 int UIBlackMarketDialog::vfunc_65()
 {
     FUN_1401c0d80()->Load();
-    int nOpened = UIDialog::vfunc_65();
-    if (nOpened != 0)
+    if (UIDialog::vfunc_65())
     {
         FUN_140f17d40()->FUN_140a20940();
         FUN_140f17d50()->FUN_140d6e400();
+        return 1;
     }
-    return nOpened != 0;
+    return 0;
 }
 
 // @0x1418cf680
@@ -170,14 +169,14 @@ int UIBlackMarketDialog::vfunc_73()
 }
 
 // @0x1418cf860
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
     Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer && pPlayer->FUN_14166ce30() != 0 && m_68 == 0)
     {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_blackmarket_error_not_useable_by_dead")), 1, 1);
+        CStringW strMsg = FUN_14028b8e0(L"s_blackmarket_error_not_useable_by_dead");
+        FUN_1412751f0(strMsg, 1, 1);
         vfunc_67();
     }
 }
@@ -201,10 +200,13 @@ void UIBlackMarketDialog::vfunc_79(void* p)
 }
 
 // @0x1418cfa40
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 int UIBlackMarketDialog::vfunc_74(int nMsg, void* p2, void* p3)
 {
-    if ((nMsg == 0x10f || nMsg == 0x102) && !FUN_140ba28d0(&m_30, 0) && m_spItemSearch.get() && FUN_1418d0da0(m_spItemSearch.get()))
+    if (nMsg != 0x10f && nMsg != 0x102)
+        return 0;
+    if (FUN_140ba28d0(&m_30, 0) || m_spItemSearch == 0)
+        return 0;
+    if (FUN_1418d0da0(m_spItemSearch.get()))
         m_spItemSearch->FUN_140f0d630(nMsg, p2, p3);
     return 0;
 }
@@ -260,11 +262,10 @@ int UIBlackMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 }
 
 // @0x1418d0010
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (vfunc_55() == 0 && m_30.get() && m_pCurPage)
+    if (vfunc_55() == 0 && (m_30.get() ? true : false) && m_pCurPage)
         m_pCurPage->vfunc_5();
 }
 
@@ -370,18 +371,19 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
 }
 
 // @0x1418d0b60
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::FUN_1418d0b60(int nA, int nB, void* p)
 {
-    if (vfunc_55() == 0 && !(m_spItemSearch == 0))
-        m_spItemSearch->FUN_140f0de60(nA, nB, p);
+    if (vfunc_55() != 0 || m_spItemSearch == 0)
+        return;
+    m_spItemSearch->FUN_140f0de60(nA, nB, p);
 }
 
 // @0x1418d0be0
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 bool UIBlackMarketDialog::FUN_1418d0be0()
 {
-    return m_pCurPage == m_spItemRegister.get();
+    if (m_pCurPage != m_spItemRegister.get())
+        return false;
+    return true;
 }
 
 // @0x1418d0c20
@@ -406,35 +408,37 @@ bool UIBlackMarketDialog::FUN_1418d0da0(BlackMarketPage* pPage)
 }
 
 // @0x1418d0de0
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::FUN_1418d0de0(void* p)
 {
-    if (!(m_spItemRegister == 0))
-        m_spItemRegister->FUN_140f132c0(*static_cast<CBlackMarketMan::ProductMap*>(p));
+    if (m_spItemRegister == 0)
+        return;
+    m_spItemRegister->FUN_140f132c0(*static_cast<CBlackMarketMan::ProductMap*>(p));
 }
 
 // @0x1418d0e40
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::FUN_1418d0e40(MS2Ptr<Unk_BlackMarketEntry> spEntry)
 {
-    if (vfunc_55() == 0 && !(m_spItemRegister == 0))
-        m_spItemRegister->FUN_140f12d40(spEntry);
+    if (vfunc_55() != 0 || m_spItemRegister == 0)
+        return;
+    m_spItemRegister->FUN_140f12d40(spEntry);
 }
 
 // @0x1418d0f00
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::FUN_1418d0f00(MS2Ptr<Unk_BlackMarketEntry> spEntry, int n)
 {
-    if (vfunc_55() == 0 && !(m_spItemRegister == 0))
-        m_spItemRegister->FUN_140f13030(spEntry, n);
+    if (vfunc_55() != 0 || m_spItemRegister == 0)
+        return;
+    m_spItemRegister->FUN_140f13030(spEntry, n);
 }
 
 // @0x1418d0fc0
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::FUN_1418d0fc0(void* p2, void* p3)
 {
-    if (vfunc_55() == 0 && !FUN_140a467d0(&m_30) && !(m_spItemRegister == 0) && m_pCurPage == m_spItemRegister.get())
-        m_spItemRegister->FUN_140f13420(static_cast<NotifyContext::BindData*>(p2), *static_cast<CItem*>(p3));
+    if (vfunc_55() != 0 || FUN_140a467d0(&m_30))
+        return;
+    if (m_spItemRegister == 0 || m_pCurPage != m_spItemRegister.get())
+        return;
+    m_spItemRegister->FUN_140f13420(static_cast<NotifyContext::BindData*>(p2), *static_cast<CItem*>(p3));
 }
 
 // @0x1418d1080
@@ -453,31 +457,30 @@ void UIBlackMarketDialog::FUN_1418d1080(MS2Ptr<Unk_BlackMarketEntry> spEntry, in
 }
 
 // @0x1418d1330
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::FUN_1418d1330(int nA, int nB, void* p)
 {
-    if (!(m_spItemSearch == 0))
-        m_spItemSearch->FUN_140f0d990(nA, nB, p);
+    if (m_spItemSearch == 0)
+        return;
+    m_spItemSearch->FUN_140f0d990(nA, nB, p);
 }
 
 // @0x1418d13a0
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::FUN_1418d13a0(int nA, int nB, void* p)
 {
-    if (!(m_spItemRegister == 0) && m_pCurPage == m_spItemRegister.get())
-        m_spItemRegister->FUN_140f137a0(nA, nB, (unsigned __int64)p);
+    if (m_spItemRegister == 0 || m_pCurPage != m_spItemRegister.get())
+        return;
+    m_spItemRegister->FUN_140f137a0(nA, nB, (unsigned __int64)p);
 }
 
 // @0x1418d1430
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::FUN_1418d1430(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (m_pCurPage == m_spMesoRegister.get() || m_pCurPage == m_spMesoSearch.get() || m_pCurPage == m_spMesoSearchSingle.get())
-    {
-        CString strUrl = FUN_1401d3200()->m_6198.FUN_1409f6f30();
-        if (!strUrl.IsEmpty())
-            FUN_1418fe1c0(strUrl);
-    }
+    if (!FUN_1418d0da0(m_spMesoSearchSingle.get()) && !FUN_1418d0da0(m_spMesoRegister.get()))
+        return;
+    const CString& strUrl = FUN_1401d3200()->m_6198.FUN_1409f6f30();
+    if (strUrl.IsEmpty() == true)
+        return;
+    FUN_1418fe1c0(strUrl);
 }
 
 // Anchor for the UCRT header-inline memmove_s COMDAT used by the page vector's copy.
