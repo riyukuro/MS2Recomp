@@ -176,9 +176,10 @@ bool FUN_1417ddbf0(const efd::ClassInfo* pInfo, int nId)
 PCBase* FUN_1417dcb20(PCBase* p)
 {
     PCBase* pOut = 0;
-    if (p == 0 || !p->TypeCast(0x6200050, (void**)&pOut))
-        pOut = 0;
-    return pOut;
+    if (p != 0 && p->TypeCast(0x6200050, (void**)&pOut))
+        return pOut;
+    else
+        return 0;
 }
 
 // ---- CStateManager ----
@@ -672,11 +673,8 @@ class Unk_SMSkillTable { public: MS2Ptr<Unk_SMSkillRec> FUN_1407ee2f0(int nSkill
 Unk_SMSkillTable* FUN_1401958b0();
 
 // @0x1417df080
-StateMoveSkill::StateMoveSkill(PCBase* pOwner) : State(pOwner)
+StateMoveSkill::StateMoveSkill(PCBase* pOwner) : State(pOwner), m_n44(0), m_nFallbackState(0), m_nFallbackSub(0)
 {
-    m_n44 = 0;
-    m_nFallbackState = 0;
-    m_nFallbackSub = 0;
     m_nMode = 0;
 }
 
@@ -698,7 +696,8 @@ void StateMoveSkill::vfunc_4(StateData* pData)
 void StateMoveSkill::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    FUN_141671960(m_pOwner, FUN_141671920(m_pOwner)->m_n8);
+    Unk_SMBlk180* pBlk = FUN_141671920(m_pOwner);
+    FUN_141671960(m_pOwner, pBlk->m_n8);
     m_tick.FUN_140268840();
     m_spData = 0;
     m_spRec = 0;
@@ -749,9 +748,9 @@ int StateMoveSkill::FUN_1417df3c0()
 // @0x1417df3e0
 int StateMoveSkill::FUN_1417df3e0()
 {
-    if (m_spData.get() == 0)
-        return 0;
-    return m_spData->m_nSkill;
+    if (m_spData.get() != 0)
+        return m_spData->m_nSkill;
+    return 0;
 }
 
 // @0x1417df430
@@ -765,9 +764,9 @@ long long StateMoveSkill::FUN_1417df430()
 // @0x1417df480
 int StateMoveSkill::vfunc_36()
 {
-    if (m_spData.get() == 0)
-        return 0;
-    return FUN_1409331f0()->FUN_14142c0c0(m_spData->m_nSkill);
+    if (m_spData.get() != 0)
+        return FUN_1409331f0()->FUN_14142c0c0(m_spData->m_nSkill);
+    return 0;
 }
 
 // @0x1417df4e0
@@ -835,9 +834,9 @@ StateNone::StateNone(PCBase* pOwner) : State(pOwner)
 void StateNone::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    PCBase* pPC = FUN_1417b8370();
-    PCBase* p4f = FUN_1417dfaa0(m_pOwner);
-    if (pPC == 0 || p4f != 0)
+    bool bPC = FUN_1417b8370() != 0;
+    bool b4f = FUN_1417dfaa0(m_pOwner) != 0;
+    if (!bPC || b4f)
         FUN_14166ca20(m_pOwner, 4);
 }
 
@@ -845,13 +844,14 @@ void StateNone::vfunc_4(StateData* pData)
 void StateNone::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    PCBase* pPC = FUN_1417b8370();
-    PCBase* p4f = FUN_1417dfaa0(m_pOwner);
-    if (pPC == 0 || p4f != 0)
+    bool bPC = FUN_1417b8370() != 0;
+    bool b4f = FUN_1417dfaa0(m_pOwner) != 0;
+    if (!bPC || b4f)
     {
-        Unk_SMHost* pHost = FUN_1409ffc60(m_pOwner);
+        int nValue = 0;
+        Unk_SMHost* pHost = reinterpret_cast<Unk_SMHost*>(FUN_1417b83a0());
         if (pHost != 0)
-            pHost->FUN_140b10150();
+            nValue = pHost->FUN_140b10150();
         FUN_14166ca80(m_pOwner, 4);
     }
 }
@@ -859,16 +859,17 @@ void StateNone::vfunc_5(int n)
 // @0x1417dfa80
 bool StateNone::vfunc_25(int n, void* p)
 {
-    return true;
+    return false;
 }
 
 // @0x1417dfaa0
 PCBase* FUN_1417dfaa0(PCBase* p)
 {
     PCBase* pOut = 0;
-    if (p == 0 || !p->TypeCast(0x620004f, (void**)&pOut))
-        pOut = 0;
-    return pOut;
+    if (p != 0 && p->TypeCast(0x620004f, (void**)&pOut))
+        return pOut;
+    else
+        return 0;
 }
 
 // @0x1417dfaf0
@@ -1013,7 +1014,7 @@ void StateRegen::vfunc_5(int n)
 {
     State::vfunc_5(n);
     FUN_14166ca80(m_pOwner, 9);
-    Unk_SMHost* pHost = FUN_1409ffc60(m_pOwner);
+    Unk_SMHost* pHost = reinterpret_cast<Unk_SMHost*>(FUN_1417b83a0());
     if (pHost != 0)
     {
         int nValue = pHost->FUN_140b10150();
@@ -1157,8 +1158,11 @@ void StateRide::vfunc_5(int n)
 void StateRide::vfunc_8(double fTime)
 {
     Unk_SMRider* pRider = FUN_1416764a0(m_pOwner);
-    if (pRider != 0 && m_pOwner->vfunc_63() != 0)
-        FUN_141705ac0(pRider, fTime);
+    if (pRider == 0)
+        return;
+    if (m_pOwner->vfunc_63() == 0)
+        return;
+    FUN_141705ac0(pRider, fTime);
 }
 
 // @0x1417e0780
@@ -1448,17 +1452,23 @@ void StateRope::vfunc_9(double fTime)
 void StateRope::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID, const NiFixedString& kTextKey,
     const NiTextKeyMatch* pkMatchObject, NiControllerSequence* pkSeq, float fEventTime)
 {
-    if (!FUN_14166de90(m_pOwner, 0x22, eSequenceID) && !FUN_14166de90(m_pOwner, 0x23, eSequenceID))
-        return;
-    if (FUN_140998dc0(kTextKey, "begin"))
-        FUN_1417e23c0();
+    if (FUN_14166de90(m_pOwner, 0x22, eSequenceID) || FUN_14166de90(m_pOwner, 0x23, eSequenceID))
+    {
+        if (FUN_140998dc0(kTextKey, "begin"))
+            FUN_1417e23c0();
+    }
 }
 
 // @0x1417e1d00
 void StateRope::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
-    if (FUN_14166de90(m_pOwner, 0x22, eSequenceID) || FUN_14166de90(m_pOwner, 0x23, eSequenceID))
+    if (FUN_14166de90(m_pOwner, 0x22, eSequenceID))
+    {
+        m_n10 = 0x36;
+        FUN_14166e0a0(m_pOwner);
+    }
+    else if (FUN_14166de90(m_pOwner, 0x23, eSequenceID))
     {
         m_n10 = 0x36;
         FUN_14166e0a0(m_pOwner);
@@ -1472,7 +1482,9 @@ void StateRope::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
 // @0x1417e1df0
 void StateRope::FUN_1417e1df0(egf::Entity* pRope)
 {
-    if (pRope != 0 && m_pRope != 0 && m_pRope != pRope)
+    if (pRope == 0)
+        return;
+    if (m_pRope != 0 && m_pRope != pRope)
     {
         m_pRope = pRope;
         FUN_1409618c0(m_pRope, 0xfd95ca52, &m_pos54);
@@ -1649,7 +1661,8 @@ int CStateService::FUN_1417e25a0(int nScene)
     FUN_14151f460(1);
     if (FUN_140e800e0() != 0)
         FUN_140e800e0()->FUN_140aad970();
-    return FUN_1417e2830(nScene);
+    int nRet = FUN_1417e2830(nScene);
+    return nRet;
 }
 
 // @0x1417e2610
@@ -1686,8 +1699,9 @@ efd::SmartPointer<CSceneStateBase> CStateService::FUN_1417e2720(unsigned nScene)
 // @0x1417e27d0
 void CStateService::FUN_1417e27d0(CInPacket* pPacket)
 {
-    if (m_spCurrent != 0)
-        m_spCurrent->OnPacket(*pPacket);
+    if (m_spCurrent == 0)
+        return;
+    m_spCurrent->OnPacket(*pPacket);
 }
 
 // @0x1417e2830
@@ -1765,7 +1779,7 @@ efd::AsyncResult CStateService::OnInit()
 // @0x1417e3160
 efd::AsyncResult CStateService::OnTick()
 {
-    if (m_spCurrent != 0)
+    if (m_spCurrent)
     {
         efd::SmartPointer<CSceneStateBase> spScene = m_spCurrent;
         double fTime = (double)FUN_141473230(FUN_14086d260());
