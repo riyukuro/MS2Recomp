@@ -351,22 +351,21 @@ void UIItemColoringDialog::OnLoadInit()
 MS2_REPLACE_METHOD(0x1419ac580, UIItemColoringDialog, OnLoadInit, 245, 0xE6DA347E);
 
 // @0x1419ac680
-// MS2-FUNCTIONAL: code generation differs (stand-in callees / block layout)
 void UIItemColoringDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc != 0) {
-        FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-        m_198 = FUN_140869420();
-        m_19c = (FUN_14109a9e0() % 6 + 5) * 1000;
-        m_268.AssignRaw(new Customize(FUN_14123c580(pPc), static_cast<IItemCustomizeEventListener*>(this), 0));
-        FUN_1419afe30();
-        m_25c = 1;
-        FUN_140d86260()->vfunc_43(0xe, 0, 1000);
-        FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyChangeActiveMyCodiTab"),
-                                       Delegate<void(NotifyObject*)>(this, &UIItemColoringDialog::FUN_1419addc0));
-    }
+    if (pPc == 0)
+        return;
+    FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
+    m_198 = FUN_140869420();
+    m_19c = (FUN_14109a9e0() % 6 + 5) * 1000;
+    m_268.AssignRaw(new Customize(FUN_14123c580(pPc), static_cast<IItemCustomizeEventListener*>(this), 0));
+    FUN_1419afe30();
+    m_25c = 1;
+    FUN_140d86260()->vfunc_43(0xe, 0, 1000);
+    FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyChangeActiveMyCodiTab"),
+                                   Delegate<void(NotifyObject*)>(this, &UIItemColoringDialog::FUN_1419addc0));
 }
 MS2_REPLACE_METHOD(0x1419ac680, UIItemColoringDialog, OnLoadComplete, 618, 0x1F43C844);
 
@@ -384,12 +383,14 @@ int UIItemColoringDialog::vfunc_13()
 MS2_REPLACE_METHOD(0x1419ac8f0, UIItemColoringDialog, vfunc_13, 74, 0x91CBCDB2);
 
 // @0x1419ac940
-// MS2-FUNCTIONAL: code generation differs (stand-in callees / block layout)
 void UIItemColoringDialog::vfunc_15()
 {
     if (vfunc_55() != 0)
         return;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0 || m_268 == 0)
+    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPc == 0)
+        return;
+    if (m_268 == 0)
         return;
     if (m_2d8 != 0)
         m_2d8->FUN_1418dda30(m_268->FUN_140cd27f0() == 0);
@@ -566,9 +567,9 @@ void UIItemColoringDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStrin
         ASArray rows(2);
         FUN_1419b0b10(&rows, &nTotal);
         *pRetVal = rows.FUN_1422bb870();
-    } else if (_stricmp("getTooltipColor", strMethod) == 0 && !(m_268 == 0)) {
+    } else if (_stricmp("getTooltipColor", strMethod) == 0 && m_268 != 0) {
         MS2Ptr<CItem> spItem = m_268->FUN_140cd1890();
-        if (!(spItem == 0)) {
+        if (spItem != 0) {
             ASTooltip tooltip(1, 2);
             if (FUN_140f01670(&tooltip, spItem->FUN_1405276c0(), pArgs))
                 *pRetVal = tooltip.FUN_1422bb870();
@@ -619,14 +620,14 @@ MS2_REPLACE_METHOD(0x1419addc0, UIItemColoringDialog, FUN_1419addc0, 439, 0x99B7
 void UIItemColoringDialog::vfunc_24(void* p)
 {
     CItem* pItem = static_cast<CItem*>(p);
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0 && m_30.get() != 0 && vfunc_55() == 0) {
-        int nItemId = pItem->FUN_1405276c0();
-        if (FUN_1419b1590(nItemId).get() != 0)
-            FUN_1419b1f50(-1);
-        m_30->Invoke("removeBasketItem", FUN_141b71990(nItemId));
-        if (m_2a8.IsEmpty())
-            FUN_1419af840();
-    }
+    if (!(FUN_1403ed2d0()->FUN_141bd0cc0() != 0 && m_30.get() != 0 && vfunc_55() == 0))
+        return;
+    int nItemId = pItem->FUN_1405276c0();
+    if (FUN_1419b1590(nItemId).get() != 0)
+        FUN_1419b1f50(-1);
+    m_30->Invoke("removeBasketItem", FUN_141b71990(nItemId));
+    if (m_2a8.IsEmpty())
+        FUN_1419af840();
 }
 
 // @0x1419ae170
@@ -634,42 +635,42 @@ void UIItemColoringDialog::vfunc_24(void* p)
 void UIItemColoringDialog::FUN_1419ae170()
 {
     Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc != 0) {
-        m_278.RemoveAll();
-        ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
-        FUN_1411e3000(FUN_1416561a0(pPc), &equips, 4, 0, 1);
-        ASArray items(2);
-        for (POSITION pos = equips.GetHeadPosition(); pos != NULL; equips.GetNext(pos)) {
-            MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
-            if (spEquip.get() == 0)
-                continue;
-            Unk_IcEquip* pEquip = static_cast<Unk_IcEquip*>(spEquip.operator->());
-            if (FUN_141421690(pEquip->FUN_1411dc7a0().get()) != 0)
-                continue;
-            MS2Ptr<CItem> spItem = pEquip->FUN_1411dc7a0();
-            if (spItem == 0)
-                continue;
-            Unk_IcCapItem* pData = pEquip->FUN_1411dc7f0();
-            if (pData == 0)
-                continue;
-            if (pEquip->FUN_1411dcda0() == 0)
-                continue;
-            if (!pData->FUN_14053e170())
-                continue;
-            int nItemId = pData->FUN_14053c510();
-            ASObj obj(2);
-            obj.FUN_1407cbb20("guid", FUN_141b71910(spItem->FUN_140526a50()));
-            obj.FUN_1407cbb20("itemid", FUN_141b71990(nItemId));
-            obj.FUN_1407cbb20("itemname", FUN_1401a9d70()->FUN_141811980(1, nItemId));
-            obj.FUN_1407cba60("iconPath", FUN_140528590(spItem.operator->()));
-            ASFunction tooltip(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemColoringDialog::FUN_1419afcd0),
-                               spItem.get(), FUN_1422db730());
-            obj.FUN_1409adbe0("tooltipFunction", Scaleform::GFx::Value(tooltip.FUN_1422bb870()));
-            items.FUN_1422bc050(Scaleform::GFx::Value(obj.FUN_1422bb870()));
-            m_278.AddTail(spItem);
-        }
-        m_30->Invoke("buildItems", Scaleform::GFx::Value(items.FUN_1422bb870()), -1);
+    if (pPc == 0)
+        return;
+    m_278.RemoveAll();
+    ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
+    FUN_1411e3000(FUN_1416561a0(pPc), &equips, 4, 0, 1);
+    ASArray items(2);
+    for (POSITION pos = equips.GetHeadPosition(); pos != NULL; equips.GetNext(pos)) {
+        MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
+        if (spEquip.get() == 0)
+            continue;
+        Unk_IcEquip* pEquip = static_cast<Unk_IcEquip*>(spEquip.operator->());
+        if (FUN_141421690(pEquip->FUN_1411dc7a0().get()) != 0)
+            continue;
+        MS2Ptr<CItem> spItem = pEquip->FUN_1411dc7a0();
+        if (spItem == 0)
+            continue;
+        Unk_IcCapItem* pData = pEquip->FUN_1411dc7f0();
+        if (pData == 0)
+            continue;
+        if (pEquip->FUN_1411dcda0() == 0)
+            continue;
+        if (!pData->FUN_14053e170())
+            continue;
+        int nItemId = pData->FUN_14053c510();
+        ASObj obj(2);
+        obj.FUN_1407cbb20("guid", FUN_141b71910(spItem->FUN_140526a50()));
+        obj.FUN_1407cbb20("itemid", FUN_141b71990(nItemId));
+        obj.FUN_1407cbb20("itemname", FUN_1401a9d70()->FUN_141811980(1, nItemId));
+        obj.FUN_1407cba60("iconPath", FUN_140528590(spItem.operator->()));
+        ASFunction tooltip(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemColoringDialog::FUN_1419afcd0),
+                           spItem.get(), FUN_1422db730());
+        obj.FUN_1409adbe0("tooltipFunction", Scaleform::GFx::Value(tooltip.FUN_1422bb870()));
+        items.FUN_1422bc050(Scaleform::GFx::Value(obj.FUN_1422bb870()));
+        m_278.AddTail(spItem);
     }
+    m_30->Invoke("buildItems", Scaleform::GFx::Value(items.FUN_1422bb870()), -1);
 }
 MS2_REPLACE_METHOD(0x1419ae170, UIItemColoringDialog, FUN_1419ae170, 1558, 0xF5106CDC);
 
@@ -718,16 +719,15 @@ bool UIItemColoringDialog::FUN_1419ae940()
 MS2_REPLACE_METHOD(0x1419ae940, UIItemColoringDialog, FUN_1419ae940, 163, 0x937074BA);
 
 // @0x1419ae9f0
-// MS2-FUNCTIONAL: code generation differs (stand-in callees / block layout)
 void UIItemColoringDialog::FUN_1419ae9f0()
 {
-    if (FUN_1419aef80() == 0) {
-        FUN_1419ae940();
-    } else {
+    if (FUN_1419aef80() != 0) {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14028de60(0x271), 1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemColoringDialog::FUN_1419b1d00));
         spBox->FUN_141a01800(2);
         FUN_140d73c60(spBox);
+    } else {
+        FUN_1419ae940();
     }
 }
 MS2_REPLACE_METHOD(0x1419ae9f0, UIItemColoringDialog, FUN_1419ae9f0, 338, 0xB7886C44);
@@ -933,23 +933,23 @@ int UIItemColoringDialog::FUN_1419af980()
 MS2_REPLACE_METHOD(0x1419af980, UIItemColoringDialog, FUN_1419af980, 829, 0x2D3A7545);
 
 // @0x1419afcd0
-// MS2-FUNCTIONAL: code generation differs (stand-in callees / block layout)
 void UIItemColoringDialog::FUN_1419afcd0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (!(m_30 == 0) && m_278.IsEmpty() != true) {
-        CItem* pUser = static_cast<CItem*>(params.pUserData);
-        if (pUser != 0) {
-            Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-            if (pPc != 0) {
-                CItem* pItem = pPc->FUN_141655b80(pUser->FUN_140526a50()).get();
-                if (pItem != 0) {
-                    ASTooltip tooltip(pPc, 0x20, 2);
-                    if (tooltip.FUN_1409e0d40(pItem) != 0)
-                        *params.pRetVal = tooltip.FUN_1422bb870();
-                }
-            }
-        }
-    }
+    if (!(!(m_30 == 0) && m_278.IsEmpty() != true))
+        return;
+    CItem* pUser = static_cast<CItem*>(params.pUserData);
+    if (pUser == 0)
+        return;
+    Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPc == 0)
+        return;
+    CItem* pItem = pPc->FUN_141655b80(pUser->FUN_140526a50()).get();
+    if (pItem == 0)
+        return;
+    ASTooltip tooltip(pPc, 0x20, 2);
+    if (tooltip.FUN_1409e0d40(pItem) == 0)
+        return;
+    *params.pRetVal = tooltip.FUN_1422bb870();
 }
 MS2_REPLACE_METHOD(0x1419afcd0, UIItemColoringDialog, FUN_1419afcd0, 336, 0x43BD46A6);
 
@@ -1007,48 +1007,47 @@ MS2_REPLACE_METHOD(0x1419b00b0, UIItemColoringDialog, FUN_1419b00b0, 514, 0x88E2
 void UIItemColoringDialog::FUN_1419b02c0(__int64 nUid, int nIndex)
 {
     Unk_IcPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc != 0 && !(m_268 == 0)) {
-        m_268->FUN_140cd2700(nUid);
-        MS2Ptr<CItem> spItem = m_268->FUN_140cd1890();
-        if (!(spItem == 0)) {
-            MS2Ptr<CItemData> spData(FUN_140527840(spItem.operator->()));
-            if (spData->FUN_14053d2f0()) {
-                if (pPc->FUN_14166c930() != 0xe)
-                    pPc->vfunc_59(0xe, 0, 0, 0);
-                FUN_14166cc40(pPc, 0x55);
-            } else {
-                FUN_14166cc40(pPc, 0x4d);
-            }
-            ASObj obj(2);
-            if (FUN_140f32290(obj, spData, m_268, 3, 0xf, 0) != 0) {
-                CItemExtraData* pExtra = FUN_140527870(spItem.operator->());
-                if (pExtra != 0)
-                    m_254 = std::pair<unsigned, unsigned>((unsigned)pExtra->FUN_14059a0b0(0), pExtra->FUN_14059a040(0));
-                m_30->Invoke("buildCurrentItem", Scaleform::GFx::Value(obj.FUN_1422bb870()));
-            }
-            FUN_1419b0620(1);
-            m_250 = nIndex;
-        }
+    if (!(pPc != 0 && !(m_268 == 0)))
+        return;
+    m_268->FUN_140cd2700(nUid);
+    MS2Ptr<CItem> spItem = m_268->FUN_140cd1890();
+    if (spItem == 0)
+        return;
+    MS2Ptr<CItemData> spData(FUN_140527840(spItem.operator->()));
+    if (spData->FUN_14053d2f0()) {
+        if (pPc->FUN_14166c930() != 0xe)
+            pPc->vfunc_59(0xe, 0, 0, 0);
+        FUN_14166cc40(pPc, 0x55);
+    } else {
+        FUN_14166cc40(pPc, 0x4d);
     }
+    ASObj obj(2);
+    if (FUN_140f32290(obj, spData, m_268, 3, 0xf, 0) != 0) {
+        CItemExtraData* pExtra = FUN_140527870(spItem.operator->());
+        if (pExtra != 0)
+            m_254 = std::pair<unsigned, unsigned>((unsigned)pExtra->FUN_14059a0b0(0), pExtra->FUN_14059a040(0));
+        m_30->Invoke("buildCurrentItem", Scaleform::GFx::Value(obj.FUN_1422bb870()));
+    }
+    FUN_1419b0620(1);
+    m_250 = nIndex;
 }
 MS2_REPLACE_METHOD(0x1419b02c0, UIItemColoringDialog, FUN_1419b02c0, 845, 0x93B847FF);
 
 // @0x1419b0620
-// MS2-FUNCTIONAL: code generation differs (stand-in callees / block layout)
 void UIItemColoringDialog::FUN_1419b0620(int n)
 {
     if (m_268 == 0)
         return;
-    if (m_268->FUN_140cd2a00() == 0) {
-        FUN_1419af110(0);
-        FUN_1419af1d0(0);
-    } else {
+    if (m_268->FUN_140cd2a00() != 0) {
         FUN_1419af110(1);
         if (FUN_140f02a80(m_254.first, m_254.second)) {
             FUN_1419af1d0(0);
         } else if (m_268->FUN_140cd2ea0() != 0) {
             FUN_1419af1d0(1);
         }
+    } else {
+        FUN_1419af110(0);
+        FUN_1419af1d0(0);
     }
 }
 MS2_REPLACE_METHOD(0x1419b0620, UIItemColoringDialog, FUN_1419b0620, 217, 0x07FE26A8);
@@ -1129,8 +1128,7 @@ int UIItemColoringDialog::FUN_1419b0ef0()
 {
     UIBillDialog* pBill;
     if (m_2a8.IsEmpty() == false && (pBill = FUN_140f0a350(0x4e7b)) != 0) {
-        MS2Ptr<ASArray> spRows(new ASArray(2));
-        if (spRows.get() != 0) {
+        if (MS2Ptr<ASArray> spRows = new ASArray(2)) {
             int nTotal = 0;
             if (FUN_1419b0b10(spRows.operator->(), &nTotal) != 0) {
                 Unk_BSFee* pFee = FUN_1419b1ac0();
@@ -1138,8 +1136,7 @@ int UIItemColoringDialog::FUN_1419b0ef0()
                 int nCoupons = FUN_1419b1970(1);
                 if (nCoupons == 0 || FUN_1419b1af0((unsigned)FUN_1419b1710()) == 0)
                     bCoupon = 0;
-                MS2Ptr<UIBillDialog::TData> spBill(new UIBillDialog::TData());
-                if (spBill.get() != 0) {
+                if (MS2Ptr<UIBillDialog::TData> spBill = new UIBillDialog::TData()) {
                     spBill->m_18 = static_cast<IMessageListener*>(this);
                     spBill->m_30 = 0;
                     spBill->m_20 = MS2Ptr<AScript>(spRows);
@@ -1164,13 +1161,12 @@ int UIItemColoringDialog::FUN_1419b0ef0()
 MS2_REPLACE_METHOD(0x1419b0ef0, UIItemColoringDialog, FUN_1419b0ef0, 1340, 0xD179D68F);
 
 // @0x1419b1440
-// MS2-FUNCTIONAL: code generation differs (stand-in callees / block layout)
 MS2Ptr<CItem> UIItemColoringDialog::FUN_1419b1440(int nItemId)
 {
     if (m_268 == 0)
         return MS2Ptr<CItem>(0);
     MS2Ptr<CItem> spItem = m_268->FUN_140cd1890();
-    if (spItem.get() != 0 && spItem->FUN_1405276c0() == nItemId) {
+    if ((spItem.get() ? true : false) && spItem->FUN_1405276c0() == nItemId) {
         m_268->FUN_140cd27a0();
         m_2a8.AddTail(spItem);
         return spItem;
@@ -1180,14 +1176,13 @@ MS2Ptr<CItem> UIItemColoringDialog::FUN_1419b1440(int nItemId)
 MS2_REPLACE_METHOD(0x1419b1440, UIItemColoringDialog, FUN_1419b1440, 327, 0xAFB3734B);
 
 // @0x1419b1590
-// MS2-FUNCTIONAL: code generation differs (stand-in callees / block layout)
 MS2Ptr<CItem> UIItemColoringDialog::FUN_1419b1590(int nItemId)
 {
     if (m_2a8.IsEmpty() != false)
         return MS2Ptr<CItem>(0);
     for (POSITION pos = m_2a8.GetHeadPosition(); pos != NULL; m_2a8.GetNext(pos)) {
         MS2Ptr<CItem> spItem = m_2a8.GetAt(pos);
-        if (spItem.get() != 0 && spItem->FUN_1405276c0() == nItemId) {
+        if ((spItem.get() ? true : false) && spItem->FUN_1405276c0() == nItemId) {
             m_2a8.RemoveAt(pos);
             return spItem;
         }
@@ -1292,7 +1287,7 @@ MS2_REPLACE_METHOD(0x1419b1af0, UIItemColoringDialog, FUN_1419b1af0, 77, 0x270DC
 // MS2-FUNCTIONAL: code generation differs (stand-in callees / block layout)
 bool UIItemColoringDialog::FUN_1419b1b50()
 {
-    if (!(m_30 == 0) && !(m_268 == 0)) {
+    if (m_30 != 0 && m_268 != 0) {
         if (m_260 == true) {
             CStringW strKey(L"s_beauty_msg_wait_by_expired_codi");
             FUN_1412752d0(strKey, 1);
@@ -1354,7 +1349,6 @@ void UIItemColoringDialog::FUN_1419b1db0()
 MS2_REPLACE_METHOD(0x1419b1db0, UIItemColoringDialog, FUN_1419b1db0, 134, 0x5B58A172);
 
 // @0x1419b1e40
-// MS2-FUNCTIONAL: code generation differs (stand-in callees / block layout)
 void UIItemColoringDialog::FUN_1419b1e40(ATL::CAtlList<MS2Ptr<CItem> >& list)
 {
     if (m_268 == 0 || list.IsEmpty() != false)
@@ -1363,8 +1357,7 @@ void UIItemColoringDialog::FUN_1419b1e40(ATL::CAtlList<MS2Ptr<CItem> >& list)
         MS2Ptr<CItem> spItem = list.GetAt(pos);
         if (spItem == 0)
             continue;
-        __int64 nUid = spItem->FUN_140526a50();
-        m_268->FUN_140cd2210(nUid);
+        m_268->FUN_140cd2210(spItem->FUN_140526a50());
     }
 }
 MS2_REPLACE_METHOD(0x1419b1e40, UIItemColoringDialog, FUN_1419b1e40, 254, 0x7D656948);
@@ -1391,8 +1384,7 @@ int FUN_1419b1fd0(MS2Ptr<Customize> spCustomize, const __int64* pUid, int nIndex
     CStringW strCmd;
     strCmd.Format(L"changeitem,%I64u,%d,%s", *pUid, nIndex, (const char*)strTag);
     CStringW strName;
-    MS2Ptr<CItem> spItem = spCustomize->FUN_140cd1890();
-    if (spItem.get() != 0) {
+    if (MS2Ptr<CItem> spItem = spCustomize->FUN_140cd1890()) {
         int nRarity = FUN_141275c00(spItem->FUN_140526bd0());
         strName = FUN_14183e930(spItem->FUN_140527b10(), nRarity);
     }
