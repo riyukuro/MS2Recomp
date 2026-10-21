@@ -272,12 +272,13 @@ Unk_SocketPtr<CMagicData> FUN_14145c300(unsigned nMagicId, int nIndex)
     if (FUN_1401d1320(&s_magicCache))
         FUN_14145c4b0();
     Unk_MagicListPtr list(0);
-    if (!s_magics.Lookup(nMagicId, list))
-        return Unk_SocketPtr<CMagicData>(0);
-    if (list->IsEmpty())
-        return Unk_SocketPtr<CMagicData>(0);
-    int nWrapped = (int)((unsigned long long)nIndex % list->GetCount());
-    return list->GetAt(nWrapped);
+    if (s_magics.Lookup(nMagicId, list)) {
+        if (list->IsEmpty())
+            return Unk_SocketPtr<CMagicData>(0);
+        nIndex = (int)((unsigned long long)nIndex % list->GetCount());
+        return list->GetAt(nIndex);
+    }
+    return Unk_SocketPtr<CMagicData>(0);
 }
 #endif
 
@@ -554,10 +555,10 @@ struct Unk_MagicEntity {
     void FUN_14123dcb0(unsigned nKey, int nValue);
 };
 
-struct Unk_MagicTagLookup { ~Unk_MagicTagLookup(); void* m_p; void* m_pad; };    // dtor 0x1410a6c00; m_p is the looked-up entity
+struct Unk_MagicTagLookup { ~Unk_MagicTagLookup(); void* m_p; };    // dtor 0x1410a6c00 (intrusive pointer); m_p is the looked-up entity
 // @0x1414691d0
 static inline bool FUN_1414691d0(Unk_MagicTagLookup* p, void* pNull) { return p->m_p == pNull; }
-MS2_CHECK_SIZE(Unk_MagicTagLookup, 0x10);
+MS2_CHECK_SIZE(Unk_MagicTagLookup, 8);
 struct Unk_MagicActor;
 // The world manager (FUN_1403ed2d0).
 class Unk_MagicWorld {
@@ -635,7 +636,7 @@ bool FUN_14028d470(float a, float b);                               // approx eq
 void FUN_140a90720(void* pArray, unsigned nIndex, unsigned nCount); // CAtlArray::RemoveAt
 void FUN_140188720(Unk_MagicUIntMap* pMap);                         // clear the map
 void FUN_1410a7400(void* pArray, Unk_StreamPoint* pPoint);          // append a point
-void FUN_140981070(void* pNode, Unk_NiPoint3* pPoint);              // NiAVObject::SetTranslate
+void FUN_140981070(void* pNode, const Unk_NiPoint3& kPoint);              // NiAVObject::SetTranslate
 bool FUN_14098dad0(void* pNode);                                    // NiAVObject::GetAppCulled
 void FUN_140a0b300(void* pNode, char bCulled);                      // set app-culled
 void FUN_1409fabf0(Unk_NodePtr* pDst, void* pNode);                 // Unk_NodePtr::Reset
@@ -650,7 +651,7 @@ int FUN_14161d0f0(void* pArg);
 unsigned FUN_140869420();
 void FUN_140a53190(Unk_MagicEffectReq* pReq, unsigned nTarget);      // bind the target entity
 unsigned FUN_14123c580(Unk_MagicEntity* pEntity);                   // the entity's effect handle
-float FUN_141473280(Unk_MagicTime* pTime);                          // the frame time in seconds
+double FUN_141473280(Unk_MagicTime* pTime);                          // the frame time in seconds
 Unk_MagicTime* FUN_14086d260();
 float FUN_140966f00(const Unk_StreamPoint& a, const Unk_StreamPoint& b);   // distance
 Unk_MagicCullCfg* FUN_141bd9c00(Unk_MagicWorld* pWorld);
@@ -677,7 +678,7 @@ Unk_StreamPoint FUN_141b6e150(const void* pFloat3);                 // the ancho
 // @0x14145d5d0
 // MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 int CMagic::FUN_14145d5d0(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, const CMagicData* pData,
-    const Unk_StreamPoint& ptStart, unsigned n530, unsigned n534, unsigned n53c)
+    Unk_StreamPoint ptStart, unsigned n530, unsigned n534, unsigned n53c)
 {
     Unk_MagicTag* pTag = spSkill.operator->();
     if (FUN_1403ed2d0()->FUN_141bd1180(pTag->m_nOwnerId) == NULL)
@@ -1393,10 +1394,10 @@ void CMagic::FUN_141460640(unsigned nNow)
 MS2_REPLACE_METHOD(0x141460640, CMagic, FUN_141460640, 179, 0x0262413B);
 
 // @0x141460700
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
-void CMagic::FUN_141460700()
+void CMagic::FUN_141460700(unsigned nNow)
 {
-    if (FUN_1403ed2d0()->FUN_141bd1200(m_spSkill->m_nOwnerId) != NULL) {
+    Unk_MagicEntity* pOwner = FUN_1403ed2d0()->FUN_141bd1200(m_spSkill->m_nOwnerId);
+    if (pOwner != NULL) {
         m_n1CC = 0;
         FUN_140188720(&m_map1D8);
         FUN_140188720(&m_map220);
@@ -1543,7 +1544,6 @@ void CMagic::FUN_1414614d0()
 }
 MS2_REPLACE_METHOD(0x1414614d0, CMagic, FUN_1414614d0, 585, 0x283D7457);
 
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 // @0x141461720
 void CMagic::FUN_141461720(int nFlag)
 {
@@ -1579,8 +1579,7 @@ void CMagic::FUN_141461720(int nFlag)
     matRotation.FUN_14109aa30(1, ptAxis);
     matRotation.FUN_14109aa30(2, ptUp);
     FUN_140ddcca0(FUN_1409475f0(&m_spScene), matRotation);
-    double dTime = FUN_141473280(FUN_14086d260());
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spScene))->Update((float)dTime, false);
+    static_cast<NiAVObject*>(FUN_1409475f0(&m_spScene))->Update((float)FUN_141473280(FUN_14086d260()), false);
 }
 MS2_REPLACE_METHOD(0x141461720, CMagic, FUN_141461720, 852, 0x58FA7E4A);
 
@@ -2215,16 +2214,13 @@ void FUN_141467f60(const Unk_StreamPoint& ptPos, const Unk_StreamPoint* pDirecti
 }
 
 // @0x141461a80
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 void CMagic::FUN_141461a80(Unk_StreamPoint ptNew)
 {
     m_ptLast = m_ptCurrent;
     m_ptCurrent = ptNew;
     FUN_1410a7400(&m_arr1A8, &ptNew);
-    Unk_NiPoint3 ptLocal(ptNew);
-    FUN_140981070(FUN_1409475f0(&m_spScene), &ptLocal);
-    double dTime = FUN_141473280(FUN_14086d260());
-    static_cast<NiAVObject*>(FUN_1409475f0(&m_spScene))->Update((float)dTime, false);
+    FUN_140981070(FUN_1409475f0(&m_spScene), ptNew);
+    static_cast<NiAVObject*>(FUN_1409475f0(&m_spScene))->Update((float)FUN_141473280(FUN_14086d260()), false);
     FUN_141464160();
 }
 MS2_REPLACE_METHOD(0x141461A80, CMagic, FUN_141461a80, 210, 0x555ADF73);
@@ -2245,29 +2241,29 @@ void CMagic::FUN_141461ba0(const Unk_NiMatrix3& matRotation)
 MS2_REPLACE_METHOD(0x141461BA0, CMagic, FUN_141461ba0, 39, 0x16B62C85);
 
 // @0x141463fb0
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 void CMagic::FUN_141463fb0(unsigned nNow)
 {
+    const Unk_MagicSkillRow* pRow;
     if (FUN_141464490()) {
         Unk_MagicTagLookup kLookup = FUN_1403ed2d0()->FUN_141bc5bb0(m_spSkill->m_nTagId);
-        if (!FUN_1414691d0(&kLookup, 0) && m_nStateTick + 1000U < nNow) {
+        if (FUN_1414691d0(&kLookup, 0) && m_nStateTick + 1000U < nNow) {
             m_nState = 3;
             FUN_14145f570(nNow);
         }
     }
-    if (m_fRemainTime <= 0.0f) {
-        if (m_nD0 == 0 && m_data.m_nMoveEndHoldDuration != 0) {
-            m_nD0 = nNow + m_data.m_nMoveEndHoldDuration;
-        } else if ((unsigned)m_nD0 < nNow) {
-            m_nStateTick = nNow;
-            const Unk_MagicSkillRow* pRow = m_spSkill->FUN_141759050();
-            if (m_nState == 2 && pRow != NULL && pRow->m_n10c == 4 && m_n528 != 2) {
-                m_nState = 5;
-                FUN_141460700();
-            } else {
-                m_nState = 3;
-                FUN_14145f570(nNow);
-            }
+    if (m_fRemainTime > 0.0f)
+        return;
+    if (m_nD0 == 0 && m_data.m_nMoveEndHoldDuration > 0) {
+        m_nD0 = nNow + m_data.m_nMoveEndHoldDuration;
+    } else if ((unsigned)m_nD0 < nNow) {
+        m_nStateTick = nNow;
+        pRow = m_spSkill->FUN_141759050();
+        if (m_nState == 2 && pRow != NULL && pRow->m_n10c == 4 && m_n528 != 2) {
+            m_nState = 5;
+            FUN_141460700(nNow);
+        } else {
+            m_nState = 3;
+            FUN_14145f570(nNow);
         }
     }
 }
@@ -2331,8 +2327,7 @@ bool CMagic::FUN_141464410()
 MS2_REPLACE_METHOD(0x141464410, CMagic, FUN_141464410, 111, 0xD3F16574);
 
 // @0x141464490
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
-bool CMagic::FUN_141464490()
+int CMagic::FUN_141464490()
 {
     return m_n538 != 0;
 }
@@ -2385,17 +2380,15 @@ MS2_REPLACE_METHOD(0x141464640, CMagic, FUN_141464640, 37, 0x661D43EC);
 int CMagic::FUN_141464670()
 {
     int nExtra = 0;
-    if (m_spCaster.m_p != NULL) {
-        Unk_MagicTag* pCaster = m_spCaster.operator->();
-        Unk_MagicTag* pTag = m_spCaster.operator->();
-        Unk_SocketPtr<CMagicModel> spModel = FUN_1410a7630()->FUN_14146c5d0(pTag->m_nTagId, pCaster->m_nTagSub);
-        CMagicModel* pModel = spModel.get();
+    int nFlight;
+    CMagicModel* pModel;
+    if (m_spCaster.get() != NULL) {
+        pModel = FUN_1410a7630()->FUN_14146c5d0(m_spCaster->m_nTagId, m_spCaster->m_nTagSub).get();
         if (pModel != NULL)
             nExtra = pModel->FUN_141467b30();
     }
-    int nFlight = (int)FUN_14028d260(m_fTotalTime);
-    int nSpawn = (int)FUN_14028d260(FUN_141464640());
-    return nSpawn + nExtra + nFlight + m_data.m_nMoveEndHoldDuration;
+    nFlight = (int)FUN_14028d260(m_fTotalTime);
+    return (int)FUN_14028d260(FUN_141464640()) + (nFlight + nExtra) + m_data.m_nMoveEndHoldDuration;
 }
 MS2_REPLACE_METHOD(0x141464670, CMagic, FUN_141464670, 274, 0x2F8B3639);
 
@@ -2637,7 +2630,6 @@ void CMagicModel::FUN_141467da0()
 MS2_REPLACE_METHOD(0x141467DA0, CMagicModel, FUN_141467da0, 39, 0x0E5A1776);
 
 // @0x141467500
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 void CMagicModel::FUN_141467500(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, Unk_StreamPoint ptStart,
     unsigned n530, unsigned n534, unsigned n53c)
 {
@@ -2650,8 +2642,7 @@ void CMagicModel::FUN_141467500(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaste
     Unk_SocketPtr<CMagicData> spData = FUN_14145c300(pRow->m_nMagicId, m_spA->m_n84);
     if (spData == NULL)
         return;
-    Unk_StreamPoint ptCopy = ptStart;
-    if (m_spMagic->FUN_14145d5d0(Unk_MagicTagPtr(m_spA), Unk_MagicTagPtr(spCaster), spData.operator->(), ptCopy,
+    if (m_spMagic->FUN_14145d5d0(Unk_MagicTagPtr(m_spA), Unk_MagicTagPtr(spCaster), spData.operator->(), ptStart,
             n530, n534, n53c) != 0)
         FUN_1410a7630()->FUN_14146cbd0(Unk_SocketPtr<CMagicModel>(this));
 }
@@ -3070,14 +3061,13 @@ std::pair<bool, bool> CMagicService::FUN_14146c990(int* pKey, Unk_NiPoint3* pPoi
 }
 MS2_REPLACE_METHOD(0x14146C990, CMagicService, FUN_14146c990, 560, 0x03AD0746);
 
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 // @0x14146cbd0
 int CMagicService::FUN_14146cbd0(Unk_SocketPtr<CMagicModel> spModel)
 {
     unsigned long long nCaster = spModel->FUN_141467bc0()->m_nTagId;
     Unk_MagicModelMapPtr spModels(0);
     if (!m_mapModels.Lookup(nCaster, spModels)) {
-        spModels = Unk_MagicModelMapPtr(Unk_SocketNew(0));
+        spModels = Unk_SocketNew(0);
         m_mapModels.SetAt(nCaster, spModels);
     }
     spModels->SetAt(spModel->FUN_141467b60(), spModel);

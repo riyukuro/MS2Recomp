@@ -148,13 +148,13 @@ public:
 
     // Start the projectile: bind the skill and caster records, copy the move data, build the scene root and prime the effects.
     int FUN_14145d5d0(Unk_MagicTagPtr spSkill, Unk_MagicTagPtr spCaster, const CMagicData* pData,
-        const Unk_StreamPoint& ptStart, unsigned n530, unsigned n534, unsigned n53c);   // 0x14145d5d0
+        Unk_StreamPoint ptStart, unsigned n530, unsigned n534, unsigned n53c);   // 0x14145d5d0
     void FUN_14145d9d0();                                           // 0x14145d9d0 flight time and the random landing point
     void FUN_14145ddd0(const Unk_StreamPoint& ptStart);             // 0x14145ddd0 restart from a new start point
     void FUN_14145de80();                                           // 0x14145de80 per-frame state machine
     void FUN_14145e960(unsigned nNow);                              // 0x14145e960 spawn the main effect
     void FUN_141460640(unsigned nNow);                              // 0x141460640 release every spawned effect (nNow unused)
-    void FUN_141460700();                                           // 0x141460700 restart the flight from the current point
+    void FUN_141460700(unsigned nNow);                              // 0x141460700 restart the flight from the current point
     void FUN_141461140();                                           // 0x141461140 pick the target point
     void FUN_141461a80(Unk_StreamPoint ptNew);                      // 0x141461a80 move the projectile and its scene root
     void FUN_141461b60(const Unk_StreamPoint& ptDirection);         // 0x141461b60 set the direction and rotate
@@ -164,7 +164,7 @@ public:
     bool FUN_141464220();                                           // 0x141464220 is the projectile out of the visible range
     Unk_MagicEntity* FUN_141464360();                               // 0x141464360 the target entity
     bool FUN_141464410();                                           // 0x141464410 the caster's lock-on entity
-    bool FUN_141464490();                                           // 0x141464490 has an attacker record
+    int FUN_141464490();                                            // 0x141464490 has an attacker record
     void FUN_1414644d0(int bHide);                                  // 0x1414644d0 show or hide the scene root
     Unk_StreamPoint FUN_141464520();                                // 0x141464520 rotation matrix column 0
     Unk_StreamPoint FUN_141464580();                                // 0x141464580 rotation matrix column 1
