@@ -210,7 +210,11 @@ Unk_ShopXY* FUN_140a0a600(Unk_ShopXY* pThis, float x, float y);    // efd::Point
 // The game event values (shop talk, give point, reset price sale).
 CGameEventValueManager* FUN_140302b00();
 unsigned FUN_1404271c0(Unk_GameEventLockedValue<0x78>* pValue, unsigned nNpcId);           // talk text id
-MS2Ptr<CNpcShopGivePointContextBase> FUN_1404273a0(Unk_GameEventLockedValue<0x78>* pValue, unsigned nShopId);
+// The give point lookup is a member: the exe passes the value in rcx and the returned holder in rdx.
+struct Unk_ShopGivePointValue
+{
+    MS2Ptr<CNpcShopGivePointContextBase> FUN_1404273a0(unsigned nShopId);
+};
 unsigned FUN_1404275a0(Unk_GameEventLockedValue<0x78>* pValue, unsigned nShopId);          // reset discount (%)
 
 // Misc helpers.
@@ -460,6 +464,7 @@ CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& a);                  
 
 int FUN_141658e60(MyPC* pPlayer);                                       // the player's gender (equip check)
 bool FUN_141b48950(MS2Ptr<CItem> spItem);                               // the item has a preview (fitting) model
+int FUN_1405267d0(CItem* pItem, int nGender);                           // CItem member: the item may be worn by the gender (the exe tests the int result)
 bool FUN_1418bf430(MS2Ptr<CItemData> spData, ATL::CAtlArray<MS2Ptr<CItemData> >* pFirst,
                    ATL::CAtlArray<MS2Ptr<CItemData> >* pSecond);        // the items of a set box
 MS2Ptr<CItemData> FUN_141b49860(ATL::CAtlArray<MS2Ptr<CItemData> >& items, bool bFirst);   // pick an item of a set
@@ -1255,8 +1260,7 @@ void UIShopDialog::vfunc_80(void* pReply)
             RefreshItems(entry.m_strName);
         } else {
             FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
-            MS2Ptr<ASTextInput> spInput = m_spShop->FUN_140bbe880<ASTextInput>(CString("m_inputSearch"));
-            if ((ASTextInput*)spInput != 0)
+            if (MS2Ptr<ASTextInput> spInput = m_spShop->FUN_140bbe880<ASTextInput>(CString("m_inputSearch")))
                 FUN_1422e0a60(spInput.operator->(), CString(""));
         }
     }
@@ -1393,8 +1397,7 @@ int UIShopDialog::vfunc_13()
         return 1;
     if (vfunc_55() == 0 && m_spShop.get() != 0) {
         if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0)) {
-            MS2Ptr<ASTextInput> spInput = m_spShop->FUN_140bbe880<ASTextInput>(CString("m_inputSearch"));
-            if ((ASTextInput*)spInput != 0) {
+            if (MS2Ptr<ASTextInput> spInput = m_spShop->FUN_140bbe880<ASTextInput>(CString("m_inputSearch"))) {
                 if (spInput->FUN_1422c76c0() != 0) {
                     Search(spInput->FUN_1422e0b00());
                     return 1;
@@ -1743,7 +1746,7 @@ void UIShopDialog::ReadNewProducts(CInPacket& packet)
         MS2Ptr<CNpcShopProductNewCli> spProduct(new CNpcShopProductNewCli);
         if (spProduct.get())
         {
-            int nIndex = i + nFirst;
+            int nIndex = nFirst + i;
             spProduct->m_18 = nIndex;
             spProduct->FUN_140db8840(packet);
             products.insert(std::pair<const int, MS2Ptr<CNpcShopProductBase> >(nIndex, (CNpcShopProductNewCli*)spProduct));
@@ -1793,8 +1796,7 @@ void UIShopDialog::ReadProductUpdate(CInPacket& packet)
     FUN_1412761e0(m_spShop, 1);
     int nSerial = packet.vfunc_o8_3();
     int nBuyCount = packet.vfunc_o8_3();
-    MS2Ptr<CNpcShopProductCli> spProduct(dynamic_cast<CNpcShopProductCli*>(FindProduct(0, nSerial).get()));
-    if (spProduct.get())
+    if (MS2Ptr<CNpcShopProductCli> spProduct = dynamic_cast<CNpcShopProductCli*>(FindProduct(0, nSerial).get()))
     {
         spProduct->FUN_140db6e30(nBuyCount);
         UpdateProduct(spProduct);
@@ -1934,7 +1936,7 @@ void UIShopDialog::ReadShopError(CInPacket& packet)
         FUN_141275260(0x5b, 1, 1);
         break;
     case 20:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_lack_guild_require_date")), 1, 1);
+        FUN_1412751f0(FUN_14028b8e0(L"s_err_lack_guild_require_date"), 1, 1);
         break;
     case 4:
     case 5:
@@ -1963,33 +1965,33 @@ void UIShopDialog::ReadShopError(CInPacket& packet)
         FUN_141275260(0xc07, 1, 1);
         break;
     case 24:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_msg_cant_sell_to_only_sell_shop")), 1, 1);
+        FUN_1412751f0(FUN_14028b8e0(L"s_msg_cant_sell_to_only_sell_shop"), 1, 1);
         break;
     case 25:
         FUN_1412751f0(FUN_140a228f0(0x688, *TSingleton<Client::Constants>::GetInstance()->PropertyProtectionTime.Get(), FUN_1409eec40(0x5a3)), 1, 1);
         break;
     case 26:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_guild_err_buy_no_master")), 1, 1);
+        FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_buy_no_master"), 1, 1);
         break;
     case 27:
         FUN_14134a120(7, 0, 0);
         break;
     case 28:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_invalid_item_cannot_buy_by_period")), 1, 1);
+        FUN_1412751f0(FUN_14028b8e0(L"s_err_invalid_item_cannot_buy_by_period"), 1, 1);
         break;
     case 29:
         break;
     case 30:
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_shop_no_star_point_event")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(FUN_14028b8e0(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
         break;
     case 32:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_meratmarket_error_country_limit")), 1, 1);
+        FUN_1412751f0(FUN_14028b8e0(L"s_meratmarket_error_country_limit"), 1, 1);
         break;
     case 31:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_shop_err_change_reset_price")), 1, 1);
+        FUN_1412751f0(FUN_14028b8e0(L"s_shop_err_change_reset_price"), 1, 1);
         break;
     case 33:
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_cannot_sell_petitem_summon")), 1, 1);
+        FUN_1412751f0(FUN_14028b8e0(L"s_err_cannot_sell_petitem_summon"), 1, 1);
         break;
     default:
     {
@@ -2012,7 +2014,7 @@ void UIShopDialog::UpdateProduct(MS2Ptr<CNpcShopProductCli> spProduct)
     {
         ASSlot slot(2);
         MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-        MS2Ptr<CNpcShopGivePointContextBase> spEvent = FUN_1404273a0(FUN_140302b00()->GetNpcShopGivePoint(), m_nShopId);
+        MS2Ptr<CNpcShopGivePointContextBase> spEvent = ((Unk_ShopGivePointValue*)FUN_140302b00()->GetNpcShopGivePoint())->FUN_1404273a0(m_nShopId);
         if (PopulateProduct(slot, spProduct, spEvent, pPlayer))
             m_spShop->Invoke("updateItem", m_selection.m_nIndex, slot.FUN_1422bb870());
     }
@@ -2023,9 +2025,7 @@ MS2_REPLACE_METHOD(0x141AFAEB0, UIShopDialog, UpdateProduct, 513, 0xA9430DA7);
 // @0x141afb0c0
 void UIShopDialog::StartMeratItem(MS2Ptr<CNpcShopMeratItemCli> spItem)
 {
-    if (m_spShop == 0 || spItem == 0)
-        return;
-    if (spItem->m_spProduct == 0)
+    if (m_spShop == 0 || spItem == 0 || spItem->m_spProduct == 0)
         return;
     if (m_nGroup == 0)
     {
@@ -2075,11 +2075,7 @@ void UIShopDialog::RemoveRepurchaseProduct(MS2Ptr<CNpcShopProductCli> spProduct)
     {
         if (m_spShop.get())
         {
-            int nIndex;
-            if (m_selection.m_nSecondary == 8)
-                nIndex = m_selection.m_nIndex;
-            else
-                nIndex = -1;
+            int nIndex = m_selection.m_nSecondary == 8 ? m_selection.m_nIndex : -1;
             m_spShop->FUN_1409ba0d0("removeItem", spProduct->m_18, nIndex);
         }
     }
@@ -2094,16 +2090,16 @@ void UIShopDialog::Search(CStringW strText)
         return;
     if (m_strSearch.IsEmpty() && strText.IsEmpty())
         return;
-    if (strText.IsEmpty())
-    {
-        RefreshItems(strText);
-    }
-    else
+    if (!strText.IsEmpty())
     {
         Unk_BlockList request(0x4e3b);
         request.Add("m_inputSearch", strText, 0);
         if (FUN_140d86260()->vfunc_37(&request) == 1)
             RefreshItems(strText);
+    }
+    else
+    {
+        RefreshItems(strText);
     }
 }
 MS2_REPLACE_METHOD(0x141AFB590, UIShopDialog, Search, 390, 0x648F32FA);
@@ -2139,24 +2135,24 @@ bool UIShopDialog::CanSellItem(MS2Ptr<CItem> spItem)
         return false;
     }
     if (IsSellOnly() == 1) {
-        FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_msg_cant_sell_to_only_sell_shop")), 1, 1);
+        FUN_1412751f0(FUN_14028b8e0(L"s_msg_cant_sell_to_only_sell_shop"), 1, 1);
         return false;
     }
     if (!HasStarEvent()) {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_shop_no_star_point_event")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(FUN_14028b8e0(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
         return false;
     }
     if (FUN_140535310() && FUN_140535310()->FUN_140613160(FUN_14052cd70(&spItem)) == 0)
         return false;
     CItemSocket* pSocket = spItem->FUN_1405279c0();
     if (pSocket && pSocket->FUN_140622720() == 0) {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_itembreak_usedgemstone_item")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(FUN_14028b8e0(L"s_itembreak_usedgemstone_item"), 0, 0, CStringW(L""));
         return false;
     }
     if (FUN_14053cd10(spItem->FUN_140527840())) {
         __int64 nPlaying = FUN_140c8dab0(FUN_140c8dac0());
         if (nPlaying == spItem->FUN_140526a50()) {
-            FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_play_instrument_cant_destory_score")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(FUN_14028b8e0(L"s_play_instrument_cant_destory_score"), 0, 0, CStringW(L""));
             return false;
         }
     }
@@ -2181,7 +2177,7 @@ void UIShopDialog::UpdateGachaCoin()
         return;
     if (m_nShopType == 4)
     {
-        int nAmount = DAT_143ab2a90.FUN_140a5f180(FUN_14052d230()->FUN_14059e550(m_nShopId), 0);
+        unsigned int nAmount = DAT_143ab2a90.FUN_140a5f180(FUN_14052d230()->FUN_14059e550(m_nShopId), 0);
         int nCost = FUN_14052d230()->FUN_14059ee00(m_nShopId);
         m_spShop->Invoke("gachaCoinAmount", FUN_1418fec90(2, nAmount, nCost));
     }
@@ -2246,7 +2242,7 @@ void UIShopDialog::RefreshItems(const CStringW& strSearch)
     ATL::CAtlArray<MS2Ptr<ShopTabInfo> >& tabs = m_tabs[m_nGroup];
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (m_nGroup == 0 && m_nCategory >= 0) {
-        MS2Ptr<CNpcShopGivePointContextBase> spEvent = FUN_1404273a0(FUN_140302b00()->GetNpcShopGivePoint(), m_nShopId);
+        MS2Ptr<CNpcShopGivePointContextBase> spEvent = ((Unk_ShopGivePointValue*)FUN_140302b00()->GetNpcShopGivePoint())->FUN_1404273a0(m_nShopId);
         bool bNoSearch = strSearch.IsEmpty();
         if (!m_meratItems.empty()) {
             size_t nCount = m_meratItems.size();
@@ -2325,7 +2321,7 @@ void UIShopDialog::FillNewProducts(ASDataProvider& list, const CStringW& strSear
     ATL::CAtlArray<MS2Ptr<ShopTabInfo> >& tabs = m_tabs[m_nGroup];
     bool bNoSearch = strSearch.IsEmpty();
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    MS2Ptr<CNpcShopGivePointContextBase> spEvent = FUN_1404273a0(FUN_140302b00()->GetNpcShopGivePoint(), m_nShopId);
+    MS2Ptr<CNpcShopGivePointContextBase> spEvent = ((Unk_ShopGivePointValue*)FUN_140302b00()->GetNpcShopGivePoint())->FUN_1404273a0(m_nShopId);
     if (m_nCategory >= 0 && m_nCategory < (int)tabs.GetCount()) {
         MS2Ptr<NpcShopTabInfo> spTab = dynamic_cast<NpcShopTabInfo*>((ShopTabInfo*)tabs[m_nCategory]);
         if (spTab.get()) {
@@ -2410,18 +2406,23 @@ MS2_REPLACE_METHOD(0x141AFD380, UIShopDialog, SetTab, 248, 0x5A841595);
 // @0x141afd480
 void UIShopDialog::UpdateSerial(__int64 tReset)
 {
-    if (m_spShop == 0 || !FUN_1422dc390() || m_nResetType == 99 || !m_bResetEnable)
+    if (m_spShop == 0 || !FUN_1422dc390())
         return;
-    unsigned __int64 nLeft = 0;
-    unsigned int nInterval = m_280;
-    if (nInterval == 0)
-        nInterval = FUN_140536a30(&FUN_1401d3200()->ShopSeedResetTime);
-    __int64 tNow = FUN_140869440();
-    if (0 < tNow && tNow < tReset)
-        nLeft = tReset - tNow;
-    if ((__int64)nLeft > (__int64)nInterval)
-        nLeft = nInterval;
-    m_spShop->FUN_141b06e00("updateTimer", nLeft, nInterval);
+    if (m_nResetType == 99)
+        return;
+    if (m_bResetEnable)
+    {
+        unsigned __int64 nLeft = 0;
+        unsigned int nInterval = m_280;
+        if (nInterval == 0)
+            nInterval = FUN_140536a30(&FUN_1401d3200()->ShopSeedResetTime);
+        __int64 tNow = FUN_140869440();
+        if (0 < tNow && tReset > tNow)
+            nLeft = tReset - tNow;
+        if ((__int64)nLeft > (__int64)nInterval)
+            nLeft = nInterval;
+        m_spShop->FUN_141b06e00("updateTimer", nLeft, nInterval);
+    }
 }
 MS2_REPLACE_METHOD(0x141afd480, UIShopDialog, UpdateSerial, 316, 0x5C24CCB4);
 
@@ -2465,7 +2466,7 @@ MS2_REPLACE_METHOD(0x141AFD840, UIShopDialog, ChangeTab, 146, 0x56C7DCFF);
 void UIShopDialog::BuyProduct(int nSerial, unsigned nQuantity)
 {
     if (!HasStarEvent()) {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_shop_no_star_point_event")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(FUN_14028b8e0(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
         return;
     }
     MS2Ptr<CNpcShopProductCli> spProduct = dynamic_cast<CNpcShopProductCli*>((CNpcShopProductBase*)FindCurrentProduct(nSerial));
@@ -2514,7 +2515,7 @@ MS2_REPLACE_METHOD(0x141afd8e0, UIShopDialog, BuyProduct, 1403, 0xD7C2A581);
 void UIShopDialog::BuyMeratItem(int nSerial, unsigned nQuantity, AScript& source)
 {
     if (!HasStarEvent()) {
-        FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_shop_no_star_point_event")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(FUN_14028b8e0(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
         return;
     }
     MS2Ptr<CNpcShopMeratItemCli> spItem = FindMeratItem(nSerial);
@@ -2691,7 +2692,7 @@ void UIShopDialog::CloseShop()
     UIMarketBillDialog* pBill = (UIMarketBillDialog*)FUN_140b09580(0x4f17);
     if (pBill && pBill->vfunc_55() == 0) {
         MS2Ptr<TMarketBillDataParam> spParam = pBill->FUN_140ea8da0();
-        if (spParam.get() && spParam->m_nDialogId == vfunc_48())
+        if ((spParam.get() ? true : false) && spParam->m_nDialogId == vfunc_48())
             FUN_1403ed2b0()->FUN_141adc5d0(0x4f17);
     }
     FUN_1403ed2b0()->FUN_141adc5d0(vfunc_48());
@@ -2745,7 +2746,7 @@ void UIShopDialog::RefreshCategories()
     std::vector<MS2Ptr<CItem> > items;
     ATL::CAtlArray<MS2Ptr<ShopTabInfo> >& tabs = m_tabs[m_nGroup];
     if (m_nGroup == 0 && m_nCategory >= 0) {
-        MS2Ptr<CNpcShopGivePointContextBase> spEvent = FUN_1404273a0(FUN_140302b00()->GetNpcShopGivePoint(), m_nShopId);
+        MS2Ptr<CNpcShopGivePointContextBase> spEvent = ((Unk_ShopGivePointValue*)FUN_140302b00()->GetNpcShopGivePoint())->FUN_1404273a0(m_nShopId);
         if (m_nCategory < (int)tabs.GetCount()) {
             MS2Ptr<NpcShopTabInfo> spTab = dynamic_cast<NpcShopTabInfo*>((ShopTabInfo*)tabs[m_nCategory]);
             if (spTab.get()) {
@@ -3252,7 +3253,7 @@ void UIShopDialog::OnPriceChanged(const Scaleform::GFx::FunctionHandler::Params&
 {
     if (m_spShop == 0)
         return;
-    if (params.ArgCount <= 2)
+    if (params.ArgCount < 3)
         return;
     ASData args;
     if (args.FUN_1422b9620(params.pArgs, params.ArgCount) != 0) {
@@ -3428,15 +3429,17 @@ MS2_REPLACE_METHOD(0x141B03BD0, UIShopDialog, UnloadRenderTarget, 87, 0xD3970D13
 // @0x141b03c30
 void UIShopDialog::OnEquipmentTooltip(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (!(m_spEquip == 0)) {
-        MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
-        ASEquipIcon* pIcon = (ASEquipIcon*)params.pUserData;
-        if (pMyPC != 0 && pIcon != 0) {
-            ASTooltip tip((void*)pMyPC, 2, 2);
-            tip.FUN_1409e0d40(pIcon->FUN_1409b9550().get());
-            tip.FUN_1409c6dc0(5);
-            *params.pRetVal = tip.FUN_1422bb870();
-        }
+    if (m_spEquip == 0)
+        return;
+    MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMyPC == 0)
+        return;
+    ASEquipIcon* pIcon = (ASEquipIcon*)params.pUserData;
+    if (pIcon != 0) {
+        ASTooltip tip((void*)pMyPC, 2, 2);
+        tip.FUN_1409e0d40(pIcon->FUN_1409b9550().get());
+        tip.FUN_1409c6dc0(5);
+        *params.pRetVal = tip.FUN_1422bb870();
     }
 }
 MS2_REPLACE_METHOD(0x141b03c30, UIShopDialog, OnEquipmentTooltip, 277, 0xE1DC4319);
@@ -3468,9 +3471,10 @@ bool UIShopDialog::CanPreviewItem(MS2Ptr<CItem> spItem)
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMyPC == 0)
         return false;
-    if (spItem->FUN_1405267d0(FUN_141658e60(pMyPC)) == 0)
+    if (::FUN_1405267d0(spItem.operator->(), FUN_141658e60(pMyPC)) == 0)
         return false;
-    return FUN_141b48950(spItem);
+    bool bPreview = FUN_141b48950(spItem);
+    return bPreview;
 }
 MS2_REPLACE_METHOD(0x141b03f70, UIShopDialog, CanPreviewItem, 211, 0x2A8C49E6);
 
@@ -3492,11 +3496,11 @@ void UIShopDialog::PreviewGachaItem(int nSerial)
         return;
     }
     if (m_spPreview.get() != 0) {
-        bool bShown;
+        bool bShown = false;
         if (!FUN_141b487f0(spData)) {
             if (m_spEquip.get() != 0)
                 m_spEquip->FUN_140e2a670();
-            bShown = m_spPreview->FUN_140d3bc90(spItem) != 0;
+            bShown = m_spPreview->FUN_140d3bc90(spItem) ? true : false;
         } else {
             bShown = m_spPreview->FUN_140d3f400(spItem);
         }
@@ -3572,16 +3576,18 @@ MS2_REPLACE(0x141B046E0, FUN_141b046e0, 25, 0xA22EF56D);
 // @0x141b04700
 int FUN_141b04700(int nGroup, CNpcShopProductCli* pProduct)
 {
-    MS2Ptr<CItem> spItem = pProduct->FUN_140db5e90();
-    if (spItem.get()) {
-        bool bStack = FUN_14053c7c0(spItem->FUN_140527840());
-        if (nGroup == 1) {
-            if (bStack)
+    {
+        MS2Ptr<CItem> spItem = pProduct->FUN_140db5e90();
+        if (spItem.get()) {
+            int bStack = FUN_14053c7c0(spItem->FUN_140527840());
+            if (nGroup == 1) {
+                if (bStack)
+                    return spItem->FUN_140526c50();
+                return 0;
+            }
+            else if (bStack)
                 return spItem->FUN_140526c50();
-            return 0;
         }
-        if (bStack)
-            return spItem->FUN_140526c50();
     }
     return 0;
 }
@@ -3606,7 +3612,7 @@ bool FUN_141b047f0(CNpcShopProductCli* pProduct, bool bNotify)
     __int64 tNow = FUN_140869440();
     if (tNow < spMember->fc8 + 604800) {
         if (bNotify)
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_lack_guild_require_date")), 1, 1);
+            FUN_1412751f0(FUN_14028b8e0(L"s_err_lack_guild_require_date"), 1, 1);
         return false;
     }
     if (nHave < nTrophy) {
@@ -3626,12 +3632,14 @@ bool FUN_141b04a10(CNpcShopProductCli* pProduct, bool bNotify)
     if (nId == 0)
         return true;
     int nGrade = pProduct->m_68;
-    if (FUN_140936900(FUN_1406c7600(), nId, nGrade) == 0) {
-        if (bNotify)
-            FUN_1412751f0(FUN_14052bd00(0x5c, FUN_14093b9c0(nId, nGrade)), 1, 1);
-        return false;
+    if (FUN_140936900(FUN_1406c7600(), nId, nGrade) != 0)
+        return true;
+    if (bNotify)
+    {
+        CStringW strMsg = FUN_14052bd00(0x5c, FUN_14093b9c0(nId, nGrade));
+        FUN_1412751f0(strMsg, 1, 1);
     }
-    return true;
+    return false;
 }
 MS2_REPLACE(0x141b04a10, FUN_141b04a10, 205, 0x3B932FD3);
 
@@ -3706,9 +3714,10 @@ bool FUN_141b04ed0(CNpcShopProductCli* pProduct, bool bNotify)
         return true;
     if (FUN_1403ed290()->FUN_1413b6160() == 0)
         return false;
-    if (FUN_1403ed290()->FUN_1404d2990(nNpc) < nLevel) {
+    int nGuildLevel = FUN_1403ed290()->FUN_1404d2990(nNpc);
+    if (nLevel > nGuildLevel) {
         if (bNotify)
-            FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_err_lack_guild_npc_level")), 1, 1);
+            FUN_1412751f0(FUN_14028b8e0(L"s_err_lack_guild_npc_level"), 1, 1);
         return false;
     }
     return true;
@@ -3725,7 +3734,7 @@ bool FUN_141b04fd0(CNpcShopProductCli* pProduct, bool bNotify)
             return false;
         if (FUN_1403ed290()->FUN_1413b6160() == 0 || FUN_1403ed290()->FUN_1404d01b0(pPlayer->vfunc_77()) == 0) {
             if (bNotify)
-                FUN_1412751f0(FUN_14028b8e0(CStringW(L"s_guild_err_buy_no_master")), 1, 1);
+                FUN_1412751f0(FUN_14028b8e0(L"s_guild_err_buy_no_master"), 1, 1);
             return false;
         }
     }
@@ -3768,16 +3777,18 @@ MS2_REPLACE(0x141b05180, FUN_141b05180, 705, 0xD8883427);
 // @0x141b05450
 CString FUN_141b05450(int nKind)
 {
-    if (nKind == 1)
+    switch (nKind)
+    {
+    case 1:
         return CString("UIShopDialogWander");
-    else if (nKind == 2)
+    case 2:
         return CString("UIShopDialogStar");
-    else if (nKind == 3)
+    case 3:
         return CString("UIShopDialogPSSB");
-    else if (nKind == 4)
+    case 4:
         return CString("UIShopDialogGacha");
-    else
-        return CString("UIShopDialog");
+    }
+    return CString("UIShopDialog");
 }
 MS2_REPLACE(0x141b05450, FUN_141b05450, 248, 0x3A2E6E43);
 
