@@ -103,6 +103,7 @@ int CCharacterAbilityTable::FUN_1401df7b0()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -211,6 +212,7 @@ void CCharacterAbilityTable::FUN_1401e0350(ATL::CAtlList<MS2Ptr<CCharacterAbilit
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -226,6 +228,7 @@ void CCharacterAbilityTable::FUN_1401e0450(ATL::CAtlList<MS2Ptr<CCharacterAbilit
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -237,12 +240,12 @@ void CCharacterAbilityTable::FUN_1401e0450(ATL::CAtlList<MS2Ptr<CCharacterAbilit
 }
 
 // @0x1401e0560
-// MS2-FUNCTIONAL: trailing cleanup NOP after the lock-guard else path / EH ip2state boundary
 MS2Ptr<CCharacterAbilityCategory> CCharacterAbilityTable::FUN_1401e0560(int nId)
 {
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -255,12 +258,12 @@ MS2Ptr<CCharacterAbilityCategory> CCharacterAbilityTable::FUN_1401e0560(int nId)
 }
 
 // @0x1401e0670
-// MS2-FUNCTIONAL: trailing cleanup NOP after the lock-guard else path / EH ip2state boundary
 MS2Ptr<CCharacterAbility> CCharacterAbilityTable::FUN_1401e0670(int nId)
 {
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
