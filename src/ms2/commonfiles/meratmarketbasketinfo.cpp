@@ -1690,10 +1690,9 @@ int CMeratMarketPremium::GetCategoryId(CStringA strCategory)
 MS2_REPLACE_METHOD(0x1406A3240, CMeratMarketPremium, GetCategoryId, 138, 0x17D7B8FE);
 
 // @0x1406a32d0
-// MS2-FUNCTIONAL: the exe pads the lock guard else-path with a nop
 MS2Ptr<CMeratMarketPremiumProduct> CMeratMarketPremium::FindProduct(int nId)
 {
-    if (Unk_LockGuard guard = s_lock) {} else
+    if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         MS2Ptr<CMeratMarketPremiumProduct> spProduct(0);
         m_productMap.Lookup(nId, spProduct);
@@ -1703,10 +1702,9 @@ MS2Ptr<CMeratMarketPremiumProduct> CMeratMarketPremium::FindProduct(int nId)
 MS2_REPLACE_METHOD(0x1406A32D0, CMeratMarketPremium, FindProduct, 179, 0x8C57130B);
 
 // @0x1406a3390
-// MS2-FUNCTIONAL: the exe pads the lock guard else-path with a nop
 MS2Ptr<CUgcPremiumProduct> CMeratMarketPremium::FindUgcProduct(unsigned nId)
 {
-    if (Unk_LockGuard guard = s_lock) {} else
+    if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         MS2Ptr<CUgcPremiumProduct> spProduct(0);
         m_ugcMap.Lookup(nId, spProduct);
