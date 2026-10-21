@@ -160,12 +160,8 @@ void* FUN_1404499b0(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -186,12 +182,8 @@ void* FUN_140449a80(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -212,12 +204,8 @@ void* FUN_140449b50(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -238,12 +226,8 @@ void* FUN_140449c20(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -264,12 +248,8 @@ void* FUN_140449cf0(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -290,12 +270,8 @@ void* FUN_140449dc0(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -316,12 +292,8 @@ void* FUN_140449e90(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -342,12 +314,8 @@ void* FUN_140449f60(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -368,12 +336,8 @@ void* FUN_14044a030(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -394,12 +358,8 @@ void* FUN_14044a100(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -420,12 +380,8 @@ void* FUN_14044a1d0(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -446,12 +402,8 @@ void* FUN_14044a2a0(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -472,12 +424,8 @@ void* FUN_14044a370(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
@@ -498,12 +446,8 @@ void* FUN_14044a440(Unk_TreeNode** pIter)
     }
     else if ((*pIter)->m_pLeft->m_Isnil != 0)
     {
-        p = (*pIter)->m_pParent;
-        while (p->m_Isnil == 0 && *pIter == p->m_pLeft)
-        {
+        while ((p = (*pIter)->m_pParent)->m_Isnil == 0 && *pIter == p->m_pLeft)
             *pIter = p;
-            p = (*pIter)->m_pParent;
-        }
         if ((*pIter)->m_Isnil == 0)
             *pIter = p;
     }
