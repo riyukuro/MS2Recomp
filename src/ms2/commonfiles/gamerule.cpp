@@ -1676,14 +1676,15 @@ MS2_REPLACE_METHOD(0x14047A5B0, CGameRule, FUN_14047a5b0, 221, 0x94C9C752);
 void CGameRule::FUN_14047a6a0(int eventId, MS2Ptr<NpcEventDropEventContext> spContext)
 {
     Unk_CriticalSectionLock lock(m_418, 1);
-    m_448[eventId] = spContext;
+    const int key = eventId;
+    m_448[key] = spContext;
 }
 
 // @0x14047a730
 void CGameRule::FUN_14047a730(int eventId)
 {
     Unk_CriticalSectionLock lock(m_418, 1);
-    m_448.erase(eventId);
+    m_448.erase(+eventId);
 }
 MS2_REPLACE_METHOD(0x14047A730, CGameRule, FUN_14047a730, 101, 0x362DD7E9);
 
@@ -1766,7 +1767,7 @@ MS2_REPLACE_METHOD(0x14047AB70, CGameRule, FUN_14047ab70, 391, 0x632E5C98);
 MS2Ptr<DungeonBonusRewardCtx> CGameRule::FUN_14047ad00(unsigned dungeonId)
 {
     Unk_CriticalSectionLock lock(m_8, 1);
-    std::map<unsigned long, std::set<MS2Ptr<DungeonBonusRewardCtx> > >::iterator it = m_3c8.find(dungeonId);
+    std::map<unsigned, std::set<MS2Ptr<DungeonBonusRewardCtx> > >::iterator it = m_3c8.find(dungeonId);
     if (it == m_3c8.end())
         return MS2Ptr<DungeonBonusRewardCtx>(0);
     std::set<MS2Ptr<DungeonBonusRewardCtx> >& contexts = it->second;
@@ -1817,7 +1818,7 @@ void CGameRule::FUN_14047b070(MS2Ptr<DungeonBonusRewardCtx> spContext)
 MS2Ptr<DungeonBonusRewardCtx> CGameRule::FUN_14047b170(unsigned dungeonId)
 {
     Unk_CriticalSectionLock lock(m_3d8, 1);
-    std::map<unsigned long, std::set<MS2Ptr<DungeonBonusRewardCtx> > >::iterator it = m_408.find(dungeonId);
+    std::map<unsigned, std::set<MS2Ptr<DungeonBonusRewardCtx> > >::iterator it = m_408.find(dungeonId);
     if (it == m_408.end())
         return MS2Ptr<DungeonBonusRewardCtx>(0);
     std::set<MS2Ptr<DungeonBonusRewardCtx> >& contexts = it->second;
@@ -1840,7 +1841,7 @@ void CGameRule::FUN_14047b300(unsigned dungeonId, Unk_DungeonGroupType group, st
             Unk_AppendVector(spContext->m_customDropBoxIds, out);
         }
     }
-    std::map<unsigned long, std::set<MS2Ptr<DungeonBonusRewardCtx> > >::iterator itDungeon = m_3c8.find(dungeonId);
+    std::map<unsigned, std::set<MS2Ptr<DungeonBonusRewardCtx> > >::iterator itDungeon = m_3c8.find(dungeonId);
     if (itDungeon != m_3c8.end()) {
         std::set<MS2Ptr<DungeonBonusRewardCtx> >& contexts = itDungeon->second;
         for (std::set<MS2Ptr<DungeonBonusRewardCtx> >::iterator it = contexts.begin(); it != contexts.end(); ++it) {
@@ -2723,7 +2724,7 @@ void CGameRule::FUN_14047ee40(int key, MS2Ptr<Unk_ItemTagRewardContext> spContex
 void CGameRule::FUN_14047ef00(int key)
 {
     Unk_CriticalSectionLock lock(m_d18, 1);
-    m_d48.erase(key);
+    m_d48.erase(reinterpret_cast<unsigned&>(key));
 }
 MS2_REPLACE_METHOD(0x14047EF00, CGameRule, FUN_14047ef00, 93, 0xF6109E5C);
 

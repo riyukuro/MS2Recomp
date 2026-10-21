@@ -437,9 +437,9 @@ private:
     std::set<unsigned> m_3a0;                               // free air taxi
     int m_3b0;
     std::map<Unk_DungeonGroupType, std::set<MS2Ptr<DungeonBonusRewardCtx> > > m_3b8;
-    std::map<unsigned long, std::set<MS2Ptr<DungeonBonusRewardCtx> > > m_3c8;
+    std::map<unsigned, std::set<MS2Ptr<DungeonBonusRewardCtx> > > m_3c8;
     CLockCriticalSection m_3d8;
-    std::map<unsigned long, std::set<MS2Ptr<DungeonBonusRewardCtx> > > m_408;
+    std::map<unsigned, std::set<MS2Ptr<DungeonBonusRewardCtx> > > m_408;
     CLockCriticalSection m_418;
     std::map<int, MS2Ptr<NpcEventDropEventContext> > m_448;
     CLockCriticalSection m_458;
