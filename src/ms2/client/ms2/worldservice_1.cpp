@@ -2193,7 +2193,7 @@ class Unk_WsE_EntityWorld
 {
 public:
     efd::SmartPointer<egf::Entity> FUN_1411cedd0(unsigned modelId, egf::EntityID id, bool bFlag);   // create from a flat model id
-    efd::SmartPointer<egf::Entity> FUN_1411cec80(const std::string& model, egf::EntityID id, bool bFlag);   // create from a name
+    efd::SmartPointer<egf::Entity> FUN_1411cec80(const efd::utf8string& model, egf::EntityID id, bool bFlag);   // create from a name (efd string, as the exe)
     void FUN_1411cf2d0(egf::Entity* entity, int flag);              // add an entity
     void FUN_1411d0a60(int a, int b);
 };
@@ -2820,7 +2820,7 @@ struct Unk_WsME_FunctorPtr { void* p; };     // TFunctor<void,EmptyParam>: point
 void* FUN_1409670f0();
 // SmartPointer<egf::Entity> returned through a hidden pointer (8 bytes)
 struct Unk_WsA_EntityRef { void* p; };
-void FUN_1411cec80(void* mgr, Unk_WsA_EntityRef* ret, const std::string& flatModel, const unsigned __int64* pId, bool bCreate);
+void FUN_1411cec80(void* mgr, Unk_WsA_EntityRef* ret, const efd::utf8string& flatModel, const unsigned __int64* pId, bool bCreate);   // EntityWorldManager member: this, hidden return, utf8string, &EntityID temp
 void FUN_1411cf2d0(void* mgr, void* entity, int flag);
 void FUN_1414f1e70(void* sceneGraphSvc, const unsigned __int64* pEntityId, int state);
 void* FUN_140ad4ba0();
@@ -2835,7 +2835,7 @@ int WorldService::FUN_141bbaf00(GameObject* obj, const unsigned __int64& id, boo
     Unk_WsA_EntityRef entity;
     {
         CString name = obj->m_str88;
-        std::string flatModel((const char*)name);
+        efd::utf8string flatModel((const char*)name);
         FUN_1411cec80(FUN_1409670f0(), &entity, flatModel, &idCopy, true);
     }
     if (entity.p == 0)
@@ -9666,7 +9666,7 @@ int WorldService::FUN_141bc1720(MS2Ptr<Unk_WsE_FieldObject> obj)
             created = ((Unk_WsE_EntityWorld*)FUN_1409670f0())->FUN_1411cedd0(0x7b35ceec, newId, true);
             if (created == 0)
             {
-                std::string name("Portal_Type_A");
+                efd::utf8string name("Portal_Type_A");
                 created = ((Unk_WsE_EntityWorld*)FUN_1409670f0())->FUN_1411cec80(name, newId, true);
             }
         }
@@ -9675,7 +9675,7 @@ int WorldService::FUN_141bc1720(MS2Ptr<Unk_WsE_FieldObject> obj)
             created = ((Unk_WsE_EntityWorld*)FUN_1409670f0())->FUN_1411cedd0(0x7996c3af, newId, true);
             if (created == 0)
             {
-                std::string name("MS2RoomEnterPortal");
+                efd::utf8string name("MS2RoomEnterPortal");
                 created = ((Unk_WsE_EntityWorld*)FUN_1409670f0())->FUN_1411cec80(name, newId, true);
             }
         }
