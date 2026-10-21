@@ -123,7 +123,7 @@
 // MS2-PIN: ??__Fs_strSkill@@YAXXZ 0x142cbf020 ; probe
 // MS2-PIN: ??__Fs_strStun@@YAXXZ 0x142cbf040 ; probe
 // MS2-PINS-END tplpin
-// MS2-PIN: ?FUN_1419d7750@@YAPEAVCItemMergeOptionProxy@@XZ 0x1419d7750
+// MS2-PIN: ?FUN_1419d7750@@YAPEAVCItemMergeOptionProxy@@PEAX@Z 0x1419d7750
 // MS2-PIN: ??$?0U?$pair@HH@std@@@?$_Tuple_val@$$QEAU?$pair@HH@std@@@std@@QEAA@$$QEAU?$pair@HH@1@@Z 0x1419d33c0
 // MS2-PIN: ??$_Seek_wrapped@U?$pair@HH@std@@@std@@YAXAEAPEAU?$pair@HH@0@QEAU10@@Z 0x1419d5d70
 // MS2-PIN: ??$_Swap_adl@H@std@@YAXAEAH0@Z 0x1419d5f40
@@ -303,12 +303,13 @@ Unk_SaRow* FUN_140184750(Unk_SaTable* pTable, __int64 nIndex);
 // The proxy handle: allocate and reset (the definitions are at the end of the unit).
 CPtred* FUN_1401ba820(CPtred* p);                           // sets the count to 1
 void* FUN_1401b7b90(void* pOut, int n);                     // new-tag construct
-static CItemMergeOptionProxy* FUN_1419d36b0();
-static CItemMergeOptionProxy* FUN_1419d7750();
+static CItemMergeOptionProxy* FUN_1419d36b0(void* pUnused);
+int& FUN_1411f61b0(int& r);                                  // std::move (folded copy)
+static CItemMergeOptionProxy* FUN_1419d7750(void* pUnused);
 static MS2Ptr<CItemMergeOptionProxy>& FUN_1419d7530(MS2Ptr<CItemMergeOptionProxy>& sp, void* pTag);
 void* FUN_1405c5c30(Unk_MergeSpecialMap* pMap, const int& key, unsigned& nHash, unsigned& nBin, void*& pPrev);
 void* FUN_1405c5d20(Unk_MergeNormalMap* pMap, const int& key, unsigned& nHash, unsigned& nBin, void*& pPrev);
-bool FUN_1409c1720(Scaleform::GFx::Value& value);           // the value as a bool
+bool FUN_1409c1720(const Scaleform::GFx::Value& value);           // the value as a bool
 void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);   // *pOut = v
 
 // @0x1419d2890
@@ -451,11 +452,12 @@ int UIItemMergeOptionDialog::vfunc_13()
 {
     if (m_30 == 0)
         return 0;
-    if (!FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0) && !FUN_14025e7c0()->FUN_14116d840())
-        return 0;
-    if (GetPhase() != 4 && GetPhase() != 5)
-        return 0;
-    return 1;
+    if (FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0) || FUN_14025e7c0()->FUN_14116d840())
+    {
+        if (GetPhase() == 4 || GetPhase() == 5)
+            return 1;
+    }
+    return 0;
 }
 
 // @0x1419ce980
@@ -1008,8 +1010,9 @@ void UIItemMergeOptionDialog::FUN_1419d1d20(int nError)
 // @0x1419d2140
 bool UIItemMergeOptionDialog::ConfirmMerge(int nButton, const CMsgBoxData& box)
 {
-    if (nButton == 0)
-        RequestMerge();
+    if (nButton != 0)
+        return true;
+    RequestMerge();
     return true;
 }
 
@@ -1124,10 +1127,9 @@ int UIItemMergeOptionDialog::CheckMerge()
 // @0x1419d27e0
 int UIItemMergeOptionDialog::FUN_1419d27e0(ItemInfoSlot& slot)
 {
-    if (m_30.get() == 0)
-        return 0;
-    Scaleform::GFx::Value value = m_30->FUN_1422baa20("m_merging");
-    return FUN_1409c1720(value) == 0;
+    if (m_30.get() != 0)
+        return FUN_1409c1720(m_30->FUN_1422baa20("m_merging")) ? 0 : 1;
+    return 0;
 }
 
 // @0x1419d28e0
@@ -1180,10 +1182,10 @@ void UIItemMergeOptionDialog::ShowMissingItem(int nItemId)
 
 // Is the item still in the bag (an equipped one is not)?
 // @0x1419d2df0
-static bool FUN_1419d2df0(MS2Ptr<CItem> spItem)
+static int FUN_1419d2df0(MS2Ptr<CItem> spItem)
 {
     if (!spItem)
-        return false;
+        return 0;
     return DAT_143ab2a90.FUN_140a5d680(spItem->FUN_140526a50()).get() != 0;
 }
 
@@ -1192,9 +1194,13 @@ static bool FUN_1419d2df0(MS2Ptr<CItem> spItem)
 static unsigned FUN_1419d2eb0(MS2Ptr<CItem> spItem)
 {
     unsigned nEquipped = FUN_1419d2df0(spItem) == 0;
-    unsigned char nMerged = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->FUN_140630810();
+    unsigned nMerged = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->FUN_140630810();
     unsigned nRank = spItem->FUN_140526bd0();
-    return nEquipped << 4 | (unsigned)nMerged << 3 | nRank;
+    unsigned nResult = 0;
+    nResult |= nEquipped << 4;
+    nResult |= nMerged << 3;
+    nResult |= nRank;
+    return nResult;
 }
 
 // @0x1419d2fa0
@@ -1210,12 +1216,9 @@ static int FUN_1419d2fa0(const void* pLeft, const void* pRight)
 }
 
 // @0x1419d36b0
-static CItemMergeOptionProxy* FUN_1419d36b0()
+static CItemMergeOptionProxy* FUN_1419d36b0(void* pUnused)
 {
-    void* p = operator new(0x100);
-    if (p == 0)
-        return 0;
-    return new (p) CItemMergeOptionProxy();
+    return new CItemMergeOptionProxy();
 }
 
 // The sort functor of the option preview.
@@ -1240,8 +1243,10 @@ void* Unk_MergeSpecialMap::Lookup(const int& key)
 {
     unsigned nBin;
     unsigned nHash;
+    void* pAssoc;
     void* pPrev;
-    return FUN_1405c5c30(this, key, nHash, nBin, pPrev);
+    pAssoc = FUN_1405c5c30(this, key, nHash, nBin, pPrev);
+    return pAssoc;
 }
 
 // @0x1419d7660
@@ -1249,18 +1254,19 @@ void* Unk_MergeNormalMap::Lookup(const int& key)
 {
     unsigned nBin;
     unsigned nHash;
+    void* pAssoc;
     void* pPrev;
-    return FUN_1405c5d20(this, key, nHash, nBin, pPrev);
+    pAssoc = FUN_1405c5d20(this, key, nHash, nBin, pPrev);
+    return pAssoc;
 }
 
 // @0x1419d7720
-// MS2-FUNCTIONAL: ResetNew is a private member of the exe's smart pointer; reached through a friend here
 struct Unk_TePtrAccess
 {
     static void ResetNew(MS2Ptr<CItemMergeOptionProxy>& sp)
     {
         sp.Release();
-        sp.m_p = FUN_1419d7750();
+        sp.m_p = FUN_1419d7750(0);
     }
 };
 
@@ -1274,27 +1280,25 @@ static MS2Ptr<CItemMergeOptionProxy>& FUN_1419d7530(MS2Ptr<CItemMergeOptionProxy
 // @0x1419d7570
 CStringW UIItemMergeOptionDialog::OptionLess::GetName(const std::pair<int, int>& option)
 {
-    if (option.first == -1)
-    {
-        if (option.second == 0)
-            return CStringW(L"");
+    if (option.first != -1)
+        return FUN_14082f000(option.first);
+    if (option.second != 0)
         return FUN_140630e10(option.second);
-    }
-    return FUN_14082f000(option.first);
+    return CStringW(L"");
 }
 
-static CItemMergeOptionProxy* FUN_1419d7750()
+static CItemMergeOptionProxy* FUN_1419d7750(void* pUnused)
 {
-    return static_cast<CItemMergeOptionProxy*>(FUN_1401ba820(FUN_1419d36b0()));
+    return static_cast<CItemMergeOptionProxy*>(FUN_1401ba820(FUN_1419d36b0(0)));
 }
 
 // Second swap variants the exe keeps as separate (non-folded) copies.
 // @0x1419d68b0
 void FUN_1419d68b0(int& nLeft, int& nRight)
 {
-    int nTemp = nLeft;
-    nLeft = nRight;
-    nRight = nTemp;
+    int nTemp = FUN_1411f61b0(nLeft);
+    nLeft = FUN_1411f61b0(nRight);
+    nRight = FUN_1411f61b0(nTemp);
 }
 
 // @0x1419d5f70
