@@ -2,10 +2,10 @@
 // window drawn from loading.bmp, optionally alpha-masked by loading_mask.bmp), plus the ATL::CImage / Gdiplus inlines.
 // MS2-UNIT: ?\loadingdialog.cpp
 // MS2-RANGE: 0x140d4a310-0x140d4dce0 .text$mn
+// MS2-RANGE: 0x1400d2e70-0x1400d2f60 .text$di
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0?$CComPtr@UIStream@@@ATL@@QEAA@XZ 0x140d4ba00 ; unique
 // MS2-PIN: ??0?$CComPtrBase@UIStream@@@ATL@@IEAA@XZ 0x140d4ba20 ; unique
-// MS2-PIN: ??1?$CSimpleArray@GV?$CSimpleArrayEqualHelper@G@ATL@@@ATL@@QEAA@XZ 0x140d4bf10 ; unique
 // MS2-PIN: ?SetStatus@Graphics@Gdiplus@@IEBA?AW4Status@2@W432@@Z 0x140d4d8c0 ; unique
 // MS2-PIN: ?SetStatus@Image@Gdiplus@@IEBA?AW4Status@2@W432@@Z 0x140d4d8f0 ; unique
 // MS2-PINS-END tplpin
@@ -20,6 +20,13 @@
 
 #include "ms2/placeholder/ms2memfile.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+
+// Header statics this TU shares with its neighbours (unit_1400d2c40 holds the other TUs' copies): the sort-type name
+// table and a null MS2Ptr handle whose pointee type is unknown. The handle's MS2Ptr COMDATs (0x140d4ba40 ctor,
+// 0x140d4bf10 dtor, 0x140d4db40 Reference, 0x140d4dc30 Release, 0x140d4dc70 ReleaseImpl) were linked from this obj.
+class Unk_HeldObject : public CPtred { };
+static CString s_strSortTypeNames3[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
+static MS2Ptr<Unk_HeldObject> s_heldObject(0);
 
 CString FUN_140188f50(const char* psz, int n);
 extern unsigned __int64 DAT_143a4a5e8;
@@ -390,4 +397,17 @@ LRESULT CALLBACK CLoadingDialog::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
     return pThis->OnMessage(hWnd, uMsg, wParam, lParam);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
-// MS2-RANGE: 0x142ca5020-0x142ca5060 .text$yd
+// MS2-RANGE: 0x142ca4fd0-0x142ca5060 .text$yd
+// gap3: the s_heldObject MS2Ptr COMDATs (0x140d4bf10 was pinned to ~CSimpleArray<WORD>, whose body differs) and the
+// ATL/CRT inlines that compile differently with this toolset.
+// MS2-PIN: ??0?$MS2Ptr@VUnk_HeldObject@@@@QEAA@H@Z 0x140d4ba40
+// MS2-PIN: ??1?$MS2Ptr@VUnk_HeldObject@@@@QEAA@XZ 0x140d4bf10
+// MS2-PIN: ?Reference@?$MS2Ptr@VUnk_HeldObject@@@@CAXPEAVUnk_HeldObject@@@Z 0x140d4db40
+// MS2-PIN: ?Release@?$MS2Ptr@VUnk_HeldObject@@@@AEAAXXZ 0x140d4dc30
+// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_HeldObject@@@@AEAAXPEAX@Z 0x140d4dc70
+// MS2-PIN: ?CreateEx@CImage@ATL@@QEAAHHHHKPEBKK@Z 0x140d4c420
+// MS2-PIN: ?_AtlInitializeCriticalSectionEx@ATL@@YAHPEAU_RTL_CRITICAL_SECTION@@KK@Z 0x140d4db60
+// MS2-PIN: ?abs@@YAJJ@Z 0x140d4dcc0
+// MS2-FUNCTIONAL ?CreateEx@CImage@ATL@@QEAAHHHHKPEBKK@Z: the exe calls memset out of line for the BITMAPINFO/palette clears; /Oi expands the memset intrinsic (rep stosb, extra rdi save) inside the header inline
+// MS2-FUNCTIONAL ?_AtlInitializeCriticalSectionEx@ATL@@YAHPEAU_RTL_CRITICAL_SECTION@@KK@Z: the exe's ATL takes the pre-Vista branch (InitializeCriticalSectionAndSpinCount(cs, spin)); 14.16 calls InitializeCriticalSectionEx(cs, spin, flags), same result for flags 0
+// MS2-FUNCTIONAL ?abs@@YAJJ@Z: the exe's abs(long) calls labs out of line; /Oi expands the labs intrinsic inside the header inline
