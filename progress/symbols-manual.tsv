@@ -7748,3 +7748,13 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?SetProperties@PointObject@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEBV?$Point@N@Render@4@@Z	142989db0	func
 ?ToObject@Value@AS2@GFx@Scaleform@@QEBAPEAVObject@234@PEBVEnvironment@234@@Z	142991660	func
 ?ExecuteSnapshot@TimelineSnapshot@GFx@Scaleform@@QEAAXPEAVDisplayObjContainer@23@@Z	1425d78a0	func
+??0RectangleObject@AS2@GFx@Scaleform@@QEAA@PEAVEnvironment@123@@Z	142920000	func
+?GFxObject_GetRectangleProperties@AS2@GFx@Scaleform@@YAXPEAVEnvironment@123@PEAVObject@123@QEAVValue@123@@Z	142948660	func
+?GetProperties@RectangleObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@QEAVValue@234@@Z	142954690	func
+?GetProperties@RectangleObject@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEAV?$Rect@N@Render@4@@Z	142954800	func
+?IsRectValid@AS2@GFx@Scaleform@@YA_NAEBV?$Rect@N@Render@3@@Z	142965db0	func
+?NumberUtil_IsNaN@AS2@GFx@Scaleform@@YA_NN@Z	142444c00	func
+?Rectangle_NaNParams@AS2@GFx@Scaleform@@3QBVValue@123@B	143d74730	data
+?SetProperties@RectangleObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@QEBVValue@234@@Z	142989e90	func
+?SetProperties@RectangleObject@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEBV?$Rect@N@Render@4@@Z	14298a040	func
+?ValidateRect@AS2@GFx@Scaleform@@YAXPEAV?$Rect@N@Render@3@@Z	142992e30	func
