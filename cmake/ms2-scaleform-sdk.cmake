@@ -26,10 +26,11 @@ if(NOT IS_DIRECTORY "${_ms2_sf_default}")
 endif()
 set(MS2_SCALEFORM_SDK "${_ms2_sf_default}" CACHE PATH "Scaleform GFx SDK root (dir with Include/ and Src/); empty = placeholders only")
 
-# Scaleform 4.1.18 compatibility headers: tools/sf418_headers.py copies GFx/GFx_Player.h, GFx/GFx_Loader.h and GFxConfig.h
-# from the SDK into <dir> with the exe's 4.1.18 differences (Value::ObjectInterface without the AS3 ByteArray virtuals,
-# MemoryParams without InitialDynamicLimit, the extra State::StateType entry before State_IMEManager, 4 mice/keyboards;
-# see the script). <dir> is searched before the SDK; same include guards. tools/progress.py runs the same script. The
+# Scaleform 4.1.18 compatibility headers: tools/sf418_headers.py copies GFx/GFx_Player.h, GFx/GFx_Loader.h, GFxConfig.h and
+# Render/Render_Image.h from the SDK into <dir> with the exe's 4.1.18 differences (Value::ObjectInterface without the AS3
+# ByteArray virtuals, MemoryParams without InitialDynamicLimit, the extra State::StateType entry before State_IMEManager,
+# 4 mice/keyboards, the Image/Texture SF_AMP_CODE members always present; see the script), plus the SDK headers that reach
+# them by relative includes. <dir> is searched before the SDK; same include guards. tools/progress.py runs the same script. The
 # printed id of the generated text becomes MS2_SF418=<id> in the flags, so objects rebuild when the headers change.
 get_filename_component(_ms2_sf418_gen "${CMAKE_CURRENT_LIST_DIR}/../tools/sf418_headers.py" ABSOLUTE)
 function(ms2_scaleform_418_headers dir out_id)
@@ -45,7 +46,7 @@ function(ms2_scaleform_418_headers dir out_id)
     endif()
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${gen}"
                  "${MS2_SCALEFORM_SDK}/Src/GFx/GFx_Player.h" "${MS2_SCALEFORM_SDK}/Src/GFx/GFx_Loader.h"
-                 "${MS2_SCALEFORM_SDK}/Include/GFxConfig.h")
+                 "${MS2_SCALEFORM_SDK}/Include/GFxConfig.h" "${MS2_SCALEFORM_SDK}/Src/Render/Render_Image.h")
     set(${out_id} "${id}" PARENT_SCOPE)
 endfunction()
 
