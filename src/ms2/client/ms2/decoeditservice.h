@@ -28,6 +28,7 @@
 class NiMesh;
 class NiNode;
 class NiAVObject;
+namespace efd { class utf8string; }
 class Unk_TiXmlElement;
 class Unk_DecoXml;
 
@@ -60,7 +61,7 @@ public:
     void CollectTransforms(ATL::CAtlArray<NiTransform>& aOut);      // 0x141174bb0 the transform of every instance
     CString GetModel();                                             // 0x1411744a0 the model path
     void PlayAnim(int nSeq, float fSpeed, bool bLoop);              // 0x141174ce0
-    void PlayAnim(const char* pszName, float fSpeed, bool bLoop);   // 0x141174c70
+    void PlayAnim(const efd::utf8string& strName, float fSpeed, bool bLoop);   // 0x141174c70
     void SetAnimSpeed(int nSeq, float fSpeed, bool bLoop);          // 0x141174ce0
     bool IsEditable();                                              // 0x1411747f0
     static bool ContainsTransform(const NiTransform& xf, const ATL::CAtlArray<NiTransform>& aXf);   // 0x141175100

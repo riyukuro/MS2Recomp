@@ -68,11 +68,11 @@ void* FUN_14086d260();                                              // the clock
 double FUN_141473280(void* pClock);                                 // seconds
 class Unk_DecoAnimObj { public: bool FUN_1409a20a0(int nSeq, float fSpeed, bool bLoop); };
 struct Unk_DecoAnimHandle { Unk_DecoAnimObj* FUN_140998e90(); char m_pad[0x40]; };
-struct Unk_DecoAnimRec { char m_pad0[8]; Unk_DecoAnimHandle m_hnd; char m_pad1[0x38]; int m_nSeq; };
+struct Unk_DecoAnimRec { char m_pad0[8]; Unk_DecoAnimHandle m_hnd; int m_nSeq; };   // m_nSeq +0x48 (FUN_1411766b0)
 class Unk_DecoAnimSvc
 {
 public:
-    void FUN_1409a1fc0(egf::EntityID& kId, const efd::utf8string& strName, float fSpeed, bool bLoop);
+    bool FUN_1409a1fc0(const egf::EntityID& kId, const efd::utf8string& strName, float fSpeed, bool bLoop);
     bool FUN_1411766b0(const egf::EntityID& kId, int nSeq, float fSpeed, bool bLoop);      // 0x1411766b0
     bool FUN_1409991a0(const egf::EntityID& kId, Unk_DecoAnimRec** ppRec);
 };
@@ -411,8 +411,9 @@ MS2_REPLACE_METHOD(0x1411704D0, DecoEditService, AddTransform, 61, 0x47FC5A4B);
 void DecoEditService::CollectNear(Unk_StreamPoint pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
 {
     DecoLayer* pLayer = GetLayer();
-    if (pLayer != 0)
-        pLayer->CollectNear(pt, fRadius, aOut);
+    if (pLayer == 0)
+        return;
+    pLayer->CollectNear(pt, fRadius, aOut);
 }
 
 // @0x141170590
@@ -669,10 +670,12 @@ bool DecoItem::LoadKfm(CString strAsset)
 // @0x141174a50
 bool DecoItem::AddTransform(const NiTransform& xf)
 {
-    bool bKnown = ContainsTransform(xf, m_aXf);
-    if (!bKnown)
+    if (!ContainsTransform(xf, m_aXf))
+    {
         m_aXf.Add(xf);
-    return !bKnown;
+        return true;
+    }
+    return false;
 }
 
 // @0x141174ab0
@@ -716,14 +719,11 @@ void DecoItem::CollectTransforms(ATL::CAtlArray<NiTransform>& aOut)
 MS2_REPLACE_METHOD(0x141174BB0, DecoItem, CollectTransforms, 186, 0xECD1BF5B);
 
 // @0x141174c70
-void DecoItem::PlayAnim(const char* pszName, float fSpeed, bool bLoop)
+void DecoItem::PlayAnim(const efd::utf8string& strName, float fSpeed, bool bLoop)
 {
     Unk_DecoAnimSvc* pAnim = FUN_1410a68d0();
     if (pAnim != 0)
-    {
-        egf::EntityID kId = FUN_14123c460();
-        pAnim->FUN_1409a1fc0(kId, efd::utf8string(pszName), fSpeed, bLoop);
-    }
+        pAnim->FUN_1409a1fc0(FUN_14123c460(), strName, fSpeed, bLoop);
 }
 
 // @0x141174ce0
@@ -731,10 +731,7 @@ void DecoItem::PlayAnim(int nSeq, float fSpeed, bool bLoop)
 {
     Unk_DecoAnimSvc* pAnim = FUN_1410a68d0();
     if (pAnim != 0)
-    {
-        egf::EntityID kId = FUN_14123c460();
-        pAnim->FUN_1411766b0(kId, nSeq, fSpeed, bLoop);
-    }
+        pAnim->FUN_1411766b0(FUN_14123c460(), nSeq, fSpeed, bLoop);
 }
 
 // @0x141174d50
@@ -776,6 +773,7 @@ int DecoItem::vfunc_11()
     if (m_bKfm)
     {
         PlayAnim("Idle_A", 1.0f, false);
+        FUN_140ae1e80(FUN_141b6efc0(FUN_14123c410()), 0.0f, 1.0f, 0.0f, 0.5f, egf::kENTITY_INVALID);
     }
     return 1;
 }
@@ -811,8 +809,10 @@ bool DecoItem::ContainsTransform(const NiTransform& xf, const ATL::CAtlArray<NiT
 {
     for (unsigned i = 0; i < aXf.GetCount(); i++)
     {
-        if (!(aXf[i].m_Translate != xf.m_Translate))
-            return true;
+        const NiTransform& kXf = aXf[i];
+        if (kXf.m_Translate != xf.m_Translate)
+            continue;
+        return true;
     }
     return false;
 }
@@ -935,7 +935,7 @@ void DecoLayer::Refresh()
 {
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
     {
-        if (m_aItems[i] != 0)
+        if (m_aItems[i])
             m_aItems[i]->Refresh();
     }
 }
@@ -945,7 +945,7 @@ void DecoLayer::SetCulled(int bVisible)
 {
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
     {
-        if (m_aItems[i] != 0)
+        if (m_aItems[i])
             m_aItems[i]->SetCulled(bVisible);
     }
 }
@@ -1014,7 +1014,10 @@ bool DecoLayer::ChangeAsset(CString strAsset)
 DecoItem* DecoLayer::AddItem()
 {
     DecoItem* pItem = new (efd::MemHint(efd::MemHint::NONE)) DecoItem;
-    m_aItems.Add(efd::SmartPointer<DecoItem>(pItem));
+    {
+        efd::SmartPointer<DecoItem> spItem(pItem);
+        m_aItems.Add(spItem);
+    }
     return pItem;
 }
 
@@ -1022,7 +1025,10 @@ DecoItem* DecoLayer::AddItem()
 DecoItem* DecoLayer::AddItem(const ATL::CAtlArray<NiTransform>& aXf)
 {
     DecoItem* pItem = new (efd::MemHint(efd::MemHint::NONE)) DecoItem(aXf);
-    m_aItems.Add(efd::SmartPointer<DecoItem>(pItem));
+    {
+        efd::SmartPointer<DecoItem> spItem(pItem);
+        m_aItems.Add(spItem);
+    }
     return pItem;
 }
 
@@ -1030,9 +1036,9 @@ DecoItem* DecoLayer::AddItem(const ATL::CAtlArray<NiTransform>& aXf)
 bool DecoLayer::AddTransform(const NiTransform& xf)
 {
     DecoItem* pItem = GetEditableItem();
-    if (pItem == 0)
-        return false;
-    return pItem->AddTransform(xf);
+    if (pItem != 0)
+        return pItem->AddTransform(xf);
+    return false;
 }
 
 // @0x141177580
@@ -1049,7 +1055,7 @@ void DecoLayer::CollectNear(Unk_StreamPoint pt, float fRadius, ATL::CAtlArray<Ni
 // @0x141177640
 DecoItem* DecoLayer::GetEditableItem()
 {
-    if (m_aItems.GetCount() == 0)
+    if (m_aItems.GetCount() < 1)
         return AddItem();
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
     {
