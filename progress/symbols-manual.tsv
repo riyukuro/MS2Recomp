@@ -4443,3 +4443,13 @@ criHeap_Initialize	1400282e0	func
 ?SetToAppend@?$Matrix2x4@M@Render@Scaleform@@QEAAXAEBV123@0@Z	1425e5430	func
 ?Unlock@Mutex@Scaleform@@QEAAXXZ	14258bb70	func
 ?unmapTextureRT@DrawableImage@Render@Scaleform@@IEAAXXZ	1425f0590	func
+??0AllocEngineMH@HeapMH@Scaleform@@QEAA@PEAVSysAlloc@2@PEAVMemoryHeapMH@2@_K2@Z	1426406e0	func
+??1AllocEngineMH@HeapMH@Scaleform@@QEAA@XZ	142640f70	func
+??0AllocBitSet2MH@HeapMH@Scaleform@@QEAA@XZ	1426cba30	func
+?Alloc@AllocBitSet2MH@HeapMH@Scaleform@@QEAAPEAX_K0PEAUMagicHeadersInfo@23@@Z	1426cba50	func
+?Alloc@AllocBitSet2MH@HeapMH@Scaleform@@QEAAPEAX_KPEAUMagicHeadersInfo@23@@Z	1426cbc50	func
+?Free@AllocBitSet2MH@HeapMH@Scaleform@@QEAAXPEAUPageMH@23@PEAXPEAUMagicHeadersInfo@23@PEA_K@Z	1426cbdb0	func
+?GetUsableSize@AllocBitSet2MH@HeapMH@Scaleform@@QEBA_KPEBUPageMH@23@PEBX@Z	1426cc040	func
+?InitPage@AllocBitSet2MH@HeapMH@Scaleform@@QEAAXPEAUPageMH@23@K@Z	1426cc080	func
+?ReallocInPlace@AllocBitSet2MH@HeapMH@Scaleform@@QEAAPEAXPEAUPageMH@23@PEAX_KPEA_KPEAUMagicHeadersInfo@23@@Z	1426cc5c0	func
+?ReleasePage@AllocBitSet2MH@HeapMH@Scaleform@@QEAAXPEAE@Z	1426cc850	func
