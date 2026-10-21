@@ -151,9 +151,9 @@ void FUN_140e00250(CInPacket& packet);
 void FUN_140e003b0(CInPacket& packet);
 void FUN_140e005a0(CInPacket& packet);
 void FUN_140e00690(CInPacket& packet);
-void FUN_140e00b40(char nType, CInPacket& packet);
-void FUN_140e00d90(char nType, int nSub);
-void FUN_140e00f00(char nType, int nSub);
+void FUN_140e00b40(unsigned char nType, CInPacket& packet);
+void FUN_140e00d90(unsigned char nType, int nSub);
+void FUN_140e00f00(unsigned char nType, int nSub);
 void FUN_140e00fd0();
 void FUN_140e010c0(CInPacket& packet);
 void FUN_140e011c0(CStringW& strOut, const CStringW& strName, __int64 nFee, int nMax, int nShareRate);
@@ -219,13 +219,12 @@ void FUN_140dff2b0()
     else
     {
         MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-        if (pMyPC != 0)
-        {
-            COutPacket packet(0x90, 0);
-            packet.vfunc_o10_1(10);
-            packet.vfunc_o10_1(1);
-            FUN_140710590(packet);
-        }
+        if (pMyPC == 0)
+            return;
+        COutPacket packet(0x90, 0);
+        packet.vfunc_o10_1(10);
+        packet.vfunc_o10_1(1);
+        FUN_140710590(packet);
     }
 }
 
@@ -266,25 +265,26 @@ void FUN_140dff600(CInPacket& packet)
     case 0:
         FUN_140e00250(packet);
         break;
+    case 4:
+        FUN_140e003b0(packet);
+        break;
     case 1:
         FUN_140e005a0(packet);
         break;
     case 2:
         FUN_140dfef30(packet);
         break;
-    case 4:
-        FUN_140e003b0(packet);
-        break;
     case 5:
         FUN_140e00690(packet);
-        break;
-    case 0xc:
-        FUN_140e010c0(packet);
         break;
     case 0xd:
     case 0xe:
     case 0xf:
         FUN_140e00b40(nSub, packet);
+        break;
+    case 0xc:
+        FUN_140e010c0(packet);
+        break;
     }
 }
 
@@ -293,7 +293,9 @@ void FUN_140dff600(CInPacket& packet)
 bool FUN_140dff700(int nResult, const CMsgBoxData& box)
 {
     MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pMyPC != 0 && nResult == 0)
+    if (pMyPC == 0)
+        return true;
+    if (nResult == 0)
     {
         int nMapId = 0;
         int nPortalId = 0;
@@ -303,11 +305,11 @@ bool FUN_140dff700(int nResult, const CMsgBoxData& box)
         box.FUN_140e01c50(2, nFee);
         if (DAT_143ab2898 < nFee)
         {
-            CStringW strMsg = FUN_140298ea0(CStringW(L"s_ugcox_enter_fail_entry_fee_lack"));
+            CStringW strMsg = FUN_140298ea0(L"s_ugcox_enter_fail_entry_fee_lack");
             FUN_1412751f0(strMsg, 1, 1);
             return true;
         }
-        pMyPC->FUN_14152a0c0(nMapId, nPortalId, 0, 0, CStringW(L""), CStringW(L""));
+        pMyPC->FUN_14152a0c0(nMapId, nPortalId, 0, 0, L"", L"");
     }
     return true;
 }
@@ -316,14 +318,13 @@ bool FUN_140dff700(int nResult, const CMsgBoxData& box)
 bool FUN_140dff8d0(int nResult, const CMsgBoxData& box)
 {
     MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pMyPC != 0)
+    if (pMyPC == 0)
+        return true;
+    if (nResult == 0)
     {
-        if (nResult == 0)
-        {
-            __int64 nMoney = 0;
-            box.FUN_140b19130(0, nMoney);
-            pMyPC->FUN_141529c80(0, 0, 0, nMoney, CStringW(L""));
-        }
+        __int64 nMoney = 0;
+        box.FUN_140b19130(0, nMoney);
+        pMyPC->FUN_141529c80(0, 0, 0, nMoney, CStringW(L""));
     }
     return true;
 }
@@ -332,7 +333,7 @@ bool FUN_140dff8d0(int nResult, const CMsgBoxData& box)
 // @0x140dff970
 void FUN_140dff970()
 {
-    CStringW strMsg = FUN_140298ea0(CStringW(L"s_ugcox_finish_warning_host"));
+    CStringW strMsg = FUN_140298ea0(L"s_ugcox_finish_warning_host");
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(1));
     spBox->FUN_141a01570(strMsg);
     spBox->FUN_141a01800(1);
@@ -356,40 +357,39 @@ bool FUN_140dffad0(int nResult, const CMsgBoxData& box)
 void FUN_140dffb50(void* pListener)
 {
     CStringW strMsg;
-    if (!s_bHost)
+    if (s_bHost)
     {
-        strMsg = FUN_140298ea0(CStringW(L"s_ugcox_leave_warning_entry"));
+        strMsg = FUN_140298ea0(L"s_ugcox_leave_warning_host");
+        FUN_1416fb300(FUN_1403b4750(), strMsg);
     }
     else
     {
-        strMsg = FUN_140298ea0(CStringW(L"s_ugcox_leave_warning_host"));
-        FUN_1416fb300(FUN_1403b4750(), strMsg);
+        strMsg = FUN_140298ea0(L"s_ugcox_leave_warning_entry");
     }
     MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(1));
     spBox->FUN_141a01570(strMsg);
     spBox->FUN_141a01800(1);
     spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dffdf0));
     spBox->FUN_141a02860(pListener);
-    spBox->FUN_141a01660(CStringW(L"leaveInField"));
+    spBox->FUN_141a01660(L"leaveInField");
     FUN_140d73c60(spBox);
 }
 
 // @0x140dffdf0
 bool FUN_140dffdf0(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0)
+    if (nResult != 0)
+        return true;
+    if (s_bHost)
     {
-        if (s_bHost)
-        {
-            COutPacket packet(0x90, 0);
-            packet.vfunc_o10_1(10);
-            packet.vfunc_o10_1(9);
-            FUN_140710590(packet);
-        }
-        COutPacket packet(0x6c, 0);
-        packet.vfunc_o10_1(1);
+        COutPacket packet(0x90, 0);
+        packet.vfunc_o10_1(10);
+        packet.vfunc_o10_1(9);
         FUN_140710590(packet);
     }
+    COutPacket packet(0x6c, 0);
+    packet.vfunc_o10_1(1);
+    FUN_140710590(packet);
     return true;
 }
 
@@ -397,22 +397,22 @@ bool FUN_140dffdf0(int nResult, const CMsgBoxData& box)
 // @0x140dffeb0
 int FUN_140dffeb0(Unk_OxArgs* pArgs)
 {
-    CStringW strCmd = pArgs->FUN_1408d21c0(1, CStringW(L""));
+    CStringW strCmd = pArgs->FUN_1408d21c0(1, L"");
     if (FUN_1403b3c40(strCmd, L"camera"))
     {
         int nObject = pArgs->FUN_1408d1f60(2, 0);
         if (0 < nObject)
         {
             FUN_140ad4b90()->FUN_1418631c0();
-            if (s_nCameraObject == nObject)
-            {
-                s_nCameraObject = -1;
-                FUN_140ad4b90()->FUN_1418631f0(nObject, 0);
-            }
-            else
+            if (s_nCameraObject != nObject)
             {
                 s_nCameraObject = nObject;
                 FUN_140ad4b90()->FUN_1418631f0(nObject, 1);
+            }
+            else
+            {
+                s_nCameraObject = -1;
+                FUN_140ad4b90()->FUN_1418631f0(nObject, 0);
             }
         }
     }
@@ -425,7 +425,7 @@ int FUN_140dffeb0(Unk_OxArgs* pArgs)
     }
     else if (FUN_1403b3c40(strCmd, L"answer"))
     {
-        CStringW strAnswer = pArgs->FUN_1408d21c0(2, CStringW(L""));
+        CStringW strAnswer = pArgs->FUN_1408d21c0(2, L"");
         if (FUN_1403b3c40(strAnswer, L"o"))
         {
             COutPacket packet(0x90, 0);
@@ -472,11 +472,10 @@ void FUN_140e00250(CInPacket& packet)
     else
     {
         std::vector<int> fees;
-        unsigned char nCount = packet.vfunc_o8_1();
-        for (int i = 0; i < (int)nCount; i++)
+        int nCount = packet.vfunc_o8_1();
+        for (int i = 0; i < nCount; i++)
         {
-            int nFee = packet.vfunc_o8_3();
-            fees.push_back(nFee);
+            fees.push_back(packet.vfunc_o8_3());
         }
         UIQuizOXCreateDialog* pDialog = FUN_140e01b10(0x4f47);
         if (pDialog != 0)
@@ -496,7 +495,7 @@ void FUN_140e003b0(CInPacket& packet)
     unsigned nCooltime = packet.vfunc_o8_3();
     int nTotal = packet.vfunc_o8_3();
     unsigned nCooltime2 = packet.vfunc_o8_3();
-    CStringW strMsg = FUN_14028b8e0(CStringW(L"s_ugcox_create_complete"));
+    CStringW strMsg = FUN_14028b8e0(L"s_ugcox_create_complete");
     strMsg.Replace(L"{eventFee}", (LPCWSTR)FUN_1409404f0(nFee));
     FUN_1412751f0(strMsg, 3, 1);
     FUN_140e01480(nPromoted, nCooltime, nTotal, nCooltime2);
@@ -506,7 +505,7 @@ void FUN_140e003b0(CInPacket& packet)
 // @0x140e005a0
 void FUN_140e005a0(CInPacket& packet)
 {
-    unsigned char nUnused = packet.vfunc_o8_1();
+    int nUnused = packet.vfunc_o8_1();
     int nPromoted = packet.vfunc_o8_3();
     unsigned nCooltime = packet.vfunc_o8_3();
     int nTotal = packet.vfunc_o8_3();
@@ -549,11 +548,11 @@ void FUN_140e00690(CInPacket& packet)
 
 // Subs 0xd..0xf: the quiz state (0xd start, 0xe running, 0xf end).
 // @0x140e00b40
-void FUN_140e00b40(char nType, CInPacket& packet)
+void FUN_140e00b40(unsigned char nType, CInPacket& packet)
 {
     __int64 nHostId = packet.vfunc_o8_4();
-    unsigned char nStep = packet.vfunc_o8_1();
-    unsigned char nRound = packet.vfunc_o8_1();
+    int nStep = packet.vfunc_o8_1();
+    int nRound = packet.vfunc_o8_1();
     __int64 nPrize1 = packet.vfunc_o8_4();
     __int64 nPrize2 = packet.vfunc_o8_4();
     UIPrizeMoneyDialog* pPrize = FUN_140e019d0(0x4f46);
@@ -581,19 +580,19 @@ void FUN_140e00b40(char nType, CInPacket& packet)
                 FUN_140e00fd0();
         }
     }
-    else if (!s_bHost)
+    else if (s_bHost)
     {
-        FUN_140e00f00(nType, nStep);
+        FUN_140e00d90(nType, nStep);
     }
     else
     {
-        FUN_140e00d90(nType, nStep);
+        FUN_140e00f00(nType, nStep);
     }
 }
 
 // The host's view of the state change.
 // @0x140e00d90
-void FUN_140e00d90(char nType, int nStep)
+void FUN_140e00d90(unsigned char nType, int nStep)
 {
     if (nType == '\r')
     {
@@ -644,7 +643,7 @@ void FUN_140e00d90(char nType, int nStep)
 
 // The entrants' view of the state change.
 // @0x140e00f00
-void FUN_140e00f00(char nType, int nStep)
+void FUN_140e00f00(unsigned char nType, int nStep)
 {
     if (nType == '\r')
     {
@@ -683,6 +682,7 @@ void FUN_140e00fd0()
     aIds.Add(0);
     aIds.Add(0);
     aIds.Add(0);
+    aIds.Add(0);
     aIds.Add(0x1c9c703);
     aIds.Add(0x1c9c704);
     aIds.Add(0x1c9c705);
@@ -695,8 +695,8 @@ void FUN_140e00fd0()
 // @0x140e010c0
 void FUN_140e010c0(CInPacket& packet)
 {
-    char nMode = packet.vfunc_o8_1();
-    unsigned char nCount = packet.vfunc_o8_1();
+    int nMode = packet.vfunc_o8_1();
+    int nCount = packet.vfunc_o8_1();
     UIQuizHostDialog* pHost = FUN_140e01a70(0x4f44);
     if (pHost != 0)
     {
@@ -709,7 +709,7 @@ void FUN_140e010c0(CInPacket& packet)
         {
             FUN_140e7e030(pHost, false);
         }
-        FUN_140e7e0b0(pHost, 1 < nCount);
+        FUN_140e7e0b0(pHost, nCount > 1);
     }
     if (nMode == 3)
         FUN_1403ed2b0()->FUN_141adc530(0x4f45);
@@ -721,7 +721,7 @@ void FUN_140e010c0(CInPacket& packet)
 // @0x140e011c0
 void FUN_140e011c0(CStringW& strOut, const CStringW& strName, __int64 nFee, int nMax, int nShareRate)
 {
-    strOut = FUN_14028b8e0(CStringW(L"s_ugcox_rule_notify"));
+    strOut = FUN_14028b8e0(L"s_ugcox_rule_notify");
     strOut.Replace(L"{name}", (LPCWSTR)strName);
     strOut.Replace(L"{entryFee}", (LPCWSTR)FUN_1409404f0(nFee));
     strOut.Replace(L"{entryMax}", (LPCWSTR)FUN_140719630(nMax));
@@ -732,7 +732,10 @@ void FUN_140e011c0(CStringW& strOut, const CStringW& strName, __int64 nFee, int 
 // @0x140e013e0
 void FUN_140e013e0(CStringW& strOut, const CStringW& strName)
 {
-    strOut = FUN_14028b8e0(CStringW(L"s_ugcox_move_home_confirm"));
+    {
+        CStringW strKey(L"s_ugcox_move_home_confirm");
+        strOut = FUN_14028b8e0(strKey);
+    }
     strOut.Replace(L"{name}", (LPCWSTR)strName);
 }
 
@@ -869,30 +872,26 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // @0x140e01de0
 CString FUN_140e01de0(MS2Ptr<Unk_AdMarketItem> item)
 {
-    if (item.get() == 0)
-        return CString("");
-    return FUN_140540050("limited_{0}", CString(item->m_id.FUN_1409b0470()));
+    if (item.get() != 0)
+        return FUN_140540050("limited_{0}", CString(item->m_id.FUN_1409b0470()));
+    return CString("");
 }
 
 // @0x140e01ef0
 bool FUN_140e01ef0(Unk_140165cf0* pElem)
 {
-    return pElem != 0;
+    if (pElem == 0)
+        return false;
+    return true;
 }
 
 // @0x140e01f10
 bool FUN_140e01f10(Unk_140165cf0* pElem)
 {
-    bool bMinimize;
     if (pElem == 0)
-    {
-        bMinimize = true;
-    }
-    else
-    {
-        bMinimize = false;
-        FUN_1408730a0(pElem, "minimize", bMinimize);
-    }
+        return true;
+    bool bMinimize = false;
+    FUN_1408730a0(pElem, "minimize", bMinimize);
     return bMinimize;
 }
 
