@@ -155,9 +155,10 @@ MS2_REPLACE_METHOD(0x140BD2CB0, AScript, FUN_140bd2cb0, 148, 0x01016A6F);
 // @0x140bd2c00
 static UIMeratMarketDialog* FUN_140bd2c00()
 {
-    if (FUN_1403ed2b0() == 0)
+    Unk_EdUIManager* pManager = FUN_1403ed2b0();
+    if (pManager == 0)
         return 0;
-    MS2Ptr<UIObject> spDialog = FUN_1403ed2b0()->FUN_141adcea0(FUN_140bd5bd0());
+    MS2Ptr<UIObject> spDialog = pManager->FUN_141adcea0(FUN_140bd5bd0());
     if (spDialog.IsNull())
         return 0;
     return dynamic_cast<UIMeratMarketDialog*>(spDialog.get());
@@ -227,19 +228,17 @@ void UIChatEmoticonDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->FUN_140d9f8f0();
-    if (!spCli.IsNull())
-    {
-        m_nSelTab = -1;
-        m_nNextExpire = 0;
-        spCli.get()->FUN_140a3a410();
-        FUN_140bd1fc0();
-        FUN_140bd1720();
-        FUN_140bd1a60();
-    }
-    else
+    if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x4e, 0);
+        return;
     }
+    m_nSelTab = -1;
+    m_nNextExpire = 0;
+    spCli.get()->FUN_140a3a410();
+    FUN_140bd1fc0();
+    FUN_140bd1720();
+    FUN_140bd1a60();
 }
 MS2_REPLACE_METHOD(0x140BD1080, UIChatEmoticonDialog, OnLoadComplete, 205, 0x7931F529);
 
@@ -254,9 +253,9 @@ MS2_REPLACE_METHOD(0x140BD1160, UIChatEmoticonDialog, vfunc_26, 43, 0x30115037);
 // @0x140bd11a0
 int UIChatEmoticonDialog::vfunc_13()
 {
-    if (vfunc_55() == 0)
-        return UIDialog::vfunc_13();
-    return 0;
+    if (vfunc_55() != 0)
+        return 0;
+    return UIDialog::vfunc_13();
 }
 MS2_REPLACE_METHOD(0x140BD11A0, UIChatEmoticonDialog, vfunc_13, 51, 0xC446B2C6);
 
@@ -507,8 +506,9 @@ MS2_REPLACE_METHOD(0x140BD2660, UIChatEmoticonDialog, FUN_140bd2660, 90, 0xFAB05
 void UIChatEmoticonDialog::FUN_140bd26c0(unsigned nGroupId)
 {
     m_setNewGroups.insert(nGroupId);
-    if (FUN_1409331e0() != 0)
-        FUN_1409331e0()->FUN_14138d7e0(9, 0);
+    if (FUN_1409331e0() == 0)
+        return;
+    FUN_1409331e0()->FUN_14138d7e0(9, 0);
 }
 MS2_REPLACE_METHOD(0x140BD26C0, UIChatEmoticonDialog, FUN_140bd26c0, 80, 0x9F8D5E99);
 
@@ -517,8 +517,8 @@ CStringW UIChatEmoticonDialog::FUN_140bd2720(int nEmoticonId)
 {
     ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
     if (!spEmo)
-        return CStringW(spEmo->m_strCommand);
-    return CStringW(L"");
+        return CStringW(L"");
+    return CStringW(spEmo->m_strCommand);
 }
 MS2_REPLACE_METHOD(0x140BD2720, UIChatEmoticonDialog, FUN_140bd2720, 182, 0xB154531B);
 
@@ -532,8 +532,10 @@ void UIChatEmoticonDialog::FUN_140bd27e0(int nTab)
         if (pDialog != 0)
             pDialog->Invoke("selectTab", m_nSelTab);
     }
-    else if (m_nSelTab != nTab)
+    else
     {
+        if (m_nSelTab == nTab)
+            return;
         m_nSelTab = nTab;
         FUN_140bd1a60();
     }
@@ -556,6 +558,7 @@ MS2_REPLACE_METHOD(0x140BD28B0, UIChatEmoticonDialog, FUN_140bd28b0, 205, 0x4516
 // exe VA.
 
 struct Unk_EdAlc { };                                       // empty std::allocator stand-in
+struct Unk_EdPairHolder { Unk_EdAlc m_pair; };                  // a container whose compressed pair sits at offset 0
 struct Unk_EdNode { Unk_EdNode* m_pNext; Unk_EdNode* m_pPrev; };            // list node header; the element follows
 struct Unk_EdListVal { Unk_EdNode* m_pHead; size_t m_nSize; };              // _List_val
 struct Unk_EdIter { Unk_EdNode* m_pNode; };                 // list iterator
@@ -602,7 +605,7 @@ void FUN_140bd5c10(CPtred* p);
 Unk_EdIter* FUN_140bd4bc0(void* pTree, Unk_EdIter* pOut, const int* pKey);
 Unk_EdMapPair* FUN_140bd5770(Unk_EdIter* pIt);
 Unk_EdTreeNode* FUN_140bd6d90(Unk_EdTreeNode* pNode);
-void FUN_14035cfa0(void* p);
+void* FUN_14035cfa0(void* p);                                          // std::addressof
 void* FUN_14015f9d0(size_t n);
 size_t FUN_14017ba40(size_t n);
 void FUN_14015fc80(void* p, size_t nBytes);
@@ -613,16 +616,15 @@ Unk_EdNode** FUN_140bd6e20(Unk_EdListVal* pList);
 void FUN_140a3cfa0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 void FUN_140a3cfe0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 Unk_EdAlc* FUN_140bd6a00(Unk_EdListVal* pList);
-void FUN_140bd7520(Unk_EdListVal* pList);
+void FUN_140bd7520(Unk_EdListVal* pList) noexcept;
 void FUN_140bd66f0(Unk_EdListVal* pList, Unk_EdNode* pNode);
 Unk_EdIter* FUN_140bd4ed0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 
 // @0x140bd2f60
-// MS2-FUNCTIONAL
-void FUN_140bd2f60(Unk_EdAlc* pAlc, Unk_EdNode* pNode)
+void FUN_140bd2f60(Unk_EdAlc* pAlc, Unk_EdNode* pNode) noexcept
 {
     Unk_EdAlc alc;
-    FUN_140bd4a30(&alc, FUN_140bd4790(pNode));
+    FUN_140bd4a30(&alc, FUN_140bd4790(&pNode->m_pNext));
     FUN_140bd4a30(&alc, FUN_140bd4790(&pNode->m_pPrev));
     FUN_140bd76e0(&alc, pNode, 1);
 }
@@ -657,15 +659,13 @@ Unk_EdListVal* FUN_140bd4f40(Unk_EdListVal* pList)
 }
 
 // @0x140bd52a0
-// MS2-FUNCTIONAL
-void FUN_140bd52a0(Unk_EdRef* pRef)
+void FUN_140bd52a0(Unk_EdRef* pRef) noexcept
 {
     FUN_140bd6ee0(pRef);
 }
 
 // @0x140bd52d0
-// MS2-FUNCTIONAL
-void FUN_140bd52d0(Unk_EdListVal* pList)
+void FUN_140bd52d0(Unk_EdListVal* pList) noexcept
 {
     FUN_140bd66f0(pList, *FUN_140bd6dc0(pList));
 }
@@ -677,8 +677,7 @@ void FUN_140bd5330(Unk_EdListVal* pList)
 }
 
 // @0x140bd53d0
-// MS2-FUNCTIONAL
-void FUN_140bd53d0(Unk_EdListVal* pList)
+void FUN_140bd53d0(Unk_EdListVal* pList) noexcept
 {
     FUN_140bd7140(pList);
     FUN_140bd5330(pList);
@@ -754,23 +753,17 @@ Unk_EdIter* FUN_140bd5830(Unk_EdIter* pIt)
 }
 
 // @0x140bd58c0
-// MS2-FUNCTIONAL
 Unk_EdTreeIter* FUN_140bd58c0(Unk_EdTreeIter* pIt)
 {
-    if (pIt->m_pNode->m_pRight->m_bNil == 0)
+    if (pIt->m_pNode->m_pRight->m_bNil)
     {
-        pIt->m_pNode = FUN_140bd6d90(pIt->m_pNode->m_pRight);
-    }
-    else
-    {
-        Unk_EdTreeNode* pParent = pIt->m_pNode->m_pParent;
-        while (pParent->m_bNil == 0 && pIt->m_pNode == pParent->m_pRight)
-        {
+        Unk_EdTreeNode* pParent;
+        while (!(pParent = pIt->m_pNode->m_pParent)->m_bNil && pIt->m_pNode == pParent->m_pRight)
             pIt->m_pNode = pParent;
-            pParent = pIt->m_pNode->m_pParent;
-        }
         pIt->m_pNode = pParent;
     }
+    else
+        pIt->m_pNode = FUN_140bd6d90(pIt->m_pNode->m_pRight);
     return pIt;
 }
 
@@ -805,12 +798,13 @@ void FUN_140bd5c50(Unk_EdRef* pRef, void* pUnused)
 }
 
 // @0x140bd6ee0
-// MS2-FUNCTIONAL
 void FUN_140bd6ee0(Unk_EdRef* pRef)
 {
     if (pRef->m_p != 0)
+    {
         FUN_140bd6f70(pRef, 0);
-    pRef->m_p = 0;
+        pRef->m_p = 0;
+    }
 }
 
 // @0x140bd5d80
@@ -836,11 +830,10 @@ void FUN_140bd66f0(Unk_EdListVal* pList, Unk_EdNode* pNode)
 }
 
 // @0x140bd67b0
-// MS2-FUNCTIONAL
 void FUN_140bd67b0(Unk_EdListVal* pList, Unk_EdNode* pNode)
 {
     Unk_EdAlc* pAlc = FUN_140bd6a00(pList);
-    FUN_140bd4a30(pAlc, pNode + 1);
+    FUN_140bd4a30(pAlc, FUN_14035cfa0(pNode + 1));
     FUN_140bd2f60(pAlc, pNode);
 }
 
@@ -851,10 +844,9 @@ void* FUN_140bd69b0(void* p)
 }
 
 // @0x140bd6a00
-// MS2-FUNCTIONAL
 Unk_EdAlc* FUN_140bd6a00(Unk_EdListVal* pList)
 {
-    return FUN_140bd6930(reinterpret_cast<Unk_EdAlc*>(pList));
+    return FUN_140bd6930(&reinterpret_cast<Unk_EdPairHolder*>(pList)->m_pair);
 }
 
 // @0x140bd6de0
@@ -907,7 +899,7 @@ void* FUN_140bd7230(Unk_EdAlc* pAlc, size_t nCount)
 
 // @0x140bd7360
 // MS2-FUNCTIONAL
-Unk_EdIter* FUN_140bd7360(Unk_EdListVal* pList, Unk_EdIter* pOut)
+Unk_EdIter* FUN_140bd7360(Unk_EdListVal* pList, Unk_EdIter* pOut) noexcept
 {
     FUN_140a3cfa0(pOut, FUN_140bd6de0(pList)->m_pHead->m_pNext, FUN_140a3e770(pList));
     return pOut;
@@ -915,7 +907,7 @@ Unk_EdIter* FUN_140bd7360(Unk_EdListVal* pList, Unk_EdIter* pOut)
 
 // @0x140bd73c0
 // MS2-FUNCTIONAL
-Unk_EdIter* FUN_140bd73c0(Unk_EdListVal* pList, Unk_EdIter* pOut)
+Unk_EdIter* FUN_140bd73c0(Unk_EdListVal* pList, Unk_EdIter* pOut) noexcept
 {
     FUN_140a3cfe0(pOut, FUN_140bd6e00(pList)->m_pHead->m_pNext, FUN_140a3e7b0(pList));
     return pOut;
@@ -929,7 +921,7 @@ void FUN_140bd77a0(Unk_EdAlc* pAlc, void* p, size_t nCount)
 
 // @0x140bd78c0
 // MS2-FUNCTIONAL
-Unk_EdIter* FUN_140bd78c0(Unk_EdListVal* pList, Unk_EdIter* pOut)
+Unk_EdIter* FUN_140bd78c0(Unk_EdListVal* pList, Unk_EdIter* pOut) noexcept
 {
     FUN_140a3cfa0(pOut, FUN_140bd6de0(pList)->m_pHead, FUN_140a3e770(pList));
     return pOut;
@@ -937,7 +929,7 @@ Unk_EdIter* FUN_140bd78c0(Unk_EdListVal* pList, Unk_EdIter* pOut)
 
 // @0x140bd7920
 // MS2-FUNCTIONAL
-Unk_EdIter* FUN_140bd7920(Unk_EdListVal* pList, Unk_EdIter* pOut)
+Unk_EdIter* FUN_140bd7920(Unk_EdListVal* pList, Unk_EdIter* pOut) noexcept
 {
     FUN_140a3cfe0(pOut, FUN_140bd6e00(pList)->m_pHead, FUN_140a3e7b0(pList));
     return pOut;
@@ -1017,10 +1009,9 @@ CPtred* FUN_140bd5760(const Unk_EdRef* pRef)
 }
 
 // @0x140bd6850
-// MS2-FUNCTIONAL
 void* FUN_140bd6850(void* p)
 {
-    return FUN_140bd69b0(p);
+    return FUN_140bd69b0(&static_cast<Unk_EdPairHolder*>(p)->m_pair);
 }
 
 // @0x140bd6930
@@ -1036,10 +1027,9 @@ void* FUN_140bd6960(void* p)
 }
 
 // @0x140bd6a60
-// MS2-FUNCTIONAL
 void* FUN_140bd6a60(void* p)
 {
-    return FUN_140bd6960(p);
+    return FUN_140bd6960(&static_cast<Unk_EdPairHolder*>(p)->m_pair);
 }
 
 // @0x140bd6dc0
@@ -1068,7 +1058,7 @@ size_t* FUN_140bd6e60(Unk_EdListVal* pList)
 
 // @0x140bd7300
 // MS2-FUNCTIONAL
-Unk_EdIter* FUN_140bd7300(Unk_EdListVal* pList, Unk_EdIter* pOut)
+Unk_EdIter* FUN_140bd7300(Unk_EdListVal* pList, Unk_EdIter* pOut) noexcept
 {
     Unk_EdListVal* pVal = FUN_140bd47e0(FUN_140bd6850(pList));
     FUN_140bd4dd0(pOut, (*FUN_140bd6dc0(pList))->m_pNext, pVal);
@@ -1077,7 +1067,7 @@ Unk_EdIter* FUN_140bd7300(Unk_EdListVal* pList, Unk_EdIter* pOut)
 
 // @0x140bd7860
 // MS2-FUNCTIONAL
-Unk_EdIter* FUN_140bd7860(Unk_EdListVal* pList, Unk_EdIter* pOut)
+Unk_EdIter* FUN_140bd7860(Unk_EdListVal* pList, Unk_EdIter* pOut) noexcept
 {
     Unk_EdListVal* pVal = FUN_140bd47e0(FUN_140bd6850(pList));
     FUN_140bd4dd0(pOut, *FUN_140bd6dc0(pList), pVal);
@@ -1085,8 +1075,7 @@ Unk_EdIter* FUN_140bd7860(Unk_EdListVal* pList, Unk_EdIter* pOut)
 }
 
 // @0x140bd7520
-// MS2-FUNCTIONAL
-void FUN_140bd7520(Unk_EdListVal* pList)
+void FUN_140bd7520(Unk_EdListVal* pList) noexcept
 {
     Unk_EdNode* pNode = (*FUN_140bd6dc0(pList))->m_pNext;
     Unk_EdNode** ppHead = FUN_140bd6dc0(pList);
@@ -1155,7 +1144,7 @@ Unk_EdMapPair* FUN_140bd7d50(Unk_EdMapPair* p)
 
 // @0x140bd7420
 // MS2-FUNCTIONAL
-Unk_EdIter* FUN_140bd7420(Unk_EdListVal* pList, Unk_EdIter* pOut)
+Unk_EdIter* FUN_140bd7420(Unk_EdListVal* pList, Unk_EdIter* pOut) noexcept
 {
     Unk_EdListVal* pVal = FUN_140bd4780(FUN_140bd6890(pList));
     FUN_140bd4d90(pOut, (*FUN_140bd6e40(pList))->m_pNext, pVal);
@@ -1164,7 +1153,7 @@ Unk_EdIter* FUN_140bd7420(Unk_EdListVal* pList, Unk_EdIter* pOut)
 
 // @0x140bd7980
 // MS2-FUNCTIONAL
-Unk_EdIter* FUN_140bd7980(Unk_EdListVal* pList, Unk_EdIter* pOut)
+Unk_EdIter* FUN_140bd7980(Unk_EdListVal* pList, Unk_EdIter* pOut) noexcept
 {
     Unk_EdListVal* pVal = FUN_140bd4780(FUN_140bd6890(pList));
     FUN_140bd4d90(pOut, *FUN_140bd6e40(pList), pVal);
