@@ -7776,3 +7776,15 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?SetMatrix@MatrixObject@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEBV?$Matrix2x4@M@Render@4@@Z	142982370	func
 ?SetProperties_Call@PointObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@QEBVValue@234@@Z	142989d20	func
 ?ToPrimitive@Value@AS2@GFx@Scaleform@@QEBA?AV1234@PEAVEnvironment@234@W4hint@1234@@Z	142991850	func
+??0Value@AS2@GFx@Scaleform@@QEAA@PEAVObject@123@@Z	142923cb0	func
+?ArrayObjectElements_Resize@AS2@GFx@Scaleform@@YAXPEAV?$ArrayLH@PEAVValue@AS2@GFx@Scaleform@@$0BED@UArrayDefaultPolicy@4@@3@_K@Z	14297e2b0	func
+?Concat@ArrayObject@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEBVValue@234@@Z	142935680	func
+?InsertEmpty@ArrayObject@AS2@GFx@Scaleform@@QEAAXHH@Z	142962010	func
+?JoinToString@ArrayObject@AS2@GFx@Scaleform@@QEBAXPEAVEnvironment@234@PEAVStringBuffer@4@PEBD@Z	142966270	func
+?OperatorNew@Environment@AS2@GFx@Scaleform@@QEAAPEAVObject@234@PEAV5234@AEBVASString@34@HH@Z	14296e520	func
+?PushBack@ArrayObject@AS2@GFx@Scaleform@@QEAAXAEBVValue@234@@Z	142971ba0	func
+?PushBack@ArrayObject@AS2@GFx@Scaleform@@QEAAXXZ	142971c50	func
+?RemoveElements@ArrayObject@AS2@GFx@Scaleform@@QEAAXHH@Z	14297d0d0	func
+?Resize@ArrayObject@AS2@GFx@Scaleform@@QEAAXH@Z	14297e330	func
+?SetElement@ArrayObject@AS2@GFx@Scaleform@@QEAAXHAEBVValue@234@@Z	1429814c0	func
+?ToInt32@Value@AS2@GFx@Scaleform@@QEBAHPEAVEnvironment@234@@Z	142991210	func
