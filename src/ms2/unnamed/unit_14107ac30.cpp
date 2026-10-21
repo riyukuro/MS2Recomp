@@ -630,12 +630,12 @@ bool FUN_14107cb00(NiFixedString* pName, void* pData, int n)
 MS2_REPLACE(0x14107cb00, FUN_14107cb00, 155, 0x76E1782A);
 
 // @0x14107cbe0
-// MS2-FUNCTIONAL: ATLENSURE_THROW expansion differs (extra temporary)
 NiObject** FUN_14107cbe0(Unk_C930Walker& rWalker)
 {
     do
     {
         int bOk = !!(*(void**)((char*)&rWalker + 8) != 0);
+        do { } while (0);
         if (!bOk)
             FUN_140159b70(E_FAIL);
     } while (0);
