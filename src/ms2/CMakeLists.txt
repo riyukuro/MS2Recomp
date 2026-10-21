@@ -6,6 +6,7 @@
 include("${CMAKE_CURRENT_LIST_DIR}/../../cmake/ms2-game-flags.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/../../cmake/ms2-scaleform-sdk.cmake")    # optional Scaleform SDK headers (MS2_SCALEFORM_SDK)
 include("${CMAKE_CURRENT_LIST_DIR}/../../cmake/ms2-engine-flags.cmake")     # Gamebryo include dirs + defines (docs/RECOVERY.md section 3)
+include("${CMAKE_CURRENT_LIST_DIR}/../../cmake/ms2-unit-profiles.cmake")    # `// MS2-FLAGS: <profile>` per-unit flags (Scaleform)
 
 if(MSVC AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     foreach(cfg DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
@@ -27,6 +28,7 @@ ms2_filter_sources(MS2_GAME_SOURCES)     # MS2_GAME_FILTER (per-agent link check
 if(NOT MS2_GAME_SOURCES)
     message(FATAL_ERROR "MS2_GAME_FILTER '${MS2_GAME_FILTER}' matches no game source")
 endif()
+ms2_unit_profiles(MS2_GAME_SOURCES)      # per-source overrides after the game flags (cmake/ms2-unit-profiles.cmake)
 add_library(ms2game OBJECT ${MS2_GAME_SOURCES})
 target_include_directories(ms2game PRIVATE "${PROJECT_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}/hook")
 ms2_engine_flags(ms2game)
