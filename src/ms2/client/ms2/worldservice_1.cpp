@@ -11094,7 +11094,7 @@ void FUN_14169c280(Unk_WsI_Portal* portal);                     // refresh porta
 CStringW* FUN_141811980(void* stringTable, CStringW* out, int category, unsigned id);   // localized string
 void* FUN_1401a9d70();                                          // string table singleton
 void FUN_140997ec0(CGlobalKeyTextCallback* self, egf::EntityPtr pEntity);   // register the entity (callee releases)
-bool FUN_142095bc0(void* assetService, std::string name, std::string& outCategory);
+namespace efd { class AssetLocatorService; } bool FUN_142095bc0(efd::AssetLocatorService* pService, const efd::utf8string& kUrn, efd::utf8string& kOut);   // efd strings (efd allocator)
 void* FUN_140998300(char* cell);
 void FUN_1409a10d0(std::string* dst, std::string* src);         // normalise (in place)
 
@@ -11360,12 +11360,12 @@ void WorldService::FUN_141bbd640(const egf::EntityChangeMessage* pMsg, efd::Cate
         efd::AssetID asset;
         if (FUN_140998250_I(pEntity, 0x770e5fc6, &asset) == 0)
         {
-            std::string path(asset.GetURN().c_str());
+            efd::utf8string path(asset.GetURN());
             void* assetService = FUN_140998300(&DAT_143b059e8);
             if (assetService != 0)
             {
-                std::string category("Unknown");
-                if (FUN_142095bc0(assetService, std::string(path.c_str()), category))
+                efd::utf8string category("Unknown");
+                if (FUN_142095bc0(static_cast<efd::AssetLocatorService*>(assetService), efd::utf8string(path.c_str()), category))
                     FUN_1411ab090(FUN_1403ed280(), CStringA(category.c_str()));
             }
         }
