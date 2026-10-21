@@ -110,7 +110,7 @@ public:
     void FUN_141b434c0(ASData& args);                           // onChangeModel
     int FUN_141b43660(int nImage);                              // select an image of the folder
     bool FUN_141b437c0(ASData& args);                           // onChangeIndexDesign
-    int FUN_141b43be0(int nImage);                              // onDoubleClickImage
+    bool FUN_141b43be0(int nImage);                              // onDoubleClickImage
     bool FUN_141b43c60(int nImage);                             // onClickMake
     void FUN_141b44910();                                       // onClickAddImage
     void FUN_141b44990();                                       // onClickInitialize

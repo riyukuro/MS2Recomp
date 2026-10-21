@@ -481,10 +481,10 @@ MS2_REPLACE_METHOD(0x141B3CCA0, UIUGCItemEditDialog, vfunc_16, 34, 0x6D66C0A2);
 // @0x141b3ccd0
 bool UIUGCItemEditDialog::vfunc_17()
 {
-    bool bLoaded = UIDialog::vfunc_17();
-    if (bLoaded)
-        FUN_141b3cd10();
-    return bLoaded;
+    if (!UIDialog::vfunc_17())
+        return false;
+    FUN_141b3cd10();
+    return true;
 }
 MS2_REPLACE_METHOD(0x141B3CCD0, UIUGCItemEditDialog, vfunc_17, 47, 0x5B5734A2);
 
@@ -516,7 +516,8 @@ int UIUGCItemEditDialog::vfunc_65()
         CShopCategoryTable::GetInstance()->Reload(false);
     if (CUGCDesignTable::GetInstance() != 0)
     {
-        if (CUGCDesignTable::GetInstance()->Load())
+        bool bLoaded = CUGCDesignTable::GetInstance()->Load();
+        if (bLoaded)
             m_tabs.RemoveAll();
     }
     if (m_tabs.IsEmpty())
@@ -634,11 +635,10 @@ MS2_REPLACE_METHOD(0x141B3D370, UIUGCItemEditDialog, vfunc_49, 1014, 0x0C638ED2)
 // @0x141b3d770
 void UIUGCItemEditDialog::vfunc_ugc_4(int nDialog)
 {
-    if (vfunc_48() == nDialog)
-    {
-        FUN_141b41a20();
-        FUN_141b419c0();
-    }
+    if (vfunc_48() != nDialog)
+        return;
+    FUN_141b41a20();
+    FUN_141b419c0();
 }
 
 // @0x141b3d7e0
@@ -646,10 +646,10 @@ int UIUGCItemEditDialog::vfunc_o178_0(void* pAvatar)
 {
     FUN_141b3e640(MS2Ptr<UIAvatarBase>(static_cast<UIAvatarBase*>(pAvatar)), true, true);
     FUN_141b3e990();
-    if (m_nImage == -1)
-        FUN_141b417e0();
-    else
+    if (m_nImage != -1)
         FUN_141b43660(m_nImage);
+    else
+        FUN_141b417e0();
     return 1;
 }
 
@@ -1111,11 +1111,10 @@ MS2_REPLACE_METHOD(0x141B40220, UIUGCItemEditDialog, FUN_141b40220, 71, 0x71650D
 // @0x141b40270
 void UIUGCItemEditDialog::FUN_141b40270()
 {
-    if (!(m_30 == 0))
-    {
-        FUN_141b401b0(MS2Ptr<CItem>(0));
-        m_30->Invoke("restart");
-    }
+    if (m_30 == 0)
+        return;
+    FUN_141b401b0(MS2Ptr<CItem>(0));
+    m_30->Invoke("restart");
 }
 MS2_REPLACE_METHOD(0x141B40270, UIUGCItemEditDialog, FUN_141b40270, 131, 0x98AA674E);
 
@@ -1361,16 +1360,18 @@ MS2_REPLACE_METHOD(0x141B417E0, UIUGCItemEditDialog, FUN_141b417e0, 474, 0x20AE6
 // @0x141b419c0
 void UIUGCItemEditDialog::FUN_141b419c0()
 {
-    if (!(m_30 == 0))
-        m_30->Invoke("updateSelectedImage");
+    if (m_30 == 0)
+        return;
+    m_30->Invoke("updateSelectedImage");
 }
 MS2_REPLACE_METHOD(0x141B419C0, UIUGCItemEditDialog, FUN_141b419c0, 89, 0xDD4D8B79);
 
 // @0x141b41a20
 void UIUGCItemEditDialog::FUN_141b41a20()
 {
-    if (!(m_30 == 0))
-        m_30->Invoke("requestCapture");
+    if (m_30 == 0)
+        return;
+    m_30->Invoke("requestCapture");
 }
 MS2_REPLACE_METHOD(0x141B41A20, UIUGCItemEditDialog, FUN_141b41a20, 89, 0xD3BAD29F);
 
@@ -1421,8 +1422,9 @@ void UIUGCItemEditDialog::FUN_141b41cd0()
 // @0x141b41e80
 void UIUGCItemEditDialog::FUN_141b41e80(int nModel)
 {
-    if (!(m_30 == 0))
-        m_30->Invoke("changeModel", nModel);
+    if (m_30 == 0)
+        return;
+    m_30->Invoke("changeModel", nModel);
 }
 MS2_REPLACE_METHOD(0x141B41E80, UIUGCItemEditDialog, FUN_141b41e80, 98, 0xA2958292);
 
@@ -1520,8 +1522,9 @@ void UIUGCItemEditDialog::FUN_141b42800()
     MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
     if (spUpload == 0)
         return;
-    if (spUpload->m_nKind == m_nKind && !(spUpload->m_spViewer == 0))
-        spUpload->m_spViewer->vfunc_5();
+    if (spUpload->m_nKind != m_nKind || spUpload->m_spViewer == 0)
+        return;
+    spUpload->m_spViewer->vfunc_5();
 }
 MS2_REPLACE_METHOD(0x141B42800, UIUGCItemEditDialog, FUN_141b42800, 200, 0x5A3F806B);
 
@@ -1626,7 +1629,9 @@ __int64 UIUGCItemEditDialog::FUN_141b43240(MS2Ptr<CUGCDesignData> spDesign, int 
 {
     if (spDesign == 0)
         return 0;
-    return FUN_14088df20(FUN_1401c0d90()->FUN_14047bab0(), 10000, spDesign->m_nSalePrice) * nCount;
+    int nRate = FUN_1401c0d90()->FUN_14047bab0();
+    __int64 nUnit = FUN_14088df20(nRate, 10000, spDesign->m_nSalePrice);
+    return nUnit * nCount;
 }
 MS2_REPLACE_METHOD(0x141B43240, UIUGCItemEditDialog, FUN_141b43240, 165, 0xD9422141);
 
@@ -1648,9 +1653,9 @@ MS2_REPLACE_METHOD(0x141B432F0, UIUGCItemEditDialog, FUN_141b432f0, 243, 0x99491
 // @0x141b433f0
 MS2Ptr<UIAvatarBase> UIUGCItemEditDialog::FUN_141b433f0(int nModel)
 {
-    if (nModel >= 0 && nModel < (int)m_avatars.GetCount())
-        return m_avatars[nModel];
-    return MS2Ptr<UIAvatarBase>(0);
+    if (nModel < 0 || nModel >= (int)m_avatars.GetCount())
+        return MS2Ptr<UIAvatarBase>(0);
+    return m_avatars[nModel];
 }
 
 // @0x141b43490
@@ -1728,16 +1733,16 @@ bool UIUGCItemEditDialog::FUN_141b437c0(ASData& args)
 }
 
 // @0x141b43be0
-int UIUGCItemEditDialog::FUN_141b43be0(int nImage)
+bool UIUGCItemEditDialog::FUN_141b43be0(int nImage)
 {
     if (nImage == -1)
     {
         FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
-        return 0;
+        return false;
     }
-    if (FUN_14052d220()->FUN_141882a70(nImage, 1) == 0)
-        return 0;
-    return 1;
+    if (FUN_14052d220()->FUN_141882a70(nImage, 1))
+        return true;
+    return false;
 }
 MS2_REPLACE_METHOD(0x141B43BE0, UIUGCItemEditDialog, FUN_141b43be0, 115, 0xA8E3BCB1);
 
@@ -1827,8 +1832,10 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
 // @0x141b44910
 void UIUGCItemEditDialog::FUN_141b44910()
 {
-    if (FUN_14052d220()->FUN_1418810c0(CStringW(L"./"), L"Image Files (*.dds, *.png, *.jpg)"))
-        FUN_141b40ab0(m_nKind, 0);
+    int nRet = FUN_14052d220()->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
+    if (nRet == 0)
+        return;
+    FUN_141b40ab0(m_nKind, 0);
 }
 MS2_REPLACE_METHOD(0x141B44910, UIUGCItemEditDialog, FUN_141b44910, 115, 0x34A6A13A);
 
@@ -1850,31 +1857,35 @@ MS2_REPLACE_METHOD(0x141B44990, UIUGCItemEditDialog, FUN_141b44990, 131, 0x56878
 // @0x141b44a20
 void UIUGCItemEditDialog::FUN_141b44a20()
 {
-    if (FUN_14052d220()->FUN_141880fc0())
-        FUN_141b40ab0(m_nKind, 0);
+    if (FUN_14052d220()->FUN_141880fc0() == 0)
+        return;
+    FUN_141b40ab0(m_nKind, 0);
 }
 MS2_REPLACE_METHOD(0x141B44A20, UIUGCItemEditDialog, FUN_141b44a20, 57, 0x77671059);
 
 // @0x141b44a60
 void UIUGCItemEditDialog::FUN_141b44a60(ASData& args)
 {
-    if (!(m_30 == 0))
-    {
-        int nX = args.FUN_1422b8a10();
-        int nY = args.FUN_1422b8a10();
-        int nWidth = args.FUN_1422b8a10();
-        int nHeight = args.FUN_1422b8a10();
-        m_kCapture = NiRect<unsigned int>(nX, nX + nWidth, nY, nY + nHeight);
-        m_nCapture = 1;
-    }
+    if (m_30 == 0)
+        return;
+    int nX = args.FUN_1422b8a10();
+    int nY = args.FUN_1422b8a10();
+    int nWidth = args.FUN_1422b8a10();
+    int nHeight = args.FUN_1422b8a10();
+    m_kCapture = NiRect<unsigned int>(nX, nX + nWidth, nY, nY + nHeight);
+    m_nCapture = 1;
 }
 MS2_REPLACE_METHOD(0x141B44A60, UIUGCItemEditDialog, FUN_141b44a60, 197, 0x071D5F4A);
 
 // @0x141b44b30
 void UIUGCItemEditDialog::FUN_141b44b30(int nPosition)
 {
-    if (nPosition != -1 && !(m_30 == 0))
-        FUN_141b40b00(nPosition);
+    if (nPosition == -1)
+        return;
+    if (m_30 == 0)
+        return;
+    int nPos = nPosition;
+    FUN_141b40b00(nPos);
 }
 MS2_REPLACE_METHOD(0x141B44B30, UIUGCItemEditDialog, FUN_141b44b30, 77, 0x779D4CE8);
 
@@ -1906,8 +1917,9 @@ MS2_REPLACE_METHOD(0x141B44B90, UIUGCItemEditDialog, FUN_141b44b90, 366, 0xA572C
 // @0x141b44d10
 void UIUGCItemEditDialog::FUN_141b44d10(ASData& args)
 {
-    if (!(m_30 == 0))
-        FUN_141b40220();
+    if (m_30 == 0)
+        return;
+    FUN_141b40220();
 }
 MS2_REPLACE_METHOD(0x141B44D10, UIUGCItemEditDialog, FUN_141b44d10, 57, 0x7B4AAC92);
 
@@ -1957,7 +1969,7 @@ void UIUGCItemEditDialog::FUN_141b45020()
     MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_inputItemName");
     if (spInput == 0)
         return;
-    spInput->FUN_1422e0ab0(CStringW(L""));
+    spInput->FUN_1422e0ab0(L"");
 }
 MS2_REPLACE_METHOD(0x141B45020, UIUGCItemEditDialog, FUN_141b45020, 170, 0x7E70A9EB);
 
@@ -2249,8 +2261,7 @@ float FUN_141b48480(int nPreviewKind, int nSlot)
         return 90.0f;
     else if (nSlot == 10)
         return 334.0f;
-    else
-        return 270.0f;
+    return 270.0f;
 }
 MS2_REPLACE_OVERLOAD(0x141B48480, float(int, int), FUN_141b48480, 102, 0x98227DA7);
 
@@ -2259,8 +2270,7 @@ float FUN_141b48500(int nPreviewKind)
 {
     if (nPreviewKind == 6)
         return 316.0f;
-    else
-        return 300.0f;
+    return 300.0f;
 }
 MS2_REPLACE_OVERLOAD(0x141B48500, float(int), FUN_141b48500, 30, 0xD23D5A8F);
 
@@ -2325,9 +2335,9 @@ bool FUN_141b488c0(MS2Ptr<CItemData> spData)
 {
     if (spData == 0)
         return false;
-    if (spData->property.doNotPreview == 0)
-        return true;
-    return false;
+    if (spData->property.doNotPreview != 0)
+        return false;
+    return true;
 }
 MS2_REPLACE_OVERLOAD(0x141B488C0, bool(MS2Ptr<CItemData>), FUN_141b488c0, 125, 0xD4A40561);
 
@@ -2547,12 +2557,7 @@ bool FUN_141b49b50(MS2Ptr<CItemData> spData)
 {
     if (spData == 0)
         return false;
-    bool bPackage;
-    if (spData->FUN_14053c5c0() == 0x19 && spData->function.name != L"UGCMapPackage")
-        bPackage = true;
-    else
-        bPackage = false;
-    return bPackage;
+    return spData->FUN_14053c5c0() == 0x19 && spData->function.name != L"UGCMapPackage";
 }
 MS2_REPLACE_OVERLOAD(0x141B49B50, bool(MS2Ptr<CItemData>), FUN_141b49b50, 167, 0xAE2BC220);
 
@@ -2632,25 +2637,11 @@ MS2_REPLACE_METHOD(0x141B49D40, ItemPreviewCommon::CLimitCharRotate, FUN_141b49d
 // @0x141b49f30
 bool ItemPreviewCommon::CLimitCharRotate::FUN_141b49f30(const std::pair<float, float>* pRange, float fAngle)
 {
-    bool bIn;
-    if (pRange->first <= pRange->second)
-    {
-        bool bInside;
-        if (fAngle <= pRange->first || pRange->second <= fAngle)
-            bInside = false;
-        else
-            bInside = true;
-        bIn = bInside;
-    }
+    bool bIn = false;
+    if (!(pRange->first <= pRange->second))
+        bIn = fAngle < pRange->second || fAngle > pRange->first;
     else
-    {
-        bool bOutside;
-        if (fAngle < pRange->second || (pRange->first <= fAngle && fAngle != pRange->first))
-            bOutside = true;
-        else
-            bOutside = false;
-        bIn = bOutside;
-    }
+        bIn = fAngle > pRange->first && fAngle < pRange->second;
     return bIn;
 }
 MS2_REPLACE_METHOD(0x141B49F30, ItemPreviewCommon::CLimitCharRotate, FUN_141b49f30, 173, 0x97848DA4);
