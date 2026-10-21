@@ -2796,3 +2796,11 @@ inline bool Unk_ItemOptionPicker<T>::PickN(std::vector<T>& out, unsigned n, Unk_
     }
     return true;
 }
+
+// The first-argument forward of the pair<int,int>(int&,int&) ctor 0x1405dbe80: a TU-local copy of the identity
+// COMDAT whose names (forward<int&>, _Const_cast<pair<int,unsigned>>) are bound to other exe copies.
+// @0x1405e6670
+int& FUN_1405e6670(int& r)
+{
+    return r;
+}

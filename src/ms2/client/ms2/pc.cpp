@@ -41,7 +41,6 @@
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_PCBaseComp_a68@@@@AEBAXPEAX@Z 0x141669480 ; prop
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VJobSystemCli@@@@AEBAXPEAX@Z 0x141669540 ; unique
 // MS2-PIN: ?Release@?$MS2Ptr@VUnk_PCBaseComp_a68@@@@AEAAXXZ 0x141669aa0 ; prop
-// MS2-PIN: ??__FstrMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ 0x14166a060 ; prop
 // MS2-PINS-END tplpin
 // tplpin --simulate (w553), hand-applied:
 // MS2-PIN: ??0PC@@QEAA@XZ 0x14164dfd0
@@ -78,7 +77,6 @@
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUnk_PCBaseComp_a68@@@@AEBAXPEAX@Z 0x141669480
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VJobSystemCli@@@@AEBAXPEAX@Z 0x141669540
 // MS2-PIN: ?Release@?$MS2Ptr@VUnk_PCBaseComp_a68@@@@AEAAXXZ 0x141669aa0
-// MS2-PIN: ??__FstrMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ 0x14166a060
 // MS2-PIN: ??0?$MS2Ptr@VUnk_PCInteractMode@@@@QEAA@H@Z 0x141666110
 // MS2-PIN: ??0?$MS2Ptr@VUnk_PCInteractMode@@@@QEAA@PEAVUnk_PCInteractMode@@@Z 0x141666130
 // MS2-PIN: ??0?$MS2Ptr@VCSkillTierOptionManager@@@@QEAA@PEAVCSkillTierOptionManager@@@Z 0x1416661d0
@@ -4923,3 +4921,4 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy)(void*, s
 // MS2-PIN: ?vfunc_126@PC@@UEAAXV?$MS2Ptr@VUnk_PCArg125@@@@H@Z 0x141655230
 // MS2-PIN: ?vfunc_143@PC@@UEAAXXZ 0x141660920
 // MS2-PIN: ??$addressof@V?$_Vector_val@U?$_Simple_types@UModelNameEntry@@@std@@@std@@@std@@YAPEAV?$_Vector_val@U?$_Simple_types@UModelNameEntry@@@std@@@0@AEAV10@@Z 0x141665be0
+// MS2-RANGE: 0x142cb3d50-0x142cb4000 .text$yd

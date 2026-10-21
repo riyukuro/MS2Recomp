@@ -879,3 +879,4 @@ inline int FUN_140f1ffe0(const int& n, int nMin, int nMax)
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+// MS2-RANGE: 0x142ca8f40-0x142ca8f70 .text$yd

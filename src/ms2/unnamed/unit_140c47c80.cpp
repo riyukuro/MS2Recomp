@@ -683,3 +683,4 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
     }
     return true;
 }
+// MS2-RANGE: 0x142ca2db0-0x142ca2e40 .text$yd
