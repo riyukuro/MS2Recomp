@@ -7886,3 +7886,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?GetMovieClipObject@AvmSprite@AS2@GFx@Scaleform@@AEAAPEAVMovieClipObject@234@XZ	142953da0	func
 ?SetLevelMovie@MovieImpl@GFx@Scaleform@@QEAA_NHPEAVDisplayObjContainer@23@@Z	142575f20	func
 sfr_atan2f_thunk	14280f28e	func
+?SetNoLine@DrawingContext@GFx@Scaleform@@QEAAXXZ	1426005c0	func
