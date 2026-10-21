@@ -7827,3 +7827,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ??1InvokeAliasInfo@MovieRoot@AS2@GFx@Scaleform@@QEAA@XZ	142925ae0	func
 ??1Watchpoint@Object@AS2@GFx@Scaleform@@QEAA@XZ	142926100	func
 ?TryBlocks_Resize@AS2@GFx@Scaleform@@YAXPEAV?$ArrayLH@UTryDescr@Environment@AS2@GFx@Scaleform@@$01UArrayDefaultPolicy@5@@3@_K@Z	14297e060	func
+?CountLayers@ShapeDataFloatMP@Render@Scaleform@@QEAAXXZ	1426786e0	func
