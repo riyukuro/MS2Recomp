@@ -7843,3 +7843,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?TextFormat_Destruct@AS2@GFx@Scaleform@@YAXPEAVTextFormat@Text@Render@3@@Z	1424aa0f0	func
 ?WatchpointHash_Destruct@AS2@GFx@Scaleform@@YAXPEAV?$ASStringHash_GC@UWatchpoint@Object@AS2@GFx@Scaleform@@@23@@Z	1429246b0	func
 ?IsVerboseParse@Stream@GFx@Scaleform@@QEBA_NXZ	1425c2090	func
+?updateRenderTargetRT@DrawableImage@Render@Scaleform@@IEAAXXZ	1425f05f0	func
