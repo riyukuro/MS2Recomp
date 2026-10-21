@@ -142,11 +142,10 @@ Ridee* FUN_1417cd1c0(GameObject* pObject);
 // ---- StateHoldData ----
 
 // @0x1417cb9c0
-StateHoldData::StateHoldData()
+StateHoldData::StateHoldData() : m_nTargetId(0)
 {
     m_nSkill = 0x1312d1f;
     m_nLevel = 1;
-    m_nTargetId = 0;
 }
 
 // @0x1417cba30
