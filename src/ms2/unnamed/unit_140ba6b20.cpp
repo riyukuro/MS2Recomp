@@ -2,7 +2,7 @@
 // MS2-UNIT: unit_140ba6b20
 // MS2-RANGE: 0x140ba6b20-0x140ba7d90 .text$mn
 // MS2-RANGE: 0x1400c9a30-0x1400c9ba0 .text$di
-// MS2-FUNCTIONAL: 6cf0/7080/7130/vfunc_43/vfunc_28/79c0 are behaviour-equivalent; the exe 3-hop pointer chain after 16-byte smart-pointer returns and some branch layouts are not reproduced by our cl.
+// MS2-FUNCTIONAL: 6cf0 is behaviour-equivalent; the exe loads nLevel into ecx for the setPoint max-level compare (cmp ecx,eax vs our cmp [mem],eax).
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?vfunc_48@UIAdventureLevelExpBar@@UEAAHXZ 0x140ba7c70 ; unique
 // MS2-PINS-END tplpin
@@ -200,8 +200,7 @@ __int64 UIAdventureLevelExpBar::FUN_140ba6ff0()
 // @0x140ba7080
 void UIAdventureLevelExpBar::FUN_140ba7080(int nVisible)
 {
-    MS2Ptr<ASMovieClip> spPoint = GetChild<ASMovieClip>("m_point");
-    if (spPoint.get())
+    if (MS2Ptr<ASMovieClip> spPoint = GetChild<ASMovieClip>("m_point"))
         spPoint->vfunc_3(nVisible);
 }
 
@@ -210,19 +209,18 @@ void UIAdventureLevelExpBar::FUN_140ba7130()
 {
     int nVisible = 1;
     Unk_AdvActor* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    Unk_AdvHolderRef spHolder(pPlayer->FUN_1416764a0());
+    if (spHolder != 0)
     {
-        Unk_AdvHolderRef spHolder(pPlayer->FUN_1416764a0());
-        if (spHolder != 0)
-        {
-            int nMounted = spHolder.FUN_140975bc0()->FUN_141707750().FUN_1407895d0()->m_6c;
-            if (nMounted != 0)
-                nVisible = 0;
-        }
-        MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
-        if (pEntity.get())
-            pEntity->vfunc_3(nVisible);
+        bool bMounted = spHolder.FUN_140975bc0()->FUN_141707750().FUN_1407895d0()->m_6c != 0 ? 1 : 0;
+        if (bMounted)
+            nVisible = 0;
     }
+    MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
+    if (pEntity.get())
+        pEntity->vfunc_3(nVisible);
 }
 
 // @0x140ba72b0
@@ -248,8 +246,7 @@ void UIAdventureLevelExpBar::vfunc_43()
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity.get())
     {
-        float fScale = (float)DAT_143af62d4 * FUN_14025e7a0()->FUN_1422afec0(m_28);
-        static_cast<Unk_AdvEntity*>(pEntity.operator->())->FUN_1422c0e80(fScale);
+        static_cast<Unk_AdvEntity*>(pEntity.operator->())->FUN_1422c0e80((float)DAT_143af62d4 * FUN_14025e7a0()->FUN_1422afec0(m_28));
         pEntity->Invoke("setExpBarHeight", (unsigned int)FUN_1418dd0c0());
         static_cast<Unk_AdvEntity*>(pEntity.operator->())->vfunc_25();
     }
@@ -279,13 +276,15 @@ int UIAdventureLevelExpBar::vfunc_28(const char* szMethod, const Scaleform::GFx:
 {
     if (UISwfEntity::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (_stricmp("OnClickBar", szMethod) != 0)
-        return 0;
-    if (FUN_140166410()->FUN_14036d570(0xfb) == false)
-        FUN_1403ed2b0()->FUN_141adc750(0x4f87);
-    else
-        FUN_1403ed2b0()->FUN_141adc750(0x4f67);
-    return 1;
+    if (_stricmp("OnClickBar", szMethod) == 0)
+    {
+        if (FUN_140166410()->FUN_14036d570(0xfb))
+            FUN_1403ed2b0()->FUN_141adc750(0x4f67);
+        else
+            FUN_1403ed2b0()->FUN_141adc750(0x4f87);
+        return 1;
+    }
+    return 0;
 }
 
 // @0x140ba7710
@@ -307,14 +306,11 @@ MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root)
     return pEntity;
 }
 
-// MS2-FUNCTIONAL: the exe moves the local into the return slot through the MS2Ptr move-ctor COMDAT.
 // @0x140ba7ae0
 MS2Ptr<ASGameEntity>& FUN_140ba7ae0(MS2Ptr<ASGameEntity>& kDst, MS2Ptr<ASGameEntity>& kSrc)
 {
-    Unk_AdvPtrView& d = reinterpret_cast<Unk_AdvPtrView&>(kDst);
-    Unk_AdvPtrView& s = reinterpret_cast<Unk_AdvPtrView&>(kSrc);
-    d.m_p = s.m_p;
-    s.m_p = 0;
+    reinterpret_cast<Unk_AdvPtrView&>(kDst).m_p = reinterpret_cast<Unk_AdvPtrView&>(kSrc).m_p;
+    reinterpret_cast<Unk_AdvPtrView&>(kSrc).m_p = 0;
     return kDst;
 }
 
