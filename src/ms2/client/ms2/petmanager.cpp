@@ -102,7 +102,6 @@ CPetManager* FUN_140535320();                               // CPetManager::GetI
 void FUN_1401ff930(Unk_PetFlags* pFlags, CInPacket* pIn);
 
 // items
-CItemData* FUN_140527840(CItem*);
 int FUN_14053dc20(CItemData*);
 int FUN_14053dc60(CItemData*);
 bool FUN_14053cd10(CItemData*);
@@ -151,26 +150,25 @@ CPetInventory::~CPetInventory()
 // @0x140c868d0
 void CPetInventory::FUN_140c868d0()
 {
-    if (FUN_1403ed2d0() != 0)
+    if (FUN_1403ed2d0() == 0)
+        return;
+    unsigned nSlots = 0;
+    Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer != 0)
     {
-        int nSlots = 0;
-        Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPlayer != 0)
+        void* pPet = pPlayer->FUN_141676a10();
+        if (pPet != 0)
         {
-            void* pPet = pPlayer->FUN_141676a10();
-            if (pPet != 0)
-            {
-                MS2Ptr<Unk_PetRow> spRow = static_cast<CPet*>(pPet)->FUN_140b102b0();
-                if (spRow.get() != 0)
-                    nSlots = spRow->m_nSlots;
-            }
+            MS2Ptr<Unk_PetRow> spRow = static_cast<CPet*>(pPet)->FUN_140b102b0();
+            if (spRow.get() != 0)
+                nSlots = spRow->m_nSlots;
         }
-        Unk_CriticalSectionLock guard(m_lock, 1);
-        m_items.RemoveAll();
-        m_slots.RemoveAll();
-        m_slots.SetCount(nSlots, -1);
-        m_n80 = 0;
     }
+    Unk_CriticalSectionLock guard(m_lock, 1);
+    m_items.RemoveAll();
+    m_slots.RemoveAll();
+    m_slots.SetCount(nSlots, -1);
+    m_n80 = 0;
 }
 // @0x140c869e0
 int CPetInventory::FUN_140c869e0(CItem* pItem)
@@ -218,10 +216,12 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c86c90(int nSlot)
 {
     ItemPtr spItem(0);
     int nCount = (int)m_slots.GetCount();
-    if (nSlot < 0 || nCount <= nSlot)
+    if (nSlot < 0 || nSlot >= nCount)
         return ItemPtr(0);
-    Unk_CriticalSectionLock guard(m_lock, 1);
-    spItem = m_slots[nSlot];
+    {
+        Unk_CriticalSectionLock guard(m_lock, 1);
+        spItem = m_slots[nSlot];
+    }
     return spItem;
 }
 // @0x140c86d90
@@ -297,7 +297,7 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c87300(int nItemId, int bAnyUsabili
             continue;
         if (bAnyUsability == 0 && pPlayer->FUN_141662eb0(spItem.get()) == 0)
             continue;
-        if (FUN_14053dc20(FUN_140527840(spItem.get())) == nItemId)
+        if (FUN_14053dc20(reinterpret_cast<CItemData*>(spItem->FUN_140527840())) == nItemId)
             return spItem;
     }
     return ItemPtr(0);
@@ -305,15 +305,16 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c87300(int nItemId, int bAnyUsabili
 // @0x140c874f0
 int CPetInventory::FUN_140c874f0()
 {
-    int nFree = 0;
+    int nUsed = 0;
     Unk_CriticalSectionLock guard(m_lock, 1);
     for (unsigned i = 0; i < m_slots.GetCount(); ++i)
     {
         ItemPtr spItem = m_slots[i];
-        if (spItem.get() == 0)
-            ++nFree;
+        if (spItem == 0)
+            continue;
+        ++nUsed;
     }
-    return nFree;
+    return nUsed;
 }
 // @0x140c875e0
 int CPetInventory::FUN_140c875e0()
@@ -325,33 +326,37 @@ int CPetInventory::FUN_140c87610()
 {
     Unk_CriticalSectionLock guard(m_lock, 1);
     unsigned nCount = (unsigned)m_slots.GetCount();
-    for (int i = 0; i < (int)(nCount >> 1); ++i)
+    int nHalf = nCount >> 1;
+    int nLast = nCount - 1;
+    for (int i = 0; i < nHalf; ++i)
     {
-        ItemPtr spItem = m_slots[(int)((nCount - 1) - i)];
-        if (spItem.get() == 0)
+        ItemPtr spItem = m_slots[nLast - i];
+        if (spItem == 0)
             return 1;
         spItem = m_slots[i];
-        if (spItem.get() == 0)
+        if (spItem == 0)
             return 1;
     }
     return 0;
 }
 // @0x140c87780
-bool CPetInventory::FUN_140c87780(int nItemId, int nCount)
+int CPetInventory::FUN_140c87780(int nItemId, int nCount)
 {
-    return nCount <= FUN_140c87840(nItemId, 0);
+    int nHave = FUN_140c87840(nItemId, 0);
+    return nHave >= nCount;
 }
 // @0x140c877e0
-bool CPetInventory::FUN_140c877e0(int nItemId, int nRarity, int nCount)
+int CPetInventory::FUN_140c877e0(int nItemId, int nRarity, int nCount)
 {
-    return nCount <= FUN_140c87840(nItemId, nRarity);
+    int nHave = FUN_140c87840(nItemId, nRarity);
+    return nHave >= nCount;
 }
 // @0x140c87840
 int CPetInventory::FUN_140c87840(int nItemId, int nRarity)
 {
-    int nTotal = 0;
     if (nItemId == 0)
         return 0;
+    int nTotal = 0;
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
@@ -359,7 +364,7 @@ int CPetInventory::FUN_140c87840(int nItemId, int nRarity)
     for (unsigned i = 0; i < m_slots.GetCount(); ++i)
     {
         ItemPtr spItem = m_slots[i];
-        if (spItem.get() == 0)
+        if (spItem == 0)
             continue;
         if (pPlayer->FUN_141662eb0(spItem.get()) == 0)
             continue;
@@ -380,8 +385,8 @@ int CPetInventory::FUN_140c87a00(int nItemId)
     for (int i = 0; i < nCount; ++i)
     {
         ItemPtr spItem = m_slots[i];
-        if (spItem.get() != 0 && spItem->FUN_1405276c0() == nItemId)
-            nRoom += (int)spItem->FUN_1405281e0() - spItem->FUN_140526c50();
+        if (static_cast<bool>(spItem.get()) && spItem->FUN_1405276c0() == nItemId)
+            nRoom += spItem->FUN_1405281e0() - spItem->FUN_140526c50() < 0 ? 0 : spItem->FUN_1405281e0() - spItem->FUN_140526c50();
     }
     return nRoom;
 }
@@ -432,7 +437,7 @@ void CPetInventory::FUN_140c87ef0(ATL::CAtlArray<ItemPtr>& result)
 bool CPetInventory::FUN_140c87fb0(int nItemId)
 {
     ItemPtr spItem = FUN_140c86d90(nItemId);
-    if (spItem.get() == 0)
+    if (spItem == 0)
         return false;
     return FUN_140c88f70(spItem);
 }
@@ -440,7 +445,7 @@ bool CPetInventory::FUN_140c87fb0(int nItemId)
 bool CPetInventory::FUN_140c88050(int nItemId)
 {
     ItemPtr spItem = FUN_140c87300(nItemId, 0);
-    if (spItem.get() == 0)
+    if (spItem == 0)
         return false;
     return FUN_140c88f70(spItem);
 }
@@ -452,16 +457,15 @@ void CPetInventory::FUN_140c88100()
     FUN_140710590(packet);
 }
 // @0x140c88160
-void CPetInventory::FUN_140c88160(__int64 nUid, short nSlot)
+void CPetInventory::FUN_140c88160(__int64 nUid, int nSlot)
 {
-    if (FUN_140535320()->FUN_140c8b2e0() != nUid)
-    {
-        COutPacket packet(0x79, 0);
-        packet.Encode1(3);
-        packet.Encode8(nUid);
-        packet.Encode2(nSlot);
-        FUN_140710590(packet);
-    }
+    if (FUN_140535320()->FUN_140c8b2e0() == nUid)
+        return;
+    COutPacket packet(0x79, 0);
+    packet.Encode1(3);
+    packet.Encode8(nUid);
+    packet.Encode2(nSlot);
+    FUN_140710590(packet);
 }
 // @0x140c88200
 void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
@@ -475,7 +479,7 @@ void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
             {
                 if (spItem->FUN_140525640() == 0)
                 {
-                    if (FUN_14053cd10(FUN_140527840(spItem.get())))
+                    if (FUN_14053cd10(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))
                     {
                         if (FUN_140c8dab0(FUN_140c8dac0()) == spItem->FUN_140526a50())
                         {
@@ -511,20 +515,18 @@ void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
     }
 }
 // @0x140c88590
-void CPetInventory::FUN_140c88590(__int64 nUid, short nSlot, int nCount)
+void CPetInventory::FUN_140c88590(__int64 nUid, int nSlot, int nCount)
 {
-    if (0 < nCount)
-    {
-        if (FUN_140535320()->FUN_140c8b2e0() != nUid)
-        {
-            COutPacket packet(0x79, 0);
-            packet.Encode1(1);
-            packet.Encode8(nUid);
-            packet.Encode2(nSlot);
-            packet.Encode4(nCount);
-            FUN_140710590(packet);
-        }
-    }
+    if (nCount < 1)
+        return;
+    if (FUN_140535320()->FUN_140c8b2e0() == nUid)
+        return;
+    COutPacket packet(0x79, 0);
+    packet.Encode1(1);
+    packet.Encode8(nUid);
+    packet.Encode2(nSlot);
+    packet.Encode4(nCount);
+    FUN_140710590(packet);
 }
 // @0x140c88650
 bool CPetInventory::FUN_140c88650(int nButton, const CMsgBoxData& box)
@@ -542,7 +544,7 @@ bool CPetInventory::FUN_140c88700(int nButton, const CMsgBoxData& box)
     if (nButton == 0)
     {
         int nCount = _wtoi(box.FUN_141a02d50().Trim(L','));
-        FUN_140c88590(box.FUN_141a02c20(), (short)box.FUN_141a02c80(), nCount);
+        FUN_140c88590(box.FUN_141a02c20(), box.FUN_141a02c80(), nCount);
     }
     return true;
 }
@@ -597,7 +599,7 @@ void CPetInventory::FUN_140c88c30(ItemPtr spItem, int nSlot)
         return;
     if (!spItem->FUN_140526850())
     {
-        FUN_140535320()->FUN_140c8b410()->FUN_140c88590(spItem->FUN_140526a50(), (short)nSlot, spItem->FUN_140526c50());
+        FUN_140535320()->FUN_140c8b410()->FUN_140c88590(spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50());
         return;
     }
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(5, 0xc10, 0, CStringW(L""));
@@ -623,9 +625,9 @@ bool CPetInventory::FUN_140c88f70(ItemPtr spItem)
         FUN_141275260(0x888, 1, 1);
         return false;
     }
-    if (!FUN_14053d270(FUN_140527840(spItem.get())))
+    if (!FUN_14053d270(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))
         return false;
-    int nSkill = FUN_14053dc20(FUN_140527840(spItem.get()));
+    int nSkill = FUN_14053dc20(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
     MS2Ptr<Unk_PmSkillLevel> spLevel = FUN_1401958b0()->FUN_1407ee2f0(nSkill, 1);
     if (spLevel.get() != 0)
         return false;
@@ -641,9 +643,8 @@ bool CPetInventory::FUN_140c88f70(ItemPtr spItem)
 
 // ---- CPetManager ------------------------------------------------------------------------------------------------
 // @0x140c89200
-Unk_PetManagerEmpty* Unk_PetManagerEmpty::FUN_140c89200()
+Unk_PetManagerEmpty::Unk_PetManagerEmpty()
 {
-    return this;
 }
 // @0x140c89220
 int CPetManager::FUN_140c89220(int nItemId)
@@ -663,17 +664,17 @@ int CPetManager::FUN_140c89270(int nItemId)
 MS2Ptr<CItem> CPetManager::FUN_140c892c0(int nItemId)
 {
     MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c86d90(nItemId);
-    if (spItem.get() == 0)
-        return DAT_143ab2a90.FUN_140a5e2e0(nItemId);
-    return spItem;
+    if (spItem.get() != 0)
+        return spItem;
+    return DAT_143ab2a90.FUN_140a5e2e0(nItemId);
 }
 // @0x140c89380
 MS2Ptr<CItem> CPetManager::FUN_140c89380(unsigned __int64 nUid)
 {
     MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b410()->FUN_140c87250(nUid);
-    if (spItem.get() == 0)
-        return DAT_143ab2a90.FUN_140a5d680(nUid);
-    return spItem;
+    if (spItem.get() != 0)
+        return spItem;
+    return DAT_143ab2a90.FUN_140a5d680(nUid);
 }
 // @0x140c89440
 int CPetManager::FUN_140c89440(int nItemId, int nRarity)
@@ -684,10 +685,8 @@ int CPetManager::FUN_140c89440(int nItemId, int nRarity)
 }
 // @0x140c894b0
 CPetManager::CPetManager()
+    : m_8(0), m_nSummonUid(0)
 {
-    m_8 = 0;
-    m_nSummonUid = 0;
-    m_a0.FUN_140c89200();
     m_nAuto = 1;
 }
 // @0x140c89570
@@ -697,27 +696,28 @@ CPetManager::~CPetManager()
 // @0x140c895e0
 void CPetManager::FUN_140c895e0(CInPacket& in)
 {
-    switch (in.vfunc_o8_1())
+    int nMode = in.vfunc_o8_1();
+    switch (nMode)
     {
+    case 7: FUN_140c89810(in); break;
+    case 8: FUN_140c898f0(in); break;
+    case 9: FUN_140c89980(in); break;
     case 0: FUN_140c89b20(in); break;
     case 1: FUN_140c89d00(in); break;
     case 2: FUN_140c89ea0(in); break;
     case 4: FUN_140c8a140(in); break;
     case 5: FUN_140c8a420(in); break;
     case 6: FUN_140c8a390(in); break;
-    case 7: FUN_140c89810(in); break;
-    case 8: FUN_140c898f0(in); break;
-    case 9: FUN_140c89980(in); break;
     case 10: FUN_140c8a4b0(in); break;
+    case 0x12: FUN_140c8a640(in); break;
+    case 0x11: FUN_140c8a7a0(in); break;
     case 0xb: FUN_140c8a940(in); break;
     case 0xc: FUN_140c8ab80(in); break;
-    case 0xf: FUN_140c8b070(in); break;
     case 0x10: FUN_140c8ac50(in); break;
-    case 0x11: FUN_140c8a7a0(in); break;
-    case 0x12: FUN_140c8a640(in); break;
     case 0x13: FUN_140c8ae50(in); break;
-    case 0x14: FUN_140c8b0c0(in); break;
     case 0x15: FUN_140c8afa0(in); break;
+    case 0xf: FUN_140c8b070(in); break;
+    case 0x14: FUN_140c8b0c0(in); break;
     }
 }
 // @0x140c89810
@@ -744,23 +744,22 @@ void CPetManager::FUN_140c89980(CInPacket& in)
 {
     int nObjectId = in.vfunc_o8_3();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
     {
-        if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
+        FUN_140535320()->FUN_140c8b410()->FUN_140c868d0();
+        m_info.FUN_1401ffd00(&in);
+        if (m_info.identity.name.IsEmpty())
         {
-            FUN_140535320()->FUN_140c8b410()->FUN_140c868d0();
-            m_info.FUN_1401ffd00(&in);
-            if (m_info.identity.name.IsEmpty())
-            {
-                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_140c8b2e0());
-                if (spItem.get() == 0)
-                    return;
-                m_info.identity.name = spItem->FUN_140527b10();
-            }
-            Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
-            if (pDialog != 0)
-                pDialog->FUN_140e74640(1);
+            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_140c8b2e0());
+            if (spItem == 0)
+                return;
+            m_info.identity.name = spItem->FUN_140527b10();
         }
+        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        if (pDialog != 0)
+            pDialog->FUN_140e74640(1);
     }
 }
 // @0x140c89b20
@@ -769,24 +768,23 @@ void CPetManager::FUN_140c89b20(CInPacket& in)
     int nObjectId = in.vfunc_o8_3();
     int nValue = in.vfunc_o8_3();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    pPlayer->FUN_141663150(in);
+    pPlayer->FUN_141676a50(pPlayer->FUN_1416769f0(), nValue);
+    FUN_1411e7660(pPlayer->FUN_1416561a0());
+    if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
     {
-        pPlayer->FUN_141663150(in);
-        pPlayer->FUN_141676a50(pPlayer->FUN_1416769f0(), nValue);
-        FUN_1411e7660(pPlayer->FUN_1416561a0());
-        if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
+        FUN_140535320()->FUN_140c8b300(pPlayer->FUN_1416769f0());
+        Unk_PmInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+        if (pInventory != 0)
+            pInventory->FUN_14199a3f0(pPlayer->FUN_1416769f0());
+        Unk_PmGameMenu* pMenu = FUN_140938b90(0x4e28);
+        if (pMenu != 0)
         {
-            FUN_140535320()->FUN_140c8b300(pPlayer->FUN_1416769f0());
-            Unk_PmInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
-            if (pInventory != 0)
-                pInventory->FUN_14199a3f0(pPlayer->FUN_1416769f0());
-            Unk_PmGameMenu* pMenu = FUN_140938b90(0x4e28);
-            if (pMenu != 0)
-            {
-                MS2Ptr<Unk_PetRow> spRow = FUN_140535320()->FUN_140c8b470();
-                if (spRow.get() != 0)
-                    pMenu->FUN_141938270(1, spRow->m_nF18 == 1, m_nAuto);
-            }
+            MS2Ptr<Unk_PetRow> spRow = FUN_140535320()->FUN_140c8b470();
+            if (spRow.get() != 0)
+                pMenu->FUN_141938270(1, spRow->m_nF18 == 1, m_nAuto);
         }
     }
 }
@@ -796,25 +794,24 @@ void CPetManager::FUN_140c89d00(CInPacket& in)
     int nObjectId = in.vfunc_o8_3();
     __int64 nUid = in.vfunc_o8_4();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    pPlayer->FUN_141676ab0(nUid);
+    pPlayer->FUN_141663400(MS2Ptr<CItem>(0));
+    FUN_1411e7660(pPlayer->FUN_1416561a0());
+    if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
     {
-        pPlayer->FUN_141676ab0(nUid);
-        pPlayer->FUN_141663400(MS2Ptr<CItem>(0));
-        FUN_1411e7660(pPlayer->FUN_1416561a0());
-        if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
-        {
-            FUN_140535320()->FUN_140c8b300(0);
-            Unk_PmInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
-            if (pInventory != 0)
-                pInventory->FUN_14199a3f0(nUid);
-            Unk_PmGameMenu* pMenu = FUN_140938b90(0x4e28);
-            if (pMenu != 0)
-                pMenu->FUN_141938270(0, 0, 0);
-            Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
-            if (pDialog != 0)
-                pDialog->FUN_140e74640(2);
-            FUN_141275260(0xc0c, 1, 1);
-        }
+        FUN_140535320()->FUN_140c8b300(0);
+        Unk_PmInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
+        if (pInventory != 0)
+            pInventory->FUN_14199a3f0(nUid);
+        Unk_PmGameMenu* pMenu = FUN_140938b90(0x4e28);
+        if (pMenu != 0)
+            pMenu->FUN_141938270(0, 0, 0);
+        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        if (pDialog != 0)
+            pDialog->FUN_140e74640(2);
+        FUN_141275260(0xc0c, 1, 1);
     }
 }
 // @0x140c89ea0
@@ -853,21 +850,17 @@ void CPetManager::FUN_140c8a140(CInPacket& in)
         if (spHud.get() != 0)
             ((UIHudEntity::Entity*)(void*)spHud.operator->())->FUN_140f48d80();
     }
-    Unk_PmPlayer* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pLocal != 0)
+    if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0 && FUN_1403ed2d0()->FUN_141bd0cc0()->FUN_14123c580() == nObjectId)
     {
-        if (FUN_1403ed2d0()->FUN_141bd0cc0()->FUN_14123c580() == nObjectId)
-        {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->FUN_140c8b2e0());
-            if (spItem.get() == 0)
-                return;
-            m_info.identity.FUN_1401ff0f0(identity);
-            spItem->FUN_140528b00(m_info.identity.name);
-            FUN_140535320()->FUN_140c8b450()->identity.extra = identity.extra;
-            Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
-            if (pDialog != 0)
-                pDialog->FUN_140e74640(0xd);
-        }
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->FUN_140c8b2e0());
+        if (spItem == 0)
+            return;
+        m_info.identity.FUN_1401ff0f0(identity);
+        spItem->FUN_140528b00(m_info.identity.name);
+        FUN_140535320()->FUN_140c8b450()->identity.extra = identity.extra;
+        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        if (pDialog != 0)
+            pDialog->FUN_140e74640(0xd);
     }
 }
 // @0x140c8a390
@@ -875,22 +868,20 @@ void CPetManager::FUN_140c8a390(CInPacket& in)
 {
     int nObjectId = in.vfunc_o8_3();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
-    if (pPlayer != 0)
-    {
-        if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
-            FUN_1401ff930(&m_info.flags, &in);
-    }
+    if (pPlayer == 0)
+        return;
+    if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
+        FUN_1401ff930(&m_info.flags, &in);
 }
 // @0x140c8a420
 void CPetManager::FUN_140c8a420(CInPacket& in)
 {
     int nObjectId = in.vfunc_o8_3();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
-    if (pPlayer != 0)
-    {
-        if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
-            m_info.options.FUN_1401ff4d0(&in);
-    }
+    if (pPlayer == 0)
+        return;
+    if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
+        m_info.options.FUN_1401ff4d0(&in);
 }
 // @0x140c8a4b0
 void CPetManager::FUN_140c8a4b0(CInPacket& in)
@@ -899,21 +890,19 @@ void CPetManager::FUN_140c8a4b0(CInPacket& in)
     __int64 nValue = in.vfunc_o8_4();
     __int64 nUid = in.vfunc_o8_4();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
     {
-        if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
-        {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-            if (spItem.get() != 0)
-            {
-                spItem->FUN_140528b60(nValue);
-                if (pPlayer->FUN_1416769f0() == nUid)
-                    m_info.identity.id = nValue;
-                Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
-                if (pDialog != 0)
-                    pDialog->FUN_140e74640(6);
-            }
-        }
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+        if (spItem == 0)
+            return;
+        spItem->FUN_140528b60(nValue);
+        if (pPlayer->FUN_1416769f0() == nUid)
+            m_info.identity.id = nValue;
+        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        if (pDialog != 0)
+            pDialog->FUN_140e74640(6);
     }
 }
 // @0x140c8a640
@@ -923,19 +912,17 @@ void CPetManager::FUN_140c8a640(CInPacket& in)
     int nLevel = in.vfunc_o8_3();
     __int64 nUid = in.vfunc_o8_4();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
     {
-        if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
-        {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-            if (spItem.get() != 0)
-            {
-                spItem->FUN_140528bb0(nLevel);
-                Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
-                if (pDialog != 0)
-                    pDialog->FUN_140e74640(8);
-            }
-        }
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+        if (spItem == 0)
+            return;
+        spItem->FUN_140528bb0(nLevel);
+        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        if (pDialog != 0)
+            pDialog->FUN_140e74640(8);
     }
 }
 // @0x140c8a7a0
@@ -943,32 +930,31 @@ void CPetManager::FUN_140c8a7a0(CInPacket& in)
 {
     int nObjectId = in.vfunc_o8_3();
     __int64 nUid = in.vfunc_o8_4();
-    unsigned char nFlag = in.vfunc_o8_1();
+    int nFlag = in.vfunc_o8_1();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    if (spItem == 0)
+        return;
+    spItem->FUN_140526bf0(nFlag);
+    spItem->FUN_140524eb0(in);
+    if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-        if (spItem.get() != 0)
-        {
-            spItem->FUN_140526bf0(nFlag);
-            spItem->FUN_140524eb0(in);
-            if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
-            {
-                Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
-                if (pDialog != 0)
-                    pDialog->FUN_140e74640(7);
-            }
-        }
+        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+        if (pDialog != 0)
+            pDialog->FUN_140e74640(7);
     }
 }
 // @0x140c8a940
 void CPetManager::FUN_140c8a940(CInPacket& in)
 {
     int nObjectId = in.vfunc_o8_3();
-    unsigned short nLevel = (unsigned short)in.vfunc_o8_2();
+    short nLevel = (short)in.vfunc_o8_3();
     __int64 nUid = in.vfunc_o8_4();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
     {
         if (pPlayer->FUN_1416769f0() == nUid)
         {
@@ -985,15 +971,14 @@ void CPetManager::FUN_140c8a940(CInPacket& in)
         if (pPlayer == FUN_1403ed2d0()->FUN_141bd0cc0())
         {
             MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-            if (spItem.get() != 0)
-            {
-                spItem->FUN_140528bf0(nLevel);
-                if (pPlayer->FUN_1416769f0() == nUid)
-                    m_info.identity.level = (short)nLevel;
-                Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
-                if (pDialog != 0)
-                    pDialog->FUN_140e74640(9);
-            }
+            if (spItem == 0)
+                return;
+            spItem->FUN_140528bf0(nLevel);
+            if (pPlayer->FUN_1416769f0() == nUid)
+                m_info.identity.level = nLevel;
+            Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+            if (pDialog != 0)
+                pDialog->FUN_140e74640(9);
         }
     }
 }
@@ -1002,14 +987,13 @@ void CPetManager::FUN_140c8ab80(CInPacket& in)
 {
     int nExp = in.vfunc_o8_3();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer != 0)
-    {
-        pPlayer->FUN_141663a70(nExp);
-        Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
-        if (pDialog != 0)
-            pDialog->FUN_140e74640(0xc);
-        FUN_141276180(s_strGemUpgradeSound, CString(""));
-    }
+    if (pPlayer == 0)
+        return;
+    pPlayer->FUN_141663a70(nExp);
+    Unk_PmPetDialog* pDialog = FUN_140b99ba0(0x4f38);
+    if (pDialog != 0)
+        pDialog->FUN_140e74640(0xc);
+    FUN_141276180(s_strGemUpgradeSound, "");
 }
 // @0x140c8ac50
 void CPetManager::FUN_140c8ac50(CInPacket& in)
@@ -1030,15 +1014,16 @@ void CPetManager::FUN_140c8ac50(CInPacket& in)
 // @0x140c8ae50
 void CPetManager::FUN_140c8ae50(CInPacket& in)
 {
-    switch (in.vfunc_o8_3())
+    int nError = in.vfunc_o8_3();
+    switch (nError)
     {
     case 0x1b: FUN_141275260(0x34, 1, 1); break;
     case 0x1c: FUN_1403ed2b0()->FUN_141add1f0(); break;
-    default: FUN_141275260(0x979, 1, 1); break;
-    case 0x1e: FUN_141275260(0xf2, 1, 1); break;
     case 0x20: FUN_140d73bc0(0xc24, 0, 0, CStringW(L"")); break;
-    case 0x21: FUN_141275260(0xc21, 1, 1); break;
+    case 0x1e: FUN_141275260(0xf2, 1, 1); break;
     case 0x27: break;
+    case 0x21: FUN_141275260(0xc21, 1, 1); break;
+    default: FUN_141275260(0x979, 1, 1); break;
     }
 }
 // @0x140c8afa0
@@ -1046,28 +1031,27 @@ void CPetManager::FUN_140c8afa0(CInPacket& in)
 {
     int nObjectId = in.vfunc_o8_3();
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
-    if (pPlayer != 0 && pPlayer->FUN_1416769d0() != 0)
-    {
-        if (pPlayer->FUN_141663450().get() != 0)
-            pPlayer->FUN_141663150(in);
-    }
+    if (pPlayer == 0)
+        return;
+    if (pPlayer->FUN_1416769d0() == 0)
+        return;
+    if (pPlayer->FUN_141663450() == 0)
+        return;
+    pPlayer->FUN_141663150(in);
 }
 // @0x140c8b070
 void CPetManager::FUN_140c8b070(CInPacket& in)
 {
-    m_nAuto = in.vfunc_o8_1();
+    m_nAuto = in.vfunc_o8_0();
 }
 // @0x140c8b0c0
 void CPetManager::FUN_140c8b0c0(CInPacket& in)
 {
     int nSkillId = in.vfunc_o8_3();
     MS2Ptr<CItemData> spData = FUN_14053f870(nSkillId);
-    if (spData.get() != 0)
-    {
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nSkillId);
-        CStringW strText = FUN_1405c2690(CStringW(L"s_skill_consume_by_pet_trap"), strName);
-        FUN_1412751b0(strText, 0x14);
-    }
+    if (spData == 0)
+        return;
+    FUN_1412751b0(FUN_1405c2690(L"s_skill_consume_by_pet_trap", FUN_1401a9d70()->FUN_141811980(1, nSkillId)), 0x14);
 }
 // @0x140c8b1f0
 void CPetManager::FUN_140c8b1f0()
@@ -1077,9 +1061,9 @@ void CPetManager::FUN_140c8b1f0()
 // @0x140c8b220
 int CPetManager::FUN_140c8b220(int nKey)
 {
-    if (m_counts.find((unsigned long)nKey) == m_counts.end())
+    if (m_counts.find(reinterpret_cast<unsigned long&>(nKey)) == m_counts.end())
         return 0;
-    return m_counts[(unsigned long)nKey];
+    return m_counts[reinterpret_cast<unsigned long&>(nKey)];
 }
 // @0x140c8b2b0
 bool CPetManager::FUN_140c8b2b0()
@@ -1130,12 +1114,12 @@ CCPetInfoPacket::Info* CPetManager::FUN_140c8b450()
 MS2Ptr<Unk_PetRow> CPetManager::FUN_140c8b470()
 {
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_140c8b2e0());
-    if (spItem.get() == 0)
+    if (spItem == 0)
         return MS2Ptr<Unk_PetRow>(0);
-    MS2Ptr<CItemData> spData(FUN_140527840(spItem.get()));
-    if (spData.get() == 0)
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
+    if (spData == 0)
         return MS2Ptr<Unk_PetRow>(0);
-    return FUN_14052d210()->FUN_1407290f0(FUN_14053dc60(spData.get()));
+    return FUN_14052d210()->FUN_1407290f0(spData->FUN_14053dc60());
 }
 // @0x140c8b5c0
 void* CPetManager::FUN_140c8b5c0(int nObjectId)
@@ -1143,7 +1127,10 @@ void* CPetManager::FUN_140c8b5c0(int nObjectId)
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1290(nObjectId);
     if (pPlayer == 0)
         return 0;
-    return pPlayer->FUN_141676a10();
+    void* pPet = pPlayer->FUN_141676a10();
+    if (pPet == 0)
+        return 0;
+    return pPet;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

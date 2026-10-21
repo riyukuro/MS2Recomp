@@ -306,7 +306,7 @@ int PetSlot::vfunc_18(void* p)
             return pDrag->vfunc_10();
         }
         __int64 nUid = pFrom->FUN_140dbb060();
-        FUN_140535320()->FUN_140c8b410()->FUN_140c88160(nUid, (short)m_nIndex);
+        FUN_140535320()->FUN_140c8b410()->FUN_140c88160(nUid, m_nIndex);
         FUN_141404930(nUid);
         return pDrag->vfunc_10();
     }

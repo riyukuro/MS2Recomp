@@ -40,11 +40,11 @@ public:
     void FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode);   // stacks of an item id, sorted by count
     ItemPtr FUN_140c87250(unsigned __int64 nUid);           // by uid
     ItemPtr FUN_140c87300(int nItemId, int bAnyUsability);  // by item data id
-    int FUN_140c874f0();                                    // free slots
+    int FUN_140c874f0();                                    // occupied slots
     int FUN_140c875e0();                                    // slot count
     int FUN_140c87610();                                    // any free slot (scanned from both ends)
-    bool FUN_140c87780(int nItemId, int nCount);
-    bool FUN_140c877e0(int nItemId, int nRarity, int nCount);
+    int FUN_140c87780(int nItemId, int nCount);           // BOOL
+    int FUN_140c877e0(int nItemId, int nRarity, int nCount); // BOOL
     int FUN_140c87840(int nItemId, int nRarity);            // owned count of an item id (usable ones)
     int FUN_140c87a00(int nItemId);                         // room left in the stacks of an item id
     unsigned FUN_140c87b90();                               // first free slot (-1: none)
@@ -53,9 +53,9 @@ public:
     bool FUN_140c87fb0(int nItemId);                        // use the usable item of that id
     bool FUN_140c88050(int nItemId);                        // use the item of that data id
     void FUN_140c88100();                                   // packet 0x79 mode 7
-    void FUN_140c88160(__int64 nUid, short nSlot);          // packet 0x79 mode 3 (move)
+    void FUN_140c88160(__int64 nUid, int nSlot);            // packet 0x79 mode 3 (move)
     void FUN_140c88200(__int64 nUid, int nSlot, int nCount);   // packet 0x79 mode 0 (take out)
-    void FUN_140c88590(__int64 nUid, short nSlot, int nCount); // packet 0x79 mode 1 (put in)
+    void FUN_140c88590(__int64 nUid, int nSlot, int nCount); // packet 0x79 mode 1 (put in)
     bool FUN_140c88650(int nButton, const CMsgBoxData& box);   // count box result of FUN_140c88200
     bool FUN_140c88700(int nButton, const CMsgBoxData& box);   // count box result of FUN_140c88590
     void FUN_140c887b0(ItemPtr spItem, int nSlot);          // take an item out of the pet inventory (count box when stacked)
@@ -76,7 +76,7 @@ MS2_CHECK_OFFSET(CPetInventory, m_n80, 0x80);
 class Unk_PetManagerEmpty
 {
 public:
-    Unk_PetManagerEmpty* FUN_140c89200();
+    Unk_PetManagerEmpty();                                  // 0x140c89200
     MS2Ptr<CItem> FUN_140c892c0(int nItemId);               // item lookup by id
     int FUN_140c89440(int nItemId, int nRarity);
 };
