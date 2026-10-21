@@ -122,9 +122,9 @@ float FUN_140af7e90(CCameraMode* p);
 class Unk_TrigNpc;
 void FUN_14166f8f0(Unk_TrigNpc* p, int n, int b);
 void FUN_14166ed50(Unk_TrigNpc* p, int n);
-void FUN_14166ef10(Unk_TrigNpc* p, const CString& str, bool b, int n1, int n2);
+void FUN_14166ef10(Unk_TrigNpc* p, const CString& str, int n1, int n2, bool b);
 void FUN_14166d8b0(PCBase* p, float fYaw);
-void FUN_14166d2d0(PCBase* p, efd::Point3 pt, bool b);
+void FUN_14166d2d0(PCBase* p, efd::Point3 pt, int b);
 
 // ---- UI ----
 class Unk_CommandUIRef {
@@ -330,18 +330,17 @@ void CTriggerService::FUN_141861620(const egf::EntityChangeMessage* pMsg, efd::C
     if (pEntity == 0)
         return;
     egf::FlatModel* pModel = FUN_1408a9bd0(pEntity);
-    if (pModel->ContainsModel(0xe8dd99d))
-    {
-        int nId = 0;
-        FUN_1408a2020(pEntity, 0x6c37a861, &nId);
-        MS2Ptr<TriggerObject> spObject = TriggerObject::Create(pEntity);
-        if (spObject == 0)
-            return;
-        Unk_EntRef kRef(0);
-        kRef.FUN_1408b6ec0(reinterpret_cast<Unk_Entity*>(pEntity));
-        spObject->Init(nId, kRef);
-        m_mapObjects.SetAt(nId, spObject);
-    }
+    if (!(pModel->ContainsModel(0xe8dd99d)))
+        return;
+    int nId = 0;
+    FUN_1408a2020(pEntity, 0x6c37a861, &nId);
+    MS2Ptr<TriggerObject> spObject = TriggerObject::Create(pEntity);
+    if (spObject == 0)
+        return;
+    Unk_EntRef kRef(0);
+    kRef.FUN_1408b6ec0(reinterpret_cast<Unk_Entity*>(pEntity));
+    spObject->Init(nId, kRef);
+    m_mapObjects.SetAt(nId, spObject);
 }
 
 // @0x141861760
@@ -445,11 +444,11 @@ void CTriggerService::FUN_141861ad0(CInPacket* pEvent)
 void CTriggerService::FUN_141861b00(CInPacket* pEvent)
 {
     m_listCamera.RemoveAll();
-    unsigned char nCount = pEvent->vfunc_o8_1();
+    int nCount = pEvent->vfunc_o8_1();
     ATL::CAtlArray<int> aObjects;
     for (int i = 0; i < nCount; i++)
         aObjects.Add(pEvent->vfunc_o8_3());
-    unsigned char bEnd = pEvent->vfunc_o8_1();
+    int bEnd = pEvent->vfunc_o8_1();
     FUN_141863340(aObjects, bEnd);
 }
 
@@ -516,8 +515,7 @@ void CTriggerService::FUN_141861f60(CInPacket* pEvent)
 // @0x141861fc0
 void CTriggerService::FUN_141861fc0(CInPacket* pEvent)
 {
-    CStringA strText = pEvent->vfunc_o8_7();
-    CStringW strWide = FUN_1408767c0(strText);
+    CStringW strWide = FUN_1408767c0(pEvent->vfunc_o8_7());
     MS2Ptr<CFileBuffer> spBuffer(new CFileBuffer);
     spBuffer->SetText(strWide);
     Unk_TrigTextUI* pUi = FUN_14122d570(0x4e6b);
@@ -633,11 +631,14 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
 // @0x1418627c0
 void CTriggerService::FUN_1418627c0(CInPacket* pEvent)
 {
-    unsigned char nSub = pEvent->vfunc_o8_1();
+    int nSub = pEvent->vfunc_o8_1();
     switch (nSub)
     {
-    case 1:
-        FUN_141863df0(pEvent);
+    case 4:
+        FUN_141863b70(pEvent);
+        break;
+    case 5:
+        FUN_141863c50(pEvent);
         break;
     case 2:
         FUN_141863cc0(pEvent);
@@ -645,11 +646,8 @@ void CTriggerService::FUN_1418627c0(CInPacket* pEvent)
     case 3:
         FUN_141863d80(pEvent);
         break;
-    case 4:
-        FUN_141863b70(pEvent);
-        break;
-    case 5:
-        FUN_141863c50(pEvent);
+    case 1:
+        FUN_141863df0(pEvent);
         break;
     case 7:
         FUN_141863e50(pEvent);
@@ -709,30 +707,25 @@ void CTriggerService::FUN_1418629b0(CInPacket* pEvent)
 // @0x141862d30
 void CTriggerService::FUN_141862d30(CInPacket* pEvent)
 {
-    unsigned char nState = pEvent->vfunc_o8_1();
+    int nState = pEvent->vfunc_o8_1();
     CStringA strNames = pEvent->vfunc_o8_7();
     ATL::CAtlArray<CString> aNames;
     FUN_14015f050(strNames, aNames, ",");
     for (size_t i = 0; i < aNames.GetCount(); i++)
     {
         Unk_CommandUIRef kRef = static_cast<Unk_TsUiMgrView*>(FUN_1403ed2b0())->FUN_141adcf50(aNames[i]);
-        if (!FUN_140534e80(kRef))
-        {
-            if (kRef.FUN_141371280()->vfunc_9() != nState)
-                kRef.FUN_141371280()->vfunc_8(nState);
-        }
+        if (FUN_140534e80(kRef))
+            continue;
+        if (kRef.FUN_141371280()->vfunc_9() != nState)
+            kRef.FUN_141371280()->vfunc_8(nState);
     }
 }
 
 // @0x141862ec0
 void CTriggerService::FUN_141862ec0(CInPacket* pEvent)
 {
-    if (pEvent->vfunc_o8_0() == 0)
-    {
-        FUN_141adc5d0(FUN_1403ed2b0(), 0x4f62);
-        FUN_141add040(FUN_1403ed2b0(), 0x4e3d);
-    }
-    else
+    bool bShow = pEvent->vfunc_o8_0();
+    if (bShow)
     {
         int nA = pEvent->vfunc_o8_3();
         int nB = pEvent->vfunc_o8_3();
@@ -744,6 +737,11 @@ void CTriggerService::FUN_141862ec0(CInPacket* pEvent)
             pUi->FUN_141924680();
         }
         FUN_141add0b0(FUN_1403ed2b0(), 0x4e3d);
+    }
+    else
+    {
+        FUN_141adc5d0(FUN_1403ed2b0(), 0x4f62);
+        FUN_141add040(FUN_1403ed2b0(), 0x4e3d);
     }
 }
 
@@ -818,36 +816,36 @@ void CTriggerService::FUN_1418631f0(int nObject, int bStart)
 // @0x141863260
 void CTriggerService::FUN_141863260()
 {
-    if (!m_listCamera.IsEmpty())
-    {
-        Unk_TrigCamStep kStep = m_listCamera.RemoveHead();
-        MS2Ptr<TriggerObject> spObject;
-        if (m_mapObjects.Lookup(kStep.m_nObject, spObject))
-        {
-            if (kStep.m_bStart == 0)
-                spObject->vfunc_4();
-            else
-                spObject->vfunc_3();
-        }
-    }
+    if (m_listCamera.IsEmpty())
+        return;
+    Unk_TrigCamStep kStep = m_listCamera.RemoveHead();
+    MS2Ptr<TriggerObject> spObject;
+    if (!(m_mapObjects.Lookup(kStep.m_nObject, spObject)))
+        return;
+    if (kStep.m_bStart != 0)
+        spObject->vfunc_3();
+    else
+        spObject->vfunc_4();
 }
 
 // @0x141863340
 void CTriggerService::FUN_141863340(const ATL::CAtlArray<int>& aObjects, int bEnd)
 {
     m_listCamera.RemoveAll();
-    if (!aObjects.IsEmpty())
+    if (aObjects.IsEmpty())
+        return;
+    if (aObjects.GetCount() == 1 && aObjects[0] == 0)
     {
-        if (aObjects.GetCount() == 1 && aObjects[0] == 0)
+        FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 2, false);
+    }
+    else
+    {
+        for (unsigned i = 0; i < aObjects.GetCount(); i++)
+            FUN_1418631f0(aObjects[i], 1);
+        if (!aObjects.IsEmpty() && bEnd != 0)
         {
-            FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 2, false);
-        }
-        else
-        {
-            for (size_t i = 0; i < aObjects.GetCount(); i++)
-                FUN_1418631f0(aObjects[i], 1);
-            if (!aObjects.IsEmpty() && bEnd != 0)
-                FUN_1418631f0(aObjects[aObjects.GetCount() - 1], 0);
+            int nLast = aObjects[aObjects.GetCount() - 1];
+            FUN_1418631f0(nLast, 0);
         }
     }
 }
@@ -911,22 +909,20 @@ void CTriggerService::FUN_141863630(int nId, char bAdd, CStringA strName)
 
 // Collect the ids of the objects whose FlatModel contains the model.
 // @0x1418637a0
-bool CTriggerService::FUN_1418637a0(const unsigned& rModel, ATL::CAtlList<int>& rIds)
+bool CTriggerService::FUN_1418637a0(const unsigned& rModel, std::vector<int>& rIds)
 {
-    rIds.RemoveAll();
-    POSITION pos = m_mapObjects.GetHeadPosition();
-    while (pos)
+    rIds.clear();
+    for (POSITION pos = m_mapObjects.GetHeadPosition(); pos; m_mapObjects.GetNext(pos))
     {
         int nKey = m_mapObjects.GetKeyAt(pos);
         MS2Ptr<TriggerObject> spObject = m_mapObjects.GetValueAt(pos);
-        if (spObject)
+        if (spObject ? true : false)
         {
             if (spObject->HasModel(rModel))
-                rIds.AddTail(nKey);
+                rIds.push_back(nKey);
         }
-        m_mapObjects.GetNext(pos);
     }
-    return !rIds.IsEmpty();
+    return rIds.empty() ? false : true;
 }
 
 // @0x1418638d0
@@ -959,10 +955,10 @@ void CTriggerService::FUN_141863a90(CInPacket* pEvent, bool bSkipFx)
 {
     int nId = pEvent->vfunc_o8_3();
     MS2Ptr<TriggerObject> spObject;
-    if (!m_mapObjects.Lookup(nId, spObject))
-        FUN_140353fc0(FUN_140166440(), 0xc, 0x13, L"Trigger Object Sync Error. ObjectID:{0}", nId);
-    else
+    if (m_mapObjects.Lookup(nId, spObject))
         spObject->vfunc_2(TrigEvent(pEvent), bSkipFx);
+    else
+        FUN_140353fc0(FUN_140166440(), 0xc, 0x13, L"Trigger Object Sync Error. ObjectID:{0}", nId);
 }
 
 // Play a cut scene movie (UI 0x4e7e).
@@ -1022,20 +1018,19 @@ void CTriggerService::FUN_141863df0(CInPacket* pEvent)
 void CTriggerService::FUN_141863e50(CInPacket* pEvent)
 {
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    int nCount = pEvent->vfunc_o8_3();
+    MS2Ptr<StateTriggerEmotionData> spData(new StateTriggerEmotionData);
+    spData->m_nFlag = 0;
+    spData->m_nMode = 0;
+    spData->m_nValue = 0;
+    for (int i = 0; i < nCount; i++)
     {
-        int nCount = pEvent->vfunc_o8_3();
-        MS2Ptr<StateTriggerEmotionData> spData(new StateTriggerEmotionData);
-        spData->m_nFlag = 0;
-        spData->m_nMode = 0;
-        spData->m_nValue = 0;
-        for (int i = 0; i < nCount; i++)
-        {
-            CStringA strEmotion = pEvent->vfunc_o8_6();
-            spData->m_aEmotions.Add(strEmotion);
-        }
-        pPlayer->vfunc_59(0x35, spData.get(), 0, 0);
+        CStringA strEmotion = pEvent->vfunc_o8_6();
+        spData->m_aEmotions.Add(strEmotion);
     }
+    pPlayer->vfunc_59(0x35, spData.get(), 0, 0);
 }
 
 // Play one emotion on the local player.
@@ -1043,18 +1038,17 @@ void CTriggerService::FUN_141863e50(CInPacket* pEvent)
 void CTriggerService::FUN_141864010(CInPacket* pEvent)
 {
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPlayer != 0)
-    {
-        unsigned char nFlag = pEvent->vfunc_o8_1();
-        int nValue = pEvent->vfunc_o8_3();
-        CStringA strEmotion = pEvent->vfunc_o8_6();
-        MS2Ptr<StateTriggerEmotionData> spData(new StateTriggerEmotionData);
-        spData->m_nFlag = nFlag;
-        spData->m_nMode = 1;
-        spData->m_nValue = nValue;
-        spData->m_aEmotions.Add(strEmotion);
-        pPlayer->vfunc_59(0x35, spData.get(), 0, 1);
-    }
+    if (pPlayer == 0)
+        return;
+    int nFlag = pEvent->vfunc_o8_1();
+    int nValue = pEvent->vfunc_o8_3();
+    CStringA strEmotion = pEvent->vfunc_o8_6();
+    MS2Ptr<StateTriggerEmotionData> spData(new StateTriggerEmotionData);
+    spData->m_nFlag = nFlag;
+    spData->m_nMode = 1;
+    spData->m_nValue = nValue;
+    spData->m_aEmotions.Add(strEmotion);
+    pPlayer->vfunc_59(0x35, spData.get(), 0, 1);
 }
 
 // An NPC says a line (or stops talking when the text is empty).
@@ -1064,17 +1058,16 @@ void CTriggerService::FUN_1418641e0(CInPacket* pEvent)
     int nNpc = pEvent->vfunc_o8_3();
     CStringA strText = pEvent->vfunc_o8_7();
     Unk_TrigNpc* pNpc = reinterpret_cast<Unk_TrigNpc*>(FUN_1403ed2d0()->FUN_141bd1200(nNpc));
-    if (pNpc != 0)
+    if (pNpc == 0)
+        return;
+    if (!strText.IsEmpty())
     {
-        if (strText.IsEmpty())
-        {
-            FUN_14166f8f0(pNpc, 0, 1);
-        }
-        else
-        {
-            FUN_14166ed50(pNpc, 0);
-            FUN_14166ef10(pNpc, strText, true, 0, 1);
-        }
+        FUN_14166ed50(pNpc, 0);
+        FUN_14166ef10(pNpc, strText, 1, 0, true);
+    }
+    else
+    {
+        FUN_14166f8f0(pNpc, 0, 1);
     }
 }
 
@@ -1083,26 +1076,24 @@ void CTriggerService::FUN_1418641e0(CInPacket* pEvent)
 void CTriggerService::FUN_1418642e0(CInPacket* pEvent)
 {
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPlayer != 0)
-    {
-        Unk_StreamPoint pt = pEvent->vfunc_o8_11();
-        bool bMove = pEvent->vfunc_o8_0();
-        FUN_14166d8b0(pPlayer, pt.z);
-        if (bMove)
-            pPlayer->vfunc_21(efd::Point3(pt.x, pt.y, pt.z));
-    }
+    if (pPlayer == 0)
+        return;
+    Unk_StreamPoint pt = pEvent->vfunc_o8_11();
+    bool bMove = pEvent->vfunc_o8_0();
+    FUN_14166d8b0(pPlayer, pt.z);
+    if (bMove)
+        pPlayer->vfunc_21(reinterpret_cast<const efd::Point3&>(pt));
 }
 
 // @0x1418643c0
 void CTriggerService::FUN_1418643c0(CInPacket* pEvent)
 {
     PCBase* pPlayer = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPlayer != 0)
-    {
-        Unk_StreamPoint pt = pEvent->vfunc_o8_11();
-        bool bFlag = pEvent->vfunc_o8_0();
-        FUN_14166d2d0(pPlayer, efd::Point3(pt.x, pt.y, pt.z), bFlag);
-    }
+    if (pPlayer == 0)
+        return;
+    Unk_StreamPoint pt = pEvent->vfunc_o8_11();
+    bool bFlag = pEvent->vfunc_o8_0();
+    FUN_14166d2d0(pPlayer, reinterpret_cast<const efd::Point3&>(pt), bFlag);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbc120-0x142cbc260 .text$yd

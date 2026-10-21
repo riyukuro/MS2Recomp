@@ -9,6 +9,7 @@
 #include <afx.h>
 #include <atlcoll.h>
 #include <atlstr.h>
+#include <vector>
 #include <efd/ISystemService.h>
 #include <efd/Category.h>
 
@@ -99,7 +100,7 @@ public:
     void FUN_141863340(const ATL::CAtlArray<int>& aObjects, int bEnd);
     void FUN_141863460(float fFade);
     void FUN_141863630(int nId, char bAdd, CStringA strName);
-    bool FUN_1418637a0(const unsigned& rModel, ATL::CAtlList<int>& rIds);
+    bool FUN_1418637a0(const unsigned& rModel, std::vector<int>& rIds);
     bool FUN_1418638d0(egf::Entity* pEntity);   // is the entity inside a mesh trigger object
     void FUN_141863a90(CInPacket* pEvent, bool bSkipFx);
     void FUN_141863b70(CInPacket* pEvent);
