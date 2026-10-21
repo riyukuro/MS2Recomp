@@ -402,7 +402,7 @@ CStringW UIAllianceQuestDialog::FUN_140bf6be0(int nAlliance)
 CStringW UIAllianceQuestDialog::FUN_140bf6c90(unsigned nQuest)
 {
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-    if (spData.get() == 0)
+    if (!spData)
         return L"";
     int nRepeat = FUN_14074b070(spData.get());
     CMsTime now(FUN_140869440());
@@ -488,7 +488,7 @@ void UIAllianceQuestDialog::FUN_140bf7630()
     {
         int nQuest = ids[i];
         MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-        if (spData.get() == 0)
+        if (!spData)
             continue;
         int nRepeat = FUN_14074b070(spData.get());
         if (nRepeat == 0)
@@ -627,7 +627,7 @@ int UIAllianceQuestDialog::FUN_140bf8800(unsigned nQuest)
     if (!FUN_14036d570(FUN_140166410(), 0xef))
         return 0;
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-    if (spData.get() == 0)
+    if (!spData)
         return 0;
     if (FUN_14074b1c0(spData.get(), 2) == 0)
         return 0;
@@ -645,12 +645,15 @@ int UIAllianceQuestDialog::FUN_140bf8900()
     {
         unsigned nQuest = ids[i];
         MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-        if (spData.get() == 0)
+        if (!spData)
             continue;
         if (FUN_14074b070(spData.get()) != 2 && FUN_14074b070(spData.get()) != 3)
             continue;
-        if (spData->m_require.m_unrequireGroup.GetCount() == 0 && FUN_140764020()->vfunc_1(nQuest, 0) != 0)
-            return 1;
+        if (spData->m_require.m_unrequireGroup.GetCount() != 0)
+            continue;
+        if (FUN_140764020()->vfunc_1(nQuest, 0) == 0)
+            continue;
+        return 1;
     }
     return 0;
 }
@@ -664,12 +667,13 @@ int UIAllianceQuestDialog::FUN_140bf8ab0()
     {
         unsigned nQuest = ids[i];
         MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-        if (spData.get() == 0)
+        if (!spData)
             continue;
         if (FUN_14074b070(spData.get()) != 2 && FUN_14074b070(spData.get()) != 3)
             continue;
-        if (FUN_140764020()->FUN_140746ba0(nQuest, 0, 0) == 0)
-            return 1;
+        if (FUN_140764020()->FUN_140746ba0(nQuest, 0, 0) != 0)
+            continue;
+        return 1;
     }
     return 0;
 }
@@ -680,7 +684,7 @@ void UIAllianceQuestDialog::FUN_140bf8c30(unsigned nQuest)
     if (FUN_140bf8800(nQuest) == 0)
         return;
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-    if (spData.get() == 0)
+    if (!spData)
         return;
     int nCost = FUN_1401c0db0()->FUN_14067a0b0(spData->m_4c, spData->m_50);
     if (nCost == 0)
@@ -752,12 +756,15 @@ void UIAllianceQuestDialog::FUN_140bf91b0()
     {
         unsigned nQuest = ids[i];
         MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-        if (spData.get() == 0)
+        if (!spData)
             continue;
         if (FUN_14074b070(spData.get()) != 2 && FUN_14074b070(spData.get()) != 3)
             continue;
-        if (spData->m_require.m_unrequireGroup.GetCount() == 0 && FUN_140764020()->vfunc_1(nQuest, 0) != 0)
-            m_1c0.Add(nQuest);
+        if (spData->m_require.m_unrequireGroup.GetCount() != 0)
+            continue;
+        if (FUN_140764020()->vfunc_1(nQuest, 0) == 0)
+            continue;
+        m_1c0.Add(nQuest);
     }
 }
 
@@ -771,12 +778,13 @@ void UIAllianceQuestDialog::FUN_140bf9360()
     {
         unsigned nQuest = ids[i];
         MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-        if (spData.get() == 0)
+        if (!spData)
             continue;
         if (FUN_14074b070(spData.get()) != 2 && FUN_14074b070(spData.get()) != 3)
             continue;
-        if (FUN_140764020()->FUN_140746ba0(nQuest, 0, 0) == 0)
-            m_1e0.Add(nQuest);
+        if (FUN_140764020()->FUN_140746ba0(nQuest, 0, 0) != 0)
+            continue;
+        m_1e0.Add(nQuest);
     }
 }
 
@@ -800,7 +808,7 @@ unsigned UIAllianceQuestDialog::FUN_140bf9580(unsigned nQuest)
     if (FUN_140764020()->FUN_140745590(nQuest) != 0)
     {
         MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-        if (spData.get() == 0)
+        if (!spData)
             return 0;
         if (spData->m_require.m_groupId == 0)
         {
@@ -820,7 +828,7 @@ unsigned UIAllianceQuestDialog::FUN_140bf9580(unsigned nQuest)
     if (FUN_140764020()->vfunc_1(nQuest, 0) != 0)
         return nQuest;
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-    if (spData.get() == 0)
+    if (!spData)
         return 0;
     if (FUN_14074b070(spData.get()) == 3 && spData->m_require.m_unrequireGroup.GetCount() != 0)
     {
@@ -847,11 +855,12 @@ unsigned UIAllianceQuestDialog::FUN_140bf9580(unsigned nQuest)
 int UIAllianceQuestDialog::FUN_140bf9a40(unsigned nQuest)
 {
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
-    if (spData.get() == 0)
+    if (!spData)
         return 0;
     if (spData->m_require.m_alliance != 0 && spData->m_require.m_fameGrade != 0)
     {
-        if (FUN_140931250(spData->m_require.m_alliance) < spData->m_require.m_fameGrade)
+        int nGrade = FUN_140931250(spData->m_require.m_alliance);
+        if (nGrade < spData->m_require.m_fameGrade)
             return 0;
     }
     ATL::CAtlArray<unsigned>& rQuests = spData->m_require.m_quest;
