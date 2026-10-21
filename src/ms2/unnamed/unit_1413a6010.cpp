@@ -50,7 +50,6 @@ CGuideConditionDialog::CGuideConditionDialog()
 {
 }
 
-// MS2-FUNCTIONAL: EH state / temporaries differ
 // @0x1413a6140
 int CGuideConditionDialog::vfunc_3()
 {
@@ -64,28 +63,19 @@ int CGuideConditionDialog::vfunc_3()
     unsigned nOpen = pDlg->vfunc_55() == 0;
     if (nOpen != (unsigned)m_nIsOpen)
         return 0;
-    unsigned i = 0;
-    while (true)
+    for (unsigned i = 0; i < m_arrControl.GetCount(); i++)
     {
-        size_t nIndex = i;
-        if (m_arrControl.GetCount() <= nIndex)
-            break;
         MS2Ptr<ASDisplayObject> spChild = pDlg->GetChild<ASDisplayObject>(m_arrControl[i]);
         if (spChild == 0)
             return 0;
         if (!spChild->FUN_1422bfca0())
             return 0;
-        i++;
     }
-    int nResult;
-    if (m_nSubIndex < 0 || pDlg->vfunc_82() == m_nSubIndex)
-        nResult = 1;
-    else
-        nResult = 0;
-    return nResult;
+    if (m_nSubIndex >= 0 && pDlg->vfunc_82() != m_nSubIndex)
+        return 0;
+    return 1;
 }
 
-// MS2-FUNCTIONAL: EH state / string temporaries differ
 // @0x1413a6300
 CStringW CGuideConditionDialog::vfunc_7()
 {
@@ -97,15 +87,12 @@ CStringW CGuideConditionDialog::vfunc_7()
 // @0x1413a6430
 int CGuideConditionDialog::vfunc_8()
 {
-    int nResult;
     if (m_nIsOpen == 0)
-        nResult = 0;
-    else
-        nResult = FUN_1409331e0()->FUN_14138d870(&m_strDialog);
+        return 0;
+    int nResult = FUN_1409331e0()->FUN_14138d870(&m_strDialog);
     return nResult;
 }
 
-// MS2-FUNCTIONAL: EH state / exception temporaries differ
 // @0x1413a6480
 void CGuideConditionDialog::vfunc_2(Unk_140165cf0* pElem)
 {
