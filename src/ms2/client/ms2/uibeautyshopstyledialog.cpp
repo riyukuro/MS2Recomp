@@ -401,15 +401,17 @@ bool FUN_140f09810(ASObj& obj, bool bEnabled);
 // ---- the beauty shop helpers ----
 
 // @0x140f01070
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int FUN_140f01070(int nShopKind)
 {
-    if (nShopKind == 1)
+    switch (nShopKind)
+    {
+    case 1:
         return 1;
-    if (nShopKind == 2)
+    case 2:
         return 3;
-    if (nShopKind == 3)
+    case 3:
         return 2;
+    }
     return 0;
 }
 
@@ -511,21 +513,20 @@ void FUN_140f01430()
 }
 
 // @0x140f01470
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 bool FUN_140f01470(unsigned nSlots)
 {
-    return FUN_140f011b0() <= nSlots;
+    unsigned nNeed = FUN_140f011b0();
+    return nSlots >= nNeed;
 }
 
 class CEquipItem;
 class Unk_PCEquipSet;
-void FUN_1411e3000(Unk_PCEquipSet* pSet, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList, int nType, int a4, int a5);
+void FUN_1411e3000(Unk_PCEquipSet* pSet, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList, int nType, int a4, bool a5);
 
 // @0x140f014b0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void FUN_140f014b0(ATL::CAtlList<MS2Ptr<CEquipItem> >* pList, Unk_PCEquipSet* pSet)
 {
-    FUN_1411e3000(pSet, pList, 4, 0, 0);
+    FUN_1411e3000(pSet, pList, 4, 0, false);
 }
 
 // @0x140f014f0
@@ -536,13 +537,16 @@ void FUN_140f014f0(MS2Ptr<Customize> spCustomize)
 }
 
 // @0x140f01540
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void FUN_140f01540(ASObj& obj, bool bHair)
 {
     bool bExtended = FUN_140166410()->FUN_14036d570(0xb7);
-    obj.FUN_1407cbbe0("colorScrollVisible", bExtended == true);
+    bool bVisible = bExtended == true;
+    obj.FUN_1407cbbe0("colorScrollVisible", bVisible);
     if (bExtended)
-        obj.FUN_1407cb9c0("fixRow", bHair == true ? 4 : 5);
+    {
+        int nRow = bHair == true ? 4 : 5;
+        obj.FUN_1407cb9c0("fixRow", nRow);
+    }
 }
 
 // The colour palette of an item.
@@ -690,7 +694,7 @@ void FUN_140f024e0(ASData* pArgs, int* pnPalette, int* pnType)
 }
 
 bool FUN_140f026f0(Unk_BSColorPtr spRow, bool* pbLocked);
-bool FUN_140f02790(int nAchieve, int nGrade, bool* pbLocked);
+bool FUN_140f02790(unsigned nAchieve, int nGrade, bool* pbLocked);
 
 // @0x140f02650
 // MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
@@ -714,16 +718,17 @@ bool FUN_140f026f0(Unk_BSColorPtr spRow, bool* pbLocked)
 }
 
 // @0x140f02790
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
-bool FUN_140f02790(int nAchieve, int nGrade, bool* pbLocked)
+bool FUN_140f02790(unsigned nAchieve, int nGrade, bool* pbLocked)
 {
     *pbLocked = false;
-    if (!nAchieve)
+    if (nAchieve > 0)
+    {
+        MS2Ptr<CAchieve> spAchieve = FUN_1406c7600()->FUN_140935e60(nAchieve);
+        if (spAchieve == 0)
+            return false;
+        *pbLocked = FUN_1406c7600()->FUN_140936900(nAchieve, nGrade) == 0;
         return true;
-    MS2Ptr<CAchieve> spAchieve = FUN_1406c7600()->FUN_140935e60(nAchieve);
-    if (spAchieve == 0)
-        return false;
-    *pbLocked = FUN_1406c7600()->FUN_140936900(nAchieve, nGrade) == 0;
+    }
     return true;
 }
 
@@ -877,10 +882,13 @@ int UIBeautyShopStyleDialog::vfunc_13()
 }
 
 // @0x140f03a10
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopStyleDialog::vfunc_15()
 {
-    if (!(m_198 == 0) && vfunc_55() == 0 && m_1a8.get())
+    if (m_198 == 0)
+        return;
+    if (vfunc_55() != 0)
+        return;
+    if (m_1a8.get())
         m_1a8->FUN_1418dda30(1);
 }
 
@@ -1486,19 +1494,19 @@ int UIBeautyShopStyleDialog::FUN_140f07980()
 }
 
 // @0x140f079a0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopStyleDialog::FUN_140f079a0()
 {
-    if (!(m_198 == 0))
-        m_198->FUN_140cd2530(6);
+    if (m_198 == 0)
+        return;
+    m_198->FUN_140cd2530(6);
 }
 
 // @0x140f07a00
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopStyleDialog::FUN_140f07a00()
 {
-    if (!(m_198 == 0))
-        m_198->FUN_140cd24a0(6);
+    if (m_198 == 0)
+        return;
+    m_198->FUN_140cd24a0(6);
 }
 
 // Preview a saved style on the character.
@@ -1591,30 +1599,32 @@ int UIBeautyShopStyleDialog::FUN_140f08160()
 
 // The fee row; *pPrice: the fee when a change is billable.
 // @0x140f08190
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 Unk_BSFee* UIBeautyShopStyleDialog::FUN_140f08190(unsigned* pPrice)
 {
     Unk_BSFee* pFee = m_1b8.FUN_1406e3dc0();
     *pPrice = 0;
-    if (!(m_198 == 0) && m_26c == 4)
+    if (m_198 == 0)
+        return pFee;
+    if (m_26c == 4)
+    {
         *pPrice = pFee->FUN_1406dc4f0();
+        return pFee;
+    }
     return pFee;
 }
 
 // Close: restore the hair and the camera.
 // @0x140f08220
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
-bool UIBeautyShopStyleDialog::FUN_140f08220()
+int UIBeautyShopStyleDialog::FUN_140f08220()
 {
-    if (!(m_198 == 0))
-    {
-        m_198->FUN_140cd22f0(FUN_140f01070(FUN_140f07980()));
-        if (Unk_BSField* pField = FUN_1403ed2d0()->FUN_141bd3620())
-            pField->vfunc_149();
-        FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
-        return true;
-    }
-    return false;
+    if (m_198 == 0)
+        return 0;
+    int nSlot = FUN_140f01070(FUN_140f07980());
+    m_198->FUN_140cd22f0(nSlot);
+    if (Unk_BSField* pField = FUN_1403ed2d0()->FUN_141bd3620())
+        pField->vfunc_149();
+    FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
+    return 1;
 }
 
 // "OnClickClose": ask when the preview changed.
@@ -1638,14 +1648,12 @@ void UIBeautyShopStyleDialog::FUN_140f082d0()
 
 // "OnClickReset".
 // @0x140f08470
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopStyleDialog::FUN_140f08470()
 {
-    if (!(m_30 == 0) && !(m_items == 0))
-    {
-        FUN_140f08950(0);
-        FUN_140f08f70();
-    }
+    if (m_30 == 0 || m_items == 0)
+        return;
+    FUN_140f08950(0);
+    FUN_140f08f70();
 }
 
 // The bill rows ("category", "list" of {detail, strPrice}); *pPrice: the fee.
@@ -1695,15 +1703,13 @@ void UIBeautyShopStyleDialog::FUN_140f08950(int bPreview)
 }
 
 // @0x140f08a30
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopStyleDialog::FUN_140f08a30(int bPreview)
 {
-    if (!(m_30 == 0))
-    {
-        if (m_264 != bPreview)
-            FUN_140f08aa0(bPreview);
-        m_264 = bPreview;
-    }
+    if (m_30 == 0)
+        return;
+    if (m_264 != bPreview)
+        FUN_140f08aa0(bPreview);
+    m_264 = bPreview;
 }
 
 // @0x140f08aa0
@@ -1716,23 +1722,22 @@ void UIBeautyShopStyleDialog::FUN_140f08aa0(int bPreview)
 }
 
 // @0x140f08ae0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopStyleDialog::FUN_140f08ae0(int, int nIndex)
 {
-    if (!(m_198 == 0))
-    {
-        MS2Ptr<CItem> spItem = FUN_140f09020(nIndex);
-        if (!(spItem == 0))
-            FUN_140f07a60(MS2Ptr<CItem>(spItem));
-    }
+    if (m_198 == 0)
+        return;
+    MS2Ptr<CItem> spItem = FUN_140f09020(nIndex);
+    if (spItem == 0)
+        return;
+    FUN_140f07a60(MS2Ptr<CItem>(spItem));
 }
 
 // @0x140f08ba0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopStyleDialog::FUN_140f08ba0()
 {
-    if (vfunc_55() == 0)
-        FUN_140f07cc0();
+    if (vfunc_55() != 0)
+        return;
+    FUN_140f07cc0();
 }
 
 // Apply the selected style (bill dialog OK).
@@ -1773,34 +1778,32 @@ int UIBeautyShopStyleDialog::FUN_140f08be0()
 }
 
 // @0x140f08f20
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopStyleDialog::FUN_140f08f20(unsigned n)
 {
     unsigned nMax = FUN_140f011b0();
-    if (n < nMax)
-        nMax = n;
-    m_290 = nMax;
+    m_290 = n < nMax ? n : nMax;
 }
 
 // Drop the selection and restore the hair.
 // @0x140f08f70
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIBeautyShopStyleDialog::FUN_140f08f70()
 {
-    if (!(m_items == 0))
+    if (m_items == 0)
+        return;
+    if (m_198.get())
     {
-        if (m_198.get())
-            m_198->FUN_140cd22f0(FUN_140f01070(FUN_140f07980()));
-        FUN_140f08ba0();
-        m_items->FUN_1422dcca0(-1);
+        int nSlot = FUN_140f01070(FUN_140f07980());
+        m_198->FUN_140cd22f0(nSlot);
     }
+    FUN_140f08ba0();
+    m_items->FUN_1422dcca0(-1);
 }
 
 // @0x140f09020
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 MS2Ptr<CItem> UIBeautyShopStyleDialog::FUN_140f09020(int nIndex)
 {
-    if (nIndex < 0 || nIndex >= (int)m_298.size())
+    int nCount = (int)m_298.size();
+    if (nIndex < 0 || nCount <= nIndex)
         return MS2Ptr<CItem>(0);
     return MS2Ptr<CItem>(m_298.at(nIndex));
 }
@@ -1828,10 +1831,10 @@ bool UIBeautyShopStyleDialog::FUN_140f09230()
 }
 
 // @0x140f09260
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UIBeautyShopStyleDialog::FUN_140f09260()
 {
-    return m_290 - (int)m_298.size();
+    int nRemain = m_290 - m_298.size();
+    return nRemain;
 }
 
 // @0x140f092b0
@@ -1842,11 +1845,11 @@ void UIBeautyShopStyleDialog::FUN_140f092b0()
 }
 
 // @0x140f092e0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
-void UIBeautyShopStyleDialog::FUN_140f092e0(bool b)
+void UIBeautyShopStyleDialog::FUN_140f092e0(int b)
 {
-    if (!(m_30 == 0))
-        FUN_140cff840(m_30->FUN_1422bb870(), CString("m_extendSlot"), b);
+    if (m_30 == 0)
+        return;
+    FUN_140cff840(m_30->FUN_1422bb870(), CString("m_extendSlot"), b);
 }
 
 // The "my codi" tab changed: drop the page when its outfit expired.
@@ -1874,18 +1877,18 @@ bool UIBeautyShopStyleDialog::FUN_140f09520(int nResult, const CMsgBoxData&)
 }
 
 // @0x140f09560
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 bool UIBeautyShopStyleDialog::FUN_140f09560()
 {
-    if (m_30 == 0)
-        return false;
-    if (!(m_198 == 0) && FUN_140f07980() == 1)
+    if (m_30 == 0 || m_198 == 0)
+        return true;
+    int nKind = FUN_140f07980();
+    if (nKind == 1)
     {
         m_30->Invoke("setEnableCheckPreviewWithCap", FUN_140f09630());
-        if (m_264 == 0)
-            FUN_140f079a0();
-        else
+        if (m_264 != 0)
             FUN_140f07a00();
+        else
+            FUN_140f079a0();
     }
     return true;
 }
@@ -1920,13 +1923,12 @@ bool FUN_140f096f0(ASObj& obj, MS2Ptr<CItemData> spData, int nIndex, unsigned nM
 
 // An empty (bEnabled) or locked slot object.
 // @0x140f09810
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 bool FUN_140f09810(ASObj& obj, bool bEnabled)
 {
     obj.FUN_1407cb9c0("idx", -1);
     obj.FUN_1407cb9c0("merat", 0);
     if (!bEnabled)
-        obj.FUN_1407cbbe0("enabled", false);
+        obj.FUN_1407cbbe0("enabled", bEnabled);
     return true;
 }
 

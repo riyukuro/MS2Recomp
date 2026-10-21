@@ -212,7 +212,7 @@ public:
     void FUN_140f07e20();
     int FUN_140f08160();
     Unk_BSFee* FUN_140f08190(unsigned* pPrice);
-    bool FUN_140f08220();
+    int FUN_140f08220();
     void FUN_140f082d0();
     void FUN_140f08470();
     int FUN_140f084e0(AScript& out, unsigned* pPrice);
@@ -229,7 +229,7 @@ public:
     bool FUN_140f09230();
     int FUN_140f09260();
     void FUN_140f092b0();
-    void FUN_140f092e0(bool b);
+    void FUN_140f092e0(int b);
     void FUN_140f09380(NotifyObject* pNotify);
     bool FUN_140f09520(int nResult, const CMsgBoxData& data);
     bool FUN_140f09560();
