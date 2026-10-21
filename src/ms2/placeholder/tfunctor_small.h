@@ -40,3 +40,19 @@ private:
     static Impl* Clone(Impl* p) { if(p==0) return 0; Impl* copy=static_cast<Impl*>(p->Clone()); return copy; }
     Impl* implementation;
 };
+// One-argument handler bound to a free function (appended by gap3: ms2memfile.cpp, the XML loaders
+// FunctorHandler<TFunctor<bool, ParamList<TiXmlDocument&>>, bool (*)(TiXmlDocument&)>, vftable 0x142f46850, 0x10 bytes).
+template<class Functor,class Fn> class FunctorHandler;
+template<class R,class A,class Fn>
+class FunctorHandler<TFunctor<R,ParamList<A,EmptyParam>>,Fn>
+    : public FunctorImpl<R,ParamList<A,EmptyParam>> {
+public:
+    typedef FunctorImpl<R,ParamList<A,EmptyParam>> Impl;
+    FunctorHandler(const Fn& f) : fn(f) {}
+    FunctorHandler(const FunctorHandler& o) noexcept : Impl(o),fn(o.fn) {}
+    virtual ~FunctorHandler() = default;
+    virtual FunctorHandler* Clone() const { return new FunctorHandler(*this); }
+    virtual R Invoke(A a) { return fn(a); }
+private:
+    Fn fn;
+};

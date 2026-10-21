@@ -74,8 +74,10 @@ public:
     bool IsNull() const { return m_pImpl == 0; }
     R operator()(A1 a1, A2 a2) const { return m_pImpl->Invoke(a1, a2); }
     bool operator==(const Delegate& o) const;   // specialized by the units with the COMDAT (uimessagebox.cpp)
+    void Reset();                       // deletes the implementation (ms2memfile.cpp: CString(CString, bool), 0x141629c20)
 
 private:
+    static DelegateImplBase* Clone(DelegateImplBase* p);    // null or p->vfunc_1() (ms2memfile.cpp, 0x141628ab0)
     DelegateImplBase* m_pImpl;          // +0x00
 };
 
@@ -148,6 +150,7 @@ public:
     void Reset();                       // deletes the implementation (alphaanimation.cpp: Delegate<float(float)>, 0x14098e760)
 
 private:
+    static DelegateImplBase* Clone(DelegateImplBase* p);    // null or p->vfunc_1() (ms2memfile.cpp: bool(TiXmlDocument&), 0x141628af0)
     DelegateImplBase* m_pImpl;          // +0x00
 };
 

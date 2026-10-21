@@ -121,6 +121,7 @@ public:
 
     // Optional override of FUN_1422db790 (set from 0x141629ed0): (name, debug) -> swf file name.
     static Delegate<CString(CString, bool)> s_swfNameDelegate;      // 0x143b0d2f0
+    static void FUN_141629ed0(Delegate<CString(CString, bool)> d);  // defined in client/ms2/ms2memfile.cpp
 
 protected:
     MS2_LAYOUT_FRIEND;

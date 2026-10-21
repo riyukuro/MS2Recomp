@@ -40,6 +40,12 @@ public:
     static Delegate<bool(TiXmlDocument&)> ms_kXmlLoader3;                       // 0x143b0d7b0 ("name")
     static Delegate<bool(TiXmlDocument&)> ms_kXmlLoader4;                       // 0x143b0d7b8 ("value")
     static CString ms_strLocale;                                                // 0x143b0d798
+    // Setters (appended by gap3; defined in client/ms2/ms2memfile.cpp, whose startup code installs the loaders).
+    static void FUN_141629df0(Delegate<bool(TiXmlDocument&)> loader);
+    static void FUN_141629e70(Delegate<bool(TiXmlDocument&)> loader);
+    static void FUN_141629e30(Delegate<bool(TiXmlDocument&)> loader);
+    static void FUN_141629db0(Delegate<bool(TiXmlDocument&)> loader);
+    static void FUN_141629eb0(const CString& strLocale);
 
 private:
     MS2_LAYOUT_FRIEND;
