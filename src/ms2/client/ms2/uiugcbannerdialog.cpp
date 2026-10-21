@@ -107,9 +107,12 @@ struct Unk_BnBlockRef
     ~Unk_BnBlockRef() { FUN_1401cb250(this); }
 };
 MS2_CHECK_SIZE(Unk_BnBlockRef, 0x10);
-class Unk_BnStateMgr;
+class Unk_BnStateMgr
+{
+public:
+    Unk_BnBlockRef FUN_140a2f620(int nKind);
+};
 Unk_BnStateMgr* FUN_140a6a830();
-void FUN_140a2f620(Unk_BnStateMgr* pMgr, Unk_BnBlockRef* pOut, int nKind);
 void* FUN_1401cb3d0(Unk_BnBlockRef* pRef);
 void FUN_140a2ff20(Unk_BnBlockRef* pRef, int nKind, __int64 n);
 
@@ -124,7 +127,7 @@ bool FUN_140a467d0(const MS2Ptr<AScript>* pScript);             // the movie roo
 bool FUN_140ba28d0(const MS2Ptr<AScript>* pScript, int n);      // the movie root is null
 void FUN_14151f200();
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);     // str == sz
-bool FUN_140d74e80(CStringW& tag);                              // a "terms" message box tag answered with yes
+int FUN_140d74e80(CStringW& tag);                               // a "terms" message box tag answered with yes
 void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_141275260(int nStringId, int nA, int nB);
@@ -135,7 +138,7 @@ unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);        // set an Int value
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);   // a formatted table string
 CStringW FUN_1418fec00(int nPayType, __int64 nAmount, int nFlag);   // a price as text
-bool FUN_1418ff110(int nPayType, __int64 nAmount, int nFlag);    // the player can pay
+bool FUN_1418ff110(int nPayType, __int64 nAmount, bool bFlag);    // the player can pay
 void FUN_141276180(const CString& strName, const CString& strArg);
 CStringW FUN_141026920(int nKind);
 CStringW FUN_141028910(int nKind);
@@ -274,27 +277,30 @@ void UIUGCBannerDialog::OnLoadInit()
         vfunc_67();
         return;
     }
-    if (spUpload->FUN_1418a3ad0() == vfunc_48())
+    if (spUpload->FUN_1418a3ad0() != vfunc_48())
     {
-        if (spUpload->m_nKind == 3)
-        {
-            if (FUN_141b357e0() == 0)
-                vfunc_67();
-            else
-            {
-                FUN_14088e140(&m_190, FUN_140869440());
-                FUN_14088e140(&m_1c0, FUN_140869440());
-                if (m_230 < 0x18)
-                    m_1f4 = 0;
-                else
-                    m_1f4 = 1;
-            }
-        }
-        else
-            vfunc_67();
-    }
-    else
         vfunc_67();
+        return;
+    }
+    int nOk = 0;
+    int nKind = spUpload->m_nKind;
+    if (nKind != 3)
+    {
+        vfunc_67();
+        return;
+    }
+    nOk = FUN_141b357e0();
+    if (nOk == 0)
+    {
+        vfunc_67();
+        return;
+    }
+    FUN_14088e140(&m_190, FUN_140869440());
+    FUN_14088e140(&m_1c0, FUN_140869440());
+    if (m_230 >= 0x18)
+        m_1f4 = 1;
+    else
+        m_1f4 = 0;
 }
 
 // @0x141b34850
@@ -327,27 +333,25 @@ int UIUGCBannerDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         CStringW strTag = pMsg->FUN_1422b8f40();
         if (nResult == 0)
         {
-            if (FUN_140d74e80(strTag) == 0)
-            {
-                if (FUN_1403b3c40(strTag, L"noexist"))
-                {
-                    FUN_141b358d0();
-                    FUN_141b364a0(-1);
-                    MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
-                    if (spUpload.get() != 0)
-                    {
-                        if (spUpload->m_spViewer.get() != 0)
-                            spUpload->m_spViewer->vfunc_4();
-                    }
-                }
-            }
-            else
+            if (FUN_140d74e80(strTag) != 0)
                 FUN_14052d220()->FUN_141883400(reinterpret_cast<ATL::CRBMap<int, int>&>(m_1f8),
                                                reinterpret_cast<const Unk_BannerDay&>(m_1c0));
+            else if (FUN_1403b3c40(strTag, L"noexist"))
+            {
+                FUN_141b358d0();
+                FUN_141b364a0(-1);
+                MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
+                if (spUpload.get() ? true : false)
+                {
+                    if (spUpload->m_spViewer.get() ? true : false)
+                        spUpload->m_spViewer->vfunc_4();
+                }
+            }
             FUN_14151f200();
             return 1;
         }
-        FUN_14151f200();
+        else
+            FUN_14151f200();
     }
     return 0;
 }
@@ -549,37 +553,37 @@ int UIUGCBannerDialog::FUN_141b357e0()
 // @0x141b358d0
 void UIUGCBannerDialog::FUN_141b358d0()
 {
-    if (FUN_140a467d0(&m_30) == 0)
-    {
-        FUN_14052d220()->FUN_141889ce0(3);
-        ASArray arr(2);
-        FUN_14052d220()->FUN_141889e20(0x10, 0, &arr);
-        int nCount = FUN_14052d220()->FUN_14188a480();
-        ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildUGCFiles", nCount, arr);
-    }
+    if (FUN_140a467d0(&m_30) != 0)
+        return;
+    FUN_14052d220()->FUN_141889ce0(3);
+    ASArray arr(2);
+    FUN_14052d220()->FUN_141889e20(0x10, 0, &arr);
+    int nCount = FUN_14052d220()->FUN_14188a480();
+    ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildUGCFiles", nCount, arr);
 }
 
 // @0x141b359b0
 void UIUGCBannerDialog::FUN_141b359b0()
 {
-    if (FUN_140a467d0(&m_30) == 0)
-    {
-        FUN_14088e0f0(&m_1c0, &m_190, m_1f4 * 0x18 + m_230);
-        ASArray arr(2);
-        FUN_14052d220()->FUN_141888de0(m_188, reinterpret_cast<const Unk_BannerDay&>(m_1c0),
-                                       reinterpret_cast<ATL::CRBMap<int, int>&>(m_1f8), &arr);
-        int nBit = m_230 < 0x18 ? 2 : 3;
-        ((Unk_UgcScript*)m_30.operator->())->FUN_141b36b60("buildTimeReserve", m_1f4, arr, m_230 > 0x17, nBit);
-    }
+    if (FUN_140a467d0(&m_30) != 0)
+        return;
+    FUN_14088e0f0(&m_1c0, &m_190, m_1f4 * 0x18 + m_230);
+    ASArray arr(2);
+    FUN_14052d220()->FUN_141888de0(m_188, reinterpret_cast<const Unk_BannerDay&>(m_1c0),
+                                   reinterpret_cast<ATL::CRBMap<int, int>&>(m_1f8), &arr);
+    int nLow = m_230 < 0x18 ? 0 : 1;
+    int nBit = m_230 < 0x18 ? 2 : 3;
+    ((Unk_UgcScript*)m_30.operator->())->FUN_141b36b60("buildTimeReserve", m_1f4, arr, nLow, nBit);
 }
 
 // @0x141b35b80
 void UIUGCBannerDialog::FUN_141b35b80()
 {
+    int nType = 3;
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        CStringW strDir = FUN_141026920(3);
+        CStringW strDir = FUN_141026920(nType);
         wchar_t szFull[260] = {0};
         _wfullpath(szFull, strDir, 260);
         CStringW strFull(szFull);
@@ -617,12 +621,13 @@ int UIUGCBannerDialog::FUN_141b35d00(int nIndex)
 // @0x141b35e10
 int UIUGCBannerDialog::FUN_141b35e10(int nIndex)
 {
-    Unk_BnBlockRef block;
-    FUN_140a2f620(FUN_140a6a830(), &block, 5);
-    if (FUN_1401cb3d0(&block) != 0)
     {
-        FUN_140a2ff20(&block, 5, (__int64)static_cast<IMessageListener*>(this));
-        return 0;
+        Unk_BnBlockRef block = FUN_140a6a830()->FUN_140a2f620(5);
+        if (FUN_1401cb3d0(&block) != 0)
+        {
+            FUN_140a2ff20(&block, 5, (__int64)static_cast<IMessageListener*>(this));
+            return 0;
+        }
     }
     if (nIndex == -1)
     {
@@ -634,9 +639,11 @@ int UIUGCBannerDialog::FUN_141b35e10(int nIndex)
         FUN_140d73bc0(0x2e4, 0, 0, CStringW(L""));
         return 0;
     }
-    if (!FUN_1418ff110(FUN_141b36a60(), FUN_141b368b0(), 1))
+    __int64 nPrice = FUN_141b368b0();
+    if (!FUN_1418ff110(FUN_141b36a60(), nPrice, true))
         return 0;
-    if (FUN_14052d220()->FUN_141881890(nIndex) == 0)
+    int nRes = FUN_14052d220()->FUN_141881890(nIndex);
+    if (nRes == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
         return 0;
@@ -696,7 +703,7 @@ int UIUGCBannerDialog::FUN_141b36230(int nHour, bool bPicked)
 int UIUGCBannerDialog::FUN_141b362b0(int nOffset)
 {
     int nDay = m_1f4 + nOffset;
-    int nLow = m_230 >= 0x18;
+    int nLow = m_230 < 0x18 ? 0 : 1;
     int nHigh = m_230 < 0x18 ? 2 : 3;
     if (nDay <= nLow)
         nDay = nLow;
@@ -731,7 +738,7 @@ void UIUGCBannerDialog::FUN_141b364a0(int nIndex)
     if (nIndex == -1)
     {
         if (m_30.get() != 0)
-            m_30->Invoke("selectThumbnail", -1);
+            m_30->Invoke("selectThumbnail", nIndex);
     }
     else
     {
@@ -768,13 +775,12 @@ void UIUGCBannerDialog::FUN_141b366b0()
 // @0x141b36750
 void UIUGCBannerDialog::FUN_141b36750(__int64 nPrice)
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0)
-    {
-        if (m_238 == 0)
-            m_238 = reinterpret_cast<Unk_WcTitleFinder*>(m_30.operator->())->FUN_140c436d0("m_labelMeso");
-        if (m_238.get() != 0)
-            m_238->FUN_1422e4b80(FUN_1418fec00(FUN_141b36a60(), nPrice, 0));
-    }
+    if (FUN_140ba28d0(&m_30, 0) != 0)
+        return;
+    if (m_238 == 0)
+        m_238 = reinterpret_cast<Unk_WcTitleFinder*>(m_30.operator->())->FUN_140c436d0("m_labelMeso");
+    if (m_238.get() != 0)
+        m_238->FUN_1422e4b80(FUN_1418fec00(FUN_141b36a60(), nPrice, 0));
 }
 
 // @0x141b368b0
@@ -784,12 +790,11 @@ __int64 UIUGCBannerDialog::FUN_141b368b0()
     if (banner == 0)
         return 0;
     __int64 nTotal = 0;
-    POSITION pos = m_1f8.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_1f8.GetHeadPosition(); pos != 0; m_1f8.GetNext(pos))
     {
         int nHour = m_1f8.GetKeyAt(pos);
-        nTotal += banner->GetHourly(nHour);
-        m_1f8.GetNext(pos);
+        __int64 nPrice = banner->GetHourly(nHour);
+        nTotal += nPrice;
     }
     return nTotal;
 }
@@ -856,15 +861,17 @@ void UIUGCCameraDialog::vfunc_67()
 // @0x141b381d0
 void UIUGCCameraDialog::vfunc_72()
 {
-    if (vfunc_55() != 1 && m_188 > 0)
+    if (vfunc_55() == 1)
+        return;
+    if (m_188 > 0)
     {
         if (m_188 == 1)
             m_188 = 2;
         else if (m_188 == 2)
         {
             m_188 = 0;
-            FUN_141276180(s_strProfileTakePhoto, CString(""));
-            FUN_141276180(s_strPCTakePhoto, CString(""));
+            FUN_141276180(s_strProfileTakePhoto, "");
+            FUN_141276180(s_strPCTakePhoto, "");
             FUN_141b386b0(m_18c, m_190, m_194, m_198);
             UIUGCImageUploadDialog* pDialog = UgcFindDialog<UIUGCImageUploadDialog>(eUI_4e56);
             if (pDialog != 0)
@@ -880,11 +887,11 @@ void UIUGCCameraDialog::OnLoadInit()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        pDialog->Invoke("open",
-                        FUN_1401d3200()->UGCCameraDefaultSize.Read(),
-                        FUN_1401d3200()->UGCCameraMinSize.Read(),
-                        FUN_1401d3200()->UGCCameraMaxSize.Read(),
-                        FUN_1401d3200()->UGCCameraSnapshotPreviewTime.Read());
+        int nDefault = FUN_1401d3200()->UGCCameraDefaultSize.Read();
+        int nMin = FUN_1401d3200()->UGCCameraMinSize.Read();
+        int nMax = FUN_1401d3200()->UGCCameraMaxSize.Read();
+        int nPreview = FUN_1401d3200()->UGCCameraSnapshotPreviewTime.Read();
+        pDialog->Invoke("open", nDefault, nMin, nMax, nPreview);
     }
 }
 
@@ -925,7 +932,7 @@ int UIUGCCameraDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         }
         return 1;
     }
-    if (_stricmp("onProfile", szMethod) == 0)
+    else if (_stricmp("onProfile", szMethod) == 0)
         FUN_14052d220()->FUN_14187fb30();
     return 0;
 }
