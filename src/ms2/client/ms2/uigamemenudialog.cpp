@@ -318,7 +318,7 @@ public:
     Unk_GmMenuRef* FUN_140cf7590(Unk_GmMenuRef* pOut, int nId);
     Unk_GmMenuRef FUN_140cf7690(int nId);
     void FUN_140cf7710(Unk_GmNodeArr* pOut, int nLang);
-    void FUN_140cf77a0(Unk_GmNodeRef* pOut, int nId, int nLang);
+    Unk_GmNodeRef FUN_140cf77a0(int nId, int nLang);
 };
 class Unk_GmGridRef
 {
@@ -679,7 +679,7 @@ int FUN_140930e10();
 bool FUN_1409301c0();
 bool FUN_140930b70();
 bool FUN_1409312f0();
-int FUN_1410d4940(void*);
+__int64 FUN_1410d4940(void*);
 bool FUN_140b06000(void*);
 int FUN_140d5b6b0(void*);
 bool FUN_14071b9c0(void*);
@@ -753,7 +753,7 @@ void* FUN_141523c50(PCBase*);
 int FUN_141527160(PCBase*, int);
 int FUN_141527e00(PCBase*);
 int FUN_141527ed0(PCBase*);
-int FUN_141529ae0(PCBase*, int, int, int, int);
+int FUN_141529ae0(PCBase*, int, int, int, __int64);
 void FUN_14152a240(PCBase*, int);
 int FUN_14152e970(PCBase*, int);
 void* FUN_1416546d0(PCBase*);
@@ -1263,8 +1263,8 @@ void UIGameMenuDialog::FUN_141938270(int bUp, int nA, int nB)
 // @0x141938350
 void UIGameMenuDialog::FUN_141938350(int nId, int bUp)
 {
-    MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(FUN_14193b530(nId)));
-    if (spItem.get() != 0)
+    int nKey = FUN_14193b530(nId);
+    if (MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(nKey)))
         spItem->Invoke("setNotifyUp", FUN_14193afc0(nId), bUp);
 }
 
@@ -1280,8 +1280,8 @@ void UIGameMenuDialog::FUN_1419384d0()
     for (POSITION pos = m_menuText.GetStartPosition(); pos != NULL; m_menuText.GetNext(pos)) {
         int nId = m_menuText.GetKeyAt(pos);
         CStringW strText(m_menuText.GetValueAt(pos));
-        MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(FUN_14193b530(nId)));
-        if (spItem.get() != 0)
+        int nKey = FUN_14193b530(nId);
+        if (MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(nKey)))
             spItem->FUN_140c38f00("setEventPopup", FUN_14193afc0(nId), CStringW(strText));
     }
 }
@@ -1438,8 +1438,8 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
         }
     }
     int nMenu = FUN_140c1d2f0()->FUN_140cf73a0(nId);
-    MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(FUN_14193b530(nMenu)));
-    if (spItem.get() != 0)
+    int nKey = FUN_14193b530(nMenu);
+    if (MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(nKey)))
         spItem->Invoke("setNotifyCount", FUN_14193afc0(nMenu), nCount);
 }
 
@@ -1451,8 +1451,8 @@ void UIGameMenuDialog::FUN_1419391c0()
         if (FUN_1410d4940(FUN_1409670e0()) > 0)
             nCount = 1;
     }
-    MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(FUN_14193b530(0x16)));
-    if (spItem.get() != 0)
+    int nKey = FUN_14193b530(0x16);
+    if (MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(nKey)))
         spItem->Invoke("setNotifyCount", FUN_14193afc0(0x16), nCount);
 }
 
@@ -1466,8 +1466,8 @@ void UIGameMenuDialog::FUN_141939320(bool bValue)
 // @0x141939360
 void UIGameMenuDialog::FUN_141939360(bool bValue)
 {
-    MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(FUN_14193b530(0x16)));
-    if (spItem.get() != 0)
+    int nKey = FUN_14193b530(0x16);
+    if (MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(nKey)))
         spItem->FUN_140ee5060("setNotifyRedCircle", FUN_14193afc0(0x16), bValue);
 }
 
@@ -1481,8 +1481,8 @@ void UIGameMenuDialog::FUN_1419394a0(bool bValue)
 // @0x1419394e0
 void UIGameMenuDialog::FUN_1419394e0(bool bValue)
 {
-    MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(FUN_14193b530(7)));
-    if (spItem.get() != 0)
+    int nKey = FUN_14193b530(7);
+    if (MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(nKey)))
         spItem->FUN_140ee5060("setNotifyRedCircle", FUN_14193afc0(7), bValue);
 }
 
@@ -1490,8 +1490,8 @@ void UIGameMenuDialog::FUN_1419394e0(bool bValue)
 void UIGameMenuDialog::FUN_141939620()
 {
     if (FUN_14036d570(FUN_140166410(), 0x5c) == 1) {
-        MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(FUN_14193b530(0x24)));
-        if (spItem.get() != 0)
+        int nKey = FUN_14193b530(0x24);
+        if (MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(nKey)))
             spItem->Invoke("setNotifyCount", FUN_14193afc0(0x24), DAT_143ab2900);
     }
 }
@@ -1499,8 +1499,8 @@ void UIGameMenuDialog::FUN_141939620()
 // @0x141939770
 void UIGameMenuDialog::FUN_141939770(int nId, int nEnable)
 {
-    MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(FUN_14193b530(nId)));
-    if (spItem.get() != 0)
+    int nKey = FUN_14193b530(nId);
+    if (MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(nKey)))
         spItem->Invoke("setMenuEnable", FUN_14193afc0(nId), nEnable);
     m_enabled.SetAt(reinterpret_cast<const EMenuKey&>(nId), nEnable);
 }
@@ -1565,21 +1565,21 @@ void UIGameMenuDialog::FUN_141939910()
 }
 
 // @0x141939cf0
-// MS2-FUNCTIONAL: ASObj/ref temporaries are ordered by the compiler
 void UIGameMenuDialog::FUN_141939cf0(int nId)
 {
-    if (!FUN_140a467d0(&m_30)) {
-        Unk_GmNodeRef ref;
-        FUN_140c1d2f0()->FUN_140cf77a0(&ref, nId, FUN_14193a010());
-        if (FUN_14193fba0(&ref)) {
-        } else if (ref.FUN_140c1cdb0()->FUN_140cf0bf0()) {
-            ASObj obj(2);
-            obj.FUN_1407cb9c0("row", ref.FUN_140c1cdb0()->m_range.m_0);
-            obj.FUN_1407cb9c0("col", ref.FUN_140c1cdb0()->m_range.m_4);
-            if (FUN_14193a7b0(nId, &obj) != 0)
-                m_30->Invoke("modifyMenuEntity", obj.FUN_1422bb870());
-        }
-    }
+    if (FUN_140a467d0(&m_30))
+        return;
+    Unk_GmNodeRef ref = FUN_140c1d2f0()->FUN_140cf77a0(nId, FUN_14193a010());
+    if (FUN_14193fba0(&ref))
+        return;
+    if (!ref.FUN_140c1cdb0()->FUN_140cf0bf0())
+        return;
+    ASObj obj(2);
+    obj.FUN_1407cb9c0("row", ref.FUN_140c1cdb0()->m_range.m_0);
+    obj.FUN_1407cb9c0("col", ref.FUN_140c1cdb0()->m_range.m_4);
+    if (FUN_14193a7b0(nId, &obj) == 0)
+        return;
+    m_30->Invoke("modifyMenuEntity", obj.FUN_1422bb870());
 }
 
 // @0x141939ec0
@@ -1668,8 +1668,8 @@ void UIGameMenuDialog::FUN_14193a140()
     if (m_order.GetCount() != 0) {
         for (size_t k = 0; k < arrAdded.GetCount(); ++k) {
             if (FUN_14193f100(m_order, arrAdded[k]) == -1) {
-                MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(FUN_14193b530(arrAdded[k])));
-                if (spItem.get() != 0)
+                int nKey = FUN_14193b530(arrAdded[k]);
+                if (MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(FUN_14193afc0(nKey)))
                     spItem->Invoke("setNotifyNew", FUN_14193afc0(arrAdded[k]), 1);
             }
         }
@@ -1803,18 +1803,20 @@ void UIGameMenuDialog::FUN_14193b320(GameEventVariable*)
 // @0x14193b360
 void UIGameMenuDialog::FUN_14193b360()
 {
-    if (FUN_14036d570(FUN_140166410(), 0xa8) && !FUN_140a467d0(&m_30)) {
-        ATL::CAtlArray<int> arrQuests;
-        FUN_1416d0920(FUN_140764020(), &arrQuests);
-        int bNew = 0;
-        for (size_t i = 0; i < arrQuests.GetCount(); ++i) {
-            if (FUN_14074bc90(arrQuests[i]) == 0) {
-                bNew = 1;
-                break;
-            }
+    if (!FUN_14036d570(FUN_140166410(), 0xa8))
+        return;
+    if (FUN_140a467d0(&m_30))
+        return;
+    ATL::CAtlArray<int> arrQuests;
+    FUN_1416d0920(FUN_140764020(), &arrQuests);
+    int bNew = 0;
+    for (size_t i = 0; i < arrQuests.GetCount(); ++i) {
+        if (FUN_14074bc90(arrQuests[i]) == 0) {
+            bNew = 1;
+            break;
         }
-        m_30->FUN_14184af30("setQuest", arrQuests.GetCount() != 0, bNew);
     }
+    m_30->FUN_14184af30("setQuest", arrQuests.GetCount() != 0, bNew);
 }
 
 // @0x14193b4a0
@@ -1862,10 +1864,10 @@ void UIGameMenuDialog::FUN_14193b630()
 // @0x14193b670
 void UIGameMenuDialog::FUN_14193b670()
 {
-    if (FUN_14036d570(FUN_140166410(), 0x4e) == 0)
-        FUN_140d73aa0(FUN_140298ea0(CStringW(L"s_pvp_arena_close_test_season_msg")), 0, 0, CStringW(L""));
-    else
+    if (FUN_14036d570(FUN_140166410(), 0x4e) != 0)
         FUN_1403ed2b0()->FUN_141adc750(0x4f04);
+    else
+        FUN_140d73aa0(FUN_140298ea0(CStringW(L"s_pvp_arena_close_test_season_msg")), 0, 0, CStringW(L""));
 }
 
 // @0x14193b750
@@ -2182,12 +2184,11 @@ void UIGameMenuDialog::FUN_14193cf60()
 // @0x14193d030
 void UIGameMenuDialog::FUN_14193d030()
 {
-    if (FUN_1416d09d0(FUN_140764020(), *FUN_1401d7c10(&FUN_1401d3200()->m_8de0), 1) != 0) {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_sky_fortress_goto_map")), 0, CStringW(L""));
-        if (box.get() != 0) {
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193dab0));
-            FUN_140d73c60(box);
-        }
+    if (FUN_1416d09d0(FUN_140764020(), *FUN_1401d7c10(&FUN_1401d3200()->m_8de0), 1) == 0)
+        return;
+    if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(L"s_sky_fortress_goto_map"), 0, CStringW(L""))) {
+        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193dab0));
+        FUN_140d73c60(box);
     }
 }
 
@@ -2331,15 +2332,15 @@ bool UIGameMenuDialog::FUN_14193d8a0(int nResult, const CMsgBoxData& box)
 // @0x14193d900
 bool UIGameMenuDialog::FUN_14193d900(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0) {
-        PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPc != NULL && FUN_141529ae0(pPc, 0, 0, 0, 0) != 0) {
-            unsigned short nIndex = (unsigned short)box.FUN_141a02e50(0, 0);
-            COutPacket packet(0x23, 0);
-            packet.vfunc_o10_1(10);
-            packet.vfunc_o10_2(nIndex);
-            FUN_140710590(packet);
-        }
+    if (nResult != 0)
+        return true;
+    PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPc != NULL && FUN_141529ae0(pPc, 0, 0, 0, 0) != 0) {
+        int nIndex = box.FUN_141a02e50(0, 0);
+        COutPacket packet(0x23, 0);
+        packet.vfunc_o10_1(10);
+        packet.vfunc_o10_2((short)nIndex);
+        FUN_140710590(packet);
     }
     return true;
 }
