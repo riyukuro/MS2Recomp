@@ -13,14 +13,16 @@
 #include <iterator>
 #include "ms2/unnamed/unk_stlglue.h"
 
-// Callees (accessors, allocator_traits, uninitialized copy helpers) of the same vectors, in other units.
+// Callees (accessors, allocator_traits, uninitialized copy helpers) of the same vectors, in other units. The
+// _Myfirst/_Mylast accessors and std::forward are noexcept: inside _Emplace_reallocate's try block the exe does not spill
+// their results (and evaluates the construct arguments in the order that implies).
 extern Unk_StlElem<0x20>* FUN_140296020(Unk_StlElem<0x20>* p);
 extern size_t FUN_14029a300(void* pThis, size_t nNewSize);
 extern void FUN_14029a4a0(void* pThis, Unk_StlElem<0x20>* pNewVec, size_t nNewSize, size_t nNewCapacity);
 extern void FUN_14029a860(void* pThis, Unk_StlElem<0x20>* pFirst, Unk_StlElem<0x20>* pLast);
 extern void* FUN_14029bab0(void* pThis);
-extern Unk_StlElem<0x20>*& FUN_14029bfd0(void* pThis);
-extern Unk_StlElem<0x20>*& FUN_14029c010(void* pThis);
+extern Unk_StlElem<0x20>*& FUN_14029bfd0(void* pThis) noexcept;
+extern Unk_StlElem<0x20>*& FUN_14029c010(void* pThis) noexcept;
 extern void FUN_14029c080(void* pThis, Unk_StlElem<0x20>* pFirst, Unk_StlElem<0x20>* pLast);
 extern Unk_StlElem<0x20>* FUN_14029c550(void* pThis, Unk_StlElem<0x20>* pFirst, Unk_StlElem<0x20>* pLast, Unk_StlElem<0x20>* pDest);
 extern void FUN_14029c670(void* pThis, Unk_StlElem<0x20>* pFirst, Unk_StlElem<0x20>* pLast, Unk_StlElem<0x20>* pDest);
@@ -29,7 +31,7 @@ extern Unk_StlElem<0x20>* FUN_14029c7c0(void* pAl, size_t n);
 extern void FUN_14029cd50(void* pAl, Unk_StlElem<0x20>* p, size_t n);
 extern size_t FUN_14029d620(void* pThis);
 extern size_t FUN_14029dc20(void* pThis);
-extern Unk_StlElem<0x20>* FUN_1403a4b80(Unk_StlElem<0x20>* p);
+extern Unk_StlElem<0x20>* FUN_1403a4b80(Unk_StlElem<0x20>* p) noexcept;
 extern Unk_StlElem<0x10>* FUN_1415dd7c0(Unk_StlElem<0x10>* p);
 extern Unk_StlElem<0x18>* FUN_1415dd7d0(Unk_StlElem<0x18>* p);
 extern Unk_StlElem<0x58>* FUN_1415dd7e0(Unk_StlElem<0x58>* p);
@@ -158,29 +160,29 @@ extern Unk_StlElem<0xc8>* FUN_1415e4ce0(Unk_StlElem<0xc8>* p);
 extern Unk_StlElem<0xf8>* FUN_1415e4cf0(Unk_StlElem<0xf8>* p);
 extern Unk_StlElem<0x490>* FUN_1415e4d00(Unk_StlElem<0x490>* p);
 extern Unk_StlElem<0x20>* FUN_1415e4d10(Unk_StlElem<0x20>* p);
-extern Unk_StlElem<0x10>* FUN_1415e4d20(Unk_StlElem<0x10>* p);
-extern Unk_StlElem<0x18>* FUN_1415e4d30(Unk_StlElem<0x18>* p);
-extern Unk_StlElem<0x58>* FUN_1415e4d40(Unk_StlElem<0x58>* p);
-extern void* FUN_1415e4d50(void* p);
-extern Unk_StlElem<0x98>* FUN_1415e4d60(Unk_StlElem<0x98>* p);
-extern Unk_StlElem<0x220>* FUN_1415e4d70(Unk_StlElem<0x220>* p);
-extern Unk_StlElem<0x128>* FUN_1415e4d80(Unk_StlElem<0x128>* p);
-extern Unk_StlElem<0x118>* FUN_1415e4d90(Unk_StlElem<0x118>* p);
-extern Unk_StlElem<0xe0>* FUN_1415e4da0(Unk_StlElem<0xe0>* p);
-extern Unk_StlElem<0x580>* FUN_1415e4db0(Unk_StlElem<0x580>* p);
-extern Unk_StlElem<0x18>* FUN_1415e4dc0(Unk_StlElem<0x18>* p);
-extern Unk_StlElem<0x14a8>* FUN_1415e4dd0(Unk_StlElem<0x14a8>* p);
-extern Unk_StlElem<0x18>* FUN_1415e4de0(Unk_StlElem<0x18>* p);
-extern Unk_StlElem<0x190>* FUN_1415e4df0(Unk_StlElem<0x190>* p);
-extern Unk_StlElem<0xb8>* FUN_1415e4e00(Unk_StlElem<0xb8>* p);
-extern Unk_StlElem<0x58>* FUN_1415e4e10(Unk_StlElem<0x58>* p);
-extern Unk_StlElem<0x68>* FUN_1415e4e20(Unk_StlElem<0x68>* p);
-extern Unk_StlElem<0xae8>* FUN_1415e4e30(Unk_StlElem<0xae8>* p);
-extern Unk_StlElem<0xec8>* FUN_1415e4e40(Unk_StlElem<0xec8>* p);
-extern Unk_StlElem<0xc8>* FUN_1415e4e50(Unk_StlElem<0xc8>* p);
-extern Unk_StlElem<0xf8>* FUN_1415e4e60(Unk_StlElem<0xf8>* p);
-extern Unk_StlElem<0x490>* FUN_1415e4e70(Unk_StlElem<0x490>* p);
-extern Unk_StlElem<0x20>* FUN_1415e4e80(Unk_StlElem<0x20>* p);
+extern Unk_StlElem<0x10>* FUN_1415e4d20(Unk_StlElem<0x10>* p) noexcept;
+extern Unk_StlElem<0x18>* FUN_1415e4d30(Unk_StlElem<0x18>* p) noexcept;
+extern Unk_StlElem<0x58>* FUN_1415e4d40(Unk_StlElem<0x58>* p) noexcept;
+extern void* FUN_1415e4d50(void* p) noexcept;
+extern Unk_StlElem<0x98>* FUN_1415e4d60(Unk_StlElem<0x98>* p) noexcept;
+extern Unk_StlElem<0x220>* FUN_1415e4d70(Unk_StlElem<0x220>* p) noexcept;
+extern Unk_StlElem<0x128>* FUN_1415e4d80(Unk_StlElem<0x128>* p) noexcept;
+extern Unk_StlElem<0x118>* FUN_1415e4d90(Unk_StlElem<0x118>* p) noexcept;
+extern Unk_StlElem<0xe0>* FUN_1415e4da0(Unk_StlElem<0xe0>* p) noexcept;
+extern Unk_StlElem<0x580>* FUN_1415e4db0(Unk_StlElem<0x580>* p) noexcept;
+extern Unk_StlElem<0x18>* FUN_1415e4dc0(Unk_StlElem<0x18>* p) noexcept;
+extern Unk_StlElem<0x14a8>* FUN_1415e4dd0(Unk_StlElem<0x14a8>* p) noexcept;
+extern Unk_StlElem<0x18>* FUN_1415e4de0(Unk_StlElem<0x18>* p) noexcept;
+extern Unk_StlElem<0x190>* FUN_1415e4df0(Unk_StlElem<0x190>* p) noexcept;
+extern Unk_StlElem<0xb8>* FUN_1415e4e00(Unk_StlElem<0xb8>* p) noexcept;
+extern Unk_StlElem<0x58>* FUN_1415e4e10(Unk_StlElem<0x58>* p) noexcept;
+extern Unk_StlElem<0x68>* FUN_1415e4e20(Unk_StlElem<0x68>* p) noexcept;
+extern Unk_StlElem<0xae8>* FUN_1415e4e30(Unk_StlElem<0xae8>* p) noexcept;
+extern Unk_StlElem<0xec8>* FUN_1415e4e40(Unk_StlElem<0xec8>* p) noexcept;
+extern Unk_StlElem<0xc8>* FUN_1415e4e50(Unk_StlElem<0xc8>* p) noexcept;
+extern Unk_StlElem<0xf8>* FUN_1415e4e60(Unk_StlElem<0xf8>* p) noexcept;
+extern Unk_StlElem<0x490>* FUN_1415e4e70(Unk_StlElem<0x490>* p) noexcept;
+extern Unk_StlElem<0x20>* FUN_1415e4e80(Unk_StlElem<0x20>* p) noexcept;
 extern Unk_StlElem<0x58>* FUN_1415e4f60(Unk_StlElem<0x58>* p);
 extern Unk_StlElem<0x30>* FUN_1415e4f70(Unk_StlElem<0x30>* p);
 extern Unk_StlElem<0x98>* FUN_1415e4f80(Unk_StlElem<0x98>* p);
@@ -294,52 +296,52 @@ extern void* FUN_141601f90(void* pThis);
 extern void* FUN_141601fd0(void* pThis);
 extern void* FUN_141602010(void* pThis);
 extern void* FUN_141602050(void* pThis);
-extern Unk_StlElem<0x10>*& FUN_1416033c0(void* pThis);
-extern Unk_StlElem<0x18>*& FUN_141603400(void* pThis);
-extern Unk_StlElem<0x58>*& FUN_141603440(void* pThis);
-extern Unk_StlElem<0x30>*& FUN_141603480(void* pThis);
-extern Unk_StlElem<0x98>*& FUN_1416034c0(void* pThis);
-extern Unk_StlElem<0x220>*& FUN_141603500(void* pThis);
-extern Unk_StlElem<0x128>*& FUN_141603540(void* pThis);
-extern Unk_StlElem<0x118>*& FUN_141603580(void* pThis);
-extern Unk_StlElem<0xe0>*& FUN_1416035c0(void* pThis);
-extern Unk_StlElem<0x580>*& FUN_141603600(void* pThis);
-extern Unk_StlElem<0x18>*& FUN_141603640(void* pThis);
-extern Unk_StlElem<0x14a8>*& FUN_141603680(void* pThis);
-extern Unk_StlElem<0x18>*& FUN_1416036c0(void* pThis);
-extern Unk_StlElem<0x190>*& FUN_141603700(void* pThis);
-extern Unk_StlElem<0xb8>*& FUN_141603740(void* pThis);
-extern Unk_StlElem<0x58>*& FUN_141603780(void* pThis);
-extern Unk_StlElem<0x68>*& FUN_1416037c0(void* pThis);
-extern Unk_StlElem<0xae8>*& FUN_141603800(void* pThis);
-extern Unk_StlElem<0xec8>*& FUN_141603840(void* pThis);
-extern Unk_StlElem<0xc8>*& FUN_141603880(void* pThis);
-extern Unk_StlElem<0xf8>*& FUN_1416038c0(void* pThis);
-extern Unk_StlElem<0x490>*& FUN_141603900(void* pThis);
-extern Unk_StlElem<0x20>*& FUN_141603940(void* pThis);
-extern Unk_StlElem<0x10>*& FUN_141603980(void* pThis);
-extern Unk_StlElem<0x18>*& FUN_1416039c0(void* pThis);
-extern Unk_StlElem<0x58>*& FUN_141603a00(void* pThis);
-extern Unk_StlElem<0x30>*& FUN_141603a40(void* pThis);
-extern Unk_StlElem<0x98>*& FUN_141603a80(void* pThis);
-extern Unk_StlElem<0x220>*& FUN_141603ac0(void* pThis);
-extern Unk_StlElem<0x128>*& FUN_141603b00(void* pThis);
-extern Unk_StlElem<0x118>*& FUN_141603b40(void* pThis);
-extern Unk_StlElem<0xe0>*& FUN_141603b80(void* pThis);
-extern Unk_StlElem<0x580>*& FUN_141603bc0(void* pThis);
-extern Unk_StlElem<0x18>*& FUN_141603c00(void* pThis);
-extern Unk_StlElem<0x14a8>*& FUN_141603c40(void* pThis);
-extern Unk_StlElem<0x18>*& FUN_141603c80(void* pThis);
-extern Unk_StlElem<0x190>*& FUN_141603cc0(void* pThis);
-extern Unk_StlElem<0xb8>*& FUN_141603d00(void* pThis);
-extern Unk_StlElem<0x58>*& FUN_141603d40(void* pThis);
-extern Unk_StlElem<0x68>*& FUN_141603d80(void* pThis);
-extern Unk_StlElem<0xae8>*& FUN_141603dc0(void* pThis);
-extern Unk_StlElem<0xec8>*& FUN_141603e00(void* pThis);
-extern Unk_StlElem<0xc8>*& FUN_141603e40(void* pThis);
-extern Unk_StlElem<0xf8>*& FUN_141603e80(void* pThis);
-extern Unk_StlElem<0x490>*& FUN_141603ec0(void* pThis);
-extern Unk_StlElem<0x20>*& FUN_141603f00(void* pThis);
+extern Unk_StlElem<0x10>*& FUN_1416033c0(void* pThis) noexcept;
+extern Unk_StlElem<0x18>*& FUN_141603400(void* pThis) noexcept;
+extern Unk_StlElem<0x58>*& FUN_141603440(void* pThis) noexcept;
+extern Unk_StlElem<0x30>*& FUN_141603480(void* pThis) noexcept;
+extern Unk_StlElem<0x98>*& FUN_1416034c0(void* pThis) noexcept;
+extern Unk_StlElem<0x220>*& FUN_141603500(void* pThis) noexcept;
+extern Unk_StlElem<0x128>*& FUN_141603540(void* pThis) noexcept;
+extern Unk_StlElem<0x118>*& FUN_141603580(void* pThis) noexcept;
+extern Unk_StlElem<0xe0>*& FUN_1416035c0(void* pThis) noexcept;
+extern Unk_StlElem<0x580>*& FUN_141603600(void* pThis) noexcept;
+extern Unk_StlElem<0x18>*& FUN_141603640(void* pThis) noexcept;
+extern Unk_StlElem<0x14a8>*& FUN_141603680(void* pThis) noexcept;
+extern Unk_StlElem<0x18>*& FUN_1416036c0(void* pThis) noexcept;
+extern Unk_StlElem<0x190>*& FUN_141603700(void* pThis) noexcept;
+extern Unk_StlElem<0xb8>*& FUN_141603740(void* pThis) noexcept;
+extern Unk_StlElem<0x58>*& FUN_141603780(void* pThis) noexcept;
+extern Unk_StlElem<0x68>*& FUN_1416037c0(void* pThis) noexcept;
+extern Unk_StlElem<0xae8>*& FUN_141603800(void* pThis) noexcept;
+extern Unk_StlElem<0xec8>*& FUN_141603840(void* pThis) noexcept;
+extern Unk_StlElem<0xc8>*& FUN_141603880(void* pThis) noexcept;
+extern Unk_StlElem<0xf8>*& FUN_1416038c0(void* pThis) noexcept;
+extern Unk_StlElem<0x490>*& FUN_141603900(void* pThis) noexcept;
+extern Unk_StlElem<0x20>*& FUN_141603940(void* pThis) noexcept;
+extern Unk_StlElem<0x10>*& FUN_141603980(void* pThis) noexcept;
+extern Unk_StlElem<0x18>*& FUN_1416039c0(void* pThis) noexcept;
+extern Unk_StlElem<0x58>*& FUN_141603a00(void* pThis) noexcept;
+extern Unk_StlElem<0x30>*& FUN_141603a40(void* pThis) noexcept;
+extern Unk_StlElem<0x98>*& FUN_141603a80(void* pThis) noexcept;
+extern Unk_StlElem<0x220>*& FUN_141603ac0(void* pThis) noexcept;
+extern Unk_StlElem<0x128>*& FUN_141603b00(void* pThis) noexcept;
+extern Unk_StlElem<0x118>*& FUN_141603b40(void* pThis) noexcept;
+extern Unk_StlElem<0xe0>*& FUN_141603b80(void* pThis) noexcept;
+extern Unk_StlElem<0x580>*& FUN_141603bc0(void* pThis) noexcept;
+extern Unk_StlElem<0x18>*& FUN_141603c00(void* pThis) noexcept;
+extern Unk_StlElem<0x14a8>*& FUN_141603c40(void* pThis) noexcept;
+extern Unk_StlElem<0x18>*& FUN_141603c80(void* pThis) noexcept;
+extern Unk_StlElem<0x190>*& FUN_141603cc0(void* pThis) noexcept;
+extern Unk_StlElem<0xb8>*& FUN_141603d00(void* pThis) noexcept;
+extern Unk_StlElem<0x58>*& FUN_141603d40(void* pThis) noexcept;
+extern Unk_StlElem<0x68>*& FUN_141603d80(void* pThis) noexcept;
+extern Unk_StlElem<0xae8>*& FUN_141603dc0(void* pThis) noexcept;
+extern Unk_StlElem<0xec8>*& FUN_141603e00(void* pThis) noexcept;
+extern Unk_StlElem<0xc8>*& FUN_141603e40(void* pThis) noexcept;
+extern Unk_StlElem<0xf8>*& FUN_141603e80(void* pThis) noexcept;
+extern Unk_StlElem<0x490>*& FUN_141603ec0(void* pThis) noexcept;
+extern Unk_StlElem<0x20>*& FUN_141603f00(void* pThis) noexcept;
 extern void FUN_141604220(void* pThis, Unk_StlElem<0x10>* pFirst, Unk_StlElem<0x10>* pLast);
 extern void FUN_141604230(void* pThis, Unk_StlElem<0x18>* pFirst, Unk_StlElem<0x18>* pLast);
 extern void FUN_141604240(void* pThis, Unk_StlElem<0x58>* pFirst, Unk_StlElem<0x58>* pLast);
@@ -1462,8 +1464,6 @@ void FUN_1415d6ab0(void* pThis, Unk_StlElem<0x20>* pVal)
 }
 
 // @0x1415d6b70
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x10>* FUN_1415d6b70(void* pThis, Unk_StlElem<0x10>* pWhere, Unk_StlElem<0x10>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_1416033c0(pThis));
@@ -1502,8 +1502,6 @@ Unk_StlElem<0x10>* FUN_1415d6b70(void* pThis, Unk_StlElem<0x10>* pWhere, Unk_Stl
 }
 
 // @0x1415d6dc0
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x18>* FUN_1415d6dc0(void* pThis, Unk_StlElem<0x18>* pWhere, Unk_StlElem<0x18>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603400(pThis));
@@ -1542,8 +1540,6 @@ Unk_StlElem<0x18>* FUN_1415d6dc0(void* pThis, Unk_StlElem<0x18>* pWhere, Unk_Stl
 }
 
 // @0x1415d7010
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x20>* FUN_1415d7010(void* pThis, Unk_StlElem<0x20>* pWhere, Unk_StlElem<0x20>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_14029bfd0(pThis));
@@ -1582,8 +1578,6 @@ Unk_StlElem<0x20>* FUN_1415d7010(void* pThis, Unk_StlElem<0x20>* pWhere, Unk_Stl
 }
 
 // @0x1415d7260
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x58>* FUN_1415d7260(void* pThis, Unk_StlElem<0x58>* pWhere, Unk_StlElem<0x58>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603440(pThis));
@@ -1622,8 +1616,6 @@ Unk_StlElem<0x58>* FUN_1415d7260(void* pThis, Unk_StlElem<0x58>* pWhere, Unk_Stl
 }
 
 // @0x1415d74b0
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x30>* FUN_1415d74b0(void* pThis, Unk_StlElem<0x30>* pWhere, Unk_StlElem<0x30>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603480(pThis));
@@ -1662,8 +1654,6 @@ Unk_StlElem<0x30>* FUN_1415d74b0(void* pThis, Unk_StlElem<0x30>* pWhere, Unk_Stl
 }
 
 // @0x1415d7700
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x98>* FUN_1415d7700(void* pThis, Unk_StlElem<0x98>* pWhere, Unk_StlElem<0x98>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_1416034c0(pThis));
@@ -1702,8 +1692,6 @@ Unk_StlElem<0x98>* FUN_1415d7700(void* pThis, Unk_StlElem<0x98>* pWhere, Unk_Stl
 }
 
 // @0x1415d7970
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x220>* FUN_1415d7970(void* pThis, Unk_StlElem<0x220>* pWhere, Unk_StlElem<0x220>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603500(pThis));
@@ -1742,8 +1730,6 @@ Unk_StlElem<0x220>* FUN_1415d7970(void* pThis, Unk_StlElem<0x220>* pWhere, Unk_S
 }
 
 // @0x1415d7be0
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x128>* FUN_1415d7be0(void* pThis, Unk_StlElem<0x128>* pWhere, Unk_StlElem<0x128>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603540(pThis));
@@ -1782,8 +1768,6 @@ Unk_StlElem<0x128>* FUN_1415d7be0(void* pThis, Unk_StlElem<0x128>* pWhere, Unk_S
 }
 
 // @0x1415d7e50
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x118>* FUN_1415d7e50(void* pThis, Unk_StlElem<0x118>* pWhere, Unk_StlElem<0x118>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603580(pThis));
@@ -1822,8 +1806,6 @@ Unk_StlElem<0x118>* FUN_1415d7e50(void* pThis, Unk_StlElem<0x118>* pWhere, Unk_S
 }
 
 // @0x1415d80c0
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0xe0>* FUN_1415d80c0(void* pThis, Unk_StlElem<0xe0>* pWhere, Unk_StlElem<0xe0>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_1416035c0(pThis));
@@ -1862,8 +1844,6 @@ Unk_StlElem<0xe0>* FUN_1415d80c0(void* pThis, Unk_StlElem<0xe0>* pWhere, Unk_Stl
 }
 
 // @0x1415d8330
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x580>* FUN_1415d8330(void* pThis, Unk_StlElem<0x580>* pWhere, Unk_StlElem<0x580>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603600(pThis));
@@ -1902,8 +1882,6 @@ Unk_StlElem<0x580>* FUN_1415d8330(void* pThis, Unk_StlElem<0x580>* pWhere, Unk_S
 }
 
 // @0x1415d85a0
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x18>* FUN_1415d85a0(void* pThis, Unk_StlElem<0x18>* pWhere, Unk_StlElem<0x18>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603640(pThis));
@@ -1942,8 +1920,6 @@ Unk_StlElem<0x18>* FUN_1415d85a0(void* pThis, Unk_StlElem<0x18>* pWhere, Unk_Stl
 }
 
 // @0x1415d87f0
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x14a8>* FUN_1415d87f0(void* pThis, Unk_StlElem<0x14a8>* pWhere, Unk_StlElem<0x14a8>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603680(pThis));
@@ -1982,8 +1958,6 @@ Unk_StlElem<0x14a8>* FUN_1415d87f0(void* pThis, Unk_StlElem<0x14a8>* pWhere, Unk
 }
 
 // @0x1415d8a60
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x18>* FUN_1415d8a60(void* pThis, Unk_StlElem<0x18>* pWhere, Unk_StlElem<0x18>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_1416036c0(pThis));
@@ -2022,8 +1996,6 @@ Unk_StlElem<0x18>* FUN_1415d8a60(void* pThis, Unk_StlElem<0x18>* pWhere, Unk_Stl
 }
 
 // @0x1415d8cb0
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x190>* FUN_1415d8cb0(void* pThis, Unk_StlElem<0x190>* pWhere, Unk_StlElem<0x190>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603700(pThis));
@@ -2062,8 +2034,6 @@ Unk_StlElem<0x190>* FUN_1415d8cb0(void* pThis, Unk_StlElem<0x190>* pWhere, Unk_S
 }
 
 // @0x1415d8f20
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0xb8>* FUN_1415d8f20(void* pThis, Unk_StlElem<0xb8>* pWhere, Unk_StlElem<0xb8>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603740(pThis));
@@ -2102,8 +2072,6 @@ Unk_StlElem<0xb8>* FUN_1415d8f20(void* pThis, Unk_StlElem<0xb8>* pWhere, Unk_Stl
 }
 
 // @0x1415d9190
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x58>* FUN_1415d9190(void* pThis, Unk_StlElem<0x58>* pWhere, Unk_StlElem<0x58>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603780(pThis));
@@ -2142,8 +2110,6 @@ Unk_StlElem<0x58>* FUN_1415d9190(void* pThis, Unk_StlElem<0x58>* pWhere, Unk_Stl
 }
 
 // @0x1415d93e0
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x68>* FUN_1415d93e0(void* pThis, Unk_StlElem<0x68>* pWhere, Unk_StlElem<0x68>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_1416037c0(pThis));
@@ -2182,8 +2148,6 @@ Unk_StlElem<0x68>* FUN_1415d93e0(void* pThis, Unk_StlElem<0x68>* pWhere, Unk_Stl
 }
 
 // @0x1415d9630
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0xae8>* FUN_1415d9630(void* pThis, Unk_StlElem<0xae8>* pWhere, Unk_StlElem<0xae8>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603800(pThis));
@@ -2222,8 +2186,6 @@ Unk_StlElem<0xae8>* FUN_1415d9630(void* pThis, Unk_StlElem<0xae8>* pWhere, Unk_S
 }
 
 // @0x1415d98a0
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0xec8>* FUN_1415d98a0(void* pThis, Unk_StlElem<0xec8>* pWhere, Unk_StlElem<0xec8>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603840(pThis));
@@ -2262,8 +2224,6 @@ Unk_StlElem<0xec8>* FUN_1415d98a0(void* pThis, Unk_StlElem<0xec8>* pWhere, Unk_S
 }
 
 // @0x1415d9b10
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0xc8>* FUN_1415d9b10(void* pThis, Unk_StlElem<0xc8>* pWhere, Unk_StlElem<0xc8>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603880(pThis));
@@ -2302,8 +2262,6 @@ Unk_StlElem<0xc8>* FUN_1415d9b10(void* pThis, Unk_StlElem<0xc8>* pWhere, Unk_Stl
 }
 
 // @0x1415d9d80
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0xf8>* FUN_1415d9d80(void* pThis, Unk_StlElem<0xf8>* pWhere, Unk_StlElem<0xf8>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_1416038c0(pThis));
@@ -2342,8 +2300,6 @@ Unk_StlElem<0xf8>* FUN_1415d9d80(void* pThis, Unk_StlElem<0xf8>* pWhere, Unk_Stl
 }
 
 // @0x1415d9ff0
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x490>* FUN_1415d9ff0(void* pThis, Unk_StlElem<0x490>* pWhere, Unk_StlElem<0x490>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603900(pThis));
@@ -2382,8 +2338,6 @@ Unk_StlElem<0x490>* FUN_1415d9ff0(void* pThis, Unk_StlElem<0x490>* pWhere, Unk_S
 }
 
 // @0x1415da260
-// MS2-FUNCTIONAL: same calls and EH (catch: destroy + deallocate + rethrow); the exe evaluates the construct arguments
-// left to right and keeps fewer temporaries than this free-function form.
 Unk_StlElem<0x20>* FUN_1415da260(void* pThis, Unk_StlElem<0x20>* pWhere, Unk_StlElem<0x20>* pVal)
 {
     const size_t nWhereOff = static_cast<size_t>(pWhere - FUN_141603940(pThis));
