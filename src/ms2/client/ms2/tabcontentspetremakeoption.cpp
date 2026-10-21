@@ -328,11 +328,16 @@ void PetRemakeOptionPetCard::vfunc_4()
 }
 
 // @0x140b917f0
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void PetRemakeOptionPetCard::vfunc_5(int nEvent)
 {
-    if (0 < nEvent && (nEvent < 3 || nEvent == 10))
+    switch (nEvent)
+    {
+    case 1:
+    case 2:
+    case 10:
         vfunc_4();
+        break;
+    }
 }
 
 // ---- PetRemakeOptionPetIngredient ----
@@ -378,11 +383,17 @@ void PetRemakeOptionPetIngredient::vfunc_4()
 }
 
 // @0x140b91b60
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void PetRemakeOptionPetIngredient::vfunc_5(int nEvent)
 {
-    if (0 < nEvent && (nEvent < 3 || (10 < nEvent && nEvent < 0xd)))
+    switch (nEvent)
+    {
+    case 1:
+    case 2:
+    case 11:
+    case 12:
         vfunc_4();
+        break;
+    }
 }
 
 // ---- PetRemakeOptionBoard ----
@@ -456,17 +467,17 @@ void PetRemakeOptionBoard::vfunc_4()
 }
 
 // @0x140b92210
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void PetRemakeOptionBoard::vfunc_5(int nEvent)
 {
-    if (nEvent == 0xb)
+    switch (nEvent)
     {
-        FUN_140b93460();
-    }
-    else if (nEvent == 0xe)
-    {
+    case 0xe:
         vfunc_3();
         FUN_140b92da0();
+        break;
+    case 0xb:
+        FUN_140b93460();
+        break;
     }
 }
 
@@ -716,18 +727,15 @@ CString PetRemakeOptionBoard::FUN_140b94260(CItem* pItem, CString strKey, CAtlAr
 }
 
 // @0x140b94340
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 int PetRemakeOptionBoard::FUN_140b94340(MS2Ptr<CItem> item)
 {
-    if (!(item == 0) && item->FUN_140527840() != 0)
-    {
-        int nHave = 0;
-        int nItemId = item->FUN_140527840()->FUN_14053c6f0();
-        if (nItemId != 0)
-            nHave = FUN_140a5f780(&DAT_143ab2a90, nItemId, 0);
-        return nHave;
-    }
-    return 0;
+    if (item == 0 || item->FUN_140527840() == 0)
+        return 0;
+    int nHave = 0;
+    int nItemId = item->FUN_140527840()->FUN_14053c6f0();
+    if (nItemId != 0)
+        nHave = FUN_140a5f780(&DAT_143ab2a90, nItemId, 0);
+    return nHave;
 }
 
 // ---- TabContentsPetRemakeOption ----
@@ -894,38 +902,36 @@ int TabContentsPetRemakeOption::vfunc_8()
 MS2_REPLACE_METHOD(0x140B94FA0, TabContentsPetRemakeOption, vfunc_8, 11, 0xA6B3D596);
 
 // @0x140b94fc0
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void TabContentsPetRemakeOption::vfunc_9(void* pPacket)
 {
-    CInPacket* pkt = (CInPacket*)pPacket;
-    if (pkt->FUN_14070fe80() == 200 && !(m_ui == 0))
-    {
-        FUN_140b967c0(1);
-        unsigned char nKind = pkt->vfunc_o8_1();
-        if (nKind == 6)
-            FUN_140b97c90(pkt);
-        else if (nKind == 1)
-            FUN_140b98430(pkt);
-        else if (nKind == 2)
-            FUN_140b98520(pkt);
-        else if (nKind == 5)
-            FUN_140b98610(pkt);
-    }
+    if (((CInPacket*)pPacket)->FUN_14070fe80() != 200)
+        return;
+    if (m_ui == 0)
+        return;
+    FUN_140b967c0(1);
+    int nKind = ((CInPacket*)pPacket)->vfunc_o8_1();
+    if (nKind == 6)
+        FUN_140b97c90((CInPacket*)pPacket);
+    else if (nKind == 1)
+        FUN_140b98430((CInPacket*)pPacket);
+    else if (nKind == 2)
+        FUN_140b98520((CInPacket*)pPacket);
+    else if (nKind == 5)
+        FUN_140b98610((CInPacket*)pPacket);
 }
 
 // @0x140b950b0
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void TabContentsPetRemakeOption::vfunc_10(void* pItem, bool b)
 {
-    CItem* item = (CItem*)pItem;
-    if (item != 0 && item->FUN_140525640() != 0)
-    {
-        FUN_140b96520(1);
-        m_uidPet = 0;
-        m_pet = 0;
-        FUN_140b96ca0();
-        vfunc_2(10);
-    }
+    if (!pItem)
+        return;
+    if (!((CItem*)pItem)->FUN_140525640())
+        return;
+    FUN_140b96520(1);
+    m_uidPet = 0;
+    m_pet = 0;
+    FUN_140b96ca0();
+    vfunc_2(10);
 }
 
 // @0x140b95140
@@ -1356,17 +1362,17 @@ void TabContentsPetRemakeOption::FUN_140b97170(int nIndex)
 }
 
 // @0x140b972f0
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void TabContentsPetRemakeOption::FUN_140b972f0(int nIndex)
 {
-    if (m_nState != 4 && -1 < nIndex && nIndex < (int)m_ingredients.GetCount())
-    {
-        m_nIngredientIndex = nIndex;
-        IdCount entry = m_ingredients[nIndex];
-        m_uidIngredient = entry.first;
-        FUN_140b96520(3);
-        vfunc_2(0xb);
-    }
+    if (m_nState == 4)
+        return;
+    if (nIndex < 0 || nIndex >= (int)m_ingredients.GetCount())
+        return;
+    m_nIngredientIndex = nIndex;
+    IdCount entry = m_ingredients[nIndex];
+    m_uidIngredient = entry.first;
+    FUN_140b96520(3);
+    vfunc_2(0xb);
 }
 
 // @0x140b973b0
@@ -1445,28 +1451,25 @@ void TabContentsPetRemakeOption::FUN_140b979c0()
 }
 
 // @0x140b97b00
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
-bool TabContentsPetRemakeOption::FUN_140b97b00(CAtlArray<unsigned __int64>& arr, unsigned __int64 id)
+int TabContentsPetRemakeOption::FUN_140b97b00(CAtlArray<unsigned __int64>& arr, unsigned __int64 id)
 {
     for (size_t i = 0; i < arr.GetCount(); i++)
     {
         if (id == arr[i])
-            return true;
+            return 1;
     }
-    return false;
+    return 0;
 }
 
 // @0x140b97b70
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 unsigned __int64 TabContentsPetRemakeOption::FUN_140b97b70(CAtlArray<unsigned __int64>& arr, int nIndex)
 {
-    if (-1 < nIndex)
+    if (nIndex < 0)
+        return 0;
+    for (size_t i = 0; i < arr.GetCount(); i++)
     {
-        for (size_t i = 0; i < arr.GetCount(); i++)
-        {
-            if (i == nIndex)
-                return arr[i];
-        }
+        if (i == nIndex)
+            return arr[i];
     }
     return 0;
 }

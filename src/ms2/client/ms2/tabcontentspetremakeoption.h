@@ -137,7 +137,7 @@ public:
     void FUN_140b973b0(ASData* pData);                  // GetEnableLockOption
     void FUN_140b97870(ASData* pData);                  // OnClickApply
     void FUN_140b979c0();                               // OnClickRetry
-    bool FUN_140b97b00(ATL::CAtlArray<unsigned __int64>& arr, unsigned __int64 id);   // arr holds id
+    int FUN_140b97b00(ATL::CAtlArray<unsigned __int64>& arr, unsigned __int64 id);   // arr holds id
     unsigned __int64 FUN_140b97b70(ATL::CAtlArray<unsigned __int64>& arr, int nIndex);   // uid at nIndex, 0 when out of range
     void FUN_140b97bf0(ATL::CAtlArray<unsigned __int64>& arr, unsigned __int64 id);   // remove id from arr
     void FUN_140b97c90(CInPacket* pPacket);             // 6: the remake result
