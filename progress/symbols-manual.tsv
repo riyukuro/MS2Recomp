@@ -4312,3 +4312,7 @@ MS2_SF_Resource_vftable	143149880	data
 MS2_SF_VideoCharacterDef_vftable	14318b778	data
 criHeap_Finalize	140027ea4	func
 criHeap_Initialize	1400282e0	func
+??1Formatter@Scaleform@@UEAA@XZ	1425af520	func
+?GetSize@LongFormatter@Scaleform@@UEBA_KXZ	1425b1540	func
+??0LoadStates@GFx@Scaleform@@QEAA@PEAVLoaderImpl@12@PEAVStateBag@12@PEAVMovieDefBindStates@12@@Z	142636ed0	func
+?WaitForLoadFinish@LoadTaskData@MovieDataDef@GFx@Scaleform@@QEAAXXZ	1425d3c40	func
