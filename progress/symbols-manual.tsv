@@ -7869,3 +7869,6 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ??0Unk_IpIdSet@@QEAA@I@Z	140203150	func
 ??1Unk_IpIdSet@@QEAA@XZ	1402038f0	func
 ?CompareNoCase@String@Scaleform@@SAHPEBD0@Z	142586710	func
+?WatchpointHash_Add@AS2@GFx@Scaleform@@YAXPEAV?$ASStringHash_GC@UWatchpoint@Object@AS2@GFx@Scaleform@@@23@PEAXAEBUNodeRef@?$HashNode@VASString@GFx@Scaleform@@UWatchpoint@Object@AS2@23@UASStringHashFunctor@23@@3@_K@Z	142916110	func
+?WatchpointHash_FindIndex@AS2@GFx@Scaleform@@YA_JPEBV?$ASStringHash_GC@UWatchpoint@Object@AS2@GFx@Scaleform@@@23@AEBVASString@23@@Z	142917220	func
+?WatchpointHash_FindIndexNoCase@AS2@GFx@Scaleform@@YA_JPEBV?$ASStringHash_GC@UWatchpoint@Object@AS2@GFx@Scaleform@@@23@AEBUASStringNoCaseKey@23@@Z	142916e60	func
