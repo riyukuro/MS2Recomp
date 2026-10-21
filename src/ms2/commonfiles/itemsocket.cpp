@@ -441,13 +441,12 @@ bool CItemSocket::FUN_140620de0() const
 }
 
 // @0x140620f40
-// MS2-FUNCTIONAL: the exe tests the record through a bool temporary and its frame has one fewer slot
 bool CItemSocket::FUN_140620f40(int nGemId) const
 {
     for (unsigned i = 0; i < m_aGems.GetCount(); i++)
     {
         MS2Ptr<TSocketGemStoneInfo> spInfo = m_aGems[i];
-        if (spInfo.get() != 0 && spInfo->m_nGemId == nGemId)
+        if ((spInfo.get() ? true : false) && spInfo->m_nGemId == nGemId)
             return true;
     }
     return false;
@@ -530,16 +529,13 @@ bool CItemSocket::FUN_140621500(unsigned nIndex, int nGemId)
 }
 
 // @0x140621600
-// MS2-FUNCTIONAL: the by-value spInfo cleanup on the early returns is ordered differently in the exe
 bool CItemSocket::FUN_140621600(unsigned nIndex, MS2Ptr<TSocketGemStoneInfo> spInfo)
 {
-    if (!(spInfo == 0) && nIndex < m_aGems.GetCount())
-    {
-        m_aGems.SetAt(nIndex, spInfo);
-        FUN_140622d00();
-        return true;
-    }
-    return false;
+    if (spInfo == 0 || nIndex >= m_aGems.GetCount())
+        return false;
+    m_aGems.SetAt(nIndex, spInfo);
+    FUN_140622d00();
+    return true;
 }
 
 // @0x1406216b0
@@ -626,16 +622,13 @@ bool CItemSocket::FUN_140621b80(Unk_SocketSpecialMap& kOut)
 }
 
 // @0x140621be0
-// MS2-FUNCTIONAL: the exe lookup-miss branch is laid out first
 Unk_EnchantPtr<BaseOption> CItemSocket::FUN_140621be0(Unk_SocketSpecialStat nStat)
 {
-    if (!m_kSpecial.IsEmpty())
-    {
-        Unk_EnchantPtr<BaseOption> spOption(0);
-        m_kSpecial.Lookup(nStat, spOption);
-        return spOption;
-    }
-    return Unk_EnchantPtr<BaseOption>(0);
+    if (m_kSpecial.IsEmpty())
+        return Unk_EnchantPtr<BaseOption>(0);
+    Unk_EnchantPtr<BaseOption> spOption(0);
+    m_kSpecial.Lookup(nStat, spOption);
+    return spOption;
 }
 
 // @0x140621ca0
@@ -694,19 +687,17 @@ int CItemSocket::FUN_140621e60(Unk_GemFilter pfnFilter)
 }
 
 // @0x140622020
-// MS2-FUNCTIONAL: the exe frame is 0x10 larger (an extra temporary for the item-data test)
 int CItemSocket::FUN_140622020(CItemSocket* pSocket, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo)
 {
-    if (spInfo.get() != 0 && !spInfo->FUN_14061fab0())
+    if ((spInfo.get() ? true : false) && !spInfo->FUN_14061fab0())
         return false;
     return FUN_140622440(pSocket, pGemData, spInfo);
 }
 
 // @0x1406220f0
-// MS2-FUNCTIONAL: the exe frame is 0x10 larger (an extra temporary for the item-data test)
 int CItemSocket::FUN_1406220f0(CItemSocket* pSocket, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo)
 {
-    if (spInfo.get() != 0 && !spInfo->FUN_14061fab0())
+    if ((spInfo.get() ? true : false) && !spInfo->FUN_14061fab0())
         return false;
     return FUN_1406224d0(pSocket, pGemData, spInfo);
 }
@@ -730,10 +721,9 @@ int CItemSocket::FUN_1406222c0(CItemSocket* pSocket, CItemData* pGemData, MS2Ptr
 }
 
 // @0x140622330
-// MS2-FUNCTIONAL: the exe frame is 0x10 larger (an extra temporary for the item-data test)
 int CItemSocket::FUN_140622330(CItemSocket* pSocket, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo)
 {
-    if (spInfo.get() != 0 && !spInfo->FUN_14061fab0())
+    if ((spInfo.get() ? true : false) && !spInfo->FUN_14061fab0())
         return false;
     return FUN_1406225d0(pSocket, pGemData, spInfo);
 }
@@ -765,12 +755,13 @@ int CItemSocket::FUN_1406224d0(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocket
 }
 
 // @0x1406225d0
-// MS2-FUNCTIONAL: the exe stores an extra zeroed int temporary before the item-data test
 int CItemSocket::FUN_1406225d0(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo)
 {
     if (spInfo.get() != 0 && spInfo->FUN_14061fbb0())
         return false;
-    return pGemData->limit.enableBreak != 0;
+    if (pGemData->limit.enableBreak == 0)
+        return false;
+    return true;
 }
 
 // @0x140622680
