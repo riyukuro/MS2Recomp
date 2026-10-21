@@ -243,7 +243,7 @@ struct Unk_FmAdditionalRow;
 class Unk_FmAdditionalRowPtr { public: ~Unk_FmAdditionalRowPtr(); bool FUN_14096e7e0(int n) const;
     Unk_FmAdditionalRow* FUN_140184880(); void* m_p0; void* m_p8; };
 struct Unk_FmAdditionalRow { char m_pad_00[0x30]; int m_nType; };
-class Unk_FmAdditionalData { public: Unk_FmAdditionalRowPtr FUN_140aafef0(int nId, int nLevel);
+class Unk_FmAdditionalData { public: Unk_FmAdditionalRowPtr FUN_140aafef0(int nId, unsigned short nLevel);
     Unk_FmAdditionalPtr FUN_1407ee2f0(int nId, short nLevel); };
 Unk_FmAdditionalData* FUN_1401958b0();                      // the additional effect table
 
@@ -583,12 +583,11 @@ CString Unk_FishRecord::FUN_140cd8f60()
 // ---- CFishingManager ----
 
 // @0x140cd9400
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 CFishingManager::CFishingManager()
 {
     m_bFishing = 0;
-    m_bGreat = 0;
     m_nBiteEnd = 0;
+    m_bGreat = 0;
     m_nReelSound = 0;
     m_uidRod = 0;
     m_bAutoFishing = 0;
@@ -822,34 +821,30 @@ void CFishingManager::FUN_140cdac20()
 }
 
 // @0x140cdac50
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void CFishingManager::FUN_140cdac50()
 {
     Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPC != 0)
-    {
-        if (reinterpret_cast<Unk_FmBuffs*>(pPC->FUN_1416749a0())->FUN_1409701d0(1) != 0)
-            FUN_140cdb1e0();
-    }
+    if (pPC == 0)
+        return;
+    if (reinterpret_cast<Unk_FmBuffs*>(pPC->FUN_1416749a0())->FUN_1409701d0(1) != 0)
+        FUN_140cdb1e0();
 }
 
 // @0x140cdacb0
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void CFishingManager::FUN_140cdacb0(NotifyObject* pNotify)
 {
     NotifyChangeBuff* pBuff = dynamic_cast<NotifyChangeBuff*>(pNotify);
-    if (pBuff != 0 && pBuff->m_bAdded != 0)
-    {
-        Unk_FmAdditionalRowPtr row = FUN_1401958b0()->FUN_140aafef0(pBuff->m_nId, 1);
-        if (!row.FUN_14096e7e0(0))
-        {
-            if (row.FUN_140184880()->m_nType == 1)
-            {
-                if (FUN_140954150() != 0 && FUN_140cdbb90() != 0)
-                    FUN_140cdb1e0();
-            }
-        }
-    }
+    if (pBuff == 0)
+        return;
+    if (pBuff->m_bAdded == 0)
+        return;
+    Unk_FmAdditionalRowPtr row = FUN_1401958b0()->FUN_140aafef0(pBuff->m_nId, 1);
+    if (row.FUN_14096e7e0(0))
+        return;
+    if (!(row.FUN_140184880()->m_nType == 1))
+        return;
+    if (FUN_140954150() != 0 && FUN_140cdbb90() != 0)
+        FUN_140cdb1e0();
 }
 
 // @0x140cdadb0
@@ -906,15 +901,13 @@ void CFishingManager::FUN_140cdae30(MS2Ptr<CItem> rod)
 MS2_REPLACE_METHOD(0x140CDAE30, CFishingManager, FUN_140cdae30, 604, 0x17346286);
 
 // @0x140cdb0a0
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void CFishingManager::FUN_140cdb0a0()
 {
-    if (FUN_140954150() != 0)
-    {
-        COutPacket pkt(0x73, 0);
-        pkt.Encode1(1);
-        FUN_140710590(pkt);
-    }
+    if (FUN_140954150() == 0)
+        return;
+    COutPacket pkt(0x73, 0);
+    pkt.Encode1(1);
+    FUN_140710590(pkt);
 }
 
 // @0x140cdb110
@@ -944,7 +937,7 @@ MS2_REPLACE_METHOD(0x140CDB1E0, CFishingManager, FUN_140cdb1e0, 97, 0x3BC9DD37);
 int CFishingManager::FUN_140cdb250()
 {
     MS2Ptr<CFishCube> cube = FUN_140cdbb10(FUN_140cdc950());
-    if (cube == 0)
+    if (cube.IsNull())
         return 0;
     if (cube->m_a == 0)
         return 0;
@@ -1223,13 +1216,12 @@ int CFishingManager::FUN_140cdc280(unsigned nFishId)
 MS2_REPLACE_METHOD(0x140CDC280, CFishingManager, FUN_140cdc280, 238, 0xE86E14BC);
 
 // @0x140cdc380
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 int CFishingManager::FUN_140cdc380(unsigned nFishId)
 {
     if (TSingleton<CFishingManager>::GetInstance()->FUN_140cdba00(nFishId).get() != 0)
         return 1;
     CFishDataPtr data = TSingleton<CFishingTable>::GetInstance()->GetFish(nFishId);
-    if (data.get() != 0 && data->m_nCompanion != 0)
+    if ((data.get() ? true : false) && data->m_nCompanion != 0)
     {
         CFishData* pData = data.operator->();
         if (TSingleton<CFishingManager>::GetInstance()->FUN_140cdba00(pData->m_nCompanion).get() != 0)
@@ -1267,7 +1259,6 @@ int CFishingManager::FUN_140cdc520()
 }
 
 // @0x140cdc810
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 int CFishingManager::FUN_140cdc810()
 {
     Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -1294,7 +1285,7 @@ int CFishingManager::FUN_140cdc810()
     if (nState == 0x21)
     {
         efd::SmartPointer<Ridee> spRidee(pPC->FUN_1416764a0());
-        if (spRidee != 0)
+        if (spRidee)
         {
             int nRideState = spRidee->FUN_14166c930();
             if (nRideState == 1 || nRideState == 2)
@@ -1564,13 +1555,15 @@ int CFishingManager::FUN_140cdd7b0()
 }
 
 // @0x140cddc70
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 CStringW CFishingManager::FUN_140cddc70(const ATL::CAtlArray<CString>& texts)
 {
     int nCount = (int)texts.GetCount();
-    if (nCount == 0)
-        return CStringW(L"");
-    return FUN_14028b8e0(FUN_14016a730(texts[FUN_140768010(nCount, 0)], 0));
+    if (nCount != 0)
+    {
+        unsigned nIndex = FUN_140768010(nCount, 0);
+        return FUN_14028b8e0(FUN_14016a730(texts[nIndex], 0));
+    }
+    return CStringW(L"");
 }
 
 // ---- CFish ----
