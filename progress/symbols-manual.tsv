@@ -7845,3 +7845,5 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?IsVerboseParse@Stream@GFx@Scaleform@@QEBA_NXZ	1425c2090	func
 ?updateRenderTargetRT@DrawableImage@Render@Scaleform@@IEAAXXZ	1425f05f0	func
 ??1FunctionObject@AS2@GFx@Scaleform@@UEAA@XZ	1429255a0	func
+?GetFailedText@CGuideEntity@@QEAAXAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@_NI@Z	1413a2f30	func
+?MoveStartedConditions@CGuideEntity@@QEAAXXZ	1413a3720	func
