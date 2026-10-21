@@ -306,7 +306,6 @@ bool FUN_140627020(MS2Ptr<CItemGemStoneData>);
 bool FUN_140626fb0(unsigned);
 CStringW FUN_14042cb90(CStringW, const float&);
 struct Unk_SpTooltipRoot { MS2Ptr<AScript> FUN_1409db730(); };
-void FUN_1409d8bf0(ASTooltip*, int);
 bool FUN_140841300(const CStringW&, const char*);
 NotifySystem* FUN_140939a10();
 int FUN_1422dccd0(Unk_SocketPageBag*);
@@ -466,11 +465,10 @@ void ItemSocketSystemPageBase::vfunc_8(CInPacket* packet)
 }
 
 // @0x140f6cce0
-// MS2-FUNCTIONAL: smart-pointer return and exception-cleanup layout differ.
 MS2Ptr<CItem> ItemSocketSystemPageBase::FUN_140f6cce0(int itemId, int grade)
 {
     MS2Ptr<CItem> item(new CItem);
-    if (item.get() != 0) {
+    if (item.get() ? true : false) {
         if (item->FUN_140523c40(itemId, grade, 0))
             return item;
     }
@@ -484,12 +482,12 @@ MS2Ptr<CItem> ItemSocketSystemPageBase::FUN_140f6ce00(int itemId, int grade, boo
     if (grade == 0)
         grade = FUN_14053feb0(itemId);
     MS2Ptr<CItem> item(new CItem);
-    if (item.get() != 0) {
+    if (item.get() ? true : false) {
         if (item->FUN_14052b130(itemId, grade, 0) != 0) {
             item->FUN_14052b340(1);
             if (bindOwner)
                 item->FUN_140526a70(FUN_14028d0e0());
-            if (source.get() != 0) {
+            if (source.get() ? true : false) {
                 unsigned value = source->FUN_1405273a0();
                 item->FUN_1405273f0(value);
                 __int64 option = source->FUN_140528e00();
@@ -600,7 +598,6 @@ int ItemSocketSystemPageBase::FUN_140f6d670()
 MS2_REPLACE_METHOD(0x140F6D670, ItemSocketSystemPageBase, FUN_140f6d670, 51, 0x9B421BE7);
 
 // @0x140f6d6b0
-// MS2-FUNCTIONAL: equivalent UID search; return and cleanup layout differ.
 MS2Ptr<CItem> ItemSocketSystemPageBase::FUN_140f6d6b0(__int64 uid, CAtlArray<MS2Ptr<CItem>>& items, int* index)
 {
     *index = -1;
@@ -608,13 +605,14 @@ MS2Ptr<CItem> ItemSocketSystemPageBase::FUN_140f6d6b0(__int64 uid, CAtlArray<MS2
         return MS2Ptr<CItem>(0);
     if (items.IsEmpty() == true)
         return MS2Ptr<CItem>(0);
-    for (size_t i = 0; i < items.GetCount(); ++i) {
-        MS2Ptr<CItem> item(items.GetAt(i));
-        if (!(item == 0)) {
-            if (item->FUN_140526a50() == uid) {
-                *index = static_cast<int>(i);
-                return item;
-            }
+    size_t count = items.GetCount();
+    for (size_t i = 0; i < count; ++i) {
+        MS2Ptr<CItem> item = items[i];
+        if (item == 0)
+            continue;
+        if (item->FUN_140526a50() == uid) {
+            *index = static_cast<int>(i);
+            return item;
         }
     }
     return MS2Ptr<CItem>(0);
@@ -639,42 +637,39 @@ void ItemSocketSystemPageBase::FUN_140f6d8f0(CAtlArray<MS2Ptr<CItem>>& items, in
 MS2_REPLACE_METHOD(0x140F6D8F0, ItemSocketSystemPageBase, FUN_140f6d8f0, 170, 0x9CBA533A);
 
 // @0x140f6d9a0
-// MS2-FUNCTIONAL: typed list erase and bag refresh preserve calls and branches.
 bool ItemSocketSystemPageBase::FUN_140f6d9a0(int index, const CString& name, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<Unk_SocketPageBag> control)
 {
-    if (index >= 0 && index < static_cast<int>(items.GetCount())) {
-        items.RemoveAt(index, 1);
-        int count = static_cast<int>(items.GetCount());
-        DragSlotBag* bag = FUN_140c54570(name);
-        if (bag == 0)
-            return false;
-        ItemSlotBag* itemBag = dynamic_cast<ItemSlotBag*>(bag);
-        if (itemBag == 0) {
-            FUN_1422cc9e0(bag);
-            bag->vfunc_10(count);
-        } else {
-            FUN_14141ff80(itemBag, count);
-        }
-        if (control.get() != 0)
-            FUN_1422cf860(control.operator->());
-        return true;
+    if (index < 0 || static_cast<int>(items.GetCount()) <= index)
+        return false;
+    items.RemoveAt(index, 1);
+    int count = static_cast<int>(items.GetCount());
+    DragSlotBag* bag = FUN_140c54570(name);
+    if (bag == 0)
+        return false;
+    ItemSlotBag* itemBag = dynamic_cast<ItemSlotBag*>(bag);
+    if (itemBag != 0) {
+        FUN_14141ff80(itemBag, count);
+    } else {
+        FUN_1422cc9e0(bag);
+        bag->vfunc_10(count);
     }
-    return false;
+    if (control.get() != 0)
+        FUN_1422cf860(control.operator->());
+    return true;
 }
 
 // @0x140f6db00
-// MS2-FUNCTIONAL: typed append and bag refresh; local cleanup layout differs.
 bool ItemSocketSystemPageBase::FUN_140f6db00(MS2Ptr<CItem> item, const CString& name, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<Unk_SocketPageBag> control)
 {
     DragSlotBag* bag = FUN_140c54570(name);
-    if (bag != 0) {
-        int index = static_cast<int>(items.GetCount());
-        items.Add(item);
-        FUN_1422ccb50(bag, index);
-        FUN_1422cf7e0(control.operator->(), index);
-        bag->vfunc_14(index);
-    }
-    return bag != 0;
+    if (bag == 0)
+        return false;
+    int index = static_cast<int>(items.GetCount());
+    items.Add(item);
+    FUN_1422ccb50(bag, index);
+    FUN_1422cf7e0(control.operator->(), index);
+    bag->vfunc_14(index);
+    return true;
 }
 
 // @0x140f6dbe0
@@ -744,7 +739,7 @@ void ItemSocketSystemPageBase::FUN_140f6e250(const CString& name, const CAtlArra
     *price = 0;
     int rate = 0;
     int enabled = 0;
-    if (sale.get() != 0) {
+    if (sale.get() ? true : false) {
         rate = sale->rate;
         enabled = sale->enabled;
     }
@@ -870,13 +865,11 @@ void ItemSocketSystemPageGemStoneManage::vfunc_7(MS2Ptr<AScript> root)
             FUN_140f70770();
             FUN_140f70ad0();
             {
-                MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots0");
-                if (slots.get() != 0)
+                if (MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots0"))
                     m_equipmentControl = reinterpret_cast<Unk_SpFindBag*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
             }
             {
-                MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots1");
-                if (slots.get() != 0)
+                if (MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots1"))
                     m_gemControl = reinterpret_cast<Unk_SpFindBag*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
             }
             bool debug = FUN_14116d720(FUN_14025e7c0());
@@ -966,18 +959,15 @@ int ItemSocketSystemPageGemStoneManage::vfunc_3(const char* event, const Scalefo
 }
 
 // @0x140f70150
-// MS2-FUNCTIONAL: secondary listener this-adjustment and typed slot refresh.
 void ItemSocketSystemPageGemStoneManage::vfunc_4(void* rawItem, int)
 {
-    CItem* item = static_cast<CItem*>(rawItem);
-    if (item != 0) {
-        if (FUN_14053d840(item->FUN_140527840())) {
-            int index = -1;
-            MS2Ptr<CItem> found = FUN_140f6d6b0(item->FUN_140526a50(), m_gems, &index);
-            if (index != -1)
-                FUN_140f6d340(FUN_1422cc860(m_gemName, index), found);
-        }
-    }
+    if (rawItem == 0 || !FUN_14053d840(static_cast<CItem*>(rawItem)->FUN_140527840()))
+        return;
+    int index = -1;
+    MS2Ptr<CItem> found = FUN_140f6d6b0(static_cast<CItem*>(rawItem)->FUN_140526a50(), m_gems, &index);
+    if (index == -1)
+        return;
+    FUN_140f6d340(FUN_1422cc860(m_gemName, index), found);
 }
 
 // @0x140f702b0
@@ -1003,15 +993,18 @@ void ItemSocketSystemPageGemStoneManage::vfunc_2(void* rawItem)
 // MS2-FUNCTIONAL: secondary listener this-adjustment and typed item map removal.
 void ItemSocketSystemPageGemStoneManage::vfunc_3(void* rawItem, bool updating)
 {
-    CItem* item = static_cast<CItem*>(rawItem);
-    if (item != 0) {
-        if (FUN_14053d840(item->FUN_140527840()) && !(m_root == 0) && !m_gems.IsEmpty() && !updating) {
-            int index = -1;
-            __int64 uid = item->FUN_140526a50();
-            MS2Ptr<CItem> found = FUN_140f6d6b0(uid, m_gems, &index);
-            FUN_140f6d9a0(index, m_gemName, m_gems, m_gemControl);
-            m_gemsByUid.RemoveKey((int)uid);
-        }
+    if (rawItem == 0 || !FUN_14053d840(static_cast<CItem*>(rawItem)->FUN_140527840()))
+        return;
+    if (m_root == 0)
+        return;
+    if (m_gems.IsEmpty())
+        return;
+    if (!updating) {
+        int index = -1;
+        __int64 uid = static_cast<CItem*>(rawItem)->FUN_140526a50();
+        MS2Ptr<CItem> found = FUN_140f6d6b0(uid, m_gems, &index);
+        FUN_140f6d9a0(index, m_gemName, m_gems, m_gemControl);
+        m_gemsByUid.RemoveKey((int)uid);
     }
 }
 
@@ -1133,7 +1126,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f70f90(MS2Ptr<CItem> item)
     if (!(m_root == 0) && !(item == 0)) {
         if (item->FUN_1405279c0() != 0) {
             if (FUN_141425750(item->FUN_140526a50(), 0) == 0) {
-                FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_invalid_target"), 1);
+                FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
                 return;
             }
             FUN_141276180(s_strManageSound, CString(""));
@@ -1173,7 +1166,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71530(int slot)
         CItemSocket* socket = m_selected->FUN_1405279c0();
         if (socket != 0 && socket->FUN_140620a50() != 0 && socket->FUN_140620a20() != 0) {
             if (socket->FUN_140621020(slot)) {
-                FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_socket_empty"), 1);
+                FUN_1412752d0(L"s_itemsocketsystem_error_socket_empty", 1);
                 return;
             }
             int gemId = socket->FUN_140620ac0(slot);
@@ -1186,7 +1179,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71530(int slot)
             __int64 fee = 0;
             int itemId = FUN_1405575b0(FUN_140281980(), costItemId);
             if (costCount < 1) {
-                box = FUN_140d73d20(1, FUN_14062b4f0(CStringW(L"s_itemsocketsystem_msg_ask_gemstone_put_off_free"), &shown), 0, CStringW(L""));
+                box = FUN_140d73d20(1, FUN_14062b4f0(L"s_itemsocketsystem_msg_ask_gemstone_put_off_free", &shown), 0, L"");
             } else {
                 int grade = FUN_14053feb0(itemId);
                 int have = FUN_140a5f780(reinterpret_cast<Unk_SocketPageInventoryCount*>(&DAT_143ab2a90), costItemId, grade);
@@ -1199,22 +1192,22 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f71530(int slot)
                     }
                 }
                 CStringW name = FUN_1401a9d70()->FUN_141811980(1, itemId);
-                CStringW msg = FUN_1409e8970(CStringW(L"s_itemsocketsystem_msg_ask_gemstone_put_off"), shown, costCount);
+                CStringW msg = FUN_1409e8970(L"s_itemsocketsystem_msg_ask_gemstone_put_off", shown, costCount);
                 if (fee != 0)
 #ifdef __clang__
                     // clang otherwise emits an unavailable CopyChars DLL import; bind the exe's operator+.
-                    msg += FUN_1401d0160(L"\n", FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
+                    msg += FUN_1401d0160(L"\n", FUN_1405c2690(L"s_itemenchant_fee", FUN_1409404f0(fee)));
 #else
-                    msg += L"\n" + FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee));
+                    msg += L"\n" + FUN_1405c2690(L"s_itemenchant_fee", FUN_1409404f0(fee));
 #endif
-                box = FUN_140d73d20(0x1a, msg, 0, CStringW(L""));
+                box = FUN_140d73d20(0x1a, msg, 0, L"");
                 if (box == 0)
                     return;
                 CStringW countText;
                 if (lack)
-                    countText = FUN_1409e8970(CStringW(L"s_itemsocketsystem_text_item_count_lack"), have, costCount);
+                    countText = FUN_1409e8970(L"s_itemsocketsystem_text_item_count_lack", have, costCount);
                 else
-                    countText = FUN_1409e8970(CStringW(L"s_itemsocketsystem_text_item_count"), have, costCount);
+                    countText = FUN_1409e8970(L"s_itemsocketsystem_text_item_count", have, costCount);
                 FUN_141a020b0(box.operator->(), itemId, grade, 0);
                 box->FUN_141a01570(msg);
                 box->FUN_141a015d0(countText);
@@ -1380,26 +1373,21 @@ bool ItemSocketSystemPageGemStoneManage::FUN_140f72c80(int button, const CMsgBox
                 FUN_140628b70(msg, out);
                 FUN_140710590(out);
             } else {
-                FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_lack_price"), 1);
+                FUN_1412752d0(L"s_itemsocketsystem_error_lack_price", 1);
             }
         } else {
-            FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_invalid_target"), 1);
+            FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
         }
     }
     return true;
 }
 
 // @0x140f72e60
-// MS2-FUNCTIONAL: slot seal/equip marks with the typed item handle.
 void ItemSocketSystemPageGemStoneManage::FUN_140f72e60(ItemInfoSlot& slot, ASSlot& asSlot)
 {
-    bool seal = false;
-    MS2Ptr<CItem> item = slot.vfunc_25();
-    if (item.get() != 0) {
-        if (item->FUN_1405279c0() == 0)
-            seal = false;
-        else
-            seal = item->FUN_1405279c0()->FUN_140620a20() == 0;
+    int seal = 0;
+    if (MS2Ptr<CItem> item = slot.vfunc_25()) {
+        seal = item->FUN_1405279c0() != 0 ? item->FUN_1405279c0()->FUN_140620a20() == 0 : 0;
         if (!FUN_1414258e0(item->FUN_140526a50()))
             asSlot.FUN_1409c20d0(1);
     }
@@ -1429,7 +1417,6 @@ MS2Ptr<CGemStoneItem> ItemSocketSystemPageGemStoneManage::FUN_140f733a0(CAtlArra
 }
 
 // @0x140f73450
-// MS2-FUNCTIONAL: typed UI handle; temporary cleanup layout differs.
 UIHighlightGameMenu* FUN_140f73450()
 {
     Unk_SocketPageUIService* service = FUN_1403ed2b0();
@@ -1577,16 +1564,17 @@ void ItemSocketSystemPageGemStoneUpgrade::vfunc_5(CInPacket* packet)
 }
 
 // @0x140f75750
-// MS2-FUNCTIONAL: typed ASData event decoding.
 int ItemSocketSystemPageGemStoneUpgrade::vfunc_3(const char* event, const Scaleform::GFx::Value* args, int count)
 {
     if (_stricmp("onIndexChangeSlot", event) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(args, count) != 0)
-            FUN_140f76420(data.FUN_1422b8a10());
+        if (data.FUN_1422b9620(args, count) != 0) {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_140f76420(nIndex);
+        }
         return 1;
     }
-    if (_stricmp("onClickAction", event) == 0) {
+    else if (_stricmp("onClickAction", event) == 0) {
         if (m_state == 1)
             FUN_140f76970();
         else if (m_state == 2)
@@ -1596,48 +1584,47 @@ int ItemSocketSystemPageGemStoneUpgrade::vfunc_3(const char* event, const Scalef
 }
 
 // @0x140f75860
-// MS2-FUNCTIONAL: secondary listener this-adjustment and typed gemstone list append.
 void ItemSocketSystemPageGemStoneUpgrade::vfunc_2(void* rawItem)
 {
-    CItem* item = static_cast<CItem*>(rawItem);
-    if (item != 0) {
-        if (FUN_14053d840(item->FUN_140527840()) && !(m_root == 0)) {
-            int index = -1;
-            MS2Ptr<CItem> found = FUN_140f7a190(item->FUN_140526a50(), &index);
-            if (index < 0)
-                FUN_140f6db00(MS2Ptr<CItem>(item), m_gemsName, m_gems, m_bag);
-        }
-    }
+    if (rawItem == 0 || !FUN_14053d840(static_cast<CItem*>(rawItem)->FUN_140527840()))
+        return;
+    if (m_root == 0)
+        return;
+    int index = -1;
+    MS2Ptr<CItem> found = FUN_140f7a190(static_cast<CItem*>(rawItem)->FUN_140526a50(), &index);
+    if (index >= 0)
+        return;
+    FUN_140f6db00(MS2Ptr<CItem>(static_cast<CItem*>(rawItem)), m_gemsName, m_gems, m_bag);
 }
 
 // @0x140f759e0
-// MS2-FUNCTIONAL: secondary listener this-adjustment and typed gemstone list erase.
 void ItemSocketSystemPageGemStoneUpgrade::vfunc_3(void* rawItem, bool updating)
 {
-    CItem* item = static_cast<CItem*>(rawItem);
-    if (item != 0) {
-        if (FUN_14053d840(item->FUN_140527840()) && !(m_root == 0) && !m_gems.IsEmpty() && !updating) {
-            int index = -1;
-            MS2Ptr<CItem> found = FUN_140f7a190(item->FUN_140526a50(), &index);
-            if (index != -1)
-                FUN_140f6d9a0(index, m_gemsName, m_gems, m_bag);
-        }
+    if (rawItem == 0 || !FUN_14053d840(static_cast<CItem*>(rawItem)->FUN_140527840()))
+        return;
+    if (m_root == 0)
+        return;
+    if (m_gems.IsEmpty())
+        return;
+    if (!updating) {
+        int index = -1;
+        MS2Ptr<CItem> found = FUN_140f7a190(static_cast<CItem*>(rawItem)->FUN_140526a50(), &index);
+        if (index == -1)
+            return;
+        FUN_140f6d9a0(index, m_gemsName, m_gems, m_bag);
     }
 }
 
 // @0x140f75b60
-// MS2-FUNCTIONAL: secondary listener this-adjustment and typed slot refresh.
 void ItemSocketSystemPageGemStoneUpgrade::vfunc_4(void* rawItem, int)
 {
-    CItem* item = static_cast<CItem*>(rawItem);
-    if (item != 0) {
-        if (FUN_14053d840(item->FUN_140527840())) {
-            int index = -1;
-            MS2Ptr<CItem> found = FUN_140f7a190(item->FUN_140526a50(), &index);
-            if (index != -1)
-                FUN_140f6d400(FUN_1422cc860(m_gemsName, index));
-        }
-    }
+    if (rawItem == 0 || !FUN_14053d840(static_cast<CItem*>(rawItem)->FUN_140527840()))
+        return;
+    int index = -1;
+    MS2Ptr<CItem> found = FUN_140f7a190(static_cast<CItem*>(rawItem)->FUN_140526a50(), &index);
+    if (index == -1)
+        return;
+    FUN_140f6d400(FUN_1422cc860(m_gemsName, index));
 }
 
 // @0x140f75c50
@@ -1696,7 +1683,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f75c50()
                                 MS2Ptr<TSocketGemStoneInfo> info(gems.GetAt(slot));
                                 if (!(info == 0) && info->m_nGemId != 0) {
                                     MS2Ptr<CItem> gem = FUN_140f6d050(MS2Ptr<TSocketGemStoneInfo>(info), 0, true);
-                                    if (gem.get() != 0) {
+                                    if (gem.get() ? true : false) {
                                         MS2Ptr<TGemStoneInEquip> record(new TGemStoneInEquip(gem, equip, slot));
                                         if (record == 0)
                                             continue;
@@ -1734,7 +1721,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f764b0(MS2Ptr<CItem> item)
             targetUid = record->m_equipment->FUN_140526a50();
         MS2Ptr<CItem> owner = FUN_141425750(targetUid, 0);
         if (owner == 0) {
-            FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_invalid_target"), 1);
+            FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
             return;
         }
         if (FUN_140f79e10(record, owner, 0)) {
@@ -1773,7 +1760,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f76970()
             targetUid = record->m_equipment->FUN_140526a50();
         MS2Ptr<CItem> owner = FUN_141425750(targetUid, 0);
         if (owner == 0) {
-            FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_invalid_target"), 1);
+            FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
             return;
         }
         if (!FUN_140f79e10(record, owner, 0))
@@ -1782,7 +1769,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f76970()
         if (row == 0)
             return;
         if (FUN_140627020(row)) {
-            FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_gemstone_maxlevel"), 1);
+            FUN_1412752d0(L"s_itemsocketsystem_error_gemstone_maxlevel", 1);
             return;
         }
         unsigned rate = 0;
@@ -1802,7 +1789,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f76970()
                 int have = FUN_140f6e580(ingredient, m_selected);
                 if (have < need) {
                     if (!ingredient->FUN_140526320()) {
-                        FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_lack_price"), 1);
+                        FUN_1412752d0(L"s_itemsocketsystem_error_lack_price", 1);
                         return;
                     }
                     fee = (need - have) * 1000;
@@ -1810,7 +1797,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f76970()
             }
         }
         if (DAT_143ab2898 < fee) {
-            FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_lack_price"), 1);
+            FUN_1412752d0(L"s_itemsocketsystem_error_lack_price", 1);
             return;
         }
         CCItemSocketSystemPacket::GemStoneUpgrade msg;
@@ -1834,13 +1821,12 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f770b0()
     int id = 0;
     __int64 uid = m_selectedUid;
     if (record.get() != 0 && !record->FUN_140f74590()) {
-        if (record->m_equipment.get() != 0)
+        if (record->m_equipment.get() ? true : false)
             uid = record->m_equipment->FUN_140526a50();
-        if (record->m_gem.get() != 0)
+        if (record->m_gem.get() ? true : false)
             id = record->m_gem->FUN_1405276c0();
     }
-    MS2Ptr<CItem> owner = FUN_141425750(uid, 0);
-    if (owner.get() != 0) {
+    if (MS2Ptr<CItem> owner = FUN_141425750(uid, 0)) {
         if (FUN_14053d840(owner->FUN_140527840()))
             id = owner->FUN_1405276c0();
         if (!FUN_140626fb0(id)) {
@@ -1856,20 +1842,19 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f770b0()
 }
 
 // @0x140f77360
-// MS2-FUNCTIONAL: Scaleform data with typed temporaries.
 void ItemSocketSystemPageGemStoneUpgrade::FUN_140f77360(MS2Ptr<CItem> item)
 {
     FUN_140f79430();
-    if (!(item == 0)) {
-        m_selected = item;
-        FUN_140f6d340(m_selectedName, m_selected);
-        ASObj data(2);
-        data.FUN_1407cbb20("itemName", m_selected->FUN_140528160());
-        data.FUN_1409c0e60("maxLevelNotice", L"$s_itemsocketsystem_gemstoneupgrade_msg_maxlevel");
-        m_root->Invoke("playSelect", data.FUN_1422bb870());
-        m_state = 1;
-        m_selectedUid = m_selected->FUN_140526a50();
-    }
+    if (item == 0)
+        return;
+    m_selected = item;
+    FUN_140f6d340(m_selectedName, m_selected);
+    ASObj data(2);
+    data.FUN_1407cbb20("itemName", m_selected->FUN_140528160());
+    data.FUN_1409c0e60("maxLevelNotice", L"$s_itemsocketsystem_gemstoneupgrade_msg_maxlevel");
+    m_root->Invoke("playSelect", data.FUN_1422bb870());
+    m_state = 1;
+    m_selectedUid = m_selected->FUN_140526a50();
 }
 
 // @0x140f77560
@@ -1890,14 +1875,14 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f77560(CCItemSocketSystemPacket
         FUN_140f6d340(m_selectedName, m_selected);
         ASObj data(2);
         data.FUN_1407cbb20("itemName", m_selected->FUN_140528160());
-        CStringW prob = FUN_14042cb90(CStringW(L"s_itemsocketsystem_success_prob"), result->m_fProb);
+        CStringW prob = FUN_14042cb90(L"s_itemsocketsystem_success_prob", result->m_fProb);
         data.FUN_1407cbb20("successProb", prob);
         FUN_140f77950(data);
         m_root->Invoke("playSelect", data.FUN_1422bb870());
         m_state = 1;
         m_selectedUid = m_selected->FUN_140526a50();
     } else {
-        FUN_1412752d0(CStringW(L"s_itemsocketsystem_error_invalid_target"), 1);
+        FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target", 1);
     }
 }
 
@@ -1963,8 +1948,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f78110(MS2Ptr<CItem> item)
         }
         __int64 fee = 0;
         FUN_140f6e250(m_ingredientsName, m_ingredients, item, &fee, sale);
-        MS2Ptr<ASMovieClip> content = m_root->FUN_1409b4560("m_content");
-        if (content.get() != 0) {
+        if (MS2Ptr<ASMovieClip> content = m_root->FUN_1409b4560("m_content")) {
             MS2Ptr<ASTextField> desc = content->FUN_1409b4620("m_saleDesc");
             if (desc.get() != 0) {
                 CStringW text;
@@ -1974,8 +1958,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f78110(MS2Ptr<CItem> item)
                 }
                 desc->FUN_1422c4f00(text);
             }
-            MS2Ptr<ASTextField> feeField = content->FUN_1409b4620("m_upgradeFee");
-            if (feeField.get() != 0) {
+            if (MS2Ptr<ASTextField> feeField = content->FUN_1409b4620("m_upgradeFee")) {
                 CStringW text = FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee));
                 desc->FUN_1422c4f00(text);
             }
@@ -2004,8 +1987,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f787a0(CInPacket* packet)
         __int64 uid = valid ? result.m_nUid : result.m_nGemUid;
         __int64 resultUid = 0;
         bool restore = false;
-        MS2Ptr<CItem> item = FUN_141425750(uid, &restore);
-        if (item.get() != 0) {
+        if (MS2Ptr<CItem> item = FUN_141425750(uid, &restore)) {
             if (!valid) {
                 m_selected = item;
                 resultUid = item->FUN_140526a50();
@@ -2122,35 +2104,34 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f79540()
 {
     int index = -1;
     MS2Ptr<CItem> found = FUN_140f7a190(m_selectedUid, &index);
-    if (!(found == 0)) {
+    if (found == 0) {
+        FUN_140f6dbe0(m_bag);
+        m_selectedUid = 0;
+    } else {
         if (FUN_1422dccd0(m_bag.operator->()) != index) {
             FUN_1422dcca0(m_bag.operator->(), index);
             m_bag->vfunc_24(false);
         }
-    } else {
-        FUN_140f6dbe0(m_bag);
-        m_selectedUid = 0;
     }
 }
 
 // @0x140f79680
 void ItemSocketSystemPageGemStoneUpgrade::FUN_140f79680(__int64 uid)
 {
-    if (m_highlightUid != uid) {
-        if (m_highlightUid != 0) {
-            int index = -1;
-            MS2Ptr<CItem> found = FUN_140f7a190(m_highlightUid, &index);
-            if (!(found == 0))
-                FUN_140f6e500(index, false);
-        }
-        if (uid != 0) {
-            int index = -1;
-            MS2Ptr<CItem> found = FUN_140f7a190(uid, &index);
-            if (!(found == 0))
-                FUN_140f6e500(index, true);
-        }
-        m_highlightUid = uid;
+    __int64 old = m_highlightUid;
+    if (old != uid && old != 0) {
+        int index = -1;
+        FUN_140f7a190(old, &index);
+        if (index >= 0)
+            FUN_140f6e500(index, false);
     }
+    if (uid != 0) {
+        int index = -1;
+        FUN_140f7a190(uid, &index);
+        if (index >= 0)
+            FUN_140f6e500(index, true);
+    }
+    m_highlightUid = uid;
 }
 
 // @0x140f79760
@@ -2208,7 +2189,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f799d0(const Scaleform::GFx::Fu
 void ItemSocketSystemPageGemStoneUpgrade::FUN_140f79ad0(ItemInfoSlot& slot, ASSlot& asSlot)
 {
     MS2Ptr<CItem> item = slot.vfunc_25();
-    if (item.get() != 0) {
+    if (item.get() ? true : false) {
         MS2Ptr<TGemStoneInEquip> record(0);
         if (!m_equipped.IsEmpty() && m_equipped.Lookup(item->FUN_140526a50(), record)) {
             MS2Ptr<CItem> equip(record->m_equipment);
@@ -2221,7 +2202,6 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f79ad0(ItemInfoSlot& slot, ASSl
 }
 
 // @0x140f79c50
-// MS2-FUNCTIONAL: gemstone tooltip with the equipment comparison; typed tooltip handles.
 void ItemSocketSystemPageGemStoneUpgrade::FUN_140f79c50(ItemInfoSlot& slot, ASTooltip& tooltip)
 {
     MS2Ptr<CItem> item = slot.vfunc_25();
@@ -2236,7 +2216,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f79c50(ItemInfoSlot& slot, ASTo
             if (sub.get() != 0) {
                 ASTooltip compare(sub->FUN_1422bb870(), 2);
                 if (!compare.FUN_1422ba9a0() && !FUN_1414258e0(equip->FUN_140526a50()))
-                    FUN_1409d8bf0(&compare, 1);
+                    compare.FUN_1409d8bf0(true);
             }
         }
     }
@@ -2312,11 +2292,13 @@ MS2Ptr<TGemStoneInEquip> ItemSocketSystemPageGemStoneUpgrade::FUN_140f7a380(__in
 // @0x140f7a440
 void ItemSocketSystemPageGemStoneUpgrade::FUN_140f7a440(NotifyObject* notify)
 {
-    if (!(m_root == 0) && m_state == 1 && !(m_selected == 0)) {
-        NotifyGameEventChanged* changed = dynamic_cast<NotifyGameEventChanged*>(notify);
-        if (changed != 0 && FUN_140841300(changed->m_eventName, "SaleGemStoneUpgrade"))
-            FUN_140f78110(m_selected);
-    }
+    if (m_root == 0)
+        return;
+    if (m_state != 1 || m_selected == 0)
+        return;
+    NotifyGameEventChanged* changed = dynamic_cast<NotifyGameEventChanged*>(notify);
+    if (changed != 0 && FUN_140841300(changed->m_eventName, "SaleGemStoneUpgrade"))
+        FUN_140f78110(m_selected);
 }
 
 // @0x140f7b1f0
