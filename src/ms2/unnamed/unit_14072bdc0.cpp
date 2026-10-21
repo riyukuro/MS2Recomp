@@ -58,13 +58,18 @@ CInstrumentData::~CInstrumentData()
 }
 
 // @0x14072c150
-// MS2-FUNCTIONAL: temp/RVO shape of the string-table call differs
 CStringW CInstrumentData::GetName() const
 {
     if (m_nId == 1)
-        return FUN_14028b8e0(CStringW(L"s_play_instrument_instrument_name_1"));
-    if (m_nId == 2)
-        return FUN_14028b8e0(CStringW(L"s_play_instrument_instrument_name_2"));
+    {
+        CStringW strKey(L"s_play_instrument_instrument_name_1");
+        return FUN_14028b8e0(strKey);
+    }
+    else if (m_nId == 2)
+    {
+        CStringW strKey(L"s_play_instrument_instrument_name_2");
+        return FUN_14028b8e0(strKey);
+    }
     return CStringW(L"");
 }
 
@@ -94,17 +99,18 @@ CInstrumentCategoryData::~CInstrumentCategoryData()
 }
 
 // @0x14072c480
-// MS2-FUNCTIONAL: temp/RVO shape of the string-table call differs
 CStringW CInstrumentCategoryData::GetName() const
 {
-    return FUN_14028b8e0(FUN_1401ceea0(L"s_play_instrument_instrument_category_name_{0}", m_nId));
+    CStringW strKey = FUN_1401ceea0(L"s_play_instrument_instrument_category_name_{0}", m_nId);
+    return FUN_14028b8e0(strKey);
 }
 
 // @0x14072c500
-// MS2-FUNCTIONAL: compare operand shape differs
 bool CInstrumentCategoryData::IsPercussion() const
 {
-    return 0 < m_nPercussionId;
+    if (m_nPercussionId > 0)
+        return true;
+    return false;
 }
 
 // @0x14072c520
@@ -130,7 +136,6 @@ bool CInstrumentDataTable::Load()
 }
 
 // @0x14072c6c0
-// MS2-FUNCTIONAL: XML loop codegen differs
 bool CInstrumentDataTable::LoadInstruments()
 {
     CString strPath = FUN_14071a5b0("Table", "InstrumentInfo.xml");
@@ -145,17 +150,15 @@ bool CInstrumentDataTable::LoadInstruments()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("instrument"); pNode != 0; pNode = pNode->FUN_140168650("instrument"))
     {
-        if (FUN_14028f710(pNode))
-        {
-            InstrumentPtr spInstrument(new CInstrumentData(pNode));
-            m_instruments.SetAt(spInstrument->m_nId, spInstrument);
-        }
+        if (!FUN_14028f710(pNode))
+            continue;
+        InstrumentPtr spInstrument(new CInstrumentData(pNode));
+        m_instruments.SetAt(spInstrument->m_nId, spInstrument);
     }
     return true;
 }
 
 // @0x14072c920
-// MS2-FUNCTIONAL: XML loop codegen differs
 bool CInstrumentDataTable::LoadCategories()
 {
     CString strPath = FUN_14071a5b0("Table", "InstrumentCategoryInfo.xml");
@@ -170,11 +173,10 @@ bool CInstrumentDataTable::LoadCategories()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("category"); pNode != 0; pNode = pNode->FUN_140168650("category"))
     {
-        if (FUN_14028f710(pNode))
-        {
-            CategoryPtr spCategory(new CInstrumentCategoryData(pNode));
-            m_categories.SetAt(spCategory->m_nId, spCategory);
-        }
+        if (!FUN_14028f710(pNode))
+            continue;
+        CategoryPtr spCategory(new CInstrumentCategoryData(pNode));
+        m_categories.SetAt(spCategory->m_nId, spCategory);
     }
     return true;
 }
@@ -230,13 +232,12 @@ CStringW CInstrumentDataTable::GetCategoryNameById(int nCategoryId)
 }
 
 // @0x14072ceb0
-// MS2-FUNCTIONAL: CString return temp shape differs
 CString CInstrumentDataTable::GetCategoryIconById(int nCategoryId)
 {
     CategoryPtr spCategory = GetInstance()->GetCategory(nCategoryId);
-    if (spCategory.get() == 0)
-        return CString("");
-    return spCategory->m_strIcon;
+    if (spCategory.get() != 0)
+        return spCategory->m_strIcon;
+    return CString("");
 }
 
 // @0x14072d7c0
