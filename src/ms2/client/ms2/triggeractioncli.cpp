@@ -163,7 +163,7 @@ CStringW TriggerActionCli::GetName()
 // @0x140de4f00
 CStringW TriggerActionCli::GetArg(int n)
 {
-    return m_args[n];
+    return m_args[(unsigned)n];
 }
 
 // @0x140de4f60
@@ -175,9 +175,9 @@ unsigned __int64 TriggerActionCli::GetArgCount()
 // @0x140de4f90
 int TriggerActionCli::GetIntArg0()
 {
-    if (m_args.GetCount() < 2)
-        return 0;
-    return _wtoi(m_args[0]);
+    if (m_args.GetCount() >= 2)
+        return _wtoi(m_args[0]);
+    return 0;
 }
 
 // @0x140de4ff0
@@ -279,15 +279,15 @@ CStringW TriggerConditionCli::GetName()
 // @0x140de5970
 CStringW TriggerConditionCli::GetArg(int n) const
 {
-    return m_args.GetAt(n);
+    return m_args.GetAt((unsigned)n);
 }
 
 // @0x140de59d0
 int TriggerConditionCli::GetIntArg0()
 {
-    if (m_args.GetCount() < 2)
-        return 0;
-    return _wtoi(m_args[0]);
+    if (m_args.GetCount() >= 2)
+        return _wtoi(m_args[0]);
+    return 0;
 }
 
 // @0x140de5a30
@@ -1384,13 +1384,13 @@ void TriggerStateCli::AddTransition(TransitionPtr spTrans)
 // @0x140dea510
 TriggerStateCli::ActionPtr TriggerStateCli::GetOnEnter(int n)
 {
-    return m_onEnter[n];
+    return m_onEnter[(unsigned)n];
 }
 
 // @0x140dea570
 TriggerStateCli::TransitionPtr TriggerStateCli::GetTransition(int n)
 {
-    return m_transitions[n];
+    return m_transitions[(unsigned)n];
 }
 
 // @0x140dea5d0
