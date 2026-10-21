@@ -344,23 +344,24 @@ void UIItemRemakeOptionDialog::vfunc_67()
 // @0x14129daa0
 void UIItemRemakeOptionDialog::vfunc_79(void* pPacket)
 {
-    CInPacket* pkt = (CInPacket*)pPacket;
-    if (pkt->FUN_14070fe80() == 200 && !(m_enchantAni == 0)) {
-        FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
-        unsigned char kind = pkt->vfunc_o8_1();
-        if (kind == 6)
-            FUN_1412a2c50(pkt);
-        else if (kind == 4)
-            FUN_14129f940(pkt);
-        else if (kind == 1)
-            FUN_1412a30f0(pkt);
-        else if (kind == 2)
-            FUN_1412a3330(pkt);
-        else if (kind == 8)
-            FUN_1412a3460();
-        else if (kind == 5)
-            FUN_1412a34f0(pkt);
-    }
+    if (static_cast<CInPacket*>(pPacket)->FUN_14070fe80() != 200)
+        return;
+    if (m_enchantAni == 0)
+        return;
+    FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
+    int kind = static_cast<CInPacket*>(pPacket)->vfunc_o8_1();
+    if (kind == 6)
+        FUN_1412a2c50(static_cast<CInPacket*>(pPacket));
+    else if (kind == 4)
+        FUN_14129f940(static_cast<CInPacket*>(pPacket));
+    else if (kind == 1)
+        FUN_1412a30f0(static_cast<CInPacket*>(pPacket));
+    else if (kind == 2)
+        FUN_1412a3330(static_cast<CInPacket*>(pPacket));
+    else if (kind == 8)
+        FUN_1412a3460(static_cast<CInPacket*>(pPacket));
+    else if (kind == 5)
+        FUN_1412a34f0(static_cast<CInPacket*>(pPacket));
 }
 
 // @0x14129dbe0
@@ -368,19 +369,17 @@ int UIItemRemakeOptionDialog::vfunc_13()
 {
     if (m_enchantAni == 0)
         return 0;
-    if (!FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0)) {
-        if (!FUN_14025e7c0()->FUN_14116d840())
-            return 0;
-    }
-    if (FUN_1412a1c60() != 3)
-        return 0;
-    return 1;
+    if ((FUN_14025e7c0()->FUN_14116dd30(0x493e2, 0, 0) || FUN_14025e7c0()->FUN_14116d840()) && FUN_1412a1c60() == 3)
+        return 1;
+    return 0;
 }
 
 // @0x14129dc60
 void UIItemRemakeOptionDialog::FUN_14129dc60(NotifyObject* pNotify)
 {
-    if (m_enchantAni == 0 || FUN_1412a1c60() != 2 || m_cur == 0)
+    if (m_enchantAni == 0)
+        return;
+    if (FUN_1412a1c60() != 2 || m_cur == 0)
         return;
     NotifyGameEventChanged* changed = dynamic_cast<NotifyGameEventChanged*>(pNotify);
     if (changed != 0 && FUN_140841300(changed->m_eventName, "SaleRemake"))
@@ -611,8 +610,9 @@ void UIItemRemakeOptionDialog::FUN_14129f360(ASData* pData)
 // @0x14129f6f0
 void UIItemRemakeOptionDialog::FUN_14129f6f0()
 {
-    if (!(m_enchantAni == 0))
-        vfunc_85(0x66);
+    if (m_enchantAni == 0)
+        return;
+    vfunc_85(0x66);
 }
 
 // @0x14129f740
@@ -700,28 +700,36 @@ void UIItemRemakeOptionDialog::FUN_14129f940(CInPacket* pPacket)
 // @0x1412a0460
 void UIItemRemakeOptionDialog::FUN_1412a0460(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (!(m_cur == 0) && 0x31 < DAT_143ab2914 && FUN_1412a1c60() == 2) {
-        CCItemRemakeOptionPacket::ForceFillIngredient fill;
-        fill.m_uid = m_cur->FUN_140526a50();
-        COutPacket pkt(0x75, 0);
-        pkt.Encode1(8);
-        fill.vfunc_1(pkt);
-        FUN_140710590(pkt);
-    }
+    if (m_cur == 0)
+        return;
+    if (DAT_143ab2914 < 0x32)
+        return;
+    if (FUN_1412a1c60() != 2)
+        return;
+    CCItemRemakeOptionPacket::ForceFillIngredient fill;
+    fill.m_uid = m_cur->FUN_140526a50();
+    COutPacket pkt(0x75, 0);
+    pkt.Encode1(8);
+    fill.vfunc_1(pkt);
+    FUN_140710590(pkt);
 }
 
 // @0x1412a0550
 void UIItemRemakeOptionDialog::FUN_1412a0550(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (!(m_cur == 0) && 0x31 < DAT_143ab2914 && FUN_1412a1c60() == 2) {
-        CCItemRemakeOptionPacket::ForceFillIngredient fill;
-        fill.m_uid = m_cur->FUN_140526a50();
-        fill.m_count = 10;
-        COutPacket pkt(0x75, 0);
-        pkt.Encode1(8);
-        fill.vfunc_1(pkt);
-        FUN_140710590(pkt);
-    }
+    if (m_cur == 0)
+        return;
+    if (DAT_143ab2914 < 0x32)
+        return;
+    if (FUN_1412a1c60() != 2)
+        return;
+    CCItemRemakeOptionPacket::ForceFillIngredient fill;
+    fill.m_uid = m_cur->FUN_140526a50();
+    fill.m_count = 10;
+    COutPacket pkt(0x75, 0);
+    pkt.Encode1(8);
+    fill.vfunc_1(pkt);
+    FUN_140710590(pkt);
 }
 
 // @0x1412a0650
@@ -744,7 +752,8 @@ bool UIItemRemakeOptionDialog::FUN_1412a0650(int nResult, const CMsgBoxData& box
 CString UIItemRemakeOptionDialog::FUN_1412a0720(CItem* item, CString key, CAtlArray<CString>& names)
 {
     FUN_141415600(key);
-    FUN_141415450(key, MS2Ptr<CItem>(item), 0, 0x405, 0x2020);
+    int nFlags = 0x2020;
+    FUN_141415450(key, MS2Ptr<CItem>(item), 0, 0x405, nFlags);
     FUN_140165270(names, key);
     return CString(key);
 }
@@ -766,9 +775,9 @@ void UIItemRemakeOptionDialog::FUN_1412a0800()
 Unk_EnSlot* UIItemRemakeOptionDialog::FUN_1412a0900(const CString& name)
 {
     Unk_EnSlot* slot = FUN_140f6e830(name);
-    if (slot == 0)
-        return 0;
-    return slot;
+    if (slot != 0)
+        return slot;
+    return 0;
 }
 
 // @0x1412a0940
@@ -814,10 +823,10 @@ bool UIItemRemakeOptionDialog::FUN_1412a0940(MS2Ptr<CItem> item)
 // @0x1412a0cd0
 void UIItemRemakeOptionDialog::FUN_1412a0cd0(ASObj& obj, MS2Ptr<CItem> item)
 {
-    if (!(item == 0)) {
-        obj.FUN_1407cba60("enchantItem",
-            FUN_1412a0720(item.get(), Unk_SocketFormat("{0}.selectedItem", vfunc_1()), m_names198));
-    }
+    if (item == 0)
+        return;
+    obj.FUN_1407cba60("enchantItem",
+        FUN_1412a0720(item.get(), Unk_SocketFormat("{0}.selectedItem", vfunc_1()), m_names198));
 }
 
 // @0x1412a0e30
@@ -932,14 +941,13 @@ int UIItemRemakeOptionDialog::FUN_1412a1c60()
 // @0x1412a1c80
 int UIItemRemakeOptionDialog::FUN_1412a1c80(MS2Ptr<CItem> item)
 {
-    if (!(item == 0) && item->FUN_140527840() != 0) {
-        int have = 0;
-        int itemId = reinterpret_cast<CItemData*>(item->FUN_140527840())->FUN_14053c6f0();
-        if (itemId != 0)
-            have = DAT_143ab2a90.FUN_140a5f7b0(itemId, 0);
-        return have;
-    }
-    return 0;
+    if (item == 0 || item->FUN_140527840() == 0)
+        return 0;
+    int have = 0;
+    int itemId = reinterpret_cast<CItemData*>(item->FUN_140527840())->FUN_14053c6f0();
+    if (itemId != 0)
+        have = DAT_143ab2a90.FUN_140a5f7b0(itemId, 0);
+    return have;
 }
 
 // @0x1412a1d40
@@ -1123,23 +1131,28 @@ void UIItemRemakeOptionDialog::FUN_1412a30f0(CInPacket* pPacket)
 // @0x1412a3330
 void UIItemRemakeOptionDialog::FUN_1412a3330(CInPacket* pPacket)
 {
-    if (!(m_new == 0)) {
-        CCItemRemakeOptionPacket::ApplyOptionClient apply;
-        apply.m_item = m_new;
-        apply.vfunc_2(*pPacket);
-        if (apply.m_uid == m_new->FUN_140526a50()) {
-            FUN_1412a1650(MS2Ptr<CItem>(m_new));
-            m_new = 0;
-            m_cur = 0;
-        }
-    }
+    if (m_new == 0)
+        return;
+    CCItemRemakeOptionPacket::ApplyOptionClient apply;
+    apply.m_item = m_new;
+    apply.vfunc_2(*pPacket);
+    if (apply.m_uid != m_new->FUN_140526a50())
+        return;
+    FUN_1412a1650(MS2Ptr<CItem>(m_new));
+    m_new = 0;
+    m_cur = 0;
 }
 
 // @0x1412a3460
-void UIItemRemakeOptionDialog::FUN_1412a3460()
+void UIItemRemakeOptionDialog::FUN_1412a3460(CInPacket* pPacket)
 {
-    if (!(m_cur == 0) && 0x31 < DAT_143ab2914 && FUN_1412a1c60() == 2)
-        FUN_1412a1600(MS2Ptr<CItem>(m_cur));
+    if (m_cur == 0)
+        return;
+    if (DAT_143ab2914 < 0x32)
+        return;
+    if (FUN_1412a1c60() != 2)
+        return;
+    FUN_1412a1600(MS2Ptr<CItem>(m_cur));
 }
 
 // @0x1412a34f0

@@ -61,7 +61,7 @@ public:
     void FUN_1412a2c50(CInPacket* pPacket);                     // 0x1412a2c50 packet kind 6
     void FUN_1412a30f0(CInPacket* pPacket);                     // 0x1412a30f0 packet kind 1
     void FUN_1412a3330(CInPacket* pPacket);                     // 0x1412a3330 packet kind 2
-    void FUN_1412a3460();                                       // 0x1412a3460 packet kind 8
+    void FUN_1412a3460(CInPacket* pPacket);                     // 0x1412a3460 packet kind 8 (the packet is unused)
     void FUN_1412a34f0(CInPacket* pPacket);                     // 0x1412a34f0 packet kind 5 (error)
 protected:
     MS2_LAYOUT_FRIEND;
