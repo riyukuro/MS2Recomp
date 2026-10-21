@@ -4658,3 +4658,5 @@ criHeap_Initialize	1400282e0	func
 ?AS3exec@RegExp@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEAV?$SPtr@VObject@fl@Instances@AS3@GFx@Scaleform@@@456@AEBVASString@56@@Z	1423f9300	func
 ?Convert2String@Value@AS3@GFx@Scaleform@@QEBA?AVCheckResult@234@AEAVASString@34@@Z	1424f1390	func
 ?prototypeSet@XMLList@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEBVValue@456@0@Z	142429fa0	func
+?GFx_GFX_TagLoaderTable@GFx@Scaleform@@3PAP6AXPEAVLoadProcess@12@AEBUTagInfo@12@@ZA	143a2f2c0	data
+?SWF_TagLoaderTable@GFx@Scaleform@@3PAP6AXPEAVLoadProcess@12@AEBUTagInfo@12@@ZA	143a2efe0	data
