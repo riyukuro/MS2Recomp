@@ -489,8 +489,10 @@ CStringW FUN_140ebced0(CMeratMarketPremiumProduct* pProduct, int nSubId)
 {
     bool bDay = pProduct->FUN_14069fe40() == 2;
     CStringW strResult;
-    CDBPremiumProduct* pText = pProduct;
-    if (nSubId != 0)
+    CDBPremiumProduct* pText = 0;
+    if (nSubId == 0)
+        pText = pProduct;
+    else
         pText = pProduct->GetSubProduct(nSubId).operator->();
     if (pText != 0)
         strResult = FUN_140ebd020(bDay, pText);
@@ -731,10 +733,10 @@ int FUN_140ebf520(MS2Ptr<CMeratMarketProduct> spProduct, AScript* pRow)
     int nType = spProduct->GetCurrency();
     if (nType == 3)
     {
-        if (pRow->FUN_1422ba9a0())
-            nType = 1;
-        else
+        if (!pRow->FUN_1422ba9a0())
             nType = FUN_1409c1750(pRow->FUN_1422baa20("priceType"));
+        else
+            nType = 1;
     }
     return nType;
 }
@@ -820,13 +822,11 @@ bool FUN_140ebfb90(CDBPremiumProduct* pProduct, bool bShowError)
     if (nAchieve == 0)
         return true;
     int nGrade = pProduct->m_nfc;
-    if (FUN_140936900(FUN_1406c7600(), nAchieve, nGrade) == 0)
-    {
-        if (bShowError)
-            FUN_1412751f0(FUN_14052bd00(0x5c, FUN_14093b9c0(nAchieve, nGrade)), 1, 1);
-        return false;
-    }
-    return true;
+    if (FUN_140936900(FUN_1406c7600(), nAchieve, nGrade) != 0)
+        return true;
+    if (bShowError)
+        FUN_1412751f0(FUN_14052bd00(0x5c, FUN_14093b9c0(nAchieve, nGrade)), 1, 1);
+    return false;
 }
 
 // The player level against the buy limit of the product.
@@ -1051,7 +1051,6 @@ public:
 };
 
 // Fill the sort drop down of a tab.
-// MS2-FUNCTIONAL: not byte-matched (temporaries / EH state layout)
 // @0x140ec0700
 void FUN_140ec0700(ASObj* pDialog, int nTab)
 {
@@ -1062,7 +1061,6 @@ void FUN_140ec0700(ASObj* pDialog, int nTab)
 }
 
 // One entry of the sort drop down.
-// MS2-FUNCTIONAL: not byte-matched (temporaries / EH state layout)
 // @0x140ec07b0
 void FUN_140ec07b0(ASArray* pArr, const CStringW& strLabel, int nSort, bool bUgc)
 {
@@ -1078,12 +1076,12 @@ void FUN_140ec07b0(ASArray* pArr, const CStringW& strLabel, int nSort, bool bUgc
         else if (nSort == 1)
         {
             strName = "saleCount";
-            nOpt = 0x12;
+            nOpt |= 0x10;
         }
         else if (nSort == 6)
         {
             strName = "saleCountTotal";
-            nOpt = 0x12;
+            nOpt |= 0x10;
         }
         obj.FUN_1407cba60("sortDataName", strName);
         obj.FUN_1409c0d20("sortOpt", nOpt);
@@ -1201,7 +1199,7 @@ MS2Ptr<CMeratMarketProduct> FUN_140d57f70(Unk_McMarket* pMan, const Unk_MeratPro
 MS2Ptr<CMeratMarketProduct> FUN_140d576a0(Unk_McMarket* pMan, const Unk_MeratProductKey& key);
 int FUN_140896310(CUgcMarketProduct* pUgc);
 int FUN_140d5a2e0(Unk_McMarket* pMan);
-int FUN_140d5a1d0(Unk_McMarket* pMan);
+__int64 FUN_140d5a1d0(Unk_McMarket* pMan);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_140a228f0(int nId, const int& nMonth, const CStringW& strArg);
 CStringW FUN_14028de60(int nId);
@@ -1249,8 +1247,7 @@ void FUN_140ec1340(ASData& data)
     spReport->SetFieldb0(strName);
     spReport->SetFieldd8(nTarget);
     spReport->SetFieldb8(strReason);
-    MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d57150(FUN_140939a00(), *(Unk_MeratProductKey*)&id, 0);
-    if (spProduct != 0)
+    if (MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d57150(FUN_140939a00(), *(Unk_MeratProductKey*)&id, 0))
     {
         spReport->SetFielda0(*(__int64*)((char*)spProduct.get() + 0x318));
         spReport->SetFielda8(*(__int64*)((char*)spProduct.get() + 0x320));
@@ -1340,12 +1337,14 @@ int FUN_140ec1ee0(int nValue)
 // @0x140ec1f20
 CStringW FUN_140ec1f20()
 {
-    if (FUN_140d5a2e0(FUN_140939a00()) == 0)
-        return CStringW(L"");
-    CMsTime tNow((__time64_t)FUN_140869440());
-    int nMonth = tNow.GetMonth();
-    int nArg = FUN_140d5a1d0(FUN_140939a00());
-    return FUN_140a228f0(0xa24, nMonth, FUN_1409404f0(nArg));
+    if (FUN_140d5a2e0(FUN_140939a00()) != 0)
+    {
+        CMsTime tNow((__time64_t)FUN_140869440());
+        int nMonth = tNow.GetMonth();
+        __int64 nArg = FUN_140d5a1d0(FUN_140939a00());
+        return FUN_140a228f0(0xa24, nMonth, FUN_1409404f0(nArg));
+    }
+    return CStringW(L"");
 }
 
 // @0x140ec2010
