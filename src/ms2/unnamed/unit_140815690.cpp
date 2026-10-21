@@ -73,6 +73,7 @@ void CSmartRecommendShopTable::FUN_140815810()
 {
     if (Unk_LockGuard guard = m_spData->m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -82,12 +83,12 @@ void CSmartRecommendShopTable::FUN_140815810()
 MS2_REPLACE_METHOD(0x140815810, CSmartRecommendShopTable, FUN_140815810, 114, 0x00B29241);
 
 // @0x140815890
-// MS2-FUNCTIONAL: trailing cleanup NOP after the lock-guard else path / EH ip2state boundary
 MS2Ptr<CRecommendItem> CSmartRecommendShopTable::FUN_140815890(int nCode)
 {
     CheckInit();
     if (Unk_LockGuard guard = m_spData->m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -109,6 +110,7 @@ void CSmartRecommendShopTable::FUN_140815a10(MS2Ptr<CRecommendItem> spItem)
 {
     if (Unk_LockGuard guard = m_spData->m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -119,11 +121,11 @@ void CSmartRecommendShopTable::FUN_140815a10(MS2Ptr<CRecommendItem> spItem)
 MS2_REPLACE_METHOD(0x140815A10, CSmartRecommendShopTable, FUN_140815a10, 155, 0x3D6FB2DA);
 
 // @0x140815ac0
-// MS2-FUNCTIONAL: trailing cleanup NOP after the lock-guard else path (ip2state boundary)
 int CSmartRecommendShopTable::FUN_140815ac0(CString strPath)
 {
     if (Unk_LockGuard guard = m_spData->m_lock)
     {
+        __assume(0);
     }
     else
     {
