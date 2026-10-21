@@ -7762,3 +7762,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?Add@StaticTextSnapshotData@GFx@Scaleform@@QEAAXPEAVStaticTextCharacter@23@@Z	1425e0720	func
 ?AddToOptimizedPlayList@InteractiveObject@GFx@Scaleform@@QEAAXXZ	1425f7e30	func
 ?ConvertToButtonKeyCode@EventId@GFx@Scaleform@@QEBAHXZ	142603da0	func
+?GetTopMostMouseEntity@DisplayObjContainer@GFx@Scaleform@@UEAA?AW4TopMostResult@DisplayObjectBase@23@AEBV?$Point@M@Render@3@PEAUTopMostDescr@523@@Z	1425fc5f0	func
