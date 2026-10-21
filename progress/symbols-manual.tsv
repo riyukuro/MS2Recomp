@@ -7880,3 +7880,6 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?GetTicks@Timer@Scaleform@@SA_KXZ	1425e3590	func
 ?Convert@LongFormatter@Scaleform@@UEAAXXZ	1425affb0	func
 ?GetResult@LongFormatter@Scaleform@@UEBA?AVStringDataPtr@2@XZ	1425b1490	func
+?SetRendererFloat@Sprite@GFx@Scaleform@@QEAAXM@Z	1425dcf10	func
+?SetRendererMatrix@Sprite@GFx@Scaleform@@QEAAXPEAMI@Z	1425dcf20	func
+?SetRendererString@Sprite@GFx@Scaleform@@QEAAXVASString@23@@Z	1425dcf30	func
