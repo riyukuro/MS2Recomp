@@ -169,7 +169,7 @@ public:
     void FUN_140d5bc30(CInPacket& packet);
     void FUN_140d5bd10(CInPacket& packet);
     void FUN_140d5bf40(CInPacket& packet);
-    void FUN_140d5c0c0(CInPacket& packet);
+    void FUN_140d5c0c0(CInPacket& packet, int nPage, int nValue);
     void FUN_140d601c0(MS2Ptr<CMeratMarketProduct> spProduct);    // keep the earliest sale end
     void FUN_140d5c2f0(CInPacket& packet);
     void FUN_140d5c910(CInPacket& packet);
