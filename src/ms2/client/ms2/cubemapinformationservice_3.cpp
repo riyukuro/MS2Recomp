@@ -286,7 +286,7 @@ struct Unk_CMISHouseInfo : public CPtred                                    // a
     bool m_bNoSalable;                                                      // +0x30
     int m_nValue;                                                           // +0x34
 };
-struct Unk_CMISHousePtr { void* m_p; };                                     // MS2Ptr<house info>
+struct Unk_CMISHousePtr { void* m_0; void* m_p; }; MS2_CHECK_SIZE(Unk_CMISHousePtr, 0x10); // object at +8 (ctor 0x14111e6e0, -> 0x141128470); 8 bytes overflowed FUN_1410bbf20's local
 struct Unk_CMISHouseNode { int first; Unk_CMISHousePtr second; };
 class Unk_CMISHouseMark { public: virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); void FUN_14198cb00(const Unk_CMISHouseInfo& info); void FUN_14198cf50(); };
 Unk_CMISHouseMark* FUN_1410dc020();
@@ -3551,7 +3551,7 @@ void CubeMapInformationService::FUN_1410bb610(unsigned nMask, Unk_CMISPawn* pPaw
         FUN_14114dbb0(&ff8, &it);
         while (FUN_1411273c0(&it, FUN_141151970(&ff8, &itEnd))) {
             int nGroup = FUN_141128560(&it)->m_key;
-            egf::EntityPtr spEnt = FUN_1408a7ed0(&FUN_141128560(&it)->m_ref);
+          { egf::EntityPtr spEnt = FUN_1408a7ed0(&FUN_141128560(&it)->m_ref);   // dtor 0x1408a8720 once, at the block end
             if (!FUN_1408b70b0(&spEnt, 0)) {
                 Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(reinterpret_cast<Unk_CubeOwners&>(f138), nGroup, f1b0);
                 void* pOwner = FUN_140965820(&spOwner);
@@ -3567,7 +3567,7 @@ void CubeMapInformationService::FUN_1410bb610(unsigned nMask, Unk_CMISPawn* pPaw
                     }
                 }
             }
-            FUN_1408a8720(&spEnt);
+          }
             FUN_141129a80(&it);
         }
         void* aCopy[1]; void* pEnd[1]; void* pBegin[1];
@@ -5899,9 +5899,9 @@ void CubeMapInformationService::FUN_1410d0310()
         itEntEnd = *FUN_141152570(pMarks, &itTmp);
         itEnt = *FUN_14114e930(pMarks, &itTmp);
         while (FUN_141127980(&itEnt, &itEntEnd)) {
-            egf::EntityPtr spEnt = FUN_1408a7ed0(FUN_141128e50(&itEnt));
-            static_cast<Unk_CMISWorldMgr*>(FUN_1409670f0())->FUN_1411cf570(FUN_1408a9090(&spEnt));
-            FUN_1408a8720(&spEnt);
+            {   egf::EntityPtr spEnt = FUN_1408a7ed0(FUN_141128e50(&itEnt));   // dtor 0x1408a8720 once, at the block end
+                static_cast<Unk_CMISWorldMgr*>(FUN_1409670f0())->FUN_1411cf570(FUN_1408a9090(&spEnt));
+            }
             FUN_14112ab20(&itEnt);
         }
     }
@@ -6380,9 +6380,9 @@ void CubeMapInformationService::FUN_1410ccc00(int nGroup, int nA, int nB)
             itEntEnd = *FUN_141152570(pMarks, &itTmp);
             itEnt = *FUN_14114e930(pMarks, &itTmp);
             while (FUN_141127980(&itEnt, &itEntEnd)) {
-                egf::EntityPtr spEnt = FUN_1408a7ed0(FUN_141128e50(&itEnt));
-                static_cast<Unk_CMISWorldMgr*>(FUN_1409670f0())->FUN_1411cf570(FUN_1408a9090(&spEnt));
-                FUN_1408a8720(&spEnt);
+                {   egf::EntityPtr spEnt = FUN_1408a7ed0(FUN_141128e50(&itEnt));   // dtor 0x1408a8720 once, at the block end
+                    static_cast<Unk_CMISWorldMgr*>(FUN_1409670f0())->FUN_1411cf570(FUN_1408a9090(&spEnt));
+                }
                 FUN_14112ab20(&itEnt);
             }
             FUN_141150260(pMarks);

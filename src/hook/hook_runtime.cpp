@@ -53,24 +53,37 @@ bool EnvFlag(const char* name, bool def) {
 // A value starting with '@' names a list file (Wine path, e.g. Z:\\home\\...) read instead of the env text, so
 // bisecting is not limited by the 32 KB environment value; entries may be separated by commas or newlines.
 // MS2HOOK_ONLY (same syntax): when set, hooks matching NO entry are disabled (allow list).
+// The value is read at its full length: a fixed 4 KB buffer used to make GetEnvironmentVariableA fail for longer lists
+// (e.g. ~1100 VAs), and the list was then silently ignored with every hook left on.
 static const char* LoadList(const char* var, char** storage, bool* isSet) {
-    static char envbuf[4096];
-    DWORD n = GetEnvironmentVariableA(var, envbuf, sizeof(envbuf));
-    *isSet = n != 0 && n < sizeof(envbuf);
+    DWORD need = GetEnvironmentVariableA(var, nullptr, 0);   // length + 1, 0 = not set
+    *isSet = need != 0;
     if (!*isSet) return "";
-    if (envbuf[0] != '@') {
-        // own copy: envbuf is shared, so the next LoadList (MS2HOOK_ONLY after MS2HOOK_DISABLE) would overwrite it
-        *storage = static_cast<char*>(HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, n + 1));
-        memcpy(*storage, envbuf, n);
-        return *storage;
+    char* envbuf = static_cast<char*>(HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, need + 1));
+    DWORD n = GetEnvironmentVariableA(var, envbuf, need);
+    if (n == 0 || n >= need) {
+        Log("%s: could not read the value (%lu chars) - IGNORED", var, need);
+        *isSet = false;
+        return "";
     }
-    HANDLE h = CreateFileA(envbuf + 1, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
-    if (h == INVALID_HANDLE_VALUE) return "";
-    DWORD sz = GetFileSize(h, nullptr), got = 0;
-    *storage = static_cast<char*>(HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sz + 2));
-    ReadFile(h, *storage, sz, &got, nullptr);
-    CloseHandle(h);
-    for (char* c = *storage; *c; ++c) if (*c == '\n' || *c == '\r' || *c == ' ') *c = ',';
+    if (envbuf[0] != '@') {
+        *storage = envbuf;
+    } else {
+        HANDLE h = CreateFileA(envbuf + 1, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+        if (h == INVALID_HANDLE_VALUE) {
+            Log("%s: cannot open list file %s - IGNORED", var, envbuf + 1);
+            *isSet = false;
+            return "";
+        }
+        DWORD sz = GetFileSize(h, nullptr), got = 0;
+        *storage = static_cast<char*>(HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sz + 2));
+        ReadFile(h, *storage, sz, &got, nullptr);
+        CloseHandle(h);
+        for (char* c = *storage; *c; ++c) if (*c == '\n' || *c == '\r' || *c == ' ') *c = ',';
+    }
+    int entries = 0;
+    for (const char* c = *storage; *c; ++c) if ((c == *storage || c[-1] == ',') && *c != ',') ++entries;
+    Log("%s: %d entries (%zu chars%s)", var, entries, strlen(*storage), envbuf[0] == '@' ? ", from file" : "");
     return *storage;
 }
 

@@ -217,14 +217,14 @@ void CClientPlatformNexonKorea::vfunc_14()
     CNXMan::CreateInstance();
     CNXMan::GetInstance()->FUN_14160d820();
 }
-
+#ifndef MS2_HOOK_DLL   // hook DLL: the vtable slot binds the exe body, which the compat NexonKorea_ShutdownNX replaces
 // @0x140c78180
 void CClientPlatformNexonKorea::vfunc_15()
 {
     CNXMan::GetInstance()->FUN_14160da80();
     CNXMan::DestroyInstance();
 }
-
+#endif
 // @0x140c781b0
 void CClientPlatformNexonKorea::vfunc_16()
 {
@@ -380,7 +380,7 @@ int CClientPlatformNexonKorea::vfunc_1()
     return 0;
 }
 MS2_REPLACE_METHOD(0x140C78CB0, CClientPlatformNexonKorea, vfunc_1, 48, 0x20596032);
-
+#ifndef MS2_HOOK_DLL   // hook DLL: the vtable slot binds the exe body (null CNXMan; compat NexonKorea_GetServiceIndex)
 // @0x140c78cf0
 int CClientPlatformNexonKorea::vfunc_74()
 {
@@ -388,7 +388,7 @@ int CClientPlatformNexonKorea::vfunc_74()
         return 5;
     return 4;
 }
-
+#endif
 // @0x140c78d30
 CStringA CClientPlatformNexonKorea::vfunc_75()
 {
