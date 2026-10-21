@@ -288,12 +288,12 @@ public:
     // CRBMap<unsigned> whose ordering is the exe's signed int compare (0x140212de0)
     struct Unk_BuffKeyTraits : public ATL::CElementTraits<unsigned>
     {
-        static int CompareElementsOrdered(const unsigned& a, const unsigned& b) { return ((int)a < (int)b) ? -1 : (((int)a == (int)b) ? 0 : 1); }
+        static int CompareElementsOrdered(const unsigned& a, const unsigned& b) { if ((int)a < (int)b) return -1; else if ((int)a == (int)b) return 0; else return 1; }
     };
     typedef ATL::CRBMap<unsigned, BuffPtr, Unk_BuffKeyTraits> BuffMap;
     CClubDataTable();                               // 0x1402112f0
     virtual ~CClubDataTable();                      // 0x140211360
-    bool FUN_1402113c0();                           // load (thunk of FUN_1402113f0)
+    int FUN_1402113c0();                            // load (thunk of FUN_1402113f0)
     int FUN_1402113f0();                            // load Table/clubBuff.xml
     BuffPtr FUN_1402116a0(unsigned nId);            // buff by id
     BuffPtr FUN_140211760(int nEffectId, int nEffectLevel);   // buff by effect id and level

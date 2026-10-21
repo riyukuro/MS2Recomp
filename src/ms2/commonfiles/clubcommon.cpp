@@ -1416,9 +1416,11 @@ CClubDataTable::~CClubDataTable()
 }
 
 // @0x1402113c0
-bool CClubDataTable::FUN_1402113c0()
+int CClubDataTable::FUN_1402113c0()
 {
-    return FUN_1402113f0() != 0;
+    if (!FUN_1402113f0())
+        return 0;
+    return 1;
 }
 
 // @0x1402113f0
@@ -1545,49 +1547,46 @@ extern void FUN_140159b70(int hr);
 extern void FUN_1402176a0(void** pThis);
 extern void* FUN_1401ba820(void* p);
 
+// the MS2Ptr<ClubBuffData> fields the raw-view helpers touch
+struct Unk_BuffPtrView { void* m_0; void* m_p; };
+
 // @0x140211b20
-// MS2-FUNCTIONAL: allocation helper for MS2Ptr<ClubBuffData>'s "new" constructor
-CClubDataTable::ClubBuffData* Unk_NewClubBuffData()
+CClubDataTable::ClubBuffData* Unk_NewClubBuffData(void* pTag)
 {
     return new CClubDataTable::ClubBuffData;
 }
 
 // @0x140217680
-// MS2-FUNCTIONAL: allocate and register a new ClubBuffData
-void* Unk_BuffPtrAlloc()
+void* Unk_BuffPtrAlloc(void* pTag)
 {
-    return FUN_1401ba820(Unk_NewClubBuffData());
+    return FUN_1401ba820(Unk_NewClubBuffData(0));
 }
 
 // @0x140217650
-// MS2-FUNCTIONAL: MS2Ptr<ClubBuffData> reset-to-new on a raw view
 void Unk_BuffPtrResetNew(void** pThis)
 {
     FUN_1402176a0(pThis);
-    pThis[1] = Unk_BuffPtrAlloc();
+    ((Unk_BuffPtrView*)pThis)->m_p = Unk_BuffPtrAlloc(0);
 }
 
 // @0x140211da0
-// MS2-FUNCTIONAL: MS2Ptr<ClubBuffData> "new tag" constructor on a raw view
-void* Unk_BuffPtrNew(void** pThis)
+void* Unk_BuffPtrNew(void** pThis, void* pTag)
 {
-    pThis[1] = 0;
+    ((Unk_BuffPtrView*)pThis)->m_p = 0;
     Unk_BuffPtrResetNew(pThis);
     return pThis;
 }
 
 // @0x140212650
-// MS2-FUNCTIONAL: MS2Ptr::get on a raw view
 void* Unk_BuffPtrGet(void** pThis)
 {
-    return pThis[1];
+    return ((Unk_BuffPtrView*)pThis)->m_p;
 }
 
 // @0x140212670
-// MS2-FUNCTIONAL: MS2Ptr::operator-> on a raw view
 void* Unk_BuffPtrArrow(void** pThis)
 {
-    return pThis[1];
+    return ((Unk_BuffPtrView*)pThis)->m_p;
 }
 
 // @0x140212e20
@@ -1615,43 +1614,48 @@ void* Unk_TreePostInc(void* pTree, void** pPos)
 }
 
 // @0x140213660
-// MS2-FUNCTIONAL: CRBTree node -> pair, throws E_FAIL on a null position
 void* Unk_TreeNodePair(void* pTree, char* pNode)
 {
-    if (pNode)
-        return pNode + 8;
-    FUN_140159b70(0x80004005);
+    do {
+        int bOk = (pNode != 0);
+        do {} while (0);
+        if (!bOk)
+            FUN_140159b70(0x80004005);
+    } while (0);
+    return pNode + 8;
 }
 
 // @0x140217850
-// MS2-FUNCTIONAL: club buff type -> effect category
 int Unk_ClubBuffCategory(int n)
 {
-    if (n == 1)
+    switch (n)
+    {
+    case 1:
         return 1;
-    if (n == 2)
+    case 2:
         return 8;
-    if (n == 3)
+    case 3:
         return 11;
-    if (n == 4)
+    case 4:
         return 5;
+    }
     return 0;
 }
 
 // @0x1402178b0
-// MS2-FUNCTIONAL: effect category -> club buff type
 int Unk_ClubBuffTypeOf(int n)
 {
-    if (0 < n)
+    switch (n)
     {
-        if (n < 3)
-            return 1;
-        if (n == 5)
-            return 4;
-        if (n == 8)
-            return 2;
-        if (n == 11)
-            return 3;
+    case 1:
+    case 2:
+        return 1;
+    case 8:
+        return 2;
+    case 11:
+        return 3;
+    case 5:
+        return 4;
     }
     return 0;
 }
