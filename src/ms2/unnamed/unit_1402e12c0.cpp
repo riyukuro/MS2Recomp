@@ -6,6 +6,7 @@
 // MS2-RANGE: 0x1402e12c0-0x1402e1b80 .text$mn
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -19,11 +20,6 @@ typedef unsigned __int64 u64;
 unsigned FUN_140869420();   // client millisecond clock
 void* FUN_140166440();      // the CLogString singleton
 
-// critical-section guard trio (shared with worldservice_1)
-struct Unk_LockGuard { void* m_lock; int m_state; };
-Unk_LockGuard* FUN_140163940(Unk_LockGuard* pGuard, void* pLock);
-int FUN_140164a80(Unk_LockGuard* pGuard);
-void FUN_1401643b0(Unk_LockGuard* pGuard);
 
 // fmt slot helpers (16-byte argument record + 8-byte bound slot)
 struct Unk_LogArg { i64 m_w0, m_w1; };
@@ -41,7 +37,7 @@ void FUN_140653690(i64 pLog, i64 a, i64 c, int nCategory, const wchar_t* pszForm
 class Unk_PerfLogCallback { public: virtual void vfunc_0(); };
 class Unk_PerfLog {
 public:
-    char m_lock_00[0x30];
+    CLockCriticalSection m_lock;   // +0x00
     CString m_strLabel;      // +0x30
     CString m_strMessage;    // +0x38
     unsigned m_nLastTick;    // +0x40
@@ -62,25 +58,31 @@ MS2_CHECK_OFFSET(Unk_PerfLog, m_nFirstTick, 0x44);
 MS2_CHECK_OFFSET(Unk_PerfLog, m_nCount, 0x48);
 MS2_CHECK_OFFSET(Unk_PerfLog, m_pCallback, 0x50);
 
-int FUN_1402e1a50(int nValue);
+u64 FUN_1402e1a50(int nValue);
 
-// fmt::internal::MakeValue<int> boxed-argument store (int specialization; the ostream branch is unreachable).
+// fmt::internal::MakeValue<unsigned long> boxed-argument ctor (the 8-byte branch is unreachable on LLP64).
+struct Unk_LogArgValue : Unk_LogArg {
+    Unk_LogArgValue(unsigned nValue);
+};
+MS2_CHECK_SIZE(Unk_LogArgValue, 0x10);
+
 // @0x1402e1a20
-Unk_LogArg FUN_1402e1a20(int nValue)
+Unk_LogArgValue::Unk_LogArgValue(unsigned nValue)
 {
-    Unk_LogArg v = {};
-    *(int*)&v = nValue;
-    return v;
+    if (sizeof(long) == sizeof(int))
+        *(int*)&m_w0 = nValue;
+    else
+        m_w0 = (unsigned long long)nValue;
 }
 
 // @0x1402e1a00
-int FUN_1402e1a00(const int* pValue)
+u64 FUN_1402e1a00(const int* pValue)
 {
     return FUN_1402e1a50(*pValue);
 }
 
 // @0x1402e1a50
-int FUN_1402e1a50(int)
+u64 FUN_1402e1a50(int)
 {
     return 2;
 }
@@ -88,7 +90,7 @@ int FUN_1402e1a50(int)
 // @0x1402e15d0 - slot bound to an int argument
 u64* FUN_1402e15d0(u64* pSlot, const int* pValue)
 {
-    *pSlot = (u64)(unsigned)FUN_1402e1a00(pValue);
+    *pSlot = FUN_1402e1a00(pValue);
     return pSlot;
 }
 
@@ -101,8 +103,8 @@ void FUN_1402e1600(i64 pLog, i64 a, i64 c, int nCategory, const wchar_t* pszForm
     Unk_LogArg kArg0 = FUN_140163740(*pStr0);
     Unk_LogArg kArg1 = FUN_140163790(*pInt1);
     Unk_LogArg kArg2 = FUN_140163740(*pStr2);
-    Unk_LogArg kArg3 = FUN_1402e1a20(*pInt3);
-    Unk_LogArg kArg4 = FUN_1402e1a20(*pInt4);
+    Unk_LogArgValue kArg3(*pInt3);
+    Unk_LogArgValue kArg4(*pInt4);
     (void)kArg1; (void)kArg2; (void)kArg3; (void)kArg4;
 
     u64 aSlot[5];
@@ -152,15 +154,13 @@ void Unk_PerfLog::FUN_1402e12c0(const char* pszFormat, ...)
     }
     m_nLastTick = nNow;
 
-    Unk_LockGuard guard;
-    FUN_140163940(&guard, this);
-    if (FUN_140164a80(&guard) == 0) {
+    if (Unk_LockGuard guard = m_lock) {
+    } else {
         va_list args;
         va_start(args, pszFormat);
         m_strMessage.FormatV(pszFormat, args);
         va_end(args);
     }
-    FUN_1401643b0(&guard);
 
     if (m_pCallback != 0)
         m_pCallback->vfunc_0();
@@ -175,15 +175,10 @@ unsigned Unk_PerfLog::FUN_1402e14c0()
 // @0x1402e14e0
 CString Unk_PerfLog::FUN_1402e14e0()
 {
-    Unk_LockGuard guard;
-    FUN_140163940(&guard, this);
-    if (FUN_140164a80(&guard) == 0) {
-        CString str = m_strMessage;
-        FUN_1401643b0(&guard);
-        return str;
+    if (Unk_LockGuard guard = m_lock) {
+    } else {
+        return m_strMessage;
     }
-    FUN_1401643b0(&guard);
-    return CString();
 }
 
 // @0x1402e1570
