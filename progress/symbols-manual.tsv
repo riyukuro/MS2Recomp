@@ -4505,3 +4505,7 @@ criHeap_Initialize	1400282e0	func
 ?VisitMem@AllocEngine@HeapPT@Scaleform@@QEBAXPEAVMemVisitor@Heap@3@I@Z	1426d0780	func
 ?VisitSegments@AllocEngine@HeapPT@Scaleform@@QEBAXPEAVSegVisitor@Heap@3@@Z	1426d0940	func
 ?VisitSegments@HeapRoot@HeapPT@Scaleform@@QEBAXPEAVSegVisitor@Heap@3@@Z	1426cf700	func
+?DAT_143b277b8@@3PEBDEB	143b277b8	data
+?DAT_143b277c0@@3PADA	143b277c0	data
+?DAT_143b278c4@@3KA	143b278c4	data
+?DAT_143b278c8@@3KA	143b278c8	data
