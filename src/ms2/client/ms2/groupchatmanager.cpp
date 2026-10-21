@@ -242,6 +242,7 @@ MS2_REPLACE_METHOD(0x14137B280, CGroupChat, FUN_14137b280, 394, 0x61BD6F0C);
 // @0x14137b410
 int CGroupChat::FUN_14137b410(__int64 characterId) {
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos)) {
             Unk_ChatMemberPtr member = m_members.GetValueAt(pos);
@@ -255,6 +256,7 @@ MS2_REPLACE_METHOD(0x14137B410, CGroupChat, FUN_14137b410, 243, 0x8EC10524);
 // @0x14137b510
 int CGroupChat::FUN_14137b510(CStringW name) {
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos)) {
             Unk_ChatMemberPtr member = m_members.GetValueAt(pos);
@@ -266,11 +268,11 @@ int CGroupChat::FUN_14137b510(CStringW name) {
 }
 MS2_REPLACE_METHOD(0x14137B510, CGroupChat, FUN_14137b510, 351, 0x323F2968);
 // @0x14137b680
-// MS2-FUNCTIONAL: EH unwind table differs by 2 entries (code bytes match)
 int CGroupChat::FUN_14137b680(Unk_ChatMemberPtr member) {
     if (member == 0)
         return 0;
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         if (FUN_14137bad0() >= 0x14)
             return 0;
@@ -283,6 +285,7 @@ MS2_REPLACE_METHOD(0x14137B680, CGroupChat, FUN_14137b680, 317, 0xEEB9101C);
 // @0x14137b7d0
 void CGroupChat::FUN_14137b7d0(CStringW name) {
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         m_members.RemoveKey(name);
     }
@@ -291,6 +294,7 @@ MS2_REPLACE_METHOD(0x14137B7D0, CGroupChat, FUN_14137b7d0, 112, 0xF000DAA1);
 // @0x14137b850
 void CGroupChat::FUN_14137b850() {
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         m_members.RemoveAll();
     }
@@ -299,6 +303,7 @@ MS2_REPLACE_METHOD(0x14137B850, CGroupChat, FUN_14137b850, 90, 0x396D8C74);
 // @0x14137b8b0
 Unk_ChatMemberPtr CGroupChat::FUN_14137b8b0(__int64 characterId) {
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos)) {
             Unk_ChatMemberPtr member = m_members.GetValueAt(pos);
@@ -313,6 +318,7 @@ MS2_REPLACE_METHOD(0x14137B8B0, CGroupChat, FUN_14137b8b0, 341, 0x7EC655AF);
 Unk_ChatMemberPtr CGroupChat::FUN_14137ba10(CStringW name) {
     Unk_ChatMemberPtr result(0);
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         m_members.Lookup(name, result);
     }
@@ -326,6 +332,7 @@ MS2_REPLACE_METHOD(0x14137BAD0, CGroupChat, FUN_14137bad0, 31, 0x80E102A6);
 int CGroupChat::FUN_14137bb00() {
     int count = 0;
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos)) {
             Unk_ChatMemberPtr member = m_members.GetValueAt(pos);
@@ -340,6 +347,7 @@ MS2_REPLACE_METHOD(0x14137BB00, CGroupChat, FUN_14137bb00, 218, 0x77C09BC6);
 void CGroupChat::FUN_14137bbe0(ATL::CAtlList<__int64>& ids) {
     ids.RemoveAll();
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos)) {
             Unk_ChatMemberPtr member = m_members.GetValueAt(pos);
@@ -353,6 +361,7 @@ MS2_REPLACE_METHOD(0x14137BBE0, CGroupChat, FUN_14137bbe0, 232, 0x5BE9FB61);
 void CGroupChat::FUN_14137bcd0(ATL::CAtlList<Unk_ChatMemberPtr>& out) {
     out.RemoveAll();
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos)) {
             Unk_ChatMemberPtr member = m_members.GetValueAt(pos);
@@ -366,6 +375,7 @@ MS2_REPLACE_METHOD(0x14137BCD0, CGroupChat, FUN_14137bcd0, 223, 0xF672EE09);
 void CGroupChat::FUN_14137bdc0(ATL::CAtlList<Unk_ChatMemberPtr>& out) {
     out.RemoveAll();
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos)) {
             Unk_ChatMemberPtr member = m_members.GetValueAt(pos);
@@ -379,6 +389,7 @@ MS2_REPLACE_METHOD(0x14137BDC0, CGroupChat, FUN_14137bdc0, 269, 0x29FC06EF);
 void CGroupChat::FUN_14137bee0(ATL::CAtlList<Unk_ChatMemberPtr>& out) {
     out.RemoveAll();
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos)) {
             Unk_ChatMemberPtr member = m_members.GetValueAt(pos);
@@ -408,6 +419,7 @@ MS2_REPLACE_METHOD(0x14137E190, CGroupChatManager, FUN_14137e190, 31, 0x8872628C
 // MS2-FUNCTIONAL: third Format argument load order and one nop
 void CGroupChatManager::FUN_14137e1c0() {
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         CStringW line;
         {
@@ -450,6 +462,7 @@ void CGroupChatManager::FUN_14137e4a0(Unk_ChatPtrChat chat) {
     if (FUN_14137e820() >= 3)
         return;
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         unsigned oid = chat->FUN_14137b260();
         if (FUN_14137e630(oid) == 0)
@@ -460,6 +473,7 @@ MS2_REPLACE_METHOD(0x14137E4A0, CGroupChatManager, FUN_14137e4a0, 271, 0x0FDF968
 // @0x14137e5c0
 void CGroupChatManager::FUN_14137e5c0(unsigned oid) {
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         m_chats.RemoveKey(oid);
     }
@@ -469,6 +483,7 @@ MS2_REPLACE_METHOD(0x14137E5C0, CGroupChatManager, FUN_14137e5c0, 98, 0x9B51D476
 Unk_ChatPtrChat CGroupChatManager::FUN_14137e630(unsigned oid) {
     Unk_ChatPtrChat result(0);
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         m_chats.Lookup(oid, result);
     }
@@ -478,6 +493,7 @@ MS2_REPLACE_METHOD(0x14137E630, CGroupChatManager, FUN_14137e630, 171, 0xA48F2D1
 // @0x14137e6f0
 void CGroupChatManager::FUN_14137e6f0(__int64 characterId, ATL::CAtlList<unsigned>& oids) {
     if (Unk_LockGuard guard = m_lock) {
+        __assume(0);
     } else {
         for (POSITION pos = m_chats.GetHeadPosition(); pos; m_chats.GetNext(pos)) {
             Unk_ChatPtrChat chat = m_chats.GetValueAt(pos);
