@@ -177,7 +177,7 @@ public:
 
 class Unk_CapWorld { public: void FUN_141bc7d40(const egf::EntityID& kId); void FUN_141bc7fe0(const egf::EntityID& kId); void FUN_141bc8e00(); PCBase* FUN_141bd0cc0(); void FUN_141bc7ec0(const egf::EntityID& kId); void FUN_141bc7f10(const egf::EntityID& kId); };    // WorldService
 Unk_CapWorld* FUN_1403ed2d0();
-class COptimizer { public: int FUN_1409f7ea0(); void FUN_14161d010(const egf::EntityID& kId); void FUN_14161d070(const egf::EntityID& kId); void FUN_14109ac50(int n) { m_n68 = n; } private: char m_pad[0x68]; int m_n68; };
+class COptimizer { public: int FUN_1409f7ea0(); void FUN_14161d010(const egf::EntityID& kId); void FUN_14161d070(const egf::EntityID& kId); void FUN_14109ac50(int n) { m_n68 = n; } int FUN_14109a9d0(); private: char m_pad[0x68]; int m_n68; };
 COptimizer* FUN_1409f7c90();
 class Unk_CsoSpawnMgr { public: Unk_PCBaseFxLib* FUN_1411bf1e0(); };
 Unk_CsoSpawnMgr* FUN_140a50010();
@@ -379,15 +379,18 @@ float FUN_14028d5b0(float fAngle);                                  // normalise
 float FUN_14059d930(float f);                                       // fabs
 extern int DAT_143ae2b4c;                                           // the optimizer's turn-smoothing option
 
+// (a CMaid member in the exe: the maid arrives as this)
+struct Unk_NpcMaid : CMaid { CStringW FUN_14109a730(); };
+
 // The maid's profile title.
 // @0x14109a730
-static CStringW FUN_14109a730(CMaid* pMaid)
+CStringW Unk_NpcMaid::FUN_14109a730()
 {
-    return pMaid->m_profile.title;
+    return m_profile.title;
 }
 
 // @0x14109a9d0
-static int FUN_14109a9d0()
+int COptimizer::FUN_14109a9d0()
 {
     return DAT_143ae2b4c;
 }
@@ -412,7 +415,7 @@ static int FUN_14109a9e0()
 // @0x14109ace0
 static float FUN_14109ace0()
 {
-    return ((float)FUN_14109a9e0() * 2.0f) / 32767.0f - 1.0f;
+    return -1.0f + (2.0f * (float)FUN_14109a9e0()) / 32767.0f;
 }
 
 class CCameraMode { public: virtual ~CCameraMode(); };
@@ -476,10 +479,9 @@ static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 // @0x14108e1e0
 CNpcVibrate::CNpcVibrate()
 {
-    // the exe zeroes the float fields with integer stores
-    reinterpret_cast<int&>(m_fStart) = 0;
-    reinterpret_cast<int&>(m_fEnd) = 0;
-    reinterpret_cast<int&>(m_fAmp) = 0;
+    m_fStart = 0.0f;
+    m_fEnd = 0.0f;
+    m_fAmp = 0.0f;
     m_bActive = 0;
 }
 
@@ -919,9 +921,9 @@ int CNpc::vfunc_127()
 }
 
 // @0x141091760
-bool CNpc::vfunc_128()
+int CNpc::vfunc_128()
 {
-    return m_nE48 != 0;
+    return (unsigned __int64)m_nE48 > 0 ? 1 : 0;
 }
 
 // The index of a value in an array (-1: none).
@@ -1139,7 +1141,7 @@ int CNpc::FUN_141092fa0()
 }
 
 // @0x141092ff0
-bool CNpc::FUN_141092ff0()
+int CNpc::FUN_141092ff0()
 {
     return m_spNpcData->IsBoss();
 }
@@ -1162,15 +1164,14 @@ bool CNpc::FUN_141093070()
 // @0x1410930a0
 int CNpc::FUN_1410930a0()
 {
-    if (FUN_141670a00(4) == 0) {
-        if (FUN_14166c930() == 0xc) {
-            if (FUN_141093270()->GetCorpseHitAble() != 0)
-                return 1;
-            return 0;
-        }
+    if (FUN_141670a00(4) != 0)
         return 0;
-    }
-    return 0;
+    if (FUN_14166c930() != 0xc)
+        return 0;
+    bool bNoHit = FUN_141093270()->GetCorpseHitAble() == 0;
+    if (bNoHit)
+        return 0;
+    return 1;
 }
 
 // @0x141093160
@@ -1190,11 +1191,11 @@ int CNpc::FUN_1410931c0()
 }
 
 // @0x141093220
-bool CNpc::FUN_141093220()
+int CNpc::FUN_141093220()
 {
     if (m_spNpcData.get() != 0)
         return m_spNpcData->IsShopKind();
-    return false;
+    return 0;
 }
 
 // @0x141093270
@@ -1225,11 +1226,11 @@ CStringW CNpc::FUN_141093310()
 }
 
 // @0x1410934c0
-unsigned char CNpc::FUN_1410934c0()
+int CNpc::FUN_1410934c0()
 {
     if (m_spNpcData == 0)
         return 0;
-    return (unsigned char)m_spNpcData->m_nClass;
+    return m_spNpcData->m_nClass;
 }
 
 // @0x141093510
@@ -1302,8 +1303,8 @@ void CNpc::FUN_141093910()
 CStringW CNpc::FUN_141093980()
 {
     if (FUN_141093800().get() != 0) {
-        if (!FUN_14109a730(FUN_141093800().operator->()).IsEmpty())
-            return FUN_14109a730(FUN_141093800().operator->());
+        if (!static_cast<Unk_NpcMaid*>(FUN_141093800().operator->())->FUN_14109a730().IsEmpty())
+            return static_cast<Unk_NpcMaid*>(FUN_141093800().operator->())->FUN_14109a730();
         Unk_UmValuePtr<Unk_UmDescRow> spDesc = FUN_1409eed10()->FUN_14067f780(FUN_141093800()->m_nMaidId);
         if (spDesc.get() != 0)
             return spDesc->m_08;
@@ -1389,19 +1390,23 @@ void CNpc::FUN_141094050()
 int CNpc::FUN_141094170()
 {
     int nType = FUN_141093760();
-    if (nType == 1)
-        return 0x4e3b;
-    if (nType == 2)
-        return 0x4e47;
-    if (nType == 3)
+    switch (nType)
+    {
+    case 3:
         return 0x4e4a;
-    if (nType == 0x56)
+    case 2:
+        return 0x4e47;
+    case 1:
+        return 0x4e3b;
+    case 0x56:
         return 0x4e97;
-    if (nType == 0x58)
+    case 0x58:
         return 0x4f55;
-    if (FUN_140764010()->FUN_14035b0a0(nType) != 0)
-        return 0x4f50;
-    return 0;
+    default:
+        if (FUN_140764010()->FUN_14035b0a0(nType) != 0)
+            return 0x4f50;
+        return 0;
+    }
 }
 
 // @0x141094200
@@ -1434,16 +1439,16 @@ void CNpc::FUN_1410942c0()
 
 // In talk range of the camera (always for property tag 0x1a).
 // @0x141094300
-int CNpc::FUN_141094300()
+bool CNpc::FUN_141094300()
 {
     if (m_spNpcData->HasPropertyTag(0x1a))
-        return 1;
+        return true;
     float fDefault = 400.0f;
     float* pRange = reinterpret_cast<Unk_EmoCfgFloat*>((char*)FUN_1401d3200() + 0x218)->FUN_140967520(&fDefault);
     float fRange = *pRange + m_spNpcData->m_capsule.m_fRadius;
-    if (FUN_140f4a450() <= fRange)
-        return 1;
-    return 0;
+    if (FUN_140f4a450() > fRange)
+        return false;
+    return true;
 }
 
 // Shows the npc's talk script line n: the balloon text (names filled in for a maid) and the line's sound, then restarts
@@ -1473,11 +1478,11 @@ void FUN_1410943b0(PCBase* pActor, int n)
 void CNpc::vfunc_43(float f)
 {
     GameObject::vfunc_43(f);
-    if (f <= 0.0f) {
+    if (f > 0.0f) {
+        vfunc_126(0, 0);
+    } else {
         if (FUN_14166ce30() == 0)
             vfunc_126(1, 0);
-    } else {
-        vfunc_126(0, 0);
     }
 }
 
@@ -1709,7 +1714,7 @@ void CNpc::FUN_1410952b0(bool b)
 // @0x1410952d0
 bool CNpc::FUN_1410952d0()
 {
-    return m_cF38 != 0;
+    return m_cF38;
 }
 
 // Builds the npc's collision: the body box ("box" shape) and one box per node collision of the npc row (green, bound
@@ -2120,7 +2125,7 @@ void CNpc::FUN_141098fb0(int nKind)
 void CNpc::FUN_141099170(float fTime)
 {
     efd::Point3 kRot = vfunc_20();
-    if (!(FUN_14109a9d0() == 0 || !FUN_14028d470(kRot.z, m_f934)))
+    if (!(FUN_1409f7c90()->FUN_14109a9d0() == 0 || !FUN_14028d470(kRot.z, m_f934)))
         return;
     FUN_14166d8b0(FUN_14028d5b0(m_f934));
     float fDelta = FUN_14028d5b0(m_f934 - kRot.z);

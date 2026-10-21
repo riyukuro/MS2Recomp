@@ -38,7 +38,7 @@ public:
     virtual void vfunc_125(int n) override;                 // 0x140b0fe30
     virtual void vfunc_126(int a, int b) override;          // 0x140b0f970
     virtual int vfunc_127() override;                       // 0x140b11460
-    virtual bool vfunc_128() override;                      // 0x140b10140
+    virtual int vfunc_128() override;                      // 0x140b10140
     virtual MS2Ptr<UITamingBar::Entity> vfunc_129();        // 0x140b11050 the taming bar entity (created on demand)
 
     int FUN_140b10150();                                    // the pet is unusable by its owner (hidden / forbidden)

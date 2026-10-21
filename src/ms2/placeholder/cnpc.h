@@ -111,7 +111,7 @@ public:
     virtual void vfunc_125(int n);                          // 0x141091210
     virtual void vfunc_126(int a, int b);                   // 0x1410916a0
     virtual int vfunc_127();                                // 0x141091740
-    virtual bool vfunc_128();                               // 0x141091760
+    virtual int vfunc_128();                               // 0x141091760
 
     // non-virtual members called from other units
     MS2Ptr<NpcDataCli> FUN_141093270();                     // copy of the npc row (+0xd50)
@@ -121,18 +121,18 @@ public:
     int FUN_141094f40();                                    // m_nOwnerId
     PCBase* FUN_141094f60();                                // the owner actor looked up by m_nOwnerId (world FindPC; null: none)
     int FUN_1410930a0();                                    // 0x1410930a0 (basecollision: a dead npc that still counts as a target)
-    unsigned char FUN_1410934c0();                                  // 0x1410934c0 the npc kind (bit index of a kind mask)
+    int FUN_1410934c0();                                  // 0x1410934c0 the npc kind (bit index of a kind mask)
     void FUN_141095140();                                   // release the owner effect handle (+0xec4)
 
     // unit_14108e1e0 internals
     void FUN_141092c50(CInPacket& packet);                  // +0xf20 update (mode byte)
     void FUN_141092d40(CString strAnim);                    // bore animation debug trace
-    bool FUN_141092ff0();                                   // the row is a boss
+    int FUN_141092ff0();                                   // the row is a boss
     int FUN_141093030();                                    // class 4 or 6
     bool FUN_141093070();                                   // shown on the minimap
     int FUN_141093160();                                    // kind 2
     int FUN_1410931c0();                                    // kind 3
-    bool FUN_141093220();                                   // shop kind
+    int FUN_141093220();                                   // shop kind
     unsigned short FUN_141093510();                         // m_nDE8
     CStringA FUN_141093530();                               // the marker label (empty when inactive)
     int FUN_141093760();                                    // npc type (0: no row)
@@ -151,7 +151,7 @@ public:
     int FUN_141094170();                                    // the ui the npc type opens
     int FUN_141094200();                                    // open it
     void FUN_1410942c0();                                   // close it
-    int FUN_141094300();                                    // in talk range
+    bool FUN_141094300();                                    // in talk range
     void FUN_141094730();                                   // send packet 0x32 (talk)
     void FUN_141094790(__int64 nUid);                       // m_nE48 (maid uid)
     __int64 FUN_1410947c0();
@@ -227,7 +227,7 @@ public:
     Timer m_timerEE8;                                       // +0xee8
     int m_nF20;                                             // +0xf20
     MS2Ptr<CRandomTargetEffect> m_spF28;                    // +0xf28
-    char m_cF38;                                            // +0xf38
+    bool m_cF38;                                            // +0xf38
 };
 MS2_CHECK_SIZE(CNpc, 0xf40);
 MS2_CHECK_OFFSET(CNpc, m_spNpcData, 0xd50);

@@ -352,9 +352,9 @@ int CPet::vfunc_58()
 }
 
 // @0x140b10140
-bool CPet::vfunc_128()
+int CPet::vfunc_128()
 {
-    return false;
+    return 0;
 }
 
 // @0x140b10150
