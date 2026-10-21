@@ -289,15 +289,16 @@ int FUN_140526810(CItem* pItem, unsigned short nLevel);
 MS2Ptr<SkillData> FUN_140639210(int nSkillId);
 
 // AScript as the function object: invoke with an ASArgList.
+// The helpers below are members (rcx = the function object, rdx = the returned value).
 class Unk_SsFn : public AScript
 {
 public:
     Scaleform::GFx::Value FUN_1422bb9f0(ASArgList& args);
+    Scaleform::GFx::Value FUN_141761eb0(unsigned nElement, CString strIcon, int nGray, int nFlag);
+    Scaleform::GFx::Value FUN_141761fc0(CString strIcon, int nGray, int nFlag);
+    Scaleform::GFx::Value FUN_1417620b0(Scaleform::GFx::Value kArg);
+    Scaleform::GFx::Value FUN_141762190(bool bShow, int nCount);
 };
-Scaleform::GFx::Value FUN_141761eb0(AScript* pFn, unsigned nElement, CString strIcon, int nGray, int nFlag);
-Scaleform::GFx::Value FUN_141761fc0(AScript* pFn, CString strIcon, int nGray, int nFlag);
-Scaleform::GFx::Value FUN_1417620b0(AScript* pFn, Scaleform::GFx::Value kArg);
-Scaleform::GFx::Value FUN_141762190(AScript* pFn, bool bShow, int nCount);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned n);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
@@ -579,10 +580,7 @@ int SkillSlot::vfunc_11()
     m_strIcon.Empty();
     FUN_14175cc70();
     if (m_spClear.get() != 0)
-    {
-        CString strIcon(m_strIcon);
-        FUN_141761fc0(m_spClear.operator->(), strIcon, 0, 1);
-    }
+        static_cast<Unk_SsFn*>(m_spClear.operator->())->FUN_141761fc0(m_strIcon, 0, 1);
     m_bUsable = true;
     return DragSlot::vfunc_11();
 }
@@ -1012,7 +1010,7 @@ void SkillSlot::FUN_14175f280(unsigned nFlags)
             bChanged = true;
         }
         if (bChanged && m_spUpdate.get() != 0)
-            FUN_1417620b0(m_spUpdate.operator->(), obj.FUN_1422bb870());
+            static_cast<Unk_SsFn*>(m_spUpdate.operator->())->FUN_1417620b0(obj.FUN_1422bb870());
         if ((nFlags & 8) != 0)
             FUN_14175f510();
     }
@@ -1041,7 +1039,7 @@ void SkillSlot::FUN_14175f510()
             if (bChanged || !m_bUsable)
             {
                 if (m_spClear.get() != 0)
-                    FUN_141761fc0(m_spClear.operator->(), CString(strIcon), nDisabled, 1);
+                    static_cast<Unk_SsFn*>(m_spClear.operator->())->FUN_141761fc0(CString(strIcon), nDisabled, 1);
                 m_bUsable = true;
             }
             if (m_nSkillId != 0)
@@ -1059,14 +1057,14 @@ void SkillSlot::FUN_14175f510()
             if (!spReplace->m_bDisableChangeSkillIconEffect)
             {
                 if (m_spSet.get() != 0)
-                    FUN_141761eb0(m_spSet.operator->(), spReplace->GetElement(), CString(strIcon), nDisabled, 1);
+                    static_cast<Unk_SsFn*>(m_spSet.operator->())->FUN_141761eb0(spReplace->GetElement(), CString(strIcon), nDisabled, 1);
                 m_bUsable = false;
                 nKey = spReplace->GetCooldownKey();
             }
             else
             {
                 if (m_spClear.get() != 0)
-                    FUN_141761fc0(m_spClear.operator->(), CString(strIcon), nDisabled, 1);
+                    static_cast<Unk_SsFn*>(m_spClear.operator->())->FUN_141761fc0(CString(strIcon), nDisabled, 1);
                 m_bUsable = true;
                 MS2Ptr<SkillData> spSkill = FUN_1401958b0()->GetSkillData(m_nSkillId);
                 if (spSkill.get() != 0)
@@ -1089,7 +1087,7 @@ void SkillSlot::FUN_14175f510()
             if (m_spRecharge.get() != 0)
             {
                 int nMax = FUN_1417604f0();
-                FUN_141762190(m_spRecharge.operator->(), 0 < nMax, nRecharge);
+                static_cast<Unk_SsFn*>(m_spRecharge.operator->())->FUN_141762190(0 < nMax, nRecharge);
             }
             m_nRecharge = nRecharge;
         }
@@ -1196,16 +1194,15 @@ unsigned SkillSlot::FUN_141760220(int n)
 int SkillSlot::FUN_1417603f0()
 {
     int nSkillId = FUN_141761d90();
-    if (nSkillId != 0)
+    if (nSkillId == 0)
+        return 0;
+    MS2Ptr<SkillData> spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
+    if (spSkill.get() != 0 && spSkill->GetRechargeMaxCount() > 0)
     {
-        MS2Ptr<SkillData> spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
-        if (spSkill.get() != 0 && spSkill->GetRechargeMaxCount() != 0)
-        {
-            PC* pPc = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-            if (pPc != 0)
-                return static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141768770(spSkill.get());
+        PC* pPc = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        if (pPc == 0)
             return 0;
-        }
+        return static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141768770(spSkill.get());
     }
     return 0;
 }
@@ -1267,7 +1264,7 @@ CString SkillSlot::FUN_141760690()
 CString SkillSlot::FUN_1417607f0(int* pSkillId)
 {
     CString strIcon;
-    int nSkillId = *pSkillId;
+    unsigned nSkillId = *pSkillId;
     if (*pSkillId == 0)
         nSkillId = FUN_141761d90();
     MS2Ptr<SkillData> spSkill(0);
@@ -1316,9 +1313,9 @@ float SkillSlot::FUN_141760a30()
     float fTotal = 0;
     int nByItem = 0;
     static_cast<MyPC*>(pPc)->FUN_141523bc0()->FUN_141766230(nSkillId, &fRemain, &fTotal, &nByItem, 1);
-    if (nByItem == 0)
-        return spLevel->FUN_140804660();
-    return fTotal;
+    if (nByItem != 0)
+        return fTotal;
+    return spLevel->FUN_140804660();
 }
 
 // @0x141760b90
@@ -1566,7 +1563,7 @@ SkillSlot* FUN_141761e60(DragSlot* p)
 }
 
 // @0x141761eb0
-Scaleform::GFx::Value FUN_141761eb0(AScript* pFn, unsigned nElement, CString strIcon, int nGray, int nFlag)
+Scaleform::GFx::Value Unk_SsFn::FUN_141761eb0(unsigned nElement, CString strIcon, int nGray, int nFlag)
 {
     ASArgList args;
     args.FUN_1409b2800(4);
@@ -1574,37 +1571,37 @@ Scaleform::GFx::Value FUN_141761eb0(AScript* pFn, unsigned nElement, CString str
     FUN_1422bce70(args.FUN_1409b1f70(1), (const char*)strIcon);
     FUN_1422bccb0(args.FUN_1409b1f70(2), nGray);
     FUN_1422bccb0(args.FUN_1409b1f70(3), nFlag);
-    return static_cast<Unk_SsFn*>(pFn)->FUN_1422bb9f0(args);
+    return FUN_1422bb9f0(args);
 }
 
 // @0x141761fc0
-Scaleform::GFx::Value FUN_141761fc0(AScript* pFn, CString strIcon, int nGray, int nFlag)
+Scaleform::GFx::Value Unk_SsFn::FUN_141761fc0(CString strIcon, int nGray, int nFlag)
 {
     ASArgList args;
     args.FUN_1409b2800(3);
     FUN_1422bce70(args.FUN_1409b1f70(0), (const char*)strIcon);
     FUN_1422bccb0(args.FUN_1409b1f70(1), nGray);
     FUN_1422bccb0(args.FUN_1409b1f70(2), nFlag);
-    return static_cast<Unk_SsFn*>(pFn)->FUN_1422bb9f0(args);
+    return FUN_1422bb9f0(args);
 }
 
 // @0x1417620b0
-Scaleform::GFx::Value FUN_1417620b0(AScript* pFn, Scaleform::GFx::Value kArg)
+Scaleform::GFx::Value Unk_SsFn::FUN_1417620b0(Scaleform::GFx::Value kArg)
 {
     ASArgList args;
     args.FUN_1409b2800(1);
     FUN_1422bcc70(args.FUN_1409b1f70(0), Scaleform::GFx::Value(kArg));
-    return static_cast<Unk_SsFn*>(pFn)->FUN_1422bb9f0(args);
+    return FUN_1422bb9f0(args);
 }
 
 // @0x141762190
-Scaleform::GFx::Value FUN_141762190(AScript* pFn, bool bShow, int nCount)
+Scaleform::GFx::Value Unk_SsFn::FUN_141762190(bool bShow, int nCount)
 {
     ASArgList args;
     args.FUN_1409b2800(2);
     FUN_1422bcce0(args.FUN_1409b1f70(0), bShow);
     FUN_1422bccb0(args.FUN_1409b1f70(1), nCount);
-    return static_cast<Unk_SsFn*>(pFn)->FUN_1422bb9f0(args);
+    return FUN_1422bb9f0(args);
 }
 
 // @0x1417633f0
@@ -2106,16 +2103,15 @@ void CSkillSystem::FUN_141766900(unsigned __int64 nKey, unsigned nEnd)
 void CSkillSystem::FUN_1417669c0(int nStart, int nSkillId, float fDuration)
 {
     MS2Ptr<SkillData> spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
-    if (!spSkill.IsNull())
-    {
-        if (m_mapCooltime.Lookup(spSkill->GetCooldownKey()) != 0)
-            m_mapCooltime.RemoveKey(spSkill->GetCooldownKey());
-        Unk_SkillCooltime kCool(nStart, fDuration);
-        kCool.m_nKey = spSkill->GetCooldownKey();
-        m_mapCooltime.SetAt(kCool.m_nKey, kCool);
-        if (FUN_140aa6d40() != 0)
-            FUN_141b0e260(FUN_140aa6d40(), kCool.m_nKey);
-    }
+    if (spSkill.IsNull())
+        return;
+    if (m_mapCooltime.Lookup(spSkill->GetCooldownKey()) != 0)
+        m_mapCooltime.RemoveKey(spSkill->GetCooldownKey());
+    Unk_SkillCooltime kCool(nStart, fDuration);
+    kCool.m_nKey = spSkill->GetCooldownKey();
+    m_mapCooltime.SetAt(kCool.m_nKey, kCool);
+    if (FUN_140aa6d40() != 0)
+        FUN_141b0e260(FUN_140aa6d40(), kCool.m_nKey);
 }
 
 extern CString DAT_143aea1b8;                             // the ui sounds of the skill errors
@@ -2273,16 +2269,14 @@ MS2Ptr<CSkillRecord> CSkillSystem::FUN_141765570(Unk_InventorySkillRequest& kReq
 unsigned char CSkillSystem::FUN_141765a70(int nSkillId)
 {
     MS2Ptr<SkillLevelData> spLevel = FUN_141764c80(nSkillId);
-    if (!spLevel.IsNull())
-    {
-        Unk_InventorySkillRequest kReq(spLevel->FUN_140803dc0(), 1);
-        int nWhy = FUN_14176a380(spLevel, &kReq);
-        if (nWhy == 0)
-            return 1;
-        if (m_nShowError != 0)
-            FUN_141769440(nWhy);
+    if (spLevel.IsNull())
         return 0;
-    }
+    Unk_InventorySkillRequest kReq(spLevel->FUN_140803dc0(), 1);
+    int nWhy = FUN_14176a380(spLevel, &kReq);
+    if (nWhy == 0)
+        return 1;
+    if (m_nShowError != 0)
+        FUN_141769440(nWhy);
     return 0;
 }
 
@@ -2798,7 +2792,9 @@ MS2Ptr<Unk_MyPCSkillSet> CSkillSystem::FUN_141768380()
 // @0x1417683d0
 void CSkillSystem::FUN_1417683d0()
 {
-    if (!(m_spSkillSet == 0))
+    if (m_spSkillSet == 0)
+        FUN_1409331f0()->FUN_14142f700();
+    else
     {
         FUN_1409331f0()->FUN_14142e8c0(m_spSkillSet);
         if (m_spSkillSet->m_nKind == 0)
@@ -2807,8 +2803,6 @@ void CSkillSystem::FUN_1417683d0()
             FUN_1409331f0()->FUN_14142fc10(strName);
         }
     }
-    else
-        FUN_1409331f0()->FUN_14142f700();
 }
 
 // @0x141768530
@@ -3044,11 +3038,12 @@ int FUN_141769320(Unk_SsItemPtr kPtr)
 {
     if (kPtr.FUN_1401b52a0()->FUN_14053cc80())
         return FUN_1401d3200()->m_nSkillItemA;
-    if (kPtr.FUN_1401b52a0()->FUN_14053cc40())
+    else if (kPtr.FUN_1401b52a0()->FUN_14053cc40())
         return FUN_1401d3200()->m_nSkillItemC;
-    if (kPtr.FUN_1401b52a0()->FUN_14053c5c0() == 5)
+    else if (kPtr.FUN_1401b52a0()->FUN_14053c5c0() == 5)
         return FUN_1401d3200()->m_nSkillItemB;
-    return kPtr.FUN_1401b52a0()->FUN_14053dc20();
+    else
+        return kPtr.FUN_1401b52a0()->FUN_14053dc20();
 }
 
 // @0x141769410
@@ -3563,7 +3558,7 @@ int CSkillSystem::FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pRe
 MS2Ptr<SkillLevelData> CSkillSystem::FUN_14176b7c0(int nSkillId, unsigned short nLevel)
 {
     MS2Ptr<SkillData> spSkill = FUN_1401958b0()->GetSkillData(nSkillId);
-    if (spSkill.IsNull())
+    if (spSkill == 0)
         return MS2Ptr<SkillLevelData>(0);
     MS2Ptr<SkillLevelData> spLevel(0);
     for (short n = nLevel; n != 0; n = n - 1)

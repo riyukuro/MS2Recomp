@@ -90,7 +90,12 @@ float FUN_140a0fda0(float a, float b);                                      // m
 float FUN_140a0fde0(float a, float b);                                      // min
 bool FUN_1409c1720(const Scaleform::GFx::Value& v);                         // the value as a bool
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                         // the value is set
-Scaleform::GFx::Value FUN_1417620b0(AScript* pFn, Scaleform::GFx::Value kArg);   // call an AS function object
+// Call an AS function object (skillslot.cpp; a member: rcx = the function object, rdx = the returned value).
+class Unk_SsFn : public AScript
+{
+public:
+    Scaleform::GFx::Value FUN_1417620b0(Scaleform::GFx::Value kArg);
+};
 MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);  // new ASGameEntity(v, n)
 CStringW FUN_140719630(int n);
 CString Name_140219830(int value);
@@ -430,7 +435,7 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
                     nRepeat = (int)(nGrade == 1 ? m_nRepeat * 0.5 : (double)m_nRepeat);
                 for (int i = 0; i < nRepeat; i++)
                 {
-                    Scaleform::GFx::Value clip = FUN_1417620b0(m_spDamageText.operator->(), obj.FUN_1422bb870());
+                    Scaleform::GFx::Value clip = static_cast<Unk_SsFn*>(m_spDamageText.operator->())->FUN_1417620b0(obj.FUN_1422bb870());
                     MS2Ptr<DamageInfo> spInfo(new DamageInfo(0, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), nGrade));
                     if (spInfo.get() != 0)
                     {
@@ -1477,11 +1482,11 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
         {
             bool bMine = spInfo->m_bMyDamage;
             Scaleform::GFx::Value& clip = spClip->FUN_1422bb870();
-            bool bGarbage = bGarbageSeen || FUN_1409c1720(FUN_1417620b0(m_spDamageGarbage.operator->(), clip)) == true;
+            bool bGarbage = bGarbageSeen || FUN_1409c1720(static_cast<Unk_SsFn*>(m_spDamageGarbage.operator->())->FUN_1417620b0(clip)) == true;
             if (!bGarbage)
             {
                 bool bCritical = spInfo->m_nGrade == 1;
-                bool bEnable = FUN_1409c1720(FUN_1417620b0(m_spDamageEnable.operator->(), clip));
+                bool bEnable = FUN_1409c1720(static_cast<Unk_SsFn*>(m_spDamageEnable.operator->())->FUN_1417620b0(clip));
                 bool bOld = false;
                 bool bHide = false;
                 if (bEnable)
