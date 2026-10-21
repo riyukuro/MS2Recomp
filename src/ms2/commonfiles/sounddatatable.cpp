@@ -78,7 +78,8 @@ class TiXmlDeclaration : public TiXmlNode
 {
 public:
     TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);   // 0x1408704d0
-    virtual ~TiXmlDeclaration();                                         // 0x14081ad20
+    // @0x14081ad20
+    virtual ~TiXmlDeclaration() {}      // inline as in tinyxml.h (the out-of-line copy clashed with commonfiles/tinyxml.cpp in the DLL)
     // @0x14081b2d0
     virtual void Print(FILE* f, int nDepth) const { Print(f, nDepth, 0); }
     virtual const char* Parse(const char*, void*, int) { return 0; }
@@ -93,18 +94,13 @@ public:
     //
     //
     //
-    virtual TiXmlNode* Clone() const { return 0; }
+    virtual TiXmlNode* Clone() const;   // commonfiles/tinyxml.cpp
     virtual bool Accept(void*) const { return false; }
     virtual void Print(FILE*, int, void*) const {}
 private:
     Unk_TiXmlString m_version, m_encoding, m_standalone;
 };
 MS2_CHECK_SIZE(TiXmlDeclaration, 0x68);
-
-// @0x14081ad20
-TiXmlDeclaration::~TiXmlDeclaration()
-{
-}
 
 // @0x14081b310
 static Unk_140165cf0* DocRootElement(TiXmlDocument* pDoc)
