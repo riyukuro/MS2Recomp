@@ -258,7 +258,7 @@ void FUN_14183c3e0(void* pDst, void* pSrc);
 int FUN_1409618c0(Unk_Entity* pEntity, unsigned uPropId, Unk_StreamPoint* pOut);           // point property (0 = ok)
 void FUN_1402bd040(Unk_StreamPoint* p);
 Unk_StreamPoint* FUN_14027dda0(Unk_StreamPoint* t, float x, float y, float z);
-void FUN_1408a20a0(Unk_Entity* pEntity, unsigned nHash, char* pbOut);
+void FUN_1408a20a0(Unk_Entity* pEntity, unsigned nHash, unsigned char* pbOut);
 const egf::EntityID* FUN_1408b76f0(Unk_Entity* pEntity);
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
 void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot);
@@ -316,7 +316,7 @@ class Unk_FcUIMgr
 {
 public:
     MS2Ptr<UIObject> FUN_141adcea0(int nId);                        // find a window
-    bool FUN_141adc890(int nId);                                    // is open
+    int FUN_141adc890(int nId);                                     // is open
     void FUN_141adc5d0(int nId);                                    // close
 };
 Unk_FcUIMgr* FUN_1403ed2b0();
@@ -761,18 +761,17 @@ Unk_StreamPoint CFunctionCubeObject::FUN_141226d00()
 }
 
 // @0x141226d70
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CFunctionCubeObject::EndOfSequence(NiActorManager* pkManager, NiActorManager::SequenceID eSequenceID,
     NiControllerSequence* pkSeq, float fEventTime)
 {
     CGlobalKeyTextCallback::EndOfSequence(pkManager, eSequenceID, pkSeq, fEventTime);
     switch (m_nState)
     {
-    case 3:
-        vfunc_12(0, false);
-        break;
     case 4:
         vfunc_12(1, false);
+        break;
+    case 3:
+        vfunc_12(0, false);
         break;
     case 5:
         vfunc_12(2, false);
@@ -906,17 +905,15 @@ void CFunctionCubeObject::FUN_141227780()
 }
 
 // @0x1412277d0
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CFunctionCubeObject::FUN_1412277d0(unsigned char bOn)
 {
-    if (m_ent.FUN_1408a9090() != 0)
-    {
-        m_bAlt = bOn;
-        if (bOn)
-            FUN_141b71e70(*FUN_1408b76f0(m_ent.FUN_1408a9280()), true, 1, false);
-        else
-            FUN_141b71e70(*FUN_1408b76f0(m_ent.FUN_1408a9280()), false, 1, false);
-    }
+    if (m_ent.FUN_1408a9090() == 0)
+        return;
+    m_bAlt = bOn;
+    if (bOn)
+        FUN_141b71e70(*FUN_1408b76f0(m_ent.FUN_1408a9280()), true, 1, false);
+    else
+        FUN_141b71e70(*FUN_1408b76f0(m_ent.FUN_1408a9280()), false, 1, false);
 }
 
 // @0x1412278b0
@@ -1012,17 +1009,18 @@ void CFunctionCubeObject::FUN_141227950()
 }
 
 // @0x141227cd0
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CFunctionCubeObject::FUN_141227cd0()
 {
-    char bFlag = 0;
+    unsigned char bFlag = 0;
     FUN_1408a20a0(m_ent.FUN_1408a9280(), 0x38141815, &bFlag);
-    if (bFlag != 0 && m_nState < 3)
+    if (!bFlag)
+        return;
+    if (m_nState < 3)
     {
-        if (m_spData->m_aAnim[m_nState] == 0)
-            FUN_141689ec0(FUN_1409f7ca0(), m_ent.FUN_1408a9090(), 5, 0, 1);
-        else
+        if (m_spData->m_aAnim[m_nState] != 0)
             FUN_141689ec0(FUN_1409f7ca0(), m_ent.FUN_1408a9090(), 9, 0, 1);
+        else
+            FUN_141689ec0(FUN_1409f7ca0(), m_ent.FUN_1408a9090(), 5, 0, 1);
     }
 }
 
@@ -1053,7 +1051,6 @@ void CFunctionCubeObject::FUN_141227dd0(int nSkip)
 }
 
 // @0x141228060
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CFunctionCubeObject::FUN_141228060()
 {
     if (FUN_1403ed2b0()->FUN_141adc890(0x4e6b))
@@ -1840,20 +1837,16 @@ CNurturingCubeObject::CNurturingCubeObject()
 }
 
 // @0x14122b1f0
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 CNurturingCubeObject::~CNurturingCubeObject()
 {
     if (((CubeSpawnObject*)m_spPet) != 0)
     {
-        CubeSpawnObject* pPet = ((CubeSpawnObject*)m_spPet);
-        void* pWorld = FUN_1403ed2d0();
-        FUN_141bbb7f0(pWorld, pPet, 0);
+        FUN_141bbb7f0(FUN_1403ed2d0(), (CubeSpawnObject*)m_spPet, 0);
         m_spPet = 0;
     }
 }
 
 // @0x14122b2e0
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CNurturingCubeObject::vfunc_1(Unk_FcMsg* pMsg)
 {
     CFunctionCubeObject::vfunc_1(pMsg);
@@ -1861,7 +1854,7 @@ void CNurturingCubeObject::vfunc_1(Unk_FcMsg* pMsg)
     __int64 nE0 = (&pMsg->m_src)->vfunc_4();
     unsigned short nLevel = (&pMsg->m_src)->vfunc_2();
     unsigned short nMaxLevel = (&pMsg->m_src)->vfunc_2();
-    unsigned short nF4 = (&pMsg->m_src)->vfunc_2();
+    int nF4 = (&pMsg->m_src)->vfunc_2();
     __int64 nC0 = (&pMsg->m_src)->vfunc_4();
     FUN_14122ce80(nLevel);
     m_nE0 = nE0;
@@ -1878,30 +1871,27 @@ void CNurturingCubeObject::vfunc_1(Unk_FcMsg* pMsg)
 }
 
 // @0x14122b530
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CNurturingCubeObject::vfunc_14(MS2Ptr<Unk_FcStateMsg> sp)
 {
     CFunctionCubeObject::vfunc_14(sp);
     CNurturingCubeObject* pSrc = dynamic_cast<CNurturingCubeObject*>((CFunctionCubeObject*)sp.get());
-    if (pSrc != 0)
+    if (pSrc == 0)
+        return;
+    FUN_14122ce80(pSrc->FUN_14122cb20());
+    m_nE0 = pSrc->FUN_14122cb00();
+    m_nTime = pSrc->FUN_14122cba0();
+    m_nMaxLevel = pSrc->FUN_14122cb40();
+    m_nF4 = pSrc->FUN_14122cb60();
+    m_nLevel = pSrc->FUN_14122cb20();
+    m_nC0 = pSrc->FUN_14122cb80();
+    if (((CubeSpawnObject*)m_spPet) != 0)
     {
-        FUN_14122ce80(pSrc->FUN_14122cb20());
-        m_nE0 = pSrc->FUN_14122cb00();
-        m_nTime = pSrc->FUN_14122cba0();
-        m_nMaxLevel = pSrc->FUN_14122cb40();
-        m_nF4 = pSrc->FUN_14122cb60();
-        m_nLevel = pSrc->FUN_14122cb20();
-        m_nC0 = pSrc->FUN_14122cb80();
-        if (((CubeSpawnObject*)m_spPet) != 0)
-        {
-            m_spPet->FUN_140a4f200((void*)m_nC0);
-            m_spPet->FUN_140a4f230((int)m_nE0, (int)m_nE8);
-        }
+        m_spPet->FUN_140a4f200((void*)m_nC0);
+        m_spPet->FUN_140a4f230((int)m_nE0, (int)m_nE8);
     }
 }
 
 // @0x14122b6e0
-// MS2-FUNCTIONAL: map walk through unit-local stand-ins; frame layout differs
 int CNurturingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int nCubeId, __int64 nArg,
     CubeItemInfo* pItem)
 {
@@ -1910,15 +1900,10 @@ int CNurturingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, in
     if (pRow->m_nSub == 1)
         m_spData->m_bBuff = 1;
     m_obj.FUN_140704bd0(&pRow->m_objData);
-    POSITION pos = m_obj.m_map.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = m_obj.m_map.GetStartPosition(); pos != 0; m_obj.m_map.GetNext(pos))
     {
         __int64 nValue = m_obj.m_map.GetValueAt(pos);
-        __int64 nMax = nValue;
-        if (nValue <= m_nE8)
-            nMax = m_nE8;
-        m_nE8 = nMax;
-        m_obj.m_map.GetNext(pos);
+        m_nE8 = (nValue > m_nE8) ? nValue : m_nE8;
     }
     FUN_14122cbc0(m_nLevel, Unk_EntRef(pEntity));
     return 1;
@@ -2105,11 +2090,12 @@ int CNurturingCubeObject::FUN_14122c410()
 }
 
 // @0x14122c460
-// MS2-FUNCTIONAL: notice strings built through FUN_ helpers; frame layout differs
 void CNurturingCubeObject::FUN_14122c460(int nMode)
 {
     Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pActor != 0 && ((CubeSpawnObject*)m_spPet) != 0)
+    if (pActor == 0)
+        return;
+    if (((CubeSpawnObject*)m_spPet) != 0)
     {
         m_spPet->FUN_140a4f230((int)m_nE0, (int)m_nE8);
         if (nMode == 0)
@@ -2796,7 +2782,6 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141230c00(CString strId)
 }
 
 // A cube object was created: it replaces its pending twin and goes into the table.
-// MS2-FUNCTIONAL: the temporaries differ from the exe
 // @0x141230c90
 void CFunctionCubeService::FUN_141230c90(MS2Ptr<CFunctionCubeObject> spObject)
 {
