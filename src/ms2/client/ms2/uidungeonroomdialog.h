@@ -46,7 +46,7 @@ public:
     void Refresh(MS2Ptr<DungeonRoom> spRoom);                       // 0x1412a78a0
     void Reset();                                                   // 0x1412a81d0
     void AddMissionLabels(size_t nCount);                           // 0x1412a83e0
-    void SetLayout(int nLines);                                     // 0x1412a8770
+    void SetLayout(unsigned __int64 nLines);                        // 0x1412a8770
 
     MS2Ptr<ASMovieClip> m_spPanel;                                  // +0x18
     MS2Ptr<ASMovieClip> m_missionRankIcon;                          // +0x28
