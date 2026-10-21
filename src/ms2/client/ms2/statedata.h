@@ -40,7 +40,7 @@ public:
     bool m_b2c;                                                 // +0x2c
     float m_fScale;                                             // +0x30 1.0
     int m_n34;                                                  // +0x34
-    int m_n38;                                                  // +0x38
+    float m_f38;                                                // +0x38 yaw (z rotation)
 };
 MS2_CHECK_SIZE(StateJumpToData, 0x40);
 
@@ -73,9 +73,9 @@ public:
     StateTurnData();                                            // 0x1417c0e70
     virtual ~StateTurnData();                                   // 0x1417c0ee0
 
-    int m_n18;                                                  // +0x18
-    int m_n1c;                                                  // +0x1c
-    int m_n20;                                                  // +0x20
+    float m_f18;                                                // +0x18 (the ctor stores 0.0f)
+    float m_f1c;                                                // +0x1c
+    float m_f20;                                                // +0x20
     float m_f24;                                                // +0x24 1.0
 };
 MS2_CHECK_SIZE(StateTurnData, 0x28);
@@ -85,7 +85,7 @@ class StateInteractNpcData : public StateData
 {
 public:
     StateInteractNpcData();                                     // 0x1417c0f10
-    virtual ~StateInteractNpcData();                            // 0x1417c1c20 (implicit)
+    virtual ~StateInteractNpcData() = default;                  // 0x1417c1c20 (implicit)
 
     int m_nNpc;                                                 // +0x18
 };
@@ -96,7 +96,7 @@ class StateHitData : public StateData
 {
 public:
     StateHitData();                                             // 0x1417c0f50
-    virtual ~StateHitData();                                    // 0x1417c1bc0 (implicit)
+    virtual ~StateHitData() = default;                          // 0x1417c1bc0 (implicit)
 
     float m_f18;                                                // +0x18 1.0 the hit animation speed
     float m_f1c;                                                // +0x1c
@@ -114,7 +114,7 @@ class StateSkillData : public StateData
 {
 public:
     StateSkillData();                                           // 0x1417c0ff0
-    virtual ~StateSkillData();                                  // 0x1417c1cc0 (implicit)
+    virtual ~StateSkillData() = default;                        // 0x1417c1cc0 (implicit)
     virtual void vfunc_1(Unk_StateDataArg* p);                  // 1 0x1417c1040
     virtual void vfunc_2(Unk_StateDataArg* p);                  // 2 0x1417c1090
 
@@ -128,7 +128,7 @@ class StateGlideData : public StateSkillData
 {
 public:
     StateGlideData();                                           // 0x1417c10e0
-    virtual ~StateGlideData();                                  // 0x1417c1ba0 (implicit)
+    virtual ~StateGlideData() = default;                        // 0x1417c1ba0 (implicit)
     virtual void vfunc_1(Unk_StateDataArg* p);                  // 1 0x1417c1120
     virtual void vfunc_2(Unk_StateDataArg* p);                  // 2 0x1417c1160
 
@@ -142,7 +142,7 @@ class StateSummonData : public StateData
 public:
     StateSummonData();                                          // 0x1417c11a0
     StateSummonData(void* pSummon, bool b);                     // 0x1417c11f0
-    virtual ~StateSummonData();                                 // 0x1417c1d00 (implicit)
+    virtual ~StateSummonData() = default;                       // 0x1417c1d00 (implicit)
 
     bool m_b18;                                                 // +0x18
     void* m_pSummon;                                            // +0x20
@@ -154,7 +154,7 @@ class StateStunData : public StateData
 {
 public:
     StateStunData(long n);                                      // 0x1417c1250
-    virtual ~StateStunData();                                   // 0x1417c1ce0 (implicit)
+    virtual ~StateStunData() = default;                         // 0x1417c1ce0 (implicit)
 
     long m_n18;                                                 // +0x18
 };
@@ -165,7 +165,7 @@ class StateDeadNPCData : public StateData
 {
 public:
     StateDeadNPCData(bool b);                                   // 0x1417c12a0
-    virtual ~StateDeadNPCData();                                // 0x1417c1b60 (implicit)
+    virtual ~StateDeadNPCData() = default;                      // 0x1417c1b60 (implicit)
 
     bool m_b18;                                                 // +0x18
 };
@@ -177,7 +177,7 @@ class StateRecallData : public StateData
 public:
     StateRecallData();                                          // 0x1417c12f0
     StateRecallData(void* p);                                   // 0x1417c1330
-    virtual ~StateRecallData();                                 // 0x1417c1ca0 (implicit)
+    virtual ~StateRecallData() = default;                       // 0x1417c1ca0 (implicit)
 
     void* m_p18;                                                // +0x18
 };
@@ -188,7 +188,7 @@ class StateFallData : public StateData
 {
 public:
     StateFallData(const efd::Point3& kPos);                     // 0x1417c1380
-    virtual ~StateFallData();                                   // 0x1417c1b80 (implicit)
+    virtual ~StateFallData() = default;                         // 0x1417c1b80 (implicit)
 
     efd::Point3 m_pos;                                          // +0x18
 };
@@ -199,7 +199,7 @@ class StateHomemadeData : public StateData
 {
 public:
     StateHomemadeData(int nA, CString str, int nB);             // 0x1417c13d0
-    virtual ~StateHomemadeData();                               // 0x1417c1bf0 (implicit)
+    virtual ~StateHomemadeData() = default;                     // 0x1417c1bf0 (implicit)
     virtual void vfunc_2(Unk_StateDataArg* p);                  // 2 0x1417c1460
 
     CString m_str;                                              // +0x18
@@ -213,7 +213,7 @@ class StateAutoInteractionData : public StateData
 {
 public:
     StateAutoInteractionData(int a, int b, int c);              // 0x1417c14b0
-    virtual ~StateAutoInteractionData();                        // 0x1417c1b40 (implicit)
+    virtual ~StateAutoInteractionData() = default;              // 0x1417c1b40 (implicit)
 
     int m_n18;                                                  // +0x18
     int m_n1c;                                                  // +0x1c
@@ -226,7 +226,7 @@ class StateMicroGameRpsData : public StateData
 {
 public:
     StateMicroGameRpsData(int n);                               // 0x1417c1520
-    virtual ~StateMicroGameRpsData();                           // 0x1417c1c70 (implicit)
+    virtual ~StateMicroGameRpsData() = default;                 // 0x1417c1c70 (implicit)
     virtual void vfunc_1(Unk_StateDataArg* p);                  // 1 0x1417c1590
     virtual void vfunc_2(Unk_StateDataArg* p);                  // 2 0x1417c1620
 
@@ -244,7 +244,7 @@ class StateMicroGameCoupleDanceData : public StateData
 {
 public:
     StateMicroGameCoupleDanceData(int n);                       // 0x1417c1830
-    virtual ~StateMicroGameCoupleDanceData();                   // 0x1417c1c40 (implicit)
+    virtual ~StateMicroGameCoupleDanceData() = default;         // 0x1417c1c40 (implicit)
     virtual void vfunc_1(Unk_StateDataArg* p);                  // 1 0x1417c1890
     virtual void vfunc_2(Unk_StateDataArg* p);                  // 2 0x1417c1910
 

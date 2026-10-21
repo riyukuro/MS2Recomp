@@ -87,7 +87,7 @@ void StateJumpTo::vfunc_5(int n)
         if (m_spJump->m_n34 != 0)
         {
             efd::Point3 kRot = m_pOwner->vfunc_20();
-            kRot.z = reinterpret_cast<const float&>(m_spJump->m_n38);
+            kRot.z = m_spJump->m_f38;
             m_pOwner->FUN_14166d970(kRot);
         }
         m_pOwner->vfunc_19(m_spJump->m_pos);
@@ -109,7 +109,7 @@ void StateJumpTo::vfunc_3(double fTime)
         m_pOwner->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));
         if ((m_spJump.get() != 0 ? true : false) && m_spJump->m_n34 != 0)
         {
-            m_pOwner->FUN_14166d8b0(reinterpret_cast<const float&>(m_spJump->m_n38));
+            m_pOwner->FUN_14166d8b0(m_spJump->m_f38);
             m_pOwner->FUN_14166d630((float)fTime);
         }
     }

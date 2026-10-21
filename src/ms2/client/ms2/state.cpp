@@ -2030,7 +2030,6 @@ StateSpawnData::~StateSpawnData()
 }
 
 // @0x1417c0c30
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 StateJumpToData::StateJumpToData()
 {
     m_pos = efd::Point3::ZERO;
@@ -2039,7 +2038,7 @@ StateJumpToData::StateJumpToData()
     m_b2c = false;
     m_fScale = 1.0f;
     m_n34 = 0;
-    m_n38 = 0;
+    m_f38 = 0.0f;
 }
 
 // @0x1417c0cf0
@@ -2070,12 +2069,11 @@ StateLandData::~StateLandData()
 }
 
 // @0x1417c0e70
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 StateTurnData::StateTurnData()
 {
-    m_n18 = 0;
-    m_n1c = 0;
-    m_n20 = 0;
+    m_f18 = 0.0f;
+    m_f1c = 0.0f;
+    m_f20 = 0.0f;
     m_f24 = 1.0f;
 }
 
@@ -2218,12 +2216,9 @@ StateAutoInteractionData::StateAutoInteractionData(int a, int b, int c)
 }
 
 // @0x1417c1520
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 StateMicroGameRpsData::StateMicroGameRpsData(int n)
+    : m_n18(n), m_n1c(-1), m_n20(-1)
 {
-    m_n18 = n;
-    m_n1c = -1;
-    m_n20 = -1;
 }
 
 // @0x1417c1590
@@ -2266,11 +2261,9 @@ bool StateMicroGameRpsData::FUN_1417c16b0(MS2Ptr<Unk_StateArg22> p)
 }
 
 // @0x1417c1830
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 StateMicroGameCoupleDanceData::StateMicroGameCoupleDanceData(int n)
+    : m_n18(n), m_b1c(false)
 {
-    m_n18 = n;
-    m_b1c = false;
 }
 
 // @0x1417c1890
@@ -2307,85 +2300,8 @@ bool StateMicroGameCoupleDanceData::FUN_1417c1990(MS2Ptr<Unk_StateArg22> p)
     return true;
 }
 
-// ---- the implicit payload dtors (compiler-generated COMDATs in the exe) ----
+// The implicit payload dtors (0x1417c1b40-0x1417c1d00) are defaulted in statedata.h and emitted here as COMDATs.
 
-// @0x1417c1b40
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateAutoInteractionData::~StateAutoInteractionData()
-{
-}
-
-// @0x1417c1b60
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateDeadNPCData::~StateDeadNPCData()
-{
-}
-
-// @0x1417c1b80
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateFallData::~StateFallData()
-{
-}
-
-// @0x1417c1ba0
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateGlideData::~StateGlideData()
-{
-}
-
-// @0x1417c1bc0
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateHitData::~StateHitData()
-{
-}
-
-// @0x1417c1bf0
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateHomemadeData::~StateHomemadeData()
-{
-}
-
-// @0x1417c1c20
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateInteractNpcData::~StateInteractNpcData()
-{
-}
-
-// @0x1417c1c40
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateMicroGameCoupleDanceData::~StateMicroGameCoupleDanceData()
-{
-}
-
-// @0x1417c1c70
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateMicroGameRpsData::~StateMicroGameRpsData()
-{
-}
-
-// @0x1417c1ca0
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateRecallData::~StateRecallData()
-{
-}
-
-// @0x1417c1cc0
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateSkillData::~StateSkillData()
-{
-}
-
-// @0x1417c1ce0
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateStunData::~StateStunData()
-{
-}
-
-// @0x1417c1d00
-// MS2-FUNCTIONAL: implicit dtor in the exe (no vptr store at /Od); defined explicitly here
-StateSummonData::~StateSummonData()
-{
-}
 // MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@2@@Z 0x1417bb580 ; this TU's copy (called by ~_Tree_comp_alloc 0x1417ba540; 0x14139e1c0 is another TU's)
 // MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@2@@Z 0x1417bb5b0 ; called from _Buynode's catch(...)
 // Atexit thunks of this unit's statics (gap1 yd sweep).
