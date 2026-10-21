@@ -7864,3 +7864,5 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ??1Unk_StItemArray@@QEAA@XZ	1408f2340	func
 ??1Unk_StItemEntry@@QEAA@XZ	1401bfde0	func
 ?FUN_140527b10@Unk_StItemObj@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140527b10	func
+?WatchpointHash_GetCaseCheck@AS2@GFx@Scaleform@@YAPEBUWatchpoint@Object@123@PEAV?$ASStringHash_GC@UWatchpoint@Object@AS2@GFx@Scaleform@@@23@AEBVASString@23@_N@Z	142949eb0	func
+?WatchpointHash_RemoveCaseCheck@AS2@GFx@Scaleform@@YAXPEAV?$ASStringHash_GC@UWatchpoint@Object@AS2@GFx@Scaleform@@@23@AEBVASString@23@_N@Z	14297cae0	func
