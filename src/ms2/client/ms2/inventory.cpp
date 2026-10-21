@@ -462,14 +462,13 @@ void Unk_Inventory::FUN_140a5c8e0() {
     FUN_140a5c970();
 }
 MS2_REPLACE_METHOD(0x140a5c8e0, Unk_Inventory, FUN_140a5c8e0, 123, 0x1FB5DEC2);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a5c970
 void Unk_Inventory::FUN_140a5c970() {
     if (Unk_LockGuard guard = lock) {} else {
         FUN_140a66c00();
         items.RemoveAll();
         for (int i = 0; i < 15; ++i) {
-            int count = FUN_140a66510(i);
+            unsigned count = FUN_140a66510(i);
             slots[i].RemoveAll();
             slots[i].SetCount(count, -1);
             extraSlots[i] = 0;
@@ -541,10 +540,9 @@ bool Unk_Inventory::FUN_140a5ce30(CStringW& names) {
     return count < 15;
 }
 MS2_REPLACE_METHOD(0x140a5ce30, Unk_Inventory, FUN_140a5ce30, 236, 0x77D3BC0E);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a5cf30
 int Unk_Inventory::FUN_140a5cf30(int category) {
-    if (category < 0 || category > 14) return 0;
+    if (category < 0 || category >= 15) return 0;
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
         for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
@@ -556,10 +554,9 @@ int Unk_Inventory::FUN_140a5cf30(int category) {
     return count;
 }
 MS2_REPLACE_METHOD(0x140a5cf30, Unk_Inventory, FUN_140a5cf30, 271, 0xF4C9FBF5);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a5d050
 int Unk_Inventory::FUN_140a5d050(int category) {
-    if (category < 0 || category > 14) return 0;
+    if (category < 0 || category >= 15) return 0;
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
         ItemArray& bag = slots[category];
@@ -576,7 +573,7 @@ MS2_REPLACE(0x140a5d0f0, FUN_140a5d0f0, 35, 0xEEBD98E0);
 // @0x140a5d120
 int Unk_Inventory::FUN_140a5d120(CItem* item) {
     int category = FUN_140a617f0(ItemPtr(item));
-    if (category < 0 || category > 14) return 11;
+    if (category < 0 || category >= 15) return 11;
     if (Unk_LockGuard guard = lock) {} else {
         if (items.Lookup(item->FUN_140526a50()) != nullptr) return 17;
         int slot = item->FUN_140526b50();
@@ -595,7 +592,6 @@ int Unk_Inventory::FUN_140a5d120(CItem* item) {
     return 0;
 }
 MS2_REPLACE_METHOD(0x140a5d120, Unk_Inventory, FUN_140a5d120, 614, 0x2B7971F8);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a5d390
 void Unk_Inventory::FUN_140a5d390(__int64 id) {
     ItemPtr item;
@@ -603,7 +599,7 @@ void Unk_Inventory::FUN_140a5d390(__int64 id) {
         items.RemoveKey(id);
         if (item.get() != nullptr) {
             int category = FUN_140a617f0(item);
-            if (category < 0 || category > 14) return;
+            if (category < 0 || category >= 15) return;
             ItemArray& bag = slots[category];
             int slot = item->FUN_140526b50();
             if (slot < 0 || slot >= (int)bag.GetCount()) return;
@@ -636,7 +632,6 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5d680(__int64 id) {
 }
 MS2_REPLACE_METHOD(0x140a5d680, Unk_Inventory, FUN_140a5d680, 204, 0x4A1D0688);
 
-// MS2-FUNCTIONAL: early-return spelling; shared pointer return copies instead of moving.
 // @0x140a5d760
 Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5d760(int skill, int ignoreUsability) {
     if (skill == 0) return ItemPtr(0);
@@ -649,7 +644,8 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5d760(int skill, int ignoreUsabili
             int itemSkill = FUN_14053dc20(FUN_140527840(item.operator->()));
             if (itemSkill == 0 || itemSkill != skill) continue;
             if (FUN_140526100(item.operator->()) != 0) continue;
-            if (ignoreUsability != 0 || player->FUN_141662eb0(item.get()) != 0) return item;
+            if (ignoreUsability == 0 && player->FUN_141662eb0(item.get()) == 0) continue;
+            return item;
         }
     }
     return ItemPtr(0);
@@ -698,7 +694,6 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5dca0(CStringW function, CStringW 
     return ItemPtr(0);
 }
 MS2_REPLACE_METHOD(0x140a5dca0, Unk_Inventory, FUN_140a5dca0, 910, 0xCFFD79FB);
-// MS2-FUNCTIONAL: early-return spelling and shared pointer return copy.
 // @0x140a5e040
 Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e040(int tag) {
     if (tag == 0) return ItemPtr(0);
@@ -715,8 +710,8 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e040(int tag) {
         }
     } }
     std::sort(found.begin(), found.end(), FUN_140a5c650);
-    if (found.size() == 0) return ItemPtr(0);
-    return found[0];
+    if (found.size() > 0) return found[0];
+    return ItemPtr(0);
 }
 MS2_REPLACE_METHOD(0x140a5e040, Unk_Inventory, FUN_140a5e040, 656, 0x8F0B4180);
 // MS2-FUNCTIONAL: early-return spelling and shared pointer return copy.
@@ -726,7 +721,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e2e0(int itemId) {
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (data == nullptr) return ItemPtr(0);
     int category = FUN_14053fd90(data.operator->());
-    if (category < 0 || category > 14) return ItemPtr(0);
+    if (category < 0 || category >= 15) return ItemPtr(0);
     Unk_InventoryPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (player == nullptr) return ItemPtr(0);
     if (Unk_LockGuard guard = lock) {} else {
@@ -735,7 +730,8 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e2e0(int itemId) {
             ItemPtr item = bag[i];
             if (item == nullptr) continue;
             if (item->FUN_1405276c0() != itemId) continue;
-            if (player->FUN_141662eb0(item.get()) != 0) return item;
+            if (player->FUN_141662eb0(item.get()) == 0) continue;
+            return item;
         }
     }
     return ItemPtr(0);
@@ -750,7 +746,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e5c0(int itemId, int rarity) {
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (data == nullptr) return ItemPtr(0);
     int category = FUN_14053fd90(data.operator->());
-    if (category < 0 || category > 14) return ItemPtr(0);
+    if (category < 0 || category >= 15) return ItemPtr(0);
     if (Unk_LockGuard guard = lock) {} else {
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
@@ -758,7 +754,8 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e5c0(int itemId, int rarity) {
             if (item == nullptr) continue;
             if (item->FUN_1405276c0() != itemId) continue;
             if (item->FUN_140526bd0() != rarity) continue;
-            if (player->FUN_141662eb0(item.get()) != 0) return item;
+            if (player->FUN_141662eb0(item.get()) == 0) continue;
+            return item;
         }
     }
     return ItemPtr(0);
@@ -771,7 +768,7 @@ int Unk_Inventory::FUN_140a5e8d0(int itemId, ATL::CAtlList<ItemPtr>& result, int
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (data == nullptr) return 0;
     int category = FUN_14053fd90(data.operator->());
-    if (category < 0 || category > 14) return 0;
+    if (category < 0 || category >= 15) return 0;
     { if (Unk_LockGuard guard = lock) {} else {
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
@@ -816,7 +813,7 @@ int Unk_Inventory::FUN_140a5eda0(const int* filter) {
     MS2Ptr<CItemData> data = FUN_14053f870(filter[0]);
     if (data == nullptr) return 0;
     int category = FUN_14053fd90(data.operator->());
-    if (category < 0 || category > 14) return 0;
+    if (category < 0 || category >= 15) return 0;
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
         ItemArray& bag = slots[category];
@@ -831,7 +828,6 @@ int Unk_Inventory::FUN_140a5eda0(const int* filter) {
     return count;
 }
 MS2_REPLACE_METHOD(0x140a5eda0, Unk_Inventory, FUN_140a5eda0, 688, 0x152569D1);
-// MS2-FUNCTIONAL: early returns preserve lock and smart-pointer cleanup.
 // @0x140a5f060
 int Unk_Inventory::FUN_140a5f060(__int64 id) {
     if (id == 0) return 0;
@@ -840,13 +836,12 @@ int Unk_Inventory::FUN_140a5f060(__int64 id) {
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
         ItemPtr item = FUN_140a5d680(id);
-        if (item.get() != nullptr && player->FUN_141662eb0(item.get()) != 0)
-            count = item->vfunc_4();
+        if ((item.get() ? true : false) && player->FUN_141662eb0(item.get()) != 0)
+            count += item->vfunc_4();
     }
     return count;
 }
 MS2_REPLACE_METHOD(0x140a5f060, Unk_Inventory, FUN_140a5f060, 274, 0x5F6FCB45);
-// MS2-FUNCTIONAL: early-return spelling; typed virtual quantity accessor.
 // @0x140a5f180
 int Unk_Inventory::FUN_140a5f180(int itemId, int rarity) {
     if (itemId == 0) return 0;
@@ -855,15 +850,17 @@ int Unk_Inventory::FUN_140a5f180(int itemId, int rarity) {
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (data == nullptr) return 0;
     int category = FUN_14053fd90(data.operator->());
-    if (category < 0 || category > 14) return 0;
+    if (category < 0 || category >= 15) return 0;
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
-            if (item == nullptr || item->FUN_1405276c0() != itemId) continue;
+            if (item == nullptr) continue;
+            if (item->FUN_1405276c0() != itemId) continue;
             if (rarity != 0 && item->FUN_140526bd0() != rarity) continue;
-            if (player->FUN_141662eb0(item.get()) != 0) count += item->vfunc_4();
+            if (player->FUN_141662eb0(item.get()) == 0) continue;
+            count += item->vfunc_4();
         }
     }
     return count;
@@ -879,13 +876,14 @@ int Unk_Inventory::FUN_140a5f410(ItemPtr reference) {
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
     if (data == nullptr) return 0;
     int category = FUN_14053fd90(data.operator->());
-    if (category < 0 || category > 14) return 0;
+    if (category < 0 || category >= 15) return 0;
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
-            if (item == nullptr || item->FUN_1405276c0() != itemId) continue;
+            if (item == nullptr) continue;
+            if (item->FUN_1405276c0() != itemId) continue;
             int rarity = item->FUN_140526bd0();
             if (rarity != reference->FUN_140526bd0()) continue;
             if (player->FUN_141662eb0(reference.get()) == 0) continue;
@@ -899,7 +897,6 @@ MS2_REPLACE_METHOD(0x140a5f410, Unk_Inventory, FUN_140a5f410, 859, 0x51CE102B);
 // @0x140a5f780
 void Unk_Inventory::FUN_140a5f780(int tag, int rarity) { FUN_140a5f7b0(tag, rarity); }
 MS2_REPLACE_METHOD(0x140a5f780, Unk_Inventory, FUN_140a5f780, 42, 0x941253E9);
-// MS2-FUNCTIONAL: typed map iteration and early returns.
 // @0x140a5f7b0
 int Unk_Inventory::FUN_140a5f7b0(int tag, int rarity) {
     if (tag == 0) return 0;
@@ -909,7 +906,8 @@ int Unk_Inventory::FUN_140a5f7b0(int tag, int rarity) {
     if (Unk_LockGuard guard = lock) {} else {
         for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
             ItemPtr item = items.GetValueAt(pos);
-            if (item == nullptr || !FUN_1405277e0(item.operator->(), tag)) continue;
+            if (item == nullptr) continue;
+            if (!FUN_1405277e0(item.operator->(), tag)) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
             if (rarity != 0 && item->FUN_140526bd0() != rarity) continue;
             count += item->vfunc_4();
@@ -969,7 +967,7 @@ MS2_REPLACE_METHOD(0x140a5fbd0, Unk_Inventory, FUN_140a5fbd0, 653, 0x115EDCE8);
 // MS2-FUNCTIONAL: preserve redundant accessor calls and signed capacity subtraction.
 // @0x140a5fe70
 int Unk_Inventory::FUN_140a5fe70(int category, ItemPtr reference) {
-    if (reference == nullptr || category < 0 || category > 14) return 0;
+    if (reference == nullptr || category < 0 || category >= 15) return 0;
     MS2Ptr<CItemData> data = FUN_14053f870(reference->FUN_1405276c0());
     if (!data || data->property.slotMax == 1) return 0;
     int capacity = 0;
@@ -996,13 +994,12 @@ int Unk_Inventory::FUN_140a5fe70(int category, ItemPtr reference) {
     return capacity;
 }
 MS2_REPLACE_METHOD(0x140a5fe70, Unk_Inventory, FUN_140a5fe70, 1023, 0x1F94ED77);
-// MS2-FUNCTIONAL: shared pointer declaration does not expose the move constructor.
 // @0x140a60280
 Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a60280(int category, int slot) {
     ItemPtr item(0);
-    if (category < 0 || category > 14) return ItemPtr(0);
+    if (category < 0 || category >= 15) return ItemPtr(0);
     int count = (int)slots[category].GetCount();
-    if (slot < 0 || count <= slot) return ItemPtr(0);
+    if (slot < 0 || slot >= count) return ItemPtr(0);
     { if (Unk_LockGuard guard = lock) {} else { item = slots[category][slot]; } }
     return item;
 }
@@ -1026,16 +1023,15 @@ int Unk_Inventory::FUN_140a603e0(int category, int from, int to) {
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a603e0, Unk_Inventory, FUN_140a603e0, 377, 0x816338B7);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a60560
 int Unk_Inventory::FUN_140a60560(int category, int slot, ItemPtr item) {
     if (item == nullptr) return 0;
-    if (category < 0 || category > 14) return 0;
+    if (category < 0 || category >= 15) return 0;
     if (item->FUN_140526b50() == slot) return 1;
     if (Unk_LockGuard guard = lock) {} else {
         ItemArray& bag = slots[category];
         // The original tests slot <= count here, despite the unusual direction.
-        if (slot < 0 || slot <= (int)bag.GetCount()) return 0;
+        if (slot < 0 || (int)bag.GetCount() >= slot) return 0;
         ItemPtr previous = bag[slot];
         if (previous.get() != nullptr) return 0;
         slots[category][slot] = item;
@@ -1055,47 +1051,43 @@ void Unk_Inventory::FUN_140a60790(ItemArray& result) {
     }
 }
 MS2_REPLACE_METHOD(0x140a60790, Unk_Inventory, FUN_140a60790, 225, 0x3B659717);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a60880
 void Unk_Inventory::FUN_140a60880(int category, ItemArray& result) {
-    if (category >= 0 && category < 15) {
-        if (Unk_LockGuard guard = lock) {} else {
-            for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
-                ItemPtr item = slots[category][i];
-                if (item == nullptr) continue;
-                result.Add(item);
-            }
+    if (category < 0 || category >= 15) return;
+    if (Unk_LockGuard guard = lock) {} else {
+        for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
+            ItemPtr item = slots[category][i];
+            if (item == nullptr) continue;
+            result.Add(item);
         }
     }
 }
 MS2_REPLACE_METHOD(0x140a60880, Unk_Inventory, FUN_140a60880, 268, 0xE3D94D0C);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a609a0
 void Unk_Inventory::FUN_140a609a0(int category, ATL::CAtlArray<unsigned __int64>& result) {
-    if (category >= 0 && category < 15) {
-        if (Unk_LockGuard guard = lock) {} else {
-            for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
-                ItemPtr item = slots[category][i];
-                if (item == nullptr) continue;
-                result.Add(item->FUN_140526a50());
-            }
+    if (category < 0 || category >= 15) return;
+    if (Unk_LockGuard guard = lock) {} else {
+        for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
+            ItemPtr item = slots[category][i];
+            if (item == nullptr) continue;
+            result.Add(item->FUN_140526a50());
         }
     }
 }
 MS2_REPLACE_METHOD(0x140a609a0, Unk_Inventory, FUN_140a609a0, 284, 0x2A368F4F);
-// MS2-FUNCTIONAL: equivalent typed map iteration with scoped lock.
 // @0x140a60ad0
 int Unk_Inventory::FUN_140a60ad0(int type) {
     Unk_InventoryScopedLock guard(lock, 1);
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
-        if (FUN_14053c5c0(FUN_140527840(item.operator->())) == type && FUN_140528980(item.operator->())) return 1;
+        if (FUN_14053c5c0(FUN_140527840(item.operator->())) != type) continue;
+        if (!FUN_140528980(item.operator->())) continue;
+        return 1;
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x140a60ad0, Unk_Inventory, FUN_140a60ad0, 321, 0x274281EB);
-// MS2-FUNCTIONAL: equivalent typed map iteration with scoped lock.
 // @0x140a60c20
 int Unk_Inventory::FUN_140a60c20(int type) {
     Unk_InventoryScopedLock guard(lock, 1);
@@ -1104,58 +1096,57 @@ int Unk_Inventory::FUN_140a60c20(int type) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
         if (type != 0 && FUN_14053c5c0(FUN_140527840(item.operator->())) != type) continue;
-        if (FUN_140528980(item.operator->())) ++count;
+        if (!FUN_140528980(item.operator->())) continue;
+        ++count;
     }
     return count;
 }
 MS2_REPLACE_METHOD(0x140a60c20, Unk_Inventory, FUN_140a60c20, 326, 0x43BB48CE);
-// MS2-FUNCTIONAL: equivalent typed map iteration with scoped lock.
 // @0x140a60d70
 int Unk_Inventory::FUN_140a60d70(int type) {
     Unk_InventoryScopedLock guard(lock, 1);
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
-        if (FUN_140527760(item.operator->()) == type && FUN_140528980(item.operator->())) return 1;
+        if (FUN_140527760(item.operator->()) != type) continue;
+        if (!FUN_140528980(item.operator->())) continue;
+        return 1;
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x140a60d70, Unk_Inventory, FUN_140a60d70, 313, 0x04FAC3B5);
-// MS2-FUNCTIONAL: equivalent typed map iteration with scoped lock.
 // @0x140a60ec0
 int Unk_Inventory::FUN_140a60ec0(int tag) {
     Unk_InventoryScopedLock guard(lock, 1);
     for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
         ItemPtr item = items.GetValueAt(pos);
         if (item == nullptr) continue;
-        if (FUN_1405277e0(item.operator->(), tag) && FUN_140528980(item.operator->())) return 1;
+        if (!FUN_1405277e0(item.operator->(), tag)) continue;
+        if (!FUN_140528980(item.operator->())) continue;
+        return 1;
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x140a60ec0, Unk_Inventory, FUN_140a60ec0, 318, 0x729C8B6E);
-// MS2-FUNCTIONAL: equivalent filter loop with scoped cleanup.
 // @0x140a61010
 void Unk_Inventory::FUN_140a61010(int category, const __int64* filter, ItemArray& result) {
-    if (category >= 0 && category < 15 && *filter != 0) {
-        if (Unk_LockGuard guard = lock) {} else {
-            for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
-                ItemPtr item = slots[category][i];
-                if (item == nullptr) continue;
-                if (FUN_1406a5a50(item, filter)) result.Add(item);
-            }
+    if (category < 0 || category >= 15 || *filter == 0) return;
+    if (Unk_LockGuard guard = lock) {} else {
+        for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
+            ItemPtr item = slots[category][i];
+            if (item == nullptr) continue;
+            if (FUN_1406a5a50(item, filter)) result.Add(item);
         }
     }
 }
 MS2_REPLACE_METHOD(0x140a61010, Unk_Inventory, FUN_140a61010, 373, 0xDE25A3BB);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a61190
 int Unk_Inventory::FUN_140a61190(int category) {
-    if (category >= 0 && category < 15) {
-        if (Unk_LockGuard guard = lock) {} else {
-            for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
-                ItemPtr item = slots[category][i];
-                if (item == nullptr) return i;
-            }
+    if (category < 0 || category >= 15) return -1;
+    if (Unk_LockGuard guard = lock) {} else {
+        for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
+            ItemPtr item = slots[category][i];
+            if (item == nullptr) return i;
         }
     }
     return -1;
@@ -1172,29 +1163,26 @@ int Unk_Inventory::FUN_140a612b0(int category, ItemPtr item, int quantity) {
     return FUN_140a61190(category);
 }
 MS2_REPLACE_METHOD(0x140a612b0, Unk_Inventory, FUN_140a612b0, 375, 0x959966DC);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a61430
 int Unk_Inventory::FUN_140a61430(int category) {
-    if (category >= 0 && category < 15) {
-        if (Unk_LockGuard guard = lock) {} else {
-            unsigned count = (unsigned)slots[category].GetCount();
-            unsigned half = count >> 1;
-            int last = count - 1;
-            for (int i = 0; i < (int)half; ++i) {
-                ItemPtr item = slots[category][last - i];
-                if (item == nullptr) return 1;
-                item = slots[category][i];
-                if (item == nullptr) return 1;
-            }
+    if (category < 0 || category >= 15) return 0;
+    if (Unk_LockGuard guard = lock) {} else {
+        unsigned count = (unsigned)slots[category].GetCount();
+        unsigned half = count >> 1;
+        int last = count - 1;
+        for (int i = 0; i < (int)half; ++i) {
+            ItemPtr item = slots[category][last - i];
+            if (item == nullptr) return 1;
+            item = slots[category][i];
+            if (item == nullptr) return 1;
         }
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x140a61430, Unk_Inventory, FUN_140a61430, 406, 0x33AA553B);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a615d0
 int Unk_Inventory::FUN_140a615d0(int category) {
-    if (category < 0 || category > 14) return 0;
+    if (category < 0 || category >= 15) return 0;
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
         for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
@@ -1205,14 +1193,13 @@ int Unk_Inventory::FUN_140a615d0(int category) {
     return count;
 }
 MS2_REPLACE_METHOD(0x140a615d0, Unk_Inventory, FUN_140a615d0, 259, 0x5A865E94);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a616e0
 int Unk_Inventory::FUN_140a616e0() {
     int count = 0;
     if (Unk_LockGuard guard = lock) {} else {
         for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
             ItemPtr item = items.GetValueAt(pos);
-            if (item.get() != nullptr && item->FUN_1405268f0() != 0) ++count;
+            if ((item.get() ? true : false) && item->FUN_1405268f0() != 0) ++count;
         }
     }
     return count;
@@ -1233,7 +1220,7 @@ int Unk_Inventory::FUN_140a61870(MS2Ptr<CItemData> data) {
 // MS2-FUNCTIONAL: equivalent adjacent-item comparison loop.
 // @0x140a618e0
 int Unk_Inventory::FUN_140a618e0(int category) {
-    if (category < 0 || category > 14) return 0;
+    if (category < 0 || category >= 15) return 0;
     ItemPtr first(0), second(0);
     if (Unk_LockGuard guard = lock) {} else {
         if (FUN_140a61b40(category) != 0) return 1;
@@ -1249,7 +1236,7 @@ MS2_REPLACE_METHOD(0x140a618e0, Unk_Inventory, FUN_140a618e0, 594, 0x5762F162);
 // MS2-FUNCTIONAL: typed item metadata; original routine intentionally takes no lock.
 // @0x140a61b40
 int Unk_Inventory::FUN_140a61b40(int category) {
-    if (category < 0 || category > 14) return 0;
+    if (category < 0 || category >= 15) return 0;
     ItemPtr item(0);
     MS2Ptr<CItemData> data(0);
     ATL::CAtlMap<int, unsigned> seen;
@@ -1271,7 +1258,6 @@ int Unk_Inventory::FUN_140a61b40(int category) {
 }
 MS2_REPLACE_METHOD(0x140a61b40, Unk_Inventory, FUN_140a61b40, 614, 0xF20A9A12);
 
-// MS2-FUNCTIONAL: typed packet payload and equivalent early-return spelling.
 // @0x140a61db0
 int Unk_Inventory::FUN_140a61db0(__int64 id, const CStringW& argument) {
     ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
@@ -1292,9 +1278,11 @@ int Unk_Inventory::FUN_140a61db0(__int64 id, const CStringW& argument) {
     COutPacket packet(25, 0);
     payload.FUN_1401fbc40(packet);
     FUN_140710590(packet);
-    MS2Ptr<CItemData> data(FUN_140527840(item.operator->()));
-    if (data.get() != nullptr)
-        FUN_1403ed280()->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<Unk_InvItemDataView*>(data.operator->())->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+    {
+        MS2Ptr<CItemData> data(FUN_140527840(item.operator->()));
+        if (data.get() != nullptr)
+            FUN_1403ed280()->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<Unk_InvItemDataView*>(data.operator->())->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+    }
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a61db0, Unk_Inventory, FUN_140a61db0, 1024, 0x39622B75);
@@ -1347,7 +1335,6 @@ int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBindin
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a62270, Unk_Inventory, FUN_140a62270, 1692, 0x65CDD949);
-// MS2-FUNCTIONAL: typed packet payload and equivalent early returns.
 // @0x140a62920
 int Unk_Inventory::FUN_140a62920(__int64 id) {
     if (FUN_1409331e0()->FUN_14138c900(5) != 0) { FUN_141275260(2185, 1, 1); return 0; }
@@ -1364,9 +1351,11 @@ int Unk_Inventory::FUN_140a62920(__int64 id) {
     packet.Encode1(1);
     payload.FUN_1401fb910(packet);
     FUN_140710590(packet);
-    MS2Ptr<CItemData> data(FUN_140527840(item.operator->()));
-    if (data.get() != nullptr)
-        FUN_1403ed280()->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<Unk_InvItemDataView*>(data.operator->())->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+    {
+        MS2Ptr<CItemData> data(FUN_140527840(item.operator->()));
+        if (data.get() != nullptr)
+            FUN_1403ed280()->FUN_1411a5110("ms2sound/sound/item", reinterpret_cast<Unk_InvItemDataView*>(data.operator->())->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+    }
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a62920, Unk_Inventory, FUN_140a62920, 908, 0x22CFDA56);
@@ -1598,7 +1587,6 @@ int Unk_Inventory::FUN_140a655b0(CItem* item) {
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a655b0, Unk_Inventory, FUN_140a655b0, 438, 0xBDCB1A31);
-// MS2-FUNCTIONAL: equivalent validation with early-return spelling.
 // @0x140a65770
 int Unk_Inventory::FUN_140a65770(CItem* item) {
     if (item == nullptr) return 11;
@@ -1606,11 +1594,9 @@ int Unk_Inventory::FUN_140a65770(CItem* item) {
     if (data == nullptr) return 11;
     if (FUN_140528930(item) && !FUN_14053cde0(data)) return 5;
     int result = FUN_140a65860(MS2Ptr<CItemData>(data), item->FUN_140526bd0());
-    if (result == 0) {
-        if (!FUN_140528980(item)) return 10;
-        return 0;
-    }
-    return result;
+    if (result != 0) return result;
+    if (!FUN_140528980(item)) return 10;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140a65770, Unk_Inventory, FUN_140a65770, 220, 0x8761E71D);
 // MS2-FUNCTIONAL: equivalent validation with typed player virtual and early returns.
@@ -1753,27 +1739,24 @@ int FUN_140a66750(unsigned category) {
     return count;
 }
 MS2_REPLACE(0x140a66750, FUN_140a66750, 503, 0x0D527D0B);
-// MS2-FUNCTIONAL: typed ATL map traversal.
 // @0x140a66990
 void Unk_Inventory::FUN_140a66990(unsigned short level) {
-    if (FUN_140166410()->FUN_14036d570(232) && FUN_140a67000() != 0) {
-        ATL::CAtlMap<Unk_InventoryEquipSlot, ItemPtr> candidates;
-        FUN_140a66ca0(candidates, level);
-        for (POSITION pos = candidates.GetStartPosition(); pos != nullptr; candidates.GetNext(pos)) {
-            ItemPtr item = candidates.GetValueAt(pos);
-            if (item.get() != nullptr) FUN_140a66ae0(item);
-        }
+    if (!FUN_140166410()->FUN_14036d570(232)) return;
+    if (FUN_140a67000() == 0) return;
+    ATL::CAtlMap<Unk_InventoryEquipSlot, ItemPtr> candidates;
+    FUN_140a66ca0(candidates, level);
+    for (POSITION pos = candidates.GetStartPosition(); pos != nullptr; candidates.GetNext(pos)) {
+        ItemPtr item = candidates.GetValueAt(pos);
+        if (item.get() != nullptr) FUN_140a66ae0(item);
     }
 }
 MS2_REPLACE_METHOD(0x140a66990, Unk_Inventory, FUN_140a66990, 328, 0xA98001E1);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a66ae0
 void Unk_Inventory::FUN_140a66ae0(ItemPtr item) {
-    if (FUN_140a67020(item) != 0) {
-        if (FUN_140a66f20() == 0) {
-            if (FUN_140a62270(item.get(), 0, 0, 0) != 0) FUN_140a66f40(item->FUN_140526a50());
-        } else FUN_140a673e0(item);
-    }
+    if (FUN_140a67020(item) == 0) return;
+    if (FUN_140a66f20() == 0) {
+        if (FUN_140a62270(item.get(), 0, 0, 0) != 0) FUN_140a66f40(item->FUN_140526a50());
+    } else FUN_140a673e0(item);
 }
 MS2_REPLACE_METHOD(0x140a66ae0, Unk_Inventory, FUN_140a66ae0, 276, 0x03FB783B);
 // @0x140a66c00
@@ -1873,14 +1856,14 @@ void Unk_Inventory::FUN_140a674c0(ItemPtr item) {
     }
 }
 MS2_REPLACE_METHOD(0x140a674c0, Unk_Inventory, FUN_140a674c0, 243, 0xD2BF86FC);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a675c0
 void Unk_Inventory::FUN_140a675c0() {
-    if (FUN_140166410()->FUN_14036d570(232) && autoEquipQueue.GetCount() != 0 && FUN_140a66f20() == 0) {
-        ItemPtr item = autoEquipQueue.GetHead();
-        if (item.get() != nullptr) FUN_140a66ae0(item);
-        if (Unk_LockGuard guard = lock) {} else { autoEquipQueue.RemoveHead(); }
-    }
+    if (!FUN_140166410()->FUN_14036d570(232)) return;
+    if (autoEquipQueue.GetCount() == 0) return;
+    if (FUN_140a66f20() != 0) return;
+    ItemPtr item = autoEquipQueue.GetHead();
+    if (item.get() != nullptr) FUN_140a66ae0(item);
+    if (Unk_LockGuard guard = lock) {} else { autoEquipQueue.RemoveHead(); }
 }
 MS2_REPLACE_METHOD(0x140a675c0, Unk_Inventory, FUN_140a675c0, 304, 0xA41E7464);
 
