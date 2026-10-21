@@ -404,23 +404,15 @@ CString CSoundEventEffectParam::FUN_141776120(int nJob) const
 // @0x1417762a0
 float CSoundEventEffectParam::FUN_1417762a0(int nJob) const
 {
-    float fDelay;
     if (!m_bByJob)
-    {
-        fDelay = m_fStartDelay;
-    }
-    else if (nJob == 0)
-    {
-        fDelay = m_fStartDelay;
-    }
-    else
-    {
-        fDelay = 0;
-        Unk_SoundJobCode nKey = (Unk_SoundJobCode)nJob;
-        if (!m_mapJobDelay.Lookup(nKey, fDelay))
-            fDelay = m_fStartDelay;
-    }
-    return fDelay;
+        return m_fStartDelay;
+    if (nJob == 0)
+        return m_fStartDelay;
+    float fDelay = 0;
+    Unk_SoundJobCode nKey = (Unk_SoundJobCode)nJob;
+    if (m_mapJobDelay.Lookup(nKey, fDelay))
+        return fDelay;
+    return m_fStartDelay;
 }
 
 // @0x141776330
@@ -643,33 +635,44 @@ void CSoundEventEffect::vfunc_4()
 // @0x141777520
 void CSoundEventEffect::vfunc_5()
 {
-    if (!m_bDoNotStop)
+    if (m_bDoNotStop)
+    {
+        m_bStopRequested = true;
+        m_dStopTime = FUN_14086d260()->FUN_141473280() + 10.0;
+    }
+    else
     {
         if (m_spSound.get() != 0)
             m_spSound->FUN_14177a920(0);
         m_b2d = true;
     }
-    else
-    {
-        m_bStopRequested = true;
-        m_dStopTime = FUN_14086d260()->FUN_141473280() + 10.0;
-    }
 }
 
 // @0x1417775b0
-// FMOD event callback: 4 = event finished, 6 = sound def created.
+// FMOD event callback: 4 = event finished, 6 = sound def created, 7 = sound def released.
 FMOD_RESULT F_CALLBACK FUN_1417775b0(FMOD_EVENT* pEvent, FMOD_EVENT_CALLBACKTYPE eType, void* pParam1, void* pParam2,
                                      void* pUserData)
 {
-    CSoundEventEffect* pEffect = static_cast<CSoundEventEffect*>(pUserData);
     if (eType == FMOD_EVENT_CALLBACKTYPE_EVENTFINISHED)
     {
+        CSoundEventEffect* pEffect = static_cast<CSoundEventEffect*>(pUserData);
         if (pEffect != 0)
             pEffect->FUN_141777770();
     }
-    else if (eType == FMOD_EVENT_CALLBACKTYPE_SOUNDDEF_CREATE && pEffect != 0)
+    else if (eType == FMOD_EVENT_CALLBACKTYPE_SOUNDDEF_CREATE)
     {
-        FUN_140c9cb10()->FUN_1417b0560(pEffect->FUN_141777700(), (FMOD::Sound**)pParam2);
+        FMOD::Sound** ppSound = (FMOD::Sound**)pParam2;
+        CSoundEventEffect* pEffect = static_cast<CSoundEventEffect*>(pUserData);
+        if (pEffect != 0)
+        {
+            CString& strName = pEffect->FUN_141777700();
+            FUN_140c9cb10()->FUN_1417b0560(strName, ppSound);
+        }
+    }
+    else if (eType == FMOD_EVENT_CALLBACKTYPE_SOUNDDEF_RELEASE)
+    {
+        void* pSound = pParam2;
+        pSound = pSound;
     }
     return FMOD_OK;
 }
@@ -757,16 +760,16 @@ bool CSoundEvent::FUN_14177a8d0()
 // @0x14177a920
 void CSoundEvent::FUN_14177a920(int bFadeOut)
 {
-    if (bFadeOut == 0)
+    if (bFadeOut != 0)
+    {
+        m_nStarted = 0;
+        m_nStopped = 0;
+    }
+    else
     {
         m_nStopped = 1;
         if (FUN_14177ab80())
             m_pEvent->stop(true);
-    }
-    else
-    {
-        m_nStarted = 0;
-        m_nStopped = 0;
     }
 }
 
@@ -809,9 +812,9 @@ bool CSoundEvent::FUN_14177ac00()
 }
 
 // @0x14177ac50
-void CSoundEvent::FUN_14177ac50(bool bMute)
+void CSoundEvent::FUN_14177ac50(unsigned bMute)
 {
-    m_pEvent->setMute(bMute);
+    m_pEvent->setMute(bMute & 1);
 }
 
 // @0x14177ac80
@@ -1072,14 +1075,13 @@ void CSoundEventMgr::FUN_14177ba30()
 }
 
 // @0x14177bb70
-void CSoundEventMgr::FUN_14177bb70()
+void CSoundEventMgr::FUN_14177bb70(float fDelta)
 {
-    if (m_bReady)
-    {
-        FUN_14177bbc0();
-        if (m_b30)
-            FUN_14177d230();
-    }
+    if (!m_bReady)
+        return;
+    FUN_14177bbc0();
+    if (m_b30)
+        FUN_14177d230();
 }
 
 // @0x14177bbc0
@@ -1315,18 +1317,19 @@ void CSoundEventMgr::FUN_14177c8a0()
 void CSoundEventMgr::FUN_14177c980(unsigned bMute)
 {
     if (m_bReady)
-        m_pMusicSystem->setMute((bMute & 1) != 0);
+        m_pMusicSystem->setMute(bMute & 1);
 }
 
 // @0x14177c9e0
 float CSoundEventMgr::FUN_14177c9e0()
 {
-    float fVolume;
-    if (m_bReady == 0)
-        fVolume = 0.0f;
-    else
+    if (m_bReady)
+    {
+        float fVolume;
         m_pMusicSystem->getVolume(&fVolume);
-    return fVolume;
+        return fVolume;
+    }
+    return 0.0f;
 }
 
 // @0x14177ca30
@@ -1343,10 +1346,13 @@ void CSoundEventMgr::FUN_14177ca30(float fVolume)
 // @0x14177caa0
 int CSoundEventMgr::FUN_14177caa0()
 {
-    MusicData kCurrent;
     if (m_bReady)
+    {
+        MusicData kCurrent;
         m_histMusic.Get(0, &kCurrent);
-    return kCurrent.m_nId;
+        return kCurrent.m_nId;
+    }
+    return 0;
 }
 
 // The music callback: a cue's parameter 5 (the loop switch) toggles between 0 and 10.
@@ -1646,58 +1652,52 @@ void CSoundEventMgr::FUN_14177da80(int nCategory, float fVolume)
 // @0x14177db60
 float CSoundEventMgr::FUN_14177db60(int nCategory)
 {
-    float fVolume;
-    if (m_bReady == 0 || m_apCategory[nCategory] == 0)
+    if (m_bReady && m_apCategory[nCategory])
     {
-        fVolume = 0.0f;
-    }
-    else
-    {
-        fVolume = 0.0f;
+        float fVolume = 0.0f;
         m_apCategory[nCategory]->getVolume(&fVolume);
+        return fVolume;
     }
-    return fVolume;
+    return 0.0f;
 }
 
 // @0x14177dbe0
 void CSoundEventMgr::FUN_14177dbe0(int nCategory, unsigned bMute)
 {
-    if (m_bReady == 0)
-        return;
-    if (nCategory == 2)
-        FUN_14177c980(bMute);
-    if (m_apCategory[nCategory])
-        m_apCategory[nCategory]->setMute((bMute & 1) != 0);
+    if (m_bReady)
+    {
+        if (nCategory == 2)
+            FUN_14177c980(bMute);
+        if (m_apCategory[nCategory])
+            m_apCategory[nCategory]->setMute(bMute & 1);
+    }
 }
 
 // @0x14177dc80
 void CSoundEventMgr::FUN_14177dc80(unsigned bMute)
 {
-    if (m_bReady == 0)
-        return;
-    FUN_14177c980(bMute);
-    for (unsigned i = 0; i < 11; ++i)
+    if (m_bReady)
     {
-        if (m_apCategory[i])
-            m_apCategory[i]->setMute((bMute & 1) != 0);
+        FUN_14177c980(bMute);
+        for (int i = 0; i < 11; ++i)
+        {
+            if (m_apCategory[i])
+                m_apCategory[i]->setMute(bMute & 1);
+        }
+        FUN_1403ed2b0()->FUN_141adbf70(bMute);
     }
-    FUN_1403ed2b0()->FUN_141adbf70(bMute);
 }
 
 // @0x14177dd50
 bool CSoundEventMgr::FUN_14177dd50(int nCategory)
 {
-    bool bMute;
-    if (m_bReady == 0 || m_apCategory[nCategory] == 0)
+    if (m_bReady && m_apCategory[nCategory])
     {
-        bMute = false;
-    }
-    else
-    {
-        bMute = false;
+        bool bMute = false;
         m_apCategory[nCategory]->getMute(&bMute);
+        return bMute;
     }
-    return bMute;
+    return false;
 }
 
 // @0x14177ddd0

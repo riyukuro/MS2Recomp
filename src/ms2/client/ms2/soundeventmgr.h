@@ -40,7 +40,7 @@ public:
     CTwoCircleCollision* FUN_1411b1ba0() { return m_pRange; }
     void FUN_14177abc0(FMOD_EVENT_CALLBACK pfnCallback, void* pUserData);
     bool FUN_14177ac00();                                       // getMute succeeded
-    void FUN_14177ac50(bool bMute);
+    void FUN_14177ac50(unsigned bMute);
     int FUN_14177ac80();                                        // started or stopped
     CString FUN_14177aca0();                                    // the event name
     void FUN_14177acf0(float fVolume);
@@ -226,7 +226,7 @@ public:
     void FUN_14177b900();                                       // fade the environment sounds in
     void FUN_14177b940();                                       // fade them out, stop the environment sounds
     void FUN_14177ba30();                                       // shut down
-    void FUN_14177bb70();                                       // per frame
+    void FUN_14177bb70(float fDelta);                                     // per frame
     void FUN_14177bbc0();                                       // advance the volume fades
     void FUN_14177bda0();                                       // sound device lost
     void FUN_14177bf20();                                       // sound device restored
