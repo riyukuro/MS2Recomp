@@ -212,7 +212,8 @@ template unsigned __int64&& std::forward<unsigned __int64>(unsigned __int64&) no
 // @0x140f8f3b0
 void FUN_140f8f3b0(ASObj* pObj, CMatchPartyRecruit* pRecruit)
 {
-    pObj->FUN_1407cbbe0("alreadyRegisterMemberSearch", FUN_140695080(pRecruit) == 0);
+    bool bAlready = FUN_140695080(pRecruit) ? false : true;
+    pObj->FUN_1407cbbe0("alreadyRegisterMemberSearch", bAlready);
 }
 
 // @0x140f8ff40
@@ -355,21 +356,26 @@ int UIPartySearchDialog::vfunc_65()
 // @0x140f8c650
 int UIPartySearchDialog::vfunc_73()
 {
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x1b) == 0)
-        return UIDialog::vfunc_73();
-    FUN_141275260(0x2f7, 1, 1);
-    return 0;
+    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x1b) != 0)
+    {
+        FUN_141275260(0x2f7, 1, 1);
+        return 0;
+    }
+    return UIDialog::vfunc_73();
 }
 
 // @0x140f8c6b0
 void UIPartySearchDialog::vfunc_79(void* pEvent)
 {
     UIDialog::vfunc_79(pEvent);
-    Unk_PsdKeyEvent* pKey = static_cast<Unk_PsdKeyEvent*>(pEvent);
     if (!m_30)
         return;
-    if (pKey->FUN_14070fe80() == 0x53 && !pKey->vfunc_1())
-        FUN_140f8e610();
+    if (static_cast<Unk_PsdKeyEvent*>(pEvent)->FUN_14070fe80() == 0x53)
+    {
+        int bRepeat = static_cast<Unk_PsdKeyEvent*>(pEvent)->vfunc_1();
+        if (bRepeat == 0)
+            FUN_140f8e610();
+    }
 }
 
 // @0x140f8c740
@@ -403,11 +409,18 @@ void UIPartySearchDialog::vfunc_26()
 void UIPartySearchDialog::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (m_30.get() && m_178 != 0 && FUN_140f8e3a0() && m_180.get())
+    if (!m_30)
+        return;
+    if (m_178 != 0)
     {
-        FUN_1409670d0()->FUN_141631270(*m_180);
-        m_17c = FUN_140869420();
-        m_178 = 0;
+        if (!FUN_140f8e3a0())
+            return;
+        if (m_180.get())
+        {
+            FUN_1409670d0()->FUN_141631270(*m_180);
+            m_17c = FUN_140869420();
+            m_178 = 0;
+        }
     }
 }
 
@@ -700,15 +713,14 @@ int UIPartySearchDialog::FUN_140f8def0(int nStart, int nCount, ATL::CAtlArray<MS
 }
 
 // @0x140f8e220
-bool UIPartySearchDialog::FUN_140f8e220(int nStart, int nCount, ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit> >& list)
+int UIPartySearchDialog::FUN_140f8e220(int nStart, int nCount, ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit> >& list)
 {
-    if (m_30.get())
-    {
-        ASArray rows(2);
-        int nTotal = FUN_140f8f410(nStart, nCount, &rows, list);
-        m_30->Invoke("buildPageTo", rows.FUN_1422bb870(), nTotal);
-    }
-    return m_30.get() != 0;
+    if (!m_30)
+        return 0;
+    ASArray rows(2);
+    int nTotal = FUN_140f8f410(nStart, nCount, &rows, list);
+    m_30->Invoke("buildPageTo", rows.FUN_1422bb870(), nTotal);
+    return 1;
 }
 
 // @0x140f8e340
@@ -716,26 +728,29 @@ int UIPartySearchDialog::FUN_140f8e340(int nStart, int nCount)
 {
     if (nStart < 0 || nCount == 0)
         return 1;
-    return FUN_140f8e220(nStart, nCount, FUN_1409670d0()->FUN_141631d20());
+    ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& arr = FUN_1409670d0()->FUN_141631d20();
+    return FUN_140f8e220(nStart, nCount, arr);
 }
 
 // @0x140f8e3a0
-bool UIPartySearchDialog::FUN_140f8e3a0()
+int UIPartySearchDialog::FUN_140f8e3a0()
 {
-    return m_17c + 500U <= FUN_140869420();
+    const unsigned nDelay = 500;
+    unsigned nNow = FUN_140869420();
+    if (nNow < m_17c + nDelay)
+        return 0;
+    return 1;
 }
 
 // @0x140f8e3f0
 int UIPartySearchDialog::FUN_140f8e3f0(int nPage)
 {
-    if (m_30.get())
-    {
-        m_180->page = nPage;
-        m_180->pageSize = 0;
-        m_178 = 1;
-        return m_178;
-    }
-    return 0;
+    if (!m_30)
+        return 0;
+    m_180->page = nPage;
+    m_180->pageSize = 0;
+    m_178 = 1;
+    return m_178;
 }
 
 // @0x140f8e480
@@ -880,25 +895,28 @@ void UIPartySearchDialog::FUN_140f8ec40()
 void UIPartySearchDialog::FUN_140f8ed40(ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit> >& list, int nStart)
 {
     FUN_140f8ded0();
-    if (!(!m_30))
-        FUN_140f8def0(nStart, 0xc, list);
+    if (!m_30)
+        return;
+    int nPageSize = 0xc;
+    FUN_140f8def0(nStart, nPageSize, list);
 }
 
 // @0x140f8edb0
 void UIPartySearchDialog::FUN_140f8edb0()
 {
-    if (m_30.get())
-        FUN_140f8ee50(&FUN_1409670d0()->FUN_141631ce0());
+    if (!m_30)
+        return;
+    CMatchPartyRecruit* pRecruit = &FUN_1409670d0()->FUN_141631ce0();
+    FUN_140f8ee50(pRecruit);
 }
 
 // @0x140f8ee00
 void UIPartySearchDialog::FUN_140f8ee00(CMatchPartyRecruit* pRecruit)
 {
-    if (m_30.get())
-    {
-        FUN_140f8ee50(pRecruit);
-        FUN_140f8e610();
-    }
+    if (!m_30)
+        return;
+    FUN_140f8ee50(pRecruit);
+    FUN_140f8e610();
 }
 
 // @0x140f8ee50

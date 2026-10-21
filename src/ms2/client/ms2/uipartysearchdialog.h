@@ -32,9 +32,9 @@ public:
     void FUN_140f8dde0();                                     // clear the search text and the condition text
     void FUN_140f8ded0();                                       // m_178 = 0
     int FUN_140f8def0(int nStart, int nCount, ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& list);   // send the list page + notice
-    bool FUN_140f8e220(int nStart, int nCount, ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& list);  // send a list page
+    int FUN_140f8e220(int nStart, int nCount, ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& list);  // send a list page
     int FUN_140f8e340(int nStart, int nCount);                  // page of the manager's results
-    bool FUN_140f8e3a0();                                       // the last search is older than 500 ms
+    int FUN_140f8e3a0();                                        // the last search is older than 500 ms
     int FUN_140f8e3f0(int nPage);                               // queue a search (page = nPage)
     int FUN_140f8e480(const CStringW& strText);                 // validate the search text; 1 = stored
     void FUN_140f8e610();                                       // "forceClickRefresh"
