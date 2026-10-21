@@ -58,6 +58,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import bytematch as bm  # noqa: E402
 import ms2paths  # noqa: E402
 import gbprogress  # noqa: E402
+import ms2flags  # noqa: E402  (`// MS2-FLAGS: <profile>` per-unit flags, cmake/ms2-unit-profiles.cmake)
 import mergekey  # noqa: E402
 
 SRC = os.path.join(ROOT, "src")
@@ -152,6 +153,7 @@ class Unit:
         self.ranges = []
         self.guess = bool(os.environ.get("MS2_GUESS_LOOKALIKES"))   # `// MS2-GUESS-LOOKALIKES`: pair leftover identical groups (functional)
         self.pins = {}       # `// MS2-PIN: <mangled> 0x<va>`: obj symbol -> exe VA (must lie in a MS2-RANGE)
+        self.profile = None  # `// MS2-FLAGS: <profile>`: per-unit flag profile (ms2flags; None = game flags)
         for line in open(path, encoding="latin1"):
             if "MS2-" not in line:                    # every directive below contains it (find_units reads ~470 files)
                 continue
@@ -163,6 +165,8 @@ class Unit:
             m = re.match(r"\s*//\s*MS2-UNIT:\s*(\S+)", line)
             if m:
                 self.name = m.group(1)
+            if self.profile is None and re.match(r"\s*//\s*MS2-FLAGS:", line):
+                self.profile = ms2flags.profile_of(line)
             m = re.match(r"\s*//\s*MS2-RANGE:\s*0x([0-9a-fA-F]+)\s*-\s*0x([0-9a-fA-F]+)", line)
             if m:
                 self.ranges.append((int(m.group(1), 16), int(m.group(2), 16)))
@@ -314,7 +318,7 @@ def needs_compile(u):
         meta = json.load(open(u.deps))
     except Exception:
         return True
-    if meta.get("flags") != FLAGS_KEY:
+    if meta.get("flags") != FLAGS_KEY + ms2flags.key(u.profile):
         return True
     t = os.path.getmtime(u.obj)
     for f in [u.path] + meta.get("deps", []):
@@ -326,8 +330,9 @@ def needs_compile(u):
 def compile_unit(u):
     os.makedirs(os.path.dirname(u.obj), exist_ok=True)
     env = ms2paths.toolchain_env()
-    pch = ms2pch.args(GAME_FLAGS, open(u.path, encoding="latin1").read(), CL, env)
-    cmd = ms2paths.cl_cmdline([CL] + GAME_FLAGS + pch + ["/showIncludes", "/Fo" + u.obj, u.path])
+    flags = ms2flags.apply(GAME_FLAGS, u.profile)
+    pch = ms2pch.args(GAME_FLAGS, open(u.path, encoding="latin1").read(), CL, env) if not u.profile else []
+    cmd = ms2paths.cl_cmdline([CL] + flags + pch + ["/showIncludes", "/Fo" + u.obj, u.path])
     t0 = time.time()
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, encoding="latin1")
     deps, msgs = [], []
@@ -342,7 +347,7 @@ def compile_unit(u):
     if ok and pch:
         deps.append(os.path.join(SRC, ms2pch.HDR))
     if ok:
-        json.dump({"flags": FLAGS_KEY, "deps": sorted(set(deps))}, open(u.deps, "w"))
+        json.dump({"flags": FLAGS_KEY + ms2flags.key(u.profile), "deps": sorted(set(deps))}, open(u.deps, "w"))
     elif os.path.exists(u.obj):
         os.remove(u.obj)
     return ok, msgs, time.time() - t0
