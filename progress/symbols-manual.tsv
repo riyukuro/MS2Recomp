@@ -4620,3 +4620,4 @@ criHeap_Initialize	1400282e0	func
 ?DAT_143b278d8@@3JA	143b278d8	data
 ?DAT_143b278e0@@3PEAXEA	143b278e0	data
 ?DAT_143b278f0@@3PAEA	143b278f0	data
+?GetLoadTimeImageCreator@LoadStates@GFx@Scaleform@@QEBAPEAVImageCreator@23@I@Z	142639350	func
