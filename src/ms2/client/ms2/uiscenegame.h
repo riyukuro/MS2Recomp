@@ -190,6 +190,7 @@ public:
     virtual void vfunc_56();                                    // 56 0x141aca500
     virtual void vfunc_58();                                    // 58 0x141aca570
 
+    int FUN_141aca870();                                        // 0x141aca870 debug hotkeys
     void FUN_141aca840(int nUiId);                              // 0x141aca840 remember a dialog to close on the next show
     void FUN_141acc510(NotifyObject* pNotify);                  // 0x141acc510 NotifyChangeEnableFeature handler
 

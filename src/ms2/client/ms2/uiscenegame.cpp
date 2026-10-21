@@ -276,13 +276,14 @@ int UISceneGame::vfunc_13()
 MS2_REPLACE_METHOD(0x141ac7650, UISceneGame, vfunc_13, 467, 0xEE67B3FF);
 
 // @0x141ac7830
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 int UISceneGame::vfunc_14()
 {
     if (UISwfEntity::vfunc_14()) return 1;
-    if (FUN_14025e7c0()->FUN_14116dd30(0x493ef, 0, 0) == 0) return 0;
-    FUN_141850100(0, 0);
-    return 1;
+    if (FUN_14025e7c0()->FUN_14116dd30(0x493ef, 0, 0) != 0) {
+        FUN_141850100(0, 0);
+        return 1;
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141ac7830, UISceneGame, vfunc_14, 101, 0x48E1F71D);
 
@@ -442,11 +443,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // @0x141ac7ec0
 UISceneGameBeautyShop::UISceneGameBeautyShop()
+    : m_a8(0), m_ac(0), m_b0(0), m_b4(0)
 {
-    m_a8 = 0;
-    m_ac = 0;
-    m_b0 = 0;
-    m_b4 = 0;
     m_6c = 0x620001f;
 }
 
@@ -509,7 +507,7 @@ void UISceneGameBeautyShop::vfunc_49(int n)
 }
 MS2_REPLACE_METHOD(0x141ac8130, UISceneGameBeautyShop, vfunc_49, 344, 0x482C92FF);
 
-class Unk_GsFn { public: char m_pad_00[40]; };
+class Unk_GsFn { public: void* m_pad_00[5]; };
 MS2_CHECK_SIZE(Unk_GsFn, 40);
 class Unk_GsAS : public AScript { public: Unk_GsFn FUN_1422bb330(const char* szName); };
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
@@ -538,10 +536,10 @@ void UISceneGameBeautyShop::vfunc_52()
 MS2_REPLACE_METHOD(0x141ac8310, UISceneGameBeautyShop, vfunc_52, 39, 0x70D86E74);
 
 // @0x141ac8340
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 int UISceneGameBeautyShop::vfunc_13()
 {
-    return UISwfEntity::vfunc_13() != 0;
+    if (UISwfEntity::vfunc_13()) return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141ac8340, UISceneGameBeautyShop, vfunc_13, 37, 0xE794AF82);
 
@@ -588,16 +586,13 @@ int UISceneGameBeautyShop::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 MS2_REPLACE_METHOD(0x141ac84a0, UISceneGameBeautyShop, OnMessage, 425, 0x799116AE);
 
 // @0x141ac8660
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 void UISceneGameBeautyShop::FUN_141ac8660()
 {
     Unk_GsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer != 0) {
-        if (FUN_1409478c0()->FUN_140a18070() != 0) {
-            pPlayer->FUN_14166d8e0(Unk_StreamPoint(0.0f, -1.0f, 0.0f));
-            pPlayer->vfunc_59(0xe, 0, 0, 0);
-        }
-    }
+    if (pPlayer == 0) return;
+    if (FUN_1409478c0()->FUN_140a18070() == 0) return;
+    pPlayer->FUN_14166d8e0(Unk_StreamPoint(0.0f, -1.0f, 0.0f));
+    pPlayer->vfunc_59(0xe, 0, 0, 0);
 }
 MS2_REPLACE_METHOD(0x141ac8660, UISceneGameBeautyShop, FUN_141ac8660, 160, 0xC0E3A86A);
 
@@ -880,10 +875,10 @@ void UISceneGameCinematicCutScene::vfunc_52()
 MS2_REPLACE_METHOD(0x141ac9700, UISceneGameCinematicCutScene, vfunc_52, 24, 0xA9B9DF0A);
 
 // @0x141ac9720
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 int UISceneGameCinematicCutScene::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    return UISceneEntity::vfunc_28(szMethod, pArgs, nArgs) != 0;
+    if (UISceneEntity::vfunc_28(szMethod, pArgs, nArgs)) return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141ac9720, UISceneGameCinematicCutScene, vfunc_28, 67, 0xF60BC26E);
 
@@ -953,24 +948,26 @@ void UISceneGameCinematicTalk::vfunc_52()
 MS2_REPLACE_METHOD(0x141ac9a90, UISceneGameCinematicTalk, vfunc_52, 24, 0xEA7E60A3);
 
 // @0x141ac9ab0
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 int UISceneGameCinematicTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    return UISceneEntity::vfunc_28(szMethod, pArgs, nArgs) != 0;
+    if (UISceneEntity::vfunc_28(szMethod, pArgs, nArgs)) return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141ac9ab0, UISceneGameCinematicTalk, vfunc_28, 67, 0x9BB14E4A);
 
 // @0x141ac9b00
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 float FUN_141ac9b00()
 {
-    float fScale;
-    if ((float)DAT_143af62d4 <= (float)DAT_143af62d8 * 1.6 || (float)DAT_143af62d8 / (float)DAT_143af62d4 <= 0.5) {
-        fScale = (float)DAT_143af62d8 / 1200.0f;
-    } else {
+    float fWide = (float)DAT_143af62d8 * 1.6f;
+    float fRatio = (float)DAT_143af62d8 / (float)DAT_143af62d4;
+    float fScale = 0.0f;
+    if (fWide < (float)DAT_143af62d4 && fRatio > 0.5) {
         fScale = (float)DAT_143af62d4 / 1920.0f;
+    } else {
+        fScale = (float)DAT_143af62d8 / 1200.0f;
     }
-    return (float)(1.0 / fScale);
+    fScale = 1.0f / fScale;
+    return fScale;
 }
 
 // @0x141ac9c00
@@ -1085,7 +1082,6 @@ extern wchar_t DAT_142fdea00[];
 extern wchar_t DAT_142fde9f4[];
 extern char DAT_142fdeb28[];
 extern Unk_GsAppG DAT_143b059e8;
-int FUN_141aca870();
 
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 
@@ -1136,16 +1132,15 @@ void UISceneGamePlay::vfunc_48(int n)
 MS2_REPLACE_METHOD(0x141ac9f20, UISceneGamePlay, vfunc_48, 415, 0x83342379);
 
 // @0x141aca0d0
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 void UISceneGamePlay::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
-    if (FUN_141acc6c0(n) == 0) {
+    if (FUN_141acc6c0(n) != 0) {
+        if ((unsigned char)FUN_140b632f0()->FUN_1410af770() != 0) FUN_14025e7a0()->FUN_1422aed30(0);
+        if (m_6c == 0x620001d) FUN_1403ed2b0()->FUN_141adb4c0(0);
+    } else {
         FUN_1403ed2b0()->FUN_141ada610(m_6c);
         FUN_1403ed2b0()->FUN_141adad20(m_6c);
-    } else {
-        if (FUN_140b632f0()->FUN_1410af770() != 0) FUN_14025e7a0()->FUN_1422aed30(0);
-        if (m_6c == 0x620001d) FUN_1403ed2b0()->FUN_141adb4c0(0);
     }
     if (FUN_141acc5f0(n) != 0) FUN_141acc5a0(1.0f);
     FUN_1422e7950();
@@ -1166,11 +1161,10 @@ void UISceneGamePlay::vfunc_11()
 MS2_REPLACE_METHOD(0x141aca1a0, UISceneGamePlay, vfunc_11, 189, 0x2CECF6E0);
 
 // @0x141aca270
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 int UISceneGamePlay::vfunc_13()
 {
-    if (UISwfEntity::vfunc_13() == 0) return FUN_141aca870();
-    return 1;
+    if (UISwfEntity::vfunc_13()) return 1;
+    return FUN_141aca870();
 }
 MS2_REPLACE_METHOD(0x141aca270, UISceneGamePlay, vfunc_13, 45, 0xD0F20584);
 
@@ -1193,12 +1187,11 @@ int UISceneGamePlay::vfunc_14()
 MS2_REPLACE_METHOD(0x141aca2b0, UISceneGamePlay, vfunc_14, 237, 0x5EDB9347);
 
 // @0x141aca3b0
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 void UISceneGamePlay::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (FUN_14025e7c0()->FUN_14116dcb0(0x49406, 0, 0) == 0) FUN_1409bb9e0()->FUN_140d406d0(0);
-    else FUN_1409bb9e0()->FUN_140d406d0(1);
+    if (FUN_14025e7c0()->FUN_14116dcb0(0x49406, 0, 0) != 0) FUN_1409bb9e0()->FUN_140d406d0(1);
+    else FUN_1409bb9e0()->FUN_140d406d0(0);
     if (FUN_14025e7c0()->FUN_14116d950(0x2a, 0, 0) != 0 || FUN_14025e7c0()->FUN_14116d950(0x36, 0, 0) != 0) FUN_1403ed2b0()->FUN_141adcb60(1);
     else FUN_1403ed2b0()->FUN_141adcb60(0);
     FUN_1408e48f0(&DAT_143ab2ee0);
@@ -1206,10 +1199,10 @@ void UISceneGamePlay::vfunc_15()
 MS2_REPLACE_METHOD(0x141aca3b0, UISceneGamePlay, vfunc_15, 199, 0x6836B94F);
 
 // @0x141aca480
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 void UISceneGamePlay::vfunc_34(void* p, float x, float y)
 {
-    if (FUN_14025e7a0()->FUN_1422aeed0(2) == 0) UISwfEntity::vfunc_34(p, x, y);
+    if (FUN_14025e7a0()->FUN_1422aeed0(2) != 0) return;
+    UISwfEntity::vfunc_34(p, x, y);
 }
 MS2_REPLACE_METHOD(0x141aca480, UISceneGamePlay, vfunc_34, 82, 0x597C7D9E);
 
@@ -1259,16 +1252,15 @@ void UISceneGamePlay::vfunc_58()
 MS2_REPLACE_METHOD(0x141aca570, UISceneGamePlay, vfunc_58, 705, 0x57099858);
 
 // @0x141aca840
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 void UISceneGamePlay::FUN_141aca840(int nUiId)
 {
-    m_a8.Add((Unk_GsUiId)nUiId);
+    m_a8.Add(reinterpret_cast<Unk_GsUiId&>(nUiId));
 }
 MS2_REPLACE_METHOD(0x141aca840, UISceneGamePlay, FUN_141aca840, 42, 0x89200DCD);
 
 // @0x141aca870
 // MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
-int FUN_141aca870()
+int UISceneGamePlay::FUN_141aca870()
 {
     if (FUN_14025e7c0()->FUN_14116d7a0(0xf) != 0) return 0;
     if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0) != 0) {
@@ -1678,16 +1670,15 @@ return nResult;
 }
 
 // @0x141acc510
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 void UISceneGamePlay::FUN_141acc510(NotifyObject* pNotify)
 {
-    if (dynamic_cast<NotifyChangeEnableFeature*>(pNotify) != 0) {
-        FUN_1401d3200()->FUN_1402b7200();
-        FUN_1401a9d70()->FUN_141811960();
-        FUN_14025e7d0()->FUN_140259930();
-        FUN_1409c51f0();
-        FUN_141371b20()->FUN_141815db0();
-    }
+    NotifyChangeEnableFeature* pChange = dynamic_cast<NotifyChangeEnableFeature*>(pNotify);
+    if (pChange == 0) return;
+    FUN_1401d3200()->FUN_1402b7200();
+    FUN_1401a9d70()->FUN_141811960();
+    FUN_14025e7d0()->FUN_140259930();
+    FUN_1409c51f0();
+    FUN_141371b20()->FUN_141815db0();
 }
 MS2_REPLACE_METHOD(0x141acc510, UISceneGamePlay, FUN_141acc510, 125, 0x4F19D812);
 
@@ -1715,10 +1706,16 @@ int FUN_141acc5f0(int nSceneId)
 }
 
 // @0x141acc6c0
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 int FUN_141acc6c0(int nSceneId)
 {
-    if (nSceneId == 0x620001f || nSceneId == 0x6200022 || nSceneId == 0x6200031 || nSceneId == 0x6200041 || nSceneId == 0x620007f) return 1;
+    switch (nSceneId) {
+    case 0x620001f:
+    case 0x6200022:
+    case 0x6200031:
+    case 0x6200041:
+    case 0x620007f:
+        return 1;
+    }
     return 0;
 }
 
@@ -1853,27 +1850,24 @@ void UISceneGameScreenShot::vfunc_57()
 MS2_REPLACE_METHOD(0x141acd730, UISceneGameScreenShot, vfunc_57, 24, 0xDE7FCC7E);
 
 // @0x141acd750
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 int UISceneGameScreenShot::vfunc_13()
 {
-    if (UISwfEntity::vfunc_13() == 0) {
-        if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0) != 0) {
-            if (FUN_14025e7c0()->FUN_14116d9c0(0x14, 1, 0) != 0) {
-                FUN_1422e7a40(0x620001d);
-                return 1;
-            }
+    if (UISwfEntity::vfunc_13()) return 1;
+    if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0) != 0) {
+        if (FUN_14025e7c0()->FUN_14116d9c0(0x14, 1, 0) != 0) {
+            FUN_1422e7a40(0x620001d);
+            return 1;
         }
-        return 0;
     }
-    return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141acd750, UISceneGameScreenShot, vfunc_13, 121, 0x77A86C42);
 
 // @0x141acd7d0
-// MS2-FUNCTIONAL: not byte-exact yet (stack frame / branch layout differ)
 int UISceneGameScreenShot::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    return UISceneEntity::vfunc_28(szMethod, pArgs, nArgs) != 0;
+    if (UISceneEntity::vfunc_28(szMethod, pArgs, nArgs)) return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141acd7d0, UISceneGameScreenShot, vfunc_28, 67, 0x32BD72BD);
 
