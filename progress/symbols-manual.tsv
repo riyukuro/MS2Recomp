@@ -7649,3 +7649,4 @@ jpeg_start_decompress	1426f4b10	func
 ?SetPixelARGB@ImageData@Render@Scaleform@@QEAAXIIK@Z	14257d240	func
 ?Play@SoundInfo@GFx@Scaleform@@QEAAXPEAVInteractiveObject@23@@Z	1426d3570	func
 ?Read@ButtonDef@GFx@Scaleform@@QEAAXPEAVLoadProcess@23@W4TagType@23@@Z	14265de60	func
+??0FilterSet@Render@Scaleform@@QEAA@PEAVFilter@12@@Z	1425e79a0	func
