@@ -855,7 +855,6 @@ Unk_UtilNode* FUN_140d89e80(Unk_UtilNodeList* pList, unsigned nIndex);
 unsigned char FUN_14106b8f0(const Unk_UtilNode* pNode);             // node flag byte
 
 // @0x141b701f0
-// MS2-FUNCTIONAL: loop-continue branch layout differs
 bool FUN_141b701f0(Unk_UtilNodeList* pList, unsigned bMask)
 {
     if (pList == NULL)
@@ -865,8 +864,11 @@ bool FUN_141b701f0(Unk_UtilNodeList* pList, unsigned bMask)
         return false;
     for (unsigned i = 0; i < nCount; i++) {
         Unk_UtilNode* pNode = FUN_140d89e80(pList, i);
-        if (pNode != NULL && (FUN_14106b8f0(pNode) & bMask) == 0)
+        if (pNode != NULL) {
+            if ((FUN_14106b8f0(pNode) & bMask) != 0)
+                continue;
             return false;
+        }
     }
     return true;
 }
@@ -1195,22 +1197,19 @@ void FUN_141b71250(int nValue)
 {
     if (FUN_14025e7a0() != NULL) {
         Unk_UtilHudPtr kHud = FUN_14025e7a0()->FUN_1422b0370(6);
-        if (kHud.FUN_140a58470() != NULL) {
-            int nMode = nValue == 0 ? 2 : 1;
-            kHud.FUN_140a584a0()->FUN_1422cecb0(nMode);
-        }
+        if (kHud.FUN_140a58470() != NULL)
+            kHud.FUN_140a584a0()->FUN_1422cecb0(nValue != 0 ? 1 : 2);
     }
 }
 
 // @0x141b712e0
-// MS2-FUNCTIONAL: exe destroys the HUD handle with an explicit call and keeps no EH state slot
-bool FUN_141b712e0()
+int FUN_141b712e0()
 {
     if (FUN_14025e7a0() == NULL)
-        return false;
+        return 0;
     Unk_UtilHudPtr kHud = FUN_14025e7a0()->FUN_1422b0370(6);
     if (kHud.FUN_140d41080(0))
-        return false;
+        return 0;
     return kHud.FUN_140a584a0()->FUN_1422bfca0() != 0;
 }
 
@@ -1381,27 +1380,20 @@ float FUN_141b72510(const Unk_UtilRangeEntry* pInfo);
 float FUN_141b724f0(const Unk_UtilRangeEntry* pInfo);
 
 // @0x141b71c50
-// MS2-FUNCTIONAL: nested null-check return layout and frame size differ
 float FUN_141b71c50()
 {
     Unk_UtilRangeEntry* pEntry = FUN_140af7da0(FUN_1413f9890());
-    if (pEntry == NULL) {
+    if (pEntry == NULL)
         return FLT_MAX;
-    } else {
-        pEntry = FUN_14200aae0(FUN_1413f9910(), pEntry);
-        if (pEntry == NULL) {
-            return FLT_MAX;
-        } else {
-            pEntry = FUN_142008b80(pEntry);
-            if (pEntry == NULL) {
-                return FLT_MAX;
-            } else {
-                float fWidth = FUN_141b72510(pEntry);
-                float fDepth = FUN_141b724f0(pEntry);
-                return fWidth * fDepth * 10000.0f;
-            }
-        }
-    }
+    Unk_UtilRangeEntry* pRange = FUN_14200aae0(FUN_1413f9910(), pEntry);
+    if (pRange == NULL)
+        return FLT_MAX;
+    Unk_UtilRangeEntry* pSize = FUN_142008b80(pRange);
+    if (pSize == NULL)
+        return FLT_MAX;
+    float fScale = 10000.0f;
+    float fWidth = FUN_141b72510(pSize);
+    return fWidth * FUN_141b724f0(pSize) * fScale;
 }
 
 // @0x141b72510
@@ -1551,18 +1543,19 @@ MS2_CHECK_SIZE(Unk_UtilLogScope, 0x10);
 // @0x141b721f0
 Unk_UtilLogScope::Unk_UtilLogScope(CStringA kTag)
 {
-    if (FUN_140a44830() != NULL) {
-        m_dwThread = GetCurrentThreadId();
-        m_kTag = kTag;
-        FUN_140a44830()->FUN_140a43750(m_dwThread, m_kTag);
-    }
+    if (FUN_140a44830() == NULL)
+        return;
+    m_dwThread = GetCurrentThreadId();
+    m_kTag = kTag;
+    FUN_140a44830()->FUN_140a43750(m_dwThread, m_kTag);
 }
 
 // @0x141b722b0
 Unk_UtilLogScope::~Unk_UtilLogScope()
 {
-    if (FUN_140a44830() != NULL)
-        FUN_140a44830()->FUN_140a437d0(m_dwThread);
+    if (FUN_140a44830() == NULL)
+        return;
+    FUN_140a44830()->FUN_140a437d0(m_dwThread);
 }
 
 // @0x141b72310
@@ -1578,15 +1571,13 @@ int FUN_141b72310(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 MS2_REPLACE(0x141b72310, FUN_141b72310, 74, 0xEE31BF70);
 
 // @0x141b72360
-// MS2-FUNCTIONAL: exe's out slot is a 24-byte object (frame layout differs)
 Unk_UtilHolder* FUN_141b72360(const Unk_UtilObjRef& kRef)
 {
     Unk_UtilHolder* pHolder = NULL;
-    if (kRef.FUN_140965780() != NULL) {
-        if (kRef.FUN_1409658c0()->GetProperty(0x6200045, &pHolder))
-            return pHolder;
-    }
-    return NULL;
+    if ((bool)kRef.FUN_140965780() && kRef.FUN_1409658c0()->GetProperty(0x6200045, &pHolder))
+        return pHolder;
+    else
+        return NULL;
 }
 
 // @0x141b723e0
@@ -1620,17 +1611,14 @@ MS2_REPLACE(0x141b72470, FUN_141b72470, 16, 0x5463A882);
 bool FUN_142087fc0(const NiFixedString& kKey);                      // key is not empty
 
 // @0x141b72480
-// MS2-FUNCTIONAL: result-variable store layout differs
 float FUN_141b72480(NiControllerSequence* pSeq, const NiFixedString& kKey)
 {
-    float fTime;
     if (!FUN_142087fc0(kKey)) {
-        fTime = -FLT_MAX;
+        return -FLT_MAX;
     } else {
         NiTextKeyMatch kMatch(kKey);
-        fTime = pSeq->GetKeyTimeAt(&kMatch);
+        return pSeq->GetKeyTimeAt(&kMatch);
     }
-    return fTime;
 }
 
 // @0x141b72530
