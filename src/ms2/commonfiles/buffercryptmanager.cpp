@@ -302,3 +302,22 @@ int FUN_1401cde60(CBufferCryptManager* pManager, unsigned char* pData, int nLeng
     }
     return 1;
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+#include "hook/ms2hook.h"
+MS2_REPLACE_METHOD(0x1401cd490, CXORCrypter, Encrypt, 141, 0xC2E8D752);
+MS2_REPLACE_METHOD(0x1401cd530, CXORCrypter, Decrypt, 146, 0x416CBFED);
+MS2_REPLACE_METHOD(0x1401cd7d0, CTableCrypter, Encrypt, 94, 0xEE661B00);
+MS2_REPLACE_METHOD(0x1401cd840, CTableCrypter, Decrypt, 99, 0x8BEE29AF);
+MS2_REPLACE_METHOD(0x1401cd910, CRearrangeCrypter, Init, 6, 0xA9AF6E37);
+MS2_REPLACE_METHOD(0x1401cd920, CRearrangeCrypter, Encrypt, 126, 0x566F6F41);
+MS2_REPLACE_METHOD(0x1401cd9b0, CRearrangeCrypter, Decrypt, 131, 0x8AE4685C);
+MS2_REPLACE(0x1401cda40, FUN_1401cda40, 157, 0x50CC8F22);
+MS2_REPLACE(0x1401cdae0, FUN_1401cdae0, 74, 0xDC3759AD);
+MS2_REPLACE(0x1401cdb30, FUN_1401cdb30, 11, 0x3BE09B6E);
+MS2_REPLACE(0x1401cdb40, FUN_1401cdb40, 11, 0x3BE09B6E);
+MS2_REPLACE(0x1401cdb50, FUN_1401cdb50, 88, 0x671D7725);
+MS2_REPLACE(0x1401cdbb0, FUN_1401cdbb0, 85, 0x157B6DDC);
+MS2_REPLACE(0x1401cddd0, FUN_1401cddd0, 128, 0x7B198022);
+MS2_REPLACE(0x1401cde60, FUN_1401cde60, 213, 0xDCD4A622);
+
