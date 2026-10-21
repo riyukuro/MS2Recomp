@@ -7889,3 +7889,5 @@ sfr_atan2f_thunk	14280f28e	func
 ?SetNoLine@DrawingContext@GFx@Scaleform@@QEAAXXZ	1426005c0	func
 ?ClassHash_GetCaseCheck@AS2@GFx@Scaleform@@YAPEAVFunctionRef@123@PEAV?$ASStringHash@VFunctionRef@AS2@GFx@Scaleform@@@23@AEBVASString@23@_N@Z	142949f60	func
 ?ClassHash_RemoveCaseCheck@AS2@GFx@Scaleform@@YAXPEAV?$ASStringHash@VFunctionRef@AS2@GFx@Scaleform@@@23@AEBVASString@23@_N@Z	14297cd20	func
+?LogParse@?$LogBase@VLoadProcess@GFx@Scaleform@@@GFx@Scaleform@@QEBAXPEBDZZ	1423dce80	func
+?ReadFontInfo@FontData@GFx@Scaleform@@QEAAXPEAVStream@23@W4TagType@23@@Z	142657290	func
