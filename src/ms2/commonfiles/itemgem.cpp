@@ -299,16 +299,12 @@ void CGemTransparency::vfunc_3(CInputStream& stream)
 MS2_REPLACE_METHOD(0x1405A3F90, CGemTransparency, vfunc_3, 101, 0xA25B1972);
 
 // @0x1405a4000
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 MS2Ptr<CGemBase> CGemTransparency::vfunc_4()
 {
     MS2Ptr<CGemTransparency> spGem(new CGemTransparency(*this));
     for (size_t i = 0; i < 10; i++)
-    {
-        int nHidden = FUN_1405a4140((int)i);
-        spGem->FUN_1405a4100((int)i, nHidden);
-    }
-    return MS2Ptr<CGemBase>((MS2Ptr<CGemBase>&&)spGem);
+        spGem->FUN_1405a4100((int)i, FUN_1405a4140((int)i));
+    return spGem;
 }
 MS2_REPLACE_METHOD(0x1405A4000, CGemTransparency, vfunc_4, 238, 0x34197057);
 
@@ -371,7 +367,6 @@ int CGemTransparency::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
 MS2_REPLACE_METHOD(0x1405A41F0, CGemTransparency, vfunc_6, 809, 0x64895CF1);
 
 // @0x1405a4520
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 int CGemTransparency::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_7(pPC, spItem) == 0)
@@ -380,11 +375,8 @@ int CGemTransparency::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
     {
         Unk_GemSlot nSlot = s_mapGemSlots.GetKeyAt(pos);
         MS2Ptr<CEquipItem> spEquip = FUN_1416561a0(pPC)->FUN_1411e1780(FUN_1405a46d0(nSlot), 3);
-        if (spEquip.get() != 0)
-        {
-            MS2Ptr<CItem> spWorn = spEquip->FUN_1411dc7a0();
-            pPC->vfunc_128(spWorn.get(), 0);
-        }
+        if (spEquip != 0)
+            pPC->vfunc_128(spEquip->FUN_1411dc7a0().get(), 0);
     }
     return 1;
 }
@@ -710,25 +702,28 @@ int CGemChatBalloon::vfunc_5(PC* pPC, MS2Ptr<CItem> spItem)
 MS2_REPLACE_METHOD(0x1405A4950, CGemChatBalloon, vfunc_5, 107, 0x312F240B);
 
 // @0x1405a49d0
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 int CGemChatBalloon::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_6(pPC, spItem) == 0)
         return 0;
-    if (pPC->vfunc_85().get() != 0)
+    Unk_PCBaseComp_aa8* pComp = pPC->vfunc_85().get();
+    if (pComp != 0)
         ((UIChatBalloon::Entity*)(void*)pPC->vfunc_85().operator->())->FUN_1418fb6f0(FUN_1405a7e80(m_nGemId));
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A49D0, CGemChatBalloon, vfunc_6, 381, 0x217FE53C);
 
 // @0x1405a4b60
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 int CGemChatBalloon::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_7(pPC, spItem) == 0)
         return 0;
-    if (pPC->vfunc_85().get() != 0)
-        ((UIChatBalloon::Entity*)(void*)pPC->vfunc_85().operator->())->FUN_1418fb6f0(CString(""));
+    Unk_PCBaseComp_aa8* pComp = pPC->vfunc_85().get();
+    if (pComp != 0)
+    {
+        CString strEmpty = "";
+        ((UIChatBalloon::Entity*)(void*)pPC->vfunc_85().operator->())->FUN_1418fb6f0(strEmpty);
+    }
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A4B60, CGemChatBalloon, vfunc_7, 354, 0x36EE21FF);
@@ -741,25 +736,28 @@ int CGemNametag::vfunc_5(PC* pPC, MS2Ptr<CItem> spItem)
 MS2_REPLACE_METHOD(0x1405A4E50, CGemNametag, vfunc_5, 107, 0xB1C968F3);
 
 // @0x1405a4ed0
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 int CGemNametag::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_6(pPC, spItem) == 0)
         return 0;
-    if (pPC->vfunc_82().get() != 0)
+    Unk_PCBaseComp_a78* pComp = pPC->vfunc_82().get();
+    if (pComp != 0)
         ((UINameTag::Entity*)(void*)pPC->vfunc_82().operator->())->FUN_141a5f040(FUN_1405a7e80(m_nGemId));
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A4ED0, CGemNametag, vfunc_6, 381, 0x6896D7E6);
 
 // @0x1405a5060
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 int CGemNametag::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_7(pPC, spItem) == 0)
         return 0;
-    if (pPC->vfunc_82().get() != 0)
-        ((UINameTag::Entity*)(void*)pPC->vfunc_82().operator->())->FUN_141a5f040(CString(""));
+    Unk_PCBaseComp_a78* pComp = pPC->vfunc_82().get();
+    if (pComp != 0)
+    {
+        CString strEmpty = "";
+        ((UINameTag::Entity*)(void*)pPC->vfunc_82().operator->())->FUN_141a5f040(strEmpty);
+    }
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A5060, CGemNametag, vfunc_7, 354, 0xE14E63A2);
@@ -827,12 +825,12 @@ int CGemFishing::FUN_1405a5be0()
 MS2_REPLACE_METHOD(0x1405A5BE0, CGemFishing, FUN_1405a5be0, 14, 0xA25B27BF);
 
 // @0x1405a5e20
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 int CGemCharEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_6(pPC, spItem) == 0)
         return 0;
-    if (FUN_1405a7e30(pPC) != 0)
+    ClonePC* pClone = FUN_1405a7e30(pPC);
+    if (pClone != 0)
         return 0;
     MS2Ptr<CGemCharEffectData> spData = FUN_1405a61f0();
     if (spData == 0)
@@ -841,8 +839,8 @@ int CGemCharEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
     query.m_strName = spData->FUN_1405acbd0(FUN_141658e60(pPC));
     query.m_nObject = 0;
     query.SetActor(pPC->FUN_14123c580());
-    int nHandle = FUN_1403ed280()->FUN_1411a49c0(&query);
-    if (nHandle != 0)
+    unsigned int nHandle = FUN_1403ed280()->FUN_1411a49c0(&query);
+    if (nHandle > 0)
         m_listEffects.AddTail(nHandle);
     FUN_1416636e0(pPC, spItem, m_nDataId);
     return 1;
@@ -850,18 +848,17 @@ int CGemCharEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
 MS2_REPLACE_METHOD(0x1405A5E20, CGemCharEffect, vfunc_6, 597, 0x32DB2D2F);
 
 // @0x1405a6080
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 int CGemCharEffect::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_7(pPC, spItem) == 0)
         return 0;
-    if (FUN_1405a7e30(pPC) != 0)
+    ClonePC* pClone = FUN_1405a7e30(pPC);
+    if (pClone != 0)
         return 0;
-    POSITION pos = m_listEffects.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_listEffects.GetHeadPosition(); pos != 0; m_listEffects.GetNext(pos))
     {
-        FUN_1403ed280()->FUN_1411a6060(m_listEffects.GetAt(pos));
-        m_listEffects.GetNext(pos);
+        int nHandle = m_listEffects.GetAt(pos);
+        FUN_1403ed280()->FUN_1411a6060(nHandle);
     }
     m_listEffects.RemoveAll();
     FUN_141663870(pPC);
@@ -881,7 +878,6 @@ MS2Ptr<CGemCharEffectData> CGemCharEffect::FUN_1405a61f0()
 MS2_REPLACE_METHOD(0x1405A61F0, CGemCharEffect, FUN_1405a61f0, 247, 0x46DC65A6);
 
 // @0x1405a6650
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 int CGemEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_6(pPC, spItem) == 0)
@@ -889,21 +885,19 @@ int CGemEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
     MS2Ptr<CGemEffectData> spData = FUN_1405a68d0();
     if (spData == 0)
         return 0;
-    const CString* pstrEffect = &spData->m_strEffect;
-    if (((Unk_GemEquipment*)FUN_14165f460(pPC))->FUN_141271090(spItem, *pstrEffect) == 0)
+    if (!((Unk_GemEquipment*)FUN_14165f460(pPC))->FUN_141271090(spItem, spData->m_strEffect))
         return 0;
     return 1;
 }
 MS2_REPLACE_METHOD(0x1405A6650, CGemEffect, vfunc_6, 392, 0x9D8906BE);
 
 // @0x1405a67e0
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 int CGemEffect::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
 {
-    int nResult = CGemBase::vfunc_7(pPC, spItem);
-    if (nResult != 0)
-        ((Unk_GemEquipment*)FUN_14165f460(pPC))->FUN_1412711e0(spItem);
-    return nResult != 0;
+    if (CGemBase::vfunc_7(pPC, spItem) == 0)
+        return 0;
+    ((Unk_GemEquipment*)FUN_14165f460(pPC))->FUN_1412711e0(spItem);
+    return 1;
 }
 MS2_REPLACE_METHOD(0x1405A67E0, CGemEffect, vfunc_7, 224, 0x711888E0);
 
@@ -935,17 +929,16 @@ void CGemPetSkin::vfunc_3(CInputStream& stream)
 MS2_REPLACE_METHOD(0x1405A6BD0, CGemPetSkin, vfunc_3, 58, 0xB7D8DF08);
 
 // @0x1405a6c10
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 CString CGemPetSkin::vfunc_10()
 {
     MS2Ptr<Unk_GemPetRow> spPet = FUN_14052d210()->FUN_1407290f0(m_nPetId);
-    if (!spPet.IsNull())
-    {
-        MS2Ptr<CItemData> spItem = FUN_14053f870(spPet->FUN_1407287e0(1));
-        if (!spItem.IsNull())
-            return spItem->FUN_14053fdd0();
-    }
-    return CString("");
+    if (spPet.IsNull())
+        return "";
+    unsigned int nItemId = spPet->FUN_1407287e0(1);
+    MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
+    if (spItem.IsNull())
+        return "";
+    return spItem->FUN_14053fdd0();
 }
 MS2_REPLACE_METHOD(0x1405A6C10, CGemPetSkin, vfunc_10, 306, 0x1CD343BD);
 
@@ -968,16 +961,12 @@ CItemGem::~CItemGem()
 }
 
 // @0x1405a7020
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 bool CItemGem::FUN_1405a7020(int nType, int nGemId)
 {
     switch (nType)
     {
     case 1:
         m_spGem.AssignRaw(new CGemTransparency(nType, nGemId));
-        break;
-    case 2:
-        m_spGem.AssignRaw(new CGemDamageFont(nType, nGemId));
         break;
     case 3:
         m_spGem.AssignRaw(new CGemChatBalloon(nType, nGemId));
@@ -991,11 +980,14 @@ bool CItemGem::FUN_1405a7020(int nType, int nGemId)
     case 6:
         m_spGem.AssignRaw(new CGemSwim(nType, nGemId));
         break;
-    case 7:
-        m_spGem.AssignRaw(new CGemCharEffect(nType, nGemId));
+    case 2:
+        m_spGem.AssignRaw(new CGemDamageFont(nType, nGemId));
         break;
     case 8:
         m_spGem.AssignRaw(new CGemFishing(nType, nGemId));
+        break;
+    case 7:
+        m_spGem.AssignRaw(new CGemCharEffect(nType, nGemId));
         break;
     case 9:
         m_spGem.AssignRaw(new CGemAutoMastery(nType, nGemId));
