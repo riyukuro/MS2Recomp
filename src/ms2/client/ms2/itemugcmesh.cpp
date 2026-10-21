@@ -204,7 +204,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 struct Unk_UgcPlayer;
 struct Unk_UgcDesc
 {
-    void FUN_14054b6e0(CStringW* pOut);                             // the text
+    CStringW FUN_14054b6e0();                                       // the text
 };
 struct Unk_UgcNames
 {
@@ -218,7 +218,7 @@ struct Unk_UgcRow2
 };
 struct Unk_UgcRow2Ptr
 {
-    bool FUN_14052cde0() const;                                     // is null
+    void* FUN_14052cde0() const;                                    // the row (0 when absent)
     Unk_UgcRow2* FUN_14052ceb0() const;                             // operator->
     void FUN_14052c420();                                           // release
     ~Unk_UgcRow2Ptr() { FUN_14052c420(); }
@@ -352,34 +352,30 @@ void FUN_141421f30(NiMesh* pMesh, Unk_UgcRoot* pRoot)
 }
 
 // @0x141422110
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
 // collects the nodes of a model whose name starts with strPrefix into kSet; true when any was found.
 unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObjectPtr>* pSet)
 {
     if (pRoot == 0)
         return 0;
-    NiAVObject* pFirst = pRoot->GetObjectByName(NiFixedString((const char*)strPrefix));
-    if (pFirst != 0)
-        pSet->insert(NiAVObjectPtr(pFirst));
+    if (NiAVObject* pFirst = pRoot->GetObjectByName((const char*)strPrefix))
+        pSet->insert(pFirst);
     Unk_NodeQueue kQueue(pRoot);
     NiAVObject* pObject;
     while ((pObject = kQueue.Next(false)) != 0)
     {
         CString strName((const char*)pObject->GetName());
-        if (strName.IsEmpty())
+        if (strName == strPrefix)
             continue;
         if (strName.Find((const char*)strPrefix, 0) == 0)
         {
-            pSet->insert(NiAVObjectPtr(pObject));
+            pSet->insert(pObject);
+            continue;
         }
-        else
-        {
-            NiNode* pNode = NiDynamicCast(NiNode, pObject);
-            if (pNode != 0)
-                kQueue.AddChildren(pNode);
-        }
+        NiNode* pNode = NiDynamicCast(NiNode, pObject);
+        if (pNode != 0)
+            kQueue.AddChildren(pNode);
     }
-    return !pSet->empty();
+    return pSet->empty() ? 0 : 1;
 }
 
 // @0x141422340
@@ -600,16 +596,14 @@ int FUN_1414232f0(NiAVObjectPtr spMesh, NiTexturePtr spTexture)
 }
 
 // @0x141423480 - finds the named child of a model; a node without a mesh is resolved to its first child
-// MS2-FUNCTIONAL: same calls/order; exe frame 0x78 vs 0x58: after the GetObjectByName result ctor the exe spills the
 //   NiAVObjectPtr ctor's return through three stack slots (+0x48/+0x50/+0x60, a reference-binding chain) not reproduced
 NiAVObjectPtr FUN_141423480(NiAVObjectPtr spRoot, const CString& strName)
 {
     if (spRoot)
     {
-        NiAVObjectPtr spObj = spRoot->GetObjectByName((const char*)strName);
-        if (spObj)
+        if (NiAVObjectPtr spObj = spRoot->GetObjectByName((const char*)strName))
         {
-            if (!FUN_141427d60(spObj))
+            if (!FUN_141427d60(spObj.operator->()))
             {
                 NiNodePtr spNode = NiDynamicCast(NiNode, spObj);
                 if (spNode)
@@ -873,7 +867,6 @@ int FUN_1414248a0(Unk_UgcItemData* pData, __int64 nKey, int* pOut)
 }
 
 // @0x141424970 - true when the item has a colour table row for the colours of the equipped item
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
 int FUN_141424970(MS2Ptr<CItem> spItem, Unk_UgcPlayer* pPlayer)
 {
     if (spItem == 0)
@@ -881,10 +874,23 @@ int FUN_141424970(MS2Ptr<CItem> spItem, Unk_UgcPlayer* pPlayer)
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
     if (spData == 0)
         return 0;
-    if (!((Unk_UgcItemData*)spData.get())->FUN_14053cf00())
+    if (((Unk_UgcItemData*)spData.operator->())->FUN_14053cf00())
     {
-        int nItemId = ((Unk_UgcItemData*)spData.get())->FUN_14053e260();
-        if (nItemId != 0)
+        unsigned aColor[4];                                         // 16-byte buffer in the exe (/GS cookie), two used
+        FUN_1414239e0(&aColor[0], 0, pPlayer);
+        FUN_1414239e0(&aColor[1], 1, pPlayer);
+        unsigned nItemId = ((Unk_UgcItemData*)spData.operator->())->FUN_14053e260();
+        if (nItemId > 0)
+        {
+            Unk_UgcRowPtr kRow = FUN_140281980()->FUN_1405590e0(nItemId, &aColor[0], &aColor[1]);
+            if (FUN_14059cf00(&kRow) != 0)
+                return 1;
+        }
+    }
+    else
+    {
+        unsigned nItemId = ((Unk_UgcItemData*)spData.operator->())->FUN_14053e260();
+        if (nItemId > 0)
         {
             CItemExtraData* pExtra = (Unk_UgcProxy*)spItem->FUN_140527870();
             Unk_UgcRowPtr kRow = FUN_140281980()->FUN_140558e80(
@@ -893,25 +899,11 @@ int FUN_141424970(MS2Ptr<CItem> spItem, Unk_UgcPlayer* pPlayer)
                 return 1;
         }
     }
-    else
-    {
-        unsigned aColor[2];
-        FUN_1414239e0(&aColor[0], 0, pPlayer);
-        FUN_1414239e0(&aColor[1], 1, pPlayer);
-        int nItemId = ((Unk_UgcItemData*)spData.get())->FUN_14053e260();
-        if (nItemId != 0)
-        {
-            Unk_UgcRowPtr kRow = FUN_140281980()->FUN_1405590e0(nItemId, &aColor[0], &aColor[1]);
-            if (FUN_14059cf00(&kRow) != 0)
-                return 1;
-        }
-    }
     return 0;
 }
 
 // @0x141424d00 - ray-picks the item's mesh parts; *pbEmpty is set to 0 when any mesh was tested
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
-bool FUN_141424d00(MS2Ptr<CEquipItem> spItem, NiPoint3* pOrigin, NiPoint3* pDir, NiPick* pPick, int* pbEmpty)
+int FUN_141424d00(MS2Ptr<CEquipItem> spItem, NiPoint3* pOrigin, NiPoint3* pDir, NiPick* pPick, int* pbEmpty)
 {
     pPick->SetFrontOnly(true);
     pPick->SetCoordinateType(NiPick::COORDINATES_WORLD);
@@ -922,7 +914,9 @@ bool FUN_141424d00(MS2Ptr<CEquipItem> spItem, NiPoint3* pOrigin, NiPoint3* pDir,
     for (size_t i = 0; i < aParts.GetCount(); i++)
     {
         std::set<NiAVObjectPtr>& kSet = aParts[i]->FUN_141201c90();
-        for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != kSet.end(); ++it)
+        std::set<NiAVObjectPtr>& rSet = kSet;
+        std::set<NiAVObjectPtr>::iterator itEnd = rSet.end();
+        for (std::set<NiAVObjectPtr>::iterator it = rSet.begin(); it != itEnd; ++it)
         {
             NiAVObjectPtr spRoot = *it;
             Unk_NodeQueue kQueue(spRoot);
@@ -956,7 +950,9 @@ bool FUN_141424d00(MS2Ptr<CEquipItem> spItem, NiPoint3* pOrigin, NiPoint3* pDir,
             }
         }
     }
-    return pPick->GetResults().GetSize() != 0;
+    if (pPick->GetResults().GetSize() > 0)
+        return 1;
+    return 0;
 }
 
 // @0x141425130 - true when a mesh of the model has an animation controller of the UGC type
@@ -1078,26 +1074,29 @@ bool FUN_1414258e0(__int64 nUid)
 // ---- item names ----
 
 // @0x141425950 - display name of an item; a linked item (kind 0xb) is shown through its link-kind string
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
 CStringW FUN_141425950(unsigned nItemId)
 {
     CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return FUN_1401a9d70()->FUN_141811980(1, nItemId);
-    if (((Unk_UgcItemData*)spData.get())->FUN_14053c5c0() != 0xb)
-        return strName;
-    CStringW strLinked = FUN_1401a9d70()->FUN_141811980(1, ((Unk_UgcItemData*)spData.get())->FUN_14053dc60());
-    Unk_UgcRow2Ptr kRow = FUN_14052d210()->FUN_1407290f0(((Unk_UgcItemData*)spData.get())->FUN_14053dc60());
-    if (kRow.FUN_14052cde0())
+    if (((Unk_UgcItemData*)spData.operator->())->FUN_14053c5c0() == 0xb)
+    {
+        CStringW strLinked = FUN_1401a9d70()->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->FUN_14053dc60());
+        Unk_UgcRow2Ptr kRow = FUN_14052d210()->FUN_1407290f0(((Unk_UgcItemData*)spData.operator->())->FUN_14053dc60());
+        if (kRow.FUN_14052cde0())
+        {
+            if (kRow.FUN_14052ceb0()->m_nType == 1)
+                return FUN_14052bd00(0xcd6, strLinked);
+            else
+                return FUN_14052bd00(0xcd5, strLinked);
+        }
         return strLinked;
-    if (kRow.FUN_14052ceb0()->m_nType == 1)
-        return FUN_14052bd00(0xcd6, strLinked);
-    return FUN_14052bd00(0xcd5, strLinked);
+    }
+    return strName;
 }
 
 // @0x141425c00 - name of the first item of a category
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
 CStringW FUN_141425c00(int nCategory)
 {
     CStringW strName;
@@ -1106,14 +1105,13 @@ CStringW FUN_141425c00(int nCategory)
     for (unsigned __int64 i = 0; i < aItems.size(); i++)
     {
         MS2Ptr<CItemData> spData = aItems[i];
-        if (spData.get() != 0 && ((Unk_UgcItemData*)spData.get())->FUN_14053ec50() == nCategory)
+        if (spData.get() != 0 && ((Unk_UgcItemData*)spData.operator->())->FUN_14053ec50() == nCategory)
         {
-            strName = FUN_1401a9d70()->FUN_141811980(1, ((Unk_UgcItemData*)spData.get())->FUN_14053c510());
+            strName = FUN_1401a9d70()->FUN_141811980(1, ((Unk_UgcItemData*)spData.operator->())->FUN_14053c510());
             if (!strName.IsEmpty())
                 return strName;
-            CStringW strDesc;
-            ((Unk_UgcItemData*)spData.get())->FUN_14053eba0()->FUN_14054b6e0(&strDesc);
-            return strDesc;
+            else
+                return ((Unk_UgcItemData*)spData.operator->())->FUN_14053eba0()->FUN_14054b6e0();
         }
     }
     return CStringW((const wchar_t*)0);
@@ -1208,7 +1206,6 @@ void CItemUgcMeshContainer::FUN_141426140()
 }
 
 // @0x141426170
-// MS2-FUNCTIONAL: the node-set iteration and the by-value MS2Ptr temporaries are laid out differently
 bool CItemUgcMeshContainer::FUN_141426170(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem == 0)
@@ -1233,15 +1230,17 @@ bool CItemUgcMeshContainer::FUN_141426170(MS2Ptr<CEquipItem> spItem)
             MS2Ptr<Unk_PickTarget> spPart = aParts[j];
             std::set<NiAVObjectPtr> kNodes;
             spPart->FUN_141201cb0(kNodes);
-            for (std::set<NiAVObjectPtr>::iterator it = kNodes.begin(); it != kNodes.end(); ++it)
+            std::set<NiAVObjectPtr>& rNodes = kNodes;
+            std::set<NiAVObjectPtr>::iterator itEnd = rNodes.end();
+            for (std::set<NiAVObjectPtr>::iterator it = rNodes.begin(); it != itEnd; ++it)
             {
                 NiAVObjectPtr spNode = *it;
-                if (spNode != 0)
-                {
-                    MS2Ptr<CItemUgcMesh> spMesh = FUN_141426af0(strName, spNode);
-                    if (!(spMesh == 0))
-                        m_meshes.Add(spMesh);
-                }
+                if (spNode == 0)
+                    continue;
+                MS2Ptr<CItemUgcMesh> spMesh = FUN_141426af0(strName, spNode);
+                if (spMesh == 0)
+                    continue;
+                m_meshes.Add(spMesh);
             }
         }
     }
