@@ -574,13 +574,15 @@ MS2_REPLACE_METHOD(0x14162AC00, CPartyManager, FUN_14162ac00, 50, 0xBD8235D8);
 bool CPartyManager::FUN_14162ac40() { return permissions.FUN_140b912f0(); }
 MS2_REPLACE_METHOD(0x14162AC40, CPartyManager, FUN_14162ac40, 31, 0x7B803D45);
 
-// MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x14162ac70
 bool CPartyManager::FUN_14162ac70(int key)
 {
-    if (!FUN_14162ab20()) return FUN_140d9f880(FUN_140931510(), key) < 10;
+    if (!FUN_14162ab20()) {
+        if (FUN_140d9f880(FUN_140931510(), key) >= 10) return false;
+        return true;
+    }
     for (unsigned i = 0; i < members.GetCount(); ++i)
-        if (members[i]->counters.FUN_140268570(key) > 9) return false;
+        if (members[i]->counters.FUN_140268570(key) >= 10) return false;
     return true;
 }
 MS2_REPLACE_METHOD(0x14162AC70, CPartyManager, FUN_14162ac70, 177, 0xA0EAF4F7);
@@ -589,19 +591,31 @@ MS2_REPLACE_METHOD(0x14162AC70, CPartyManager, FUN_14162ac70, 177, 0xA0EAF4F7);
 bool CPartyManager::FUN_14162ad30() { return flag29; }
 MS2_REPLACE_METHOD(0x14162AD30, CPartyManager, FUN_14162ad30, 15, 0x52CC66EC);
 
-// MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x14162ad50
-int CPartyManager::FUN_14162ad50(CStringW name) { return FUN_14162b0c0(name).get() != NULL; }
+int CPartyManager::FUN_14162ad50(CStringW name)
+{
+    CPartyMember* p = FUN_14162b0c0(name).get();
+    if (p != NULL) return 1;
+    return 0;
+}
 MS2_REPLACE_METHOD(0x14162AD50, CPartyManager, FUN_14162ad50, 187, 0xEF192C97);
 
-// MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x14162ae20
-int CPartyManager::FUN_14162ae20(__int64 id) { return FUN_14162afc0(id).get() != NULL; }
+int CPartyManager::FUN_14162ae20(__int64 id) 
+{
+    CPartyMember* p = FUN_14162afc0(id).get();
+    if (p != NULL) return 1;
+    return 0;
+}
 MS2_REPLACE_METHOD(0x14162AE20, CPartyManager, FUN_14162ae20, 105, 0x72DB080E);
 
-// MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x14162ae90
-int CPartyManager::FUN_14162ae90(__int64 id) { return FUN_14162b260(id).get() != NULL; }
+int CPartyManager::FUN_14162ae90(__int64 id) 
+{
+    CPartyMember* p = FUN_14162b260(id).get();
+    if (p != NULL) return 1;
+    return 0;
+}
 MS2_REPLACE_METHOD(0x14162AE90, CPartyManager, FUN_14162ae90, 105, 0xB07D31F7);
 
 // @0x14162af00
@@ -1559,11 +1573,11 @@ void CPartyManager::FUN_141630a60(CInPacket& packet)
 bool CPartyManager::FUN_141630c30(__int64 id) { return leaderId == id; }
 MS2_REPLACE_METHOD(0x141630C30, CPartyManager, FUN_141630c30, 55, 0xE1350063);
 
-// MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x141630c70
 bool CPartyManager::FUN_141630c70(int result, const CMsgBoxData&)
 {
-    if (result == 0) FUN_14162bd40(0);
+    if (result != 0) return true;
+    FUN_14162bd40(0);
     return true;
 }
 MS2_REPLACE_METHOD(0x141630C70, CPartyManager, FUN_141630c70, 48, 0xE4C414EC);
@@ -1622,15 +1636,16 @@ void CPartyManager::FUN_141631060()
 }
 MS2_REPLACE_METHOD(0x141631060, CPartyManager, FUN_141631060, 91, 0x2A2536B7);
 
-// MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x1416310d0
 void CPartyManager::FUN_1416310d0(CInPacket& packet)
 {
-    unsigned char type = static_cast<CInputStream&>(packet).vfunc_o8_1();
-    if (type == 0) FUN_141631370(packet);
-    else if (type == 1) FUN_141631410(packet);
-    else if (type == 2) FUN_1416314c0(packet);
-    else if (type == 4) FUN_141631700(packet);
+    int type = static_cast<CInputStream&>(packet).vfunc_o8_1();
+    switch (type) {
+    case 0: FUN_141631370(packet); break;
+    case 1: FUN_141631410(packet); break;
+    case 2: FUN_1416314c0(packet); break;
+    case 4: FUN_141631700(packet); break;
+    }
 }
 MS2_REPLACE_METHOD(0x1416310D0, CPartyManager, FUN_1416310d0, 164, 0x4143B2A2);
 
@@ -1656,7 +1671,6 @@ void CPartyManager::FUN_141631200()
 }
 MS2_REPLACE_METHOD(0x141631200, CPartyManager, FUN_141631200, 92, 0xF01C980A);
 
-// MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x141631270
 void CPartyManager::FUN_141631270(const CMatchPartyRecruitSchCond& condition)
 {
@@ -1664,15 +1678,15 @@ void CPartyManager::FUN_141631270(const CMatchPartyRecruitSchCond& condition)
     packet.Encode1(2);
     FUN_140694630(&condition, packet);
     FUN_140710590(packet);
-    if (condition.page < 2) searchPending = 1;
+    if (condition.page <= 1) searchPending = 1;
 }
 MS2_REPLACE_METHOD(0x141631270, CPartyManager, FUN_141631270, 120, 0x92FC6B3D);
 
-// MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x1416312f0
 void CPartyManager::FUN_1416312f0(int id)
 {
-    if (partyId == id) deadline = FUN_141472bc0() + 10000;
+    if (partyId != id) return;
+    deadline = FUN_141472bc0() + 10000;
 }
 MS2_REPLACE_METHOD(0x1416312F0, CPartyManager, FUN_1416312f0, 55, 0x412FA0CA);
 
