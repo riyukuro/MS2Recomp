@@ -1631,7 +1631,6 @@ float UIPopupEntity::vfunc_59()
 }
 
 // @0x141a7d260
-// MS2-FUNCTIONAL: returns the zero position as an Unk_PopupPos copy (the exe builds a NiPoint3 from DAT_143b01a60)
 Unk_PopupPos UIPopupEntity::vfunc_60()
 {
     if (m_68 != 0)
@@ -1641,11 +1640,7 @@ Unk_PopupPos UIPopupEntity::vfunc_60()
         if (m_70 != 0)
             return FUN_140947900(static_cast<NiAVObject*>(m_70));
     }
-    Unk_PopupPos pos;
-    pos.x = DAT_143b01a60.x;
-    pos.y = DAT_143b01a60.y;
-    pos.z = DAT_143b01a60.z;
-    return pos;
+    return Unk_PopupPos(DAT_143b01a60);
 }
 
 // @0x141a7d300

@@ -14,10 +14,13 @@
 #include "ms2/commonfiles/timer.h"
 #include "ms2/placeholder/ascript.h"
 
+namespace efd { class Point3; }
+
 // the popup's anchor position (3 floats, passed by pointer to a copy)
 struct Unk_PopupPos
 {
     Unk_PopupPos() {}                   // a user ctor keeps a local copy free of a /GS cookie
+    Unk_PopupPos(const efd::Point3& kPt);   // 0x14027dcf0 (the shared NiPoint3-from-Point3 copy)
     float x, y, z;
 };
 MS2_CHECK_SIZE(Unk_PopupPos, 0xc);
