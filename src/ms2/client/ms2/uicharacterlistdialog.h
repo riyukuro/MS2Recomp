@@ -136,7 +136,7 @@ public:
     int FUN_1418f1b90();                                    // 0x1418f1b90 the id of the selected character's map
     int FUN_1418f1c20();                                    // 0x1418f1c20 the number of characters
     __int64 FUN_1418f1c50();                                // 0x1418f1c50
-    bool FUN_1418f1c70();                                   // 0x1418f1c70
+    int FUN_1418f1c70();                                    // 0x1418f1c70
     void FUN_1418f1cb0();                                   // 0x1418f1cb0 preview the selected character
     static void FUN_1418f1e90();                            // 0x1418f1e90
     void FUN_1418f1f10();                                   // 0x1418f1f10
