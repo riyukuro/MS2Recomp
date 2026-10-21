@@ -91,7 +91,7 @@ public:
     void FUN_14199c8a0(int* pWidth, int* pHeight);              // the panel size
     void FUN_14199ca90();                                       // bind and fill the tab bar
     void FUN_14199d1c0();                                       // the tab list
-    int FUN_14199d840();                                        // the stackable items of the tab
+    int FUN_14199d840(int nTab);                                   // the stackable items of the tab
     int FUN_14199d920(int nTab);                                // the button of a tab
     bool FUN_14199d980();                                       // the tab can be expanded
     CStringW FUN_14199d9c0();                                   // the item break button tooltip

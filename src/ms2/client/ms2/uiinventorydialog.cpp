@@ -252,7 +252,7 @@ class Unk_InvItemBag : public ASTileList
 public:
 #define INV_V(n) virtual void vfunc_##n();
     INV_V(16) INV_V(17) INV_V(18) INV_V(19) INV_V(20) INV_V(21) INV_V(22) INV_V(23)
-    virtual void vfunc_24(int bRefresh);                            // 24 (+0xc0) validateNow
+    virtual void vfunc_24(bool bRefresh);                           // 24 (+0xc0) validateNow (bool: the exe passes dl)
     virtual void vfunc_25(const Scaleform::GFx::Value& provider);   // 25 (+0xc8) dataProvider
     void FUN_1422cf4f0(int nRow);                                   // scroll to a row
     int FUN_1422cf520();                                            // the scroll position
@@ -263,7 +263,7 @@ class Unk_InvExpandLabel : public ASUIComponent
 {
 public:
     INV_V(16) INV_V(17) INV_V(18) INV_V(19) INV_V(20) INV_V(21) INV_V(22) INV_V(23)
-    virtual void vfunc_24(int bRefresh);                            // 24 (+0xc0)
+    virtual void vfunc_24(bool bRefresh);                           // 24 (+0xc0) (bool: the exe passes dl)
     void FUN_1422e4a50(const CStringW& strText);                    // set the text
 };
 
@@ -640,12 +640,10 @@ MS2_REPLACE_METHOD(0x141997620, UIInventoryDialog, vfunc_62, 174, 0);
 // @0x1419976e0
 void UIInventoryDialog::vfunc_oa0_11(void* a1)
 {
-    if (vfunc_55() == 0)
-    {
-        MS2Ptr<ASTextField> spMeso = GetChild<ASTextField>("m_meso");
-        if (spMeso.get() != 0)
-            spMeso->FUN_1422c4cd0(FUN_1409404f0((__int64)a1));
-    }
+    if (vfunc_55() != 0)
+        return;
+    if (MS2Ptr<ASTextField> spMeso = GetChild<ASTextField>("m_meso"))
+        spMeso->FUN_1422c4cd0(FUN_1409404f0((__int64)a1));
 }
 MS2_REPLACE_METHOD_VIA(0x1419976E0, UIInventoryDialog, UIStatusEventListener, vfunc_oa0_11, 272, 0);
 
@@ -864,7 +862,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         {
             if (DAT_143ab2a90.FUN_140a5cf30(nTab) == 0)
                 return 1;
-            if (0 < FUN_14199d840())
+            if (0 < FUN_14199d840(nTab))
             {
                 MS2Ptr<CMsgBoxData> box = FUN_140d73e40(1, 0x2a1, 0, CStringW(L""));
                 if (box.get() != 0)
@@ -1053,7 +1051,8 @@ int UIInventoryDialog::vfunc_13()
                     m_1e0->FUN_1422c7630(0);
                     return 1;
                 }
-                pDlg->FUN_1422c7630(0);
+                else
+                    pDlg->FUN_1422c7630(0);
             }
         }
     }
@@ -1122,8 +1121,7 @@ MS2_REPLACE_METHOD(0x141999E20, UIInventoryDialog, FUN_141999e20, 36, 0);
 void UIInventoryDialog::FUN_141999e50()
 {
     m_19c = 7;
-    MS2Ptr<ASMovieClip> spEff = GetChild<ASMovieClip>("m_expandEff");
-    if (spEff.get() != 0)
+    if (MS2Ptr<ASMovieClip> spEff = GetChild<ASMovieClip>("m_expandEff"))
         spEff->vfunc_12(1);
 }
 MS2_REPLACE_METHOD(0x141999E50, UIInventoryDialog, FUN_141999e50, 175, 0);
@@ -1207,7 +1205,8 @@ MS2_REPLACE_METHOD(0x14199A3F0, UIInventoryDialog, FUN_14199a3f0, 179, 0);
 void UIInventoryDialog::FUN_14199a4b0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASIndexEvent event(params);
-    if (event.FUN_1422e2aa0() < 0)
+    int nIndex = event.FUN_1422e2aa0();
+    if (nIndex < 0)
         return;
     Scaleform::GFx::Value item = event.FUN_1422e2b60();
     if (FUN_1409b0390(&item))
@@ -1221,7 +1220,6 @@ void UIInventoryDialog::FUN_14199a4b0(const Scaleform::GFx::FunctionHandler::Par
 MS2_REPLACE_METHOD(0x14199A4B0, UIInventoryDialog, FUN_14199a4b0, 348, 0);
 
 // @0x14199a620
-// MS2-FUNCTIONAL: frame layout of the candidate temporaries differs
 void UIInventoryDialog::FUN_14199a620(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (!m_1e0)
@@ -1246,7 +1244,7 @@ void UIInventoryDialog::FUN_14199a620(const Scaleform::GFx::FunctionHandler::Par
             candidates.FUN_1422bbf00(row);
         }
     }
-    int nRows = candidates.FUN_1422bc5d0() < 6 ? (int)candidates.FUN_1422bc5d0() : 5;
+    int nRows = candidates.FUN_1422bc5d0() > 5 ? 5 : (int)candidates.FUN_1422bc5d0();
     static_cast<ASObj*>(static_cast<AScript*>(m_1e0.operator->()))->FUN_1407cb9c0("m_rowCount", nRows);
     m_1e0->Invoke("setCandidates", candidates);
 }
@@ -1338,8 +1336,7 @@ bool UIInventoryDialog::FUN_14199ac30(int nResult, const CMsgBoxData& box)
     CItem* pItem = DAT_143ab2a90.FUN_140a5d680(nItemUid).get();
     if (pItem == 0)
         return false;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1405c2690(CStringW(L"s_coupleeffect_send_confirm"), strName), 0, CStringW(L""));
-    if (spBox.get() != 0)
+    if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1405c2690(CStringW(L"s_coupleeffect_send_confirm"), strName), 0, CStringW(L"")))
     {
         spBox->FUN_1405340b0(nItemUid);
         spBox->FUN_140b76940(CStringW(strName));
@@ -1447,12 +1444,12 @@ void UIInventoryDialog::FUN_14199ba10()
     m_1d8 = "";
     int nCount = DAT_143ab2a90.FUN_140a5d050(m_194);
     FUN_14140ed60(m_188);
-    if (InventorySlotBag* pBag = FUN_14140eca0(m_188, m_194, nCount))
-    {
-        m_210->vfunc_25(pBag->FUN_14140f7a0().FUN_1422bb890());
-        m_210->vfunc_24(1);
-        m_19c &= ~4;
-    }
+    InventorySlotBag* pBag = FUN_14140eca0(m_188, m_194, nCount);
+    if (pBag == 0)
+        return;
+    m_210->vfunc_25(pBag->FUN_14140f7a0().FUN_1422bb890());
+    m_210->vfunc_24(true);
+    m_19c &= ~4;
 }
 MS2_REPLACE_METHOD(0x14199BA10, UIInventoryDialog, FUN_14199ba10, 395, 0);
 
@@ -1518,8 +1515,9 @@ void UIInventoryDialog::FUN_14199bed0(const __int64& nMesos)
     }
     else if (nMesos < 10 || 50000 < nMesos)
     {
+        __int64 nMax = std::min<__int64>(50000, DAT_143ab2898);
         int nMin = 10;
-        Unk_InvNotice(0xee, 1, 1, nMin, FUN_1409404f0(std::min<__int64>(50000, DAT_143ab2898)));
+        Unk_InvNotice(0xee, 1, 1, nMin, FUN_1409404f0(nMax));
     }
     else
     {
@@ -1555,13 +1553,12 @@ MS2_REPLACE_METHOD(0x14199C020, UIInventoryDialog, vfunc_66, 158, 0);
 // @0x14199c0d0
 void UIInventoryDialog::FUN_14199c0d0()
 {
-    int nUsed = DAT_143ab2a90.FUN_140a5cf30(m_194);
-    int nTotal = DAT_143ab2a90.FUN_140a5d050(m_194);
-    MS2Ptr<Unk_InvExpandLabel> spLabel = GetChild<Unk_InvExpandLabel>("m_expand");
-    if (spLabel.get() != 0)
+    unsigned int nUsed = DAT_143ab2a90.FUN_140a5cf30(m_194);
+    unsigned int nTotal = DAT_143ab2a90.FUN_140a5d050(m_194);
+    if (MS2Ptr<Unk_InvExpandLabel> spLabel = GetChild<Unk_InvExpandLabel>("m_expand"))
     {
         spLabel->FUN_1422e4a50(StringFormat(L"{0}/{1}", nUsed, nTotal));
-        spLabel->vfunc_24(1);
+        spLabel->vfunc_24(true);
     }
     m_19c &= ~2;
 }
@@ -1634,7 +1631,10 @@ MS2_REPLACE_METHOD(0x14199C610, UIInventoryDialog, FUN_14199c610, 405, 0);
 // @0x14199c7b0
 bool UIInventoryDialog::FUN_14199c7b0(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0 && dynamic_cast<ASDialog*>((AScript*)m_30) != 0 && m_1e0.get() != 0)
+    if (nResult != 0)
+        return true;
+    ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDlg != 0 && m_1e0.get() != 0)
     {
         static_cast<Unk_InvSwfManager*>(FUN_140b632f0())->FUN_1422d4dd0(CString(m_20));
         m_1e0->FUN_1422c7630(1);
@@ -1745,7 +1745,7 @@ void UIInventoryDialog::FUN_14199d1c0()
 MS2_REPLACE_METHOD(0x14199D1C0, UIInventoryDialog, FUN_14199d1c0, 1646, 0);
 
 // @0x14199d840
-int UIInventoryDialog::FUN_14199d840()
+int UIInventoryDialog::FUN_14199d840(int)
 {
     Unk_Inventory::ItemArray items;
     DAT_143ab2a90.FUN_140a60880(m_194, items);
@@ -1783,8 +1783,7 @@ CStringW UIInventoryDialog::FUN_14199d9c0()
     if (pPc == 0)
         return L"";
     CStringW strTooltip(L"");
-    MS2Ptr<Unk_InvButton> spButton = m_30->FUN_140acce30<Unk_InvButton>("m_itemBreak");
-    if (spButton.get() != 0)
+    if (MS2Ptr<Unk_InvButton> spButton = m_30->FUN_140acce30<Unk_InvButton>("m_itemBreak"))
     {
         if (spButton->FUN_1422c2030() == 1 || 0x13 < (unsigned short)pPc->vfunc_78())
         {
@@ -1820,8 +1819,7 @@ CStringW UIInventoryDialog::FUN_14199deb0(int bBank)
     if (pPc == 0)
         return L"";
     CStringW strTooltip(L"");
-    MS2Ptr<ASUIComponent> spButton = m_30->FUN_140acce30<ASUIComponent>("m_openBank");
-    if (spButton.get() != 0)
+    if (MS2Ptr<ASUIComponent> spButton = m_30->FUN_140acce30<ASUIComponent>("m_openBank"))
     {
         if (bBank == 1)
         {
@@ -1951,8 +1949,7 @@ MS2_REPLACE_METHOD(0x14199F870, UIInviteGroupDialog, vfunc_67, 36, 0);
 void UIInviteGroupDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_userCount");
-    if (spCount.get() != 0)
+    if (MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_userCount"))
         spCount->FUN_1422c4cd0(FUN_1408116a0(0x48a, 0));
     FUN_1419a0240();
 }
@@ -1965,12 +1962,13 @@ int UIInviteGroupDialog::vfunc_13()
         return 1;
     if (!FUN_1419a0b20())
         return 0;
-    if (!FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
-        return 0;
-    MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput");
-    if (spInput.get() != 0)
-        FUN_141484720()->Invite(m_180, spInput->FUN_1422e0b00());
-    return 1;
+    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+    {
+        if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput"))
+            FUN_141484720()->Invite(m_180, spInput->FUN_1422e0b00());
+        return 1;
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x14199F9A0, UIInviteGroupDialog, vfunc_13, 309, 0);
 
@@ -2058,8 +2056,7 @@ MS2_REPLACE_METHOD(0x14199FE30, UIInviteGroupDialog, FUN_14199fe30, 58, 0);
 void UIInviteGroupDialog::FUN_14199fe70(unsigned nCount)
 {
     FUN_1419a0160(nCount);
-    MS2Ptr<ASUIComponent> spButton = GetChild<ASUIComponent>("m_inviteFromComunity");
-    if (spButton.get() != 0)
+    if (MS2Ptr<ASUIComponent> spButton = GetChild<ASUIComponent>("m_inviteFromComunity"))
     {
         Unk_ChatPtrChat spChat = FUN_141484720()->FUN_14137e630(m_180);
         unsigned nTotal = nCount;
@@ -2076,8 +2073,7 @@ void UIInviteGroupDialog::FUN_14199fe70(unsigned nCount)
             MS2Ptr<CMsgBoxData> spTop = FUN_14151f820();
             if (spTop.get() != 0 && spTop->FUN_141a02ce0() == strText)
                 return;
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strText, 0, strText);
-            if (spBox.get() != 0)
+            if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strText, 0, strText))
                 FUN_140d73c60(spBox);
         }
     }
@@ -2087,8 +2083,7 @@ MS2_REPLACE_METHOD(0x14199FE70, UIInviteGroupDialog, FUN_14199fe70, 735, 0);
 // @0x1419a0160
 void UIInviteGroupDialog::FUN_1419a0160(unsigned nCount)
 {
-    MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_userCount");
-    if (spCount.get() != 0)
+    if (MS2Ptr<ASTextField> spCount = GetChild<ASTextField>("m_userCount"))
         spCount->FUN_1422c4cd0(FUN_14028dee0(0x48a, nCount));
 }
 MS2_REPLACE_METHOD(0x1419A0160, UIInviteGroupDialog, FUN_1419a0160, 204, 0);
@@ -2100,8 +2095,7 @@ void UIInviteGroupDialog::FUN_1419a0240()
     FUN_1419a06d0(entries);
     FUN_1419a07d0(entries);
     FUN_1419a08f0(entries);
-    MS2Ptr<Unk_InvUserList> spList = GetChild<Unk_InvUserList>("m_userList");
-    if (spList.get() != 0)
+    if (MS2Ptr<Unk_InvUserList> spList = GetChild<Unk_InvUserList>("m_userList"))
     {
         spList->FUN_1422dd1d0();
         for (POSITION pos = entries.GetHeadPosition(); pos != 0; entries.GetNext(pos))
@@ -2118,8 +2112,7 @@ void UIInviteGroupDialog::FUN_1419a0240()
         spList->FUN_1422dd000(spList->FUN_1422dd150() < 9 ? spList->FUN_1422dd150() : 8);
         spList->vfunc_24(1);
     }
-    MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput");
-    if (spInput.get() != 0)
+    if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput"))
         spInput->FUN_1422e0a60(CString(""));
     if (ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30))
         pDlg->Invoke("updateUserCount");
@@ -2134,8 +2127,12 @@ void UIInviteGroupDialog::FUN_1419a06d0(EntryList& entries)
     for (size_t i = 0; i < nCount; i++)
     {
         CPartyMember* pMember = members[i].get();
-        if (pMember != 0 && FUN_1419a0a10(pMember->user.m_8, entries) == 0)
+        if (pMember != 0)
+        {
+            if (FUN_1419a0a10(pMember->user.m_8, entries) != 0)
+                continue;
             entries.AddTail(Unk_InvGroupEntry(*pMember));
+        }
     }
 }
 MS2_REPLACE_METHOD(0x1419A06D0, UIInviteGroupDialog, FUN_1419a06d0, 243, 0);
@@ -2149,8 +2146,12 @@ void UIInviteGroupDialog::FUN_1419a07d0(EntryList& entries)
     for (size_t i = 0; i < nCount; i++)
     {
         CGuildMember* pMember = members[i].FUN_1404f0ab0();
-        if (pMember != 0 && FUN_1419a0a10(pMember->data.f08, entries) == 0)
+        if (pMember != 0)
+        {
+            if (FUN_1419a0a10(pMember->data.f08, entries) != 0)
+                continue;
             entries.AddTail(Unk_InvGroupEntry(*pMember));
+        }
     }
 }
 MS2_REPLACE_METHOD(0x1419A07D0, UIInviteGroupDialog, FUN_1419a07d0, 268, 0);
@@ -2164,8 +2165,12 @@ void UIInviteGroupDialog::FUN_1419a08f0(EntryList& entries)
     for (size_t i = 0; i < nCount; i++)
     {
         CBuddy* pBuddy = buddies[i].get();
-        if (pBuddy != 0 && FUN_1419a0a10(pBuddy->FUN_1401cc230(), entries) == 0)
+        if (pBuddy != 0)
+        {
+            if (FUN_1419a0a10(pBuddy->FUN_1401cc230(), entries) != 0)
+                continue;
             entries.AddTail(Unk_InvGroupEntry(*pBuddy));
+        }
     }
 }
 MS2_REPLACE_METHOD(0x1419A08F0, UIInviteGroupDialog, FUN_1419a08f0, 268, 0);
@@ -2190,15 +2195,19 @@ int UIInviteGroupDialog::FUN_1419a0a10(__int64 nCharacterId, EntryList& entries)
 MS2_REPLACE_METHOD(0x1419A0A10, UIInviteGroupDialog, FUN_1419a0a10, 254, 0);
 
 // @0x1419a0b20
-bool UIInviteGroupDialog::FUN_1419a0b20()
+int UIInviteGroupDialog::FUN_1419a0b20()
 {
-    MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput");
-    if (spInput.get() != 0 && spInput->FUN_1422c76c0())
-        return true;
+    if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_textInput"))
+    {
+        if (spInput->FUN_1422c76c0())
+            return 1;
+    }
     UIMessageBox* pBox = FUN_14151f890();
     if (pBox != 0 && pBox->FUN_1419f8270() == 0)
-        return false;
-    return FUN_1403ed2b0()->FUN_141adbb00() == 0;
+        return 0;
+    if (FUN_1403ed2b0()->FUN_141adbb00() != 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x1419A0B20, UIInviteGroupDialog, FUN_1419a0b20, 234, 0);
 
@@ -2283,11 +2292,9 @@ void UIItemBreakBase::FUN_1419a1430()
 {
     FUN_141410780(vfunc_1());
     FUN_1414106d0(vfunc_1());
-    MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag");
-    if (spBag.get() != 0)
+    if (MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag"))
     {
-        MS2Ptr<Unk_IbSlotBag> spSlots = spBag->FUN_140accef0<Unk_IbSlotBag>("instance");
-        if (spSlots.get() != 0)
+        if (MS2Ptr<Unk_IbSlotBag> spSlots = spBag->FUN_140accef0<Unk_IbSlotBag>("instance"))
             spSlots->FUN_1407cba60("bagId", vfunc_1());
     }
     vfunc_85(true, 0);
@@ -2299,10 +2306,9 @@ int UIItemBreakBase::FUN_1419a1660()
 {
     if (m_30 == 0)
         return 0;
-    MS2Ptr<ASMovieClip> spBag = m_30->FUN_1409b4560("m_itemBag");
-    if (spBag.get() == 0)
-        return 0;
-    return spBag->FUN_1422bfca0();
+    if (MS2Ptr<ASMovieClip> spBag = m_30->FUN_1409b4560("m_itemBag"))
+        return spBag->FUN_1422bfca0();
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1419A1660, UIItemBreakBase, FUN_1419a1660, 214, 0);
 
@@ -2404,7 +2410,8 @@ void UIItemBreakBase::vfunc_66()
     UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
     if (pInventory != 0 && pInventory->vfunc_55() != 0)
     {
-        if (dynamic_cast<ASDialog*>((AScript*)m_30) != 0)
+        ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
+        if (pDlg != 0)
         {
             Unk_IbUIMsg msg;
             msg.FUN_1422b82b0("openWindowPos");
@@ -2431,7 +2438,8 @@ void UIItemBreakBase::vfunc_43()
         }
         if (ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30))
         {
-            pDlg->FUN_1422c00f0(fX - (float)pDlg->FUN_1422c1340(), fY);
+            int nWidth = pDlg->FUN_1422c1340();
+            pDlg->FUN_1422c00f0(fX - (float)nWidth, fY);
             return;
         }
     }
@@ -2453,14 +2461,16 @@ MS2_REPLACE_METHOD(0x1419A1D20, UIItemBreakBase, FUN_1419a1d20, 145, 0);
 CString UIItemBreakBase::FUN_1419a1dc0(int nItemId, int nRarity, int nCount)
 {
     CItem* pItem = new CItem();
-    if (!pItem->FUN_140523c40(nItemId, nRarity, 0))
-        return "";
-    pItem->FUN_140526c70(nCount);
-    CString strName;
-    strName.Format("%s_%d", (const char*)vfunc_1(), nItemId);
-    FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
-    m_190.AddTail(strName);
-    return strName;
+    if (pItem->FUN_140523c40(nItemId, nRarity, 0))
+    {
+        pItem->FUN_140526c70(nCount);
+        CString strName;
+        strName.Format("%s_%d", (const char*)vfunc_1(), nItemId);
+        FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
+        m_190.AddTail(strName);
+        return strName;
+    }
+    return "";
 }
 MS2_REPLACE_METHOD(0x1419A1DC0, UIItemBreakBase, FUN_1419a1dc0, 475, 0);
 
@@ -2532,8 +2542,7 @@ void UIItemBreakDialog::OnLoadComplete()
 {
     UIItemBreakBase::OnLoadComplete();
     m_200.clear();
-    MS2Ptr<Unk_IbDropdown> spType = GetChild<Unk_IbDropdown>("m_bundleTypeDropdown");
-    if (spType.get() != 0)
+    if (MS2Ptr<Unk_IbDropdown> spType = GetChild<Unk_IbDropdown>("m_bundleTypeDropdown"))
     {
         int nIndex = 0;
         ASObj equip(2);
@@ -2577,8 +2586,7 @@ void UIItemBreakDialog::OnLoadComplete()
         spType->FUN_1422df690(nSelect);
         spType->vfunc_24(1);
     }
-    MS2Ptr<Unk_IbDropdown> spRank = GetChild<Unk_IbDropdown>("m_bundleRankDropdown");
-    if (spRank.get() != 0)
+    if (MS2Ptr<Unk_IbDropdown> spRank = GetChild<Unk_IbDropdown>("m_bundleRankDropdown"))
     {
         CStringW strOrBelow = FUN_140298ea0(CStringW(L"s_itembreak_rank_or_below"));
         for (int nRank = 1; nRank < 7; nRank++)
@@ -2637,14 +2645,11 @@ MS2_REPLACE_METHOD(0x1419A2E10, UIItemBreakDialog, vfunc_88, 17, 0);
 // @0x1419a2e30
 void UIItemBreakDialog::vfunc_85(bool bReset, int nIndex)
 {
-    MS2Ptr<ASButton> spBreak = GetChild<ASButton>("m_break");
-    if (spBreak.get() != 0)
+    if (MS2Ptr<ASButton> spBreak = GetChild<ASButton>("m_break"))
         spBreak->FUN_1422c1fe0(FUN_1409c4b20()->FUN_140532b60());
-    MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag");
-    if (spBag.get() != 0)
+    if (MS2Ptr<ASMovieClip> spBag = GetChild<ASMovieClip>("m_itemBag"))
     {
-        MS2Ptr<Unk_IbSlotBag> spSlots = spBag->FUN_140accef0<Unk_IbSlotBag>("instance");
-        if (spSlots.get() != 0)
+        if (MS2Ptr<Unk_IbSlotBag> spSlots = spBag->FUN_140accef0<Unk_IbSlotBag>("instance"))
         {
             if (!bReset)
             {
@@ -2670,8 +2675,7 @@ int UIItemBreakDialog::vfunc_46()
 {
     if (!UIItemBreakBase::vfunc_46())
         return 0;
-    MS2Ptr<ASTextField> spDesc = m_30->FUN_1409b4620("m_desc");
-    if (spDesc.get() != 0)
+    if (MS2Ptr<ASTextField> spDesc = m_30->FUN_1409b4620("m_desc"))
     {
         CStringW strDesc = spDesc->FUN_1422c4da0();
         if (FUN_140166410()->FUN_14036d570(0x3a) == true)
@@ -2680,8 +2684,7 @@ int UIItemBreakDialog::vfunc_46()
             strDesc = StringFormat(L"{0}, {1}", strDesc, FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_desc_socket"));
         spDesc->FUN_1422c4cd0(strDesc);
     }
-    MS2Ptr<ASUIComponent> spInfo = m_30->FUN_140acce30<ASUIComponent>("m_info");
-    if (spInfo.get() != 0)
+    if (MS2Ptr<ASUIComponent> spInfo = m_30->FUN_140acce30<ASUIComponent>("m_info"))
     {
         CStringW strTooltip = FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_tooltip_desc");
         if (FUN_140166410()->FUN_14036d570(0x3a) == true)
@@ -2866,13 +2869,15 @@ MS2_REPLACE_METHOD(0x1419A44D0, UIItemBreakDialog, FUN_1419a44d0, 1478, 0);
 CString UIItemBreakDialog::FUN_1419a4aa0(int nItemId)
 {
     CItem* pItem = new CItem();
-    if (!pItem->FUN_140523c40(nItemId, FUN_14053feb0(nItemId), 0))
-        return "";
-    CString strName;
-    strName.Format("%s_preview_%d", (const char*)vfunc_1(), nItemId);
-    FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
-    m_1c8.AddTail(strName);
-    return strName;
+    if (pItem->FUN_140523c40(nItemId, FUN_14053feb0(nItemId), 0))
+    {
+        CString strName;
+        strName.Format("%s_preview_%d", (const char*)vfunc_1(), nItemId);
+        FUN_141415450(strName, MS2Ptr<CItem>(pItem), 0, 0x401, 0);
+        m_1c8.AddTail(strName);
+        return strName;
+    }
+    return "";
 }
 MS2_REPLACE_METHOD(0x1419A4AA0, UIItemBreakDialog, FUN_1419a4aa0, 460, 0);
 
@@ -2955,8 +2960,7 @@ MS2_REPLACE_METHOD(0x1419A5030, UIItemBreakDonationDialog, vfunc_85, 15, 0);
 // @0x1419a5050
 int UIItemBreakDonationDialog::vfunc_46()
 {
-    MS2Ptr<ASUIComponent> spInfo = m_30->FUN_140acce30<ASUIComponent>("m_info");
-    if (spInfo.get() != 0)
+    if (MS2Ptr<ASUIComponent> spInfo = m_30->FUN_140acce30<ASUIComponent>("m_info"))
         spInfo->FUN_1422c7b40(FUN_14025e7a0()->FUN_1422b0570("$s_itembreak_donation_tooltip_desc"));
     return 1;
 }
