@@ -237,6 +237,7 @@ bool FUN_141b899d0(WeddingManager* pWedding);              // ApplyPartner: the 
 CBlockManager* FUN_140a6a830();
 void FUN_140a30ad0(const BlockPtr& spBlock, int nAction, unsigned __int64 n);   // the blocked action notice
 CStringA FUN_14016a600(const wchar_t* psz, unsigned nCodePage);                // wide to multibyte
+int FUN_1405267d0(CItem* pItem, int nGender);                     // CItem member: the item may be worn by the gender (the exe tests the int result)
 void FUN_1418fe1c0(const CStringA& strUrl);                 // open the url in the external browser
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);   // equals
 CStringW FUN_1409eec40(int nStringId);                      // a string table text (the item string table)
@@ -626,13 +627,13 @@ int UseItemCheckCapacity(CItem* pItem, CStringW& strTab, __int64* pnOver)
 }
 
 // The quest scroll confirm box: accept the scroll's quests (when none is in progress and all can be accepted).
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1c8e0
 bool OnQuestScrollConfirm(int nButton, const CMsgBoxData& box)
 {
     if (nButton != 0)
         return true;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(box.FUN_141a02f10(0, 0));
+    __int64 nItemUid = box.FUN_141a02f10(0, 0);
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
     if (spItem.IsNull())
         return true;
     std::vector<int> quests = spItem->FUN_140527840()->function.xml.FUN_1409e8620(L"questID", std::vector<int>());
@@ -758,44 +759,39 @@ void OpenItemBoxContents(CItem* pItem, CStringW strArgs)
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1da90
 bool OnOpenItemBoxConfirm(int nButton, const CMsgBoxData& box)
 {
-    if (nButton == 0)
+    if (nButton != 0)
+        return true;
+    if (IsBoxNotAgainChecked(box))
     {
-        if (IsBoxNotAgainChecked(box))
-        {
-            TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n10Time = FUN_140869440();
-            TSingleton<CGameOption>::GetInstance()->FUN_141243540();
-        }
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());
-        if (spItem.get() != 0)
-            OpenItemBoxSingle(spItem.get());
+        TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n10Time = FUN_140869440();
+        TSingleton<CGameOption>::GetInstance()->FUN_141243540();
     }
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());
+    if (spItem.get() != 0)
+        OpenItemBoxSingle(spItem.get());
     return true;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1db60
 bool OnOpenItemBoxCapacity(int nButton, const CMsgBoxData& box)
 {
-    if (nButton == 0)
+    if (nButton != 0)
+        return true;
+    if (IsBoxNotAgainChecked(box))
     {
-        if (IsBoxNotAgainChecked(box))
-        {
-            TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n18Time = FUN_140869440();
-            TSingleton<CGameOption>::GetInstance()->FUN_141243540();
-        }
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());
-        if (spItem.get() != 0)
-            OpenItemBoxContents(spItem.get(), L"");
+        TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n18Time = FUN_140869440();
+        TSingleton<CGameOption>::GetInstance()->FUN_141243540();
     }
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(box.FUN_141a02c20());
+    if (spItem.get() != 0)
+        OpenItemBoxContents(spItem.get(), L"");
     return true;
 }
 
 // The multi-open count box: open that many boxes (through the multi open dialog for more than one).
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1dc60
 bool OnOpenItemBoxMulti(int nButton, const CMsgBoxData& box)
 {
@@ -812,17 +808,17 @@ bool OnOpenItemBoxMulti(int nButton, const CMsgBoxData& box)
     int nCount = FUN_1407181a0(arrFields[1]);
     if (nCount < 0)
         nCount = 0;
-    if (*TSingleton<Client::Constants>::GetInstance()->ItemBoxMultiOpenLimitCount.Get() < nCount)
+    if (nCount > *TSingleton<Client::Constants>::GetInstance()->ItemBoxMultiOpenLimitCount.Get())
         nCount = *TSingleton<Client::Constants>::GetInstance()->ItemBoxMultiOpenLimitCount.Get();
-    if (nCount < 2)
-    {
-        DAT_143ab2a90.FUN_140a63880(spItem.get(), strArgs);
-    }
-    else
+    if (nCount > 1)
     {
         UIItemMultiOpenBoxDialog* pDialog = GetItemUseDialog<UIItemMultiOpenBoxDialog>(0x4f88);
         if (pDialog != 0 && pDialog->FUN_141924630() == 0)
             pDialog->FUN_140c3f9d0(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), strArgs, nCount);
+    }
+    else
+    {
+        DAT_143ab2a90.FUN_140a63880(spItem.get(), strArgs);
     }
     return true;
 }
@@ -949,11 +945,11 @@ int ItemChangeBeauty(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 0;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d1ef50
 int CreateReactor(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    if (!FUN_140b7a330(pPlayer, spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(0, 0)))
+    int nReactorId = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(0, 0);
+    if (!FUN_140b7a330(pPlayer, nReactorId))
         return 0;
     static_cast<MyPC*>(pPlayer)->FUN_14152e0c0();
     return DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
@@ -1112,8 +1108,9 @@ int OpenCoupleEffectBox(MS2Ptr<CItem> spItem, PC* pPlayer)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14028b8e0(L"s_coupleeffect_recevie_name"), 0, L"");
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01d30(2, L"", 0xc, 0, 0);
-            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            CStringW strEmpty(L"");
+            spBox->FUN_141a01d30(2, strEmpty, 0xc, 0, 0);
+            spBox->FUN_1405340b0(spItem->FUN_140526a50());
             spBox->FUN_141a027c0(Unk_IuBoxCallback(pDialog, &UIInventoryDialog::FUN_14199ac30));
             FUN_140d73c60(spBox);
         }
@@ -1226,34 +1223,35 @@ int ItemExchangeScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 1;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d21c30
 int ItemSocketScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    int bOpen = FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f10);
-    if (bOpen == 0)
-        DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
-    else
+    if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f10))
+    {
         FUN_140d73aa0(FUN_14028b8e0(L"s_itemsocket_scroll_already_open"), 0, 0, L"");
-    return bOpen == 0;
+        return 0;
+    }
+    DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
+    return 1;
 }
 
 // The web page item: the in-game browser ("maview") or the external one.
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d21d70
 int OpenWebPage(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     CStringA strUrl = FUN_14016a600(spItem->FUN_140527840()->function.parameter.FUN_1408d21c0(0, L""), 0);
     CStringW strKind = spItem->FUN_140527840()->function.parameter.FUN_1408d21c0(1, L"");
-    if (!FUN_1403b3c40(strKind, L"maview"))
+    if (FUN_1403b3c40(strKind, L"maview"))
+    {
+        UIWebBrowser* pBrowser = FUN_140c43790(0x4e6a);
+        if (pBrowser == 0)
+            return 1;
+        pBrowser->FUN_14135ec00(strUrl, true);
+    }
+    else
     {
         FUN_1418fe1c0(strUrl);
-        return 1;
     }
-    UIWebBrowser* pBrowser = FUN_140c43790(0x4e6a);
-    if (pBrowser == 0)
-        return 1;
-    pBrowser->FUN_14135ec00(strUrl, true);
     return 1;
 }
 
@@ -1367,7 +1365,6 @@ int EnchantScroll(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The guild recall: call the other guild members.
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d226b0
 int RecallGuild(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1382,8 +1379,9 @@ int RecallGuild(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 0;
     }
     ATL::CAtlMap<__int64, __int64> mapMembers;
-    int nCount = FUN_1403ed290()->FUN_1404d3400(&mapMembers) - 1;
-    if (nCount < 1)
+    int nTotal = FUN_1403ed290()->FUN_1404d3400(&mapMembers);
+    int nCount = nTotal - 1;
+    if (nCount <= 0)
     {
         FUN_140d73bc0(0xb5c, 0, 0, L"");
         return 0;
@@ -1413,7 +1411,6 @@ int RecallWedding(MS2Ptr<CItem> spItem, PC* pPlayer)
     return TSingleton<CCashCallManager>::GetInstance()->FUN_140b04430(spItem->FUN_140526a50(), 1);
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d22b50
 int ResetAbilityCoolTime(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1427,14 +1424,18 @@ int ResetAbilityCoolTime(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73bc0(0xc63, 0, 0, L"");
         return 0;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0xc62, 0, s_strUseFunctionItem);
-    if (spBox.get() == 0)
-        return 0;
-    spBox->FUN_141a01600(spItem->FUN_140526a50());
-    spBox->FUN_141a024a0(0);
-    spBox->FUN_141a01700(0x477, 0x478, 0);
-    FUN_140d73c60(spBox);
-    return 1;
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0xc62, 0, s_strUseFunctionItem);
+        if (spBox.get() != 0)
+        {
+            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->FUN_141a024a0(0);
+            spBox->FUN_141a01700(0x477, 0x478, 0);
+            FUN_140d73c60(spBox);
+            return 1;
+        }
+    }
+    return 0;
 }
 
 // MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
@@ -1472,7 +1473,6 @@ int ChangeGender(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 1;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d233d0
 int ChangeGuildName(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1482,32 +1482,39 @@ int ChangeGuildName(MS2Ptr<CItem> spItem, PC* pPlayer)
         return 0;
     }
     int nMax = *TSingleton<Client::Constants>::GetInstance()->GuildNameLengthMax.Get();
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14062b4f0(L"s_guild_ui_change_name", nMax), 0, s_strChangeGuildName);
-    if (spBox.get() != 0)
     {
-        spBox->FUN_141a01600(spItem->FUN_140526a50());
-        spBox->FUN_141a01d30(0, L"", nMax, 0, 0);
-        FUN_140d73c60(spBox);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, FUN_14062b4f0(L"s_guild_ui_change_name", nMax), 0, s_strChangeGuildName);
+        if (spBox.get() != 0)
+        {
+            CStringW strEmpty(L"");
+            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->FUN_141a01d30(0, strEmpty, nMax, 0, 0);
+            FUN_140d73c60(spBox);
+        }
     }
     return 0;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d236a0
 int ChangeCharName(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(10);
-    if (spBlock.get() != 0)
     {
-        FUN_140a30ad0(spBlock, 10, 0);
-        return 1;
+        BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(10);
+        if (spBlock.get() != 0)
+        {
+            FUN_140a30ad0(spBlock, 10, 0);
+            return 1;
+        }
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(10, 1, 0, s_strChangeCharName);
-    if (spBox.get() != 0)
     {
-        spBox->FUN_141a01600(spItem->FUN_140526a50());
-        spBox->FUN_141a01d30(2, L"", 0xc, 0, 0);
-        FUN_140d73c60(spBox);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(10, 1, 0, s_strChangeCharName);
+        if (spBox.get() != 0)
+        {
+            CStringW strEmpty(L"");
+            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->FUN_141a01d30(2, strEmpty, 0xc, 0, 0);
+            FUN_140d73c60(spBox);
+        }
     }
     return 1;
 }
@@ -1638,7 +1645,7 @@ int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
         FUN_140d73aa0(FUN_14028dfa0(L"s_msg_item_open_item_box_with_key_no_key_count", FUN_1401a9d70()->FUN_141811980(1, nKeyId), nHave, nNeed), 0, 0, L"");
         return 1;
     }
-    if (spItem->FUN_1405267d0(FUN_141658e60(pPlayer)) == 0)
+    if (::FUN_1405267d0(spItem.operator->(), FUN_141658e60(pPlayer)) == 0)
     {
         FUN_141276180(s_warningGender, "");
         FUN_140d73bc0(0x2d, 0, 0, L"");
@@ -1655,11 +1662,10 @@ int OpenItemBoxWithKey(MS2Ptr<CItem> spItem, PC* pPlayer)
     return 1;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d259d0
 int OpenItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    if (spItem->FUN_1405267d0(FUN_141658e60(pPlayer)) == 0)
+    if (::FUN_1405267d0(spItem.operator->(), FUN_141658e60(pPlayer)) == 0)
     {
         FUN_141276180(s_warningGender, "");
         FUN_140d73bc0(0x2d, 0, 0, L"");
@@ -1669,7 +1675,7 @@ int OpenItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
     if (spItem->FUN_140527840()->function.parameter.FUN_1408d2380() > 4)
         nCount = spItem->FUN_140527840()->function.parameter.FUN_1408d1fd0(4, 1);
     int nHave = DAT_143ab2a90.FUN_140a5f180(spItem->FUN_1405276c0(), 0);
-    if (nHave < nCount)
+    if (nCount > nHave)
     {
         FUN_140d73aa0(FUN_1409e8970(L"s_msg_item_open_item_box_multi_no_having_count", nHave, nCount), 0, 0, L"");
         return 1;
@@ -1679,7 +1685,6 @@ int OpenItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
 }
 
 // The limited quantity box: a per-item cooldown between uses (GMs skip it).
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries, branch layout or callee typing differ from the exe
 // @0x140d25c50
 int OpenItemBoxLimitedQuantity(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
@@ -1693,8 +1698,8 @@ int OpenItemBoxLimitedQuantity(MS2Ptr<CItem> spItem, PC* pPlayer)
     if (nCooldown > 0 && DAT_143ab2914 < 0x32)
     {
         unsigned nNow = FUN_140869420();
-        unsigned nElapsed = nNow - s_itemUseMap[spItem->FUN_1405276c0()];
-        if (nElapsed < (unsigned)FUN_14086be10(nCooldown))
+        unsigned nLast = s_itemUseMap[spItem->FUN_1405276c0()];
+        if (nNow - nLast < (unsigned)FUN_14086be10(nCooldown))
             return 0;
         s_itemUseMap[spItem->FUN_1405276c0()] = nNow;
     }
