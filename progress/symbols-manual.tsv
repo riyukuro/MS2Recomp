@@ -7671,3 +7671,7 @@ tan	14280f480	func
 ?IsLeapYear@AS2@GFx@Scaleform@@YA_NH@Z	142965c80	func
 ?SetDate@DateObject@AS2@GFx@Scaleform@@QEAAX_J@Z	142980570	func
 ?UpdateGMT@DateObject@AS2@GFx@Scaleform@@QEAAXXZ	142992900	func
+??0PathAllocator@GFx@Scaleform@@QEAA@I@Z	142636190	func
+??0ShapeDataBase@GFx@Scaleform@@QEAA@W4EmptyShape@012@@Z	142659740	func
+?InitEmptyClipDef@SpriteDef@GFx@Scaleform@@QEAAXXZ	1425d80c0	func
+MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
