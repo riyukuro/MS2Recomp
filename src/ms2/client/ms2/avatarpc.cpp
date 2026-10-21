@@ -101,8 +101,8 @@ struct Unk_AvSeqCtl
     char m_pad_00[0x30];
     Unk_AvAnimTargetRef m_spTarget;                         // +0x30
     char m_pad_38[0xc];
-    int m_n44;
-    int m_n48;
+    float m_n44;
+    float m_n48;
 };
 struct Unk_AvSeqRef
 {
@@ -752,7 +752,9 @@ void AvatarPC::FUN_1409f4d80(MS2Ptr<CItem> spItem)
 // @0x1409f4f20
 bool AvatarPC::FUN_1409f4f20()
 {
-    if (::FUN_14166c930(this) == 0x21 && m_spRidee != 0 && m_spRidee->FUN_14123bea0() != 0)
+    if (::FUN_14166c930(this) != 0x21)
+        return false;
+    if ((m_spRidee ? true : false) && m_spRidee->FUN_14123bea0() != 0)
         return true;
     return false;
 }
@@ -761,7 +763,7 @@ bool AvatarPC::FUN_1409f4f20()
 void AvatarPC::vfunc_147(UIModelView* pView)
 {
     ClonePC::vfunc_147(pView);
-    if (m_spModelView != 0)
+    if (m_spModelView)
     {
         m_spModelView->vfunc_10(FUN_14123c580());
         if (FUN_14123bea0() != 0)
@@ -784,7 +786,7 @@ IAvatarObjectEventListener* AvatarPC::FUN_1409f5070()
 // @0x1409f5090
 void AvatarPC::vfunc_14()
 {
-    if (m_spRidee != 0)
+    if (m_spRidee)
         FUN_1403ed2d0()->FUN_141bbb7f0(m_spRidee, 0);
     m_pListener = 0;
     m_spExternalRoot = 0;
@@ -797,14 +799,14 @@ void AvatarPC::vfunc_14()
 // @0x1409f5150
 void AvatarPC::vfunc_127(CItem* pItem, int n)
 {
-    if (FUN_14123dbd0() == 0)
-    {
-        ::FUN_141653d10(this, MS2Ptr<CItem>(pItem));
-    }
-    else
+    if (FUN_14123dbd0() != 0)
     {
         PC::vfunc_127(pItem, n);
         FUN_141087390();
+    }
+    else
+    {
+        ::FUN_141653d10(this, MS2Ptr<CItem>(pItem));
     }
 }
 
@@ -820,7 +822,8 @@ void AvatarPC::vfunc_59(int nState, StateData* pData, int nSub, int bForce)
 {
     int nOldAction = ::FUN_14166c930(this);
     PC::vfunc_59(nState, pData, nSub, bForce);
-    if (nOldAction != ::FUN_14166c930(this))
+    bool bChanged = nOldAction != ::FUN_14166c930(this);
+    if (bChanged)
     {
         vfunc_19(m_kPos);
         FUN_141087390();
@@ -863,7 +866,8 @@ bool AvatarPC::vfunc_102(MS2Ptr<CSkillRecord> spSkill)
 // @0x1409f5510
 float AvatarPC::vfunc_95()
 {
-    return ::FUN_141671940(this);
+    float fRet = ::FUN_141671940(this);
+    return fRet;
 }
 
 // @0x1409f5540
@@ -1077,11 +1081,11 @@ void AvatarPC::FUN_1409f64a0()
 // @0x1409f64c0
 void AvatarPC::FUN_1409f64c0(MS2Ptr<CItem> spItem)
 {
-    if (!(spItem == 0))
-    {
-        if (FUN_140526390(spItem.operator->()) != 0)
-            FUN_1409f64a0();
-    }
+    if (spItem == 0)
+        return;
+    if (FUN_140526390(spItem.operator->()) == 0)
+        return;
+    FUN_1409f64a0();
 }
 
 // @0x1409f6540
@@ -1159,12 +1163,11 @@ bool AvatarPC::FUN_1409f67a0(NiNodePtr spNode)
 // @0x1409f68e0
 void AvatarPC::FUN_1409f68e0(MS2Ptr<CItem> spItem)
 {
-    if (!(spItem == 0))
-    {
-        FUN_1409f6540(false);
-        ::FUN_141661ba0(this, 0);
-        ::FUN_14165cac0(this);
-    }
+    if (spItem == 0)
+        return;
+    FUN_1409f6540(false);
+    ::FUN_141661ba0(this, 0);
+    ::FUN_14165cac0(this);
 }
 
 // @0x1409f6950
@@ -1208,19 +1211,20 @@ void AvatarPC::FUN_1409f6950(MS2Ptr<CItem> spItem)
 // @0x1409f6db0
 void AvatarPC::FUN_1409f6db0(MS2Ptr<CItem> spItem)
 {
-    if (!(spItem == 0))
-        vfunc_59(0x1b, 0, 0, 0);
+    if (spItem == 0)
+        return;
+    vfunc_59(0x1b, 0, 0, 0);
 }
 
 // @0x1409f6e30
 void AvatarPC::FUN_1409f6e30()
 {
-    if (m_nTimer != 0)
+    if ((unsigned int)m_nTimer > 0)
     {
         FUN_1403ed280()->FUN_1411a6060(m_nTimer);
         m_nTimer = 0;
     }
-    if (m_spFishing != 0)
+    if (m_spFishing)
         FUN_1403ed2d0()->FUN_141bbb7f0(m_spFishing, 0);
     m_spFishing = 0;
 }
@@ -1228,7 +1232,7 @@ void AvatarPC::FUN_1409f6e30()
 // @0x1409f6ee0
 unsigned int FUN_1409f6ee0()
 {
-    for (unsigned int nId = 0x3fb; nId <= 0x40e; nId++)
+    for (unsigned int nId = 0x3fb; nId < 0x40f; nId++)
     {
         if (FUN_1403ed2d0()->FUN_141bd1290(nId) == 0)
             return nId;
@@ -1269,10 +1273,12 @@ AvatarPet::~AvatarPet()
 // @0x1409f86e0
 bool AvatarPet::vfunc_57()
 {
-    CItemData* pData = m_spItemData.get();
-    if (pData != 0)
+    if (m_spItemData.get() != 0)
+    {
         vfunc_62(MS2Ptr<CItemData>(m_spItemData));
-    return pData != 0;
+        return true;
+    }
+    return false;
 }
 
 // @0x1409f8760
@@ -1387,7 +1393,7 @@ void AvatarPet::FUN_1409f8e10()
 // @0x1409f9010
 void AvatarPet::FUN_1409f9010()
 {
-    if (m_nEffect != 0)
+    if ((unsigned int)m_nEffect > 0)
     {
         FUN_1403ed280()->FUN_1411a6060(m_nEffect);
         m_nEffect = 0;
@@ -1397,7 +1403,7 @@ void AvatarPet::FUN_1409f9010()
 // @0x1409f9060
 unsigned int FUN_1409f9060()
 {
-    for (unsigned int nId = 0x426; nId <= 0x42f; nId++)
+    for (unsigned int nId = 0x426; nId < 0x430; nId++)
     {
         if (FUN_1403ed2d0()->FUN_141bd1180(nId) == 0)
             return nId;
@@ -1542,7 +1548,9 @@ void AvatarRidee::vfunc_53(float f)
 // @0x1409f9e20
 bool AvatarRidee::vfunc_57()
 {
-    if (!CloneCube::vfunc_57() && m_spRow.get() != 0)
+    if (CloneCube::vfunc_57())
+        return true;
+    if (m_spRow.get() != 0)
         FUN_1409f9ea0(Unk_RideePtr(m_spRow));
     return true;
 }
@@ -1671,7 +1679,7 @@ void AvatarRidee::FUN_1409fa940()
 // @0x1409faa70
 unsigned int FUN_1409faa70()
 {
-    for (unsigned int nId = 0x41b; nId <= 0x424; nId++)
+    for (unsigned int nId = 0x41b; nId < 0x425; nId++)
     {
         if (FUN_1403ed2d0()->FUN_141bd1180(nId) == 0)
             return nId;
@@ -1694,9 +1702,8 @@ bool AvatarRidee::FUN_1409faac0()
 
 // @0x1409faf60
 Unk_UgcDownloadInfo::Unk_UgcDownloadInfo(int nKind)
-    : m_nKind(nKind)
+    : m_nKind(nKind), m_b28(false)
 {
-    m_b28 = false;
 }
 
 
@@ -1763,15 +1770,13 @@ void Unk_AvSeqCtl::FUN_1409fae00(bool b)
 void Unk_AcAnimSvc::FUN_1409fad80(const Unk_GoModelKey& id, bool bFlag)
 {
     Unk_AvAnimRec* pRec;
-    if (FUN_1409991a0(id, &pRec))
-    {
-        pRec->m_bFlag = bFlag;
-        Unk_AvSeqCtl* pSeq = pRec->m_spSeq.FUN_140998e90();
-        if (pSeq != 0)
-        {
-            pSeq->FUN_1409fae00(bFlag);
-        }
-    }
+    if (!FUN_1409991a0(id, &pRec))
+        return;
+    pRec->m_bFlag = bFlag;
+    Unk_AvSeqCtl* pSeq = pRec->m_spSeq.FUN_140998e90();
+    if (pSeq == 0)
+        return;
+    pSeq->FUN_1409fae00(bFlag);
 }
 
 // MS2-FUNCTIONAL: instantiations of the pointer / array template glue of this range (efd::SmartPointer getters, MS2Ptr
