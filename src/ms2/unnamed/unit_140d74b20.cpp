@@ -105,33 +105,29 @@ void FUN_140d74e50(int nBit)
 }
 
 // @0x140d74e80
-bool FUN_140d74e80(CStringW& tag)
+int FUN_140d74e80(CStringW& tag)
 {
-    if (tag.Find(L"terms", 0) == 0)
-    {
-        ATL::CAtlArray<CStringW> parts;
-        FUN_14025a680(tag, parts, L",");
-        if (FUN_14015a000(parts) < 2)
-            return false;
-        if (g_1439f5a0c != 8)
-            FUN_140d74e50(g_1439f5a0c);
-        return FUN_140159a00(parts, 1).Find(L"true", 0) != -1;
-    }
-    return false;
+    if (tag.Find(L"terms", 0) != 0)
+        return 0;
+    ATL::CAtlArray<CStringW> parts;
+    FUN_14025a680(tag, parts, L",");
+    if (FUN_14015a000(parts) < 2)
+        return 0;
+    if (g_1439f5a0c != 8)
+        FUN_140d74e50(g_1439f5a0c);
+    return FUN_140159a00(parts, 1).Find(L"true", 0) != -1;
 }
 
 // @0x140d74f70
-bool FUN_140d74f70(CStringW& tag)
+int FUN_140d74f70(CStringW& tag)
 {
-    if (tag.Find(L"terms", 0) == 0)
-    {
-        ATL::CAtlArray<CStringW> parts;
-        FUN_14025a680(tag, parts, L",");
-        if (FUN_14015a000(parts) < 3)
-            return false;
-        return FUN_140159a00(parts, 2).Find(L"true", 0) != -1;
-    }
-    return false;
+    if (tag.Find(L"terms", 0) != 0)
+        return 0;
+    ATL::CAtlArray<CStringW> parts;
+    FUN_14025a680(tag, parts, L",");
+    if (FUN_14015a000(parts) < 3)
+        return 0;
+    return FUN_140159a00(parts, 2).Find(L"true", 0) != -1;
 }
 
 // @0x140d75040
@@ -150,8 +146,7 @@ Unk_BitRef::Unk_BitRef(Unk_PCBaseFlags* pSet, unsigned nPos)
 // @0x140d75090
 Unk_BitRef Unk_BitSet11::FUN_140d75090(unsigned nPos)
 {
-    if (nPos > 10)
-        _wassert(L"UINT(pos) < UINT(T)", _CRT_WIDE(MS2_THIS_FILE), 0x98);
+    (void)((!!(nPos < 11)) || (_wassert(L"UINT(pos) < UINT(T)", _CRT_WIDE(MS2_THIS_FILE), 0x98), 0));
     return Unk_BitRef(this, nPos);
 }
 
@@ -164,28 +159,24 @@ bool Unk_BitRef::FUN_140d750f0() const
 // @0x140d75120
 Unk_PCBaseFlags& Unk_PCBaseFlags::FUN_140d75120(unsigned nPos, bool bValue)
 {
-    if (nPos > 10)
+    if (nPos >= 11)
         MS2_ASSERT_AT(0xf3, 0);
-    if (bValue == 0)
-        m_bits[(int)nPos / 8] &= ~(unsigned char)(1 << ((int)nPos % 8));
+    if (bValue)
+        m_bits[(int)nPos / 8] |= 1 << ((int)nPos % 8);
     else
-        m_bits[(int)nPos / 8] |= (unsigned char)(1 << ((int)nPos % 8));
+        m_bits[(int)nPos / 8] &= ~(1 << ((int)nPos % 8));
     return *this;
 }
 
 // @0x140d75240
-// MS2-FUNCTIONAL: the exe keeps the (x & mask) != 0 ternary temp in the return slot; no source form found for that frame
 bool Unk_PCBaseFlags::FUN_140d75240(unsigned nPos) const
 {
-    bool b;
-    if (nPos < 11)
-        b = (m_bits[(int)nPos / 8] & (1 << ((int)nPos % 8))) != 0;
-    else
+    if (nPos >= 11)
     {
         MS2_ASSERT_AT(0x194, 0);
-        b = false;
+        return false;
     }
-    return b;
+    return (m_bits[(int)nPos / 8] & (1 << ((int)nPos % 8))) != 0;
 }
 
 // @0x140d752e0
@@ -198,11 +189,13 @@ void Unk_PCBaseFlags::FUN_140d752e0(unsigned char c)
 }
 
 // @0x140d75340
-// MS2-FUNCTIONAL: constant-folded "if (11 % 8 != 0)" tail trim compiles to a test the exe lays out differently (je body; jmp end)
+// The exe's constant test runs the trim only when 11 % 8 == 0, i.e. never.
 void Unk_PCBaseFlags::FUN_140d75340()
 {
-    if (11 % 8)
+    if (11 % 8) {
+    } else {
         m_bits[1] &= 7;
+    }
 }
 
 // CExplorer1 IMPLEMENT_DYNCREATE, spelled out in the exe's function order
