@@ -90,13 +90,13 @@ struct Unk_MeratOid
 };
 MS2_CHECK_SIZE(Unk_MeratOid, 0x10);
 
-// MS2-FUNCTIONAL: the exe compares through a bool temp per branch
 // @0x140899d90
 bool Unk_MeratOid::operator<(const Unk_MeratOid& o) const
 {
-    if (m_nPremiumId == o.m_nPremiumId)
+    if (m_nPremiumId != o.m_nPremiumId)
+        return m_nPremiumId < o.m_nPremiumId;
+    else
         return m_nUgcId < o.m_nUgcId;
-    return m_nPremiumId < o.m_nPremiumId;
 }
 
 // @0x140899ce0
@@ -1627,18 +1627,16 @@ void CUgcUpload::Clear()
     static_cast<IUgcProxy&>(m_upload).Clear();
 }
 
-// MS2-FUNCTIONAL: codegen differs (temp/branch layout)
 // @0x1408936e0
-bool CUgcUpload::CopyFrom(const CUgcUpload* pOther)
+int CUgcUpload::CopyFrom(const CUgcUpload* pOther)
 {
     Clear();
-    if (pOther != 0)
-    {
-        m_nKind = pOther->m_nKind;
-        static_cast<IUgcProxy&>(m_user).CopyFrom(&pOther->m_user);
-        static_cast<IUgcProxy&>(m_upload).CopyFrom(&pOther->m_upload);
-    }
-    return pOther != 0;
+    if (pOther == 0)
+        return 0;
+    m_nKind = pOther->m_nKind;
+    static_cast<IUgcProxy&>(m_user).CopyFrom(&pOther->m_user);
+    static_cast<IUgcProxy&>(m_upload).CopyFrom(&pOther->m_upload);
+    return 1;
 }
 
 // @0x140893780
@@ -1765,7 +1763,6 @@ CStringA CUgcItemMusicNote::FUN_140894060() const
     }
     return CStringA("");
 }
-#line 1767
 
 // @0x140894120
 CUgcMarketSchCond::CUgcMarketSchCond()
@@ -1854,52 +1851,48 @@ void CUgcMarketSchCond::ReadShort(CInputStream& stream)
     m_n30 = stream.vfunc_o8_3();
 }
 
-// MS2-FUNCTIONAL: result materialisation differs
 // @0x140894750
 int CUgcMarketSchCond::FUN_140894750() const
 {
-    int nPage;
     if (m_n30 == 0)
-        nPage = -1;
-    else
-        nPage = (m_n30 - 1) / 10;
+        return -1;
+    int nIndex = m_n30 - 1;
+    int nPage = nIndex / 10;
     return nPage;
 }
 
-// MS2-FUNCTIONAL: result materialisation differs
 // @0x1408947a0
 int CUgcMarketSchCond::FUN_1408947a0() const
 {
     int nPage = FUN_140894750();
     if (nPage == -1)
-        nPage = 0;
-    else
-        nPage = nPage * 0x78 + 1;
-    return nPage;
+        return 0;
+    int nPerPage = 0x78;
+    int nStart = nPage * nPerPage + 1;
+    return nStart;
 }
 
-// MS2-FUNCTIONAL: result materialisation differs
 // @0x1408947f0
 int CUgcMarketSchCond::FUN_1408947f0() const
 {
     int nPage = FUN_140894750();
     if (nPage == -1)
-        nPage = 0;
-    else
-        nPage = (nPage + 1) * 0x78;
-    return nPage;
+        return 0;
+    int nPerPage = 0x78;
+    int nEnd = (nPage + 1) * nPerPage;
+    return nEnd;
 }
 
-// MS2-FUNCTIONAL: multiplier local layout differs
 // @0x140894840
 int CUgcMarketSchCond::FUN_140894840() const
 {
-    int n;
     if (m_n30 == 0)
-        n = -1;
-    else
-        n = ((m_n30 - 1) / 0x32 + 1) * 600;
-    return n;
+        return -1;
+    int nIndex = m_n30 - 1;
+    int nBlock = nIndex / 0x32;
+    int nPerBlock = 600;
+    int nEnd = (nBlock + 1) * nPerBlock;
+    return nEnd;
 }
 
 // @0x1408948a0
@@ -1961,7 +1954,6 @@ int CUgcMarketSchCond::FUN_140894a10(const CUgcMarketSchCond* pOther) const
         return 0;
     return 1;
 }
-#line 1966
 
 // @0x140894ad0
 CUgcMarketProduct::CUgcMarketProduct()
@@ -2231,13 +2223,10 @@ int CUgcMarketProduct::FUN_140896350() const
     return 0;
 }
 
-// MS2-FUNCTIONAL: the result goes through an int local in the exe
 // @0x1408963f0
 bool CUgcMarketProduct::FUN_1408963f0(Unk_CommonOwner& owner)
 {
-    if (!FUN_140896230(owner) && FUN_1406a5800())
-        return true;
-    return false;
+    return !FUN_140896230(owner) && FUN_1406a5800();
 }
 
 // @0x140896450
@@ -2387,7 +2376,6 @@ int RideeItemInfo::IsValid() const
     return 0;
 }
 
-// MS2-FUNCTIONAL: early returns instead of the exe's single result register shape
 // @0x140897330
 int RideeItemInfo::Equals(const RideeItemInfo* pOther) const
 {
@@ -2401,15 +2389,16 @@ int RideeItemInfo::Equals(const RideeItemInfo* pOther) const
             return 1;
         return 0;
     }
-    if (pOther->IsValid() == 0)
-        return 0;
-    if (m_nId == pOther->m_nId)
+    else
     {
-        if (m_look.m_n18 == pOther->m_look.m_n18)
-            return 1;
-        return 0;
+        if (pOther->IsValid() == 0)
+            return 0;
+        if (m_nId != pOther->m_nId)
+            return 0;
+        if (m_look.m_n18 != pOther->m_look.m_n18)
+            return 0;
+        return 1;
     }
-    return 0;
 }
 
 // @0x1408973e0
@@ -2705,13 +2694,16 @@ public:
 // @0x14089e200
 Unk_BpCurrency Unk_BpFee::FUN_14089e200()
 {
-    if (!FUN_140166410()->FUN_14036d710(0x62))
+    if (FUN_140166410()->FUN_14036d710(0x62))
+    {
+        if (m_currency == 3)
+            return (Unk_BpCurrency)10;
+    }
+    else
     {
         if (m_currency == 10 || m_currency == 9)
             return (Unk_BpCurrency)3;
     }
-    else if (m_currency == 3)
-        return (Unk_BpCurrency)10;
     return (Unk_BpCurrency)m_currency;
 }
 

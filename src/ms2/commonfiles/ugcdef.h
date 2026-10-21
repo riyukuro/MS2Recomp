@@ -389,7 +389,7 @@ public:
     virtual ~CUgcUpload();                                  // 0x140893600
 
     void Clear();                                           // 0x140893670
-    bool CopyFrom(const CUgcUpload* pOther);                // 0x1408936e0
+    int CopyFrom(const CUgcUpload* pOther);                 // 0x1408936e0
     void Write(COutputStream& stream) const;                // 0x140893780
     void Read(CInPacket& packet);                           // 0x140893820
 
