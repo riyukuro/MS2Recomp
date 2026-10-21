@@ -129,7 +129,7 @@ void FUN_140629de0(CCItemSocketSystemPacket::ForceFillIngredient&, COutputStream
 
 // @0x140c4ffa0
 ItemSocketSystemPageSocketTransfer::ItemSocketSystemPageSocketTransfer()
-    : m_state(0), m_source(0), m_target(0), m_sourceUid(0), m_highlightUid(0)
+    : m_state(0), m_sourceUid(0), m_highlightUid(0)
 {
     m_sourceName = "SocketTransferPage_selectedSourceSlot";
     m_targetName = "SocketTransferPage_selectedTargetSlot";
@@ -210,31 +210,32 @@ void ItemSocketSystemPageSocketTransfer::vfunc_2()
 void ItemSocketSystemPageSocketTransfer::vfunc_5(CInPacket* packet)
 {
     ItemSocketSystemPageBase::vfunc_5(packet);
-    unsigned char operation = packet->vfunc_o8_1();
+    int operation = packet->vfunc_o8_1();
     FUN_140f6d620(1);
     if (operation == 13)
         FUN_140c533f0(packet);
     else if (operation == 16)
-        FUN_140c53920();
+        FUN_140c53920(packet);
     else if (operation == 18)
         vfunc_8(packet);
 }
 
 // @0x140c50e00
-// MS2-FUNCTIONAL: typed ASData event decoding and smart-pointer temporary layout.
 int ItemSocketSystemPageSocketTransfer::vfunc_3(const char* event, const Scaleform::GFx::Value* args, int count)
 {
     if (_stricmp("onIndexChangeSlot0", event) == 0) {
         ASData data;
         if (data.FUN_1422b9620(args, count) != 0) {
-            MS2Ptr<CItem> item = FUN_140f6d840(m_sourceItems, data.FUN_1422b8a10());
+            int index = data.FUN_1422b8a10();
+            MS2Ptr<CItem> item = FUN_140f6d840(m_sourceItems, index);
             FUN_140c51680(item);
         }
         return 1;
     } else if (_stricmp("onIndexChangeSlot1", event) == 0) {
         ASData data;
         if (data.FUN_1422b9620(args, count) != 0) {
-            MS2Ptr<CItem> item = FUN_140f6d840(m_targetItems, data.FUN_1422b8a10());
+            int index = data.FUN_1422b8a10();
+            MS2Ptr<CItem> item = FUN_140f6d840(m_targetItems, index);
             FUN_140c51a60(item);
         }
         return 1;
@@ -248,64 +249,76 @@ int ItemSocketSystemPageSocketTransfer::vfunc_3(const char* event, const Scalefo
 }
 
 // @0x140c51050
-// MS2-FUNCTIONAL: typed inventory and equipped-item enumeration; smart-pointer temporaries differ.
 void ItemSocketSystemPageSocketTransfer::FUN_140c51050()
 {
     Unk_TrPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (player != 0) {
-        m_sourceItems.RemoveAll();
-        CAtlArray<MS2Ptr<CItem>> items;
-        FUN_140c53f90(items);
-        if (!items.IsEmpty()) {
-            size_t count = items.GetCount();
-            for (size_t i = 0; i < count; ++i) {
-                MS2Ptr<CItem> item(items.GetAt(i));
-                if (!(item == 0) && item->FUN_140529560() != 0 && item->FUN_1405279c0() != 0
-                    && FUN_140627e80(MS2Ptr<CItem>(item)) != 0)
-                    m_sourceItems.Add(item);
-            }
+    if (!player)
+        return;
+    m_sourceItems.RemoveAll();
+    CAtlArray<MS2Ptr<CItem>> items;
+    FUN_140c53f90(items);
+    if (!items.IsEmpty()) {
+        size_t count = items.GetCount();
+        for (size_t i = 0; i < count; ++i) {
+            MS2Ptr<CItem> item(items.GetAt(i));
+            if (item == 0)
+                continue;
+            if (!item->FUN_140529560())
+                continue;
+            if (!item->FUN_1405279c0())
+                continue;
+            if (!FUN_140627e80(MS2Ptr<CItem>(item)))
+                continue;
+            m_sourceItems.Add(item);
         }
-        CAtlList<MS2Ptr<CEquipItem>> equipped(10);
-        FUN_1411e1ce0(FUN_1416561a0(player), equipped, 1);
-        POSITION pos = equipped.GetHeadPosition();
-        while (pos != 0) {
-            MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
-            if (!(equip == 0)) {
-                MS2Ptr<CItem> item = equip->FUN_1411dc7a0();
-                if (!(item == 0) && item->FUN_140529560() != 0 && item->FUN_1405279c0() != 0
-                    && FUN_140627e80(MS2Ptr<CItem>(item)) != 0)
-                    m_sourceItems.Add(item);
-            }
-            equipped.GetNext(pos);
-        }
+    }
+    CAtlList<MS2Ptr<CEquipItem>> equipped(10);
+    Unk_TrInventory* inventory = FUN_1416561a0(player);
+    FUN_1411e1ce0(inventory, equipped, 1);
+    for (POSITION pos = equipped.GetHeadPosition(); pos != 0; equipped.GetNext(pos)) {
+        MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
+        if (equip == 0)
+            continue;
+        MS2Ptr<CItem> item = equip->FUN_1411dc7a0();
+        if (item == 0)
+            continue;
+        if (!item->FUN_140529560())
+            continue;
+        if (!item->FUN_1405279c0())
+            continue;
+        if (!FUN_140627e80(MS2Ptr<CItem>(item)))
+            continue;
+        m_sourceItems.Add(item);
     }
 }
 
 // @0x140c51410
-// MS2-FUNCTIONAL: typed candidate filter; smart-pointer temporaries differ.
 void ItemSocketSystemPageSocketTransfer::FUN_140c51410()
 {
-    if (!(m_source == 0) && m_source->FUN_1405279c0() != 0) {
-        Unk_TrPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
-        if (player != 0) {
-            m_targetItems.RemoveAll();
-            CAtlArray<MS2Ptr<CItem>> items;
-            FUN_140c53f90(items);
-            if (!items.IsEmpty()) {
-                size_t count = items.GetCount();
-                for (size_t i = 0; i < count; ++i) {
-                    MS2Ptr<CItem> item(items.GetAt(i));
-                    if (!(item == 0) && FUN_140628200(MS2Ptr<CItem>(m_source), MS2Ptr<CItem>(item)) != 0)
-                        m_targetItems.Add(item);
-                }
-            }
-            ItemSlotBag* bag = FUN_140c54590(m_slots1Name);
-            if (bag != 0) {
-                FUN_14141ff80(bag, (int)m_targetItems.GetCount());
-                if (m_targetControl.get() != 0)
-                    FUN_1422cf860(m_targetControl.operator->());
-            }
+    if (m_source == 0 || !m_source->FUN_1405279c0())
+        return;
+    Unk_TrPlayer* player = FUN_141bd0cc0(FUN_1403ed2d0());
+    if (!player)
+        return;
+    m_targetItems.RemoveAll();
+    CAtlArray<MS2Ptr<CItem>> items;
+    FUN_140c53f90(items);
+    if (!items.IsEmpty()) {
+        size_t count = items.GetCount();
+        for (size_t i = 0; i < count; ++i) {
+            MS2Ptr<CItem> item(items.GetAt(i));
+            if (item == 0)
+                continue;
+            if (!FUN_140628200(MS2Ptr<CItem>(m_source), MS2Ptr<CItem>(item)))
+                continue;
+            m_targetItems.Add(item);
         }
+    }
+    ItemSlotBag* bag = FUN_140c54590(m_slots1Name);
+    if (bag != 0) {
+        FUN_14141ff80(bag, (int)m_targetItems.GetCount());
+        if (m_targetControl.get() != 0)
+            FUN_1422cf860(m_targetControl.operator->());
     }
 }
 
@@ -612,14 +625,16 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c533f0(CInPacket* packet)
 }
 
 // @0x140c53920
-void ItemSocketSystemPageSocketTransfer::FUN_140c53920()
+void ItemSocketSystemPageSocketTransfer::FUN_140c53920(CInPacket* packet)
 {
-    if (!(m_root == 0) && !(m_source == 0)) {
-        if (m_source->FUN_140527840() != 0 && DAT_143ab2914 > 0x31 && m_state == 1) {
-            __int64 price = 0;
-            FUN_140f6e250(m_ingredientName, m_ingredients, MS2Ptr<CItem>(m_source), &price, MS2Ptr<SaleParam>(0));
-        }
-    }
+    if (m_root == 0 || m_source == 0 || !m_source->FUN_140527840())
+        return;
+    if ((int)DAT_143ab2914 < 0x32)
+        return;
+    if (m_state != 1)
+        return;
+    __int64 price = 0;
+    FUN_140f6e250(m_ingredientName, m_ingredients, MS2Ptr<CItem>(m_source), &price, MS2Ptr<SaleParam>(0));
 }
 
 // @0x140c53a70
@@ -661,22 +676,23 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::Fun
 }
 
 // @0x140c53e40
-// MS2-FUNCTIONAL: debug fill-ingredient request through the typed packet record.
 void ItemSocketSystemPageSocketTransfer::FUN_140c53e40(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    if (!(m_source == 0)) {
-        if (m_source->FUN_1405279c0() != 0 && DAT_143ab2914 > 0x31 && m_state == 1) {
-            if (FUN_140627e80(MS2Ptr<CItem>(m_source)) != 0) {
-                CCItemSocketSystemPacket::ForceFillIngredient fill;
-                fill.m_nType = 0xc;
-                fill.m_nUid = m_source->FUN_140526a50();
-                COutPacket out(0x88, 0);
-                out.Encode1(0x10);
-                FUN_140629de0(fill, out);
-                FUN_140710590(out);
-            }
-        }
-    }
+    if (m_source == 0 || !m_source->FUN_1405279c0())
+        return;
+    if ((int)DAT_143ab2914 < 0x32)
+        return;
+    if (m_state != 1)
+        return;
+    if (!FUN_140627e80(MS2Ptr<CItem>(m_source)))
+        return;
+    CCItemSocketSystemPacket::ForceFillIngredient fill;
+    fill.m_nType = 0xc;
+    fill.m_nUid = m_source->FUN_140526a50();
+    COutPacket out(0x88, 0);
+    out.Encode1(0x10);
+    FUN_140629de0(fill, out);
+    FUN_140710590(out);
 }
 
 // @0x140c53f90
@@ -711,13 +727,13 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c54100(__int64 uid)
     if (previous != uid && previous != 0) {
         int index = -1;
         FUN_140f6d6b0(previous, m_sourceItems, &index);
-        if (-1 < index)
+        if (index >= 0)
             FUN_140f6e500(index, false);
     }
     if (uid != 0) {
         int index = -1;
         FUN_140f6d6b0(uid, m_sourceItems, &index);
-        if (-1 < index)
+        if (index >= 0)
             FUN_140f6e500(index, true);
     }
     m_highlightUid = uid;

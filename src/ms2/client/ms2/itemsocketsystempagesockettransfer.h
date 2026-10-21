@@ -32,7 +32,7 @@ public:
     void FUN_140c52b20(ASObj&);                         // ingredient part of the select data
     void FUN_140c52f10(MS2Ptr<CItem>, ASObj&, int);     // the socket rows of an item
     void FUN_140c533f0(CInPacket*);                     // transfer result
-    void FUN_140c53920();
+    void FUN_140c53920(CInPacket* packet);
     void FUN_140c53a70(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: transfer
     void FUN_140c53e40(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: fill ingredients
     void FUN_140c53f90(CAtlArray<MS2Ptr<CItem>>&);
