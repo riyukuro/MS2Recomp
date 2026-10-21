@@ -76,15 +76,15 @@ void FUN_140650b50(CString strLanguage);                                        
 
 // ---- this unit's functions (called from other units) ----
 int FUN_1414b1230();                                                            // parse the command line: 0 = quit
-CString FUN_1414b1380();
+CString FUN_1414b1380(int nUnused);
 void FUN_1414b13f0(int nIndex, CString strArg);                                 // one argument
 bool FUN_1414b1580(CString strKey);                                             // is the option given
-bool FUN_1414b15f0(CString strArg);                                             // "/passport:"
-bool FUN_1414b16b0(CString strArg);                                             // "/sid:"
+int FUN_1414b15f0(CString strArg);                                             // "/passport:"
+int FUN_1414b16b0(CString strArg);                                             // "/sid:"
 int FUN_1414b1770(CString strArg);                                              // "/arg:"
-bool FUN_1414b18c0(CString strArg);                                             // "/nexonsn:"
+int FUN_1414b18c0(CString strArg);                                             // "/nexonsn:"
 void FUN_1414b1980();
-unsigned __int64 FUN_1414b1c40(CString strArg);                                 // "/CRASHDUMP:" check
+int FUN_1414b1c40(CString strArg);                                 // "/CRASHDUMP:" check
 void FUN_1414b1f10();                                                           // the "-key" options
 void FUN_1414b21d0();                                                           // the debug defaults
 
@@ -121,7 +121,6 @@ extern int g_nLogLevel;                                                         
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // @0x1414b1230
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 int FUN_1414b1230()
 {
     g_nArgc = __argc;
@@ -131,7 +130,7 @@ int FUN_1414b1230()
         if (i != g_nArgc - 1)
             g_strCmdLine.Append(" ");
     }
-    if (0 < g_nArgc)
+    if (g_nArgc >= 1)
     {
         if (FUN_1414b1c40(CString(__argv[1])) != 0)
             return 0;
@@ -139,7 +138,7 @@ int FUN_1414b1230()
     if (FUN_1406c34c0() == 0)
     {
         FUN_1414b21d0();
-        if (1 < g_nArgc)
+        if (g_nArgc >= 2)
         {
             for (int j = 1; j < g_nArgc; j++)
                 FUN_1414b13f0(j, CString(__argv[j]));
@@ -150,15 +149,13 @@ int FUN_1414b1230()
 }
 
 // @0x1414b1380
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
-CString FUN_1414b1380()
+CString FUN_1414b1380(int)
 {
     CString str("");
     return CString(str);
 }
 
 // @0x1414b13f0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void FUN_1414b13f0(int nIndex, CString strArg)
 {
     if (strArg.IsEmpty())
@@ -167,16 +164,24 @@ void FUN_1414b13f0(int nIndex, CString strArg)
     {
         ATL::CAtlArray<CString> tokens;
         FUN_14028c3e0(strArg, tokens, ":", 2);
-        if (FUN_1401662c0(&tokens) > 1)
+        if (FUN_1401662c0(&tokens) >= 2)
         {
             FUN_1406aeee0()->FUN_1406aef60(*FUN_140164930(&tokens, 0), *FUN_140164930(&tokens, 1));
             g_args.FUN_14016a190((const char*)*FUN_140164930(&tokens, 0), *FUN_140164930(&tokens, 1));
         }
     }
-    else if (nIndex == 1)
-        g_strServerAddr = strArg;
-    else if (nIndex == 2)
-        g_nPort = atoi(strArg);
+    else
+    {
+        switch (nIndex)
+        {
+        case 1:
+            g_strServerAddr = strArg;
+            break;
+        case 2:
+            g_nPort = atoi(strArg);
+            break;
+        }
+    }
 }
 
 // @0x1414b1580
@@ -187,64 +192,58 @@ bool FUN_1414b1580(CString strKey)
 }
 
 // @0x1414b15f0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
-bool FUN_1414b15f0(CString strArg)
+int FUN_1414b15f0(CString strArg)
 {
     if (strArg.Find("/passport:", 0) != 0)
-        return false;
+        return 0;
     CString strValue = strArg.Mid(10);
     g_strPassport = strValue;
     g_bits.FUN_140c79bc0(0).FUN_1414b2270(true);
-    return true;
+    return 1;
 }
 
 // @0x1414b16b0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
-bool FUN_1414b16b0(CString strArg)
+int FUN_1414b16b0(CString strArg)
 {
     if (strArg.Find("/sid:", 0) != 0)
-        return false;
+        return 0;
     CString strValue = strArg.Mid(5);
     g_strSid = strValue;
     g_bits.FUN_140c79bc0(1).FUN_1414b2270(true);
-    return true;
+    return 1;
 }
 
 // @0x1414b1770
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 int FUN_1414b1770(CString strArg)
 {
-    if (strArg.Find("/arg:", 0) == 0)
+    if (strArg.Find("/arg:", 0) != 0)
+        return 0;
+    CString strRest = strArg.Mid(5);
+    ATL::CAtlArray<CString> tokens;
+    FUN_14015f050(strRest, tokens, ",");
+    int nCount = (int)FUN_1401662c0(&tokens);
+    if (nCount == 2)
     {
-        CString strRest = strArg.Mid(5);
-        ATL::CAtlArray<CString> tokens;
-        FUN_14015f050(strRest, tokens, ",");
-        if (FUN_1401662c0(&tokens) == 2)
-        {
-            g_strServerAddr = *FUN_140164930(&tokens, 0);
-            g_nPort = atoi(*FUN_140164930(&tokens, 1));
-            g_bPortSet = 1;
-        }
-        g_bits.FUN_140c79bc0(3).FUN_1414b2270(true);
-        return 1;
+        g_strServerAddr = *FUN_140164930(&tokens, 0);
+        g_nPort = atoi(*FUN_140164930(&tokens, 1));
+        g_bPortSet = 1;
     }
-    return 0;
+    g_bits.FUN_140c79bc0(3).FUN_1414b2270(true);
+    return 1;
 }
 
 // @0x1414b18c0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
-bool FUN_1414b18c0(CString strArg)
+int FUN_1414b18c0(CString strArg)
 {
     if (strArg.Find("/nexonsn:", 0) != 0)
-        return false;
+        return 0;
     CString strValue = strArg.Mid(9);
     g_strNexonSn = strValue;
     g_bits.FUN_140c79bc0(2).FUN_1414b2270(true);
-    return true;
+    return 1;
 }
 
 // @0x1414b1980
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void FUN_1414b1980()
 {
     for (int i = 0; i < __argc; i++)
@@ -254,7 +253,7 @@ void FUN_1414b1980()
         {
             ATL::CAtlArray<CString> tokens;
             FUN_14015f0b0(strArg, tokens, ":");
-            if (FUN_1401662c0(&tokens) > 1)
+            if (FUN_1401662c0(&tokens) >= 2)
             {
                 if ((*FUN_140164930(&tokens, 0)).CompareNoCase("/passport") == 0)
                     FUN_1414b15f0(CString(strArg));
@@ -265,15 +264,13 @@ void FUN_1414b1980()
                 else if ((*FUN_140164930(&tokens, 0)).CompareNoCase("/arg") == 0)
                 {
                     CString strAll(strArg);
-                    while (i + 1 < __argc)
+                    for (int j = i + 1; j < __argc; j++)
                     {
-                        int j = i + 1;
                         strAll += " ";
                         strAll += __argv[j];
-                        i = j;
                     }
                     FUN_1414b1770(CString(strAll));
-                    return;
+                    break;
                 }
             }
         }
@@ -281,23 +278,46 @@ void FUN_1414b1980()
 }
 
 // @0x1414b1c40
-// MS2-FUNCTIONAL: the exe builds the two tag arrays element by element; not matched
-unsigned __int64 FUN_1414b1c40(CString strArg)
+int FUN_1414b1c40(CString strArg)
 {
-    char szTag[12] = "/CRASHDUMP:";
-    char szKey[13] = "EE4CFC6B3BB5";
+    char szTag[12] = { 0 };
+    szTag[0] = '/';
+    szTag[1] = 'C';
+    szTag[2] = 'R';
+    szTag[3] = 'A';
+    szTag[4] = 'S';
+    szTag[5] = 'H';
+    szTag[6] = 'D';
+    szTag[7] = 'U';
+    szTag[8] = 'M';
+    szTag[9] = 'P';
+    szTag[10] = ':';
+    szTag[11] = '\0';
+    char szKey[13] = { 0 };
+    szKey[0] = 'E';
+    szKey[1] = 'E';
+    szKey[2] = '4';
+    szKey[3] = 'C';
+    szKey[4] = 'F';
+    szKey[5] = 'C';
+    szKey[6] = '6';
+    szKey[7] = 'B';
+    szKey[8] = '3';
+    szKey[9] = 'B';
+    szKey[10] = 'B';
+    szKey[11] = '5';
     if (strArg.GetLength() < 0x17)
         return 0;
     if (strncmp(szTag, strArg, 0xb) != 0)
         return 0;
     CString strRest = strArg.Mid(0xb);
-    if (strncmp(szKey, strRest, 0xc) == 0)
-        __debugbreak();
-    return 0;
+    if (strncmp(szKey, strRest, 0xc) != 0)
+        return 0;
+    __debugbreak();
+    return 1;
 }
 
 // @0x1414b1f10
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void FUN_1414b1f10()
 {
     CString strValue;
@@ -375,8 +395,7 @@ void Unk_CmdBitset::FUN_1414b23d0(bool bFill)
 void Unk_CmdBitset::FUN_1414b2430()
 {
     if (4 % 8 != 0)
-        return;
-    m_bits[(4 - 1) / 8] &= (1 << (4 % 8)) - 1;
+        m_bits[(4 - 1) / 8] &= (1 << (4 % 8)) - 1;
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb2d20-0x142cb2de0 .text$yd
