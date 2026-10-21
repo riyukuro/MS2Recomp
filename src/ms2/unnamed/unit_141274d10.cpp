@@ -981,14 +981,13 @@ MS2_REPLACE(0x141276f80, FUN_141276f80, 867, 0x9FE0BD97);
 
 // ---- number / icon helpers --------------------------------------------------------------------------------------------
 // @0x1412772f0
-// MS2-FUNCTIONAL: x87-free SSE operand order of the 1.33 scaling differs (movaps/addsd order); logic equivalent
 int FUN_1412772f0(__int64 nValue, int bGrouped)
 {
     char szBuf[24];
     CString strDigits(_i64toa(nValue, szBuf, 10));
     int nLen = strDigits.GetLength();
     if (bGrouped != 0)
-        nLen = (int)(nLen + nLen * 0.33);
+        nLen += nLen * 0.33;
     return nLen;
 }
 MS2_REPLACE(0x1412772f0, FUN_1412772f0, 162, 0x506850F8);
@@ -1107,17 +1106,15 @@ CStringW FUN_141277be0(Unk_IconItemPtr item);
 CStringW FUN_141277b90(const CStringW& str);
 
 // @0x141277910
-// MS2-FUNCTIONAL: temp/dtor ordering of CStringW chain differs by 4 bytes
 CStringW FUN_141277910(Unk_IconItemPtr item)
 {
     if (item.FUN_1402ffd90() != 0)
         return CStringW(L"");
-    if (item.FUN_1401b52a0()->FUN_14053cbc0() == 0) {
-        if (item.FUN_1401b52a0()->FUN_14053d8c0() == 0)
-            return FUN_141277410(item.FUN_1401b52a0()->FUN_14053c600());
+    if (item.FUN_1401b52a0()->FUN_14053cbc0() != 0)
+        return FUN_1401a9d70()->FUN_141811980(8, item.FUN_1401b52a0()->FUN_14053c620());
+    if (item.FUN_1401b52a0()->FUN_14053d8c0() != 0)
         return FUN_141277be0(item);
-    }
-    return FUN_1401a9d70()->FUN_141811980(8, item.FUN_1401b52a0()->FUN_14053c620());
+    return FUN_141277410(item.FUN_1401b52a0()->FUN_14053c600());
 }
 MS2_REPLACE(0x141277910, FUN_141277910, 365, 0x0A17FA5D);
 
@@ -1131,15 +1128,13 @@ public:
 MS2_CHECK_OFFSET(Unk_NamedSource, m_strName, 0x28);
 
 // @0x141277a90
-// MS2-FUNCTIONAL: CStringW fallback path folded differently in the exe (32 bytes longer)
 CStringW FUN_141277a90(Unk_NamedSource* pSource, const CStringW& strFallback)
 {
     if (pSource->FUN_140893520() != 0)
         return FUN_14028de60(0xf4);
-    int nLen = pSource->FUN_140892ec0().GetLength();
-    if (nLen < 1)
-        return CStringW(strFallback);
-    return FUN_141277b90(pSource->m_strName);
+    if (pSource->FUN_140892ec0().GetLength() > 0)
+        return FUN_141277b90(pSource->m_strName);
+    return CStringW(strFallback);
 }
 MS2_REPLACE(0x141277a90, FUN_141277a90, 236, 0xA59909FA);
 
@@ -1156,22 +1151,24 @@ CStringW FUN_141277be0(Unk_IconItemPtr item)
 {
     Unk_LapenPtr lapen = FUN_1409c4b30()->FUN_1405b56a0(item.FUN_1401b52a0()->FUN_14053c510());
     if (lapen.FUN_140c6a370() != 0) {
-        int nColor = lapen.FUN_1405b70e0()->m_nColor;
-        if (nColor == 1)
+        switch (lapen.FUN_1405b70e0()->m_nColor)
         {
-                CStringW strKey(L"s_word_iconcode_lapenshard_red");
-                return FUN_14028b8e0(strKey);
-            }
-        if (nColor == 2)
+        case 1:
         {
-                CStringW strKey(L"s_word_iconcode_lapenshard_blue");
-                return FUN_14028b8e0(strKey);
-            }
-        if (nColor == 4)
+            CStringW strKey(L"s_word_iconcode_lapenshard_red");
+            return FUN_14028b8e0(strKey);
+        }
+        case 2:
         {
-                CStringW strKey(L"s_word_iconcode_lapenshard_green");
-                return FUN_14028b8e0(strKey);
-            }
+            CStringW strKey(L"s_word_iconcode_lapenshard_blue");
+            return FUN_14028b8e0(strKey);
+        }
+        case 4:
+        {
+            CStringW strKey(L"s_word_iconcode_lapenshard_green");
+            return FUN_14028b8e0(strKey);
+        }
+        }
     }
     return FUN_141277410(item.FUN_1401b52a0()->FUN_14053c600());
 }
@@ -1211,17 +1208,16 @@ int FUN_141277f50()
 MS2_REPLACE(0x141277f50, FUN_141277f50, 6, 0x76552545);
 
 // @0x141277f60
-// MS2-FUNCTIONAL: switch jump-table layout differs (case blocks ordered differently)
 CString FUN_141277f60(int nLayer)
 {
     switch (nLayer) {
     case 0: return CString("GC_Gfx HUD");
-    case 1: return CString("GC_Gfx Damage");
     case 2: return CString("GC_Gfx Main");
     case 3: return CString("GC_Gfx PostDisplay");
     case 4: return CString("GC_Gfx Background");
     case 5: return CString("GC_Gfx Tooltip");
     case 6: return CString("GC_Gfx MouseCursor");
+    case 1: return CString("GC_Gfx Damage");
     }
     return CString("");
 }
