@@ -66,7 +66,7 @@ public:
     int FUN_141a753d0(CPartyMember* pMember);                   // "removeMember"
     int FUN_141a75490(__int64 nCharId, float* pPos);            // "getCameraButtonPos" (adds it to pPos)
     int FUN_141a75680(float* pPos);                             // the first other member's camera button
-    bool FUN_141a75840();                                       // "isCanObserveMode"
+    int FUN_141a75840();                                        // "isCanObserveMode"
     void FUN_141a759b0();                                       // refresh the vote panel
     void FUN_141a75a00(unsigned int nDeadline);                 // m_deadline = n
     void FUN_141a75a20();                                       // "arrangeBottomButton"
@@ -118,7 +118,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x141a7bbf0
     virtual void vfunc_72();                                    // 72 0x141a7c210
 
-    bool FUN_141a7b1a0(ASObj& obj, CPartyMember* pMember, unsigned int nRank);    // fill one meter row
+    int FUN_141a7b1a0(ASObj& obj, CPartyMember* pMember, unsigned int nRank);    // fill one meter row
     void FUN_141a7b3c0();                                       // title bar and sort direction
     void FUN_141a7b540();                                       // rebuild the ranking
     void FUN_141a7bb70();                                       // "RemoveMember"
@@ -163,7 +163,7 @@ MS2_CHECK_SIZE(UIPerformanceDialog, 0x188);
 #include "ms2/placeholder/uiugceventlistener.h"
 #include "ms2/client/ms2/alphaanimation.h"     // Delegate<void()>
 
-extern NiPoint3 DAT_143b01a60;                              // zero position
+extern efd::Point3 DAT_143b01a60;                           // zero position
 
 class ASScrollingList;
 class PCBase;
