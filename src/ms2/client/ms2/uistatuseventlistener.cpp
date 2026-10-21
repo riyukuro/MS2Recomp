@@ -105,7 +105,7 @@ public:
     void FUN_140de2bd0();                                                   // sort
     void FUN_140de2c40(int bDeposit, __int64 nAmount);                      // send the deposit / withdraw
     void FUN_140de2ce0();                                                   // send the expand request
-    void FUN_140de1fd0(ATL::CAtlArray<void*>* pOut);                        // the item entries
+    void FUN_140de1fd0(class Unk_StItemArray* pOut);                        // the item entries
 };
 extern Unk_StModel DAT_143ab2d80;
 
@@ -149,7 +149,7 @@ public:
     virtual void s6(); virtual void s7(); virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11();
     virtual void s12(); virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17();
     virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23();
-    virtual void vfunc_24(int bFocus);                                      // 24 (+0xc0) set the focus
+    virtual void vfunc_24(bool bFocus);                                     // 24 (+0xc0) set the focus
     Scaleform::GFx::Value FUN_140bbeaa0(const char* szMethod, ASArray& a1);
     CStringW FUN_1422e0b00();                                               // the text
     void FUN_1422e0bd0(const CStringW& str);                                // set the text
@@ -157,12 +157,10 @@ public:
 };
 int FUN_1422c76c0(Unk_StInput* p);                                          // the input has the focus
 void FUN_1422c7630(ASDisplayObject* p, int bFocus);
-int FUN_140bc0500(Unk_StInputRef* p);                                       // not null
+Unk_StInput* FUN_140bc0500(const Unk_StInputRef& r);                             // operator T*
 Unk_StInput* FUN_140bc0550(Unk_StInputRef* p);                              // operator->
-void FUN_140bbf710(Unk_StInputRef* p);                                      // default ctor
-void FUN_140bbfdd0(Unk_StInputRef* p);                                      // release
 void FUN_140bc0300(Unk_StInputRef* p, int n);                               // reset
-int FUN_14199f2c0(Unk_StInputRef* p);                                       // composing (IME)
+unsigned char FUN_14199f2c0(Unk_StInputRef* p);                                       // composing (IME)
 class Unk_StScript : public AScript
 {
 public:
@@ -180,7 +178,7 @@ public:
 #define ST_V(n) virtual void vfunc_##n();
     ST_V(16) ST_V(17) ST_V(18) ST_V(19) ST_V(20) ST_V(21) ST_V(22) ST_V(23)
 #undef ST_V
-    virtual void vfunc_24(int bShow);                                       // 24 (+0xc0) refresh
+    virtual void vfunc_24(bool bShow);                                      // 24 (+0xc0) refresh
     void FUN_1422e4a50(const CStringW& str);                                // set the text
 };
 
@@ -204,30 +202,30 @@ public:
     Unk_DictRequest(const void* pSource);                   // 0x1401baaa0
     ~Unk_DictRequest();                                     // 0x1401baaf0
     void FUN_1401bac80(CString strName, CStringW strValue, int n);
-    int FUN_1401bab90(CString strName, void* pOut);
+    unsigned char FUN_1401bab90(CString strName, void* pOut);
 private:
-    char m_pad[0x38];
+    void* m_pad[5];
 };
 struct Unk_DictRequestValue
 {
     Unk_DictRequestValue();                                 // 0x1401ba840
     ~Unk_DictRequestValue();                                // 0x1401ba940
-    char m_pad_00[8];
+    void* m_pad_00;
     CStringW m_text;                                        // +0x08
-    char m_pad_10[8];
+    void* m_pad_10;
     int m_code;                                             // +0x18
-    char m_pad_1c[0x1c];
+    int m_pad_1c;
 };
 
 // Input state, the movie manager, string helpers and message boxes.
-class Unk_StInputState { public: char FUN_14116d9c0(int a, int b, int c); };
+class Unk_StInputState { public: unsigned char FUN_14116d9c0(int a, int b, int c); };
 Unk_StInputState* FUN_14025e7c0();
 char* FUN_14025e7b0();
 int FUN_1402c4c90(void* p, int n);
 class Unk_StUiSvc;
 Unk_StUiSvc* FUN_1403ed2b0();
 void FUN_141add1f0(Unk_StUiSvc* p);          // tell why the expansion is not possible
-class Unk_StUiMgr { public: int FUN_1422d4e20(const CString& strKey); void FUN_1422d4dd0(CString strKey); };
+class Unk_StUiMgr { public: int FUN_1422d4e20(CString strKey); void FUN_1422d4dd0(CString strKey); };
 Unk_StUiMgr* FUN_140b632f0();
 class Unk_StStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_StStrings* FUN_1401a9d70();
@@ -252,7 +250,7 @@ int FUN_1412772f0(__int64 n, int a);
 void FUN_141276180(const CString& strKey, const CString& strValue);
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
 CStringW* FUN_140159a00(ATL::CAtlArray<CStringW>* p, size_t i);
-char FUN_1403b3c40(const CStringW& a, const wchar_t* b);
+unsigned char FUN_1403b3c40(const CStringW& a, const wchar_t* b);
 const __int64& FUN_1402e49a0(const __int64* a, const __int64* b);           // std::min
 int FUN_141b21220(void* p);
 void* FUN_140967100();
@@ -263,22 +261,38 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_PickXY offLeft, 
 CStringW FUN_140720ca0(void*);
 
 // The candidate set (a hash set of names, 0x30 bytes, 10 bins) and one item entry (0x10 bytes).
-class Unk_StCandSet { public: char m_pad[0x30]; };
-void FUN_14025b4d0(Unk_StCandSet* p, int nBins);
+class Unk_StCandSet
+{
+public:
+    Unk_StCandSet(int nBins);                                               // 0x14025b4d0
+    ~Unk_StCandSet();                                                       // 0x14025c430
+    void* m_pad[6];
+};
 void* FUN_14025e750(Unk_StCandSet* p);                                      // first position
 const CStringW& FUN_14025e5c0(Unk_StCandSet* p, void* pos);                 // the key at a position
 void FUN_14025e840(Unk_StCandSet* p, void** pPos);                          // next
-void FUN_14025c430(Unk_StCandSet* p);                                       // dtor
-void* FUN_1409eea60(Unk_StCandSet* p, const CStringW& key);                 // lookup
+void* FUN_1409eea60(Unk_StCandSet* p, const CStringW& key, void* pStart);    // Find
 void FUN_14025d670(Unk_StCandSet* p, const CStringW& key);                  // insert
-class Unk_StItemEntry { public: char m_pad[0x10]; };
-void FUN_1402034d0(Unk_StItemEntry* p, void* pSrc);
-char FUN_1401c0050(Unk_StItemEntry* p, int n);
-void* FUN_1401c0180(Unk_StItemEntry* p);
-void FUN_140527b10(void* pItem, CStringW* pName);
-void FUN_1401bfde0(Unk_StItemEntry* p);
+class Unk_StItemEntry
+{
+public:
+    Unk_StItemEntry(const Unk_StItemEntry& src);                            // 0x1402034d0
+    ~Unk_StItemEntry();                                                     // 0x1401bfde0
+    void* m_pad[2];
+};
+unsigned char FUN_1401c0050(Unk_StItemEntry* p, int n);
+class Unk_StItemObj { public: CStringW FUN_140527b10(); };                // the item name
+Unk_StItemObj* FUN_1401c0180(Unk_StItemEntry* p);
 size_t FUN_140720ca0_count(void*);
-void* FUN_140c3c720(ATL::CAtlArray<void*>* p, unsigned i);
+// CAtlArray<MS2Ptr<CItem>> (ctor 0x1408f2190, dtor 0x1408f2340).
+class Unk_StItemArray
+{
+public:
+    Unk_StItemArray();
+    ~Unk_StItemArray();
+    void* m_pad[4];
+};
+const Unk_StItemEntry& FUN_140c3c720(Unk_StItemArray* p, size_t i);
 
 // The candidate list (setCandidates) values.
 class Unk_StCandList { public: char m_pad[0x40]; };
@@ -553,7 +567,6 @@ MS2_REPLACE_METHOD(0x141B0E380, UIStatusEventDispatcher, FUN_141b0e380, 139, 0xE
 UIStoreDialog::UIStoreDialog()
     : m_188(""), m_190(0), m_194(0), m_198(0), m_1a0(L"")
 {
-    FUN_140bbf710(&m_1a8);
     FUN_141924170(1);
     m_164 = 1;
     m_5c = 1;
@@ -564,7 +577,6 @@ UIStoreDialog::UIStoreDialog()
 // @0x141b0ed50
 UIStoreDialog::~UIStoreDialog()
 {
-    FUN_140bbfdd0(&m_1a8);
 }
 
 // @0x141b0ee20
@@ -662,13 +674,15 @@ MS2_REPLACE_METHOD(0x141B0F210, UIStoreDialog, vfunc_73, 146, 0x7CAE19AE);
 // @0x141b0f2b0
 int UIStoreDialog::vfunc_71()
 {
-    if (FUN_141b10af0() == 0)
-        return 0;
-    if (m_190 != 0)
-        FUN_140d73aa0(FUN_1409eec40(0x2ae), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
-    else
-        FUN_140d73aa0(FUN_1409eec40(0x2ad), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
-    return 1;
+    if (FUN_141b10af0() != 0)
+    {
+        if (m_190 != 0)
+            FUN_140d73aa0(FUN_1409eec40(0x2ae), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
+        else
+            FUN_140d73aa0(FUN_1409eec40(0x2ad), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
+        return 1;
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141B0F2B0, UIStoreDialog, vfunc_71, 374, 0xCD6372B2);
 
@@ -691,20 +705,13 @@ void UIStoreDialog::OnLoadComplete()
     m_198 = 6;
     if (m_30.get() != 0)
     {
-        Unk_StScript* pScript = static_cast<Unk_StScript*>(m_30.operator->());
-        bool bBound;
-        {
-            CString strName("m_inputSearch");
-            Unk_StInputRef spBound = pScript->FUN_140bbe940(strName, &m_1a8);
-            bBound = FUN_140bc0500(&spBound) != 0;
-            FUN_140bbfdd0(&spBound);
-        }
-        if (bBound)
+        Unk_StInput* pInput = FUN_140bc0500(static_cast<Unk_StScript*>(m_30.operator->())->FUN_140bbe940("m_inputSearch", &m_1a8));
+        if (pInput != 0)
         {
             FUN_140bc0550(&m_1a8)->FUN_1422e0920(StoreDelegate(this, &UIStoreDialog::FUN_141b10bc0));
         }
         CStringW strMoney = FUN_140719a00(DAT_143ab28f8);
-        pScript->FUN_140c38f00("initData", m_188, CStringW(strMoney));
+        static_cast<Unk_StScript*>(m_30.operator->())->FUN_140c38f00("initData", m_188, CStringW(strMoney));
     }
 }
 MS2_REPLACE_METHOD(0x141B0F4F0, UIStoreDialog, OnLoadComplete, 637, 0x655A75AF);
@@ -722,45 +729,42 @@ int UIStoreDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (UIDialog::OnMessage(pSender, pMsg) != 0)
         return 1;
-    if (pMsg->FUN_1422e4520() != 0 || dynamic_cast<UIMessageBox*>(pSender) == 0)
-        return 0;
-    int nAnswer = pMsg->FUN_1422b8a10();
-    CStringW strTag = pMsg->FUN_1422b8f40();
-    int nResult = 1;
-    if (nAnswer == 0)
+    if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        if (FUN_1403b3c40(strTag, L"askClose") == 0)
+        int nAnswer = pMsg->FUN_1422b8a10();
+        CStringW strTag = pMsg->FUN_1422b8f40();
+        int nResult = 1;
+        if (nAnswer == 0)
         {
-            ATL::CAtlArray<CStringW> aParts;
-            if (FUN_14028cb70(strTag, aParts, L",", 2) != 0)
+            if (FUN_1403b3c40(strTag, L"askClose"))
             {
-                CStringW strCmd(aParts.GetAt(0));
-                CStringW strAmount(aParts.GetAt(1));
-                if (!strAmount.IsEmpty())
+                nResult = 0;
+                FUN_14151f200();
+                vfunc_67();
+            }
+            else
+            {
+                ATL::CAtlArray<CStringW> aParts;
+                if (FUN_14028cb70(strTag, aParts, L",", 2) != 0)
                 {
-                    __int64 nAmount = _wtoi64(strAmount);
-                    if (FUN_1403b3c40(strCmd, L"deposit") == 0)
+                    CStringW strCmd(aParts.GetAt(0));
+                    CStringW strAmount(aParts.GetAt(1));
+                    if (!strAmount.IsEmpty())
                     {
-                        if (FUN_1403b3c40(strCmd, L"withdraw") != 0)
+                        __int64 nAmount = _wtoi64(strAmount);
+                        if (FUN_1403b3c40(strCmd, L"deposit"))
+                            nResult = FUN_141b11190(nAmount);
+                        else if (FUN_1403b3c40(strCmd, L"withdraw"))
                             nResult = FUN_141b11350(nAmount);
-                    }
-                    else
-                    {
-                        nResult = FUN_141b11190(nAmount);
                     }
                 }
             }
         }
-        else
-        {
-            nResult = 0;
+        if (nResult != 0)
             FUN_14151f200();
-            vfunc_67();
-        }
+        return 1;
     }
-    if (nResult != 0)
-        FUN_14151f200();
-    return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD_VIA(0x141B0F7C0, UIStoreDialog, IMessageListener, OnMessage, 627, 0xBC88E193);
 
@@ -869,52 +873,55 @@ int UIStoreDialog::vfunc_13()
         return 0;
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0) == 0)
-        return 0;
-    ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDlg == 0)
-        return 0;
-    if (FUN_140b632f0() != 0)
+    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
     {
-        CString strKey(m_20);
-        if (FUN_140b632f0()->FUN_1422d4e20(strKey) == 0)
-            return 0;
-    }
-    if (FUN_140bc0500(&m_1a8) != 0)
-    {
-        if (FUN_1422c76c0(FUN_140bc0550(&m_1a8)) == 0)
+        ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
+        if (pDlg != 0)
         {
-            FUN_1422c7630(pDlg, 0);
-        }
-        else
-        {
-            FUN_141b10ed0(FUN_140bc0550(&m_1a8)->FUN_1422e0b00());
-            FUN_1422c7630(pDlg, 1);
-            FUN_1422c7630(FUN_140bc0550(&m_1a8), 0);
+            if (FUN_140b632f0() != 0)
+            {
+                if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) == 0)
+                    return 0;
+            }
+            if (FUN_140bc0500(m_1a8) != 0)
+            {
+                if (FUN_1422c76c0(FUN_140bc0550(&m_1a8)) != 0)
+                {
+                    FUN_141b10ed0(FUN_140bc0550(&m_1a8)->FUN_1422e0b00());
+                    FUN_1422c7630(pDlg, 1);
+                    FUN_1422c7630(FUN_140bc0550(&m_1a8), 0);
+                }
+                else
+                {
+                    FUN_1422c7630(pDlg, 0);
+                }
+            }
+            return 1;
         }
     }
-    return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141B10290, UIStoreDialog, vfunc_13, 490, 0x272CDE81);
 
 // @0x141b10480
-// MS2-FUNCTIONAL: frame layout of the request temporaries differs
 void UIStoreDialog::vfunc_80(void* pRequest)
 {
-    if (FUN_140bc0500(&m_1a8) == 0)
-        return;
-    Unk_DictRequest request(pRequest);
-    Unk_DictRequestValue value;
-    if (request.FUN_1401bab90("m_inputSearch", &value) == 1)
+    if (FUN_140bc0500(m_1a8))
     {
-        if (value.m_code == 0)
+        Unk_DictRequest request(pRequest);
+        Unk_DictRequestValue value;
+        if (request.FUN_1401bab90("m_inputSearch", &value) == 1)
         {
-            FUN_141b116d0(CStringW(FUN_1413fa9b0(FUN_140bc0550(&m_1a8)->FUN_1422e0b00())));
-        }
-        else
-        {
-            FUN_140bc0550(&m_1a8)->FUN_1422e0bd0(CStringW(L""));
-            FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
+            if (value.m_code == 0)
+            {
+                CStringW strSearch = FUN_1413fa9b0(FUN_140bc0550(&m_1a8)->FUN_1422e0b00());
+                FUN_141b116d0(strSearch);
+            }
+            else
+            {
+                FUN_140bc0550(&m_1a8)->FUN_1422e0bd0(L"");
+                FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
+            }
         }
     }
 }
@@ -996,17 +1003,15 @@ MS2_REPLACE_METHOD_VIA(0x141B10980, UIStoreDialog, UIItemEventListener, vfunc_il
 // @0x141b109a0
 void UIStoreDialog::FUN_141b109a0()
 {
-    if (vfunc_55() == 0 && FUN_1422dc390() != 0)
+    if (vfunc_55() != 0 || FUN_1422dc390() == 0)
+        return;
+    m_198 = 6;
+    if (MS2Ptr<ASMovieClip> spEff = FUN_140ba7930("m_expandEff"))
     {
-        m_198 = 6;
-        MS2Ptr<ASMovieClip> spEff = FUN_140ba7930("m_expandEff");
-        if (spEff.get() != 0)
-        {
-            spEff->vfunc_3(1);
-            spEff->vfunc_12(1);
-        }
-        FUN_141276180(s_strExpandBankSlot, CString(""));
+        spEff->vfunc_3(1);
+        spEff->vfunc_12(1);
     }
+    FUN_141276180(s_strExpandBankSlot, "");
 }
 MS2_REPLACE_METHOD(0x141B109A0, UIStoreDialog, FUN_141b109a0, 316, 0x290F2820);
 
@@ -1032,7 +1037,6 @@ void UIStoreDialog::FUN_141b10ba0(int n)
 MS2_REPLACE_METHOD(0x141B10BA0, UIStoreDialog, FUN_141b10ba0, 25, 0xB1829CF6);
 
 // @0x141b10bc0
-// MS2-FUNCTIONAL: frame layout of the candidate temporaries differs
 void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (FUN_14199f2c0(&m_1a8) != 0)
@@ -1047,8 +1051,7 @@ void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params&
     ASDataProvider aCandidates(2);                                          // exe 0x1422deec0
     if (strSearch.GetLength() > 0)
     {
-        Unk_StCandSet set;
-        FUN_14025b4d0(&set, 10);
+        Unk_StCandSet set(10);
         FUN_141b11a10(CStringW(strSearch), &set);
         for (void* pos = FUN_14025e750(&set); pos != 0; FUN_14025e840(&set, &pos))
         {
@@ -1057,10 +1060,8 @@ void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params&
             row.FUN_1407cbb20("label", FUN_14025e5c0(&set, pos));
             aCandidates.FUN_1422bbf00(row);
         }
-        FUN_14025c430(&set);
     }
-    unsigned int nRows = aCandidates.FUN_1422bc5d0();
-    int nShown = nRows < 6 ? (int)aCandidates.FUN_1422bc5d0() : 5;
+    int nShown = aCandidates.FUN_1422bc5d0() > 5 ? 5 : aCandidates.FUN_1422bc5d0();
     static_cast<ASObj*>(static_cast<AScript*>(FUN_140bc0550(&m_1a8)))->FUN_1407cb9c0("m_rowCount", nShown);
     FUN_140bc0550(&m_1a8)->FUN_140bbeaa0("setCandidates", aCandidates);
 }
@@ -1076,19 +1077,25 @@ MS2_REPLACE_METHOD(0x141B10EB0, UIStoreDialog, FUN_141b10eb0, 21, 0x441926A2);
 // @0x141b10ed0
 void UIStoreDialog::FUN_141b10ed0(CStringW strText)
 {
-    if (strText.IsEmpty())
+    if (strText.IsEmpty() == true)
     {
         FUN_141b116d0(CStringW(L""));
         return;
     }
     Unk_DictRequest request(0x4e47);
-    request.FUN_1401bac80("m_inputSearch", CStringW(strText), 0);
+    request.FUN_1401bac80("m_inputSearch", strText, 0);
     int nResult = FUN_140d86260()->vfunc_37(&request);
     if (nResult == 1)
     {
-        FUN_141b116d0(CStringW(FUN_1413fa9b0(strText)));
+        CStringW strSearch = FUN_1413fa9b0(strText);
+        FUN_141b116d0(strSearch);
+        return;
     }
     else if (nResult == 2)
+    {
+        return;
+    }
+    else
     {
         return;
     }
@@ -1115,7 +1122,7 @@ int UIStoreDialog::FUN_141b11190(const __int64& nAmount)
         return 0;
     }
     __int64 nStore = DAT_143ab2d80.FUN_140de2a80();
-    if (nAmount < 1 || nStore < nAmount)
+    if (nAmount <= 0 || nAmount > nStore)
     {
         __int64 nMax = FUN_1402e49a0(&nStore, &DAT_143ab2898);
         if (nAmount == 0)
@@ -1130,13 +1137,13 @@ int UIStoreDialog::FUN_141b11190(const __int64& nAmount)
         return 0;
     }
     __int64 nTotal = DAT_143ab28f8 + nAmount;
-    if (nTotal < 2000000001)
+    if (nTotal > 2000000000)
     {
-        DAT_143ab2d80.FUN_140de2c40(1, nAmount);
-        return 1;
+        FUN_140961010(0x2b3, 1, 1, FUN_140763e10(2000000000));
+        return 0;
     }
-    FUN_140961010(0x2b3, 1, 1, FUN_140763e10(2000000000));
-    return 0;
+    DAT_143ab2d80.FUN_140de2c40(1, nAmount);
+    return 1;
 }
 MS2_REPLACE_METHOD(0x141B11190, UIStoreDialog, FUN_141b11190, 438, 0xAEFB6E3B);
 
@@ -1149,7 +1156,7 @@ int UIStoreDialog::FUN_141b11350(const __int64& nAmount)
         return 0;
     }
     __int64 nStore = DAT_143ab2d80.FUN_140de2ab0();
-    if (nAmount < 1 || nStore < nAmount)
+    if (nAmount <= 0 || nAmount > nStore)
     {
         __int64 nMax = FUN_1402e49a0(&nStore, &DAT_143ab28f8);
         if (nAmount == 0)
@@ -1204,8 +1211,7 @@ void UIStoreDialog::FUN_141b11590()
 {
     unsigned nSlots = DAT_143ab2d80.FUN_140de1c00();
     unsigned nUsed = DAT_143ab2d80.FUN_140de1c30();
-    MS2Ptr<Unk_StExpandClip> spText = FUN_140e6d820("m_expand");
-    if (spText.get() != 0)
+    if (MS2Ptr<Unk_StExpandClip> spText = FUN_140e6d820("m_expand"))
     {
         spText->FUN_1422e4a50(FUN_1406e7810(L"{0}/{1}", nSlots, nUsed));
         spText->vfunc_24(1);
@@ -1215,7 +1221,6 @@ void UIStoreDialog::FUN_141b11590()
 MS2_REPLACE_METHOD(0x141B11590, UIStoreDialog, FUN_141b11590, 309, 0x7FA1358F);
 
 // @0x141b116d0
-// MS2-FUNCTIONAL: frame layout of the message box temporaries differs
 void UIStoreDialog::FUN_141b116d0(CStringW strText)
 {
     m_1a0 = strText;
@@ -1230,10 +1235,10 @@ void UIStoreDialog::FUN_141b116d0(CStringW strText)
                 reinterpret_cast<Unk_StScript*>(pDlg)->FUN_1409ba030("moveScroll", nIndex);
             if (nIndex == -1)
             {
-                if (FUN_140bc0500(&m_1a8) != 0)
+                if (FUN_140bc0500(m_1a8) != 0)
                 {
                     FUN_1422c7630(FUN_140bc0550(&m_1a8), 0);
-                    FUN_140bc0550(&m_1a8)->FUN_1422e0bd0(CStringW(L""));
+                    FUN_140bc0550(&m_1a8)->FUN_1422e0bd0(L"");
                     FUN_140bc0550(&m_1a8)->vfunc_24(1);
                 }
                 MS2Ptr<CMsgBoxData> box = FUN_140d73e40(0, 0x937, 0, CStringW(L""));
@@ -1251,26 +1256,22 @@ MS2_REPLACE_METHOD(0x141B116D0, UIStoreDialog, FUN_141b116d0, 823, 0x91F98195);
 // @0x141b11a10
 void UIStoreDialog::FUN_141b11a10(CStringW strText, Unk_StCandSet* pOut)
 {
-    ATL::CAtlArray<void*> aEntries;
+    Unk_StItemArray aEntries;
     DAT_143ab2d80.FUN_140de1fd0(&aEntries);
     for (unsigned i = 0; i < FUN_140720ca0_count(&aEntries); ++i)
     {
-        Unk_StItemEntry entry;
-        FUN_1402034d0(&entry, FUN_140c3c720(&aEntries, i));
-        if (FUN_1401c0050(&entry, 0) == 0)
+        Unk_StItemEntry entry = FUN_140c3c720(&aEntries, i);
+        if (FUN_1401c0050(&entry, 0))
+            continue;
+        CStringW strItem = FUN_1401c0180(&entry)->FUN_140527b10();
+        CStringW strNorm = FUN_1413fa9b0(strItem);
+        strText.MakeLower();
+        strNorm.MakeLower();
+        if (strNorm.Find(strText, 0) != -1)
         {
-            CStringW strItem;
-            FUN_140527b10(FUN_1401c0180(&entry), &strItem);
-            CStringW strNorm = FUN_1413fa9b0(strItem);
-            strText.MakeLower();
-            strNorm.MakeLower();
-            if (strNorm.Find(strText, 0) != -1)
-            {
-                if (FUN_1409eea60(pOut, strItem) == 0)
-                    FUN_14025d670(pOut, strItem);
-            }
+            if (FUN_1409eea60(pOut, strItem, 0) == 0)
+                FUN_14025d670(pOut, strItem);
         }
-        FUN_1401bfde0(&entry);
     }
 }
 MS2_REPLACE_METHOD(0x141B11A10, UIStoreDialog, FUN_141b11a10, 391, 0x02F4CAD4);
@@ -1278,14 +1279,13 @@ MS2_REPLACE_METHOD(0x141B11A10, UIStoreDialog, FUN_141b11a10, 391, 0x02F4CAD4);
 // @0x141b11ba0
 bool UIStoreDialog::FUN_141b11ba0(int nButton, const CMsgBoxData& box)
 {
-    if (nButton == 0)
+    if (nButton != 0)
+        return true;
+    ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDlg != 0 && FUN_140bc0500(m_1a8) != 0)
     {
-        ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
-        if (pDlg != 0 && FUN_140bc0500(&m_1a8) != 0)
-        {
-            FUN_140b632f0()->FUN_1422d4dd0(CString(m_20));
-            FUN_1422c7630(FUN_140bc0550(&m_1a8), 1);
-        }
+        FUN_140b632f0()->FUN_1422d4dd0(CString(m_20));
+        FUN_1422c7630(FUN_140bc0550(&m_1a8), 1);
     }
     return true;
 }

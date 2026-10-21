@@ -21,7 +21,12 @@ class Unk_StCandSet;
 
 // The 16-byte handle of the search input ("m_inputSearch"): an MS2Ptr whose operations live in the exe (0x140bbf710 /
 // 0x140bbfdd0 / 0x140bc0500 / 0x140bc0550).
-struct Unk_StInputRef { void* m_0; void* m_8; };
+struct Unk_StInputRef
+{
+    Unk_StInputRef();                                           // 0x140bbf710
+    ~Unk_StInputRef();                                          // 0x140bbfdd0
+    void* m_0; void* m_8;
+};
 
 class UIStoreDialog : public UIDialog, public UIStatusEventListener, public UIItemEventListener
 {
