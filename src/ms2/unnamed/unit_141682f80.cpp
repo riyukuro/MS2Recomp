@@ -394,17 +394,19 @@ Unk_StreamPoint* Unk_PCMove::FUN_1416836d0(Unk_StreamPoint* pOut)
 }
 
 // @0x141683900
-// MS2-FUNCTIONAL: exe returns through a shared jmp-to-end epilogue; logic identical
 Unk_StreamPoint* Unk_PCMove::FUN_141683900(Unk_StreamPoint* pOut)
 {
     if (!FUN_141683ef0()) {
         *pOut = DAT_143b01a60;
-    } else if (!FUN_1416839b0() && (m_moving != 0 || FUN_140868ba0(m_timer) != 0)) {
+        return pOut;
+    }
+    if (!FUN_1416839b0() && (m_moving != 0 || FUN_140868ba0(m_timer) != 0)) {
         *pOut = m_dir;
+        return pOut;
     } else {
         FUN_141683290(pOut);
+        return pOut;
     }
-    return pOut;
 }
 
 // @0x1416839b0
