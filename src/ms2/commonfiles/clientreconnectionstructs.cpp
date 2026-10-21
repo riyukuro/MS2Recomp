@@ -66,7 +66,7 @@ COutPacketBuffer::~COutPacketBuffer() {}
 void COutPacketBuffer::FUN_140208960(CGameSocket* pSocket, COutPacket& packet)
 {
     MS2_ASSERT_AT(0x10a, pSocket != NULL);
-    if (Unk_LockGuard guard = m_lock) {} else {
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
         for (POSITION pos = m_pending.GetHeadPosition(); pos != NULL; m_pending.GetNext(pos)) {
             COutPacketPtr& pending = m_pending.GetAt(pos);
             FUN_140209510(*pending, false);
@@ -81,7 +81,7 @@ void COutPacketBuffer::FUN_140208960(CGameSocket* pSocket, COutPacket& packet)
 void COutPacketBuffer::RetransmitClientPackets(CGameSocket* pSocket, unsigned lastSequence)
 {
     MS2_ASSERT_AT(0x122, pSocket != NULL);
-    if (Unk_LockGuard guard = m_lock) {} else {
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
         m_resending = 1;
         unsigned newSequence = lastSequence;
         COutPacket ack(7, 0);
@@ -105,7 +105,7 @@ void COutPacketBuffer::RetransmitClientPackets(CGameSocket* pSocket, unsigned la
 // @0x140208d40
 void COutPacketBuffer::FUN_140208d40()
 {
-    if (Unk_LockGuard guard = m_lock) {} else {
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
         m_resending = 0; m_value = 0; m_captureEnabled = 0; m_limit = 0; m_capturedSize = 0;
         m_pendingSize = 0; m_loopbackSize = 0; m_sequence = 0;
         m_captured.RemoveAll();
@@ -118,13 +118,13 @@ void COutPacketBuffer::ShrinkCapturedPackets()
 {
     if (m_captureEnabled == 0) {
         if (m_capturedSize != 0) {
-            if (Unk_LockGuard guard = m_lock) {} else { m_captured.RemoveAll(); m_capturedSize = 0; }
+            if (Unk_LockGuard guard = m_lock) { __assume(0); } else { m_captured.RemoveAll(); m_capturedSize = 0; }
         }
     } else {
         unsigned limit = m_limit;
         unsigned shrink = limit / 2;
         if (m_capturedSize < limit) return;
-        if (Unk_LockGuard guard = m_lock) {} else {
+        if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
             FUN_140166440()->LogB(0, 0, 0x85, L"{0}. currSize={1} limit={2} shrink={3}", L"COutPacketBuffer::ShrinkCapturedPackets",
                                   m_capturedSize, limit, shrink);
             while (m_capturedSize > shrink && !m_captured.IsEmpty()) {
@@ -138,7 +138,7 @@ void COutPacketBuffer::ShrinkCapturedPackets()
 // @0x140209050
 void COutPacketBuffer::FUN_140209050(unsigned ackSequence)
 {
-    if (Unk_LockGuard guard = m_lock) {} else {
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
         while (!m_captured.IsEmpty()) {
             POSITION posHead = m_captured.GetHeadPosition();
             POSITION pos = posHead;
@@ -156,7 +156,7 @@ void COutPacketBuffer::FUN_140209050(unsigned ackSequence)
 // @0x1402091b0
 void COutPacketBuffer::PushPendingPacket(COutPacket& packet)
 {
-    if (Unk_LockGuard guard = m_lock) {} else {
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
         COutPacketPtr copy = FUN_14020aaa0(packet);
         if (packet.FUN_14020bc40() != 0) {
             m_loopbackSize += copy->FUN_14020b9f0();
@@ -175,7 +175,7 @@ void COutPacketBuffer::FUN_140209340(unsigned limit) { m_limit = limit; }
 unsigned COutPacketBuffer::FUN_140209360()
 {
     if (m_capturedSize == 0) return 0;
-    if (Unk_LockGuard guard = m_lock) {} else {
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
         if (m_captured.IsEmpty()) return 0;
         return m_captured.GetHead()->FUN_14020ba00();
     }
@@ -193,12 +193,12 @@ int COutPacketBuffer::FUN_140209490() { return m_captureEnabled; }
 // @0x1402094b0
 void COutPacketBuffer::FUN_1402094b0(int value)
 {
-    if (Unk_LockGuard guard = m_lock) {} else m_value = value;
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else m_value = value;
 }
 // @0x140209510
 void COutPacketBuffer::FUN_140209510(COutPacket& packet, bool bControl)
 {
-    if (Unk_LockGuard guard = m_lock) {} else if (m_resending == 0) {
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else if (m_resending == 0) {
         ++m_sequence;
         packet.FUN_14020c070(m_sequence);
         if (m_captureEnabled != 0) {
