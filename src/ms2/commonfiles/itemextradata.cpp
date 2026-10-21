@@ -30,7 +30,7 @@
 
 // ---- out-of-unit callees ----
 unsigned FUN_140869420();                                       // the tick count
-bool FUN_14059d150(float* p);
+int FUN_14059d150(float* p);
 CItemDataTable* FUN_140281980();                                // the item table singleton
 void FUN_140159b70(long hr);                                    // ATL throw
 float FUN_14029dd40(float f);                                   // fabs
@@ -45,10 +45,11 @@ static inline const Unk_StreamPoint& AsPt(const efd::Point3& p) { return *(const
 static float FUN_14059d930(float f) { return FUN_14029dd40(f); }
 
 // @0x14059bfe0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
-static bool FUN_14059bfe0(float a, float b)
+static int FUN_14059bfe0(float a, float b)
 {
-    return FUN_14059d930(a - b) > 0.0001f;
+    if (FUN_14059d930(a - b) > 0.0001f)
+        return 1;
+    return 0;
 }
 
 // @0x14059c020
@@ -128,40 +129,26 @@ CItemExtraData::~CItemExtraData()
 }
 
 // @0x140598f70
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 int CItemExtraData::vfunc_1(const CItemExtraData* pOther)
 {
-    int nResult;
-    if (FUN_14059d140() == pOther->FUN_14059d140())
-    {
-        if (!FUN_140599830(pOther))
-            nResult = 0;
-        else if (!vfunc_2(pOther))
-            nResult = 0;
-        else
-            nResult = 1;
-    }
-    else
-        nResult = 0;
-    return nResult;
+    if (FUN_14059d140() != pOther->FUN_14059d140())
+        return 0;
+    if (!FUN_140599830(pOther))
+        return 0;
+    if (!vfunc_2(pOther))
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x140598F70, CItemExtraData, vfunc_1, 112, 0x51C8CF20);
 
 // @0x140598ff0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 int CItemExtraData::vfunc_2(const CItemExtraData* pOther)
 {
-    int nResult;
-    if (FUN_14059d140() == pOther->FUN_14059d140())
-    {
-        if (m_nPick == pOther->m_nPick)
-            nResult = 1;
-        else
-            nResult = 0;
-    }
-    else
-        nResult = 0;
-    return nResult;
+    if (FUN_14059d140() != pOther->FUN_14059d140())
+        return 0;
+    if (m_nPick != pOther->m_nPick)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x140598FF0, CItemExtraData, vfunc_2, 82, 0x373D0EFF);
 
@@ -359,15 +346,11 @@ void CItemExtraData::FUN_140599ea0(int nIndex, const int& nValue, unsigned nSlot
 MS2_REPLACE_METHOD(0x140599EA0, CItemExtraData, FUN_140599ea0, 287, 0x2890776D);
 
 // @0x140599fd0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 int CItemExtraData::FUN_140599fd0(unsigned nIndex)
 {
-    int nValue;
-    if (nIndex < 3)
-        nValue = FUN_14059a2c0()->m_aRgb[nIndex];
-    else
-        nValue = 0;
-    return nValue;
+    if (nIndex >= 3)
+        return 0;
+    return FUN_14059a2c0()->m_aRgb[nIndex];
 }
 MS2_REPLACE_METHOD(0x140599FD0, CItemExtraData, FUN_140599fd0, 104, 0x96D99435);
 
@@ -897,10 +880,12 @@ MS2_REPLACE_METHOD(0x14059BDA0, CCapExtraData, vfunc_2, 560, 0xFEDE7F42);
 // ---- finite checks and the bounds-checked / small glue (inline COMDATs of the original) ----
 
 // @0x14059d150
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
-bool FUN_14059d150(float* p)
+int FUN_14059d150(float* p)
 {
-    return (_fpclass((double)*p) & 0x207) == 0;
+    if (_fpclass((double)*p) & 0x207)
+        return 0;
+    else
+        return 1;
 }
 
 // @0x14059d190
