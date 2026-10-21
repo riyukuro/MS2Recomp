@@ -1352,7 +1352,8 @@ void* FUN_141427210(void* pIter);
 void* FUN_1412095f0(void* pSet);
 void** FUN_140553e80(void* pSet);
 void FUN_1405408b0(void* pOut, void* pNode, void* pTree);
-void FUN_141428500(void* pSet, void* pOut, void* pKey);
+void* FUN_141427160(void* pSet, void* pKey);
+void* FUN_141428500(void* pSet, void* pOut, void* pKey);
 void* FUN_141428280(void* pSet, void* pOut);
 void FUN_141428070(void* pPtr);
 bool FUN_1405411b0(void* pIterA, void* pIterB);
@@ -1498,6 +1499,13 @@ void* FUN_1414282e0(void* pSet, void** pOut, void* pKey)   // MS2-FUNCTIONAL: ra
     }
     else
         *pOut = itFound;
+    return pOut;
+}
+
+// @0x141428500
+void* FUN_141428500(void* pSet, void* pOut, void* pKey) // MS2-FUNCTIONAL: raw lower_bound (iterator(_Lbound(key), _Get_scary()))
+{
+    FUN_1405408b0(pOut, FUN_141427160(pSet, pKey), FUN_141427210(FUN_140553e80(pSet)));
     return pOut;
 }
 

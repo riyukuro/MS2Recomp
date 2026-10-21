@@ -10586,12 +10586,12 @@ wmemmove	140191580	func
 ?_Unused_capacity@?$vector@V?$MS2Ptr@VCIngredientInfo@@@@V?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@AEBA_KXZ	140289e50	func
 ?FUN_140289e90@@YA_J_J@Z	140289e90	func
 ?begin@?$initializer_list@_J@std@@QEBAPEB_JXZ	140289e90	func
-??__FstrHeap@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ	140289ea0	func
+??__FstrHeap@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ	142cab860	func
 ?_Xlength@?$vector@UUnk_RemakeLockOpt@@V?$allocator@UUnk_RemakeLockOpt@@@std@@@std@@CAXXZ	140289ea0	func
 ?_Xlength@?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@CAXXZ	140289ec0	func
 ?_Xlength@?$vector@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@CAXXZ	140289ee0	func
 ?_Xlength@?$vector@V?$MS2Ptr@VCIngredientInfo@@@@V?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@CAXXZ	140289f00	func
-??__FstrMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ	140289f20	func
+??__FstrMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@2@XZ@YAXXZ	142cab880	func
 ?_Xlength@?$vector@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@CAXXZ	140289f20	func
 ?_Xlength@?$vector@V?$MS2Ptr@VLogContext@Probability@@@@V?$allocator@V?$MS2Ptr@VLogContext@Probability@@@@@std@@@std@@CAXXZ	140289f20	func
 ?_Xrange@?$vector@V?$MS2Ptr@VCIngredientInfo@@@@V?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@CAXXZ	140289f40	func
@@ -192192,8 +192192,8 @@ __imp_OpenSurveyWindowA	142cd1488	data
 ??_7CAchieveData@@6BCCacheData@@@	142ce68c0	data
 ??_7CAchieveData@@6B?$CValidData@VCAchieveData@@@@@	142ce68d0	data
 ??_7AdBannerData@@6B@	142ce6ac0	data
-?strHeap@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@3@XZ@4VCWin32Heap@3@A	142ceaa70	data
-?strMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@3@XZ@4V23@A	142ceaa70	data
+?strHeap@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@3@XZ@4VCWin32Heap@3@A	143acd170	data
+?strMgr@?1??GetInstance@CAtlStringMgr@ATL@@SAPEAUIAtlStringMgr@3@XZ@4V23@A	143acd190	data
 ??_7AdditionalActionAdditional@@6B@	142ceaaa0	data
 ??_7AdditionalActionSkill@@6B@	142ceaab0	data
 ??_7AdditionalData@@6B@	142ceaac0	data

@@ -634,7 +634,7 @@ CStringW FUN_1408f71a0(CStringW strKey, const CStringW& strA, const CStringW& st
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strA);
 bool FUN_140375130(void* p);
 int FUN_14036e5b0(Unk_UserSvc* p);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int n, const CStringW& strTag);
+MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int n, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> sp);
 void FUN_140d73aa0(CStringW strMsg, int n, void* pOwner, CStringW strTag);
 void FUN_140d73bc0(int nStringId, int n, void* pOwner, CStringW strTag);

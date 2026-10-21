@@ -450,8 +450,8 @@ void FUN_14135ec00(void*,const CString&,bool);
 void* FUN_1403ed290();
 void FUN_1413b71c0(void*,CStringW);
 void* FUN_14136f480(int);
-Unk_g3_Ref16 FUN_1409eec40(int);
-void FUN_140d73aa0(const Unk_g3_Ref16&,int,void*,CStringW);
+CStringW FUN_1409eec40(int);
+void FUN_140d73aa0(CStringW,int,void*,CStringW);   // the exe callee destroys both strings
 void FUN_141664200(void*,Unk_g3_Ref16*);
 void* FUN_140c207b0(Unk_g3_Ref16*);
 int FUN_14050a6a0(void*);
@@ -1919,9 +1919,9 @@ int CUserCommandCli::FUN_14136c880(Unk_CommandArgs&) {
     char* dialog=(char*)FUN_14136f480(0x4e4f);
     void* target;
     if(dialog==0) target=0; else target=dialog+0x18;
-    CStringW name(L"leaveGuild");
-    Unk_g3_Ref16 ref=FUN_1409eec40(0x3e0);
-    FUN_140d73aa0(ref,1,target,name);
+    FUN_140d73aa0(FUN_1409eec40(0x3e0),1,target,CStringW(L"leaveGuild"));
+
+
     return 1;
 }
 // @0x14136c940
