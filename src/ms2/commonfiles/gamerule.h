@@ -219,8 +219,8 @@ public:
     BOOL FUN_1404780e0(int value);
     void FUN_140478170(int eventId, MS2Ptr<OntimeEventContext> spContext);   // GameEventOntime
     void FUN_1404781f0(int eventId);
-    MS2Ptr<OntimeEventContext> FUN_140478280();
-    MS2Ptr<OntimeEventContext> FUN_1404783e0(int eventId);
+    MS2Ptr<const OntimeEventContext> FUN_140478280();
+    MS2Ptr<const OntimeEventContext> FUN_1404783e0(int eventId);
     void FUN_1404784b0(int a, __int64 b, CStringW str);     // GameEventUgcMapCommendationGM
     void FUN_140478640(int a);
     MS2Ptr<UgcMapCommendationGMEvent> FUN_1404786b0(int a);

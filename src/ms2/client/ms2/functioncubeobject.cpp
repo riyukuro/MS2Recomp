@@ -1453,7 +1453,7 @@ class Unk_FcEntMgr;
 Unk_FcEntMgr* FUN_1409670f0();
 void FUN_1411cf570(Unk_FcEntMgr* pMgr, Unk_Entity* pEntity);        // remove
 void FUN_1411cf2d0(Unk_FcEntMgr* pMgr, Unk_Entity* pEntity, int nFlag);
-Unk_EntRef* FUN_1411cec80(Unk_FcEntMgr* pMgr, Unk_EntRef* pOut, Unk_FcAnimName* pClass, egf::EntityID kId);
+Unk_EntRef* FUN_1411cec80(Unk_FcEntMgr* pMgr, Unk_EntRef* pOut, Unk_FcAnimName* pClass, egf::EntityID kId, bool bMaster);   // EntityWorldManager::FUN_1411cec80
 Unk_FcAnimName* FUN_140b7cc50(Unk_FcAnimSvc* pSvc, Unk_FcAnimName* pOut, egf::EntityID kId);  // current animation
 unsigned char FUN_140de8e30(Unk_FcAnimName* pName, const char* psz);                         // names are equal
 
@@ -1537,7 +1537,7 @@ int CBreedingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
         Unk_FcAnimName kClass;
         FUN_1409989e0(&kClass, "GameObject");
         Unk_EntRef kTmp(0);
-        m_entPet = *FUN_1411cec80(FUN_1409670f0(), &kTmp, &kClass, kId);
+        m_entPet = *FUN_1411cec80(FUN_1409670f0(), &kTmp, &kClass, kId, true);
         FUN_1408a8900(&kClass);
         if (m_entPet.FUN_1408a9090() != 0)
         {

@@ -47,7 +47,7 @@
 // MS2-PIN: ??$_Distance1@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@@std@@@std@@YA_JV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x1404832e0 ; prop
 // MS2-PIN: ??$_Distance1@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@@std@@YA_JV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x1404833a0 ; prop
 // MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x140484700 ; prop
-// MS2-PIN: ??$_Eqrange@K@?$_Tree@V?$_Tmap_traits@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@@std@@V12@@1@AEBK@Z 0x140484790 ; prop
+// MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x140484790 ; prop
 // MS2-PIN: ??$_Eqrange@U?$pair@HH@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@2@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@std@@@std@@@std@@V12@@1@AEBU?$pair@HH@1@@Z 0x140485000 ; unique
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAX@1@@Z 0x1404908f0 ; prop
 // MS2-PIN: ??$_Try_emplace@AEBK$$V@?$map@KV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@std@@@std@@@std@@_N@1@AEBK@Z 0x1404936c0 ; unique
@@ -251,11 +251,10 @@
 // MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@KV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEBA_KXZ 0x1404c0af0 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ?Recompute@?$Unk_GameRuleRateMap@K@@QEAAXK@Z 0x1404a6e40
-// this TU's copy of the OntimeEventContext pointer copy (the exe's reads the source through get(); 0x1403e1cd0 is another's)
-// MS2-PIN: ??0?$MS2Ptr@UOntimeEventContext@@@@QEAA@AEBV0@@Z 0x140497ca0
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@_KU?$less@_K@std@@V?$allocator@_K@2@$0A@@std@@@std@@QEAA_KAEB_K@Z 0x1404bfb40
-// the ItemTag multimap's _Insert_at (its map<DWORD,DWORD> look-alike is another TU's COMDAT copy)
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@1@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@1@Z 0x14048fcc0
+// the ItemTag multimap's _Insert_at (max_size 0x1404c0ad0; its map<DWORD,DWORD> look-alike is another TU's COMDAT copy) and its _Insert_nohint
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@1@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@1@Z 0x140487c70
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@1@@Z 0x14048fcc0
 // pair<const int, map<DWORD,DWORD>> piecewise ctor (calls the map ctor 0x140445750; 0x140481dc0 is a look-alike)
 // MS2-PIN: ??$make_pair@AEAHAEAV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@YA?AU?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@0@AEAHAEAV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@Z 0x140496df0
 // look-alike callees resolved through their matched callers (bytematch -v)
@@ -281,6 +280,22 @@
 #include <iterator>
 #include <functional>
 #include "hook/ms2hook.h"
+
+// The ontime getters return MS2Ptr<const OntimeEventContext>: the exe converts the map's MS2Ptr<OntimeEventContext>
+// into a second pointer family (copy 0x140497ca0 reads the source through get(), AddRef 0x1404aeed0, (int) 0x140497ce0)
+// that only this TU instantiates. The CPtred helpers take a non-const pointer.
+template <> inline void MS2Ptr<const OntimeEventContext>::Reference(const OntimeEventContext* p)
+{
+    CPtred::AddRefPtred(const_cast<OntimeEventContext*>(p));
+}
+template <> inline void MS2Ptr<const OntimeEventContext>::ReleaseImpl(void*)
+{
+    if (CPtred::ReleasePtred(const_cast<OntimeEventContext*>(m_p)) == 0)
+    {
+        Reference(m_p);
+        CPtred::DeletePtred(const_cast<OntimeEventContext*>(m_p));
+    }
+}
 
 // The scoped lock of this TU (the same exe ctor as Unk_PetLock; it acquires immediately, the dtor releases).
 struct Unk_GameRuleLock {
@@ -1042,7 +1057,7 @@ void CGameRule::FUN_1404781f0(int eventId)
 MS2_REPLACE_METHOD(0x1404781F0, CGameRule, FUN_1404781f0, 125, 0x1CF96A77);
 
 // @0x140478280
-MS2Ptr<OntimeEventContext> CGameRule::FUN_140478280()
+MS2Ptr<const OntimeEventContext> CGameRule::FUN_140478280()
 {
     Unk_GameRuleLock lock(m_4d0, 1);
     for (POSITION pos = m_500.GetStartPosition(); pos != NULL; m_500.GetNext(pos)) {
@@ -1051,18 +1066,18 @@ MS2Ptr<OntimeEventContext> CGameRule::FUN_140478280()
         if (pEventCtx->m_1c == true)
             return pEventCtx;
     }
-    return MS2Ptr<OntimeEventContext>(0);
+    return MS2Ptr<const OntimeEventContext>(0);
 }
 MS2_REPLACE_METHOD(0x140478280, CGameRule, FUN_140478280, 336, 0x21808762);
 
 // @0x1404783e0
-MS2Ptr<OntimeEventContext> CGameRule::FUN_1404783e0(int eventId)
+MS2Ptr<const OntimeEventContext> CGameRule::FUN_1404783e0(int eventId)
 {
     Unk_GameRuleLock lock(m_4d0, 1);
     ATL::CAtlMap<int, MS2Ptr<OntimeEventContext> >::CPair* pPair = m_500.Lookup(eventId);
     if (pPair != NULL)
         return pPair->m_value;
-    return MS2Ptr<OntimeEventContext>(0);
+    return MS2Ptr<const OntimeEventContext>(0);
 }
 MS2_REPLACE_METHOD(0x1404783E0, CGameRule, FUN_1404783e0, 196, 0x34016C97);
 
@@ -2951,4 +2966,5 @@ void CGameRule::FUN_14047fc60()
     }
 }
 MS2_REPLACE_METHOD(0x14047FC60, CGameRule, FUN_14047fc60, 247, 0x577FF757);
-// MS2-FUNCTIONAL 0x140497ca0: the exe has two MS2Ptr<OntimeEventContext> families - this TU's copy ctor reads the source through get() 0x1403e89f0 and AddRef 0x1404aeed0, the other TU's (0x1403e1cd0) reads m_p and calls AddRef 0x1403f38c0; one generic MS2Ptr<T> copy ctor cannot emit both, so the map value here is a second, unrecovered smart-pointer type
+// MS2-FUNCTIONAL 0x140497ca0: MS2Ptr<const OntimeEventContext>'s converting ctor from MS2Ptr<OntimeEventContext>; the exe reads the source through get() 0x1403e89f0, the shared ascript.h template reads o.m_p
+// MS2-PIN: ??$?0UOntimeEventContext@@@?$MS2Ptr@$$CBUOntimeEventContext@@@@QEAA@AEBV?$MS2Ptr@UOntimeEventContext@@@@@Z 0x140497ca0
