@@ -54,7 +54,7 @@ public:
     unsigned GetSaveId() const;                             // 0x1413a2c00
     unsigned GetSaveStep() const;                           // 0x1413a2c20
     int GetForce() const;                                   // 0x1413a2c40
-    bool IsSaveSkipped() const;                             // 0x1413a2c60: no save id, or saving disabled
+    int IsSaveSkipped() const;                              // 0x1413a2c60: no save id, or saving disabled
     int CheckStart(bool* pbOpen, unsigned* pnFailed);      // 0x1413a2ca0: the trigger conditions, then the open conditions
     int CheckClose(unsigned* pnFailed);                    // 0x1413a2dd0
     int CheckCancel(unsigned* pnFailed);                   // 0x1413a2e70

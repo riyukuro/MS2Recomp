@@ -154,7 +154,7 @@ Unk_GmPlayerFlags* FUN_140e09150(void* pPlayerInfo);
 bool FUN_140528980(void* pItem);                                    // item is valid
 int FUN_1405276c0(void* pItem);                                     // item id
 int FUN_14053fc10(int nItemId);                                     // item kind
-char FUN_140d1a9d0(const Unk_GcOptInt* pOpt);                       // Nullable<int>::HasValue
+bool FUN_140d1a9d0(const Unk_GcOptInt* pOpt);                       // Nullable<int>::HasValue
 const int* FUN_1413989f0(const Unk_GcOptInt* pOpt);                 // Nullable<int>::GetValue
 Unk_GcCondRef FUN_1413a5420(CStringA strTag);                       // the condition class of a tag
 void FUN_140710590(COutPacket& kPacket);                            // sends the packet
@@ -203,13 +203,12 @@ void CGuideManager::StopAndUpdate()
 int CGuideManager::SendStates()
 {
     COutPacket packet(0x57, 0);
-    packet.Encode4((int)m_map60.GetCount());
-    POSITION pos = m_map60.GetHeadPosition();
-    while (pos != 0)
+    int nCount = (int)m_map60.GetCount();
+    packet.Encode4(nCount);
+    for (POSITION pos = m_map60.GetHeadPosition(); pos != 0; m_map60.GetNext(pos))
     {
         packet.Encode4(m_map60.GetKeyAt(pos));
         packet.Encode4(m_map60.GetValueAt(pos));
-        m_map60.GetNext(pos);
     }
     FUN_140710590(packet);
     m_n24 = 0;
@@ -220,17 +219,17 @@ int CGuideManager::SendStates()
 void CGuideManager::ReceiveStates(CInPacket& kPacket)
 {
     ClearEntities();
-    CInputStream& in = kPacket;
-    int nCount = in.vfunc_o8_3();
-    for (int i = 0; i < nCount; i++)
+    unsigned nCount = kPacket.vfunc_o8_3();
+    for (unsigned i = 0; i < nCount; i++)
     {
-        int nKey = in.vfunc_o8_3();
-        int nValue = in.vfunc_o8_3();
-        if (nKey != 0)
-            m_map60.SetAt(nKey, nValue);
+        int nKey = kPacket.vfunc_o8_3();
+        int nValue = kPacket.vfunc_o8_3();
+        if (nKey == 0)
+            continue;
+        m_map60.SetAt(nKey, nValue);
     }
     Unk_Bitset8 bits;
-    m_bits.m_bits[0] = *FUN_141396750(&bits, in.vfunc_o8_1());
+    static_cast<Unk_Bitset8&>(m_bits) = *reinterpret_cast<Unk_Bitset8*>(FUN_141396750(&bits, kPacket.vfunc_o8_1()));
 }
 
 // @0x14138b3a0
@@ -245,9 +244,7 @@ void CGuideManager::Load()
 {
     m_entities.RemoveAll();
     m_caches.RemoveAll();
-    CStringA strFile("guide.xml");
-    CStringA strDir("Table");
-    LoadFile(FUN_14071a5b0(strDir, strFile));
+    LoadFile(FUN_14071a5b0("Table", "guide.xml"));
     PrepareEntities();
     NotifyEntitiesLoaded();
     RefreshEntities();
@@ -502,18 +499,14 @@ void CGuideManager::FinishEntity(MS2Ptr<CGuideEntity> spEntity)
 {
     m_map90.SetAt(spEntity->m_nId, 1);
     QueueOccurrence(static_cast<Occurrence>(2), spEntity->m_nId);
-    if (spEntity->IsSaveSkipped() == 0)
-    {
-        unsigned nStep = 0;
-        if (m_map60.Lookup(spEntity->GetSaveId(), nStep))
-        {
-            if (spEntity->GetSaveStep() < nStep)
-                return;
-        }
-        unsigned nNewStep = spEntity->GetSaveStep();
-        m_map60.SetAt(spEntity->GetSaveId(), nNewStep);
-        m_n24 = 1;
-    }
+    if (spEntity->IsSaveSkipped() != 0)
+        return;
+    unsigned nStep = 0;
+    if (m_map60.Lookup(spEntity->GetSaveId(), nStep) && nStep > spEntity->GetSaveStep())
+        return;
+    unsigned nNewStep = spEntity->GetSaveStep();
+    m_map60.SetAt(spEntity->GetSaveId(), nNewStep);
+    m_n24 = 1;
 }
 
 // @0x14138c850
@@ -556,29 +549,21 @@ int CGuideManager::IsSkillRestricted(int nSkillId)
 // @0x14138c9c0
 int CGuideManager::IsActionRestricted(int nType)
 {
-    int nResult;
-    if (IsRestricted(0x13) == 0)
-    {
-        if (nType == 1 || nType == 0x1e)
-            nResult = 0;
-        else if (nType == 0x11)
-            nResult = IsRestricted(0x10);
-        else if (nType == 0x1f)
-            nResult = IsRestricted(0x11);
-        else if (nType == 0x39)
-            nResult = IsRestricted(0xd);
-        else if (nType == 0x12)
-            nResult = IsRestricted(0xf);
-        else if (nType == 0x13)
-            nResult = IsRestricted(0xe);
-        else
-            nResult = IsRestricted(0x12);
-    }
-    else
-    {
-        nResult = 1;
-    }
-    return nResult;
+    if (IsRestricted(0x13) != 0)
+        return 1;
+    if (nType == 1 || nType == 0x1e)
+        return 0;
+    if (nType == 0x11)
+        return IsRestricted(0x10);
+    else if (nType == 0x1f)
+        return IsRestricted(0x11);
+    else if (nType == 0x39)
+        return IsRestricted(0xd);
+    else if (nType == 0x12)
+        return IsRestricted(0xf);
+    else if (nType == 0x13)
+        return IsRestricted(0xe);
+    return IsRestricted(0x12);
 }
 
 // @0x14138caa0
@@ -592,13 +577,13 @@ bool CGuideManager::IsCleared(int nId)
     unsigned nStep = 0;
     if (m_map60.Lookup(spEntity->GetSaveId(), nStep))
     {
-        if (spEntity->GetSaveStep() <= nStep)
+        if (nStep >= spEntity->GetSaveStep())
             return true;
     }
     unsigned nCleared = 0;
-    if (!m_map90.Lookup(spEntity->m_nId, nCleared) || nCleared != 1)
-        return false;
-    return true;
+    if (m_map90.Lookup(spEntity->m_nId, nCleared) && nCleared == 1)
+        return true;
+    return false;
 }
 
 // @0x14138cc20
@@ -753,18 +738,18 @@ void CGuideManager::ChangeEntityState(int nId)
     }
     if (spEntity->m_nState == 0)
     {
-        if (!IsCleared(nId))
-        {
-            spEntity->StartActions();
-            spEntity->m_nState = 1;
-            CStringW strMessage(L"[Guide] ChangeState (Init->Openning)");
-            FUN_1412751b0(strMessage, 0x14);
-        }
-        else
+        if (IsCleared(nId))
         {
             ResetEntity(spEntity);
             spEntity->Clear(true);
             CStringW strMessage(L"[Guide] ChangeState (Clear->Init)");
+            FUN_1412751b0(strMessage, 0x14);
+        }
+        else
+        {
+            spEntity->StartActions();
+            spEntity->m_nState = 1;
+            CStringW strMessage(L"[Guide] ChangeState (Init->Openning)");
             FUN_1412751b0(strMessage, 0x14);
         }
     }
@@ -803,17 +788,14 @@ void CGuideManager::QueueOccurrence(Occurrence eOccurrence, int nSubValue)
 // @0x14138d870
 int CGuideManager::InternOccurrence(const CStringA& strName)
 {
-    std::map<CStringA, int>::iterator it = m_mapNames.find(strName);
-    int nId;
+    std::map<CStringA, int>::const_iterator it = m_mapNames.find(strName);
     if (it == m_mapNames.end())
     {
-        nId = (int)m_mapNames.size() + 1;
+        int nId = (int)(m_mapNames.size() + 1);
         m_mapNames.insert(std::make_pair(strName, nId));
+        return nId;
     }
-    else
-    {
-        nId = it->second;
-    }
+    int nId = it->second;
     return nId;
 }
 
@@ -846,13 +828,11 @@ void CGuideManager::QueueAllEntities()
 {
     m_listQueued.clear();
     m_setQueued.clear();
-    POSITION pos = m_entities.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_entities.GetHeadPosition(); pos != 0; m_entities.GetNext(pos))
     {
         MS2Ptr<CGuideEntity> spEntity = m_entities.GetValueAt(pos);
         m_listQueued.push_back(spEntity);
         m_setQueued.insert(reinterpret_cast<const long&>(spEntity->m_nId));
-        m_entities.GetNext(pos);
     }
 }
 

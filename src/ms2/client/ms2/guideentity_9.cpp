@@ -530,7 +530,7 @@ int CGuideEntity::GetForce() const
 }
 
 // @0x1413a2c60
-bool CGuideEntity::IsSaveSkipped() const
+int CGuideEntity::IsSaveSkipped() const
 {
     return m_nSaveId == 0 || m_nNoSave != 0;
 }
