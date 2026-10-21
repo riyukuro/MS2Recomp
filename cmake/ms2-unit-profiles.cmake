@@ -6,7 +6,8 @@
 #
 #   scaleform   Scaleform GFx 4.1.18 recovered from the exe (src/ms2/scaleform, sfr lane): SDK property sheets
 #               GFx_Config_Release + GFx_Lib (work/lb5/gen_gfx.py): /Ox /Ob2 /Ot /GF /Gy /GR- /Zp8 /MD, no EH
-#               (/EHs-c- cancels the directory's /EHsc), /fp:precise, SF_BUILD_SHIPPING + NDEBUG.
+#               (/EHs-c- cancels the directory's /EHsc), /fp:precise, SF_BUILD_SHIPPING + NDEBUG,
+#               GFX_USE_VIDEO (the exe links GFx video: Video state 0x1e, the CRI decoder).
 
 set(MS2_PROFILE_scaleform_OPTIONS
     "/Ox"
@@ -23,6 +24,7 @@ set(MS2_PROFILE_scaleform_DEFINITIONS
     "NDEBUG"
     "SF_BUILD_SHIPPING"
     "_CRT_SECURE_NO_WARNINGS"
+    "GFX_USE_VIDEO"
 )
 set(MS2_UNIT_PROFILES scaleform)
 
