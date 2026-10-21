@@ -4204,3 +4204,17 @@ luaopen_Entity	1422416d0	func
 __imp_NxGetCookingLib	142cced30	data
 ?build@cBlockConnections@@QEAAXPEAViMesh@@@Z	14163bc10	func
 ?GetPetExp@CExpTable@@QEAA_JGHG@Z	140353930	func
+?Decode@CNMSerializable@@UEAAIPEAVCNMSerializableDecoder@@PEAVCNMStream@@@Z	14156c9b0	func
+?DecodeDispatch@CNMSerializable@@UEAAIPEAVCNMSerializableDecoder@@PEAVCNMStream@@@Z	14156c990	func
+?DecodeFramed@CNMSerializable@@UEAAIPEAVCNMStream@@@Z	14156c970	func
+?Encode@CNMSerializable@@UEAAIPEAVCNMEncoder@@PEAVCNMStream@@@Z	14156c950	func
+?EncodeDispatch@CNMSerializable@@UEAAIPEAVCNMEncoder@@PEAVCNMStream@@@Z	14156c930	func
+?EncodeFramed@CNMSerializable@@UEAAIPEAVCNMStream@@@Z	14156c910	func
+?Free@?$CNMStr@$08@@QEAAXXZ	1415f9bd0	func
+?Free@?$CNMStr@$0BAA@@@QEAAXXZ	1415f9c30	func
+?Free@?$CNMStr@$0BAAA@@@QEAAXXZ	1415f9c90	func
+?Free@?$CNMStr@$0BFO@@@QEAAXXZ	1415f9cf0	func
+?Free@?$CNMStr@$0CA@@@QEAAXXZ	1415f9d50	func
+?Free@?$CNMStr@$0EA@@@QEAAXXZ	1415f9db0	func
+?Free@?$CNMStr@$0EAA@@@QEAAXXZ	1415f9e10	func
+?Free@?$CNMStr@$0IAA@@@QEAAXXZ	1415f9e70	func
