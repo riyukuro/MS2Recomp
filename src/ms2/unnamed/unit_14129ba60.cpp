@@ -83,8 +83,12 @@ MS2Ptr<ASMovieClip>* FUN_14129cca0(MS2Ptr<ASMovieClip>* pDst, MS2Ptr<ASMovieClip
 CString UIRecallScrollNotifyDialog::vfunc_1() { return "RecallScrollNotifyDialog"; }
 
 // @0x14129bc60
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
-int UIRecallScrollNotifyDialog::vfunc_65() { return UIDialog::vfunc_65() != 0; }
+int UIRecallScrollNotifyDialog::vfunc_65()
+{
+    if (UIDialog::vfunc_65() == 0)
+        return 0;
+    return 1;
+}
 
 // @0x14129bc90
 void UIRecallScrollNotifyDialog::vfunc_67()
@@ -126,20 +130,22 @@ void UIRecallScrollNotifyDialog::OnLoadComplete()
 }
 
 // @0x14129c0b0
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
 void UIRecallScrollNotifyDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
-        pDialog->vfunc_2(2, 0, m_nOffset - FUN_1418dd0d0());
+        pDialog->vfunc_2(2, 0, FUN_1418dd0d0() * -1 + m_nOffset);
 }
 
 // @0x14129c140
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
-int UIRecallScrollNotifyDialog::vfunc_13() { return UIDialog::vfunc_13() != 0; }
+int UIRecallScrollNotifyDialog::vfunc_13()
+{
+    if (UIDialog::vfunc_13())
+        return 1;
+    return 0;
+}
 
 // @0x14129c170
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
 int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs)) return 1;
@@ -149,10 +155,12 @@ int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nSlot = data.FUN_1422b8a10();
-            if (nSlot > -1 && nSlot < 3) {
-                MS2Ptr<CFieldDataCli> spSender = CFieldDataCli::Find(m_fields[nSlot]);
-                if (spSender == 0) return 0;
-                CStringW strMsg = FUN_140632a60(0xb62, m_names[nSlot], FUN_1401a9d70()->FUN_141811980(3, m_fields[nSlot]));
+            if (nSlot < 0 || nSlot >= 3)
+                return 1;
+            MS2Ptr<CFieldDataCli> spSender = CFieldDataCli::Find(m_fields[nSlot]);
+            if (spSender == 0) return 0;
+            CStringW strMsg = FUN_140632a60(0xb62, m_names[nSlot], FUN_1401a9d70()->FUN_141811980(3, m_fields[nSlot]));
+            {
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(s_strRecallConfirm));
                 if (box.get() != 0) {
                     box->FUN_140533ff0(nSlot);
@@ -164,7 +172,6 @@ int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::
                     box->FUN_141a01700(0x477, 0x478, 0);
                     FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
                 }
-                return 1;
             }
             return 1;
         }
@@ -173,16 +180,19 @@ int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::
 }
 
 // @0x14129c610
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
 void UIRecallScrollNotifyDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (FUN_1422dc2d0() != 0 && m_tick.FUN_140268870(1000) != 0) {
+    if (FUN_1422dc2d0() == 0)
+        return;
+    if (m_tick.FUN_140268870(1000) != 0) {
         CMsTime now(FUN_140869440());
         int nActive = 0;
         for (int i = 0; i < 3; i++) {
             CMsTime zero(0);
-            if (!(m_times[i] == zero) && m_clips[i].get() != 0) {
+            if (m_times[i] == zero)
+                continue;
+            if (m_clips[i].get() != 0 ? true : false) {
                 if (m_clips[i]->FUN_1422bfca0()) {
                     nActive = nActive + 1;
                     if (now > m_times[i]) {
@@ -208,42 +218,38 @@ void UIRecallScrollNotifyDialog::FUN_14129c8e0(int nOffset) { m_nOffset = nOffse
 bool UIRecallScrollNotifyDialog::FUN_14129c900() { return m_bActive; }
 
 // @0x14129c920
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
 void UIRecallScrollNotifyDialog::FUN_14129c920(int nSlot, __time64_t nTime, const CStringW& strName, int nField)
 {
     m_times[nSlot] = nTime;
     m_names[nSlot] = strName;
     m_fields[nSlot] = nField;
-    if (FUN_1422dc2d0() != 0) {
-        CMsTime now(FUN_140869440());
-        ATL::CTimeSpan span = m_times[nSlot] - now;
-        reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_14129cce0("OpenNotify", nSlot, FUN_14129cb50(span));
-        FUN_14129cc60(true);
-    }
+    if (FUN_1422dc2d0() == 0)
+        return;
+    CMsTime now(FUN_140869440());
+    ATL::CTimeSpan span = m_times[nSlot] - now;
+    reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_14129cce0("OpenNotify", nSlot, FUN_14129cb50(span));
+    FUN_14129cc60(true);
 }
 
 // @0x14129caa0
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
 void UIRecallScrollNotifyDialog::FUN_14129caa0(int nSlot)
 {
     m_times[nSlot] = 0;
-    if (FUN_1422dc2d0() != 0)
-        reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_1409ba030("CloseNotify", nSlot);
+    if (FUN_1422dc2d0() == 0)
+        return;
+    reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_1409ba030("CloseNotify", nSlot);
 }
 
 // @0x14129cb20
 void UIRecallScrollNotifyDialog::FUN_14129cb20() { memset(m_times, 0, sizeof(m_times)); }
 
 // @0x14129cb50
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
 CStringW UIRecallScrollNotifyDialog::FUN_14129cb50(ATL::CTimeSpan span)
 {
     CStringW str;
-    unsigned nSeconds = span.GetSeconds();
-    unsigned nMinutes = (unsigned)span.GetMinutes();
-    str.Format(L"%02d:%02d", nMinutes, nSeconds);
+    str.Format(L"%02d:%02d", span.GetMinutes(), span.GetSeconds());
     int nColor = 0xffffff;
-    if (span.GetTotalSeconds() < 11)
+    if (span.GetTotalSeconds() <= 10)
         nColor = 0xff0000;
     str = FUN_14183e930(str, nColor);
     return str;
