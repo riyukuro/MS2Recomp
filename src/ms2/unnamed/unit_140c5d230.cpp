@@ -188,7 +188,7 @@ public:
 #define LS_V(n) virtual void vfunc_##n();
     LS_V(16) LS_V(17) LS_V(18) LS_V(19) LS_V(20) LS_V(21) LS_V(22) LS_V(23)
 #undef LS_V
-    virtual void vfunc_24(int nShow);                                   // 24 (+0xc0) refresh
+    virtual void vfunc_24(bool bVisible);                               // 24 (+0xc0) show
     void FUN_1407cba60(const char* szName, CString str);                // set the bag id
 private:
     unsigned char m_pad_80[8];
@@ -372,8 +372,7 @@ void LapenshardItemSlotBagPanel::vfunc_3()
         return;
     vfunc_4();
     m_strBag = "LapenshardItemSlotBag";
-    MS2Ptr<Unk_LsBag> bag = m_ui->FUN_140accef0<Unk_LsBag>("m_itemBag");
-    if (bag.get() != 0)
+    if (MS2Ptr<Unk_LsBag> bag = m_ui->FUN_140accef0<Unk_LsBag>("m_itemBag"))
     {
         bag->Invoke("resetRenderer");
         bag->FUN_1422dcca0(0xffffffff);
@@ -382,7 +381,7 @@ void LapenshardItemSlotBagPanel::vfunc_3()
         BindBag(&m_strBag, &items, 1);
         bag->FUN_1422dd1d0();
         bag->FUN_1407cba60("bagId", m_strBag);
-        bag->vfunc_24(1);
+        bag->vfunc_24(true);
     }
 }
 
@@ -484,13 +483,15 @@ void LapenshardEquipSlotPanel::vfunc_3()
     {
         CString strName;
         strName.Format("m_equipSlot%d", i);
+        int nIndex = i - 1;
         MS2Ptr<ASMovieClip> slot = m_ui->FUN_1409b4560(strName);
         if (slot.get() != 0)
         {
             ASObj obj(2);
-            obj.FUN_1407cba60("bindID", pReg->vfunc_15(i - 1));
+            obj.FUN_1407cba60("bindID", pReg->vfunc_15(nIndex));
             obj.FUN_1409c0d20("slotIndex", i);
-            obj.FUN_1407cb9c0("isEquip", pPlayer->FUN_14152f770((Unk_MyPCLapenSlot)i) != 0);
+            int bEquip = pPlayer->FUN_14152f770((Unk_MyPCLapenSlot)i) ? 1 : 0;
+            obj.FUN_1407cb9c0("isEquip", bEquip);
             slot->FUN_140acd1f0("setData", AScript(obj));
         }
     }
@@ -538,17 +539,17 @@ void LapenshardEquipSlotPanel::FUN_140c5d9c0(int bOn)
         return;
     for (unsigned i = 1; i < 7; ++i)
     {
-        if (nKind == FUN_1409c4b30()->FUN_1405b5810(i))
+        int nSlotKind = FUN_1409c4b30()->FUN_1405b5810(i);
+        if (nKind != nSlotKind)
+            continue;
+        CString strName;
+        strName.Format("m_equipSlot%d", i);
+        MS2Ptr<ASMovieClip> slot = m_ui->FUN_1409b4560(strName);
+        if (slot.get() != 0)
         {
-            CString strName;
-            strName.Format("m_equipSlot%d", i);
-            MS2Ptr<ASMovieClip> slot = m_ui->FUN_1409b4560(strName);
-            if (slot.get() != 0)
-            {
-                MS2Ptr<ASMovieClip> effect = slot->FUN_1409b4560(CString("m_equipEffect"));
-                if (effect.get() != 0)
-                    effect->vfunc_3(bOn);
-            }
+            MS2Ptr<ASMovieClip> effect = slot->FUN_1409b4560(CString("m_equipEffect"));
+            if (effect.get() != 0)
+                effect->vfunc_3(bOn);
         }
     }
 }
@@ -579,13 +580,12 @@ UILapenshardEquipTab::~UILapenshardEquipTab()
 // @0x140c5dd20
 void UILapenshardEquipTab::vfunc_1()
 {
-    POSITION pos = m_panels.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_panels.GetHeadPosition(); pos != 0; m_panels.GetNext(pos))
     {
         LapenshardPanelPtr p = m_panels.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_1();
-        m_panels.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_1();
     }
     m_panels.RemoveAll();
     m_ui = 0;
@@ -608,13 +608,12 @@ void UILapenshardEquipTab::vfunc_2(int nEvent)
 {
     if (m_ui == 0)
         return;
-    POSITION pos = m_panels.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_panels.GetHeadPosition(); pos != 0; m_panels.GetNext(pos))
     {
         LapenshardPanelPtr p = m_panels.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_5(nEvent);
-        m_panels.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_5(nEvent);
     }
 }
 
@@ -622,17 +621,14 @@ void UILapenshardEquipTab::vfunc_2(int nEvent)
 void UILapenshardEquipTab::vfunc_3(MS2Ptr<ASUIComponent> ui)
 {
     m_ui = ui;
-    POSITION pos = m_panels.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_panels.GetHeadPosition(); pos != 0; m_panels.GetNext(pos))
     {
         LapenshardPanelPtr p = m_panels.GetAt(pos);
-        if (!(p == 0))
-        {
-            p->FUN_140c5ee50(ui);
-            p->vfunc_4();
-            p->vfunc_3();
-        }
-        m_panels.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->FUN_140c5ee50(ui);
+        p->vfunc_4();
+        p->vfunc_3();
     }
 }
 
@@ -642,25 +638,28 @@ int UILapenshardEquipTab::vfunc_6(const char* szMethod, const Scaleform::GFx::Va
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    if (_stricmp("OnUnmountEquipSlot", szMethod) != 0)
-        return 0;
-    if (FUN_140c62520() == 0)
-        return 1;
-    ASData data;
-    if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+    if (_stricmp("OnUnmountEquipSlot", szMethod) == 0)
     {
-        int nSlot = data.FUN_1422b8a10();
-        if (pPlayer->FUN_14152f770((Unk_MyPCLapenSlot)nSlot) != 0)
+        if (FUN_140c62520() == 0)
+            return 1;
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            COutPacket pkt(0xad, 0);
-            pkt.vfunc_o10_1(2);
-            Unk_LsSlotArg arg;
-            arg.m_n = nSlot;
-            FUN_1405b5e40(&arg, &pkt);
-            FUN_140710590(pkt);
+            int nSlot = data.FUN_1422b8a10();
+            int bMounted = pPlayer->FUN_14152f770((Unk_MyPCLapenSlot)nSlot);
+            if (bMounted != 0)
+            {
+                COutPacket pkt(0xad, 0);
+                pkt.vfunc_o10_1(2);
+                Unk_LsSlotArg arg;
+                arg.m_n = nSlot;
+                FUN_1405b5e40(&arg, &pkt);
+                FUN_140710590(pkt);
+            }
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x140c5e290
@@ -757,11 +756,11 @@ void UILapenshardSystemDialog::vfunc_67()
     for (unsigned i = 0; i < m_tabs.GetCount(); ++i)
     {
         TabInfoPtr spTab = m_tabs[i];
-        if (!(spTab == 0))
-        {
-            if (!(spTab->m_spPage == 0))
-                spTab->m_spPage->vfunc_1();
-        }
+        if (spTab == 0)
+            continue;
+        if (spTab->m_spPage == 0)
+            continue;
+        spTab->m_spPage->vfunc_1();
     }
     m_tabs.RemoveAll();
     m_spPage = 0;
@@ -772,23 +771,20 @@ void UILapenshardSystemDialog::vfunc_67()
 void UILapenshardSystemDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    MS2Ptr<Unk_LsTabBar> spBar = FUN_140c02870("m_buttonBar");
-    if (spBar.get() != 0)
+    if (MS2Ptr<Unk_LsTabBar> spBar = FUN_140c02870("m_buttonBar"))
     {
         for (unsigned i = 0; i < m_tabs.GetCount(); ++i)
         {
             TabInfoPtr spTab = m_tabs[i];
-            if (!(spTab == 0))
-            {
-                if (!(spTab->m_spPage == 0))
-                {
-                    ASObj row(2);
-                    row.FUN_1409c0d20("tabIndex", i);
-                    row.FUN_1407cbb20("label", spTab->m_strLabel);
-                    row.FUN_1407cba60("frame", spTab->m_strName);
-                    spBar->FUN_1422e3460(row);
-                }
-            }
+            if (spTab == 0)
+                continue;
+            if (spTab->m_spPage == 0)
+                continue;
+            ASObj row(2);
+            row.FUN_1409c0d20("tabIndex", i);
+            row.FUN_1407cbb20("label", spTab->m_strLabel);
+            row.FUN_1407cba60("frame", spTab->m_strName);
+            spBar->FUN_1422e3460(row);
         }
         spBar->vfunc_24(true);
         spBar->FUN_1422e31e0(0);
@@ -811,21 +807,19 @@ int UILapenshardSystemDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         return 1;
     if (FUN_1418fc760(szMethod, pArgs, nArgs, this) != 0)
         return 1;
-    if (m_spPage.get() != 0)
-    {
-        if (m_spPage->vfunc_6(szMethod, pArgs, nArgs) != 0)
-            return 1;
-    }
+    if (m_spPage.get() != 0 && m_spPage->vfunc_6(szMethod, pArgs, nArgs) != 0)
+        return 1;
     ASData data;
     if (_stricmp("OnLeaveTab", szMethod) == 0)
     {
         FUN_140c62740();
         return 1;
     }
-    if (_stricmp("OnChangeTab", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
+    else if (_stricmp("OnChangeTab", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
     {
         unsigned nTab = data.FUN_1422b8b10();
-        FUN_140c627a0(nTab, data.FUN_1422b9260());
+        Scaleform::GFx::Value root = data.FUN_1422b9260();
+        FUN_140c627a0(nTab, root);
         return 1;
     }
     return 0;
@@ -903,18 +897,16 @@ void UILapenshardSystemDialog::FUN_140c62740()
 // @0x140c627a0
 void UILapenshardSystemDialog::FUN_140c627a0(unsigned nTab, const Scaleform::GFx::Value& root)
 {
-    if (nTab < m_tabs.GetCount())
+    if (m_tabs.GetCount() <= nTab)
+        return;
+    TabInfoPtr spTab = m_tabs[nTab];
+    if (spTab.get() != 0)
     {
-        TabInfoPtr spTab = m_tabs[nTab];
-        if (spTab.get() != 0)
+        if ((m_spPage = spTab->m_spPage).get() != 0)
         {
-            m_spPage = spTab->m_spPage;
-            if (m_spPage.get() != 0)
-            {
-                MS2Ptr<ASUIComponent> spUi = FUN_140acca70(m_28, root);
-                if (spUi.get() != 0)
-                    m_spPage->vfunc_3(spUi);
-            }
+            MS2Ptr<ASUIComponent> spUi = FUN_140acca70(m_28, root);
+            if (spUi.get() != 0)
+                m_spPage->vfunc_3(spUi);
         }
     }
 }
@@ -989,8 +981,7 @@ void UILapenshardShieldBar::vfunc_26()
 // @0x140c5f2a0
 void UILapenshardShieldBar::vfunc_43()
 {
-    MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>(m_30.operator->()));
-    if (spEntity.get() != 0)
+    if (MS2Ptr<ASGameEntity> spEntity = dynamic_cast<ASGameEntity*>(m_30.operator->()))
     {
         int nX = (int)spEntity->FUN_1422c10a0();
         int nY = (int)spEntity->FUN_1422c1110();
@@ -1000,8 +991,7 @@ void UILapenshardShieldBar::vfunc_43()
         UIObject* pHpBar = FUN_14096e340(0x4e3d);
         if (pHpBar != 0)
         {
-            MS2Ptr<ASGameEntity> spHp(dynamic_cast<ASGameEntity*>(pHpBar->FUN_1422dba00().operator->()));
-            if (spHp.get() != 0)
+            if (MS2Ptr<ASGameEntity> spHp = dynamic_cast<ASGameEntity*>(pHpBar->FUN_1422dba00().operator->()))
                 nOffset = (int)(spHp->FUN_1422c1110() + (float)spHp->FUN_1422c13b0() + 30.0f);
         }
         spEntity->vfunc_2(1, 0, nOffset);
@@ -1025,29 +1015,29 @@ void UILapenshardShieldBar::vfunc_3()
 void UILapenshardShieldBar::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (!(m_30 == 0) && !(m_spBuff == 0))
+    if (!m_30)
+        return;
+    if (m_spBuff == 0)
+        return;
+    if (m_nPending != 0)
+        FUN_140c5fbd0();
+    if (m_bEnded == 0 && m_tick.FUN_140268870(100) != 0)
     {
-        if (m_nPending != 0)
-            FUN_140c5fbd0();
-        if (m_bEnded == 0 && m_tick.FUN_140268870(100) != 0)
+        MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pPlayer == 0)
+            return;
+        if (m_bImpending == 0)
         {
-            if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
+            if (m_spBuff->FUN_14096d2e0() < 5000)
             {
-                if (m_bImpending == 0)
-                {
-                    if (m_spBuff->FUN_14096d2e0() < 5000)
-                    {
-                        m_30->Invoke("impending");
-                        m_bImpending = 1;
-                    }
-                }
-                if (m_spBuff->FUN_14096d2e0() != 0)
-                {
-                    CStringW strLeft = FUN_140c5f9e0();
-                    m_30->Invoke("setValue", m_spBuff->m_nId, FUN_14096d810(m_spBuff.operator->())->m_nValue, strLeft);
-                }
+                m_30->Invoke("impending");
+                m_bImpending = 1;
             }
         }
+        if (m_spBuff->FUN_14096d2e0() <= 0)
+            return;
+        CStringW strLeft = FUN_140c5f9e0();
+        m_30->Invoke("setValue", m_spBuff->m_nId, FUN_14096d810(m_spBuff.operator->())->m_nValue, strLeft);
     }
 }
 
@@ -1097,8 +1087,8 @@ CStringW UILapenshardShieldBar::FUN_140c5f9e0()
     if (m_spBuff == 0)
         return L"";
     ATL::CTimeSpan span = CMsTime((__int64)FUN_14028d280(m_spBuff->m_nEnd)) - CMsTime((__int64)FUN_14028d280(FUN_141472bc0()));
-    int nSeconds = (int)span.GetSeconds();
-    int nMinutes = (int)(span.GetTotalMinutes() - span.GetTotalHours() * 60);
+    int nSeconds = span.GetSeconds();
+    int nMinutes = span.GetMinutes();
     return Unk_Fmt2(L"{0:02}:{1:02}", nMinutes, nSeconds);
 }
 
@@ -1227,15 +1217,15 @@ void LapenshardSourceItemSlotBagPanel::vfunc_3()
         return;
     vfunc_4();
     m_strBag = "LapenshardSourceItemSlotBag";
-    MS2Ptr<Unk_LsBag> bag = m_ui->FUN_140accef0<Unk_LsBag>("m_sourceItemBag");
-    if (bag.get() != 0)
+    if (MS2Ptr<Unk_LsBag> bag = m_ui->FUN_140accef0<Unk_LsBag>("m_sourceItemBag"))
     {
         bag->Invoke("resetRenderer");
         bag->FUN_1422dcca0(0xffffffff);
         FUN_140c60920(&m_items, 0, 1, 1, 1, 0, 0);
         BindBag(&m_strBag, &m_items, 0);
+        bag->FUN_1422dd1d0();
         bag->FUN_1407cba60("bagId", m_strBag);
-        bag->vfunc_24(1);
+        bag->vfunc_24(true);
     }
 }
 
@@ -1269,16 +1259,17 @@ int LapenshardSourceItemSlotBagPanel::vfunc_8(const char* szMethod, const Scalef
 {
     if (m_pTab == 0)
         return 0;
-    if (m_pTab->FUN_140c68e20() < 2)
-    {
-        if (_stricmp("OnSelectSourceItem", szMethod) == 0)
-        {
-            ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-                FUN_140c63bb0(data.FUN_1422b8a10());
-            return 1;
-        }
+    if (m_pTab->FUN_140c68e20() > 1)
         return 0;
+    if (_stricmp("OnSelectSourceItem", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_140c63bb0(nIndex);
+        }
+        return 1;
     }
     return 0;
 }
@@ -1334,14 +1325,12 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_3()
     if (spRec->m_nNeed == 0)
         return;
     m_strBag = "LapenshardIngredientItemSlotBag";
-    MS2Ptr<Unk_LsBag> bag = m_ui->FUN_140accef0<Unk_LsBag>("m_ingredientItemBag");
-    if (bag.get() != 0)
+    if (MS2Ptr<Unk_LsBag> bag = m_ui->FUN_140accef0<Unk_LsBag>("m_ingredientItemBag"))
     {
         bag->Invoke("resetRenderer");
         bag->FUN_1422dcca0(0xffffffff);
         FUN_140c60920(&m_items, 0, 0, 0, 0, spRec->m_nKind, spSource->FUN_140526a50());
-        MS2Ptr<CItem> spCopy = spSource->FUN_140524250();
-        if (spCopy.get() != 0)
+        if (MS2Ptr<CItem> spCopy = spSource->FUN_140524250())
         {
             if (!spCopy->FUN_140528e20())
             {
@@ -1360,7 +1349,7 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_3()
         BindBag(&m_strBag, &m_items, 0);
         bag->FUN_1422dd1d0();
         bag->FUN_1407cba60("bagId", m_strBag);
-        bag->vfunc_24(1);
+        bag->vfunc_24(true);
     }
 }
 
@@ -1404,16 +1393,17 @@ int LapenshardIngredientItemSlotBagPanel::vfunc_8(const char* szMethod, const Sc
 {
     if (m_pTab == 0)
         return 0;
-    if (m_pTab->FUN_140c68e20() == 1)
-    {
-        if (_stricmp("OnSelectIngredientItem", szMethod) == 0)
-        {
-            ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-                FUN_140c64390(data.FUN_1422b8a10());
-            return 1;
-        }
+    if (m_pTab->FUN_140c68e20() != 1)
         return 0;
+    if (_stricmp("OnSelectIngredientItem", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_140c64390(nIndex);
+        }
+        return 1;
     }
     return 0;
 }
@@ -1449,8 +1439,7 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64390(int nIndex)
         }
         else
         {
-            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_lapenshard_upgraded_item")), 0, CStringW(L""));
-            if (box.get() != 0)
+            if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_lapenshard_upgraded_item")), 0, CStringW(L"")))
             {
                 box->FUN_140533ff0(nIndex);
                 box->FUN_140534050(spSource->FUN_1405276c0());
@@ -1475,10 +1464,10 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64960(int nIndex, int nCount)
     {
         m_pTab->FUN_140c68e60(spItem->FUN_140526a50(), -nCount);
         spItem->FUN_140526c70(spItem->FUN_140526c50() + nCount);
-        if (!spItem->FUN_14052a290(2))
-            spItem->FUN_14052a230(2);
-        else
+        if (spItem->FUN_14052a290(2))
             spItem->FUN_14052a260(2);
+        else
+            spItem->FUN_14052a230(2);
         Unk_LsBagReg* pReg = FUN_140a70b70(FUN_1422c8e90(m_strBag));
         if (pReg != 0)
         {
@@ -1512,13 +1501,12 @@ bool LapenshardIngredientItemSlotBagPanel::FUN_140c64bc0(int nResult, const CMsg
         unsigned nCount = box.FUN_141a02e90(2, 0);
         MS2Ptr<Unk_LsRecord> spRec = FUN_1409c4b30()->FUN_1405b56a0(nItemId);
         if (spRec == 0)
-            return 0;
+            return false;
         MS2Ptr<CItem> spItem = m_items[nIndex];
         if (spItem == 0)
-            return 0;
-        if ((unsigned)spItem->FUN_140526c50() < nCount)
-            nCount = spItem->FUN_140526c50();
-        FUN_140c64960(nIndex, -(int)nCount);
+            return false;
+        unsigned nUse = (unsigned)spItem->FUN_140526c50() < nCount ? spItem->FUN_140526c50() : nCount;
+        FUN_140c64960(nIndex, -(int)nUse);
     }
     FUN_14151f200();
     return true;
@@ -1555,7 +1543,7 @@ Unk_LsPktA::Unk_LsPktA() : m_n10(0), m_nTotal(0) {}
 Unk_LsPktB::Unk_LsPktB() : m_ingredients(0x11, 0.75f, 0.25f, 2.25f, 10), m_bSuccess(false), m_n5c(0) {}
 void FUN_1405b6360(Unk_LsPktA* pRecord, CInPacket& packet);             // read
 void FUN_1405b6280(Unk_LsPktA* pRecord, COutPacket& packet);            // write the source record
-void FUN_1405b5ec0(Unk_LsPktA* pRecord, COutPacket& packet);            // write the source record (pick)
+void FUN_1405b5ec0(Unk_LsRecHead* pRecord, COutPacket& packet);         // write the source record (pick)
 void FUN_1405b6220(Unk_LsPktB* pRecord, CInPacket& packet);             // read
 void FUN_1405b5fd0(Unk_LsPktB* pRecord, COutPacket& packet);            // write
 void* FUN_14025e7c0();
@@ -1598,22 +1586,30 @@ void LapenshardUpgradeSlotPanel::vfunc_3()
     if (m_pTab == 0)
         return;
     vfunc_4();
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    m_body = m_ui->FUN_140accfb0<ASUIComponent>("m_body");
+    if (m_body == 0)
+        return;
+    FUN_140c67ce0();
+    m_spSource = m_pTab->FUN_140c68da0();
+    int nState = m_pTab->FUN_140c68e20();
+    switch (nState)
     {
-        m_body = m_ui->FUN_140accfb0<ASUIComponent>("m_body");
-        if (!(m_body == 0))
+    case 0:
         {
-            FUN_140c67ce0();
-            m_spSource = m_pTab->FUN_140c68da0();
-            int nState = m_pTab->FUN_140c68e20();
-            if (nState == 0)
-                m_body->vfunc_13(CString("start"));
-            else if (nState == 1 && m_spSource.get() != 0)
-            {
-                m_pTab->FUN_140c69620();
-                FUN_140c671d0();
-            }
+            CString strLabel("start");
+            m_body->vfunc_13(strLabel);
         }
+        break;
+    case 1:
+        if (m_spSource.get() != 0)
+        {
+            m_pTab->FUN_140c69620();
+            FUN_140c671d0();
+        }
+        break;
     }
 }
 
@@ -1635,36 +1631,35 @@ void LapenshardUpgradeSlotPanel::vfunc_4()
 // @0x140c651a0
 void LapenshardUpgradeSlotPanel::vfunc_5(int nEvent)
 {
-    if (m_pTab != 0)
+    if (m_pTab == 0)
+        return;
+    switch (nEvent)
     {
-        switch (nEvent)
-        {
-        case 2:
-            if (m_pTab->FUN_140c68e20() == 0 || m_pTab->FUN_140c68e20() == 1)
-                vfunc_3();
-            break;
-        case 3:
-        case 8:
+    case 3:
+    case 8:
+        vfunc_3();
+        break;
+    case 2:
+        if (m_pTab->FUN_140c68e20() == 0 || m_pTab->FUN_140c68e20() == 1)
             vfunc_3();
-            break;
-        case 4:
-            FUN_140c65ef0();
-            break;
-        case 5:
-            FUN_140c65e00();
-            break;
-        case 6:
-            FUN_140c67440(1);
-            break;
-        case 7:
-            FUN_140c67440(0);
-            break;
-        case 9:
-            FUN_140c660f0();
-            break;
-        case 0xd:
-            FUN_140c65ef0();
-        }
+        break;
+    case 5:
+        FUN_140c65e00();
+        break;
+    case 4:
+        FUN_140c65ef0();
+        break;
+    case 6:
+        FUN_140c67440(true);
+        break;
+    case 7:
+        FUN_140c67440(false);
+        break;
+    case 9:
+        FUN_140c660f0();
+        break;
+    case 0xd:
+        FUN_140c65ef0();
     }
 }
 
@@ -1725,13 +1720,12 @@ UILapenshardUpgradeTab::~UILapenshardUpgradeTab()
 // @0x140c68090
 void UILapenshardUpgradeTab::vfunc_1()
 {
-    POSITION pos = m_panels.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_panels.GetHeadPosition(); pos != 0; m_panels.GetNext(pos))
     {
         LapenshardPanelPtr p = m_panels.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_1();
-        m_panels.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_1();
     }
     m_panels.RemoveAll();
     m_ui = 0;
@@ -1761,13 +1755,12 @@ void UILapenshardUpgradeTab::vfunc_2(int nEvent)
         FUN_140c68a50();
         FUN_140c68f90();
     }
-    POSITION pos = m_panels.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_panels.GetHeadPosition(); pos != 0; m_panels.GetNext(pos))
     {
         LapenshardPanelPtr p = m_panels.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_5(nEvent);
-        m_panels.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_5(nEvent);
     }
 }
 
@@ -1775,17 +1768,14 @@ void UILapenshardUpgradeTab::vfunc_2(int nEvent)
 void UILapenshardUpgradeTab::vfunc_3(MS2Ptr<ASUIComponent> ui)
 {
     m_ui = ui;
-    POSITION pos = m_panels.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_panels.GetHeadPosition(); pos != 0; m_panels.GetNext(pos))
     {
         LapenshardPanelPtr p = m_panels.GetAt(pos);
-        if (!(p == 0))
-        {
-            p->FUN_140c5ee50(ui);
-            p->vfunc_4();
-            p->vfunc_3();
-        }
-        m_panels.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->FUN_140c5ee50(ui);
+        p->vfunc_4();
+        p->vfunc_3();
     }
 }
 
@@ -1794,15 +1784,15 @@ int UILapenshardUpgradeTab::vfunc_6(const char* szMethod, const Scaleform::GFx::
 {
     if (m_ui == 0)
         return 0;
-    POSITION pos = m_panels.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_panels.GetHeadPosition(); pos != 0; m_panels.GetNext(pos))
     {
         LapenshardPanelPtr p = m_panels.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_8(szMethod, pArgs, nArgs);
-        m_panels.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_8(szMethod, pArgs, nArgs);
     }
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return 0;
     if (_stricmp("OnAction", szMethod) == 0)
     {
@@ -1822,26 +1812,22 @@ int UILapenshardUpgradeTab::vfunc_6(const char* szMethod, const Scaleform::GFx::
         }
         return 1;
     }
-    if (_stricmp("OnFillIngredientDebug", szMethod) == 0)
+    else if (_stricmp("OnFillIngredientDebug", szMethod) == 0)
     {
-        if (m_nState == 1)
-        {
-            if (!FUN_14116d720(FUN_14025e7c0()))
-                return 0;
-            if (!(m_spSource == 0))
-            {
-                COutPacket pkt(0xad, 0);
-                pkt.vfunc_o10_1(6);
-                pkt.vfunc_o10_3(m_spSource->FUN_1405276c0());
-                pkt.vfunc_o10_3(m_n_c0);
-                FUN_140710590(pkt);
-                return 1;
-            }
+        if (m_nState != 1)
             return 0;
-        }
-        return 0;
+        if (!FUN_14116d720(FUN_14025e7c0()))
+            return 0;
+        if (m_spSource == 0)
+            return 0;
+        COutPacket pkt(0xad, 0);
+        pkt.vfunc_o10_1(6);
+        pkt.vfunc_o10_3(m_spSource->FUN_1405276c0());
+        pkt.vfunc_o10_3(m_n_c0);
+        FUN_140710590(pkt);
+        return 1;
     }
-    if (_stricmp("OnProcessingComplete", szMethod) == 0)
+    else if (_stricmp("OnProcessingComplete", szMethod) == 0)
     {
         m_nState = 4;
         vfunc_2(0xc);
@@ -1860,32 +1846,32 @@ void UILapenshardUpgradeTab::vfunc_9(CInPacket& packet)
 {
     if (packet.FUN_14070fe80() == 0x11b)
     {
-        char nKind = packet.vfunc_o8_1();
-        if (nKind == 4)
+        int nKind = (unsigned char)packet.vfunc_o8_1();
+        switch (nKind)
+        {
+        case 4:
         {
             Unk_LsPktA rec;
             FUN_1405b6360(&rec, packet);
             m_n_bc = rec.m_n10;
             vfunc_2(5);
+            break;
         }
-        else
+        case 5:
         {
-            if (nKind == 5)
-            {
-                if (m_nState != 2)
-                    return;
-                Unk_LsPktB rec;
-                FUN_1405b6220(&rec, packet);
-                if (m_spSource->FUN_1405276c0() != rec.m_nItemId)
-                    return;
-                if (!rec.m_bSuccess)
-                    vfunc_2(7);
-                else
-                    vfunc_2(6);
-                m_nState = 3;
-            }
-            else if (nKind != 6)
+            if (m_nState != 2)
                 return;
+            Unk_LsPktB rec;
+            FUN_1405b6220(&rec, packet);
+            if (m_spSource->FUN_1405276c0() != rec.m_nItemId)
+                return;
+            if (rec.m_bSuccess)
+                vfunc_2(6);
+            else
+                vfunc_2(7);
+            m_nState = 3;
+        }
+        case 6:
             vfunc_2(9);
         }
     }
@@ -1910,23 +1896,22 @@ void UILapenshardUpgradeTab::FUN_140c68a50()
 void UILapenshardUpgradeTab::FUN_140c68aa0()
 {
     MyPC* pPlayer = vfunc_11();
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    COutPacket pkt(0xad, 0);
+    pkt.vfunc_o10_1(4);
+    Unk_LsPktA rec;
+    rec.m_nItemId = m_spSource->FUN_1405276c0();
+    rec.m_nUid = m_spSource->FUN_140526a50();
+    rec.m_nTotal = m_nTotal;
+    if (rec.m_nUid == 0)
     {
-        COutPacket pkt(0xad, 0);
-        pkt.vfunc_o10_1(4);
-        Unk_LsPktA rec;
-        rec.m_nItemId = m_spSource->FUN_1405276c0();
-        rec.m_nUid = m_spSource->FUN_140526a50();
-        rec.m_nTotal = m_nTotal;
-        if (rec.m_nUid == 0)
-        {
-            rec.m_nSlot = pPlayer->FUN_14152f7c0(rec.m_nItemId);
-            if (rec.m_nSlot == 0)
-                return;
-        }
-        FUN_1405b6280(&rec, pkt);
-        FUN_140710590(pkt);
+        rec.m_nSlot = vfunc_11()->FUN_14152f7c0(rec.m_nItemId);
+        if (rec.m_nSlot == 0)
+            return;
     }
+    FUN_1405b6280(&rec, pkt);
+    FUN_140710590(pkt);
 }
 
 // @0x140c68bd0
@@ -1944,7 +1929,7 @@ void UILapenshardUpgradeTab::FUN_140c68bd0(MS2Ptr<CItem> spItem)
     m_nState = 1;
     COutPacket pkt(0xad, 0);
     pkt.vfunc_o10_1(3);
-    Unk_LsPktA rec;
+    Unk_LsRecHead rec;
     rec.m_nItemId = spItem->FUN_1405276c0();
     rec.m_nUid = spItem->FUN_140526a50();
     if (rec.m_nUid == 0)
@@ -1973,19 +1958,20 @@ void UILapenshardUpgradeTab::FUN_140c68df0()
 // @0x140c68e60
 void UILapenshardUpgradeTab::FUN_140c68e60(unsigned __int64 nUid, int nDelta)
 {
-    if (vfunc_11() != 0)
-    {
-        int nCount = 0;
-        m_ingredients.Lookup(nUid, nCount);
-        nCount += nDelta;
-        if (nCount == 0)
-            m_ingredients.RemoveKey(nUid);
-        else
-            m_ingredients.SetAt(nUid, nCount);
-        m_nTotal += nDelta;
-        vfunc_2(4);
-        FUN_140c68aa0();
-    }
+    MyPC* pPlayer = vfunc_11();
+    if (pPlayer == 0)
+        return;
+    int nCount = 0;
+    m_ingredients.Lookup(nUid, nCount);
+    // clamped at zero through an unsigned compare, so the clamp never fires
+    nCount = (unsigned)(nCount + nDelta) < 0 ? 0 : nCount + nDelta;
+    if (nCount == 0)
+        m_ingredients.RemoveKey(nUid);
+    else
+        m_ingredients.SetAt(nUid, nCount);
+    m_nTotal = (unsigned)(m_nTotal + nDelta) < 0 ? 0 : m_nTotal + nDelta;
+    vfunc_2(4);
+    FUN_140c68aa0();
 }
 
 // @0x140c68f90
@@ -2062,46 +2048,42 @@ MS2Ptr<Unk_LsRecord> LapenshardUpgradeSlotPanel::FUN_140c65d60()
 // @0x140c65e00
 void LapenshardUpgradeSlotPanel::FUN_140c65e00()
 {
-    if (!(m_body == 0))
-    {
-        float fProb = (float)m_pTab->FUN_140c68e40() / 100.0f;
-        m_ui->Invoke("setSuccessProb", FUN_14042cb90(CStringW(L"s_lapenshard_tabname_upgrade_success_prob"), fProb));
-    }
+    if (m_body == 0)
+        return;
+    float fProb = (float)m_pTab->FUN_140c68e40() / 100.0f;
+    m_ui->Invoke("setSuccessProb", FUN_14042cb90(CStringW(L"s_lapenshard_tabname_upgrade_success_prob"), fProb));
 }
 
 // @0x140c65ef0
 void LapenshardUpgradeSlotPanel::FUN_140c65ef0()
 {
-    if (!(m_spSource == 0))
-    {
-        MS2Ptr<Unk_LsRecord> spRec = FUN_1409c4b30()->FUN_1405b56a0(m_spSource->FUN_1405276c0());
-        if (!(spRec == 0))
-        {
-            if (spRec->m_nNeed != 0)
-            {
-                if (m_pTab->FUN_140c68e20() == 0 || m_pTab->FUN_140c68e20() == 1)
-                {
-                    CString strSlot = FUN_1422cc860(m_strBind, 0);
-                    if (FUN_140c69ab0(FUN_1422c8e90(strSlot)) != 0)
-                        m_ui->Invoke("setIngredientLapenshardCount", FUN_1419021b0(m_pTab->FUN_140c68fd0(), spRec->m_nNeed));
-                }
-            }
-        }
-    }
+    if (m_spSource == 0)
+        return;
+    MS2Ptr<Unk_LsRecord> spRec = FUN_1409c4b30()->FUN_1405b56a0(m_spSource->FUN_1405276c0());
+    if (spRec == 0)
+        return;
+    if ((unsigned)spRec->m_nNeed <= 0)
+        return;
+    if (!(m_pTab->FUN_140c68e20() == 0 || m_pTab->FUN_140c68e20() == 1))
+        return;
+    CString strSlot = FUN_1422cc860(m_strBind, 0);
+    ItemInfoSlot* pBag = FUN_140c69ab0(FUN_1422c8e90(strSlot));
+    if (pBag == 0)
+        return;
+    int nCount = m_pTab->FUN_140c68fd0();
+    int nNeed = spRec->m_nNeed;
+    m_ui->Invoke("setIngredientLapenshardCount", FUN_1419021b0(nCount, nNeed));
 }
 
 // @0x140c67ce0
 void LapenshardUpgradeSlotPanel::FUN_140c67ce0()
 {
-    if (!(m_body == 0))
-    {
-        if (FUN_14116d720(FUN_14025e7c0()))
-        {
-            MS2Ptr<ASMovieClip> spButton = m_body->FUN_140acce30<ASMovieClip>("m_fillIngredientDebug");
-            if (spButton.get() != 0)
-                spButton->vfunc_3(1);
-        }
-    }
+    if (m_body == 0)
+        return;
+    if (!(FUN_14116d720(FUN_14025e7c0())))
+        return;
+    if (MS2Ptr<ASMovieClip> spButton = m_body->FUN_140acce30<ASMovieClip>("m_fillIngredientDebug"))
+        spButton->vfunc_3(1);
 }
 
 // ---- the window: opening conditions ----
@@ -2310,30 +2292,28 @@ int UILapenshardUpgradeTab::FUN_140c691f0()
 // @0x140c69030
 void UILapenshardUpgradeTab::FUN_140c69030()
 {
-    if (FUN_140c691f0() != 0)
+    if (FUN_140c691f0() == 0)
+        return;
+    MyPC* pPlayer = vfunc_11();
+    if (pPlayer == 0)
+        return;
+    COutPacket pkt(0xad, 0);
+    pkt.vfunc_o10_1(5);
+    Unk_LsPktB rec;
+    rec.m_nItemId = m_spSource->FUN_1405276c0();
+    rec.m_nUid = m_spSource->FUN_140526a50();
+    rec.m_n5c = m_n_c0;
+    if (rec.m_nUid == 0)
     {
-        MyPC* pPlayer = vfunc_11();
-        if (pPlayer != 0)
-        {
-            COutPacket pkt(0xad, 0);
-            pkt.vfunc_o10_1(5);
-            Unk_LsPktB rec;
-            rec.m_nItemId = m_spSource->FUN_1405276c0();
-            rec.m_nUid = m_spSource->FUN_140526a50();
-            rec.m_n5c = m_n_c0;
-            if (rec.m_nUid == 0)
-            {
-                rec.m_nSlot = pPlayer->FUN_14152f7c0(rec.m_nItemId);
-                if (rec.m_nSlot == 0)
-                    return;
-            }
-            Unk_LsCopyMap(rec.m_ingredients, m_ingredients);
-            FUN_1405b5fd0(&rec, pkt);
-            FUN_140710590(pkt);
-            m_nState = 2;
-            m_ui->Invoke("RequestUpgrade");
-        }
+        rec.m_nSlot = pPlayer->FUN_14152f7c0(rec.m_nItemId);
+        if (rec.m_nSlot == 0)
+            return;
     }
+    Unk_LsCopyMap(rec.m_ingredients, m_ingredients);
+    FUN_1405b5fd0(&rec, pkt);
+    FUN_140710590(pkt);
+    m_nState = 2;
+    m_ui->Invoke("RequestUpgrade");
 }
 
 // ---- the shield bar: open ----
@@ -2429,38 +2409,37 @@ void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEqui
             }
         }
     }
-    if (!items.IsEmpty())
+    if (items.IsEmpty())
+        return;
+    size_t nCount = items.GetCount();
+    for (size_t i = 0; i < nCount; ++i)
     {
-        size_t nCount = items.GetCount();
-        for (size_t i = 0; i < nCount; ++i)
+        MS2Ptr<CItem> spItem = items[i];
+        if (spItem == 0)
+            continue;
+        if (bCheckUse != 0)
         {
-            MS2Ptr<CItem> spItem = items[i];
-            if (spItem == 0)
+            if (pPlayer->FUN_141662eb0(spItem.get()) == 0)
                 continue;
-            if (bCheckUse != 0)
-            {
-                if (pPlayer->FUN_141662eb0(spItem.get()) == 0)
-                    continue;
-                if (FUN_140526790(spItem.get(), pPlayer->FUN_141654700()) == 0)
-                    continue;
-                if (FUN_140526810(spItem.get(), pPlayer->vfunc_78()) == 0)
-                    continue;
-            }
-            if (spItem->FUN_140526100() == 0)
+            if (FUN_140526790(spItem.get(), pPlayer->FUN_141654700()) == 0)
                 continue;
-            if (bWithBound == 0 && spItem->FUN_140528e20())
+            if (FUN_140526810(spItem.get(), pPlayer->vfunc_78()) == 0)
                 continue;
-            if (bTableOnly != 0 && FUN_1405b5a50(FUN_1409c4b30(), spItem->FUN_1405276c0()) == 0)
-                continue;
-            if (nKind != 0 && FUN_1405b59d0(FUN_1409c4b30(), spItem->FUN_1405276c0()) != nKind)
-                continue;
-            if (nExcludeUid != 0 && spItem->FUN_140526a50() == nExcludeUid)
-                continue;
-            if (spItem->FUN_1405291f0() == 0)
-                pOut->Add(spItem->FUN_140524250());
-            else
-                pOut->Add(spItem);
         }
+        if (spItem->FUN_140526100() == 0)
+            continue;
+        if (bWithBound == 0 && spItem->FUN_140528e20())
+            continue;
+        if (bTableOnly != 0 && FUN_1405b5a50(FUN_1409c4b30(), spItem->FUN_1405276c0()) == 0)
+            continue;
+        if (nKind != 0 && FUN_1405b59d0(FUN_1409c4b30(), spItem->FUN_1405276c0()) != nKind)
+            continue;
+        if (nExcludeUid != 0 && spItem->FUN_140526a50() == nExcludeUid)
+            continue;
+        if (spItem->FUN_1405291f0() == 0)
+            pOut->Add(spItem->FUN_140524250());
+        else
+            pOut->Add(spItem);
     }
 }
 
@@ -2615,27 +2594,26 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
 // @0x140c660f0
 void LapenshardUpgradeSlotPanel::FUN_140c660f0()
 {
-    if (!(m_ui == 0) && !m_items.IsEmpty() && !m_kinds.IsEmpty())
+    if (!(!(m_ui == 0) && !m_items.IsEmpty() && !m_kinds.IsEmpty()))
+        return;
+    ASArray rows(2);
+    for (unsigned i = 0; i < m_items.GetCount(); ++i)
     {
-        ASArray rows(2);
-        for (unsigned i = 0; i < m_items.GetCount(); ++i)
-        {
-            MS2Ptr<CItem> spItem = m_items[i];
-            if (spItem == 0)
-                continue;
-            ASObj row(2);
-            row.FUN_1407cba60("binding", FUN_1422cc860(m_strBind, i));
-            int nHave = 0;
-            if (spItem->FUN_140526100() == 0)
-                nHave = FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &m_kinds[i]);
-            row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, spItem->FUN_140526c50()));
-            rows.FUN_1422bc050(row.FUN_1422bb870());
-        }
-        ASObj data(2);
-        data.FUN_1409adbe0("ingredient", rows.FUN_1422bb870());
-        m_ui->Invoke("setIngredientData", data.FUN_1422bb870());
-        FUN_140c65ef0();
+        MS2Ptr<CItem> spItem = m_items[i];
+        if (spItem == 0)
+            continue;
+        ASObj row(2);
+        row.FUN_1407cba60("binding", FUN_1422cc860(m_strBind, i));
+        int nHave = 0;
+        if (spItem->FUN_140526100() == 0)
+            nHave = FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &m_kinds[i]);
+        row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, spItem->FUN_140526c50()));
+        rows.FUN_1422bc050(row.FUN_1422bb870());
     }
+    ASObj data(2);
+    data.FUN_1409adbe0("ingredient", rows.FUN_1422bb870());
+    m_ui->Invoke("setIngredientData", data.FUN_1422bb870());
+    FUN_140c65ef0();
 }
 
 // @0x140c671d0
@@ -2643,7 +2621,10 @@ void LapenshardUpgradeSlotPanel::FUN_140c671d0()
 {
     if (m_body == 0)
         return;
-    m_body->vfunc_13(CString("select"));
+    {
+        CString strLabel("select");
+        m_body->vfunc_13(strLabel);
+    }
     FUN_140c664e0();
     MS2Ptr<Unk_LsRecord> spRec = FUN_140c65d60();
     if (spRec == 0)
@@ -2678,11 +2659,14 @@ static CStringW Unk_LsBindResultSlot(LapenshardUpgradeSlotPanel* pPanel, CString
 
 // @0x140c67440
 // MS2-FUNCTIONAL: the success and fail slots share one helper and the temporaries are laid out differently
-void LapenshardUpgradeSlotPanel::FUN_140c67440(int bSuccess)
+void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
 {
     if (m_body == 0)
         return;
-    m_body->vfunc_13(CString("result"));
+    {
+        CString strLabel("result");
+        m_body->vfunc_13(strLabel);
+    }
     MS2Ptr<Unk_LsRecord> spRec = FUN_140c65d60();
     if (spRec == 0)
         return;

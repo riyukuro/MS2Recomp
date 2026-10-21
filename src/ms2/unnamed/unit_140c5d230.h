@@ -224,7 +224,7 @@ public:
     void FUN_140c65ef0();
     void FUN_140c660f0();
     void FUN_140c671d0();
-    void FUN_140c67440(int bSuccess);
+    void FUN_140c67440(bool bSuccess);
     void FUN_140c67ce0();
 
     CString m_strSource;                                            // +0x28 "lapenshardUpgradeSourceSlot"
