@@ -207,7 +207,7 @@ public:
     char m_cE40;                                            // +0xe40
     __int64 m_nE48;                                         // +0xe48
     char m_cE50;                                            // +0xe50
-    int m_nE54;                                             // +0xe54 effect handle (released by the dtor)
+    unsigned m_nE54;                                          // +0xe54 effect handle (released by the dtor)
     int m_nE58;                                             // +0xe58
     __int64 m_nE60;                                         // +0xe60
     ATL::CAtlArray<MS2Ptr<CBoxCollision> > m_arrE68;        // +0xe68

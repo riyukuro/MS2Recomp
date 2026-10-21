@@ -578,7 +578,7 @@ CNpc::CNpc()
 // @0x14108ef30
 CNpc::~CNpc()
 {
-    if (m_nE54 != 0)
+    if (m_nE54 > 0)
         FUN_1411a6060(FUN_1403ed280(), m_nE54);
     FUN_141095140();
 }
@@ -609,14 +609,14 @@ int CNpc::vfunc_10()
             NoticeMessage kQuery;
             kQuery.m_strName = m_spNpcData->m_strKeepEffect;
             kQuery.SetActor(FUN_14123c580());
-            kQuery.m_nMode48 = m_spNpcData->IsBoss() ? 6 : 5;
+            kQuery.m_nObject = m_spNpcData->IsBoss() ? 6 : 5;
             m_nE54 = reinterpret_cast<Unk_PoEffectSvc*>(FUN_1403ed280())->FUN_1411a49c0(kQuery);
         }
         if (!m_spNpcData->m_strCreateEffect.IsEmpty()) {
             NoticeMessage kQuery;
             kQuery.m_strName = m_spNpcData->m_strCreateEffect;
             kQuery.SetActor(FUN_14123c580());
-            kQuery.m_nMode48 = m_spNpcData->IsBoss() ? 6 : 5;
+            kQuery.m_nObject = m_spNpcData->IsBoss() ? 6 : 5;
             reinterpret_cast<Unk_PoEffectSvc*>(FUN_1403ed280())->FUN_1411a4a00(kQuery);
         }
         FUN_1410947e0();
@@ -658,10 +658,10 @@ void CNpc::vfunc_12()
     vfunc_82();
     if (!FUN_141093270()->HasPropertyTag(2))
         return;
-    if (FUN_14166ce30() == 0 && vfunc_80().get() != 0) {
-        vfunc_80()->FUN_141992140(1);
-        vfunc_80()->FUN_141992180(FUN_141670a00(4), FUN_141670a30(4));
-    }
+    if (!(FUN_14166ce30() == 0 && vfunc_80().get() != 0))
+        return;
+    vfunc_80()->FUN_141992140(1);
+    vfunc_80()->FUN_141992180(FUN_141670a00(4), FUN_141670a30(4));
 }
 
 // @0x14108fb00
@@ -904,12 +904,12 @@ void CNpc::vfunc_32(bool b)
 // @0x1410916a0
 void CNpc::vfunc_126(int a, int b)
 {
-    if (!m_spNpcData.IsNull() && (m_nEB8 == 0 || b != 0)) {
-        if (a == 0 || m_spNpcData->m_capsule.m_nIgnore != 0)
-            FUN_14123fbf0(m_unk_150, 5);
-        else
-            FUN_14123fbf0(m_unk_150, 4);
-    }
+    if (!(!m_spNpcData.IsNull() && (m_nEB8 == 0 || b != 0)))
+        return;
+    if (a == 0 || m_spNpcData->m_capsule.m_nIgnore != 0)
+        FUN_14123fbf0(m_unk_150, 5);
+    else
+        FUN_14123fbf0(m_unk_150, 4);
 }
 
 // @0x141091740
@@ -1250,11 +1250,12 @@ CStringA CNpc::FUN_141093530()
 void CNpc::vfunc_66(int n)
 {
     PCBase::vfunc_66(n);
-    if (n == 0)
-        return;
-    if (FUN_14166ce30() == 0 && vfunc_80().get() != 0)
-        vfunc_80()->FUN_141992180(FUN_141670a00(4), FUN_141670a30(4));
-    FUN_1410943b0(this, 1);
+    if (n != 0)
+    {
+        if (FUN_14166ce30() == 0 && (vfunc_80().get() ? true : false))
+            vfunc_80()->FUN_141992180(FUN_141670a00(4), FUN_141670a30(4));
+        FUN_1410943b0(this, 1);
+    }
 }
 
 // @0x141093760
@@ -1355,14 +1356,14 @@ void CNpc::FUN_141093e90()
 // @0x141093eb0
 void CNpc::FUN_141093eb0()
 {
-    if (m_nEC0 != 0) {
-        PCBase* pOwner = reinterpret_cast<Unk_CscWorld*>(FUN_1403ed2d0())->FUN_141bd1200(m_nEC0);
-        if (pOwner != NULL) {
-            efd::SmartPointer<NiAVObject> spNode = pOwner->FUN_141675930();
-            if (spNode != 0) {
-                efd::Point3 kPos = FUN_140947900(spNode.operator->());
-                vfunc_19(kPos);
-            }
+    if (m_nF20 == 0)
+        return;
+    PCBase* pOwner = reinterpret_cast<Unk_CscWorld*>(FUN_1403ed2d0())->FUN_141bd1200(m_nF20);
+    if (pOwner != NULL) {
+        efd::SmartPointer<NiAVObject> spNode = pOwner->FUN_141675930();
+        if (spNode != 0) {
+            efd::Point3 kPos = FUN_140947900(spNode.operator->());
+            vfunc_19(kPos);
         }
     }
 }
@@ -1377,8 +1378,7 @@ void CNpc::FUN_141093fa0()
 // @0x141094050
 void CNpc::FUN_141094050()
 {
-    MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85();
-    if (spBalloon.get() != 0)
+    if (MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85())
         spBalloon->vfunc_3();
     if (m_spNpcData.get() != 0)
         FUN_1411a4f40(FUN_1403ed280(), m_spNpcData->m_strSoundEnd, vfunc_18());
@@ -1489,9 +1489,9 @@ int CNpc::vfunc_69()
     spData = FUN_141093270();
     if (spData == 0)
         return 0;
-    if (spData->m_nEmotionId == 0)
-        return spData->GetId();
-    return spData->m_nEmotionId;
+    if (spData->m_nEmotionId != 0)
+        return spData->m_nEmotionId;
+    return spData->GetId();
 }
 
 // @0x141094730
@@ -1644,14 +1644,16 @@ void CNpc::FUN_141094ff0(int nActor)
 void CNpc::FUN_141095050()
 {
     PCBase* pActor = FUN_141bd1290(reinterpret_cast<WorldService*>(FUN_1403ed2d0()), m_nEC0);
-    if (pActor != NULL && m_strEC8.GetLength() > 0) {
-        NoticeMessage kQuery;
-        kQuery.m_strName = m_strEC8;
-        kQuery.m_nMode48 = 6;
-        kQuery.SetActor(pActor->FUN_14123c580());
-        kQuery.m_bFlag31 = true;
-        m_nEC4 = reinterpret_cast<Unk_PoEffectSvc*>(FUN_1403ed280())->FUN_1411a49c0(kQuery);
-    }
+    if (pActor == NULL)
+        return;
+    if (m_strEC8.GetLength() < 1)
+        return;
+    NoticeMessage kQuery;
+    kQuery.m_strName = m_strEC8;
+    kQuery.m_nObject = 6;
+    kQuery.SetActor(pActor->FUN_14123c580());
+    kQuery.m_bFlag31 = true;
+    m_nEC4 = reinterpret_cast<Unk_PoEffectSvc*>(FUN_1403ed280())->FUN_1411a49c0(kQuery);
 }
 
 // @0x141095140
@@ -1879,27 +1881,32 @@ void CNpc::FUN_1410979a0()
 // @0x141097a30
 void CNpc::FUN_141097a30()
 {
-    if (m_pD60 != NULL) {
-        NxMat34 kPose = m_pD60->getGlobalPose();
-        efd::Point3 kPos(kPose.t.x, kPose.t.y, kPose.t.z);
-        kPos *= 100.0f;
-        kPos.z = kPos.z - m_spNpcData->m_collision.m_fHeight * 0.5f;
-        GameObject::vfunc_19(kPos);
-    }
+    if (m_pD60 == NULL)
+        return;
+    NxMat34 kPose = m_pD60->getGlobalPose();
+    efd::Point3 kPos(kPose.t.x, kPose.t.y, kPose.t.z);
+    kPos *= 100.0f;
+    kPos.z = kPos.z - m_spNpcData->m_collision.m_fHeight * 0.5f;
+    GameObject::vfunc_19(kPos);
 }
 
 // Moves the dead body's shapes to a collision group.
 // @0x141097b40
 void CNpc::FUN_141097b40(unsigned short nGroup)
 {
-    if (m_nD84 != nGroup && m_pD60 != NULL) {
-        FUN_1409f7ca0()->FUN_14168a540(0);
-        unsigned int nShapes = m_pD60->getNbShapes();
-        NxShape* const* ppShapes = m_pD60->getShapes();
-        for (unsigned int i = 0; i < nShapes; i++)
-            ppShapes[i]->setGroup(nGroup);
-        FUN_1409f7ca0()->FUN_14168a570();
+    if (m_nD84 == nGroup)
+        return;
+    if (m_pD60 == NULL)
+        return;
+    FUN_1409f7ca0()->FUN_14168a540(0);
+    unsigned int nShapes = m_pD60->getNbShapes();
+    NxShape* const* ppShapes = m_pD60->getShapes();
+    for (unsigned int i = 0; i < nShapes; i++)
+    {
+        NxShape* pShape = ppShapes[i];
+        pShape->setGroup(nGroup);
     }
+    FUN_1409f7ca0()->FUN_14168a570();
 }
 
 // A hit: the hit numbers, buff triggers, the boss camera, the hit effect / colour / shake / sound, the knockback record
@@ -2098,11 +2105,11 @@ void CNpc::FUN_141098fb0(int nKind)
     if (!strEffect.IsEmpty()) {
         NoticeMessage kQuery;
         kQuery.m_strName = strEffect;
-        kQuery.m_nMode48 = FUN_141093270()->IsBoss() ? 6 : 5;
+        kQuery.m_nObject = FUN_141093270()->IsBoss() ? 6 : 5;
         kQuery.SetActor(FUN_14123c580());
         reinterpret_cast<Unk_PoEffectSvc*>(FUN_1403ed280())->FUN_1411a4a00(kQuery);
     }
-    if (nKind == 0 && m_nE54 != 0) {
+    if (nKind == 0 && m_nE54 > 0) {
         FUN_1411a6060(FUN_1403ed280(), m_nE54);
         m_nE54 = 0;
     }
@@ -2113,21 +2120,21 @@ void CNpc::FUN_141098fb0(int nKind)
 void CNpc::FUN_141099170(float fTime)
 {
     efd::Point3 kRot = vfunc_20();
-    if (FUN_14109a9d0() == 0 || !FUN_14028d470(kRot.z, m_f934)) {
-        FUN_14166d8b0(FUN_14028d5b0(m_f934));
-        float fDelta = FUN_14028d5b0(m_f934 - kRot.z);
-        float fSpeed = FUN_14059d930(fDelta);
-        fSpeed = fSpeed / 0.1f;
-        if (m_spNpcData->m_fRotationSpeed < fSpeed)
-            fSpeed = m_spNpcData->m_fRotationSpeed;
-        fTime = FUN_14109ac70(fDelta) * fSpeed * fTime;
-        if (FUN_14059d930(fTime) < FUN_14059d930(fDelta))
-            kRot.z = kRot.z + fTime;
-        else
-            kRot.z = m_f934;
-        kRot.z = FUN_14028d5b0(kRot.z);
-        vfunc_21(kRot);
-    }
+    if (!(FUN_14109a9d0() == 0 || !FUN_14028d470(kRot.z, m_f934)))
+        return;
+    FUN_14166d8b0(FUN_14028d5b0(m_f934));
+    float fDelta = FUN_14028d5b0(m_f934 - kRot.z);
+    float fSpeed = FUN_14059d930(fDelta);
+    fSpeed = fSpeed / 0.1f;
+    if (m_spNpcData->m_fRotationSpeed < fSpeed)
+        fSpeed = m_spNpcData->m_fRotationSpeed;
+    fTime = FUN_14109ac70(fDelta) * fSpeed * fTime;
+    if (FUN_14059d930(fTime) < FUN_14059d930(fDelta))
+        kRot.z = kRot.z + fTime;
+    else
+        kRot.z = m_f934;
+    kRot.z = FUN_14028d5b0(kRot.z);
+    vfunc_21(kRot);
 }
 
 // The idle monologue balloon timer.
