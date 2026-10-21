@@ -4655,3 +4655,6 @@ criHeap_Initialize	1400282e0	func
 ?sourceGet@RegExp@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEAVASString@56@@Z	14242b010	func
 ?sqrt@Math@fl@Classes@AS3@GFx@Scaleform@@QEAAXAEANN@Z	14242b090	func
 ?tan@Math@fl@Classes@AS3@GFx@Scaleform@@QEAAXAEANN@Z	14242b0b0	func
+?AS3exec@RegExp@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEAV?$SPtr@VObject@fl@Instances@AS3@GFx@Scaleform@@@456@AEBVASString@56@@Z	1423f9300	func
+?Convert2String@Value@AS3@GFx@Scaleform@@QEBA?AVCheckResult@234@AEAVASString@34@@Z	1424f1390	func
+?prototypeSet@XMLList@fl@Instances@AS3@GFx@Scaleform@@QEAAXAEBVValue@456@0@Z	142429fa0	func
