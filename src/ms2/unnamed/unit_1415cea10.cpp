@@ -55,133 +55,133 @@ template void std::_Enable_shared_from_this<Unk_Esft19, Unk_Esft19>(const std::s
 
 struct Unk_Elem0 { char b[0x10]; };
 // @0x1415cf050
-void FUN_1415cf050(Unk_Elem0** p, long long n)
+void FUN_1415cf050(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem0**)p += (long long)n;
 }
 
 struct Unk_Elem1 { char b[0x18]; };
 // @0x1415cf080
-void FUN_1415cf080(Unk_Elem1** p, long long n)
+void FUN_1415cf080(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem1**)p += (long long)n;
 }
 
 struct Unk_Elem2 { char b[0x58]; };
 // @0x1415cf0b0
-void FUN_1415cf0b0(Unk_Elem2** p, long long n)
+void FUN_1415cf0b0(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem2**)p += (long long)n;
 }
 
 struct Unk_Elem3 { char b[0x30]; };
 // @0x1415cf0e0
-void FUN_1415cf0e0(Unk_Elem3** p, long long n)
+void FUN_1415cf0e0(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem3**)p += (long long)n;
 }
 
 struct Unk_Elem4 { char b[0x98]; };
 // @0x1415cf110
-void FUN_1415cf110(Unk_Elem4** p, long long n)
+void FUN_1415cf110(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem4**)p += (long long)n;
 }
 
 struct Unk_Elem5 { char b[0x220]; };
 // @0x1415cf140
-void FUN_1415cf140(Unk_Elem5** p, long long n)
+void FUN_1415cf140(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem5**)p += (long long)n;
 }
 
 struct Unk_Elem6 { char b[0x128]; };
 // @0x1415cf170
-void FUN_1415cf170(Unk_Elem6** p, long long n)
+void FUN_1415cf170(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem6**)p += (long long)n;
 }
 
 struct Unk_Elem7 { char b[0x118]; };
 // @0x1415cf1a0
-void FUN_1415cf1a0(Unk_Elem7** p, long long n)
+void FUN_1415cf1a0(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem7**)p += (long long)n;
 }
 
 struct Unk_Elem8 { char b[0x580]; };
 // @0x1415cf1d0
-void FUN_1415cf1d0(Unk_Elem8** p, long long n)
+void FUN_1415cf1d0(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem8**)p += (long long)n;
 }
 
 struct Unk_Elem9 { char b[0x18]; };
 // @0x1415cf200
-void FUN_1415cf200(Unk_Elem9** p, long long n)
+void FUN_1415cf200(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem9**)p += (long long)n;
 }
 
 struct Unk_Elem10 { char b[0x14a8]; };
 // @0x1415cf230
-void FUN_1415cf230(Unk_Elem10** p, long long n)
+void FUN_1415cf230(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem10**)p += (long long)n;
 }
 
 struct Unk_Elem11 { char b[0x18]; };
 // @0x1415cf260
-void FUN_1415cf260(Unk_Elem11** p, long long n)
+void FUN_1415cf260(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem11**)p += (long long)n;
 }
 
 struct Unk_Elem12 { char b[0xb8]; };
 // @0x1415cf290
-void FUN_1415cf290(Unk_Elem12** p, long long n)
+void FUN_1415cf290(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem12**)p += (long long)n;
 }
 
 struct Unk_Elem13 { char b[0x58]; };
 // @0x1415cf2c0
-void FUN_1415cf2c0(Unk_Elem13** p, long long n)
+void FUN_1415cf2c0(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem13**)p += (long long)n;
 }
 
 struct Unk_Elem14 { char b[0xae8]; };
 // @0x1415cf2f0
-void FUN_1415cf2f0(Unk_Elem14** p, long long n)
+void FUN_1415cf2f0(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem14**)p += (long long)n;
 }
 
 struct Unk_Elem15 { char b[0xc8]; };
 // @0x1415cf320
-void FUN_1415cf320(Unk_Elem15** p, long long n)
+void FUN_1415cf320(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem15**)p += (long long)n;
 }
 
 struct Unk_Elem16 { char b[0xf8]; };
 // @0x1415cf350
-void FUN_1415cf350(Unk_Elem16** p, long long n)
+void FUN_1415cf350(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem16**)p += (long long)n;
 }
 
 struct Unk_Elem17 { char b[0x490]; };
 // @0x1415cf380
-void FUN_1415cf380(Unk_Elem17** p, long long n)
+void FUN_1415cf380(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem17**)p += (long long)n;
 }
 
 struct Unk_Elem18 { char b[0x30]; };
 // @0x1415cf3b0
-void FUN_1415cf3b0(Unk_Elem18** p, long long n)
+void FUN_1415cf3b0(void* p, void* n, char tag)
 {
-    *p += n;
+    *(Unk_Elem18**)p += (long long)n;
 }
