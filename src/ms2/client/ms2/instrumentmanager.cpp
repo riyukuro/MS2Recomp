@@ -1102,15 +1102,14 @@ bool CInstrumentManager::IsBlocked(int nOwner)
 }
 
 // @0x140d09eb0
-// MS2-FUNCTIONAL: loop / iterator shape differs (5 bytes shorter in the exe)
 void CInstrumentManager::Clear()
 {
     if (!m_midi.IsOpen())
         return;
-    for (std::map<unsigned, int>::iterator it = m_slotIndex.begin(); it != m_slotIndex.end(); ++it)
+    for (std::map<unsigned, int>::iterator it = m_slotIndex.begin(), itEnd = m_slotIndex.end(); it != itEnd; ++it)
     {
         ResetChannel(it->second, it->first);
-        m_events.erase(m_slots[it->second].m_owner);
+        m_events.erase(reinterpret_cast<unsigned&>(m_slots[it->second].m_owner));
         m_slots[it->second].Init();
     }
     m_remoteVoices.clear();
@@ -1208,13 +1207,12 @@ void CInstrumentManager::MapSlot(int nKey, int nSlot)
 }
 
 // @0x140d0a3e0
-// MS2-FUNCTIONAL: map erase sequence not byte-matched
 void CInstrumentManager::RemoveSlot(unsigned nKey)
 {
     std::map<unsigned, int>::iterator it = m_slotIndex.find(nKey);
     if (it != m_slotIndex.end() && it->second < 0x10)
     {
-        m_events.erase(m_slots[it->second].m_owner);
+        m_events.erase(reinterpret_cast<unsigned&>(m_slots[it->second].m_owner));
         m_slots[it->second].Init();
         m_remoteVoices.erase(nKey);
         m_slotIndex.erase(nKey);
@@ -1341,12 +1339,12 @@ int CInstrumentManager::ScaleVolume(int nVolume, int nProgram)
 }
 
 // @0x140d0ac80
-// MS2-FUNCTIONAL: not byte-matched
 void CInstrumentManager::PlayEvents()
 {
     unsigned nNow = FUN_140869420();
     std::map<unsigned, Unk_ImScoreEvents>::iterator it = m_events.begin();
-    while (it != m_events.end())
+    std::map<unsigned, Unk_ImScoreEvents>::iterator itEnd = m_events.end();
+    while (it != itEnd)
     {
         Unk_ImActor* pActor = FUN_1403ed2d0()->FUN_141bd1290(it->first);
         if (pActor == 0)
@@ -1357,16 +1355,24 @@ void CInstrumentManager::PlayEvents()
             continue;
         }
         Unk_ImScoreEvents::iterator itEvent = it->second.begin();
-        while (itEvent != it->second.end() && itEvent->first <= nNow)
+        Unk_ImScoreEvents::iterator itEventEnd = it->second.end();
+        for (; itEvent != itEventEnd; ++itEvent)
         {
+            if (itEvent->first > nNow)
+                break;
             std::pair<int, int>* pEvent = &itEvent->second;
             if (pActor->FUN_14166c930() != 0x2f)
                 return;
             if (pEvent->first == 0)
-                pActor->FUN_14165ebb0((float)pEvent->second / 120.0f);
+            {
+                float fTempo = (float)pEvent->second / 120.0f;
+                pActor->FUN_14165ebb0(fTempo);
+            }
             else if (pEvent->first == 1)
-                pActor->FUN_14166ccb0()->FUN_140de0410(pEvent->second);
-            ++itEvent;
+            {
+                StatePlayInstrument* pState = pActor->FUN_14166ccb0();
+                pState->FUN_140de0410(pEvent->second);
+            }
         }
         if (itEvent != it->second.begin())
             it->second.erase(it->second.begin(), itEvent);
