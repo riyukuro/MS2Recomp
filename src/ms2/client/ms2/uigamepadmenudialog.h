@@ -14,6 +14,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/client/ms2/uidialog.h"
+#include "ms2/client/ms2/uigamemenudialog.h"   // EMenuKey (m_enable shares UIGameMenuDialog::m_enabled's CAtlMap instance)
 #include "ms2/commonfiles/timer.h"
 #include "ms2/placeholder/ascript.h"
 
@@ -56,8 +57,8 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     ATL::CAtlArray<MS2Ptr<Unk_GpNode> > m_menus;        // +0x178
-    ATL::CAtlMap<int, int> m_enable;                    // +0x198 menu id -> enable state
-    ATL::CAtlMap<int, int> m_pages;                     // +0x1e0 page -> sub-menu count (the exe calls another copy of the map code)
+    ATL::CAtlMap<EMenuKey, int> m_enable;               // +0x198 menu id -> enable state (the CAtlMap<EMenuKey, int> code at 0x140c1xxxx)
+    ATL::CAtlMap<int, unsigned int> m_pages;            // +0x1e0 page -> sub-menu count (the CAtlMap<int, UINT> code at 0x1405xxxxx)
     int m_nPage;                                        // +0x228
     int m_nItem;                                        // +0x22c
     Timer m_timer;                                      // +0x230

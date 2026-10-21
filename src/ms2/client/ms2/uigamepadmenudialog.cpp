@@ -2,38 +2,38 @@
 // MS2-UNIT: ?\uigamepadmenudialog.cpp
 // MS2-RANGE: 0x140c1aaf0-0x140c1e730 .text$mn
 // MS2-RANGE: 0x1400cc300-0x1400cc560 .text$di
-// MS2-PIN: ??0CNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@HI@Z 0x140c1cc00
-// MS2-PIN: ??0CPair@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEAA@H@Z 0x140c1cc40
-// MS2-PIN: ?CreateNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@HII@Z 0x140c1d090
-// MS2-PIN: ?GetNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x140c1d300
-// MS2-PIN: ?Lookup@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEBA_NHAEAH@Z 0x140c1d700
-// MS2-PIN: ?NewNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@HII@Z 0x140c1d760
-// MS2-PIN: ?SetAt@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAPEAU__POSITION@@HH@Z 0x140c1e090
+// MS2-PIN: ??0CNode@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAA@AEBW4EMenuKey@@I@Z 0x140c1cc00
+// MS2-PIN: ??0CPair@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@IEAA@AEBW4EMenuKey@@@Z 0x140c1cc40
+// MS2-PIN: ?CreateNode@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAPEAVCNode@12@AEBW4EMenuKey@@II@Z 0x140c1d090
+// MS2-PIN: ?GetNode@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEBAPEAVCNode@12@AEBW4EMenuKey@@AEAI1AEAPEAV312@@Z 0x140c1d300
+// MS2-PIN: ?Lookup@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEBA_NAEBW4EMenuKey@@AEAH@Z 0x140c1d700
+// MS2-PIN: ?NewNode@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAPEAVCNode@12@AEBW4EMenuKey@@II@Z 0x140c1d760
+// MS2-PIN: ?SetAt@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAPEAU__POSITION@@AEBW4EMenuKey@@H@Z 0x140c1e090
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?FUN_140c1c770@UIGamePadMenuDialog@@QEAAHXZ 0x140c1c770 ; unique
-// MS2-PIN: ??0?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@IMMMI@Z 0x140c1ca10 ; unique
-// MS2-PIN: ??1?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@XZ 0x140c1cca0 ; unique
+// MS2-PIN: ??0?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAA@IMMMI@Z 0x140c1ca10 ; unique
+// MS2-PIN: ??1?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAA@XZ 0x140c1cca0 ; unique
 // MS2-PIN: ?get@?$MS2Ptr@VUnk_GpMenu@@@@QEBAPEAVUnk_GpMenu@@XZ 0x140c1cd90 ; unique
 // MS2-PIN: ??C?$MS2Ptr@VUnk_GpMenu@@@@QEBAPEAVUnk_GpMenu@@XZ 0x140c1cda0 ; unique
 // MS2-PIN: ?FUN_140c1cdc0@Unk_GpCondRef@@QEAAHXZ 0x140c1cdc0 ; unique
-// MS2-PIN: ?CompareElements@?$CDefaultCompareTraits@H@ATL@@SA_NAEBH0@Z 0x140c1d040 ; unique
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXXZ 0x140c1d110 ; unique
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXXZ 0x140c1d160 ; unique
-// MS2-PIN: ?FreeNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@@Z 0x140c1d180 ; unique
-// MS2-PIN: ?FreePlexes@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXXZ 0x140c1d270 ; unique
-// MS2-PIN: ?GetCount@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEBA_KXZ 0x140c1d2d0 ; unique
-// MS2-PIN: ?GetHash@CNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEBAIXZ 0x140c1d2e0 ; unique
+// MS2-PIN: ?CompareElements@?$CDefaultCompareTraits@W4EMenuKey@@@ATL@@SA_NAEBW4EMenuKey@@0@Z 0x140c1d040 ; unique
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAXXZ 0x140c1d110 ; unique
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAXXZ 0x140c1d160 ; unique
+// MS2-PIN: ?FreeNode@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x140c1d180 ; unique
+// MS2-PIN: ?FreePlexes@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAXXZ 0x140c1d270 ; unique
+// MS2-PIN: ?GetCount@?$CAtlMap@HIV?$CElementTraits@H@ATL@@V?$CElementTraits@I@2@@ATL@@QEBA_KXZ 0x140c1d2d0 ; unique
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEBAIXZ 0x140c1d2e0 ; unique
 // MS2-PIN: ?vfunc_48@UIGamePadMenuDialog@@UEAAHXZ 0x140c1d3f0 ; unique
-// MS2-PIN: ?Hash@?$CDefaultHashTraits@H@ATL@@SAKAEBH@Z 0x140c1d5a0 ; unique
-// MS2-PIN: ?InitHashTable@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA_NI_N@Z 0x140c1d5b0 ; unique
-// MS2-PIN: ?IsLocked@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBA_NXZ 0x140c1d6d0 ; unique
-// MS2-PIN: ?PickSize@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBAI_K@Z 0x140c1d970 ; unique
-// MS2-PIN: ?Rehash@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXI@Z 0x140c1da60 ; unique
-// MS2-PIN: ?RemoveAll@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXXZ 0x140c1dcf0 ; unique
-// MS2-PIN: ?RemoveAtPos@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140c1dee0 ; unique
-// MS2-PIN: ?RemoveNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140c1dfd0 ; unique
-// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXMMM_N@Z 0x140c1e2b0 ; unique
-// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXXZ 0x140c1e360 ; unique
+// MS2-PIN: ?Hash@?$CDefaultHashTraits@W4EMenuKey@@@ATL@@SAKAEBW4EMenuKey@@@Z 0x140c1d5a0 ; unique
+// MS2-PIN: ?InitHashTable@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAA_NI_N@Z 0x140c1d5b0 ; unique
+// MS2-PIN: ?IsLocked@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEBA_NXZ 0x140c1d6d0 ; unique
+// MS2-PIN: ?PickSize@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEBAI_K@Z 0x140c1d970 ; unique
+// MS2-PIN: ?Rehash@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAXI@Z 0x140c1da60 ; unique
+// MS2-PIN: ?RemoveAll@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAXXZ 0x140c1dcf0 ; unique
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140c1dee0 ; unique
+// MS2-PIN: ?RemoveNode@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140c1dfd0 ; unique
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAXMMM_N@Z 0x140c1e2b0 ; unique
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@W4EMenuKey@@HV?$CElementTraits@W4EMenuKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAXXZ 0x140c1e360 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_GpButton@@@@AEAAXPEAX@Z 0x140c1e560 ; merge-bind
 // MS2-GUESS-LOOKALIKES
@@ -192,10 +192,8 @@ Scaleform::GFx::Value Unk_GpAS::FUN_140c1c8c0(const char* szMethod, unsigned __i
 
 // @0x140c1aaf0
 UIGamePadMenuDialog::UIGamePadMenuDialog()
-    : m_enable(17, 0.75f, 0.25f, 2.25f, 10), m_pages(17, 0.75f, 0.25f, 2.25f, 10)
+    : m_enable(17, 0.75f, 0.25f, 2.25f, 10), m_nPage(0), m_nItem(0), m_pages(17, 0.75f, 0.25f, 2.25f, 10)
 {
-    m_nPage = 0;
-    m_nItem = 0;
     m_nMoveMs = 0x32;
     m_80 = 0;
     m_5c = 1;
@@ -252,20 +250,27 @@ int UIGamePadMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     ASData data;
     if (_stricmp("OnMove", szMethod) == 0)
+    {
         return 1;
-    CString strName(szMethod);
-    int nEvent = strName.Find("_event", 0);
-    if (nEvent != -1)
-        strName = strName.Mid(0, nEvent);
-    MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7470(CString(strName));
-    if (spMenu.get() == 0)
-        return 0;
-    if (spMenu->m_tail.FUN_14098d930() == false)
-        spMenu->m_tail.FUN_14098d150();
-    else if (spMenu->m_nUiId != 0)
-        FUN_1403ed2b0()->FUN_141adc750(spMenu->m_nUiId);
-    vfunc_67();
-    return 1;
+    }
+    else
+    {
+        CString strName(szMethod);
+        int nEvent = strName.Find("_event", 0);
+        if (nEvent != -1)
+            strName = strName.Mid(0, nEvent);
+        MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7470(CString(strName));
+        if (spMenu.get() != 0)
+        {
+            if (spMenu->m_tail.FUN_14098d930() == false)
+                spMenu->m_tail.FUN_14098d150();
+            else if (spMenu->m_nUiId != 0)
+                FUN_1403ed2b0()->FUN_141adc750(spMenu->m_nUiId);
+            vfunc_67();
+            return 1;
+        }
+    }
+    return 0;
 }
 
 // @0x140c1b230
@@ -273,10 +278,11 @@ int UIGamePadMenuDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (vfunc_55() == 0 && FUN_140a467d0(&m_30) == false)
+    if (vfunc_55() != 0 || FUN_140a467d0(&m_30))
+        return 0;
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog != 0)
     {
-        if (dynamic_cast<ASDialog*>((AScript*)m_30) == 0)
-            return 0;
         if (FUN_14025e7c0()->FUN_14116d9c0(0x92, 0, 0))
             FUN_140c1c530(0x92);
         else if (FUN_14025e7c0()->FUN_14116d9c0(0x93, 0, 0))
@@ -300,15 +306,16 @@ void UIGamePadMenuDialog::vfunc_72()
     if (m_timer.FUN_140868c00() != 0)
     {
         m_timer.FUN_1408687f0();
-        if (m_menus.GetCount() != 0)
+        if (m_menus.GetCount() > 0)
         {
             FUN_140c1b620();
             m_menus.RemoveAt(0, 1);
             if (m_menus.GetCount() == 0)
             {
-                m_pages.Lookup(m_nPage, m_nItem);
-                m_nItem = m_nItem - 1;
-                FUN_1409ee290(&m_30)->FUN_1409ba0d0("moveMenu", m_nPage, m_nItem);
+                m_pages.Lookup(m_nPage, reinterpret_cast<unsigned int&>(m_nItem));
+                int nItem = m_nItem - 1;
+                m_nItem = nItem;
+                FUN_1409ee290(&m_30)->FUN_1409ba0d0("moveMenu", m_nPage, nItem);
             }
             else
             {
@@ -375,13 +382,11 @@ void UIGamePadMenuDialog::FUN_140c1b620()
 // @0x140c1ba90
 void UIGamePadMenuDialog::FUN_140c1ba90(int nMenu, int nEnable)
 {
-    int nKind = FUN_140c1c770();
-    int nId = FUN_140c1d2f0()->FUN_140cf72f0(nMenu, nKind);
-    MS2Ptr<Unk_GpButton> spButton = FUN_140c1be20(FUN_140c1bcd0(nId));
-    if (spButton.get() == 0)
-        m_enable.SetAt(nMenu, nEnable);
-    else
+    int nId = FUN_140c1d2f0()->FUN_140cf72f0(nMenu, FUN_140c1c770());
+    if (MS2Ptr<Unk_GpButton> spButton = FUN_140c1be20(FUN_140c1bcd0(nId)))
         spButton->Invoke("setMenuEnable", FUN_140c1bcd0(nMenu), nEnable);
+    else
+        m_enable.SetAt(reinterpret_cast<const EMenuKey&>(nMenu), nEnable);
 }
 
 // @0x140c1bc10
@@ -411,12 +416,11 @@ MS2Ptr<Unk_GpButton> UIGamePadMenuDialog::FUN_140c1bd90(int nMenu, __int64 nUnus
 // @0x140c1be20
 MS2Ptr<Unk_GpButton> UIGamePadMenuDialog::FUN_140c1be20(const CString& strMenu)
 {
-    MS2Ptr<ASMovieClip> spMenus = FUN_140ba7930(CString("m_menus"));
-    if (spMenus.get() != 0)
+    if (MS2Ptr<ASMovieClip> spMenus = FUN_140ba7930("m_menus"))
     {
         MS2Ptr<ASMovieClip> spMenu = spMenus->FUN_1409b4560(strMenu);
-        if (spMenu.get() != 0)
-            return static_cast<Unk_GpClip*>(spMenu.get())->FUN_140bbe700(CString("m_button"));
+        if (spMenu)
+            return static_cast<Unk_GpClip*>(spMenu.get())->FUN_140bbe700("m_button");
     }
     return MS2Ptr<Unk_GpButton>(0);
 }
@@ -425,7 +429,7 @@ MS2Ptr<Unk_GpButton> UIGamePadMenuDialog::FUN_140c1be20(const CString& strMenu)
 int UIGamePadMenuDialog::FUN_140c1bf90(int nMenu)
 {
     int nEnable;
-    if (m_enable.Lookup(nMenu, nEnable) == false)
+    if (m_enable.Lookup(reinterpret_cast<const EMenuKey&>(nMenu), nEnable) == false)
         nEnable = 1;
     return nEnable;
 }
@@ -440,15 +444,15 @@ void UIGamePadMenuDialog::FUN_140c1bfe0(NotifyObject* pObj)
 void UIGamePadMenuDialog::FUN_140c1c010(ATL::CAtlArray<MS2Ptr<Unk_GpNode> >& dst)
 {
     ATL::CAtlArray<MS2Ptr<Unk_GpNode> > nodes;
-    int nKind = FUN_140c1c770();
-    FUN_140c1d2f0()->FUN_140cf7710(nodes, nKind);
+    FUN_140c1d2f0()->FUN_140cf7710(nodes, FUN_140c1c770());
     for (size_t i = 0; i < nodes.GetCount(); i++)
     {
         MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7690(nodes[i]->m_nId);
         if (spMenu.get() != 0)
         {
-            if (spMenu->m_cond40.FUN_140c1d130() || spMenu->m_cond40.FUN_140c1cdc0() != 0)
-                dst.Add(nodes[i]);
+            if (spMenu->m_cond40.FUN_140c1d130() == false && spMenu->m_cond40.FUN_140c1cdc0() == 0)
+                continue;
+            dst.Add(nodes[i]);
         }
     }
 }
@@ -456,14 +460,12 @@ void UIGamePadMenuDialog::FUN_140c1c010(ATL::CAtlArray<MS2Ptr<Unk_GpNode> >& dst
 // @0x140c1c160
 int UIGamePadMenuDialog::FUN_140c1c160(int nMenu, ASObj* pObj)
 {
-    MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7690(nMenu);
-    if (spMenu.get() != 0)
+    if (MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7690(nMenu))
     {
         if (spMenu->m_cond40.FUN_140c1d130() == false && spMenu->m_cond40.FUN_140c1cdc0() == 0)
             return 0;
         CStringW strTip = FUN_14025e7a0()->FUN_1422b0570(spMenu->m_strText);
-        int nKind = FUN_140c1c770();
-        if (FUN_140c1d2f0()->FUN_140cf71f0(nMenu, nKind) != 0 && spMenu->m_nKeyBind != 0)
+        if (FUN_140c1d2f0()->FUN_140cf71f0(nMenu, FUN_140c1c770()) != 0 && spMenu->m_nKeyBind != 0)
         {
             CStringW strKey = FUN_1409331f0()->FUN_14142d760(spMenu->m_nKeyBind, 0);
             if (strKey.GetLength() > 0)
@@ -479,8 +481,7 @@ int UIGamePadMenuDialog::FUN_140c1c160(int nMenu, ASObj* pObj)
         pObj->FUN_1407cba60("layerName", CString(strName));
         if (FUN_140166410()->FUN_14036d570(0xc4) == false)
         {
-            int nKind2 = FUN_140c1c770();
-            if (FUN_140c1d2f0()->FUN_140cf71f0(nMenu, nKind2) == 0)
+            if (FUN_140c1d2f0()->FUN_140cf71f0(nMenu, FUN_140c1c770()) == 0)
                 pObj->FUN_1409c0e60("tooltipName", L"");
             else
                 pObj->FUN_1407cbb20("tooltipName", CStringW(strTip));
@@ -497,44 +498,44 @@ int UIGamePadMenuDialog::FUN_140c1c160(int nMenu, ASObj* pObj)
 void UIGamePadMenuDialog::FUN_140c1c530(int nKey)
 {
     int nPages = (int)m_pages.GetCount();
-    int nSub = 0;
+    unsigned int nSub = 0;
     m_pages.Lookup(m_nPage, nSub);
-    if (nKey == 0x92)
+    switch (nKey)
     {
+    case 0x92:
         m_nItem = m_nItem - 1;
-    }
-    else if (nKey == 0x93)
-    {
+        break;
+    case 0x93:
         m_nItem = m_nItem + 1;
-    }
-    else if (nKey == 0x94)
-    {
+        break;
+    case 0x94:
         m_nPage = m_nPage - 1;
         m_pages.Lookup(m_nPage, nSub);
         m_nItem = nSub - 1;
-    }
-    else
-    {
-        if (nKey != 0x95)
-            return;
+        break;
+    case 0x95:
         m_nPage = m_nPage + 1;
         m_pages.Lookup(m_nPage, nSub);
         m_nItem = nSub - 1;
+        break;
+    default:
+        return;
     }
     if (m_nPage < 0)
     {
         m_nPage = nPages - 1;
     }
-    else if (m_nPage < nPages)
-    {
-        if (m_nItem < 0)
-            m_nItem = nSub - 1;
-        else if (nSub <= m_nItem)
-            m_nItem = 0;
-    }
-    else
+    else if (m_nPage >= nPages)
     {
         m_nPage = 0;
+    }
+    else if (m_nItem < 0)
+    {
+        m_nItem = nSub - 1;
+    }
+    else if (m_nItem >= (int)nSub)
+    {
+        m_nItem = 0;
     }
     FUN_1409ee290(&m_30)->FUN_1409ba0d0("moveMenu", m_nPage, m_nItem);
 }
