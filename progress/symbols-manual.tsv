@@ -7873,3 +7873,5 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?WatchpointHash_FindIndex@AS2@GFx@Scaleform@@YA_JPEBV?$ASStringHash_GC@UWatchpoint@Object@AS2@GFx@Scaleform@@@23@AEBVASString@23@@Z	142917220	func
 ?WatchpointHash_FindIndexNoCase@AS2@GFx@Scaleform@@YA_JPEBV?$ASStringHash_GC@UWatchpoint@Object@AS2@GFx@Scaleform@@@23@AEBUASStringNoCaseKey@23@@Z	142916e60	func
 ??0CNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAA@AEBV?$SmartPointer@VGameObject@@@efd@@@Z	141bf3640	func
+?MemberHash_FindIndexNoCase@AS2@GFx@Scaleform@@YA_JPEBV?$ASStringHash_GC@VMember@AS2@GFx@Scaleform@@@23@AEBUASStringNoCaseKey@23@@Z	142917040	func
+?Object_NotsetVal@AS2@GFx@Scaleform@@3VValue@123@B	143a51b50	data
