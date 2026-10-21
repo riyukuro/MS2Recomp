@@ -7811,3 +7811,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?UnicodeAlphaBits@Scaleform@@3QBGB	143186050	data
 ?UnicodeDigitBits@Scaleform@@3QBGB	1431866f0	data
 ?UnicodeXDigitBits@Scaleform@@3QBGB	143186d30	data
+??$HitTestSingleStroke@V?$Matrix2x4@M@Render@Scaleform@@@Render@Scaleform@@YA_NAEBVShapeDataInterface@01@PEAUShapePosInfo@01@IAEBV?$Matrix2x4@M@01@MMPEAUStrokeGenerator@01@AEBUToleranceParams@01@@Z	1426299a0	func
