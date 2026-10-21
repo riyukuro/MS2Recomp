@@ -71,7 +71,7 @@ public:
 // The actor's +0xd00 action table lookup (returns an int; pcbase.h declares it void).
 class Unk_SiActor { public: int FUN_141679120(int n); };
 inline Unk_SiActor* AsActor(PCBase* p) { return reinterpret_cast<Unk_SiActor*>(p); }
-inline Unk_SiPC* AsPC(PCBase* p) { return reinterpret_cast<Unk_SiPC*>(p); }
+#define AsPC(p) reinterpret_cast<Unk_SiPC*>(p)
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
 void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
@@ -88,6 +88,8 @@ struct Unk_SiString
     operator const efd::utf8string&() const { return *(const efd::utf8string*)m_buf; }
     char m_buf[0x20];
 };
+// The exe passes the string's address directly (no conversion call).
+#define SI_STR(k) (*reinterpret_cast<const efd::utf8string*>(&(k)))
 
 // The animation service: the sequence id / actor manager of a model key.
 class Unk_SiAnimSvc
@@ -221,10 +223,9 @@ int StateIdle::vfunc_15()
 {
     if (m_n10 == 7)
         return 0;
-    else if (m_n10 == 6)
+    if (m_n10 == 6)
         return 0;
-    else
-        return 1;
+    return 1;
 }
 
 // @0x1417cd770
@@ -404,7 +405,7 @@ void StateIdle::vfunc_9(double fTime)
         if (m_pOwner->vfunc_65() != 0)
             m_pOwner->FUN_14166ce70(0);
         Unk_SiString kName("FittingDoll_Idle_A");
-        bool bPlayed = m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        bool bPlayed = m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
         if (bPlayed)
             m_pOwner->FUN_14166f8f0(0, 1);
         break;
@@ -412,7 +413,7 @@ void StateIdle::vfunc_9(double fTime)
     case 0xb:
     {
         Unk_SiString kName(m_pOwner->vfunc_123(0x1e));
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
         break;
     }
     case 0xc:
@@ -432,7 +433,7 @@ void StateIdle::vfunc_9(double fTime)
         if (m_pOwner->vfunc_65() != 0)
             m_pOwner->FUN_14166ce70(0);
         Unk_SiString kName("Emotion_MusicStart_A");
-        bool bPlayed = m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        bool bPlayed = m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
         if (bPlayed)
             m_pOwner->FUN_14166f8f0(0, 1);
         break;
@@ -440,31 +441,31 @@ void StateIdle::vfunc_9(double fTime)
     case 0x4b:
     {
         Unk_SiString kName("Equip_Change_Cap_A");
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
         break;
     }
     case 0x4d:
     {
         Unk_SiString kName("Equip_Change_Body_A");
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
         break;
     }
     case 0x50:
     {
         Unk_SiString kName("Equip_Change_Glove_A");
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
         break;
     }
     case 0x51:
     {
         Unk_SiString kName("Equip_Change_Mantle_A");
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
         break;
     }
     case 0x52:
     {
         Unk_SiString kName("Equip_Change_Shoes_A");
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
         break;
     }
     }
@@ -512,7 +513,8 @@ int StateIdle::vfunc_14()
 {
     if (m_n10 == 7)
         return 0;
-    return m_n14;
+    else
+        return m_n14;
 }
 
 // @0x1417ce630
@@ -527,8 +529,9 @@ int StateIdle::vfunc_16()
 // @0x1417ce680
 int StateIdle::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 {
-    bool bSame = p->m_nSub == m_n10;
-    return !bSame;
+    if (p->m_nSub != m_n10)
+        return 1;
+    return 0;
 }
 
 // @0x1417ce6f0
@@ -539,8 +542,10 @@ void StateIdle::FUN_1417ce6f0(unsigned nSeq)
         nKey = 1;
     if (!m_pOwner->FUN_14166de90(nKey, nSeq))
     {
-        Unk_SiString kName(m_pOwner->vfunc_123(nKey));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        {
+            Unk_SiString kName(m_pOwner->vfunc_123(nKey));
+            m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
+        }
         m_pOwner->FUN_14166f8f0(0, 1);
     }
 }
@@ -555,7 +560,7 @@ void StateIdle::FUN_1417ce820(unsigned nSeq)
         efd::utf8string kName = m_pOwner->FUN_141679170(0x27, nSub);
         if (!m_pOwner->FUN_141679220(kName.c_str()))
             kName = m_pOwner->FUN_141679170(0x27, 0);
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -581,7 +586,7 @@ void StateIdle::FUN_1417ce9f0(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x2e, nSeq))
     {
         Unk_SiString kName(m_pOwner->vfunc_123(0x2e));
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
     }
 }
 
@@ -603,11 +608,11 @@ void StateIdle::FUN_1417ceab0(unsigned nSeq)
         if (pPC != 0)
             AsPC(pPC)->FUN_14165e2a0(kName.m_buf, nKey);
     }
-    if (FUN_14096ad40(kName) && !m_pOwner->FUN_14166de90(nKey, nSeq))
+    if (FUN_14096ad40(SI_STR(kName)) && !m_pOwner->FUN_14166de90(nKey, nSeq))
         kName = m_pOwner->vfunc_123(nKey);
     bool bPlayed = false;
-    if (!FUN_14096ad40(kName))
-        bPlayed = m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+    if (!FUN_14096ad40(SI_STR(kName)))
+        bPlayed = m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     if (bPlayed)
         FUN_1417cf210();
     if (m_nSoundIdle == 0)
@@ -620,7 +625,7 @@ void StateIdle::FUN_1417ceca0(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x37, nSeq))
     {
         Unk_SiString kName(m_pOwner->vfunc_123(0x37));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -630,7 +635,7 @@ void StateIdle::FUN_1417ced70(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x36, nSeq))
     {
         Unk_SiString kName(m_pOwner->vfunc_123(0x36));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -647,7 +652,7 @@ void StateIdle::FUN_1417cee90(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x4a, nSeq))
     {
         Unk_SiString kName(m_pOwner->vfunc_123(0x4a));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -708,7 +713,7 @@ void StateIdle::FUN_1417cf260()
         Unk_EffectTarget kTarget;
         kTarget.m_strName = AsPC(pPC)->FUN_14165e010(0x30);
         kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
-        kTarget.FUN_140a53190(pPC->FUN_14123c580());
+        kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
         m_nSoundIdle = FUN_1403ed280()->FUN_1411a49c0(kTarget);
     }
 }
@@ -780,8 +785,7 @@ void StateIdleNPC::vfunc_4(StateData* pData)
     State::vfunc_4(pData);
     m_n10 = 1;
     Unk_GoModelKey kKey;
-    Unk_GoModelKey& rKey = m_pOwner->FUN_14123c460(kKey);
-    NiActorManager* pMgr = FUN_141b6f910()->FUN_140999440(rKey);
+    NiActorManager* pMgr = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460(kKey));
     if (pMgr != 0)
     {
         unsigned nSeq = FUN_1409a1a00(pMgr);
@@ -802,17 +806,15 @@ void StateIdleNPC::FUN_1417cf860(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(nKey, nSeq))
     {
         Unk_SiString kName(m_pOwner->vfunc_123(nKey));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
 // ---- StateIdlePet ----
 
 // @0x1417cf970
-StateIdlePet::StateIdlePet(PCBase* pOwner) : State(pOwner)
+StateIdlePet::StateIdlePet(PCBase* pOwner) : State(pOwner), m_nVoiced(0), m_nTired(0)
 {
-    m_nVoiced = 0;
-    m_nTired = 0;
 }
 
 // @0x1417cfa00
@@ -836,8 +838,12 @@ void StateIdlePet::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     PCBase* pNpc = FUN_1417b83a0();
-    if (pNpc != 0 && FUN_140b10360(pNpc) != 0)
-        FUN_140b11180(pNpc);
+    if (pNpc == 0)
+        return;
+    PCBase* pPet = FUN_140b10360(pNpc);
+    if (pPet == 0)
+        return;
+    FUN_140b11180(pNpc);
 }
 
 // @0x1417cfaf0
@@ -889,7 +895,7 @@ void StateIdlePet::vfunc_9(double fTime)
             else
             {
                 Unk_SiString kName("Tired_A");
-                m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+                m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
             }
         }
     }
@@ -900,7 +906,8 @@ void StateIdlePet::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
     float fEventTime)
 {
     PCBase* pNpc = FUN_1417b83a0();
-    if (pNpc != 0)
+    if (pNpc == 0)
+        return;
     {
         MS2Ptr<Unk_PCBaseComp_aa8> spComp = pNpc->vfunc_85();
         if (spComp.get() != 0)
@@ -912,17 +919,14 @@ void StateIdlePet::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
                 m_nVoiced = 0;
             }
         }
-        if (!m_pOwner->FUN_14166de90(0x27, eSequenceID))
-        {
-            if (m_pOwner->FUN_14166de90(0x44, eSequenceID))
-                m_n10 = 1;
-        }
-        else
+        if (m_pOwner->FUN_14166de90(0x27, eSequenceID))
         {
             m_n10 = 1;
             unsigned nSeq = FUN_1409a1a00(pkManager);
             FUN_1417cfea0(nSeq);
         }
+        else if (m_pOwner->FUN_14166de90(0x44, eSequenceID))
+            m_n10 = 1;
     }
 }
 
@@ -954,13 +958,13 @@ void StateIdlePet::FUN_1417cfea0(unsigned nSeq)
             if (!m_pOwner->FUN_14166de90(0, nSeq))
             {
                 Unk_SiString kName(m_pOwner->vfunc_123(0));
-                m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+                m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
             }
         }
         else
         {
             Unk_SiString kName(m_pOwner->vfunc_123(0x27));
-            m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+            m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
         }
     }
 }
@@ -971,7 +975,7 @@ void StateIdlePet::FUN_1417d0140(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x27, nSeq))
     {
         Unk_SiString kName(m_pOwner->vfunc_123(0x27));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     }
     FUN_1417d0540(0x5c);
 }
@@ -982,7 +986,7 @@ void StateIdlePet::FUN_1417d0210(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x42, nSeq))
     {
         Unk_SiString kName(m_pOwner->vfunc_123(0x42));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     }
     FUN_1417d0540(0x5d);
 }
@@ -993,7 +997,7 @@ void StateIdlePet::FUN_1417d02e0(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x43, nSeq))
     {
         Unk_SiString kName(m_pOwner->vfunc_123(0x43));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     }
     FUN_1417d0540(0x5e);
 }
@@ -1004,7 +1008,7 @@ void StateIdlePet::FUN_1417d03b0(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x44, nSeq))
     {
         Unk_SiString kName("Revive_A");
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     }
     FUN_1417d0540(0x60);
 }
@@ -1015,7 +1019,7 @@ void StateIdlePet::FUN_1417d0470(unsigned nSeq)
     if (!m_pOwner->FUN_14166de90(0x45, nSeq))
     {
         Unk_SiString kName(m_pOwner->vfunc_123(0x45));
-        m_pOwner->FUN_14166dd20(kName, m_pOwner->FUN_1416713c0(), false, false);
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     }
     FUN_1417d0540(0x61);
 }
@@ -1024,11 +1028,12 @@ void StateIdlePet::FUN_1417d0470(unsigned nSeq)
 void StateIdlePet::FUN_1417d0540(int nVoice)
 {
     PCBase* pNpc = FUN_1417b83a0();
-    if (pNpc != 0 && m_nVoiced == 0)
-    {
-        FUN_140b114e0(pNpc, nVoice);
-        m_nVoiced = 1;
-    }
+    if (pNpc == 0)
+        return;
+    if (m_nVoiced != 0)
+        return;
+    FUN_140b114e0(pNpc, nVoice);
+    m_nVoiced = 1;
 }
 
 // ---- StateJumpNpc ----
@@ -1042,12 +1047,11 @@ StateJumpNpc::StateJumpNpc(PCBase* pOwner) : State(pOwner)
 // @0x1417d0620
 void StateJumpNpc::vfunc_4(StateData* pData)
 {
-    if (m_pNpc != 0)
-    {
-        CString strAnim = m_pNpc->FUN_141093530();
-        Unk_SiString kName((const char*)strAnim);
-        m_pNpc->FUN_14166dd20(kName, 1.0f, false, false);
-    }
+    if (m_pNpc == 0)
+        return;
+    CString strAnim = m_pNpc->FUN_141093530();
+    Unk_SiString kName((const char*)strAnim);
+    m_pNpc->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
 }
 
 // @0x1417d08a0
@@ -1092,7 +1096,7 @@ void StateIdleFittingDoll::vfunc_4(StateData* pData)
     State::vfunc_4(pData);
     m_n10 = 1;
     Unk_SiString kName("EMPTY_SEQUENCE_AT_0f");
-    m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+    m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
 }
 
 // @0x1417d0890
