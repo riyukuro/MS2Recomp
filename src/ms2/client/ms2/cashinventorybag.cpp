@@ -441,9 +441,9 @@ int CCashMarketMan::FUN_140b06680(MS2Ptr<CCashSaleProduct> spSale)
     __int64 nNow = FUN_140869440();
     if (nNow < spSale->m_data.m_n60)
         return 0x6a;
-    if (nNow < spSale->m_data.m_n68)
-        return 0;
-    return 0x6a;
+    if (nNow >= spSale->m_data.m_n68)
+        return 0x6a;
+    return 0;
 }
 
 // @0x140b06750
@@ -564,7 +564,10 @@ void CCashMarketMan::FUN_140b06d70(CInPacket& packet)
     row.Read(packet);
     MS2Ptr<CMarketBuyLimitHistory> sp(0);
     Unk_LockGuard guard(m_lock);
-    if ((int)guard == 0)
+    if ((int)guard != 0)
+    {
+    }
+    else
     {
         m_mapLimit.Lookup(row.m_n2c, sp);
         if (sp == 0)
@@ -594,31 +597,17 @@ int CCashMarketMan::FUN_140b06ed0(int nProductId)
 // @0x140b06f90
 bool CCashMarketMan::FUN_140b06f90(MS2Ptr<Unk_CashLimitRowA> sp)
 {
-    if (!(sp == 0))
-    {
-        if (sp->FUN_1406a4370() != 0)
-        {
-            int nBought = FUN_140b06ed0(sp->FUN_1406a4640());
-            int nLimit = sp->m_nLimit;
-            return nLimit <= nBought;
-        }
-    }
-    return false;
+    if (sp == 0 || sp->FUN_1406a4370() == 0)
+        return false;
+    return FUN_140b06ed0(sp->FUN_1406a4640()) >= sp->m_nLimit;
 }
 
 // @0x140b07060
 bool CCashMarketMan::FUN_140b07060(MS2Ptr<Unk_CashLimitRowB> sp)
 {
-    if (!(sp == 0))
-    {
-        if (sp->FUN_1406a09c0() != 0)
-        {
-            int nBought = FUN_140b06ed0(sp->m_nProductId);
-            int nLimit = sp->m_nLimit;
-            return nLimit <= nBought;
-        }
-    }
-    return false;
+    if (sp == 0 || sp->FUN_1406a09c0() == 0)
+        return false;
+    return FUN_140b06ed0(sp->m_nProductId) >= sp->m_nLimit;
 }
 
 // @0x140b07120
@@ -942,7 +931,7 @@ void CCashMarketMan::FUN_140b08760(CInPacket& packet)
                 FUN_141035080(ref.FUN_140b051d0(), nPage);
         }
         m_nPage = nPage;
-        if (m_aInv.GetCount() != 0 && FUN_1401d5b00() == 1)
+        if (m_aInv.GetCount() > 0 && FUN_1401d5b00() == 1)
         {
             MS2Ptr<CCashInventoryProduct> spFirst = m_aInv[0];
             if (spFirst.get() != 0)
@@ -951,10 +940,14 @@ void CCashMarketMan::FUN_140b08760(CInPacket& packet)
     }
     else
     {
-        if (nCode == 0xff)
+        switch (nCode)
+        {
+        case 0xff:
             FUN_141275260(0xa8d, 1, 1);
-        else
+            break;
+        default:
             Unk_CashMessage(0xa8c, 1, 1, nCode);
+        }
     }
 }
 
@@ -1087,13 +1080,13 @@ int CashInventorySlot::vfunc_14()
 int CashInventorySlot::vfunc_0(void* p)
 {
     ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x20, 2);
-    int nOk = tip.FUN_1409e0d40(m_spItem.get());
-    if (nOk != 0)
+    if (tip.FUN_1409e0d40(m_spItem.get()))
     {
         tip.FUN_1409c65f0(FUN_14028de60(0xa5d));
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        return 1;
     }
-    return nOk != 0;
+    return 0;
 }
 
 // @0x140b0d1a0
@@ -1103,12 +1096,13 @@ int CashInventorySlot::vfunc_8(void* p)
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);
-    int nOk = slot.FUN_1409c3860(m_spItem.get(), pPlayer, 1);
-    if (nOk == 0)
-        return 0;
-    slot.FUN_1409c24f0(m_nType);
-    *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
-    return 1;
+    if (slot.FUN_1409c3860(m_spItem.get(), pPlayer, 1))
+    {
+        slot.FUN_1409c24f0(m_nType);
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        return 1;
+    }
+    return 0;
 }
 
 // @0x140b0d290
@@ -1118,9 +1112,9 @@ MS2Ptr<CItem> CashInventorySlot::vfunc_25()
     if (!spProd)
         return MS2Ptr<CItem>(0);
     MS2Ptr<CItem> spItem(new CItem);
-    if (spItem->FUN_140523c40(spProd->m_data.m_n28, spProd->m_data.m_n2c, 0))
-        return spItem;
-    return MS2Ptr<CItem>(0);
+    if (!spItem->FUN_140523c40(spProd->m_data.m_n28, spProd->m_data.m_n2c, 0))
+        return MS2Ptr<CItem>(0);
+    return spItem;
 }
 
 // @0x140b0d440
