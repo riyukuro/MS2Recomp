@@ -190,7 +190,7 @@ Unk_CommonCachedPacket::Unk_CommonCachedPacket(const Unk_CommonPacket& source,un
 Unk_CommonResendQueue::Unk_CommonResendQueue() : m_totalBytes(0),m_lastPacketSeq(0) {}
 // @0x14026e0e0
 void Unk_CommonResendQueue::Add(const Unk_CommonPacket& source,unsigned packetSeq) {
-    if(Unk_LockGuard guard=m_lock) {} else {
+    if(Unk_LockGuard guard=m_lock) { __assume(0); } else {
         Unk_CommonCachedPacket entry(source,packetSeq);
         m_packets.AddTail(entry); m_totalBytes+=source.FUN_14020b9f0();
         MS2_ASSERT_AT(0x902,m_lastPacketSeq == 0 || m_lastPacketSeq < packetSeq);
@@ -202,7 +202,7 @@ MS2_REPLACE_METHOD(0x14026E0E0, Unk_CommonResendQueue, Add, 227, 0xCF92E809);
 void Unk_CommonResendQueue::Prune(int targetBytes,int threshold) {
     if(m_totalBytes<=threshold) return;
     {
-        if(Unk_LockGuard guard=m_lock) {} else {
+        if(Unk_LockGuard guard=m_lock) { __assume(0); } else {
             while(m_totalBytes>targetBytes&&!m_packets.IsEmpty()) {
                 Unk_CommonCachedPacket entry=m_packets.RemoveHead();
                 m_totalBytes-=entry.packet->FUN_14020b9f0();
@@ -213,7 +213,7 @@ void Unk_CommonResendQueue::Prune(int targetBytes,int threshold) {
 MS2_REPLACE_METHOD(0x14026E1D0, Unk_CommonResendQueue, Prune, 207, 0x532A3B40);
 // @0x14026e2b0
 void Unk_CommonResendQueue::Acknowledge(unsigned sequence) {
-    if(Unk_LockGuard guard=m_lock) {} else {
+    if(Unk_LockGuard guard=m_lock) { __assume(0); } else {
         while(!m_packets.IsEmpty()) {
             Unk_CommonCachedPacket& entry=m_packets.GetHead();
             if(entry.sequence>sequence) break;
@@ -224,7 +224,7 @@ void Unk_CommonResendQueue::Acknowledge(unsigned sequence) {
 MS2_REPLACE_METHOD(0x14026E2B0, Unk_CommonResendQueue, Acknowledge, 197, 0x15D091BF);
 // @0x14026e380
 void Unk_CommonResendQueue::CopyAfter(ATL::CAtlArray<Unk_CommonCachedPacket>& output,unsigned sequence) {
-    if(Unk_LockGuard guard=m_lock) {} else {
+    if(Unk_LockGuard guard=m_lock) { __assume(0); } else {
         for(POSITION pos=m_packets.GetHeadPosition();pos;m_packets.GetNext(pos)) {
             const Unk_CommonCachedPacket& entry=m_packets.GetAt(pos);
             if(entry.sequence>sequence) output.Add(entry);
@@ -238,17 +238,16 @@ MS2_REPLACE_METHOD(0x14026E450, Unk_CommonResendQueue, LastSequence, 14, 0x9A8B2
 // @0x14026e470
 CClientHardwareInfo::CClientHardwareInfo() : m_hardware(L"") {}
 // @0x14026e4e0
-void CClientHardwareInfo::Write(COutputStream& out) { if(Unk_LockGuard guard=m_lock) {} else { out.vfunc_o10_8(m_hardware); } }
+void CClientHardwareInfo::Write(COutputStream& out) { if(Unk_LockGuard guard=m_lock) { __assume(0); } else { out.vfunc_o10_8(m_hardware); } }
 MS2_REPLACE_METHOD(0x14026E4E0, CClientHardwareInfo, Write, 116, 0x52C5054C);
 // @0x14026e560
-void CClientHardwareInfo::Read(CInputStream& in) { if(Unk_LockGuard guard=m_lock) {} else { m_hardware=in.vfunc_o8_8(); } }
+void CClientHardwareInfo::Read(CInputStream& in) { if(Unk_LockGuard guard=m_lock) { __assume(0); } else { m_hardware=in.vfunc_o8_8(); } }
 MS2_REPLACE_METHOD(0x14026E560, CClientHardwareInfo, Read, 149, 0xE2A7F101);
 // @0x14026e600
-// MS2-FUNCTIONAL: lock-guard fallback cleanup lacks the exe's final NOP; guard conversion always returns zero.
-CStringW CClientHardwareInfo::Get() { if(Unk_LockGuard guard=m_lock) {} else { return m_hardware; } }
+CStringW CClientHardwareInfo::Get() { if(Unk_LockGuard guard=m_lock) { __assume(0); } else { return m_hardware; } }
 MS2_REPLACE_METHOD(0x14026E600, CClientHardwareInfo, Get, 137, 0x8CE2105F);
 // @0x14026e690
-void CClientHardwareInfo::Set(const CStringW& value) { if(Unk_LockGuard guard=m_lock) {} else { m_hardware=value; } }
+void CClientHardwareInfo::Set(const CStringW& value) { if(Unk_LockGuard guard=m_lock) { __assume(0); } else { m_hardware=value; } }
 MS2_REPLACE_METHOD(0x14026E690, CClientHardwareInfo, Set, 101, 0x13760137);
 // @0x14027db40
 Unk_CommonPosition::Unk_CommonPosition(float a,float b,float c) : x(a),y(b),z(c) {}
