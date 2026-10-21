@@ -436,8 +436,7 @@ void PetComposePetEnchant::vfunc_3()
     __int64 nExp = FUN_140528b90(pet);
     unsigned short nPetClass = FUN_140528c20(pet);
     {
-        MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>(CString("m_submit"));
-        if (submit.get() != 0)
+        if (MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>(CString("m_submit")))
         {
             ATL::CAtlArray<IdCount> selected;
             m_pOwner->FUN_140cb4860(selected);
@@ -448,8 +447,7 @@ void PetComposePetEnchant::vfunc_3()
                 submit->FUN_1422c1fe0(0);
         }
     }
-    MS2Ptr<ASUIComponent> bar = ench->FUN_140accfb0<ASUIComponent>(CString("m_expBar"));
-    if (bar.get() != 0)
+    if (MS2Ptr<ASUIComponent> bar = ench->FUN_140accfb0<ASUIComponent>(CString("m_expBar")))
     {
         m_pOwner->FUN_140cb5300(&nPetClass, &nExp);
         unsigned nClass = nPetClass;
@@ -656,13 +654,12 @@ TabContentsPetCompose::TabContentsPetCompose()
 // @0x140cb4050
 void TabContentsPetCompose::vfunc_1()
 {
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetComposeBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_1();
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        ((PetComposeBase*)p)->vfunc_1();
     }
     m_ui = 0;
     m_nGainBase = 0;
@@ -679,13 +676,12 @@ void TabContentsPetCompose::vfunc_4()
     m_candidates.RemoveAll();
     m_pool.RemoveAll();
     m_selected.RemoveAll();
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetComposeBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_2();
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        ((PetComposeBase*)p)->vfunc_2();
     }
 }
 
@@ -694,28 +690,26 @@ void TabContentsPetCompose::vfunc_2(int nTab)
 {
     if (m_ui == 0)
         return;
-    if (0 < nTab)
+    switch (nTab)
     {
-        if (nTab < 3)
-        {
-            FUN_140cb5600();
-            FUN_140cb5970();
-            FUN_140cb5bd0();
-        }
-        else if (nTab == 0xc)
-        {
-            FUN_140cb5600();
-            FUN_140cb5970();
-            FUN_140cb5bd0();
-        }
+    case 1:
+    case 2:
+        FUN_140cb5600();
+        FUN_140cb5970();
+        FUN_140cb5bd0();
+        break;
+    case 0xc:
+        FUN_140cb5600();
+        FUN_140cb5970();
+        FUN_140cb5bd0();
+        break;
     }
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetComposeBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_5(nTab);
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        ((PetComposeBase*)p)->vfunc_5(nTab);
     }
 }
 
@@ -726,17 +720,14 @@ void TabContentsPetCompose::vfunc_3(MS2Ptr<ASUIComponent> ui)
     FUN_140cb5600();
     FUN_140cb5970();
     FUN_140cb5bd0();
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetComposeBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-        {
-            p->FUN_140cb8490(ui);
-            p->vfunc_4();
-            p->vfunc_3();
-        }
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        ((PetComposeBase*)p)->FUN_140cb8490(ui);
+        ((PetComposeBase*)p)->vfunc_4();
+        ((PetComposeBase*)p)->vfunc_3();
     }
 }
 
@@ -932,40 +923,39 @@ void TabContentsPetCompose::FUN_140cb5300(unsigned short* pClass, __int64* pExp)
     __int64 nExp = FUN_140528b90(pet);
     int nRank = pet->FUN_140526bd0();
     unsigned nClass2 = nClass;
-    if (nClass2 < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
+    if (!(nClass2 < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass)))
+        return;
+    __int64 nBase = 0;
+    __int64 nBonus = 0;
+    FUN_140cb4ed0(&nBase, &nBonus);
+    __int64 nGain = nBase + nBonus;
+    if (nGain < 0 && nExp <= _abs64(nGain))
+        nExp = 0;
+    else
+        nExp = nExp + nGain;
+    unsigned short nItemClass = FUN_1405282d0(pet);
+    __int64 nNeed = FUN_1404a1bb0()->FUN_140353930(nClass, nRank, nItemClass);
+    unsigned short nUp = 0;
+    while (nNeed <= nExp)
     {
-        __int64 nBase = 0;
-        __int64 nBonus = 0;
-        FUN_140cb4ed0(&nBase, &nBonus);
-        __int64 nGain = nBase + nBonus;
-        if (nGain < 0 && nExp <= _abs64(nGain))
-            nExp = 0;
-        else
-            nExp = nExp + nGain;
-        unsigned short nItemClass = FUN_1405282d0(pet);
-        __int64 nNeed = FUN_1404a1bb0()->FUN_140353930(nClass, nRank, nItemClass);
-        unsigned short nUp = 0;
-        while (nNeed <= nExp)
-        {
-            nExp = nExp - nNeed;
-            nUp = nUp + 1;
-            nItemClass = FUN_1405282d0(pet);
-            unsigned nNext = (unsigned)nClass + (unsigned)nUp;
-            nNeed = FUN_1404a1bb0()->FUN_140353930(nNext & 0xffff, nRank, nItemClass);
-        }
-        if (nUp != 0)
-        {
-            nClass = nClass + nUp;
-            unsigned nClass3 = nClass;
-            if (*FUN_1401d7c10(&FUN_1401d3200()->m_petClass) <= nClass3)
-            {
-                nClass = (unsigned short)*FUN_1401d7c10(&FUN_1401d3200()->m_petClass);
-                nExp = 0;
-            }
-        }
-        *pExp = nExp;
-        *pClass = nClass;
+        nExp = nExp - nNeed;
+        nUp = nUp + 1;
+        nItemClass = FUN_1405282d0(pet);
+        unsigned nNext = (unsigned)nClass + (unsigned)nUp;
+        nNeed = FUN_1404a1bb0()->FUN_140353930(nNext & 0xffff, nRank, nItemClass);
     }
+    if (nUp != 0)
+    {
+        nClass = nClass + nUp;
+        unsigned nClass3 = nClass;
+        if (*FUN_1401d7c10(&FUN_1401d3200()->m_petClass) <= nClass3)
+        {
+            nClass = (unsigned short)*FUN_1401d7c10(&FUN_1401d3200()->m_petClass);
+            nExp = 0;
+        }
+    }
+    *pExp = nExp;
+    *pClass = nClass;
 }
 
 // @0x140cb5600
@@ -1019,21 +1009,24 @@ void TabContentsPetCompose::FUN_140cb5970()
     for (unsigned i = 0; i < m_petCards.GetCount(); i++)
     {
         unsigned __int64 id = m_petCards[i];
-        if (FUN_140535320()->FUN_140c8b2e0() != id && m_uidPet != id)
-            m_pool.Add(FUN_140cb65d0(id));
+        if (FUN_140535320()->FUN_140c8b2e0() == id)
+            continue;
+        if (m_uidPet == id)
+            continue;
+        m_pool.Add(FUN_140cb65d0(id));
     }
     for (unsigned i = 0; i < m_candidates.GetCount(); i++)
     {
         unsigned __int64 id = m_candidates[i];
-        if (FUN_140535320()->FUN_140c8b2e0() != id && m_uidPet != id)
-        {
-            ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
-            if (!(item == 0))
-            {
-                int nCount = FUN_140cb6450(id);
-                m_pool.Add(FUN_140cb6610(id, nCount));
-            }
-        }
+        if (FUN_140535320()->FUN_140c8b2e0() == id)
+            continue;
+        if (m_uidPet == id)
+            continue;
+        ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
+        if (item == 0)
+            continue;
+        int nCount = FUN_140cb6450(id);
+        m_pool.Add(FUN_140cb6610(id, nCount));
     }
 }
 
@@ -1046,60 +1039,56 @@ void TabContentsPetCompose::FUN_140cb5bd0()
 // @0x140cb5c00
 void TabContentsPetCompose::FUN_140cb5c00(int nIndex)
 {
-    if (-1 < nIndex && nIndex < (int)m_petCards.GetCount())
-    {
-        m_uidPet = m_petCards[nIndex];
-        FUN_140cb5970();
-        FUN_140cb5bd0();
-        vfunc_2(10);
-    }
+    if (!(-1 < nIndex && nIndex < (int)m_petCards.GetCount()))
+        return;
+    m_uidPet = m_petCards[nIndex];
+    FUN_140cb5970();
+    FUN_140cb5bd0();
+    vfunc_2(10);
 }
 
 // @0x140cb5c90
 void TabContentsPetCompose::FUN_140cb5c90(int nIndex)
 {
-    if (-1 < nIndex && nIndex < (int)m_pool.GetCount())
+    if (!(-1 < nIndex && nIndex < (int)m_pool.GetCount()))
+        return;
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
+    if (pet == 0)
+        return;
+    __int64 nExp = FUN_140528b90(pet);
+    unsigned short nPetClass = FUN_140528c20(pet);
+    FUN_140cb5300(&nPetClass, &nExp);
+    unsigned __int64 id = m_pool[nIndex].first;
+    ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
+    if (item == 0)
+        return;
+    __int64 nPrice = FUN_140528e00(item);
+    if (FUN_140528c60(item) != 0)
     {
-        ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
-        if (!(pet == 0))
+        FUN_1412752d0(CStringW(L"s_err_cannot_compose_petitem_hasitem"), 1);
+    }
+    else if (FUN_140528ca0(item) == 0 && FUN_140869440() < nPrice)
+    {
+        FUN_1412752d0(CStringW(L"s_itemlock_invalid_petcompose"), 1);
+    }
+    else if (FUN_140528ca0(item) == 1)
+    {
+        FUN_1412752d0(CStringW(L"s_itemlock_invalid_petcompose"), 1);
+    }
+    else
+    {
+        unsigned nClass = nPetClass;
+        if (nClass < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
         {
-            __int64 nExp = FUN_140528b90(pet);
-            unsigned short nPetClass = FUN_140528c20(pet);
-            FUN_140cb5300(&nPetClass, &nExp);
-            unsigned __int64 id = m_pool[nIndex].first;
-            ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
-            if (!(item == 0))
-            {
-                __int64 nPrice = FUN_140528e00(item);
-                if (FUN_140528c60(item) != 0)
-                {
-                    FUN_1412752d0(CStringW(L"s_err_cannot_compose_petitem_hasitem"), 1);
-                }
-                else if (FUN_140528ca0(item) == 0 && FUN_140869440() < nPrice)
-                {
-                    FUN_1412752d0(CStringW(L"s_itemlock_invalid_petcompose"), 1);
-                }
-                else if (FUN_140528ca0(item) == 1)
-                {
-                    FUN_1412752d0(CStringW(L"s_itemlock_invalid_petcompose"), 1);
-                }
-                else
-                {
-                    unsigned nClass = nPetClass;
-                    if (nClass < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
-                    {
-                        unsigned nMax = 0xc;
-                        if (11 < m_selected.GetCount())
-                            return;
-                        if (FUN_140cb62e0(id) != 0)
-                            vfunc_2(0xb);
-                    }
-                    else
-                    {
-                        FUN_1412752d0(CStringW(L"s_pet_not_enchant"), 1);
-                    }
-                }
-            }
+            unsigned nMax = 0xc;
+            if (11 < m_selected.GetCount())
+                return;
+            if (FUN_140cb62e0(id) != 0)
+                vfunc_2(0xb);
+        }
+        else
+        {
+            FUN_1412752d0(CStringW(L"s_pet_not_enchant"), 1);
         }
     }
 }
@@ -1107,15 +1096,13 @@ void TabContentsPetCompose::FUN_140cb5c90(int nIndex)
 // @0x140cb5fd0
 void TabContentsPetCompose::FUN_140cb5fd0(int nIndex)
 {
-    if (-1 < nIndex && nIndex < (int)m_selected.GetCount())
-    {
-        ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
-        if (!(pet == 0))
-        {
-            FUN_140cb6180(nIndex);
-            vfunc_2(0xb);
-        }
-    }
+    if (!(-1 < nIndex && nIndex < (int)m_selected.GetCount()))
+        return;
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
+    if (pet == 0)
+        return;
+    FUN_140cb6180(nIndex);
+    vfunc_2(0xb);
 }
 
 // @0x140cb6080
@@ -1148,20 +1135,23 @@ int TabContentsPetCompose::FUN_140cb6180(int nIndex)
 {
     const unsigned __int64 id = FUN_140cb6100(m_selected, nIndex);
     ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
-    if (item.get() == 0)
-        return 0;
-    m_selected.RemoveAt(nIndex, 1);
-    int nPos = FUN_140cb6080(m_pool, id);
-    if (nPos < 0)
+    if (item.get() != 0)
     {
-        int nOne = 1;
-        m_pool.Add(IdCount(id, nOne));
+        m_selected.RemoveAt(nIndex, 1);
+        int nPos = FUN_140cb6080(m_pool, id);
+        if (nPos > -1)
+        {
+            IdCount& e = m_pool[nPos];
+            e.second++;
+        }
+        else
+        {
+            int nOne = 1;
+            m_pool.Add(IdCount(id, nOne));
+        }
+        return 1;
     }
-    else
-    {
-        m_pool[nPos].second++;
-    }
-    return 1;
+    return 0;
 }
 
 // @0x140cb62e0
@@ -1170,39 +1160,41 @@ int TabContentsPetCompose::FUN_140cb62e0(unsigned __int64 id)
     int nPos = FUN_140cb6080(m_pool, id);
     if (nPos < 0)
         return 0;
-    if (FUN_140cb6450(id) == 0)
+    unsigned nAvail = FUN_140cb6450(id);
+    if (nAvail < 1)
         return 0;
     IdCount& entry = m_pool[nPos];
-    entry.second--;
-    if (entry.second == 0)
+    int& nCount = entry.second;
+    nCount--;
+    if (nCount == 0)
         m_pool.RemoveAt(nPos, 1);
     ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
-    if (item.get() == 0)
-        return 0;
-    m_selected.Add(FUN_140cb65d0(id));
-    return 1;
+    if (item.get())
+    {
+        m_selected.Add(FUN_140cb65d0(id));
+        return 1;
+    }
+    return 0;
 }
 
 // @0x140cb6450
 int TabContentsPetCompose::FUN_140cb6450(unsigned __int64 id)
 {
     ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
-    if (!(item == 0))
-    {
-        unsigned nHave = DAT_143ab2a90.FUN_140a5f060(item->FUN_140526a50());
-        if (nHave == 0)
-            return 0;
-        int nUsed = 0;
-        for (unsigned i = 0; i < m_selected.GetCount(); i++)
-        {
-            IdCount& e = m_selected[i];
-            if (e.first == id)
-                nUsed += e.second;
-        }
-        if (nUsed < (int)nHave)
-            return nHave - nUsed;
+    if (item == 0)
         return 0;
+    unsigned nHave = DAT_143ab2a90.FUN_140a5f060(item->FUN_140526a50());
+    if (nHave == 0)
+        return 0;
+    int nUsed = 0;
+    for (unsigned i = 0; i < m_selected.GetCount(); i++)
+    {
+        IdCount& e = m_selected[i];
+        if (e.first == id)
+            nUsed += e.second;
     }
+    if (nHave > (unsigned)nUsed)
+        return nHave - nUsed;
     return 0;
 }
 
