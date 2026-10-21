@@ -1,0 +1,3 @@
+[submodule "src/ms2/scaleform"]
+	path = src/ms2/scaleform
+	url = https://github.com/riyukuro/GFx418-Recomp.git
