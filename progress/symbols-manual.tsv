@@ -4203,3 +4203,4 @@ luaopen_Entity	1422416d0	func
 ??0cPhysXTriangleMeshWrapper@@QEAA@AEBVNxTriangleMeshShape@@AEBVcCoordinateMapping@@M@Z	14164c5a0	func
 __imp_NxGetCookingLib	142cced30	data
 ?build@cBlockConnections@@QEAAXPEAViMesh@@@Z	14163bc10	func
+?GetPetExp@CExpTable@@QEAA_JGHG@Z	140353930	func
