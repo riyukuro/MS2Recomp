@@ -6182,3 +6182,15 @@ png_write_info	14270f2a0	func
 ?yvalueGet@GamePadAnalogEvent@fl_gfx@Instances@AS3@GFx@Scaleform@@QEAAXAEAN@Z	1424cca20	func
 ?yvalueSet@GamePadAnalogEvent@fl_gfx@Instances@AS3@GFx@Scaleform@@QEAAXAEBVValue@456@N@Z	1424cca30	func
 ?ToUpper@String@Scaleform@@QEBA?AV12@XZ	142587e00	func
+??0JpegErrorHandler@JPEG@Render@Scaleform@@QEAA@XZ	14264d350	func
+??1JpegErrorHandler@JPEG@Render@Scaleform@@QEAA@XZ	14264d390	func
+?SetupJpegErr@JPEG@Render@Scaleform@@YAPEAUjpeg_error_mgr@@PEAUJpegErrorHandler@123@@Z	14264d400	func
+jpeg_CreateDecompress	1426f4460	func
+jpeg_abort_decompress	1426f4590	func
+jpeg_destroy_decompress	1426f4690	func
+jpeg_finish_decompress	1426f46a0	func
+jpeg_read_coefficients	1426f4da0	func
+jpeg_read_header	1426f4810	func
+jpeg_read_scanlines	1426f4a40	func
+jpeg_resync_to_restart	1426f6440	func
+jpeg_start_decompress	1426f4b10	func
