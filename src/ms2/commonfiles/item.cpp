@@ -1175,44 +1175,40 @@ int CItem::FUN_1405279f0()
 }
 MS2_REPLACE_METHOD(0x1405279F0, CItem, FUN_1405279f0, 40, 0x27EECBC7);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140526160
 int CItem::FUN_140526160()
 {
     if ((unsigned)m_dc > 0)
         return 1;
-    return 0;
+    else
+        return 0;
 }
 MS2_REPLACE_METHOD(0x140526160, CItem, FUN_140526160, 29, 0x4E475867);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140526c70
 void CItem::FUN_140526c70(int nCount)
 {
-    unsigned n = nCount;
-    m_6c = n < FUN_1405281e0() ? n : FUN_1405281e0();
+    m_6c = (unsigned)nCount < FUN_1405281e0() ? nCount : FUN_1405281e0();
 }
 MS2_REPLACE_METHOD(0x140526C70, CItem, FUN_140526c70, 70, 0x1DBDC687);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140526cc0
 unsigned CItem::FUN_140526cc0(int nAdd)
 {
     m_6c = m_6c + nAdd;
-    FUN_140526c70(m_6c);
+    FUN_140526c70((unsigned)m_6c < 0 ? 0 : m_6c);
     return m_6c;
 }
 MS2_REPLACE_METHOD(0x140526CC0, CItem, FUN_140526cc0, 93, 0x92394BB5);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140526d30
 int CItem::FUN_140526d30()
 {
     if (FUN_1405277b0()->FUN_14053cd10())
         return 0x17;
-    if (FUN_140525640() == 0)
-        return 0;
-    return 0x18;
+    if (FUN_140525640() != 0)
+        return 0x18;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140526D30, CItem, FUN_140526d30, 69, 0x30D36CF3);
 
@@ -1234,12 +1230,11 @@ unsigned CItem::FUN_140527530()
 }
 MS2_REPLACE_METHOD(0x140527530, CItem, FUN_140527530, 71, 0xB0CECF7D);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140527580
 int CItem::FUN_140527580()
 {
     unsigned n;
-    if (FUN_1405274e0() - FUN_140527440() < 0)
+    if ((int)(FUN_1405274e0() - FUN_140527440()) < 0)
         n = 0;
     else
         n = FUN_1405274e0() - FUN_140527440();
@@ -1247,11 +1242,10 @@ int CItem::FUN_140527580()
 }
 MS2_REPLACE_METHOD(0x140527580, CItem, FUN_140527580, 100, 0xDED28C8F);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140527640
 __int64 CItem::FUN_140527640()
 {
-    return FUN_140527670() * (unsigned __int64)m_6c;
+    return FUN_140527670() * (unsigned)m_6c;
 }
 MS2_REPLACE_METHOD(0x140527640, CItem, FUN_140527640, 36, 0x1268982F);
 
@@ -1271,33 +1265,30 @@ int CItem::FUN_1405276c0()
 }
 MS2_REPLACE_METHOD(0x1405276C0, CItem, FUN_1405276c0, 69, 0x027BAB5E);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140527710
 unsigned CItem::FUN_140527710()
 {
-    if (m_spData.get() == 0)
-        return 0;
-    return m_spData->limit.levelLimit;
+    if (m_spData.get() != 0)
+        return m_spData->limit.levelLimit;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140527710, CItem, FUN_140527710, 67, 0x198C6BCE);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140527760
 int CItem::FUN_140527760()
 {
-    if (m_spData.get() == 0)
-        return 0;
-    return m_spData->FUN_14053c600();
+    if (m_spData.get() != 0)
+        return m_spData->FUN_14053c600();
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140527760, CItem, FUN_140527760, 69, 0xAC97522B);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x1405277e0
 bool CItem::FUN_1405277e0(int n)
 {
-    if (m_spData.get() == 0)
-        return false;
-    return m_spData->FUN_14053c6b0(n);
+    if (m_spData.get() != 0)
+        return m_spData->FUN_14053c6b0(n);
+    return false;
 }
 MS2_REPLACE_METHOD(0x1405277E0, CItem, FUN_1405277e0, 77, 0x4F881743);
 
@@ -1326,14 +1317,13 @@ unsigned short CItem::FUN_1405282d0()
 }
 MS2_REPLACE_METHOD(0x1405282D0, CItem, FUN_1405282d0, 40, 0x5F468EB9);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140528930
 bool CItem::FUN_140528930()
 {
     __int64 nNow = FUN_140869440();
-    if (m_80 < 1 || nNow < m_80)
-        return false;
-    return true;
+    if (m_80 > 0 && m_80 <= nNow)
+        return true;
+    return false;
 }
 MS2_REPLACE_METHOD(0x140528930, CItem, FUN_140528930, 64, 0x2211389E);
 
@@ -1716,7 +1706,6 @@ const CStringW& CItemTransfer::CItemBinding::FUN_14052d1b0()
     return m_str20;
 }
 
-// MS2-FUNCTIONAL: switch temporaries/slot layout differ from the exe (jump table and behaviour identical)
 // @0x140528cc0
 bool CItem::FUN_140528cc0()
 {
@@ -1729,16 +1718,15 @@ bool CItem::FUN_140528cc0()
     if (FUN_140525e00() == 1)
         return false;
     int nType = FUN_140527840()->FUN_14053c5c0();
-    unsigned nIdx = nType - 1;
-    switch (nIdx)
+    switch (nType)
     {
-    case 0:
-    case 4:
-    case 8:
-    case 10:
+    case 1:
+    case 5:
+    case 9:
     case 11:
     case 12:
-    case 20:
+    case 13:
+    case 21:
         return true;
     }
     return false;
