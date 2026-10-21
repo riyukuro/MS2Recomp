@@ -7848,3 +7848,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?GetFailedText@CGuideEntity@@QEAAXAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@_NI@Z	1413a2f30	func
 ?MoveStartedConditions@CGuideEntity@@QEAAXXZ	1413a3720	func
 ??0FontHandle@GFx@Scaleform@@QEAA@PEAVFontManagerBase@Text@Render@2@PEAVFont@52@PEBDIPEAVMovieDef@12@@Z	1425b5800	func
+??0Unk_PonyHandle@@QEAA@PEAX@Z	141065070	func
