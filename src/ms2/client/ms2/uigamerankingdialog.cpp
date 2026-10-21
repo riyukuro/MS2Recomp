@@ -335,7 +335,9 @@ CString UIGameRankingDialog::vfunc_1()
 // @0x140e2cf10
 int UIGameRankingDialog::vfunc_65()
 {
-    return UIDialog::vfunc_65() != 0;
+    if (UIDialog::vfunc_65() == 0)
+        return 0;
+    return 1;
 }
 
 // @0x140e2cf40
@@ -504,10 +506,12 @@ void UIGameRankingDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
 // @0x140e2dd00
 int UIGameRankingDialog::vfunc_73()
 {
-    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x32) == 0)
-        return UIDialog::vfunc_73();
-    FUN_141275260(0x2f7, 1, 1);
-    return 0;
+    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x32) != 0)
+    {
+        FUN_141275260(0x2f7, 1, 1);
+        return 0;
+    }
+    return UIDialog::vfunc_73();
 }
 
 // @0x140e2dd60
@@ -1033,32 +1037,22 @@ int UIGameRankingDialog::FUN_140e32c30(int nCategoryId)
 // @0x140e32d30
 void UIGameRankingDialog::FUN_140e32d30(ATL::CAtlList<Unk_RankCatPtr>& list)
 {
-    POSITION pos = m_categories.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_categories.GetHeadPosition(); pos != 0; m_categories.GetNext(pos))
     {
-        Unk_RankCatPtr spCat(m_categories.GetAt(pos));
-        if (spCat)
-        {
-            if (spCat->m_nParent == 0)
-                list.AddTail(spCat);
-        }
-        m_categories.GetNext(pos);
+        Unk_RankCatPtr spCat(static_cast<const Unk_RankCatPtr&>(m_categories.GetAt(pos)));
+        if (spCat != 0 && spCat->m_nParent == 0)
+            list.AddTail(spCat);
     }
 }
 
 // @0x140e32df0
 void UIGameRankingDialog::FUN_140e32df0(ATL::CAtlList<Unk_RankCatPtr>& list)
 {
-    POSITION pos = m_categories.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_categories.GetHeadPosition(); pos != 0; m_categories.GetNext(pos))
     {
-        Unk_RankCatPtr spCat(m_categories.GetAt(pos));
-        if (spCat)
-        {
-            if (spCat->m_nParent != 0)
-                list.AddTail(spCat);
-        }
-        m_categories.GetNext(pos);
+        Unk_RankCatPtr spCat(static_cast<const Unk_RankCatPtr&>(m_categories.GetAt(pos)));
+        if (spCat != 0 && spCat->m_nParent != 0)
+            list.AddTail(spCat);
     }
 }
 
@@ -1066,7 +1060,7 @@ void UIGameRankingDialog::FUN_140e32df0(ATL::CAtlList<Unk_RankCatPtr>& list)
 void UIGameRankingDialog::FUN_140e32eb0()
 {
     m_rows.RemoveAll();
-    if (!(m_items.get()))
+    if (m_items == 0)
         return;
     m_items->FUN_1422dd1d0();
     m_items->FUN_1422dcca0(-1);
@@ -1202,7 +1196,7 @@ void UIGameRankingDialog::FUN_140e33e20()
         POSITION pos = m_categories.GetHeadPosition();
         while (pos != 0)
         {
-            Unk_RankCatPtr spCat(m_categories.GetAt(pos));
+            Unk_RankCatPtr spCat(static_cast<const Unk_RankCatPtr&>(m_categories.GetAt(pos)));
             if (spCat && spCat->m_nId == m_nCategory)
             {
                 spList->FUN_1422dcca0(nIndex);
@@ -1412,7 +1406,7 @@ Unk_RankCatPtr UIGameRankingDialog::FUN_140e350c0(int nCategoryId)
 {
     for (POSITION pos = m_categories.GetHeadPosition(); pos != 0; m_categories.GetNext(pos))
     {
-        Unk_RankCatPtr spCat(m_categories.GetAt(pos));
+        Unk_RankCatPtr spCat(static_cast<const Unk_RankCatPtr&>(m_categories.GetAt(pos)));
         if (spCat)
         {
             if (spCat->m_nId == nCategoryId)
@@ -1453,13 +1447,11 @@ void UIGameRankingDialog::FUN_140e35350(int nCategoryId, Unk_RankKey* pKey)
 // @0x140e354d0
 int UIGameRankingDialog::FUN_140e354d0(int nType, int nSub)
 {
-    POSITION pos = m_categories.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_categories.GetHeadPosition(); pos != 0; m_categories.GetNext(pos))
     {
-        Unk_RankCatPtr spCat(m_categories.GetAt(pos));
-        if (spCat && spCat->m_nType == nType && spCat->m_nSub == nSub)
+        Unk_RankCatPtr spCat(static_cast<const Unk_RankCatPtr&>(m_categories.GetAt(pos)));
+        if (spCat != 0 && spCat->m_nType == nType && spCat->m_nSub == nSub)
             return spCat->m_nId;
-        m_categories.GetNext(pos);
     }
     return 0;
 }
