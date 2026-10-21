@@ -146,22 +146,22 @@ public:
     Unk_ScRequest(const void* pSource);                             // 0x1401baaa0
     ~Unk_ScRequest();                                               // 0x1401baaf0
     void FUN_1401bac80(CString strName, CStringW strValue, int n);
-    void FUN_1401badc0(int bEnabled);
-    char FUN_1401bab90(CString strName, void* pOut);
+    void FUN_1401badc0(bool bEnabled);
+    unsigned char FUN_1401bab90(CString strName, void* pOut);
 private:
-    char m_pad[0x38];
+    void* m_pad[5];                                                 // ctor 0x1401baa00 writes +0x18 / +0x1c / +0x20
 };
 struct Unk_ScReqValue
 {
     Unk_ScReqValue();                                               // 0x1401ba840
     ~Unk_ScReqValue();                                              // 0x1401ba940
-    char m_pad_00[8];
+    void* m_pad_00;
     CStringW m_strText;                                             // +0x08
-    char m_pad_10[8];
+    void* m_pad_10;
     int m_code;                                                     // +0x18
-    char m_pad_1c[0x1c];
+    int m_pad_1c;
 };
-MS2_CHECK_SIZE(Unk_ScReqValue, 0x38);
+MS2_CHECK_SIZE(Unk_ScReqValue, 0x20);                               // ctor 0x1401ba840: strings at +0 / +8 / +0x10
 
 IClientPlatform* FUN_140d86260();
 CStringW FUN_1409eec40(int nStringId);
@@ -244,7 +244,6 @@ void UISkillCompactControlDialog::vfunc_67()
     m_bLoaded = 0;
 }
 
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140f9e430
 int UISkillCompactControlDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
@@ -254,12 +253,14 @@ int UISkillCompactControlDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         FUN_14151f200();
         if (nResult == 0)
         {
-            FUN_140fa23f0(m_cur.m_nKey, FUN_140fa2520(CStringW(m_cur.m_strTab)));
+            __int64 nId = FUN_140fa2520(CStringW(m_cur.m_strTab));
+            FUN_140fa23f0(m_cur.m_nKey, nId);
             FUN_140fa2180(CStringW(m_cur.m_strTab));
         }
         else
         {
-            FUN_140fa23f0(m_prev.m_nKey, FUN_140fa2520(CStringW(m_prev.m_strTab)));
+            __int64 nId = FUN_140fa2520(CStringW(m_prev.m_strTab));
+            FUN_140fa23f0(m_prev.m_nKey, nId);
             FUN_140fa2180(CStringW(m_cur.m_strTab));
         }
         m_cur.Clear();
@@ -552,21 +553,22 @@ int UISkillCompactControlDialog::vfunc_48()
 }
 
 // The tooltip of a skill row.
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140f9fdb0
 void UISkillCompactControlDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    CString strName = pArgs->FUN_1422b8d30();
+    if (strName.Find("compactSkill", 0) != -1)
     {
-        CString strName = pArgs->FUN_1422b8d30();
-        if (strName.Find("compactSkill", 0) != -1)
+        int nSkillId = pArgs->FUN_1422b8a10();
+        ASTooltip tip(pPlayer, 0x10, 2);
+        if (FUN_1409e1b80(&tip, nSkillId, 0) != 0)
         {
-            int nSkillId = pArgs->FUN_1422b8a10();
-            ASTooltip tip(pPlayer, 0x10, 2);
-            if (FUN_1409e1b80(&tip, nSkillId, 0) != 0)
-                FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+            FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
+            return;
         }
     }
 }
@@ -615,7 +617,6 @@ void UISkillCompactControlDialog::vfunc_79(void* pPacket)
 }
 
 // The platform answers of the web side tab requests.
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa0420
 void UISkillCompactControlDialog::vfunc_80(void* pRequest)
 {
@@ -652,7 +653,6 @@ void UISkillCompactControlDialog::OnLoadComplete()
 }
 
 // The answer of the rename box: the new name travels to the platform first.
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa0820
 bool UISkillCompactControlDialog::FUN_140fa0820(int nResult, const CMsgBoxData& data)
 {
@@ -671,7 +671,6 @@ bool UISkillCompactControlDialog::FUN_140fa0820(int nResult, const CMsgBoxData& 
     return 1;
 }
 
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa0a20
 bool UISkillCompactControlDialog::FUN_140fa0a20(CStringW strName)
 {
@@ -691,19 +690,18 @@ bool UISkillCompactControlDialog::FUN_140fa0a20(CStringW strName)
         return 0;
     spConfig->m_strName = strName;
     if (m_30.get() != 0)
-        m_30->Invoke("renameTab", CStringW(strName), CStringW(m_strRename));
+        m_30->Invoke("renameTab", CStringW(m_strRename), CStringW(strName));
     FUN_140fa16f0(CStringW(strName));
     return 1;
 }
 
 // The answer of the add tab box.
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa0d80
 bool UISkillCompactControlDialog::FUN_140fa0d80(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
-        if (m_lstConfig.GetCount() > 2)
+        if (m_lstConfig.GetCount() >= 3)
             return 0;
         CStringW strText = data.FUN_141a02d50();
         strText = strText.Mid(strText.Find(L',', 0) + 1);
@@ -718,39 +716,38 @@ bool UISkillCompactControlDialog::FUN_140fa0d80(int nResult, const CMsgBoxData& 
     return 1;
 }
 
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa0fa0
 bool UISkillCompactControlDialog::FUN_140fa0fa0(CStringW strName)
 {
     if (strName.IsEmpty())
         return 0;
-    MS2Ptr<CSkillCompactControlConfig> spConfig = FUN_140fa28b0(CStringW(strName));
-    if (spConfig.get() == 0)
     {
-        FUN_14151f200();
-        m_strTab = strName;
-        FUN_140fa2720(CStringW(strName));
-        FUN_140fa16f0(CStringW(strName));
-        if (m_30.get() != 0)
-            m_30->Invoke("AddTab", CStringW(strName), 1);
-        return 1;
+        MS2Ptr<CSkillCompactControlConfig> spConfig = FUN_140fa28b0(CStringW(strName));
+        if (spConfig.get() != 0)
+        {
+            UIMessageBox* pBox = FUN_14151f890();
+            if (pBox != 0)
+                pBox->FUN_1419f82b0(FUN_14028de60(0xc38));
+            return 0;
+        }
     }
-    UIMessageBox* pBox = FUN_14151f890();
-    if (pBox != 0)
-        pBox->FUN_1419f82b0(FUN_14028de60(0xc38));
-    return 0;
+    FUN_14151f200();
+    m_strTab = strName;
+    FUN_140fa2720(CStringW(strName));
+    FUN_140fa16f0(CStringW(strName));
+    if (m_30.get() != 0)
+        m_30->Invoke("AddTab", CStringW(strName), 1);
+    return 1;
 }
 
 // The tabs back to the server.
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa1240
 void UISkillCompactControlDialog::FUN_140fa1240()
 {
     COutPacket packet(0x7b, 0);
     packet.Encode1(1);
     packet.Encode4(m_lstConfig.GetCount());
-    POSITION pos = m_lstConfig.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_lstConfig.GetHeadPosition(); pos != 0; m_lstConfig.GetNext(pos))
     {
         MS2Ptr<CSkillCompactControlConfig> spConfig = m_lstConfig.GetAt(pos);
         packet.vfunc_o10_8(spConfig->m_strName);
@@ -758,7 +755,6 @@ void UISkillCompactControlDialog::FUN_140fa1240()
         packet.Encode4(spConfig->m_skills.size());
         for (std::set<unsigned>::iterator it = spConfig->m_skills.begin(); it != spConfig->m_skills.end(); ++it)
             packet.Encode4(*it);
-        m_lstConfig.GetNext(pos);
     }
     FUN_140710590(packet);
 }
@@ -771,8 +767,13 @@ void UISkillCompactControlDialog::FUN_140fa1400()
         pPlayer->FUN_141523bc0()->FUN_141767d90(&m_lstConfig);
 }
 
+// The exe's out-of-line IsNull COMDAT of the list pointer (0x140fa3060, shared by ICF).
+static __declspec(noinline) bool Unk_CcSkillListIsNull(const Unk_CcSkillListPtr& sp)
+{
+    return sp.get() == 0;
+}
+
 // The skills of the player's job: the learnable ones first, then the others.
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa1460
 void UISkillCompactControlDialog::FUN_140fa1460(ATL::CAtlList<unsigned>* pList)
 {
@@ -780,19 +781,18 @@ void UISkillCompactControlDialog::FUN_140fa1460(ATL::CAtlList<unsigned>* pList)
     if (pPlayer == 0)
         return;
     Unk_CcSkillListPtr spSkills = CSkillCompactControlTable::GetJobSkills((Unk_CcJob)FUN_141654700(pPlayer));
-    if (!spSkills)
+    if (Unk_CcSkillListIsNull(spSkills))
         return;
     std::set<unsigned> setLearned;
     std::set<unsigned> setOther;
-    POSITION pos = spSkills->GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = spSkills->GetHeadPosition(); pos != 0; spSkills->GetNext(pos))
     {
         Unk_CcSkillPtr spSkill = spSkills->GetAt(pos);
-        if (static_cast<Unk_ScPc*>(pPlayer)->FUN_1416546d0()->vfunc_2(spSkill->m_nSkillId) == 0)
-            setOther.insert(spSkill->m_nSkillId);
-        else
+        int bLearned = static_cast<Unk_ScPc*>(pPlayer)->FUN_1416546d0()->vfunc_2(spSkill->m_nSkillId);
+        if (bLearned)
             setLearned.insert(spSkill->m_nSkillId);
-        spSkills->GetNext(pos);
+        else
+            setOther.insert(spSkill->m_nSkillId);
     }
     for (std::set<unsigned>::iterator it = setLearned.begin(); it != setLearned.end(); ++it)
         pList->AddTail(*it);
@@ -874,77 +874,67 @@ void UISkillCompactControlDialog::FUN_140fa16f0(CStringW strTab)
     pDialog->Invoke("selectTab", CStringW(strTab));
 }
 
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa1ff0
 void UISkillCompactControlDialog::FUN_140fa1ff0()
 {
-    if (!m_lstConfig.IsEmpty() && m_spButtonBar.IsNull() == 0)
+    if (m_lstConfig.IsEmpty())
+        return;
+    if (m_spButtonBar.IsNull())
+        return;
+    m_spButtonBar->FUN_1422e3400();
+    int nIndex = 0;
+    for (POSITION pos = m_lstConfig.GetHeadPosition(); pos != 0; m_lstConfig.GetNext(pos))
     {
-        m_spButtonBar->FUN_1422e3400();
-        int nIndex = 0;
-        POSITION pos = m_lstConfig.GetHeadPosition();
-        while (pos != 0)
-        {
-            MS2Ptr<CSkillCompactControlConfig> spConfig = m_lstConfig.GetAt(pos);
-            m_30->Invoke("AddTab", CStringW(spConfig->m_strName), nIndex);
-            if (nIndex == 0)
-                nIndex = 1;
-            m_lstConfig.GetNext(pos);
-        }
+        MS2Ptr<CSkillCompactControlConfig> spConfig = m_lstConfig.GetAt(pos);
+        m_30->Invoke("AddTab", CStringW(spConfig->m_strName), nIndex);
+        if (nIndex == 0)
+            nIndex = 1;
     }
 }
 
 // The hot key label of the tab.
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa2180
 void UISkillCompactControlDialog::FUN_140fa2180(CStringW strTab)
 {
-    int nSet = FUN_1409331f0()->FUN_1414319f0();
-    int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(strTab)), nSet);
+    int nKey = FUN_1409331f0()->FUN_14142c940(FUN_140fa2520(CStringW(strTab)), FUN_1409331f0()->FUN_1414319f0());
     MS2Ptr<Unk_140acd6e0> spHotKey = static_cast<Unk_ScButtonView*>(m_30.operator->())->FUN_140acce30("m_hotKey");
-    if (spHotKey.get() != 0)
+    if (spHotKey)
     {
-        spHotKey->FUN_1422cdfb0(FUN_1409331f0()->FUN_14142d220(nKey));
+        CStringW strKey = FUN_1409331f0()->FUN_14142d220(nKey);
+        spHotKey->FUN_1422cdfb0(strKey);
         spHotKey->FUN_1422c7630(0);
-        if (nKey < 0x92)
-        {
-            MS2Ptr<ASDisplayObject> spCap = spHotKey->FUN_1422ce400();
-            FUN_140d01340(spCap->FUN_1422bb890(), 2, 2);
-        }
+        if (nKey > 0x91)
+            FUN_140d01340(spHotKey->FUN_1422ce400()->FUN_1422bb890(), 1, 2);
         else
-        {
-            MS2Ptr<ASDisplayObject> spCap = spHotKey->FUN_1422ce400();
-            FUN_140d01340(spCap->FUN_1422bb890(), 1, 2);
-        }
+            FUN_140d01340(spHotKey->FUN_1422ce400()->FUN_1422bb890(), 2, 2);
     }
 }
 
 // The key is not bound to an action yet.
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa23a0
-bool UISkillCompactControlDialog::FUN_140fa23a0(int nKey)
+int UISkillCompactControlDialog::FUN_140fa23a0(int nKey)
 {
     return FUN_1409331f0()->FUN_14142d190(nKey) == 0;
 }
 
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa23f0
-bool UISkillCompactControlDialog::FUN_140fa23f0(int nKey, __int64 nId)
+int UISkillCompactControlDialog::FUN_140fa23f0(int nKey, __int64 nId)
 {
     int nSet = FUN_1409331f0()->FUN_1414319f0();
-    if (FUN_1409331f0()->FUN_14142b250(nKey, 2, nId, 0, nSet) == 0)
-        return 0;
-    MS2Ptr<CSkillCompactControlConfig> spConfig = FUN_140fa28b0(CStringW(m_cur.m_strTab));
-    if (spConfig.IsNull() != 0)
-        return 0;
-    spConfig->m_30 = nId;
-    FUN_1409331f0()->FUN_14142a8b0(nId);
-    FUN_140fa1400();
-    return 1;
+    if (FUN_1409331f0()->FUN_14142b250(nKey, 2, nId, 0, nSet) != 0)
+    {
+        MS2Ptr<CSkillCompactControlConfig> spConfig = FUN_140fa28b0(CStringW(m_cur.m_strTab));
+        if (spConfig.IsNull() != 0)
+            return 0;
+        spConfig->m_30 = nId;
+        FUN_1409331f0()->FUN_14142a8b0(nId);
+        FUN_140fa1400();
+        return 1;
+    }
+    return 0;
 }
 
 // The id of the tab's action: its own, else the first free one of the three.
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa2520
 __int64 UISkillCompactControlDialog::FUN_140fa2520(CStringW strTab)
 {
@@ -953,19 +943,17 @@ __int64 UISkillCompactControlDialog::FUN_140fa2520(CStringW strTab)
         return 0;
     if (spConfig->m_30 != 0)
         return spConfig->m_30;
-    for (unsigned nId = 0xaae61; nId < 0xaae64; nId++)
+    for (unsigned nId = 0xaae61; nId <= 0xaae63; nId++)
     {
-        bool bUsed = false;
-        POSITION pos = m_lstConfig.GetHeadPosition();
-        while (pos != 0)
+        BOOL bUsed = FALSE;
+        for (POSITION pos = m_lstConfig.GetHeadPosition(); pos != 0; m_lstConfig.GetNext(pos))
         {
             spConfig = m_lstConfig.GetAt(pos);
             if (spConfig->m_30 == nId)
             {
-                bUsed = true;
+                bUsed = TRUE;
                 break;
             }
-            m_lstConfig.GetNext(pos);
         }
         if (!bUsed)
             return nId;
@@ -973,46 +961,37 @@ __int64 UISkillCompactControlDialog::FUN_140fa2520(CStringW strTab)
     return 0;
 }
 
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa2720
 MS2Ptr<CSkillCompactControlConfig> UISkillCompactControlDialog::FUN_140fa2720(CStringW strName)
 {
     MS2Ptr<CSkillCompactControlConfig> spConfig(new CSkillCompactControlConfig());
     spConfig->m_strName = strName;
-    ATL::CAtlList<unsigned> lstSkills(10);
-    FUN_140fa1460(&lstSkills);
-    POSITION pos = lstSkills.GetHeadPosition();
-    while (pos != 0)
     {
-        unsigned nSkillId = lstSkills.GetAt(pos);
-        spConfig->m_skills.insert(nSkillId);
-        lstSkills.GetNext(pos);
+        ATL::CAtlList<unsigned> lstSkills(10);
+        FUN_140fa1460(&lstSkills);
+        for (POSITION pos = lstSkills.GetHeadPosition(); pos != 0; lstSkills.GetNext(pos))
+            spConfig->m_skills.insert(lstSkills.GetAt(pos));
     }
     m_lstConfig.AddTail(spConfig);
     return spConfig;
 }
 
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa28b0
 MS2Ptr<CSkillCompactControlConfig> UISkillCompactControlDialog::FUN_140fa28b0(CStringW strName)
 {
-    POSITION pos = m_lstConfig.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_lstConfig.GetHeadPosition(); pos != 0; m_lstConfig.GetNext(pos))
     {
         MS2Ptr<CSkillCompactControlConfig> spConfig = m_lstConfig.GetAt(pos);
         if (spConfig->m_strName.CompareNoCase(strName) == 0)
             return spConfig;
-        m_lstConfig.GetNext(pos);
     }
     return MS2Ptr<CSkillCompactControlConfig>(0);
 }
 
-// MS2-FUNCTIONAL: typed source, behaviour-equivalent; bytes not matched yet
 // @0x140fa29f0
 void UISkillCompactControlDialog::FUN_140fa29f0(CStringW strName)
 {
-    POSITION pos = m_lstConfig.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_lstConfig.GetHeadPosition(); pos != 0; m_lstConfig.GetNext(pos))
     {
         MS2Ptr<CSkillCompactControlConfig> spConfig = m_lstConfig.GetAt(pos);
         if (spConfig->m_strName.CompareNoCase(strName) == 0)
@@ -1020,7 +999,6 @@ void UISkillCompactControlDialog::FUN_140fa29f0(CStringW strName)
             m_lstConfig.RemoveAt(pos);
             return;
         }
-        m_lstConfig.GetNext(pos);
     }
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

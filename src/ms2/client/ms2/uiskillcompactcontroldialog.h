@@ -59,8 +59,8 @@ public:
     void FUN_140fa16f0(CStringW strTab);         // rebuild the skill list in the movie
     void FUN_140fa1ff0();                               // add all tabs to the tab bar
     void FUN_140fa2180(CStringW strTab);         // set the hot key label
-    bool FUN_140fa23a0(int nKey);                       // the key is not bound to a tab yet
-    bool FUN_140fa23f0(int nKey, __int64 nId);          // bind the key to a tab's id
+    int FUN_140fa23a0(int nKey);                       // the key is not bound to a tab yet
+    int FUN_140fa23f0(int nKey, __int64 nId);          // bind the key to a tab's id
     __int64 FUN_140fa2520(CStringW strTab);      // the tab's emotion / key id
     MS2Ptr<CSkillCompactControlConfig> FUN_140fa2720(CStringW strName);   // create a tab
     MS2Ptr<CSkillCompactControlConfig> FUN_140fa28b0(CStringW strName);   // find a tab
