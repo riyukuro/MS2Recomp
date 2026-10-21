@@ -502,6 +502,8 @@ class Unk_GcTime
 {
 public:
     Unk_GcTime();                                                   // 0x1406c4730 (calls 0x1406c5270(this, 0, 0))
+    explicit Unk_GcTime(unsigned __int64 nTime);                    // 0x1406c47a0 from the epoch seconds
+    ATL::CTimeSpan operator-(const Unk_GcTime& rhs) const;          // 0x1406c4a20
     Unk_GcTime& FUN_1406c47a0(unsigned __int64 nTime);              // from the epoch seconds
     Unk_GcTime& FUN_1406c47d0(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec);
     Unk_GcTime& FUN_1406c4930(const Unk_GcTime& rhs);               // operator=

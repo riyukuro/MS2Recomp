@@ -40,7 +40,7 @@ __int64 FUN_140930240();                                // the merat
 struct Unk_G9Holder { void* m_p0; void* m_p8; };
 Unk_G9Holder* FUN_1403ed290();                          // the guild manager holder
 void* FUN_1404d3180(void* pHolder);
-char FUN_1404c6160(void* pGuildPvp);
+bool FUN_1404c6160(void* pGuildPvp);
 struct Unk_G9Rec { void* m_p[6]; unsigned __int64 m_nExpire; };
 Unk_G9Rec* FUN_141523c50(Unk_G9Player* pPlayer);        // the player's real estate record
 bool FUN_1406c4d20(const Unk_GcTime& a, const Unk_GcTime& b);
@@ -68,7 +68,7 @@ class Unk_StatRef { public: ~Unk_StatRef(); void* FUN_140c24af0(); private: void
 class Unk_StatWnd { public: Unk_StatRef FUN_140c25130(); };
 unsigned FUN_140caa1a0(void* pRef);
 void* FUN_140b72e80(unsigned nUIId);                    // the mentoring pane
-char FUN_1401647e0(const CStringA& strA, const CStringA* pStrB);       // true when the names differ
+bool FUN_1401647e0(const CStringA& strA, const CStringA& strB) throw();   // operator!= (true when the names differ)
 __int64 FUN_140d59970(void* pMarket);                   // the expiry of the ugc product
 int FUN_141924630(void* pDialog);                       // is floating
 
@@ -144,11 +144,15 @@ public:
     virtual void Unk_Slot54();
     virtual int vfunc_55();
 };
-struct Unk_G9Iter { void* m_p0; void* m_p1; };
-void FUN_140e5e890(void* pPane, Unk_G9Iter* pOut);
-char FUN_140e605c0(Unk_G9Iter* pIt);
-Unk_G9Named* FUN_140e60630(Unk_G9Iter* pIt);
-void FUN_140e60460(Unk_G9Iter* pIt);
+// The page smart pointer of the mentoring pane (dtor 0x140e60460 releases it).
+struct Unk_G9Iter { ~Unk_G9Iter(); void* m_p0; void* m_p1; };
+class Unk_G9Pane
+{
+public:
+    Unk_G9Iter FUN_140e5e890();                         // the current page
+};
+bool FUN_140e605c0(Unk_G9Iter* pIt);                    // IsNull
+Unk_G9Named* FUN_140e60630(Unk_G9Iter* pIt);            // operator->
 
 void* FUN_141386950(const CStringA& strDialog);         // the dialog of a name
 void FUN_1422dba50(void* pDialog, Unk_G9Val* pOut);
@@ -169,7 +173,7 @@ Unk_G9Span* FUN_1413a52a0(__int64* pSpan);
 int FUN_1410c3650(Unk_G9Home* pHome);
 void* FUN_140931510();                                  // the dungeon room manager
 int FUN_140d9f880(void* pMgr, int nDungeonId);
-int FUN_1413b57d0(void* pDialog);
+bool FUN_1413b57d0(void* pDialog);
 
 
 // @0x1413acea0
@@ -179,7 +183,6 @@ CStringW CGuideConditionHasMoney::vfunc_1()
 }
 
 // @0x1413acef0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 void CGuideConditionHasMoney::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
@@ -199,48 +202,54 @@ void CGuideConditionHasMoney::vfunc_2(Unk_140165cf0* pElem)
 }
 
 // @0x1413ad020
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionHasMoney::vfunc_3()
 {
     switch (m_nMoneyType) {
     case 0:
-        return FUN_1413a5600(m_n20 < DAT_143ab2898);
+        return FUN_1413a5600(DAT_143ab2898 > m_n20);
     case 1:
-        return FUN_1413a5600(m_n20 < FUN_140930240());
+        return FUN_1413a5600(FUN_140930240() > m_n20);
     case 2:
-        return FUN_1413a5600(m_n20 < DAT_143ab28b8);
+        return FUN_1413a5600(DAT_143ab28b8 > m_n20);
     case 3:
-        return FUN_1413a5600(m_n20 < DAT_143ab28b0);
+        return FUN_1413a5600(DAT_143ab28b0 > m_n20);
     case 4:
-        return FUN_1413a5600(m_n20 < DAT_143ab28c0);
+        return FUN_1413a5600(DAT_143ab28c0 > m_n20);
     case 5:
-        return FUN_1413a5600(m_n20 < DAT_143ab28c8);
+        return FUN_1413a5600(DAT_143ab28c8 > m_n20);
     case 6:
-        return FUN_1413a5600(m_n20 < DAT_143ab28d0);
+        return FUN_1413a5600(DAT_143ab28d0 > m_n20);
     case 7:
-        return FUN_1413a5600(m_n20 < DAT_143ab28d8);
+        return FUN_1413a5600(DAT_143ab28d8 > m_n20);
     case 8:
-        return FUN_1413a5600(m_n20 < DAT_143ab28e0);
+        return FUN_1413a5600(DAT_143ab28e0 > m_n20);
     default:
         return 0;
     }
 }
 
 // @0x1413ad250
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionHasMoney::vfunc_7()
 {
     CStringW strType;
-    if (m_nMoneyType == 0)
+    switch (m_nMoneyType)
+    {
+    case 0:
         strType = L"meso";
-    else if (m_nMoneyType == 1)
+        break;
+    case 1:
         strType = L"merat";
-    else if (m_nMoneyType == 2)
+        break;
+    case 2:
         strType = L"karma";
-    else if (m_nMoneyType == 3)
+        break;
+    case 3:
         strType = L"honor";
-    else if (m_nMoneyType == 4)
+        break;
+    case 4:
         strType = L"lu";
+        break;
+    }
     CStringW str = FUN_1413a5820();
     str.Append(FUN_140275590(L"moneyType({0}), value({1})", strType, m_n20));
     return str;
@@ -261,8 +270,7 @@ CStringW CGuideConditionGuildPvpPeriod::vfunc_1()
 // @0x1413ad460
 int CGuideConditionGuildPvpPeriod::vfunc_3()
 {
-    void* pPvp = FUN_1404d3180(&FUN_1403ed290()->m_p8);
-    return FUN_1413a55a0(FUN_1404c6160(pPvp) != 0);
+    return FUN_1413a55a0(FUN_1404c6160(FUN_1404d3180(&FUN_1403ed290()->m_p8)) ? 1 : 0);
 }
 
 // @0x1413ad4c0
@@ -278,7 +286,6 @@ CStringW CGuideConditionRealEstateExpireDays::vfunc_1()
 }
 
 // @0x1413ad570
-// MS2-FUNCTIONAL: the day count is taken from the epoch seconds instead of the time-span helpers
 int CGuideConditionRealEstateExpireDays::vfunc_3()
 {
     Unk_G9Player* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -287,13 +294,12 @@ int CGuideConditionRealEstateExpireDays::vfunc_3()
     Unk_G9Rec* pRec = FUN_141523c50(pPlayer);
     if (!pRec)
         return 0;
-    Unk_GcTime now;
-    now.FUN_1406c47a0(FUN_140869440());
-    Unk_GcTime expire;
-    expire.FUN_1406c47a0(pRec->m_nExpire);
+    Unk_GcTime now(FUN_140869440());
+    Unk_GcTime expire(pRec->m_nExpire);
     if (FUN_1406c4d20(now, expire))
         return 0;
-    __int64 nDays = ((__int64)expire.FUN_140282020() - (__int64)now.FUN_140282020()) / 86400;
+    ATL::CTimeSpan span = expire - now;
+    __int64 nDays = span.GetDays();
     return FUN_1413a5600(nDays < m_n20);
 }
 
@@ -310,7 +316,6 @@ CStringW CGuideConditionUgcProductExpireDays::vfunc_1()
 }
 
 // @0x1413ad710
-// MS2-FUNCTIONAL: the day count is taken from the epoch seconds instead of the time-span helpers
 int CGuideConditionUgcProductExpireDays::vfunc_3()
 {
     if (!FUN_140939a00())
@@ -318,13 +323,12 @@ int CGuideConditionUgcProductExpireDays::vfunc_3()
     __int64 nExpire = FUN_140d59970(FUN_140939a00());
     if (!nExpire)
         return 0;
-    Unk_GcTime now;
-    now.FUN_1406c47a0(FUN_140869440());
-    Unk_GcTime expire;
-    expire.FUN_1406c47a0(nExpire);
+    Unk_GcTime now(FUN_140869440());
+    Unk_GcTime expire(nExpire);
     if (FUN_1406c4d20(now, expire))
         return 0;
-    __int64 nDays = ((__int64)expire.FUN_140282020() - (__int64)now.FUN_140282020()) / 86400;
+    ATL::CTimeSpan span = expire - now;
+    __int64 nDays = span.GetDays();
     return FUN_1413a5600(nDays < m_n20);
 }
 
@@ -388,7 +392,8 @@ int CGuideConditionSubJobCode::vfunc_3()
     if (!pPlayer)
         return 0;
     for (size_t i = 0; i < m_subJobCodes.GetCount(); ++i) {
-        if (FUN_141654730(pPlayer) == m_subJobCodes[i])
+        int nCode = m_subJobCodes[i];
+        if (FUN_141654730(pPlayer) == nCode)
             return FUN_1413a55a0(1);
     }
     return FUN_1413a55a0(0);
@@ -499,7 +504,6 @@ int CGuideConditionMenuExpand::vfunc_3()
 }
 
 // @0x1413adfd0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionMenuExpand::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
@@ -523,9 +527,9 @@ CStringW CGuideConditionSelectItemEnchant::vfunc_1()
 int CGuideConditionSelectItemEnchant::vfunc_3()
 {
     void* pDlg = FUN_1413b1bc0(0x4e92);
-    if (!pDlg)
-        return 0;
-    return FUN_1413a5600(FUN_1419c16a0(pDlg) != 0);
+    if (pDlg)
+        return FUN_1413a5600(FUN_1419c16a0(pDlg) != 0);
+    return 0;
 }
 
 // @0x1413ae1d0
@@ -544,9 +548,9 @@ CStringW CGuideConditionMasteryMainTabIndex::vfunc_1()
 int CGuideConditionMasteryMainTabIndex::vfunc_3()
 {
     void* pDlg = FUN_140faf160(0x4f1e);
-    if (!pDlg)
-        return 0;
-    return FUN_1413a5600(FUN_140eb5040(pDlg) == m_n20);
+    if (pDlg)
+        return FUN_1413a5600(FUN_140eb5040(pDlg) == m_n20);
+    return 0;
 }
 
 // @0x1413ae2e0
@@ -565,9 +569,9 @@ CStringW CGuideConditionMasterySubTabIndex::vfunc_1()
 int CGuideConditionMasterySubTabIndex::vfunc_3()
 {
     void* pDlg = FUN_140faf160(0x4f1e);
-    if (!pDlg)
-        return 0;
-    return FUN_1413a5600(FUN_140eb5150(pDlg) == m_n20);
+    if (pDlg)
+        return FUN_1413a5600(FUN_140eb5150(pDlg) == m_n20);
+    return 0;
 }
 
 // @0x1413ae3f0
@@ -586,9 +590,9 @@ CStringW CGuideConditionPlayInstrumentTabIndex::vfunc_1()
 int CGuideConditionPlayInstrumentTabIndex::vfunc_3()
 {
     void* pDlg = FUN_140d0c040(0x4eec);
-    if (!pDlg)
-        return 0;
-    return FUN_1413a5600(FUN_14100c890(pDlg) == m_n20);
+    if (pDlg)
+        return FUN_1413a5600(FUN_14100c890(pDlg) == m_n20);
+    return 0;
 }
 
 // @0x1413ae500
@@ -607,9 +611,9 @@ CStringW CGuideConditionPlayInstrumentHasSelectItem::vfunc_1()
 int CGuideConditionPlayInstrumentHasSelectItem::vfunc_3()
 {
     void* pDlg = FUN_140d0c040(0x4eec);
-    if (!pDlg)
-        return 0;
-    return FUN_1413a5600(FUN_14100d8c0(pDlg));
+    if (pDlg)
+        return FUN_1413a5600(FUN_14100d8c0(pDlg));
+    return 0;
 }
 
 // @0x1413ae600
@@ -695,28 +699,26 @@ void CGuideConditionMentoringPage::vfunc_2(Unk_140165cf0* pElem)
 }
 
 // @0x1413aea80
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionMentoringPage::vfunc_3()
 {
     void* pPane = FUN_140b72e80(0x4f4b);
-    if (!pPane)
-        return 0;
-    if (FUN_141924630(pPane) == 0)
-        return 0;
-    Unk_G9Iter it;
-    FUN_140e5e890(pPane, &it);
-    if (FUN_140e605c0(&it)) {
-        FUN_140e60460(&it);
-        return 0;
+    if (pPane)
+    {
+        if (FUN_141924630(pPane) == 0)
+            return 0;
+        Unk_G9Iter it = static_cast<Unk_G9Pane*>(pPane)->FUN_140e5e890();
+        if (FUN_140e605c0(&it))
+            return 0;
+        Unk_G9Named* pNamed = FUN_140e60630(&it);
+        bool bDiffer = FUN_1401647e0(pNamed->vfunc_6(), m_strPageName);
+        if (bDiffer)
+            return 0;
+        return 1;
     }
-    CStringA strName = FUN_140e60630(&it)->vfunc_6();
-    bool bDiffer = FUN_1401647e0(strName, &m_strPageName) != 0;
-    FUN_140e60460(&it);
-    return bDiffer ? 0 : 1;
+    return 0;
 }
 
 // @0x1413aebb0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionMentoringPage::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
@@ -789,7 +791,6 @@ int CGuideConditionButtonSelected::vfunc_3()
 }
 
 // @0x1413af0c0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 void CGuideConditionButtonSelected::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
@@ -802,7 +803,6 @@ void CGuideConditionButtonSelected::vfunc_2(Unk_140165cf0* pElem)
 }
 
 // @0x1413af190
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionButtonSelected::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
@@ -875,13 +875,10 @@ void CGuideConditionContract::vfunc_2(Unk_140165cf0* pElem)
 }
 
 // @0x1413af5e0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionContract::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
-    CStringW strDialog = FUN_14016a730(m_strDialog, 0);
-    CStringW strChild = FUN_14016a730(m_strChild, 0);
-    str.Append(FUN_140e06940(L"dialogName({0}), dialogName({1}), dialogName({2})", m_nDialogId, strChild, strDialog));
+    str.Append(FUN_140e06940(L"dialogName({0}), dialogName({1}), dialogName({2})", m_nDialogId, FUN_14016a730(m_strChild, 0), FUN_14016a730(m_strDialog, 0)));
     return str;
 }
 
@@ -917,11 +914,10 @@ void CGuideConditionHomeMode::vfunc_2(Unk_140165cf0* pElem)
 }
 
 // @0x1413af8d0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionHomeMode::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
-    str.Append(StringFormat(L"mode({0})", GcEnum<Unk_GcModeId>(m_nMode)));
+    str.Append(StringFormat(L"mode({0})", reinterpret_cast<const Unk_GcModeId&>(m_nMode)));
     return str;
 }
 
@@ -990,9 +986,9 @@ void CGuideConditionChatEmoticon::vfunc_2(Unk_140165cf0* pElem)
 int CGuideConditionChatEmoticon::vfunc_3()
 {
     void* pDlg = FUN_1413b1b20(0x4f80);
-    if (!pDlg)
-        return 0;
-    return FUN_1413a5600(FUN_1413b57d0(pDlg) != 0);
+    if (pDlg)
+        return FUN_1413a5600(FUN_1413b57d0(pDlg));
+    return 0;
 }
 
 // @0x1413afca0
@@ -1000,3 +996,7 @@ int CGuideConditionChatEmoticon::vfunc_8()
 {
     return 0;
 }
+// MS2-PIN: ??0Unk_GcTime@@QEAA@_K@Z 0x1406c47a0
+// MS2-PIN: ??GUnk_GcTime@@QEBA?AVCTimeSpan@ATL@@AEBV0@@Z 0x1406c4a20
+// MS2-PIN: ??1Unk_G9Iter@@QEAA@XZ 0x140e60460
+// MS2-PIN: ?FUN_140e5e890@Unk_G9Pane@@QEAA?AUUnk_G9Iter@@XZ 0x140e5e890
