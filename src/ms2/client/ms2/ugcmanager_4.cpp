@@ -1008,6 +1008,7 @@ void CUgcManager::FUN_141880ec0(int nResult)
     int bDone = 0;
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1265,6 +1266,7 @@ int CUgcManager::FUN_141882370()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1281,6 +1283,7 @@ int CUgcManager::FUN_1418823f0()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1299,6 +1302,7 @@ void CUgcManager::FUN_141882450(MS2Ptr<CUgcUploadCtrl> spCtrl)
     CString strNext;
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -1331,6 +1335,7 @@ MS2Ptr<CUgcUploadCtrl> CUgcManager::FUN_141882610()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2065,6 +2070,7 @@ void CUgcManager::FUN_141886190(CString strName, MS2Ptr<CUgcDownloadCtrl> spCtrl
         return;
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2079,6 +2085,7 @@ void CUgcManager::FUN_141886270(CString strName, int nResult)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2324,6 +2331,7 @@ MS2Ptr<CUgcRegistBanner> CUgcManager::FUN_141887ce0(int nBannerId)
     MS2Ptr<CUgcRegistBanner> spBanner(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2345,6 +2353,7 @@ void CUgcManager::FUN_141887dc0(int nBannerId, MS2Ptr<CUgcRegistBanner> spBanner
     {
         if (Unk_LockGuard guard = m_lock)
         {
+            __assume(0);
         }
         else
         {
@@ -2372,6 +2381,7 @@ void CUgcManager::FUN_141887dc0(int nBannerId, MS2Ptr<CUgcRegistBanner> spBanner
             {
                 if (Unk_LockGuard guard = m_lock)
                 {
+                    __assume(0);
                 }
                 else
                 {
@@ -2424,6 +2434,7 @@ void CUgcManager::FUN_1418885b0(int nBannerId)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2484,6 +2495,7 @@ void CUgcManager::FUN_1418889d0(int nBannerId, unsigned __int64 key, const Reser
     Unk_UgcBoxPtr<CReserveMap> spMap(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2505,6 +2517,7 @@ void CUgcManager::FUN_141888af0(int nBannerId, unsigned __int64 key, int nState)
     Unk_UgcBoxPtr<CReserveMap> spMap(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2527,6 +2540,7 @@ void CUgcManager::FUN_141888bf0(int nBannerId, int nDate, CRBMap<int, ReserveBan
     Unk_UgcBoxPtr<CReserveMap> spMap(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2549,6 +2563,7 @@ void CUgcManager::FUN_141888d30(int nBannerId)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2701,6 +2716,7 @@ void CUgcManager::FUN_1418895d0(int nObjectId, NiTexturePtr spTexture)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2715,6 +2731,7 @@ void CUgcManager::FUN_141889670(int nObjectId)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2729,6 +2746,7 @@ NiTexturePtr CUgcManager::FUN_1418896e0(int nObjectId)
     NiTexturePtr spTexture(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2839,6 +2857,7 @@ void CUgcManager::FUN_141889ce0(int nType)
         FUN_14188b480();
         if (Unk_LockGuard guard = m_lock)
         {
+            __assume(0);
         }
         else
         {
@@ -2859,6 +2878,7 @@ void CUgcManager::FUN_141889e20(unsigned int nCount, int nStart, ASArray* pArray
     CAtlArray<MS2Ptr<CUploadFile> > files;
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2898,6 +2918,7 @@ void CUgcManager::FUN_14188a140(unsigned int nCount, unsigned int nStart, ASArra
     CAtlArray<MS2Ptr<CUploadFile> > files;
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2939,6 +2960,7 @@ MS2Ptr<CUploadFile> CUgcManager::FUN_14188a4b0(int nIndex)
     MS2Ptr<CUploadFile> spFile(0);
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -2955,6 +2977,7 @@ int CUgcManager::FUN_14188a5b0(const CStringW& strPath)
     int nIndex = -1;
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -3037,6 +3060,7 @@ int CUgcManager::FUN_14188aa20(const CString& strName)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -3180,6 +3204,7 @@ void CUgcManager::FUN_14188bbb0()
     m_bInit = 0;
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else if (m_spUpload.get())
     {
@@ -3202,6 +3227,7 @@ void CUgcManager::FUN_14188bce0()
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -3252,6 +3278,7 @@ int CUgcManager::FUN_14188c020(CAtlArray<MS2Ptr<CUploadFile> >& files)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -3286,6 +3313,7 @@ MS2Ptr<CUgcBannerRollingImage> CUgcManager::FUN_14188c300(int nBannerId)
 {
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -3308,6 +3336,7 @@ MS2Ptr<CUgcBannerRollingImage> CUgcManager::FUN_14188c430()
     CAtlArray<MS2Ptr<CUgcBannerRollingImage> > images;
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
@@ -3748,6 +3777,7 @@ void CUgcManager::FUN_14188eb30(CInPacket& packet)
     }
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {
