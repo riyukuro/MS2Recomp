@@ -41,7 +41,7 @@ public:
     CString m_equipmentName, m_gemName, m_selectedName, m_socketName;
     MS2Ptr<CItem> m_selected;
     CAtlArray<MS2Ptr<CItem>> m_equipment;
-    CAtlMap<int, MS2Ptr<CItem>> m_gemsByUid;       // keyed by the truncated item uid (exe: CAtlMap<int, ...>)
+    CAtlMap<__int64, MS2Ptr<CItem>> m_gemsByUid;   // keyed by the item uid (SetAt 0x140cd6c10 takes the 64-bit key)
     CAtlArray<MS2Ptr<CItem>> m_gems;
     CAtlArray<MS2Ptr<CGemStoneItem>> m_sockets;
     MS2Ptr<Unk_SocketPageBag> m_equipmentControl, m_gemControl;
