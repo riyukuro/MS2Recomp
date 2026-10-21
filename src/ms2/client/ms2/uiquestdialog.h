@@ -63,8 +63,8 @@ public:
     void SelectListIndex(int nIndex);                           // 0x141a9c0e0
     void ScrollToQuest(int nQuestId);                           // 0x141a9c1c0
     int HasAvailable(int nQuestId);                             // 0x141a9c290
-    bool HasPinned(int nQuestId);                               // 0x141a9c430
-    bool IsInCurrentTab(int nQuestId);                          // 0x141a9c470
+    int HasPinned(int nQuestId);                                // 0x141a9c430
+    int IsInCurrentTab(int nQuestId);                           // 0x141a9c470
     void RemovePinned(int nQuestId);                            // 0x141a9c4d0
     void CollectQuests(ATL::CAtlArray<Unk_PayloadPtr<CQuest> >& rOut, unsigned nChapter);   // 0x141a9c560
     int GetTab();                                               // 0x141a9c6d0 "m_tab" (4 without the strip)
@@ -96,7 +96,7 @@ public:
     void CollectEpisodes(ATL::CAtlArray<unsigned>& rOut);       // 0x141aa07f0
     void GroupChapters(QuestGroups& rOut);                      // 0x141aa0a00
     void CollectRecommended(ATL::CAtlArray<MS2Ptr<CQuestData> >& rOut);   // 0x141aa0f80
-    bool IsSubTabOne();                                         // 0x141aa17b0
+    int IsSubTabOne();                                          // 0x141aa17b0
     void FocusQuestTab(int nQuestId);                           // 0x141aa17f0
     void FocusQuestSubTab(int nQuestId);                        // 0x141aa18b0
     int TabOfQuest(int nQuestId);                               // 0x141aa1990

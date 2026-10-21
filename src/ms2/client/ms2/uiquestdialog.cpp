@@ -557,7 +557,9 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
 // @0x141a9a700
 int UIQuestDialog::vfunc_65()
 {
-    return UIDialog::vfunc_65() != 0;
+    if (!UIDialog::vfunc_65())
+        return 0;
+    return 1;
 }
 
 // @0x141a9a730
@@ -656,29 +658,27 @@ void UIQuestDialog::vfunc_o178_6(void*)
 // @0x141a9ae00
 void UIQuestDialog::RefreshTab()
 {
-    if (GetSubTab() == 0)
+    if (GetSubTab())
     {
-        RefreshCompleted();
+        switch (GetTab())
+        {
+        case 0:
+            RefreshEpisodes();
+            break;
+        case 1:
+            RefreshList();
+            break;
+        case 2:
+            RefreshList();
+            break;
+        case 3:
+            RefreshList();
+            break;
+        }
     }
     else
     {
-        int nTab = GetTab();
-        if (nTab == 0)
-        {
-            RefreshEpisodes();
-        }
-        else if (nTab == 1)
-        {
-            RefreshList();
-        }
-        else if (nTab == 2)
-        {
-            RefreshList();
-        }
-        else if (nTab == 3)
-        {
-            RefreshList();
-        }
+        RefreshCompleted();
     }
 }
 
@@ -688,7 +688,7 @@ void UIQuestDialog::RefreshEpisodes()
     Unk_QdActor* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        MS2Ptr<Unk_QdList> spList = FUN_140c02900(CString("m_questList"));
+        MS2Ptr<Unk_QdList> spList = FUN_140c02900("m_questList");
         if (spList.get() != 0)
         {
             spList->FUN_1422dd1d0();
@@ -712,7 +712,7 @@ void UIQuestDialog::RefreshEpisodes()
 // @0x141a9b0e0
 void UIQuestDialog::RefreshList()
 {
-    MS2Ptr<Unk_QdList> spList = FUN_140c02900(CString("m_questList"));
+    MS2Ptr<Unk_QdList> spList = FUN_140c02900("m_questList");
     if (spList.get() != 0)
     {
         spList->FUN_1422dd1d0();
@@ -777,7 +777,7 @@ MS2Ptr<Unk_QdChapterText> FUN_1416e7f30(int nChapter);
 // @0x141a9b6e0
 void UIQuestDialog::RefreshCompleted()
 {
-    MS2Ptr<Unk_QdList> spList = FUN_140c02900(CString("m_questList"));
+    MS2Ptr<Unk_QdList> spList = FUN_140c02900("m_questList");
     if (spList.get() != 0)
     {
         spList->FUN_1422dd1d0();
@@ -852,7 +852,7 @@ void UIQuestDialog::SelectQuest(int nQuestId)
 // @0x141a9bff0
 void UIQuestDialog::FocusQuest(int nQuestId)
 {
-    MS2Ptr<Unk_QdList> spList = FUN_140c02900(CString("m_questList"));
+    MS2Ptr<Unk_QdList> spList = FUN_140c02900("m_questList");
     if (spList.get() == 0)
     {
         m_188 = nQuestId;
@@ -871,7 +871,7 @@ void UIQuestDialog::FocusQuest(int nQuestId)
 // @0x141a9c0e0
 void UIQuestDialog::SelectListIndex(int nIndex)
 {
-    MS2Ptr<Unk_QdList> spList = FUN_140c02900(CString("m_questList"));
+    MS2Ptr<Unk_QdList> spList = FUN_140c02900("m_questList");
     if (spList.get() != 0)
     {
         spList->FUN_1422dcca0(nIndex);
@@ -915,13 +915,15 @@ int UIQuestDialog::HasAvailable(int nQuestId)
 }
 
 // @0x141a9c430
-bool UIQuestDialog::HasPinned(int nQuestId)
+int UIQuestDialog::HasPinned(int nQuestId)
 {
-    return Unk_ArrayFind<int>(m_pinned, nQuestId) != -1;
+    if (Unk_ArrayFind<int>(m_pinned, nQuestId) != -1)
+        return 1;
+    return 0;
 }
 
 // @0x141a9c470
-bool UIQuestDialog::IsInCurrentTab(int nQuestId)
+int UIQuestDialog::IsInCurrentTab(int nQuestId)
 {
     return GetTab() == TabOfQuest(nQuestId);
 }
@@ -956,7 +958,7 @@ void UIQuestDialog::CollectQuests(CAtlArray<Unk_PayloadPtr<CQuest> >& rOut, unsi
 // @0x141a9c6d0
 int UIQuestDialog::GetTab()
 {
-    MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870(CString("m_tab"));
+    MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_tab");
     if (spTab.get() == 0)
         return 4;
     return spTab->FUN_1422e3210();
@@ -965,7 +967,7 @@ int UIQuestDialog::GetTab()
 // @0x141a9c780
 int UIQuestDialog::GetSubTab()
 {
-    MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870(CString("m_subTab"));
+    MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_subTab");
     if (spTab.get() == 0)
         return 3;
     return spTab->FUN_1422e3210();
@@ -974,20 +976,22 @@ int UIQuestDialog::GetSubTab()
 // @0x141a9c830
 int UIQuestDialog::GetSubTabFilter()
 {
-    int nSub = GetSubTab();
-    if (nSub == 0)
+    switch (GetSubTab())
+    {
+    case 0:
         return 0;
-    if (nSub == 1)
+    case 1:
         return 1;
-    if (nSub == 2)
+    case 2:
         return 2;
+    }
     return 4;
 }
 
 // @0x141a9c880
 int UIQuestDialog::GetQuestListIndex()
 {
-    MS2Ptr<Unk_QdList> spList = FUN_140c02900(CString("m_questList"));
+    MS2Ptr<Unk_QdList> spList = FUN_140c02900("m_questList");
     if (spList.get() == 0)
         return 0;
     int nIndex = spList->FUN_1422dccd0();
@@ -1000,9 +1004,9 @@ int UIQuestDialog::GetQuestListIndex()
 int UIQuestDialog::GetSelectedID()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog == 0)
-        return 0;
-    return FUN_1409c1750(pDialog->Invoke("getSelectedID"));
+    if (pDialog != 0)
+        return FUN_1409c1750(pDialog->Invoke("getSelectedID"));
+    return 0;
 }
 
 // @0x141a9ca00
@@ -1233,7 +1237,7 @@ void UIQuestDialog::SetTab(int nTab)
     if (nTab != 4)
     {
         {
-            MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870(CString("m_tab"));
+            MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_tab");
             if (spTab.get() != 0)
                 spTab->FUN_1422e31e0(nTab);
         }
@@ -1248,7 +1252,7 @@ void UIQuestDialog::SetSubTab(int nTab)
     if (nTab != 3)
     {
         {
-            MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870(CString("m_subTab"));
+            MS2Ptr<Unk_QdTabBar> spTab = FUN_140c02870("m_subTab");
             if (spTab.get() != 0)
                 spTab->FUN_1422e31e0(nTab);
         }
@@ -1305,7 +1309,7 @@ void UIQuestDialog::RefreshDetail()
 // @0x141a9ea20
 void UIQuestDialog::ClearFlags()
 {
-    for (int i = 0; i < 3; i++)
+    for (size_t i = 0; i < 3; i++)
         m_flags[i].RemoveAll();
 }
 
@@ -1808,7 +1812,7 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
 }
 
 // @0x141aa17b0
-bool UIQuestDialog::IsSubTabOne()
+int UIQuestDialog::IsSubTabOne()
 {
     return GetSubTabFilter() == 1;
 }
@@ -1914,15 +1918,14 @@ void UIQuestDialog::GiveUpQuest(int nQuestId)
 // @0x141aa1fa0
 bool UIQuestDialog::OnGiveUpConfirm(int nButton, const CMsgBoxData& rData)
 {
-    if (nButton == 0)
-    {
-        int nQuestId = rData.FUN_141a02e90(0, 0);
-        COutPacket packet(0x29, 0);
-        packet.Encode1(6);
-        packet.Encode4(nQuestId);
-        FUN_140710590(packet);
-        RefreshDetail();
-    }
+    if (nButton != 0)
+        return true;
+    int nQuestId = rData.FUN_141a02e90(0, 0);
+    COutPacket packet(0x29, 0);
+    packet.Encode1(6);
+    packet.Encode4(nQuestId);
+    FUN_140710590(packet);
+    RefreshDetail();
     return true;
 }
 
@@ -1957,8 +1960,15 @@ void UIQuestDialog::ChangeTab(int nTab)
 // @0x141aa22b0
 void UIQuestDialog::OnPacketParty(CInPacket& rPacket)
 {
-    if (FUN_141924630() != 0 && rPacket.vfunc_o8_1() == 0x1e)
+    if (FUN_141924630() == 0)
+        return;
+    int nType = rPacket.vfunc_o8_1();
+    switch (nType)
+    {
+    case 0x1e:
         SelectQuest(GetSelectedID());
+        break;
+    }
 }
 
 // @0x141aa2330
