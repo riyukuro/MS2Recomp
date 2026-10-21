@@ -7747,3 +7747,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?Point_NanParams@AS2@GFx@Scaleform@@3QBVValue@123@B	143d747b0	data
 ?SetProperties@PointObject@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEBV?$Point@N@Render@4@@Z	142989db0	func
 ?ToObject@Value@AS2@GFx@Scaleform@@QEBAPEAVObject@234@PEBVEnvironment@234@@Z	142991660	func
+?ExecuteSnapshot@TimelineSnapshot@GFx@Scaleform@@QEAAXPEAVDisplayObjContainer@23@@Z	1425d78a0	func
