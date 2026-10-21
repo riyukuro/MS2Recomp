@@ -112,14 +112,14 @@ public:
     MS2Ptr<CTalkScript> FUN_141b20fe0();                    // the script handle
     MS2Ptr<CCinematicContent> FUN_141b21030();              // the current page
     void FUN_141b21190(unsigned char nFlags, int nParam, int nPage);   // set the state words
-    bool FUN_141b211d0();                                   // the talk cooldown elapsed
+    int FUN_141b211d0();                                    // the talk cooldown elapsed
     int FUN_141b21220();                                    // IsTalking
-    bool FUN_141b21240(int nNpcId);                         // IsTalkingWith
+    int FUN_141b21240(int nNpcId);                          // IsTalkingWith
     unsigned FUN_141b212c0();                               // npc id (0 when not talking)
-    unsigned __int64 FUN_141b212f0();                       // npc id of the open talk
+    int FUN_141b212f0();                                    // npc id of the open talk
     Unk_TcNpc* FUN_141b21350();                             // the npc actor
     void FUN_141b21390();                                   // stop
-    unsigned char FUN_141b213c0();                          // the talk has no npc
+    int FUN_141b213c0();                                    // the talk has no npc
     unsigned FUN_141b213f0(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound);   // begin without an npc
     void FUN_141b215b0(int bSamePage);                      // advance to the next page
     void FUN_141b217b0();                                   // clear the id queue

@@ -31,6 +31,7 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/commonfiles/stream.h"
+#include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/mypc.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
@@ -533,12 +534,12 @@ void UITalkCinematic::FUN_141b1bce0(int nMsg)
     }
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1be50
 void UITalkCinematic::FUN_141b1be50()
 {
-    if (!FUN_140a467d0(&m_30))
-        FUN_1409ee290(&m_30)->Invoke("onFireworkEffect");
+    if (FUN_140a467d0(&m_30))
+        return;
+    FUN_1409ee290(&m_30)->Invoke("onFireworkEffect");
 }
 
 // @0x141b1beb0
@@ -629,12 +630,12 @@ void UITalkCinematic::FUN_141b1bfe0(ASObj& rPage, const CCinematicContent* pCont
     rPage.FUN_1409eb270("illust", illust);
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1c4c0
 void UITalkCinematic::FUN_141b1c4c0(ASObj& rPage, const CCinematicContent* pContent)
 {
-    if (pContent != 0)
-        rPage.FUN_1407cba60("imagePlate", CString(pContent->m_imagePlate));
+    if (pContent == 0)
+        return;
+    rPage.FUN_1407cba60("imagePlate", CString(pContent->m_imagePlate));
 }
 
 // MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
@@ -724,33 +725,30 @@ MS2Ptr<CCinematicComponent> UITalkCinematic::FUN_141b1c960(int nButtonSet)
     }
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1d3d0
 int UITalkCinematic::FUN_141b1d3d0()
 {
-    if (!FUN_140a467d0(&m_30))
-        return FUN_1409c17e0(FUN_1409ee290(&m_30)->Invoke("getLowerCutGlobalY"));
-    return -1;
+    if (FUN_140a467d0(&m_30))
+        return -1;
+    return FUN_1409c17e0(FUN_1409ee290(&m_30)->Invoke("getLowerCutGlobalY"));
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1d460
 int UITalkCinematic::FUN_141b1d460()
 {
-    if (!FUN_140a467d0(&m_30))
-        return FUN_1409c17e0(FUN_1409ee290(&m_30)->Invoke("getIllustGlobalX"));
-    return -1;
+    if (FUN_140a467d0(&m_30))
+        return -1;
+    return FUN_1409c17e0(FUN_1409ee290(&m_30)->Invoke("getIllustGlobalX"));
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1d4f0
 UINpcPreviewDialog* FUN_141b1d4f0(unsigned nUiId)
 {
     if (FUN_1403ed2b0() != 0)
     {
         MS2Ptr<UIObject> spDialog = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
-        if (!spDialog.IsNull())
-            return dynamic_cast<UINpcPreviewDialog*>(spDialog.get());
+        if (spDialog.get())
+            return dynamic_cast<UINpcPreviewDialog*>((UIObject*)spDialog);
     }
     return 0;
 }
@@ -759,13 +757,6 @@ UINpcPreviewDialog* FUN_141b1d4f0(unsigned nUiId)
 
 CTalkScript* FUN_140854fa0(void* pThis, CInPacket& in);        // CTalkScript::CTalkScript(CInPacket&) (talkscript.cpp, not recovered)
 
-// The incoming packet: a CInputStream sub-object at +8.
-class CInPacket
-{
-public:
-    CInputStream& Stream() { return *reinterpret_cast<CInputStream*>(reinterpret_cast<char*>(this) + 8); }
-    void* m_pad_00;
-};
 
 // The UI message sent to the swf entity registered for an event id (same shape as functioncubeobject.cpp's).
 struct Unk_FcUIMsg
@@ -961,13 +952,12 @@ void Unk_TalkIdState::FUN_141b1dac0()
     m_nPos = 0;
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1daf0
 unsigned Unk_TalkIdState::FUN_141b1daf0()
 {
-    if (m_nPos < (int)m_ids.FUN_140186270())
-        return m_ids.FUN_1401c0c80(m_nPos);
-    return 0;
+    if (m_nPos >= (int)m_ids.FUN_140186270())
+        return 0;
+    return m_ids.FUN_1401c0c80(m_nPos);
 }
 
 // @0x141b1db40
@@ -1020,50 +1010,50 @@ const void* UITalkManager::vfunc_1()
 // @0x141b1ddd0
 void UITalkManager::FUN_141b1ddd0(CInPacket& in)
 {
-    char nMode = in.Stream().vfunc_o8_1();
+    char nMode = in.vfunc_o8_1();
     if (nMode == 1)
     {
-        int nNpcId = in.Stream().vfunc_o8_3();
-        m_nFlags = in.Stream().vfunc_o8_1();
-        m_nParam = in.Stream().vfunc_o8_3();
-        m_nPage = in.Stream().vfunc_o8_3();
-        m_nSound = in.Stream().vfunc_o8_3();
+        int nNpcId = in.vfunc_o8_3();
+        m_nFlags = in.vfunc_o8_1();
+        m_nParam = in.vfunc_o8_3();
+        m_nPage = in.vfunc_o8_3();
+        m_nSound = in.vfunc_o8_3();
         FUN_141b1ff80(nNpcId);
     }
     else if (nMode == 8)
     {
-        m_nFlags = in.Stream().vfunc_o8_1();
-        int nId = in.Stream().vfunc_o8_3();
-        m_nParam = in.Stream().vfunc_o8_3();
-        m_nPage = in.Stream().vfunc_o8_3();
-        m_nSound = in.Stream().vfunc_o8_3();
+        m_nFlags = in.vfunc_o8_1();
+        int nId = in.vfunc_o8_3();
+        m_nParam = in.vfunc_o8_3();
+        m_nPage = in.vfunc_o8_3();
+        m_nSound = in.vfunc_o8_3();
         FUN_141b217b0();
         FUN_141b217e0(nId);
         FUN_141b20700();
     }
     else if (nMode == 9)
     {
-        m_nFlags = in.Stream().vfunc_o8_1();
-        m_nParam = in.Stream().vfunc_o8_3();
-        m_nPage = in.Stream().vfunc_o8_3();
-        m_nSound = in.Stream().vfunc_o8_3();
+        m_nFlags = in.vfunc_o8_1();
+        m_nParam = in.vfunc_o8_3();
+        m_nPage = in.vfunc_o8_3();
+        m_nSound = in.vfunc_o8_3();
         FUN_141b217b0();
         FUN_141b20700();
     }
     else if (nMode == 2)
     {
-        m_nFlags = in.Stream().vfunc_o8_1();
-        int nId = in.Stream().vfunc_o8_3();
-        m_nParam = in.Stream().vfunc_o8_3();
-        m_nPage = in.Stream().vfunc_o8_3();
-        m_nSound = in.Stream().vfunc_o8_3();
+        m_nFlags = in.vfunc_o8_1();
+        int nId = in.vfunc_o8_3();
+        m_nParam = in.vfunc_o8_3();
+        m_nPage = in.vfunc_o8_3();
+        m_nSound = in.vfunc_o8_3();
         FUN_141b217b0();
         FUN_141b217e0(nId);
         FUN_141b204d0();
     }
     else if (nMode == 3)
     {
-        m_nSubMode = (unsigned char)in.Stream().vfunc_o8_1();
+        m_nSubMode = (unsigned char)in.vfunc_o8_1();
         switch (m_nSubMode)
         {
         case 1: FUN_141b1e990(in); break;
@@ -1084,9 +1074,9 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
     }
     else if (nMode == 4)
     {
-        CStringW strScript = in.Stream().vfunc_o8_8();
-        CString strSound = in.Stream().vfunc_o8_6();
-        CString strIllust = in.Stream().vfunc_o8_6();
+        CStringW strScript = in.vfunc_o8_8();
+        CString strSound = in.vfunc_o8_6();
+        CString strIllust = in.vfunc_o8_6();
         FUN_1403b4750()->FUN_1416fb380(strScript);
         FUN_1403b4750()->FUN_1416fb340(strScript);
         UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
@@ -1095,8 +1085,8 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
     }
     else if (nMode == 10)
     {
-        unsigned nNpcId = in.Stream().vfunc_o8_3();
-        unsigned nSub = in.Stream().vfunc_o8_2();
+        unsigned nNpcId = in.vfunc_o8_3();
+        unsigned nSub = in.vfunc_o8_2();
         void* pMem = operator new(0x90);
         MS2Ptr<CTalkScript> spScript(pMem != 0 ? FUN_140854fa0(pMem, in) : 0);
         if (nSub == 1)
@@ -1132,7 +1122,7 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
 // @0x141b1e8a0
 void UITalkManager::FUN_141b1e8a0(CInPacket& in)
 {
-    int nValue = in.Stream().vfunc_o8_3();
+    int nValue = in.vfunc_o8_3();
     UISwfEntity* pEntity = FUN_1408e57f0()->FUN_1422b9e20(0x620001f);
     if (pEntity != 0)
     {
@@ -1149,7 +1139,7 @@ void UITalkManager::FUN_141b1e8a0(CInPacket& in)
 // @0x141b1e990
 void UITalkManager::FUN_141b1e990(CInPacket& in)
 {
-    CString strName = in.Stream().vfunc_o8_6();
+    CString strName = in.vfunc_o8_6();
     Unk_TcNpc* pNpc = FUN_141b21350();
     if (pNpc != 0)
     {
@@ -1163,12 +1153,11 @@ void UITalkManager::FUN_141b1e990(CInPacket& in)
     }
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1ea90
 void UITalkManager::FUN_141b1ea90(CInPacket& in)
 {
-    CString strDialog = in.Stream().vfunc_o8_6();
-    CString strArg = in.Stream().vfunc_o8_6();
+    CString strDialog = in.vfunc_o8_6();
+    CString strArg = in.vfunc_o8_6();
     FUN_141b1eb90(strDialog, strArg);
 }
 
@@ -1308,16 +1297,16 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
 // @0x141b1f350
 void UITalkManager::FUN_141b1f350(CInPacket& in)
 {
-    unsigned nCount = in.Stream().vfunc_o8_3();
+    unsigned nCount = in.vfunc_o8_3();
     for (unsigned __int64 i = 0; i < nCount; i++)
     {
-        int nItemId = in.Stream().vfunc_o8_3();
-        unsigned nRarity = (unsigned char)in.Stream().vfunc_o8_1();
-        int nAmount = in.Stream().vfunc_o8_3();
+        int nItemId = in.vfunc_o8_3();
+        unsigned nRarity = (unsigned char)in.vfunc_o8_1();
+        int nAmount = in.vfunc_o8_3();
         MS2Ptr<CItem> spItem(new CItem());
         if (spItem->FUN_140523c40(nItemId, nRarity, 0))
         {
-            spItem->FUN_140524eb0(in.Stream());
+            spItem->FUN_140524eb0(in);
             spItem->FUN_14052b340(nAmount);
             if (FUN_1403ed2b0()->FUN_141adc890(0x4e98) == 0)
             {
@@ -1340,52 +1329,49 @@ void UITalkManager::FUN_141b1f350(CInPacket& in)
     }
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1f620
 void UITalkManager::FUN_141b1f620(CInPacket& in)
 {
-    __int64 nValue = in.Stream().vfunc_o8_4();
+    __int64 nValue = in.vfunc_o8_4();
     m_reward.m_nMerat += nValue;
     void* pHud = FUN_140938cd0(0x4e5d);
     if (pHud != 0)
         FUN_141abf230(pHud, nValue, 0);
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1f6b0
 void UITalkManager::FUN_141b1f6b0(CInPacket& in)
 {
-    __int64 nValue = in.Stream().vfunc_o8_4();
+    __int64 nValue = in.vfunc_o8_4();
     m_reward.m_nMeso += nValue;
     void* pHud = FUN_140938cd0(0x4e5d);
     if (pHud != 0)
         FUN_141abf450(pHud, nValue, 0);
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1f740
 void UITalkManager::FUN_141b1f740(CInPacket& in)
 {
-    m_reward.m_nExp += in.Stream().vfunc_o8_3();
+    int nExp = in.vfunc_o8_3();
+    m_reward.m_nExp += nExp;
 }
 
 // MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1f7a0
 void UITalkManager::FUN_141b1f7a0(CInPacket& in)
 {
-    int nValue = in.Stream().vfunc_o8_3();
-    char bJackpot = in.Stream().vfunc_o8_1();
+    int nValue = in.vfunc_o8_3();
+    char bJackpot = in.vfunc_o8_1();
     m_reward.m_nAffinity += nValue;
     if (bJackpot != 0)
         m_reward.m_nJackpot = 1;
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1f840
 void UITalkManager::FUN_141b1f840(CInPacket& in)
 {
-    unsigned nValue = in.Stream().vfunc_o8_3();
-    CStringW strText = in.Stream().vfunc_o8_8();
+    unsigned nValue = in.vfunc_o8_3();
+    CStringW strText = in.vfunc_o8_8();
     void* pDlg = FUN_14138fd50(0x4e7e);
     if (pDlg != 0)
         FUN_14190f110(pDlg, nValue, FUN_14016a600(strText, 0));
@@ -1405,18 +1391,21 @@ void UITalkManager::FUN_141b1f920(const CString& strArgs)
     FUN_141b1faa0(nType, nDialog);
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1fa20
 void UITalkManager::FUN_141b1fa20(const CString& strArgs)
 {
-    FUN_141b1faa0(4, 0x4f03);
+    int nId = 0x4f03;
+    int nType = 4;
+    FUN_141b1faa0(nType, nId);
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1fa60
 bool UITalkManager::FUN_141b1fa60()
 {
-    return FUN_1403ed2d0()->FUN_141bd0cc0() != 0;
+    MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return false;
+    return true;
 }
 
 // MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
@@ -1503,23 +1492,21 @@ void UITalkManager::FUN_141b1fcf0(unsigned nNpcId)
     }
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1feb0
 void UITalkManager::FUN_141b1feb0()
 {
-    if (FUN_141b21220() != 0)
+    if (FUN_141b21220() == 0)
+        return;
+    m_nTalking = 0;
+    m_nPending = 0;
+    if (FUN_141b213c0() == 0)
     {
-        m_nTalking = 0;
-        m_nPending = 0;
-        if (FUN_141b213c0() == 0)
-        {
-            COutPacket packet(0x22, 0);
-            packet.vfunc_o10_1(0);
-            FUN_140710590(packet);
-        }
-        FUN_141b20210();
-        FUN_140a94350()->vfunc_10(0);
+        COutPacket packet(0x22, 0);
+        packet.vfunc_o10_1(0);
+        FUN_140710590(packet);
     }
+    FUN_141b20210();
+    FUN_140a94350()->vfunc_10(0);
 }
 
 // MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
@@ -1679,11 +1666,11 @@ void UITalkManager::FUN_141b20790(int nNpcId)
     }
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b20ac0
 int UITalkManager::FUN_141b20ac0()
 {
-    FUN_141b21220();
+    if (FUN_141b21220() == 0)
+        return 0;
     return 0;
 }
 
@@ -1738,25 +1725,21 @@ int UITalkManager::FUN_141b20bb0()
     return 1;
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b20db0
 void UITalkManager::FUN_141b20db0(unsigned nNpcId)
 {
-    if (FUN_141b213c0() == 0)
-    {
-        if (m_nPending == 0)
-        {
-            m_nPending = 1;
-            m_nSubMode = 0;
-            COutPacket packet(0x22, 0);
-            packet.vfunc_o10_1(2);
-            packet.vfunc_o10_3(nNpcId);
-            FUN_140710590(packet);
-        }
-    }
-    else
+    if (FUN_141b213c0() != 0)
     {
         FUN_141b215b0(0);
+    }
+    else if (m_nPending == 0)
+    {
+        m_nPending = 1;
+        m_nSubMode = 0;
+        COutPacket packet(0x22, 0);
+        packet.vfunc_o10_1(2);
+        packet.vfunc_o10_3(nNpcId);
+        FUN_140710590(packet);
     }
 }
 
@@ -1813,13 +1796,12 @@ void UITalkManager::FUN_141b21190(unsigned char nFlags, int nParam, int nPage)
     m_nPage = nPage;
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b211d0
-bool UITalkManager::FUN_141b211d0()
+int UITalkManager::FUN_141b211d0()
 {
-    unsigned nNow = FUN_140869420();
-    int nLast = m_nLastTick;
-    return *FUN_1402056b0(reinterpret_cast<char*>(FUN_1401d3200()) + 0x3730) <= (unsigned)(nNow - nLast);
+    if (FUN_140869420() - m_nLastTick < *FUN_1402056b0(reinterpret_cast<char*>(FUN_1401d3200()) + 0x3730))
+        return 0;
+    return 1;
 }
 
 // @0x141b21220
@@ -1828,18 +1810,19 @@ int UITalkManager::FUN_141b21220()
     return m_nTalking;
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b21240
-bool UITalkManager::FUN_141b21240(int nNpcId)
+int UITalkManager::FUN_141b21240(int nNpcId)
 {
     if (FUN_141b21220() == 0)
-        return false;
+        return 0;
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
-        return false;
+        return 0;
     if (nNpcId == (int)FUN_14123c580(pPC))
-        return true;
-    return nNpcId == m_nNpcId;
+        return 1;
+    if (nNpcId == m_nNpcId)
+        return 1;
+    return 0;
 }
 
 // @0x141b212c0
@@ -1850,26 +1833,24 @@ unsigned UITalkManager::FUN_141b212c0()
     return m_nNpcId;
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b212f0
-unsigned __int64 UITalkManager::FUN_141b212f0()
+int UITalkManager::FUN_141b212f0()
 {
     Unk_TcNpc* pNpc = FUN_141b21350();
-    if (pNpc == 0)
-    {
-        if (FUN_141b213c0() == 0)
-            return 0;
-        return (unsigned __int64)(unsigned)m_nSpecialNpc;
-    }
-    return FUN_141092fa0(pNpc);
+    if (pNpc != 0)
+        return FUN_141092fa0(pNpc);
+    if (FUN_141b213c0() != 0)
+        return m_nSpecialNpc;
+    return 0;
 }
 
 // MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b21350
 Unk_TcNpc* UITalkManager::FUN_141b21350()
 {
-    unsigned nId = FUN_141b212c0();
-    return FUN_1403ed2d0()->FUN_141bd1320(nId);
+    int nId = FUN_141b212c0();
+    Unk_TcNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(nId);
+    return pNpc;
 }
 
 // @0x141b21390
@@ -1879,13 +1860,12 @@ void UITalkManager::FUN_141b21390()
     m_nSpecialNpc = 0;
 }
 
-// MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b213c0
-unsigned char UITalkManager::FUN_141b213c0()
+int UITalkManager::FUN_141b213c0()
 {
-    if (m_nSpecialNpc == 0)
-        return m_nFlags & 0x10;
-    return 1;
+    if ((unsigned)m_nSpecialNpc > 0)
+        return 1;
+    return m_nFlags & 0x10;
 }
 
 // MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
