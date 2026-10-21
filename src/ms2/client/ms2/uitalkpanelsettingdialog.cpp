@@ -127,21 +127,21 @@ public:
     ~Unk_TpsRequest();                                                       // 0x1401baaf0
     void FUN_1401bac80(CString strName, CStringW strValue, int n);
     void FUN_1401badc0(int bEnabled);
-    char FUN_1401bab90(CString strName, void* pOut);
+    unsigned char FUN_1401bab90(CString strName, void* pOut);
 private:
-    char m_pad[0x38];
+    void* m_pad[5];
 };
 struct Unk_TpsReqValue
 {
     Unk_TpsReqValue();                                                          // 0x1401ba840
     ~Unk_TpsReqValue();                                                         // 0x1401ba940
-    char m_pad_00[8];
+    void* m_pad_00;
     CStringW m_strText;                                                     // +0x08
-    char m_pad_10[8];
+    void* m_pad_10;
     int m_code;                                                             // +0x18
-    char m_pad_1c[0x1c];
+    int m_pad_1c;
 };
-MS2_CHECK_SIZE(Unk_TpsReqValue, 0x38);
+MS2_CHECK_SIZE(Unk_TpsReqValue, 0x20);
 
 class Unk_TpsFeatures { public: bool FUN_14036d570(int nFeature); };
 Unk_TpsFeatures* FUN_140166410();
@@ -355,11 +355,10 @@ void UITalkPanelSettingDialog::vfunc_80(void* pRequest)
 // @0x141b23550
 CStringW UITalkPanelSettingDialog::FUN_141b23550()
 {
-    MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab");
-    if (static_cast<Unk_TpsInput*>(spTab) == 0)
-        return L"";
-    return spTab->FUN_1422e0b00();
-}   // MS2-FUNCTIONAL: not byte-matched (temp destruction order)
+    if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
+        return spTab->FUN_1422e0b00();
+    return L"";
+}
 
 // @0x141b23650
 int UITalkPanelSettingDialog::FUN_141b23650()
