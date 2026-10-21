@@ -363,3 +363,18 @@ void NpcDataTableCli::Collect(std::map<unsigned, MS2Ptr<NpcDataCli> >& mapOut)
 
 // @0x140a84780
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x140a7d630, NpcConstantValue, 32, 0xE0140F56);
+MS2_REPLACE_METHOD(0x140a7c150, NpcDataCli, Different, 711, 0xD224B019);
+MS2_REPLACE_METHOD(0x140a7c420, NpcDataCli, LoadXml, 1191, 0x8292CE11);
+MS2_REPLACE_METHOD(0x140a7c8d0, NpcDataCli, GetNametag, 18, 0x6892930A);
+MS2_REPLACE_METHOD(0x140a7c8f0, NpcDataCli, IsFemale, 48, 0xE93E6AD5);
+MS2_REPLACE_METHOD(0x140a7c930, NpcDataCli, IsBossNpc, 24, 0x026BE602);
+MS2_REPLACE_METHOD(0x140a7c950, NpcDataCli, GetUnknown12, 11, 0xCC810D29);
+MS2_REPLACE_METHOD(0x140a7c970, NpcDataCli, GetClassConstant, 162, 0xFD3F06CD);
+MS2_REPLACE(0x140a7cbe0, FUN_140a7cbe0, 6, 0xA9AF6E37);
+MS2_REPLACE_METHOD(0x140a7cbf0, NpcDataTableCli, LoadAll, 107, 0xE972F120);
+MS2_REPLACE_METHOD(0x140a7cc70, NpcDataTableCli, IndexAllRegions, 240, 0x62AFCDC1);
+MS2_REPLACE_METHOD(0x140a7d260, NpcDataTableCli, Collect, 228, 0x687C6E21);
+

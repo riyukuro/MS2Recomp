@@ -274,18 +274,18 @@ typedef std::map<unsigned, MS2Ptr<CNpcShopData> > Unk_NpcShopMap;
 
 // ---- statics (.text$di in this order) -----------------------------------------------------------------------------
 
-static ATL::CAtlArray<MS2Ptr<CCacheData> > s_aNpcShopCaches;                                     // 0x143ab0888
-static std::vector<CString> s_vecUnused;                                                         // 0x143ab0758
-static ATL::CAtlArray<MS2Ptr<CCacheData> > s_aBeautyShopCaches;                                  // 0x143ab0908
-static MS2Ptr<CCacheData> s_spCouponCache;                                                       // 0x143ab0988
-static CLockCriticalSection s_beautyShopLock;                                                    // 0x143ab08a8
-static CLockCriticalSection s_couponLock;                                                        // 0x143ab0928
-static CLockCriticalSection s_npcShopLock;                                                       // 0x143ab07b0
-static ATL::CAtlMap<int, Unk_MeratItemArrayPtr> s_meratGroups;                                   // 0x143ab0840
-static ATL::CRBMap<unsigned, MS2Ptr<CBeautyShopData> > s_beautyShops;                            // 0x143ab08d8
-static ATL::CRBMap<unsigned, MS2Ptr<CNpcShopData> > s_npcShops;                                  // 0x143ab07e0
-static ATL::CRBMap<unsigned, Unk_ShopLimitArrayPtr> s_shopLimits;                                // 0x143ab0810
-static ATL::CRBMap<unsigned, Unk_CouponItemArrayPtr> s_coupons;                                  // 0x143ab0958
+MS2_NPCSHOPDATA_STATIC ATL::CAtlArray<MS2Ptr<CCacheData> > s_aNpcShopCaches;                                     // 0x143ab0888
+MS2_NPCSHOPDATA_STATIC std::vector<CString> s_vecUnused;                                                         // 0x143ab0758
+MS2_NPCSHOPDATA_STATIC ATL::CAtlArray<MS2Ptr<CCacheData> > s_aBeautyShopCaches;                                  // 0x143ab0908
+MS2_NPCSHOPDATA_STATIC MS2Ptr<CCacheData> s_spCouponCache;                                                       // 0x143ab0988
+MS2_NPCSHOPDATA_STATIC CLockCriticalSection s_beautyShopLock;                                                    // 0x143ab08a8
+MS2_NPCSHOPDATA_STATIC CLockCriticalSection s_couponLock;                                                        // 0x143ab0928
+MS2_NPCSHOPDATA_STATIC CLockCriticalSection s_npcShopLock;                                                       // 0x143ab07b0
+MS2_NPCSHOPDATA_STATIC ATL::CAtlMap<int, Unk_MeratItemArrayPtr> s_meratGroups;                                   // 0x143ab0840
+MS2_NPCSHOPDATA_STATIC ATL::CRBMap<unsigned, MS2Ptr<CBeautyShopData> > s_beautyShops;                            // 0x143ab08d8
+MS2_NPCSHOPDATA_STATIC ATL::CRBMap<unsigned, MS2Ptr<CNpcShopData> > s_npcShops;                                  // 0x143ab07e0
+MS2_NPCSHOPDATA_STATIC ATL::CRBMap<unsigned, Unk_ShopLimitArrayPtr> s_shopLimits;                                // 0x143ab0810
+MS2_NPCSHOPDATA_STATIC ATL::CRBMap<unsigned, Unk_CouponItemArrayPtr> s_coupons;                                  // 0x143ab0958
 static CString s_premiumSortNames[8] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal",
                                         "EnumEnd"};                                              // 0x143ab0770
 static CString s_ugcSortNames[7] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};  // 0x143ab0720
@@ -2428,3 +2428,33 @@ unsigned CNpcShopMeratItemSvr::vfunc_3()
 {
     return m_nSn;
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x1406df180, FUN_1406df180, 6, 0xFFA3AE7F);
+MS2_REPLACE(0x1406df690, FUN_1406df690, 3315, 0xAEF0974A);
+MS2_REPLACE(0x1406e21b0, FUN_1406e21b0, 908, 0xB569CF72);
+MS2_REPLACE_METHOD(0x1406e2600, CNpcShopData, FUN_1406e2600, 1454, 0x4E5603C8);
+MS2_REPLACE(0x1406e2c10, FUN_1406e2c10, 260, 0x78C2A73E);
+MS2_REPLACE(0x1406e2d20, FUN_1406e2d20, 431, 0x33D51D3C);
+MS2_REPLACE(0x1406e2ee0, FUN_1406e2ee0, 190, 0x15DF81BD);
+MS2_REPLACE(0x1406e3460, FUN_1406e3460, 323, 0x4ED278B7);
+MS2_REPLACE_METHOD(0x1406e3900, CBeautyShopItem, FUN_1406e3900, 682, 0x34FCDCE9);
+MS2_REPLACE_METHOD(0x1406e4260, CBeautyShopItemGroups, FUN_1406e4260, 232, 0xED5A6CB2);
+MS2_REPLACE(0x1406e4420, FUN_1406e4420, 207, 0xD8B8393F);
+MS2_REPLACE_METHOD(0x1406e45b0, CBeautyShopData, FUN_1406e45b0, 432, 0x08A4BE3E);
+MS2_REPLACE_METHOD(0x1406e4ce0, CBeautyShopData, GetShopItemGroupList, 172, 0xF6135C20);
+MS2_REPLACE(0x1406e4db0, FUN_1406e4db0, 11, 0x30025ED0);
+MS2_REPLACE(0x1406e4dd0, FUN_1406e4dd0, 278, 0xBF47013A);
+MS2_REPLACE(0x1406e55b0, FUN_1406e55b0, 267, 0xEEA11BA8);
+MS2_REPLACE(0x1406e5a40, FUN_1406e5a40, 170, 0x5E64F0EF);
+MS2_REPLACE(0x1406e5ba0, FUN_1406e5ba0, 21, 0x00E918A5);
+MS2_REPLACE(0x1406e5bc0, FUN_1406e5bc0, 36, 0x91B4DE0C);
+MS2_REPLACE(0x1406e5bf0, FUN_1406e5bf0, 670, 0xA9B6A623);
+MS2_REPLACE(0x1406e5ea0, FUN_1406e5ea0, 421, 0xF247BA76);
+MS2_REPLACE(0x1406e8b50, FUN_1406e8b50, 194, 0xB4D21D25);
+MS2_REPLACE_METHOD(0x1406f1930, CNpcShopMeratItemSvr, vfunc_2, 11, 0x02239C70);
+MS2_REPLACE_METHOD(0x1406f1980, CNpcShopMeratItemBase, vfunc_1, 115, 0xCD056558);
+MS2_REPLACE_METHOD(0x1406f1a00, CNpcShopMeratItemSvr, vfunc_1, 82, 0xDA979F2E);
+MS2_REPLACE_METHOD(0x1406f2470, CNpcShopMeratItemBase, vfunc_3, 60, 0xABB6EB59);
+MS2_REPLACE_METHOD(0x1406f24b0, CNpcShopMeratItemSvr, vfunc_3, 14, 0x828204CF);
+

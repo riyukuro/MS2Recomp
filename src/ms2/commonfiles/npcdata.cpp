@@ -1697,3 +1697,9 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9b7e0-0x142c9b860 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x1406ce6d0, CNpcDataTable, LoadRegionSpawn, 1625, 0x38836B4E);
+MS2_REPLACE_METHOD(0x1406cedb0, CNpcDataTable, NeedsLoad, 496, 0x195E2B17);
+MS2_REPLACE(0x1406cfb20, FUN_1406cfb20, 188, 0xF03F4D95);
+
