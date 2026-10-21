@@ -13,7 +13,6 @@ class Unk_G9Player
 {
 public:
     virtual ~Unk_G9Player();
-    virtual void Unk_Slot0();
     virtual void Unk_Slot1();
     virtual void Unk_Slot2();
     virtual void Unk_Slot3();

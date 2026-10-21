@@ -40,19 +40,19 @@ __declspec(noinline) CStringW GcFmtStr(const wchar_t* f, const CStringW& a) { re
 #include "ms2/unnamed/unit_1413a9df0.h"
 
 // @0x1413a9df0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionFieldId::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
-    str.Append(StringFormat(L"value({0}), range({1}-{2})", m_n20, unsigned(m_nRangeBeg), unsigned(m_nRangeEnd)));
+    str.Append(StringFormat(L"value({0}), range({1}-{2})", m_n20, reinterpret_cast<const unsigned&>(m_nRangeBeg), reinterpret_cast<const unsigned&>(m_nRangeEnd)));
     return str;
 }
 
 // @0x1413a9ec0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionFieldId::vfunc_8()
 {
-    if (!m_b1c && m_n20 != 0 && m_nRangeBeg == 0 && m_nRangeEnd == 0)
+    if (m_b1c)
+        return 0;
+    if (m_n20 != 0 && m_nRangeBeg == 0 && m_nRangeEnd == 0)
         return m_n20;
     return 0;
 }
@@ -296,12 +296,11 @@ CStringW CGuideConditionGuideClear::vfunc_7()
 }
 
 // @0x1413aac50
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionGuideClear::vfunc_8()
 {
-    if (!m_b1c)
-        return m_nGuideId;
-    return 0;
+    if (m_b1c)
+        return 0;
+    return m_nGuideId;
 }
 
 // @0x1413aac80
@@ -372,10 +371,9 @@ CStringW CGuideConditionCanObserveMode::vfunc_1()
 }
 
 // @0x1413ab070
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionCanObserveMode::vfunc_3()
 {
-    void* pDialog = FUN_1413b1c60(CStringA("PartyDialog"));
+    void* pDialog = FUN_1413b1c60("PartyDialog");
     if (pDialog == 0)
         return 0;
     return FUN_1413a55a0(FUN_141a75840(pDialog));
@@ -401,14 +399,12 @@ void CGuideConditionMyPlayerLevel::vfunc_2(Unk_140165cf0* pElem)
 }
 
 // @0x1413ab1d0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionMyPlayerLevel::vfunc_3()
 {
     Unk_G9Player* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    unsigned short nLevel = pPC->vfunc_78();
-    return FUN_1413a5600(m_n20 <= (int)(unsigned)nLevel);
+    return FUN_1413a5600(pPC->vfunc_78() >= m_n20);
 }
 
 // @0x1413ab240
@@ -430,10 +426,9 @@ CStringW CGuideConditionMoney::vfunc_1()
 }
 
 // @0x1413ab300
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionMoney::vfunc_3()
 {
-    return FUN_1413a5600(m_n20 <= DAT_143ab2898);
+    return FUN_1413a5600(DAT_143ab2898 >= m_n20);
 }
 
 // @0x1413ab350
@@ -640,26 +635,22 @@ CStringW CGuideConditionLastClosedTextTip::vfunc_1()
 }
 
 // @0x1413ac1d0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 void CGuideConditionLastClosedTextTip::vfunc_2(Unk_140165cf0* pElem)
 {
     CGuideCondition::vfunc_2(pElem);
     m_nEntityId = 0;
     FUN_1408731e0(pElem, "entityId", m_nEntityId);
-    if (m_nEntityId == 0) {
-        CStringA strMsg = FUN_141388650("lastClosedToolTip entityId == 0");
-        throw std::exception((const char*)strMsg);
-    }
+    if (m_nEntityId == 0)
+        throw std::exception(FUN_141388650("lastClosedToolTip entityId == 0"));
 }
 
 // @0x1413ac290
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionLastClosedTextTip::vfunc_3()
 {
     void* pDialog = FUN_14136f3e0(0x4e53);
-    if (pDialog == 0)
-        return 0;
-    return FUN_1413a5600(m_nEntityId == FUN_14195b950(pDialog));
+    if (pDialog != 0)
+        return FUN_1413a5600(m_nEntityId == FUN_14195b950(pDialog));
+    return 0;
 }
 
 // @0x1413ac2f0
@@ -727,22 +718,22 @@ CStringW CGuideConditionTitle::vfunc_1()
 }
 
 // @0x1413ac6a0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionTitle::vfunc_3()
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    Unk_G9Player* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
         return 0;
-    return FUN_1413a5600(DAT_143ab3268.FUN_140186270() != 0);
+    return FUN_1413a5600(DAT_143ab3268.FUN_140186270() > 0);
 }
 
 // @0x1413ac700
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 void CGuideConditionTitle::vfunc_5()
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0) {
-        size_t nCount = DAT_143ab3268.FUN_140186270();
-        FUN_1412751b0(GcFmtSize(L"CGuideConditionTitle> titleCount={0}", nCount), 0x14);
-    }
+    Unk_G9Player* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return;
+    size_t nCount = DAT_143ab3268.FUN_140186270();
+    FUN_1412751b0(GcFmtSize(L"CGuideConditionTitle> titleCount={0}", nCount), 0x14);
 }
 
 // @0x1413ac790
