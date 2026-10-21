@@ -79,7 +79,7 @@ class CFishingRodData : public CPtred
 public:
     CFishingRodData();                                              // 0x1403b1980
     virtual ~CFishingRodData();                                     // 0x1403b3a10
-    bool Load(Unk_140165cf0* pNode);                                // 0x1403b1a20
+    int  Load(Unk_140165cf0* pNode);                                // 0x1403b1a20
 
     unsigned m_nRodCode;                                            // +0x18 "rodCode"
     unsigned m_nMasteryLimit;                                          // +0x1c "fishMasteryLimit"
@@ -97,7 +97,7 @@ class CFishingSpotData : public CPtred
 public:
     CFishingSpotData();                                             // 0x1403b1b20
     virtual ~CFishingSpotData();                                    // 0x1403b3a60
-    bool Load(Unk_140165cf0* pNode);                                // 0x1403b1b90
+    int  Load(Unk_140165cf0* pNode);                                // 0x1403b1b90
 
     unsigned m_nId;                                                 // +0x18 "id"
     unsigned m_nMinMastery;                                         // +0x1c "minMastery"

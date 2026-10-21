@@ -218,8 +218,7 @@ CFishingRodData::CFishingRodData()
 }
 
 // @0x1403b1a20
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
-bool CFishingRodData::Load(Unk_140165cf0* pNode)
+int CFishingRodData::Load(Unk_140165cf0* pNode)
 {
     FUN_140873220(pNode, "rodCode", m_nRodCode);
     FUN_140873220(pNode, "fishMasteryLimit", m_nMasteryLimit);
@@ -228,7 +227,9 @@ bool CFishingRodData::Load(Unk_140165cf0* pNode)
     FUN_140873ad0(pNode, "chair", m_strChair);
     FUN_140873ad0(pNode, "fishLureEffect", m_strLureEffect);
     FUN_140873ad0(pNode, "fishingChairEffect", m_strChairEffect);
-    return m_nRodCode != 0;
+    if (m_nRodCode == 0)
+        return 0;
+    return 1;
 }
 
 // ---- CFishingSpotData ----
@@ -246,8 +247,7 @@ CFishingSpotData::CFishingSpotData()
 }
 
 // @0x1403b1b90
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
-bool CFishingSpotData::Load(Unk_140165cf0* pNode)
+int CFishingSpotData::Load(Unk_140165cf0* pNode)
 {
     FUN_140873220(pNode, "id", m_nId);
     FUN_140873220(pNode, "minMastery", m_nMinMastery);
@@ -301,25 +301,25 @@ int CFishingTable::FUN_1403b1f70(const CStringW& strHabitat)
 {
     if (strHabitat == L"water")
         return 0;
-    if (strHabitat == L"seawater")
+    else if (strHabitat == L"seawater")
         return 1;
-    if (strHabitat == L"poison")
+    else if (strHabitat == L"poison")
         return 3;
-    if (strHabitat == L"lava")
+    else if (strHabitat == L"lava")
         return 2;
-    if (strHabitat == L"oil")
+    else if (strHabitat == L"oil")
         return 4;
-    if (strHabitat == L"devilwater")
+    else if (strHabitat == L"devilwater")
         return 5;
-    if (strHabitat == L"emeraldwater")
+    else if (strHabitat == L"emeraldwater")
         return 6;
-    if (strHabitat == L"all")
+    else if (strHabitat == L"all")
         return 7;
-    return 8;
+    else
+        return 8;
 }
 
 // @0x1403b20b0
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 CStringW CFishingTable::FUN_1403b20b0(int nHabitat)
 {
     switch (nHabitat)
@@ -328,10 +328,10 @@ CStringW CFishingTable::FUN_1403b20b0(int nHabitat)
         return FUN_14028de60(0xbd0);
     case 1:
         return FUN_14028de60(0xbd1);
-    case 2:
-        return FUN_14028de60(0xbd3);
     case 3:
         return FUN_14028de60(0xbd2);
+    case 2:
+        return FUN_14028de60(0xbd3);
     case 4:
         return FUN_14028de60(0xbd4);
     case 5:
@@ -518,19 +518,17 @@ CStringW CFishingTable::FUN_1403b2ee0(unsigned nFishId)
 }
 
 // @0x1403b30b0
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 void CFishingTable::FUN_1403b30b0(ATL::CAtlArray<unsigned int>* pOut, int nHabitat, int bBookOnly)
 {
     CheckInit();
     for (POSITION pos = m_mapFish.GetStartPosition(); pos != 0; m_mapFish.GetNext(pos))
     {
         CFishDataPtr spData = m_mapFish.GetValueAt(pos);
-        if (spData->m_nHabitat == nHabitat)
-        {
-            if (bBookOnly != 0 && spData->m_nFishingBook == 0)
-                continue;
-            pOut->Add(spData->m_nId);
-        }
+        if (spData->m_nHabitat != nHabitat)
+            continue;
+        if (bBookOnly != 0 && spData->m_nFishingBook == 0)
+            continue;
+        pOut->Add(spData->m_nId);
     }
 }
 
