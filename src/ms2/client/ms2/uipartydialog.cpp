@@ -1779,10 +1779,10 @@ __int64 FUN_140c75430(CUserReportData* pData, int nKind);                // the 
 // The UIMsg built on the stack (uitalkcinematic.cpp: its ASData setters are free functions bound by address).
 struct Unk_FcUIMsg
 {
+    Unk_FcUIMsg();                                                      // 0x1422e4490
     ~Unk_FcUIMsg();                                                     // 0x140c30570
     void* m_pad[0x50 / 8];                                              // pointers, not a char array: the exe has no /GS cookie
 };
-void FUN_1422e4490(Unk_FcUIMsg* p);                                     // construct
 void FUN_1422b82b0(Unk_FcUIMsg* p, const char* psz);
 void FUN_1422b8310(Unk_FcUIMsg* p, const wchar_t* psz);
 void FUN_1422b7f70(Unk_FcUIMsg* p, int n);
@@ -2374,8 +2374,8 @@ void UIPopUpMenu::FUN_141a80770()
     if (m_100 != 0)
         return;
     vfunc_47(1);
-    if ((ASScrollingList*)m_f0.get() != 0)
-        static_cast<Unk_PdScript*>((AScript*)m_f0.get())->FUN_1422bb330("close");
+    if ((ASScrollingList*)m_f0 != 0)
+        static_cast<Unk_PdScript*>((AScript*)m_f0.operator->())->FUN_1422bb330("close");
     FUN_141a82dd0();
     FUN_140b632f0()->FUN_1422d4840(this, 0);
     FUN_141930950(FUN_140c607b0(), this);
@@ -2853,7 +2853,6 @@ void UIPopUpMenu::FUN_141a83ed0(int nQuery, int nKind)
     CString strBuddy = FUN_140719530(nBuddyId);
     CString strChar = FUN_140719530(m_a8);
     Unk_FcUIMsg msg;
-    FUN_1422e4490(&msg);
     FUN_1422b7f70(&msg, nQuery);
     FUN_1422b7f70(&msg, nKind);
     FUN_1422b8310(&msg, m_90);
@@ -2861,7 +2860,7 @@ void UIPopUpMenu::FUN_141a83ed0(int nQuery, int nKind)
     FUN_1422b82b0(&msg, strChar);
     UIDialog* pQuery = FUN_140ae5a30(0x4e4e);
     if (pQuery != 0)
-        static_cast<IMessageListener*>(pQuery)->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+        pQuery->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
 }
 
 // @0x141a84130
@@ -2878,7 +2877,6 @@ void UIPopUpMenu::FUN_141a84130(int nQuery, int nKind)
     CString strHome = FUN_140719530(nHomeId);
     CString strChar = FUN_140719530(m_a8);
     Unk_FcUIMsg msg;
-    FUN_1422e4490(&msg);
     FUN_1422b7f70(&msg, nQuery);
     FUN_1422b7f70(&msg, nKind);
     FUN_1422b8310(&msg, m_90);
@@ -2886,7 +2884,7 @@ void UIPopUpMenu::FUN_141a84130(int nQuery, int nKind)
     FUN_1422b82b0(&msg, strChar);
     UIDialog* pQuery = FUN_140ae5a30(0x4e4e);
     if (pQuery != 0)
-        static_cast<IMessageListener*>(pQuery)->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+        pQuery->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
 }
 
 // @0x141a842f0
@@ -3254,15 +3252,16 @@ void UIPopUpMenu::FUN_141a85500()
     if (m_90.IsEmpty())
         return;
     UIDialog* pDialog;
+    int nState;
+    bool bMemoTab;
     if (m_d0 != 0 && (pDialog = FUN_140ae5990(0x4e4d)) != 0 && pDialog->vfunc_55() == 0 &&
-        FUN_1418d6960(reinterpret_cast<Unk_PmCommunity*>(pDialog)) == 3)
+        (bMemoTab = (nState = FUN_1418d6960(reinterpret_cast<Unk_PmCommunity*>(pDialog))) == 3))
     {
         CString strBuddy = FUN_140719530(m_d0);
         Unk_FcUIMsg msg;
-        FUN_1422e4490(&msg);
         FUN_1422b82b0(&msg, "editMemo");
         FUN_1422b82b0(&msg, strBuddy);
-        static_cast<IMessageListener*>(pDialog)->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+        pDialog->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
     }
     else
     {
@@ -3530,19 +3529,19 @@ void UIPopUpMenu::FUN_141a871a0()
     if (m_90.IsEmpty())
         return;
     UIDialog* pDialog;
-    if (m_d8 == 0 || (pDialog = FUN_140ae5990(0x4e4d)) == 0 || pDialog->vfunc_55() != 0 ||
-        FUN_1418d6960(reinterpret_cast<Unk_PmCommunity*>(pDialog)) != 4)
-    {
-        FUN_141a84130(0, 5);
-    }
-    else
+    int nState;
+    if (m_d8 != 0 && (pDialog = FUN_140ae5990(0x4e4d)) != 0 && pDialog->vfunc_55() == 0 &&
+        (nState = FUN_1418d6960(reinterpret_cast<Unk_PmCommunity*>(pDialog))) == 4)
     {
         CString strHome = FUN_140719530(m_d8);
         Unk_FcUIMsg msg;
-        FUN_1422e4490(&msg);
         FUN_1422b82b0(&msg, "editMemoHomeBlock");
         FUN_1422b82b0(&msg, strHome);
-        static_cast<IMessageListener*>(pDialog)->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+        pDialog->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
+    }
+    else
+    {
+        FUN_141a84130(0, 5);
     }
 }
 
