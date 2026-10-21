@@ -4433,3 +4433,13 @@ criHeap_Initialize	1400282e0	func
 ?SupportsInterface@CTraits@InstanceTraits@AS3@GFx@Scaleform@@UEBA_NAEBVTraits@2345@@Z	14252e480	func
 ?Unk15@Object@AS3@GFx@Scaleform@@UEAAPEAXXZ	1423df580	func
 ?StripExtension@String@Scaleform@@QEAAXXZ	1425a5180	func
+??0Mutex@Scaleform@@QEAA@_N0@Z	14258a350	func
+??0WaitCondition@Scaleform@@QEAA@XZ	14258a620	func
+??1Mutex@Scaleform@@UEAA@XZ	14258a720	func
+??1WaitCondition@Scaleform@@QEAA@XZ	14258a810	func
+?AddRef@RefCountVImpl@Scaleform@@UEAAXXZ	14257dc40	func
+?DoLock@Mutex@Scaleform@@QEAAXXZ	14258aca0	func
+?Release@RefCountVImpl@Scaleform@@UEAAXXZ	14257dcf0	func
+?SetToAppend@?$Matrix2x4@M@Render@Scaleform@@QEAAXAEBV123@0@Z	1425e5430	func
+?Unlock@Mutex@Scaleform@@QEAAXXZ	14258bb70	func
+?unmapTextureRT@DrawableImage@Render@Scaleform@@IEAAXXZ	1425f0590	func
