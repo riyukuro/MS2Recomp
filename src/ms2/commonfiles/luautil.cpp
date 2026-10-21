@@ -249,7 +249,7 @@ bool CLua::vfunc_1()
     CLuaContext* pContext = GetContext().get();
     if (pContext == 0)
     return false;
-    if (Unk_LockGuard guard = m_lock) {}
+    if (Unk_LockGuard guard = m_lock) { __assume(0); }
     else
     {
         if (Unk_LockGuard contextGuard = pContext->m_lock) {}
@@ -316,7 +316,7 @@ void CLua::Validate()
 // @0x140673670
 CLua::ContextPtr CLua::GetContext()
 {
-    if (Unk_LockGuard guard = m_lock) {}
+    if (Unk_LockGuard guard = m_lock) { __assume(0); }
     else
     {
         if (m_context.IsNull())
@@ -389,7 +389,7 @@ bool CLua::SetLocale(const CString& strLocale)
         MS2_ASSERT_AT(0x225, 0);
         return false;
     }
-    if (Unk_LockGuard guard = spContext->m_lock) {}
+    if (Unk_LockGuard guard = spContext->m_lock) { __assume(0); }
     else
     {
         spContext->Select("set_locale");
@@ -409,7 +409,7 @@ CString CLua::GetLocale()
         MS2_ASSERT_AT(0x23b, 0);
         return "";
     }
-    if (Unk_LockGuard guard = spContext->m_lock) {}
+    if (Unk_LockGuard guard = spContext->m_lock) { __assume(0); }
     else
     {
         spContext->Select("get_locale");
@@ -444,6 +444,7 @@ float CLua::FUN_140674100(long long p2, int unused) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_msiR");
         context->Push((double)p2);
@@ -460,6 +461,7 @@ float CLua::FUN_140674290(long long p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_rmsiR");
         context->Push((double)p2);
@@ -476,6 +478,7 @@ float CLua::FUN_140674420(long long p2, float p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_pc_asiR");
         context->Push((double)p2);
@@ -493,6 +496,7 @@ float CLua::FUN_1406745e0(long long p2, float p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_npc_asiR");
         context->Push((double)p2);
@@ -545,6 +549,7 @@ long long CLua::FUN_140674bb0(int p2, const CString& p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcMarketRegisterFee");
         context->Push((long long)p2);
@@ -562,6 +567,7 @@ bool CLua::FUN_140674d70(const CString& p2, long long* p3, long long* p4) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcMarketSellPriceMinMaxMusicScore");
         context->Push((const char*)p2);
@@ -580,6 +586,7 @@ long long CLua::FUN_140674f30(long long p2, int p3, int p4, int p5) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_blackMarketBuyFeeCost");
         context->Push((double)p2);
@@ -599,6 +606,7 @@ float CLua::FUN_140675150(int p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_blackMarketCostRate");
         context->Push((long long)p2);
@@ -615,6 +623,7 @@ long long CLua::FUN_1406752e0(long long p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_blackMarketRegisterDeposit");
         context->Push((double)p2);
@@ -631,6 +640,7 @@ float CLua::FUN_140675470() {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_blackMarketRegisterDepositPercent");
         if (!context->Call()) { return 0; }
@@ -646,6 +656,7 @@ long long CLua::FUN_1406755d0() {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_blackMarketRegisterDepositMax");
         if (!context->Call()) { return 0; }
@@ -661,6 +672,7 @@ int CLua::FUN_140675730(unsigned short p2, int p3, int p4) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcResolvePaneltyPrice");
         context->Push((double)p2);
@@ -679,6 +691,7 @@ double CLua::FUN_140675920(int p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcKillCountBonusExpRate");
         context->Push((double)p2);
@@ -695,6 +708,7 @@ int CLua::FUN_140675ab0(int p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcKillCountGrade");
         context->Push((double)p2);
@@ -711,6 +725,7 @@ CString CLua::FUN_140675c30(int p3) {
         return "";
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcKillCountMsg");
         context->Push((double)(int)p3);
@@ -727,6 +742,7 @@ unsigned int CLua::FUN_140675e00(unsigned short p2, unsigned short p3, unsigned 
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcKillCount");
         context->Push((double)p2);
@@ -746,6 +762,7 @@ long long CLua::FUN_140676020(long long p2, long long p3, long long p4, long lon
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcSendMailFee");
         context->Push((double)p2);
@@ -768,6 +785,7 @@ int CLua::FUN_1406762d0(int p2, int p3, int p4, int p5) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcNpcSpawnWeight");
         context->Push((double)p2);
@@ -787,6 +805,7 @@ int CLua::FUN_1406764e0(int p2, unsigned short p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcTaxiCharge");
         context->Push((double)p2);
@@ -804,6 +823,7 @@ int CLua::FUN_1406766a0(unsigned short p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcAirTaxiCharge");
         context->Push((double)p2);
@@ -820,6 +840,7 @@ int CLua::FUN_140676830(unsigned short p2, unsigned int p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcRevivalMerat");
         context->Push((double)p2);
@@ -837,6 +858,7 @@ int CLua::FUN_1406769f0(int p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcManufactureCompleteByMerat");
         context->Push((double)p2);
@@ -853,6 +875,7 @@ int CLua::FUN_140676b70(int p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcGetExtendCapacity");
         context->Push((double)p2);
@@ -869,6 +892,7 @@ long long CLua::FUN_140676cf0(int p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcGetExtendCapacityPrice");
         context->Push((double)p2);
@@ -885,6 +909,7 @@ int CLua::FUN_140676e80(int p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcGuildFundMax");
         context->Push((double)p2);
@@ -901,6 +926,7 @@ int CLua::FUN_140677000(int p2, int p3, int p4) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcGuildSkillCost");
         context->Push((long long)p2);
@@ -919,6 +945,7 @@ int CLua::FUN_1406771e0(unsigned short p2, unsigned int p3, int p4) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcRevivalMeso");
         context->Push((double)p2);
@@ -937,6 +964,7 @@ int CLua::FUN_1406773d0() {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("getMesoRevivalDailyMaxCount");
         if (!context->Call()) { return 0; }
@@ -953,7 +981,7 @@ void CLua::FUN_140677530(unsigned short a, int b, long long c, int d, CIngredien
         MS2_ASSERT_AT(0x517, 0);
         return;
     }
-    if (Unk_LockGuard guard = context->m_lock) {}
+    if (Unk_LockGuard guard = context->m_lock) { __assume(0); }
     else
     {
         context->Select("calcMeratSkinItemBreakReward");
@@ -990,6 +1018,7 @@ unsigned int CLua::FUN_140677910() {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcMeratSkinItemBreakRefundPercent");
         if (!context->Call()) { return 0; }
@@ -1004,6 +1033,7 @@ bool CLua::FUN_140677a70(int p2, int p3, unsigned short p4, int p5, int *p6) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcItemSocketMaxCount");
         context->Push((long long)p2);
@@ -1023,6 +1053,7 @@ unsigned int CLua::FUN_140677c60(unsigned int p2, unsigned int p3, unsigned int 
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcGatheringReceipeRewardItemCount");
         context->Push((long long)p2);
@@ -1040,6 +1071,7 @@ unsigned int CLua::FUN_140677e20(unsigned int p2, unsigned int p3, unsigned int 
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcCraftReceipeRequireItemCount");
         context->Push((long long)p2);
@@ -1057,6 +1089,7 @@ double CLua::FUN_140677fe0(unsigned int p2, unsigned int p3, unsigned int p4) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcGatheringObjectgSuccessProp");
         context->Push((long long)p2);
@@ -1075,6 +1108,7 @@ unsigned int CLua::FUN_1406781c0(unsigned int p2, unsigned int p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcGatheringObjectgMaxCount");
         context->Push((long long)p2);
@@ -1091,6 +1125,7 @@ unsigned int CLua::FUN_140678350(float p2, unsigned int p3, unsigned int p4, uns
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcGatheringActionCount");
         context->Push((double)p2);
@@ -1111,6 +1146,7 @@ void CLua::FUN_140678570(unsigned int p2, unsigned int p3, unsigned int p4, unsi
         return;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcOHItemAdditionalLevel");
         context->Push((long long)p2);
@@ -1131,6 +1167,7 @@ int CLua::FUN_140678760(int p2, int p3, int p4) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcUnlimitedEnchantItemLevel");
         context->Push((long long)p2);
@@ -1145,6 +1182,7 @@ int CLua::FUN_140678760(int p2, int p3, int p4) {
 unsigned short CLua::FUN_140678940(unsigned short a,unsigned short b,unsigned short c) {
     ContextPtr context=GetContext(); if(!context) { MS2_ASSERT_AT(0x61e, 0); return 0; }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcLapenshardLevel"); context->Push((long long)a); context->Push((long long)b); context->Push((long long)c);
         if(!context->Call()) return 0;
@@ -1160,6 +1198,7 @@ int CLua::FUN_140678b50(unsigned short p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_TamingPetRank");
         context->Push((long long)p2);
@@ -1176,6 +1215,7 @@ long long CLua::FUN_140678cd0(long long p2, unsigned short p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_petExp");
         context->Push((long long)p2);
@@ -1193,6 +1233,7 @@ void CLua::FUN_140678e80(int p2, int p3, unsigned short p4, long long p5, unsign
         return;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_petEnchantExp");
         context->Push((long long)p2);
@@ -1216,6 +1257,7 @@ long long CLua::FUN_1406790e0(int p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_petEnchantBookCost");
         context->Push((long long)p2);
@@ -1232,6 +1274,7 @@ long long CLua::FUN_140679260(int p2, int p3, unsigned short p4, long long p5) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_petEnchantCost");
         context->Push((long long)p2);
@@ -1251,6 +1294,7 @@ long long CLua::FUN_140679460(int p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_petEvolutionCost");
         context->Push((long long)p2);
@@ -1267,6 +1311,7 @@ unsigned short CLua::FUN_1406795e0(int p2, unsigned short p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_petEvolutionResultLevel");
         context->Push((long long)p2);
@@ -1284,6 +1329,7 @@ long long CLua::FUN_140679790(int p2, int p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcItemMergeRevertMeso");
         context->Push((long long)p2);
@@ -1301,6 +1347,7 @@ int CLua::FUN_140679950(int p2, unsigned int p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcItemMergeMaterialCount");
         context->Push((long long)p2);
@@ -1318,6 +1365,7 @@ long long CLua::FUN_140679b00(int p2, long long p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcItemMergeRequireMeso");
         context->Push((long long)p2);
@@ -1335,6 +1383,7 @@ int CLua::FUN_140679ca0(int p2, int p3, int p4, int p5) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcQuestRewardFamePoint");
         context->Push((long long)p2);
@@ -1354,6 +1403,7 @@ float CLua::FUN_140679ea0(int p2, int p3, int p4, int p5) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcQuestRewardExpFactorRateByRank");
         context->Push((long long)p2);
@@ -1373,6 +1423,7 @@ int CLua::FUN_14067a0b0(int p2, int p3) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcFameCompletionTicketCount");
         context->Push((long long)p2);
@@ -1386,6 +1437,7 @@ int CLua::FUN_14067a0b0(int p2, int p3) {
 bool CLua::FUN_14067a260(int* item,long long* price) {
     ContextPtr context=GetContext(); if(!context) { MS2_ASSERT_AT(0x6d9, 0); return false; }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_blueprintCreateCost"); if(!context->Call()) return false;
         *item = FUN_14088da20((int)context->Integer(1));
@@ -1422,6 +1474,7 @@ int CLua::FUN_14067a4f0(unsigned short p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcRevivalPrice");
         context->Push((double)p2);
@@ -1438,6 +1491,7 @@ long long CLua::FUN_14067a680(long long p2, long long p3, long long p4, float p5
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calc_pc_damage");
         context->Push((double)p2);
@@ -1458,6 +1512,7 @@ int CLua::FUN_14067a8d0(unsigned short p2) {
         return 0;
     }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("calcAvailableSkillPoint");
         context->Push((double)p2);
@@ -1470,6 +1525,7 @@ int CLua::FUN_14067a8d0(unsigned short p2) {
 unsigned int CLua::FUN_14067aa60(const Unk_OffenseScore* score) {
     ContextPtr context=GetContext(); if(!context) { MS2_ASSERT_AT(0x7d9, 0); return 0; }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("cale_pc_OffenseScore");
         context->Push((long long)score->m_00);
@@ -1513,6 +1569,7 @@ unsigned int CLua::FUN_14067aa60(const Unk_OffenseScore* score) {
 unsigned int CLua::FUN_14067b230(const Unk_DefenseScore* score) {
     ContextPtr context=GetContext(); if(!context) { MS2_ASSERT_AT(0x80f, 0); return 0; }
     if (Unk_LockGuard guard = context->m_lock) {
+        __assume(0);
     } else {
         context->Select("cale_pc_DefenseScore");
         context->Push((long long)score->m_00);
