@@ -7763,3 +7763,16 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?AddToOptimizedPlayList@InteractiveObject@GFx@Scaleform@@QEAAXXZ	1425f7e30	func
 ?ConvertToButtonKeyCode@EventId@GFx@Scaleform@@QEBAHXZ	142603da0	func
 ?GetTopMostMouseEntity@DisplayObjContainer@GFx@Scaleform@@UEAA?AW4TopMostResult@DisplayObjectBase@23@AEBV?$Point@M@Render@3@PEAUTopMostDescr@523@@Z	1425fc5f0	func
+??0Cxform@Render@Scaleform@@QEAA@XZ	1425e54b0	func
+??0MatrixObject@AS2@GFx@Scaleform@@QEAA@PEAVEnvironment@123@@Z	14291e790	func
+?Append@?$Matrix2x4@M@Render@Scaleform@@QEAAAEAV123@AEBV123@@Z	1425e5250	func
+?GFxObject_GetColorTransformProperties@AS2@GFx@Scaleform@@YAXPEAVEnvironment@123@PEAVObject@123@QEAVValue@123@@Z	142948220	func
+?GetMatrix@MatrixObject@AS2@GFx@Scaleform@@QEAA?AV?$Matrix2x4@M@Render@4@PEAVEnvironment@234@@Z	14294b2e0	func
+?GetMatrixAsValuesArray@MatrixObject@AS2@GFx@Scaleform@@QEAAPEAY05VValue@234@PEAVASStringContext@234@PEAY05V5234@@Z	14294b630	func
+?Matrix2F_AppendRotation@AS2@GFx@Scaleform@@YAAEAV?$Matrix2x4@M@Render@3@PEAV453@M@Z	1425f0ec0	func
+?Matrix2F_SetInverse@AS2@GFx@Scaleform@@YAXPEAV?$Matrix2x4@M@Render@3@AEBV453@@Z	142446cb0	func
+?Mul_Call@Value@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEBV1234@@Z	142968f90	func
+?Prepend@Cxform@Render@Scaleform@@QEAAXAEBV123@@Z	1425e5700	func
+?SetMatrix@MatrixObject@AS2@GFx@Scaleform@@QEAAXPEAVEnvironment@234@AEBV?$Matrix2x4@M@Render@4@@Z	142982370	func
+?SetProperties_Call@PointObject@AS2@GFx@Scaleform@@QEAAXPEAVASStringContext@234@QEBVValue@234@@Z	142989d20	func
+?ToPrimitive@Value@AS2@GFx@Scaleform@@QEBA?AV1234@PEAVEnvironment@234@W4hint@1234@@Z	142991850	func
