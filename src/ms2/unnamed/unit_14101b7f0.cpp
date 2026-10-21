@@ -173,20 +173,21 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (temp slots differ)
 // @0x14101c0b0
 void Unk_PvpEntryBlock::FUN_14101c0b0(void* pArgument)
 {
-    Unk_PvpEntryItem* pItem = FUN_14101c560(0xc9)->FUN_14101f010((__int64)pArgument);
+    Unk_PvpEntryTable* pTable = FUN_14101c560(0xc9);
+    Unk_PvpEntryItem* pItem = pTable->FUN_14101f010((__int64)pArgument);
     if (pItem != 0)
     {
         pItem->m_bOnline = false;
         FUN_14101c4e0(0xc9);
     }
-    pItem = FUN_14101c560(0xca)->FUN_14101f010((__int64)pArgument);
-    if (pItem != 0)
+    Unk_PvpEntryTable* pTable2 = FUN_14101c560(0xca);
+    Unk_PvpEntryItem* pItem2 = pTable2->FUN_14101f010((__int64)pArgument);
+    if (pItem2 != 0)
     {
-        pItem->m_bOnline = false;
+        pItem2->m_bOnline = false;
         FUN_14101c4e0(0xca);
     }
 }
@@ -211,39 +212,37 @@ void Unk_PvpEntryBlock::FUN_14101c1a0(int* pA, int* pB)
         *pB = pTableB->m_4;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (temp slots differ)
 // @0x14101c220
 void Unk_PvpEntryBlock::FUN_14101c220(int nTeam, __int64 nCharId, int nWin, int nLose, int nKill)
 {
     Unk_PvpEntryTable* pTable = FUN_14101c560(nTeam);
-    if (pTable != 0)
+    if (pTable == 0)
+        return;
+    bool bAdded = false;
+    Unk_PvpEntryItem* pItem = pTable->FUN_14101f010(nCharId);
+    if (pItem == 0)
     {
-        bool bAdded = false;
-        Unk_PvpEntryItem* pItem = pTable->FUN_14101f010(nCharId);
-        if (pItem == 0)
+        CStringW strName(L"Unknown");
+        int nJob = 0;
+        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
+        if (pPlayer != 0)
         {
-            CStringW strName(L"Unknown");
-            int nJob = 0;
-            PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
-            if (pPlayer != 0)
-            {
-                strName = pPlayer->vfunc_77();
-                nJob = FUN_141654730(pPlayer);
-            }
-            pItem = new Unk_PvpEntryItem(nCharId, strName, nJob, nKill, nWin, nLose);
-            pTable->FUN_14101eee0(pItem);
-            bAdded = true;
+            strName = pPlayer->vfunc_77();
+            nJob = FUN_141654730(pPlayer);
         }
-        else
-        {
-            pItem->m_nCharId = nCharId;
-            pItem->m_nWin = nWin;
-            pItem->m_nLose = nLose;
-            pItem->m_nKill = nKill;
-        }
-        if (bAdded)
-            FUN_14101c4e0(nTeam);
+        pItem = new Unk_PvpEntryItem(nCharId, strName, nJob, nKill, nWin, nLose);
+        pTable->FUN_14101eee0(pItem);
+        bAdded = true;
     }
+    else
+    {
+        pItem->m_nCharId = nCharId;
+        pItem->m_nWin = nWin;
+        pItem->m_nLose = nLose;
+        pItem->m_nKill = nKill;
+    }
+    if (bAdded)
+        FUN_14101c4e0(nTeam);
 }
 
 // @0x14101c470
@@ -278,7 +277,6 @@ Unk_PvpEntryTable* Unk_PvpEntryBlock::FUN_14101c560(int nTeam)
 }
 
 // The row order: online rows first, then by name.
-// MS2-FUNCTIONAL: behaviour-equivalent (branch layout differs)
 // @0x14101c5b0
 bool FUN_14101c5b0(Unk_PvpEntryItem* pA, Unk_PvpEntryItem* pB)
 {
@@ -288,7 +286,7 @@ bool FUN_14101c5b0(Unk_PvpEntryItem* pA, Unk_PvpEntryItem* pB)
         return true;
     if (!pA->m_bOnline)
         return false;
-    if (!pB->m_bOnline)
+    else if (!pB->m_bOnline)
         return true;
     return pA->m_strName < pB->m_strName;
 }
@@ -374,14 +372,13 @@ void Unk_PvpEntryTable::FUN_14101ef40()
     m_targets.clear();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (early-out layout differs)
 // @0x14101f010
 Unk_PvpEntryItem* Unk_PvpEntryTable::FUN_14101f010(unsigned __int64 nCharId)
 {
     std::map<unsigned __int64, Unk_PvpEntryItem*>::iterator it = m_targets.find(nCharId);
-    if (!(it == m_targets.end()))
-        return it->second;
-    return 0;
+    if (it == m_targets.end())
+        return 0;
+    return it->second;
 }
 
 // The UCRT's header-inline memcpy_s / memmove_s of this TU (0x141020200 / the memmove_s copy), kept alive through ATL::Checked.
