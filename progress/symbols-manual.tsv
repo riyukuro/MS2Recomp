@@ -7647,3 +7647,5 @@ jpeg_start_decompress	1426f4b10	func
 ?ExecuteSW@DICommand_Threshold@Render@Scaleform@@UEBAXAEAUDICommandContext@23@AEAVImageData@23@PEAPEAV523@@Z	142677ea0	func
 ?GetPixel@ImageData@Render@Scaleform@@QEBA?AVColor@23@II@Z	14257be60	func
 ?SetPixelARGB@ImageData@Render@Scaleform@@QEAAXIIK@Z	14257d240	func
+?Play@SoundInfo@GFx@Scaleform@@QEAAXPEAVInteractiveObject@23@@Z	1426d3570	func
+?Read@ButtonDef@GFx@Scaleform@@QEAAXPEAVLoadProcess@23@W4TagType@23@@Z	14265de60	func
