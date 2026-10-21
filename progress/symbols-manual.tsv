@@ -7853,3 +7853,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ??0Unk_FcUIMsg@@QEAA@XZ	1422e4490	func
 ?FunctionTable@AsBroadcasterProto@AS2@GFx@Scaleform@@2QBUNameFunction@234@B	143213460	data
 ?Value_ToObjectInterface@AS2@GFx@Scaleform@@YAPEAVObjectInterface@123@PEBVValue@123@PEBVEnvironment@123@@Z	142991810	func
+?GetNextImageId@ImageBase@Render@Scaleform@@SAIXZ	14257bdc0	func
