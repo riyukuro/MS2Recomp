@@ -7668,3 +7668,6 @@ log	14280f468	func
 sin	14280f474	func
 sqrt	14280f366	func
 tan	14280f480	func
+?IsLeapYear@AS2@GFx@Scaleform@@YA_NH@Z	142965c80	func
+?SetDate@DateObject@AS2@GFx@Scaleform@@QEAAX_J@Z	142980570	func
+?UpdateGMT@DateObject@AS2@GFx@Scaleform@@QEAAXXZ	142992900	func
