@@ -23,7 +23,7 @@ public:
     void FUN_1407b7110(const ATL::CAtlList<__int64>* pOwners);              // replace the content
     void FUN_1407b7090(const ATL::CAtlList<__int64>* pOwners);              // add to the content
     void* FUN_1407b72d0(unsigned __int64 nUid, void* pOut);                 // lookup (0 when absent)
-    int FUN_1408f32a0() const;                                              // non-empty
+    unsigned __int64 FUN_1408f32a0() const;                                 // count (GetCount)
     void* FUN_1407b75d0();                                                  // first position
     unsigned __int64* FUN_1408f31c0(void* pPos);                            // the uid at a position
 private:
@@ -73,13 +73,13 @@ public:
     int FUN_141190370(GameObject* pActor, int nA, int nB);                 // can pick up with range m_f220
     int FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB);    // can pick up within fRange
     int FUN_1411905a0();                                                    // the local player may pick it up
-    int FUN_141190640(char bForce);                                         // the pickup setting allows it
+    int FUN_141190640(bool bForce);                                         // the pickup setting allows it
     int FUN_1411906a0();                                                    // the inventory can take the item
     void FUN_141190830(int nPickerId);                                      // send the pickup packet
     void FUN_141190900(int nPickerId);                                      // try to pick up
     void FUN_141190b70(int nPickerId);                                      // picked up by an actor
     void FUN_141191030();                                                   // m_nTick = now
-    int FUN_141191060();                                                    // 1000 ms since m_nTick
+    bool FUN_141191060();                                                   // 1000 ms since m_nTick
     int FUN_1411910a0();                                                    // m_nOwnerObjId
     int FUN_1411910c0();                                                    // m_nDropKind
     unsigned __int64 FUN_1411910e0();                                       // the first owner uid
@@ -88,12 +88,12 @@ public:
     void FUN_1411911f0();                                                   // "Item_Icon:0" of the model
     void FUN_141191240();                                                   // read the drop settings
     void FUN_141191330(int nValue);                                         // 0x141191330 m_n278
-    void FUN_141191780(float fTime, GameObject* pTarget);                   // state 1: fly out
-    void FUN_141191a10(float fTime, GameObject* pTarget);                   // state 0: bob
-    void FUN_141191d10(float fTime, GameObject* pTarget);                   // state 2: fly to the owner
-    void FUN_1411920b0(float fTime, GameObject* pTarget);                   // state 3
-    void FUN_141192200(float fTime, GameObject* pTarget);                   // state 4
-    void FUN_1411923a0(float fTime, GameObject* pTarget);                   // state 5: grow in
+    void FUN_141191780(double fTime, GameObject* pTarget);                  // state 1: fly out
+    void FUN_141191a10(double fTime, GameObject* pTarget);                  // state 0: bob
+    void FUN_141191d10(double fTime, GameObject* pTarget);                  // state 2: fly to the owner
+    void FUN_1411920b0(double fTime, GameObject* pTarget);                  // state 3
+    void FUN_141192200(double fTime, GameObject* pTarget);                  // state 4
+    void FUN_1411923a0(double fTime, GameObject* pTarget);                  // state 5: grow in
     void FUN_1411925e0(efd::Point3 kAxis, float fDegrees);           // spin the model
     void FUN_141192840(int nValue);                                         // 0x141192840 m_n294
 
@@ -131,7 +131,7 @@ public:
     MS2Ptr<ItemDropEffect> m_spEffect;  // +0x250
     unsigned int m_nTick;               // +0x260
     int m_n264;                         // +0x264
-    void (CDropItem::*m_pfnState)(float fTime, GameObject* pTarget);   // +0x268 the state update
+    void (CDropItem::*m_pfnState)(double fTime, GameObject* pTarget);  // +0x268 the state update
     int m_n278;                         // +0x278
     float m_f27c;                       // +0x27c
     Unk_StreamPoint m_posOrigin;        // +0x280
