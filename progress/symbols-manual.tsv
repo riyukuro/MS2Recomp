@@ -7679,3 +7679,11 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?CopyCalls@ContextImpl@Render@Scaleform@@3IA	143b15f80	data
 ?DestroyCalls@ContextImpl@Render@Scaleform@@3IA	143b15f7c	data
 ?InterfaceImpl@FilterState@Render@Scaleform@@2VInterface_RefCountImpl@StateData@23@A	143b172e8	data
+?AppendCharNode@ASConstString@GFx@Scaleform@@QEBAPEAUASStringNode@23@K@Z	1425c0370	func
+?ClearIntervalTimer@MovieImpl@GFx@Scaleform@@QEAAXH@Z	14256e0d0	func
+?GetCharAt@ASConstString@GFx@Scaleform@@QEBAKI@Z	1425c0d60	func
+?GetLength@ASConstString@GFx@Scaleform@@QEBAIXZ	1425c0e10	func
+?NaN@NumberUtil@GFx@Scaleform@@YANXZ	1425e3ee0	func
+?SFstrtod@Scaleform@@YANPEBDPEAPEAD@Z	1425a4a70	func
+?ToLowerNode@ASConstString@GFx@Scaleform@@QEBAPEAUASStringNode@23@XZ	1425c1820	func
+?ToUpperNode@ASConstString@GFx@Scaleform@@QEBAPEAUASStringNode@23@XZ	1425c1860	func
