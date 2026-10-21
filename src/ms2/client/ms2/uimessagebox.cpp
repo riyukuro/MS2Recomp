@@ -261,7 +261,7 @@ class Unk_MessageBoxFilters { public: MS2Ptr<Unk_MessageBoxFilter> FUN_140229a50
 Unk_MessageBoxFilters* FUN_14025e7d0();
 class Unk_MessageBoxNameDialog : public UIDialog { public: void FUN_1418f2030(__int64 nUid, const CStringW& strName); void FUN_1418f20d0(); };
 Unk_MessageBoxNameDialog* FUN_140b72de0(int nId);
-class Unk_MessageBoxTradeDialog : public UIDialog { public: bool FUN_141b283f0(int* pSlot); };
+class Unk_MessageBoxTradeDialog : public UIDialog { public: int FUN_141b283f0(int* pSlot); };
 Unk_MessageBoxTradeDialog* FUN_14140e820(int nId);
 void FUN_141404930(__int64 nUid);
 void FUN_141425fc0(__int64 nUid, unsigned int nCount, CItem* pItem);  // sell
@@ -275,7 +275,7 @@ int FUN_1416764d0(PC* pPlayer);                                 // riding
 int FUN_14166c930(PC* pPlayer);
 int FUN_14123c580(void* pActor);                                // the object id
 int FUN_14053dc20(Unk_ItemEquipData* pData);
-int FUN_14053dc40(Unk_ItemEquipData* pData);
+unsigned short FUN_14053dc40(Unk_ItemEquipData* pData);
 void FUN_140d1bd60(MS2Ptr<CItem> spItem, int n);
 void FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int n);
 bool FUN_140930b10();
@@ -378,7 +378,7 @@ public:
     CItem* FUN_14152efa0(__int64 nUid, __int64* pSlot);         // a fitting doll item
     class Unk_MessageBoxSkillBook* FUN_1416546d0();
 };
-class Unk_MessageBoxSkillBook { public: void FUN_140a6e140(__int64 nUid, int nItemId, int nSkill); };
+class Unk_MessageBoxSkillBook { public: void FUN_140a6e140(__int64 nUid, int nItemId, unsigned short nSkill); };
 class Unk_MessageBoxPortal : public CPtred
 {
 public:
@@ -827,7 +827,6 @@ void UIMessageBox::FUN_1419f8ec0(MS2Ptr<CMsgBoxData> spData)
 MS2_REPLACE_METHOD(0x1419F8EC0, UIMessageBox, FUN_1419f8ec0, 571, 0xFAAAA2EC);
 
 // @0x1419f9110
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 void UIMessageBox::FUN_1419f9110()
 {
     if (!FUN_1419f8270())
@@ -836,7 +835,7 @@ void UIMessageBox::FUN_1419f9110()
         FUN_140b632f0()->FUN_1422d4840(this, 4);
         FUN_141276180(s_close, "");
     }
-    if (m_data.get())
+    if (m_data.get() ? true : false)
     {
         if (m_data->FUN_141a02ce0() == s_143af3ba8)
         {
@@ -1358,13 +1357,14 @@ int UIMessageBox::FUN_1419fb630(int nButton)
 MS2_REPLACE_METHOD(0x1419FB630, UIMessageBox, FUN_1419fb630, 363, 0x8A536F36);
 
 // @0x1419fb7b0
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 int UIMessageBox::FUN_1419fb7b0(int nButton)
 {
     if (m_data == 0)
         return 1;
     Unk_MessageBoxPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer && nButton == 0)
+    if (!pPlayer)
+        return 1;
+    if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
@@ -1526,7 +1526,6 @@ int UIMessageBox::FUN_1419fc140(int nButton, CStringW strTag)
 MS2_REPLACE_METHOD(0x1419FC140, UIMessageBox, FUN_1419fc140, 1021, 0xB1DBE34C);
 
 // @0x1419fc550
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fc550(int nButton)
 {
     if (m_data == 0)
@@ -1534,13 +1533,13 @@ int UIMessageBox::FUN_1419fc550(int nButton)
     Unk_MessageBoxPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPlayer)
         return 1;
-    if (nButton != 0)
-        return 1;
-    __int64 nUid = m_data->FUN_141a02c00();
-    FUN_14151f200();
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-    if (spItem.get())
-        DAT_143ab2a90.FUN_140a65bb0(spItem.get());
+    if (nButton == 0)
+    {
+        __int64 nUid = m_data->FUN_141a02c00();
+        FUN_14151f200();
+        if (MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid))
+            DAT_143ab2a90.FUN_140a65bb0(spItem.get());
+    }
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419FC550, UIMessageBox, FUN_1419fc550, 221, 0xF5CE1574);
@@ -1743,7 +1742,6 @@ int UIMessageBox::FUN_1419fd0d0(int nButton)
 MS2_REPLACE_METHOD(0x1419FD0D0, UIMessageBox, FUN_1419fd0d0, 78, 0x7F02717F);
 
 // @0x1419fd130
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fd130(int nButton)
 {
     if (m_data == 0)
@@ -1753,7 +1751,8 @@ int UIMessageBox::FUN_1419fd130(int nButton)
         return 0;
     if (nButton == 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_data->FUN_141a02c00());
+        __int64 nUid = m_data->FUN_141a02c00();
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return 0;
         pPlayer->FUN_14152aa90(spItem, 1);
@@ -1825,7 +1824,6 @@ int UIMessageBox::FUN_1419fd4a0(int nButton)
 }
 
 // @0x1419fd6e0
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fd6e0(int nButton)
 {
     if (m_data == 0)
@@ -1835,7 +1833,8 @@ int UIMessageBox::FUN_1419fd6e0(int nButton)
         return 0;
     if (nButton == 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_data->FUN_141a02c00());
+        __int64 nUid = m_data->FUN_141a02c00();
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return 0;
         Unk_MessageBoxTrainingDialog* pDialog = FUN_140d276c0(0x4f12);
@@ -1883,7 +1882,6 @@ int UIMessageBox::FUN_1419fd830(int nButton)
 }
 
 // @0x1419fda70
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fda70(int nButton)
 {
     if (m_data == 0)
@@ -1893,7 +1891,8 @@ int UIMessageBox::FUN_1419fda70(int nButton)
         return 0;
     if (nButton == 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_data->FUN_141a02c00());
+        __int64 nUid = m_data->FUN_141a02c00();
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return 0;
         UIItemRemakeScrollDialog* pDialog = Unk_MessageBoxDialog<UIItemRemakeScrollDialog>(0x4f09);
@@ -1947,14 +1946,14 @@ int UIMessageBox::FUN_1419fdbe0(int nButton)
 MS2_REPLACE_METHOD(0x1419FDBE0, UIMessageBox, FUN_1419fdbe0, 662, 0x412AD453);
 
 // @0x1419fde80
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fde80(int nButton)
 {
     if (m_data == 0)
         return 1;
     if (nButton == 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_data->FUN_141a02c00());
+        __int64 nUid = m_data->FUN_141a02c00();
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return 0;
         FUN_140d1bd60(spItem, 1);
@@ -1985,17 +1984,18 @@ int UIMessageBox::FUN_1419fdf80(int nButton)
 MS2_REPLACE_METHOD(0x1419FDF80, UIMessageBox, FUN_1419fdf80, 387, 0x7E745354);
 
 // @0x1419fe110
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fe110(int nButton)
 {
     if (m_data == 0)
         return 1;
     if (nButton == 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_data->FUN_141a02c00());
+        __int64 nUid = m_data->FUN_141a02c00();
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return 0;
-        FUN_141271960(spItem, m_data->FUN_141a02e50(0, 0), 1);
+        int nCount = m_data->FUN_141a02e50(0, 0);
+        FUN_141271960(spItem, nCount, 1);
     }
     return 1;
 }
@@ -2120,7 +2120,6 @@ int UIMessageBox::FUN_1419fe830(int nButton, int nCount)
 MS2_REPLACE_METHOD(0x1419FE830, UIMessageBox, FUN_1419fe830, 193, 0xB5EC7C67);
 
 // @0x1419fe900
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 int UIMessageBox::FUN_1419fe900(int nButton, int nCount)
 {
     if (m_data == 0)

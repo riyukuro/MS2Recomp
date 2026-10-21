@@ -42,7 +42,7 @@ public:
     void FUN_141b27fa0(int nSide, int nIndex);                          // clear a trade slot
     void FUN_141b28130(int nSide, __int64 nMeso);                       // show the meso of a side
     void FUN_141b28290(int nSlotIndex, int bLock);                      // latch / unlatch a side (sound + AS call)
-    bool FUN_141b283f0(int* pnSlot);                                    // the first free slot of the trade table (false: none)
+    int FUN_141b283f0(int* pnSlot);                                     // the first free slot of the trade table (false: none)
     void FUN_141b284b0();                                               // bind the inputs and texts of the movie
     void FUN_141b28d10(char bMine, __int64 nMeso);                      // show the meso number text
     void FUN_141b28e30(char bMine, __int64 nFee);                       // show the fee text

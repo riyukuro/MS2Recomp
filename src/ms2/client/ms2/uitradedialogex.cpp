@@ -393,12 +393,14 @@ void UITradeDialogEx::FUN_141b28290(int nSlotIndex, int bLock)
 }
 
 // @0x141b283f0
-bool UITradeDialogEx::FUN_141b283f0(int* pnSlot)
+int UITradeDialogEx::FUN_141b283f0(int* pnSlot)
 {
-    int nSlot = DAT_143ab2e80.FUN_14185b5c0();
-    if (nSlot >= 0)
-        *pnSlot = nSlot;
-    return nSlot >= 0;
+    int nSlot = -1;
+    nSlot = DAT_143ab2e80.FUN_14185b5c0();
+    if (nSlot < 0)
+        return 0;
+    *pnSlot = nSlot;
+    return 1;
 }
 
 // @0x141b28440

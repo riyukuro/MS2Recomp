@@ -1902,7 +1902,7 @@ int InvenSlot::FUN_14140b6d0(MS2Ptr<CItem> spItem)
     if (pTrade != 0)
     {
         int nSlot = 0;
-        if (pTrade->FUN_141b283f0(&nSlot) == false)
+        if (pTrade->FUN_141b283f0(&nSlot) == 0)
         {
             FUN_140d73aa0(FUN_14028de60(0x82f), 0, 0, CStringW(L""));
             return 0;
