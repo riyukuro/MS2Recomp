@@ -104,8 +104,7 @@ template<class T> MS2Ptr<T> AScript::FUN_140bc7280(const CString& strName)
 }
 
 struct Unk_DmActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: only the level (slot 78, +0x270) is used
-typedef unsigned short (*Unk_DmLevelFn)(void*);
-inline unsigned short Unk_DmActorLevel(void* pActor) { return reinterpret_cast<Unk_DmLevelFn>((*reinterpret_cast<void***>(pActor))[78])(pActor); }
+#define Unk_DmActorLevel(pActor) static_cast<Unk_DmActor*>(pActor)->vfunc_78()
 
 class Unk_DmFeatures { public: bool FUN_14036d570(int nFeature); };
 Unk_DmFeatures* FUN_140166410();
@@ -369,8 +368,7 @@ void UIDailyMissionDialog::FUN_140c00070(int nQuestId)
 // @0x140c001d0
 void UIDailyMissionDialog::FUN_140c001d0()
 {
-    MS2Ptr<Unk_DmList> spList = FUN_140c02900("m_recommendList");
-    if (spList.operator->() != 0)
+    if (MS2Ptr<Unk_DmList> spList = FUN_140c02900("m_recommendList"))
     {
         spList->FUN_1422dd1d0();
         ATL::CAtlArray<Unk_PayloadPtr<CQuest>> quests;
@@ -379,16 +377,18 @@ void UIDailyMissionDialog::FUN_140c001d0()
         for (size_t i = 0; i < quests.GetCount(); i++)
         {
             Unk_PayloadPtr<CQuest> spQuest = quests[i];
-            int nKind = spQuest->GetData()->m_338.m_value;
-            if (nKind < 1 || (nKind > 2 && nKind != 5))
+            switch (spQuest->GetData()->m_338.m_value)
             {
-                if (spQuest->GetData()->m_338.m_4 == m_1b0)
-                {
-                    ASObj row(2);
-                    FUN_140c01040(row, spQuest.get());
-                    spList->FUN_1422dd230(row);
-                }
+            case 1:
+            case 2:
+            case 5:
+                continue;
             }
+            if (spQuest->GetData()->m_338.m_4 != m_1b0)
+                continue;
+            ASObj row(2);
+            FUN_140c01040(row, spQuest.get());
+            spList->FUN_1422dd230(row);
         }
         spList->vfunc_24(true);
     }
@@ -436,26 +436,25 @@ void UIDailyMissionDialog::FUN_140c00500()
 void UIDailyMissionDialog::FUN_140c009b0()
 {
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    if (MS2Ptr<Unk_DmTabBar> spTab = FUN_140c02870("m_groupTab"))
     {
-        MS2Ptr<Unk_DmTabBar> spTab = FUN_140c02870("m_groupTab");
-        if (spTab.operator->() != 0)
+        for (size_t i = 0; i < 6; i++)
         {
-            for (size_t i = 0; i < 6; i++)
-            {
-                CString strKey = FUN_14021a8b0((int)i);
-                if ((int)i == 2 && Unk_DmActorLevel(pPlayer) < 0x32)
-                    strKey = "newbee";
-                ASObj row(2);
-                row.FUN_1407cbb20("label", FUN_14028b8e0(StringFormat(L"s_daily_mission_{0}", strKey)));
-                row.FUN_1407cb9c0("enabled", FUN_140c02320((int)i));
-                spTab.operator->()->FUN_1422e3460(row);
-            }
-            spTab.operator->()->FUN_1422e31e0(0);
-            spTab.operator->()->vfunc_24(true);
+            int nGroup = (int)i;
+            CString strKey = FUN_14021a8b0(nGroup);
+            if (nGroup == 2 && Unk_DmActorLevel(pPlayer) < 0x32)
+                strKey = "newbee";
+            ASObj row(2);
+            row.FUN_1407cbb20("label", FUN_14028b8e0(StringFormat(L"s_daily_mission_{0}", strKey)));
+            row.FUN_1407cb9c0("enabled", FUN_140c02320(nGroup));
+            spTab.operator->()->FUN_1422e3460(row);
         }
-        FUN_140c00cd0();
+        spTab.operator->()->FUN_1422e31e0(0);
+        spTab.operator->()->vfunc_24(true);
     }
+    FUN_140c00cd0();
 }
 
 // Update one quest row.
@@ -487,12 +486,13 @@ void UIDailyMissionDialog::FUN_140c00cd0()
         satisfied.FUN_1422bbc60(FUN_140c01d30(nGroup));
     }
     FUN_1409ee290(&m_30)->FUN_140bd2cb0("refreshSatisfiedCount", satisfied);
-    MS2Ptr<ASMovieClip> spPoint = FUN_140ba7930("m_missionPoint");
-    if (spPoint.operator->() != 0)
+    if (MS2Ptr<ASMovieClip> spPoint = FUN_140ba7930("m_missionPoint"))
     {
-        spPoint->vfunc_13(CString(spPoint == 0 ? "off" : "on"));
-        MS2Ptr<ASTextField> spText = spPoint->FUN_1409b4620("textField");
-        if (spText.operator->() != 0)
+        {
+            CString strFrame(spPoint == 0 ? "off" : "on");
+            spPoint->vfunc_13(strFrame);
+        }
+        if (MS2Ptr<ASTextField> spText = spPoint->FUN_1409b4620("textField"))
         {
             int nMax = FUN_140c020d0();
             int nCur = FUN_140c01f50();
@@ -587,8 +587,7 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
     spItem->FUN_140526c70(pReward->m_job);
     int nFlags = 0x415;
     CString strBind;
-    size_t nSlot = m_188.GetCount() + 1;
-    strBind.Format("%s.%d", (const char*)vfunc_1(), nSlot);
+    strBind.Format("%s.%d", (LPCSTR)vfunc_1(), m_188.GetCount() + 1);
     FUN_141415450(strBind, spItem, 0, nFlags, 0x800);
     rRow.FUN_1407cba60("binding", strBind);
     if (bName != 0)
