@@ -86,14 +86,13 @@
 #include "ms2/placeholder/citem.h"
 // Invented constraint names; the representation follows commonfiles/constraints.h calls.
 #define PAYLOAD_CONSTRAINT_ASSERT(line,expr) (void)((!!(expr)) || (_wassert(_CRT_WIDE(#expr),L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\constraints.h",line),0))
-// MS2-FUNCTIONAL: equivalent template/guard behavior; /Od temporaries or assertion code differ.
 template<class T>struct Unk_140203550 {
     T minimum,maximum;
     Unk_140203550(T constraintMin,T constraintMax):minimum(constraintMin),maximum(constraintMax) {
         PAYLOAD_CONSTRAINT_ASSERT(157,constraintMin <= constraintMax);
     }
     bool Check(T value)const {
-        bool checkResult = minimum <= value && value <= maximum;
+        bool checkResult = minimum <= value && maximum >= value;
         PAYLOAD_CONSTRAINT_ASSERT(164,checkResult);
         return checkResult;
     }
@@ -121,22 +120,20 @@ template<class Constraint>unsigned short Unk_Read16(void* packet,Constraint cons
 
 
 #include <array>
-// MS2-FUNCTIONAL: equivalent template/guard behavior; /Od temporaries or assertion code differ.
 template<class T> struct Unk_Minimum {
     T minimum;
     explicit Unk_Minimum(T constraintMin):minimum(constraintMin) {}
     bool Check(T value) const {
-        bool checkResult = minimum <= value;
+        bool checkResult = value >= minimum;
         PAYLOAD_CONSTRAINT_ASSERT(82,checkResult);
         return checkResult;
     }
 };
-// MS2-FUNCTIONAL: equivalent template/guard behavior; /Od temporaries or assertion code differ.
 template<class T, size_t N> struct Unk_Allowed {
     std::array<T,N> values;
     Unk_Allowed(T a,T b) {values[0]=a;values[1]=b;}
     bool Check(T value) {
-        for(unsigned int i=0;i<N;++i) if(values[i]==value)return true;
+        for(unsigned int i=0;i<(unsigned int)N;++i) if(values[i]==value)return true;
         PAYLOAD_CONSTRAINT_ASSERT(282,FALSE);
         return false;
     }
@@ -218,10 +215,9 @@ struct Unk_WidePayload {CStringW text;};
 MS2_CHECK_SIZE(Unk_NarrowPayload,8);
 MS2_CHECK_SIZE(Unk_WidePayload,8);
 // The original guard acquires immediately and releases even while unwinding.
-// MS2-FUNCTIONAL: equivalent template/guard behavior; /Od temporaries or assertion code differ.
 struct Unk_PetLock {
     inline Unk_PetLock(CLockCriticalSection& value,int acquire):lock(&value) {
-        if(acquire)lock->vfunc_1();
+        if(acquire)value.vfunc_1();
     }
     ~Unk_PetLock();
     CLockCriticalSection* lock;
@@ -555,13 +551,12 @@ void CCCreateItemPacket::vfunc_1(void* packet)
 }
 MS2_REPLACE_METHOD(0x1401FB0A0, CCCreateItemPacket, vfunc_1, 1395, 0x4816AC55);
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // @0x1401fb620
 int CCCreateItemPacket::vfunc_2()
 {
     for(unsigned int index=0;index<5;++index) {
-        if(optionsA[index].GetCount()!=0)return 1;
-        if(optionsB[index].GetCount()!=0)return 1;
+        if(optionsA[index].GetCount()>0)return 1;
+        if(optionsB[index].GetCount()>0)return 1;
     }
     return 0;
 }
@@ -603,18 +598,23 @@ void FUN_1401fb7d0(unsigned char* payload, void* inputPacket)
 MS2_REPLACE(0x1401FB7D0, FUN_1401fb7d0, 151, 0x2EDB9444);
 
 
-// MS2-FUNCTIONAL: recovered payload fields; compiler temporaries may differ.
 // @0x1401fb870
-int FUN_1401fb870(unsigned char* payload,int mode)
+bool FUN_1401fb870(unsigned char* payload,int mode)
 {
-    if(mode==0){*reinterpret_cast<int*>(payload+12)=0;return 1;}
-    else if(mode==1){*reinterpret_cast<int*>(payload+12)=1;return 1;}
-    else if(mode==2){
+    switch(mode) {
+    case 0:
+        *reinterpret_cast<int*>(payload+12)=0;
+        return true;
+    case 1:
+        *reinterpret_cast<int*>(payload+12)=1;
+        return true;
+    case 2:
         if(FUN_14036d570(FUN_140166410(),142)==1)*reinterpret_cast<int*>(payload+12)=2;
         else *reinterpret_cast<int*>(payload+12)=1;
-        return 1;
+        return true;
     }
-    else {*reinterpret_cast<int*>(payload+12)=0;return 0;}
+    *reinterpret_cast<int*>(payload+12)=0;
+    return false;
 }
 MS2_REPLACE(0x1401FB870, FUN_1401fb870, 151, 0xB110380A);
 
@@ -707,11 +707,13 @@ void FUN_1401fbca0(unsigned char* payload, CInputStream& stream)
 }
 MS2_REPLACE(0x1401FBCA0, FUN_1401fbca0, 123, 0x60D02CCC);
 
-// MS2-FUNCTIONAL: equivalent field operations; /Od temporary placement differs.
+struct Unk_PayloadStrW { CStringW str; };                       // a payload led by a wide string
+struct Unk_PayloadStrA { CString str; };                        // a payload led by a narrow string
+
 // @0x1401fbd30
 void FUN_1401fbd30(unsigned char* payload, COutputStream& stream)
 {
-    stream.vfunc_o10_8(*reinterpret_cast<CStringW*>(payload));
+    stream.vfunc_o10_8(reinterpret_cast<Unk_PayloadStrW*>(payload)->str);
 }
 MS2_REPLACE(0x1401FBD30, FUN_1401fbd30, 53, 0x02F7FD6B);
 
@@ -760,11 +762,10 @@ void FUN_1401fbfe0(unsigned char* payload, void* inputPacket)
 }
 MS2_REPLACE(0x1401FBFE0, FUN_1401fbfe0, 201, 0x6B1F8237);
 
-// MS2-FUNCTIONAL: equivalent field operations; /Od temporary placement differs.
 // @0x1401fc0b0
 void FUN_1401fc0b0(unsigned char* payload, COutputStream& stream)
 {
-    stream.vfunc_o10_8(*reinterpret_cast<CStringW*>(payload));
+    stream.vfunc_o10_8(reinterpret_cast<Unk_PayloadStrW*>(payload)->str);
     stream.vfunc_o10_1(*reinterpret_cast<unsigned char*>(payload + 0x8));
     stream.vfunc_o10_3(*reinterpret_cast<int*>(payload + 0xc));
 }
@@ -780,11 +781,10 @@ void FUN_1401fc120(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<int*>(payload + 12)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->vfunc_o8_3();
 }
 
-// MS2-FUNCTIONAL: equivalent field operations; /Od temporary placement differs.
 // @0x1401fc1e0
 void FUN_1401fc1e0(unsigned char* payload, COutputStream& stream)
 {
-    stream.vfunc_o10_8(*reinterpret_cast<CStringW*>(payload));
+    stream.vfunc_o10_8(reinterpret_cast<Unk_PayloadStrW*>(payload)->str);
 }
 MS2_REPLACE(0x1401FC1E0, FUN_1401fc1e0, 53, 0x02F7FD6B);
 
@@ -796,11 +796,10 @@ void FUN_1401fc220(unsigned char* payload, void* inputPacket)
     reinterpret_cast<Unk_WidePayload*>(payload)->text=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadWide(Unk_WideRange(1,24));
 }
 
-// MS2-FUNCTIONAL: recovered wire operations; expression temporaries may differ.
 // @0x1401fc2a0
 void FUN_1401fc2a0(unsigned char* payload, COutputStream& stream)
 {
-    stream.vfunc_o10_8(reinterpret_cast<CStringW*>(payload)->Trim());
+    stream.vfunc_o10_8(reinterpret_cast<Unk_PayloadStrW*>(payload)->str.Trim());
     stream.vfunc_o10_8(*reinterpret_cast<CStringW*>(payload + 8));
     stream.vfunc_o10_8(*reinterpret_cast<CStringW*>(payload + 16));
 }
@@ -853,11 +852,10 @@ void FUN_1401fc5c0(unsigned char* payload, void* inputPacket)
 MS2_REPLACE(0x1401FC5C0, FUN_1401fc5c0, 60, 0x2C84E205);
 
 
-// MS2-FUNCTIONAL: equivalent field operations; /Od temporary placement differs.
 // @0x1401fc610
 void FUN_1401fc610(unsigned char* payload, COutputStream& stream)
 {
-    stream.vfunc_o10_6(*reinterpret_cast<CString*>(payload));
+    stream.vfunc_o10_6(reinterpret_cast<Unk_PayloadStrA*>(payload)->str);
     stream.vfunc_o10_1(*reinterpret_cast<unsigned char*>(payload + 0x8));
 }
 MS2_REPLACE(0x1401FC610, FUN_1401fc610, 78, 0x705DDEAA);
@@ -971,11 +969,11 @@ void FUN_1401fcd80(unsigned char* payload, void* inputPacket)
 MS2_REPLACE(0x1401FCD80, FUN_1401fcd80, 60, 0x21DC48C6);
 
 
-// MS2-FUNCTIONAL: recovered item serialization and ownership; compiler temporaries may differ.
 // @0x1401fcdd0
 void Unk_PayloadItemWire::FUN_1401fcdd0(COutputStream& stream,Unk_PayloadPtr<CItem> item)
 {
-    FUN_1401fce90(stream,item);
+    COutputStream& out=stream;
+    FUN_1401fce90(out,item);
 }
 MS2_REPLACE_METHOD(0x1401FCDD0, Unk_PayloadItemWire, FUN_1401fcdd0, 104, 0x0BE4AB2C);
 
@@ -1198,11 +1196,10 @@ void FUN_1401fdec0(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<Unk_PayloadPoint*>(payload+36)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadPoint<Unk_PayloadPoint>();
 }
 
-// MS2-FUNCTIONAL: equivalent field operations; /Od temporary placement differs.
 // @0x1401fe0d0
 void FUN_1401fe0d0(unsigned char* payload, COutputStream& stream)
 {
-    stream.vfunc_o10_7(*reinterpret_cast<CString*>(payload));
+    stream.vfunc_o10_7(reinterpret_cast<Unk_PayloadStrA*>(payload)->str);
     stream.vfunc_o10_4(*reinterpret_cast<__int64*>(payload + 0x8));
     stream.vfunc_o10_3(*reinterpret_cast<int*>(payload + 0x10));
     stream.vfunc_o10_2(*reinterpret_cast<short*>(payload + 0x14));
@@ -1224,11 +1221,10 @@ void FUN_1401fe190(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<unsigned int*>(payload + 28)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->vfunc_o8_1();
 }
 
-// MS2-FUNCTIONAL: equivalent field operations; /Od temporary placement differs.
 // @0x1401fe310
 void FUN_1401fe310(unsigned char* payload, COutputStream& stream)
 {
-    stream.vfunc_o10_6(*reinterpret_cast<CString*>(payload));
+    stream.vfunc_o10_6(reinterpret_cast<Unk_PayloadStrA*>(payload)->str);
 }
 MS2_REPLACE(0x1401FE310, FUN_1401fe310, 53, 0xEE8624DB);
 
@@ -1240,11 +1236,10 @@ void FUN_1401fe350(unsigned char* payload, void* inputPacket)
     reinterpret_cast<Unk_NarrowPayload*>(payload)->text=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadNarrowWrapper(Unk_NarrowLimit(500));
 }
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // @0x1401fe3d0
 void CMeratMarketPacket::UgcAddProductBase::vfunc_1(COutputStream& stream)
 {
-    stream.vfunc_o10_4(id);stream.vfunc_o10_1(enabled==1);
+    stream.vfunc_o10_4(id);stream.vfunc_o10_1(enabled==1?1:0);
     stream.vfunc_o10_8(name);stream.vfunc_o10_8(description);stream.vfunc_o10_4(price);
 }
 MS2_REPLACE_METHOD(0x1401FE3D0, CMeratMarketPacket::UgcAddProductBase, vfunc_1, 198, 0xCFAAA1DA);
@@ -1571,17 +1566,14 @@ void Unk_PetOptions::FUN_1401ff4d0(void* packet)
 }
 MS2_REPLACE_METHOD(0x1401FF4D0, Unk_PetOptions, FUN_1401ff4d0, 260, 0x331C58E3);
 
-// MS2-FUNCTIONAL: recovered member operations; compiler temporaries may differ.
 // @0x1401ff5e0
 void Unk_PetOptions::FUN_1401ff5e0(const Unk_PetOptions& other)
 {
     map.RemoveAll();
-    POSITION pos=other.map.GetStartPosition();
-    while(pos) {
+    for(POSITION pos=other.map.GetStartPosition();pos!=0;other.map.GetNext(pos)) {
         unsigned int key=other.map.GetKeyAt(pos);
         const Unk_PetOption& option=other.map.GetValueAt(pos);
         map.SetAt(key,option);
-        other.map.GetNext(pos);
     }
 }
 MS2_REPLACE_METHOD(0x1401FF5E0, Unk_PetOptions, FUN_1401ff5e0, 149, 0xD429DC30);
@@ -1832,26 +1824,27 @@ bool Unk_ColorItems::FUN_140200c40()
 }
 MS2_REPLACE_METHOD(0x140200C40, Unk_ColorItems, FUN_140200c40, 31, 0xA55FE3CB);
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // @0x140200c70
 Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> Unk_ColorItems::FUN_140200c70(size_t index)
 {
-    if(!items.IsEmpty()){
-        if(index<items.GetCount())return items[index];
-        else return Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>(0);
-    }
-    else return Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>(0);
+    if(items.IsEmpty())return Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>(0);
+    if(index>=items.GetCount())return Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>(0);
+    return items[index];
 }
 MS2_REPLACE_METHOD(0x140200C70, Unk_ColorItems, FUN_140200c70, 191, 0xA11E03C4);
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // @0x140200d40
 Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> Unk_ColorItems::FUN_140200d40()
 {
     Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> item=FUN_140200c70(0);
-    if(item.get()==0){FUN_140200c10();return Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>(0);}
-    items.RemoveAt(0,1);
-    return item;
+    if(item.get()!=0){
+        items.RemoveAt(0,1);
+        return item;
+    }
+    else{
+        FUN_140200c10();
+        return Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem>(0);
+    }
 }
 MS2_REPLACE_METHOD(0x140200D40, Unk_ColorItems, FUN_140200d40, 188, 0x633FE9CD);
 
@@ -2071,48 +2064,48 @@ void FUN_1402021f0(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<int*>(payload + 0)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->vfunc_o8_3();*reinterpret_cast<CStringW*>(payload + 8)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadWide(Unk_NarrowLimit(64));
 }
 
-// MS2-FUNCTIONAL: equivalent field operations; /Od temporary placement differs.
 // @0x140202290
 void FUN_140202290(unsigned char* payload, COutputStream& stream)
 {
     stream.vfunc_o10_1(*reinterpret_cast<unsigned char*>(payload));
-    if (*reinterpret_cast<int*>(payload) == 3) {
+    switch (*reinterpret_cast<int*>(payload)) {
+    case 3:
         stream.vfunc_o10_3(*reinterpret_cast<int*>(payload + 0x4));
     }
 }
 MS2_REPLACE(0x140202290, FUN_140202290, 87, 0xE6055E16);
 
 
-// MS2-FUNCTIONAL: equivalent field operations; /Od temporary placement differs.
 // @0x1402022f0
 void FUN_1402022f0(unsigned char* payload, void* inputPacket)
 {
     *reinterpret_cast<unsigned int*>(payload) = reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket) + 8)->vfunc_o8_1();
-    if (*reinterpret_cast<unsigned int*>(payload) == 3) {
+    switch (*reinterpret_cast<int*>(payload)) {
+    case 3:
         *reinterpret_cast<int*>(payload + 0x4) = reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket) + 8)->vfunc_o8_3();
     }
 }
 MS2_REPLACE(0x1402022F0, FUN_1402022f0, 125, 0x35803A0D);
 
 
-// MS2-FUNCTIONAL: equivalent field operations; /Od temporary placement differs.
 // @0x140202380
 void FUN_140202380(unsigned char* payload, COutputStream& stream)
 {
     stream.vfunc_o10_1(*reinterpret_cast<unsigned char*>(payload));
-    if (*reinterpret_cast<int*>(payload) == 5) {
+    switch (*reinterpret_cast<int*>(payload)) {
+    case 5:
         stream.vfunc_o10_3(*reinterpret_cast<int*>(payload + 0x4));
     }
 }
 MS2_REPLACE(0x140202380, FUN_140202380, 87, 0x884B7380);
 
 
-// MS2-FUNCTIONAL: equivalent field operations; /Od temporary placement differs.
 // @0x1402023e0
 void FUN_1402023e0(unsigned char* payload, void* inputPacket)
 {
     *reinterpret_cast<unsigned int*>(payload) = reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket) + 8)->vfunc_o8_1();
-    if (*reinterpret_cast<unsigned int*>(payload) == 5) {
+    switch (*reinterpret_cast<int*>(payload)) {
+    case 5:
         *reinterpret_cast<int*>(payload + 0x4) = reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket) + 8)->vfunc_o8_3();
     }
 }
