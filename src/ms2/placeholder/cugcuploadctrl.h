@@ -37,7 +37,7 @@ public:
     virtual void vfunc_4() = 0;                             // 4 the upload finished
     virtual void vfunc_5();                                 // 5 refresh the preview data
     virtual void vfunc_6(COutPacket& packet);               // 6 write the preview data of an item upload
-    virtual void vfunc_7();                                 // 7
+    virtual void vfunc_7(void* p);                          // 7 (empty in the base and the equip viewer)
     virtual int vfunc_8(MS2Ptr<IUgcProxy> spProxy, int nKind);   // 8 the uploaded content to download (0: none)
     virtual int vfunc_9();                                  // 9 the largest image size (base 0x200)
     virtual __int64 vfunc_10();                             // 10 the owner id of the content (base 0)
@@ -58,7 +58,7 @@ public:
     virtual void vfunc_4();
     virtual void vfunc_5();
     virtual void vfunc_6(COutPacket& packet);
-    virtual void vfunc_7();
+    virtual void vfunc_7(void* p);
     virtual int vfunc_8(MS2Ptr<IUgcProxy> spProxy, int nKind);
     virtual __int64 vfunc_10();
     virtual CString vfunc_11();
@@ -275,7 +275,7 @@ public:
     void FUN_1418a3af0(int nResult);
     int FUN_1418a3b80(__int64 uid);                         // prepare the upload (0 = ok)
     CStringW FUN_1418a3bd0();                               // the result text
-    int FUN_1418a3c20(__int64 uid, int bFirst);
+    int FUN_1418a3c20(__int64 uid);
     void FUN_1418a3db0();
     MS2Ptr<CUgcUploadCtrl> FUN_1418a4100();
     void FUN_1418a4150();

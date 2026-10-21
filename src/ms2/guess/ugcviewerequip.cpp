@@ -321,7 +321,7 @@ void CUgcViewerEquip::vfunc_6(COutPacket& packet)
 }
 
 // @0x14189f5a0
-void CUgcViewerEquip::vfunc_7()
+void CUgcViewerEquip::vfunc_7(void* p)
 {
 }
 
@@ -746,8 +746,9 @@ int CUgcViewerProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
 void CUgcViewerProfile::vfunc_4()
 {
     void* pDialog = FUN_140938c30(0x2711);
-    if (pDialog != 0)
-        FUN_14132fa90(pDialog);
+    if (pDialog == 0)
+        return;
+    FUN_14132fa90(pDialog);
 }
 
 // @0x1418a1470
@@ -827,8 +828,9 @@ int CUgcViewerWeddingProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
 void CUgcViewerWeddingProfile::vfunc_4()
 {
     void* pDialog = FUN_1418764c0(0x4f8c);
-    if (pDialog != 0)
-        FUN_140fc7f30(pDialog);
+    if (pDialog == 0)
+        return;
+    FUN_140fc7f30(pDialog);
 }
 
 // @0x1418a19b0
@@ -908,8 +910,9 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
 void CUgcViewerGuildMark::vfunc_4()
 {
     void* pDialog = FUN_14136f480(0x4e4f);
-    if (pDialog != 0)
-        FUN_1419769d0(pDialog);
+    if (pDialog == 0)
+        return;
+    FUN_1419769d0(pDialog);
 }
 
 // @0x1418a1f20
@@ -1380,7 +1383,7 @@ void IUgcViewer::vfunc_6(COutPacket& packet)
 }
 
 // @0x1418a71b0
-void IUgcViewer::vfunc_7()
+void IUgcViewer::vfunc_7(void* p)
 {
 }
 
@@ -1481,13 +1484,12 @@ void CUgcUploadCtrl::FUN_1418a3af0(int nResult)
 // @0x1418a3b80
 int CUgcUploadCtrl::FUN_1418a3b80(__int64 uid)
 {
-    int nResult = FUN_1418a3c20(uid, 1);
-    if (nResult == 0)
-    {
-        FUN_1418a3db0();
-        nResult = 0;
-    }
-    return nResult;
+    int nResult = 1;
+    nResult = FUN_1418a3c20(uid);
+    if (nResult != 0)
+        return nResult;
+    FUN_1418a3db0();
+    return 0;
 }
 
 // @0x1418a3bd0
@@ -1497,9 +1499,9 @@ CStringW CUgcUploadCtrl::FUN_1418a3bd0()
 }
 
 // @0x1418a3c20
-int CUgcUploadCtrl::FUN_1418a3c20(__int64 uid, int bFirst)
+int CUgcUploadCtrl::FUN_1418a3c20(__int64 uid)
 {
-    int nResult;
+    int nResult = 1;
     switch (m_nKind)
     {
     case 1:
@@ -1507,6 +1509,10 @@ int CUgcUploadCtrl::FUN_1418a3c20(__int64 uid, int bFirst)
     case 3:
     case 7:
         nResult = FUN_1418a4470(uid);
+        break;
+    case 0xc9:
+    case 0xd1:
+        nResult = FUN_1418a4690();
         break;
     case 5:
     case 6:
@@ -1516,10 +1522,6 @@ int CUgcUploadCtrl::FUN_1418a3c20(__int64 uid, int bFirst)
         break;
     case 9:
         nResult = FUN_1418a4780();
-        break;
-    case 0xc9:
-    case 0xd1:
-        nResult = FUN_1418a4690();
     }
     return nResult;
 }
@@ -1542,7 +1544,7 @@ void CUgcUploadCtrl::FUN_1418a3db0()
             m_spImage->m_upload.CopyFrom(&m_upload);
             m_spImage->m_spFile = spFile;
             m_spImage->m_spViewer = m_spViewer;
-            m_spImage->FUN_1418a3c20(0, 0);
+            m_spImage->FUN_1418a3c20(0);
         }
     }
 }
@@ -1581,7 +1583,7 @@ CString CUgcUploadCtrl::FUN_1418a41e0()
 // @0x1418a43d0
 int CUgcUploadCtrl::FUN_1418a43d0()
 {
-    if (m_spFile.get() == 0)
+    if (m_spFile == 0)
         return 0xb;
     m_strResult = m_spFile->GetThumbnailDir();
     return 0;
@@ -1590,7 +1592,7 @@ int CUgcUploadCtrl::FUN_1418a43d0()
 // @0x1418a4470
 int CUgcUploadCtrl::FUN_1418a4470(__int64 uid)
 {
-    if (m_spFile.get() == 0)
+    if (m_spFile == 0)
         return 0xb;
     int nSize = m_spViewer->vfunc_9();
     Unk_UgcFileResult result = ChangeFormat(m_nKind, m_spFile, nSize, FUN_14036e510(FUN_140166410()));
@@ -1613,7 +1615,7 @@ int CUgcUploadCtrl::FUN_1418a4470(__int64 uid)
 // @0x1418a4690
 int CUgcUploadCtrl::FUN_1418a4690()
 {
-    if (m_spFile.get() == 0)
+    if (m_spFile == 0)
         return 0xb;
     Unk_UgcFileResult result = ChangeFormat(m_nKind, m_spFile, 0x30, 0);
     int nResult = result.m_nResult;
@@ -1628,7 +1630,7 @@ int CUgcUploadCtrl::FUN_1418a4690()
 // @0x1418a4780
 int CUgcUploadCtrl::FUN_1418a4780()
 {
-    if (m_spFile.get() == 0)
+    if (m_spFile == 0)
         return 0xb;
     int nSize = m_spViewer->vfunc_9();
     Unk_UgcFileResult result = ChangeFormat(m_nKind, m_spFile, nSize, 0);
