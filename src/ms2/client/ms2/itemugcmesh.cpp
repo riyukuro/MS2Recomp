@@ -695,7 +695,6 @@ int FUN_141423880(const Unk_UgcColorList& kColors, Unk_UgcPlayer* pPlayer)
 }
 
 // @0x1414239e0
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
 int FUN_1414239e0(unsigned* pOut, int nSlot, Unk_UgcPlayer* pPlayer)
 {
     if (!(nSlot < 3))
@@ -706,6 +705,11 @@ int FUN_1414239e0(unsigned* pOut, int nSlot, Unk_UgcPlayer* pPlayer)
         if (pPlayer == 0)
             return 0;
     }
+    int bSlot;
+    if (nSlot == 0)
+        bSlot = 0;
+    else
+        bSlot = 1;
     *pOut = FUN_141b6df90(pPlayer->FUN_141659220(nSlot));
     return 1;
 }
@@ -1183,7 +1187,7 @@ template <> Delegate<bool(const ItemColorEx&, MS2Ptr<CItemData>)>::DelegateImplB
 extern char DAT_142f11044[];                                        // part-name separator
 extern char DAT_142f1106c[];                                        // part-name suffix tested for the ankle part
 void FUN_14015f050(const CString& strText, CAtlArray<CString>& aOut, const char* szSep);   // split
-char FUN_140184310(const CString& strText, const char* szSuffix);   // ends with
+bool FUN_140184310(const CString& strText, const char* szSuffix);   // ends with
 bool FUN_14053d6f0(Unk_UgcItemData* pData);                         // the item has attach parts
 
 // @0x141427500
@@ -1265,14 +1269,13 @@ bool CItemUgcMeshContainer::FUN_141426540(MS2Ptr<CItemData> spData, NiAVObjectPt
 }
 
 // @0x141426750 - the attach-part names of an item (the comma list at +0x208), plus the ankle part of shoes
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
 void CItemUgcMeshContainer::FUN_141426750(CAtlArray<CString>& aNames, void* pItemData)
 {
     aNames.RemoveAll();
     CString strParts(*(CString*)((char*)pItemData + 0x208));
     FUN_14015f050(strParts, aNames, DAT_142f11044);
     if (FUN_140184310(strParts, DAT_142f1106c))
-        aNames.Add(CString("SH_Ankle"));
+        aNames.Add("SH_Ankle");
 }
 
 // @0x141426810
@@ -1373,33 +1376,36 @@ void* FUN_1405541f0(void* pSet, void* pNode);
 void* FUN_140554040(void* pSet);
 bool FUN_140552a70(void* pLess, void* pKey, void* pNode);
 
+// The smart pointer layout these raw helpers touch: the held object pointer is the second field.
+struct Unk_UmPtrView { void* m_0; void* m_p; };
+
 // @0x141427370
-void* FUN_141427370(void* pDst, void* pSrc)     // MS2-FUNCTIONAL: raw move of the held pointer (tail of a smart pointer)
+void* FUN_141427370(void* pDst, void* pSrc)     // raw move of the held pointer (tail of a smart pointer)
 {
-    ((void**)pDst)[1] = ((void**)pSrc)[1];
-    ((void**)pSrc)[1] = 0;
+    ((Unk_UmPtrView*)pDst)->m_p = ((Unk_UmPtrView*)pSrc)->m_p;
+    ((Unk_UmPtrView*)pSrc)->m_p = 0;
     return pDst;
 }
 
 // @0x1414273e0
-void* FUN_1414273e0(void* pDst, int)            // MS2-FUNCTIONAL: raw reset of the held pointer
+void* FUN_1414273e0(void* pDst, int)            // raw reset of the held pointer
 {
-    ((void**)pDst)[1] = 0;
+    ((Unk_UmPtrView*)pDst)->m_p = 0;
     return pDst;
 }
 
 // @0x141427400
-void* FUN_141427400(void* pDst, void* pObj)     // MS2-FUNCTIONAL: raw smart pointer attach
+void* FUN_141427400(void* pDst, void* pObj)     // raw smart pointer attach
 {
-    ((void**)pDst)[1] = pObj;
+    ((Unk_UmPtrView*)pDst)->m_p = pObj;
     FUN_141428070(pDst);
     return pDst;
 }
 
 // @0x141428070
-void FUN_141428070(void* pPtr)                  // MS2-FUNCTIONAL: raw AddRef of the held pointer
+void FUN_141428070(void* pPtr)                  // raw AddRef of the held pointer
 {
-    if (((void**)pPtr)[1])
+    if (((Unk_UmPtrView*)pPtr)->m_p)
         FUN_1414280a0(pPtr, 0);
 }
 
@@ -1417,11 +1423,13 @@ void FUN_141427780(void* pNode)                 // MS2-FUNCTIONAL: raw node rele
     FUN_141428560(FUN_1414277a0(pNode));
 }
 
+struct Unk_UmU16Array { unsigned short* m_aT; unsigned m_nAllocSize; unsigned m_nSize; };
+
 // @0x1414279b0
-int FUN_1414279b0(void* pArray, unsigned short* pValue)    // MS2-FUNCTIONAL: raw CSimpleArray<unsigned short>::Find
+int FUN_1414279b0(void* pArray, unsigned short* pValue)    // raw CSimpleArray<unsigned short>::Find
 {
-    for (unsigned i = 0; i < ((unsigned*)pArray)[3]; ++i)
-        if ((*(unsigned short**)pArray)[i] == *pValue)
+    for (unsigned i = 0; i < ((Unk_UmU16Array*)pArray)->m_nSize; ++i)
+        if (((Unk_UmU16Array*)pArray)->m_aT[i] == *pValue)
             return (int)i;
     return -1;
 }
@@ -1433,9 +1441,9 @@ char* FUN_141427a50(void* pSlots, unsigned nIndex)         // MS2-FUNCTIONAL: ra
 }
 
 // @0x141427a70
-void* FUN_141427a70(void* pObj)                 // MS2-FUNCTIONAL: raw second pointer field
+void* FUN_141427a70(void* pObj)                 // raw second pointer field
 {
-    return ((void**)pObj)[1];
+    return ((Unk_UmPtrView*)pObj)->m_p;
 }
 
 // @0x141427ab0
