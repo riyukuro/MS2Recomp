@@ -148,6 +148,8 @@ public:
     bool IsNull() const { return m_pImpl == 0; }
     R operator()(A1 a1) const;
     void Reset();                       // deletes the implementation (alphaanimation.cpp: Delegate<float(float)>, 0x14098e760)
+    bool is_valid() const;              // m_pImpl != 0 (offscreenwebbrowser.cpp, 0x14161b680)
+    bool IsSet() const;                 // is_valid() (offscreenwebbrowser.cpp, 0x141618660)
 
 private:
     static DelegateImplBase* Clone(DelegateImplBase* p);    // null or p->vfunc_1() (ms2memfile.cpp: bool(TiXmlDocument&), 0x141628af0)
