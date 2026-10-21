@@ -7832,3 +7832,13 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?IsEqual@Value@AS2@GFx@Scaleform@@QEBA_NPEAVEnvironment@234@AEBV1234@@Z	142965570	func
 ?ObjectPtrArray_PushBack@AS2@GFx@Scaleform@@YAXPEAV?$Array@PEAVObject@AS2@GFx@Scaleform@@$01UArrayDefaultPolicy@4@@3@AEBQEAVObject@123@@Z	142971a50	func
 ?ObjectPtrArray_Resize@AS2@GFx@Scaleform@@YAXPEAV?$Array@PEAVObject@AS2@GFx@Scaleform@@$01UArrayDefaultPolicy@4@@3@_K@Z	14297e230	func
+??1StaticTextSnapshotData@GFx@Scaleform@@QEAA@XZ	1424aa050	func
+?ASUserData_SetLastObjectValue@GFx@Scaleform@@YAXPEAVASUserData@12@PEAX1_N@Z	142575f10	func
+?GetMemberRaw@Object@AS2@GFx@Scaleform@@UEAA_NPEAVASStringContext@234@AEBVASString@34@PEAVValue@234@@Z	142953280	func
+?GetMemberRawConstructor@GASPrototypeBase@AS2@GFx@Scaleform@@QEAA_NPEAVObject@234@PEAVASStringContext@234@AEBVASString@34@PEAVValue@234@_N@Z	142953980	func
+?MemberHash_Destruct@AS2@GFx@Scaleform@@YAXPEAV?$ASStringHash_GC@VMember@AS2@GFx@Scaleform@@@23@@Z	142924800	func
+?ParagraphFormat_Destruct@AS2@GFx@Scaleform@@YAXPEAVParagraphFormat@Text@Render@3@@Z	142606690	func
+?ProgressInfoHash_Destruct@AS2@GFx@Scaleform@@YAXPEAV?$StringHashLH@UProgressDesc@MovieClipLoader@AS2@GFx@Scaleform@@$01UNoCaseHashFunctor@String@5@U?$StringLH_HashNode@UProgressDesc@MovieClipLoader@AS2@GFx@Scaleform@@UNoCaseHashFunctor@String@5@@5@V?$HashsetCachedNodeEntry@U?$StringLH_HashNode@UProgressDesc@MovieClipLoader@AS2@GFx@Scaleform@@UNoCaseHashFunctor@String@5@@Scaleform@@UNodeHashF@12@@5@@3@@Z	142924ab0	func
+?SharedObjectHash_Destruct@AS2@GFx@Scaleform@@YAXPEAV?$ASStringHash_GC@VSharedObjectPtr@AS2@GFx@Scaleform@@@23@@Z	1429248c0	func
+?TextFormat_Destruct@AS2@GFx@Scaleform@@YAXPEAVTextFormat@Text@Render@3@@Z	1424aa0f0	func
+?WatchpointHash_Destruct@AS2@GFx@Scaleform@@YAXPEAV?$ASStringHash_GC@UWatchpoint@Object@AS2@GFx@Scaleform@@@23@@Z	1429246b0	func
