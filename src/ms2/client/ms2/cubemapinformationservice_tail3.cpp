@@ -71,8 +71,8 @@
 // MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@KKU?$less@K@std@@V?$CustomAllocator@U?$pair@$$CBKK@std@@@efd@@$0A@@std@@@std@@QEAAXXZ 0x1411353c0 ; prop
 // MS2-PIN: ?_Copy_alloc@?$_Tree_comp_alloc@V?$_Tmap_traits@_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@U?$less@_K@std@@V?$CustomAllocator@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@@efd@@$0A@@std@@@std@@QEAAXAEBV?$CustomAllocator@U?$_Tree_node@U?$pair@$$CB_KV?$MS2Ptr@VUnk_CMISUidRecord@@@@@std@@PEAX@std@@@efd@@@Z 0x141135720 ; unique
 // MS2-PIN: ?_Copy_alloc@?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEAAXAEBV?$CustomAllocator@VEntityID@egf@@@efd@@@Z 0x141135990 ; prop
-// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HUUnk_CMISCell@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISCell@@@std@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHUUnk_CMISCell@@@std@@PEAX@2@@Z 0x141135b90 ; prop
-// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HUUnk_CMISMarkRec@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@PEAX@2@@Z 0x141135c30 ; prop
+// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HUUnk_CMISCell@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISCell@@@std@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHUUnk_CMISCell@@@std@@PEAX@2@@Z 0x141135c30 ; prop
+// MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HUUnk_CMISMarkRec@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@PEAX@2@@Z 0x141135b90 ; prop
 // MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@PEAX@2@@Z 0x141135cd0 ; prop
 // MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VFittingDollData@@@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@PEAX@2@@Z 0x141135d20 ; prop
 // MS2-PIN: ?_Destroy_if_node@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VSalesInfo@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VSalesInfo@@@@@std@@@3@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VSalesInfo@@@@@std@@PEAX@2@@Z 0x141135d70 ; prop
@@ -235,3 +235,6 @@ void Unk_CMISDriveTail3()
     { efd::utf8string s; (void)s.find_last_of("/", 0); }
     { std::string s; s.append("x"); }
 }
+// fx25: two merge-induced stubs (look-alike copies the merge pairs elsewhere); the table rows already name these VAs
+// MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IHU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIH@std@@@efd@@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@2@XZ 0x141132bf0
+// MS2-PIN: ?_Copy_alloc@?$_Tree_comp_alloc@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAAXAEBV?$allocator@U?$_Tree_node@HPEAX@std@@@2@@Z 0x141135840
