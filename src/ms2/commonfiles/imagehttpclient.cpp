@@ -211,7 +211,7 @@ bool CImageHttpClient::CanSend()
 // @0x140511c80
 void CImageHttpClient::ClearRequest()
 {
-    if (Unk_LockGuard guard = m_lock) {} else
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else
     {
         m_request = 0;
     }
@@ -313,18 +313,17 @@ TPtrValue<CWinHttpClient> CImageHttpClient::CreateRequest(const std::wstring& st
     TPtrValue<CWinHttpClient> request;
     request = Unk_GrNewTag(0);
     request->FUN_140920cc0(strUrl);
-    if (Unk_LockGuard guard = m_lock) {} else
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else
     {
         m_request = request;
     }
     return request;
 }
 
-// MS2-FUNCTIONAL: 1 byte longer .pdata/EH unwind than exe
 // @0x1405126d0
 TPtrValue<CWinHttpClient> CImageHttpClient::GetRequest()
 {
-    if (Unk_LockGuard guard = m_lock) {} else
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else
     {
         return static_cast<const TPtrValue<CWinHttpClient>&>(m_request);
     }
@@ -333,17 +332,16 @@ TPtrValue<CWinHttpClient> CImageHttpClient::GetRequest()
 // @0x140512760
 void CImageHttpClient::SetRequest(TPtrValue<CWinHttpClient> request)
 {
-    if (Unk_LockGuard guard = m_lock) {} else
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else
     {
         m_request = request;
     }
 }
 
-// MS2-FUNCTIONAL: 1 byte longer .pdata/EH unwind than exe
 // @0x1405127e0
 bool CImageHttpClient::IsRequestPending()
 {
-    if (Unk_LockGuard guard = m_lock) {} else
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else
     {
         return m_request.get() != 0;
     }
