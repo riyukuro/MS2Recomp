@@ -558,7 +558,6 @@ void UIGroupMessenger::vfunc_43()
 }
 MS2_REPLACE_METHOD(0x141948F40, UIGroupMessenger, vfunc_43, 211, 0x36AB4734);
 
-// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141949020
 int UIGroupMessenger::vfunc_13()
 {
@@ -568,7 +567,7 @@ int UIGroupMessenger::vfunc_13()
         return 0;
     if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
         return FUN_14194cbb0();
-    if (FUN_14025e7c0()->FUN_14116d840())
+    else if (FUN_14025e7c0()->FUN_14116d840())
         return FUN_14194cd00();
     return 0;
 }
@@ -796,12 +795,12 @@ void UIGroupMessenger::FUN_14194a320(int nKind, const CStringW& strName, const C
 }
 MS2_REPLACE_METHOD(0x14194A320, UIGroupMessenger, FUN_14194a320, 20, 0x19CBB9B4);
 
-// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194a340
 void UIGroupMessenger::FUN_14194a340(int nKind, const CStringW& strName, const CStringW& strOther)
 {
     FUN_14194bde0();
-    FUN_14194a650(nKind, strName, FUN_140632a60(0x80e, strName, strOther));
+    CStringW strMsg = FUN_140632a60(0x80e, strName, strOther);
+    FUN_14194a650(nKind, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x14194A340, UIGroupMessenger, FUN_14194a340, 109, 0xF1D02319);
 
@@ -818,21 +817,21 @@ void UIGroupMessenger::FUN_14194a3c0(int nKind, const CStringW& strName, int nMo
 }
 MS2_REPLACE_METHOD(0x14194A3C0, UIGroupMessenger, FUN_14194a3c0, 252, 0xF0BC3812);
 
-// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194a4d0
 void UIGroupMessenger::FUN_14194a4d0(int nKind, const CStringW& strName)
 {
     FUN_14194bde0();
-    FUN_14194a650(nKind, strName, FUN_14052bd00(0x811, strName));
+    CStringW strMsg = FUN_14052bd00(0x811, strName);
+    FUN_14194a650(nKind, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x14194A4D0, UIGroupMessenger, FUN_14194a4d0, 99, 0xBA001AB9);
 
-// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194a540
 void UIGroupMessenger::FUN_14194a540(int nKind, const CStringW& strName)
 {
     FUN_14194bde0();
-    FUN_14194a650(nKind, strName, FUN_14052bd00(0x812, strName));
+    CStringW strMsg = FUN_14052bd00(0x812, strName);
+    FUN_14194a650(nKind, strName, strMsg);
 }
 MS2_REPLACE_METHOD(0x14194A540, UIGroupMessenger, FUN_14194a540, 99, 0x5DE0CDB3);
 
@@ -929,13 +928,13 @@ void UIGroupMessenger::FUN_14194a930(std::list<MS2Ptr<ChatEmoticonData> >& emoti
 }
 MS2_REPLACE_METHOD(0x14194A930, UIGroupMessenger, FUN_14194a930, 1055, 0x7996AA4B);
 
-// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194ad60
 void UIGroupMessenger::FUN_14194ad60()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog != 0)
-        pDialog->Invoke("closeChatEmoticonPreview");
+    if (pDialog == 0)
+        return;
+    pDialog->Invoke("closeChatEmoticonPreview");
 }
 MS2_REPLACE_METHOD(0x14194AD60, UIGroupMessenger, FUN_14194ad60, 110, 0xF5CDBC08);
 
@@ -1101,12 +1100,11 @@ unsigned UIGroupMessenger::FUN_14194b9b0()
 }
 MS2_REPLACE_METHOD(0x14194B9B0, UIGroupMessenger, FUN_14194b9b0, 17, 0xABC1DB6D);
 
-// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194b9d0
 int UIGroupMessenger::FUN_14194b9d0(__int64 nCharacterId)
 {
     Unk_ChatPtrChat spChat = CGroupChatManager::GetInstance()->FUN_14137e630(m_nGroupId);
-    if (spChat.get() && spChat->FUN_14137b410(nCharacterId))
+    if ((spChat.get() ? true : false) && spChat->FUN_14137b410(nCharacterId))
         return 1;
     return 0;
 }
@@ -1434,17 +1432,16 @@ CStringW UIGroupMessenger::FUN_14194d8f0(const CStringW& strName, int bSystem)
 }
 MS2_REPLACE(0x14194D8F0, UIGroupMessenger::FUN_14194d8f0, 299, 0xBD408FB8);
 
-// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194da30
 bool UIGroupMessenger::FUN_14194da30(CStringW strMsg)
 {
     if (strMsg.IsEmpty())
         return true;
-    if (strMsg.GetAt(0) == L'<')
-    {
-        strMsg.MakeLower();
-        return strMsg.Find(L"img://emoticon:") == -1;
-    }
+    if (strMsg.GetAt(0) != L'<')
+        return true;
+    strMsg.MakeLower();
+    if (strMsg.Find(L"img://emoticon:") != -1)
+        return false;
     return true;
 }
 MS2_REPLACE(0x14194DA30, UIGroupMessenger::FUN_14194da30, 189, 0xD3318D3F);
@@ -1973,14 +1970,14 @@ int UIGroupMessengerBrowser::FUN_141952840()
 }
 MS2_REPLACE_METHOD(0x141952840, UIGroupMessengerBrowser, FUN_141952840, 176, 0xFA7309D9);
 
-// MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141952900
 unsigned UIGroupMessengerBrowser::FUN_141952900()
 {
     for (unsigned i = 0; i < 3; i++)
     {
-        if (m_windows.Lookup(i) == 0)
-            return i;
+        if (m_windows.Lookup(i) != 0)
+            continue;
+        return i;
     }
     return 3;
 }
