@@ -16,7 +16,7 @@ Output: a COFF (bigobj) object with
         nothing else defines <symbol> (no object, no library member), so a recovered definition always wins.
 Limits (docs/RECOVERY.md): data may only be referenced RIP-relatively (no `&g_x` in a static initializer = ADDR64;
 the linker would store VA - 0x100000000; the post-link step `tools/ms2symobj.py --check <dll>` fails the build), and the exe's statically linked
-runtime (CRT, import stubs; 0x142748000-0x1427b6c90) is never mapped: the DLL uses its own CRT/MFC.
+runtime (CRT, import stubs; 0x1427485e6-0x1427b6c90) is never mapped: the DLL uses its own CRT/MFC.
 """
 import argparse
 import os
@@ -26,7 +26,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DLL_BASE = 0x100000000
-RUNTIME_RANGES = [(0x142748000, 0x1427b6c90)]
+RUNTIME_RANGES = [(0x1427485e6, 0x1427b6c90)]  # below: Scaleform Sound code (SoundInfo 0x142748430..)
 # The CEF 3.3396 wrapper (libcef_dll_wrapper, 0x142778700-0x1427b6870) and its libcef.dll import thunks
 # (`jmp [IAT]`, e.g. cef_string_ascii_to_utf16 0x142778544) share that range but are not CRT: the DLL has no copy of
 # them, so CEF names keep their exe bindings (webbrowserservice calls CefInitialize, CreateBrowser, CefString's C API).
