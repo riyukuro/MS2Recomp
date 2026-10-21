@@ -189,7 +189,7 @@ public:
 Unk_HudPackets* FUN_140bccd50();
 
 // The notice payloads (NotifyObject is 0x18 bytes).
-class Unk_HudNotifyFlag : public NotifyObject { public: char m_bFlag; };                       // +0x18 keyboard / mouse
+class Unk_HudNotifyFlag : public NotifyObject { public: unsigned char m_bFlag; };                       // +0x18 keyboard / mouse
 class Unk_HudNotifyMoney : public NotifyObject { public: char m_pad_18[0x10]; __int64 m_nAmount; };   // +0x28 token money
 
 // The local player and the game event manager.
@@ -590,15 +590,17 @@ void UIUpperHudDialog::FUN_141356d00(const Scaleform::GFx::FunctionHandler::Para
 // @0x141356d30
 void UIUpperHudDialog::FUN_141356d30(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4ecf) == 0)
+    if (FUN_1403ed2b0()->FUN_141adc890(0x4ecf))
+    {
+        FUN_1403ed2b0()->FUN_141adc5d0(0x4ecf);
+    }
+    else
     {
         COutPacket packet(0x67, 0);
         packet.Encode1(0);
         packet.Encode1(1);
         FUN_140710590(packet);
     }
-    else
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4ecf);
 }
 
 // @0x141356dc0
@@ -698,14 +700,14 @@ void UIUpperHudDialog::FUN_141357300(NotifyObject* pObj)
 // @0x141357330
 void UIUpperHudDialog::FUN_141357330(NotifyObject* pObj)
 {
-    if (pObj != 0)
-    {
-        bool bKeyboard = static_cast<Unk_HudNotifyFlag*>(pObj)->m_bFlag == 0;
-        if (m_keyboardMode)
-            m_keyboardMode->FUN_1422c1fe0(bKeyboard);
-        if (m_mouseMode)
-            m_mouseMode->FUN_1422c1fe0(bKeyboard);
-    }
+    Unk_HudNotifyFlag* pFlag = static_cast<Unk_HudNotifyFlag*>(pObj);
+    if (pFlag == 0)
+        return;
+    int bKeyboard = pFlag->m_bFlag == 0 ? 1 : 0;
+    if (m_keyboardMode)
+        m_keyboardMode->FUN_1422c1fe0(bKeyboard);
+    if (m_mouseMode)
+        m_mouseMode->FUN_1422c1fe0(bKeyboard);
 }
 
 // @0x141357400
@@ -905,8 +907,9 @@ void UIUpperHudDialog::FUN_141358360()
         nState = pDlg->FUN_141324d80();
         FUN_1413593d0(m_pcBang, pDlg->FUN_141324db0());
     }
-    if (!(m_30 == 0))
-        FUN_141359510(nState);
+    if (m_30 == 0)
+        return;
+    FUN_141359510(nState);
 }
 
 // @0x141358420
@@ -914,7 +917,8 @@ void UIUpperHudDialog::FUN_141358420()
 {
     if (m_searchDungeon == 0)
         return;
-    m_searchDungeon->vfunc_4(FUN_1409670d0()->FUN_14162ac40());
+    bool bOn = FUN_1409670d0()->FUN_14162ac40();
+    m_searchDungeon->vfunc_4(bOn);
 }
 
 // @0x141358490
@@ -1046,8 +1050,9 @@ void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
 void UIUpperHudDialog::FUN_141359340()
 {
     CStringW strNotice;
-    if (FUN_1401c0d90()->FUN_14047d970(strNotice))
-        FUN_141357430(CStringW(strNotice));
+    if (!FUN_1401c0d90()->FUN_14047d970(strNotice))
+        return;
+    FUN_141357430(CStringW(strNotice));
 }
 
 // @0x1413593d0
@@ -2021,7 +2026,9 @@ bool FUN_14135dba0(const NiFixedString& kName, const Unk_ShaderVec4* pv, int n)
             throw 13;
         }
     }
-    return NiShaderFactory::UpdateGlobalShaderConstant(kName, n * 0x10, pv);
+    if (NiShaderFactory::UpdateGlobalShaderConstant(kName, n * sizeof(Unk_ShaderVec4), pv))
+        return true;
+    return false;
 }
 
 // @0x14135dc40
@@ -2109,25 +2116,24 @@ int UIVisualEffectDialog::vfunc_48()
 // @0x14135deb0
 int Unk_ShaderVec4::FUN_14135deb0() const
 {
-    if ((_fpclass(m_af[0]) & 0x207) == 0 && (_fpclass(m_af[1]) & 0x207) == 0
-        && (_fpclass(m_af[2]) & 0x207) == 0 && (_fpclass(m_af[3]) & 0x207) == 0)
+    if ((_fpclass(m_af[0]) & 0x207) != 0 || (_fpclass(m_af[1]) & 0x207) != 0
+        || (_fpclass(m_af[2]) & 0x207) != 0 || (_fpclass(m_af[3]) & 0x207) != 0)
+        return 0;
+    else
         return 1;
-    return 0;
 }
 
 // @0x14135df60
 bool FUN_14135df60(NiObject* pObject, const NiRTTI* pRTTI)
 {
     const NiRTTI* pCur = pObject->GetRTTI();
-    while (true)
+    while (pCur)
     {
-        if (pCur == 0)
-            return false;
         if (pCur == pRTTI)
-            break;
+            return true;
         pCur = pCur->GetBaseRTTI();
     }
-    return true;
+    return false;
 }
 
 // @0x14135dfc0
@@ -2208,7 +2214,7 @@ NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 
 // @0x14135e1c0
 UIWeaponDummyDialog::UIWeaponDummyDialog()
-    : m_rotation(DAT_143b01a60), m_translation(DAT_143b01a60)
+    : m_rotation(&DAT_143b01a60), m_translation(&DAT_143b01a60)
 {
     m_40 = 1;
 }
@@ -2335,10 +2341,8 @@ int UIWeaponDummyDialog::vfunc_48()
 
 // @0x14135eac0
 UIWebBrowserBase::UIWebBrowserBase(int nBrowserId)
+    : m_nBrowserId(nBrowserId), m_bVisible(false), m_b18d(true)
 {
-    m_nBrowserId = nBrowserId;
-    m_bVisible = false;
-    m_b18d = true;
 }
 
 // @0x14135eb80

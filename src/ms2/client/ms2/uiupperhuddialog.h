@@ -28,6 +28,7 @@ class Unk_UISwfEntity_25;
 struct Unk_HudStreamPoint
 {
     Unk_HudStreamPoint();                                           // 0x1405522f0
+    explicit Unk_HudStreamPoint(const void* p);                     // 0x14027dcf0 copy from an xyz
     Unk_HudStreamPoint& operator=(const Unk_HudStreamPoint&);       // 0x14097fad0
     Unk_HudStreamPoint FUN_14097fc90(float f) const;                // operator*(float)
     Unk_HudStreamPoint FUN_140ae9180(float f) const;                // operator/(float)
