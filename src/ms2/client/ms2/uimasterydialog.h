@@ -36,9 +36,9 @@ struct Unk_MasteryCraft
 {
     Unk_MasteryCraft();                 // 0x140eadd70
     void FUN_140eadda0();               // reset: type 2, the rest 0
-    bool FUN_140eaddf0();               // type == 0
-    bool FUN_140eade30();               // type == 1
-    bool FUN_140eade70();               // m_nTotal != 0
+    BOOL FUN_140eaddf0();               // type == 0
+    BOOL FUN_140eade30();               // type == 1
+    BOOL FUN_140eade70();               // m_nTotal != 0
     int m_nType;
     int m_nTotal;
     int m_nDone;

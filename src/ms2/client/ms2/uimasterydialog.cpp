@@ -316,7 +316,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_141a02a30(CMsgBoxData* pBox, ATL::CAtlArray<ItemEntity>& rewards);
 void FUN_141275260(int nStringId, int nA, int nB);
-short FUN_1407181a0(const CStringW& str);
+int FUN_1407181a0(const CStringW& str);
 class Unk_MHome { public: int FUN_1410d2f10(); bool FUN_1410d5640(); };
 Unk_MHome* FUN_1409670e0();
 CStringW FUN_1405c2690(CStringW strKey, CStringW strArg);
@@ -363,6 +363,7 @@ class Unk_MFurn : public CPtred
 public:
     unsigned int FUN_1405494e0();
     __int64 m_n18;
+    char m_pad20[0x1c];
     int m_n3c; int m_n40; int m_n44; int m_n48;
     unsigned short m_w4c;
     char m_pad4e;
@@ -462,19 +463,19 @@ void Unk_MasteryCraft::FUN_140eadda0()
 }
 
 // @0x140eaddf0
-bool Unk_MasteryCraft::FUN_140eaddf0()
+BOOL Unk_MasteryCraft::FUN_140eaddf0()
 {
     return m_nType == 0;
 }
 
 // @0x140eade30
-bool Unk_MasteryCraft::FUN_140eade30()
+BOOL Unk_MasteryCraft::FUN_140eade30()
 {
     return m_nType == 1;
 }
 
 // @0x140eade70
-bool Unk_MasteryCraft::FUN_140eade70()
+BOOL Unk_MasteryCraft::FUN_140eade70()
 {
     return m_nTotal != 0;
 }
@@ -848,10 +849,10 @@ void UIMasteryDialog::FUN_140eb0540()
 // @0x140eb05b0
 void UIMasteryDialog::FUN_140eb05b0(int nType, bool bKeep)
 {
-    if (FUN_140eb8a90() == nType) {
-        FUN_140eb0610(nType, bKeep);
-        FUN_140eb0da0(nType, bKeep);
-    }
+    if (FUN_140eb8a90() != nType)
+        return;
+    FUN_140eb0610(nType, bKeep);
+    FUN_140eb0da0(nType, bKeep);
 }
 
 // @0x140eb0610
@@ -1068,10 +1069,10 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
 // @0x140eb2460
 void UIMasteryDialog::FUN_140eb2460()
 {
-    if (FUN_140eb86b0() == 8) {
-        FUN_140eb24a0();
-        FUN_140eb2d10();
-    }
+    if (FUN_140eb86b0() != 8)
+        return;
+    FUN_140eb24a0();
+    FUN_140eb2d10();
 }
 
 // @0x140eb24a0
@@ -1331,8 +1332,9 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
 // @0x140eb4ba0
 void UIMasteryDialog::FUN_140eb4ba0()
 {
-    if (FUN_140eb5040() == 3)
-        FUN_140eb4210(m_nSelected);
+    if (FUN_140eb5040() != 3)
+        return;
+    FUN_140eb4210(m_nSelected);
 }
 
 // @0x140eb4be0
@@ -1356,16 +1358,16 @@ void UIMasteryDialog::FUN_140eb4c10(int nType, int bRefreshTabs)
 // @0x140eb4c70
 bool UIMasteryDialog::FUN_140eb4c70(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0) {
-        FUN_140eb6c80();
-        CStringW strInput = box.FUN_141a02d50();
-        strInput.Remove(L',');
-        m_craft.m_nType = 0;
-        m_craft.m_nTotal = FUN_1407181a0(strInput);
-        m_craft.m_nId = box.FUN_141a02e50(0, 0);
-        m_craft.m_nDone = 1;
-        m_craft.m_nPending = 1;
-    }
+    if (nResult != 0)
+        return true;
+    FUN_140eb6c80();
+    CStringW strInput = box.FUN_141a02d50();
+    strInput.Remove(L',');
+    m_craft.m_nType = 0;
+    m_craft.m_nTotal = FUN_1407181a0(strInput);
+    m_craft.m_nId = box.FUN_141a02e50(0, 0);
+    m_craft.m_nDone = 1;
+    m_craft.m_nPending = 1;
     return true;
 }
 
@@ -1441,41 +1443,56 @@ int UIMasteryDialog::FUN_140eb5150()
 // @0x140eb5260
 void UIMasteryDialog::FUN_140eb5260(int nType)
 {
-    if (vfunc_55() == 0 && FUN_140eb8a90() == nType)
-        m_nPendingSub = nType;
+    if (vfunc_55())
+        return;
+    if (FUN_140eb8a90() != nType)
+        return;
+    m_nPendingSub = nType;
 }
 
 // @0x140eb52c0
 void UIMasteryDialog::FUN_140eb52c0(int nType)
 {
-    if (vfunc_55() == 0 && FUN_140eb8a90() == nType)
-        m_nPendingList = nType;
+    if (vfunc_55())
+        return;
+    if (FUN_140eb8a90() != nType)
+        return;
+    m_nPendingList = nType;
 }
 
 // @0x140eb5320
 void UIMasteryDialog::FUN_140eb5320(NotifyObject* pNotify)
 {
     NotifyDamagedMyPC* p = dynamic_cast<NotifyDamagedMyPC*>(pNotify);
-    if (p && p->m_pDamage && p->m_pDamage->FUN_14175ac30() < 0)
-        FUN_140eb6c80();
+    if (p) {
+        if (!p->m_pDamage)
+            return;
+        if (p->m_pDamage->FUN_14175ac30() < 0)
+            FUN_140eb6c80();
+    }
 }
 
 // @0x140eb53a0
 void UIMasteryDialog::FUN_140eb53a0()
 {
-    int nTab = FUN_140eb5040();
-    if (-1 < nTab) {
-        if (nTab < 2) {
+    switch (FUN_140eb5040()) {
+    case 0:
+    case 1:
+        FUN_140eb05b0(FUN_140eb8a90(), false);
+        break;
+    case 2:
+        switch (FUN_140eb86b0()) {
+        case 8:
+            FUN_140eb2460();
+            break;
+        case 9:
             FUN_140eb05b0(FUN_140eb8a90(), false);
-        } else if (nTab == 2) {
-            int nSlot = FUN_140eb86b0();
-            if (nSlot == 8)
-                FUN_140eb2460();
-            else if (nSlot == 9)
-                FUN_140eb05b0(FUN_140eb8a90(), false);
-        } else if (nTab == 3) {
-            FUN_140eb3460();
+            break;
         }
+        break;
+    case 3:
+        FUN_140eb3460();
+        break;
     }
 }
 
@@ -1674,10 +1691,9 @@ void UIMasteryDialog::FUN_140eb6c80()
         Unk_MCastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
-        int nCraftId = m_craft.m_nId;
-        int nSelected = m_nSelected;
+        BOOL bSame = m_nSelected == m_craft.m_nId;
         m_craft.FUN_140eadda0();
-        if (nSelected == nCraftId)
+        if (bSame)
             FUN_140eb5450(m_nSelected);
     }
 }
@@ -1801,10 +1817,11 @@ int UIMasteryDialog::FUN_140eb79b0(int nType, unsigned int nNeedMastery, ItemEnt
 // @0x140eb7b40
 unsigned __int64 UIMasteryDialog::FUN_140eb7b40(int nType, int nNeedMastery, unsigned int nCount)
 {
-    if (FUN_1409670c0()->FUN_14066bb80(nType) == 0)
-        return nCount;
-    unsigned int nMastery = FUN_140eb7bb0(nType);
-    return FUN_1401c0db0()->FUN_140677e20(nCount, nNeedMastery, nMastery);
+    if (FUN_1409670c0()->FUN_14066bb80(nType)) {
+        unsigned int nMastery = FUN_140eb7bb0(nType);
+        return FUN_1401c0db0()->FUN_140677e20(nCount, nNeedMastery, nMastery);
+    }
+    return nCount;
 }
 
 // @0x140eb7bb0
@@ -1939,7 +1956,7 @@ bool UIMasteryDialog::FUN_140eb8550(MS2Ptr<Unk_MRec> spRec)
 // @0x140eb8630
 int UIMasteryDialog::FUN_140eb8630(int nType)
 {
-    if (nType < 0 || 0xb < nType)
+    if (nType < 0 || nType >= 0xc)
         return 0;
     return m_310[nType];
 }
@@ -1947,8 +1964,9 @@ int UIMasteryDialog::FUN_140eb8630(int nType)
 // @0x140eb8670
 void UIMasteryDialog::FUN_140eb8670(int nType, int nValue)
 {
-    if (-1 < nType && nType < 0xc)
-        m_310[nType] = nValue;
+    if (nType < 0 || nType >= 0xc)
+        return;
+    m_310[nType] = nValue;
 }
 
 // @0x140eb86b0
@@ -2008,22 +2026,22 @@ int UIMasteryDialog::FUN_140eb89e0(int nSlot)
         return 3;
     case 1:
         return 5;
-    case 2:
-        return 4;
-    case 3:
-        return 6;
     case 4:
         return 8;
     case 5:
         return 7;
+    case 2:
+        return 4;
+    case 3:
+        return 6;
     case 6:
         return 9;
     case 7:
         return 10;
-    default:
-        return 0;
     case 9:
         return 0xb;
+    default:
+        return 0;
     }
 }
 
@@ -2036,15 +2054,16 @@ int UIMasteryDialog::FUN_140eb8a90()
 // @0x140eb8ac0
 int UIMasteryDialog::FUN_140eb8ac0()
 {
-    int nSlot = FUN_140eb86b0();
-    if (nSlot == 10)
+    switch (FUN_140eb86b0()) {
+    case 10:
         return 1;
-    if (nSlot == 0xb)
+    case 0xb:
         return 2;
-    if (nSlot == 0xc)
+    case 0xc:
         return 3;
-    if (nSlot == 0xd)
+    case 0xd:
         return 4;
+    }
     return 0;
 }
 
@@ -2266,7 +2285,7 @@ Unk_MRawPtr* FUN_140eba870(Unk_MRawPtr* a, Unk_MRawPtr* b)
 }
 
 // @0x140eba8a0
-Unk_MRawPtr* FUN_140eba8a0(Unk_MRawPtr* a)
+Unk_MRawPtr* FUN_140eba8a0(Unk_MRawPtr* a, int)
 {
     a->m_p = 0;
     return a;
@@ -2283,7 +2302,7 @@ void* FUN_140ebac50(void* p, unsigned int nFlags)
 {
     FUN_14034ed60(p);
     if (nFlags & 1)
-        operator delete(p);
+        operator delete(p, (size_t)0x10);
     return p;
 }
 
@@ -2292,7 +2311,7 @@ void* FUN_140ebac90(void* p, unsigned int nFlags)
 {
     FUN_14066d5b0(p);
     if (nFlags & 1)
-        operator delete(p);
+        operator delete(p, (size_t)0x10);
     return p;
 }
 
@@ -2301,7 +2320,7 @@ void* FUN_140ebacd0(void* p, unsigned int nFlags)
 {
     FUN_14056c300(p);
     if (nFlags & 1)
-        operator delete(p);
+        operator delete(p, (size_t)0x10);
     return p;
 }
 
@@ -2346,9 +2365,14 @@ void FUN_140ebaf70(Unk_MSinkRef* p, int a, void* b)
 // @0x140ebafb0
 void* FUN_140ebafb0(void*, void* p)
 {
-    if (p != 0)
-        return p;
-    FUN_140159b70(0x80004005);
+    do {
+        int nCond = !!(p != 0);
+        do {} while (0);
+        if (!nCond)
+            FUN_140159b70(0x80004005);
+    } while (0);
+    void* pNode = p;
+    return pNode;
 }
 
 // @0x140ebb020
@@ -2360,8 +2384,10 @@ unsigned int Unk_MHousing::FUN_140ebb020()
 // @0x140ebb030
 Unk_MMapNode* FUN_140ebb030(Unk_MMapRaw* pMap, Unk_MMapNode** ppPos)
 {
+    do {} while (0);
     Unk_MMapNode* pOld = *ppPos;
-    *ppPos = FUN_140ebae70(pMap, pOld);
+    Unk_MMapNode* pNext = FUN_140ebae70(pMap, pOld);
+    *ppPos = pNext;
     return pOld;
 }
 
@@ -2370,11 +2396,11 @@ Unk_MMapNode* FUN_140ebb080(Unk_MMapRaw* pMap);
 bool FUN_140ebb1b0(Unk_MMapRaw* pMap);
 Unk_MMapNode* FUN_140ebb080(Unk_MMapRaw* pMap)
 {
-    if (!FUN_140ebb1b0(pMap)) {
-        for (unsigned int i = 0; i < pMap->m_nBins; i++) {
-            if (pMap->m_ppBins[i] != 0)
-                return pMap->m_ppBins[i];
-        }
+    if (FUN_140ebb1b0(pMap))
+        return 0;
+    for (unsigned int i = 0; i < pMap->m_nBins; i++) {
+        if (pMap->m_ppBins[i] != 0)
+            return pMap->m_ppBins[i];
     }
     return 0;
 }
@@ -2382,9 +2408,14 @@ Unk_MMapNode* FUN_140ebb080(Unk_MMapRaw* pMap)
 // @0x140ebb100
 void* FUN_140ebb100(void*, char* p)
 {
-    if (p != 0)
-        return p + 8;
-    FUN_140159b70(0x80004005);
+    do {
+        int nCond = !!(p != 0);
+        do {} while (0);
+        if (!nCond)
+            FUN_140159b70(0x80004005);
+    } while (0);
+    char* pNode = p;
+    return pNode + 8;
 }
 
 // @0x140ebb170
