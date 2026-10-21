@@ -7821,3 +7821,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ??0StrFormatter@Scaleform@@QEAA@AEAVMsgFormat@1@AEBVStringDataPtr@1@@Z	1425af2a0	func
 ?PopPage@?$PagedStack@VValue@AS2@GFx@Scaleform@@$0CA@@AS2@GFx@Scaleform@@QEAAXXZ	140006cf0	func
 ?PushPage@?$PagedStack@VValue@AS2@GFx@Scaleform@@$0CA@@AS2@GFx@Scaleform@@QEAAXXZ	140006a40	func
+?FUN_142095bc0@@YA_NPEAVAssetLocatorService@efd@@AEBVutf8string@2@AEAV32@@Z	142095bc0	func
