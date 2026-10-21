@@ -7701,3 +7701,6 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?ReleaseInternal@?$RefCountBaseGC@$0BED@@AS2@GFx@Scaleform@@IEAAXXZ	1425925f0	func
 ?SetAsObject@Value@AS2@GFx@Scaleform@@QEAAXPEAVObject@234@@Z	14297fcb0	func
 ?StringSplit@StringProto@AS2@GFx@Scaleform@@SA?AV?$Ptr@VArrayObject@AS2@GFx@Scaleform@@@4@PEAVEnvironment@234@AEBVASString@34@PEBDH@Z	1429902c0	func
+??0FontData@GFx@Scaleform@@QEAA@PEBDI@Z	1426540b0	func
+??0FontResource@GFx@Scaleform@@QEAA@PEAVFont@Render@2@PEAVResourceBinding@12@@Z	142654400	func
+?SetBindData@ResourceBinding@GFx@Scaleform@@QEAAXIAEBUResourceBindData@23@@Z	142636820	func
