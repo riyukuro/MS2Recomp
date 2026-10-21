@@ -58,7 +58,7 @@ WorldService* FUN_1403ed2d0();                                              // t
 CEffectService* FUN_1403ed280();                                            // the effect service
 
 // The client settings: the pet option flags at +0x34 (+0x12 other users' pets, +0x13 the own pet).
-struct Unk_PetOptFlags { char m_pad_00[0x12]; char m_bOther; char m_bOwn; };
+struct Unk_PetOptFlags { char m_pad_00[0x12]; unsigned char m_bOther; unsigned char m_bOwn; };
 struct Unk_PetClientSettings
 {
     char m_pad_00[0x34];
@@ -79,7 +79,7 @@ class Unk_PCBaseBuffs { public: int FUN_140970020(int nBuffId, unsigned short nL
 class Unk_OwnerPC : public PCBase { public: MS2Ptr<CGemPetSkin> FUN_14165df00(); };
 
 // The pet-skill service (skill table, skill service, pet food table).
-class Unk_SkillObj : public CPtred { public: char FUN_140804450(); };
+class Unk_SkillObj : public CPtred { public: bool FUN_140804450(); };
 class Unk_PetSkillElem : public CPtred { public: int m_nSkillId; unsigned short m_nLevel; };
 class Unk_PetSkillLevel : public CPtred { public: char m_pad_18[0x98 - sizeof(CPtred)]; std::vector<MS2Ptr<Unk_PetSkillElem> > m_vElems; };
 class Unk_PetSkillTable { public: MS2Ptr<Unk_PetSkillLevel> FUN_1407ee2f0(int nSkillId, unsigned short nLevel); };
@@ -132,7 +132,7 @@ int FUN_1422b9ea0(void* p);
 unsigned FUN_140a35ca0(MS2Tick* p);
 MS2Tick* FUN_140a36020(const void* pValue);                                 // Value<MS2Tick>::Get
 CString* FUN_140298f80(const void* pValue);                                 // Value<CString>::Get
-void FUN_14123fbf0(Unk_PCBaseBody* pBody, int n);
+void FUN_14123fbf0(Unk_PCBaseBody* pBody, unsigned short nGroup);  // collision group
 void FUN_141191330(Unk_WsC_GameObj* pField, int nId);
 void FUN_141190900(Unk_WsC_GameObj* pField, int nId);
 PCBase* FUN_1409613d0(GameObject* p);
@@ -146,9 +146,10 @@ inline void* FUN_140b12380(Unk_WsC_GameObj* pField) { return reinterpret_cast<Un
 inline PCBase* FUN_140b120b0(GameObject* p)
 {
     PCBase* pResult = 0;
-    if (p == 0 || !p->TypeCast(0x6200003, (void**)&pResult))
-        pResult = 0;
-    return pResult;
+    if (p != 0 && p->TypeCast(0x6200003, (void**)&pResult))
+        return pResult;
+    else
+        return 0;
 }
 MS2Ptr<UITamingBar::Entity> FUN_140e97f80(int nActorId);
 void FUN_140e98000(int nActorId);
@@ -211,7 +212,9 @@ CPet::~CPet()
 // @0x140b0f930
 int CPet::vfunc_124(int nNpcId)
 {
-    return CNpc::vfunc_124(nNpcId) != 0;
+    if (CNpc::vfunc_124(nNpcId) == 0)
+        return 0;
+    return 1;
 }
 
 // @0x140b0f970
@@ -239,23 +242,14 @@ float CPet::vfunc_97()
         fCur = m_fScaleA8;
     if (fCur != fBase)
     {
-        if (fBase / 2.0f <= fCur)
-        {
-            if (fCur < fBase / 2.0f || fBase <= fCur)
-            {
-                if (fCur <= fBase || fBase * 2.0f < fCur)
-                {
-                    if (fBase * 2.0f < fCur)
-                        fResult = 0.5f;
-                }
-                else
-                    fResult = 1.0f - (fCur - fBase) / (fBase * 2.0f);
-            }
-            else
-                fResult = 2.0f - fCur / fBase;
-        }
-        else
+        if (fCur < fBase / 2.0f)
             fResult = 1.5f;
+        else if (fCur >= fBase / 2.0f && fCur < fBase)
+            fResult = 2.0f - fCur / fBase;
+        else if (fCur > fBase && fCur <= fBase * 2.0f)
+            fResult = 1.0f - (fCur - fBase) / (fBase * 2.0f);
+        else if (fCur > fBase * 2.0f)
+            fResult = 0.5f;
     }
     return fResult;
 }
@@ -270,7 +264,8 @@ void CPet::vfunc_53(float f)
         if (FUN_14123c660() != FUN_140b10150())
         {
             vfunc_23(FUN_140b10150());
-            FUN_14123cb20(FUN_140b10150() == 0);
+            bool bShow = FUN_140b10150() == 0;
+            FUN_14123cb20(bShow);
         }
     }
     FUN_140b11180();
@@ -328,8 +323,8 @@ void CPet::vfunc_52(double fTime)
     float fRatio = FUN_14123c260() / FUN_14123c2e0();
     if (fRatio != m_fScaleA8)
     {
-        bool bDown = m_fScaleA8 - fRatio <= 0.0f;
-        float fStep = (float)fTime * 3.0f;
+        int bDown = m_fScaleA8 - fRatio > 0.0f ? 0 : 1;
+        float fStep = 3.0f * (float)fTime;
         if (bDown)
             fStep = -fStep;
         fRatio = fRatio + fStep;
@@ -338,8 +333,11 @@ void CPet::vfunc_52(double fTime)
             if (fRatio < m_fScaleA8)
                 fRatio = m_fScaleA8;
         }
-        else if (m_fScaleA8 <= fRatio && fRatio != m_fScaleA8)
-            fRatio = m_fScaleA8;
+        else
+        {
+            if (fRatio > m_fScaleA8)
+                fRatio = m_fScaleA8;
+        }
         FUN_14123c280(fRatio * FUN_14123c2e0());
     }
 }
@@ -367,9 +365,11 @@ int CPet::FUN_140b10150()
         return 0;
     if (FUN_1409a8b10()->FUN_140b123b0()->m_bOwn != 0 && pOwner->GetClassID() == 0x6200004)
         return 1;
-    if (FUN_1409a8b10()->FUN_140b123b0()->m_bOther != 0 && pOwner->GetClassID() != 0x6200004)
+    else if (FUN_1409a8b10()->FUN_140b123b0()->m_bOther != 0 && pOwner->GetClassID() != 0x6200004)
         return 1;
-    return FUN_14166cad0() != 0 ? 1 : 0;
+    if (FUN_14166cad0())
+        return 1;
+    return 0;
 }
 
 // @0x140b10210
@@ -425,16 +425,24 @@ void CPet::FUN_140b103c0(void* p)
 void CPet::FUN_140b10400()
 {
     PCBase* pOwner = FUN_141094f60();
-    if (pOwner != 0 && pOwner->GetClassID() == 0x6200004 && !(m_spRow == 0)
-        && m_tm1068.FUN_140268870(100) != 0 && vfunc_65() != 0)
-    {
-        Unk_WsC_GameObj* pField = FUN_1403ed2d0()->FUN_141bd1a50(static_cast<Unk_WsC_GameObj*>(static_cast<GameObject*>(this)));
-        if (pField != 0 && FUN_140b12380(pField) != 0)
-        {
-            FUN_141191330(pField, FUN_14123c580());
-            FUN_141190900(pField, FUN_14123c580());
-        }
-    }
+    if (pOwner == 0)
+        return;
+    if (pOwner->GetClassID() != 0x6200004)
+        return;
+    if (m_spRow == 0)
+        return;
+    if (m_tm1068.FUN_140268870(100) == 0)
+        return;
+    if (vfunc_65() == 0)
+        return;
+    Unk_WsC_GameObj* pField = FUN_1403ed2d0()->FUN_141bd1a50(static_cast<Unk_WsC_GameObj*>(static_cast<GameObject*>(this)));
+    if (pField == 0)
+        return;
+    void* pItem = FUN_140b12380(pField);
+    if (pItem == 0)
+        return;
+    FUN_141191330(pField, FUN_14123c580());
+    FUN_141190900(pField, FUN_14123c580());
 }
 
 // @0x140b10510
@@ -494,14 +502,17 @@ void CPet::FUN_140b107f0(int nKind)
 {
     m_nKind = nKind;
     void* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pLocal == 0)
-        return;
-    if (static_cast<PCBase*>(pLocal)->FUN_14123c580() != m_nKind)
-        return;
-    if (FUN_14166ce30() == 0 && vfunc_129().get() != 0)
+    if (pLocal != 0)
     {
-        vfunc_129()->FUN_140e97ca0(1);
-        vfunc_129()->FUN_140e97ce0(FUN_140b10c00());
+        if (static_cast<PCBase*>(pLocal)->FUN_14123c580() == m_nKind)
+        {
+            bool bShow = FUN_14166ce30() == 0 && (vfunc_129().get() != 0 ? true : false);
+            if (bShow)
+            {
+                vfunc_129()->FUN_140e97ca0(1);
+                vfunc_129()->FUN_140e97ce0(FUN_140b10c00());
+            }
+        }
     }
 }
 
@@ -546,7 +557,7 @@ unsigned __int64 CPet::FUN_140b10c00()
 }
 
 // @0x140b10c20
-bool CPet::FUN_140b10c20()
+int CPet::FUN_140b10c20()
 {
     return *Client::Constants::GetInstance()->TamingPetMaxPoint.Get() == FUN_140b10c00();
 }
@@ -619,23 +630,26 @@ MS2Ptr<UITamingBar::Entity> CPet::vfunc_129()
 int CPet::FUN_140b11180()
 {
     PCBase* pOwner = FUN_140b10360();
-    if (pOwner != 0 && pOwner->FUN_14166ce30() == 0)
+    if (pOwner == 0)
+        return 0;
+    if (pOwner->FUN_14166ce30() != 0)
+        return 0;
+    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(3) == 1)
+        return 0;
+    if (m_tm10a8.FUN_140268870(1000) != 0)
     {
-        if (FUN_14025e7b0()->m_8.FUN_1402c4c90(3) != 1 && m_tm10a8.FUN_140268870(1000) != 0)
+        int nItemId = FUN_140b11c20(&FUN_140c8b450(FUN_140535320())->m_map, pOwner);
+        if (nItemId == 0)
+            return 0;
+        MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
+        if (spData == 0)
+            return 0;
+        short nLevel = spData->FUN_14053dc40();
+        int nSkillId = spData->FUN_14053dc20();
+        if (FUN_140b11810(pOwner->FUN_14166c930(), nSkillId, nLevel) != 0)
         {
-            int nItemId = FUN_140b11c20(&FUN_140c8b450(FUN_140535320())->m_map, pOwner);
-            if (nItemId == 0)
-                return 0;
-            MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
-            if (spData.IsNull())
-                return 0;
-            unsigned short nLevel = spData->FUN_14053dc40();
-            int nSkillId = spData->FUN_14053dc20();
-            if (FUN_140b11810(pOwner->FUN_14166c930(), nSkillId, nLevel) != 0)
-            {
-                if (FUN_140c8b430(FUN_140535320())->FUN_140c89220(nItemId) != 0)
-                    return 1;
-            }
+            if (FUN_140c8b430(FUN_140535320())->FUN_140c89220(nItemId) != 0)
+                return 1;
         }
     }
     return 0;
@@ -644,24 +658,21 @@ int CPet::FUN_140b11180()
 // @0x140b11320
 void CPet::FUN_140b11320(float fTime)
 {
-    if (FUN_1422b9ea0(FUN_1408e57f0()) == 0)
+    if (FUN_1422b9ea0(FUN_1408e57f0()) != 0)
+        return;
+    MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85();
+    if (spBalloon.IsNull())
+        return;
+    if (spBalloon->FUN_1418fb6b0())
+        return;
+    m_nIdleMs += FUN_14028d260(fTime);
+    if (spBalloon->FUN_140f48d40() != 0)
     {
-        MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85();
-        if (!spBalloon.IsNull())
+        if ((unsigned)m_nIdleMs >= FUN_140a35ca0(FUN_140a36020(&Client::Constants::GetInstance()->MonologueShowTime)))
         {
-            if (spBalloon->FUN_1418fb6b0() == 0)
-            {
-                m_nIdleMs += FUN_14028d260(fTime);
-                if (spBalloon->FUN_140f48d40() != 0)
-                {
-                    if (FUN_140a35ca0(FUN_140a36020(&Client::Constants::GetInstance()->MonologueShowTime)) <= (unsigned)m_nIdleMs)
-                    {
-                        spBalloon->vfunc_3();
-                        m_nTargetId = 0;
-                        m_nIdleMs = 0;
-                    }
-                }
-            }
+            spBalloon->vfunc_3();
+            m_nTargetId = 0;
+            m_nIdleMs = 0;
         }
     }
 }
@@ -669,16 +680,14 @@ void CPet::FUN_140b11320(float fTime)
 // @0x140b11460
 int CPet::vfunc_127()
 {
-    if (FUN_140b10150() == 0)
-    {
-        PCBase* pOwner = FUN_141094f60();
-        if (pOwner == 0)
-            return 0;
-        if (FUN_1409a8b10()->FUN_140b123b0()->m_bOther != 0 && pOwner->GetClassID() != 0x6200004)
-            return 0;
-        return 1;
-    }
-    return 0;
+    if (FUN_140b10150() != 0)
+        return 0;
+    PCBase* pOwner = FUN_141094f60();
+    if (pOwner == 0)
+        return 0;
+    if (FUN_1409a8b10()->FUN_140b123b0()->m_bOther != 0 && pOwner->GetClassID() != 0x6200004)
+        return 0;
+    return 1;
 }
 
 // @0x140b114e0
@@ -733,9 +742,9 @@ int CPet::FUN_140b11810(int nSkillType, unsigned nSkillId, unsigned short nLevel
     if (nSkillType == 0x12)
     {
         MS2Ptr<Unk_PetSkillLevel> spLevel = FUN_1401958b0()->FUN_1407ee2f0(nSkillId, nLevel);
-        if (spLevel.get() != 0)
+        if (spLevel.get() != 0 ? true : false)
         {
-            if (reinterpret_cast<Unk_SkillObj*>(spLevel.get())->FUN_140804450() != 0)
+            if (reinterpret_cast<Unk_SkillObj*>(spLevel.operator->())->FUN_140804450() != 0)
                 return 0;
         }
     }
@@ -747,11 +756,12 @@ int CPet::FUN_140b11810(int nSkillType, unsigned nSkillId, unsigned short nLevel
 int FUN_140b118f0(int nItemId, PCBase* pPC)
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
-    if (spData.IsNull())
+    if (spData == 0)
         return 0;
     int nSkillId = spData->FUN_14053dc20();
-    float fCooldown = static_cast<MyPC*>(pPC)->FUN_141523bc0()->FUN_141765fe0(nSkillId, 0);
-    return fCooldown > 0.0f ? 1 : 0;
+    if (static_cast<MyPC*>(pPC)->FUN_141523bc0()->FUN_141765fe0(nSkillId, 0) > 0.0f)
+        return 1;
+    return 0;
 }
 
 // @0x140b119c0

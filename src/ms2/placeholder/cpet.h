@@ -56,7 +56,7 @@ public:
     int FUN_140b109f0();                                    // m_nKind
     void FUN_140b10a10(unsigned __int64 nPoint);            // taming point changed
     unsigned __int64 FUN_140b10c00();                       // m_nTamingPoint
-    bool FUN_140b10c20();                                   // m_nTamingPoint == TamingPetMaxPoint
+    int FUN_140b10c20();                                    // m_nTamingPoint == TamingPetMaxPoint
     void FUN_140b10c80(CStringW str);                       // set the pet's display name
     void FUN_140b10f90(unsigned short n);                   // m_nGrade + its sound/effect id
     unsigned short FUN_140b10fe0();                         // m_nGrade
