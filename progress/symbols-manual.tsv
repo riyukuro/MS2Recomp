@@ -7687,3 +7687,10 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?SFstrtod@Scaleform@@YANPEBDPEAPEAD@Z	1425a4a70	func
 ?ToLowerNode@ASConstString@GFx@Scaleform@@QEBAPEAUASStringNode@23@XZ	1425c1820	func
 ?ToUpperNode@ASConstString@GFx@Scaleform@@QEBAPEAUASStringNode@23@XZ	1425c1860	func
+??0ResourceBinding@GFx@Scaleform@@QEAA@PEAVMemoryHeap@2@@Z	142636600	func
+??1ResourceBinding@GFx@Scaleform@@QEAA@XZ	142636630	func
+?CreateInstance@MovieDefImpl@GFx@Scaleform@@UEAAPEAVMovie@23@AEBUMemoryParams@23@_NPEAVActionControl@23@PEAVThreadCommandQueue@Render@3@@Z	1425ce7e0	func
+?CreateInstance@MovieDefImpl@GFx@Scaleform@@UEAAPEAVMovie@23@PEAVMemoryContext@23@_NPEAVActionControl@23@PEAVThreadCommandQueue@Render@3@@Z	1425ce8d0	func
+?CreateMemoryContext@MovieDefImpl@GFx@Scaleform@@UEAAPEAVMemoryContext@23@PEBDAEBUMemoryParams@23@_N@Z	1425cea00	func
+?Destroy@ResourceBinding@GFx@Scaleform@@QEAAXXZ	1426366b0	func
+?GetFontResource@MovieDefImpl@GFx@Scaleform@@UEAAPEAVFontResource@23@PEBDIPEAUSearchInfo@123@@Z	1425cfbd0	func
