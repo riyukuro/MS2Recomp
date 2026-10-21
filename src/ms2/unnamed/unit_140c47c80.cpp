@@ -184,13 +184,12 @@ inline MS2Ptr<Unk_SocketPageBag> FUN_140c4b8a0(int nMovieId, const Scaleform::GF
 }
 
 // @0x140c4bc60
-// MS2-FUNCTIONAL: child lookup; return-slot temporaries differ.
 inline MS2Ptr<Unk_SocketPageBag> Unk_GsClip::FUN_140c4bc60(const CString& strName)
 {
     Scaleform::GFx::Value v = FUN_1422baa20(strName);
-    if (!FUN_1409b4d40(v))
-        return MS2Ptr<Unk_SocketPageBag>(0);
-    return FUN_140c4b8a0(m_nMovieId, v);
+    if (FUN_1409b4d40(v))
+        return FUN_140c4b8a0(m_nMovieId, v);
+    return MS2Ptr<Unk_SocketPageBag>(0);
 }
 
 // @0x140c4bd20
@@ -387,18 +386,16 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c48df0(int result, const CMsgBoxDa
 }
 
 // @0x140c49000
-// MS2-FUNCTIONAL: slot item and seal flag with typed temporaries.
 void ItemSocketSystemPageGemstoneSwap::FUN_140c49000(ItemInfoSlot& slot, ASSlot& asSlot)
 {
     int seal = 0;
-    MS2Ptr<CItem> item = slot.vfunc_25();
-    if (item.get() != 0) {
-        if (static_cast<CItem*>(item)->FUN_1405279c0() != 0)
-            seal = static_cast<CItem*>(item)->FUN_1405279c0()->FUN_140620a20() == 0 ? 1 : 0;
-        else
-            seal = 0;
-        if (!FUN_1414258e0(static_cast<CItem*>(item)->FUN_140526a50()))
-            asSlot.FUN_1409c20d0(1);
+    {
+        MS2Ptr<CItem> item = slot.vfunc_25();
+        if (item.get() != 0) {
+            seal = static_cast<CItem*>(item)->FUN_1405279c0() ? (static_cast<CItem*>(item)->FUN_1405279c0()->FUN_140620a20() == 0 ? 1 : 0) : 0;
+            if (!FUN_1414258e0(static_cast<CItem*>(item)->FUN_140526a50()))
+                asSlot.FUN_1409c20d0(1);
+        }
     }
     asSlot.FUN_1409c1f00(seal);
 }
@@ -532,7 +529,6 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49fc0()
 }
 
 // @0x140c4a2b0
-// MS2-FUNCTIONAL: target filter and bag parameters with typed temporaries.
 void ItemSocketSystemPageGemstoneSwap::FUN_140c4a2b0(MS2Ptr<CItem> source)
 {
     CItemSocket* socket = static_cast<CItem*>(source)->FUN_1405279c0();
@@ -546,7 +542,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c4a2b0(MS2Ptr<CItem> source)
         CItemSocket* itemSocket = static_cast<CItem*>(item)->FUN_1405279c0();
         if (itemSocket == 0)
             continue;
-        if (item == source.get())
+        if (source == item.get())
             continue;
         if (!FUN_140c4a760(MS2Ptr<CItem>(source), MS2Ptr<CItem>(item)))
             continue;
@@ -580,11 +576,11 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4a620(MS2Ptr<CItem> item)
 }
 
 // @0x140c4a760
-// MS2-FUNCTIONAL: kind and socket comparisons; temporary layout differs.
 bool ItemSocketSystemPageGemstoneSwap::FUN_140c4a760(MS2Ptr<CItem> source, MS2Ptr<CItem> target)
 {
-    int kind = FUN_140222ce0(MS2Ptr<CItemData>(static_cast<CItem*>(source)->FUN_140527840()));
-    if (kind != FUN_140222ce0(MS2Ptr<CItemData>(static_cast<CItem*>(target)->FUN_140527840())))
+    int sourceKind = FUN_140222ce0(MS2Ptr<CItemData>(static_cast<CItem*>(source)->FUN_140527840()));
+    int targetKind = FUN_140222ce0(MS2Ptr<CItemData>(static_cast<CItem*>(target)->FUN_140527840()));
+    if (sourceKind != targetKind)
         return false;
     CItemSocket* sourceSocket = static_cast<CItem*>(source)->FUN_1405279c0();
     CItemSocket* targetSocket = static_cast<CItem*>(target)->FUN_1405279c0();
