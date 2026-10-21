@@ -929,3 +929,12 @@ CFieldSpawnTag::CFieldSpawnTag()
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9a720-0x142c9a7c0 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x1403743e0, CFieldData, FUN_1403743e0, 27, 0x73D2913F);
+MS2_REPLACE(0x140374410, CFieldData::FUN_140374410, 136, 0x96B1CD82);
+MS2_REPLACE(0x1403744a0, CFieldData::FUN_1403744a0, 136, 0xECF037A7);
+MS2_REPLACE(0x1403759c0, FUN_1403759c0, 121, 0x483C9A71);
+MS2_REPLACE(0x140375a40, FUN_140375a40, 131, 0xD5C88EBF);
+MS2_REPLACE(0x140375ad0, FUN_140375ad0, 131, 0x1EA967D6);
+

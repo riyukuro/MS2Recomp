@@ -253,3 +253,9 @@ PortalRandomTargetData::PortalRandomTargetData() : m_nFieldId(0), m_nPortalId(0)
 PortalRandomTargetData::~PortalRandomTargetData()
 {
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x1407301d0, CPortalTable, LoadNames, 796, 0xF33D09CB);
+MS2_REPLACE_METHOD(0x140730920, CPortalTable, Load, 58, 0xAA3A95B5);
+MS2_REPLACE_METHOD(0x140730960, CPortalTable, GetRandomTarget, 533, 0xEC8B059D);
+

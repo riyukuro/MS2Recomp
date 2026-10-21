@@ -393,3 +393,7 @@ MS2_REPLACE_METHOD(0x1408ad2c0, Unk_UGCGroup, FUN_1408ad2c0, 30, 0x39B3499B);
 // @0x1408ad2f0
 int Unk_UGCGroup::FUN_1408ad2f0() { return FUN_14053f940(contractPriceItemCode); }
 MS2_REPLACE_METHOD(0x1408ad2f0, Unk_UGCGroup, FUN_1408ad2f0, 30, 0x52EB71DE);
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x1408a85a0, FUN_1408a85a0, 60, 0x0DEFBE38);
+

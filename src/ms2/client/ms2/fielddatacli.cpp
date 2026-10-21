@@ -493,3 +493,15 @@ bool FUN_140a56f50(const Unk_Vec3Cli* a, const Unk_Vec3Cli* b)
 }
 // Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
 // MS2-RANGE: 0x142c9f4f0-0x142c9f520 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+#include "hook/ms2hook.h"
+MS2_REPLACE(0x140a545d0, FUN_140a545d0, 3707, 0xDC1BDE1E);
+MS2_REPLACE_METHOD(0x140a55500, CFieldDataCli, vfunc_1, 2065, 0x80291AF9);
+MS2_REPLACE(0x140a55d20, FUN_140a55d20, 190, 0x3768CF2B);
+MS2_REPLACE_METHOD(0x140a56690, CFieldDataCli, LoadXBlock, 1079, 0x996652D0);
+MS2_REPLACE(0x140a56ad0, FUN_140a56ad0, 131, 0x79F34C34);
+MS2_REPLACE(0x140a56e70, FUN_140a56e70, 97, 0x97AA0EFC);
+MS2_REPLACE(0x140a56ee0, FUN_140a56ee0, 100, 0x40E619D7);
+MS2_REPLACE(0x140a56f50, FUN_140a56f50, 64, 0xF740D9EC);
+

@@ -76,3 +76,7 @@ errno_t FUN_14183e520(void* const dst, rsize_t const dstSize, void const* const 
     memmove(dst, src, srcSize);
     return 0;
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x14183e450, TerrainExportScheduler, FUN_14183e450, 8, 0x41132FCD);
+

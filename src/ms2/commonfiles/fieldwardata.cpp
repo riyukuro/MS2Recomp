@@ -203,3 +203,13 @@ void FieldWarDataTable::AddData(MS2Ptr<FieldWarData> spData)
     m_byID[spData->GetFieldWarID()] = spData;
     m_byFieldID[spData->m_fieldID] = spData;
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+#include "hook/ms2hook.h"
+MS2_REPLACE_METHOD(0x1403821a0, FieldWarData, Load, 251, 0xE8EC07A8);
+MS2_REPLACE_METHOD(0x1403822b0, FieldWarData, GetFieldWarID, 14, 0x72E52537);
+MS2_REPLACE_METHOD(0x1403822d0, FieldWarData, GetFieldWarGroupID, 14, 0x8AEE455B);
+MS2_REPLACE_METHOD(0x1403822f0, FieldWarData, IsValid, 8, 0x71679366);
+MS2_REPLACE_METHOD(0x1403823f0, FieldWarGroup, GetTotalWeight, 61, 0x48CE2ABA);
+MS2_REPLACE_METHOD(0x140382ca0, FieldWarDataTable, Clear, 31, 0x0CD65179);
+

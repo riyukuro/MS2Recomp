@@ -241,3 +241,7 @@ HomeBlockManager::BuddyPtr HomeBlockManager::FUN_140a47d10(HomePtr home) {
 Unk_HomeNotifications* FUN_140a4a7b0() {
     return DAT_143ab6878;
 }
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x140a4a7b0, FUN_140a4a7b0, 8, 0xDB03878A);
+

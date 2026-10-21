@@ -109,3 +109,7 @@ MS2_REPLACE_METHOD(0x1410b25a0, Unk_CubeHeightIndex, FUN_1410b25a0, 440, 0xff7f5
 void Unk_CubeHeightIndex::Clear() { m_heights.clear(); }
 MS2_REPLACE_METHOD(0x1410b2760, Unk_CubeHeightIndex, Clear, 27, 0xfadc04ac);
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE(0x1410b27c0, GetCubeMapService, 22, 0xB397CB61);
+

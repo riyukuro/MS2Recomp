@@ -529,3 +529,29 @@ Unk_EntityWorldRecord::Unk_EntityWorldRecord() {
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cacf00-0x142cacfa0 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x1411ce510, EntityWorldManager, FUN_1411ce510, 137, 0x914735AB);
+MS2_REPLACE_METHOD(0x1411ce5f0, EntityWorldManager, FUN_1411ce5f0, 137, 0xA0DF957E);
+MS2_REPLACE_METHOD(0x1411ce6d0, EntityWorldManager, FUN_1411ce6d0, 137, 0x28F920FD);
+MS2_REPLACE_METHOD(0x1411cf2d0, EntityWorldManager, FUN_1411cf2d0, 235, 0x598D80F1);
+MS2_REPLACE_METHOD(0x1411cf440, EntityWorldManager, FUN_1411cf440, 238, 0x7E62F595);
+MS2_REPLACE_METHOD(0x1411cf540, EntityWorldManager, FUN_1411cf540, 29, 0xBFC13A2A);
+MS2_REPLACE_METHOD(0x1411cf570, EntityWorldManager, FUN_1411cf570, 29, 0x5373787F);
+MS2_REPLACE_METHOD(0x1411cf5a0, EntityWorldManager, FUN_1411cf5a0, 126, 0xDCCD1250);
+MS2_REPLACE_METHOD(0x1411cfb80, EntityWorldManager, FUN_1411cfb80, 81, 0x0F002E8C);
+MS2_REPLACE_METHOD(0x1411cfbe0, EntityWorldManager, FUN_1411cfbe0, 156, 0x9E5EDDCF);
+MS2_REPLACE_METHOD(0x1411cfce0, EntityWorldManager, FUN_1411cfce0, 75, 0x12220267);
+MS2_REPLACE_METHOD_VIA(0x1411d02c0, EntityWorldManager, IWorldServiceCallback, vfunc_1, 50, 0xAF6B0458);
+MS2_REPLACE_METHOD_VIA(0x1411d0300, EntityWorldManager, IWorldServiceCallback, vfunc_3, 245, 0xBFAD7532);
+MS2_REPLACE_METHOD_VIA(0x1411d0400, EntityWorldManager, IWorldServiceCallback, vfunc_4, 10, 0x96F6F902);
+MS2_REPLACE_METHOD(0x1411d0410, EntityWorldManager, OnPreInit, 99, 0x59319EEF);
+MS2_REPLACE_METHOD(0x1411d08e0, EntityWorldManager, OnTick, 11, 0x30025ED0);
+MS2_REPLACE_METHOD(0x1411d0900, EntityWorldManager, OnShutdown, 309, 0x4615E54F);
+MS2_REPLACE_METHOD(0x1411d0a40, EntityWorldManager, GetDisplayName, 13, 0x9234EB31);
+MS2_REPLACE_METHOD(0x1411d0a60, EntityWorldManager, FUN_1411d0a60, 72, 0xB4FFA8F6);
+MS2_REPLACE_METHOD(0x1411d0ab0, EntityWorldManager, FUN_1411d0ab0, 52, 0x8539A88D);
+MS2_REPLACE_METHOD(0x1411d0af0, EntityWorldManager, FUN_1411d0af0, 52, 0x5489282E);
+MS2_REPLACE_METHOD(0x1411d0b30, EntityWorldManager, FUN_1411d0b30, 41, 0xA11CE50E);
+MS2_REPLACE(0x1411d0b60, FUN_1411d0b60, 250, 0x7104AF24);
+

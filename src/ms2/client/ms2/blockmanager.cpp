@@ -206,3 +206,9 @@ void FUN_140a2ff20(const BlockPtr& rec, int action, u64 cb)
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9ef00-0x142c9ef20 .text$yd
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+#include "hook/ms2hook.h"
+MS2_REPLACE_METHOD(0x140a2f700, CBlockManager, ClearBlocks, 39, 0xD09E5179);
+MS2_REPLACE(0x140a30b80, FUN_140a30b80, 92, 0xA9E0D0E6);
+

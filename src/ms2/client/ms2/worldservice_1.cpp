@@ -11958,4 +11958,8 @@ void FUN_141bdb0f0(WorldService* self, CStringA name, MS2Ptr<Unk_WsK_Rank> value
     FUN_1401643b0(&guard);
 }
 MS2_REPLACE(0x141BDB0F0, FUN_141bdb0f0, 184, 0x1042F222);
+
+// hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
+MS2_REPLACE_METHOD(0x141bda9c0, WorldService, FUN_141bda9c0, 41, 0x7DE44964);
+
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@V?$_Vector_val@U?$_Simple_types@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141bdbaf0 ; FUN_141bdb1b0's unused local (fx24)
