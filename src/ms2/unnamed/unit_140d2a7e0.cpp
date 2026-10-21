@@ -191,8 +191,8 @@ CStringW FUN_140d2bff0(MS2Ptr<CItem> spItem);
 bool FUN_140d2a7e0(CStringW strText, ATL::CAtlArray<CStringW>& arrLinks)
 {
     CStringW strPlain(strText);
-    FUN_140d2c730(strPlain, CStringW(L"A"));
-    FUN_140d2c730(strPlain, CStringW(L"FONT"));
+    FUN_140d2c730(strPlain, L"A");
+    FUN_140d2c730(strPlain, L"FONT");
     strPlain.Replace(L"&apos;", L"'");
     strPlain.Replace(L"&lt;", L"<");
     strPlain.Replace(L"&gt;", L">");
@@ -200,8 +200,8 @@ bool FUN_140d2a7e0(CStringW strText, ATL::CAtlArray<CStringW>& arrLinks)
     for (unsigned i = 0; i < arrLinks.GetCount(); ++i)
     {
         CStringW strOther(arrLinks[i]);
-        FUN_140d2c730(strOther, CStringW(L"a"));
-        FUN_140d2c730(strOther, CStringW(L"FONT"));
+        FUN_140d2c730(strOther, L"a");
+        FUN_140d2c730(strOther, L"FONT");
         if (strPlain == strOther)
         {
             __int64 nId = FUN_140d2caf0(strText);
@@ -413,18 +413,20 @@ bool FUN_140d2c080(CStringW strText, ATL::CAtlList<CStringW>& links, CStringW st
     if (strEnd.IsEmpty())
         return false;
     int nPos = 0;
-    for (;;)
+    while (true)
     {
         int nFirst = strText.Find(strBegin, nPos);
         if (nFirst < 0)
             break;
-        nPos = strText.Find(strEnd, nFirst);
-        if (nPos < 0)
+        int nLast = strText.Find(strEnd, nFirst);
+        if (nLast < 0)
             break;
-        nPos += strEnd.GetLength();
-        links.AddTail(strText.Mid(nFirst, nPos - nFirst));
+        nLast = nLast + strEnd.GetLength() - 1;
+        nPos = nLast + 1;
+        CStringW strLink = strText.Mid(nFirst, nLast - nFirst + 1);
+        links.AddTail(strLink);
     }
-    return links.GetCount() != 0;
+    return links.GetCount() > 0;
 }
 
 // Removes the links from the chat input that were not taken from the list (hand-typed links are not allowed).
@@ -433,7 +435,7 @@ void FUN_140d2c2a0(MS2Ptr<Unk_ChatInput> spInput, ATL::CAtlArray<CStringW>& arrL
 {
     if (spInput->FUN_1422c76c0() == 0)
         return;
-    if (!arrLinks.IsEmpty())
+    if (arrLinks.IsEmpty())
         return;
     CStringW strHtml = spInput->FUN_1422e0c20();
     if (strHtml.IsEmpty())
@@ -442,23 +444,22 @@ void FUN_140d2c2a0(MS2Ptr<Unk_ChatInput> spInput, ATL::CAtlArray<CStringW>& arrL
     ATL::CAtlList<CStringW> links(10);
     if (FUN_140d2c080(CStringW(strHtml), links, CStringW(L"<A HREF="), CStringW(L"/A>")))
     {
-        bool bChanged = false;
-        POSITION pos = links.GetHeadPosition();
-        while (pos != NULL)
+        BOOL bChanged = FALSE;
+        for (POSITION pos = links.GetHeadPosition(); pos != NULL; links.GetNext(pos))
         {
             CStringW strLink(links.GetAt(pos));
             if (!FUN_140d2a7e0(CStringW(strLink), arrLinks))
             {
                 strHtml.Replace(strLink, L"");
-                bChanged = true;
+                bChanged = TRUE;
             }
-            links.GetNext(pos);
         }
         if (bChanged)
         {
             spInput->FUN_1422e0bd0(strHtml);
             spInput->vfunc_24(true);
-            if (spInput->FUN_1422e0b00().IsEmpty())
+            CStringW strText = spInput->FUN_1422e0b00();
+            if (strText.IsEmpty())
             {
                 CStringW strEmpty(L"<Font></Font>");
                 spInput->FUN_1422e0bd0(strEmpty);
@@ -477,10 +478,10 @@ void FUN_140d2c620(CStringW& strText)
 // @0x140d2c650
 void FUN_140d2c650(CStringW& strText)
 {
-    FUN_140d2c730(strText, CStringW(L"P"));
-    FUN_140d2c730(strText, CStringW(L"BR"));
-    FUN_140d2c730(strText, CStringW(L"TEXTFORMAT"));
-    FUN_140d2c730(strText, CStringW(L"FONT"));
+    FUN_140d2c730(strText, L"P");
+    FUN_140d2c730(strText, L"BR");
+    FUN_140d2c730(strText, L"TEXTFORMAT");
+    FUN_140d2c730(strText, L"FONT");
 }
 
 // Removes the <tag ...> and </tag> markup of the tag from the text (at most 20 tags); a broken tag clears the text.
@@ -499,12 +500,11 @@ void FUN_140d2c730(CStringW& strText, const CStringW& strTag)
     strEndTag.Format(L"</%s>", (const wchar_t*)strLowerTag);
     CStringW strEmpty(L"");
     int nRemaining = 20;
-    while (nRemaining > 0)
+    while (nRemaining-- > 0)
     {
-        --nRemaining;
         int nBegin = strLower.Find(strOpen, 0);
         if (nBegin < 0)
-            break;
+            return;
         int nEnd = strLower.Find(strClose, nBegin);
         if (nEnd < 0 || nEnd <= nBegin)
         {
@@ -521,9 +521,9 @@ void FUN_140d2c730(CStringW& strText, const CStringW& strTag)
         }
         strLower.Delete(nBegin, strEndTag.GetLength());
         strText.Delete(nBegin, strEndTag.GetLength());
-        continue;
     }
-    if (nRemaining <= 0 && strText.Find(strOpen, 0) >= 0)
+    int nLeft = strText.Find(strOpen, 0);
+    if (nLeft >= 0)
         strText = strEmpty;
 }
 
@@ -532,7 +532,7 @@ void FUN_140d2c730(CStringW& strText, const CStringW& strTag)
 __int64 FUN_140d2caf0(const CStringW& strText)
 {
     ATL::CAtlArray<CStringW> groups;
-    FUN_14028cf00(strText, groups, CStringW(L"<"), CStringW(L">"));
+    FUN_14028cf00(strText, groups, L"<", L">");
     for (unsigned i = 0; i < groups.GetCount(); ++i)
     {
         CStringW strGroup(groups.GetAt(i));
@@ -673,7 +673,7 @@ CStringW FUN_140d2d440(unsigned nId, int nGrade)
 // @0x140d2d8a0
 CStringW FUN_140d2d8a0(int nAchieveId, int nGrade, CStringW strText, CStringW strDate)
 {
-    unsigned __int64 nLinkId = nAchieveId;
+    unsigned __int64 nLinkId = (unsigned)nAchieveId;
     Unk_ChatLinkKind eKind = CHATLINK_ACHIEVE;
     CStringW strLink = StringFormat(L"'event:achieveTooltip,{0},{1},{2},{3},{4}'", nLinkId, eKind, nGrade, strText, strDate);
     return FUN_140d2ef00(CStringW(strLink), CStringW(L"#ffffff"), FUN_14093b9c0(nAchieveId, nGrade));
@@ -687,7 +687,7 @@ CStringW FUN_140d2da30(MS2Ptr<CCashSaleProduct> spProduct)
         return CStringW(L"");
     unsigned __int64 nLinkId = (unsigned)spProduct->m_n18;
     Unk_ChatLinkKind eKind = CHATLINK_BILL;
-    CStringW strLink = StringFormat(L"'event:billDialog,{0},{1},{2},{3},{4}'", nLinkId, eKind, (unsigned)spProduct->m_data.m_n28, spProduct->m_data.m_n2c, spProduct->m_n1c);
+    CStringW strLink = StringFormat(L"'event:billDialog,{0},{1},{2},{3},{4}'", nLinkId, eKind, reinterpret_cast<unsigned&>(spProduct->m_data.m_n28), spProduct->m_data.m_n2c, spProduct->m_n1c);
     return FUN_140d2ef00(CStringW(strLink), CStringW(L"#ffffff"), FUN_14052bd00(0xabf, FUN_141425950(spProduct->m_data.m_n28)));
 }
 
@@ -702,17 +702,14 @@ CStringW FUN_140d2dc70(MS2Ptr<CMeratMarketProduct> spProduct)
     if (nCategory == 0)
         return CStringW(L"");
 
-    CStringA strId;
-    if (nUgc == 0)
-        strId = FUN_140719190(spProduct->m_premium.m_nId);
-    else
-        strId = FUN_140719530(spProduct->m_ugc.m_n20);
+    CStringA strId = nUgc ? FUN_140719530(spProduct->m_ugc.m_n20) : FUN_140719190(spProduct->m_premium.m_nId);
     CStringW strName = spProduct->GetName();
     unsigned nItemId = spProduct->GetItemId();
     Unk_ChatLinkKind eKind = CHATLINK_MERAT;
     CStringW strLink = Unk_WcStringFormat(L"'event:searchFromMeratmarket,{0},{1},{2},{3},{4},{5},{6}'", strId, eKind, strId, nUgc, L"", nCategory, nItemId);
-    int nGrade = nUgc == 0 ? spProduct->m_premium.m_nGrade : spProduct->m_ugc.m_n1f8;
-    return FUN_140d2ef00(CStringW(strLink), TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)nGrade), FUN_14052bd00(0xabe, strName));
+    int nGrade = nUgc ? spProduct->m_ugc.m_n1f8 : spProduct->m_premium.m_nGrade;
+    CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)nGrade);
+    return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), FUN_14052bd00(0xabe, strName));
 }
 
 // The item link of an item with an uid (a held item of any container, else the item name only).
@@ -721,10 +718,11 @@ CStringW FUN_140d2e090(unsigned __int64 nUid, MS2Ptr<CItem> spItem)
 {
     if (spItem == NULL)
         return CStringW(L"");
-    Unk_ChatLinkKind eKind = CHATLINK_ITEM_REF;
+    unsigned __int64 nLinkId = nUid;
     int nZero1 = 0;
     int nZero2 = 0;
-    CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nUid, eKind, nUid, nZero2, nZero1);
+    Unk_ChatLinkKind eKind = CHATLINK_ITEM_REF;
+    CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nLinkId, eKind, nUid, nZero2, nZero1);
     CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spItem->FUN_140526bd0());
     return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), spItem->FUN_140527b10());
 }
@@ -774,9 +772,9 @@ CStringW FUN_140d2e6f0(MS2Ptr<CItem> spItem)
 CStringW FUN_140d2e900(unsigned nItemId, int nGrade)
 {
     unsigned __int64 nLinkId = nItemId;
-    Unk_ChatLinkKind eKind = CHATLINK_ITEM_ID;
     int nZero = 0;
-    CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nLinkId, eKind, nZero, nItemId, (ItemGradeKey)nGrade);
+    Unk_ChatLinkKind eKind = CHATLINK_ITEM_ID;
+    CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nLinkId, eKind, nZero, nItemId, reinterpret_cast<ItemGradeKey&>(nGrade));
     CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)nGrade);
     return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), FUN_141425950((int)nItemId));
 }
@@ -786,8 +784,8 @@ CStringW FUN_140d2e900(unsigned nItemId, int nGrade)
 CStringW FUN_140d2ea90(int nNameId, int nGrade, unsigned nCount, int nUid)
 {
     unsigned __int64 nLinkId = (__int64)nUid;
-    Unk_ChatLinkKind eKind = CHATLINK_ITEM_OWNED;
     int nZero = 0;
+    Unk_ChatLinkKind eKind = CHATLINK_ITEM_OWNED;
     CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nLinkId, eKind, nZero, nUid, nCount);
     CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)nGrade);
     return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), FUN_141425950(nNameId));
@@ -799,16 +797,19 @@ CStringW FUN_140d2ec30(MS2Ptr<CMeratMarketPremiumProduct> spProduct)
 {
     if (spProduct == NULL)
         return CStringW(L"");
-    unsigned __int64 nLinkId = (__int64)spProduct->m_nId;
+    int nId = spProduct->m_nId;
+    unsigned __int64 nLinkId = nId;
     int nZero = 0;
     int nCategory = spProduct->m_nCategoryId;
     if (nCategory == 0)
         return CStringW(L"");
-    CStringA strId = FUN_140719190(spProduct->m_nId);
+    CStringA strId = FUN_140719190(nId);
     CStringW strName = spProduct->CDBPremiumProduct::GetName();
     Unk_ChatLinkKind eKind = CHATLINK_MERAT;
     CStringW strLink = Unk_WcStringFormat(L"'event:searchFromMeratmarket,{0},{1},{2},{3},{4},{5}'", nLinkId, eKind, strId, nZero, L"", nCategory);
-    return FUN_140d2ef00(CStringW(strLink), TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)spProduct->m_nGrade), FUN_14052bd00(0xabe, strName));
+    ItemGradeKey eGrade = (ItemGradeKey)spProduct->m_nGrade;
+    CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString(eGrade);
+    return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), FUN_14052bd00(0xabe, strName));
 }
 
 // The anchor markup of a chat link: <a href=...><FONT color=...>[name]</FONT></a>.
