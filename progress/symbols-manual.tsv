@@ -7641,3 +7641,9 @@ jpeg_start_decompress	1426f4b10	func
 ??0AppendableSoundData@Sound@Scaleform@@QEAA@II@Z	142747bc0	func
 ?LockDataForAppend@AppendableSoundData@Sound@Scaleform@@QEAAPEAEII@Z	142748230	func
 ?UnlockData@AppendableSoundData@Sound@Scaleform@@QEAAXXZ	142748420	func
+?CopyScanlineDefault@ImageBase@Render@Scaleform@@SAXPEAEPEBE_KPEAVPalette@23@PEAX@Z	14257a330	func
+?ExecuteHW@?$DICommand_SourceRectImpl@UDICommand_Threshold@Render@Scaleform@@@Render@Scaleform@@UEBAXAEAUDICommandContext@23@@Z	142674540	func
+?ExecuteHWCopyAction@DICommand_Threshold@Render@Scaleform@@UEBAXAEAUDICommandContext@23@PEAPEAVTexture@23@PEBV?$Matrix2x4@M@23@@Z	142675870	func
+?ExecuteSW@DICommand_Threshold@Render@Scaleform@@UEBAXAEAUDICommandContext@23@AEAVImageData@23@PEAPEAV523@@Z	142677ea0	func
+?GetPixel@ImageData@Render@Scaleform@@QEBA?AVColor@23@II@Z	14257be60	func
+?SetPixelARGB@ImageData@Render@Scaleform@@QEAAXIIK@Z	14257d240	func
