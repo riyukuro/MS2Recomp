@@ -7825,3 +7825,4 @@ MS2_SF_ConstShapeNoStyles_vftable	14318b708	data
 ?PopPage@?$PagedStack@V?$Ptr@VFunctionObject@AS2@GFx@Scaleform@@@Scaleform@@$0CA@@AS2@GFx@Scaleform@@QEAAXXZ	14296f2b0	func
 ??4Value@AS2@GFx@Scaleform@@QEAAXAEBV0123@@Z	1429267a0	func
 ??1InvokeAliasInfo@MovieRoot@AS2@GFx@Scaleform@@QEAA@XZ	142925ae0	func
+??1Watchpoint@Object@AS2@GFx@Scaleform@@QEAA@XZ	142926100	func
