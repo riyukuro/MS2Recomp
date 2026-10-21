@@ -168,14 +168,14 @@ public:
     void GetMaxGradePoint(Unk_FameAlliance nAlliance);                   // 0x14035ab40
     int GetGradePoint(Unk_FameAlliance nAlliance, int nGrade);           // 0x14035ab90 points needed for the grade (INT_MAX when none)
     unsigned PickRandomLog(Unk_FameAlliance nAlliance, int nGrade, Unk_FameLogFilter* pOwned);  // 0x14035ac50 (name invented)
-    bool IsLogOfAlliance(unsigned nLogId, Unk_FameAlliance nAlliance);        // 0x14035ae50
+    int IsLogOfAlliance(unsigned nLogId, Unk_FameAlliance nAlliance);        // 0x14035ae50
     LimitPtr GetLimit(Unk_FameAlliance nAlliance);                       // 0x14035af00
     ATL::CAtlArray<PickPtr>& GetPickMethods();              // 0x14035afc0
     ATL::CAtlArray<Unk_FameAlliance>& GetAllianceIds();                  // 0x14035aff0
     int IsExped(Unk_FameAlliance nAlliance);                             // 0x14035b010
     int IsNotOfficerNpc(int nKind);                        // 0x14035b0a0
     int GetReloadFlag(unsigned nId);                             // 0x14035b110
-    bool IsReloadOnComplete(unsigned nId);                       // 0x14035b160
+    int IsReloadOnComplete(unsigned nId);                       // 0x14035b160
     CStringA GetSymbol(Unk_FameAlliance nAlliance);                      // 0x14035b1d0
     CStringA GetSymbolByOfficerNpc(int nKind);              // 0x14035b2a0
     Unk_FameAlliance GetAllianceByNpc(int nNpcId);          // 0x14035b3c0 (name invented)

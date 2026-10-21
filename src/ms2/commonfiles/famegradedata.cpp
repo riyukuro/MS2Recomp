@@ -191,7 +191,7 @@ int FUN_14035b710(CStringA& str)
 {
     if (str.CompareNoCase("rankalliancecombination") == 0)
         return 1;
-    if (str.CompareNoCase("fixedcountperalliance") == 0)
+    else if (str.CompareNoCase("fixedcountperalliance") == 0)
         return 2;
     return 0;
 }
@@ -702,36 +702,27 @@ int CFameTable::GetNextGradePoint(Unk_FameAlliance nAlliance, int nGrade)
     CheckInit();
     if (nAlliance <= 0 || nAlliance >= 10)
         return 0x7fffffff;
+    const ATL::CRBMap<int, GradePtr>& map = m_aGrades[nAlliance];
     GradePtr spGrade(0);
-    if (!m_aGrades[nAlliance].Lookup(nGrade + 1, spGrade))
-        return 0x7fffffff;
-    return spGrade->m_nRequirePoint;
+    if (map.Lookup(nGrade + 1, spGrade))
+        return spGrade->m_nRequirePoint;
+    return 0x7fffffff;
 }
 
 // @0x14035aa20
 int CFameTable::GetMaxGrade(Unk_FameAlliance nAlliance)
 {
     CheckInit();
-    int nRet;
     if (nAlliance <= 0 || nAlliance >= 10)
+        return 0;
+    ATL::CRBMap<int, GradePtr>& rMap = m_aGrades[nAlliance];
+    POSITION pos = rMap.GetTailPosition();
+    if (pos)
     {
-        nRet = 0;
+        GradePtr spGrade = rMap.GetValueAt(pos);
+        return spGrade->m_nGrade;
     }
-    else
-    {
-        ATL::CRBMap<int, GradePtr>& rMap = m_aGrades[nAlliance];
-        POSITION pos = rMap.GetTailPosition();
-        if (pos == 0)
-        {
-            nRet = 0;
-        }
-        else
-        {
-            GradePtr spGrade = rMap.GetValueAt(pos);
-            nRet = spGrade->m_nGrade;
-        }
-    }
-    return nRet;
+    return 0;
 }
 
 // @0x14035aad0
@@ -758,10 +749,11 @@ int CFameTable::GetGradePoint(Unk_FameAlliance nAlliance, int nGrade)
     CheckInit();
     if (nAlliance <= 0 || nAlliance >= 10)
         return 0x7fffffff;
+    const ATL::CRBMap<int, GradePtr>& map = m_aGrades[nAlliance];
     GradePtr spGrade(0);
-    if (!m_aGrades[nAlliance].Lookup(nGrade, spGrade))
-        return 0x7fffffff;
-    return spGrade->m_nRequirePoint;
+    if (map.Lookup(nGrade, spGrade))
+        return spGrade->m_nRequirePoint;
+    return 0x7fffffff;
 }
 
 // MS2-FUNCTIONAL: 64-bit modulo operand load order (mov rcx/rax/rcx before div) differs
@@ -792,13 +784,13 @@ unsigned CFameTable::PickRandomLog(Unk_FameAlliance nAlliance, int nGrade, Unk_F
 }
 
 // @0x14035ae50
-bool CFameTable::IsLogOfAlliance(unsigned nLogId, Unk_FameAlliance nAlliance)
+int CFameTable::IsLogOfAlliance(unsigned nLogId, Unk_FameAlliance nAlliance)
 {
     CheckInit();
     LogPtr spLog(0);
-    if (!m_mapLog.Lookup(nLogId, spLog))
-        return false;
-    return spLog->m_nAlliance == nAlliance;
+    if (m_mapLog.Lookup(nLogId, spLog))
+        return spLog->m_nAlliance == nAlliance;
+    return 0;
 }
 
 // @0x14035af00
@@ -806,9 +798,9 @@ CFameTable::LimitPtr CFameTable::GetLimit(Unk_FameAlliance nAlliance)
 {
     CheckInit();
     LimitPtr spLimit(0);
-    if (!m_mapLimit.Lookup(nAlliance, spLimit))
-        return LimitPtr(0);
-    return spLimit;
+    if (m_mapLimit.Lookup(nAlliance, spLimit))
+        return spLimit;
+    return LimitPtr(0);
 }
 
 // @0x14035afc0
@@ -844,15 +836,19 @@ int CFameTable::GetReloadFlag(unsigned nId)
 {
     CheckInit();
     int nValue = 0;
-    return m_mapReload.Lookup(nId, nValue) ? nValue : 0;
+    if (!m_mapReload.Lookup(nId, nValue))
+        return 0;
+    return nValue;
 }
 
 // @0x14035b160
-bool CFameTable::IsReloadOnComplete(unsigned nId)
+int CFameTable::IsReloadOnComplete(unsigned nId)
 {
     CheckInit();
     int nValue = 0;
-    return m_mapReload.Lookup(nId, nValue) && nValue == 0;
+    if (!m_mapReload.Lookup(nId, nValue))
+        return 0;
+    return nValue == 0;
 }
 
 // @0x14035b1d0
@@ -861,7 +857,7 @@ CStringA CFameTable::GetSymbol(Unk_FameAlliance nAlliance)
     DefPtr spDef(0);
     if (m_mapDef.Lookup(nAlliance, spDef))
         return spDef->m_strSymbol;
-    return CStringA();
+    return "";
 }
 
 // @0x14035b2a0
@@ -874,7 +870,7 @@ CStringA CFameTable::GetSymbolByOfficerNpc(int nKind)
         if (spDef->m_nOfficerNpcKind == nKind)
             return spDef->m_strSymbol;
     }
-    return CStringA();
+    return "";
 }
 
 // @0x14035b3c0
