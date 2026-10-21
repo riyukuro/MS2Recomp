@@ -54,11 +54,11 @@ public:
     void GetList(CAchieveList& rOut, int nType, unsigned char nCategory, int bStarted, int bGradeReached);   // 0x140935f80
     void GetListFromTable(CAchieveList& rOut, int nType, unsigned char nCategory, int bStarted, int bGradeReached);   // 0x1409361f0
     int GetRewardTotal(int nType);                                  // 0x1409364d0
-    bool IsCompleted(unsigned nId);                                 // 0x1409365a0
+    int IsCompleted(unsigned nId);                                 // 0x1409365a0
     bool IsGradeCleared(unsigned nId, int nGrade);                  // 0x140936640
     bool HasCompletedOfType(Unk_NullableInt nType);                 // 0x140936740
-    bool IsBeforeStartGrade(unsigned nId, int nGrade);              // 0x140936900
-    bool IsBeforeStartGradeOf(MS2Ptr<CAchieve> pAchieve, int nGrade);   // 0x1409369b0
+    int IsBeforeStartGrade(unsigned nId, int nGrade);              // 0x140936900
+    int IsBeforeStartGradeOf(MS2Ptr<CAchieve> pAchieve, int nGrade);   // 0x1409369b0
     void OnPacket(CByteBuffer& rBuf);                               // 0x140936a50
     void NotifyClear(CAchieve* pAchieve);                           // 0x140936ec0
     void NotifyReward(int nId, int nGrade);                         // 0x1409372b0

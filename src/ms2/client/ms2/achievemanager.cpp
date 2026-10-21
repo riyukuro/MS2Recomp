@@ -232,7 +232,7 @@ WC_WRAP(2)
 
 // This unit's own text helpers (defined below).
 CStringW FUN_14093ce70(int nId, int nGrade);
-bool FUN_14093dc90(int nId, int nGrade, CStringW& strIcon, CStringW& strMsg);
+int FUN_14093dc90(int nId, int nGrade, CStringW& strIcon, CStringW& strMsg);
 CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw);
 CStringW FUN_14093bad0(int nId, int nGrade, CStringW strFormat);
 CStringW FUN_14093dd50(int nId, __int64 nA, __int64 nB);
@@ -427,7 +427,7 @@ int CAchieveManager::GetRewardTotal(int nType)
 MS2_REPLACE_METHOD(0x1409364D0, CAchieveManager, GetRewardTotal, 199, 0x78B15772);
 
 // @0x1409365a0
-bool CAchieveManager::IsCompleted(unsigned nId)
+int CAchieveManager::IsCompleted(unsigned nId)
 {
     MS2Ptr<CAchieve> pAchieve = Find(nId);
     if (pAchieve.IsNull())
@@ -467,21 +467,21 @@ bool CAchieveManager::HasCompletedOfType(Unk_NullableInt nType)
 MS2_REPLACE_METHOD(0x140936740, CAchieveManager, HasCompletedOfType, 428, 0x7D5EC3BD);
 
 // @0x140936900
-bool CAchieveManager::IsBeforeStartGrade(unsigned nId, int nGrade)
+int CAchieveManager::IsBeforeStartGrade(unsigned nId, int nGrade)
 {
     MS2Ptr<CAchieve> pAchieve = Find(nId);
     if (pAchieve.IsNull())
         return false;
-    return nGrade < pAchieve->GetStartGrade();
+    return pAchieve->GetStartGrade() > nGrade;
 }
 MS2_REPLACE_METHOD(0x140936900, CAchieveManager, IsBeforeStartGrade, 158, 0x1A2A0203);
 
 // @0x1409369b0
-bool CAchieveManager::IsBeforeStartGradeOf(MS2Ptr<CAchieve> pAchieve, int nGrade)
+int CAchieveManager::IsBeforeStartGradeOf(MS2Ptr<CAchieve> pAchieve, int nGrade)
 {
     if (pAchieve == 0)
         return false;
-    return nGrade < pAchieve->GetStartGrade();
+    return pAchieve->GetStartGrade() > nGrade;
 }
 
 // The three dialog lookups (UI ids 0x4e28 / 0x2711 / 0x4e5d).
@@ -772,8 +772,9 @@ void CAchieveManager::RebuildTally()
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
         MS2Ptr<CAchieve> pAchieve = m_map.GetValueAt(pos);
-        if (pAchieve->IsStarted() != 0)
-            Tally(pAchieve.get());
+        if (pAchieve->IsStarted() == 0)
+            continue;
+        Tally(pAchieve.get());
     }
 }
 
@@ -1069,9 +1070,9 @@ CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw)
 CStringW FUN_14093cdb0(int nId)
 {
     MS2Ptr<CAchieve> pAchieve = FUN_1406c7600()->Find(nId);
-    if (!pAchieve.IsNull())
-        return FUN_14093ce70(nId, pAchieve->GetStartGrade());
-    return CStringW(L"");
+    if (pAchieve.IsNull())
+        return CStringW(L"");
+    return FUN_14093ce70(nId, pAchieve->GetStartGrade());
 }
 
 // The reward text of one grade (special text of the table, or built from the reward type).
@@ -1171,16 +1172,16 @@ CStringW FUN_14093ce70(int nId, int nGrade)
 
 // The special notify icon / text of a grade, when the special reward table has them.
 // @0x14093dc90
-bool FUN_14093dc90(int nId, int nGrade, CStringW& strIcon, CStringW& strMsg)
+int FUN_14093dc90(int nId, int nGrade, CStringW& strIcon, CStringW& strMsg)
 {
     MS2Ptr<CAchieveUIData::SpecialRewardDesc> pSpecial = CAchieveUIData::FindSpecialReward(nId, nGrade);
-    bool bFound = pSpecial.get() != 0;
-    if (bFound)
+    if (pSpecial.get() != 0)
     {
         strIcon = pSpecial->m_strNotifyIcon;
         strMsg = pSpecial->m_strNotifyString;
+        return 1;
     }
-    return bFound;
+    return 0;
 }
 
 // @0x14093dd50
@@ -1235,10 +1236,9 @@ int FUN_14093e2b0(int nCondType)
     {
         if (nCondType == 0x44)
             return 0;
-        else if (nCondType == 0x45)
+        if (nCondType == 0x45)
             return 0;
-        else
-            return 1;
+        return 1;
     }
     else if (FUN_14029f2b0(nCondType) == 0xf)
     {
@@ -1252,10 +1252,7 @@ int FUN_14093e2b0(int nCondType)
     {
         return 3;
     }
-    else
-    {
-        return 4;
-    }
+    return 4;
 }
 
 // The time (as a date string) an achievement entry was recorded, or "" when it was never.
@@ -1536,7 +1533,8 @@ CStringW FUN_14093f670(int nValue)
 CStringW FUN_14093f800(__int64 nTime)
 {
     CMsTime time = FUN_1406c47a0(nTime);
-    return FUN_14083bab0(time, CStringW(L"/"));
+    CStringW str = FUN_14083bab0(time, CStringW(L"/"));
+    return str;
 }
 
 // @0x14093f8a0
@@ -1548,8 +1546,7 @@ int CAchieveCategory::ParseTab(CStringA& strTab)
         return 2;
     else if (strTab.CompareNoCase("trophy") == 0)
         return 0;
-    else
-        return 0;
+    return 0;
 }
 
 // @0x14093f910
@@ -1561,8 +1558,7 @@ int CAchieveCategory::ParseTree(CStringA& strTree)
         return 1;
     else if (strTree.CompareNoCase("fixed") == 0)
         return 2;
-    else
-        return 0;
+    return 0;
 }
 
 // @0x140940370
