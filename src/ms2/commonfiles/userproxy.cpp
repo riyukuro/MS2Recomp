@@ -1691,6 +1691,7 @@ void Unk_UserProxy::FUN_1408f1090(CString p) {
 // @0x1408f1110
 void Unk_UserProxy::FUN_1408f1110(__int64 p) {
   if (Unk_LockGuard lock = m_290) {
+      __assume(0);
   } else {
     m_170.insert(p);
   }
@@ -1699,6 +1700,7 @@ void Unk_UserProxy::FUN_1408f1110(__int64 p) {
 // @0x1408f1190
 void Unk_UserProxy::FUN_1408f1190(__int64 p) {
   if (Unk_LockGuard lock = m_290) {
+      __assume(0);
   } else {
     m_170.erase(p);
   }
@@ -1707,6 +1709,7 @@ void Unk_UserProxy::FUN_1408f1190(__int64 p) {
 // @0x1408f1200
 void Unk_UserProxy::FUN_1408f1200() {
   if (Unk_LockGuard lock = m_290) {
+      __assume(0);
   } else {
     m_170.clear();
   }
@@ -1715,6 +1718,7 @@ void Unk_UserProxy::FUN_1408f1200() {
 // @0x1408f1270
 void Unk_UserProxy::FUN_1408f1270(ATL::CAtlArray<unsigned __int64> &out) {
   if (Unk_LockGuard lock = m_290) {
+      __assume(0);
   } else {
     // const begin/end 0x1408f48f0 / 0x1408f4960 (the non-const end is 0x140341f40, used by find).
     const std::set<unsigned __int64> &ids = m_170;
@@ -1727,6 +1731,7 @@ void Unk_UserProxy::FUN_1408f1270(ATL::CAtlArray<unsigned __int64> &out) {
 // MS2-FUNCTIONAL: equivalent locked early return; compiler cleanup branch differs.
 __int64 Unk_UserProxy::FUN_1408f1330() {
   if (Unk_LockGuard lock = m_290) {
+      __assume(0);
   } else {
     const std::set<unsigned __int64> &ids = m_170;
     if (ids.empty())
@@ -1998,10 +2003,10 @@ void Unk_UserProxyLabel::Encode(COutputStream &s) {
 void CPlatformProxy::vfunc_5(COutputStream &s) {}
 
 // @0x1408f2f50
-// MS2-FUNCTIONAL: equivalent scoped-lock return; compiler omits the final cleanup-path nop.
 CString CNAPlatformProxy::vfunc_40() {
   {
     if (Unk_LockGuard lock = m_lock) {
+        __assume(0);
     } else {
       return m_38;
     }
@@ -2012,10 +2017,10 @@ CString CNAPlatformProxy::vfunc_40() {
 CString CPlatformProxy::vfunc_40() { return ""; }
 
 // @0x1408f3020
-// MS2-FUNCTIONAL: equivalent scoped-lock return; compiler omits the final cleanup-path nop.
 float CNAPlatformProxy::vfunc_42() {
   {
     if (Unk_LockGuard lock = m_lock) {
+        __assume(0);
     } else {
       return m_40;
     }
@@ -2026,10 +2031,10 @@ float CNAPlatformProxy::vfunc_42() {
 float CPlatformProxy::vfunc_42() { return 0; }
 
 // @0x1408f30a0
-// MS2-FUNCTIONAL: equivalent scoped-lock return; compiler omits the final cleanup-path nop.
 __int64 CNAPlatformProxy::vfunc_44() {
   {
     if (Unk_LockGuard lock = m_lock) {
+        __assume(0);
     } else {
       return m_48;
     }
@@ -2151,10 +2156,10 @@ int CKRPlatformProxy::vfunc_12() { return m_30 == 2 ? 1 : 0; }
 int CPlatformProxy::vfunc_12() { return 3; }
 
 // @0x1408f35e0
-// MS2-FUNCTIONAL: equivalent scoped-lock return; compiler omits the final cleanup-path nop.
 CString CJPPlatformProxy::vfunc_10() {
   {
     if (Unk_LockGuard lock = m_lock) {
+        __assume(0);
     } else {
       return m_78;
     }
@@ -2162,10 +2167,10 @@ CString CJPPlatformProxy::vfunc_10() {
 }
 
 // @0x1408f3670
-// MS2-FUNCTIONAL: equivalent scoped-lock return; compiler omits the final cleanup-path nop.
 CString CKRPlatformProxy::vfunc_10() {
   {
     if (Unk_LockGuard lock = m_lock) {
+        __assume(0);
     } else {
       return m_78;
     }
@@ -2173,10 +2178,10 @@ CString CKRPlatformProxy::vfunc_10() {
 }
 
 // @0x1408f3700
-// MS2-FUNCTIONAL: equivalent scoped-lock return; compiler omits the final cleanup-path nop.
 CString CNAPlatformProxy::vfunc_10() {
   {
     if (Unk_LockGuard lock = m_lock) {
+        __assume(0);
     } else {
       return m_30;
     }
@@ -2214,10 +2219,10 @@ __int64 CNAPlatformProxy::vfunc_52() { return m_88; }
 __int64 CPlatformProxy::vfunc_52() { return 0; }
 
 // @0x1408f3870
-// MS2-FUNCTIONAL: equivalent scoped-lock return; compiler omits the final cleanup-path nop.
 CString CNAPlatformProxy::vfunc_48() {
   {
     if (Unk_LockGuard lock = m_lock) {
+        __assume(0);
     } else {
       return m_58;
     }
@@ -2269,6 +2274,7 @@ void CPlatformProxy::vfunc_35() {}
 // @0x1408f3b10
 void CNAPlatformProxy::vfunc_41(CString p) {
   if (Unk_LockGuard lock = m_lock) {
+      __assume(0);
   } else {
     m_38 = p;
   }
@@ -2280,6 +2286,7 @@ void CPlatformProxy::vfunc_41(CString p) {}
 // @0x1408f3bb0
 void CNAPlatformProxy::vfunc_43(float p) {
   if (Unk_LockGuard lock = m_lock) {
+      __assume(0);
   } else {
     m_40 = p;
   }
@@ -2291,6 +2298,7 @@ void CPlatformProxy::vfunc_43(float p) {}
 // @0x1408f3c20
 void CNAPlatformProxy::vfunc_45(__int64 p) {
   if (Unk_LockGuard lock = m_lock) {
+      __assume(0);
   } else {
     m_48 = p;
   }
@@ -2302,6 +2310,7 @@ void CPlatformProxy::vfunc_45(__int64 p) {}
 // @0x1408f3c90
 void CNAPlatformProxy::vfunc_47(int p) {
   if (Unk_LockGuard lock = m_lock) {
+      __assume(0);
   } else {
     m_50 = p;
   }
@@ -2427,6 +2436,7 @@ void CPlatformProxy::vfunc_13(int p) {}
 // @0x1408f4290
 void CJPPlatformProxy::vfunc_11(CString p) {
   if (Unk_LockGuard lock = m_lock) {
+      __assume(0);
   } else {
     m_78 = p;
   }
@@ -2435,6 +2445,7 @@ void CJPPlatformProxy::vfunc_11(CString p) {
 // @0x1408f4310
 void CKRPlatformProxy::vfunc_11(CString p) {
   if (Unk_LockGuard lock = m_lock) {
+      __assume(0);
   } else {
     m_78 = p;
   }
@@ -2443,6 +2454,7 @@ void CKRPlatformProxy::vfunc_11(CString p) {
 // @0x1408f4390
 void CNAPlatformProxy::vfunc_11(CString p) {
   if (Unk_LockGuard lock = m_lock) {
+      __assume(0);
   } else {
     m_30 = p;
   }
@@ -2481,6 +2493,7 @@ void CPlatformProxy::vfunc_53(__int64 p) {}
 // @0x1408f4530
 void CNAPlatformProxy::vfunc_49(CString p) {
   if (Unk_LockGuard lock = m_lock) {
+      __assume(0);
   } else {
     m_58 = p;
   }
