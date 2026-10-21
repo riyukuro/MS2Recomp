@@ -2,3 +2,12 @@
 
 
 .
+233c
+#line 234 // MS2 __LINE__
+.
+225a
+#line 228 // MS2: the exe's source has two more lines above this log
+.
+221c
+    sceneDesc.flags &= ~NX_SF_SIMULATE_SEPARATE_THREAD; // MS2: scenes simulate on the calling thread
+.

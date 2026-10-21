@@ -1,0 +1,3 @@
+930c
+    case SCM_DEF_FOG_DENSITY: return NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT;  // MS2: the exe types the fog density as FLOAT
+.

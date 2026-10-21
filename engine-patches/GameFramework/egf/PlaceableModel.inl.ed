@@ -1,0 +1,6 @@
+54c
+        if ((_fpclass(rotation.x) & 0x207) || (_fpclass(rotation.y) & 0x207) || (_fpclass(rotation.z) & 0x207)) return; m_rotation = rotation; // MS2: reject NaN/Inf
+.
+31c
+        if ((_fpclass(position.x) & 0x207) || (_fpclass(position.y) & 0x207) || (_fpclass(position.z) & 0x207)) return; m_position = position; // MS2: reject NaN/Inf
+.

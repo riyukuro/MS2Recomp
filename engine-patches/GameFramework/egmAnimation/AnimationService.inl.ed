@@ -1,0 +1,7 @@
+221a
+// MS2: the exe's egmAnimationBindings calls GetAnimationIdFromName out of line (older cl inliner); the TU defines
+// EE_MS2_ANIMSVC_NAME_CALL (engine/units-gb.json). Same mangled name, other units unchanged.
+#if defined(EE_MS2_ANIMSVC_NAME_CALL)
+__declspec(noinline)
+#endif
+.

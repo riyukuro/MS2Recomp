@@ -1,0 +1,3 @@
+24c
+template<class T> using MS2Utf8MapTree = typename efd::map<efd::utf8string, T>::_Mybase; /* MS2: see utf8string.inl */ EE_MS2_INSERT_NOHINT(MS2Utf8MapTree<efd::SmartPointer<efd::ISection>>, MS2Utf8MapTree<efd::SmartPointer<efd::ISection>>::value_type&, MS2Utf8MapTree<efd::SmartPointer<efd::ISection>>::_Nodeptr) EE_MS2_INSERT_NOHINT(MS2Utf8MapTree<efd::SmartPointer<efd::ISectionEntry>>, MS2Utf8MapTree<efd::SmartPointer<efd::ISectionEntry>>::value_type&, MS2Utf8MapTree<efd::SmartPointer<efd::ISectionEntry>>::_Nodeptr)
+.

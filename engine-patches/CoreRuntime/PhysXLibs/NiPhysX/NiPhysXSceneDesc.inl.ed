@@ -1,0 +1,4 @@
+143c
+// MS2: out of line in the exe (0x141f014f0, its one caller NiPhysXScene::PostLinkObject calls it)
+inline __declspec(noinline) void NiPhysXSceneDesc::ClearBackCompatable()
+.

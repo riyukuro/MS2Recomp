@@ -1,9 +1,63 @@
 778a
+#line 778 // MS2 __LINE__
+efd::Bool VisualTrackerService::SetGraphShow( // MS2: no SDK counterpart (name ours)
+    efd::UInt32 graphIndex,
+    bool show,
+    const char* name)
+{
+    if (m_pages.size() <= m_curPageIndex)
+    {
+        EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR2,
+            ("Must create a page prior to adding graphs!"));
+        return false;
+    }
+    NiVisualTracker* pNiTracker = m_pages[m_curPageIndex]->GetVisualTrackers().GetTail();
+    VisualTracker* pTracker = static_cast<VisualTracker*>(pNiTracker);
+    if (!pTracker)
+    {
+        EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR2,
+            ("Must add a tracker to currect page prior to adding graphs!"));
+        return false;
+    }
+    if (graphIndex < pTracker->GetGraphCount())
+    {
+        pTracker->ShowGraph(show, graphIndex);
+        if (show) pTracker->SetName(name, graphIndex); else pTracker->SetName("", graphIndex);
+    }
+    return true;
+}
+
+//------------------------------------------------------------------------------------------------
+#line 813 // MS2 __LINE__
+efd::UInt32 VisualTrackerService::GetGraphIndexByName(const char* name) // MS2: no SDK counterpart (name ours)
+{
+    if (m_pages.size() <= m_curPageIndex)
+    {
+        EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR2,
+            ("Must create a page prior to adding graphs!"));
+        return 0xffffffff;
+    }
+    NiVisualTracker* pNiTracker = m_pages[m_curPageIndex]->GetVisualTrackers().GetTail();
+    VisualTracker* pTracker = static_cast<VisualTracker*>(pNiTracker);
+    if (!pTracker)
+    {
+        EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR2,
+            ("Must add a tracker to currect page prior to adding graphs!"));
+        return 0xffffffff;
+    }
+    if (pTracker->GetGraphIndexByName(name) < pTracker->GetGraphCount())
+        return pTracker->GetGraphIndexByName(name);
+    return 0xffffffff;
+}
+
+//------------------------------------------------------------------------------------------------
 #line 840 // MS2 __LINE__ (linefix)
 .
 750a
 #line 752 // MS2 __LINE__ (linefix)
 .
+133@57s "," " -> ="
+133@54s "" "EQUALS, // MS2: "
 68c
     , m_memoryMax(2000000.0f)   // MS2: exe 0x1422a4e10 stores 2000000.0f
 .

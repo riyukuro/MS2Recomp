@@ -1,0 +1,5 @@
+131a
+    case SOURCE_AMB:  // MS2
+        NiSprintf(pcString, stLen, "%s = SOURCE_AMB", pcPrefix);
+        break;
+.

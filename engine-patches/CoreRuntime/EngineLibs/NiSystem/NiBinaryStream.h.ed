@@ -1,3 +1,14 @@
+52@54s "" "  // MS2"
+52@3s "" " MS2_NISLB_RETURN"
+50c
+MS2_NISLB_RESULT NiStreamSaveBinary(efd::BinaryStream& binstream, T* value, unsigned int uiNumEls)  // MS2: returns the save result
+.
+45c
+    MS2_NISLB_RETURN efd::BinaryStreamSave(binstream, &value, 1);  // MS2
+.
+43c
+MS2_NISLB_RESULT NiStreamSaveBinary(efd::BinaryStream& binstream, T& value)  // MS2: returns the save result
+.
 38@54s "" "  // MS2"
 38@3s "" " MS2_NISLB_RETURN"
 36c

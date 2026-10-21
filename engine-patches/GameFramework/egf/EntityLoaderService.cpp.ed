@@ -1,3 +1,31 @@
+1386c
+            // MS2: the exe inlines map::operator[] (try_emplace: lower_bound + emplace_hint) here
+            AssetID key(pMessage->GetResponseURI());
+            const efd::utf8string& uuid = urlIt->first;
+            MS2MapIndex(m_requestToUUIDMap, std::move(key)) = uuid;
+.
+1368a
+// MS2: map::operator[](key_type&&) as the exe's inliner expands it (14.16 _Try_emplace body)
+template<class _Map>
+static __forceinline typename _Map::mapped_type& MS2MapIndex(_Map& map, typename _Map::key_type&& key)
+{
+    typename _Map::iterator where = map.lower_bound(key);
+    if (where == map.end() || map.key_comp()(key, where->first))
+    {
+        where = map.emplace_hint(where, std::piecewise_construct,
+            std::forward_as_tuple(std::move(key)), std::tuple<>());
+    }
+    return where->second;
+}
+
+//------------------------------------------------------------------------------------------------
+.
+1054a
+#line 1055 // MS2 __LINE__ (linefix)
+.
+878a
+#line 882 // MS2 __LINE__ (linefix)
+.
 701,704c
             // MS2: no elr_EntityDestructionCompleted result here (the exe sends it from the canceled-load
             // path of lds_Initial instead)

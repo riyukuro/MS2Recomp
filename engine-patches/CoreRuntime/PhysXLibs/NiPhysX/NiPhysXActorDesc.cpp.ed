@@ -92,9 +92,140 @@
         }
 
 .
+261a
+#line 266 // MS2 __LINE__
+.
+219a
+    // MS2: scaled props scale the primitive shapes and re-cook the collision meshes at the new size.
+    if (fScale != 1.0f)
+    {
+        for (NiUInt32 i = 0; i < kActorDesc.shapes.size(); i++)
+        {
+            NxShapeDesc* pkShapeDesc = kActorDesc.shapes[i];
+            NxShapeType eType = pkShapeDesc->getType();
+            if (eType == NX_SHAPE_PLANE)
+            {
+                ((NxPlaneShapeDesc*)pkShapeDesc)->d *= fScale;
+            }
+            else if (eType == NX_SHAPE_SPHERE)
+            {
+                ((NxSphereShapeDesc*)pkShapeDesc)->radius *= fScale;
+            }
+            else if (eType == NX_SHAPE_CAPSULE)
+            {
+                ((NxCapsuleShapeDesc*)pkShapeDesc)->radius *= fScale;
+                ((NxCapsuleShapeDesc*)pkShapeDesc)->height *= fScale;
+            }
+            else if (eType == NX_SHAPE_BOX)
+            {
+                ((NxBoxShapeDesc*)pkShapeDesc)->dimensions *= fScale;
+            }
+            else if (eType == NX_SHAPE_CONVEX)
+            {
+                NxConvexShapeDesc* pkConvexDesc = (NxConvexShapeDesc*)pkShapeDesc;
+                NxConvexMesh* pkMesh = pkConvexDesc->meshData;
+                if (!pkMesh)
+                    continue;
+
+                NxU32 uiNumVertices = pkMesh->getCount(0, NX_ARRAY_VERTICES);
+                NxU32 uiNumTriangles = pkMesh->getCount(0, NX_ARRAY_TRIANGLES);
+                NxU32 uiPointStride = pkMesh->getStride(0, NX_ARRAY_VERTICES);
+                NxU32 uiTriangleStride = pkMesh->getStride(0, NX_ARRAY_TRIANGLES);
+                const void* pvPoints = pkMesh->getBase(0, NX_ARRAY_VERTICES);
+                const void* pvTriangles = pkMesh->getBase(0, NX_ARRAY_TRIANGLES);
+
+                NxConvexMeshDesc kMeshDesc;
+                kMeshDesc.numVertices = uiNumVertices;
+                kMeshDesc.numTriangles = uiNumTriangles;
+                kMeshDesc.pointStrideBytes = uiPointStride;
+                kMeshDesc.triangleStrideBytes = uiTriangleStride;
+                kMeshDesc.points = pvPoints;
+                kMeshDesc.triangles = pvTriangles;
+                kMeshDesc.flags = 0;
+
+                NxCookingInterface* pkCooking = NxGetCookingLib(NX_PHYSICS_SDK_VERSION);
+                pkCooking->NxInitCooking();
+                NiPhysXMemStream* pkCooked = NiNew NiPhysXMemStream;
+                if (pkCooking->NxCookConvexMesh(kMeshDesc, *pkCooked))
+                {
+                    pkCooked->Reset();
+                    NiPhysXMemStream* pkScaled = NiNew NiPhysXMemStream;
+                    if (pkCooking->NxScaleCookedConvexMesh(*pkCooked, fScale, *pkScaled))
+                    {
+                        pkScaled->Reset();
+                        pkConvexDesc->meshData = efdPhysX::PhysXSDKManager::GetManager()->
+                            m_pPhysXSDK->createConvexMesh(*pkScaled);
+                        if (pkMesh->getReferenceCount() == 0)
+                        {
+                            efdPhysX::PhysXSDKManager::GetManager()->m_pPhysXSDK->
+                                releaseConvexMesh(*pkMesh);
+                        }
+                    }
+                    NiDelete pkScaled;
+                }
+                NiDelete pkCooked;
+                pkCooking->NxCloseCooking();
+            }
+            else if (eType == NX_SHAPE_MESH)
+            {
+                NxTriangleMeshShapeDesc* pkMeshShapeDesc = (NxTriangleMeshShapeDesc*)pkShapeDesc;
+                NxTriangleMesh* pkMesh = pkMeshShapeDesc->meshData;
+                if (!pkMesh)
+                    continue;
+
+                int iNumVertices = pkMesh->getCount(0, NX_ARRAY_VERTICES);
+                NxU32 uiNumTriangles = pkMesh->getCount(0, NX_ARRAY_TRIANGLES);
+                NxU32 uiPointStride = pkMesh->getStride(0, NX_ARRAY_VERTICES);
+                NxU32 uiTriangleStride = pkMesh->getStride(0, NX_ARRAY_TRIANGLES);
+                NxVec3* pkPoints = (NxVec3*)pkMesh->getBase(0, NX_ARRAY_VERTICES);
+                const void* pvTriangles = pkMesh->getBase(0, NX_ARRAY_TRIANGLES);
+
+                // Scale the vertices about the actor's pose, in place.
+                NxMat34 kInvPose;
+                m_pkPoses[uiIndex].getInverse(kInvPose);
+                for (int v = 0; v < iNumVertices; v++)
+                    pkPoints[v] = kInvPose * (m_pkPoses[uiIndex] * pkPoints[v] * fScale);
+
+                NxTriangleMeshDesc kMeshDesc;
+                kMeshDesc.numVertices = iNumVertices;
+                kMeshDesc.numTriangles = uiNumTriangles;
+                kMeshDesc.pointStrideBytes = uiPointStride;
+                kMeshDesc.triangleStrideBytes = uiTriangleStride;
+                kMeshDesc.points = pkPoints;
+                kMeshDesc.triangles = pvTriangles;
+                kMeshDesc.flags = 0;
+
+                NxCookingInterface* pkCooking = NxGetCookingLib(NX_PHYSICS_SDK_VERSION);
+                pkCooking->NxInitCooking();
+                NiPhysXMemStream* pkCooked = NiNew NiPhysXMemStream;
+                if (pkCooking->NxCookTriangleMesh(kMeshDesc, *pkCooked))
+                {
+                    pkCooked->Reset();
+                    pkMeshShapeDesc->meshData = efdPhysX::PhysXSDKManager::GetManager()->
+                        m_pPhysXSDK->createTriangleMesh(*pkCooked);
+                    if (pkMesh->getReferenceCount() == 0)
+                    {
+                        efdPhysX::PhysXSDKManager::GetManager()->m_pPhysXSDK->
+                            releaseTriangleMesh(*pkMesh);
+                    }
+                }
+                NiDelete pkCooked;
+                pkCooking->NxCloseCooking();
+            }
+        }
+    }
+
+.
+215c
+    const bool bKeepMeshes,
+    const float fScale)
+.
 31a
 // MS2: the game's "assertions throw" switch (exe 0x143afc898, a char): when set, the NaN guards in
 // AddState/RestoreState throw 13 after logging.
 extern char DAT_143afc898;
 
+.
+29c
+#include <PhysXLoader.h> // MS2: NxGetCookingLib (CreateActor re-cooks scaled collision meshes)
 .

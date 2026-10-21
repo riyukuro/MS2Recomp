@@ -1,4 +1,16 @@
-314a
+302a
+{
+    int iCurrent = ftell(m_pFile);
+    if (iCurrent < 0)
+        return 0;
+    fseek(m_pFile, 0, SEEK_END);
+    int iSize = ftell(m_pFile);
+    fseek(m_pFile, iCurrent, SEEK_SET);
+    if (iSize < 0)
+        return 0;
+    return (unsigned int)iSize;
+}
+
 //--------------------------------------------------------------------------------------------------
 // MS2: Win32FileW, the wide-path twin (see Win32File.h).
 EE_ImplementDerivedBinaryStream(Win32FileW, FileRead, FileWrite);
@@ -207,7 +219,7 @@ unsigned int Win32FileW::FileWrite(const void *pBuffer, unsigned int uiBytes)
         {
             if (uiAvailBufferBytes > 0)
             {
-                Memcpy(&m_pBuffer[m_uiPos], pBuffer, uiAvailBufferBytes);
+                MS2MemcpyCall(&m_pBuffer[m_uiPos], pBuffer, uiAvailBufferBytes);
                 pBuffer = &(((char *) pBuffer)[uiAvailBufferBytes]);
                 uiBytes -= uiAvailBufferBytes;
                 uiWrite = uiAvailBufferBytes;
@@ -277,16 +289,9 @@ bool Win32FileW::Flush()
 
 //--------------------------------------------------------------------------------------------------
 unsigned int Win32FileW::GetFileSize() const
-{
-    int iCurrent = ftell(m_pFile);
-    if (iCurrent < 0)
-        return 0;
-    fseek(m_pFile, 0, SEEK_END);
-    int iSize = ftell(m_pFile);
-    fseek(m_pFile, iCurrent, SEEK_SET);
-    if (iSize < 0)
-        return 0;
-    return (unsigned int)iSize;
-}
-
+.
+233@22s "" "Call"
+233@17s "" "S2M"
+26c
+static __declspec(noinline) SInt32 MS2MemcpyCall(void* d, const void* s, size_t n) { return Memcpy(d, s, n); } // MS2: FileWrite's spill copy is an out-of-line efd::Memcpy call in the exe
 .

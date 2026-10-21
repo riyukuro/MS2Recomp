@@ -1,6 +1,9 @@
 213a
 #line 217 // MS2 __LINE__ (linefix)
 .
+28c
+template<class T> using MS2DdeTree = typename efd::map<efd::utf8string, T>::_Mybase; /* MS2: see utf8string.inl */ EE_MS2_INSERT_NOHINT(MS2DdeTree<efd::SInt8>, MS2DdeTree<efd::SInt8>::value_type&, MS2DdeTree<efd::SInt8>::_Nodeptr) EE_MS2_INSERT_NOHINT(MS2DdeTree<efd::UInt8>, MS2DdeTree<efd::UInt8>::value_type&, MS2DdeTree<efd::UInt8>::_Nodeptr) EE_MS2_INSERT_NOHINT(MS2DdeTree<efd::SInt16>, MS2DdeTree<efd::SInt16>::value_type&, MS2DdeTree<efd::SInt16>::_Nodeptr) EE_MS2_INSERT_NOHINT(MS2DdeTree<efd::UInt16>, MS2DdeTree<efd::UInt16>::value_type&, MS2DdeTree<efd::UInt16>::_Nodeptr) EE_MS2_INSERT_NOHINT(MS2DdeTree<efd::SInt32>, MS2DdeTree<efd::SInt32>::value_type&, MS2DdeTree<efd::SInt32>::_Nodeptr) EE_MS2_INSERT_NOHINT(MS2DdeTree<efd::UInt32>, MS2DdeTree<efd::UInt32>::value_type&, MS2DdeTree<efd::UInt32>::_Nodeptr) EE_MS2_INSERT_NOHINT(MS2DdeTree<efd::SInt64>, MS2DdeTree<efd::SInt64>::value_type&, MS2DdeTree<efd::SInt64>::_Nodeptr) EE_MS2_INSERT_NOHINT(MS2DdeTree<efd::UInt64>, MS2DdeTree<efd::UInt64>::value_type&, MS2DdeTree<efd::UInt64>::_Nodeptr)
+.
 22a
 #endif
 .

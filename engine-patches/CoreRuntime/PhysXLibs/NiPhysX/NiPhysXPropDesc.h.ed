@@ -1,0 +1,3 @@
+439c
+        const NiUInt32 uiIndex = 0, const float fScale = 1.0f); // MS2: fScale
+.

@@ -1,0 +1,3 @@
+30c
+typedef efd::map<efd::utf8string, egfPhysX::PhysXSceneData*>::_Mybase MS2SceneTree; /* MS2: see utf8string.inl */ EE_MS2_EQRANGE(MS2SceneTree)
+.

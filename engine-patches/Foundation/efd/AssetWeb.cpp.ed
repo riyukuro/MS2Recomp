@@ -1,3 +1,11 @@
+1684a
+    // MS2: the graphs already known by name are (re)opened first
+    for (efd::map<efd::utf8string, Graph>::iterator git = m_Graphs.begin(); git != m_Graphs.end(); ++git)
+    {
+        openGraph(git->first);
+    }
+
+.
 18c
 #include <rpc.h>
 .

@@ -1,0 +1,7 @@
+475a
+        // MS2: a fourth source mode (3) maps to a fourth AmbDiffEmissive value, as in NiStandardMaterialDescriptor
+        else if (pkVCProp->GetSourceMode() == (NiVertexColorProperty::SourceVertexMode)3)
+        {
+            kDesc.eAmbDiffEmissive = (NiStandardMaterial::AmbDiffEmissiveEnum)3;
+        }
+.

@@ -1,0 +1,3 @@
+42c
+typedef efd::set<efd::utf8string>::_Mybase MS2Utf8SetTree; /* MS2: see utf8string.inl */ EE_MS2_EQRANGE(MS2Utf8SetTree)
+.

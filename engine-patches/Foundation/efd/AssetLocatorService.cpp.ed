@@ -12,6 +12,24 @@ bool AssetLocatorService::HasAsset(const efd::utf8string& uri)
     }
     return false;
 }
+
+//------------------------------------------------------------------------------------------------
+bool AssetLocatorService::FindAssetRelPath(const efd::utf8string& uri, efd::utf8string& relpath)
+{
+    if (m_dataState != ASSETS_NONE)
+    {
+        TripleSet triples;
+        m_metastore.findAllAssets(uri, triples);
+        for (TripleSet::iterator i = triples.begin(); i != triples.end(); ++i)
+        {
+            m_metastore.assetPropertyValue(i->subject, URIReader::GlobalNamespace_relpath, relpath);
+            if (!relpath.empty())
+                break;
+        }
+        return !relpath.empty();
+    }
+    return false;
+}
 .
 702a
 

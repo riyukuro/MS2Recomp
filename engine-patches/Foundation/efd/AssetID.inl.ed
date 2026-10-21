@@ -1,8 +1,20 @@
+75a
+    EE_MS2_ASSETID_STRIP_SCHEME();
+.
+66a
+    EE_MS2_ASSETID_STRIP_SCHEME();
+.
 62c
 EE_MS2_ASSETID_COPY_INLINE AssetID& AssetID::operator=(const efd::AssetID& other)
 .
+52a
+    EE_MS2_ASSETID_STRIP_SCHEME();
+.
 48c
 EE_MS2_ASSETID_COPY_INLINE AssetID::AssetID(const efd::AssetID& other)
+.
+33a
+    EE_MS2_ASSETID_STRIP_SCHEME();
 .
 16a
 // MS2: the exe calls the copy ctor / copy assignment out of line (the game's /Od copies 0x140de8c90 / 0x1411d6ee0;
@@ -12,5 +24,10 @@ EE_MS2_ASSETID_COPY_INLINE AssetID::AssetID(const efd::AssetID& other)
 #else
 #define EE_MS2_ASSETID_COPY_INLINE inline
 #endif
+
+// MS2: every URN store is followed by this: a URN ending in ':' (a bare scheme) is kept as "" (the game's /Od copies
+// show it written out in each function, not called)
+#define EE_MS2_ASSETID_STRIP_SCHEME() \
+    { const size_t n = m_urn.length(); if (n && m_urn[n - 1] == ':') m_urn.clear(); }
 
 .

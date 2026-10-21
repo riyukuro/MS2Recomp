@@ -1,0 +1,9 @@
+166c
+                &newName); if (DAT_143b05980) m_sceneName = DAT_143b05980(m_sceneName); // MS2: as Initialize (decorates the current name)
+.
+60c
+                    &m_sceneName); if (DAT_143b05980) m_sceneName = DAT_143b05980(m_sceneName); // MS2: decorate the scene name
+.
+45c
+extern efd::utf8string (*DAT_143b05980)(const efd::utf8string&); // MS2: the game's scene name decorator (exe 0x143b05980)
+.

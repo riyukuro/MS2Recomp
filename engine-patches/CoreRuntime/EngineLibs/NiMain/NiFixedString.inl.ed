@@ -1,0 +1,9 @@
+54c
+// MS2: some exe TUs inline this assignment where cl 14.16 calls it; they define EE_MS2_NIFS_ASSIGN_FORCE (engine/units-gb.json)
+#if defined(EE_MS2_NIFS_ASSIGN_FORCE)
+__forceinline
+#else
+inline
+#endif
+NiFixedString& NiFixedString::operator=(const char* pkString)
+.

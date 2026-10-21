@@ -1,0 +1,9 @@
+39c
+// MS2: the exe calls this ctor out of line (the game copy 0x141bf3410) from the TUs that define EE_MS2_BLOCKID_CHAR_CALL
+#if defined(EE_MS2_BLOCKID_CHAR_CALL)
+#define EE_MS2_BLOCKID_CHAR_INLINE inline __declspec(noinline)
+#else
+#define EE_MS2_BLOCKID_CHAR_INLINE inline
+#endif
+EE_MS2_BLOCKID_CHAR_INLINE BlockIdentification::BlockIdentification(const char* asset, efd::UInt32 instance)
+.

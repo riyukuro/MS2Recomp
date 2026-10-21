@@ -1,8 +1,9 @@
 790a
 #line 799 // MS2 __LINE__ (linefix)
 .
-37a
+38c
 #endif
+typedef efd::SmartPointer<efd::INetLib> (*MS2NetLibFactory)(); template<class T> using MS2Utf8MapTree = typename efd::map<efd::utf8string, T>::_Mybase; /* MS2: see utf8string.inl */ EE_MS2_INSERT_NOHINT(MS2Utf8MapTree<MS2NetLibFactory>, MS2Utf8MapTree<MS2NetLibFactory>::value_type&, MS2Utf8MapTree<MS2NetLibFactory>::_Nodeptr)
 .
 35a
 #if defined(EE_USE_NATIVE_STL)

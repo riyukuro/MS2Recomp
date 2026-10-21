@@ -20,3 +20,22 @@
 
 
 .
+123c
+#line 124 // MS2 __LINE__
+.
+101,102c
+        if (m_updatePose.isFinite()) // MS2: NaN guard (log, throw 13 if the game asks for it, else skip the move)
+            m_pActor->moveGlobalPose(m_updatePose);
+        else
+        {
+#line 117 // MS2 __LINE__
+            EE_LOG(efd::kPhysicsSystem, efd::ILogger::kERR1,
+                ("EntityActorData::OnTick() m_pActor->moveGlobalPose(m_updatePose)"));
+            if (DAT_143b08a3c)
+                throw 13;
+        }
+#line 103 // MS2 __LINE__
+.
+91c
+extern char DAT_143b08a3c; // MS2: the game's "assertions throw" switch (exe 0x143b08a3c)
+.

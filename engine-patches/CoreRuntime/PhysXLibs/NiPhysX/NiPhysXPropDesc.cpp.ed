@@ -1,0 +1,11 @@
+106@23s "" ", fScale"
+93@48s "" " }"
+84a
+        if (pkMaterial) { // MS2: skip a missing material
+.
+81,82c
+        // Make sure PhysX has the required index. Just keep asking for new materials until one comes back with the right index.
+.
+61c
+    const NiUInt32 uiIndex, const float fScale)
+.

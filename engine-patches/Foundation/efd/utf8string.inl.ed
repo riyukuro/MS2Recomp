@@ -15,6 +15,100 @@ template<> struct less<efd::utf8string>
     }
 };
 }
+// MS2: the exe's map<utf8string, ..>::_Insert_nohint inlines the key compare in the descent loop but calls
+// less<utf8string> out of line for the final uniqueness test (the old cl's per-site inliner). No flag reproduces
+// that, so TUs that need it specialize _Insert_nohint per map type with EE_MS2_INSERT_NOHINT(tree, valty, nodety)
+// (the 14.16 xtree body, loop compare forced inline).
+namespace efd
+{
+__forceinline bool MS2InlineUtf8Less(const efd::utf8string& _Left, const efd::utf8string& _Right)
+{
+    const char* _Rptr = _Right.raw().data();
+    const char* _Lptr = _Left.raw().data();
+    return std::_Traits_compare<std::char_traits<char>>(_Lptr, _Left.raw().size(), _Rptr, _Right.raw().size()) < 0;
+}
+}
+#define EE_MS2_INSERT_NOHINT(TREE, VALTY, NODETY) \
+template<> template<> \
+TREE::_Pairib TREE::_Insert_nohint<VALTY, NODETY>(bool _Leftish, std::add_rvalue_reference<VALTY>::type _Val, NODETY _Newnode) \
+{ \
+    auto& _My_data = this->_Get_data(); \
+    _TRY_BEGIN \
+    _Nodeptr _Wherenode = _My_data._Myhead; \
+    _Nodeptr _Trynode = _Wherenode->_Parent; \
+    bool _Addleft = true; \
+    while (!_Trynode->_Isnil) \
+    { \
+        _Wherenode = _Trynode; \
+        if (_Leftish) \
+            _Addleft = !efd::MS2InlineUtf8Less(this->_Key(_Trynode), this->_Kfn(_Val)); \
+        else \
+            _Addleft = efd::MS2InlineUtf8Less(this->_Kfn(_Val), this->_Key(_Trynode)); \
+        _Trynode = _Addleft ? _Trynode->_Left : _Trynode->_Right; \
+    } \
+    iterator _Where = iterator(_Wherenode, _STD addressof(_My_data)); \
+    if (!_Addleft) \
+    { \
+    } \
+    else if (_Where == begin()) \
+    { \
+        return (_Pairib(_Insert_at(true, _Wherenode, _STD forward<VALTY>(_Val), _Newnode), true)); \
+    } \
+    else \
+    { \
+        --_Where; \
+    } \
+    if (_DEBUG_LT_PRED(this->_Getcomp(), this->_Key(_Where._Ptr), this->_Kfn(_Val))) \
+    { \
+        return (_Pairib(_Insert_at(_Addleft, _Wherenode, _STD forward<VALTY>(_Val), _Newnode), true)); \
+    } \
+    else \
+    { \
+        _Destroy_if_node(_Newnode); \
+        return (_Pairib(_Where, false)); \
+    } \
+    _CATCH_ALL \
+    _Destroy_if_node(_Newnode); \
+    _RERAISE; \
+    _CATCH_END \
+}
+// MS2: likewise map<utf8string, ..>::equal_range is called out of line with both descent loops' compares inlined.
+#define EE_MS2_EQRANGE(TREE) \
+template<> template<> __declspec(noinline) \
+TREE::_Pairii TREE::_Eqrange<efd::utf8string>(const efd::utf8string& _Keyval) \
+{ \
+    auto& _My_data = this->_Get_data(); \
+    _Nodeptr _Pnode = _My_data._Myhead->_Parent; \
+    _Nodeptr _Lonode = _My_data._Myhead; \
+    _Nodeptr _Hinode = _My_data._Myhead; \
+    while (!_Pnode->_Isnil) \
+    { \
+        if (efd::MS2InlineUtf8Less(this->_Key(_Pnode), _Keyval)) \
+            _Pnode = _Pnode->_Right; \
+        else \
+        { \
+            if (_Hinode->_Isnil && efd::MS2InlineUtf8Less(_Keyval, this->_Key(_Pnode))) \
+                _Hinode = _Pnode; \
+            _Lonode = _Pnode; \
+            _Pnode = _Pnode->_Left; \
+        } \
+    } \
+    _Pnode = _Hinode->_Isnil ? _My_data._Myhead->_Parent : _Hinode->_Left; \
+    while (!_Pnode->_Isnil) \
+    { \
+        if (efd::MS2InlineUtf8Less(_Keyval, this->_Key(_Pnode))) \
+        { \
+            _Hinode = _Pnode; \
+            _Pnode = _Pnode->_Left; \
+        } \
+        else \
+            _Pnode = _Pnode->_Right; \
+    } \
+    return (_Pairii(iterator(_Lonode, _STD addressof(_My_data)), iterator(_Hinode, _STD addressof(_My_data)))); \
+}
+#else
+#define EE_MS2_INSERT_NOHINT(TREE, VALTY, NODETY)
+#define EE_MS2_EQRANGE(TREE)
 #endif
 .
 637c
@@ -24,6 +118,9 @@ EE_MS2_UTF8_EQ_INLINE bool operator==(
 EE_MS2_UTF8_APPEND_INLINE utf8string& utf8string::append(const char* src_sz)
 .
 243@0s "inline" "EE_MS2_UTF8_ASSIGN_INLINE"
+73c
+EE_MS2_UTF8_CHAR_CTOR_INLINE utf8string::utf8string(const char* src_sz)
+.
 17a
 // MS2: the exe calls the game's /Od copies of these out of line from some engine TUs and inlines them in others;
 // the TUs that call them define the switch (engine/units-gb.json)
@@ -44,6 +141,12 @@ EE_MS2_UTF8_APPEND_INLINE utf8string& utf8string::append(const char* src_sz)
 #define EE_MS2_UTF8_EQ_INLINE inline __declspec(noinline)
 #else
 #define EE_MS2_UTF8_EQ_INLINE inline
+#endif
+// MS2: utf8string(const char*) 0x1409989e0
+#if defined(EE_MS2_UTF8_CHAR_CTOR_CALL)
+#define EE_MS2_UTF8_CHAR_CTOR_INLINE inline __declspec(noinline)
+#else
+#define EE_MS2_UTF8_CHAR_CTOR_INLINE inline
 #endif
 
 .

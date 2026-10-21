@@ -1,0 +1,3 @@
+156c
+    if (!FindPackageByAsset(kReference.GetAssetID()) && !IsPackageLoading(kReference.GetAssetID())) RequestLoadPackage(kReference); // MS2: RegisterReference_Internal(kReference, NULL), inlined
+.

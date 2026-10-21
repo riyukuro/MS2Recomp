@@ -26,6 +26,9 @@ void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
 }
 
 .
+3640c
+    size_t count = m_objects.size();  // MS2: 64-bit count (exe), stock efd::UInt32
+.
 2582a
 // MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
 //

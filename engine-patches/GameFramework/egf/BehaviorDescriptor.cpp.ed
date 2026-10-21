@@ -1,0 +1,3 @@
+25c
+typedef void (*MS2BuiltinBehavior)(egf::Entity*, efd::ParameterList*); template<class T> using MS2Utf8MapTree = typename efd::map<efd::utf8string, T>::_Mybase; /* MS2: see utf8string.inl */ EE_MS2_INSERT_NOHINT(MS2Utf8MapTree<MS2BuiltinBehavior>, MS2Utf8MapTree<MS2BuiltinBehavior>::value_type&, MS2Utf8MapTree<MS2BuiltinBehavior>::_Nodeptr)
+.

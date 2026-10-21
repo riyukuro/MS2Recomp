@@ -1,0 +1,3 @@
+674c
+    const size_t n = i_value.length(); if (!(n && i_value[n - 1] == ':')) o_result.SetURN(i_value); // MS2: keep "" for a bare 'scheme:'
+.

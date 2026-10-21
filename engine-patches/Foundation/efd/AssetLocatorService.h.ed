@@ -3,4 +3,8 @@
     /// local asset web knows any asset matching uri (false before any metadata is opened).
     virtual bool HasAsset(const efd::utf8string& uri);
 
+    /// MS2: non-virtual (exe 0x142095bc0, called from game code; the name is ours): the relpath property of the
+    /// first local asset matching uri that has one; false if none (or before any metadata is opened).
+    bool FindAssetRelPath(const efd::utf8string& uri, efd::utf8string& relpath);
+
 .

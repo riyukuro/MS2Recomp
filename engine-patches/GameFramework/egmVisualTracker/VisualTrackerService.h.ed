@@ -1,3 +1,6 @@
 314c
     virtual void ToggleShowTrackers(); // MS2: virtual in the exe (base vftable slot 16, overridden by MS2VisualTrackerManager)
 .
+300c
+    efd::Bool SetGraphShow(efd::UInt32 graphIndex, bool show, const char* name); efd::UInt32 GetGraphIndexByName(const char* name); // MS2 (names ours): show/hide a graph of the current tracker; its index by name or 0xffffffff
+.
