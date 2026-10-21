@@ -1454,34 +1454,34 @@ int CAchieveCategory::IsOpen()
 }
 
 // @0x14093f2d0
-bool CAchieveCategory::Matches(unsigned nAchieveId)
+int CAchieveCategory::Matches(unsigned nAchieveId)
 {
     MS2Ptr<CAchieveData> pData = GetAchieveData(nAchieveId);
     if (pData.IsNull())
-        return false;
+        return 0;
     if (m_nTab == 0)
     {
         if (pData->m_nType == 9)
-            return false;
+            return 0;
     }
     else
     {
         if (m_nTab == 1)
-            return false;
+            return 0;
         if (m_nTab == 2 && pData->m_nType != 9)
-            return false;
+            return 0;
     }
     if (m_strCategoryTag.GetLength() != 0)
     {
         if (pData->m_strCategoryTag.Find((const char*)m_strCategoryTag, 0) == -1)
-            return false;
+            return 0;
     }
     if (m_strContentsTag.GetLength() != 0)
     {
         if (pData->m_strContentsTag.Find((const char*)m_strContentsTag, 0) == -1)
-            return false;
+            return 0;
     }
-    return true;
+    return 1;
 }
 
 // "minutes seconds" text of a duration given in seconds.

@@ -144,7 +144,7 @@ public:
     static int ParseTab(CStringA& strTab);                          // 0x14093f8a0
     static int ParseTree(CStringA& strTree);                        // 0x14093f910
     int IsOpen();                                                   // 0x14093f240 (no event filter, or the event is running)
-    bool Matches(unsigned nAchieveId);                              // 0x14093f2d0
+    int Matches(unsigned nAchieveId);                               // 0x14093f2d0
 
     int m_nId;                                                      // +0x20 "id"
     int m_nTab;                                                     // +0x24 "tab" (summary / emblem / trophy)

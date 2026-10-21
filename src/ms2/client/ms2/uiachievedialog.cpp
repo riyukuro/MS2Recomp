@@ -286,7 +286,7 @@ UIAchieveDialog::UIAchieveDialog()
     CAchieveCategory::Load();
     m_178 = 0;
     m_17c = CAchieveCategory::FindIdByTab(1);
-    for (int i = 0; i < 14; i++)
+    for (size_t i = 0; i < 14; i++)
         m_198.SetAt(i, 1);
 }
 
@@ -527,8 +527,9 @@ int UIAchieveDialog::vfunc_13()
         return 0;
     if (FUN_14116d840(FUN_14025e7c0())) {
         bool bHandled = FUN_1409ee290(&m_30)->Invoke("closePopup").GetBool();
-        if (!bHandled)
-            vfunc_69();
+        if (bHandled)
+            return 1;
+        vfunc_69();
         return 1;
     }
     if (FUN_14116d9c0(FUN_14025e7c0(), 0x1c, 0, 0))
@@ -667,8 +668,7 @@ void UIAchieveDialog::FUN_1418a8ff0()
     if (spCategory.IsNull())
         return;
     {
-        MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy");
-        if (spHero.get() != 0) {
+        if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
             if (spCategory->m_nTab == 0)
                 spHero->vfunc_13("search_filter");
             else if (spCategory->m_nTab == 2)
@@ -878,8 +878,7 @@ void UIAchieveDialog::FUN_1418aa660(int nId)
     if (nTab != 0 && nTab != 2)
         return;
     if (spCategory->Matches(nId)) {
-        MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy");
-        if (spHero.get() != 0) {
+        if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
             ASObj row(2);
             FUN_1418ab7e0(row, spAchieve);
             spHero->Invoke("updateAchieve", row);
@@ -959,10 +958,8 @@ CStringW UIAchieveDialog::FUN_1418aac30(CAchieve* pAchieve, int nGrade)
 // @0x1418aad60
 CStringW UIAchieveDialog::FUN_1418aad60()
 {
-    MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy");
-    if (spHero.get() != 0) {
-        MS2Ptr<Unk_AcText> spInput = spHero->FUN_140bbe880("m_searchInput");
-        if (spInput.get() != 0)
+    if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
+        if (MS2Ptr<Unk_AcText> spInput = spHero->FUN_140bbe880("m_searchInput"))
             return spInput->FUN_1422e0b00();
     }
     return CStringW(L"");
@@ -972,52 +969,52 @@ CStringW UIAchieveDialog::FUN_1418aad60()
 void UIAchieveDialog::FUN_1418aaee0(const CStringW& strText)
 {
     MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy");
-    if (spHero.get() != 0) {
-        MS2Ptr<Unk_AcText> spInput = spHero->FUN_140bbe880("m_searchInput");
-        if (spInput.get() != 0)
-            spInput->FUN_1422e0ab0(strText);
-    }
+    if (spHero.get() == 0)
+        return;
+    MS2Ptr<Unk_AcText> spInput = spHero->FUN_140bbe880("m_searchInput");
+    if (spInput.get() != 0)
+        spInput->FUN_1422e0ab0(strText);
 }
 
 // @0x1418ab000
 void UIAchieveDialog::FUN_1418ab000(ASObj& rRow, CAchieve* pAchieve)
 {
     CStringW strReward = FUN_14093cdb0(pAchieve->GetDataRef()->m_nId);
-    if (strReward.GetLength() > 0) {
-        strReward = FUN_1405c2690(CStringW(L"s_achieve_reward"), strReward);
-        if (FUN_140166410()->FUN_14036d570(0xbb)) {
-            Unk_AchieveReward* pReward = pAchieve->GetReward();
-            if (pReward != 0 && pReward->m_nType == 8) {
-                strReward = FUN_1405c2690(CStringW(L"s_achieve_reward_item_coloring"), strReward);
-                int nPalette = pReward->m_nCode;
-                Unk_AmColorSet set = FUN_140281980()->FUN_140558ad0(nPalette);
-                if (set.FUN_14056d460() != 0) {
-                    int nIndex = 0;
-                    for (unsigned i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++) {
-                        Unk_AmColorElem elem(set.FUN_14056d540()->FUN_140570dd0(i));
-                        if (elem.FUN_14056d570()->m_nAchieveId == (int)pAchieve->GetId()) {
-                            if (elem.FUN_14056d570()->m_nGrade == pAchieve->GetStartGrade()) {
-                                ASObj palette(2);
-                                palette.FUN_1409c0d20("paletteID", nPalette);
-                                palette.FUN_1409c4990("realColor", elem.FUN_14056d570()->m_real);
-                                palette.FUN_1409c4990("visibleColor", elem.FUN_14056d570()->m_visible);
-                                palette.FUN_1409c4990("ch2Color", elem.FUN_14056d570()->m_ch2);
-                                palette.FUN_1407cb9c0("colorSN", elem.FUN_14056d570()->m_nSN);
-                                if (elem.FUN_14056d570()->m_bHasSecond != 0) {
-                                    palette.FUN_1409c4990("realColor2", elem.FUN_14056d570()->m_ch2);
-                                    palette.FUN_1409c4990("visibleColor2", elem.FUN_14056d570()->m_ch2);
-                                }
-                                int nSlot = nIndex++;
-                                CString strName = FUN_1402bad60("palette{0}", &nSlot);
-                                FUN_1418adf60(rRow, strName, AScript(palette));
+    if (!(strReward.GetLength() > 0))
+        return;
+    strReward = FUN_1405c2690(CStringW(L"s_achieve_reward"), strReward);
+    if (FUN_140166410()->FUN_14036d570(0xbb)) {
+        Unk_AchieveReward* pReward = pAchieve->GetReward();
+        if (pReward != 0 && pReward->m_nType == 8) {
+            strReward = FUN_1405c2690(CStringW(L"s_achieve_reward_item_coloring"), strReward);
+            int nPalette = pReward->m_nCode;
+            Unk_AmColorSet set = FUN_140281980()->FUN_140558ad0(nPalette);
+            if (set.FUN_14056d460() != 0) {
+                int nIndex = 0;
+                for (unsigned i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++) {
+                    Unk_AmColorElem elem(set.FUN_14056d540()->FUN_140570dd0(i));
+                    if (elem.FUN_14056d570()->m_nAchieveId == (int)pAchieve->GetId()) {
+                        if (elem.FUN_14056d570()->m_nGrade == pAchieve->GetStartGrade()) {
+                            ASObj palette(2);
+                            palette.FUN_1409c0d20("paletteID", nPalette);
+                            palette.FUN_1409c4990("realColor", elem.FUN_14056d570()->m_real);
+                            palette.FUN_1409c4990("visibleColor", elem.FUN_14056d570()->m_visible);
+                            palette.FUN_1409c4990("ch2Color", elem.FUN_14056d570()->m_ch2);
+                            palette.FUN_1407cb9c0("colorSN", elem.FUN_14056d570()->m_nSN);
+                            if (elem.FUN_14056d570()->m_bHasSecond != 0) {
+                                palette.FUN_1409c4990("realColor2", elem.FUN_14056d570()->m_ch2);
+                                palette.FUN_1409c4990("visibleColor2", elem.FUN_14056d570()->m_ch2);
                             }
+                            int nSlot = nIndex++;
+                            CString strName = FUN_1402bad60("palette{0}", &nSlot);
+                            FUN_1418adf60(rRow, strName, AScript(palette));
                         }
                     }
                 }
             }
         }
-        rRow.FUN_1407cbb20("reward", CStringW(strReward));
     }
+    rRow.FUN_1407cbb20("reward", CStringW(strReward));
 }
 
 // @0x1418ab520
@@ -1189,10 +1186,8 @@ int UIAchieveDialog::FUN_1418ac320(int nId)
 // @0x1418ac480
 int UIAchieveDialog::FUN_1418ac480()
 {
-    MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy");
-    if (spHero.get() != 0) {
-        MS2Ptr<Unk_AcDrop> spFilter = spHero->FUN_140bbe700("m_filter");
-        if (spFilter.get() != 0) {
+    if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
+        if (MS2Ptr<Unk_AcDrop> spFilter = spHero->FUN_140bbe700("m_filter")) {
             if (!spFilter->FUN_1422bfca0())
                 return 4;
             return spFilter->FUN_1422df6c0();
@@ -1204,10 +1199,8 @@ int UIAchieveDialog::FUN_1418ac480()
 // @0x1418ac5f0
 void UIAchieveDialog::FUN_1418ac5f0(int nIndex)
 {
-    MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy");
-    if (spHero.get() != 0) {
-        MS2Ptr<Unk_AcDrop> spFilter = spHero->FUN_140bbe700("m_filter");
-        if (spFilter.get() != 0)
+    if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
+        if (MS2Ptr<Unk_AcDrop> spFilter = spHero->FUN_140bbe700("m_filter"))
             spFilter->FUN_1422df690(nIndex);
     }
 }
@@ -1289,10 +1282,8 @@ int UIAchieveDialog::FUN_1418aca90(CAchieve* pAchieve)
 // @0x1418acaf0
 int UIAchieveDialog::FUN_1418acaf0()
 {
-    MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy");
-    if (spHero.get() != 0) {
-        MS2Ptr<Unk_AcDrop> spFilter = spHero->FUN_140bbe700("m_filter");
-        if (spFilter.get() != 0) {
+    if (MS2Ptr<Unk_AcHero> spHero = FUN_140ede180("m_heroTrophy")) {
+        if (MS2Ptr<Unk_AcDrop> spFilter = spHero->FUN_140bbe700("m_filter")) {
             if (!spFilter->FUN_1422bfca0())
                 return 0;
             if (spFilter->FUN_1422df6c0() != 0)
@@ -1326,9 +1317,9 @@ int UIAchieveDialog::FUN_1418acd10(int nId)
         return 0;
     __int64 nProgress = spAchieve->GetProgress();
     __int64 nGoal = spAchieve->GetGradeGoal(spAchieve->GetStartGrade());
-    if (nProgress < nGoal)
-        return 1;
-    return 0;
+    if (nProgress >= nGoal)
+        return 0;
+    return 1;
 }
 
 // @0x1418ace00
@@ -1490,8 +1481,7 @@ static void AcCollectClears(std::vector<UIAchieveDialog::ClearRecord>& rRecords)
     FUN_1406c7600()->GetFirstList(achieves);
     for (size_t i = 0; i < achieves.GetCount(); i++) {
         MS2Ptr<CAchieve> spAchieve = achieves[i];
-        int nGrade = spAchieve->GetDataRef()->m_nFirstGrade;
-        while (nGrade <= spAchieve->GetCurGrade()) {
+        for (int nGrade = spAchieve->GetDataRef()->m_nFirstGrade; nGrade <= spAchieve->GetCurGrade(); nGrade++) {
             __int64 nTime = spAchieve->GetValue(nGrade);
             if (nTime != 0) {
                 UIAchieveDialog::ClearRecord record;
@@ -1500,7 +1490,6 @@ static void AcCollectClears(std::vector<UIAchieveDialog::ClearRecord>& rRecords)
                 record.m_grade = nGrade;
                 rRecords.push_back(record);
             }
-            nGrade++;
         }
     }
     std::sort(rRecords.begin(), rRecords.end(), AcClearOrder());
