@@ -170,8 +170,9 @@ void FUN_140d73aa0(CStringW strText, int n, void* pListener, CStringW strExtra);
 // @0x140eabae0
 bool FUN_140eabae0(const std::pair<int, __int64>* pEntry, CStringW* pstrName, CStringW* pstrAmount)
 {
+    int nPayType = pEntry->first;
     __int64 nAmount = pEntry->second;
-    *pstrName = FUN_1418fe5d0(pEntry->first);
+    *pstrName = FUN_1418fe5d0(nPayType);
     *pstrAmount = FUN_14052bd00(0x987, FUN_1409404f0(nAmount));
     return !pstrName->IsEmpty();
 }
@@ -299,14 +300,12 @@ void TMarketBillDataParam::FUN_140eab9d0(int n, unsigned __int64 v)
 // @0x140eaba00
 MS2Ptr<ASBillData> TMarketBillDataParam::FUN_140eaba00(int nIndex)
 {
-    if (!m_bills.IsEmpty())
-    {
-        int nCount = (int)m_bills.GetCount();
-        if (nIndex < 0 || nIndex >= nCount)
-            return MS2Ptr<ASBillData>(0);
-        return m_bills.GetAt(nIndex);
-    }
-    return MS2Ptr<ASBillData>(0);
+    if (m_bills.IsEmpty())
+        return MS2Ptr<ASBillData>(0);
+    int nCount = (int)m_bills.GetCount();
+    if (nIndex < 0 || nIndex >= nCount)
+        return MS2Ptr<ASBillData>(0);
+    return m_bills.GetAt(nIndex);
 }
 
 // ---- UIMarketBillDialog ----
@@ -384,7 +383,7 @@ int UIMarketBillDialog::vfunc_13()
 void UIMarketBillDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    if (m_spParam.IsNull())
+    if (m_spParam == 0)
         vfunc_67();
     FUN_140eaac30(m_spParam->m_nType);
     FUN_140ea8df0();
@@ -412,7 +411,7 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                     return 1;
                 }
             }
-            FUN_140eaa0b0();
+            FUN_140eaa0b0(szMethod);
         }
         return 1;
     }
@@ -444,11 +443,10 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 void UIMarketBillDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
-    if (!FUN_140ba28d0(&m_30, 0) && !m_spParam.IsNull())
-    {
-        if (!m_spParam->m_dgTooltip.IsNull())
-            m_spParam->m_dgTooltip(pRetVal, *pArgs, m_spParam);
-    }
+    if (!(!FUN_140ba28d0(&m_30, 0) && !(m_spParam == 0)))
+        return;
+    if (!m_spParam->m_dgTooltip.IsNull())
+        m_spParam->m_dgTooltip(pRetVal, *pArgs, m_spParam);
 }
 
 // @0x140eacd00
@@ -473,15 +471,13 @@ void UIMarketBillDialog::FUN_140ea7770(MS2Ptr<TMarketBillDataParam> spParam)
     m_nTotal = 0;
     m_mapPrice.RemoveAll();
     m_mapRandomPayback.RemoveAll();
-    if (m_spParam.get())
-    {
-        if (m_spParam->FUN_140eacfc0())
-        {
-            m_mapPrice.SetAt((ePayType)m_spParam->m_nCurrency, m_spParam->m_n30);
-            m_nTotal = m_spParam->m_n30;
-            m_mapPayback.SetAt((ePayType)m_spParam->m_n38, m_spParam->m_n40);
-        }
-    }
+    if (!(m_spParam.get()))
+        return;
+    if (!(m_spParam->FUN_140eacfc0()))
+        return;
+    m_mapPrice.SetAt((ePayType)m_spParam->m_nCurrency, m_spParam->m_n30);
+    m_nTotal = m_spParam->m_n30;
+    m_mapPayback.SetAt((ePayType)m_spParam->m_n38, m_spParam->m_n40);
 }
 
 // Write the fee / payback texts and grow the movie by the lines they gained.
@@ -711,8 +707,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
             if (nDialogId == 0x4ec1)
             {
                 bool bGift = false;
-                MS2Ptr<TMeratMarketBillDataParam> spMerat(dynamic_cast<TMeratMarketBillDataParam*>(m_spParam.get()));
-                if (spMerat.get())
+                if (MS2Ptr<TMeratMarketBillDataParam> spMerat = dynamic_cast<TMeratMarketBillDataParam*>(m_spParam.get()))
                     bGift = spMerat->FUN_140eacf70();
                 const wchar_t* szNotice = bGift ? L"$s_marketbill_notice_meratmarket" : L"$s_marketbill_notice_meratmarket_only_premium";
                 strNotice = szNotice;
@@ -748,17 +743,16 @@ CStringW UIMarketBillDialog::FUN_140ea9710(int nPayType, __int64 nAmount)
 // @0x140ea9770
 void UIMarketBillDialog::FUN_140ea9770(int nPayType, __int64 nAmount)
 {
-    if (m_spParam.get())
+    if (m_spParam.get() ? true : false)
     {
         if (m_spParam->FUN_140eacfc0())
             return;
     }
     __int64 nCurrent = 0;
-    m_mapPrice.Lookup((ePayType)nPayType, nCurrent);
-    __int64 nNew = nCurrent + nAmount;
-    if (nNew < 1)
-        nNew = 0;
-    m_mapPrice.SetAt((ePayType)nPayType, nNew);
+    m_mapPrice.Lookup(reinterpret_cast<const ePayType&>(nPayType), nCurrent);
+    nCurrent += nAmount;
+    nCurrent = nCurrent > 0 ? nCurrent : 0;
+    m_mapPrice.SetAt(reinterpret_cast<const ePayType&>(nPayType), nCurrent);
     m_nTotal += nAmount;
 }
 
@@ -766,51 +760,48 @@ void UIMarketBillDialog::FUN_140ea9770(int nPayType, __int64 nAmount)
 // @0x140ea9880
 void UIMarketBillDialog::FUN_140ea9880(int nPayType, __int64 nAmount)
 {
-    if (m_spParam.get())
+    if (m_spParam.get() ? true : false)
     {
         if (m_spParam->FUN_140eacfc0())
             return;
     }
     __int64 nCurrent = 0;
-    m_mapRandomPayback.Lookup((ePayType)nPayType, nCurrent);
-    __int64 nNew = nCurrent + nAmount;
-    if (nNew < 1)
-        nNew = 0;
-    m_mapRandomPayback.SetAt((ePayType)nPayType, nNew);
+    m_mapRandomPayback.Lookup(reinterpret_cast<const ePayType&>(nPayType), nCurrent);
+    nCurrent += nAmount;
+    nCurrent = nCurrent > 0 ? nCurrent : 0;
+    m_mapRandomPayback.SetAt(reinterpret_cast<const ePayType&>(nPayType), nCurrent);
 }
 
 // Add to the payback of a pay type.
 // @0x140ea9970
 void UIMarketBillDialog::FUN_140ea9970(int nPayType, __int64 nAmount)
 {
-    if (m_spParam.get())
+    if (m_spParam.get() ? true : false)
     {
         if (m_spParam->FUN_140eacfc0())
             return;
     }
-    if (nPayType != 0x11)
-    {
-        __int64 nCurrent = 0;
-        m_mapPayback.Lookup((ePayType)nPayType, nCurrent);
-        __int64 nNew = nCurrent + nAmount;
-        if (nNew < 1)
-            nNew = 0;
-        m_mapPayback.SetAt((ePayType)nPayType, nNew);
-    }
+    if (nPayType == 0x11)
+        return;
+    __int64 nCurrent = 0;
+    m_mapPayback.Lookup(reinterpret_cast<const ePayType&>(nPayType), nCurrent);
+    nCurrent += nAmount;
+    nCurrent = nCurrent > 0 ? nCurrent : 0;
+    m_mapPayback.SetAt(reinterpret_cast<const ePayType&>(nPayType), nCurrent);
 }
 
 // A row is a UGC map package.
 // @0x140ea9a70
 bool UIMarketBillDialog::FUN_140ea9a70()
 {
-    if (m_spParam.IsNull() || m_spParam->m_bills.IsEmpty())
+    if (m_spParam == 0 || m_spParam->m_bills.IsEmpty())
         return false;
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = m_spParam->m_bills;
     size_t nCount = bills.GetCount();
     for (size_t i = 0; i < nCount; ++i)
     {
         MS2Ptr<ASBillData> spBill = bills.GetAt(i);
-        if (spBill.IsNull())
+        if (spBill == 0)
             continue;
         int nItemId = spBill->vfunc_1();
         if (nItemId == 0)
@@ -830,14 +821,14 @@ bool UIMarketBillDialog::FUN_140ea9a70()
 // @0x140ea9c30
 bool UIMarketBillDialog::FUN_140ea9c30(const int& nItemType)
 {
-    if (m_spParam.IsNull() || m_spParam->m_bills.IsEmpty())
+    if (m_spParam == 0 || m_spParam->m_bills.IsEmpty())
         return false;
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = m_spParam->m_bills;
     size_t nCount = bills.GetCount();
     for (size_t i = 0; i < nCount; ++i)
     {
         MS2Ptr<ASBillData> spBill = bills.GetAt(i);
-        if (spBill.IsNull())
+        if (spBill == 0)
             continue;
         int nItemId = spBill->vfunc_1();
         if (nItemId == 0)
@@ -856,14 +847,14 @@ bool UIMarketBillDialog::FUN_140ea9c30(const int& nItemType)
 // @0x140ea9df0
 bool UIMarketBillDialog::FUN_140ea9df0()
 {
-    if (m_spParam.IsNull() || m_spParam->m_bills.IsEmpty())
+    if (m_spParam == 0 || m_spParam->m_bills.IsEmpty())
         return false;
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = m_spParam->m_bills;
     size_t nCount = bills.GetCount();
     for (size_t i = 0; i < nCount; ++i)
     {
         MS2Ptr<ASBillData> spBill = bills.GetAt(i);
-        if (spBill.IsNull())
+        if (spBill == 0)
             continue;
         int nItemId = spBill->vfunc_1();
         if (nItemId == 0)
@@ -882,7 +873,7 @@ bool UIMarketBillDialog::FUN_140ea9df0()
 // @0x140ea9fc0
 void UIMarketBillDialog::FUN_140ea9fc0()
 {
-    if (m_spParam.IsNull())
+    if (m_spParam == 0)
         return;
     if (!m_spParam->m_dgCancel.IsNull())
         m_spParam->m_dgCancel(m_spParam);
@@ -891,9 +882,9 @@ void UIMarketBillDialog::FUN_140ea9fc0()
 
 // "onClickBuy".
 // @0x140eaa0b0
-void UIMarketBillDialog::FUN_140eaa0b0()
+void UIMarketBillDialog::FUN_140eaa0b0(const char* szMethod)
 {
-    if (m_spParam.IsNull())
+    if (m_spParam == 0)
         return;
     bool bClose = true;
     if (!FUN_140eaad30(&bClose))
@@ -909,7 +900,7 @@ void UIMarketBillDialog::FUN_140eaa0b0()
 // @0x140eaa1e0
 void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
 {
-    if (m_spParam.IsNull())
+    if (m_spParam == 0)
         return;
     CStringW strName = pData->FUN_1422b8f40();
     if (strName.GetLength() == 0)
@@ -950,7 +941,7 @@ void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
 // @0x140eaa5e0
 void UIMarketBillDialog::FUN_140eaa5e0(ASData* pData)
 {
-    if (FUN_140ba28d0(&m_30, 0) || m_spParam.IsNull())
+    if (FUN_140ba28d0(&m_30, 0) || m_spParam == 0)
         return;
     Scaleform::GFx::Value value = pData->FUN_1422b9260();
     int nIndex = pData->FUN_1422b8b10();
@@ -1116,7 +1107,7 @@ bool UIMarketBillDialog::FUN_140eab330(bool* pbClose, const CStringW& strName, c
 // @0x140eab6b0
 bool UIMarketBillDialog::FUN_140eab6b0(int nButton, const CMsgBoxData& box)
 {
-    if (nButton == 0 && m_spParam.get())
+    if (nButton == 0 && (m_spParam.get() ? true : false))
     {
         if (!m_spParam->m_dgBuy.IsNull())
             m_spParam->m_dgBuy(m_spParam, m_mapPrice);
@@ -1134,7 +1125,7 @@ bool UIMarketBillDialog::FUN_140eab7b0(int nButton, const CMsgBoxData& box)
         CStringW strMessage;
         box.FUN_140b76a70(0, strName);
         box.FUN_140b76a70(1, strMessage);
-        if (m_spParam.get())
+        if (m_spParam.get() ? true : false)
         {
             if (!m_spParam->m_dgGift.IsNull())
                 m_spParam->m_dgGift(m_spParam, m_mapPrice, strName, strMessage);

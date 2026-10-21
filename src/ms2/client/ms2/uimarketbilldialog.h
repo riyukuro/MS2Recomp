@@ -49,7 +49,7 @@ public:
     bool FUN_140ea9c30(const int& nItemType);                       // 0x140ea9c30 a row is an item of the type
     bool FUN_140ea9df0();                                           // 0x140ea9df0 a row is a locked item
     void FUN_140ea9fc0();                                           // 0x140ea9fc0 "onClickBuy" in the basket mode
-    void FUN_140eaa0b0();                                           // 0x140eaa0b0 "onClickBuy"
+    void FUN_140eaa0b0(const char* szMethod);                       // 0x140eaa0b0 "onClickBuy"
     void FUN_140eaa1e0(const char* szMethod, ASData* pData);        // 0x140eaa1e0 "onClickGiftOk"
     void FUN_140eaa5e0(ASData* pData);                              // 0x140eaa5e0 "onUpdateTotalPrice"
     void FUN_140eaa860(ASData* pData);                              // 0x140eaa860 "onChangeMode"
