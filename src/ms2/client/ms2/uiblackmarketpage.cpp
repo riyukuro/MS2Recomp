@@ -523,8 +523,10 @@ MS2_REPLACE_METHOD(0x140F0D500, BlackMarketPageItemSearch, vfunc_6, 71, 0x1464A8
 // @0x140f0d550
 void BlackMarketPageItemSearch::vfunc_5()
 {
-    if (m_bSendPending && m_nPending > 0 && FUN_140f0f2c0())
+    if (m_bSendPending && m_nPending > 0)
     {
+        if (!FUN_140f0f2c0())
+            return;
         FUN_140f0c400("loading");
         CBlackMarketMan::GetInstance()->FUN_140a20b10(m_spCond);
         m_dwSearchTick = FUN_140869420();
@@ -590,19 +592,18 @@ void BlackMarketPageItemSearch::FUN_140f0d990(int nA, int nB, void* p)
 void BlackMarketPageItemSearch::FUN_140f0db00(MS2Ptr<CBlackMarketProduct> spEntry, int nState)
 {
     CString strState = FUN_140f14ae0(nState);
-    if (m_20.get() && spEntry.get() && spEntry->m_item.get())
+    if (!(m_20.get() && spEntry.get() && spEntry->m_item.get()))
+        return;
+    ASObj obj(2);
+    obj.FUN_1407cbb20("marketSN", FUN_140719a80(spEntry->m_qw18));
+    obj.FUN_1407cba60("saleState", strState);
+    obj.FUN_1407cbb20("price", FUN_1409404f0(spEntry->PriceFor(spEntry->GetRemain())));
     {
-        ASObj obj(2);
-        obj.FUN_1407cbb20("marketSN", FUN_140719a80(spEntry->m_qw18));
-        obj.FUN_1407cba60("saleState", strState);
-        obj.FUN_1407cbb20("price", FUN_1409404f0(spEntry->PriceFor(spEntry->GetRemain())));
-        {
-            ASSlot slot(2);
-            slot.FUN_1409c2190(spEntry->m_item->FUN_140526c50());
-            obj.FUN_1409adbe0("slotData", slot.FUN_1422bb870());
-        }
-        m_20->Invoke("updateItem", obj.FUN_1422bb870(), (long)spEntry->m_n88);
+        ASSlot slot(2);
+        slot.FUN_1409c2190(spEntry->m_item->FUN_140526c50());
+        obj.FUN_1409adbe0("slotData", slot.FUN_1422bb870());
     }
+    m_20->Invoke("updateItem", obj.FUN_1422bb870(), (long)spEntry->m_n88);
 }
 
 // @0x140f0de60
@@ -644,7 +645,6 @@ void BlackMarketPageItemSearch::FUN_140f0dfe0(int nAction)
 MS2_REPLACE_METHOD(0x140F0DFE0, BlackMarketPageItemSearch, FUN_140f0dfe0, 95, 0xF3D8B4A4);
 
 // @0x140f0e050
-// MS2-FUNCTIONAL: frame layout of the temporaries
 void BlackMarketPageItemSearch::FUN_140f0e050()
 {
     ASObj data(2);
@@ -695,8 +695,7 @@ MS2_REPLACE_METHOD(0x140F0E050, BlackMarketPageItemSearch, FUN_140f0e050, 1873, 
 // @0x140f0e7b0
 void BlackMarketPageItemSearch::FUN_140f0e7b0(ASArray& out, ATL::CAtlList<Unk_BmPtr<CBlackMarketTable::TabInfo> >* pTabs)
 {
-    POSITION pos = pTabs->GetHeadPosition();
-    while (pos)
+    for (POSITION pos = pTabs->GetHeadPosition(); pos; pTabs->GetNext(pos))
     {
         Unk_BmPtr<CBlackMarketTable::TabInfo> spTab = pTabs->GetAt(pos);
         if (spTab.get())
@@ -708,7 +707,6 @@ void BlackMarketPageItemSearch::FUN_140f0e7b0(ASArray& out, ATL::CAtlList<Unk_Bm
             if (spTab->m_bShowIncludeLowTab)
                 FUN_140f0e7b0(out, &spTab->m_children);
         }
-        pTabs->GetNext(pos);
     }
 }
 
@@ -788,11 +786,12 @@ void BlackMarketPageItemSearch::FUN_140f0efe0(ASObj& out, int nTabId)
 // @0x140f0f0f0
 void BlackMarketPageItemSearch::FUN_140f0f0f0(int nFirst, int nEnd, POSITION pos)
 {
-    if (!m_20.get())
-        return;
-    ASArray list(2);
-    int nCount = FUN_140f15350(nFirst, nEnd, pos, list, CBlackMarketMan::GetInstance()->m_listSearch);
-    m_20->Invoke("buildPage", list, nCount);
+    if (m_20.get())
+    {
+        ASArray list(2);
+        int nCount = FUN_140f15350(nFirst, nEnd, pos, list, CBlackMarketMan::GetInstance()->m_listSearch);
+        m_20->Invoke("buildPage", list, nCount);
+    }
 }
 
 // @0x140f0f1d0
@@ -1432,13 +1431,14 @@ void BlackMarketPageItemRegister::FUN_140f13420(NotifyContext::BindData* pSlot, 
     if (m_20 == 0)
         return;
     NotifyContext::BindData* pBind = FUN_1422c8e90(pSlot->FUN_1422c89f0());
-    if (pBind == 0)
-        return;
-    ASObj obj(2);
-    if (FUN_140f14650(obj, item, m_item))
+    if (pBind != 0)
     {
-        m_20->Invoke("setRegisterItem", pBind->FUN_1422c8d40(), obj.FUN_1422bb870());
-        FUN_140f13ce0(MS2Ptr<CItem>(&item));
+        ASObj obj(2);
+        if (FUN_140f14650(obj, item, m_item))
+        {
+            m_20->Invoke("setRegisterItem", pBind->FUN_1422c8d40(), obj.FUN_1422bb870());
+            FUN_140f13ce0(MS2Ptr<CItem>(&item));
+        }
     }
 }
 
@@ -1457,7 +1457,9 @@ MS2_REPLACE_METHOD(0x140F13610, BlackMarketPageItemRegister, FUN_140f13610, 380,
 // @0x140f137a0
 void BlackMarketPageItemRegister::FUN_140f137a0(int nItemId, int nRank, unsigned __int64 nPrice)
 {
-    if (m_20 == 0 || !m_item.IsSame(nItemId, nRank))
+    if (m_20 == 0)
+        return;
+    if (!m_item.IsSame(nItemId, nRank))
         return;
     m_item.SetPrice(nPrice);
     if (m_20.get())
