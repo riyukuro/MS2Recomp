@@ -38,7 +38,7 @@ MS2_CHECK_SIZE(CNMSerializable, 0x10);
 class CNMFunc : public CNMSerializable
 {
 public:
-    virtual ~CNMFunc();                                         // 0x1415ed640
+    virtual ~CNMFunc() = default;                                         // 0x1415ed640
 
     int m_nFuncId;                                              // +0x10
     int m_nDirection;                                           // +0x14 (0 = reply)
@@ -50,6 +50,21 @@ public:
     int m_n2c;
 };
 MS2_CHECK_SIZE(CNMFunc, 0x30);
+
+// Fixed-capacity string holding only a heap pointer (the shared empty string until assigned); bodies in the library
+// (Free: unit_1415f9410). The destructor is the inline one-liner the exe instantiates per N in unit_1415eb6c0.
+template <int N>
+class CNMStr
+{
+public:
+    CNMStr();
+    CNMStr(const CNMStr& r);
+    ~CNMStr() { Free(); }
+    CNMStr& operator=(const CNMStr& r);
+    void Free();
+
+    char* m_p;
+};
 
 // The library's singleton dispatcher (RTTI CNMManager). Only the two calls the request wrappers make.
 class CNMManager
@@ -98,7 +113,7 @@ class CNMAvatarItemInfo : public CNMSerializable
 public:
     CNMAvatarItemInfo(const CNMAvatarItemInfo& r) noexcept;  // 0x1415e8970
     CNMAvatarItemInfo(CNMAvatarItemInfo&& r) noexcept;       // 0x1415e8930
-    virtual ~CNMAvatarItemInfo();                               // 0x1415ec300
+    virtual ~CNMAvatarItemInfo() = default;                               // 0x1415ec300
     CNMAvatarItemInfo& operator=(const CNMAvatarItemInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -115,7 +130,7 @@ class CNMAvatarFullInfo : public CNMAvatarItemInfo
 public:
     CNMAvatarFullInfo(const CNMAvatarFullInfo& r) noexcept;  // 0x1415e88f0
     CNMAvatarFullInfo(CNMAvatarFullInfo&& r) noexcept;       // 0x1415e88b0
-    virtual ~CNMAvatarFullInfo();                               // 0x1415ec2e0
+    virtual ~CNMAvatarFullInfo() = default;                               // 0x1415ec2e0
     CNMAvatarFullInfo& operator=(const CNMAvatarFullInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -132,7 +147,7 @@ class CNMCharacter : public CNMSerializable
 public:
     CNMCharacter(const CNMCharacter& r) noexcept;               // 0x1415e8c60
     CNMCharacter(CNMCharacter&& r) noexcept;                    // 0x1415e8be0
-    virtual ~CNMCharacter();                                    // 0x1415ecdb0
+    virtual ~CNMCharacter() = default;                                    // 0x1415ecdb0
     CNMCharacter& operator=(const CNMCharacter& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -153,7 +168,7 @@ class CNMDefaultUserInfo : public CNMSerializable
 public:
     CNMDefaultUserInfo(const CNMDefaultUserInfo& r) noexcept;   // 0x1415e9110
     CNMDefaultUserInfo(CNMDefaultUserInfo&& r) noexcept;        // 0x1415e9020
-    virtual ~CNMDefaultUserInfo();                              // 0x1415ed1c0
+    virtual ~CNMDefaultUserInfo() = default;                              // 0x1415ed1c0
     CNMDefaultUserInfo& operator=(const CNMDefaultUserInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -179,7 +194,7 @@ class CNMRealUserInfo : public CNMDefaultUserInfo
 public:
     CNMRealUserInfo(const CNMRealUserInfo& r) noexcept;         // 0x1415eacc0
     CNMRealUserInfo(CNMRealUserInfo&& r) noexcept;              // 0x1415eaad0
-    virtual ~CNMRealUserInfo();                                 // 0x1415ee780
+    virtual ~CNMRealUserInfo() = default;                                 // 0x1415ee780
     CNMRealUserInfo& operator=(const CNMRealUserInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -214,7 +229,7 @@ class CNMRealFriendInfo : public CNMDefaultUserInfo
 public:
     CNMRealFriendInfo(const CNMRealFriendInfo& r) noexcept;     // 0x1415eaa40
     CNMRealFriendInfo(CNMRealFriendInfo&& r) noexcept;          // 0x1415ea9b0
-    virtual ~CNMRealFriendInfo();                               // 0x1415ee710
+    virtual ~CNMRealFriendInfo() = default;                               // 0x1415ee710
     CNMRealFriendInfo& operator=(const CNMRealFriendInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -235,7 +250,7 @@ class CNMFriendInfo : public CNMRealFriendInfo
 public:
     CNMFriendInfo(const CNMFriendInfo& r) noexcept;             // 0x1415e97b0
     CNMFriendInfo(CNMFriendInfo&& r) noexcept;                  // 0x1415e96a0
-    virtual ~CNMFriendInfo();                                   // 0x1415ed5b0
+    virtual ~CNMFriendInfo() = default;                                   // 0x1415ed5b0
     CNMFriendInfo& operator=(const CNMFriendInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -260,7 +275,7 @@ class CNMCategoryInfo : public CNMSerializable
 public:
     CNMCategoryInfo(const CNMCategoryInfo& r) noexcept;         // 0x1415e8b40
     CNMCategoryInfo(CNMCategoryInfo&& r) noexcept;              // 0x1415e8aa0
-    virtual ~CNMCategoryInfo();                                 // 0x1415ec980
+    virtual ~CNMCategoryInfo() = default;                                 // 0x1415ec980
     CNMCategoryInfo& operator=(const CNMCategoryInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -283,7 +298,7 @@ class CNMCateFriendInfo : public CNMCategoryInfo
 public:
     CNMCateFriendInfo(const CNMCateFriendInfo& r);              // 0x1415e8a40
     CNMCateFriendInfo(CNMCateFriendInfo&& r) noexcept;          // 0x1415e89f0
-    virtual ~CNMCateFriendInfo();                               // 0x1415ec950
+    virtual ~CNMCateFriendInfo() = default;                               // 0x1415ec950
     CNMCateFriendInfo& operator=(const CNMCateFriendInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -300,10 +315,13 @@ class CNMChannelMemberInfo : public CNMSerializable
 {
 public:
     CNMChannelMemberInfo(const CNMChannelMemberInfo& r);
-    virtual ~CNMChannelMemberInfo();
+    virtual ~CNMChannelMemberInfo() = default;
     CNMChannelMemberInfo& operator=(const CNMChannelMemberInfo& r);
 
-    unsigned char m_body[0x20];                       // +0x10 (not recovered)
+    unsigned char m_10[0x8];                          // +0x10 (not recovered)
+    CNMStr<0x40> m_18;                                // +0x18
+    CNMStr<0x400> m_20;                               // +0x20
+    unsigned char m_28[0x8];                          // +0x28 (not recovered)
 };
 MS2_CHECK_SIZE(CNMChannelMemberInfo, 0x30);
 
@@ -313,7 +331,7 @@ class CNMChatRoomMemberInfo : public CNMRealUserInfo
 public:
     CNMChatRoomMemberInfo(const CNMChatRoomMemberInfo& r) noexcept; // 0x1415e8f40
     CNMChatRoomMemberInfo(CNMChatRoomMemberInfo&& r) noexcept;  // 0x1415e8e60
-    virtual ~CNMChatRoomMemberInfo();                           // 0x1415ecf90
+    virtual ~CNMChatRoomMemberInfo() = default;                           // 0x1415ecf90
     CNMChatRoomMemberInfo& operator=(const CNMChatRoomMemberInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -337,7 +355,7 @@ class CNMGuildMemberLevelInfo : public CNMSerializable
 public:
     CNMGuildMemberLevelInfo(const CNMGuildMemberLevelInfo& r) noexcept; // 0x1415ea1f0
     CNMGuildMemberLevelInfo(CNMGuildMemberLevelInfo&& r) noexcept; // 0x1415ea180
-    virtual ~CNMGuildMemberLevelInfo();                         // 0x1415ee0f0
+    virtual ~CNMGuildMemberLevelInfo() = default;                         // 0x1415ee0f0
     CNMGuildMemberLevelInfo& operator=(const CNMGuildMemberLevelInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -357,7 +375,7 @@ class CNMChatRoomInfoEx : public CNMSerializable
 public:
     CNMChatRoomInfoEx(CNMChatRoomInfoEx&& r) noexcept;          // 0x1415e8ce0
     CNMChatRoomInfoEx();                                        // 0x1415776c0
-    virtual ~CNMChatRoomInfoEx();                               // 0x1415ecf60
+    virtual ~CNMChatRoomInfoEx() = default;                               // 0x1415ecf60
     CNMChatRoomInfoEx& operator=(const CNMChatRoomInfoEx& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -389,7 +407,7 @@ class CNMFileEvent : public CNMSerializable
 public:
     CNMFileEvent(const CNMFileEvent& r) noexcept;               // 0x1415e92c0
     CNMFileEvent(CNMFileEvent&& r) noexcept;                    // 0x1415e9200
-    virtual ~CNMFileEvent();                                    // 0x1415ed4b0
+    virtual ~CNMFileEvent() = default;                                    // 0x1415ed4b0
     CNMFileEvent& operator=(const CNMFileEvent& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -413,7 +431,7 @@ class CNMFilePath : public CNMSerializable
 public:
     CNMFilePath(const CNMFilePath& r) noexcept;                 // 0x1415e93e0
     CNMFilePath(CNMFilePath&& r) noexcept;                      // 0x1415e9380
-    virtual ~CNMFilePath();                                     // 0x1415ed4d0
+    virtual ~CNMFilePath() = default;                                     // 0x1415ed4d0
     CNMFilePath& operator=(const CNMFilePath& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -432,7 +450,7 @@ class CNMFindUserInfo : public CNMSerializable
 public:
     CNMFindUserInfo(const CNMFindUserInfo& r) noexcept;         // 0x1415e9570
     CNMFindUserInfo(CNMFindUserInfo&& r) noexcept;              // 0x1415e9440
-    virtual ~CNMFindUserInfo();                                 // 0x1415ed540
+    virtual ~CNMFindUserInfo() = default;                                 // 0x1415ed540
     CNMFindUserInfo& operator=(const CNMFindUserInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -459,7 +477,7 @@ class CNMGameCode : public CNMSerializable
 public:
     CNMGameCode(const CNMGameCode& r) noexcept;                 // 0x1415e9910
     CNMGameCode(CNMGameCode&& r) noexcept;                      // 0x1415e98c0
-    virtual ~CNMGameCode();                                     // 0x1415ed9c0
+    virtual ~CNMGameCode() = default;                                     // 0x1415ed9c0
     CNMGameCode& operator=(const CNMGameCode& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -478,7 +496,7 @@ class CNMGameInfo : public CNMSerializable
 public:
     CNMGameInfo(const CNMGameInfo& r) noexcept;                 // 0x1415e9af0
     CNMGameInfo(CNMGameInfo&& r) noexcept;                      // 0x1415e9960
-    virtual ~CNMGameInfo();                                     // 0x1415ed9e0
+    virtual ~CNMGameInfo() = default;                                     // 0x1415ed9e0
     CNMGameInfo& operator=(const CNMGameInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -508,7 +526,7 @@ class CNMGameServerCode : public CNMSerializable
 public:
     CNMGameServerCode(const CNMGameServerCode& r) noexcept;     // 0x1415e9cd0
     CNMGameServerCode(CNMGameServerCode&& r) noexcept;          // 0x1415e9c80
-    virtual ~CNMGameServerCode();                               // 0x1415edad0
+    virtual ~CNMGameServerCode() = default;                               // 0x1415edad0
     CNMGameServerCode& operator=(const CNMGameServerCode& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -527,7 +545,7 @@ class CNMGuildInfoEx : public CNMSerializable
 public:
     CNMGuildInfoEx(const CNMGuildInfoEx& r) noexcept;           // 0x1415e9e20
     CNMGuildInfoEx(CNMGuildInfoEx&& r) noexcept;                // 0x1415e9d20
-    virtual ~CNMGuildInfoEx();                                  // 0x1415ee070
+    virtual ~CNMGuildInfoEx() = default;                                  // 0x1415ee070
     CNMGuildInfoEx& operator=(const CNMGuildInfoEx& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -553,7 +571,7 @@ class CNMGuildListExInfo : public CNMSerializable
 {
 public:
     CNMGuildListExInfo(const CNMGuildListExInfo& r);            // 0x1415e9f20
-    virtual ~CNMGuildListExInfo();                              // 0x1415ee090
+    virtual ~CNMGuildListExInfo() = default;                              // 0x1415ee090
     CNMGuildListExInfo& operator=(const CNMGuildListExInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -572,7 +590,7 @@ public:
     CNMGuildMemberInfo(const CNMGuildMemberInfo& r) noexcept;   // 0x1415ea080
     CNMGuildMemberInfo(CNMGuildMemberInfo&& r) noexcept;        // 0x1415e9f80
     CNMGuildMemberInfo(const CNMChannelMemberInfo& r);          // 0x141574aa0
-    virtual ~CNMGuildMemberInfo();                              // 0x1415ee0c0
+    virtual ~CNMGuildMemberInfo() = default;                              // 0x1415ee0c0
     CNMGuildMemberInfo& operator=(const CNMGuildMemberInfo& r);
     CNMGuildMemberInfo& operator=(CNMGuildMemberInfo&& r);      // 0x1415f1180
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -599,7 +617,7 @@ class CNMGuildOnlineInfoEx : public CNMSerializable
 public:
     CNMGuildOnlineInfoEx(const CNMGuildOnlineInfoEx& r);        // 0x1415ea330
     CNMGuildOnlineInfoEx(CNMGuildOnlineInfoEx&& r) noexcept;    // 0x1415ea260
-    virtual ~CNMGuildOnlineInfoEx();                            // 0x1415ee170
+    virtual ~CNMGuildOnlineInfoEx() = default;                            // 0x1415ee170
     CNMGuildOnlineInfoEx& operator=(const CNMGuildOnlineInfoEx& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -624,7 +642,7 @@ class CNMNoteInfo : public CNMSerializable
 public:
     CNMNoteInfo(const CNMNoteInfo& r) noexcept;                 // 0x1415ea820
     CNMNoteInfo(CNMNoteInfo&& r) noexcept;                      // 0x1415ea690
-    virtual ~CNMNoteInfo();                                     // 0x1415ee5d0
+    virtual ~CNMNoteInfo() = default;                                     // 0x1415ee5d0
     CNMNoteInfo& operator=(const CNMNoteInfo& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -659,7 +677,7 @@ class CNMNoteInfo2 : public CNMSerializable
 public:
     CNMNoteInfo2(const CNMNoteInfo2& r);                        // 0x1415ea540
     CNMNoteInfo2(CNMNoteInfo2&& r) noexcept;                    // 0x1415ea400
-    virtual ~CNMNoteInfo2();                                    // 0x1415ee590
+    virtual ~CNMNoteInfo2() = default;                                    // 0x1415ee590
     CNMNoteInfo2& operator=(const CNMNoteInfo2& r);
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -686,10 +704,11 @@ class CNMRejectedUser : public CNMSerializable
 {
 public:
     CNMRejectedUser(const CNMRejectedUser& r);
-    virtual ~CNMRejectedUser();
+    virtual ~CNMRejectedUser() = default;
     CNMRejectedUser& operator=(const CNMRejectedUser& r);
 
-    unsigned char m_body[0xb8];                       // +0x10 (not recovered)
+    CNMCharacter m_character;                         // +0x10
+    unsigned char m_a8[0x20];                         // +0xa8 (not recovered)
 };
 MS2_CHECK_SIZE(CNMRejectedUser, 0xc8);
 
@@ -697,10 +716,11 @@ class CNMSessionMemberInfo : public CNMSerializable
 {
 public:
     CNMSessionMemberInfo(const CNMSessionMemberInfo& r);
-    virtual ~CNMSessionMemberInfo();
+    virtual ~CNMSessionMemberInfo() = default;
     CNMSessionMemberInfo& operator=(const CNMSessionMemberInfo& r);
 
-    unsigned char m_body[0xe8];                       // +0x10 (not recovered)
+    unsigned char m_10[0xd8];                         // +0x10 (not recovered)
+    CNMAvatarFullInfo m_avatar;                       // +0xe8
 };
 MS2_CHECK_SIZE(CNMSessionMemberInfo, 0xf8);
 
@@ -708,7 +728,7 @@ class CNMVirtualUserInfo : public CNMSerializable
 {
 public:
     CNMVirtualUserInfo(const CNMVirtualUserInfo& r);
-    virtual ~CNMVirtualUserInfo();
+    virtual ~CNMVirtualUserInfo() = default;
     CNMVirtualUserInfo& operator=(const CNMVirtualUserInfo& r);
 
     unsigned char m_body[0x480];                       // +0x10 (not recovered)
@@ -719,7 +739,7 @@ class CNMExecutePatcherFunc : public CNMFunc
 {
 public:
     CNMExecutePatcherFunc(const char* szUrl, const char* szPatchDir, const char* szExecPath, int n4, int n5, int n6);
-    virtual ~CNMExecutePatcherFunc();                           // 0x1415ed360
+    virtual ~CNMExecutePatcherFunc() = default;                           // 0x1415ed360
 
     char m_szUrl[0x100];                                        // +0x30
     char m_szPatchDir[0x100];                                   // +0x130
@@ -735,7 +755,7 @@ class CNMExecuteLauncherFunc : public CNMFunc
 {
 public:
     CNMExecuteLauncherFunc(int nGameCode, int n2, const char* szArgument, int n4, int n5);
-    virtual ~CNMExecuteLauncherFunc();
+    virtual ~CNMExecuteLauncherFunc() = default;
 
     int m_nGameCode;                                            // +0x30
     int m_n34;
@@ -750,7 +770,7 @@ class CNMExecuteNGMPatcherFunc : public CNMFunc
 public:
     CNMExecuteNGMPatcherFunc(int nGameCode, const char* sz2, const char* sz3, const char* sz4, int n5, int n6, int n7,
                              const char* sz8, int n9, const char* sz10, int n11);
-    virtual ~CNMExecuteNGMPatcherFunc();
+    virtual ~CNMExecuteNGMPatcherFunc() = default;
 
     char m_body[0x85c0];                                        // +0x30 (not recovered)
 };
@@ -760,7 +780,7 @@ class CNMExecuteNGMPatcher2Func : public CNMFunc
 {
 public:
     CNMExecuteNGMPatcher2Func(const char* szArgument, int n2);
-    virtual ~CNMExecuteNGMPatcher2Func();
+    virtual ~CNMExecuteNGMPatcher2Func() = default;
 
     char m_body[0x8008];                                        // +0x30 (not recovered)
 };
@@ -771,7 +791,7 @@ class CNMExecuteNGMLauncherFunc : public CNMFunc
 public:
     CNMExecuteNGMLauncherFunc(int nGameCode, int n2, const char* sz3, int n4, const char* sz5, int n6, const char* sz7,
                               const char* sz8, int n9);
-    virtual ~CNMExecuteNGMLauncherFunc();
+    virtual ~CNMExecuteNGMLauncherFunc() = default;
 
     int m_nGameCode;                                            // +0x30
     int m_n34;
@@ -791,7 +811,7 @@ class CNMExecuteNGMInstallerFunc : public CNMFunc
 public:
     CNMExecuteNGMInstallerFunc(int nGameCode, int n2, int n3, const char* sz4, const char* sz5, const char* sz6,
                                const char* sz7, int n8);
-    virtual ~CNMExecuteNGMInstallerFunc();
+    virtual ~CNMExecuteNGMInstallerFunc() = default;
 
     int m_nGameCode;                                            // +0x30
     int m_n34;
@@ -808,7 +828,7 @@ class CNMIsNGMInstalledFunc : public CNMFunc
 {
 public:
     CNMIsNGMInstalledFunc();
-    virtual ~CNMIsNGMInstalledFunc();                           // 0x1415ee210
+    virtual ~CNMIsNGMInstalledFunc() = default;                           // 0x1415ee210
 
     int m_bInstalled;                                           // +0x30 (reply)
     int m_n34;
@@ -820,7 +840,7 @@ class CNMGetUrlExFunc : public CNMFunc
 {
 public:
     CNMGetUrlExFunc();
-    virtual ~CNMGetUrlExFunc();                                 // 0x1415edfc0
+    virtual ~CNMGetUrlExFunc() = default;                                 // 0x1415edfc0
 
     int m_nUrlType;                                             // +0x30
     int m_nGameCode;                                            // +0x34 (type 1)
@@ -843,7 +863,7 @@ class CNMGetSessionValueFunc : public CNMFunc
 {
 public:
     CNMGetSessionValueFunc(const char* szName);
-    virtual ~CNMGetSessionValueFunc();                          // 0x1415edf70
+    virtual ~CNMGetSessionValueFunc() = default;                          // 0x1415edf70
 
     char m_szName[0x20];                                        // +0x30
     char m_szValue[0x100];                                      // +0x50 (reply)
@@ -854,7 +874,7 @@ class CNMSetSessionValueFunc : public CNMFunc
 {
 public:
     CNMSetSessionValueFunc(const char* szName, const char* szValue, int n3);
-    virtual ~CNMSetSessionValueFunc();
+    virtual ~CNMSetSessionValueFunc() = default;
 
     char m_szName[0x20];                                        // +0x30
     char m_szValue[0x100];                                      // +0x50
@@ -867,7 +887,7 @@ class CNMBringForwardStandAloneMsgFunc : public CNMFunc
 {
 public:
     CNMBringForwardStandAloneMsgFunc(const char* szName);
-    virtual ~CNMBringForwardStandAloneMsgFunc();
+    virtual ~CNMBringForwardStandAloneMsgFunc() = default;
 
     char m_szName[0x400];                                       // +0x30
 };
@@ -877,7 +897,7 @@ class CNMDownloadFileFunc : public CNMFunc
 {
 public:
     CNMDownloadFileFunc(const char* szUrl, const char* szPath);
-    virtual ~CNMDownloadFileFunc();
+    virtual ~CNMDownloadFileFunc() = default;
 
     char m_szUrl[0x100];                                        // +0x30
     char m_szPath[0x100];                                       // +0x130
@@ -888,7 +908,7 @@ class CNMUploadFileFunc : public CNMFunc
 {
 public:
     CNMUploadFileFunc(const char* szUrl, const char* sz2, const char* sz3, int n4);
-    virtual ~CNMUploadFileFunc();
+    virtual ~CNMUploadFileFunc() = default;
 
     char m_szUrl[0x400];                                        // +0x30
     char m_sz430[0x100];
@@ -902,7 +922,7 @@ class CNMGetSupportGameListFunc : public CNMFunc
 {
 public:
     CNMGetSupportGameListFunc(int n);
-    virtual ~CNMGetSupportGameListFunc();                       // 0x1415edf90
+    virtual ~CNMGetSupportGameListFunc() = default;                       // 0x1415edf90
 
     int m_n30;
     int m_n34;
@@ -914,7 +934,7 @@ class CNMGetGameServerListFunc : public CNMFunc
 {
 public:
     CNMGetGameServerListFunc(int nGameCode);
-    virtual ~CNMGetGameServerListFunc();
+    virtual ~CNMGetGameServerListFunc() = default;
 
     int m_nGameCode;                                            // +0x30
     int m_n34;
@@ -926,7 +946,7 @@ class CNMGetGameFullNameFunc : public CNMFunc
 {
 public:
     CNMGetGameFullNameFunc(int nGameCode);
-    virtual ~CNMGetGameFullNameFunc();
+    virtual ~CNMGetGameFullNameFunc() = default;
 
     int m_nGameCode;                                            // +0x30
     char m_szName[0x84];                                        // +0x34 (reply)
@@ -937,7 +957,7 @@ class CNMGetGameShortNameFunc : public CNMFunc
 {
 public:
     CNMGetGameShortNameFunc(int nGameCode);
-    virtual ~CNMGetGameShortNameFunc();
+    virtual ~CNMGetGameShortNameFunc() = default;
 
     int m_nGameCode;                                            // +0x30
     char m_szName[0x84];                                        // +0x34 (reply)
@@ -948,7 +968,7 @@ class CNMGetGameFriendTitleFunc : public CNMFunc
 {
 public:
     CNMGetGameFriendTitleFunc(int nGameCode);
-    virtual ~CNMGetGameFriendTitleFunc();
+    virtual ~CNMGetGameFriendTitleFunc() = default;
 
     int m_nGameCode;                                            // +0x30
     char m_szTitle[0x84];                                       // +0x34 (reply)
@@ -959,7 +979,7 @@ class CNMGetGameServerNameFunc : public CNMFunc
 {
 public:
     CNMGetGameServerNameFunc(int nGameCode, int nServerCode);
-    virtual ~CNMGetGameServerNameFunc();
+    virtual ~CNMGetGameServerNameFunc() = default;
 
     int m_nGameCode;                                            // +0x30
     int m_nServerCode;                                          // +0x34
@@ -971,7 +991,7 @@ class CNMDownloadGuildMarkFileFunc : public CNMFunc
 {
 public:
     CNMDownloadGuildMarkFileFunc(int nGameCode, unsigned __int64 nGuildKey, const char* szPath);
-    virtual ~CNMDownloadGuildMarkFileFunc();
+    virtual ~CNMDownloadGuildMarkFileFunc() = default;
 
     int m_nGameCode;                                            // +0x30
     int m_n34;
@@ -980,18 +1000,6 @@ public:
 };
 MS2_CHECK_SIZE(CNMDownloadGuildMarkFileFunc, 0x140);
 
-// Fixed-capacity string holding only a heap pointer (the shared empty string until assigned); bodies in the library.
-template <int N>
-class CNMStr
-{
-public:
-    CNMStr();
-    CNMStr(const CNMStr& r);
-    ~CNMStr();
-    CNMStr& operator=(const CNMStr& r);
-
-    char* m_p;
-};
 
 // Server list request (0x48). Only the nested records the list code needs are declared.
 class CNMSetServerInfoFunc : public CNMFunc
@@ -1014,7 +1022,7 @@ public:
     };
 
     CNMSetServerInfoFunc();                                     // 0x141590b00
-    virtual ~CNMSetServerInfoFunc();
+    virtual ~CNMSetServerInfoFunc() = default;
 
     std::vector<RequestInfo> m_requests;                        // +0x30
 };
@@ -1022,12 +1030,12 @@ MS2_CHECK_SIZE(CNMSetServerInfoFunc::ServerAddress, 0x10);
 MS2_CHECK_SIZE(CNMSetServerInfoFunc::RequestInfo, 0x20);
 MS2_CHECK_SIZE(CNMSetServerInfoFunc, 0x48);
 
-// Scoped critical-section lock (name invented): enters on construction; the destructor (leave) lives elsewhere.
+// Scoped critical-section lock (name invented): enters on construction, leaves on destruction.
 class CNMCSLock
 {
 public:
     CNMCSLock(CRITICAL_SECTION* pcs);                           // 0x1415e89b0
-    ~CNMCSLock();
+    ~CNMCSLock() { LeaveCriticalSection(m_pcs); }
 
     CRITICAL_SECTION* m_pcs;                                    // +0x00
 };

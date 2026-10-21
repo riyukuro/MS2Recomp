@@ -16,11 +16,13 @@
 // CNMChatRoomInfoEx (0x4e0, vftable 0x142f3c7a8) is in nmfunc.h with the other records (w500: moved there for
 // unit_1415e5c20, which defines its move constructor; same layout).
 
-// CNMChatMessage: chat message record, 0x670 bytes, vftable 0x142f3c2e0 (payload not recovered).
+// CNMChatMessage: chat message record, 0x670 bytes, vftable 0x142f3c2e0 (payload mostly not recovered).
 class CNMChatMessage : public CNMSerializable
 {
 public:
-    char m_10[0x660];                                           // +0x10
+    char m_10[0x8];                                             // +0x10
+    CNMAvatarItemInfo m_avatar;                                 // +0x18
+    char m_28[0x648];                                           // +0x28
 };
 MS2_CHECK_SIZE(CNMChatMessage, 0x670);
 
@@ -29,7 +31,7 @@ class CNMCRRegisterCallbackFunc : public CNMFunc
 {
 public:
     CNMCRRegisterCallbackFunc(unsigned uSerialKey, HWND hWnd, unsigned uMsg); // 0x14159c9b0
-    virtual ~CNMCRRegisterCallbackFunc();                       // 0x1415ec860
+    virtual ~CNMCRRegisterCallbackFunc() = default;                       // 0x1415ec860
 
     HWND m_hWnd;                                                // +0x30
     unsigned m_uMsg;                                            // +0x38
@@ -42,7 +44,7 @@ class CNMCRCloseFunc : public CNMFunc
 {
 public:
     explicit CNMCRCloseFunc(unsigned uSerialKey);               // 0x14159cd20
-    virtual ~CNMCRCloseFunc();                                  // 0x1415ec760
+    virtual ~CNMCRCloseFunc() = default;                                  // 0x1415ec760
 };
 MS2_CHECK_SIZE(CNMCRCloseFunc, 0x30);
 
@@ -53,7 +55,7 @@ class CNMCRChangeRoomInfoFunc : public CNMFunc
 public:
     CNMCRChangeRoomInfoFunc(unsigned uSerialKey, const char* szTitle, const unsigned* pU434, const unsigned* pU438,
         const unsigned* pU43c, const char* sz448, const unsigned __int64* pU440);   // 0x14159d790
-    virtual ~CNMCRChangeRoomInfoFunc();                         // 0x1415ec520
+    virtual ~CNMCRChangeRoomInfoFunc() = default;                         // 0x1415ec520
 
     unsigned m_uFlags;                                          // +0x30
     char m_szTitle[0x400];                                      // +0x34
@@ -70,7 +72,7 @@ class CNMCRGetMemberListFunc : public CNMFunc
 {
 public:
     explicit CNMCRGetMemberListFunc(unsigned uSerialKey);       // 0x14159e210
-    virtual ~CNMCRGetMemberListFunc();                          // 0x1415ec7b0
+    virtual ~CNMCRGetMemberListFunc() = default;                          // 0x1415ec7b0
 
     std::vector<CNMChatRoomMemberInfo> m_aMembers;              // +0x30 (reply)
 };
@@ -81,7 +83,7 @@ class CNMCRInviteUserFunc : public CNMFunc
 {
 public:
     CNMCRInviteUserFunc(unsigned uSerialKey, const char* szUser, const char* szMessage); // 0x14159e6a0
-    virtual ~CNMCRInviteUserFunc();                             // 0x1415ec840
+    virtual ~CNMCRInviteUserFunc() = default;                             // 0x1415ec840
 
     char m_szUser[0x400];                                       // +0x30
     char m_szMessage[0x400];                                    // +0x430
@@ -93,7 +95,7 @@ class CNMCRBanUserFunc : public CNMFunc
 {
 public:
     CNMCRBanUserFunc(unsigned uSerialKey, unsigned __int64 uUserKey); // 0x14159eac0
-    virtual ~CNMCRBanUserFunc();                                // 0x1415ec4d0
+    virtual ~CNMCRBanUserFunc() = default;                                // 0x1415ec4d0
 
     unsigned __int64 m_uUserKey;                                // +0x30
 };
@@ -105,7 +107,7 @@ class CNMCRSendChatMessageFunc : public CNMFunc
 {
 public:
     CNMCRSendChatMessageFunc(unsigned uSerialKey, const unsigned __int64* pKeys, const CNMChatMessage& msg); // 0x14159ee30
-    virtual ~CNMCRSendChatMessageFunc();                        // 0x1415ec880
+    virtual ~CNMCRSendChatMessageFunc() = default;                        // 0x1415ec880
 
     unsigned __int64 m_aKeys[10];                               // +0x30
     CNMChatMessage m_msg;                                       // +0x80
@@ -117,7 +119,7 @@ class CNMCRGetMemberInfoFunc : public CNMFunc
 {
 public:
     CNMCRGetMemberInfoFunc(unsigned uSerialKey, unsigned uWhich); // 0x14159f290
-    virtual ~CNMCRGetMemberInfoFunc();                          // 0x1415ec780
+    virtual ~CNMCRGetMemberInfoFunc() = default;                          // 0x1415ec780
 
     unsigned m_uWhich;                                          // +0x30
     unsigned m_34;                                              // +0x34
@@ -130,7 +132,7 @@ class CNMCRGetRoomInfoExFunc : public CNMFunc
 {
 public:
     explicit CNMCRGetRoomInfoExFunc(unsigned uSerialKey);       // 0x14159d3b0
-    virtual ~CNMCRGetRoomInfoExFunc();                          // 0x1415ec7e0
+    virtual ~CNMCRGetRoomInfoExFunc() = default;                          // 0x1415ec7e0
 
     CNMChatRoomInfoEx m_info;                                   // +0x30 (reply)
 };
