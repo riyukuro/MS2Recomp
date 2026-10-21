@@ -252,17 +252,16 @@ void FUN_14154fda0(void* pObj);
 void FUN_1411ff180(Unk_LightUpdateBits* pBits);                      // set every bit
 
 // Attach type name -> 0 none, 1 Node, 2 Mesh, 3 WeaponL, 4 WeaponR (0x14154d880).
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x14154d880
 static int ParseAttachType(CString& strType)
 {
     if (strType.CompareNoCase("Node") == 0)
         return 1;
-    if (strType.CompareNoCase("Mesh") == 0)
+    else if (strType.CompareNoCase("Mesh") == 0)
         return 2;
-    if (strType.CompareNoCase("WeaponL") == 0)
+    else if (strType.CompareNoCase("WeaponL") == 0)
         return 3;
-    if (strType.CompareNoCase("WeaponR") == 0)
+    else if (strType.CompareNoCase("WeaponR") == 0)
         return 4;
     return 0;
 }
@@ -408,49 +407,42 @@ void CNifEffectParam::vfunc_1(Unk_140165cf0* pNode)
 }
 MS2_REPLACE_METHOD(0x141548B90, CNifEffectParam, vfunc_1, 1569, 0x0382EC70);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x1415491c0
 bool CNifEffectParam::vfunc_2()
 {
-    return CEffectParam::vfunc_2() ? true : false;
+    if (!CEffectParam::vfunc_2())
+        return false;
+    return true;
 }
 MS2_REPLACE_METHOD(0x1415491C0, CNifEffectParam, vfunc_2, 37, 0x35A9EC27);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x1415491f0
 bool CNifEffectParam::vfunc_3()
 {
     if (m_strFilePath.IsEmpty())
         return true;
-    CString strDir("Effect");
-    return FUN_140a0afd0()->IsCached(FUN_140cc2ba0(strDir, m_strFilePath));
+    return FUN_140a0afd0()->IsCached(FUN_140cc2ba0("Effect", m_strFilePath));
 }
 MS2_REPLACE_METHOD(0x1415491F0, CNifEffectParam, vfunc_3, 162, 0xE876FA96);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x1415492a0
 void CNifEffectParam::vfunc_4()
 {
-    if (!m_strFilePath.IsEmpty())
-    {
-        CString strDir("Effect");
-        FUN_140ab7a10()->FUN_141210ac0(FUN_140cc2ba0(strDir, m_strFilePath));
-    }
+    if (m_strFilePath.IsEmpty())
+        return;
+    FUN_140ab7a10()->FUN_141210ac0(FUN_140cc2ba0("Effect", m_strFilePath));
 }
 MS2_REPLACE_METHOD(0x1415492A0, CNifEffectParam, vfunc_4, 152, 0x93F3CAB0);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x141549340
 bool CNifEffectParam::vfunc_5(int n)
 {
-    if (!m_strFilePath.IsEmpty())
+    if (m_strFilePath.IsEmpty())
+        return true;
+    if (FUN_140a0afd0() != 0)
     {
-        if (FUN_140a0afd0() != 0)
-        {
-            CString strDir("Effect");
-            if (!FUN_140a0afd0()->Preload(FUN_140cc2ba0(strDir, m_strFilePath), false, n))
-                return false;
-        }
+        if (!FUN_140a0afd0()->Preload(FUN_140cc2ba0("Effect", m_strFilePath), false, n))
+            return false;
     }
     return true;
 }
@@ -934,12 +926,12 @@ void CNifEffect::vfunc_4()
 }
 MS2_REPLACE_METHOD(0x14154ACF0, CNifEffect, vfunc_4, 497, 0x164194E8);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x14154aef0
 void CNifEffect::vfunc_5()
 {
-    if (!FUN_14154b5e0() || vfunc_11() == 0)
-        CEffect::vfunc_5();
+    if (FUN_14154b5e0() && vfunc_11() != 0)
+        return;
+    CEffect::vfunc_5();
 }
 MS2_REPLACE_METHOD(0x14154AEF0, CNifEffect, vfunc_5, 63, 0x0B5C2734);
 
@@ -1217,21 +1209,18 @@ void CNifEffect::FUN_14154c260(Unk_EffectTarget* pTarget)
     }
 }
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x14154c440
 // Attach types 3 / 4: hang the effect on the model of the weapon in equip slot nSlot.
 void CNifEffect::FUN_14154c440(Unk_EffectTarget* pTarget, int nSlot)
 {
     Unk_NifPCPtr spPC(FUN_14099eef0(pTarget->FUN_140a533b0()));
-    if (!FUN_140c206b0(&spPC, 0))
-    {
-        MS2Ptr<CEquipItem> spEquip = FUN_1416561a0(FUN_140aac440(&spPC))->FUN_1411e1860(nSlot, 6, 0);
-        if (!spEquip.IsNull())
-        {
-            m_spTarget = reinterpret_cast<Unk_NifEquipView*>(spEquip.get())->FUN_1411dd700();
-            FUN_14154c580();
-        }
-    }
+    if (FUN_140c206b0(&spPC, 0))
+        return;
+    MS2Ptr<CEquipItem> spEquip = FUN_1416561a0(FUN_140aac440(&spPC))->FUN_1411e1860(nSlot, 6, 0);
+    if (spEquip == 0)
+        return;
+    m_spTarget = reinterpret_cast<Unk_NifEquipView*>(spEquip.operator->())->FUN_1411dd700();
+    FUN_14154c580();
 }
 MS2_REPLACE_METHOD(0x14154C440, CNifEffect, FUN_14154c440, 307, 0x560D08B0);
 
@@ -1822,17 +1811,15 @@ void CNifLoadingService::ClearCaches()
 }
 MS2_REPLACE_METHOD(0x141551BE0, CNifLoadingService, ClearCaches, 34, 0xA6AAFB20);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x141551c10
 void CNifLoadingService::PreloadEffectNifs()
 {
     ATL::CAtlArray<CString> aFiles;
     FUN_140399100(CString(".nif"), CString("./Data/Resource/Model/Effect/BG/Perform"), aFiles, CString(""), false);
-    if (m_bShutdown == 0)
-    {
-        for (unsigned i = 0; i < aFiles.GetCount(); ++i)
-            Preload(CString(aFiles[i]), false, 5);
-    }
+    if (m_bShutdown != 0)
+        return;
+    for (unsigned i = 0; i < aFiles.GetCount(); ++i)
+        Preload(CString(aFiles[i]), false, 5);
 }
 MS2_REPLACE_METHOD(0x141551C10, CNifLoadingService, PreloadEffectNifs, 402, 0xFF4C9F2D);
 
@@ -1877,13 +1864,13 @@ void CNifLoadingService::SetLifetime(double dSeconds)
 }
 MS2_REPLACE_METHOD(0x141554D90, CNifLoadingService, SetLifetime, 79, 0xCC07C8F2);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x141554df0
 bool CNifLoadingService::OnDeviceReset(char bBefore, void* pRenderer)
 {
-    if (pRenderer != 0)
+    void* pkRenderer = pRenderer;
+    if (pkRenderer != 0)
     {
-        if (bBefore == 0)
+        if ((unsigned char)bBefore == 0)
         {
             DAT_143ae1f20 = 0;
             FUN_140a44830()->FUN_1401ce2f0("\n *Reset Device [Pagefile %d MB] [GFXSysAlloc %d MB]",
@@ -2347,23 +2334,21 @@ NiAVObject* FUN_14098db40(NiNode* pNode, unsigned nIndex);          // child at 
 void FUN_1415672e0(NiAVObject* pNode, bool bFlag);                  // prepare a loaded nif
 void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x141556810
 static void SetWeights(NiAVObject* pObj, int nWeight)
 {
-    if (pObj != 0)
+    if (pObj == 0)
+        return;
+    NiNode* pNode = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, pObj));
+    if (pNode != 0)
     {
-        NiNode* pNode = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, pObj));
-        if (pNode == 0)
-        {
-            FUN_141047ac0(pObj, &DAT_143ae5178, (float)nWeight / 100.0f);
-        }
-        else
-        {
-            unsigned nCount = FUN_1409f7c30(pNode);
-            for (unsigned i = 0; i < nCount; ++i)
-                SetWeights(FUN_14098db40(pNode, i), nWeight);
-        }
+        unsigned nCount = FUN_1409f7c30(pNode);
+        for (unsigned i = 0; i < nCount; ++i)
+            SetWeights(FUN_14098db40(pNode, i), nWeight);
+    }
+    else
+    {
+        FUN_141047ac0(pObj, &DAT_143ae5178, (float)nWeight / 100.0f);
     }
 }
 
@@ -2558,18 +2543,19 @@ NiAVObjectPtr CNifLoadingService::Load(CString strPath, bool bFlag, int nClass, 
 }
 MS2_REPLACE_METHOD(0x141551EA0, CNifLoadingService, Load, 1819, 0xAED3D828);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x1415525d0
 bool CNifLoadingService::Preload(CString strPath, bool bFlag, int nClass)
 {
+    bool bReloaded = false;
     if (strPath == "" || m_bShutdown != 0)
         return false;
     FUN_14028e7c0(strPath);
-    bool bReloaded = false;
     CCachedNifPtr spCached = FindCachedNif(CString(strPath), nClass, &bReloaded);
     if (spCached == 0)
         spCached = CreateCachedNif(CString(strPath), nClass, bFlag, bReloaded);
-    return spCached != 0;
+    if (spCached == 0)
+        return false;
+    return true;
 }
 MS2_REPLACE_METHOD(0x1415525D0, CNifLoadingService, Preload, 458, 0x73C90076);
 
