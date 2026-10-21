@@ -28,7 +28,7 @@ public:
 };
 
 // The client feature switches: 0x56 = club chat, 0x93 = dungeon help.
-class Unk_MdFeatures { public: char FUN_14036d570(int nFeature); };
+class Unk_MdFeatures { public: bool FUN_14036d570(int nFeature); };
 Unk_MdFeatures* FUN_140166410();
 
 // The chat window's name service (+0x48 of the state).
@@ -46,7 +46,7 @@ struct Unk_MdNames
     CStringW m_strCurrent;                                                  // +0x00
     ATL::CAtlList<CStringW> m_names;                                        // +0x08
     CStringW FUN_1414829e0();                                               // 0x1414829e0 the current name (picks one when none)
-    CStringW FUN_141482a50(int a, int b);                                   // 0x141482a50 the first valid name of the list
+    CStringW FUN_141482a50();                                               // 0x141482a50 the first valid name of the list
     void FUN_141482b70();                                                   // 0x141482b70 forget everything
     void FUN_141482bb0();                                                   // 0x141482bb0 take the next name
     void FUN_141482c80(CStringW strName);                                   // 0x141482c80 make a name current
@@ -72,8 +72,7 @@ static MessengerData::ScreenSetting s_screenGlobal;                         // 0
 class Unk_MdPlayer
 {
 public:
-    virtual ~Unk_MdPlayer();
-    virtual void vfunc_0();
+    virtual ~Unk_MdPlayer();                                                // vfunc_0
     virtual void vfunc_1();
     virtual void vfunc_2();
     virtual void vfunc_3();
@@ -162,11 +161,11 @@ Unk_MdPlayers* FUN_1403ed2d0();
 // Source records of the chat entries (partial layouts: only what the entry builders read).
 class Unk_MdName { public: CString FUN_1408f1a60(); CStringW FUN_1408f19e0(); };   // a name box
 class Unk_MdSrcA { public: int FUN_1401cc680(); __int64 FUN_1401cc230(); const CString& FUN_1401cc530(); CStringW FUN_1401cc1c0();
-                   unsigned short FUN_1401cc210(); int FUN_1401cc290(); };
+                   int FUN_1401cc210(); int FUN_1401cc290(); };
 class Unk_MdSrcB
 {
 public:
-    char FUN_141637c20();
+    bool FUN_141637c20();
     unsigned char m_pad_00[0x28];
     Unk_MdName m_name;                                                      // +0x28
     __int64 m_nId;                                                          // +0x30
@@ -208,8 +207,8 @@ Unk_MdClassTable* FUN_1401d7a50();
 int FUN_140644bb0(Unk_MdClassTable* p, int nClass);                         // class id -> text id
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl);   // the local file of an image
 struct Unk_MdTime { unsigned short m_nTime; unsigned short m_pad; };
-CStringW FUN_140c348b0(char chSep, const void* pTime, const CStringW& strText);   // "<time> <text>"
-CStringW FUN_140a228f0(char chSep, const void* pTime, const CStringW& strText);   // same, for the other source
+CStringW FUN_140c348b0(int chSep, const void* pTime, const CStringW& strText);   // "<time> <text>"
+CStringW FUN_140a228f0(int chSep, const void* pTime, const CStringW& strText);   // same, for the other source
 
 struct Unk_MdEntry
 {
@@ -290,10 +289,10 @@ int MessengerData::NoticeSetting::FUN_141480d00(Unk_MdXml* pXml)
 }
 
 // @0x141480ef0
-bool MessengerData::NoticeSetting::FUN_141480ef0(Unk_MdXml* pXml)
+int MessengerData::NoticeSetting::FUN_141480ef0(Unk_MdXml* pXml)
 {
     Unk_MdXml* pNotice = pXml->FUN_140872ec0("Notice", true);
-    if (pNotice != 0)
+    if (pNotice)
     {
         pNotice->FUN_140873ca0("all", m_nAll);
         pNotice->FUN_140873ca0("user", m_nUser);
@@ -305,8 +304,9 @@ bool MessengerData::NoticeSetting::FUN_141480ef0(Unk_MdXml* pXml)
         pNotice->FUN_140873ca0("party", m_nParty);
         pNotice->FUN_140873ca0("mentoring", m_nMentoring);
         pNotice->FUN_140873ca0("etc", m_nEtc);
+        return 1;
     }
-    return pNotice != 0;
+    return 0;
 }
 
 // @0x141481040
@@ -365,16 +365,17 @@ int MessengerData::SystemSetting::FUN_141481250(Unk_MdXml* pXml)
 }
 
 // @0x141481320
-bool MessengerData::SystemSetting::FUN_141481320(Unk_MdXml* pXml)
+int MessengerData::SystemSetting::FUN_141481320(Unk_MdXml* pXml)
 {
     Unk_MdXml* pSystem = pXml->FUN_140872ec0("System", true);
-    if (pSystem != 0)
+    if (pSystem)
     {
         pSystem->FUN_140873ca0("all", m_nAll);
         pSystem->FUN_140873ca0("event", m_nEvent);
         pSystem->FUN_140873ca0("notice", m_nNotice);
+        return 1;
     }
-    return pSystem != 0;
+    return 0;
 }
 
 // @0x1414813b0
@@ -399,11 +400,10 @@ MessengerData::ScreenSetting::ScreenSetting()
 }
 
 // @0x141481480
-bool MessengerData::ScreenSetting::FUN_141481480(Unk_MdXml* pXml)
+int MessengerData::ScreenSetting::FUN_141481480(Unk_MdXml* pXml)
 {
     Unk_MdXml* pScreen = pXml->FUN_140872ec0("Screen", true);
-    bool bFound = pScreen != 0;
-    if (bFound)
+    if (pScreen)
     {
         int nFontSize = 0;
         int nAlpha = 0;
@@ -412,21 +412,23 @@ bool MessengerData::ScreenSetting::FUN_141481480(Unk_MdXml* pXml)
         pScreen->FUN_1408731e0("showDamage", &m_nShowDamage);
         m_nFontSize = nFontSize;
         m_nBackgroundAlpha = nAlpha;
+        return 1;
     }
-    return bFound;
+    return 0;
 }
 
 // @0x141481540
-bool MessengerData::ScreenSetting::FUN_141481540(Unk_MdXml* pXml)
+int MessengerData::ScreenSetting::FUN_141481540(Unk_MdXml* pXml)
 {
     Unk_MdXml* pScreen = pXml->FUN_140872ec0("Screen", true);
-    if (pScreen != 0)
+    if (pScreen)
     {
         pScreen->FUN_140873ca0("fontSize", m_nFontSize);
         pScreen->FUN_140873ca0("backgroundAlpha", m_nBackgroundAlpha);
         pScreen->FUN_140873ca0("showDamage", m_nShowDamage);
+        return 1;
     }
-    return pScreen != 0;
+    return 0;
 }
 
 // @0x1414815d0
@@ -460,10 +462,10 @@ int MessengerData::RequireSetting::FUN_141481640(Unk_MdXml* pXml)
 }
 
 // @0x1414817b0
-bool MessengerData::RequireSetting::FUN_1414817b0(Unk_MdXml* pXml)
+int MessengerData::RequireSetting::FUN_1414817b0(Unk_MdXml* pXml)
 {
     Unk_MdXml* pRequire = pXml->FUN_140872ec0("Require", true);
-    if (pRequire != 0)
+    if (pRequire)
     {
         pRequire->FUN_140873ca0("all", m_nAll);
         pRequire->FUN_140873ca0("meso", m_nMeso);
@@ -472,8 +474,9 @@ bool MessengerData::RequireSetting::FUN_1414817b0(Unk_MdXml* pXml)
         pRequire->FUN_140873ca0("item", m_nItem);
         pRequire->FUN_140873ca0("experience", m_nExperience);
         pRequire->FUN_140873ca0("auth", m_nAuth);
+        return 1;
     }
-    return pRequire != 0;
+    return 0;
 }
 
 // @0x1414818b0
@@ -741,13 +744,9 @@ int MessengerData::TalkTab::FUN_1414827c0(Unk_MdXml* pXml)
     pXml->FUN_1408731e0("close", &m_nClose);
     pXml->FUN_1408731e0("detach", &m_nDetach);
     pXml->FUN_1408731e0("additive", &m_nAdditive);
-    bool bEmpty = m_strName.IsEmpty();
-    int nResult;
-    if (bEmpty)
-        nResult = 0;
-    else
-        nResult = m_panel.FUN_141482220(pXml);
-    return nResult;
+    if (m_strName.IsEmpty())
+        return 0;
+    return m_panel.FUN_141482220(pXml);
 }
 
 // @0x141482880
@@ -789,18 +788,20 @@ CStringW Unk_MdNames::FUN_1414829e0()
 Unk_MdState* FUN_141482e80();
 
 // @0x141482a50
-CStringW Unk_MdNames::FUN_141482a50(int a, int b)
+CStringW Unk_MdNames::FUN_141482a50()
 {
-    if (FUN_141482e80()->m_pChat == 0)
-        return FUN_1414829e0();
-    POSITION pos = m_names.GetHeadPosition();
-    while (pos != 0)
+    if (FUN_141482e80()->m_pChat != 0)
     {
-        CStringW strName = m_names.GetNext(pos);
-        if (FUN_141482e80()->m_pChat->FUN_141a23d70(strName) != 0)
-            return strName;
+        POSITION pos = m_names.GetHeadPosition();
+        while (pos != 0)
+        {
+            CStringW strName = m_names.GetNext(pos);
+            if (FUN_141482e80()->m_pChat->FUN_141a23d70(strName) != 0)
+                return strName;
+        }
+        return FUN_141482e80()->m_pChat->FUN_141a258a0();
     }
-    return FUN_141482e80()->m_pChat->FUN_141a258a0();
+    return FUN_1414829e0();
 }
 
 // @0x141482b70
@@ -904,17 +905,14 @@ Unk_MdEntry::Unk_MdEntry()
 Unk_MdEntry::Unk_MdEntry(__int64 nId)
 {
     Unk_MdPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(nId);
-    if (pPlayer != 0)
-    {
-        m_nKind = 1;
-        m_nId = nId;
-        m_strImage = (const char*)FUN_141028be0(pPlayer->FUN_141656a80(), pPlayer->FUN_1416612e0(), 1, "");
-        m_strName = pPlayer->vfunc_77();
-        Unk_MdTime tm;
-        tm.m_nTime = pPlayer->vfunc_78();
-        int nJob = pPlayer->FUN_141654730();
-        m_strInfo = FUN_140c348b0(0x20, &tm, FUN_1401a9d70()->FUN_141811980(6, nJob));
-    }
+    if (pPlayer == 0)
+        return;
+    m_nKind = 1;
+    m_nId = nId;
+    m_strImage = (const char*)FUN_141028be0(pPlayer->FUN_141656a80(), pPlayer->FUN_1416612e0(), 1, "");
+    m_strName = pPlayer->vfunc_77();
+    unsigned short nLevel = pPlayer->vfunc_78();
+    m_strInfo = FUN_140c348b0(0x20, &nLevel, FUN_1401a9d70()->FUN_141811980(6, pPlayer->FUN_141654730()));
 }
 
 // @0x141483300
@@ -924,17 +922,14 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcA& src)
     m_nId = src.FUN_1401cc230();
     m_strImage = (const char*)FUN_141028be0(m_nId, src.FUN_1401cc530(), 1, "");
     m_strName = src.FUN_1401cc1c0();
-    Unk_MdTime tm;
-    tm.m_nTime = src.FUN_1401cc210();
-    int nJob = FUN_140644bb0(FUN_1401d7a50(), src.FUN_1401cc290());
-    m_strInfo = FUN_140a228f0(0x20, &tm, FUN_1401a9d70()->FUN_141811980(6, nJob));
+    int nTime = src.FUN_1401cc210();
+    m_strInfo = FUN_140a228f0(0x20, &nTime, FUN_1401a9d70()->FUN_141811980(6, FUN_140644bb0(FUN_1401d7a50(), src.FUN_1401cc290())));
 }
 
 // @0x141483580
 Unk_MdEntry::Unk_MdEntry(Unk_MdSrcB& src)
 {
-    unsigned nKind = (src.FUN_141637c20() == 0);
-    m_nKind = nKind;
+    m_nKind = (src.FUN_141637c20() == 0);
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, src.m_name.FUN_1408f1a60(), 1, "");
     m_strName = src.m_name.FUN_1408f19e0();
@@ -944,13 +939,11 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcB& src)
 // @0x141483830
 Unk_MdEntry::Unk_MdEntry(Unk_MdSrcC& src)
 {
-    unsigned nKind = (src.m_nState == 0);
-    m_nKind = nKind;
+    m_nKind = (src.m_nState == 0);
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, src.m_name.FUN_1404ca980(), 1, "");
     m_strName = src.m_name.FUN_1404ca890();
-    int nJob = FUN_140644bb0(FUN_1401d7a50(), src.m_nClass);
-    m_strInfo = FUN_140c348b0(0x20, src.m_time, FUN_1401a9d70()->FUN_141811980(6, nJob));
+    m_strInfo = FUN_140c348b0(0x20, src.m_time, FUN_1401a9d70()->FUN_141811980(6, FUN_140644bb0(FUN_1401d7a50(), src.m_nClass)));
 }
 
 // @0x141483af0
@@ -1025,19 +1018,13 @@ CString FUN_1414842b0(int nKind, CStringW strName);
 // @0x1414840d0
 __int64 FUN_1414840d0(GroupMessengerData::TalkLog* pLog)
 {
-    __int64 nResult;
     Unk_MdRoomPtr room = FUN_141484720()->FUN_14137e630(pLog->m_nKind);
-    if (room.FUN_141381230(0) == 0)
-    {
-        Unk_MdMemberPtr member = room.FUN_141381280()->FUN_14137ba10(CStringW(pLog->m_strMsg));
-        if (member.FUN_14137c360(0) == 0)
-            nResult = member.FUN_14137c3b0()->m_nOwner;
-        else
-            nResult = 0;
-    }
-    else
-        nResult = 0;
-    return nResult;
+    if (room.FUN_141381230(0))
+        return 0;
+    Unk_MdMemberPtr member = room.FUN_141381280()->FUN_14137ba10(CStringW(pLog->m_strMsg));
+    if (member.FUN_14137c360(0))
+        return 0;
+    return member.FUN_14137c3b0()->m_nOwner;
 }
 
 // @0x141484200

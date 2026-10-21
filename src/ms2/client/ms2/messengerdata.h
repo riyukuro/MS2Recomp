@@ -23,7 +23,7 @@ struct NoticeSetting
 {
     NoticeSetting();                                // 0x141480c70 all on
     int FUN_141480d00(Unk_MdXml* pXml);             // 0x141480d00 load
-    bool FUN_141480ef0(Unk_MdXml* pXml);            // 0x141480ef0 save
+    int  FUN_141480ef0(Unk_MdXml* pXml);            // 0x141480ef0 save
     int FUN_141481040(int nType);                  // 0x141481040 the line type is switched off
     int m_nAll;                                     // +0x00 "all"
     int m_nUser;                                    // +0x04 "user"
@@ -43,7 +43,7 @@ struct SystemSetting
 {
     SystemSetting();                                // 0x141481210
     int FUN_141481250(Unk_MdXml* pXml);             // 0x141481250 load
-    bool FUN_141481320(Unk_MdXml* pXml);            // 0x141481320 save
+    int  FUN_141481320(Unk_MdXml* pXml);            // 0x141481320 save
     int FUN_1414813b0(int nType);                  // 0x1414813b0
     int m_nAll;                                     // +0x00 "all"
     int m_nEvent;                                   // +0x04 "event"
@@ -56,8 +56,8 @@ MS2_CHECK_SIZE(SystemSetting, 0x10);
 struct ScreenSetting
 {
     ScreenSetting();                                // 0x141481440 17, 50, 1
-    bool FUN_141481480(Unk_MdXml* pXml);            // 0x141481480 load
-    bool FUN_141481540(Unk_MdXml* pXml);            // 0x141481540 save
+    int  FUN_141481480(Unk_MdXml* pXml);            // 0x141481480 load
+    int  FUN_141481540(Unk_MdXml* pXml);            // 0x141481540 save
     int m_nFontSize;                                // +0x00 "fontSize"
     int m_nBackgroundAlpha;                         // +0x04 "backgroundAlpha"
     int m_nShowDamage;                              // +0x08 "showDamage"
@@ -69,7 +69,7 @@ struct RequireSetting
 {
     RequireSetting();                               // 0x1414815d0
     int FUN_141481640(Unk_MdXml* pXml);             // 0x141481640 load
-    bool FUN_1414817b0(Unk_MdXml* pXml);            // 0x1414817b0 save
+    int  FUN_1414817b0(Unk_MdXml* pXml);            // 0x1414817b0 save
     int FUN_1414818b0(int nType);                  // 0x1414818b0
     int m_nAll;                                     // +0x00 "all"
     int m_nMeso;                                    // +0x04 "meso"
