@@ -312,7 +312,9 @@ def check(dll, inputs):
     if pe.OPTIONAL_HEADER.ImageBase != DLL_BASE:
         print(f"{dll}: ImageBase 0x{pe.OPTIONAL_HEADER.ImageBase:x}, expected 0x{DLL_BASE:x} (/BASE /FIXED)")
         bad += 1
-    rel = {va - DLL_BASE: name for name, (va, kind) in load(inputs).items() if kind != "func"}
+    # __ImageBase is linker-defined in the DLL (KEEP_LOCAL_PREFIXES), never bound to the exe row; its raw value
+    # 0x40000000 is also float 2.0f followed by 4 zero bytes (fpscameramode .rdata, merge 24 clang link)
+    rel = {va - DLL_BASE: name for name, (va, kind) in load(inputs).items() if kind != "func" and name != "__ImageBase"}
     for sec in pe.sections:
         if sec.Characteristics & IMAGE_SCN_CNT_CODE:
             continue
