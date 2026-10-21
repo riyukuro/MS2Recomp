@@ -71,7 +71,8 @@ def obj_path(cache, u):
 
 
 def _key(u):
-    return KEY + " " + " ".join(u["args"])
+    ts = u.get("toolset", ms2paths.DEFAULT_TOOLSET)       # default toolset keeps the old key (no rebuild)
+    return KEY + (" toolset=" + ts if ts != ms2paths.DEFAULT_TOOLSET else "") + " " + " ".join(u["args"])
 
 
 def needs_compile(cache, u):
@@ -102,7 +103,8 @@ def compile_unit(args):
     o = obj_path(cache, u)
     os.makedirs(os.path.dirname(o), exist_ok=True)
     env = ms2paths.toolchain_env()
-    cmd = ms2paths.cl_cmdline([CL, "/nologo", "/c"] + u["args"] + ["/showIncludes", "/Fo" + o, u["source"]])
+    cl = ms2paths.find_cl_toolset(u.get("toolset"))
+    cmd = ms2paths.cl_cmdline([cl, "/nologo", "/c"] + u["args"] + ["/showIncludes", "/Fo" + o, u["source"]])
     t0 = time.time()
     r = subprocess.run(cmd, cwd=u["cwd"], capture_output=True, text=True, env=env, encoding="latin1")
     deps, errs = set(), []
@@ -188,14 +190,28 @@ def _init():
             if rva not in exe.rf and int(p[1]) > 0:
                 bylen[int(p[1])].append(rva)
                 leaf.add(rva)
+    game = game_ranges()
+    G.update(exe=exe, names=names, dnames=dnames, bylen=bylen, leaf=leaf, game=game, game_lo=[a for a, _ in game],
+             named_vas=set(names.values()))
+
+
+def owned_game_units():
+    """start VAs of the work/map/units.tsv rows owned by a library doc (see game_ranges)"""
+    return {int(v, 16) for d in gbtree.lib_docs() for v in d.get("owned_game_units", ())}
+
+
+def game_ranges():
+    """sorted [(lo, hi)] of the game units (work/map/units.tsv), minus the rows a library doc owns: "owned_game_units"
+    in engine/units-lib-*.json lists unit-map rows (start VA, hex) whose range is a vendored library compiled by the
+    engine stage (fmt 0.12.0, 2026-10-20 tc1: the game map's source-less ?\\fmt.cpp row)."""
+    owned = owned_game_units()
     game = []
     for line in open(UNITS_TSV):
         p = line.rstrip("\n").split("\t")
-        if not p[0].startswith("#") and len(p) > 1:
+        if not p[0].startswith("#") and len(p) > 1 and int(p[0], 16) not in owned:
             game.append((int(p[0], 16), int(p[1], 16)))
     game.sort()
-    G.update(exe=exe, names=names, dnames=dnames, bylen=bylen, leaf=leaf, game=game, game_lo=[a for a, _ in game],
-             named_vas=set(names.values()))
+    return game
 
 
 def _in_game(va):
@@ -699,13 +715,7 @@ def credit(res, game_rows):
         info[va] = (int(p[1]), p[3] if len(p) > 3 else "")
         starts.append(va)
     starts.sort()
-    game = []
-    for line in open(UNITS_TSV):
-        p = line.rstrip("\n").split("\t")
-        if p[0].startswith("#") or len(p) < 2:
-            continue
-        game.append((int(p[0], 16), int(p[1], 16)))
-    game.sort()
+    game = game_ranges()
     import bisect
     gs = [a for a, _ in game]
 

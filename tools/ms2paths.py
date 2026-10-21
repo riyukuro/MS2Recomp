@@ -149,6 +149,23 @@ def find_cl(env=None):
     return shutil.which("cl", path=path) or "cl"
 
 
+# Older MSVC toolsets selectable per engine/library unit ("toolset" field of engine/units-*.json, default "1416"):
+# third_party/msvc147 = 14.14.26428 (cl 19.14.26433), third_party/msvc148 = 14.15.26726 (cl 19.15.26731).
+TOOLSETS = {"1416": "msvc", "1414": "msvc147", "1415": "msvc148"}
+DEFAULT_TOOLSET = "1416"
+
+
+def find_cl_toolset(toolset=None, env=None):
+    """cl for `toolset` ("1414"|"1415"|"1416"; None/"1416" = find_cl()). Native Windows: MS2_CL_<toolset> when set."""
+    if not toolset or toolset == DEFAULT_TOOLSET:
+        return find_cl(env)
+    if toolset not in TOOLSETS:
+        raise ValueError("unknown MSVC toolset %r (known: %s)" % (toolset, ", ".join(sorted(TOOLSETS))))
+    if is_nt():
+        return os.environ.get("MS2_CL_" + toolset) or find_cl(env)
+    return os.path.join(THIRD_PARTY, TOOLSETS[toolset], "bin", "x64", "cl")
+
+
 def msvc_tools_dir(env=None):
     """VC/Tools/MSVC/<ver> of the 14.16 toolset (headers include/, atlmfc/include, atlmfc/lib/x64, lib/x64 below it)."""
     if not is_nt():

@@ -1415,11 +1415,12 @@ def main():
         for va, nm, un, st, sz in rows:
             fo.write(f"{va:x}\t{nm}\t{un}\t{st}\t{sz}\n")
 
-    # overall game-code denominator: functions inside work/map/units.tsv ranges
+    # overall game-code denominator: functions inside work/map/units.tsv ranges (minus the rows a library lane owns)
     game_n = game_b = 0
+    lib_owned = gbprogress.owned_game_units()
     for line in open(UNITS):
         p = line.rstrip("\n").split("\t")
-        if p[0].startswith("#") or len(p) < 6:
+        if p[0].startswith("#") or len(p) < 6 or int(p[0], 16) in lib_owned:
             continue
         lo, hi = int(p[0], 16), int(p[1], 16)
         i = bisect.bisect_left(starts, lo)

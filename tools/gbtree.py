@@ -177,12 +177,16 @@ def expand(s, tree=TREE):
     return (s.replace("$(TREE)", tree).replace("$(ROOT)", ROOT).replace("$(PHYSX)", PHYSX).replace("$(D3DX)", D3DX))
 
 
+def lib_docs():
+    """the library unit docs engine/units-lib-*.json"""
+    import glob
+    return [json.load(open(p)) for p in sorted(glob.glob(os.path.join(ROOT, "engine", "units-lib-*.json")))]
+
+
 def load_units(tree=TREE):
     """[{name, recipe, unit, source, cmd}] with every path resolved; source None when it does not exist."""
     out = []
-    import glob
-    docs = [json.load(open(UNITS_JSON))] + [json.load(open(p)) for p in
-                                            sorted(glob.glob(os.path.join(ROOT, "engine", "units-lib-*.json")))]
+    docs = [json.load(open(UNITS_JSON))] + lib_docs()
     for doc, u in ((d, u) for d in docs for u in d["units"]):
         u = dict(u, flags=doc["flags"][u["flags"]], include_dirs=doc["include_dirs"][u["include_dirs"]])
         src = u["source"]
@@ -206,7 +210,9 @@ def load_units(tree=TREE):
                 f = "-FI" + os.path.join(tree, f[3:])
             flags.append(f)
         out.append(dict(name=u["name"], recipe=u["recipe"], unit=u["unit"], source=src, cwd=cwd,
-                        args=flags + ["-D" + d for d in u["defines"]] + inc))
+                        args=flags + ["-D" + d for d in u["defines"]] + inc,
+                        toolset=os.environ.get("MS2_GB_TOOLSET")       # experiments only: force one toolset on every unit
+                        or str(u.get("toolset") or doc.get("toolset") or ms2paths.DEFAULT_TOOLSET)))
     return out
 
 
