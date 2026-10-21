@@ -382,7 +382,8 @@ void UIAvatarBase::vfunc_16(int n, int bUpdate)
 {
     if (FUN_1418b9b80() == 0)
         return;
-    if (vfunc_23())
+    GameObject* pObj = vfunc_23();
+    if (pObj != 0)
     {
         Unk_StreamPoint kAngle = Unk_StreamPoint(0.0f, (float)n * m_fMoveStep, 0.0f).FUN_14097fd50(m_kAngle);
         FUN_1418bf270(&kAngle.y);
@@ -479,16 +480,14 @@ void UIAvatarBase::vfunc_9(float x, float y, float z, int bUpdate)
     if (FUN_1418b9b80() == 0)
         return;
     GameObject* pObj = vfunc_23();
-    if (pObj)
-    {
-        NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
-        if (pNode)
-        {
-            FUN_1410a7800(pNode, x, y, z);
-            if (bUpdate)
-                pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
-        }
-    }
+    if (pObj == 0)
+        return;
+    NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+    if (pNode == 0)
+        return;
+    FUN_1410a7800(pNode, x, y, z);
+    if (bUpdate)
+        pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
 }
 
 // @0x1418b9200
@@ -534,10 +533,12 @@ MS2_REPLACE_METHOD(0x1418B9310, UIAvatarBase, vfunc_25, 14, 0xD26D6807);
 Unk_GoModelKey* UIAvatarBase::vfunc_26(Unk_GoModelKey* pKey)
 {
     GameObject* pObj = vfunc_24();
-    if (pObj == 0)
-        FUN_1408995b0(pKey);
-    else
+    if (pObj != 0)
+    {
         pObj->FUN_14123c460(*pKey);
+        return pKey;
+    }
+    FUN_1408995b0(pKey);
     return pKey;
 }
 
@@ -631,7 +632,7 @@ MS2_REPLACE_METHOD(0x1418B9730, UIAvatarBase, vfunc_28, 321, 0x52FA4849);
 // @0x1418b9880 (secondary vftable: the listener slots)
 int UIAvatarBase::vfunc_0(GameObject* pObj)
 {
-    if (pObj && pObj->FUN_14123c580() == m_nObjectId)
+    if (pObj && m_nObjectId == pObj->FUN_14123c580())
     {
         FUN_1418b9b60(1);
         vfunc_22();
@@ -646,7 +647,7 @@ int UIAvatarBase::vfunc_0(GameObject* pObj)
 // @0x1418b9970
 int UIAvatarBase::vfunc_2(GameObject* pObj)
 {
-    if (pObj && pObj->FUN_14123c580() == m_nObjectId)
+    if (pObj && m_nObjectId == pObj->FUN_14123c580())
     {
         if (m_pListener)
             m_pListener->vfunc_o178_0(this);
@@ -658,7 +659,7 @@ int UIAvatarBase::vfunc_2(GameObject* pObj)
 // @0x1418b9a00
 int UIAvatarBase::vfunc_3(GameObject* pObj)
 {
-    if (pObj && pObj->FUN_14123c580() == m_nObjectId)
+    if (pObj && m_nObjectId == pObj->FUN_14123c580())
     {
         FUN_1418b9b60(0);
         return 1;
@@ -669,7 +670,7 @@ int UIAvatarBase::vfunc_3(GameObject* pObj)
 // @0x1418b9a60
 int UIAvatarBase::vfunc_4(GameObject* pObj)
 {
-    if (pObj && pObj->FUN_14123c580() == m_nObjectId)
+    if (pObj && m_nObjectId == pObj->FUN_14123c580())
     {
         FUN_1418b9b60(1);
         if (m_pListener)
@@ -819,19 +820,11 @@ MS2_REPLACE_METHOD(0x1418BA160, UIAvatarBase, FUN_1418ba160, 54, 0x8F49F212);
 // @0x1418ba1a0
 int UIAvatarBase::FUN_1418ba1a0(int nButton)
 {
-    int nMode;
     if (nButton == 0)
-        nMode = 2;
+        return 2;
     else if (nButton == 1)
-    {
-        if (!m_bWheelCamera)
-            nMode = 1;
-        else
-            nMode = 3;
-    }
-    else
-        nMode = 0;
-    return nMode;
+        return m_bWheelCamera ? 3 : 1;
+    return 0;
 }
 
 // @0x1418ba200
@@ -890,12 +883,10 @@ void UIAvatarBase::FUN_1418ba410(Unk_StreamPoint* pOut)
     if (pObj)
     {
         NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
-        if (pNode)
-        {
-            Unk_NiMatrix3* pRot = FUN_1410b23c0(pNode);
-            const Unk_StreamPoint& kPos = FUN_140e69200(pNode);
-            FUN_1418ba4a0(pRot, &kPos, pOut);
-        }
+        if (pNode == 0)
+            return;
+        Unk_NiMatrix3* pRot = FUN_1410b23c0(pNode);
+        FUN_1418ba4a0(pRot, &FUN_140e69200(pNode), pOut);
     }
 }
 
@@ -1091,8 +1082,8 @@ GameObject* UIAvatarPC::vfunc_23()
     AvatarPC* pAvatar = FUN_1418bd1d0();
     if (pAvatar && pAvatar->FUN_1409f4f20())
     {
-        int nRideeId = pAvatar->FUN_1409f6450();
-        if (nRideeId != 0)
+        unsigned nRideeId = pAvatar->FUN_1409f6450();
+        if (nRideeId > 0)
             return FUN_1403ed2d0()->FUN_141bd1180(nRideeId);
     }
     return UIAvatarBase::vfunc_24();
@@ -1431,12 +1422,12 @@ MS2_REPLACE_METHOD(0x1418BC280, UIAvatarPC, FUN_1418bc280, 79, 0x40AEB62A);
 void UIAvatarPC::vfunc_4(__int64 nItemUid)
 {
     Unk_UabPlayer* pPlayer = FUN_14099eef0(vfunc_24());
-    if (pPlayer)
-    {
-        MS2Ptr<CItem> spItem = pPlayer->FUN_141655b80(nItemUid);
-        if (!spItem.IsNull())
-            FUN_1418bc380(spItem.get());
-    }
+    if (pPlayer == 0)
+        return;
+    MS2Ptr<CItem> spItem = pPlayer->FUN_141655b80(nItemUid);
+    if (spItem.IsNull())
+        return;
+    FUN_1418bc380(spItem.get());
 }
 
 // @0x1418bc380
@@ -1496,20 +1487,22 @@ void UIAvatarPC::FUN_1418bc630()
 int UIAvatarPC::FUN_1418bc740()
 {
     PCBase* pPc = FUN_1403ed2d0()->FUN_141bd1290(m_nObjectId);
-    if (pPc == 0)
-        return 3;
-    return FUN_141658e60(pPc);
+    if (pPc != 0)
+        return FUN_141658e60(pPc);
+    return 3;
 }
 
 // @0x1418bc790
 void UIAvatarPC::FUN_1418bc790(int nState, int nParam)
 {
-    if (vfunc_24())
+    GameObject* pObj = vfunc_24();
+    if (pObj != 0)
     {
         AvatarPC* pAvatar = FUN_1418bd1d0();
         if (pAvatar)
         {
-            if (pAvatar->FUN_1409f62a0() == 1)
+            int nMode = pAvatar->FUN_1409f62a0();
+            if (nMode == 1)
                 FUN_1418bca60(nState, nParam);
             else
             {
@@ -1698,13 +1691,12 @@ MS2_REPLACE_METHOD(0x1418BD050, UIAvatarPC, FUN_1418bd050, 238, 0x27EC8CD8);
 // @0x1418bd150
 void UIAvatarPC::FUN_1418bd150(unsigned int a, unsigned int b)
 {
-    if (FUN_1418b9b80())
-    {
-        vfunc_20(0.0f, 0.0f, 0.0f, 1);
-        AvatarPC* pAvatar = FUN_1418bd1d0();
-        if (pAvatar)
-            pAvatar->FUN_1409f4cf0(a, b);
-    }
+    if (!FUN_1418b9b80())
+        return;
+    vfunc_20(0.0f, 0.0f, 0.0f, 1);
+    AvatarPC* pAvatar = FUN_1418bd1d0();
+    if (pAvatar)
+        pAvatar->FUN_1409f4cf0(a, b);
 }
 
 // @0x1418bd1d0
@@ -1791,21 +1783,21 @@ MS2_REPLACE_METHOD(0x1418BD760, UIAvatarPC, FUN_1418bd760, 17, 0x38E3250F);
 // @0x1418bd780
 void UIAvatarPC::FUN_1418bd780(PC* pSource, AvatarPC* pAvatar)
 {
-    if (pAvatar)
-    {
-        __int64 nNow = FUN_140869440();
-        CMsTime kZero((__time64_t)0);
-        CMsTime kNow(nNow);
-        FUN_1411ea620(FUN_1416561a0(pAvatar), kNow, kZero);
-    }
+    if (pAvatar == 0)
+        return;
+    __int64 nNow = FUN_140869440();
+    CMsTime kZero((__time64_t)0);
+    CMsTime kNow(nNow);
+    FUN_1411ea620(FUN_1416561a0(pAvatar), kNow, kZero);
 }
 
 // @0x1418bd7f0
 void UIAvatarPC::FUN_1418bd7f0(bool bEnabled)
 {
     AvatarPC* pAvatar = FUN_1418bd1d0();
-    if (pAvatar)
-        pAvatar->FUN_1409f6540(bEnabled);
+    if (pAvatar == 0)
+        return;
+    pAvatar->FUN_1409f6540(bEnabled);
 }
 
 // @0x1418bd830
