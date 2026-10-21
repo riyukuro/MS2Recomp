@@ -926,7 +926,10 @@ void FUN_141049b10(NiAVObject* pRoot, CAtlArray<CString>& kNames, MeshArray& kMe
     for (unsigned int i = 0; i < kSource.GetCount(); i++)
     {
         efd::SmartPointer<NiMesh>& spMesh = kSource.GetAt(i);
-        kNames.Add(CString((const char*)spMesh->GetName()));
+        {
+            CString strName((const char*)spMesh->GetName());
+            kNames.Add(strName);
+        }
         if (i == 0)
         {
             if (FUN_140a0b000(spMesh) != 0)
@@ -939,23 +942,30 @@ void FUN_141049b10(NiAVObject* pRoot, CAtlArray<CString>& kNames, MeshArray& kMe
 // @0x141049c60
 bool FUN_141049c60(NiMesh* pMesh)
 {
-    if (pMesh->GetPrimitiveType() == 0)
-    {
-        if (pMesh->GetProperty(0) == 0)
-        {
-            if (NiDynamicCast(NiMorphMeshModifier, pMesh->GetModifierByType(&NiMorphMeshModifier::ms_RTTI)) == 0)
-            {
-                if (NiDynamicCast(NiSkinningMeshModifier, pMesh->GetModifierByType(&NiSkinningMeshModifier::ms_RTTI)) != 0)
-                {
-                    Unk_MaterialEntry* pEntry = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pMesh));
-                    if (pEntry != 0)
-                        return FUN_140ef4dd0(pEntry) == 2;
-                }
-            }
-        }
-    }
-    return false;
+    if (pMesh->GetPrimitiveType() != 0)
+        return false;
+    if (pMesh->GetProperty(0) != 0)
+        return false;
+    NiMorphMeshModifier* pMorph = NiDynamicCast(NiMorphMeshModifier, pMesh->GetModifierByType(&NiMorphMeshModifier::ms_RTTI));
+    if (pMorph != 0)
+        return false;
+    NiSkinningMeshModifier* pSkin = NiDynamicCast(NiSkinningMeshModifier, pMesh->GetModifierByType(&NiSkinningMeshModifier::ms_RTTI));
+    if (pSkin == 0)
+        return false;
+    Unk_MaterialEntry* pEntry = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pMesh));
+    if (pEntry == 0)
+        return false;
+    if (FUN_140ef4dd0(pEntry) != 2)
+        return false;
+    return true;
 }
+
+// cl's `for each` (the exe's iteration shape: the end iterator takes the lower slot); clang-cl (the hook DLL build) has no such statement: a range-for there.
+#ifdef __clang__
+#define CMM_FOR_EACH(decl, container) for (decl : container)
+#else
+#define CMM_FOR_EACH(decl, container) for each (decl in container)
+#endif
 
 // Collects the mergeable meshes of the scene and groups them by parent and property state (0x141049d50).
 // @0x141049d50
@@ -965,27 +975,25 @@ void FUN_141049d50(NiAVObject* pRoot, MeshGroups& kGroups)
     Unk_CubeSceneIterator kIter(pRoot);
     while (NiAVObject* pObject = kIter.FUN_14098e0d0(false))
     {
-        if (!FUN_14098dad0(pObject))
+        if (FUN_14098dad0(pObject))
+            continue;
+        if (pObject->GetName() == "Bip01")
+            continue;
+        NiNode* pNode = NiDynamicCast(NiNode, pObject);
+        if (pNode != 0)
         {
-            if (!(pObject->GetName() == "Bip01"))
-            {
-                NiNode* pNode = NiDynamicCast(NiNode, pObject);
-                if (pNode == 0)
-                {
-                    NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
-                    if (pMesh != 0 && FUN_141049c60(pMesh))
-                        kMeshes.push_back(pMesh);
-                }
-                else
-                {
-                    kIter.FUN_14098d6d0(pNode);
-                }
-            }
+            kIter.FUN_14098d6d0(pNode);
+            continue;
         }
+        NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
+        if (pMesh == 0)
+            continue;
+        if (!FUN_141049c60(pMesh))
+            continue;
+        kMeshes.push_back(pMesh);
     }
-    for (MeshList::iterator it = kMeshes.begin(); it != kMeshes.end(); ++it)
+    CMM_FOR_EACH(NiMesh* pMesh, kMeshes)
     {
-        NiMesh* pMesh = *it;
         int iGroup = FUN_141049fa0(pMesh, kGroups);
         if (iGroup == -1)
         {
@@ -1016,14 +1024,13 @@ int FUN_141049fa0(NiMesh* pMesh, const MeshGroups& kGroups)
 // @0x14104a080
 void FUN_14104a080(const MeshGroups& kGroups, int* pVertices, int* pIndices)
 {
-    for (MeshGroups::const_iterator itGroup = kGroups.begin(); itGroup != kGroups.end(); ++itGroup)
+    CMM_FOR_EACH(const MeshList& kList, kGroups)
     {
-        const MeshList& kList = *itGroup;
-        for (MeshList::const_iterator it = kList.begin(); it != kList.end(); ++it)
+        CMM_FOR_EACH(NiMesh* pMesh, kList)
         {
-            NiMesh* pMesh = *it;
             *pVertices += pMesh->GetVertexCount();
-            *pIndices += pMesh->GetCount(0, NiCommonSemantics::INDEX(), 0);
+            int nIndices = pMesh->GetCount(0, NiCommonSemantics::INDEX(), 0);
+            *pIndices += nIndices;
         }
     }
 }
@@ -1382,17 +1389,17 @@ void FUN_14104ba70(unsigned int** ppDst, NiDataStreamRef* pRef, unsigned int uiC
 void FUN_14104b530(NiMesh* pMerged, const MeshGroups& kBuckets)
 {
     unsigned int uiTotal = 0;
-    for (const MeshList& kList : kBuckets)
-        for (NiMesh* pMesh : kList)
+    CMM_FOR_EACH(const MeshList& kList, kBuckets)
+        CMM_FOR_EACH(NiMesh* pMesh, kList)
             uiTotal += pMesh->GetCount(0, NiCommonSemantics::INDEX(), 0);
 
     NiDataStreamRef* pRef = pMerged->AddStream(NiCommonSemantics::INDEX(), 0, NiDataStreamElement::F_UINT32_1, uiTotal, 0x12,
                                                NiDataStream::USAGE_VERTEX_INDEX, 0, false, true);
     unsigned int* pDst = (unsigned int*)pRef->GetDataStream()->LockWrite();
     int iVertexOffset = 0;
-    for (const MeshList& kList : kBuckets)
+    CMM_FOR_EACH(const MeshList& kList, kBuckets)
     {
-        for (NiMesh* pMesh : kList)
+        CMM_FOR_EACH(NiMesh* pMesh, kList)
         {
             unsigned int uiCount = pMesh->GetCount(0, NiCommonSemantics::INDEX(), 0);
             unsigned int uiVertices = pMesh->GetVertexCount();
@@ -1409,7 +1416,7 @@ void FUN_14104b530(NiMesh* pMerged, const MeshGroups& kBuckets)
     for (unsigned int i = 0; i < uiBucketCount; i++)
     {
         int iCount = 0;
-        for (NiMesh* pMesh : kBuckets[i])
+        CMM_FOR_EACH(NiMesh* pMesh, kBuckets[i])
             iCount += pMesh->GetCount(0, NiCommonSemantics::INDEX(), 0);
         NiDataStream::Region kRegion(iStart, iCount);
         if (i == 0)
@@ -1427,17 +1434,19 @@ void FUN_14104b530(NiMesh* pMerged, const MeshGroups& kBuckets)
 int FUN_14104c870(std::vector<Unk_StreamElementDesc>& kLayout, const efd::vector<NiDataStreamRef*>& kSources, const NiFixedString& kSemantic, unsigned int uiIndex)
 {
     int iFormat = 0;
-    for (NiDataStreamRef* pSource : kSources)
+    CMM_FOR_EACH(NiDataStreamRef* pSource, kSources)
     {
         const NiDataStreamElement& kElement = pSource->FindElementDesc(kSemantic, uiIndex);
         if (kElement.IsEqual(NiDataStreamElement::ms_kInvalidElement))
             continue;
-        if (iFormat != 0 && iFormat != kElement.GetFormat())
+        if (iFormat == 0 || iFormat == kElement.GetFormat())
+            iFormat = kElement.GetFormat();
+        else
             return 0x10;
-        iFormat = kElement.GetFormat();
     }
-    if (iFormat != 0)
-        kLayout.push_back(Unk_StreamElementDesc(kSemantic, uiIndex, (NiDataStreamElement::Format)iFormat));
+    if (iFormat == 0)
+        return iFormat;
+    kLayout.push_back(Unk_StreamElementDesc(kSemantic, uiIndex, (NiDataStreamElement::Format)iFormat));
     return iFormat;
 }
 
@@ -1494,9 +1503,9 @@ void FUN_14104bbb0(NiMesh* pMerged, MergeInfo& kInfo, const MeshGroups& kBuckets
 {
     int iVertexTotal = 0;
     efd::vector<NiDataStreamRef*> kSources;
-    for (const MeshList& kList : kBuckets)
+    CMM_FOR_EACH(const MeshList& kList, kBuckets)
     {
-        for (NiMesh* pMesh : kList)
+        CMM_FOR_EACH(NiMesh* pMesh, kList)
         {
             iVertexTotal += pMesh->GetVertexCount();
             NiDataStreamRef* pSource = FUN_14104cc20(pMesh);
@@ -1529,7 +1538,7 @@ void FUN_14104bbb0(NiMesh* pMerged, MergeInfo& kInfo, const MeshGroups& kBuckets
     unsigned char* pDst = (unsigned char*)pMergedRef->GetDataStream()->Lock(10);
     for (unsigned int uiBucket = 0; uiBucket < kBuckets.size(); uiBucket++)
     {
-        for (NiMesh* pMesh : kBuckets[uiBucket])
+        CMM_FOR_EACH(NiMesh* pMesh, kBuckets[uiBucket])
         {
             NiTransform kInverseParent;
             NiTransform kParentWorld = pMesh->GetParent()->GetWorldTransform();
@@ -1802,15 +1811,14 @@ bool FUN_141052aa0(const NiPropertyState* pA, const NiPropertyState* pB)
 void FUN_1410528f0(const MeshList& kMeshes, MeshGroups& kGroups)
 {
     kGroups.clear();
-    for (NiMesh* pMesh : kMeshes)
+    CMM_FOR_EACH(NiMesh* pMesh, kMeshes)
     {
-        unsigned int uiGroup = 0;
-        while (uiGroup < kGroups.size())
+        unsigned int uiGroup;
+        for (uiGroup = 0; uiGroup < kGroups.size(); uiGroup++)
         {
             NiMesh* pFirst = kGroups[uiGroup][0];
             if (FUN_141052aa0(pMesh->GetPropertyState(), pFirst->GetPropertyState()) == true)
                 break;
-            uiGroup++;
         }
         if (uiGroup == kGroups.size())
             kGroups.push_back(MeshList());
@@ -2044,9 +2052,9 @@ NiTexturingProperty* FUN_141050fd0(NiPixelData* pAlbedo, NiPixelData* pShader)
     NiSourceTexture* pBase = NiDynamicCast(NiSourceTexture, pTexturing->GetBaseTexture());
     CString strPath;
     strPath.Format("CharacterAtlas%d.dds", s_iAtlasFileCount);
-    SaveTextureToFileA(&strPath, D3DXIFF_DDS, pBase);
+    SaveTextureToFileA(&strPath, D3DXIFF_PNG, pBase);        // the exe passes 3 (PNG) despite the .dds names
     strPath.Format("CharacterAtlasShaderMap%d.dds", s_iAtlasFileCount);
-    SaveTextureToFileA(&strPath, D3DXIFF_DDS, spShaderTexture);
+    SaveTextureToFileA(&strPath, D3DXIFF_PNG, spShaderTexture);
     s_iAtlasFileCount++;
     return pTexturing;
 }
@@ -2059,7 +2067,8 @@ NiDataStreamRef* FUN_141051210(NiDataStreamRef* pRef, unsigned int uiCount)
 {
     NiDataStreamElementSet kElements;
     for (unsigned int i = 0; i < pRef->GetDataStream()->GetElementDescCount(); i++)
-        kElements.Add(pRef->GetDataStream()->GetElementDescAt(i));
+        kElements.Add(pRef->GetElementDescAt(i));
+    unsigned int uiStride = pRef->GetStride();
     NiDataStream* pStream = NiDataStream::CreateDataStream(kElements, uiCount, pRef->GetAccessMask(), pRef->GetUsage(), false);
     NiDataStream::Region kRegion(0, uiCount);
     pStream->AddRegion(kRegion);
@@ -2078,12 +2087,7 @@ bool FUN_1410513b0(NiDataStreamRef* pA, NiDataStreamRef* pB)
         return false;
     if (pA->IsPerInstance() != pB->IsPerInstance())
         return false;
-    if (pA->GetDataStream() == 0 || pB->GetDataStream() == 0)
-    {
-        if (pA->GetDataStream() != 0 || pB->GetDataStream() != 0)
-            return false;
-    }
-    else
+    if (pA->GetDataStream() != 0 && pB->GetDataStream() != 0)
     {
         if (pA->GetDataStream()->GetElementDescCount() != pB->GetDataStream()->GetElementDescCount())
             return false;
@@ -2096,6 +2100,11 @@ bool FUN_1410513b0(NiDataStreamRef* pA, NiDataStreamRef* pB)
                 return false;
         }
     }
+    else if (pA->GetDataStream() == 0 && pB->GetDataStream() == 0)
+    {
+    }
+    else
+        return false;
     return true;
 }
 
