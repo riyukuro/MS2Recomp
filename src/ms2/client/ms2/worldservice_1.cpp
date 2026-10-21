@@ -1728,7 +1728,7 @@ typedef efd::SmartPointer<Unk_WsC_GameObj> Unk_WsC_GameObjPtr;      // copy ctor
 #include <NiAVObject.h>
 #include <NiProperty.h>
 #include <egf/FlatModel.h>
-#include "ms2/guess/fieldproperty.h"
+#include "ms2/commonfiles/fieldproperty.h"
 // ---- types ----
 // 8-byte COM-style smart pointer (ctor 0x14098c7d0, get 0x14098d090, operator-> 0x14098d0e0, dtor 0x14098cc60).
 struct Unk_WsD_Com8 { void* m_p; };

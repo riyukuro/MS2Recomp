@@ -385,7 +385,7 @@
 // that add-ref VA. The others are the shared classes whose add-ref another unit already binds.
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/tptrvalue.h"
-#include "ms2/guess/fieldproperty.h"
+#include "ms2/commonfiles/fieldproperty.h"
 #include "ms2/guess/regionskillobject.h"
 #include "ms2/client/ms2/uidebugtooltip.h"
 #include "alphaanimation.h"

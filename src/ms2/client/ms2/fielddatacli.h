@@ -4,7 +4,7 @@
 #pragma once
 #include "ms2/commonfiles/fielddata.h"
 #include "ms2/placeholder/ascript.h"
-#include "ms2/guess/fieldproperty.h"   // Unk_Vec3f
+#include "ms2/commonfiles/fieldproperty.h"   // Unk_Vec3f
 
 // 12-byte vector class used for the camera settings. All special members are out of line in the exe.
 struct Unk_GVec3 {

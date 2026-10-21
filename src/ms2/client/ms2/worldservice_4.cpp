@@ -181,7 +181,7 @@
 #include "ms2/placeholder/tptrvalue.h"
 #include "ms2/placeholder/notifyworld.h"
 #include "ms2/placeholder/cinteractwebobject.h"
-#include "ms2/guess/fieldproperty.h"
+#include "ms2/commonfiles/fieldproperty.h"
 #include "liftabletarget.h"
 #include "alphaanimation.h"                 // CEntityShower / CEntityHider (NiRefObject)
 #include "textureanimationdata.h"           // TextureLayerManager

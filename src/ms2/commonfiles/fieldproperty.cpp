@@ -10,7 +10,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-#include "ms2/guess/fieldproperty.h"
+#include "ms2/commonfiles/fieldproperty.h"
 
 // ---- unrecovered neighbours: the packet writer / reader primitives ---------------------------------------------------
 void FUN_14070fa60(Unk_PktOut*, float);                 // write float

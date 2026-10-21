@@ -223,7 +223,7 @@
 #include "ms2/client/ms2/worldservice_tail.h"
 #include "ms2/client/ms2/worldservice_real.h"
 #include "ms2/client/ms2/dropitem.h"
-#include "ms2/guess/fieldproperty.h"
+#include "ms2/commonfiles/fieldproperty.h"
 #include "ms2/client/ms2/effectservice.h"
 #include "ms2/placeholder/coptimizer.h"
 #include "ms2/placeholder/cboxcollision.h"

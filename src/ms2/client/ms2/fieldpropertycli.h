@@ -1,10 +1,10 @@
 // fieldpropertycli.h - client-side FieldProperty subclasses (Apply/Unapply on map entry/exit). NOT an original header.
 // The *Cli classes add no data (except the light ones, which cache the previous entity colour) and override
-// vfunc_4 (Apply) / vfunc_5 (Unapply) of FieldProperty (guess/fieldproperty.h). Their destructors only forward to the
+// vfunc_4 (Apply) / vfunc_5 (Unapply) of FieldProperty (commonfiles/fieldproperty.h). Their destructors only forward to the
 // server-class destructor and store no vptr, so they are declared here, bound to the exe through
 // progress/symbols-manual.tsv, and written as FUN_<va> forwarding functions in fieldpropertycli.cpp.
 #pragma once
-#include "ms2/guess/fieldproperty.h"
+#include "ms2/commonfiles/fieldproperty.h"
 #include "ms2/placeholder/ascript.h"
 
 #define MS2_FPCLI(Name)                                  \

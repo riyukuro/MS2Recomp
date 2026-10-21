@@ -189,7 +189,7 @@
 #include "dropitem.h"
 #include "liftableobject.h"
 #include "liftabletarget.h"
-#include "ms2/guess/fieldproperty.h"
+#include "ms2/commonfiles/fieldproperty.h"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 
