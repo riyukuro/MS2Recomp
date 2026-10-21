@@ -256,7 +256,6 @@ bool FUN_140627110(unsigned nId, short* pMin, short* pMax, int* pError)
 MS2_REPLACE(0x140627110, FUN_140627110, 141, 0x833B2DEF);
 
 // @0x1406271b0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 bool FUN_1406271b0(MS2Ptr<CItemGemStoneData> spRow, short* pMin, short* pMax, int* pError)
 {
     *pMin = 0;
@@ -276,7 +275,7 @@ bool FUN_1406271b0(MS2Ptr<CItemGemStoneData> spRow, short* pMin, short* pMax, in
         return false;
     }
     *pMin = spRow->m_nSlot;
-    *pMax = *pMin + 1;
+    *pMax = (unsigned short)*pMin + 1;
     return true;
 }
 MS2_REPLACE(0x1406271B0, FUN_1406271b0, 308, 0x26C469AB);
@@ -347,18 +346,12 @@ int FUN_140627450(MS2Ptr<CItem> spItem, MS2Ptr<Unk_ItemSocketScrollData> spScrol
 MS2_REPLACE(0x140627450, FUN_140627450, 1234, 0xF69E6543);
 
 // @0x140627930
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 bool FUN_140627930(MS2Ptr<CItemData> spData, MS2Ptr<Unk_ItemSocketScrollData> spScroll)
 {
     if (spData == 0 || spScroll == 0)
         return false;
-    int nKind;
-    if (spData->FUN_14053cf90())
-        nKind = 2;
-    else
-        nKind = 1;
-    bool bResult = (spScroll->m_nTargetMask & nKind) > 0;
-    return bResult;
+    int nKind = spData->FUN_14053cf90() ? 2 : 1;
+    return (spScroll->m_nTargetMask & nKind) > 0;
 }
 MS2_REPLACE(0x140627930, FUN_140627930, 226, 0xEA957CAF);
 
@@ -453,7 +446,6 @@ bool FUN_140627d70(MS2Ptr<CItemData> spData)
 MS2_REPLACE(0x140627D70, FUN_140627d70, 259, 0xA98525E6);
 
 // @0x140627e80
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 // The item is an equip with a socket record that is unlocked (and not yet used).
 int FUN_140627e80(MS2Ptr<CItem> spItem)
 {
@@ -463,25 +455,19 @@ int FUN_140627e80(MS2Ptr<CItem> spItem)
         return 0;
     if (reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->FUN_140635900() == 0)
         return 0;
-    if (spItem->FUN_1405279c0() != 0)
-    {
-        if (spItem->FUN_140529560() != 0)
-        {
-            if (FUN_140620a20(spItem->FUN_1405279c0()) == 0)
-                return 0;
-            if (FUN_140620940(spItem->FUN_1405279c0()) != 0)
-                return 0;
-            if (spItem->FUN_140526160() == 1)
-                return 0;
-            return 1;
-        }
-    }
-    return 0;
+    if (spItem->FUN_1405279c0() == 0 || spItem->FUN_140529560() == 0)
+        return 0;
+    if (FUN_140620a20(spItem->FUN_1405279c0()) == 0)
+        return 0;
+    if (FUN_140620940(spItem->FUN_1405279c0()) != 0)
+        return 0;
+    if (spItem->FUN_140526160() == 1)
+        return 0;
+    return 1;
 }
 MS2_REPLACE(0x140627E80, FUN_140627e80, 458, 0xBE0452AB);
 
 // @0x140628050
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 int FUN_140628050(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0 || reinterpret_cast<CItemData*>(spItem->FUN_140527840()) == 0)
@@ -490,34 +476,24 @@ int FUN_140628050(MS2Ptr<CItem> spItem)
         return 0;
     if (reinterpret_cast<CItemTransfer*>(spItem->FUN_140527930())->FUN_140635900() == 0)
         return 0;
-    if (spItem->FUN_1405279c0() != 0)
-    {
-        if (spItem->FUN_140529560() != 0)
-        {
-            if (FUN_140620a20(spItem->FUN_1405279c0()) != 0)
-                return 0;
-            if (FUN_140620940(spItem->FUN_1405279c0()) != 0)
-                return 0;
-            return 1;
-        }
-    }
-    return 0;
+    if (spItem->FUN_1405279c0() == 0 || spItem->FUN_140529560() == 0)
+        return 0;
+    if (FUN_140620a20(spItem->FUN_1405279c0()) != 0)
+        return 0;
+    if (FUN_140620940(spItem->FUN_1405279c0()) != 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE(0x140628050, FUN_140628050, 411, 0x17EB2A1D);
 
 // @0x140628200
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 int FUN_140628200(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB)
 {
-    if (FUN_140627e80(spA) != 0 && FUN_140628050(spB) != 0)
-    {
-        int nA = FUN_140620a50(spA->FUN_1405279c0());
-        int nB = FUN_140620a50(spB->FUN_1405279c0());
-        if (nA != nB)
-            return 0;
-        return 1;
-    }
-    return 0;
+    if (FUN_140627e80(spA) == 0 || FUN_140628050(spB) == 0)
+        return 0;
+    if (FUN_140620a50(spA->FUN_1405279c0()) != FUN_140620a50(spB->FUN_1405279c0()))
+        return 0;
+    return 1;
 }
 MS2_REPLACE(0x140628200, FUN_140628200, 322, 0x2F05C1F7);
 
@@ -917,102 +893,79 @@ struct Unk_SockItemOne
 MS2_REPLACE(0x14062A090, FUN_14062a090, 104, 0x1A92EBE0);
 
 // @0x140628ff0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 void FUN_140628ff0(Unk_SockItemMsg& v, COutputStream& out, bool bTransfer)
 {
-    if (!(v.m_spItem == 0))
+    if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
+        return;
+    out.vfunc_o10_1(v.m_bValid);
+    out.vfunc_o10_4(v.m_spItem->FUN_140526a50());
+    if (v.m_bValid)
     {
-        if (v.m_spItem->FUN_1405279c0() != 0)
-        {
-            out.vfunc_o10_1(v.m_bValid);
-            out.vfunc_o10_4(v.m_spItem->FUN_140526a50());
-            if (v.m_bValid)
-            {
-                out.vfunc_o10_1(v.m_nByte);
-                v.m_spItem->FUN_1405279c0()->FUN_1406205e0(out);
-                out.vfunc_o10_0(bTransfer);
-                if (bTransfer)
-                    reinterpret_cast<CItemTransfer*>(v.m_spItem->FUN_140527930())->vfunc_1(out);
-            }
-        }
+        out.vfunc_o10_1(v.m_nByte);
+        v.m_spItem->FUN_1405279c0()->FUN_1406205e0(out);
+        out.vfunc_o10_0(bTransfer);
+        if (bTransfer)
+            reinterpret_cast<CItemTransfer*>(v.m_spItem->FUN_140527930())->vfunc_1(out);
     }
 }
 MS2_REPLACE(0x140628FF0, FUN_140628ff0, 322, 0x2CF4AD29);
 
 // @0x140629140
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 void FUN_140629140(Unk_SockItemMsg& v, CInPacket& in)
 {
-    if (!(v.m_spItem == 0))
+    if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
+        return;
+    v.m_bValid = in.vfunc_o8_1() == 1 ? true : false;
+    __int64 nUid = in.vfunc_o8_4();
+    if (v.m_bValid)
     {
-        if (v.m_spItem->FUN_1405279c0() != 0)
+        v.m_nByte = in.vfunc_o8_1();
+        if (v.m_spItem->FUN_140526a50() == nUid)
         {
-            char cValid = in.vfunc_o8_1();
-            v.m_bValid = cValid == 1;
-            __int64 nUid = in.vfunc_o8_4();
-            if (v.m_bValid)
-            {
-                v.m_nByte = in.vfunc_o8_1();
-                if (v.m_spItem->FUN_140526a50() == nUid)
-                {
-                    v.m_spItem->FUN_1405279c0()->FUN_140620700(in);
-                    if (in.vfunc_o8_0())
-                        reinterpret_cast<CItemTransfer*>(v.m_spItem->FUN_140527930())->vfunc_2(in);
-                }
-            }
+            v.m_spItem->FUN_1405279c0()->FUN_140620700(in);
+            bool bTransfer = in.vfunc_o8_0();
+            if (bTransfer)
+                reinterpret_cast<CItemTransfer*>(v.m_spItem->FUN_140527930())->vfunc_2(in);
         }
     }
 }
 MS2_REPLACE(0x140629140, FUN_140629140, 502, 0x90571525);
 
 // @0x140629400
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 void FUN_140629400(Unk_SockItemPair& v, COutputStream& out, int nMode)
 {
-    if (!(v.m_spA == 0))
-    {
-        if (v.m_spA->FUN_1405279c0() != 0 && !(v.m_spB == 0))
-        {
-            if (v.m_spB->FUN_1405279c0() != 0)
-            {
-                out.vfunc_o10_4(v.m_spA->FUN_140526a50());
-                v.m_spA->FUN_1405279c0()->FUN_1406205e0(out);
-                out.vfunc_o10_4(v.m_spB->FUN_140526a50());
-                v.m_spB->FUN_1405279c0()->FUN_1406205e0(out);
-                out.vfunc_o10_0(nMode == 1);
-                if (nMode != 0)
-                    reinterpret_cast<CItemTransfer*>(v.m_spB->FUN_140527930())->vfunc_1(out);
-            }
-        }
-    }
+    if (v.m_spA == 0 || v.m_spA->FUN_1405279c0() == 0)
+        return;
+    if (v.m_spB == 0 || v.m_spB->FUN_1405279c0() == 0)
+        return;
+    out.vfunc_o10_4(v.m_spA->FUN_140526a50());
+    v.m_spA->FUN_1405279c0()->FUN_1406205e0(out);
+    out.vfunc_o10_4(v.m_spB->FUN_140526a50());
+    v.m_spB->FUN_1405279c0()->FUN_1406205e0(out);
+    out.vfunc_o10_0(nMode == 1);
+    if (nMode != 0)
+        reinterpret_cast<CItemTransfer*>(v.m_spB->FUN_140527930())->vfunc_1(out);
 }
 MS2_REPLACE(0x140629400, FUN_140629400, 411, 0x09CAED1C);
 
 // @0x1406295b0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 void FUN_1406295b0(Unk_SockItemPair& v, CInPacket& in)
 {
-    if (!(v.m_spA == 0))
-    {
-        if (v.m_spA->FUN_1405279c0() != 0 && !(v.m_spB == 0))
-        {
-            if (v.m_spB->FUN_1405279c0() != 0)
-            {
-                __int64 nUidA = in.vfunc_o8_4();
-                if (v.m_spA->FUN_140526a50() == nUidA)
-                {
-                    v.m_spA->FUN_1405279c0()->FUN_140620700(in);
-                    __int64 nUidB = in.vfunc_o8_4();
-                    if (v.m_spB->FUN_140526a50() == nUidB)
-                    {
-                        v.m_spB->FUN_1405279c0()->FUN_140620700(in);
-                        if (in.vfunc_o8_0())
-                            reinterpret_cast<CItemTransfer*>(v.m_spB->FUN_140527930())->vfunc_2(in);
-                    }
-                }
-            }
-        }
-    }
+    if (v.m_spA == 0 || v.m_spA->FUN_1405279c0() == 0)
+        return;
+    if (v.m_spB == 0 || v.m_spB->FUN_1405279c0() == 0)
+        return;
+    __int64 nUidA = in.vfunc_o8_4();
+    if (v.m_spA->FUN_140526a50() != nUidA)
+        return;
+    v.m_spA->FUN_1405279c0()->FUN_140620700(in);
+    __int64 nUidB = in.vfunc_o8_4();
+    if (v.m_spB->FUN_140526a50() != nUidB)
+        return;
+    v.m_spB->FUN_1405279c0()->FUN_140620700(in);
+    int bTransfer = in.vfunc_o8_0();
+    if (bTransfer != 0)
+        reinterpret_cast<CItemTransfer*>(v.m_spB->FUN_140527930())->vfunc_2(in);
 }
 MS2_REPLACE(0x1406295B0, FUN_1406295b0, 550, 0x1BE1882E);
 
@@ -1068,11 +1021,10 @@ void FUN_140629960(Unk_SockMsgGem& v, COutputStream& out)
 MS2_REPLACE(0x140629960, FUN_140629960, 197, 0x2250C583);
 
 // @0x140629a30
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 void FUN_140629a30(Unk_SockMsgGem& v, CInPacket& in)
 {
     FUN_140629830(v, in);
-    v.m_bB34 = in.vfunc_o8_1() == 1;
+    v.m_bB34 = in.vfunc_o8_1() == 1 ? true : false;
     v.m_nB30 = in.vfunc_o8_1();
     v.m_n28 = in.vfunc_o8_4();
     bool bGem = in.vfunc_o8_0();
@@ -1149,48 +1101,37 @@ void FUN_140629e60(Unk_SockMsgIIL& v, CInPacket& in)
 MS2_REPLACE(0x140629E60, FUN_140629e60, 191, 0xB6E1E065);
 
 // @0x14062a100
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 void FUN_14062a100(Unk_SockItemOne& v, COutputStream& out)
 {
-    if (!(v.m_spItem == 0))
+    if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
+        return;
+    out.vfunc_o10_1(v.m_bFlag);
+    v.m_nUid = v.m_spItem->FUN_140526a50();
+    out.vfunc_o10_4(v.m_nUid);
+    out.vfunc_o10_1(v.m_nByte);
+    if (v.m_bFlag)
     {
-        if (v.m_spItem->FUN_1405279c0() != 0)
-        {
-            out.vfunc_o10_1(v.m_bFlag);
-            v.m_nUid = v.m_spItem->FUN_140526a50();
-            out.vfunc_o10_4(v.m_nUid);
-            out.vfunc_o10_1(v.m_nByte);
-            if (v.m_bFlag)
-            {
-                out.vfunc_o10_3(v.m_spItem->FUN_1405273a0());
-                v.m_spItem->FUN_1405279c0()->FUN_1406205e0(out);
-            }
-        }
+        out.vfunc_o10_3(v.m_spItem->FUN_1405273a0());
+        v.m_spItem->FUN_1405279c0()->FUN_1406205e0(out);
     }
 }
 MS2_REPLACE(0x14062A100, FUN_14062a100, 291, 0x952C6E87);
 
 // @0x14062a230
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 void FUN_14062a230(Unk_SockItemOne& v, CInPacket& in)
 {
-    if (!(v.m_spItem == 0))
+    if (v.m_spItem == 0 || v.m_spItem->FUN_1405279c0() == 0)
+        return;
+    v.m_bFlag = in.vfunc_o8_1() == 1 ? true : false;
+    v.m_nUid = in.vfunc_o8_4();
+    v.m_nByte = in.vfunc_o8_1();
+    if (v.m_bFlag)
     {
-        if (v.m_spItem->FUN_1405279c0() != 0)
+        if (v.m_spItem->FUN_140526a50() == v.m_nUid)
         {
-            char cFlag = in.vfunc_o8_1();
-            v.m_bFlag = cFlag == 1;
-            v.m_nUid = in.vfunc_o8_4();
-            v.m_nByte = in.vfunc_o8_1();
-            if (v.m_bFlag)
-            {
-                if (v.m_spItem->FUN_140526a50() == v.m_nUid)
-                {
-                    int nCount = in.vfunc_o8_3();
-                    v.m_spItem->FUN_1405273f0(nCount);
-                    v.m_spItem->FUN_1405279c0()->FUN_140620700(in);
-                }
-            }
+            int nCount = in.vfunc_o8_3();
+            v.m_spItem->FUN_1405273f0(nCount);
+            v.m_spItem->FUN_1405279c0()->FUN_140620700(in);
         }
     }
 }
@@ -1348,16 +1289,11 @@ CStringW FUN_14062b020(MS2Ptr<CItemOption> spOption)
 MS2_REPLACE(0x14062B020, FUN_14062b020, 733, 0x424D87E9);
 
 // @0x14062ad80
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 CStringW FUN_14062ad80(MS2Ptr<CItem> spItem)
 {
-    if (!(spItem == (CItem*)0))
-    {
-        Unk_ItemEnchantData* pStatus = spItem->FUN_1405278a0();
-        if (pStatus != 0)
-            return FUN_14062b020(spItem->FUN_1405278a0()->m_spOption);
-    }
-    return CStringW(L"");
+    if (spItem == (CItem*)0 || spItem->FUN_1405278a0() == 0)
+        return CStringW(L"");
+    return FUN_14062b020(spItem->FUN_1405278a0()->m_spOption);
 }
 MS2_REPLACE(0x14062AD80, FUN_14062ad80, 215, 0x5D6DA17D);
 
@@ -1520,18 +1456,17 @@ int CItemSocketTable::Load()
 MS2_REPLACE_METHOD(0x14062CBC0, CItemSocketTable, Load, 1884, 0x1D6D1303);
 
 // @0x14062d330
-// MS2-FUNCTIONAL: exe branches 'if (guard) skip' as je+jmp (not jne); rest identical
 MS2Ptr<CItemSocketData> CItemSocketTable::Find(unsigned nItemId, int nGrade)
 {
     if (m_items.IsEmpty())
         return MS2Ptr<CItemSocketData>(0);
     MS2Ptr<CItemSocketData> spResult(0);
     ContainerPtr spContainer(0);
+    if (Unk_LockGuard guard = m_lock)
     {
-        Unk_LockGuard guard(m_lock);
-        if (guard == 0 && m_items.Lookup(nItemId, spContainer))
-            spResult = spContainer->Find(nGrade);
     }
+    else if (m_items.Lookup(nItemId, spContainer))
+        spResult = spContainer->Find(nGrade);
     return spResult;
 }
 MS2_REPLACE_METHOD(0x14062D330, CItemSocketTable, Find, 366, 0x63FC37F3);
@@ -1689,7 +1624,7 @@ FMT_VARIADIC_W(CStringW, FormatStringId, int)
 Unk_OptionFactory* FUN_140166430();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW FUN_140631830(int nStat, int nValue, CItemData* pData);
-CStringW FUN_140630ea0(int nSaType, unsigned short nValue, CItemData* pData);
+CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData);
 __int64 FUN_140632990(__int64 nValue, float fRate);
 void FUN_1406334d0(CStringW& str);
 void FUN_140892c70(CUgcItemLook* pLook);
@@ -2062,7 +1997,6 @@ int CItemStatus::FUN_14062ffb0(unsigned nType, int nWhich, int nSub)
 MS2_REPLACE_METHOD(0x14062FFB0, CItemStatus, FUN_14062ffb0, 717, 0x6B640166);
 
 // @0x140630290
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 int CItemStatus::FUN_140630290(unsigned nType, int nWhich, int nSub)
 {
     int nResult = 0;
@@ -2070,13 +2004,13 @@ int CItemStatus::FUN_140630290(unsigned nType, int nWhich, int nSub)
     {
         if (nSub == 5)
         {
-            nResult = m_spOption->FUN_1405cb440(nType);
+            nResult += m_spOption->FUN_1405cb440(nType);
         }
         else
         {
             Unk_EnchantPtr<BaseOption> spBase = m_spOption->FUN_1405cb800(nSub, nType);
             if (spBase.get() != 0)
-                nResult = spBase->FUN_140266e30();
+                nResult += spBase->FUN_140266e30();
         }
     }
     if ((nWhich == 3 || nWhich == 2) && nSub == 5)
@@ -2127,26 +2061,25 @@ bool CItemStatus::FUN_1406304b0(int nSub, int nWhich, unsigned nType)
 MS2_REPLACE_METHOD(0x1406304B0, CItemStatus, FUN_1406304b0, 289, 0xE66A0E7F);
 
 // @0x1406305e0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 CStringW CItemStatus::FUN_1406305e0(int nSub, unsigned nType, void* pData)
 {
     CStringW str;
-    Unk_EnchantPtr<BaseOption> spBase = m_spOption->FUN_1405cb800(nSub, nType);
-    if (spBase.get() != 0)
     {
-        int nValue = spBase->FUN_140266e30();
-        str = FUN_140631830(nType, nValue, reinterpret_cast<CItemData*>(pData));
+        Unk_EnchantPtr<BaseOption> spBase = m_spOption->FUN_1405cb800(nSub, nType);
+        if (spBase.get() != 0)
+        {
+            str = FUN_140631830(nType, spBase->FUN_140266e30(), reinterpret_cast<CItemData*>(pData));
+        }
     }
     return str;
 }
 MS2_REPLACE_METHOD(0x1406305E0, CItemStatus, FUN_1406305e0, 263, 0xC97769C1);
 
 // @0x1406306f0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 void CItemStatus::FUN_1406306f0(int nItemId, int nRank, int nSeed)
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
-    if (spData.get() == 0)
+    if (spData == 0)
         return;
     Unk_Random kRandom(nSeed);
     m_spOption = FUN_140166430()->FUN_1405f4ff0(spData, nRank, kRandom);
@@ -2254,7 +2187,7 @@ MS2_REPLACE(0x140630E10, FUN_140630e10, 128, 0x6BB2121D);
 
 // @0x140630ea0
 // MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
-CStringW FUN_140630ea0(int nSaType, unsigned short nValue, CItemData* pData)
+CStringW FUN_140630ea0(int nSaType, int nValue, CItemData* pData)
 {
     CStringW strResult;
     Unk_Actor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
@@ -2303,14 +2236,13 @@ CStringW FUN_140630ea0(int nSaType, unsigned short nValue, CItemData* pData)
 MS2_REPLACE(0x140630EA0, FUN_140630ea0, 1348, 0xF81FC732);
 
 // @0x1406313f0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 CStringW FUN_1406313f0(int nStat, BaseOption* pBase)
 {
     CStringW str;
-    if (!FUN_14082f250(nStat))
-        str = FormatStringId(0x48b, FUN_14082f000(nStat), FUN_1409e0900(pBase->FUN_140266e30()));
-    else
+    if (FUN_14082f250(nStat))
         str = FormatStringId(0x48b, FUN_14082f000(nStat), FUN_1409e0a90(pBase->FUN_140266e10()));
+    else
+        str = FormatStringId(0x48b, FUN_14082f000(nStat), FUN_1409e0900(pBase->FUN_140266e30()));
     return str;
 }
 MS2_REPLACE(0x1406313F0, FUN_1406313f0, 515, 0x242D2E53);
@@ -2340,20 +2272,19 @@ CStringW FUN_140631720(int nStat, int nValue, bool bPercent)
 MS2_REPLACE(0x140631720, FUN_140631720, 256, 0x7787FE96);
 
 // @0x140631830
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 CStringW FUN_140631830(int nStat, int nValue, CItemData* pData)
 {
     CStringW str;
-    if (!FUN_14081dcd0(nStat))
+    if (FUN_14081dcd0(nStat))
+    {
+        float fValue = (float)nValue / 10.0f;
+        str = StringFormat(FUN_140184750(&DAT_143ab1a40, nStat)->m_strFormat, fValue);
+    }
+    else
     {
         if (FUN_14081d9e0(nStat) != 0)
             return FUN_140630ea0(nStat, nValue, pData);
         str = StringFormat(FUN_140184750(&DAT_143ab1a40, nStat)->m_strFormat, nValue);
-    }
-    else
-    {
-        float fValue = (float)nValue / 10.0f;
-        str = StringFormat(FUN_140184750(&DAT_143ab1a40, nStat)->m_strFormat, fValue);
     }
     return str;
 }
@@ -2808,7 +2739,6 @@ int CItemTransfer::FUN_140634cc0()
 MS2_REPLACE_METHOD(0x140634CC0, CItemTransfer, FUN_140634cc0, 57, 0xF1D55D66);
 
 // @0x140634d00
-// MS2-FUNCTIONAL: stack frame differs (flag temp)
 void CItemTransfer::vfunc_1(COutputStream& out)
 {
     out.vfunc_o10_3(m_nRule);
@@ -2817,14 +2747,14 @@ void CItemTransfer::vfunc_1(COutputStream& out)
     out.vfunc_o10_3(m_nMax);
     out.vfunc_o10_1(m_b3F);
     out.vfunc_o10_1(m_b42);
-    if (m_spBinding.get() == 0 || FUN_140635100() == 0)
-    {
-        out.vfunc_o10_0(false);
-    }
-    else
+    if ((bool)m_spBinding.get() && FUN_140635100() != 0)
     {
         out.vfunc_o10_0(true);
         m_spBinding->FUN_1406346a0(out);
+    }
+    else
+    {
+        out.vfunc_o10_0(false);
     }
 }
 MS2_REPLACE_METHOD(0x140634D00, CItemTransfer, vfunc_1, 288, 0xD1BB41E7);
