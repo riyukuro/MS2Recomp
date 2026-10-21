@@ -261,12 +261,10 @@ class Unk_BdTrophy { public: int FUN_140267c10(); int FUN_140267d70(int n); };
 void FUN_1418d7af0(ASObj* pObj, void* pTrophy);
 int FUN_1418d7b90(ASObj* pRow, CBuddyManager::Ptr spBuddy, int nTab);
 int FUN_1418d8540(ASObj* pRow, Unk_BdProxyRef ref, int bNew);
-bool FUN_1418d8ac0(ASObj* pRow);
+int FUN_1418d8ac0(ASObj* pRow);
 CBuddyManager* FUN_14097a780();
 HomeBlockManager* FUN_1414a5830();
 UIBuddyEventDispatcher* FUN_140a4a7b0();
-CBuddyManager* FUN_1418d8f90();
-CBuddyManager* FUN_1418dcb70();
 
 // @0x1418d3190
 UICommunityDialog::UICommunityDialog()
@@ -288,7 +286,9 @@ UICommunityDialog::~UICommunityDialog()
 // @0x1418d3370
 int UICommunityDialog::vfunc_65()
 {
-    return UIDialog::vfunc_65() != 0;
+    if (!UIDialog::vfunc_65())
+        return 0;
+    return 1;
 }
 
 // @0x1418d33a0
@@ -439,7 +439,7 @@ static int Unk_BdSendRequest(UICommunityDialog* pDialog, const Scaleform::GFx::V
     Unk_BuddyRequest request;
     request.protocol = nProtocol;
     request.id = FUN_140718350(data.FUN_1422b8d30());
-    FUN_1418d8f90()->FUN_140ae4820(request);
+    pDialog->FUN_1418d8f90()->FUN_140ae4820(request);
     return 1;
 }
 
@@ -850,8 +850,9 @@ void UICommunityDialog::vfunc_buddy_13(__int64 nId)
 // @0x1418d5e50
 void UICommunityDialog::vfunc_buddy_14()
 {
-    if (m_190 == 4)
-        FUN_1418d6430(4);
+    if (m_190 != 4)
+        return;
+    FUN_1418d6430(4);
 }
 
 // MS2-FUNCTIONAL: UIEntityEventListener hands the actor as a by-value MS2Ptr<CProxyGameObject> (callee-destroyed, IsNull/operator-> COMDATs); the placeholder base (uientityeventlistener.h, 18 users) declares void*, so the param is reached through a cast local - retyping the shared vtable slot is a cross-unit change
@@ -914,7 +915,12 @@ void UICommunityDialog::vfunc_5(void* pActor, int n)
 bool UICommunityDialog::FUN_1418d6390(int nButton, const CMsgBoxData& data)
 {
     if (nButton == 0)
-        FUN_1418fd740(data.FUN_141a02ed0(0, 0), data.FUN_141a02ed0(1, 0), data.FUN_141a02e50(2, 0));
+    {
+        __int64 nParam = data.FUN_141a02ed0(0, 0);
+        __int64 nId = data.FUN_141a02ed0(1, 0);
+        int nType = data.FUN_141a02e50(2, 0);
+        FUN_1418fd740(nParam, nId, nType);
+    }
     return true;
 }
 
@@ -1000,8 +1006,9 @@ void UICommunityDialog::FUN_1418d6430(int nTab)
 // @0x1418d6930
 void UICommunityDialog::FUN_1418d6930(int nTab)
 {
-    if (nTab >= 0 && nTab < 5)
-        m_190 = nTab;
+    if (nTab < 0 || nTab >= 5)
+        return;
+    m_190 = nTab;
 }
 
 // @0x1418d6960
@@ -1013,19 +1020,22 @@ int UICommunityDialog::FUN_1418d6960()
 // @0x1418d6980
 void UICommunityDialog::FUN_1418d6980()
 {
-    if (FUN_140a467d0(&m_30) == 0)
-        m_30->Invoke("initData", m_190);
+    if (FUN_140a467d0(&m_30))
+        return;
+    m_30->Invoke("initData", m_190);
 }
 
 // @0x1418d69f0
 void UICommunityDialog::FUN_1418d69f0(int nTab)
 {
-    if (FUN_140a467d0(&m_30) == 0 && nTab >= 0 && nTab < 5)
-    {
-        FUN_1422dc3b0(nTab == 3 || nTab == 4);
-        m_190 = nTab;
-        FUN_1418d6430(nTab);
-    }
+    if (FUN_140a467d0(&m_30))
+        return;
+    if (nTab < 0 || nTab >= 5)
+        return;
+    bool bShow = nTab == 3 || nTab == 4;
+    FUN_1422dc3b0(bShow);
+    m_190 = nTab;
+    FUN_1418d6430(nTab);
 }
 
 // @0x1418d6a90
@@ -1114,8 +1124,9 @@ void UICommunityDialog::FUN_1418d7000(int nTab, CBuddyManager::Ptr spBuddy)
 // @0x1418d71d0
 void UICommunityDialog::FUN_1418d71d0(int nTab, __int64 nId)
 {
-    if (FUN_140a467d0(&m_30) == 0)
-        FUN_1418d7000(nTab, FUN_14097a780()->FUN_140ae4b70(nId));
+    if (FUN_140a467d0(&m_30))
+        return;
+    FUN_1418d7000(nTab, FUN_14097a780()->FUN_140ae4b70(nId));
 }
 
 // @0x1418d7240
@@ -1208,11 +1219,10 @@ void UICommunityDialog::FUN_1418d77f0(int nOnline, int nTotal)
 // @0x1418d7af0
 void FUN_1418d7af0(ASObj* pObj, void* pTrophy)
 {
-    Unk_BdTrophy* pScore = static_cast<Unk_BdTrophy*>(pTrophy);
-    pObj->FUN_1407cb9c0("total", pScore->FUN_140267c10());
-    pObj->FUN_1407cb9c0("combat", pScore->FUN_140267d70(0));
-    pObj->FUN_1407cb9c0("life", pScore->FUN_140267d70(2));
-    pObj->FUN_1407cb9c0("adventure", pScore->FUN_140267d70(1));
+    pObj->FUN_1407cb9c0("total", static_cast<Unk_BdTrophy*>(pTrophy)->FUN_140267c10());
+    pObj->FUN_1407cb9c0("combat", static_cast<Unk_BdTrophy*>(pTrophy)->FUN_140267d70(0));
+    pObj->FUN_1407cb9c0("life", static_cast<Unk_BdTrophy*>(pTrophy)->FUN_140267d70(2));
+    pObj->FUN_1407cb9c0("adventure", static_cast<Unk_BdTrophy*>(pTrophy)->FUN_140267d70(1));
 }
 
 // MS2-FUNCTIONAL: the exe keeps one set of string temporaries per member; the member order and the values are the same
@@ -1315,12 +1325,12 @@ int FUN_1418d8540(ASObj* pRow, Unk_BdProxyRef ref, int bNew)
 }
 
 // @0x1418d8ac0
-bool FUN_1418d8ac0(ASObj* pRow)
+int FUN_1418d8ac0(ASObj* pRow)
 {
-    bool bVip = FUN_14036d570(FUN_140166410(), 0x82);
-    if (bVip)
-        pRow->FUN_1407cbbe0("isVIPGM", true);
-    return bVip;
+    if (!FUN_14036d570(FUN_140166410(), 0x82))
+        return 0;
+    pRow->FUN_1407cbbe0("isVIPGM", true);
+    return 1;
 }
 
 // ---- UIBuddyEventListener / UIBuddyEventDispatcher (placeholders; bodies of this obj) ----
@@ -1543,13 +1553,13 @@ void UIBuddyEventDispatcher::vfunc_14()
 // ---- helper functions ----
 
 // @0x1418d8f90
-CBuddyManager* FUN_1418d8f90()
+CBuddyManager* UICommunityDialog::FUN_1418d8f90()
 {
     return FUN_14097a780();
 }
 
 // @0x1418dcb70
-CBuddyManager* FUN_1418dcb70()
+CBuddyManager* UICommunityQueryDialog::FUN_1418dcb70()
 {
     return FUN_14097a780();
 }
@@ -1575,7 +1585,9 @@ UICommunityQueryDialog::~UICommunityQueryDialog()
 // @0x1418da650
 int UICommunityQueryDialog::vfunc_65()
 {
-    return UIDialog::vfunc_65() != 0;
+    if (!UIDialog::vfunc_65())
+        return 0;
+    return 1;
 }
 
 // @0x1418da680

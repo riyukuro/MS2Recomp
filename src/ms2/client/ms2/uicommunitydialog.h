@@ -60,6 +60,7 @@ public:
     bool FUN_1418d6390(int nButton, const CMsgBoxData& data);   // 0x1418d6390 the home-visit box answer
     void FUN_1418d6430(int nTab);                               // build the buddy list of a tab
     void FUN_1418d6930(int nTab);                               // m_190 = nTab (0..4)
+    CBuddyManager* FUN_1418d8f90();                             // the buddy manager
     static eUIClassID GetUIClassID() { return (eUIClassID)0x4e4d; }   // COMDAT (0x141a4b220, uiminimapentity.cpp)
     int FUN_1418d6960();                                        // m_190
     void FUN_1418d6980();                                       // "initData"
@@ -113,6 +114,7 @@ public:
     int FUN_1418dc410(const CStringW& str);                     // empty / bad word check (true = rejected)
     int FUN_1418dc540(const CStringW& str);                     // add-buddy name check (true = rejected)
     int FUN_1418dc7f0(const CStringW& str);                     // add-ban name check (true = rejected)
+    CBuddyManager* FUN_1418dcb70();                             // the buddy manager
 private:
     MS2_LAYOUT_FRIEND;
     int m_180;                                                  // +0x180 mode (1 add buddy, 2 add ban, 3 ..., 4 edit memo, 5 home block name)
