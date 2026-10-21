@@ -186,7 +186,7 @@ inline Scaleform::GFx::Value Unk_RmScript::FUN_140f5fe90(const char* szMethod, C
 {
     ASArgList args;
     args.FUN_1409b2800(3);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), strText.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(0), (const wchar_t*)strText);
     FUN_1422bcd10(args.FUN_1409b1f70(1), nCount);
     FUN_1422bcce0(args.FUN_1409b1f70(2), bLock);
     return FUN_1422bb8f0(szMethod, args);
@@ -197,7 +197,7 @@ inline Scaleform::GFx::Value Unk_RmScript::FUN_140f5ff80(const char* szMethod, C
 {
     ASArgList args;
     args.FUN_1409b2800(2);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), strText.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(0), (const wchar_t*)strText);
     FUN_1422bcce0(args.FUN_1409b1f70(1), bFinal);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -377,7 +377,7 @@ int UIItemRemakeScrollDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             FUN_140f5acf0(data);
         return 1;
     }
-    if (_stricmp("GetEnableLockOption", szMethod) == 0)
+    else if (_stricmp("GetEnableLockOption", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
@@ -432,19 +432,16 @@ int UIItemRemakeScrollDialog::vfunc_71()
 void UIItemRemakeScrollDialog::FUN_140f59230(CInPacket& packet)
 {
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
-    unsigned char nType = packet.vfunc_o8_1();
+    int nType = packet.vfunc_o8_1();
     if (nType == 0)
     {
-        if (FUN_141924630() == 0)
-        {
-            __int64 nUid = packet.vfunc_o8_4();
-            MS2Ptr<CItem> sp = DAT_143ab2a90.FUN_140a5d680(nUid);
-            if (!sp.IsNull())
-            {
-                m_nScrollUid = nUid;
-                FUN_1403ed2b0()->FUN_141adc530(vfunc_48());
-            }
-        }
+        if (FUN_141924630() != 0)
+            return;
+        __int64 nUid = packet.vfunc_o8_4();
+        if (DAT_143ab2a90.FUN_140a5d680(nUid) == 0)
+            return;
+        m_nScrollUid = nUid;
+        FUN_1403ed2b0()->FUN_141adc530(vfunc_48());
     }
     else if (nType == 2)
     {
@@ -608,30 +605,29 @@ void UIItemRemakeScrollDialog::FUN_140f5a7e0(CInPacket& packet)
     apply.m_item = m_spOption;
     apply.vfunc_2(packet);
     MS2Ptr<CItem> spFound = DAT_143ab2a90.FUN_140a5d680(apply.m_uid);
-    if (!spFound.IsNull())
+    if (spFound == 0)
     {
-        FUN_140f5d080(3);
-        FUN_140f5c700();
+        CStringW strMessage = FUN_14028b8e0(L"s_itemremake_scroll_error_have_not_item");
+        FUN_140d73aa0(strMessage, 0, 0, CStringW(L""));
+        return;
     }
-    else
-        RM_NOT_FOUND(L"s_itemremake_scroll_error_have_not_item");
+    FUN_140f5d080(3);
+    FUN_140f5c700();
 }
 
 // @0x140f5a9c0
 void UIItemRemakeScrollDialog::FUN_140f5a9c0(CInPacket& packet)
 {
-    if (!m_spOption.IsNull())
-    {
-        CCItemRemakeOptionPacket::ApplyOptionClient apply;
-        apply.m_item = m_spOption;
-        apply.vfunc_2(packet);
-        if (apply.m_uid == m_spOption->FUN_140526a50())
-        {
-            FUN_140f5d020(MS2Ptr<CItem>(m_spOption));
-            FUN_140f5d080(4);
-            FUN_140f5cba0(MS2Ptr<CItem>(m_spOption));
-        }
-    }
+    if (m_spOption == 0)
+        return;
+    CCItemRemakeOptionPacket::ApplyOptionClient apply;
+    apply.m_item = m_spOption;
+    apply.vfunc_2(packet);
+    if (apply.m_uid != m_spOption->FUN_140526a50())
+        return;
+    FUN_140f5d020(MS2Ptr<CItem>(m_spOption));
+    FUN_140f5d080(4);
+    FUN_140f5cba0(MS2Ptr<CItem>(m_spOption));
 }
 
 // @0x140f5ab10
@@ -988,27 +984,28 @@ bool UIItemRemakeScrollDialog::FUN_140f5d140(MS2Ptr<CItem> spItem)
     {
         FUN_140d428a0(pSlot, spItem);
         pSlot->vfunc_10();
+        return true;
     }
-    return pSlot != 0;
+    return false;
 }
 
 // @0x140f5d220
 bool UIItemRemakeScrollDialog::FUN_140f5d220(MS2Ptr<CItem> spItem)
 {
     ItemScrollSlot* pSlot = FUN_140f5d0c0(CString(m_strIngredientSlot));
-    if (pSlot == 0)
+    if (pSlot != 0)
     {
-        if (spItem.IsNull())
-        {
-            m_spIngredient = 0;
-            m_nIngredientUid = 0;
-            m_30->Invoke("selectItemIngredient");
-        }
-        return false;
+        FUN_140d428a0(pSlot, spItem);
+        pSlot->vfunc_10();
+        return true;
     }
-    FUN_140d428a0(pSlot, spItem);
-    pSlot->vfunc_10();
-    return true;
+    if (spItem == 0)
+    {
+        m_spIngredient = 0;
+        m_nIngredientUid = 0;
+        m_30->Invoke("selectItemIngredient");
+    }
+    return false;
 }
 
 // @0x140f5d380
@@ -1154,24 +1151,26 @@ bool UIItemRemakeScrollDialog::FUN_140f5e2a0(int nError)
     switch (nError)
     {
     case 1: strMessage = L"s_itemremake_scroll_error_invalid_target"; break;
+    case 10: strMessage = L"s_itemremake_scroll_error_invalid_scroll"; break;
     case 2: strMessage = L"s_itemremake_scroll_error_invalid_target_data"; break;
     case 3: strMessage = L"s_itemremake_scroll_error_invalid_target_stat"; break;
     case 4: strMessage = L"s_itemremake_scroll_error_impossible_slot"; break;
+    case 8: strMessage = L"s_itemremake_scroll_error_impossible_item"; break;
     case 5: strMessage = L"s_itemremake_scroll_error_impossible_rank"; break;
     case 6: strMessage = L"s_itemremake_scroll_error_impossible_level"; break;
     case 7: strMessage = L"s_itemremake_scroll_error_impossible_property"; break;
-    case 8: strMessage = L"s_itemremake_scroll_error_impossible_item"; break;
-    case 10: strMessage = L"s_itemremake_scroll_error_invalid_scroll"; break;
     case 0xb: strMessage = L"s_itemremake_scroll_error_invalid_scroll_data"; break;
     case 0x10: strMessage = L"s_itemremake_error_server_fail_lack_lock_consume_item"; break;
     case 0x11: strMessage = L"s_content_shutdown_notice"; break;
     }
-    if (strMessage.IsEmpty())
-        return false;
-    if (m_nPet != 0)
-        strMessage.Append(L"_pet");
-    FUN_1412752d0(strMessage, 1);
-    return true;
+    if (!strMessage.IsEmpty())
+    {
+        if (m_nPet != 0)
+            strMessage.Append(L"_pet");
+        FUN_1412752d0(strMessage, 1);
+        return true;
+    }
+    return false;
 }
 
 // @0x140f5e4c0
@@ -1335,7 +1334,8 @@ bool UIItemRemakeScrollDialog::FUN_140f5f2a0(int nButton, const CMsgBoxData& box
 // @0x140f5f310
 void UIItemRemakeScrollDialog::FUN_140f5f310(ATL::CAtlArray<int>& aLocked)
 {
-    ASArray arr(m_30->Invoke("getLockOptionIndex"), 2);
+    Scaleform::GFx::Value v = m_30->Invoke("getLockOptionIndex");
+    ASArray arr(v, 2);
     int nValue = 0;
     for (unsigned i = 0; i < arr.FUN_1422bc5d0(); i++)
     {
@@ -1347,14 +1347,13 @@ void UIItemRemakeScrollDialog::FUN_140f5f310(ATL::CAtlArray<int>& aLocked)
 // @0x140f5f3e0
 CStringW FUN_140f5f3e0(int nValue)
 {
-    if (nValue == 0)
-        return CStringW(L"value_x");
-    else if (nValue == 1)
-        return CStringW(L"value_o");
-    else if (nValue == 2)
-        return CStringW(L"value_high");
-    else if (nValue == 3)
-        return CStringW(L"value_max");
+    switch (nValue)
+    {
+    case 0: return CStringW(L"value_x");
+    case 1: return CStringW(L"value_o");
+    case 2: return CStringW(L"value_high");
+    case 3: return CStringW(L"value_max");
+    }
     return CStringW(L"");
 }
 
