@@ -7,7 +7,6 @@
 // MS2-RANGE: 0x1400bb810-0x1400bb9a0 .text$di
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$?0V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H$0A@@?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@QEAA@$$QEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@$$QEAH@Z 0x1406cf6c0 ; unique
-// MS2-PIN: ??0?$MS2Ptr@VCNpcData@@@@QEAA@$$QEAV0@@Z 0x1406cf850 ; unique
 // MS2-PIN: ??$?8HH@std@@YA_NAEBU?$pair@HH@0@0@Z 0x1406cf930 ; unique
 // MS2-PIN: ??$IsSameArray@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@@YA_NAEBV?$CAtlArray@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@V?$CElementTraits@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@ATL@@@ATL@@0@Z 0x1406cfc90 ; unique
 // MS2-PIN: ??$_Kfn@$$CBK_N@?$_Tmap_traits@K_NU?$less@K@std@@V?$allocator@U?$pair@$$CBK_N@std@@@2@$0A@@std@@SAAEBKAEBU?$pair@$$CBK_N@1@@Z 0x1406d3860 ; unique
@@ -58,7 +57,6 @@
 // MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBIV?$MS2Ptr@VCCacheData@@@@@std@@@std@@SAPEAU?$pair@$$CBIV?$MS2Ptr@VCCacheData@@@@@2@AEAU32@@Z 0x1406dbd30 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCCacheData@@@@AEAAXPEAX@Z 0x1406db0c0 ; merge-bind
-// MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCNpcData@@@@AEAAXPEAX@Z 0x1406db200 ; merge-bind
 // MS2-PIN: ??1NodeCollision@CNpcData@@UEAA@XZ 0x1406d5820
 // MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@I_NU?$less@I@std@@V?$allocator@U?$pair@$$CBI_N@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBI_N@std@@PEAX@2@XZ 0x1406da210 ; manual
 // MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@I_NU?$less@I@std@@V?$allocator@U?$pair@$$CBI_N@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBI_N@std@@PEAX@2@@Z 0x1406daaf0 ; manual
@@ -66,10 +64,12 @@
 // MS2-PIN: ??1CRegionSpawnProb@@UEAA@XZ 0x1406d5620
 // MS2-FUNCTIONAL ??1CPair@?$CRBTree@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$Unk_BmBoxPtr@V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$Unk_BmBoxPtr@V?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@@@@2@@ATL@@IEAA@XZ: bytes match; the exe linker ICF-folded its Unk_BmBoxPtr<CAtlArray<unsigned>> dtor callee into the shared MS2Ptr dtor copy 0x1406d5390, while that name binds to the identical copy 0x1401c5790 (blackmarket); a compiler-generated COMDAT cannot choose its callee copy
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\npcdata.cpp"
+#define MS2_PTR_MOVE_CONVERT
 #include "ms2/placeholder/ms2stdafx.h"
 #include "npcdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/tixmldocument.h"
+#include "ms2/client/ms2/npcdatacli.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -970,7 +970,7 @@ const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);
 class Unk_NpcWeightMgr { public: int FUN_1406762d0(int nMain, int nSub, int nRare, int nDiff); };
 Unk_NpcWeightMgr* FUN_1401c0db0();
 
-class Unk_NpcTableCli { public: MS2Ptr<CNpcData> FUN_140a7cab0(int nNpcId); };
+class Unk_NpcTableCli { public: MS2Ptr<NpcDataCli> FUN_140a7cab0(int nNpcId); };
 class Unk_SingletonObj;
 extern Unk_SingletonObj* DAT_143ab06f0;                         // the exe's NpcDataTableCli singleton (0x1406d6e90 returns it)
 
@@ -991,7 +991,7 @@ CNpcRegionSpawnData::CNpcRegionSpawnData()
 // MS2-FUNCTIONAL: the exe stores m_pSpawn with a different Unk_BmPtr assignment sequence
 CRegionSpawnProb::CRegionSpawnProb()
 {
-    m_pSpawn = 0;
+    m_pSpawn.AssignRaw(0);
     m_fRate = 0.0f;
     m_fWeight = 0.0f;
 }
@@ -1011,7 +1011,6 @@ CRegionSpawnResult::~CRegionSpawnResult()
 }
 
 // @0x1406c8730
-// MS2-FUNCTIONAL: the exe frame is 0x10 larger (one more MS2Ptr temp on the return paths)
 MS2Ptr<CRegionSpawnProb> CRegionSpawnResult::Pick() const
 {
     if (m_aProb.IsEmpty())
@@ -1020,7 +1019,7 @@ MS2Ptr<CRegionSpawnProb> CRegionSpawnResult::Pick() const
         return m_aProb[0];
     float fRoll = FUN_14028d2e0();
     float fSum = 0.0f;
-    for (int i = 0; i < (int)m_aProb.GetCount(); i++)
+    for (unsigned int i = 0; i < m_aProb.GetCount(); i++)
     {
         if (fSum <= fRoll && fRoll <= fSum + m_aProb[i]->m_fRate)
             return m_aProb[i];
@@ -1030,14 +1029,12 @@ MS2Ptr<CRegionSpawnProb> CRegionSpawnResult::Pick() const
 }
 
 // @0x1406cd330
-// MS2-FUNCTIONAL: the exe moves the lookup result through a second MS2Ptr temp (frame 0x10 larger)
 Unk_NpcTableCli* FUN_1406d6e90();
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId)
 {
     if (nNpcId == 0)
         return MS2Ptr<CNpcData>(0);
-    MS2Ptr<CNpcData> pData = FUN_1406d6e90()->FUN_140a7cab0(nNpcId);
-    return pData;
+    return FUN_1406d6e90()->FUN_140a7cab0(nNpcId);
 }
 
 // @0x1406d6e90
@@ -1048,24 +1045,40 @@ Unk_NpcTableCli* FUN_1406d6e90()
 MS2_REPLACE(0x1406D6E90, FUN_1406d6e90, 8, 0x5738B5AB);
 
 // @0x1406cd420
-// MS2-FUNCTIONAL: string dictionary lookups: the exe keeps the CStringW temps in a different frame order
 CStringW FUN_1406cd420(int nNpcType)
 {
     if (nNpcType == 2)
+    {
         return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_bank"));
-    if (nNpcType >= 11 && nNpcType <= 29)
+    }
+    else if (nNpcType > 10 && nNpcType < 30)
+    {
         return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_shop"));
-    if (nNpcType >= 31 && nNpcType <= 39)
+    }
+    else if (nNpcType > 30 && nNpcType < 40)
+    {
         return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_beautyshop"));
-    if (nNpcType == 0x50)
+    }
+    else if (nNpcType == 0x50)
+    {
         return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_job"));
-    if (nNpcType == 0x51)
+    }
+    else if (nNpcType == 0x51)
+    {
         return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_doctor"));
-    if (nNpcType == 0x52)
+    }
+    else if (nNpcType == 0x52)
+    {
         return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_transfer"));
-    if (nNpcType == 0x57)
+    }
+    else if (nNpcType == 0x57)
+    {
         return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_enchant"));
-    return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_normal"));
+    }
+    else
+    {
+        return FUN_140298ea0(CStringW(L"s_gamedictionary_npc_type_normal"));
+    }
 }
 
 // @0x1406cd750
@@ -1180,25 +1193,24 @@ Unk_BmPtr<CNpcRegionSpawnData> CNpcDataTable::GetRegionSpawnData(int nNpcId)
 MS2_REPLACE_METHOD(0x1406CE1D0, CNpcDataTable, GetRegionSpawnData, 157, 0x462B29AE);
 
 // @0x1406ce280
-// MS2-FUNCTIONAL: MS2Ptr temp placement; the ICF copies of the CRBMap/Unk_BmBoxPtr glue resolve to other VAs
 void CNpcDataTable::IndexRegionSpawn(Unk_BmPtr<CNpcRegionSpawnData> pData)
 {
-    if (!(pData == 0))
+    if (pData == 0)
+        return;
+    Unk_CriticalSectionLock lock(m_lock, 1);
+    for (int nGroup = 0; nGroup < 2; nGroup++)
     {
-        Unk_CriticalSectionLock lock(m_lock, 1);
-        for (int nGroup = 0; nGroup < 2; nGroup++)
+        for (unsigned int i = 0; i < pData->m_aTags[nGroup].GetCount(); i++)
         {
-            for (int i = 0; i < (int)pData->m_aTags[nGroup].GetCount(); i++)
+            CStringW strTag = pData->m_aTags[nGroup][i];
+            Unk_BmBoxPtr<ATL::CAtlArray<unsigned> > pIds;
+            if (!m_mapTag[nGroup].Lookup(strTag, pIds))
             {
-                CStringW strTag = pData->m_aTags[nGroup][i];
-                Unk_BmBoxPtr<ATL::CAtlArray<unsigned> > pIds;
-                if (!m_mapTag[nGroup].Lookup(strTag, pIds))
-                {
-                    pIds = Unk_BmNewTag(0);
-                    m_mapTag[nGroup].SetAt(strTag, pIds);
-                }
-                pIds->Add(pData->m_nNpcId);
+                Unk_BmBoxPtr<ATL::CAtlArray<unsigned> > pNew(Unk_BmNewTag(0));
+                m_mapTag[nGroup].SetAt(strTag, pNew);
+                pIds = pNew;
             }
+            pIds->Add(pData->m_nNpcId);
         }
     }
 }
@@ -1209,12 +1221,12 @@ void CNpcDataTable::LoadNpcCache()
 {
     std::vector<CString> aFiles;
     FUN_140166420();
-    FUN_1403992a0(CString(".xml"), CString("./Data/Xml/NpcData/"), aFiles, CString(""), false);
-    for (std::vector<CString>::iterator it = aFiles.begin(); it != aFiles.end(); ++it)
+    FUN_1403992a0(".xml", "./Data/Xml/NpcData/", aFiles, "", false);
+    for (CString& strFile : aFiles)
     {
-        int nNpcId = GetIdFromPath(*it);
+        int nNpcId = GetIdFromPath(strFile);
         m_mapLoaded[nNpcId] = false;
-        CCacheData* pCache = new CCacheData(CString(*it));
+        CCacheData* pCache = new CCacheData(CString(strFile));
         m_mapCache[nNpcId].AssignRaw(pCache);
     }
 }
