@@ -8209,3 +8209,9 @@ compress2	142724100	func
 ?GetEventClass@TransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	14246a0c0	func
 ?GetEventName@NetStatusEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEBDXZ	14246a0e0	func
 ?GetEventName@TimerEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEBDXZ	14246a0f0	func
+?GetDuration@SoundObject@AS3@GFx@Scaleform@@QEAAMXZ	142565360	func
+?GetPosition@SoundObject@AS3@GFx@Scaleform@@QEAAMXZ	1425653a0	func
+?LoadFile@SoundObject@AS3@GFx@Scaleform@@QEAAXAEBVString@4@_N@Z	142565470	func
+?SetPan@SoundObject@AS3@GFx@Scaleform@@QEAAXH@Z	142565940	func
+?SetVolume@SoundObject@AS3@GFx@Scaleform@@QEAAXH@Z	142565980	func
+?GetUrl@URLRequest@fl_net@Instances@AS3@GFx@Scaleform@@QEBAAEBVASString@56@XZ	142499480	func
