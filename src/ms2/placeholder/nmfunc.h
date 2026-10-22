@@ -455,6 +455,7 @@ MS2_CHECK_SIZE(CNMFilePath, 0x118);
 class CNMFindUserInfo : public CNMSerializable
 {
 public:
+    CNMFindUserInfo();                                          // 0x141574480
     CNMFindUserInfo(const CNMFindUserInfo& r) noexcept;         // 0x1415e9570
     CNMFindUserInfo(CNMFindUserInfo&& r) noexcept;              // 0x1415e9440
     virtual ~CNMFindUserInfo() = default;                                 // 0x1415ed540

@@ -108,6 +108,13 @@ class CNMCustomNotifyData : public CNMSerializable
 public:
     virtual ~CNMCustomNotifyData() = default;
 
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
     int m_10; // +0x10
     int m_14; // +0x14
     long long m_18; // +0x18
@@ -1876,7 +1883,15 @@ MS2_CHECK_SIZE(CNMGetDomainFunc, 0x430);
 class CNMGetFindUserResultFunc : public CNMFunc
 {
 public:
+    CNMGetFindUserResultFunc();
+    CNMGetFindUserResultFunc(int nResult);
     virtual ~CNMGetFindUserResultFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_30; // +0x30
     int m_34; // +0x34
