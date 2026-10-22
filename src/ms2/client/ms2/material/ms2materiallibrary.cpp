@@ -547,7 +547,8 @@ NiShaderDesc* MS2MaterialLibrary::GetNextMaterialDesc()
 
 //--------------------------------------------------------------------------------------------------
 // @0x142769e40
-void MS2MaterialLibrary::_SDMInit()
+// MS2MaterialSDM::Init calls this entry point to create the MS2MaterialLibrary singleton.
+void MS2MaterialLibrary::InitFromSDM()
 {
     Create();
 }

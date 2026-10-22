@@ -16,7 +16,7 @@ EE_IMPLEMENT_SDM_CONSTRUCTOR(MS2Material, "NiMesh NiFloodgate NiMain");
 void MS2MaterialSDM::Init()
 {
     EE_IMPLEMENT_SDM_INIT_CHECK();
-    MS2MaterialLibrary::_SDMInit();
+    MS2MaterialLibrary::InitFromSDM();
 }
 
 // @0x142756a80
@@ -26,6 +26,5 @@ void MS2MaterialSDM::Shutdown()
     MS2MaterialLibrary::_SDMShutdown();
 }
 
-// MS2: no MS2MaterialSDM object is defined in this TU (the exe's initializers 0x14014d250 and 0x140106fb0 call the ctor out
-// of line, so they belong to other TUs that include the SDM header; unit_140105110 currently names the second one
-// efdPhysXSDMObject).
+// MS2: no MS2MaterialSDM object is defined in this TU. The exe's initializer at 0x140106fb0 calls this constructor and is
+// the MS2MaterialSDMObject in unit_140105110; 0x14014d250 is another out-of-line initializer.

@@ -24,7 +24,7 @@ public:
     static MS2MaterialLibrary* Create();
     NiMaterial* CreateMaterial(const NiFixedString& kName);
 
-    static void _SDMInit();
+    static void InitFromSDM();
     static void _SDMShutdown();
 
     static void AddTextureAttribute(NiShaderDesc* pkDesc, const char* pcName, const char* pcDefault,

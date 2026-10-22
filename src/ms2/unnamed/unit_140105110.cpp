@@ -11,7 +11,7 @@
 // MS2-PIN: ??__Es_wsaStartup@@YAXXZ 0x140105170
 // MS2-PIN: ??__EInitializeCAtlStringMgr@ATLImplementationDetails@ATL@@YAXXZ 0x140106f10
 // MS2-PIN: ??__EInitializeCImage@ATLImplementationDetails@ATL@@YAXXZ 0x140106f30
-// MS2-PIN: ??__EefdPhysXSDMObject@@YAXXZ 0x140106fb0
+// MS2-PIN: ??__EMS2MaterialSDMObject@@YAXXZ 0x140106fb0
 // MS2-PIN: ??__ENSFParserLibSDMObject@@YAXXZ 0x140106fd0
 // MS2-PIN: ??__ENiAnimationSDMObject@@YAXXZ 0x140106ff0
 // MS2-PIN: ??__ENiBinaryShaderLibSDMObject@@YAXXZ 0x140107070
@@ -219,7 +219,6 @@ static CString s_str_empty2("");
 #undef min
 #undef max
 #include <NiMain.h>
-#include <efdPhysX/PhysXSDKManager.h>
 #include <NSFParserLib.h>
 #include <NiAnimation.h>
 #include <NiBinaryShaderLib.h>
@@ -229,18 +228,9 @@ static CString s_str_empty2("");
 #include <NiParticle.h>
 #include <NiPhysX.h>
 #include <NiTerrainLib.h>
+#include "ms2/client/ms2/material/ms2materialsdm.h"
 
-// efdPhysXSDM's constructor (0x142756a00, a Gamebryo PhysX-lib function in the exe's runtime range) is not part of the
-// engine libraries this build links, so it is defined here (EE_IMPLEMENT_SDM_CONSTRUCTOR without the ms_initialized
-// definition, which the exe's Init already owns).
-efdPhysX::efdPhysXSDM::efdPhysXSDM()
-{
-    static efd::SInt32 counter = 0;
-    if (counter++ == 0)
-        efd::StaticDataManager::AddLibrary("efdPhysX", efdPhysXSDM::Init, efdPhysXSDM::Shutdown, NULL, NULL, "");
-}
-
-static efdPhysX::efdPhysXSDM efdPhysXSDMObject;
+static MS2MaterialSDM MS2MaterialSDMObject;
 static NSFParserLibSDM NSFParserLibSDMObject;
 static NiAnimationSDM NiAnimationSDMObject;
 static int NiBezFloatKeyregisterloaderreturn = NiBezFloatKey::RegisterLoader();

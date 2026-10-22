@@ -31,8 +31,8 @@
 // The vertex/geometry/pixel program versions MS2 registers its materials with.
 #define MS2_MATERIAL_PROGRAM_VERSION 0x5d
 
-// "TransformSkinnedPosition60" (the 60-bone skinning fragment of MS2MaterialNodeLibrary); an initialized .data pointer
-// of another unit.
+// Name of the 60-bone skinning fragment registered by MS2MaterialNodeLibrary. The executable exposes its name pointer
+// as g_pcTransformSkinnedPosition60 (0x143a4a630).
 extern const char* g_pcTransformSkinnedPosition60;
 
 //--------------------------------------------------------------------------------------------------
