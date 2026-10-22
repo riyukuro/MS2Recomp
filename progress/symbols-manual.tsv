@@ -8379,3 +8379,4 @@ compress2	142724100	func
 ?GetMatrixPool@TreeCacheNode@Render@Scaleform@@QEBAAEAVMatrixPool@MatrixPoolImpl@23@XZ	1426815d0	func
 ?Compare@DrawableImage@Render@Scaleform@@QEAAXPEAVImageBase@23@0@Z	1425eb390	func
 ?CopyPixels@DrawableImage@Render@Scaleform@@QEAAXPEAVImageBase@23@AEBV?$Rect@J@23@AEBV?$Point@J@23@0PEBV623@_N@Z	1425eb700	func
+?GetColorBoundsRect@DrawableImage@Render@Scaleform@@QEAA?AV?$Rect@J@23@KK_N@Z	1425ecb50	func
