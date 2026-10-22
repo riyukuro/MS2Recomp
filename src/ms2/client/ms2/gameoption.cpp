@@ -384,7 +384,6 @@ CString CGameOptionBattle::vfunc_1()
     return CString("GameOptionBattle");
 }
 
-// MS2-FUNCTIONAL: the exe returns the raw memcmp int from a bool-declared slot (no setne)
 // @0x141248240
 int CGameOptionBattle::vfunc_14()
 {
@@ -455,12 +454,12 @@ void CGameOptionCamera::vfunc_7()
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_enableBgTransparency"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_state.m_b00 = sp->FUN_1422ce0e0() != 0;
+            m_state.m_b00 = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_enableVibrateEffect"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_state.m_b01 = sp->FUN_1422ce0e0() != 0;
+            m_state.m_b01 = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoSlider> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a58110(CString("m_cameraLooseStep"), -1);
@@ -509,27 +508,31 @@ void CGameOptionCamera::vfunc_10()
     CBaseOption::vfunc_10();
     FUN_14125b6b0(TSingleton<CGameOption>::GetInstance()->FUN_140af7de0(), &m_state);
     int nApply = 1;
-    if (static_cast<CFieldDataCli*>(FUN_1403ed2d0()->FUN_141bd30a0()) != 0)
+    CFieldDataCli* pField = FUN_1403ed2d0()->FUN_141bd30a0();
+    if (pField != 0)
         nApply = FUN_1403ed2d0()->FUN_141bd30a0()->m_nApplyCameraOption;
     if (nApply != 0)
     {
         float fScale = FUN_1403ed2d0()->FUN_141bcfc50();
         TSingleton<CameraMgr>::GetInstance()->FUN_140ad4ff0(fScale);
         float fStep = (float)m_state.m_n04 / 100.0f;
-        float f1 = FUN_1401d3200()->m_1a80.FUN_140298f40();
-        float f2 = FUN_1401d3200()->m_1ad8.FUN_140298f40();
-        float f3 = FUN_1401d3200()->m_1b30.FUN_140298f40();
-        TSingleton<CameraMgr>::GetInstance()->FUN_140aeb880(f1 * fStep, f2 * fStep, f3 * fStep);
+        float f1 = FUN_1401d3200()->m_1a80.FUN_140298f40() * fStep;
+        float f2 = FUN_1401d3200()->m_1ad8.FUN_140298f40() * fStep;
+        float f3 = FUN_1401d3200()->m_1b30.FUN_140298f40() * fStep;
+        TSingleton<CameraMgr>::GetInstance()->FUN_140aeb880(f1, f2, f3);
         CCameraMode* pMode = TSingleton<CameraMgr>::GetInstance()->FUN_140af2520();
         if (pMode != 0)
         {
             if (pMode->vfunc_1() == 0x10)
-                static_cast<CLocalTargetCameraMode*>(pMode)->FUN_140d4fa10(fScale);
+            {
+                CLocalTargetCameraMode* pLocal = static_cast<CLocalTargetCameraMode*>(pMode);
+                pLocal->FUN_140d4fa10(fScale);
+            }
             CCameraMode* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140af24f0();
             if (pTarget != 0)
             {
                 pTarget->vfunc_11(fScale);
-                pTarget->vfunc_29(f1 * fStep, f2 * fStep, f3 * fStep);
+                pTarget->vfunc_29(f1, f2, f3);
             }
         }
     }
@@ -551,7 +554,6 @@ CString CGameOptionCamera::vfunc_1()
     return CString("GameOptionCamera");
 }
 
-// MS2-FUNCTIONAL: the exe returns the raw memcmp int from a bool-declared slot (no setne)
 // @0x141249270
 int CGameOptionCamera::vfunc_14()
 {
@@ -676,72 +678,72 @@ void CGameOptionCommunity::vfunc_7()
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayMyChatBalloon"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateA.m_b[0] = sp->FUN_1422ce0e0() != 0;
+            m_stateA.m_b[0] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayOtherChatBalloon"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateA.m_b[1] = sp->FUN_1422ce0e0() != 0;
+            m_stateA.m_b[1] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableSingleRiding"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateA.m_b[2] = sp->FUN_1422ce0e0() != 0;
+            m_stateA.m_b[2] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayChatComfirmSuper"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateB.m_b[0] = sp->FUN_1422ce0e0() != 0;
+            m_stateB.m_b[0] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayChatComfirmWorld"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateB.m_b[1] = sp->FUN_1422ce0e0() != 0;
+            m_stateB.m_b[1] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_displayChatComfirmChannel"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateB.m_b[2] = sp->FUN_1422ce0e0() != 0;
+            m_stateB.m_b[2] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disablePartyRequest"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateB.m_b[3] = sp->FUN_1422ce0e0() != 0;
+            m_stateB.m_b[3] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableBuddyRequest"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateB.m_b[4] = sp->FUN_1422ce0e0() != 0;
+            m_stateB.m_b[4] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableGuildRequest"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateB.m_b[5] = sp->FUN_1422ce0e0() != 0;
+            m_stateB.m_b[5] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableGroupRequest"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateB.m_b[6] = sp->FUN_1422ce0e0() != 0;
+            m_stateB.m_b[6] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableWhisperNotify"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateB.m_b[7] = sp->FUN_1422ce0e0() != 0;
+            m_stateB.m_b[7] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableTradeRequest"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateB.m_b[8] = sp->FUN_1422ce0e0() != 0;
+            m_stateB.m_b[8] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableHomeRequest"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateB.m_b[9] = sp->FUN_1422ce0e0() != 0;
+            m_stateB.m_b[9] = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_disableCoupleEmotionRequest"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_stateB.m_b[10] = sp->FUN_1422ce0e0() != 0;
+            m_stateB.m_b[10] = sp->FUN_1422ce0e0() ? true : false;
     }
 }
 
@@ -749,11 +751,11 @@ void CGameOptionCommunity::vfunc_7()
 void CGameOptionCommunity::vfunc_10()
 {
     CBaseOption::vfunc_10();
-    if (TSingleton<CGameOption>::GetInstance()->FUN_14124ab20()->m_b[2] != m_stateA.m_b[2])
+    if (TSingleton<CGameOption>::GetInstance()->FUN_14124ab20()->m_bDisableSingleRiding != m_stateA.m_bDisableSingleRiding)
     {
         MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPlayer != 0)
-            pPlayer->FUN_14152dff0(m_stateA.m_b[2]);
+            pPlayer->FUN_14152dff0(m_stateA.m_bDisableSingleRiding);
     }
     FUN_14125d2a0(TSingleton<CGameOption>::GetInstance()->FUN_14124ab20(), &m_stateA);
     FUN_14125d710(TSingleton<CGameOption>::GetInstance()->FUN_140ae6540(), &m_stateB);
@@ -1002,10 +1004,10 @@ void FUN_14125d8c0(Unk_GraphicState* p);
 int FUN_14125d9b0(Unk_GraphicState* p, TiXmlDocument* pDoc, int n);
 void FUN_14125dff0(Unk_GraphicState* pDst, const Unk_GraphicState* pSrc);
 void FUN_14125e1f0(Unk_GraphicState* p, int nQuality, int n);
-void FUN_14125e300(Unk_GraphicState* p, bool b);
-void FUN_14125e3b0(Unk_GraphicState* p, bool b);
+void FUN_14125e300(Unk_GraphicState* p, int b);
+void FUN_14125e3b0(Unk_GraphicState* p, int b);
 void FUN_14125e4b0(Unk_GraphicState* p, int n);
-void FUN_14125e5b0(Unk_GraphicState* p, bool b);
+void FUN_14125e5b0(Unk_GraphicState* p, int b);
 bool FUN_14125e7e0(Unk_GraphicState* p, int nFormat, int nWidth, int nHeight);
 void FUN_14125e910(Unk_GraphicState* p, int nScreenMode, int nResIdx);
 void FUN_14125ec20(Unk_GraphicState2* p);
@@ -1055,8 +1057,10 @@ void CGameOptionGraphicDefault::vfunc_4(int n)
 // @0x14124ac90
 int CGameOptionGraphicDefault::vfunc_5(const char* pszName, void* pArg, int nArg)
 {
-    if (_stricmp(pszName, "onDisplayQuality") == 0 && m_n74 != 0)
+    if (_stricmp(pszName, "onDisplayQuality") == 0)
     {
+        if (m_n74 == 0)
+            return 0;
         ASData data;
         if (data.FUN_1422b9620((const Scaleform::GFx::Value*)pArg, nArg))
         {
@@ -1070,18 +1074,12 @@ int CGameOptionGraphicDefault::vfunc_5(const char* pszName, void* pArg, int nArg
                 MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
                 if (static_cast<Unk_GoCombo*>(sp) != 0)
                 {
-                    if (nLevel < 3)
-                    {
-                        if (nLevel < 2)
-                        {
-                            if (nLevel >= 0)
-                                sp->FUN_1422df690(0);
-                        }
-                        else
-                            sp->FUN_1422df690(1);
-                    }
-                    else
+                    if (nLevel >= 3)
                         sp->FUN_1422df690(2);
+                    else if (nLevel >= 2)
+                        sp->FUN_1422df690(1);
+                    else if (nLevel >= 0)
+                        sp->FUN_1422df690(0);
                 }
             }
             {
@@ -1092,8 +1090,7 @@ int CGameOptionGraphicDefault::vfunc_5(const char* pszName, void* pArg, int nArg
                     sp->FUN_1422ce5f0((float)(std::max)(nLevel, nMin));
                 }
             }
-            int nBenchmark = TSingleton<CGameOption>::GetInstance()->FUN_1412438f0();
-            if (nBenchmark < nLevel && nLevel != m_state.m_nQuality && FUN_14151f6e0() != 0)
+            if (nLevel > TSingleton<CGameOption>::GetInstance()->FUN_1412438f0() && nLevel != m_state.m_nQuality && FUN_14151f6e0() != 0)
                 FUN_140d73bc0(0x84d, 0, 0, CStringW(L""));
         }
     }
@@ -1251,7 +1248,7 @@ void CGameOptionGraphicDefault::vfunc_7()
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showFrameRate"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_state.m_bShowFrameRate = sp->FUN_1422ce0e0() != 0;
+            m_state.m_bShowFrameRate = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoSlider> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a58110(CString("m_effectStep"), -1);
@@ -1266,12 +1263,12 @@ void CGameOptionGraphicDefault::vfunc_7()
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_hdr"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_state.m_bHdr = sp->FUN_1422ce0e0() != 0;
+            m_state.m_bHdr = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_shimmer"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_state.m_bShimmer = sp->FUN_1422ce0e0() != 0;
+            m_state.m_bShimmer = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_shadow"), -1);
@@ -1289,12 +1286,12 @@ void CGameOptionGraphicDefault::vfunc_7()
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_vsync"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_state.m_bVsync = sp->FUN_1422ce0e0() != 0;
+            m_state.m_bVsync = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_enchantEffect"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_state.m_bEnchantEffect = sp->FUN_1422ce0e0() != 0;
+            m_state.m_bEnchantEffect = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoCombo> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_multisampling"), -1);
@@ -1309,27 +1306,27 @@ void CGameOptionGraphicDefault::vfunc_7()
     {
         MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideAlways"), -1);
         if (static_cast<Unk_GoRadio*>(sp) != 0)
-            m_state2.m_bHideAlways = sp->FUN_1422ce0e0() != 0;
+            m_state2.m_bHideAlways = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_hideBossBattle"), -1);
         if (static_cast<Unk_GoRadio*>(sp) != 0)
-            m_state2.m_bHideBossBattle = sp->FUN_1422ce0e0() != 0;
+            m_state2.m_bHideBossBattle = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showParty"), -1);
         if (static_cast<Unk_GoRadio*>(sp) != 0)
-            m_state2.m_bShowParty = sp->FUN_1422ce0e0() != 0;
+            m_state2.m_bShowParty = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showGuild"), -1);
         if (static_cast<Unk_GoRadio*>(sp) != 0)
-            m_state2.m_bShowGuild = sp->FUN_1422ce0e0() != 0;
+            m_state2.m_bShowGuild = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoRadio> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a46480(CString("m_showCustom"), -1);
         if (static_cast<Unk_GoRadio*>(sp) != 0)
-            m_state2.m_bShowCustom = sp->FUN_1422ce0e0() != 0;
+            m_state2.m_bShowCustom = sp->FUN_1422ce0e0() ? true : false;
     }
     {
         MS2Ptr<Unk_GoInput> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_14124e2e0(CString("m_customInput"), -1);
@@ -1339,7 +1336,7 @@ void CGameOptionGraphicDefault::vfunc_7()
     {
         MS2Ptr<Unk_GoCheck> sp = ((Unk_GoDialog*)GetOptionDialog())->FUN_140a57f50(CString("m_showPhysx"), -1);
         if (static_cast<Unk_GoCheck*>(sp) != 0)
-            m_state2.m_bShowPhysx = sp->FUN_1422ce0e0() != 0;
+            m_state2.m_bShowPhysx = sp->FUN_1422ce0e0() ? true : false;
     }
 }
 
@@ -1347,9 +1344,10 @@ void CGameOptionGraphicDefault::vfunc_7()
 void CGameOptionGraphicDefault::FUN_14124ce20()
 {
     Unk_GraphicState* pGfx = TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0();
-    bool bResChanged = false;
+    int bResChanged = 0;
+    int bNotify = 0;
     if (m_state.m_nScreenMode != pGfx->m_nScreenMode || m_state.m_nResIdx != pGfx->m_nResIdx)
-        bResChanged = true;
+        bResChanged = 1;
     if (bResChanged)
     {
         FUN_14125e910(TSingleton<CGameOption>::GetInstance()->FUN_1409a8ac0(), m_state.m_nScreenMode, m_state.m_nResIdx);
@@ -1364,17 +1362,21 @@ void CGameOptionGraphicDefault::FUN_14124ce20()
         FUN_14125e3b0(&m_state, m_state.m_bShimmer);
     if (m_state.m_nEffectStep != pGfx->m_nEffectStep)
         FUN_1403ed280()->FUN_1411a8880(m_state.m_nEffectStep);
-    bool bMultisampling = m_state.m_nMultisampling != pGfx->m_nMultisampling;
-    if (bMultisampling)
+    if (m_state.m_nMultisampling != pGfx->m_nMultisampling)
+    {
         FUN_14125e4b0(&m_state, FUN_140ae1c00()->FUN_141376790(m_state.m_nMultisampling));
-    bool bVsync = m_state.m_bVsync != pGfx->m_bVsync;
-    if (bVsync)
+        bNotify = 1;
+    }
+    if (m_state.m_bVsync != pGfx->m_bVsync)
+    {
         FUN_14125e5b0(&m_state, m_state.m_bVsync);
-    if (!m_state.m_bShowFrameRate)
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4e7d);
-    else
+        bNotify = 1;
+    }
+    if (m_state.m_bShowFrameRate)
         FUN_1403ed2b0()->FUN_141adc530(0x4e7d);
-    if (bVsync || bMultisampling)
+    else
+        FUN_1403ed2b0()->FUN_141adc5d0(0x4e7d);
+    if (bNotify != 0)
         FUN_140d73bc0(0x84e, 0, 0, CStringW(L""));
 }
 
@@ -1469,10 +1471,10 @@ void CGameOptionGraphicDefault::vfunc_10()
     FUN_14125ef90(&m_state2);
     if (m_state.m_bEnchantEffect != bOldEnchant)
     {
-        if (!m_state.m_bEnchantEffect)
-            FUN_1403ed2d0()->FUN_141bd4260();
-        else
+        if (m_state.m_bEnchantEffect)
             FUN_1403ed2d0()->FUN_141bd41d0();
+        else
+            FUN_1403ed2d0()->FUN_141bd4260();
     }
 }
 
@@ -1531,8 +1533,8 @@ static std::pair<int, int> FUN_14124d9d0(int nWidth, int nHeight)
     int b = nHeight;
     if (1 < nGcd)
     {
-        a = nWidth / nGcd;
-        b = nHeight / nGcd;
+        a = a / nGcd;
+        b = b / nGcd;
     }
     bool bScale = 0x10 < a;
     if (!bScale)
@@ -1542,7 +1544,8 @@ static std::pair<int, int> FUN_14124d9d0(int nWidth, int nHeight)
             bScale = 5 < a;
         else
         {
-            int nMul = (int)(16.0f / (float)a);
+            float fMul16 = 16.0f / (float)a;
+            int nMul = (int)fMul16;
             a = a * nMul;
             b = b * nMul;
             if (a < 0x10 && (nGcd = FUN_14124d900(a, b), 1 < nGcd))
@@ -1555,30 +1558,28 @@ static std::pair<int, int> FUN_14124d9d0(int nWidth, int nHeight)
     if (bScale)
     {
         float fRatio = (float)a / (float)b;
-        float fScaled;
-        if (1.6f <= fRatio)
-            fScaled = fRatio * 10.0f;
-        else
-            fScaled = FUN_14124d950(fRatio * 10.0f);
-        if (1.57f <= fRatio)
-        {
-            float fNine = 9.0f;
-            float fMul = 9.0f / (float)b;
-            a = (int)FUN_14124d950((float)a * fMul);
-            b = (int)fNine;
-        }
-        else
+        float fScaled = fRatio < 1.6f ? FUN_14124d950(fRatio * 10.0f) : fRatio * 10.0f;
+        if (fRatio < 1.57f)
         {
             int nScaled = (int)fScaled;
             float fMul = (float)nScaled / (float)a;
             a = nScaled;
-            b = (int)FUN_14124d950((float)b * fMul);
+            float fB = (float)b * fMul;
+            b = (int)FUN_14124d950(fB);
             float fRatio2 = (float)a / (float)b;
             if ((fRatio2 < 1.6f || 1.67f <= fRatio2) && (nGcd = FUN_14124d900(a, b), 1 < nGcd))
             {
                 a = a / nGcd;
                 b = b / nGcd;
             }
+        }
+        else
+        {
+            float fNine = 9.0f;
+            float fMul = fNine / (float)b;
+            float fA = (float)a * fMul;
+            a = (int)FUN_14124d950(fA);
+            b = (int)fNine;
         }
     }
     return std::pair<int, int>(a, b);
@@ -1606,6 +1607,13 @@ bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);    // SaveFile
 void FUN_140874050(void* pElem, const char* szName, const CString& strValue);   // SetAttribute
 void* FUN_14086e090(void* pParent, void* pChild);               // LinkEndChild
 void* FUN_14086f2f0(void* pMem, const char* szName);            // TiXmlElement::TiXmlElement(const char*)
+class TiXmlElement
+{
+public:
+    TiXmlElement(const char* szValue);                              // 0x14086f2f0
+private:
+    char m_pad[0x90];
+};
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
 CString FUN_1412755b0();                                        // the option folder
 CString FUN_141275640();                                        // the account folder
@@ -1843,25 +1851,28 @@ void CGameOption::FUN_141242990()
 // @0x141242f60
 int CGameOption::FUN_141242f60()
 {
-    if (FUN_1406c34c0() == 0 && DAT_143ae0900 != 0)
+    if (FUN_1406c34c0() == 0 && (unsigned char)DAT_143ae0900 != 0)
         return 1;
     int bRead = 0;
     int bDefaulted = 0;
     TiXmlDocument doc;
-    if (FUN_141243f50(0) == 0)
-        bRead = FUN_140166420()->FUN_1403974b0(&doc, FUN_141241b60(0, false), 0, true, false);
-    else
+    if (FUN_141243f50(0) != 0)
     {
         DeleteFileA(FUN_141241b60(0, false));
         bRead = FUN_140166420()->FUN_1403974b0(&doc, FUN_141241b60(0, true), 0, true, false);
         bDefaulted = 1;
     }
+    else
+        bRead = FUN_140166420()->FUN_1403974b0(&doc, FUN_141241b60(0, false), 0, true, false);
     if (bRead == 0)
         EE_LOG_AT(1, 1, ("Failed to read %s", "GameOption.xml"), MS2_THIS_FILE, 0xe2);
     if (FUN_14125f190(&m_language, &doc) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read language hide option");
     if (FUN_140166410()->FUN_14036e560() && bDefaulted != 0)
-        m_language.m_nLanguage = FUN_1406518d0((short)GetUserDefaultUILanguage());
+    {
+        LANGID nLang = GetUserDefaultUILanguage();
+        m_language.m_nLanguage = FUN_1406518d0((short)nLang);
+    }
     FUN_1406507a0(m_language.m_nLanguage);
     FUN_140650b30(m_language.m_nVoice);
     return 1;
@@ -1913,8 +1924,9 @@ void CGameOption::FUN_141243630()
     FILE* pFile = fopen(FUN_141241b60(0, false), "r");
     if (pFile != 0)
     {
+        long nSize = 0;
         fseek(pFile, 0, SEEK_END);
-        long nSize = ftell(pFile);
+        nSize = ftell(pFile);
         fseek(pFile, 0, SEEK_SET);
         char* pBuf = new char[nSize + 2];
         memset(pBuf, 0, nSize + 2);
@@ -2066,7 +2078,8 @@ unsigned int CGameOption::FUN_141243f50(int nKind)
         strPath = FUN_141241b60(2, false);
     else
         return 1;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    int bLoaded = FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false);
+    if (bLoaded == 0)
         return 1;
     void* pRoot = FUN_14081b310(&doc);
     if (pRoot == 0)
@@ -2123,8 +2136,7 @@ static void FUN_141244320(TiXmlDocument* pDoc)
         void* pOption = FUN_140165cf0(pRoot, "option");
         if (pOption == 0)
         {
-            void* pMem = operator new(0x90);
-            pOption = pMem != 0 ? FUN_14086f2f0(pMem, "option") : 0;
+            pOption = new TiXmlElement("option");
             FUN_14086e090(pRoot, pOption);
         }
         CString strVersion;
