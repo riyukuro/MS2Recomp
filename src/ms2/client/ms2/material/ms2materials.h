@@ -158,6 +158,33 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+// Vtable 0x1431c6458 (sizeof 0x550, no new members): the character outline pass ("OutlineMaterial", typed as
+// MS2CharacterMaterial, version offset 0xe). The vertices are pushed out along the world normal by the OutlineWidth
+// attribute in view space (ExtractOutline) and the pixels output the flat OutlineColor attribute.
+class OutlineMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+
+public:
+    OutlineMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool SetupTransformPipeline(Context& kContext, NiMaterialResource* pkOutProjPos,
+        NiStandardVertexProgramDescriptor* pkVertexDesc, bool bForceWorldView, bool bForceViewPos,
+        NiMaterialResource*& pkWorldPos, NiMaterialResource*& pkViewPos, NiMaterialResource*& pkProjectedPos,
+        NiMaterialResource*& pkWorldNormal, NiMaterialResource*& pkWorldView);
+    virtual bool HandleMS2FinalPixelOutputs(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource* pkWorldNormal, NiMaterialResource* pkViewVector, NiMaterialResource* pkDiffuseAccum,
+        NiMaterialResource* pkSpecularAccum, NiMaterialResource* pkOpacityAccum);
+
+    // ---- new virtual ----
+    // +0x398 HandleViewProjectionFragment with the position extruded along the world normal (ExtractOutline);
+    // bForceViewPos is unused, the view position is always produced
+    virtual bool HandleOutlineViewProjection(Context& kContext, bool bForceViewPos, NiMaterialResource* pkWorldPos,
+        NiMaterialResource* pkWorldNormal, NiMaterialResource*& pkProjectedPos, NiMaterialResource*& pkViewPos);
+};
+
+//--------------------------------------------------------------------------------------------------
 class MS2DirectionalShadowWriteMaterial : public NiDirectionalShadowWriteMaterial
 {
 public:
@@ -215,7 +242,6 @@ public:
 
 MS2_DECLARE_STANDARD_MATERIAL(CustomizedTextureGeneratorMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(TexCoordWriteMaterial);
-MS2_DECLARE_STANDARD_MATERIAL(OutlineMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MRTShaderPickerMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2MotionBlurMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2OuterGlowCharacterMaterial);
