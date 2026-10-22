@@ -1446,7 +1446,14 @@ MS2_CHECK_SIZE(CNMFinalizeFunc, 0x30);
 class CNMFindUserRequestInfo : public CNMSerializable
 {
 public:
+    CNMFindUserRequestInfo();
     virtual ~CNMFindUserRequestInfo() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_10; // +0x10
     char m_14[0x20]; // +0x14
@@ -1464,7 +1471,15 @@ MS2_CHECK_SIZE(CNMFindUserRequestInfo, 0x50);
 class CNMFindUserFunc : public CNMFunc
 {
 public:
+    CNMFindUserFunc();
+    CNMFindUserFunc(const CNMFindUserRequestInfo& info);
     virtual ~CNMFindUserFunc() = default;
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     CNMFindUserRequestInfo m_30; // +0x30
     int m_80; // +0x80
@@ -2540,6 +2555,13 @@ class CNMRequestSessionData : public CNMSerializable
 {
 public:
     virtual ~CNMRequestSessionData() = default;
+
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     int m_10; // +0x10
     int m_14; // +0x14
