@@ -91,7 +91,7 @@
 // MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsMapV9@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV9@@@@@3@@ATL@@AEAAXXZ 0x141c1f200
 //
 //
-// MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CB_KV?$MS2Ptr@VRecad0@WsReal@@@@@std@@@std@@SAPEAU?$pair@$$CB_KV?$MS2Ptr@VRecad0@WsReal@@@@@2@AEAU32@@Z 0x141c1f6a0
+// MS2-PIN: ?Reference@?$MS2Ptr@VRec1f8@WsReal@@@@CAXPEAVRec1f8@WsReal@@@Z 0x141c1f6a0
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$set@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$set@VEntityID@egf@@U?$less@VEntityID@egf@@@std@@V?$allocator@VEntityID@egf@@@4@@std@@@std@@PEAX@2@XZ 0x141c1f9b0
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$SmartPointer@VEntity@egf@@@efd@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$SmartPointer@VEntity@egf@@@efd@@@std@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$SmartPointer@VEntity@egf@@@efd@@@std@@PEAX@2@XZ 0x141c1fa70
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@VEntityID@egf@@V?$SmartPointer@VCEntityHider@@@efd@@U?$less@VEntityID@egf@@@std@@V?$allocator@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityHider@@@efd@@@std@@@6@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityHider@@@efd@@@std@@PEAX@2@XZ 0x141c1fb30
@@ -135,7 +135,7 @@
 // MS2-PIN: ?SwapNode@?$CRBTree@VEntityID@egf@@V?$MS2Ptr@VCInteractObject@@@@V?$CElementTraits@VEntityID@egf@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCInteractObject@@@@@5@@ATL@@AEAAXPEAVCNode@12@0@Z 0x141c1e5a0
 // MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@_JV?$SmartPointer@VUnk_WsMapV8@@@efd@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsMapV8@@@efd@@@4@@ATL@@AEAAXXZ 0x141c1f120
 // MS2-PIN: ?AddRef@?$MS2Ptr@VCLiftableTargetGuide@@@@AEBAXXZ 0x141c1f530
-// MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@std@@@2@@std@@@std@@QEBAAEBQEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@@2@XZ 0x141c1f660
+// MS2-PIN: ?Reference@?$MS2Ptr@VMS2ActorUpdater@@@@CAXPEAVMS2ActorUpdater@@@Z 0x141c1f660
 // MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@VEntityID@egf@@_JU?$less@VEntityID@egf@@@std@@V?$allocator@U?$pair@$$CBVEntityID@egf@@_J@std@@@4@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBVEntityID@egf@@_J@std@@PEAX@2@XZ 0x141c20750
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VCLiftableTargetGuide@@@@AEBAXPEAX@Z 0x141c1f770
 // MS2-PIN: ?_Calculate_growth@?$vector@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@V?$allocator@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VUnk_WsK_Rank@@@@@std@@@2@@std@@AEBA_K_K@Z 0x141c20b60
