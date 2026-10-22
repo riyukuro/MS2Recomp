@@ -7934,3 +7934,16 @@ sfr_atan2f_thunk	14280f28e	func
 ?SecurityDomainCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	143165350	data
 ?SecurityPanelCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431653a0	data
 ?SystemCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431653f0	data
+?AntiAliasTypeCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167a30	data
+?CSMSettingsCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167a80	data
+?FontCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167ad0	data
+?FontStyleCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167b20	data
+?FontTypeCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167b70	data
+?GridFitTypeCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167bc0	data
+?TextColorTypeCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167cb0	data
+?TextDisplayModeCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167d00	data
+?TextFieldAutoSizeCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167da0	data
+?TextFieldTypeCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167df0	data
+?TextFormatAlignCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167e90	data
+?TextLineMetricsCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167ee0	data
+?TextRendererCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167f30	data
