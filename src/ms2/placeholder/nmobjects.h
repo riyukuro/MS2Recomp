@@ -861,6 +861,13 @@ class CNMMyGameInfo : public CNMSerializable
 public:
     virtual ~CNMMyGameInfo() = default;
 
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
     int m_10[0xa]; // +0x10
 };
 MS2_CHECK_SIZE(CNMMyGameInfo, 0x38);
