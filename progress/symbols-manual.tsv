@@ -7924,3 +7924,13 @@ sfr_atan2f_thunk	14280f28e	func
 ?ThrowError@VM@AS3@GFx@Scaleform@@QEAAXAEBVError@1234@@Z	14252eca0	func
 ?_constructInstance@ASVM@AS3@GFx@Scaleform@@QEAA_NAEAV?$SPtr@VObject@AS3@GFx@Scaleform@@@234@PEAVObject@234@IPEBVValue@234@@Z	142531f40	func
 ?ASValue2GFxValue@MovieRoot@AS3@GFx@Scaleform@@QEBAXAEBVValue@234@PEAV534@@Z	1424e42c0	func
+??0EventDispatcher@fl_events@InstanceTraits@AS3@GFx@Scaleform@@QEAA@AEAVVM@345@AEBUClassInfo@345@@Z	14245f5d0	func
+?ApplicationDomainCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	143165210	data
+?CapabilitiesCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	143165260	data
+?IMECI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	143165440	data
+?IMEConversionModeCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	143165490	data
+?LoaderContextCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431652b0	data
+?SecurityCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	143165300	data
+?SecurityDomainCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	143165350	data
+?SecurityPanelCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431653a0	data
+?SystemCI@fl_system@AS3@GFx@Scaleform@@3UClassInfo@234@B	1431653f0	data
