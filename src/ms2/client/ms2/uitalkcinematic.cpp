@@ -198,7 +198,7 @@ void UITalkCinematic::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
     FUN_141b1bfa0();
-    if (FUN_140967100()->FUN_141b21220() == 0)
+    if (FUN_140967100()->GetTalking() == 0)
     {
         FUN_1408e57f0()->FUN_1422b9fd0(m_nKeyGroup);
     }
@@ -557,13 +557,13 @@ void UITalkCinematic::FUN_141b1bf00()
 }
 
 // @0x141b1bf80
-void UITalkCinematic::FUN_141b1bf80(unsigned nKeyGroup) { m_nKeyGroup = nKeyGroup; }
+void UITalkCinematic::SetKeyGroup(unsigned nKeyGroup) { m_nKeyGroup = nKeyGroup; }
 
 // @0x141b1bfa0
 void UITalkCinematic::FUN_141b1bfa0() { m_nKeyGroup = 0x620001d; }
 
 // @0x141b1bfc0
-int UITalkCinematic::FUN_141b1bfc0() { return m_nLoaded; }
+int UITalkCinematic::GetLoaded() { return m_nLoaded; }
 
 // MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
 // @0x141b1bfe0
@@ -1110,7 +1110,7 @@ void UITalkManager::FUN_141b1ddd0(CInPacket& in)
             m_spScript = spScript;
             m_nSpecialNpc = spScript->m_npcId;
             m_nSound = FUN_141b21d70();
-            if (FUN_141b21220() == 0)
+            if (GetTalking() == 0)
                 FUN_141b200d0(nNpcId, m_spScript.get());
             else
                 FUN_141b20bb0();
@@ -1449,7 +1449,7 @@ void UITalkManager::FUN_141b1faa0(int nMode, int nDialogId)
             FUN_140710590(packet);
         }
     }
-    spUi->FUN_141b1bf80(0x620001f);
+    spUi->SetKeyGroup(0x620001f);
     SendNpcTalkMode0();
 }
 
@@ -1457,7 +1457,7 @@ void UITalkManager::FUN_141b1faa0(int nMode, int nDialogId)
 // @0x141b1fcf0
 void UITalkManager::FUN_141b1fcf0(unsigned nNpcId)
 {
-    if (FUN_141b21220() == 0 && FUN_141b211d0())
+    if (GetTalking() == 0 && FUN_141b211d0())
     {
         MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPC != 0)
@@ -1495,7 +1495,7 @@ void UITalkManager::FUN_141b1fcf0(unsigned nNpcId)
 // @0x141b1feb0
 void UITalkManager::SendNpcTalkMode0()
 {
-    if (FUN_141b21220() == 0)
+    if (GetTalking() == 0)
         return;
     m_nTalking = 0;
     m_nPending = 0;
@@ -1661,7 +1661,7 @@ void UITalkManager::FUN_141b20790(int nNpcId)
     if (spScript.get() != 0 && spScript->m_contents.FUN_14078fae0() != 0)
     {
         pNpc->FUN_14166fff0(CStringW(spScript->m_contents.FUN_14078f350(0)->m_name));
-        if (FUN_140967100()->FUN_141b21220() == 0 && spScript->m_contents.FUN_14078f350(0)->m_unk20.GetLength() != 0)
+        if (FUN_140967100()->GetTalking() == 0 && spScript->m_contents.FUN_14078f350(0)->m_unk20.GetLength() != 0)
             FUN_1411a4f40(FUN_1403ed280(), CString(spScript->m_contents.FUN_14078f350(0)->m_unk20), Unk_TcActorPos(pNpc));
     }
 }
@@ -1669,7 +1669,7 @@ void UITalkManager::FUN_141b20790(int nNpcId)
 // @0x141b20ac0
 int UITalkManager::FUN_141b20ac0()
 {
-    if (FUN_141b21220() == 0)
+    if (GetTalking() == 0)
         return 0;
     return 0;
 }
@@ -1678,7 +1678,7 @@ int UITalkManager::FUN_141b20ac0()
 // @0x141b20af0
 void UITalkManager::FUN_141b20af0()
 {
-    if (FUN_141b213c0() == 0 && FUN_141b21220() != 0)
+    if (FUN_141b213c0() == 0 && GetTalking() != 0)
     {
         MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
         Unk_TcNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_nNpcId);
@@ -1766,7 +1766,7 @@ CStringW UITalkManager::FUN_141b20ed0()
 }
 
 // @0x141b20fe0
-MS2Ptr<CTalkScript> UITalkManager::FUN_141b20fe0()
+MS2Ptr<CTalkScript> UITalkManager::GetScript()
 {
     return m_spScript;
 }
@@ -1805,7 +1805,7 @@ int UITalkManager::FUN_141b211d0()
 }
 
 // @0x141b21220
-int UITalkManager::FUN_141b21220()
+int UITalkManager::GetTalking()
 {
     return m_nTalking;
 }
@@ -1813,7 +1813,7 @@ int UITalkManager::FUN_141b21220()
 // @0x141b21240
 int UITalkManager::FUN_141b21240(int nNpcId)
 {
-    if (FUN_141b21220() == 0)
+    if (GetTalking() == 0)
         return 0;
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
@@ -1828,7 +1828,7 @@ int UITalkManager::FUN_141b21240(int nNpcId)
 // @0x141b212c0
 unsigned UITalkManager::FUN_141b212c0()
 {
-    if (FUN_141b21220() == 0)
+    if (GetTalking() == 0)
         return 0;
     return m_nNpcId;
 }
@@ -1872,7 +1872,7 @@ int UITalkManager::FUN_141b213c0()
 // @0x141b213f0
 unsigned UITalkManager::FUN_141b213f0(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound)
 {
-    if (FUN_141b21220() == 0)
+    if (GetTalking() == 0)
     {
         if (!spScript.IsNull())
         {
@@ -2011,7 +2011,7 @@ void UITalkManager::FUN_141b21ae0(const CString& strDialog)
     {
         UITalkCinematic* pUi = FUN_140a7b2b0(0x4e40);
         unsigned nId = reinterpret_cast<unsigned (*)(void*)>((*reinterpret_cast<void***>(pClass))[0x180 / 8])(pClass);
-        if (pUi == 0 || pUi->FUN_141b1bfc0() == 0)
+        if (pUi == 0 || pUi->GetLoaded() == 0)
             m_openedDialogs.FUN_1401855a0(nId);
         else
             FUN_1403ed2b0()->FUN_141adc530(nId);
@@ -2042,7 +2042,7 @@ MS2Ptr<CTalkScript> UITalkManager::FUN_141b21b90()
 // @0x141b21d70
 unsigned UITalkManager::FUN_141b21d70()
 {
-    return FUN_140857990(FUN_141b20fe0(), m_nFlags, m_nSpecialNpc, m_nPage);
+    return FUN_140857990(GetScript(), m_nFlags, m_nSpecialNpc, m_nPage);
 }
 
 // MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent

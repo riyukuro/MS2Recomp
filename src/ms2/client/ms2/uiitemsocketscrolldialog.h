@@ -35,7 +35,7 @@ public:
     void FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDrag);  // 0x140f65130 an item was dropped onto the slot
     bool FUN_140f659e0(int nButton, const CMsgBoxData& box);    // 0x140f659e0 "used" box answered: close
     bool FUN_140f65a40(int nButton, const CMsgBoxData& box);    // 0x140f65a40 "unlock more" box answered: send
-    void FUN_140f65a90(int bHasItem);                           // 0x140f65a90
+    void SetHasItem(int bHasItem);                           // 0x140f65a90
     ItemScrollSlot* FUN_140f65ab0(CString strName);             // 0x140f65ab0 the scroll slot of a name
     CItemSocketScrollDataPtr FUN_140f65b30(MS2Ptr<CItemData> spData);   // 0x140f65b30 the table row of a scroll
     bool FUN_140f65c10(CItemSocketScrollDataPtr spRow, CStringW& strNotice);    // 0x140f65c10 the limit text

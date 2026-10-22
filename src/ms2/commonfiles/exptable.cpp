@@ -223,7 +223,7 @@ bool CExpTable::LoadNextExp()
         m_nextExp[i] = 0x7fffffffffffffffLL;
     CString strPath = FUN_14071a5b0("Table", "nextExp.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -261,7 +261,7 @@ bool CExpTable::LoadCommonExp()
 {
     CString strPath = FUN_14071a5b0("Table", "commonExpTable.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -292,7 +292,7 @@ bool CExpTable::LoadPetExp()
 {
     CString strPath = FUN_14071a5b0("Table", "petExp.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -325,7 +325,7 @@ bool CExpTable::LoadPetEvolution()
     m_petEvolution.RemoveAll();
     CString strPath = FUN_14071a5b0("Table", "petEvolution.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -361,7 +361,7 @@ bool CExpTable::ReadExpTable(const CString& strFile)
 {
     CString strPath = FUN_14071a5b0("Table", strFile);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
         FUN_14015eb90(CLogString::GetInstance(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[file: {0}]", strPath);
         return false;

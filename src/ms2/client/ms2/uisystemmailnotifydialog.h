@@ -44,7 +44,7 @@ public:
 
     void FUN_1412a53e0(CInPacket& packet);                      // 0x1412a53e0 packet 0xbd: pending mail id / show a mail
     void FUN_1412a5570(int nMailId);                            // 0x1412a5570 show the mail
-    void FUN_1412a5c50(bool bOnTime);                           // 0x1412a5c50 on-time event mode
+    void SetOnTime(bool bOnTime);                           // 0x1412a5c50 on-time event mode
     void FUN_1412a5c70(int nMs);                                // 0x1412a5c70 hide after nMs
     int FUN_1412a5ca0();                                       // 0x1412a5ca0 a mail is pending
     void FUN_1412a5ce0(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1412a5ce0 "m_btnDetail": open the page

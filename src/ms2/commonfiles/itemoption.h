@@ -29,7 +29,7 @@ public:
     void FUN_1405cb190(int nGroup);             // 0x1405cb190 clear a group
     bool FUN_1405cb200(int nGroup, int nStat, Unk_EnchantPtr<BaseOption> spOption);        // 0x1405cb200
     bool FUN_1405cb2a0(int nGroup, unsigned nStat, Unk_EnchantPtr<BaseOption> spOption);   // 0x1405cb2a0
-    unsigned FUN_1405cb340();                   // 0x1405cb340 the item id
+    unsigned GetItemId();                   // 0x1405cb340 the item id
     void FUN_1405cb360(int nValue);             // 0x1405cb360
     int FUN_1405cb380();                        // 0x1405cb380
     int FUN_1405cb3a0(unsigned nType);          // 0x1405cb3a0 the summed value of a stat type

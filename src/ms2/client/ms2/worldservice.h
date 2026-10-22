@@ -400,7 +400,7 @@ public:
     int FUN_141bcfb70();                                // service running && m_040 == 0
     int FUN_141bcfc10();                                // m_prevState == 4 && m_state == 6
     float FUN_141bcfc50();                              // scale from the local player
-    int FUN_141bcfd10();                                // return m_state
+    int GetState();                                // return m_state
     egf::Entity* FUN_141bcfd30(unsigned key, const Unk_StreamPoint& pos, float maxDist, int nearest, int flat);
     int FUN_141bcfff0(int id, struct Unk_WsC_NpcAnim* out);
     egf::Entity* FUN_141bd0220(const Unk_StreamPoint& pos, float maxDist);
@@ -450,13 +450,13 @@ public:
     void FUN_141bd30f0(char b);                         // set shadow flag on every m_2e8 entity's scene graph + hw instancing
     Unk_WsP16* FUN_141bd3210(Unk_WsP16* out, Unk_StreamPoint pt);   // field object containing pt, else the nearest (m_2f8)
     Unk_WsP16* FUN_141bd3430(Unk_WsP16* out, unsigned __int64 key); // m_2f8 lookup
-    TextureLayerManager* FUN_141bd3650();               // return m_spTextureLayerManager
-    ChaosLightEffectLayerManager* FUN_141bd3680();      // return m_spChaosLightEffectLayerManager
+    TextureLayerManager* GetTextureLayerManager();               // return m_spTextureLayerManager
+    ChaosLightEffectLayerManager* GetChaosLightEffectLayerManager();      // return m_spChaosLightEffectLayerManager
     ATL::CRBMap<unsigned, Unk_WsV118>* FUN_141bd36b0(); // &m_118
     ATL::CRBMap<unsigned, Unk_WsV148>* FUN_141bd36d0(); // &m_148
     bool FUN_141bd36f0(Unk_StreamPoint pt, Unk_StreamPoint* pOut);   // offset of pt outside the world bounds into *pOut; true if inside
-    Unk_StreamPoint FUN_141bd37e0();                    // m_boundsMin
-    Unk_StreamPoint FUN_141bd3820();                    // m_boundsMax
+    Unk_StreamPoint GetBoundsMin();                    // m_boundsMin
+    Unk_StreamPoint GetBoundsMax();                    // m_boundsMax
     void FUN_141bd3860();                               // m_978 = 1
     void FUN_141bd3880();                               // each m_350 value: FUN_14169d0e0
     void FUN_141bd3920();                               // each m_540 / m_570 value: FUN_1414483e0

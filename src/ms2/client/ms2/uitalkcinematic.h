@@ -70,9 +70,9 @@ public:
     void FUN_141b1be50();                                           // firework effect
     void FUN_141b1beb0(CString strImage);                           // remember a loaded reward image (by value: destroyed by the callee)
     void FUN_141b1bf00();                                           // release the reward images
-    void FUN_141b1bf80(unsigned nKeyGroup);                         // 0x141b1bf80
+    void SetKeyGroup(unsigned nKeyGroup);                         // 0x141b1bf80
     void FUN_141b1bfa0();                                           // 0x141b1bfa0 default key group
-    int FUN_141b1bfc0();                                            // 0x141b1bfc0
+    int GetLoaded();                                            // 0x141b1bfc0
     void FUN_141b1bfe0(ASObj& rPage, const CCinematicContent* pContent);   // fill the illustrations of the page
     void FUN_141b1c4c0(ASObj& rPage, const CCinematicContent* pContent);   // the image plate
     int FUN_141b1c530();                                            // the next key was pressed

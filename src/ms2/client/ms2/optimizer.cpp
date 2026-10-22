@@ -91,7 +91,7 @@ int FUN_1408731e0(void* pElement, const char* pszAttr, int& nValue);
 void* FUN_1409a8b10();
 struct Unk_OptSettings { unsigned char m_pad_0[0x10]; unsigned char m_bOptimize; };
 Unk_OptSettings* FUN_140c77560(void* pSettings);
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 
 // options of Optimization.xml (contiguous dwords) and the "loaded" flag
 extern int DAT_143ae2b30, DAT_143ae2b34, DAT_143ae2b38, DAT_143ae2b3c, DAT_143ae2b40, DAT_143ae2b44, DAT_143ae2b48;
@@ -435,10 +435,10 @@ void COptimizer::FUN_14161c8c0()
     if (m_nFirstLoadTick == 0)
     {
         m_nFirstLoadTick = FUN_140869420();
-        if (FUN_140166440() != 0)
+        if (GetLogString() != 0)
         {
             unsigned long nElapsed = m_nFirstLoadTick - m_nStartTick;
-            Unk_OptLog(FUN_140166440(), 0xb, 6, L"First MyPC Load Time = {0}", nElapsed);
+            Unk_OptLog(GetLogString(), 0xb, 6, L"First MyPC Load Time = {0}", nElapsed);
         }
     }
 }
@@ -490,21 +490,21 @@ void COptimizer::FUN_14161c990()
         fAverage = fAverage + fFrame;
     }
     fAverage = fAverage / (float)m_samples.size();
-    if (FUN_140166440() != 0)
+    if (GetLogString() != 0)
     {
-        Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] sampleCount:{0} sampleCycleTick:{1}", m_nSampleCount, (unsigned)m_nSampleCycle);
+        Unk_OptLog(GetLogString(), 0xb, 6, L"[SamplingFrame] sampleCount:{0} sampleCycleTick:{1}", m_nSampleCount, (unsigned)m_nSampleCycle);
     }
-    if (FUN_140166440() != 0)
+    if (GetLogString() != 0)
     {
-        Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] lowest Frame:{0}", fLowest);
+        Unk_OptLog(GetLogString(), 0xb, 6, L"[SamplingFrame] lowest Frame:{0}", fLowest);
     }
-    if (FUN_140166440() != 0)
+    if (GetLogString() != 0)
     {
-        Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] highest Frame:{0}", fHighest);
+        Unk_OptLog(GetLogString(), 0xb, 6, L"[SamplingFrame] highest Frame:{0}", fHighest);
     }
-    if (FUN_140166440() != 0)
+    if (GetLogString() != 0)
     {
-        Unk_OptLog(FUN_140166440(), 0xb, 6, L"[SamplingFrame] Avg Frame:{0}", fAverage);
+        Unk_OptLog(GetLogString(), 0xb, 6, L"[SamplingFrame] Avg Frame:{0}", fAverage);
     }
 }
 

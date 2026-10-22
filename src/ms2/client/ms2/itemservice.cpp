@@ -56,7 +56,7 @@
 
 // ---- out-of-unit callees ----
 class CLogString;
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 template <class T> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                                     const T& first);                // 0x1403a1280 for T = const char*
 
@@ -228,7 +228,7 @@ MS2Ptr<CEquipItem> CItemService::FUN_14141a060(CItem* pItem, PC* pPC, __int64 nC
                     if (!spModel->vfunc_4(strPath))
                     {
                         efd::utf8string strName = IsModel(spModel.get())->FUN_141201780();
-                        Unk_FileLog(FUN_140166440(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem1 [{0}]", strName.c_str());
+                        Unk_FileLog(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem1 [{0}]", strName.c_str());
                         return MS2Ptr<CEquipItem>(0);
                     }
                 }
@@ -255,14 +255,14 @@ MS2Ptr<CEquipItem> CItemService::FUN_14141a060(CItem* pItem, PC* pPC, __int64 nC
                         if (!spModel->vfunc_4(strPath))
                         {
                             efd::utf8string strName = IsModel(spModel.get())->FUN_141201780();
-                            Unk_FileLog(FUN_140166440(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem3 [{0}]", strName.c_str());
+                            Unk_FileLog(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem3 [{0}]", strName.c_str());
                             return MS2Ptr<CEquipItem>(0);
                         }
                     }
                     else if (!FUN_141565a20(spModel.get(), strPath, spRoot))
                     {
                         efd::utf8string strName = IsModel(spModel.get())->FUN_141201780();
-                        Unk_FileLog(FUN_140166440(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem2 [{0}]", strName.c_str());
+                        Unk_FileLog(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem2 [{0}]", strName.c_str());
                         return MS2Ptr<CEquipItem>(0);
                     }
                 }

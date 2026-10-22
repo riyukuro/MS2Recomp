@@ -19,7 +19,7 @@
 #pragma function(strcmp)     // the exe calls the CRT strcmp (0x14280f2b8)
 
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const char* const& rArg);
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);    // FirstChildElement of a document
 
 // @0x1422eb480
@@ -48,7 +48,7 @@ bool NiGFxLocalizeManager::FUN_1422eb570(Scaleform::GFx::Loader* pLoader, const 
     ConfigParser parser(szPath);
     if (!parser.IsValid())
     {
-        FUN_1403a1280(FUN_140166440(), 2, 0x1a, L"Unable to load font config:{0}", szPath);
+        FUN_1403a1280(GetLogString(), 2, 0x1a, L"Unable to load font config:{0}", szPath);
         return false;
     }
 

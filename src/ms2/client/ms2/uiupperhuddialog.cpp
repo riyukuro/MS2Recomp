@@ -711,7 +711,7 @@ void UIUpperHudDialog::FUN_141357330(NotifyObject* pObj)
 }
 
 // @0x141357400
-void UIUpperHudDialog::FUN_141357400(float f)
+void UIUpperHudDialog::SetNoticeSpeed(float f)
 {
     m_fNoticeSpeed = f;
 }
@@ -1515,8 +1515,8 @@ MS2_CHECK_SIZE(Unk_ShaderColor, 0x10);
 class Unk_HudMotionBlur : public NiObject
 {
 public:
-    int FUN_14135de90() const;
-    void FUN_14135e060(int nMode);
+    int GetMode() const;
+    void SetMode(int nMode);
 private:
     char m_pad_10[0x10];
     int m_nMode;                                                                // +0x20
@@ -1600,7 +1600,7 @@ void UIVisualEffectDialog::OnLoadComplete()
     Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&DAT_143ae0e88, FUN_1409a8c40(FUN_14135dd90(&spEffect))));
     bool bAll = false;
     if (FUN_14135dd70(&spBlur) != 0)
-        bAll = FUN_14135dd80(&spBlur)->FUN_14135de90() == 0;
+        bAll = FUN_14135dd80(&spBlur)->GetMode() == 0;
     obj.FUN_1407cbbe0("motionBlurAll", bAll);
     obj.FUN_1409c4a30("motionBlurValue", FUN_14135dad0(FUN_142087e50(DAT_143ae5450)));
     bEnable = FUN_1409a8b20()->FUN_1416a3a00(9);
@@ -1989,7 +1989,7 @@ void FUN_14135d9d0(int nMode)
     Unk_HudPPEffectPtr spEffect(FUN_1411782c0(FUN_1409a8b20(), 3));
     Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&DAT_143ae0e88, FUN_1409a8c40(FUN_14135dd90(&spEffect))));
     if (FUN_14135dd70(&spBlur) != 0)
-        FUN_14135dd80(&spBlur)->FUN_14135e060(nMode);
+        FUN_14135dd80(&spBlur)->SetMode(nMode);
     if (!FUN_1409a8b20()->FUN_1416a3a00(10))
     {
         bool bOk = FUN_1409a8b20()->FUN_1416a37a0(10, true);
@@ -2102,7 +2102,7 @@ Unk_HudMotionBlur* FUN_14135de30(const NiRTTI* pRTTI, NiObject* pObject)
 }
 
 // @0x14135de90
-int Unk_HudMotionBlur::FUN_14135de90() const
+int Unk_HudMotionBlur::GetMode() const
 {
     return m_nMode;
 }
@@ -2153,7 +2153,7 @@ void Unk_ShaderVec4::Assign(float a, float b, float c, float d)
 }
 
 // @0x14135e060
-void Unk_HudMotionBlur::FUN_14135e060(int nMode)
+void Unk_HudMotionBlur::SetMode(int nMode)
 {
     m_nMode = nMode;
 }
@@ -2373,7 +2373,7 @@ void UIWebBrowserBase::vfunc_84(bool bVisible)
 }
 
 // @0x14135ed80
-bool UIWebBrowserBase::FUN_14135ed80() const
+bool UIWebBrowserBase::IsVisible() const
 {
     return m_bVisible;
 }
@@ -2514,7 +2514,7 @@ int UIWebBrowserBase::vfunc_74(int a1, void* p2, void* p3)
     unsigned int nMsg = a1;
     if (m_nBrowserId == -1)
         return UIDialog::vfunc_74(a1, p2, p3);
-    if (!FUN_14135ed80())
+    if (!IsVisible())
         return UIDialog::vfunc_74(a1, p2, p3);
     POINT kPoint;
     kPoint.x = (short)(__int64)p3;

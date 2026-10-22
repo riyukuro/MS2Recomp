@@ -94,7 +94,7 @@ void UIGuideEvent::FUN_14195a0c0(unsigned int id) {
     MS2Ptr<UIGuideEventArrow> arrow;
     if(!m_arrows.Lookup(id,arrow)) return;
     arrow->FUN_14195dfc0();
-    if(arrow->FUN_14195e020()==0) {
+    if(arrow->GetUseCount()==0) {
         if(m_30.get()) reinterpret_cast<Unk_1422baa20*>(m_30.operator->())->FUN_140ba26d0("removeArrow",id);
         m_arrows.RemoveKey(id);
     }
@@ -151,7 +151,7 @@ int UIGuideEvent::FUN_14195b810() { if(m_summary==NULL) return false; return FUN
 // @0x14195b8c0
 int UIGuideEvent::FUN_14195b8c0() { if(m_30==NULL) return 0; return FUN_1409c1720(m_30->Invoke("isShowTextTip")); }
 // @0x14195b950
-int UIGuideEvent::FUN_14195b950() { return m_lastTip; }
+int UIGuideEvent::GetLastTip() { return m_lastTip; }
 // @0x14195bfc0
 void UIGuideEvent::FUN_14195bfc0() { if(!m_expiry) return; if(FUN_140869420()>=m_expiry) FUN_14195b540(m_guide); }
 
@@ -574,7 +574,7 @@ int UIGuideEventArrow::FUN_14195dfc0()
     return --m_useCount;
 }
 // @0x14195e020
-int UIGuideEventArrow::FUN_14195e020() { return m_useCount; }
+int UIGuideEventArrow::GetUseCount() { return m_useCount; }
 
 // ---- UIGuideEventArrowDialog ----
 // @0x14195e040
@@ -1010,5 +1010,5 @@ MS2_REPLACE_METHOD(0x14195B600, UIGuideEvent, FUN_14195b600, 342, 0x9E9CF949);
 MS2_REPLACE_METHOD(0x14195B760, UIGuideEvent, FUN_14195b760, 166, 0xB3BB373C);
 MS2_REPLACE_METHOD(0x14195B810, UIGuideEvent, FUN_14195b810, 166, 0xC1178F37);
 MS2_REPLACE_METHOD(0x14195B8C0, UIGuideEvent, FUN_14195b8c0, 136, 0x51C8B7CD);
-MS2_REPLACE_METHOD(0x14195B950, UIGuideEvent, FUN_14195b950, 14, 0x99EEE733);
+MS2_REPLACE_METHOD(0x14195B950, UIGuideEvent, GetLastTip, 14, 0x99EEE733);
 MS2_REPLACE_METHOD(0x14195BFC0, UIGuideEvent, FUN_14195bfc0, 66, 0x7CE6065D);

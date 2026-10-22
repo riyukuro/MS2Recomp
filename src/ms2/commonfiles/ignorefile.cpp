@@ -16,7 +16,7 @@
 
 // ---- unit-local views of callees emitted in other units ----
 
-CLogString* FUN_140166440();                                        // the log singleton
+CLogString* GetLogString();                                        // the log singleton
 void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat);
 template<class T> inline void Unk_FileLog(CLogString* log, int level, int category, const wchar_t* format, const T& value) {
     const fmt::internal::ArgArray<1>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(value)};
@@ -54,7 +54,7 @@ bool CIgnoreFile::FUN_14050e2a0(std::string strPath)
         if (strPath.find(*it, 0) != std::string::npos)
         {
             const char* pszDir = it->c_str();
-            Unk_FileLog(FUN_140166440(), 0xc, 0x13, L"[Ignore Dir] {0}", pszDir);
+            Unk_FileLog(GetLogString(), 0xc, 0x13, L"[Ignore Dir] {0}", pszDir);
             return true;
         }
     }
@@ -78,13 +78,13 @@ bool CIgnoreFile::FUN_14050e4c0(std::string strPath, int nMode)
     if (!doc.FUN_140870fc0(strFile, 0))
     {
         const char* pszFile = strFile;
-        Unk_FileLog(FUN_140166440(), 2, 0x13, L"[IgnoreFile] {0} \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4.\n", pszFile);
+        Unk_FileLog(GetLogString(), 2, 0x13, L"[IgnoreFile] {0} \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4.\n", pszFile);
         return false;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[IgnoreFile] xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4.\n");
+        FUN_1401859c0(GetLogString(), 1, 0x13, L"[IgnoreFile] xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4.\n");
         return false;
     }
     for (Unk_140165cf0* pExcept = pRoot->FUN_140165cf0("except"); pExcept != 0; pExcept = pExcept->FUN_140168650("except"))

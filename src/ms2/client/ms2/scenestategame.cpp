@@ -5346,8 +5346,8 @@ template <> Unk_HsInfo* MS2Ptr<Unk_HsInfo>::get() const;     // ICF copy outside
 class UIWatchAGameDialog : public UIDialog
 {
 public:
-    void FUN_140fc0b20(int nValue);
-    void FUN_140fc0b40(int nCharId);
+    void SetValue(int nValue);
+    void SetCharId(int nCharId);
     void FUN_140fc0b60(bool bFlag);
 };
 
@@ -5480,8 +5480,8 @@ void CSceneStateGame::OnHideAndSeek(CInPacket& packet)
             break;
         if (bShow)
         {
-            pDlg->FUN_140fc0b20(nValue);
-            pDlg->FUN_140fc0b40(nCharId);
+            pDlg->SetValue(nValue);
+            pDlg->SetCharId(nCharId);
             pDlg->FUN_140fc0b60(bFlag);
             FUN_1403ed2b0()->FUN_141adc530(0x4f91);
         }
@@ -6269,7 +6269,7 @@ void CSceneStateGame::OnItemEnchant(CInPacket& packet)
         MS2Ptr<CItem> spItem = FUN_1419be700(nItemUid);
         if (spItem.get() != 0)
         {
-            int nPrevLevel = spItem->FUN_1405278a0()->FUN_140630d60()->FUN_14058c5f0();
+            int nPrevLevel = spItem->FUN_1405278a0()->FUN_140630d60()->GetLevel();
             UIItemEnchantDialog* pDlg = FUN_1413b1bc0(0x4e92);
             if (pDlg != 0)
             {
@@ -6304,7 +6304,7 @@ void CSceneStateGame::OnItemEnchant(CInPacket& packet)
         MS2Ptr<CItem> spItem = FUN_1419be700(nItemUid);
         if (spItem.get() != 0)
         {
-            int nPrevLevel = spItem->FUN_1405278a0()->FUN_140630d60()->FUN_14058c5f0();
+            int nPrevLevel = spItem->FUN_1405278a0()->FUN_140630d60()->GetLevel();
             UIItemEnchantDialog* pDlg = FUN_1413b1bc0(0x4e92);
             if (pDlg != 0)
             {
@@ -9203,7 +9203,7 @@ bool CSceneStateGame::FUN_141740280(int nButton, const CMsgBoxData& data)
         FUN_1418fd6c0(nUid);
         FUN_141740200(strName, 1);
     }
-    else if (data.FUN_141a04a80().m_nButton != 0)
+    else if (data.GetTimer().m_nButton != 0)
         FUN_141740200(strName, 6);
     else if (data.FUN_141a049d0())
         FUN_141740200(strName, 6);

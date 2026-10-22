@@ -200,7 +200,7 @@ bool FUN_140870d70(TiXmlDocument*, const void*, unsigned, int);
 bool FUN_140870fc0(TiXmlDocument*, const char*, int);
 CString FUN_140188f50(const char*, int);
 CString FUN_14016a5c0(const char*, int);
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 #ifdef __clang__
 // Bind verified MFC concatenation helpers; clang otherwise emits an unavailable CopyChars DLL import.
 CString FUN_14038f6d0(const CString&, const char*);
@@ -472,7 +472,7 @@ int CFileSystem::FUN_1403974b0(TiXmlDocument* document, const char* path, int en
     std::string alternate = FUN_14039b810(std::string(path));
     if (!FUN_140870fc0(document, FUN_14016a5c0(alternate.c_str(), 0), encoding)) {
         if (!FUN_140870fc0(document, FUN_14016a5c0(path, 0), encoding)) {
-            if (warn) Unk_FileLog(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", CString(path ? path : ""));
+            if (warn) Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", CString(path ? path : ""));
             return 0;
         }
     }
@@ -633,13 +633,13 @@ void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& out
         CString last = directory.Right(1);
         if (last != "/" && last != "*") directory += "/";
     }
-    if (FUN_140166420()->FUN_140398190() && !FUN_140166420()->FUN_14039f3b0(CString(static_cast<const char*>(directory)))) {
+    if (GetFileSystem()->FUN_140398190() && !GetFileSystem()->FUN_14039f3b0(CString(static_cast<const char*>(directory)))) {
         if (pattern.Find(".xml", 0) == -1) {
-            if (!localOnly) FUN_140166420()->FUN_14039d9f0(pattern, directory, output, exclude);
+            if (!localOnly) GetFileSystem()->FUN_14039d9f0(pattern, directory, output, exclude);
         } else {
             std::vector<CString> archived, local;
-            FUN_140166420()->FUN_14039e460(pattern, directory, local, exclude);
-            if (!localOnly) FUN_140166420()->FUN_14039d9f0(pattern, directory, archived, exclude);
+            GetFileSystem()->FUN_14039e460(pattern, directory, local, exclude);
+            if (!localOnly) GetFileSystem()->FUN_14039d9f0(pattern, directory, archived, exclude);
             std::unordered_set<std::string> unique;
             auto append = [&unique](const std::vector<CString>& paths) {
                 for (const auto& path : paths) {
@@ -651,13 +651,13 @@ void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& out
             append(archived);
             for (const auto& path : unique) output.push_back(CString(path.c_str()));
         }
-    } else FUN_140166420()->FUN_14039e460(pattern, directory, output, exclude);
+    } else GetFileSystem()->FUN_14039e460(pattern, directory, output, exclude);
 }
 MS2_REPLACE(0x1403992a0, FUN_1403992a0, 877, 0xACD21ED3);
 // MS2-FUNCTIONAL: preserves two FindFirstFileA passes, recursive order and extension/exclusion tests.
 // @0x140399620
 void FUN_140399620(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly) {
-    if (FUN_140166420()->FUN_140398190()) {
+    if (GetFileSystem()->FUN_140398190()) {
         FUN_140399100(pattern, directory, output, exclude, localOnly);
         return;
     }
@@ -774,7 +774,7 @@ bool CFileSystem::FUN_14039a160(const char* directory, const char* reference, ch
             throw 13;
         }
     }
-    Unk_FileLog(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}] referencePath : {1}", reference, directory);
+    Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}] referencePath : {1}", reference, directory);
     return false;
 }
 MS2_REPLACE_METHOD(0x14039a160, CFileSystem, FUN_14039a160, 1230, 0x093E08A9);
@@ -1128,7 +1128,7 @@ CFileSystem::BufferPtr CFileSystem::FUN_14039cc50(std::string path, int flag) {
     }
     if (Unk_FileFailure(this, resolved)()) {
         const char* text = resolved.c_str();
-        Unk_FileLog(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", text);
+        Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", text);
     }
     return BufferPtr(0);
 }
@@ -1305,7 +1305,7 @@ int CFileSystem::FUN_14039f4b0(const char* path, void** data, unsigned __int64* 
             }
         }
     }
-    if (warn) Unk_FileLog(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", CString(path ? path : ""));
+    if (warn) Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", CString(path ? path : ""));
     return 0;
 }
 MS2_REPLACE_METHOD(0x14039f4b0, CFileSystem, FUN_14039f4b0, 1584, 0x28E9772F);

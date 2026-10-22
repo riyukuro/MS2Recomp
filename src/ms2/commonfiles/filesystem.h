@@ -147,7 +147,7 @@ typedef unsigned long (CFileSystem::*Unk_FileTransformMethod)(unsigned long, uns
                                                            unsigned char**, unsigned long);
 typedef ClassFunHandler<Unk_FileTransform, CFileSystem*, Unk_FileTransformMethod> Unk_FileTransformHandler;
 MS2_CHECK_SIZE(Unk_FileTransformHandler, 0x18);
-CFileSystem* FUN_140166420();
+CFileSystem* GetFileSystem();
 void FUN_140399100(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly = false);
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly = false);
 void FUN_140399620(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly = false);

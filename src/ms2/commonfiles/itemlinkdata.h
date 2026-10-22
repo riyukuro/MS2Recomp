@@ -18,7 +18,7 @@ class CHyperLinkData : public CPtred
 public:
     CHyperLinkData(long nType);                                 // 0x1405bd5b0
     virtual ~CHyperLinkData() = default;                                  // 0x1405be190 (??_G 0x1405be340)
-    long FUN_1405bd600() const;                                 // the link type
+    long GetType() const;                                 // the link type
 protected:
     MS2_LAYOUT_FRIEND;
     long m_nType;                                               // +0x18
@@ -31,7 +31,7 @@ class CItemLinkData : public CHyperLinkData
 public:
     CItemLinkData(long nType, __int64 nOwnerId);                // 0x1405bd6d0
     virtual ~CItemLinkData() = default;                                   // 0x1405be1b0 (??_G 0x1405be380)
-    __int64 FUN_1405bd9a0() const;                              // the owner id
+    __int64 GetOwnerId() const;                              // the owner id
 protected:
     __int64 m_nOwnerId;                                         // +0x20
 };
@@ -58,7 +58,7 @@ class CLinkItemID : public CItemLinkData
 public:
     CLinkItemID(__int64 nOwnerId, int nItemId, int nRarity);    // 0x1405bd9c0
     virtual ~CLinkItemID() = default;                                     // 0x1405be250 (??_G 0x1405be4c0)
-    int FUN_1405bdb00() const;                                  // the item id
+    int GetItemId() const;                                  // the item id
     unsigned short FUN_1405bdb20() const;                       // the rarity
 protected:
     int m_nItemId;                                              // +0x28
@@ -71,7 +71,7 @@ class CLinkItemGUID : public CItemLinkData
 public:
     CLinkItemGUID(__int64 nOwnerId, __int64 nGuid);             // 0x1405bdb40
     virtual ~CLinkItemGUID() = default;                                   // 0x1405be230 (??_G 0x1405be480)
-    __int64 FUN_1405bdc50() const;                              // the item guid
+    __int64 GetGuid() const;                              // the item guid
 protected:
     __int64 m_nGuid;                                            // +0x28
 };
@@ -82,8 +82,8 @@ class CLinkSerialID : public CItemLinkData
 public:
     CLinkSerialID(__int64 nOwnerId, int nSerialLow, int nSerialHigh);   // 0x1405bdc70
     virtual ~CLinkSerialID() = default;                                   // 0x1405be2a0 (??_G 0x1405be540)
-    int FUN_1405bddb0() const;
-    int FUN_1405bddd0() const;
+    int GetLow() const;
+    int GetHigh() const;
 protected:
     int m_nLow;                                                 // +0x28
     int m_nHigh;                                                // +0x2c
@@ -95,7 +95,7 @@ class CLinkBlackMarketSN : public CItemLinkData
 public:
     CLinkBlackMarketSN(__int64 nOwnerId, __int64 nSerial);      // 0x1405bddf0
     virtual ~CLinkBlackMarketSN() = default;                              // 0x1405be1f0 (??_G 0x1405be400)
-    __int64 FUN_1405bdf00() const;                              // the serial number
+    __int64 GetSerial() const;                              // the serial number
 protected:
     __int64 m_nSerial;                                          // +0x28
 };

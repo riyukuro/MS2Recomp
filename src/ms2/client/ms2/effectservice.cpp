@@ -601,7 +601,7 @@ CEffectDataPtr EffectDataManager::FUN_14119fc50(const CString& strPath)
     strFile.TrimLeft();
     strFile.TrimRight();
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strFile, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strFile, 0, true, false) == 0)
     {
         FUN_14015eb90(FUN_140166440(), 2, 0x13, L"파일을 읽을 수 없습니다 CEffectDataMgr[{0}]", strFile);
         return CEffectDataPtr(0);

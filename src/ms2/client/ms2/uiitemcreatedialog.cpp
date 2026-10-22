@@ -156,7 +156,7 @@ CString FUN_14016a5c0(const char* sz, int nCodePage);       // copy a string
 CString FUN_140cc2a00(CString strDir, const CString& strFile);   // the path of a file in a directory
 void FUN_140710590(COutPacket& packet);                     // send
 void FUN_1418fc840(MS2Ptr<Unk_IcCombo> spCombo, int nItemId, int nRank);   // fill the rank combo of an item
-CFileSystem* FUN_140166420();
+CFileSystem* GetFileSystem();
 
 template <class T> static T* Unk_IcGetDialog(int nId)
 {
@@ -639,7 +639,7 @@ void UIItemCreateDialog::FUN_1419b6350()
     m_spContextMenu = FUN_140c02900("m_contextMenu");
     if (!(Unk_IcList*)m_spContextMenu)
         return;
-    bool bPacked = FUN_140166420()->FUN_140398190();
+    bool bPacked = GetFileSystem()->FUN_140398190();
     m_spContextMenu->vfunc_3(!bPacked);
     if (!bPacked) {
         ATL::CAtlArray<std::pair<CStringW, CStringW> > menu;

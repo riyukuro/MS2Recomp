@@ -48,7 +48,7 @@ void GameDictionaryManager::LoadNpc()
     strDir.Format("%s", "Table");
     CString strPath = FUN_14071a5b0(strDir, "monsterWebfinder_Npc.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -69,7 +69,7 @@ void GameDictionaryManager::LoadMob()
     strDir.Format("%s", "Table");
     CString strPath = FUN_14071a5b0(strDir, "monsterWebfinder_Mob.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -90,7 +90,7 @@ void GameDictionaryManager::LoadItem()
     strDir.Format("%s", "Table");
     CString strPath = FUN_14071a5b0(strDir, "itemWebfinder.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

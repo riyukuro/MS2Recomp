@@ -3191,7 +3191,7 @@ int PC::vfunc_122(void* p)
     PC* pOther = efd::DynamicCast<PC>(static_cast<PCBase*>(p));
     if (pOther != 0)
     {
-        int bPk = FUN_1403ed2d0()->FUN_141bd30a0()->FUN_1403754d0();
+        int bPk = FUN_1403ed2d0()->FUN_141bd30a0()->GetPkMode();
         if (bPk != 0)
         {
             if (p == this)
@@ -3372,9 +3372,9 @@ BOOL PC::FUN_141661e40(int* pnEnchant, int* pnGrade)
         CItemEnchantInfo* pEnchant = reinterpret_cast<Unk_PCItemStatus*>(spItem->FUN_1405278a0())->FUN_140630d60();
         if (pEnchant == 0)
             continue;
-        if (pEnchant->FUN_14058c5f0() < *Client::Constants::GetInstance()->ShowNameTagEnchantLevel.Get())
+        if (pEnchant->GetLevel() < *Client::Constants::GetInstance()->ShowNameTagEnchantLevel.Get())
             continue;
-        aEnchants.push_back(std::make_pair(pEnchant->FUN_14058c5f0(), spItem->FUN_140526bd0()));
+        aEnchants.push_back(std::make_pair(pEnchant->GetLevel(), spItem->FUN_140526bd0()));
     }
     std::sort(aEnchants.begin(), aEnchants.end(), Unk_PCEnchantOrder());
     if (aEnchants.size() > 0)

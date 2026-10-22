@@ -1384,7 +1384,7 @@ void UIGameRankingDialog::FUN_140e34eb0(Unk_RankPageReq spReply)
         if (list.FUN_140b2e170() != 0)
         {
             Unk_RankDataPtr spData((Unk_RankNewTag(0)));
-            spData.FUN_140b2e1e0()->FUN_140b287b0(spReply.FUN_140b2e220()->FUN_140e37c20(), Unk_RankJson(list));
+            spData.FUN_140b2e1e0()->FUN_140b287b0(spReply.FUN_140b2e220()->GetRankType(), Unk_RankJson(list));
             if (spData.FUN_140b2e1e0()->m_nRank == 0)
             {
                 if (m_30.get())
@@ -1541,7 +1541,7 @@ Unk_RankArcadeTable* FUN_140e37aa0()
 }
 
 // @0x140e37c20
-int Unk_RankReply::FUN_140e37c20()
+int Unk_RankReply::GetRankType()
 {
     return m_nRankType;
 }

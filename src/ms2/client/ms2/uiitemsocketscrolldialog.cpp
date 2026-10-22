@@ -226,7 +226,7 @@ void UIItemSocketScrollDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     CItemSocketScrollTable::GetInstance()->Reload();
-    FUN_140f65a90(0);
+    SetHasItem(0);
     FUN_140d42540(m_strSlot, m_nScrollUid, m_spItem);
     ItemScrollSlot* pSlot = FUN_140f65ab0(CString(m_strSlot));
     if (pSlot != 0)
@@ -273,7 +273,7 @@ void UIItemSocketScrollDialog::FUN_140f650a0(ItemScrollSlot& slot)
     {
         m_spItem = 0;
         m_30->Invoke("selectItem");
-        FUN_140f65a90(0);
+        SetHasItem(0);
     }
 }
 
@@ -330,7 +330,7 @@ void UIItemSocketScrollDialog::FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDr
         obj.FUN_1407cbb20("result", CStringW(strResult));
         m_spItem = spTarget;
         m_30->Invoke("selectItem", obj.FUN_1422bb870());
-        FUN_140f65a90(1);
+        SetHasItem(1);
         return;
     }
     FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_itemsocket_scroll_error_have_not_scroll")), 0, 0, CStringW(L""));
@@ -353,7 +353,7 @@ bool UIItemSocketScrollDialog::FUN_140f65a40(int nButton, const CMsgBoxData& box
 }
 
 // @0x140f65a90
-void UIItemSocketScrollDialog::FUN_140f65a90(int bHasItem)
+void UIItemSocketScrollDialog::SetHasItem(int bHasItem)
 {
     m_bHasItem = bHasItem;
 }

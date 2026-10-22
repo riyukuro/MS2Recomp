@@ -177,11 +177,11 @@ int CGemBase::vfunc_1()
 MS2_REPLACE_METHOD(0x1405A39D0, CGemBase, vfunc_1, 14, 0x72E52537);
 
 // @0x1405a39f0
-int CGemBase::FUN_1405a39f0()
+int CGemBase::GetGemId()
 {
     return m_nGemId;
 }
-MS2_REPLACE_METHOD(0x1405A39F0, CGemBase, FUN_1405a39f0, 14, 0x8AEE455B);
+MS2_REPLACE_METHOD(0x1405A39F0, CGemBase, GetGemId, 14, 0x8AEE455B);
 
 // @0x1405a3a10
 void CGemBase::vfunc_2(COutputStream& stream)
@@ -818,11 +818,11 @@ void CGemMeta::vfunc_8()
 MS2_REPLACE_METHOD(0x1405A6F30, CGemMeta, vfunc_8, 82, 0xB0B4740A);
 
 // @0x1405a5be0
-int CGemFishing::FUN_1405a5be0()
+int CGemFishing::GetDataId()
 {
     return m_nDataId;
 }
-MS2_REPLACE_METHOD(0x1405A5BE0, CGemFishing, FUN_1405a5be0, 14, 0xA25B27BF);
+MS2_REPLACE_METHOD(0x1405A5BE0, CGemFishing, GetDataId, 14, 0xA25B27BF);
 
 // @0x1405a5e20
 int CGemCharEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
@@ -1020,7 +1020,7 @@ MS2Ptr<CItemGem> CItemGem::vfunc_2()
 {
     MS2Ptr<CItemGem> spClone(new CItemGem);
     if (m_spGem.get() != 0)
-        spClone->FUN_1405aa540(m_spGem->vfunc_4());
+        spClone->SetGem(m_spGem->vfunc_4());
     return spClone;
 }
 MS2_REPLACE_METHOD(0x1405A76E0, CItemGem, vfunc_2, 284, 0xAA301DEE);
@@ -1032,7 +1032,7 @@ void CItemGem::vfunc_3(COutputStream& stream)
     if (m_spGem.get() != 0)
     {
         stream.vfunc_o10_1(m_spGem->vfunc_1());
-        stream.vfunc_o10_3(m_spGem->FUN_1405a39f0());
+        stream.vfunc_o10_3(m_spGem->GetGemId());
         m_spGem->vfunc_2(stream);
     }
 }
@@ -1131,11 +1131,11 @@ CString FUN_1405a7e80(int nValue)
 }
 
 // @0x1405aa540
-void CItemGem::FUN_1405aa540(MS2Ptr<CGemBase> spGem)
+void CItemGem::SetGem(MS2Ptr<CGemBase> spGem)
 {
     m_spGem = spGem;
 }
-MS2_REPLACE_METHOD(0x1405AA540, CItemGem, FUN_1405aa540, 61, 0x63D19A2E);
+MS2_REPLACE_METHOD(0x1405AA540, CItemGem, SetGem, 61, 0x63D19A2E);
 
 // @0x1405a96f0
 extern void* DAT_143aafd08;                                         // the gem table singleton (unit_14149fd50.cpp)

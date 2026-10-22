@@ -213,7 +213,7 @@ void UIItemPetStudyDialog::vfunc_67()
 }
 
 // @0x140e557f0
-void UIItemPetStudyDialog::FUN_140e557f0(unsigned __int64 nOwner)
+void UIItemPetStudyDialog::SetOwner(unsigned __int64 nOwner)
 {
     m_nOwner = nOwner;
 }

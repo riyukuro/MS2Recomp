@@ -73,7 +73,7 @@ MS2_REPLACE_METHOD(0x140DC2F80, RewardPreviewItem, Load, 145, 0x55730D5E);
 void RewardPreviewItem::Set(ItemDropResult& result)
 {
     m_item.m_itemId = result.m_itemId;
-    m_item.FUN_14026b1c0(result.vfunc_o18_1());
+    m_item.SetRank(result.vfunc_o18_1());
     m_bTradable = result.vfunc_o18_3();
 }
 MS2_REPLACE_METHOD(0x140DC3020, RewardPreviewItem, Set, 91, 0x33C979F5);

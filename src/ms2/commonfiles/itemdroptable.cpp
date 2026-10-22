@@ -715,7 +715,7 @@ bool ItemDropGlobalBox::CheckContinent(int nMapId)
     MS2Ptr<CFieldData> pField = CFieldData::FUN_140374140(nMapId);
     if (pField == 0)
         return false;
-    return m_continentCondition == pField->FUN_140375350();
+    return m_continentCondition == pField->GetContinentCode();
 }
 MS2_REPLACE_METHOD(0x1402E8520, ItemDropGlobalBox, CheckContinent, 168, 0xA22C2B15);
 

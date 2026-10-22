@@ -312,7 +312,7 @@ void CTextureAnimation::FUN_141848650()
 {
     if (m_spLayer)
     {
-        FUN_1403ed2d0()->FUN_141bd3650()->RemoveLayer(m_spLayer);
+        FUN_1403ed2d0()->GetTextureLayerManager()->RemoveLayer(m_spLayer);
         m_spNode->UpdateProperties();
         m_spLayer = 0;
     }
@@ -368,7 +368,7 @@ void CTextureAnimation::FUN_141848890(unsigned int nFrame)
         Unk_PPSmartC spBase = FUN_141848bb0(m_nFrame);
         Unk_PPSmartC spMap = FUN_141848dc0(m_nFrame);
         m_spLayer = new (efd::MemHint(efd::MemHint::NONE)) TextureLayer(1, pTexturing, spBase.Get(), spMap.Get());
-        FUN_1403ed2d0()->FUN_141bd3650()->AddLayer(m_spLayer);
+        FUN_1403ed2d0()->GetTextureLayerManager()->AddLayer(m_spLayer);
     }
     else
     {
@@ -377,7 +377,7 @@ void CTextureAnimation::FUN_141848890(unsigned int nFrame)
         Unk_PPSmartC spMap = FUN_141848dc0(m_nFrame);
         m_spLayer->FUN_14184b140(spBase.Get());
         m_spLayer->FUN_14184b170(spMap.Get());
-        FUN_1403ed2d0()->FUN_141bd3650()->Refresh(m_spLayer);
+        FUN_1403ed2d0()->GetTextureLayerManager()->Refresh(m_spLayer);
     }
     m_spNode->UpdateProperties();
 }

@@ -404,11 +404,11 @@ void UISystemShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 MS2_REPLACE_METHOD(0x140FA59B0, UISystemShopDialog, vfunc_49, 487, 0xFB754602);
 
 // @0x140fa5ba0
-void UISystemShopDialog::FUN_140fa5ba0(int nMode)
+void UISystemShopDialog::SetMode(int nMode)
 {
     m_nMode = nMode;
 }
-MS2_REPLACE_METHOD(0x140FA5BA0, UISystemShopDialog, FUN_140fa5ba0, 25, 0x11D24FAE);
+MS2_REPLACE_METHOD(0x140FA5BA0, UISystemShopDialog, SetMode, 25, 0x11D24FAE);
 
 // MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140fa5bc0

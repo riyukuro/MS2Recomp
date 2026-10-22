@@ -58,7 +58,7 @@ public:
     void FUN_140e4f9e0();
     void FUN_140e4fa60(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140e4fb70(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140e4fc30(int);
+    void SetBoxItemId(int);
     bool FUN_140e4fc50(int, const CMsgBoxData&);
     bool FUN_140e4fc90(const ItemEntity&);
     bool FUN_140e4fd60();

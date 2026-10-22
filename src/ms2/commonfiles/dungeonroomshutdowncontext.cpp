@@ -37,7 +37,7 @@ DungeonRoomShutdownContext::DungeonRoomShutdownContext()
 void DungeonRoomShutdownContext::FUN_140343eb0(const CStringW& strXml)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, strXml) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, strXml) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == 0)
@@ -56,7 +56,7 @@ void DungeonRoomShutdownContext::FUN_140343eb0(const CStringW& strXml)
 void DungeonRoomShutdownContext::FUN_140343fc0(const CStringW& strXml)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, strXml) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, strXml) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == 0)

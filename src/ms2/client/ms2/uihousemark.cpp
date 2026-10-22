@@ -209,7 +209,7 @@ void UIHouseMarkEntity::FUN_14198b100()
         return;
     }
     PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPc != NULL && FUN_14198c3f0() && FUN_1416595d0(pPc) != 0)
+    if (pPc != NULL && IsPopup() && FUN_1416595d0(pPc) != 0)
     {
         if ((unsigned)(m_nPopupTick + *FUN_1401d3200()->m_4390.FUN_1402056b0()) < GetTickCountMs2())
             FUN_14198b320();
@@ -506,11 +506,11 @@ void UIHouseMarkEntity::FUN_14198c370(int nProgress)
 MS2_REPLACE_METHOD(0x14198C370, UIHouseMarkEntity, FUN_14198c370, 114, 0x007BAE6D);
 
 // @0x14198c3f0
-bool UIHouseMarkEntity::FUN_14198c3f0()
+bool UIHouseMarkEntity::IsPopup()
 {
     return m_bPopup;
 }
-MS2_REPLACE_METHOD(0x14198C3F0, UIHouseMarkEntity, FUN_14198c3f0, 15, 0x52CC66EC);
+MS2_REPLACE_METHOD(0x14198C3F0, UIHouseMarkEntity, IsPopup, 15, 0x52CC66EC);
 
 // MS2-FUNCTIONAL: behaviour-equivalent; the Delegate/CStringW temporaries get different stack slots
 // @0x14198c410

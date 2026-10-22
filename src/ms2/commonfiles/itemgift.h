@@ -29,7 +29,7 @@ struct ItemEntity : CPtred, ItemAble {
     void FUN_14026b030(Unk_GiftOutput&);
     void FUN_14026b030(Unk_GiftOutput&) const;   // same function, called through a const ItemEntity& (SnowmanContext::Write)
     void FUN_14026b100(Unk_GiftInput&);
-    bool FUN_14026aff0(); bool FUN_14026b010(); void FUN_14026b1c0(int rank);   // rx2a: byte getters/setter
+    bool FUN_14026aff0(); bool FUN_14026b010(); void SetRank(int rank);   // rx2a: byte getters/setter
     unsigned int m_itemId;
     unsigned int m_count;
     bool m_28,m_29,m_2a,m_2b;

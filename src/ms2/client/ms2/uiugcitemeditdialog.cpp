@@ -1407,7 +1407,7 @@ void UIUGCItemEditDialog::FUN_141b41cd0()
     if (GFxService::FUN_141b47780() != 0)
         return;
     UIAvatarBase* pAvatar = FUN_141b43490();
-    if (pAvatar == 0 || pAvatar->GetView() == 0 || pAvatar->GetView()->FUN_141ab7660() == 0)
+    if (pAvatar == 0 || pAvatar->GetView() == 0 || pAvatar->GetView()->GetDirty() == 0)
         return;
     if (m_nCapture == 1)
     {
@@ -2011,7 +2011,7 @@ void UIUGCItemEditDialog::FUN_141b45180(MS2Ptr<CItem> spItem)
             return;
         m_spMadeItem = spItem;
         CString strDir = FUN_1401d31f0()->m_strUploadDir;
-        m_spMadeItem->FUN_140529fd0(strDir);
+        m_spMadeItem->SetName(strDir);
         CStringW strText = spUpload->m_nKind != 2 ? FUN_14028de60(0x2ee)
                                                   : FUN_14028b8e0(CStringW(L"s_msg_ugc_item_edit_complete_cube"));
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, CStringW(L""));
@@ -2039,7 +2039,7 @@ void UIUGCItemEditDialog::FUN_141b45770(const CUgcItemProxy* pProxy, CItemUgc* p
     spItem->FUN_140526c70(pProxy->m_nCount);
     spItem->FUN_1405278d0()->FUN_140632200(pUgc);
     CString strDir = FUN_1401d31f0()->m_strUploadDir;
-    spItem->FUN_140529fd0(strDir);
+    spItem->SetName(strDir);
     FUN_141b45180(spItem);
 }
 MS2_REPLACE_METHOD(0x141B45770, UIUGCItemEditDialog, FUN_141b45770, 518, 0x7E73CDB0);
@@ -2131,7 +2131,7 @@ bool UIUGCItemEditDialog::FUN_141b46070(int nResult, const CMsgBoxData& box)
     if (nResult == 0)
     {
         if (m_spMadeItem.get() != 0)
-            m_spMadeItem->FUN_140529fd0(CString(""));
+            m_spMadeItem->SetName(CString(""));
         m_spMadeItem = 0;
         if (!FUN_14052d220()->FUN_14187f410())
             FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)vfunc_48());
@@ -2192,11 +2192,11 @@ bool UIUGCItemEditDialog::FUN_141b462a0(int nResult, const CMsgBoxData& box)
 MS2_REPLACE_METHOD(0x141B462A0, UIUGCItemEditDialog, FUN_141b462a0, 257, 0xD0D704D2);
 
 // @0x141b463b0
-void UIUGCItemEditDialog::FUN_141b463b0(MS2Ptr<CItem> spItem)
+void UIUGCItemEditDialog::SetEditItem(MS2Ptr<CItem> spItem)
 {
     m_spEditItem = spItem;
 }
-MS2_REPLACE_METHOD(0x141B463B0, UIUGCItemEditDialog, FUN_141b463b0, 63, 0xAF7C5FDE);
+MS2_REPLACE_METHOD(0x141B463B0, UIUGCItemEditDialog, SetEditItem, 63, 0xAF7C5FDE);
 
 // ---- inline COMDATs of this obj ----
 

@@ -35,7 +35,7 @@ class Unk_IntroWindow { public: void FUN_141b91ba0(); };
 Unk_IntroWindow* FUN_140aadf80();
 class Unk_IntroFiles { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_IntroFiles* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 bool FUN_14028f710(Unk_140165cf0* pNode);
@@ -199,7 +199,7 @@ void UIIntroMovie::LoadIntroMovie()
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0) return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0) {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("introMovie"); pNode != 0; pNode = pNode->FUN_140168650("introMovie")) {

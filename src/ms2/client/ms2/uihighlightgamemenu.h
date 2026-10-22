@@ -73,7 +73,7 @@ public:
     virtual void vfunc_21(void* pItem);                 // UIItemEventListener 21 0x140c22df0
     virtual void vfunc_22(void* pItem);                 // UIItemEventListener 22 0x140c22ea0
 
-    bool FUN_140c22ce0();                               // 0x140c22ce0 the icon count is non-zero
+    bool IsActive();                               // 0x140c22ce0 the icon count is non-zero
     void FUN_140c244b0(int* pPos, bool bSet);           // 0x140c244b0 set a socket bit
     void FUN_140c22f50();                               // ask every action, send the "setMenu" list
     bool FUN_140c231b0();                               // "inven": a better piece of equipment is in the bag

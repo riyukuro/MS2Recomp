@@ -189,7 +189,7 @@ bool ReactorData::Load(Unk_140165cf0* pNode)
     if (!strXml.IsEmpty())
     {
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_140397ab0(&doc, strXml) == 0)
+        if (GetFileSystem()->FUN_140397ab0(&doc, strXml) == 0)
         {
             MS2_ASSERT_AT(0xff, 0);
             return false;
@@ -255,7 +255,7 @@ bool CReactorDataTable::LoadReactors()
     TiXmlDocument doc;
     CString strPath(m_strReactorXml);
     const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -288,7 +288,7 @@ bool CReactorDataTable::LoadStates()
     TiXmlDocument doc;
     CString strPath(m_strStateXml);
     const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -364,7 +364,7 @@ CReactorDataTable::DataPtr CReactorDataTable::GetReactorData(int nId)
     }
     else
     {
-        if (!FUN_140166420()->FUN_140398190() && IsCacheStale())
+        if (!GetFileSystem()->FUN_140398190() && IsCacheStale())
             Load();
         if (m_reactors.Lookup(nId, data))
             return data;

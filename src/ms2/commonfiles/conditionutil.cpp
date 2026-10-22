@@ -44,7 +44,7 @@ int FUN_1408732e0(Unk_ConditionXml* pNode, const char* pszName, __int64& rValue)
 int FUN_1408731e0(Unk_ConditionXml* pNode, const char* pszName, int& rValue);              // int attribute
 int FUN_1408733e0(Unk_ConditionXml* pNode, const char* pszName, CString& rValue);          // string attribute
 CString FUN_14015f710(Unk_ConditionXml* pNode, const char* pszName, CString strDefault);   // string with default
-CLogString* FUN_140166440();                                                                // the log singleton
+CLogString* GetLogString();                                                                // the log singleton
 void FUN_14015f050(CString& str, ATL::CAtlArray<CString>& rOut, const char* pszSep);       // split into strings
 void FUN_140177de0(const CString& str, ATL::CAtlArray<int>& rOut, const char* pszSep);           // split into ints
 void FUN_1401782a0(const CString& str, std::vector<unsigned int>& rOut, const char* pszSep);
@@ -341,7 +341,7 @@ int CConditionCommonData::Load(Unk_ConditionXml* pNode, CStringW strTag, unsigne
     CStringW strError(L"");
     if (!Validate(&strError))
     {
-        Unk_ConditionLog(FUN_140166440(), 0, 0, 0x31, L"{0} {1}. ID:{2} ", strError, strTag, nId);
+        Unk_ConditionLog(GetLogString(), 0, 0, 0x31, L"{0} {1}. ID:{2} ", strError, strTag, nId);
         return 0;
     }
     return 1;

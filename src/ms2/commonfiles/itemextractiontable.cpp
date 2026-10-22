@@ -22,7 +22,7 @@
 
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
 
@@ -53,7 +53,7 @@ void CItemExtractionTable::Load()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
@@ -64,7 +64,7 @@ void CItemExtractionTable::Load()
         FUN_140873220(pNode, "ResultItemID", spInfo->m_nResultItemId);
         if (spInfo->m_nScrollCount < 1)
         {
-            FUN_14015eb90(FUN_140166440(), 2, 0x13, L"값이 0 입니다.[<ms2> {0}][ScrollCount]", strPath);
+            FUN_14015eb90(GetLogString(), 2, 0x13, L"값이 0 입니다.[<ms2> {0}][ScrollCount]", strPath);
             continue;
         }
         m_map.SetAt(spInfo->m_nTargetItemId, spInfo);

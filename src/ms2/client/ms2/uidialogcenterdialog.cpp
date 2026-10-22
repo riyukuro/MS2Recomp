@@ -41,7 +41,7 @@ public:
 class UIWeddingHallReservationDialog : public UIDialog
 {
 public:
-    void FUN_140fdbf50(int nMode);
+    void SetPackage(int nMode);
     void FUN_140fdcaa0(CString strTab);
 };
 
@@ -332,7 +332,7 @@ void UIDialogCenterDialog::FUN_141295b00(const Scaleform::GFx::FunctionHandler::
 void UIDialogCenterDialog::FUN_141295b30(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     UIWeddingHallReservationDialog* pDlg = FUN_141296ab0(0x4f8d);
-    pDlg->FUN_140fdbf50(1);
+    pDlg->SetPackage(1);
     pDlg->FUN_140fdcaa0(CString("reservation"));
     pDlg->FUN_141924680();
 }
@@ -341,7 +341,7 @@ void UIDialogCenterDialog::FUN_141295b30(const Scaleform::GFx::FunctionHandler::
 void UIDialogCenterDialog::FUN_141295bb0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     UIWeddingHallReservationDialog* pDlg = FUN_141296ab0(0x4f8d);
-    pDlg->FUN_140fdbf50(1);
+    pDlg->SetPackage(1);
     pDlg->FUN_140fdcaa0(CString("reservationChange"));
     pDlg->FUN_141924680();
 }
@@ -350,7 +350,7 @@ void UIDialogCenterDialog::FUN_141295bb0(const Scaleform::GFx::FunctionHandler::
 void UIDialogCenterDialog::FUN_141295c30(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     UIWeddingHallReservationDialog* pDlg = FUN_141296ab0(0x4f8d);
-    pDlg->FUN_140fdbf50(1);
+    pDlg->SetPackage(1);
     pDlg->FUN_140fdcaa0(CString("reservationCancel"));
     pDlg->FUN_141924680();
 }

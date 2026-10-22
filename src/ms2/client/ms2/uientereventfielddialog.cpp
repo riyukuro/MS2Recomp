@@ -247,7 +247,7 @@ void UIEnterEventFieldDialog::UpdateVisible()
     if (!(spField == 0))
     {
         int nShow = 1;
-        if (spField->FUN_140375310() != 0)
+        if (spField->HasTutorialType() != 0)
         {
             nShow = 0;
         }

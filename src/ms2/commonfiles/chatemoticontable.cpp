@@ -53,7 +53,7 @@
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char* pszName); };   // FirstChildElement
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14071ae20(const CString& strFile);                           // the localised string table path
@@ -122,13 +122,13 @@ int ChatEmoticonCachedData::LoadEmoticons()
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -160,13 +160,13 @@ int ChatEmoticonCachedData::LoadStrings()
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -201,13 +201,13 @@ int ChatEmoticonCachedData::LoadCategories()
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -267,7 +267,7 @@ int ChatEmoticonCachedData::ValidateEmoticon(ChatEmoticonDataPtr spEmoticon)
     }
     if (m_categories.find(spEmoticon->m_nCategoryId) == m_categories.end())
     {
-        Unk_EmoticonLog(FUN_140166440(), 1, 0x13, L"invalid categoryId. chatEmoticonId: {1}, categoryId: {0}",
+        Unk_EmoticonLog(GetLogString(), 1, 0x13, L"invalid categoryId. chatEmoticonId: {1}, categoryId: {0}",
                         spEmoticon->m_nId, spEmoticon->m_nCategoryId);
         return 0;
     }

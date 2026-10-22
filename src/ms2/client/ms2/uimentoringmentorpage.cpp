@@ -126,7 +126,7 @@ ASMentoringMentorPage::~ASMentoringMentorPage() {}
 void ASMentoringMentorPage::OnInit()
 {
     if (!m_owner) return;
-    m_script = m_owner->FUN_140c74d70();
+    m_script = m_owner->GetScript();
     do
     {
         m_script->FUN_140beaf20("m_coin", m_coin);
@@ -826,9 +826,9 @@ int UIMentoringPage::vfunc_8() { return 0; }
 // @0x140c74d60
 void UIMentoringPage::vfunc_9() {}
 // @0x140c74d70
-MS2Ptr<AScript> UIMentoringPage::FUN_140c74d70() { return m_script; }
+MS2Ptr<AScript> UIMentoringPage::GetScript() { return m_script; }
 // @0x140c74dc0
-UIMentoringDialog* UIMentoringPage::FUN_140c74dc0() { return m_owner; }
+UIMentoringDialog* UIMentoringPage::GetOwner() { return m_owner; }
 
 // ---- hooks ----
 MS2_REPLACE_METHOD(0x140C713E0, ASMentoringMentorPage, OnInit, 515, 0xC15AD1B1);
@@ -871,5 +871,5 @@ MS2_REPLACE_METHOD(0x140C74CE0, UIMentoringPage, vfunc_5, 23, 0x192A1B0B);
 MS2_REPLACE_METHOD(0x140C74D00, UIMentoringPage, vfunc_7, 61, 0xF1E0C4FD);
 MS2_REPLACE_METHOD(0x140C74D50, UIMentoringPage, vfunc_8, 8, 0x7F371472);
 MS2_REPLACE_METHOD(0x140C74D60, UIMentoringPage, vfunc_9, 6, 0xA9AF6E37);
-MS2_REPLACE_METHOD(0x140C74D70, UIMentoringPage, FUN_140c74d70, 65, 0x6FC2F2E2);
-MS2_REPLACE_METHOD(0x140C74DC0, UIMentoringPage, FUN_140c74dc0, 15, 0x9BD8F6D9);
+MS2_REPLACE_METHOD(0x140C74D70, UIMentoringPage, GetScript, 65, 0x6FC2F2E2);
+MS2_REPLACE_METHOD(0x140C74DC0, UIMentoringPage, GetOwner, 15, 0x9BD8F6D9);

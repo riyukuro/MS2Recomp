@@ -64,7 +64,7 @@ public:
     void FUN_14198c140(bool bPopup);
     void FUN_14198c210(int nIconType);
     void FUN_14198c370(int nProgress);
-    bool FUN_14198c3f0();                                           // the popup is open
+    bool IsPopup();                                           // the popup is open
     void FUN_14198c410();                                           // the button: contract terms, then the contract UI
     void FUN_14198c5a0();                                           // open the contract UI (0x4e76)
     void FUN_14198c610();                                           // show again after a reset

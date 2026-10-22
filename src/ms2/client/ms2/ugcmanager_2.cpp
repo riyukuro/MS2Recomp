@@ -70,7 +70,7 @@ static CString s_strTabIndex = "tabIndex";
 
 // ---- callees ------------------------------------------------------------------------------------------------------
 
-CLogString* FUN_140166440();                                // the log singleton
+CLogString* GetLogString();                                // the log singleton
 CUgcDownloadDown* FUN_1414a57f0();
 CUgcDownloadLoad* FUN_1414a5800();
 CUgcManager* FUN_14052d220();
@@ -542,7 +542,7 @@ void CUgcDownloadEquip::ProcessResult()
             spEquip->FUN_1411dc900(1);
         }
     }
-    Unk_UgcLog(FUN_140166440(), 0xc, 0x13, L"[CUgcDownloadEquip::ProcessResult] proxy count = {0}", m_list.GetCount());
+    Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadEquip::ProcessResult] proxy count = {0}", m_list.GetCount());
 }
 MS2_REPLACE_METHOD(0x14186fc80, CUgcDownloadEquip, ProcessResult, 447, 0xE108C4AE);
 
@@ -612,7 +612,7 @@ void CUgcDownloadCube::ProcessResult()
         if (pDialog)
             pDialog->FUN_140eec480();
     }
-    Unk_UgcLog(FUN_140166440(), 0xc, 0x13, L"[CUgcDownloadCube::ProcessResult] proxy count = {0}", m_list.GetCount());
+    Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadCube::ProcessResult] proxy count = {0}", m_list.GetCount());
 }
 MS2_REPLACE_METHOD(0x141870220, CUgcDownloadCube, ProcessResult, 574, 0x6AF398CE);
 
@@ -693,7 +693,7 @@ void CUgcDownloadItemIcon::ProcessResult()
             }
         }
     }
-    Unk_UgcLog(FUN_140166440(), 0xc, 0x13, L"[CUgcDownloadItemIcon::ProcessResult] proxy count = {0}",
+    Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadItemIcon::ProcessResult] proxy count = {0}",
                m_list.GetCount());
 }
 MS2_REPLACE_METHOD(0x141870840, CUgcDownloadItemIcon, ProcessResult, 782, 0xBF3BA1EC);
@@ -852,7 +852,7 @@ void CUgcDownloadProfile::ProcessResult()
             }
         }
     }
-    Unk_UgcLog(FUN_140166440(), 0xc, 0x13, L"[CUgcDownloadProfile::ProcessResult] proxy count = {0}", m_list.GetCount());
+    Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadProfile::ProcessResult] proxy count = {0}", m_list.GetCount());
 }
 MS2_REPLACE_METHOD(0x1418714a0, CUgcDownloadProfile, ProcessResult, 1217, 0xBCA7EE22);
 
@@ -907,7 +907,7 @@ void CUgcDownloadWeddingProfile::ProcessResult()
                 pDialog->FUN_140fc7f30();
         }
     }
-    Unk_UgcLog(FUN_140166440(), 0xc, 0x13, L"[CUgcDownloadWeddingProfile::ProcessResult] proxy count = {0}",
+    Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadWeddingProfile::ProcessResult] proxy count = {0}",
                m_list.GetCount());
 }
 MS2_REPLACE_METHOD(0x141871c60, CUgcDownloadWeddingProfile, ProcessResult, 373, 0x1CCCDB4A);
@@ -973,7 +973,7 @@ void CUgcDownloadGuildMark::ProcessResult()
                 pImage->FUN_1414017b0(m_strPath);
         }
     }
-    Unk_UgcLog(FUN_140166440(), 0xc, 0x13, L"[CUgcDownloadGuildMark::ProcessResult] proxy count = {0}",
+    Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadGuildMark::ProcessResult] proxy count = {0}",
                m_list.GetCount());
 }
 MS2_REPLACE_METHOD(0x1418720c0, CUgcDownloadGuildMark, ProcessResult, 914, 0xC202CF80);
@@ -1017,7 +1017,7 @@ void CUgcDownloadGuildPoster::ProcessResult()
 {
     if (m_nResult == 0 && m_spPoster.get())
         FUN_1403ed290()->FUN_1413baef0(m_spPoster->m_nIndex, 0);
-    FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"[CUgcDownloadGuildPoster::ProcessResult]");
+    FUN_1401859c0(GetLogString(), 0xc, 0x13, L"[CUgcDownloadGuildPoster::ProcessResult]");
 }
 MS2_REPLACE_METHOD(0x141872730, CUgcDownloadGuildPoster, ProcessResult, 131, 0xC7FB1C84);
 
@@ -1075,7 +1075,7 @@ void CUgcDownloadRidee::ProcessResult()
                 FUN_14052d220()->FUN_141887040(sp.get(), m_strPath, m_param.m_upload.m_uid);
         }
     }
-    Unk_UgcLog(FUN_140166440(), 0xc, 0x13, L"[CUgcDownloadRidee::ProcessResult] proxy count = {0}", m_list.GetCount());
+    Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadRidee::ProcessResult] proxy count = {0}", m_list.GetCount());
 }
 MS2_REPLACE_METHOD(0x141872ac0, CUgcDownloadRidee, ProcessResult, 495, 0x511D51FA);
 
@@ -1196,7 +1196,7 @@ void CUgcDownloadShopBanner::ProcessResult()
                 pDialog->FUN_14130bf20(sp->m_strKey, m_strPath, bOk);
             }
         }
-        Unk_UgcLog(FUN_140166440(), 0xc, 0x13, L"[CUgcDownloadShopBanner::ProcessResult] proxy count = {0}",
+        Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadShopBanner::ProcessResult] proxy count = {0}",
                    m_list.GetCount());
     }
 }
@@ -1343,7 +1343,7 @@ void CUgcDownloadBlueprintImage::ProcessResult()
             FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(pNotify));
         }
     }
-    Unk_UgcLog(FUN_140166440(), 0xc, 0x13, L"[CUgcDownloadBlueprintImage::ProcessResult] proxy count = {0}",
+    Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadBlueprintImage::ProcessResult] proxy count = {0}",
                m_list.GetCount());
 }
 MS2_REPLACE_METHOD(0x1418740f0, CUgcDownloadBlueprintImage, ProcessResult, 717, 0x83300BF5);
@@ -1414,7 +1414,7 @@ void CUgcDownloadBlueprintIcon::ProcessResult()
                 FUN_140bc09f0()->OnCallBackIcon(&sp->m_callBack, m_strPath);
         }
     }
-    Unk_UgcLog(FUN_140166440(), 0xc, 0x13, L"[CUgcDownloadBlueprintIcon::ProcessResult] proxy count = {0}",
+    Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadBlueprintIcon::ProcessResult] proxy count = {0}",
                m_list.GetCount());
 }
 MS2_REPLACE_METHOD(0x1418747a0, CUgcDownloadBlueprintIcon, ProcessResult, 661, 0x772FA1E7);

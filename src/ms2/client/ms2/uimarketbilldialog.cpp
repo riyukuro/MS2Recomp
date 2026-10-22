@@ -385,7 +385,7 @@ void UIMarketBillDialog::OnLoadComplete()
     UIModalDialog::OnLoadComplete();
     if (m_spParam == 0)
         vfunc_67();
-    FUN_140eaac30(m_spParam->m_nType);
+    SetMode(m_spParam->m_nType);
     FUN_140ea8df0();
 }
 
@@ -646,7 +646,7 @@ float UIMarketBillDialog::FUN_140ea8ab0(MS2Ptr<ASTextField> spPayback, MS2Ptr<AS
 
 // A copy of the parameter.
 // @0x140ea8da0
-MS2Ptr<TMarketBillDataParam> UIMarketBillDialog::FUN_140ea8da0()
+MS2Ptr<TMarketBillDataParam> UIMarketBillDialog::GetParam()
 {
     return m_spParam;
 }
@@ -966,9 +966,9 @@ void UIMarketBillDialog::FUN_140eaa5e0(ASData* pData)
 void UIMarketBillDialog::FUN_140eaa860(ASData* pData)
 {
     if (!pData->FUN_1422b8a90())
-        FUN_140eaac30(1);
+        SetMode(1);
     else
-        FUN_140eaac30(2);
+        SetMode(2);
     FUN_140eaa8d0();
 }
 
@@ -1006,7 +1006,7 @@ void UIMarketBillDialog::FUN_140eaa8d0()
 }
 
 // @0x140eaac30
-void UIMarketBillDialog::FUN_140eaac30(int nMode)
+void UIMarketBillDialog::SetMode(int nMode)
 {
     m_nMode = nMode;
 }

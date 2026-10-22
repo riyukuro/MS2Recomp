@@ -3518,7 +3518,7 @@ bool CGuildManager::SendGuildMode120(int result, const CMsgBoxData& box)
 {
     if (result != 0)
         return true;
-    if (box.FUN_141a04a80().m_nButton != 0)
+    if (box.GetTimer().m_nButton != 0)
         return true;
     COutPacket packet(0x4b, 0);
     packet.vfunc_o10_1(0x78);

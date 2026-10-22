@@ -301,7 +301,7 @@ extern unsigned DAT_143af62d4;
 extern unsigned DAT_143af62d8;
 extern int DAT_143af62e0;
 
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 
 // ---- the log with one argument (in this unit) ----
 // @0x141aed470
@@ -609,7 +609,7 @@ void CUIService::FUN_141ad9c40(MS2Ptr<CGemBase> spGem)
 {
     GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(FUN_14025e7a0()->FUN_1422b01a0(1));
     if (pDamage != 0)
-        pDamage->FUN_140b61900(FUN_140719190(spGem->FUN_1405a39f0()));
+        pDamage->FUN_140b61900(FUN_140719190(spGem->GetGemId()));
 }
 MS2_REPLACE_METHOD(0x141ad9c40, CUIService, FUN_141ad9c40, 174, 0x2F761BAF);
 
@@ -618,7 +618,7 @@ void CUIService::FUN_141ad9d00(MS2Ptr<CGemBase> spGem)
 {
     GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(FUN_14025e7a0()->FUN_1422b01a0(1));
     if (pDamage != 0)
-        pDamage->FUN_140b61b80(FUN_140719190(spGem->FUN_1405a39f0()));
+        pDamage->FUN_140b61b80(FUN_140719190(spGem->GetGemId()));
 }
 MS2_REPLACE_METHOD(0x141ad9d00, CUIService, FUN_141ad9d00, 174, 0x5D6CDB34);
 
@@ -1252,7 +1252,7 @@ MS2_REPLACE_METHOD(0x141adb900, CUIService, FUN_141adb900, 172, 0xB7C6BAAD);
 // @0x141adb9c0
 void CUIService::FUN_141adb9c0(const CStringW& str, int a, int b)
 {
-    Unk_UisLoading* pLoading = static_cast<Unk_UisLoading*>(FUN_141540270(FUN_141add860()));
+    Unk_UisLoading* pLoading = static_cast<Unk_UisLoading*>(FUN_141540270(GetMode()));
     if (pLoading != 0)
         pLoading->FUN_1419dff50(str, a, b);
     FUN_140a94350()->vfunc_10(1);
@@ -1291,7 +1291,7 @@ void CUIService::FUN_141adbea0()
 {
     if (m_b120)
     {
-        Unk_UisLoading* pLoading = static_cast<Unk_UisLoading*>(FUN_141540270(FUN_141add860()));
+        Unk_UisLoading* pLoading = static_cast<Unk_UisLoading*>(FUN_141540270(GetMode()));
         if (pLoading != 0)
             pLoading->FUN_1419dfd90();
     }
@@ -1330,24 +1330,24 @@ int CUIService::FUN_141add730()
     int nMode = 0;
     if (!m_b120 && m_n11c != 0)
         FUN_141add6e0(m_n11c);
-    nMode = FUN_141add860();
+    nMode = GetMode();
     if (nMode != 0x3ed)
     {
         UIObject* pDlg = FUN_141540270(nMode);
         if (pDlg == 0 || pDlg->FUN_1422dba00() == 0)
             FUN_141add6e0(0x3ed);
-        nMode = FUN_141add860();
+        nMode = GetMode();
     }
     return nMode;
 }
 MS2_REPLACE_METHOD(0x141add730, CUIService, FUN_141add730, 295, 0x6A8E9128);
 
 // @0x141add860
-int CUIService::FUN_141add860()
+int CUIService::GetMode()
 {
     return m_nMode;
 }
-MS2_REPLACE_METHOD(0x141add860, CUIService, FUN_141add860, 17, 0xCF7F4092);
+MS2_REPLACE_METHOD(0x141add860, CUIService, GetMode, 17, 0xCF7F4092);
 
 // @0x141add880
 // msg-box result callback (Delegate<bool(int, const CMsgBoxData&)>): on OK open the market dialog with the box's first argument
@@ -1513,7 +1513,7 @@ void CUIService::OpenDialog(eUIClassID nClass)
     if (m_mapDlg.Lookup(nClass, spDlg))
         spDlg->FUN_141924680();
     else
-        Unk_UisLog1(FUN_140166440(), 2, 0x1a, L"CUIService::OpenDialog error. eUIClassID = {0}", nClass);
+        Unk_UisLog1(GetLogString(), 2, 0x1a, L"CUIService::OpenDialog error. eUIClassID = {0}", nClass);
 }
 MS2_REPLACE_METHOD(0x141adc530, CUIService, OpenDialog, 148, 0x5BAEB13D);
 
@@ -1548,7 +1548,7 @@ void CUIService::ToggleDialog(eUIClassID nClass)
     if (m_mapDlg.Lookup(nClass, spDlg))
         spDlg->FUN_1419246f0();
     else
-        Unk_UisLog1(FUN_140166440(), 2, 0x1a, L"CUIService::ToggleDialog error. eUIClassID = {0}", nClass);
+        Unk_UisLog1(GetLogString(), 2, 0x1a, L"CUIService::ToggleDialog error. eUIClassID = {0}", nClass);
 }
 MS2_REPLACE_METHOD(0x141adc750, CUIService, ToggleDialog, 148, 0x411CFA63);
 

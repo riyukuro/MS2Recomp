@@ -156,7 +156,7 @@ int FUN_1413d6890(HardwareInstancingService*, egf::Entity*);
 void FUN_1413d73a0(HardwareInstancingService*, int);
 void FUN_141473870(const egf::EntityID&);
 void FUN_1414737d0(egf::Entity*);
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 bool FUN_140a33ff0(const efd::Point3*);
 void FUN_140a38a50(egf::Entity*, egf::PropertyID, const efd::Point3&);
 void FUN_1409457c0(egf::Entity*, egf::PropertyID, const float&);
@@ -271,7 +271,7 @@ egf::EntityPtr EntityWorldManager::FactoryEntity(const efd::utf8string& modelNam
     if (models->FindModel(modelName) == nullptr) {
         auto result = models->LoadModel(modelName);
         if (result != 0 && result != 1) {
-            Unk_WorldLog(FUN_140166440(), 12, 0x13, L"EntityWorldManager::FactoryEntity LoadResult = {0}", result);
+            Unk_WorldLog(GetLogString(), 12, 0x13, L"EntityWorldManager::FactoryEntity LoadResult = {0}", result);
             return egf::EntityPtr(0);
         }
     }
@@ -282,7 +282,7 @@ egf::EntityPtr EntityWorldManager::FUN_1411cedd0(egf::FlatModelID modelID, egf::
     if (models->FindModel(modelID) == nullptr) {
         auto result = models->LoadModel(models->GetModelNameByID(modelID, true));
         if (result != 0 && result != 1) {
-            Unk_WorldLog(FUN_140166440(), 12, 0x13, L"EntityWorldManager::FactoryEntity LoadResult = {0}", result);
+            Unk_WorldLog(GetLogString(), 12, 0x13, L"EntityWorldManager::FactoryEntity LoadResult = {0}", result);
             return egf::EntityPtr(0);
         }
     }

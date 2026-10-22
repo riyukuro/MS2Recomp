@@ -73,7 +73,7 @@ public:
     virtual int vfunc_48() { return 0x4e6c; }                   // 48 0x1419dae40
     virtual void vfunc_67();                                    // 67 0x1419d9700 UIModalDialog::vfunc_67
 
-    void FUN_1419da620(int nMode);                              // set the mode
+    void SetMode(int nMode);                              // set the mode
     void FUN_1419da8f0();                                       // load the options (account or local copy)
     void FUN_1419dabc0();                                       // apply: send the options / store the copy
 

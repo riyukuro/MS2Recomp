@@ -449,7 +449,7 @@ unsigned UICameraEditDialog::LoadCustomizeCamera()
     if (CameraMgr::GetInstance()->FUN_140a18070() == 0)
         return 0;
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, "./data/xml/camera/customize.xml", 0, 1, 0) != 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, "./data/xml/camera/customize.xml", 0, 1, 0) != 0)
     {
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot != 0)

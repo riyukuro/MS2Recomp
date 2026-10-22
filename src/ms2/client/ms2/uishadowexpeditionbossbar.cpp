@@ -171,7 +171,7 @@ void FieldGameScoreBoardCli::FUN_140f9c610(CStringW strTitle, int nCur, int nMax
         UIShadowExpeditionBossBar* pDlg = FUN_140f9d940(0x4f0e);
         if (pDlg != 0) {
             pDlg->FUN_140f9d1f0(nCur, nMax);
-            pDlg->FUN_140f9d230(strTitle);
+            pDlg->SetTitle(strTitle);
             m_pDlg = pDlg;
         }
         break;
@@ -302,11 +302,11 @@ void UIShadowExpeditionBossBar::FUN_140f9d1f0(int nCur, int nMax)
 MS2_REPLACE_METHOD(0x140F9D1F0, UIShadowExpeditionBossBar, FUN_140f9d1f0, 45, 0xB629382D);
 
 // @0x140f9d230
-void UIShadowExpeditionBossBar::FUN_140f9d230(CStringW strTitle)
+void UIShadowExpeditionBossBar::SetTitle(CStringW strTitle)
 {
     m_strTitle = strTitle;
 }
-MS2_REPLACE_METHOD(0x140F9D230, UIShadowExpeditionBossBar, FUN_140f9d230, 65, 0x444C32F9);
+MS2_REPLACE_METHOD(0x140F9D230, UIShadowExpeditionBossBar, SetTitle, 65, 0x444C32F9);
 
 // @0x140f9d280
 void UIShadowExpeditionBossBar::vfunc_84(int nCur)

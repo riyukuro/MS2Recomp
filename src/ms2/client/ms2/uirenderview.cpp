@@ -208,13 +208,13 @@ int UIRenderView::vfunc_13(const Unk_ModelViewCamera&)
 }
 
 // @0x141ab7660
-int UIRenderView::FUN_141ab7660()
+int UIRenderView::GetDirty()
 {
     return m_nDirty;
 }
 
 // @0x141ab7680
-NiNode* UIRenderView::FUN_141ab7680()
+NiNode* UIRenderView::GetEffectRoot()
 {
     return m_spEffectRoot;
 }
@@ -387,8 +387,8 @@ MS2_REPLACE_METHOD(0x141ab7590, UIRenderView, vfunc_9, 12, 0x90591540);
 MS2_REPLACE_METHOD(0x141ab75b0, UIRenderView, vfunc_10, 48, 0xDCFD6EC6);
 MS2_REPLACE_METHOD(0x141ab7620, UIRenderView, vfunc_11, 11, 0x02239C70);
 MS2_REPLACE_METHOD(0x141ab7640, UIRenderView, vfunc_13, 16, 0x32804D89);
-MS2_REPLACE_METHOD(0x141ab7660, UIRenderView, FUN_141ab7660, 14, 0x921EE467);
-MS2_REPLACE_METHOD(0x141ab7680, UIRenderView, FUN_141ab7680, 31, 0x52CE6B8B);
+MS2_REPLACE_METHOD(0x141ab7660, UIRenderView, GetDirty, 14, 0x921EE467);
+MS2_REPLACE_METHOD(0x141ab7680, UIRenderView, GetEffectRoot, 31, 0x52CE6B8B);
 MS2_REPLACE_METHOD(0x141ab76b0, UIRenderView, FUN_141ab76b0, 430, 0xC0327C64);
 MS2_REPLACE_METHOD(0x141ab7b80, UIRenderView, FUN_141ab7b80, 41, 0x1026C096);
 MS2_REPLACE_METHOD(0x141ab7bb0, UIRenderView, vfunc_14, 8, 0x7F371472);

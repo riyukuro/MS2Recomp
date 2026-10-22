@@ -68,7 +68,7 @@ public:
     int FUN_141a75680(float* pPos);                             // the first other member's camera button
     int FUN_141a75840();                                        // "isCanObserveMode"
     void FUN_141a759b0();                                       // refresh the vote panel
-    void FUN_141a75a00(unsigned int nDeadline);                 // m_deadline = n
+    void SetDeadline(unsigned int nDeadline);                 // m_deadline = n
     void FUN_141a75a20();                                       // "arrangeBottomButton"
     bool FUN_141a77600(int nResult, const CMsgBoxData& box);    // create club box answer
     bool SendDungeonReward(int nResult, const CMsgBoxData& box);    // give up box answer

@@ -955,7 +955,7 @@ int LoadShopMeratGroup()
     strPath = FUN_14071a5b0(CString("Table/Server"), CString("shop_meratGroup.xml"));
     FUN_1406e35b0(strPath);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1076,7 +1076,7 @@ Unk_ShopLifeRef FUN_1406e3310(Unk_140165cf0* pElem);
 int FUN_1406e0390(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1151,7 +1151,7 @@ int FUN_1406e0390(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
 int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1299,7 +1299,7 @@ int FUN_1406e0bd0(const CString& strPath, Unk_NpcShopMap& shops, bool bOverride)
 int FUN_1406e1a50(const CString& strPath, Unk_NpcShopMap& shops)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -2190,7 +2190,7 @@ bool FUN_1406e56d0(const CString& strPath)
     if (s_spCouponCache != 0)
         s_spCouponCache->FUN_1401d1160(strPath);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

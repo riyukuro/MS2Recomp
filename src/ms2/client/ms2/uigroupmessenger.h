@@ -86,13 +86,13 @@ public:
     void FUN_14194afc0(int nEmoticonId);                                    // sends an emoticon as an image line
     int FUN_14194b190(int nEmoticonId, bool bFavorite);                     // (un)marks a favorite emoticon
     void FUN_14194b440(const CStringW& strName, float x, float y);          // the member popup menu
-    int FUN_14194b880();                                                    // the member list is shown
+    int IsUserList();                                                    // the member list is shown
     CString FUN_14194b8a0();                                                // the settings file name
-    CStringW FUN_14194b960();                                               // the chat name
-    unsigned FUN_14194b9b0();                                               // the group id
+    CStringW GetName();                                               // the chat name
+    unsigned GetGroupId();                                               // the group id
     int FUN_14194b9d0(__int64 nCharacterId);                                // is a member
     CStringW FUN_14194ba80(unsigned __int64 nCharacterId);                  // a member's name
-    void FUN_14194bc70(CStringW strName);                                   // renames the chat
+    void SetName(CStringW strName);                                   // renames the chat
     void FUN_14194bcc0(CStringW strText);                                   // appends to the input
     void FUN_14194bde0();                                                   // refreshes the window
     void OnBuildScrollingList();                                                   // refreshes the member list

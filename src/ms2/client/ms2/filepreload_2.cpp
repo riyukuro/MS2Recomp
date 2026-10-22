@@ -163,7 +163,7 @@ unsigned CFileSearcher::vfunc_1(void*,Unk_140659080& startup) {
     } else {
         ATL::CAtlArray<CString> files;
         for(auto it=directories.rbegin();it!=directories.rend();++it) {
-            FUN_140166420();
+            GetFileSystem();
             FUN_140399620(CString("*.*"),CString(*it),files,CString(""),false);
         }
         FUN_1412195a0(files);

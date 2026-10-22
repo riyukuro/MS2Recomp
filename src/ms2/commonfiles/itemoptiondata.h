@@ -31,14 +31,14 @@ public:
     ItemOptionValue();                          // 0x1405ce250
     ItemOptionValue(int nStat);                 // 0x1405ce2b0
     ItemOptionValue(unsigned nSpecial);         // 0x1405ce310
-    int FUN_1405ce370();                        // the stat (-1 for a special stat)
-    unsigned FUN_1405ce390();                   // the special stat
-    bool FUN_1405ce3b0();                       // the value is set
+    int GetStat();                        // the stat (-1 for a special stat)
+    unsigned GetSpecial();                   // the special stat
+    bool HasValue();                       // the value is set
     bool FUN_1405ce3f0();
     BOOL FUN_1405ce470();                       // a special stat
     CString FUN_1405ce4a0();                    // the xml name of the stat
-    int FUN_1405ce530();                        // the value
-    void FUN_1405ce550(int nValue);             // sets the value
+    int GetValue();                        // the value
+    void SetValue(int nValue);             // sets the value
     virtual int vfunc_1(unsigned nItemId, int nRank);   // slot 1: the value for an item
 protected:
     int m_nValue;                               // +0x18 "value"
@@ -110,10 +110,10 @@ public:
     int FUN_1405d9bb0(int nStatId);
     ItemOptionStatGroup FUN_1405d9e00();        // the random row's statGroup
     int FUN_1405d9e30();                        // m_n50
-    void FUN_1405d9be0(MS2Ptr<Unk_1405e74c0> spTarget);    // sets the reroll request
+    void SetTarget(MS2Ptr<Unk_1405e74c0> spTarget);    // sets the reroll request
     BOOL FUN_1405d9c30(CString strName);        // the option already holds a stat of the name's exclusive group
     BOOL FUN_1405d9d10(CString strName);        // the same for the reroll result
-    MS2Ptr<CItemOption> FUN_1405d9e50();        // the option
+    MS2Ptr<CItemOption> GetOption();        // the option
     int FUN_1405d9ea0(MS2Ptr<ItemOptionValueRandom> spValue, Unk_Random* pRandom, unsigned* pCount, Unk_ProbabilityLog* pLogs);
     int FUN_1405da4b0(MS2Ptr<ItemOptionValueRandom> spValue, unsigned* pCount, int nIndex, Unk_ProbabilityLog* pLogs);
     int FUN_1405daad0(MS2Ptr<ItemOptionValueRandom> spValue, unsigned* pCount, Unk_ProbabilityLog* pLogs);
@@ -133,11 +133,11 @@ public:
     ItemOptionValueRandom();                    // 0x1405d2520
     bool FUN_1405d2590(Unk_140165cf0* pElem);   // xml read
     CString FUN_1405d26c0();                    // the xml name of the stat
-    int FUN_1405d2750();                        // the stat (-1 for a special stat)
-    unsigned FUN_1405d2770();                   // the special stat
+    int GetStat();                        // the stat (-1 for a special stat)
+    unsigned GetSpecial();                   // the special stat
     BOOL FUN_1405d2790();                       // a special stat
-    int FUN_1405d27c0();                        // "statID"
-    int FUN_1405d27e0();                        // "weight"
+    int GetStatId();                        // "statID"
+    int GetWeight();                        // "weight"
     int FUN_1405d2800(MS2Ptr<ItemOptionRandomContext> spContext);
     int FUN_1405d28d0(MS2Ptr<ItemOptionRandomContext> spContext, Unk_Random* pRandom);
     bool FUN_1405d29b0();                       // the special stat is a special ability
@@ -155,7 +155,7 @@ class ItemOptionConstant : public CPtred
 public:
     ItemOptionConstant();                       // 0x1405d29f0
     void FUN_1405d2a50(int nValue);
-    int FUN_1405d2a70();                        // "grade"
+    int GetGrade();                        // "grade"
     bool FUN_1405d2a90(Unk_140165cf0* pElem);   // xml read
     void FUN_1405d2e70(MS2Ptr<CItemOption> spOption, int nRank);   // adds the rows to an option
     size_t FUN_1405d31f0();                     // the row count
@@ -252,7 +252,7 @@ public:
     int FUN_1405d3a90(Unk_Random* pRandom);
     int FUN_1405d3ae0();                        // the first stat
     int FUN_1405d3b30() const;                   // the last stat
-    int FUN_1405d3b80();                        // "highStat"
+    int GetHighStat();                        // "highStat"
     bool FUN_1405d3ba0(int nStat);              // nStat reaches highStat
 private:
     int m_nId;                                  // +0x18 "id"
@@ -269,10 +269,10 @@ class ItemOptionRandom : public CPtred
 {
 public:
     ItemOptionRandom();                         // 0x1405d3bf0
-    int FUN_1405d3c80();                        // "code"
-    ItemOptionStatGroup FUN_1405d3ca0();        // "statGroup"
-    int FUN_1405d3cc0();                        // "probVer"
-    int FUN_1405d3ce0();                        // "levelGroupID"
+    int GetCode();                        // "code"
+    ItemOptionStatGroup GetStatGroup();        // "statGroup"
+    int GetProbVer();                        // "probVer"
+    int GetLevelGroupId();                        // "levelGroupID"
     bool Load(Unk_140165cf0* pElem);   // xml read
     // Rolls the random options onto an option.
     void FUN_1405d3f70(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);

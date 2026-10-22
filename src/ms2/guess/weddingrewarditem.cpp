@@ -800,7 +800,7 @@ bool WeddingTable::GetUpgradeItems(int nFromPackageId, int nFromHallId, int nToP
                     {
                         ItemEntity item;
                         item.m_itemId = to.m_itemId;
-                        item.FUN_14026b1c0(((ItemAble&)to).vfunc_o18_1());
+                        item.SetRank(((ItemAble&)to).vfunc_o18_1());
                         item.m_count = nCount;
                         items.push_back(item);
                     }
@@ -813,7 +813,7 @@ bool WeddingTable::GetUpgradeItems(int nFromPackageId, int nFromHallId, int nToP
         {
             ItemEntity item;
             item.m_itemId = to.m_itemId;
-            item.FUN_14026b1c0(((ItemAble&)to).vfunc_o18_1());
+            item.SetRank(((ItemAble&)to).vfunc_o18_1());
             item.m_count = to.m_count;
             items.push_back(item);
         }

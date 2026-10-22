@@ -53,8 +53,8 @@ public:
     void FUN_140f5c700();                                       // 0x140f5c700 "selectOption"
     void FUN_140f5cba0(MS2Ptr<CItem> spItem);                   // 0x140f5cba0 "complete"
     void FUN_140f5d020(MS2Ptr<CItem> spItem);                   // 0x140f5d020 forget an item's lock
-    void FUN_140f5d080(int nState);                             // 0x140f5d080 set the state
-    int FUN_140f5d0a0();                                        // 0x140f5d0a0 the state
+    void SetState(int nState);                             // 0x140f5d080 set the state
+    int GetState();                                        // 0x140f5d0a0 the state
     ItemScrollSlot* FUN_140f5d0c0(CString strName);             // 0x140f5d0c0 the scroll slot of a name
     bool FUN_140f5d140(MS2Ptr<CItem> spItem);                   // 0x140f5d140 put an item in the target slot
     bool FUN_140f5d220(MS2Ptr<CItem> spItem);                   // 0x140f5d220 put an item in the ingredient slot

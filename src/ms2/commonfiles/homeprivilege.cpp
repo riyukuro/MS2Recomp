@@ -29,11 +29,11 @@ CHomePrivilege::~CHomePrivilege()
 }
 
 // @0x14050d530
-void CHomePrivilege::FUN_14050d530(MyPC* pOwner)
+void CHomePrivilege::SetOwner(MyPC* pOwner)
 {
     m_pOwner = pOwner;
 }
-MS2_REPLACE_METHOD(0x14050d530, CHomePrivilege, FUN_14050d530, 25, 0xAB8BF0FB);
+MS2_REPLACE_METHOD(0x14050d530, CHomePrivilege, SetOwner, 25, 0xAB8BF0FB);
 
 // @0x14050d550
 int CHomePrivilege::FUN_14050d550(int nNpcId)

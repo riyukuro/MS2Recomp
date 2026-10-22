@@ -125,7 +125,7 @@ ASMentoringRewardPage::~ASMentoringRewardPage(){}
 // @0x140e62310
 void ASMentoringRewardPage::OnInit(){
  if(!m_owner)return;
- m_script=m_owner->FUN_140c74d70();
+ m_script=m_owner->GetScript();
  do{m_script->FUN_140bbe640("m_receiveButton",m_button);if(m_button==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(24),__FUNCTION__));}while(0);
  do{m_script->FUN_140beaf20("m_coin",m_coin);if(m_coin==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(25),__FUNCTION__));}while(0);
  do{m_script->FUN_140bc71c0("m_effect1",m_effect1);if(m_effect1==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(26),__FUNCTION__));}while(0);
@@ -136,7 +136,7 @@ void ASMentoringRewardPage::OnInit(){
 MS2_REPLACE_METHOD(0x140E62310, ASMentoringRewardPage, OnInit, 2312, 0x91C5FF3B);
 // @0x140e62cc0
 void ASMentoringRewardPage::Refresh(){
- if(!FUN_1406c7610())return;UIMentoringDialog* owner=m_owner->FUN_140c74dc0();if(!owner)return;
+ if(!FUN_1406c7610())return;UIMentoringDialog* owner=m_owner->GetOwner();if(!owner)return;
  const size_t count=3;std::vector<unsigned> values;FUN_1406c7610()->FUN_14069c070(values);if(values.size()!=count)return;
  FUN_140cfee80((*m_script).FUN_1422bb890(),"m_benefitDesc",LocalizedMentorFormat(L"s_mentoring_reward_coin_desc",values[0],values[1],values[2]));
  bool available=FUN_140c70240()->FUN_140b71610();int level=FUN_140c70240()->FUN_140b715c0();unsigned index=FUN_140324070(level,0,2);

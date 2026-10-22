@@ -35,7 +35,7 @@
 
 class Unk_EtLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
 Unk_EtLoader* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
@@ -105,7 +105,7 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("transform"); pNode != 0; pNode = pNode->FUN_140168650("transform"))
@@ -116,7 +116,7 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
         FUN_140873220(pNode, "inputRank", nInputRank);
         if (nInputRank == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             return 0;
         }
         unsigned nInputLimitLevel = 0;
@@ -129,7 +129,7 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
         XmlSplitImpl(strSlot, arrSlot, ",");
         if (arrSlot.IsEmpty())
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             return 0;
         }
         CString strItemId;
@@ -138,7 +138,7 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
         XmlSplitImpl(strItemId, arrItemId, ",");
         if (arrItemId.IsEmpty())
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             return 0;
         }
         for (unsigned i = 0; i < arrItemId.GetCount(); i++)
@@ -159,7 +159,7 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
         FUN_140873220(pNode, "output1Count", nOutput1Count);
         if (nOutput1Id == 0 || nOutput1Rank == 0 || nOutput1Count == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             return 0;
         }
         spData->m_arrOutputId.Add(nOutput1Id);

@@ -717,7 +717,7 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
         {
             UIAutoFishingDialog* pAuto = FUN_140cdee10((eUIClassID)0x4f07);
             UIPlayInstrumentDialog* pPlay = FUN_140d0c040((eUIClassID)0x4eec);
-            if (pPlay != 0 && pAuto != 0 && pAuto->FUN_141924630() == 0 && pPlay->FUN_14100d9f0() != 0)
+            if (pPlay != 0 && pAuto != 0 && pAuto->FUN_141924630() == 0 && pPlay->GetAutoPlay() != 0)
             {
                 pAuto->FUN_140fa5ba0(5);
                 pAuto->FUN_141924680();

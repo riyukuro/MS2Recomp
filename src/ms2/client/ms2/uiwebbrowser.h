@@ -30,7 +30,7 @@ public:
     virtual bool vfunc_91();                                    // 91 0x141b50990 resizable
 
     void FUN_141b50420(NotifyObject* pNotify);                  // 0x141b50420 "NotifyGameStart": forget the stored page
-    void FUN_141b50450(const CString& strUrl);                  // 0x141b50450 browser callback: remember the page
+    void SetStored(const CString& strUrl);                  // 0x141b50450 browser callback: remember the page
     void FUN_141b50490(const CString& strKey);                  // 0x141b50490 navigate to the page stored under a key
     void FUN_141b507b0(int nWidth, int nHeight);                // 0x141b507b0 "setBrowserSize"
     void FUN_141b50830(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b50830 navigation button

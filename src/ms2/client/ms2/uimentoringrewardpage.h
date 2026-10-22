@@ -32,7 +32,7 @@ public:
  virtual int vfunc_1();virtual void vfunc_2();virtual void vfunc_3(Scaleform::GFx::Value*,const CString&,ASData*);
  virtual void vfunc_4(Scaleform::GFx::Value*,ASData*);virtual int vfunc_5(const char*,const Scaleform::GFx::Value*,unsigned);
  virtual CString vfunc_6()=0;virtual CStringW vfunc_7();virtual int vfunc_8();virtual void vfunc_9();
- MS2Ptr<AScript> FUN_140c74d70();UIMentoringDialog* FUN_140c74dc0();
+ MS2Ptr<AScript> GetScript();UIMentoringDialog* GetOwner();
  void FUN_140c6f190();void FUN_140c71ce0();void FUN_140c6f7a0(CString,MS2Ptr<Unk_MentorEntry>);void FUN_140c71ee0(CString,MS2Ptr<Unk_MentorEntry>,int);
 private:friend class UIMentoringMissionPage;friend class UIMentoringBuffPage;MS2Ptr<AScript> m_script;UIMentoringDialog* m_owner;
 };

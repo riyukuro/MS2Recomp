@@ -1272,7 +1272,7 @@ class Unk_PPSecondView
 public:
     NiViewRenderClick* GetClick();
 };
-CLogString* FUN_140166440();                                                // the client log
+CLogString* GetLogString();                                                // the client log
 void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pwszText);
 // The log with two format arguments.
 // @0x1416ac870
@@ -1832,7 +1832,7 @@ efd::AsyncResult PostProcessingService::OnShutdown()
     ecr::RenderService* pkRenderService = m_pServiceManager->GetSystemServiceAs<ecr::RenderService>();
     if (pkRenderService == 0)
     {
-        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pRenderService is Null");
+        FUN_1401859c0(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pRenderService is Null");
         return efd::AsyncResult_Pending;
     }
     if (pkRenderService->GetActiveRenderSurface() != 0)
@@ -1841,7 +1841,7 @@ efd::AsyncResult PostProcessingService::OnShutdown()
         NiRenderFrame* pkFrame = pkRenderService->GetActiveRenderSurface()->GetRenderFrame();
         if (pkFrame == 0)
         {
-            FUN_1401859c0(FUN_140166440(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pFrame is Null");
+            FUN_1401859c0(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pFrame is Null");
             return efd::AsyncResult_Pending;
         }
         MS2_FOR_EACH(const auto& kStep, m_kSteps)
@@ -2215,7 +2215,7 @@ void PostProcessingService::FUN_1416aa6a0(Unk_PPTexture nClick, bool bActive)
         }
     }
     bool bNowActive = m_aspClicks[nClick]->GetActive();
-    Unk_PPLog2(FUN_140166440(), 0xc, 0x13, L"SetPreprocessRCActiveRef texture={0} active={1}\n", nClick, bNowActive);
+    Unk_PPLog2(GetLogString(), 0xc, 0x13, L"SetPreprocessRCActiveRef texture={0} active={1}\n", nClick, bNowActive);
 }
 MS2_REPLACE_METHOD(0x1416aa6a0, PostProcessingService, FUN_1416aa6a0, 423, 0x945022B3);
 
@@ -2290,19 +2290,19 @@ void PostProcessingService::LinkEffects()
     ecr::RenderService* pkRenderService = m_pServiceManager->GetSystemServiceAs<ecr::RenderService>();
     if (pkRenderService == 0)
     {
-        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pRenderService is Null");
+        FUN_1401859c0(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pRenderService is Null");
         return;
     }
     NiRenderFrame* pkFrame = pkRenderService->GetActiveRenderSurface()->GetRenderFrame();
     if (pkFrame == 0)
     {
-        FUN_1401859c0(FUN_140166440(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pFrame is Null");
+        FUN_1401859c0(GetLogString(), 1, 0x13, L"ERROR: PostProcessingService::LinkEffects pFrame is Null");
         return;
     }
     NiRenderStep* pkMainSceneRenderStep = pkRenderService->GetActiveRenderSurface()->GetRenderStep();
     if (pkMainSceneRenderStep == 0)
     {
-        FUN_1401859c0(FUN_140166440(), 1, 0x13,
+        FUN_1401859c0(GetLogString(), 1, 0x13,
             L"ERROR: PostProcessingService::LinkEffects pMainSceneRenderStep is Null");
         return;
     }

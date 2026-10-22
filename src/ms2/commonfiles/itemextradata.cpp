@@ -383,18 +383,18 @@ int* CItemExtraData::FUN_14059a180(unsigned nSlot)
 MS2_REPLACE_METHOD(0x14059A180, CItemExtraData, FUN_14059a180, 96, 0x21C9BAD5);
 
 // @0x14059a1f0
-void CItemExtraData::FUN_14059a1f0(int n)
+void CItemExtraData::SetPick(int n)
 {
     m_nPick = n;
 }
-MS2_REPLACE_METHOD(0x14059A1F0, CItemExtraData, FUN_14059a1f0, 22, 0x6E748507);
+MS2_REPLACE_METHOD(0x14059A1F0, CItemExtraData, SetPick, 22, 0x6E748507);
 
 // @0x14059a210
-int CItemExtraData::FUN_14059a210()
+int CItemExtraData::GetPick()
 {
     return m_nPick;
 }
-MS2_REPLACE_METHOD(0x14059A210, CItemExtraData, FUN_14059a210, 14, 0x8AEE455B);
+MS2_REPLACE_METHOD(0x14059A210, CItemExtraData, GetPick, 14, 0x8AEE455B);
 
 // @0x14059a230
 CItemExtraData::ColorPtr CItemExtraData::FUN_14059a230(unsigned nSlot) const

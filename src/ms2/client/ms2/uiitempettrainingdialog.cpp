@@ -199,7 +199,7 @@ void UIItemPetTrainingDialog::vfunc_67()
 }
 
 // @0x140e57c80
-void UIItemPetTrainingDialog::FUN_140e57c80(unsigned __int64 nOwner)
+void UIItemPetTrainingDialog::SetOwner(unsigned __int64 nOwner)
 {
     m_nOwner = nOwner;
 }

@@ -963,7 +963,7 @@ int UIMessenger::FUN_141a0df10()
 }
 
 // @0x141a0df70
-CStringW UIMessenger::FUN_141a0df70()
+CStringW UIMessenger::GetName()
 {
     return m_strName;
 }
@@ -1434,7 +1434,7 @@ int UIMessenger::FUN_141a0fe20(int nEmoticonId)
     COutPacket packet(0xb7, 0);
     packet.vfunc_o10_1(3);
     packet.vfunc_o10_3(nEmoticonId);
-    packet.vfunc_o10_8(FUN_141a0df70());
+    packet.vfunc_o10_8(GetName());
     packet.vfunc_o10_1(FUN_141a144a0());
     FUN_140710590(packet);
     return 1;
@@ -3203,7 +3203,7 @@ int UIMessengerBrowser::FUN_141a23d70(const CStringW& strName)
     for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
-        if (pWindow != 0 && pWindow->FUN_141a0df70() == strName)
+        if (pWindow != 0 && pWindow->GetName() == strName)
             return 1;
     }
     return 0;
@@ -3279,7 +3279,7 @@ void UIMessengerBrowser::FUN_141a24490()
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0)
         {
-            FUN_141482e80()->FUN_141482d30(pWindow->FUN_141a0df70());
+            FUN_141482e80()->FUN_141482d30(pWindow->GetName());
             pWindow->vfunc_84();
             FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
         }
@@ -3294,9 +3294,9 @@ void UIMessengerBrowser::FUN_141a245d0(const CStringW& strName)
     for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
-        if (pWindow != 0 && pWindow->FUN_141a0df70() == strName && pWindow->m_tabs.IsEmpty())
+        if (pWindow != 0 && pWindow->GetName() == strName && pWindow->m_tabs.IsEmpty())
         {
-            FUN_141482e80()->FUN_141482d30(pWindow->FUN_141a0df70());
+            FUN_141482e80()->FUN_141482d30(pWindow->GetName());
             pWindow->vfunc_84();
             m_windows.RemoveAt(i, 1);
             FUN_140b632f0()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pWindow));
@@ -3396,7 +3396,7 @@ void UIMessengerBrowser::FUN_141a24fb0(CStringW strText)
     for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
-        if (pWindow != 0 && FUN_141482e80()->FUN_1414829e0() == pWindow->FUN_141a0df70())
+        if (pWindow != 0 && FUN_141482e80()->FUN_1414829e0() == pWindow->GetName())
             pWindow->FUN_141a0ec30(strText);
     }
 }
@@ -3442,7 +3442,7 @@ void UIMessengerBrowser::FUN_141a252a0(const CStringW& strTarget)
     for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
-        if (pWindow != 0 && FUN_141482e80()->FUN_141482a50() == pWindow->FUN_141a0df70())
+        if (pWindow != 0 && FUN_141482e80()->FUN_141482a50() == pWindow->GetName())
             pWindow->FUN_141a14bb0(strTarget);
     }
 }
@@ -3517,7 +3517,7 @@ CStringW UIMessengerBrowser::FUN_141a258a0()
     {
         UIMessenger* pWindow = m_windows[i];
         if (pWindow != 0)
-            return pWindow->FUN_141a0df70();
+            return pWindow->GetName();
     }
     return L"";
 }
@@ -3536,7 +3536,7 @@ UIMessenger* UIMessengerBrowser::FUN_141a259c0(const CStringW& strName)
     for (unsigned int i = 0; i < m_windows.GetCount(); i++)
     {
         UIMessenger* pWindow = m_windows[i];
-        if (pWindow != 0 && pWindow->FUN_141a0df70() == strName)
+        if (pWindow != 0 && pWindow->GetName() == strName)
             return pWindow;
     }
     return 0;

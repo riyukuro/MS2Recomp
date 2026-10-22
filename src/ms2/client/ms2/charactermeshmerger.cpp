@@ -676,7 +676,7 @@ int FUN_140ef4dd0(Unk_MaterialEntry* pEntry);
 NiMaterial* FUN_140a17cd0(NiMesh* pMesh);         // active material
 int FUN_141049fa0(NiMesh* pMesh, const MeshGroups& kGroups);
 
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 
 // Four-argument wide log (template instance 0x141054b90).
 template<class T, class U, class V, class W> inline void Unk_MeshLog(CLogString* log, int level, int category, const wchar_t* format,
@@ -1086,7 +1086,7 @@ void FUN_14104a1c0(const MeshList& kGroup, MeshGroups& kBuckets, MergeInfo& kInf
                     if (!(pTransforms[ucBone].m_Translate == kTransforms[ucFound]->m_Translate))
                     {
                         NiPoint3 kDiff = pTransforms[ucBone].m_Translate - kTransforms[ucFound]->m_Translate;
-                        Unk_MeshLog(FUN_140166440(), 2, 0x13, L"[MeshOptimizer] Bone {0}의 SkinToBoneTransform이 앞에 설정된 것과 다릅니다 Diff :({1},{2},{3})",
+                        Unk_MeshLog(GetLogString(), 2, 0x13, L"[MeshOptimizer] Bone {0}의 SkinToBoneTransform이 앞에 설정된 것과 다릅니다 Diff :({1},{2},{3})",
                                     (const char*)pBone->GetName(), kDiff.x, kDiff.y, kDiff.z);
                         kRemap[ucBone] = ucFound;
                     }
@@ -1194,7 +1194,7 @@ void FUN_14104e800(const MeshList& kGroup, MeshGroups& kBuckets, MergeInfo& kInf
                     if (!(pTransforms[ucBone].m_Translate == kTransforms[ucFound]->m_Translate))
                     {
                         NiPoint3 kDiff = pTransforms[ucBone].m_Translate - kTransforms[ucFound]->m_Translate;
-                        Unk_MeshLog(FUN_140166440(), 2, 0x13, L"[MeshOptimizer] Bone {0}의 SkinToBoneTransform이 앞에 설정된 것과 다릅니다 Diff :({1},{2},{3})",
+                        Unk_MeshLog(GetLogString(), 2, 0x13, L"[MeshOptimizer] Bone {0}의 SkinToBoneTransform이 앞에 설정된 것과 다릅니다 Diff :({1},{2},{3})",
                                     (const char*)pBone->GetName(), kDiff.x, kDiff.y, kDiff.z);
                         kRemap[ucBone] = ucFound;
                     }

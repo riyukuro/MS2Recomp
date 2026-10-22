@@ -842,7 +842,7 @@ static void Rw_RouletteCurrent(CStringW& strOut, CStringW strArg, CStringW& strW
     UIRouletteDialog* pDlg = FUN_1416ffcb0(0x4e6d);
     if (pDlg != 0)
     {
-        int nIndex = pDlg->FUN_141ac59e0();
+        int nIndex = pDlg->GetSpinIndex();
         nIndex = nIndex + 1;
         strOut = StringFormat(L"{0}", nIndex);
     }
@@ -855,7 +855,7 @@ static void Rw_RoulettePrev(CStringW& strOut, CStringW strArg, CStringW& strWhol
     UIRouletteDialog* pDlg = FUN_1416ffcb0(0x4e6d);
     if (pDlg != 0)
     {
-        int nIndex = pDlg->FUN_141ac59e0();
+        int nIndex = pDlg->GetSpinIndex();
         strOut = StringFormat(L"{0}", nIndex);
     }
 }

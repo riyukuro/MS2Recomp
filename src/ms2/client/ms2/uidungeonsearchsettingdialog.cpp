@@ -171,11 +171,11 @@ void UIDungeonSearchSettingDialog::FUN_140c11190(int nGroup)
 MS2_REPLACE_METHOD(0x140C11190, UIDungeonSearchSettingDialog, FUN_140c11190, 262, 0xF2E97D1F);
 
 // @0x140c112a0
-void UIDungeonSearchSettingDialog::FUN_140c112a0(const std::set<unsigned>& selected)
+void UIDungeonSearchSettingDialog::SetSelected(const std::set<unsigned>& selected)
 {
     m_selected = selected;
 }
-MS2_REPLACE_METHOD(0x140C112A0, UIDungeonSearchSettingDialog, FUN_140c112a0, 43, 0x1EB6C01A);
+MS2_REPLACE_METHOD(0x140C112A0, UIDungeonSearchSettingDialog, SetSelected, 43, 0x1EB6C01A);
 
 // @0x140c112e0
 void UIDungeonSearchSettingDialog::FUN_140c112e0()

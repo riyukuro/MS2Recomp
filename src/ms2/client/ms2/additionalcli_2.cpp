@@ -1207,7 +1207,7 @@ bool AdditionalCliList::FUN_140973680(MS2Ptr<AdditionalCli> sp)
         return false;
     if (PC* pPC = efd::DynamicCast<PC>(m_pOwner))
     {
-        if (static_cast<Unk_AclWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->FUN_1403754d0())
+        if (static_cast<Unk_AclWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->GetPkMode())
             return true;
         if (static_cast<Unk_AclWorld*>(WorldService::GetInstance())->FUN_141bd30a0()->m_nMapType == 3)
             return true;

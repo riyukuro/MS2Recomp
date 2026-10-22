@@ -46,7 +46,7 @@ CHyperLinkData::CHyperLinkData(long nType)
 }
 
 // @0x1405bd600
-long CHyperLinkData::FUN_1405bd600() const
+long CHyperLinkData::GetType() const
 {
     return m_nType;
 }
@@ -115,7 +115,7 @@ void FUN_1405bd720(const CStringW& strText, ATL::CAtlArray<MS2Ptr<CHyperLinkData
 }
 
 // @0x1405bd9a0
-__int64 CItemLinkData::FUN_1405bd9a0() const
+__int64 CItemLinkData::GetOwnerId() const
 {
     return m_nOwnerId;
 }
@@ -139,7 +139,7 @@ CHyperLinkData* FUN_1405bda30(ATL::CAtlArray<__int64>& arrValues)
 }
 
 // @0x1405bdb00
-int CLinkItemID::FUN_1405bdb00() const
+int CLinkItemID::GetItemId() const
 {
     return m_nItemId;
 }
@@ -167,7 +167,7 @@ CHyperLinkData* FUN_1405bdba0(ATL::CAtlArray<__int64>& arrValues)
 }
 
 // @0x1405bdc50
-__int64 CLinkItemGUID::FUN_1405bdc50() const
+__int64 CLinkItemGUID::GetGuid() const
 {
     return m_nGuid;
 }
@@ -191,13 +191,13 @@ CHyperLinkData* FUN_1405bdce0(ATL::CAtlArray<__int64>& arrValues)
 }
 
 // @0x1405bddb0
-int CLinkSerialID::FUN_1405bddb0() const
+int CLinkSerialID::GetLow() const
 {
     return m_nLow;
 }
 
 // @0x1405bddd0
-int CLinkSerialID::FUN_1405bddd0() const
+int CLinkSerialID::GetHigh() const
 {
     return m_nHigh;
 }
@@ -219,7 +219,7 @@ CHyperLinkData* FUN_1405bde50(ATL::CAtlArray<__int64>& arrValues)
 }
 
 // @0x1405bdf00
-__int64 CLinkBlackMarketSN::FUN_1405bdf00() const
+__int64 CLinkBlackMarketSN::GetSerial() const
 {
     return m_nSerial;
 }

@@ -726,7 +726,7 @@ void WeddingManager::ShowProposeAnswer(const CStringW& name)
 bool WeddingManager::OnProposeSentAnswer(int result, const CMsgBoxData& box)
 {
     PlayEmotion(3);
-    if (box.FUN_141a04a80().m_nButton != 0)
+    if (box.GetTimer().m_nButton != 0)
         return true;
     unsigned __int64 id = FUN_140718370(box.FUN_141a02fd0(0, CStringW()));
     COutPacket packet(0xba, 0);
@@ -741,7 +741,7 @@ bool WeddingManager::OnProposeAnswer(int result, const CMsgBoxData& box)
 {
     unsigned __int64 id = FUN_140718370(box.FUN_141a02fd0(0, CStringW()));
     int answer = result == 0 ? 1 : 2;
-    if (box.FUN_141a04a80().m_nButton != 0)
+    if (box.GetTimer().m_nButton != 0)
         answer = 6;
     COutPacket packet(0xba, 0);
     packet.Encode1(4);

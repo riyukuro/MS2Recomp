@@ -944,7 +944,7 @@ void QuestAdditionalRewardContext::Load(CStringW* pValue)
     } else {
         TiXmlDocument doc;
         Unk_140165cf0* pRoot;
-        if (FUN_140166420()->FUN_140397ab0(&doc, *pValue) != 0 && (pRoot = FUN_140345b40(&doc)) != NULL) {
+        if (GetFileSystem()->FUN_140397ab0(&doc, *pValue) != 0 && (pRoot = FUN_140345b40(&doc)) != NULL) {
             FUN_140873220(pRoot, "exp", m_rates[0]);
             FUN_140873220(pRoot, "meso", m_rates[1]);
             FUN_140873220(pRoot, "guild_fund", m_rates[2]);
@@ -1559,7 +1559,7 @@ MS2Ptr<CNpcShopGivePointContextBase> CNpcShopGivePointContextBase::Create(int ty
         MS2Ptr<CNpcShopGivePointContextCNSpring> spContext(new CNpcShopGivePointContextCNSpring);
         if (spContext) {
             TiXmlDocument doc;
-            if (FUN_140166420()->FUN_140397ab0(&doc, strPath) == 0)
+            if (GetFileSystem()->FUN_140397ab0(&doc, strPath) == 0)
                 return 0;
             Unk_140165cf0* pRoot = FUN_140345b40(&doc);
             if (pRoot == NULL)
@@ -2242,7 +2242,7 @@ BingoContext::BingoContext()
 bool BingoContext::LoadNumbers(CStringW strPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, strPath) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, strPath) == 0)
         return false;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -2274,7 +2274,7 @@ bool BingoContext::LoadNumbers(CStringW strPath)
 bool BingoContext::LoadRewards(CStringW strPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, strPath) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, strPath) == 0)
         return false;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -2462,7 +2462,7 @@ bool LimitedQuantityContext::ParseRange(CStringW str)
 bool LimitedQuantityContext::LoadItems(CStringW strPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, strPath) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, strPath) == 0)
         return false;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)

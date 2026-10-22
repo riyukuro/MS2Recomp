@@ -134,7 +134,7 @@
 #include "hook/ms2hook.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
 Unk_140165cf0* FUN_1403f0510(Unk_140165cf0* pElem);                     // the next element with the same name
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);   // attribute text
@@ -460,7 +460,7 @@ unsigned SoundPropertyMgr::Load()
 int SoundPropertyMgr::LoadHitSound(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
@@ -481,7 +481,7 @@ int SoundPropertyMgr::LoadHitSound(const char* pszPath)
         }
         return 1;
     }
-    FUN_1403a1280(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", pszPath);
+    FUN_1403a1280(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", pszPath);
     return 0;
 }
 
@@ -489,7 +489,7 @@ int SoundPropertyMgr::LoadHitSound(const char* pszPath)
 int SoundPropertyMgr::LoadSystemSound(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
@@ -503,7 +503,7 @@ int SoundPropertyMgr::LoadSystemSound(const char* pszPath)
         }
         return 1;
     }
-    FUN_1403a1280(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", pszPath);
+    FUN_1403a1280(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", pszPath);
     return 0;
 }
 
@@ -511,7 +511,7 @@ int SoundPropertyMgr::LoadSystemSound(const char* pszPath)
 int SoundPropertyMgr::LoadPitchSound(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
@@ -529,7 +529,7 @@ int SoundPropertyMgr::LoadPitchSound(const char* pszPath)
         }
         return 1;
     }
-    FUN_1403a1280(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", pszPath);
+    FUN_1403a1280(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", pszPath);
     return 0;
 }
 
@@ -538,7 +538,7 @@ int SoundPropertyMgr::LoadPitchSound(const char* pszPath)
 int SoundPropertyMgr::LoadEventSound(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
@@ -572,7 +572,7 @@ int SoundPropertyMgr::LoadEventSound(const char* pszPath)
         }
         return 1;
     }
-    FUN_1403a1280(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", pszPath);
+    FUN_1403a1280(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", pszPath);
     return 0;
 }
 
@@ -580,7 +580,7 @@ int SoundPropertyMgr::LoadEventSound(const char* pszPath)
 int SoundPropertyMgr::LoadTriggerVoice(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot != 0)
@@ -594,7 +594,7 @@ int SoundPropertyMgr::LoadTriggerVoice(const char* pszPath)
         }
         return 1;
     }
-    FUN_1403a1280(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", pszPath);
+    FUN_1403a1280(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", pszPath);
     return 0;
 }
 

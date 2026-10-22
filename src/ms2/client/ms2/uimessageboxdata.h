@@ -161,7 +161,7 @@ public:
     int FUN_141a049a0() const;                                      // has a countdown
     int FUN_141a049d0() const;                                      // the countdown is over
     bool FUN_141a04a30();                                           // arm the movie when it has a priority object
-    const Unk_MsgBoxTimer& FUN_141a04a80() const;                   // the pressed-button record
+    const Unk_MsgBoxTimer& GetTimer() const;                   // the pressed-button record
     bool FUN_141a04aa0();                                           // check box 0 state
     bool FUN_141a04c20();                                           // check box 1 state
     CStringW FUN_141a04da0();                                 // the text input's text

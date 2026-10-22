@@ -341,7 +341,7 @@ public:
     void FUN_140663010(unsigned short nLevel, int nJob, Unk_MItemArray& out);
     int FUN_1406631b0(unsigned short nLevel);
     MS2Ptr<Unk_MHouseLevel> FUN_1406635c0(unsigned short nLevel);
-    unsigned int FUN_140ebb020();                           // COMDAT: the highest level
+    unsigned int GetMaxLevel();                           // COMDAT: the highest level
     char m_pad[8]; unsigned int m_nMaxLevel;
 };
 Unk_MHousing* FUN_140933200();
@@ -475,7 +475,7 @@ BOOL Unk_MasteryCraft::FUN_140eade30()
 }
 
 // @0x140eade70
-BOOL Unk_MasteryCraft::FUN_140eade70()
+BOOL Unk_MasteryCraft::HasTotal()
 {
     return m_nTotal != 0;
 }
@@ -529,7 +529,7 @@ int UIMasteryDialog::vfunc_65()
 // @0x140eae520
 void UIMasteryDialog::vfunc_67()
 {
-    if (m_craft.FUN_140eade70()) {
+    if (m_craft.HasTotal()) {
         Unk_MCastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
@@ -758,7 +758,7 @@ void UIMasteryDialog::OnCastingCancelled()
 // @0x140eafa50
 void UIMasteryDialog::vfunc_72()
 {
-    if (m_craft.FUN_140eade70() && m_craft.m_nPending != 0) {
+    if (m_craft.HasTotal() && m_craft.m_nPending != 0) {
         int nTime = 2000;
         if (m_craft.FUN_140eaddf0()) {
             MS2Ptr<Unk_MRec> spRec = FUN_1409670c0()->FUN_14066aa00(m_craft.m_nId);
@@ -790,7 +790,7 @@ void UIMasteryDialog::vfunc_72()
 }
 
 // @0x140eafdb0
-void UIMasteryDialog::FUN_140eafdb0(int nMainTab)
+void UIMasteryDialog::SetMainTab(int nMainTab)
 {
     m_nMainTab = nMainTab;
 }
@@ -1002,7 +1002,7 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
             return;
         ASObj page(2);
         unsigned int nMastery = FUN_140eb7bb0(spRec->m_nType);
-        int bCanCraft = (nMastery >= (unsigned int)spRec->m_nNeedMastery && !m_craft.FUN_140eade70()) ? 1 : 0;
+        int bCanCraft = (nMastery >= (unsigned int)spRec->m_nNeedMastery && !m_craft.HasTotal()) ? 1 : 0;
         for (size_t i = 0; i < spRec->m_rewards.GetCount(); i++) {
             ItemEntity& rew = spRec->m_rewards[i];
             int nRank = FUN_140eb79b0(spRec->m_nType, spRec->m_nNeedMastery, &rew);
@@ -1088,7 +1088,7 @@ void UIMasteryDialog::FUN_140eb24a0()
     FUN_140d43990(&m_mastery);
     spLevel->Invoke("removeGradeAll");
     unsigned short nCur = DAT_143ab291c;
-    unsigned short nMax = FUN_140933200()->FUN_140ebb020();
+    unsigned short nMax = FUN_140933200()->GetMaxLevel();
     int nSum = 0;
     unsigned int nSumCur = 0;
     ASArray rows(2);
@@ -1120,7 +1120,7 @@ void UIMasteryDialog::FUN_140eb24a0()
     }
     spLevel->FUN_140eba120("setGrade", rows, nSumCur + DAT_143ab2930, 0);
     CStringW strGrade = FUN_140656190(L"{0} {1}", FUN_140298ea0(CStringW(L"s_mastery_housing")), FUN_1409e8820(CStringW(L"s_mastery_housing_grade"), DAT_143ab291c));
-    if (DAT_143ab291c == FUN_140933200()->FUN_140ebb020()) {
+    if (DAT_143ab291c == FUN_140933200()->GetMaxLevel()) {
         spLevel->FUN_140eb9e40("setPcGrade", 1, 1, CStringW(strGrade), 1);
     } else {
         MS2Ptr<Unk_MHouseLevel> spNext = FUN_140933200()->FUN_1406635c0((unsigned short)(DAT_143ab291c + 1));
@@ -1323,7 +1323,7 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
     page.FUN_1409adc90("grade", spRec->m_result.vfunc_o18_1());
     page.FUN_1409c1180("meso", spRec->m_nMeso);
     page.FUN_1407cbb20("mastery", CStringW(strState));
-    page.FUN_1407cbbe0("enabled", bEnough && !m_craft.FUN_140eade70());
+    page.FUN_1407cbbe0("enabled", bEnough && !m_craft.HasTotal());
     page.FUN_1409c0dc0("goto", bWarn ? "normal" : "warn");
     page.FUN_1407cbbe0("debug", FUN_14116d720(FUN_14025e7c0()));
     m_30->Invoke("setPage", page);
@@ -1542,7 +1542,7 @@ void UIMasteryDialog::FUN_140eb55e0(int nId)
         Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
         ItemEntity ent;
         ent.m_itemId = ref->FUN_14026b500();
-        ent.FUN_14026b1c0(FUN_14053feb0(ent.m_itemId));
+        ent.SetRank(FUN_14053feb0(ent.m_itemId));
         ent.m_count = FUN_140eb7b40(spRec->m_nType, spRec->m_nNeedMastery, ref->m_c);
         ingredients.Add(ent);
     }
@@ -1590,7 +1590,7 @@ void UIMasteryDialog::FUN_140eb5e60(int nId)
         ItemEntity ent;
         ent.m_itemId = ref->m_a;
         ent.m_count = ref->m_c;
-        ent.FUN_14026b1c0(FUN_14053feb0(ref->m_a));
+        ent.SetRank(FUN_14053feb0(ref->m_a));
         ingredients.Add(ent);
     }
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, FUN_14028b8e0(CStringW(L"s_magicscroll_craft_messagebox_desc")), static_cast<IMessageListener*>(this), CStringW(L""));
@@ -1687,7 +1687,7 @@ void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
 // @0x140eb6c80
 void UIMasteryDialog::FUN_140eb6c80()
 {
-    if (m_craft.FUN_140eade70()) {
+    if (m_craft.HasTotal()) {
         Unk_MCastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
@@ -2375,7 +2375,7 @@ void* FUN_140ebafb0(void*, void* p)
 }
 
 // @0x140ebb020
-unsigned int Unk_MHousing::FUN_140ebb020()
+unsigned int Unk_MHousing::GetMaxLevel()
 {
     return m_nMaxLevel;
 }
@@ -2444,7 +2444,7 @@ MS2_REPLACE_METHOD(0x140EAE8A0, UIMasteryDialog, OnLoadComplete, 1128, 0xDFE5910
 MS2_REPLACE_METHOD(0x140EAED30, UIMasteryDialog, vfunc_49, 854, 0xCABA0319);
 MS2_REPLACE_METHOD(0x140EAF090, UIMasteryDialog, vfunc_28, 1909, 0x1C41E7B5);
 MS2_REPLACE_METHOD(0x140EAFA50, UIMasteryDialog, vfunc_72, 854, 0x26543527);
-MS2_REPLACE_METHOD(0x140EAFDB0, UIMasteryDialog, FUN_140eafdb0, 30, 0xCCD60FF0);
+MS2_REPLACE_METHOD(0x140EAFDB0, UIMasteryDialog, SetMainTab, 30, 0xCCD60FF0);
 MS2_REPLACE_METHOD(0x140EAFDE0, UIMasteryDialog, FUN_140eafde0, 1873, 0xB1D4732E);
 MS2_REPLACE_METHOD(0x140EB0540, UIMasteryDialog, FUN_140eb0540, 99, 0xC5E0DBBE);
 MS2_REPLACE_METHOD(0x140EB05B0, UIMasteryDialog, FUN_140eb05b0, 81, 0x46902322);

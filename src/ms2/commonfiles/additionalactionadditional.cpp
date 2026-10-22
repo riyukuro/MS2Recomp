@@ -357,7 +357,7 @@
 #include "hook/ms2hook.h"
 
 // Unrecovered helpers.
-CLogString* FUN_140166440();                                                // the log singleton
+CLogString* GetLogString();                                                // the log singleton
 class Unk_AdditionalFlags { public: bool FUN_140829c80(unsigned nID); bool FUN_140829cf0(unsigned nID); };
 extern Unk_AdditionalFlags* DAT_143aac270;
 bool FUN_14028f650(Unk_140165cf0* pElem);                                   // the element is usable
@@ -1131,7 +1131,7 @@ bool AdditionalLevelData::Load(Unk_140165cf0* pElem)
             bool bValues = arrCodes.GetCount() == arrValues.GetCount();
             if (!bFactors && !bValues)
             {
-                Unk_AdditionalLog(FUN_140166440(), 1, 0x13, L"EffectDuration different count factor or value");
+                Unk_AdditionalLog(GetLogString(), 1, 0x13, L"EffectDuration different count factor or value");
                 return false;
             }
             else if (bFactors == true && bValues == false)
@@ -1170,7 +1170,7 @@ bool AdditionalLevelData::Load(Unk_140165cf0* pElem)
         XmlTokenList(pCooldown, "values", arrValues);
         if (arrSkillIDs.GetCount() != arrValues.GetCount())
         {
-            Unk_AdditionalLog(FUN_140166440(), 1, 0x13, L"ModifySkillCooldown different count value");
+            Unk_AdditionalLog(GetLogString(), 1, 0x13, L"ModifySkillCooldown different count value");
             return false;
         }
         for (unsigned i = 0; i < arrSkillIDs.GetCount(); i++)
@@ -1185,7 +1185,7 @@ bool AdditionalLevelData::Load(Unk_140165cf0* pElem)
         XmlTokenList(pOverlap, "offsetCounts", arrOffsets);
         if (arrCodes.GetCount() != arrOffsets.GetCount())
         {
-            Unk_AdditionalLog(FUN_140166440(), 1, 0x13, L"Count Diff effectCodes, offsetCounts");
+            Unk_AdditionalLog(GetLogString(), 1, 0x13, L"Count Diff effectCodes, offsetCounts");
             return false;
         }
         for (unsigned i = 0; i < arrCodes.GetCount(); i++)
@@ -1217,12 +1217,12 @@ bool AdditionalLevelData::Load(Unk_140165cf0* pElem)
             if (eType == SAType_None)
             {
                 unsigned nID = GetID();
-                Unk_AdditionalLog(FUN_140166440(), 1, 0x13, L"Unknown SA Type String ID:{0}", nID);
+                Unk_AdditionalLog(GetLogString(), 1, 0x13, L"Unknown SA Type String ID:{0}", nID);
                 continue;
             }
             if (DAT_143ab1a40[eType].m_bAllowAdditional == 0)
             {
-                Unk_AdditionalLog(FUN_140166440(), 1, 0x13, L"Not Allow SA Type:{0}", eType);
+                Unk_AdditionalLog(GetLogString(), 1, 0x13, L"Not Allow SA Type:{0}", eType);
                 continue;
             }
             int nValue = 0;

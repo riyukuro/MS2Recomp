@@ -178,7 +178,7 @@ public:
     explicit UIMinimapEntityTaxi(const efd::Point3& kPos);      // 0x141a34810
     virtual void GetText(CStringW& strText, ASObj& data);       // 1 0x141a34c30
 
-    void FUN_141a34870(bool bBest);                             // SetBest
+    void SetBest(bool bBest);                             // SetBest
     void FUN_141a34890(const efd::Point3& kPos);                // Initialize
 
     bool m_best;                                                // +0x68

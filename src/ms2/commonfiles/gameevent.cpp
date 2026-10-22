@@ -851,7 +851,7 @@ GameEventItemBuff::GameEventItemBuff() : m_d0(0)
 void GameEventItemBuff::vfunc_2()
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_70) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_70) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
@@ -908,7 +908,7 @@ GameEventDungeonBonusReward::GameEventDungeonBonusReward()
 void GameEventDungeonBonusReward::vfunc_2()
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
@@ -1131,7 +1131,7 @@ void GameEventQuestTag::vfunc_2()
 {
     m_d0 = m_68;
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_70) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_70) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
@@ -1734,7 +1734,7 @@ void GameEventFieldShutdown::vfunc_2()
 {
     m_d0.clear();
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
@@ -1783,7 +1783,7 @@ GameEventDungeonExtraReward::GameEventDungeonExtraReward()
 void GameEventDungeonExtraReward::vfunc_2()
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
@@ -2054,7 +2054,7 @@ void GameEventNpcEventDrop::vfunc_2()
 {
     m_d0 = 0;
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
@@ -2111,9 +2111,9 @@ void GameEventBlueMarble::vfunc_2()
 {
     TiXmlDocument docRound;
     TiXmlDocument docSlot;
-    if (FUN_140166420()->FUN_140397ab0(&docRound, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&docRound, m_68) == 0)
         return;
-    if (FUN_140166420()->FUN_140397ab0(&docSlot, m_70) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&docSlot, m_70) == 0)
         return;
     MS2Ptr<BlueMarbleEventContext> spContext(new BlueMarbleEventContext(FUN_1402e1d00(), FUN_1402e2730()));
     Unk_140165cf0* pRound = FUN_140165cf0(&docRound, "round");
@@ -2153,7 +2153,7 @@ void GameEventBlueMarble::vfunc_4(Unk_GEIn* in)
         MS2Ptr<ItemEntity> spItem(new ItemEntity);
         int nRound = MS2_GE_R(in)->ReadInt();
         spItem->m_itemId = MS2_GE_R(in)->ReadInt();
-        spItem->FUN_14026b1c0(MS2_GE_R(in)->ReadByte());
+        spItem->SetRank(MS2_GE_R(in)->ReadByte());
         spItem->m_count = MS2_GE_R(in)->ReadInt();
         m_d0->AddReward(nRound, spItem);
     }
@@ -2283,7 +2283,7 @@ void GameEventDungeonEnterTimeLimit::FUN_1403c31c0(const CStringW& strXml)
 {
     m_d0.clear();
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, strXml) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, strXml) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (!pRoot)
@@ -2566,12 +2566,12 @@ void GameEventStampEvent::vfunc_2()
 {
     TiXmlDocument docStamp;
     TiXmlDocument docReward;
-    if (FUN_140166420()->FUN_140397ab0(&docStamp, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&docStamp, m_68) == 0)
     {
         MS2_ASSERT_AT(MS2_LINE(2060), 0);
         return;
     }
-    if (FUN_140166420()->FUN_140397ab0(&docReward, m_70) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&docReward, m_70) == 0)
     {
         MS2_ASSERT_AT(MS2_LINE(2066), 0);
         return;
@@ -2728,7 +2728,7 @@ MS2_REPLACE_METHOD(0x1403C55C0, GameEventTimeRunEvent, vfunc_4, 170, 0xD50DD980)
 int GameEventTimeRunEvent::FUN_1403c5670(MS2Ptr<TimeRunEventContext> spContext)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return 0;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -2750,7 +2750,7 @@ MS2_REPLACE_METHOD(0x1403C5670, GameEventTimeRunEvent, FUN_1403c5670, 608, 0x6AA
 int GameEventTimeRunEvent::FUN_1403c58e0(MS2Ptr<TimeRunEventContext> spContext)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_70) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_70) == 0)
         return 0;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -4095,7 +4095,7 @@ GameEventItemBox::GameEventItemBox() : m_d0(0), m_e0(false)
 void GameEventItemBox::vfunc_2()
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return;
     MS2Ptr<ItemBoxEventContext> spBox(new ItemBoxEventContext);
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
@@ -4185,7 +4185,7 @@ GameEventShutdownInteractObjectId::GameEventShutdownInteractObjectId()
 void GameEventShutdownInteractObjectId::vfunc_2()
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -4268,7 +4268,7 @@ GameEventShutdownFunctionItem::GameEventShutdownFunctionItem()
 void GameEventShutdownFunctionItem::vfunc_2()
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -4345,7 +4345,7 @@ GameEventShutdownSkillItem::GameEventShutdownSkillItem()
 void GameEventShutdownSkillItem::vfunc_2()
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -4757,7 +4757,7 @@ bool GameEventGallery::ReadCardData(MS2Ptr<GalleryContext> pContext)
         return false;
     }
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
     {
         MS2_ASSERT_AT(MS2_LINE(3951), "CFileSystem::GetInstance()->GetXmlFromString(doc, m_v1)" && 0);
         return false;
@@ -4792,7 +4792,7 @@ bool GameEventGallery::ReadRewardData(MS2Ptr<GalleryContext> pContext)
         return false;
     }
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_70) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_70) == 0)
     {
         MS2_ASSERT_AT(MS2_LINE(3974), "CFileSystem::GetInstance()->GetXmlFromString(doc, m_v2)" && 0);
         return false;
@@ -4999,7 +4999,7 @@ bool GameEventSnowman::ReadSnowmanData(MS2Ptr<SnowmanContext> pContext)
         return false;
     }
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
     {
         MS2_ASSERT_AT(MS2_LINE(4145), "CFileSystem::GetInstance()->GetXmlFromString(doc, m_v1)" && 0);
         return false;
@@ -5136,7 +5136,7 @@ bool GameEventRps::ReadRpsData(MS2Ptr<RpsContext> pContext)
         return false;
     }
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
     {
         MS2_ASSERT_AT(MS2_LINE(4233), 0);
         return false;
@@ -5451,7 +5451,7 @@ GameEventCustomTriggerString::GameEventCustomTriggerString()
 void GameEventCustomTriggerString::vfunc_2()
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -5577,7 +5577,7 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
 {
     {
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+        if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
             return false;
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == NULL)
@@ -5608,7 +5608,7 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
     }
     {
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_140397ab0(&doc, m_70) == 0)
+        if (GetFileSystem()->FUN_140397ab0(&doc, m_70) == 0)
             return false;
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == NULL)
@@ -5632,7 +5632,7 @@ bool GameEventTreeWatering::ReadTreeWateringData(MS2Ptr<TreeWateringContext> pCo
     }
     {
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_140397ab0(&doc, m_78) == 0)
+        if (GetFileSystem()->FUN_140397ab0(&doc, m_78) == 0)
             return false;
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == NULL)
@@ -5839,7 +5839,7 @@ void GameEventBurningLevelup::vfunc_2()
     m_d0->m_endTime = m_38.Get();
     {
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+        if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
             return;
         Unk_140165cf0* pRoot = FUN_140345b40(&doc);
         if (pRoot == NULL)
@@ -5860,7 +5860,7 @@ void GameEventBurningLevelup::vfunc_2()
     }
     {
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_140397ab0(&doc, m_70) == 0)
+        if (GetFileSystem()->FUN_140397ab0(&doc, m_70) == 0)
             return;
         Unk_140165cf0* pRoot = FUN_140345b40(&doc);
         if (pRoot == NULL)
@@ -5882,7 +5882,7 @@ void GameEventBurningLevelup::vfunc_2()
             m_d0->m_28.insert(ids[i]);
     }
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_80) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_80) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -6082,7 +6082,7 @@ void GameEventCoupleDance::vfunc_2()
     m_d0->m_endTime = m_28.Get();
     {
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+        if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         {
             MS2_ASSERT_AT(MS2_LINE(4337), 0);
             return;
@@ -6097,7 +6097,7 @@ void GameEventCoupleDance::vfunc_2()
     }
     {
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_140397ab0(&doc, m_70) == 0)
+        if (GetFileSystem()->FUN_140397ab0(&doc, m_70) == 0)
         {
             MS2_ASSERT_AT(MS2_LINE(4354), 0);
             return;
@@ -6390,7 +6390,7 @@ void GameEventCollectItemGroup::vfunc_2()
     m_d0->m_beginTime = m_28.Get();
     m_d0->m_endTime = m_38.Get();
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -6571,7 +6571,7 @@ void GameEventArcadeOpen::vfunc_2()
     m_d0.AssignRaw(new ArcadeOpenContext);
     m_e0 = false;
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, m_68) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)
@@ -6742,12 +6742,12 @@ void GameEventLongTermAttendGift::vfunc_2()
     TiXmlDocument docReward;
     if (m_68.IsEmpty() || m_70.IsEmpty())
         return;
-    if (FUN_140166420()->FUN_140397ab0(&docInfo, m_68) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&docInfo, m_68) == 0)
     {
         MS2_ASSERT_AT(MS2_LINE(5899), 0);
         return;
     }
-    if (FUN_140166420()->FUN_140397ab0(&docReward, m_70) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&docReward, m_70) == 0)
     {
         MS2_ASSERT_AT(MS2_LINE(5905), 0);
         return;

@@ -101,7 +101,7 @@ static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);          // the item data of an item id
 CItemOptionTable* FUN_140166430();                      // the option table singleton
 CString FUN_14016a5c0(const char* psz, int n);
-CLogString* FUN_140166440();                            // the log
+CLogString* GetLogString();                            // the log
 void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& strArg);
 void FUN_140177a80(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg);
 // The log's two-argument call (FMT_VARIADIC instantiation outside this unit).
@@ -488,10 +488,10 @@ MS2Ptr<ItemOptionConstant> CItemOptionTable::FUN_1405f5ee0(unsigned nId, int nGr
     for (; range.first != range.second; ++range.first)
     {
         MS2Ptr<ItemOptionConstant> spConstant = range.first->second;
-        if (nGrade >= spConstant->FUN_1405d2a70() && nGrade >= nBest)
+        if (nGrade >= spConstant->GetGrade() && nGrade >= nBest)
         {
             spResult = spConstant;
-            nBest = spConstant->FUN_1405d2a70();
+            nBest = spConstant->GetGrade();
         }
     }
     return spResult;
@@ -555,7 +555,7 @@ int CItemOptionTable::FUN_1405f6350(unsigned nStatId)
     auto it = m_variations.find(nStatId);
     if (it == m_variations.end())
         return 0;
-    return it->second->FUN_1405d3b80();
+    return it->second->GetHighStat();
 }
 
 // @0x1405f63e0
@@ -804,26 +804,26 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
         nPickCount = spRandom->FUN_1405d5fe0(nRank);
     }
     pOut->push_back(StringFormat(L"pickCount {0}", nPickCount));
-    if (FUN_140166440() != 0)
-        FUN_140177a80(FUN_140166440(), 0xb, 0x13, L"pickCount {0}", nPickCount);
+    if (GetLogString() != 0)
+        FUN_140177a80(GetLogString(), 0xb, 0x13, L"pickCount {0}", nPickCount);
     pOut->push_back(StringFormat(L"TotalCount {0}", nTotal));
-    if (FUN_140166440() != 0)
-        FUN_140177a80(FUN_140166440(), 0xb, 0x13, L"TotalCount {0}", nTotal);
+    if (GetLogString() != 0)
+        FUN_140177a80(GetLogString(), 0xb, 0x13, L"TotalCount {0}", nTotal);
     for (auto& kCount : mapCounts)
     {
         unsigned nSum = 0;
         for (auto& kValue : kCount.second)
             nSum += kValue.second;
         pOut->push_back(StringFormat(L"{0}:{1}", kCount.first, nSum));
-        if (FUN_140166440() != 0)
-            FUN_1401e0850(FUN_140166440(), 0xb, 0x13, L"{0}:{1}", kCount.first, nSum);
+        if (GetLogString() != 0)
+            FUN_1401e0850(GetLogString(), 0xb, 0x13, L"{0}:{1}", kCount.first, nSum);
         for (auto& kValue : kCount.second)
         {
             unsigned nValue = kValue.first;
             unsigned nCount = kValue.second;
             pOut->push_back(StringFormat(L"{0}:idx{1}:{2}", kCount.first, nValue, nCount));
-            if (FUN_140166440() != 0)
-                Unk_ItemOptionLog(FUN_140166440(), 0xb, 0x13, L"{0}:idx{1}:{2}", kCount.first, nValue, nCount);
+            if (GetLogString() != 0)
+                Unk_ItemOptionLog(GetLogString(), 0xb, 0x13, L"{0}:idx{1}:{2}", kCount.first, nValue, nCount);
         }
     }
 }
@@ -895,7 +895,7 @@ bool CItemOptionTable::LoadItemOptionConstant()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     CLockCriticalSection lock;
@@ -934,7 +934,7 @@ bool CItemOptionTable::LoadItemOptionRandom()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     CLockCriticalSection lock;
@@ -946,7 +946,7 @@ bool CItemOptionTable::LoadItemOptionRandom()
         if (!spRandom->Load(pElem))
             return;
         Unk_CriticalSectionLock guard(lock, 1);
-        m_randoms.insert(std::make_pair(spRandom->FUN_1405d3c80(), (ItemOptionRandom*)spRandom));
+        m_randoms.insert(std::make_pair(spRandom->GetCode(), (ItemOptionRandom*)spRandom));
     });
     return true;
 }
@@ -967,7 +967,7 @@ bool CItemOptionTable::LoadItemOptionVariation()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     for (Unk_140165cf0* pElem : pRoot->FUN_140165cf0("option"))

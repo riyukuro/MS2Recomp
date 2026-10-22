@@ -1033,7 +1033,7 @@ void UIDungeonRoomInfo::FUN_1412b2250()
             {
                 MS2Ptr<RewardPreviewItem> spItem(new RewardPreviewItem);
                 spItem->m_item.m_itemId = entity.vfunc_o18_0();
-                spItem->m_item.FUN_14026b1c0(entity.vfunc_o18_1());
+                spItem->m_item.SetRank(entity.vfunc_o18_1());
                 items.push_back(spItem);
             }
         }
@@ -1286,18 +1286,18 @@ void UIDungeonRoomInfo::FUN_1412b3fe0()
 MS2_REPLACE_METHOD(0x1412B3FE0, UIDungeonRoomInfo, FUN_1412b3fe0, 272, 0x75F6951F);
 
 // @0x1412b4100
-CStringW UIDungeonRoomInfo::FUN_1412b4100()
+CStringW UIDungeonRoomInfo::GetBanner()
 {
     return m_strBanner;
 }
-MS2_REPLACE_METHOD(0x1412B4100, UIDungeonRoomInfo, FUN_1412b4100, 68, 0x0D2F044B);
+MS2_REPLACE_METHOD(0x1412B4100, UIDungeonRoomInfo, GetBanner, 68, 0x0D2F044B);
 
 // @0x1412b4150
-void UIDungeonRoomInfo::FUN_1412b4150(MS2Ptr<DungeonRoom> spRoom)
+void UIDungeonRoomInfo::SetRoom(MS2Ptr<DungeonRoom> spRoom)
 {
     m_spRoom = spRoom;
 }
-MS2_REPLACE_METHOD(0x1412B4150, UIDungeonRoomInfo, FUN_1412b4150, 63, 0xDC260D09);
+MS2_REPLACE_METHOD(0x1412B4150, UIDungeonRoomInfo, SetRoom, 63, 0xDC260D09);
 
 // @0x1412b41a0
 void UIDungeonRoomInfo::OnEnterSolo(const ASParams& params)
@@ -1894,7 +1894,7 @@ void UIDungeonRoomDialog::OnLoadComplete()
     {
         nGroup = GroupOfType(m_spRoom->m_groupType);
         nRoomId = m_spRoom->GetDungeonRoomID();
-        m_spInfo->FUN_1412b4150(m_spRoom);
+        m_spInfo->SetRoom(m_spRoom);
     }
     if (!SelectGroup(nGroup, nRoomId))
     {
@@ -1952,7 +1952,7 @@ void UIDungeonRoomDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     {
         if (m_spInfo)
         {
-            CStringW strStatus = m_spInfo->FUN_1412b4100();
+            CStringW strStatus = m_spInfo->GetBanner();
             if (strStatus.IsEmpty())
                 return;
             ASTooltip tooltip(1, 2);
@@ -2463,7 +2463,7 @@ void UIDungeonRoomDialog::SetRoom(MS2Ptr<DungeonRoom> spRoom)
 {
     m_spRoom = spRoom;
     if (m_spInfo)
-        m_spInfo->FUN_1412b4150(m_spRoom);
+        m_spInfo->SetRoom(m_spRoom);
 }
 MS2_REPLACE_METHOD(0x1412BAC40, UIDungeonRoomDialog, SetRoom, 169, 0x33D70A2C);
 

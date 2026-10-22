@@ -31,7 +31,7 @@
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char* pszName); };   // FirstChildElement
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 void FUN_1401859c0(CLogString* log, int level, int category, const wchar_t* format);
 void FUN_14054c030(CLogString* log, int level, int category, const wchar_t* format, const CString& first,
@@ -90,13 +90,13 @@ bool LoginBgBgmTable::Load()
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return true;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return true;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -123,7 +123,7 @@ bool LoginBgBgmTable::Load()
         unsigned nParams = bgmParams.size();
         if (nIds > nParams)
         {
-            FUN_14054c030(FUN_140166440(), 2, 0x13,
+            FUN_14054c030(GetLogString(), 2, 0x13,
                           L"[<ms2> loginBgBgm.xml bgmID count != bgmParam count. clientPropertyBgDay : {0}]",
                           strPath, strBgDay);
             for (unsigned n = 0; n < nIds - nParams; n++)
@@ -141,7 +141,7 @@ bool LoginBgBgmTable::Load()
             unsigned nMonth = *it;
             if (nMonth > 12)
             {
-                FUN_14054c030(FUN_140166440(), 2, 0x13, L"[<ms2> loginBgBgm.xml month > 12. clientPropertyBgDay : {0}]",
+                FUN_14054c030(GetLogString(), 2, 0x13, L"[<ms2> loginBgBgm.xml month > 12. clientPropertyBgDay : {0}]",
                               strPath, strBgDay);
                 continue;
             }
@@ -188,7 +188,7 @@ void LoginBgBgmTable::SelectCurrent()
     int nCandidates = candidates.size();
     if (nCandidates == 0)
     {
-        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"[<ms2> LoginBgBgmTable::Get candidateVector size 0 error");
+        FUN_1401859c0(GetLogString(), 2, 0x13, L"[<ms2> LoginBgBgmTable::Get candidateVector size 0 error");
         return;
     }
     m_spCurrent = candidates[FUN_140768010(nCandidates, 0)];

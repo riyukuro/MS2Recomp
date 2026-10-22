@@ -60,8 +60,8 @@ public:
 
     NiRenderedTexture* FUN_141ab73f0();                     // the click's rendered texture (NULL without a click)
     NiRenderTargetGroup* FUN_141ab7440();                   // the click's render target group (NULL without a click)
-    int FUN_141ab7660();                                    // m_nDirty
-    NiNode* FUN_141ab7680();                                // the effect root
+    int GetDirty();                                    // m_nDirty
+    NiNode* GetEffectRoot();                                // the effect root
     bool FUN_141ab76b0(const efd::Point3& kWorld, Unk_ScreenPoint* pScreen);   // world point -> pixels in the texture
     bool FUN_141ab7870(CStringW strPath, int nFormat);       // saves the texture to a file
     void FUN_141ab7b80(int nValue);                         // updates the global shader constant

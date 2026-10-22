@@ -521,7 +521,7 @@ template <> inline Delegate<bool(MS2Ptr<TMarketBillDataParam>)>& Delegate<bool(M
 CString FUN_141028be0(__int64 nCharId, const CString& strProfile, int bNoDownload, CString strUrl);   // the local file of a profile image
 class Unk_MmFiles { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
 Unk_MmFiles* FUN_140166420();                                               // the resource file system
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
 void FUN_1407cd930(Scaleform::GFx::Value* pObj, const char* szName, const Scaleform::GFx::Value& v);   // set a member of an AS object
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                         // the value is an object
@@ -5083,7 +5083,7 @@ void UIMeratMarketDialog::LoadSampleScore()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
     Unk_140165cf0* pHarmony = pRoot->FUN_140165cf0("harmony");

@@ -98,7 +98,7 @@ public:
     virtual int vfunc_2();                                  // 0x10 percent rank flag
     virtual int vfunc_3();                                  // 0x18 my rank
     int FUN_140b2e9c0();                                    // number of pages
-    int FUN_140e37c20();                                    // the ranking type of the answer (inline, rankdialog)
+    int GetRankType();                                    // the ranking type of the answer (inline, rankdialog)
     Unk_RankListHandle FUN_140b3dcc0();                     // the row list of the answer
     char m_pad_08[0x10];
     int m_nRankType;                                        // +0x18

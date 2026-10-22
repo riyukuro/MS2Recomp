@@ -203,7 +203,7 @@ int FUN_14015f500(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 void FUN_14028f5d0(Unk_140165cf0* pParent, const char* pszChild, std::vector<Unk_140165cf0*>& arrOut);
 extern "C" double (__cdecl* __imp_floor)(double);
 CItemOptionTable* FUN_140166430();                      // the option table singleton
-CLogString* FUN_140166440();                            // the log
+CLogString* GetLogString();                            // the log
 // The log's two-argument call (FMT_VARIADIC instantiation outside this unit).
 void FUN_1401e0850(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const CString& first,
                    const unsigned& second);
@@ -243,19 +243,19 @@ ItemOptionValue::ItemOptionValue(unsigned nSpecial)
 }
 
 // @0x1405ce370
-int ItemOptionValue::FUN_1405ce370()
+int ItemOptionValue::GetStat()
 {
     return m_nStat;
 }
 
 // @0x1405ce390
-unsigned ItemOptionValue::FUN_1405ce390()
+unsigned ItemOptionValue::GetSpecial()
 {
     return m_nSpecial;
 }
 
 // @0x1405ce3b0
-bool ItemOptionValue::FUN_1405ce3b0()
+bool ItemOptionValue::HasValue()
 {
     return m_nValue != 0;
 }
@@ -263,10 +263,10 @@ bool ItemOptionValue::FUN_1405ce3b0()
 // @0x1405ce3f0
 bool ItemOptionValue::FUN_1405ce3f0()
 {
-    if (FUN_1405ce370() != -1)
-        return FUN_14082f1d0(FUN_1405ce370());
-    else if (FUN_1405ce390() != 0)
-        return FUN_14081dc50(FUN_1405ce390());
+    if (GetStat() != -1)
+        return FUN_14082f1d0(GetStat());
+    else if (GetSpecial() != 0)
+        return FUN_14081dc50(GetSpecial());
     MS2_ASSERT_AT(0x3b, 0);
     return true;
 }
@@ -274,7 +274,7 @@ bool ItemOptionValue::FUN_1405ce3f0()
 // @0x1405ce470
 BOOL ItemOptionValue::FUN_1405ce470()
 {
-    if (FUN_1405ce370() != -1)
+    if (GetStat() != -1)
         return FALSE;
     return TRUE;
 }
@@ -282,20 +282,20 @@ BOOL ItemOptionValue::FUN_1405ce470()
 // @0x1405ce4a0
 CString ItemOptionValue::FUN_1405ce4a0()
 {
-    int nStat = FUN_1405ce370();
+    int nStat = GetStat();
     if (nStat != -1)
         return FUN_14082efb0(nStat);
-    return FUN_14081d380(FUN_1405ce390());
+    return FUN_14081d380(GetSpecial());
 }
 
 // @0x1405ce530
-int ItemOptionValue::FUN_1405ce530()
+int ItemOptionValue::GetValue()
 {
     return m_nValue;
 }
 
 // @0x1405ce550
-void ItemOptionValue::FUN_1405ce550(int nValue)
+void ItemOptionValue::SetValue(int nValue)
 {
     m_nValue = nValue;
 }
@@ -336,7 +336,7 @@ int ItemOptionValueRef::FUN_1405ce670(unsigned nItemId, int nRank)
     int nLevel = spItem->FUN_14053f0a0();
     int nStat = spItem->FUN_14053c620();
     int nJob = FUN_1405d2410(spItem);
-    switch (FUN_1405ce370())
+    switch (GetStat())
     {
     case 0:
         return FUN_1405cfd50(nStat, nJob, spItem->FUN_14053f080());
@@ -1349,20 +1349,20 @@ bool ItemOptionValueRandom::FUN_1405d2590(Unk_140165cf0* pElem)
 // @0x1405d26c0
 CString ItemOptionValueRandom::FUN_1405d26c0()
 {
-    int nStat = FUN_1405d2750();
+    int nStat = GetStat();
     if (nStat != -1)
         return FUN_14082efb0(nStat);
-    return FUN_14081d380(FUN_1405d2770());
+    return FUN_14081d380(GetSpecial());
 }
 
 // @0x1405d2750
-int ItemOptionValueRandom::FUN_1405d2750()
+int ItemOptionValueRandom::GetStat()
 {
     return m_nStat;
 }
 
 // @0x1405d2770
-unsigned ItemOptionValueRandom::FUN_1405d2770()
+unsigned ItemOptionValueRandom::GetSpecial()
 {
     return m_nSpecial;
 }
@@ -1370,19 +1370,19 @@ unsigned ItemOptionValueRandom::FUN_1405d2770()
 // @0x1405d2790
 BOOL ItemOptionValueRandom::FUN_1405d2790()
 {
-    if (FUN_1405d2750() != -1)
+    if (GetStat() != -1)
         return FALSE;
     return TRUE;
 }
 
 // @0x1405d27c0
-int ItemOptionValueRandom::FUN_1405d27c0()
+int ItemOptionValueRandom::GetStatId()
 {
     return m_nStatId;
 }
 
 // @0x1405d27e0
-int ItemOptionValueRandom::FUN_1405d27e0()
+int ItemOptionValueRandom::GetWeight()
 {
     return m_nWeight;
 }
@@ -1432,7 +1432,7 @@ void ItemOptionConstant::FUN_1405d2a50(int nValue)
 }
 
 // @0x1405d2a70
-int ItemOptionConstant::FUN_1405d2a70()
+int ItemOptionConstant::GetGrade()
 {
     return m_nGrade;
 }
@@ -1462,8 +1462,8 @@ bool ItemOptionConstant::FUN_1405d2a90(Unk_140165cf0* pElem)
             MS2Ptr<ItemOptionValue> spValue(new ItemOptionValue(nStat));
             int nValue = 0;
             FUN_1408731e0(pChild, "value", nValue);
-            spValue->FUN_1405ce550(nValue);
-            if (spValue->FUN_1405ce3b0())
+            spValue->SetValue(nValue);
+            if (spValue->HasValue())
                 m_vValues.push_back(spValue.get());
             continue;
         }
@@ -1473,8 +1473,8 @@ bool ItemOptionConstant::FUN_1405d2a90(Unk_140165cf0* pElem)
             MS2Ptr<ItemOptionValue> spValue(new ItemOptionValue(nSpecial));
             int nValue = 0;
             FUN_1408731e0(pChild, "value", nValue);
-            spValue->FUN_1405ce550(nValue);
-            if (spValue->FUN_1405ce3b0())
+            spValue->SetValue(nValue);
+            if (spValue->HasValue())
                 m_vValues.push_back(spValue.get());
         }
     }
@@ -1486,19 +1486,19 @@ void ItemOptionConstant::FUN_1405d2e70(MS2Ptr<CItemOption> spOption, int nRank)
 {
     for (auto& spValue : m_vValues)
     {
-        if (spValue->FUN_1405ce370() != -1)
+        if (spValue->GetStat() != -1)
         {
             Unk_EnchantPtr<BaseOption> spBase(new BaseOption);
-            spBase->FUN_140266e90(spValue->vfunc_1(spOption->FUN_1405cb340(), nRank));
+            spBase->FUN_140266e90(spValue->vfunc_1(spOption->GetItemId(), nRank));
             if (spBase->FUN_140266e30() > 0)
-                spOption->FUN_1405cb200(0, spValue->FUN_1405ce370(), spBase);
+                spOption->FUN_1405cb200(0, spValue->GetStat(), spBase);
         }
         else
         {
             Unk_EnchantPtr<BaseOption> spBase(new BaseOption);
-            spBase->FUN_140266e90(spValue->vfunc_1(spOption->FUN_1405cb340(), nRank));
+            spBase->FUN_140266e90(spValue->vfunc_1(spOption->GetItemId(), nRank));
             if (spBase->FUN_140266e30() > 0)
-                spOption->FUN_1405cb2a0(0, spValue->FUN_1405ce390(), spBase);
+                spOption->FUN_1405cb2a0(0, spValue->GetSpecial(), spBase);
         }
     }
 }
@@ -1514,7 +1514,7 @@ MS2Ptr<ItemOptionValue> ItemOptionConstant::FUN_1405d3220(int nStat)
 {
     for (size_t i = 0; i < m_vValues.size(); ++i)
     {
-        if (m_vValues[i]->FUN_1405ce370() == nStat)
+        if (m_vValues[i]->GetStat() == nStat)
             return m_vValues[i];
     }
     return MS2Ptr<ItemOptionValue>(0);
@@ -1525,7 +1525,7 @@ MS2Ptr<ItemOptionValue> ItemOptionConstant::FUN_1405d3300(unsigned nSpecial)
 {
     for (size_t i = 0; i < m_vValues.size(); ++i)
     {
-        if (m_vValues[i]->FUN_1405ce390() == nSpecial)
+        if (m_vValues[i]->GetSpecial() == nSpecial)
             return m_vValues[i];
     }
     return MS2Ptr<ItemOptionValue>(0);
@@ -1554,7 +1554,7 @@ void ItemOptionConstant::FUN_1405d3490(Unk_140165cf0* pElem)
             FUN_140873220(pChild, "luaIndex", spValue->m_nLuaIndex);
             int nValue = 0;
             FUN_1408731e0(pChild, "value", nValue);
-            spValue->FUN_1405ce550(nValue);
+            spValue->SetValue(nValue);
             m_vValues.push_back(spValue.get());
             continue;
         }
@@ -1564,8 +1564,8 @@ void ItemOptionConstant::FUN_1405d3490(Unk_140165cf0* pElem)
             MS2Ptr<ItemOptionValue> spValue(new ItemOptionValue(nSpecial));
             int nValue = 0;
             FUN_1408731e0(pChild, "value", nValue);
-            spValue->FUN_1405ce550(nValue);
-            if (spValue->FUN_1405ce3b0())
+            spValue->SetValue(nValue);
+            if (spValue->HasValue())
                 m_vValues.push_back(spValue.get());
         }
     }
@@ -1637,7 +1637,7 @@ int ItemOptionVariationData::FUN_1405d3b30() const
 }
 
 // @0x1405d3b80
-int ItemOptionVariationData::FUN_1405d3b80()
+int ItemOptionVariationData::GetHighStat()
 {
     return m_nHighStat;
 }
@@ -1658,25 +1658,25 @@ ItemOptionRandom::ItemOptionRandom()
 }
 
 // @0x1405d3c80
-int ItemOptionRandom::FUN_1405d3c80()
+int ItemOptionRandom::GetCode()
 {
     return m_nCode;
 }
 
 // @0x1405d3ca0
-ItemOptionStatGroup ItemOptionRandom::FUN_1405d3ca0()
+ItemOptionStatGroup ItemOptionRandom::GetStatGroup()
 {
     return m_eStatGroup;
 }
 
 // @0x1405d3cc0
-int ItemOptionRandom::FUN_1405d3cc0()
+int ItemOptionRandom::GetProbVer()
 {
     return m_nProbVer;
 }
 
 // @0x1405d3ce0
-int ItemOptionRandom::FUN_1405d3ce0()
+int ItemOptionRandom::GetLevelGroupId()
 {
     return m_nLevelGroupId;
 }
@@ -1792,7 +1792,7 @@ bool ItemOptionRandom::FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
 {
     MS2Ptr<ItemOptionRandomContext> spContext(
         new ItemOptionRandomContext(spTarget->m_spSource, spTarget->m_nRank, MS2Ptr<ItemOptionRandom>(this)));
-    spContext->FUN_1405d9be0(spTarget);
+    spContext->SetTarget(spTarget);
     const int kMaxTry = 20;
     for (int nTry = 0; nTry < kMaxTry; nTry++)
     {
@@ -1819,7 +1819,7 @@ bool ItemOptionRandom::FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
             {
                 if (pValue->FUN_1405d2790() == 0)
                 {
-                    int nStat = pValue->FUN_1405d2750();
+                    int nStat = pValue->GetStat();
                     BOOL bSpecial = pValue->FUN_1405d2790();
                     if (std::find(spTarget->m_vLocked.begin(), spTarget->m_vLocked.end(),
                                   std::pair<int, int>(bSpecial, nStat)) != spTarget->m_vLocked.end())
@@ -1830,7 +1830,7 @@ bool ItemOptionRandom::FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
                 }
                 else
                 {
-                    int nSpecial = pValue->FUN_1405d2770();
+                    int nSpecial = pValue->GetSpecial();
                     BOOL bSpecial = pValue->FUN_1405d2790();
                     if (std::find(spTarget->m_vLocked.begin(), spTarget->m_vLocked.end(),
                                   std::pair<int, int>(bSpecial, nSpecial)) != spTarget->m_vLocked.end())
@@ -1845,7 +1845,7 @@ bool ItemOptionRandom::FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
                 // a kept stat: copied from the source
                 if (pValue->FUN_1405d2790() == 0)
                 {
-                    int nStat = pValue->FUN_1405d2750();
+                    int nStat = pValue->GetStat();
                     Unk_EnchantPtr<BaseOption> spBase = spTarget->m_spSource->FUN_1405cb760(2, nStat);
                     if (spBase == 0)
                         continue;
@@ -1853,7 +1853,7 @@ bool ItemOptionRandom::FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
                 }
                 else
                 {
-                    unsigned nSpecial = pValue->FUN_1405d2770();
+                    unsigned nSpecial = pValue->GetSpecial();
                     Unk_EnchantPtr<BaseOption> spBase = spTarget->m_spSource->FUN_1405cb800(2, nSpecial);
                     if (spBase == 0)
                         continue;
@@ -1879,7 +1879,7 @@ bool ItemOptionRandom::FUN_1405d55e0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
     unsigned nCount = spTarget->m_spSource->FUN_1405cbbb0(2);
     MS2Ptr<ItemOptionRandomContext> spContext(
         new ItemOptionRandomContext(spTarget->m_spSource, spTarget->m_nRank, MS2Ptr<ItemOptionRandom>(this)));
-    spContext->FUN_1405d9be0(spTarget);
+    spContext->SetTarget(spTarget);
     if (spTarget->m_nMode == 0)
     {
         if (FUN_1405d7940(vValues, spTarget->m_spSource.get()) == 0)
@@ -1911,7 +1911,7 @@ bool ItemOptionRandom::FUN_1405d55e0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
                 {
                     if (pValue->FUN_1405d2790() == 0)
                     {
-                        int nStat = pValue->FUN_1405d2750();
+                        int nStat = pValue->GetStat();
                         BOOL bSpecial = pValue->FUN_1405d2790();
                         if (std::find(spTarget->m_vLocked.begin(), spTarget->m_vLocked.end(),
                                       std::pair<int, int>(bSpecial, nStat)) != spTarget->m_vLocked.end())
@@ -1922,7 +1922,7 @@ bool ItemOptionRandom::FUN_1405d55e0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
                     }
                     else
                     {
-                        int nSpecial = pValue->FUN_1405d2770();
+                        int nSpecial = pValue->GetSpecial();
                         BOOL bSpecial = pValue->FUN_1405d2790();
                         if (std::find(spTarget->m_vLocked.begin(), spTarget->m_vLocked.end(),
                                       std::pair<int, int>(bSpecial, nSpecial)) != spTarget->m_vLocked.end())
@@ -1936,7 +1936,7 @@ bool ItemOptionRandom::FUN_1405d55e0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
                 {
                     if (pValue->FUN_1405d2790() == 0)
                     {
-                        int nStat = pValue->FUN_1405d2750();
+                        int nStat = pValue->GetStat();
                         Unk_EnchantPtr<BaseOption> spBase = spSource->FUN_1405cb760(2, nStat);
                         if (spBase == 0)
                             continue;
@@ -1944,7 +1944,7 @@ bool ItemOptionRandom::FUN_1405d55e0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
                     }
                     else
                     {
-                        unsigned nSpecial = pValue->FUN_1405d2770();
+                        unsigned nSpecial = pValue->GetSpecial();
                         Unk_EnchantPtr<BaseOption> spBase = spSource->FUN_1405cb800(2, nSpecial);
                         if (spBase == 0)
                             continue;
@@ -1986,18 +1986,18 @@ bool ItemOptionRandom::FUN_1405d6020(MS2Ptr<CItemOption> spOption, int nRank, Un
     MS2Ptr<ItemOptionValueRandom> spValue = FUN_1405d8f30(spContext, pRandom);
     if (spValue == 0)
         return false;
-    if (spValue->FUN_1405d2750() != -1)
+    if (spValue->GetStat() != -1)
     {
         Unk_EnchantPtr<BaseOption> spBase(new BaseOption);
         spBase->FUN_140266e90(spValue->FUN_1405d28d0(spContext, pRandom));
-        if (!spOption->FUN_1405cb200(2, spValue->FUN_1405d2750(), spBase))
+        if (!spOption->FUN_1405cb200(2, spValue->GetStat(), spBase))
             return false;
     }
     else
     {
         Unk_EnchantPtr<BaseOption> spBase(new BaseOption);
         spBase->FUN_140266e90(spValue->FUN_1405d28d0(spContext, pRandom));
-        if (!spOption->FUN_1405cb2a0(2, spValue->FUN_1405d2770(), spBase))
+        if (!spOption->FUN_1405cb2a0(2, spValue->GetSpecial(), spBase))
             return false;
     }
     return true;
@@ -2029,7 +2029,7 @@ void ItemOptionRandom::FUN_1405d6560(MS2Ptr<CItemOption> spOption, int nRank, un
     for (auto& kCount : mapCounts)
     {
         pOut->push_back(StringFormat(L"Option {0}:{1}", kCount.first, kCount.second));
-        FUN_1401e0850(FUN_140166440(), 2, 0x13, L"Option {0}:{1}", kCount.first, kCount.second);
+        FUN_1401e0850(GetLogString(), 2, 0x13, L"Option {0}:{1}", kCount.first, kCount.second);
     }
 }
 
@@ -2053,31 +2053,31 @@ void ItemOptionRandom::FUN_1405d68f0(unsigned nItemId, int nRank, unsigned& nPic
     for (auto& spValue : m_vValues)
     {
         CString strName = spValue->FUN_1405d26c0();
-        unsigned nWeight = spValue->FUN_1405d27e0();
+        unsigned nWeight = spValue->GetWeight();
         std::pair<unsigned, int> kInfo;
         kInfo.first = nWeight;
-        kInfo.second = spValue->FUN_1405d27c0();
+        kInfo.second = spValue->GetStatId();
         vInfo.push_back(std::make_pair(strName, kInfo));
         bool bArmor = spContext->FUN_1405d9e00() == 2 &&
                       FUN_140166430()->FUN_1405f6e40(spValue->FUN_1405d26c0()).get() != 0;
         if (bArmor)
         {
             nArmor += nWeight;
-            unsigned nStatId = spValue->FUN_1405d27c0();
+            unsigned nStatId = spValue->GetStatId();
             vArmor.push_back(std::make_pair(
                 StringFormat(L"OptionName: {0}, Weight : {1}, statID: {2}", strName, nWeight, nStatId), nWeight));
         }
         else if (spValue->FUN_1405d29b0())
         {
             nSpecial += nWeight;
-            unsigned nStatId = spValue->FUN_1405d27c0();
+            unsigned nStatId = spValue->GetStatId();
             vSpecial.push_back(std::make_pair(
                 StringFormat(L"OptionName: {0}, Weight : {1}, statID: {2}", strName, nWeight, nStatId), nWeight));
         }
         else
         {
             vWeights.push_back(nWeight);
-            unsigned nStatId = spValue->FUN_1405d27c0();
+            unsigned nStatId = spValue->GetStatId();
             vLines.push_back(StringFormat(L"OptionName : {0}, Weight : {1}, statID : {2}", strName, nWeight, nStatId));
         }
     }
@@ -2145,7 +2145,7 @@ int ItemOptionRandom::FUN_1405d7680(int nStat)
     MS2Ptr<ItemOptionValueRandom> spValue = FUN_1405d77a0(nStat);
     if (spValue == 0)
         return 0;
-    return spValue->FUN_1405d27c0();
+    return spValue->GetStatId();
 }
 
 // @0x1405d7710
@@ -2154,7 +2154,7 @@ int ItemOptionRandom::FUN_1405d7710(unsigned nSpecial)
     MS2Ptr<ItemOptionValueRandom> spValue = FUN_1405d7870(nSpecial);
     if (spValue == 0)
         return 0;
-    return spValue->FUN_1405d27c0();
+    return spValue->GetStatId();
 }
 
 // @0x1405d77a0
@@ -2162,7 +2162,7 @@ MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d77a0(int nStat)
 {
     for (auto& spValue : m_vValues)
     {
-        if (spValue->FUN_1405d2750() == nStat)
+        if (spValue->GetStat() == nStat)
             return spValue;
     }
     return nullptr;
@@ -2173,7 +2173,7 @@ MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d7870(unsigned nSpecial)
 {
     for (auto& spValue : m_vValues)
     {
-        if (spValue->FUN_1405d2770() == nSpecial)
+        if (spValue->GetSpecial() == nSpecial)
             return spValue;
     }
     return nullptr;
@@ -2189,9 +2189,9 @@ int ItemOptionRandom::FUN_1405d7940(std::vector<ItemOptionValueRandom*>& vOut, C
         size_t nFound = 0;
         for (size_t i = 0; i < m_vValues.size(); i++)
         {
-            if (m_vValues[i]->FUN_1405d2750() == -1)
+            if (m_vValues[i]->GetStat() == -1)
                 continue;
-            int nStat = m_vValues[i]->FUN_1405d2750();
+            int nStat = m_vValues[i]->GetStat();
             if (kStats.Lookup(nStat) != NULL)
             {
                 vOut.push_back(m_vValues[i].get());
@@ -2208,9 +2208,9 @@ int ItemOptionRandom::FUN_1405d7940(std::vector<ItemOptionValueRandom*>& vOut, C
         size_t nFound = 0;
         for (size_t i = 0; i < m_vValues.size(); i++)
         {
-            if (m_vValues[i]->FUN_1405d2770() == 0)
+            if (m_vValues[i]->GetSpecial() == 0)
                 continue;
-            Unk_SocketSpecialStat eSpecial = (Unk_SocketSpecialStat)m_vValues[i]->FUN_1405d2770();
+            Unk_SocketSpecialStat eSpecial = (Unk_SocketSpecialStat)m_vValues[i]->GetSpecial();
             if (kSpecials.Lookup(eSpecial) != NULL)
             {
                 vOut.push_back(m_vValues[i].get());
@@ -2262,7 +2262,7 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
     for (auto& spValue : m_vValues)
     {
         CString strName = spValue->FUN_1405d26c0();
-        int nWeight = spValue->FUN_1405d27e0();
+        int nWeight = spValue->GetWeight();
         if (spContext->FUN_1405d9e00() == 2 && FUN_140166430()->FUN_1405f6e40(strName).get() != 0)
         {
             pickerArmor.Register(nWeight, spValue.get());
@@ -2292,7 +2292,7 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
         {
             pickerArmor.Pick(pRandom, pValue);
             picker.Register(pickerArmor.m_total, pValue);
-            unsigned nWeight = pValue->FUN_1405d27e0();
+            unsigned nWeight = pValue->GetWeight();
             kArmor.first = pValue;
             kArmor.second = (double)nWeight / (double)pickerArmor.m_total;
         }
@@ -2306,7 +2306,7 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
         {
             pickerSpecial.Pick(pRandom, pValue);
             picker.Register(pickerSpecial.m_total, pValue);
-            unsigned nWeight = pValue->FUN_1405d27e0();
+            unsigned nWeight = pValue->GetWeight();
             kSpecial.first = pValue;
             kSpecial.second = (double)nWeight / (double)pickerSpecial.m_total;
         }
@@ -2415,7 +2415,7 @@ MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d8f30(MS2Ptr<ItemOptionR
     Unk_ItemOptionValuePicker pickerArmor;
     Unk_ItemOptionValuePicker pickerSpecial;
     std::vector<ItemOptionValueRandom*> vHeld;
-    FUN_1405d7940(vHeld, spContext->FUN_1405d9e50().get());
+    FUN_1405d7940(vHeld, spContext->GetOption().get());
     ItemOptionValueRandom* pPicked = NULL;
     MS2Ptr<ItemOptionValueRandom> spHeldArmor(0);
     MS2Ptr<ItemOptionValueRandom> spHeldSpecial(0);
@@ -2439,7 +2439,7 @@ MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d8f30(MS2Ptr<ItemOptionR
     for (auto& spValue : m_vValues)
     {
         CString strName = spValue->FUN_1405d26c0();
-        int nWeight = spValue->FUN_1405d27e0();
+        int nWeight = spValue->GetWeight();
         if (!vHeld.empty() && std::find(vHeld.begin(), vHeld.end(), spValue) != vHeld.end())
             continue;
         if (spContext->FUN_1405d9e00() == 2 && FUN_140166430()->FUN_1405f6e40(strName).get() != 0)
@@ -2550,7 +2550,7 @@ int ItemOptionRandomContext::FUN_1405d9bb0(int nStatId)
 }
 
 // @0x1405d9be0
-void ItemOptionRandomContext::FUN_1405d9be0(MS2Ptr<Unk_1405e74c0> spTarget)
+void ItemOptionRandomContext::SetTarget(MS2Ptr<Unk_1405e74c0> spTarget)
 {
     m_spTarget = spTarget;
 }
@@ -2574,7 +2574,7 @@ BOOL ItemOptionRandomContext::FUN_1405d9d10(CString strName)
 // @0x1405d9e00
 ItemOptionStatGroup ItemOptionRandomContext::FUN_1405d9e00()
 {
-    return m_spRandom->FUN_1405d3ca0();
+    return m_spRandom->GetStatGroup();
 }
 
 // @0x1405d9e30
@@ -2584,7 +2584,7 @@ int ItemOptionRandomContext::FUN_1405d9e30()
 }
 
 // @0x1405d9e50
-MS2Ptr<CItemOption> ItemOptionRandomContext::FUN_1405d9e50()
+MS2Ptr<CItemOption> ItemOptionRandomContext::GetOption()
 {
     return m_spOption;
 }
@@ -2601,15 +2601,15 @@ int ItemOptionRandomContext::FUN_1405d9ea0(MS2Ptr<ItemOptionValueRandom> spValue
     {
         if (!pLogs)
             return true;
-        return FUN_14073ede0(m_spRandom->FUN_1405d3cc0(), spValue->FUN_1405d27c0(), nValue, pLogs);
+        return FUN_14073ede0(m_spRandom->GetProbVer(), spValue->GetStatId(), nValue, pLogs);
     };
-    if (spValue->FUN_1405d2750() != -1)
+    if (spValue->GetStat() != -1)
     {
         if (FUN_1405d9c30(spValue->FUN_1405d26c0()))
             return 0;
         Unk_EnchantPtr<BaseOption> spBase(new BaseOption);
         spBase->FUN_140266e90(spValue->FUN_1405d28d0(MS2Ptr<ItemOptionRandomContext>(this), pRandom));
-        if (m_spOption->FUN_1405cb200(2, spValue->FUN_1405d2750(), spBase))
+        if (m_spOption->FUN_1405cb200(2, spValue->GetStat(), spBase))
         {
             log(spBase->FUN_140266e30());
             (*pCount)--;
@@ -2618,13 +2618,13 @@ int ItemOptionRandomContext::FUN_1405d9ea0(MS2Ptr<ItemOptionValueRandom> spValue
     }
     else
     {
-        if (FUN_14081d650(m_spOption, 2, spValue->FUN_1405d2770()) != 0)
+        if (FUN_14081d650(m_spOption, 2, spValue->GetSpecial()) != 0)
             return 0;
         if (FUN_1405d9c30(spValue->FUN_1405d26c0()))
             return 0;
         Unk_EnchantPtr<BaseOption> spBase(new BaseOption);
         spBase->FUN_140266e90(spValue->FUN_1405d28d0(MS2Ptr<ItemOptionRandomContext>(this), pRandom));
-        if (m_spOption->FUN_1405cb2a0(2, spValue->FUN_1405d2770(), spBase))
+        if (m_spOption->FUN_1405cb2a0(2, spValue->GetSpecial(), spBase))
         {
             log(spBase->FUN_140266e30());
             (*pCount)--;
@@ -2645,9 +2645,9 @@ int ItemOptionRandomContext::FUN_1405da4b0(MS2Ptr<ItemOptionValueRandom> spValue
     {
         if (!pLogs)
             return true;
-        return FUN_14073ede0(m_spRandom->FUN_1405d3cc0(), spValue->FUN_1405d27c0(), nValue, pLogs);
+        return FUN_14073ede0(m_spRandom->GetProbVer(), spValue->GetStatId(), nValue, pLogs);
     };
-    if (spValue->FUN_1405d2750() != -1)
+    if (spValue->GetStat() != -1)
     {
         if (FUN_1405d9c30(spValue->FUN_1405d26c0()))
             return 0;
@@ -2655,7 +2655,7 @@ int ItemOptionRandomContext::FUN_1405da4b0(MS2Ptr<ItemOptionValueRandom> spValue
         spBase->m_nIndex = nIndex;
         int nValue = spValue->FUN_1405d2800(MS2Ptr<ItemOptionRandomContext>(this));
         spBase->FUN_140266e90(nValue);
-        if (m_spOption->FUN_1405cb200(2, spValue->FUN_1405d2750(), spBase))
+        if (m_spOption->FUN_1405cb200(2, spValue->GetStat(), spBase))
         {
             log(spBase->FUN_140266e30());
             (*pCount)--;
@@ -2664,7 +2664,7 @@ int ItemOptionRandomContext::FUN_1405da4b0(MS2Ptr<ItemOptionValueRandom> spValue
     }
     else
     {
-        if (FUN_14081d650(m_spOption, 2, spValue->FUN_1405d2770()) != 0)
+        if (FUN_14081d650(m_spOption, 2, spValue->GetSpecial()) != 0)
             return 0;
         if (FUN_1405d9c30(spValue->FUN_1405d26c0()))
             return 0;
@@ -2672,7 +2672,7 @@ int ItemOptionRandomContext::FUN_1405da4b0(MS2Ptr<ItemOptionValueRandom> spValue
         spBase->m_nIndex = nIndex;
         int nValue = spValue->FUN_1405d2800(MS2Ptr<ItemOptionRandomContext>(this));
         spBase->FUN_140266e90(nValue);
-        if (m_spOption->FUN_1405cb2a0(2, spValue->FUN_1405d2770(), spBase))
+        if (m_spOption->FUN_1405cb2a0(2, spValue->GetSpecial(), spBase))
         {
             log(spBase->FUN_140266e30());
             (*pCount)--;
@@ -2695,13 +2695,13 @@ int ItemOptionRandomContext::FUN_1405daad0(MS2Ptr<ItemOptionValueRandom> spValue
     {
         if (!pLogs)
             return true;
-        return FUN_14073ede0(m_spRandom->FUN_1405d3cc0(), spValue->FUN_1405d27c0(), nValue, pLogs);
+        return FUN_14073ede0(m_spRandom->GetProbVer(), spValue->GetStatId(), nValue, pLogs);
     };
-    if (spValue->FUN_1405d2750() != -1)
+    if (spValue->GetStat() != -1)
     {
         Unk_EnchantPtr<BaseOption> spBase(new BaseOption);
         spBase->FUN_140266e90(spValue->FUN_1405d2800(MS2Ptr<ItemOptionRandomContext>(this)));
-        if (m_spTarget->m_spResult->FUN_1405cb200(2, spValue->FUN_1405d2750(), spBase))
+        if (m_spTarget->m_spResult->FUN_1405cb200(2, spValue->GetStat(), spBase))
         {
             log(spBase->FUN_140266e30());
             (*pCount)--;
@@ -2712,11 +2712,11 @@ int ItemOptionRandomContext::FUN_1405daad0(MS2Ptr<ItemOptionValueRandom> spValue
     {
         if (m_spTarget->m_nRoll == 0)
             return 1;
-        if (FUN_14081d650(m_spTarget->m_spResult, 2, spValue->FUN_1405d2770()) != 0)
+        if (FUN_14081d650(m_spTarget->m_spResult, 2, spValue->GetSpecial()) != 0)
             return 0;
         Unk_EnchantPtr<BaseOption> spBase(new BaseOption);
         spBase->FUN_140266e90(spValue->FUN_1405d2800(MS2Ptr<ItemOptionRandomContext>(this)));
-        if (m_spTarget->m_spResult->FUN_1405cb2a0(2, spValue->FUN_1405d2770(), spBase))
+        if (m_spTarget->m_spResult->FUN_1405cb2a0(2, spValue->GetSpecial(), spBase))
         {
             log(spBase->FUN_140266e30());
             (*pCount)--;

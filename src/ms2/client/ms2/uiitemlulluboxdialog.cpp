@@ -289,7 +289,7 @@ void UIItemLulluBoxDialog::vfunc_79(void* p)
             for (int i = 0; i < n; ++i) {
                 LULLUBOX_ITEMS.FUN_140be9400(i).m_itemId = LULLUBOX_PKT->vfunc_o8_3();
                 LULLUBOX_ITEMS.FUN_140be9400(i).m_count = LULLUBOX_PKT->vfunc_o8_3();
-                LULLUBOX_ITEMS.FUN_140be9400(i).FUN_14026b1c0(LULLUBOX_PKT->vfunc_o8_3());
+                LULLUBOX_ITEMS.FUN_140be9400(i).SetRank(LULLUBOX_PKT->vfunc_o8_3());
                 bool special = LULLUBOX_PKT->vfunc_o8_0();
                 if (special)
                     m_special2.insert(LULLUBOX_ITEMS.FUN_140be9400(i));
@@ -397,7 +397,7 @@ void UIItemLulluBoxDialog::FUN_140e9c210(const Scaleform::GFx::FunctionHandler::
 }
 
 // @0x140e9c240
-void UIItemLulluBoxDialog::FUN_140e9c240(int id) { m_boxItemId = id; }
+void UIItemLulluBoxDialog::SetBoxItemId(int id) { m_boxItemId = id; }
 
 // @0x140e9c260
 bool UIItemLulluBoxDialog::FUN_140e9c260(int result, const CMsgBoxData&)
@@ -827,7 +827,7 @@ MS2_REPLACE_METHOD(0x140E9C0D0, UIItemLulluBoxDialog, FUN_140e9c0d0, 117, 0xF7E1
 MS2_REPLACE_METHOD(0x140E9C150, UIItemLulluBoxDialog, FUN_140e9c150, 124, 0xDAAC0987);
 MS2_REPLACE_METHOD(0x140E9C1E0, UIItemLulluBoxDialog, FUN_140e9c1e0, 37, 0xA11D6E9E);
 MS2_REPLACE_METHOD(0x140E9C210, UIItemLulluBoxDialog, FUN_140e9c210, 29, 0xE16B80A7);
-MS2_REPLACE_METHOD(0x140E9C240, UIItemLulluBoxDialog, FUN_140e9c240, 25, 0x11D24FAE);
+MS2_REPLACE_METHOD(0x140E9C240, UIItemLulluBoxDialog, SetBoxItemId, 25, 0x11D24FAE);
 MS2_REPLACE_METHOD(0x140E9C260, UIItemLulluBoxDialog, FUN_140e9c260, 50, 0x2930820F);
 MS2_REPLACE_METHOD(0x140E9C2A0, UIItemLulluBoxDialog, FUN_140e9c2a0, 154, 0x18EDC92E);
 MS2_REPLACE_METHOD(0x140E9C340, UIItemLulluBoxDialog, FUN_140e9c340, 146, 0xBDB0C44D);

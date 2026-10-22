@@ -1145,7 +1145,7 @@ bool UIMyInfoDialog::FUN_141a5c640(int nButton, const CMsgBoxData& kData)
 }
 
 // @0x141a5c7a0
-int UIMyInfoDialog::FUN_141a5c7a0()
+int UIMyInfoDialog::GetTab()
 {
     return m_nTab;
 }

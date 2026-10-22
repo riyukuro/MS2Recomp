@@ -55,8 +55,8 @@ public:
     int FUN_14059a0b0(unsigned nSlot);
     int FUN_14059a120();
     int* FUN_14059a180(unsigned nSlot);
-    void FUN_14059a1f0(int n);
-    int FUN_14059a210();
+    void SetPick(int n);
+    int GetPick();
     ColorPtr FUN_14059a230(unsigned nSlot) const;
     ColorPtr FUN_14059a2c0();
     bool FUN_14059a350();

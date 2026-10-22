@@ -57,7 +57,7 @@ class Unk_UtilErrorDialog : public CDialog
 {
 public:
     void FUN_140d53570(CStringA kText);                             // sets the caption text (by value: callee destroys)
-    void FUN_141b72590(CStringA kText);
+    void SetKText(CStringA kText);
 private:
     char m_pad_after_dialog[0x170 - sizeof(CDialog)];
     CStringA m_kText;                                               // +0x170
@@ -200,7 +200,7 @@ int FUN_141b6db40(size_t nSize)
     DAT_143af7d44 = 1;
     if (DAT_143ab0248 == 0) {
         DAT_143af7e00.FUN_140d53570(FUN_14028dc80(0xb22));
-        DAT_143af7e00.FUN_141b72590(FUN_14028dc80(0xb24));
+        DAT_143af7e00.SetKText(FUN_14028dc80(0xb24));
         if (DAT_143af7e00.DoModal() == -1) {
             FUN_141b6fcf0(FUN_14028de60(0xb24), CStringW(L"Error"), 0x10);
         }
@@ -1075,13 +1075,13 @@ CStringA FUN_141b70dd0(Unk_UtilNameSrc* pSrc)
 }
 MS2_REPLACE(0x141b70dd0, FUN_141b70dd0, 192, 0xADA3F07D);
 
-CFileSystem* FUN_140166420();
+CFileSystem* GetFileSystem();
 
 // @0x141b70ea0
 unsigned FUN_141b70ea0(const CStringA& kPath)
 {
     std::string kName((LPCSTR)kPath);
-    return FUN_140166420()->FUN_1403987d0(kName);
+    return GetFileSystem()->FUN_1403987d0(kName);
 }
 MS2_REPLACE(0x141b70ea0, FUN_141b70ea0, 168, 0x8E07B1D5);
 
@@ -1645,11 +1645,11 @@ float FUN_141b72560(float fBase, float fExp)
 MS2_REPLACE(0x141b72560, FUN_141b72560, 38, 0x09A6CEAF);
 
 // @0x141b72590
-void Unk_UtilErrorDialog::FUN_141b72590(CStringA kText)
+void Unk_UtilErrorDialog::SetKText(CStringA kText)
 {
     m_kText = kText;
 }
-MS2_REPLACE_METHOD(0x141b72590, Unk_UtilErrorDialog, FUN_141b72590, 65, 0xD5D7D3A4);
+MS2_REPLACE_METHOD(0x141b72590, Unk_UtilErrorDialog, SetKText, 65, 0xD5D7D3A4);
 
 // @0x141b725e0
 // MS2-FUNCTIONAL: exe imports logf from the CRT DLL; this build links it statically

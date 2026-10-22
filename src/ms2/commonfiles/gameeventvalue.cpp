@@ -546,7 +546,7 @@ void CGameEventValueMasteryReward::Load(unsigned long eventId, int type, const C
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_140397ab0(&doc, strPath) == 0)
+    if (GetFileSystem()->FUN_140397ab0(&doc, strPath) == 0)
         return;
     Unk_140165cf0* pRoot = FUN_140345b40(&doc);
     if (pRoot == NULL)

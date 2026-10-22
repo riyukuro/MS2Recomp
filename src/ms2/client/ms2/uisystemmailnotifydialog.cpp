@@ -379,7 +379,7 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
 }
 
 // @0x1412a5c50
-void UISystemMailNotifyDialog::FUN_1412a5c50(bool bOnTime)
+void UISystemMailNotifyDialog::SetOnTime(bool bOnTime)
 {
     m_bOnTime = bOnTime;
 }

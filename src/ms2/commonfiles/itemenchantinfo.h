@@ -87,11 +87,11 @@ public:
     void FUN_14058c510();
     int FUN_14058c5a0();
     int FUN_14058c5c0();
-    int FUN_14058c5f0();
+    int GetLevel();
     int FUN_14058c610();
     int FUN_14058c660();
     void FUN_14058c6b0(int level, bool dirty);
-    int FUN_14058c730();
+    int GetCharge();
     void FUN_14058c750(int charge);
     void FUN_14058c7c0(int charge);
     void FUN_14058c830();
@@ -108,12 +108,12 @@ public:
     void FUN_14058c9c0(Unk_EnchantWrite& stream) const;
     void FUN_14058cb20(Unk_EnchantRead& stream);
     void FUN_14058cc90(bool dirty);
-    bool FUN_14058ccb0();
+    bool GetDirty();
     int FUN_14058ccf0();
     Unk_EnchantMap& FUN_14058cd40();
     int FUN_14058cd60();
     void FUN_14058cda0(int version);
-    int FUN_14058cdc0();
+    int GetVersion();
     Unk_EnchantPtr<BaseOption> FUN_14058cde0(int key);
     void FUN_14058ce60();
 private:

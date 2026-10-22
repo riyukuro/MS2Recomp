@@ -1782,7 +1782,7 @@ void QuestDataTable::LoadQuestData()
     CString strPath = FUN_14071a5b0(CString("QuestData"), CString("QuestData.xml"));
     TiXmlDocument doc;
     const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -2514,8 +2514,8 @@ void QuestDataTable::FUN_14074fee0()
             MS2Ptr<CFieldData> spField = CFieldData::FUN_140374140(nFieldId);
             if (!spField)
                 continue;
-            m_98.SetAt(nChapter, spField->FUN_140375370());
-            m_e0.SetAt(nChapter, spField->FUN_140375350());
+            m_98.SetAt(nChapter, spField->GetRegionCode());
+            m_e0.SetAt(nChapter, spField->GetContinentCode());
         }
     }
 }
@@ -2532,7 +2532,7 @@ void QuestDataTable::LoadQuestGroupTable()
     CString strPath = FUN_14071a5b0(CString("Table"), CString("QuestGroupTable.xml"));
     TiXmlDocument doc;
     const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

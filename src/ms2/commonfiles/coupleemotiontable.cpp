@@ -19,7 +19,7 @@
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 void FUN_140177a80(void* log, int level, int category, const wchar_t* format, const unsigned int& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
@@ -104,13 +104,13 @@ int CCoupleEmotionTable::Load()
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("coupleEmotion"); pElem != 0;
@@ -218,7 +218,7 @@ int CCoupleEmotionTable::Validate(MS2Ptr<CCoupleEmotionData> spData)
         }
         if (!ValidateAni(spAni))
         {
-            FUN_140177a80(FUN_140166440(), 1, 0x13, L"invalid couple_emotion data. id : {0}", spData->m_nId);
+            FUN_140177a80(GetLogString(), 1, 0x13, L"invalid couple_emotion data. id : {0}", spData->m_nId);
             return 0;
         }
     }
@@ -235,13 +235,13 @@ int CCoupleEmotionTable::ValidateAni(MS2Ptr<CCoupleEmotionData::AnimationData> s
     }
     if (spAni->m_nifPaths.size() != spAni->m_requestAnis.size())
     {
-        Unk_CoupleEmotionLog(FUN_140166440(), 1, 0x13, L"<{0}> 와 <{1}>의 갯수가 다릅니다", L"pathNifList",
+        Unk_CoupleEmotionLog(GetLogString(), 1, 0x13, L"<{0}> 와 <{1}>의 갯수가 다릅니다", L"pathNifList",
                              L"animationNameList");
         return 0;
     }
     if (spAni->m_requestAnis.size() != spAni->m_targetAnis.size())
     {
-        Unk_CoupleEmotionLog(FUN_140166440(), 1, 0x13, L"<{0}> 와 <{1}>의 갯수가 다릅니다", L"animationList_1",
+        Unk_CoupleEmotionLog(GetLogString(), 1, 0x13, L"<{0}> 와 <{1}>의 갯수가 다릅니다", L"animationList_1",
                              L"animationList_2");
         return 0;
     }

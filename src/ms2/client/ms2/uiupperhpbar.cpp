@@ -195,7 +195,7 @@ MS2_REPLACE_METHOD(0x141B4B240, UpperHpBarEntity, FUN_141b4b240, 422, 0xB9F4F251
 void UpperHpBarEntity::FUN_141b4b500(){
  if(m_clip==0)return;
  if(m_id==0)return;
- if(!FUN_141b4bba0())return;
+ if(!GetVisible())return;
  {
   Unk_UpperActor* actor=FUN_1409ffd30(FUN_1403ed2d0()->FUN_141bd1180(m_id));
   if(actor==0){m_id=0;m_hp=0;}
@@ -233,8 +233,8 @@ void UpperHpBarEntity::FUN_141b4bb20(bool show){if(m_clip==0)return;if(m_visible
 MS2_REPLACE_METHOD(0x141B4BB20, UpperHpBarEntity, FUN_141b4bb20, 120, 0xBFBA21E5);
 
 // @0x141b4bba0
-bool UpperHpBarEntity::FUN_141b4bba0(){return m_visible;}
-MS2_REPLACE_METHOD(0x141B4BBA0, UpperHpBarEntity, FUN_141b4bba0, 15, 0x4AD18319);
+bool UpperHpBarEntity::GetVisible(){return m_visible;}
+MS2_REPLACE_METHOD(0x141B4BBA0, UpperHpBarEntity, GetVisible, 15, 0x4AD18319);
 
 // @0x141b4bbc0
 const int& UpperHpBarEntity::FUN_141b4bbc0(){return m_kind;}
@@ -245,8 +245,8 @@ const int& UpperHpBarEntity::FUN_141b4bbe0(){return m_id;}
 MS2_REPLACE_METHOD(0x141B4BBE0, UpperHpBarEntity, FUN_141b4bbe0, 11, 0x3BE09B6E);
 
 // @0x141b4bc00
-Unk_UpperPtr<Unk_UpperClip> UpperHpBarEntity::FUN_141b4bc00(){return m_clip;}
-MS2_REPLACE_METHOD(0x141B4BC00, UpperHpBarEntity, FUN_141b4bc00, 65, 0x3F666686);
+Unk_UpperPtr<Unk_UpperClip> UpperHpBarEntity::GetClip(){return m_clip;}
+MS2_REPLACE_METHOD(0x141B4BC00, UpperHpBarEntity, GetClip, 65, 0x3F666686);
 
 // @0x141b4bc50
 void UpperHpBarEntity::FUN_141b4bc50(const int& id){m_id=id;}
@@ -313,7 +313,7 @@ void UIUpperHpBar::FUN_141b4c510(Unk_UpperActor* actor,int kind){
  UpperHpBarEntity& e=FUN_141b4d170(actor);
  if(!FUN_141b4d630(e,kind,FUN_14123c580(actor)))return;
  if(!FUN_141b4d320(e))return;
- if(e.FUN_141b4bc00()==0){
+ if(e.GetClip()==0){
   Scaleform::GFx::Value created=m_30->Invoke("createHpBar",e.FUN_141b4a820());
   Unk_UpperPtr<Unk_UpperClip> clip=FUN_140acca70(FUN_1422db730(),created);
   e.FUN_141b4a8b0(clip);
@@ -341,9 +341,9 @@ void UIUpperHpBar::FUN_141b4c510(Unk_UpperActor* actor,int kind){
  args.FUN_1407cbb20("hpText",hp);
  e.FUN_141b4bc50(FUN_14123c580(actor));
  e.FUN_141b4bc70(cur);
- Unk_UpperClip* gauge=e.FUN_141b4bc00().get();
+ Unk_UpperClip* gauge=e.GetClip().get();
  if(gauge!=0){
-  e.FUN_141b4bc00()->Invoke("setHP",args);
+  e.GetClip()->Invoke("setHP",args);
   e.FUN_141b4b860();
  }
  Unk_UpperTargetUI* ui=FUN_140974280(0x4f73);
@@ -400,16 +400,16 @@ UpperHpBarEntity& UIUpperHpBar::FUN_141b4d170(void* actor){
 MS2_REPLACE_METHOD(0x141B4D170, UIUpperHpBar, FUN_141b4d170, 411, 0xEE28EACC);
 // @0x141b4d320
 bool UIUpperHpBar::FUN_141b4d320(UpperHpBarEntity& target){
- if(m_current!=0&&m_current->FUN_141b4bba0()==true){
+ if(m_current!=0&&m_current->GetVisible()==true){
   Unk_UpperNpc* npc=FUN_140a38a00(FUN_1403ed2d0()->FUN_141bd1180(m_current->FUN_141b4bbe0()));
   bool isBoss=npc&&npc->FUN_141093270()->FUN_1406cd200(4);
   if(isBoss)return false;
  }
  int kind=target.FUN_141b4bbc0();
  if(kind==3){
-  if(m_entities[1].FUN_141b4bba0()){Unk_UpperNpc* npc1=FUN_140a38a00(FUN_1403ed2d0()->FUN_141bd1180(m_entities[1].FUN_141b4bbe0()));if(npc1!=0)return false;}
-  if(m_entities[0].FUN_141b4bba0()){Unk_UpperNpc* npc0=FUN_140a38a00(FUN_1403ed2d0()->FUN_141bd1180(m_entities[0].FUN_141b4bbe0()));if(npc0!=0)return false;}
-  if(m_entities[2].FUN_141b4bba0())return false;
+  if(m_entities[1].GetVisible()){Unk_UpperNpc* npc1=FUN_140a38a00(FUN_1403ed2d0()->FUN_141bd1180(m_entities[1].FUN_141b4bbe0()));if(npc1!=0)return false;}
+  if(m_entities[0].GetVisible()){Unk_UpperNpc* npc0=FUN_140a38a00(FUN_1403ed2d0()->FUN_141bd1180(m_entities[0].FUN_141b4bbe0()));if(npc0!=0)return false;}
+  if(m_entities[2].GetVisible())return false;
  }
  FUN_141b4d5c0();
  m_entities[kind].FUN_141b4bb20(true);
@@ -421,7 +421,7 @@ void UIUpperHpBar::FUN_141b4d5c0(){{UpperHpBarEntity* entities=m_entities;for(un
 MS2_REPLACE_METHOD(0x141B4D5C0, UIUpperHpBar, FUN_141b4d5c0, 97, 0xA3A3684D);
 
 // @0x141b4d630
-bool UIUpperHpBar::FUN_141b4d630(UpperHpBarEntity& entity,int kind,int id){if(kind==g_upperTargetId)return true;if(entity.FUN_141b4bba0()&&entity.FUN_141b4bbe0()==id)return true;return false;}
+bool UIUpperHpBar::FUN_141b4d630(UpperHpBarEntity& entity,int kind,int id){if(kind==g_upperTargetId)return true;if(entity.GetVisible()&&entity.FUN_141b4bbe0()==id)return true;return false;}
 MS2_REPLACE_METHOD(0x141B4D630, UIUpperHpBar, FUN_141b4d630, 86, 0xFD636C18);
 // @0x141b4d690
 CString UIUpperHpBar::FUN_141b4d690(void* actor){CString id=FUN_140b62550(FUN_14123c580(actor));return id;}

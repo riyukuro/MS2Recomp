@@ -722,7 +722,7 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 }
 
 // @0x141034da0
-int UICashShopDialog::FUN_141034da0()
+int UICashShopDialog::GetCategory()
 {
     return m_nCategory;
 }
@@ -846,7 +846,7 @@ void UICashShopDialog::FUN_1410356f0()
         return;
     m_pUnlockDialog = new CCashUnlockDialog(0);
     if (m_pUnlockDialog->Create(0x96, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80()))) != 0) {
-        FUN_141035970(1);
+        SetUnlockState(1);
         m_pUnlockDialog->Navigate(CString(szUrl));
         m_pUnlockDialog->CenterOnScreen();
         m_pUnlockDialog->ShowWindow(SW_SHOW);
@@ -864,7 +864,7 @@ void UICashShopDialog::FUN_141035920(int n)
 }
 
 // @0x141035970
-void UICashShopDialog::FUN_141035970(int nState)
+void UICashShopDialog::SetUnlockState(int nState)
 {
     m_nUnlockState = nState;
 }

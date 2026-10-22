@@ -240,7 +240,7 @@ void Unk_PetBoxDropVec::FUN_140f9b7d0()
 }
 
 // @0x140f9a200
-void UISelectItemBoxDialog::FUN_140f9a200(unsigned __int64 uItemUid)
+void UISelectItemBoxDialog::SetItemUid(unsigned __int64 uItemUid)
 {
     m_uItemUid = uItemUid;
 }

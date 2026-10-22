@@ -26,7 +26,7 @@ int FUN_140718200(const CStringW& strNumber);                                   
 void* FUN_140165cf0(void* pNode, const char* szName);                           // first child element
 void* FUN_140168650(void* pNode, const char* szName);                           // next sibling element
 bool FUN_14083d7e0(const CStringW& strText, const CStringW& strPrefix);         // starts with
-CFileSystem* FUN_140166420();                                                   // the file system singleton
+CFileSystem* GetFileSystem();                                                   // the file system singleton
 class Unk_MtItemTexts { public: CStringW FUN_141811980(int n, int nId); };      // text by kind and id (1 = item name)
 Unk_MtItemTexts* FUN_1401a9d70();
 
@@ -210,7 +210,7 @@ bool MailText::LoadTitle(const CStringW& text) {
     SetTitleText(text);
     if (!FUN_14083d7e0(text, L"<ms2>")) return true;
     TiXmlDocument document;
-    if (!FUN_140166420()->FUN_140397ab0(&document, text)) return false;
+    if (!GetFileSystem()->FUN_140397ab0(&document, text)) return false;
     void* root = FUN_140165cf0(&document, "ms2"); if (!root) return false;
     void* title = FUN_140165cf0(root, "title"); if (!title) return false;
     bool loaded = m_title.Load(title);
@@ -222,7 +222,7 @@ bool MailText::LoadBody(const CStringW& text) {
     m_paragraphs.RemoveAll();
     if (!FUN_14083d7e0(text, L"<ms2>")) return true;
     TiXmlDocument document;
-    if (!FUN_140166420()->FUN_140397ab0(&document, text)) return false;
+    if (!GetFileSystem()->FUN_140397ab0(&document, text)) return false;
     void* root = FUN_140165cf0(&document, "ms2"); if (!root) return false;
     void* firstChild = FUN_140165cf0(root, "body");
     if (!firstChild) return false;

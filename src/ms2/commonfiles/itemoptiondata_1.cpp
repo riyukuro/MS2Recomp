@@ -75,7 +75,7 @@ bool CItemOption::FUN_1405cb2a0(int nGroup, unsigned nStat, Unk_EnchantPtr<BaseO
 }
 
 // @0x1405cb340
-unsigned CItemOption::FUN_1405cb340() {
+unsigned CItemOption::GetItemId() {
     return m_nItemId;
 }
 

@@ -329,7 +329,7 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
     for (size_t i = 0; i < xblocks.GetCount(); i++) {
         TiXmlDocument doc;
         int nDeleted = 0;
-        if (FUN_140166420()->FUN_1403974b0(&doc, xblocks[i], 0, true, false) == 0)
+        if (GetFileSystem()->FUN_1403974b0(&doc, xblocks[i], 0, true, false) == 0)
             continue;
         Unk_140165cf0* pGame = FUN_140165cf0(&doc, "game");
         if (pGame == NULL)
@@ -363,7 +363,7 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
     for (size_t i = 0; i < blocks.GetCount(); i++) {
         TiXmlDocument doc;
         int nDeleted = 0;
-        if (FUN_140166420()->FUN_1403974b0(&doc, blocks[i], 0, true, false) == 0)
+        if (GetFileSystem()->FUN_1403974b0(&doc, blocks[i], 0, true, false) == 0)
             continue;
         Unk_140165cf0* pBlock = FUN_140165cf0(&doc, "block");
         if (pBlock == NULL)
@@ -693,7 +693,7 @@ bool FUN_1418226b0(bool bLog)
     bool bResult = true;
 
     TiXmlDocument docField;
-    if (FUN_140166420()->FUN_1403974b0(&docField, "./Data/Xml/Table/fieldData.xml", 0, true, false) == 0) {
+    if (GetFileSystem()->FUN_1403974b0(&docField, "./Data/Xml/Table/fieldData.xml", 0, true, false) == 0) {
         bResult = false;
     } else {
         Unk_140165cf0* pRoot = FUN_140165cf0(&docField, "ms2");
@@ -721,7 +721,7 @@ bool FUN_1418226b0(bool bLog)
                 CString strXblock;
                 strXblock.Format("./Data/Resource/Exported/XBlock/%s.xblock", FUN_14086f4b0(pXblock, "name"));
                 TiXmlDocument docXblock;
-                if (FUN_140166420()->FUN_1403974b0(&docXblock, strXblock, 0, true, false) == 0) {
+                if (GetFileSystem()->FUN_1403974b0(&docXblock, strXblock, 0, true, false) == 0) {
                     strErrors.AppendFormat("** Not Find XBlockPath. \n: %s\n", (const char*)CString(strXblock));
                     continue;
                 }
@@ -848,7 +848,7 @@ bool FUN_1418226b0(bool bLog)
     }
     CString strTimeEvent = FUN_14071a5b0(CString("Table/Server"), CString("timeEventData.xml"));
     TiXmlDocument docTime;
-    if (FUN_140166420()->FUN_1403974b0(&docTime, strTimeEvent, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&docTime, strTimeEvent, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pTimeRoot = FUN_140165cf0(&docTime, "ms2");
     if (pTimeRoot == NULL)
@@ -892,7 +892,7 @@ bool FUN_1418226b0(bool bLog)
         FUN_1411683e0(FUN_141168200(), "Parse GameEvent NpcSpwan");
     CString strGameEvent = FUN_14071a5b0(CString("Table/Server"), CString("GameEvent.xml"));
     TiXmlDocument docGame;
-    if (FUN_140166420()->FUN_1403974b0(&docGame, strGameEvent, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&docGame, strGameEvent, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pGameRoot = FUN_140165cf0(&docGame, "ms2");
     if (pGameRoot == NULL) {
@@ -908,7 +908,7 @@ bool FUN_1418226b0(bool bLog)
         CStringW strNpcFile;
         FUN_140873420(pEvent, "value1", strNpcFile);
         TiXmlDocument docNpc;
-        if (FUN_140397ab0(FUN_140166420(), &docNpc, strNpcFile) == 0)
+        if (FUN_140397ab0(GetFileSystem(), &docNpc, strNpcFile) == 0)
             continue;
         Unk_140165cf0* pNpcRoot = FUN_140345b40(&docNpc);
         if (pNpcRoot == NULL)

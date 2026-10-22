@@ -1,15 +1,15 @@
 #va	current	proposed	confidence	rule	evidence	file	agent	date	status
-140166420	FUN_140166420	GetFileSystem	medium	singleton	returns the CFileSystem instance pointer DAT_143aab398	commonfiles/achievedata.cpp	nam1	2026-10-22	
-140166440	FUN_140166440	GetLogString	medium	singleton	returns the CLogString instance pointer DAT_143aab390	commonfiles/achievedata.cpp	nam1	2026-10-22	
+140166420	FUN_140166420	GetFileSystem	medium	singleton	returns the CFileSystem instance pointer DAT_143aab398	commonfiles/achievedata.cpp	nam1	2026-10-22	applied desc-3 as GetFileSystem
+140166440	FUN_140166440	GetLogString	medium	singleton	returns the CLogString instance pointer DAT_143aab390	commonfiles/achievedata.cpp	nam1	2026-10-22	applied desc-3 as GetLogString
 1401a9d70	FUN_1401a9d70	GetStringTable	medium	body	inline accessor returning the CStringTable singleton DAT_143aac298 (v2525: CStringTable::GetInstance)	client/ms2/stringtable.cpp	nam1	2026-10-22	
 140205190	CByteBuffer::FUN_140205190	GetLength	high	getter	body returns m_uLength	unnamed/unit_1401f9eb0.cpp	nam1	2026-10-22	
-140209340	COutPacketBuffer::FUN_140209340	SetLimit	high	setter	body stores the argument in m_limit	commonfiles/clientreconnectionstructs.cpp	nam1	2026-10-22	
-140209430	COutPacketBuffer::FUN_140209430	GetSequence	high	getter	body returns m_sequence	commonfiles/clientreconnectionstructs.cpp	nam1	2026-10-22	
-140209490	COutPacketBuffer::FUN_140209490	GetCaptureEnabled	high	getter	body returns m_captureEnabled	commonfiles/clientreconnectionstructs.cpp	nam1	2026-10-22	
+140209340	COutPacketBuffer::FUN_140209340	SetLimit	high	setter	body stores the argument in m_limit	commonfiles/clientreconnectionstructs.cpp	nam1	2026-10-22	applied desc-3 as SetLimit
+140209430	COutPacketBuffer::FUN_140209430	GetSequence	high	getter	body returns m_sequence	commonfiles/clientreconnectionstructs.cpp	nam1	2026-10-22	applied desc-3 as GetSequence
+140209490	COutPacketBuffer::FUN_140209490	GetCaptureEnabled	high	getter	body returns m_captureEnabled	commonfiles/clientreconnectionstructs.cpp	nam1	2026-10-22	applied desc-3 as GetCaptureEnabled
 140266ce0	BaseOption::FUN_140266ce0	HasValue	medium	bool-test	body returns m_nValue != 0	unnamed/unit_140266860.cpp	nam1	2026-10-22	
 140266e30	BaseOption::FUN_140266e30	GetValue	high	getter	body returns m_nValue	unnamed/unit_140266860.cpp	nam1	2026-10-22	
 140266e90	BaseOption::FUN_140266e90	SetValue	high	setter	body stores the argument in m_nValue	unnamed/unit_140266860.cpp	nam1	2026-10-22	
-14026b1c0	ItemEntity::FUN_14026b1c0	SetRank	high	setter	body stores the argument in m_rank	commonfiles/commonstruct_wa.cpp	nam1	2026-10-22	
+14026b1c0	ItemEntity::FUN_14026b1c0	SetRank	high	setter	body stores the argument in m_rank	commonfiles/commonstruct_wa.cpp	nam1	2026-10-22	applied desc-3 as SetRank
 14028b8e0	FUN_14028b8e0	GetStringCommonByKey	medium	body	body: string-common lookup by key (callers pass L"s_..."); ~300 users, shared header	client/ms2/stringtable.cpp	nam1	2026-10-22	
 14028de60	FUN_14028de60	GetStringCommon	medium	body	body: string-common table lookup by numeric id (callers pass s_* ids); ~300 users, shared header	client/ms2/stringtable.cpp	nam1	2026-10-22	
 14029f070	CConditionCommon::vfunc_2	GetCount	medium	getter	body returns m_nCount; virtual slot: rename the whole override family	commonfiles/conditionutil.cpp	nam1	2026-10-22	
@@ -25,58 +25,58 @@
 1403157a0	DungeonMissionDataUseInteractObject::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionDataUseInteractObject" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	commonfiles/dungeonmissiondata.cpp	nam1	2026-10-22	
 1403158b0	DungeonMissionDataDamageToNpc::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionDataDamageToNpc" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	commonfiles/dungeonmissiondata.cpp	nam1	2026-10-22	
 140315a70	DungeonMissionDataTrigger::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonMissionDataTrigger" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	commonfiles/dungeonmissiondata.cpp	nam1	2026-10-22	
-140375310	CFieldData::FUN_140375310	HasTutorialType	medium	bool-test	body returns m_nTutorialType != 0	commonfiles/fielddata.cpp	nam1	2026-10-22	
-140375350	CFieldData::FUN_140375350	GetContinentCode	high	getter	body returns m_nContinentCode	commonfiles/fielddata.cpp	nam1	2026-10-22	
-140375370	CFieldData::FUN_140375370	GetRegionCode	high	getter	body returns m_nRegionCode	commonfiles/fielddata.cpp	nam1	2026-10-22	
-1403754d0	CFieldData::FUN_1403754d0	GetPkMode	high	getter	body returns m_nPkMode	commonfiles/fielddata.cpp	nam1	2026-10-22	
-1403755d0	CFieldData::FUN_1403755d0	GetOnlyDarkTomb	high	getter	body returns m_nOnlyDarkTomb	commonfiles/fielddata.cpp	nam1	2026-10-22	
-140375780	CFieldData::FUN_140375780	GetMapType	high	getter	body returns m_nMapType	commonfiles/fielddata.cpp	nam1	2026-10-22	
+140375310	CFieldData::FUN_140375310	HasTutorialType	medium	bool-test	body returns m_nTutorialType != 0	commonfiles/fielddata.cpp	nam1	2026-10-22	applied desc-3 as HasTutorialType
+140375350	CFieldData::FUN_140375350	GetContinentCode	high	getter	body returns m_nContinentCode	commonfiles/fielddata.cpp	nam1	2026-10-22	applied desc-3 as GetContinentCode
+140375370	CFieldData::FUN_140375370	GetRegionCode	high	getter	body returns m_nRegionCode	commonfiles/fielddata.cpp	nam1	2026-10-22	applied desc-3 as GetRegionCode
+1403754d0	CFieldData::FUN_1403754d0	GetPkMode	high	getter	body returns m_nPkMode	commonfiles/fielddata.cpp	nam1	2026-10-22	applied desc-3 as GetPkMode
+1403755d0	CFieldData::FUN_1403755d0	GetOnlyDarkTomb	high	getter	body returns m_nOnlyDarkTomb	commonfiles/fielddata.cpp	nam1	2026-10-22	applied desc-3 as GetOnlyDarkTomb
+140375780	CFieldData::FUN_140375780	GetMapType	high	getter	body returns m_nMapType	commonfiles/fielddata.cpp	nam1	2026-10-22	applied desc-3 as GetMapType
 1403757a0	CFieldData::vfunc_2	GetCapacity	low	getter	body returns m_nCapacity; virtual slot: rename the whole override family; same proposal for another function of this class (overload/duplicate?)	commonfiles/fielddata.cpp	nam1	2026-10-22	
 1403757c0	CFieldData::FUN_1403757c0	GetCapacity	low	getter	body returns m_nCapacity; same proposal for another function of this class (overload/duplicate?)	commonfiles/fielddata.cpp	nam1	2026-10-22	
-1403757e0	CFieldData::FUN_1403757e0	GetSetItemRestrainId	high	getter	body returns m_nSetItemRestrainId	commonfiles/fielddata.cpp	nam1	2026-10-22	
-14050d530	CHomePrivilege::FUN_14050d530	SetOwner	high	setter	body stores the argument in m_pOwner	commonfiles/homeprivilege.cpp	nam1	2026-10-22	
+1403757e0	CFieldData::FUN_1403757e0	GetSetItemRestrainId	high	getter	body returns m_nSetItemRestrainId	commonfiles/fielddata.cpp	nam1	2026-10-22	applied desc-3 as GetSetItemRestrainId
+14050d530	CHomePrivilege::FUN_14050d530	SetOwner	high	setter	body stores the argument in m_pOwner	commonfiles/homeprivilege.cpp	nam1	2026-10-22	applied desc-3 as SetOwner
 140518920	CByteBuffer::vfunc_0	GetOffset	medium	getter	body returns m_uOffset; virtual slot: rename the whole override family	commonfiles/imagehttpclient.cpp	nam1	2026-10-22	
-140529fd0	CItem::FUN_140529fd0	SetName	high	setter	body stores the argument in m_strName	commonfiles/item.cpp	nam1	2026-10-22	
-140543590	DropNifData::FUN_140543590	GetTypeId	high	getter	body returns m_nTypeId	commonfiles/itemdatastruct.cpp	nam1	2026-10-22	
-14058c5f0	CItemEnchantInfo::FUN_14058c5f0	GetLevel	high	getter	body returns m_level	commonfiles/itemenchantinfo.cpp	nam1	2026-10-22	
-14058c730	CItemEnchantInfo::FUN_14058c730	GetCharge	high	getter	body returns m_charge	commonfiles/itemenchantinfo.cpp	nam1	2026-10-22	
-14058ccb0	CItemEnchantInfo::FUN_14058ccb0	GetDirty	high	getter	body returns m_dirty	commonfiles/itemenchantinfo.cpp	nam1	2026-10-22	
+140529fd0	CItem::FUN_140529fd0	SetName	high	setter	body stores the argument in m_strName	commonfiles/item.cpp	nam1	2026-10-22	applied desc-3 as SetName
+140543590	DropNifData::FUN_140543590	GetTypeId	high	getter	body returns m_nTypeId	commonfiles/itemdatastruct.cpp	nam1	2026-10-22	applied desc-3 as GetTypeId
+14058c5f0	CItemEnchantInfo::FUN_14058c5f0	GetLevel	high	getter	body returns m_level	commonfiles/itemenchantinfo.cpp	nam1	2026-10-22	applied desc-3 as GetLevel
+14058c730	CItemEnchantInfo::FUN_14058c730	GetCharge	high	getter	body returns m_charge	commonfiles/itemenchantinfo.cpp	nam1	2026-10-22	applied desc-3 as GetCharge
+14058ccb0	CItemEnchantInfo::FUN_14058ccb0	GetDirty	high	getter	body returns m_dirty	commonfiles/itemenchantinfo.cpp	nam1	2026-10-22	applied desc-3 as GetDirty
 14058cd40	CItemEnchantInfo::FUN_14058cd40	GetOptions	medium	getter	body returns m_options	commonfiles/itemenchantinfo.cpp	nam1	2026-10-22	
-14058cdc0	CItemEnchantInfo::FUN_14058cdc0	GetVersion	high	getter	body returns m_version	commonfiles/itemenchantinfo.cpp	nam1	2026-10-22	
-14059a1f0	CItemExtraData::FUN_14059a1f0	SetPick	high	setter	body stores the argument in m_nPick	commonfiles/itemextradata.cpp	nam1	2026-10-22	
-14059a210	CItemExtraData::FUN_14059a210	GetPick	high	getter	body returns m_nPick	commonfiles/itemextradata.cpp	nam1	2026-10-22	
+14058cdc0	CItemEnchantInfo::FUN_14058cdc0	GetVersion	high	getter	body returns m_version	commonfiles/itemenchantinfo.cpp	nam1	2026-10-22	applied desc-3 as GetVersion
+14059a1f0	CItemExtraData::FUN_14059a1f0	SetPick	high	setter	body stores the argument in m_nPick	commonfiles/itemextradata.cpp	nam1	2026-10-22	applied desc-3 as SetPick
+14059a210	CItemExtraData::FUN_14059a210	GetPick	high	getter	body returns m_nPick	commonfiles/itemextradata.cpp	nam1	2026-10-22	applied desc-3 as GetPick
 14059d130	CItemExtraData::FUN_14059d130	GetKind	low	getter	body returns m_nKind; same proposal for another function of this class (overload/duplicate?)	commonfiles/itemextradata.cpp	nam1	2026-10-22	
 14059d140	CItemExtraData::FUN_14059d140	GetKind	low	getter	body returns m_nKind; same proposal for another function of this class (overload/duplicate?)	commonfiles/itemextradata.cpp	nam1	2026-10-22	
 1405a39d0	CGemBase::vfunc_1	GetType	medium	getter	body returns m_nType; virtual slot: rename the whole override family	commonfiles/itemgem.cpp	nam1	2026-10-22	
-1405a39f0	CGemBase::FUN_1405a39f0	GetGemId	high	getter	body returns m_nGemId	commonfiles/itemgem.cpp	nam1	2026-10-22	
-1405a5be0	CGemFishing::FUN_1405a5be0	GetDataId	high	getter	body returns m_nDataId	commonfiles/itemgem.cpp	nam1	2026-10-22	
-1405aa540	CItemGem::FUN_1405aa540	SetGem	high	setter	body stores the argument in m_spGem	commonfiles/itemgem.cpp	nam1	2026-10-22	
-1405bd600	CHyperLinkData::FUN_1405bd600	GetType	high	getter	body returns m_nType	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	
-1405bd9a0	CItemLinkData::FUN_1405bd9a0	GetOwnerId	high	getter	body returns m_nOwnerId	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	
-1405bdb00	CLinkItemID::FUN_1405bdb00	GetItemId	high	getter	body returns m_nItemId	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	
-1405bdc50	CLinkItemGUID::FUN_1405bdc50	GetGuid	high	getter	body returns m_nGuid	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	
-1405bddb0	CLinkSerialID::FUN_1405bddb0	GetLow	high	getter	body returns m_nLow	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	
-1405bddd0	CLinkSerialID::FUN_1405bddd0	GetHigh	high	getter	body returns m_nHigh	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	
-1405bdf00	CLinkBlackMarketSN::FUN_1405bdf00	GetSerial	high	getter	body returns m_nSerial	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	
-1405bfb80	CItemMergeOptionData::FUN_1405bfb80	GetProbVer	high	getter	body returns m_nProbVer	commonfiles/itemmergeoptiontable.cpp	nam1	2026-10-22	
-1405cb340	CItemOption::FUN_1405cb340	GetItemId	high	getter	body returns m_nItemId	commonfiles/itemoptiondata_1.cpp	nam1	2026-10-22	
-1405ce370	ItemOptionValue::FUN_1405ce370	GetStat	high	getter	body returns m_nStat	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405ce390	ItemOptionValue::FUN_1405ce390	GetSpecial	high	getter	body returns m_nSpecial	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405ce3b0	ItemOptionValue::FUN_1405ce3b0	HasValue	medium	bool-test	body returns m_nValue != 0	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405ce530	ItemOptionValue::FUN_1405ce530	GetValue	high	getter	body returns m_nValue	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405ce550	ItemOptionValue::FUN_1405ce550	SetValue	high	setter	body stores the argument in m_nValue	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d2750	ItemOptionValueRandom::FUN_1405d2750	GetStat	high	getter	body returns m_nStat	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d2770	ItemOptionValueRandom::FUN_1405d2770	GetSpecial	high	getter	body returns m_nSpecial	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d27c0	ItemOptionValueRandom::FUN_1405d27c0	GetStatId	high	getter	body returns m_nStatId	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d27e0	ItemOptionValueRandom::FUN_1405d27e0	GetWeight	high	getter	body returns m_nWeight	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d2a70	ItemOptionConstant::FUN_1405d2a70	GetGrade	high	getter	body returns m_nGrade	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d3b80	ItemOptionVariationData::FUN_1405d3b80	GetHighStat	high	getter	body returns m_nHighStat	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d3c80	ItemOptionRandom::FUN_1405d3c80	GetCode	high	getter	body returns m_nCode	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d3ca0	ItemOptionRandom::FUN_1405d3ca0	GetStatGroup	high	getter	body returns m_eStatGroup	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d3cc0	ItemOptionRandom::FUN_1405d3cc0	GetProbVer	high	getter	body returns m_nProbVer	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d3ce0	ItemOptionRandom::FUN_1405d3ce0	GetLevelGroupId	high	getter	body returns m_nLevelGroupId	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d9be0	ItemOptionRandomContext::FUN_1405d9be0	SetTarget	high	setter	body stores the argument in m_spTarget	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
-1405d9e50	ItemOptionRandomContext::FUN_1405d9e50	GetOption	high	getter	body returns m_spOption	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	
+1405a39f0	CGemBase::FUN_1405a39f0	GetGemId	high	getter	body returns m_nGemId	commonfiles/itemgem.cpp	nam1	2026-10-22	applied desc-3 as GetGemId
+1405a5be0	CGemFishing::FUN_1405a5be0	GetDataId	high	getter	body returns m_nDataId	commonfiles/itemgem.cpp	nam1	2026-10-22	applied desc-3 as GetDataId
+1405aa540	CItemGem::FUN_1405aa540	SetGem	high	setter	body stores the argument in m_spGem	commonfiles/itemgem.cpp	nam1	2026-10-22	applied desc-3 as SetGem
+1405bd600	CHyperLinkData::FUN_1405bd600	GetType	high	getter	body returns m_nType	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	applied desc-3 as GetType
+1405bd9a0	CItemLinkData::FUN_1405bd9a0	GetOwnerId	high	getter	body returns m_nOwnerId	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	applied desc-3 as GetOwnerId
+1405bdb00	CLinkItemID::FUN_1405bdb00	GetItemId	high	getter	body returns m_nItemId	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	applied desc-3 as GetItemId
+1405bdc50	CLinkItemGUID::FUN_1405bdc50	GetGuid	high	getter	body returns m_nGuid	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	applied desc-3 as GetGuid
+1405bddb0	CLinkSerialID::FUN_1405bddb0	GetLow	high	getter	body returns m_nLow	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	applied desc-3 as GetLow
+1405bddd0	CLinkSerialID::FUN_1405bddd0	GetHigh	high	getter	body returns m_nHigh	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	applied desc-3 as GetHigh
+1405bdf00	CLinkBlackMarketSN::FUN_1405bdf00	GetSerial	high	getter	body returns m_nSerial	commonfiles/itemlinkdata.cpp	nam1	2026-10-22	applied desc-3 as GetSerial
+1405bfb80	CItemMergeOptionData::FUN_1405bfb80	GetProbVer	high	getter	body returns m_nProbVer	commonfiles/itemmergeoptiontable.cpp	nam1	2026-10-22	applied desc-3 as GetProbVer
+1405cb340	CItemOption::FUN_1405cb340	GetItemId	high	getter	body returns m_nItemId	commonfiles/itemoptiondata_1.cpp	nam1	2026-10-22	applied desc-3 as GetItemId
+1405ce370	ItemOptionValue::FUN_1405ce370	GetStat	high	getter	body returns m_nStat	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetStat
+1405ce390	ItemOptionValue::FUN_1405ce390	GetSpecial	high	getter	body returns m_nSpecial	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetSpecial
+1405ce3b0	ItemOptionValue::FUN_1405ce3b0	HasValue	medium	bool-test	body returns m_nValue != 0	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as HasValue
+1405ce530	ItemOptionValue::FUN_1405ce530	GetValue	high	getter	body returns m_nValue	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetValue
+1405ce550	ItemOptionValue::FUN_1405ce550	SetValue	high	setter	body stores the argument in m_nValue	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as SetValue
+1405d2750	ItemOptionValueRandom::FUN_1405d2750	GetStat	high	getter	body returns m_nStat	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetStat
+1405d2770	ItemOptionValueRandom::FUN_1405d2770	GetSpecial	high	getter	body returns m_nSpecial	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetSpecial
+1405d27c0	ItemOptionValueRandom::FUN_1405d27c0	GetStatId	high	getter	body returns m_nStatId	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetStatId
+1405d27e0	ItemOptionValueRandom::FUN_1405d27e0	GetWeight	high	getter	body returns m_nWeight	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetWeight
+1405d2a70	ItemOptionConstant::FUN_1405d2a70	GetGrade	high	getter	body returns m_nGrade	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetGrade
+1405d3b80	ItemOptionVariationData::FUN_1405d3b80	GetHighStat	high	getter	body returns m_nHighStat	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetHighStat
+1405d3c80	ItemOptionRandom::FUN_1405d3c80	GetCode	high	getter	body returns m_nCode	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetCode
+1405d3ca0	ItemOptionRandom::FUN_1405d3ca0	GetStatGroup	high	getter	body returns m_eStatGroup	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetStatGroup
+1405d3cc0	ItemOptionRandom::FUN_1405d3cc0	GetProbVer	high	getter	body returns m_nProbVer	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetProbVer
+1405d3ce0	ItemOptionRandom::FUN_1405d3ce0	GetLevelGroupId	high	getter	body returns m_nLevelGroupId	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetLevelGroupId
+1405d9be0	ItemOptionRandomContext::FUN_1405d9be0	SetTarget	high	setter	body stores the argument in m_spTarget	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as SetTarget
+1405d9e50	ItemOptionRandomContext::FUN_1405d9e50	GetOption	high	getter	body returns m_spOption	commonfiles/itemoptiondata_2.cpp	nam1	2026-10-22	applied desc-3 as GetOption
 140620260	TSocketGemStoneInfo::FUN_140620260	GetGemId	high	getter	body returns m_nGemId	commonfiles/itemsocket.cpp	nam1	2026-10-22	
 140620280	TSocketGemStoneInfo::FUN_140620280	GetLock	high	getter	body returns m_spLock	commonfiles/itemsocket.cpp	nam1	2026-10-22	
 1406202d0	TSocketGemStoneInfo::FUN_1406202d0	GetBind	high	getter	body returns m_spBind	commonfiles/itemsocket.cpp	nam1	2026-10-22	
@@ -270,20 +270,20 @@
 140bf6290	UIAllianceQuestDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "AllianceQuestDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_140bf60f0.cpp	nam1	2026-10-22	
 140bfcc00	UICoupleDanceEventDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CoupleDanceEventDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uicoupledanceeventdialog.cpp	nam1	2026-10-22	
 140bfe600	UIRandomCoupon::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "RandomCoupon" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uirandomcoupon.cpp	nam1	2026-10-22	
-140bfebf0	UIRandomCoupon::FUN_140bfebf0	SetProduct	high	setter	body stores the argument in m_spProduct	client/ms2/uirandomcoupon.cpp	nam1	2026-10-22	
+140bfebf0	UIRandomCoupon::FUN_140bfebf0	SetProduct	high	setter	body stores the argument in m_spProduct	client/ms2/uirandomcoupon.cpp	nam1	2026-10-22	applied desc-3 as SetProduct
 140bff660	UIDailyMissionDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DailyMissionDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidailymissiondialog.cpp	nam1	2026-10-22	
 140c03850	UIDTAttendPopup::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DTAttendPopup" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidtattendpopup.cpp	nam1	2026-10-22	
 140c0afd0	UIDungeonControlCenter::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonControlCenter" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidungeoncategory.cpp	nam1	2026-10-22	
 140c0ed60	UIDungeonPopupRewardDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonPopupRewardDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidungeonpopuprewarddialog.cpp	nam1	2026-10-22	
 140c0ffd0	UIDungeonSearchSettingDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonSearchSettingDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidungeonsearchsettingdialog.cpp	nam1	2026-10-22	
-140c112a0	UIDungeonSearchSettingDialog::FUN_140c112a0	SetSelected	high	setter	body stores the argument in m_selected	client/ms2/uidungeonsearchsettingdialog.cpp	nam1	2026-10-22	
+140c112a0	UIDungeonSearchSettingDialog::FUN_140c112a0	SetSelected	high	setter	body stores the argument in m_selected	client/ms2/uidungeonsearchsettingdialog.cpp	nam1	2026-10-22	applied desc-3 as SetSelected
 140c15510	UIFamePointBoardDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "FamePointBoardDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uifamepointboarddialog.cpp	nam1	2026-10-22	
 140c16740	UIGalleryEventDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GalleryEventDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uigalleryeventdialog.cpp	nam1	2026-10-22	
 140c194b0	UIGameMakerMainDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GameMakerMainDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uigamemakermaindialog.cpp	nam1	2026-10-22	
 140c1a000	UIGameModeSelectDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GameModeSelectDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uigamemodeselectdialog.cpp	nam1	2026-10-22	
 140c1ae70	UIGamePadMenuDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GamePadMenuDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uigamepadmenudialog.cpp	nam1	2026-10-22	
 140c22690	UIHighlightGameMenu::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "HighlightGameMenu" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uihighlightgamemenu.cpp	nam1	2026-10-22	
-140c22ce0	UIHighlightGameMenu::FUN_140c22ce0	IsActive	high	getter	body returns m_bActive	client/ms2/uihighlightgamemenu.cpp	nam1	2026-10-22	
+140c22ce0	UIHighlightGameMenu::FUN_140c22ce0	IsActive	high	getter	body returns m_bActive	client/ms2/uihighlightgamemenu.cpp	nam1	2026-10-22	applied desc-3 as IsActive
 140c264f0	UIHomeInfoEditDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "HomeInfoEditDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uihomeinfoeditdialog.cpp	nam1	2026-10-22	
 140c273f0	UIHomeInsideOptionDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "HomeInsideOptionDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uihomeinsideoptiondialog.cpp	nam1	2026-10-22	
 140c2bd20	UIHomeResizeDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "HomeResizeDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uihomeresizedialog.cpp	nam1	2026-10-22	
@@ -306,8 +306,8 @@
 140c68da0	UILapenshardUpgradeTab::FUN_140c68da0	GetSource	high	getter	body returns m_spSource	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	
 140c68e40	UILapenshardUpgradeTab::FUN_140c68e40	GetN_bc	high	getter	body returns m_n_bc	unnamed/unit_140c5d230.cpp	nam1	2026-10-22	
 140c6b4a0	UILongTermAttendGiftDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LongTermAttendGiftDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uilongtermattendgiftdialog.cpp	nam1	2026-10-22	
-140c74d70	UIMentoringPage::FUN_140c74d70	GetScript	high	getter	body returns m_script	client/ms2/uimentoringmentorpage.cpp	nam1	2026-10-22	
-140c74dc0	UIMentoringPage::FUN_140c74dc0	GetOwner	high	getter	body returns m_owner	client/ms2/uimentoringmentorpage.cpp	nam1	2026-10-22	
+140c74d70	UIMentoringPage::FUN_140c74d70	GetScript	high	getter	body returns m_script	client/ms2/uimentoringmentorpage.cpp	nam1	2026-10-22	applied desc-3 as GetScript
+140c74dc0	UIMentoringPage::FUN_140c74dc0	GetOwner	high	getter	body returns m_owner	client/ms2/uimentoringmentorpage.cpp	nam1	2026-10-22	applied desc-3 as GetOwner
 140c8b2e0	CPetManager::FUN_140c8b2e0	GetSummonUid	high	getter	body returns m_nSummonUid	client/ms2/petmanager.cpp	nam1	2026-10-22	applied desc-2 as GetSummonUid
 140c8b300	CPetManager::FUN_140c8b300	SetSummonUid	high	setter	body stores the argument in m_nSummonUid	client/ms2/petmanager.cpp	nam1	2026-10-22	applied desc-2 as SetSummonUid
 140c8b320	CPetManager::FUN_140c8b320	GetAuto	high	getter	body returns m_nAuto	client/ms2/petmanager.cpp	nam1	2026-10-22	applied desc-2 as GetAuto
@@ -420,25 +420,25 @@
 140e21000	UIDungeonRewardDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonRewardDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidungeonrewarddialog.cpp	nam1	2026-10-22	
 140e26e60	UIDungeonSearchSelectDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonSearchSelectDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidungeonsearchselectdialog.cpp	nam1	2026-10-22	
 140e29310	UIEnchantSelectDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "EnchantSelectDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uienchantselectdialog.cpp	nam1	2026-10-22	
-140e37c20	Unk_RankReply::FUN_140e37c20	GetRankType	high	getter	body returns m_nRankType	client/ms2/uigamerankingdialog.cpp	nam1	2026-10-22	
+140e37c20	Unk_RankReply::FUN_140e37c20	GetRankType	high	getter	body returns m_nRankType	client/ms2/uigamerankingdialog.cpp	nam1	2026-10-22	applied desc-3 as GetRankType
 140e39d50	UIGuildHouseUpgradeDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GuildHouseUpgradeDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiguildhouseupgradedialog.cpp	nam1	2026-10-22	
 140e3f2f0	UIAdPushDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "AdPushDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_140e3efd0.cpp	nam1	2026-10-22	
 140e47a50	UIItemEventOpenBoxDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemEventOpenBoxDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemeventopenboxdialog.cpp	nam1	2026-10-22	
 140e49f70	UIItemExtractionScrollDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemExtractionScrollDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemextractionscrolldialog.cpp	nam1	2026-10-22	
 140e4c0d0	UIItemMergeRevertDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemMergeRevertDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemmergerevertdialog.cpp	nam1	2026-10-22	
 140e4e2f0	UIItemPetBoxDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemPetBoxDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitempetboxdialog.cpp	nam1	2026-10-22	
-140e4fc30	UIItemPetBoxDialog::FUN_140e4fc30	SetBoxItemId	high	setter	body stores the argument in m_boxItemId	client/ms2/uiitempetboxdialog.cpp	nam1	2026-10-22	
+140e4fc30	UIItemPetBoxDialog::FUN_140e4fc30	SetBoxItemId	high	setter	body stores the argument in m_boxItemId	client/ms2/uiitempetboxdialog.cpp	nam1	2026-10-22	applied desc-3 as SetBoxItemId
 140e54df0	UIItemPetStudyDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemPetStudyDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitempetstudydialog.cpp	nam1	2026-10-22	
-140e557f0	UIItemPetStudyDialog::FUN_140e557f0	SetOwner	high	setter	body stores the argument in m_nOwner	client/ms2/uiitempetstudydialog.cpp	nam1	2026-10-22	
+140e557f0	UIItemPetStudyDialog::FUN_140e557f0	SetOwner	high	setter	body stores the argument in m_nOwner	client/ms2/uiitempetstudydialog.cpp	nam1	2026-10-22	applied desc-3 as SetOwner
 140e57150	UIItemPetTrainingDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemPetTrainingDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitempettrainingdialog.cpp	nam1	2026-10-22	
-140e57c80	UIItemPetTrainingDialog::FUN_140e57c80	SetOwner	high	setter	body stores the argument in m_nOwner	client/ms2/uiitempettrainingdialog.cpp	nam1	2026-10-22	
+140e57c80	UIItemPetTrainingDialog::FUN_140e57c80	SetOwner	high	setter	body stores the argument in m_nOwner	client/ms2/uiitempettrainingdialog.cpp	nam1	2026-10-22	applied desc-3 as SetOwner
 140e59b60	UIMasteryObjectMark::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MasteryObjectMark" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimasteryobjectmark.cpp	nam1	2026-10-22	
 140e5cbf0	CHomemadeCubeObject::FUN_140e5cbf0	GetArg2	high	getter	body returns m_nArg2	client/ms2/uimasteryobjectmark.cpp	nam1	2026-10-22	
 140e5e330	UIMentoringDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MentoringDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimentoringrewardpage.cpp	nam1	2026-10-22	
 140e63f20	UIMicroGameCoupleDance::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MicroGameCoupleDance" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimicrogamecoupledance.cpp	nam1	2026-10-22	
 140e65a30	UIMicroGameCoupleDanceMessage::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MicroGameCoupleDanceMessage" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimicrogamecoupledancemessage.cpp	nam1	2026-10-22	
 140e660c0	UIMicroGameRps::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MicroGameRps" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimicrogamerps.cpp	nam1	2026-10-22	
-140e665e0	UIMicroGameRps::FUN_140e665e0	SetCard	high	setter	body stores the argument in m_nCard	client/ms2/uimicrogamerps.cpp	nam1	2026-10-22	
+140e665e0	UIMicroGameRps::FUN_140e665e0	SetCard	high	setter	body stores the argument in m_nCard	client/ms2/uimicrogamerps.cpp	nam1	2026-10-22	applied desc-3 as SetCard
 140e6a000	UIMusicConcertDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MusicConcertDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimusicconcertdialog.cpp	nam1	2026-10-22	
 140e6b8a0	UINpcDuelHPBarDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "NpcDuelHPBarDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uinpcduelhpbardialog.cpp	nam1	2026-10-22	
 140e6d450	UIOtherPetSystemDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "OtherPetSystemDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiotherpetsystemdialog.cpp	nam1	2026-10-22	
@@ -470,15 +470,15 @@
 140e937b0	UISkillPreviewDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SkillPreviewDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiskillpreviewdialog.cpp	nam1	2026-10-22	
 140e94560	UISnowmanEventDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SnowmanEventDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uisnowmaneventdialog.cpp	nam1	2026-10-22	
 140e9ac70	UIItemLulluBoxDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemLulluBoxDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemlulluboxdialog.cpp	nam1	2026-10-22	
-140e9c240	UIItemLulluBoxDialog::FUN_140e9c240	SetBoxItemId	high	setter	body stores the argument in m_boxItemId	client/ms2/uiitemlulluboxdialog.cpp	nam1	2026-10-22	
+140e9c240	UIItemLulluBoxDialog::FUN_140e9c240	SetBoxItemId	high	setter	body stores the argument in m_boxItemId	client/ms2/uiitemlulluboxdialog.cpp	nam1	2026-10-22	applied desc-3 as SetBoxItemId
 140ea11b0	UILearningQuestDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LearningQuestDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uilearningquestdialog.cpp	nam1	2026-10-22	
 140ea4660	UILevelUpPackageDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LevelUpPackageDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uileveluppackagedialog.cpp	nam1	2026-10-22	
 140ea6180	UILoginNotice::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LoginNotice" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiloginnotice.cpp	nam1	2026-10-22	
-140ea8da0	UIMarketBillDialog::FUN_140ea8da0	GetParam	high	getter	body returns m_spParam	client/ms2/uimarketbilldialog.cpp	nam1	2026-10-22	
-140eaac30	UIMarketBillDialog::FUN_140eaac30	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/uimarketbilldialog.cpp	nam1	2026-10-22	
-140eade70	Unk_MasteryCraft::FUN_140eade70	HasTotal	medium	bool-test	body returns m_nTotal != 0	client/ms2/uimasterydialog.cpp	nam1	2026-10-22	
-140eafdb0	UIMasteryDialog::FUN_140eafdb0	SetMainTab	high	setter	body stores the argument in m_nMainTab	client/ms2/uimasterydialog.cpp	nam1	2026-10-22	
-140ebb020	Unk_MHousing::FUN_140ebb020	GetMaxLevel	high	getter	body returns m_nMaxLevel	client/ms2/uimasterydialog.cpp	nam1	2026-10-22	
+140ea8da0	UIMarketBillDialog::FUN_140ea8da0	GetParam	high	getter	body returns m_spParam	client/ms2/uimarketbilldialog.cpp	nam1	2026-10-22	applied desc-3 as GetParam
+140eaac30	UIMarketBillDialog::FUN_140eaac30	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/uimarketbilldialog.cpp	nam1	2026-10-22	applied desc-3 as SetMode
+140eade70	Unk_MasteryCraft::FUN_140eade70	HasTotal	medium	bool-test	body returns m_nTotal != 0	client/ms2/uimasterydialog.cpp	nam1	2026-10-22	applied desc-3 as HasTotal
+140eafdb0	UIMasteryDialog::FUN_140eafdb0	SetMainTab	high	setter	body stores the argument in m_nMainTab	client/ms2/uimasterydialog.cpp	nam1	2026-10-22	applied desc-3 as SetMainTab
+140ebb020	Unk_MHousing::FUN_140ebb020	GetMaxLevel	high	getter	body returns m_nMaxLevel	client/ms2/uimasterydialog.cpp	nam1	2026-10-22	applied desc-3 as GetMaxLevel
 140ec28b0	UIMeratMarketDialogUtil::ASOutData::FUN_140ec28b0	GetProduct	high	getter	body returns m_spProduct	client/ms2/uimeratmarketcommon.cpp	nam1	2026-10-22	
 140ec2900	UIMeratMarketDialogUtil::ASOutData::FUN_140ec2900	GetRenderer	high	getter	body returns m_spRenderer	client/ms2/uimeratmarketcommon.cpp	nam1	2026-10-22	
 140ec4300	UISkillBookAutoDistributeDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SkillBookAutoDistributeDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiskillbookautodistributedialog.cpp	nam1	2026-10-22	
@@ -489,10 +489,10 @@
 140ee23c0	UITimeRunEventDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TimeRunEventDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uitimeruneventdialog.cpp	nam1	2026-10-22	
 140ee5730	UITypingGameDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TypingGameDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uitypinggamedialog.cpp	nam1	2026-10-22	
 140ee76e0	UIUGCCubeBillDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "UGCCubeBillDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiugccubebilldialog.cpp	nam1	2026-10-22	
-140ee9cd0	Unk_CubeFocus::FUN_140ee9cd0	IsActive	high	getter	body returns m_bActive	client/ms2/uiugccubepalettedialog.cpp	nam1	2026-10-22	
-140ee9f30	Unk_CubeTimer::FUN_140ee9f30	GetValue	high	getter	body returns m_nValue	client/ms2/uiugccubepalettedialog.cpp	nam1	2026-10-22	
+140ee9cd0	Unk_CubeFocus::FUN_140ee9cd0	IsActive	high	getter	body returns m_bActive	client/ms2/uiugccubepalettedialog.cpp	nam1	2026-10-22	applied desc-3 as IsActive
+140ee9f30	Unk_CubeTimer::FUN_140ee9f30	GetValue	high	getter	body returns m_nValue	client/ms2/uiugccubepalettedialog.cpp	nam1	2026-10-22	applied desc-3 as GetValue
 140eea300	UIUGCCubePaletteDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "UGCCubePaletteDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiugccubepalettedialog.cpp	nam1	2026-10-22	
-140ef0b20	FUN_140ef0b20	GetUGCCubePalette	medium	singleton	returns the UGCCubePalette instance pointer DAT_143ac90f0	client/ms2/uiugccubepalettedialog.cpp	nam1	2026-10-22	
+140ef0b20	FUN_140ef0b20	GetUGCCubePalette	medium	singleton	returns the UGCCubePalette instance pointer DAT_143ac90f0	client/ms2/uiugccubepalettedialog.cpp	nam1	2026-10-22	applied desc-3 as GetUGCCubePalette
 140ef5030	UIArcadeLifeBar::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ArcadeLifeBar" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiarcadelifebar.cpp	nam1	2026-10-22	
 140ef5af0	UIArcadeMainDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ArcadeMainDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiarcademaindialog.cpp	nam1	2026-10-22	
 140f00550	UIBeautyListDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BeautyListDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uibeautylistdialog.cpp	nam1	2026-10-22	
@@ -507,7 +507,7 @@
 140f3fbe0	UIEnterEventFieldDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "EnterEventFieldDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uientereventfielddialog.cpp	nam1	2026-10-22	
 140f40d70	UIEventIntroduce::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "EventIntroduce" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uieventintroduce.cpp	nam1	2026-10-22	
 140f412e0	UIFishingBookDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "FishingBookDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uifishingbookdialog.cpp	nam1	2026-10-22	
-140f43dd0	Unk_FbItemArray::FUN_140f43dd0	GetSize	high	getter	body returns m_nSize	client/ms2/uifishingbookdialog.cpp	nam1	2026-10-22	
+140f43dd0	Unk_FbItemArray::FUN_140f43dd0	GetSize	high	getter	body returns m_nSize	client/ms2/uifishingbookdialog.cpp	nam1	2026-10-22	applied desc-3 as GetSize
 140f43ea0	UIFishingFloatDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "FishingFloatDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uifishingfloatdialog.cpp	nam1	2026-10-22	
 140f496f0	UIHudEntity::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "HudEntity" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uihudentity.cpp	nam1	2026-10-22	
 140f4ac70	UIIndividualDPSDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "IndividualDPSDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiindividualdpsdialog.cpp	nam1	2026-10-22	
@@ -519,11 +519,11 @@
 140f50eb0	UIItemExchangeScrollDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemExchangeScrollDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemexchangescrolldialog.cpp	nam1	2026-10-22	
 140f56c30	UIItemLockDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemLockDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemlockdialog.cpp	nam1	2026-10-22	
 140f583e0	UIItemRemakeScrollDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemRemakeScrollDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemremakescrolldialog.cpp	nam1	2026-10-22	
-140f5d080	UIItemRemakeScrollDialog::FUN_140f5d080	SetState	high	setter	body stores the argument in m_nState	client/ms2/uiitemremakescrolldialog.cpp	nam1	2026-10-22	
-140f5d0a0	UIItemRemakeScrollDialog::FUN_140f5d0a0	GetState	high	getter	body returns m_nState	client/ms2/uiitemremakescrolldialog.cpp	nam1	2026-10-22	
+140f5d080	UIItemRemakeScrollDialog::FUN_140f5d080	SetState	high	setter	body stores the argument in m_nState	client/ms2/uiitemremakescrolldialog.cpp	nam1	2026-10-22	applied desc-3 as SetState
+140f5d0a0	UIItemRemakeScrollDialog::FUN_140f5d0a0	GetState	high	getter	body returns m_nState	client/ms2/uiitemremakescrolldialog.cpp	nam1	2026-10-22	applied desc-3 as GetState
 140f61050	UIItemRePackingScrollDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemRePackingScrollDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemrepackingscrolldialog.cpp	nam1	2026-10-22	
 140f64940	UIItemSocketScrollDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemSocketScrollDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemsocketscrolldialog.cpp	nam1	2026-10-22	
-140f65a90	UIItemSocketScrollDialog::FUN_140f65a90	SetHasItem	high	setter	body stores the argument in m_bHasItem	client/ms2/uiitemsocketscrolldialog.cpp	nam1	2026-10-22	
+140f65a90	UIItemSocketScrollDialog::FUN_140f65a90	SetHasItem	high	setter	body stores the argument in m_bHasItem	client/ms2/uiitemsocketscrolldialog.cpp	nam1	2026-10-22	applied desc-3 as SetHasItem
 140f68fc0	UIItemSocketSystemDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemSocketSystemDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemsocketsystemdialog.cpp	nam1	2026-10-22	
 140f84090	UIKeyboardGuideDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "KeyboardGuideDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uikeyboardguidedialog.cpp	nam1	2026-10-22	
 140f84520	UILevelUpGuideDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LevelUpGuideDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uilevelupguidedialog.cpp	nam1	2026-10-22	
@@ -531,16 +531,16 @@
 140f90870	UIPvPRankDuelResultDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "PvPRankDuelResultDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uipvprankduelresultdialog.cpp	nam1	2026-10-22	
 140f920b0	UIRankPvPDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "RankPvPDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uirankpvpdialog.cpp	nam1	2026-10-22	
 140f99500	UISelectItemBoxDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SelectItemBoxDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiselectitemboxdialog.cpp	nam1	2026-10-22	
-140f9a200	UISelectItemBoxDialog::FUN_140f9a200	SetItemUid	high	setter	body stores the argument in m_uItemUid	client/ms2/uiselectitemboxdialog.cpp	nam1	2026-10-22	
+140f9a200	UISelectItemBoxDialog::FUN_140f9a200	SetItemUid	high	setter	body stores the argument in m_uItemUid	client/ms2/uiselectitemboxdialog.cpp	nam1	2026-10-22	applied desc-3 as SetItemUid
 140f9bb00	UIPortalEmoticon::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "PortalEmoticon" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiportalemoticon.cpp	nam1	2026-10-22	
-140f9bb50	UIPortalEmoticon::FUN_140f9bb50	IsShown	high	getter	body returns m_bShown	client/ms2/uiportalemoticon.cpp	nam1	2026-10-22	
-140f9bca0	UIPortalEmoticon::FUN_140f9bca0	SetName	high	setter	body stores the argument in m_strName	client/ms2/uiportalemoticon.cpp	nam1	2026-10-22	
+140f9bb50	UIPortalEmoticon::FUN_140f9bb50	IsShown	high	getter	body returns m_bShown	client/ms2/uiportalemoticon.cpp	nam1	2026-10-22	applied desc-3 as IsShown
+140f9bca0	UIPortalEmoticon::FUN_140f9bca0	SetName	high	setter	body stores the argument in m_strName	client/ms2/uiportalemoticon.cpp	nam1	2026-10-22	applied desc-3 as SetName
 140f9cdb0	UIShadowExpeditionBossBar::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ShadowExpeditionBossBar" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uishadowexpeditionbossbar.cpp	nam1	2026-10-22	
-140f9d230	UIShadowExpeditionBossBar::FUN_140f9d230	SetTitle	high	setter	body stores the argument in m_strTitle	client/ms2/uishadowexpeditionbossbar.cpp	nam1	2026-10-22	
+140f9d230	UIShadowExpeditionBossBar::FUN_140f9d230	SetTitle	high	setter	body stores the argument in m_strTitle	client/ms2/uishadowexpeditionbossbar.cpp	nam1	2026-10-22	applied desc-3 as SetTitle
 140f9d280	UIShadowExpeditionBossBar::vfunc_84	SetCur	medium	setter	body stores the argument in m_nCur; virtual slot: rename the whole override family	client/ms2/uishadowexpeditionbossbar.cpp	nam1	2026-10-22	
 140fa3ba0	UISmartPush::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SmartPush" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uismartpush.cpp	nam1	2026-10-22	
 140fa4250	UISystemShopDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SystemShopDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uisystemshopdialog.cpp	nam1	2026-10-22	
-140fa5ba0	UISystemShopDialog::FUN_140fa5ba0	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/uisystemshopdialog.cpp	nam1	2026-10-22	
+140fa5ba0	UISystemShopDialog::FUN_140fa5ba0	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/uisystemshopdialog.cpp	nam1	2026-10-22	applied desc-3 as SetMode
 140fa8710	UITopLayerNotify::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TopLayerNotify" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uitoplayernotify.cpp	nam1	2026-10-22	
 140fa8d60	UIHomeOptionDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "HomeOptionDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uihomeoptiondialog.cpp	nam1	2026-10-22	
 140facc10	UIUGCExtraCNDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "UGCExtraCNDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiugcextracndialog.cpp	nam1	2026-10-22	
@@ -549,46 +549,46 @@
 140faf9f0	UIUGCCubeNoticeDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "UGCCubeNoticeDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiugccubenoticedialog.cpp	nam1	2026-10-22	
 140fb05e0	UIUGCPortalDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "UGCPortalDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiugcportaldialog.cpp	nam1	2026-10-22	
 140fb4b10	UIUGCCubeNoticePopup::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "UGCCubeNoticePopup" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiugccubenoticepopup.cpp	nam1	2026-10-22	
-140fb4b90	UIUGCCubeNoticePopup::FUN_140fb4b90	IsShown	high	getter	body returns m_bShown	client/ms2/uiugccubenoticepopup.cpp	nam1	2026-10-22	
-140fb4c50	UIUGCCubeNoticePopup::FUN_140fb4c50	SetPtWorld	high	setter	body stores the argument in m_ptWorld	client/ms2/uiugccubenoticepopup.cpp	nam1	2026-10-22	
-140fb4c80	UIUGCCubeNoticePopup::FUN_140fb4c80	SetIdEntity	high	setter	body stores the argument in m_idEntity	client/ms2/uiugccubenoticepopup.cpp	nam1	2026-10-22	
+140fb4b90	UIUGCCubeNoticePopup::FUN_140fb4b90	IsShown	high	getter	body returns m_bShown	client/ms2/uiugccubenoticepopup.cpp	nam1	2026-10-22	applied desc-3 as IsShown
+140fb4c50	UIUGCCubeNoticePopup::FUN_140fb4c50	SetPtWorld	high	setter	body stores the argument in m_ptWorld	client/ms2/uiugccubenoticepopup.cpp	nam1	2026-10-22	applied desc-3 as SetPtWorld
+140fb4c80	UIUGCCubeNoticePopup::FUN_140fb4c80	SetIdEntity	high	setter	body stores the argument in m_idEntity	client/ms2/uiugccubenoticepopup.cpp	nam1	2026-10-22	applied desc-3 as SetIdEntity
 140fb54a0	UIUGCPVPControlDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "UGCPVPControlDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiugcpvpcontroldialog.cpp	nam1	2026-10-22	
 140fb5de0	UIUnlimitedEnchantDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "UnlimitedEnchantDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiunlimitedenchantdialog.cpp	nam1	2026-10-22	
 140fc09f0	UIWatchAGameDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WatchAGameDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiwatchagamedialog.cpp	nam1	2026-10-22	
-140fc0b20	UIWatchAGameDialog::FUN_140fc0b20	SetValue	high	setter	body stores the argument in m_nValue	client/ms2/uiwatchagamedialog.cpp	nam1	2026-10-22	
-140fc0b40	UIWatchAGameDialog::FUN_140fc0b40	SetCharId	high	setter	body stores the argument in m_nCharId	client/ms2/uiwatchagamedialog.cpp	nam1	2026-10-22	
+140fc0b20	UIWatchAGameDialog::FUN_140fc0b20	SetValue	high	setter	body stores the argument in m_nValue	client/ms2/uiwatchagamedialog.cpp	nam1	2026-10-22	applied desc-3 as SetValue
+140fc0b40	UIWatchAGameDialog::FUN_140fc0b40	SetCharId	high	setter	body stores the argument in m_nCharId	client/ms2/uiwatchagamedialog.cpp	nam1	2026-10-22	applied desc-3 as SetCharId
 140fc2150	UIWeddingAffinityDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WeddingAffinityDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiweddingaffinitydialog.cpp	nam1	2026-10-22	
 140fc2d40	UIWeddingBillboardDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WeddingBillboardDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiweddingbillboarddialog.cpp	nam1	2026-10-22	
 140fc73a0	UIWeddingDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WeddingDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiweddingdialog.cpp	nam1	2026-10-22	
 140fccb30	UIWeddingGuestDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WeddingGuestDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiweddingguestdialog.cpp	nam1	2026-10-22	
-140fd6e40	UIWeddingGuestPage::FUN_140fd6e40	GetScript	high	getter	body returns m_pScript	client/ms2/uiweddingguestdialog.cpp	nam1	2026-10-22	
-140fd6e90	UIWeddingGuestPage::FUN_140fd6e90	GetDialog	high	getter	body returns m_pDialog	client/ms2/uiweddingguestdialog.cpp	nam1	2026-10-22	
+140fd6e40	UIWeddingGuestPage::FUN_140fd6e40	GetScript	high	getter	body returns m_pScript	client/ms2/uiweddingguestdialog.cpp	nam1	2026-10-22	applied desc-3 as GetScript
+140fd6e90	UIWeddingGuestPage::FUN_140fd6e90	GetDialog	high	getter	body returns m_pDialog	client/ms2/uiweddingguestdialog.cpp	nam1	2026-10-22	applied desc-3 as GetDialog
 140fd8ec0	UIWeddingHallListDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WeddingHallListDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiweddinghalllistdialog.cpp	nam1	2026-10-22	
 140fdb4f0	UIWeddingHallReservationDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WeddingHallReservationDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	
-140fdbf50	UIWeddingHallReservationDialog::FUN_140fdbf50	SetPackage	high	setter	body stores the argument in m_nPackage	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	
-140fdc110	UIWeddingHallReservationDialog::FUN_140fdc110	SetHall	high	setter	body stores the argument in m_nHall	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	
-140fdc130	UIWeddingHallReservationDialog::FUN_140fdc130	SetTime	high	setter	body stores the argument in m_nTime	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	
-140fdc160	UIWeddingHallReservationDialog::FUN_140fdc160	SetNight	high	setter	body stores the argument in m_bNight	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	
-140fdca20	UIWeddingHallReservationDialog::FUN_140fdca20	GetHall	high	getter	body returns m_nHall	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	
-140fdca40	UIWeddingHallReservationDialog::FUN_140fdca40	GetTime	high	getter	body returns m_nTime	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	
-140fdca60	UIWeddingHallReservationDialog::FUN_140fdca60	GetNight	high	getter	body returns m_bNight	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	
-140fdca80	UIWeddingHallReservationDialog::FUN_140fdca80	GetMode	high	getter	body returns m_nMode	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	
+140fdbf50	UIWeddingHallReservationDialog::FUN_140fdbf50	SetPackage	high	setter	body stores the argument in m_nPackage	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	applied desc-3 as SetPackage
+140fdc110	UIWeddingHallReservationDialog::FUN_140fdc110	SetHall	high	setter	body stores the argument in m_nHall	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	applied desc-3 as SetHall
+140fdc130	UIWeddingHallReservationDialog::FUN_140fdc130	SetTime	high	setter	body stores the argument in m_nTime	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	applied desc-3 as SetTime
+140fdc160	UIWeddingHallReservationDialog::FUN_140fdc160	SetNight	high	setter	body stores the argument in m_bNight	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	applied desc-3 as SetNight
+140fdca20	UIWeddingHallReservationDialog::FUN_140fdca20	GetHall	high	getter	body returns m_nHall	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	applied desc-3 as GetHall
+140fdca40	UIWeddingHallReservationDialog::FUN_140fdca40	GetTime	high	getter	body returns m_nTime	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	applied desc-3 as GetTime
+140fdca60	UIWeddingHallReservationDialog::FUN_140fdca60	GetNight	high	getter	body returns m_bNight	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	applied desc-3 as GetNight
+140fdca80	UIWeddingHallReservationDialog::FUN_140fdca80	GetMode	high	getter	body returns m_nMode	client/ms2/uiweddinghallreservationdialog.cpp	nam1	2026-10-22	applied desc-3 as GetMode
 140fe5860	UIWeddingInvitationDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WeddingInvitationDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiweddinginvitationdialog.cpp	nam1	2026-10-22	
-140fe7620	UIWeddingPage::FUN_140fe7620	GetScript	high	getter	body returns m_pScript	client/ms2/uiweddingpage.cpp	nam1	2026-10-22	
+140fe7620	UIWeddingPage::FUN_140fe7620	GetScript	high	getter	body returns m_pScript	client/ms2/uiweddingpage.cpp	nam1	2026-10-22	applied desc-3 as GetScript
 140fea0f0	UIWorldChampionRewardDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WorldChampionRewardDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiworldchampionrewarddialog.cpp	nam1	2026-10-22	
 140fedd90	UIWriteMusicDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WriteMusicDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiwritemusicdialog.cpp	nam1	2026-10-22	
-140fef760	UIWriteMusicDialog::FUN_140fef760	GetItem	high	getter	body returns m_spItem	client/ms2/uiwritemusicdialog.cpp	nam1	2026-10-22	
-140ff4500	UIWriteMusicDialog::FUN_140ff4500	SetItem	high	setter	body stores the argument in m_spItem	client/ms2/uiwritemusicdialog.cpp	nam1	2026-10-22	
+140fef760	UIWriteMusicDialog::FUN_140fef760	GetItem	high	getter	body returns m_spItem	client/ms2/uiwritemusicdialog.cpp	nam1	2026-10-22	applied desc-3 as GetItem
+140ff4500	UIWriteMusicDialog::FUN_140ff4500	SetItem	high	setter	body stores the argument in m_spItem	client/ms2/uiwritemusicdialog.cpp	nam1	2026-10-22	applied desc-3 as SetItem
 14100a420	UIPlayInstrumentDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "PlayInstrumentDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiplayinstrumentdialog.cpp	nam1	2026-10-22	
-14100d9f0	UIPlayInstrumentDialog::FUN_14100d9f0	GetAutoPlay	high	getter	body returns m_nAutoPlay	client/ms2/uiplayinstrumentdialog.cpp	nam1	2026-10-22	
+14100d9f0	UIPlayInstrumentDialog::FUN_14100d9f0	GetAutoPlay	high	getter	body returns m_nAutoPlay	client/ms2/uiplayinstrumentdialog.cpp	nam1	2026-10-22	applied desc-3 as GetAutoPlay
 141020a70	RideeInterpolator::FUN_141020a70	SetObjectId	high	setter	body stores the argument in m_nObjectId	client/ms2/rideeinterpolator.cpp	nam1	2026-10-22	applied desc-2 as SetObjectId
 141025b70	FUN_141025b70	GetStringManager	medium	singleton	returns the StringManager instance pointer DAT_143ab1c98	client/ms2/string/stringidinterface.cpp	nam1	2026-10-22	applied desc-2 as GetStringManager
 14102bab0	UIAttendGiftDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "AttendGiftDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiattendgiftdialog.cpp	nam1	2026-10-22	
 141030f60	UIBannerAdvertisingDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BannerAdvertisingDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiattendgiftdialog.cpp	nam1	2026-10-22	
 141031550	UIBootyPopup::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BootyPopup" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uibootypopup.cpp	nam1	2026-10-22	
 141032010	UICameraDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CameraDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uicameradialog.cpp	nam1	2026-10-22	
-141034da0	UICashShopDialog::FUN_141034da0	GetCategory	high	getter	body returns m_nCategory	client/ms2/uicashshopdialog.cpp	nam1	2026-10-22	
-141035970	UICashShopDialog::FUN_141035970	SetUnlockState	high	setter	body stores the argument in m_nUnlockState	client/ms2/uicashshopdialog.cpp	nam1	2026-10-22	
+141034da0	UICashShopDialog::FUN_141034da0	GetCategory	high	getter	body returns m_nCategory	client/ms2/uicashshopdialog.cpp	nam1	2026-10-22	applied desc-3 as GetCategory
+141035970	UICashShopDialog::FUN_141035970	SetUnlockState	high	setter	body stores the argument in m_nUnlockState	client/ms2/uicashshopdialog.cpp	nam1	2026-10-22	applied desc-3 as SetUnlockState
 14103d2c0	Unk_CashMgr::FUN_14103d2c0	GetSaleProducts	medium	getter	body returns m_saleProducts	client/ms2/uicashshopdialog.cpp	nam1	2026-10-22	
 141040b40	UIChaosLightDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ChaosLightDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uichaoslightdialog.cpp	nam1	2026-10-22	
 1410463e0	ChaosLightEffectLayer::vfunc_18	GetMesh	medium	getter	body returns m_spMesh; virtual slot: rename the whole override family	client/ms2/chaoslighttransitiondata.cpp	nam1	2026-10-22	
@@ -682,9 +682,9 @@
 1412a1c60	UIItemRemakeOptionDialog::FUN_1412a1c60	GetState	high	getter	body returns m_state	unnamed/unit_14129cfa0.cpp	nam1	2026-10-22	
 1412a4070	UIItemModifyDialogBase::vfunc_86	GetEnchantAni	medium	getter	body returns m_enchantAni; virtual slot: rename the whole override family	unnamed/unit_14129cfa0.cpp	nam1	2026-10-22	
 1412a49b0	UISystemMailNotifyDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SystemMailNotifyDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uisystemmailnotifydialog.cpp	nam1	2026-10-22	
-1412a5c50	UISystemMailNotifyDialog::FUN_1412a5c50	SetOnTime	high	setter	body stores the argument in m_bOnTime	client/ms2/uisystemmailnotifydialog.cpp	nam1	2026-10-22	
-1412b4100	UIDungeonRoomInfo::FUN_1412b4100	GetBanner	high	getter	body returns m_strBanner	client/ms2/uidungeonroomdialog.cpp	nam1	2026-10-22	
-1412b4150	UIDungeonRoomInfo::FUN_1412b4150	SetRoom	high	setter	body stores the argument in m_spRoom	client/ms2/uidungeonroomdialog.cpp	nam1	2026-10-22	
+1412a5c50	UISystemMailNotifyDialog::FUN_1412a5c50	SetOnTime	high	setter	body stores the argument in m_bOnTime	client/ms2/uisystemmailnotifydialog.cpp	nam1	2026-10-22	applied desc-3 as SetOnTime
+1412b4100	UIDungeonRoomInfo::FUN_1412b4100	GetBanner	high	getter	body returns m_strBanner	client/ms2/uidungeonroomdialog.cpp	nam1	2026-10-22	applied desc-3 as GetBanner
+1412b4150	UIDungeonRoomInfo::FUN_1412b4150	SetRoom	high	setter	body stores the argument in m_spRoom	client/ms2/uidungeonroomdialog.cpp	nam1	2026-10-22	applied desc-3 as SetRoom
 1412b71d0	UIDungeonRoomDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DungeonRoomDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidungeonroomdialog.cpp	nam1	2026-10-22	
 1412c22b0	UIGlobalPortalDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GlobalPortalDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiglobalportaldialog.cpp	nam1	2026-10-22	
 1412c3b90	UIIGuideMovieDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GuideMovieDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_1412c3ac0.cpp	nam1	2026-10-22	
@@ -712,21 +712,21 @@
 141346760	UIPvPTeamScoreDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "PvPTeamScoreDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uipvpteamscoredialog.cpp	nam1	2026-10-22	
 141346ad0	UIRangePreviewDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "RangePreviewDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uirangepreviewdialog.cpp	nam1	2026-10-22	
 14134ca70	UISmartRecommendBillingDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SmartRecommendBillingDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uismartrecommendbillingdialog.cpp	nam1	2026-10-22	
-14134cf50	UISmartRecommendBillingDialog::FUN_14134cf50	SetItem	high	setter	body stores the argument in m_item	client/ms2/uismartrecommendbillingdialog.cpp	nam1	2026-10-22	
+14134cf50	UISmartRecommendBillingDialog::FUN_14134cf50	SetItem	high	setter	body stores the argument in m_item	client/ms2/uismartrecommendbillingdialog.cpp	nam1	2026-10-22	applied desc-3 as SetItem
 14134d830	UISmartRecommendNotifyDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SmartRecommendNotifyDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uismartrecommendbillingdialog.cpp	nam1	2026-10-22	
 14134e510	UIStatControlDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "StatControlDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uistatcontroldialog.cpp	nam1	2026-10-22	
 14134fd80	UIHouseDemolishDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "HouseDemolishDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_14134fc90.cpp	nam1	2026-10-22	
 141350d90	UITextPreviewDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TextPreviewDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uitextpreviewdialog.cpp	nam1	2026-10-22	
 141351aa0	UITokenPocketDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TokenPocketDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uitokenpocketdialog.cpp	nam1	2026-10-22	
 141353e80	UIUpperHudDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "UpperHudDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	
-141357400	UIUpperHudDialog::FUN_141357400	SetNoticeSpeed	high	setter	body stores the argument in m_fNoticeSpeed	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	
+141357400	UIUpperHudDialog::FUN_141357400	SetNoticeSpeed	high	setter	body stores the argument in m_fNoticeSpeed	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	applied desc-3 as SetNoticeSpeed
 14135aaf0	UIVideoContents::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "VideoContents" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	
 14135b5c0	UIVisitorsBookDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "VisitorsBookDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	
 14135bcb0	UIVisualEffectDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "VisualEffectDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	
-14135de90	Unk_HudMotionBlur::FUN_14135de90	GetMode	high	getter	body returns m_nMode	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	
-14135e060	Unk_HudMotionBlur::FUN_14135e060	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	
+14135de90	Unk_HudMotionBlur::FUN_14135de90	GetMode	high	getter	body returns m_nMode	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	applied desc-3 as GetMode
+14135e060	Unk_HudMotionBlur::FUN_14135e060	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	applied desc-3 as SetMode
 14135e290	UIWeaponDummyDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WeaponDummyDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	
-14135ed80	UIWebBrowserBase::FUN_14135ed80	IsVisible	high	getter	body returns m_bVisible	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	
+14135ed80	UIWebBrowserBase::FUN_14135ed80	IsVisible	high	getter	body returns m_bVisible	client/ms2/uiupperhuddialog.cpp	nam1	2026-10-22	applied desc-3 as IsVisible
 14137b260	CGroupChat::FUN_14137b260	GetOid	high	getter	body returns m_oid	client/ms2/groupchatmanager.cpp	nam1	2026-10-22	applied desc-1 as GetOid
 141382e50	CGuideActionMinimapMaximize::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CGuideActionMinimapMaximize" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/guideaction.cpp	nam1	2026-10-22	
 141382fb0	CGuideActionOpenDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CGuideActionOpenDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/guideaction.cpp	nam1	2026-10-22	
@@ -1016,14 +1016,14 @@
 14190f3b0	UICutSceneMovie::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CutSceneMovie" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uicutscenemovie.cpp	nam1	2026-10-22	
 1419105b0	UIDamageEffect::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DamageEffect" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidamageeffect.cpp	nam1	2026-10-22	
 1419114d0	UIDamageText::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DamageText" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidamagetext.cpp	nam1	2026-10-22	
-1419139d0	UIDamageText::FUN_1419139d0	SetObserver	high	setter	body stores the argument in m_bObserver	client/ms2/uidamagetext.cpp	nam1	2026-10-22	
-1419139f0	UIDamageText::FUN_1419139f0	SetObservedId	high	setter	body stores the argument in m_nObservedId	client/ms2/uidamagetext.cpp	nam1	2026-10-22	
+1419139d0	UIDamageText::FUN_1419139d0	SetObserver	high	setter	body stores the argument in m_bObserver	client/ms2/uidamagetext.cpp	nam1	2026-10-22	applied desc-3 as SetObserver
+1419139f0	UIDamageText::FUN_1419139f0	SetObservedId	high	setter	body stores the argument in m_nObservedId	client/ms2/uidamagetext.cpp	nam1	2026-10-22	applied desc-3 as SetObservedId
 14191a9a0	UIDebugTooltip::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "CubeUGCHead" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidebugtooltip.cpp	nam1	2026-10-22	
 14191b3d0	UIDecoEditDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DecoEditDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidecoeditdialog.cpp	nam1	2026-10-22	
 14191ca70	UIBeautyShopDevDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "BeautyShopDevDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uibeautyshopdevdialog.cpp	nam1	2026-10-22	
 1419234e0	UIDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "Dialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidialog.cpp	nam1	2026-10-22	
 141928d50	UIDPSDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "DPSDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uidpsdialog.cpp	nam1	2026-10-22	
-14192a2c0	FUN_14192a2c0	GetToolBaseDialog	medium	singleton	returns the CToolBaseDialog instance pointer DAT_143ad0d98	client/ms2/uidpsdialog.cpp	nam1	2026-10-22	
+14192a2c0	FUN_14192a2c0	GetToolBaseDialog	medium	singleton	returns the CToolBaseDialog instance pointer DAT_143ad0d98	client/ms2/uidpsdialog.cpp	nam1	2026-10-22	applied desc-3 as GetToolBaseDialog
 14192a330	UIItemDropSimulatorDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemDropSimulatorDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemdropsimulatordialog.cpp	nam1	2026-10-22	
 1419316f0	UIEpProgress::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "EpProgress" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiepprogress.cpp	nam1	2026-10-22	
 141931f90	UIExpBar::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ExpBar" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiexpbar.cpp	nam1	2026-10-22	
@@ -1031,19 +1031,19 @@
 141936630	UIGameMenuDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GameMenuDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uigamemenudialog.cpp	nam1	2026-10-22	
 141946ca0	UIGraphicOptionDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GraphicOptionDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uigraphicoptiondialog.cpp	nam1	2026-10-22	
 141947c60	UIGroupMessenger::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GroupMessenger" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uigroupmessenger.cpp	nam1	2026-10-22	
-14194b880	UIGroupMessenger::FUN_14194b880	IsUserList	high	getter	body returns m_bUserList	client/ms2/uigroupmessenger.cpp	nam1	2026-10-22	
-14194b960	UIGroupMessenger::FUN_14194b960	GetName	high	getter	body returns m_strName	client/ms2/uigroupmessenger.cpp	nam1	2026-10-22	
-14194b9b0	UIGroupMessenger::FUN_14194b9b0	GetGroupId	high	getter	body returns m_nGroupId	client/ms2/uigroupmessenger.cpp	nam1	2026-10-22	
-14194bc70	UIGroupMessenger::FUN_14194bc70	SetName	high	setter	body stores the argument in m_strName	client/ms2/uigroupmessenger.cpp	nam1	2026-10-22	
+14194b880	UIGroupMessenger::FUN_14194b880	IsUserList	high	getter	body returns m_bUserList	client/ms2/uigroupmessenger.cpp	nam1	2026-10-22	applied desc-3 as IsUserList
+14194b960	UIGroupMessenger::FUN_14194b960	GetName	high	getter	body returns m_strName	client/ms2/uigroupmessenger.cpp	nam1	2026-10-22	applied desc-3 as GetName
+14194b9b0	UIGroupMessenger::FUN_14194b9b0	GetGroupId	high	getter	body returns m_nGroupId	client/ms2/uigroupmessenger.cpp	nam1	2026-10-22	applied desc-3 as GetGroupId
+14194bc70	UIGroupMessenger::FUN_14194bc70	SetName	high	setter	body stores the argument in m_strName	client/ms2/uigroupmessenger.cpp	nam1	2026-10-22	applied desc-3 as SetName
 1419509c0	UIGroupMessengerBrowser::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GroupMessengerBrowser" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uigroupmessenger.cpp	nam1	2026-10-22	
 1419594f0	UIGuideEvent::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GuideEvent" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiguideeventarrow.cpp	nam1	2026-10-22	
-14195b950	UIGuideEvent::FUN_14195b950	GetLastTip	high	getter	body returns m_lastTip	client/ms2/uiguideeventarrow.cpp	nam1	2026-10-22	
-14195e020	UIGuideEventArrow::FUN_14195e020	GetUseCount	high	getter	body returns m_useCount	client/ms2/uiguideeventarrow.cpp	nam1	2026-10-22	
+14195b950	UIGuideEvent::FUN_14195b950	GetLastTip	high	getter	body returns m_lastTip	client/ms2/uiguideeventarrow.cpp	nam1	2026-10-22	applied desc-3 as GetLastTip
+14195e020	UIGuideEventArrow::FUN_14195e020	GetUseCount	high	getter	body returns m_useCount	client/ms2/uiguideeventarrow.cpp	nam1	2026-10-22	applied desc-3 as GetUseCount
 1419625d0	UIGuildDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "GuildDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiguilddialog.cpp	nam1	2026-10-22	
 141986c00	UIHeadUpDisplay::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "HeadUpDisplay" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiheadupdisplay.cpp	nam1	2026-10-22	
 141986fa0	UIHideSettingDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "HideSettingDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uihidesettingdialog.cpp	nam1	2026-10-22	
 14198b2b0	UIHouseMarkEntity::FUN_14198b2b0	GetPos	medium	getter	body returns m_pos	client/ms2/uihousemark.cpp	nam1	2026-10-22	
-14198c3f0	UIHouseMarkEntity::FUN_14198c3f0	IsPopup	high	getter	body returns m_bPopup	client/ms2/uihousemark.cpp	nam1	2026-10-22	
+14198c3f0	UIHouseMarkEntity::FUN_14198c3f0	IsPopup	high	getter	body returns m_bPopup	client/ms2/uihousemark.cpp	nam1	2026-10-22	applied desc-3 as IsPopup
 14198c860	UIHouseMark::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "HouseMark" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uihousemark.cpp	nam1	2026-10-22	
 141995250	UIIntroMovie::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "IntroMovie" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiintromovie.cpp	nam1	2026-10-22	
 141997190	UIInventoryDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "InventoryDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiinventorydialog.cpp	nam1	2026-10-22	
@@ -1053,9 +1053,9 @@
 1419ac1d0	UIItemColoringDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemColoringDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemcoloringdialog.cpp	nam1	2026-10-22	
 1419b3d10	UIItemCreateDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemCreateDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemcreatedialog.cpp	nam1	2026-10-22	
 1419bc850	UIItemEditDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemEditDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemeditdialog.cpp	nam1	2026-10-22	
-1419c16a0	UIItemEnchantDialog::FUN_1419c16a0	GetSelectedUid	high	getter	body returns m_selectedUid	client/ms2/uiitemenchantdialog.cpp	nam1	2026-10-22	
+1419c16a0	UIItemEnchantDialog::FUN_1419c16a0	GetSelectedUid	high	getter	body returns m_selectedUid	client/ms2/uiitemenchantdialog.cpp	nam1	2026-10-22	applied desc-3 as GetSelectedUid
 1419ce4a0	UIItemMergeOptionDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ItemMergeOptionDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiitemmergeoptiondialog.cpp	nam1	2026-10-22	
-1419da620	UIItemGetOptionDialog::FUN_1419da620	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/uiitemgetoptiondialog.cpp	nam1	2026-10-22	
+1419da620	UIItemGetOptionDialog::FUN_1419da620	SetMode	high	setter	body stores the argument in m_nMode	client/ms2/uiitemgetoptiondialog.cpp	nam1	2026-10-22	applied desc-3 as SetMode
 1419dc510	UIJobChangeDialog::FUN_1419dc510	SetJob	high	setter	body stores the argument in m_nJob	client/ms2/uijobchangedialog.cpp	nam1	2026-10-22	
 1419df180	UIKillCount::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "KillCount" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uikillcount.cpp	nam1	2026-10-22	
 1419dfa10	UILoadingProgress::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "LoadingProgress" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiloadingprogress.cpp	nam1	2026-10-22	
@@ -1081,25 +1081,25 @@
 141a02da0	CMsgBoxData::FUN_141a02da0	GetCallback	high	getter	body returns m_callback	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
 141a02dc0	CMsgBoxData::FUN_141a02dc0	GetLinkUrl	high	getter	body returns m_strLinkUrl	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
 141a03070	CMsgBoxData::FUN_141a03070	IsModaless	high	getter	body returns m_bModaless	unnamed/unit_141a00db0.cpp	nam1	2026-10-22	
-141a04a80	CMsgBoxData::FUN_141a04a80	GetTimer	high	getter	body returns m_timer	client/ms2/uimessageboxdata.cpp	nam1	2026-10-22	
+141a04a80	CMsgBoxData::FUN_141a04a80	GetTimer	high	getter	body returns m_timer	client/ms2/uimessageboxdata.cpp	nam1	2026-10-22	applied desc-3 as GetTimer
 141a08eb0	UIMessenger::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MessengerDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimessenger.cpp	nam1	2026-10-22	
-141a0df70	UIMessenger::FUN_141a0df70	GetName	high	getter	body returns m_strName	client/ms2/uimessenger.cpp	nam1	2026-10-22	
+141a0df70	UIMessenger::FUN_141a0df70	GetName	high	getter	body returns m_strName	client/ms2/uimessenger.cpp	nam1	2026-10-22	applied desc-3 as GetName
 141a21a60	UIMessengerBrowser::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MessengerBrowser" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimessenger.cpp	nam1	2026-10-22	
 141a33060	UIMinimapEntityProxy::vfunc_4	GetKind	medium	getter	body returns m_kind; virtual slot: rename the whole override family	client/ms2/uiminimapentity.cpp	nam1	2026-10-22	
-141a34870	UIMinimapEntityTaxi::FUN_141a34870	SetBest	high	setter	body stores the argument in m_best	client/ms2/uiminimapentity.cpp	nam1	2026-10-22	
+141a34870	UIMinimapEntityTaxi::FUN_141a34870	SetBest	high	setter	body stores the argument in m_best	client/ms2/uiminimapentity.cpp	nam1	2026-10-22	applied desc-3 as SetBest
 141a35ba0	UIMinimapDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MinimapDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiminimapentity.cpp	nam1	2026-10-22	
 141a55330	UIModalDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ModalDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimodaldialog.cpp	nam1	2026-10-22	
 141a557b0	UIMoveFieldDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MoveFieldDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimovefielddialog.cpp	nam1	2026-10-22	
 141a57ba0	UIMyHouseAuthDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "MyHouseAuthDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uimyhouseauthdialog.cpp	nam1	2026-10-22	
-141a5c7a0	UIMyInfoDialog::FUN_141a5c7a0	GetTab	high	getter	body returns m_nTab	client/ms2/uimyinfodialog.cpp	nam1	2026-10-22	
+141a5c7a0	UIMyInfoDialog::FUN_141a5c7a0	GetTab	high	getter	body returns m_nTab	client/ms2/uimyinfodialog.cpp	nam1	2026-10-22	applied desc-3 as GetTab
 141a624b0	UINpcControlDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "NpcControlDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uinpccontroldialog.cpp	nam1	2026-10-22	
-141a638c0	UINpcControlDialog::FUN_141a638c0	SetNpcId	high	setter	body stores the argument in m_nNpcId	client/ms2/uinpccontroldialog.cpp	nam1	2026-10-22	
+141a638c0	UINpcControlDialog::FUN_141a638c0	SetNpcId	high	setter	body stores the argument in m_nNpcId	client/ms2/uinpccontroldialog.cpp	nam1	2026-10-22	applied desc-3 as SetNpcId
 141a6a680	UINpcCreateDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "NpcCreateDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uinpccreatedialog.cpp	nam1	2026-10-22	
 141a6e100	UINpcPreviewDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "NpcPreviewDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uinpcpreviewdialog.cpp	nam1	2026-10-22	
 141a725e0	UIObjectStoreDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ObjectStoreDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiobjectstoredialog.cpp	nam1	2026-10-22	
 141a73360	UIObserveDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ObserveDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiobservedialog.cpp	nam1	2026-10-22	
 141a74d00	UIPartyDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "PartyDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uipartydialog.cpp	nam1	2026-10-22	
-141a75a00	UIPartyDialog::FUN_141a75a00	SetDeadline	high	setter	body stores the argument in m_deadline	client/ms2/uipartydialog.cpp	nam1	2026-10-22	
+141a75a00	UIPartyDialog::FUN_141a75a00	SetDeadline	high	setter	body stores the argument in m_deadline	client/ms2/uipartydialog.cpp	nam1	2026-10-22	applied desc-3 as SetDeadline
 141a7b150	UIPartyDPSDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "PartyDPSDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uipartydialog.cpp	nam1	2026-10-22	
 141a7c5b0	UIPerformanceDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "PerformanceDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uipartydialog.cpp	nam1	2026-10-22	
 141a7cca0	UIPopupEntity::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "PopupEntity" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uipartydialog.cpp	nam1	2026-10-22	
@@ -1110,14 +1110,14 @@
 141aa9a90	UIQuestGuideDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "QuestGuideDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiquesteventlistener.cpp	nam1	2026-10-22	
 141ab2220	UIRealEstateDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "RealEstateDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uirealestatedialog.cpp	nam1	2026-10-22	
 141ab5df0	UIRealEstateSell::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "RealEstateSell" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uirealestatesell.cpp	nam1	2026-10-22	
-141ab7660	UIRenderView::FUN_141ab7660	GetDirty	high	getter	body returns m_nDirty	client/ms2/uirenderview.cpp	nam1	2026-10-22	
-141ab7680	UIRenderView::FUN_141ab7680	GetEffectRoot	high	getter	body returns m_spEffectRoot	client/ms2/uirenderview.cpp	nam1	2026-10-22	
+141ab7660	UIRenderView::FUN_141ab7660	GetDirty	high	getter	body returns m_nDirty	client/ms2/uirenderview.cpp	nam1	2026-10-22	applied desc-3 as GetDirty
+141ab7680	UIRenderView::FUN_141ab7680	GetEffectRoot	high	getter	body returns m_spEffectRoot	client/ms2/uirenderview.cpp	nam1	2026-10-22	applied desc-3 as GetEffectRoot
 141ab8b40	UIReportDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ReportDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uireportdialog.cpp	nam1	2026-10-22	
 141aba800	UIRevivalDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "RevivalDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uirevivaldialog.cpp	nam1	2026-10-22	
 141abe240	UIRewardNotify::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "RewardNotify" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uirewardnotify.cpp	nam1	2026-10-22	
 141ac23e0	UIFameContentsNotify::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "FameContentsNotify" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uirewardnotify.cpp	nam1	2026-10-22	
 141ac4bd0	UIRouletteDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "RouletteDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uirewardnotify.cpp	nam1	2026-10-22	
-141ac59e0	UIRouletteDialog::FUN_141ac59e0	GetSpinIndex	high	getter	body returns m_spinIndex	client/ms2/uirewardnotify.cpp	nam1	2026-10-22	
+141ac59e0	UIRouletteDialog::FUN_141ac59e0	GetSpinIndex	high	getter	body returns m_spinIndex	client/ms2/uirewardnotify.cpp	nam1	2026-10-22	applied desc-3 as GetSpinIndex
 141ac7350	UISceneGame::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SceneGame" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiscenegame.cpp	nam1	2026-10-22	
 141ac7fc0	UISceneGameBeautyShop::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SceneGameBeautyShop" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiscenegame.cpp	nam1	2026-10-22	
 141ac94c0	UISceneGameCinematicCutScene::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SceneGameCinematicCutScene" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiscenegame.cpp	nam1	2026-10-22	
@@ -1128,46 +1128,46 @@
 141ace2f0	UISceneLobbySelect::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SceneLobbySelect" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiscenelobbyselect.cpp	nam1	2026-10-22	
 141ace7c0	UISceneLobbyServer::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SceneLobbyServer" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiscenelobbyselect.cpp	nam1	2026-10-22	
 141acec90	UISceneLogin::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SceneLogin" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiscenelogin.cpp	nam1	2026-10-22	
-141ad03b0	Unk_LgPreload::FUN_141ad03b0	SetCallback	high	setter	body stores the argument in m_callback	client/ms2/uiscenelogin.cpp	nam1	2026-10-22	
+141ad03b0	Unk_LgPreload::FUN_141ad03b0	SetCallback	high	setter	body stores the argument in m_callback	client/ms2/uiscenelogin.cpp	nam1	2026-10-22	applied desc-3 as SetCallback
 141ad0480	UISceneLogo::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SceneLogo" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiscenelogo.cpp	nam1	2026-10-22	
 141ad06f0	UIScreenMask::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ScreenMask" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiscreenmask.cpp	nam1	2026-10-22	
 141ad0f30	UIServerListDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ServerListDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiserverlistdialog.cpp	nam1	2026-10-22	
-141ad1010	UIServerListDialog::FUN_141ad1010	GetServerId	high	getter	body returns m_nServerId	client/ms2/uiserverlistdialog.cpp	nam1	2026-10-22	
-141ad1030	UIServerListDialog::FUN_141ad1030	GetServer	high	getter	body returns m_strServer	client/ms2/uiserverlistdialog.cpp	nam1	2026-10-22	
-141ad31b0	UIServerListDialog::FUN_141ad31b0	GetChannel	high	getter	body returns m_nChannel	client/ms2/uiserverlistdialog.cpp	nam1	2026-10-22	
-141add860	CUIService::FUN_141add860	GetMode	high	getter	body returns m_nMode	client/ms2/uiservice.cpp	nam1	2026-10-22	
+141ad1010	UIServerListDialog::FUN_141ad1010	GetServerId	high	getter	body returns m_nServerId	client/ms2/uiserverlistdialog.cpp	nam1	2026-10-22	applied desc-3 as GetServerId
+141ad1030	UIServerListDialog::FUN_141ad1030	GetServer	high	getter	body returns m_strServer	client/ms2/uiserverlistdialog.cpp	nam1	2026-10-22	applied desc-3 as GetServer
+141ad31b0	UIServerListDialog::FUN_141ad31b0	GetChannel	high	getter	body returns m_nChannel	client/ms2/uiserverlistdialog.cpp	nam1	2026-10-22	applied desc-3 as GetChannel
+141add860	CUIService::FUN_141add860	GetMode	high	getter	body returns m_nMode	client/ms2/uiservice.cpp	nam1	2026-10-22	applied desc-3 as GetMode
 141af2be0	UIShopDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "ShopDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uishopdialog.cpp	nam1	2026-10-22	
 141b0ee20	UIStoreDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "StoreDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uistatuseventlistener.cpp	nam1	2026-10-22	
 141b12880	UISwfTool::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SwfTool" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiswftool.cpp	nam1	2026-10-22	
 141b12c20	UISystemMenuDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SystemMenuDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uisystemmenudialog.cpp	nam1	2026-10-22	
 141b15a20	UISystemText::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "SystemText" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uisystemtext.cpp	nam1	2026-10-22	
 141b1a030	UITalkCinematic::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TalkCinematic" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uitalkcinematic.cpp	nam1	2026-10-22	
-141b1bf80	UITalkCinematic::FUN_141b1bf80	SetKeyGroup	high	setter	body stores the argument in m_nKeyGroup	client/ms2/uitalkcinematic.cpp	nam1	2026-10-22	
-141b1bfc0	UITalkCinematic::FUN_141b1bfc0	GetLoaded	high	getter	body returns m_nLoaded	client/ms2/uitalkcinematic.cpp	nam1	2026-10-22	
-141b20fe0	UITalkManager::FUN_141b20fe0	GetScript	high	getter	body returns m_spScript	client/ms2/uitalkcinematic.cpp	nam1	2026-10-22	
-141b21220	UITalkManager::FUN_141b21220	GetTalking	high	getter	body returns m_nTalking	client/ms2/uitalkcinematic.cpp	nam1	2026-10-22	
+141b1bf80	UITalkCinematic::FUN_141b1bf80	SetKeyGroup	high	setter	body stores the argument in m_nKeyGroup	client/ms2/uitalkcinematic.cpp	nam1	2026-10-22	applied desc-3 as SetKeyGroup
+141b1bfc0	UITalkCinematic::FUN_141b1bfc0	GetLoaded	high	getter	body returns m_nLoaded	client/ms2/uitalkcinematic.cpp	nam1	2026-10-22	applied desc-3 as GetLoaded
+141b20fe0	UITalkManager::FUN_141b20fe0	GetScript	high	getter	body returns m_spScript	client/ms2/uitalkcinematic.cpp	nam1	2026-10-22	applied desc-3 as GetScript
+141b21220	UITalkManager::FUN_141b21220	GetTalking	high	getter	body returns m_nTalking	client/ms2/uitalkcinematic.cpp	nam1	2026-10-22	applied desc-3 as GetTalking
 141b225d0	UITalkPanelSettingDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TalkPanelSettingDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uitalkpanelsettingdialog.cpp	nam1	2026-10-22	
 141b26730	UITimerDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TimerDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uitimerdialog.cpp	nam1	2026-10-22	
 141b271d0	UITradeDialogEx::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TradeDialogEx" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uitradedialogex.cpp	nam1	2026-10-22	
 141b2a0a0	UITriggerEditorDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TriggerEditorDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uitriggereditordialog.cpp	nam1	2026-10-22	
 141b33180	UITriggerTimerDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "TriggerTimerDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uitriggertimerdialog.cpp	nam1	2026-10-22	
-141b463b0	UIUGCItemEditDialog::FUN_141b463b0	SetEditItem	high	setter	body stores the argument in m_spEditItem	client/ms2/uiugcitemeditdialog.cpp	nam1	2026-10-22	
+141b463b0	UIUGCItemEditDialog::FUN_141b463b0	SetEditItem	high	setter	body stores the argument in m_spEditItem	client/ms2/uiugcitemeditdialog.cpp	nam1	2026-10-22	applied desc-3 as SetEditItem
 141b4a820	UpperHpBarEntity::FUN_141b4a820	GetName	medium	getter	body returns m_name	client/ms2/uiupperhpbar.cpp	nam1	2026-10-22	
-141b4bba0	UpperHpBarEntity::FUN_141b4bba0	GetVisible	high	getter	body returns m_visible	client/ms2/uiupperhpbar.cpp	nam1	2026-10-22	
+141b4bba0	UpperHpBarEntity::FUN_141b4bba0	GetVisible	high	getter	body returns m_visible	client/ms2/uiupperhpbar.cpp	nam1	2026-10-22	applied desc-3 as GetVisible
 141b4bbc0	UpperHpBarEntity::FUN_141b4bbc0	GetKind	medium	getter	body returns m_kind	client/ms2/uiupperhpbar.cpp	nam1	2026-10-22	
-141b4bc00	UpperHpBarEntity::FUN_141b4bc00	GetClip	high	getter	body returns m_clip	client/ms2/uiupperhpbar.cpp	nam1	2026-10-22	
+141b4bc00	UpperHpBarEntity::FUN_141b4bc00	GetClip	high	getter	body returns m_clip	client/ms2/uiupperhpbar.cpp	nam1	2026-10-22	applied desc-3 as GetClip
 141b4bf90	UIUpperHpBar::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "UpperHpBar" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiupperhpbar.cpp	nam1	2026-10-22	
-141b50450	UIWebBrowser::FUN_141b50450	SetStored	high	setter	body stores the argument in m_strStored	client/ms2/uiwebbrowser.cpp	nam1	2026-10-22	
+141b50450	UIWebBrowser::FUN_141b50450	SetStored	high	setter	body stores the argument in m_strStored	client/ms2/uiwebbrowser.cpp	nam1	2026-10-22	applied desc-3 as SetStored
 141b50990	UIWebBrowser::vfunc_91	IsResizable	medium	getter	body returns m_bResizable; virtual slot: rename the whole override family	client/ms2/uiwebbrowser.cpp	nam1	2026-10-22	
 141b518b0	UIWhisperNotifyDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WhisperNotifyDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiwhispernotifydialog.cpp	nam1	2026-10-22	
 141b54350	UIWorldMapDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "WorldMapDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	client/ms2/uiworldmapdialog.cpp	nam1	2026-10-22	
-141b72590	Unk_UtilErrorDialog::FUN_141b72590	SetKText	high	setter	body stores the argument in m_kText	client/ms2/util.cpp	nam1	2026-10-22	
+141b72590	Unk_UtilErrorDialog::FUN_141b72590	SetKText	high	setter	body stores the argument in m_kText	client/ms2/util.cpp	nam1	2026-10-22	applied desc-3 as SetKText
 141b72ff0	UIVisualTrackerListDialog::vfunc_1	GetTypeName	medium	typename	slot 1 returns the class tag "VisualTrackerListDialog" (UIObject base returns "Object"); family rename across shared headers, gate every dependent	unnamed/unit_141b72f60.cpp	nam1	2026-10-22	
-141bcfd10	WorldService::FUN_141bcfd10	GetState	high	getter	body returns m_state	client/ms2/worldservice_1.cpp	nam1	2026-10-22	
-141bd3650	WorldService::FUN_141bd3650	GetTextureLayerManager	high	getter	body returns m_spTextureLayerManager	client/ms2/worldservice_1.cpp	nam1	2026-10-22	
-141bd3680	WorldService::FUN_141bd3680	GetChaosLightEffectLayerManager	high	getter	body returns m_spChaosLightEffectLayerManager	client/ms2/worldservice_1.cpp	nam1	2026-10-22	
-141bd37e0	WorldService::FUN_141bd37e0	GetBoundsMin	high	getter	body returns m_boundsMin	client/ms2/worldservice_1.cpp	nam1	2026-10-22	
-141bd3820	WorldService::FUN_141bd3820	GetBoundsMax	high	getter	body returns m_boundsMax	client/ms2/worldservice_1.cpp	nam1	2026-10-22	
+141bcfd10	WorldService::FUN_141bcfd10	GetState	high	getter	body returns m_state	client/ms2/worldservice_1.cpp	nam1	2026-10-22	applied desc-3 as GetState
+141bd3650	WorldService::FUN_141bd3650	GetTextureLayerManager	high	getter	body returns m_spTextureLayerManager	client/ms2/worldservice_1.cpp	nam1	2026-10-22	applied desc-3 as GetTextureLayerManager
+141bd3680	WorldService::FUN_141bd3680	GetChaosLightEffectLayerManager	high	getter	body returns m_spChaosLightEffectLayerManager	client/ms2/worldservice_1.cpp	nam1	2026-10-22	applied desc-3 as GetChaosLightEffectLayerManager
+141bd37e0	WorldService::FUN_141bd37e0	GetBoundsMin	high	getter	body returns m_boundsMin	client/ms2/worldservice_1.cpp	nam1	2026-10-22	applied desc-3 as GetBoundsMin
+141bd3820	WorldService::FUN_141bd3820	GetBoundsMax	high	getter	body returns m_boundsMax	client/ms2/worldservice_1.cpp	nam1	2026-10-22	applied desc-3 as GetBoundsMax
 1422aef70	GFxManager::FUN_1422aef70	IsPause	high	getter	body returns m_bPause	gfxui/gfxmanager.cpp	nam1	2026-10-22	
 1422af090	GFxManager::FUN_1422af090	IsArchive	high	getter	body returns m_bArchive	gfxui/gfxmanager.cpp	nam1	2026-10-22	
 1422b0230	GFxManager::FUN_1422b0230	GetVideo	high	getter	body returns m_spVideo	gfxui/gfxmanager.cpp	nam1	2026-10-22	

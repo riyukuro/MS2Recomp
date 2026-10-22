@@ -33,7 +33,7 @@ public:
 
     void FUN_140bfeae0();                                           // reset the pick
     void FUN_140bfeb50(int nMode, int nA, int nB, CStringW strName);   // set the pick (nMode 0: nothing) and show
-    void FUN_140bfebf0(MS2Ptr<Unk_RcProduct> spProduct);            // the picked product
+    void SetProduct(MS2Ptr<Unk_RcProduct> spProduct);            // the picked product
     void FUN_140bfebf0(MS2Ptr<CMeratMarketProduct> spProduct);      // 0x140bfebf0 typed with the recovered class (meratmarketman.cpp)
     void FUN_140bfec40();                                           // play the sound of the coupon (m_78)
 

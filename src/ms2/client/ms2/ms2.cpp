@@ -1044,7 +1044,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     m_spServiceManager->RegisterSystemService(spPropertyVisualization);
 
     int n = 0;
-    FUN_14025e7a0()->FUN_1422af0b0(FUN_140166420()->FUN_140398190(), n);
+    FUN_14025e7a0()->FUN_1422af0b0(GetFileSystem()->FUN_140398190(), n);
     FUN_14025e7a0()->FUN_1414a61c0(Unk_GFxImageCallback(FUN_140a59830));
     RegisterUIScenes();
     efd::SmartPointer<DecoEditService> spDecoEdit = EE_NEW DecoEditService;

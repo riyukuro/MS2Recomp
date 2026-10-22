@@ -39,7 +39,7 @@ extern int DAT_1439f8640;                           // its length
 extern char DAT_142f6301c[];                        // "," the field separator of the upload answer
 
 CFeatureManager* FUN_140166410();                   // the content switches
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg);
 int FUN_1406516b0();                                // the server kind
 CUgcManager* FUN_14052d220();
@@ -91,7 +91,7 @@ void CSoapClient::FUN_14176fe30(CString strError)
 {
     m_strError = strError;
     const char* pszError = strError;
-    FUN_1403a1280(FUN_140166440(), 1, 0x13, L"[E] soap : {0}", pszError);
+    FUN_1403a1280(GetLogString(), 1, 0x13, L"[E] soap : {0}", pszError);
 }
 
 // Sends the upload and its image (the blueprint case) of the current UGC manager upload, file by file.

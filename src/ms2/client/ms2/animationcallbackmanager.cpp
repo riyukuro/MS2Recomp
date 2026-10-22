@@ -84,7 +84,7 @@ extern int DAT_143ae2b30;                   // 1: actor-manager callbacks are ro
 egf::Entity* FUN_14123c410(GameObject* pObj);                                       // the owner's entity (0 if none)
 NiActorManager* FUN_1413f9b70(const egf::EntityID& kId);                            // AnimationService::GetActorManager
 bool FUN_14028d470(float fValue, float fCompare);                                   // float equality
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_142095bc0(efd::AssetLocatorService* pService, const efd::utf8string& kUrn, efd::utf8string& kOut);
 template <class T, class U> void Unk_FileLog(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                                              const T& first, const U& second);      // filesystem.cpp 0x1403a1310
@@ -371,7 +371,7 @@ void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb)
                 }
                 const char* pszResult = kResult.c_str();
                 const char* pszKey = (const char*)kText;
-                Unk_FileLog(FUN_140166440(), 12, 0x13, L"skip text {0} - [{1}]", pszKey, pszResult);
+                Unk_FileLog(GetLogString(), 12, 0x13, L"skip text {0} - [{1}]", pszKey, pszResult);
                 continue;
             }
             pMgr->RegisterCallback(NiActorManager::TEXT_KEY_EVENT, uiSeq, kText);

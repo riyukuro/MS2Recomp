@@ -97,13 +97,13 @@ void UIWatchAGameDialog::vfunc_67()
 }
 
 // @0x140fc0b20
-void UIWatchAGameDialog::FUN_140fc0b20(int nValue)
+void UIWatchAGameDialog::SetValue(int nValue)
 {
     m_nValue = nValue;
 }
 
 // @0x140fc0b40
-void UIWatchAGameDialog::FUN_140fc0b40(int nCharId)
+void UIWatchAGameDialog::SetCharId(int nCharId)
 {
     m_nCharId = nCharId;
 }

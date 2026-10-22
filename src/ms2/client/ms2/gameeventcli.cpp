@@ -301,7 +301,7 @@ void GameEventOntimeCli::OnStart()
         ATL::CTimeSpan span = end - now;
         if (pDlg->FUN_141924630())
             pDlg->vfunc_67();
-        pDlg->FUN_1412a5c50(true);
+        pDlg->SetOnTime(true);
         pDlg->FUN_1412a5c70((int)(span.GetTotalSeconds() * 1000));
         pDlg->FUN_141924680();
     }
@@ -895,7 +895,7 @@ void GameEventUpdateStringCli::OnStart()
     strXml.Trim();
     if (!strXml.IsEmpty()) {
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_140397ab0(&doc, strXml) == 0) {
+        if (GetFileSystem()->FUN_140397ab0(&doc, strXml) == 0) {
             MS2_ASSERT_AT(0x271, FALSE);
             return;
         }
@@ -954,7 +954,7 @@ void GameEventWorldmapIconCli::OnStart()
 {
     TiXmlDocument doc;
     const CStringW* pXml = &m_d0;
-    if (FUN_140166420()->FUN_140397ab0(&doc, *pXml) == 0) {
+    if (GetFileSystem()->FUN_140397ab0(&doc, *pXml) == 0) {
         MS2_ASSERT_AT(0x2c1, FALSE);
     } else {
         Unk_140165cf0* pRoot = FUN_140345b40(&doc);
@@ -978,7 +978,7 @@ void GameEventWorldmapIconCli::vfunc_6()
 {
     TiXmlDocument doc;
     const CStringW* pXml = &m_d0;
-    if (FUN_140166420()->FUN_140397ab0(&doc, *pXml) == 0) {
+    if (GetFileSystem()->FUN_140397ab0(&doc, *pXml) == 0) {
         MS2_ASSERT_AT(0x2db, FALSE);
     } else {
         Unk_140165cf0* pRoot = FUN_140345b40(&doc);
@@ -1080,7 +1080,7 @@ void GameEventRpsCli::OnStart()
     MS2Ptr<RpsGameData> spData(new RpsGameData());
     TiXmlDocument doc;
     CStringW* pXml = &m_d0->m_strTitle;
-    if (FUN_140166420()->FUN_140397ab0(&doc, *pXml) == 0) {
+    if (GetFileSystem()->FUN_140397ab0(&doc, *pXml) == 0) {
         MS2_ASSERT_AT(0x33e, 0);
     } else {
         Unk_140165cf0* pRoot = FUN_140345b40(&doc);

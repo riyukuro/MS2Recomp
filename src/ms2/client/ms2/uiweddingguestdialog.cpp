@@ -464,13 +464,13 @@ void UIWeddingGuestPage::vfunc_5()
 }
 
 // @0x140fd6e40
-MS2Ptr<AScript> UIWeddingGuestPage::FUN_140fd6e40()
+MS2Ptr<AScript> UIWeddingGuestPage::GetScript()
 {
     return m_pScript;
 }
 
 // @0x140fd6e90
-UIWeddingGuestDialog* UIWeddingGuestPage::FUN_140fd6e90()
+UIWeddingGuestDialog* UIWeddingGuestPage::GetDialog()
 {
     return m_pDialog;
 }

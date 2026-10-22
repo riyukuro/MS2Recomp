@@ -115,8 +115,8 @@ public:
     void FUN_1412b3b40();                                           // 0x1412b3b40
     void FUN_1412b3e90();                                           // 0x1412b3e90
     void FUN_1412b3fe0();                                           // 0x1412b3fe0
-    CStringW FUN_1412b4100();                                       // 0x1412b4100 the party status text (m_strBanner)
-    void FUN_1412b4150(MS2Ptr<DungeonRoom> spRoom);                 // 0x1412b4150 set the room
+    CStringW GetBanner();                                       // 0x1412b4100 the party status text (m_strBanner)
+    void SetRoom(MS2Ptr<DungeonRoom> spRoom);                 // 0x1412b4150 set the room
     void OnEnterSolo(const ASParams& params);                       // 0x1412b41a0
     void OnEnterParty(const ASParams& params);                      // 0x1412b4220
     void OnPartySearch(const ASParams& params);                     // 0x1412b4330

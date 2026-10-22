@@ -5883,8 +5883,8 @@ float WorldService::FUN_141bcfc50()
 MS2_REPLACE_METHOD(0x141BCFC50, WorldService, FUN_141bcfc50, 182, 0x2166B0AE);
 
 // @0x141bcfd10
-int WorldService::FUN_141bcfd10() { return m_state; }
-MS2_REPLACE_METHOD(0x141BCFD10, WorldService, FUN_141bcfd10, 17, 0x96358E1D);
+int WorldService::GetState() { return m_state; }
+MS2_REPLACE_METHOD(0x141BCFD10, WorldService, GetState, 17, 0x96358E1D);
 
 // MS2-FUNCTIONAL: ATL list/pointer COMDATs inlined; entity property getters by VA
 bool FUN_141c06b80(void* map, unsigned key, Unk_WsC_TagPtr* out);   // m_208.Lookup
@@ -7204,12 +7204,12 @@ void* WorldService::FUN_141bd3620()
 MS2_REPLACE_METHOD(0x141BD3620, WorldService, FUN_141bd3620, 37, 0x32671CB2);
 
 // @0x141bd3650
-TextureLayerManager* WorldService::FUN_141bd3650() { return m_spTextureLayerManager; }
-MS2_REPLACE_METHOD(0x141BD3650, WorldService, FUN_141bd3650, 33, 0x43B7195A);
+TextureLayerManager* WorldService::GetTextureLayerManager() { return m_spTextureLayerManager; }
+MS2_REPLACE_METHOD(0x141BD3650, WorldService, GetTextureLayerManager, 33, 0x43B7195A);
 
 // @0x141bd3680
-ChaosLightEffectLayerManager* WorldService::FUN_141bd3680() { return m_spChaosLightEffectLayerManager; }
-MS2_REPLACE_METHOD(0x141BD3680, WorldService, FUN_141bd3680, 33, 0x0F2105E9);
+ChaosLightEffectLayerManager* WorldService::GetChaosLightEffectLayerManager() { return m_spChaosLightEffectLayerManager; }
+MS2_REPLACE_METHOD(0x141BD3680, WorldService, GetChaosLightEffectLayerManager, 33, 0x0F2105E9);
 
 // @0x141bd36b0
 ATL::CRBMap<unsigned, Unk_WsV118>* WorldService::FUN_141bd36b0() { return &m_118; }
@@ -7237,12 +7237,12 @@ bool WorldService::FUN_141bd36f0(Unk_StreamPoint pt, Unk_StreamPoint* pOut)
 MS2_REPLACE_METHOD(0x141BD36F0, WorldService, FUN_141bd36f0, 230, 0x9BCB5A80);
 
 // @0x141bd37e0
-Unk_StreamPoint WorldService::FUN_141bd37e0() { return m_boundsMin; }
-MS2_REPLACE_METHOD(0x141BD37E0, WorldService, FUN_141bd37e0, 44, 0x714FF8C2);
+Unk_StreamPoint WorldService::GetBoundsMin() { return m_boundsMin; }
+MS2_REPLACE_METHOD(0x141BD37E0, WorldService, GetBoundsMin, 44, 0x714FF8C2);
 
 // @0x141bd3820
-Unk_StreamPoint WorldService::FUN_141bd3820() { return m_boundsMax; }
-MS2_REPLACE_METHOD(0x141BD3820, WorldService, FUN_141bd3820, 44, 0xAFB99E16);
+Unk_StreamPoint WorldService::GetBoundsMax() { return m_boundsMax; }
+MS2_REPLACE_METHOD(0x141BD3820, WorldService, GetBoundsMax, 44, 0xAFB99E16);
 
 // @0x141bd3860
 void WorldService::FUN_141bd3860() { m_978 = 1; }
@@ -7960,7 +7960,7 @@ extern char DAT_143afbbb0;
 void WorldService::FUN_141bd5ea0(void* pActor)
 {
     bool bothEmpty;
-    if (FUN_141443f30(FUN_141bd3650()) && FUN_141443f30(FUN_141bd3680()))
+    if (FUN_141443f30(GetTextureLayerManager()) && FUN_141443f30(GetChaosLightEffectLayerManager()))
         bothEmpty = true;
     else
         bothEmpty = false;
@@ -7975,10 +7975,10 @@ void WorldService::FUN_141bd5ea0(void* pActor)
             {
                 NiProperty* prop = node->GetProperty(8);
                 if (prop)
-                    FUN_141443e60(FUN_141bd3650(), prop);
+                    FUN_141443e60(GetTextureLayerManager(), prop);
                 void* other = FUN_14098d8d0(&DAT_143afbbb0, node);
                 if (other)
-                    FUN_141443e60(FUN_141bd3680(), other);
+                    FUN_141443e60(GetChaosLightEffectLayerManager(), other);
             }
             FUN_14098cf00(&it);
         }
@@ -10902,10 +10902,10 @@ int WorldService::FUN_141bbc580(int resetFlag, int mapId)
     if (m_340.get())
         FUN_141b94090(m_340.get());
     FUN_141bcaa80();
-    if (FUN_141bd3650())
-        FUN_141443f00(FUN_141bd3650());
-    if (FUN_141bd3680())
-        FUN_141443f00((TextureLayerManager*)FUN_141bd3680());
+    if (GetTextureLayerManager())
+        FUN_141443f00(GetTextureLayerManager());
+    if (GetChaosLightEffectLayerManager())
+        FUN_141443f00((TextureLayerManager*)GetChaosLightEffectLayerManager());
     FUN_141bc2730();
     if (FUN_14052d220())
         FUN_1418894d0(FUN_14052d220());

@@ -113,7 +113,7 @@ public:
     bool FUN_141a5c3a0();                                       // may the window refresh now
     void FUN_141a5c410(int nTab, int nNewTab);                  // ask whether the codi tab may change
     bool FUN_141a5c640(int nButton, const CMsgBoxData& kData);  // the answer of the codi tab question
-    int FUN_141a5c7a0();                                        // the info mode
+    int GetTab();                                        // the info mode
     void FUN_141a5c7c0(int nStat);                              // show one stat point row
     void FUN_141a5cf30(int nStat);                              // OnAddStatPointStop
     void FUN_141a5d5d0();                                       // loadRenderTarget

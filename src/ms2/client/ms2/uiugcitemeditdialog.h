@@ -131,7 +131,7 @@ public:
     bool FUN_141b46070(int nResult, const CMsgBoxData& box);    // the rename box
     bool FUN_141b461b0(int nResult, const CMsgBoxData& box);    // the screenshot box (meso)
     bool FUN_141b462a0(int nResult, const CMsgBoxData& box);    // the screenshot box (merat)
-    void FUN_141b463b0(MS2Ptr<CItem> spItem);                   // re-edit an item
+    void SetEditItem(MS2Ptr<CItem> spItem);                   // re-edit an item
 
 private:
     MS2_LAYOUT_FRIEND;

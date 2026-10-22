@@ -295,7 +295,7 @@ MS2Ptr<ItemDropEffect> CItemDataTable::GetItemDropEffect(unsigned nItemId, unsig
     }
     if (spNif == 0)
         return MS2Ptr<ItemDropEffect>(0);
-    return GetDropEffect(spNif->FUN_140543590());
+    return GetDropEffect(spNif->GetTypeId());
 }
 
 // @0x1405565f0

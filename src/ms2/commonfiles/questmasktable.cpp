@@ -300,7 +300,7 @@ bool CQuestMaskTable::LoadFile(const CStringA& strFile, Unk_QmFieldMap& rMap)
 {
     CString strPath = FUN_14071a5b0(CString("Table"), CString(strFile));
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

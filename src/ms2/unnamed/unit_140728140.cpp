@@ -23,7 +23,7 @@
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format, const CString& first,
                    const unsigned& second);
@@ -172,7 +172,7 @@ bool CPetDataTable::LoadProperties()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
     Unk_CriticalSectionLock lock(m_lock, 1);
@@ -190,7 +190,7 @@ bool CPetDataTable::LoadProperties()
         if (!spPet->Load(pNode))
         {
             unsigned int nId = spPet->GetId();
-            FUN_1401e0850(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}][petID={1}] loading Failed!",
+            FUN_1401e0850(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}][petID={1}] loading Failed!",
                           strPath, nId);
             continue;
         }
@@ -202,7 +202,7 @@ bool CPetDataTable::LoadProperties()
             {
                 if (Contains(spNpc->m_model.m_strKfm))
                 {
-                    FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다IsPetKFM failed. {0}]",
+                    FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다IsPetKFM failed. {0}]",
                                   spNpc->m_model.m_strKfm);
                     return false;
                 }

@@ -233,7 +233,7 @@ bool FUN_1406a5930();                                       // the star point ev
 unsigned __int64 FUN_140718350(const CString& s);           // _atoi64
 CStringW FUN_14028b8e0(const CStringW& strKey);             // string table text
 CStringTable* FUN_1401a9d70();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 
 // The unit's two-argument log call (FMT_VARIADIC wrapper over CLogString::FUN_1406530d0).
 template <class T, class U>
@@ -811,7 +811,7 @@ void UIShopDialog::vfunc_72()
                 COutPacket packet(0x28, 0);
                 packet.Encode1(10);
                 FUN_140710590(packet);
-                Unk_ShopLog(FUN_140166440(), 0xc, 0x13, L"PROTOCOL_SHOP::ITEM_LIST_TIMEOUT next:{0}, server:{1}", m_tReset, tNow);
+                Unk_ShopLog(GetLogString(), 0xc, 0x13, L"PROTOCOL_SHOP::ITEM_LIST_TIMEOUT next:{0}, server:{1}", m_tReset, tNow);
                 m_18b = 0;
             }
             else if (m_bResetEnable && m_bResetLimited)
@@ -1801,7 +1801,7 @@ void UIShopDialog::ReadProductUpdate(CInPacket& packet)
         spProduct->FUN_140db6e30(nBuyCount);
         UpdateProduct(spProduct);
     }
-    Unk_ShopLog(FUN_140166440(), 0xc, 0x13, L"OnShop [ITEM_UPDATE] : nSerialID = {0}, nBuyCount = {1}", nSerial, nBuyCount);
+    Unk_ShopLog(GetLogString(), 0xc, 0x13, L"OnShop [ITEM_UPDATE] : nSerialID = {0}, nBuyCount = {1}", nSerial, nBuyCount);
 }
 MS2_REPLACE_METHOD(0x141AF98D0, UIShopDialog, ReadProductUpdate, 493, 0x4ED3B394);
 
@@ -1853,7 +1853,7 @@ void UIShopDialog::ReadRepurchaseAdd(CInPacket& packet)
                 RepurchaseAdded(spProduct);
             unsigned nItemId = spProduct->FUN_140db5e20();
             int nSerial = spProduct->FUN_140db5e70();
-            Unk_ShopLog(FUN_140166440(), 0xc, 0x13, L"OnShop [ITEM_REPURCHASE_ADD] : nRepurchaseID = {0}, itemID = {1}", nSerial, nItemId);
+            Unk_ShopLog(GetLogString(), 0xc, 0x13, L"OnShop [ITEM_REPURCHASE_ADD] : nRepurchaseID = {0}, itemID = {1}", nSerial, nItemId);
         }
     }
     if (m_bRepurchaseEmpty)
@@ -1878,7 +1878,7 @@ void UIShopDialog::ReadRepurchaseRemoval(CInPacket& packet)
         return;
     m_products[1].erase(nSerial);
     RemoveRepurchaseProduct(spProduct);
-    Unk_ShopLog(FUN_140166440(), 0xc, 0x13, L"OnShop [ITEM_REPURCHASE_REMOVE] : nRepurchaseID = {0}", nSerial);
+    Unk_ShopLog(GetLogString(), 0xc, 0x13, L"OnShop [ITEM_REPURCHASE_REMOVE] : nRepurchaseID = {0}", nSerial);
 }
 MS2_REPLACE_METHOD(0x141AFA130, UIShopDialog, ReadRepurchaseRemoval, 432, 0x58D72355);
 
@@ -1902,7 +1902,7 @@ void UIShopDialog::ReadPurchaseResult(CInPacket& packet)
             strText = FUN_1405c2690(CStringW(L"s_msg_take_item_to_guild_storage"), strName);
         FUN_1412751b0(strText, 0x14);
     }
-    Unk_ShopLog(FUN_140166440(), 0xc, 0x13, L"OnShop [ITEM_BUY] : itemID = {0}, nCount = {1}, totalPrice = {2}", nItemId, nCount, nPrice);
+    Unk_ShopLog(GetLogString(), 0xc, 0x13, L"OnShop [ITEM_BUY] : itemID = {0}, nCount = {1}, totalPrice = {2}", nItemId, nCount, nPrice);
 }
 MS2_REPLACE_METHOD(0x141AFA2F0, UIShopDialog, ReadPurchaseResult, 836, 0x826C9615);
 
@@ -2691,7 +2691,7 @@ void UIShopDialog::CloseShop()
     }
     UIMarketBillDialog* pBill = (UIMarketBillDialog*)FUN_140b09580(0x4f17);
     if (pBill && pBill->vfunc_55() == 0) {
-        MS2Ptr<TMarketBillDataParam> spParam = pBill->FUN_140ea8da0();
+        MS2Ptr<TMarketBillDataParam> spParam = pBill->GetParam();
         if ((spParam.get() ? true : false) && spParam->m_nDialogId == vfunc_48())
             FUN_1403ed2b0()->FUN_141adc5d0(0x4f17);
     }

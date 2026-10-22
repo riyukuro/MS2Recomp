@@ -149,7 +149,7 @@ void TriggerCli::CollectIds(std::vector<std::pair<CStringW, int> >& rOut)
 int TriggerCli::LoadFile(const CString& strPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     CString strNorm(strPath);
     FUN_1401d3700(strNorm);
@@ -168,7 +168,7 @@ int TriggerCli::LoadFile(const CString& strPath)
 int TriggerCli::LoadBuffer(CFileSystem::BufferPtr spBuffer)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403979e0(&doc, spBuffer) == 0)
+    if (GetFileSystem()->FUN_1403979e0(&doc, spBuffer) == 0)
         return 0;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)
@@ -186,7 +186,7 @@ int TriggerCli::LoadEditorTable()
         return 0;
     CString strPath = FUN_14071a5b0("Table/Server", "triggerEditor.xml");
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
     if (pRoot == 0)

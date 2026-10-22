@@ -76,7 +76,7 @@ void UIUGCCubeNoticePopup::OnLoadComplete()
 }
 
 // @0x140fb4b90
-int UIUGCCubeNoticePopup::FUN_140fb4b90()
+int UIUGCCubeNoticePopup::IsShown()
 {
     return m_bShown;
 }
@@ -97,13 +97,13 @@ void UIUGCCubeNoticePopup::FUN_140fb4be0()
 }
 
 // @0x140fb4c50
-void UIUGCCubeNoticePopup::FUN_140fb4c50(Unk_StreamPoint ptWorld)
+void UIUGCCubeNoticePopup::SetPtWorld(Unk_StreamPoint ptWorld)
 {
     m_ptWorld = ptWorld;
 }
 
 // @0x140fb4c80
-void UIUGCCubeNoticePopup::FUN_140fb4c80(const egf::EntityID& id)
+void UIUGCCubeNoticePopup::SetIdEntity(const egf::EntityID& id)
 {
     m_idEntity = id;
 }
@@ -141,7 +141,7 @@ void UIUGCCubeNoticePopup::vfunc_15()
         {
             if (m_bPending != 0)
                 vfunc_52();
-            if (FUN_140fb4b90() == 0)
+            if (IsShown() == 0)
                 vfunc_8(0);
             else
                 FUN_140fb4eb0();

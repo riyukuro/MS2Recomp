@@ -335,13 +335,13 @@ inline Unk_140166430* FUN_140166430()
 }
 extern CLogString* DAT_143aab390;
 // @0x140166440
-inline CLogString* FUN_140166440()
+inline CLogString* GetLogString()
 {
     return DAT_143aab390;
 }
 extern CFileSystem* DAT_143aab398;
 // @0x140166420
-inline CFileSystem* FUN_140166420()
+inline CFileSystem* GetFileSystem()
 {
     return DAT_143aab398;
 }
@@ -883,15 +883,15 @@ void CAchieveData::Load(CString strPath)
 {
     TiXmlDocument doc;
     const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
     {
-        Unk_AchieveLog(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
     {
-        Unk_AchieveLog(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     std::vector<Unk_XmlNode*> nodes;
@@ -968,12 +968,12 @@ void CAchieveData::Load(CString strPath)
                 }
             }
             if (pData->m_mapGrade.Lookup(pGrade->m_nGrade) != 0)
-                Unk_AchieveLog(FUN_140166440(), 1, 0x13, L"트로피의 {0}등급이 중복입니다. {1} 트로피 확인해 주세요.",
+                Unk_AchieveLog(GetLogString(), 1, 0x13, L"트로피의 {0}등급이 중복입니다. {1} 트로피 확인해 주세요.",
                                pGrade->m_nGrade, pData->m_nId);
             pData->m_mapGrade.SetAt(pGrade->m_nGrade, pGrade);
         }
         if (pData->m_nFirstGrade != 1 && pData->m_nType != 9)
-            Unk_AchieveLog(FUN_140166440(), 1, 0x13, L"트로피의 최소 등급이 1이 아닙니다{0}. {1} 트로피 확인해 주세요.",
+            Unk_AchieveLog(GetLogString(), 1, 0x13, L"트로피의 최소 등급이 1이 아닙니다{0}. {1} 트로피 확인해 주세요.",
                            pData->m_nFirstGrade, pData->m_nId);
         s_mapData.SetAt(pData->m_nId, pData);
         s_listData.AddTail(pData);
@@ -987,15 +987,15 @@ void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
 {
     TiXmlDocument doc;
     const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
     {
-        Unk_AchieveLog(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
     {
-        Unk_AchieveLog(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_AchieveLog(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
     std::vector<Unk_XmlNode*> nodes;

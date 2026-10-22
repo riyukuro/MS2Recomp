@@ -253,7 +253,7 @@ ChaosLightEffectLayer::ChaosLightEffectLayer(NiMesh* pMesh, void* pTexture, cons
             NiTexturingProperty::Map* pMap = static_cast<NiTexturingProperty*>(pProp)->GetGlowMap();
             if (pMap != 0)
             {
-                ChaosLightEffectLayerManager* pManager = FUN_1403ed2d0()->FUN_141bd3680();
+                ChaosLightEffectLayerManager* pManager = FUN_1403ed2d0()->GetChaosLightEffectLayerManager();
                 if (((__int64)pManager->FUN_1410469c0()) != (__int64)pMap->GetTexture())
                     m_spTexture.Assign(pMap->GetTexture());
             }

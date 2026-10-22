@@ -88,7 +88,7 @@ int CFieldMissionTable::Load()
     CString strPath = FUN_14071a5b0(CString("Table"), CString("fieldMission.xml"));
     TiXmlDocument doc;
     const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
     {
         return 0;
     }

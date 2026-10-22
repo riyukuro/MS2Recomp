@@ -19,7 +19,7 @@
 __int64 FUN_140869440();                                // server time
 CStringW FUN_1408767c0(void* pszUtf8);                  // utf8 -> wide
 CString FUN_1401d4330(const wchar_t* psz, int nFlag);   // wide -> narrow
-CFileSystem* FUN_140166420();                           // the file system singleton
+CFileSystem* GetFileSystem();                           // the file system singleton
 int FUN_140518af0(const CRect* pRect);                  // 0x140518af0 CRect::Height
 int FUN_140519850(const CRect* pRect);                  // 0x140519850 CRect::Width
 CRect* FUN_140517a60(CRect* pRect);                     // 0x140517a60 CRect::CRect()
@@ -205,7 +205,7 @@ void TriggerDebugDialog::Resize()
 int TriggerDebugDialog::LoadXml()
 {
     SetWindowText(m_strFile);
-    CFileSystem::BufferPtr spBuffer = FUN_140166420()->FUN_140397bc0(m_strFile, 0, 0);
+    CFileSystem::BufferPtr spBuffer = GetFileSystem()->FUN_140397bc0(m_strFile, 0, 0);
     if (spBuffer.IsNull())
         return 0;
     CStringW strXml = FUN_1408767c0(spBuffer->GetBuffer());

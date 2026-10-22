@@ -28,7 +28,7 @@ public:
     virtual void vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs);   // 49 0x140fa59b0 the icon tooltip (count left)
     virtual void vfunc_67();                                        // 67 0x140fa43c0 close: drop the slot, stop listening
 
-    void FUN_140fa5ba0(int nMode);                                  // 0x140fa5ba0 set the mode (4 fishing, 5 instrument)
+    void SetMode(int nMode);                                  // 0x140fa5ba0 set the mode (4 fishing, 5 instrument)
     void FUN_140fa5bc0();                                           // 0x140fa5bc0 fishing: bind the bait slot, fill the movie
     bool FUN_140fa62d0(int nButton, const CMsgBoxData& box);        // 0x140fa62d0 fishing extend box answered
     bool FUN_140fa64a0(int nButton, const CMsgBoxData& box);        // 0x140fa64a0 fishing cancel box answered

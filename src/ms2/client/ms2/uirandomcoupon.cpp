@@ -214,7 +214,7 @@ void UIRandomCoupon::FUN_140bfeb50(int nMode, int nA, int nB, CStringW strName)
 }
 
 // @0x140bfebf0
-void UIRandomCoupon::FUN_140bfebf0(MS2Ptr<Unk_RcProduct> spProduct)
+void UIRandomCoupon::SetProduct(MS2Ptr<Unk_RcProduct> spProduct)
 {
     m_spProduct = spProduct;
 }

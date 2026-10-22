@@ -1098,7 +1098,7 @@ void UIPlayInstrumentDialog::FUN_14100d920()
 }
 
 // @0x14100d9f0
-int UIPlayInstrumentDialog::FUN_14100d9f0()
+int UIPlayInstrumentDialog::GetAutoPlay()
 {
     return m_nAutoPlay;
 }

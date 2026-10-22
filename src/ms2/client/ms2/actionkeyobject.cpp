@@ -1201,8 +1201,8 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
         return;
     MS2Ptr<CFieldDataCli> spCurrent = reinterpret_cast<Unk_AkoWorldView*>(FUN_1403ed2d0())->FUN_141bd30a0();
     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nTarget);
-    if (spCurrent.get() && spField.get() && spField->FUN_1403754f0() && !spCurrent->FUN_1403754d0()
-        && spField->FUN_1403754d0())
+    if (spCurrent.get() && spField.get() && spField->FUN_1403754f0() && !spCurrent->GetPkMode()
+        && spField->GetPkMode())
     {
         FUN_140d73bc0(0x971, 1, pPlayer, StringFormat(L"moveportal,{0},{1}", nTarget, nPortalId));
         return;

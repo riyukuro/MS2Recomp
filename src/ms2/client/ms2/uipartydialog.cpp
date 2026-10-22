@@ -522,7 +522,7 @@ void UIPartyDialog::FUN_141a759b0()
 }
 
 // @0x141a75a00
-void UIPartyDialog::FUN_141a75a00(unsigned int nDeadline)
+void UIPartyDialog::SetDeadline(unsigned int nDeadline)
 {
     m_deadline = nDeadline;
 }
@@ -1683,7 +1683,7 @@ static CString s_strStun5 = "stun";
 // ======== UIPopUpMenu (the fifth TU of this range) ========
 
 // The callees of the popup menu.
-CLogString* FUN_140166440();                                            // TSingleton<CLogString>::GetInstance
+CLogString* GetLogString();                                            // TSingleton<CLogString>::GetInstance
 int FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szText);   // log a line
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);                      // an int value
 class Unk_PmCamera { public: bool FUN_140af0700(const efd::Point3& kWorld, NiPoint3& kScreen); int FUN_140a18070(); float FUN_141032df0(); float FUN_140b67d10(); float FUN_1409f2430(); };
@@ -2017,7 +2017,7 @@ void UIPopUpMenu::PopUpMenu(const Unk_PopupMenuInfo& info, PCBase* pTarget, int 
     FUN_141a832e0(pTarget, strName);
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::PopUpMenu Empty Menu");
+        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenu Empty Menu");
         return;
     }
     m_110 = nType;
@@ -2067,7 +2067,7 @@ void UIPopUpMenu::FUN_141a7e870(const Unk_PopupMenuInfo& info, PCBase* pTarget, 
     FUN_141a832e0(pTarget, strName);
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::PopUpMenu Empty Menu");
+        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenu Empty Menu");
         return;
     }
     m_110 = nType;
@@ -2154,7 +2154,7 @@ void UIPopUpMenu::PopUpMenuFromPartyMember(const Unk_PopupMenuInfo& info, CParty
     CStringW strName = pMember->user.FUN_1408f19e0();
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromPartyMember Empty Menu");
+        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromPartyMember Empty Menu");
         return;
     }
     m_110 = 2;
@@ -2186,7 +2186,7 @@ void UIPopUpMenu::PopUpMenuFromGuildMember(const Unk_PopupMenuInfo& info, CGuild
     CStringW strName = pMember->data.FUN_1404ca890();
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromGuildMember Empty Menu");
+        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromGuildMember Empty Menu");
         return;
     }
     m_110 = 3;
@@ -2230,7 +2230,7 @@ void UIPopUpMenu::FUN_141a7f950(const Unk_PopupMenuInfo& info, __int64 nBuddyId)
     CStringW strName = pBuddy->FUN_1401cc1c0();
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"Popupmenu error!: name is Empty!");
+        FUN_1401859c0(GetLogString(), 0xc, 0x13, L"Popupmenu error!: name is Empty!");
         return;
     }
     m_110 = 7;
@@ -2261,7 +2261,7 @@ void UIPopUpMenu::FUN_141a7fc50(const Unk_PopupMenuInfo& info, __int64 nHomeId)
     CStringW strName = FUN_14016a730(spHome->m_30, 0);
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"Popupmenu error!: name is Empty!");
+        FUN_1401859c0(GetLogString(), 0xc, 0x13, L"Popupmenu error!: name is Empty!");
         return;
     }
     m_110 = 7;
@@ -2314,7 +2314,7 @@ void UIPopUpMenu::PopUpMenuFromClubMember(const Unk_PopupMenuInfo& info, CClubMe
     CStringW strName = pMember->m_info.FUN_14020e5d0();
     if (strName.IsEmpty())
     {
-        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromClubMember Empty Menu");
+        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::PopUpMenuFromClubMember Empty Menu");
         return;
     }
     m_110 = 0xe;
@@ -2496,7 +2496,7 @@ int UIPopUpMenu::Open(const Unk_PmTarget& target, int nFlags, int nType)
     FUN_141a83810(nFlags, nType, target);
     if (m_118.IsEmpty())
     {
-        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::Open Empty Menu");
+        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::Open Empty Menu");
         return 0;
     }
     float fDirX = 1.0f;
@@ -2578,7 +2578,7 @@ int UIPopUpMenu::OpenFromCharName(CStringW strName, const Unk_PopupMenuInfo& inf
     FUN_141a834e0(info.m_b, nMode, strName, nDir);
     if (m_118.IsEmpty())
     {
-        FUN_1401859c0(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::OpenFromCharName Empty Menu");
+        FUN_1401859c0(GetLogString(), 2, 0x13, L"UIPopUpMenu::OpenFromCharName Empty Menu");
         return 0;
     }
     if (m_80 == 2)
@@ -2906,7 +2906,7 @@ void UIPopUpMenu::FUN_141a84320(ASArray& menu)
 void UIPopUpMenu::AddPopupMenu(Unk_PmMenuId nMenuId)
 {
     if (m_160.Lookup(nMenuId) == 0)
-        Unk_PmLog(FUN_140166440(), 2, 0x13, L"UIPopUpMenu::AddPopupMenu NotFound MenuID:{0}", nMenuId);
+        Unk_PmLog(GetLogString(), 2, 0x13, L"UIPopUpMenu::AddPopupMenu NotFound MenuID:{0}", nMenuId);
     else
         m_118.Add(nMenuId);
 }
@@ -3710,7 +3710,7 @@ void FUN_141a8a010(float x, float y)
     }
     else
     {
-        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup UISwfEntity mouseX[{0}] mouseY[{1}]", x, y);
+        Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup UISwfEntity mouseX[{0}] mouseY[{1}]", x, y);
     }
     FUN_141a8a730();
 }
@@ -3735,7 +3735,7 @@ int FUN_141a8a760()
 // @0x141a8a7b0
 void FUN_141a8a7b0(UIDialog* pDialog, float x, float y)
 {
-    Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup UIDialog name[{0}] mouseX[{1}] mouseY[{2}]", (const char*)pDialog->vfunc_1(), x, y);
+    Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup UIDialog name[{0}] mouseX[{1}] mouseY[{2}]", (const char*)pDialog->vfunc_1(), x, y);
 }
 
 // @0x141a8a870
@@ -3748,7 +3748,7 @@ void FUN_141a8a870(UISwfEntity* pEntity, float x, float y)
     }
     else if (pEntity != 0)
     {
-        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup UIEntity name[{0}] mouseX[{1}] mouseY[{2}]", (const char*)pEntity->vfunc_1(), x, y);
+        Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup UIEntity name[{0}] mouseX[{1}] mouseY[{2}]", (const char*)pEntity->vfunc_1(), x, y);
     }
 }
 
@@ -3757,28 +3757,28 @@ void FUN_141a8a990(CSceneStateBase* pState, float x, float y)
 {
     if (pState->GetClassID() == 0x620000b)
     {
-        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup SceneLogo mouseX[{0}] mouseY[{1}]", x, y);
+        Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup SceneLogo mouseX[{0}] mouseY[{1}]", x, y);
     }
     else if (pState->GetClassID() == 0x6200009)
     {
-        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup SceneLogin mouseX[{0}] mouseY[{1}]", x, y);
+        Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup SceneLogin mouseX[{0}] mouseY[{1}]", x, y);
     }
     else if (pState->GetClassID() == 0x620000d)
     {
-        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup SceneMulti mouseX[{0}] mouseY[{1}]", x, y);
+        Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup SceneMulti mouseX[{0}] mouseY[{1}]", x, y);
     }
     else if (pState->GetClassID() == 0x620000c)
     {
-        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup SceneGame mouseX[{0}] mouseY[{1}]", x, y);
+        Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup SceneGame mouseX[{0}] mouseY[{1}]", x, y);
     }
     else if (pState->GetClassID() == 0x620000a)
     {
-        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"OnPopup SceneLoading mouseX[{0}] mouseY[{1}]", x, y);
+        Unk_PpLog(GetLogString(), 0xc, 0x13, L"OnPopup SceneLoading mouseX[{0}] mouseY[{1}]", x, y);
     }
     else
     {
         unsigned int nClassId = pState->GetClassID();
-        Unk_PpLog(FUN_140166440(), 0xc, 0x13, L"ETC SceneLoading  Class ID : {0}, mouseX[{1}] mouseY[{2}]", nClassId, x, y);
+        Unk_PpLog(GetLogString(), 0xc, 0x13, L"ETC SceneLoading  Class ID : {0}, mouseX[{1}] mouseY[{2}]", nClassId, x, y);
     }
 }
 

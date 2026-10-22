@@ -1011,11 +1011,11 @@ void UIMinimapEntityTaxi::FUN_141a34890(const efd::Point3& kPos)
 MS2_REPLACE_METHOD(0x141a34890, UIMinimapEntityTaxi, FUN_141a34890, 908, 0x75C22537);
 
 // @0x141a34870
-void UIMinimapEntityTaxi::FUN_141a34870(bool bBest)
+void UIMinimapEntityTaxi::SetBest(bool bBest)
 {
     m_best = bBest;
 }
-MS2_REPLACE_METHOD(0x141a34870, UIMinimapEntityTaxi, FUN_141a34870, 23, 0x1A4301B5);
+MS2_REPLACE_METHOD(0x141a34870, UIMinimapEntityTaxi, SetBest, 23, 0x1A4301B5);
 
 // @0x141a34c30
 void UIMinimapEntityTaxi::GetText(CStringW& strText, ASObj& data)
@@ -1973,7 +1973,7 @@ void UIMinimapDialog::FUN_141a3a200()
         bBest = FUN_141b71c00((unsigned short)pPC->vfunc_78()) == 1;
     spTaxi->m_text = bBest ? FUN_14028b8e0(L"s_word_besttaxistation") : FUN_14028b8e0(L"s_word_taxistation");
     spTaxi->m_icon = bBest ? s_strTaxiBest : s_strTaxi;
-    spTaxi->FUN_141a34870(bBest);
+    spTaxi->SetBest(bBest);
     ASObj data(2);
     data.FUN_1407cbb20(s_strName, spTaxi->m_text);
     data.FUN_1407cba60(s_strMcName, spTaxi->m_icon);

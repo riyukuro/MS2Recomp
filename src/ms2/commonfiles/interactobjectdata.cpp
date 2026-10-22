@@ -39,7 +39,7 @@ void FUN_14028c2d0(CString strText, Unk_PDVec3* pOut);                  // "x,y,
 int FUN_140764310(const CStringA& strQuests, const CStringA& strStates, QuestMask* pMask);   // questmasktable.cpp
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // data file path
 CString FUN_14016a5c0(const char* psz, int n);
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 MS2Ptr<CItemData> FUN_14053f870(unsigned nItemId);                      // the item data of an id
 // The one-argument log of additionalactionadditional.cpp (an FMT_VARIADIC instance it emitted first).
 void FUN_140177a80(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned& nArg);
@@ -163,7 +163,7 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
         {
             if (spItem->FUN_14053cbc0() && m_item.m_nConsume > 1)
             {
-                FUN_140177a80(FUN_140166440(), 1, 0x13, L"InteractObjectData : consume item error {0}", m_item.m_nCode);
+                FUN_140177a80(GetLogString(), 1, 0x13, L"InteractObjectData : consume item error {0}", m_item.m_nCode);
                 return false;
             }
         }
@@ -180,7 +180,7 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
             XmlTokenList(pCondition, "level", aLevel);
             if (aId.size() != aLevel.size())
             {
-                FUN_140177a80(FUN_140166440(), 1, 0x13, L"InteractObjectData : conditionEffect id,level not pair",
+                FUN_140177a80(GetLogString(), 1, 0x13, L"InteractObjectData : conditionEffect id,level not pair",
                               m_item.m_nCode);
                 return false;
             }
@@ -292,7 +292,7 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
             bool bPaired = aCode.GetCount() == aLevel.GetCount() && aCode.GetCount() == aProp.GetCount();
             if (!bPaired)
             {
-                Unk_InteractLog(FUN_140166440(), 1, 0x13,
+                Unk_InteractLog(GetLogString(), 1, 0x13,
                                 L"xml 형식이 잘못 되었습니다[<ms2> {0}] invokeBuff data error. interactID: {1}",
                                 "InteractObject.xml", m_nId);
                 return false;
@@ -396,12 +396,12 @@ void CInteractObjectData::LoadAll()
     {
         TiXmlDocument doc;
         CString strPath = FUN_14071a5b0("Table", aFile[i]);
-        if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             return;
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
         {
-            Unk_InteractLog(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", "InteractObject.xml");
+            Unk_InteractLog(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", "InteractObject.xml");
             return;
         }
         for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("interact"); pNode != 0;
@@ -433,7 +433,7 @@ MS2Ptr<CInteractObjectData> CInteractObjectData::Get(int nId)
     }
     else
     {
-        if (!FUN_140166420()->FUN_140398190() && s_table.Lookup(nId, spData))
+        if (!GetFileSystem()->FUN_140398190() && s_table.Lookup(nId, spData))
         {
             if (FUN_1401d1320(spData.operator->()))
             {

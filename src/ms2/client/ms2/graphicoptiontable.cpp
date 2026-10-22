@@ -18,7 +18,7 @@ public:
 };
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14036e770(CLogString* log, int level, int category, const wchar_t* format, const CStringW& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 CStringW FUN_14016a730(const char* psz, int n);                         // narrow -> wide
@@ -45,7 +45,7 @@ void CGraphicOptionTable::Load()
 {
     if (FUN_140166420()->FUN_1403974b0(&m_doc, FUN_14071a5b0(CString("Table"), CString("graphicOption.xml")), 0, true, false) == 0)
     {
-        FUN_14036e770(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]",
+        FUN_14036e770(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]",
                       FUN_14016a730(FUN_14071a5b0(CString("Table"), CString("graphicOption.xml")), 0));
     }
     else
@@ -53,7 +53,7 @@ void CGraphicOptionTable::Load()
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&m_doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
         {
-            FUN_14036e770(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]",
+            FUN_14036e770(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]",
                           FUN_14016a730(FUN_14071a5b0(CString("Table"), CString("graphicOption.xml")), 0));
         }
         else

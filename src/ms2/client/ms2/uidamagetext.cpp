@@ -426,7 +426,7 @@ void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, in
                         {
                             MS2Ptr<CGemBase> spGem = pPC->FUN_14165f460()->FUN_141270740(2);
                             if (spGem.get() != 0)
-                                obj.FUN_1407cbb20("gem", FUN_140719630(spGem->FUN_1405a39f0()));
+                                obj.FUN_1407cbb20("gem", FUN_140719630(spGem->GetGemId()));
                         }
                     }
                 }
@@ -594,18 +594,18 @@ void UIDamageText::FUN_141913990(bool bClearing)
 }
 
 // @0x1419139d0
-void UIDamageText::FUN_1419139d0(bool b)
+void UIDamageText::SetObserver(bool b)
 {
     m_bObserver = b;
 }
-MS2_REPLACE_METHOD(0x1419139D0, UIDamageText, FUN_1419139d0, 26, 0x17DDE11B);
+MS2_REPLACE_METHOD(0x1419139D0, UIDamageText, SetObserver, 26, 0x17DDE11B);
 
 // @0x1419139f0
-void UIDamageText::FUN_1419139f0(__int64 n)
+void UIDamageText::SetObservedId(__int64 n)
 {
     m_nObservedId = n;
 }
-MS2_REPLACE_METHOD(0x1419139F0, UIDamageText, FUN_1419139f0, 28, 0x4BB4D3D1);
+MS2_REPLACE_METHOD(0x1419139F0, UIDamageText, SetObservedId, 28, 0x4BB4D3D1);
 
 // @0x141913a20
 void UIDamageText::FUN_141913a20()

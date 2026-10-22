@@ -42,8 +42,8 @@ public:
  bool FUN_141b4ab70(const int&);void FUN_141b4ac50(Unk_UpperPtr<Unk_UpperBuff>);void FUN_141b4b0d0(Unk_UpperPtr<Unk_UpperBuff>);
  void FUN_141b4b240(Unk_UpperActor*,const int&);void FUN_141b4b3f0();void FUN_141b4b500();
  void FUN_141b4b860();void FUN_141b4b950(bool);void FUN_141b4ba40(bool);void FUN_141b4bb20(bool);
- bool FUN_141b4bba0();const int& FUN_141b4bbc0();const int& FUN_141b4bbe0();
- Unk_UpperPtr<Unk_UpperClip> FUN_141b4bc00();
+ bool GetVisible();const int& FUN_141b4bbc0();const int& FUN_141b4bbe0();
+ Unk_UpperPtr<Unk_UpperClip> GetClip();
  void FUN_141b4bc50(const int&);void FUN_141b4bc70(const __int64&);
  void FUN_141b4bca0(const Scaleform::GFx::FunctionHandler::Params&);void FUN_141b4bce0(const Scaleform::GFx::FunctionHandler::Params&);
 private:MS2_LAYOUT_FRIEND;

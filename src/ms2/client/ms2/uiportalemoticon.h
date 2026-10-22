@@ -25,12 +25,12 @@ public:
     virtual int vfunc_48() { return 0x4f0d; }                       // 48 0x140f9c170 UI type id
     virtual void vfunc_52();                                        // 52 0x140f9bd70 open the movie with the emoticon name
 
-    int FUN_140f9bb50();                                            // m_bShown
+    int IsShown();                                            // m_bShown
     void FUN_140f9bb70();                                           // start showing (m_bShown = m_bPending = 1)
     void FUN_140f9bba0();                                           // stop showing
     void FUN_140f9bbd0();                                           // unregister the emoticon and stop showing
     void FUN_140f9bc40(Unk_StreamPoint ptWorld);                    // the portal's point (the bubble floats 150 above it)
-    void FUN_140f9bca0(const CStringW& strName);                    // the emoticon name
+    void SetName(const CStringW& strName);                    // the emoticon name
     void FUN_140f9bf70();                                           // project the world point and place the movie
 
 private:

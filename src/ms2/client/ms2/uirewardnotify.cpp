@@ -1075,8 +1075,8 @@ void UIRouletteDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 MS2_REPLACE_METHOD(0x141ac5540, UIRouletteDialog, vfunc_49, 1169, 0x1B141379);
 
 // @0x141ac59e0
-int UIRouletteDialog::FUN_141ac59e0() { return m_spinIndex; }
-MS2_REPLACE_METHOD(0x141ac59e0, UIRouletteDialog, FUN_141ac59e0, 17, 0xA19D11F5);
+int UIRouletteDialog::GetSpinIndex() { return m_spinIndex; }
+MS2_REPLACE_METHOD(0x141ac59e0, UIRouletteDialog, GetSpinIndex, 17, 0xA19D11F5);
 
 // @0x141ac5a00
 int UIRouletteDialog::FUN_141ac5a00() { return (int)m_spins.GetCount(); }

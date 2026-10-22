@@ -110,7 +110,7 @@ float FUN_141b6fe90(NiControllerSequence* pSeq, const NiFixedString& kKey, float
 int FUN_141b6ff60(NiControllerSequence* pSeq, const NiFixedString& kKey);  // the sequence has the text key
 float FUN_140a53fa0(NiControllerSequence* pSeq);           // NiControllerSequence::m_fOffset
 float FUN_140a53f80(NiControllerSequence* pSeq);           // NiControllerSequence::m_fFrequency
-CLogString* FUN_140166440();                               // the game log, or 0
+CLogString* GetLogString();                               // the game log, or 0
 
 // The animation service: the actor manager of an entity.
 class Unk_SsAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID& kId); };
@@ -458,8 +458,8 @@ void StateSkill::vfunc_4(StateData* pData)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != NULL)
         FUN_141659000(pPC, 0);
-    if (FUN_1417b84b0() != NULL && m_spRecord.get() != NULL && FUN_140166440() != NULL)
-        Unk_SsLog2(FUN_140166440(), 0xb, 0x134, L"Start ID:{0}, level:{1}", m_spRecord->GetSkillId(), m_spRecord->GetLevel());
+    if (FUN_1417b84b0() != NULL && m_spRecord.get() != NULL && GetLogString() != NULL)
+        Unk_SsLog2(GetLogString(), 0xb, 0x134, L"Start ID:{0}, level:{1}", m_spRecord->GetSkillId(), m_spRecord->GetLevel());
     m_pOwner->vfunc_22(efd::Point3(efd::Point3::ZERO));
     m_pOwner->vfunc_19(reinterpret_cast<const efd::Point3&>(m_spRecord->m_ptPos));
     if (pPC == NULL || FUN_141489940(pPC) != 10)
@@ -526,8 +526,8 @@ void StateSkill::vfunc_5(int n)
     if (FUN_1417b84b0() != NULL && m_spRecord.get() != NULL)
     {
         DWORD nDuration = GetTickCountMs2() - m_nStartTick;
-        if (FUN_140166440() != NULL)
-            Unk_SsLog3(FUN_140166440(), 0xb, 0x134, L"End ID:{0}, level:{1} duration:{2}", m_spRecord->GetSkillId(),
+        if (GetLogString() != NULL)
+            Unk_SsLog3(GetLogString(), 0xb, 0x134, L"End ID:{0}, level:{1} duration:{2}", m_spRecord->GetSkillId(),
                 m_spRecord->GetLevel(), nDuration);
     }
     m_pOwner->FUN_14166da10(1800.0f);

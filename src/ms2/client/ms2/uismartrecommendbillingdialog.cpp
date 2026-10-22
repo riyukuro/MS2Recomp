@@ -233,7 +233,7 @@ int UISmartRecommendBillingDialog::vfunc_28(const char* szMethod, const Scalefor
 }
 
 // @0x14134cf50
-void UISmartRecommendBillingDialog::FUN_14134cf50(Unk_RecommendPtr item)
+void UISmartRecommendBillingDialog::SetItem(Unk_RecommendPtr item)
 {
     m_item = item;
 }
@@ -365,7 +365,7 @@ int UISmartRecommendNotifyDialog::vfunc_28(const char* szMethod, const Scaleform
     {
         UISmartRecommendBillingDialog* pBilling = FUN_14134e160(0x4e9f);
         if (pBilling != 0)
-            pBilling->FUN_14134cf50(m_item);
+            pBilling->SetItem(m_item);
         if (FUN_1403ed2b0()->FUN_141adc940(0x4e9f) == 0)
             FUN_1403ed2b0()->FUN_141adc5d0(0x4e9f);
         FUN_1403ed2b0()->FUN_141adc530(0x4e9f);

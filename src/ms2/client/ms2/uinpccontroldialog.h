@@ -47,7 +47,7 @@ public:
     virtual void vfunc_79(void* p);                     // 79 0x141a62500 packet 0x87 from the server
 
     void FUN_141a63770();                               // "[name] [GameOID : id] [npcID : npc]" into "m_npcName"
-    void FUN_141a638c0(int nNpcId);                     // select the controlled npc
+    void SetNpcId(int nNpcId);                     // select the controlled npc
     int FUN_141a638e0();                                // "GetLoopCount" of the movie (0 without a movie)
     void FUN_141a63970(unsigned char nCmd, __int64 nValue);     // packet 0x50 / 4 / id / cmd / value
     void FUN_141a63a10(int nCmd, const CStringW& strArgs);      // packet 0x50 / 4 / id / 8: skill list with loop count

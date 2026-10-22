@@ -290,7 +290,7 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
 void UIAdditionalControlDialog::FUN_1418b3620()
 {
     if (m_pList = FUN_140c02900("m_contextMenu")) {
-        bool bFlag = FUN_140166420()->FUN_140398190();
+        bool bFlag = GetFileSystem()->FUN_140398190();
         m_pList->vfunc_3(!bFlag);
         if (!bFlag) {
             ATL::CAtlArray<std::pair<CStringW, CStringW> > items;

@@ -28,11 +28,11 @@ public:
     virtual int vfunc_48() { return 0x4f52; }                       // 48 0x140fb52a0 UI type id
     virtual void vfunc_52();                                        // 52 0x140fb4d10 hide when the movie clip is up
 
-    int FUN_140fb4b90();                                            // m_bShown
+    int IsShown();                                            // m_bShown
     void FUN_140fb4bb0();                                           // start showing (m_bShown = m_bPending = 1)
     void FUN_140fb4be0();                                           // unregister the popup and stop showing
-    void FUN_140fb4c50(Unk_StreamPoint ptWorld);                    // the world point the popup floats at
-    void FUN_140fb4c80(const egf::EntityID& id);                    // the cube's entity
+    void SetPtWorld(Unk_StreamPoint ptWorld);                    // the world point the popup floats at
+    void SetIdEntity(const egf::EntityID& id);                    // the cube's entity
     void FUN_140fb4cc0(const CStringW& strTitle, const CStringW& strText);   // the texts
     void FUN_140fb4eb0();                                           // project the world point and place the movie
     void FUN_140fb5080(int bShow);                                  // push the texts and the visibility to the movie

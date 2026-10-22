@@ -117,7 +117,7 @@ public:
     virtual void vfunc_26();                                            // 26 0x140f9a140 reset
     virtual int vfunc_48() { return 0x4eff; }                           // 48 0x140f9b780 UI type id
 
-    void FUN_140f9a200(unsigned __int64 uItemUid);                      // the box item to open
+    void SetItemUid(unsigned __int64 uItemUid);                      // the box item to open
     void FUN_140f9a230(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_okButton" clicked: send the choice
     void FUN_140f9a5f0(const Scaleform::GFx::FunctionHandler::Params& params);   // list selection changed
     void FUN_140f9a700();                                               // refresh the slots, counters and the ok label

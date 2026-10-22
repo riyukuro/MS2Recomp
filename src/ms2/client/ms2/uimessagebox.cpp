@@ -1397,7 +1397,7 @@ int UIMessageBox::FUN_1419fb930(int nButton)
     {
         if (m_closing == 0)
         {
-            if (m_data.get() && m_data->FUN_141a04a80().m_nButton != 0)
+            if (m_data.get() && m_data->GetTimer().m_nButton != 0)
                 nResult = 12;
         }
         else

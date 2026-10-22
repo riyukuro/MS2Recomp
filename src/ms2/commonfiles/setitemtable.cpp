@@ -29,7 +29,7 @@
 
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 // The two-argument log call (an FMT_VARIADIC instantiation, ?\characterability.cpp).
 void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format, const CString& first,
@@ -100,7 +100,7 @@ int SetItemTable::LoadSets()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     std::vector<Unk_140165cf0*> nodes;
@@ -114,7 +114,7 @@ int SetItemTable::LoadSets()
         if (m_map.Lookup(spInfo->FUN_1407ad550()) != 0)
         {
             unsigned nSetId = spInfo->FUN_1407ad550();
-            FUN_1401e0850(FUN_140166440(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[<ms2> {0}] SetID is Duplicated, setID = {1}", strPath, nSetId);
+            FUN_1401e0850(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[<ms2> {0}] SetID is Duplicated, setID = {1}", strPath, nSetId);
             return 0;
         }
         std::vector<unsigned>& items = spInfo->FUN_1407ad710();

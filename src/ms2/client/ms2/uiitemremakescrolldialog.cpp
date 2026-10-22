@@ -326,7 +326,7 @@ CString UIItemRemakeScrollDialog::vfunc_1()
 void UIItemRemakeScrollDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140f5d080(1);
+    SetState(1);
     m_strSlot = FUN_140540050("{0}.slot", vfunc_1());
     m_strIngredientSlot = FUN_140540050("targetIngredient.slot", vfunc_1());
     FUN_140d42540(m_strSlot, m_nScrollUid, m_spTarget);
@@ -399,7 +399,7 @@ void UIItemRemakeScrollDialog::vfunc_67()
     UIDialog::vfunc_67();
     m_nScrollUid = 0;
     m_nIngredientUid = 0;
-    FUN_140f5d080(0);
+    SetState(0);
     FUN_140d42630(m_strSlot);
     FUN_140d42630(m_strIngredientSlot);
     m_strSlot = "";
@@ -417,7 +417,7 @@ void UIItemRemakeScrollDialog::vfunc_67()
 // @0x140f59070
 int UIItemRemakeScrollDialog::vfunc_71()
 {
-    if (FUN_140f5d0a0() == 3)
+    if (GetState() == 3)
     {
         CStringW strAsk = FUN_14028b8e0(CStringW(L"s_itemremake_scroll_ask_close"));
         if (m_nPet != 0)
@@ -611,7 +611,7 @@ void UIItemRemakeScrollDialog::FUN_140f5a7e0(CInPacket& packet)
         FUN_140d73aa0(strMessage, 0, 0, CStringW(L""));
         return;
     }
-    FUN_140f5d080(3);
+    SetState(3);
     FUN_140f5c700();
 }
 
@@ -626,7 +626,7 @@ void UIItemRemakeScrollDialog::FUN_140f5a9c0(CInPacket& packet)
     if (apply.m_uid != m_spOption->FUN_140526a50())
         return;
     FUN_140f5d020(MS2Ptr<CItem>(m_spOption));
-    FUN_140f5d080(4);
+    SetState(4);
     FUN_140f5cba0(MS2Ptr<CItem>(m_spOption));
 }
 
@@ -665,7 +665,7 @@ void UIItemRemakeScrollDialog::FUN_140f5acf0(ASData& data)
 {
     if (FUN_140ba28d0(&m_30, 0) == 0)
     {
-        int nState = FUN_140f5d0a0();
+        int nState = GetState();
         if (nState == 1)
             FUN_140f5adb0();
         else if (nState == 2)
@@ -685,7 +685,7 @@ void UIItemRemakeScrollDialog::FUN_140f5acf0(ASData& data)
 // @0x140f5adb0
 void UIItemRemakeScrollDialog::FUN_140f5adb0()
 {
-    if (FUN_140f5d0a0() == 1)
+    if (GetState() == 1)
     {
         if (!m_spTarget.IsNull())
             FUN_140f5e1f0(2);
@@ -698,7 +698,7 @@ void UIItemRemakeScrollDialog::FUN_140f5adb0()
 // MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemRemakeScrollDialog::FUN_140f5ae60()
 {
-    if (m_spTarget.IsNull() || FUN_140f5d0a0() != 2)
+    if (m_spTarget.IsNull() || GetState() != 2)
         return;
     MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
     if (spScroll.IsNull())
@@ -751,7 +751,7 @@ void UIItemRemakeScrollDialog::FUN_140f5ae60()
 // MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemRemakeScrollDialog::FUN_140f5b670(ASData& data)
 {
-    if (FUN_140f5d0a0() == 3 && !m_spTarget.IsNull() && !m_spOption.IsNull())
+    if (GetState() == 3 && !m_spTarget.IsNull() && !m_spOption.IsNull())
     {
         MS2Ptr<CItem> spCheck = DAT_143ab2a90.FUN_140a5d680(m_spTarget->FUN_140526a50());
         if (spCheck.IsNull())
@@ -774,7 +774,7 @@ void UIItemRemakeScrollDialog::FUN_140f5b670(ASData& data)
         FUN_140f5d020(MS2Ptr<CItem>(spChosen));
         if (!(spChosen == m_spOption.get()))
         {
-            FUN_140f5d080(4);
+            SetState(4);
             FUN_140f5cba0(MS2Ptr<CItem>(spChosen));
         }
         else
@@ -857,7 +857,7 @@ void UIItemRemakeScrollDialog::FUN_140f5bbb0(ASData& data)
 // @0x140f5c2e0
 void UIItemRemakeScrollDialog::FUN_140f5c2e0()
 {
-    if (FUN_140f5d0a0() != 1)
+    if (GetState() != 1)
         return;
     m_30->Invoke("restart");
     FUN_140f5e510();
@@ -867,7 +867,7 @@ void UIItemRemakeScrollDialog::FUN_140f5c2e0()
 // MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemRemakeScrollDialog::FUN_140f5c340()
 {
-    if (m_spTarget.IsNull() || FUN_140f5d0a0() != 2)
+    if (m_spTarget.IsNull() || GetState() != 2)
         return;
     m_bHasLocked = false;
     m_nOptionCount = 0;
@@ -897,7 +897,7 @@ void UIItemRemakeScrollDialog::FUN_140f5c340()
 void UIItemRemakeScrollDialog::FUN_140f5c700()
 {
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
-    if (m_spTarget.IsNull() || FUN_140f5d0a0() != 3)
+    if (m_spTarget.IsNull() || GetState() != 3)
         return;
     CStringW strCur(L"s_itemremake_scroll_cur_option");
     CStringW strNew(L"s_itemremake_scroll_new_option");
@@ -924,7 +924,7 @@ void UIItemRemakeScrollDialog::FUN_140f5c700()
 void UIItemRemakeScrollDialog::FUN_140f5cba0(MS2Ptr<CItem> spItem)
 {
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
-    if (FUN_140f5d0a0() == 4)
+    if (GetState() == 4)
     {
         m_bFinal = false;
         MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
@@ -956,13 +956,13 @@ void UIItemRemakeScrollDialog::FUN_140f5d020(MS2Ptr<CItem> spItem)
 }
 
 // @0x140f5d080
-void UIItemRemakeScrollDialog::FUN_140f5d080(int nState)
+void UIItemRemakeScrollDialog::SetState(int nState)
 {
     m_nState = nState;
 }
 
 // @0x140f5d0a0
-int UIItemRemakeScrollDialog::FUN_140f5d0a0()
+int UIItemRemakeScrollDialog::GetState()
 {
     return m_nState;
 }
@@ -1129,7 +1129,7 @@ bool UIItemRemakeScrollDialog::FUN_140f5dd50(MS2Ptr<CItem> spItem, MS2Ptr<CItemR
 // @0x140f5e1f0
 void UIItemRemakeScrollDialog::FUN_140f5e1f0(int nState)
 {
-    FUN_140f5d080(nState);
+    SetState(nState);
     if (nState == 2)
         FUN_140f5c340();
     else if (nState == 1)

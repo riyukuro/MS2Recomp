@@ -398,7 +398,7 @@ void UIWorldMapDialog::OnLoadComplete()
     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(FUN_141b69690());
     if (!spField)
         return;
-    m_nWorld = FUN_140cb17d0()->WorldOfField(spField->FUN_140375350());
+    m_nWorld = FUN_140cb17d0()->WorldOfField(spField->GetContinentCode());
     SendRequestWorldmapMode0();
     FUN_141b60c40(m_nField, m_210 != 0);
     FUN_141b5be10();
@@ -1185,7 +1185,7 @@ void UIWorldMapDialog::FUN_141b58f80()
     if (!spField)
         return;
     int bHideOtherWorld = 0;
-    int nContinent = spField->FUN_140375350();
+    int nContinent = spField->GetContinentCode();
     {
         CContinentRegionTable::InfoPtr spContinent = FUN_1403782c0()->GetContinent(nContinent);
         if (spContinent.get() != 0)
@@ -1205,7 +1205,7 @@ void UIWorldMapDialog::FUN_141b58f80()
         CStringW strError;
         if (FUN_140a55d20(spTarget.operator->(), &strError) == 0)
             continue;
-        if (bHideOtherWorld != 0 && nContinent != spTarget->FUN_140375350())
+        if (bHideOtherWorld != 0 && nContinent != spTarget->GetContinentCode())
             continue;
         Unk_FieldIdListPtr spNpcs(fields.GetValueAt(pos));
         unsigned short nLevel = (unsigned short)pPlayer->vfunc_78();
@@ -1443,7 +1443,7 @@ void UIWorldMapDialog::FUN_141b5aa70(int nFieldId)
     MS2Ptr<CFieldDataCli> spFrom = CFieldDataCli::Find(TSingleton<WorldService>::GetInstance()->FUN_141bd3060());
     MS2Ptr<CFieldDataCli> spTo = CFieldDataCli::Find(nFieldId);
     if (spFrom.operator CFieldDataCli*() != 0 && spTo.operator CFieldDataCli*() != 0 && spTo->FUN_1403754f0() != 0
-        && spFrom->FUN_1403754d0() == 0 && spTo->FUN_1403754d0() != 0)
+        && spFrom->GetPkMode() == 0 && spTo->GetPkMode() != 0)
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028de60(0x971), 0, CStringW(L""));
         if (spBox.operator CMsgBoxData*() != 0)
@@ -1841,7 +1841,7 @@ MS2Ptr<UIWorldMap::MapTile> UIWorldMapDialog::FUN_141b5d120()
         MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(FUN_141b69690());
         if (spField.operator CFieldDataCli*() != 0)
         {
-            int nWorld = FUN_140cb17d0()->WorldOfField(spField->FUN_140375350());
+            int nWorld = FUN_140cb17d0()->WorldOfField(spField->GetContinentCode());
             if (nWorld != FUN_141b69340() || spTile == 0)
                 spTile = FUN_140cb17d0()->FindMapTile(FUN_141b69340());
         }
@@ -1923,7 +1923,7 @@ void UIWorldMapDialog::FUN_141b5d4b0(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* 
     pObj->FUN_1407cbbe0("town", bTown);
     pObj->FUN_1407cbbe0("publicField", spTile->m_21);
     pObj->FUN_1407cbb20("fieldName", FUN_1401a9d70()->FUN_141811980(3, spTile->m_34));
-    pObj->FUN_1407cb9c0("pvpField", spField->FUN_1403754d0());
+    pObj->FUN_1407cb9c0("pvpField", spField->GetPkMode());
     bool bShowName = !bTown;
     int nNameMovie = FUN_140764020()->FUN_1416d0800(spTile->m_34);
     if (nNameMovie == 0)
@@ -2371,8 +2371,8 @@ bool UIWorldMapDialog::FUN_141b60b40(int nFrom, int nTo)
     MS2Ptr<CFieldDataCli> spTo = CFieldDataCli::Find(nTo);
     if (spFrom == 0 || spTo == 0)
         return false;
-    int nToGroup = spTo->FUN_140375350();
-    int nFromGroup = spFrom->FUN_140375350();
+    int nToGroup = spTo->GetContinentCode();
+    int nFromGroup = spFrom->GetContinentCode();
     return TSingleton<Client::Constants>::GetInstance()->AreSameGroup(nFromGroup, nToGroup);
 }
 MS2_REPLACE_METHOD(0x141B60B40, UIWorldMapDialog, FUN_141b60b40, 236, 0xEBE314AD);

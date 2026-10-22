@@ -115,11 +115,11 @@ public:
     void ShrinkCapturedPackets();
     void FUN_140209050(unsigned ackSequence);                   // drop acknowledged packets
     void PushPendingPacket(COutPacket& packet);
-    void FUN_140209340(unsigned limit);
+    void SetLimit(unsigned limit);
     unsigned FUN_140209360();                                   // sequence of the oldest captured packet
-    int FUN_140209430();                                        // current sequence
+    int GetSequence();                                        // current sequence
     void FUN_140209450(int enabled);
-    int FUN_140209490();
+    int GetCaptureEnabled();
     void FUN_1402094b0(int value);
     void FUN_140209510(COutPacket& packet, bool bControl);      // Capture
     bool FUN_140209640(int type, bool bControl);                // IsControlPacket

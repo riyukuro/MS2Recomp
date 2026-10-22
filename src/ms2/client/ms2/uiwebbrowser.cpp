@@ -248,7 +248,7 @@ void UIWebBrowser::FUN_141b50420(NotifyObject*)
 }
 
 // @0x141b50450
-void UIWebBrowser::FUN_141b50450(const CString& strUrl)
+void UIWebBrowser::SetStored(const CString& strUrl)
 {
     m_strStored = strUrl;
 }
@@ -303,7 +303,7 @@ void UIWebBrowser::vfunc_89(const CString& strUrl)
     UIWebBrowserBase::vfunc_89(strUrl);
     Unk_WbBrowser* pBrowser = FUN_140cc18a0()->FUN_141b796e0(m_nBrowserId);
     if (pBrowser != 0)
-        pBrowser->FUN_141612b50(Delegate<void(const CString&)>(this, &UIWebBrowser::FUN_141b50450));
+        pBrowser->FUN_141612b50(Delegate<void(const CString&)>(this, &UIWebBrowser::SetStored));
     FUN_140d8ee90()->FUN_140a1f970(CString("dialog_open"), CString("webbrowser"));
 }
 

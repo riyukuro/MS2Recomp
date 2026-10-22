@@ -60,20 +60,20 @@ int CItemEnchantInfo::FUN_14058c5c0() {
 MS2_REPLACE_METHOD(0x14058C5C0, CItemEnchantInfo, FUN_14058c5c0, 41, 0xADE1B9D7);
 
 // @0x14058c5f0
-int CItemEnchantInfo::FUN_14058c5f0() {
+int CItemEnchantInfo::GetLevel() {
     return m_level;
 }
-MS2_REPLACE_METHOD(0x14058C5F0, CItemEnchantInfo, FUN_14058c5f0, 14, 0xA25B27BF);
+MS2_REPLACE_METHOD(0x14058C5F0, CItemEnchantInfo, GetLevel, 14, 0xA25B27BF);
 
 // @0x14058c610
 int CItemEnchantInfo::FUN_14058c610() {
-    FUN_14058c6b0(m_level+1,true); FUN_14058c830(); return FUN_14058c5f0();
+    FUN_14058c6b0(m_level+1,true); FUN_14058c830(); return GetLevel();
 }
 MS2_REPLACE_METHOD(0x14058C610, CItemEnchantInfo, FUN_14058c610, 59, 0xBD673904);
 
 // @0x14058c660
 int CItemEnchantInfo::FUN_14058c660() {
-    FUN_14058c6b0(m_level-1,true); FUN_14058c830(); return FUN_14058c5f0();
+    FUN_14058c6b0(m_level-1,true); FUN_14058c830(); return GetLevel();
 }
 MS2_REPLACE_METHOD(0x14058C660, CItemEnchantInfo, FUN_14058c660, 59, 0xF291359C);
 
@@ -85,10 +85,10 @@ void CItemEnchantInfo::FUN_14058c6b0(int level, bool dirty) {
 MS2_REPLACE_METHOD(0x14058C6B0, CItemEnchantInfo, FUN_14058c6b0, 109, 0x16E22D3E);
 
 // @0x14058c730
-int CItemEnchantInfo::FUN_14058c730() {
+int CItemEnchantInfo::GetCharge() {
     return m_charge;
 }
-MS2_REPLACE_METHOD(0x14058C730, CItemEnchantInfo, FUN_14058c730, 14, 0xBA6447E3);
+MS2_REPLACE_METHOD(0x14058C730, CItemEnchantInfo, GetCharge, 14, 0xBA6447E3);
 
 // @0x14058c750
 void CItemEnchantInfo::FUN_14058c750(int charge) {
@@ -211,10 +211,10 @@ void CItemEnchantInfo::FUN_14058cc90(bool dirty) {
 MS2_REPLACE_METHOD(0x14058CC90, CItemEnchantInfo, FUN_14058cc90, 26, 0x506FF4A5);
 
 // @0x14058ccb0
-bool CItemEnchantInfo::FUN_14058ccb0() {
+bool CItemEnchantInfo::GetDirty() {
     return m_dirty;
 }
-MS2_REPLACE_METHOD(0x14058CCB0, CItemEnchantInfo, FUN_14058ccb0, 18, 0x61F4ABA5);
+MS2_REPLACE_METHOD(0x14058CCB0, CItemEnchantInfo, GetDirty, 18, 0x61F4ABA5);
 
 // @0x14058ccf0
 int CItemEnchantInfo::FUN_14058ccf0() {
@@ -243,10 +243,10 @@ void CItemEnchantInfo::FUN_14058cda0(int version) {
 MS2_REPLACE_METHOD(0x14058CDA0, CItemEnchantInfo, FUN_14058cda0, 22, 0x26F5625B);
 
 // @0x14058cdc0
-int CItemEnchantInfo::FUN_14058cdc0() {
+int CItemEnchantInfo::GetVersion() {
     return m_version;
 }
-MS2_REPLACE_METHOD(0x14058CDC0, CItemEnchantInfo, FUN_14058cdc0, 14, 0xD26D6807);
+MS2_REPLACE_METHOD(0x14058CDC0, CItemEnchantInfo, GetVersion, 14, 0xD26D6807);
 
 // @0x14058cde0
 Unk_EnchantPtr<BaseOption> CItemEnchantInfo::FUN_14058cde0(int key) {

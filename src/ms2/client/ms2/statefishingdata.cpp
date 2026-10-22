@@ -510,7 +510,7 @@ int StateFishing::FUN_140ddb620()
             MS2Ptr<CGemFishing> spFishing(dynamic_cast<CGemFishing*>(spGem.operator->()));
             if (spFishing.get() != 0)
             {
-                unsigned nRod = spFishing->FUN_1405a5be0();
+                unsigned nRod = spFishing->GetDataId();
                 if (nRod != 0)
                     return nRod;
             }

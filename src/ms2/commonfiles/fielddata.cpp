@@ -785,14 +785,14 @@ bool CFieldData::FUN_1403752c0()
 }
 MS2_REPLACE_METHOD(0x1403752c0, CFieldData, FUN_1403752c0, 63, 0x9B9CE7F7);
 // @0x140375310
-bool CFieldData::FUN_140375310() { return m_nTutorialType != 0; }
-MS2_REPLACE_METHOD(0x140375310, CFieldData, FUN_140375310, 48, 0x4EAB9F3F);
+bool CFieldData::HasTutorialType() { return m_nTutorialType != 0; }
+MS2_REPLACE_METHOD(0x140375310, CFieldData, HasTutorialType, 48, 0x4EAB9F3F);
 // @0x140375350
-int CFieldData::FUN_140375350() { return m_nContinentCode; }
-MS2_REPLACE_METHOD(0x140375350, CFieldData, FUN_140375350, 14, 0x7A15C443);
+int CFieldData::GetContinentCode() { return m_nContinentCode; }
+MS2_REPLACE_METHOD(0x140375350, CFieldData, GetContinentCode, 14, 0x7A15C443);
 // @0x140375370
-int CFieldData::FUN_140375370() { return m_nRegionCode; }
-MS2_REPLACE_METHOD(0x140375370, CFieldData, FUN_140375370, 14, 0x921EE467);
+int CFieldData::GetRegionCode() { return m_nRegionCode; }
+MS2_REPLACE_METHOD(0x140375370, CFieldData, GetRegionCode, 14, 0x921EE467);
 // @0x140375390
 int CFieldData::FUN_140375390() { return m_nCashTaxiNotDeparture == 0 ? 1 : 0; }
 MS2_REPLACE_METHOD(0x140375390, CFieldData, FUN_140375390, 47, 0x04942BBE);
@@ -809,8 +809,8 @@ MS2_REPLACE_METHOD(0x140375450, CFieldData, FUN_140375450, 47, 0xDF869FD2);
 int CFieldData::FUN_140375490() { return m_nRecallOtherUserProhibit == 0 ? 1 : 0; }
 MS2_REPLACE_METHOD(0x140375490, CFieldData, FUN_140375490, 47, 0x4217D80E);
 // @0x1403754d0
-int CFieldData::FUN_1403754d0() { return m_nPkMode; }
-MS2_REPLACE_METHOD(0x1403754d0, CFieldData, FUN_1403754d0, 17, 0xBA29CEEF);
+int CFieldData::GetPkMode() { return m_nPkMode; }
+MS2_REPLACE_METHOD(0x1403754d0, CFieldData, GetPkMode, 17, 0xBA29CEEF);
 // MS2-FUNCTIONAL: smart-pointer conversion and return temporary differ; ownership and shadow-continent lookup are preserved.
 // @0x1403754f0
 int CFieldData::FUN_1403754f0()
@@ -827,8 +827,8 @@ MS2_REPLACE_METHOD(0x140375570, CFieldData, FUN_140375570, 37, 0xF3184D0D);
 int CFieldData::FUN_1403755a0() { if (m_nAutoRevivalType == 2 && m_nAutoRevivalTime > 0) return 1; return 0; }
 MS2_REPLACE_METHOD(0x1403755a0, CFieldData, FUN_1403755a0, 37, 0x1B0E46E6);
 // @0x1403755d0
-int CFieldData::FUN_1403755d0() { return m_nOnlyDarkTomb; }
-MS2_REPLACE_METHOD(0x1403755d0, CFieldData, FUN_1403755d0, 14, 0x81E2A10F);
+int CFieldData::GetOnlyDarkTomb() { return m_nOnlyDarkTomb; }
+MS2_REPLACE_METHOD(0x1403755d0, CFieldData, GetOnlyDarkTomb, 14, 0x81E2A10F);
 // @0x140375660
 int CFieldData::FUN_140375660(unsigned mask) { if ((m_nLimitContent & mask) != 0) return 1; return 0; }
 MS2_REPLACE_METHOD(0x140375660, CFieldData, FUN_140375660, 40, 0x01A67DF4);
@@ -858,8 +858,8 @@ int CFieldData::FUN_140375740()
 }
 MS2_REPLACE_METHOD(0x140375740, CFieldData, FUN_140375740, 58, 0xB479DB81);
 // @0x140375780
-int CFieldData::FUN_140375780() { return m_nMapType; }
-MS2_REPLACE_METHOD(0x140375780, CFieldData, FUN_140375780, 14, 0xAA28048B);
+int CFieldData::GetMapType() { return m_nMapType; }
+MS2_REPLACE_METHOD(0x140375780, CFieldData, GetMapType, 14, 0xAA28048B);
 // @0x1403757a0
 int CFieldData::vfunc_2() { return m_nCapacity; }
 MS2_REPLACE_METHOD(0x1403757a0, CFieldData, vfunc_2, 17, 0x93EFE35E);
@@ -867,8 +867,8 @@ MS2_REPLACE_METHOD(0x1403757a0, CFieldData, vfunc_2, 17, 0x93EFE35E);
 int CFieldData::FUN_1403757c0() { return m_nCapacity; }
 MS2_REPLACE_METHOD(0x1403757c0, CFieldData, FUN_1403757c0, 17, 0x93EFE35E);
 // @0x1403757e0
-unsigned CFieldData::FUN_1403757e0() { return m_nSetItemRestrainId; }
-MS2_REPLACE_METHOD(0x1403757e0, CFieldData, FUN_1403757e0, 17, 0xF95067D2);
+unsigned CFieldData::GetSetItemRestrainId() { return m_nSetItemRestrainId; }
+MS2_REPLACE_METHOD(0x1403757e0, CFieldData, GetSetItemRestrainId, 17, 0xF95067D2);
 
 // @0x1403758c0
 template<class T> void Unk_FieldSplit(const CString& text,std::vector<T>& out,const char* delimiter);

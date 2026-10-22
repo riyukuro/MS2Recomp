@@ -49,7 +49,7 @@ public:
 class Unk_LgPreload
 {
 public:
-    void FUN_141ad03b0(LgProgressCallback kCallback);   // set the progress callback (by value: the callee destroys it)
+    void SetCallback(LgProgressCallback kCallback);   // set the progress callback (by value: the callee destroys it)
     void FUN_141ad0320();                               // clear it
     int FUN_141210c60();                                // the preload is finished
     char m_pad_00[0x20];
@@ -138,7 +138,7 @@ static int FUN_141ad03a0() { return 0x4eef; }
 UISceneLogin::UISceneLogin() : m_nTitleDone(0), m_nShown(0), m_nExitFlag(0), m_nProgressDirty(0), m_nProgress(0), m_bPending(0)
 {
     m_6c = 0x6200009;
-    FUN_140ab7a10()->FUN_141ad03b0(LgProgressCallback(this, &UISceneLogin::FUN_141acf860));
+    FUN_140ab7a10()->SetCallback(LgProgressCallback(this, &UISceneLogin::FUN_141acf860));
 }
 
 // @0x141acec20
@@ -537,7 +537,7 @@ void Unk_LgPreload::FUN_141ad0320()
 }
 
 // @0x141ad03b0
-void Unk_LgPreload::FUN_141ad03b0(LgProgressCallback kCallback)
+void Unk_LgPreload::SetCallback(LgProgressCallback kCallback)
 {
     m_callback = kCallback;
 }

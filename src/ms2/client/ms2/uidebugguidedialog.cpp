@@ -231,7 +231,7 @@ void UIDebugGuideDialog::OnLoadInit()
     m_groups.clear();
     LoadXml("./Data/XmlDebug/DebugCommandCustom.xml");
     CString strPath = Unk_SocketFormat("{0}_{1}.xml", "./Data/XmlDebug/DebugCommand", FUN_140651350());
-    if (FUN_140166420()->FUN_1403987d0(std::string(strPath)) == 0)
+    if (GetFileSystem()->FUN_1403987d0(std::string(strPath)) == 0)
         strPath = FUN_1411c0aa0("./Data/XmlDebug/DebugCommand.xml");
     LoadXml(strPath);
     m_movie = FUN_1409b40c0(m_28, (*m_30).FUN_1422bb890());
@@ -357,7 +357,7 @@ void UIDebugGuideDialog::LoadXml(CString strPath)
 {
     bool bTemp = false;
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 1, true, false) != 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 1, true, false) != 0)
     {
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)

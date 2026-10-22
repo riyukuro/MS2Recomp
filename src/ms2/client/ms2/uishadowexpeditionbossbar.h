@@ -62,7 +62,7 @@ public:
     virtual void vfunc_84(int nCur);                                // 84 0x140f9d280
     virtual void vfunc_85();                                        // 85 0x140f9d2a0
     void FUN_140f9d1f0(int nCur, int nMax);                         // 0x140f9d1f0
-    void FUN_140f9d230(CStringW strTitle);                          // 0x140f9d230 set the title
+    void SetTitle(CStringW strTitle);                          // 0x140f9d230 set the title
 private:
     MS2_LAYOUT_FRIEND;
     CStringW m_strTitle;                                            // +0x178

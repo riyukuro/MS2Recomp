@@ -676,7 +676,7 @@ public:
 class CItemEnchantInfo
 {
 public:
-    int FUN_14058c5f0();                                        // enchant level
+    int GetLevel();                                        // enchant level
     int FUN_14058c8a0();                                        // broken
 };
 class Unk_ItemPlusInfo
@@ -1131,7 +1131,7 @@ void ASSlot::FUN_1409c2f40(CItemEnchantInfo* pEnchant)
 {
     if (pEnchant->FUN_14058c8a0() != 0)
     {
-        int nLevel = pEnchant->FUN_14058c5f0();
+        int nLevel = pEnchant->GetLevel();
         if (nLevel > 0)
         {
             FUN_1407cb9c0("enchantBroken", 1);
@@ -1140,7 +1140,7 @@ void ASSlot::FUN_1409c2f40(CItemEnchantInfo* pEnchant)
     }
     else
     {
-        int nLevel = pEnchant->FUN_14058c5f0();
+        int nLevel = pEnchant->GetLevel();
         if (nLevel > 0)
             FUN_1407cb9c0("enchant", nLevel);
     }

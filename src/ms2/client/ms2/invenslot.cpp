@@ -308,7 +308,7 @@ public:
 class UIUGCItemEditDialog : public UIDialog
 {
 public:
-    void FUN_141b463b0(MS2Ptr<CItem> spItem);             // put the UGC item into the editor
+    void SetEditItem(MS2Ptr<CItem> spItem);             // put the UGC item into the editor
 };
 UIUGCItemEditDialog* FUN_140eeff60(int nId);
 class Unk_IsInstrumentMgr
@@ -960,7 +960,7 @@ int InvenSlot::vfunc_13()
                             UIUGCItemEditDialog* pEdit = spEdit.get();
                             if (pEdit->vfunc_55() == 1)
                             {
-                                spEdit.get()->FUN_141b463b0(spItem);
+                                spEdit.get()->SetEditItem(spItem);
                                 FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4e69);
                             }
                         }

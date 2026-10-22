@@ -529,7 +529,7 @@ bool CGFxLanguage::LoadKorFlash(TiXmlDocument* pDoc)
 {
     CString strPath = FUN_14071ae20("korFlash.xml");
     CCacheData::FUN_1401d1160(CString(strPath));
-    return FUN_140166420()->FUN_1403974b0(pDoc, strPath, 0, true, false) ? true : false;
+    return GetFileSystem()->FUN_1403974b0(pDoc, strPath, 0, true, false) ? true : false;
 }
 
 // @0x141815db0
@@ -602,7 +602,7 @@ bool CStringTable::Load()
 {
     CString strPath = FUN_14071a5b0(CString("Table"), CString("string.xml"));
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1062,7 +1062,7 @@ int CStringTable::FUN_141813f10(CachePtr spCache)
         if (spFile == 0)
             continue;
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
+        if (GetFileSystem()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
             return 0;
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
@@ -1100,7 +1100,7 @@ int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
         if (spFile == 0)
             continue;
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
+        if (GetFileSystem()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
             return 0;
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
@@ -1133,7 +1133,7 @@ int CStringTable::FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCac
     CString strPath = FUN_14071ae20(strFile);
     Unk_CriticalSectionLock lock(m_lock, 1);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1162,7 +1162,7 @@ int CStringTable::FUN_141814a20(CString strFile, DescMap& rMap, CCacheData& rCac
     CString strPath = FUN_14071ae20(strFile);
     Unk_CriticalSectionLock lock(m_lock, 1);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1195,7 +1195,7 @@ int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
         if (spFile == 0)
             continue;
         TiXmlDocument doc;
-        if (FUN_140166420()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
+        if (GetFileSystem()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
             continue;
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)

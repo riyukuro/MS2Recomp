@@ -26,7 +26,7 @@ public:
     virtual int vfunc_48() { return 0x4f86; }                   // 48 0x140c14270
 
     void FUN_140c11190(int nGroup);                             // pick the dungeon group: refill m_rooms
-    void FUN_140c112a0(const std::set<unsigned>& selected);     // the ticked dungeon ids (set by the control center)
+    void SetSelected(const std::set<unsigned>& selected);     // the ticked dungeon ids (set by the control center)
     void FUN_140c112e0();                                       // refresh
     void FUN_140c11300();                                       // the list's row count
     void FUN_140c11370(const Scaleform::GFx::FunctionHandler::Params& params);   // the dropdown changed

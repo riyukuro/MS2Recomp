@@ -71,7 +71,7 @@ CString UIPortalEmoticon::vfunc_1()
 }
 
 // @0x140f9bb50
-int UIPortalEmoticon::FUN_140f9bb50()
+int UIPortalEmoticon::IsShown()
 {
     return m_bShown;
 }
@@ -106,7 +106,7 @@ void UIPortalEmoticon::FUN_140f9bc40(Unk_StreamPoint ptWorld)
 }
 
 // @0x140f9bca0
-void UIPortalEmoticon::FUN_140f9bca0(const CStringW& strName)
+void UIPortalEmoticon::SetName(const CStringW& strName)
 {
     m_strName = strName;
 }
@@ -154,7 +154,7 @@ void UIPortalEmoticon::vfunc_15()
     {
         if (m_bPending != 0)
             vfunc_52();
-        if (FUN_140f9bb50() == 0)
+        if (IsShown() == 0)
             vfunc_8(0);
         else
             FUN_140f9bf70();

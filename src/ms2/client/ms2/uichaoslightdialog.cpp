@@ -408,7 +408,7 @@ void ChaosLightEffect::vfunc_7()
     for (unsigned int i = 0; i < m_arrLayers.GetCount(); i++)
     {
         ChaosLightEffectLayer* pLayer = m_arrLayers[i];
-        FUN_1403ed2d0()->FUN_141bd3680()->RemoveLayer(pLayer);
+        FUN_1403ed2d0()->GetChaosLightEffectLayerManager()->RemoveLayer(pLayer);
     }
     MS2_FOR_EACH(NiAVObjectPtr spNode, m_vecObjects)
         spNode->UpdateProperties();
@@ -467,7 +467,7 @@ void FUN_141041ea0(const ChaosLightEffectParam* pParam)
             {
                 ChaosLightEffectLayer* pLayer = rEffect->m_arrLayers[i];
                 pLayer->FUN_141046410(*pParam);
-                FUN_1403ed2d0()->FUN_141bd3680()->Refresh(pLayer);
+                FUN_1403ed2d0()->GetChaosLightEffectLayerManager()->Refresh(pLayer);
             }
         }
     }
@@ -563,7 +563,7 @@ void ChaosLightEffect::FUN_1410423d0(NiAVObjectPtr spObject)
                     continue;
             }
         }
-        ChaosLightEffectLayerManager* pManager = FUN_1403ed2d0()->FUN_141bd3680();
+        ChaosLightEffectLayerManager* pManager = FUN_1403ed2d0()->GetChaosLightEffectLayerManager();
         ChaosLightEffectLayer* pLayer = new (efd::MemHint(efd::MemHint::NONE))
             ChaosLightEffectLayer(pMesh, pManager->FUN_1410469c0(), &m_param);
         pManager->AddLayer(pLayer);

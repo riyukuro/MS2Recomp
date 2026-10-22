@@ -319,7 +319,7 @@ public:
   CStringW* FUN_140529540();
   void FUN_140529600();
   bool FUN_140529680(int);
-  void FUN_140529fd0(CString);
+  void SetName(CString);
   void FUN_14052a210(unsigned);
   void FUN_14052a230(unsigned);
   void FUN_14052a260(unsigned);

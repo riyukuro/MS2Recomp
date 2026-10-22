@@ -27,7 +27,7 @@ public:
     virtual void vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs);   // 5 0x140fe7600
     virtual CString vfunc_6() = 0;                              //  6 the page key
     virtual CStringW vfunc_7() = 0;                              //  7 the tab label
-    MS2Ptr<AScript> FUN_140fe7620() const;                      // 0x140fe7620 the page movie clip
+    MS2Ptr<AScript> GetScript() const;                      // 0x140fe7620 the page movie clip
     UIWeddingDialog* FUN_140fe7670() const;                     // 0x140fe7670 the owner
 
 protected:

@@ -279,11 +279,11 @@ int UIWeddingHallReservationDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 MS2_REPLACE_METHOD_VIA(0x140fdbe20, UIWeddingHallReservationDialog, IMessageListener, OnMessage, 289, 0x68FA4A79);
 
 // @0x140fdbf50
-void UIWeddingHallReservationDialog::FUN_140fdbf50(int nPackage)
+void UIWeddingHallReservationDialog::SetPackage(int nPackage)
 {
     m_nPackage = nPackage;
 }
-MS2_REPLACE_METHOD(0x140fdbf50, UIWeddingHallReservationDialog, FUN_140fdbf50, 25, 0x11D24FAE);
+MS2_REPLACE_METHOD(0x140fdbf50, UIWeddingHallReservationDialog, SetPackage, 25, 0x11D24FAE);
 
 // @0x140fdbf70
 void UIWeddingHallReservationDialog::FUN_140fdbf70()
@@ -306,25 +306,25 @@ void UIWeddingHallReservationDialog::FUN_140fdc030()
 MS2_REPLACE_METHOD(0x140fdc030, UIWeddingHallReservationDialog, FUN_140fdc030, 205, 0xFF3DDA98);
 
 // @0x140fdc110
-void UIWeddingHallReservationDialog::FUN_140fdc110(int nHall)
+void UIWeddingHallReservationDialog::SetHall(int nHall)
 {
     m_nHall = nHall;
 }
-MS2_REPLACE_METHOD(0x140fdc110, UIWeddingHallReservationDialog, FUN_140fdc110, 25, 0x3BA376EE);
+MS2_REPLACE_METHOD(0x140fdc110, UIWeddingHallReservationDialog, SetHall, 25, 0x3BA376EE);
 
 // @0x140fdc130
-void UIWeddingHallReservationDialog::FUN_140fdc130(__int64 nTime)
+void UIWeddingHallReservationDialog::SetTime(__int64 nTime)
 {
     m_nTime = nTime;
 }
-MS2_REPLACE_METHOD(0x140fdc130, UIWeddingHallReservationDialog, FUN_140fdc130, 28, 0x9BD0B3F6);
+MS2_REPLACE_METHOD(0x140fdc130, UIWeddingHallReservationDialog, SetTime, 28, 0x9BD0B3F6);
 
 // @0x140fdc160
-void UIWeddingHallReservationDialog::FUN_140fdc160(unsigned char bNight)
+void UIWeddingHallReservationDialog::SetNight(unsigned char bNight)
 {
     m_bNight = bNight;
 }
-MS2_REPLACE_METHOD(0x140fdc160, UIWeddingHallReservationDialog, FUN_140fdc160, 26, 0x1076974C);
+MS2_REPLACE_METHOD(0x140fdc160, UIWeddingHallReservationDialog, SetNight, 26, 0x1076974C);
 
 // MS2-FUNCTIONAL: frame 0x20 larger (slot order of the bill / string temporaries); calls and logic identical
 // @0x140fdc180
@@ -387,32 +387,32 @@ void UIWeddingHallReservationDialog::FUN_140fdc9f0()
 MS2_REPLACE_METHOD(0x140fdc9f0, UIWeddingHallReservationDialog, FUN_140fdc9f0, 27, 0x68E3290C);
 
 // @0x140fdca20
-int UIWeddingHallReservationDialog::FUN_140fdca20()
+int UIWeddingHallReservationDialog::GetHall()
 {
     return m_nHall;
 }
-MS2_REPLACE_METHOD(0x140fdca20, UIWeddingHallReservationDialog, FUN_140fdca20, 17, 0xA6F3F9B2);
+MS2_REPLACE_METHOD(0x140fdca20, UIWeddingHallReservationDialog, GetHall, 17, 0xA6F3F9B2);
 
 // @0x140fdca40
-__int64 UIWeddingHallReservationDialog::FUN_140fdca40()
+__int64 UIWeddingHallReservationDialog::GetTime()
 {
     return m_nTime;
 }
-MS2_REPLACE_METHOD(0x140fdca40, UIWeddingHallReservationDialog, FUN_140fdca40, 18, 0x7817FBF0);
+MS2_REPLACE_METHOD(0x140fdca40, UIWeddingHallReservationDialog, GetTime, 18, 0x7817FBF0);
 
 // @0x140fdca60
-unsigned char UIWeddingHallReservationDialog::FUN_140fdca60()
+unsigned char UIWeddingHallReservationDialog::GetNight()
 {
     return m_bNight;
 }
-MS2_REPLACE_METHOD(0x140fdca60, UIWeddingHallReservationDialog, FUN_140fdca60, 18, 0x21FB4E4C);
+MS2_REPLACE_METHOD(0x140fdca60, UIWeddingHallReservationDialog, GetNight, 18, 0x21FB4E4C);
 
 // @0x140fdca80
-int UIWeddingHallReservationDialog::FUN_140fdca80()
+int UIWeddingHallReservationDialog::GetMode()
 {
     return m_nMode;
 }
-MS2_REPLACE_METHOD(0x140fdca80, UIWeddingHallReservationDialog, FUN_140fdca80, 17, 0xD5D5F2AE);
+MS2_REPLACE_METHOD(0x140fdca80, UIWeddingHallReservationDialog, GetMode, 17, 0xD5D5F2AE);
 
 // @0x140fdcaa0
 void UIWeddingHallReservationDialog::FUN_140fdcaa0(const CString& strMode)

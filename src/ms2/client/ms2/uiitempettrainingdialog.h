@@ -27,7 +27,7 @@ public:
     virtual int vfunc_65();                                     // 65 0x140e57bb0
     virtual void vfunc_67();                                    // 67 0x140e57bd0 close: forget the items
 
-    void FUN_140e57c80(unsigned __int64 nOwner);                // 0x140e57c80 the uid of the training item
+    void SetOwner(unsigned __int64 nOwner);                // 0x140e57c80 the uid of the training item
     void FUN_140e57cb0(CInPacket& packet);                      // 0x140e57cb0 packet 0xcc: training done
     void FUN_140e57d60();                                       // 0x140e57d60 ask the server to train the pet
     ItemScrollSlot* FUN_140e57e50(CString strName);             // 0x140e57e50 the scroll slot of a name

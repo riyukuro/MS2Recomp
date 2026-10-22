@@ -104,7 +104,7 @@ public:
     virtual bool vfunc_75();                                        // 75 0x1410337a0
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // IMessageListener 0 0x141033e40
 
-    int FUN_141034da0();                                            // 0x141034da0 the category page
+    int GetCategory();                                            // 0x141034da0 the category page
     bool FUN_141034dc0(int nId);                                    // 0x141034dc0 is the product shown?
     void FUN_141034e00(int nCash);                                  // 0x141034e00 the cash balance
     void FUN_141034ef0(int n, CInPacket& rPacket);                  // 0x141034ef0 the buy result: drops the bought basket rows
@@ -116,7 +116,7 @@ public:
     bool FUN_1410356a0();                                           // 0x1410356a0 buy ids are waiting
     void FUN_1410356f0();                                           // 0x1410356f0 open the cash unlock web dialog
     void FUN_141035920(int n);                                      // 0x141035920
-    void FUN_141035970(int nState);                                 // 0x141035970 unlock state
+    void SetUnlockState(int nState);                                 // 0x141035970 unlock state
     bool FUN_141035990(const CString& strName, ATL::CAtlArray<int>& rIds, bool bBasket);   // 0x141035990 open the bill dialog for the products
     void FUN_141035e40();                                           // 0x141035e40 page buttons
     void FUN_1410360c0();                                           // 0x1410360c0 fill the sale list

@@ -374,7 +374,7 @@ void UINpcControlDialog::FUN_141a63770()
 }
 
 // @0x141a638c0
-void UINpcControlDialog::FUN_141a638c0(int nNpcId)
+void UINpcControlDialog::SetNpcId(int nNpcId)
 {
     m_nNpcId = nNpcId;
 }

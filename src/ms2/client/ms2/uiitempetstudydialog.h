@@ -27,7 +27,7 @@ public:
     virtual int vfunc_65();                                     // 65 0x140e55730
     virtual void vfunc_67();                                    // 67 0x140e55750 close: forget the items
 
-    void FUN_140e557f0(unsigned __int64 nOwner);                // 0x140e557f0 the uid of the study scroll
+    void SetOwner(unsigned __int64 nOwner);                // 0x140e557f0 the uid of the study scroll
     void FUN_140e55820(CInPacket& packet);                      // 0x140e55820 packet 0xcc: study done
     void FUN_140e558d0();                                       // 0x140e558d0 ask the server to study
     ItemScrollSlot* FUN_140e559c0(CString strName);             // 0x140e559c0 the scroll slot of a name

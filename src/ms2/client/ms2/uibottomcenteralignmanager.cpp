@@ -62,7 +62,7 @@ void UIBottomCenterAlignManager::FUN_140bc1730()
 {
     int nOffset = 0;
     UIHighlightGameMenu* pMenu = FUN_140bc17d0(0x4f75);
-    if (pMenu && pMenu->FUN_140c22ce0())
+    if (pMenu && pMenu->IsActive())
         nOffset -= 60;
     UIRecallScrollNotifyDialog* pRecall = FUN_140bc1870(0x4edd);
     if (pRecall && pRecall->FUN_14129c900())

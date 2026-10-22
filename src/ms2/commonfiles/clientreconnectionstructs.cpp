@@ -170,7 +170,7 @@ void COutPacketBuffer::PushPendingPacket(COutPacket& packet)
     }
 }
 // @0x140209340
-void COutPacketBuffer::FUN_140209340(unsigned limit) { m_limit = limit; }
+void COutPacketBuffer::SetLimit(unsigned limit) { m_limit = limit; }
 // @0x140209360
 unsigned COutPacketBuffer::FUN_140209360()
 {
@@ -181,7 +181,7 @@ unsigned COutPacketBuffer::FUN_140209360()
     }
 }
 // @0x140209430
-int COutPacketBuffer::FUN_140209430() { return m_sequence; }
+int COutPacketBuffer::GetSequence() { return m_sequence; }
 // @0x140209450
 void COutPacketBuffer::FUN_140209450(int enabled)
 {
@@ -189,7 +189,7 @@ void COutPacketBuffer::FUN_140209450(int enabled)
     if (enabled == 0) ShrinkCapturedPackets();
 }
 // @0x140209490
-int COutPacketBuffer::FUN_140209490() { return m_captureEnabled; }
+int COutPacketBuffer::GetCaptureEnabled() { return m_captureEnabled; }
 // @0x1402094b0
 void COutPacketBuffer::FUN_1402094b0(int value)
 {
@@ -246,10 +246,10 @@ MS2_REPLACE_METHOD(0x140208D40, COutPacketBuffer, FUN_140208d40, 227, 0xA4669931
 MS2_REPLACE_METHOD(0x140208E30, COutPacketBuffer, ShrinkCapturedPackets, 535, 0xC7874AD2);
 MS2_REPLACE_METHOD(0x140209050, COutPacketBuffer, FUN_140209050, 337, 0x7D8B5E33);
 MS2_REPLACE_METHOD(0x1402091B0, COutPacketBuffer, PushPendingPacket, 381, 0xC82B70A7);
-MS2_REPLACE_METHOD(0x140209340, COutPacketBuffer, FUN_140209340, 22, 0x5ED7A56F);
-MS2_REPLACE_METHOD(0x140209430, COutPacketBuffer, FUN_140209430, 14, 0x6A78E4AB);
+MS2_REPLACE_METHOD(0x140209340, COutPacketBuffer, SetLimit, 22, 0x5ED7A56F);
+MS2_REPLACE_METHOD(0x140209430, COutPacketBuffer, GetSequence, 14, 0x6A78E4AB);
 MS2_REPLACE_METHOD(0x140209450, COutPacketBuffer, FUN_140209450, 47, 0x92F6C3F9);
-MS2_REPLACE_METHOD(0x140209490, COutPacketBuffer, FUN_140209490, 14, 0xA25B27BF);
+MS2_REPLACE_METHOD(0x140209490, COutPacketBuffer, GetCaptureEnabled, 14, 0xA25B27BF);
 MS2_REPLACE_METHOD(0x1402094B0, COutPacketBuffer, FUN_1402094b0, 88, 0x0208595C);
 MS2_REPLACE_METHOD(0x140209510, COutPacketBuffer, FUN_140209510, 284, 0xEA511BF5);
 MS2_REPLACE_METHOD(0x140209640, COutPacketBuffer, FUN_140209640, 90, 0x6996CB7F);

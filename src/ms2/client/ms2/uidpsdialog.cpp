@@ -67,7 +67,7 @@ void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, __int64 n);           // Value
 
 CToolBaseDialog* FUN_14192a1e0();                                       // TSingleton<CDPSDialog>::CreateInstance
 void FUN_14192a260();                                                   // DestroyInstance
-CToolBaseDialog* FUN_14192a2c0();                                       // GetInstance
+CToolBaseDialog* GetToolBaseDialog();                                       // GetInstance
 
 // @0x141928c80
 UIDPSDialog::UIDPSDialog()
@@ -93,10 +93,10 @@ int UIDPSDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    if (FUN_14192a2c0() == 0)
+    if (GetToolBaseDialog() == 0)
         FUN_14192a260();
     FUN_14192a1e0();
-    CToolBaseDialog* pTool = FUN_14192a2c0();
+    CToolBaseDialog* pTool = GetToolBaseDialog();
     pTool->Create(0x91, CWnd::FromHandle(FUN_140aadf80()->FUN_14209c720()));
     COutPacket packet(0x56, 0);
     packet.vfunc_o10_1(1);
@@ -108,7 +108,7 @@ int UIDPSDialog::vfunc_65()
 void UIDPSDialog::vfunc_67()
 {
     FUN_14109a6f0()->FUN_14117c7c0(FUN_140869420());
-    if (FUN_14192a2c0() != 0)
+    if (GetToolBaseDialog() != 0)
         FUN_14192a260();
     COutPacket packet(0x56, 0);
     packet.vfunc_o10_1(0);
@@ -120,8 +120,8 @@ void UIDPSDialog::vfunc_67()
 // @0x141928f20
 void UIDPSDialog::vfunc_72()
 {
-    if (FUN_14192a2c0() != 0)
-        FUN_141178870(FUN_14192a2c0());
+    if (GetToolBaseDialog() != 0)
+        FUN_141178870(GetToolBaseDialog());
     if (m_17c != 0)
     {
         ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -167,8 +167,8 @@ void UIDPSDialog::vfunc_72()
                     CString strDps;
                     strDps.Format("%.2f", dDps);
                     pDialog->FUN_14192a060("setAttr", CString(strTime), m_188, CString(strDps));
-                    if (FUN_14192a2c0() != 0)
-                        FUN_1411789e0(FUN_14192a2c0(), m_184);
+                    if (GetToolBaseDialog() != 0)
+                        FUN_1411789e0(GetToolBaseDialog(), m_184);
                     FUN_14109a6f0()->FUN_14117c7c0(m_184);
                     pDialog->Invoke("onStop");
                 }
@@ -291,8 +291,8 @@ void UIDPSDialog::FUN_141929a60(int nDelay, int nDuration)
 // @0x141929b00
 void UIDPSDialog::OnStop()
 {
-    if (FUN_14192a2c0() != 0)
-        FUN_1411789e0(FUN_14192a2c0(), FUN_140869420());
+    if (GetToolBaseDialog() != 0)
+        FUN_1411789e0(GetToolBaseDialog(), FUN_140869420());
     FUN_14109a6f0()->FUN_14117c7c0(FUN_140869420());
     FUN_141929760();
     FUN_141929700();
@@ -333,7 +333,7 @@ CToolBaseDialog* FUN_14192a1e0()
         void* mem = FUN_140c7fa70(0x350);
         return mem ? FUN_141178390(mem, 0) : 0;
     }
-    return FUN_14192a2c0();
+    return GetToolBaseDialog();
 }
 
 // @0x14192a260
@@ -341,13 +341,13 @@ void FUN_14192a260()
 {
     if (DAT_143ad0d98 != 0)
     {
-        delete FUN_14192a2c0();
+        delete GetToolBaseDialog();
         DAT_143ad0d98 = 0;
     }
 }
 
 // @0x14192a2c0
-CToolBaseDialog* FUN_14192a2c0()
+CToolBaseDialog* GetToolBaseDialog()
 {
     return DAT_143ad0d98;
 }

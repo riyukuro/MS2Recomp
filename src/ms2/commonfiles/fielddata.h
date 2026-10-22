@@ -78,13 +78,13 @@ public:
 
     // Recovered predicates and accessors (appended by a3; the shared layout is unchanged).
     bool FUN_140375100(); bool FUN_140375130(); bool FUN_140375170(); bool FUN_140375190();
-    bool FUN_1403751b0(); bool FUN_140375270(); bool FUN_1403752c0(); bool FUN_140375310();
-    int FUN_140375350(); int FUN_140375370();
+    bool FUN_1403751b0(); bool FUN_140375270(); bool FUN_1403752c0(); bool HasTutorialType();
+    int GetContinentCode(); int GetRegionCode();
     int FUN_140375390(); int FUN_1403753d0(); int FUN_140375410(); int FUN_140375450(); int FUN_140375490();
-    int FUN_1403754d0(); int FUN_1403754f0();
-    int FUN_140375570(); int FUN_1403755a0(); int FUN_1403755d0();
+    int GetPkMode(); int FUN_1403754f0();
+    int FUN_140375570(); int FUN_1403755a0(); int GetOnlyDarkTomb();
     int FUN_140375660(unsigned); int FUN_140375690(void*); bool FUN_1403756c0(unsigned);
-    bool FUN_1403756f0(); int FUN_140375740(); int FUN_140375780(); int FUN_1403757c0(); unsigned FUN_1403757e0();
+    bool FUN_1403756f0(); int FUN_140375740(); int GetMapType(); int FUN_1403757c0(); unsigned GetSetItemRestrainId();
 
 public:
     MS2_LAYOUT_FRIEND;

@@ -40,7 +40,7 @@ int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int& nOut);
 int FUN_140873360(Unk_140165cf0* pNode, const char* pszName, float& fOut);
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 
-CLogString* FUN_140166440();                                        // the logger
+CLogString* GetLogString();                                        // the logger
 // The sound service (?\soundservice.cpp) and its FMOD event system.
 class CSoundService { public: FMOD::EventSystem* GetEventSystem(); };
 CSoundService* FUN_140c9cb10();
@@ -102,7 +102,7 @@ bool CSoundMusicEffectParam::vfunc_2()
             FMOD::MusicPrompt* pPrompt;
             if (pMusic->prepareCue(m_nCueID, &pPrompt) != FMOD_OK)
             {
-                Unk_SoundLog(FUN_140166440(), 1, 0x13, L"Music Cue을 찾을 수 없습니다[{0}] [{1}]", m_nCueID, m_str20);
+                Unk_SoundLog(GetLogString(), 1, 0x13, L"Music Cue을 찾을 수 없습니다[{0}] [{1}]", m_nCueID, m_str20);
                 return false;
             }
         }

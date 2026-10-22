@@ -636,7 +636,7 @@ CString FUN_140741200(const char* pszFormat, const CString& strA, const CString&
 CString FUN_140536a50(const char* pszFormat, const CString& strA);
 class Unk_NifStrings { public: CStringW FUN_141811980(int nA, int nId); };
 Unk_NifStrings* FUN_1401a9d70();
-CLogString* FUN_140166440();                                         // the game log, or 0
+CLogString* GetLogString();                                         // the game log, or 0
 
 // 3-argument fmt log helper (log, level, category, "format", a, b, c).
 // @0x14154da00
@@ -1297,8 +1297,8 @@ void CNifEffect::FUN_14154c7f0(Unk_EffectTarget* pTarget)
             strWhere = Unk_SocketFormat("targetNode:{0}, itemID:{1}({2})", CString(FUN_142087e50(FUN_1409a8b90(static_cast<NiAVObject*>(FUN_1409475f0(&kTarget))))), nItemId, CString((const wchar_t*)strName));
         }
     }
-    if (FUN_140166440() != 0)
-        Unk_NifLog3(FUN_140166440(), 0xc, 0x133, L"LOD level [{0}] [{1}] [{2}]", m_nLodLevel, m_spParam->m_strFilePath, strWhere);
+    if (GetLogString() != 0)
+        Unk_NifLog3(GetLogString(), 0xc, 0x133, L"LOD level [{0}] [{1}] [{2}]", m_nLodLevel, m_spParam->m_strFilePath, strWhere);
 }
 MS2_REPLACE_METHOD(0x14154C7F0, CNifEffect, FUN_14154c7f0, 1827, 0x12B3C2BF);
 
@@ -1662,7 +1662,7 @@ NiStream* CNiStreamLoadThread::Load(CString strPath, int bKeep)
         {
             delete pStream;
             const char* pszPath = strDir.c_str();
-            FUN_1403a1280(FUN_140166440(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[{0}]", pszPath);
+            FUN_1403a1280(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[{0}]", pszPath);
             return 0;
         }
         NiFree(pBuf);
@@ -2446,7 +2446,7 @@ CCachedNifPtr CNifLoadingService::CreateCachedNif(CString strPath, int nClass, b
     NiStream* pStream = FUN_1414a5720()->Get(CString(strPath));
     if (pStream == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"CreateCachedNif Stream[{0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"CreateCachedNif Stream[{0}]", strPath);
         return 0;
     }
     CCachedNifPtr spEntry = EE_NEW CCachedNif;
@@ -2456,7 +2456,7 @@ CCachedNifPtr CNifLoadingService::CreateCachedNif(CString strPath, int nClass, b
     spEntry->m_nClass = nClass;
     if (FUN_1409849b0(&spEntry->m_spData) == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"CreateCachedNif Object[{0}] GetObjectAt()", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"CreateCachedNif Object[{0}] GetObjectAt()", strPath);
         delete pStream;
         return 0;
     }

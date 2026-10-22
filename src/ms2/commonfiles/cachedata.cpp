@@ -136,7 +136,7 @@ extern bool DAT_143aac548;                      // watcher disabled
 extern int DAT_1439f4840;                       // default code page (localepath.cpp)
 extern Unk_SingletonObj* DAT_143aac5c0;
 extern Unk_SingletonObj1* DAT_143aac5c8;
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 unsigned int FUN_1408693e0();                   // tick count in milliseconds
 #ifdef __clang__
 CString FUN_1401d2b10(const CString&, const CString&);
@@ -194,7 +194,7 @@ bool CCacheData::FUN_1401d1160(CString strPath)
     FILETIME kTime;
     if (FUN_1401d17f0(strPath, &kTime) == 0)
     {
-        std::string kFound = FUN_140166420()->FUN_14039b810(std::string(strPath));
+        std::string kFound = GetFileSystem()->FUN_14039b810(std::string(strPath));
         if (FUN_1401d17f0(CString(kFound.c_str()), &kTime) == 0)
             return false;
         else
@@ -208,7 +208,7 @@ bool CCacheData::FUN_1401d1160(CString strPath)
 // @0x1401d1320
 unsigned char FUN_1401d1320(CCacheData* pData)
 {
-    if (FUN_140166420()->FUN_140398190())
+    if (GetFileSystem()->FUN_140398190())
     {
         return 0;
     }
@@ -256,7 +256,7 @@ void FUN_1401d1400(CString strPath)
             return;
         if (nTry > 20)
             return;
-        Unk_FileLog(FUN_140166440(), 12, 0x13, L"try = {0} file = {1}", nTry, (const char*)CString(strPath));
+        Unk_FileLog(GetLogString(), 12, 0x13, L"try = {0} file = {1}", nTry, (const char*)CString(strPath));
         Sleep(100);
     } while (dwError == ERROR_SHARING_VIOLATION);
     if (dwError != 0)
@@ -300,7 +300,7 @@ void FUN_1401d17b0(Unk_CacheListenerPtr kListener)
 // @0x1401d17f0
 int CCacheData::FUN_1401d17f0(CString strPath, FILETIME* pTime)
 {
-    if (FUN_140166420()->FUN_140398190())
+    if (GetFileSystem()->FUN_140398190())
     {
         GetSystemTimeAsFileTime(pTime);
         return 1;

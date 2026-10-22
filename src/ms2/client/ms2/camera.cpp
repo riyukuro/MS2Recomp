@@ -182,7 +182,7 @@ Unk_CameraUIService* FUN_1403ed2b0();
 class UINpcControlDialog : public UIDialog
 {
 public:
-    void FUN_141a638c0(int nNpcId);
+    void SetNpcId(int nNpcId);
 };
 // @0x140af2990
 template <class T> T* Unk_CameraDialog(int nId)
@@ -491,7 +491,7 @@ BOOL LoadTestCamerValue()
     TiXmlDocument doc;
     if (!doc.FUN_140870fc0("./data/xml/table/TestCamerValue.xml", 0))
     {
-        if (!FUN_140166420()->FUN_1403974b0(&doc, "./data/xml/table/TestCamerValue.xml", 0, true, false))
+        if (!GetFileSystem()->FUN_1403974b0(&doc, "./data/xml/table/TestCamerValue.xml", 0, true, false))
             return FALSE;
     }
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
@@ -1094,7 +1094,7 @@ void CameraMgr::FUN_140aeb1a0()
             if (pDialog)
             {
                 FUN_1403ed2b0()->FUN_141adc5d0(0x4e81);
-                pDialog->FUN_141a638c0(pNpc->FUN_14123c580());
+                pDialog->SetNpcId(pNpc->FUN_14123c580());
                 FUN_1403ed2b0()->FUN_141adc530(0x4e81);
                 COutPacket packet(0x50, 0);
                 packet.vfunc_o10_1(4);
@@ -1805,7 +1805,7 @@ void CameraMgr::LoadMapLocalTargetCamera(unsigned int nMapId)
     CString strPath;
     strPath.Format("%s/%08d.xml", (const char*)FUN_14071a5b0("Camera", "Map"), nMapId);
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return;
     m_mapCache.FUN_1401d1160(strPath);
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
@@ -1910,7 +1910,7 @@ void CameraMgr::LoadMapCamera(unsigned int nMapId)
     CString strPath;
     strPath.Format("%s/%08d.xml", (const char*)FUN_14071a5b0("Camera", "Map"), nMapId);
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return;
     m_mapCache.FUN_1401d1160(strPath);
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");

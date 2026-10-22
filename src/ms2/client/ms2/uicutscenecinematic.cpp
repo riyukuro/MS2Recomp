@@ -293,7 +293,7 @@ void UICutSceneCinematic::FUN_141908040(bool bOn)
 {
     if (bOn)
     {
-        if (FUN_140967100()->FUN_141b21220())
+        if (FUN_140967100()->GetTalking())
             FUN_140967100()->SendNpcTalkMode0();
         FUN_1408e57f0()->FUN_1422b9fd0(0x6200041);
     }

@@ -984,11 +984,11 @@ bool CItem::FUN_140529680(int n)
 MS2_REPLACE_METHOD(0x140529680, CItem, FUN_140529680, 55, 0xA5806025);
 
 // @0x140529fd0
-void CItem::FUN_140529fd0(CString str)
+void CItem::SetName(CString str)
 {
     m_strName = str;
 }
-MS2_REPLACE_METHOD(0x140529FD0, CItem, FUN_140529fd0, 63, 0xD01079EB);
+MS2_REPLACE_METHOD(0x140529FD0, CItem, SetName, 63, 0xD01079EB);
 
 // @0x14052a210
 void CItem::FUN_14052a210(unsigned n)
@@ -1455,7 +1455,7 @@ int CItem::FUN_140526fc0()
     CItemEnchantInfo* pInfo = m_spStatus->FUN_140630d60();
     if (pInfo == 0)
         return 0;
-    return pInfo->FUN_14058c5f0();
+    return pInfo->GetLevel();
 }
 MS2_REPLACE_METHOD(0x140526FC0, CItem, FUN_140526fc0, 100, 0xC4F66D3A);
 
@@ -1479,7 +1479,7 @@ int CItem::FUN_1405270a0()
     CItemEnchantInfo* pInfo = m_spStatus->FUN_140630d60();
     if (pInfo == 0)
         return 0;
-    return pInfo->FUN_14058c730();
+    return pInfo->GetCharge();
 }
 MS2_REPLACE_METHOD(0x1405270A0, CItem, FUN_1405270a0, 100, 0xCC383426);
 
@@ -2399,10 +2399,10 @@ int CItem::FUN_140528f90(int)
     if (pInfo == 0)
         return 0;
     int nRate = 0;
-    int nLevel = pInfo->FUN_14058c5f0() + 1;
-    if (pInfo->FUN_14058c730() != 0)
+    int nLevel = pInfo->GetLevel() + 1;
+    if (pInfo->GetCharge() != 0)
     {
-        switch (pInfo->FUN_14058cdc0())
+        switch (pInfo->GetVersion())
         {
         case 0:
             nRate = FUN_14052d1e0()->FUN_140594750(nLevel);

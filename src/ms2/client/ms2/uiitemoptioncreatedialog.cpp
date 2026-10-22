@@ -372,14 +372,14 @@ void UIItemOptionCreateDialog::FUN_1412d3740()
             ASObj column(2);
             ASObj label(2);
             if (pValue->FUN_1405d2790() == 0) {
-                FUN_1412d4400(label, pValue->FUN_1405d2750());
-                std::pair<int, int> range = FUN_140166430()->FUN_1405f64e0(m_nItemId, m_nRank, pValue->FUN_1405d2750());
+                FUN_1412d4400(label, pValue->GetStat());
+                std::pair<int, int> range = FUN_140166430()->FUN_1405f64e0(m_nItemId, m_nRank, pValue->GetStat());
                 column.FUN_1407cb9c0("minV", range.first);
                 column.FUN_1407cb9c0("maxV", range.second);
                 column.FUN_1407cb9c0("value", range.second);
             } else if (pValue->FUN_1405d2790() == 1) {
-                FUN_1412d44d0(label, pValue->FUN_1405d2770());
-                std::pair<int, int> range = FUN_140166430()->FUN_1405f6650(m_nItemId, m_nRank, pValue->FUN_1405d2770());
+                FUN_1412d44d0(label, pValue->GetSpecial());
+                std::pair<int, int> range = FUN_140166430()->FUN_1405f6650(m_nItemId, m_nRank, pValue->GetSpecial());
                 column.FUN_1407cb9c0("minV", range.first);
                 column.FUN_1407cb9c0("maxV", range.second);
                 column.FUN_1407cb9c0("value", range.second);
@@ -407,9 +407,9 @@ void UIItemOptionCreateDialog::FUN_1412d3a60()
             ASObj row(2);
             row.FUN_1412d4860("kinds", 0);
             if (pValue->FUN_1405ce470() == 0) {
-                FUN_1412d4400(row, pValue->FUN_1405ce370());
+                FUN_1412d4400(row, pValue->GetStat());
             } else if (pValue->FUN_1405ce470() == 1) {
-                FUN_1412d44d0(row, pValue->FUN_1405ce390());
+                FUN_1412d44d0(row, pValue->GetSpecial());
             }
             int nValue = pValue->vfunc_1(m_nItemId, m_nRank);
             if (nValue == 0)

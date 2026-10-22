@@ -109,11 +109,11 @@ public:
     void SendNpcTalkMode2(unsigned nNpcId);                    // ask the server to continue
     void FUN_141b20e60(MS2Ptr<CTalkScript> spScript, int nId, int nPage);   // begin at a page
     CStringW FUN_141b20ed0();                               // the name of the current page
-    MS2Ptr<CTalkScript> FUN_141b20fe0();                    // the script handle
+    MS2Ptr<CTalkScript> GetScript();                    // the script handle
     MS2Ptr<CCinematicContent> FUN_141b21030();              // the current page
     void FUN_141b21190(unsigned char nFlags, int nParam, int nPage);   // set the state words
     int FUN_141b211d0();                                    // the talk cooldown elapsed
-    int FUN_141b21220();                                    // IsTalking
+    int GetTalking();                                    // IsTalking
     int FUN_141b21240(int nNpcId);                          // IsTalkingWith
     unsigned FUN_141b212c0();                               // npc id (0 when not talking)
     int FUN_141b212f0();                                    // npc id of the open talk

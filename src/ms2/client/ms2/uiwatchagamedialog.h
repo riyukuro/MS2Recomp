@@ -23,8 +23,8 @@ public:
     virtual int vfunc_48() { return 0x4f91; }                   // 48 0x140fc1ce0
     virtual void vfunc_67();                                    // 67 0x140fc0a40
 
-    void FUN_140fc0b20(int nValue);                             // 0x140fc0b20
-    void FUN_140fc0b40(int nCharId);                            // 0x140fc0b40
+    void SetValue(int nValue);                             // 0x140fc0b20
+    void SetCharId(int nCharId);                            // 0x140fc0b40
     void FUN_140fc0b60(bool bFlag);                             // 0x140fc0b60 remember the flag, push "foldDialog"
     void FUN_140fc1380(const Scaleform::GFx::FunctionHandler::Params& params);   // an action button was clicked
     void FUN_140fc1440(const Scaleform::GFx::FunctionHandler::Params& params);   // the fold button was clicked

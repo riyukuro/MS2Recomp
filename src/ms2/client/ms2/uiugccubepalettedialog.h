@@ -90,7 +90,7 @@ MS2_CHECK_SIZE(UGCKeyController, 0x18);
 struct Unk_CubeFocus
 {
     Unk_CubeFocus();                                        // 0x140ee9c90
-    bool FUN_140ee9cd0();                                   // active
+    bool IsActive();                                   // active
     void FUN_140ee9cf0(int nIndex, int nCubeId);            // activate (index clamped at 0)
     void FUN_140ee9d50();                                   // clear
     int FUN_140ee9d70();                                    // list index of the cube (or the stored index)
@@ -109,7 +109,7 @@ struct Unk_CubeTimer
     bool FUN_140ee9e80();                                   // expired
     void FUN_140ee9eb0(int n);                              // arm (200 ms), remember max(n, 0)
     void FUN_140ee9f00();                                   // reset
-    int FUN_140ee9f30();                                    // the remembered value
+    int GetValue();                                    // the remembered value
     Timer m_timer;                                          // +0x00
     int m_nValue;                                           // +0x38
 };

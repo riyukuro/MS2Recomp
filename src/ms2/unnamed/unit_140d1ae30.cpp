@@ -1266,7 +1266,7 @@ int PetTraining(MS2Ptr<CItem> spItem, PC* pPlayer)
     UIItemPetTrainingDialog* pDialog = GetItemUseDialog<UIItemPetTrainingDialog>(0x4f12);
     if (pDialog != 0)
     {
-        pDialog->FUN_140e57c80(spItem->FUN_140526a50());
+        pDialog->SetOwner(spItem->FUN_140526a50());
         pDialog->FUN_141924680();
     }
     return 1;
@@ -1302,7 +1302,7 @@ int OpenPetBox(MS2Ptr<CItem> spItem, PC* pPlayer)
     {
         if (pDialog->FUN_141924630() != 0)
             return 1;
-        pDialog->FUN_140e4fc30(spItem->FUN_1405276c0());
+        pDialog->SetBoxItemId(spItem->FUN_1405276c0());
         pDialog->FUN_141924680();
     }
     return 1;
@@ -1316,7 +1316,7 @@ int OpenItemBoxLullu(MS2Ptr<CItem> spItem, PC* pPlayer)
     {
         if (pDialog->FUN_141924630() != 0)
             return 1;
-        pDialog->FUN_140e9c240(spItem->FUN_1405276c0());
+        pDialog->SetBoxItemId(spItem->FUN_1405276c0());
         pDialog->FUN_141924680();
     }
     return 1;
@@ -1330,7 +1330,7 @@ int SelectItemBox(MS2Ptr<CItem> spItem, PC* pPlayer)
     {
         if (pDialog->FUN_141924630() != 0)
             return 1;
-        pDialog->FUN_140f9a200(spItem->FUN_140526a50());
+        pDialog->SetItemUid(spItem->FUN_140526a50());
         pDialog->FUN_141924680();
     }
     return 1;
@@ -1580,7 +1580,7 @@ int LevelPotion(MS2Ptr<CItem> spItem, PC* pPlayer)
     MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
     if (spField == 0)
         return 0;
-    if (spField->FUN_140375310())
+    if (spField->HasTutorialType())
     {
         FUN_1412751f0(FUN_14028b8e0(L"s_tutorial_levelup_item_not_use"), 1, 1);
         return 0;

@@ -79,7 +79,7 @@ public:
     void FUN_1413571f0(NotifyObject* pObj);
     void FUN_141357300(NotifyObject* pObj);
     void FUN_141357330(NotifyObject* pObj);
-    void FUN_141357400(float f);
+    void SetNoticeSpeed(float f);
     void FUN_141357430(CStringW strText);
     void FUN_1413574a0(int nMode);
     void FUN_141357580(int nMode);
@@ -168,7 +168,7 @@ public:
     virtual bool vfunc_90(POINT* pPos);                                       // 90 0x14135f840 hit test (window -> view coordinates)
 
     void FUN_14135ec00(const CString& strUrl, bool bOnce);
-    bool FUN_14135ed80() const;
+    bool IsVisible() const;
     void FUN_14135eda0(int nWidth, int nHeight);
     void FUN_14135f7f0();
 

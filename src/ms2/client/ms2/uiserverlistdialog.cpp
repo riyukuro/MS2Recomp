@@ -279,20 +279,20 @@ CString UIServerListDialog::vfunc_1()
 // @0x141ad0f80
 size_t UIServerListDialog::FUN_141ad0f80()
 {
-    ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(FUN_141ad1030());
+    ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer());
     if (pPair == 0)
         return 0;
     return pPair->m_value->m_channels.GetCount();
 }
 
 // @0x141ad1010
-int UIServerListDialog::FUN_141ad1010()
+int UIServerListDialog::GetServerId()
 {
     return m_nServerId;
 }
 
 // @0x141ad1030
-CStringW UIServerListDialog::FUN_141ad1030()
+CStringW UIServerListDialog::GetServer()
 {
     return m_strServer;
 }
@@ -652,7 +652,7 @@ int UIServerListDialog::FUN_141ad2c50(__int64 nCharId, __int64 n3)
         if (pOptions->m_nCharId != nCharId)
             FUN_140da4fe0(FUN_140939a10(), MS2Ptr<NotifyObject>(new NotifyChangeMyPC));
         pOptions->FUN_141260c00(&nCharId);
-        pOptions->FUN_141260a30(FUN_141ad1030());
+        pOptions->FUN_141260a30(GetServer());
         if (nChannel != 0)
             pOptions->FUN_141260ab0(nChannel);
     }
@@ -681,7 +681,7 @@ void UIServerListDialog::FUN_141ad2ef0()
 // @0x141ad2f60
 void UIServerListDialog::FUN_141ad2f60(ASArray& array, int* pnSelected, int nSelectedChannel)
 {
-    ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(FUN_141ad1030());
+    ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer());
     if (pPair != 0)
         FUN_141ad3370(array, pnSelected, nSelectedChannel, MS2Ptr<CMultiServer>(pPair->m_value));
 }
@@ -689,7 +689,7 @@ void UIServerListDialog::FUN_141ad2f60(ASArray& array, int* pnSelected, int nSel
 // @0x141ad3030
 void UIServerListDialog::FUN_141ad3030(const ATL::CAtlArray<int>& channels)
 {
-    ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(FUN_141ad1030());
+    ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer());
     if (pPair != 0) {
         pPair->m_value->m_channels.RemoveAll();
         for (unsigned i = 0; i < channels.GetCount(); i++) {
@@ -702,7 +702,7 @@ void UIServerListDialog::FUN_141ad3030(const ATL::CAtlArray<int>& channels)
 }
 
 // @0x141ad31b0
-int UIServerListDialog::FUN_141ad31b0()
+int UIServerListDialog::GetChannel()
 {
     return m_nChannel;
 }

@@ -16,7 +16,7 @@ public:
     virtual int vfunc_2(void*);                                     // 2 0x14195dee0 screen position (Unk_StreamPoint*), 0 when off screen
     void FUN_14195dfa0();                                           // ++m_34
     int FUN_14195dfc0();                                            // --m_34 (asserts when 0)
-    int FUN_14195e020();                                            // m_34
+    int GetUseCount();                                            // m_34
     int m_id;                                                       // +0x18 arrow id
     Unk_StreamPoint m_pos;                                          // +0x1c world position
     int m_direction;                                                // +0x28
@@ -88,7 +88,7 @@ public:
     int FUN_14195b760();
     int FUN_14195b810();
     int FUN_14195b8c0();
-    int FUN_14195b950();
+    int GetLastTip();
     void FUN_14195b970();
     void FUN_14195be30();
     void FUN_14195bfc0();

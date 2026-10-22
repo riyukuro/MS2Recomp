@@ -38,7 +38,7 @@ struct Unk_MasteryCraft
     void FUN_140eadda0();               // reset: type 2, the rest 0
     BOOL FUN_140eaddf0();               // type == 0
     BOOL FUN_140eade30();               // type == 1
-    BOOL FUN_140eade70();               // m_nTotal != 0
+    BOOL HasTotal();               // m_nTotal != 0
     int m_nType;
     int m_nTotal;
     int m_nDone;
@@ -67,7 +67,7 @@ public:
     virtual void OnCastingCancelled();                                                              // o178 1 0x140eafa10
 
     // ---- non-virtual members, sorted by address ----
-    void FUN_140eafdb0(int nMainTab);  // 0x140eafdb0
+    void SetMainTab(int nMainTab);  // 0x140eafdb0
     void FUN_140eafde0();  // 0x140eafde0
     void FUN_140eb0540();  // 0x140eb0540
     void FUN_140eb05b0(int nType, bool bKeep);  // 0x140eb05b0

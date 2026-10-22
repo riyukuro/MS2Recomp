@@ -99,7 +99,7 @@ ASMentoringMenteePage::~ASMentoringMenteePage() {}
 void ASMentoringMenteePage::OnInit()
 {
     if (!m_owner) return;
-    m_script = m_owner->FUN_140c74d70();
+    m_script = m_owner->GetScript();
     do
     {
         m_script->FUN_140beaf20("m_coin", m_coin);

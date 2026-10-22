@@ -114,7 +114,7 @@ public:
     virtual int vfunc_65();                                                             // 65 0x141ac4c20
     virtual void vfunc_67();                                                            // 67 0x141ac4c50
 
-    int FUN_141ac59e0();                                                                // spin index
+    int GetSpinIndex();                                                                // spin index
     int FUN_141ac5a00();                                                                // spin count
     void FUN_141ac5a30();                                                               // fill the 12 slots into the movie
     void FUN_141ac5e70(CInPacket& pkt);                                                 // packet 0x7c

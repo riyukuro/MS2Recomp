@@ -184,7 +184,7 @@ static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);           // 0
 
 class Unk_WmLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
 Unk_WmLoader* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
 unsigned char FUN_1401d1320(CCacheData* p);                                 // file changed since load
@@ -393,7 +393,7 @@ int WorldMapManager::LoadWorldMapFiles()
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2worldmap");
         if (pRoot == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2worldmap> {0}]", strPath);
+            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2worldmap> {0}]", strPath);
             continue;
         }
         Unk_140165cf0* pGroup = FUN_14028f8d0(pRoot);
@@ -419,7 +419,7 @@ int WorldMapManager::LoadWorldMapFiles()
             MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(spTile->m_34);
             if (!spField)
                 continue;
-            spTile->m_38 = WorldOfField(spField->FUN_140375350());
+            spTile->m_38 = WorldOfField(spField->GetContinentCode());
             FUN_1408731e0(pNode, "x", spTile->m_24);
             FUN_1408731e0(pNode, "y", spTile->m_28);
             FUN_1408731e0(pNode, "z", spTile->m_2c);
@@ -481,7 +481,7 @@ int WorldMapManager::LoadWorldMapFiles()
             }
             m_48[spTile->m_34] = spTile;
             if (bDefault)
-                m_58[spField->FUN_140375350()] = spTile;
+                m_58[spField->GetContinentCode()] = spTile;
         }
     }
     for (TileGroups::iterator it = customWorlds.begin(); it != customWorlds.end(); ++it)
@@ -552,7 +552,7 @@ int WorldMapManager::LoadFieldNameInfo()
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
@@ -615,7 +615,7 @@ void WorldMapManager::LoadWorldMapNames(ATL::CAtlArray<CString>& names)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("xml"); pNode != 0; pNode = pNode->FUN_140168650("xml"))

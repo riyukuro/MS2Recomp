@@ -70,8 +70,8 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141ad1810
 
     size_t FUN_141ad0f80();                                     // channel count of the chosen server
-    int FUN_141ad1010();                                        // m_nServerId
-    CStringW FUN_141ad1030();                                   // m_strServer
+    int GetServerId();                                        // m_nServerId
+    CStringW GetServer();                                   // m_strServer
     void FUN_141ad1d20();                                       // hand the server list to the movie
     void FUN_141ad2380();                                       // connect to a random address of the chosen server
     void FUN_141ad2560(int nChannel);                           // pick the channel and connect
@@ -83,7 +83,7 @@ public:
     void FUN_141ad2ef0();                                       // the connect failed: "failConnect"
     void FUN_141ad2f60(ASArray& array, int* pnSelected, int nSelectedChannel);   // channel list of the chosen server
     void FUN_141ad3030(const ATL::CAtlArray<int>& channels);    // replace the channel set of the chosen server
-    int FUN_141ad31b0();                                        // m_nChannel
+    int GetChannel();                                        // m_nChannel
     void OnEndPopdown();                                       // the pop-down ended
     bool FUN_141ad3260(int nButton, const CMsgBoxData& data);   // message box answer: cancel the login (packet 0x6d)
     void OnSceneLogin();                                       // "popdown"

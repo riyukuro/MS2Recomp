@@ -202,7 +202,7 @@ int CItemEnchantLimitTable::FUN_14058df90(CItem* pItem)
     Unk_EnchantPtr<CItemEnchantInfo> spInfo(reinterpret_cast<CItemStatus*>(pItem->FUN_1405278a0())->FUN_140630d60());
     if (!spInfo)
         return 0;
-    if (spInfo->FUN_14058c5f0() >= spLimit->m_nMaxGrade)
+    if (spInfo->GetLevel() >= spLimit->m_nMaxGrade)
         return 0;
     if (ITEM_DATA_BYTE(pItem, 0x1a1) != 0)
         return 0;

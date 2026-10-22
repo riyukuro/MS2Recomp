@@ -198,7 +198,7 @@ public:
     Unk_FbItemArray();                                          // 0x140f43c10
     ~Unk_FbItemArray() throw();                                 // 0x140f43c50
     Unk_FbItemRef& FUN_140f43cb0(unsigned __int64 nIndex);      // GetAt
-    unsigned __int64 FUN_140f43dd0();                           // GetCount
+    unsigned __int64 GetSize();                           // GetCount
 private:
     Unk_FbItemRef* m_pData;
     unsigned __int64 m_nSize;
@@ -334,7 +334,7 @@ void UIFishingBookDialog::vfunc_67()
     UIDialog::vfunc_67();
     Unk_FbItemArray items;
     FUN_140953f20()->FUN_140cdba90(items);
-    for (unsigned __int64 i = 0; i < items.FUN_140f43dd0(); i++)
+    for (unsigned __int64 i = 0; i < items.GetSize(); i++)
         items.FUN_140f43cb0(i).FUN_140cdf9d0()->m_2c = 0;
 }
 
@@ -380,7 +380,7 @@ void UIFishingBookDialog::FUN_140f41e90()
         Unk_FbItemArray items;
         FUN_140953f20()->FUN_140cdba90(items);
         int aNew[4] = {0};
-        for (unsigned __int64 i = 0; i < items.FUN_140f43dd0(); i++)
+        for (unsigned __int64 i = 0; i < items.GetSize(); i++)
         {
             Unk_FbItemRef item = items.FUN_140f43cb0(i);
             if (item.FUN_140cdf9d0()->m_2c == 0)
@@ -738,7 +738,7 @@ void FUN_140f43d70(Unk_FbItemRef* pItems, unsigned __int64 nCount)
 }
 
 // @0x140f43dd0
-unsigned __int64 Unk_FbItemArray::FUN_140f43dd0()
+unsigned __int64 Unk_FbItemArray::GetSize()
 {
     return m_nSize;
 }

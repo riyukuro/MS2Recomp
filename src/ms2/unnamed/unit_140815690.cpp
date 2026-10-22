@@ -30,7 +30,7 @@
 
 class Unk_RsLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* pszPath, int a, bool b, bool c); };
 Unk_RsLoader* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
 class Unk_RsItemTable { public: void FUN_1405f5e90(int nCode, int nRank, CString strTag, CString strInfo); };
 Unk_RsItemTable* FUN_140166430();
@@ -137,7 +137,7 @@ int CSmartRecommendShopTable::FUN_140815ac0(CString strPath)
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             return 0;
         }
         for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("recommend"); pNode != 0; pNode = pNode->FUN_140168650("recommend"))

@@ -105,7 +105,7 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
         self->DeletePatchFiles("./DataPatch/");
         FUN_140714f90()->FUN_141538cb0();
     } else if (type == 2) {
-        FUN_140166420()->FUN_140396d00("./DataPatch/");
+        GetFileSystem()->FUN_140396d00("./DataPatch/");
         self->ReloadTables();
         FUN_140714f90()->FUN_141538cb0();
     } else if (type == 3) {
@@ -143,7 +143,7 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
                 self->m_files.pop_front();
                 self->SaveFile("./DataPatch/", spFile);
                 if (self->m_files.size() == 0) {
-                    FUN_140166420()->FUN_140396d00("./DataPatch/");
+                    GetFileSystem()->FUN_140396d00("./DataPatch/");
                     self->ReloadTables();
                     FUN_140714f90()->FUN_141538cb0();
                 } else {

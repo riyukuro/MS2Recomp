@@ -37,7 +37,7 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 
 // ---- other units --------------------------------------------------------------------------------------------------
 
-CLogString* FUN_140166440();                                // the log singleton
+CLogString* GetLogString();                                // the log singleton
 // The scene-graph texture cache (CNifLoadingService-like; scenegraph units call it Unk_SgNifLoader).
 class Unk_UgcTextureCache
 {
@@ -198,7 +198,7 @@ int CUgcCompress::Decompress(const CStringW& strZipFile, unsigned __int64 userDa
         nResult = DoDecompress();
         if (nResult != 0)
             throw Exception("do_decompress", 0x56);
-        Unk_UgcLog(FUN_140166440(), 0xc, 0x13, L"CUgcCompress::Decompress : strOrgFile({0}), strZipFile({1})",
+        Unk_UgcLog(GetLogString(), 0xc, 0x13, L"CUgcCompress::Decompress : strOrgFile({0}), strZipFile({1})",
                    strOrgFile, strZipFile);
         nResult = 0;
         m_strOrgFile = strOrgFile;
@@ -1066,7 +1066,7 @@ int SaveTextureTemplate(NiTexture* pkTexture, int nUnused, int nKind, CStringW& 
     catch (Exception& e)
     {
         nResult = e.GetCode();
-        Unk_UgcLog(FUN_140166440(), 1, 0x13, L"[E] SaveTextureTemplate : result = {0}", nResult);
+        Unk_UgcLog(GetLogString(), 1, 0x13, L"[E] SaveTextureTemplate : result = {0}", nResult);
     }
     return nResult;
 }
@@ -1093,7 +1093,7 @@ int SaveTextureBannerTemplate(NiTexture* pkTexture, int nUnused, CStringW& strNa
     catch (Exception& e)
     {
         nResult = e.GetCode();
-        Unk_UgcLog(FUN_140166440(), 1, 0x13, L"[E] SaveTextureBannerTemplate : result = {0}", nResult);
+        Unk_UgcLog(GetLogString(), 1, 0x13, L"[E] SaveTextureBannerTemplate : result = {0}", nResult);
     }
     return nResult;
 }

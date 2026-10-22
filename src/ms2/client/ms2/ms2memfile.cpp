@@ -61,7 +61,7 @@ MS2MemFile::MS2MemFile(const char* pszPath)
 {
     SetEndianSwap(false);
     m_uiPos = 0;
-    m_buffer = FUN_140166420()->FUN_140397bc0(pszPath, 0, 0);
+    m_buffer = GetFileSystem()->FUN_140397bc0(pszPath, 0, 0);
     m_bGood = m_buffer.get() ? true : false;
 }
 
@@ -302,7 +302,7 @@ bool LoadAlignWidget(TiXmlDocument& doc);
 // @0x141627390
 void FUN_141627390()
 {
-    if (FUN_140166420()->FUN_1403981d0())
+    if (GetFileSystem()->FUN_1403981d0())
     {
         efd::File::SetFileCreateFunc(FUN_141627dd0);
         efd::File::SetFileAccessFunc(FUN_141627b70);
@@ -326,7 +326,7 @@ void FUN_141627390()
     NiGFxLocalizeManager::FUN_141629db0(Delegate<bool(TiXmlDocument&)>(LoadFlashDebug));
     NiSearchPath::SetCreateFunc((NiSearchPath::CreateFunction)FUN_141508060);
     // CFileSystem::FUN_14039a660 takes (CString, FILETIME); filesystem.h declares the unused second parameter void*.
-    FUN_1401d17b0(Unk_FileChangeFunctor(FUN_140166420(),
+    FUN_1401d17b0(Unk_FileChangeFunctor(GetFileSystem(),
         reinterpret_cast<void (CFileSystem::*)(CString, FILETIME)>(&CFileSystem::FUN_14039a660)));
     GFxFileOpener::FUN_1422eb400(FUN_1416282e0);
     FUN_141c51dd0(FUN_1414a90c0);
@@ -361,7 +361,7 @@ void FUN_1416275e0()
 // @0x1416277e0
 CString FUN_1416277e0(CString strName, bool bDebug)
 {
-    int nPacked = FUN_140166420()->FUN_140398190();
+    int nPacked = GetFileSystem()->FUN_140398190();
     if (nPacked == 1)
     {
         if (!bDebug)
@@ -386,9 +386,9 @@ efd::File* FUN_141627910(const wchar_t* pcName, efd::File::OpenMode eMode, unsig
 // @0x141627960
 efd::File* FUN_141627960(const char* pcName, efd::File::OpenMode eMode, unsigned int uiBufferSize, bool bFlushOnWrite)
 {
-    if (eMode == efd::File::READ_ONLY && FUN_140166420() != 0)
+    if (eMode == efd::File::READ_ONLY && GetFileSystem() != 0)
     {
-        std::string strPath = FUN_140166420()->FUN_14039b810(std::string(pcName));
+        std::string strPath = GetFileSystem()->FUN_14039b810(std::string(pcName));
         efd::File* pFile = efd::File::DefaultFileCreateFunc(strPath.c_str(), eMode, uiBufferSize, bFlushOnWrite);
         if (pFile != 0)
             return pFile;
@@ -400,9 +400,9 @@ efd::File* FUN_141627960(const char* pcName, efd::File::OpenMode eMode, unsigned
 // @0x141627aa0
 bool FUN_141627aa0(const char* pcName)
 {
-    if (FUN_140166420()->FUN_140398640(std::string(pcName), false))
+    if (GetFileSystem()->FUN_140398640(std::string(pcName), false))
         return false;
-    if (FUN_140166420()->FUN_140398200(std::string(pcName)))
+    if (GetFileSystem()->FUN_140398200(std::string(pcName)))
         return true;
     return efd::File::DefaultDirectoryExistsFunc(pcName);
 }
@@ -412,9 +412,9 @@ bool FUN_141627b70(const char* pcName, efd::File::OpenMode eMode)
 {
     if (eMode == efd::File::READ_ONLY)
     {
-        if (FUN_140166420()->FUN_140398640(std::string(pcName), true))
+        if (GetFileSystem()->FUN_140398640(std::string(pcName), true))
             return false;
-        if (FUN_140166420()->FUN_1403987d0(std::string(pcName)))
+        if (GetFileSystem()->FUN_1403987d0(std::string(pcName)))
             return true;
         return false;
     }
@@ -426,7 +426,7 @@ efd::File* FUN_141627c50(const char* pcName, efd::File::OpenMode eMode, unsigned
 {
     if (eMode == efd::File::READ_ONLY)
     {
-        if (FUN_140166420()->FUN_140398640(std::string(pcName), true))
+        if (GetFileSystem()->FUN_140398640(std::string(pcName), true))
             return 0;
         efd::File* pFile = EE_NEW MS2MemFile(pcName);
         if (pFile->IsGood())
@@ -451,7 +451,7 @@ bool FUN_141627e40(const char* pcName, efd::File::OpenMode eMode)
 {
     if (eMode == efd::File::READ_ONLY)
     {
-        if (FUN_140166420()->FUN_1403987d0(std::string(pcName)))
+        if (GetFileSystem()->FUN_1403987d0(std::string(pcName)))
             return true;
         return false;
     }
@@ -467,15 +467,15 @@ bool FUN_141627ec0(const wchar_t* pcName, efd::File::OpenMode eMode)
 // @0x141627ef0
 bool FUN_141627ef0(const char* pcName, efd::File::OpenMode eMode)
 {
-    if (FUN_140166420() == 0)
+    if (GetFileSystem() == 0)
         return efd::File::DefaultFileAccessFunc(pcName, eMode);
-    return FUN_140166420()->FUN_1403987d0(std::string(pcName)) ? true : false;
+    return GetFileSystem()->FUN_1403987d0(std::string(pcName)) ? true : false;
 }
 
 // @0x141627f90
 bool FUN_141627f90(const char* pcName)
 {
-    if (FUN_140166420()->FUN_140398200(std::string(pcName)))
+    if (GetFileSystem()->FUN_140398200(std::string(pcName)))
         return true;
     return efd::File::DefaultDirectoryExistsFunc(pcName);
 }
@@ -522,7 +522,7 @@ Scaleform::File* FUN_1416282e0(CString strPath)
     Scaleform::File* pFile = 0;
     char szExt[MAX_PATH];
     _splitpath(strPath, 0, 0, 0, szExt);
-    CFileSystem::BufferPtr buffer = FUN_140166420()->FUN_140397bc0(strPath, FUN_140166420()->FUN_1403981b0() ? 1 : 0, 1);
+    CFileSystem::BufferPtr buffer = GetFileSystem()->FUN_140397bc0(strPath, GetFileSystem()->FUN_1403981b0() ? 1 : 0, 1);
     if (buffer.get() != 0)
         pFile = new ScaleformMemFile(strPath, buffer.get());
     return pFile;
@@ -548,7 +548,7 @@ bool FUN_141628610(TiXmlDocument& doc)
 bool LoadUsmSubtitleText(TiXmlDocument& doc)
 {
     CString strPath = FUN_14071ae20("usmSubtitleText.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     return true;
 }
@@ -557,7 +557,7 @@ bool LoadUsmSubtitleText(TiXmlDocument& doc)
 bool LoadStringMovie(TiXmlDocument& doc)
 {
     CString strPath = FUN_14071ae20("stringMovie.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     return true;
 }
@@ -566,7 +566,7 @@ bool LoadStringMovie(TiXmlDocument& doc)
 bool LoadFlashDebug(TiXmlDocument& doc)
 {
     CString strPath = FUN_14071a6f0("flashDebug.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     return true;
 }
@@ -575,7 +575,7 @@ bool LoadFlashDebug(TiXmlDocument& doc)
 bool LoadAlignWidget(TiXmlDocument& doc)
 {
     CString strPath = FUN_14071a5b0("Table", "alignWidget.xml");
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     return true;
 }

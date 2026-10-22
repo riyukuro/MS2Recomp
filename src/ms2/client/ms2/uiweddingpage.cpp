@@ -236,7 +236,7 @@ void UIWeddingPage::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 }
 
 // @0x140fe7620
-MS2Ptr<AScript> UIWeddingPage::FUN_140fe7620() const
+MS2Ptr<AScript> UIWeddingPage::GetScript() const
 {
     return m_pScript;
 }

@@ -238,7 +238,7 @@ void UIItemGachaBoxDialog::vfunc_79(void* p)
             for (int i = 0; i < n; ++i) {
                 GACHA_ITEMS.FUN_140be9400(i).m_itemId = GACHA_PKT->vfunc_o8_3();
                 GACHA_ITEMS.FUN_140be9400(i).m_count = GACHA_PKT->vfunc_o8_3();
-                GACHA_ITEMS.FUN_140be9400(i).FUN_14026b1c0(GACHA_PKT->vfunc_o8_3());
+                GACHA_ITEMS.FUN_140be9400(i).SetRank(GACHA_PKT->vfunc_o8_3());
                 if (GACHA_PKT->vfunc_o8_0()) {
                     hasSpecial = true;
                     m_special.insert(GACHA_ITEMS.FUN_140be9400(i));

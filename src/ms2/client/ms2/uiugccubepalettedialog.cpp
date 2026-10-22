@@ -290,7 +290,7 @@ public:
 class UIUGCItemEditDialog : public UIDialog
 {
 public:
-    void FUN_141b463b0(MS2Ptr<CItem> spItem);
+    void SetEditItem(MS2Ptr<CItem> spItem);
 };
 
 // the input service and the key service
@@ -509,7 +509,7 @@ int FUN_1418dd0c0();
 Unk_CubePicker* FUN_1409478c0();
 Unk_CubeMgr* FUN_1409670e0();
 Unk_CubeSpRef FUN_1401cd040(void* pSingleton);
-UGCCubePalette* FUN_140ef0b20();
+UGCCubePalette* GetUGCCubePalette();
 struct Unk_ItemMgr { MS2Ptr<CItem> FUN_1408fbf90(unsigned __int64 uid); };
 int FUN_1408fc1b0(void* pBag, int nItemId);
 int FUN_140dfcb00(void* pBag, int nItemId);
@@ -790,7 +790,7 @@ Unk_CubeFocus::Unk_CubeFocus()
 }
 
 // @0x140ee9cd0
-bool Unk_CubeFocus::FUN_140ee9cd0()
+bool Unk_CubeFocus::IsActive()
 {
     return m_bActive;
 }
@@ -814,7 +814,7 @@ int Unk_CubeFocus::FUN_140ee9d70()
 {
     if (m_nCubeId == 0)
         return m_nIndex;
-    UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b5930(m_nCubeId);
+    UGCCubePalette::CubePtr spCube = GetUGCCubePalette()->FUN_1410b5930(m_nCubeId);
     if (spCube.get() == 0)
         return m_nIndex;
     spCube->FUN_140defff0();
@@ -849,7 +849,7 @@ void Unk_CubeTimer::FUN_140ee9f00()
 }
 
 // @0x140ee9f30
-int Unk_CubeTimer::FUN_140ee9f30()
+int Unk_CubeTimer::GetValue()
 {
     return m_nValue;
 }
@@ -983,14 +983,14 @@ void UIUGCCubePaletteDialog::vfunc_15()
     if (FUN_1422dc2d0() != 0)
     {
         m_keys.vfunc_0();
-        if (m_focus.FUN_140ee9cd0())
+        if (m_focus.IsActive())
         {
             FUN_140eed620(1);
             m_focus.FUN_140ee9d50();
         }
         if (m_timer.FUN_140ee9e80())
         {
-            int n = m_timer.FUN_140ee9f30();
+            int n = m_timer.GetValue();
             FUN_140eeea80(n);
             m_timer.FUN_140ee9f00();
         }
@@ -1172,7 +1172,7 @@ void UIUGCCubePaletteDialog::vfunc_14(void* pItemArg)
     int nItemId = pItem->FUN_1405276c0();
     __int64 nUid = pItem->FUN_140526a50();
     UGCCubePalette::CubeArray arr;
-    FUN_140ef0b20()->FUN_1410b5030(arr);
+    GetUGCCubePalette()->FUN_1410b5030(arr);
     for (unsigned int i = 0; i < arr.GetCount(); i++)
     {
         UGCCubePalette::CubePtr spCube = arr.GetAt(i);
@@ -1231,7 +1231,7 @@ void UIUGCCubePaletteDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
     if (_stricmp("getTooltipFromItemID", (const char*)strMethod) != 0)
         return;
     int nIndex = pArgs->FUN_1422b8b10();
-    UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b57f0(nIndex + 1);
+    UGCCubePalette::CubePtr spCube = GetUGCCubePalette()->FUN_1410b57f0(nIndex + 1);
     if (spCube == (UGCCubePalette::UGCCube*)0)
         return;
     MS2Ptr<CubeItemInfo> spInfo = spCube->FUN_140def3d0();
@@ -1341,7 +1341,7 @@ int UIUGCCubePaletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nIndex = data.FUN_1422b8b10();
-            UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b57f0(nIndex + 1);
+            UGCCubePalette::CubePtr spCube = GetUGCCubePalette()->FUN_1410b57f0(nIndex + 1);
             if (spCube == (UGCCubePalette::UGCCube*)0)
                 return 0;
             MS2Ptr<CubeItemInfo> spInfo = spCube->FUN_140def3d0();
@@ -1392,7 +1392,7 @@ void UIUGCCubePaletteDialog::FUN_140eec0b0(unsigned __int64 uid)
     if (FUN_14053cde0(spItem->FUN_140527840()))
     {
         FUN_140eed620(0);
-        UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b5a70(uid);
+        UGCCubePalette::CubePtr spCube = GetUGCCubePalette()->FUN_1410b5a70(uid);
         if (spCube.get() != 0)
         {
             int nItemId = spItem->FUN_1405276c0();
@@ -1420,7 +1420,7 @@ void UIUGCCubePaletteDialog::FUN_140eec0b0(unsigned __int64 uid)
     }
     else
     {
-        FUN_140ef0b20()->FUN_1410b54d0(uid);
+        GetUGCCubePalette()->FUN_1410b54d0(uid);
         FUN_140ef37d0();
     }
 }
@@ -1430,7 +1430,7 @@ bool UIUGCCubePaletteDialog::FUN_140eec330(int nBtn, const CMsgBoxData& data)
 {
     if (nBtn == 0)
     {
-        UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b57a0();
+        UGCCubePalette::CubePtr spCube = GetUGCCubePalette()->FUN_1410b57a0();
         if (!(spCube == (UGCCubePalette::UGCCube*)0))
         {
             COutPacket pkt(0x53, 0);
@@ -1656,8 +1656,8 @@ void UIUGCCubePaletteDialog::FUN_140eed620(int nSelect)
     if (FUN_140ba4ee0(&spList, 0) != 0)
         return;
     UGCCubePalette::CubeArray arr;
-    FUN_140ef0b20()->FUN_1410b4f60(&m_filter);
-    FUN_140ef0b20()->FUN_1410b5030(arr);
+    GetUGCCubePalette()->FUN_1410b4f60(&m_filter);
+    GetUGCCubePalette()->FUN_1410b5030(arr);
     FUN_1422dd1d0(FUN_140acd9f0(&spList));
     for (unsigned int i = 0; i < arr.GetCount(); i++)
     {
@@ -1881,21 +1881,21 @@ int UIUGCCubePaletteDialog::FUN_140eee630()
     {
         if (FUN_14138c9c0(FUN_1409331e0(), 0x7a) != 0)
             return 0;
-        FUN_140ef0b20()->FUN_1410b6210();
+        GetUGCCubePalette()->FUN_1410b6210();
         return 1;
     }
     if (FUN_14116d9c0(FUN_14025e7c0(), 0x7f, 0, 0) != 0)
     {
         if (FUN_14138c9c0(FUN_1409331e0(), 0x7f) != 0)
             return 0;
-        FUN_140ef0b20()->FUN_1410b6260();
+        GetUGCCubePalette()->FUN_1410b6260();
         return 1;
     }
     if (FUN_14116d9c0(FUN_14025e7c0(), 0x21, 0, 0) != 0)
     {
         if (FUN_14138c9c0(FUN_1409331e0(), 0x21) != 0)
             return 0;
-        FUN_140ef0b20()->FUN_1410b62d0();
+        GetUGCCubePalette()->FUN_1410b62d0();
         return 1;
     }
     POSITION pos = m_map.GetHeadPosition();
@@ -1921,7 +1921,7 @@ void UIUGCCubePaletteDialog::FUN_140eeea80(int nRow)
     ASDialog* pDlg = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
     if (pDlg == 0)
         return;
-    UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b57f0(nIndex);
+    UGCCubePalette::CubePtr spCube = GetUGCCubePalette()->FUN_1410b57f0(nIndex);
     if (spCube.get() == 0)
     {
         ASObj res(2);
@@ -1995,7 +1995,7 @@ void UIUGCCubePaletteDialog::FUN_140eeea80(int nRow)
 // @0x140eef140 (the destroy-cube message box of the selected cube)
 void UIUGCCubePaletteDialog::OnDestroyCubeItem()
 {
-    MS2Ptr<CubeItemInfo> spSel = FUN_140ef0b20()->FUN_1410b55b0();
+    MS2Ptr<CubeItemInfo> spSel = GetUGCCubePalette()->FUN_1410b55b0();
     if (spSel.get() == 0)
         return;
     MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(spSel->instanceId);
@@ -2043,7 +2043,7 @@ void UIUGCCubePaletteDialog::FUN_140eef670(int nRow)
     if (FUN_140ba4ee0(&spList, 0) == 0)
     {
         nRow = FUN_1422cf520(FUN_140acd9f0(&spList)) * 10 + nRow;
-        if (FUN_140ef0b20()->FUN_1410b6060(nRow) == 3)
+        if (GetUGCCubePalette()->FUN_1410b6060(nRow) == 3)
         {
             if (FUN_140375130(FUN_1403ed2d0()->FUN_141bd30a0().get()) == 0)
                 FUN_141275260(0x6f6, 1, 1);
@@ -2057,7 +2057,7 @@ void UIUGCCubePaletteDialog::FUN_140eef670(int nRow)
 // @0x140eefc50 (what to refresh: 1/5..9 reset the focus, 2 buy, 3/4 page, 10 focus the first)
 void UIUGCCubePaletteDialog::FUN_140eefc50(int nState)
 {
-    int nCount = FUN_140ef0b20()->FUN_1410b5d70();
+    int nCount = GetUGCCubePalette()->FUN_1410b5d70();
     switch (nState)
     {
     case 1:
@@ -2071,11 +2071,11 @@ void UIUGCCubePaletteDialog::FUN_140eefc50(int nState)
     case 2:
     {
         RItemInfo spInfo;
-        FUN_14053f870(&spInfo, FUN_140ef0b20()->FUN_1410b5bc0());
+        FUN_14053f870(&spInfo, GetUGCCubePalette()->FUN_1410b5bc0());
         if (FUN_140203c60(&spInfo) == 0 || FUN_1401b52a0(&spInfo)->FUN_14053cde0() == 0)
             FUN_140eefdd0(nCount - 1);
         else
-            m_focus.FUN_140ee9cf0(0, FUN_140ef0b20()->FUN_1410b5bc0());
+            m_focus.FUN_140ee9cf0(0, GetUGCCubePalette()->FUN_1410b5bc0());
         break;
     }
     case 3:
@@ -2083,7 +2083,7 @@ void UIUGCCubePaletteDialog::FUN_140eefc50(int nState)
         FUN_140eefdd0(nCount - 1);
         break;
     case 10:
-        m_focus.FUN_140ee9cf0(0, FUN_140ef0b20()->FUN_1410b5bc0());
+        m_focus.FUN_140ee9cf0(0, GetUGCCubePalette()->FUN_1410b5bc0());
         break;
     }
 }
@@ -2118,7 +2118,7 @@ void UIUGCCubePaletteDialog::FUN_140eef7e0(int nCubeIndex)
     MS2Ptr<UIUGCItemEditDialog> spEdit(FUN_140eeff60(0x4e69));
     if (spEdit.get()->vfunc_55() == 0)
         return;
-    UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b57f0(nCubeIndex);
+    UGCCubePalette::CubePtr spCube = GetUGCCubePalette()->FUN_1410b57f0(nCubeIndex);
     if (spCube == (UGCCubePalette::UGCCube*)0)
         return;
     int nId = spCube->FUN_140def5a0();
@@ -2148,7 +2148,7 @@ void UIUGCCubePaletteDialog::FUN_140eef7e0(int nCubeIndex)
             MS2Ptr<CUgcItemLook> spLook(spCubeInfo->look);
             if (spLook.get() != 0)
                 spItem->FUN_140528300(spLook.get());
-            spEdit.get()->FUN_141b463b0(spItem);
+            spEdit.get()->SetEditItem(spItem);
             FUN_1403ed2b0()->FUN_141adc530(0x4e69);
         }
     }
@@ -2435,7 +2435,7 @@ void FUN_140ef2fb0()
     Unk_CubeSpRef spMgr(FUN_1401cd040(&DAT_143b059e8));
     if (spMgr.FUN_140ef4cb0(0) != 0)
         return;
-    UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b57a0();
+    UGCCubePalette::CubePtr spCube = GetUGCCubePalette()->FUN_1410b57a0();
     if (spCube == (UGCCubePalette::UGCCube*)0)
         return;
     if (spCube->FUN_140def420() != 0)
@@ -2647,8 +2647,8 @@ void FUN_140ef4070(int nIndex)
     void* pEditor = FUN_141530290(pWorld);
     if (pEditor == 0 || FUN_1410a8ab0(pEditor) != 0)
         return;
-    FUN_140ef0b20()->FUN_1410b5460(nIndex);
-    MS2Ptr<CubeItemInfo> spSel = FUN_140ef0b20()->FUN_1410b55b0();
+    GetUGCCubePalette()->FUN_1410b5460(nIndex);
+    MS2Ptr<CubeItemInfo> spSel = GetUGCCubePalette()->FUN_1410b55b0();
     if (spSel.get() == 0)
     {
         if (FUN_1410a8a90(pEditor) != 1)
@@ -2674,7 +2674,7 @@ void FUN_140ef41b0(int nIndex)
     void* pEditor = FUN_141530290(pWorld);
     if (pEditor == 0 || FUN_1410a8ab0(pEditor) != 0)
         return;
-    UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b57f0(nIndex);
+    UGCCubePalette::CubePtr spCube = GetUGCCubePalette()->FUN_1410b57f0(nIndex);
     if (spCube == (UGCCubePalette::UGCCube*)0)
         return;
     MS2Ptr<CubeItemInfo> spSel = spCube->FUN_140def3d0();
@@ -2743,7 +2743,7 @@ void FUN_140ef44f0()
 // @0x140ef4540 (the buy-and-install confirmation text of the selected cube)
 CStringW FUN_140ef4540()
 {
-    UGCCubePalette::CubePtr spCube = FUN_140ef0b20()->FUN_1410b57a0();
+    UGCCubePalette::CubePtr spCube = GetUGCCubePalette()->FUN_1410b57a0();
     if (spCube == (UGCCubePalette::UGCCube*)0)
         return CStringW(L"");
     RItemInfo spInfo;
@@ -2915,16 +2915,16 @@ void* FUN_140ef0aa0(void* pTbl, unsigned __int64 n)
 }
 
 // @0x140ef0b20
-UGCCubePalette* FUN_140ef0b20()
+UGCCubePalette* GetUGCCubePalette()
 {
     return DAT_143ac90f0;
 }
 
 // ---- hooks ----
-MS2_REPLACE_METHOD(0x140EE9CD0, Unk_CubeFocus, FUN_140ee9cd0, 14, 0xDA496095);
+MS2_REPLACE_METHOD(0x140EE9CD0, Unk_CubeFocus, IsActive, 14, 0xDA496095);
 MS2_REPLACE_METHOD(0x140EE9D50, Unk_CubeFocus, FUN_140ee9d50, 14, 0x322C4B62);
 MS2_REPLACE_METHOD(0x140EE9F00, Unk_CubeTimer, FUN_140ee9f00, 27, 0x6AA3A4C7);
-MS2_REPLACE_METHOD(0x140EE9F30, Unk_CubeTimer, FUN_140ee9f30, 14, 0xB2976B17);
+MS2_REPLACE_METHOD(0x140EE9F30, Unk_CubeTimer, GetValue, 14, 0xB2976B17);
 MS2_REPLACE_METHOD(0x140EEA300, UIUGCCubePaletteDialog, vfunc_1, 61, 0x31979C2E);
 MS2_REPLACE_METHOD(0x140EEA420, UIUGCCubePaletteDialog, vfunc_54, 135, 0xD6F6CE30);
 MS2_REPLACE_METHOD(0x140EEAEE0, UIUGCCubePaletteDialog, vfunc_38, 87, 0xA2B2B2A4);

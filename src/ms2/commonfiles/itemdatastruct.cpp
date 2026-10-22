@@ -211,7 +211,7 @@ bool DropNifData::FUN_140543550(unsigned n)
 }
 
 // @0x140543590
-int DropNifData::FUN_140543590()
+int DropNifData::GetTypeId()
 {
     return m_nTypeId;
 }

@@ -31,7 +31,7 @@
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pElem);                                // element is enabled
@@ -83,7 +83,7 @@ void CItemDefaultData::Load()
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0) {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
     MS2Ptr<TDefaultItems> spCommon(new TDefaultItems(0));
@@ -123,7 +123,7 @@ void CItemDefaultData::Load()
                 if (!bBase) {
                     Unk_ItemDefaultKind eItemSlot = (Unk_ItemDefaultKind)spItemData->FUN_14053eba0()->FUN_14054b400();
                     if (eItemSlot != eSlot) {
-                        Unk_ItemDefaultLog(FUN_140166440(), 1, 0x13, L"<{0}> \xc640 <{1}>\xac00 \xac19\xc9c0 \xc54a\xc2b5\xb2c8\xb2e4.", eItemSlot, eSlot);
+                        Unk_ItemDefaultLog(GetLogString(), 1, 0x13, L"<{0}> \xc640 <{1}>\xac00 \xac19\xc9c0 \xc54a\xc2b5\xb2c8\xb2e4.", eItemSlot, eSlot);
                         continue;
                     }
                 }

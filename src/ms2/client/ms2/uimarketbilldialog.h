@@ -39,7 +39,7 @@ public:
     void FUN_140ea7900();                                           // 0x140ea7900 write the fee / payback texts and grow the movie
     float FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASTextField> spFeeText, const PaymentMap& mapPay);   // 0x140ea7e70 fill the fee texts; the height they gained
     float FUN_140ea8ab0(MS2Ptr<ASTextField> spPayback, MS2Ptr<ASTextField> spPaybackText, const PaymentMap& mapPay);   // 0x140ea8ab0 the same for the random payback
-    MS2Ptr<TMarketBillDataParam> FUN_140ea8da0();                   // 0x140ea8da0 a copy of the parameter
+    MS2Ptr<TMarketBillDataParam> GetParam();                   // 0x140ea8da0 a copy of the parameter
     void FUN_140ea8df0();                                           // 0x140ea8df0 "initData": hand the bill rows and the texts to the movie
     CStringW FUN_140ea9710(int nPayType, __int64 nAmount);          // 0x140ea9710 the amount as text
     void FUN_140ea9770(int nPayType, __int64 nAmount);              // 0x140ea9770 add to the price of a pay type (and the total)
@@ -54,7 +54,7 @@ public:
     void FUN_140eaa5e0(ASData* pData);                              // 0x140eaa5e0 "onUpdateTotalPrice"
     void FUN_140eaa860(ASData* pData);                              // 0x140eaa860 "onChangeMode"
     void FUN_140eaa8d0();                                           // 0x140eaa8d0 rebuild the sums from the rows
-    void FUN_140eaac30(int nMode);                                  // 0x140eaac30 m_nMode = nMode
+    void SetMode(int nMode);                                  // 0x140eaac30 m_nMode = nMode
     CString FUN_140eaac50(int nMode);                               // 0x140eaac50 the mode as the movie names it
     bool FUN_140eaad30(bool* pbClose);                              // 0x140eaad30 ask before the buy (blueprint / UGC warnings)
     bool FUN_140eab330(bool* pbClose, const CStringW& strName, const CStringW& strMessage);   // 0x140eab330 ask before the gift

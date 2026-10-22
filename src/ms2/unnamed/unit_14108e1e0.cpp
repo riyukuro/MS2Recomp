@@ -373,7 +373,7 @@ Unk_UisSceneMgr* FUN_1408e57f0();
 int FUN_1422b9ea0(Unk_UisSceneMgr* pMgr);                           // a full-screen ui is open
 class Unk_TalkMgrView { public: void FUN_141b20790(int nObjectId, int nFriendly); };   // UITalkManager: monologue
 Unk_TalkMgrView* FUN_140967100();
-class UITalkManager { public: int FUN_141b21220(); };                // a talk is open
+class UITalkManager { public: int GetTalking(); };                // a talk is open
 int FUN_14028d260(float f);                                         // float -> int (ms)
 float FUN_14028d5b0(float fAngle);                                  // normalise an angle
 float FUN_14059d930(float f);                                       // fabs
@@ -1052,7 +1052,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
             }
         }
     } else if (nState == 0x16) {
-        int nTalking = reinterpret_cast<UITalkManager*>(FUN_140967100())->FUN_141b21220();
+        int nTalking = reinterpret_cast<UITalkManager*>(FUN_140967100())->GetTalking();
         if (FUN_14166cc80() == 0x49 && nTalking == 0) {
             if (FUN_141093270()->m_bLookAtMyPCWhenTalking) {
                 CQuestManager* pQuest = reinterpret_cast<CQuestManager*>(FUN_140764020());

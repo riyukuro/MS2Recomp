@@ -39,8 +39,8 @@ public:
     virtual CString vfunc_6() = 0;                                          //  6 the page key
     virtual CStringW vfunc_7() = 0;                                         //  7 the tab label
 
-    MS2Ptr<AScript> FUN_140fd6e40();                                        // 0x140fd6e40 the page AS object
-    UIWeddingGuestDialog* FUN_140fd6e90();                                  // 0x140fd6e90 the dialog
+    MS2Ptr<AScript> GetScript();                                        // 0x140fd6e40 the page AS object
+    UIWeddingGuestDialog* GetDialog();                                  // 0x140fd6e90 the dialog
 
     MS2Ptr<AScript> m_pScript;                                              // +0x18
     UIWeddingGuestDialog* m_pDialog;                                        // +0x28

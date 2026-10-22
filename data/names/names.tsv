@@ -1082,3 +1082,151 @@
 1418dead0	UICameraEditDialog::FUN_1418dead0	UICameraEditDialog::IsDragging	descriptive	descriptive (high): getter: body returns m_bDragging	nam1	2026-10-22
 1418dfc40	UICartoonDialog::FUN_1418dfc40	UICartoonDialog::GetBookId	descriptive	descriptive (high): getter: body returns m_nBookId	nam1	2026-10-22
 140bc4410	UICashAttendDialog::FUN_140bc4410	UICashAttendDialog::GetSelected	descriptive	descriptive (high): getter: body returns m_selected	nam1	2026-10-22
+141034da0	UICashShopDialog::FUN_141034da0	UICashShopDialog::GetCategory	descriptive	descriptive (high): getter: body returns m_nCategory	nam1	2026-10-22
+141035970	UICashShopDialog::FUN_141035970	UICashShopDialog::SetUnlockState	descriptive	descriptive (high): setter: body stores the argument in m_nUnlockState	nam1	2026-10-22
+1419139d0	UIDamageText::FUN_1419139d0	UIDamageText::SetObserver	descriptive	descriptive (high): setter: body stores the argument in m_bObserver	nam1	2026-10-22
+1419139f0	UIDamageText::FUN_1419139f0	UIDamageText::SetObservedId	descriptive	descriptive (high): setter: body stores the argument in m_nObservedId	nam1	2026-10-22
+14192a2c0	FUN_14192a2c0	GetToolBaseDialog	descriptive	descriptive (medium): singleton: returns the CToolBaseDialog instance pointer DAT_143ad0d98	nam1	2026-10-22
+1412b4100	UIDungeonRoomInfo::FUN_1412b4100	UIDungeonRoomInfo::GetBanner	descriptive	descriptive (high): getter: body returns m_strBanner	nam1	2026-10-22
+1412b4150	UIDungeonRoomInfo::FUN_1412b4150	UIDungeonRoomInfo::SetRoom	descriptive	descriptive (high): setter: body stores the argument in m_spRoom	nam1	2026-10-22
+140c112a0	UIDungeonSearchSettingDialog::FUN_140c112a0	UIDungeonSearchSettingDialog::SetSelected	descriptive	descriptive (high): setter: body stores the argument in m_selected	nam1	2026-10-22
+140f43dd0	Unk_FbItemArray::FUN_140f43dd0	Unk_FbItemArray::GetSize	descriptive	descriptive (high): getter: body returns m_nSize	nam1	2026-10-22
+140e37c20	Unk_RankReply::FUN_140e37c20	Unk_RankReply::GetRankType	descriptive	descriptive (high): getter: body returns m_nRankType	nam1	2026-10-22
+14194b880	UIGroupMessenger::FUN_14194b880	UIGroupMessenger::IsUserList	descriptive	descriptive (high): getter: body returns m_bUserList	nam1	2026-10-22
+14194b960	UIGroupMessenger::FUN_14194b960	UIGroupMessenger::GetName	descriptive	descriptive (high): getter: body returns m_strName	nam1	2026-10-22
+14194b9b0	UIGroupMessenger::FUN_14194b9b0	UIGroupMessenger::GetGroupId	descriptive	descriptive (high): getter: body returns m_nGroupId	nam1	2026-10-22
+14194bc70	UIGroupMessenger::FUN_14194bc70	UIGroupMessenger::SetName	descriptive	descriptive (high): setter: body stores the argument in m_strName	nam1	2026-10-22
+14195b950	UIGuideEvent::FUN_14195b950	UIGuideEvent::GetLastTip	descriptive	descriptive (high): getter: body returns m_lastTip	nam1	2026-10-22
+14195e020	UIGuideEventArrow::FUN_14195e020	UIGuideEventArrow::GetUseCount	descriptive	descriptive (high): getter: body returns m_useCount	nam1	2026-10-22
+140c22ce0	UIHighlightGameMenu::FUN_140c22ce0	UIHighlightGameMenu::IsActive	descriptive	descriptive (high): getter: body returns m_bActive	nam1	2026-10-22
+14198c3f0	UIHouseMarkEntity::FUN_14198c3f0	UIHouseMarkEntity::IsPopup	descriptive	descriptive (high): getter: body returns m_bPopup	nam1	2026-10-22
+1419c16a0	UIItemEnchantDialog::FUN_1419c16a0	UIItemEnchantDialog::GetSelectedUid	descriptive	descriptive (high): getter: body returns m_selectedUid	nam1	2026-10-22
+1419da620	UIItemGetOptionDialog::FUN_1419da620	UIItemGetOptionDialog::SetMode	descriptive	descriptive (high): setter: body stores the argument in m_nMode	nam1	2026-10-22
+140e9c240	UIItemLulluBoxDialog::FUN_140e9c240	UIItemLulluBoxDialog::SetBoxItemId	descriptive	descriptive (high): setter: body stores the argument in m_boxItemId	nam1	2026-10-22
+140e4fc30	UIItemPetBoxDialog::FUN_140e4fc30	UIItemPetBoxDialog::SetBoxItemId	descriptive	descriptive (high): setter: body stores the argument in m_boxItemId	nam1	2026-10-22
+140e557f0	UIItemPetStudyDialog::FUN_140e557f0	UIItemPetStudyDialog::SetOwner	descriptive	descriptive (high): setter: body stores the argument in m_nOwner	nam1	2026-10-22
+140e57c80	UIItemPetTrainingDialog::FUN_140e57c80	UIItemPetTrainingDialog::SetOwner	descriptive	descriptive (high): setter: body stores the argument in m_nOwner	nam1	2026-10-22
+140f5d080	UIItemRemakeScrollDialog::FUN_140f5d080	UIItemRemakeScrollDialog::SetState	descriptive	descriptive (high): setter: body stores the argument in m_nState	nam1	2026-10-22
+140f5d0a0	UIItemRemakeScrollDialog::FUN_140f5d0a0	UIItemRemakeScrollDialog::GetState	descriptive	descriptive (high): getter: body returns m_nState	nam1	2026-10-22
+140f65a90	UIItemSocketScrollDialog::FUN_140f65a90	UIItemSocketScrollDialog::SetHasItem	descriptive	descriptive (high): setter: body stores the argument in m_bHasItem	nam1	2026-10-22
+140ea8da0	UIMarketBillDialog::FUN_140ea8da0	UIMarketBillDialog::GetParam	descriptive	descriptive (high): getter: body returns m_spParam	nam1	2026-10-22
+140eaac30	UIMarketBillDialog::FUN_140eaac30	UIMarketBillDialog::SetMode	descriptive	descriptive (high): setter: body stores the argument in m_nMode	nam1	2026-10-22
+140eade70	Unk_MasteryCraft::FUN_140eade70	Unk_MasteryCraft::HasTotal	descriptive	descriptive (medium): bool-test: body returns m_nTotal != 0	nam1	2026-10-22
+140eafdb0	UIMasteryDialog::FUN_140eafdb0	UIMasteryDialog::SetMainTab	descriptive	descriptive (high): setter: body stores the argument in m_nMainTab	nam1	2026-10-22
+140ebb020	Unk_MHousing::FUN_140ebb020	Unk_MHousing::GetMaxLevel	descriptive	descriptive (high): getter: body returns m_nMaxLevel	nam1	2026-10-22
+140c74d70	UIMentoringPage::FUN_140c74d70	UIMentoringPage::GetScript	descriptive	descriptive (high): getter: body returns m_script	nam1	2026-10-22
+140c74dc0	UIMentoringPage::FUN_140c74dc0	UIMentoringPage::GetOwner	descriptive	descriptive (high): getter: body returns m_owner	nam1	2026-10-22
+141a04a80	CMsgBoxData::FUN_141a04a80	CMsgBoxData::GetTimer	descriptive	descriptive (high): getter: body returns m_timer	nam1	2026-10-22
+141a0df70	UIMessenger::FUN_141a0df70	UIMessenger::GetName	descriptive	descriptive (high): getter: body returns m_strName	nam1	2026-10-22
+140e665e0	UIMicroGameRps::FUN_140e665e0	UIMicroGameRps::SetCard	descriptive	descriptive (high): setter: body stores the argument in m_nCard	nam1	2026-10-22
+141a34870	UIMinimapEntityTaxi::FUN_141a34870	UIMinimapEntityTaxi::SetBest	descriptive	descriptive (high): setter: body stores the argument in m_best	nam1	2026-10-22
+141a5c7a0	UIMyInfoDialog::FUN_141a5c7a0	UIMyInfoDialog::GetTab	descriptive	descriptive (high): getter: body returns m_nTab	nam1	2026-10-22
+141a638c0	UINpcControlDialog::FUN_141a638c0	UINpcControlDialog::SetNpcId	descriptive	descriptive (high): setter: body stores the argument in m_nNpcId	nam1	2026-10-22
+141a75a00	UIPartyDialog::FUN_141a75a00	UIPartyDialog::SetDeadline	descriptive	descriptive (high): setter: body stores the argument in m_deadline	nam1	2026-10-22
+14100d9f0	UIPlayInstrumentDialog::FUN_14100d9f0	UIPlayInstrumentDialog::GetAutoPlay	descriptive	descriptive (high): getter: body returns m_nAutoPlay	nam1	2026-10-22
+140f9bb50	UIPortalEmoticon::FUN_140f9bb50	UIPortalEmoticon::IsShown	descriptive	descriptive (high): getter: body returns m_bShown	nam1	2026-10-22
+140f9bca0	UIPortalEmoticon::FUN_140f9bca0	UIPortalEmoticon::SetName	descriptive	descriptive (high): setter: body stores the argument in m_strName	nam1	2026-10-22
+140bfebf0	UIRandomCoupon::FUN_140bfebf0	UIRandomCoupon::SetProduct	descriptive	descriptive (high): setter: body stores the argument in m_spProduct	nam1	2026-10-22
+141ab7660	UIRenderView::FUN_141ab7660	UIRenderView::GetDirty	descriptive	descriptive (high): getter: body returns m_nDirty	nam1	2026-10-22
+141ab7680	UIRenderView::FUN_141ab7680	UIRenderView::GetEffectRoot	descriptive	descriptive (high): getter: body returns m_spEffectRoot	nam1	2026-10-22
+141ac59e0	UIRouletteDialog::FUN_141ac59e0	UIRouletteDialog::GetSpinIndex	descriptive	descriptive (high): getter: body returns m_spinIndex	nam1	2026-10-22
+141ad03b0	Unk_LgPreload::FUN_141ad03b0	Unk_LgPreload::SetCallback	descriptive	descriptive (high): setter: body stores the argument in m_callback	nam1	2026-10-22
+140f9a200	UISelectItemBoxDialog::FUN_140f9a200	UISelectItemBoxDialog::SetItemUid	descriptive	descriptive (high): setter: body stores the argument in m_uItemUid	nam1	2026-10-22
+141ad1010	UIServerListDialog::FUN_141ad1010	UIServerListDialog::GetServerId	descriptive	descriptive (high): getter: body returns m_nServerId	nam1	2026-10-22
+141ad1030	UIServerListDialog::FUN_141ad1030	UIServerListDialog::GetServer	descriptive	descriptive (high): getter: body returns m_strServer	nam1	2026-10-22
+141ad31b0	UIServerListDialog::FUN_141ad31b0	UIServerListDialog::GetChannel	descriptive	descriptive (high): getter: body returns m_nChannel	nam1	2026-10-22
+141add860	CUIService::FUN_141add860	CUIService::GetMode	descriptive	descriptive (high): getter: body returns m_nMode	nam1	2026-10-22
+140f9d230	UIShadowExpeditionBossBar::FUN_140f9d230	UIShadowExpeditionBossBar::SetTitle	descriptive	descriptive (high): setter: body stores the argument in m_strTitle	nam1	2026-10-22
+14134cf50	UISmartRecommendBillingDialog::FUN_14134cf50	UISmartRecommendBillingDialog::SetItem	descriptive	descriptive (high): setter: body stores the argument in m_item	nam1	2026-10-22
+1412a5c50	UISystemMailNotifyDialog::FUN_1412a5c50	UISystemMailNotifyDialog::SetOnTime	descriptive	descriptive (high): setter: body stores the argument in m_bOnTime	nam1	2026-10-22
+140fa5ba0	UISystemShopDialog::FUN_140fa5ba0	UISystemShopDialog::SetMode	descriptive	descriptive (high): setter: body stores the argument in m_nMode	nam1	2026-10-22
+141b1bf80	UITalkCinematic::FUN_141b1bf80	UITalkCinematic::SetKeyGroup	descriptive	descriptive (high): setter: body stores the argument in m_nKeyGroup	nam1	2026-10-22
+141b1bfc0	UITalkCinematic::FUN_141b1bfc0	UITalkCinematic::GetLoaded	descriptive	descriptive (high): getter: body returns m_nLoaded	nam1	2026-10-22
+141b20fe0	UITalkManager::FUN_141b20fe0	UITalkManager::GetScript	descriptive	descriptive (high): getter: body returns m_spScript	nam1	2026-10-22
+141b21220	UITalkManager::FUN_141b21220	UITalkManager::GetTalking	descriptive	descriptive (high): getter: body returns m_nTalking	nam1	2026-10-22
+140fb4b90	UIUGCCubeNoticePopup::FUN_140fb4b90	UIUGCCubeNoticePopup::IsShown	descriptive	descriptive (high): getter: body returns m_bShown	nam1	2026-10-22
+140fb4c50	UIUGCCubeNoticePopup::FUN_140fb4c50	UIUGCCubeNoticePopup::SetPtWorld	descriptive	descriptive (high): setter: body stores the argument in m_ptWorld	nam1	2026-10-22
+140fb4c80	UIUGCCubeNoticePopup::FUN_140fb4c80	UIUGCCubeNoticePopup::SetIdEntity	descriptive	descriptive (high): setter: body stores the argument in m_idEntity	nam1	2026-10-22
+140ee9cd0	Unk_CubeFocus::FUN_140ee9cd0	Unk_CubeFocus::IsActive	descriptive	descriptive (high): getter: body returns m_bActive	nam1	2026-10-22
+140ee9f30	Unk_CubeTimer::FUN_140ee9f30	Unk_CubeTimer::GetValue	descriptive	descriptive (high): getter: body returns m_nValue	nam1	2026-10-22
+140ef0b20	FUN_140ef0b20	GetUGCCubePalette	descriptive	descriptive (medium): singleton: returns the UGCCubePalette instance pointer DAT_143ac90f0	nam1	2026-10-22
+141b463b0	UIUGCItemEditDialog::FUN_141b463b0	UIUGCItemEditDialog::SetEditItem	descriptive	descriptive (high): setter: body stores the argument in m_spEditItem	nam1	2026-10-22
+141b4bba0	UpperHpBarEntity::FUN_141b4bba0	UpperHpBarEntity::GetVisible	descriptive	descriptive (high): getter: body returns m_visible	nam1	2026-10-22
+141b4bc00	UpperHpBarEntity::FUN_141b4bc00	UpperHpBarEntity::GetClip	descriptive	descriptive (high): getter: body returns m_clip	nam1	2026-10-22
+141357400	UIUpperHudDialog::FUN_141357400	UIUpperHudDialog::SetNoticeSpeed	descriptive	descriptive (high): setter: body stores the argument in m_fNoticeSpeed	nam1	2026-10-22
+14135de90	Unk_HudMotionBlur::FUN_14135de90	Unk_HudMotionBlur::GetMode	descriptive	descriptive (high): getter: body returns m_nMode	nam1	2026-10-22
+14135e060	Unk_HudMotionBlur::FUN_14135e060	Unk_HudMotionBlur::SetMode	descriptive	descriptive (high): setter: body stores the argument in m_nMode	nam1	2026-10-22
+14135ed80	UIWebBrowserBase::FUN_14135ed80	UIWebBrowserBase::IsVisible	descriptive	descriptive (high): getter: body returns m_bVisible	nam1	2026-10-22
+140fc0b20	UIWatchAGameDialog::FUN_140fc0b20	UIWatchAGameDialog::SetValue	descriptive	descriptive (high): setter: body stores the argument in m_nValue	nam1	2026-10-22
+140fc0b40	UIWatchAGameDialog::FUN_140fc0b40	UIWatchAGameDialog::SetCharId	descriptive	descriptive (high): setter: body stores the argument in m_nCharId	nam1	2026-10-22
+141b50450	UIWebBrowser::FUN_141b50450	UIWebBrowser::SetStored	descriptive	descriptive (high): setter: body stores the argument in m_strStored	nam1	2026-10-22
+140fd6e40	UIWeddingGuestPage::FUN_140fd6e40	UIWeddingGuestPage::GetScript	descriptive	descriptive (high): getter: body returns m_pScript	nam1	2026-10-22
+140fd6e90	UIWeddingGuestPage::FUN_140fd6e90	UIWeddingGuestPage::GetDialog	descriptive	descriptive (high): getter: body returns m_pDialog	nam1	2026-10-22
+140fdbf50	UIWeddingHallReservationDialog::FUN_140fdbf50	UIWeddingHallReservationDialog::SetPackage	descriptive	descriptive (high): setter: body stores the argument in m_nPackage	nam1	2026-10-22
+140fdc110	UIWeddingHallReservationDialog::FUN_140fdc110	UIWeddingHallReservationDialog::SetHall	descriptive	descriptive (high): setter: body stores the argument in m_nHall	nam1	2026-10-22
+140fdc130	UIWeddingHallReservationDialog::FUN_140fdc130	UIWeddingHallReservationDialog::SetTime	descriptive	descriptive (high): setter: body stores the argument in m_nTime	nam1	2026-10-22
+140fdc160	UIWeddingHallReservationDialog::FUN_140fdc160	UIWeddingHallReservationDialog::SetNight	descriptive	descriptive (high): setter: body stores the argument in m_bNight	nam1	2026-10-22
+140fdca20	UIWeddingHallReservationDialog::FUN_140fdca20	UIWeddingHallReservationDialog::GetHall	descriptive	descriptive (high): getter: body returns m_nHall	nam1	2026-10-22
+140fdca40	UIWeddingHallReservationDialog::FUN_140fdca40	UIWeddingHallReservationDialog::GetTime	descriptive	descriptive (high): getter: body returns m_nTime	nam1	2026-10-22
+140fdca60	UIWeddingHallReservationDialog::FUN_140fdca60	UIWeddingHallReservationDialog::GetNight	descriptive	descriptive (high): getter: body returns m_bNight	nam1	2026-10-22
+140fdca80	UIWeddingHallReservationDialog::FUN_140fdca80	UIWeddingHallReservationDialog::GetMode	descriptive	descriptive (high): getter: body returns m_nMode	nam1	2026-10-22
+140fe7620	UIWeddingPage::FUN_140fe7620	UIWeddingPage::GetScript	descriptive	descriptive (high): getter: body returns m_pScript	nam1	2026-10-22
+140fef760	UIWriteMusicDialog::FUN_140fef760	UIWriteMusicDialog::GetItem	descriptive	descriptive (high): getter: body returns m_spItem	nam1	2026-10-22
+140ff4500	UIWriteMusicDialog::FUN_140ff4500	UIWriteMusicDialog::SetItem	descriptive	descriptive (high): setter: body stores the argument in m_spItem	nam1	2026-10-22
+141b72590	Unk_UtilErrorDialog::FUN_141b72590	Unk_UtilErrorDialog::SetKText	descriptive	descriptive (high): setter: body stores the argument in m_kText	nam1	2026-10-22
+141bcfd10	WorldService::FUN_141bcfd10	WorldService::GetState	descriptive	descriptive (high): getter: body returns m_state	nam1	2026-10-22
+141bd3650	WorldService::FUN_141bd3650	WorldService::GetTextureLayerManager	descriptive	descriptive (high): getter: body returns m_spTextureLayerManager	nam1	2026-10-22
+141bd3680	WorldService::FUN_141bd3680	WorldService::GetChaosLightEffectLayerManager	descriptive	descriptive (high): getter: body returns m_spChaosLightEffectLayerManager	nam1	2026-10-22
+141bd37e0	WorldService::FUN_141bd37e0	WorldService::GetBoundsMin	descriptive	descriptive (high): getter: body returns m_boundsMin	nam1	2026-10-22
+141bd3820	WorldService::FUN_141bd3820	WorldService::GetBoundsMax	descriptive	descriptive (high): getter: body returns m_boundsMax	nam1	2026-10-22
+140166420	FUN_140166420	GetFileSystem	descriptive	descriptive (medium): singleton: returns the CFileSystem instance pointer DAT_143aab398	nam1	2026-10-22
+140166440	FUN_140166440	GetLogString	descriptive	descriptive (medium): singleton: returns the CLogString instance pointer DAT_143aab390	nam1	2026-10-22
+140209340	COutPacketBuffer::FUN_140209340	COutPacketBuffer::SetLimit	descriptive	descriptive (high): setter: body stores the argument in m_limit	nam1	2026-10-22
+140209430	COutPacketBuffer::FUN_140209430	COutPacketBuffer::GetSequence	descriptive	descriptive (high): getter: body returns m_sequence	nam1	2026-10-22
+140209490	COutPacketBuffer::FUN_140209490	COutPacketBuffer::GetCaptureEnabled	descriptive	descriptive (high): getter: body returns m_captureEnabled	nam1	2026-10-22
+14026b1c0	ItemEntity::FUN_14026b1c0	ItemEntity::SetRank	descriptive	descriptive (high): setter: body stores the argument in m_rank	nam1	2026-10-22
+140375310	CFieldData::FUN_140375310	CFieldData::HasTutorialType	descriptive	descriptive (medium): bool-test: body returns m_nTutorialType != 0	nam1	2026-10-22
+140375350	CFieldData::FUN_140375350	CFieldData::GetContinentCode	descriptive	descriptive (high): getter: body returns m_nContinentCode	nam1	2026-10-22
+140375370	CFieldData::FUN_140375370	CFieldData::GetRegionCode	descriptive	descriptive (high): getter: body returns m_nRegionCode	nam1	2026-10-22
+1403754d0	CFieldData::FUN_1403754d0	CFieldData::GetPkMode	descriptive	descriptive (high): getter: body returns m_nPkMode	nam1	2026-10-22
+1403755d0	CFieldData::FUN_1403755d0	CFieldData::GetOnlyDarkTomb	descriptive	descriptive (high): getter: body returns m_nOnlyDarkTomb	nam1	2026-10-22
+140375780	CFieldData::FUN_140375780	CFieldData::GetMapType	descriptive	descriptive (high): getter: body returns m_nMapType	nam1	2026-10-22
+1403757e0	CFieldData::FUN_1403757e0	CFieldData::GetSetItemRestrainId	descriptive	descriptive (high): getter: body returns m_nSetItemRestrainId	nam1	2026-10-22
+14050d530	CHomePrivilege::FUN_14050d530	CHomePrivilege::SetOwner	descriptive	descriptive (high): setter: body stores the argument in m_pOwner	nam1	2026-10-22
+140529fd0	CItem::FUN_140529fd0	CItem::SetName	descriptive	descriptive (high): setter: body stores the argument in m_strName	nam1	2026-10-22
+140543590	DropNifData::FUN_140543590	DropNifData::GetTypeId	descriptive	descriptive (high): getter: body returns m_nTypeId	nam1	2026-10-22
+14058c5f0	CItemEnchantInfo::FUN_14058c5f0	CItemEnchantInfo::GetLevel	descriptive	descriptive (high): getter: body returns m_level	nam1	2026-10-22
+14058c730	CItemEnchantInfo::FUN_14058c730	CItemEnchantInfo::GetCharge	descriptive	descriptive (high): getter: body returns m_charge	nam1	2026-10-22
+14058ccb0	CItemEnchantInfo::FUN_14058ccb0	CItemEnchantInfo::GetDirty	descriptive	descriptive (high): getter: body returns m_dirty	nam1	2026-10-22
+14058cdc0	CItemEnchantInfo::FUN_14058cdc0	CItemEnchantInfo::GetVersion	descriptive	descriptive (high): getter: body returns m_version	nam1	2026-10-22
+14059a1f0	CItemExtraData::FUN_14059a1f0	CItemExtraData::SetPick	descriptive	descriptive (high): setter: body stores the argument in m_nPick	nam1	2026-10-22
+14059a210	CItemExtraData::FUN_14059a210	CItemExtraData::GetPick	descriptive	descriptive (high): getter: body returns m_nPick	nam1	2026-10-22
+1405a39f0	CGemBase::FUN_1405a39f0	CGemBase::GetGemId	descriptive	descriptive (high): getter: body returns m_nGemId	nam1	2026-10-22
+1405a5be0	CGemFishing::FUN_1405a5be0	CGemFishing::GetDataId	descriptive	descriptive (high): getter: body returns m_nDataId	nam1	2026-10-22
+1405aa540	CItemGem::FUN_1405aa540	CItemGem::SetGem	descriptive	descriptive (high): setter: body stores the argument in m_spGem	nam1	2026-10-22
+1405bd600	CHyperLinkData::FUN_1405bd600	CHyperLinkData::GetType	descriptive	descriptive (high): getter: body returns m_nType	nam1	2026-10-22
+1405bd9a0	CItemLinkData::FUN_1405bd9a0	CItemLinkData::GetOwnerId	descriptive	descriptive (high): getter: body returns m_nOwnerId	nam1	2026-10-22
+1405bdb00	CLinkItemID::FUN_1405bdb00	CLinkItemID::GetItemId	descriptive	descriptive (high): getter: body returns m_nItemId	nam1	2026-10-22
+1405bdc50	CLinkItemGUID::FUN_1405bdc50	CLinkItemGUID::GetGuid	descriptive	descriptive (high): getter: body returns m_nGuid	nam1	2026-10-22
+1405bddb0	CLinkSerialID::FUN_1405bddb0	CLinkSerialID::GetLow	descriptive	descriptive (high): getter: body returns m_nLow	nam1	2026-10-22
+1405bddd0	CLinkSerialID::FUN_1405bddd0	CLinkSerialID::GetHigh	descriptive	descriptive (high): getter: body returns m_nHigh	nam1	2026-10-22
+1405bdf00	CLinkBlackMarketSN::FUN_1405bdf00	CLinkBlackMarketSN::GetSerial	descriptive	descriptive (high): getter: body returns m_nSerial	nam1	2026-10-22
+1405bfb80	CItemMergeOptionData::FUN_1405bfb80	CItemMergeOptionData::GetProbVer	descriptive	descriptive (high): getter: body returns m_nProbVer	nam1	2026-10-22
+1405cb340	CItemOption::FUN_1405cb340	CItemOption::GetItemId	descriptive	descriptive (high): getter: body returns m_nItemId	nam1	2026-10-22
+1405ce370	ItemOptionValue::FUN_1405ce370	ItemOptionValue::GetStat	descriptive	descriptive (high): getter: body returns m_nStat	nam1	2026-10-22
+1405ce390	ItemOptionValue::FUN_1405ce390	ItemOptionValue::GetSpecial	descriptive	descriptive (high): getter: body returns m_nSpecial	nam1	2026-10-22
+1405ce3b0	ItemOptionValue::FUN_1405ce3b0	ItemOptionValue::HasValue	descriptive	descriptive (medium): bool-test: body returns m_nValue != 0	nam1	2026-10-22
+1405ce530	ItemOptionValue::FUN_1405ce530	ItemOptionValue::GetValue	descriptive	descriptive (high): getter: body returns m_nValue	nam1	2026-10-22
+1405ce550	ItemOptionValue::FUN_1405ce550	ItemOptionValue::SetValue	descriptive	descriptive (high): setter: body stores the argument in m_nValue	nam1	2026-10-22
+1405d2750	ItemOptionValueRandom::FUN_1405d2750	ItemOptionValueRandom::GetStat	descriptive	descriptive (high): getter: body returns m_nStat	nam1	2026-10-22
+1405d2770	ItemOptionValueRandom::FUN_1405d2770	ItemOptionValueRandom::GetSpecial	descriptive	descriptive (high): getter: body returns m_nSpecial	nam1	2026-10-22
+1405d27c0	ItemOptionValueRandom::FUN_1405d27c0	ItemOptionValueRandom::GetStatId	descriptive	descriptive (high): getter: body returns m_nStatId	nam1	2026-10-22
+1405d27e0	ItemOptionValueRandom::FUN_1405d27e0	ItemOptionValueRandom::GetWeight	descriptive	descriptive (high): getter: body returns m_nWeight	nam1	2026-10-22
+1405d2a70	ItemOptionConstant::FUN_1405d2a70	ItemOptionConstant::GetGrade	descriptive	descriptive (high): getter: body returns m_nGrade	nam1	2026-10-22
+1405d3b80	ItemOptionVariationData::FUN_1405d3b80	ItemOptionVariationData::GetHighStat	descriptive	descriptive (high): getter: body returns m_nHighStat	nam1	2026-10-22
+1405d3c80	ItemOptionRandom::FUN_1405d3c80	ItemOptionRandom::GetCode	descriptive	descriptive (high): getter: body returns m_nCode	nam1	2026-10-22
+1405d3ca0	ItemOptionRandom::FUN_1405d3ca0	ItemOptionRandom::GetStatGroup	descriptive	descriptive (high): getter: body returns m_eStatGroup	nam1	2026-10-22
+1405d3cc0	ItemOptionRandom::FUN_1405d3cc0	ItemOptionRandom::GetProbVer	descriptive	descriptive (high): getter: body returns m_nProbVer	nam1	2026-10-22
+1405d3ce0	ItemOptionRandom::FUN_1405d3ce0	ItemOptionRandom::GetLevelGroupId	descriptive	descriptive (high): getter: body returns m_nLevelGroupId	nam1	2026-10-22
+1405d9be0	ItemOptionRandomContext::FUN_1405d9be0	ItemOptionRandomContext::SetTarget	descriptive	descriptive (high): setter: body stores the argument in m_spTarget	nam1	2026-10-22
+1405d9e50	ItemOptionRandomContext::FUN_1405d9e50	ItemOptionRandomContext::GetOption	descriptive	descriptive (high): getter: body returns m_spOption	nam1	2026-10-22

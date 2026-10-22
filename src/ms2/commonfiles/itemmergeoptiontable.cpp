@@ -369,7 +369,7 @@ int CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
 }
 
 // @0x1405bfb80
-int CItemMergeOptionData::FUN_1405bfb80()
+int CItemMergeOptionData::GetProbVer()
 {
     return m_nProbVer;
 }

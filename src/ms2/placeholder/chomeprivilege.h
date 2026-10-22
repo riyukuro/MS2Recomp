@@ -12,7 +12,7 @@ class CHomePrivilege : public CPtred
 public:
     CHomePrivilege();                                       // 0x14050d4c0
     virtual ~CHomePrivilege();                              // 0x14050d500
-    void FUN_14050d530(MyPC* pOwner);                       // attach to the owner
+    void SetOwner(MyPC* pOwner);                       // attach to the owner
     int FUN_14050d550(int nNpcId);                          // the house lets the player use this npc
     int FUN_14050d6f0(int nPortalId);                       // ... this portal
     int FUN_14050d890(int nInteractId);                     // ... this interact object

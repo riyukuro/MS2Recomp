@@ -105,10 +105,10 @@ void BlindManager::Load()
     CreateLists();
     CString strFile("BlindList.xml");
     CString strPath = FUN_140cc2a00(FUN_141275640(), strFile);
-    if (FUN_140166420()->FUN_1403987d0(std::string((const char*)strPath)) == 0)
+    if (GetFileSystem()->FUN_1403987d0(std::string((const char*)strPath)) == 0)
         return;
     TiXmlDocument document;
-    if (FUN_140166420()->FUN_1403974b0(&document, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&document, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&document)->FUN_140165cf0("ms2");
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("blind"); pNode != 0; pNode = pNode->FUN_140168650("blind"))

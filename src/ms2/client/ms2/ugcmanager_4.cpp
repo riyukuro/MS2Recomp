@@ -3464,7 +3464,7 @@ void CUgcManager::FUN_14188cb10(int nType)
     strPath.Replace(L"\\", L"/");
     CString strPathA = FUN_1401d4330(strPath, 0);
     CAtlArray<CString> files;
-    FUN_140166420();
+    GetFileSystem();
     FUN_140399100("*.png", strPathA, files, "");
     if (files.GetCount() <= 0)
         return;
@@ -3475,7 +3475,7 @@ void CUgcManager::FUN_14188cb10(int nType)
         CStringW strFileName = StringFormat(L"{0}{1}", szName, szExt);
         CStringW strExt(szExt);
         FUN_140841420(strExt);
-        CFileSystem::BufferPtr spBuffer = FUN_140166420()->FUN_140397bc0(FUN_1401d4330(strFile, 0), 0, 0);
+        CFileSystem::BufferPtr spBuffer = GetFileSystem()->FUN_140397bc0(FUN_1401d4330(strFile, 0), 0, 0);
         if (spBuffer.get())
         {
             CStringW strTarget = StringFormat(L"{0}\\{1}", strDir, strFileName);

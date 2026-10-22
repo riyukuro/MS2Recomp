@@ -873,7 +873,7 @@ void UIItemEnchantDialog::OnClickFailStackDown()
 }
 
 // @0x1419c16a0
-unsigned __int64 UIItemEnchantDialog::FUN_1419c16a0()
+unsigned __int64 UIItemEnchantDialog::GetSelectedUid()
 {
     return m_selectedUid;
 }
@@ -1018,7 +1018,7 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
         __int64 id1 = pkt.vfunc_o8_4();
         m_2b8 = pkt.vfunc_o8_1();
         m_result.m_itemId = pkt.vfunc_o8_3();
-        m_result.FUN_14026b1c0(pkt.vfunc_o8_2());
+        m_result.SetRank(pkt.vfunc_o8_2());
         m_result.m_count = pkt.vfunc_o8_3();
         MS2Ptr<CItem> first = DAT_143ab2a90.FUN_140a5d680(id0);
         if (first.get() != 0) {
@@ -1036,7 +1036,7 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
         m_228 = 100.0f;
         m_23c = 100.0f;
         m_result.m_itemId = pkt.vfunc_o8_3();
-        m_result.FUN_14026b1c0(pkt.vfunc_o8_2());
+        m_result.SetRank(pkt.vfunc_o8_2());
         m_result.m_count = pkt.vfunc_o8_3();
         m_2b4 = (float)FUN_140478b60(FUN_1401c0d90()) / 10000.0f;
         m_2b4 = m_2b4 + FUN_1411e1110(FUN_1416561a0(pc), 0x41);
@@ -1570,7 +1570,7 @@ void UIItemEnchantDialog::FUN_1419c6420()
     m_2b8 = 0;
     m_failStack = 0;
     m_result.m_itemId = 0;
-    m_result.FUN_14026b1c0(0);
+    m_result.SetRank(0);
     m_result.m_count = 0;
     m_2bc = 0;
     m_failStackUids.RemoveAll();
@@ -2507,7 +2507,7 @@ MS2_REPLACE_METHOD(0x1419C0C70, UIItemEnchantDialog, SendRequestItemEnchantMode6
 MS2_REPLACE_METHOD(0x1419C11E0, UIItemEnchantDialog, OnRetry, 48, 0x9599EC04);
 MS2_REPLACE_METHOD(0x1419C15C0, UIItemEnchantDialog, OnClickFailStackUp, 100, 0x3ADF4CC0);
 MS2_REPLACE_METHOD(0x1419C1630, UIItemEnchantDialog, OnClickFailStackDown, 100, 0xA08A2C70);
-MS2_REPLACE_METHOD(0x1419C16A0, UIItemEnchantDialog, FUN_1419c16a0, 18, 0x232FCD10);
+MS2_REPLACE_METHOD(0x1419C16A0, UIItemEnchantDialog, GetSelectedUid, 18, 0x232FCD10);
 MS2_REPLACE_METHOD(0x1419C19D0, UIItemEnchantDialog, FUN_1419c19d0, 91, 0x012443E8);
 MS2_REPLACE_METHOD(0x1419C1A40, UIItemEnchantDialog, FUN_1419c1a40, 783, 0xA75C2F26);
 MS2_REPLACE_METHOD(0x1419C1D60, UIItemEnchantDialog, FUN_1419c1d60, 140, 0xCE77794F);

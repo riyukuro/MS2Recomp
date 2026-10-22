@@ -63,7 +63,7 @@
 #include "ms2/commonfiles/logstring.h"
 
 // ---- out-of-unit callees and data (bound to the exe by name) ----
-CLogString* FUN_140166440();                                                 // the game log, or 0
+CLogString* GetLogString();                                                 // the game log, or 0
 void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszMessage);
 CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);                  // ANSI -> wide
 CStringA FUN_14016a600(const wchar_t* pszWide, int nCodePage);               // wide -> ANSI
@@ -309,10 +309,10 @@ static void Unk_RsDeviceLostHook(bool bDeviceOk);
 // @0x1414ea3d0
 void CRenderCallback::Message(const char* pText)
 {
-    if (FUN_140166440() != 0) {
+    if (GetLogString() != 0) {
         CStringA text(pText);
         text.Trim();
-        FUN_1401859c0(FUN_140166440(), 0xb, 0x13, FUN_14016a730(text, 0));
+        FUN_1401859c0(GetLogString(), 0xb, 0x13, FUN_14016a730(text, 0));
     }
 }
 MS2_REPLACE_METHOD(0x1414EA3D0, CRenderCallback, Message, 184, 0x559ACDD4);
@@ -320,10 +320,10 @@ MS2_REPLACE_METHOD(0x1414EA3D0, CRenderCallback, Message, 184, 0x559ACDD4);
 // @0x1414ea490
 void CRenderCallback::Warning(const char* pText)
 {
-    if (FUN_140166440() != 0) {
+    if (GetLogString() != 0) {
         CStringA text(pText);
         text.Trim();
-        FUN_1401859c0(FUN_140166440(), 2, 0x13, FUN_14016a730(text, 0));
+        FUN_1401859c0(GetLogString(), 2, 0x13, FUN_14016a730(text, 0));
     }
 }
 MS2_REPLACE_METHOD(0x1414EA490, CRenderCallback, Warning, 184, 0xC0005629);
@@ -331,10 +331,10 @@ MS2_REPLACE_METHOD(0x1414EA490, CRenderCallback, Warning, 184, 0xC0005629);
 // @0x1414ea550
 void CRenderCallback::Error(const char* pText)
 {
-    if (FUN_140166440() != 0) {
+    if (GetLogString() != 0) {
         CStringA text(pText);
         text.Trim();
-        FUN_1401859c0(FUN_140166440(), 1, 0x13, FUN_14016a730(text, 0));
+        FUN_1401859c0(GetLogString(), 1, 0x13, FUN_14016a730(text, 0));
     }
     if (FUN_140a44830() != 0) {
         FUN_140a44830()->FUN_1401ce2f0("Renderer: %s", pText);
@@ -583,7 +583,7 @@ static unsigned int Unk_RsShaderError(const char* pcMsg, NiShaderError eErr, boo
     } else {
         text = StringFormat("Shader Error\260\241 \271\337\273\375\307\337\275\300\264\317\264\331.\n\nNif path : \n{0}\n\nNode name : {1}\n\n{2}\n\n\264\375\307\301 \306\304\300\317\300\273 \273\375\274\272\307\317\275\303\260\332\275\300\264\317\261\356?", (const char*)kNifPath, (const char*)kNodeName, pcMsg);
     }
-    Unk_RsLog3(FUN_140166440(), 1, 0x133, L"Code:{0:X} bRecoverable:{1} {2}", eErr, bRecoverable, pcMsg);
+    Unk_RsLog3(GetLogString(), 1, 0x133, L"Code:{0:X} bRecoverable:{1} {2}", eErr, bRecoverable, pcMsg);
     int answer = MessageBoxA(0, text, "Shader error", 4);
     if (answer == 6) {
         FUN_140a44830()->FUN_1401ce2f0("[%x][bRecoverable %d] %s", eErr, (unsigned int)bRecoverable, pcMsg);

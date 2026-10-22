@@ -102,8 +102,8 @@ public:
     void FUN_1419135c0();                                                               // clear everything
     bool FUN_1419136c0(CStringW& strOut);                                               // debug text of the containers
     void FUN_141913990(bool bClearing);
-    void FUN_1419139d0(bool b);                                                         // m_bObserver
-    void FUN_1419139f0(__int64 n);                                                      // m_nObservedId
+    void SetObserver(bool b);                                                         // m_bObserver
+    void SetObservedId(__int64 n);                                                      // m_nObservedId
     void FUN_141913a20();                                                               // read the layout constants
     float FUN_141913af0(GameObject* pTarget);                                           // height offset of a target
     float FUN_141913b80(const NiPoint3& kPos);

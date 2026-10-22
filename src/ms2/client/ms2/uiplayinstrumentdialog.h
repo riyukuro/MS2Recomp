@@ -60,7 +60,7 @@ public:
     void FUN_14100d600();                                                   // 0x14100d600 a score ended
     bool FUN_14100d8c0();                                                   // 0x14100d8c0 any score chosen
     void FUN_14100d920();                                                   // 0x14100d920 auto start
-    int FUN_14100d9f0();                                                    // 0x14100d9f0 m_nAutoPlay
+    int GetAutoPlay();                                                    // 0x14100d9f0 m_nAutoPlay
     void FUN_14100da10();                                                   // 0x14100da10 the play timer text
     void FUN_14100e060();                                                   // 0x14100e060 bind the key buttons
     void FUN_14100e880(int nKey, MS2Ptr<Unk_140acd6e0> spButton, int nIndex);   // 0x14100e880

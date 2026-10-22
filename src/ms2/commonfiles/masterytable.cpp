@@ -235,7 +235,7 @@ int CMasteryTable::LoadMastery()
             {
                 MS2Ptr<ItemEntity> spItem(new ItemEntity);
                 spItem->m_itemId = ids[i];
-                spItem->FUN_14026b1c0(ranks[i]);
+                spItem->SetRank(ranks[i]);
                 spItem->m_count = counts[i];
                 spMastery->m_rewards.Add(spItem);
             }

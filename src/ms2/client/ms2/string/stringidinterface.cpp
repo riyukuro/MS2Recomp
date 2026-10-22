@@ -60,7 +60,7 @@ public:
 };
 Unk_ChatTextFilter* FUN_1403b4750();
 
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 class Unk_XmlFiles { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_XmlFiles* FUN_140166420();
@@ -167,7 +167,7 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
     } while (0);
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
         return 0;
     }
     pMap = new ValueMap(10);
@@ -179,7 +179,7 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
         typename KeyMap::CPair* pPair = names->Lookup(strName);
         if (pPair == 0)
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
+            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", m_path18);
             delete pMap;
             pMap = 0;
             return 0;

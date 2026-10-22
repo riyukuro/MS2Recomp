@@ -35,7 +35,7 @@ void* FUN_14127bf80(void* pFramework);                          // its render se
 ecr::RenderSurface* FUN_140af7da0(ecr::RenderService* pService);  // the service's default surface
 int FUN_14151e740();                                            // GFx allocator bytes in use
 void FUN_1422d9020(int n);
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 
 extern char DAT_143b059e8;                                      // the entity app framework
 extern const efd::Category DAT_143b0d778;                       // the category GFxService subscribes to
@@ -229,19 +229,19 @@ bool GFxService::FUN_1422ea110(bool bBeforeReset, void* pvData)
     {
         if (bBeforeReset)
         {
-            if (FUN_140166440() != 0)
+            if (GetLogString() != 0)
             {
                 DWORD dwTick = GetTickCount();
-                Unk_OptLog(FUN_140166440(), 0xc, 0x1a, L"GFxService::OnLostRenderDevice[{0}]", dwTick);
+                Unk_OptLog(GetLogString(), 0xc, 0x1a, L"GFxService::OnLostRenderDevice[{0}]", dwTick);
             }
             pService->vfunc_16();
         }
         else
         {
-            if (FUN_140166440() != 0)
+            if (GetLogString() != 0)
             {
                 DWORD dwTick = GetTickCount();
-                Unk_OptLog(FUN_140166440(), 0xc, 0x1a, L"GFxService::OnRestoreRenderDevice[{0}]", dwTick);
+                Unk_OptLog(GetLogString(), 0xc, 0x1a, L"GFxService::OnRestoreRenderDevice[{0}]", dwTick);
             }
             return pService->vfunc_17();
         }

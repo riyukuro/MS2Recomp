@@ -295,7 +295,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 }
 
 // @0x1419da620
-void UIItemGetOptionDialog::FUN_1419da620(int nMode)
+void UIItemGetOptionDialog::SetMode(int nMode)
 {
     m_nMode = nMode;
 }

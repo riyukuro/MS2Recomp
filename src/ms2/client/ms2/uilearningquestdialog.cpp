@@ -40,7 +40,7 @@ private:
     void* m_40; void* m_48; void* m_50; void* m_58; void* m_60; void* m_68;
 };
 class CFileSystem;
-CFileSystem* FUN_140166420();
+CFileSystem* GetFileSystem();
 int FUN_1403974b0(CFileSystem* pFiles, TiXmlDocument* pDoc, const char* pszPath, int nFlags, bool bA, bool bB);   // load an xml file
 TiXmlElement* FUN_140165cf0(TiXmlDocument* pParent, const char* pszName);   // FirstChildElement
 TiXmlElement* FUN_140165cf0(TiXmlElement* pParent, const char* pszName);
@@ -358,7 +358,7 @@ void UILearningQuestDialog::LoadLearningQuest()
         CLearningQuestTable::GetInstance()->GetAll(all);
     for (size_t i = 0; i < all.GetCount(); i++)
         m_2c8.SetAt(all[i]->m_nId, 0);
-    if (FUN_1403974b0(FUN_140166420(), &m_1e8, (const char*)FUN_140cc2a00(FUN_1412755f0(), "learningQuestCharacter.xml"), 0, true, false) != 0)
+    if (FUN_1403974b0(GetFileSystem(), &m_1e8, (const char*)FUN_140cc2a00(FUN_1412755f0(), "learningQuestCharacter.xml"), 0, true, false) != 0)
     {
         TiXmlElement* pRoot = FUN_140165cf0(&m_1e8, "ms2");
         if (pRoot != 0)
@@ -379,7 +379,7 @@ void UILearningQuestDialog::LoadLearningQuest()
             }
         }
     }
-    if (FUN_1403974b0(FUN_140166420(), &m_258, (const char*)FUN_140cc2a00(FUN_141275640(), "learningQuestAccount.xml"), 0, true, false) != 0)
+    if (FUN_1403974b0(GetFileSystem(), &m_258, (const char*)FUN_140cc2a00(FUN_141275640(), "learningQuestAccount.xml"), 0, true, false) != 0)
     {
         TiXmlElement* pRoot = FUN_140165cf0(&m_258, "ms2");
         if (pRoot != 0)

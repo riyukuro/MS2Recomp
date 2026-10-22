@@ -203,7 +203,7 @@ Unk_PiUIManager* FUN_1403ed2b0();
 
 // The dialogs the page talks to. The RTTI names must match the exe's.
 class UIItemAutoUseOptionDialog : public UIDialog { };
-class UIItemGetOptionDialog : public UIDialog { public: void FUN_1419da620(int nMode); };
+class UIItemGetOptionDialog : public UIDialog { public: void SetMode(int nMode); };
 class UIOtherPetSystemDialog : public UIDialog
 {
 public:
@@ -1034,7 +1034,7 @@ void PetInfoSkill::OnAutoItemPick()
     UIItemGetOptionDialog* pGet = FUN_140cbe260(0x4e6c);
     if (pGet != 0)
     {
-        pGet->FUN_1419da620(0);
+        pGet->SetMode(0);
         FUN_1403ed2b0()->FUN_141adc530(0x4e6c);
     }
 }

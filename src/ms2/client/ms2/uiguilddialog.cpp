@@ -1222,7 +1222,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             CStringW strReceiver = data.FUN_1422b8f40();
             ItemEntity item;
             item.m_itemId = data.FUN_1422b8a10();
-            item.FUN_14026b1c0(data.FUN_1422b8a10());
+            item.SetRank(data.FUN_1422b8a10());
             item.m_count = data.FUN_1422b8b10();
             if (CGuildManager::GetInstance()->FUN_1413bb490(item, strReceiver) && m_storagePage.get() != 0)
                 m_storagePage->Invoke("onGiftPopDown");

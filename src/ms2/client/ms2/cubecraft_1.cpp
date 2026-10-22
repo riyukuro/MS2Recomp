@@ -207,7 +207,7 @@ Unk_Int3 FUN_1408a0400(int nPacked);
 class Unk_FishRodState { public: int FUN_1409700d0(int nKind); };
 Unk_FishRodState* FUN_1416749a0(PCBase*);
 class Unk_GemItem : public CPtred { public: char m_pad[0x40]; };
-class CGemFishing : public Unk_GemItem { public: int FUN_1405a5be0(); };
+class CGemFishing : public Unk_GemItem { public: int GetDataId(); };
 struct Unk_CcInvView { MS2Ptr<Unk_GemItem> FUN_141270740(int nTab); };   // member (this=rcx, hidden return=rdx)
 Unk_CcInvView* FUN_14165f460(PCBase*);
 Unk_GemItem* FUN_140ddcc50(MS2Ptr<Unk_GemItem>&);
@@ -1334,7 +1334,7 @@ void CFishingGuideObject::FUN_1410a59f0()
             MS2Ptr<CGemFishing> spGem(dynamic_cast<CGemFishing*>(FUN_140ddcc50(spItem)));
             if (spGem.get() != 0)
             {
-                int nGemId = spGem->FUN_1405a5be0();
+                int nGemId = spGem->GetDataId();
                 if (nGemId != 0)
                 {
                     MS2Ptr<Unk_FishData> spRow = FUN_1403b4740()->FUN_1403b2dc0(nGemId);

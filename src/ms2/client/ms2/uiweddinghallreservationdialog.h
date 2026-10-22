@@ -34,19 +34,19 @@ public:
     virtual int vfunc_65();                                     // 65 0x140fdb540
     virtual void vfunc_67();                                    // 67 0x140fdb5f0 also ends the npc talk
 
-    void FUN_140fdbf50(int nPackage);                           // set the package
+    void SetPackage(int nPackage);                           // set the package
     void FUN_140fdbf70();                                       // previous tab
     void FUN_140fdc030();                                       // next tab
-    void FUN_140fdc110(int nHall);                              // set the hall
-    void FUN_140fdc130(__int64 nTime);                          // set the time
-    void FUN_140fdc160(unsigned char bNight);                   // set the night flag
+    void SetHall(int nHall);                              // set the hall
+    void SetTime(__int64 nTime);                          // set the time
+    void SetNight(unsigned char bNight);                   // set the night flag
     void FUN_140fdc180();                                       // open the bill of the reservation
     void FUN_140fdc970();                                       // send the reservation change
     void FUN_140fdc9f0();                                       // send the reservation cancel
-    int FUN_140fdca20();                                        // the hall
-    __int64 FUN_140fdca40();                                    // the time
-    unsigned char FUN_140fdca60();                              // the night flag
-    int FUN_140fdca80();                                        // the mode (0 reserve, 1 change, 2 cancel)
+    int GetHall();                                        // the hall
+    __int64 GetTime();                                    // the time
+    unsigned char GetNight();                              // the night flag
+    int GetMode();                                        // the mode (0 reserve, 1 change, 2 cancel)
     void FUN_140fdcaa0(const CString& strMode);                 // set the mode by name
     __int64 FUN_140fdcb30();                                    // the price of the hall
     void FUN_140fdcc30(PagePtr spPage);                         // register a page under its name

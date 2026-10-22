@@ -703,7 +703,7 @@ void UIWriteMusicDialog::vfunc_72()
 }
 
 // @0x140fef760
-MS2Ptr<CItem> UIWriteMusicDialog::FUN_140fef760()
+MS2Ptr<CItem> UIWriteMusicDialog::GetItem()
 {
     return m_spItem;
 }
@@ -720,7 +720,7 @@ bool UIWriteMusicDialog::FUN_140fef7b0(MS2Ptr<CItem> spItem)
             return false;
         }
         m_nMode = 1;
-        FUN_140ff4500(spItem);
+        SetItem(spItem);
         return true;
     }
     return false;
@@ -764,7 +764,7 @@ bool UIWriteMusicDialog::FUN_140fef8f0(MS2Ptr<CItem> spItem)
             return false;
         }
         m_nMode = 2;
-        FUN_140ff4500(spItem);
+        SetItem(spItem);
         FUN_140ff2500(spItem->FUN_140526a50());
         return true;
     }
@@ -1559,7 +1559,7 @@ void UIWriteMusicDialog::FUN_140ff43a0(const CString& strMelody, ASArray& chords
 }
 
 // @0x140ff4500
-void UIWriteMusicDialog::FUN_140ff4500(MS2Ptr<CItem> spItem)
+void UIWriteMusicDialog::SetItem(MS2Ptr<CItem> spItem)
 {
     m_spItem = spItem;
 }

@@ -144,7 +144,7 @@ public:
     CGemBase(int nType, int nGemId);                                // 0x1405a3940
     virtual ~CGemBase();                                            //  0 0x1405a39a0 (??_G 0x1405a8fa0)
     virtual int vfunc_1();                                          //  1 0x1405a39d0 the gem type
-    int FUN_1405a39f0();                                            // 0x1405a39f0 the gem id
+    int GetGemId();                                            // 0x1405a39f0 the gem id
     virtual void vfunc_2(COutputStream& stream);                    //  2 0x1405a3a10 write the payload
     virtual void vfunc_3(CInputStream& stream);                     //  3 0x1405a3a30 read the payload
     virtual MS2Ptr<CGemBase> vfunc_4();                             //  4 0x1405a3a50 clone
@@ -260,7 +260,7 @@ public:
     CGemFishing(const CGemFishing& o);                              // 0x1405a5aa0
     virtual ~CGemFishing();                                         //  0 0x1405a5b00 (??_G 0x1405a90e0)
     virtual MS2Ptr<CGemBase> vfunc_4();                             //  4 0x1405a5b30
-    int FUN_1405a5be0();                                            // 0x1405a5be0 the data id
+    int GetDataId();                                            // 0x1405a5be0 the data id
 
     int m_nDataId;                                                  // +0x20
 };
@@ -354,7 +354,7 @@ public:
     virtual int vfunc_6(PC* pPC, MS2Ptr<CItem> spItem);             //  6 0x1405a7a90 apply
     virtual int vfunc_7(PC* pPC, MS2Ptr<CItem> spItem);             //  7 0x1405a7b50 remove
     virtual void vfunc_8();                                         //  8 0x1405a7c10
-    void FUN_1405aa540(MS2Ptr<CGemBase> spGem);                     // 0x1405aa540 take over a gem
+    void SetGem(MS2Ptr<CGemBase> spGem);                     // 0x1405aa540 take over a gem
     bool FUN_1405a7020(int nType, int nGemId);                      // 0x1405a7020 create the gem of a type
     int FUN_1405a7c60();                                            // 0x1405a7c60
     CString FUN_1405a7cc0();                                        // 0x1405a7cc0

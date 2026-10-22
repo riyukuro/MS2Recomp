@@ -80,7 +80,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x14134caf0
     virtual void vfunc_79(void* p);                             // 79 0x14134cbd0 packet 0xa0: the offer was accepted
 
-    void FUN_14134cf50(Unk_RecommendPtr item);                  // 0x14134cf50 show this offer
+    void SetItem(Unk_RecommendPtr item);                  // 0x14134cf50 show this offer
     void FUN_14134cfa0();                                       // 0x14134cfa0 fill the movie
 
 private:

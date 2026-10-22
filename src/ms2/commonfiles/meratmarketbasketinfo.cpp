@@ -1567,7 +1567,7 @@ MS2_REPLACE_METHOD(0x1406A27B0, CMeratMarketPremium, Init, 325, 0x52A35A3A);
 int CMeratMarketPremium::LoadXml(const CStringA& strPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == NULL)
@@ -1607,7 +1607,7 @@ MS2_REPLACE_METHOD(0x1406A2900, CMeratMarketPremium, LoadXml, 841, 0x490FF2B8);
 int CMeratMarketPremium::LoadUgcXml(const CStringA& strPath)
 {
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == NULL)
@@ -2270,13 +2270,13 @@ MS2_REPLACE(0x1406A4C20, FUN_1406a4c20, 455, 0x916239EE);
 void Unk_MeratHomeLayout::Load()
 {
     CStringA strPath = FUN_1406a4a00();
-    FUN_140166420()->FUN_1403974b0(&m_meratDoc, strPath, 0, true, false);
+    GetFileSystem()->FUN_1403974b0(&m_meratDoc, strPath, 0, true, false);
     FUN_1406a4b50(&m_meratDoc, &m_meratItems);
     strPath = FUN_1406a4a70();
-    FUN_140166420()->FUN_1403974b0(&m_premiumDoc, strPath, 0, true, false);
+    GetFileSystem()->FUN_1403974b0(&m_premiumDoc, strPath, 0, true, false);
     FUN_1406a4b50(&m_premiumDoc, &m_premiumItems);
     strPath = FUN_1406a4ae0();
-    FUN_140166420()->FUN_1403974b0(&m_designersDoc, strPath, 0, true, false);
+    GetFileSystem()->FUN_1403974b0(&m_designersDoc, strPath, 0, true, false);
 }
 MS2_REPLACE_METHOD(0x1406A4DF0, Unk_MeratHomeLayout, Load, 447, 0xAA9F2445);
 

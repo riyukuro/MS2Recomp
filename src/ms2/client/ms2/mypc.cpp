@@ -135,7 +135,7 @@ class CHomePrivilege : public CPtred
 {
 public:
     CHomePrivilege();                                       // 0x14050d4c0
-    void FUN_14050d530(MyPC* pOwner);                       // attach to the owner
+    void SetOwner(MyPC* pOwner);                       // attach to the owner
     MyPC* m_pOwner;                                         // +0x18
 };
 
@@ -901,7 +901,7 @@ MyPC::MyPC()
     m_kSkillSystem.FUN_141764a80(this);
     FUN_141682f60(&m_unk_6d8, this);
     m_spHomePrivilege.AssignRaw(new CHomePrivilege);
-    m_spHomePrivilege->FUN_14050d530(this);
+    m_spHomePrivilege->SetOwner(this);
     DAT_143ab2e20.FUN_1408fbab0();
     DAT_143ab2e50.FUN_140dfc4e0();
     m_kStateCtl.FUN_1417b7430(this);

@@ -1232,13 +1232,13 @@ void UISceneGamePlay::vfunc_58()
     FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyFadeInComplete));
     Unk_GsMapPtr spMap = FUN_140a55460(FUN_1403ed2d0()->FUN_141bd3060());
     if (spMap.FUN_1409657a0() != 0 && spMap.FUN_140885340()->FUN_1403754f0() != 0) {
-        if (m_c8 != 0 && spMap.FUN_140885340()->FUN_1403754d0() == 0) {
+        if (m_c8 != 0 && spMap.FUN_140885340()->GetPkMode() == 0) {
             FUN_141275260(0x96f, 4, 0);
             FUN_1412751b0(FUN_14028de60(0x970), 0x14);
             FUN_141276180(DAT_143af6008, CString(""));
             m_c8 = 0;
         } else if (m_c8 == 0) {
-            if (spMap.FUN_140885340()->FUN_1403754d0() != 0) {
+            if (spMap.FUN_140885340()->GetPkMode() != 0) {
                 FUN_141275260(0x96d, 4, 0);
                 FUN_1412751b0(FUN_14028de60(0x96e), 0x14);
                 FUN_141276180(DAT_143af6008, CString(""));

@@ -2144,7 +2144,7 @@ MS2_REPLACE_METHOD(0x1406308A0, CItemStatus, FUN_1406308a0, 1103, 0xFA56D793);
 // @0x140630d00
 unsigned short CItemStatus::FUN_140630d00()
 {
-    return m_spEnchant->FUN_14058c5f0();
+    return m_spEnchant->GetLevel();
 }
 MS2_REPLACE_METHOD(0x140630D00, CItemStatus, FUN_140630d00, 39, 0x3E09AE77);
 

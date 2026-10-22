@@ -73,7 +73,7 @@ void ItemEntity::FUN_14026b100(Unk_GiftInput& stream) {
     m_2b = reinterpret_cast<CInputStream&>(stream).vfunc_o8_0();
 }
 // @0x14026b1c0
-void ItemEntity::FUN_14026b1c0(int rank) { m_rank = rank; }
+void ItemEntity::SetRank(int rank) { m_rank = rank; }
 
 // ---- CIngredientInfo ------------------------------------------------------------------------------------------
 // @0x14026b1e0
@@ -337,7 +337,7 @@ void DungeonRewardInfo::FUN_14026c900(CInPacket& in) {
         ItemEntity* item = FUN_14027f4b0(m_items.FUN_14028b360(&tmp));
         item->m_itemId = in.vfunc_o8_3();
         item->m_count = in.vfunc_o8_3();
-        item->FUN_14026b1c0(in.vfunc_o8_3());
+        item->SetRank(in.vfunc_o8_3());
         item->m_28 = in.vfunc_o8_0();
         item->m_29 = in.vfunc_o8_0();
         item->m_2b = in.vfunc_o8_0();

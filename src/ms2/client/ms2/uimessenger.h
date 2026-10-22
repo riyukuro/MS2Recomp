@@ -113,7 +113,7 @@ public:
     void FUN_141a0d880(bool bVisible);                                      // 0x141a0d880 shows the two extra components
     static bool LoadDebugChatCommand();                                            // 0x141a0d930 loads DebugChatCommand.xml
     static int FUN_141a0df10();                                             // 0x141a0df10 reloads it when it changed
-    CStringW FUN_141a0df70();                                               // 0x141a0df70 the window name
+    CStringW GetName();                                               // 0x141a0df70 the window name
     CStringW FUN_141a0dfc0();                                               // 0x141a0dfc0 the default tab name
     MessengerData::TalkTab* FUN_141a0e050();                                // 0x141a0e050 the selected tab
     MessengerData::TalkTab* FUN_141a0e0f0(const CStringW& strName);         // 0x141a0e0f0 a tab by name

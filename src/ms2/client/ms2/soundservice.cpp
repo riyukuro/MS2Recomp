@@ -30,7 +30,7 @@ extern int DAT_1439f86ac;                                           // nonzero: 
 extern char DAT_143d6eb58;                                          // class descriptor handed to the lookup FUN_14098d8d0
 
 // ---- helpers living in other units ----
-CLogString* FUN_140166440();                                        // the log
+CLogString* GetLogString();                                        // the log
 void FUN_1403a1280(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const char* const& rArg);
 void FUN_1401859c0(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat);
 int FUN_1406516c0();                                                // client language (0 Korea, 1 jp, 2 en, 3 cn)
@@ -197,10 +197,10 @@ bool FUN_1417b1430(FMOD_RESULT nResult)
 {
     if (nResult == FMOD_OK)
         return true;
-    if (FUN_140166440() != 0)
+    if (GetLogString() != 0)
     {
         const char* pszText = FUN_1417b0e10(nResult);
-        Unk_SndLog2(FUN_140166440(), 1, 0x12f, L"FMOD error! ({0}) {1}", nResult, pszText);
+        Unk_SndLog2(GetLogString(), 1, 0x12f, L"FMOD error! ({0}) {1}", nResult, pszText);
     }
     return false;
 }
@@ -215,8 +215,8 @@ FMOD_RESULT F_CALLBACK FUN_1417b14a0(FMOD_SYSTEM* pSystem, FMOD_SYSTEM_CALLBACKT
         FMOD_System_GetNumDrivers(pSystem, &nDrivers);
         if (nDrivers != 0)
             FUN_1417b4a40(1);
-        if (FUN_140166440() != 0)
-            FUN_1401859c0(FUN_140166440(), 0xc, 0x12f, L"FMOD_SYSTEM_CALLBACKTYPE_DEVICELISTCHANGED");
+        if (GetLogString() != 0)
+            FUN_1401859c0(GetLogString(), 0xc, 0x12f, L"FMOD_SYSTEM_CALLBACKTYPE_DEVICELISTCHANGED");
     }
     return FMOD_OK;
 }
@@ -325,7 +325,7 @@ void FUN_1417ae7c0(FMOD_RESULT nResult)
     {
         CStringA strText(FUN_1417b0e10(nResult));
         const char* pszText = FUN_1417b0e10(nResult);
-        FUN_1403a1280(FUN_140166440(), 1, 0x13, L"{0}", pszText);
+        FUN_1403a1280(GetLogString(), 1, 0x13, L"{0}", pszText);
     }
 }
 

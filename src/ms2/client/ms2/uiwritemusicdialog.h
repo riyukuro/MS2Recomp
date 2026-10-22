@@ -70,7 +70,7 @@ public:
     virtual void vfunc_72();                                                // 72 0x140fef6c0
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);               // IMessageListener 0 0x140fef2f0
 
-    MS2Ptr<CItem> FUN_140fef760();                                          // 0x140fef760 the score item
+    MS2Ptr<CItem> GetItem();                                          // 0x140fef760 the score item
     bool FUN_140fef7b0(MS2Ptr<CItem> spItem);                               // 0x140fef7b0 write a blank score
     bool FUN_140fef8f0(MS2Ptr<CItem> spItem);                               // 0x140fef8f0 view a written score
     void FUN_140fefd00(MS2Ptr<CItem> spItem);                               // 0x140fefd00 the score was made (server answer)
@@ -105,7 +105,7 @@ public:
     int FUN_140ff40b0();                                                    // 0x140ff40b0 the score's max length
     void FUN_140ff41a0();                                                   // 0x140ff41a0 fill the tabs from m_strText
     void FUN_140ff43a0(const CString& strMelody, ASArray& chords, const CStringW& strTitle, int nInstrument);   // 0x140ff43a0
-    void FUN_140ff4500(MS2Ptr<CItem> spItem);                               // 0x140ff4500 m_spItem = spItem
+    void SetItem(MS2Ptr<CItem> spItem);                               // 0x140ff4500 m_spItem = spItem
     bool FUN_140ff4550();                                                   // 0x140ff4550 roll type 0 (per time)
     void FUN_140ff4610(std::map<int, CString>& tabs);                       // 0x140ff4610 parse the tabs into m_pages
     void FUN_140ff4a80();                                                   // 0x140ff4a80 draw the piano roll page

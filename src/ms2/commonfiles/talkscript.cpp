@@ -105,7 +105,7 @@ CStringA FUN_14015f710(Unk_ScriptXmlNode* pNode, const char* pszName, CStringA s
 void FUN_140177de0(CStringA& str, ATL::CAtlArray<int>& rOut, const char* pszSep);   // split into ints
 bool FUN_14028f710(Unk_ScriptXmlNode* pNode);                                       // element is enabled
 unsigned FUN_140767ff0();                                                           // random
-CFileSystem* FUN_140166420();
+CFileSystem* GetFileSystem();
 void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
@@ -615,7 +615,7 @@ void FUN_140859320(Unk_ScriptXmlNode* pNode, TalkPtr script)
 void FUN_140857f20(CStringA path)
 {
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, path, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, path, 0, true, false))
         return;
     CachePtr cache(new CCacheData());
     cache->FUN_1401d1160(path);
@@ -666,7 +666,7 @@ void FUN_140858440(CStringA path)
 {
     Unk_CriticalSectionLock lock(s_lock, 1);
     TiXmlDocument doc;
-    if (!FUN_140166420()->FUN_1403974b0(&doc, path, 0, true, false))
+    if (!GetFileSystem()->FUN_1403974b0(&doc, path, 0, true, false))
         return;
     Unk_ScriptXmlNode* root = FUN_140165cf0(&doc, "ms2");
     if (!root)

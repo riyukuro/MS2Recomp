@@ -17,7 +17,7 @@
 #include "hook/ms2hook.h"
 
 // Unrecovered helpers (the xml loader helpers the other table units use).
-CLogString* FUN_140166440();
+CLogString* GetLogString();
 void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* format, const CString& arg);
 CString FUN_14071ae20(const CString& strFile);                           // the localised string table path
 CString FUN_140651350();                                                 // the locale folder name
@@ -63,12 +63,12 @@ void CScriptTable::Load()
         if (strDir.Find("script", 0) == 0)
         {
             TiXmlDocument doc;
-            if (FUN_140166420()->FUN_1403974b0(&doc, files[i], 0, true, false) == 0)
+            if (GetFileSystem()->FUN_1403974b0(&doc, files[i], 0, true, false) == 0)
                 return;
             Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
             if (pRoot == 0)
             {
-                FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", files[i]);
+                FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", files[i]);
                 return;
             }
             for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
@@ -82,7 +82,7 @@ void CScriptTable::Load()
                 if (m_mapScripts.Lookup(nId) != 0)
                 {
                     const CString& rFile = files[i];
-                    Unk_ScriptLog(FUN_140166440(), 1, 0x13, L"중복된 키 값이 존재 합니다.[<ms2> {0}] {1}", rFile, nId);
+                    Unk_ScriptLog(GetLogString(), 1, 0x13, L"중복된 키 값이 존재 합니다.[<ms2> {0}] {1}", rFile, nId);
                     continue;
                 }
                 m_mapScripts.SetAt(nId, strName);

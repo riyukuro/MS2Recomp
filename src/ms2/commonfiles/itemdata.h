@@ -268,7 +268,7 @@ public:
     virtual ~DropNifData() = default;   // COMDAT 0x140552480 (no vptr store)
     void FUN_1405434f0(Unk_140165cf0* pElem);   // XML read
     bool FUN_140543550(unsigned n); // m_nUnk1c <= n
-    int FUN_140543590();            // type id
+    int GetTypeId();            // type id
     int m_nTypeId;                  // +0x18 "typeID"
     unsigned m_nUnk1c;              // +0x1c
 };
