@@ -8325,3 +8325,4 @@ compress2	142724100	func
 ?CreateProgressEventObject@EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEAA?AV?$SPtr@VEvent@fl_events@Instances@AS3@GFx@Scaleform@@@456@AEBVASString@56@@Z	142467dc0	func
 ?GetStringCommon@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@I@Z	14028de60	func
 ??0efdPhysXSDM@efdPhysX@@QEAA@XZ	1421177a0	func
+?CheckExpand@?$HashSetBase@U?$HashNode@PEAVObject@AS3@GFx@Scaleform@@PEAV1234@V?$IdentityHash@PEAVObject@AS3@GFx@Scaleform@@@4@@Scaleform@@UNodeHashF@12@UNodeAltHashF@12@U?$AllocatorGH@PEAVObject@AS3@GFx@Scaleform@@$01@2@V?$HashsetNodeEntry@U?$HashNode@PEAVObject@AS3@GFx@Scaleform@@PEAV1234@V?$IdentityHash@PEAVObject@AS3@GFx@Scaleform@@@4@@Scaleform@@UNodeHashF@12@@2@@Scaleform@@QEAAXPEAX@Z	142498ce0	func
