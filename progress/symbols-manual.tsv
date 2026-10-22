@@ -8364,3 +8364,6 @@ compress2	142724100	func
 ?RemoveChildAt@AvmDisplayObjContainer@AS3@GFx@Scaleform@@QEAAXI@Z	1425226a0	func
 ?GetTopMostEntity@MovieImpl@GFx@Scaleform@@QEAAPEAVInteractiveObject@23@AEBV?$Point@M@Render@3@I_NPEBV423@@Z	14256fde0	func
 ?InitCenterDelta@DragState@MovieImpl@GFx@Scaleform@@QEAAX_N@Z	142570c80	func
+?CopyChannel@DrawableImage@Render@Scaleform@@QEAAXPEAVImageBase@23@AEBV?$Rect@J@23@AEBV?$Point@J@23@KK@Z	1425eb570	func
+?HitTest@DrawableImage@Render@Scaleform@@QEAA_NAEBV?$Point@J@23@AEBV?$Rect@J@23@K@Z	1425ed5e0	func
+?HitTest@DrawableImage@Render@Scaleform@@QEAA_NPEAVImageBase@23@AEBV?$Point@J@23@1KK@Z	1425ed800	func
