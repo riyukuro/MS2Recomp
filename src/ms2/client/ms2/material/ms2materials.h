@@ -499,6 +499,22 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+class MS2DecorationMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+
+public:
+    MS2DecorationMaterial(bool bAutoCreateCaches);
+
+    virtual bool SetupPackingRequirements(NiShader* pkShader, NiMaterialDescriptor* pkMaterialDescriptor,
+        RenderPassDescriptor* pkRenderPasses, unsigned int uiCount);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool HandlePositionFragment(Context& kContext, TransformType eTransType,
+        NiMaterialResource*& pkVertWorldPos, NiMaterialResource*& pkWorldMatrix);
+};
+
+//--------------------------------------------------------------------------------------------------
 #define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
     class classname : public MS2StandardMaterial                                                    \
     {                                                                                               \
@@ -506,7 +522,6 @@ public:
         classname(bool bAutoCreateCaches);                                                          \
     }
 
-MS2_DECLARE_STANDARD_MATERIAL(MS2DecorationMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2GlowMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2TextureDensityMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2ForceColorMaterial);
