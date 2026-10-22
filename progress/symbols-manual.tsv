@@ -3590,6 +3590,7 @@ __imp_NxGetUtilLib	142cced28	data
 ?CheckObjects@TriggerCli@@QEAAHAEAV?$vector@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$allocator@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@@Z	14119ab70	func
 ?GetInstance@CNMManager@@SAPEAV1@XZ	1415fa260	func
 ?CallNMFunc@CNMManager@@QEAAHPEAVCNMFunc@@@Z	1415cb440	func
+??0CNMFunc@@QEAA@HHHH@Z	14157d4c0	func
 ??0CNMGameCode@@QEAA@AEBV0@@Z	1415e9910	func
 ??4CNMGameCode@@QEAAAEAV0@AEBV0@@Z	1415f0db0	func
 ??0CNMGameServerCode@@QEAA@AEBV0@@Z	1415e9cd0	func

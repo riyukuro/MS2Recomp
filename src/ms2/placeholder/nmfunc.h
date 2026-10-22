@@ -38,6 +38,7 @@ MS2_CHECK_SIZE(CNMSerializable, 0x10);
 class CNMFunc : public CNMSerializable
 {
 public:
+    CNMFunc(int nFuncId, int nDirection, int n18, int n1c);       // 0x14157d4c0
     virtual ~CNMFunc() = default;                                         // 0x1415ed640
 
     int m_nFuncId;                                              // +0x10
@@ -862,8 +863,15 @@ MS2_CHECK_OFFSET(CNMGetUrlExFunc, m_szUrl, 0x35c);
 class CNMGetSessionValueFunc : public CNMFunc
 {
 public:
+    CNMGetSessionValueFunc();
     CNMGetSessionValueFunc(const char* szName);
     virtual ~CNMGetSessionValueFunc() = default;                          // 0x1415edf70
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
 
     char m_szName[0x20];                                        // +0x30
     char m_szValue[0x100];                                      // +0x50 (reply)
