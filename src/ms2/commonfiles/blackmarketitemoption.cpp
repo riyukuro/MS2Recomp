@@ -388,7 +388,7 @@ unsigned int FUN_1401bd3a0()
 
 // @0x1401bd470
 // MS2-FUNCTIONAL: loop temporaries and cleanup paths laid out differently
-unsigned int FUN_1401bd470()
+unsigned int LoadItemNames()
 {
     ATL::CAtlArray<CString> languages;
     FUN_1401c0da0()->FUN_14064f310(languages);

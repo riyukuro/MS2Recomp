@@ -1715,7 +1715,7 @@ CGameOption::CGameOption()
     m_n464 = 0;
     FUN_140a44830()->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CGameOption::FUN_141243630));
     FUN_141242f60();
-    FUN_141241f30();
+    LoadGameOption();
 }
 
 // @0x141241aa0
@@ -1724,7 +1724,7 @@ CGameOption::~CGameOption()
 }
 
 // @0x141241b60
-CString CGameOption::FUN_141241b60(int nKind, bool bDefault)
+CString CGameOption::GetOptionFilePath(int nKind, bool bDefault)
 {
     if (nKind == 0)
     {
@@ -1748,15 +1748,15 @@ CString CGameOption::FUN_141241b60(int nKind, bool bDefault)
 }
 
 // @0x141241f30
-void CGameOption::FUN_141241f30()
+void CGameOption::LoadGameOption()
 {
     int bRead = 0;
     if (FUN_141243f50(0) == 0)
-        bRead = FUN_140166420()->FUN_1403974b0(&m_docGame, FUN_141241b60(0, false), 0, true, false);
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docGame, GetOptionFilePath(0, false), 0, true, false);
     else
     {
-        DeleteFileA(FUN_141241b60(0, false));
-        bRead = FUN_140166420()->FUN_1403974b0(&m_docGame, FUN_141241b60(0, true), 0, true, false);
+        DeleteFileA(GetOptionFilePath(0, false));
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docGame, GetOptionFilePath(0, true), 0, true, false);
     }
     if (bRead == 0)
         EE_LOG_AT(1, 1, ("Failed to read %s", "GameOption.xml"), MS2_THIS_FILE, 0x59);
@@ -1781,26 +1781,26 @@ void CGameOption::FUN_141241f30()
     if (FUN_1412616c0(&m_chroma, &m_docGame) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read chroma option");
     FUN_140a44830()->FUN_1401ce2f0("GameOption: Width(%d) Height(%d)", m_graphic.m_nWidth, m_graphic.m_nHeight);
-    FUN_140166420()->FUN_1403974b0(&m_docGameDefault, FUN_141241b60(0, true), 0, true, false);
+    FUN_140166420()->FUN_1403974b0(&m_docGameDefault, GetOptionFilePath(0, true), 0, true, false);
 }
 
 // @0x141242570
-void CGameOption::FUN_141242570()
+void CGameOption::LoadAccountOption()
 {
     FUN_14086ddc0(&m_docAccount);
     int bRead = 0;
     if (FUN_141243f50(1) == 0)
-        bRead = FUN_140166420()->FUN_1403974b0(&m_docAccount, FUN_141241b60(1, false), 0, true, false);
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docAccount, GetOptionFilePath(1, false), 0, true, false);
     else
     {
-        DeleteFileA(FUN_141241b60(1, false));
-        bRead = FUN_140166420()->FUN_1403974b0(&m_docAccount, FUN_141241b60(1, true), 0, true, false);
+        DeleteFileA(GetOptionFilePath(1, false));
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docAccount, GetOptionFilePath(1, true), 0, true, false);
     }
     if (bRead == 0)
         EE_LOG_AT(1, 1, ("Failed to read %s", "AccountOption.xml"), MS2_THIS_FILE, 0x85);
     if (FUN_14125d3d0(&m_account, &m_docAccount) == 0)
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read account option");
-    FUN_140166420()->FUN_1403974b0(&m_docAccountDefault, FUN_141241b60(1, true), 0, true, false);
+    FUN_140166420()->FUN_1403974b0(&m_docAccountDefault, GetOptionFilePath(1, true), 0, true, false);
     if (FUN_140166410()->FUN_14036e560())
     {
         TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n08 = 0;
@@ -1812,16 +1812,16 @@ void CGameOption::FUN_141242570()
 }
 
 // @0x141242990
-void CGameOption::FUN_141242990()
+void CGameOption::LoadCharacterOption()
 {
     FUN_14086ddc0(&m_docCharacter);
     int bRead = 0;
     if (FUN_141243f50(2) == 0)
-        bRead = FUN_140166420()->FUN_1403974b0(&m_docCharacter, FUN_141241b60(2, false), 0, true, false);
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docCharacter, GetOptionFilePath(2, false), 0, true, false);
     else
     {
-        DeleteFileA(FUN_141241b60(2, false));
-        bRead = FUN_140166420()->FUN_1403974b0(&m_docCharacter, FUN_141241b60(2, true), 0, true, false);
+        DeleteFileA(GetOptionFilePath(2, false));
+        bRead = FUN_140166420()->FUN_1403974b0(&m_docCharacter, GetOptionFilePath(2, true), 0, true, false);
     }
     if (bRead == 0)
         EE_LOG_AT(1, 1, ("Failed to read %s", "CharacterOption.xml"), MS2_THIS_FILE, 0xad);
@@ -1845,7 +1845,7 @@ void CGameOption::FUN_141242990()
         FUN_1401859c0(FUN_140166440(), 1, 0x13, L"[E] Can not read m_gamePadOption option");
     if (FUN_14125c970(&m_statusChar, &m_docCharacter) != 0)
         FUN_141243540();
-    FUN_140166420()->FUN_1403974b0(&m_docCharacterDefault, FUN_141241b60(2, true), 0, true, false);
+    FUN_140166420()->FUN_1403974b0(&m_docCharacterDefault, GetOptionFilePath(2, true), 0, true, false);
 }
 
 // @0x141242f60
@@ -1858,12 +1858,12 @@ int CGameOption::FUN_141242f60()
     TiXmlDocument doc;
     if (FUN_141243f50(0) != 0)
     {
-        DeleteFileA(FUN_141241b60(0, false));
-        bRead = FUN_140166420()->FUN_1403974b0(&doc, FUN_141241b60(0, true), 0, true, false);
+        DeleteFileA(GetOptionFilePath(0, false));
+        bRead = FUN_140166420()->FUN_1403974b0(&doc, GetOptionFilePath(0, true), 0, true, false);
         bDefaulted = 1;
     }
     else
-        bRead = FUN_140166420()->FUN_1403974b0(&doc, FUN_141241b60(0, false), 0, true, false);
+        bRead = FUN_140166420()->FUN_1403974b0(&doc, GetOptionFilePath(0, false), 0, true, false);
     if (bRead == 0)
         EE_LOG_AT(1, 1, ("Failed to read %s", "GameOption.xml"), MS2_THIS_FILE, 0xe2);
     if (LoadGameOptionLanguage(&m_language, &doc) == 0)
@@ -1901,8 +1901,8 @@ void CGameOption::FUN_141243450()
 {
     FUN_141244320(&m_docGame);
     FUN_141244320(&m_docAccount);
-    FUN_1408710c0(&m_docGame, FUN_141241b60(0, false));
-    FUN_1408710c0(&m_docAccount, FUN_141241b60(1, false));
+    FUN_1408710c0(&m_docGame, GetOptionFilePath(0, false));
+    FUN_1408710c0(&m_docAccount, GetOptionFilePath(1, false));
 }
 
 // @0x141243540
@@ -1921,7 +1921,7 @@ void CGameOption::FUN_141243540()
 // @0x141243630
 void CGameOption::FUN_141243630()
 {
-    FILE* pFile = fopen(FUN_141241b60(0, false), "r");
+    FILE* pFile = fopen(GetOptionFilePath(0, false), "r");
     if (pFile != 0)
     {
         long nSize = 0;
@@ -1941,7 +1941,7 @@ void CGameOption::FUN_141243630()
 // @0x1412437e0
 void CGameOption::FUN_1412437e0()
 {
-    FUN_1408710c0(&m_docCharacter, FUN_141241b60(2, false));
+    FUN_1408710c0(&m_docCharacter, GetOptionFilePath(2, false));
 }
 
 // @0x141243850
@@ -2071,11 +2071,11 @@ unsigned int CGameOption::FUN_141243f50(int nKind)
     TiXmlDocument doc;
     CString strPath;
     if (nKind == 0)
-        strPath = FUN_141241b60(0, false);
+        strPath = GetOptionFilePath(0, false);
     else if (nKind == 1)
-        strPath = FUN_141241b60(1, false);
+        strPath = GetOptionFilePath(1, false);
     else if (nKind == 2)
-        strPath = FUN_141241b60(2, false);
+        strPath = GetOptionFilePath(2, false);
     else
         return 1;
     int bLoaded = FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false);

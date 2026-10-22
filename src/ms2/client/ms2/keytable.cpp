@@ -296,7 +296,7 @@ CKeyTable::CKeyTable()
 {
     FUN_1414307a0();
     FUN_14142a910();
-    FUN_14142fff0();
+    LoadKeySettingTable();
 }
 
 // @0x141428a70
@@ -2084,7 +2084,7 @@ template <class T> void Unk_KtLogFormat(Unk_KtLog* pLog, int nLevel, int nCatego
 }
 
 // @0x14142f8b0
-void CKeyTable::FUN_14142f8b0(CString strName)
+void CKeyTable::SaveKeySetting(CString strName)
 {
     Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo == 0)
@@ -2117,10 +2117,10 @@ void CKeyTable::FUN_14142f8b0(CString strName)
     CString strFile = FUN_140540050("keySetting_{0}.xml", strName);
     FUN_1408710c0(&doc, FUN_140cc2a00(FUN_1412755f0(), strFile));
 }
-MS2_REPLACE_METHOD(0x14142F8B0, CKeyTable, FUN_14142f8b0, 843, 0x96150CB6);
+MS2_REPLACE_METHOD(0x14142F8B0, CKeyTable, SaveKeySetting, 843, 0x96150CB6);
 
 // @0x14142fc10
-void CKeyTable::FUN_14142fc10(CString strName)
+void CKeyTable::LoadKeySetting(CString strName)
 {
     Unk_KtMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
     if (pInfo == 0)
@@ -2165,10 +2165,10 @@ void CKeyTable::FUN_14142fc10(CString strName)
         pSlot->vfunc_10();
     }
 }
-MS2_REPLACE_METHOD(0x14142FC10, CKeyTable, FUN_14142fc10, 978, 0x3C20ED15);
+MS2_REPLACE_METHOD(0x14142FC10, CKeyTable, LoadKeySetting, 978, 0x3C20ED15);
 
 // @0x14142fff0
-int CKeyTable::FUN_14142fff0()
+int CKeyTable::LoadKeySettingTable()
 {
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "keySetting.xml"), 0, true, false) == 0)

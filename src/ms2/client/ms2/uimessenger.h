@@ -111,7 +111,7 @@ public:
 
     // ---- non-virtual members (exe order) ----
     void FUN_141a0d880(bool bVisible);                                      // 0x141a0d880 shows the two extra components
-    static bool FUN_141a0d930();                                            // 0x141a0d930 loads DebugChatCommand.xml
+    static bool LoadDebugChatCommand();                                            // 0x141a0d930 loads DebugChatCommand.xml
     static int FUN_141a0df10();                                             // 0x141a0df10 reloads it when it changed
     CStringW FUN_141a0df70();                                               // 0x141a0df70 the window name
     CStringW FUN_141a0dfc0();                                               // 0x141a0dfc0 the default tab name

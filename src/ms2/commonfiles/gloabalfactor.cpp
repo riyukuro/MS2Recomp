@@ -49,7 +49,7 @@ bool CGloabalFactor::Load()
         return false;
     if (!FUN_1404c1370())
         return false;
-    if (!FUN_1404c1400())
+    if (!LoadMultiControl())
         return false;
     return true;
 }
@@ -137,7 +137,7 @@ static int FUN_1404c1e80(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
 
 // @0x1404c1400
 // MS2-FUNCTIONAL: the exe keeps the narrowed path pointer and the 0x10-byte xml/path temporaries in a different frame layout (814 vs 796 bytes)
-bool CGloabalFactor::FUN_1404c1400()
+bool CGloabalFactor::LoadMultiControl()
 {
     m_multi.clear();
     m_multi.resize(6);

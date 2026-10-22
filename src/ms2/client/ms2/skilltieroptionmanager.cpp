@@ -43,7 +43,7 @@ int FUN_141654700(PC* pOwner);                                           // the 
 struct Unk_RegMarker {};
 
 typedef MS2Ptr<CSkillTierOption> CSkillTierOptionPtr;
-int FUN_14080bc00();
+int LoadItemOptionSkillTier();
 unsigned FUN_14080c530();
 unsigned FUN_14080c5a0(unsigned nIndex);
 int FUN_14080c1c0(unsigned nTier, ATL::CAtlArray<unsigned int>* pOut);
@@ -148,7 +148,7 @@ void CSkillTierOptionManager::Clear()
 }
 
 // @0x14080bc00
-int FUN_14080bc00()
+int LoadItemOptionSkillTier()
 {
     CString strPath = FUN_14071a5b0(CString("Table"), CString("itemOptionSkillTier.xml"));
     TiXmlDocument doc;
@@ -207,7 +207,7 @@ int FUN_14080c1c0(unsigned nTier, ATL::CAtlArray<unsigned int>* pOut)
     if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         if (FUN_1401d1320(s_spCache.get()))
-            FUN_14080bc00();
+            LoadItemOptionSkillTier();
         CSkillTierOptionPtr spOption = 0;
         if (!s_options.Lookup(nTier, spOption))
             return 0;
@@ -231,7 +231,7 @@ int FUN_14080c370(unsigned nTier, eJobCode eJob, ATL::CAtlArray<unsigned int>* p
     if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         if (FUN_1401d1320(s_spCache.get()))
-            FUN_14080bc00();
+            LoadItemOptionSkillTier();
         CSkillTierOptionPtr spOption = 0;
         if (!s_options.Lookup(nTier, spOption))
             return 0;

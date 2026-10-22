@@ -51,7 +51,7 @@ public:
     virtual ~CItemEnchantTransformTable();                  // 0x140591510 (??_G 0x140593170)
 
     int FUN_1405915b0();                                    // loads the xml (CValidData init)
-    int FUN_140591630();                                    // parses the xml into the maps
+    int LoadItemEnchantTransform();                                    // parses the xml into the maps
     static int FUN_140592110(MS2Ptr<CItem> spItem);        // the item can be transformed
     CEnchantTransformDataPtr FUN_140592330(const CString& strKey);   // the row of a key (reloads when the xml changed)
     CEnchantTransformDataPtr FUN_140592430(int nItemId, EnchantTransformRank eRank, int nLimitLevel, int nEnchantLevel, int nSlot);

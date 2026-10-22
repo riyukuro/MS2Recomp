@@ -49,8 +49,8 @@ public:
     CCharacterAbilityTable();                               // 0x1401df5e0
     virtual ~CCharacterAbilityTable();                      //  0 0x1401df700 (??_G 0x1401e14d0)
     int FUN_1401df7b0();                                    // (re)loads both files
-    int FUN_1401df860();                                    // CharacterAbilityCategory.xml
-    int FUN_1401dfd40();                                    // CharacterAbility.xml
+    int LoadCharacterAbilityCategory();                                    // CharacterAbilityCategory.xml
+    int LoadCharacterAbility();                                    // CharacterAbility.xml
     void FUN_1401e0350(ATL::CAtlList<MS2Ptr<CCharacterAbilityCategory> >* pOut);
     void FUN_1401e0450(ATL::CAtlList<MS2Ptr<CCharacterAbility> >* pOut);
     MS2Ptr<CCharacterAbilityCategory> FUN_1401e0560(int nId);

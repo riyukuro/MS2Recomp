@@ -35,12 +35,12 @@ class Unk_PatchTextFilter;
 class Unk_PatchTableA;
 class Unk_PatchTableB;
 class Unk_PatchTableC;
-void FUN_1416e4340();
+void LoadQuestDescription();
 void FUN_14093af30();
 Unk_PatchTableA* FUN_1409eed20();
 void FUN_14067ee90(Unk_PatchTableA* p);
-void FUN_140851750();
-void FUN_140855540();
+void LoadSystemMailContent();
+void LoadTalkScripts();
 bool FUN_14087ea50(Unk_PatchTextFilter* p);                // reloads the word filter
 Unk_PatchTableB* FUN_1401a9d70();
 bool FUN_141811960(Unk_PatchTableB* p);
@@ -276,11 +276,11 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // @0x140a858f0
 void COnlinePatchManagerCli::ReloadTables()
 {
-    FUN_1416e4340();
+    LoadQuestDescription();
     FUN_14093af30();
     FUN_14067ee90(FUN_1409eed20());
-    FUN_140851750();
-    FUN_140855540();
+    LoadSystemMailContent();
+    LoadTalkScripts();
     FUN_14087ea50(FUN_140a87680()->FUN_140a87690());
     FUN_141811960(FUN_1401a9d70());
     FUN_140259930(FUN_14025e7d0());

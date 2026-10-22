@@ -55,7 +55,7 @@
 // MS2-PIN: ??1?$TPtredDummy@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@UEAA@XZ 0x141468d00 ; unique: caller ??_G?$TPtredDummy@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$...
 // MS2-PIN: ??8?$Unk_SocketPtr@VCMagicData@@@@QEBA_NPEAVCMagicData@@@Z 0x141469250 ; unique: caller ?FUN_141467500@CMagicModel@@QEAAXUUnk_MagicTagPtr@@0UUnk_StreamPoi...
 // MS2-PIN: ?_Lmost@?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@QEBAAEAPEAU?$_Tree_node@HPEAX@2@XZ 0x141469300 ; unique: single byte-identical candidate
-// MS2-PIN: ??C?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@QEBAPEAV?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@XZ 0x141469310 ; unique: caller ?FUN_14145c4d0@@YAHXZ
+// MS2-PIN: ??C?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@QEBAPEAV?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@XZ 0x141469310 ; unique: caller ?LoadMagicPath@@YAHXZ
 // MS2-PIN: ?CreateNode@?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x141469790 ; unique: single byte-identical candidate
 // MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAXXZ 0x141469810 ; unique: caller ?RemoveAll@?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketP...
 // MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAXXZ 0x141469830 ; unique: caller ?RemoveAll@?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketP...
@@ -64,7 +64,7 @@
 // MS2-PIN: ?GetNode@?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x141469aa0 ; unique: caller ?Lookup@?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@...
 // MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x14146a7b0 ; unique: single byte-identical candidate
 // MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x14146a8a0 ; unique: single byte-identical candidate
-// MS2-PIN: ?SetAt@?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@Z 0x14146a960 ; unique: caller ?FUN_14145c4d0@@YAHXZ
+// MS2-PIN: ?SetAt@?$CAtlMap@IV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$Unk_SocketPtr@V?$CAtlArray@V?$Unk_SocketPtr@VCMagicData@@@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicData@@@@@ATL@@@ATL@@@@@Z 0x14146a960 ; unique: caller ?LoadMagicPath@@YAHXZ
 // MS2-PIN: ??8?$Unk_SocketPtr@V?$CRBMap@_KV?$Unk_SocketPtr@VCMagicModel@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicModel@@@@@3@@ATL@@@@QEBA_NPEAV?$CRBMap@_KV?$Unk_SocketPtr@VCMagicModel@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@VCMagicModel@@@@@3@@ATL@@@Z 0x14146db80 ; unique: caller ?FUN_14146c6c0@CMagicService@@QEAAX_KHH@Z
 // MS2-PIN: ?GetClassDesc@CMagicService@@UEBAPEBVClassInfo@efd@@XZ 0x14146e650 ; unique: vftable slot 6 of ??_7CMagicService@@6BISystemService@efd@@@
 // MS2-PIN: ?IsEmpty@?$CAtlArray@PEAUUnk_MagicHitRef@@V?$CElementTraits@PEAUUnk_MagicHitRef@@@ATL@@@ATL@@QEBA_NXZ 0x14146ee40
@@ -285,13 +285,13 @@ Unk_SocketPtr<CMagicData> FUN_14145c300(unsigned nMagicId, int nIndex)
 // @0x14145c4b0
 static void FUN_14145c4b0()
 {
-    FUN_14145c4d0();
+    LoadMagicPath();
 }
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 #ifndef MS2_HOOK_DLL
 // @0x14145c4d0
-int FUN_14145c4d0()
+int LoadMagicPath()
 {
     Unk_MagicLock lock(s_magicLock, 1);
     s_magics.RemoveAll();

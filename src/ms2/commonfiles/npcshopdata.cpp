@@ -945,7 +945,7 @@ bool FUN_1406e5bc0(Unk_140165cf0* pElem);
 // Loads Table/Server/shop_meratGroup.xml into the merat groups (once, and only with the merat premium table).
 // MS2-FUNCTIONAL: the exe's string temporaries for the path differ.
 // @0x1406df1f0
-int FUN_1406df1f0()
+int LoadShopMeratGroup()
 {
     if (!s_meratGroups.IsEmpty())
         return 1;
@@ -2166,7 +2166,7 @@ bool FUN_1406e56d0(const CString& strPath);
 
 // Loads Table/shop_beautyCoupon.xml.
 // @0x1406e55b0
-__int64 FUN_1406e55b0()
+__int64 LoadShopBeautyCoupon()
 {
     if (Unk_LockGuard guard = s_couponLock)
     {
@@ -2433,7 +2433,7 @@ MS2_REPLACE_METHOD(0x1406e45b0, CBeautyShopData, Read, 432, 0x08A4BE3E);
 MS2_REPLACE_METHOD(0x1406e4ce0, CBeautyShopData, GetShopItemGroupList, 172, 0xF6135C20);
 MS2_REPLACE(0x1406e4db0, FUN_1406e4db0, 11, 0x30025ED0);
 MS2_REPLACE(0x1406e4dd0, FUN_1406e4dd0, 278, 0xBF47013A);
-MS2_REPLACE(0x1406e55b0, FUN_1406e55b0, 267, 0xEEA11BA8);
+MS2_REPLACE(0x1406e55b0, LoadShopBeautyCoupon, 267, 0xEEA11BA8);
 MS2_REPLACE(0x1406e5a40, FUN_1406e5a40, 170, 0x5E64F0EF);
 MS2_REPLACE(0x1406e5ba0, FUN_1406e5ba0, 21, 0x00E918A5);
 MS2_REPLACE(0x1406e5bc0, FUN_1406e5bc0, 36, 0x91B4DE0C);

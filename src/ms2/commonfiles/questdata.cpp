@@ -1776,7 +1776,7 @@ QuestDataTable::~QuestDataTable()
 
 // MS2-FUNCTIONAL: the exe builds the literal CString temps and the path with a different EH state layout (precedent banktable)
 // @0x14074c320
-void QuestDataTable::FUN_14074c320()
+void QuestDataTable::LoadQuestData()
 {
     Unk_1401b4ec0 guard(m_lock, 1);
     CString strPath = FUN_14071a5b0(CString("QuestData"), CString("QuestData.xml"));
@@ -1809,7 +1809,7 @@ void QuestDataTable::FUN_14074c320()
     FUN_14074fee0();
     FUN_140750d90();
     FUN_140750f30();
-    FUN_140750120();
+    LoadQuestGroupTable();
 
     std::map<unsigned, MS2Ptr<CQuestData> >& quests = m_quests;
     for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : quests)
@@ -1847,7 +1847,7 @@ void QuestDataTable::FUN_14074c320()
         }
     }
 }
-MS2_REPLACE_METHOD(0x14074C320, QuestDataTable, FUN_14074c320, 1691, 0xED84B5B4);
+MS2_REPLACE_METHOD(0x14074C320, QuestDataTable, LoadQuestData, 1691, 0xED84B5B4);
 
 // @0x14074c9d0
 MS2Ptr<CQuestData> QuestDataTable::FUN_14074c9d0(int nQuestId)
@@ -2527,7 +2527,7 @@ bool FUN_14028f710(Unk_140165cf0* pElem);
 int FUN_140752030(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 // MS2-FUNCTIONAL: the exe builds the literal CString temps and the path with a different EH state layout (precedent banktable)
 // @0x140750120
-void QuestDataTable::FUN_140750120()
+void QuestDataTable::LoadQuestGroupTable()
 {
     CString strPath = FUN_14071a5b0(CString("Table"), CString("QuestGroupTable.xml"));
     TiXmlDocument doc;
@@ -2553,7 +2553,7 @@ void QuestDataTable::FUN_140750120()
         }
     }
 }
-MS2_REPLACE_METHOD(0x140750120, QuestDataTable, FUN_140750120, 713, 0x932C35CB);
+MS2_REPLACE_METHOD(0x140750120, QuestDataTable, LoadQuestGroupTable, 713, 0x932C35CB);
 
 void FUN_140353fc0(void* pLog, int a, int nFlags, const wchar_t* pszFormat, const int& arg0);
 

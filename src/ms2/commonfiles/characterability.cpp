@@ -107,9 +107,9 @@ int CCharacterAbilityTable::FUN_1401df7b0()
     }
     else
     {
-        if (FUN_1401df860() == 0)
+        if (LoadCharacterAbilityCategory() == 0)
             return 0;
-        if (FUN_1401dfd40() == 0)
+        if (LoadCharacterAbility() == 0)
             return 0;
     }
     SetInit(true);
@@ -118,7 +118,7 @@ int CCharacterAbilityTable::FUN_1401df7b0()
 
 // @0x1401df860
 // MS2-FUNCTIONAL: loop-body branch layout (skip jumps of the region/locale checks) differs
-int CCharacterAbilityTable::FUN_1401df860()
+int CCharacterAbilityTable::LoadCharacterAbilityCategory()
 {
     m_categories.RemoveAll();
     CString strPath = FUN_14071a5b0("Table", "CharacterAbilityCategory.xml");
@@ -157,7 +157,7 @@ int CCharacterAbilityTable::FUN_1401df860()
 
 // @0x1401dfd40
 // MS2-FUNCTIONAL: loop-body branch layout (skip jumps of the region/locale checks) differs
-int CCharacterAbilityTable::FUN_1401dfd40()
+int CCharacterAbilityTable::LoadCharacterAbility()
 {
     m_abilities.RemoveAll();
     for (POSITION pos = m_categories.GetStartPosition(); pos != NULL; m_categories.GetNext(pos))

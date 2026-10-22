@@ -237,7 +237,7 @@ public:
     void FUN_1410ce560();
     bool FUN_1410c1910(const Unk_Int3& pt, int bDefer);
     bool FUN_1410c06b0(MS2Ptr<Cube> spCube);
-    int FUN_1410d3450(CString strName);
+    int ExportUGCMap(CString strName);
     bool FUN_1410c2610(Unk_Int3 pt);
     void FUN_1410c2a90(int nGroup);
     void FUN_1410c3fc0(PCBase* pActor, float* pOutLo, float* pOutHi);

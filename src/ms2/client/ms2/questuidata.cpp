@@ -112,7 +112,7 @@ static CStringW FUN_1416e7470(CQuestUIData* pData, CConditionCommonData* pCond);
 static CStringW FUN_1416e7570(CQuestUIData* pData, CConditionCommonData* pCond);
 void FUN_1416e4590(CString strPath);
 void FUN_1416e43d0();
-void FUN_1416e79e0();
+void LoadChapterDescriptions();
 void FUN_1416e7c00(CString strPath);
 CStringW FUN_1416e4df0(int nQuestId);
 
@@ -143,12 +143,12 @@ CQuestUIData::~CQuestUIData()
 
 // Loads the quest texts, then the chapter texts, and expands their reserved words.
 // @0x1416e4340
-void FUN_1416e4340()
+void LoadQuestDescription()
 {
     CString strPath = FUN_14071ae20("QuestDescription_final.xml");
     FUN_1416e4590(strPath);
     CQuestUIData::SetInit(true);
-    FUN_1416e79e0();
+    LoadChapterDescriptions();
     FUN_1416e43d0();
 }
 
@@ -660,7 +660,7 @@ CChapterUIData::~CChapterUIData()
 
 // Loads the chapter texts of every *chapterdescription*.xml of the locale.
 // @0x1416e79e0
-void FUN_1416e79e0()
+void LoadChapterDescriptions()
 {
     ATL::CAtlArray<CString> files;
     FUN_140399100(CString("*.xml"), FUN_14071ae20(FUN_140651350()), files, CString(""), false);

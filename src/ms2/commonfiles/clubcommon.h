@@ -293,8 +293,8 @@ public:
     typedef ATL::CRBMap<unsigned, BuffPtr, Unk_BuffKeyTraits> BuffMap;
     CClubDataTable();                               // 0x1402112f0
     virtual ~CClubDataTable();                      // 0x140211360
-    int FUN_1402113c0();                            // load (thunk of FUN_1402113f0)
-    int FUN_1402113f0();                            // load Table/clubBuff.xml
+    int FUN_1402113c0();                            // load (thunk of LoadClubBuff)
+    int LoadClubBuff();                            // load Table/clubBuff.xml
     BuffPtr FUN_1402116a0(unsigned nId);            // buff by id
     BuffPtr FUN_140211760(int nEffectId, int nEffectLevel);   // buff by effect id and level
     void FUN_1402118e0(ATL::CAtlArray<unsigned>& ids);        // all buff ids

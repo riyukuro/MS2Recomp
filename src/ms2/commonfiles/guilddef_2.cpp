@@ -462,19 +462,19 @@ CGuildXmlData::CGuildXmlData(){memset(questFactors,0,sizeof(questFactors));}
 CGuildXmlData::~CGuildXmlData(){}
 // @0x1404d5960
 bool CGuildXmlData::FUN_1404d5960(){
-    if(!FUN_1404d5a50())return false;
-    if(!FUN_1404d5d20())return false;
-    if(!FUN_1404d5fa0())return false;
-    if(!FUN_1404d6210())return false;
-    if(!FUN_1404d64c0())return false;
-    if(!FUN_1404d67e0())return false;
+    if(!LoadGuildProperty())return false;
+    if(!LoadGuildBuff())return false;
+    if(!LoadGuildEvent())return false;
+    if(!LoadGuildHouse())return false;
+    if(!LoadGuildNpc())return false;
+    if(!LoadGuildRaid())return false;
     if(!FUN_1404d6ab0())return false;
-    if(!FUN_1404d6ac0())return false;
-    if(!FUN_1404d6ec0())return false;
+    if(!LoadGuildQuestRewardFactor())return false;
+    if(!LoadGuildContribution())return false;
     FUN_1404fa010(true);return true;
 }
 // @0x1404d5a50
-bool CGuildXmlData::FUN_1404d5a50(){
+bool CGuildXmlData::LoadGuildProperty(){
     CString path=FUN_14071a5b0(CString("Table"),CString("GuildProperty.xml"));
     TiXmlDocument doc;
     if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
@@ -490,7 +490,7 @@ bool CGuildXmlData::FUN_1404d5a50(){
     return true;
 }
 // @0x1404d5d20
-bool CGuildXmlData::FUN_1404d5d20(){
+bool CGuildXmlData::LoadGuildBuff(){
     CString path=FUN_14071a5b0(CString("Table"),CString("GuildBuff.xml"));
     TiXmlDocument doc;
     if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
@@ -504,7 +504,7 @@ bool CGuildXmlData::FUN_1404d5d20(){
     return true;
 }
 // @0x1404d5fa0
-bool CGuildXmlData::FUN_1404d5fa0(){
+bool CGuildXmlData::LoadGuildEvent(){
     CString path=FUN_14071a5b0(CString("Table"),CString("GuildEvent.xml"));
     TiXmlDocument doc;
     if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
@@ -518,7 +518,7 @@ bool CGuildXmlData::FUN_1404d5fa0(){
     return true;
 }
 // @0x1404d6210
-bool CGuildXmlData::FUN_1404d6210(){
+bool CGuildXmlData::LoadGuildHouse(){
     CString path=FUN_14071a5b0(CString("Table"),CString("GuildHouse.xml"));
     TiXmlDocument doc;
     if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
@@ -532,7 +532,7 @@ bool CGuildXmlData::FUN_1404d6210(){
     return true;
 }
 // @0x1404d64c0
-bool CGuildXmlData::FUN_1404d64c0(){
+bool CGuildXmlData::LoadGuildNpc(){
     CString path=FUN_14071a5b0(CString("Table"),CString("GuildNpc.xml"));
     TiXmlDocument doc;
     if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
@@ -548,7 +548,7 @@ bool CGuildXmlData::FUN_1404d64c0(){
     return true;
 }
 // @0x1404d67e0
-bool CGuildXmlData::FUN_1404d67e0(){
+bool CGuildXmlData::LoadGuildRaid(){
     CString path=FUN_14071a5b0(CString("Table"),CString("GuildRaid.xml"));
     TiXmlDocument doc;
     if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
@@ -567,7 +567,7 @@ bool CGuildXmlData::FUN_1404d67e0(){
 bool CGuildXmlData::FUN_1404d6ab0(){return true;}
 MS2_REPLACE_METHOD(0x1404d6ab0, CGuildXmlData, FUN_1404d6ab0, 8, 0x71679366);
 // @0x1404d6ac0
-bool CGuildXmlData::FUN_1404d6ac0(){
+bool CGuildXmlData::LoadGuildQuestRewardFactor(){
     CString path=FUN_14071a5b0(CString("Table"),CString("GuildQuestRewardFactor.xml"));
     TiXmlDocument doc;
     if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;
@@ -588,7 +588,7 @@ bool CGuildXmlData::FUN_1404d6ac0(){
     return true;
 }
 // @0x1404d6ec0
-bool CGuildXmlData::FUN_1404d6ec0(){
+bool CGuildXmlData::LoadGuildContribution(){
     CString path=FUN_14071a5b0(CString("Table"),CString("GuildContribution.xml"));
     TiXmlDocument doc;
     if(!FUN_1403974b0(FUN_140166420(),&doc,path,0,true,0))return false;

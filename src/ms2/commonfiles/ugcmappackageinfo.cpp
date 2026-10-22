@@ -145,7 +145,7 @@ UGCMapPackageDataPtr FUN_1408b9b90(const CString& strName)
                 return found;
         }
     }
-    return FUN_1408b9cb0(strName);
+    return LoadExportedUGCMap(strName);
 }
 
 void FUN_1408b9c90();
@@ -159,7 +159,7 @@ void FUN_1408b9c90()
 
 // @0x1408b9cb0
 // MS2-FUNCTIONAL: path arg of FUN_1403974b0 is routed through rcx in the exe (mov rcx,[..]; mov r8,rcx), plus a 2-byte drift later
-UGCMapPackageDataPtr FUN_1408b9cb0(const CString& strName)
+UGCMapPackageDataPtr LoadExportedUGCMap(const CString& strName)
 {
     CString strPath;
     strPath.Format("./Data/Xml/ExportedUGCMap/%s.xml", (const char*)strName);

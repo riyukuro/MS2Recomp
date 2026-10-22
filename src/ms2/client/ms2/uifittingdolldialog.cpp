@@ -360,7 +360,7 @@ void UIFittingDollDialog::FUN_141933b00()
 
     MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_desc");
     if (spDesc.get() != 0)
-        spDesc->FUN_1422c4cd0(FUN_1401a9d70()->FUN_141811c90(nItemId, CString("functionDescription")));
+        spDesc->FUN_1422c4cd0(FUN_1401a9d70()->GetItemDescription(nItemId, CString("functionDescription")));
 
     MS2Ptr<ASMovieClip> spCharacter = GetChild<ASMovieClip>("m_character");
     if (spCharacter.get() != 0)

@@ -122,7 +122,7 @@ public:
     int FUN_1422b1030();                                            // the loader states
     int FUN_1422b1620(CString strFontConfig, const CString& strLocale);   // the string tables / font config
     int FUN_1422b1750(NiRenderer* pRenderer);                       // create the renderer
-    int FUN_1422b1820(HWND hWnd);                                   // the IME manager
+    int InitIME(HWND hWnd);                                   // the IME manager
     int FUN_1422b19d0(HWND hWnd, CString strPath);                  // load GFxMovieMain (id 2)
     int FUN_1422b1bb0(HWND hWnd, CString strPath);                  // load GFxMovieTooltip (id 5)
     int FUN_1422b1d70(HWND hWnd, CString strPath);                  // load GFxMovieMouseCursor (id 6)

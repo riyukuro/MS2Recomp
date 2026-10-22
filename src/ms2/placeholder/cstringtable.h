@@ -79,12 +79,12 @@ public:
     bool FUN_141810f70();                                   // reads string.xml and the description files
     bool FUN_141811960();                                   // reload
     CStringW FUN_141811980(int nTable, int nId);            // the string of a table row
-    CStringW FUN_141811c90(int nItemId, CString strTag);    // an item description
-    CStringW FUN_141811e50(int nSkillId, unsigned short nLevel, CString strTag);    // a skill description
+    CStringW GetItemDescription(int nItemId, CString strTag);    // an item description
+    CStringW GetSkillDescription(int nSkillId, unsigned short nLevel, CString strTag);    // a skill description
     CStringW FUN_141812290(int nBuffId, unsigned short nLevel, CString strTag);     // a leveled description
     CStringW FUN_1418125b0(int nId);                        // a name (npc / pet / map etc. by id range)
-    CStringW FUN_1418128c0(int nSetId, CString strTag);     // a set item name
-    CStringW FUN_141812a80(int nSetId, CString strTag);     // an UGC map set item name
+    CStringW GetSetItemName(int nSetId, CString strTag);     // a set item name
+    CStringW GetUGCMapSetItemName(int nSetId, CString strTag);     // an UGC map set item name
     int FUN_141812c40(int nTable, const CStringW& strName); // the id whose text is strName (-1: none)
     CStringW FUN_141812ec0(int n);
     CStringW FUN_141812f60(int nItemId);                    // the name of an item's string id

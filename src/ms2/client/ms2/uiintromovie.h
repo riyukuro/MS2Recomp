@@ -39,7 +39,7 @@ public:
     virtual int vfunc_53();                                         // 53 0x141995200
     virtual int vfunc_48() { return 0x4e33; }                       // 48 (COMDAT 0x1419967b0)
 
-    void FUN_141995880();                                           // load Table/introMovie.xml
+    void LoadIntroMovie();                                           // load Table/introMovie.xml
     void FUN_141995cd0();                                           // advance the seek times of the current movie
     void FUN_141995e70(int nUnused);                                // go to the next scene (the argument is ignored)
 

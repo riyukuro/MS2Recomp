@@ -54,9 +54,9 @@ public:
     void FUN_141b2ba00(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b2ba00 reset
     void FUN_141b2ba30(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b2ba30 ask to delete
     void FUN_141b2bb10(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b2bb10 ask to reset
-    int FUN_141b2bbf0();                                                // 0x141b2bbf0 load a script file
+    int OpenTriggerFile();                                                // 0x141b2bbf0 load a script file
     void FUN_141b2be80(Scaleform::GFx::Value& state);                   // 0x141b2be80 one state of the movie
-    int FUN_141b2d0d0();                                                // 0x141b2d0d0 save the script file
+    int SaveTriggerFile();                                                // 0x141b2d0d0 save the script file
     void SendTriggerMode13();                                               // 0x141b2d340 send the script (0x2f/0xd)
     void FUN_141b2d570();                                               // 0x141b2d570 verify, then send
     void FUN_141b2d870();                                               // 0x141b2d870 the install list

@@ -371,7 +371,7 @@ void COptimizer::FUN_14161c420(float fLimit)
 }
 
 // @0x14161c490
-void COptimizer::FUN_14161c490()
+void COptimizer::LoadOptimization()
 {
     if (DAT_143ae2bf8 == 0)
     {

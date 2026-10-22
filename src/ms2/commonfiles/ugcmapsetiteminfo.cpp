@@ -100,7 +100,7 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::FUN_140b9df60(unsigned int nGroup)
         if (FUN_1401d1320(this) == 0 && m_map.Lookup(nGroup, found))
             return found;
     }
-    return FUN_140b9e100(nGroup);
+    return LoadUGCMapSetItem(nGroup);
 }
 
 // @0x140b9e0a0
@@ -113,7 +113,7 @@ void CUGCMapSetItemTable::FUN_140b9e0a0()
 
 // @0x140b9e100
 // MS2-FUNCTIONAL: 3611 vs 3568 bytes; FUN_1403974b0 path arg routed via rcx in exe, Data operator-> binds to foreign COMDAT, residual drift
-UGCMapSetItemDataPtr CUGCMapSetItemTable::FUN_140b9e100(unsigned int nGroup)
+UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
 {
     CString strPath;
     {

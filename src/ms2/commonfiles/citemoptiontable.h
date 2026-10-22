@@ -79,10 +79,10 @@ public:
                        const std::vector<std::pair<int, int> >& vLocked, std::vector<CStringW>* pOut,
                        unsigned nPickCount, int nIndex, Unk_ProbabilityLog& vLogs);
     void FUN_1405f78f0();                                   // the exclusive option groups
-    bool FUN_1405f8310();
-    bool FUN_1405f8540();
+    bool LoadItemOptionConstant();
+    bool LoadItemOptionRandom();
     bool FUN_1405f8770();
-    bool FUN_1405f8780();                                   // the variation rows
+    bool LoadItemOptionVariation();                                   // the variation rows
 
     static void CheckInit();                                // 0x140608280
     static void SetInit(bool bInit) { s_bInit = bInit; }    // 0x140609530

@@ -8013,3 +8013,4 @@ compress2	142724100	func
 ?MarkInCycleCall@?$RefCountCollector@$0BED@@AS3@GFx@Scaleform@@SAXPEAV1234@PEAPEBV?$RefCountBaseGC@$0BED@@234@@Z	1423df850	func
 ?StrictEqual@AS3@GFx@Scaleform@@YA_NAEBVValue@123@0@Z	14252cbf0	func
 ?ToNumberValue@Value@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@XZ	14252f6d0	func
+?LoadHideAndSeek@HideAndSeek@@YAXXZ	14050a830	func

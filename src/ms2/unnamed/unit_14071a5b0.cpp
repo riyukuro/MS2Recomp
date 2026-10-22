@@ -48,7 +48,7 @@ void FUN_14071a7e0(unsigned int id, unsigned int* hi, unsigned int* lo)
 }
 
 // @0x14071a840
-CStringA FUN_14071a840(const CStringA& dir, const CStringA& name)
+CStringA GetItemPresetPath(const CStringA& dir, const CStringA& name)
 {
     CStringA s;
     s.Format("%s%s.xml", (const char*)dir, (const char*)name);
@@ -61,14 +61,14 @@ CStringA FUN_14071a840(const CStringA& dir, const CStringA& name)
 
 // @0x14071a940
 // MS2-FUNCTIONAL: temp/destructor order of the ItemModel path build (extra copy vs the exe) not matched after 3 attempts
-CStringA FUN_14071a940(unsigned int id)
+CStringA GetItemModelPath(unsigned int id)
 {
     CStringA r = FUN_14071a5b0(CStringA("ItemModel"), FUN_140513200("{0:03d}.xml", id));
     return r;
 }
 
 // @0x14071aa00
-CStringA FUN_14071aa00(unsigned int id)
+CStringA GetNpcPath(unsigned int id)
 {
     unsigned int hi, lo;
     FUN_14071a7e0(id, &hi, &lo);
@@ -82,7 +82,7 @@ CStringA FUN_14071aa00(unsigned int id)
 }
 
 // @0x14071ab10
-CStringA FUN_14071ab10(unsigned int id)
+CStringA GetPetPath(unsigned int id)
 {
     CStringA s;
     s.Format("%08d.xml", id);
@@ -108,7 +108,7 @@ CStringA FUN_14071abf0(unsigned int id)
 }
 
 // @0x14071ace0
-CStringA FUN_14071ace0(const CStringA& name)
+CStringA GetAniKeyInfoPath(const CStringA& name)
 {
     CStringA n = FUN_140188f50((const char*)name, 0);
     CStringA s;

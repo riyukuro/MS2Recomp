@@ -293,10 +293,10 @@ efd::File* FUN_141627910(const wchar_t* pcName, efd::File::OpenMode eMode, unsig
 Scaleform::File* FUN_1416282e0(CString strPath);
 CString FUN_141628470(CString strName, bool bDebug);
 bool FUN_141628610(TiXmlDocument& doc);
-bool FUN_141628640(TiXmlDocument& doc);
-bool FUN_141628700(TiXmlDocument& doc);
-bool FUN_1416287c0(TiXmlDocument& doc);
-bool FUN_141628880(TiXmlDocument& doc);
+bool LoadUsmSubtitleText(TiXmlDocument& doc);
+bool LoadStringMovie(TiXmlDocument& doc);
+bool LoadFlashDebug(TiXmlDocument& doc);
+bool LoadAlignWidget(TiXmlDocument& doc);
 
 // Packed client: files come from the archives (or, with FUN_1403981d0, through MS2MemFile).
 // @0x141627390
@@ -321,16 +321,16 @@ void FUN_141627390()
     efd::File::SetDirectoryExistsFunc((efd::File::DIREXISTSFUNCW)efd::File::DefaultDirectoryExistsFunc);
     NiGFxLocalizeManager::FUN_141629eb0(FUN_140166410()->FUN_14036d8e0());
     NiGFxLocalizeManager::FUN_141629df0(Delegate<bool(TiXmlDocument&)>(FUN_141628610));
-    NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)>(FUN_141628640));
-    NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(FUN_141628700));
-    NiGFxLocalizeManager::FUN_141629db0(Delegate<bool(TiXmlDocument&)>(FUN_1416287c0));
+    NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)>(LoadUsmSubtitleText));
+    NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(LoadStringMovie));
+    NiGFxLocalizeManager::FUN_141629db0(Delegate<bool(TiXmlDocument&)>(LoadFlashDebug));
     NiSearchPath::SetCreateFunc((NiSearchPath::CreateFunction)FUN_141508060);
     // CFileSystem::FUN_14039a660 takes (CString, FILETIME); filesystem.h declares the unused second parameter void*.
     FUN_1401d17b0(Unk_FileChangeFunctor(FUN_140166420(),
         reinterpret_cast<void (CFileSystem::*)(CString, FILETIME)>(&CFileSystem::FUN_14039a660)));
     GFxFileOpener::FUN_1422eb400(FUN_1416282e0);
     FUN_141c51dd0(FUN_1414a90c0);
-    UIAlignWidgetManager::FUN_1422e6e20(Delegate<bool(TiXmlDocument&)>(FUN_141628880));
+    UIAlignWidgetManager::FUN_1422e6e20(Delegate<bool(TiXmlDocument&)>(LoadAlignWidget));
 }
 
 // Developer layout: loose files through MS2MemFile, debug swf names.
@@ -350,11 +350,11 @@ void FUN_1416275e0()
     UISwfEntity::FUN_141629ed0(Delegate<CString(CString, bool)>(FUN_141628470));
     NiGFxLocalizeManager::FUN_141629eb0(FUN_140166410()->FUN_14036d8e0());
     NiGFxLocalizeManager::FUN_141629df0(Delegate<bool(TiXmlDocument&)>(FUN_141628610));
-    NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)>(FUN_141628640));
-    NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(FUN_141628700));
-    NiGFxLocalizeManager::FUN_141629db0(Delegate<bool(TiXmlDocument&)>(FUN_1416287c0));
+    NiGFxLocalizeManager::FUN_141629e70(Delegate<bool(TiXmlDocument&)>(LoadUsmSubtitleText));
+    NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(LoadStringMovie));
+    NiGFxLocalizeManager::FUN_141629db0(Delegate<bool(TiXmlDocument&)>(LoadFlashDebug));
     FUN_141c51dd0(FUN_1414a90c0);
-    UIAlignWidgetManager::FUN_1422e6e20(Delegate<bool(TiXmlDocument&)>(FUN_141628880));
+    UIAlignWidgetManager::FUN_1422e6e20(Delegate<bool(TiXmlDocument&)>(LoadAlignWidget));
 }
 
 // The swf file of a movie name (debug builds of the movie under ..\GfxDebug).
@@ -541,11 +541,11 @@ CString FUN_141628470(CString strName, bool bDebug)
 // @0x141628610
 bool FUN_141628610(TiXmlDocument& doc)
 {
-    return FUN_141371b20()->FUN_141815de0(&doc);
+    return FUN_141371b20()->LoadKorFlash(&doc);
 }
 
 // @0x141628640
-bool FUN_141628640(TiXmlDocument& doc)
+bool LoadUsmSubtitleText(TiXmlDocument& doc)
 {
     CString strPath = FUN_14071ae20("usmSubtitleText.xml");
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
@@ -554,7 +554,7 @@ bool FUN_141628640(TiXmlDocument& doc)
 }
 
 // @0x141628700
-bool FUN_141628700(TiXmlDocument& doc)
+bool LoadStringMovie(TiXmlDocument& doc)
 {
     CString strPath = FUN_14071ae20("stringMovie.xml");
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
@@ -563,7 +563,7 @@ bool FUN_141628700(TiXmlDocument& doc)
 }
 
 // @0x1416287c0
-bool FUN_1416287c0(TiXmlDocument& doc)
+bool LoadFlashDebug(TiXmlDocument& doc)
 {
     CString strPath = FUN_14071a6f0("flashDebug.xml");
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
@@ -572,7 +572,7 @@ bool FUN_1416287c0(TiXmlDocument& doc)
 }
 
 // @0x141628880
-bool FUN_141628880(TiXmlDocument& doc)
+bool LoadAlignWidget(TiXmlDocument& doc)
 {
     CString strPath = FUN_14071a5b0("Table", "alignWidget.xml");
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)

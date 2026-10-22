@@ -63,7 +63,7 @@ public:
     // 0x140373d30: clear the table (CAtlMap::RemoveAll on 0x143aaec00).
     static void FUN_140373d30();
     // 0x140373d50: load ./Data/Xml/Table/fieldData.xml into the table.
-    static void FUN_140373d50();
+    static void LoadFieldData();
     // 0x140374090: append every table entry to out (vector::push_back 0x14037bed0), under the table lock.
     static void FUN_140374090(std::vector<MS2Ptr<CFieldData> >& out);
     // 0x140374140: look up a field id (0 -> null; logs "FieldID : {0}" when missing).

@@ -88,7 +88,7 @@ MS2_REPLACE_METHOD(0x141995250, UIIntroMovie, vfunc_1, 61, 0xBABA033B);
 void UIIntroMovie::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_141995880();
+    LoadIntroMovie();
     if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer")) {
         int nWidth = spPlayer->FUN_1422c1500();
         int nHeight = spPlayer->FUN_1422c1530();
@@ -192,7 +192,7 @@ bool UIIntroMovie::vfunc_17()
 MS2_REPLACE_METHOD(0x1419957B0, UIIntroMovie, vfunc_17, 201, 0x7929C691);
 
 // @0x141995880
-void UIIntroMovie::FUN_141995880()
+void UIIntroMovie::LoadIntroMovie()
 {
     CString strPath = FUN_14071a5b0("Table", "introMovie.xml");
     TiXmlDocument doc;
@@ -225,7 +225,7 @@ void UIIntroMovie::FUN_141995880()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141995880, UIIntroMovie, FUN_141995880, 1091, 0xB4EC1BD2);
+MS2_REPLACE_METHOD(0x141995880, UIIntroMovie, LoadIntroMovie, 1091, 0xB4EC1BD2);
 
 // MS2-FUNCTIONAL: extra else-hop jumps differ; no source form found
 // @0x141995cd0

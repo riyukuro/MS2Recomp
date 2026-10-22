@@ -251,7 +251,7 @@ public:
     void FUN_140e2dec0(int nMsg);                                                                   // refresh result visibility after a message
     void FUN_140e2dfc0(int nType, int nSub);                                                        // select the board of (type, sub)
     void FUN_140e2e030(CString strUrl);                                                             // select the board of a web guide url
-    void FUN_140e2e1d0();                                                                           // load gameRankingCategory.xml
+    void LoadGameRankingCategory();                                                                           // load gameRankingCategory.xml
     void FUN_140e2e540();                                                                           // select the first category
     void FUN_140e2e620();                                                                           // build the season tabs of every board type
     Unk_RankTabPtr FUN_140e304c0(CStringW strLabel, CStringW strTooltip, int nSeason);             // new tab data

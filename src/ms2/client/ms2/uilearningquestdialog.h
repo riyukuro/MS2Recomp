@@ -43,8 +43,8 @@ public:
     void FUN_140ea1c30(NotifyObject* pNotify);                  // 0x140ea1c30 "NotifyGameStart": which learning quests are open
     void FUN_140ea1d70(NotifyObject* pNotify);                  // 0x140ea1d70 "NotifyChangeMyPC": forget the open flags
     int FUN_140ea1e20(int bNew);                                // 0x140ea1e20 pick the first open learning quest
-    void FUN_140ea2120();                                       // 0x140ea2120 read the seen lists from the xml files
-    void FUN_140ea26e0();                                       // 0x140ea26e0 write the seen lists
+    void LoadLearningQuest();                                       // 0x140ea2120 read the seen lists from the xml files
+    void SaveLearningQuest();                                       // 0x140ea26e0 write the seen lists
     void FUN_140ea2e50(ASObj& rOut);                            // 0x140ea2e50 build the category / quest tree
     void FUN_140ea3570(const CQuestData::CompleteReward& rReward, ASObj& rOut);   // 0x140ea3570 exp / meso text and reward items
     void FUN_140ea3910();                                       // 0x140ea3910 mark dirty while the lobby scene is shown

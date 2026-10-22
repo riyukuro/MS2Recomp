@@ -525,7 +525,7 @@ CGFxLanguage::~CGFxLanguage()
 }
 
 // @0x141815de0
-bool CGFxLanguage::FUN_141815de0(TiXmlDocument* pDoc)
+bool CGFxLanguage::LoadKorFlash(TiXmlDocument* pDoc)
 {
     CString strPath = FUN_14071ae20("korFlash.xml");
     CCacheData::FUN_1401d1160(CString(strPath));
@@ -745,7 +745,7 @@ CStringW CStringTable::FUN_141811980(int nTable, int nId)
 }
 
 // @0x141811c90
-CStringW CStringTable::FUN_141811c90(int nItemId, CString strTag)
+CStringW CStringTable::GetItemDescription(int nItemId, CString strTag)
 {
     CheckInit();
     DescPtr spDesc;
@@ -758,7 +758,7 @@ CStringW CStringTable::FUN_141811c90(int nItemId, CString strTag)
 }
 
 // @0x141811e50
-CStringW CStringTable::FUN_141811e50(int nSkillId, unsigned short nLevel, CString strTag)
+CStringW CStringTable::GetSkillDescription(int nSkillId, unsigned short nLevel, CString strTag)
 {
     CheckInit();
     DescPtr spDesc;
@@ -833,7 +833,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
 }
 
 // @0x1418128c0
-CStringW CStringTable::FUN_1418128c0(int nSetId, CString strTag)
+CStringW CStringTable::GetSetItemName(int nSetId, CString strTag)
 {
     CheckInit();
     if (FUN_1401d1320(&m_setItemNameStamp))
@@ -846,7 +846,7 @@ CStringW CStringTable::FUN_1418128c0(int nSetId, CString strTag)
 }
 
 // @0x141812a80
-CStringW CStringTable::FUN_141812a80(int nSetId, CString strTag)
+CStringW CStringTable::GetUGCMapSetItemName(int nSetId, CString strTag)
 {
     CheckInit();
     if (FUN_1401d1320(&m_ugcSetItemNameStamp))

@@ -441,7 +441,7 @@ int UICameraEditDialog::FUN_1418de260()
 }
 
 // @0x1418de2b0
-unsigned UICameraEditDialog::FUN_1418de2b0()
+unsigned UICameraEditDialog::LoadCustomizeCamera()
 {
     GameObject* pTarget = FUN_1418dea40();
     if (pTarget == 0)

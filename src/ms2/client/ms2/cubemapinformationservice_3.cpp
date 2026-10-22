@@ -63,7 +63,7 @@ inline TSingleton<CubeMapInformationService>::TSingleton() { s_instance = static
 // (0x141122xxx / 0x141125xxx), which allocates/frees the tree's head node. A local definition would win over that
 // binding in the hook DLL and leave head null (the hooked MS2::RegisterServices then AVs in the first f368 lookup).
 // Exceptions: 287's dtor (FUN_1410b7fe0's static, atexit thunk 0x142cac250) has no symbol row, and the 294/295 locals
-// of FUN_1410d3450 are constructed/destroyed by explicit wrapper calls, so their implicit ctor/dtor do nothing.
+// of ExportUGCMap are constructed/destroyed by explicit wrapper calls, so their implicit ctor/dtor do nothing.
 void FUN_1411258b0(Unk_CMISTree<287>*);
 template <> Unk_CMISTree<287>::~Unk_CMISTree() { FUN_1411258b0(this); }
 template <> Unk_CMISTree<294>::Unk_CMISTree() {}
@@ -5719,7 +5719,7 @@ static CString Unk_CMISFormatPoint(const Unk_Int3& pt)                          
 }
 // @0x1410d3450
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently; the document is a stack object and the declaration node is not destroyed
-int CubeMapInformationService::FUN_1410d3450(CString strName)
+int CubeMapInformationService::ExportUGCMap(CString strName)
 {
     if (!FUN_140374410(FUN_1403ed2d0()->FUN_141bd3060()))
         return 0;

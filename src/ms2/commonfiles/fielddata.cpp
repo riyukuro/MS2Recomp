@@ -339,7 +339,7 @@ static ATL::CRBMap<unsigned,Unk_FieldSpawnMapPtr> s_spawnTags;
 static CCacheData s_spawnCache;
 static CLockCriticalSection s_fieldLock;
 static CLockCriticalSection s_spawnLock;
-void FUN_140373340();
+void LoadMapSpawnTag();
 int FUN_1403759c0(Unk_140165cf0*,const char*,std::vector<short>&);
 int FUN_140375a40(Unk_140165cf0*,const char*,int&);
 int FUN_140375ad0(Unk_140165cf0*,const char*,int&);
@@ -359,7 +359,7 @@ CNpcSpawnData::CNpcSpawnData() : id(0), count(0), probability(0) {}
 // @0x1403728d0
 TPtr<CFieldSpawnTag> FUN_1403728d0(int mapCode,int spawnId)
 {
-    FUN_140373340();
+    LoadMapSpawnTag();
     TPtr<CFieldSpawnTag> tag;
     Unk_FieldSpawnMapPtr entries;
     if (Unk_LockGuard guard=s_spawnLock) {} else {
@@ -381,7 +381,7 @@ TPtr<CFieldSpawnTag> FUN_1403728d0(int mapCode,int spawnId)
 // @0x140372ab0
 void FUN_140372ab0(int mapCode,int spawnId,ATL::CAtlArray<Unk_FieldSpawnPair>& out)
 {
-    FUN_140373340();
+    LoadMapSpawnTag();
     Unk_FieldSpawnMapPtr entries;
     if (Unk_LockGuard guard=s_spawnLock) {} else {
         if (!s_spawnTags.Lookup(mapCode,entries)) return;
@@ -407,7 +407,7 @@ void FUN_140372ab0(int mapCode,int spawnId,ATL::CAtlArray<Unk_FieldSpawnPair>& o
 // @0x140372c80
 void FUN_140372c80(int mapCode,CStringW tagName,ATL::CAtlArray<Unk_FieldSpawnPair>& out)
 {
-    FUN_140373340();
+    LoadMapSpawnTag();
     tagName.Trim();
     TPtr<CFieldSpawnTag> unused;
     Unk_FieldSpawnMapPtr entries;
@@ -462,7 +462,7 @@ void FUN_140372c80(int mapCode,CStringW tagName,ATL::CAtlArray<Unk_FieldSpawnPai
 // @0x1403731e0
 void FUN_1403731e0(ATL::CAtlArray<Unk_FieldSpawnPair>& out)
 {
-    FUN_140373340();
+    LoadMapSpawnTag();
     Unk_FieldSpawnMapPtr entries;
     if (Unk_LockGuard guard=s_spawnLock) {} else {
         for (POSITION outer=s_spawnTags.GetHeadPosition();outer;s_spawnTags.GetNext(outer)) {
@@ -480,7 +480,7 @@ void FUN_1403731e0(ATL::CAtlArray<Unk_FieldSpawnPair>& out)
 }
 #ifndef MS2_HOOK_DLL
 // @0x140373340
-void FUN_140373340()
+void LoadMapSpawnTag()
 {
     if (Unk_LockGuard guard=s_spawnLock) {} else {
         if (s_spawnTags.IsEmpty()) {
@@ -562,7 +562,7 @@ void CFieldData::FUN_140373d30() { s_fields.RemoveAll(); }
 #endif
 #ifndef MS2_HOOK_DLL
 // @0x140373d50
-void CFieldData::FUN_140373d50()
+void CFieldData::LoadFieldData()
 {
     if (Unk_LockGuard guard=s_fieldLock) {} else { s_fields.RemoveAll(); }
     TiXmlDocument doc;

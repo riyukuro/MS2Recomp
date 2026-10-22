@@ -119,15 +119,15 @@ public:
     void FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount);  // put it into a free quick slot (set mode)
     void FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid);   // put it into its job quick slot
     void FUN_14142f470(int nPage, int nSlot);              // put the job item of the slot into the page
-    void FUN_14142f8b0(CString strName);                   // save the skill set layout (keySetting_<name>.xml)
-    void FUN_14142fc10(CString strName);                   // load the skill set layout (keySetting_<name>.xml)
+    void SaveKeySetting(CString strName);                   // save the skill set layout (keySetting_<name>.xml)
+    void LoadKeySetting(CString strName);                   // load the skill set layout (keySetting_<name>.xml)
     void SendKeyTableMode7();                                   // leave the skill set mode and save
     int FUN_14142f830(int nSlot);
     int FUN_14142f870(int nSlot);
     int FUN_141430470(__int64 nAction);
     MS2Ptr<CKeySettingParam> FUN_141430590(__int64 nAction) const;     // the setting of the action
     SettingList FUN_141430710(int nCategory);               // the settings of a tab
-    int FUN_14142fff0();                                     // load Table/keySetting.xml into m_settings
+    int LoadKeySettingTable();                                     // load Table/keySetting.xml into m_settings
     void FUN_1414307a0();                                   // build the setting categories
     int FUN_141430b10(__int64 nAction);
     int FUN_141430b90(int nKey);

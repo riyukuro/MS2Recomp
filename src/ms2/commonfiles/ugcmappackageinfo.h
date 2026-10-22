@@ -52,4 +52,4 @@ typedef MS2SvrPtr<CUGCMapPackageData> UGCMapPackageDataPtr;
 
 UGCMapPackageDataPtr FUN_1408b9b90(const CString& strName);     // cached lookup, loads on miss
 void FUN_1408b9c90();                                           // clear the cache
-UGCMapPackageDataPtr FUN_1408b9cb0(const CString& strName);     // load from xml (inserts into the cache)
+UGCMapPackageDataPtr LoadExportedUGCMap(const CString& strName);     // load from xml (inserts into the cache)

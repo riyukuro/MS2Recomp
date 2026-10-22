@@ -68,4 +68,4 @@ typedef Unk_PayloadPtr<CubeOwner> Unk_CubeOwnerPtr;
 typedef std::map<int,Unk_CubeOwnerPtr> Unk_CubeOwnerMap;
 typedef std::map<int,Unk_CubeOwnerMap> Unk_CubeOwners;
 Unk_UGCMapPtr FUN_1408ad3f0(int);
-Unk_UGCMapPtr FUN_1408ad500(unsigned);
+Unk_UGCMapPtr LoadUGCMap(unsigned);

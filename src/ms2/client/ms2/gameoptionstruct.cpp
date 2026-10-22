@@ -3027,7 +3027,7 @@ MS2_REPLACE(0x141260E00, FUN_141260e00, 96, 0xDCA96A2F);
 // @0x141260e70
 void FUN_141260e70(Unk_GsConnect* p)
 {
-    TSingleton<CGameOption>::GetInstance()->FUN_141241f30();
+    TSingleton<CGameOption>::GetInstance()->LoadGameOption();
 }
 MS2_REPLACE(0x141260E70, FUN_141260e70, 27, 0x0AC960EC);
 

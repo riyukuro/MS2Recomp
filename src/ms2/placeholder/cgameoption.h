@@ -47,10 +47,10 @@ class CGameOption : public TSingleton<CGameOption>
 public:
     CGameOption();                                          // 0x141241810
     virtual ~CGameOption();                                 // 0x141241aa0 (deleting dtor 0x141245a10)
-    CString FUN_141241b60(int nKind, bool bDefault);        // XML path: kind 0 GameOption, 1 AccountOption, 2 CharacterOption
-    void FUN_141241f30();                                   // load GameOption.xml into the tab blocks
-    void FUN_141242570();                                  // load AccountOption.xml
-    void FUN_141242990();                                  // load CharacterOption.xml
+    CString GetOptionFilePath(int nKind, bool bDefault);        // XML path: kind 0 GameOption, 1 AccountOption, 2 CharacterOption
+    void LoadGameOption();                                   // load GameOption.xml into the tab blocks
+    void LoadAccountOption();                                  // load AccountOption.xml
+    void LoadCharacterOption();                                  // load CharacterOption.xml
     int FUN_141242f60();                                    // load the language block
     void FUN_1412432d0();                                   // save GameOption.xml / AccountOption.xml
     void FUN_141243450();                                   // reset the document roots of game and account options

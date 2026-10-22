@@ -38,7 +38,7 @@ public:
     float FUN_14161c360();                                  // frame limit from the options
     void FUN_14161c3f0();                                   // no frame limit
     void FUN_14161c420(float fLimit);
-    void FUN_14161c490();                                   // load Optimization.xml
+    void LoadOptimization();                                   // load Optimization.xml
     void FUN_14161c8c0();                                   // log the first MyPC load time
     void FUN_14161c940(unsigned nCount, int nCycle);        // start frame sampling
     void FUN_14161c990();                                   // sample the frame rate

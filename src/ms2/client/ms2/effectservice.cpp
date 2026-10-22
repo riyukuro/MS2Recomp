@@ -580,7 +580,7 @@ CEffectDataPtr EffectDataManager::FUN_14119f870(CString strPath)
 MS2_REPLACE_METHOD(0x14119f870, EffectDataManager, FUN_14119f870, 482, 0xBC6A47F9);
 
 // @0x14119fa60
-void EffectDataManager::FUN_14119fa60()
+void EffectDataManager::LoadEffectFiles()
 {
     ATL::CAtlArray<CString> files;
     FUN_140399100(".xml", "./Data/Xml/Effect", files, "", false);
@@ -591,7 +591,7 @@ void EffectDataManager::FUN_14119fa60()
         FUN_14119f870(CString(pszFile + nPrefix));
     }
 }
-MS2_REPLACE_METHOD(0x14119fa60, EffectDataManager, FUN_14119fa60, 489, 0x37B27AE7);
+MS2_REPLACE_METHOD(0x14119fa60, EffectDataManager, LoadEffectFiles, 489, 0x37B27AE7);
 
 // @0x14119fc50
 CEffectDataPtr EffectDataManager::FUN_14119fc50(const CString& strPath)

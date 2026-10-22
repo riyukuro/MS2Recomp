@@ -46,7 +46,7 @@ public:
     int FUN_14064f210();
     void FUN_14064f290(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out);
     void FUN_14064f310(ATL::CAtlArray<CString>& out);
-    int FUN_14064f390();                            // load gameOptionLocale.xml
+    int LoadGameOptionLocale();                            // load gameOptionLocale.xml
 
     ATL::CAtlArray<LocaleLanguageDataPtr> m_rows;   // +0x08
 };

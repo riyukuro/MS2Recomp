@@ -82,7 +82,7 @@ public:
     virtual ~EffectDataManager();                           // 0x14119f820
 
     CEffectDataPtr FUN_14119f870(CString strPath);          // 0x14119f870 cached load
-    void FUN_14119fa60();                                   // 0x14119fa60 load every file of ./Data/Xml/Effect
+    void LoadEffectFiles();                                   // 0x14119fa60 load every file of ./Data/Xml/Effect
     CEffectDataPtr FUN_14119fc50(const CString& strPath);   // 0x14119fc50 parse one file
 
 public:

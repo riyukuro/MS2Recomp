@@ -225,7 +225,7 @@ void UIObjectStoreDialog::OnLoadComplete()
             }
         }
         m_30->Invoke("initData", m_180, strNum, strName,
-                     FUN_1401a9d70()->FUN_141811c90(m_198, CString("functionDescription")), 1, nSlots);
+                     FUN_1401a9d70()->GetItemDescription(m_198, CString("functionDescription")), 1, nSlots);
     }
 }
 

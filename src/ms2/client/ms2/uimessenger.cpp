@@ -788,7 +788,7 @@ void UIMessenger::OnLoadComplete()
     FUN_141a13ac0();
     vfunc_4();
     m_bScrollEnd = 1;
-    FUN_141a0d930();
+    LoadDebugChatCommand();
     FUN_141a0e990();
 }
 
@@ -901,7 +901,7 @@ void UIMessenger::FUN_141a0d880(bool bVisible)
 
 // MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x141a0d930
-bool UIMessenger::FUN_141a0d930()
+bool UIMessenger::LoadDebugChatCommand()
 {
     if (!s_debugCommands.empty())
         return true;
@@ -957,7 +957,7 @@ int UIMessenger::FUN_141a0df10()
     if (FUN_1401d1320(s_spDebugCommandCache.operator->()))
     {
         s_debugCommands.clear();
-        FUN_141a0d930();
+        LoadDebugChatCommand();
     }
     return 1;
 }

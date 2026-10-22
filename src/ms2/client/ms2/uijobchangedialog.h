@@ -62,8 +62,8 @@ public:
     virtual int vfunc_48() { return 0x4e7c; }           // 48 0x1419dd650 UI type id
 
     void FUN_1419db600();                               // read both tables, then mark the check valid
-    void FUN_1419db630();                               // read jobPreview.xml
-    void FUN_1419db970();                               // read korJobDescription.xml
+    void LoadJobPreview();                               // read jobPreview.xml
+    void LoadJobDescription();                               // read korJobDescription.xml
     void FUN_1419dbe30(int nJob);                       // send the preview skills
     void FUN_1419dc1e0(int nJob);                       // send the texts and the job
     void FUN_1419dc510(int nJob);                       // choose the job

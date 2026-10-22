@@ -701,3 +701,87 @@
 141b44910	UIUGCItemEditDialog::FUN_141b44910	UIUGCItemEditDialog::OnClickAddImage	certain	certain: only call of the "onClickAddImage" branch of the Scaleform method dispatcher UIUGCItemEditDialog::vfunc_28 (_stricmp on the ActionScript method name)	nam1	2026-10-22
 1422f1150	GFxMovieTooltip::FUN_1422f1150	GFxMovieTooltip::CreateTooltip	certain	certain: only call of the "createTooltip" branch of the Scaleform method dispatcher GFxMovieTooltip::vfunc_3 (_stricmp on the ActionScript method name)	nam1	2026-10-22
 1422f12b0	GFxMovieTooltip::FUN_1422f12b0	GFxMovieTooltip::DestroyTooltip	certain	certain: only call of the "destroyTooltip" branch of the Scaleform method dispatcher GFxMovieTooltip::vfunc_3 (+1 more) (_stricmp on the ActionScript method name)	nam1	2026-10-22
+1401bd470	FUN_1401bd470	LoadItemNames	certain	certain: body names the data file String/<lang>/itemName.xml	nam1	2026-10-22
+1401df860	CCharacterAbilityTable::FUN_1401df860	CCharacterAbilityTable::LoadCharacterAbilityCategory	certain	certain: body names the data file Table/CharacterAbilityCategory.xml	nam1	2026-10-22
+1401dfd40	CCharacterAbilityTable::FUN_1401dfd40	CCharacterAbilityTable::LoadCharacterAbility	certain	certain: body names the data file Table/CharacterAbility.xml	nam1	2026-10-22
+1402113f0	CClubDataTable::FUN_1402113f0	CClubDataTable::LoadClubBuff	certain	certain: body names the data file Table/clubBuff.xml	nam1	2026-10-22
+14036cd50	CFeatureManager::FUN_14036cd50	CFeatureManager::LoadFeatureSetting	certain	certain: body names the data file Table/feature_setting.xml	nam1	2026-10-22
+14036d040	CFeatureManager::FUN_14036d040	CFeatureManager::LoadFeature	certain	certain: body names the data file Table/feature.xml	nam1	2026-10-22
+140373340	FUN_140373340	LoadMapSpawnTag	certain	certain: body names the data file table/mapSpawnTag.xml	nam1	2026-10-22
+140373d50	CFieldData::FUN_140373d50	CFieldData::LoadFieldData	certain	certain: body names the data file Table/fieldData.xml	nam1	2026-10-22
+1404c1400	CGloabalFactor::FUN_1404c1400	CGloabalFactor::LoadMultiControl	certain	certain: body names the data file Table/multicontrol.xml	nam1	2026-10-22
+1404d5a50	CGuildXmlData::FUN_1404d5a50	CGuildXmlData::LoadGuildProperty	certain	certain: body names the data file Table/GuildProperty.xml	nam1	2026-10-22
+1404d5d20	CGuildXmlData::FUN_1404d5d20	CGuildXmlData::LoadGuildBuff	certain	certain: body names the data file Table/GuildBuff.xml	nam1	2026-10-22
+1404d5fa0	CGuildXmlData::FUN_1404d5fa0	CGuildXmlData::LoadGuildEvent	certain	certain: body names the data file Table/GuildEvent.xml	nam1	2026-10-22
+1404d6210	CGuildXmlData::FUN_1404d6210	CGuildXmlData::LoadGuildHouse	certain	certain: body names the data file Table/GuildHouse.xml	nam1	2026-10-22
+1404d64c0	CGuildXmlData::FUN_1404d64c0	CGuildXmlData::LoadGuildNpc	certain	certain: body names the data file Table/GuildNpc.xml	nam1	2026-10-22
+1404d67e0	CGuildXmlData::FUN_1404d67e0	CGuildXmlData::LoadGuildRaid	certain	certain: body names the data file Table/GuildRaid.xml	nam1	2026-10-22
+1404d6ac0	CGuildXmlData::FUN_1404d6ac0	CGuildXmlData::LoadGuildQuestRewardFactor	certain	certain: body names the data file Table/GuildQuestRewardFactor.xml	nam1	2026-10-22
+1404d6ec0	CGuildXmlData::FUN_1404d6ec0	CGuildXmlData::LoadGuildContribution	certain	certain: body names the data file Table/GuildContribution.xml	nam1	2026-10-22
+14050a830	HideAndSeek::FUN_14050a830	HideAndSeek::LoadHideAndSeek	certain	certain: body names the data file Table/Server/hideAndSeek.xml	nam1	2026-10-22
+140591630	CItemEnchantTransformTable::FUN_140591630	CItemEnchantTransformTable::LoadItemEnchantTransform	certain	certain: body names the data file Table/ItemEnchantTransform.xml	nam1	2026-10-22
+1405bfc70	CItemMergeOptionTable::FUN_1405bfc70	CItemMergeOptionTable::LoadItemMergeOptionBase	certain	certain: body names the data file Table/itemMergeOptionBase.xml	nam1	2026-10-22
+1405f8310	CItemOptionTable::FUN_1405f8310	CItemOptionTable::LoadItemOptionConstant	certain	certain: body names the data file Table/ItemOptionConstant.xml	nam1	2026-10-22
+1405f8540	CItemOptionTable::FUN_1405f8540	CItemOptionTable::LoadItemOptionRandom	certain	certain: body names the data file Table/ItemOptionRandom.xml	nam1	2026-10-22
+1405f8780	CItemOptionTable::FUN_1405f8780	CItemOptionTable::LoadItemOptionVariation	certain	certain: body names the data file Table/itemOptionVariation.xml	nam1	2026-10-22
+14064f390	CLocaleLanguage::FUN_14064f390	CLocaleLanguage::LoadGameOptionLocale	certain	certain: body names the data file Table/gameOptionLocale.xml	nam1	2026-10-22
+1406df1f0	FUN_1406df1f0	LoadShopMeratGroup	certain	certain: body names the data file Table/Server/shop_meratGroup.xml	nam1	2026-10-22
+1406e55b0	FUN_1406e55b0	LoadShopBeautyCoupon	certain	certain: body names the data file Table/shop_beautyCoupon.xml	nam1	2026-10-22
+1406f9dd0	CFieldMetaTable::FUN_1406f9dd0	CFieldMetaTable::LoadFieldMetaData	certain	certain: body names the data file Table/FieldMetaData.xml	nam1	2026-10-22
+14071a840	FUN_14071a840	GetItemPresetPath	certain	certain: body names the data file ItemPreset/%s%s.xml path builder	nam1	2026-10-22
+14071a940	FUN_14071a940	GetItemModelPath	certain	certain: body names the data file ItemModel/{0:03d}.xml path builder	nam1	2026-10-22
+14071aa00	FUN_14071aa00	GetNpcPath	certain	certain: body names the data file npc/%02d/%02d/%08d.xml path builder	nam1	2026-10-22
+14071ab10	FUN_14071ab10	GetPetPath	certain	certain: body names the data file pet/%08d.xml path builder	nam1	2026-10-22
+14071ace0	FUN_14071ace0	GetAniKeyInfoPath	certain	certain: body names the data file AniKeyInfo/<name>.xml path builder	nam1	2026-10-22
+14074c320	QuestDataTable::FUN_14074c320	QuestDataTable::LoadQuestData	certain	certain: body names the data file QuestData/QuestData.xml	nam1	2026-10-22
+140750120	QuestDataTable::FUN_140750120	QuestDataTable::LoadQuestGroupTable	certain	certain: body names the data file Table/QuestGroupTable.xml	nam1	2026-10-22
+140784a20	FUN_140784a20	LoadRiding	certain	certain: body names the data file Riding/%08d.xml	nam1	2026-10-22
+140784de0	FUN_140784de0	LoadRidingEffectDummy	certain	certain: body names the data file Riding/EffectDummy/%08d.xml	nam1	2026-10-22
+14080bc00	FUN_14080bc00	LoadItemOptionSkillTier	certain	certain: body names the data file Table/itemOptionSkillTier.xml	nam1	2026-10-22
+14081ccd0	FUN_14081ccd0	LoadSpecialAbilityStringTable	certain	certain: body names the data file Table/specialAbilityStringTable.xml	nam1	2026-10-22
+14081d060	FUN_14081d060	LoadStringSpecialAbilityName	certain	certain: body names the data file String/stringSpecialAbilityName.xml	nam1	2026-10-22
+140851750	FUN_140851750	LoadSystemMailContent	certain	certain: body names the data file String/systemMailContent.xml	nam1	2026-10-22
+140855540	FUN_140855540	LoadTalkScripts	certain	certain: body names the data file Script/Quest/questscript*.xml + Script/Npc/npcscript*.xml	nam1	2026-10-22
+1408ad500	FUN_1408ad500	LoadUGCMap	certain	certain: body names the data file UGCMap/%08d.xml	nam1	2026-10-22
+1408b9cb0	FUN_1408b9cb0	LoadExportedUGCMap	certain	certain: body names the data file ExportedUGCMap/%s.xml	nam1	2026-10-22
+140ae8540	FUN_140ae8540	LoadTestCamerValue	certain	certain: body names the data file table/TestCamerValue.xml	nam1	2026-10-22
+140aebb30	CameraMgr::FUN_140aebb30	CameraMgr::LoadMapCamera	certain	certain: body names the data file Camera/Map/%08d.xml <defaultCamera>	nam1	2026-10-22
+140aec0e0	CameraMgr::FUN_140aec0e0	CameraMgr::LoadMapLocalTargetCamera	certain	certain: body names the data file Camera/Map/%08d.xml <localTargetCamera>	nam1	2026-10-22
+140b9e100	CUGCMapSetItemTable::FUN_140b9e100	CUGCMapSetItemTable::LoadUGCMapSetItem	certain	certain: body names the data file Table/UGCMapSetItem.xml	nam1	2026-10-22
+140e2e1d0	UIGameRankingDialog::FUN_140e2e1d0	UIGameRankingDialog::LoadGameRankingCategory	certain	certain: body names the data file Table/gameRankingCategory.xml	nam1	2026-10-22
+140ea2120	UILearningQuestDialog::FUN_140ea2120	UILearningQuestDialog::LoadLearningQuest	certain	certain: body names the data file learningQuestCharacter.xml + learningQuestAccount.xml (read)	nam1	2026-10-22
+140ea26e0	UILearningQuestDialog::FUN_140ea26e0	UILearningQuestDialog::SaveLearningQuest	certain	certain: body names the data file learningQuestCharacter.xml + learningQuestAccount.xml (write)	nam1	2026-10-22
+140f2ef10	UICharacterCreateSelectDialog::FUN_140f2ef10	UICharacterCreateSelectDialog::LoadCharacterCreateSelect	certain	certain: body names the data file Table/characterCreateSelect.xml	nam1	2026-10-22
+1410d3450	CubeMapInformationService::FUN_1410d3450	CubeMapInformationService::ExportUGCMap	certain	certain: body names the data file ExportedUGCMap/{0}.xml (caller prints "UGCMap exported to ...")	nam1	2026-10-22
+14119fa60	EffectDataManager::FUN_14119fa60	EffectDataManager::LoadEffectFiles	certain	certain: body names the data file enumerates ./Data/Xml/Effect/*.xml	nam1	2026-10-22
+141241b60	CGameOption::FUN_141241b60	CGameOption::GetOptionFilePath	certain	certain: body names the data file GameOption/AccountOption/CharacterOption (+Default*) .xml	nam1	2026-10-22
+141241f30	CGameOption::FUN_141241f30	CGameOption::LoadGameOption	certain	certain: body names the data file GameOption.xml ("Failed to read GameOption.xml")	nam1	2026-10-22
+141242570	CGameOption::FUN_141242570	CGameOption::LoadAccountOption	certain	certain: body names the data file AccountOption.xml ("Failed to read AccountOption.xml")	nam1	2026-10-22
+141242990	CGameOption::FUN_141242990	CGameOption::LoadCharacterOption	certain	certain: body names the data file CharacterOption.xml ("Failed to read CharacterOption.xml")	nam1	2026-10-22
+14142f8b0	CKeyTable::FUN_14142f8b0	CKeyTable::SaveKeySetting	certain	certain: body names the data file keySetting_{0}.xml (write)	nam1	2026-10-22
+14142fc10	CKeyTable::FUN_14142fc10	CKeyTable::LoadKeySetting	certain	certain: body names the data file keySetting_{0}.xml (read)	nam1	2026-10-22
+14142fff0	CKeyTable::FUN_14142fff0	CKeyTable::LoadKeySettingTable	certain	certain: body names the data file Table/keySetting.xml	nam1	2026-10-22
+14145c4d0	FUN_14145c4d0	LoadMagicPath	certain	certain: body names the data file table/magicPath.xml	nam1	2026-10-22
+14161c490	COptimizer::FUN_14161c490	COptimizer::LoadOptimization	certain	certain: body names the data file Optimization.xml	nam1	2026-10-22
+141628640	FUN_141628640	LoadUsmSubtitleText	certain	certain: body names the data file String/usmSubtitleText.xml	nam1	2026-10-22
+141628700	FUN_141628700	LoadStringMovie	certain	certain: body names the data file String/stringMovie.xml	nam1	2026-10-22
+1416287c0	FUN_1416287c0	LoadFlashDebug	certain	certain: body names the data file flashDebug.xml	nam1	2026-10-22
+141628880	FUN_141628880	LoadAlignWidget	certain	certain: body names the data file Table/alignWidget.xml	nam1	2026-10-22
+1416e4340	FUN_1416e4340	LoadQuestDescription	certain	certain: body names the data file String/QuestDescription_final.xml	nam1	2026-10-22
+1416e79e0	FUN_1416e79e0	LoadChapterDescriptions	certain	certain: body names the data file chapterdescription*.xml	nam1	2026-10-22
+141811c90	CStringTable::FUN_141811c90	CStringTable::GetItemDescription	certain	certain: body names the data file korItemDescription.xml lookup by item id	nam1	2026-10-22
+141811e50	CStringTable::FUN_141811e50	CStringTable::GetSkillDescription	certain	certain: body names the data file stringSkillDescription.xml lookup by skill id	nam1	2026-10-22
+1418128c0	CStringTable::FUN_1418128c0	CStringTable::GetSetItemName	certain	certain: body names the data file SetItemName.xml lookup	nam1	2026-10-22
+141812a80	CStringTable::FUN_141812a80	CStringTable::GetUGCMapSetItemName	certain	certain: body names the data file UGCMapSetItemName.xml lookup	nam1	2026-10-22
+141815de0	CGFxLanguage::FUN_141815de0	CGFxLanguage::LoadKorFlash	certain	certain: body names the data file String/korFlash.xml	nam1	2026-10-22
+1418de2b0	UICameraEditDialog::FUN_1418de2b0	UICameraEditDialog::LoadCustomizeCamera	certain	certain: body names the data file camera/customize.xml	nam1	2026-10-22
+141995880	UIIntroMovie::FUN_141995880	UIIntroMovie::LoadIntroMovie	certain	certain: body names the data file Table/introMovie.xml	nam1	2026-10-22
+1419db630	UIJobChangeDialog::FUN_1419db630	UIJobChangeDialog::LoadJobPreview	certain	certain: body names the data file Table/jobPreview.xml	nam1	2026-10-22
+1419db970	UIJobChangeDialog::FUN_1419db970	UIJobChangeDialog::LoadJobDescription	certain	certain: body names the data file String/korJobDescription.xml	nam1	2026-10-22
+141a0d930	UIMessenger::FUN_141a0d930	UIMessenger::LoadDebugChatCommand	certain	certain: body names the data file DebugChatCommand.xml	nam1	2026-10-22
+141a54940	UIMinimapEditDialog::FUN_141a54940	UIMinimapEditDialog::GetXBlockPath	certain	certain: body names the data file ./data/xml/MapXblock/{0}.xml	nam1	2026-10-22
+141a6b2e0	UINpcCreateDialog::FUN_141a6b2e0	UINpcCreateDialog::ReadNpcFromFile	certain	certain: body names the data file log string L"ReadNpcFromFile" / L"End ReadNpcFromFile"	nam1	2026-10-22
+141a6ec20	UINpcPreviewDialog::FUN_141a6ec20	UINpcPreviewDialog::LoadNpcName	certain	certain: body names the data file String/npcName.xml	nam1	2026-10-22
+141b2bbf0	UITriggerEditorDialog::FUN_141b2bbf0	UITriggerEditorDialog::OpenTriggerFile	certain	certain: body names the data file open-file dialog ./Data/Xml/Trigger/ *.xml	nam1	2026-10-22
+141b2d0d0	UITriggerEditorDialog::FUN_141b2d0d0	UITriggerEditorDialog::SaveTriggerFile	certain	certain: body names the data file save-file dialog ./Data/Xml/Trigger/ *.xml	nam1	2026-10-22
+1422b1820	GFxManager::FUN_1422b1820	GFxManager::InitIME	certain	certain: body names the data file GFxIMEManagerWin32 Init "ime.xml"	nam1	2026-10-22
