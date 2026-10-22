@@ -8363,3 +8363,4 @@ compress2	142724100	func
 ??0Unk_RsNiPoint3@@QEAA@AEBUVector3@@@Z	14027dcf0	func
 ?Resize@?$VectorBase@J@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@K@Z	142562e70	func
 ?Resize@?$VectorBase@K@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@K@Z	142562f30	func
+?MakeObject@VM@AS3@GFx@Scaleform@@QEBA?AV?$Pickable@VObject@fl@Instances@AS3@GFx@Scaleform@@@4@XZ	142516600	func
