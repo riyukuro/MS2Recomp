@@ -8339,3 +8339,5 @@ compress2	142724100	func
 ??0Unk_StreamPoint@@QEAA@AEBVPoint3@efd@@@Z	14027dcf0	func
 ?vfunc_o10_10@COutPacket@@UEAAXAEBUUnk_StreamPoint@@@Z	14020b2c0	func
 ?vfunc_o10_11@COutPacket@@UEAAXAEBUUnk_StreamPoint@@@Z	14020b2f0	func
+?ToLocaleStringInternal@Array@fl@Instances@AS3@GFx@Scaleform@@QEBA?AVASString@56@XZ	142425540	func
+?ToStringInternal@Array@fl@Instances@AS3@GFx@Scaleform@@QEBA?AVASString@56@AEBV756@@Z	142425b50	func
