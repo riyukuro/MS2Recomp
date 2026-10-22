@@ -515,6 +515,40 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+class MS2GlowMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+
+public:
+    MS2GlowMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool GeneratePixelShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+    virtual ReturnCode GenerateShaderDescArray(NiMaterialDescriptor* pkMaterialDescriptor,
+        RenderPassDescriptor* pkRenderPasses, unsigned int uiMaxCount, unsigned int& uiCountAdded);
+
+    // non-virtual; name invented (no strings): builds the glow color from the glow map alpha (times the detail map
+    // alpha when there is one) and zeroes the specular term
+    bool HandleGlowColor(Context& kContext, NiStandardPixelProgramDescriptor* pkPixelDesc,
+        NiMaterialResource** apkUVSets, NiMaterialResource*& pkDiffuseAccum, NiMaterialResource*& pkSpecularAccum);
+};
+
+//--------------------------------------------------------------------------------------------------
+class MS2TextureDensityMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+
+public:
+    MS2TextureDensityMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool GeneratePixelShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+    virtual bool HandleMS2FinalPixelOutputs(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource* pkWorldNormal, NiMaterialResource* pkViewVector, NiMaterialResource* pkDiffuseAccum,
+        NiMaterialResource* pkSpecularAccum, NiMaterialResource* pkOpacityAccum);
+};
+
+//--------------------------------------------------------------------------------------------------
 #define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
     class classname : public MS2StandardMaterial                                                    \
     {                                                                                               \
@@ -522,8 +556,6 @@ public:
         classname(bool bAutoCreateCaches);                                                          \
     }
 
-MS2_DECLARE_STANDARD_MATERIAL(MS2GlowMaterial);
-MS2_DECLARE_STANDARD_MATERIAL(MS2TextureDensityMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2ForceColorMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2UIMaterial);
 
