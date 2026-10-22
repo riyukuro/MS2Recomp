@@ -1,6 +1,7 @@
 # KMS2 opcodes (client exe) <-> GMS2 / Maple2 names. Names and values only; reference sources are data (not code).
 # dir: recv = server->client (Maple2 SendOp.cs names; user KMS2 table primary), send = client->server (Maple2 RecvOp.cs names).
 # status: confirmed (exe semantics/layout agree) | by-model (shift model or user table, exe silent) | conflict (not renamed in code).
+# capture_evidence (appended after aliases): none | layout-fit | activity-fit | payload-confirmed | contradicted; brief aggregate counts only (no capture identities or payload data).
 #
 # Shift table (kms2 -> gms2 = kms2 + shift), edges pinned from exe handlers/senders:
 #   recv  0x01..0x2d  +0   last: 0x2c FieldRemoveItem, 0x2d FieldPickupItem (bPicked/objId/owner/meso layout)
@@ -9,7 +10,7 @@
 #   recv  0x60..0x139 +2   first: 0x60 MassiveEvent (UIMassiveEvent dialog); GMS 0x61 ItemTitle absent
 #                          high anchors: 0x10d BuddyEmote, 0x10e BuddyBadge, 0x111 BirthdayCard, 0x117 MeretUse, 0x11b Lapenshard,
 #                          0x11c Prestige, 0x12b HideAndSeek, 0x12e LimitBreak; no further shift found to the top
-#   recv  0x10f/0x110      conflict: user table has SyncWorld at 0x10f (+3 blip, nothing at 0x110); the model puts it at 0x110
+#   recv  0x10f/0x110      conflict: handlers and captures distinguish SyncWorld (int64 login server time) from WorldTimeSync (int field interval)
 #   send  0x01..0x37  +0   last: 0x37 RequestCube (CUserCommandCli cube building)
 #   send  0x38..0xaa  +1   first: 0x38 Ugc (CUgcManager); GMS 0x38 RequestApartment absent; last: 0xa9 StateReact, 0xaa TreeWatering
 #   send  0xab..0xbc  +2   first: 0xab SpectateMushtopia (StateObserver); GMS 0xac Survival absent; up to 0xbc LimitBreak
@@ -18,499 +19,499 @@
 #          ping, 0xb4 by UIClosetDialog, 0xbc by UIUnlimitedEnchantDialog, ... so the exe names win there)
 #   send  0xbe..0xc1       KMS-only (no Maple2 name): CheckDeleteAccount / character list / personal info agreement / home block
 #
-#dir	kms2	gms2	name	status	evidence	aliases
-recv	0x0	0x0	Null	by-model	no dispatcher case; maple2; shift +0	NULL
-recv	0x1	0x1	RequestVersion	by-model	net:FUN_14153ad10; user; shift +0	
-recv	0x2	0x2	VersionResult	by-model	net:FUN_14153af70; user; shift +0	
-recv	0x3	0x3	DataPatch	confirmed	net:FUN_14153af40; user; "./DataPatch/" handling in CNetworkService	ResponseLogin
-recv	0x4	0x4	RequestKey	by-model	net:FUN_14153b010; user; shift +0	
-recv	0x5	0x5	Reconnect	by-model	net:FUN_14153b1c0; user; shift +0	
-recv	0x6	0x6	Ping	by-model	net:FUN_14153b220; user; shift +0	
-recv	0x7	0x7	ReconnectUnk	by-model	net:FUN_14153b2d0; user; shift +0	
-recv	0x8	0x8	FinalizeReconnect	by-model	net:FUN_14153b310; user; shift +0	
-recv	0x9	0x9	RequestLogin	by-model	game:FUN_14170dc90; user; shift +0	
-recv	0xa	0xa	LoginResult	confirmed	net:FUN_14153c670; user; shift 0; layout 10	
-recv	0xb	0xb	ServerList	by-model	login:inline; user; shift +0	
-recv	0xc	0xc	CharacterList	by-model	game:FUN_141731b20; user; shift +0	CharList
-recv	0xd	0xd	MoveResult	by-model	net:FUN_14153b440; user; shift +0	
-recv	0xe	0xe	LoginToGame	by-model	net:FUN_14153b570; user; shift +0	
-recv	0xf	0xf	GameToLogin	by-model	net:FUN_14153bc00; user; shift +0	
-recv	0x10	0x10	GameToGame	by-model	net:FUN_14153be30; user; shift +0	
-recv	0x11	0x11	ResponseTimeSync	by-model	net:FUN_14153a380; user; shift +0	
-recv	0x12	0x12	RequestHeartbeat	by-model	net:FUN_14153a2e0; user; shift +0	RequestHeartBeat
-recv	0x13	0x13	RequestClientTickSync	by-model	net:FUN_14153a780; user; shift +0	
-recv	0x14	0x14	SyncNumber	by-model	net:FUN_14153a820; user; shift +0	
-recv	0x15	0x15	ServerEnter	confirmed	game:FUN_14170dd60; user; shift 0; layout 3; client_arch, channel dialog	
-recv	0x16	0x16	RequestFieldEnter	by-model	game:FUN_14170f930; user; shift 0	
-recv	0x17	0x17	FieldAddUser	by-model	game:OnAddUser; user; shift +0	FieldAddPlayer
-recv	0x18	0x18	FieldRemoveUser	by-model	game:FUN_141711dc0; user; shift 0	FieldRemovePlayer
-recv	0x19	0x19	FieldEntrance	by-model	game:FUN_14170fc70; user; shift 0	DungeonList
-recv	0x1a	0x1a	RoomDungeon	by-model	game:FUN_141737360; user; shift 0	DungeonRoom
-recv	0x1b	0x1b	DungeonReward	by-model	no dispatcher case; user; shift +0	Results
-recv	0x1c	0x1c	UserSync	confirmed	game:FUN_141712690; user; shift 0; layout 2	
-recv	0x1d	0x1d	UserChat	by-model	no dispatcher case; user; shift +0	
-recv	0x1e	0x1e	MessengerBrowser	by-model	no dispatcher case; user; shift +0	UserChatItemLink
-recv	0x1f	0x1f	Emote	by-model	game:FUN_141712a90; user; shift 0	Emotion
-recv	0x20	0x20	ItemPutOnOrOff	confirmed	game:FUN_141712fb0; user; shift 0; modes 3/3	
-recv	0x21	0x21	ItemInventory	confirmed	game:FUN_141713fb0; user; shift 0; s_item_err_*, item decode	
-recv	0x22	0x22	StorageInventory	confirmed	game:FUN_140de3480; user; shift 0; CStore	
-recv	0x23	0x23	FurnishingStorage	by-model	game:FUN_141715bd0; user; shift 0; item decode	WarehouseInventory
-recv	0x24	0x24	FurnishingInventory	confirmed	game:FUN_141716200; user; shift 0; CUgcItem (furnishing = ugc items)	
-recv	0x25	0x25	ItemPutOn	confirmed	game:FUN_141716680; user; shift 0; s_msg_item_auto_*	
-recv	0x26	0x26	ItemPutOff	confirmed	game:FUN_141716b60; user; shift 0; layout 2	
-recv	0x27	0x27	ItemSkinPutOn	by-model	game:FUN_141716d10; user; shift 0; item decode	
-recv	0x28	0x28	ItemSkinPutOff	confirmed	game:FUN_141717000; user; shift 0; layout 2	
-recv	0x29	0x29	ItemDrop	by-model	game:FUN_141717560; user; shift 0	
-recv	0x2a	0x2a	ItemUpdate	confirmed	game:FUN_141717140; user; shift 0; CEquipItem	ItemExtraData
-recv	0x2b	0x2b	FieldAddItem	confirmed	game:FUN_141711e70; user; shift 0; position fff + item decode	
-recv	0x2c	0x2c	FieldRemoveItem	confirmed	game:FUN_141712340; user; edge 0: drop removal (object id)	
-recv	0x2d	0x2d	FieldPickupItem	confirmed	game:FUN_141712420; user; edge 0: bPicked, objId, owner, meso/EP pickup	
-recv	0x2e	0x2f	Stat	confirmed	game:FUN_1417176b0; user; edge +1: 35 stat types x3 (HP/SP/EP)	
-recv	0x2f	0x30	UserBattle	confirmed	game:FUN_141717580; user; edge +1: actor id + battle flag	
-recv	0x30	0x31	UserSkinColor	confirmed	game:FUN_141717340; user; edge +1: actor id + 2 skin colors	
-recv	0x31	0x32	Beauty	by-model	no dispatcher case; user; shift +1	
-recv	0x32	0x33	AdventurerBar	by-model	game:FUN_14171a6c0; user; shift 1	
-recv	0x33	0x34	RevivalConfirm	confirmed	game:FUN_14171a730; user; shift 1; layout 3	
-recv	0x34	0x35	Revival	confirmed	game:FUN_14171a900; user; shift 1; layout 2	
-recv	0x35	0x36	RevivalCount	by-model	game:FUN_14171aa90; user; shift 1	
-recv	0x36	0x37	UserState	confirmed	game:FUN_141721940; user; shift 1; layout 2	
-recv	0x37	0x38	ExpUp	by-model	game:FUN_14171ab00; user; shift 1	
-recv	0x38	0x39	LevelUp	confirmed	game:FUN_14171aec0; user; shift 1; s_msg_skillbook_add_skillpoint	
-recv	0x39	0x3a	Meso	confirmed	game:FUN_14171b630; user; shift 1; layout 2	
-recv	0x3a	0x3b	Meret	confirmed	game:FUN_14171b750; user; shift 1; layout 5; Merat_Get/Merat_Use	
-recv	0x3b	0x3c	CurrencyToken	confirmed	game:FUN_14171bd90; user; shift 1; modes 9/9	MesoToken
-recv	0x3c	0x3d	SkillUse	confirmed	game:FUN_141717b40; user; shift 1; layout 15	
-recv	0x3d	0x3e	SkillDamage	confirmed	game:FUN_14171c0b0; user; shift 1; modes 8/8	
-recv	0x3e	0x3f	SkillSync	by-model	game:FUN_141718150; user; shift 1	
-recv	0x3f	0x40	SkillCancel	confirmed	game:FUN_141718680; user; shift 1; layout 2	
-recv	0x40	0x41	SkillUseFailed	confirmed	game:FUN_1417187b0; user; shift 1; layout 4; log OnSkillUseFailed	
-recv	0x41	0x42	StateSkill	by-model	game:FUN_141718b80; user; shift 1	
-recv	0x42	0x43	SkillCooldown	by-model	game:FUN_14172f030; user; shift 1	
-recv	0x43	0x44	SkillResetCooldown	by-model	game:FUN_14172f1c0; user; shift 1	
-recv	0x44	0x45	SkillPoint	by-model	game:FUN_14172f210; user; shift 1	
-recv	0x45	0x46	AttributePoint	by-model	game:FUN_14172f480; user; shift 1	StatPoint
-recv	0x46	0x47	CharacterCreate	by-model	no dispatcher case; user; shift +1	CharCreate
-recv	0x47	0x48	Buff	confirmed	game:FUN_141720480; user; shift 1; layout 2	
-recv	0x48	0x49	FieldPortal	confirmed	game:FUN_14171ee80; user; shift 1; layout 2	
-recv	0x49	0x4a	Job	confirmed	game:FUN_14171f8a0; user; shift 1; layout 2	
-recv	0x4a	0x4b	NpcMonologue	by-model	no dispatcher case; user; shift +1	
-recv	0x4b	0x4c	NpcTalk	by-model	game:FUN_141719a30; user; shift 1	
-recv	0x4c	0x4d	RegionSkill	confirmed	game:FUN_141720e50; user; shift 1; layout 2	
-recv	0x4d	0x4e	FunctionCube	by-model	game:FUN_1417212a0; user; shift 1	
-recv	0x4e	0x4f	Trigger	by-model	game:FUN_141721270; user; shift 1	
-recv	0x4f	0x50	Breakable	by-model	game:FUN_1417212d0; user; shift 1	
-recv	0x50	0x51	RoomTimer	by-model	game:FUN_140ee0d10; user; shift +1	Room
-recv	0x51	0x52	Shop	by-model	no dispatcher case; user; shift +1	
-recv	0x52	0x53	Quest	confirmed	net:FUN_1416cbd90; user; shift 1; CQuestManager, s_quest_alliance_*	
-recv	0x53	0x54	Party	confirmed	net:FUN_14162a4b0; user; shift 1; CPartyManager; modes 29/32	
-recv	0x54	0x55	Mail	by-model	game:FUN_141721cd0; user; shift 1	
-recv	0x55	0x56	FieldAddNpc	confirmed	game:FUN_141718cf0; user; shift 1; CNpcData/CNpc	FieldAddNPC
-recv	0x56	0x57	FieldRemoveNpc	confirmed	game:FUN_1417195f0; user; +1: NotifyRemoveNpc	FieldRemoveNPC
-recv	0x57	0x58	FieldDeadNpc	confirmed	game:FUN_1417197c0; user; +1: npc dead vfunc	FieldDeadNPC
-recv	0x58	0x59	NpcControl	confirmed	game:FUN_141719840; user; +1: ushort count + per-npc ushort-sized buffer	
-recv	0x59	0x5a	InteractNpc	confirmed	game:FUN_141719990; user; shift 1; layout 2	InteractNPC
-recv	0x5a	0x5b	FieldAddPet	confirmed	game:FUN_141719a60; user; shift 1; layout 11; CPet	
-recv	0x5b	0x5c	FieldRemovePet	confirmed	game:FUN_14171a2e0; user; +1: CPet removal	
-recv	0x5c	0x5d	SyncPetTamingPoint	confirmed	game:FUN_14171a5f0; user; +1: CPet id, int, int (taming point)	
-recv	0x5d	0x5e	Tombstone	confirmed	game:FUN_1417215a0; user; +1: tombstone	
-recv	0x5e	0x5f	Achieve	confirmed	net:FUN_140936a50; user; shift 1; CAchieveManager	Trophy
-recv	0x5f	0x60	UserMoveByPortal	confirmed	game:FUN_141721a30; user; edge +1: id, pos, rot, flag; MyPC teleport	
-recv	0x60	0x62	MassiveEvent	confirmed	game:FUN_141722f70; user; edge +2: dialog 0x4e4c UIMassiveEvent	MassEvent
-recv	0x61	0x63	Buddy	by-model	game:FUN_141721c50; user; shift +2	
-recv	0x62	0x64	AdminBlock	by-model	game:FUN_141721c90; user; shift +2	
-recv	0x63	0x65	InteractObject	confirmed	game:FUN_14172d0f0; user; shift 2; MS2InteractActor/MS2InteractMesh	
-recv	0x64	0x66	StateConsumeEp	by-model	game:FUN_141722fb0; user; shift 2	
-recv	0x65	0x67	StateFallDamage	confirmed	game:FUN_141723050; user; shift 2; layout 2	StateFallDmg
-recv	0x66	0x68	Cinematic	confirmed	game:FUN_141723260; user; shift 2; modes 12/12; UICutSceneCinematic	
-recv	0x67	0x69	Admin	by-model	game:FUN_1417232a0; user; shift 2	
-recv	0x68	0x6a	SetCraftMode	confirmed	game:FUN_141723410; user; shift 2; layout 2	SetBuildMode
-recv	0x69	0x6b	ResponseCube	confirmed	game:FUN_141723670; user; shift 2; modes 54/54	
-recv	0x6a	0x6c	LoadCubes	confirmed	game:FUN_141728110; user; shift 2; modes 4/4	Cubes
-recv	0x6b	0x6d	Ugc	confirmed	net:FUN_1418897f0; user; shift 2; CUgcManager	UGC
-recv	0x6c	0x6e	MeretMarket	confirmed	net:FUN_140d53fb0; user; shift 2; CMeratMarketMan	
-recv	0x6d	0x6f	Gvg	confirmed	net:FUN_14153a8f0; user; shift 2; GVGroupType	ContentShutdown
-recv	0x6e	0x70	GuideObject	by-model	game:FUN_14172c170; user; shift 2	
-recv	0x6f	0x71	KeyTable	confirmed	net:FUN_141428bb0; user; shift 2; CKeyTable, DefaultKey.xml	
-recv	0x70	0x72	FollowNpc	by-model	game:FUN_141723330; user; shift 2	FollowNPC
-recv	0x71	0x73	Notice	by-model	game:FUN_141728c20; user; shift 2	
-recv	0x72	0x74	RelocateWorld	by-model	net:FUN_14153c0c0; user; shift 2	
-recv	0x73	0x75	Liftable	confirmed	game:FUN_141729250; user; shift 2; modes 4/4	
-recv	0x74	0x76	ItemMerge	confirmed	game:FUN_141729ce0; user; shift 2; UIItemMergeOptionDialog/UIItemMergeRevertDialog	ItemFusion
-recv	0x75	0x77	Vibrate	by-model	game:FUN_14172a1c0; user; shift 2	
-recv	0x76	0x78	HideVibrate	by-model	game:FUN_14172a7b0; user; shift 2	
-recv	0x77	0x79	ShowVibrate	by-model	game:FUN_14172a850; user; shift 2	
-recv	0x78	0x7a	CharacterInfo	by-model	no dispatcher case; user; shift +2	CharInfo
-recv	0x79	0x7b	ResponseRide	confirmed	game:FUN_14172a8f0; user; shift 2; modes 4/6; rideonaction	
-recv	0x7a	0x7c	RideSync	confirmed	game:FUN_141712710; user; shift 2; layout 2	
-recv	0x7b	0x7d	FittingDoll	by-model	game:FUN_14172b350; user; shift 2	
-recv	0x7c	0x7e	BonusGame	by-model	no dispatcher case; user; shift +2	RouletteGame
-recv	0x7d	0x7f	LoadUgcMap	confirmed	game:FUN_14170e800; user; shift 2; layout 3	LoadUGCMap
-recv	0x7e	0x80	ProxyGameObj	by-model	game:FUN_14172f500; user; shift 2	FieldObject
-recv	0x7f	0x81	BadgeEquip	by-model	game:FUN_141730920; user; shift 2	Gem
-recv	0x80	0x82	Taxi	by-model	game:FUN_141731470; user; shift 2	
-recv	0x81	0x83	FindFields	by-model	game:FUN_141731610; user; shift 2	
-recv	0x82	0x84	Trade	confirmed	net:FUN_14185bd20; user; shift 2; modes 13/13; CTradeManagerEx	
-recv	0x83	0x85	InvincibleEffect	by-model	game:FUN_1417316d0; user; shift 2	
-recv	0x84	0x86	Worldmap	by-model	no dispatcher case; user; shift +2	WorldMap
-recv	0x85	0x87	MoveEventField	by-model	no dispatcher case; user; shift +2	MoveEventfield
-recv	0x86	0x88	DpsStat	by-model	game:FUN_141731730; user; shift 2	DPSStat
-recv	0x87	0x89	DebugMode	by-model	no dispatcher case; user; shift +2	
-recv	0x88	0x8a	StoryBook	by-model	no dispatcher case; user; shift +2	
-recv	0x89	0x8b	GuideRecord	by-model	game:FUN_141731160; user; shift 2	
-recv	0x8a	0x8c	Guild	by-model	net:FUN_1413b6370; user; shift 2	
-recv	0x8b	0x8d	GroupChat	confirmed	net:FUN_14137f2f0; user; shift 2; modes 13/13; CGroupChatManager	
-recv	0x8c	0x8e	RecallUser	by-model	game:FUN_141731c10; user; shift 2	
-recv	0x8d	0x8f	Rank	confirmed	net:FUN_140769780; user; shift 2; CRankViewer	
-recv	0x8e	0x90	AppendMessageCommon	by-model	no dispatcher case; user; shift +2	
-recv	0x8f	0x91	AppendMessageString	by-model	no dispatcher case; user; shift +2	
-recv	0x90	0x92	AppendMessageKillBoss	by-model	no dispatcher case; user; shift +2	
-recv	0x91	0x93	AppendClientLog	by-model	game:FUN_14173def0; user; shift 2	
-recv	0x92	0x94	AppendMessageAssistBonus	by-model	no dispatcher case; user; shift +2	
-recv	0x93	0x95	Ah	by-model	net:FUN_140d86260; user; shift +2	AntiHack,AH
-recv	0x94	0x96	UiText	by-model	game:FUN_141731190; user; shift 2	UIText
-recv	0x95	0x97	PlayNpcSound	by-model	game:FUN_141731350; user; shift 2	PlayNPCSound
-recv	0x96	0x98	ItemDismantle	by-model	game:FUN_141731ac0; user; shift 2	ItemBreak
-recv	0x97	0x99	ItemEnchant	confirmed	game:FUN_141732b20; user; shift 2; UIItemEnchantDialog, s_itemenchant_*	
-recv	0x98	0x9a	BlackMarket	confirmed	net:FUN_140a20650; user; shift 2; CBlackMarketMan	
-recv	0x99	0x9b	MesoMarket	confirmed	net:FUN_140d6e490; user; shift 2; modes 8/8; CMesoMarketMan	
-recv	0x9a	0x9c	TeamPvp	by-model	no dispatcher case; user; shift +2	TeamPVP
-recv	0x9b	0x9d	WebOpen	confirmed	game:FUN_141733140; user; shift 2; Open URL in ... strings	
-recv	0x9c	0x9e	Gamble	by-model	no dispatcher case; user; shift +2	
-recv	0x9d	0x9f	FieldMaid	by-model	game:FUN_141732ac0; user; shift 2	
-recv	0x9e	0xa0	UserMaid	by-model	game:FUN_141732af0; user; shift 2	
-recv	0x9f	0xa1	NewsNotification	by-model	game:FUN_141733440; user; shift 2	
-recv	0xa0	0xa2	SmartRecommendBilling	by-model	no dispatcher case; user; shift +2	
-recv	0xa1	0xa3	SystemShop	confirmed	game:FUN_141733660; user; shift 2; s_shop_no_star_point_event	
-recv	0xa2	0xa4	AutoRevive	confirmed	game:FUN_1417337c0; user; shift 2; UIAutoReviveCountDownDialog	
-recv	0xa3	0xa5	PlayerKillNotice	confirmed	game:FUN_141733850; user; shift 2; UIPvPKillLogDialog	
-recv	0xa4	0xa6	Attendance	by-model	no dispatcher case; user; shift +2	DailyWonder
-recv	0xa5	0xa7	PcBangBonus	by-model	no dispatcher case; user; shift +2	PCCafeBonus
-recv	0xa6	0xa8	DeadUser	by-model	game:FUN_141736880; user; shift 2	Dead
-recv	0xa7	0xa9	DynamicChannel	by-model	net:FUN_14153c4b0; user; shift 2	
-recv	0xa8	0xaa	UserEnv	by-model	game:FUN_141736940; user; shift 2; s_fame_point_update, UIAchieveDialog	UserEnvironment
-recv	0xa9	0xab	MaidCraftItem	by-model	net:FUN_140d500b0; user; shift +2	Manufacturer
-recv	0xaa	0xac	EnterUgcMap	by-model	game:FUN_1417373d0; user; shift +2	EnterUGCMap
-recv	0xab	0xad	ItemUse	by-model	game:FUN_141739910; user; shift +2	CouponUse
-recv	0xac	0xae	ItemBox	by-model	game:FUN_141739e40; user; shift +2	ItemUse
-recv	0xad	0xaf	Cash	confirmed	net:FUN_140b06020; user; shift 2; CCashMarketMan	
-recv	0xae	0xb0	MyInfo	confirmed	game:FUN_14171b380; user; shift 2; layout 4	
-recv	0xaf	0xb1		by-model	net:FUN_140d86260; -; shift +2	Session
-recv	0xb0	0xb2	WorldShareInfo	by-model	game:FUN_141733b30; user; shift 2	
-recv	0xb1	0xb3	Insignia	confirmed	game:FUN_141733e40; user; shift 2; layout 3	NameTagSymbol,Nametag
-recv	0xb2	0xb4	GameEvent	confirmed	game:FUN_140ceab50; user; shift 2; modes 4/4; GameEventManagerCli	
-recv	0xb3	0xb5	BannerList	confirmed	net:FUN_14096b3a0; user; shift 2; CAdBannerManagerCli	
-recv	0xb4	0xb6	WaitingTicketUpdate	confirmed	multi:FUN_14174f8d0; user; shift 2; waitingticketdialog	
-recv	0xb5	0xb7	SetPcBang	confirmed	game:FUN_141733f50; user; shift 2; layout 2	SetPCCafe,SetPcbang
-recv	0xb6	0xb8	Pvp	confirmed	game:FUN_141732350; user; shift 2; UIIndividualPvPDialog, s_rank_duel_*	PVP
-recv	0xb7	0xb9	HomeCommand	by-model	game:FUN_1417340f0; user; shift 2	
-recv	0xb8	0xba	CharMaxCount	confirmed	net:FUN_14153e050; user; shift 2; layout 2	
-recv	0xb9	0xbb	World	by-model	game:FUN_1417343c0; user; shift 2	FinalizeServerEnter
-recv	0xba	0xbc	ItemDropNotice	confirmed	game:FUN_1417343f0; user; shift 2; layout 4	DropItemGetMessage
-recv	0xbb	0xbd	PartySearch	confirmed	net:FUN_1416310d0; user; shift 2; modes 4/4; CPartyManager	MatchParty
-recv	0xbc	0xbe	RecallScroll	confirmed	game:FUN_141734530; user; shift 2; s_cash_recall_wedding_notice	
-recv	0xbd	0xbf	UserConditionEvent	confirmed	game:FUN_1412a53e0; user; shift 2; modes 2/2	
-recv	0xbe	0xc0	PotentialAbility	by-model	game:FUN_141734930; user; shift 2	
-recv	0xbf	0xc1	EnchantScroll	confirmed	game:FUN_141734950; user; shift 2; UIEnchantScrollDialog	
-recv	0xc0	0xc2	BossRanking	by-model	no dispatcher case; user; shift +2	
-recv	0xc1	0xc3	GlobalPortal	confirmed	game:FUN_141734b20; user; shift 2; modes 4/4; UIGlobalPortalDialog	
-recv	0xc2	0xc4	QuizEvent	confirmed	game:FUN_141734b70; user; shift 2; UIQuizDialog	
-recv	0xc3	0xc5	PlaySystemSound	by-model	game:FUN_141734bc0; user; shift 2	
-recv	0xc4	0xc6	Fishing	by-model	game:FUN_141734c70; user; shift 2	
-recv	0xc5	0xc7	DarkStream	confirmed	game:FUN_141734ca0; user; shift 2; UIDarkStreamResultDialog	
-recv	0xc6	0xc8	NpsInfo	by-model	net:FUN_14153e0d0; user; shift 2	
-recv	0xc7	0xc9	PlayInstrument	by-model	game:FUN_1417353b0; user; shift 2	
-recv	0xc8	0xca	ChangeAttributes	by-model	no dispatcher case; user; shift +2	
-recv	0xc9	0xcb	ChangeAttributesScroll	by-model	no dispatcher case; user; shift +2	
-recv	0xca	0xcc	FieldProperty	by-model	game:FUN_1417353e0; user; shift 2	
-recv	0xcb	0xcd	GameEventUserValue	by-model	game:FUN_141735410; user; shift 2	
-recv	0xcc	0xce	ResponsePet	confirmed	net:FUN_140c895e0; user; shift 2; modes 19/19; CPetManager	
-recv	0xcd	0xcf	Mastery	confirmed	game:FUN_141735440; user; shift 2; s_pettaming_mastery, s_fishing_grade_up	
-recv	0xce	0xd0	PetInventory	by-model	game:FUN_1417132b0; user; shift 2; CItem decode	
-recv	0xcf	0xd1	NoticeDialog	confirmed	game:FUN_141009680; user; shift 2; UINoticeDialog	
-recv	0xd0	0xd2	AaErr	by-model	net:FUN_14153e150; user; shift 2	
-recv	0xd1	0xd3	SkillMacro	by-model	game:FUN_141737d60; user; shift 2	Macro
-recv	0xd2	0xd4		by-model	net:FUN_140d86260; -; shift +2	BanWord,Banword
-recv	0xd3	0xd5	CheckCharNameResult	by-model	game:FUN_141737db0; user; shift 2	
-recv	0xd4	0xd6	PlatformProtectPacket	by-model	no dispatcher case; user; shift +2	
-recv	0xd5	0xd7		by-model	net:FUN_140d86260; -; shift +2	PlatformAccountSafe
-recv	0xd6	0xd8	GlobalFactor	by-model	game:FUN_1417380c0; user; shift 2	
-recv	0xd7	0xd9	SmartPush	by-model	game:FUN_141738120; user; shift 2	
-recv	0xd8	0xda	PlayArcade	confirmed	game:FUN_141734e00; user; shift 2; UIArcadeMainDialog	
-recv	0xd9	0xdb	DebugState	by-model	no dispatcher case; user; shift +2	
-recv	0xda	0xdc	CardReverseGame	by-model	no dispatcher case; user; shift +2	
-recv	0xdb	0xdd	ItemLock	by-model	game:FUN_141731af0; user; shift 2	
-recv	0xdc	0xde	HomeBank	by-model	game:FUN_141738290; user; shift 2	
-recv	0xdd	0xdf	HomeDoctor	by-model	game:FUN_141738380; user; shift 2	
-recv	0xde	0xe0	ItemSocketSystem	confirmed	game:FUN_14173f550; user; shift 2; itemsocketsystemutil	
-recv	0xdf	0xe1	CharacterAbility	confirmed	net:FUN_140f29ad0; user; shift 2; CCharacterAbilityManager	CharAbility
-recv	0xe0	0xe2	ShadowBuff	by-model	no dispatcher case; user; shift +2	
-recv	0xe1	0xe3	ShadowExpedition	by-model	no dispatcher case; user; shift +2	
-recv	0xe3	0xe5	ItemSocketScroll	by-model	no dispatcher case; user; shift +2	
-recv	0xe4	0xe6	ItemRepackage	by-model	no dispatcher case; user; shift +2	ItemSocketExpansionScroll
-recv	0xe5	0xe7	Mapleopoly	by-model	no dispatcher case; user; shift +2	DiceGame
-recv	0xe6	0xe8	BypassKey	confirmed	net:FUN_14153b3b0; user; shift 2; layout 2	
-recv	0xe7	0xe9	NpcRide	by-model	game:FUN_141738ad0; user; user only (GMS 0xe9 unnamed in Maple2); exe: int npcId -> npc packet handler	
-recv	0xe8	0xea	NpcNotice	by-model	game:FUN_141738430; user; shift 2	
-recv	0xe9	0xeb	LocalCamera	confirmed	game:FUN_14173a370; user; shift 2; layout 3	
-recv	0xea	0xec	HomeAction	by-model	game:FUN_141738b40; user; shift 2; UIUGCCubeNoticeDialog	HomeGame,ResponseHomeAction
-recv	0xeb	0xed	PremiumClub	confirmed	game:FUN_141739f90; user; shift 2; UIVIPDialog	
-recv	0xec	0xee		by-model	game:FUN_14173a0d0; -; shift +2	
-recv	0xed	0xef	SteamCashShop	by-model	net:FUN_140d86260; user; shift +2	
-recv	0xee	0xf0	InGameRank	confirmed	net:FUN_140b2ab70; user; shift 2; CGameRankingCli	
-recv	0xef	0xf1	DungeonMatch	by-model	game:FUN_14173e4b0; user; shift 2	ResetCamera
-recv	0xf0	0xf2	DungeonWaiting	by-model	no dispatcher case; user; shift +2	DungeonWait
-recv	0xf1	0xf3	OneTimeEffect	confirmed	game:FUN_14173a420; user; shift 2; layout 2	
-recv	0xf2	0xf4	CameraInterpolation	by-model	game:FUN_14173a5b0; user; shift 2	SetCamera
-recv	0xf3	0xf5	TimeScale	confirmed	game:FUN_14173a5e0; user; shift 2; layout 5	
-recv	0xf4	0xf6	LegionBattle	by-model	game:FUN_14173a720; user; shift 2	
-recv	0xf5	0xf7	ItemScript	by-model	game:FUN_14173e510; user; shift 2	Fireworks
-recv	0xf6	0xf8	Club	confirmed	net:FUN_140b158c0; user; shift 2; modes 28/28; CClubClientManager	
-recv	0xf7	0xf9	EventReward	confirmed	game:FUN_141735dd0; user; shift 2; UIGalleryEventDialog/UIStampEventDialog	
-recv	0xf8	0xfa	HomeInvite	confirmed	game:FUN_14173a990; user; shift 2; modes 2/2	InviteToHome
-recv	0xf9	0xfb	TaskEvent	by-model	game:FUN_141736240; user; shift 2	
-recv	0xfa	0xfc	StateFishingData	by-model	game:FUN_14173b080; user; shift +2	
-recv	0xfb	0xfd	DungeonReviveCount	by-model	game:FUN_14173b1d0; user; shift 2	
-recv	0xfd	0xff		by-model	game:FUN_14173b220; -; shift +2	
-recv	0xfe	0x100	ChangeBackground	by-model	game:FUN_14173b380; user; shift 2	
-recv	0xff	0x101	RoomStageDungeon	by-model	net:FUN_14153e180; user; shift 2	
-recv	0x100	0x102	DungeonMission	by-model	no dispatcher case; user; shift +2	
-recv	0x101	0x103		by-model	game:FUN_14173a0f0; -; shift +2	
-recv	0x102	0x104	ItemExchange	by-model	no dispatcher case; user; shift +2	BuddyEmote
-recv	0x103	0x105	BindItem	by-model	game:FUN_14173b420; user; shift 2	Item
-recv	0x104	0x106	TransferEnchant	by-model	no dispatcher case; user; shift +2	ItemEnchantTransform
-recv	0x105	0x107	PlayerHost	by-model	game:FUN_14173b5a0; user; shift 2	AdBalloon
-recv	0x106	0x108	GmCommand	by-model	game:FUN_14173c090; user; shift +2	GMCommand
-recv	0x107	0x109	GlamourAnvil	by-model	no dispatcher case; user; shift +2	ItemExtraction
-recv	0x108	0x10a	PetSkinBadge	by-model	no dispatcher case; user; shift +2	PetSkin
-recv	0x109	0x10b	DungeonHelp	by-model	no dispatcher case; user; shift +2	DungeonHelper
-recv	0x10a	0x10c	Mentor	confirmed	net:FUN_140b719e0; user; shift 2; CMentoringManager	
-recv	0x10c	0x10e	SkillBookTree	by-model	no dispatcher case; user; shift +2	
-recv	0x10d	0x10f	BuddyEmote	confirmed	net:FUN_14153e280; user; +2: modes 0..6, couple emotion / buddy manager	
-recv	0x10e	0x110	BuddyBadge	confirmed	net:FUN_14153f6c0; user; +2: byte kind + long charId (BuddyBadge layout)	
-recv	0x10f	0x111	SyncWorld	conflict	multi:FUN_14174fcc0; user; user table SyncWorld (shift 3 blip); kms2 branch and shift model: SyncWorld at 0x110. exe: CSceneStateMulti reads a long server time; no reference layout decides	
-recv	0x110	0x112	SyncWorld	conflict	net:FUN_14153a8a0; maple2; kms2 branch and shift model SyncWorld (GMS 0x112); user table: no entry. exe: CNetworkService reads an int interval into the world object; no reference layout decides	
-recv	0x111	0x113	BirthdayCard	confirmed	game:FUN_14173c7a0; user; +2: mode 1 int id + long value	Birthday
-recv	0x112	0x114	SuperWorldChat	by-model	net:FUN_14153f8c0; user; shift 2	
-recv	0x113	0x115		by-model	game:FUN_1403ed2d0; -; shift +2	
-recv	0x114	0x116	Microgame	confirmed	net:FUN_140b73cc0; user; shift 2; microgamemanagercli	RockPaperScissors
-recv	0x115	0x117	Reactor	confirmed	game:FUN_14173c870; user; shift 2; CReactor	
-recv	0x116	0x118	SurvivalEvent	by-model	no dispatcher case; user; shift +2	MushkingRoyale
-recv	0x117	0x119	MeretUse	by-model	game:FUN_14171bad0; user; shift 2	
-recv	0x118	0x11a	TreeWatering	by-model	game:FUN_14173ce30; user; user TreeWatering vs Maple2 HalloweenEvent (GMS 0x11a); exe: mode 2/3 result replies (string ids 0xd1d..0xd21), client sends TreeWatering 0xaa; user name kept	HalloweenEvent
-recv	0x119	0x11b	Survival	by-model	no dispatcher case; user; shift +2	MushkingRoyaleSystem
-recv	0x11a	0x11c	SpectateMushtopia	by-model	game:FUN_14173d180; user; shift +2	Spectate
-recv	0x11b	0x11d	Lapenshard	confirmed	game:FUN_14173d2e0; user; shift 2; Unk_LapenEquipped	ItemLapenshard
-recv	0x11c	0x11e	Prestige	confirmed	game:FUN_14173d4d0; user; shift 2; UIAdventureLevelDialog (prestige)	AdventureLevel
-recv	0x11d	0x11f	Ugd	by-model	no dispatcher case; user; shift +2	
-recv	0x11f	0x121	WorldChampion	by-model	game:FUN_14173dfd0; user; shift +2	FieldWar
-recv	0x120	0x122	SyncValue	by-model	game:FUN_14173ddf0; user; shift +2	
-recv	0x121	0x123	MinimapPing	by-model	game:FUN_14173de10; user; shift 2	No
-recv	0x122	0x124	MsgBox	by-model	no dispatcher case; user; shift +2	
-recv	0x123	0x125	Wardrobe	by-model	no dispatcher case; user; shift +2	
-recv	0x124	0x126	DynamicBanword	by-model	net:FUN_14153f9d0; user; shift 2	
-recv	0x125	0x127	RequestSystemInfo	by-model	net:FUN_14153fa20; user; shift 2	UnknownLogin
-recv	0x126	0x128	ChatStamp	by-model	game:FUN_14173e440; user; shift 2	ChatSticker
-recv	0x127	0x129		by-model	net:FUN_14153fae0; -; shift +2	
-recv	0x128	0x12a	Wedding	by-model	game:FUN_1409eed90; user; shift 2	Marriage
-recv	0x12a	0x12c	WeddingBillboard	by-model	no dispatcher case; user; shift +2	
-recv	0x12b	0x12d	HideAndSeek	confirmed	game:FUN_14173e5b0; user; shift 2; UIHideAndSeekResultDialog	
-recv	0x12c	0x12e	MessengerBrowserStamp	by-model	game:FUN_14173f0c0; user; shift 2	
-recv	0x12d	0x12f		by-model	net:FUN_140a8afb0; -; shift +2	
-recv	0x12e	0x130	LimitBreak	confirmed	game:FUN_14173f1a0; user; shift 2; UIUnlimitedEnchantDialog	
-recv	0x12f	0x131		by-model	game:FUN_14173f280; -; shift +2	
-recv	0x130	0x132		by-model	game:FUN_141720c60; -; shift +2	UnknownSync,Init_0x05
-recv	0x131	0x133		by-model	game:FUN_14173f7c0; -; shift +2	
-recv	0x135	0x137		by-model	game:FUN_14173f810; -; shift +2	
-recv	0x136	0x138		by-model	game:FUN_14173f860; -; shift +2	
-recv	0x137	0x139		by-model	game:FUN_140ad5f00; -; shift +2	
-recv	0x138	0x13a		by-model	game:FUN_14173fc00; -; shift +2	
-recv	0x139	0x13b		by-model	game:FUN_14173fc40; -; shift +2	
-send	0x0	0x0	Null	by-model	no sender found; shift +0	NULL
-send	0x1	0x1	ResponseVersion	by-model	CNetworkService; shift +0	
-send	0x2	0x2	Patch	by-model	CNetworkService,COnlinePatchManagerCli; shift +0	
-send	0x3	0x3	ResponseLogin	by-model	CClientPlatformNexonKorea,UILoginDialog,UIServerListDialog; shift +0	
-send	0x4	0x4	ResponseKey	by-model	CNetworkService,CSceneStateGame; shift +0	
-send	0x5	0x5	Reconnect	by-model	CReconnectionManagerCli; shift +0	
-send	0x6	0x6	Pong	by-model	CNetworkService; shift +0	
-send	0x7	0x7	ReconnectUnk	by-model	COutPacketBuffer; shift +0	
-send	0x8	0x8	FinalizeReconnect	by-model	COutPacketBuffer; shift +0	
-send	0x9	0x9	CharacterManagement	confirmed	UICharacterCreateDialog,UICharacterListDialog,UIServerListDialog; send KMS 0x9 -> GMS 0x9 CharacterManagement (shift +0); senders UICharacterListDialog/UICharacterCreateDialog	CharManagement
-send	0xa	0xa	ResponseHeartbeat	by-model	CNetworkService; shift +0	
-send	0xb	0xb	RequestTimeSync	by-model	CNetworkService; shift +0	
-send	0xc	0xc	ResponseClientTickSync	by-model	CNetworkService; shift +0	
-send	0xd	0xd	RequestQuit	by-model	CClientPlatformNexonKorea,CNetworkService; shift +0	
-send	0xe	0xe	DynamicBanword	by-model	CSceneStateGame; shift +0	
-send	0xf	0xf	RequestLoadUgcMap	by-model	CSceneStateGame; shift +0	RequestLoadUGCMap
-send	0x10	0x10	ResponseFieldEnter	by-model	CSceneStateGame,CubeMapInformationService; shift +0	
-send	0x11	0x11	UserChat	by-model	FUN_141276f80,UIDebugPacketDialog,UIMeratMarketDialog; shift +0	
-send	0x12	0x12	UserSync	by-model	StateLocalController; shift +0	
-send	0x13	0x13	Emote	confirmed	StateSkill,UICoupleActionDialog,UIDynamicActionDialog,Unk_Inventory; send KMS 0x13 -> GMS 0x13 Emotion (shift +0); senders UICoupleActionDialog/UIDynamicActionDialog	Emotion
-send	0x14	0x14	RequestServerList	by-model	UICharacterListDialog; shift +0	
-send	0x15	0x15	RequestItemCreate	confirmed	UIItemCreateDialog,UIItemOptionCreateDialog; send KMS 0x15 -> GMS 0x15 RequestItemCreate (shift +0); senders UIItemCreateDialog	
-send	0x16	0x16	ItemEquip	confirmed	EquipSlot,Unk_Inventory; send KMS 0x16 -> GMS 0x16 ItemEquip (shift +0); senders EquipSlot	
-send	0x17	0x17	RequestItemInventory	confirmed	CNetworkService,InvenSlot,UIInventoryDialog,Unk_Inventory; send KMS 0x17 -> GMS 0x17 RequestItemInventory (shift +0); senders Unk_Inventory/UIInventoryDialog	
-send	0x18	0x18	RequestItemStorage	confirmed	CNetworkService,CStore,FUN_140de2dc0,FUN_140de31f0,StoreSlot; send KMS 0x18 -> GMS 0x18 RequestItemStorage (shift +0); senders CStore	
-send	0x19	0x19	RequestItemUse	confirmed	OpenInstrument,Unk_Inventory; send KMS 0x19 -> GMS 0x19 RequestItemUse (shift +0); senders Unk_Inventory	
-send	0x1a	0x1a	RequestItemBox	by-model	UIItemMultiOpenBoxDialog; shift +0	RequestItemUseMultiple,ItemExtraData
-send	0x1c	0x1c	RequestItemPickup	confirmed	CDropItem; send KMS 0x1c -> GMS 0x1c RequestItemPickup (shift +0); senders CDropItem	
-send	0x1d	0x1d	RequestMesoPickup	by-model	MyPC; shift +0	RequestMoneyPickup
-send	0x1e	0x1e	CharacterInfo	confirmed	UIPopUpMenu; send KMS 0x1e -> GMS 0x1e CharacterInfo (shift +0); senders UIPopUpMenu	CharInfo
-send	0x1f	0x1f	Revival	confirmed	StateSummonRevive,UIRevivalDialog; send KMS 0x1f -> GMS 0x1f Revival (shift +0); senders UIRevivalDialog/StateSummonRevive	
-send	0x20	0x20	Skill	confirmed	CMagic,CSkillRecord,StateSkill; send KMS 0x20 -> GMS 0x20 Skill (shift +0); senders CMagic/StateSkill/CSkillRecord	
-send	0x21	0x21	StateSkill	confirmed	StateSkill; send KMS 0x21 -> GMS 0x21 StateSkill (shift +0); senders StateSkill	
-send	0x22	0x22	NpcTalk	confirmed	CCustomSelectableDistractorCinematicComponent,CQuestAcceptCinematicComponent,CQuestCompleteCinematicComponent,UIAlliance; send KMS 0x22 -> GMS 0x22 NpcTalk (shift +0); senders quest/npc cinematic components	
-send	0x23	0x23	Beauty	confirmed	CSceneStateGame,Customize,FUN_140f01250,FUN_140f012d0,UIBeautyListDialog,UIBeautyShopDialog,UIBeautyShopStyleDialog,UIGa; send KMS 0x23 -> GMS 0x23 Beauty (shift +0); senders UIBeauty*/Customize::Equipment	
-send	0x24	0x24	RequestNpcCreate	confirmed	UINpcCreateDialog; send KMS 0x24 -> GMS 0x24 RequestNpcCreate (shift +0); senders UINpcCreateDialog	RequestNPCCreate
-send	0x25	0x25	Job	confirmed	CChangeJobComponent,JobSystemCli,UISkillBookTreeDialog; send KMS 0x25 -> GMS 0x25 Job (shift +0); senders JobSystemCli/CChangeJobComponent	
-send	0x26	0x26	Vibrate	by-model	WorldService; shift +0	
-send	0x27	0x27	Breakable	by-model	WorldService; shift +0	
-send	0x28	0x28	Shop	confirmed	UIShopDialog; send KMS 0x28 -> GMS 0x28 Shop (shift +0); senders UIShopDialog	
-send	0x29	0x29	Quest	confirmed	CQuest,CQuestAcceptCinematicComponent,CQuestCompleteCinematicComponent,CQuestManager,CQuestProgressCinematicComponent,FU; send KMS 0x29 -> GMS 0x29 Quest (shift +0); senders CQuest/CQuestManager	
-send	0x2a	0x2a	Tombstone	by-model	WorldService; shift +0	
-send	0x2b	0x2b	RoomDungeon	confirmed	CPartyManager,PortalAction,UIDungeonControlCenter,UIDungeonRoomInfo,UIDungeonSearchDialog,UIDungeonSearchUnitedReward; send KMS 0x2b -> GMS 0x2b RoomDungeon (shift +0); senders UIDungeonRoomInfo/CPartyManager	
-send	0x2c	0x2c	Party	confirmed	CPartyManager,CQuestManager,PartyVoteCli,StateRecall,UIDungeonControlCenter,UIDungeonRoomInfo,UIDungeonSearchPage,UIMess; send KMS 0x2c -> GMS 0x2c Party (shift +0); senders CPartyManager	
-send	0x2d	0x2d	Mail	confirmed	UIMailListDialog,UIMailSendDialog; send KMS 0x2d -> GMS 0x2d Mail (shift +0); senders UIMailListDialog	
-send	0x2e	0x2e	FunctionCube	confirmed	CFunctionCubeObject,CFunctionCubeService,MyPC,StateHomemade,StateNurturing,StateUseFurniture,UIHomePasswordDialog,UIObje; send KMS 0x2e -> GMS 0x2e FunctionCube (shift +0); senders CFunctionCubeObject/StateHomemade	
-send	0x2f	0x2f	Trigger	confirmed	CGuideActionServerTriggerEvent,CKeyTable,UICutSceneCinematic,UICutSceneMovie,UITriggerEditorDialog,UITypingGameDialog; send KMS 0x2f -> GMS 0x2f Trigger (shift +0); senders UITriggerEditorDialog/CGuideActionServerTriggerEvent	
-send	0x30	0x30	Buddy	confirmed	CBuddyManager; send KMS 0x30 -> GMS 0x30 Buddy (shift +0); senders CBuddyManager	
-send	0x31	0x31	InteractObject	confirmed	CInteractObject,StateInteraction,UIObjectCreateDialog; send KMS 0x31 -> GMS 0x31 InteractObject (shift +0); senders CInteractObject/StateInteraction	
-send	0x32	0x32	InteractNpc	confirmed	CNpc; send KMS 0x32 -> GMS 0x32 InteractNpc (shift +0); senders CNpc	InteractNPC
-send	0x33	0x33	StateConsumeEp	by-model	no sender found; shift +0	
-send	0x34	0x34	StateFallDamage	by-model	PCBase; shift +0	
-send	0x35	0x35	GuideObjectSync	confirmed	StatePcGuideObjectController; send KMS 0x35 -> GMS 0x35 GuideObjectSync (shift +0); senders StatePcGuideObjectController	
-send	0x36	0x36	RequestSetCraftMode	by-model	MyPC; shift +0	RequestSetBuildMode
-send	0x37	0x37	RequestCube	confirmed	CGodModeInfo,CSceneStateGame,CUgcManager,CUgcSignCinematicComponent,CUserCommandCli,CubeMapInformationService,FUN_140ee8; edge 0: CUserCommandCli cube building	
-send	0x38	0x39	Ugc	confirmed	CSceneStateGame,CUgcManager; edge +1: CUgcManager	UGC
-send	0x39	0x3a	MeretMarket	confirmed	CMeratMarketMan,CUserCommandCli,FUN_140ebded0,UIMeratMarketDialog; send KMS 0x39 -> GMS 0x3a MeretMarket (shift +1); senders CMeratMarketMan	
-send	0x3a	0x3b	KeyTable	confirmed	CKeyTable,FUN_14092f690,FUN_14092fac0,FUN_14092fef0,FUN_140930040,FUN_1409300a0; send KMS 0x3a -> GMS 0x3b KeyTable (shift +1); senders CKeyTable	
-send	0x3b	0x3c	Channel	by-model	WorldService; shift +1	
-send	0x3c	0x3d	Liftable	confirmed	LiftCubeAction; send KMS 0x3c -> GMS 0x3d Liftable (shift +1); senders LiftCubeAction	
-send	0x3d	0x3e	MyInfo	confirmed	UIPCInfoDialog; send KMS 0x3d -> GMS 0x3e MyInfo (shift +1); senders UIPCInfoDialog	
-send	0x3e	0x3f	RelocateWorld	by-model	CNetworkService; shift +1	
-send	0x3f	0x40	ItemMerge	confirmed	UIItemMergeOptionDialog,UIItemMergeRevertDialog; send KMS 0x3f -> GMS 0x40 ItemFusion (shift +1); senders UIItemMergeOptionDialog	ItemFusion
-send	0x40	0x41	RequestRide	confirmed	MyPC,StateSummon; send KMS 0x40 -> GMS 0x41 RequestRide (shift +1); senders MyPC/StateSummon (ride)	
-send	0x41	0x42	RideSync	confirmed	StateRideeController; send KMS 0x41 -> GMS 0x42 RideSync (shift +1); senders StateRideeController	
-send	0x42	0x43	FittingDoll	confirmed	CNetworkService,FittingDollSlot,InvenSlot,MyPC,UIFittingDollDialog; send KMS 0x42 -> GMS 0x43 FittingDoll (shift +1); senders UIFittingDollDialog	
-send	0x43	0x44	BonusGame	confirmed	CRouletteCinematicComponent,UIRouletteDialog,UITalkManager; send KMS 0x43 -> GMS 0x44 BonusGame (shift +1); senders UIRouletteDialog/CRouletteCinematicComponent	RouletteGame
-send	0x44	0x45	ResolvePenalty	confirmed	CPaneltyResolveCinematicComponent; send KMS 0x44 -> GMS 0x45 ResolvePenalty (shift +1); senders CPaneltyResolveCinematicComponent	
-send	0x45	0x46	TakeBoat	confirmed	CTakeBoatCinematicComponent; send KMS 0x45 -> GMS 0x46 TakeBoat (shift +1); senders CTakeBoatCinematicComponent	
-send	0x46	0x47	Achieve	confirmed	UIAchieveDialog; send KMS 0x46 -> GMS 0x47 Achieve (shift +1); senders UIAchieveDialog	Trophy
-send	0x47	0x48	BadgeEquip	confirmed	FUN_141271960,FUN_141271f90,UIGemSettingDialog; send KMS 0x47 -> GMS 0x48 BadgeEquip (shift +1); senders UIGemSettingDialog	RequestGemEquipment
-send	0x48	0x49	RequestTaxi	confirmed	CAutoFindTaxiStation,StateCashCall,StateTaxiCall,TaxiStationAction; send KMS 0x48 -> GMS 0x49 RequestTaxi (shift +1); senders CAutoFindTaxiStation/StateTaxiCall	
-send	0x49	0x4a	Trade	confirmed	CTradeManagerEx; send KMS 0x49 -> GMS 0x4a Trade (shift +1); senders CTradeManagerEx	
-send	0x4a	0x4b	RequestWorldmap	confirmed	UIWorldMapDialog; send KMS 0x4a -> GMS 0x4b RequestWorldmap (shift +1); senders UIWorldMapDialog	RequestWorldMap
-send	0x4b	0x4c	Guild	confirmed	CGuildManager; send KMS 0x4b -> GMS 0x4c Guild (shift +1); senders CGuildManager	
-send	0x4c	0x4d	GroupChat	confirmed	CGroupChatManager; send KMS 0x4c -> GMS 0x4d GroupChat (shift +1); senders CGroupChatManager	
-send	0x4d	0x4e	RequestHomeBank	confirmed	StateHomeConvenient; send KMS 0x4d -> GMS 0x4e RequestHomeBank (shift +1); senders StateHomeConvenient	
-send	0x4e	0x4f	RequestHomeDoctor	confirmed	CHomeDoctorCinematicComponent; send KMS 0x4e -> GMS 0x4f RequestHomeDoctor (shift +1); senders CHomeDoctorCinematicComponent	
-send	0x4f	0x50	Ah	by-model	no sender found; shift +1	AntiHack,AH
-send	0x50	0x51	SetDebugMode	confirmed	AiDebugDialog,CameraMgr,UIDebugGuideDialog,UIDialogCenterDialog,UIMinimapEntity,UINpcControlDialog,UINpcCreateDialog,UIO; send KMS 0x50 -> GMS 0x51 SetDebugMode (shift +1); senders debug dialogs	
-send	0x51	0x52	RequestHome	by-model	CSceneStateGame,CUserCommandCli,MyPC,UIPopUpMenu; shift +1	
-send	0x52	0x53	RequestReport	confirmed	TencentUserReport,UIReportDialog; send KMS 0x52 -> GMS 0x53 RequestReport (shift +1); senders UIReportDialog	
-send	0x53	0x54	FurnishingStorage	by-model	CNetworkService; shift +1	RequestMarketInventory
-send	0x54	0x55	RequestMoveEventField	by-model	UIWorldMapDialog; shift +1	RequestMoveEventfield
-send	0x55	0x56	LogSend	confirmed	CBigDataLogSystem; send KMS 0x55 -> GMS 0x56 LogSend (shift +1); senders CBigDataLogSystem	
-send	0x56	0x57	DpsMode	confirmed	UIDPSDialog; send KMS 0x56 -> GMS 0x57 DpsMode (shift +1); senders UIDPSDialog	DPSMode
-send	0x57	0x58	GuideRecord	confirmed	CGuideManager; send KMS 0x57 -> GMS 0x58 GuideRecord (shift +1); senders CGuideManager	
-send	0x58	0x59	Rank	by-model	no sender found; shift +1	
-send	0x59	0x5a	RequestSkipTutorial	by-model	no sender found; shift +1	
-send	0x5a	0x5b	ItemDismantle	confirmed	CItemBreakManager; send KMS 0x5a -> GMS 0x5b ItemDismantle (shift +1); senders CItemBreakManager	RequestItemBreak
-send	0x5b	0x5c	RideConsumeEp	by-model	no sender found; shift +1	MountConsumeStamina
-send	0x5c	0x5d	RequestAdditionalEffect	confirmed	UIAdditionalControlDialog; send KMS 0x5c -> GMS 0x5d RequestAdditionalEffect (shift +1); senders UIAdditionalControlDialog	RequestAddEffect
-send	0x5d	0x5e	RecallUser	by-model	CNetworkService; shift +1	
-send	0x5e	0x5f	RequestItemEnchant	confirmed	FUN_1419028d0,UIItemEnchantDialog,UIItemEnchantSimulateDialog; send KMS 0x5e -> GMS 0x5f RequestItemEnchant (shift +1); senders UIItemEnchantDialog	
-send	0x5f	0x60	BlackMarket	confirmed	CBlackMarketMan; send KMS 0x5f -> GMS 0x60 BlackMarket (shift +1); senders CBlackMarketMan	
-send	0x60	0x61	Gamble	by-model	UITalkManager; shift +1	
-send	0x61	0x62	Pvp	confirmed	CGuildManager,CPVPManager,CPvpRankDuelComponent,UIGuildDialog,UIIndividualPvPDialog,UIPvPGuildTeamResultDialog,UIPvPRank; send KMS 0x61 -> GMS 0x62 PVP (shift +1); senders CPVPManager/UIIndividualPvPDialog	PVP
-send	0x62	0x63	Maid	confirmed	CUserMaidManager,UIMaidDialog; send KMS 0x62 -> GMS 0x63 Maid (shift +1); senders CUserMaidManager	
-send	0x63	0x64	NewsNotification	confirmed	CWebBrowserService; send KMS 0x63 -> GMS 0x64 NewsNotification (shift +1); senders CWebBrowserService	
-send	0x64	0x65	SmartRecommendBilling	confirmed	UISmartRecommendBillingDialog; send KMS 0x64 -> GMS 0x65 SmartRecommendBilling (shift +1); senders UISmartRecommendBillingDialog	
-send	0x65	0x66	SystemShop	by-model	CNetworkService,InvenSlot,UIItemGachaBoxDialog,UIMeratMarketDialog; shift +1	
-send	0x66	0x67	Attendance	by-model	CUserCommandCli,UIAttendGiftDialog,UICashAttendDialog,UIDTAttendPopup,WorldService; shift +1	DailyWonder
-send	0x67	0x68	PcBangBonus	confirmed	UIPcBangDialog,UIUpperHudDialog; send KMS 0x67 -> GMS 0x68 PcBangBonus (shift +1); senders UIPcBangDialog	PCCafeBonus
-send	0x68	0x69	MaidCraftItem	confirmed	CManufactureManager; send KMS 0x68 -> GMS 0x69 MaidCraftItem (shift +1); senders CManufactureManager	RequestManufacturer
-send	0x69	0x6a	RequestUserEnv	by-model	UIAchieveDialog,UIMyInfoDialog; shift +1	RequestUserEnvironment
-send	0x6a	0x6b	Cash	confirmed	CCashMarketMan; send KMS 0x6a -> GMS 0x6b Cash (shift +1); senders CCashMarketMan	
-send	0x6b	0x6c	Insignia	confirmed	MyPC,UINameTagSymbolSettingDialog; send KMS 0x6b -> GMS 0x6c Nametag (shift +1); senders UINameTagSymbolSettingDialog	Nametag
-send	0x6c	0x6d	RequestMoveField	confirmed	FUN_140dffdf0,MyPC,UIDarkStreamResultDialog,UIRevivalDialog,UISystemMenuDialog; send KMS 0x6c -> GMS 0x6d RequestMoveField (shift +1); senders MyPC (move field)	
-send	0x6d	0x6e	WaitingTicket	by-model	UIServerListDialog; shift +1	
-send	0x6e	0x6f	PartySearch	confirmed	CPartyManager; send KMS 0x6e -> GMS 0x6f MatchParty (shift +1); senders CPartyManager (match)	MatchParty
-send	0x6f	0x70	RecallScroll	by-model	UIMessageBox; shift +1	
-send	0x70	0x71	PotentialAbility	by-model	no sender found; shift +1	
-send	0x71	0x72	EnchantScroll	confirmed	EnchantScrollSlot,UIEnchantScrollDialog,UIMasteryDialog; send KMS 0x71 -> GMS 0x72 EnchantScroll (shift +1); senders UIEnchantScrollDialog	
-send	0x72	0x73	GlobalPortal	confirmed	UIGlobalPortalDialog; send KMS 0x72 -> GMS 0x73 GlobalPortal (shift +1); senders UIGlobalPortalDialog	
-send	0x73	0x74	Fishing	confirmed	CFishingManager; send KMS 0x73 -> GMS 0x74 Fishing (shift +1); senders CFishingManager	
-send	0x74	0x75	PlayInstrument	confirmed	CInstrumentManager,UIMusicConcertDialog; send KMS 0x74 -> GMS 0x75 PlayInstrument (shift +1); senders CInstrumentManager	
-send	0x75	0x76	ChangeAttributes	confirmed	PetRemakeOptionBoard,TabContentsPetRemakeOption,UIItemRemakeOptionDialog; send KMS 0x75 -> GMS 0x76 ChangeAttributes (shift +1); senders UIItemRemake*/PetRemakeOption	ChangeAttribute
-send	0x76	0x77	ChangeAttributesScroll	confirmed	UIItemRemakeScrollDialog; send KMS 0x76 -> GMS 0x77 ChangeAttributesScroll (shift +1); senders UIItemRemakeScrollDialog	ChangeAttributeScroll
-send	0x77	0x78	TransferEnchant	confirmed	UIItemEnchantTransformDialog; send KMS 0x77 -> GMS 0x78 TransferEnchant (shift +1); senders UIItemEnchantTransformDialog	ItemEnchantTransform
-send	0x78	0x79	RequestPet	confirmed	CPetManager,MyPC,PetInfoBasic,StateSummon,TabContentsPetCompose,TabContentsPetEvolution,UIItemAutoUseOptionDialog,UIItem; send KMS 0x78 -> GMS 0x79 RequestPet (shift +1); senders CPetManager/TabContentsPet*	
-send	0x79	0x7a	RequestPetInventory	confirmed	CPetInventory; send KMS 0x79 -> GMS 0x7a RequestPetInventory (shift +1); senders CPetInventory	
-send	0x7a	0x7b	NoticeDialog	confirmed	UILoginNotice; send KMS 0x7a -> GMS 0x7b NoticeDialog (shift +1); senders UILoginNotice	
-send	0x7b	0x7c	SkillMacro	confirmed	UISkillCompactControlDialog; send KMS 0x7b -> GMS 0x7c SkillMacro (shift +1); senders UISkillCompactControlDialog	Macro
-send	0x7c	0x7d	Banword	by-model	no sender found; shift +1	BanWord
-send	0x7d	0x7e	CheckCharName	by-model	UIMessageBox; shift +1	
-send	0x7e	0x7f	PlatformProtectPacket	by-model	no sender found; shift +1	
-send	0x7f	0x80	PlatformAccountSafe	by-model	no sender found; shift +1	
-send	0x80	0x81	State	by-model	MyPC; shift +1	
-send	0x81	0x82	MesoMarket	confirmed	BlackMarketPageMesoRegister,BlackMarketPageMesoSearch,CMesoMarketMan; send KMS 0x81 -> GMS 0x82 MesoMarket (shift +1); senders CMesoMarketMan/BlackMarketPageMeso*	
-send	0x82	0x83	GlobalFactor	by-model	CSceneStateGame; shift +1	
-send	0x83	0x84	SmartPush	confirmed	CSmartPush,CSmartPushSafeWaterRidingToggle,StateAutoInteraction; send KMS 0x83 -> GMS 0x84 SmartPush (shift +1); senders CSmartPush*	
-send	0x84	0x85	PlayArcade	confirmed	UIArcadeMainDialog,UIMicroGameCoupleDance; send KMS 0x84 -> GMS 0x85 PlayArcade (shift +1); senders UIArcadeMainDialog	
-send	0x85	0x86	EnterEventField	confirmed	UIEnterEventFieldDialog; send KMS 0x85 -> GMS 0x86 EnterEventfield (shift +1); senders UIEnterEventFieldDialog	EnterEventfield
-send	0x86	0x87	CardReverseGame	confirmed	UICardReverseGameDialog; send KMS 0x86 -> GMS 0x87 CardReverseGame (shift +1); senders UICardReverseGameDialog	
-send	0x87	0x88	RequestItemLock	confirmed	CItemLockManager; send KMS 0x87 -> GMS 0x88 RequestItemLock (shift +1); senders CItemLockManager	
-send	0x88	0x89	ItemSocketSystem	confirmed	FUN_14062abb0,ItemSocketSystemPageGemStoneManage,ItemSocketSystemPageGemStoneUpgrade,ItemSocketSystemPageGemstoneSwap,It; send KMS 0x88 -> GMS 0x89 ItemSocketSystem (shift +1); senders ItemSocketSystemPage*	
-send	0x89	0x8a	CharacterAbility	confirmed	CUserCommandCli,UICharacterAbilityDialog; send KMS 0x89 -> GMS 0x8a CharacterAbility (shift +1); senders UICharacterAbilityDialog	CharAbility
-send	0x8a	0x8b	Tutorial	confirmed	CGuideActionClearTutorial; send KMS 0x8a -> GMS 0x8b Tutorial (shift +1); senders CGuideActionClearTutorial	
-send	0x8b	0x8c	ItemSocketScroll	confirmed	UIItemSocketScrollDialog; send KMS 0x8b -> GMS 0x8c ItemSocketScroll (shift +1); senders UIItemSocketScrollDialog	
-send	0x8c	0x8d	ItemRepack	confirmed	UIItemRePackingScrollDialog; send KMS 0x8c -> GMS 0x8d ItemRepack (shift +1); senders UIItemRePackingScrollDialog	ItemRepackage
-send	0x8d	0x8e	Mapleopoly	confirmed	UIBlueMarbleGameDialog; send KMS 0x8d -> GMS 0x8e DiceGame (shift +1); senders UIBlueMarbleGameDialog	DiceGame
-send	0x8e	0x8f	PremiumClub	confirmed	UIVIPDialog,UIVIPGoodsShopDialog; send KMS 0x8e -> GMS 0x8f PremiumClub (shift +1); senders UIVIPDialog/UIVIPGoodsShopDialog	
-send	0x8f	0x90		by-model	UIItemCreateDialog; shift +1	
-send	0x90	0x91	HomeAction	by-model	CUGCBallObject,FUN_140dfee10,FUN_140dfeeb0,FUN_140dff210,FUN_140dff2b0,FUN_140dff580,FUN_140dffad0,FUN_140dffdf0,FUN_140; shift +1	HomeGame
-send	0x92	0x93	Mastery	confirmed	UIMasteryDialog; send KMS 0x92 -> GMS 0x93 Mastery (shift +1); senders UIMasteryDialog	ConstructRecipe
-send	0x93	0x94	ConstructShop	by-model	no sender found; shift +1	
-send	0x95	0x96	Club	confirmed	CClubCli,CClubClientManager; send KMS 0x95 -> GMS 0x96 Club (shift +1); senders CClubCli/CClubClientManager	
-send	0x96	0x97	NexonArena	by-model	no sender found; shift +1	MeretPurchase
-send	0x97	0x98	EventReward	confirmed	GameEventLongTermAttendGiftCli,UIBingoEventDialog,UIBurningEventWidgetDialog,UICharacterListDialog,UICollectItemGroupEve; send KMS 0x97 -> GMS 0x98 EventReward (shift +1); senders event dialogs (bingo/attend)	
-send	0x98	0x99	NameChange	by-model	UIInventoryDialog; shift +1	
-send	0x99	0x9a	AttributePoint	confirmed	CStatPointManager; send KMS 0x99 -> GMS 0x9a AttributePoint (shift +1); senders CStatPointManager	StatPoint
-send	0x9a	0x9b	ItemRepeat	by-model	UIItemCreateDialog; shift +1	
-send	0x9b	0x9c	ItemExchangeScroll	confirmed	ItemExchangeSlot,UIItemExchangeScrollDialog; send KMS 0x9b -> GMS 0x9c ItemExchangeScroll (shift +1); senders UIItemExchangeScrollDialog	ItemExchange
-send	0x9c	0x9d	RequestTutorialItem	confirmed	CGuideActionRequestTutorialItem; send KMS 0x9c -> GMS 0x9d RequestTutorialItem (shift +1); senders CGuideActionRequestTutorialItem	
-send	0x9d	0x9e	DungeonReward	confirmed	UIDungeonRewardDialog,UIPartyDialog; send KMS 0x9d -> GMS 0x9e DungeonReward (shift +1); senders UIDungeonRewardDialog	
-send	0x9e	0x9f	ItemBillboard	confirmed	UIItemBillBoardDialog,UIMessenger; send KMS 0x9e -> GMS 0x9f ItemBillboard (shift +1); senders UIItemBillBoardDialog	PlayerHost
-send	0x9f	0xa0	TreasureMap	confirmed	UIItemTreasureMapDialog; send KMS 0x9f -> GMS 0xa0 TreasureMap (shift +1); senders UIItemTreasureMapDialog	
-send	0xa0	0xa1	ItemExtractionScroll	confirmed	UIItemExtractionScrollDialog; send KMS 0xa0 -> GMS 0xa1 ItemExtractionScroll (shift +1); senders UIItemExtractionScrollDialog	ItemExtraction
-send	0xa1	0xa2	Mentor	confirmed	ASMentoringRewardPage,UIGameMenuDialog,UIInviteMentoringDialog,UIMentoringMenteeRegisterPage,UIMentoringMentorRegisterPa; send KMS 0xa1 -> GMS 0xa2 Mentor (shift +1); senders UIInviteMentoringDialog	
-send	0xa2	0xa3	RequestSkillBookTree	confirmed	UISkillBookTreeDialog; send KMS 0xa2 -> GMS 0xa3 RequestSkillBookTree (shift +1); senders UISkillBookTreeDialog	
-send	0xa3	0xa4	BuddyEmote	confirmed	CNetworkService,RequestCoupleEmotion,StateCoupleEmotion,StateSkill,UIMessageBox; send KMS 0xa3 -> GMS 0xa4 BuddyEmote (shift +1); senders StateCoupleEmotion	
-send	0xa4	0xa5	BuddyBadge	confirmed	CoupleEffectSystem; send KMS 0xa4 -> GMS 0xa5 BuddyBadge (shift +1); senders CoupleEffectSystem	
-send	0xa5	0xa6	SyncWorld	by-model	WorldService; shift +1	
-send	0xa6	0xa7	BirthdayCard	confirmed	UIBirthdayCardDialog; send KMS 0xa6 -> GMS 0xa7 BirthdayCard (shift +1); senders UIBirthdayCardDialog	
-send	0xa7	0xa8	SuperWorldChat	confirmed	CUserCommandCli,SuperWorldChat,UISelectSuperWorldChatDialog; send KMS 0xa7 -> GMS 0xa8 SuperWorldChat (shift +1); senders UISelectSuperWorldChatDialog	
-send	0xa8	0xa9	Microgame	confirmed	FUN_140b73d60,FUN_140b751b0,FUN_140bac700,FUN_140bacda0,UIBannerEventListenerCoupleDance,UIBannerEventListenerRpsGame,UI; send KMS 0xa8 -> GMS 0xa9 Microgame (shift +1); senders UICoupleDanceEventDialog	RockPaperScissors
-send	0xa9	0xaa	StateReact	confirmed	CReactor; +1: CReactor state react	
-send	0xaa	0xab	TreeWatering	confirmed	StateTreeWatering; edge +1: StateTreeWatering byte 0/1	
-send	0xab	0xad	SpectateMushtopia	confirmed	StateObserver; edge +2: StateObserver (spectate); kms2 branch has Survival here (one behind: exe sender is semantic)	
-send	0xac	0xae	Prestige	confirmed	UIAdventureLevelDialog,UIAdventureLevelOldDialog; send KMS 0xac -> GMS 0xae Prestige (shift +2); senders UIAdventureLevelDialog; kms2 branch has SpectateMushtopia here (one behind: exe sender is semantic)	
-send	0xad	0xaf	Lapenshard	confirmed	LapenshardSlot,UILapenshardEquipTab,UILapenshardUpgradeTab; send KMS 0xad -> GMS 0xaf Lapenshard (shift +2); senders UILapenshard*; kms2 branch has Prestige here (one behind: exe sender is semantic)	ItemLapenshard
-send	0xae	0xb0	Ugd	by-model	UIGameMakerMainDialog; shift +2; kms2 branch has Lapenshard here (one behind: exe sender is semantic)	UGD
-send	0xaf	0xb1	WorldChampion	confirmed	UIWorldChampionRewardDialog; send KMS 0xaf -> GMS 0xb1 WorldChampion (shift +2); senders UIWorldChampionRewardDialog; kms2 branch has Ugd here (one behind: exe sender is semantic)	
-send	0xb0	0xb2	ServerEnter	by-model	CNetworkService; shift +2; kms2 branch has WorldChampion here (one behind: exe sender is semantic)	ResponseServerEnter
-send	0xb1	0xb3	MinimapPing	confirmed	UIMinimapDialog; send KMS 0xb1 -> GMS 0xb3 MinimapPing (shift +2); senders UIMinimapDialog; kms2 branch has ServerEnter here (one behind: exe sender is semantic)	
-send	0xb3	0xb5	MsgBox	by-model	no sender found; shift +2	
-send	0xb4	0xb6	Wardrobe	confirmed	UIClosetDialog; send KMS 0xb4 -> GMS 0xb6 Wardrobe (shift +2); senders UIClosetDialog; kms2 branch has MsgBox here (one behind: exe sender is semantic)	
-send	0xb5	0xb7	SystemInfo	by-model	CNetworkService; shift +2; kms2 branch has Wardrobe here (one behind: exe sender is semantic)	
-send	0xb6	0xb8	SidePopup	confirmed	UISidePopupTalk; send KMS 0xb6 -> GMS 0xb8 SidePopup (shift +2); senders UISidePopupTalk; kms2 branch has SystemInfo here (one behind: exe sender is semantic)	FieldWar
-send	0xb7	0xb9	ChatSticker	confirmed	CChatEmoticonCli,UIGroupMessenger,UIMessenger; send KMS 0xb7 -> GMS 0xb9 Messenger (shift +2); senders UIMessenger/UIGroupMessenger; kms2 branch has SidePopup here (one behind: exe sender is semantic)	Messenger
-send	0xb8	0xba	WebScreenshot	confirmed	CImageHttpClient; send KMS 0xb8 -> GMS 0xba WebScreenshot (shift +2); senders CImageHttpClient; kms2 branch has ChatSticker here (one behind: exe sender is semantic)	
-send	0xb9	0xbb	FileHash	by-model	no sender found; shift +2; kms2 branch has WebScreenshot here (one behind: exe sender is semantic)	
-send	0xba	0xbc	Wedding	confirmed	UIWeddingDialog,UIWeddingGuestPageStranger,UIWeddingInvitationDialog,UIWeddingPageMessage,UIWeddingPageSkill,WeddingMana; send KMS 0xba -> GMS 0xbc Wedding (shift +2); senders WeddingManager; kms2 branch has FileHash here (one behind: exe sender is semantic)	Marriage
-send	0xbb	0xbd	WeddingBillboard	confirmed	UIWeddingBillboardDialog; send KMS 0xbb -> GMS 0xbd WeddingBillboard (shift +2); senders UIWeddingBillboardDialog; kms2 branch has Wedding here (one behind: exe sender is semantic)	
-send	0xbc	0xbe	LimitBreak	confirmed	UIUnlimitedEnchantDialog; send KMS 0xbc -> GMS 0xbe LimitBreak (shift +2); senders UIUnlimitedEnchantDialog; kms2 branch has WeddingBillboard here (one behind: exe sender is semantic)	
-send	0xbe	0xc0		by-model	UICharacterListDialog; shift +2	
-send	0xbf	0xc1		by-model	UICharacterListDialog; shift +2	
-send	0xc0	0xc2		by-model	CPersonalInfoAgreement; shift +2	
-send	0xc1	0xc3		by-model	HomeBlockManager; shift +2	
+#dir	kms2	gms2	name	status	evidence	aliases	capture_evidence
+recv	0x0	0x0	Null	by-model	no dispatcher case; maple2; shift +0	NULL	none: 0 packets; no full-layout confirmation
+recv	0x1	0x1	RequestVersion	by-model	net:FUN_14153ad10; user; shift +0		none: 610 packets; no full-layout confirmation
+recv	0x2	0x2	VersionResult	by-model	net:FUN_14153af70; user; shift +0		none: 1 packets; no full-layout confirmation
+recv	0x3	0x3	DataPatch	confirmed	net:FUN_14153af40; user; "./DataPatch/" handling in CNetworkService	ResponseLogin	none: 0 packets; no full-layout confirmation
+recv	0x4	0x4	RequestKey	by-model	net:FUN_14153b010; user; shift +0		none: 599 packets; no full-layout confirmation
+recv	0x5	0x5	Reconnect	by-model	net:FUN_14153b1c0; user; shift +0		none: 1472 packets; no full-layout confirmation
+recv	0x6	0x6	Ping	by-model	net:FUN_14153b220; user; shift +0		none: 13578 packets; no full-layout confirmation
+recv	0x7	0x7	ReconnectUnk	by-model	net:FUN_14153b2d0; user; shift +0		none: 0 packets; no full-layout confirmation
+recv	0x8	0x8	FinalizeReconnect	by-model	net:FUN_14153b310; user; shift +0		none: 0 packets; no full-layout confirmation
+recv	0x9	0x9	RequestLogin	by-model	game:FUN_14170dc90; user; shift +0		none: 10 packets; no full-layout confirmation
+recv	0xa	0xa	LoginResult	confirmed	net:FUN_14153c670; user; shift 0; layout 10		none: 4 packets; no full-layout confirmation
+recv	0xb	0xb	ServerList	by-model	login:inline; user; shift +0		none: 6 packets; no full-layout confirmation
+recv	0xc	0xc	CharacterList	by-model	game:FUN_141731b20; user; shift +0	CharList	none: 48 packets; no full-layout confirmation
+recv	0xd	0xd	MoveResult	by-model	net:FUN_14153b440; user; shift +0		none: 603 packets; no full-layout confirmation
+recv	0xe	0xe	LoginToGame	by-model	net:FUN_14153b570; user; shift +0		none: 6 packets; no full-layout confirmation
+recv	0xf	0xf	GameToLogin	by-model	net:FUN_14153bc00; user; shift +0		none: 7 packets; no full-layout confirmation
+recv	0x10	0x10	GameToGame	by-model	net:FUN_14153be30; user; shift +0		none: 301 packets; no full-layout confirmation
+recv	0x11	0x11	ResponseTimeSync	by-model	net:FUN_14153a380; user; shift +0		none: 123536 packets; no full-layout confirmation
+recv	0x12	0x12	RequestHeartbeat	by-model	net:FUN_14153a2e0; user; shift +0	RequestHeartBeat	none: 4 packets; no full-layout confirmation
+recv	0x13	0x13	RequestClientTickSync	by-model	net:FUN_14153a780; user; shift +0		none: 682 packets; no full-layout confirmation
+recv	0x14	0x14	SyncNumber	by-model	net:FUN_14153a820; user; shift +0		none: 1414 packets; no full-layout confirmation
+recv	0x15	0x15	ServerEnter	confirmed	game:FUN_14170dd60; user; shift 0; layout 3; client_arch, channel dialog		none: 599 packets; no full-layout confirmation
+recv	0x16	0x16	RequestFieldEnter	by-model	game:FUN_14170f930; user; shift 0		layout-fit: 812 packets meet compact prefix; full branch layout not verified
+recv	0x17	0x17	FieldAddUser	by-model	game:OnAddUser; user; shift +0	FieldAddPlayer	none: 1400 packets; no full-layout confirmation
+recv	0x18	0x18	FieldRemoveUser	by-model	game:FUN_141711dc0; user; shift 0	FieldRemovePlayer	layout-fit: 328 packets meet compact prefix; full branch layout not verified
+recv	0x19	0x19	FieldEntrance	by-model	game:FUN_14170fc70; user; shift 0	DungeonList	layout-fit: 1247 packets meet compact prefix; full branch layout not verified
+recv	0x1a	0x1a	RoomDungeon	by-model	game:FUN_141737360; user; shift 0	DungeonRoom	layout-fit: 1254 packets meet compact prefix; full branch layout not verified
+recv	0x1b	0x1b	DungeonReward	by-model	no dispatcher case; user; shift +0	Results	none: 28 packets; no full-layout confirmation
+recv	0x1c	0x1c	UserSync	confirmed	game:FUN_141712690; user; shift 0; layout 2		none: 369625 packets; no full-layout confirmation
+recv	0x1d	0x1d	UserChat	by-model	no dispatcher case; user; shift +0		none: 1502 packets; no full-layout confirmation
+recv	0x1e	0x1e	MessengerBrowser	by-model	no dispatcher case; user; shift +0	UserChatItemLink	none: 362 packets; no full-layout confirmation
+recv	0x1f	0x1f	Emote	by-model	game:FUN_141712a90; user; shift 0	Emotion	layout-fit: 812 packets meet compact prefix; full branch layout not verified
+recv	0x20	0x20	ItemPutOnOrOff	confirmed	game:FUN_141712fb0; user; shift 0; modes 3/3		none: 0 packets; no full-layout confirmation
+recv	0x21	0x21	ItemInventory	confirmed	game:FUN_141713fb0; user; shift 0; s_item_err_*, item decode		none: 35207 packets; no full-layout confirmation
+recv	0x22	0x22	StorageInventory	confirmed	game:FUN_140de3480; user; shift 0; CStore		none: 90 packets; no full-layout confirmation
+recv	0x23	0x23	FurnishingStorage	by-model	game:FUN_141715bd0; user; shift 0; item decode	WarehouseInventory	layout-fit: 47323 packets meet compact prefix; full branch layout not verified
+recv	0x24	0x24	FurnishingInventory	confirmed	game:FUN_141716200; user; shift 0; CUgcItem (furnishing = ugc items)		none: 265210 packets; no full-layout confirmation
+recv	0x25	0x25	ItemPutOn	confirmed	game:FUN_141716680; user; shift 0; s_msg_item_auto_*		none: 279 packets; no full-layout confirmation
+recv	0x26	0x26	ItemPutOff	confirmed	game:FUN_141716b60; user; shift 0; layout 2		none: 261 packets; no full-layout confirmation
+recv	0x27	0x27	ItemSkinPutOn	by-model	game:FUN_141716d10; user; shift 0; item decode		none: 0 packets; no full-layout confirmation
+recv	0x28	0x28	ItemSkinPutOff	confirmed	game:FUN_141717000; user; shift 0; layout 2		none: 0 packets; no full-layout confirmation
+recv	0x29	0x29	ItemDrop	by-model	game:FUN_141717560; user; shift 0		none: 0 packets; no full-layout confirmation
+recv	0x2a	0x2a	ItemUpdate	confirmed	game:FUN_141717140; user; shift 0; CEquipItem	ItemExtraData	none: 1 packets; no full-layout confirmation
+recv	0x2b	0x2b	FieldAddItem	confirmed	game:FUN_141711e70; user; shift 0; position fff + item decode		none: 5767 packets; no full-layout confirmation
+recv	0x2c	0x2c	FieldRemoveItem	confirmed	game:FUN_141712340; user; edge 0: drop removal (object id)		none: 5600 packets; no full-layout confirmation
+recv	0x2d	0x2d	FieldPickupItem	confirmed	game:FUN_141712420; user; edge 0: bPicked, objId, owner, meso/EP pickup		none: 4820 packets; no full-layout confirmation
+recv	0x2e	0x2f	Stat	confirmed	game:FUN_1417176b0; user; edge +1: 35 stat types x3 (HP/SP/EP)		none: 228353 packets; no full-layout confirmation
+recv	0x2f	0x30	UserBattle	confirmed	game:FUN_141717580; user; edge +1: actor id + battle flag		none: 2524 packets; no full-layout confirmation
+recv	0x30	0x31	UserSkinColor	confirmed	game:FUN_141717340; user; edge +1: actor id + 2 skin colors		none: 0 packets; no full-layout confirmation
+recv	0x31	0x32	Beauty	by-model	no dispatcher case; user; shift +1		none: 1 packets; no full-layout confirmation
+recv	0x32	0x33	AdventurerBar	by-model	game:FUN_14171a6c0; user; shift 1		layout-fit: 2 packets meet compact prefix; full branch layout not verified
+recv	0x33	0x34	RevivalConfirm	confirmed	game:FUN_14171a730; user; shift 1; layout 3		none: 1142 packets; no full-layout confirmation
+recv	0x34	0x35	Revival	confirmed	game:FUN_14171a900; user; shift 1; layout 2		none: 125 packets; no full-layout confirmation
+recv	0x35	0x36	RevivalCount	by-model	game:FUN_14171aa90; user; shift 1		layout-fit: 816 packets meet compact prefix; full branch layout not verified
+recv	0x36	0x37	UserState	confirmed	game:FUN_141721940; user; shift 1; layout 2		none: 953 packets; no full-layout confirmation
+recv	0x37	0x38	ExpUp	by-model	game:FUN_14171ab00; user; shift 1		payload-confirmed: 5,792 packets; 3,386 mode 0 x32 B + 2,405 mode 1 x9 B; one other shape unresolved
+recv	0x38	0x39	LevelUp	confirmed	game:FUN_14171aec0; user; shift 1; s_msg_skillbook_add_skillpoint		none: 72 packets; no full-layout confirmation
+recv	0x39	0x3a	Meso	confirmed	game:FUN_14171b630; user; shift 1; layout 2		none: 2805 packets; no full-layout confirmation
+recv	0x3a	0x3b	Meret	confirmed	game:FUN_14171b750; user; shift 1; layout 5; Merat_Get/Merat_Use		none: 12 packets; no full-layout confirmation
+recv	0x3b	0x3c	CurrencyToken	confirmed	game:FUN_14171bd90; user; shift 1; modes 9/9	MesoToken	none: 9 packets; no full-layout confirmation
+recv	0x3c	0x3d	SkillUse	confirmed	game:FUN_141717b40; user; shift 1; layout 15		none: 28789 packets; no full-layout confirmation
+recv	0x3d	0x3e	SkillDamage	confirmed	game:FUN_14171c0b0; user; shift 1; modes 8/8		none: 125282 packets; no full-layout confirmation
+recv	0x3e	0x3f	SkillSync	by-model	game:FUN_141718150; user; shift 1		layout-fit: 432 packets meet compact prefix; full branch layout not verified
+recv	0x3f	0x40	SkillCancel	confirmed	game:FUN_141718680; user; shift 1; layout 2		none: 1731 packets; no full-layout confirmation
+recv	0x40	0x41	SkillUseFailed	confirmed	game:FUN_1417187b0; user; shift 1; layout 4; log OnSkillUseFailed		none: 70 packets; no full-layout confirmation
+recv	0x41	0x42	StateSkill	by-model	game:FUN_141718b80; user; shift 1		layout-fit: 1312 packets meet compact prefix; full branch layout not verified
+recv	0x42	0x43	SkillCooldown	by-model	game:FUN_14172f030; user; shift 1		layout-fit: 167 packets meet compact prefix; full branch layout not verified
+recv	0x43	0x44	SkillResetCooldown	by-model	game:FUN_14172f1c0; user; shift 1		none: 0 packets; no full-layout confirmation
+recv	0x44	0x45	SkillPoint	by-model	game:FUN_14172f210; user; shift 1		layout-fit: 1264 packets meet compact prefix; full branch layout not verified
+recv	0x45	0x46	AttributePoint	by-model	game:FUN_14172f480; user; shift 1	StatPoint	layout-fit: 3811 packets meet compact prefix; full branch layout not verified
+recv	0x46	0x47	CharacterCreate	by-model	no dispatcher case; user; shift +1	CharCreate	none: 2 packets; no full-layout confirmation
+recv	0x47	0x48	Buff	confirmed	game:FUN_141720480; user; shift 1; layout 2		none: 81194 packets; no full-layout confirmation
+recv	0x48	0x49	FieldPortal	confirmed	game:FUN_14171ee80; user; shift 1; layout 2		none: 5977 packets; no full-layout confirmation
+recv	0x49	0x4a	Job	confirmed	game:FUN_14171f8a0; user; shift 1; layout 2		none: 219 packets; no full-layout confirmation
+recv	0x4a	0x4b	NpcMonologue	by-model	no dispatcher case; user; shift +1		none: 0 packets; no full-layout confirmation
+recv	0x4b	0x4c	NpcTalk	by-model	game:FUN_141719a30; user; shift 1		layout-fit: 3635 packets meet compact prefix; full branch layout not verified
+recv	0x4c	0x4d	RegionSkill	confirmed	game:FUN_141720e50; user; shift 1; layout 2		none: 22561 packets; no full-layout confirmation
+recv	0x4d	0x4e	FunctionCube	by-model	game:FUN_1417212a0; user; shift 1		layout-fit: 2607 packets meet compact prefix; full branch layout not verified
+recv	0x4e	0x4f	Trigger	by-model	game:FUN_141721270; user; shift 1		layout-fit: 20669 packets meet compact prefix; full branch layout not verified
+recv	0x4f	0x50	Breakable	by-model	game:FUN_1417212d0; user; shift 1		layout-fit: 1797 packets meet compact prefix; full branch layout not verified
+recv	0x50	0x51	RoomTimer	by-model	game:FUN_140ee0d10; user; shift +1	Room	none: 13 packets; no full-layout confirmation
+recv	0x51	0x52	Shop	by-model	no dispatcher case; user; shift +1		none: 841 packets; no full-layout confirmation
+recv	0x52	0x53	Quest	confirmed	net:FUN_1416cbd90; user; shift 1; CQuestManager, s_quest_alliance_*		none: 7587 packets; no full-layout confirmation
+recv	0x53	0x54	Party	confirmed	net:FUN_14162a4b0; user; shift 1; CPartyManager; modes 29/32		none: 1848 packets; no full-layout confirmation
+recv	0x54	0x55	Mail	by-model	game:FUN_141721cd0; user; shift 1		layout-fit: 725 packets meet compact prefix; full branch layout not verified
+recv	0x55	0x56	FieldAddNpc	confirmed	game:FUN_141718cf0; user; shift 1; CNpcData/CNpc	FieldAddNPC	none: 22340 packets; no full-layout confirmation
+recv	0x56	0x57	FieldRemoveNpc	confirmed	game:FUN_1417195f0; user; +1: NotifyRemoveNpc	FieldRemoveNPC	none: 14305 packets; no full-layout confirmation
+recv	0x57	0x58	FieldDeadNpc	confirmed	game:FUN_1417197c0; user; +1: npc dead vfunc	FieldDeadNPC	none: 0 packets; no full-layout confirmation
+recv	0x58	0x59	NpcControl	confirmed	game:FUN_141719840; user; +1: ushort count + per-npc ushort-sized buffer		none: 1257184 packets; no full-layout confirmation
+recv	0x59	0x5a	InteractNpc	confirmed	game:FUN_141719990; user; shift 1; layout 2	InteractNPC	none: 193 packets; no full-layout confirmation
+recv	0x5a	0x5b	FieldAddPet	confirmed	game:FUN_141719a60; user; shift 1; layout 11; CPet		none: 676 packets; no full-layout confirmation
+recv	0x5b	0x5c	FieldRemovePet	confirmed	game:FUN_14171a2e0; user; +1: CPet removal		none: 286 packets; no full-layout confirmation
+recv	0x5c	0x5d	SyncPetTamingPoint	confirmed	game:FUN_14171a5f0; user; +1: CPet id, int, int (taming point)		none: 199 packets; no full-layout confirmation
+recv	0x5d	0x5e	Tombstone	confirmed	game:FUN_1417215a0; user; +1: tombstone		none: 188 packets; no full-layout confirmation
+recv	0x5e	0x5f	Achieve	confirmed	net:FUN_140936a50; user; shift 1; CAchieveManager	Trophy	none: 40648 packets; no full-layout confirmation
+recv	0x5f	0x60	UserMoveByPortal	confirmed	game:FUN_141721a30; user; edge +1: id, pos, rot, flag; MyPC teleport		none: 293 packets; no full-layout confirmation
+recv	0x60	0x62	MassiveEvent	confirmed	game:FUN_141722f70; user; edge +2: dialog 0x4e4c UIMassiveEvent	MassEvent	none: 320 packets; no full-layout confirmation
+recv	0x61	0x63	Buddy	by-model	game:FUN_141721c50; user; shift +2		none: 2563 packets; no full-layout confirmation
+recv	0x62	0x64	AdminBlock	by-model	game:FUN_141721c90; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x63	0x65	InteractObject	confirmed	game:FUN_14172d0f0; user; shift 2; MS2InteractActor/MS2InteractMesh		none: 3953 packets; no full-layout confirmation
+recv	0x64	0x66	StateConsumeEp	by-model	game:FUN_141722fb0; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0x65	0x67	StateFallDamage	confirmed	game:FUN_141723050; user; shift 2; layout 2	StateFallDmg	none: 19 packets; no full-layout confirmation
+recv	0x66	0x68	Cinematic	confirmed	game:FUN_141723260; user; shift 2; modes 12/12; UICutSceneCinematic		none: 3217 packets; no full-layout confirmation
+recv	0x67	0x69	Admin	by-model	game:FUN_1417232a0; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0x68	0x6a	SetCraftMode	confirmed	game:FUN_141723410; user; shift 2; layout 2	SetBuildMode	none: 267 packets; no full-layout confirmation
+recv	0x69	0x6b	ResponseCube	confirmed	game:FUN_141723670; user; shift 2; modes 54/54		none: 7914 packets; no full-layout confirmation
+recv	0x6a	0x6c	LoadCubes	confirmed	game:FUN_141728110; user; shift 2; modes 4/4	Cubes	none: 2726 packets; no full-layout confirmation
+recv	0x6b	0x6d	Ugc	confirmed	net:FUN_1418897f0; user; shift 2; CUgcManager	UGC	none: 2049 packets; no full-layout confirmation
+recv	0x6c	0x6e	MeretMarket	confirmed	net:FUN_140d53fb0; user; shift 2; CMeratMarketMan		none: 2688 packets; no full-layout confirmation
+recv	0x6d	0x6f	Gvg	confirmed	net:FUN_14153a8f0; user; shift 2; GVGroupType	ContentShutdown	none: 1202 packets; no full-layout confirmation
+recv	0x6e	0x70	GuideObject	by-model	game:FUN_14172c170; user; shift 2		layout-fit: 281 packets; modes 0/1/2 match full handler branches (39/47 B, 13 B, 33 B); four other modes unresolved
+recv	0x6f	0x71	KeyTable	confirmed	net:FUN_141428bb0; user; shift 2; CKeyTable, DefaultKey.xml		none: 789 packets; no full-layout confirmation
+recv	0x70	0x72	FollowNpc	by-model	game:FUN_141723330; user; shift 2	FollowNPC	layout-fit: 73 packets meet compact prefix; full branch layout not verified
+recv	0x71	0x73	Notice	by-model	game:FUN_141728c20; user; shift 2		layout-fit: 320 packets meet compact prefix; full branch layout not verified
+recv	0x72	0x74	RelocateWorld	by-model	net:FUN_14153c0c0; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0x73	0x75	Liftable	confirmed	game:FUN_141729250; user; shift 2; modes 4/4		none: 952 packets; no full-layout confirmation
+recv	0x74	0x76	ItemMerge	confirmed	game:FUN_141729ce0; user; shift 2; UIItemMergeOptionDialog/UIItemMergeRevertDialog	ItemFusion	none: 18 packets; no full-layout confirmation
+recv	0x75	0x77	Vibrate	by-model	game:FUN_14172a1c0; user; shift 2		layout-fit: 40410 packets meet compact prefix; full branch layout not verified
+recv	0x76	0x78	HideVibrate	by-model	game:FUN_14172a7b0; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0x77	0x79	ShowVibrate	by-model	game:FUN_14172a850; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0x78	0x7a	CharacterInfo	by-model	no dispatcher case; user; shift +2	CharInfo	none: 9 packets; no full-layout confirmation
+recv	0x79	0x7b	ResponseRide	confirmed	game:FUN_14172a8f0; user; shift 2; modes 4/6; rideonaction		none: 499 packets; no full-layout confirmation
+recv	0x7a	0x7c	RideSync	confirmed	game:FUN_141712710; user; shift 2; layout 2		none: 112326 packets; no full-layout confirmation
+recv	0x7b	0x7d	FittingDoll	by-model	game:FUN_14172b350; user; shift 2		layout-fit: 189 packets meet compact prefix; full branch layout not verified
+recv	0x7c	0x7e	BonusGame	by-model	no dispatcher case; user; shift +2	RouletteGame	none: 3 packets; no full-layout confirmation
+recv	0x7d	0x7f	LoadUgcMap	confirmed	game:FUN_14170e800; user; shift 2; layout 3	LoadUGCMap	none: 811 packets; no full-layout confirmation
+recv	0x7e	0x80	ProxyGameObj	by-model	game:FUN_14172f500; user; shift 2	FieldObject	layout-fit: 116638 packets meet compact prefix; full branch layout not verified
+recv	0x7f	0x81	BadgeEquip	by-model	game:FUN_141730920; user; shift 2	Gem	layout-fit: 21 packets meet compact prefix; full branch layout not verified
+recv	0x80	0x82	Taxi	by-model	game:FUN_141731470; user; shift 2		layout-fit: 52 packets meet compact prefix; full branch layout not verified
+recv	0x81	0x83	FindFields	by-model	game:FUN_141731610; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0x82	0x84	Trade	confirmed	net:FUN_14185bd20; user; shift 2; modes 13/13; CTradeManagerEx		none: 100 packets; no full-layout confirmation
+recv	0x83	0x85	InvincibleEffect	by-model	game:FUN_1417316d0; user; shift 2		layout-fit: 1 packets meet compact prefix; full branch layout not verified
+recv	0x84	0x86	Worldmap	by-model	no dispatcher case; user; shift +2	WorldMap	none: 73 packets; no full-layout confirmation
+recv	0x85	0x87	MoveEventField	by-model	no dispatcher case; user; shift +2	MoveEventfield	none: 0 packets; no full-layout confirmation
+recv	0x86	0x88	DpsStat	by-model	game:FUN_141731730; user; shift 2	DPSStat	none: 0 packets; no full-layout confirmation
+recv	0x87	0x89	DebugMode	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x88	0x8a	StoryBook	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x89	0x8b	GuideRecord	by-model	game:FUN_141731160; user; shift 2		layout-fit: 600 packets meet compact prefix; full branch layout not verified
+recv	0x8a	0x8c	Guild	by-model	net:FUN_1413b6370; user; shift 2		payload-confirmed: 2,160 packets; guild handler layout fits; all guild-named captures have hits
+recv	0x8b	0x8d	GroupChat	confirmed	net:FUN_14137f2f0; user; shift 2; modes 13/13; CGroupChatManager		none: 5 packets; no full-layout confirmation
+recv	0x8c	0x8e	RecallUser	by-model	game:FUN_141731c10; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0x8d	0x8f	Rank	confirmed	net:FUN_140769780; user; shift 2; CRankViewer		none: 0 packets; no full-layout confirmation
+recv	0x8e	0x90	AppendMessageCommon	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x8f	0x91	AppendMessageString	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x90	0x92	AppendMessageKillBoss	by-model	no dispatcher case; user; shift +2		none: 106 packets; no full-layout confirmation
+recv	0x91	0x93	AppendClientLog	by-model	game:FUN_14173def0; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0x92	0x94	AppendMessageAssistBonus	by-model	no dispatcher case; user; shift +2		none: 1 packets; no full-layout confirmation
+recv	0x93	0x95	Ah	by-model	net:FUN_140d86260; user; shift +2	AntiHack,AH	none: 3669 packets; no full-layout confirmation
+recv	0x94	0x96	UiText	by-model	game:FUN_141731190; user; shift 2	UIText	layout-fit: 1246 packets meet compact prefix; full branch layout not verified
+recv	0x95	0x97	PlayNpcSound	by-model	game:FUN_141731350; user; shift 2	PlayNPCSound	layout-fit: 5 packets meet compact prefix; full branch layout not verified
+recv	0x96	0x98	ItemDismantle	by-model	game:FUN_141731ac0; user; shift 2	ItemBreak	none: 162 packets; no full-layout confirmation
+recv	0x97	0x99	ItemEnchant	confirmed	game:FUN_141732b20; user; shift 2; UIItemEnchantDialog, s_itemenchant_*		none: 22 packets; no full-layout confirmation
+recv	0x98	0x9a	BlackMarket	confirmed	net:FUN_140a20650; user; shift 2; CBlackMarketMan		none: 24 packets; no full-layout confirmation
+recv	0x99	0x9b	MesoMarket	confirmed	net:FUN_140d6e490; user; shift 2; modes 8/8; CMesoMarketMan		none: 6 packets; no full-layout confirmation
+recv	0x9a	0x9c	TeamPvp	by-model	no dispatcher case; user; shift +2	TeamPVP	none: 0 packets; no full-layout confirmation
+recv	0x9b	0x9d	WebOpen	confirmed	game:FUN_141733140; user; shift 2; Open URL in ... strings		none: 0 packets; no full-layout confirmation
+recv	0x9c	0x9e	Gamble	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x9d	0x9f	FieldMaid	by-model	game:FUN_141732ac0; user; shift 2		layout-fit: 17 packets meet compact prefix; full branch layout not verified
+recv	0x9e	0xa0	UserMaid	by-model	game:FUN_141732af0; user; shift 2		layout-fit: 599 packets meet compact prefix; full branch layout not verified
+recv	0x9f	0xa1	NewsNotification	by-model	game:FUN_141733440; user; shift 2		layout-fit: 14 packets meet compact prefix; full branch layout not verified
+recv	0xa0	0xa2	SmartRecommendBilling	by-model	no dispatcher case; user; shift +2		none: 1 packets; no full-layout confirmation
+recv	0xa1	0xa3	SystemShop	confirmed	game:FUN_141733660; user; shift 2; s_shop_no_star_point_event		none: 5 packets; no full-layout confirmation
+recv	0xa2	0xa4	AutoRevive	confirmed	game:FUN_1417337c0; user; shift 2; UIAutoReviveCountDownDialog		none: 10 packets; no full-layout confirmation
+recv	0xa3	0xa5	PlayerKillNotice	confirmed	game:FUN_141733850; user; shift 2; UIPvPKillLogDialog		none: 106 packets; no full-layout confirmation
+recv	0xa4	0xa6	Attendance	by-model	no dispatcher case; user; shift +2	DailyWonder	none: 61 packets; no full-layout confirmation
+recv	0xa5	0xa7	PcBangBonus	by-model	no dispatcher case; user; shift +2	PCCafeBonus	none: 684 packets; no full-layout confirmation
+recv	0xa6	0xa8	DeadUser	by-model	game:FUN_141736880; user; shift 2	Dead	layout-fit: 124 packets meet compact prefix; full branch layout not verified
+recv	0xa7	0xa9	DynamicChannel	by-model	net:FUN_14153c4b0; user; shift 2		layout-fit: 599 packets meet compact prefix; full branch layout not verified
+recv	0xa8	0xaa	UserEnv	by-model	game:FUN_141736940; user; shift 2; s_fame_point_update, UIAchieveDialog	UserEnvironment	layout-fit: 4252 packets meet compact prefix; full branch layout not verified
+recv	0xa9	0xab	MaidCraftItem	by-model	net:FUN_140d500b0; user; shift +2	Manufacturer	none: 600 packets; no full-layout confirmation
+recv	0xaa	0xac	EnterUgcMap	by-model	game:FUN_1417373d0; user; shift +2	EnterUGCMap	none: 9 packets; no full-layout confirmation
+recv	0xab	0xad	ItemUse	by-model	game:FUN_141739910; user; shift +2	CouponUse	none: 2 packets; no full-layout confirmation
+recv	0xac	0xae	ItemBox	by-model	game:FUN_141739e40; user; shift +2	ItemUse	none: 10 packets; no full-layout confirmation
+recv	0xad	0xaf	Cash	confirmed	net:FUN_140b06020; user; shift 2; CCashMarketMan		none: 645 packets; no full-layout confirmation
+recv	0xae	0xb0	MyInfo	confirmed	game:FUN_14171b380; user; shift 2; layout 4		none: 1 packets; no full-layout confirmation
+recv	0xaf	0xb1		by-model	net:FUN_140d86260; -; shift +2	Session	none: 4 packets; callback target vfunc 26 remains opaque
+recv	0xb0	0xb2	WorldShareInfo	by-model	game:FUN_141733b30; user; shift 2		layout-fit: 13256 packets meet compact prefix; full branch layout not verified
+recv	0xb1	0xb3	Insignia	confirmed	game:FUN_141733e40; user; shift 2; layout 3	NameTagSymbol,Nametag	none: 307 packets; no full-layout confirmation
+recv	0xb2	0xb4	GameEvent	confirmed	game:FUN_140ceab50; user; shift 2; modes 4/4; GameEventManagerCli		none: 601 packets; no full-layout confirmation
+recv	0xb3	0xb5	BannerList	confirmed	net:FUN_14096b3a0; user; shift 2; CAdBannerManagerCli		none: 606 packets; no full-layout confirmation
+recv	0xb4	0xb6	WaitingTicketUpdate	confirmed	multi:FUN_14174f8d0; user; shift 2; waitingticketdialog		none: 1 packets; no full-layout confirmation
+recv	0xb5	0xb7	SetPcBang	confirmed	game:FUN_141733f50; user; shift 2; layout 2	SetPCCafe,SetPcbang	none: 1 packets; no full-layout confirmation
+recv	0xb6	0xb8	Pvp	confirmed	game:FUN_141732350; user; shift 2; UIIndividualPvPDialog, s_rank_duel_*	PVP	none: 2219 packets; no full-layout confirmation
+recv	0xb7	0xb9	HomeCommand	by-model	game:FUN_1417340f0; user; shift 2		layout-fit: 600 packets meet compact prefix; full branch layout not verified
+recv	0xb8	0xba	CharMaxCount	confirmed	net:FUN_14153e050; user; shift 2; layout 2		none: 13 packets; no full-layout confirmation
+recv	0xb9	0xbb	World	by-model	game:FUN_1417343c0; user; shift 2	FinalizeServerEnter	layout-fit: 601 packets meet compact prefix; full branch layout not verified
+recv	0xba	0xbc	ItemDropNotice	confirmed	game:FUN_1417343f0; user; shift 2; layout 4	DropItemGetMessage	none: 0 packets; no full-layout confirmation
+recv	0xbb	0xbd	PartySearch	confirmed	net:FUN_1416310d0; user; shift 2; modes 4/4; CPartyManager	MatchParty	none: 10 packets; no full-layout confirmation
+recv	0xbc	0xbe	RecallScroll	confirmed	game:FUN_141734530; user; shift 2; s_cash_recall_wedding_notice		none: 0 packets; no full-layout confirmation
+recv	0xbd	0xbf	UserConditionEvent	confirmed	game:FUN_1412a53e0; user; shift 2; modes 2/2		none: 597 packets; no full-layout confirmation
+recv	0xbe	0xc0	PotentialAbility	by-model	game:FUN_141734930; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0xbf	0xc1	EnchantScroll	confirmed	game:FUN_141734950; user; shift 2; UIEnchantScrollDialog		none: 1 packets; no full-layout confirmation
+recv	0xc0	0xc2	BossRanking	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0xc1	0xc3	GlobalPortal	confirmed	game:FUN_141734b20; user; shift 2; modes 4/4; UIGlobalPortalDialog		none: 87 packets; no full-layout confirmation
+recv	0xc2	0xc4	QuizEvent	confirmed	game:FUN_141734b70; user; shift 2; UIQuizDialog		none: 5 packets; no full-layout confirmation
+recv	0xc3	0xc5	PlaySystemSound	by-model	game:FUN_141734bc0; user; shift 2		layout-fit: 406 packets meet compact prefix; full branch layout not verified
+recv	0xc4	0xc6	Fishing	by-model	game:FUN_141734c70; user; shift 2		layout-fit: 690 packets meet compact prefix; full branch layout not verified
+recv	0xc5	0xc7	DarkStream	confirmed	game:FUN_141734ca0; user; shift 2; UIDarkStreamResultDialog		none: 838 packets; no full-layout confirmation
+recv	0xc6	0xc8	NpsInfo	by-model	net:FUN_14153e0d0; user; shift 2		layout-fit: 6 packets meet compact prefix; full branch layout not verified
+recv	0xc7	0xc9	PlayInstrument	by-model	game:FUN_1417353b0; user; shift 2		layout-fit: 2251 packets meet compact prefix; full branch layout not verified
+recv	0xc8	0xca	ChangeAttributes	by-model	no dispatcher case; user; shift +2		none: 10 packets; no full-layout confirmation
+recv	0xc9	0xcb	ChangeAttributesScroll	by-model	no dispatcher case; user; shift +2		none: 3 packets; no full-layout confirmation
+recv	0xca	0xcc	FieldProperty	by-model	game:FUN_1417353e0; user; shift 2		layout-fit: 842 packets meet compact prefix; full branch layout not verified
+recv	0xcb	0xcd	GameEventUserValue	by-model	game:FUN_141735410; user; shift 2		none: 17835 packets; no full-layout confirmation
+recv	0xcc	0xce	ResponsePet	confirmed	net:FUN_140c895e0; user; shift 2; modes 19/19; CPetManager		none: 2354 packets; no full-layout confirmation
+recv	0xcd	0xcf	Mastery	confirmed	game:FUN_141735440; user; shift 2; s_pettaming_mastery, s_fishing_grade_up		none: 192 packets; no full-layout confirmation
+recv	0xce	0xd0	PetInventory	by-model	game:FUN_1417132b0; user; shift 2; CItem decode		layout-fit: 16 packets meet compact prefix; full branch layout not verified
+recv	0xcf	0xd1	NoticeDialog	confirmed	game:FUN_141009680; user; shift 2; UINoticeDialog		none: 15 packets; no full-layout confirmation
+recv	0xd0	0xd2	AaErr	by-model	net:FUN_14153e150; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0xd1	0xd3	SkillMacro	by-model	game:FUN_141737d60; user; shift 2	Macro	layout-fit: 814 packets meet compact prefix; full branch layout not verified
+recv	0xd2	0xd4		by-model	net:FUN_140d86260; -; shift +2	BanWord,Banword	none: 0 packets; no full-layout confirmation
+recv	0xd3	0xd5	CheckCharNameResult	by-model	game:FUN_141737db0; user; shift 2		layout-fit: 7 packets meet compact prefix; full branch layout not verified
+recv	0xd4	0xd6	PlatformProtectPacket	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0xd5	0xd7		by-model	net:FUN_140d86260; -; shift +2	PlatformAccountSafe	none: 0 packets; no full-layout confirmation
+recv	0xd6	0xd8	GlobalFactor	by-model	game:FUN_1417380c0; user; shift 2		none: 33 packets; no full-layout confirmation
+recv	0xd7	0xd9	SmartPush	by-model	game:FUN_141738120; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0xd8	0xda	PlayArcade	confirmed	game:FUN_141734e00; user; shift 2; UIArcadeMainDialog		none: 0 packets; no full-layout confirmation
+recv	0xd9	0xdb	DebugState	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0xda	0xdc	CardReverseGame	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0xdb	0xdd	ItemLock	by-model	game:FUN_141731af0; user; shift 2		layout-fit: 2 packets meet compact prefix; full branch layout not verified
+recv	0xdc	0xde	HomeBank	by-model	game:FUN_141738290; user; shift 2		layout-fit: 6 packets meet compact prefix; full branch layout not verified
+recv	0xdd	0xdf	HomeDoctor	by-model	game:FUN_141738380; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0xde	0xe0	ItemSocketSystem	confirmed	game:FUN_14173f550; user; shift 2; itemsocketsystemutil		none: 0 packets; no full-layout confirmation
+recv	0xdf	0xe1	CharacterAbility	confirmed	net:FUN_140f29ad0; user; shift 2; CCharacterAbilityManager	CharAbility	none: 600 packets; no full-layout confirmation
+recv	0xe0	0xe2	ShadowBuff	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0xe1	0xe3	ShadowExpedition	by-model	no dispatcher case; user; shift +2		none: 1 packets; no full-layout confirmation
+recv	0xe3	0xe5	ItemSocketScroll	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0xe4	0xe6	ItemRepackage	by-model	no dispatcher case; user; shift +2	ItemSocketExpansionScroll	none: 0 packets; no full-layout confirmation
+recv	0xe5	0xe7	Mapleopoly	by-model	no dispatcher case; user; shift +2	DiceGame	none: 0 packets; no full-layout confirmation
+recv	0xe6	0xe8	BypassKey	confirmed	net:FUN_14153b3b0; user; shift 2; layout 2		none: 887 packets; no full-layout confirmation
+recv	0xe7	0xe9	NpcRide	by-model	game:FUN_141738ad0; user; user only (GMS 0xe9 unnamed in Maple2); exe: int npcId -> npc packet handler		none: 0 packets; no full-layout confirmation
+recv	0xe8	0xea	NpcNotice	by-model	game:FUN_141738430; user; shift 2		layout-fit: 4 packets meet compact prefix; full branch layout not verified
+recv	0xe9	0xeb	LocalCamera	confirmed	game:FUN_14173a370; user; shift 2; layout 3		none: 13 packets; no full-layout confirmation
+recv	0xea	0xec	HomeAction	by-model	game:FUN_141738b40; user; shift 2; UIUGCCubeNoticeDialog	HomeGame,ResponseHomeAction	layout-fit: 178 packets meet compact prefix; full branch layout not verified
+recv	0xeb	0xed	PremiumClub	confirmed	game:FUN_141739f90; user; shift 2; UIVIPDialog		none: 991 packets; no full-layout confirmation
+recv	0xec	0xee		by-model	game:FUN_14173a0d0; -; shift +2		none: 0 packets; no full-layout confirmation
+recv	0xed	0xef	SteamCashShop	by-model	net:FUN_140d86260; user; shift +2		none: 1 packets; no full-layout confirmation
+recv	0xee	0xf0	InGameRank	confirmed	net:FUN_140b2ab70; user; shift 2; CGameRankingCli		none: 599 packets; no full-layout confirmation
+recv	0xef	0xf1	DungeonMatch	by-model	game:FUN_14173e4b0; user; shift 2	ResetCamera	none: 0 packets; no full-layout confirmation
+recv	0xf0	0xf2	DungeonWaiting	by-model	no dispatcher case; user; shift +2	DungeonWait	none: 25 packets; no full-layout confirmation
+recv	0xf1	0xf3	OneTimeEffect	confirmed	game:FUN_14173a420; user; shift 2; layout 2		none: 370 packets; no full-layout confirmation
+recv	0xf2	0xf4	CameraInterpolation	by-model	game:FUN_14173a5b0; user; shift 2	SetCamera	layout-fit: 109 packets meet compact prefix; full branch layout not verified
+recv	0xf3	0xf5	TimeScale	confirmed	game:FUN_14173a5e0; user; shift 2; layout 5		none: 816 packets; no full-layout confirmation
+recv	0xf4	0xf6	LegionBattle	by-model	game:FUN_14173a720; user; shift 2		layout-fit: 1074 packets meet compact prefix; full branch layout not verified
+recv	0xf5	0xf7	ItemScript	by-model	game:FUN_14173e510; user; shift 2	Fireworks	layout-fit: 3 packets meet compact prefix; full branch layout not verified
+recv	0xf6	0xf8	Club	confirmed	net:FUN_140b158c0; user; shift 2; modes 28/28; CClubClientManager		none: 1972 packets; no full-layout confirmation
+recv	0xf7	0xf9	EventReward	confirmed	game:FUN_141735dd0; user; shift 2; UIGalleryEventDialog/UIStampEventDialog		none: 11 packets; no full-layout confirmation
+recv	0xf8	0xfa	HomeInvite	confirmed	game:FUN_14173a990; user; shift 2; modes 2/2	InviteToHome	none: 3 packets; no full-layout confirmation
+recv	0xf9	0xfb	TaskEvent	by-model	game:FUN_141736240; user; shift 2		layout-fit: 12 packets meet compact prefix; full branch layout not verified
+recv	0xfa	0xfc	StateFishingData	by-model	game:FUN_14173b080; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0xfb	0xfd	DungeonReviveCount	by-model	game:FUN_14173b1d0; user; shift 2		layout-fit: 26 packets meet compact prefix; full branch layout not verified
+recv	0xfd	0xff		by-model	game:FUN_14173b220; -; shift +2		none: 0 packets; no full-layout confirmation
+recv	0xfe	0x100	ChangeBackground	by-model	game:FUN_14173b380; user; shift 2		layout-fit: 1 packets meet compact prefix; full branch layout not verified
+recv	0xff	0x101	RoomStageDungeon	by-model	net:FUN_14153e180; user; shift 2		layout-fit: 39 packets meet compact prefix; full branch layout not verified
+recv	0x100	0x102	DungeonMission	by-model	no dispatcher case; user; shift +2		none: 35 packets; no full-layout confirmation
+recv	0x101	0x103		by-model	game:FUN_14173a0f0; -; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x102	0x104	ItemExchange	by-model	no dispatcher case; user; shift +2	BuddyEmote	none: 0 packets; no full-layout confirmation
+recv	0x103	0x105	BindItem	by-model	game:FUN_14173b420; user; shift 2	Item	layout-fit: 517 packets meet compact prefix; full branch layout not verified
+recv	0x104	0x106	TransferEnchant	by-model	no dispatcher case; user; shift +2	ItemEnchantTransform	none: 0 packets; no full-layout confirmation
+recv	0x105	0x107	PlayerHost	by-model	game:FUN_14173b5a0; user; shift 2	AdBalloon	layout-fit: 1 packets meet compact prefix; full branch layout not verified
+recv	0x106	0x108	GmCommand	by-model	game:FUN_14173c090; user; shift +2	GMCommand	none: 0 packets; no full-layout confirmation
+recv	0x107	0x109	GlamourAnvil	by-model	no dispatcher case; user; shift +2	ItemExtraction	none: 0 packets; no full-layout confirmation
+recv	0x108	0x10a	PetSkinBadge	by-model	no dispatcher case; user; shift +2	PetSkin	none: 0 packets; no full-layout confirmation
+recv	0x109	0x10b	DungeonHelp	by-model	no dispatcher case; user; shift +2	DungeonHelper	none: 113 packets; no full-layout confirmation
+recv	0x10a	0x10c	Mentor	confirmed	net:FUN_140b719e0; user; shift 2; CMentoringManager		none: 1198 packets; no full-layout confirmation
+recv	0x10c	0x10e	SkillBookTree	by-model	no dispatcher case; user; shift +2		none: 138 packets; no full-layout confirmation
+recv	0x10d	0x10f	BuddyEmote	confirmed	net:FUN_14153e280; user; +2: modes 0..6, couple emotion / buddy manager		none: 0 packets; no full-layout confirmation
+recv	0x10e	0x110	BuddyBadge	confirmed	net:FUN_14153f6c0; user; +2: byte kind + long charId (BuddyBadge layout)		none: 76 packets; no full-layout confirmation
+recv	0x10f	0x111	SyncWorld	conflict	multi:FUN_14174fcc0; user; capture: int64 server time in login/character scene; 7 x 8 B; SyncWorld		payload-confirmed: 7 x 8 B int64 server time; login/character scene
+recv	0x110	0x112	WorldTimeSync	conflict	net:FUN_14153a8a0; maple2; capture: int interval updates world clock; 597 x 4 B; time-sync		payload-confirmed: 597 x 4 B int interval; updates world clock at field entry
+recv	0x111	0x113	BirthdayCard	confirmed	game:FUN_14173c7a0; user; +2: mode 1 int id + long value	Birthday	none: 0 packets; no full-layout confirmation
+recv	0x112	0x114	SuperWorldChat	by-model	net:FUN_14153f8c0; user; shift 2		contradicted: 1 packets; compact fixed prefix exceeds observed payload
+recv	0x113	0x115		by-model	game:FUN_1403ed2d0; -; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x114	0x116	Microgame	confirmed	net:FUN_140b73cc0; user; shift 2; microgamemanagercli	RockPaperScissors	none: 40 packets; no full-layout confirmation
+recv	0x115	0x117	Reactor	confirmed	game:FUN_14173c870; user; shift 2; CReactor		none: 0 packets; no full-layout confirmation
+recv	0x116	0x118	SurvivalEvent	by-model	no dispatcher case; user; shift +2	MushkingRoyale	none: 0 packets; no full-layout confirmation
+recv	0x117	0x119	MeretUse	by-model	game:FUN_14171bad0; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0x118	0x11a	TreeWatering	by-model	game:FUN_14173ce30; user; user TreeWatering vs Maple2 HalloweenEvent (GMS 0x11a); exe: mode 2/3 result replies (string ids 0xd1d..0xd21), client sends TreeWatering 0xaa; user name kept	HalloweenEvent	none: 0 packets; no full-layout confirmation
+recv	0x119	0x11b	Survival	by-model	no dispatcher case; user; shift +2	MushkingRoyaleSystem	none: 1 packets; no full-layout confirmation
+recv	0x11a	0x11c	SpectateMushtopia	by-model	game:FUN_14173d180; user; shift +2	Spectate	none: 0 packets; no full-layout confirmation
+recv	0x11b	0x11d	Lapenshard	confirmed	game:FUN_14173d2e0; user; shift 2; Unk_LapenEquipped	ItemLapenshard	none: 832 packets; no full-layout confirmation
+recv	0x11c	0x11e	Prestige	confirmed	game:FUN_14173d4d0; user; shift 2; UIAdventureLevelDialog (prestige)	AdventureLevel	none: 3169 packets; no full-layout confirmation
+recv	0x11d	0x11f	Ugd	by-model	no dispatcher case; user; shift +2		none: 1 packets; no full-layout confirmation
+recv	0x11f	0x121	WorldChampion	by-model	game:FUN_14173dfd0; user; shift +2	FieldWar	none: 14 packets; no full-layout confirmation
+recv	0x120	0x122	SyncValue	by-model	game:FUN_14173ddf0; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x121	0x123	MinimapPing	by-model	game:FUN_14173de10; user; shift 2	No	none: 0 packets; no full-layout confirmation
+recv	0x122	0x124	MsgBox	by-model	no dispatcher case; user; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x123	0x125	Wardrobe	by-model	no dispatcher case; user; shift +2		none: 501 packets; no full-layout confirmation
+recv	0x124	0x126	DynamicBanword	by-model	net:FUN_14153f9d0; user; shift 2		none: 0 packets; no full-layout confirmation
+recv	0x125	0x127	RequestSystemInfo	by-model	net:FUN_14153fa20; user; shift 2	UnknownLogin	payload-confirmed: 601 empty payloads; handler reads no request data
+recv	0x126	0x128	ChatStamp	by-model	game:FUN_14173e440; user; shift 2	ChatSticker	layout-fit: 600 packets meet compact prefix; full branch layout not verified
+recv	0x127	0x129		by-model	net:FUN_14153fae0; -; shift +2		none: 1 packets; no full-layout confirmation
+recv	0x128	0x12a	Wedding	by-model	game:FUN_1409eed90; user; shift 2	Marriage	layout-fit: 2186 packets meet compact prefix; full branch layout not verified
+recv	0x12a	0x12c	WeddingBillboard	by-model	no dispatcher case; user; shift +2		none: 5 packets; no full-layout confirmation
+recv	0x12b	0x12d	HideAndSeek	confirmed	game:FUN_14173e5b0; user; shift 2; UIHideAndSeekResultDialog		none: 278 packets; no full-layout confirmation
+recv	0x12c	0x12e	MessengerBrowserStamp	by-model	game:FUN_14173f0c0; user; shift 2		layout-fit: 6 packets meet compact prefix; full branch layout not verified
+recv	0x12d	0x12f	Payback	capture-proposed	net:FUN_140a8afb0; -; shift +2; capture: 729 packets, 0/1 status and product-list branches (9 B / 696-704 B)		payload-confirmed: 729 packets; mode 0 is 9 B status, mode 1 product-list payloads 696-704 B
+recv	0x12e	0x130	LimitBreak	confirmed	game:FUN_14173f1a0; user; shift 2; UIUnlimitedEnchantDialog		none: 10 packets; no full-layout confirmation
+recv	0x12f	0x131	WaterGunSkill	capture-proposed	game:FUN_14173f280; -; shift +2; capture: 2 packets, 0/1 branches (9 B / 696 B); handler updates water-gun/guide-skill state		layout-fit: 2 packets; observed 9 B and 696 B branches include mode and handler fields; variable body not fully decoded
+recv	0x130	0x132		by-model	game:FUN_141720c60; -; shift +2	UnknownSync,Init_0x05	none: 0 packets; no full-layout confirmation
+recv	0x131	0x133	CashShopState	capture-proposed	game:FUN_14173f7c0; -; shift +2; capture: 600 one-byte packets at field entry; stores a field-state byte; interpretation tentative		payload-confirmed: 600 one-byte packets; handler stores exactly one state byte
+recv	0x135	0x137		by-model	game:FUN_14173f810; -; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x136	0x138		by-model	game:FUN_14173f860; -; shift +2		none: 0 packets; no full-layout confirmation
+recv	0x137	0x139	TermTag	capture-proposed	game:FUN_140ad5f00; -; shift +2; capture: 179 packets, mode 0 load; handler modes 0/1/2 load/start/end term tags		layout-fit: 179 packets; mode 0 tag-load payloads fit handler; start/end branches not observed
+recv	0x138	0x13a	HomeBlock	capture-proposed	game:FUN_14173fc00; -; shift +2; capture: 692 five-byte mode-4 packets; HomeBlockManager mode 4 adds home-block records		payload-confirmed: 692 five-byte mode-4 packets; mode plus zero-count HomeBlock record list
+recv	0x139	0x13b		by-model	game:FUN_14173fc40; -; shift +2		none: 0 packets; no full-layout confirmation
+send	0x0	0x0	Null	by-model	no sender found; shift +0	NULL	none: 0 packets; no full-layout confirmation
+send	0x1	0x1	ResponseVersion	by-model	CNetworkService; shift +0		none: 610 packets; no full-layout confirmation
+send	0x2	0x2	Patch	by-model	CNetworkService,COnlinePatchManagerCli; shift +0		none: 0 packets; no full-layout confirmation
+send	0x3	0x3	ResponseLogin	by-model	CClientPlatformNexonKorea,UILoginDialog,UIServerListDialog; shift +0		none: 6 packets; no full-layout confirmation
+send	0x4	0x4	ResponseKey	by-model	CNetworkService,CSceneStateGame; shift +0		none: 603 packets; no full-layout confirmation
+send	0x5	0x5	Reconnect	by-model	CReconnectionManagerCli; shift +0		none: 0 packets; no full-layout confirmation
+send	0x6	0x6	Pong	by-model	CNetworkService; shift +0		none: 9275 packets; no full-layout confirmation
+send	0x7	0x7	ReconnectUnk	by-model	COutPacketBuffer; shift +0		none: 0 packets; no full-layout confirmation
+send	0x8	0x8	FinalizeReconnect	by-model	COutPacketBuffer; shift +0		none: 0 packets; no full-layout confirmation
+send	0x9	0x9	CharacterManagement	confirmed	UICharacterCreateDialog,UICharacterListDialog,UIServerListDialog; send KMS 0x9 -> GMS 0x9 CharacterManagement (shift +0); senders UICharacterListDialog/UICharacterCreateDialog	CharManagement	none: 8 packets; no full-layout confirmation
+send	0xa	0xa	ResponseHeartbeat	by-model	CNetworkService; shift +0		none: 4 packets; no full-layout confirmation
+send	0xb	0xb	RequestTimeSync	by-model	CNetworkService; shift +0		none: 41967 packets; no full-layout confirmation
+send	0xc	0xc	ResponseClientTickSync	by-model	CNetworkService; shift +0		none: 649 packets; no full-layout confirmation
+send	0xd	0xd	RequestQuit	by-model	CClientPlatformNexonKorea,CNetworkService; shift +0		none: 14 packets; no full-layout confirmation
+send	0xe	0xe	DynamicBanword	by-model	CSceneStateGame; shift +0		none: 598 packets; no full-layout confirmation
+send	0xf	0xf	RequestLoadUgcMap	by-model	CSceneStateGame; shift +0	RequestLoadUGCMap	none: 744 packets; no full-layout confirmation
+send	0x10	0x10	ResponseFieldEnter	by-model	CSceneStateGame,CubeMapInformationService; shift +0		none: 742 packets; no full-layout confirmation
+send	0x11	0x11	UserChat	by-model	FUN_141276f80,UIDebugPacketDialog,UIMeratMarketDialog; shift +0		none: 411 packets; no full-layout confirmation
+send	0x12	0x12	UserSync	by-model	StateLocalController; shift +0		none: 649869 packets; no full-layout confirmation
+send	0x13	0x13	Emote	confirmed	StateSkill,UICoupleActionDialog,UIDynamicActionDialog,Unk_Inventory; send KMS 0x13 -> GMS 0x13 Emotion (shift +0); senders UICoupleActionDialog/UIDynamicActionDialog	Emotion	none: 14 packets; no full-layout confirmation
+send	0x14	0x14	RequestServerList	by-model	UICharacterListDialog; shift +0		none: 5 packets; no full-layout confirmation
+send	0x15	0x15	RequestItemCreate	confirmed	UIItemCreateDialog,UIItemOptionCreateDialog; send KMS 0x15 -> GMS 0x15 RequestItemCreate (shift +0); senders UIItemCreateDialog		none: 0 packets; no full-layout confirmation
+send	0x16	0x16	ItemEquip	confirmed	EquipSlot,Unk_Inventory; send KMS 0x16 -> GMS 0x16 ItemEquip (shift +0); senders EquipSlot		none: 130 packets; no full-layout confirmation
+send	0x17	0x17	RequestItemInventory	confirmed	CNetworkService,InvenSlot,UIInventoryDialog,Unk_Inventory; send KMS 0x17 -> GMS 0x17 RequestItemInventory (shift +0); senders Unk_Inventory/UIInventoryDialog		none: 13 packets; no full-layout confirmation
+send	0x18	0x18	RequestItemStorage	confirmed	CNetworkService,CStore,FUN_140de2dc0,FUN_140de31f0,StoreSlot; send KMS 0x18 -> GMS 0x18 RequestItemStorage (shift +0); senders CStore		none: 48 packets; no full-layout confirmation
+send	0x19	0x19	RequestItemUse	confirmed	OpenInstrument,Unk_Inventory; send KMS 0x19 -> GMS 0x19 RequestItemUse (shift +0); senders Unk_Inventory		none: 30 packets; no full-layout confirmation
+send	0x1a	0x1a	RequestItemBox	by-model	UIItemMultiOpenBoxDialog; shift +0	RequestItemUseMultiple,ItemExtraData	none: 10 packets; no full-layout confirmation
+send	0x1c	0x1c	RequestItemPickup	confirmed	CDropItem; send KMS 0x1c -> GMS 0x1c RequestItemPickup (shift +0); senders CDropItem		none: 1858 packets; no full-layout confirmation
+send	0x1d	0x1d	RequestMesoPickup	by-model	MyPC; shift +0	RequestMoneyPickup	none: 1258 packets; no full-layout confirmation
+send	0x1e	0x1e	CharacterInfo	confirmed	UIPopUpMenu; send KMS 0x1e -> GMS 0x1e CharacterInfo (shift +0); senders UIPopUpMenu	CharInfo	none: 9 packets; no full-layout confirmation
+send	0x1f	0x1f	Revival	confirmed	StateSummonRevive,UIRevivalDialog; send KMS 0x1f -> GMS 0x1f Revival (shift +0); senders UIRevivalDialog/StateSummonRevive		none: 11 packets; no full-layout confirmation
+send	0x20	0x20	Skill	confirmed	CMagic,CSkillRecord,StateSkill; send KMS 0x20 -> GMS 0x20 Skill (shift +0); senders CMagic/StateSkill/CSkillRecord		none: 40893 packets; no full-layout confirmation
+send	0x21	0x21	StateSkill	confirmed	StateSkill; send KMS 0x21 -> GMS 0x21 StateSkill (shift +0); senders StateSkill		none: 696 packets; no full-layout confirmation
+send	0x22	0x22	NpcTalk	confirmed	CCustomSelectableDistractorCinematicComponent,CQuestAcceptCinematicComponent,CQuestCompleteCinematicComponent,UIAlliance; send KMS 0x22 -> GMS 0x22 NpcTalk (shift +0); senders quest/npc cinematic components		none: 2172 packets; no full-layout confirmation
+send	0x23	0x23	Beauty	confirmed	CSceneStateGame,Customize,FUN_140f01250,FUN_140f012d0,UIBeautyListDialog,UIBeautyShopDialog,UIBeautyShopStyleDialog,UIGa; send KMS 0x23 -> GMS 0x23 Beauty (shift +0); senders UIBeauty*/Customize::Equipment		none: 5 packets; no full-layout confirmation
+send	0x24	0x24	RequestNpcCreate	confirmed	UINpcCreateDialog; send KMS 0x24 -> GMS 0x24 RequestNpcCreate (shift +0); senders UINpcCreateDialog	RequestNPCCreate	none: 0 packets; no full-layout confirmation
+send	0x25	0x25	Job	confirmed	CChangeJobComponent,JobSystemCli,UISkillBookTreeDialog; send KMS 0x25 -> GMS 0x25 Job (shift +0); senders JobSystemCli/CChangeJobComponent		none: 43 packets; no full-layout confirmation
+send	0x26	0x26	Vibrate	by-model	WorldService; shift +0		none: 4705 packets; no full-layout confirmation
+send	0x27	0x27	Breakable	by-model	WorldService; shift +0		none: 27 packets; no full-layout confirmation
+send	0x28	0x28	Shop	confirmed	UIShopDialog; send KMS 0x28 -> GMS 0x28 Shop (shift +0); senders UIShopDialog		none: 17 packets; no full-layout confirmation
+send	0x29	0x29	Quest	confirmed	CQuest,CQuestAcceptCinematicComponent,CQuestCompleteCinematicComponent,CQuestManager,CQuestProgressCinematicComponent,FU; send KMS 0x29 -> GMS 0x29 Quest (shift +0); senders CQuest/CQuestManager		none: 418 packets; no full-layout confirmation
+send	0x2a	0x2a	Tombstone	by-model	WorldService; shift +0		none: 0 packets; no full-layout confirmation
+send	0x2b	0x2b	RoomDungeon	confirmed	CPartyManager,PortalAction,UIDungeonControlCenter,UIDungeonRoomInfo,UIDungeonSearchDialog,UIDungeonSearchUnitedReward; send KMS 0x2b -> GMS 0x2b RoomDungeon (shift +0); senders UIDungeonRoomInfo/CPartyManager		none: 31 packets; no full-layout confirmation
+send	0x2c	0x2c	Party	confirmed	CPartyManager,CQuestManager,PartyVoteCli,StateRecall,UIDungeonControlCenter,UIDungeonRoomInfo,UIDungeonSearchPage,UIMess; send KMS 0x2c -> GMS 0x2c Party (shift +0); senders CPartyManager		none: 21 packets; no full-layout confirmation
+send	0x2d	0x2d	Mail	confirmed	UIMailListDialog,UIMailSendDialog; send KMS 0x2d -> GMS 0x2d Mail (shift +0); senders UIMailListDialog		none: 28 packets; no full-layout confirmation
+send	0x2e	0x2e	FunctionCube	confirmed	CFunctionCubeObject,CFunctionCubeService,MyPC,StateHomemade,StateNurturing,StateUseFurniture,UIHomePasswordDialog,UIObje; send KMS 0x2e -> GMS 0x2e FunctionCube (shift +0); senders CFunctionCubeObject/StateHomemade		none: 74 packets; no full-layout confirmation
+send	0x2f	0x2f	Trigger	confirmed	CGuideActionServerTriggerEvent,CKeyTable,UICutSceneCinematic,UICutSceneMovie,UITriggerEditorDialog,UITypingGameDialog; send KMS 0x2f -> GMS 0x2f Trigger (shift +0); senders UITriggerEditorDialog/CGuideActionServerTriggerEvent		none: 111 packets; no full-layout confirmation
+send	0x30	0x30	Buddy	confirmed	CBuddyManager; send KMS 0x30 -> GMS 0x30 Buddy (shift +0); senders CBuddyManager		none: 10 packets; no full-layout confirmation
+send	0x31	0x31	InteractObject	confirmed	CInteractObject,StateInteraction,UIObjectCreateDialog; send KMS 0x31 -> GMS 0x31 InteractObject (shift +0); senders CInteractObject/StateInteraction		none: 308 packets; no full-layout confirmation
+send	0x32	0x32	InteractNpc	confirmed	CNpc; send KMS 0x32 -> GMS 0x32 InteractNpc (shift +0); senders CNpc	InteractNPC	none: 0 packets; no full-layout confirmation
+send	0x33	0x33	StateConsumeEp	by-model	no sender found; shift +0		none: 0 packets; no full-layout confirmation
+send	0x34	0x34	StateFallDamage	by-model	PCBase; shift +0		none: 1289 packets; no full-layout confirmation
+send	0x35	0x35	GuideObjectSync	confirmed	StatePcGuideObjectController; send KMS 0x35 -> GMS 0x35 GuideObjectSync (shift +0); senders StatePcGuideObjectController		none: 963 packets; no full-layout confirmation
+send	0x36	0x36	RequestSetCraftMode	by-model	MyPC; shift +0	RequestSetBuildMode	none: 93 packets; no full-layout confirmation
+send	0x37	0x37	RequestCube	confirmed	CGodModeInfo,CSceneStateGame,CUgcManager,CUgcSignCinematicComponent,CUserCommandCli,CubeMapInformationService,FUN_140ee8; edge 0: CUserCommandCli cube building		none: 888 packets; no full-layout confirmation
+send	0x38	0x39	Ugc	confirmed	CSceneStateGame,CUgcManager; edge +1: CUgcManager	UGC	none: 765 packets; no full-layout confirmation
+send	0x39	0x3a	MeretMarket	confirmed	CMeratMarketMan,CUserCommandCli,FUN_140ebded0,UIMeratMarketDialog; send KMS 0x39 -> GMS 0x3a MeretMarket (shift +1); senders CMeratMarketMan		none: 779 packets; no full-layout confirmation
+send	0x3a	0x3b	KeyTable	confirmed	CKeyTable,FUN_14092f690,FUN_14092fac0,FUN_14092fef0,FUN_140930040,FUN_1409300a0; send KMS 0x3a -> GMS 0x3b KeyTable (shift +1); senders CKeyTable		none: 69 packets; no full-layout confirmation
+send	0x3b	0x3c	Channel	by-model	WorldService; shift +1		none: 5 packets; no full-layout confirmation
+send	0x3c	0x3d	Liftable	confirmed	LiftCubeAction; send KMS 0x3c -> GMS 0x3d Liftable (shift +1); senders LiftCubeAction		none: 6 packets; no full-layout confirmation
+send	0x3d	0x3e	MyInfo	confirmed	UIPCInfoDialog; send KMS 0x3d -> GMS 0x3e MyInfo (shift +1); senders UIPCInfoDialog		none: 1 packets; no full-layout confirmation
+send	0x3e	0x3f	RelocateWorld	by-model	CNetworkService; shift +1		none: 0 packets; no full-layout confirmation
+send	0x3f	0x40	ItemMerge	confirmed	UIItemMergeOptionDialog,UIItemMergeRevertDialog; send KMS 0x3f -> GMS 0x40 ItemFusion (shift +1); senders UIItemMergeOptionDialog	ItemFusion	none: 18 packets; no full-layout confirmation
+send	0x40	0x41	RequestRide	confirmed	MyPC,StateSummon; send KMS 0x40 -> GMS 0x41 RequestRide (shift +1); senders MyPC/StateSummon (ride)		none: 37 packets; no full-layout confirmation
+send	0x41	0x42	RideSync	confirmed	StateRideeController; send KMS 0x41 -> GMS 0x42 RideSync (shift +1); senders StateRideeController		none: 27415 packets; no full-layout confirmation
+send	0x42	0x43	FittingDoll	confirmed	CNetworkService,FittingDollSlot,InvenSlot,MyPC,UIFittingDollDialog; send KMS 0x42 -> GMS 0x43 FittingDoll (shift +1); senders UIFittingDollDialog		none: 0 packets; no full-layout confirmation
+send	0x43	0x44	BonusGame	confirmed	CRouletteCinematicComponent,UIRouletteDialog,UITalkManager; send KMS 0x43 -> GMS 0x44 BonusGame (shift +1); senders UIRouletteDialog/CRouletteCinematicComponent	RouletteGame	none: 4 packets; no full-layout confirmation
+send	0x44	0x45	ResolvePenalty	confirmed	CPaneltyResolveCinematicComponent; send KMS 0x44 -> GMS 0x45 ResolvePenalty (shift +1); senders CPaneltyResolveCinematicComponent		none: 2 packets; no full-layout confirmation
+send	0x45	0x46	TakeBoat	confirmed	CTakeBoatCinematicComponent; send KMS 0x45 -> GMS 0x46 TakeBoat (shift +1); senders CTakeBoatCinematicComponent		none: 1 packets; no full-layout confirmation
+send	0x46	0x47	Achieve	confirmed	UIAchieveDialog; send KMS 0x46 -> GMS 0x47 Achieve (shift +1); senders UIAchieveDialog	Trophy	none: 10 packets; no full-layout confirmation
+send	0x47	0x48	BadgeEquip	confirmed	FUN_141271960,FUN_141271f90,UIGemSettingDialog; send KMS 0x47 -> GMS 0x48 BadgeEquip (shift +1); senders UIGemSettingDialog	RequestGemEquipment	none: 20 packets; no full-layout confirmation
+send	0x48	0x49	RequestTaxi	confirmed	CAutoFindTaxiStation,StateCashCall,StateTaxiCall,TaxiStationAction; send KMS 0x48 -> GMS 0x49 RequestTaxi (shift +1); senders CAutoFindTaxiStation/StateTaxiCall		none: 40 packets; no full-layout confirmation
+send	0x49	0x4a	Trade	confirmed	CTradeManagerEx; send KMS 0x49 -> GMS 0x4a Trade (shift +1); senders CTradeManagerEx		none: 61 packets; no full-layout confirmation
+send	0x4a	0x4b	RequestWorldmap	confirmed	UIWorldMapDialog; send KMS 0x4a -> GMS 0x4b RequestWorldmap (shift +1); senders UIWorldMapDialog	RequestWorldMap	none: 63 packets; no full-layout confirmation
+send	0x4b	0x4c	Guild	confirmed	CGuildManager; send KMS 0x4b -> GMS 0x4c Guild (shift +1); senders CGuildManager		none: 177 packets; no full-layout confirmation
+send	0x4c	0x4d	GroupChat	confirmed	CGroupChatManager; send KMS 0x4c -> GMS 0x4d GroupChat (shift +1); senders CGroupChatManager		none: 0 packets; no full-layout confirmation
+send	0x4d	0x4e	RequestHomeBank	confirmed	StateHomeConvenient; send KMS 0x4d -> GMS 0x4e RequestHomeBank (shift +1); senders StateHomeConvenient		none: 5 packets; no full-layout confirmation
+send	0x4e	0x4f	RequestHomeDoctor	confirmed	CHomeDoctorCinematicComponent; send KMS 0x4e -> GMS 0x4f RequestHomeDoctor (shift +1); senders CHomeDoctorCinematicComponent		none: 0 packets; no full-layout confirmation
+send	0x4f	0x50	Ah	by-model	no sender found; shift +1	AntiHack,AH	none: 1593 packets; no full-layout confirmation
+send	0x50	0x51	SetDebugMode	confirmed	AiDebugDialog,CameraMgr,UIDebugGuideDialog,UIDialogCenterDialog,UIMinimapEntity,UINpcControlDialog,UINpcCreateDialog,UIO; send KMS 0x50 -> GMS 0x51 SetDebugMode (shift +1); senders debug dialogs		none: 11 packets; no full-layout confirmation
+send	0x51	0x52	RequestHome	by-model	CSceneStateGame,CUserCommandCli,MyPC,UIPopUpMenu; shift +1		none: 7 packets; no full-layout confirmation
+send	0x52	0x53	RequestReport	confirmed	TencentUserReport,UIReportDialog; send KMS 0x52 -> GMS 0x53 RequestReport (shift +1); senders UIReportDialog		none: 0 packets; no full-layout confirmation
+send	0x53	0x54	FurnishingStorage	by-model	CNetworkService; shift +1	RequestMarketInventory	none: 0 packets; no full-layout confirmation
+send	0x54	0x55	RequestMoveEventField	by-model	UIWorldMapDialog; shift +1	RequestMoveEventfield	none: 0 packets; no full-layout confirmation
+send	0x55	0x56	LogSend	confirmed	CBigDataLogSystem; send KMS 0x55 -> GMS 0x56 LogSend (shift +1); senders CBigDataLogSystem		none: 748 packets; no full-layout confirmation
+send	0x56	0x57	DpsMode	confirmed	UIDPSDialog; send KMS 0x56 -> GMS 0x57 DpsMode (shift +1); senders UIDPSDialog	DPSMode	none: 8 packets; no full-layout confirmation
+send	0x57	0x58	GuideRecord	confirmed	CGuideManager; send KMS 0x57 -> GMS 0x58 GuideRecord (shift +1); senders CGuideManager		none: 20 packets; no full-layout confirmation
+send	0x58	0x59	Rank	by-model	no sender found; shift +1		none: 0 packets; no full-layout confirmation
+send	0x59	0x5a	RequestSkipTutorial	by-model	no sender found; shift +1		none: 0 packets; no full-layout confirmation
+send	0x5a	0x5b	ItemDismantle	confirmed	CItemBreakManager; send KMS 0x5a -> GMS 0x5b ItemDismantle (shift +1); senders CItemBreakManager	RequestItemBreak	none: 25 packets; no full-layout confirmation
+send	0x5b	0x5c	RideConsumeEp	by-model	no sender found; shift +1	MountConsumeStamina	none: 9 packets; no full-layout confirmation
+send	0x5c	0x5d	RequestAdditionalEffect	confirmed	UIAdditionalControlDialog; send KMS 0x5c -> GMS 0x5d RequestAdditionalEffect (shift +1); senders UIAdditionalControlDialog	RequestAddEffect	none: 0 packets; no full-layout confirmation
+send	0x5d	0x5e	RecallUser	by-model	CNetworkService; shift +1		none: 0 packets; no full-layout confirmation
+send	0x5e	0x5f	RequestItemEnchant	confirmed	FUN_1419028d0,UIItemEnchantDialog,UIItemEnchantSimulateDialog; send KMS 0x5e -> GMS 0x5f RequestItemEnchant (shift +1); senders UIItemEnchantDialog		none: 18 packets; no full-layout confirmation
+send	0x5f	0x60	BlackMarket	confirmed	CBlackMarketMan; send KMS 0x5f -> GMS 0x60 BlackMarket (shift +1); senders CBlackMarketMan		none: 24 packets; no full-layout confirmation
+send	0x60	0x61	Gamble	by-model	UITalkManager; shift +1		none: 0 packets; no full-layout confirmation
+send	0x61	0x62	Pvp	confirmed	CGuildManager,CPVPManager,CPvpRankDuelComponent,UIGuildDialog,UIIndividualPvPDialog,UIPvPGuildTeamResultDialog,UIPvPRank; send KMS 0x61 -> GMS 0x62 PVP (shift +1); senders CPVPManager/UIIndividualPvPDialog	PVP	none: 1 packets; no full-layout confirmation
+send	0x62	0x63	Maid	confirmed	CUserMaidManager,UIMaidDialog; send KMS 0x62 -> GMS 0x63 Maid (shift +1); senders CUserMaidManager		none: 0 packets; no full-layout confirmation
+send	0x63	0x64	NewsNotification	confirmed	CWebBrowserService; send KMS 0x63 -> GMS 0x64 NewsNotification (shift +1); senders CWebBrowserService		none: 12 packets; no full-layout confirmation
+send	0x64	0x65	SmartRecommendBilling	confirmed	UISmartRecommendBillingDialog; send KMS 0x64 -> GMS 0x65 SmartRecommendBilling (shift +1); senders UISmartRecommendBillingDialog		none: 0 packets; no full-layout confirmation
+send	0x65	0x66	SystemShop	by-model	CNetworkService,InvenSlot,UIItemGachaBoxDialog,UIMeratMarketDialog; shift +1		none: 9 packets; no full-layout confirmation
+send	0x66	0x67	Attendance	by-model	CUserCommandCli,UIAttendGiftDialog,UICashAttendDialog,UIDTAttendPopup,WorldService; shift +1	DailyWonder	none: 86 packets; no full-layout confirmation
+send	0x67	0x68	PcBangBonus	confirmed	UIPcBangDialog,UIUpperHudDialog; send KMS 0x67 -> GMS 0x68 PcBangBonus (shift +1); senders UIPcBangDialog	PCCafeBonus	none: 1 packets; no full-layout confirmation
+send	0x68	0x69	MaidCraftItem	confirmed	CManufactureManager; send KMS 0x68 -> GMS 0x69 MaidCraftItem (shift +1); senders CManufactureManager	RequestManufacturer	none: 0 packets; no full-layout confirmation
+send	0x69	0x6a	RequestUserEnv	by-model	UIAchieveDialog,UIMyInfoDialog; shift +1	RequestUserEnvironment	none: 10 packets; no full-layout confirmation
+send	0x6a	0x6b	Cash	confirmed	CCashMarketMan; send KMS 0x6a -> GMS 0x6b Cash (shift +1); senders CCashMarketMan		none: 27 packets; no full-layout confirmation
+send	0x6b	0x6c	Insignia	confirmed	MyPC,UINameTagSymbolSettingDialog; send KMS 0x6b -> GMS 0x6c Nametag (shift +1); senders UINameTagSymbolSettingDialog	Nametag	none: 13 packets; no full-layout confirmation
+send	0x6c	0x6d	RequestMoveField	confirmed	FUN_140dffdf0,MyPC,UIDarkStreamResultDialog,UIRevivalDialog,UISystemMenuDialog; send KMS 0x6c -> GMS 0x6d RequestMoveField (shift +1); senders MyPC (move field)		none: 169 packets; no full-layout confirmation
+send	0x6d	0x6e	WaitingTicket	by-model	UIServerListDialog; shift +1		none: 0 packets; no full-layout confirmation
+send	0x6e	0x6f	PartySearch	confirmed	CPartyManager; send KMS 0x6e -> GMS 0x6f MatchParty (shift +1); senders CPartyManager (match)	MatchParty	none: 8 packets; no full-layout confirmation
+send	0x6f	0x70	RecallScroll	by-model	UIMessageBox; shift +1		none: 0 packets; no full-layout confirmation
+send	0x70	0x71	PotentialAbility	by-model	no sender found; shift +1		none: 0 packets; no full-layout confirmation
+send	0x71	0x72	EnchantScroll	confirmed	EnchantScrollSlot,UIEnchantScrollDialog,UIMasteryDialog; send KMS 0x71 -> GMS 0x72 EnchantScroll (shift +1); senders UIEnchantScrollDialog		none: 0 packets; no full-layout confirmation
+send	0x72	0x73	GlobalPortal	confirmed	UIGlobalPortalDialog; send KMS 0x72 -> GMS 0x73 GlobalPortal (shift +1); senders UIGlobalPortalDialog		none: 5 packets; no full-layout confirmation
+send	0x73	0x74	Fishing	confirmed	CFishingManager; send KMS 0x73 -> GMS 0x74 Fishing (shift +1); senders CFishingManager		none: 34 packets; no full-layout confirmation
+send	0x74	0x75	PlayInstrument	confirmed	CInstrumentManager,UIMusicConcertDialog; send KMS 0x74 -> GMS 0x75 PlayInstrument (shift +1); senders CInstrumentManager		none: 2 packets; no full-layout confirmation
+send	0x75	0x76	ChangeAttributes	confirmed	PetRemakeOptionBoard,TabContentsPetRemakeOption,UIItemRemakeOptionDialog; send KMS 0x75 -> GMS 0x76 ChangeAttributes (shift +1); senders UIItemRemake*/PetRemakeOption	ChangeAttribute	none: 10 packets; no full-layout confirmation
+send	0x76	0x77	ChangeAttributesScroll	confirmed	UIItemRemakeScrollDialog; send KMS 0x76 -> GMS 0x77 ChangeAttributesScroll (shift +1); senders UIItemRemakeScrollDialog	ChangeAttributeScroll	none: 2 packets; no full-layout confirmation
+send	0x77	0x78	TransferEnchant	confirmed	UIItemEnchantTransformDialog; send KMS 0x77 -> GMS 0x78 TransferEnchant (shift +1); senders UIItemEnchantTransformDialog	ItemEnchantTransform	none: 0 packets; no full-layout confirmation
+send	0x78	0x79	RequestPet	confirmed	CPetManager,MyPC,PetInfoBasic,StateSummon,TabContentsPetCompose,TabContentsPetEvolution,UIItemAutoUseOptionDialog,UIItem; send KMS 0x78 -> GMS 0x79 RequestPet (shift +1); senders CPetManager/TabContentsPet*		none: 31 packets; no full-layout confirmation
+send	0x79	0x7a	RequestPetInventory	confirmed	CPetInventory; send KMS 0x79 -> GMS 0x7a RequestPetInventory (shift +1); senders CPetInventory		none: 196 packets; no full-layout confirmation
+send	0x7a	0x7b	NoticeDialog	confirmed	UILoginNotice; send KMS 0x7a -> GMS 0x7b NoticeDialog (shift +1); senders UILoginNotice		none: 1 packets; no full-layout confirmation
+send	0x7b	0x7c	SkillMacro	confirmed	UISkillCompactControlDialog; send KMS 0x7b -> GMS 0x7c SkillMacro (shift +1); senders UISkillCompactControlDialog	Macro	none: 4 packets; no full-layout confirmation
+send	0x7c	0x7d	Banword	by-model	no sender found; shift +1	BanWord	none: 0 packets; no full-layout confirmation
+send	0x7d	0x7e	CheckCharName	by-model	UIMessageBox; shift +1		none: 6 packets; no full-layout confirmation
+send	0x7e	0x7f	PlatformProtectPacket	by-model	no sender found; shift +1		none: 0 packets; no full-layout confirmation
+send	0x7f	0x80	PlatformAccountSafe	by-model	no sender found; shift +1		none: 0 packets; no full-layout confirmation
+send	0x80	0x81	State	by-model	MyPC; shift +1		none: 5910 packets; no full-layout confirmation
+send	0x81	0x82	MesoMarket	confirmed	BlackMarketPageMesoRegister,BlackMarketPageMesoSearch,CMesoMarketMan; send KMS 0x81 -> GMS 0x82 MesoMarket (shift +1); senders CMesoMarketMan/BlackMarketPageMeso*		none: 8 packets; no full-layout confirmation
+send	0x82	0x83	GlobalFactor	by-model	CSceneStateGame; shift +1		none: 33 packets; no full-layout confirmation
+send	0x83	0x84	SmartPush	confirmed	CSmartPush,CSmartPushSafeWaterRidingToggle,StateAutoInteraction; send KMS 0x83 -> GMS 0x84 SmartPush (shift +1); senders CSmartPush*		none: 0 packets; no full-layout confirmation
+send	0x84	0x85	PlayArcade	confirmed	UIArcadeMainDialog,UIMicroGameCoupleDance; send KMS 0x84 -> GMS 0x85 PlayArcade (shift +1); senders UIArcadeMainDialog		none: 0 packets; no full-layout confirmation
+send	0x85	0x86	EnterEventField	confirmed	UIEnterEventFieldDialog; send KMS 0x85 -> GMS 0x86 EnterEventfield (shift +1); senders UIEnterEventFieldDialog	EnterEventfield	none: 1 packets; no full-layout confirmation
+send	0x86	0x87	CardReverseGame	confirmed	UICardReverseGameDialog; send KMS 0x86 -> GMS 0x87 CardReverseGame (shift +1); senders UICardReverseGameDialog		none: 0 packets; no full-layout confirmation
+send	0x87	0x88	RequestItemLock	confirmed	CItemLockManager; send KMS 0x87 -> GMS 0x88 RequestItemLock (shift +1); senders CItemLockManager		none: 4 packets; no full-layout confirmation
+send	0x88	0x89	ItemSocketSystem	confirmed	FUN_14062abb0,ItemSocketSystemPageGemStoneManage,ItemSocketSystemPageGemStoneUpgrade,ItemSocketSystemPageGemstoneSwap,It; send KMS 0x88 -> GMS 0x89 ItemSocketSystem (shift +1); senders ItemSocketSystemPage*		none: 0 packets; no full-layout confirmation
+send	0x89	0x8a	CharacterAbility	confirmed	CUserCommandCli,UICharacterAbilityDialog; send KMS 0x89 -> GMS 0x8a CharacterAbility (shift +1); senders UICharacterAbilityDialog	CharAbility	none: 1 packets; no full-layout confirmation
+send	0x8a	0x8b	Tutorial	confirmed	CGuideActionClearTutorial; send KMS 0x8a -> GMS 0x8b Tutorial (shift +1); senders CGuideActionClearTutorial		none: 1 packets; no full-layout confirmation
+send	0x8b	0x8c	ItemSocketScroll	confirmed	UIItemSocketScrollDialog; send KMS 0x8b -> GMS 0x8c ItemSocketScroll (shift +1); senders UIItemSocketScrollDialog		none: 0 packets; no full-layout confirmation
+send	0x8c	0x8d	ItemRepack	confirmed	UIItemRePackingScrollDialog; send KMS 0x8c -> GMS 0x8d ItemRepack (shift +1); senders UIItemRePackingScrollDialog	ItemRepackage	none: 0 packets; no full-layout confirmation
+send	0x8d	0x8e	Mapleopoly	confirmed	UIBlueMarbleGameDialog; send KMS 0x8d -> GMS 0x8e DiceGame (shift +1); senders UIBlueMarbleGameDialog	DiceGame	none: 0 packets; no full-layout confirmation
+send	0x8e	0x8f	PremiumClub	confirmed	UIVIPDialog,UIVIPGoodsShopDialog; send KMS 0x8e -> GMS 0x8f PremiumClub (shift +1); senders UIVIPDialog/UIVIPGoodsShopDialog		none: 792 packets; no full-layout confirmation
+send	0x8f	0x90		by-model	UIItemCreateDialog; shift +1		none: 3 packets; no full-layout confirmation
+send	0x90	0x91	HomeAction	by-model	CUGCBallObject,FUN_140dfee10,FUN_140dfeeb0,FUN_140dff210,FUN_140dff2b0,FUN_140dff580,FUN_140dffad0,FUN_140dffdf0,FUN_140; shift +1	HomeGame	none: 430 packets; no full-layout confirmation
+send	0x92	0x93	Mastery	confirmed	UIMasteryDialog; send KMS 0x92 -> GMS 0x93 Mastery (shift +1); senders UIMasteryDialog	ConstructRecipe	none: 1 packets; no full-layout confirmation
+send	0x93	0x94	ConstructShop	by-model	no sender found; shift +1		none: 0 packets; no full-layout confirmation
+send	0x95	0x96	Club	confirmed	CClubCli,CClubClientManager; send KMS 0x95 -> GMS 0x96 Club (shift +1); senders CClubCli/CClubClientManager		none: 6 packets; no full-layout confirmation
+send	0x96	0x97	NexonArena	by-model	no sender found; shift +1	MeretPurchase	none: 0 packets; no full-layout confirmation
+send	0x97	0x98	EventReward	confirmed	GameEventLongTermAttendGiftCli,UIBingoEventDialog,UIBurningEventWidgetDialog,UICharacterListDialog,UICollectItemGroupEve; send KMS 0x97 -> GMS 0x98 EventReward (shift +1); senders event dialogs (bingo/attend)		none: 122 packets; no full-layout confirmation
+send	0x98	0x99	NameChange	by-model	UIInventoryDialog; shift +1		none: 0 packets; no full-layout confirmation
+send	0x99	0x9a	AttributePoint	confirmed	CStatPointManager; send KMS 0x99 -> GMS 0x9a AttributePoint (shift +1); senders CStatPointManager	StatPoint	none: 1685 packets; no full-layout confirmation
+send	0x9a	0x9b	ItemRepeat	by-model	UIItemCreateDialog; shift +1		none: 0 packets; no full-layout confirmation
+send	0x9b	0x9c	ItemExchangeScroll	confirmed	ItemExchangeSlot,UIItemExchangeScrollDialog; send KMS 0x9b -> GMS 0x9c ItemExchangeScroll (shift +1); senders UIItemExchangeScrollDialog	ItemExchange	none: 0 packets; no full-layout confirmation
+send	0x9c	0x9d	RequestTutorialItem	confirmed	CGuideActionRequestTutorialItem; send KMS 0x9c -> GMS 0x9d RequestTutorialItem (shift +1); senders CGuideActionRequestTutorialItem		none: 1 packets; no full-layout confirmation
+send	0x9d	0x9e	DungeonReward	confirmed	UIDungeonRewardDialog,UIPartyDialog; send KMS 0x9d -> GMS 0x9e DungeonReward (shift +1); senders UIDungeonRewardDialog		none: 0 packets; no full-layout confirmation
+send	0x9e	0x9f	ItemBillboard	confirmed	UIItemBillBoardDialog,UIMessenger; send KMS 0x9e -> GMS 0x9f ItemBillboard (shift +1); senders UIItemBillBoardDialog	PlayerHost	none: 0 packets; no full-layout confirmation
+send	0x9f	0xa0	TreasureMap	confirmed	UIItemTreasureMapDialog; send KMS 0x9f -> GMS 0xa0 TreasureMap (shift +1); senders UIItemTreasureMapDialog		none: 0 packets; no full-layout confirmation
+send	0xa0	0xa1	ItemExtractionScroll	confirmed	UIItemExtractionScrollDialog; send KMS 0xa0 -> GMS 0xa1 ItemExtractionScroll (shift +1); senders UIItemExtractionScrollDialog	ItemExtraction	none: 0 packets; no full-layout confirmation
+send	0xa1	0xa2	Mentor	confirmed	ASMentoringRewardPage,UIGameMenuDialog,UIInviteMentoringDialog,UIMentoringMenteeRegisterPage,UIMentoringMentorRegisterPa; send KMS 0xa1 -> GMS 0xa2 Mentor (shift +1); senders UIInviteMentoringDialog		none: 0 packets; no full-layout confirmation
+send	0xa2	0xa3	RequestSkillBookTree	confirmed	UISkillBookTreeDialog; send KMS 0xa2 -> GMS 0xa3 RequestSkillBookTree (shift +1); senders UISkillBookTreeDialog		none: 55 packets; no full-layout confirmation
+send	0xa3	0xa4	BuddyEmote	confirmed	CNetworkService,RequestCoupleEmotion,StateCoupleEmotion,StateSkill,UIMessageBox; send KMS 0xa3 -> GMS 0xa4 BuddyEmote (shift +1); senders StateCoupleEmotion		none: 0 packets; no full-layout confirmation
+send	0xa4	0xa5	BuddyBadge	confirmed	CoupleEffectSystem; send KMS 0xa4 -> GMS 0xa5 BuddyBadge (shift +1); senders CoupleEffectSystem		none: 67 packets; no full-layout confirmation
+send	0xa5	0xa6	SyncWorld	by-model	WorldService; shift +1		none: 0 packets; no full-layout confirmation
+send	0xa6	0xa7	BirthdayCard	confirmed	UIBirthdayCardDialog; send KMS 0xa6 -> GMS 0xa7 BirthdayCard (shift +1); senders UIBirthdayCardDialog		none: 0 packets; no full-layout confirmation
+send	0xa7	0xa8	SuperWorldChat	confirmed	CUserCommandCli,SuperWorldChat,UISelectSuperWorldChatDialog; send KMS 0xa7 -> GMS 0xa8 SuperWorldChat (shift +1); senders UISelectSuperWorldChatDialog		none: 0 packets; no full-layout confirmation
+send	0xa8	0xa9	Microgame	confirmed	FUN_140b73d60,FUN_140b751b0,FUN_140bac700,FUN_140bacda0,UIBannerEventListenerCoupleDance,UIBannerEventListenerRpsGame,UI; send KMS 0xa8 -> GMS 0xa9 Microgame (shift +1); senders UICoupleDanceEventDialog	RockPaperScissors	none: 30 packets; no full-layout confirmation
+send	0xa9	0xaa	StateReact	confirmed	CReactor; +1: CReactor state react		none: 0 packets; no full-layout confirmation
+send	0xaa	0xab	TreeWatering	confirmed	StateTreeWatering; edge +1: StateTreeWatering byte 0/1		none: 0 packets; no full-layout confirmation
+send	0xab	0xad	SpectateMushtopia	confirmed	StateObserver; edge +2: StateObserver (spectate); kms2 branch has Survival here (one behind: exe sender is semantic)		none: 0 packets; no full-layout confirmation
+send	0xac	0xae	Prestige	confirmed	UIAdventureLevelDialog,UIAdventureLevelOldDialog; send KMS 0xac -> GMS 0xae Prestige (shift +2); senders UIAdventureLevelDialog; kms2 branch has SpectateMushtopia here (one behind: exe sender is semantic)		none: 3 packets; no full-layout confirmation
+send	0xad	0xaf	Lapenshard	confirmed	LapenshardSlot,UILapenshardEquipTab,UILapenshardUpgradeTab; send KMS 0xad -> GMS 0xaf Lapenshard (shift +2); senders UILapenshard*; kms2 branch has Prestige here (one behind: exe sender is semantic)	ItemLapenshard	none: 17 packets; no full-layout confirmation
+send	0xae	0xb0	Ugd	by-model	UIGameMakerMainDialog; shift +2; kms2 branch has Lapenshard here (one behind: exe sender is semantic)	UGD	none: 0 packets; no full-layout confirmation
+send	0xaf	0xb1	WorldChampion	confirmed	UIWorldChampionRewardDialog; send KMS 0xaf -> GMS 0xb1 WorldChampion (shift +2); senders UIWorldChampionRewardDialog; kms2 branch has Ugd here (one behind: exe sender is semantic)		none: 0 packets; no full-layout confirmation
+send	0xb0	0xb2	ServerEnter	by-model	CNetworkService; shift +2; kms2 branch has WorldChampion here (one behind: exe sender is semantic)	ResponseServerEnter	none: 600 packets; no full-layout confirmation
+send	0xb1	0xb3	MinimapPing	confirmed	UIMinimapDialog; send KMS 0xb1 -> GMS 0xb3 MinimapPing (shift +2); senders UIMinimapDialog; kms2 branch has ServerEnter here (one behind: exe sender is semantic)		none: 1 packets; no full-layout confirmation
+send	0xb3	0xb5	MsgBox	by-model	no sender found; shift +2		none: 0 packets; no full-layout confirmation
+send	0xb4	0xb6	Wardrobe	confirmed	UIClosetDialog; send KMS 0xb4 -> GMS 0xb6 Wardrobe (shift +2); senders UIClosetDialog; kms2 branch has MsgBox here (one behind: exe sender is semantic)		none: 17 packets; no full-layout confirmation
+send	0xb5	0xb7	SystemInfo	by-model	CNetworkService; shift +2; kms2 branch has Wardrobe here (one behind: exe sender is semantic)		none: 600 packets; no full-layout confirmation
+send	0xb6	0xb8	SidePopup	confirmed	UISidePopupTalk; send KMS 0xb6 -> GMS 0xb8 SidePopup (shift +2); senders UISidePopupTalk; kms2 branch has SystemInfo here (one behind: exe sender is semantic)	FieldWar	none: 2 packets; no full-layout confirmation
+send	0xb7	0xb9	ChatSticker	confirmed	CChatEmoticonCli,UIGroupMessenger,UIMessenger; send KMS 0xb7 -> GMS 0xb9 Messenger (shift +2); senders UIMessenger/UIGroupMessenger; kms2 branch has SidePopup here (one behind: exe sender is semantic)	Messenger	none: 1 packets; no full-layout confirmation
+send	0xb8	0xba	WebScreenshot	confirmed	CImageHttpClient; send KMS 0xb8 -> GMS 0xba WebScreenshot (shift +2); senders CImageHttpClient; kms2 branch has ChatSticker here (one behind: exe sender is semantic)		none: 0 packets; no full-layout confirmation
+send	0xb9	0xbb	FileHash	by-model	no sender found; shift +2; kms2 branch has WebScreenshot here (one behind: exe sender is semantic)		none: 0 packets; no full-layout confirmation
+send	0xba	0xbc	Wedding	confirmed	UIWeddingDialog,UIWeddingGuestPageStranger,UIWeddingInvitationDialog,UIWeddingPageMessage,UIWeddingPageSkill,WeddingMana; send KMS 0xba -> GMS 0xbc Wedding (shift +2); senders WeddingManager; kms2 branch has FileHash here (one behind: exe sender is semantic)	Marriage	none: 2 packets; no full-layout confirmation
+send	0xbb	0xbd	WeddingBillboard	confirmed	UIWeddingBillboardDialog; send KMS 0xbb -> GMS 0xbd WeddingBillboard (shift +2); senders UIWeddingBillboardDialog; kms2 branch has Wedding here (one behind: exe sender is semantic)		none: 3 packets; no full-layout confirmation
+send	0xbc	0xbe	LimitBreak	confirmed	UIUnlimitedEnchantDialog; send KMS 0xbc -> GMS 0xbe LimitBreak (shift +2); senders UIUnlimitedEnchantDialog; kms2 branch has WeddingBillboard here (one behind: exe sender is semantic)		none: 15 packets; no full-layout confirmation
+send	0xbe	0xc0		by-model	UICharacterListDialog; shift +2		none: 0 packets; no full-layout confirmation
+send	0xbf	0xc1		by-model	UICharacterListDialog; shift +2		none: 0 packets; no full-layout confirmation
+send	0xc0	0xc2		by-model	CPersonalInfoAgreement; shift +2		none: 0 packets; no full-layout confirmation
+send	0xc1	0xc3		by-model	HomeBlockManager; shift +2		none: 0 packets; no full-layout confirmation
