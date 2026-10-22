@@ -1,0 +1,3 @@
+13c
+#define EE_MS2_REMOVESTREAMREF_HOOKS  // MS2: see NiMesh.inl RemoveStreamRef (replaces a blank line: keeps __LINE__)
+.

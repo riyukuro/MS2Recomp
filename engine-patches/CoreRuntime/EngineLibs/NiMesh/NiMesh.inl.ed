@@ -18,3 +18,23 @@ extern void (*DAT_143afbb98)();
 extern void (*DAT_143afbba0)();
 #endif
 .
+349a
+#ifdef EE_MS2_REMOVESTREAMREF_HOOKS
+            if (DAT_143afbba0)
+                DAT_143afbba0();
+#endif
+.
+348a
+#ifdef EE_MS2_REMOVESTREAMREF_HOOKS
+            if (DAT_143afbb98)
+                DAT_143afbb98();
+#endif
+.
+342a
+#ifdef EE_MS2_REMOVESTREAMREF_HOOKS
+// MS2: some engine TUs (NiImmediateModeAdapter, NiGeomMorpherConverter) bracket the delete with the
+// renderer lock / unlock hooks, like RemoveAllStreamRefs below (exe 0x141e91554)
+extern void (*DAT_143afbb98)();
+extern void (*DAT_143afbba0)();
+#endif
+.

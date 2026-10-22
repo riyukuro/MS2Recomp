@@ -7,6 +7,11 @@
 155a
     m_kMS2FloatMap.RemoveAll(); // MS2: game 0x141c38400 does this first
 .
+150a
+    // MS2: presized like the other constructor (game 0x141c37c00)
+    m_kSeqDataArray.SetSize(1024);
+    m_kSeqDataArray.SetGrowBy(100);
+.
 149c
     m_uiActivationID(0), m_kMS2FloatMap(37) // MS2
 .

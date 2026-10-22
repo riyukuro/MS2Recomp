@@ -1,0 +1,34 @@
+737a
+    MS2ExcludeFromShadows(m_spParticleContainer); // MS2 (exe 0x141e9d720)
+.
+732a
+// MS2: game scene root (exe 0x143afa980); the list at +0x190 holds the shadow generators
+struct Unk_RsSceneRoot;
+extern Unk_RsSceneRoot* DAT_143afa980;
+// MS2: shadow-exclusion hook installed by the game (exe 0x143afbfc8, game: ms2.cpp)
+extern void (*DAT_143afbfc8)(NiAVObject*);
+
+// MS2: keeps a node out of every shadow (exe 0x141e9d720)
+static void MS2ExcludeFromShadows(NiNode* pkNode)
+{
+    if (DAT_143afbfc8)
+    {
+        DAT_143afbfc8(pkNode);
+        return;
+    }
+    if (!DAT_143afa980)
+        return;
+
+    NiTPointerList<NiShadowGenerator*>& kGenerators =
+        *(NiTPointerList<NiShadowGenerator*>*)((char*)DAT_143afa980 + 0x190);
+    NiTListIterator kPos = kGenerators.GetHeadPos();
+    while (kPos)
+    {
+        NiShadowGenerator* pkGenerator = kGenerators.GetNext(kPos);
+        pkGenerator->AttachUnaffectedCasterNode(pkNode);
+        pkGenerator->AttachUnaffectedReceiverNode(pkNode);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+.
