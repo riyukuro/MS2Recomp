@@ -50,11 +50,12 @@ GB_BAND = (0x141bf0000, 0x142303c10)        # main Gamebryo band (report only)
 GB_TAIL = (0x1427b6c90, 0x1428d6000)        # Gamebryo tail: renderer / shader libs (report only)
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb1"                                  # bump to recompile everything
-MATCH_KEY = "callee-dup"                        # bump to re-match every obj (pairing logic changed)
+MATCH_KEY = "rtti-pin1"                         # bump to re-match every obj (pairing logic changed)
 if bm.CHAIN:
     MATCH_KEY += "-chain"
 LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
 STATIC_NEAR = 0x10000                           # match_obj: a COMDAT caller's static callee only this near the obj's own code
+RELOK_KEY = "relok9:"                         # assign_copies: relocation-consistency cache version
 COPY_ROUNDS = 8                              # assign_copies: offers of an unpaired copy to the next claimant
 LIB_RECIPE = "/obj/lib-"                         # obj path part of the library units' recipes (lib-cef, ...)
 NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
@@ -289,6 +290,7 @@ def match_obj(path):
     copies = {}                  # unpaired name -> the exe functions whose bytes equal it (relocations masked), if several
     weak = {}                    # name -> its non-exact table-name pair, kept if nothing better turns up
     shints = {}                  # static name -> exe VA called by an exact COMDAT-any function (see _hints)
+    rtti = {}                    # the obj's ms_RTTI anchors (see _rtti_clash), found on first use
     for si in obj.func_symbols():
         n = obj.syms[si][0]
         if n.startswith(bm.FUNCLET_PREFIXES):
@@ -301,6 +303,8 @@ def match_obj(path):
         hits = ()
         if va is not None:
             ok = _match(obj, n, va)
+            if ok and _rtti_clash(obj, n, va, rtti):
+                va, ok = None, False      # a table name on another class's copy (the TUs' twins): search instead
             if ok:
                 callees.update(_hints(obj, n, shints))
         if not ok:
@@ -559,6 +563,157 @@ def _small_leaf():
     return out
 
 
+def _reloc_targets(obj, data, fields):
+    """[(field offset, extra, addend, key)] of the function's REL32 relocations; key names the target within the obj"""
+    out = []
+    for f in fields:
+        tsi = f[5]
+        if tsi is not None and bm.REL_REL32 <= f[3] <= bm.REL_REL32 + 5:
+            t = obj.syms[tsi]
+            if t[2] <= 0 or obj.sec(t[2])["chars"] & 0x20 and obj.sec(t[2]).get("comdat", (0,))[0] != 0:
+                continue        # an inline callee has several identical copies in the exe: says nothing of the TU
+            out.append((f[0], f[3] - bm.REL_REL32, struct.unpack_from("<i", data, f[0])[0], (t[0], t[2], t[1])))
+    return out
+
+
+def _rtti_clash(obj, n, va, memo):
+    """the function at `va` loads an ms_RTTI other than the one _exe_anchors finds for the obj: it is another TU's
+    copy (NiDX9/NiD3D10/D3D11PersistentSrcTextureRendererData::GetViewerStrings are byte-identical twins)"""
+    data, fields, _ = obj.function(obj.by_name[n])
+    tg = [r for r in _reloc_targets(obj, data, fields) if r[3][0].startswith("?ms_RTTI@")]
+    if not tg:
+        return False
+    if "anchors" not in memo:
+        def resolve(m, v):
+            d, fl, _ = obj.function(obj.by_name[m])
+            for fo, extra, add, key in _reloc_targets(obj, d, fl):
+                yield key, v + fo + 4 + extra + struct.unpack_from("<i", G["exe"].img, v - G["exe"].base + fo)[0] - add
+        memo["anchors"] = {k: v for k, v in _exe_anchors(obj, resolve).items() if k[0].startswith("?ms_RTTI@")}
+    an, rva = memo["anchors"], va - G["exe"].base
+    return any(key in an and an[key] != va + fo + 4 + extra + struct.unpack_from("<i", G["exe"].img, rva + fo)[0] - add
+               for fo, extra, add, key in tg)
+
+
+def _exe_anchors(obj, resolve):
+    """{relocation key: exe VA} found from the exe alone, not from any pairing: string literals whose text occurs
+    once in .rdata; the class's ms_RTTI, from the copy of its dynamic initializer that loads the class-name string;
+    and its vftable, the .rdata slot holding GetRTTI (`lea rax, [ms_RTTI]; ret`) less the slot's offset"""
+    exe = G["exe"]
+    if "getrtti" not in G:
+        secs = {}
+        for sec in exe.pe.sections:                 # the first of a name (the exe has a second, tiny .text)
+            secs.setdefault(sec.Name.rstrip(b"\0"), (sec.VirtualAddress, sec.Misc_VirtualSize))
+        tva, tsz = secs[b".text"]
+        get = collections.defaultdict(list)
+        for m in re.finditer(rb"\x48\x8d\x05(....)\xc3", exe.img[tva:tva + tsz], re.S):
+            f = exe.base + tva + m.start()
+            get[f + 7 + struct.unpack("<i", m.group(1))[0]].append(f)
+        G["getrtti"], G["secs"] = get, secs
+    get, (rva0, rsz) = G["getrtti"], G["secs"][b".rdata"]
+
+    def find_all(pat, align=1):
+        out, i = [], exe.img.find(pat, rva0, rva0 + rsz)
+        while i >= 0 and len(out) < 3:
+            if i % align == 0:
+                out.append(exe.base + i)
+            i = exe.img.find(pat, i + 1, rva0 + rsz)
+        return out
+    out = {}
+    for t in obj.syms.values():
+        if t[0].startswith("??_C@") and t[2] > 0 and t[1] == 0 and t[3] == 0:
+            data = obj.sec(t[2])["data"]
+            if len(data) >= 6 and data.endswith(b"\0"):
+                # not the tail of a longer string; the linker may put a non-text constant (a float) right before it
+                hits = [h for h in find_all(data) if not 0x20 <= exe.img[h - exe.base - 1] < 0x7f]
+                if len(hits) == 1:
+                    out[(t[0], t[2], t[1])] = hits[0]
+    rtti = {}
+    for n in obj.by_name:
+        m = re.fullmatch(r"\?\?__E\?ms_RTTI@(\w+)@@2VNiRTTI@@B@@YAXXZ", n)
+        if not m:
+            continue
+        data, fields, _ = obj.function(obj.by_name[n])
+        pat = bytearray(data)
+        for f in fields:
+            pat[f[0]:f[0] + f[1]] = b"\0" * f[1]
+        pk = ("thunk", bytes(pat), tuple((f[0], f[1]) for f in fields))
+        if pk not in G:               # the initializers are tail-jump leaves the function map may not list: scan .text
+            rx, o = b"", 0
+            for f in sorted(fields):
+                rx += re.escape(data[o:f[0]]) + b".{%d}" % f[1]
+                o = f[0] + f[1]
+            rx += re.escape(data[o:])
+            tva, tsz = G["secs"][b".text"]
+            G[pk] = [exe.base + tva + m.start() for m in re.finditer(rx, exe.img[tva:tva + tsz], re.S)]
+        good = []
+        for v in G[pk]:
+            at = dict(resolve(n, v))
+            if any(k in out for k in at) and all(out[k] == at[k] for k in at if k in out):
+                good.append(at)
+        if len(good) == 1:
+            for k, tv in good[0].items():
+                if k[0] == f"?ms_RTTI@{m.group(1)}@@2VNiRTTI@@B":
+                    out[k] = rtti[m.group(1)] = tv
+    for t in obj.syms.values():
+        m = re.fullmatch(r"\?\?_7(\w+)@@6B@", t[0])
+        if not m or t[2] <= 0 or m.group(1) not in rtti or len(get.get(rtti[m.group(1)], ())) != 1:
+            continue
+        for off, si, ty in obj.sec(t[2])["relocs"]:
+            if obj.syms[si][0] == f"?GetRTTI@{m.group(1)}@@UEBAPEBVNiRTTI@@XZ":
+                slots = find_all(struct.pack("<Q", get[rtti[m.group(1)]][0]), 8)
+                if len(slots) == 1:
+                    out[(t[0], t[2], t[1])] = slots[0] - (off - t[1])
+                break
+    return out
+
+
+def _relok_job(job):
+    """{"name@va": 1 | 0 | -1}: the copy's relocations resolve to the exe VAs the obj's exact pairs give the same
+    targets (1), none of its targets is known (0), or one resolves elsewhere (-1: another TU's copy)"""
+    k, path, exact, todo = job
+    exe = G["exe"]
+    out = {}
+    try:
+        obj = bm.Obj(path)
+    except Exception:
+        return k, out
+
+    def resolve(n, va):
+        data, fields, _ = obj.function(obj.by_name[n])
+        rva = va - exe.base
+        for fo, extra, add, key in _reloc_targets(obj, data, fields):
+            yield key, va + fo + 4 + extra + struct.unpack_from("<i", exe.img, rva + fo)[0] - add
+    # anchors: only the obj's own (non pick-any COMDAT) exact pairs; a COMDAT's exact pair may itself be a sibling
+    # instantiation's byte-identical copy. A target the anchors disagree on is dropped.
+    seen = collections.defaultdict(set)
+    for n, va in exact:
+        if n in obj.by_name and obj.sec(obj.syms[obj.by_name[n]][2]).get("comdat", (0,))[0] != 2:
+            for key, t in resolve(n, va):
+                seen[key].add(t)
+    known = {key: next(iter(ts)) for key, ts in seen.items() if len(ts) == 1}
+    strong = _exe_anchors(obj, resolve)      # the class's own RTTI static / vftable: certain, and they tell its TU
+    known.update(strong)
+    for n, hits in todo:
+        if n not in obj.by_name:
+            continue
+        at = {v: dict(resolve(n, v)) for v in hits}
+        # only a target the copies disagree on tells them apart (one all of them share, e.g. a merged string, does not)
+        disc = {key for key in known if len({m.get(key) for m in at.values()}) > 1}
+        for v, m in at.items():
+            # a vote: an anchor may itself be a same-named sibling TU's copy (the material node libraries' static
+            # CreateFragmentN), so one stray target does not rule a copy out; only agreement on a TU-private target
+            # (static, own function) confirms it, a shared COMDAT one (vftable, string) can only tell against it
+            ks = disc & m.keys()
+            bad = sum(known[key] != m[key] for key in ks)
+            good = len(ks) - bad
+            r = -1 if bad > good else 0
+            if good > bad and any(known[key] == m[key] and (key in strong or obj.sec(key[1]).get("comdat", (0,))[0] == 0)
+                                  for key in ks):
+                r = 1
+            out[f"{n}@{v:x}"] = r
+    return k, out
+
+
 def assign_copies(res, cgroups, paths, j, log=print):
     """Pair the objs' unpaired functions that have several byte-identical exe copies (template instantiations of
     same-size types, e.g. map<utf8string,int> / map<utf8string,unsigned int>, kept apart by the linker): every copy no
@@ -574,8 +729,35 @@ def assign_copies(res, cgroups, paths, j, log=print):
             if gid in cgroups:
                 groups[(k, tuple(cgroups[gid]))].append(n)
 
+    # relocation consistency (gb12): the obj's exact pairs give exe VAs for its relocation targets (vftable, RTTI,
+    # strings, statics); a copy whose relocations resolve elsewhere is another TU's (sibling classes' CreateObject /
+    # ??_G / CreateClone are byte-identical but for those), one that resolves the same is the obj's own
+    rjobs = []
+    for k, c in res.items():
+        todo = sorted((n, tuple(cgroups[gid])) for n, gid in c.get("cands", ()) if gid in cgroups)
+        if not todo or k not in paths:
+            continue
+        exact = sorted((n, va) for n, va, ok, _ in c["pairs"] if ok)
+        rk = RELOK_KEY + hashlib.sha1(repr((exact, todo)).encode()).hexdigest()[:16]
+        if c.get("relok", {}).get("key") != rk:
+            rjobs.append((rk, (k, paths[k], exact, todo)))
+    if rjobs:
+        log(f"engine: copy relocation targets of {len(rjobs)} obj(s) ...")
+        rks = {jb[0]: rk for rk, jb in rjobs}
+        with Pool(max(1, j), initializer=_init) as p:
+            for k, out in p.imap_unordered(_relok_job, [jb for _, jb in rjobs], chunksize=4):
+                res[k]["relok"] = {"key": rks[k], "ok": out}
+    rel = {k: c.get("relok", {}).get("ok", {}) for k, c in res.items()}
+
+    def xview(k):
+        # exact copy matches, less those another TU's relocation targets rule out
+        r = rel.get(k, {})
+        return {t: b and r.get(t, 0) >= 0 for t, b in res[k].get("xok", {}).items()}
+
     def dist(k, v):
-        own = res[k].get("own") or ()
+        # an exact copy pair of an earlier round anchors the obj too (an obj whose only own code was a copy, e.g. a
+        # NiPSys* modifier's CreateObject, then pulls its ??_G / ctor copies next to it)
+        own = list(res[k].get("own") or ()) + [a for _, a in xpairs.get(k, ())]
         if own:
             return min(abs(v - a) for a in own)
         ex = [va for _, va, ok, _ in res[k]["pairs"] if ok]
@@ -589,9 +771,14 @@ def assign_copies(res, cgroups, paths, j, log=print):
             for v in hits:
                 if v in claimed or (v, k) in refused:
                     continue
+                rv = [rel.get(k, {}).get(f"{n}@{v:x}", 0) for n in ns]
+                if rv and min(rv) == -1 and max(rv) == -1:
+                    continue                              # every name of the group resolves to other targets there
                 d = dist(k, v)
                 if v in small_leaf and d > LEAF_NEAR:     # a few-byte leaf body (ret, return a constant) says
                     continue                              # nothing about its TU: only near the obj's own code
+                if max(rv, default=0) == 1:
+                    d -= 1 << 50                          # its relocations confirm the obj: before any distance
                 if v not in owner or (d, k) < owner[v]:
                     owner[v] = (d, k)
         todo = collections.defaultdict(list)
@@ -603,7 +790,7 @@ def assign_copies(res, cgroups, paths, j, log=print):
         if not todo:
             break
         jobs = [(paths[k], prs, res[k].get("xok", {}), k) for k, prs in todo.items()
-                if k in paths and _greedy(prs, res[k].get("xok", {})) is None]
+                if k in paths and _greedy(prs, xview(k)) is None]
         if jobs:
             log(f"engine: pairing byte-identical copies in {len(jobs)} obj(s) ...")
             byp = {p: k for p, _, _, k in jobs}
@@ -612,7 +799,7 @@ def assign_copies(res, cgroups, paths, j, log=print):
                     res[byp[path]]["xok"] = xok
         grew, r0 = False, len(refused)
         for k, prs in todo.items():
-            got = _greedy(prs, res[k].get("xok", {})) or ()
+            got = _greedy(prs, xview(k)) or ()
             xpairs[k] += got
             claimed |= {v for _, v in got}
             grew |= bool(got)
@@ -624,6 +811,415 @@ def assign_copies(res, cgroups, paths, j, log=print):
 
 
 # ---------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------
+# block pass (2026-10-22 gb12): a TU's dynamic initializers (.text$di) and atexit destructors (.text$yd) are one
+# section per function; the linker lays an obj's sections of one name out contiguously, in the obj's section order, at
+# the section alignment. Header statics (NiXKeyregisterloaderreturn, efd kCAT_* FixedStrings, NiFloodgateSDM) give
+# every includer the same byte-identical functions (hundreds of copies), which assign_copies cannot place (its
+# distance is to the obj's .text code, far away). Here each obj's whole block is placed: an exe base where every
+# function's masked bytes match; relocations into the obj's own (non-COMDAT) data sections that agree on one base per
+# section are counted as a score (the exe TU's data layout may differ a little), used only to rank placements.
+BLOCK_SECS = (".text$di", ".text$yd")
+BLOCK_KEY = "blk7"
+
+
+def _block_layout(obj, secname):
+    """[(symbol, offset, data, fields, leaf, alignment)] of the obj's functions in sections named secname, in link
+    order"""
+    secs = [(i + 1, s) for i, s in enumerate(obj.sections) if s["name"] == secname and s["chars"] & 0x20]
+    fsyms = {}
+    for si in obj.func_symbols():
+        n, v, sn = obj.syms[si][0], obj.syms[si][1], obj.syms[si][2]
+        if not n.startswith(bm.FUNCLET_PREFIXES):
+            fsyms.setdefault(sn, []).append((v, si))
+    out, off = [], 0
+    for sn, s in secs:
+        al = 1 << (((s["chars"] >> 20) & 0xF) - 1) if (s["chars"] >> 20) & 0xF else 16
+        off = (off + al - 1) & -al
+        for v, si in sorted(fsyms.get(sn, ())):
+            data, fields, unw = obj.function(si)
+            out.append((obj.syms[si][0], off + v, bytes(data), fields, unw is None, al))
+        off += s["size"]
+    return out
+
+
+def _block_cands(obj, lay):
+    """[(base, score, bad, shifts)] where the block lay fits the exe; score = own-data relocations agreeing on a base
+    per section, bad = functions (at most 1/8) whose bytes differ, shifts = [[index, delta]] of the functions placed
+    off their obj offset (after a function whose exe size differs)"""
+    exe = G["exe"]
+    if not lay:
+        return []
+    pats = []
+    for n, off, data, fields, leaf, al in lay:
+        m = bytearray(b"\xff") * len(data)
+        loc = []
+        for f in fields:
+            for k in range(f[0], min(f[0] + f[1], len(data))):
+                m[k] = 0
+            tsi = f[5]
+            if tsi is not None and bm.REL_REL32 <= f[3] <= bm.REL_REL32 + 5:
+                t = obj.syms[tsi]
+                if t[2] > 0 and not obj.sec(t[2])["chars"] & 0x20 and obj.sec(t[2]).get("comdat", (0,))[0] == 0:
+                    loc.append((f[0], f[3] - bm.REL_REL32, struct.unpack_from("<i", data, f[0])[0] + 0, t[2], t[1]))
+        mi = int.from_bytes(bytes(m), "little")
+        pats.append((len(data), mi, int.from_bytes(data, "little") & mi, loc, al))
+    # seed: the non-leaf function with the fewest (but some) masked hits
+    best = None
+    for i, (n, off, data, fields, leaf, al) in enumerate(lay):
+        if leaf:
+            continue
+        hits = _search(obj, obj.by_name[n])
+        if hits and (best is None or len(hits) < len(best[1])):
+            best = (i, hits)
+        if 0 < len(hits) <= 2:
+            break
+    if best is None:
+        return []
+    starts = G.get("starts")
+    if starts is None:
+        starts = G["starts"] = sorted(exe.rf)
+
+    def fits(i, va):
+        """None: the exe function at va is ours; else the size of the (different) exe function there, or -1"""
+        ln, mi, want, loc, al = pats[i]
+        rva = va - exe.base
+        if not _allowed(va) or _in_game(va):
+            return -1
+        if (rva not in exe.rf or exe.chain_end(rva) - rva == ln) and \
+                int.from_bytes(bytes(exe.img[rva:rva + ln]), "little") & mi == want:
+            return None
+        # a function the exe builds differently (MS2 change, other inlining): tolerated where the exe has a
+        # function of its own (with unwind data, so its size is known)
+        return exe.chain_end(rva) - rva if rva in exe.rf else -1
+    # no tolerance: blocks are mostly identical header thunks, so a block with one differing function fits at many
+    # wrong places (tried 1/8 in gb12: NiBezPosKey's thunks landed on NiAlphaController's block)
+    out, lim = [], 0
+    for h in best[1]:
+        si = best[0]
+        pos, bad = {si: h}, 0
+        # walk forward: each function follows the previous one's exe size at its own section alignment
+        for i in range(si, len(pats)):
+            if i > si:
+                pos[i] = (end + pats[i][4] - 1) & -pats[i][4]
+            r = fits(i, pos[i])
+            if r == -1:
+                bad = len(pats)
+                break
+            if r is not None:
+                bad += 1
+            end = pos[i] + (pats[i][0] if r is None else r)
+            if bad > lim:
+                break
+        # walk back: the previous function ends right below (our size if it matches there, else the exe function
+        # that starts before)
+        for i in range(si - 1, -1, -1):
+            if bad > lim:
+                break
+            nxt = pos[i + 1]
+            a = pats[i][4]
+            guess = (nxt - pats[i][0]) & -a
+            if fits(i, guess) is None and ((guess + pats[i][0] + pats[i + 1][4] - 1) & -pats[i + 1][4]) == nxt:
+                pos[i] = guess
+                continue
+            j = bisect.bisect_left(starts, nxt - exe.base) - 1
+            if j < 0:
+                bad = len(pats)
+                break
+            pos[i] = starts[j] + exe.base
+            r = fits(i, pos[i])
+            if r is None or r == -1 or ((pos[i] + r + pats[i + 1][4] - 1) & -pats[i + 1][4]) != nxt:
+                bad = len(pats)
+                break
+            bad += 1
+        if bad > lim:
+            continue
+        bases = collections.defaultdict(collections.Counter)
+        for i, va in pos.items():
+            rva = va - exe.base
+            if fits(i, va) is None:
+                for fo, extra, add, sn, sv in pats[i][3]:
+                    disp = struct.unpack_from("<i", exe.img, rva + fo)[0]
+                    bases[sn][va + fo + 4 + extra + disp - add - sv] += 1
+        base = pos[0] - lay[0][1]
+        shifts = [[i, va - base - lay[i][1]] for i, va in sorted(pos.items()) if va != base + lay[i][1]]
+        # score: relocations into the obj's own data that agree with one base per section (the exe TU's data layout
+        # may differ a little, so this only ranks placements)
+        out.append((base, sum(c.most_common(1)[0][1] for c in bases.values()), bad, shifts))
+    return out
+
+
+def _block_job(job):
+    path, win = job
+    G["win"] = win
+    out = {}
+    try:
+        obj = bm.Obj(path)
+    except Exception:
+        return path, out
+    for sec in BLOCK_SECS:
+        lay = _block_layout(obj, sec)
+        if lay:
+            out[sec] = {"lay": [[n, off, len(d)] for n, off, d, _, _, _ in lay],
+                        "cands": [list(c) for c in _block_cands(obj, lay)]}
+    return path, out
+
+
+def assign_blocks(res, paths, windows, j, log=print):
+    """place every obj's .text$di / .text$yd block (see BLOCK_SECS); writes res[key]["bpairs"]"""
+    jobs = []
+    for k, c in res.items():
+        if c.get("blk", {}).get("key") != c["key"] + [BLOCK_KEY] and k in paths:
+            jobs.append((paths[k], unit_window(c["unit"], windows), k))
+    if jobs:
+        log(f"engine: block layouts of {len(jobs)} obj(s) ...")
+        byp = {p: k for p, _, k in jobs}
+        with Pool(max(1, j), initializer=_init) as p:
+            for path, out in p.imap_unordered(_block_job, [(p_, w) for p_, w, _ in jobs], chunksize=4):
+                res[byp[path]]["blk"] = {"key": res[byp[path]]["key"] + [BLOCK_KEY], "secs": out}
+    # exe VAs paired exactly by a name / unique search / callee hint / copy: another TU's function, never inside a
+    # block. A copy pair of a block function is not: assign_copies places those by distance to the obj's .text and
+    # never checks the data they initialise, so the block placement decides them (see the end).
+    blkfn = {k: {n for s in c.get("blk", {}).get("secs", {}).values() for n, _, _ in s["lay"]} for k, c in res.items()}
+    fixed, ex = {}, {}
+    for k, c in res.items():
+        for n, va, ok, how in c["pairs"] + c.get("hpairs", []) + [x for x in c.get("xpairs", []) if x[0] not in blkfn[k]]:
+            if ok:
+                fixed.setdefault(va, set()).add((k, n))
+                ex[(k, n)] = va
+    taken = []          # sorted [(lo, hi, unit)] of placed blocks
+    bp = collections.defaultdict(list)
+    for sec in BLOCK_SECS:
+        todo = []
+        for k, c in res.items():
+            s = c.get("blk", {}).get("secs", {}).get(sec)
+            if not s or not s["cands"]:
+                continue
+            lay = s["lay"]
+            # the obj's own exact pairs inside the block are anchors: a placement must keep every one of them
+            anchors = [(i, ex[(k, n)]) for i, (n, off, _) in enumerate(lay) if (k, n) in ex]
+            good = []
+            for b, score, bad, shifts in s["cands"]:
+                sh = dict(shifts)
+                pos = [b + off + sh.get(i, 0) for i, (n, off, _) in enumerate(lay)]
+                if any(pos[i] != va for i, va in anchors):
+                    continue
+                if any(v in fixed and (k, n) not in fixed[v] for (n, _, _), v in zip(lay, pos)):
+                    continue
+                good.append(((bad, -score), pos))
+            if good:
+                best = min(good)[0]
+                todo.append((k, lay, sorted(g[1] for g in good if g[0] == best)))
+        # fewest (best-ranked) placements first, larger blocks first; a placement never overlaps an earlier one, but
+        # the stock and v2525 objs of one unit share theirs
+        todo.sort(key=lambda t: (len(t[2]), -(t[1][-1][1] + t[1][-1][2]), t[0]))
+        for k, lay, good in todo:
+            u = res[k]["unit"]
+            for pos in good:
+                lo, hi = pos[0], pos[-1] + lay[-1][2]
+                i = bisect.bisect_right(taken, (lo, 1 << 62)) - 1
+                if i >= 0 and taken[i][:3] == (lo, hi, u):
+                    pass
+                elif (i >= 0 and taken[i][1] > lo) or (i + 1 < len(taken) and taken[i + 1][0] < hi):
+                    continue
+                else:
+                    bisect.insort(taken, (lo, hi, u))
+                bp[k] += [(n, v) for (n, _, _), v in zip(lay, pos)]
+                break
+    # verify exactly (unwind included); a placed function that differs stays a functional pair
+    vjobs = [(paths[k], [([n], [v]) for n, v in prs], res[k].get("bok", {})) for k, prs in bp.items()]
+    vjobs = [jb for jb in vjobs if _greedy(jb[1], jb[2]) is None]
+    if vjobs:
+        byp = {paths[k]: k for k in bp}
+        with Pool(max(1, j), initializer=_init) as p:
+            for path, xok in p.imap_unordered(_verify_job, vjobs):
+                res[byp[path]]["bok"] = xok
+    n_ok = 0
+    for k, c in res.items():
+        xok = c.get("bok", {})
+        c["bpairs"] = [[n, v, bool(xok.get(f"{n}@{v:x}")), "block"] for n, v in bp.get(k, ())]
+        n_ok += sum(1 for p in c["bpairs"] if p[2])
+    # an exact block pair supersedes copy pairs of the same function or exe VA
+    bva = {p[1] for c in res.values() for p in c["bpairs"] if p[2]}
+    for k, c in res.items():
+        bn = {p[0] for p in c["bpairs"] if p[2]}
+        if "xpairs" in c:
+            c["xpairs"] = [x for x in c["xpairs"] if x[0] not in bn and x[1] not in bva]
+    log(f"engine: block pairs {sum(len(v) for v in bp.values())} ({n_ok} exact) in {len(bp)} obj(s)")
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# sub-block pass (2026-10-22 gb13): most exe TUs carry a different header-static set than the stock objs (only 16 of
+# the 48 TUs with animation-key loaders have a NiBoolKey thunk; the NiFloodgate/NiCollision/NiParticle SDM objects
+# come and go; the NiPhysX classes' blocks hold only their ms_RTTI initializer), so assign_blocks' whole-layout fit
+# finds no base. Here a block is laid out from an anchor (a block function whose exe VA is certain: an exact
+# non-copy pair, or a thunk whose relocation resolves to a string / ms_RTTI _exe_anchors finds in the exe alone) by an
+# order-preserving walk: the exe function right after (before) a placed one is the obj's next (previous) block
+# function that matches it exactly (bytes, unwind, every relocation to a named symbol); obj functions the exe TU does
+# not have are skipped. Byte-identical thunks of one shape (atexit registrations, kCAT copies) are thus paired k-th to
+# k-th in link order. Only the TU-private statics they write go unchecked (the exe TU's data layout differs with its
+# header set). A run that reaches a VA another TU pairs exactly is dropped whole (it walked past its TU).
+SUB_KEY = "sub3"
+SUB_PAD = 64            # most int3 padding between two functions of a block
+
+
+def _sub_job(job):
+    path, win, todo = job
+    G["win"] = win
+    exe = G["exe"]
+    out = {}
+    try:
+        obj = bm.Obj(path)
+    except Exception:
+        return path, out
+    img, base = exe.img, exe.base
+
+    def resolve(n, va):
+        data, fields, _ = obj.function(obj.by_name[n])
+        rva = va - base
+        for fo, extra, add, key in _reloc_targets(obj, data, fields):
+            yield key, va + fo + 4 + extra + struct.unpack_from("<i", img, rva + fo)[0] - add
+    strong = None
+    for sec, anchors in todo.items():
+        lay = _block_layout(obj, sec)
+        if not lay:
+            continue
+        pats = []
+        for n, off, data, fields, leaf, al in lay:
+            m = bytearray(b"\xff") * len(data)
+            for f in fields:
+                m[f[0]:f[0] + f[1]] = b"\0" * min(f[1], max(0, len(data) - f[0]))
+            mi = int.from_bytes(bytes(m), "little")
+            pats.append((len(data), mi, int.from_bytes(data, "little") & mi, al))
+        memo = {}
+
+        def fit(i, va):
+            if (i, va) in memo:
+                return memo[(i, va)]
+            ln, mi, want, al = pats[i]
+            rva = va - base
+            ok = (va & (al - 1)) == 0 and _allowed(va) and not _in_game(va) and 0 < rva < len(img) - ln and \
+                (rva not in exe.rf or exe.chain_end(rva) - rva == ln) and \
+                int.from_bytes(bytes(img[rva:rva + ln]), "little") & mi == want and _match(obj, lay[i][0], va)
+            memo[(i, va)] = ok
+            return ok
+        idx = {n: i for i, (n, *_) in enumerate(lay)}
+        anc = {idx[n]: va for n, va in anchors.items() if n in idx}
+        # anchors from the exe alone: a block function referencing a target _exe_anchors pins (class-name string,
+        # ms_RTTI), found once in .text with those targets
+        if strong is None:
+            strong = _exe_anchors(obj, resolve)
+        for i, (n, off, data, fields, leaf, al) in enumerate(lay):
+            if i in anc:
+                continue
+            keys = {r[3] for r in _reloc_targets(obj, data, fields)} & strong.keys()
+            if not keys:
+                continue
+            pk = ("subthunk", bytes(data), tuple((f[0], f[1]) for f in fields))
+            if pk not in G:
+                rx, o = b"", 0
+                for f in sorted(fields):
+                    rx += re.escape(data[o:f[0]]) + b".{%d}" % f[1]
+                    o = f[0] + f[1]
+                rx += re.escape(data[o:])
+                tva, tsz = G["secs"][b".text"]
+                G[pk] = [base + tva + m.start() for m in re.finditer(rx, img[tva:tva + tsz], re.S)]
+            good = [v for v in G[pk] if all(dict(resolve(n, v)).get(k) == strong[k] for k in keys)]
+            if len(good) == 1 and fit(i, good[0]):
+                anc[i] = good[0]
+        runs = []
+        for i0, va0 in sorted(anc.items()):
+            if not fit(i0, va0) and anchors.get(lay[i0][0]) != va0:
+                continue
+            run = {i0: va0}
+            i, va = i0, va0
+            while True:                                   # forward: the next exe function is a later obj function
+                nxt = va + pats[i][0]
+                while nxt - (va + pats[i][0]) < SUB_PAD and img[nxt - base] == 0xCC:
+                    nxt += 1
+                j = next((j for j in range(i + 1, len(lay)) if fit(j, nxt)), None)
+                if j is None:
+                    break
+                run[j] = nxt
+                i, va = j, nxt
+            i, va = i0, va0
+            while True:                                   # backward: the exe function ending below is an earlier one
+                e = va
+                while va - e < SUB_PAD and img[e - 1 - base] == 0xCC:
+                    e -= 1
+                j = next((j for j in range(i - 1, -1, -1) if fit(j, e - pats[j][0])), None)
+                if j is None:
+                    break
+                run[j] = e - pats[j][0]
+                i, va = j, e - pats[j][0]
+            runs.append(run)
+        got, bad = {}, False
+        for run in runs:
+            for i, va in run.items():
+                if got.setdefault(i, va) != va:
+                    bad = True        # two anchors place one function differently: no placement
+        vas = list(got.values())
+        if not bad and got and len(set(vas)) == len(vas):
+            out[sec] = [[lay[i][0], va] for i, va in sorted(got.items())]
+    return path, out
+
+
+def assign_subblocks(res, paths, windows, j, log=print):
+    """place the blocks assign_blocks could not (see SUB_KEY); adds exact [name, va, True, "subblock"] to bpairs"""
+    fixed = {}           # exe VA -> units that pair it exactly (not by a copy guess)
+    for k, c in res.items():
+        for n, va, ok, how in c["pairs"] + c.get("hpairs", []) + c.get("bpairs", []):
+            if ok:
+                fixed.setdefault(va, set()).add(c["unit"].lower())
+    jobs = []
+    for k, c in res.items():
+        secs = c.get("blk", {}).get("secs", {})
+        bn = {p[0] for p in c.get("bpairs", []) if p[2]}
+        ex = {n: va for n, va, ok, _ in c["pairs"] + c.get("hpairs", []) + c.get("bpairs", []) if ok}
+        todo = {}
+        for sec, s in secs.items():
+            names = [n for n, _, _ in s["lay"]]
+            if names and not any(n in bn for n in names):
+                todo[sec] = {n: ex[n] for n in names if n in ex}
+        if not todo or k not in paths:
+            continue
+        sk = c["key"] + [SUB_KEY, hashlib.sha1(json.dumps(todo, sort_keys=True).encode()).hexdigest()[:16]]
+        if c.get("sblk", {}).get("key") != sk:
+            jobs.append((paths[k], unit_window(c["unit"], windows), todo, k, sk))
+    if jobs:
+        log(f"engine: sub-block layouts of {len(jobs)} obj(s) ...")
+        byp = {p: (k, sk) for p, _, _, k, sk in jobs}
+        with Pool(max(1, j), initializer=_init) as p:
+            for path, out in p.imap_unordered(_sub_job, [(p_, w, t) for p_, w, t, _, _ in jobs], chunksize=2):
+                k, sk = byp[path]
+                res[k]["sblk"] = {"key": sk, "secs": out}
+    claims = collections.defaultdict(set)
+    runs = []
+    for k, c in sorted(res.items()):
+        for sec, prs in c.get("sblk", {}).get("secs", {}).items():
+            u = c["unit"].lower()
+            if any(va in fixed and u not in fixed[va] for _, va in prs):
+                continue                                  # walked into another TU's block
+            runs.append((k, prs))
+            for _, va in prs:
+                claims[va].add(u)
+    n_ok = 0
+    new = collections.defaultdict(list)
+    for k, prs in runs:
+        own = {p[0] for p in res[k].get("bpairs", []) if p[2]}
+        for n, va in prs:
+            if len(claims[va]) == 1 and n not in own and va not in fixed:
+                new[k].append([n, va, True, "subblock"])
+                n_ok += 1
+    sva = {p[1] for prs in new.values() for p in prs}
+    for k, c in res.items():
+        c["bpairs"] = c.get("bpairs", []) + new.get(k, [])
+        sn = {p[0] for p in new.get(k, ())}
+        if "xpairs" in c:
+            c["xpairs"] = [x for x in c["xpairs"] if x[0] not in sn and x[1] not in sva]
+    log(f"engine: sub-block pairs {n_ok} in {len(new)} obj(s) ({len(runs)} runs)")
+
 
 def run(cache, j=8, filters=(), log=print):
     """Compile + match every engine unit (those whose name contains one of `filters`); returns (results, failed)."""
@@ -687,6 +1283,8 @@ def run(cache, j=8, filters=(), log=print):
         allu = gbtree.load_units(tree)
         assign_copies(res, groups, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, j, log)
         lib_hints(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
+        assign_blocks(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
+        assign_subblocks(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in allu}, windows, j, log)
         used = {g for c in res.values() for _, g in c.get("cands", ())}
         groups = {g: h for g, h in groups.items() if g in used}
         json.dump(groups, open(gpath + ".tmp", "w"))
@@ -731,8 +1329,8 @@ def credit(res, game_rows):
         canon.setdefault(c["unit"].lower(), c["unit"])
     for k, c in sorted(res.items()):
         c = dict(c, unit=canon[c["unit"].lower()])
-        better = {x[0] for x in c.get("xpairs", ())}
-        for sym, va, ok, how in c["pairs"] + c.get("xpairs", []) + c.get("hpairs", []):
+        better = {x[0] for x in c.get("xpairs", []) + c.get("bpairs", []) if x[2]}
+        for sym, va, ok, how in c["pairs"] + c.get("xpairs", []) + c.get("hpairs", []) + c.get("bpairs", []):
             if not ok and sym in better:      # a non-exact table-name pair superseded by an exact copy pair
                 continue
             if how == "name":
