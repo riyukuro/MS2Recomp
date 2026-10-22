@@ -7957,3 +7957,14 @@ sfr_atan2f_thunk	14280f28e	func
 ?TextFieldCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167d50	data
 ?TextFormatCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167e40	data
 ?TextSnapshotCI@fl_text@AS3@GFx@Scaleform@@3UClassInfo@234@B	143167f80	data
+??0EventDispatcher@fl_events@Instances@AS3@GFx@Scaleform@@QEAA@AEAVTraits@InstanceTraits@345@@Z	14245f780	func
+?ContextMenuBuiltInItemsCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d040	data
+?ContextMenuCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d130	data
+?ContextMenuClipboardItemsCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d090	data
+?ContextMenuItemCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d0e0	data
+?KeyLocationCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d1d0	data
+?KeyboardCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d180	data
+?MouseCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d220	data
+?MouseCursorCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d270	data
+?MultitouchCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d2c0	data
+?MultitouchInputModeCI@fl_ui@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316d310	data
