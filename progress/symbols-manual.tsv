@@ -8287,3 +8287,6 @@ compress2	142724100	func
 ?AS3Constructor@Vector_uint@fl_vec@Instances@AS3@GFx@Scaleform@@UEAAXIPEBVValue@456@@Z	142557330	func
 ?ForEachChild_GC@Vector_object@fl_vec@Instances@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@456@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@456@@Z@Z	14255c220	func
 ?SetProperty@Vector_object@fl_vec@Instances@AS3@GFx@Scaleform@@UEAA?AVCheckResult@456@AEBVMultiname@456@AEBVValue@456@@Z	142563cd0	func
+?MonthFromYearDay@Date@fl@Instances@AS3@GFx@Scaleform@@SAJJJ@Z	14241cdc0	func
+?Months@Date@fl@Instances@AS3@GFx@Scaleform@@2QAY0M@$$CBJA	14313e2f0	data
+?YearFromTime@Date@fl@Instances@AS3@GFx@Scaleform@@SANN@Z	1424272a0	func
