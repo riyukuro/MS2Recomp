@@ -362,11 +362,11 @@ public:
     bool FUN_14053c810();    // 0x14053c810
     bool FUN_14053c870();    // 0x14053c870
     bool FUN_14053c8b0();    // 0x14053c8b0
-    bool FUN_14053c8e0(int nJob);    // 0x14053c8e0
-    bool FUN_14053c940(int nGender);     // 0x14053c940 wearable by the gender
-    bool FUN_14053c9a0(unsigned short nLevel);    // 0x14053c9a0
-    bool FUN_14053c9e0(int nGender, int nB);    // 0x14053c9e0
-    bool FUN_14053cae0(int nGender, int nCategory);    // 0x14053cae0
+    int FUN_14053c8e0(int nJob);    // 0x14053c8e0
+    int FUN_14053c940(int nGender);     // 0x14053c940 wearable by the gender
+    int FUN_14053c9a0(unsigned short nLevel);    // 0x14053c9a0
+    int FUN_14053c9e0(int nGender, int nB);    // 0x14053c9e0
+    int FUN_14053cae0(int nGender, int nCategory);    // 0x14053cae0
     bool FUN_14053cb40();    // 0x14053cb40
     bool FUN_14053cbc0();    // 0x14053cbc0
     bool FUN_14053cc00();    // 0x14053cc00
@@ -414,7 +414,7 @@ public:
     int FUN_14053d9d0();    // 0x14053d9d0
     bool FUN_14053da20();    // 0x14053da20
     bool FUN_14053dad0();    // 0x14053dad0
-    bool FUN_14053db80();    // 0x14053db80
+    int FUN_14053db80();    // 0x14053db80
     int FUN_14053dc20();    // 0x14053dc20
     unsigned short FUN_14053dc40();    // 0x14053dc40
     int FUN_14053dc60();    // 0x14053dc60

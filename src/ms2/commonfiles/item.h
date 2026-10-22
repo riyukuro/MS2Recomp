@@ -42,7 +42,7 @@ public:
     int FUN_140630290(unsigned nType, int nWhich, int nSub);
     unsigned short FUN_140630d00();
     float FUN_1406303e0(unsigned nType);
-    bool FUN_1406304b0(int nSub, int nWhich, unsigned nType);
+    int FUN_1406304b0(int nSub, int nWhich, unsigned nType);
     CStringW FUN_1406305e0(int nSub, unsigned nType, void* pArg);
     bool FUN_140630dc0(int nType);
     bool FUN_140630810();

@@ -2039,7 +2039,7 @@ MS2_REPLACE_METHOD(0x1406303E0, CItemStatus, FUN_1406303e0, 197, 0xE7166FB6);
 
 // @0x1406304b0
 // MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
-bool CItemStatus::FUN_1406304b0(int nSub, int nWhich, unsigned nType)
+int CItemStatus::FUN_1406304b0(int nSub, int nWhich, unsigned nType)
 {
     if (nSub != 5)
     {

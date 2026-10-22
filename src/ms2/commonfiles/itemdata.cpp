@@ -593,46 +593,49 @@ bool CItemData::FUN_14053c8b0()
 }
 
 // @0x14053c8e0
-bool CItemData::FUN_14053c8e0(int nJob)
+int CItemData::FUN_14053c8e0(int nJob)
 {
-    return limit.FUN_140545c80(nJob) != 0;
+    int nJobType = nJob;
+    bool bAllowed = limit.FUN_140545c80(nJobType);
+    return bAllowed ? 1 : 0;
 }
 
 // @0x14053c940
-bool CItemData::FUN_14053c940(int nGender)
+int CItemData::FUN_14053c940(int nGender)
 {
     if (limit.genderLimit == 2)
-        return true;
-    return limit.genderLimit == nGender;
+        return 1;
+    return limit.genderLimit == nGender ? 1 : 0;
 }
 
 // @0x14053c9a0
-bool CItemData::FUN_14053c9a0(unsigned short nLevel)
+int CItemData::FUN_14053c9a0(unsigned short nLevel)
 {
-    return limit.levelLimit <= nLevel;
+    return limit.levelLimit <= nLevel ? 1 : 0;
 }
 
 // @0x14053c9e0
-bool CItemData::FUN_14053c9e0(int nGender, int nB)
+int CItemData::FUN_14053c9e0(int nGender, int nB)
 {
     if (FUN_14053d2f0())
     {
-        for (unsigned i = 0; i < FUN_14053eba0()->FUN_14054b3d0(); ++i)
+        for (size_t i = 0; i < FUN_14053eba0()->FUN_14054b3d0(); ++i)
         {
             const ModelGroup* pGroup = FUN_14053eba0()->FUN_14054b2f0(i);
-            for (unsigned j = 0; j < pGroup->FUN_1405450c0(); ++j)
+            for (size_t j = 0; j < pGroup->FUN_1405450c0(); ++j)
             {
-                if (pGroup->FUN_140544fe0(j)->FUN_140544aa0(nGender, nB) != 0)
-                    return true;
+                const ModelPart* pPart = pGroup->FUN_140544fe0(j);
+                if (pPart->FUN_140544aa0(nGender, nB) != 0)
+                    return 1;
             }
         }
-        return false;
+        return 0;
     }
     return FUN_14053c940(nGender);
 }
 
 // @0x14053cae0
-bool CItemData::FUN_14053cae0(int nGender, int nCategory)
+int CItemData::FUN_14053cae0(int nGender, int nCategory)
 {
     if (FUN_14053d2f0() && nCategory != 0 && FUN_14053c620() != nCategory)
         return false;
@@ -1080,18 +1083,20 @@ bool CItemData::FUN_14053dad0()
 }
 
 // @0x14053db80
-bool CItemData::FUN_14053db80()
+int CItemData::FUN_14053db80()
 {
-    if (!FUN_14053d900())
+    if (FUN_14053d900())
     {
-        if (!FUN_14053cd10())
+        if (FUN_14036d570(FUN_140166410(), 0xec))
             return limit.enableRegisterMeratMarket;
-        if (!FUN_14036d570(FUN_140166410(), 0xa9))
-            return false;
-        return limit.enableRegisterMeratMarket;
+        return 0;
     }
-    if (!FUN_14036d570(FUN_140166410(), 0xec))
-        return false;
+    if (FUN_14053cd10())
+    {
+        if (FUN_14036d570(FUN_140166410(), 0xa9))
+            return limit.enableRegisterMeratMarket;
+        return 0;
+    }
     return limit.enableRegisterMeratMarket;
 }
 

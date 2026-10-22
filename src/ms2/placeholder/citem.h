@@ -171,9 +171,9 @@ public:
   int FUN_140526100();
   int FUN_1405262c0();
   bool FUN_140526320();
-  bool FUN_140526790(int);
-  bool FUN_1405267d0(int);
-  bool FUN_140526810(unsigned short);
+  int FUN_140526790(int);
+  int FUN_1405267d0(int);
+  int FUN_140526810(unsigned short);
   // Scalar accessors (item.cpp, w87): plain field getters/setters; names are by offset.
   int FUN_14052a020();
   void FUN_14052a040(int);

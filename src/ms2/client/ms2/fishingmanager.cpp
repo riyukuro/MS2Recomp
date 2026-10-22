@@ -1119,8 +1119,8 @@ int CFishingManager::FUN_140cdbbd0(MS2Ptr<CItem> rod)
         return 0;
     if (rod->FUN_140525e00() != 0 && !pPC->vfunc_146())
         return 0;
-    unsigned short nLevel = pPC->vfunc_78();
-    if (!rod->FUN_140526810(nLevel))
+
+    if (!rod->FUN_140526810(pPC->vfunc_78()))
         return 0;
     if (!rod->FUN_140526790(pPC->FUN_141654700()))
         return 0;
