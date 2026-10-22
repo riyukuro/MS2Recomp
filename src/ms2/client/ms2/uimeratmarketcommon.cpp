@@ -965,7 +965,7 @@ int FUN_140ec04b0(CMeratMarketPremiumProduct* pProduct)
 }
 
 // ---- sort drop downs, UGC checks and the bill dialog start ----
-CStringW FUN_140c160b0(CStringW strFormat, __int64* pValue, const CStringW& strArg, int n);
+CStringW FUN_140c160b0(CStringW strFormat, const __int64& nValue);
 void FUN_140d73ff0(CStringW strText);
 void FUN_140d73bc0(int nId, int a, int b, CStringW strTag);
 void FUN_141275260(int nStringId, int a, int b);
@@ -1032,15 +1032,17 @@ CStringW FUN_140ebd9d0(bool bSelect, __int64 nCur)
 
 // The star point text of a product.
 // @0x140ec05f0
-CStringW FUN_140ec05f0(CMeratMarketPremiumProduct* pProduct, __int64 nUnused, const CStringW& strArg)
+CStringW FUN_140ec05f0(CMeratMarketPremiumProduct* pProduct)
 {
     if (!FUN_1406a5930())
         return CStringW(L"");
     if (!pProduct->FUN_14069ff00())
         return CStringW(L"");
     __int64 nPoint = pProduct->GetPoint();
-    return FUN_140c160b0(CStringW(L"s_meratmarket_text_add_star_point"), &nPoint, strArg, 0);
+    CStringW strText = FUN_140c160b0(CStringW(L"s_meratmarket_text_add_star_point"), nPoint);
+    return strText;
 }
+MS2_REPLACE(0x140EC05F0, FUN_140ec05f0, 258, 0x533F6FAB);
 
 // The data provider as this unit creates it (ctor 0x1422deec0, dtor 0x1422df070: a second copy of ASDataProvider's).
 class Unk_McDataProvider : public ASArray
