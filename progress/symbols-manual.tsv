@@ -8343,5 +8343,12 @@ compress2	142724100	func
 ?DAT_143a2d128@@3QBUThunkInfo@AS3@GFx@Scaleform@@B	143a2d128	data
 ?GetControllerMaskByFocusGroup@MovieImpl@GFx@Scaleform@@QEAAII@Z	14256f050	func
 ?FindExportedResource@MovieImpl@GFx@Scaleform@@QEAA_NPEAVMovieDefImpl@23@PEAUResourceBindData@23@AEBVString@3@@Z	14256ec50	func
+?SetChildIndex@AvmDisplayObjContainer@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObjectBase@34@I@Z	142526610	func
+?SwapChildrenAt@AvmDisplayObjContainer@AS3@GFx@Scaleform@@QEAAXII@Z	14252e6d0	func
 ?IsEmpty@NiString@@QEBA_NXZ	141d5f0e0	func
 ?CompareNoCase@NiString@@QEBAHPEBD@Z	141d5d390	func
+?SetPixel@DrawableImage@Render@Scaleform@@QEAA_NJJVColor@23@@Z	1425eef90	func
+?SetPixel32@DrawableImage@Render@Scaleform@@QEAA_NJJVColor@23@@Z	1425eef20	func
+?UnloadMovie@MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVLoader@fl_display@Instances@234@_N1@Z	1425305f0	func
+?AddNewLoadQueueEntry@MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVURLRequest@fl_net@Instances@234@PEAVLoader@fl_display@7234@W4LoadMethod@LoadQueueEntry@34@@Z	1424e9090	func
+?AddNewLoadQueueEntry@MovieRoot@AS3@GFx@Scaleform@@QEAAXPEAVByteArray@fl_utils@Instances@234@PEAVLoader@fl_display@7234@W4LoadMethod@LoadQueueEntry@34@@Z	1424e9010	func
