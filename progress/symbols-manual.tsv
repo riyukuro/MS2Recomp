@@ -8195,3 +8195,17 @@ compress2	142724100	func
 ?vfunc_1@NotifyOpenDialogByScene@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db51c0	func
 ?vfunc_1@NotifyUseSKill@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4670	func
 ?vfunc_1@NotifyUgcDownloadComplete@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4250	func
+?GetEventClass@AppLifecycleEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	142469fa0	func
+?GetEventClass@TextEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	14246a090	func
+?GetEventClass@FocusEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	142469fc0	func
+?GetEventClass@GestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	142469fd0	func
+?GetEventClass@KeyboardEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	14246a010	func
+?GetEventClass@MouseEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	14246a020	func
+?GetEventClass@PressAndTapGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	14246a060	func
+?GetEventClass@ProgressEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	14246a070	func
+?GetEventClass@StageOrientationEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	14246a080	func
+?GetEventClass@TimerEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	14246a0a0	func
+?GetEventClass@TouchEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	14246a0b0	func
+?GetEventClass@TransformGestureEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEAVObject@456@XZ	14246a0c0	func
+?GetEventName@NetStatusEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEBDXZ	14246a0e0	func
+?GetEventName@TimerEvent@fl_events@Instances@AS3@GFx@Scaleform@@UEBAPEBDXZ	14246a0f0	func
