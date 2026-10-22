@@ -480,6 +480,25 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+// Vtable 0x1431d44c8: glass keeps the standard shade trees but derives the output alpha from the lit colour.
+class MS2GlassMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+
+public:
+    MS2GlassMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool HandleMS2FinalPixelOutputs(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource* pkWorldNormal, NiMaterialResource* pkViewVector, NiMaterialResource* pkDiffuseAccum,
+        NiMaterialResource* pkSpecularAccum, NiMaterialResource* pkOpacityAccum);
+    // +0x398; name invented (the node it attaches is CalculateDiffuseOnlyAlpha)
+    virtual bool HandleDiffuseOnlyAlpha(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource* pkDiffuseAccum, NiMaterialResource* pkSpecularAccum, NiMaterialResource* pkOpacityAccum,
+        NiMaterialResource*& pkOpacityOut);
+};
+
+//--------------------------------------------------------------------------------------------------
 #define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
     class classname : public MS2StandardMaterial                                                    \
     {                                                                                               \
@@ -487,7 +506,6 @@ public:
         classname(bool bAutoCreateCaches);                                                          \
     }
 
-MS2_DECLARE_STANDARD_MATERIAL(MS2GlassMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2DecorationMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2GlowMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2TextureDensityMaterial);
