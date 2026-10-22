@@ -453,6 +453,33 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+class MS2ShimmerMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+
+public:
+    MS2ShimmerMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual ReturnCode GenerateShaderDescArray(NiMaterialDescriptor* pkMaterialDescriptor,
+        RenderPassDescriptor* pkRenderPasses, unsigned int uiMaxCount, unsigned int& uiCountAdded);
+    virtual bool HandleFinalVertexOutputs(Context& kContext, NiStandardVertexProgramDescriptor* pkVertDesc,
+        NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldReflect,
+        NiMaterialResource* pkViewPos, NiMaterialResource* pkProjectedPos);
+    virtual bool HandlePreLightTextureApplication(Context& kContext, NiStandardPixelProgramDescriptor* pkPixelDesc,
+        NiMaterialResource*& pkWorldPos, NiMaterialResource*& pkWorldNormal, NiMaterialResource*& pkWorldBinormal,
+        NiMaterialResource*& pkWorldTangent, NiMaterialResource*& pkWorldViewVector,
+        NiMaterialResource*& pkTangentViewVector, NiMaterialResource*& pkMatDiffuseColor,
+        NiMaterialResource*& pkMatSpecularColor, NiMaterialResource*& pkMatSpecularPower,
+        NiMaterialResource*& pkMatGlossiness, NiMaterialResource*& pkMatAmbientColor,
+        NiMaterialResource*& pkMatEmissiveColor, NiMaterialResource*& pkOpacityAccum,
+        NiMaterialResource*& pkAmbientLightAccum, NiMaterialResource*& pkDiffuseLightAccum,
+        NiMaterialResource*& pkSpecularLightAccum, NiMaterialResource*& pkDiffuseTexAccum,
+        NiMaterialResource*& pkSpecularTexAccum, unsigned int& uiTexturesApplied, NiMaterialResource** apkUVSets,
+        unsigned int uiNumStandardUVs, unsigned int uiNumTexEffectUVs);
+};
+
+//--------------------------------------------------------------------------------------------------
 #define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
     class classname : public MS2StandardMaterial                                                    \
     {                                                                                               \
@@ -460,7 +487,6 @@ public:
         classname(bool bAutoCreateCaches);                                                          \
     }
 
-MS2_DECLARE_STANDARD_MATERIAL(MS2ShimmerMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2GlassMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2DecorationMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2GlowMaterial);
