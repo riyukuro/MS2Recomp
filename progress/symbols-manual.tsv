@@ -7971,3 +7971,13 @@ sfr_atan2f_thunk	14280f28e	func
 ?GetMaxTouchPoints@MovieImpl@GFx@Scaleform@@QEBAIXZ	14256f780	func
 ?GetMultitouchInputMode@MovieImpl@GFx@Scaleform@@QEBA?AW4MultitouchInputMode@123@XZ	14256f920	func
 ?GetSupportedGesturesMask@MovieImpl@GFx@Scaleform@@QEBAKXZ	14256fd70	func
+??0ByteArray@fl_utils@ClassTraits@AS3@GFx@Scaleform@@QEAA@AEAVVM@345@@Z	1424bc0e0	func
+?DictionaryCI@fl_utils@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316fd60	data
+?EndianCI@fl_utils@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316fdb0	data
+?IDataInputCI@fl_utils@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316fe00	data
+?IDataOutputCI@fl_utils@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316fe50	data
+?IExternalizableCI@fl_utils@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316ff40	data
+?MakeObject@Dictionary@fl_utils@InstanceTraits@AS3@GFx@Scaleform@@UEAAXAEAVValue@456@AEAVTraits@3456@@Z	1424beb70	func
+?MakeObject@Timer@fl_utils@InstanceTraits@AS3@GFx@Scaleform@@UEAAXAEAVValue@456@AEAVTraits@3456@@Z	1424bebe0	func
+?ProxyCI@fl_utils@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316fea0	data
+?TimerCI@fl_utils@AS3@GFx@Scaleform@@3UClassInfo@234@B	14316fef0	data
