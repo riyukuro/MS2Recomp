@@ -55,7 +55,7 @@ if bm.CHAIN:
     MATCH_KEY += "-chain"
 LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
 STATIC_NEAR = 0x10000                           # match_obj: a COMDAT caller's static callee only this near the obj's own code
-RELOK_KEY = "relok6:"                         # assign_copies: relocation-consistency cache version
+RELOK_KEY = "relok8:"                         # assign_copies: relocation-consistency cache version
 COPY_ROUNDS = 8                              # assign_copies: offers of an unpaired copy to the next claimant
 LIB_RECIPE = "/obj/lib-"                         # obj path part of the library units' recipes (lib-cef, ...)
 NO_CALLEE = bool(os.environ.get("MS2_GB_NO_CALLEE"))     # old pairing (no callee pass), for before/after comparisons
@@ -573,6 +573,78 @@ def _reloc_targets(obj, data, fields):
     return out
 
 
+def _exe_anchors(obj, resolve):
+    """{relocation key: exe VA} found from the exe alone, not from any pairing: string literals whose text occurs
+    once in .rdata; the class's ms_RTTI, from the copy of its dynamic initializer that loads the class-name string;
+    and its vftable, the .rdata slot holding GetRTTI (`lea rax, [ms_RTTI]; ret`) less the slot's offset"""
+    exe = G["exe"]
+    if "getrtti" not in G:
+        secs = {}
+        for sec in exe.pe.sections:                 # the first of a name (the exe has a second, tiny .text)
+            secs.setdefault(sec.Name.rstrip(b"\0"), (sec.VirtualAddress, sec.Misc_VirtualSize))
+        tva, tsz = secs[b".text"]
+        get = collections.defaultdict(list)
+        for m in re.finditer(rb"\x48\x8d\x05(....)\xc3", exe.img[tva:tva + tsz], re.S):
+            f = exe.base + tva + m.start()
+            get[f + 7 + struct.unpack("<i", m.group(1))[0]].append(f)
+        G["getrtti"], G["secs"] = get, secs
+    get, (rva0, rsz) = G["getrtti"], G["secs"][b".rdata"]
+
+    def find_all(pat, align=1):
+        out, i = [], exe.img.find(pat, rva0, rva0 + rsz)
+        while i >= 0 and len(out) < 2:
+            if i % align == 0:
+                out.append(exe.base + i)
+            i = exe.img.find(pat, i + 1, rva0 + rsz)
+        return out
+    out = {}
+    for t in obj.syms.values():
+        if t[0].startswith("??_C@") and t[2] > 0 and t[1] == 0 and t[3] == 0:
+            data = obj.sec(t[2])["data"]
+            if len(data) >= 6 and data.endswith(b"\0"):
+                hits = find_all(b"\0" + data)
+                if len(hits) == 1:
+                    out[(t[0], t[2], t[1])] = hits[0] + 1
+    rtti = {}
+    for n in obj.by_name:
+        m = re.fullmatch(r"\?\?__E\?ms_RTTI@(\w+)@@2VNiRTTI@@B@@YAXXZ", n)
+        if not m:
+            continue
+        data, fields, _ = obj.function(obj.by_name[n])
+        pat = bytearray(data)
+        for f in fields:
+            pat[f[0]:f[0] + f[1]] = b"\0" * f[1]
+        pk = ("thunk", bytes(pat), tuple((f[0], f[1]) for f in fields))
+        if pk not in G:               # the initializers are tail-jump leaves the function map may not list: scan .text
+            rx, o = b"", 0
+            for f in sorted(fields):
+                rx += re.escape(data[o:f[0]]) + b".{%d}" % f[1]
+                o = f[0] + f[1]
+            rx += re.escape(data[o:])
+            tva, tsz = G["secs"][b".text"]
+            G[pk] = [exe.base + tva + m.start() for m in re.finditer(rx, exe.img[tva:tva + tsz], re.S)]
+        good = []
+        for v in G[pk]:
+            at = dict(resolve(n, v))
+            if any(k in out for k in at) and all(out[k] == at[k] for k in at if k in out):
+                good.append(at)
+        if len(good) == 1:
+            for k, tv in good[0].items():
+                if k[0] == f"?ms_RTTI@{m.group(1)}@@2VNiRTTI@@B":
+                    out[k] = rtti[m.group(1)] = tv
+    for t in obj.syms.values():
+        m = re.fullmatch(r"\?\?_7(\w+)@@6B@", t[0])
+        if not m or t[2] <= 0 or m.group(1) not in rtti or len(get.get(rtti[m.group(1)], ())) != 1:
+            continue
+        for off, si, ty in obj.sec(t[2])["relocs"]:
+            if obj.syms[si][0] == f"?GetRTTI@{m.group(1)}@@UEBAPEBVNiRTTI@@XZ":
+                slots = find_all(struct.pack("<Q", get[rtti[m.group(1)]][0]), 8)
+                if len(slots) == 1:
+                    out[(t[0], t[2], t[1])] = slots[0] - (off - t[1])
+                break
+    return out
+
+
 def _relok_job(job):
     """{"name@va": 1 | 0 | -1}: the copy's relocations resolve to the exe VAs the obj's exact pairs give the same
     targets (1), none of its targets is known (0), or one resolves elsewhere (-1: another TU's copy)"""
@@ -597,6 +669,8 @@ def _relok_job(job):
             for key, t in resolve(n, va):
                 seen[key].add(t)
     known = {key: next(iter(ts)) for key, ts in seen.items() if len(ts) == 1}
+    strong = _exe_anchors(obj, resolve)      # the class's own RTTI static / vftable: certain, and they tell its TU
+    known.update(strong)
     for n, hits in todo:
         if n not in obj.by_name:
             continue
@@ -611,7 +685,8 @@ def _relok_job(job):
             bad = sum(known[key] != m[key] for key in ks)
             good = len(ks) - bad
             r = -1 if bad > good else 0
-            if good > bad and any(known[key] == m[key] and obj.sec(key[1]).get("comdat", (0,))[0] == 0 for key in ks):
+            if good > bad and any(known[key] == m[key] and (key in strong or obj.sec(key[1]).get("comdat", (0,))[0] == 0)
+                                  for key in ks):
                 r = 1
             out[f"{n}@{v:x}"] = r
     return k, out
