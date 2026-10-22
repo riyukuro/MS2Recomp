@@ -199,8 +199,8 @@ void FUN_140d73bc0(int nId, int n, IMessageListener* pListener, CStringW str);
 
 // ---- service plumbing ----
 efd::MessageService* FUN_1411d1530(efd::ServiceManager* pManager);
-class Unk_TrigNetSvc { public: efd::Category FUN_142156c20(); };
-Unk_TrigNetSvc* FUN_140ae1200(efd::ServiceManager* pManager);
+#include <egf/EntityManager.h>
+egf::EntityManager* FUN_140ae1200(efd::ServiceManager* pManager);
 class Unk_TrigAnimSvc { public: efd::Category FUN_141235eb0(); };
 Unk_TrigAnimSvc* FUN_141b6f910();
 void FUN_1410db4c0(efd::IDependencyRegistrar* pRegistrar, unsigned n);
@@ -282,46 +282,46 @@ efd::SyncResult CTriggerService::OnPreInit(efd::IDependencyRegistrar* pRegistrar
     return efd::SyncResult_Success;
 }
 
-// MS2-FUNCTIONAL: the exe holds the services in CComPtr wrappers; raw pointers are used here
+// Services retain their engine reference counts through initialization and shutdown.
 // @0x141861110
 efd::AsyncResult CTriggerService::OnInit()
 {
-    efd::MessageService* pMessages = FUN_1411d1530(m_pServiceManager);
-    Unk_TrigNetSvc* pNet = FUN_140ae1200(m_pServiceManager);
+    efd::SmartPointer<efd::MessageService> pMessages = FUN_1411d1530(m_pServiceManager);
+    efd::SmartPointer<egf::EntityManager> pEntities = FUN_140ae1200(m_pServiceManager);
     m_catGlobal = pMessages->GetGloballyUniqueCategory();
     pMessages->Subscribe(this, s_catEntityChannel, 0, false);
     pMessages->Subscribe(this, m_catGlobal, 0, false);
-    efd::Category catNet = pNet->FUN_142156c20();
-    pMessages->Subscribe(this, catNet, 0, false);
+
+    pMessages->Subscribe(this, pEntities->GetEntityLoadCategory(), 0, false);
     pMessages->Subscribe(this, s_catAnimationChannel, 0, false);
-    efd::Category catAnim = FUN_141b6f910()->FUN_141235eb0();
-    pMessages->Subscribe(this, catAnim, 0, false);
-    FUN_1403ed2d0()->FUN_141bbae40(this ? static_cast<IWorldServiceCallback*>(this) : 0);
+
+    pMessages->Subscribe(this, FUN_141b6f910()->FUN_141235eb0(), 0, false);
+    FUN_1403ed2d0()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     return efd::AsyncResult_Complete;
 }
-
+MS2_REPLACE_METHOD(0x141861110, CTriggerService, OnInit, 725, 0xB3706D6C);
 // @0x1418613f0
 efd::AsyncResult CTriggerService::OnTick()
 {
     return efd::AsyncResult_Pending;
 }
 
-// MS2-FUNCTIONAL: the exe holds the services in CComPtr wrappers; raw pointers are used here
+// Services retain their engine reference counts through initialization and shutdown.
 // @0x141861410
 efd::AsyncResult CTriggerService::OnShutdown()
 {
-    efd::MessageService* pMessages = FUN_1411d1530(m_pServiceManager);
-    Unk_TrigNetSvc* pNet = FUN_140ae1200(m_pServiceManager);
+    efd::SmartPointer<efd::MessageService> pMessages = FUN_1411d1530(m_pServiceManager);
+    efd::SmartPointer<egf::EntityManager> pEntities = FUN_140ae1200(m_pServiceManager);
     pMessages->Unsubscribe(this, s_catEntityChannel, 0);
     pMessages->Unsubscribe(this, m_catGlobal, 0);
-    efd::Category catNet = pNet->FUN_142156c20();
-    pMessages->Unsubscribe(this, catNet, 0);
+
+    pMessages->Unsubscribe(this, pEntities->GetEntityLoadCategory(), 0);
     pMessages->Unsubscribe(this, s_catAnimationChannel, 0);
-    efd::Category catAnim = FUN_141b6f910()->FUN_141235eb0();
-    pMessages->Unsubscribe(this, catAnim, 0);
+
+    pMessages->Unsubscribe(this, FUN_141b6f910()->FUN_141235eb0(), 0);
     return efd::AsyncResult_Complete;
 }
-
+MS2_REPLACE_METHOD(0x141861410, CTriggerService, OnShutdown, 512, 0x9DCA81B1);
 // A trigger entity appeared: create its world object.
 // @0x141861620
 void CTriggerService::FUN_141861620(const egf::EntityChangeMessage* pMsg, efd::Category)
