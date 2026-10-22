@@ -17,3 +17,10 @@ class MS2UIMaterialNodeLibrary
 public:
     static NiMaterialNodeLibrary* CreateMaterialNodeLibrary();
 };
+
+// The GetParticleOpacity/GetScreenPosition library of SoftParticlesMaterial (unreferenced in the exe).
+class SoftParticlesMaterialNodeLibrary
+{
+public:
+    static NiMaterialNodeLibrary* CreateMaterialNodeLibrary();
+};

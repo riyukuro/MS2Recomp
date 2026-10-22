@@ -177,10 +177,30 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+// Vtable 0x1431c68e0 (sizeof 0x540, no new members): soft particles faded against the scene depth.
 class SoftParticlesMaterial : public NiStandardMaterial
 {
 public:
     SoftParticlesMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool HandleViewProjectionFragment(Context& kContext, bool bForceViewPos,
+        NiMaterialResource* pkVertWorldPos, NiMaterialResource*& pkVertOutProjectedPos,
+        NiMaterialResource*& pkVertOutViewPos);
+    virtual bool HandleFinalVertexOutputs(Context& kContext, NiStandardVertexProgramDescriptor* pkVertDesc,
+        NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldReflect,
+        NiMaterialResource* pkViewPos, NiMaterialResource* pkProjectedPos);
+    virtual bool HandlePreLightTextureApplication(Context& kContext, NiStandardPixelProgramDescriptor* pkPixelDesc,
+        NiMaterialResource*& pkWorldPos, NiMaterialResource*& pkWorldNormal, NiMaterialResource*& pkWorldBinormal,
+        NiMaterialResource*& pkWorldTangent, NiMaterialResource*& pkWorldViewVector,
+        NiMaterialResource*& pkTangentViewVector, NiMaterialResource*& pkMatDiffuseColor,
+        NiMaterialResource*& pkMatSpecularColor, NiMaterialResource*& pkMatSpecularPower,
+        NiMaterialResource*& pkMatGlossiness, NiMaterialResource*& pkMatAmbientColor,
+        NiMaterialResource*& pkMatEmissiveColor, NiMaterialResource*& pkOpacityAccum,
+        NiMaterialResource*& pkAmbientLightAccum, NiMaterialResource*& pkDiffuseLightAccum,
+        NiMaterialResource*& pkSpecularLightAccum, NiMaterialResource*& pkDiffuseTexAccum,
+        NiMaterialResource*& pkSpecularTexAccum, unsigned int& uiTexturesApplied, NiMaterialResource** apkUVSets,
+        unsigned int uiNumStandardUVs, unsigned int uiNumTexEffectUVs);
 };
 
 //--------------------------------------------------------------------------------------------------
