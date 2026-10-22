@@ -27,7 +27,7 @@ class Unk_PCCubeCraft
 public:
     Unk_PCCubeCraft(PC* pOwner, int nMode, CubeItemInfo* pInfo);    // 0x1410a8550
     ~Unk_PCCubeCraft();                                                 // 0x1410a8880
-    void FUN_1410a8a20(int nValue);                                     // send the build-state packet (0x37, 0, nValue)
+    void SendRequestCubeMode0(int nValue);                                     // send the build-state packet (0x37, 0, nValue)
     int FUN_1410a8a90();                                                // the mode (0 build, 1 inventory edit, 2 move)
     int FUN_1410a8ab0();                                                // mode == 2
     void FUN_1410a8af0(bool bEnable);                                   // enter / leave the build mode

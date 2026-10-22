@@ -274,7 +274,7 @@ int UIItemCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             packet.h = h;
             packet.i = i;
             packet.j = j;
-            FUN_1419b5370(packet);
+            SendRequestItemCreate(packet);
         }
         return 1;
     } else if (_stricmp("OnCompareItem", szMethod) == 0) {
@@ -468,13 +468,13 @@ unsigned UIItemCreateDialog::FUN_1419b5280(int nItemId, unsigned nLevel)
 MS2_REPLACE_METHOD(0x1419b5280, UIItemCreateDialog, FUN_1419b5280, 226, 0x663C0A39);
 
 // @0x1419b5370
-void UIItemCreateDialog::FUN_1419b5370(CCCreateItemPacket& packet)
+void UIItemCreateDialog::SendRequestItemCreate(CCCreateItemPacket& packet)
 {
     COutPacket out(0x15, 0);
     packet.vfunc_0(out);
     FUN_140710590(out);
 }
-MS2_REPLACE_METHOD(0x1419b5370, UIItemCreateDialog, FUN_1419b5370, 88, 0xE0A3735C);
+MS2_REPLACE_METHOD(0x1419b5370, UIItemCreateDialog, SendRequestItemCreate, 88, 0xE0A3735C);
 
 // MS2-FUNCTIONAL: packet field reads ordered differently
 // @0x1419b53d0

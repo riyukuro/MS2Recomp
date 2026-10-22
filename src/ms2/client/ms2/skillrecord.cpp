@@ -460,7 +460,7 @@ int CSkillRecord::HasTarget(unsigned nKey, unsigned nTarget)
 }
 
 // @0x14175a430
-void CSkillRecord::FUN_14175a430()
+void CSkillRecord::SendSkill()
 {
     m_nSendTick = FUN_141472bc0();
     COutPacket packet(0x20);

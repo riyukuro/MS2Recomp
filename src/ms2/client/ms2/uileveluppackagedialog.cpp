@@ -154,7 +154,7 @@ int UILevelUpPackageDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     if (_stricmp(szMethod, "onReceiveItem") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_140ea52d0(data.FUN_1422b8b10());
+            SendQuest(data.FUN_1422b8b10());
     }
     else if (_stricmp(szMethod, "onLevelSelect") == 0) {
         ASData data;
@@ -264,7 +264,7 @@ void UILevelUpPackageDialog::FUN_140ea4f10(unsigned short nLevel)
 }
 
 // @0x140ea52d0
-void UILevelUpPackageDialog::FUN_140ea52d0(int nQuest)
+void UILevelUpPackageDialog::SendQuest(int nQuest)
 {
     Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuest);
     if (spQuest.IsNull())

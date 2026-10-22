@@ -396,7 +396,7 @@ void UIBingoEventDialog::OnLoadComplete()
         MS2Ptr<Unk_140acd6e0> receive = BINGO_CLIP(list)->FUN_140acce30(CString("m_receiveButton"));
         if (receive.get() == 0)
             continue;
-        receive->FUN_1422ce240(BingoParamsDelegate(this, &UIBingoEventDialog::FUN_140bb0e20), FUN_140bb9630(i));
+        receive->FUN_1422ce240(BingoParamsDelegate(this, &UIBingoEventDialog::SendEventRewardMode23), FUN_140bb9630(i));
         m_receive.SetAt(i, receive);
         Unk_BingoSlots slots(Unk_BingoNewTag(0));
         for (unsigned long long j = 0; j < 2; j++)
@@ -731,7 +731,7 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
 }
 
 // @0x140bb0e20
-void UIBingoEventDialog::FUN_140bb0e20(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIBingoEventDialog::SendEventRewardMode23(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nIndex = FUN_140bb9640(params.pUserData);
     COutPacket pkt(0x97, 0);
@@ -1360,7 +1360,7 @@ MS2_REPLACE_METHOD(0x140BAF740, UIBingoEventDialog, vfunc_26, 586, 0x3FB4D0D5);
 MS2_REPLACE_METHOD_VIA(0x140BAF990, UIBingoEventDialog, IMessageListener, OnMessage, 550, 0x6080E95C);
 MS2_REPLACE_METHOD(0x140BAFBC0, UIBingoEventDialog, vfunc_72, 2704, 0xD97805CE);
 MS2_REPLACE_METHOD(0x140BB0660, UIBingoEventDialog, vfunc_43, 110, 0xCD09A3C9);
-MS2_REPLACE_METHOD(0x140BB0E20, UIBingoEventDialog, FUN_140bb0e20, 115, 0xC9AB93BE);
+MS2_REPLACE_METHOD(0x140BB0E20, UIBingoEventDialog, SendEventRewardMode23, 115, 0xC9AB93BE);
 MS2_REPLACE_METHOD(0x140BB13E0, UIBingoEventDialog, FUN_140bb13e0, 119, 0xBD64CF06);
 MS2_REPLACE_METHOD(0x140BB1460, UIBingoEventDialog, FUN_140bb1460, 44, 0x5B0A3F82);
 MS2_REPLACE_METHOD(0x140BB14D0, UIBingoEventDialog, FUN_140bb14d0, 158, 0x5D5E2DE1);

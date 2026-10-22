@@ -639,7 +639,7 @@ void StateSkill::vfunc_3(double fTime)
     }
     else
     {
-        FUN_1417f4e10();
+        SendSkillMode4();
         vfunc_7(0x1b);
     }
     unsigned nNow = GetTickCountMs2();
@@ -926,7 +926,7 @@ void StateSkill::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceI
                 float fCooldown = pMy->FUN_141523bc0()->FUN_141765fe0(nSkillId, 0);
                 if (bReady || fCooldown <= 0.0f || m_b111)
                 {
-                    m_spRecord->FUN_14175a430();
+                    m_spRecord->SendSkill();
                     FUN_1417f16f0(m_spRecord);
                     pMy->FUN_141523bc0()->FUN_141767990(m_spRecord->GetSkillId(), m_spRecord->GetLevel());
                     pMy->FUN_141523bc0()->FUN_141768900(m_spRecord);
@@ -1559,12 +1559,12 @@ void StateSkill::FUN_1417ed7f0()
     {
         if (m_b110)
         {
-            FUN_1417f4e10();
+            SendSkillMode4();
             vfunc_7(6);
         }
         else if (m_pOwner->FUN_1416749c0())
         {
-            FUN_1417f4e10();
+            SendSkillMode4();
             vfunc_7(2);
         }
     }
@@ -1597,7 +1597,7 @@ void StateSkill::FUN_1417f11d0()
         m_spCharge->m_n9c = 0;
         if (m_spCharge->m_n98 != 0)
         {
-            m_spCharge->FUN_14175a430();
+            m_spCharge->SendSkill();
             FUN_1417f1a90();
             FUN_1417f16f0(m_spCharge);
             pMyPC->FUN_141523bc0()->FUN_141767990(m_spCharge->GetSkillId(), m_spCharge->GetLevel());
@@ -1697,7 +1697,7 @@ void StateSkill::FUN_1417f4dc0()
 MS2_REPLACE_METHOD(0x1417f4dc0, StateSkill, FUN_1417f4dc0, 67, 0x398B83F0);
 
 // @0x1417f4e10
-void StateSkill::FUN_1417f4e10()
+void StateSkill::SendSkillMode4()
 {
     if (m_spRecord == NULL)
         return;
@@ -1706,7 +1706,7 @@ void StateSkill::FUN_1417f4e10()
     packet.vfunc_o10_4(m_spRecord->m_nCastId);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1417f4e10, StateSkill, FUN_1417f4e10, 134, 0x06A14881);
+MS2_REPLACE_METHOD(0x1417f4e10, StateSkill, SendSkillMode4, 134, 0x06A14881);
 
 // The yaw (degrees, 0..360 from +y) of an euler rotation; turns the actor to it.
 // @0x1417f4ea0

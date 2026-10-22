@@ -21,7 +21,7 @@ public:
     void FUN_140e647c0(int event, struct Unk_CoupleEvent* data);
     void FUN_140e648d0();
     void FUN_140e64a10(int dance);
-    void FUN_140e64a90(int dance);
+    void SendPlayArcade(int dance);
     void FUN_140e64c00();
     void FUN_140e64e70();
     int FUN_140e64e80();

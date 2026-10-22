@@ -122,7 +122,7 @@ public:
  void FUN_140e255b0();
  void FUN_140e25610();
  void FUN_140e25790();
- void FUN_140e25ff0();
+ void SendDungeonReward();
  void FUN_140e24c50(bool);
  CStringW FUN_140e25840(int);
  void FUN_140e25c30(ATL::CAtlArray<MS2Ptr<CItem> >&,DungeonRewardInfo&); void FUN_140e25dc0(size_t);

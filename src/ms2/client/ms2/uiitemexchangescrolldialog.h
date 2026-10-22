@@ -55,7 +55,7 @@ public:
     void FUN_140f52c80();                                           // 0x140f52c80 refresh after the item changed
     void FUN_140f52ca0(CInPacket* pPacket);                         // 0x140f52ca0 packet kind 0: the upgrade target
     void FUN_140f53300(CInPacket* pPacket);                         // 0x140f53300 packet kind 3: ingredient counts
-    void FUN_140f53950(ASData* pData);                              // 0x140f53950 onOk
+    void SendItemExchangeScrollMode1(ASData* pData);                              // 0x140f53950 onOk
     void FUN_140f53a70();                                           // 0x140f53a70 look up the table row of the scroll
     void FUN_140f53bb0(ASObj& obj, CExchangeItemInfo* pInfo);       // 0x140f53bb0 page type 1
     void FUN_140f54120(ASObj& obj, CExchangeItemInfo* pInfo);       // 0x140f54120 page type 2

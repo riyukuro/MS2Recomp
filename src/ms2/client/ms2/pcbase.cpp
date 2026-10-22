@@ -4174,7 +4174,7 @@ int PCBase::FUN_141677f40(PCBase* pActor)
             if (pLocal->FUN_14123c580() == pRider->FUN_14123c580() && spData->m_n88 == 0) {
                 if (spRidee->FUN_1417075e0() == 0) {
                     MS2Ptr<RideOffAction> spAction(new RideOffAction(1));
-                    if (static_cast<MyPC*>(pLocal)->FUN_14152c280(spAction.get()) == 0)
+                    if (static_cast<MyPC*>(pLocal)->SendRequestRideMode1(spAction.get()) == 0)
                         return 0;
                     return 1;
                 }

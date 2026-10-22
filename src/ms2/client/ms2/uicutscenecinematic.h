@@ -88,7 +88,7 @@ public:
     void FUN_141908c00();                                           // update the balloons
     void FUN_141908fc0();                                           // skip pressed: confirm or skip
     void FUN_141909100();                                           // skip
-    void FUN_141909230();                                           // send the skip request
+    void SendTrigger();                                           // send the skip request
     void FUN_1419092a0(CStringW& strText);                          // resolve a text key
     void FUN_141909340(int nActorId);                               // hide the balloon of an actor
     bool FUN_141909420(int nResult, const CMsgBoxData& box);        // skip confirm answer

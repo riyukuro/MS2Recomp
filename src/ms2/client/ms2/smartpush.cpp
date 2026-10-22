@@ -522,7 +522,7 @@ void CSmartPushAutoFishing::vfunc_4(int nValue)
 {
     CSmartPush::vfunc_4(nValue);
     if (CFishingManager::GetInstance()->FUN_140954150() != 0 && CFishingManager::GetInstance()->FUN_140cdbb90() != 0)
-        CFishingManager::GetInstance()->FUN_140cdb1e0();
+        CFishingManager::GetInstance()->SendFishingMode9();
     CGameOption::GetInstance()->FUN_140c9b8b0()->m_n20[3] = FUN_140dd06b0();
     CGameOption::GetInstance()->FUN_141243540();
 }
@@ -1216,7 +1216,7 @@ bool CSmartPushAutoInteraction::FUN_140dd3a70(int nResult, const CMsgBoxData& da
                 spAction->m_n28 = m_data->m_nId;
                 spAction->m_n2c = nCount;
                 spAction->m_n30 = nRecipe;
-                pMy->FUN_14152c280(spAction.get());
+                pMy->SendRequestRideMode1(spAction.get());
             }
         }
     }

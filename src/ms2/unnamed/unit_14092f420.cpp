@@ -494,7 +494,7 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
 }
 
 // @0x14092fef0
-int FUN_14092fef0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nParam)
+int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nParam)
 {
     if (nSkillId == 0 && nItemUid == 0 && nItemId == 0)
         return 0;
@@ -518,7 +518,7 @@ int FUN_14092fef0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nP
 }
 
 // @0x140930040
-int FUN_140930040()
+int SendKeyTableMode6()
 {
     COutPacket packet(0x3a, 0);
     packet.vfunc_o10_1(6);
@@ -527,7 +527,7 @@ int FUN_140930040()
 }
 
 // @0x1409300a0
-int FUN_1409300a0(int nSlot)
+int SendKeyTableMode8(int nSlot)
 {
     COutPacket packet(0x3a, 0);
     packet.vfunc_o10_1(8);
@@ -1129,9 +1129,9 @@ MS2_REPLACE(0x14092F640, FUN_14092f640, 24, 0xBB440648);
 MS2_REPLACE(0x14092F660, FUN_14092f660, 38, 0xCF7D0CEE);
 MS2_REPLACE(0x14092F690, FUN_14092f690, 1064, 0xC2F7F480);
 MS2_REPLACE(0x14092FAC0, FUN_14092fac0, 1051, 0xDAF9E13C);
-MS2_REPLACE(0x14092FEF0, FUN_14092fef0, 326, 0x3471EE0B);
-MS2_REPLACE(0x140930040, FUN_140930040, 81, 0xB09A1348);
-MS2_REPLACE(0x1409300A0, FUN_1409300a0, 103, 0x9DE9981A);
+MS2_REPLACE(0x14092FEF0, SendKeyTableMode5, 326, 0x3471EE0B);
+MS2_REPLACE(0x140930040, SendKeyTableMode6, 81, 0xB09A1348);
+MS2_REPLACE(0x1409300A0, SendKeyTableMode8, 103, 0x9DE9981A);
 MS2_REPLACE(0x140930110, FUN_140930110, 45, 0x35E26EF0);
 MS2_REPLACE(0x140930150, FUN_140930150, 49, 0x600B5E60);
 MS2_REPLACE(0x140930190, FUN_140930190, 34, 0x990CD6A7);

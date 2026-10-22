@@ -193,7 +193,7 @@ public:
     void FUN_141526c80(int& nSkillId, unsigned short& nLevel);   // switch the skill by the casting skill / buffs
     int FUN_141529620();
     int FUN_141529ae0(int nMapId, int nA, int nB, __int64 nC);   // check the portal lock, then stop
-    void FUN_14152a040();
+    void SendRequestMoveFieldMode3();
     void FUN_14152a240(int nId);
     void FUN_14152a2b0(int n);
     void FUN_14152a2d0(int n);
@@ -206,7 +206,7 @@ public:
     int FUN_1415279d0(PCBase* pOther);                       // can ride along with pOther (buddy, party or guild)
     egf::Entity* FUN_141529750();                            // the telescope in reach (with a view list)
     egf::Entity* FUN_141529900();                            // the telescope in reach, its views opened
-    void FUN_14152b800(__int64 nItemUid);                    // request 0x78/1 for an inventory item
+    void SendRequestPet(__int64 nItemUid);                    // request 0x78/1 for an inventory item
     void FUN_14152b8d0(__int64 nItemUid);                    // summon with an inventory item
     void FUN_14152aa90(MS2Ptr<CItem> spItem, int bConfirmed); // summon the pet of an item
     void FUN_14152ba80(MS2Ptr<CItem> spItem);               // use a mount item
@@ -227,19 +227,19 @@ public:
     void FUN_14152f140(__int64 nOwnerId);                   // return the locked items of a plot PC
     void FUN_14152f3c0();                                   // the same for every plot PC
     int FUN_14152feb0(int nMode, bool bPalette);            // request the cube build mode (packet 0x36)
-    int FUN_14152c280(class RideOffAction* pAction);        // get off the ride
+    int SendRequestRideMode1(class RideOffAction* pAction);        // get off the ride
     void FUN_141530200();                                   // leave the cube build mode
     class Unk_PCCubeCraft* FUN_141530290();                 // the cube craft controller in the cube craft mode
     int FUN_141529a50(int nNpcId);                          // talk to the npc (0: the nearest talkable one)
     PCBase* FUN_141529640();
-    void FUN_1415293b0();
+    void SendFunctionCube();
     void FUN_14152dbc0();
     void FUN_14152e0c0();
     void FUN_14152e170(int nMode, int nArg);
     int FUN_14152ea50();
     void FUN_1415294f0(int nObjectId, __int64 nExp);                                // the nearest talkable npc
-    void FUN_141529d90();                                   // request the house design mode (packet 0x6c 4)
-    void FUN_141529e90();                                   // request the blueprint mode (packet 0x6c 5)
+    void SendRequestMoveFieldMode4();                                   // request the house design mode (packet 0x6c 4)
+    void SendRequestMoveFieldMode5();                                   // request the blueprint mode (packet 0x6c 5)
     bool FUN_141525580(MS2Ptr<class CSkillRecord> spRecord);   // the record may be cast now
     void FUN_141525ff0(MS2Ptr<class CSkillRecord> spRecord, float fElapsed);   // send the cast
     void FUN_141524a80(bool bForce);                        // stop moving for a cast
@@ -248,9 +248,9 @@ public:
     bool FUN_1415302e0(int nItemId);                         // the cube item is locked (housing level, achievement)
     void FUN_141523e60(CItem* pItem, int* pStatDiff, int* pSpecialDiff, int* pScoreDiff);   // the stat change of equipping pItem
     static void FUN_141531470(ATL::CAtlArray<MS2Ptr<CItem> >& aItems, int* pStats, int* pSpecials, int* pScore);   // sum the items' stats
-    void FUN_14152dee0(int nId);                            // packet 0x40 3
-    void FUN_14152df80();                                   // packet 0x40 4 (camera reset first)
-    void FUN_14152dff0(unsigned char n);                    // packet 0x40 6
+    void SendRequestRideMode3(int nId);                            // packet 0x40 3
+    void SendRequestRideMode4();                                   // packet 0x40 4 (camera reset first)
+    void SendRequestRideMode6(unsigned char n);                    // packet 0x40 6
     // @0x140967010
     MS2Ptr<CHomePrivilege> FUN_140967010() { return m_spHomePrivilege; }   // COMDAT in actionkeyobject.cpp's range
     static void FUN_1415308d0();                            // reset the debug switches
@@ -276,13 +276,13 @@ public:
     int FUN_14152f8b0(unsigned nItemId);                    // an item of the same group is equipped
     void FUN_14152f960(ATL::CAtlArray<unsigned int>& aOut); // the equipped item ids
     void FUN_14152fa20();                                   // end bulk update
-    void FUN_14152fc20();                                   // poll the channel once a second
+    void SendNametag();                                   // poll the channel once a second
     unsigned short FUN_14152fce0(unsigned nGroup);          // the highest grade equipped in nGroup
     Unk_MyPCLapenSlot FUN_14152fd50(unsigned nItemId);      // the slot to equip nItemId into
-    void FUN_141529c80(int nPortalId, int nA, int nB, __int64 nC, CStringW strPwd);   // password portal move
-    void FUN_14152a0c0(int nPortalId, int nD, int nA, int nB, CStringW strA, CStringW strPwd);   // portal move
+    void SendRequestMoveFieldMode2(int nPortalId, int nA, int nB, __int64 nC, CStringW strPwd);   // password portal move
+    void SendRequestMoveFieldMode0(int nPortalId, int nD, int nA, int nB, CStringW strA, CStringW strPwd);   // portal move
     int FUN_1415271e0(PCBase* pActor, struct Unk_MyPCSkillUse* pSkill);   // can the skill be used on pActor
-    void FUN_141529fb0();                                   // request the field leave (packet 0x6c 6)
+    void SendRequestMoveFieldMode6();                                   // request the field leave (packet 0x6c 6)
     void FUN_141524880(MS2Ptr<Unk_MyPCComp1618> sp);        // set m_sp1618
     int FUN_1415248d0(int nSide, int nType);                // sit (0xbadf0a13) or lie (0xc13e30c8) on a nearby object
 

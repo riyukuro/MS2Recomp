@@ -259,10 +259,10 @@ public:
     void FUN_140b14110(CInPacket& packet);                      // opcode 0x1c
     bool FUN_140b14220();                                       // always true
     bool FUN_140b14230(CStringW strName);                       // request: add a member by name
-    void FUN_140b14480();                                       // request: withdraw
-    void FUN_140b14530(CStringW strName);                       // request: change the leader
+    void SendClubMode10();                                       // request: withdraw
+    void SendClubMode12(CStringW strName);                       // request: change the leader
     void FUN_140b146e0(int nBuffId, int nBuffLevel);            // request: set the buff
-    void FUN_140b14900(CStringW strName);                       // request: rename the club
+    void SendClubMode14(CStringW strName);                       // request: rename the club
 };
 MS2_CHECK_SIZE(CClubCli, 0xf0);
 

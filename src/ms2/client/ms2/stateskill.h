@@ -140,7 +140,7 @@ public:
     static int FUN_1417e9d20(Unk_SocketPtr<CArrowFillTargetContext> spCtx);  // run an arrow pick (callee releases)
     unsigned FUN_1417e9330();                                           // the running skill id (0: none)
     float FUN_1417f4ea0(PCBase* pOwner, efd::Point3 kRot);
-    void FUN_1417f4e10();
+    void SendSkillMode4();
     void FUN_1417f4d20();                                               // start the super armor effect
     void FUN_1417f4dc0();                                               // stop it
     bool FUN_1417f5060();                                               // the combo input may chain

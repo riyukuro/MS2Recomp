@@ -218,7 +218,7 @@ CMesoMarketMan::~CMesoMarketMan()
 }
 
 // @0x140d6e400
-void CMesoMarketMan::FUN_140d6e400()
+void CMesoMarketMan::SendMesoMarket()
 {
     m_arrMarket.RemoveAll();
     m_mapMarket.RemoveAll();

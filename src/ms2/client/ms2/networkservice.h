@@ -124,8 +124,8 @@ public:
     bool FUN_1415395a0(int,const class CMsgBoxData&);
     void FUN_141538570(); void FUN_1415385a0(); int FUN_1415385d0();
     void FUN_141538820(); void FUN_1415388a0();
-    void FUN_141538930(__int64,int); void FUN_1415389b0(__int64); void FUN_141538a20(__int64);
-    void FUN_141538a90(__int64,__int64); void FUN_141538b10(int);
+    void SendRequestItemInventoryMode4(__int64,int); void SendRequestItemInventoryMode5(__int64); void SendRequestItemStorage(__int64);
+    void SendFittingDoll(__int64,__int64); void FUN_141538b10(int);
     void FUN_141538bb0(CStringW,int); void FUN_141538c40(int,int);
     unsigned FUN_141538f20(); unsigned FUN_141538f40(); unsigned FUN_141538f60();
     void FUN_141538f80(); void FUN_141539130(); int FUN_141539180();

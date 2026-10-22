@@ -250,7 +250,7 @@ public:
     unsigned __int64 FUN_1410d4fa0();
     unsigned __int64 FUN_1410d50c0();
     void FUN_1410d5190(unsigned __int64* pCubes, unsigned __int64* pOthers);
-    void FUN_1410d5350();
+    void SendRequestCubeMode31();
     bool FUN_1410c8470(int nA, int nB, int* pState, __int64* pValue);
     bool FUN_1410c80d0(int nGroup);
     int FUN_1410c8580(int nGroup);
@@ -261,7 +261,7 @@ public:
     int FUN_1410ce310();
     int FUN_1410d33a0(int nKey, Unk_StreamPoint* pOut);
     CStringW FUN_1410c7f60(int nA, int nB);
-    void FUN_1410d5b20(__int64 nId);
+    void SendRequestCubeMode68(__int64 nId);
     int FUN_1410c3000();
     void FUN_1410c3020(int v);
     int FUN_1410c3100();

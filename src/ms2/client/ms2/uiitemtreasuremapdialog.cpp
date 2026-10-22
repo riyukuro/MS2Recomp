@@ -156,7 +156,7 @@ void UIItemTreasureMapDialog::OnLoadComplete()
         spTargetItems->FUN_140c57d70("m_itemBag", m_itemBag);
     FUN_140c55ea0();
     if (m_itemBag.get() != 0)
-        m_itemBag->FUN_1422dce60(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::FUN_140c55ba0), 0);
+        m_itemBag->FUN_1422dce60(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::SendTreasureMapMode2), 0);
     if (m_board.get() != 0)
     {
         m_submit = m_board->FUN_140acce30<Unk_140acd6e0>("m_submit");
@@ -236,7 +236,7 @@ void UIItemTreasureMapDialog::FUN_140c55b50(const CString& strParam)
 // The item bag was clicked: select the map.
 // @0x140c55ba0
 // MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
-void UIItemTreasureMapDialog::FUN_140c55ba0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIItemTreasureMapDialog::SendTreasureMapMode2(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (!(m_itemBag == 0) && m_nState == 0)
     {

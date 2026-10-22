@@ -30,9 +30,9 @@ public:
     void FUN_140c2c2f0();                                       // 0x140c2c2f0 "OnShrinkHeight"
     void FUN_140c2c640();                                       // 0x140c2c640 "OnExtensionArea"
     void FUN_140c2cac0();                                       // 0x140c2cac0 "OnExtensionHeight"
-    bool FUN_140c2cd90(int nResult, const CMsgBoxData& data);   // 0x140c2cd90 shrink area box result
-    bool FUN_140c2ce00(int nResult, const CMsgBoxData& data);   // 0x140c2ce00 shrink height box result
-    bool FUN_140c2ce70(int nResult, const CMsgBoxData& data);   // 0x140c2ce70 extend area box result
-    bool FUN_140c2cee0(int nResult, const CMsgBoxData& data);   // 0x140c2cee0 extend height box result
+    bool SendRequestCubeMode38(int nResult, const CMsgBoxData& data);   // 0x140c2cd90 shrink area box result
+    bool SendRequestCubeMode45(int nResult, const CMsgBoxData& data);   // 0x140c2ce00 shrink height box result
+    bool SendRequestCubeMode37(int nResult, const CMsgBoxData& data);   // 0x140c2ce70 extend area box result
+    bool SendRequestCubeMode44(int nResult, const CMsgBoxData& data);   // 0x140c2cee0 extend height box result
 };
 MS2_CHECK_SIZE(UIHomeResizeDialog, 0x178);

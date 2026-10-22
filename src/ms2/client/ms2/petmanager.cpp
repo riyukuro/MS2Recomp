@@ -450,14 +450,14 @@ bool CPetInventory::FUN_140c88050(int nItemId)
     return FUN_140c88f70(spItem);
 }
 // @0x140c88100
-void CPetInventory::FUN_140c88100()
+void CPetInventory::SendRequestPetInventoryMode7()
 {
     COutPacket packet(0x79, 0);
     packet.Encode1(7);
     FUN_140710590(packet);
 }
 // @0x140c88160
-void CPetInventory::FUN_140c88160(__int64 nUid, int nSlot)
+void CPetInventory::SendRequestPetInventoryMode3(__int64 nUid, int nSlot)
 {
     if (FUN_140535320()->FUN_140c8b2e0() == nUid)
         return;
@@ -515,7 +515,7 @@ void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
     }
 }
 // @0x140c88590
-void CPetInventory::FUN_140c88590(__int64 nUid, int nSlot, int nCount)
+void CPetInventory::SendRequestPetInventoryMode1(__int64 nUid, int nSlot, int nCount)
 {
     if (nCount < 1)
         return;
@@ -544,7 +544,7 @@ bool CPetInventory::FUN_140c88700(int nButton, const CMsgBoxData& box)
     if (nButton == 0)
     {
         int nCount = _wtoi(box.FUN_141a02d50().Trim(L','));
-        FUN_140c88590(box.FUN_141a02c20(), box.FUN_141a02c80(), nCount);
+        SendRequestPetInventoryMode1(box.FUN_141a02c20(), box.FUN_141a02c80(), nCount);
     }
     return true;
 }
@@ -599,7 +599,7 @@ void CPetInventory::FUN_140c88c30(ItemPtr spItem, int nSlot)
         return;
     if (!spItem->FUN_140526850())
     {
-        FUN_140535320()->FUN_140c8b410()->FUN_140c88590(spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50());
+        FUN_140535320()->FUN_140c8b410()->SendRequestPetInventoryMode1(spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50());
         return;
     }
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(5, 0xc10, 0, CStringW(L""));
@@ -1086,7 +1086,7 @@ int CPetManager::FUN_140c8b320()
     return m_nAuto;
 }
 // @0x140c8b340
-int CPetManager::FUN_140c8b340()
+int CPetManager::SendRequestPet()
 {
     m_nAuto = (m_nAuto == 0);
     COutPacket packet(0x78, 0);

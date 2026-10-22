@@ -2003,7 +2003,7 @@ void UIGameMenuDialog::FUN_14193c000()
         } else {
             MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_quest_epic_restart_warning")), 0, CStringW(L""));
             if (box.get() != 0) {
-                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193da30));
+                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendQuest));
                 FUN_140d73c60(box);
             }
         }
@@ -2330,7 +2330,7 @@ bool UIGameMenuDialog::FUN_14193d8a0(int nResult, const CMsgBoxData& box)
 }
 
 // @0x14193d900
-bool UIGameMenuDialog::FUN_14193d900(int nResult, const CMsgBoxData& box)
+bool UIGameMenuDialog::SendBeauty(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
@@ -2357,7 +2357,7 @@ bool UIGameMenuDialog::FUN_14193d9e0(int nResult, const CMsgBoxData&)
 }
 
 // @0x14193da30
-bool UIGameMenuDialog::FUN_14193da30(int nResult, const CMsgBoxData&)
+bool UIGameMenuDialog::SendQuest(int nResult, const CMsgBoxData&)
 {
     if (nResult != 0)
         return true;
@@ -2474,7 +2474,7 @@ void UIGameMenuDialog::FUN_14193e2e0(int nMapType)
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_beauty_goto_map_return_warn")), 0, CStringW(L""));
         if (box.get() != 0) {
             FUN_140533ff0(box.get(), nMapType);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193d900));
+            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendBeauty));
             FUN_140d73c60(box);
         }
     } else {
@@ -2482,7 +2482,7 @@ void UIGameMenuDialog::FUN_14193e2e0(int nMapType)
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
         if (box.get() != 0) {
             FUN_140533ff0(box.get(), nMapType);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193d900));
+            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendBeauty));
             FUN_140d73c60(box);
         }
     }
@@ -2746,9 +2746,9 @@ MS2_REPLACE_METHOD_VIA(0x14193D640, UIGameMenuDialog, UIUGCEventListener, vfunc_
 MS2_REPLACE_METHOD_VIA(0x14193D6A0, UIGameMenuDialog, UIUGCEventListener, vfunc_ugc_6, 81, 0x283C8D26);
 MS2_REPLACE_METHOD(0x14193D700, UIGameMenuDialog, FUN_14193d700, 395, 0xD653C4D5);
 MS2_REPLACE_METHOD(0x14193D8A0, UIGameMenuDialog, FUN_14193d8a0, 83, 0x69D7EC77);
-MS2_REPLACE_METHOD(0x14193D900, UIGameMenuDialog, FUN_14193d900, 203, 0x961AF19C);
+MS2_REPLACE_METHOD(0x14193D900, UIGameMenuDialog, SendBeauty, 203, 0x961AF19C);
 MS2_REPLACE_METHOD(0x14193D9E0, UIGameMenuDialog, FUN_14193d9e0, 74, 0x77F8E0A9);
-MS2_REPLACE_METHOD(0x14193DA30, UIGameMenuDialog, FUN_14193da30, 107, 0xB7466044);
+MS2_REPLACE_METHOD(0x14193DA30, UIGameMenuDialog, SendQuest, 107, 0xB7466044);
 MS2_REPLACE_METHOD(0x14193DAB0, UIGameMenuDialog, FUN_14193dab0, 49, 0x7F64B487);
 MS2_REPLACE_METHOD(0x14193DAF0, UIGameMenuDialog, FUN_14193daf0, 596, 0xF8427C08);
 MS2_REPLACE_METHOD(0x14193DD50, UIGameMenuDialog, FUN_14193dd50, 18, 0xD3766A28);

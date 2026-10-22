@@ -402,7 +402,7 @@ void StateFishing::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
         bLeave = spCli.get() != 0;
     }
     if (bLeave)
-        FsFishMgr()->FUN_140cdb1e0();
+        FsFishMgr()->SendFishingMode9();
 }
 
 // @0x140ddaf00

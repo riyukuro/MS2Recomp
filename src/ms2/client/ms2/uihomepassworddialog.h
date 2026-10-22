@@ -22,8 +22,8 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x1412c9580
 
     void FUN_1412c9680(CString strPassword);                    // m_178 = strPassword
-    void FUN_1412c96d0(int nMode, CStringW strPassword, int nUnused);   // send the password packet (type 0x37, sub 0x18)
-    void FUN_1412c97c0();                                       // FUN_1412c96d0(0, L"", 0): clear the password
+    void SendRequestCube(int nMode, CStringW strPassword, int nUnused);   // send the password packet (type 0x37, sub 0x18)
+    void FUN_1412c97c0();                                       // SendRequestCube(0, L"", 0): clear the password
 
 private:
     CString m_178;                                              // +0x178

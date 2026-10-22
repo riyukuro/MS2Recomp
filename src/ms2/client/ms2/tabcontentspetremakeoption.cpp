@@ -883,7 +883,7 @@ int TabContentsPetRemakeOption::vfunc_6(const char* szEvent, const Scaleform::GF
     }
     else if (_stricmp("OnDebug", szEvent) == 0)
     {
-        FUN_140b95c40();
+        SendChangeAttributesMode7();
     }
     else if (_stricmp("OnClickCompareEnchant", szEvent) == 0)
     {
@@ -1047,7 +1047,7 @@ void TabContentsPetRemakeOption::FUN_140b95280(int bUsePoint)
 
 // @0x140b95c40
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
-void TabContentsPetRemakeOption::FUN_140b95c40()
+void TabContentsPetRemakeOption::SendChangeAttributesMode7()
 {
     ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)

@@ -236,7 +236,7 @@ void StateHold::vfunc_5(int n)
         efd::Point3 kPos = pPC->vfunc_18();
         pPC->FUN_141676060(kPos);
         if (FUN_140a38d60(FUN_1409478c0()) != pPC)
-            pPC->FUN_14152df80();
+            pPC->SendRequestRideMode4();
     }
 }
 

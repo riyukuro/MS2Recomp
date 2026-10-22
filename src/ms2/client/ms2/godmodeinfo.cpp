@@ -63,7 +63,7 @@ void CGodModeInfo::FUN_141374b80(Unk_StreamPoint kPos)
 void CGodModeInfo::FUN_141374d10(int n)
 {
     m_n18 = n;
-    FUN_141374ea0();
+    SendRequestCube();
 }
 
 // Moves the tooltip 150 units above `kPos`.
@@ -97,14 +97,14 @@ void CGodModeInfo::FUN_141374dd0(void* pInput)
         if (nValue != m_n18)
         {
             m_n18 = FUN_140ad02c0(nValue, 0);
-            FUN_141374ea0();
+            SendRequestCube();
         }
     }
 }
 
 // Pushes the index: the tooltip text, then the 0x37/0x13 packet.
 // @0x141374ea0
-void CGodModeInfo::FUN_141374ea0()
+void CGodModeInfo::SendRequestCube()
 {
     if (DAT_143ae0fb4 != 0)
     {

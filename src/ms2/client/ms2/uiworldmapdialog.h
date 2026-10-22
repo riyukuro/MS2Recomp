@@ -64,7 +64,7 @@ public:
     void FUN_141b58350(MS2Ptr<UIWorldMap::MapTile> spTile);                 // 0x141b58350 "updateAdditional"
     void FUN_141b58670(unsigned int nFieldId, int nQuestId, short nLevel, int bRelated);   // 0x141b58670 add a quest line
     void FUN_141b58830(unsigned int nFieldId, int nNpcField, int nNpcId, int nKind, int nQuestId, short nLevel, int nState);   // 0x141b58830 add an npc quest line
-    void FUN_141b58e80();                                                   // 0x141b58e80 request the tiles (packet 0x4a)
+    void SendRequestWorldmapMode0();                                                   // 0x141b58e80 request the tiles (packet 0x4a)
     void FUN_141b58f00();                                                   // 0x141b58f00
     void FUN_141b58f80();                                                   // 0x141b58f80
     void FUN_141b5cea0(ATL::CAtlMap<int, MS2Ptr<CQuestData> >& starts, ATL::CAtlMap<int, MS2Ptr<CQuestData> >& completes,
@@ -89,10 +89,10 @@ public:
     void FUN_141b5be10();                                                   // 0x141b5be10
     void FUN_141b5c230();                                                   // 0x141b5c230 the field mission mode
     void FUN_141b5c2b0(int nRound, ASObj* pObj);                            // 0x141b5c2b0 the field mission rewards
-    void FUN_141b5cbc0();                                                   // 0x141b5cbc0 request the mission reward (packet 0x29)
+    void SendQuest();                                                   // 0x141b5cbc0 request the mission reward (packet 0x29)
     void FUN_141b5cc40(int nRound);                                         // 0x141b5cc40 "m_fieldMission"
     MS2Ptr<UIWorldMap::MapTile> FUN_141b5d120();                            // 0x141b5d120 the current tile
-    void FUN_141b5d390();
+    void SendRequestWorldmapMode1();
     void FUN_141b5d4b0(MS2Ptr<UIWorldMap::MapTile> spTile, ASObj* pObj);    // 0x141b5d4b0 the tile part of "createMap"
     void FUN_141b5e160(MS2Ptr<UIWorldMap::IconInfo> spIcon, ASObj* pObj);   // 0x141b5e160
     void FUN_141b5e330(MS2Ptr<UIWorldMap::IconInfo> spIcon, ASObj* pObj);   // 0x141b5e330

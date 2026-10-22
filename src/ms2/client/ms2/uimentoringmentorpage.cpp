@@ -364,7 +364,7 @@ int UIMentoringMentorRegisterPage::vfunc_5(const char* szMethod, const Scaleform
             if (spBox.get() != 0)
             {
                 FUN_141a024a0(spBox.get(), false);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMentoringMentorRegisterPage::FUN_140c72f10));
+                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMentoringMentorRegisterPage::SendMentor));
                 FUN_140d73c60(spBox);
             }
         }
@@ -380,7 +380,7 @@ CString UIMentoringMentorRegisterPage::vfunc_6() { return "MentorRegisterPage"; 
 CStringW UIMentoringMentorRegisterPage::vfunc_7() { return FUN_14028b8e0(L"s_mentoring_tab_register_mentor"); }
 
 // @0x140c72f10
-bool UIMentoringMentorRegisterPage::FUN_140c72f10(int nResult, const CMsgBoxData& data)
+bool UIMentoringMentorRegisterPage::SendMentor(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0) return true;
     COutPacket pkt(0xa1, 0);
@@ -846,7 +846,7 @@ MS2_REPLACE_METHOD(0x140C72A60, UIMentoringMentorRegisterPage, vfunc_2, 24, 0xF6
 MS2_REPLACE_METHOD(0x140C72A80, UIMentoringMentorRegisterPage, vfunc_5, 969, 0xEE03CA94);
 MS2_REPLACE_METHOD(0x140C72E50, UIMentoringMentorRegisterPage, vfunc_6, 61, 0x94AF945E);
 MS2_REPLACE_METHOD(0x140C72EA0, UIMentoringMentorRegisterPage, vfunc_7, 97, 0xB74C2263);
-MS2_REPLACE_METHOD(0x140C72F10, UIMentoringMentorRegisterPage, FUN_140c72f10, 120, 0x23D6C3AB);
+MS2_REPLACE_METHOD(0x140C72F10, UIMentoringMentorRegisterPage, SendMentor, 120, 0x23D6C3AB);
 MS2_REPLACE_METHOD(0x140C73590, UIMentoringMissionPage, vfunc_1, 405, 0x6054B35C);
 MS2_REPLACE_METHOD(0x140C73730, UIMentoringMissionPage, vfunc_2, 75, 0x4A8190D1);
 MS2_REPLACE_METHOD(0x140C73790, UIMentoringMissionPage, vfunc_3, 550, 0x33441F61);

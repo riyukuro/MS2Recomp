@@ -248,7 +248,7 @@ void UIRealEstateSell::FUN_141ab6230()
 
 // MS2-FUNCTIONAL: temp spills / CStringW copy placement differ vs exe
 // @0x141ab6ad0
-int UIRealEstateSell::FUN_141ab6ad0(CStringW strName)
+int UIRealEstateSell::SendRequestCube(CStringW strName)
 {
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
@@ -284,7 +284,7 @@ int UIRealEstateSell::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (FUN_14028cb70(strTag, aParts, L",", 2) == 0)
             return 0;
         CStringW strInput(aParts[1]);
-        if (FUN_141ab6ad0(strInput) != 0)
+        if (SendRequestCube(strInput) != 0)
             FUN_14151f200();
         return 1;
     }

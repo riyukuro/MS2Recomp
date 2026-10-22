@@ -39,7 +39,7 @@ public:
     void FUN_141295c30(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: wedding hall cancel
     void FUN_141295cb0(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: trigger debug (pick an xml)
     CString FUN_1412965f0(CString strInitialDir, const char* pszFilter);   // GetOpenFileName in a directory
-    void FUN_141296070(CString strPath);                // close the trigger debug window of a path
+    void SendSetDebugModeMode9(CString strPath);                // close the trigger debug window of a path
     MS2Ptr<Unk_140acd6e0> FUN_141296150(int nRow, int nColumn, CStringW strLabel);   // create the button of a grid cell
     void FUN_141296370(int nRow, int nColumn, CString strKey, int nDialogId);        // a button that opens a dialog
     void FUN_141296500(int nRow, int nColumn, CString strKey, Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb);   // a button with a callback

@@ -297,7 +297,7 @@ public:
     void FUN_14165f0b0(MS2Ptr<CItem> spItem);               // +0x1040 the held item
     void FUN_14165f130(int n);                              // +0x1050
     int FUN_14165f150();                                    // +0x1050 an item is held
-    void FUN_14165f170();                                   // put the held item away (packet 0x37/0x12)
+    void SendRequestCube();                                   // put the held item away (packet 0x37/0x12)
     void FUN_141661820(int nSkillId, short nLevel, std::set<unsigned int>& kVisited, std::set<unsigned int>& kFound);   // (empty in the client)
     void FUN_141661840(int nSkillId, short nLevel);         // (empty in the client)
     int FUN_141661860();                                    // +0x1000

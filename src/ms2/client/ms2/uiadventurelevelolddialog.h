@@ -45,7 +45,7 @@ public:
     int FUN_140ba61b0(ASObj& obj, unsigned int nLevel);                                             // level row: state, level text
     int FUN_140ba63d0(ASObj& obj, unsigned int nLevel);                                             // level row: item reward
     int FUN_140ba66a0(ASObj& obj, unsigned int nLevel);                                             // level row: stat reward
-    void FUN_140ba6a10(unsigned int nLevel);                                                        // claim a level reward
+    void SendPrestige(unsigned int nLevel);                                                        // claim a level reward
     MS2Ptr<Unk_ALList> FUN_140ba4b70(const CString& strName);                                       // the list control of the movie (shared with UIAdventureLevelDialog)
 
 private:

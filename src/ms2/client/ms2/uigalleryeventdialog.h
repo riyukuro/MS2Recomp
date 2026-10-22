@@ -58,9 +58,9 @@ public:
     void FUN_140c181a0(int);
     void FUN_140c18330();
     void FUN_140c18460();
-    void FUN_140c184c0(int);
-    void FUN_140c18610(int);
-    void FUN_140c18760();
+    void SendEventRewardMode7(int);
+    void SendEventRewardMode8(int);
+    void SendEventRewardMode9();
     int FUN_140c187e0();
     CString FUN_140c189d0(int);
     int FUN_140c18ab0(int);

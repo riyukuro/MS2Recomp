@@ -169,7 +169,7 @@ int UITradeDialogEx::vfunc_65()
 void UITradeDialogEx::vfunc_67()
 {
     FUN_140aa6d40()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
-    FUN_14140ea30()->FUN_14185b970();
+    FUN_14140ea30()->SendTradeMode7();
     FUN_14140ea30()->FUN_14185d7b0();
     UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
     if (pInv != 0)
@@ -284,13 +284,13 @@ int UITradeDialogEx::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         {
             __int64 nMeso = FUN_1407182f0(data.FUN_1422b8d30());
             if (FUN_141b295a0(nMeso))
-                FUN_14140ea30()->FUN_14185bb80();
+                FUN_14140ea30()->SendTradeMode11();
         }
         return 1;
     }
     if (_stricmp("OnConfirm", szMethod) == 0)
     {
-        FUN_14140ea30()->FUN_14185bbe0();
+        FUN_14140ea30()->SendTradeMode13();
         return 1;
     }
     return 0;
@@ -565,7 +565,7 @@ bool UITradeDialogEx::FUN_141b295a0(__int64 nMeso)
         FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_trade_error_lack_meso_2")), 0, 0, CStringW(L""));
         bValid = false;
     }
-    FUN_14140ea30()->FUN_14185baf0(nMeso);
+    FUN_14140ea30()->SendTradeMode10(nMeso);
     return bValid;
 }
 

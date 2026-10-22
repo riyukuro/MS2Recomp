@@ -33,7 +33,7 @@ public:
     void FUN_140e13c00();
     void FUN_140e142f0();
     void FUN_140e14400(const Scaleform::GFx::FunctionHandler::Params& params);
-    bool FUN_140e144b0(int nResult, const CMsgBoxData& data);
+    bool SendRoomDungeon(int nResult, const CMsgBoxData& data);
 private:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<ASMovieClip> m_root;                                 // +0x18

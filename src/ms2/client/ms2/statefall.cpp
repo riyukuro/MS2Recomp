@@ -168,7 +168,7 @@ void StateFall::vfunc_8(double fTime)
         else
         {
             if (m_pOwner->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
-                pPC->FUN_14152c280(new RideOffActionAutoClimb(1));
+                pPC->SendRequestRideMode1(new RideOffActionAutoClimb(1));
         }
     }
     else
@@ -200,7 +200,7 @@ void StateFall::vfunc_9(double fTime)
                 MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
                 spAction->m_n28 = nSide;
                 spAction->m_n2c = 0xbadf0a13;
-                if (pPC->FUN_14152c280(spAction) != 0)
+                if (pPC->SendRequestRideMode1(spAction) != 0)
                     pPC->vfunc_59(1, 0, 0, 0);
                 return;
             }

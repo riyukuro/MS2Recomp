@@ -51,7 +51,7 @@ public:
     void FUN_140fbaca0();                                           // 0x140fbaca0 fill the goods list of the movie
     void FUN_140fbbae0(int nGoodsId);                               // 0x140fbbae0 "onClickBuyGoods": check the limit, open the bill
     void FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods);                  // 0x140fbbe40 open the bill dialog for a goods row
-    bool FUN_140fbcca0(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay);   // 0x140fbcca0 the buy callback
+    bool SendPremiumClubMode4(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay);   // 0x140fbcca0 the buy callback
     bool FUN_140fbce80(Scaleform::GFx::Value* pRetVal, ASData& rData, MS2Ptr<TMarketBillDataParam> spParam);   // 0x140fbce80 the bill tooltip callback
 
 private:

@@ -528,7 +528,7 @@ void BlackMarketPageItemSearch::vfunc_5()
         if (!FUN_140f0f2c0())
             return;
         FUN_140f0c400("loading");
-        CBlackMarketMan::GetInstance()->FUN_140a20b10(m_spCond);
+        CBlackMarketMan::GetInstance()->SendBlackMarketMode4(m_spCond);
         m_dwSearchTick = FUN_140869420();
         m_bSendPending = false;
     }
@@ -1004,7 +1004,7 @@ void BlackMarketPageItemSearch::FUN_140f107a0(unsigned __int64 nId, int nCount)
     }
     FUN_1412761e0(m_20, 0);
     m_request.SetProduct(5, 0, 0);
-    CBlackMarketMan::GetInstance()->FUN_140a20bf0(nId, nCount);
+    CBlackMarketMan::GetInstance()->SendBlackMarketMode5(nId, nCount);
 }
 
 // @0x140f108e0
@@ -1475,7 +1475,7 @@ bool BlackMarketPageItemRegister::FUN_140f13950(int nResult, const CMsgBoxData& 
     if (nResult == 0)
     {
         FUN_1412761e0(m_20, 0);
-        CBlackMarketMan::GetInstance()->FUN_140a20aa0(m_request.m_nKey);
+        CBlackMarketMan::GetInstance()->SendBlackMarketMode3(m_request.m_nKey);
     }
     else
     {
@@ -1521,7 +1521,7 @@ void BlackMarketPageItemRegister::FUN_140f13ce0(MS2Ptr<CItem> spItem)
     if (!spItem)
         return;
     if (m_item.Set(spItem))
-        CBlackMarketMan::GetInstance()->FUN_140a20c70(m_item.m_nItemId, m_item.m_nRank);
+        CBlackMarketMan::GetInstance()->SendBlackMarketMode8(m_item.m_nItemId, m_item.m_nRank);
 }
 MS2_REPLACE_METHOD(0x140F13CE0, BlackMarketPageItemRegister, FUN_140f13ce0, 154, 0x160E98B9);
 
@@ -1536,7 +1536,7 @@ void BlackMarketPageItemRegister::FUN_140f13d80()
         __int64 nUid = FUN_140718370(parts.GetAt(0));
         __int64 nPrice = FUN_140718320(parts.GetAt(1));
         int nCount = FUN_1407181a0(parts.GetAt(2));
-        CBlackMarketMan::GetInstance()->FUN_140a20a00(nUid, nPrice, nCount);
+        CBlackMarketMan::GetInstance()->SendBlackMarketMode2(nUid, nPrice, nCount);
     }
 }
 MS2_REPLACE_METHOD(0x140F13D80, BlackMarketPageItemRegister, FUN_140f13d80, 232, 0xE2EC43A2);

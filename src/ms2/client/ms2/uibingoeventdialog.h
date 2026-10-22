@@ -108,7 +108,7 @@ public:
     // @0x140bb6c60
     virtual int vfunc_48() { return 20355; }
     void FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140bb0e20(const Scaleform::GFx::FunctionHandler::Params&);
+    void SendEventRewardMode23(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140bb0ea0(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140bb13e0(const Scaleform::GFx::FunctionHandler::Params&);
     bool FUN_140bb1460(int, const CMsgBoxData&);

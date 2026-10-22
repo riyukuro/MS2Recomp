@@ -339,7 +339,7 @@ int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_1412c79e0(data.FUN_1422b8f40());
+            SendRequestCubeMode58(data.FUN_1422b8f40());
         return 1;
     }
     return 0;
@@ -767,7 +767,7 @@ void UIHomeInfoDialog::FUN_1412c7810()
 
 // @0x1412c79e0
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
-void UIHomeInfoDialog::FUN_1412c79e0(CStringW strName)
+void UIHomeInfoDialog::SendRequestCubeMode58(CStringW strName)
 {
     COutPacket packet(0x37, 0);
     packet.vfunc_o10_1(0x3a);
@@ -815,7 +815,7 @@ bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot)
             spBox->FUN_141a024e0(FUN_14028de60(0x9d1), 0);
             spBox->FUN_141a02730(0);
             spBox->FUN_141a02770(0x1c0, 400);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::FUN_1412c7f40));
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::SendRequestCubeMode31));
             FUN_140d73c60(spBox);
         }
     }
@@ -834,7 +834,7 @@ bool UIHomeInfoDialog::FUN_1412c7ef0(int nResult, const CMsgBoxData& data)
 }
 
 // @0x1412c7f40
-bool UIHomeInfoDialog::FUN_1412c7f40(int nResult, const CMsgBoxData& data)
+bool UIHomeInfoDialog::SendRequestCubeMode31(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
@@ -985,11 +985,11 @@ MS2_REPLACE_METHOD(0x1412C7710, UIHomeInfoDialog, FUN_1412c7710, 86, 0xF80D1B0D)
 MS2_REPLACE_METHOD(0x1412C7770, UIHomeInfoDialog, FUN_1412c7770, 73, 0x23D732DD);
 MS2_REPLACE_METHOD(0x1412C77C0, UIHomeInfoDialog, FUN_1412c77c0, 68, 0x6D992898);
 MS2_REPLACE_METHOD(0x1412C7810, UIHomeInfoDialog, FUN_1412c7810, 444, 0xF76ACB35);
-MS2_REPLACE_METHOD(0x1412C79E0, UIHomeInfoDialog, FUN_1412c79e0, 173, 0xBF680A66);
+MS2_REPLACE_METHOD(0x1412C79E0, UIHomeInfoDialog, SendRequestCubeMode58, 173, 0xBF680A66);
 MS2_REPLACE_METHOD(0x1412C7AA0, UIHomeInfoDialog, FUN_1412c7aa0, 72, 0xA734365C);
 MS2_REPLACE_METHOD(0x1412C7AF0, UIHomeInfoDialog, FUN_1412c7af0, 1011, 0x70EEF58B);
 MS2_REPLACE_METHOD(0x1412C7EF0, UIHomeInfoDialog, FUN_1412c7ef0, 72, 0x71DF7278);
-MS2_REPLACE_METHOD(0x1412C7F40, UIHomeInfoDialog, FUN_1412c7f40, 157, 0xC5195BF7);
+MS2_REPLACE_METHOD(0x1412C7F40, UIHomeInfoDialog, SendRequestCubeMode31, 157, 0xC5195BF7);
 MS2_REPLACE_METHOD(0x1412C7FF0, UIHomeInfoDialog, FUN_1412c7ff0, 461, 0xE69FF28C);
 MS2_REPLACE_METHOD(0x1412C81D0, UIHomeInfoDialog, FUN_1412c81d0, 164, 0xB0D62B29);
 MS2_REPLACE_METHOD(0x1412C8280, UIHomeInfoDialog, FUN_1412c8280, 164, 0x180D9578);

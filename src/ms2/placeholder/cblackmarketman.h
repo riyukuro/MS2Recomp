@@ -27,13 +27,13 @@ public:
     virtual ~CBlackMarketMan();                             // 0x140a20590
 
     void OnBlackMarket(CInPacket& packet);                  // packet 0x5f dispatcher by the sub code
-    void FUN_140a20940();                                   // send 0x5f/1
-    void FUN_140a209a0();                                   // send 0x5f/6
-    void FUN_140a20a00(unsigned __int64 qwA, unsigned __int64 qwB, int nCount);   // send 0x5f/2
-    void FUN_140a20aa0(unsigned __int64 qwId);              // send 0x5f/3
-    void FUN_140a20b10(MS2Ptr<CBlackMarketSchCond> spCond); // send 0x5f/4: the search condition
-    void FUN_140a20bf0(unsigned __int64 qwId, int nCount);  // send 0x5f/5
-    void FUN_140a20c70(int nA, int nB);                     // send 0x5f/8
+    void SendBlackMarketMode1();                                   // send 0x5f/1
+    void SendBlackMarketMode6();                                   // send 0x5f/6
+    void SendBlackMarketMode2(unsigned __int64 qwA, unsigned __int64 qwB, int nCount);   // send 0x5f/2
+    void SendBlackMarketMode3(unsigned __int64 qwId);              // send 0x5f/3
+    void SendBlackMarketMode4(MS2Ptr<CBlackMarketSchCond> spCond); // send 0x5f/4: the search condition
+    void SendBlackMarketMode5(unsigned __int64 qwId, int nCount);  // send 0x5f/5
+    void SendBlackMarketMode8(int nA, int nB);                     // send 0x5f/8
     int FUN_140a20cf0(MS2Ptr<CBlackMarketProduct> sp);     // add to the own list (true when it was new)
     void FUN_140a20e00(unsigned __int64 qwId);              // remove from the own list
     MS2Ptr<CBlackMarketProduct> FUN_140a20e70(unsigned __int64 qwId);   // product of the own list

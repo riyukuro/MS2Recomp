@@ -1433,7 +1433,7 @@ CStringW CubeMapInformationService::FUN_1410c7f60(int nA, int nB)
     return CStringW(spOwner->ownerName);
 }
 // @0x1410d5b20
-void CubeMapInformationService::FUN_1410d5b20(__int64 nId)
+void CubeMapInformationService::SendRequestCubeMode68(__int64 nId)
 {
     if (FUN_141151760(&f78)) {
         COutPacket packet(0x37, 0);
@@ -2067,7 +2067,7 @@ void CubeMapInformationService::FUN_1410d5190(unsigned __int64* pCubes, unsigned
     }
 }
 // @0x1410d5350
-void CubeMapInformationService::FUN_1410d5350()
+void CubeMapInformationService::SendRequestCubeMode31()
 {
     Unk_CMISIter<260> it, itEnd;
     for (FUN_14114dd70(&fb8, &it); FUN_1411274c0(&it, FUN_141151af0(&fb8, &itEnd)); FUN_141129b50(&it)) {
@@ -6520,7 +6520,7 @@ MS2_REPLACE_METHOD(0x1410c3020, CubeMapInformationService, FUN_1410c3020, 210, 0
 MS2_REPLACE_METHOD(0x1410ce560, CubeMapInformationService, FUN_1410ce560, 145, 0xA6305FF4);
 MS2_REPLACE_METHOD(0x1410ce310, CubeMapInformationService, FUN_1410ce310, 212, 0xE2043451);
 MS2_REPLACE_METHOD(0x1410d33a0, CubeMapInformationService, FUN_1410d33a0, 160, 0x039024A4);
-MS2_REPLACE_METHOD(0x1410d5b20, CubeMapInformationService, FUN_1410d5b20, 153, 0xAA015FE8);
+MS2_REPLACE_METHOD(0x1410d5b20, CubeMapInformationService, SendRequestCubeMode68, 153, 0xAA015FE8);
 MS2_REPLACE_METHOD(0x1410ce800, CubeMapInformationService, OnPreInit, 69, 0xF3875923);
 MS2_REPLACE_METHOD(0x1410ce850, CubeMapInformationService, OnInit, 68, 0xC478B401);
 MS2_REPLACE_METHOD(0x1410c3000, CubeMapInformationService, FUN_1410c3000, 17, 0xF1B8F21A);
@@ -6568,7 +6568,7 @@ MS2_REPLACE_METHOD(0x1410cb980, CubeMapInformationService, FUN_1410cb980, 245, 0
 MS2_REPLACE_METHOD(0x1410d50c0, CubeMapInformationService, FUN_1410d50c0, 196, 0x522E19D8);
 MS2_REPLACE_METHOD(0x1410d4fa0, CubeMapInformationService, FUN_1410d4fa0, 275, 0xAD5CD043);
 MS2_REPLACE_METHOD(0x1410d5190, CubeMapInformationService, FUN_1410d5190, 433, 0xE5884B7A);
-MS2_REPLACE_METHOD(0x1410d5350, CubeMapInformationService, FUN_1410d5350, 399, 0xC29D2273);
+MS2_REPLACE_METHOD(0x1410d5350, CubeMapInformationService, SendRequestCubeMode31, 399, 0xC29D2273);
 MS2_REPLACE_METHOD(0x1410d23f0, CubeMapInformationService, FUN_1410d23f0, 398, 0x7EA54F09);
 MS2_REPLACE_METHOD(0x1410c3fc0, CubeMapInformationService, FUN_1410c3fc0, 622, 0xED5B5BB5);
 MS2_REPLACE_METHOD(0x1410c81c0, CubeMapInformationService, FUN_1410c81c0, 679, 0x79FEA130);

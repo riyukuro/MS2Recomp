@@ -631,7 +631,7 @@ int UIGroupMessenger::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (strTag == s_strGroupExit)
         {
             if (nResult == 0)
-                CGroupChatManager::GetInstance()->FUN_14137efa0(m_nGroupId, 0);
+                CGroupChatManager::GetInstance()->SendGroupChatMode4(m_nGroupId, 0);
             FUN_14151f200();
             return 1;
         }
@@ -767,7 +767,7 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             ASData args;
             if (!args.FUN_1422b9620(pArgs, nArgs))
                 return 0;
-            FUN_14194ade0(args.FUN_1422b8a10());
+            SendMessengerMode4(args.FUN_1422b8a10());
         }
         else if (_stricmp("eventChatEmoticonFavorite", szMethod) == 0)
         {
@@ -782,7 +782,7 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             if (args.FUN_1422b9620(pArgs, nArgs))
             {
                 CStringW strText = args.FUN_1422b8f40();
-                CGroupChatManager::GetInstance()->FUN_14137f080(m_nGroupId, strText);
+                CGroupChatManager::GetInstance()->SendGroupChatMode10(m_nGroupId, strText);
             }
         }
     }
@@ -940,7 +940,7 @@ MS2_REPLACE_METHOD(0x14194AD60, UIGroupMessenger, FUN_14194ad60, 110, 0xF5CDBC08
 
 // MS2-FUNCTIONAL: control flow / temporaries differ from the exe (functional-first)
 // @0x14194ade0
-int UIGroupMessenger::FUN_14194ade0(int nEmoticonId)
+int UIGroupMessenger::SendMessengerMode4(int nEmoticonId)
 {
     ChatEmoticonDataPtr spEmo = FUN_1409eecd0()->FUN_1401e7120(nEmoticonId);
     if (!!spEmo)
@@ -962,7 +962,7 @@ int UIGroupMessenger::FUN_14194ade0(int nEmoticonId)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x14194ADE0, UIGroupMessenger, FUN_14194ade0, 460, 0x5BD64367);
+MS2_REPLACE_METHOD(0x14194ADE0, UIGroupMessenger, SendMessengerMode4, 460, 0x5BD64367);
 
 // @0x14194afc0
 void UIGroupMessenger::FUN_14194afc0(int nEmoticonId)
@@ -975,7 +975,7 @@ void UIGroupMessenger::FUN_14194afc0(int nEmoticonId)
         strSize = StringFormat(L"width='{0}' height='{1}'", spEmo->m_nWidth, spEmo->m_nHeight);
     CStringW strLine = FUN_140cde1f0(L"<img src='img://emoticon:{0}' vspace='{1}' {2} />", spEmo->m_nId,
                                      spEmo->m_nVSpace, strSize);
-    CGroupChatManager::GetInstance()->FUN_14137f080(m_nGroupId, strLine);
+    CGroupChatManager::GetInstance()->SendGroupChatMode10(m_nGroupId, strLine);
 }
 MS2_REPLACE_METHOD(0x14194AFC0, UIGroupMessenger, FUN_14194afc0, 446, 0xADC3693B);
 
@@ -1270,7 +1270,7 @@ int UIGroupMessenger::FUN_14194c830()
             pChecker->FilterReservedWords(strText);
         }
         strText = FUN_141842320(strText);
-        CGroupChatManager::GetInstance()->FUN_14137f080(m_nGroupId, strText);
+        CGroupChatManager::GetInstance()->SendGroupChatMode10(m_nGroupId, strText);
     }
     else
     {
@@ -1280,7 +1280,7 @@ int UIGroupMessenger::FUN_14194c830()
             pChecker->FilterReservedWords(strHtml);
         }
         FUN_140d2c650(strHtml);
-        CGroupChatManager::GetInstance()->FUN_14137f080(m_nGroupId, strHtml);
+        CGroupChatManager::GetInstance()->SendGroupChatMode10(m_nGroupId, strHtml);
     }
     FUN_14194cd00();
     return 1;

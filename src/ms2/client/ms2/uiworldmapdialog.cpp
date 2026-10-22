@@ -399,7 +399,7 @@ void UIWorldMapDialog::OnLoadComplete()
     if (!spField)
         return;
     m_nWorld = FUN_140cb17d0()->WorldOfField(spField->FUN_140375350());
-    FUN_141b58e80();
+    SendRequestWorldmapMode0();
     FUN_141b60c40(m_nField, m_210 != 0);
     FUN_141b5be10();
     if (m_210 != 0)
@@ -516,7 +516,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             m_nMode = data.FUN_1422b8a10();
-            FUN_141b5d390();
+            SendRequestWorldmapMode1();
         }
         return 1;
     }
@@ -598,7 +598,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             {
                 UIWorldChampionRewardDialog* pDialog;
                 if (spIcon->m_20.m_20 == 2 && (pDialog = FUN_14193f2b0(0x4f68)) != 0)
-                    pDialog->FUN_140feb5b0();
+                    pDialog->SendWorldChampionMode8();
             }
         }
     }
@@ -727,7 +727,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("onClickMissionReward", szMethod) == 0)
     {
-        FUN_141b5cbc0();
+        SendQuest();
     }
     else if (_stricmp("onClickMissionRewardPrev", szMethod) == 0)
     {
@@ -1018,7 +1018,7 @@ MS2_REPLACE_METHOD(0x141B57870, UIWorldMapDialog, FUN_141b57870, 2428, 0xF6B08EB
 // @0x141b58200
 void UIWorldMapDialog::FUN_141b58200()
 {
-    FUN_141b58e80();
+    SendRequestWorldmapMode0();
 }
 MS2_REPLACE_METHOD(0x141B58200, UIWorldMapDialog, FUN_141b58200, 24, 0x7DF05EEB);
 
@@ -1145,7 +1145,7 @@ void UIWorldMapDialog::FUN_141b58830(unsigned int nFieldId, int nNpcField, int n
 MS2_REPLACE_METHOD(0x141B58830, UIWorldMapDialog, FUN_141b58830, 1554, 0xD7B92CE9);
 
 // @0x141b58e80
-void UIWorldMapDialog::FUN_141b58e80()
+void UIWorldMapDialog::SendRequestWorldmapMode0()
 {
     COutPacket packet(0x4a);
     packet.Encode1(0);
@@ -1153,7 +1153,7 @@ void UIWorldMapDialog::FUN_141b58e80()
     packet.Encode4(FUN_141b69340());
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141B58E80, UIWorldMapDialog, FUN_141b58e80, 119, 0x11A35320);
+MS2_REPLACE_METHOD(0x141B58E80, UIWorldMapDialog, SendRequestWorldmapMode0, 119, 0x11A35320);
 
 // @0x141b58f00
 void UIWorldMapDialog::FUN_141b58f00()
@@ -1422,7 +1422,7 @@ void UIWorldMapDialog::FUN_141b5a550(int nFieldId)
     {
         MS2Ptr<RideOffActionTaxi> spAction(new RideOffActionTaxi(0));
         spAction->m_n28 = nFieldId;
-        pPlayer->FUN_14152c280(spAction.operator->());
+        pPlayer->SendRequestRideMode1(spAction.operator->());
     }
 }
 
@@ -1489,7 +1489,7 @@ MS2_REPLACE_METHOD(0x141B5AEC0, UIWorldMapDialog, FUN_141b5aec0, 91, 0xBCE3A810)
 bool UIWorldMapDialog::FUN_141b5af30(int nButton, const CMsgBoxData& data)
 {
     if (nButton == 0)
-        FUN_140764020()->FUN_1416d0c90(m_1c4);
+        FUN_140764020()->SendQuestMode15(m_1c4);
     return true;
 }
 MS2_REPLACE_METHOD(0x141B5AF30, UIWorldMapDialog, FUN_141b5af30, 60, 0x34E1CF2E);
@@ -1777,7 +1777,7 @@ void UIWorldMapDialog::FUN_141b5cea0(ATL::CAtlMap<int, MS2Ptr<CQuestData> >& sta
 }
 
 // @0x141b5cbc0
-void UIWorldMapDialog::FUN_141b5cbc0()
+void UIWorldMapDialog::SendQuest()
 {
     if (FUN_140764020()->FUN_1416d0100() != 0)
     {
@@ -1787,7 +1787,7 @@ void UIWorldMapDialog::FUN_141b5cbc0()
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x141B5CBC0, UIWorldMapDialog, FUN_141b5cbc0, 117, 0xBD951E1F);
+MS2_REPLACE_METHOD(0x141B5CBC0, UIWorldMapDialog, SendQuest, 117, 0xBD951E1F);
 
 // @0x141b5cc40
 // MS2-FUNCTIONAL: the field mission panel of a round (frame layout of the temporaries)
@@ -1832,7 +1832,7 @@ MS2Ptr<UIWorldMap::MapTile> UIWorldMapDialog::FUN_141b5d120()
 MS2_REPLACE_METHOD(0x141B5D120, UIWorldMapDialog, FUN_141b5d120, 609, 0x66E09A6F);
 
 // @0x141b5d390
-void UIWorldMapDialog::FUN_141b5d390()
+void UIWorldMapDialog::SendRequestWorldmapMode1()
 {
     if (!m_tiles.empty())
         return;
@@ -1858,7 +1858,7 @@ void UIWorldMapDialog::FUN_141b5d390()
         break;
     }
 }
-MS2_REPLACE_METHOD(0x141B5D390, UIWorldMapDialog, FUN_141b5d390, 260, 0x20B4035F);
+MS2_REPLACE_METHOD(0x141B5D390, UIWorldMapDialog, SendRequestWorldmapMode1, 260, 0x20B4035F);
 
 // @0x141b5d4b0
 // MS2-FUNCTIONAL: the tile part of "createMap" (frame layout of the string temporaries)

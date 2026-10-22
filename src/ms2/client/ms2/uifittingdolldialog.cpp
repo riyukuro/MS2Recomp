@@ -198,7 +198,7 @@ CString UIFittingDollDialog::vfunc_1()
 }
 
 // @0x141933390
-void UIFittingDollDialog::FUN_141933390()
+void UIFittingDollDialog::SendFittingDoll()
 {
     if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
     {
@@ -319,7 +319,7 @@ int UIFittingDollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             return 0;
         int nResult = FUN_141934430();
         if (nResult == 0)
-            FUN_141933390();
+            SendFittingDoll();
         else if (nResult != 0x16)
             FUN_14121b840(nResult);
         return 1;
@@ -523,7 +523,7 @@ int UIFittingDollDialog::FUN_141934430()
 bool UIFittingDollDialog::FUN_141934c10(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
-        FUN_141933390();
+        SendFittingDoll();
     return true;
 }
 

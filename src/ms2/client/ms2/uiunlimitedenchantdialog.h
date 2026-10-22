@@ -50,8 +50,8 @@ public:
     void FUN_140fb6b00(CInPacket* pPacket);                          // 0x140fb6b00 enchant result
     void FUN_140fb6c30(Unk_UnlimitedEnchantError eError);                                  // 0x140fb6c30 show the error text of a check
     void FUN_140fb6ed0();                                            // 0x140fb6ed0 collect the items and fill the bag
-    void FUN_140fb7450(unsigned __int64 nUid);                       // 0x140fb7450 ask for the preview
-    void FUN_140fb7570(unsigned __int64 nUid);                       // 0x140fb7570 ask for the enchant
+    void SendLimitBreakMode0(unsigned __int64 nUid);                       // 0x140fb7450 ask for the preview
+    void SendLimitBreakMode1(unsigned __int64 nUid);                       // 0x140fb7570 ask for the enchant
     void FUN_140fb7690(__int64 nUid);                                // 0x140fb7690 refresh the bag, select the item
     Unk_UnlimitedEnchantError FUN_140fb7870(MS2Ptr<CItem> spItem);                         // 0x140fb7870 check an item (0 ok)
     MS2Ptr<Unk_UeBag> FUN_140ba4b70(const CString& strName);         // child lookup of the movie

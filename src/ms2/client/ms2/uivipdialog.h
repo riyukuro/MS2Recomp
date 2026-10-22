@@ -29,7 +29,7 @@ public:
     virtual void vfunc_67();                                        // 67 0x140fb7f60
     virtual void vfunc_72();                                        // 72 0x140fb7f80 re-lists when the VIP end time changed
 
-    void FUN_140fb8620();                                           // 0x140fb8620 packet 0x8e / 1: ask the claimed benefit ids
+    void SendPremiumClubMode1();                                           // 0x140fb8620 packet 0x8e / 1: ask the claimed benefit ids
     int FUN_140fb8680();                                            // 0x140fb8680 the number of benefit items that can be claimed
     void FUN_140fb87d0(CInPacket& packet, int nMode);               // 0x140fb87d0 packet reply: 1 = claimed ids, 2 = one claimed
     void FUN_140fb8d10();                                           // 0x140fb8d10 the remaining time text and the timer icon

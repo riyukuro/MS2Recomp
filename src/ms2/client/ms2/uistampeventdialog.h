@@ -33,8 +33,8 @@ public:
     void FUN_140ed89f0(MS2Ptr<StampEventContext> spContext);        // "setCompleteReward"
     void FUN_140ed8c20(unsigned nQuest);                            // "updateStamp"
     void FUN_140ed8c70();                                           // "m_count" text
-    void FUN_140ed8e60(int nCount, int nSpecial);                   // request a reward (packet 0x97, 0)
-    void FUN_140ed8f50();                                           // request the complete reward (packet 0x97, 1)
+    void SendEventRewardMode0(int nCount, int nSpecial);                   // request a reward (packet 0x97, 0)
+    void SendEventRewardMode1();                                           // request the complete reward (packet 0x97, 1)
     int FUN_140ed8fc0();                                            // the complete reward can be claimed
     int FUN_140ed9180(int nCount, int nSpecial);                    // reward state: 0 locked, 1 claimable, 2 claimed
     CString FUN_140ed9480(int nItemId);                             // item icon name

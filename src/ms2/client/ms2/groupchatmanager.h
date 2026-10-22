@@ -118,8 +118,8 @@ public:
     int FUN_14137e820();
     void Create(CStringW name);
     void Invite(unsigned oid, CStringW name);
-    void FUN_14137efa0(unsigned oid, int flag);
-    void FUN_14137f080(unsigned oid, CStringW text);
+    void SendGroupChatMode4(unsigned oid, int flag);
+    void SendGroupChatMode10(unsigned oid, CStringW text);
     void OnGroupChat(CInPacket* packet);           // packet dispatcher
     void FUN_14137f490(CInPacket* packet);
     void FUN_14137f590(CInPacket* packet);

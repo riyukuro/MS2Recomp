@@ -197,7 +197,7 @@ Unk_SsWorld* FUN_1403ed2d0();
 SkillDataTable* FUN_1401958b0();                          // the skill table
 void FUN_14092f4e0(int nSkillId);                         // use a skill
 int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // put an entry on a quick slot
-int FUN_14092fef0(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // the entry may be put on a quick slot
+int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nPage, int nSlot);   // the entry may be put on a quick slot
 bool FUN_140930d70();                                     // the quick slots are synced to the server
 void FUN_141275260(int nNotice, int a, int b);            // a system notice by id
 void FUN_1412751f0(const CStringW& strText, int a, int b);   // a system notice
@@ -545,7 +545,7 @@ int SkillSlot::vfunc_17()
     {
         int nPage = FUN_1409331f0()->FUN_140a700b0();
         int nSlot = FUN_1422cc410();
-        if (FUN_14092fef0(m_nSkillId, m_nItemId, m_nItemUid, nPage, nSlot) == 0)
+        if (SendKeyTableMode5(m_nSkillId, m_nItemId, m_nItemUid, nPage, nSlot) == 0)
         {
             vfunc_12();
             return 0;

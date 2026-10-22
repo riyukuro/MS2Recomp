@@ -37,9 +37,9 @@ public:
     int FUN_140bf8900();                                        // 0x140bf8900 some quest can be accepted at once
     int FUN_140bf8ab0();                                        // 0x140bf8ab0 some quest can be completed at once
     void FUN_140bf8c30(unsigned nQuest);                        // 0x140bf8c30 ask to use a completion ticket
-    bool FUN_140bf9010(int nResult, const CMsgBoxData& rBox);   // 0x140bf9010 "accept all" confirmed
-    bool FUN_140bf9090(int nResult, const CMsgBoxData& rBox);   // 0x140bf9090 "complete all" confirmed
-    bool FUN_140bf9110(int nResult, const CMsgBoxData& rBox);   // 0x140bf9110 ticket use confirmed
+    bool SendQuestMode34(int nResult, const CMsgBoxData& rBox);   // 0x140bf9010 "accept all" confirmed
+    bool SendQuestMode35(int nResult, const CMsgBoxData& rBox);   // 0x140bf9090 "complete all" confirmed
+    bool SendQuestMode33(int nResult, const CMsgBoxData& rBox);   // 0x140bf9110 ticket use confirmed
     void FUN_140bf91b0();                                       // 0x140bf91b0 collect the acceptable quests
     void FUN_140bf9360();                                       // 0x140bf9360 collect the completable quests
     int FUN_140bf94e0(int nQuest);                              // 0x140bf94e0 the quest is among the collected acceptable ones

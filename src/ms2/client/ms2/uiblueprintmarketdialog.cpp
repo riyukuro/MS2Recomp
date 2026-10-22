@@ -365,7 +365,7 @@ void UIBlueprintMarketDialog::vfunc_72()
     if (FUN_1418ffe80(m_nFlags, 1)) {
         if (!m_saved.IsEmpty()) {
             int nUIClassID = vfunc_48();
-            CMeratMarketMan::GetInstance()->FUN_140d54fe0(false, m_saved.m_nId, nUIClassID);
+            CMeratMarketMan::GetInstance()->SendMeretMarketMode29(false, m_saved.m_nId, nUIClassID);
         } else {
             CMeratMarketMan::GetInstance()->FUN_140d54e50(m_spCond);
         }

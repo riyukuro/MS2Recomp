@@ -29,9 +29,9 @@ public:
     virtual void vfunc_67();                                               // 67 0x140c6b520
 
     void FUN_140c6b9d0();                                                  // refresh the reward list when the dialog is loaded
-    void FUN_140c6ba20(NotifyObject*);                                     // "NotifyGameStart": asks the server for the event data
+    void SendEventRewardMode27(NotifyObject*);                                     // "NotifyGameStart": asks the server for the event data
     void FUN_140c6bac0(int nType, CInPacket& packet);                      // server answer of packet 0x97
-    bool FUN_140c6bb80(int nResult, const CMsgBoxData& data);             // "use merat to attend" confirm result
+    bool SendEventRewardMode26(int nResult, const CMsgBoxData& data);             // "use merat to attend" confirm result
     bool FUN_140c6bd40(int nResult, const CMsgBoxData& data);             // "lack of merat" box result
     void FUN_140c6bdb0();                                                  // "setData" of the swf (header)
     void FUN_140c6c250();                                                  // "setAttendance" of the swf (day frames)
@@ -39,7 +39,7 @@ public:
     void FUN_140c6c8e0();                                                  // refresh everything
     void FUN_140c6c920();                                                  // "updateAttendance" of the swf
     bool FUN_140c6cbf0();                                                  // fetch the event record; true when there is one
-    void FUN_140c6cc80(int nDay);                                          // claim the reward of a day
+    void SendEventRewardMode25(int nDay);                                          // claim the reward of a day
     void FUN_140c6cd00();                                                  // press the attend button
     int FUN_140c6d040(unsigned int nDay);                                  // 0 not yet, 1 claimable, 2 claimed
     int FUN_140c6d130();                                                   // days that can still be caught up

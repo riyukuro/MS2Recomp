@@ -148,7 +148,7 @@ int UIHomePasswordDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             if (strPassword.GetLength() != 6)
                 FUN_140d73bc0(0xb0a, 0, 0, L"");
             else
-                FUN_1412c96d0(1, strPassword, nFlag);
+                SendRequestCube(1, strPassword, nFlag);
         }
         return 1;
     }
@@ -208,7 +208,7 @@ void UIHomePasswordDialog::FUN_1412c9680(CString strPassword)
 }
 
 // @0x1412c96d0
-void UIHomePasswordDialog::FUN_1412c96d0(int nMode, CStringW strPassword, int nUnused)
+void UIHomePasswordDialog::SendRequestCube(int nMode, CStringW strPassword, int nUnused)
 {
     Unk_HpActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pActor != 0)
@@ -228,7 +228,7 @@ void UIHomePasswordDialog::FUN_1412c96d0(int nMode, CStringW strPassword, int nU
 // @0x1412c97c0
 void UIHomePasswordDialog::FUN_1412c97c0()
 {
-    FUN_1412c96d0(0, L"", 0);
+    SendRequestCube(0, L"", 0);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142caf410-0x142caf4c0 .text$yd

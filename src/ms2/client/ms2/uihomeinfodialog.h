@@ -46,11 +46,11 @@ public:
     void FUN_1412c7770();                                       // bank
     void FUN_1412c77c0();                                       // doctor
     void FUN_1412c7810();                                       // balance: ask for the amount to move
-    void FUN_1412c79e0(CStringW strName);                       // send the "remove user" request
+    void SendRequestCubeMode58(CStringW strName);                       // send the "remove user" request
     bool FUN_1412c7aa0(int nResult, const CMsgBoxData& data);
     bool FUN_1412c7af0(int nSlot);                              // save slot action (0 save, 1 load, 2 demolish)
     bool FUN_1412c7ef0(int nResult, const CMsgBoxData& data);
-    bool FUN_1412c7f40(int nResult, const CMsgBoxData& data);
+    bool SendRequestCubeMode31(int nResult, const CMsgBoxData& data);
     bool FUN_1412c7ff0(int nResult, const CMsgBoxData& data);
     unsigned int FUN_1412c81d0();                                      // remaining bank cooldown in ms
     unsigned int FUN_1412c8280();                                      // remaining doctor cooldown in ms

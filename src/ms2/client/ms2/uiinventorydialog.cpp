@@ -875,7 +875,7 @@ int UIInventoryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                     return 1;
                 }
             }
-            FUN_14199c230(nTab, false);
+            SendRequestItemInventory(nTab, false);
         }
         return 1;
     }
@@ -1378,7 +1378,7 @@ MS2_REPLACE_METHOD(0x14199B100, UIInventoryDialog, FUN_14199b100, 883, 0);
 // @0x14199b480
 bool UIInventoryDialog::FUN_14199b480(int nResult, const CMsgBoxData& box)
 {
-    FUN_14199c230(m_194, nResult == 0);
+    SendRequestItemInventory(m_194, nResult == 0);
     return true;
 }
 MS2_REPLACE_METHOD(0x14199B480, UIInventoryDialog, FUN_14199b480, 86, 0);
@@ -1565,7 +1565,7 @@ void UIInventoryDialog::FUN_14199c0d0()
 MS2_REPLACE_METHOD(0x14199C0D0, UIInventoryDialog, FUN_14199c0d0, 337, 0);
 
 // @0x14199c230
-void UIInventoryDialog::FUN_14199c230(int nTab, bool bStack)
+void UIInventoryDialog::SendRequestItemInventory(int nTab, bool bStack)
 {
     COutPacket packet(0x17, 0);
     packet.vfunc_o10_1(8);
@@ -1573,7 +1573,7 @@ void UIInventoryDialog::FUN_14199c230(int nTab, bool bStack)
     packet.vfunc_o10_0(bStack);
     FUN_140710590(packet);
 }
-MS2_REPLACE(0x14199C230, UIInventoryDialog::FUN_14199c230, 117, 0);
+MS2_REPLACE(0x14199C230, UIInventoryDialog::SendRequestItemInventory, 117, 0);
 
 // @0x14199c2b0
 // MS2-FUNCTIONAL: frame layout of the message box temporaries differs
@@ -1844,7 +1844,7 @@ void UIInventoryDialog::FUN_14199e2a0()
     if (!FUN_140d86260()->vfunc_40(FUN_140a5d0f0()))
         FUN_1403ed2b0()->FUN_141add1f0();
     else
-        DAT_143ab2a90.FUN_140a62cc0((unsigned char)m_194);
+        DAT_143ab2a90.SendRequestItemInventory((unsigned char)m_194);
 }
 MS2_REPLACE_METHOD(0x14199E2A0, UIInventoryDialog, FUN_14199e2a0, 113, 0);
 
@@ -2326,7 +2326,7 @@ void UIItemBreakBase::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_1419a1430();
     FUN_140a6a840()->FUN_1419cae20(this);
-    FUN_1409c4b20()->FUN_140531c20(vfunc_88());
+    FUN_1409c4b20()->SendItemDismantleMode0(vfunc_88());
     if (UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d))
     {
         pInventory->FUN_141999f60();
@@ -2776,7 +2776,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     }
     if (_stricmp(szMethod, "onSendBreak") == 0)
-        return FUN_1409c4b20()->FUN_140532d80();
+        return FUN_1409c4b20()->SendItemDismantleMode3();
     if (_stricmp(szMethod, "onResetBreak") == 0)
     {
         if (UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d))
@@ -2799,7 +2799,7 @@ int UIItemBreakDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     }
     if (_stricmp(szMethod, "OnBundleRegister") == 0)
     {
-        FUN_1409c4b20()->FUN_1405332b0(m_1f8, m_1fc);
+        FUN_1409c4b20()->SendItemDismantleMode6(m_1f8, m_1fc);
         return 1;
     }
     return 0;
@@ -3025,7 +3025,7 @@ int UIItemBreakDonationDialog::vfunc_28(const char* szMethod, const Scaleform::G
         return 1;
     }
     if (_stricmp(szMethod, "onSendBreak") == 0)
-        return FUN_1409c4b20()->FUN_140532d80();
+        return FUN_1409c4b20()->SendItemDismantleMode3();
     return 0;
 }
 MS2_REPLACE_METHOD(0x1419A51B0, UIItemBreakDonationDialog, vfunc_28, 1989, 0);

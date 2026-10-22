@@ -236,7 +236,7 @@ bool FUN_1406272f0(unsigned, MS2Ptr<CItemGemStoneData>);
 ItemSlotBag* FUN_140c54590(const CString&);
 void FUN_141276180(const CString&, const CString&);
 bool FUN_14062a3d0(MS2Ptr<CItem>, int, MS2Ptr<CItem>, Delegate<bool(int, const CMsgBoxData&)>);
-bool FUN_14062abb0(MS2Ptr<CItem>, const CMsgBoxData&);
+bool SendItemSocketSystem(MS2Ptr<CItem>, const CMsgBoxData&);
 unsigned short FUN_140626f20(unsigned);
 void FUN_1406284f0(unsigned short, int, int*, int*);
 struct Unk_SocketPageStrings { CStringW FUN_141811980(int, int); };
@@ -881,7 +881,7 @@ void ItemSocketSystemPageGemStoneManage::vfunc_7(MS2Ptr<AScript> root)
             if (m_debugButton.get() != 0) {
                 m_debugButton->vfunc_3(debug);
                 if (debug)
-                    FUN_1422ce240(m_debugButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneManage::FUN_140f72a40), 0);
+                    FUN_1422ce240(m_debugButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneManage::SendItemSocketSystemMode16), 0);
             }
             MS2Ptr<ItemSlotBag::CreateParam> param(new ItemSlotBag::CreateParam);
             param->m_nIconType = 0x415;
@@ -1329,7 +1329,7 @@ void ItemSocketSystemPageGemStoneManage::FUN_140f727e0(CInPacket* packet)
 }
 
 // @0x140f72a40
-void ItemSocketSystemPageGemStoneManage::FUN_140f72a40(const Scaleform::GFx::FunctionHandler::Params&)
+void ItemSocketSystemPageGemStoneManage::SendItemSocketSystemMode16(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_selected == 0 || m_selected->FUN_1405279c0() == 0)
         return;
@@ -1359,7 +1359,7 @@ bool ItemSocketSystemPageGemStoneManage::FUN_140f72bc0(int button, const CMsgBox
     if (m_selected == 0)
         return true;
     if (button == 0)
-        FUN_14062abb0(m_selected, box);
+        SendItemSocketSystem(m_selected, box);
     else if (button == 1)
         FUN_140f6dbe0(m_gemControl);
     return true;
@@ -1515,7 +1515,7 @@ void ItemSocketSystemPageGemStoneUpgrade::vfunc_7(MS2Ptr<AScript> root)
             if (m_debugAction.get() != 0) {
                 m_debugAction->vfunc_3(debug);
                 if (debug)
-                    FUN_1422ce240(m_debugAction.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneUpgrade::FUN_140f79760), 0);
+                    FUN_1422ce240(m_debugAction.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageGemStoneUpgrade::SendItemSocketSystemMode15), 0);
             }
             m_debugFill = reinterpret_cast<Unk_SpFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnFillIngredient");
             if (m_debugFill.get() != 0) {
@@ -2147,7 +2147,7 @@ void ItemSocketSystemPageGemStoneUpgrade::FUN_140f79680(__int64 uid)
 }
 
 // @0x140f79760
-void ItemSocketSystemPageGemStoneUpgrade::FUN_140f79760(const Scaleform::GFx::FunctionHandler::Params&)
+void ItemSocketSystemPageGemStoneUpgrade::SendItemSocketSystemMode15(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_selected == 0)
         return;

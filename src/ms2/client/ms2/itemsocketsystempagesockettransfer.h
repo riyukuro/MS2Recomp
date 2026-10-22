@@ -34,9 +34,9 @@ public:
     void FUN_140c533f0(CInPacket*);                     // transfer result
     void FUN_140c53920(CInPacket* packet);
     void FUN_140c53a70(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: transfer
-    void FUN_140c53e40(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: fill ingredients
+    void SendItemSocketSystemMode16(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: fill ingredients
     void FUN_140c53f90(CAtlArray<MS2Ptr<CItem>>&);
-    void FUN_140c53fc0(Unk_SockUidPair&);               // send the transfer request
+    void SendItemSocketSystemMode12(Unk_SockUidPair&);               // send the transfer request
     void FUN_140c54030();
     void FUN_140c54100(__int64);
     bool FUN_140c54210(int, const CMsgBoxData&);        // transfer the skin first? answer

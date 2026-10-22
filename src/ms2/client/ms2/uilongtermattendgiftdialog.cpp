@@ -309,7 +309,7 @@ UILongTermAttendGiftDialog::UILongTermAttendGiftDialog()
 {
     FUN_141924170(1);
     FUN_141926980(false);
-    FUN_140939a10()->FUN_140da4e40(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILongTermAttendGiftDialog::FUN_140c6ba20));
+    FUN_140939a10()->FUN_140da4e40(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode27));
 }
 
 // @0x140c6b450
@@ -399,7 +399,7 @@ int UILongTermAttendGiftDialog::vfunc_28(const char* method, const Scaleform::GF
     if (!_stricmp(method, "onClickReward")) {
         ASData data;
         if (data.FUN_1422b9620(args, count)) {
-            FUN_140c6cc80(data.FUN_1422b8a10());
+            SendEventRewardMode25(data.FUN_1422b8a10());
             return 1;
         }
     }
@@ -415,7 +415,7 @@ void UILongTermAttendGiftDialog::FUN_140c6b9d0()
 }
 
 // @0x140c6ba20
-void UILongTermAttendGiftDialog::FUN_140c6ba20(NotifyObject*)
+void UILongTermAttendGiftDialog::SendEventRewardMode27(NotifyObject*)
 {
     if (!FUN_140c6cbf0())
         return;
@@ -451,7 +451,7 @@ void UILongTermAttendGiftDialog::FUN_140c6bac0(int nType, CInPacket&)
 
 // @0x140c6bb80
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
-bool UILongTermAttendGiftDialog::FUN_140c6bb80(int nResult, const CMsgBoxData&)
+bool UILongTermAttendGiftDialog::SendEventRewardMode26(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0) {
         Unk_LtaWallet* wallet = FUN_140d86260();
@@ -583,7 +583,7 @@ bool UILongTermAttendGiftDialog::FUN_140c6cbf0()
 
 // @0x140c6cc80
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
-void UILongTermAttendGiftDialog::FUN_140c6cc80(int nDay)
+void UILongTermAttendGiftDialog::SendEventRewardMode25(int nDay)
 {
     if (FUN_140c6d040(nDay) == 1) {
         COutPacket packet(0x97, 0);
@@ -604,7 +604,7 @@ void UILongTermAttendGiftDialog::FUN_140c6cd00()
             FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_longtermattendgift_dialog_err_msg_empty_point")), 0, 0, CStringW(L""));
         } else {
             CStringW strMsg = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_use_merat"), m_178->m_meratCost);
-            FUN_140d74390(strMsg, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::FUN_140c6bb80));
+            FUN_140d74390(strMsg, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode26));
         }
     } else if (nCatchUp == 0) {
         FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_longtermattendgift_dialog_err_msg_attendance_full")), 0, 0, CStringW(L""));
@@ -718,9 +718,9 @@ MS2_REPLACE_METHOD(0x140C6B5B0, UILongTermAttendGiftDialog, vfunc_13, 24, 0x8FA0
 MS2_REPLACE_METHOD(0x140C6B5D0, UILongTermAttendGiftDialog, vfunc_45, 730, 0xB19047B7);
 MS2_REPLACE_METHOD(0x140C6B8B0, UILongTermAttendGiftDialog, vfunc_28, 274, 0x0945BA3B);
 MS2_REPLACE_METHOD(0x140C6B9D0, UILongTermAttendGiftDialog, FUN_140c6b9d0, 69, 0xFBAD2347);
-MS2_REPLACE_METHOD(0x140C6BA20, UILongTermAttendGiftDialog, FUN_140c6ba20, 154, 0xBA109B7F);
+MS2_REPLACE_METHOD(0x140C6BA20, UILongTermAttendGiftDialog, SendEventRewardMode27, 154, 0xBA109B7F);
 MS2_REPLACE_METHOD(0x140C6BAC0, UILongTermAttendGiftDialog, FUN_140c6bac0, 181, 0x81188338);
-MS2_REPLACE_METHOD(0x140C6BB80, UILongTermAttendGiftDialog, FUN_140c6bb80, 438, 0x8E7D2C3E);
+MS2_REPLACE_METHOD(0x140C6BB80, UILongTermAttendGiftDialog, SendEventRewardMode26, 438, 0x8E7D2C3E);
 MS2_REPLACE_METHOD(0x140C6BD40, UILongTermAttendGiftDialog, FUN_140c6bd40, 99, 0x5A2F6464);
 MS2_REPLACE_METHOD(0x140C6BDB0, UILongTermAttendGiftDialog, FUN_140c6bdb0, 1177, 0x034D4258);
 MS2_REPLACE_METHOD(0x140C6C250, UILongTermAttendGiftDialog, FUN_140c6c250, 572, 0xF5C9411B);
@@ -728,7 +728,7 @@ MS2_REPLACE_METHOD(0x140C6C4A0, UILongTermAttendGiftDialog, FUN_140c6c4a0, 1073,
 MS2_REPLACE_METHOD(0x140C6C8E0, UILongTermAttendGiftDialog, FUN_140c6c8e0, 44, 0x62139651);
 MS2_REPLACE_METHOD(0x140C6C920, UILongTermAttendGiftDialog, FUN_140c6c920, 714, 0x788EDB50);
 MS2_REPLACE_METHOD(0x140C6CBF0, UILongTermAttendGiftDialog, FUN_140c6cbf0, 138, 0xF668AB87);
-MS2_REPLACE_METHOD(0x140C6CC80, UILongTermAttendGiftDialog, FUN_140c6cc80, 114, 0x30A3C2F8);
+MS2_REPLACE_METHOD(0x140C6CC80, UILongTermAttendGiftDialog, SendEventRewardMode25, 114, 0x30A3C2F8);
 MS2_REPLACE_METHOD(0x140C6CD00, UILongTermAttendGiftDialog, FUN_140c6cd00, 820, 0xFB296AB6);
 MS2_REPLACE_METHOD(0x140C6D040, UILongTermAttendGiftDialog, FUN_140c6d040, 226, 0x5844E738);
 MS2_REPLACE_METHOD(0x140C6D130, UILongTermAttendGiftDialog, FUN_140c6d130, 202, 0xB29E3DE9);

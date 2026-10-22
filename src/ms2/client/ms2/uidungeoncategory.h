@@ -89,12 +89,12 @@ public:
     void FUN_140c0c8e0();                                       // main tab 1
     void FUN_140c0ca80();                                       // open the search setting dialog
     void FUN_140c0cc00();                                       // toggle the party search dialog
-    void FUN_140c0cc30();                                       // request a party match
-    void FUN_140c0ccc0();                                       // cancel the party match
+    void SendPartyMode32();                                       // request a party match
+    void SendPartyMode34();                                       // cancel the party match
     void FUN_140c0cd20();                                       // bookmark list
     void FUN_140c0cd80();                                       // toggle the detail popup
     void FUN_140c0cdb0(int nId);                                // bookmark a dungeon
-    void FUN_140c0ce20(int nGroupType);                         // enter a lobby
+    void SendRoomDungeon(int nGroupType);                         // enter a lobby
     void FUN_140c0cea0(CInPacket& packet);                      // packet 0x53 (party match)
     void FUN_140c0cf20(CInPacket& packet);                      // packet 0x1a (dungeon reward)
     int FUN_140c0cf80(int nGroupType, const Unk_DcLevelRange& range, ASArray& out);

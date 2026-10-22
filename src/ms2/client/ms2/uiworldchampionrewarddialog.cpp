@@ -330,13 +330,13 @@ void UIWorldChampionRewardDialog::FUN_140feb440(CInPacket& packet) {
 }
 MS2_REPLACE_METHOD(0x140feb440, UIWorldChampionRewardDialog, FUN_140feb440, 360, 0x78A910B1);
 // @0x140feb5b0
-void UIWorldChampionRewardDialog::FUN_140feb5b0() {
+void UIWorldChampionRewardDialog::SendWorldChampionMode8() {
     if (FUN_141924630()) { vfunc_67(); return; }
     COutPacket packet(0xaf, 0);
     packet.Encode1(8);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140feb5b0, UIWorldChampionRewardDialog, FUN_140feb5b0, 110, 0x9A7244DB);
+MS2_REPLACE_METHOD(0x140feb5b0, UIWorldChampionRewardDialog, SendWorldChampionMode8, 110, 0x9A7244DB);
 // @0x140feb630
 void UIWorldChampionRewardDialog::FUN_140feb630() {
     if (m_maxStep < 1 || m_step > m_maxStep) return;
@@ -429,19 +429,19 @@ void UIWorldChampionRewardDialog::FUN_140fec310(const Scaleform::GFx::FunctionHa
         FUN_140d73ff0(L"s_world_champion_msg_current_field");
         return;
     }
-    FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldChampionRewardDialog::FUN_140fec4c0),
+    FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldChampionRewardDialog::SendWorldChampionMode9),
         FUN_1405c2690(L"s_world_champion_msg_move_field", FUN_1401a9d70()->FUN_141811980(3, m_field)));
 }
 MS2_REPLACE_METHOD(0x140fec310, UIWorldChampionRewardDialog, FUN_140fec310, 422, 0x718A91D0);
 // @0x140fec4c0
-bool UIWorldChampionRewardDialog::FUN_140fec4c0(int result, const CMsgBoxData&) {
+bool UIWorldChampionRewardDialog::SendWorldChampionMode9(int result, const CMsgBoxData&) {
     if (result != 0) return true;
     COutPacket packet(0xaf, 0);
     packet.Encode1(9);
     FUN_140710590(packet);
     return true;
 }
-MS2_REPLACE_METHOD(0x140fec4c0, UIWorldChampionRewardDialog, FUN_140fec4c0, 107, 0xA6AB5B53);
+MS2_REPLACE_METHOD(0x140fec4c0, UIWorldChampionRewardDialog, SendWorldChampionMode9, 107, 0xA6AB5B53);
 // @0x140fec540
 void UIWorldChampionRewardDialog::FUN_140fec540(size_t count) {
     if (m_items.size() >= count) return;

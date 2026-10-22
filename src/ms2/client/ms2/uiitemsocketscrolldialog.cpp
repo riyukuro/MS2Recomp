@@ -348,7 +348,7 @@ bool UIItemSocketScrollDialog::FUN_140f659e0(int nButton, const CMsgBoxData& box
 bool UIItemSocketScrollDialog::FUN_140f65a40(int nButton, const CMsgBoxData& box)
 {
     if (nButton == 0)
-        FUN_140f670e0(box.FUN_141a02f10(0, 0));
+        SendItemSocketScroll(box.FUN_141a02f10(0, 0));
     return 1;
 }
 
@@ -510,7 +510,7 @@ void UIItemSocketScrollDialog::FUN_140f66870()
                 return;
             }
         }
-        FUN_140f670e0(nTargetUid);
+        SendItemSocketScroll(nTargetUid);
         return;
     }
     FUN_140d73aa0(FUN_14028b8e0(CStringW(L"s_itemsocket_scroll_error_have_not_scroll")), 0, 0, CStringW(L""));
@@ -539,7 +539,7 @@ void UIItemSocketScrollDialog::FUN_140f66f70(int nError)
 }
 
 // @0x140f670e0
-void UIItemSocketScrollDialog::FUN_140f670e0(__int64 nTargetUid)
+void UIItemSocketScrollDialog::SendItemSocketScroll(__int64 nTargetUid)
 {
     Unk_SsdUidPair pair;
     pair.m_nSecond = m_nScrollUid;

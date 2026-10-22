@@ -26,7 +26,7 @@ public:
     void FUN_140feb1b0(CInPacket&);
     void FUN_140feb2c0(CInPacket&);
     void FUN_140feb440(CInPacket&);
-    void FUN_140feb5b0();
+    void SendWorldChampionMode8();
     void FUN_140feb630();
     void FUN_140feb6b0();
     void FUN_140feb870();
@@ -35,7 +35,7 @@ public:
     void FUN_140fec260(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140fec2b0(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140fec310(const Scaleform::GFx::FunctionHandler::Params&);
-    bool FUN_140fec4c0(int, const CMsgBoxData&);
+    bool SendWorldChampionMode9(int, const CMsgBoxData&);
     void FUN_140fec540(size_t);
 private:
     MS2_LAYOUT_FRIEND;

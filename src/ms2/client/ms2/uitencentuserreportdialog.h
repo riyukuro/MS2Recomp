@@ -97,7 +97,7 @@ public:
     void FUN_140edbdd0();
     void FUN_140edbe30();
     void FUN_140edbf80();
-    void FUN_140edc010();
+    void SendRequestReport();
     // @0x140ede800
     virtual int vfunc_48() { return 20274; }
 private:

@@ -54,12 +54,12 @@ MS2_CHECK_SIZE(UIMentoringMentorPage,0x40);
 class CMsgBoxData;
 class UIMentoringMenteeRegisterPage:public UIMentoringPage {
 public:UIMentoringMenteeRegisterPage(UIMentoringDialog*);virtual ~UIMentoringMenteeRegisterPage();virtual int vfunc_1();virtual void vfunc_2();virtual int vfunc_5(const char*,const Scaleform::GFx::Value*,unsigned);virtual CString vfunc_6();virtual CStringW vfunc_7();
- bool FUN_140c709d0(int,const CMsgBoxData&);
+ bool SendMentor(int,const CMsgBoxData&);
 };
 MS2_CHECK_SIZE(UIMentoringMenteeRegisterPage,0x30);
 class UIMentoringMentorRegisterPage:public UIMentoringPage {
 public:UIMentoringMentorRegisterPage(UIMentoringDialog*);virtual ~UIMentoringMentorRegisterPage();virtual int vfunc_1();virtual void vfunc_2();virtual int vfunc_5(const char*,const Scaleform::GFx::Value*,unsigned);virtual CString vfunc_6();virtual CStringW vfunc_7();
- bool FUN_140c72f10(int,const CMsgBoxData&);
+ bool SendMentor(int,const CMsgBoxData&);
 };
 MS2_CHECK_SIZE(UIMentoringMentorRegisterPage,0x30);
 class ASObj;class Unk_MentorInstance;class Unk_MentorIdArray;

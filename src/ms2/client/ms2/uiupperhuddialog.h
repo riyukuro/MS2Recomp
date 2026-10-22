@@ -66,7 +66,7 @@ public:
 
     void FUN_141356cd0(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_141356d00(const Scaleform::GFx::FunctionHandler::Params& params);
-    void FUN_141356d30(const Scaleform::GFx::FunctionHandler::Params& params);
+    void SendPcBangBonus(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_141356dc0(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_141356df0(const Scaleform::GFx::FunctionHandler::Params& params);
     void FUN_141356e20(const Scaleform::GFx::FunctionHandler::Params& params);

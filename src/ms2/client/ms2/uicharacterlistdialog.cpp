@@ -1496,7 +1496,7 @@ void UICharacterListDialog::FUN_1418f1260()
 // @0x1418f13d0
 void UICharacterListDialog::FUN_1418f13d0()
 {
-    FUN_1418f1880();
+    SendCharacterManagementMode2();
 }
 
 // @0x1418f13f0
@@ -1526,7 +1526,7 @@ void UICharacterListDialog::FUN_1418f1790()
 }
 
 // @0x1418f1880
-void UICharacterListDialog::FUN_1418f1880()
+void UICharacterListDialog::SendCharacterManagementMode2()
 {
     if (m_1d8 != 0)
         return;
@@ -1718,7 +1718,7 @@ void UICharacterListDialog::FUN_1418f1fd0()
 }
 
 // @0x1418f2030
-void UICharacterListDialog::FUN_1418f2030(unsigned __int64 nId, const CStringW& str)
+void UICharacterListDialog::SendCharacterManagementMode5(unsigned __int64 nId, const CStringW& str)
 {
     Unk_ClReqRename req;
     req.m_nId = nId;
@@ -2111,12 +2111,12 @@ void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
         strSender.Format(FUN_14028b8e0(spFound->m_50), (const wchar_t*)spCharacter->FUN_1418e9cd0());
         static_cast<Unk_ClBox*>(spBox.operator->())->FUN_141a015d0(strSender);
     }
-    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::FUN_1418f00b0));
+    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterListDialog::SendEventReward));
     FUN_140d73c60(spBox);
 }
 
 // @0x1418f00b0
-bool UICharacterListDialog::FUN_1418f00b0(int nResult, const CMsgBoxData& box)
+bool UICharacterListDialog::SendEventReward(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;

@@ -417,7 +417,7 @@ void UIPartySearchDialog::vfunc_15()
             return;
         if (m_180.get())
         {
-            FUN_1409670d0()->FUN_141631270(*m_180);
+            FUN_1409670d0()->SendMatchPartyMode2(*m_180);
             m_17c = FUN_140869420();
             m_178 = 0;
         }
@@ -590,7 +590,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         FUN_140f8ff40(0xb39, 1, 1);
                         return 1;
                     }
-                    FUN_1409670d0()->FUN_14162ba50(CStringW(strName));
+                    FUN_1409670d0()->SendPartyMode1(CStringW(strName));
                 }
             }
         }

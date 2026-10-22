@@ -227,7 +227,7 @@ int UIItemExchangeScrollDialog::vfunc_28(const char* szMethod, const Scaleform::
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_140f53950(&data);
+            SendItemExchangeScrollMode1(&data);
         return 1;
     }
     return 0;
@@ -659,7 +659,7 @@ void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
 
 // @0x140f53950
 // MS2-FUNCTIONAL: not byte-matched yet
-void UIItemExchangeScrollDialog::FUN_140f53950(ASData* pData)
+void UIItemExchangeScrollDialog::SendItemExchangeScrollMode1(ASData* pData)
 {
     int nCount = pData->FUN_1422b8a10();
     if (nCount == 0)

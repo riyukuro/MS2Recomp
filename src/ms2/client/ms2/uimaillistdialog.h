@@ -78,8 +78,8 @@ public:
     void FUN_1419e5190();                                           // fill the list with the current page
     void FUN_1419e5900();                                           // "onMailCount" (unread user / system mails)
     void FUN_1419e5a10(__int64 nMailId);                            // "setMailInfo" (the opened mail)
-    void FUN_1419e61c0(__int64 nMailId);                            // mark read (packet 0x2d / 2)
-    void FUN_1419e6290(__int64 nMailId);                            // receive the attachments (packet 0x2d / 0xb)
+    void SendMailMode2(__int64 nMailId);                            // mark read (packet 0x2d / 2)
+    void SendMailMode11(__int64 nMailId);                            // receive the attachments (packet 0x2d / 0xb)
     void FUN_1419e6360(__int64 nMailId);                            // reply: open the send dialog
     void FUN_1419e6410(__int64 nMailId);                            // remove: confirm box
     unsigned FUN_1419e67a0(CMailInfo* pMail);                       // bind the attachment tooltips, returns their count
@@ -91,14 +91,14 @@ public:
     CStringA FUN_1419e7260(Unk_MailPtr<CMailInfo> spMail);          // the row state name
     void FUN_1419e73f0();                                           // "m_page"
     int FUN_1419e74e0(__int64 nMailId);                             // an attachment is a locked item
-    bool FUN_1419e7640(int nButton, const CMsgBoxData& data);       // read all: packet 0x2d / 0x12
-    bool FUN_1419e77c0(int nButton, const CMsgBoxData& data);       // receive all: packet 0x2d / 0x13
+    bool SendMailMode18(int nButton, const CMsgBoxData& data);       // read all: packet 0x2d / 0x12
+    bool SendMailMode19(int nButton, const CMsgBoxData& data);       // receive all: packet 0x2d / 0x13
     bool FUN_1419e7940(int nButton, const CMsgBoxData& data);       // remove the listed mails: packet 0x2d / 0xd
-    bool FUN_1419e7c80(int nButton, const CMsgBoxData& data);       // remove one mail
+    bool SendMailMode13(int nButton, const CMsgBoxData& data);       // remove one mail
     void FUN_1419e7ea0(CStringW strIds, ATL::CAtlArray<__int64>& aIds, int bSkipAttached);   // parse the id list
     int FUN_1419e7fd0();                                            // the selected tab ("m_tab")
     void FUN_1419e6d20(ATL::CAtlList<Unk_MailPtr<CMailInfo> >& out);   // the mails of the tab, newest first, ads last
-    void FUN_1419e90d0();                                           // ask the server for the list (packet 0x2d / 0)
+    void SendMailMode0();                                           // ask the server for the list (packet 0x2d / 0)
 
     // child lookups (UIDialog COMDATs shared by many dialogs)
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // 0x140bb4cf0 text field

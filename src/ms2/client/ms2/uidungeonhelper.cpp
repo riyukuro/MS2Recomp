@@ -368,13 +368,13 @@ MS2_REPLACE_METHOD(0x140E142F0, UIDungeonSearchUnitedReward, FUN_140e142f0, 266,
 // @0x140e14400
 void UIDungeonSearchUnitedReward::FUN_140e14400(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &UIDungeonSearchUnitedReward::FUN_140e144b0),
+    FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &UIDungeonSearchUnitedReward::SendRoomDungeon),
                   CStringW(L"s_dungeonSearch_confirm_united_reward_reset"));
 }
 MS2_REPLACE_METHOD(0x140E14400, UIDungeonSearchUnitedReward, FUN_140e14400, 167, 0x8D389342);
 
 // @0x140e144b0
-bool UIDungeonSearchUnitedReward::FUN_140e144b0(int nResult, const CMsgBoxData&)
+bool UIDungeonSearchUnitedReward::SendRoomDungeon(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0) {
         COutPacket packet(0x2b, 0);
@@ -383,7 +383,7 @@ bool UIDungeonSearchUnitedReward::FUN_140e144b0(int nResult, const CMsgBoxData&)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140E144B0, UIDungeonSearchUnitedReward, FUN_140e144b0, 93, 0x5CD20D2C);
+MS2_REPLACE_METHOD(0x140E144B0, UIDungeonSearchUnitedReward, SendRoomDungeon, 93, 0x5CD20D2C);
 
 // @0x140e14520
 // MS2-FUNCTIONAL: switch lowering differs (jump table layout) and call temporaries are ordered differently

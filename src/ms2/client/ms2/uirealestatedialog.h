@@ -37,7 +37,7 @@ public:
     int FUN_141ab3250(const CStringW& strName);                     // request the rename of the home
     void FUN_141ab3760(CStringW strName);                           // push the home name (the callee destroys it)
     void FUN_141ab3820();                                           // push the contract effect
-    void FUN_141ab38e0();                                           // the model house (concept) dialog, or the packet 0x37 / 2
+    void SendRequestCubeMode2();                                           // the model house (concept) dialog, or the packet 0x37 / 2
     void FUN_141ab4000(int nGroup, int nMapId);                     // select the plot
     void FUN_141ab4040(const __int64* pnTime);                      // push the expire date
     void FUN_141ab42a0();                                           // fill the movie ("initData")

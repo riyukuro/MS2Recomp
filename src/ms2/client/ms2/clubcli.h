@@ -77,10 +77,10 @@ public:
     void OnClub(CInPacket& packet);                          // dispatch a club packet (opcode 0x56 sub-opcode)
 
     bool FUN_140b15c10(CStringW strName);                           // request: create a club
-    void FUN_140b15f40(__int64 nClubId, int nCode);                 // request: answer a club invitation to join
+    void SendClubMode3(__int64 nClubId, int nCode);                 // request: answer a club invitation to join
     bool FUN_140b16030(__int64 nClubId);                            // the club's "always true"
     bool FUN_140b160c0(__int64 nClubId, CStringW strName);          // request: add a member
-    void FUN_140b161a0(__int64 nInviteId, int bAccept);             // request: answer an invitation
+    void SendClubMode8(__int64 nInviteId, int bAccept);             // request: answer an invitation
     void FUN_140b16270(__int64 nClubId);                            // request: withdraw
     void FUN_140b162f0(__int64 nClubId, CStringW strName);          // request: change the leader
     void FUN_140b163c0(__int64 nClubId, int nBuffId, int nLevel);   // request: set the buff

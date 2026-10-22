@@ -240,7 +240,7 @@ void UISkillCompactControlDialog::vfunc_67()
     if (pPlayer != 0)
         pPlayer->FUN_141523bc0()->FUN_141767df0(0);
     FUN_140fa1400();
-    FUN_140fa1240();
+    SendSkillMacroMode1();
     m_bLoaded = 0;
 }
 
@@ -742,7 +742,7 @@ bool UISkillCompactControlDialog::FUN_140fa0fa0(CStringW strName)
 
 // The tabs back to the server.
 // @0x140fa1240
-void UISkillCompactControlDialog::FUN_140fa1240()
+void UISkillCompactControlDialog::SendSkillMacroMode1()
 {
     COutPacket packet(0x7b, 0);
     packet.Encode1(1);

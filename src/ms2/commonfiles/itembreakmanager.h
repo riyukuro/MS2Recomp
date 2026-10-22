@@ -66,10 +66,10 @@ public:
     typedef Unk_BreakItemPtr ItemPtr;
     CItemBreakManager(); virtual ~CItemBreakManager();
     int FUN_140531270(ItemPtr); int FUN_140531510(ItemPtr); int FUN_140531630(ItemPtr); bool FUN_1405316d0(ItemPtr); bool FUN_140531850(ItemPtr);
-    int FUN_140531aa0(ItemPtr); int FUN_140531b70(); void FUN_140531c20(int); void FUN_140531cc0(); ItemPtr FUN_140531ce0(int);
+    int FUN_140531aa0(ItemPtr); int FUN_140531b70(); void SendItemDismantleMode0(int); void FUN_140531cc0(); ItemPtr FUN_140531ce0(int);
     void FUN_140531ed0(); void FUN_140532060(); void FUN_1405320e0(int); void FUN_140532160(Unk_BreakPacket&); void FUN_140532220();
-    void FUN_1405322b0(Unk_BreakPacket&); int FUN_140532ab0(); int FUN_140532b60(); int FUN_140532c30(); int FUN_140532d80();
-    int FUN_140532de0(ItemPtr,int); void FUN_140533210(__int64,int,int); void FUN_1405332b0(int,int); int FUN_140533340(ItemPtr);
+    void FUN_1405322b0(Unk_BreakPacket&); int FUN_140532ab0(); int FUN_140532b60(); int FUN_140532c30(); int SendItemDismantleMode3();
+    int FUN_140532de0(ItemPtr,int); void SendItemDismantleMode1(__int64,int,int); void SendItemDismantleMode6(int,int); int FUN_140533340(ItemPtr);
     void FUN_140533440(ItemPtr,int); bool FUN_140533c60(int,const CMsgBoxData&); bool FUN_140533da0(int,const CMsgBoxData&); unsigned FUN_140533e20();
     ItemBreakCommon::Items items; ATL::CAtlArray<unsigned __int64> pending; int type;
 };

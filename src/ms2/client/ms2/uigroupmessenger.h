@@ -82,7 +82,7 @@ public:
     void FUN_14194a6f0(NotifyObject* pNotify);                              // NotifyChatEmoticonSelected
     void FUN_14194a930(std::list<MS2Ptr<ChatEmoticonData> >& emoticons);    // opens the emoticon preview
     void FUN_14194ad60();                                                   // closes the emoticon preview
-    int FUN_14194ade0(int nEmoticonId);                                     // sends an emoticon
+    int SendMessengerMode4(int nEmoticonId);                                     // sends an emoticon
     void FUN_14194afc0(int nEmoticonId);                                    // sends an emoticon as an image line
     int FUN_14194b190(int nEmoticonId, bool bFavorite);                     // (un)marks a favorite emoticon
     void FUN_14194b440(const CStringW& strName, float x, float y);          // the member popup menu

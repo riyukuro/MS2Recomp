@@ -24,7 +24,7 @@ public:
     virtual void OnLoadComplete();                              // 22 0x140bb98c0
     virtual int vfunc_48();                                    // 48 0x140bb9bc0
 
-    void FUN_140bb9900();                                       // request the card data from the server (packet 0xa6)
+    void SendBirthdayCard();                                       // request the card data from the server (packet 0xa6)
     void FUN_140bb9960();                                       // push the birthday month and play the greeting sound
 };
 MS2_CHECK_SIZE(UIBirthdayCardDialog, 0x178);

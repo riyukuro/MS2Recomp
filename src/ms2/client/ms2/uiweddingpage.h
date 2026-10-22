@@ -48,7 +48,7 @@ public:
     virtual CString vfunc_6();
     virtual CStringW vfunc_7();
 
-    bool FUN_140fe7c60(int nResult, const CMsgBoxData& box);   // 0x140fe7c60 couple message confirmed
+    bool SendWedding(int nResult, const CMsgBoxData& box);   // 0x140fe7c60 couple message confirmed
 };
 MS2_CHECK_SIZE(UIWeddingPageMessage, 0x30);
 
@@ -80,7 +80,7 @@ public:
     virtual CStringW vfunc_7();
     virtual void vfunc_o178_12(void* pQuest);                   // 0x140fe8e20 (listener slot 12) refresh the list
 
-    void FUN_140fe8e50(int nQuestId);                           // 0x140fe8e50 turn in a completed quest
+    void SendQuest(int nQuestId);                           // 0x140fe8e50 turn in a completed quest
     void FUN_140fe8fb0();                                       // 0x140fe8fb0 fill "m_list" with the quests
 
 private:

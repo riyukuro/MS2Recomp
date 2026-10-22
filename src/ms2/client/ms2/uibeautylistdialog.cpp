@@ -79,7 +79,7 @@ void UIBeautyListDialog::OnLoadComplete()
 }
 
 // @0x140f00610
-bool UIBeautyListDialog::FUN_140f00610(int nResult, const CMsgBoxData& box)
+bool UIBeautyListDialog::SendBeautyMode10(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
@@ -139,7 +139,7 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 if (box.get() != 0)
                 {
                     box->FUN_140533ff0(nType);
-                    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyListDialog::FUN_140f00610));
+                    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyListDialog::SendBeautyMode10));
                     FUN_140d73c60(box);
                 }
             }
@@ -162,7 +162,7 @@ MS2_REPLACE_METHOD(0x140F00550, UIBeautyListDialog, vfunc_1, 61, 0x39CDE7B6);
 MS2_REPLACE_METHOD(0x140F005A0, UIBeautyListDialog, vfunc_65, 37, 0x08DECE9B);
 MS2_REPLACE_METHOD(0x140F005D0, UIBeautyListDialog, vfunc_67, 24, 0xCDB64A16);
 MS2_REPLACE_METHOD(0x140F005F0, UIBeautyListDialog, OnLoadComplete, 24, 0xF14792AA);
-MS2_REPLACE_METHOD(0x140F00610, UIBeautyListDialog, FUN_140f00610, 144, 0x8984A75E);
+MS2_REPLACE_METHOD(0x140F00610, UIBeautyListDialog, SendBeautyMode10, 144, 0x8984A75E);
 MS2_REPLACE_METHOD(0x140F006B0, UIBeautyListDialog, FUN_140f006b0, 122, 0x2A121F15);
 MS2_REPLACE_METHOD(0x140F00730, UIBeautyListDialog, vfunc_28, 986, 0xE0F5361C);
 

@@ -495,14 +495,14 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         {
             ASData dataGoto;
             if (dataGoto.FUN_1422b9620(pArgs, nArgs) != 0)
-                FUN_140764020()->FUN_1416cf510(dataGoto.FUN_1422b8b10());
+                FUN_140764020()->SendQuestMode12(dataGoto.FUN_1422b8b10());
             return 1;
         }
         if (_stricmp("onGotoDungeon", szMethod) == 0)
         {
             ASData dataGoto;
             if (dataGoto.FUN_1422b9620(pArgs, nArgs) != 0)
-                FUN_140764020()->FUN_1416cf630(dataGoto.FUN_1422b8b10());
+                FUN_140764020()->SendQuestMode13(dataGoto.FUN_1422b8b10());
             return 1;
         }
         if (_stricmp("onGotoDispatch", szMethod) == 0)
@@ -521,7 +521,7 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 ASData dataGoto;
                 if (dataGoto.FUN_1422b9620(pArgs, nArgs) != 0)
                 {
-                    FUN_140764020()->FUN_1416cf750(dataGoto.FUN_1422b8b10());
+                    FUN_140764020()->SendQuestMode19(dataGoto.FUN_1422b8b10());
                     return 1;
                 }
             }

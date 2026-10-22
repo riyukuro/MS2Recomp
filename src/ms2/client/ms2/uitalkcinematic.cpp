@@ -720,7 +720,7 @@ MS2Ptr<CCinematicComponent> UITalkCinematic::FUN_141b1c960(int nButtonSet)
     case 18: return MS2Ptr<CCinematicComponent>(new CHomeDoctorCinematicComponent(this));
     case 19: return MS2Ptr<CCinematicComponent>(new CCustomSelectableDistractorCinematicComponent(this));
     default:
-        FUN_140967100()->FUN_141b1feb0();
+        FUN_140967100()->SendNpcTalkMode0();
         return MS2Ptr<CCinematicComponent>(0);
     }
 }
@@ -1257,7 +1257,7 @@ void UITalkManager::FUN_141b1eb90(CString strDialog, CString strArg)
             }
             else if (FUN_14102c7a0(pDlg, FUN_1407181d0(strArg)) == 0)
             {
-                FUN_141b1feb0();
+                SendNpcTalkMode0();
             }
             else
             {
@@ -1419,7 +1419,7 @@ void UITalkManager::FUN_141b1faa0(int nMode, int nDialogId)
     spUi->FUN_141b1bfa0();
     if (nDialogId == 0x4e24 && !FUN_141b1fa60())
     {
-        FUN_141b1feb0();
+        SendNpcTalkMode0();
         return;
     }
     if (nDialogId == 0x4eee)
@@ -1450,7 +1450,7 @@ void UITalkManager::FUN_141b1faa0(int nMode, int nDialogId)
         }
     }
     spUi->FUN_141b1bf80(0x620001f);
-    FUN_141b1feb0();
+    SendNpcTalkMode0();
 }
 
 // MS2-FUNCTIONAL: frame/temp layout and unit-local helper types differ from the exe; behaviour equivalent
@@ -1493,7 +1493,7 @@ void UITalkManager::FUN_141b1fcf0(unsigned nNpcId)
 }
 
 // @0x141b1feb0
-void UITalkManager::FUN_141b1feb0()
+void UITalkManager::SendNpcTalkMode0()
 {
     if (FUN_141b21220() == 0)
         return;
@@ -1626,7 +1626,7 @@ int UITalkManager::FUN_141b204d0()
         m_spScript = FUN_141b21b90();
     if (FUN_141b20bb0() == 0)
     {
-        FUN_141b1feb0();
+        SendNpcTalkMode0();
         return 0;
     }
     m_nPending = 0;
@@ -1684,15 +1684,15 @@ void UITalkManager::FUN_141b20af0()
         Unk_TcNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_nNpcId);
         if (pPC == 0 || pNpc == 0)
         {
-            FUN_141b1feb0();
+            SendNpcTalkMode0();
         }
         else if (pNpc->FUN_141094300() == 0)
         {
-            FUN_141b1feb0();
+            SendNpcTalkMode0();
         }
         else if (FUN_1409331e0()->FUN_14138c900(2) != 0)
         {
-            FUN_141b1feb0();
+            SendNpcTalkMode0();
         }
     }
 }
@@ -1726,7 +1726,7 @@ int UITalkManager::FUN_141b20bb0()
 }
 
 // @0x141b20db0
-void UITalkManager::FUN_141b20db0(unsigned nNpcId)
+void UITalkManager::SendNpcTalkMode2(unsigned nNpcId)
 {
     if (FUN_141b213c0() != 0)
     {
@@ -1917,7 +1917,7 @@ void UITalkManager::FUN_141b215b0(int bSamePage)
             }
             else
             {
-                FUN_141b1feb0();
+                SendNpcTalkMode0();
             }
         }
     }

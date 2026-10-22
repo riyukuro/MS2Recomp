@@ -285,7 +285,7 @@ int UIItemRemakeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             unsigned __int64 uid = FUN_140718350(data.FUN_1422b8d30());
             unsigned int bSelected = data.FUN_1422b8a90();
-            FUN_14129f740(uid);
+            SendChangeAttributesMode4(uid);
         }
         return 1;
     }
@@ -616,7 +616,7 @@ void UIItemRemakeOptionDialog::FUN_14129f6f0()
 }
 
 // @0x14129f740
-void UIItemRemakeOptionDialog::FUN_14129f740(unsigned __int64 uid)
+void UIItemRemakeOptionDialog::SendChangeAttributesMode4(unsigned __int64 uid)
 {
     if (FUN_1412a1c60() != 0) {
         MS2Ptr<CItem> item = FUN_1419bef70(uid);
@@ -882,7 +882,7 @@ void UIItemRemakeOptionDialog::FUN_1412a0e30(ASObj& obj, MS2Ptr<CItem> item, CIn
 // @0x1412a1600
 void UIItemRemakeOptionDialog::FUN_1412a1600(MS2Ptr<CItem> item)
 {
-    FUN_14129f740(item->FUN_140526a50());
+    SendChangeAttributesMode4(item->FUN_140526a50());
 }
 
 // @0x1412a1650

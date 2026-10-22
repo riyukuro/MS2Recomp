@@ -119,7 +119,7 @@ int UIMoveFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             if (CFieldData::FUN_140374410(nField) == true) {
                 FUN_140d73bc0(0x51, 0, 0, CStringW(L""));
             } else {
-                pPlayer->FUN_1415293b0();
+                pPlayer->SendFunctionCube();
                 Unk_CommandChat chat;
                 chat.kind = 0;
                 chat.message = StringFormat(L"/MoveField {0}", strField);

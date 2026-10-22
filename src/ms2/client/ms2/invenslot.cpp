@@ -1469,7 +1469,7 @@ int InvenSlot::vfunc_18(void* p)
         {
             MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
             if (pPC != 0)
-                pPC->FUN_14152b800(pPetEquip->FUN_140cbcb00());
+                pPC->SendRequestPet(pPetEquip->FUN_140cbcb00());
             return 1;
         }
     }
@@ -1915,7 +1915,7 @@ int InvenSlot::FUN_14140b6d0(MS2Ptr<CItem> spItem)
         if (spItem->FUN_140526850() == false || bAll)
         {
             int nCount = spItem->FUN_140526c50();
-            CTradeManagerEx::GetInstance()->FUN_14185b9d0(spItem->FUN_140526a50(), nCount, nSlot);
+            CTradeManagerEx::GetInstance()->SendTradeMode8(spItem->FUN_140526a50(), nCount, nSlot);
             FUN_141404930(spItem->FUN_140526a50());
         }
         else

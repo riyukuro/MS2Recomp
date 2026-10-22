@@ -68,7 +68,7 @@ public:
     int FUN_140a61db0(__int64 id, const CStringW& argument);
     int FUN_140a621c0(__int64 id, int slot, int mode);
     int FUN_140a62920(__int64 id);
-    void FUN_140a62cc0(unsigned char category);
+    void SendRequestItemInventory(unsigned char category);
     unsigned FUN_140a62d30(int skill);
     unsigned FUN_140a63000(int itemId);
     unsigned FUN_140a63360(int skill);
@@ -78,7 +78,7 @@ public:
     int FUN_140a63950(CItem* item, int slot, int mode);
     int FUN_140a655b0(CItem* item);
     int FUN_140a65860(MS2Ptr<CItemData> data, int rarity);
-    int FUN_140a65bb0(CItem* item);
+    int SendEmotion(CItem* item);
     int FUN_140a65e30(CItem* item);
     int FUN_140a661e0(CItem* item);
     int FUN_140a66200(CItem* item, int* reason, CStringW& name);

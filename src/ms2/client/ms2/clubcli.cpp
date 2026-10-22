@@ -537,7 +537,7 @@ bool CClubCli::FUN_140b14230(CStringW strName)
 }
 
 // @0x140b14480
-void CClubCli::FUN_140b14480()
+void CClubCli::SendClubMode10()
 {
     CStringW strMe = FUN_140b18ef0();
     if (strMe.IsEmpty())
@@ -549,7 +549,7 @@ void CClubCli::FUN_140b14480()
 }
 
 // @0x140b14530
-void CClubCli::FUN_140b14530(CStringW strName)
+void CClubCli::SendClubMode12(CStringW strName)
 {
     CStringW strMe = FUN_140b18ef0();
     if (strMe.IsEmpty())
@@ -598,7 +598,7 @@ void CClubCli::FUN_140b146e0(int nBuffId, int nBuffLevel)
 }
 
 // @0x140b14900
-void CClubCli::FUN_140b14900(CStringW strNewName)
+void CClubCli::SendClubMode14(CStringW strNewName)
 {
     if (strNewName.IsEmpty())
         return;
@@ -1008,7 +1008,7 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
 }
 
 // @0x140b15f40
-void CClubClientManager::FUN_140b15f40(__int64 nClubId, int nCode)
+void CClubClientManager::SendClubMode3(__int64 nClubId, int nCode)
 {
     MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
     if (spClub == 0)
@@ -1041,7 +1041,7 @@ bool CClubClientManager::FUN_140b160c0(__int64 nClubId, CStringW strName)
 }
 
 // @0x140b161a0
-void CClubClientManager::FUN_140b161a0(__int64 nInviteId, int bAccept)
+void CClubClientManager::SendClubMode8(__int64 nInviteId, int bAccept)
 {
     MS2Ptr<Club::PacketInvite> spInvite = FUN_140b156b0(nInviteId);
     if (spInvite == 0)
@@ -1059,7 +1059,7 @@ void CClubClientManager::FUN_140b16270(__int64 nClubId)
     MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
     if (spClub == 0)
         return;
-    spClub->FUN_140b14480();
+    spClub->SendClubMode10();
 }
 
 // @0x140b162f0
@@ -1068,7 +1068,7 @@ void CClubClientManager::FUN_140b162f0(__int64 nClubId, CStringW strName)
     MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
     if (spClub == 0)
         return;
-    spClub->FUN_140b14530(CStringW(strName));
+    spClub->SendClubMode12(CStringW(strName));
 }
 
 // @0x140b163c0
@@ -1086,7 +1086,7 @@ void CClubClientManager::FUN_140b16450(__int64 nClubId, CStringW strName)
     MS2Ptr<CClubCli> spClub = FUN_140b14d80(nClubId);
     if (spClub == 0)
         return;
-    spClub->FUN_140b14900(CStringW(strName));
+    spClub->SendClubMode14(CStringW(strName));
 }
 
 // @0x140b16520
@@ -1130,7 +1130,7 @@ void CClubClientManager::FUN_140b166d0(CInPacket& packet)
     }
     else
     {
-        FUN_140b15f40(spClub->FUN_14020f0c0(), 0);
+        SendClubMode3(spClub->FUN_14020f0c0(), 0);
     }
 }
 
@@ -1462,7 +1462,7 @@ bool CClubClientManager::FUN_140b18390(int nResult, const CMsgBoxData& data)
         nCode = 0x4c;
     __int64 nClubId = 0;
     data.FUN_140b19130(0, nClubId);
-    FUN_140b15f40(nClubId, nCode);
+    SendClubMode3(nClubId, nCode);
     return true;
 }
 
@@ -1474,7 +1474,7 @@ bool CClubClientManager::FUN_140b18400(int nResult, const CMsgBoxData& data)
         nAccept = 0;
     __int64 nInviteId = 0;
     data.FUN_140b19130(0, nInviteId);
-    FUN_140b161a0(nInviteId, nAccept);
+    SendClubMode8(nInviteId, nAccept);
     return true;
 }
 

@@ -2015,7 +2015,7 @@ void PC::FUN_14165f130(int n) { m_n1050 = n; }
 int PC::FUN_14165f150() { return m_n1050; }
 
 // @0x14165f170
-void PC::FUN_14165f170()
+void PC::SendRequestCube()
 {
     if (FUN_14165f100() == 0)
         return;

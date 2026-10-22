@@ -455,10 +455,10 @@ int UIDungeonControlCenter::vfunc_28(const char* szMethod, const Scaleform::GFx:
         FUN_140c0cc00();
         return 1;
     } else if (_stricmp("onPartyMatch", szMethod) == 0) {
-        FUN_140c0cc30();
+        SendPartyMode32();
         return 1;
     } else if (_stricmp("onPartyMatchCancel", szMethod) == 0) {
-        FUN_140c0ccc0();
+        SendPartyMode34();
         return 1;
     } else if (_stricmp("onSetting", szMethod) == 0) {
         FUN_140c0ca80();
@@ -471,7 +471,7 @@ int UIDungeonControlCenter::vfunc_28(const char* szMethod, const Scaleform::GFx:
     } else if (_stricmp("onEnterLobby", szMethod) == 0) {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs))
-            FUN_140c0ce20(args.FUN_1422b8b10());
+            SendRoomDungeon(args.FUN_1422b8b10());
         return 1;
     } else if (_stricmp("onClickTile", szMethod) == 0) {
         ASData args;
@@ -703,7 +703,7 @@ COutputStream& FUN_140c0dd90(COutputStream& out, const std::set<unsigned int>& i
 }
 
 // @0x140c0cc30
-void UIDungeonControlCenter::FUN_140c0cc30()
+void UIDungeonControlCenter::SendPartyMode32()
 {
     COutPacket packet(0x2c, 0);
     packet.Encode1(0x20);
@@ -712,17 +712,17 @@ void UIDungeonControlCenter::FUN_140c0cc30()
     FUN_14070f820(packet, false);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140C0CC30, UIDungeonControlCenter, FUN_140c0cc30, 123, 0x8CB1324B);
+MS2_REPLACE_METHOD(0x140C0CC30, UIDungeonControlCenter, SendPartyMode32, 123, 0x8CB1324B);
 
 // @0x140c0ccc0
-void UIDungeonControlCenter::FUN_140c0ccc0()
+void UIDungeonControlCenter::SendPartyMode34()
 {
     COutPacket packet(0x2c, 0);
     packet.Encode1(0x22);
     packet.Encode1(1);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140C0CCC0, UIDungeonControlCenter, FUN_140c0ccc0, 87, 0xD11E8DC1);
+MS2_REPLACE_METHOD(0x140C0CCC0, UIDungeonControlCenter, SendPartyMode34, 87, 0xD11E8DC1);
 
 // @0x140c0cd20
 void UIDungeonControlCenter::FUN_140c0cd20()
@@ -756,7 +756,7 @@ void UIDungeonControlCenter::FUN_140c0cdb0(int nId)
 MS2_REPLACE_METHOD(0x140C0CDB0, UIDungeonControlCenter, FUN_140c0cdb0, 91, 0xA9F2625E);
 
 // @0x140c0ce20
-void UIDungeonControlCenter::FUN_140c0ce20(int nGroupType)
+void UIDungeonControlCenter::SendRoomDungeon(int nGroupType)
 {
     int nLobby = FUN_140c0dc60(nGroupType);
     if (nLobby != -1) {
@@ -765,7 +765,7 @@ void UIDungeonControlCenter::FUN_140c0ce20(int nGroupType)
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x140C0CE20, UIDungeonControlCenter, FUN_140c0ce20, 113, 0xCAA06AAE);
+MS2_REPLACE_METHOD(0x140C0CE20, UIDungeonControlCenter, SendRoomDungeon, 113, 0xCAA06AAE);
 
 // @0x140c0cea0
 void UIDungeonControlCenter::FUN_140c0cea0(CInPacket& packet)

@@ -394,11 +394,11 @@ int UIGalleryEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
                 return 0;
             }
             int index = data.FUN_1422b8b10();
-            FUN_140c184c0(index);
+            SendEventRewardMode7(index);
         }
         return 1;
     } else if (!_stricmp(method, "onBoardReward")) {
-        FUN_140c18760();
+        SendEventRewardMode9();
         return 1;
     } else if (!_stricmp(method, "onQuestReward")) {
         ASData data;
@@ -407,7 +407,7 @@ int UIGalleryEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
             return 0;
         }
         int index = data.FUN_1422b8b10();
-        FUN_140c18610(index);
+        SendEventRewardMode8(index);
         return 1;
     } else if (!_stricmp(method, "OnPreviewItem")) {
         ASData data;
@@ -582,7 +582,7 @@ void UIGalleryEventDialog::FUN_140c18460()
 MS2_REPLACE_METHOD(0x140C18460, UIGalleryEventDialog, FUN_140c18460, 79, 0x4C57278E);
 
 // @0x140c184c0
-void UIGalleryEventDialog::FUN_140c184c0(int index)
+void UIGalleryEventDialog::SendEventRewardMode7(int index)
 {
     if (!FUN_140c18f10()) return;
     auto context = FUN_1401c0d90()->FUN_14047cf60();
@@ -594,10 +594,10 @@ void UIGalleryEventDialog::FUN_140c184c0(int index)
     packet.Encode1((unsigned char)index);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140C184C0, UIGalleryEventDialog, FUN_140c184c0, 321, 0x3E2C0F07);
+MS2_REPLACE_METHOD(0x140C184C0, UIGalleryEventDialog, SendEventRewardMode7, 321, 0x3E2C0F07);
 
 // @0x140c18610
-void UIGalleryEventDialog::FUN_140c18610(int index)
+void UIGalleryEventDialog::SendEventRewardMode8(int index)
 {
     if (!FUN_140c18f10()) return;
     auto context = FUN_1401c0d90()->FUN_14047cf60();
@@ -609,10 +609,10 @@ void UIGalleryEventDialog::FUN_140c18610(int index)
     packet.Encode1((unsigned char)index);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140C18610, UIGalleryEventDialog, FUN_140c18610, 321, 0x682700B4);
+MS2_REPLACE_METHOD(0x140C18610, UIGalleryEventDialog, SendEventRewardMode8, 321, 0x682700B4);
 
 // @0x140c18760
-void UIGalleryEventDialog::FUN_140c18760()
+void UIGalleryEventDialog::SendEventRewardMode9()
 {
     if (!FUN_140c18f10()) return;
     if (!FUN_140c187e0()) return;
@@ -620,7 +620,7 @@ void UIGalleryEventDialog::FUN_140c18760()
     packet.Encode1(9);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140C18760, UIGalleryEventDialog, FUN_140c18760, 110, 0xCEE06F2A);
+MS2_REPLACE_METHOD(0x140C18760, UIGalleryEventDialog, SendEventRewardMode9, 110, 0xCEE06F2A);
 
 // @0x140c187e0
 int UIGalleryEventDialog::FUN_140c187e0()

@@ -927,7 +927,7 @@ FishingAction::FishingAction() {}
 int FishingAction::vfunc_1() { return TSingleton<CFishingManager>::GetInstance()->FUN_140cdb250(); }
 MS2_REPLACE_METHOD(0x14095CF80, FishingAction, vfunc_1, 27, 0xB7D79C18);
 // @0x14095cfb0
-void FishingAction::vfunc_2() { TSingleton<CFishingManager>::GetInstance()->FUN_140cdb1e0(); }
+void FishingAction::vfunc_2() { TSingleton<CFishingManager>::GetInstance()->SendFishingMode9(); }
 MS2_REPLACE_METHOD(0x14095CFB0, FishingAction, vfunc_2, 27, 0x585EBA68);
 // @0x14095cfe0
 int FishingAction::vfunc_5() { return 5; }
@@ -1030,7 +1030,7 @@ void PortalAction::vfunc_2()
         Cube* pCell = spCubeMap->FUN_1410b8ab0(ptCell);
         if (m_spPortal->m_nType == 0xb)
         {
-            pPlayer->FUN_141529c80(0, 0, 0, m_spPortal->m_nOwnerId, L"");
+            pPlayer->SendRequestMoveFieldMode2(0, 0, 0, m_spPortal->m_nOwnerId, L"");
             return;
         }
         else if (pCell)
@@ -1146,7 +1146,7 @@ void PortalAction::FUN_140956160(int nTarget, int nPortalId)
         FUN_140956290(nPortalId);
         break;
     case 9:
-        FUN_140956310();
+        SendRoomDungeon();
         break;
     case 0xc:
         FUN_1409569a0(nPortalId, 3);
@@ -1185,13 +1185,13 @@ void PortalAction::FUN_140956290(int nPortalId)
 }
 MS2_REPLACE_METHOD(0x140956290, PortalAction, FUN_140956290, 119, 0x70B8578D);
 // @0x140956310
-void PortalAction::FUN_140956310()
+void PortalAction::SendRoomDungeon()
 {
     COutPacket packet(0x2b);
     packet.Encode1(9);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140956310, PortalAction, FUN_140956310, 75, 0xAAB9ED2B);
+MS2_REPLACE_METHOD(0x140956310, PortalAction, SendRoomDungeon, 75, 0xAAB9ED2B);
 // MS2-FUNCTIONAL: stack slot layout differs (temps); calls and control flow identical
 // @0x140956370
 void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
@@ -1220,7 +1220,7 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
     }
     if (!m_spPortal->m_bConfirm)
     {
-        pPlayer->FUN_14152a0c0(nTarget, nPortalId, 0, 0, L"", L"");
+        pPlayer->SendRequestMoveFieldMode0(nTarget, nPortalId, 0, 0, L"", L"");
     }
     else
     {
@@ -1252,7 +1252,7 @@ bool PortalAction::FUN_140956be0(int nButton, const CMsgBoxData& data)
         if (spPortal == 0)
             FUN_1412751f0(FUN_14028b8e0(L"s_action_portal_invalid_portal"), 1, 1);
         else
-            pPlayer->FUN_14152a0c0(nTarget, nPortalId, 0, 0, strPassword, L"");
+            pPlayer->SendRequestMoveFieldMode0(nTarget, nPortalId, 0, 0, strPassword, L"");
     }
     return true;
 }
@@ -1297,7 +1297,7 @@ void PortalAction::FUN_140956aa0(Cube* pCell, int nTarget, int nPortalId)
     int bInside = 0;
     if (nKind == 1)
         bInside = 1;
-    pPlayer->FUN_14152a0c0(nTarget, nPortalId, nCubeId, bInside, L"", L"");
+    pPlayer->SendRequestMoveFieldMode0(nTarget, nPortalId, nCubeId, bInside, L"", L"");
 }
 MS2_REPLACE_METHOD(0x140956AA0, PortalAction, FUN_140956aa0, 309, 0xFE6AA6E2);
 // @0x140956e40
@@ -1400,7 +1400,7 @@ void LiftCubeAction::vfunc_2()
     Unk_WsB_Lift* pLift = FUN_1403ed2d0()->FUN_141bc5a20(m_str18).get();
     if (!pLift)
         return;
-    if (pPlayer->FUN_1416764a0() && !pPlayer->FUN_14152c280(0))
+    if (pPlayer->FUN_1416764a0() && !pPlayer->SendRequestRideMode1(0))
         return;
     pLift->FUN_141447d50(0);
     COutPacket packet(0x3c);
@@ -1675,7 +1675,7 @@ void InteractAction::vfunc_2()
             MS2Ptr<RideOffActionInteract> spRideOff(new RideOffActionInteract(0));
             spRideOff->m_n28 = pObject->FUN_140967110();
             spRideOff->m_s30 = pObject->FUN_140967060();
-            pPlayer->FUN_14152c280(spRideOff);
+            pPlayer->SendRequestRideMode1(spRideOff);
         }
         else
         {
@@ -2028,7 +2028,7 @@ void PullObjectWeaponAction::vfunc_2()
         int nResult = FUN_1408a2060(m_spCube->entity, 0xe52a2848, &strOwner);
         if (nResult == 0 || !strOwner.empty())
         {
-            if (pPlayer->FUN_1416764a0() && !pPlayer->FUN_14152c280(0))
+            if (pPlayer->FUN_1416764a0() && !pPlayer->SendRequestRideMode1(0))
                 return;
             COutPacket packet(0x37);
             packet.Encode1(0x11);
@@ -2174,7 +2174,7 @@ void FunctionCubeAction::vfunc_2()
     }
     if (pPlayer->FUN_1416764a0() && static_cast<bool>(spObject.get()))
     {
-        if (spObject->FUN_1412271f0() && !pPlayer->FUN_14152c280(0))
+        if (spObject->FUN_1412271f0() && !pPlayer->SendRequestRideMode1(0))
             return;
     }
     spObject->vfunc_8(m_str18);
@@ -2358,7 +2358,7 @@ void HoldAction::vfunc_2()
     }
     else if (pPlayer->FUN_1416764a0())
     {
-        pPlayer->FUN_14152c280(new RideOffActionHold(0));
+        pPlayer->SendRequestRideMode1(new RideOffActionHold(0));
     }
     else
     {
@@ -2453,11 +2453,11 @@ void HoldPCAction::vfunc_2()
         return;
     if (pPlayer->FUN_1416764a0())
     {
-        pPlayer->FUN_14152c280(new RideOffActionHold(0));
+        pPlayer->SendRequestRideMode1(new RideOffActionHold(0));
     }
     else if (m_n18 != 0)
     {
-        pPlayer->FUN_14152dee0(m_n18);
+        pPlayer->SendRequestRideMode3(m_n18);
     }
 }
 MS2_REPLACE_METHOD(0x14095C9A0, HoldPCAction, vfunc_2, 262, 0xBF53E2D3);
@@ -3007,7 +3007,7 @@ void ReactorAction::vfunc_2()
             MS2Ptr<RideOffActionReact> spRideOff(new RideOffActionReact(0));
             spRideOff->m_n28 = spReactor->FUN_140b78bb0();
             spRideOff->m_s30 = spReactor->FUN_140b78af0();
-            pPlayer->FUN_14152c280(spRideOff);
+            pPlayer->SendRequestRideMode1(spRideOff);
         }
         else
         {
@@ -3022,7 +3022,7 @@ void ReactorAction::vfunc_2()
         else
         {
             pPlayer->FUN_14152e0c0();
-            spReactor->FUN_140b799a0();
+            spReactor->SendStateReact();
         }
     }
     m_n1c = 1;

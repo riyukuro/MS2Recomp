@@ -182,7 +182,7 @@ void ItemSocketSystemPageSocketTransfer::vfunc_7(MS2Ptr<AScript> root)
             if (m_debugFillButton.get() != 0) {
                 m_debugFillButton->vfunc_3(debug);
                 if (debug)
-                    FUN_1422ce240(m_debugFillButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketTransfer::FUN_140c53e40), 0);
+                    FUN_1422ce240(m_debugFillButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode16), 0);
             }
             FUN_140f6d450(m_slots0Name, m_sourceItems, 0x435, 0x20);
             FUN_140f6d450(m_slots1Name, m_targetItems, 0x415, 0x20);
@@ -462,7 +462,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51fa0()
                     Unk_SockUidPair request;
                     request.m_nFirst = sourceUid;
                     request.m_nSecond = targetUid;
-                    FUN_140c53fc0(request);
+                    SendItemSocketSystemMode12(request);
                 }
             }
         }
@@ -676,7 +676,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53a70(const Scaleform::GFx::Fun
 }
 
 // @0x140c53e40
-void ItemSocketSystemPageSocketTransfer::FUN_140c53e40(const Scaleform::GFx::FunctionHandler::Params&)
+void ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode16(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_source == 0 || !m_source->FUN_1405279c0())
         return;
@@ -702,7 +702,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c53f90(CAtlArray<MS2Ptr<CItem>>&
 }
 
 // @0x140c53fc0
-void ItemSocketSystemPageSocketTransfer::FUN_140c53fc0(Unk_SockUidPair& request)
+void ItemSocketSystemPageSocketTransfer::SendItemSocketSystemMode12(Unk_SockUidPair& request)
 {
     COutPacket out(0x88, 0);
     out.Encode1(0xc);
@@ -748,7 +748,7 @@ bool ItemSocketSystemPageSocketTransfer::FUN_140c54210(int result, const CMsgBox
         Unk_SockUidPair request;
         request.m_nFirst = first;
         request.m_nSecond = second;
-        FUN_140c53fc0(request);
+        SendItemSocketSystemMode12(request);
     }
     return true;
 }
@@ -800,9 +800,9 @@ MS2_REPLACE_METHOD(0x140C52B20, ItemSocketSystemPageSocketTransfer, FUN_140c52b2
 MS2_REPLACE_METHOD(0x140C52F10, ItemSocketSystemPageSocketTransfer, FUN_140c52f10, 1237, 0x59CBBE94);
 MS2_REPLACE_METHOD(0x140C53920, ItemSocketSystemPageSocketTransfer, FUN_140c53920, 319, 0x125C8A93);
 MS2_REPLACE_METHOD(0x140C53A70, ItemSocketSystemPageSocketTransfer, FUN_140c53a70, 957, 0xE021B62B);
-MS2_REPLACE_METHOD(0x140C53E40, ItemSocketSystemPageSocketTransfer, FUN_140c53e40, 326, 0x93DED7C3);
+MS2_REPLACE_METHOD(0x140C53E40, ItemSocketSystemPageSocketTransfer, SendItemSocketSystemMode16, 326, 0x93DED7C3);
 MS2_REPLACE_METHOD(0x140C53F90, ItemSocketSystemPageSocketTransfer, FUN_140c53f90, 41, 0x01CA403F);
-MS2_REPLACE_METHOD(0x140C53FC0, ItemSocketSystemPageSocketTransfer, FUN_140c53fc0, 95, 0x9F00587C);
+MS2_REPLACE_METHOD(0x140C53FC0, ItemSocketSystemPageSocketTransfer, SendItemSocketSystemMode12, 95, 0x9F00587C);
 MS2_REPLACE_METHOD(0x140C54030, ItemSocketSystemPageSocketTransfer, FUN_140c54030, 200, 0xDE335BE4);
 MS2_REPLACE_METHOD(0x140C54100, ItemSocketSystemPageSocketTransfer, FUN_140c54100, 253, 0x87789B05);
 MS2_REPLACE_METHOD(0x140C54210, ItemSocketSystemPageSocketTransfer, FUN_140c54210, 120, 0xB1E4E0BC);

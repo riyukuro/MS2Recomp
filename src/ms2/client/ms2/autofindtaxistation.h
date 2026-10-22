@@ -16,7 +16,7 @@ public:
 
     void FUN_1409f1240();                       // request / schedule the search (called from FUN_1409f1cb0)
     void FUN_1409f1450();                       // search timer callback: start the camera flight
-    void FUN_1409f1890();                       // send the 0x48/5 packet and arm the 5 s timeout
+    void SendRequestTaxiMode5();                       // send the 0x48/5 packet and arm the 5 s timeout
     void FUN_1409f1970();                       // arm the 1500 ms step
     void FUN_1409f1a00();                       // timeout: mark done and reset
     void FUN_1409f1a70();                       // cancel / reset the state

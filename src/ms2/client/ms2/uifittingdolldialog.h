@@ -32,7 +32,7 @@ public:
     virtual void vfunc_dl_4(void* p);                           // UIDialogEventListener 4 0x141933740 "onDragEnd"
     virtual void vfunc_33(int nClassId, int n);                 // UIItemEventListener 33 0x141933ad0
 
-    void FUN_141933390();                                       // ask the server to transform the doll
+    void SendFittingDoll();                                       // ask the server to transform the doll
     void FUN_141933b00();                                       // show the doll's name / description / frames
     void FUN_141934070();                                       // tell the bag id / ownership to the movie
     void FUN_1419342e0();                                       // FUN_14121e760(vfunc_1())

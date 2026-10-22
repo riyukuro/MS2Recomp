@@ -366,9 +366,9 @@ void UIUpperHudDialog::OnLoadComplete()
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(101), __FUNCTION__));
     do { m_30->FUN_140bbe640("m_pcBangButtonCn1", m_pcBangCn1); if (m_pcBangCn1 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(102), __FUNCTION__)); } while (0);
     do { m_30->FUN_140bbe640("m_pcBangButtonCn2", m_pcBangCn2); if (m_pcBangCn2 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(103), __FUNCTION__)); } while (0);
-    m_pcBang->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356d30), 0);
-    m_pcBangCn1->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356d30), 0);
-    m_pcBangCn2->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356d30), 0);
+    m_pcBang->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::SendPcBangBonus), 0);
+    m_pcBangCn1->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::SendPcBangBonus), 0);
+    m_pcBangCn2->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::SendPcBangBonus), 0);
     if (FUN_140bc6d10("m_fishingBookButton", m_fishingBook))
         m_fishingBook->FUN_1422ce240(HudClickDelegate(this, &UIUpperHudDialog::FUN_141356dc0), 0);
     if (FUN_140bc6d10("m_keyboardGuideButton", m_keyboardGuide))
@@ -588,7 +588,7 @@ void UIUpperHudDialog::FUN_141356d00(const Scaleform::GFx::FunctionHandler::Para
 }
 
 // @0x141356d30
-void UIUpperHudDialog::FUN_141356d30(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIUpperHudDialog::SendPcBangBonus(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (FUN_1403ed2b0()->FUN_141adc890(0x4ecf))
     {

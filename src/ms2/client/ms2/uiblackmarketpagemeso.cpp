@@ -150,7 +150,7 @@ MS2_REPLACE_METHOD(0x140F19320, BlackMarketPageMesoSearch, vfunc_2, 554, 0x0EC38
 void BlackMarketPageMesoSearch::vfunc_3()
 {
     if (m_58.CompareNoCase("m_mesoSearchPageSingleRange") == 0)
-        FUN_140f1ad40(FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(0), FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(0));
+        SendMesoMarketMode7(FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(0), FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(0));
     RefreshPage();
 }
 MS2_REPLACE_METHOD(0x140F19550, BlackMarketPageMesoSearch, vfunc_3, 121, 0x80E83548);
@@ -183,7 +183,7 @@ int BlackMarketPageMesoSearch::vfunc_4(const char* szMethod, const Scaleform::GF
             return 0;
         }
         CStringW strMsg = FUN_14028dfa0(CStringW(L"s_mesoMarket_ask_buy_text"), FUN_1409404f0(spProduct->m_n20), FUN_1409404f0(spProduct->m_n28));
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageMesoSearch::FUN_140f19ef0), strMsg);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageMesoSearch::SendMesoMarketMode8), strMsg);
         if (spBox)
             spBox->FUN_1405340b0(nId);
     }
@@ -251,7 +251,7 @@ void BlackMarketPageMesoSearch::FUN_140f19d00(const Scaleform::GFx::FunctionHand
 {
     if (m_58.CompareNoCase("m_mesoSearchPageSingleRange") == 0)
     {
-        FUN_140f1ad40(FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(0), FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(0));
+        SendMesoMarketMode7(FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(0), FUN_1401d3200()->MesoMarketProductUnit.FUN_140f20bb0(0));
         return;
     }
     if (m_spSearchBegin == 0 || m_spSearchEnd == 0)
@@ -265,7 +265,7 @@ void BlackMarketPageMesoSearch::FUN_140f19d00(const Scaleform::GFx::FunctionHand
         MS2_ASSERT_AT(MS2_LINE(209), 0);
         return;
     }
-    FUN_140f1ad40(nBegin, nEnd);
+    SendMesoMarketMode7(nBegin, nEnd);
 }
 MS2_REPLACE_METHOD(0x140F19D00, BlackMarketPageMesoSearch, FUN_140f19d00, 413, 0x7650FCCF);
 
@@ -277,7 +277,7 @@ void BlackMarketPageMesoSearch::FUN_140f19eb0(const Scaleform::GFx::FunctionHand
 MS2_REPLACE_METHOD(0x140F19EB0, BlackMarketPageMesoSearch, FUN_140f19eb0, 45, 0xB3A2B662);
 
 // @0x140f19ef0
-bool BlackMarketPageMesoSearch::FUN_140f19ef0(int nResult, const CMsgBoxData& box)
+bool BlackMarketPageMesoSearch::SendMesoMarketMode8(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
@@ -288,7 +288,7 @@ bool BlackMarketPageMesoSearch::FUN_140f19ef0(int nResult, const CMsgBoxData& bo
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140F19EF0, BlackMarketPageMesoSearch, FUN_140f19ef0, 124, 0xF5FE63A9);
+MS2_REPLACE_METHOD(0x140F19EF0, BlackMarketPageMesoSearch, SendMesoMarketMode8, 124, 0xF5FE63A9);
 
 // @0x140f19f80
 void BlackMarketPageMesoSearch::RefreshPage()
@@ -402,7 +402,7 @@ void BlackMarketPageMesoSearch::FUN_140f1ac40(int nDelta)
 MS2_REPLACE_METHOD(0x140F1AC40, BlackMarketPageMesoSearch, FUN_140f1ac40, 236, 0xD1903D62);
 
 // @0x140f1ad40
-void BlackMarketPageMesoSearch::FUN_140f1ad40(__int64 nBegin, __int64 nEnd)
+void BlackMarketPageMesoSearch::SendMesoMarketMode7(__int64 nBegin, __int64 nEnd)
 {
     COutPacket packet(0x81);
     packet.vfunc_o10_1(7);
@@ -411,7 +411,7 @@ void BlackMarketPageMesoSearch::FUN_140f1ad40(__int64 nBegin, __int64 nEnd)
     FUN_140710590(packet);
     m_bSearched = true;
 }
-MS2_REPLACE_METHOD(0x140F1AD40, BlackMarketPageMesoSearch, FUN_140f1ad40, 129, 0x3488AA7C);
+MS2_REPLACE_METHOD(0x140F1AD40, BlackMarketPageMesoSearch, SendMesoMarketMode7, 129, 0x3488AA7C);
 
 // ---- BlackMarketPageMesoRegister ---------------------------------------------------------------------------------
 
@@ -508,7 +508,7 @@ int BlackMarketPageMesoRegister::vfunc_4(const char* szMethod, const Scaleform::
         if (spProduct->FUN_140d6d900())
             strKey = L"s_mesoMarket_ask_stopsale_expire";
         CStringW strMsg = FUN_14028dfa0(strKey, FUN_1409404f0(spProduct->m_n20));
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageMesoRegister::FUN_140f1cb70), strMsg);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageMesoRegister::SendMesoMarketMode6), strMsg);
         if (spBox)
             spBox->FUN_1405340b0(nId);
     }
@@ -578,7 +578,7 @@ void BlackMarketPageMesoRegister::FUN_140f1c3b0(const Scaleform::GFx::FunctionHa
     CStringW strText = FUN_14028dfa0(CStringW(L"s_mesoMarket_register_terms_content"), *FUN_1401d3200()->BlackMarketSellEndDay.Get(),
                                      nFeeRate, nFeeBase, FUN_14083cf50(FUN_1401bcd30(), 0), *FUN_1401d3200()->MailExpiryDays.Get(),
                                      limits.m_n24, fRateA, fRateB, limits.m_n1C, limits.m_n20);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d748b0(7, strTitle, strText, Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageMesoRegister::FUN_140f1cac0));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d748b0(7, strTitle, strText, Delegate<bool(int, const CMsgBoxData&)>(this, &BlackMarketPageMesoRegister::SendMesoMarketMode5));
     spBox->FUN_140e01830(nMeso);
     spBox->FUN_140e01830(FUN_140f1dec0());
 }
@@ -612,7 +612,7 @@ void BlackMarketPageMesoRegister::FUN_140f1ca80(const Scaleform::GFx::FunctionHa
 MS2_REPLACE_METHOD(0x140F1CA80, BlackMarketPageMesoRegister, FUN_140f1ca80, 45, 0x38408087);
 
 // @0x140f1cac0
-bool BlackMarketPageMesoRegister::FUN_140f1cac0(int nResult, const CMsgBoxData& box)
+bool BlackMarketPageMesoRegister::SendMesoMarketMode5(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
@@ -625,10 +625,10 @@ bool BlackMarketPageMesoRegister::FUN_140f1cac0(int nResult, const CMsgBoxData& 
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140F1CAC0, BlackMarketPageMesoRegister, FUN_140f1cac0, 168, 0xDF4567AF);
+MS2_REPLACE_METHOD(0x140F1CAC0, BlackMarketPageMesoRegister, SendMesoMarketMode5, 168, 0xDF4567AF);
 
 // @0x140f1cb70
-bool BlackMarketPageMesoRegister::FUN_140f1cb70(int nResult, const CMsgBoxData& box)
+bool BlackMarketPageMesoRegister::SendMesoMarketMode6(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
@@ -639,7 +639,7 @@ bool BlackMarketPageMesoRegister::FUN_140f1cb70(int nResult, const CMsgBoxData& 
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140F1CB70, BlackMarketPageMesoRegister, FUN_140f1cb70, 124, 0x39853F19);
+MS2_REPLACE_METHOD(0x140F1CB70, BlackMarketPageMesoRegister, SendMesoMarketMode6, 124, 0x39853F19);
 
 // @0x140f1cc00
 void BlackMarketPageMesoRegister::FUN_140f1cc00()

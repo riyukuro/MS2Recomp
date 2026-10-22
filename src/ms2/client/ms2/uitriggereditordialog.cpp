@@ -363,7 +363,7 @@ bool UITriggerEditorDialog::FUN_141b2b200(int nResult, const CMsgBoxData& data)
 MS2_REPLACE_METHOD(0x141B2B200, UITriggerEditorDialog, FUN_141b2b200, 42, 0xEF2A9723);
 
 // @0x141b2b230
-bool UITriggerEditorDialog::FUN_141b2b230(int nResult, const CMsgBoxData& data)
+bool UITriggerEditorDialog::SendTriggerMode22(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
@@ -374,7 +374,7 @@ bool UITriggerEditorDialog::FUN_141b2b230(int nResult, const CMsgBoxData& data)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x141B2B230, UITriggerEditorDialog, FUN_141b2b230, 114, 0x4CC5B095);
+MS2_REPLACE_METHOD(0x141B2B230, UITriggerEditorDialog, SendTriggerMode22, 114, 0x4CC5B095);
 
 // @0x141b2b2b0
 bool UITriggerEditorDialog::FUN_141b2b2b0(int nResult, const CMsgBoxData& data)
@@ -500,7 +500,7 @@ MS2_REPLACE_METHOD(0x141B2BA00, UITriggerEditorDialog, FUN_141b2ba00, 29, 0xD7B9
 // @0x141b2ba30
 void UITriggerEditorDialog::FUN_141b2ba30(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_140d74390(FUN_14028de60(0xafe), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b230));
+    FUN_140d74390(FUN_14028de60(0xafe), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::SendTriggerMode22));
 }
 MS2_REPLACE_METHOD(0x141B2BA30, UITriggerEditorDialog, FUN_141b2ba30, 211, 0x5605CB96);
 
@@ -695,7 +695,7 @@ MS2_REPLACE_METHOD(0x141B2D0D0, UITriggerEditorDialog, FUN_141b2d0d0, 618, 0x678
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2d340
-void UITriggerEditorDialog::FUN_141b2d340()
+void UITriggerEditorDialog::SendTriggerMode13()
 {
     if ((unsigned int)(FUN_140869420() - m_nLastSend) <= 1099)
         return;
@@ -720,7 +720,7 @@ void UITriggerEditorDialog::FUN_141b2d340()
         FUN_140d73bc0(0xaf4, 0, 0, L"");
     }
 }
-MS2_REPLACE_METHOD(0x141B2D340, UITriggerEditorDialog, FUN_141b2d340, 546, 0x538DEAC4);
+MS2_REPLACE_METHOD(0x141B2D340, UITriggerEditorDialog, SendTriggerMode13, 546, 0x538DEAC4);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2d570
@@ -740,7 +740,7 @@ void UITriggerEditorDialog::FUN_141b2d570()
     }
     FUN_141b2f140(messages);
     if (bOk)
-        FUN_141b2d340();
+        SendTriggerMode13();
     else
         FUN_140d73bc0(0xb02, 0, 0, L"");
 }

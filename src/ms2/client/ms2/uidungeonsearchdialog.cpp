@@ -351,7 +351,7 @@ bool UIDungeonSearchPage::Init(MS2Ptr<ASMovieClip> root)
     DS_BIND(m_movie->FUN_140bbe640<Unk_DsButton>("m_findButton", m_findButton), m_findButton, 0x25);
     DS_BIND(m_movie->FUN_140bbe640<Unk_DsButton>("m_cancelButton", m_cancelButton), m_cancelButton, 0x26);
     m_findButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::FUN_140e192d0), 0);
-    m_cancelButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::FUN_140e19310), 0);
+    m_cancelButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::SendPartyMode34), 0);
     m_settingButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchPage::FUN_140e19380), 0);
     FUN_140d01420((*m_movie).FUN_1422bb890(), "m_title", 2);
     return true;
@@ -403,7 +403,7 @@ MS2_REPLACE_METHOD(0x140e19250, UIDungeonSearchPage, FUN_140e19250, 51, 0x0EA659
 bool UIDungeonSearchPage::FUN_140e19290(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
-        FUN_140e196e0(false);
+        SendPartyMode32(false);
     return true;
 }
 MS2_REPLACE_METHOD(0x140e19290, UIDungeonSearchPage, FUN_140e19290, 44, 0xB906C87F);
@@ -412,19 +412,19 @@ MS2_REPLACE_METHOD(0x140e19290, UIDungeonSearchPage, FUN_140e19290, 44, 0xB906C8
 void UIDungeonSearchPage::FUN_140e192d0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (FUN_140e194f0())
-        FUN_140e196e0(true);
+        SendPartyMode32(true);
 }
 MS2_REPLACE_METHOD(0x140e192d0, UIDungeonSearchPage, FUN_140e192d0, 48, 0x9DDC2185);
 
 // @0x140e19310
-void UIDungeonSearchPage::FUN_140e19310(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDungeonSearchPage::SendPartyMode34(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     COutPacket packet(0x2c, 0);
     packet.Encode1(0x22);
     packet.Encode1(1);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140e19310, UIDungeonSearchPage, FUN_140e19310, 92, 0xF0BFF153);
+MS2_REPLACE_METHOD(0x140e19310, UIDungeonSearchPage, SendPartyMode34, 92, 0xF0BFF153);
 
 // MS2-FUNCTIONAL: behaviour-equivalent; the exe's list<int> insert is a 3-argument COMDAT (hidden iterator return) that the shared <list> push_back does not reach, frame 0x10 larger
 // @0x140e19380
@@ -463,7 +463,7 @@ bool UIDungeonSearchPage::FUN_140e194f0()
 MS2_REPLACE_METHOD(0x140e194f0, UIDungeonSearchPage, FUN_140e194f0, 476, 0x8448D04A);
 
 // @0x140e196e0
-void UIDungeonSearchPage::FUN_140e196e0(bool bStart)
+void UIDungeonSearchPage::SendPartyMode32(bool bStart)
 {
     COutPacket packet(0x2c, 0);
     packet.Encode1(0x20);
@@ -472,7 +472,7 @@ void UIDungeonSearchPage::FUN_140e196e0(bool bStart)
     FUN_14070f820(packet, bStart);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140e196e0, UIDungeonSearchPage, FUN_140e196e0, 128, 0x4ECC7700);
+MS2_REPLACE_METHOD(0x140e196e0, UIDungeonSearchPage, SendPartyMode32, 128, 0x4ECC7700);
 
 // @0x140e19770
 void UIDungeonSearchPage::FUN_140e19770()
@@ -576,12 +576,12 @@ void UIDungeonSearchDialog::OnLoadComplete()
             m_subButtons[5]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), 10);
             m_subButtons[1]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), 7);
             m_subButtons[6]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), 11);
-            m_subButtons[4]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b8d0), 0);
+            m_subButtons[4]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode4), 0);
             m_subButtons[3]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1ba50), 0);
-            m_subButtons[8]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b930), 0);
+            m_subButtons[8]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode12), 0);
             m_subButtons[9]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b850), 12);
-            m_subButtons[10]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b9f0), 0);
-            m_subButtons[11]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::FUN_140e1b990), 0);
+            m_subButtons[10]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode14), 0);
+            m_subButtons[11]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchDialog::SendRoomDungeonMode13), 0);
             m_pageCustom->FUN_140e18f90();
             m_pageRandom->FUN_140e18f90();
             m_unitedReward->FUN_140e13c00();
@@ -669,40 +669,40 @@ void UIDungeonSearchDialog::FUN_140e1b850(const Scaleform::GFx::FunctionHandler:
 MS2_REPLACE_METHOD(0x140e1b850, UIDungeonSearchDialog, FUN_140e1b850, 117, 0xBFACFFEE);
 
 // @0x140e1b8d0
-void UIDungeonSearchDialog::FUN_140e1b8d0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDungeonSearchDialog::SendRoomDungeonMode4(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     COutPacket packet(0x2b, 0);
     packet.Encode1(4);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140e1b8d0, UIDungeonSearchDialog, FUN_140e1b8d0, 80, 0x85B40661);
+MS2_REPLACE_METHOD(0x140e1b8d0, UIDungeonSearchDialog, SendRoomDungeonMode4, 80, 0x85B40661);
 
 // @0x140e1b930
-void UIDungeonSearchDialog::FUN_140e1b930(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDungeonSearchDialog::SendRoomDungeonMode12(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     COutPacket packet(0x2b, 0);
     packet.Encode1(0xc);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140e1b930, UIDungeonSearchDialog, FUN_140e1b930, 80, 0x5352FF2B);
+MS2_REPLACE_METHOD(0x140e1b930, UIDungeonSearchDialog, SendRoomDungeonMode12, 80, 0x5352FF2B);
 
 // @0x140e1b990
-void UIDungeonSearchDialog::FUN_140e1b990(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDungeonSearchDialog::SendRoomDungeonMode13(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     COutPacket packet(0x2b, 0);
     packet.Encode1(0xd);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140e1b990, UIDungeonSearchDialog, FUN_140e1b990, 80, 0xB054EE22);
+MS2_REPLACE_METHOD(0x140e1b990, UIDungeonSearchDialog, SendRoomDungeonMode13, 80, 0xB054EE22);
 
 // @0x140e1b9f0
-void UIDungeonSearchDialog::FUN_140e1b9f0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDungeonSearchDialog::SendRoomDungeonMode14(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     COutPacket packet(0x2b, 0);
     packet.Encode1(0xe);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140e1b9f0, UIDungeonSearchDialog, FUN_140e1b9f0, 80, 0x0477CCED);
+MS2_REPLACE_METHOD(0x140e1b9f0, UIDungeonSearchDialog, SendRoomDungeonMode14, 80, 0x0477CCED);
 
 // @0x140e1ba50
 void UIDungeonSearchDialog::FUN_140e1ba50(const Scaleform::GFx::FunctionHandler::Params& params)

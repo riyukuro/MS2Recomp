@@ -454,7 +454,7 @@ void CMeratMarketMan::OnMeretMarket(CInPacket& packet)
 
 // Ask for the shop list of a sort kind (sub-opcode 0x65).
 // @0x140d542c0
-void CMeratMarketMan::FUN_140d542c0(int nTab, int nSort)
+void CMeratMarketMan::SendMeretMarketMode101(int nTab, int nSort)
 {
     if (nTab == 5 || !FUN_1406a5040(nSort))
         return;
@@ -466,7 +466,7 @@ void CMeratMarketMan::FUN_140d542c0(int nTab, int nSort)
 }
 
 // @0x140d54360
-void CMeratMarketMan::FUN_140d54360()
+void CMeratMarketMan::SendMeretMarketMode102()
 {
     COutPacket packet(0x39, 0);
     packet.vfunc_o10_1(0x66);
@@ -475,7 +475,7 @@ void CMeratMarketMan::FUN_140d54360()
 
 // Ask for the ad list and drop the cached one.
 // @0x140d543c0
-void CMeratMarketMan::FUN_140d543c0(int nFlag)
+void CMeratMarketMan::SendMeretMarketMode103(int nFlag)
 {
     COutPacket packet(0x39, 0);
     packet.vfunc_o10_1(0x67);
@@ -485,7 +485,7 @@ void CMeratMarketMan::FUN_140d543c0(int nFlag)
 }
 
 // @0x140d54440
-void CMeratMarketMan::FUN_140d54440()
+void CMeratMarketMan::SendMeretMarketMode107()
 {
     COutPacket packet(0x39, 0);
     packet.vfunc_o10_1(0x6b);
@@ -493,7 +493,7 @@ void CMeratMarketMan::FUN_140d54440()
 }
 
 // @0x140d544a0
-void CMeratMarketMan::FUN_140d544a0()
+void CMeratMarketMan::SendMeretMarketMode11()
 {
     COutPacket packet(0x39, 0);
     packet.vfunc_o10_1(0x0b);
@@ -501,7 +501,7 @@ void CMeratMarketMan::FUN_140d544a0()
 }
 
 // @0x140d54500
-void CMeratMarketMan::FUN_140d54500()
+void CMeratMarketMan::SendMeretMarketMode12()
 {
     COutPacket packet(0x39, 0);
     packet.vfunc_o10_1(0x0c);
@@ -510,7 +510,7 @@ void CMeratMarketMan::FUN_140d54500()
 
 // Register a UGC design for sale (sub-opcode 0x0d).
 // @0x140d54560
-void CMeratMarketMan::FUN_140d54560(MS2Ptr<CMeratMarketPacket::UgcAddProduct> spRequest)
+void CMeratMarketMan::SendMeretMarketMode13(MS2Ptr<CMeratMarketPacket::UgcAddProduct> spRequest)
 {
     if (spRequest == 0)
         return;
@@ -522,7 +522,7 @@ void CMeratMarketMan::FUN_140d54560(MS2Ptr<CMeratMarketPacket::UgcAddProduct> sp
 
 // Stop selling a UGC product (sub-opcode 0x0e).
 // @0x140d54610
-void CMeratMarketMan::FUN_140d54610(Unk_MeratProductKey key)
+void CMeratMarketMan::SendMeretMarketMode14(Unk_MeratProductKey key)
 {
     MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d55800(key);
     if (spProduct == 0)
@@ -536,7 +536,7 @@ void CMeratMarketMan::FUN_140d54610(Unk_MeratProductKey key)
 
 // Delete a UGC product (sub-opcode 0x0f).
 // @0x140d54700
-void CMeratMarketMan::FUN_140d54700(Unk_MeratProductKey key)
+void CMeratMarketMan::SendMeretMarketMode15(Unk_MeratProductKey key)
 {
     MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d55800(key);
     if (spProduct == 0)
@@ -550,7 +550,7 @@ void CMeratMarketMan::FUN_140d54700(Unk_MeratProductKey key)
 
 // Put a UGC product on sale again (sub-opcode 0x12).
 // @0x140d547f0
-void CMeratMarketMan::FUN_140d547f0(MS2Ptr<CMeratMarketPacket::UgcResaleProduct> spRequest)
+void CMeratMarketMan::SendMeretMarketMode18(MS2Ptr<CMeratMarketPacket::UgcResaleProduct> spRequest)
 {
     if (spRequest == 0)
         return;
@@ -568,7 +568,7 @@ void CMeratMarketMan::FUN_140d547f0(MS2Ptr<CMeratMarketPacket::UgcResaleProduct>
 
 // Ask for the sale details of a UGC product (sub-opcode 0x13).
 // @0x140d54960
-void CMeratMarketMan::FUN_140d54960(Unk_MeratProductKey key)
+void CMeratMarketMan::SendMeretMarketMode19(Unk_MeratProductKey key)
 {
     MS2Ptr<CMeratMarketProduct> spProduct = FUN_140d55800(key);
     if (spProduct == 0)
@@ -583,7 +583,7 @@ void CMeratMarketMan::FUN_140d54960(Unk_MeratProductKey key)
 
 // Ask for the sales of a seller (sub-opcode 0x14).
 // @0x140d54a50
-void CMeratMarketMan::FUN_140d54a50(__int64 nSellerId)
+void CMeratMarketMan::SendMeretMarketMode20(__int64 nSellerId)
 {
     COutPacket packet(0x39, 0);
     packet.vfunc_o10_1(0x14);
@@ -601,7 +601,7 @@ void CMeratMarketMan::FUN_140d54ac0()
         if (spSeller.get() != 0) {
             if (FUN_140d567a0(spSeller)) {
                 FUN_140d566f0(1);
-                FUN_140d54a50(spSeller->m_n18);
+                SendMeretMarketMode20(spSeller->m_n18);
             }
         }
     } else {
@@ -610,7 +610,7 @@ void CMeratMarketMan::FUN_140d54ac0()
 }
 
 // @0x140d54ba0
-void CMeratMarketMan::FUN_140d54ba0()
+void CMeratMarketMan::SendMeretMarketMode22()
 {
     COutPacket packet(0x39, 0);
     packet.vfunc_o10_1(0x16);
@@ -618,7 +618,7 @@ void CMeratMarketMan::FUN_140d54ba0()
 }
 
 // @0x140d54c00
-void CMeratMarketMan::FUN_140d54c00(__int64 nId)
+void CMeratMarketMan::SendMeretMarketMode23(__int64 nId)
 {
     COutPacket packet(0x39, 0);
     packet.vfunc_o10_1(0x17);
@@ -627,7 +627,7 @@ void CMeratMarketMan::FUN_140d54c00(__int64 nId)
 }
 
 // @0x140d54c70
-void CMeratMarketMan::FUN_140d54c70(__int64 nId)
+void CMeratMarketMan::SendMeretMarketMode24(__int64 nId)
 {
     COutPacket packet(0x39, 0);
     packet.vfunc_o10_1(0x18);
@@ -636,7 +636,7 @@ void CMeratMarketMan::FUN_140d54c70(__int64 nId)
 }
 
 // @0x140d54ce0
-void CMeratMarketMan::FUN_140d54ce0(__int64 nId)
+void CMeratMarketMan::SendMeretMarketMode25(__int64 nId)
 {
     COutPacket packet(0x39, 0);
     packet.vfunc_o10_1(0x19);
@@ -646,7 +646,7 @@ void CMeratMarketMan::FUN_140d54ce0(__int64 nId)
 
 // Search the market (sub-opcode 0x1b).
 // @0x140d54d50
-void CMeratMarketMan::FUN_140d54d50(MS2Ptr<CMeratMarketSchCond> spCond)
+void CMeratMarketMan::SendMeretMarketMode27(MS2Ptr<CMeratMarketSchCond> spCond)
 {
     if (spCond == 0)
         return;
@@ -686,7 +686,7 @@ void CMeratMarketMan::FUN_140d54e50(MS2Ptr<CMeratMarketSchCond> spCond)
 
 // Like / unlike a product (sub-opcode 0x1d).
 // @0x140d54fe0
-void CMeratMarketMan::FUN_140d54fe0(bool bLike, const __int64& nUgcId, const int& nUIClassID)
+void CMeratMarketMan::SendMeretMarketMode29(bool bLike, const __int64& nUgcId, const int& nUIClassID)
 {
     COutPacket packet(0x39, 0);
     packet.vfunc_o10_1(0x1d);
@@ -699,7 +699,7 @@ void CMeratMarketMan::FUN_140d54fe0(bool bLike, const __int64& nUgcId, const int
 
 // Search with a sort byte (sub-opcode 0x68).
 // @0x140d550c0
-void CMeratMarketMan::FUN_140d550c0(MS2Ptr<CMeratMarketSchCond> spCond, int nSort)
+void CMeratMarketMan::SendMeretMarketMode104(MS2Ptr<CMeratMarketSchCond> spCond, int nSort)
 {
     if (spCond == 0)
         return;
@@ -716,7 +716,7 @@ void CMeratMarketMan::FUN_140d550c0(MS2Ptr<CMeratMarketSchCond> spCond, int nSor
 
 // Ask for premium products by id (sub-opcode 0x20, at most 20).
 // @0x140d551e0
-void CMeratMarketMan::FUN_140d551e0(ATL::CAtlArray<int>& ids)
+void CMeratMarketMan::SendMeretMarketMode32(ATL::CAtlArray<int>& ids)
 {
     if (ids.GetCount() > 0x14)
         return;
@@ -730,7 +730,7 @@ void CMeratMarketMan::FUN_140d551e0(ATL::CAtlArray<int>& ids)
 
 // Ask for UGC products by id (sub-opcode 0x21, at most 20).
 // @0x140d552c0
-void CMeratMarketMan::FUN_140d552c0(ATL::CAtlArray<unsigned __int64>& ids)
+void CMeratMarketMan::SendMeretMarketMode33(ATL::CAtlArray<unsigned __int64>& ids)
 {
     if (ids.GetCount() > 0x14)
         return;
@@ -1615,7 +1615,7 @@ void CMeratMarketMan::FUN_140d59df0(NotifyObject* pObject)
 
 // Send a purchase request.
 // @0x140d5a0d0
-void CMeratMarketMan::FUN_140d5a0d0(MS2Ptr<CMeratMarketBuy> spBuy)
+void CMeratMarketMan::SendMeretMarketMode30(MS2Ptr<CMeratMarketBuy> spBuy)
 {
     if (spBuy == 0 || spBuy->m_spPacket == 0)
         return;
@@ -1869,7 +1869,7 @@ CMeratMarketBuy::~CMeratMarketBuy()
 // @0x140d60460
 void CMeratMarketBuy::vfunc_4()
 {
-    CMeratMarketMan::GetInstance()->FUN_140d5a0d0(MS2Ptr<CMeratMarketBuy>(this));
+    CMeratMarketMan::GetInstance()->SendMeretMarketMode30(MS2Ptr<CMeratMarketBuy>(this));
 }
 
 // Fill the packet from the product.
@@ -2387,7 +2387,7 @@ void CMeratMarketMan::FUN_140d5d500(CInPacket& packet)
             if (!FUN_140d567a0(spFirst))
                 bDone = true;
             else
-                FUN_140d54a50(spFirst->m_n18);
+                SendMeretMarketMode20(spFirst->m_n18);
         }
     }
     if (bDone)

@@ -22,7 +22,7 @@ public:
     void FUN_141374d10(int n);                          // 0x141374d10 set the index and push it
     void FUN_141374d40(Unk_StreamPoint kPos);           // 0x141374d40 anchor the tooltip at kPos + (0, 0, 150)
     void FUN_141374dd0(void* pInput);                   // 0x141374dd0 '-' (0x7d) / 'x' (0x78) step the index
-    void FUN_141374ea0();                               // 0x141374ea0 refresh the text and send 0x37/0x13
+    void SendRequestCube();                               // 0x141374ea0 refresh the text and send 0x37/0x13
 
     int m_n18;                                          // +0x18 the mode index
     int m_pad_1c;

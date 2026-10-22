@@ -75,7 +75,7 @@ public:
     int FUN_1411905a0();                                                    // the local player may pick it up
     int FUN_141190640(bool bForce);                                         // the pickup setting allows it
     int FUN_1411906a0();                                                    // the inventory can take the item
-    void FUN_141190830(int nPickerId);                                      // send the pickup packet
+    void SendRequestItemPickup(int nPickerId);                                      // send the pickup packet
     void FUN_141190900(int nPickerId);                                      // try to pick up
     void FUN_141190b70(int nPickerId);                                      // picked up by an actor
     void FUN_141191030();                                                   // m_nTick = now

@@ -141,7 +141,7 @@ void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
     {
         FUN_141276180(s_strBlackMarketSell, CString(""));
         FUN_1412751b0(FUN_14028de60(0x925), 0x12);
-        FUN_140a20940();
+        SendBlackMarketMode1();
     }
     else if (cSub == 9)
     {
@@ -155,7 +155,7 @@ void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
 }
 
 // @0x140a20940
-void CBlackMarketMan::FUN_140a20940()
+void CBlackMarketMan::SendBlackMarketMode1()
 {
     COutPacket packet(0x5f, 0);
     packet.vfunc_o10_1(1);
@@ -163,7 +163,7 @@ void CBlackMarketMan::FUN_140a20940()
 }
 
 // @0x140a209a0
-void CBlackMarketMan::FUN_140a209a0()
+void CBlackMarketMan::SendBlackMarketMode6()
 {
     COutPacket packet(0x5f, 0);
     packet.vfunc_o10_1(6);
@@ -171,7 +171,7 @@ void CBlackMarketMan::FUN_140a209a0()
 }
 
 // @0x140a20a00
-void CBlackMarketMan::FUN_140a20a00(unsigned __int64 qwA, unsigned __int64 qwB, int nCount)
+void CBlackMarketMan::SendBlackMarketMode2(unsigned __int64 qwA, unsigned __int64 qwB, int nCount)
 {
     COutPacket packet(0x5f, 0);
     packet.vfunc_o10_1(2);
@@ -182,7 +182,7 @@ void CBlackMarketMan::FUN_140a20a00(unsigned __int64 qwA, unsigned __int64 qwB, 
 }
 
 // @0x140a20aa0
-void CBlackMarketMan::FUN_140a20aa0(unsigned __int64 qwId)
+void CBlackMarketMan::SendBlackMarketMode3(unsigned __int64 qwId)
 {
     COutPacket packet(0x5f, 0);
     packet.vfunc_o10_1(3);
@@ -191,7 +191,7 @@ void CBlackMarketMan::FUN_140a20aa0(unsigned __int64 qwId)
 }
 
 // @0x140a20b10
-void CBlackMarketMan::FUN_140a20b10(MS2Ptr<CBlackMarketSchCond> spCond)
+void CBlackMarketMan::SendBlackMarketMode4(MS2Ptr<CBlackMarketSchCond> spCond)
 {
     if (spCond == 0)
         return;
@@ -206,7 +206,7 @@ void CBlackMarketMan::FUN_140a20b10(MS2Ptr<CBlackMarketSchCond> spCond)
 }
 
 // @0x140a20bf0
-void CBlackMarketMan::FUN_140a20bf0(unsigned __int64 qwId, int nCount)
+void CBlackMarketMan::SendBlackMarketMode5(unsigned __int64 qwId, int nCount)
 {
     COutPacket packet(0x5f, 0);
     packet.vfunc_o10_1(5);
@@ -216,7 +216,7 @@ void CBlackMarketMan::FUN_140a20bf0(unsigned __int64 qwId, int nCount)
 }
 
 // @0x140a20c70
-void CBlackMarketMan::FUN_140a20c70(int nA, int nB)
+void CBlackMarketMan::SendBlackMarketMode8(int nA, int nB)
 {
     COutPacket packet(0x5f, 0);
     packet.vfunc_o10_1(8);

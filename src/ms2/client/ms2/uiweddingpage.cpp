@@ -299,7 +299,7 @@ bool UIWeddingPageMessage::vfunc_3(const char* szMethod, const Scaleform::GFx::V
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_wedding_dialog_couple_message_confirm")), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingPageMessage::FUN_140fe7c60));
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingPageMessage::SendWedding));
             spBox->FUN_140b76940(CStringW(strMessage));
             FUN_140d73c60(spBox);
         }
@@ -308,7 +308,7 @@ bool UIWeddingPageMessage::vfunc_3(const char* szMethod, const Scaleform::GFx::V
 }
 
 // @0x140fe7c60
-bool UIWeddingPageMessage::FUN_140fe7c60(int nResult, const CMsgBoxData& box)
+bool UIWeddingPageMessage::SendWedding(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
@@ -502,7 +502,7 @@ bool UIWeddingPageMission::vfunc_3(const char* szMethod, const Scaleform::GFx::V
         return false;
     ASData data;
     if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-        FUN_140fe8e50(data.FUN_1422b8b10());
+        SendQuest(data.FUN_1422b8b10());
     return true;
 }
 
@@ -537,7 +537,7 @@ void UIWeddingPageMission::vfunc_o178_12(void* pQuest)
 }
 
 // @0x140fe8e50
-void UIWeddingPageMission::FUN_140fe8e50(int nQuestId)
+void UIWeddingPageMission::SendQuest(int nQuestId)
 {
     Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
     if (!spQuest.IsNull())

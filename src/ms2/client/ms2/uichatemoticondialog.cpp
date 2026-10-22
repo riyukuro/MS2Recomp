@@ -235,7 +235,7 @@ void UIChatEmoticonDialog::OnLoadComplete()
     }
     m_nSelTab = -1;
     m_nNextExpire = 0;
-    spCli.get()->FUN_140a3a410();
+    spCli.get()->SendMessenger();
     FUN_140bd1fc0();
     FUN_140bd1720();
     FUN_140bd1a60();

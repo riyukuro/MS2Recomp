@@ -166,7 +166,7 @@ int UIUGCCubeBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     ASData data;
     if (_stricmp("OnBuy", szMethod) == 0)
     {
-        FUN_140ee80a0();
+        SendRequestCube();
         return 1;
     }
     return 0;
@@ -211,7 +211,7 @@ bool FUN_140ee8000(void* pUnused, int nAnswer, const CMsgBoxData& data)
 }
 
 // @0x140ee80a0
-void UIUGCCubeBillDialog::FUN_140ee80a0()
+void UIUGCCubeBillDialog::SendRequestCube()
 {
     if (s_cost.m_bPreview == 0)
     {
@@ -266,7 +266,7 @@ void FUN_140ee8190(CInPacket& packet)
 
 // Ask the server for the bill of a cube.
 // @0x140ee8360
-void FUN_140ee8360(int nCubeId)
+void SendRequestCubeMode35(int nCubeId)
 {
     FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_pending.PendingCost::Reset();
@@ -313,7 +313,7 @@ void FUN_140ee83f0(CInPacket& packet)
 
 // Ask the server for the bill of a blueprint.
 // @0x140ee86f0
-void FUN_140ee86f0(void* pBlueprintUid)
+void SendRequestCubeMode66(void* pBlueprintUid)
 {
     FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_pending.PendingCost::Reset();

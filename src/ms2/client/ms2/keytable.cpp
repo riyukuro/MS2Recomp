@@ -156,7 +156,7 @@ Unk_KtGameOption* FUN_1409a8b10();
 CInputKeyHandler* FUN_14025e7c0();
 class Unk_KtNotices { public: void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify); };
 Unk_KtNotices* FUN_140939a10();
-int FUN_1409300a0(int nPage);                               // send the quick slot page
+int SendKeyTableMode8(int nPage);                               // send the quick slot page
 class Unk_KtScene                                           // the scene sound/cinematic manager (uiguideeventarrow.cpp)
 {
 public:
@@ -398,7 +398,7 @@ void CKeyTable::OnKeyTable(CInPacket& packet)
 }
 
 // @0x1414294e0
-void CKeyTable::FUN_1414294e0(int nKey)
+void CKeyTable::SendKeyTableMode1(int nKey)
 {
     if (m_nLocked != 0)
         return;
@@ -416,7 +416,7 @@ void CKeyTable::FUN_1414294e0(int nKey)
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x1414294E0, CKeyTable, FUN_1414294e0, 281, 0xE9AD9B88);
+MS2_REPLACE_METHOD(0x1414294E0, CKeyTable, SendKeyTableMode1, 281, 0xE9AD9B88);
 
 // @0x141429600
 void CKeyTable::FUN_141429600()
@@ -727,10 +727,10 @@ int CKeyTable::FUN_14142b250(int nKey, int nType, __int64 nAction, int nSlot, in
 {
     if (FUN_141431c80(nKey, nType, nAction, nSlot, nPriority, 1))
     {
-        FUN_1414294e0(nKey);
+        SendKeyTableMode1(nKey);
         int nPair;
         if (m_pairKeys.Lookup(nKey, nPair))
-            FUN_1414294e0(nPair);
+            SendKeyTableMode1(nPair);
         return 1;
     }
     return 0;
@@ -2041,7 +2041,7 @@ void CKeyTable::FUN_14142f470(int nPage, int nSlot)
 MS2_REPLACE_METHOD(0x14142F470, CKeyTable, FUN_14142f470, 650, 0xA4530BDC);
 
 // @0x14142f700
-void CKeyTable::FUN_14142f700()
+void CKeyTable::SendKeyTableMode7()
 {
     if (m_nLocked == 0)
         return;
@@ -2578,7 +2578,7 @@ void CKeyTable::FUN_141431ae0(int nPage, bool bSend)
     m_nQuickSlotPage = nPage;
     FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyShortkeyPage(nPrev, nPage)));
     if (bSend)
-        FUN_1409300a0(nPage);
+        SendKeyTableMode8(nPage);
 }
 
 // @0x141431c20

@@ -37,10 +37,10 @@ public:
     void FUN_140e19250(const std::list<int>& rooms);                            // sets the room id list
     bool FUN_140e19290(int nResult, const CMsgBoxData& data);                   // message box answer
     void FUN_140e192d0(const Scaleform::GFx::FunctionHandler::Params& params);  // find button
-    void FUN_140e19310(const Scaleform::GFx::FunctionHandler::Params& params);  // cancel button
+    void SendPartyMode34(const Scaleform::GFx::FunctionHandler::Params& params);  // cancel button
     void FUN_140e19380(const Scaleform::GFx::FunctionHandler::Params& params);  // setting button
     bool FUN_140e194f0();                                                       // checks before searching
-    void FUN_140e196e0(bool bStart);                                            // sends the search packet
+    void SendPartyMode32(bool bStart);                                            // sends the search packet
     void FUN_140e19770();                                                       // progress icon and buttons
     void FUN_140e199b0(std::vector<MS2Ptr<Unk_DsRoom> >& out);                                    // room list of the page
 private:
@@ -76,10 +76,10 @@ public:
     void FUN_140e1b760(CInPacket& packet);                                                     // united reward reset message
     void FUN_140e1b800(NotifyObject* pNotify);                                  // NotifyGameStart: pages
     void FUN_140e1b850(const Scaleform::GFx::FunctionHandler::Params& params);  // opens the select dialog
-    void FUN_140e1b8d0(const Scaleform::GFx::FunctionHandler::Params& params);  // category 4 packet
-    void FUN_140e1b930(const Scaleform::GFx::FunctionHandler::Params& params);  // category 12 packet
-    void FUN_140e1b990(const Scaleform::GFx::FunctionHandler::Params& params);  // category 13 packet
-    void FUN_140e1b9f0(const Scaleform::GFx::FunctionHandler::Params& params);  // category 14 packet
+    void SendRoomDungeonMode4(const Scaleform::GFx::FunctionHandler::Params& params);  // category 4 packet
+    void SendRoomDungeonMode12(const Scaleform::GFx::FunctionHandler::Params& params);  // category 12 packet
+    void SendRoomDungeonMode13(const Scaleform::GFx::FunctionHandler::Params& params);  // category 13 packet
+    void SendRoomDungeonMode14(const Scaleform::GFx::FunctionHandler::Params& params);  // category 14 packet
     void FUN_140e1ba50(const Scaleform::GFx::FunctionHandler::Params& params);  // opens UI 0x4eda
     void FUN_140e1ba80(int nPage, const std::list<int>& rooms);                 // sets the room list of a page
     MS2Ptr<UIDungeonSearchPage> FUN_140e1baf0(int nPage);                       // page 1 = custom, otherwise random

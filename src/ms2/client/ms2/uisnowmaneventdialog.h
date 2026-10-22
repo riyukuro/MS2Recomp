@@ -66,8 +66,8 @@ public:
     virtual int vfunc_54(void*);
     virtual void vfunc_19();
     void FUN_140e954b0(MS2Ptr<Unk_SnowmanContext> context);
-    void FUN_140e95be0(int index);
-    void FUN_140e95d90(int index);
+    void SendEventRewardMode12(int index);
+    void SendEventRewardMode13(int index);
     int FUN_140e95f40(int index);
     int FUN_140e960d0(int index);
     int FUN_140e96260(int index);

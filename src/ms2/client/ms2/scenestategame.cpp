@@ -8861,7 +8861,7 @@ void CSceneStateGame::FUN_141739910(CInPacket& packet)
         FUN_14173c2d0(packet);
         break;
     case 6:
-        FUN_14173c630(packet);
+        SendBeauty(packet);
         break;
     case 7:
         Unk_SSGDlg4e28* pDlg = FUN_140938b90(0x4e28);
@@ -8902,7 +8902,7 @@ void CSceneStateGame::FUN_14173c2d0(CInPacket& packet)
 MS2_REPLACE_METHOD(0x14173C2D0, CSceneStateGame, FUN_14173c2d0, 850, 0x8F073C4A);
 
 // @0x14173c630
-void CSceneStateGame::FUN_14173c630(CInPacket& packet)
+void CSceneStateGame::SendBeauty(CInPacket& packet)
 {
     Unk_SSGBeautyReq req;
     FUN_1407a8340(req, packet);
@@ -8926,7 +8926,7 @@ void CSceneStateGame::FUN_14173c630(CInPacket& packet)
     FUN_140710590(out);
     FUN_1408e57f0()->FUN_1422b9fd0(0x620001f);
 }
-MS2_REPLACE_METHOD(0x14173c630, CSceneStateGame, FUN_14173c630, 357, 0x2D049D06);
+MS2_REPLACE_METHOD(0x14173c630, CSceneStateGame, SendBeauty, 357, 0x2D049D06);
 
 // @0x14173d180
 void CSceneStateGame::FUN_14173d180(CInPacket& packet)

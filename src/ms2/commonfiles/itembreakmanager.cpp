@@ -396,10 +396,10 @@ int CItemBreakManager::FUN_140531b70() {
 }
 MS2_REPLACE_METHOD(0x140531B70, CItemBreakManager, FUN_140531b70, 165, 0xC7E57465);
 // @0x140531c20
-void CItemBreakManager::FUN_140531c20(int value) { type=value; pending.RemoveAll(); ItemBreakCommon::FUN_140530b00(items,100); COutPacket packet(0x5a,0); packet.Encode1(0); packet.Encode1((unsigned char)type); FUN_140710590(packet); }
-MS2_REPLACE_METHOD(0x140531C20, CItemBreakManager, FUN_140531c20, 149, 0xDC547EA6);
+void CItemBreakManager::SendItemDismantleMode0(int value) { type=value; pending.RemoveAll(); ItemBreakCommon::FUN_140530b00(items,100); COutPacket packet(0x5a,0); packet.Encode1(0); packet.Encode1((unsigned char)type); FUN_140710590(packet); }
+MS2_REPLACE_METHOD(0x140531C20, CItemBreakManager, SendItemDismantleMode0, 149, 0xDC547EA6);
 // @0x140531cc0
-void CItemBreakManager::FUN_140531cc0() { FUN_140531c20(0); }
+void CItemBreakManager::FUN_140531cc0() { SendItemDismantleMode0(0); }
 MS2_REPLACE_METHOD(0x140531CC0, CItemBreakManager, FUN_140531cc0, 26, 0x3DB3E087);
 // MS2-FUNCTIONAL: clone return: exe copies the item handle into the sret (no move) and indexes via operator[] temps
 // @0x140531ce0
@@ -503,8 +503,8 @@ int CItemBreakManager::FUN_140532c30() {
 }
 MS2_REPLACE_METHOD(0x140532C30, CItemBreakManager, FUN_140532c30, 329, 0x048AC1F8);
 // @0x140532d80
-int CItemBreakManager::FUN_140532d80() { COutPacket packet(0x5a,0); packet.Encode1(3); FUN_140710590(packet); return 1; }
-MS2_REPLACE_METHOD(0x140532D80, CItemBreakManager, FUN_140532d80, 86, 0xCDB63F78);
+int CItemBreakManager::SendItemDismantleMode3() { COutPacket packet(0x5a,0); packet.Encode1(3); FUN_140710590(packet); return 1; }
+MS2_REPLACE_METHOD(0x140532D80, CItemBreakManager, SendItemDismantleMode3, 86, 0xCDB63F78);
 // MS2-FUNCTIONAL: 300 unmasked bytes differ; temp ordering, not hooked
 // @0x140532de0
 int CItemBreakManager::FUN_140532de0(ItemPtr item,int arg) {
@@ -518,11 +518,11 @@ int CItemBreakManager::FUN_140532de0(ItemPtr item,int arg) {
     FUN_140533440(item,arg); return 1;
 }
 // @0x140533210
-void CItemBreakManager::FUN_140533210(__int64 id,int count,int arg) { COutPacket packet(0x5a,0); packet.Encode1(1); packet.Encode4(arg); packet.FUN_14020ae50(id); packet.Encode4(count); FUN_140710590(packet); }
-MS2_REPLACE_METHOD(0x140533210, CItemBreakManager, FUN_140533210, 139, 0x0CBD71F0);
+void CItemBreakManager::SendItemDismantleMode1(__int64 id,int count,int arg) { COutPacket packet(0x5a,0); packet.Encode1(1); packet.Encode4(arg); packet.FUN_14020ae50(id); packet.Encode4(count); FUN_140710590(packet); }
+MS2_REPLACE_METHOD(0x140533210, CItemBreakManager, SendItemDismantleMode1, 139, 0x0CBD71F0);
 // @0x1405332b0
-void CItemBreakManager::FUN_1405332b0(int a,int b) { if(!FUN_140532ab0()) return; { COutPacket packet(0x5a,0); packet.Encode1(6); packet.Encode1((unsigned char)a); packet.Encode1((unsigned char)b); FUN_140710590(packet); } }
-MS2_REPLACE_METHOD(0x1405332B0, CItemBreakManager, FUN_1405332b0, 133, 0xB5BB3AAC);
+void CItemBreakManager::SendItemDismantleMode6(int a,int b) { if(!FUN_140532ab0()) return; { COutPacket packet(0x5a,0); packet.Encode1(6); packet.Encode1((unsigned char)a); packet.Encode1((unsigned char)b); FUN_140710590(packet); } }
+MS2_REPLACE_METHOD(0x1405332B0, CItemBreakManager, SendItemDismantleMode6, 133, 0xB5BB3AAC);
 // @0x140533340
 int CItemBreakManager::FUN_140533340(ItemPtr item) {
     if(!FUN_140531270(item)) { FUN_141275260(0x8f6,1,1); return 0; } COutPacket packet(0x5a,0); packet.Encode1(2); packet.FUN_14020ae50(item->FUN_140526a50()); FUN_140710590(packet); return 1;
@@ -541,7 +541,7 @@ void CItemBreakManager::FUN_140533440(ItemPtr item,int arg) {
         }
     } else {
         CStringW option; char flag=0; FUN_1409e4950(item,option,&flag);
-        if(item->FUN_140526bd0()<5 || flag!=1) FUN_140533210(item->FUN_140526a50(),item->FUN_140526c50(),arg);
+        if(item->FUN_140526bd0()<5 || flag!=1) SendItemDismantleMode1(item->FUN_140526a50(),item->FUN_140526c50(),arg);
         else {
             CStringW warning=FUN_14028b8e0(L"s_itembreak_high_sa_option_item"); CStringW text; text.Append(option); text.Append(L"\n"); text.Append(warning);
             Unk_BreakPtr<CMsgBoxData> box=FUN_140d73d20(0x11,text,0,L"");
@@ -556,12 +556,12 @@ void CItemBreakManager::FUN_140533440(ItemPtr item,int arg) {
 // @0x140533c60
 bool CItemBreakManager::FUN_140533c60(int result,const CMsgBoxData& box) {
     if(result==0) { int arg=box.FUN_141a02e50(0,0); unsigned __int64 id=box.FUN_141a02f10(1,0); int max=box.FUN_141a02e50(2,0); int count=_wtoi(box.FUN_141a02d50().Trim(L','));
-        if(count==0 || max<count) { int min=1; Unk_BreakMessage(0xee,1,1,min,max); return false; } FUN_140533210(id,count,arg);
+        if(count==0 || max<count) { int min=1; Unk_BreakMessage(0xee,1,1,min,max); return false; } SendItemDismantleMode1(id,count,arg);
     } return true;
 }
 // @0x140533da0
 bool CItemBreakManager::FUN_140533da0(int result,const CMsgBoxData& box) {
-    if(result==0) { int arg=box.FUN_141a02e50(0,0); unsigned __int64 id=box.FUN_141a02f10(1,0); int count=box.FUN_141a02e50(2,0); FUN_140533210(id,count,arg); } return true;
+    if(result==0) { int arg=box.FUN_141a02e50(0,0); unsigned __int64 id=box.FUN_141a02f10(1,0); int count=box.FUN_141a02e50(2,0); SendItemDismantleMode1(id,count,arg); } return true;
 }
 MS2_REPLACE_METHOD(0x140533DA0, CItemBreakManager, FUN_140533da0, 121, 0x0F93C2D3);
 // @0x140533e20

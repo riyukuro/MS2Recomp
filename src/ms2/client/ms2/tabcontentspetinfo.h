@@ -77,7 +77,7 @@ public:
 
     void FUN_140cb9900();                               // the rename button was clicked
     bool FUN_140cb9ba0(int nResult, const CMsgBoxData& box);   // the new name was entered
-    bool FUN_140cba0f0(int nResult, const CMsgBoxData& box);   // the rename was confirmed: send it
+    bool SendRequestPet(int nResult, const CMsgBoxData& box);   // the rename was confirmed: send it
     int FUN_140cba1f0();                                // the slot background frame (1 when the pet is not out)
     int FUN_140cba220();                                // the rename button frame
 

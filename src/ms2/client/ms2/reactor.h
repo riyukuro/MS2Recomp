@@ -37,7 +37,7 @@ public:
     void FUN_140b791a0();                                   // play the head of the animation queue
     void FUN_140b79330();                                   // connect/disconnect the effect for the local player
     bool FUN_140b79490(CInPacket* pPacket);                 // field-add packet
-    void FUN_140b799a0();                                   // send the interact request (opcode 0xa9)
+    void SendStateReact();                                   // send the interact request (opcode 0xa9)
     void FUN_140b79a10(CInPacket* pPacket);                 // state-update packet
     bool FUN_140b79c30();                                   // local player may use the reactor
     int FUN_140b79cc0(PCBase* pPc);                           // 1 = the state refuses this player

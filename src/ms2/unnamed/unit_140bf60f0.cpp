@@ -363,12 +363,12 @@ int UIAllianceQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     {
         if (FUN_140bf8900() != 0)
         {
-            FUN_140d74090(AqAnswerDelegate(this, &UIAllianceQuestDialog::FUN_140bf9010), L"s_quest_alliance_accept_all_confirm");
+            FUN_140d74090(AqAnswerDelegate(this, &UIAllianceQuestDialog::SendQuestMode34), L"s_quest_alliance_accept_all_confirm");
         }
     }
     else if (_stricmp("onCompleteAll", szMethod) == 0 && FUN_140bf8ab0() != 0)
     {
-        FUN_140d74090(AqAnswerDelegate(this, &UIAllianceQuestDialog::FUN_140bf9090), L"s_quest_alliance_complete_all_confirm");
+        FUN_140d74090(AqAnswerDelegate(this, &UIAllianceQuestDialog::SendQuestMode35), L"s_quest_alliance_complete_all_confirm");
     }
     return 0;
 }
@@ -701,13 +701,13 @@ void UIAllianceQuestDialog::FUN_140bf8c30(unsigned nQuest)
     else
     {
         CStringW strText = FUN_14028dfa0(L"s_alliance_quest_completion_ticket_use", FUN_1401a9d70()->FUN_141811980(1, nItem), nCost);
-        MS2Ptr<CMsgBoxData> spBox = FUN_140bfab20(CStringW(strText), 1, AqAnswerDelegate(this, &UIAllianceQuestDialog::FUN_140bf9110), nQuest);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140bfab20(CStringW(strText), 1, AqAnswerDelegate(this, &UIAllianceQuestDialog::SendQuestMode33), nQuest);
         FUN_140534d60(reinterpret_cast<MS2Ptr<Unk_AqMsgBox>*>(&spBox));
     }
 }
 
 // @0x140bf9010
-bool UIAllianceQuestDialog::FUN_140bf9010(int nResult, const CMsgBoxData&)
+bool UIAllianceQuestDialog::SendQuestMode34(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0)
     {
@@ -720,7 +720,7 @@ bool UIAllianceQuestDialog::FUN_140bf9010(int nResult, const CMsgBoxData&)
 }
 
 // @0x140bf9090
-bool UIAllianceQuestDialog::FUN_140bf9090(int nResult, const CMsgBoxData&)
+bool UIAllianceQuestDialog::SendQuestMode35(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0)
     {
@@ -733,7 +733,7 @@ bool UIAllianceQuestDialog::FUN_140bf9090(int nResult, const CMsgBoxData&)
 }
 
 // @0x140bf9110
-bool UIAllianceQuestDialog::FUN_140bf9110(int nResult, const CMsgBoxData& rBox)
+bool UIAllianceQuestDialog::SendQuestMode33(int nResult, const CMsgBoxData& rBox)
 {
     if (nResult == 0)
     {

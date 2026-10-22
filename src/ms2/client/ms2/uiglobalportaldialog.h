@@ -27,7 +27,7 @@ public:
 
     void FUN_1412c2980();                                       // show the texts and the enter buttons
     void FUN_1412c3020(CInPacket& packet);                      // the server packet
-    void FUN_1412c31a0(const Scaleform::GFx::FunctionHandler::Params& params);   // an enter button was clicked
+    void SendGlobalPortal(const Scaleform::GFx::FunctionHandler::Params& params);   // an enter button was clicked
     void FUN_1412c3240(CInPacket& packet);                                    // the delayed refresh fired
     void FUN_1412c32a0(CInPacket& packet);                      // packet case 0: read the notice
     void FUN_1412c3640(CInPacket& packet);                      // packet case 1: the event is over

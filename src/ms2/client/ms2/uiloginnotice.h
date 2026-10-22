@@ -17,7 +17,7 @@ public:
     virtual CString vfunc_1();
     virtual void OnLoadComplete();
     virtual void vfunc_26();
-    void FUN_140ea64e0();
+    void SendNoticeDialog();
     void FUN_140ea6540(const Scaleform::GFx::FunctionHandler::Params& params);
     virtual int vfunc_48() { return 20266; }
 private:

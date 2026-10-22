@@ -183,7 +183,7 @@ int UIHomeOptionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             if (FUN_1403b3c40(strTag, L"OnReset"))
                 m_30->Invoke("reset");
             else if (FUN_140841300(strTag, "OnKickUser"))
-                FUN_140fa9bd0();
+                SendRequestCubeMode49();
             else if (FUN_140841300(strTag, "onApply"))
                 m_30->Invoke("requestData", false);
             else if (FUN_140841300(strTag, "OnConfirm"))
@@ -241,15 +241,15 @@ MS2_REPLACE_METHOD(0x140FA99B0, UIHomeOptionDialog, FUN_140fa99b0, 149, 0x7577FE
 // @0x140fa9a50
 void UIHomeOptionDialog::FUN_140fa9a50(int nRow, int nValue)
 {
-    FUN_140fa9ad0(nRow, 0 < nValue);
+    SendRequestCubeMode42(nRow, 0 < nValue);
     int nLevel = nValue - 1;
     int nZero = 0;
-    FUN_140fa9b50(nRow, *FUN_1404eb7e0(&nZero, &nLevel));
+    SendRequestCubeMode43(nRow, *FUN_1404eb7e0(&nZero, &nLevel));
 }
 MS2_REPLACE_METHOD(0x140FA9A50, UIHomeOptionDialog, FUN_140fa9a50, 112, 0x83221714);
 
 // @0x140fa9ad0
-void UIHomeOptionDialog::FUN_140fa9ad0(int nRow, bool bOn)
+void UIHomeOptionDialog::SendRequestCubeMode42(int nRow, bool bOn)
 {
     COutPacket packet(0x37, 0);
     packet.vfunc_o10_1(0x2a);
@@ -257,10 +257,10 @@ void UIHomeOptionDialog::FUN_140fa9ad0(int nRow, bool bOn)
     packet.vfunc_o10_0(bOn);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140FA9AD0, UIHomeOptionDialog, FUN_140fa9ad0, 117, 0x51D3FED8);
+MS2_REPLACE_METHOD(0x140FA9AD0, UIHomeOptionDialog, SendRequestCubeMode42, 117, 0x51D3FED8);
 
 // @0x140fa9b50
-void UIHomeOptionDialog::FUN_140fa9b50(int nRow, int nLevel)
+void UIHomeOptionDialog::SendRequestCubeMode43(int nRow, int nLevel)
 {
     COutPacket packet(0x37, 0);
     packet.vfunc_o10_1(0x2b);
@@ -268,10 +268,10 @@ void UIHomeOptionDialog::FUN_140fa9b50(int nRow, int nLevel)
     packet.vfunc_o10_1(nLevel);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140FA9B50, UIHomeOptionDialog, FUN_140fa9b50, 117, 0xE2DAB25B);
+MS2_REPLACE_METHOD(0x140FA9B50, UIHomeOptionDialog, SendRequestCubeMode43, 117, 0xE2DAB25B);
 
 // @0x140fa9bd0
-void UIHomeOptionDialog::FUN_140fa9bd0()
+void UIHomeOptionDialog::SendRequestCubeMode49()
 {
     COutPacket packet(0x37, 0);
     packet.vfunc_o10_1(0x31);
@@ -279,6 +279,6 @@ void UIHomeOptionDialog::FUN_140fa9bd0()
     if (FUN_1418fd280() == 1)
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_home_option_msg_kick_user")), 1, 1);
 }
-MS2_REPLACE_METHOD(0x140FA9BD0, UIHomeOptionDialog, FUN_140fa9bd0, 187, 0x29C0712D);
+MS2_REPLACE_METHOD(0x140FA9BD0, UIHomeOptionDialog, SendRequestCubeMode49, 187, 0x29C0712D);
 
 MS2_EMIT_CRT_MEMMOVE_S();

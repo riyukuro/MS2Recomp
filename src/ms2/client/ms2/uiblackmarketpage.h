@@ -211,7 +211,7 @@ public:
     void FUN_140f19b80(const Scaleform::GFx::FunctionHandler::Params& params);   // a range dropdown changed
     void FUN_140f19d00(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_searchButton"
     void FUN_140f19eb0(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_prevPage" / "m_nextPage"
-    bool FUN_140f19ef0(int nResult, const CMsgBoxData& box);        // buy confirmation: send 0x81/8
+    bool SendMesoMarketMode8(int nResult, const CMsgBoxData& box);        // buy confirmation: send 0x81/8
     void RefreshPage();                                             // 0x140f19f80
     void FUN_140f1a230();                                           // the market list
     void FUN_140f1a420();                                           // "UpdateMerat"
@@ -220,7 +220,7 @@ public:
     void FUN_140f1a8f0();                                           // "m_buyCount"
     void FUN_140f1aa20();                                           // the page controls
     void FUN_140f1ac40(int nDelta);                                 // move the page
-    void FUN_140f1ad40(__int64 nBegin, __int64 nEnd);               // send the search 0x81/7
+    void SendMesoMarketMode7(__int64 nBegin, __int64 nEnd);               // send the search 0x81/7
 
     MS2_LAYOUT_FRIEND;
     MS2Ptr<ASDropdownMenu> m_spSearchBegin;                         // +0x68 "m_searchBegin"
@@ -252,8 +252,8 @@ public:
     void FUN_140f1c900(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_mesoDropdown" changed
     void FUN_140f1c930(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_buyMerat" changed
     void FUN_140f1ca80(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_prevPage" / "m_nextPage"
-    bool FUN_140f1cac0(int nResult, const CMsgBoxData& box);        // register confirmation: send 0x81/5
-    bool FUN_140f1cb70(int nResult, const CMsgBoxData& box);        // stop-sale confirmation: send 0x81/6
+    bool SendMesoMarketMode5(int nResult, const CMsgBoxData& box);        // register confirmation: send 0x81/5
+    bool SendMesoMarketMode6(int nResult, const CMsgBoxData& box);        // stop-sale confirmation: send 0x81/6
     void FUN_140f1cc00();                                           // the single range / fee controls
     void FUN_140f1cf70();                                           // reset the inputs
     void FUN_140f1d020();                                           // refresh everything

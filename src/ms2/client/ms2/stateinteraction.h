@@ -39,8 +39,8 @@ public:
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x1417d48c0: an empty StateInteractData
     virtual void OnCastingFinished();                       // listener 0  0x1417d2210: m_n48 = 1
 
-    void FUN_1417d1ed0();                                   // send the objects in reach (kind 0xb)
-    void FUN_1417d2070();                                   // send the objects the player may use (kind 0xc)
+    void SendInteractObjectMode11();                                   // send the objects in reach (kind 0xb)
+    void SendInteractObjectMode12();                                   // send the objects the player may use (kind 0xc)
     void FUN_1417d2230(CInteractObject* pObject);           // the use has finished
     void FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow); // create the reaction effect
     void FUN_1417d25e0(MS2Ptr<CInteractObjectData> spRow); // play the start animation

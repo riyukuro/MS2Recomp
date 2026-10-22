@@ -917,7 +917,7 @@ int UIMicroGameCoupleDance::vfunc_28(const char* method, const Scaleform::GFx::V
         if (!data.FUN_1422b9620(args,count)) { MS2_ASSERT_AT(200, 0); return 0; }
         int dance = data.FUN_1422b8b10();
         if (m_mode == 0) FUN_140e64a10(dance);
-        else if (m_mode == 1) FUN_140e64a90(dance);
+        else if (m_mode == 1) SendPlayArcade(dance);
         return 1;
     }
     if (_stricmp(method,"onSelectTimeUp") == 0) {
@@ -1003,7 +1003,7 @@ void UIMicroGameCoupleDance::FUN_140e64a10(int dance) {
 }
 MS2_REPLACE_METHOD(0x140E64A10, UIMicroGameCoupleDance, FUN_140e64a10, 112, 0x52698292);
 // @0x140e64a90
-void UIMicroGameCoupleDance::FUN_140e64a90(int dance) {
+void UIMicroGameCoupleDance::SendPlayArcade(int dance) {
     int selected = -1;
     for (size_t i=0; i<m_dances.size(); ++i) {
         if (dance == m_dances[i]) { selected = (int)i; break; }
@@ -1019,7 +1019,7 @@ void UIMicroGameCoupleDance::FUN_140e64a90(int dance) {
     packet.Encode4(code);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140E64A90, UIMicroGameCoupleDance, FUN_140e64a90, 349, 0xADF227BA);
+MS2_REPLACE_METHOD(0x140E64A90, UIMicroGameCoupleDance, SendPlayArcade, 349, 0xADF227BA);
 // @0x140e64c00
 void UIMicroGameCoupleDance::FUN_140e64c00() {
     if (m_30 == NULL) return;

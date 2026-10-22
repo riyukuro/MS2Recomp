@@ -776,12 +776,12 @@ void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
     {
         m_bAutoFishing = pPacket->vfunc_o8_1();
         if (m_bAutoFishing != 0)
-            FUN_140cdb1e0();
+            SendFishingMode9();
     }
 }
 
 // @0x140cdaaa0
-void CFishingManager::FUN_140cdaaa0()
+void CFishingManager::SendFishingMode10()
 {
     COutPacket pkt(0x73, 0);
     pkt.Encode1(10);
@@ -793,7 +793,7 @@ void CFishingManager::FUN_140cdaaa0()
     if (m_nReelSound != 0)
         FUN_1411a6060(FUN_1403ed280(), m_nReelSound);
 }
-MS2_REPLACE_METHOD(0x140CDAAA0, CFishingManager, FUN_140cdaaa0, 176, 0x1AA5308B);
+MS2_REPLACE_METHOD(0x140CDAAA0, CFishingManager, SendFishingMode10, 176, 0x1AA5308B);
 
 // @0x140cdab60
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
@@ -827,7 +827,7 @@ void CFishingManager::FUN_140cdac50()
     if (pPC == 0)
         return;
     if (reinterpret_cast<Unk_FmBuffs*>(pPC->FUN_1416749a0())->FUN_1409701d0(1) != 0)
-        FUN_140cdb1e0();
+        SendFishingMode9();
 }
 
 // @0x140cdacb0
@@ -844,7 +844,7 @@ void CFishingManager::FUN_140cdacb0(NotifyObject* pNotify)
     if (!(row.FUN_140184880()->m_nType == 1))
         return;
     if (FUN_140954150() != 0 && FUN_140cdbb90() != 0)
-        FUN_140cdb1e0();
+        SendFishingMode9();
 }
 
 // @0x140cdadb0
@@ -853,7 +853,7 @@ void CFishingManager::FUN_140cdadb0(MS2Ptr<CItem> rod)
     if (m_bFishing == 0)
         FUN_140cdae30(MS2Ptr<CItem>(rod));
     else
-        FUN_140cdb0a0();
+        SendFishingMode1();
 }
 MS2_REPLACE_METHOD(0x140CDADB0, CFishingManager, FUN_140cdadb0, 107, 0x5D2F9C3D);
 
@@ -887,7 +887,7 @@ void CFishingManager::FUN_140cdae30(MS2Ptr<CItem> rod)
         FUN_141275260(0xbde, 1, 1);
         return;
     }
-    if (pPC->FUN_1416764a0() != 0 && pPC->FUN_14152c280(0) == 0)
+    if (pPC->FUN_1416764a0() != 0 && pPC->SendRequestRideMode1(0) == 0)
     {
         FUN_141275260(0xbe4, 1, 1);
         return;
@@ -901,7 +901,7 @@ void CFishingManager::FUN_140cdae30(MS2Ptr<CItem> rod)
 MS2_REPLACE_METHOD(0x140CDAE30, CFishingManager, FUN_140cdae30, 604, 0x17346286);
 
 // @0x140cdb0a0
-void CFishingManager::FUN_140cdb0a0()
+void CFishingManager::SendFishingMode1()
 {
     if (FUN_140954150() == 0)
         return;
@@ -923,14 +923,14 @@ int CFishingManager::FUN_140cdb110(const efd::Point3& kPos)
 }
 
 // @0x140cdb1e0
-void CFishingManager::FUN_140cdb1e0()
+void CFishingManager::SendFishingMode9()
 {
     COutPacket pkt(0x73, 0);
     pkt.Encode1(9);
     pkt.Encode4(FUN_140cdc950());
     FUN_140710590(pkt);
 }
-MS2_REPLACE_METHOD(0x140CDB1E0, CFishingManager, FUN_140cdb1e0, 97, 0x3BC9DD37);
+MS2_REPLACE_METHOD(0x140CDB1E0, CFishingManager, SendFishingMode9, 97, 0x3BC9DD37);
 
 // @0x140cdb250
 // MS2-FUNCTIONAL: return value temporaries
@@ -1052,7 +1052,7 @@ void CFishingManager::FUN_140cdb450()
     {
         MS2Ptr<CItem> rod = DAT_143ab2a90.FUN_140a5d680(m_uidRod);
         if (rod.IsNull())
-            FUN_140cdb0a0();
+            SendFishingMode1();
     }
     if (m_tick.Check(1000) != 0 && FUN_140954150() != 0 && FUN_140ce0cb0() != 0)
     {

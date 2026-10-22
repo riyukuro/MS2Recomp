@@ -31,7 +31,7 @@ public:
     void FUN_140e48020(NotifyObject* pNotify);                  // 0x140e48020 "NotifyCompleteMyPC": refresh
     void FUN_140e48050();                                       // 0x140e48050 reload the event of the current field (GameEventItemBox::vfunc_5)
     void FUN_140e483b0();                                       // 0x140e483b0 show the event texts and the box item
-    void FUN_140e48600(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140e48600 request button: send packet 0x97
+    void SendEventReward(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140e48600 request button: send packet 0x97
     CString FUN_140e48770(unsigned nItemId);                    // 0x140e48770 bind the box item under "<class>_<id>"; "" when it is unknown
     void FUN_140e48990();                                       // 0x140e48990 drop the bound item
     MS2Ptr<Unk_140acd6e0> FUN_140bc6d10(const CString& strName, MS2Ptr<Unk_140acd6e0>& out);   // 0x140bc6d10 bind a button child

@@ -411,7 +411,7 @@ void UIDialogCenterDialog::FUN_141295cb0(const Scaleform::GFx::FunctionHandler::
 }
 
 // @0x141296070
-void UIDialogCenterDialog::FUN_141296070(CString strPath)
+void UIDialogCenterDialog::SendSetDebugModeMode9(CString strPath)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_triggers.RemoveKey(strPath);

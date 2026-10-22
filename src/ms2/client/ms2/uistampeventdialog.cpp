@@ -180,7 +180,7 @@ int UIStampEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs)) return 1;
     if (!_stricmp(szMethod, "onClickCompleteReward")) {
-        FUN_140ed8f50();
+        SendEventRewardMode1();
         return 1;
     } else {
         if (!_stricmp(szMethod, "onClickReward")) {
@@ -188,7 +188,7 @@ int UIStampEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             if (data.FUN_1422b9620(pArgs, nArgs)) {
                 int nCount = data.FUN_1422b8a10();
                 int nSpecial = data.FUN_1422b8a90();
-                FUN_140ed8e60(nCount, nSpecial);
+                SendEventRewardMode0(nCount, nSpecial);
                 return 1;
             }
         }
@@ -345,7 +345,7 @@ void UIStampEventDialog::FUN_140ed8c70()
 MS2_REPLACE_METHOD(0x140ED8C70, UIStampEventDialog, FUN_140ed8c70, 475, 0x07A666E2);
 
 // @0x140ed8e60
-void UIStampEventDialog::FUN_140ed8e60(int nCount, int nSpecial)
+void UIStampEventDialog::SendEventRewardMode0(int nCount, int nSpecial)
 {
     MS2Ptr<StampEventContext> spContext = FUN_1401c0d90()->FUN_14047ca40(g_attendTable);
     if (spContext.IsNull()) return;
@@ -356,17 +356,17 @@ void UIStampEventDialog::FUN_140ed8e60(int nCount, int nSpecial)
     packet.Encode1((unsigned char)nSpecial);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140ED8E60, UIStampEventDialog, FUN_140ed8e60, 233, 0x8AB083DE);
+MS2_REPLACE_METHOD(0x140ED8E60, UIStampEventDialog, SendEventRewardMode0, 233, 0x8AB083DE);
 
 // @0x140ed8f50
-void UIStampEventDialog::FUN_140ed8f50()
+void UIStampEventDialog::SendEventRewardMode1()
 {
     if (FUN_140ed8fc0() == 0) return;
     COutPacket packet(0x97, 0);
     packet.Encode1(1);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140ED8F50, UIStampEventDialog, FUN_140ed8f50, 91, 0x4FD356E1);
+MS2_REPLACE_METHOD(0x140ED8F50, UIStampEventDialog, SendEventRewardMode1, 91, 0x4FD356E1);
 
 // @0x140ed8fc0
 int UIStampEventDialog::FUN_140ed8fc0()

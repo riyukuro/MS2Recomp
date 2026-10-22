@@ -52,12 +52,12 @@ public:
     void FUN_140c87ef0(ATL::CAtlArray<ItemPtr>& result);    // all items
     bool FUN_140c87fb0(int nItemId);                        // use the usable item of that id
     bool FUN_140c88050(int nItemId);                        // use the item of that data id
-    void FUN_140c88100();                                   // packet 0x79 mode 7
-    void FUN_140c88160(__int64 nUid, int nSlot);            // packet 0x79 mode 3 (move)
+    void SendRequestPetInventoryMode7();                                   // packet 0x79 mode 7
+    void SendRequestPetInventoryMode3(__int64 nUid, int nSlot);            // packet 0x79 mode 3 (move)
     void FUN_140c88200(__int64 nUid, int nSlot, int nCount);   // packet 0x79 mode 0 (take out)
-    void FUN_140c88590(__int64 nUid, int nSlot, int nCount); // packet 0x79 mode 1 (put in)
+    void SendRequestPetInventoryMode1(__int64 nUid, int nSlot, int nCount); // packet 0x79 mode 1 (put in)
     bool FUN_140c88650(int nButton, const CMsgBoxData& box);   // count box result of FUN_140c88200
-    bool FUN_140c88700(int nButton, const CMsgBoxData& box);   // count box result of FUN_140c88590
+    bool FUN_140c88700(int nButton, const CMsgBoxData& box);   // count box result of SendRequestPetInventoryMode1
     void FUN_140c887b0(ItemPtr spItem, int nSlot);          // take an item out of the pet inventory (count box when stacked)
     void FUN_140c88c30(ItemPtr spItem, int nSlot);          // put an item into the pet inventory
     bool FUN_140c88f70(ItemPtr spItem);                     // use the item's skill
@@ -115,7 +115,7 @@ public:
     __int64 FUN_140c8b2e0();                                // the summoned pet item uid
     void FUN_140c8b300(__int64 nUid);
     int FUN_140c8b320();                                    // auto flag
-    int FUN_140c8b340();                                    // toggle the auto flag (sends it)
+    int SendRequestPet();                                    // toggle the auto flag (sends it)
     CPetInventory* FUN_140c8b410();                         // &m_inv
     Unk_PetManagerEmpty* FUN_140c8b430();                   // &m_a0
     CCPetInfoPacket::Info* FUN_140c8b450();                 // &m_info

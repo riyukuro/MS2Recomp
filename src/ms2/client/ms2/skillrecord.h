@@ -121,7 +121,7 @@ public:
     int FUN_14175a210();                                    // the super armor of the skill (0 if not allowed)
     void AddTarget(unsigned nKey, unsigned nTarget);        // 0x14175a280
     int HasTarget(unsigned nKey, unsigned nTarget);         // 0x14175a360
-    void FUN_14175a430();                                   // sends the cast again
+    void SendSkill();                                   // sends the cast again
 
     int m_nTick;                                            // +0x18
     int m_nSendTick;                                        // +0x1c

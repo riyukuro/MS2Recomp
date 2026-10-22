@@ -45,9 +45,9 @@ public:
     virtual void vfunc_72();                                        // 72 0x141abace0
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // IMessageListener 0 0x141aba920
 
-    bool FUN_141abaa30(int nResult, const CMsgBoxData& box);        // revive box answer (merat)
+    bool SendRevivalMode1(int nResult, const CMsgBoxData& box);        // revive box answer (merat)
     void FUN_141abad30(int nButton);                                // "onRevival": dispatch the clicked button
-    bool FUN_141abadb0(int nResult, const CMsgBoxData& box);        // town box answer
+    bool SendRevivalMode0(int nResult, const CMsgBoxData& box);        // town box answer
     void FUN_141abae20();                                           // "setData": the death message
     void FUN_141abb420();                                           // set up the button labels
     void FUN_141abb600();                                           // btn1 clicked: revive here / leave the field

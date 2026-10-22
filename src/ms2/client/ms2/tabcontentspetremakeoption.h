@@ -118,7 +118,7 @@ public:
     void FUN_140b95220(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_petCards
     void FUN_140b95250(ATL::CAtlArray<IdCount>& out);   // copy of m_ingredients
     void FUN_140b95280(int bUsePoint);                  // ask for / send the remake request
-    void FUN_140b95c40();                               // debug: remake on the server
+    void SendChangeAttributesMode7();                               // debug: remake on the server
     void FUN_140b95db0(ASData* pData);                  // debug: compare enchant
     void FUN_140b95f90();                               // send the remake request
     bool FUN_140b964c0(int nResult, const CMsgBoxData& box);   // "have no lock" confirmation

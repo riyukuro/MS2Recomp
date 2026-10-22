@@ -279,7 +279,7 @@ bool UITencentUserReportDialog::FUN_140edbc00(int result, const CMsgBoxData&)
 {
     if (result == 0) {
         FUN_140edbc60();
-        FUN_140edc010();
+        SendRequestReport();
         vfunc_67();
         return true;
     } else if (result == 1) {
@@ -343,7 +343,7 @@ void UITencentUserReportDialog::FUN_140edbf80()
 MS2_REPLACE_METHOD(0x140EDBF80, UITencentUserReportDialog, FUN_140edbf80, 132, 0x3A397539);
 
 // @0x140edc010
-void UITencentUserReportDialog::FUN_140edc010()
+void UITencentUserReportDialog::SendRequestReport()
 {
     m_data.reason = m_page->FUN_140eddc90();
     m_data.comment = m_page->FUN_140edddd0();
@@ -360,7 +360,7 @@ void UITencentUserReportDialog::FUN_140edc010()
     m_data.FUN_140201180(packet);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140EDC010, UITencentUserReportDialog, FUN_140edc010, 449, 0x6FD06EBB);
+MS2_REPLACE_METHOD(0x140EDC010, UITencentUserReportDialog, SendRequestReport, 449, 0x6FD06EBB);
 
 // @0x140edc1e0
 UITencentUserReportPage::UITencentUserReportPage(int type, Unk_ReportHandle<Unk_ReportEntity> entity)

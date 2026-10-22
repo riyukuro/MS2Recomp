@@ -286,7 +286,7 @@ void UIItemExtractionScrollDialog::vfunc_79(void* pPacket)
 }
 
 // @0x140e4a4b0
-bool UIItemExtractionScrollDialog::FUN_140e4a4b0(int nResult, const CMsgBoxData& box)
+bool UIItemExtractionScrollDialog::SendItemExtractionScroll(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
@@ -427,7 +427,7 @@ void UIItemExtractionScrollDialog::FUN_140e4b380()
         1, FUN_140938ae0(CStringW(L"s_itemextraction_conform"), spRow->m_nConsume), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemExtractionScrollDialog::FUN_140e4a4b0));
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemExtractionScrollDialog::SendItemExtractionScroll));
         FUN_140d73c60(spBox);
     }
 }

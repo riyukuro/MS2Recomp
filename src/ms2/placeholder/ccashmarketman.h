@@ -28,14 +28,14 @@ public:
     ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& FUN_140b05c00() { return m_aInv; }   // 0x140b05c00
     bool GetFlag() const;                                   // 0x140b06000 m_bFlag
     void OnCash(CInPacket& packet);                  // packet 0x6a dispatcher by the sub code
-    void FUN_140b06180();                                   // send 0x6a/0
-    void FUN_140b061e0();                                   // send 0x6a/1
-    void FUN_140b06240(int a, int b);                       // send 0x6a/2
-    void FUN_140b062c0(int a, int b, CString s1, CString s2);   // send 0x6a/3 (strings by value: the callee destroys them)
-    void FUN_140b063b0(int a, int b, int c);               // send 0x6a/4
-    void FUN_140b06450(int a);                              // send 0x6a/5
-    void FUN_140b064c0(int a, int b, int c, int nFlag);     // send 0x6a/7
-    void FUN_140b06580(int a, int b);                       // send 0x6a/6
+    void SendCashMode0();                                   // send 0x6a/0
+    void SendCashMode1();                                   // send 0x6a/1
+    void SendCashMode2(int a, int b);                       // send 0x6a/2
+    void SendCashMode3(int a, int b, CString s1, CString s2);   // send 0x6a/3 (strings by value: the callee destroys them)
+    void SendCashMode4(int a, int b, int c);               // send 0x6a/4
+    void SendCashMode5(int a);                              // send 0x6a/5
+    void SendCashMode7(int a, int b, int c, int nFlag);     // send 0x6a/7
+    void SendCashMode6(int a, int b);                       // send 0x6a/6
     int FUN_140b06600(int nId);                             // result code of the sale product nId
     int FUN_140b06680(MS2Ptr<CCashSaleProduct> spSale);     // result code of the sale product (by value)
     MS2Ptr<CCashSaleProduct> FUN_140b06750(int nId);        // find a sale product

@@ -1282,7 +1282,7 @@ void LapenshardSourceItemSlotBagPanel::FUN_140c63bb0(int nIndex)
     if (nIndex < 0 || nIndex >= (int)m_items.GetCount())
         return;
     MS2Ptr<CItem> spItem = m_items[nIndex];
-    m_pTab->FUN_140c68bd0(spItem);
+    m_pTab->SendLapenshardMode3(spItem);
 }
 
 // ---- LapenshardIngredientItemSlotBagPanel ----
@@ -1803,7 +1803,7 @@ int UILapenshardUpgradeTab::vfunc_6(const char* szMethod, const Scaleform::GFx::
         {
             int nAction = data.FUN_1422b8a10();
             if (nAction == 1)
-                FUN_140c69030();
+                SendLapenshardMode5();
             else if (nAction == 3)
             {
                 FUN_140c68a50();
@@ -1893,7 +1893,7 @@ void UILapenshardUpgradeTab::FUN_140c68a50()
 }
 
 // @0x140c68aa0
-void UILapenshardUpgradeTab::FUN_140c68aa0()
+void UILapenshardUpgradeTab::SendLapenshardMode4()
 {
     MyPC* pPlayer = vfunc_11();
     if (pPlayer == 0)
@@ -1915,7 +1915,7 @@ void UILapenshardUpgradeTab::FUN_140c68aa0()
 }
 
 // @0x140c68bd0
-void UILapenshardUpgradeTab::FUN_140c68bd0(MS2Ptr<CItem> spItem)
+void UILapenshardUpgradeTab::SendLapenshardMode3(MS2Ptr<CItem> spItem)
 {
     if (m_ui == 0)
         return;
@@ -1971,7 +1971,7 @@ void UILapenshardUpgradeTab::FUN_140c68e60(unsigned __int64 nUid, int nDelta)
         m_ingredients.SetAt(nUid, nCount);
     m_nTotal = (unsigned)(m_nTotal + nDelta) < 0 ? 0 : m_nTotal + nDelta;
     vfunc_2(4);
-    FUN_140c68aa0();
+    SendLapenshardMode4();
 }
 
 // @0x140c68f90
@@ -2290,7 +2290,7 @@ int UILapenshardUpgradeTab::FUN_140c691f0()
 }
 
 // @0x140c69030
-void UILapenshardUpgradeTab::FUN_140c69030()
+void UILapenshardUpgradeTab::SendLapenshardMode5()
 {
     if (FUN_140c691f0() == 0)
         return;

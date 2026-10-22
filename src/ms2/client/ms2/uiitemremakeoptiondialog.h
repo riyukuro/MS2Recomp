@@ -36,7 +36,7 @@ public:
     void FUN_14129ed90(ASData* pData);                          // 0x14129ed90 onClickApply
     void FUN_14129f360(ASData* pData);                          // 0x14129f360 GetEnableLockOption
     void FUN_14129f6f0();                                       // 0x14129f6f0 onEndRemakeAni
-    void FUN_14129f740(unsigned __int64 uid);                   // 0x14129f740 onSelectItem
+    void SendChangeAttributesMode4(unsigned __int64 uid);                   // 0x14129f740 onSelectItem
     void FUN_14129f940(CInPacket* pPacket);                     // 0x14129f940 packet kind 4: the item is accepted
     void FUN_1412a0460(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1412a0460 debug: fill the ingredients
     void FUN_1412a0550(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1412a0550 debug: fill the ingredient unit (10)

@@ -38,8 +38,8 @@ public:
     efd::utf8string FUN_140ca4e50();                        // the action animation of m_n10
     void FUN_140ca4f30(Unk_HmCastInfo* pInfo);              // fill the casting bar request
     int FUN_140ca4fd0(int nMode);                           // a homemade cube is in reach
-    void FUN_140ca53b0();                                   // send the cubes in reach (kind 4)
-    void FUN_140ca54f0();                                   // send the cubes that may be used (kind 5)
+    void SendFunctionCubeMode4();                                   // send the cubes in reach (kind 4)
+    void SendFunctionCubeMode5();                                   // send the cubes that may be used (kind 5)
 
     int m_n48;                                              // +0x48 casting finished
     MS2Ptr<StateHomemadeData> m_spHarvest;                  // +0x50 the data of the running harvest

@@ -287,7 +287,7 @@ MS2_REPLACE_METHOD(0x140fc7f30, UIWeddingDialog, FUN_140fc7f30, 153, 0xA5C3D4D3)
 
 // @0x140fc7fd0
 // MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-bool UIWeddingDialog::FUN_140fc7fd0(int nResult, const CMsgBoxData& box)
+bool UIWeddingDialog::SendWedding(int nResult, const CMsgBoxData& box)
 {
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
     Unk_WeddingPartner* pPartner = FUN_1408ff3b0(pProxy, DAT_143ab2828);
@@ -304,7 +304,7 @@ bool UIWeddingDialog::FUN_140fc7fd0(int nResult, const CMsgBoxData& box)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x140fc7fd0, UIWeddingDialog, FUN_140fc7fd0, 444, 0x34AE614F);
+MS2_REPLACE_METHOD(0x140fc7fd0, UIWeddingDialog, SendWedding, 444, 0x34AE614F);
 
 // @0x140fc81a0
 // MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
@@ -337,7 +337,7 @@ void UIWeddingDialog::FUN_140fc8240()
     if (FUN_140900bd0(pProxy, DAT_143ab2828) != 1)
     {
         CStringW strMessage = FUN_1405c2690(CStringW(L"s_wedding_divorce_confirm"), pPartner->m_strName);
-        FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingDialog::FUN_140fc7fd0), CStringW(strMessage));
+        FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingDialog::SendWedding), CStringW(strMessage));
     }
 }
 MS2_REPLACE_METHOD(0x140fc8240, UIWeddingDialog, FUN_140fc8240, 381, 0x2704CE65);

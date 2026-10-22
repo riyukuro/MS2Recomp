@@ -96,7 +96,7 @@ public:
     bool FUN_141b1fa60();                                   // the local player exists
     void FUN_141b1faa0(int nMode, int nDialogId);           // open a dialog from the talk
     void FUN_141b1fcf0(unsigned nNpcId);                    // start the talk with an npc
-    void FUN_141b1feb0();                                   // end the talk
+    void SendNpcTalkMode0();                                   // end the talk
     void FUN_141b1ff80(unsigned nNpcId);                    // begin: quest script
     void FUN_141b200d0(unsigned nNpcId, CTalkScript* pScript);   // begin: given script
     void FUN_141b20210();                                   // reset the talk
@@ -106,7 +106,7 @@ public:
     int FUN_141b20ac0();                                    // always 0
     void FUN_141b20af0();                                   // end the talk when the npc is gone
     int FUN_141b20bb0();                                    // show the current page
-    void FUN_141b20db0(unsigned nNpcId);                    // ask the server to continue
+    void SendNpcTalkMode2(unsigned nNpcId);                    // ask the server to continue
     void FUN_141b20e60(MS2Ptr<CTalkScript> spScript, int nId, int nPage);   // begin at a page
     CStringW FUN_141b20ed0();                               // the name of the current page
     MS2Ptr<CTalkScript> FUN_141b20fe0();                    // the script handle

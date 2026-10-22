@@ -47,7 +47,7 @@ public:
     bool FUN_140a3a140(unsigned nGroupId);                   // the pack is unowned or expired
     void FUN_140a3a290(unsigned nGroupId, __int64 nExpire);  // own a pack (replacing an old entry)
     void FUN_140a3a380(unsigned nGroupId);                   // forget a pack
-    void FUN_140a3a410();                               // report the expired packs to the server
+    void SendMessenger();                               // report the expired packs to the server
     MS2Ptr<ChatEmoticonGroupInfo> FUN_140a3a640(unsigned nGroupId);   // the owned pack, or null
     void FUN_140a3a700(CInPacket& packet);              // packet dispatcher
 

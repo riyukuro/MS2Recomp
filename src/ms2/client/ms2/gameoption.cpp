@@ -755,7 +755,7 @@ void CGameOptionCommunity::vfunc_10()
     {
         MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPlayer != 0)
-            pPlayer->FUN_14152dff0(m_stateA.m_bDisableSingleRiding);
+            pPlayer->SendRequestRideMode6(m_stateA.m_bDisableSingleRiding);
     }
     FUN_14125d2a0(TSingleton<CGameOption>::GetInstance()->FUN_14124ab20(), &m_stateA);
     FUN_14125d710(TSingleton<CGameOption>::GetInstance()->FUN_140ae6540(), &m_stateB);

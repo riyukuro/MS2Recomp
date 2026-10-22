@@ -37,7 +37,7 @@ public:
     virtual void vfunc_79(void* p);                                  // 79 0x140c55960 server packet 0xf5
 
     void FUN_140c55b50(const CString& strParam);                     // 0x140c55b50 "free" parameter: free appraise
-    void FUN_140c55ba0(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140c55ba0 item bag click: ask the cost
+    void SendTreasureMapMode2(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140c55ba0 item bag click: ask the cost
     void FUN_140c55d20(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140c55d20 m_submit click
     void FUN_140c55ea0();                                            // 0x140c55ea0 show the initial (select) page
     void FUN_140c560f0();                                            // 0x140c560f0 collect the treasure maps, fill the bag

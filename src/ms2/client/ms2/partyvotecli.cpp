@@ -223,7 +223,7 @@ bool PartyVoteCli::FUN_140a895c0()
 }
 
 // @0x140a89680
-void PartyVoteCli::FUN_140a89680(bool vote)
+void PartyVoteCli::SendParty(bool vote)
 {
     COutPacket packet(0x2c, 0);
     packet.vfunc_o10_1(0x30);
@@ -351,9 +351,9 @@ void PartyVoteReadyCli::vfunc_6(unsigned __int64 member)
 bool PartyVoteReadyCli::FUN_140a8a0b0(int result, const CMsgBoxData& box)
 {
     if (result == 0)
-        FUN_140a89680(true);
+        SendParty(true);
     else if (box.FUN_141a04a80().m_nButton == 0)
-        FUN_140a89680(false);
+        SendParty(false);
     return true;
 }
 
@@ -412,7 +412,7 @@ MS2_REPLACE_METHOD(0x140A894E0, PartyVoteCli, FUN_140a894e0, 116, 0x3FCDCE36);
 MS2_REPLACE_METHOD(0x140A89560, PartyVoteCli, FUN_140a89560, 31, 0x46B95FC3);
 MS2_REPLACE_METHOD(0x140A89590, PartyVoteCli, FUN_140a89590, 31, 0xD8882F4A);
 MS2_REPLACE_METHOD(0x140A895C0, PartyVoteCli, FUN_140a895c0, 176, 0xCA3DA8AC);
-MS2_REPLACE_METHOD(0x140A89680, PartyVoteCli, FUN_140a89680, 112, 0xAA2B2CE1);
+MS2_REPLACE_METHOD(0x140A89680, PartyVoteCli, SendParty, 112, 0xAA2B2CE1);
 MS2_REPLACE_METHOD(0x140A89720, PartyVoteCli, FUN_140a89720, 152, 0x6206D5F9);
 MS2_REPLACE_METHOD(0x140A89820, PartyVoteKickUserCli, vfunc_1, 138, 0xFF14D4C5);
 MS2_REPLACE_METHOD(0x140A898B0, PartyVoteKickUserCli, vfunc_2, 320, 0x37927C83);

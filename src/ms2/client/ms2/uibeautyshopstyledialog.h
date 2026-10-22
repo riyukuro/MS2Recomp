@@ -194,8 +194,8 @@ public:
     virtual bool vfunc_84();                    // 84 (new) the dialog is open
 
     void FUN_140f05460(NotifyObject* pNotify);
-    bool FUN_140f05640(int nResult, const CMsgBoxData& data);
-    bool FUN_140f056e0(int nResult, const CMsgBoxData& data);
+    bool SendBeautyMode19(int nResult, const CMsgBoxData& data);
+    bool SendBeautyMode18(int nResult, const CMsgBoxData& data);
     bool FUN_140f05820(int nResult, const CMsgBoxData& data);
     bool FUN_140f05850(int nResult, const CMsgBoxData& data);
     bool FUN_140f05880(int nResult, const CMsgBoxData& data);

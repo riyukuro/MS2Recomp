@@ -65,7 +65,7 @@ public:
     int FUN_1419fc140(int nButton, CStringW strTag);                // destroy_doll_item
     int FUN_1419fc550(int nButton);                                 // learn_emotion
     int FUN_1419fc640(int nButton);                                 // recallconfirm
-    int FUN_1419fc690(int nButton);                                 // confirmCommend
+    int SendRequestCube(int nButton);                                 // confirmCommend
     int FUN_1419fc710(int nButton);                                 // guildArenaJoin
     int FUN_1419fc750(int nButton);                                 // requestTradeEx
     int FUN_1419fc7d0(int nButton);                                 // maintenanceExit

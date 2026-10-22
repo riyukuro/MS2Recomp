@@ -86,19 +86,19 @@ MS2_REPLACE_METHOD(0x140BB9890, UIBirthdayCardDialog, vfunc_67, 37, 0xAB07D7CD);
 void UIBirthdayCardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140bb9900();
+    SendBirthdayCard();
     FUN_140bb9960();
 }
 MS2_REPLACE_METHOD(0x140BB98C0, UIBirthdayCardDialog, OnLoadComplete, 44, 0xD6EBC18F);
 
 // @0x140bb9900
-void UIBirthdayCardDialog::FUN_140bb9900()
+void UIBirthdayCardDialog::SendBirthdayCard()
 {
     COutPacket packet(0xa6, 0);
     packet.vfunc_o10_1(0);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140bb9900, UIBirthdayCardDialog, FUN_140bb9900, 75, 0xB451B3E8);
+MS2_REPLACE_METHOD(0x140bb9900, UIBirthdayCardDialog, SendBirthdayCard, 75, 0xB451B3E8);
 
 // @0x140bb9960
 void UIBirthdayCardDialog::FUN_140bb9960()

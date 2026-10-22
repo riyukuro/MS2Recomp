@@ -238,7 +238,7 @@ int UISnowmanEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
             return 0;
         }
         int n = data.FUN_1422b8b10();
-        FUN_140e95be0(n);
+        SendEventRewardMode12(n);
         return 1;
     } else if (!_stricmp("OnAccumCompleteReward", method)) {
         ASData data;
@@ -247,7 +247,7 @@ int UISnowmanEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
             return 0;
         }
         int n = data.FUN_1422b8b10();
-        FUN_140e95d90(n);
+        SendEventRewardMode13(n);
         return 1;
     }
     return 0;
@@ -391,7 +391,7 @@ void UISnowmanEventDialog::FUN_140e954b0(MS2Ptr<Unk_SnowmanContext> context)
 MS2_REPLACE_METHOD(0x140E954B0, UISnowmanEventDialog, FUN_140e954b0, 1819, 0x9131C474);
 
 // @0x140e95be0
-void UISnowmanEventDialog::FUN_140e95be0(int index)
+void UISnowmanEventDialog::SendEventRewardMode12(int index)
 {
     MS2Ptr<Unk_SnowmanContext> context = FUN_1401c0d90()->FUN_14047d050();
     if (context == NULL)
@@ -410,10 +410,10 @@ void UISnowmanEventDialog::FUN_140e95be0(int index)
     packet.Encode1((unsigned char)index);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140E95BE0, UISnowmanEventDialog, FUN_140e95be0, 425, 0xF738D945);
+MS2_REPLACE_METHOD(0x140E95BE0, UISnowmanEventDialog, SendEventRewardMode12, 425, 0xF738D945);
 
 // @0x140e95d90
-void UISnowmanEventDialog::FUN_140e95d90(int index)
+void UISnowmanEventDialog::SendEventRewardMode13(int index)
 {
     MS2Ptr<Unk_SnowmanContext> context = FUN_1401c0d90()->FUN_14047d050();
     if (context == NULL)
@@ -432,7 +432,7 @@ void UISnowmanEventDialog::FUN_140e95d90(int index)
     packet.Encode1((unsigned char)index);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140E95D90, UISnowmanEventDialog, FUN_140e95d90, 425, 0xFB46BF75);
+MS2_REPLACE_METHOD(0x140E95D90, UISnowmanEventDialog, SendEventRewardMode13, 425, 0xFB46BF75);
 
 // @0x140e95f40
 int UISnowmanEventDialog::FUN_140e95f40(int index)

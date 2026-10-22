@@ -64,7 +64,7 @@ public:
     bool FUN_140c2b130(int nResult, const CMsgBoxData& data);              // "save blueprint" box result
     bool FUN_140c2b180(int nResult, const CMsgBoxData& data);              // screenshot upload box result
     bool FUN_140c2b390(int nResult, const CMsgBoxData& data);              // "leave design" box result
-    bool FUN_140c2b3e0(int nResult, const CMsgBoxData& data);              // "demolish" box result
+    bool SendRequestCube(int nResult, const CMsgBoxData& data);              // "demolish" box result
 
 private:
     MS2_LAYOUT_FRIEND;

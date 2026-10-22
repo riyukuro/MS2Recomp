@@ -318,7 +318,7 @@ void StateWalk::vfunc_8(double fTime)
             {
                 MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
                 spAction->m_n2c = 0xbadf0a13;
-                if (pPC->FUN_14152c280(spAction) != 0)
+                if (pPC->SendRequestRideMode1(spAction) != 0)
                     pPC->vfunc_59(1, 0, 0, 0);
             }
         }

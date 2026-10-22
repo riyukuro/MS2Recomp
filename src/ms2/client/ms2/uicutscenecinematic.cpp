@@ -243,7 +243,7 @@ int UICutSceneCinematic::vfunc_13()
         return 1;
     if (FUN_140166410()->FUN_14036d570(2) && FUN_14025e7c0()->FUN_14116d950(0x2a, 0, 0) && FUN_14025e7c0()->FUN_14116d950(1, 0, 0))
     {
-        FUN_141909230();
+        SendTrigger();
         FUN_141908040(false);
         FUN_1419080b0();
         return 1;
@@ -294,7 +294,7 @@ void UICutSceneCinematic::FUN_141908040(bool bOn)
     if (bOn)
     {
         if (FUN_140967100()->FUN_141b21220())
-            FUN_140967100()->FUN_141b1feb0();
+            FUN_140967100()->SendNpcTalkMode0();
         FUN_1408e57f0()->FUN_1422b9fd0(0x6200041);
     }
     else
@@ -500,7 +500,7 @@ void UICutSceneCinematic::FUN_141908fc0()
 // @0x141909100
 void UICutSceneCinematic::FUN_141909100()
 {
-    FUN_141909230();
+    SendTrigger();
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC)
         FUN_140a7b810(pPC)->FUN_1409536d0();
@@ -511,7 +511,7 @@ void UICutSceneCinematic::FUN_141909100()
 }
 
 // @0x141909230
-void UICutSceneCinematic::FUN_141909230()
+void UICutSceneCinematic::SendTrigger()
 {
     if (m_nSkipState == 2 || m_nSkipState == 1)
     {
@@ -520,7 +520,7 @@ void UICutSceneCinematic::FUN_141909230()
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x141909230, UICutSceneCinematic, FUN_141909230, 103, 0x1F36D64F);
+MS2_REPLACE_METHOD(0x141909230, UICutSceneCinematic, SendTrigger, 103, 0x1F36D64F);
 
 // @0x1419092a0
 void UICutSceneCinematic::FUN_1419092a0(CStringW& strText)

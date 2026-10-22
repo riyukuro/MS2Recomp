@@ -173,7 +173,7 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
         UICommunityDialog* community=FUN_140ae5990(0x4e4d); if(community) community->FUN_1418d6430(community->FUN_1418d6960());
         FUN_140d73aa0(FUN_1409eec40(0x8ba),0,0,L""); break;
     }
-    case 20: FUN_140ae55a0(); break;
+    case 20: SendBuddyMode20(); break;
     }
     Unk_BuddyPopup* popup=FUN_140938b90(0x4e28); if(popup && !popup->vfunc_55()) popup->FUN_141937e70(response.protocol);
 }
@@ -231,8 +231,8 @@ MS2_REPLACE_METHOD(0x140AE52D0, CBuddyManager, FUN_140ae52d0, 310, 0x55F6200B);
 int CBuddyManager::FUN_140ae5410(CStringW name) { { if(Unk_BuddyGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if(!p) continue; if(p->FUN_1401cc350()==name) return 1; } } } return 0; }
 MS2_REPLACE_METHOD(0x140AE5410, CBuddyManager, FUN_140ae5410, 379, 0xD246D2B4);
 // @0x140ae55a0
-void CBuddyManager::FUN_140ae55a0() { COutPacket packet(0x30,0); packet.Encode1(20); int reject=FUN_1409a8b10()->GetSettings().autoReject?1:0; packet.Encode4(reject); FUN_140710590(packet); }
-MS2_REPLACE_METHOD(0x140AE55A0, CBuddyManager, FUN_140ae55a0, 136, 0x33CF1841);
+void CBuddyManager::SendBuddyMode20() { COutPacket packet(0x30,0); packet.Encode1(20); int reject=FUN_1409a8b10()->GetSettings().autoReject?1:0; packet.Encode4(reject); FUN_140710590(packet); }
+MS2_REPLACE_METHOD(0x140AE55A0, CBuddyManager, SendBuddyMode20, 136, 0x33CF1841);
 // @0x140ae5630
 void CBuddyManager::FUN_140ae5630(Ptr p) { if(Unk_BuddyGuard guard=lock) {} else { if(ids.Lookup(p->id)) return; POSITION pos=list.AddTail(p); p->position=pos; ids.SetAt(p->id,p); accounts.SetAt(p->account,p); } }
 MS2_REPLACE_METHOD(0x140AE5630, CBuddyManager, FUN_140ae5630, 268, 0x737F3292);

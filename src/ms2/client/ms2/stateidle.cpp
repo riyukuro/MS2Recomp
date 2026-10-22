@@ -278,7 +278,7 @@ void StateIdle::vfunc_8(double fTime)
                 {
                     pAction->m_n2c = 0xc13e30c8;
                 }
-                pPC->FUN_14152c280(spAction.get());
+                pPC->SendRequestRideMode1(spAction.get());
             }
         }
     }

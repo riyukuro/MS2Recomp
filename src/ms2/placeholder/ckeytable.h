@@ -51,7 +51,7 @@ public:
     virtual ~CKeyTable();                                   // 0x141428a70
 
     void OnKeyTable(CInPacket& packet);                  // the key table packet
-    void FUN_1414294e0(int nKey);                           // send one binding
+    void SendKeyTableMode1(int nKey);                           // send one binding
     void FUN_141429600();                                   // apply / save the edited bindings
     int FUN_1414297e0(const CString& strPath, int n);       // load the default key file
     int FUN_141429e60(const CString& strPath);              // load a default gamepad key file
@@ -121,7 +121,7 @@ public:
     void FUN_14142f470(int nPage, int nSlot);              // put the job item of the slot into the page
     void FUN_14142f8b0(CString strName);                   // save the skill set layout (keySetting_<name>.xml)
     void FUN_14142fc10(CString strName);                   // load the skill set layout (keySetting_<name>.xml)
-    void FUN_14142f700();                                   // leave the skill set mode and save
+    void SendKeyTableMode7();                                   // leave the skill set mode and save
     int FUN_14142f830(int nSlot);
     int FUN_14142f870(int nSlot);
     int FUN_141430470(__int64 nAction);

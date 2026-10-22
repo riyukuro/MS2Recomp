@@ -32,7 +32,7 @@ public:
     void FUN_140f95090(const Scaleform::GFx::FunctionHandler::Params& params);   // a tab was clicked (user data = tab)
     void FUN_140f95220(const Scaleform::GFx::FunctionHandler::Params& params);   // the shop button was clicked
     void FUN_140f95260(const Scaleform::GFx::FunctionHandler::Params& params);   // the register button was clicked
-    void FUN_140f95460(const Scaleform::GFx::FunctionHandler::Params& params);   // the unregister button was clicked
+    void SendPVPMode15(const Scaleform::GFx::FunctionHandler::Params& params);   // the unregister button was clicked
     void FUN_140f95550(const Scaleform::GFx::FunctionHandler::Params& params);   // the show grade button was clicked
     void FUN_140f95630(const Scaleform::GFx::FunctionHandler::Params& params);   // the observer check box was clicked
     bool FUN_140f95750();                                       // request the match; false (with a notice) when not allowed

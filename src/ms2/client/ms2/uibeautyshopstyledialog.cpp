@@ -459,7 +459,7 @@ int FUN_140f01220()
 
 // Save the equipped hair into a slot.
 // @0x140f01250
-bool FUN_140f01250(__int64 nItemUid)
+bool SendBeautyMode16(__int64 nItemUid)
 {
     if (nItemUid == 0)
         return false;
@@ -472,7 +472,7 @@ bool FUN_140f01250(__int64 nItemUid)
 
 // Save the equipped hair into a new slot (the slots are full: extends first).
 // @0x140f012d0
-bool FUN_140f012d0(__int64 nItemUid)
+bool SendBeautyMode17(__int64 nItemUid)
 {
     if (nItemUid == 0)
         return false;
@@ -1029,7 +1029,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         unsigned nCount = FUN_140f01220();
         CStringW strText = LocalizedMentorFormat(L"s_beauty_msg_ask_save_style_extend", nCount, nPrice);
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strText), 1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f05640));
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::SendBeautyMode19));
         spBox->FUN_141a024a0(0);
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
         return 1;
@@ -1050,7 +1050,7 @@ int UIBeautyShopStyleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             int nItemId = spItem->FUN_1405276c0();
             CStringW strText = FUN_1405c2690(CStringW(L"s_beauty_msg_ask_delete_style"), FUN_1401a9d70()->FUN_141811980(1, nItemId));
             FUN_140f0a930(CStringW(strText), 1,
-                          Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::FUN_140f056e0), nIndex);
+                          Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyShopStyleDialog::SendBeautyMode18), nIndex);
         }
         return 1;
     }
@@ -1154,7 +1154,7 @@ void UIBeautyShopStyleDialog::FUN_140f05460(NotifyObject* pNotify)
 
 // Extend the slots (answer of "s_beauty_msg_ask_save_style_extend").
 // @0x140f05640
-bool UIBeautyShopStyleDialog::FUN_140f05640(int nResult, const CMsgBoxData&)
+bool UIBeautyShopStyleDialog::SendBeautyMode19(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0)
     {
@@ -1169,7 +1169,7 @@ bool UIBeautyShopStyleDialog::FUN_140f05640(int nResult, const CMsgBoxData&)
 // Delete a saved style (answer of "s_beauty_msg_ask_delete_style"; argument 0: the slot).
 // @0x140f056e0
 // MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
-bool UIBeautyShopStyleDialog::FUN_140f056e0(int nResult, const CMsgBoxData& data)
+bool UIBeautyShopStyleDialog::SendBeautyMode18(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
@@ -1218,7 +1218,7 @@ bool UIBeautyShopStyleDialog::FUN_140f05880(int nResult, const CMsgBoxData&)
     if (spEquip == 0 || spEquip->FUN_1411dc7a0() == 0)
         return true;
     MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
-    if (!(spItem == 0) && FUN_140f012d0(spItem->FUN_140526a50()))
+    if (!(spItem == 0) && SendBeautyMode17(spItem->FUN_140526a50()))
         FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
     return true;
 }
@@ -1443,7 +1443,7 @@ bool UIBeautyShopStyleDialog::FUN_140f07310()
     if (spEquip == 0 || spEquip->FUN_1411dc7a0() == 0)
         return false;
     MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
-    if (spItem == 0 || !FUN_140f01250(spItem->FUN_140526a50()))
+    if (spItem == 0 || !SendBeautyMode16(spItem->FUN_140526a50()))
         return false;
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
     return true;
@@ -2045,8 +2045,8 @@ MS2_REPLACE_METHOD(0x140f03520, UIBeautyShopStyleDialog, vfunc_84, 46, 0xB677C87
 MS2_REPLACE_METHOD(0x140f039c0, UIBeautyShopStyleDialog, vfunc_13, 74, 0x7553428A);
 MS2_REPLACE_METHOD(0x140f03a10, UIBeautyShopStyleDialog, vfunc_15, 125, 0x26EE34D7);
 MS2_REPLACE_METHOD(0x140f04f80, UIBeautyShopStyleDialog, vfunc_45, 1234, 0xF288E122);
-MS2_REPLACE_METHOD(0x140f05640, UIBeautyShopStyleDialog, FUN_140f05640, 154, 0xFB315DAA);
-MS2_REPLACE_METHOD(0x140f056e0, UIBeautyShopStyleDialog, FUN_140f056e0, 308, 0xE4575DF0);
+MS2_REPLACE_METHOD(0x140f05640, UIBeautyShopStyleDialog, SendBeautyMode19, 154, 0xFB315DAA);
+MS2_REPLACE_METHOD(0x140f056e0, UIBeautyShopStyleDialog, SendBeautyMode18, 308, 0xE4575DF0);
 MS2_REPLACE_METHOD(0x140f05820, UIBeautyShopStyleDialog, FUN_140f05820, 42, 0x71D82932);
 MS2_REPLACE_METHOD(0x140f05850, UIBeautyShopStyleDialog, FUN_140f05850, 42, 0x46B9E12D);
 MS2_REPLACE_METHOD(0x140f05880, UIBeautyShopStyleDialog, FUN_140f05880, 503, 0xCAE5A632);

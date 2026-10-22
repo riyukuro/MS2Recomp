@@ -400,7 +400,7 @@ void UIGuildDialog::OnLoadComplete()
         }
         else
         {
-            CGuildManager::GetInstance()->FUN_1413bc710(1);
+            CGuildManager::GetInstance()->SendGuildMode87(1);
         }
         if (CFeatureManager::GetInstance()->FUN_14036d570(0x110) == 1)
         {
@@ -592,16 +592,16 @@ int UIGuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 }
                 else if (strTag.Find(L"leaveGuild") == 0)
                 {
-                    CGuildManager::GetInstance()->FUN_1413b75a0();
+                    CGuildManager::GetInstance()->SendGuildMode7();
                 }
                 else if (strTag.Find(L"expelMember") == 0)
                 {
-                    CGuildManager::GetInstance()->FUN_1413b76c0(m_strDesc);
+                    CGuildManager::GetInstance()->SendGuildMode8(m_strDesc);
                     m_strDesc = "";
                 }
                 else if (strTag.Find(L"changeMaster") == 0)
                 {
-                    CGuildManager::GetInstance()->FUN_1413b7ad0(m_strName);
+                    CGuildManager::GetInstance()->SendGuildMode63(m_strName);
                     m_strName = "";
                 }
                 else if (strTag.Find(L"sendMail") == 0)
@@ -628,12 +628,12 @@ int UIGuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     bClose = FUN_141974e70(strArg);
                 else if (strTag.Find(L"checkChampionGuild") == 0)
                 {
-                    CGuildManager::GetInstance()->FUN_1413bc190();
+                    CGuildManager::GetInstance()->SendPVPMode4();
                     bClose = true;
                 }
                 else if (strTag.Find(L"serachGuildName") == 0)
                 {
-                    bClose = CGuildManager::GetInstance()->FUN_1413bc860(strArg);
+                    bClose = CGuildManager::GetInstance()->SendGuildMode88(strArg);
                 }
             }
         }
@@ -724,7 +724,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     }
     if (_stricmp("onClickAttend", szMethod) == 0)
     {
-        CGuildManager::GetInstance()->FUN_1413b8230();
+        CGuildManager::GetInstance()->SendGuildMode15();
         return 1;
     }
     if (_stricmp("OnClickOpenMayview", szMethod) == 0)
@@ -896,7 +896,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 FUN_1412751f0(FUN_1409eec40(0x3e1), 1, 1);
                 return 1;
             }
-            CGuildManager::GetInstance()->FUN_1413b78c0(CStringW(strName), nGrade);
+            CGuildManager::GetInstance()->SendGuildMode10(CStringW(strName), nGrade);
         }
         return 1;
     }
@@ -984,7 +984,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                 }
                 CGuildGrade grade;
                 grade.FUN_1404c70f0(spOld->grade, CStringW(strGradeName), nAuth);
-                CGuildManager::GetInstance()->FUN_1413b8c40(i, grade);
+                CGuildManager::GetInstance()->SendGuildMode67(i, grade);
             }
             if (!strErrors.IsEmpty())
                 FUN_140d73aa0(FUN_14052bd00(0x422, strErrors), 0, 0, CStringW(L""));
@@ -1070,7 +1070,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         if (CGuildManager::GetInstance()->FUN_14197dfb0() == 0)
             FUN_141974930();
         else
-            CGuildManager::GetInstance()->FUN_1413bc050();
+            CGuildManager::GetInstance()->SendPVPMode3();
         return 1;
     }
     if (_stricmp("OnChangedInformArenaMatching", szMethod) == 0)
@@ -1183,7 +1183,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             int nEventId = data.FUN_1422b8a10();
-            CGuildManager::GetInstance()->FUN_1413ba310(nEventId);
+            CGuildManager::GetInstance()->SendGuildMode100(nEventId);
         }
         return 0;
     }
@@ -1231,7 +1231,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     }
     if (_stricmp("RequestStorageHistory", szMethod) == 0)
     {
-        CGuildManager::GetInstance()->FUN_1413bbb80();
+        CGuildManager::GetInstance()->SendGuildMode112();
         return 1;
     }
     if (_stricmp("onOpenDungeonDialog", szMethod) == 0)
@@ -1307,7 +1307,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
             if (data.FUN_1422b9620(pArgs, nArgs))
             {
                 __int64 nGuildId = FUN_140718350(data.FUN_1422b8d30());
-                CGuildManager::GetInstance()->FUN_1413bc4a0(nGuildId);
+                CGuildManager::GetInstance()->SendGuildMode82(nGuildId);
             }
             return 1;
         }
@@ -1317,7 +1317,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
             if (data.FUN_1422b9620(pArgs, nArgs))
             {
                 __int64 nGuildId = FUN_140718350(data.FUN_1422b8d30());
-                CGuildManager::GetInstance()->FUN_1413bc540(nGuildId);
+                CGuildManager::GetInstance()->SendGuildMode83(nGuildId);
             }
             return 1;
         }
@@ -1373,7 +1373,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
             if (data.FUN_1422b9620(pArgs, nArgs))
             {
                 __int64 nCharId = FUN_140718350(data.FUN_1422b8d30());
-                CGuildManager::GetInstance()->FUN_1413bc5b0(nCharId, 1);
+                CGuildManager::GetInstance()->SendGuildMode84(nCharId, 1);
             }
             return 1;
         }
@@ -1383,7 +1383,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
             if (data.FUN_1422b9620(pArgs, nArgs))
             {
                 __int64 nCharId = FUN_140718350(data.FUN_1422b8d30());
-                CGuildManager::GetInstance()->FUN_1413bc5b0(nCharId, 0);
+                CGuildManager::GetInstance()->SendGuildMode84(nCharId, 0);
             }
             return 1;
         }
@@ -1420,11 +1420,11 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
                 if (nType == 1)
                 {
                     CGuildManager::GetInstance()->FUN_14197e040(nValue);
-                    CGuildManager::GetInstance()->FUN_1413bc710(false);
+                    CGuildManager::GetInstance()->SendGuildMode87(false);
                     return 1;
                 }
                 if (nType == 2)
-                    CGuildManager::GetInstance()->FUN_1413b8e60(CGuildManager::GetInstance()->FUN_1404d1860(), nValue);
+                    CGuildManager::GetInstance()->SendGuildMode68(CGuildManager::GetInstance()->FUN_1404d1860(), nValue);
             }
             return 1;
         }
@@ -1434,7 +1434,7 @@ int UIGuildDialog::FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Val
             if (data.FUN_1422b9620(pArgs, nArgs))
             {
                 bool bRegist = FUN_14028d760(data.FUN_1422b8a90());
-                CGuildManager::GetInstance()->FUN_1413b8e60(bRegist, CGuildManager::GetInstance()->FUN_1404d18d0());
+                CGuildManager::GetInstance()->SendGuildMode68(bRegist, CGuildManager::GetInstance()->FUN_1404d18d0());
             }
             return 1;
         }
@@ -1563,7 +1563,7 @@ void UIGuildDialog::FUN_141969ee0()
 {
     if (FUN_141969d10("guild_join_page", m_joinPage))
     {
-        CGuildManager::GetInstance()->FUN_1413bc6a0();
+        CGuildManager::GetInstance()->SendGuildMode86();
         FUN_14196d660();
     }
 }
@@ -2992,14 +2992,14 @@ bool UIGuildDialog::FUN_141974df0(const CStringW& strText)
 // @0x141974e70
 bool UIGuildDialog::FUN_141974e70(const CStringW& strName)
 {
-    return CGuildManager::GetInstance()->FUN_1413b80d0(strName);
+    return CGuildManager::GetInstance()->SendGuildMode13(strName);
 }
 MS2_REPLACE_METHOD(0x141974e70, UIGuildDialog, FUN_141974e70, 37, 0xADB6BC2F);
 
 // @0x141974ea0
 bool UIGuildDialog::FUN_141974ea0()
 {
-    CGuildManager::GetInstance()->FUN_1413b7020();
+    CGuildManager::GetInstance()->SendGuildMode2();
     return 1;
 }
 MS2_REPLACE_METHOD(0x141974ea0, UIGuildDialog, FUN_141974ea0, 29, 0x50AB2629);
@@ -3171,7 +3171,7 @@ void UIGuildDialog::FUN_141976380(const Scaleform::GFx::FunctionHandler::Params&
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    CGuildManager::GetInstance()->FUN_1413bd2e0();
+    CGuildManager::GetInstance()->SendGuildMode115();
 }
 MS2_REPLACE_METHOD(0x141976380, UIGuildDialog, FUN_141976380, 60, 0x93A4B944);
 
@@ -3181,7 +3181,7 @@ void UIGuildDialog::FUN_1419763d0(const Scaleform::GFx::FunctionHandler::Params&
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    CGuildManager::GetInstance()->FUN_1413bd3f0();
+    CGuildManager::GetInstance()->SendGuildMode116();
 }
 MS2_REPLACE_METHOD(0x1419763d0, UIGuildDialog, FUN_1419763d0, 60, 0xAED62FC8);
 

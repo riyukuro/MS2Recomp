@@ -27,7 +27,7 @@ public:
     virtual int vfunc_65();                                     // 65 0x140f005a0 (UIDialog::vfunc_65() != 0)
     virtual void vfunc_67();                                    // 67 0x140f005d0
 
-    bool FUN_140f00610(int nResult, const CMsgBoxData& box);    // the warning was answered: send the open packet
+    bool SendBeautyMode10(int nResult, const CMsgBoxData& box);    // the warning was answered: send the open packet
     int FUN_140f006b0(int nMapId);                              // nMapId is one of the three salon maps
 };
 MS2_CHECK_SIZE(UIBeautyListDialog, 0x178);

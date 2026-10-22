@@ -83,7 +83,7 @@ public:
     bool FUN_141a31c80(const struct Unk_QmNpcQuestState* pGuide, CString& strIcon, CString& strLayer);      // ResolveQuestIcon
     void FUN_141a32120(const Scaleform::GFx::FunctionHandler::Params& params);          // the AS "userFunction"
     bool FUN_141a32260(ASObj& data);                            // BuildTooltip
-    void FUN_141a32330();                                       // OnClick
+    void SendSetDebugMode();                                       // OnClick
     void FUN_141a323e0(MS2Ptr<CPortal> spPortal);               // InitializePortal
     bool FUN_141a32640(CNpcData* pNpc);                         // NpcVisible
     CString FUN_141a32750(NpcDataCli* pNpc);                    // NpcIcon
@@ -357,7 +357,7 @@ public:
     void FUN_141a44e60();                                       // ChangeStageSize
     void FUN_141a44ed0();                                       // ResetSelectedChannel
     void FUN_141a44f40();                                       // ApplyAlignment
-    void FUN_141a45020(int nColor, float x, float y);           // SendPing
+    void SendMinimapPing(int nColor, float x, float y);           // SendPing
     bool FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOut);   // PingPosition
     void FUN_141a454d0(const int& nField, const unsigned __int64& nHome);   // AddPortalHome
     void FUN_141a455e0(const int& nField, const unsigned __int64& nHome);   // RemovePortalHome

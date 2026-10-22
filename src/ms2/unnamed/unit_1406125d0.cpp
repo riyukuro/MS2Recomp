@@ -24,11 +24,11 @@ CItemLockManager::CItemLockManager()
 // @0x140612680
 CItemLockManager::~CItemLockManager()
 {
-    FUN_1406126f0();
+    SendRequestItemLockMode0();
 }
 
 // @0x1406126f0
-void CItemLockManager::FUN_1406126f0()
+void CItemLockManager::SendRequestItemLockMode0()
 {
     m_pending.RemoveAll();
     m_locked.RemoveAll();
@@ -37,12 +37,12 @@ void CItemLockManager::FUN_1406126f0()
     packet.vfunc_o10_1(0);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1406126F0, CItemLockManager, FUN_1406126f0, 137, 0x6C3F07B6);
+MS2_REPLACE_METHOD(0x1406126F0, CItemLockManager, SendRequestItemLockMode0, 137, 0x6C3F07B6);
 
 // @0x140612780
 void CItemLockManager::FUN_140612780()
 {
-    FUN_1406126f0();
+    SendRequestItemLockMode0();
 }
 MS2_REPLACE_METHOD(0x140612780, CItemLockManager, FUN_140612780, 24, 0xEE473776);
 
@@ -166,7 +166,7 @@ int CItemLockManager::FUN_140612da0()
 MS2_REPLACE_METHOD(0x140612DA0, CItemLockManager, FUN_140612da0, 101, 0x68CEC8C8);
 
 // @0x140612e10
-int CItemLockManager::FUN_140612e10()
+int CItemLockManager::SendRequestItemLockMode3()
 {
     COutPacket packet(0x87, 0);
     packet.vfunc_o10_1(3);
@@ -174,7 +174,7 @@ int CItemLockManager::FUN_140612e10()
     FUN_140710590(packet);
     return 1;
 }
-MS2_REPLACE_METHOD(0x140612E10, CItemLockManager, FUN_140612e10, 108, 0xB57742B3);
+MS2_REPLACE_METHOD(0x140612E10, CItemLockManager, SendRequestItemLockMode3, 108, 0xB57742B3);
 
 // @0x140612e90
 int CItemLockManager::FUN_140612e90(MS2Ptr<CItem> item)

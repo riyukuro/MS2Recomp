@@ -33,7 +33,7 @@ public:
     void FUN_1412cb240();                                       // the wait time labels of the arenas
     void FUN_1412cb4b0(const Scaleform::GFx::FunctionHandler::Params& params);   // join button
     void FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler::Params& params);   // register button
-    void FUN_1412cb770(const Scaleform::GFx::FunctionHandler::Params& params);   // unregister button
+    void SendPVPMode10(const Scaleform::GFx::FunctionHandler::Params& params);   // unregister button
     void FUN_1412cb7e0(const Scaleform::GFx::FunctionHandler::Params& params);   // an arena button
     void FUN_1412cb8d0(bool bPlay);                             // the "m_effect" clips of the arenas
     CString FUN_1412cbc20(unsigned int nItemId);                // bind a reward icon, returns its key

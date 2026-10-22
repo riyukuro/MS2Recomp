@@ -173,7 +173,7 @@ int UIUnlimitedEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             unsigned __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
-            FUN_140fb7570(nUid);
+            SendLimitBreakMode1(nUid);
             return 1;
         }
     }
@@ -183,7 +183,7 @@ int UIUnlimitedEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             unsigned __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
-            FUN_140fb7450(nUid);
+            SendLimitBreakMode0(nUid);
             return 1;
         }
     }
@@ -193,7 +193,7 @@ int UIUnlimitedEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             unsigned __int64 nUid = FUN_140718370(data.FUN_1422b8f40());
-            FUN_140fb7450(nUid);
+            SendLimitBreakMode0(nUid);
             return 1;
         }
     }
@@ -360,7 +360,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
 
 // "OnSelect" / "OnRetry": check the item, ask the server for the preview.
 // @0x140fb7450
-void UIUnlimitedEnchantDialog::FUN_140fb7450(unsigned __int64 nUid)
+void UIUnlimitedEnchantDialog::SendLimitBreakMode0(unsigned __int64 nUid)
 {
     MS2Ptr<CItem> spItem = FUN_1419be700(nUid);
     if (spItem == 0)
@@ -376,11 +376,11 @@ void UIUnlimitedEnchantDialog::FUN_140fb7450(unsigned __int64 nUid)
     packet.vfunc_o10_4(spItem->FUN_140526a50());
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140FB7450, UIUnlimitedEnchantDialog, FUN_140fb7450, 273, 0x50680FB4);
+MS2_REPLACE_METHOD(0x140FB7450, UIUnlimitedEnchantDialog, SendLimitBreakMode0, 273, 0x50680FB4);
 
 // "OnEnchant": check the item, send the enchant.
 // @0x140fb7570
-void UIUnlimitedEnchantDialog::FUN_140fb7570(unsigned __int64 nUid)
+void UIUnlimitedEnchantDialog::SendLimitBreakMode1(unsigned __int64 nUid)
 {
     MS2Ptr<CItem> spItem = FUN_1419be700(nUid);
     if (spItem == 0)
@@ -396,7 +396,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb7570(unsigned __int64 nUid)
     packet.vfunc_o10_4(spItem->FUN_140526a50());
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140FB7570, UIUnlimitedEnchantDialog, FUN_140fb7570, 273, 0x50C15093);
+MS2_REPLACE_METHOD(0x140FB7570, UIUnlimitedEnchantDialog, SendLimitBreakMode1, 273, 0x50C15093);
 
 // @0x140fb7690
 // MS2-FUNCTIONAL: frame is 0x20 larger than the exe's (bool temp of the pointer test)

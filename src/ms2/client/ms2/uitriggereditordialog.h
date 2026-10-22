@@ -44,7 +44,7 @@ public:
     bool FUN_141b2b140(int nResult, const CMsgBoxData& data);          // 0x141b2b140 close answer
     bool FUN_141b2b180(int nResult, const CMsgBoxData& data);          // 0x141b2b180 reset answer
     bool FUN_141b2b200(int nResult, const CMsgBoxData& data);          // 0x141b2b200 apply answer
-    bool FUN_141b2b230(int nResult, const CMsgBoxData& data);          // 0x141b2b230 delete answer (0x2f/0x16)
+    bool SendTriggerMode22(int nResult, const CMsgBoxData& data);          // 0x141b2b230 delete answer (0x2f/0x16)
     bool FUN_141b2b2b0(int nResult, const CMsgBoxData& data);          // 0x141b2b2b0 remove state answer
     void FUN_141b2b600();                                               // 0x141b2b600 "FoldDialog"
     void FUN_141b2b6e0();                                               // 0x141b2b6e0 "UnfoldDialog"
@@ -57,7 +57,7 @@ public:
     int FUN_141b2bbf0();                                                // 0x141b2bbf0 load a script file
     void FUN_141b2be80(Scaleform::GFx::Value& state);                   // 0x141b2be80 one state of the movie
     int FUN_141b2d0d0();                                                // 0x141b2d0d0 save the script file
-    void FUN_141b2d340();                                               // 0x141b2d340 send the script (0x2f/0xd)
+    void SendTriggerMode13();                                               // 0x141b2d340 send the script (0x2f/0xd)
     void FUN_141b2d570();                                               // 0x141b2d570 verify, then send
     void FUN_141b2d870();                                               // 0x141b2d870 the install list
     void FUN_141b2dd80();                                               // 0x141b2dd80 the states of the script

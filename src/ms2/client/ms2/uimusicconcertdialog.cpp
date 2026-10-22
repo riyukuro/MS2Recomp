@@ -177,15 +177,15 @@ void UIMusicConcertDialog::FUN_140e6a0d0(const Scaleform::GFx::FunctionHandler::
     if (nIndex == 0)
         FUN_140e6a780();
     else if (nIndex == 1)
-        FUN_140e6ab10();
+        SendPlayInstrumentMode13();
     else if (nIndex == 2)
         FUN_140e6ab90();
     else if (nIndex == 3)
-        FUN_140e6ac80();
+        SendPlayInstrumentMode14();
     else if (nIndex == 4)
-        FUN_140e6ad00(0x5607ed2);
+        SendPlayInstrumentMode15(0x5607ed2);
     else if (nIndex == 5)
-        FUN_140e6ad00(0x5607ed1);
+        SendPlayInstrumentMode15(0x5607ed1);
 }
 
 // @0x140e6a1b0
@@ -263,7 +263,7 @@ void UIMusicConcertDialog::FUN_140e6a780()
     if (nStart < nNow)
     {
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14028b8e0(CStringW(L"s_music_concert_msg_confirm_register")), 1);
-        box->FUN_141a027c0(McBoxDelegate(this, &UIMusicConcertDialog::FUN_140e6adf0));
+        box->FUN_141a027c0(McBoxDelegate(this, &UIMusicConcertDialog::SendPlayInstrumentMode11));
         FUN_140d73c60(box);
     }
     else
@@ -281,13 +281,13 @@ void UIMusicConcertDialog::FUN_140e6a780()
 void UIMusicConcertDialog::FUN_140e6a9d0()
 {
     MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14028b8e0(CStringW(L"s_music_concert_msg_confirm_unregister")), 1);
-    box->FUN_141a027c0(McBoxDelegate(this, &UIMusicConcertDialog::FUN_140e6ae60));
+    box->FUN_141a027c0(McBoxDelegate(this, &UIMusicConcertDialog::SendPlayInstrumentMode12));
     FUN_140d73c60(box);
 }
 
 // @0x140e6ab10
 // MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
-void UIMusicConcertDialog::FUN_140e6ab10()
+void UIMusicConcertDialog::SendPlayInstrumentMode13()
 {
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPC != 0)
@@ -317,7 +317,7 @@ void UIMusicConcertDialog::FUN_140e6ab90()
 
 // @0x140e6ac80
 // MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
-void UIMusicConcertDialog::FUN_140e6ac80()
+void UIMusicConcertDialog::SendPlayInstrumentMode14()
 {
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPC != 0)
@@ -330,7 +330,7 @@ void UIMusicConcertDialog::FUN_140e6ac80()
 
 // @0x140e6ad00
 // MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
-void UIMusicConcertDialog::FUN_140e6ad00(int nEmotion)
+void UIMusicConcertDialog::SendPlayInstrumentMode15(int nEmotion)
 {
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPC == 0)
@@ -348,7 +348,7 @@ void UIMusicConcertDialog::FUN_140e6ad00(int nEmotion)
 }
 
 // @0x140e6adf0
-bool UIMusicConcertDialog::FUN_140e6adf0(int nResult, const CMsgBoxData& box)
+bool UIMusicConcertDialog::SendPlayInstrumentMode11(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
@@ -360,7 +360,7 @@ bool UIMusicConcertDialog::FUN_140e6adf0(int nResult, const CMsgBoxData& box)
 }
 
 // @0x140e6ae60
-bool UIMusicConcertDialog::FUN_140e6ae60(int nResult, const CMsgBoxData& box)
+bool UIMusicConcertDialog::SendPlayInstrumentMode12(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {

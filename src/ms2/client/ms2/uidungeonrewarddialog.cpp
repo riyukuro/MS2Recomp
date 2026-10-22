@@ -502,7 +502,7 @@ void UIDungeonRewardDialog::FUN_140e22740(const Scaleform::GFx::FunctionHandler:
 MS2_REPLACE_METHOD(0x140E22740, UIDungeonRewardDialog, FUN_140e22740, 57, 0x917EAC9F);
 
 // @0x140e22780
-void UIDungeonRewardDialog::FUN_140e22780(const Scaleform::GFx::FunctionHandler::Params&) { if(m_30==0)return; if(!m_party)return;FUN_1409670d0()->FUN_14162be10();FUN_140e25ff0(); }
+void UIDungeonRewardDialog::FUN_140e22780(const Scaleform::GFx::FunctionHandler::Params&) { if(m_30==0)return; if(!m_party)return;FUN_1409670d0()->FUN_14162be10();SendDungeonReward(); }
 MS2_REPLACE_METHOD(0x140E22780, UIDungeonRewardDialog, FUN_140e22780, 88, 0x89DB46B2);
 
 // @0x140e227e0
@@ -638,12 +638,12 @@ void UIDungeonRewardDialog::FUN_140e25610() {
 MS2_REPLACE_METHOD(0x140E25610, UIDungeonRewardDialog, FUN_140e25610, 376, 0x95F7B099);
 
 // @0x140e25790
-void UIDungeonRewardDialog::FUN_140e25790() { if((m_room.get()?true:false)&&m_room->m_leave)FUN_140e25ff0();else reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay","close"); }
+void UIDungeonRewardDialog::FUN_140e25790() { if((m_room.get()?true:false)&&m_room->m_leave)SendDungeonReward();else reinterpret_cast<Unk_RewardClip*>(m_30.operator->())->FUN_140e262c0("gotoAndPlay","close"); }
 MS2_REPLACE_METHOD(0x140E25790, UIDungeonRewardDialog, FUN_140e25790, 155, 0xBA656490);
 
 // @0x140e25ff0
-void UIDungeonRewardDialog::FUN_140e25ff0() { COutPacket packet(0x9d,0);packet.Encode1(6);FUN_140710590(packet); }
-MS2_REPLACE_METHOD(0x140E25FF0, UIDungeonRewardDialog, FUN_140e25ff0, 75, 0x31064D84);
+void UIDungeonRewardDialog::SendDungeonReward() { COutPacket packet(0x9d,0);packet.Encode1(6);FUN_140710590(packet); }
+MS2_REPLACE_METHOD(0x140E25FF0, UIDungeonRewardDialog, SendDungeonReward, 75, 0x31064D84);
 
 // @0x140e22210
 void UIDungeonRewardDialog::FUN_140e22210(CInPacket& packet) {

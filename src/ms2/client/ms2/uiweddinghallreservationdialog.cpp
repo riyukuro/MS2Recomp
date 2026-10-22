@@ -133,7 +133,7 @@ MS2_REPLACE_METHOD(0x140fdb540, UIWeddingHallReservationDialog, vfunc_65, 167, 0
 void UIWeddingHallReservationDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    UITalkManager::GetInstance()->FUN_141b1feb0();
+    UITalkManager::GetInstance()->SendNpcTalkMode0();
 }
 MS2_REPLACE_METHOD(0x140fdb5f0, UIWeddingHallReservationDialog, vfunc_67, 37, 0x15862B02);
 
@@ -269,7 +269,7 @@ int UIWeddingHallReservationDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             {
                 WeddingManager::GetInstance()->SendReservation(m_nPackage, m_nHall, m_nTime, m_bNight, bCoupon);
                 vfunc_67();
-                UITalkManager::GetInstance()->FUN_141b1feb0();
+                UITalkManager::GetInstance()->SendNpcTalkMode0();
             }
             return 1;
         }
@@ -375,7 +375,7 @@ void UIWeddingHallReservationDialog::FUN_140fdc970()
 {
     WeddingManager::GetInstance()->SendReservationChange(m_nPackage, m_nHall, m_nTime, m_bNight);
     vfunc_67();
-    UITalkManager::GetInstance()->FUN_141b1feb0();
+    UITalkManager::GetInstance()->SendNpcTalkMode0();
 }
 MS2_REPLACE_METHOD(0x140fdc970, UIWeddingHallReservationDialog, FUN_140fdc970, 110, 0x5F93CD48);
 

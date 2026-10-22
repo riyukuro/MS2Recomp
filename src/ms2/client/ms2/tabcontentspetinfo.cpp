@@ -738,7 +738,7 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
                     if (confirm.get() != 0)
                     {
                         confirm->FUN_140b76940(CStringW(strName));
-                        confirm->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::FUN_140cba0f0));
+                        confirm->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::SendRequestPet));
                         FUN_140d73c60(confirm);
                     }
                 }
@@ -757,7 +757,7 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
 
 // @0x140cba0f0
 // MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-bool PetInfoBasic::FUN_140cba0f0(int nResult, const CMsgBoxData& box)
+bool PetInfoBasic::SendRequestPet(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
@@ -770,7 +770,7 @@ bool PetInfoBasic::FUN_140cba0f0(int nResult, const CMsgBoxData& box)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140cba0f0, PetInfoBasic, FUN_140cba0f0, 250, 0x9A9E6D77);
+MS2_REPLACE_METHOD(0x140cba0f0, PetInfoBasic, SendRequestPet, 250, 0x9A9E6D77);
 
 // @0x140cba1f0
 int PetInfoBasic::FUN_140cba1f0()

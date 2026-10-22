@@ -1226,7 +1226,7 @@ int CUgcManager::FUN_141882020()
             if (blocked.get() != 0)
                 return 0x7a;
         }
-        FUN_141883170();
+        SendUGCMode1();
         nResult = 0;
     }
     else
@@ -1455,7 +1455,7 @@ void CUgcManager::FUN_141882d80(MS2Ptr<CUgcUploadCtrl> spCtrl, int nResult, cons
                 PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
                 if (pPlayer != 0)
                 {
-                    FUN_141883380(strPath);
+                    SendUGCMode11(strPath);
                     FUN_1418823f0();
                     FUN_141882450(MS2Ptr<CUgcUploadCtrl>(0));
                 }
@@ -1471,7 +1471,7 @@ void CUgcManager::FUN_141882d80(MS2Ptr<CUgcUploadCtrl> spCtrl, int nResult, cons
         }
         else if (nKind == 10)
         {
-            FUN_141883780(strPath);
+            SendUGCMode12(strPath);
             FUN_1418823f0();
             FUN_141882450(MS2Ptr<CUgcUploadCtrl>(0));
         }
@@ -1479,21 +1479,21 @@ void CUgcManager::FUN_141882d80(MS2Ptr<CUgcUploadCtrl> spCtrl, int nResult, cons
         {
             int bGameServer = FUN_14088db90(nKind);
             if (bGameServer != 0)
-                FUN_1418832a0();
+                SendUGCMode3();
             else
                 FUN_141883860(strPath);
         }
     }
     else
     {
-        FUN_141883800();
+        SendUGCMode0();
     }
     return;
 }
 MS2_REPLACE_METHOD(0x141882d80, CUgcManager, FUN_141882d80, 986, 0x812354B2);
 
 // @0x141883170
-void CUgcManager::FUN_141883170()
+void CUgcManager::SendUGCMode1()
 {
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_141882610();
     if (spCtrl == 0)
@@ -1507,10 +1507,10 @@ void CUgcManager::FUN_141883170()
     spCtrl->m_spViewer->vfunc_6(packet);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141883170, CUgcManager, FUN_141883170, 293, 0x0FF0EC21);
+MS2_REPLACE_METHOD(0x141883170, CUgcManager, SendUGCMode1, 293, 0x0FF0EC21);
 
 // @0x1418832a0
-void CUgcManager::FUN_1418832a0()
+void CUgcManager::SendUGCMode3()
 {
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_141882610();
     if (spCtrl == 0)
@@ -1522,17 +1522,17 @@ void CUgcManager::FUN_1418832a0()
     spCtrl->Write(packet);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1418832a0, CUgcManager, FUN_1418832a0, 207, 0x1CDD710B);
+MS2_REPLACE_METHOD(0x1418832a0, CUgcManager, SendUGCMode3, 207, 0x1CDD710B);
 
 // @0x141883380
-void CUgcManager::FUN_141883380(CString strPath)
+void CUgcManager::SendUGCMode11(CString strPath)
 {
     COutPacket packet(0x38, 0);
     packet.Encode1(0xb);
     packet.vfunc_o10_6(strPath);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141883380, CUgcManager, FUN_141883380, 107, 0x8ABFA234);
+MS2_REPLACE_METHOD(0x141883380, CUgcManager, SendUGCMode11, 107, 0x8ABFA234);
 
 // @0x141883400
 // Reserves the picked hours of a day for the banner of the current upload.
@@ -1573,23 +1573,23 @@ void CUgcManager::FUN_141883400(CRBMap<int, int>& hours, const Unk_BannerDay& da
 MS2_REPLACE_METHOD(0x141883400, CUgcManager, FUN_141883400, 876, 0x8060E659);
 
 // @0x141883780
-void CUgcManager::FUN_141883780(CString strPath)
+void CUgcManager::SendUGCMode12(CString strPath)
 {
     COutPacket packet(0x38, 0);
     packet.Encode1(0xc);
     packet.vfunc_o10_6(strPath);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141883780, CUgcManager, FUN_141883780, 107, 0x41562117);
+MS2_REPLACE_METHOD(0x141883780, CUgcManager, SendUGCMode12, 107, 0x41562117);
 
 // @0x141883800
-void CUgcManager::FUN_141883800()
+void CUgcManager::SendUGCMode0()
 {
     COutPacket packet(0x38, 0);
     packet.Encode1(0);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141883800, CUgcManager, FUN_141883800, 75, 0x3BDB0EA6);
+MS2_REPLACE_METHOD(0x141883800, CUgcManager, SendUGCMode0, 75, 0x3BDB0EA6);
 
 // @0x141883860
 // The upload is done: the viewers of the upload (and of its chained upload) download the stored content.
@@ -3982,13 +3982,13 @@ MS2_REPLACE_METHOD(0x14188fdb0, CUgcManager, FUN_14188fdb0, 249, 0xC11F5A8F);
 
 // @0x14188feb0
 // Asks the server for the blueprint upload (opcode 0x37, 0x3f).
-void CUgcManager::FUN_14188feb0()
+void CUgcManager::SendRequestCube()
 {
     COutPacket packet(0x37, 0);
     packet.Encode1(0x3f);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x14188feb0, CUgcManager, FUN_14188feb0, 75, 0xCF1E4AB9);
+MS2_REPLACE_METHOD(0x14188feb0, CUgcManager, SendRequestCube, 75, 0xCF1E4AB9);
 
 // @0x14188ff10
 // The blueprint upload was accepted: set the blueprint of the item, fill the image viewer and send the image.

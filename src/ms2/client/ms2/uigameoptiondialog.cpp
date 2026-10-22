@@ -496,7 +496,7 @@ void UIGameOptionDialog::FUN_141943ec0()
         MS2Ptr<CBaseOption> sp = m_mapPages.GetValueAt(pos);
         sp->vfunc_11();
     }
-    FUN_14097a780()->FUN_140ae55a0();
+    FUN_14097a780()->SendBuddyMode20();
 }
 
 // @0x141944030

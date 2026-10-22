@@ -20,7 +20,7 @@ public:
     size_t FUN_140a89560();         // yes count
     size_t FUN_140a89590();         // no count
     bool FUN_140a895c0();     // the local player already voted
-    void FUN_140a89680(bool);       // sends the vote (0x2c / 0x30)
+    void SendParty(bool);       // sends the vote (0x2c / 0x30)
     CStringW FUN_140a89720() const; // remaining time text
     int id, kind;
     __int64 owner, expires;

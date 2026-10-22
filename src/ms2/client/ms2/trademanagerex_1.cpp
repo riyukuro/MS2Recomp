@@ -245,7 +245,7 @@ CTradeManagerEx::~CTradeManagerEx()
 }
 
 // @0x14185b870
-void CTradeManagerEx::FUN_14185b870(__int64 uid)
+void CTradeManagerEx::SendTradeMode0(__int64 uid)
 {
     COutPacket packet(0x49, 0);
     packet.vfunc_o10_1(0);
@@ -263,7 +263,7 @@ void CTradeManagerEx::FUN_14185b8e0(__int64 uid, int bAccept)
 }
 
 // @0x14185b970
-void CTradeManagerEx::FUN_14185b970()
+void CTradeManagerEx::SendTradeMode7()
 {
     COutPacket packet(0x49, 0);
     packet.vfunc_o10_1(7);
@@ -271,7 +271,7 @@ void CTradeManagerEx::FUN_14185b970()
 }
 
 // @0x14185b9d0
-void CTradeManagerEx::FUN_14185b9d0(__int64 uid, int a, int b)
+void CTradeManagerEx::SendTradeMode8(__int64 uid, int a, int b)
 {
     COutPacket packet(0x49, 0);
     packet.vfunc_o10_1(8);
@@ -282,7 +282,7 @@ void CTradeManagerEx::FUN_14185b9d0(__int64 uid, int a, int b)
 }
 
 // @0x14185ba70
-void CTradeManagerEx::FUN_14185ba70(__int64 uid, int nSlot)
+void CTradeManagerEx::SendTradeMode9(__int64 uid, int nSlot)
 {
     COutPacket packet(0x49, 0);
     packet.vfunc_o10_1(9);
@@ -292,7 +292,7 @@ void CTradeManagerEx::FUN_14185ba70(__int64 uid, int nSlot)
 }
 
 // @0x14185baf0
-void CTradeManagerEx::FUN_14185baf0(__int64 uid)
+void CTradeManagerEx::SendTradeMode10(__int64 uid)
 {
     if (uid == m_uidLastSent)
         return;
@@ -304,7 +304,7 @@ void CTradeManagerEx::FUN_14185baf0(__int64 uid)
 }
 
 // @0x14185bb80
-void CTradeManagerEx::FUN_14185bb80()
+void CTradeManagerEx::SendTradeMode11()
 {
     COutPacket packet(0x49, 0);
     packet.vfunc_o10_1(0xb);
@@ -312,7 +312,7 @@ void CTradeManagerEx::FUN_14185bb80()
 }
 
 // @0x14185bbe0
-void CTradeManagerEx::FUN_14185bbe0()
+void CTradeManagerEx::SendTradeMode13()
 {
     COutPacket packet(0x49, 0);
     packet.vfunc_o10_1(0xd);
@@ -320,7 +320,7 @@ void CTradeManagerEx::FUN_14185bbe0()
 }
 
 // @0x14185bc40
-void CTradeManagerEx::FUN_14185bc40(__int64 uid)
+void CTradeManagerEx::SendTradeMode2(__int64 uid)
 {
     COutPacket packet(0x49, 0);
     packet.vfunc_o10_1(2);
@@ -329,7 +329,7 @@ void CTradeManagerEx::FUN_14185bc40(__int64 uid)
 }
 
 // @0x14185bcb0
-void CTradeManagerEx::FUN_14185bcb0(__int64 uid)
+void CTradeManagerEx::SendTradeMode14(__int64 uid)
 {
     COutPacket packet(0x49, 0);
     packet.vfunc_o10_1(0xe);
@@ -407,12 +407,12 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
                     FUN_141a02480(FUN_140534fe0(box), true);
                     FUN_141a024a0(FUN_140534fe0(box), false);
                     FUN_140d73c60(box);
-                    FUN_14185bc40(uid);
+                    SendTradeMode2(uid);
                 }
             }
             else
             {
-                FUN_14185bcb0(uid);
+                SendTradeMode14(uid);
             }
         }
         else

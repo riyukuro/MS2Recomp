@@ -257,7 +257,7 @@ void UIItemBillBoardDialog::OnLoadComplete()
         if (m_customerMovie->FUN_140bbe640("m_homeButton", m_homeButton).get() != 0)
             m_homeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33fa0), 0);
         if (m_customerMovie->FUN_140bbe640("m_removeButton", m_removeButton).get() != 0) {
-            m_removeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33fd0), 0);
+            m_removeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::SendItemBillboard), 0);
             if (DAT_143ab2914 < 0x32)
                 m_removeButton->vfunc_4(0);
             else
@@ -598,7 +598,7 @@ void UIItemBillBoardDialog::FUN_140c33fa0(const Scaleform::GFx::FunctionHandler:
 MS2_REPLACE_METHOD(0x140C33FA0, UIItemBillBoardDialog, FUN_140c33fa0, 36, 0xA279E0C1);
 
 // @0x140c33fd0
-void UIItemBillBoardDialog::FUN_140c33fd0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIItemBillBoardDialog::SendItemBillboard(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (DAT_143ab2914 < 0x32)
         return;
@@ -607,7 +607,7 @@ void UIItemBillBoardDialog::FUN_140c33fd0(const Scaleform::GFx::FunctionHandler:
     packet.vfunc_o10_4(m_info.owner);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140C33FD0, UIItemBillBoardDialog, FUN_140c33fd0, 113, 0x96BD63CB);
+MS2_REPLACE_METHOD(0x140C33FD0, UIItemBillBoardDialog, SendItemBillboard, 113, 0x96BD63CB);
 
 // @0x140c34050
 bool UIItemBillBoardDialog::FUN_140c34050(int nResult, const CMsgBoxData& data)

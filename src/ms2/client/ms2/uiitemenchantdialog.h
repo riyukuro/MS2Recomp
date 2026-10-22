@@ -66,10 +66,10 @@ public:
     void FUN_1419bfd70();                                 // 0x1419bfd70
     void FUN_1419bff60();                                 // 0x1419bff60
     void FUN_1419c02e0(CString name);                                 // 0x1419c02e0
-    void FUN_1419c0360(ASData*);                                 // 0x1419c0360
-    void FUN_1419c03d0(ASData*);                                 // 0x1419c03d0
+    void SendRequestItemEnchantMode15(ASData*);                                 // 0x1419c0360
+    void SendRequestItemEnchantMode19(ASData*);                                 // 0x1419c03d0
     void FUN_1419c0440(ASData* pData);                                 // 0x1419c0440
-    void FUN_1419c0c70(unsigned __int64 uid);                                 // 0x1419c0c70
+    void SendRequestItemEnchantMode6(unsigned __int64 uid);                                 // 0x1419c0c70
     void FUN_1419c0d40(ASData* pData);                                 // 0x1419c0d40
     void FUN_1419c10e0();                                 // 0x1419c10e0
     void FUN_1419c11e0();                                 // 0x1419c11e0
@@ -90,7 +90,7 @@ public:
     void FUN_1419c3950(CInPacket& pkt);                                 // 0x1419c3950
     void FUN_1419c3b90(CInPacket& pkt);                                 // 0x1419c3b90
     void FUN_1419c3e70(CInPacket& pkt);                                 // 0x1419c3e70
-    void FUN_1419c3fd0(void*, void*, void*);                                 // 0x1419c3fd0
+    void SendRequestItemEnchantMode1(void*, void*, void*);                                 // 0x1419c3fd0
     void FUN_1419c4050();                                 // 0x1419c4050
     void FUN_1419c41b0();                                 // 0x1419c41b0
     void FUN_1419c4360(unsigned __int64 uid);                                 // 0x1419c4360
@@ -99,11 +99,11 @@ public:
     bool FUN_1419c5890(int result, const CMsgBoxData& box);                                 // 0x1419c5890
     bool FUN_1419c5d20(int result, const CMsgBoxData& box);                                 // 0x1419c5d20
     bool FUN_1419c5d90(int result, const CMsgBoxData& box);                                 // 0x1419c5d90
-    bool FUN_1419c5de0(int result, const CMsgBoxData& box);                                 // 0x1419c5de0
+    bool SendRequestItemEnchantMode2(int result, const CMsgBoxData& box);                                 // 0x1419c5de0
     bool FUN_1419c5e90(int result, const CMsgBoxData& box);                                 // 0x1419c5e90
     bool FUN_1419c5f00(int result, const CMsgBoxData& box);                                 // 0x1419c5f00
-    void FUN_1419c5f60(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c5f60
-    void FUN_1419c6060(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c6060
+    void SendRequestItemEnchantMode17(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c5f60
+    void SendRequestItemEnchantMode18(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c6060
     void FUN_1419c6160(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c6160
     void FUN_1419c6270(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c6270
     void FUN_1419c6380(NotifyObject* pNotify);                                 // 0x1419c6380
@@ -119,7 +119,7 @@ public:
     CString FUN_1419c78a0(CItem* item, CString key, ATL::CAtlArray<CString>& names);                                 // 0x1419c78a0
     CStringW FUN_1419c7970(float rate);                                 // 0x1419c7970
     void FUN_1419c7a30(unsigned __int64 uid, int mode);                                 // 0x1419c7a30
-    void FUN_1419c7ce0(unsigned __int64 uid, int mode);                                 // 0x1419c7ce0
+    void SendRequestItemEnchantMode4(unsigned __int64 uid, int mode);                                 // 0x1419c7ce0
     CStringW FUN_1419c7e20(CItem* item);                                 // 0x1419c7e20
     CStringW FUN_1419c7ec0(int level, int rank);                                 // 0x1419c7ec0
     CStringW FUN_1419c7f50(CItem* item, int count);                                 // 0x1419c7f50

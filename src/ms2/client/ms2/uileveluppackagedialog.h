@@ -40,7 +40,7 @@ public:
     int FUN_140ea4b70();                                            // some package quest is still open
     void FUN_140ea4d00();                                           // send the level steps to the movie
     void FUN_140ea4f10(unsigned short nLevel);                      // show the reward of the step of nLevel
-    void FUN_140ea52d0(int nQuest);                                 // receive the reward of a quest
+    void SendQuest(int nQuest);                                 // receive the reward of a quest
     void FUN_140ea5460(ASObj& rObj, int nQuest);                    // one level step row: state, level text, reward
     void FUN_140ea57d0(ASObj& rObj, int nQuest);                    // the item reward of a level step
     unsigned FUN_140ea5b50(unsigned short nLevel);                  // the reward item id of the step of nLevel

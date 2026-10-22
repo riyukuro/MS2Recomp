@@ -51,7 +51,7 @@ public:
     int FUN_1419b5080();                                        // the item id of the selected list row
     int FUN_1419b51a0();                                        // the selected rank
     unsigned FUN_1419b5280(int nItemId, unsigned nLevel);       // the enchant level clamp of an item
-    void FUN_1419b5370(CCCreateItemPacket& packet);             // send "create item" (0x15)
+    void SendRequestItemCreate(CCCreateItemPacket& packet);             // send "create item" (0x15)
     void FUN_1419b53d0(CCCompareItemPacket& packet);            // send "compare item" (0x8f)
     void FUN_1419b54a0(CCCompareItemPacket& packet);            // send "repeat item" (0x9a)
     void FUN_1419b5560(int nItemId, int nRank);                 // the picked item changed

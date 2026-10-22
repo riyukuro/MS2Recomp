@@ -160,7 +160,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
     m_spName = FUN_140bb4cf0("m_arenaName");
     m_spDetail = FUN_140bb4cf0("m_arenaDetail");
     m_spRegister->FUN_1422ce240(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb4e0), 0);
-    m_spUnregister->FUN_1422c2a70(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb770), 0);
+    m_spUnregister->FUN_1422c2a70(ParamsDelegate(this, &UIIndividualPvPDialog::SendPVPMode10), 0);
     m_spJoin->FUN_1422ce240(ParamsDelegate(this, &UIIndividualPvPDialog::FUN_1412cb4b0), 0);
     m_arenas.clear();
     for (int i = 1; i < 4; i++)
@@ -354,7 +354,7 @@ void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler:
 }
 
 // @0x1412cb770
-void UIIndividualPvPDialog::FUN_1412cb770(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIIndividualPvPDialog::SendPVPMode10(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nState = FUN_140f97ef0()->FUN_1412818a0();
     if (nState != 1)

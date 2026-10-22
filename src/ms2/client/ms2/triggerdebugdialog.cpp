@@ -169,7 +169,7 @@ void TriggerDebugDialog::OnClose()
     CDialog::OnClose();
     UIDialogCenterDialog* pCenter = Unk_LockDialog<UIDialogCenterDialog>(0x4ea9);
     if (pCenter)
-        pCenter->FUN_141296070(m_strFile);
+        pCenter->SendSetDebugModeMode9(m_strFile);
 }
 
 // @0x140b9beb0

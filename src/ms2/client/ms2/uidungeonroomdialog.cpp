@@ -1323,7 +1323,7 @@ void UIDungeonRoomInfo::OnEnterParty(const ASParams& params)
         return;
     if (FUN_1409670d0()->FUN_14162abe0() && m_spRoom->GetDungeonRoomID() == FUN_1409670d0()->FUN_14162c090())
     {
-        FUN_1409670d0()->FUN_14162bd40(m_spRoom->GetDungeonID());
+        FUN_1409670d0()->SendRoomDungeon(m_spRoom->GetDungeonID());
         return;
     }
     if (!FUN_1409670d0()->FUN_14162ab60())

@@ -165,7 +165,7 @@ void UIVIPDialog::OnLoadComplete()
     PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPlayer != 0) {
         FUN_140fb8d10();
-        FUN_140fb8620();
+        SendPremiumClubMode1();
         m_nVipEnd = FUN_141662e90(pPlayer);
         m_nVip = FUN_141662de0(pPlayer);
         FUN_140d86260()->vfunc_43(0xe, 0, 1000);
@@ -233,7 +233,7 @@ void UIVIPDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 }
 
 // @0x140fb8620
-void UIVIPDialog::FUN_140fb8620()
+void UIVIPDialog::SendPremiumClubMode1()
 {
     COutPacket packet(0x8e, 0);
     packet.Encode1(1);

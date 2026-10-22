@@ -487,8 +487,8 @@ int FUN_140f01140();
 unsigned FUN_140f011b0();
 int FUN_140f011f0();
 int FUN_140f01220();
-bool FUN_140f01250(__int64 nItemUid);
-bool FUN_140f012d0(__int64 nItemUid);
+bool SendBeautyMode16(__int64 nItemUid);
+bool SendBeautyMode17(__int64 nItemUid);
 void FUN_140f01350();
 void FUN_140f01430();
 void FUN_140f01540(ASObj& obj, bool bHair);
@@ -875,7 +875,7 @@ int UIBeautyShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             int nSlot = data.FUN_1422b8a10();
-            FUN_1418c7dd0(nSlot);
+            SendBeautyMode12(nSlot);
             m_2b5 = 0;
         }
         return 1;
@@ -1507,7 +1507,7 @@ void UIBeautyShopDialog::FUN_1418c7d90(int bPreview)
 // Pick a style slot (-1: none selected).
 // @0x1418c7dd0
 // MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
-void UIBeautyShopDialog::FUN_1418c7dd0(int nSlot)
+void UIBeautyShopDialog::SendBeautyMode12(int nSlot)
 {
     if (!(m_30 == 0))
     {
@@ -1783,7 +1783,7 @@ bool UIBeautyShopDialog::FUN_1418c9990(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
-    FUN_140f01250(data.FUN_141a02f10(0, 0));
+    SendBeautyMode16(data.FUN_141a02f10(0, 0));
     return true;
 }
 
@@ -1796,7 +1796,7 @@ bool UIBeautyShopDialog::FUN_1418c99e0(int nResult, const CMsgBoxData& data)
         if (m_298 == FUN_140f011b0())
             FUN_140d74390(FUN_14028b8e0(CStringW(L"s_beauty_msg_error_style_slot_max")), 0, FUN_140b240b0());
         else
-            FUN_140f012d0(data.FUN_141a02f10(0, 0));
+            SendBeautyMode17(data.FUN_141a02f10(0, 0));
     }
     return true;
 }

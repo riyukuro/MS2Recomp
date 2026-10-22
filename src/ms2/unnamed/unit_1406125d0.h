@@ -85,14 +85,14 @@ class CItemLockManager : public TSingleton<CItemLockManager>
 public:
     CItemLockManager();
     virtual ~CItemLockManager();
-    void FUN_1406126f0();
+    void SendRequestItemLockMode0();
     void FUN_140612780();
     MS2Ptr<CItem> FUN_1406127a0(int nSlot);
     void FUN_140612850(CInPacket& packet);                  // item lock packet (mode 1 lock, 2 unlock, 3 list, 4 result)
     void FUN_140612c60(__int64 nItemUid);
     int FUN_140612d60();                                    // dialog open state
     int FUN_140612da0();                                   // any slot locked
-    int FUN_140612e10();
+    int SendRequestItemLockMode3();
     int FUN_140612e90(MS2Ptr<CItem> item);
     int FUN_1406130e0(__int64 nItemUid);
     int FUN_140613160(CItem* pItem);

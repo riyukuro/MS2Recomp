@@ -474,7 +474,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
     spParam->m_nCurrency = nPayType;
     spParam->m_nType = 3;
     spParam->m_nGoodsId = spGoods->m_nId;
-    spParam->m_dgBuy = TMarketBillDataParam::BuyCallback(this, &UIVIPGoodsShopDialog::FUN_140fbcca0);
+    spParam->m_dgBuy = TMarketBillDataParam::BuyCallback(this, &UIVIPGoodsShopDialog::SendPremiumClubMode4);
     spParam->m_dgTooltip = TMarketBillDataParam::TooltipCallback(this, &UIVIPGoodsShopDialog::FUN_140fbce80);
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
     Unk_VgEffectHold effect(FUN_140fb9980()->GetFirstEffect());
@@ -523,7 +523,7 @@ void UIVIPGoodsShopDialog::FUN_140fbbe40(MS2Ptr<CVIPGoods> spGoods)
 }
 
 // @0x140fbcca0
-bool UIVIPGoodsShopDialog::FUN_140fbcca0(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay)
+bool UIVIPGoodsShopDialog::SendPremiumClubMode4(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay)
 {
     if (spParam == 0)
         return false;

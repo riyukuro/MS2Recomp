@@ -37,7 +37,7 @@ public:
     int FUN_140a6f880();                                // the kind (the slot the item is equipped into)
 
 private:
-    void FUN_140a6f940(int nSlot, __int64 nItemUid);    // request the equip (packet 0xad)
+    void SendLapenshard(int nSlot, __int64 nItemUid);    // request the equip (packet 0xad)
 
 public:
     MS2_LAYOUT_FRIEND;

@@ -280,7 +280,7 @@ void StateJump::vfunc_8(double fTime)
             else
             {
                 if (m_pOwner->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
-                    pPC->FUN_14152c280(new RideOffActionAutoClimb(1));
+                    pPC->SendRequestRideMode1(new RideOffActionAutoClimb(1));
             }
         }
     }
@@ -306,7 +306,7 @@ void StateJump::vfunc_8(double fTime)
                     spAction->m_n2c = 0xbadf0a13;
                 else if (FUN_1408a9bd0(pEntity)->ContainsModel(0xc13e30c8))
                     spAction->m_n2c = 0xc13e30c8;
-                pPC->FUN_14152c280(spAction);
+                pPC->SendRequestRideMode1(spAction);
             }
         }
     }
@@ -438,7 +438,7 @@ int StateJump::FUN_1417d6620()
             spAction->m_n2c = 0xbadf0a13;
         else if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xc13e30c8))
             spAction->m_n2c = 0xc13e30c8;
-        if (pPC->FUN_14152c280(spAction) != 0)
+        if (pPC->SendRequestRideMode1(spAction) != 0)
             pPC->vfunc_59(1, 0, 0, 0);
     }
     else if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xbadf0a13))

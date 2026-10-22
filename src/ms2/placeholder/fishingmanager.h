@@ -60,15 +60,15 @@ public:
     void OnCastingFinished() override;                      // 0x140cdab60
 
     void FUN_140cd9840(CInPacket* pPacket);                 // packet 0x73
-    void FUN_140cdaaa0();                                   // stop auto fishing
+    void SendFishingMode10();                                   // stop auto fishing
     void FUN_140cdac20();                                   // the player moved
     void FUN_140cdac50();                                   // the cast was thrown
     void FUN_140cdacb0(NotifyObject* pNotify);              // "NotifyChangeBuff"
     void FUN_140cdadb0(MS2Ptr<CItem> rod);                  // use a rod
     void FUN_140cdae30(MS2Ptr<CItem> rod);                  // start fishing with a rod
-    void FUN_140cdb0a0();                                   // leaves the casting
+    void SendFishingMode1();                                   // leaves the casting
     int FUN_140cdb110(const efd::Point3& kPos);                 // a fishing spot is in front of the point
-    void FUN_140cdb1e0();                                   // leave the fishing spot (packet 0x73 mode 9)
+    void SendFishingMode9();                                   // leave the fishing spot (packet 0x73 mode 9)
     int FUN_140cdb250();                                    // start fishing at the current spot
     void FUN_140cdb450();                                   // per frame
     MS2Ptr<CFish> FUN_140cdba00(unsigned nFishId);          // a fish of the spot

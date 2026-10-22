@@ -139,7 +139,7 @@ void UIItemEventOpenBoxDialog::OnLoadComplete()
     GetChildInto<ASUIComponent>("m_slot", m_1d8);
     if (FUN_140bc6d10("m_requestButton", m_1c8).get())
     {
-        m_1c8->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEventOpenBoxDialog::FUN_140e48600), 0);
+        m_1c8->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEventOpenBoxDialog::SendEventReward), 0);
         CStringW strLabel(L"s_event_open_item_box_ui_button");
         m_1c8->FUN_1422cdfb0(FUN_14028b8e0(strLabel));
     }
@@ -223,7 +223,7 @@ MS2_REPLACE_METHOD(0x140E483B0, UIItemEventOpenBoxDialog, FUN_140e483b0, 584, 0x
 
 // MS2-FUNCTIONAL: behaviour-equivalent; the exe loads the Get() argument through an extra register hop (mov ecx / mov r8d,ecx) with no source form found
 // @0x140e48600
-void UIItemEventOpenBoxDialog::FUN_140e48600(const Scaleform::GFx::FunctionHandler::Params&)
+void UIItemEventOpenBoxDialog::SendEventReward(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_30 == 0)
         return;
@@ -242,7 +242,7 @@ void UIItemEventOpenBoxDialog::FUN_140e48600(const Scaleform::GFx::FunctionHandl
     packet.vfunc_o10_1(2);
     FUN_1407105c0(&packet, 100, 1000);
 }
-MS2_REPLACE_METHOD(0x140E48600, UIItemEventOpenBoxDialog, FUN_140e48600, 348, 0x1E646D04);
+MS2_REPLACE_METHOD(0x140E48600, UIItemEventOpenBoxDialog, SendEventReward, 348, 0x1E646D04);
 
 // MS2-FUNCTIONAL: behaviour-equivalent; the exe loads the rank argument of FUN_140523c40 through an extra register hop with no source form found
 // @0x140e48770

@@ -284,13 +284,13 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
             if (m_debugButton.get() != 0) {
                 m_debugButton->vfunc_3(debug);
                 if (debug)
-                    FUN_1422ce240(m_debugButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82940), 0);
+                    FUN_1422ce240(m_debugButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode14), 0);
             }
             m_debugFillButton = reinterpret_cast<Unk_TrFindButton*>(m_root.operator->())->FUN_140acce30("m_debugBtnFillIngredient");
             if (m_debugFillButton.get() != 0) {
                 m_debugFillButton->vfunc_3(debug);
                 if (debug)
-                    FUN_1422ce240(m_debugFillButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82a50), 0);
+                    FUN_1422ce240(m_debugFillButton.operator->(), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode16), 0);
             }
             FUN_140f6d450(m_slots0Name, m_sourceItems, 0x435, 0x20);
             FUN_140f6d450(m_slots1Name, m_ingredientEquips, 0x415, 0x20);
@@ -724,7 +724,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
     }
     Unk_SockUidList request;
     FUN_140628e20(request, uid, ingredients);
-    FUN_140f82f20(request);
+    SendItemSocketSystemMode0(request);
 }
 
 // @0x140f80d70
@@ -963,7 +963,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f826b0(CInPacket*)
 
 // @0x140f82940
 // MS2-FUNCTIONAL: debug unlock request through the typed uid list record.
-void ItemSocketSystemPageSocketUnlock::FUN_140f82940(const Scaleform::GFx::FunctionHandler::Params&)
+void ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode14(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_selected == 0)
         return;
@@ -983,7 +983,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82940(const Scaleform::GFx::Funct
 
 // @0x140f82a50
 // MS2-FUNCTIONAL: debug fill-ingredient request through the typed packet record.
-void ItemSocketSystemPageSocketUnlock::FUN_140f82a50(const Scaleform::GFx::FunctionHandler::Params&)
+void ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode16(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_selected == 0 || m_selected->FUN_1405279c0() == 0)
         return;
@@ -1058,7 +1058,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82ed0(CAtlArray<MS2Ptr<CItem>>& o
 }
 
 // @0x140f82f20
-void ItemSocketSystemPageSocketUnlock::FUN_140f82f20(Unk_SockUidList& request)
+void ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode0(Unk_SockUidList& request)
 {
     COutPacket out(0x88, 0);
     out.Encode1(0);
@@ -1142,7 +1142,7 @@ bool ItemSocketSystemPageSocketUnlock::FUN_140f83440(int result, const CMsgBoxDa
         }
         Unk_SockUidList request;
         FUN_140628f60(request, uid, uids);
-        FUN_140f82f20(request);
+        SendItemSocketSystemMode0(request);
     }
     return true;
 }
@@ -1174,13 +1174,13 @@ MS2_REPLACE_METHOD(0x140F81100, ItemSocketSystemPageSocketUnlock, FUN_140f81100,
 MS2_REPLACE_METHOD(0x140F81A40, ItemSocketSystemPageSocketUnlock, FUN_140f81a40, 1200, 0x5B4E074A);
 MS2_REPLACE_METHOD(0x140F81F00, ItemSocketSystemPageSocketUnlock, FUN_140f81f00, 1074, 0x6C036DA4);
 MS2_REPLACE_METHOD(0x140F826B0, ItemSocketSystemPageSocketUnlock, FUN_140f826b0, 637, 0x4E69FD08);
-MS2_REPLACE_METHOD(0x140F82940, ItemSocketSystemPageSocketUnlock, FUN_140f82940, 265, 0xD82C5B61);
-MS2_REPLACE_METHOD(0x140F82A50, ItemSocketSystemPageSocketUnlock, FUN_140f82a50, 316, 0xA5F94481);
+MS2_REPLACE_METHOD(0x140F82940, ItemSocketSystemPageSocketUnlock, SendItemSocketSystemMode14, 265, 0xD82C5B61);
+MS2_REPLACE_METHOD(0x140F82A50, ItemSocketSystemPageSocketUnlock, SendItemSocketSystemMode16, 316, 0xA5F94481);
 MS2_REPLACE_METHOD(0x140F82D00, ItemSocketSystemPageSocketUnlock, FUN_140f82d00, 63, 0xAB13AB14);
 MS2_REPLACE_METHOD(0x140F82D50, ItemSocketSystemPageSocketUnlock, FUN_140f82d50, 178, 0x8CA9523E);
 MS2_REPLACE_METHOD(0x140F82E10, ItemSocketSystemPageSocketUnlock, FUN_140f82e10, 178, 0x89C8085C);
 MS2_REPLACE_METHOD(0x140F82ED0, ItemSocketSystemPageSocketUnlock, FUN_140f82ed0, 60, 0x0C919240);
-MS2_REPLACE_METHOD(0x140F82F20, ItemSocketSystemPageSocketUnlock, FUN_140f82f20, 95, 0x27AA6D34);
+MS2_REPLACE_METHOD(0x140F82F20, ItemSocketSystemPageSocketUnlock, SendItemSocketSystemMode0, 95, 0x27AA6D34);
 MS2_REPLACE_METHOD(0x140F82F90, ItemSocketSystemPageSocketUnlock, FUN_140f82f90, 200, 0xD31CE18E);
 MS2_REPLACE_METHOD(0x140F83060, ItemSocketSystemPageSocketUnlock, FUN_140f83060, 253, 0xCB4FF49C);
 MS2_REPLACE_METHOD(0x140F832F0, ItemSocketSystemPageSocketUnlock, FUN_140f832f0, 327, 0x39B1FAC1);

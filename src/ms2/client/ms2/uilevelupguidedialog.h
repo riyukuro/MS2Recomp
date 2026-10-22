@@ -62,7 +62,7 @@ public:
     virtual void vfunc_o178_8(void* pQuest);                                                    // 0x140f84f30 a quest was updated
     virtual void vfunc_oa0_9(unsigned short nLevel);                                            // 0x140f851f0 level changed
 
-    bool FUN_140f85290(int nResult, const CMsgBoxData& rBox);       // newbie warning confirmed: send the quest
+    bool SendQuestMode24(int nResult, const CMsgBoxData& rBox);       // newbie warning confirmed: send the quest
     void FUN_140f85330(unsigned short nLevel);                      // collect the level steps and select the level
     void FUN_140f854b0(int nId);                                    // open the dialog a row links to
     void FUN_140f857e0(int nQuest);                                 // receive an item reward (asks first when it is a newbie)

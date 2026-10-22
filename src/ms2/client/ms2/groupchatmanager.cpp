@@ -569,7 +569,7 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
 }
 MS2_REPLACE_METHOD(0x14137EB00, CGroupChatManager, Invite, 1173, 0xCDB2E8FE);
 // @0x14137efa0
-void CGroupChatManager::FUN_14137efa0(unsigned oid, int flag) {
+void CGroupChatManager::SendGroupChatMode4(unsigned oid, int flag) {
     if (FUN_14137e630(oid) == 0)
         return;
     COutPacket packet(0x4c, 0);
@@ -578,10 +578,10 @@ void CGroupChatManager::FUN_14137efa0(unsigned oid, int flag) {
     packet.vfunc_o10_1(flag);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x14137EFA0, CGroupChatManager, FUN_14137efa0, 203, 0x55D554D6);
+MS2_REPLACE_METHOD(0x14137EFA0, CGroupChatManager, SendGroupChatMode4, 203, 0x55D554D6);
 // @0x14137f080
 // MS2-FUNCTIONAL: chat lookup temp copy and EH layout
-void CGroupChatManager::FUN_14137f080(unsigned oid, CStringW text) {
+void CGroupChatManager::SendGroupChatMode10(unsigned oid, CStringW text) {
     if (FUN_14137e630(oid) == 0)
         return;
     if (text.GetLength() >= 0x801)
@@ -603,7 +603,7 @@ void CGroupChatManager::FUN_14137f080(unsigned oid, CStringW text) {
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x14137F080, CGroupChatManager, FUN_14137f080, 615, 0x230F9B6B);
+MS2_REPLACE_METHOD(0x14137F080, CGroupChatManager, SendGroupChatMode10, 615, 0x230F9B6B);
 // @0x14137f2f0
 // MS2-FUNCTIONAL: dispatcher stack layout differs by a few bytes
 void CGroupChatManager::OnGroupChat(CInPacket* packet) {
@@ -663,7 +663,7 @@ void CGroupChatManager::FUN_14137f790(CInPacket* packet) {
     CStringW second = packet->vfunc_o8_8();
     unsigned oid = packet->vfunc_o8_3();
     if (FUN_140ae6540(FUN_1409a8b10())->m_refuseInvite) {
-        FUN_14137efa0(oid, 1);
+        SendGroupChatMode4(oid, 1);
     } else {
         Unk_ChatPtrChat chat = FUN_14137e630(oid);
         if (chat == 0)

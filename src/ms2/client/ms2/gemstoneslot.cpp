@@ -40,7 +40,7 @@ Unk_GemGameCtx* FUN_1403ed2d0();
 
 // The gemstone confirm box (itemsocketsystemutil.cpp).
 bool FUN_14062a3d0(MS2Ptr<CItem> spItem, int nSlot, MS2Ptr<CItem> spGem, Delegate<bool(int, const CMsgBoxData&)> cb);
-bool FUN_14062abb0(MS2Ptr<CItem> spItem, const CMsgBoxData& box);
+bool SendItemSocketSystem(MS2Ptr<CItem> spItem, const CMsgBoxData& box);
 CStringW FUN_14062ad80(MS2Ptr<CItem> spItem);               // the gemstone description of an item
 
 // Registry of named bags/slots (GFx bind data).
@@ -206,7 +206,7 @@ bool GemStoneSlot::FUN_140cfdfe0(int nButton, const CMsgBoxData& box)
         if (nButton == 0)
         {
             MS2Ptr<CItem> spEquip = m_spGem->m_equipment;
-            FUN_14062abb0(spEquip, box);
+            SendItemSocketSystem(spEquip, box);
         }
     }
     return true;

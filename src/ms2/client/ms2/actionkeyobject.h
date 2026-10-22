@@ -128,7 +128,7 @@ public:
     int FUN_140956110();                                // the portal moves to another field
     void FUN_140956160(int nTarget, int nPortalId);     // move through the portal by its type
     void FUN_140956290(int nPortalId);                  // the dungeon room dialog (type 8)
-    void FUN_140956310();                               // request the home move (type 9)
+    void SendRoomDungeon();                               // request the home move (type 9)
     void FUN_140956370(unsigned nTarget, unsigned nPortalId);     // move to another field (confirmation box when asked)
     void FUN_1409569a0(int nPortalId, int nMode);       // the dungeon room dialog in a mode (types 0xc, 0xe)
     void FUN_140956a20(int nPortalId, int nArg);        // the dungeon room dialog (type 0x11)

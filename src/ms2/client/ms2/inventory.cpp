@@ -1361,13 +1361,13 @@ int Unk_Inventory::FUN_140a62920(__int64 id) {
 MS2_REPLACE_METHOD(0x140a62920, Unk_Inventory, FUN_140a62920, 908, 0x22CFDA56);
 // MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a62cc0
-void Unk_Inventory::FUN_140a62cc0(unsigned char category) {
+void Unk_Inventory::SendRequestItemInventory(unsigned char category) {
     COutPacket packet(23, 0);
     packet.Encode1(9);
     packet.Encode1(category);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140a62cc0, Unk_Inventory, FUN_140a62cc0, 94, 0x4BFCB7B4);
+MS2_REPLACE_METHOD(0x140a62cc0, Unk_Inventory, SendRequestItemInventory, 94, 0x4BFCB7B4);
 // MS2-FUNCTIONAL: typed skill request and owned skill pointer; equivalent early returns.
 // @0x140a62d30
 unsigned Unk_Inventory::FUN_140a62d30(int skill) {
@@ -1627,7 +1627,7 @@ int FUN_140a65b70() {
 MS2_REPLACE(0x140a65b70, FUN_140a65b70, 54, 0x9D821E3C);
 // MS2-FUNCTIONAL: equivalent error paths and packet arguments.
 // @0x140a65bb0
-int Unk_Inventory::FUN_140a65bb0(CItem* item) {
+int Unk_Inventory::SendEmotion(CItem* item) {
     Unk_InventoryPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (player == nullptr || item == nullptr || FUN_140527840(item) == nullptr) {
         FUN_140d73bc0(2135, 0, nullptr, L""); return 0;
@@ -1642,7 +1642,7 @@ int Unk_Inventory::FUN_140a65bb0(CItem* item) {
     FUN_140710590(packet);
     return 1;
 }
-MS2_REPLACE_METHOD(0x140a65bb0, Unk_Inventory, FUN_140a65bb0, 628, 0x3B4AB7C0);
+MS2_REPLACE_METHOD(0x140a65bb0, Unk_Inventory, SendEmotion, 628, 0x3B4AB7C0);
 // MS2-FUNCTIONAL: equivalent error dispatch using constant string statics.
 // @0x140a65e30
 int Unk_Inventory::FUN_140a65e30(CItem* item) {

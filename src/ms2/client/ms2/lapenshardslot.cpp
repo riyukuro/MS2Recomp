@@ -182,7 +182,7 @@ int LapenshardSlot::vfunc_18(void* p)
                 return pFrom->vfunc_10();
             }
         }
-        FUN_140a6f940(FUN_140a6f860(), spItem->FUN_140526a50());
+        SendLapenshard(FUN_140a6f860(), spItem->FUN_140526a50());
         FUN_141404930(spItem->FUN_140526a50());
         return pFrom->vfunc_10();
     }
@@ -215,7 +215,7 @@ int LapenshardSlot::vfunc_14()
                     return 0;
                 }
             }
-            FUN_140a6f940(nSlot, spItem->FUN_140526a50());
+            SendLapenshard(nSlot, spItem->FUN_140526a50());
         }
         else
         {
@@ -328,7 +328,7 @@ int LapenshardSlot::FUN_140a6f880()
 }
 
 // @0x140a6f940
-void LapenshardSlot::FUN_140a6f940(int nSlot, __int64 nItemUid)
+void LapenshardSlot::SendLapenshard(int nSlot, __int64 nItemUid)
 {
     if (FUN_140c62520() == 0)
         return;

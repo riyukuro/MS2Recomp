@@ -168,9 +168,9 @@ public:
     void FUN_14193c000();
     void FUN_14193d030();
     bool FUN_14193d8a0(int nResult, const CMsgBoxData& box);
-    bool FUN_14193d900(int nResult, const CMsgBoxData& box);
+    bool SendBeauty(int nResult, const CMsgBoxData& box);
     bool FUN_14193d9e0(int nResult, const CMsgBoxData&);
-    bool FUN_14193da30(int nResult, const CMsgBoxData&);
+    bool SendQuest(int nResult, const CMsgBoxData&);
     bool FUN_14193dab0(int nResult, const CMsgBoxData&);
     void FUN_14193daf0(bool bEvent);
     void FUN_14193dd50();

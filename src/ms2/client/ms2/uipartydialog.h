@@ -71,7 +71,7 @@ public:
     void FUN_141a75a00(unsigned int nDeadline);                 // m_deadline = n
     void FUN_141a75a20();                                       // "arrangeBottomButton"
     bool FUN_141a77600(int nResult, const CMsgBoxData& box);    // create club box answer
-    bool FUN_141a776e0(int nResult, const CMsgBoxData& box);    // give up box answer
+    bool SendDungeonReward(int nResult, const CMsgBoxData& box);    // give up box answer
     void FUN_141a77760(float x, float y, __int64 nCharId);      // the slot popup menu
     void FUN_141a77980(CInPacket& packet);                      // party packet (0x53)
     void FUN_141a77a40(CInPacket& packet);                      // packet 0x100
@@ -314,7 +314,7 @@ public:
     // menu handlers (m_160)
     void FUN_141a84d40();
     void FUN_141a84da0();
-    void FUN_141a84df0();
+    void SendCharacterInfo();
     void FUN_141a84f60();
     void FUN_141a84f90();
     void FUN_141a85010();
@@ -331,9 +331,9 @@ public:
     void FUN_141a86920();
     void FUN_141a86970();
     void FUN_141a86a50();
-    void FUN_141a86ad0();
+    void SendRequestPet();
     void FUN_141a86b80();
-    void FUN_141a86bd0();
+    void SendRequestCube();
     void FUN_141a86ca0();
     void FUN_141a86d20();
     void FUN_141a86db0();

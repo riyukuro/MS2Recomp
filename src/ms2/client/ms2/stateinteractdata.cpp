@@ -309,7 +309,7 @@ void StateInteraction::vfunc_4(StateData* pData)
                 }
                 if (m_aObjects.size() == 0)
                     return;
-                FUN_1417d1ed0();
+                SendInteractObjectMode11();
             }
             else
                 spObject->vfunc_8();
@@ -457,7 +457,7 @@ void StateInteraction::EndOfSequence(NiActorManager*, unsigned int, NiController
 bool StateInteraction::vfunc_25(int, void*) { return false; }
 
 // @0x1417d1ed0
-void StateInteraction::FUN_1417d1ed0()
+void StateInteraction::SendInteractObjectMode11()
 {
     COutPacket kPacket(0x31, 0);
     kPacket.vfunc_o10_1(0xb);
@@ -475,7 +475,7 @@ void StateInteraction::FUN_1417d1ed0()
 
 // MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d2070
-void StateInteraction::FUN_1417d2070()
+void StateInteraction::SendInteractObjectMode12()
 {
     std::vector<MS2Ptr<CInteractObject> > aUsable;
     for (size_t i = 0; i < m_aObjects.size(); i++)
@@ -504,7 +504,7 @@ void StateInteraction::FUN_1417d2230(CInteractObject* pObject)
             return;
         if (m_aObjects.size() == 0)
             return;
-        FUN_1417d2070();
+        SendInteractObjectMode12();
         m_aObjects.clear();
     }
     else

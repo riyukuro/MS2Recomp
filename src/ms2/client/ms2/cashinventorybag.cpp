@@ -338,7 +338,7 @@ void CCashMarketMan::OnCash(CInPacket& packet)
 }
 
 // @0x140b06180
-void CCashMarketMan::FUN_140b06180()
+void CCashMarketMan::SendCashMode0()
 {
     COutPacket packet(0x6a, 0);
     packet.vfunc_o10_1(0);
@@ -346,7 +346,7 @@ void CCashMarketMan::FUN_140b06180()
 }
 
 // @0x140b061e0
-void CCashMarketMan::FUN_140b061e0()
+void CCashMarketMan::SendCashMode1()
 {
     COutPacket packet(0x6a, 0);
     packet.vfunc_o10_1(1);
@@ -354,7 +354,7 @@ void CCashMarketMan::FUN_140b061e0()
 }
 
 // @0x140b06240
-void CCashMarketMan::FUN_140b06240(int a, int b)
+void CCashMarketMan::SendCashMode2(int a, int b)
 {
     COutPacket packet(0x6a, 0);
     packet.vfunc_o10_1(2);
@@ -364,7 +364,7 @@ void CCashMarketMan::FUN_140b06240(int a, int b)
 }
 
 // @0x140b062c0
-void CCashMarketMan::FUN_140b062c0(int a, int b, CString s1, CString s2)
+void CCashMarketMan::SendCashMode3(int a, int b, CString s1, CString s2)
 {
     if (FUN_1401d5a60() != 0)
     {
@@ -379,7 +379,7 @@ void CCashMarketMan::FUN_140b062c0(int a, int b, CString s1, CString s2)
 }
 
 // @0x140b063b0
-void CCashMarketMan::FUN_140b063b0(int a, int b, int c)
+void CCashMarketMan::SendCashMode4(int a, int b, int c)
 {
     if (FUN_1401d5ab0() != 0)
     {
@@ -393,7 +393,7 @@ void CCashMarketMan::FUN_140b063b0(int a, int b, int c)
 }
 
 // @0x140b06450
-void CCashMarketMan::FUN_140b06450(int a)
+void CCashMarketMan::SendCashMode5(int a)
 {
     COutPacket packet(0x6a, 0);
     packet.vfunc_o10_1(5);
@@ -402,7 +402,7 @@ void CCashMarketMan::FUN_140b06450(int a)
 }
 
 // @0x140b064c0
-void CCashMarketMan::FUN_140b064c0(int a, int b, int c, int nFlag)
+void CCashMarketMan::SendCashMode7(int a, int b, int c, int nFlag)
 {
     if (nFlag != 1 || FUN_1401d5b00() != 0)
     {
@@ -417,7 +417,7 @@ void CCashMarketMan::FUN_140b064c0(int a, int b, int c, int nFlag)
 }
 
 // @0x140b06580
-void CCashMarketMan::FUN_140b06580(int a, int b)
+void CCashMarketMan::SendCashMode6(int a, int b)
 {
     COutPacket packet(0x6a, 0);
     packet.vfunc_o10_1(6);
@@ -935,7 +935,7 @@ void CCashMarketMan::FUN_140b08760(CInPacket& packet)
         {
             MS2Ptr<CCashInventoryProduct> spFirst = m_aInv[0];
             if (spFirst.get() != 0)
-                FUN_140b064c0(spFirst->m_n1c, spFirst->m_n18, 1, 1);
+                SendCashMode7(spFirst->m_n1c, spFirst->m_n18, 1, 1);
         }
     }
     else
@@ -1012,7 +1012,7 @@ void CCashMarketMan::FUN_140b08f50(CInPacket& packet)
     int nResult = packet.vfunc_o8_3();
     FUN_140b06980(nByte, nResult);
     if (nResult == 0x70)
-        FUN_140b06180();
+        SendCashMode0();
 }
 
 // @0x140b08fe0

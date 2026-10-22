@@ -48,7 +48,7 @@ void UILoginNotice::OnLoadComplete()
     } while (0);
     if (m_createButton.get())
         m_createButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UILoginNotice::FUN_140ea6540), 0);
-    FUN_140ea64e0();
+    SendNoticeDialog();
 }
 MS2_REPLACE_METHOD(0x140EA61D0, UILoginNotice, OnLoadComplete, 701, 0x7ECEAA69);
 
@@ -60,13 +60,13 @@ void UILoginNotice::vfunc_26()
 MS2_REPLACE_METHOD(0x140EA64C0, UILoginNotice, vfunc_26, 24, 0x7B77F63F);
 
 // @0x140ea64e0
-void UILoginNotice::FUN_140ea64e0()
+void UILoginNotice::SendNoticeDialog()
 {
     COutPacket packet(0x7a, 0);
     packet.Encode1(1);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140EA64E0, UILoginNotice, FUN_140ea64e0, 75, 0x259671C9);
+MS2_REPLACE_METHOD(0x140EA64E0, UILoginNotice, SendNoticeDialog, 75, 0x259671C9);
 
 // @0x140ea6540
 void UILoginNotice::FUN_140ea6540(const Scaleform::GFx::FunctionHandler::Params& params)

@@ -308,7 +308,7 @@ bool FUN_140dff700(int nResult, const CMsgBoxData& box)
             FUN_1412751f0(strMsg, 1, 1);
             return true;
         }
-        pMyPC->FUN_14152a0c0(nMapId, nPortalId, 0, 0, L"", L"");
+        pMyPC->SendRequestMoveFieldMode0(nMapId, nPortalId, 0, 0, L"", L"");
     }
     return true;
 }
@@ -323,7 +323,7 @@ bool FUN_140dff8d0(int nResult, const CMsgBoxData& box)
     {
         __int64 nMoney = 0;
         box.FUN_140b19130(0, nMoney);
-        pMyPC->FUN_141529c80(0, 0, 0, nMoney, CStringW(L""));
+        pMyPC->SendRequestMoveFieldMode2(0, 0, 0, nMoney, CStringW(L""));
     }
     return true;
 }
@@ -527,7 +527,7 @@ void FUN_140e00690(CInPacket& packet)
     {
         MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
         if (pMyPC != 0)
-            pMyPC->FUN_14152a0c0(nMapId, nPortalId, 0, 0, CStringW(L""), CStringW(L""));
+            pMyPC->SendRequestMoveFieldMode0(nMapId, nPortalId, 0, 0, CStringW(L""), CStringW(L""));
     }
     else
     {

@@ -255,8 +255,8 @@ public:
     virtual void vfunc_10(void* a1, bool b);                        // 10 0x140c68a30 (empty)
 
     void FUN_140c68a50();                                           // reset the page state
-    void FUN_140c68aa0();                                           // tell the server the ingredients changed
-    void FUN_140c68bd0(MS2Ptr<CItem> spItem);                       // pick the source item
+    void SendLapenshardMode4();                                           // tell the server the ingredients changed
+    void SendLapenshardMode3(MS2Ptr<CItem> spItem);                       // pick the source item
     MS2Ptr<CItem> FUN_140c68da0();                                  // the source item
     void FUN_140c68df0();                                           // clear the source item
     int FUN_140c68e20() { return m_nState; }                        // 0 idle, 1 source set, 2 requested, 3 answered, 4 processed
@@ -265,7 +265,7 @@ public:
     void FUN_140c68f90();                                           // clear the ingredients
     int FUN_140c68fd0() { return m_nTotal; }                        // the number of ingredients
     int FUN_140c68ff0(unsigned __int64 nUid);                       // the number of one ingredient
-    void FUN_140c69030();                                           // request the upgrade
+    void SendLapenshardMode5();                                           // request the upgrade
     int FUN_140c691f0();                                            // the upgrade can be requested
     void FUN_140c69620();
     int FUN_140c69650();

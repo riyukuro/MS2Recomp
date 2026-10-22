@@ -265,7 +265,7 @@ void ItemSocketSystemPageGemstoneSwap::vfunc_5(CInPacket* packet)
     if (operation == 9)
         FUN_140c48c70(packet);
     else if (operation == 11)
-        FUN_140c48ce0(packet);
+        SendItemSocketSystemMode8(packet);
 }
 
 // @0x140c48430
@@ -342,7 +342,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c48c70(CInPacket* packet)
 }
 
 // @0x140c48ce0
-void ItemSocketSystemPageGemstoneSwap::FUN_140c48ce0(CInPacket* packet)
+void ItemSocketSystemPageGemstoneSwap::SendItemSocketSystemMode8(CInPacket* packet)
 {
     Unk_SSGGemUnequip result;
     FUN_140628be0(result, *packet);

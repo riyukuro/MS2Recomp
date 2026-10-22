@@ -106,7 +106,7 @@ public:
     void FUN_1416cb0d0(int questId, int force);
     int FUN_1416d0610();
     int FUN_1416d0e20();
-    void FUN_1416d0c10();
+    void SendQuestMode14();
     void FUN_1416d0920(ATL::CAtlArray<unsigned>& out);
     int FUN_1416d09d0(int mapId, int warn);
     void FUN_1416d1d00(PCBase* pc);
@@ -131,9 +131,9 @@ public:
     int FUN_1416cebf0(int);
     int FUN_1416cede0(int, unsigned*);
     void FUN_1416cef90(int);
-    void FUN_1416cf510(int);
-    void FUN_1416cf630(int);
-    void FUN_1416cf750(int);
+    void SendQuestMode12(int);
+    void SendQuestMode13(int);
+    void SendQuestMode19(int);
     void FUN_1416cf870(int);
     void FUN_1416cf980(int, int);
     int FUN_1416cfc10(int);
@@ -144,7 +144,7 @@ public:
     int FUN_1416d0260(MS2Ptr<class CLearningQuestData>, int);
     int FUN_1416d0530();
     struct Unk_StreamPoint FUN_1416d0690();
-    void FUN_1416d0c90(int);
+    void SendQuestMode15(int);
     int FUN_1416d0f60(int);
     unsigned FUN_1416d1100(int, int, int*);
     int FUN_1416d12d0(int npcId, Unk_QmNpcQuestState* state, int all);
@@ -173,7 +173,7 @@ public:
     int FUN_1416d07c0(int);
     int FUN_1416d0800(int);
     int FUN_1416d0e60(int);
-    bool FUN_1416d0ea0(int, const class CMsgBoxData&);
+    bool SendQuestMode20(int, const class CMsgBoxData&);
     void FUN_1416d1060(ATL::CAtlArray<Unk_PayloadPtr<CQuest>>&);
     void FUN_1416d3220();
     int FUN_1416d3430();

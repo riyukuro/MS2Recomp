@@ -62,7 +62,7 @@ public:
     CMesoMarketMan();                                       // 0x140d6e2b0
     virtual ~CMesoMarketMan();                              // 0x140d6e380
 
-    void FUN_140d6e400();                                   // forget the lists and ask for the market (0x81/3)
+    void SendMesoMarket();                                   // forget the lists and ask for the market (0x81/3)
     void OnMesoMarket(CInPacket& packet);                  // packet 0x81 dispatcher by the sub code
     void FUN_140d6e5b0(ASArray& rows);                      // the rows of the own listing
     void FUN_140d6e6d0(ASArray& rows);                      // the rows of the market

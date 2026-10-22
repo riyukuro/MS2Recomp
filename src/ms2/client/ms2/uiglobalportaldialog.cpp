@@ -90,11 +90,11 @@ void UIGlobalPortalDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_closeButton");
     if (FUN_140bc6d10("m_enterButton1", m_enterButton1).get() != 0)
-        m_enterButton1->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::FUN_1412c31a0), 0);
+        m_enterButton1->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), 0);
     if (FUN_140bc6d10("m_enterButton2", m_enterButton2).get() != 0)
-        m_enterButton2->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::FUN_1412c31a0), 1);
+        m_enterButton2->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), 1);
     if (FUN_140bc6d10("m_enterButton3", m_enterButton3).get() != 0)
-        m_enterButton3->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::FUN_1412c31a0), 2);
+        m_enterButton3->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), 2);
     FUN_1412c2980();
 }
 
@@ -220,7 +220,7 @@ void UIGlobalPortalDialog::FUN_1412c3020(CInPacket& packet)
 }
 
 // @0x1412c31a0
-void UIGlobalPortalDialog::FUN_1412c31a0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIGlobalPortalDialog::SendGlobalPortal(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nButton = FUN_140bd09c0(((Unk_GpParams*)&params)->m_pButton);
     COutPacket packet(0x72, 0);

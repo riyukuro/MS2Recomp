@@ -447,7 +447,7 @@ void UIRealEstateDialog::FUN_141ab3820()
 }
 
 // @0x141ab38e0
-void UIRealEstateDialog::FUN_141ab38e0()
+void UIRealEstateDialog::SendRequestCubeMode2()
 {
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
@@ -540,7 +540,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         }
         else
         {
-            FUN_141ab38e0();
+            SendRequestCubeMode2();
         }
     }
     FUN_14151f200();

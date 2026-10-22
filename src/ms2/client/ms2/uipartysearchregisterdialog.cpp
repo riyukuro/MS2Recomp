@@ -327,7 +327,7 @@ int UIPartySearchRegisterDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         {
             if (FUN_1403b3c40(strTag, L"remove"))
             {
-                FUN_1409670d0()->FUN_141631200();
+                FUN_1409670d0()->SendMatchPartyMode1();
                 vfunc_67();
             }
             else if (FUN_1403b3c40(strTag, L"modify") && FUN_1413220d0(&m_180, 1) != 0)
@@ -410,7 +410,7 @@ int UIPartySearchRegisterDialog::FUN_1413220d0(Unk_PsRegState* pState, int bSile
     request.m_kind = nAutoJoin;
     request.m_fieldId = FUN_141322020();
     if (bSilent == 0)
-        FUN_1409670d0()->FUN_141631180(*(const Unk_PartyRecruitRequest*)&request);
+        FUN_1409670d0()->SendMatchPartyMode0(*(const Unk_PartyRecruitRequest*)&request);
     FUN_141321cc0(pTitle, nAutoJoin, &m_190);
     FUN_140694250(&request);
     return 1;

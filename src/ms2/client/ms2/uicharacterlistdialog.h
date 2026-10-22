@@ -132,7 +132,7 @@ public:
     void FUN_1418f1260();                                   // 0x1418f1260 a character was created
     void FUN_1418f13d0();                                   // 0x1418f13d0
     void FUN_1418f1790();                                   // 0x1418f1790
-    void FUN_1418f1880();                                   // 0x1418f1880 request the delete of the selected character
+    void SendCharacterManagementMode2();                                   // 0x1418f1880 request the delete of the selected character
     int FUN_1418f1b90();                                    // 0x1418f1b90 the id of the selected character's map
     int FUN_1418f1c20();                                    // 0x1418f1c20 the number of characters
     __int64 FUN_1418f1c50();                                // 0x1418f1c50
@@ -141,7 +141,7 @@ public:
     void FUN_1418f1e90();                                   // 0x1418f1e90
     void FUN_1418f1f10();                                   // 0x1418f1f10
     void FUN_1418f1fd0();                                   // 0x1418f1fd0
-    void FUN_1418f2030(unsigned __int64 nId, const CStringW& str); // 0x1418f2030 send the rename of a character
+    void SendCharacterManagementMode5(unsigned __int64 nId, const CStringW& str); // 0x1418f2030 send the rename of a character
     void FUN_1418f20d0();                                   // 0x1418f20d0
     void FUN_1418f2190();                                   // 0x1418f2190 the delete account box, step 1
     void FUN_1418f2480(CStringW str1, CStringW str2);       // 0x1418f2480
@@ -161,7 +161,7 @@ public:
     void HandleDeleteReply(unsigned char nResult, const CStringW& str1, const CStringW& str2, const CStringW& str3);   // 0x1418f2730
     static void ShowDeleteError(int nError);                // 0x1418f47e0
     static unsigned FindFreePreviewSlot();                  // 0x1418f4da0
-    bool FUN_1418f00b0(int nResult, const CMsgBoxData& box);   // 0x1418f00b0 event reward box result
+    bool SendEventReward(int nResult, const CMsgBoxData& box);   // 0x1418f00b0 event reward box result
     CharPtr FUN_1418f0730(int nIndex);                      // 0x1418f0730 the character at the index
     static bool OrderCharacters(CharPtr spA, CharPtr spB);   // 0x1418f4ca0 sort predicate
     void FUN_1418ed6b0(CInPacket& packet);                  // 0x1418ed6b0 the burning level-up reward was taken

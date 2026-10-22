@@ -481,13 +481,13 @@ void CNetworkService::FUN_1415388a0() {
     COutPacket packet(0xd,0); packet.vfunc_o10_1(1); FUN_140710590(packet);
 }
 // @0x141538930
-void CNetworkService::FUN_141538930(__int64 id,int value) { COutPacket packet(0x17,0); packet.vfunc_o10_1(4);packet.vfunc_o10_4(id);packet.vfunc_o10_3(value);FUN_140710590(packet); }
+void CNetworkService::SendRequestItemInventoryMode4(__int64 id,int value) { COutPacket packet(0x17,0); packet.vfunc_o10_1(4);packet.vfunc_o10_4(id);packet.vfunc_o10_3(value);FUN_140710590(packet); }
 // @0x1415389b0
-void CNetworkService::FUN_1415389b0(__int64 id) { COutPacket packet(0x17,0); packet.vfunc_o10_1(5);packet.vfunc_o10_4(id);FUN_140710590(packet); }
+void CNetworkService::SendRequestItemInventoryMode5(__int64 id) { COutPacket packet(0x17,0); packet.vfunc_o10_1(5);packet.vfunc_o10_4(id);FUN_140710590(packet); }
 // @0x141538a20
-void CNetworkService::FUN_141538a20(__int64 id) { COutPacket packet(0x18,0); packet.vfunc_o10_1(10);packet.vfunc_o10_4(id);FUN_140710590(packet); }
+void CNetworkService::SendRequestItemStorage(__int64 id) { COutPacket packet(0x18,0); packet.vfunc_o10_1(10);packet.vfunc_o10_4(id);FUN_140710590(packet); }
 // @0x141538a90
-void CNetworkService::FUN_141538a90(__int64 first,__int64 second) { COutPacket packet(0x42,0);packet.vfunc_o10_1(9);packet.vfunc_o10_4(first);packet.vfunc_o10_4(second);FUN_140710590(packet); }
+void CNetworkService::SendFittingDoll(__int64 first,__int64 second) { COutPacket packet(0x42,0);packet.vfunc_o10_1(9);packet.vfunc_o10_4(first);packet.vfunc_o10_4(second);FUN_140710590(packet); }
 // @0x141538b10
 void CNetworkService::FUN_141538b10(int flag) {
     if(DAT_143ab2904==0) return;
@@ -1243,10 +1243,10 @@ MS2_REPLACE_METHOD(0x1415385d0, CNetworkService, FUN_1415385d0, 33, 0xCBF1E589);
 MS2_REPLACE_METHOD(0x141538600, CNetworkService, FUN_141538600, 532, 0x44C794A7);
 MS2_REPLACE_METHOD(0x141538820, CNetworkService, FUN_141538820, 111, 0x98088833);
 MS2_REPLACE_METHOD(0x1415388a0, CNetworkService, FUN_1415388a0, 138, 0x9F931C23);
-MS2_REPLACE_METHOD(0x141538930, CNetworkService, FUN_141538930, 117, 0xF8895E9E);
-MS2_REPLACE_METHOD(0x1415389b0, CNetworkService, FUN_1415389b0, 95, 0x63AB8EBC);
-MS2_REPLACE_METHOD(0x141538a20, CNetworkService, FUN_141538a20, 95, 0xF6C48771);
-MS2_REPLACE_METHOD(0x141538a90, CNetworkService, FUN_141538a90, 118, 0xBF08B370);
+MS2_REPLACE_METHOD(0x141538930, CNetworkService, SendRequestItemInventoryMode4, 117, 0xF8895E9E);
+MS2_REPLACE_METHOD(0x1415389b0, CNetworkService, SendRequestItemInventoryMode5, 95, 0x63AB8EBC);
+MS2_REPLACE_METHOD(0x141538a20, CNetworkService, SendRequestItemStorage, 95, 0xF6C48771);
+MS2_REPLACE_METHOD(0x141538a90, CNetworkService, SendFittingDoll, 118, 0xBF08B370);
 MS2_REPLACE_METHOD(0x141538b10, CNetworkService, FUN_141538b10, 142, 0xCE84232D);
 MS2_REPLACE_METHOD(0x141538c40, CNetworkService, FUN_141538c40, 105, 0x8A1154DD);
 MS2_REPLACE_METHOD(0x141538cb0, CNetworkService, FUN_141538cb0, 140, 0x658AE724);

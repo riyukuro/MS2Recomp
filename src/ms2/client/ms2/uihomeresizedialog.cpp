@@ -145,7 +145,7 @@ void UIHomeResizeDialog::FUN_140c2bfa0()
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
                 if (spBox.get() != 0) {
                     spBox->FUN_141a01800(1);
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::FUN_140c2cd90));
+                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode38));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -171,7 +171,7 @@ void UIHomeResizeDialog::FUN_140c2c2f0()
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
                 if (spBox.get() != 0) {
                     spBox->FUN_141a01800(1);
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::FUN_140c2ce00));
+                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode45));
                     FUN_140d73c60(spBox);
                 }
             }
@@ -196,7 +196,7 @@ void UIHomeResizeDialog::FUN_140c2c640()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0) {
         spBox->FUN_141a01800(1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::FUN_140c2ce70));
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode37));
         FUN_140d73c60(spBox);
     }
 }
@@ -215,13 +215,13 @@ void UIHomeResizeDialog::FUN_140c2cac0()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0) {
         spBox->FUN_141a01800(1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::FUN_140c2cee0));
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode44));
         FUN_140d73c60(spBox);
     }
 }
 
 // @0x140c2cd90
-bool UIHomeResizeDialog::FUN_140c2cd90(int nResult, const CMsgBoxData& data)
+bool UIHomeResizeDialog::SendRequestCubeMode38(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0) {
         COutPacket pkt(0x37, 0);
@@ -232,7 +232,7 @@ bool UIHomeResizeDialog::FUN_140c2cd90(int nResult, const CMsgBoxData& data)
 }
 
 // @0x140c2ce00
-bool UIHomeResizeDialog::FUN_140c2ce00(int nResult, const CMsgBoxData& data)
+bool UIHomeResizeDialog::SendRequestCubeMode45(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0) {
         COutPacket pkt(0x37, 0);
@@ -243,7 +243,7 @@ bool UIHomeResizeDialog::FUN_140c2ce00(int nResult, const CMsgBoxData& data)
 }
 
 // @0x140c2ce70
-bool UIHomeResizeDialog::FUN_140c2ce70(int nResult, const CMsgBoxData& data)
+bool UIHomeResizeDialog::SendRequestCubeMode37(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0) {
         COutPacket pkt(0x37, 0);
@@ -254,7 +254,7 @@ bool UIHomeResizeDialog::FUN_140c2ce70(int nResult, const CMsgBoxData& data)
 }
 
 // @0x140c2cee0
-bool UIHomeResizeDialog::FUN_140c2cee0(int nResult, const CMsgBoxData& data)
+bool UIHomeResizeDialog::SendRequestCubeMode44(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0) {
         COutPacket pkt(0x37, 0);

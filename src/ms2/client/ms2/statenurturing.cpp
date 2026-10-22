@@ -230,7 +230,7 @@ void StateNurturing::vfunc_4(StateData* pData)
         }
     }
     if (pRider)
-        FUN_140ac1930();
+        SendFunctionCubeMode4();
 }
 MS2_REPLACE_METHOD(0x140AC09E0, StateNurturing, vfunc_4, 1311, 0xC5A62994);
 
@@ -285,7 +285,7 @@ void StateNurturing::vfunc_3(double fTime)
             UICastingBar* pBar = FUN_140ac2270(0x4e72);
             if (pBar)
                 pBar->FUN_1418e1390();
-            FUN_140ac1a70();
+            SendFunctionCubeMode5();
         }
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
@@ -391,7 +391,7 @@ MS2Ptr<CNurturingCubeObject> StateNurturing::FUN_140ac1650()
 MS2_REPLACE_METHOD(0x140AC1650, StateNurturing, FUN_140ac1650, 723, 0xEE67D063);
 
 // @0x140ac1930
-void StateNurturing::FUN_140ac1930()
+void StateNurturing::SendFunctionCubeMode4()
 {
     COutPacket kPacket(0x2e, 0);
     kPacket.vfunc_o10_1(4);
@@ -405,10 +405,10 @@ void StateNurturing::FUN_140ac1930()
     }
     FUN_140710590(kPacket);
 }
-MS2_REPLACE_METHOD(0x140AC1930, StateNurturing, FUN_140ac1930, 307, 0x073FD4BB);
+MS2_REPLACE_METHOD(0x140AC1930, StateNurturing, SendFunctionCubeMode4, 307, 0x073FD4BB);
 
 // @0x140ac1a70
-void StateNurturing::FUN_140ac1a70()
+void StateNurturing::SendFunctionCubeMode5()
 {
     std::vector<MS2Ptr<CNurturingCubeObject> > aUsable;
     for (size_t i = 0; i < m_aCubes.size(); i++)
@@ -429,7 +429,7 @@ void StateNurturing::FUN_140ac1a70()
     }
     FUN_140710590(kPacket);
 }
-MS2_REPLACE_METHOD(0x140AC1A70, StateNurturing, FUN_140ac1a70, 437, 0x753987F1);
+MS2_REPLACE_METHOD(0x140AC1A70, StateNurturing, SendFunctionCubeMode5, 437, 0x753987F1);
 
 // ---- StateInterActionSpawnObject ----
 

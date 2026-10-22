@@ -31,7 +31,7 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // IMessageListener 0 0x141ab6c50 the name confirmation answer
 
     void FUN_141ab6230();                                           // push "initData" (house name, address, expiry, prices)
-    int FUN_141ab6ad0(CStringW strName);                            // the entered name must be the player's own; sends the request
+    int SendRequestCube(CStringW strName);                            // the entered name must be the player's own; sends the request
 
     int m_178;                                                      // +0x178 the sell request was sent
 };

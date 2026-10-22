@@ -37,8 +37,8 @@ public:
     efd::utf8string FUN_140ac13a0();                        // the action animation of m_n10
     void FUN_140ac1480(Unk_CastInfo* pInfo);                // fill the casting bar request
     MS2Ptr<CNurturingCubeObject> FUN_140ac1650();           // nearest usable cube in reach (null when none)
-    void FUN_140ac1930();                                   // send the used cubes (kind 4)
-    void FUN_140ac1a70();                                   // send the cubes the player may use (kind 5)
+    void SendFunctionCubeMode4();                                   // send the used cubes (kind 4)
+    void SendFunctionCubeMode5();                                   // send the cubes the player may use (kind 5)
 
     int m_n48;                                              // +0x48 casting finished
     MS2Ptr<CNurturingCubeObject> m_spTarget;                // +0x50 nearest usable cube

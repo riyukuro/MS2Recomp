@@ -2024,7 +2024,7 @@ Unk_UcItemExtra* FUN_1405278a0(CItem* pItem);
 
 // @0x1419028d0
 // Refund box callback: button 0 sends the confirmation packet.
-bool FUN_1419028d0(int nButton, const CMsgBoxData& box)
+bool SendRequestItemEnchant(int nButton, const CMsgBoxData& box)
 {
     if (nButton != 0)
         return true;
@@ -2035,7 +2035,7 @@ bool FUN_1419028d0(int nButton, const CMsgBoxData& box)
     FUN_140710590(packet);
     return true;
 }
-MS2_REPLACE(0x1419028d0, FUN_1419028d0, 140, 0xDDD7FCD0);
+MS2_REPLACE(0x1419028d0, SendRequestItemEnchant, 140, 0xDDD7FCD0);
 
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMsgBoxData&));
 
@@ -2054,7 +2054,7 @@ bool FUN_141902660(MS2Ptr<CItem> spItem)
             {
                 spBox->Append<__int64>(spItem->FUN_140526a50());
                 spBox->FUN_141a024a0(false);
-                spBox->FUN_141a027c0(FUN_140b76b10(FUN_1419028d0));
+                spBox->FUN_141a027c0(FUN_140b76b10(SendRequestItemEnchant));
                 FUN_140d73c60(spBox);
             }
             return true;

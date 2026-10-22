@@ -53,7 +53,7 @@ public:
     bool FUN_140fa0a20(CStringW strName);               // rename the tab (m_strRename) to strName
     bool FUN_140fa0d80(int nResult, const CMsgBoxData& data);   // answer of the add tab box
     bool FUN_140fa0fa0(CStringW strName);               // add a tab
-    void FUN_140fa1240();                               // send the tabs to the server
+    void SendSkillMacroMode1();                               // send the tabs to the server
     void FUN_140fa1400();                               // push the tabs to the skill system
     void FUN_140fa1460(ATL::CAtlList<unsigned>* pList); // the job's skills (the usable ones first)
     void FUN_140fa16f0(CStringW strTab);         // rebuild the skill list in the movie

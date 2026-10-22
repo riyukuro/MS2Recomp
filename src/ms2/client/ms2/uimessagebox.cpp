@@ -995,7 +995,7 @@ int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scalef
     }
     else if (strTag == s_143af3c38)
     {
-        if (FUN_1419fc690(nButton))
+        if (SendRequestCube(nButton))
             return 1;
     }
     else if (strTag == s_143af3c40)
@@ -1538,7 +1538,7 @@ int UIMessageBox::FUN_1419fc550(int nButton)
         __int64 nUid = m_data->FUN_141a02c00();
         FUN_14151f200();
         if (MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid))
-            DAT_143ab2a90.FUN_140a65bb0(spItem.get());
+            DAT_143ab2a90.SendEmotion(spItem.get());
     }
     return 1;
 }
@@ -1554,7 +1554,7 @@ int UIMessageBox::FUN_1419fc640(int nButton)
 MS2_REPLACE_METHOD(0x1419FC640, UIMessageBox, FUN_1419fc640, 73, 0x0185AFFF);
 
 // @0x1419fc690
-int UIMessageBox::FUN_1419fc690(int nButton)
+int UIMessageBox::SendRequestCube(int nButton)
 {
     FUN_14151f200();
     if (nButton == 0)
@@ -1566,7 +1566,7 @@ int UIMessageBox::FUN_1419fc690(int nButton)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FC690, UIMessageBox, FUN_1419fc690, 112, 0x3F0B35F5);
+MS2_REPLACE_METHOD(0x1419FC690, UIMessageBox, SendRequestCube, 112, 0x3F0B35F5);
 
 // @0x1419fc710
 int UIMessageBox::FUN_1419fc710(int nButton)

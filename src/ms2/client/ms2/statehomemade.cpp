@@ -183,7 +183,7 @@ void StateHomemade::vfunc_4(StateData* pData)
             }
         }
         if (m_aCubes.size() != 0)
-            FUN_140ca53b0();
+            SendFunctionCubeMode4();
     }
 }
 MS2_REPLACE_METHOD(0x140CA4460, StateHomemade, vfunc_4, 1105, 0xF92EE577);
@@ -234,7 +234,7 @@ void StateHomemade::vfunc_3(double fTime)
             UICastingBar* pBar = FUN_140ac2270(0x4e72);
             if (pBar)
                 pBar->FUN_1418e1390();
-            FUN_140ca54f0();
+            SendFunctionCubeMode5();
         }
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
@@ -356,7 +356,7 @@ int StateHomemade::FUN_140ca4fd0(int nMode)
 MS2_REPLACE_METHOD(0x140CA4FD0, StateHomemade, FUN_140ca4fd0, 969, 0x67B2332E);
 
 // @0x140ca53b0
-void StateHomemade::FUN_140ca53b0()
+void StateHomemade::SendFunctionCubeMode4()
 {
     COutPacket kPacket(0x2e, 0);
     kPacket.vfunc_o10_1(4);
@@ -370,10 +370,10 @@ void StateHomemade::FUN_140ca53b0()
     }
     FUN_140710590(kPacket);
 }
-MS2_REPLACE_METHOD(0x140CA53B0, StateHomemade, FUN_140ca53b0, 307, 0x455AA292);
+MS2_REPLACE_METHOD(0x140CA53B0, StateHomemade, SendFunctionCubeMode4, 307, 0x455AA292);
 
 // @0x140ca54f0
-void StateHomemade::FUN_140ca54f0()
+void StateHomemade::SendFunctionCubeMode5()
 {
     std::vector<MS2Ptr<CHomemadeCubeObject> > aUsable;
     for (size_t i = 0; i < m_aCubes.size(); i++)
@@ -394,7 +394,7 @@ void StateHomemade::FUN_140ca54f0()
     }
     FUN_140710590(kPacket);
 }
-MS2_REPLACE_METHOD(0x140CA54F0, StateHomemade, FUN_140ca54f0, 442, 0xC4006477);
+MS2_REPLACE_METHOD(0x140CA54F0, StateHomemade, SendFunctionCubeMode5, 442, 0xC4006477);
 
 // @0x140ca64d0
 MS2Ptr<StateData> StateHomemade::vfunc_27()

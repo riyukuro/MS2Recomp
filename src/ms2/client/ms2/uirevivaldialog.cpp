@@ -458,7 +458,7 @@ int UIRevivalDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x141abaa30
-bool UIRevivalDialog::FUN_141abaa30(int nResult, const CMsgBoxData& box)
+bool UIRevivalDialog::SendRevivalMode1(int nResult, const CMsgBoxData& box)
 {
     int nCoupon = FUN_141abc9d0();
     if (nResult == 0)
@@ -542,7 +542,7 @@ void UIRevivalDialog::FUN_141abad30(int nButton)
 }
 
 // @0x141abadb0
-bool UIRevivalDialog::FUN_141abadb0(int nResult, const CMsgBoxData& box)
+bool UIRevivalDialog::SendRevivalMode0(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
@@ -663,7 +663,7 @@ void UIRevivalDialog::FUN_141abb600()
         else
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14052bd00(0x287, FUN_1401a9d70()->FUN_141811980(3, nTo)), 1);
-            spBox->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::FUN_141abadb0));
+            spBox->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode0));
             spBox->FUN_141a01800(2);
             FUN_140d73c60(spBox);
         }
@@ -710,7 +710,7 @@ void UIRevivalDialog::FUN_141abbb20()
                 strMsg = FUN_140c160b0(CStringW(L"s_msg_revival_merat_msg_box_cn"), m_190);
             m_180 = FUN_140d73f20(strMsg, 1);
             m_180->FUN_141a01540(L"revival_merat");
-            m_180->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::FUN_141abaa30));
+            m_180->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode1));
             FUN_140d73c60(m_180);
         }
         else
@@ -770,7 +770,7 @@ void UIRevivalDialog::FUN_141abc080()
                 strMsg = FUN_140c160b0(CStringW(L"s_msg_revival_meso_cannot_merat_msg_box_cn"), nCost);
             m_180 = FUN_140d73f20(strMsg, 1);
             m_180->FUN_141a01540(L"revival_merat");
-            m_180->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::FUN_141abaa30));
+            m_180->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode1));
             FUN_140d73c60(m_180);
         }
     }

@@ -940,7 +940,7 @@ int MyPC::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 if (FUN_140a55460(nMapId).IsNull())
                     return 0;
                 int nPortal = FUN_1407181a0(aToken[2]);
-                FUN_14152a0c0(nMapId, nPortal, 0, 0, CStringW(L""), CStringW(L""));
+                SendRequestMoveFieldMode0(nMapId, nPortal, 0, 0, CStringW(L""), CStringW(L""));
                 return 1;
             }
         }
@@ -971,10 +971,10 @@ int MyPC::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     if (bLocked == 0)
                     {
                         if (m_kPortalMove.m_bWithPwd == 0)
-                            FUN_14152a0c0(m_kPortalMove.m_nPortalId, m_kPortalMove.m_nD, m_kPortalMove.m_nA,
+                            SendRequestMoveFieldMode0(m_kPortalMove.m_nPortalId, m_kPortalMove.m_nD, m_kPortalMove.m_nA,
                                           m_kPortalMove.m_nB, CStringW(L""), strPwd);
                         else
-                            FUN_141529c80(m_kPortalMove.m_nPortalId, m_kPortalMove.m_nA, m_kPortalMove.m_nB,
+                            SendRequestMoveFieldMode2(m_kPortalMove.m_nPortalId, m_kPortalMove.m_nA, m_kPortalMove.m_nB,
                                           m_kPortalMove.m_nC, strPwd);
                     }
                 }
@@ -2252,7 +2252,7 @@ int MyPC::FUN_1415283c0(int nArg)
     {
         MS2Ptr<RideOffActionHomeConvenient> spAction(new RideOffActionHomeConvenient(0));
         spAction->m_n28 = nKind;
-        FUN_14152c280(spAction);
+        SendRequestRideMode1(spAction);
     }
     else
     {
@@ -2289,7 +2289,7 @@ int MyPC::FUN_1415286a0()
     {
         MS2Ptr<RideOffActionHomeConvenient> spAction(new RideOffActionHomeConvenient(0));
         spAction->m_n28 = nKind;
-        FUN_14152c280(spAction);
+        SendRequestRideMode1(spAction);
     }
     else
     {
@@ -2486,7 +2486,7 @@ bool MyPC::FUN_141525580(MS2Ptr<CSkillRecord> spRecord)
     if (spRow->FUN_1407e9e20() && spRidee != 0)
     {
         if (spRidee->FUN_141675ed0() != 0)
-            FUN_14152c280(0);
+            SendRequestRideMode1(0);
         else
         {
             if (spRecord->m_spRow->FUN_1407e9d70() && spRecord->FUN_1417599c0() != 0)
@@ -2495,7 +2495,7 @@ bool MyPC::FUN_141525580(MS2Ptr<CSkillRecord> spRecord)
                 spAction->m_n28 = spRecord->FUN_1417599c0();
                 spAction->m_b30 = spRecord->m_bAD;
                 spAction->m_n34 = spRecord->m_nA4;
-                FUN_14152c280(spAction);
+                SendRequestRideMode1(spAction);
             }
             else
             {
@@ -2503,7 +2503,7 @@ bool MyPC::FUN_141525580(MS2Ptr<CSkillRecord> spRecord)
                 spAction->m_n28 = spRow->FUN_1407e9a40();
                 spAction->m_b2c = spRecord->m_bAD;
                 spAction->m_n30 = spRecord->m_nA4;
-                FUN_14152c280(spAction);
+                SendRequestRideMode1(spAction);
             }
         }
         return false;
@@ -2875,7 +2875,7 @@ PCBase* MyPC::FUN_141529640()
     return pNpc;
 }
 // @0x1415293b0
-void MyPC::FUN_1415293b0()
+void MyPC::SendFunctionCube()
 {
     if (FUN_1409331e0()->FUN_14138cc20() != 0)
         FUN_1409331e0()->FUN_14138b170();
@@ -2895,7 +2895,7 @@ void MyPC::FUN_1415293b0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x1415293B0, MyPC, FUN_1415293b0, 313, 0x4DB1487F);
+MS2_REPLACE_METHOD(0x1415293B0, MyPC, SendFunctionCube, 313, 0x4DB1487F);
 
 // @0x1415294f0
 void MyPC::FUN_1415294f0(int nObjectId, __int64 nExp)
@@ -3044,7 +3044,7 @@ void MyPC::vfunc_53(float fDelta)
         }
     }
     FUN_14152fa20();
-    FUN_14152fc20();
+    SendNametag();
     DAT_143ab2a90.FUN_140a675c0();
 }
 MS2_REPLACE_METHOD(0x141530950, MyPC, vfunc_53, 1046, 0x5930FD7F);
@@ -3113,14 +3113,14 @@ int MyPC::FUN_141529ae0(int nMapId, int nA, int nB, __int64 nC)
         } else if (spLock->m_nUntil != 0 && spLock->m_nUntil <= GetServerTime())
             DAT_143ab3288.RemoveKey(key);
     }
-    FUN_1415293b0();
+    SendFunctionCube();
     m_kStateCtl.vfunc_0();
     return 1;
 }
 MS2_REPLACE_METHOD(0x141529ae0, MyPC, FUN_141529ae0, 397, 0xB33A68C8);
 
 // @0x141529c80
-void MyPC::FUN_141529c80(int nPortalId, int nA, int nB, __int64 nC, CStringW strPwd)
+void MyPC::SendRequestMoveFieldMode2(int nPortalId, int nA, int nB, __int64 nC, CStringW strPwd)
 {
     if (FUN_141529ae0(nPortalId, nA, nB, nC) == 0)
         return;
@@ -3133,10 +3133,10 @@ void MyPC::FUN_141529c80(int nPortalId, int nA, int nB, __int64 nC, CStringW str
     packet.vfunc_o10_8(strPwd);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141529c80, MyPC, FUN_141529c80, 263, 0xD4282BAC);
+MS2_REPLACE_METHOD(0x141529c80, MyPC, SendRequestMoveFieldMode2, 263, 0xD4282BAC);
 
 // @0x141529d90
-void MyPC::FUN_141529d90()
+void MyPC::SendRequestMoveFieldMode4()
 {
     if (FUN_1409331e0()->FUN_14138c900(0x17) != 0)
     {
@@ -3149,10 +3149,10 @@ void MyPC::FUN_141529d90()
     packet.Encode1(4);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141529d90, MyPC, FUN_141529d90, 237, 0xAC200C52);
+MS2_REPLACE_METHOD(0x141529d90, MyPC, SendRequestMoveFieldMode4, 237, 0xAC200C52);
 
 // @0x141529e90
-void MyPC::FUN_141529e90()
+void MyPC::SendRequestMoveFieldMode5()
 {
     if (!FUN_140166410()->FUN_14036d570(0xe9))
         return;
@@ -3167,10 +3167,10 @@ void MyPC::FUN_141529e90()
     packet.Encode1(5);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141529e90, MyPC, FUN_141529e90, 267, 0xB1DDB26B);
+MS2_REPLACE_METHOD(0x141529e90, MyPC, SendRequestMoveFieldMode5, 267, 0xB1DDB26B);
 
 // @0x14152a040
-void MyPC::FUN_14152a040()
+void MyPC::SendRequestMoveFieldMode3()
 {
     if (FUN_141529ae0(0, 0, 0, 0) == 0)
         return;
@@ -3178,10 +3178,10 @@ void MyPC::FUN_14152a040()
     packet.Encode1(3);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x14152A040, MyPC, FUN_14152a040, 111, 0x3DC1CC31);
+MS2_REPLACE_METHOD(0x14152A040, MyPC, SendRequestMoveFieldMode3, 111, 0x3DC1CC31);
 
 // @0x14152a0c0
-void MyPC::FUN_14152a0c0(int nPortalId, int nD, int nA, int nB, CStringW strA, CStringW strPwd)
+void MyPC::SendRequestMoveFieldMode0(int nPortalId, int nD, int nA, int nB, CStringW strA, CStringW strPwd)
 {
     if (FUN_141529ae0(FUN_1403ed2d0()->FUN_141bd3060(), nA, nB, 0) == 0)
         return;
@@ -3198,7 +3198,7 @@ void MyPC::FUN_14152a0c0(int nPortalId, int nD, int nA, int nB, CStringW strA, C
     FUN_1401fa9a0(reinterpret_cast<unsigned char*>(&kMove), packet);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x14152a0c0, MyPC, FUN_14152a0c0, 363, 0x00CCBEA9);
+MS2_REPLACE_METHOD(0x14152a0c0, MyPC, SendRequestMoveFieldMode0, 363, 0x00CCBEA9);
 
 // @0x14152a240
 void MyPC::FUN_14152a240(int nId)
@@ -3238,7 +3238,7 @@ void MyPC::FUN_14152a310(MS2Ptr<Unk_PCBaseComp_b18> sp)
 }
 
 // @0x14152b800
-void MyPC::FUN_14152b800(__int64 nItemUid)
+void MyPC::SendRequestPet(__int64 nItemUid)
 {
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
     if (spItem == 0)
@@ -3250,7 +3250,7 @@ void MyPC::FUN_14152b800(__int64 nItemUid)
     ::FUN_1401feb20(&kUid, packet);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x14152b800, MyPC, FUN_14152b800, 192, 0x59BEFECE);
+MS2_REPLACE_METHOD(0x14152b800, MyPC, SendRequestPet, 192, 0x59BEFECE);
 
 int FUN_14072f970(int nState);                              // a summon may start from the state
 int FUN_141658f30(PCBase* pPC);                             // the item's level condition holds
@@ -3505,7 +3505,7 @@ void MyPC::vfunc_121(MS2Ptr<RideOffAction> spAction)
                     // a mounted pc: ride along with it
                     if (FUN_1415279d0(pTarget) == 0)
                         return;
-                    FUN_14152dee0(pTarget->FUN_14123c580());
+                    SendRequestRideMode3(pTarget->FUN_14123c580());
                 }
                 else
                     vfunc_59(0x20, spHold, 0, 0);
@@ -3610,7 +3610,7 @@ MS2_REPLACE_METHOD(0x14152C670, MyPC, vfunc_121, 5332, 0xA0A8FD3D);
 
 // Request to get off the ride (pAction 0: a plain ride off).
 // @0x14152c280
-int MyPC::FUN_14152c280(RideOffAction* pAction)
+int MyPC::SendRequestRideMode1(RideOffAction* pAction)
 {
     if (FUN_1416764d0() == 0)
         return 1;
@@ -3632,7 +3632,7 @@ int MyPC::FUN_14152c280(RideOffAction* pAction)
     FUN_140710590(packet);
     return 1;
 }
-MS2_REPLACE_METHOD(0x14152C280, MyPC, FUN_14152c280, 474, 0x03A6A593);
+MS2_REPLACE_METHOD(0x14152C280, MyPC, SendRequestRideMode1, 474, 0x03A6A593);
 
 // @0x14152e060
 int MyPC::FUN_14152e060()
@@ -3648,7 +3648,7 @@ int MyPC::FUN_14152e060()
 MS2_REPLACE_METHOD(0x14152E060, MyPC, FUN_14152e060, 87, 0x29ABFAAD);
 
 // @0x14152dee0
-void MyPC::FUN_14152dee0(int nId)
+void MyPC::SendRequestRideMode3(int nId)
 {
     if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x57) == 1)
     {
@@ -3662,27 +3662,27 @@ void MyPC::FUN_14152dee0(int nId)
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x14152dee0, MyPC, FUN_14152dee0, 143, 0x264E7D90);
+MS2_REPLACE_METHOD(0x14152dee0, MyPC, SendRequestRideMode3, 143, 0x264E7D90);
 
 // @0x14152df80
-void MyPC::FUN_14152df80()
+void MyPC::SendRequestRideMode4()
 {
     FUN_1409478c0()->FUN_140aeaf40(this, 1);
     COutPacket packet(0x40, 0);
     packet.Encode1(4);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x14152df80, MyPC, FUN_14152df80, 99, 0x34257BF8);
+MS2_REPLACE_METHOD(0x14152df80, MyPC, SendRequestRideMode4, 99, 0x34257BF8);
 
 // @0x14152dff0
-void MyPC::FUN_14152dff0(unsigned char n)
+void MyPC::SendRequestRideMode6(unsigned char n)
 {
     COutPacket packet(0x40, 0);
     packet.Encode1(6);
     packet.Encode1(n);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x14152dff0, MyPC, FUN_14152dff0, 94, 0xD49EC510);
+MS2_REPLACE_METHOD(0x14152dff0, MyPC, SendRequestRideMode6, 94, 0xD49EC510);
 
 // @0x14152e0c0
 void MyPC::FUN_14152e0c0()
@@ -3822,20 +3822,20 @@ void MyPC::FUN_14152aa90(MS2Ptr<CItem> spItem, int bConfirmed)
             MS2Ptr<RideOffActionSummonPetOn> spAction(new RideOffActionSummonPetOn(0));
             spAction->m_n28 = spItem->FUN_140526a50();
             spAction->m_n30 = 0;
-            FUN_14152c280(spAction);
+            SendRequestRideMode1(spAction);
         }
         else
             FUN_14152b2d0(spItem->FUN_140526a50());
     }
     else if (nSummoned == spItem->FUN_140526a50())
-        FUN_14152b800(nSummoned);
+        SendRequestPet(nSummoned);
     else
     {
         if (FUN_1416764d0() != 0)
         {
             MS2Ptr<RideOffActionSummonPetTransfer> spAction(new RideOffActionSummonPetTransfer(0));
             spAction->m_n28 = spItem->FUN_140526a50();
-            FUN_14152c280(spAction);
+            SendRequestRideMode1(spAction);
         }
         else
             FUN_14152b8d0(spItem->FUN_140526a50());
@@ -4160,7 +4160,7 @@ void MyPC::FUN_14152f140(__int64 nOwnerId)
         int nReason;
         CStringW strName;
         if (DAT_143ab2a90.FUN_140a66200(pItem, &nReason, strName) == 0 && (nReason == 4 || nReason == 5))
-            FUN_140714f90()->FUN_141538a90(nOwnerId, pItem->FUN_140526a50());
+            FUN_140714f90()->SendFittingDoll(nOwnerId, pItem->FUN_140526a50());
     }
     COutPacket packet(0x42, 0);
     packet.Encode1(10);
@@ -4215,7 +4215,7 @@ int MyPC::FUN_14152feb0(int nMode, bool bPalette)
             return 0;
         }
     }
-    if (FUN_1416764d0() != 0 && FUN_14152c280(0) == 0)
+    if (FUN_1416764d0() != 0 && SendRequestRideMode1(0) == 0)
         return 0;
     if (FUN_141527960() != 0)
         return 0;
@@ -4363,7 +4363,7 @@ void MyPC::FUN_14152fa20()
 MS2_REPLACE_METHOD(0x14152FA20, MyPC, FUN_14152fa20, 498, 0x6E396E9C);
 
 // @0x14152fc20
-void MyPC::FUN_14152fc20()
+void MyPC::SendNametag()
 {
     if (m_timer1788.FUN_140268870(1000) != 0)
     {
@@ -4376,7 +4376,7 @@ void MyPC::FUN_14152fc20()
         }
     }
 }
-MS2_REPLACE_METHOD(0x14152FC20, MyPC, FUN_14152fc20, 186, 0x23189891);
+MS2_REPLACE_METHOD(0x14152FC20, MyPC, SendNametag, 186, 0x23189891);
 
 // @0x14152fce0
 unsigned short MyPC::FUN_14152fce0(unsigned nGroup)
@@ -4706,7 +4706,7 @@ void MyPC::FUN_14152ba80(MS2Ptr<CItem> spItem)
     if (spRidee.FUN_1409f78a0() != 0)
     {
         if (FUN_141676410() == nRideeId)
-            FUN_14152c280(0);
+            SendRequestRideMode1(0);
         else if (FUN_1416764d0() == 0)
         {
             int bOk = 1;
@@ -5032,7 +5032,7 @@ MS2_REPLACE_METHOD(0x1415271e0, MyPC, FUN_1415271e0, 151, 0xE24676BA);
 
 
 // @0x141529fb0
-void MyPC::FUN_141529fb0()
+void MyPC::SendRequestMoveFieldMode6()
 {
     if (!FUN_140166410()->FUN_14036d570(0xe9))
         return;
@@ -5042,7 +5042,7 @@ void MyPC::FUN_141529fb0()
     packet.Encode1(6);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x141529fb0, MyPC, FUN_141529fb0, 138, 0xA61B3F48);
+MS2_REPLACE_METHOD(0x141529fb0, MyPC, SendRequestMoveFieldMode6, 138, 0xA61B3F48);
 
 // @0x141524880
 void MyPC::FUN_141524880(MS2Ptr<Unk_MyPCComp1618> sp)

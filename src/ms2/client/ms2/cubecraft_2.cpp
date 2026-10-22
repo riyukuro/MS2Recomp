@@ -368,14 +368,14 @@ Unk_PCCubeCraft::~Unk_PCCubeCraft()
 }
 
 // @0x1410a8a20
-void Unk_PCCubeCraft::FUN_1410a8a20(int nValue)
+void Unk_PCCubeCraft::SendRequestCubeMode0(int nValue)
 {
     COutPacket packet(0x37, 0);
     packet.Encode1(0);
     packet.Encode4(nValue);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1410A8A20, Unk_PCCubeCraft, FUN_1410a8a20, 93, 0xA3979923);
+MS2_REPLACE_METHOD(0x1410A8A20, Unk_PCCubeCraft, SendRequestCubeMode0, 93, 0xA3979923);
 
 // @0x1410a8a90
 int Unk_PCCubeCraft::FUN_1410a8a90()

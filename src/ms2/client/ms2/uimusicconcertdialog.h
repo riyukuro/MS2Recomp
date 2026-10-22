@@ -32,12 +32,12 @@ public:
     void FUN_140e6a5d0(int nIndex, const CString& strIcon, const CStringW& strTooltip);   // icon + tooltip of one button
     void FUN_140e6a780();                                       // register button
     void FUN_140e6a9d0();                                       // unregister (after the confirm box)
-    void FUN_140e6ab10();                                       // stage button (packet 0x74 / 0xd)
+    void SendPlayInstrumentMode13();                                       // stage button (packet 0x74 / 0xd)
     void FUN_140e6ab90();                                       // camera button
-    void FUN_140e6ac80();                                       // firework button (packet 0x74 / 0xe)
-    void FUN_140e6ad00(int nEmotion);                           // emotion button (packet 0x74 / 0xf)
-    bool FUN_140e6adf0(int nResult, const class CMsgBoxData& box);   // confirm register: packet 0x74 / 0xb
-    bool FUN_140e6ae60(int nResult, const class CMsgBoxData& box);   // confirm unregister: packet 0x74 / 0xc
+    void SendPlayInstrumentMode14();                                       // firework button (packet 0x74 / 0xe)
+    void SendPlayInstrumentMode15(int nEmotion);                           // emotion button (packet 0x74 / 0xf)
+    bool SendPlayInstrumentMode11(int nResult, const class CMsgBoxData& box);   // confirm register: packet 0x74 / 0xb
+    bool SendPlayInstrumentMode12(int nResult, const class CMsgBoxData& box);   // confirm unregister: packet 0x74 / 0xc
 
     MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);          // 0x140ba7930 bind a movie clip child
     MS2Ptr<Unk_MusicButton> FUN_140bb4b10(const CString& strName);      // 0x140bb4b10 bind a button child

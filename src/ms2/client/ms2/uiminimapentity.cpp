@@ -531,7 +531,7 @@ void UIMinimapEntity::FUN_141a32120(const Scaleform::GFx::FunctionHandler::Param
         if (FUN_141a32260(tip))
             *params.pRetVal = tip.FUN_1422bb870();
     } else if (strName == L"click") {
-        FUN_141a32330();
+        SendSetDebugMode();
     }
 }
 MS2_REPLACE_METHOD(0x141a32120, UIMinimapEntity, FUN_141a32120, 312, 0x1DDD54D5);
@@ -550,7 +550,7 @@ bool UIMinimapEntity::FUN_141a32260(ASObj& data)
 MS2_REPLACE_METHOD(0x141a32260, UIMinimapEntity, FUN_141a32260, 190, 0x14DE07A2);
 
 // @0x141a32330
-void UIMinimapEntity::FUN_141a32330()
+void UIMinimapEntity::SendSetDebugMode()
 {
     vfunc_3();
     if (FUN_14025e7c0()->IsDebugMode() && m_position != efd::Point3::ZERO) {
@@ -560,7 +560,7 @@ void UIMinimapEntity::FUN_141a32330()
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x141a32330, UIMinimapEntity, FUN_141a32330, 164, 0x87D81A70);
+MS2_REPLACE_METHOD(0x141a32330, UIMinimapEntity, SendSetDebugMode, 164, 0x87D81A70);
 
 // @0x141a323e0
 void UIMinimapEntity::FUN_141a323e0(MS2Ptr<CPortal> spPortal)
@@ -2528,7 +2528,7 @@ void UIMinimapDialog::FUN_141a456c0(const Scaleform::GFx::FunctionHandler::Param
     float x = 0;
     float y = 0;
     if (FUN_141b90e30(FUN_140aadf80(), x, y))
-        FUN_141a45020(0, x, y);
+        SendMinimapPing(0, x, y);
 }
 MS2_REPLACE_METHOD(0x141a456c0, UIMinimapDialog, FUN_141a456c0, 88, 0x1BA9816C);
 
@@ -2538,7 +2538,7 @@ void UIMinimapDialog::FUN_141a45720(const Scaleform::GFx::FunctionHandler::Param
     float x = 0;
     float y = 0;
     if (FUN_141b90e30(FUN_140aadf80(), x, y))
-        FUN_141a45020(1, x, y);
+        SendMinimapPing(1, x, y);
 }
 MS2_REPLACE_METHOD(0x141a45720, UIMinimapDialog, FUN_141a45720, 91, 0xCE3BFD94);
 
@@ -2598,7 +2598,7 @@ MS2_REPLACE_METHOD(0x141a45ed0, UIMinimapDialog, FUN_141a45ed0, 151, 0xFEC1B993)
 void FUN_14020af60(COutPacket* pPacket, const Unk_StreamPoint* pPt);    // writes the three floats of a point
 
 // @0x141a45020
-void UIMinimapDialog::FUN_141a45020(int nKind, float x, float y)
+void UIMinimapDialog::SendMinimapPing(int nKind, float x, float y)
 {
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
@@ -2617,7 +2617,7 @@ void UIMinimapDialog::FUN_141a45020(int nKind, float x, float y)
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x141a45020, UIMinimapDialog, FUN_141a45020, 392, 0xEB54C408);
+MS2_REPLACE_METHOD(0x141a45020, UIMinimapDialog, SendMinimapPing, 392, 0xEB54C408);
 
 // The popup menu (uipartydialog.h has the full class; this unit only needs its RTTI and one entry point).
 class Unk_PopupMenuInfo

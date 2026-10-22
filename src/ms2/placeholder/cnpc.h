@@ -152,7 +152,7 @@ public:
     int FUN_141094200();                                    // open it
     void FUN_1410942c0();                                   // close it
     bool FUN_141094300();                                    // in talk range
-    void FUN_141094730();                                   // send packet 0x32 (talk)
+    void SendInteractNpc();                                   // send packet 0x32 (talk)
     void FUN_141094790(__int64 nUid);                       // m_nE48 (maid uid)
     __int64 FUN_1410947c0();
     void FUN_141094dc0(__int64 n);                          // m_nE60 (accumulated damage)

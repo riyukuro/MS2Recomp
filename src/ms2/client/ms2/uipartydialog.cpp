@@ -366,7 +366,7 @@ void ASPartyVotePage::FUN_141a74ac0(bool bYes)
     MS2Ptr<PartyVoteCli> spVote = FUN_1409670d0()->FUN_14162c350();
     if (spVote == 0)
         return;
-    spVote->FUN_140a89680(bYes);
+    spVote->SendParty(bYes);
 }
 
 // ======== UIPartyDialog ========
@@ -743,7 +743,7 @@ bool UIPartyDialog::FUN_141a77600(int nResult, const CMsgBoxData& box)
 }
 
 // @0x141a776e0
-bool UIPartyDialog::FUN_141a776e0(int nResult, const CMsgBoxData& box)
+bool UIPartyDialog::SendDungeonReward(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
@@ -817,7 +817,7 @@ void UIPartyDialog::FUN_141a77a40(CInPacket& packet)
 // @0x141a77ab0
 void UIPartyDialog::FUN_141a77ab0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_1409670d0()->FUN_14162bd40(0);
+    FUN_1409670d0()->SendRoomDungeon(0);
 }
 
 // MS2-FUNCTIONAL: written from the decompile
@@ -849,7 +849,7 @@ void UIPartyDialog::FUN_141a77ae0(const Scaleform::GFx::FunctionHandler::Params&
 // @0x141a77dd0
 void UIPartyDialog::FUN_141a77dd0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPartyDialog::FUN_141a776e0), CStringW(L"s_party_dungeon_giveup"));
+    FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPartyDialog::SendDungeonReward), CStringW(L"s_party_dungeon_giveup"));
 }
 
 // MS2-FUNCTIONAL: written from the decompile
@@ -2447,7 +2447,7 @@ void UIPopUpMenu::FUN_141a80c40()
 {
     m_160.SetAt(100, Delegate<void()>(this, &UIPopUpMenu::FUN_141a84d40));
     m_160.SetAt(0x65, Delegate<void()>(this, &UIPopUpMenu::FUN_141a84da0));
-    m_160.SetAt(0x66, Delegate<void()>(this, &UIPopUpMenu::FUN_141a84df0));
+    m_160.SetAt(0x66, Delegate<void()>(this, &UIPopUpMenu::SendCharacterInfo));
     m_160.SetAt(200, Delegate<void()>(this, &UIPopUpMenu::FUN_141a84f60));
     m_160.SetAt(0xc9, Delegate<void()>(this, &UIPopUpMenu::FUN_141a84f90));
     m_160.SetAt(0xca, Delegate<void()>(this, &UIPopUpMenu::FUN_141a85010));
@@ -2464,10 +2464,10 @@ void UIPopUpMenu::FUN_141a80c40()
     m_160.SetAt(0x1f6, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86920));
     m_160.SetAt(0x1f7, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86970));
     m_160.SetAt(0x1f8, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86a50));
-    m_160.SetAt(0x1f9, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86ad0));
+    m_160.SetAt(0x1f9, Delegate<void()>(this, &UIPopUpMenu::SendRequestPet));
     m_160.SetAt(0x1fa, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86b80));
     if (FUN_140166410()->FUN_14036d570(0x100))
-        m_160.SetAt(0x1fb, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86bd0));
+        m_160.SetAt(0x1fb, Delegate<void()>(this, &UIPopUpMenu::SendRequestCube));
     m_160.SetAt(0x1fc, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86ca0));
     m_160.SetAt(600, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86d20));
     m_160.SetAt(0x259, Delegate<void()>(this, &UIPopUpMenu::FUN_141a86db0));
@@ -3138,7 +3138,7 @@ void UIPopUpMenu::FUN_141a84da0()
 }
 
 // @0x141a84df0
-void UIPopUpMenu::FUN_141a84df0()
+void UIPopUpMenu::SendCharacterInfo()
 {
     UIPCInfoDialog* pInfo = Unk_PmGetDialog<UIPCInfoDialog>(0x4ec8);
     if (pInfo != 0)
@@ -3401,7 +3401,7 @@ void UIPopUpMenu::FUN_141a86a50()
 }
 
 // @0x141a86ad0
-void UIPopUpMenu::FUN_141a86ad0()
+void UIPopUpMenu::SendRequestPet()
 {
     if (m_1a8.m_08 == DAT_143ab2828)
     {
@@ -3423,11 +3423,11 @@ void UIPopUpMenu::FUN_141a86b80()
     MyPC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMe == 0)
         return;
-    pMe->FUN_14152b800(FUN_1416769f0(pMe));
+    pMe->SendRequestPet(FUN_1416769f0(pMe));
 }
 
 // @0x141a86bd0
-void UIPopUpMenu::FUN_141a86bd0()
+void UIPopUpMenu::SendRequestCube()
 {
     if (FUN_140166410()->FUN_14036d570(0x100))
     {

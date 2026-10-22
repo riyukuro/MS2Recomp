@@ -29,7 +29,7 @@ public:
     void FUN_140e663b0();                                                       // hide
     void FUN_140e664a0();                                                       // centre the game entity on screen
     void FUN_140e665e0(int nCard);                                              // m_70 = nCard
-    void FUN_140e66600();                                                       // onSelectTimeUp: send the selection
+    void SendMicrogame();                                                       // onSelectTimeUp: send the selection
     void FUN_140e666a0();                                                       // onRandChat
     int FUN_140e66710();                                                        // not in the micro game state?
 

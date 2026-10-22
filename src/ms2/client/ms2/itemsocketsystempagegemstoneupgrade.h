@@ -62,7 +62,7 @@ public:
     void FUN_140f79490();
     void FUN_140f79540();
     void FUN_140f79680(__int64);
-    void FUN_140f79760(const Scaleform::GFx::FunctionHandler::Params&);
+    void SendItemSocketSystemMode15(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140f798e0(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140f799d0(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140f79ad0(ItemInfoSlot&, ASSlot&);

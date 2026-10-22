@@ -137,7 +137,7 @@ void UIRankPvPDialog::OnLoadComplete()
         m_rankMark = m_registerPage->FUN_1409b4560("m_rankMark");
         m_observeCheck->FUN_1422ce090(FUN_140c9b8b0(FUN_1409a8b10())->m_observer);
         m_register->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95260), 0);
-        m_unregister->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95460), 0);
+        m_unregister->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::SendPVPMode15), 0);
         m_showGrade->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95550), 0);
         m_observeCheck->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95630), 0);
         m_gaugeWidth = m_gauge->FUN_1422c1340();
@@ -455,7 +455,7 @@ void UIRankPvPDialog::FUN_140f95260(const Scaleform::GFx::FunctionHandler::Param
 }
 
 // @0x140f95460
-void UIRankPvPDialog::FUN_140f95460(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIRankPvPDialog::SendPVPMode15(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nState = CPVPManager::GetInstance()->GetRankDuel()->m_state;
     if (nState != 1)
@@ -469,7 +469,7 @@ void UIRankPvPDialog::FUN_140f95460(const Scaleform::GFx::FunctionHandler::Param
         FUN_1407105c0(&packet, 0xf, 1000);
     }
 }
-MS2_REPLACE_METHOD(0x140F95460, UIRankPvPDialog, FUN_140f95460, 219, 0x5F2723A2);
+MS2_REPLACE_METHOD(0x140F95460, UIRankPvPDialog, SendPVPMode15, 219, 0x5F2723A2);
 
 // @0x140f95550
 void UIRankPvPDialog::FUN_140f95550(const Scaleform::GFx::FunctionHandler::Params& params)

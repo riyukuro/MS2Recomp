@@ -160,7 +160,7 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
         spAction->m_n28 = nCallType;
         spAction->m_n2c = nKind;
         spAction->m_n30 = nItemUid;
-        pPC->FUN_14152c280(spAction.get());
+        pPC->SendRequestRideMode1(spAction.get());
     }
     return 1;
 }
@@ -207,7 +207,7 @@ int CCashCallManager::FUN_140b03590(__int64 nItemUid)
         MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
         spAction->m_n2c = 5;
         spAction->m_n30 = nItemUid;
-        pPC->FUN_14152c280(spAction.get());
+        pPC->SendRequestRideMode1(spAction.get());
     }
     return 1;
 }
@@ -254,7 +254,7 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
         MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
         spAction->m_n2c = 4;
         spAction->m_n30 = nItemUid;
-        pPC->FUN_14152c280(spAction.get());
+        pPC->SendRequestRideMode1(spAction.get());
     }
     return 1;
 }
@@ -296,7 +296,7 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
         MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
         spAction->m_n2c = 6;
         spAction->m_n30 = nItemUid;
-        pPC->FUN_14152c280(spAction.get());
+        pPC->SendRequestRideMode1(spAction.get());
     }
     return 1;
 }
@@ -375,7 +375,7 @@ int CCashCallManager::FUN_140b04430(__int64 nTarget, int nCount)
     {
         MS2Ptr<RideOffActionRecall> spAction(new RideOffActionRecall(0));
         spAction->m_n28 = nTarget;
-        pPC->FUN_14152c280(spAction.get());
+        pPC->SendRequestRideMode1(spAction.get());
     }
     return 1;
 }

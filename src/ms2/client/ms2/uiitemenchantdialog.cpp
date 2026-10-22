@@ -567,7 +567,7 @@ int UIItemEnchantDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     if (_stricmp(szMethod, "onForceEnchant") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_1419c0360(&data);
+            SendRequestItemEnchantMode15(&data);
         return 1;
     }
     if (_stricmp(szMethod, "onSelectEquipIngredient") == 0) {
@@ -672,7 +672,7 @@ void UIItemEnchantDialog::FUN_1419c02e0(CString name)
 }
 
 // @0x1419c0360
-void UIItemEnchantDialog::FUN_1419c0360(ASData*)
+void UIItemEnchantDialog::SendRequestItemEnchantMode15(ASData*)
 {
     if (0x31 < DAT_143ab2914) {
         COutPacket pkt(0x5e, 0);
@@ -682,7 +682,7 @@ void UIItemEnchantDialog::FUN_1419c0360(ASData*)
 }
 
 // @0x1419c03d0
-void UIItemEnchantDialog::FUN_1419c03d0(ASData*)
+void UIItemEnchantDialog::SendRequestItemEnchantMode19(ASData*)
 {
     if (0x31 < DAT_143ab2914) {
         COutPacket pkt(0x5e, 0);
@@ -705,7 +705,7 @@ void UIItemEnchantDialog::FUN_1419c0440(ASData* pData)
         return;
     if (m_expMode == 2) {
         if (!FUN_140166410()->FUN_14036d570(0x87) || FUN_1419c89b0(uid) == 0 || FUN_1419c8b80(uid) != 0) {
-            FUN_1419c0c70(uid);
+            SendRequestItemEnchantMode6(uid);
         } else {
             CStringW charName = pc->vfunc_77();
             CStringW text = FUN_1405c2690(CStringW(L"s_itemenchant_binding_character"), charName);
@@ -750,7 +750,7 @@ void UIItemEnchantDialog::FUN_1419c0440(ASData* pData)
 }
 
 // @0x1419c0c70
-void UIItemEnchantDialog::FUN_1419c0c70(unsigned __int64 uid)
+void UIItemEnchantDialog::SendRequestItemEnchantMode6(unsigned __int64 uid)
 {
     MS2Ptr<CItem> item = FUN_1419bef70(uid);
     if (item == 0)
@@ -890,7 +890,7 @@ void UIItemEnchantDialog::FUN_1419c16c0(unsigned __int64 uid, int flag)
         if (box.get() != 0) {
             box->Append<__int64>(uid);
             FUN_141a024a0(box.operator->(), 0);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantDialog::FUN_1419c5de0));
+            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantDialog::SendRequestItemEnchantMode2));
             FUN_140d73c60(box);
             return;
         }
@@ -1066,14 +1066,14 @@ void UIItemEnchantDialog::FUN_1419c1f20(CInPacket& pkt)
             m_debugBtnFillFailStack->vfunc_3(bDebug);
             if (bDebug)
                 m_debugBtnFillFailStack->FUN_1422ce240(
-                    Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEnchantDialog::FUN_1419c5f60), 0);
+                    Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEnchantDialog::SendRequestItemEnchantMode17), 0);
         }
         m_debugBtnUseAllFailStack = list->FUN_140acce30<Unk_EnButton>("m_debugBtnUseAllFailStack");
         if (m_debugBtnUseAllFailStack) {
             m_debugBtnUseAllFailStack->vfunc_3(bDebug);
             if (bDebug)
                 m_debugBtnUseAllFailStack->FUN_1422ce240(
-                    Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEnchantDialog::FUN_1419c6060), 0);
+                    Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemEnchantDialog::SendRequestItemEnchantMode18), 0);
         }
     }
 }
@@ -1197,7 +1197,7 @@ void UIItemEnchantDialog::FUN_1419c3e70(CInPacket& pkt)
 }
 
 // @0x1419c3fd0
-void UIItemEnchantDialog::FUN_1419c3fd0(void*, void*, void*)
+void UIItemEnchantDialog::SendRequestItemEnchantMode1(void*, void*, void*)
 {
     COutPacket pkt(0x5e, 0);
     pkt.Encode1(1);
@@ -1424,13 +1424,13 @@ bool UIItemEnchantDialog::FUN_1419c5d90(int result, const CMsgBoxData& box)
 {
     if (result == 0) {
         __int64 uid = box.FUN_141a02f10(0, 0);
-        FUN_1419c0c70(uid);
+        SendRequestItemEnchantMode6(uid);
     }
     return true;
 }
 
 // @0x1419c5de0
-bool UIItemEnchantDialog::FUN_1419c5de0(int result, const CMsgBoxData& box)
+bool UIItemEnchantDialog::SendRequestItemEnchantMode2(int result, const CMsgBoxData& box)
 {
     if (result == 0) {
         __int64 uid = box.FUN_141a02f10(0, 0);
@@ -1449,7 +1449,7 @@ bool UIItemEnchantDialog::FUN_1419c5e90(int result, const CMsgBoxData& box)
     if (result == 0) {
         __int64 uid = box.FUN_141a02f10(0, 0);
         int v = box.FUN_141a02e50(1, 0);
-        FUN_1419c7ce0(uid, v);
+        SendRequestItemEnchantMode4(uid, v);
     }
     return true;
 }
@@ -1465,7 +1465,7 @@ bool UIItemEnchantDialog::FUN_1419c5f00(int result, const CMsgBoxData& box)
 }
 
 // @0x1419c5f60
-void UIItemEnchantDialog::FUN_1419c5f60(const Scaleform::GFx::FunctionHandler::Params&)
+void UIItemEnchantDialog::SendRequestItemEnchantMode17(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_enchantAni == 0)
         return;
@@ -1483,7 +1483,7 @@ void UIItemEnchantDialog::FUN_1419c5f60(const Scaleform::GFx::FunctionHandler::P
 }
 
 // @0x1419c6060
-void UIItemEnchantDialog::FUN_1419c6060(const Scaleform::GFx::FunctionHandler::Params&)
+void UIItemEnchantDialog::SendRequestItemEnchantMode18(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_enchantAni == 0)
         return;
@@ -1764,7 +1764,7 @@ void UIItemEnchantDialog::FUN_1419c7a30(unsigned __int64 uid, int mode)
     if (item == 0)
         return;
     if (item->FUN_1405270a0() < 1) {
-        FUN_1419c7ce0(uid, mode);
+        SendRequestItemEnchantMode4(uid, mode);
         return;
     }
     MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_14028b8e0(CStringW(L"s_itemenchant_exp_payback")), 0, CStringW(L""));
@@ -1778,7 +1778,7 @@ void UIItemEnchantDialog::FUN_1419c7a30(unsigned __int64 uid, int mode)
 }
 
 // @0x1419c7ce0
-void UIItemEnchantDialog::FUN_1419c7ce0(unsigned __int64 uid, int mode)
+void UIItemEnchantDialog::SendRequestItemEnchantMode4(unsigned __int64 uid, int mode)
 {
     MS2Ptr<CItem> item = FUN_1419bef70(uid);
     if (item == 0)
@@ -2501,9 +2501,9 @@ MS2_REPLACE_METHOD(0x1419BFCA0, UIItemEnchantDialog, vfunc_85, 202, 0xC1601B65);
 MS2_REPLACE_METHOD(0x1419BFD70, UIItemEnchantDialog, FUN_1419bfd70, 475, 0xB5E37790);
 MS2_REPLACE_METHOD(0x1419BFF60, UIItemEnchantDialog, FUN_1419bff60, 880, 0xA12611D3);
 MS2_REPLACE_METHOD(0x1419C02E0, UIItemEnchantDialog, FUN_1419c02e0, 116, 0x837D935B);
-MS2_REPLACE_METHOD(0x1419C0360, UIItemEnchantDialog, FUN_1419c0360, 91, 0xCB4750E9);
-MS2_REPLACE_METHOD(0x1419C03D0, UIItemEnchantDialog, FUN_1419c03d0, 91, 0xD29906B8);
-MS2_REPLACE_METHOD(0x1419C0C70, UIItemEnchantDialog, FUN_1419c0c70, 197, 0x173AAD5F);
+MS2_REPLACE_METHOD(0x1419C0360, UIItemEnchantDialog, SendRequestItemEnchantMode15, 91, 0xCB4750E9);
+MS2_REPLACE_METHOD(0x1419C03D0, UIItemEnchantDialog, SendRequestItemEnchantMode19, 91, 0xD29906B8);
+MS2_REPLACE_METHOD(0x1419C0C70, UIItemEnchantDialog, SendRequestItemEnchantMode6, 197, 0x173AAD5F);
 MS2_REPLACE_METHOD(0x1419C11E0, UIItemEnchantDialog, FUN_1419c11e0, 48, 0x9599EC04);
 MS2_REPLACE_METHOD(0x1419C15C0, UIItemEnchantDialog, FUN_1419c15c0, 100, 0x3ADF4CC0);
 MS2_REPLACE_METHOD(0x1419C1630, UIItemEnchantDialog, FUN_1419c1630, 100, 0xA08A2C70);
@@ -2517,16 +2517,16 @@ MS2_REPLACE_METHOD(0x1419C37F0, UIItemEnchantDialog, FUN_1419c37f0, 344, 0x26D73
 MS2_REPLACE_METHOD(0x1419C3950, UIItemEnchantDialog, FUN_1419c3950, 558, 0x9A27A1DA);
 MS2_REPLACE_METHOD(0x1419C3B90, UIItemEnchantDialog, FUN_1419c3b90, 723, 0xA88975ED);
 MS2_REPLACE_METHOD(0x1419C3E70, UIItemEnchantDialog, FUN_1419c3e70, 341, 0x8DD13E96);
-MS2_REPLACE_METHOD(0x1419C3FD0, UIItemEnchantDialog, FUN_1419c3fd0, 119, 0x84095DA5);
+MS2_REPLACE_METHOD(0x1419C3FD0, UIItemEnchantDialog, SendRequestItemEnchantMode1, 119, 0x84095DA5);
 MS2_REPLACE_METHOD(0x1419C4050, UIItemEnchantDialog, FUN_1419c4050, 343, 0x8860A6F7);
 MS2_REPLACE_METHOD(0x1419C41B0, UIItemEnchantDialog, FUN_1419c41b0, 422, 0x5183F1D2);
 MS2_REPLACE_METHOD(0x1419C5D20, UIItemEnchantDialog, FUN_1419c5d20, 98, 0xD143B54F);
 MS2_REPLACE_METHOD(0x1419C5D90, UIItemEnchantDialog, FUN_1419c5d90, 71, 0x14F87C35);
-MS2_REPLACE_METHOD(0x1419C5DE0, UIItemEnchantDialog, FUN_1419c5de0, 157, 0x54490F9C);
+MS2_REPLACE_METHOD(0x1419C5DE0, UIItemEnchantDialog, SendRequestItemEnchantMode2, 157, 0x54490F9C);
 MS2_REPLACE_METHOD(0x1419C5E90, UIItemEnchantDialog, FUN_1419c5e90, 98, 0x05CFFE46);
 MS2_REPLACE_METHOD(0x1419C5F00, UIItemEnchantDialog, FUN_1419c5f00, 77, 0x21806692);
-MS2_REPLACE_METHOD(0x1419C5F60, UIItemEnchantDialog, FUN_1419c5f60, 247, 0x545B198F);
-MS2_REPLACE_METHOD(0x1419C6060, UIItemEnchantDialog, FUN_1419c6060, 247, 0x21FF4F46);
+MS2_REPLACE_METHOD(0x1419C5F60, UIItemEnchantDialog, SendRequestItemEnchantMode17, 247, 0x545B198F);
+MS2_REPLACE_METHOD(0x1419C6060, UIItemEnchantDialog, SendRequestItemEnchantMode18, 247, 0x21FF4F46);
 MS2_REPLACE_METHOD(0x1419C6160, UIItemEnchantDialog, FUN_1419c6160, 259, 0x2DAFAFCE);
 MS2_REPLACE_METHOD(0x1419C6270, UIItemEnchantDialog, FUN_1419c6270, 262, 0x7AF130B8);
 MS2_REPLACE_METHOD(0x1419C6380, UIItemEnchantDialog, FUN_1419c6380, 145, 0x2C1DD8AC);
@@ -2539,7 +2539,7 @@ MS2_REPLACE_METHOD(0x1419C7610, UIItemEnchantDialog, FUN_1419c7610, 391, 0x2B4CF
 MS2_REPLACE_METHOD(0x1419C77A0, UIItemEnchantDialog, FUN_1419c77a0, 240, 0x55BF1B8B);
 MS2_REPLACE_METHOD(0x1419C78A0, UIItemEnchantDialog, FUN_1419c78a0, 197, 0x9CBFF8DE);
 MS2_REPLACE_METHOD(0x1419C7970, UIItemEnchantDialog, FUN_1419c7970, 185, 0xD43FB7C3);
-MS2_REPLACE_METHOD(0x1419C7CE0, UIItemEnchantDialog, FUN_1419c7ce0, 312, 0x332989F9);
+MS2_REPLACE_METHOD(0x1419C7CE0, UIItemEnchantDialog, SendRequestItemEnchantMode4, 312, 0x332989F9);
 MS2_REPLACE_METHOD(0x1419C7E20, UIItemEnchantDialog, FUN_1419c7e20, 144, 0x8DEEC429);
 MS2_REPLACE_METHOD(0x1419C7EC0, UIItemEnchantDialog, FUN_1419c7ec0, 124, 0x8A08E7B7);
 MS2_REPLACE_METHOD(0x1419C8020, UIItemEnchantDialog, FUN_1419c8020, 61, 0xED1B3BE4);

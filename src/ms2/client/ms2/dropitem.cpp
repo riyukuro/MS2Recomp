@@ -1004,7 +1004,7 @@ int CDropItem::FUN_1411906a0()
 }
 
 // @0x141190830
-void CDropItem::FUN_141190830(int nPickerId)
+void CDropItem::SendRequestItemPickup(int nPickerId)
 {
     FUN_141192840(1);
     FUN_141191030();
@@ -1037,7 +1037,7 @@ void CDropItem::FUN_141190900(int nPickerId)
                 }
                 if (DAT_143ab2a90.FUN_140a61430(DAT_143ab2a90.FUN_140a617f0(m_spItem)))
                 {
-                    FUN_141190830(nPickerId);
+                    SendRequestItemPickup(nPickerId);
                     return;
                 }
                 if (!FUN_1411906a0())
@@ -1046,11 +1046,11 @@ void CDropItem::FUN_141190900(int nPickerId)
                     FUN_141276180(s_strWarningBag, CString(""));
                     FUN_1411911a0();
                 }
-                FUN_141190830(nPickerId);
+                SendRequestItemPickup(nPickerId);
                 return;
             }
         }
-        FUN_141190830(nPickerId);
+        SendRequestItemPickup(nPickerId);
     }
 }
 

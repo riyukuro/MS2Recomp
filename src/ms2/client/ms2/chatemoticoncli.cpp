@@ -444,7 +444,7 @@ void CChatEmoticonCli::FUN_140a3a380(unsigned nGroupId)
 MS2_REPLACE_METHOD(0x140A3A380, CChatEmoticonCli, FUN_140a3a380, 132, 0x5133450B);
 
 // @0x140a3a410
-void CChatEmoticonCli::FUN_140a3a410()
+void CChatEmoticonCli::SendMessenger()
 {
     CMsTime now(FUN_140869440());
     std::list<unsigned> expired;
@@ -463,7 +463,7 @@ void CChatEmoticonCli::FUN_140a3a410()
         packet.vfunc_o10_3(nId);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140A3A410, CChatEmoticonCli, FUN_140a3a410, 550, 0x755D789E);
+MS2_REPLACE_METHOD(0x140A3A410, CChatEmoticonCli, SendMessenger, 550, 0x755D789E);
 
 // @0x140a3a640
 MS2Ptr<ChatEmoticonGroupInfo> CChatEmoticonCli::FUN_140a3a640(unsigned nGroupId)

@@ -309,7 +309,7 @@ int UIAdventureLevelOldDialog::vfunc_28(const char* szMethod, const Scaleform::G
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             unsigned short nLevel = data.FUN_1422b8b10();
-            FUN_140ba6a10(nLevel);
+            SendPrestige(nLevel);
         }
     }
     return 0;
@@ -519,7 +519,7 @@ int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
 }
 
 // @0x140ba6a10
-void UIAdventureLevelOldDialog::FUN_140ba6a10(unsigned int nLevel)
+void UIAdventureLevelOldDialog::SendPrestige(unsigned int nLevel)
 {
     Unk_ALReward* pReward = FUN_1401958a0()->FUN_140195e30(nLevel);
     if (pReward->FUN_1401958d0())

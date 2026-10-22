@@ -71,7 +71,7 @@ public:
     virtual void vfunc_67();                                        // 67 0x140e49fc0 close: drop the bag
     virtual void vfunc_79(void* pPacket);                           // 79 0x140e4a010 the result packet
 
-    bool FUN_140e4a4b0(int nResult, const CMsgBoxData& box);        // 0x140e4a4b0 the confirmation was answered: send 0xa0
+    bool SendItemExtractionScroll(int nResult, const CMsgBoxData& box);        // 0x140e4a4b0 the confirmation was answered: send 0xa0
     void FUN_140e4a920(__int64 nItemUid);                           // 0x140e4a920 an item was dropped: show it and the scroll
     void FUN_140e4b2c0(__int64 nScrollUid);                         // 0x140e4b2c0 remember the scroll if the player owns it
     void FUN_140e4b340();                                           // 0x140e4b340 refresh the inventory dialog

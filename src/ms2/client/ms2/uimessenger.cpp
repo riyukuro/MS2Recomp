@@ -2452,7 +2452,7 @@ void UIMessenger::FUN_141a172a0(int nPartyId, CStringW strLeader, int nRoomId)
 // @0x141a17690
 void UIMessenger::FUN_141a17690(CStringW strName)
 {
-    FUN_1409670d0()->FUN_14162ba50(CStringW(strName));
+    FUN_1409670d0()->SendPartyMode1(CStringW(strName));
 }
 
 // MS2-FUNCTIONAL: codegen differs from the exe (functional-first)

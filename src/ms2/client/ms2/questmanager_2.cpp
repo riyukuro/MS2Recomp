@@ -1554,7 +1554,7 @@ MS2_REPLACE_METHOD(0x1416cef90, CQuestManager, FUN_1416cef90, 1381, 0x06014A2F);
 
 // MS2-FUNCTIONAL: nested-if EH state map and payload-ptr temporaries differ from the exe's per-branch dtor calls.
 // @0x1416cf510
-void CQuestManager::FUN_1416cf510(int questId)
+void CQuestManager::SendQuestMode12(int questId)
 {
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
     if (!quest.IsNull()) {
@@ -1566,11 +1566,11 @@ void CQuestManager::FUN_1416cf510(int questId)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1416cf510, CQuestManager, FUN_1416cf510, 275, 0x1A371415);
+MS2_REPLACE_METHOD(0x1416cf510, CQuestManager, SendQuestMode12, 275, 0x1A371415);
 
 // MS2-FUNCTIONAL: nested-if EH state map and payload-ptr temporaries differ from the exe's per-branch dtor calls.
 // @0x1416cf630
-void CQuestManager::FUN_1416cf630(int questId)
+void CQuestManager::SendQuestMode13(int questId)
 {
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
     if (!quest.IsNull()) {
@@ -1582,11 +1582,11 @@ void CQuestManager::FUN_1416cf630(int questId)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1416cf630, CQuestManager, FUN_1416cf630, 275, 0x5B9A8BE1);
+MS2_REPLACE_METHOD(0x1416cf630, CQuestManager, SendQuestMode13, 275, 0x5B9A8BE1);
 
 // MS2-FUNCTIONAL: nested-if EH state map and payload-ptr temporaries differ from the exe's per-branch dtor calls.
 // @0x1416cf750
-void CQuestManager::FUN_1416cf750(int questId)
+void CQuestManager::SendQuestMode19(int questId)
 {
     Unk_PayloadPtr<CQuest> quest = vfunc_o10_3(questId);
     if (!quest.IsNull()) {
@@ -1598,7 +1598,7 @@ void CQuestManager::FUN_1416cf750(int questId)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1416cf750, CQuestManager, FUN_1416cf750, 275, 0x3F46AE05);
+MS2_REPLACE_METHOD(0x1416cf750, CQuestManager, SendQuestMode19, 275, 0x3F46AE05);
 
 // @0x1416cf870
 void CQuestManager::FUN_1416cf870(int questId)
@@ -1884,7 +1884,7 @@ int CQuestManager::FUN_1416d09d0(int mapId, int warn)
 MS2_REPLACE_METHOD(0x1416d09d0, CQuestManager, FUN_1416d09d0, 570, 0xAE4283FA);
 
 // @0x1416d0c10
-void CQuestManager::FUN_1416d0c10()
+void CQuestManager::SendQuestMode14()
 {
     if (FUN_1416d09d0(*FUN_1401d3200()->FameContentsSkyFortressGotoMapID.Get(), 1) != 0) {
         COutPacket packet(0x29, 0);
@@ -1892,7 +1892,7 @@ void CQuestManager::FUN_1416d0c10()
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x1416d0c10, CQuestManager, FUN_1416d0c10, 118, 0xAC4E24C6);
+MS2_REPLACE_METHOD(0x1416d0c10, CQuestManager, SendQuestMode14, 118, 0xAC4E24C6);
 
 // @0x1416d0e20
 int CQuestManager::FUN_1416d0e20()
@@ -1902,7 +1902,7 @@ int CQuestManager::FUN_1416d0e20()
 MS2_REPLACE_METHOD(0x1416d0e20, CQuestManager, FUN_1416d0e20, 48, 0x5BDD4442);
 
 // @0x1416d0c90
-void CQuestManager::FUN_1416d0c90(int id)
+void CQuestManager::SendQuestMode15(int id)
 {
     if (FUN_14025e7b0()->m_shutdown.Get(static_cast<CContentShutdown::Content>(0x53)) != 0) {
         FUN_141275260(0x2f7, 1, 1);
@@ -1921,7 +1921,7 @@ void CQuestManager::FUN_1416d0c90(int id)
     packet.vfunc_o10_3(id);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1416d0c90, CQuestManager, FUN_1416d0c90, 381, 0x1C198416);
+MS2_REPLACE_METHOD(0x1416d0c90, CQuestManager, SendQuestMode15, 381, 0x1C198416);
 
 // @0x1416d0e60
 int CQuestManager::FUN_1416d0e60(int id)
@@ -1931,7 +1931,7 @@ int CQuestManager::FUN_1416d0e60(int id)
 MS2_REPLACE_METHOD(0x1416d0e60, CQuestManager, FUN_1416d0e60, 58, 0xBEE746D6);
 
 // @0x1416d0ea0
-bool CQuestManager::FUN_1416d0ea0(int result, const CMsgBoxData& message)
+bool CQuestManager::SendQuestMode20(int result, const CMsgBoxData& message)
 {
     if (result != 0) return true;
     unsigned id = FUN_141a02e90(&message, 0, 0);
@@ -1943,7 +1943,7 @@ bool CQuestManager::FUN_1416d0ea0(int result, const CMsgBoxData& message)
     FUN_140710590(packet);
     return true;
 }
-MS2_REPLACE_METHOD(0x1416d0ea0, CQuestManager, FUN_1416d0ea0, 186, 0x7E1A7D4B);
+MS2_REPLACE_METHOD(0x1416d0ea0, CQuestManager, SendQuestMode20, 186, 0x7E1A7D4B);
 
 // @0x1416d0f60
 int CQuestManager::FUN_1416d0f60(int epilogue)

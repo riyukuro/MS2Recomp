@@ -33,16 +33,16 @@ public:
     virtual ~CTradeManagerEx();                     // 0x14185b810 (scalar deleting 0x14185dc00)
 
     // Outgoing packets (type 0x49, sub-code in the comment).
-    void FUN_14185b870(__int64 uid);                // 0  request a trade with uid
+    void SendTradeMode0(__int64 uid);                // 0  request a trade with uid
     void FUN_14185b8e0(__int64 uid, int bAccept);   // 3 accept / 4 decline the request from uid
-    void FUN_14185b970();                           // 7
-    void FUN_14185b9d0(__int64 uid, int a, int b);  // 8
-    void FUN_14185ba70(__int64 uid, int nSlot);     // 9  remove item <uid> from slot
-    void FUN_14185baf0(__int64 uid);                // 10 (once per uid)
-    void FUN_14185bb80();                           // 11
-    void FUN_14185bbe0();                           // 13
-    void FUN_14185bc40(__int64 uid);                // 2
-    void FUN_14185bcb0(__int64 uid);                // 14
+    void SendTradeMode7();                           // 7
+    void SendTradeMode8(__int64 uid, int a, int b);  // 8
+    void SendTradeMode9(__int64 uid, int nSlot);     // 9  remove item <uid> from slot
+    void SendTradeMode10(__int64 uid);                // 10 (once per uid)
+    void SendTradeMode11();                           // 11
+    void SendTradeMode13();                           // 13
+    void SendTradeMode2(__int64 uid);                // 2
+    void SendTradeMode14(__int64 uid);                // 14
 
     // Incoming packet (opcode 0x82): OnTrade switches on the sub-code.
     void OnTrade(CInPacket& packet);

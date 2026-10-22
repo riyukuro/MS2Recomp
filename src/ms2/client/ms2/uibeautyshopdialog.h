@@ -75,7 +75,7 @@ public:
     void FUN_1418c7ce0();
     void FUN_1418c7d20(int bPreview);
     void FUN_1418c7d90(int bPreview);
-    void FUN_1418c7dd0(int nSlot);
+    void SendBeautyMode12(int nSlot);
     void FUN_1418c7fe0(int nSlot);
     void FUN_1418c80b0(CInPacket& packet);              // opcode 0x31
     int FUN_1418c8ee0();                                // init

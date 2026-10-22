@@ -537,7 +537,7 @@ bool CGuildManager::FUN_1413b6d10(CStringW name)
 MS2_REPLACE_METHOD(0x1413B6D10, CGuildManager, FUN_1413b6d10, 763, 0x714A659F);
 
 // @0x1413b7020
-bool CGuildManager::FUN_1413b7020()
+bool CGuildManager::SendGuildMode2()
 {
     CStringW myName = FUN_1413c7c20();
     if (myName.IsEmpty()) return false;
@@ -552,7 +552,7 @@ bool CGuildManager::FUN_1413b7020()
     FUN_140710590(packet);
     return true;
 }
-MS2_REPLACE_METHOD(0x1413B7020, CGuildManager, FUN_1413b7020, 395, 0x358783A5);
+MS2_REPLACE_METHOD(0x1413B7020, CGuildManager, SendGuildMode2, 395, 0x358783A5);
 
 // @0x1413b71c0
 bool CGuildManager::FUN_1413b71c0(CStringW name)
@@ -585,7 +585,7 @@ bool CGuildManager::FUN_1413b71c0(CStringW name)
 MS2_REPLACE_METHOD(0x1413B71C0, CGuildManager, FUN_1413b71c0, 810, 0x7CD4D2E7);
 
 // @0x1413b74f0
-void CGuildManager::FUN_1413b74f0(int accept)
+void CGuildManager::SendGuildMode5(int accept)
 {
     if (FUN_1413b6160() == 1) return;
     if (!FUN_1413b61a0()) return;
@@ -595,10 +595,10 @@ void CGuildManager::FUN_1413b74f0(int accept)
     packet.vfunc_o10_1((unsigned char)accept);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413B74F0, CGuildManager, FUN_1413b74f0, 159, 0xF58ACAD6);
+MS2_REPLACE_METHOD(0x1413B74F0, CGuildManager, SendGuildMode5, 159, 0xF58ACAD6);
 
 // @0x1413b75a0
-void CGuildManager::FUN_1413b75a0()
+void CGuildManager::SendGuildMode7()
 {
     CStringW myName = FUN_1413c7c20();
     if (myName.IsEmpty()) return;
@@ -611,10 +611,10 @@ void CGuildManager::FUN_1413b75a0()
     packet.vfunc_o10_1(7);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413B75A0, CGuildManager, FUN_1413b75a0, 275, 0x3A516CA2);
+MS2_REPLACE_METHOD(0x1413B75A0, CGuildManager, SendGuildMode7, 275, 0x3A516CA2);
 
 // @0x1413b76c0
-void CGuildManager::FUN_1413b76c0(CStringW name)
+void CGuildManager::SendGuildMode8(CStringW name)
 {
     CStringW myName = FUN_1413c7c20();
     if (myName.IsEmpty()) return;
@@ -627,10 +627,10 @@ void CGuildManager::FUN_1413b76c0(CStringW name)
     packet.vfunc_o10_8(name);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413B76C0, CGuildManager, FUN_1413b76c0, 498, 0xEC38E14E);
+MS2_REPLACE_METHOD(0x1413B76C0, CGuildManager, SendGuildMode8, 498, 0xEC38E14E);
 
 // @0x1413b78c0
-void CGuildManager::FUN_1413b78c0(CStringW name, int grade)
+void CGuildManager::SendGuildMode10(CStringW name, int grade)
 {
     int length = name.GetLength();
     if (length < 2 || length > 0x18) {
@@ -648,10 +648,10 @@ void CGuildManager::FUN_1413b78c0(CStringW name, int grade)
     packet.vfunc_o10_1((unsigned char)grade);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413B78C0, CGuildManager, FUN_1413b78c0, 519, 0x9B2C8425);
+MS2_REPLACE_METHOD(0x1413B78C0, CGuildManager, SendGuildMode10, 519, 0x9B2C8425);
 
 // @0x1413b7ad0
-void CGuildManager::FUN_1413b7ad0(CStringW name)
+void CGuildManager::SendGuildMode63(CStringW name)
 {
     CStringW myName = FUN_1413c7c20();
     if (myName.IsEmpty()) return;
@@ -663,7 +663,7 @@ void CGuildManager::FUN_1413b7ad0(CStringW name)
     packet.vfunc_o10_8(name);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413B7AD0, CGuildManager, FUN_1413b7ad0, 398, 0xE3925E98);
+MS2_REPLACE_METHOD(0x1413B7AD0, CGuildManager, SendGuildMode63, 398, 0xE3925E98);
 
 // @0x1413b7c70
 bool CGuildManager::FUN_1413b7c70(int kind, CStringW text)
@@ -699,7 +699,7 @@ bool CGuildManager::FUN_1413b7c70(int kind, CStringW text)
 MS2_REPLACE_METHOD(0x1413B7C70, CGuildManager, FUN_1413b7c70, 1105, 0xB7681062);
 
 // @0x1413b80d0
-bool CGuildManager::FUN_1413b80d0(const CStringW& text)
+bool CGuildManager::SendGuildMode13(const CStringW& text)
 {
     if (!FUN_1413b6160()) return false;
     if (text.GetLength() > 0x14) return false;
@@ -716,10 +716,10 @@ bool CGuildManager::FUN_1413b80d0(const CStringW& text)
     FUN_140710590(packet);
     return true;
 }
-MS2_REPLACE_METHOD(0x1413B80D0, CGuildManager, FUN_1413b80d0, 333, 0x82B4AE83);
+MS2_REPLACE_METHOD(0x1413B80D0, CGuildManager, SendGuildMode13, 333, 0x82B4AE83);
 
 // @0x1413b8230
-bool CGuildManager::FUN_1413b8230()
+bool CGuildManager::SendGuildMode15()
 {
     if (!FUN_1413b6160()) return false;
     MS2Ptr<CGuildMember> member = FUN_1404cf9f0(FUN_1413c7c20());
@@ -737,7 +737,7 @@ bool CGuildManager::FUN_1413b8230()
     FUN_1407105c0(&packet, 0xf, 1000);
     return true;
 }
-MS2_REPLACE_METHOD(0x1413B8230, CGuildManager, FUN_1413b8230, 549, 0x4E99A56C);
+MS2_REPLACE_METHOD(0x1413B8230, CGuildManager, SendGuildMode15, 549, 0x4E99A56C);
 
 // @0x1413b8460
 bool CGuildManager::FUN_1413b8460()
@@ -790,7 +790,7 @@ bool CGuildManager::FUN_1413b8540(int amount)
 MS2_REPLACE_METHOD(0x1413B8540, CGuildManager, FUN_1413b8540, 1331, 0xDB077540);
 
 // @0x1413b8a80
-void CGuildManager::FUN_1413b8a80(CString text)
+void CGuildManager::SendGuildMode65(CString text)
 {
     if (text.GetLength() > 500) {
         MS2_ASSERT_AT(0x74b, FALSE);
@@ -808,10 +808,10 @@ void CGuildManager::FUN_1413b8a80(CString text)
     packet.vfunc_o10_6(text);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413B8A80, CGuildManager, FUN_1413b8a80, 439, 0x2A0F3618);
+MS2_REPLACE_METHOD(0x1413B8A80, CGuildManager, SendGuildMode65, 439, 0x2A0F3618);
 
 // @0x1413b8c40
-void CGuildManager::FUN_1413b8c40(int index, CGuildGrade grade)
+void CGuildManager::SendGuildMode67(int index, CGuildGrade grade)
 {
     if (!grade.FUN_1404c72b0()) return;
     if (grade.grade != index) return;
@@ -827,10 +827,10 @@ void CGuildManager::FUN_1413b8c40(int index, CGuildGrade grade)
     grade.FUN_1404c7160(packet);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413B8C40, CGuildManager, FUN_1413b8c40, 537, 0x9A76DCD2);
+MS2_REPLACE_METHOD(0x1413B8C40, CGuildManager, SendGuildMode67, 537, 0x9A76DCD2);
 
 // @0x1413b8e60
-void CGuildManager::FUN_1413b8e60(int focus, int value)
+void CGuildManager::SendGuildMode68(int focus, int value)
 {
     CStringW myName = FUN_1413c7c20();
     if (myName.IsEmpty()) return;
@@ -843,7 +843,7 @@ void CGuildManager::FUN_1413b8e60(int focus, int value)
     packet.vfunc_o10_3(value);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413B8E60, CGuildManager, FUN_1413b8e60, 364, 0x80447355);
+MS2_REPLACE_METHOD(0x1413B8E60, CGuildManager, SendGuildMode68, 364, 0x80447355);
 
 // @0x1413b8fe0
 void CGuildManager::FUN_1413b8fe0(int skillId)
@@ -983,7 +983,7 @@ void CGuildManager::FUN_1413ba080(int eventId)
 MS2_REPLACE_METHOD(0x1413BA080, CGuildManager, FUN_1413ba080, 636, 0x9FB82CA0);
 
 // @0x1413ba310
-void CGuildManager::FUN_1413ba310(int eventId)
+void CGuildManager::SendGuildMode100(int eventId)
 {
     if (!FUN_1413b6160()) return;
     Unk_PayloadPtr<CGuildXmlData::GuildEvent> eventData = FUN_1404f4530()->FUN_1404d7830(eventId);
@@ -1000,7 +1000,7 @@ void CGuildManager::FUN_1413ba310(int eventId)
     packet.vfunc_o10_3(eventId);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413BA310, CGuildManager, FUN_1413ba310, 403, 0xD386C619);
+MS2_REPLACE_METHOD(0x1413BA310, CGuildManager, SendGuildMode100, 403, 0xD386C619);
 
 // @0x1413ba4b0
 void CGuildManager::FUN_1413ba4b0()
@@ -1196,7 +1196,7 @@ bool CGuildManager::FUN_1413bb490(ItemEntity& item, const CStringW& receiver)
 MS2_REPLACE_METHOD(0x1413BB490, CGuildManager, FUN_1413bb490, 1766, 0x29FDE838);
 
 // @0x1413bbb80
-void CGuildManager::FUN_1413bbb80()
+void CGuildManager::SendGuildMode112()
 {
     if (!m_400) {
         COutPacket packet(0x4b, 0);
@@ -1207,7 +1207,7 @@ void CGuildManager::FUN_1413bbb80()
             dialog->FUN_1419729d0();
     }
 }
-MS2_REPLACE_METHOD(0x1413BBB80, CGuildManager, FUN_1413bbb80, 129, 0x0AB11C34);
+MS2_REPLACE_METHOD(0x1413BBB80, CGuildManager, SendGuildMode112, 129, 0x0AB11C34);
 
 // @0x1413bbc10
 bool CGuildManager::FUN_1413bbc10(const CStringW& title, const CStringW& body)
@@ -1280,7 +1280,7 @@ void CGuildManager::FUN_1413bbfe0(ATL::CAtlArray<MS2Ptr<CGuildPVPSeasonHistoryDa
 MS2_REPLACE_METHOD(0x1413BBFE0, CGuildManager, FUN_1413bbfe0, 103, 0xB4A0F13B);
 
 // @0x1413bc050
-void CGuildManager::FUN_1413bc050()
+void CGuildManager::SendPVPMode3()
 {
     if (FUN_1404d10d0() != 2) {
         CStringW message = FUN_14028de60(0x3c5);
@@ -1302,16 +1302,16 @@ void CGuildManager::FUN_1413bc050()
     packet.vfunc_o10_1(3);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413BC050, CGuildManager, FUN_1413bc050, 314, 0x235DE993);
+MS2_REPLACE_METHOD(0x1413BC050, CGuildManager, SendPVPMode3, 314, 0x235DE993);
 
 // @0x1413bc190
-void CGuildManager::FUN_1413bc190()
+void CGuildManager::SendPVPMode4()
 {
     COutPacket packet(0x61, 0);
     packet.vfunc_o10_1(4);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413BC190, CGuildManager, FUN_1413bc190, 75, 0x5F2CD8B4);
+MS2_REPLACE_METHOD(0x1413BC190, CGuildManager, SendPVPMode4, 75, 0x5F2CD8B4);
 
 // @0x1413bc1f0
 void CGuildManager::FUN_1413bc1f0(__int64 guildId, CStringW guildName)
@@ -1350,7 +1350,7 @@ int CGuildManager::FUN_1413bc390()
 MS2_REPLACE_METHOD(0x1413BC390, CGuildManager, FUN_1413bc390, 263, 0xCC512A9E);
 
 // @0x1413bc4a0
-void CGuildManager::FUN_1413bc4a0(__int64 guildId)
+void CGuildManager::SendGuildMode82(__int64 guildId)
 {
     if (m_joinRequestsForChar.GetCount() >= 10) {
         FUN_1413c66f0(0x52, 0x25, 0);
@@ -1361,20 +1361,20 @@ void CGuildManager::FUN_1413bc4a0(__int64 guildId)
     packet.vfunc_o10_4(guildId);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413BC4A0, CGuildManager, FUN_1413bc4a0, 146, 0x3573EDB9);
+MS2_REPLACE_METHOD(0x1413BC4A0, CGuildManager, SendGuildMode82, 146, 0x3573EDB9);
 
 // @0x1413bc540
-void CGuildManager::FUN_1413bc540(__int64 guildId)
+void CGuildManager::SendGuildMode83(__int64 guildId)
 {
     COutPacket packet(0x4b, 0);
     packet.vfunc_o10_1(0x53);
     packet.vfunc_o10_4(guildId);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413BC540, CGuildManager, FUN_1413bc540, 95, 0x24398D36);
+MS2_REPLACE_METHOD(0x1413BC540, CGuildManager, SendGuildMode83, 95, 0x24398D36);
 
 // @0x1413bc5b0
-void CGuildManager::FUN_1413bc5b0(__int64 characterId, int accept)
+void CGuildManager::SendGuildMode84(__int64 characterId, int accept)
 {
     COutPacket packet(0x4b, 0);
     packet.vfunc_o10_1(0x54);
@@ -1382,10 +1382,10 @@ void CGuildManager::FUN_1413bc5b0(__int64 characterId, int accept)
     packet.vfunc_o10_1((unsigned char)accept);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413BC5B0, CGuildManager, FUN_1413bc5b0, 118, 0x2ED3EDDE);
+MS2_REPLACE_METHOD(0x1413BC5B0, CGuildManager, SendGuildMode84, 118, 0x2ED3EDDE);
 
 // @0x1413bc630
-void CGuildManager::FUN_1413bc630()
+void CGuildManager::SendGuildMode85()
 {
     if (!FUN_1413b6160())
         return;
@@ -1393,10 +1393,10 @@ void CGuildManager::FUN_1413bc630()
     packet.vfunc_o10_1(0x55);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413BC630, CGuildManager, FUN_1413bc630, 91, 0xF18B1323);
+MS2_REPLACE_METHOD(0x1413BC630, CGuildManager, SendGuildMode85, 91, 0xF18B1323);
 
 // @0x1413bc6a0
-void CGuildManager::FUN_1413bc6a0()
+void CGuildManager::SendGuildMode86()
 {
     if (FUN_1413b6160())
         return;
@@ -1404,10 +1404,10 @@ void CGuildManager::FUN_1413bc6a0()
     packet.vfunc_o10_1(0x56);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413BC6A0, CGuildManager, FUN_1413bc6a0, 91, 0xD33A197F);
+MS2_REPLACE_METHOD(0x1413BC6A0, CGuildManager, SendGuildMode86, 91, 0xD33A197F);
 
 // @0x1413bc710
-void CGuildManager::FUN_1413bc710(bool anyFocus)
+void CGuildManager::SendGuildMode87(bool anyFocus)
 {
     if (FUN_1413b6160())
         return;
@@ -1427,10 +1427,10 @@ void CGuildManager::FUN_1413bc710(bool anyFocus)
     cond.FUN_1404c84e0(&packet);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413BC710, CGuildManager, FUN_1413bc710, 321, 0xF2C69BB4);
+MS2_REPLACE_METHOD(0x1413BC710, CGuildManager, SendGuildMode87, 321, 0xF2C69BB4);
 
 // @0x1413bc860
-bool CGuildManager::FUN_1413bc860(CStringW name)
+bool CGuildManager::SendGuildMode88(CStringW name)
 {
     if (FUN_1413b6160())
         return false;
@@ -1454,7 +1454,7 @@ bool CGuildManager::FUN_1413bc860(CStringW name)
     FUN_140710590(packet);
     return true;
 }
-MS2_REPLACE_METHOD(0x1413BC860, CGuildManager, FUN_1413bc860, 516, 0x09853FD9);
+MS2_REPLACE_METHOD(0x1413BC860, CGuildManager, SendGuildMode88, 516, 0x09853FD9);
 
 // @0x1413bca70
 int CGuildManager::FUN_1413bca70(std::map<unsigned __int64, PCBase*>& out)
@@ -1526,7 +1526,7 @@ void CGuildManager::FUN_1413bce40(int skillId, unsigned short skillLevel)
 MS2_REPLACE_METHOD(0x1413BCE40, CGuildManager, FUN_1413bce40, 521, 0x528E31C1);
 
 // @0x1413bd2e0
-void CGuildManager::FUN_1413bd2e0()
+void CGuildManager::SendGuildMode115()
 {
     if (f354 != 0)
         return;
@@ -1542,10 +1542,10 @@ void CGuildManager::FUN_1413bd2e0()
     packet.vfunc_o10_1(0x73);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413BD2E0, CGuildManager, FUN_1413bd2e0, 261, 0x8D07E0A5);
+MS2_REPLACE_METHOD(0x1413BD2E0, CGuildManager, SendGuildMode115, 261, 0x8D07E0A5);
 
 // @0x1413bd3f0
-void CGuildManager::FUN_1413bd3f0()
+void CGuildManager::SendGuildMode116()
 {
     if (f354 == 0)
         return;
@@ -1557,7 +1557,7 @@ void CGuildManager::FUN_1413bd3f0()
     packet.vfunc_o10_1(0x74);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1413BD3F0, CGuildManager, FUN_1413bd3f0, 196, 0x79AB3420);
+MS2_REPLACE_METHOD(0x1413BD3F0, CGuildManager, SendGuildMode116, 196, 0x79AB3420);
 
 // @0x1413bd4c0
 void CGuildManager::FUN_1413bd4c0()
@@ -1588,7 +1588,7 @@ void CGuildManager::FUN_1413bd5c0(NotifyObject* notify)
     if (!FUN_1413b6160())
         return;
     if (FUN_1404d0600(FUN_1413c7c20(), 2))
-        FUN_1413bc630();
+        SendGuildMode85();
 }
 MS2_REPLACE_METHOD(0x1413BD5C0, CGuildManager, FUN_1413bd5c0, 107, 0xE57A6F3B);
 
@@ -1701,11 +1701,11 @@ void CGuildManager::FUN_1413bdbb0(CInPacket& packet)
     }
     Unk_GuildPlayer* player = (Unk_GuildPlayer*)FUN_1403ed2d0()->FUN_141bd0cc0();
     if (FUN_140ae6540(FUN_1409a8b10())->m_refuseGuildInvite) {
-        FUN_1403ed290()->FUN_1413b74f0(0);
+        FUN_1403ed290()->SendGuildMode5(0);
         return;
     }
     if (player != 0 && player->FUN_140967420()->FUN_140743550()) {
-        FUN_1403ed290()->FUN_1413b74f0(0);
+        FUN_1403ed290()->SendGuildMode5(0);
     } else {
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140632a60(0x38c, m_invite->f30, m_invite->f20), 0, CStringW(s_strGuildInvite));
         if (box.get()) {
@@ -2186,7 +2186,7 @@ void CGuildManager::FUN_1413c0880(CInPacket& packet)
             if (isMe) {
                 FUN_1412751b0(FUN_14052bd00(0x3af, FUN_1404f0b70(&grade)->name), 0xd);
                 if (FUN_1404d0600(FUN_1413c7c20(), 2) && m_joinRequestsForGuild.IsEmpty())
-                    FUN_1413bc630();
+                    SendGuildMode85();
             } else {
                 FUN_1412751b0(FUN_140632a60(0x3ae, name, FUN_1404f0b70(&grade)->name), 0xd);
             }
@@ -2812,7 +2812,7 @@ void CGuildManager::FUN_1413c45e0(CInPacket& packet)
         return;
     MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14028b8e0(L"s_guild_notify_vsGame_open"), 1);
     if (box.get()) {
-        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CGuildManager::FUN_1413c7cb0));
+        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CGuildManager::SendGuildMode120));
         box->FUN_141a01ca0(0x1e, 1, FUN_14028de60(0x2b8));
         box->FUN_141a02460(1);
         box->FUN_141a02480(1);
@@ -2979,7 +2979,7 @@ void CGuildManager::FUN_1413c5360(CInPacket& packet)
     CStringW guildName = static_cast<CInputStream&>(packet).vfunc_o8_8();
     if (guildId > 0) {
         FUN_1412751b0(FUN_14052bd00(0x3ce, guildName), 0xd);
-        FUN_1413bc6a0();
+        SendGuildMode86();
     }
 }
 MS2_REPLACE_METHOD(0x1413C5360, CGuildManager, FUN_1413c5360, 218, 0xD82E497B);
@@ -2993,7 +2993,7 @@ void CGuildManager::FUN_1413c5440(CInPacket& packet)
     CStringW guildName = static_cast<CInputStream&>(packet).vfunc_o8_8();
     if (guildId > 0) {
         FUN_1412751b0(FUN_14052bd00(0x3cf, guildName), 0xd);
-        FUN_1413bc6a0();
+        SendGuildMode86();
     }
 }
 MS2_REPLACE_METHOD(0x1413C5440, CGuildManager, FUN_1413c5440, 218, 0xC3304083);
@@ -3514,7 +3514,7 @@ MS2_REPLACE_METHOD(0x1413C8000, CGuildManager, FUN_1413c8000, 255, 0x48CD7B49);
 
 // The vs-game entry prompt's result: enter on the first button.
 // @0x1413c7cb0
-bool CGuildManager::FUN_1413c7cb0(int result, const CMsgBoxData& box)
+bool CGuildManager::SendGuildMode120(int result, const CMsgBoxData& box)
 {
     if (result != 0)
         return true;
@@ -3525,4 +3525,4 @@ bool CGuildManager::FUN_1413c7cb0(int result, const CMsgBoxData& box)
     FUN_140710590(packet);
     return true;
 }
-MS2_REPLACE_METHOD(0x1413C7CB0, CGuildManager, FUN_1413c7cb0, 130, 0x3FF8FC6D);
+MS2_REPLACE_METHOD(0x1413C7CB0, CGuildManager, SendGuildMode120, 130, 0x3FF8FC6D);

@@ -854,7 +854,7 @@ bool COffscreenWebBrowser::OnProcessMessageReceived(CefRefPtr<CefBrowser> browse
         __int64 nOwner = message->GetArgumentList()->GetInt(0);
         MyPC* pPlayer = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer != NULL) {
-            pPlayer->FUN_141529c80(0, 0, 0, nOwner, CStringW(L""));
+            pPlayer->SendRequestMoveFieldMode2(0, 0, 0, nOwner, CStringW(L""));
         }
     }
     return false;

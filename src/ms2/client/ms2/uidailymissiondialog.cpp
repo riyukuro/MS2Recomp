@@ -227,7 +227,7 @@ int UIDailyMissionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             int nItem = data.FUN_1422b8b10();
-            FUN_140c00070(nItem);
+            SendQuest(nItem);
         }
     }
     else if (_stricmp(szMethod, "onChangeIndex") == 0)
@@ -348,7 +348,7 @@ int UIDailyMissionDialog::FUN_140bffff0()
 
 // Request the reward of a finished quest.
 // @0x140c00070
-void UIDailyMissionDialog::FUN_140c00070(int nQuestId)
+void UIDailyMissionDialog::SendQuest(int nQuestId)
 {
     Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())

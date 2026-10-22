@@ -54,7 +54,7 @@ public:
     void FUN_140c337c0();                                                   // forget the movie clips and buttons
     void FUN_140c33840(const Scaleform::GFx::FunctionHandler::Params& params);   // the install button
     void FUN_140c33fa0(const Scaleform::GFx::FunctionHandler::Params& params);   // the home button
-    void FUN_140c33fd0(const Scaleform::GFx::FunctionHandler::Params& params);   // the remove button
+    void SendItemBillboard(const Scaleform::GFx::FunctionHandler::Params& params);   // the remove button
     bool FUN_140c34050(int nResult, const CMsgBoxData& data);               // the install confirmation box result
 
 private:

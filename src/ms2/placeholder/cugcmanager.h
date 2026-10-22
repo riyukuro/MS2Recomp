@@ -176,12 +176,12 @@ public:
     void FUN_1418829b0(int nType);                          // open the upload directory in the explorer
     int FUN_141882a70(int nIndex, int bImageOnly);          // open a file in Paint
     void FUN_141882d80(MS2Ptr<CUgcUploadCtrl> spCtrl, int nResult, const CString& strPath);   // the file of an upload was sent
-    void FUN_141883170();                                   // send an item upload
-    void FUN_1418832a0();                                   // send the current upload
-    void FUN_141883380(CString strPath);                    // a profile image was uploaded
+    void SendUGCMode1();                                   // send an item upload
+    void SendUGCMode3();                                   // send the current upload
+    void SendUGCMode11(CString strPath);                    // a profile image was uploaded
     void FUN_141883400(CRBMap<int, int>& hours, const Unk_BannerDay& day);   // reserve banner hours
-    void FUN_141883780(CString strPath);                    // a wedding profile image was uploaded
-    void FUN_141883800();                                   // the upload failed
+    void SendUGCMode12(CString strPath);                    // a wedding profile image was uploaded
+    void SendUGCMode0();                                   // the upload failed
     void FUN_141883860(CString strPath);                    // the upload is done: download it for the viewers
     void FUN_141883df0(MS2Ptr<CItem> spItem, const egf::EntityID& id);  // download the UGC look of an item
     int FUN_1418841f0(CUgcItemLook* pLook, MS2Ptr<CItem> spItem, const UgcItemIcon::CallBackData* pCallBack);   // download the icon of a look
@@ -275,7 +275,7 @@ public:
     void FUN_14188cb10(int nType);                          // extract the bundled images of an upload kind
     void FUN_14188d1e0(CAtlArray<MS2Ptr<CUploadFile> >& files);   // re-create the thumbnails
     int FUN_14188fdb0(int nDialog);                         // open one upload dialog, close the others
-    void FUN_14188feb0();                                   // request a blueprint upload
+    void SendRequestCube();                                   // request a blueprint upload
     void FUN_14188ff10(CInPacket& packet);                  // the blueprint upload was accepted
 
 private:

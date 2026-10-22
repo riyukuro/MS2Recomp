@@ -970,7 +970,7 @@ void FUN_140d73ff0(CStringW strText);
 void FUN_140d73bc0(int nId, int a, int b, CStringW strTag);
 void FUN_141275260(int nStringId, int a, int b);
 int FUN_140896350(CUgcMarketProduct* pUgc);
-void FUN_140ee86f0(void* pBlueprint);
+void SendRequestCubeMode66(void* pBlueprint);
 struct Unk_McTimeKey { __int64 a; __int64 b; __int64 c; __int64 d; };
 extern int DAT_143ab2820;
 bool FUN_140896230(CUgcMarketProduct* pUgc, Unk_McTimeKey* pKey);
@@ -1127,7 +1127,7 @@ void FUN_140ec0b50(MS2Ptr<CMeratMarketProduct> spProduct)
         FUN_140d73ff0(CStringW(L"s_meratmarket_error_ugc_calculate_invalid_blueprint_item"));
         return;
     }
-    FUN_140ee86f0(ppBlueprint);
+    SendRequestCubeMode66(ppBlueprint);
 }
 
 // Open the bill dialog for a single product after the checks.

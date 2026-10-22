@@ -101,7 +101,7 @@ CStringW FUN_14016a730(const char* sz, int nCodePage);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 bool FUN_1408a06a0(int nMapId, int nGroup);
-void FUN_140ee8360(int nSlot);
+void SendRequestCubeMode35(int nSlot);
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
@@ -296,7 +296,7 @@ bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
                     {
                         spBox->FUN_140533ff0(nSlot);
                         spBox->FUN_140b76940(CStringW(strName));
-                        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faadb0));
+                        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode46));
                         FUN_140d73c60(spBox);
                         return true;
                     }
@@ -332,7 +332,7 @@ bool UIHomeSaveSlotDialog::FUN_140faac30(int nResult, const CMsgBoxData& data)
             }
             if (!bBlocked)
             {
-                FUN_140ee8360(nSlot);
+                SendRequestCubeMode35(nSlot);
             }
             else
             {
@@ -348,7 +348,7 @@ bool UIHomeSaveSlotDialog::FUN_140faac30(int nResult, const CMsgBoxData& data)
 MS2_REPLACE_METHOD(0x140FAAC30, UIHomeSaveSlotDialog, FUN_140faac30, 377, 0x4F722325);
 
 // @0x140faadb0
-bool UIHomeSaveSlotDialog::FUN_140faadb0(int nResult, const CMsgBoxData& data)
+bool UIHomeSaveSlotDialog::SendRequestCubeMode46(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
@@ -362,7 +362,7 @@ bool UIHomeSaveSlotDialog::FUN_140faadb0(int nResult, const CMsgBoxData& data)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140FAADB0, UIHomeSaveSlotDialog, FUN_140faadb0, 235, 0x407FDCD3);
+MS2_REPLACE_METHOD(0x140FAADB0, UIHomeSaveSlotDialog, SendRequestCubeMode46, 235, 0x407FDCD3);
 
 // @0x140faaeb0
 bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
@@ -386,7 +386,7 @@ bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
                     {
                         spBox->FUN_140533ff0(nSlot);
                         spBox->FUN_140b76940(CStringW(strName));
-                        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140fab420));
+                        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode64));
                         FUN_140d73c60(spBox);
                         return true;
                     }
@@ -403,7 +403,7 @@ bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
 }
 
 // @0x140fab310
-bool UIHomeSaveSlotDialog::FUN_140fab310(int nResult, const CMsgBoxData& data)
+bool UIHomeSaveSlotDialog::SendRequestCubeMode65(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
@@ -422,10 +422,10 @@ bool UIHomeSaveSlotDialog::FUN_140fab310(int nResult, const CMsgBoxData& data)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140FAB310, UIHomeSaveSlotDialog, FUN_140fab310, 263, 0xB9710357);
+MS2_REPLACE_METHOD(0x140FAB310, UIHomeSaveSlotDialog, SendRequestCubeMode65, 263, 0xB9710357);
 
 // @0x140fab420
-bool UIHomeSaveSlotDialog::FUN_140fab420(int nResult, const CMsgBoxData& data)
+bool UIHomeSaveSlotDialog::SendRequestCubeMode64(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
@@ -439,7 +439,7 @@ bool UIHomeSaveSlotDialog::FUN_140fab420(int nResult, const CMsgBoxData& data)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140FAB420, UIHomeSaveSlotDialog, FUN_140fab420, 235, 0x70C5E0AF);
+MS2_REPLACE_METHOD(0x140FAB420, UIHomeSaveSlotDialog, SendRequestCubeMode64, 235, 0x70C5E0AF);
 
 // @0x140fab520
 void UIHomeSaveSlotDialog::FUN_140fab520(int nSlot)
@@ -505,7 +505,7 @@ void UIHomeSaveSlotDialog::FUN_140fabe80(int nSlot)
         if (spBox.get() != 0)
         {
             spBox->FUN_140533ff0(nSlot);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140fab310));
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode65));
             FUN_140d73c60(spBox);
         }
     }

@@ -216,7 +216,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                             Unk_CameraSetting setting;
                             if (FUN_140aed440(Unk_CameraManager::FUN_1409478c0(), &setting) == 0)
                             {
-                                FUN_1409f1890();
+                                SendRequestTaxiMode5();
                             }
                             else
                             {
@@ -237,7 +237,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                                 FUN_140aed580(Unk_CameraManager::FUN_1409478c0(), &mv, 1, 1.0f);
                                 FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 4, false);
                                 FUN_140ca7230(FUN_1409f24b0(), (unsigned)(long long)(fLen * 0.8),
-                                              Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1890));
+                                              Unk_TaxiCallback(this, &CAutoFindTaxiStation::SendRequestTaxiMode5));
                                 if (player != 0)
                                     FUN_14166cce0(player, 0x100);
                             }
@@ -257,7 +257,7 @@ void CAutoFindTaxiStation::FUN_1409f1450()
 }
 
 // @0x1409f1890
-void CAutoFindTaxiStation::FUN_1409f1890()
+void CAutoFindTaxiStation::SendRequestTaxiMode5()
 {
     if (m_nActive == 0)
         return;

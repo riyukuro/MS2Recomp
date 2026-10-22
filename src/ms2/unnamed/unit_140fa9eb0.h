@@ -25,10 +25,10 @@ public:
     void FUN_140faa750();                                                               // load mode
     bool FUN_140faa7d0(int nResult, const CMsgBoxData& data);                           // overwrite confirmed / name entered: send save
     bool FUN_140faac30(int nResult, const CMsgBoxData& data);                           // load confirmed: send load
-    bool FUN_140faadb0(int nResult, const CMsgBoxData& data);                           // overwrite confirmed: send save
+    bool SendRequestCubeMode46(int nResult, const CMsgBoxData& data);                           // overwrite confirmed: send save
     bool FUN_140faaeb0(int nResult, const CMsgBoxData& data);                           // blueprint: name entered, send save
-    bool FUN_140fab310(int nResult, const CMsgBoxData& data);                           // blueprint: load confirmed
-    bool FUN_140fab420(int nResult, const CMsgBoxData& data);                           // blueprint: overwrite confirmed
+    bool SendRequestCubeMode65(int nResult, const CMsgBoxData& data);                           // blueprint: load confirmed
+    bool SendRequestCubeMode64(int nResult, const CMsgBoxData& data);                           // blueprint: overwrite confirmed
     void FUN_140fab520(int nSlot);                                                      // ask for a name to save the slot
     void FUN_140fab8c0(int nSlot);                                                      // ask to load the slot
     void FUN_140fabae0(int nSlot);                                                      // blueprint: ask for a name to save the slot

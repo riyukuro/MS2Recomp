@@ -1224,7 +1224,7 @@ MS2_REPLACE(0x14062A3D0, FUN_14062a3d0, 2007, 0xA6CFDB87);
 
 // @0x14062abb0
 // The socket unlock confirm box result: request the unlock (packet 0x88, mode 8) with the box's count and slot.
-bool FUN_14062abb0(MS2Ptr<CItem> spItem, const CMsgBoxData& box)
+bool SendItemSocketSystem(MS2Ptr<CItem> spItem, const CMsgBoxData& box)
 {
     if (spItem == (CItem*)0)
         return false;
@@ -1245,7 +1245,7 @@ bool FUN_14062abb0(MS2Ptr<CItem> spItem, const CMsgBoxData& box)
     FUN_140710590(packet);
     return true;
 }
-MS2_REPLACE(0x14062ABB0, FUN_14062abb0, 443, 0xB6C836FB);
+MS2_REPLACE(0x14062ABB0, SendItemSocketSystem, 443, 0xB6C836FB);
 
 class Unk_ItemEnchantData : public CItemStatus {};
 CStringW FUN_14028b8e0(const CStringW& str);

@@ -543,7 +543,7 @@ void UIHomeMenuDialog::FUN_140c2a4b0()
         FUN_141a024e0(spBox.operator->(), FUN_14028de60(0x9d1), 0);
         FUN_141a02730(spBox.operator->(), 0);
         FUN_141a02770(spBox.operator->(), 0x1c0, 400);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b3e0));
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::SendRequestCube));
         FUN_140d73c60(spBox);
     }
 }
@@ -792,7 +792,7 @@ bool UIHomeMenuDialog::FUN_140c2b390(int nResult, const CMsgBoxData& data)
 }
 
 // @0x140c2b3e0
-bool UIHomeMenuDialog::FUN_140c2b3e0(int nResult, const CMsgBoxData& data)
+bool UIHomeMenuDialog::SendRequestCube(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
@@ -851,7 +851,7 @@ MS2_REPLACE_METHOD(0x140C2B0E0, UIHomeMenuDialog, FUN_140c2b0e0, 74, 0x0CFB8B11)
 MS2_REPLACE_METHOD(0x140C2B130, UIHomeMenuDialog, FUN_140c2b130, 74, 0xB6DDA79C);
 MS2_REPLACE_METHOD(0x140C2B180, UIHomeMenuDialog, FUN_140c2b180, 518, 0x78CE4CA7);
 MS2_REPLACE_METHOD(0x140C2B390, UIHomeMenuDialog, FUN_140c2b390, 72, 0xF9694F52);
-MS2_REPLACE_METHOD(0x140C2B3E0, UIHomeMenuDialog, FUN_140c2b3e0, 157, 0x84739265);
+MS2_REPLACE_METHOD(0x140C2B3E0, UIHomeMenuDialog, SendRequestCube, 157, 0x84739265);
 MS2_REPLACE(0x140C2B5C0, FUN_140c2b5c0, 147, 0xE2946EBD);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca27e0-0x142ca2950 .text$yd

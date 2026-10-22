@@ -21,7 +21,7 @@ public:
     void vfunc_6() override;                            // 0x140c48820 redraw both items after a swap
     void vfunc_7(MS2Ptr<AScript>) override;             // 0x140c47eb0
     void FUN_140c48c70(CInPacket*);                     // operation 9: a gemstone was put into the target
-    void FUN_140c48ce0(CInPacket*);                     // operation 0xb: a gemstone was taken off the source
+    void SendItemSocketSystemMode8(CInPacket*);                     // operation 0xb: a gemstone was taken off the source
     bool FUN_140c48df0(int, const CMsgBoxData&);        // the swap confirm box answer: take the source gemstones off
     void FUN_140c49000(ItemInfoSlot&, ASSlot&);         // bag slot callback
     void FUN_140c49110();                               // clear everything

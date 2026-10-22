@@ -31,7 +31,7 @@ public:
     void FUN_140f71ea0(ASObj&);
     void FUN_140f72460(CInPacket*);
     void FUN_140f727e0(CInPacket*);
-    void FUN_140f72a40(const Scaleform::GFx::FunctionHandler::Params&);
+    void SendItemSocketSystemMode16(const Scaleform::GFx::FunctionHandler::Params&);
     bool FUN_140f72bc0(int, const CMsgBoxData&);
     bool FUN_140f72c80(int, const CMsgBoxData&);
     void FUN_140f72e60(ItemInfoSlot&, ASSlot&);

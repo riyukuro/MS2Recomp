@@ -353,7 +353,7 @@ void UILevelUpGuideDialog::vfunc_oa0_9(unsigned short nLevel)
 }
 
 // @0x140f85290
-bool UILevelUpGuideDialog::FUN_140f85290(int nResult, const CMsgBoxData& rBox)
+bool UILevelUpGuideDialog::SendQuestMode24(int nResult, const CMsgBoxData& rBox)
 {
     if (nResult == 0) {
         unsigned nQuest = rBox.FUN_141a02e90(0, 0);
@@ -442,7 +442,7 @@ void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
     if (spData->m_338.m_value == 1 && pSelf->FUN_141654700() == 1) {
         if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028b8e0(L"s_recommend_contents_newbie_warn"), 0, L"")) {
             spBox->FUN_140534050(nQuest);
-            spBox->FUN_141a027c0(LgAnswerDelegate(this, &UILevelUpGuideDialog::FUN_140f85290));
+            spBox->FUN_141a027c0(LgAnswerDelegate(this, &UILevelUpGuideDialog::SendQuestMode24));
             FUN_140d73c60(spBox);
         }
     }

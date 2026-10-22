@@ -396,7 +396,7 @@ void UIMailListDialog::OnLoadComplete()
     m_mapChecked.RemoveAll();
     m_nPage = 0;
     FUN_1419e73f0();
-    FUN_1419e90d0();
+    SendMailMode0();
 }
 MS2_REPLACE_METHOD(0x1419E36F0, UIMailListDialog, OnLoadComplete, 78, 0x5B61BC99); // UIMailListDialog::OnLoadComplete
 
@@ -439,7 +439,7 @@ void UIMailListDialog::vfunc_15()
         FUN_141275260(0x22a, 1, 1);
     }
     if (m_bRefresh && m_timer.FUN_140268870(1000) != 0)
-        FUN_1419e90d0();
+        SendMailMode0();
 }
 MS2_REPLACE_METHOD(0x1419E4DE0, UIMailListDialog, vfunc_15, 252, 0x4FCFDE97); // UIMailListDialog::vfunc_15
 
@@ -582,7 +582,7 @@ void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
 MS2_REPLACE_METHOD(0x1419E5A10, UIMailListDialog, FUN_1419e5a10, 1959, 0xC519097B); // FUN_1419e5a10
 
 // @0x1419e61c0
-void UIMailListDialog::FUN_1419e61c0(__int64 nMailId)
+void UIMailListDialog::SendMailMode2(__int64 nMailId)
 {
     CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(nMailId).get();
     if (pMail == 0)
@@ -595,10 +595,10 @@ void UIMailListDialog::FUN_1419e61c0(__int64 nMailId)
         FUN_140710590(packet);
     }
 }
-MS2_REPLACE_METHOD(0x1419E61C0, UIMailListDialog, FUN_1419e61c0, 199, 0x9CBB1495); // FUN_1419e61c0
+MS2_REPLACE_METHOD(0x1419E61C0, UIMailListDialog, SendMailMode2, 199, 0x9CBB1495); // SendMailMode2
 
 // @0x1419e6290
-void UIMailListDialog::FUN_1419e6290(__int64 nMailId)
+void UIMailListDialog::SendMailMode11(__int64 nMailId)
 {
     CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(nMailId).get();
     if (pMail == 0)
@@ -610,7 +610,7 @@ void UIMailListDialog::FUN_1419e6290(__int64 nMailId)
     packet.Encode8(pMail->FUN_140690350());
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x1419E6290, UIMailListDialog, FUN_1419e6290, 200, 0x09F47CCF); // FUN_1419e6290
+MS2_REPLACE_METHOD(0x1419E6290, UIMailListDialog, SendMailMode11, 200, 0x09F47CCF); // SendMailMode11
 
 // @0x1419e6360
 void UIMailListDialog::FUN_1419e6360(__int64 nMailId)
@@ -831,7 +831,7 @@ bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& dat
 
 // MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e90d0
-void UIMailListDialog::FUN_1419e90d0()
+void UIMailListDialog::SendMailMode0()
 {
     if (m_30 == 0)
         return;
@@ -843,7 +843,7 @@ void UIMailListDialog::FUN_1419e90d0()
         m_bRefresh = false;
     }
 }
-MS2_REPLACE_METHOD(0x1419E90D0, UIMailListDialog, FUN_1419e90d0, 128, 0xBD218E6E); // FUN_1419e90d0
+MS2_REPLACE_METHOD(0x1419E90D0, UIMailListDialog, SendMailMode0, 128, 0xBD218E6E); // SendMailMode0
 
 // MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e37d0
@@ -858,7 +858,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         {
             __int64 nMailId = atoi(data.FUN_1422b8d30());
             FUN_1419e5a10(nMailId);
-            FUN_1419e61c0(nMailId);
+            SendMailMode2(nMailId);
         }
         return 1;
     }
@@ -887,7 +887,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             __int64 nMailId = atoi(data.FUN_1422b8d30());
-            FUN_1419e6290(nMailId);
+            SendMailMode11(nMailId);
         }
     }
     else if (_stricmp("onReply", szMethod) == 0)
@@ -942,7 +942,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             if (spBox.get() != 0)
             {
                 spBox->FUN_140b76940(CStringW(strIds));
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7640));
+                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode18));
                 FUN_140d73c60(spBox);
             }
         }
@@ -987,7 +987,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             if (spBox.get() != 0)
             {
                 spBox->FUN_140b76940(CStringW(strIds));
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e77c0));
+                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode19));
                 FUN_140d73c60(spBox);
             }
         }
@@ -1072,7 +1072,7 @@ void UIMailListDialog::FUN_1419e6410(__int64 nMailId)
     if (spBox.get() != 0)
     {
         spBox->FUN_140b76940(FUN_141b71910(nMailId));
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7c80));
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::SendMailMode13));
         FUN_140d73c60(spBox);
     }
 }
@@ -1123,7 +1123,7 @@ MS2_REPLACE_METHOD(0x1419E74E0, UIMailListDialog, FUN_1419e74e0, 335, 0xE1BB44D8
 
 // MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e7640
-bool UIMailListDialog::FUN_1419e7640(int nButton, const CMsgBoxData& data)
+bool UIMailListDialog::SendMailMode18(int nButton, const CMsgBoxData& data)
 {
     if (nButton == 0)
     {
@@ -1139,11 +1139,11 @@ bool UIMailListDialog::FUN_1419e7640(int nButton, const CMsgBoxData& data)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x1419E7640, UIMailListDialog, FUN_1419e7640, 377, 0x270B2582); // FUN_1419e7640
+MS2_REPLACE_METHOD(0x1419E7640, UIMailListDialog, SendMailMode18, 377, 0x270B2582); // SendMailMode18
 
 // MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e77c0
-bool UIMailListDialog::FUN_1419e77c0(int nButton, const CMsgBoxData& data)
+bool UIMailListDialog::SendMailMode19(int nButton, const CMsgBoxData& data)
 {
     if (nButton == 0)
     {
@@ -1159,7 +1159,7 @@ bool UIMailListDialog::FUN_1419e77c0(int nButton, const CMsgBoxData& data)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x1419E77C0, UIMailListDialog, FUN_1419e77c0, 377, 0x97E3EE98); // FUN_1419e77c0
+MS2_REPLACE_METHOD(0x1419E77C0, UIMailListDialog, SendMailMode19, 377, 0x97E3EE98); // SendMailMode19
 
 // MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e7940
@@ -1194,7 +1194,7 @@ MS2_REPLACE_METHOD(0x1419E7940, UIMailListDialog, FUN_1419e7940, 812, 0x6BFE17E1
 
 // MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e7c80
-bool UIMailListDialog::FUN_1419e7c80(int nButton, const CMsgBoxData& data)
+bool UIMailListDialog::SendMailMode13(int nButton, const CMsgBoxData& data)
 {
     if (nButton == 0)
     {
@@ -1219,7 +1219,7 @@ bool UIMailListDialog::FUN_1419e7c80(int nButton, const CMsgBoxData& data)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x1419E7C80, UIMailListDialog, FUN_1419e7c80, 534, 0x573E56A5); // FUN_1419e7c80
+MS2_REPLACE_METHOD(0x1419E7C80, UIMailListDialog, SendMailMode13, 534, 0x573E56A5); // SendMailMode13
 
 // @0x1419e7ea0
 void UIMailListDialog::FUN_1419e7ea0(CStringW strIds, ATL::CAtlArray<__int64>& aIds, int bSkipAttached)

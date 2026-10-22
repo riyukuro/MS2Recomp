@@ -84,7 +84,7 @@ public:
     void FUN_14199bed0(const __int64& nMesos);                  // the meso amount of the box
     static int FUN_14199bfc0();                                 // a trade is running (and the player is alive)
     void FUN_14199c0d0();                                       // refresh the "m_expand" text
-    static void FUN_14199c230(int nTab, bool bStack);           // send the sort request
+    static void SendRequestItemInventory(int nTab, bool bStack);           // send the sort request
     void FUN_14199c2b0(CStringW strText);                       // scroll to the item matching the text
     void FUN_14199c610(CStringW strSearch, ATL::CAtlList<CStringW>& names);   // the item names of the tab containing the text
     bool FUN_14199c7b0(int nResult, const CMsgBoxData& box);    // "not found" box closed: focus the input
