@@ -8008,3 +8008,8 @@ compress2	142724100	func
 ?Construct@VM@AS3@GFx@Scaleform@@QEAAXPEBDAEAVValue@234@IPEBV5234@_N@Z	1424f0750	func
 ?RegisterImplementedInterface@CTraits@InstanceTraits@AS3@GFx@Scaleform@@IEAAXAEBVMultiname@345@@Z	142446010	func
 ?ThrowArgumentError@VM@AS3@GFx@Scaleform@@QEAAXAEBVError@1234@@Z	14252ec90	func
+?ForEachChild_GC_Internal@AS3@GFx@Scaleform@@YAXPEAV?$RefCountCollector@$0BED@@123@AEBVValue@123@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@123@@ZAEBV6123@@Z	142504530	func
+?MakeWeakRef@Value@AS3@GFx@Scaleform@@QEAA_NXZ	142516720	func
+?MarkInCycleCall@?$RefCountCollector@$0BED@@AS3@GFx@Scaleform@@SAXPEAV1234@PEAPEBV?$RefCountBaseGC@$0BED@@234@@Z	1423df850	func
+?StrictEqual@AS3@GFx@Scaleform@@YA_NAEBVValue@123@0@Z	14252cbf0	func
+?ToNumberValue@Value@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@XZ	14252f6d0	func
