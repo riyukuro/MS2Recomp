@@ -355,6 +355,38 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+// Vtable 0x1431d2fa8 (sizeof 0x550, no new members): the outer glow drawn around characters
+// ("MS2OuterGlowCharacterMaterial", typed as MS2CharacterMaterial, version 6, per-pixel lighting forced). The
+// position runs through ProjectPositionWorldToViewToProj_Outer and the pixels output the gkOuterColor global.
+class MS2OuterGlowCharacterMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+
+public:
+    MS2OuterGlowCharacterMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool GeneratePixelShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+    virtual ReturnCode GenerateShaderDescArray(NiMaterialDescriptor* pkMaterialDescriptor,
+        RenderPassDescriptor* pkRenderPasses, unsigned int uiMaxCount, unsigned int& uiCountAdded);
+    virtual bool HandlePositionFragment(Context& kContext, TransformType eTransType,
+        NiMaterialResource*& pkVertWorldPos, NiMaterialResource*& pkWorldMatrix);
+    virtual bool SetupTransformPipeline(Context& kContext, NiMaterialResource* pkOutProjPos,
+        NiStandardVertexProgramDescriptor* pkVertexDesc, bool bForceWorldView, bool bForceViewPos,
+        NiMaterialResource*& pkWorldPos, NiMaterialResource*& pkViewPos, NiMaterialResource*& pkProjectedPos,
+        NiMaterialResource*& pkWorldNormal, NiMaterialResource*& pkWorldView);
+    virtual bool HandleMS2FinalPixelOutputs(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource* pkWorldNormal, NiMaterialResource* pkViewVector, NiMaterialResource* pkDiffuseAccum,
+        NiMaterialResource* pkSpecularAccum, NiMaterialResource* pkOpacityAccum);
+
+    // ---- new virtual ----
+    // +0x398 HandleViewProjectionFragment through ProjectPositionWorldToViewToProj_Outer (fed the world normal);
+    // bForceViewPos is unused, the view position is always produced
+    virtual bool HandleOuterViewProjection(Context& kContext, bool bForceViewPos, NiMaterialResource* pkWorldPos,
+        NiMaterialResource* pkWorldNormal, NiMaterialResource*& pkProjectedPos, NiMaterialResource*& pkViewPos);
+};
+
+//--------------------------------------------------------------------------------------------------
 #define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
     class classname : public MS2StandardMaterial                                                    \
     {                                                                                               \
@@ -362,7 +394,6 @@ public:
         classname(bool bAutoCreateCaches);                                                          \
     }
 
-MS2_DECLARE_STANDARD_MATERIAL(MS2OuterGlowCharacterMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2DepthMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2DefaultShimmerValueMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2ShimmerMaterial);
