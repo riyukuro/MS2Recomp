@@ -271,6 +271,34 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+// Vtable 0x1431d20b8: writes the base map's UV set out as the pixel colour (UV debug / bake pass), version offset 1 of
+// MS2StandardMaterial. The transform pipeline only produces the world and projected positions.
+class TexCoordWriteMaterial : public MS2StandardMaterial
+{
+    NiDeclareRTTI;
+public:
+    TexCoordWriteMaterial(bool bAutoCreateCaches);
+
+    // protected in the original; public here so the hooks can bind them
+    virtual bool GenerateVertexShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+    virtual bool GeneratePixelShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+    virtual bool SetupTransformPipeline(Context& kContext, NiMaterialResource* pkOutProjPos,
+        NiStandardVertexProgramDescriptor* pkVertexDesc, bool bForceWorldView, bool bForceViewPos,
+        NiMaterialResource*& pkWorldPos, NiMaterialResource*& pkViewPos, NiMaterialResource*& pkProjectedPos,
+        NiMaterialResource*& pkWorldNormal, NiMaterialResource*& pkWorldView);
+    virtual bool HandleVertexUVSets(Context& kContext, NiStandardVertexProgramDescriptor* pkVertDesc,
+        NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldReflect);
+
+    // ---- new virtuals ----
+    // +0x398 the pixel output: the base map's UV set widened to float4, or zero when there is no base map
+    virtual bool HandleTexCoordOutput(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource** apkUVSets);
+    // +0x3a0 binds pkInput through a Float2ToFloat4 node
+    virtual bool ConvertFloat2ToFloat4(Context& kContext, NiMaterialResource* pkInput,
+        NiMaterialResource*& pkOutput);
+};
+
+//--------------------------------------------------------------------------------------------------
 #define MS2_DECLARE_STANDARD_MATERIAL(classname)                                                    \
     class classname : public MS2StandardMaterial                                                    \
     {                                                                                               \
@@ -278,7 +306,6 @@ public:
         classname(bool bAutoCreateCaches);                                                          \
     }
 
-MS2_DECLARE_STANDARD_MATERIAL(TexCoordWriteMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MRTShaderPickerMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2MotionBlurMaterial);
 MS2_DECLARE_STANDARD_MATERIAL(MS2OuterGlowCharacterMaterial);
