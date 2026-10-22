@@ -9268,9 +9268,7 @@ void WorldService::FUN_141bda460()
 }
 MS2_REPLACE_METHOD(0x141BDA460, WorldService, FUN_141bda460, 33, 0xCF45CC00);
 
-Unk_WsP16* FUN_141bd0420(WorldService* self, Unk_WsP16* out, unsigned key);   // m_208 lookup (helper C: member)
-bool FUN_1409f2130(Unk_WsP16* p, void* other);          // p == other
-void* FUN_1409f2190(Unk_WsP16* p);                      // p->
+bool FUN_1409f2130(Unk_WsC_TagPtr* p, void* other);     // p == other
 void FUN_141c2baa0(void* list);                         // list init
 void FUN_141c2ec60(void* list, void* head);             // list set head
 void* FUN_140b285a0(void* obj);
@@ -9278,23 +9276,17 @@ void* FUN_1409f2490(void* list);                        // source list head posi
 void* FUN_1409f23c0(void* list, void* pos);
 void FUN_1409f24c0(void* list, void** pos);
 void FUN_14115a960(void* list, void* elem);             // list append
-void FUN_1409f20e0(Unk_WsP16* p);                       // release
 // copy the id list stored under key into *pOutList
-// MS2-FUNCTIONAL: opaque COMDATs by VA, EH sentinel
 // @0x141bda490
 void WorldService::FUN_141bda490(unsigned key, void* pOutList)
 {
-    Unk_WsP16 holder;
-    ::FUN_141bd0420(this, &holder, key);
-    if (!FUN_1409f2130(&holder, 0))
-    {
-        FUN_141c2baa0(pOutList);
-        FUN_141c2ec60(pOutList, FUN_140b285a0(FUN_1409f2190(&holder)));
-        void* src = FUN_1409f2190(&holder);
-        for (void* pos = FUN_1409f2490(src); pos; FUN_1409f24c0(FUN_1409f2190(&holder), &pos))
-            FUN_14115a960(pOutList, FUN_1409f23c0(FUN_1409f2190(&holder), pos));
-    }
-    FUN_1409f20e0(&holder);
+    Unk_WsC_TagPtr holder = FUN_141bd0420(key);
+    if (FUN_1409f2130(&holder, 0))
+        return;
+    FUN_141c2baa0(pOutList);
+    FUN_141c2ec60(pOutList, FUN_140b285a0(holder.operator->()));
+    for (void* pos = FUN_1409f2490(holder.operator->()); pos; FUN_1409f24c0(holder.operator->(), &pos))
+        FUN_14115a960(pOutList, FUN_1409f23c0(holder.operator->(), pos));
 }
 MS2_REPLACE_METHOD(0x141BDA490, WorldService, FUN_141bda490, 232, 0x3DE57349);
 
