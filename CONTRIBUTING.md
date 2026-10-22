@@ -4,6 +4,10 @@ The work here is recovering the MapleStory2 client function by function. A unit 
 written as `src/ms2/<path>.cpp`, and it is done when the gates below pass. Batches of units are handed out as GitHub
 issues labelled `unit-batch`.
 
+Clone with `git clone --recurse-submodules`, or run `git submodule update --init` after cloning:
+`src/ms2/scaleform/` is the [GFx418-Recomp](https://github.com/riyukuro/GFx418-Recomp) submodule, and the build stops
+without it.
+
 ## What you need to supply
 
 None of this is in the repository.

@@ -23,6 +23,11 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
                         -Wno-unused-private-field -Wno-inconsistent-missing-override)
 endif()
 
+# src/ms2/scaleform is a git submodule in the published mirror (GFx418-Recomp)
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scaleform/include")
+    message(FATAL_ERROR "src/ms2/scaleform is empty: run `git submodule update --init` (or clone with --recurse-submodules)")
+endif()
+
 file(GLOB_RECURSE MS2_GAME_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 ms2_filter_sources(MS2_GAME_SOURCES)     # MS2_GAME_FILTER (per-agent link check, src/CMakeLists.txt)
 if(NOT MS2_GAME_SOURCES)

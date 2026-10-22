@@ -40,6 +40,7 @@ Merged totals by area (functions in the original executable; regenerated on each
 | Path | Contents |
 |---|---|
 | `src/ms2/` | recovered game code; `client/ms2/` and `commonfiles/` follow the original source paths, `unnamed/` and `guess/` hold units whose file name is unknown or guessed, and `placeholder/` holds partially recovered class layouts |
+| `src/ms2/scaleform/` | recovered Scaleform GFx 4.1.18 code, a git submodule ([GFx418-Recomp](https://github.com/riyukuro/GFx418-Recomp)): `git submodule update --init` |
 | `src/hook/` | the hook DLL runtime (`ms2hook.h` macros, differential tests, vendored Detours) |
 | `cmake/` | toolchains (clang-cl, or real cl 19.16 under Wine or natively on Windows) and the game and engine compiler flags |
 | `tools/msvc/` | wrappers that run MSVC 14.16 under Wine (Linux only; on Windows the real `cl.exe` is used directly) |
@@ -66,6 +67,10 @@ Merged totals by area (functions in the original executable; regenerated on each
 - The unpacked KMS2_DEV x64 `MapleStory2.exe` (TimeDateStamp `0x62568c46`) to run the DLL against
 
 ## Build
+
+`src/ms2/scaleform/` (the recovered Scaleform GFx 4.1.18 code) is a git submodule,
+[GFx418-Recomp](https://github.com/riyukuro/GFx418-Recomp). Clone with `--recurse-submodules`, or run
+`git submodule update --init` in an existing checkout (and again after a pull that moves it); CMake stops if it is missing.
 
 ```sh
 # clang-cl
