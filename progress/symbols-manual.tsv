@@ -8356,3 +8356,4 @@ compress2	142724100	func
 ?GetRoot@AvmDisplayObj@AS3@GFx@Scaleform@@QEAAPEAVDisplayObject@34@XZ	14250d990	func
 ?SwapChildren@AvmDisplayObjContainer@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObjectBase@34@0@Z	14252e590	func
 ?RemoveChild@AvmDisplayObjContainer@AS3@GFx@Scaleform@@QEAAXPEAVDisplayObjectBase@34@@Z	142522570	func
+?IsStageAccessible@AvmDisplayObj@AS3@GFx@Scaleform@@QEBA_NXZ	142514d20	func
