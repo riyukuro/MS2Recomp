@@ -378,6 +378,13 @@ class CNMNoteInfoEx : public CNMSerializable
 public:
     virtual ~CNMNoteInfoEx() = default;
 
+    unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int EncodeFramed(CNMStream* pStream) override;
+    unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
+    unsigned int Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+    unsigned int DecodeFramed(CNMStream* pStream) override;
+    unsigned int DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream) override;
+
     int m_10; // +0x10
     char m_14[0x8000]; // +0x14
     int m_8014; // +0x8014
