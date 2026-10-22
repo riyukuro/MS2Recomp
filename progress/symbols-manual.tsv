@@ -929,7 +929,7 @@ __imp_NxReleaseControllerManager	142ccec90	data
 ?vfunc_2@TimerEntity@UIHudEntity@@UEAAXXZ	140f49490	func
 ?vfunc_3@TimerEntity@UIHudEntity@@UEAAXXZ	140f494d0	func
 ?vfunc_8@TimerEntity@UIHudEntity@@UEAAHH@Z	140f49540	func
-?vfunc_1@UIHudEntity@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	140f496f0	func
+?GetTypeName@UIHudEntity@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	140f496f0	func
 ?vfunc_10@UIHudEntity@@UEAAXXZ	140f49930	func
 ?vfunc_15@UIHudEntity@@UEAAXXZ	140f49950	func
 ?vfunc_26@UIHudEntity@@UEAAXXZ	140f49900	func
@@ -1612,7 +1612,7 @@ __imp_CrashReporter_SetClientExit	142cce1c0	data
 ??0CEnchantOption@@QEAA@XZ	141745c40	func
 ??7?$MS2Ptr@VASMovieClip@@@@QEBA_NXZ	140bb6000	func
 ??0ICastingEventListener@@QEAA@XZ	140ac2e60	func
-?vfunc_1@UIItemModifyDialogBase@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
+?GetTypeName@UIItemModifyDialogBase@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
 ??0Unk_ClosingCameraData@@QEAA@XZ	140cb13b0	func
 ??YUnk_ClosingVector@@QEAAAEAU0@AEBU0@@Z	140a4e560	func
 ??CUnk_ClosingCameraPtr@@QEBAPEAVUnk_ClosingCamera@@XZ	1409f7910	func
@@ -1805,7 +1805,7 @@ FMOD_EventSystem_Create	142303b13	func
 ??0AdditionalCli@@QEAA@XZ	14096bae0	func
 ??1Unk_EmoItemPtr@@QEAA@XZ	1401b50d0	func
 ??1Unk_EmoDataPtr@@QEAA@XZ	1401f0530	func
-?vfunc_1@UIDialog@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
+?GetTypeName@UIDialog@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
 ?DAT_143ae5190@@3VNiFixedString@@A	143ae5190	data
 ??0Unk_MessageBoxMsg@@QEAA@H@Z	1422e44d0	func
 ??1Unk_MessageBoxMsg@@UEAA@XZ	140c30570	func
@@ -2060,7 +2060,7 @@ D3DXFloat16To32Array	14230396f	func
 ??1?$MS2Ptr@VUnk_PCWaterGunInfo@@@@QEAA@XZ	1416669c0	func
 ?get@?$MS2Ptr@VUnk_PCWaterGunInfo@@@@QEBAPEAVUnk_PCWaterGunInfo@@XZ	1416676d0	func
 ??C?$MS2Ptr@VUnk_PCWaterGunInfo@@@@QEBAPEAVUnk_PCWaterGunInfo@@XZ	141667750	func
-?vfunc_1@NotifyKillPlayer@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db5220	func
+?GetTypeName@NotifyKillPlayer@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db5220	func
 ?DAT_143ae7a10@@3V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@A	143ae7a10	data
 ?DetachAllAffectedNodes@NiDynamicEffect@@QEAA_NXZ	141d591d0	func
 ?GetActiveShadowClickGenerator@NiShadowManager@@SAPEAVNiShadowClickGenerator@@XZ	141d42010	func
@@ -2073,7 +2073,7 @@ D3DXFloat16To32Array	14230396f	func
 ?RemoveFromUpdate@SceneGraphService@ecr@@MEAAXPEAVSceneGraphData@12@@Z	1420039f0	func
 ?RemoveFilePaths@SceneGraphCache@ecr@@QEAAXAEBVutf8string@efd@@@Z	142015550	func
 ?s_instance@?$TSingleton@VMS2SceneGraphService@@@@2PEAVMS2SceneGraphService@@EA	143ab9508	data
-?vfunc_1@NotifyChangedTokenMoney@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4610	func
+?GetTypeName@NotifyChangedTokenMoney@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4610	func
 ??4NiString@@QEAAAEAV0@PEBD@Z	141d5c0f0	func
 ??1Unk_MyPCFieldRef@@QEAA@XZ	1408850f0	func
 ?IsNull@Unk_MyPCFieldRef@@QEBA_NXZ	1408851f0	func
@@ -2104,7 +2104,7 @@ D3DXFloat16To32Array	14230396f	func
 ??1Unk_MagicRideeRef@@QEAA@XZ	1409648b0	func
 ?s_instance@?$TSingleton@VItemGachaBoxTable@@@@2PEAVItemGachaBoxTable@@EA	143aaf1d0	data
 ?DAT_143ae5380@@3VNiFixedString@@A	143ae5380	data
-?vfunc_1@NotifyActiveMyCodiTab@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4cd0	func
+?GetTypeName@NotifyActiveMyCodiTab@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4cd0	func
 ??1PC@@UEAA@XZ	141650b10	func
 ?vfunc_9@PC@@UEAAXPEAX@Z	141651300	func
 ?vfunc_12@PC@@UEAAXXZ	1416515a0	func
@@ -2387,7 +2387,7 @@ __imp_CrashReporter_SetStrInfoW	142cce1b8	data
 ?DAT_143abdf50@@3HA	143abdf50	data
 ?Get@?$Value@I@Constants@Common@@QEAAPEAIXZ	1401d7c10	func
 ?NextWeekdayStart@@YA_JH_J@Z	14086b190	func
-?vfunc_1@NotifyOpenDialogByScene@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db51c0	func
+?GetTypeName@NotifyOpenDialogByScene@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db51c0	func
 ??0Unk_QmTalkScriptPtr@@QEAA@AEBV0@@Z	140859bc0	func
 ?IsNull@Unk_QmTalkScriptPtr@@QEBA_NXZ	14085a420	func
 ?DAT_143ae79f8@@3V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@A	143ae79f8	data
@@ -2489,7 +2489,7 @@ __imp_CrashReporter_SetStrInfoW	142cce1b8	data
 ??0UIEpProgress@@QEAA@PEAVPCBase@@@Z	141931550	func
 ??0Unk_CMISEntityRef@@QEAA@AEBU0@@Z	1408b6b20	func
 ??0Unk_CMISPt3@@QEAA@AEBUUnk_StreamPoint@@@Z	14027dcf0	func
-?vfunc_1@NotifyUseSKill@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4670	func
+?GetTypeName@NotifyUseSKill@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4670	func
 ?s_bInit@QuestDataTable@@2_NA	143ab0c78	data
 ?s_instance@?$TSingleton@VQuestDataTable@@@@2PEAV1@EA	143ab0c70	data
 ?Hash@?$CStringElementTraitsI@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CDefaultCharTraits@_W@2@@ATL@@SAKPEB_W@Z	1401f85a0	func
@@ -2642,7 +2642,7 @@ inflateInit_	142723ad0	func
 ??1Unk_W6V420@@QEAA@XZ	140a00490	func
 ??1Unk_W6V2f8@@QEAA@XZ	14123ebe0	func
 ??1Unk_W6V468@@QEAA@XZ	1410b4290	func
-?vfunc_1@NotifyUgcDownloadComplete@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4250	func
+?GetTypeName@NotifyUgcDownloadComplete@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4250	func
 ??0CUgcBannerPost@@QEAA@XZ	140890700	func
 ??0CUgcBlueprintImageProxy@@QEAA@XZ	140892810	func
 ??0CUgcItemCube@@QEAA@XZ	14088fad0	func
@@ -8172,3 +8172,17 @@ compress2	142724100	func
 ?DAT_143a2d158@@3QBQEBDB	143a2d158	data
 ?ExternalInterfaceCI@fl_external@AS3@GFx@Scaleform@@3UClassInfo@234@B	143158870	data
 ?AbstractLessThan@AS3@GFx@Scaleform@@YA?AVCheckResult@123@AEAW4Boolean3@123@AEBVValue@123@1@Z	1424e4f40	func
+?Convert2NumberInternal@Value@AS3@GFx@Scaleform@@AEBA?AVCheckResult@234@AEANW4KindType@1234@@Z	1424f1000	func
+??0DateHolder@Date@fl@Instances@AS3@GFx@Scaleform@@QEAA@NN@Z	1423ec400	func
+??0TimeHolder@Date@fl@Instances@AS3@GFx@Scaleform@@QEAA@NN@Z	1423ef290	func
+?DateWeekDayNames@fl@Instances@AS3@GFx@Scaleform@@3PAPEBDA	143a2a810	data
+?DateMonthNames@fl@Instances@AS3@GFx@Scaleform@@3PAPEBDA	143a2a850	data
+?vfunc_1@UIHudEntity@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	140f496f0	func
+?vfunc_1@UIItemModifyDialogBase@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
+?vfunc_1@UIDialog@@UEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1419234e0	func
+?vfunc_1@NotifyKillPlayer@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db5220	func
+?vfunc_1@NotifyChangedTokenMoney@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4610	func
+?vfunc_1@NotifyActiveMyCodiTab@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4cd0	func
+?vfunc_1@NotifyOpenDialogByScene@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db51c0	func
+?vfunc_1@NotifyUseSKill@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4670	func
+?vfunc_1@NotifyUgcDownloadComplete@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ	140db4250	func
