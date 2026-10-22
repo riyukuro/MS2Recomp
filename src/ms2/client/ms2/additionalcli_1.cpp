@@ -95,7 +95,7 @@ bool AdditionalCli::FUN_14096bc20(int nOwner, MS2Ptr<AdditionalCli> spSrc)
     if (spSrc == 0)
         return false;
     *this = *spSrc;
-    if (spSrc->FUN_14096d280() && spSrc->FUN_14096d280()->FUN_14123c580() == m_nCasterId)
+    if (spSrc->GetOwner() && spSrc->GetOwner()->FUN_14123c580() == m_nCasterId)
         m_nCasterId = nOwner;
     m_pOwner = static_cast<PCBase*>(static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1200(nOwner)));
     m_nKeepEffect = 0;
@@ -486,13 +486,13 @@ void AdditionalCli::FUN_14096d130()
 }
 
 // @0x14096d260
-int AdditionalCli::FUN_14096d260()
+int AdditionalCli::GetKey()
 {
     return m_nKey;
 }
 
 // @0x14096d280
-PCBase* AdditionalCli::FUN_14096d280()
+PCBase* AdditionalCli::GetOwner()
 {
     return m_pOwner;
 }
@@ -504,7 +504,7 @@ unsigned AdditionalCli::FUN_14096d2a0()
 }
 
 // @0x14096d2c0
-unsigned short AdditionalCli::FUN_14096d2c0()
+unsigned short AdditionalCli::GetLevel()
 {
     return m_nLevel;
 }
@@ -572,13 +572,13 @@ void AdditionalCli::FUN_14096d430()
 // @0x14096d5c0
 void AdditionalCli::FUN_14096d5c0()
 {
-    if (!FUN_14096d280())
+    if (!GetOwner())
         return;
     if (m_spLevel == 0)
         return;
     if (m_spLevel->m_shield.m_fHpByTargetMaxHP > 0.0f || m_spLevel->m_shield.m_nHpValue > 0)
     {
-        MS2Ptr<Unk_PCBaseComp_a68> spBar = FUN_14096d280()->vfunc_81();
+        MS2Ptr<Unk_PCBaseComp_a68> spBar = GetOwner()->vfunc_81();
         if (spBar.get())
             spBar->FUN_140e85fc0(m_nShieldValue, m_nShieldMax);
     }

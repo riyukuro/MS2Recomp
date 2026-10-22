@@ -398,7 +398,7 @@ void UIMinimapEditDialog::FUN_141a53100()
     if (spMap.IsNull())
         return;
     TiXmlDocument doc;
-    if (!doc.FUN_140870fc0((const char*)FUN_14016a5c0((const char*)FUN_141a54940(CString(spMap->m_strXBlock)), 0), 0))
+    if (!doc.FUN_140870fc0((const char*)FUN_14016a5c0((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), 0))
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == NULL)
@@ -462,7 +462,7 @@ void UIMinimapEditDialog::FUN_141a53750()
     if (spMap->m_strXBlock.IsEmpty())
         return;
     TiXmlDocument doc;
-    if (!doc.FUN_140870fc0((const char*)FUN_14016a5c0((const char*)FUN_141a54940(CString(spMap->m_strXBlock)), 0), 0))
+    if (!doc.FUN_140870fc0((const char*)FUN_14016a5c0((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), 0))
     {
         Unk_MeXmlDecl decl;
         FUN_1408704d0(&decl, "1.0", "utf-8", "");
@@ -609,7 +609,7 @@ void UIMinimapEditDialog::OnScreenShot()
 }
 
 // @0x141a54940
-CString UIMinimapEditDialog::FUN_141a54940(CString strXBlock)
+CString UIMinimapEditDialog::GetXBlockPath(CString strXBlock)
 {
     return FUN_140536a50("./data/xml/MapXblock/{0}.xml", strXBlock);
 }

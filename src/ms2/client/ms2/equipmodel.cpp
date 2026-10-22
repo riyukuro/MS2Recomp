@@ -400,7 +400,7 @@ void CEquipModel::vfunc_26(const NiPoint3& p)
 }
 
 // @0x1412000d0
-NiPoint3 CEquipModel::FUN_1412000d0()
+NiPoint3 CEquipModel::GetPos6c()
 {
     return m_pos6c;
 }
@@ -547,7 +547,7 @@ void* FUN_141200820(CEquipModel* self)
 // @0x141200850
 void* FUN_141200850(CEquipModel* self)
 {
-    return FUN_141bd1180(FUN_1403ed2d0(), ((CEquipItem*)OWNER(self))->FUN_1411dc7a0()->FUN_140526b10());
+    return FUN_141bd1180(FUN_1403ed2d0(), ((CEquipItem*)OWNER(self))->GetItem()->FUN_140526b10());
 }
 
 // @0x1412008e0

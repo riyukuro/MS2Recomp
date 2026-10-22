@@ -523,7 +523,7 @@ Unk_PreloadServiceB* FUN_140c9b8e0();
 void FUN_140c91690(Unk_PreloadServiceB*);
 Unk_PreloadServiceC* FUN_14034f780();
 void FUN_14034dde0(Unk_PreloadServiceC*);
-void FUN_1416e4340(); void FUN_140855540(); void FUN_14093af30(); void FUN_14015c050();
+void LoadQuestDescription(); void LoadTalkScripts(); void FUN_14093af30(); void FUN_14015c050();
 void FUN_14064cc80(CLearningQuestTable*);
 void FUN_1410917a0(unsigned);
 SkillDataTableCli* FUN_1401958b0();
@@ -583,9 +583,9 @@ void CFilePreload::FUN_141211240(void*) {
     if(stopped==0) FUN_140c91690(FUN_140c9b8e0());
     FUN_141211b30(2);
     if(stopped==0) FUN_14034dde0(FUN_14034f780());
-    if(stopped==0) FUN_1416e4340();
+    if(stopped==0) LoadQuestDescription();
     FUN_141211b30(4);
-    if(stopped==0) FUN_140855540();
+    if(stopped==0) LoadTalkScripts();
     if(stopped==0) FUN_14093af30();
     if(stopped==0) FUN_14015c050();
     FUN_141211b30(8);
@@ -596,7 +596,7 @@ void CFilePreload::FUN_141211240(void*) {
     FUN_141211b30(0x2000);
     callback.Clear();
 }
-// hk1 2026-10-20: not hooked - the DLL talk-script loader (talkscript.cpp FUN_140855540) it starts ends in a null CAtlMap in exe FUN_14085b850 (work/hk1/report.md). MS2_REPLACE_METHOD(0x141211240, CFilePreload, FUN_141211240, 307, 0xA3D8BB95);
+// hk1 2026-10-20: not hooked - the DLL talk-script loader (talkscript.cpp LoadTalkScripts) it starts ends in a null CAtlMap in exe FUN_14085b850 (work/hk1/report.md). MS2_REPLACE_METHOD(0x141211240, CFilePreload, FUN_141211240, 307, 0xA3D8BB95);
 // @0x141211380
 void CFilePreload::FUN_141211380(void*) {
     std::set<unsigned> pending;

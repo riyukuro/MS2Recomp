@@ -817,7 +817,7 @@ void CKfmModel::vfunc_31()
 }
 
 // @0x14143ff20
-egf::EntityPtr CKfmModel::FUN_14143ff20()
+egf::EntityPtr CKfmModel::GetEntity()
 {
     return m_spEntity;
 }

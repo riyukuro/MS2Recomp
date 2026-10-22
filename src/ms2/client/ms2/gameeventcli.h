@@ -96,7 +96,7 @@ public:
     MS2Ptr<ItemGift> FUN_140ce3710(unsigned nDay);
     int FUN_140ce36d0();
     CStringW FUN_140ce37a0();
-    CStringA FUN_140ce3850();
+    CStringA GetDesc();
     int FUN_140ce38a0();
     unsigned FUN_140ce38c0();
     __int64 FUN_140ce38e0();
@@ -126,7 +126,7 @@ public:
     unsigned FUN_140ce3e90();
     int FUN_140ce3ed0();
     CStringW FUN_140ce3f10();
-    CStringW FUN_140ce3f70();
+    CStringW GetDesc();
     AttendGiftDataGroupPtr FUN_140ce3fc0(unsigned nDay);
     CMsTime FUN_140ce4050();
     CMsTime FUN_140ce4090();

@@ -261,7 +261,7 @@ MS2Ptr<CItem> FittingDollSlot::vfunc_25()
     MS2Ptr<CEquipItem> spEquip = pDoll->FUN_141655e80(m_nSlot, pDoll->FUN_14121c710() != 0);
     if (spEquip == 0)
         return MS2Ptr<CItem>(0);
-    return ((CEquipItem*)spEquip)->FUN_1411dc7a0();
+    return ((CEquipItem*)spEquip)->GetItem();
 }
 
 // @0x14121dc90

@@ -181,7 +181,7 @@ CGemTransparency* PCGemEquip::FUN_141270360(unsigned char nIndex)
         return 0;
     if (pItem->FUN_140527900() == 0)
         return 0;
-    CGemBase* pGem = pItem->FUN_140527900()->FUN_140d41400().get();
+    CGemBase* pGem = pItem->FUN_140527900()->GetGem().get();
     if (pGem == 0)
         return 0;
     if (pGem->vfunc_1() != 1)
@@ -261,12 +261,12 @@ MS2Ptr<CGemBase> PCGemEquip::FUN_141270740(int nGemType)
     bool bNone = true;
     if (pGem != 0)
     {
-        MS2Ptr<CGemBase> spGem = pGem->FUN_140d41400();
+        MS2Ptr<CGemBase> spGem = pGem->GetGem();
         bNone = (spGem == 0);
     }
     if (bNone)
         return MS2Ptr<CGemBase>(0);
-    MS2Ptr<CGemBase> spResult = pGem->FUN_140d41400();
+    MS2Ptr<CGemBase> spResult = pGem->GetGem();
     if (spResult->vfunc_1() == nGemType)
         return spResult;
     return MS2Ptr<CGemBase>(0);

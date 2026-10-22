@@ -367,7 +367,7 @@ public:
     void FUN_141662710(int nValue);
     void FUN_141661330(const CStringW& strName);             // set the displayed name (scenestategame)
     class Unk_MyPCEquip* FUN_14165f460();                   // the equipment (mypc.cpp, w97)
-    MS2Ptr<CSetItemManager> FUN_1411f9310();                // 0x1411f9310 m_spSetItems (a pc.h inline first emitted by equipment.cpp)
+    MS2Ptr<CSetItemManager> GetSetItems();                // 0x1411f9310 m_spSetItems (a pc.h inline first emitted by equipment.cpp)
     void FUN_141670540(int nIndex, int nType, __int64 nValue);   // PCBase: set a stat value (mypc.cpp, w97)
     // scenestategame OnAddUser (0x14170fda0); argument kinds from the callee prologues
     void FUN_141656aa0(__int64 nAccountId);
@@ -472,7 +472,7 @@ public:
     int m_n10f4;                                            // +0x10f4 the title (FUN_141661c70)
     short m_n10f8;                                          // +0x10f8
     int m_n10fc;                                            // +0x10fc
-    MS2Ptr<CSetItemManager> m_spSetItems;                   // +0x1100 the set item bonuses (FUN_1411f9310)
+    MS2Ptr<CSetItemManager> m_spSetItems;                   // +0x1100 the set item bonuses (GetSetItems)
     MS2Ptr<CSkillTierOptionManager> m_spSkillTier1110;      // +0x1110 (FUN_1409eee00)
     MS2Ptr<CStatPointManager> m_spStatPoint1120;            // +0x1120
     MS2Ptr<CostumeManager> m_spCostume;                     // +0x1130 the costume sets (additionalcli.cpp)

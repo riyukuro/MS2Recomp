@@ -1901,7 +1901,7 @@ int UIPCInfoDialog::vfunc_o178_1(void* pAvatar)
     AvatarPC* pAvatarPC = FUN_140a535c0(((UIAvatarBase*)pAvatar)->vfunc_24());
     if (pAvatarPC != 0)
     {
-        if (pAvatarPC->FUN_1409f62a0() == 1)
+        if (pAvatarPC->GetType() == 1)
             FUN_1418bee30(&data, 10000);
         data.FUN_1407cbbe0("showActionList", true);
     }

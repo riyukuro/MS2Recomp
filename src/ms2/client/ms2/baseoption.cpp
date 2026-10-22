@@ -152,25 +152,25 @@ void CBaseOption::FUN_140a02d90(int n)
 }
 
 // @0x140a02dd0
-bool CBaseOption::FUN_140a02dd0() const
+bool CBaseOption::IsEnabled() const
 {
     return m_bEnabled;
 }
 
 // @0x140a02df0
-void CBaseOption::FUN_140a02df0(bool b)
+void CBaseOption::SetEnabled(bool b)
 {
     m_bEnabled = b;
 }
 
 // @0x140a02e10
-int CBaseOption::FUN_140a02e10() const
+int CBaseOption::GetType() const
 {
     return m_nType;
 }
 
 // @0x140a02e30
-int CBaseOption::FUN_140a02e30() const
+int CBaseOption::GetActive() const
 {
     return m_nActive;
 }

@@ -305,8 +305,8 @@ float NpcNavigationEntity::vfunc_8()
 // @0x140e79140
 InteractNavigationEntity::InteractNavigationEntity(CInteractObject* pObject)
 {
-    m_38 = pObject->FUN_140967060();
-    m_30 = pObject->FUN_140967110();
+    m_38 = pObject->GetName();
+    m_30 = pObject->GetRowId();
 }
 
 // @0x140e791f0
@@ -359,7 +359,7 @@ Unk_StreamPoint InteractNavigationEntity::vfunc_7()
     MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(m_38);
     if (spObj.get() == 0)
         return DAT_143b01a60;
-    Unk_StreamPoint pt = spObj->FUN_1409673c0();
+    Unk_StreamPoint pt = spObj->GetPos();
     pt.z += 200.0f;
     return pt;
 }   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)

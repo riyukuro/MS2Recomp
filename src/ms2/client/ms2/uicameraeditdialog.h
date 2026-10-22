@@ -71,7 +71,7 @@ public:
 
     void FUN_1418dda30(int n);                                      // 0x1418dda30 m_bEnable = n unless vfunc_55()
     int FUN_1418de260();                                            // 0x1418de260 camera locked (not for dialog 0x4ec2)
-    unsigned FUN_1418de2b0();                                       // 0x1418de2b0 load customize.xml; 1 if it has presets
+    unsigned LoadCustomizeCamera();                                       // 0x1418de2b0 load customize.xml; 1 if it has presets
     void FUN_1418de570();                                           // 0x1418de570 zoom-in step
     void FUN_1418de690();                                           // 0x1418de690 zoom-out step
     void FUN_1418de7b0(const Unk_StreamPoint& vFrom, float fStep);  // 0x1418de7b0 move the camera one step

@@ -1128,11 +1128,11 @@ int CFishingManager::FUN_140cdbbd0(MS2Ptr<CItem> rod)
 }
 
 // @0x140cdbdd0
-int CFishingManager::FUN_140cdbdd0()
+int CFishingManager::GetAutoCount()
 {
     return m_nAutoCount;
 }
-MS2_REPLACE_METHOD(0x140CDBDD0, CFishingManager, FUN_140cdbdd0, 17, 0xC417BCBA);
+MS2_REPLACE_METHOD(0x140CDBDD0, CFishingManager, GetAutoCount, 17, 0xC417BCBA);
 
 // @0x140cdbdf0
 void CFishingManager::FUN_140cdbdf0(int nCount)
@@ -1145,18 +1145,18 @@ void CFishingManager::FUN_140cdbdf0(int nCount)
 MS2_REPLACE_METHOD(0x140CDBDF0, CFishingManager, FUN_140cdbdf0, 66, 0x92A25D21);
 
 // @0x140cdbe40
-void CFishingManager::FUN_140cdbe40(int nBait)
+void CFishingManager::SetBaitId(int nBait)
 {
     m_nBaitId = nBait;
 }
-MS2_REPLACE_METHOD(0x140CDBE40, CFishingManager, FUN_140cdbe40, 25, 0xED11FA2A);
+MS2_REPLACE_METHOD(0x140CDBE40, CFishingManager, SetBaitId, 25, 0xED11FA2A);
 
 // @0x140cdbe60
-int CFishingManager::FUN_140cdbe60()
+int CFishingManager::GetBaitId()
 {
     return m_nBaitId;
 }
-MS2_REPLACE_METHOD(0x140CDBE60, CFishingManager, FUN_140cdbe60, 17, 0x5EB41246);
+MS2_REPLACE_METHOD(0x140CDBE60, CFishingManager, GetBaitId, 17, 0x5EB41246);
 
 // @0x140cdbe80
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe

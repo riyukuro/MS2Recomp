@@ -645,9 +645,9 @@ int GFxMovieBackground::vfunc_14(void* hwnd, unsigned msg, unsigned __int64 wPar
     return 1;
 }
 // @0x14127aaf0
-MS2Ptr<AScript> GFxMovieBackground::FUN_14127aaf0() { return m_spScript; }
+MS2Ptr<AScript> GFxMovieBackground::GetScript() { return m_spScript; }
 // @0x14127ab40
-int GFxMovieBackground::FUN_14127ab40() { return m_bLoaded; }
+int GFxMovieBackground::IsLoaded() { return m_bLoaded; }
 // MS2-FUNCTIONAL: CString/ASArgList temporaries differ
 // @0x14127ab60
 bool GFxMovieBackground::FUN_14127ab60(CString strLabel)
@@ -957,8 +957,8 @@ MS2_REPLACE_METHOD(0x14127a580, GFxMovieBackground, vfunc_11, 312, 0xAC06DE3B);
 MS2_REPLACE_METHOD(0x14127a6c0, GFxMovieBackground, vfunc_12, 270, 0x426155A0);
 MS2_REPLACE_METHOD(0x14127a7e0, GFxMovieBackground, vfunc_13, 171, 0x8D5B6885);
 MS2_REPLACE_METHOD(0x14127a8a0, GFxMovieBackground, vfunc_14, 566, 0x3E1E7EBA);
-MS2_REPLACE_METHOD(0x14127aaf0, GFxMovieBackground, FUN_14127aaf0, 67, 0xCFE02519);
-MS2_REPLACE_METHOD(0x14127ab40, GFxMovieBackground, FUN_14127ab40, 17, 0xEA51A84B);
+MS2_REPLACE_METHOD(0x14127aaf0, GFxMovieBackground, GetScript, 67, 0xCFE02519);
+MS2_REPLACE_METHOD(0x14127ab40, GFxMovieBackground, IsLoaded, 17, 0xEA51A84B);
 MS2_REPLACE_METHOD(0x14127ab60, GFxMovieBackground, FUN_14127ab60, 263, 0xE2541036);
 MS2_REPLACE_METHOD(0x14127ac70, GFxMovieBackground, FUN_14127ac70, 263, 0xBD3016D1);
 MS2_REPLACE_METHOD(0x14127ad80, GFxMovieBackground, FUN_14127ad80, 131, 0xE80F1320);

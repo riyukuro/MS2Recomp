@@ -60,5 +60,5 @@ namespace HideAndSeek
     MS2_CHECK_SIZE(ObjectData, 0x28);
 
     void FUN_14050a770(unsigned nMapCode, std::vector<int>& out);        // the riding objects of a map (loads the table on first use)
-    void FUN_14050a830();                                           // load Table/Server/hideAndSeek.xml
+    void LoadHideAndSeek();                                         // load Table/Server/hideAndSeek.xml
 }

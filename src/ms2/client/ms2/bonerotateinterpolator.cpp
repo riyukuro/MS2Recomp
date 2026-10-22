@@ -380,43 +380,43 @@ void BoneRotateInterpolator::FUN_140a32e90(bool bActive, unsigned int uiBlendMs)
 }
 
 // @0x140a32fb0
-void BoneRotateInterpolator::FUN_140a32fb0(efd::Point3 kPos)
+void BoneRotateInterpolator::SetKEye(efd::Point3 kPos)
 {
     m_kEye = kPos;
 }
 
 // @0x140a32fe0
-void BoneRotateInterpolator::FUN_140a32fe0(efd::Point3 kPos)
+void BoneRotateInterpolator::SetKBone(efd::Point3 kPos)
 {
     m_kBone = kPos;
 }
 
 // @0x140a33010
-void BoneRotateInterpolator::FUN_140a33010(efd::Point3 kPos)
+void BoneRotateInterpolator::SetKEuler(efd::Point3 kPos)
 {
     m_kEuler = kPos;
 }
 
 // @0x140a33060
-void BoneRotateInterpolator::FUN_140a33060(float fValue)
+void BoneRotateInterpolator::SetYawBias(float fValue)
 {
     m_fYawBias = fValue;
 }
 
 // @0x140a33090
-void BoneRotateInterpolator::FUN_140a33090(float fValue)
+void BoneRotateInterpolator::SetPitchBias(float fValue)
 {
     m_fPitchBias = fValue;
 }
 
 // @0x140a330c0
-void BoneRotateInterpolator::FUN_140a330c0(bool bValue)
+void BoneRotateInterpolator::SetSmooth(bool bValue)
 {
     m_bSmooth = bValue;
 }
 
 // @0x140a330e0
-bool BoneRotateInterpolator::FUN_140a330e0() const
+bool BoneRotateInterpolator::IsSmooth() const
 {
     return m_bSmooth;
 }
@@ -504,7 +504,7 @@ void CBoneRotateManager::FUN_140a34d00(const efd::Point3& kPos, int nStart, int 
     m_nStart = nStart;
     m_nEnd = nEnd;
     m_tmApply.FUN_140868750(1);
-    m_pInterp->FUN_140a330c0(true);
+    m_pInterp->SetSmooth(true);
 }
 
 // @0x140a34de0
@@ -523,7 +523,7 @@ void CBoneRotateManager::FUN_140a34de0(const egf::EntityID& kId, CString strBone
     m_nEnd = nEnd;
     m_strBone = strBone;
     m_tmApply.FUN_140868750(1);
-    m_pInterp->FUN_140a330c0(true);
+    m_pInterp->SetSmooth(true);
 }
 
 // @0x140a34f00
@@ -535,7 +535,7 @@ void CBoneRotateManager::FUN_140a34f00()
     if (m_pInterp == 0)
         return;
     m_pInterp->FUN_140a32e90(true, m_nEnd);
-    m_pInterp->FUN_140a330c0(false);
+    m_pInterp->SetSmooth(false);
     Unk_BrActionPtr spAction(0);
     if (m_actions.Lookup(m_nCurrent, spAction))
     {
@@ -592,7 +592,7 @@ void CBoneRotateManager::FUN_140a35060()
                 }
             }
         }
-        m_pInterp->FUN_140a32fb0(kBase);
+        m_pInterp->SetKEye(kBase);
         NiTransform kRoot;
         if (m_pRootNode != 0)
         {
@@ -604,8 +604,8 @@ void CBoneRotateManager::FUN_140a35060()
             }
         }
         efd::Point3 kRootPos = kRoot.m_Translate;
-        m_pInterp->FUN_140a32fe0(kRootPos);
-        m_pInterp->FUN_140a33010(m_pOwner->vfunc_20());
+        m_pInterp->SetKBone(kRootPos);
+        m_pInterp->SetKEuler(m_pOwner->vfunc_20());
         m_tmApply.FUN_140868750(500);
     }
 }
@@ -663,7 +663,7 @@ int CBoneRotateManager::FUN_140a35780()
 }
 
 // @0x140a357c0
-Unk_BrMode CBoneRotateManager::FUN_140a357c0()
+Unk_BrMode CBoneRotateManager::GetCurrent()
 {
     return m_nCurrent;
 }
@@ -672,33 +672,33 @@ Unk_BrMode CBoneRotateManager::FUN_140a357c0()
 void CBoneRotateManager::FUN_140a357e0(float fValue)
 {
     if (m_pInterp != 0)
-        m_pInterp->FUN_140a33060(fValue);
+        m_pInterp->SetYawBias(fValue);
 }
 
 // @0x140a35820
 void CBoneRotateManager::FUN_140a35820(float fValue)
 {
     if (m_pInterp != 0)
-        m_pInterp->FUN_140a33090(fValue);
+        m_pInterp->SetPitchBias(fValue);
 }
 
 // @0x140a35860
 void CBoneRotateManager::FUN_140a35860(bool bValue)
 {
     if (m_pInterp != 0)
-        m_pInterp->FUN_140a330c0(bValue);
+        m_pInterp->SetSmooth(bValue);
 }
 
 // @0x140a358a0
 bool CBoneRotateManager::FUN_140a358a0()
 {
     if (m_pInterp != 0)
-        return m_pInterp->FUN_140a330e0();
+        return m_pInterp->IsSmooth();
     return false;
 }
 
 // @0x140a358e0
-GameObject* CBoneRotateManager::FUN_140a358e0()
+GameObject* CBoneRotateManager::GetOwner()
 {
     return m_pOwner;
 }

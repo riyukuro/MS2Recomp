@@ -626,7 +626,7 @@ bool UIMeratMarketRegisterDialog::FUN_1413192d0(__int64 nItemUid, MS2Ptr<CItem> 
             {
                 MS2Ptr<CEquipItem> spEquip = FUN_1416561a0(pPlayer)->FUN_1411e1580(nItemUid);
                 if (spEquip.get() != 0)
-                    spItem = spEquip->FUN_1411dc7a0();
+                    spItem = spEquip->GetItem();
             }
         }
         if (spItem.IsNull())
@@ -651,7 +651,7 @@ bool UIMeratMarketRegisterDialog::FUN_1413192d0(__int64 nItemUid, MS2Ptr<CItem> 
                 {
                     MS2Ptr<CEquipItem> spEquip = FUN_1416561a0(pPlayer)->FUN_1411e1580(nItemUid);
                     if (spEquip.get() != 0)
-                        spItem = spEquip->FUN_1411dc7a0();
+                        spItem = spEquip->GetItem();
                 }
             }
         }
@@ -734,7 +734,7 @@ void UIMeratMarketRegisterDialog::FUN_141319920(ItemArray& arrItems)
             POSITION pos = listEquip.GetHeadPosition();
             while (pos != 0)
             {
-                MS2Ptr<CItem> spWorn = listEquip.GetAt(pos)->FUN_1411dc7a0();
+                MS2Ptr<CItem> spWorn = listEquip.GetAt(pos)->GetItem();
                 if (spWorn.get() != 0)
                 {
                     if (FUN_1406a5a50(spWorn, &owner.m_nAccount) != false)

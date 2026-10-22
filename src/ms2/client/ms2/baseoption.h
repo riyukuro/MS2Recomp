@@ -32,10 +32,10 @@ public:
 
     UIGameOptionDialog* GetOptionDialog();                          // 0x140a02d70 (this unused)
     void FUN_140a02d90(int n);                                      // forwards n to the dialog if it is open
-    bool FUN_140a02dd0() const;                                     // m_bEnabled
-    void FUN_140a02df0(bool b);
-    int FUN_140a02e10() const;                                      // m_nType
-    int FUN_140a02e30() const;                                      // m_nActive
+    bool IsEnabled() const;                                     // m_bEnabled
+    void SetEnabled(bool b);
+    int GetType() const;                                      // m_nType
+    int GetActive() const;                                      // m_nActive
     int FUN_140a02e50() const;                                      // m_nId
 
 public:

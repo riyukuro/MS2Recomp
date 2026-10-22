@@ -854,7 +854,7 @@ void UIHairPhysxDialog::FUN_141984360()
                     }
                     if (pModel != 0)
                     {
-                        Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->FUN_1411dc7a0()->FUN_140527870());
+                        Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
                         if (pData != 0)
                         {
                             int nIndex = pModel->FUN_141200ab0()->m_nIndex;
@@ -992,7 +992,7 @@ void UIHairPhysxDialog::FUN_141984e50(Unk_HpxModel* pModel, NiPoint3 kPos)
 {
     if (pModel)
     {
-        Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->FUN_1411dc7a0()->FUN_140527870());
+        Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
         if (pData)
         {
             int nIndex = pModel->FUN_141200ab0()->m_nIndex;
@@ -1014,7 +1014,7 @@ void UIHairPhysxDialog::FUN_141985000(Unk_HpxModel* pModel, NiPoint3 kDeg)
 {
     if (pModel)
     {
-        Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->FUN_1411dc7a0()->FUN_140527870());
+        Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
         if (pData)
         {
             int nIndex = pModel->FUN_141200ab0()->m_nIndex;
@@ -1037,7 +1037,7 @@ void UIHairPhysxDialog::FUN_141985210(Unk_HpxModel* pModel, const NiTransform& k
 {
     if (pModel)
     {
-        Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->FUN_1411dc7a0()->FUN_140527870());
+        Unk_HpxHairData* pData = static_cast<Unk_HpxHairData*>(pModel->FUN_141200a40()->GetItem()->FUN_140527870());
         if (pData)
         {
             int nIndex = pModel->FUN_141200ab0()->m_nIndex;

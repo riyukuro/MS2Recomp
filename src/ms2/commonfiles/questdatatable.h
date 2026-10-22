@@ -31,7 +31,7 @@ public:
     static bool s_bInit;
     static void CheckInit();
     static void SetInit(bool bInit) { s_bInit = bInit; }       // 0x14075ebe0
-    void FUN_14074c320();                                   // loads QuestData.xml and builds the indices                                // 0x14075a3f0 (message box when the table was never created)
+    void LoadQuestData();                                   // loads QuestData.xml and builds the indices                                // 0x14075a3f0 (message box when the table was never created)
     void FUN_1407511e0();                                   // drops every row and index
     MS2Ptr<CQuestData> FUN_14074c9d0(int nQuestId);                         // by id (null when missing)
     void FUN_14074cad0(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int nType);       // rows of the type (11 = all)
@@ -58,7 +58,7 @@ public:
     void FUN_14074ebc0(int nChain, IdsPtr spIds, MS2Ptr<CQuestData> spData, int nDepth);   // collects the chain of following quests
     void FUN_14074d480();                                   // sorts m_378 by level
     void FUN_14074fee0();                                   // chapter -> field values
-    void FUN_140750120();                                   // loads QuestGroupTable.xml
+    void LoadQuestGroupTable();                                   // loads QuestGroupTable.xml
     void FUN_1407503f0();                                   // reverse require links and chapter order
     void FUN_140750d90();                                   // sorts the npc quest lists
     void FUN_140750ea0();                                   // sorts m_1d8

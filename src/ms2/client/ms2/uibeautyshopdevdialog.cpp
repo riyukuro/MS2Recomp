@@ -1004,11 +1004,11 @@ void UIBeautyShopDevDialog::FUN_1419200c0(int bForce)
             MS2Ptr<CEquipItem> spEquip(aItems.GetNext(pos));
             if (spEquip.IsNull())
                 continue;
-            MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+            MS2Ptr<CItem> spItem = spEquip->GetItem();
             if (!spItem)
                 continue;
             Unk_EquipItemData* pData = spEquip->FUN_1411dc7f0();
-            if (pData && bBuild && FUN_141421690(spEquip->FUN_1411dc7a0().get()) == 0)
+            if (pData && bBuild && FUN_141421690(spEquip->GetItem().get()) == 0)
             {
                 int nItemId = pData->FUN_14053c510();
                 ASObj row(2);
@@ -1124,7 +1124,7 @@ void UIBeautyShopDevDialog::OnClickNew()
     MS2Ptr<CEquipItem> spItem = pPc->FUN_141655e10(1);
     if (spItem == 0)
         return;
-    MS2Ptr<CItemData> spData(spItem->FUN_1411dc7a0()->FUN_140527840());
+    MS2Ptr<CItemData> spData(spItem->GetItem()->FUN_140527840());
     if (spData == 0)
         return;
     OnClickAdd();
@@ -1141,7 +1141,7 @@ void UIBeautyShopDevDialog::OnClickAdd()
     MS2Ptr<CEquipItem> spItem = pPc->FUN_141655e10(6);
     if (spItem == 0)
         return;
-    MS2Ptr<CItemData> spData(spItem->FUN_1411dc7a0()->FUN_140527840());
+    MS2Ptr<CItemData> spData(spItem->GetItem()->FUN_140527840());
     if (spData == 0)
         return;
     ATL::CAtlArray<CString> aNames;
@@ -1179,7 +1179,7 @@ void UIBeautyShopDevDialog::OnClickDelete()
     MS2Ptr<CEquipItem> spItem = pPc->FUN_141655e10(1);
     if (spItem == 0)
         return;
-    MS2Ptr<CItemData> spData(spItem->FUN_1411dc7a0()->FUN_140527840());
+    MS2Ptr<CItemData> spData(spItem->GetItem()->FUN_140527840());
     if (spData == 0)
         return;
 }

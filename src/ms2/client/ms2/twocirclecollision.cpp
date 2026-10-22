@@ -14,7 +14,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-NiRenderer* FUN_140994450();                                        // NiRenderer::GetRenderer()
+NiRenderer* GetNiRenderer();                                        // NiRenderer::GetRenderer()
 void FUN_140980f20(NiVertexColorProperty* pProp, int n);            // SetSourceMode
 void FUN_140980e60(NiVertexColorProperty* pProp, int n);            // SetLightingMode
 
@@ -49,7 +49,7 @@ void CTwoCircleCollision::vfunc_1()
 {
     if (m_bBuilt == 0)
         vfunc_5();
-    NiRenderer* pRenderer = FUN_140994450();
+    NiRenderer* pRenderer = GetNiRenderer();
     for (int i = 0; i < 2; i++)
     {
         NiMesh* pMesh = m_aspDraw[i];

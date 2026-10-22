@@ -188,11 +188,11 @@ int ItemPreview::FUN_140d3c3c0(std::vector<MS2Ptr<CItem> > items)
 MS2_REPLACE_METHOD(0x140D3C3C0, ItemPreview, FUN_140d3c3c0, 623, 0xB44AB87E);
 
 // @0x140d3c640
-MS2Ptr<CItem> ItemPreview::FUN_140d3c640()
+MS2Ptr<CItem> ItemPreview::GetPreview()
 {
     return m_spPreview;
 }
-MS2_REPLACE_METHOD(0x140D3C640, ItemPreview, FUN_140d3c640, 65, 0x1F75C5E3);
+MS2_REPLACE_METHOD(0x140D3C640, ItemPreview, GetPreview, 65, 0x1F75C5E3);
 
 // @0x140d3c690
 void ItemPreview::FUN_140d3c690(std::vector<MS2Ptr<CItem> >& items)
@@ -204,11 +204,11 @@ void ItemPreview::FUN_140d3c690(std::vector<MS2Ptr<CItem> >& items)
 MS2_REPLACE_METHOD(0x140D3C690, ItemPreview, FUN_140d3c690, 114, 0x76EC6C11);
 
 // @0x140d3c710
-MS2Ptr<CItem> ItemPreview::FUN_140d3c710()
+MS2Ptr<CItem> ItemPreview::GetItem()
 {
     return m_spItem;
 }
-MS2_REPLACE_METHOD(0x140D3C710, ItemPreview, FUN_140d3c710, 65, 0xB93845D0);
+MS2_REPLACE_METHOD(0x140D3C710, ItemPreview, GetItem, 65, 0xB93845D0);
 
 // @0x140d3c760
 // MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
@@ -254,7 +254,7 @@ MS2Ptr<CItem> ItemPreview::FUN_140d3c760(MS2Ptr<CItem> spItem)
     if (!spCopy)
         return 0;
     CItemGem* pGem = spCopy->FUN_140527900();
-    if (pGem && pGem->FUN_140d41400().IsNull())
+    if (pGem && pGem->GetGem().IsNull())
         pGem->FUN_1405a7020(spData->FUN_14053e900(), spData->FUN_14053c650());
     return spCopy;
 }
@@ -266,7 +266,7 @@ MS2Ptr<CItemData> ItemPreview::FUN_140d3ce10()
 {
     if (m_spData.get())
         return m_spData;
-    MS2Ptr<CItem> spShown = FUN_140d3c640();
+    MS2Ptr<CItem> spShown = GetPreview();
     if (spShown.get() == 0)
         return 0;
     return MS2Ptr<CItemData>(FUN_140527840(spShown));
@@ -274,11 +274,11 @@ MS2Ptr<CItemData> ItemPreview::FUN_140d3ce10()
 MS2_REPLACE_METHOD(0x140D3CE10, ItemPreview, FUN_140d3ce10, 229, 0x38F6D89B);
 
 // @0x140d3cf00
-MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3cf00()
+MS2Ptr<UIAvatarBase> ItemPreview::GetAvatar()
 {
     return m_spAvatar;
 }
-MS2_REPLACE_METHOD(0x140D3CF00, ItemPreview, FUN_140d3cf00, 65, 0x7D78CB50);
+MS2_REPLACE_METHOD(0x140D3CF00, ItemPreview, GetAvatar, 65, 0x7D78CB50);
 
 // @0x140d3cf50
 void ItemPreview::FUN_140d3cf50()
@@ -519,7 +519,7 @@ MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3e2f0()
         pAvatar->vfunc_1(m_pListener);
         AvatarPC* pObj = pAvatar->FUN_1418bd1d0();
         if (pObj)
-            pObj->FUN_1409f6540(true);
+            pObj->SetEnabled(true);
     }
     return MS2Ptr<UIAvatarBase>(pAvatar);
 }
@@ -552,7 +552,7 @@ MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3e450(MS2Ptr<CItemData> spData, int nU
         pAvatar->vfunc_1(m_pListener);
         AvatarPC* pObj = pAvatar->FUN_1418bd1d0();
         if (pObj)
-            pObj->FUN_1409f6540(bShowEquip);
+            pObj->SetEnabled(bShowEquip);
     }
     return MS2Ptr<UIAvatarBase>(pAvatar);
 }
@@ -880,7 +880,7 @@ MS2_REPLACE_METHOD(0x140D40120, ItemPreviewMgr, FUN_140d40120, 842, 0x26150E8E);
 MS2Ptr<CItem> ItemPreviewMgr::FUN_140d40470()
 {
     if (m_spPreview.get())
-        return m_spPreview->FUN_140d3c640();
+        return m_spPreview->GetPreview();
     return 0;
 }
 MS2_REPLACE_METHOD(0x140D40470, ItemPreviewMgr, FUN_140d40470, 125, 0x8A1C73D5);
@@ -889,7 +889,7 @@ MS2_REPLACE_METHOD(0x140D40470, ItemPreviewMgr, FUN_140d40470, 125, 0x8A1C73D5);
 MS2Ptr<CItem> ItemPreviewMgr::FUN_140d40500()
 {
     if (m_spPreview.get())
-        return m_spPreview->FUN_140d3c710();
+        return m_spPreview->GetItem();
     return 0;
 }
 MS2_REPLACE_METHOD(0x140D40500, ItemPreviewMgr, FUN_140d40500, 125, 0xB42171E2);
@@ -904,18 +904,18 @@ MS2Ptr<CItemData> ItemPreviewMgr::FUN_140d40590()
 MS2_REPLACE_METHOD(0x140D40590, ItemPreviewMgr, FUN_140d40590, 125, 0xEDD763B6);
 
 // @0x140d40620
-MS2Ptr<ItemPreview> ItemPreviewMgr::FUN_140d40620()
+MS2Ptr<ItemPreview> ItemPreviewMgr::GetPreview()
 {
     return m_spPreview;
 }
-MS2_REPLACE_METHOD(0x140D40620, ItemPreviewMgr, FUN_140d40620, 65, 0x3FDA6E98);
+MS2_REPLACE_METHOD(0x140D40620, ItemPreviewMgr, GetPreview, 65, 0x3FDA6E98);
 
 // @0x140d40670
-int ItemPreviewMgr::FUN_140d40670()
+int ItemPreviewMgr::IsHudOn()
 {
     return m_bHudOn;
 }
-MS2_REPLACE_METHOD(0x140D40670, ItemPreviewMgr, FUN_140d40670, 14, 0xC2D0886F);
+MS2_REPLACE_METHOD(0x140D40670, ItemPreviewMgr, IsHudOn, 14, 0xC2D0886F);
 
 // @0x140d40690
 void ItemPreviewMgr::FUN_140d40690()
@@ -964,11 +964,11 @@ void ItemPreviewMgr::FUN_140d40800()
 MS2_REPLACE_METHOD(0x140D40800, ItemPreviewMgr, FUN_140d40800, 67, 0xD5F34919);
 
 // @0x140d40850
-int ItemPreviewMgr::FUN_140d40850()
+int ItemPreviewMgr::GetArg()
 {
     return m_nArg;
 }
-MS2_REPLACE_METHOD(0x140D40850, ItemPreviewMgr, FUN_140d40850, 14, 0x92BE4827);
+MS2_REPLACE_METHOD(0x140D40850, ItemPreviewMgr, GetArg, 14, 0x92BE4827);
 
 // @0x140d40870
 void ItemPreviewMgr::FUN_140d40870()
@@ -1020,7 +1020,7 @@ MS2_REPLACE(0x140D40AB0, ItemPreviewMgr::FUN_140d40ab0, 147, 0x8B528740);
 // ---- COMDAT emitted here --------------------------------------------------------------------------------------------
 
 // @0x140d41400
-MS2Ptr<CGemBase> CItemGem::FUN_140d41400()
+MS2Ptr<CGemBase> CItemGem::GetGem()
 {
     return m_spGem;
 }

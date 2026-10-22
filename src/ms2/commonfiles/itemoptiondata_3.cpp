@@ -182,12 +182,12 @@ CItemOptionTable::~CItemOptionTable()
 bool CItemOptionTable::FUN_1405f4720()
 {
     FUN_1405f78f0();
-    FUN_1405f8780();
+    LoadItemOptionVariation();
     SetInit(true);
     if (m_constants.empty())
     {
-        FUN_1405f8310();
-        FUN_1405f8540();
+        LoadItemOptionConstant();
+        LoadItemOptionRandom();
     }
     if (!FUN_1405f8770())
         return false;
@@ -886,7 +886,7 @@ void CItemOptionTable::FUN_1405f78f0()
 }
 
 // @0x1405f8310
-bool CItemOptionTable::FUN_1405f8310()
+bool CItemOptionTable::LoadItemOptionConstant()
 {
     CString strPath = FUN_14071a5b0("Table", "ItemOptionConstant.xml");
     TiXmlDocument doc;
@@ -925,7 +925,7 @@ bool CItemOptionTable::FUN_1405f8310()
 }
 
 // @0x1405f8540
-bool CItemOptionTable::FUN_1405f8540()
+bool CItemOptionTable::LoadItemOptionRandom()
 {
     CString strPath = FUN_14071a5b0("Table", "ItemOptionRandom.xml");
     TiXmlDocument doc;
@@ -958,7 +958,7 @@ bool CItemOptionTable::FUN_1405f8770()
 }
 
 // @0x1405f8780
-bool CItemOptionTable::FUN_1405f8780()
+bool CItemOptionTable::LoadItemOptionVariation()
 {
     CString strPath = FUN_14071a5b0("Table", "itemOptionVariation.xml");
     TiXmlDocument doc;

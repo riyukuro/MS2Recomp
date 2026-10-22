@@ -1516,7 +1516,7 @@ bool CSkillMagicControlGuide::FUN_1410a65f0(int nSkill)
 }
 
 // @0x1410a6730
-bool CSkillMagicControlGuide::FUN_1410a6730() { return m_bReleased; }
+bool CSkillMagicControlGuide::IsReleased() { return m_bReleased; }
 
 // @0x1410a6750
 efd::Point3 CSkillMagicControlGuide::FUN_1410a6750() { return *(efd::Point3*)&m_kAim; }
@@ -1524,7 +1524,7 @@ efd::Point3 CSkillMagicControlGuide::FUN_1410a6750() { return *(efd::Point3*)&m_
 // @0x1410a6790
 float CSkillMagicControlGuide::FUN_1410a6790()
 {
-    if (FUN_1410a6730())
+    if (IsReleased())
         return 0.0f;
     return m_fDc8;
 }

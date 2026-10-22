@@ -280,8 +280,8 @@ void UISceneLogin::OnLoadComplete()
     GFxMovieBackground* pBg = FUN_140e85550(&DAT_143ad6328, FUN_1422b01a0(FUN_14025e7a0(), 4));
     if (pBg != 0)
     {
-        if (pBg->FUN_14127ab40() != 0)
-            vfunc_60(pBg->FUN_14127aaf0());
+        if (pBg->IsLoaded() != 0)
+            vfunc_60(pBg->GetScript());
     }
     if (FUN_1406c34c0() == 0 && m_nShown != 0)
         FUN_141acfa00();

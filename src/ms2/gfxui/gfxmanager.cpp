@@ -125,7 +125,7 @@ int GFxManager::FUN_1422ad620(HWND hWnd, NiRenderer* pRenderer)
     }
     if (!FUN_1422b1620(m_strFontConfig, FUN_140651350()))
         return 0;
-    if (!FUN_1422b1820(hWnd))
+    if (!InitIME(hWnd))
         return 0;
     if (!FUN_1422b0f70(hWnd))
         return 0;
@@ -1098,7 +1098,7 @@ int GFxManager::FUN_1422b1750(NiRenderer* pRenderer)
 MS2_REPLACE_METHOD(0x1422B1750, GFxManager, FUN_1422b1750, 192, 0xAB26E2A9);
 
 // @0x1422b1820
-int GFxManager::FUN_1422b1820(HWND hWnd)
+int GFxManager::InitIME(HWND hWnd)
 {
     Ptr<IME::GFxIMEManagerWin32> spIME = *new IME::GFxIMEManagerWin32(hWnd);
     if (spIME) {
@@ -1110,7 +1110,7 @@ int GFxManager::FUN_1422b1820(HWND hWnd)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422B1820, GFxManager, FUN_1422b1820, 422, 0xF5C4BD6C);
+MS2_REPLACE_METHOD(0x1422B1820, GFxManager, InitIME, 422, 0xF5C4BD6C);
 
 // @0x1422b19d0
 int GFxManager::FUN_1422b19d0(HWND hWnd, CString strPath)

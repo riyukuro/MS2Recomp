@@ -179,8 +179,8 @@ void UITextPreviewDialog::OnDescriptionCheck()
         FUN_1405594b0(FUN_140281980(), &ids);
         for (size_t i = 0; i < FUN_140191110(&ids); i++) {
             unsigned int nId = *FUN_140297cb0(&ids, i);
-            CStringW strMain = FUN_1401a9d70()->FUN_141811c90(nId, CString("mainDescription"));
-            CStringW strTooltip = FUN_1401a9d70()->FUN_141811c90(nId, CString("tooltipDescription"));
+            CStringW strMain = FUN_1401a9d70()->GetItemDescription(nId, CString("mainDescription"));
+            CStringW strTooltip = FUN_1401a9d70()->GetItemDescription(nId, CString("tooltipDescription"));
             if (strMain.IsEmpty() && strTooltip.IsEmpty())
                 continue;
             pDlg->Invoke("descriptionCheck", 0, nId, strMain, strTooltip);

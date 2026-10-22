@@ -359,11 +359,11 @@ MS2Ptr<Unk_PCBaseComp_aa8> CubeSpawnObject::vfunc_85()
 MS2_REPLACE_METHOD(0x140a4f0b0, CubeSpawnObject, vfunc_85, 236, 0x2B063CFF);
 
 // @0x140a4f1b0
-MS2Ptr<Unk_NpcData> CubeSpawnObject::FUN_140a4f1b0()
+MS2Ptr<Unk_NpcData> CubeSpawnObject::GetNpc()
 {
     return m_spNpc;
 }
-MS2_REPLACE_METHOD(0x140a4f1b0, CubeSpawnObject, FUN_140a4f1b0, 67, 0x3741EA17);
+MS2_REPLACE_METHOD(0x140a4f1b0, CubeSpawnObject, GetNpc, 67, 0x3741EA17);
 
 // @0x140a4f200
 void CubeSpawnObject::FUN_140a4f200(void* p)

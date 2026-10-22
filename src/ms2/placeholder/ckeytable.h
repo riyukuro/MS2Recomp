@@ -64,8 +64,8 @@ public:
     int FUN_14142b250(int nKey, int nType, __int64 nAction, int nSlot, int nPriority);
     int FUN_14142b300(int nKey);
     int FUN_14142b340(int nAction);                         // run a key action
-    void FUN_14142bad0(int nMode);
-    int FUN_14142baf0();
+    void SetMode(int nMode);
+    int GetMode();
     void FUN_14142bb10();                                   // use the quick slots of the pressed keys
     int FUN_14142c0c0(int nSkillId);                        // the skill's key is held
     int FUN_14142c270(int nAction);                         // the action's key is held
@@ -112,22 +112,22 @@ public:
     int FUN_14142e6f0(int nKey);
     void FUN_14142e730(int nKey);
     void FUN_14142e770(int nKey);
-    int FUN_14142e7a0();
+    int GetLocked();
     void FUN_14142e8c0(MS2Ptr<CSkillSet> spSet);            // enter the skill set mode: the set fills the quick slots
     void FUN_14142ece0(const ATL::CAtlArray<unsigned>& aItemIds);   // enter the skill set mode with these items in the quick slots
     int FUN_14142e7c0(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount);   // a quick slot of the set holds it
     void FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsigned nCount);  // put it into a free quick slot (set mode)
     void FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid);   // put it into its job quick slot
     void FUN_14142f470(int nPage, int nSlot);              // put the job item of the slot into the page
-    void FUN_14142f8b0(CString strName);                   // save the skill set layout (keySetting_<name>.xml)
-    void FUN_14142fc10(CString strName);                   // load the skill set layout (keySetting_<name>.xml)
+    void SaveKeySetting(CString strName);                   // save the skill set layout (keySetting_<name>.xml)
+    void LoadKeySetting(CString strName);                   // load the skill set layout (keySetting_<name>.xml)
     void SendKeyTableMode7();                                   // leave the skill set mode and save
     int FUN_14142f830(int nSlot);
     int FUN_14142f870(int nSlot);
     int FUN_141430470(__int64 nAction);
     MS2Ptr<CKeySettingParam> FUN_141430590(__int64 nAction) const;     // the setting of the action
     SettingList FUN_141430710(int nCategory);               // the settings of a tab
-    int FUN_14142fff0();                                     // load Table/keySetting.xml into m_settings
+    int LoadKeySettingTable();                                     // load Table/keySetting.xml into m_settings
     void FUN_1414307a0();                                   // build the setting categories
     int FUN_141430b10(__int64 nAction);
     int FUN_141430b90(int nKey);

@@ -294,8 +294,8 @@ public:
 };
 Unk_140165cf0* FUN_1403f0510(Unk_140165cf0*);               // next <dummy>
 
-void FUN_140784de0(CRideeDataPtr spData);                   // fill the effect dummy list (default table, then the row's file)
-CRideeDataPtr FUN_140784a20(unsigned nId);                  // load a row from Data/Xml/Riding/<id>.xml
+void LoadRidingEffectDummy(CRideeDataPtr spData);                   // fill the effect dummy list (default table, then the row's file)
+CRideeDataPtr LoadRiding(unsigned nId);                  // load a row from Data/Xml/Riding/<id>.xml
 
 static CRideeDataMap s_cache;                               // 0x143ab0ee0
 static CLockCriticalSection s_lock;                         // 0x143ab0eb0
@@ -916,7 +916,7 @@ CRideeDataPtr FUN_1407844b0(unsigned nId)
         if (s_cache.Lookup(nId, spData) && !FUN_1401d1320(spData.get()))
             return spData;
     }
-    return FUN_140784a20(nId);
+    return LoadRiding(nId);
 }
 
 // @0x1407845b0
@@ -947,7 +947,7 @@ bool FUN_1407845b0(CString strPath, std::vector<CRideeDataPtr>& rOut)
 
 #ifndef MS2_HOOK_DLL
 // @0x140784a20
-CRideeDataPtr FUN_140784a20(unsigned nId)
+CRideeDataPtr LoadRiding(unsigned nId)
 {
     CString strPath;
     strPath.Format("./Data/Xml/Riding/%08d.xml", nId);
@@ -970,7 +970,7 @@ CRideeDataPtr FUN_140784a20(unsigned nId)
         spResult->m_stat.FUN_140783e60(pNode);
         spResult->m_faceCamera.FUN_140783b00(pNode);
         spResult->m_passengers.FUN_140784010(pNode);
-        FUN_140784de0(spResult);
+        LoadRidingEffectDummy(spResult);
         if (Unk_LockGuard guard = s_lock) {} else
             s_cache.SetAt(nId, spResult);
     }
@@ -979,7 +979,7 @@ CRideeDataPtr FUN_140784a20(unsigned nId)
 #endif
 
 // @0x140784de0
-void FUN_140784de0(CRideeDataPtr spData)
+void LoadRidingEffectDummy(CRideeDataPtr spData)
 {
     if (spData == 0)
         return;

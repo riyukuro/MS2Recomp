@@ -144,7 +144,7 @@ void CLocaleLanguageData::FUN_14064ef60()
 // @0x14064efc0
 CLocaleLanguage::CLocaleLanguage()
 {
-    FUN_14064f390();
+    LoadGameOptionLocale();
 }
 
 // @0x14064f020
@@ -210,7 +210,7 @@ void CLocaleLanguage::FUN_14064f310(ATL::CAtlArray<CString>& out)
 
 // @0x14064f390
 // MS2-FUNCTIONAL: xml load loop: EH state numbering and temp slots differ
-int CLocaleLanguage::FUN_14064f390()
+int CLocaleLanguage::LoadGameOptionLocale()
 {
     CString strPath = FUN_14071a5b0("Table", "gameOptionLocale.xml");
     TiXmlDocument doc;

@@ -1697,7 +1697,7 @@ int UIBeautyShopDialog::FUN_1418c8ee0()
         FUN_1418caec0();
     m_1b8->FUN_140cd25c0(nSlot);
     int nDetail = FUN_1418cbdc0(m_1b8->FUN_140cd17e0());
-    m_1b8->FUN_140cd38d0(nDetail);
+    m_1b8->SetPalette(nDetail);
     MS2Ptr<Customize::BeautyShopContext> spContext(new Customize::BeautyShopContext(FUN_1418ccb40(), m_2a0));
     m_1b8->FUN_140cd38f0(spContext);
     FUN_1418c7ab0();

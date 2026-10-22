@@ -16,7 +16,7 @@ NiMaterial* FUN_141d284a0(void* materialTable);              // looks the overdr
 unsigned FUN_140d89680(const NiVisibleArray* arr);           // NiVisibleArray count
 NiRenderObject* FUN_1414d1830(const NiVisibleArray* arr, unsigned i);
 void FUN_1410479a0(NiRenderObject* obj, void* key, const Unk_Colc& value);   // set a shader constant on obj
-NiRenderer* FUN_140994450();                                 // the active renderer
+NiRenderer* GetNiRenderer();                                 // the active renderer
 extern char DAT_143ae5210, DAT_143ae50f0;
 
 // The per-object state saved while the overdraw material/properties are applied: the object, its active material
@@ -84,7 +84,7 @@ void MS2OverdrawProcessor::PreRenderProcessList(const NiVisibleArray* pkInput, N
         Unk_OverdrawState state(obj);
         saved.push_back(state);
         FUN_1410479a0(obj, &DAT_143ae50f0, Unk_Colc(0.003921569f, 0.0f, 0.0f));
-        obj->PurgeRendererData(FUN_140994450());
+        obj->PurgeRendererData(GetNiRenderer());
         obj->ApplyAndSetActiveMaterial(m_spOverdrawMaterial, 0xffffffff);
         obj->AttachProperty(m_spZBuffer);
         obj->AttachProperty(m_spAlpha);

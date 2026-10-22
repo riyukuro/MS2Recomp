@@ -321,7 +321,7 @@ CubeHolderManager* FUN_140ef0b20();                      // the cube palette hol
 
 int FUN_140961880(egf::Entity* pEntity, unsigned uPropId, float* pOut);     // read a float property (0 = ok)
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
-CCubeMotionManager* FUN_1410af790();                        // the cube motion manager
+CCubeMotionManager* GetCubeMotionManager();                        // the cube motion manager
 
 // Housing quest-less globals.
 extern efd::Point3 DAT_143a08cf8;                               // up vector
@@ -378,11 +378,11 @@ void Unk_PCCubeCraft::SendRequestCubeMode0(int nValue)
 MS2_REPLACE_METHOD(0x1410A8A20, Unk_PCCubeCraft, SendRequestCubeMode0, 93, 0xA3979923);
 
 // @0x1410a8a90
-int Unk_PCCubeCraft::FUN_1410a8a90()
+int Unk_PCCubeCraft::GetMode()
 {
     return m_nMode;
 }
-MS2_REPLACE_METHOD(0x1410A8A90, Unk_PCCubeCraft, FUN_1410a8a90, 17, 0x9F576736);
+MS2_REPLACE_METHOD(0x1410A8A90, Unk_PCCubeCraft, GetMode, 17, 0x9F576736);
 
 // @0x1410a8ab0
 int Unk_PCCubeCraft::FUN_1410a8ab0()
@@ -409,7 +409,7 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
             float fScale;
             FUN_140961880(spCube->entity, 0x2d7cad2d, &fScale);
             egf::EntityID kId = *FUN_1408b76f0(spCube->entity);
-            FUN_1410af790()->AddScale(kId, fScale, m_fScale, 200);
+            GetCubeMotionManager()->AddScale(kId, fScale, m_fScale, 200);
         }
         FUN_1410add30();
         PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -667,7 +667,7 @@ MS2_REPLACE_METHOD(0x1410AA060, Unk_PCCubeCraft, FUN_1410aa060, 77, 0x1406CA40);
 void Unk_PCCubeCraft::FUN_1410aa0c0(CubeItemInfo* pInfo)
 {
     m_bPending = true;
-    if (FUN_1410a8a90() == 1)
+    if (GetMode() == 1)
     {
         COutPacket packet(0x37, 0);
         packet.Encode1(0);
@@ -724,7 +724,7 @@ MS2_REPLACE_METHOD(0x1410AA260, Unk_PCCubeCraft, FUN_1410aa260, 272, 0x18CE5B06)
 // @0x1410aa380
 void Unk_PCCubeCraft::FUN_1410aa380(bool bVisible)
 {
-    if (FUN_1410a8a90() == 1)
+    if (GetMode() == 1)
         return;
     m_bVisible = bVisible;
     if (m_spGuide.get() != 0)
@@ -750,11 +750,11 @@ void Unk_PCCubeCraft::FUN_1410aa4a0(bool bVisible)
 MS2_REPLACE_METHOD(0x1410AA4A0, Unk_PCCubeCraft, FUN_1410aa4a0, 109, 0x13D950CB);
 
 // @0x1410aa520
-Unk_StreamPoint Unk_PCCubeCraft::FUN_1410aa520()
+Unk_StreamPoint Unk_PCCubeCraft::GetPtCell()
 {
     return m_ptCell;
 }
-MS2_REPLACE_METHOD(0x1410AA520, Unk_PCCubeCraft, FUN_1410aa520, 41, 0xA7FB2F5C);
+MS2_REPLACE_METHOD(0x1410AA520, Unk_PCCubeCraft, GetPtCell, 41, 0xA7FB2F5C);
 
 // @0x1410aa550
 void Unk_PCCubeCraft::FUN_1410aa550(int nMode)
@@ -799,11 +799,11 @@ void Unk_PCCubeCraft::FUN_1410ac960()
 MS2_REPLACE_METHOD(0x1410AC960, Unk_PCCubeCraft, FUN_1410ac960, 74, 0xC5A8022D);
 
 // @0x1410ad5f0
-char Unk_PCCubeCraft::FUN_1410ad5f0()
+char Unk_PCCubeCraft::GetPending()
 {
     return m_bPending;
 }
-MS2_REPLACE_METHOD(0x1410AD5F0, Unk_PCCubeCraft, FUN_1410ad5f0, 18, 0xCF5C7FCF);
+MS2_REPLACE_METHOD(0x1410AD5F0, Unk_PCCubeCraft, GetPending, 18, 0xCF5C7FCF);
 
 // @0x1410ad610
 int Unk_PCCubeCraft::FUN_1410ad610()
@@ -947,7 +947,7 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Unk_StreamPoint kPos, char bNoUpdate)
             float fScale;
             FUN_140961880(spOld->entity, 0x2d7cad2d, &fScale);
             egf::EntityID kId = *FUN_1408b76f0(spOld->entity);
-            FUN_1410af790()->AddScale(kId, fScale, m_fScale, 200);
+            GetCubeMotionManager()->AddScale(kId, fScale, m_fScale, 200);
         }
     }
     MS2Ptr<Cube> spCell(m_svc->FUN_1410b8ab0(m_ptCell));
@@ -969,7 +969,7 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Unk_StreamPoint kPos, char bNoUpdate)
             FUN_140961880(spCell->entity, 0x2d7cad2d, &fCur);
             Unk_CmScale kScale;
             egf::EntityID kId = *FUN_1408b76f0(spCell->entity);
-            if (FUN_1410af790()->FUN_14115b4c0(kId, kScale))
+            if (GetCubeMotionManager()->FUN_14115b4c0(kId, kScale))
                 m_fScale = kScale.m_fTo;
             else
                 m_fScale = fCur;
@@ -979,14 +979,14 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Unk_StreamPoint kPos, char bNoUpdate)
                 {
                     float fTo = m_fScale - 0.05f;
                     egf::EntityID kId2 = *FUN_1408b76f0(spCell->entity);
-                    FUN_1410af790()->AddScale(kId2, fCur, fTo, 200);
+                    GetCubeMotionManager()->AddScale(kId2, fCur, fTo, 200);
                 }
             }
             else
             {
                 float fTo = m_fScale + 0.05f;
                 egf::EntityID kId3 = *FUN_1408b76f0(spCell->entity);
-                FUN_1410af790()->AddScale(kId3, fCur, fTo, 200);
+                GetCubeMotionManager()->AddScale(kId3, fCur, fTo, 200);
             }
         }
     }
@@ -1012,7 +1012,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
         return;
     if (FUN_141659610(pPC) != 0 && FUN_1416625b0(pPC) == 0)
         return;
-    if (FUN_1410a8a90() == 1)
+    if (GetMode() == 1)
     {
         m_svc->FUN_1410d6590(0x39);
         return;
@@ -1022,7 +1022,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
     MS2Ptr<CItemData> spData = FUN_14053f870(FUN_1410ad610());
     if (!spData)
         return;
-    if (FUN_1410a8a90() != 2)
+    if (GetMode() != 2)
     {
         if (FUN_1415302e0(pPC, FUN_1410ad610()))
         {
@@ -1040,7 +1040,7 @@ void Unk_PCCubeCraft::FUN_1410aad50()
         }
     }
     MS2Ptr<Cube> spCell(m_svc->FUN_1410b8ab0(m_ptCell));
-    if (FUN_1410a8a90() == 2 && spData->install.attachable != 0)
+    if (GetMode() == 2 && spData->install.attachable != 0)
     {
         FUN_1410aded0();
     }
@@ -1164,7 +1164,7 @@ void Unk_PCCubeCraft::FUN_1410ab5c0(unsigned char bNotice)
         }
         m_svc->FUN_1410b7a20(kFront, &kOut);
     }
-    if (FUN_1410a8a90() == 1 || FUN_1410a8a90() == 0 || FUN_1410a8a90() == 2)
+    if (GetMode() == 1 || GetMode() == 0 || GetMode() == 2)
     {
         if (!m_svc->FUN_1410b7e80(kCell))
         {
@@ -1183,7 +1183,7 @@ void Unk_PCCubeCraft::FUN_1410ab5c0(unsigned char bNotice)
             {
                 Unk_CmRotate kRot;
                 egf::EntityID kId = *FUN_1408b76f0(spCube->entity);
-                if (!FUN_1410af790()->FUN_14115b500(kId, kRot))
+                if (!GetCubeMotionManager()->FUN_14115b500(kId, kRot))
                 {
                     Unk_Int3 kGrid = FUN_1408a1430((const NiPoint3&)kCell);
                     COutPacket packet(0x37, 0);
@@ -1201,7 +1201,7 @@ void Unk_PCCubeCraft::FUN_1410ab5c0(unsigned char bNotice)
 // MS2-FUNCTIONAL: behaviour-equivalent; frame layout / local order and temporaries differ from the exe
 void Unk_PCCubeCraft::FUN_1410abb40()
 {
-    if (FUN_1410a8a90() == 2)
+    if (GetMode() == 2)
         return;
     PC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
@@ -1347,7 +1347,7 @@ void Unk_PCCubeCraft::FUN_1410ac540()
         }
         m_svc->FUN_1410b7a20(kFront, &kSpare);
     }
-    if (FUN_1410a8a90() == 3)
+    if (GetMode() == 3)
         return;
     if (!m_svc->FUN_1410b7e80(kCell))
         return;
@@ -1455,7 +1455,7 @@ void Unk_PCCubeCraft::FUN_1410ae380(Unk_StreamPoint kPos)
         return;
     MS2Ptr<Cube> spCube(m_svc->FUN_1410b8ab0(m_ptCell));
     unsigned nErr;
-    if (FUN_1410a8a90() == 2 && spData->install.attachable != 0)
+    if (GetMode() == 2 && spData->install.attachable != 0)
     {
         Unk_StreamPoint kFoot;
         Unk_C2Lift* pLift = FUN_1416625b0(pPC);
@@ -1524,7 +1524,7 @@ void Unk_PCCubeCraft::FUN_1410ae960(unsigned* pLeft, unsigned* pRight)
     Unk_StreamPoint kTop;
     m_svc->FUN_1410b7ad0(pPC, m_fLift, &kTop, 1);
     Unk_Int3 kTopGrid = FUN_1408a1430((const NiPoint3&)kTop);
-    if (FUN_1410a8a90() == 2)
+    if (GetMode() == 2)
     {
         *pLeft = kTopGrid.z - kFloorGrid.z < *FUN_1401d3200()->m_liftUp.FUN_1402056b0();
         *pRight = kFloorGrid.z - kTopGrid.z < *FUN_1401d3200()->m_liftDown.FUN_1402056b0();
@@ -1706,7 +1706,7 @@ void Unk_PCCubeCraft::FUN_1410ac9b0()
             m_bFirstMove = 1;
     }
     Unk_C2Ease kEase;
-    if ((FUN_1410a8a90() == 0 || FUN_1410a8a90() == 2)
+    if ((GetMode() == 0 || GetMode() == 2)
         && (m_tRotate.FUN_140868ba0() != 0 || m_tRotate.FUN_140868c00() != 0))
     {
         float fRatio = m_tRotate.FUN_140868940();
@@ -1779,11 +1779,11 @@ float Unk_C2Ease::FUN_1410af700(float t)
 MS2_REPLACE_METHOD(0x1410AF700, Unk_C2Ease, FUN_1410af700, 112, 0x6C45E1EF);
 
 // @0x1410af790
-CCubeMotionManager* FUN_1410af790()
+CCubeMotionManager* GetCubeMotionManager()
 {
     return DAT_143acf6c8;
 }
-MS2_REPLACE(0x1410AF790, FUN_1410af790, 8, 0xEA0FC2F5);
+MS2_REPLACE(0x1410AF790, GetCubeMotionManager, 8, 0xEA0FC2F5);
 
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy).
 // @0x1410af7e0

@@ -370,10 +370,10 @@ void UIGameOptionDialog::FUN_141943480()
         bool bEnabled = true;
         if (m_bSimple)
         {
-            int nType = sp->FUN_140a02e10();
+            int nType = sp->GetType();
             bEnabled = nType == 6 || nType == 7 || nType == 0xe;
         }
-        sp->FUN_140a02df0(bEnabled);
+        sp->SetEnabled(bEnabled);
         sp->vfunc_3(0);
     }
     bool bUnused = false;   // the exe stores this byte and never reads it

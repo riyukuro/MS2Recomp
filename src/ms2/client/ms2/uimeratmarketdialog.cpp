@@ -1706,7 +1706,7 @@ bool UIMeratMarketDialog::FillBasketRow(ASMeratMarketProduct& row, MS2Ptr<Unk_Me
     if (spEntry == 0)
         return false;
     int nOption = spEntry->FUN_1413159c0();
-    row.FUN_1409bc480(nOption);
+    row.SetIndex(nOption);
     if (FillProductRow(row, spEntry->m_spProduct, pScope))
     {
         if ((spEntry->m_spProduct.get() ? true : false) && spEntry->m_spProduct->IsPremium())
@@ -3024,7 +3024,7 @@ int UIMeratMarketDialog::FillBannerProducts(const int& nType, ASArray& rows, Unk
             MS2Ptr<ShopBannerInfo> spBanner = m_banner.FUN_1413480a0(pPremium->GetCategory());
             if (spBanner.get() != 0)
             {
-                spRow->FUN_1409bc4f0(reinterpret_cast<MS2Ptr<Unk_MeratBanner>&>(spBanner));
+                spRow->SetBanner(reinterpret_cast<MS2Ptr<Unk_MeratBanner>&>(spBanner));
                 MS2Ptr<MeratMarketShopBannerInfo> spInfo(dynamic_cast<MeratMarketShopBannerInfo*>((ShopBannerInfo*)spBanner));
                 if (spInfo.get() != 0)
                 {

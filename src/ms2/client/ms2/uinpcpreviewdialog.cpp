@@ -261,7 +261,7 @@ void UINpcPreviewDialog::vfunc_15()
     if (pActor == 0)
         return;
     std::vector<CString> names;
-    pActor->FUN_14123c6f0()->FUN_14099e800(&names);
+    pActor->GetAnimMgr()->FUN_14099e800(&names);
     if (names.size() == 0)
         return;
     m_bPending = 0;
@@ -283,7 +283,7 @@ void UINpcPreviewDialog::vfunc_15()
 int UINpcPreviewDialog::FUN_141a6e7e0(CStringW strFilter)
 {
     if (m_names.GetCount() == 0)
-        FUN_141a6ec20();
+        LoadNpcName();
     int nSearch = _wtoi(strFilter);
     ATL::CAtlMap<unsigned int, CStringW> found(17, 0.75f, 0.25f, 2.25f, 10);
     for (POSITION pos = m_names.GetHeadPosition(); pos != 0; ) {
@@ -321,7 +321,7 @@ int UINpcPreviewDialog::FUN_141a6e7e0(CStringW strFilter)
 }
 
 // @0x141a6ec20
-int UINpcPreviewDialog::FUN_141a6ec20()
+int UINpcPreviewDialog::LoadNpcName()
 {
     CString strPath = FUN_14071ae20(CString("npcName.xml"));
     TiXmlDocument doc;

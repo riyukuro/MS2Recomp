@@ -97,7 +97,7 @@ SpecialAbilityInfo::SpecialAbilityInfo(const CStringA& strKey, CStringW strForma
 // @0x14081c880
 int FUN_14081c880()
 {
-    if (FUN_14081ccd0() == 0)
+    if (LoadSpecialAbilityStringTable() == 0)
         return 0;
     // The two fixed special stats (g_kSpecialAbilityMap: stat -> string id).
     g_kSpecialAbilityMap.SetAt((Unk_SocketSpecialStat)0x75, 0x5a995cc);
@@ -161,12 +161,12 @@ int FUN_14081c880()
 }
 
 // @0x14081ccd0
-int FUN_14081ccd0()
+int LoadSpecialAbilityStringTable()
 {
     DAT_143ab1a40.clear();
     DAT_143ab1a40.resize(0xcf);
     std::map<int, CStringW> mapNames;
-    FUN_14081d060(mapNames);
+    LoadStringSpecialAbilityName(mapNames);
     CStringA strPath = FUN_14071a5b0(CStringA("Table"), CStringA("specialAbilityStringTable.xml"));
     TiXmlDocument doc;
     int nResult;
@@ -205,7 +205,7 @@ int FUN_14081ccd0()
 }
 
 // @0x14081d060
-int FUN_14081d060(std::map<int, CStringW>& mapNames)
+int LoadStringSpecialAbilityName(std::map<int, CStringW>& mapNames)
 {
     CStringA strPath = FUN_14071ae20(CStringA("stringSpecialAbilityName.xml"));
     TiXmlDocument doc;

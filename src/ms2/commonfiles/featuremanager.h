@@ -51,8 +51,8 @@ public:
 
     bool FUN_14036ccb0();                                       // loads the feature files; false when missing
     bool FUN_14036cd30();                                       // the manager is initialised
-    bool FUN_14036cd50();                                       // feature_setting.xml: the level of this locale
-    bool FUN_14036d040();                                       // feature.xml: feature name -> level
+    bool LoadFeatureSetting();                                       // feature_setting.xml: the level of this locale
+    bool LoadFeature();                                       // feature.xml: feature name -> level
     bool FUN_14036d3d0();                                       // builds the id -> name map
     bool FUN_14036d4b0(const CStringW& strName);                // the named feature is switched on
     bool FUN_14036d570(int nFeature);                           // the feature is switched on

@@ -59,7 +59,7 @@ static CMsTime FUN_14144fa40(ATL::CAtlArray<int>& aTime)
 }
 
 // @0x14144e400
-int CLoadingDescriptionTable::FUN_14144e400()
+int CLoadingDescriptionTable::LoadLoadingDescription()
 {
     m_spData.AssignRaw(new CLoadingDescriptionCache);
     CString strFile("loadingDescription.xml");

@@ -126,7 +126,7 @@ public:
 #define PurgeRendererData(p, r) ((Unk_PurgeView*)(p))->PurgeRendererData(r)
 
 // @0x140994450
-NiRenderer* FUN_140994450()
+NiRenderer* GetNiRenderer()
 {
     return DAT_143afa648;
 }
@@ -162,14 +162,14 @@ MS2_REPLACE_METHOD(0x14098EB80, AlphaObject, Set, 55, 0xAF50945A);
 // @0x14098eb30
 void AlphaObject::vfunc_0()
 {
-    PurgeRendererData(m_pObject, FUN_140994450());
+    PurgeRendererData(m_pObject, GetNiRenderer());
 }
 MS2_REPLACE_METHOD(0x14098EB30, AlphaObject, vfunc_0, 72, 0x294E735B);
 
 // @0x14098ec00
 void AlphaShellComposite::vfunc_0()
 {
-    NiRenderer* pRenderer = FUN_140994450();
+    NiRenderer* pRenderer = GetNiRenderer();
     Unk_BlendMap mapSaved;
     for (efd::vector<NiRenderObject*>::iterator it = m_aShells.begin(); it != m_aShells.end(); ++it)
     {

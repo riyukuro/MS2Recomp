@@ -254,7 +254,7 @@ void UIPetExtractionScrollDialog::vfunc_79(void* pPacket)
         CItemGem* pGem = spResult->FUN_140527900();
         if (pGem == 0)
             return;
-        MS2Ptr<CGemBase> spGem = pGem->FUN_140d41400();
+        MS2Ptr<CGemBase> spGem = pGem->GetGem();
         if (spGem.get() == 0)
             return;
         if (spGem->vfunc_1() != 0xb)
@@ -367,7 +367,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
     if (pGem == 0)
         return;
     pGem->FUN_1405a7020(spData->FUN_14053e900(), spData->FUN_14053c650());
-    MS2Ptr<CGemBase> spGem = pGem->FUN_140d41400();
+    MS2Ptr<CGemBase> spGem = pGem->GetGem();
     if (spGem.get() == 0)
         return;
     if (spGem->vfunc_1() != 0xb)                        // the pet skin gem

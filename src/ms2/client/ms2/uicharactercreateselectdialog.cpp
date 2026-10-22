@@ -95,7 +95,7 @@ UICharacterCreateSelectDialog::UICharacterCreateSelectDialog()
     m_7c = 1;
     m_80 = 0;
     FUN_141924170(0);
-    FUN_140f2ef10();
+    LoadCharacterCreateSelect();
 }
 
 // @0x140f2e5d0
@@ -204,7 +204,7 @@ int UICharacterCreateSelectDialog::vfunc_65()
     if (m_spCache.get() ? true : false)
     {
         if (FUN_1401d1320(m_spCache.operator->()) != 0)
-            FUN_140f2ef10();
+            LoadCharacterCreateSelect();
     }
     return UIDialog::vfunc_65();
 }
@@ -235,7 +235,7 @@ void UICharacterCreateSelectDialog::vfunc_40()
 {
     m_jobs.RemoveAll();
     m_randomJobs.RemoveAll();
-    FUN_140f2ef10();
+    LoadCharacterCreateSelect();
 }
 
 // @0x140f2ee10
@@ -250,7 +250,7 @@ MS2_REPLACE_METHOD(0x140F2EE10, Unk_CsJobData, FUN_140f2ee10, 249, 0xD9C56FCA);
 
 // MS2-FUNCTIONAL: LoadTable: locals / branch layout of the long XML walk differ from the exe
 // @0x140f2ef10
-void UICharacterCreateSelectDialog::FUN_140f2ef10()
+void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
 {
     CString strPath = FUN_14071a5b0("Table", "characterCreateSelect.xml");
     if (m_spCache == 0)

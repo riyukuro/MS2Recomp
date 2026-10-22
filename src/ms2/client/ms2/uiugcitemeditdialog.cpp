@@ -868,8 +868,8 @@ bool UIUGCItemEditDialog::FUN_141b3ea70(int* pnY, int* pnZoom)
     int nSlot = spData->FUN_14053eba0()->FUN_14054b400();
     __int64 nItemUid = m_spItem->FUN_140526a50();
     MS2Ptr<CEquipItem> spEquip = spPC->FUN_1418bd1d0()->FUN_141655c30(nItemUid);
-    if (spEquip.get() != 0 && spEquip->FUN_1411dc7a0().get() != 0)
-        nSlot = spEquip->FUN_1411dc7a0()->FUN_140526c30();
+    if (spEquip.get() != 0 && spEquip->GetItem().get() != 0)
+        nSlot = spEquip->GetItem()->FUN_140526c30();
     if (nSlot == 8)
     {
         *pnY = bFemale ? 0x96 : 0x8c;
@@ -1563,7 +1563,7 @@ int UIUGCItemEditDialog::FUN_141b42a50(MS2Ptr<UIAvatarPC> spAvatar, int nGender)
     if (spAvatar == 0)
         return 1;
     AvatarPC* pActor = spAvatar->FUN_1418bd1d0();
-    if (pActor != 0 && pActor->FUN_1409f62a0() == 1)
+    if (pActor != 0 && pActor->GetType() == 1)
         return nGender == pActor->FUN_141658e60() ? 0 : 2;
     return 1;
 }
@@ -2515,7 +2515,7 @@ MS2Ptr<CItemData> FUN_141b494f0(MS2Ptr<CItem> spItem)
         return MS2Ptr<CItemData>(0);
     if (pGem->vfunc_1() != GEM_PETSKIN)
         return MS2Ptr<CItemData>(0);
-    MS2Ptr<CGemBase> spGem = pGem->FUN_140d41400();
+    MS2Ptr<CGemBase> spGem = pGem->GetGem();
     if (spGem.IsNull())
         return MS2Ptr<CItemData>(0);
     CGemPetSkin* pSkin = FUN_140ddcc50(spGem);

@@ -195,7 +195,7 @@ public:
     bool FUN_1406fc7b0(unsigned int nField, unsigned int nId);
     int FUN_1406fc870(unsigned nFieldId);
     bool FUN_1406fc8a0(CString str, __int64* pTime);
-    void FUN_1406f9dd0();                                   // Load
+    void LoadFieldMetaData();                                   // Load
 
 private:
     MS2_LAYOUT_FRIEND;

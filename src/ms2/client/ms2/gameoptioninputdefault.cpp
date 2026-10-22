@@ -864,7 +864,7 @@ MS2_REPLACE(0x1412532B0, CGameOptionInputDefault::FUN_1412532b0, 58, 0x0E6A6F96)
 // @0x1412532f0
 void CGameOptionInputDefault::FUN_1412532f0(MS2Ptr<CGameOptionInputDefault> sp)
 {
-    if (sp == 0 || sp.get()->FUN_140a02e30() == 0)
+    if (sp == 0 || sp.get()->GetActive() == 0)
         return;
     FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyChangeGameOptionInput(sp.get()->FUN_140a02e50())));
 }

@@ -51,8 +51,8 @@ public:
 
     int FUN_1414058f0();                                // the skill of the item (0: none)
     int FUN_141405980();                                // the item id
-    __int64 FUN_141405a10();                            // return m_nItemUid
-    void FUN_141405a30(__int64 nItemUid);               // m_nItemUid = nItemUid
+    __int64 GetItemUid();                            // return m_nItemUid
+    void SetItemUid(__int64 nItemUid);               // m_nItemUid = nItemUid
     bool FUN_141405a60(CItem* pItem, int nSlot);        // put the item on the fitting doll
     float FUN_141409060();                              // the cooldown left of the item's skill
     int FUN_1414090c0();                                // may the item be registered on the black market

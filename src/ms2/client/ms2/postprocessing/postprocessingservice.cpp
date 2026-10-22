@@ -3020,7 +3020,7 @@ efd::SmartPointer<NiViewRenderClick> setupRenderClick(NiDefaultClickRenderStep* 
                         if (pkTarget != 0)
                         {
                             efd::SmartPointer<NiRenderTargetGroup> spTarget = NiRenderTargetGroup::Create(
-                                pkTarget->GetBuffer(), FUN_140994450(), true, true);
+                                pkTarget->GetBuffer(), GetNiRenderer(), true, true);
                             if (!spTarget)
                                 return 0;
                             spClick->SetRenderTargetGroup(spTarget);

@@ -385,7 +385,7 @@ CItemMergeOptionTable::~CItemMergeOptionTable()
 }
 
 // @0x1405bfc70
-void CItemMergeOptionTable::FUN_1405bfc70()
+void CItemMergeOptionTable::LoadItemMergeOptionBase()
 {
     TiXmlDocument doc;
     CString strPath = FUN_14071a5b0("Table", "itemMergeOptionBase.xml");

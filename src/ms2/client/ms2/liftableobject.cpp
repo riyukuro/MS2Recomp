@@ -145,13 +145,13 @@ CLiftableObject::~CLiftableObject()
 }
 
 // @0x1414472a0
-CString CLiftableObject::FUN_1414472a0() const
+CString CLiftableObject::GetName() const
 {
     return m_strName;
 }
 
 // @0x1414472f0
-void CLiftableObject::FUN_1414472f0(CString strName)
+void CLiftableObject::SetName(CString strName)
 {
     m_strName = strName;
 }
@@ -279,13 +279,13 @@ void CLiftableObject::FUN_141447910(char bOn)
 }
 
 // @0x141447a60
-void CLiftableObject::FUN_141447a60(int nKind)
+void CLiftableObject::SetKind(int nKind)
 {
     m_nKind = nKind;
 }
 
 // @0x141447a80
-int CLiftableObject::FUN_141447a80() const
+int CLiftableObject::GetKind() const
 {
     return m_nKind;
 }
@@ -297,13 +297,13 @@ void CLiftableObject::FUN_141447aa0(char bValue)
 }
 
 // @0x141447ac0
-float CLiftableObject::FUN_141447ac0() const
+float CLiftableObject::GetRange() const
 {
     return m_fRange;
 }
 
 // @0x141447ae0
-int CLiftableObject::FUN_141447ae0() const
+int CLiftableObject::GetState() const
 {
     return m_nState;
 }

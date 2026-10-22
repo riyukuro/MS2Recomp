@@ -83,7 +83,7 @@ int CItemEnchantTransformTable::FUN_1405915b0()
     }
     else
     {
-        if (FUN_140591630() == 0)
+        if (LoadItemEnchantTransform() == 0)
             return 0;
     }
     SetInit(true);
@@ -92,7 +92,7 @@ int CItemEnchantTransformTable::FUN_1405915b0()
 
 // @0x140591630
 // MS2-FUNCTIONAL: loop-body temporaries and cleanup order differ
-int CItemEnchantTransformTable::FUN_140591630()
+int CItemEnchantTransformTable::LoadItemEnchantTransform()
 {
     m_map.RemoveAll();
     m_mapLimit.RemoveAll();
@@ -225,7 +225,7 @@ CEnchantTransformDataPtr CItemEnchantTransformTable::FUN_140592330(const CString
     else
     {
         if (FUN_1401d1320(m_spCache.operator->()) != 0)
-            FUN_140591630();
+            LoadItemEnchantTransform();
         CEnchantTransformDataPtr spData(0);
         m_map.Lookup(strKey, spData);
         return spData;
@@ -259,7 +259,7 @@ unsigned int CItemEnchantTransformTable::FUN_140592620(unsigned int nItemId)
     else
     {
         if (FUN_1401d1320(m_spCache.operator->()) != 0)
-            FUN_140591630();
+            LoadItemEnchantTransform();
         m_mapLimit.Lookup(nItemId, nLowest);
     }
     return nLowest;

@@ -1928,7 +1928,7 @@ void ASMeratMarketProductBase::vfunc_6(bool bSoldOut)
 }
 
 // @0x1409bc480
-void ASMeratMarketProductBase::FUN_1409bc480(int nIndex)
+void ASMeratMarketProductBase::SetIndex(int nIndex)
 {
     m_nIndex = nIndex;
 }
@@ -1940,7 +1940,7 @@ void ASMeratMarketProductBase::FUN_1409bc4a0(const CString& strBg)
 }
 
 // @0x1409bc4f0
-void ASMeratMarketProductBase::FUN_1409bc4f0(MS2Ptr<Unk_MeratBanner> spBanner)
+void ASMeratMarketProductBase::SetBanner(MS2Ptr<Unk_MeratBanner> spBanner)
 {
     m_spBanner = spBanner;
 }
@@ -1967,7 +1967,7 @@ void ASMeratMarketProductBase::FUN_1409bc630(const Unk_MeratOid& oid)
 }
 
 // @0x1409bc680
-int ASMeratMarketProductBase::FUN_1409bc680()
+int ASMeratMarketProductBase::GetIndex()
 {
     return m_nIndex;
 }
@@ -1987,7 +1987,7 @@ unsigned int ASMeratMarketProductBase::FUN_1409bc720()
 }
 
 // @0x1409bc780
-int ASMeratMarketProductBase::FUN_1409bc780()
+int ASMeratMarketProductBase::GetProductType()
 {
     return m_nProductType;
 }

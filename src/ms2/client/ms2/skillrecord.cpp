@@ -617,7 +617,7 @@ int CDamageRecord::FUN_14175ad50()
                 return nMaterial;
             MS2Ptr<CEquipItem> spWeapon = FUN_1416561a0(pPC)->FUN_1411e1860(5, 6, 0);
             if (spWeapon.get() != 0)
-                nMaterial = spWeapon->FUN_1411dc7a0()->FUN_140527840()->m_nAttackMaterial;
+                nMaterial = spWeapon->GetItem()->FUN_140527840()->m_nAttackMaterial;
         }
     }
     return nMaterial;

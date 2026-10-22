@@ -30,7 +30,7 @@ public:
     virtual unsigned short vfunc_5(unsigned nSkillId);              //  5 0x140a6dec0 bonus levels
     virtual void vfunc_7(CByteBuffer& buf);                         //  7 0x140a6e0a0
 
-    void FUN_140a6d8e0(PCBase* pOwner);                             // set the owning PC
+    void SetOwner(PCBase* pOwner);                             // set the owning PC
     void RequestReset();                                            // 0x140a6e0e0
     void RequestSkill(unsigned __int64 nSerial, int nSkill, unsigned short nLevel);     // 0x140a6e140
     void SendRequest(int nJob, unsigned __int64 nSerial, int nSkill, unsigned short nLevel);    // 0x140a6e190

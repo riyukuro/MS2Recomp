@@ -314,7 +314,7 @@ UIGameRankingDialog::UIGameRankingDialog()
     m_nPage = 0;
     m_nTab = 0;
     FUN_1422dc3b0(1);
-    FUN_140e2e1d0();
+    LoadGameRankingCategory();
 }
 
 // @0x140e2cdc0
@@ -359,7 +359,7 @@ void UIGameRankingDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (!FUN_140166410()->FUN_14036d570(0x3f))
         return;
-    FUN_140e2e1d0();
+    LoadGameRankingCategory();
     FUN_140e2e540();
     FUN_140e2e620();
     FUN_1419260d0(CString("m_webGuideButton"), 0);
@@ -588,7 +588,7 @@ void UIGameRankingDialog::FUN_140e2e030(CString strUrl)
 }
 
 // @0x140e2e1d0
-void UIGameRankingDialog::FUN_140e2e1d0()
+void UIGameRankingDialog::LoadGameRankingCategory()
 {
     CString strPath = FUN_14071a5b0(CString("Table"), CString("gameRankingCategory.xml"));
     m_categories.RemoveAll();

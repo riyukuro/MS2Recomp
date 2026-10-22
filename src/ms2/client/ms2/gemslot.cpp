@@ -208,7 +208,7 @@ int GemSlot::FUN_14126d880(CItem* pItem)
 }
 
 // @0x14126d930
-int GemSlot::FUN_14126d930()
+int GemSlot::GetGemType()
 {
     return m_nGemType;
 }

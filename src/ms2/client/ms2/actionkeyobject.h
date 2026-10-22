@@ -71,11 +71,11 @@ public:
     void FUN_140952ef0();                               // per-frame update: pick the current action
     void FUN_140953310();                               // run the current action
     bool FUN_140953410();                               // run the current action if it may be run by the key
-    int FUN_140953530();                                // the current action type
+    int GetCur();                                // the current action type
     ActionKeyObject* FUN_140953550();                   // the current action
     void FUN_1409535c0();                               // drop the current action (re-poll in 2 s)
-    int FUN_140953690();                                // polling enabled
-    void FUN_1409536b0(int bEnable);
+    int IsEnabled();                                // polling enabled
+    void SetEnabled(int bEnable);
     void FUN_1409536d0();                               // vfunc_9 of the current action
     Unk_ActionKeyMap* FUN_140953770();                  // the action set for the player's state
 

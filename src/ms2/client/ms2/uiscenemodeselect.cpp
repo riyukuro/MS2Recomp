@@ -128,8 +128,8 @@ void UISceneModeSelect::OnLoadComplete()
     GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, FUN_1422b01a0(FUN_14025e7a0(), 4));
     if (pBg != 0)
     {
-        if (pBg->FUN_14127ab40() != 0)
-            vfunc_60(pBg->FUN_14127aaf0());
+        if (pBg->IsLoaded() != 0)
+            vfunc_60(pBg->GetScript());
     }
 }
 

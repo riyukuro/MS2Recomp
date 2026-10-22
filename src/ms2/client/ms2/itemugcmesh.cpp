@@ -80,7 +80,7 @@ class CEquipItem : public CPtred
 {
 public:
     Unk_UgcItemData* FUN_1411dc7f0();                               // the item's data
-    MS2Ptr<CItem> FUN_1411dc7a0();                                  // the item object holding the proxy data
+    MS2Ptr<CItem> GetItem();                                  // the item object holding the proxy data
     void FUN_1411dd150();
     void FUN_1411dcd00();
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);      // attach part names of an equip slot
@@ -388,19 +388,19 @@ float FUN_141422340(Unk_PickTarget* pPart, int nIndex)
         return 1.0f;
     if (spItem->FUN_1411dc7f0()->FUN_14053cfd0())
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->FUN_1411dc7a0()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
             return pProxy->m_afValue[nIndex];
     }
     if (spItem->FUN_1411dc7f0()->FUN_14053c620() == 0xd)
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->FUN_1411dc7a0()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
             return pProxy->m_f58;
     }
     if (spItem->FUN_1411dc7f0()->FUN_14053d070())
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->FUN_1411dc7a0()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
             return pProxy->m_f60;
     }
@@ -422,13 +422,13 @@ void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue)
         return;
     if (spItem->FUN_1411dc7f0()->FUN_14053cfd0())
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->FUN_1411dc7a0()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
             pProxy->m_afValue[nIndex] = fValue < 0.0f ? 0.0f : fValue;
     }
     if (spItem->FUN_1411dc7f0()->FUN_14053c620() == 0xd)
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->FUN_1411dc7a0()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0 && nIndex == 0)
             pProxy->m_f58 = fValue < 0.0f ? 0.0f : fValue;
     }
@@ -488,7 +488,7 @@ void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const
                             (kEuler.z * 3.1415927f) / 180.0f);
     if (spItem->FUN_1411dc7f0()->FUN_14053c620() == 0xd)
     {
-        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->FUN_1411dc7a0()->FUN_140527870();
+        Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
         if (pProxy != 0)
         {
             NiMatrix3 kBase;
@@ -720,9 +720,9 @@ int FUN_141423a70(__int64 nUid, const Unk_UgcColorList& kColors, Unk_UgcPlayer* 
             return 0;
     }
     MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655c30(nUid);
-    if (spItem == 0 || spItem->FUN_1411dc7a0() == 0)
+    if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
-    MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->FUN_1411dc7a0()->FUN_140527870());
+    MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870());
     if (spProxy == 0)
         return 0;
     spProxy->FUN_140599d10(kColors, nIndex);
@@ -744,9 +744,9 @@ int FUN_141423cf0(__int64 nUid, const Unk_UgcExtra& kExtra, Unk_UgcPlayer* pPlay
             return 0;
     }
     MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655c30(nUid);
-    if (spItem == 0 || spItem->FUN_1411dc7a0() == 0)
+    if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
-    Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->FUN_1411dc7a0()->FUN_140527870();
+    Unk_UgcProxy* pProxy = (Unk_UgcProxy*)spItem->GetItem()->FUN_140527870();
     if (pProxy == 0)
         return 0;
     bool bFlag = false;
@@ -771,9 +771,9 @@ int FUN_141423fb0(__int64 nUid, void* pColor, int nIndex, Unk_UgcPlayer* pPlayer
             return 0;
     }
     MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655c30(nUid);
-    if (spItem == 0 || spItem->FUN_1411dc7a0() == 0)
+    if (spItem == 0 || spItem->GetItem() == 0)
         return 0;
-    MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->FUN_1411dc7a0()->FUN_140527870());
+    MS2Ptr<Unk_UgcProxy> spProxy((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870());
     if (spProxy == 0)
         return 0;
     spProxy->FUN_140599ea0(nIndex, pColor, nValue);
@@ -795,9 +795,9 @@ int FUN_141424230(__int64 nUid, Unk_UgcPlayer* pPlayer)
             return 0;
     }
     MS2Ptr<CEquipItem> spItem = pPlayer->FUN_141655c30(nUid);
-    if (spItem.IsNull() || spItem->FUN_1411dc7a0().IsNull() || spItem->FUN_1411dc7a0()->FUN_140527870() == 0)
+    if (spItem.IsNull() || spItem->GetItem().IsNull() || spItem->GetItem()->FUN_140527870() == 0)
         return 0;
-    ((Unk_UgcProxy*)spItem->FUN_1411dc7a0()->FUN_140527870())->FUN_140599ab0(spItem->FUN_1411dc7f0());
+    ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->FUN_140599ab0(spItem->FUN_1411dc7f0());
     spItem->FUN_1411dd150();
     spItem->FUN_1411dcd00();
     pPlayer->RefreshLook();
@@ -822,9 +822,9 @@ int FUN_1414244b0(__int64 nUid, unsigned* pOut, int nIndex, Unk_UgcPlayer* pPlay
 // @0x141424580
 int FUN_141424580(MS2Ptr<CEquipItem> spItem, unsigned* pOut, int nIndex)
 {
-    if (spItem == 0 || spItem->FUN_1411dc7a0() == 0 || spItem->FUN_1411dc7a0()->FUN_140527870() == 0)
+    if (spItem == 0 || spItem->GetItem() == 0 || spItem->GetItem()->FUN_140527870() == 0)
         return 0;
-    *pOut = ((Unk_UgcProxy*)spItem->FUN_1411dc7a0()->FUN_140527870())->FUN_140599fd0(nIndex);
+    *pOut = ((Unk_UgcProxy*)spItem->GetItem()->FUN_140527870())->FUN_140599fd0(nIndex);
     return 1;
 }
 
@@ -1059,7 +1059,7 @@ MS2Ptr<CItem> FUN_141425750(__int64 nUid, bool* pbEquipped)
     {
         if (pbEquipped != 0)
             *pbEquipped = true;
-        return spEquip->FUN_1411dc7a0();
+        return spEquip->GetItem();
     }
     return MS2Ptr<CItem>(0);
 }

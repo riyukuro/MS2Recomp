@@ -480,11 +480,11 @@ Unk_CameraSetting Unk_CameraSetting::FUN_140ae8480(const Unk_CameraSetting& o)
 
 // ---- the test camera values (TestCamerValue.xml: <ms2><key name=".." value=".."/></ms2>) ----
 
-BOOL FUN_140ae8540();
+BOOL LoadTestCamerValue();
 #ifndef MS2_HOOK_DLL
 // @0x140ae8540
 // MS2-FUNCTIONAL: the CRBTree/CAtlMap helper COMDAT names of the static map init are paired with another obj.
-BOOL FUN_140ae8540()
+BOOL LoadTestCamerValue()
 {
     ATL::CRBMap<CString, CString> values(10);
     CString strUnused;
@@ -831,7 +831,7 @@ void CameraMgr::FUN_140ae9ed0(egf::Entity* pEntity, const Unk_StreamPoint* pLook
     m_1d0 = 0;
     m_1b0 = 1;
     m_bFlyBy = 0;
-    FUN_140ae8540();
+    LoadTestCamerValue();
     m_testCache.FUN_1401d1160("./data/xml/table/TestCamerValue.xml");
 }
 
@@ -1769,7 +1769,7 @@ void CameraMgr::FUN_140aeb950(CLocalTargetCameraMode* pMode)
             {
                 m_setups.clear();
                 m_290.clear();
-                FUN_140aec0e0(FUN_141bd3060(FUN_1403ed2d0()));
+                LoadMapLocalTargetCamera(FUN_141bd3060(FUN_1403ed2d0()));
             }
             DWORD nId = pMode->FUN_140af7e10();
             std::vector<Unk_CameraSetup>& setups = m_setups[nId];
@@ -1800,7 +1800,7 @@ void CameraMgr::FUN_140aeb950(CLocalTargetCameraMode* pMode)
 
 // @0x140aec0e0
 // MS2-FUNCTIONAL: the frame is 8 bytes off.
-void CameraMgr::FUN_140aec0e0(unsigned int nMapId)
+void CameraMgr::LoadMapLocalTargetCamera(unsigned int nMapId)
 {
     CString strPath;
     strPath.Format("%s/%08d.xml", (const char*)FUN_14071a5b0("Camera", "Map"), nMapId);
@@ -1864,7 +1864,7 @@ void CameraMgr::FUN_140aec4c0()
     {
         FUN_140aeb920();
         FUN_140aed260();
-        FUN_140aebb30(FUN_141bd3060(FUN_1403ed2d0()));
+        LoadMapCamera(FUN_141bd3060(FUN_1403ed2d0()));
         egf::EntityID id = egf::EntityIDFactory::GetNextID();
         egf::EntityPtr spEntity = FUN_1409670f0()->FactoryEntity((const char*)FUN_140af80c0(), id, true);
         if (FUN_1408a9090(&spEntity) != 0)
@@ -1893,7 +1893,7 @@ void CameraMgr::FUN_140aec4c0()
 MS2_REPLACE_METHOD(0x140AEC4C0, CameraMgr, FUN_140aec4c0, 971, 0xEBD98476);
 
 // @0x140aebb30
-void CameraMgr::FUN_140aebb30(unsigned int nMapId)
+void CameraMgr::LoadMapCamera(unsigned int nMapId)
 {
     MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
     if (spField == 0)
@@ -1934,7 +1934,7 @@ void CameraMgr::FUN_140aebb30(unsigned int nMapId)
         }
     }
 }
-MS2_REPLACE_METHOD(0x140AEBB30, CameraMgr, FUN_140aebb30, 1440, 0x461DF218);
+MS2_REPLACE_METHOD(0x140AEBB30, CameraMgr, LoadMapCamera, 1440, 0x461DF218);
 
 // @0x140aea7f0
 // The developer camera keys: F4+Ctrl toggles the studio camera, F5+Shift rereads TestCamerValue.xml, F6+Ctrl cycles
@@ -2493,5 +2493,5 @@ MS2_REPLACE_METHOD(0x140aea4c0, CameraMgr, FUN_140aea4c0, 808, 0xBE964AC8);
 MS2_REPLACE_METHOD(0x140aeb070, CameraMgr, FUN_140aeb070, 294, 0x09E27492);
 MS2_REPLACE_METHOD(0x140aeb1a0, CameraMgr, FUN_140aeb1a0, 619, 0x19B75919);
 MS2_REPLACE_METHOD(0x140aeb950, CameraMgr, FUN_140aeb950, 471, 0xA1F130D2);
-MS2_REPLACE_METHOD(0x140aec0e0, CameraMgr, FUN_140aec0e0, 977, 0x6A60A4CF);
+MS2_REPLACE_METHOD(0x140aec0e0, CameraMgr, LoadMapLocalTargetCamera, 977, 0x6A60A4CF);
 

@@ -184,8 +184,8 @@ public:
     void FUN_140aeb540(const egf::EntityID& id, const Unk_CameraSetting& setting);  // save a setting per entity
     bool FUN_140aeb590(Unk_CameraSetting& setting);                     // the first saved setting
     void FUN_140aeb950(CLocalTargetCameraMode* pMode);                  // cycle the map camera setups
-    void FUN_140aec0e0(unsigned int nMapId);                            // load the map camera xml
-    void FUN_140aebb30(unsigned int nMapId);
+    void LoadMapLocalTargetCamera(unsigned int nMapId);                            // load the map camera xml
+    void LoadMapCamera(unsigned int nMapId);
     void FUN_140aec4c0();                                               // create the map camera entity
     CString FUN_140af80c0();                                            // the gameplay camera model name
     void FUN_140aeb600();                                               // leave the map: drop the map camera data

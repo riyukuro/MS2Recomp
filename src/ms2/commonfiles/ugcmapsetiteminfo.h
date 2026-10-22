@@ -72,7 +72,7 @@ public:
 
     UGCMapSetItemDataPtr FUN_140b9df60(unsigned int nGroup);        // cached lookup, loads on miss (name invented)
     void FUN_140b9e0a0();                                           // drop the cache
-    UGCMapSetItemDataPtr FUN_140b9e100(unsigned int nGroup);        // (re)load the xml, return that group
+    UGCMapSetItemDataPtr LoadUGCMapSetItem(unsigned int nGroup);        // (re)load the xml, return that group
 
 private:
     MS2_LAYOUT_FRIEND;

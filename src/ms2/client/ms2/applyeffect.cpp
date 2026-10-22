@@ -560,7 +560,7 @@ inline Unk_AeFogState* FUN_1409a8d60(NiDX9Renderer* pRenderer)
 }
 extern efd::SmartPointer<NiFogProperty> DAT_143afa7f0;      // the default fog property
 // @0x1409a8a80
-inline NiFogProperty* FUN_1409a8a80() { return DAT_143afa7f0; }
+inline NiFogProperty* GetNiFogProperty() { return DAT_143afa7f0; }
 
 // The scene graph service lookup (global service manager reference).
 efd::ServiceManager* FUN_1401cd190(void* pHolder);
@@ -611,7 +611,7 @@ void ApplyEffect::SetFogRange(bool bEnabled, float fNear, float fFar, unsigned i
     }
     NiDX9Renderer* pDX9Renderer = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
     FUN_1409a8d60(pDX9Renderer)->FUN_1409a9bf0(fScale);
-    NiFogProperty* pFog = FUN_1409a8a80();
+    NiFogProperty* pFog = GetNiFogProperty();
     pFog->SetFog(bEnabled);
     pFog->SetFogColor(FUN_141b6dea0(uiColor));
     pFog->SetDepth(fDepth);

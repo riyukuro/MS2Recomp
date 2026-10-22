@@ -359,7 +359,7 @@ public:
     int FUN_1405a7c60();                                            // 0x1405a7c60
     CString FUN_1405a7cc0();                                        // 0x1405a7cc0
     CStringW FUN_1405a7d60();                                       // 0x1405a7d60
-    MS2Ptr<CGemBase> FUN_140d41400();                               // 0x140d41400 the gem (copy of +0x18)
+    MS2Ptr<CGemBase> GetGem();                               // 0x140d41400 the gem (copy of +0x18)
 
     MS2Ptr<CGemBase> m_spGem;                                       // +0x18
 };

@@ -1,7 +1,7 @@
 // citemmergeoptiontable.h - CItemMergeOptionTable (RTTI .?AVCItemMergeOptionTable@@, 0x20 bytes), the item merge option
 // tables of Table/itemMergeOptionBase.xml (owner: commonfiles\itemmergeoptiontable.cpp). NOT an original header.
 // Bases: TSingleton<CItemMergeOptionTable> at +0x0, CValidData<CItemMergeOptionTable> at +0x8. A TSingleton that
-// CGameApp::InitInstance (?\ms2.cpp) creates; the xml is loaded by FUN_1405bfc70.
+// CGameApp::InitInstance (?\ms2.cpp) creates; the xml is loaded by LoadItemMergeOptionBase.
 #pragma once
 
 #include <map>
@@ -24,7 +24,7 @@ public:
     CItemMergeOptionTable();                                // 0x1405bfba0
     virtual ~CItemMergeOptionTable();                       // 0x1405bfc10
 
-    void FUN_1405bfc70();                                   // loads the xml
+    void LoadItemMergeOptionBase();                                   // loads the xml
     DataPtr FUN_1405c00e0(int nItemId, int nMaterialId);   // the slot data of a merge pair, null when it cannot merge
     bool FUN_1405c03d0(int nCategory, int* pNormal);          // the first normal option of an item's slot
     bool FUN_1405c04f0(int nCategory, int* pSpecial);         // the first special option of an item's slot

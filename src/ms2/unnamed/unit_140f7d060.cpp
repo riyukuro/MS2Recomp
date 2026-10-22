@@ -411,7 +411,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7e8d0()
     while (pos != 0) {
         MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
         if (!(equip == 0)) {
-            MS2Ptr<CItem> item = equip->FUN_1411dc7a0();
+            MS2Ptr<CItem> item = equip->GetItem();
             if (!(item == 0) && item->FUN_1405279c0() != 0 && item->FUN_1405279c0()->FUN_140620a50() != 0)
                 m_sourceItems.Add(item);
         }

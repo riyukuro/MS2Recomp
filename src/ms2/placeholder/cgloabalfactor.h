@@ -31,7 +31,7 @@ public:
     bool Load();                                             // 0x1404c1290 resets both rate tables, then multicontrol.xml
     bool FUN_1404c12f0();                                    // 0x1404c12f0 every experience rate 1.0
     bool FUN_1404c1370();                                    // 0x1404c1370 every meso rate 1.0
-    bool FUN_1404c1400();                                   // 0x1404c1400 Table/multicontrol.xml
+    bool LoadMultiControl();                                   // 0x1404c1400 Table/multicontrol.xml
     float FUN_1404c1730(unsigned int nLevel, int nKind);    // 0x1404c1730 meso rate (1.0 outside 1..max level)
     float FUN_1404c17a0(unsigned int nLevel, int nKind);    // 0x1404c17a0 experience rate
     float FUN_1404c1810(int nType, int nGroupId);           // 0x1404c1810 multi control factor of a group (1.0: none)

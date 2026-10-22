@@ -508,7 +508,7 @@ int CInteractObject::vfunc_4()
 }
 
 // @0x1413fd890
-Unk_EntRef CInteractObject::FUN_1413fd890()
+Unk_EntRef CInteractObject::GetEnt()
 {
     return m_ent;
 }
@@ -532,7 +532,7 @@ unsigned __int64 CInteractObject::FUN_1413fd960()
 // @0x1413fd9b0
 void CInteractObject::vfunc_6(Unk_InteractCursor* pOut)
 {
-    pOut->m_strHint = FUN_1401a9d70()->FUN_141811980(0xb, FUN_140967110());
+    pOut->m_strHint = FUN_1401a9d70()->FUN_141811980(0xb, GetRowId());
     pOut->m_nCursor = m_spRow->m_nReactTime;
 }
 
@@ -659,7 +659,7 @@ int CInteractObject::FUN_1413fe040()
         return 0;
     if (m_spRow->m_homePrivilege.m_nCheck == 0)
         return 1;
-    return pPlayer->FUN_140967010()->FUN_14050d890(FUN_140967110());
+    return pPlayer->FUN_140967010()->FUN_14050d890(GetRowId());
 }
 
 // @0x1413fe120
@@ -708,7 +708,7 @@ void CInteractObject::vfunc_8()
         COutPacket packet(0x31, 0);
         packet.vfunc_o10_1(0xb);
         packet.vfunc_o10_3(1);
-        packet.vfunc_o10_7(FUN_140967060());
+        packet.vfunc_o10_7(GetName());
         FUN_140710590(packet);
     }
 }
@@ -726,7 +726,7 @@ void CInteractObject::vfunc_10()
         COutPacket packet(0x31, 0);
         packet.vfunc_o10_1(0xc);
         packet.vfunc_o10_3(1);
-        packet.vfunc_o10_7(FUN_140967060());
+        packet.vfunc_o10_7(GetName());
         FUN_140710590(packet);
     }
 }
@@ -1200,8 +1200,8 @@ void CInteractUIObject::vfunc_11()
         }
         else
         {
-            float fRange = FUN_140966e00()->m_validate.m_fInteractionDistance;
-            Unk_StreamPoint ptSelf = FUN_1409673c0();
+            float fRange = GetRow()->m_validate.m_fInteractionDistance;
+            Unk_StreamPoint ptSelf = GetPos();
             Unk_StreamPoint ptPlayer;
             pPlayer->FUN_1416767d0(&ptPlayer);
             float fDist = ptPlayer.FUN_140965c40(ptSelf).FUN_140967ac0();
@@ -1342,7 +1342,7 @@ Unk_IoRankSvc* FUN_140b2e980();
 // @0x141400800
 void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
 {
-    MS2Ptr<CInteractObjectData> spRow = FUN_140966e00();
+    MS2Ptr<CInteractObjectData> spRow = GetRow();
     if (spRow == 0)
         return;
     CString strKey = FUN_140390ea0(strName, 0);
@@ -1366,7 +1366,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
             FUN_14086f450(&elem);
             return;
         }
-        CString strPath = FUN_141029590(nSn, strMark, FUN_140967060(), CString(""));
+        CString strPath = FUN_141029590(nSn, strMark, GetName(), CString(""));
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
         FUN_14086f450(&elem);
@@ -1385,7 +1385,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         m_strCharName = FUN_1401bf530(&elem, "name", CStringW(L""));
         m_nCharTrophy = FUN_140197350(&elem, "trophy", 0);
         m_nCharRank = FUN_140197350(&elem, "rank", 0);
-        CString strPath = FUN_141028be0(nSn, strPortrait, 1, FUN_140967060());
+        CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
         FUN_14086f450(&elem);
@@ -1404,7 +1404,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         m_strCharName = FUN_1401bf530(&elem, "name", CStringW(L""));
         m_nCharBuildPoint = FUN_140197350(&elem, "build_point", 0);
         m_nCharRank = FUN_140197350(&elem, "rank", 0);
-        CString strPath = FUN_141028be0(nSn, strPortrait, 1, FUN_140967060());
+        CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
         FUN_14086f450(&elem);
@@ -1423,7 +1423,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         m_strCharName = FUN_1401bf530(&elem, "name", CStringW(L""));
         m_nCharScore = FUN_140197350(&elem, "score", 0);
         m_nCharRank = FUN_140197350(&elem, "rank", 0);
-        CString strPath = FUN_141028be0(nSn, strPortrait, 1, FUN_140967060());
+        CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
         FUN_14086f450(&elem);
@@ -1433,7 +1433,7 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
 // @0x141401380
 void CInteractDisplayImage::FUN_141401380(Unk_IoRankPtr spRank)
 {
-    MS2Ptr<CInteractObjectData> spRow = FUN_140966e00();
+    MS2Ptr<CInteractObjectData> spRow = GetRow();
     if (spRow == 0)
     {
         spRank.FUN_140b2da40();
@@ -1460,11 +1460,11 @@ void CInteractDisplayImage::FUN_141401380(Unk_IoRankPtr spRank)
     int nType = m_spRow->m_displayUrl.m_nType;
     if (nType == 1 || nType == 3)
     {
-        strPath = FUN_141029590(nGuildSn, strKey, FUN_140967060(), CString(""));
+        strPath = FUN_141029590(nGuildSn, strKey, GetName(), CString(""));
     }
     else if (nType == 2 || (nType >= 4 && nType <= 5))
     {
-        strPath = FUN_141028be0(nCharSn, strKey, 1, FUN_140967060());
+        strPath = FUN_141028be0(nCharSn, strKey, 1, GetName());
     }
     if (strPath.GetLength() > 0)
         FUN_1414017b0(strPath);
@@ -1505,7 +1505,7 @@ UINT CInteractDisplayImage::GetURLFromIndirectURL(LPVOID pParam)
     UINT nRet = 0;
     if (pThis != 0)
     {
-        CString strName = pThis->FUN_140967060();
+        CString strName = pThis->GetName();
         std::wstring strUrl(CStringW(FUN_14016a730(pThis->m_strUrl, 0)));
         Unk_IoUrl url;
         FUN_1409208e0(&url, strUrl);
@@ -1542,7 +1542,7 @@ UINT CInteractDisplayImage::GetURLFromGameRanking(LPVOID pParam)
         FUN_141b722b0(&scope);
         return 0;
     }
-    CString strName = pThis->FUN_140967060();
+    CString strName = pThis->GetName();
     int nImageType = pThis->m_spRow->m_displayUrl.m_nType;
     int nRankType = 0;
     CString strUrl(pThis->m_spRow->m_displayUrl.m_strIndirectUrl);
@@ -1680,8 +1680,8 @@ void CInteractGatheringObject::vfunc_2(Unk_InteractMsg* pMsg)
             pData = FUN_1417d0be0(pMem);
         Unk_IoStateSp spData;
         FUN_140964220(&spData, pData);
-        FUN_1409659d0(&spData)->m_nId = FUN_140967110();
-        FUN_1409659d0(&spData)->m_strName = FUN_140967060();
+        FUN_1409659d0(&spData)->m_nId = GetRowId();
+        FUN_1409659d0(&spData)->m_strName = GetName();
         FUN_1409659d0(&spData)->m_nFlag = 1;
         int nMsg = 0x8c;
         if (sType == 0)
@@ -1844,7 +1844,7 @@ void CInteractGuildPosterObject::vfunc_10()
 {
     if (vfunc_4() == 0)
         return;
-    FUN_14052d220()->FUN_141880230(FUN_140967060(), FUN_141402e60());
+    FUN_14052d220()->FUN_141880230(GetName(), FUN_141402e60());
 }
 
 // @0x141402e60
@@ -1865,7 +1865,7 @@ void CInteractGuildPosterObject::FUN_141402eb0(unsigned char bShow)
     unsigned __int64 nSvc = FUN_1404ccbd0(&FUN_1403ed290()->m_svc);
     CStringW strRaw;
     FUN_1403ed290()->m_svc.FUN_1404d2220(&strRaw, nPoster);
-    CString strUrl = FUN_1410299f0(nSvc, FUN_14016a600(strRaw, 0), nPoster, FUN_140967060(), bShow);
+    CString strUrl = FUN_1410299f0(nSvc, FUN_14016a600(strRaw, 0), nPoster, GetName(), bShow);
     CStringW strFile = FUN_14016a730(strUrl, 0);
     if (FUN_1409c1730()->FUN_140a25840(5, CStringW(strRaw)) == 1)
     {
@@ -2005,7 +2005,7 @@ void CInteractWatchTowerObject::vfunc_11()
     Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        Unk_StreamPoint ptSelf = FUN_1409673c0();
+        Unk_StreamPoint ptSelf = GetPos();
         Unk_StreamPoint ptPlayer;
         pPlayer->GetPosition(&ptPlayer);
         float fDist = FUN_141403f20(&ptPlayer, &ptSelf);

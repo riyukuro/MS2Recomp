@@ -330,7 +330,7 @@ void CReactor::FUN_140b791a0()
 {
     if (m_unk_80 != 0)
     {
-        MS2Ptr<CAnimationManager> spAnim = FUN_14123c6f0();
+        MS2Ptr<CAnimationManager> spAnim = GetAnimMgr();
         if (!spAnim.IsNull())
         {
             if (FUN_141b6f910() != 0 && !m_listAnims.IsEmpty())
@@ -356,7 +356,7 @@ void CReactor::FUN_140b79330()
         return;
     unsigned __int64 nId = FUN_141656a80(pPc);
     bool bFound = m_setPlayers.find(nId) != m_setPlayers.end();
-    MS2Ptr<ReactorData> spData = FUN_140966e50();
+    MS2Ptr<ReactorData> spData = GetData();
     if (spData.IsNull())
     {
         MS2_ASSERT_AT(0x142, 0);

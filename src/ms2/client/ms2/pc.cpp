@@ -803,7 +803,7 @@ PC::PC()
     m_spStateMgr->FUN_1417daeb0(0x47, new StateWeddingEmotion(this));
     m_kGemEquip1078.FUN_141668230(this);
     m_spJobFB8.AssignRaw(new JobSystemCli());
-    m_spJobFB8->FUN_140a6d8e0(this);
+    m_spJobFB8->SetOwner(this);
     m_spInteractMode.AssignRaw(reinterpret_cast<Unk_PCInteractMode*>(new CPvPInfo()));
     m_spHideAndSeek1250.AssignRaw(new HideAndSeek::Info());
     m_spSetItems.AssignRaw(new CSetItemManager());
@@ -1218,7 +1218,7 @@ void PC::vfunc_52(double fTime)
 {
     if (GetClassID() != 0x6200016)
         FUN_14123c330(m_unk_748.FUN_1409705d0());
-    float fScale = FUN_14123c260() / FUN_14123c2e0();
+    float fScale = FUN_14123c260() / GetScaleAC();
     if (fScale != m_fScaleA8)
     {
         int bShrink = m_fScaleA8 - fScale > 0.0f ? 0 : 1;
@@ -1233,7 +1233,7 @@ void PC::vfunc_52(double fTime)
         }
         else if (fScale > m_fScaleA8)
             fScale = m_fScaleA8;
-        FUN_14123c280(fScale * FUN_14123c2e0());
+        FUN_14123c280(fScale * GetScaleAC());
         MS2Ptr<CEquipItem> spItem = FUN_141655e10(1);
         if (spItem.get())
         {
@@ -1420,7 +1420,7 @@ MS2Ptr<CItem> PC::FUN_141655b80(__int64 nItemUid)
     MS2Ptr<CEquipItem> spEquip = FUN_141655c30(nItemUid);
     if (!spEquip)
         return MS2Ptr<CItem>(0);
-    return spEquip->FUN_1411dc7a0();
+    return spEquip->GetItem();
 }
 
 // @0x141655c30
@@ -2924,9 +2924,9 @@ int PC::FUN_141653f00()
         spRight = FUN_141655ee0(5, 1);
     if (spRight.get())
         nRight = spRight->FUN_1411dc7f0()->FUN_14053c620();
-    if (spRight.get() && spRight->FUN_1411dc7a0().get())
+    if (spRight.get() && spRight->GetItem().get())
     {
-        if (FUN_141662eb0(spRight->FUN_1411dc7a0().get()) == 0)
+        if (FUN_141662eb0(spRight->GetItem().get()) == 0)
             nRight = 0;
     }
     MS2Ptr<CEquipItem> spLeft = FUN_141655d50(4);
@@ -2934,9 +2934,9 @@ int PC::FUN_141653f00()
         spLeft = FUN_141655ee0(4, 1);
     if (spLeft.get())
         nLeft = spLeft->FUN_1411dc7f0()->FUN_14053c620();
-    if (spLeft.get() && spLeft->FUN_1411dc7a0().get())
+    if (spLeft.get() && spLeft->GetItem().get())
     {
-        if (FUN_141662eb0(spLeft->FUN_1411dc7a0().get()) == 0)
+        if (FUN_141662eb0(spLeft->GetItem().get()) == 0)
             nLeft = 0;
     }
     if (spRight == spLeft.get())
@@ -3364,7 +3364,7 @@ BOOL PC::FUN_141661e40(int* pnEnchant, int* pnGrade)
     for (POSITION pos = kList.GetHeadPosition(); pos; kList.GetNext(pos))
     {
         MS2Ptr<CEquipItem> spEquip = kList.GetAt(pos);
-        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = spEquip->GetItem();
         if (!spItem)
             continue;
         if (spItem->FUN_140526bd0() < *Client::Constants::GetInstance()->ShowNameTagEnchantItemGrade.Get())
@@ -4247,7 +4247,7 @@ void PC::vfunc_125(MS2Ptr<Unk_PCArg125> spInfo)
     MS2Ptr<CEquipmentSlotLayerInfo> spTitle = FUN_1416561a0()->GetTitle();
     if (spTitle.get())
     {
-        spInfo->m_508 = spTitle->FUN_1411df810();
+        spInfo->m_508 = spTitle->IsActive();
         spInfo->m_510 = spTitle->m_start;
         spInfo->m_520 = spTitle->m_end;
     }
@@ -4281,9 +4281,9 @@ void PC::vfunc_126(MS2Ptr<Unk_PCArg125> spInfo, int nLayer)
     while (pos)
     {
         MS2Ptr<CEquipItem> spEquip = kList.GetNext(pos);
-        if (spEquip == NULL || spEquip->FUN_1411dc7a0() == NULL)
+        if (spEquip == NULL || spEquip->GetItem() == NULL)
             continue;
-        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+        MS2Ptr<CItem> spItem = spEquip->GetItem();
         Unk_InventoryEquipSlot nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140526c30();
         if (nSlot == 0)
             nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140527a20();

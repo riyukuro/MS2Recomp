@@ -121,8 +121,8 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
         int nTrophy = pImage->FUN_1414022a0();
         int nRank = pImage->FUN_1414021c0();
         int nImageType = 0;
-        if (pImage->FUN_140966e00().get() != 0)
-            nImageType = pImage->FUN_140966e00()->m_displayUrl.m_nType;
+        if (pImage->GetRow().get() != 0)
+            nImageType = pImage->GetRow()->m_displayUrl.m_nType;
         if (strCaption.GetLength() > 0)
         {
             m_70 = 1;
@@ -180,7 +180,7 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
         return false;
     if (dynamic_cast<CInteractDisplayImage*>(pObject) == 0)
         return false;
-    Unk_StreamPoint kWorld = pObject->FUN_1409673c0();
+    Unk_StreamPoint kWorld = pObject->GetPos();
     kWorld.z += 150.0f;
     Unk_StreamPoint kScreen;
     if (FUN_1409478c0()->FUN_140af0700(kWorld, kScreen))

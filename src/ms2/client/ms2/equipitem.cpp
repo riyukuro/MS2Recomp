@@ -259,11 +259,11 @@ int CEquipItem::FUN_1411dc710()
 MS2_REPLACE_METHOD(0x1411DC710, CEquipItem, FUN_1411dc710, 123, 0xED7EE5A7);
 
 // @0x1411dc7a0
-MS2Ptr<CItem> CEquipItem::FUN_1411dc7a0()
+MS2Ptr<CItem> CEquipItem::GetItem()
 {
     return m_spItem;
 }
-MS2_REPLACE_METHOD(0x1411DC7A0, CEquipItem, FUN_1411dc7a0, 65, 0xE76D92EE);
+MS2_REPLACE_METHOD(0x1411DC7A0, CEquipItem, GetItem, 65, 0xE76D92EE);
 
 // @0x1411dc7f0
 Unk_EquipItemData* CEquipItem::FUN_1411dc7f0()
@@ -625,11 +625,11 @@ NiTexturePtr CEquipItem::FUN_1411dd820()
 MS2_REPLACE_METHOD(0x1411DD820, CEquipItem, FUN_1411dd820, 284, 0xE0250037);
 
 // @0x1411dd950
-MS2Ptr<CItemUgcMeshContainer> CEquipItem::FUN_1411dd950()
+MS2Ptr<CItemUgcMeshContainer> CEquipItem::GetUgcMeshes()
 {
     return m_spUgcMeshes;
 }
-MS2_REPLACE_METHOD(0x1411DD950, CEquipItem, FUN_1411dd950, 67, 0x8A622E97);
+MS2_REPLACE_METHOD(0x1411DD950, CEquipItem, GetUgcMeshes, 67, 0x8A622E97);
 
 // @0x1411dd9a0
 void CEquipItem::FUN_1411dd9a0()

@@ -1490,12 +1490,12 @@ void MyPC::FUN_141523e60(CItem* pItem, int* pStatDiff, int* pSpecialDiff, int* p
             if (FUN_1403ed2b0()->FUN_141adcb40() != 0)
             {
                 if (spLeft.get() != 0)
-                    aOld.Add(spLeft->FUN_1411dc7a0());
+                    aOld.Add(spLeft->GetItem());
             }
             else
             {
                 if (spRight.get() != 0)
-                    aOld.Add(spRight->FUN_1411dc7a0());
+                    aOld.Add(spRight->GetItem());
             }
         }
         else if (pItem->FUN_140527840()->FUN_14053d460())
@@ -1503,11 +1503,11 @@ void MyPC::FUN_141523e60(CItem* pItem, int* pStatDiff, int* pSpecialDiff, int* p
             MS2Ptr<CEquipItem> spLeft = m_kEquipDE0.FUN_1411e1780(4, nKind);
             MS2Ptr<CEquipItem> spRight = m_kEquipDE0.FUN_1411e1780(5, nKind);
             if (spLeft.get() != 0)
-                aOld.Add(spLeft->FUN_1411dc7a0());
+                aOld.Add(spLeft->GetItem());
             if (spRight.get() != 0)
             {
                 if (FUN_140b02900(spLeft) || spLeft.get() != spRight.get())
-                    aOld.Add(spRight->FUN_1411dc7a0());
+                    aOld.Add(spRight->GetItem());
             }
         }
         else if (pItem->FUN_140527840()->FUN_14053d340())
@@ -1515,9 +1515,9 @@ void MyPC::FUN_141523e60(CItem* pItem, int* pStatDiff, int* pSpecialDiff, int* p
             MS2Ptr<CEquipItem> spLeft = m_kEquipDE0.FUN_1411e1780(4, nKind);
             MS2Ptr<CEquipItem> spRight = m_kEquipDE0.FUN_1411e1780(5, nKind);
             if (pItem->FUN_140527840()->FUN_14053eba0()->FUN_14054b450(4) && spLeft.get() != 0)
-                aOld.Add(spLeft->FUN_1411dc7a0());
+                aOld.Add(spLeft->GetItem());
             if (pItem->FUN_140527840()->FUN_14053eba0()->FUN_14054b450(5) && spRight.get() != 0)
-                aOld.Add(spRight->FUN_1411dc7a0());
+                aOld.Add(spRight->GetItem());
         }
     }
     else if (pItem->FUN_140527840()->FUN_14053d2b0())
@@ -1525,18 +1525,18 @@ void MyPC::FUN_141523e60(CItem* pItem, int* pStatDiff, int* pSpecialDiff, int* p
         MS2Ptr<CEquipItem> spFirst = m_kEquipDE0.FUN_1411e1780(8, nKind);
         MS2Ptr<CEquipItem> spSecond = m_kEquipDE0.FUN_1411e1780(9, nKind);
         if (spFirst.get() != 0)
-            aOld.Add(spFirst->FUN_1411dc7a0());
+            aOld.Add(spFirst->GetItem());
         if (spSecond.get() != 0)
         {
             if (FUN_140b02900(spFirst) || spFirst.get() != spSecond.get())
-                aOld.Add(spSecond->FUN_1411dc7a0());
+                aOld.Add(spSecond->GetItem());
         }
     }
     else
     {
         MS2Ptr<CEquipItem> spSlot = m_kEquipDE0.FUN_1411e1780(pItem->FUN_140527a20(), nKind);
         if (spSlot.get() != 0)
-            aOld.Add(spSlot->FUN_1411dc7a0());
+            aOld.Add(spSlot->GetItem());
     }
     {
         MS2Ptr<CItem> spItem(pItem);
@@ -1922,7 +1922,7 @@ bool MyPC::FUN_1415272b0()
     MS2Ptr<CEquipItem> spWeapon = FUN_1416561a0()->FUN_1411e1780(5, 0);
     if (spWeapon == 0)
         return false;
-    if (FUN_141662eb0(spWeapon->FUN_1411dc7a0().get()) == 0)
+    if (FUN_141662eb0(spWeapon->GetItem().get()) == 0)
         return false;
     if (!spWeapon->FUN_1411dc7f0()->m_kJobLimit.FUN_140545da0(FUN_141654700()))
         return false;
@@ -1931,7 +1931,7 @@ bool MyPC::FUN_1415272b0()
         MS2Ptr<CEquipItem> spOffHand = FUN_1416561a0()->FUN_1411e1780(4, 0);
         if (spOffHand == 0)
             return false;
-        if (FUN_141662eb0(spOffHand->FUN_1411dc7a0().get()) == 0)
+        if (FUN_141662eb0(spOffHand->GetItem().get()) == 0)
             return false;
         if (!spOffHand->FUN_1411dc7f0()->m_kJobLimit.FUN_140545da0(FUN_141654700()))
             return false;
@@ -3942,35 +3942,35 @@ MS2Ptr<CItem> MyPC::FUN_14152e2f0(MS2Ptr<CItem> spItem)
         {
             MS2Ptr<CEquipItem> spRight = FUN_1416561a0()->FUN_1411e1780(5, nKind);
             if (spRight.get() != 0)
-                return spRight->FUN_1411dc7a0();
+                return spRight->GetItem();
         }
         MS2Ptr<CEquipItem> spLeft = FUN_1416561a0()->FUN_1411e1780(4, nKind);
         if (spLeft.get() != 0)
-            return spLeft->FUN_1411dc7a0();
+            return spLeft->GetItem();
     }
     else if (spItem->FUN_140527840()->FUN_14053d510())
     {
         int nSlot = FUN_1403ed2b0()->FUN_141adcb40() != 0 ? 4 : 5;
         MS2Ptr<CEquipItem> spSlot = FUN_1416561a0()->FUN_1411e1780(nSlot, nKind);
         if (spSlot.get() != 0)
-            return spSlot->FUN_1411dc7a0();
+            return spSlot->GetItem();
     }
     else if (spItem->FUN_140527840()->FUN_14053d2b0())
     {
         {
             MS2Ptr<CEquipItem> spFirst = FUN_1416561a0()->FUN_1411e1780(8, nKind);
             if (spFirst.get() != 0)
-                return spFirst->FUN_1411dc7a0();
+                return spFirst->GetItem();
         }
         MS2Ptr<CEquipItem> spSecond = FUN_1416561a0()->FUN_1411e1780(9, nKind);
         if (spSecond.get() != 0)
-            return spSecond->FUN_1411dc7a0();
+            return spSecond->GetItem();
     }
     else
     {
         MS2Ptr<CEquipItem> spSlot = FUN_1416561a0()->FUN_1411e1780(spItem->FUN_140527a20(), nKind);
         if (spSlot.get() != 0)
-            return spSlot->FUN_1411dc7a0();
+            return spSlot->GetItem();
     }
     return 0;
 }
@@ -3990,7 +3990,7 @@ bool MyPC::FUN_14152e7f0()
     ::FUN_1411e1b80(&m_kEquipDE0, aEquips);
     for (POSITION pos = aEquips.GetHeadPosition(); pos != NULL; aEquips.GetNext(pos)) {
         MS2Ptr<CEquipItem>& spEquip = aEquips.GetAt(pos);
-        const MS2Ptr<CItem>& spItem = spEquip->FUN_1411dc7a0();
+        const MS2Ptr<CItem>& spItem = spEquip->GetItem();
         if (static_cast<bool>(spItem.get()) && spItem->FUN_140525cf0() == 0) {
             Unk_EquipItemData* pData = spEquip->FUN_1411dc7f0();
             if (pData != 0 && pData->m_n13c != 2)
@@ -4134,7 +4134,7 @@ CItem* MyPC::FUN_14152efa0(__int64 nItemUid, __int64* pOwner)
     if (!spItem)
         return 0;
     *pOwner = FUN_14121c6c0(pPC);
-    return spItem->FUN_1411dc7a0().get();
+    return spItem->GetItem().get();
 }
 MS2_REPLACE_METHOD(0x14152EFA0, MyPC, FUN_14152efa0, 408, 0x53442F11);
 
@@ -4156,7 +4156,7 @@ void MyPC::FUN_14152f140(__int64 nOwnerId)
     for (POSITION pos = aItems.GetHeadPosition(); pos != 0; aItems.GetNext(pos))
     {
         CEquipItem* pEquip = aItems.GetAt(pos).get();
-        CItem* pItem = pEquip->FUN_1411dc7a0().get();
+        CItem* pItem = pEquip->GetItem().get();
         int nReason;
         CStringW strName;
         if (DAT_143ab2a90.FUN_140a66200(pItem, &nReason, strName) == 0 && (nReason == 4 || nReason == 5))

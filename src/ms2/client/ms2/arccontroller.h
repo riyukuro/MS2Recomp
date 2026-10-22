@@ -45,8 +45,8 @@ public:
 
     bool FUN_1409ab1b0(Unk_StreamPoint from, Unk_StreamPoint to, float speed, float gravityScale);  // start; false if from/to coincide
     float FUN_1409ab300() const;                                // flight time
-    bool FUN_1409ab320() const;                                 // still rising
-    Unk_StreamPoint FUN_1409ab340() const;                      // current world position
+    bool IsRising() const;                                 // still rising
+    Unk_StreamPoint GetPosition() const;                      // current world position
     bool FUN_1409ab370() const;                                 // finished
     void FUN_1409ab3b0(float fDelta);                           // advance
 

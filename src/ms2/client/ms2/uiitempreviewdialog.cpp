@@ -192,7 +192,7 @@ int UIItemPreviewDialog::vfunc_o178_1(void* pAvatar)
     ASObj data(2);
     AvatarPC* pPc = FUN_140a535c0(static_cast<Unk_IpAvatar*>(pAvatar)->vfunc_24());
     if (pPc != 0) {
-        if (pPc->FUN_1409f62a0() == 1) FUN_1418bee30(&data, 10000);
+        if (pPc->GetType() == 1) FUN_1418bee30(&data, 10000);
         bool bShowActions = true;
         MS2Ptr<CItemData> spData = FUN_1409bb9e0()->FUN_140d40590();
         if (spData.get() != 0) bShowActions = FUN_141b487f0(spData);

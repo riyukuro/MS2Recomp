@@ -456,11 +456,11 @@ bool CEquipmentSlotLayerInfo::FUN_1411df7d0()
 MS2_REPLACE_METHOD(0x1411DF7D0, CEquipmentSlotLayerInfo, FUN_1411df7d0, 57, 0xC4DEB61E);
 
 // @0x1411df810
-bool CEquipmentSlotLayerInfo::FUN_1411df810()
+bool CEquipmentSlotLayerInfo::IsActive()
 {
     return m_bActive;
 }
-MS2_REPLACE_METHOD(0x1411DF810, CEquipmentSlotLayerInfo, FUN_1411df810, 15, 0x52A185E5);
+MS2_REPLACE_METHOD(0x1411DF810, CEquipmentSlotLayerInfo, IsActive, 15, 0x52A185E5);
 
 // @0x1411df830
 // MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
@@ -708,7 +708,7 @@ int CEquipment::FUN_1411e0d40(int nItemId)
     POSITION pos = items.GetHeadPosition();
     while (pos != NULL) {
         MS2Ptr<CEquipItem> spItem = items.GetNext(pos);
-        if ((bool)spItem.get() && spItem->FUN_1411dc7a0()->FUN_140528980() && spItem->FUN_1411dc820() == nItemId)
+        if ((bool)spItem.get() && spItem->GetItem()->FUN_140528980() && spItem->FUN_1411dc820() == nItemId)
             return 1;
     }
     return 0;
@@ -778,7 +778,7 @@ int CEquipment::FUN_1411e1160(SAType eType)
     int nValue = m_abilities[eType];
     nValue += m_pPC->FUN_1416749a0()->FUN_1409716f0(eType);
     nValue += FUN_1401c0d90()->FUN_1404774a0(eType, m_pPC->FUN_141658f30());
-    nValue += m_pPC->FUN_1411f9310()->GetSpecialAbility(eType);
+    nValue += m_pPC->GetSetItems()->GetSpecialAbility(eType);
     return nValue;
 }
 MS2_REPLACE_METHOD(0x1411E1160, CEquipment, FUN_1411e1160, 231, 0xFAF634DB);
@@ -830,7 +830,7 @@ MS2Ptr<CEquipItem> CEquipment::FUN_1411e1580(__int64 nUid)
             MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
             if (spItem == 0)
                 continue;
-            if (spItem->FUN_1411dc7a0()->FUN_140526a50() == nUid)
+            if (spItem->GetItem()->FUN_140526a50() == nUid)
                 return spItem;
         }
     }
@@ -857,7 +857,7 @@ MS2Ptr<CEquipItem> CEquipment::FUN_1411e1860(int nSlot, int nSkip, int bCheck)
         MS2Ptr<CEquipItem> spItem = FUN_1411e1780(nSlot, i);
         if (!spItem)
             continue;
-        if (FUN_1411e0ee0()->FUN_141662eb0(spItem->FUN_1411dc7a0().get()) == 0)
+        if (FUN_1411e0ee0()->FUN_141662eb0(spItem->GetItem().get()) == 0)
             continue;
         if (bCheck != 0 && FUN_1411ef780(spItem, i) == 0)
             continue;
@@ -995,7 +995,7 @@ int CEquipment::FUN_1411e2440(int nLayer)
         MS2Ptr<CEquipItem> spItem = spSlot->m_items[nLayer];
         if (spItem == 0)
             continue;
-        if (FUN_141421690(spItem->FUN_1411dc7a0().get()) == 1)
+        if (FUN_141421690(spItem->GetItem().get()) == 1)
             continue;
         nCount++;
     }
@@ -1234,13 +1234,13 @@ void CEquipment::FUN_1411e3000(ATL::CAtlList<MS2Ptr<CEquipItem> >& items, int nM
             if (i >= nMaxLayer || (i == 2 && !FUN_1411ea770()))
                 continue;
             MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
-            if (spItem == 0 || spItem->FUN_1411dc7a0() == 0)
+            if (spItem == 0 || spItem->GetItem() == 0)
                 continue;
             if (FUN_1411ef870(spSlot, i) == 0)
                 continue;
-            if (m_pPC->FUN_141662eb0(spItem->FUN_1411dc7a0().get()) == 0)
+            if (m_pPC->FUN_141662eb0(spItem->GetItem().get()) == 0)
                 continue;
-            if (bCheck != 0 && FUN_1411ef780(spItem, i) == 0 && FUN_141421690(spItem->FUN_1411dc7a0().get()) == 0)
+            if (bCheck != 0 && FUN_1411ef780(spItem, i) == 0 && FUN_141421690(spItem->GetItem().get()) == 0)
                 continue;
             Unk_EquipItemData* pData = spItem->FUN_1411dc7f0();
             if (pData == NULL)
@@ -1277,24 +1277,24 @@ void CEquipment::FUN_1411e4150(__int64 nItemUid, int nSlot, int nLayer)
     MS2Ptr<CEquipItem> spItem = FUN_1411e1580(nItemUid);
     if (!spItem)
         return;
-    int nOldSlot = spItem->FUN_1411dc7a0()->FUN_140526c30();
+    int nOldSlot = spItem->GetItem()->FUN_140526c30();
     int nNewSlot = nSlot;
     MS2Ptr<CEquipmentSlot> spSlot(0);
     if (m_slots.Lookup((Unk_EquipSlotId)nSlot, spSlot)) {
-        MS2Ptr<CEquipItem> spOther = spSlot->m_items[nLayer != 0 ? nLayer : spItem->FUN_1411dc7a0()->FUN_14052a170()];
+        MS2Ptr<CEquipItem> spOther = spSlot->m_items[nLayer != 0 ? nLayer : spItem->GetItem()->FUN_14052a170()];
         if (spOther.get() == NULL) {
             FUN_1411ebec0(spItem, 1);
-            spItem->FUN_1411dc7a0()->FUN_140526c10(nNewSlot);
+            spItem->GetItem()->FUN_140526c10(nNewSlot);
             spItem->FUN_1411dcf10(s_tagLower);
             spItem->FUN_1411dd280();
             FUN_1411ec190(spItem, 1);
         } else {
             FUN_1411ebec0(spItem, 1);
             FUN_1411ebec0(spOther, 1);
-            spItem->FUN_1411dc7a0()->FUN_140526c10(nNewSlot);
+            spItem->GetItem()->FUN_140526c10(nNewSlot);
             spItem->FUN_1411dcf10(s_tagLower);
             spItem->FUN_1411dd280();
-            spOther->FUN_1411dc7a0()->FUN_140526c10(nOldSlot);
+            spOther->GetItem()->FUN_140526c10(nOldSlot);
             spOther->FUN_1411dcf10(s_tagLower);
             spOther->FUN_1411dd280();
             FUN_1411ec190(spItem, 1);
@@ -1312,7 +1312,7 @@ void CEquipment::FUN_1411e46b0(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem == 0)
         return;
-    MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
+    MS2Ptr<CItem> spData = spItem->GetItem();
     if (spData == 0)
         return;
     if (!spData->FUN_140528980()) {
@@ -1343,7 +1343,7 @@ void CEquipment::FUN_1411e46b0(MS2Ptr<CEquipItem> spItem)
                 if (bCovered) {
                     spWorn->FUN_1411dce60(s_tagLower);
                     spWorn->FUN_1411dd280();
-                } else if (m_pPC->FUN_141662eb0(spWorn->FUN_1411dc7a0().get()) != 0) {
+                } else if (m_pPC->FUN_141662eb0(spWorn->GetItem().get()) != 0) {
                     bCovered = true;
                 }
             }
@@ -1358,7 +1358,7 @@ void CEquipment::FUN_1411e4b30(MS2Ptr<CEquipItem> spItem)
 {
     if (spItem == 0)
         return;
-    MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
+    MS2Ptr<CItem> spData = spItem->GetItem();
     if (spData == 0)
         return;
     Unk_ItemEquipData* pData = spData->FUN_140527840();
@@ -1390,9 +1390,9 @@ void CEquipment::FUN_1411e4b30(MS2Ptr<CEquipItem> spItem)
             MS2Ptr<CEquipItem> spWorn = FUN_1411e1780(nSlot, j);
             if (!spWorn)
                 continue;
-            if (m_pPC->FUN_141662eb0(spWorn->FUN_1411dc7a0().get()) != 0) {
+            if (m_pPC->FUN_141662eb0(spWorn->GetItem().get()) != 0) {
                 if (j < nLayer) {
-                    if (!spWorn->FUN_1411dc7a0()->FUN_140527840()->FUN_14053d2b0()) {
+                    if (!spWorn->GetItem()->FUN_140527840()->FUN_14053d2b0()) {
                         spWorn->FUN_1411dcf10(s_tagLower);
                         spWorn->FUN_1411dd280();
                     } else if (FUN_1411e5280(j) != 0) {
@@ -1414,7 +1414,7 @@ void CEquipment::FUN_1411e5100(MS2Ptr<CEquipItem> spItem)
 {
     if (m_pPC == 0 || spItem == 0)
         return;
-    MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
+    MS2Ptr<CItem> spData = spItem->GetItem();
     if (spData == 0 || spData->FUN_140527840() == NULL)
         return;
     if (spData->FUN_14052a150() == 2) {
@@ -1432,12 +1432,12 @@ int CEquipment::FUN_1411e5280(int nLayer)
     for (int i = nLayer + 1; i < 6; i++) {
         MS2Ptr<CEquipItem> spUpper = FUN_1411e1780(9, i);
         if (spUpper.get() != NULL) {
-            if (m_pPC->FUN_141662eb0(spUpper->FUN_1411dc7a0().get()))
+            if (m_pPC->FUN_141662eb0(spUpper->GetItem().get()))
                 return 0;
         }
         MS2Ptr<CEquipItem> spLower = FUN_1411e1780(8, i);
         if (spLower.get() != NULL) {
-            if (m_pPC->FUN_141662eb0(spLower->FUN_1411dc7a0().get()))
+            if (m_pPC->FUN_141662eb0(spLower->GetItem().get()))
                 return 0;
         }
     }
@@ -1535,7 +1535,7 @@ void CEquipment::FUN_1411e5940(MS2Ptr<CEquipItem> spItem)
 {
     if (!spItem)
         return;
-    MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
+    MS2Ptr<CItem> spData = spItem->GetItem();
     if (!spData)
         return;
     Unk_ItemEquipData* pData = spData->FUN_140527840();
@@ -1652,17 +1652,17 @@ MS2_REPLACE_METHOD(0x1411EA2E0, CEquipment, FUN_1411ea2e0, 54, 0x7597CE77);
 bool CEquipment::FUN_1411ea770()
 {
     if (m_spLayerInfo.get() != NULL)
-        return m_spLayerInfo->FUN_1411df810();
+        return m_spLayerInfo->IsActive();
     return false;
 }
 MS2_REPLACE_METHOD(0x1411EA770, CEquipment, FUN_1411ea770, 69, 0x31E92972);
 
 // @0x1411eac20
-bool CEquipment::FUN_1411eac20()
+bool CEquipment::IsHasSetName()
 {
     return m_bHasSetName;
 }
-MS2_REPLACE_METHOD(0x1411EAC20, CEquipment, FUN_1411eac20, 18, 0xAEA97C04);
+MS2_REPLACE_METHOD(0x1411EAC20, CEquipment, IsHasSetName, 18, 0xAEA97C04);
 
 // @0x1411ef740
 void CEquipment::FUN_1411ef740()
@@ -1677,7 +1677,7 @@ int CEquipment::FUN_1411ef780(MS2Ptr<CEquipItem> spItem, int nLayer)
 {
     if (spItem == 0)
         return 0;
-    if (nLayer == 2 && (bool)m_spLayerInfo.get() && !m_spLayerInfo->FUN_1411df810())
+    if (nLayer == 2 && (bool)m_spLayerInfo.get() && !m_spLayerInfo->IsActive())
         return 0;
     return spItem->FUN_1411dc670();
 }
@@ -1688,7 +1688,7 @@ int CEquipment::FUN_1411ef870(MS2Ptr<CEquipmentSlot> spSlot, int nLayer)
 {
     if (spSlot == 0)
         return 0;
-    if (nLayer == 2 && (bool)m_spLayerInfo.get() && !m_spLayerInfo->FUN_1411df810())
+    if (nLayer == 2 && (bool)m_spLayerInfo.get() && !m_spLayerInfo->IsActive())
         return 0;
     return spSlot->m_bShown[nLayer];
 }
@@ -1769,7 +1769,7 @@ void CEquipment::FUN_1411e6b50()
         return;
     if (!spItem->FUN_1411dc7f0()->FUN_14053d070())
         return;
-    Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spItem->FUN_1411dc7a0()->FUN_140527870());
+    Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spItem->GetItem()->FUN_140527870());
     CharacterDecalData* pDecal = spItem->FUN_1411dc7f0()->FUN_14053eba0()->FUN_14054b6b0();
     if (pRecord->m_f60 != 0.0f) {
         FUN_14116e3f0(pMesh, pRecord->m_f58, pRecord->m_f5c, pRecord->m_f64, pRecord->m_f60,
@@ -2011,7 +2011,7 @@ void CEquipment::FUN_1411ea430(MS2Ptr<CEquipItem> spItem)
     if (SetItemTable::GetInstance()->FUN_1407c51f0(spItem->FUN_1411dc7f0()->FUN_14053c560()))
         m_bSetDirty = true;
     else {
-        int nType = spItem->FUN_1411dc7a0()->FUN_14052a170();
+        int nType = spItem->GetItem()->FUN_14052a170();
         if (nType == 3)
             m_bSetDirty = true;
     }
@@ -2024,7 +2024,7 @@ void CEquipment::FUN_1411ea500(MS2Ptr<CEquipItem> spItem)
     if (SetItemTable::GetInstance()->FUN_1407c51f0(spItem->FUN_1411dc7f0()->FUN_14053c560()))
         m_bSetDirty = true;
     else {
-        int nType = spItem->FUN_1411dc7a0()->FUN_14052a170();
+        int nType = spItem->GetItem()->FUN_14052a170();
         if (nType == 3)
             m_bSetDirty = true;
     }
@@ -2044,8 +2044,8 @@ void CEquipment::FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd)
     if (m_spLayerInfo == 0)
         m_spLayerInfo.AssignRaw(new CEquipmentSlotLayerInfo(2));
     if (m_spLayerInfo.get() != NULL) {
-        bool bWasActive = m_spLayerInfo->FUN_1411df810();
-        if (m_spLayerInfo->FUN_1411dfc10(kStart, kEnd) == true && bWasActive != m_spLayerInfo->FUN_1411df810())
+        bool bWasActive = m_spLayerInfo->IsActive();
+        if (m_spLayerInfo->FUN_1411dfc10(kStart, kEnd) == true && bWasActive != m_spLayerInfo->IsActive())
             m_5c = true;
         FUN_1411ea7c0();
     }
@@ -2072,7 +2072,7 @@ void CEquipment::FUN_1411ea8c0()
         return;
     PCBase* pMyPC = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pMyPC != NULL && m_pPC != 0 && m_pPC->FUN_14123c580() == pMyPC->FUN_14123c580())
-        NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyChangeActiveMyCodiTab(m_spLayerInfo->FUN_1411df810())));
+        NotifySystem::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyChangeActiveMyCodiTab(m_spLayerInfo->IsActive())));
 }
 MS2_REPLACE_METHOD(0x1411EA8C0, CEquipment, FUN_1411ea8c0, 308, 0xF9AC0534);
 
@@ -2094,11 +2094,11 @@ void CEquipment::FUN_1411eaa00(MS2Ptr<Equipment::SetEffectInfo> spInfo)
 }
 
 // @0x1411eabd0
-CString CEquipment::FUN_1411eabd0()
+CString CEquipment::GetSetName()
 {
     return m_strSetName;
 }
-MS2_REPLACE_METHOD(0x1411EABD0, CEquipment, FUN_1411eabd0, 68, 0xE976802C);
+MS2_REPLACE_METHOD(0x1411EABD0, CEquipment, GetSetName, 68, 0xE976802C);
 
 // @0x1411ebde0
 // MS2-FUNCTIONAL: logic from the decompile; /Od codegen (temporaries, frame or branch layout) differs
@@ -2173,7 +2173,7 @@ int FUN_1411efd50(MS2Ptr<CEquipItem> spItem)
 // @0x1411ebec0
 void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
 {
-    MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
+    MS2Ptr<CItem> spData = spItem->GetItem();
     if (spData == 0)
         return;
     Unk_ItemEquipData* pData = spData->FUN_140527840();
@@ -2198,7 +2198,7 @@ MS2_REPLACE_METHOD(0x1411EBEC0, CEquipment, FUN_1411ebec0, 711, 0xCF7FF0BD);
 // @0x1411ec190
 void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
 {
-    MS2Ptr<CItem> spData = spItem->FUN_1411dc7a0();
+    MS2Ptr<CItem> spData = spItem->GetItem();
     if (spData == 0)
         return;
     MS2Ptr<CItemData> spItemData(spData->FUN_140527840());
@@ -2487,7 +2487,7 @@ void CEquipment::FUN_1411ef2e0(CEquipModel* pModel, const NiPoint3& kPos, const 
         return;
     if (spItem->FUN_1411dc7f0()->FUN_14053c620() != 0xd)
         return;
-    if (spItem->FUN_1411dc7a0()->FUN_140527870() == NULL)
+    if (spItem->GetItem()->FUN_140527870() == NULL)
         return;
     NiPoint3 kOldPos = pCalls->FUN_141200130();
     NiPoint3 kOldRot = pCalls->FUN_1412000d0();
@@ -2666,31 +2666,31 @@ void CEquipment::FUN_1411edbb0()
     bool bMiss2 = false;
     if (spTopBase.get() != NULL) {
         int nKind = spTopBase->FUN_1411dc7f0()->FUN_14053c620();
-        int bUsable = m_pPC->FUN_141662eb0(spTopBase->FUN_1411dc7a0().get());
-        if (spTop.get() != NULL && spTop->FUN_1411dc7a0().get() != NULL) {
-            bMiss = spTop->FUN_1411dc7a0()->FUN_140525e50(nGender, nKind) == 0;
-            if (bUsable == 0 || m_pPC->FUN_141662eb0(spTop->FUN_1411dc7a0().get()) == 0)
+        int bUsable = m_pPC->FUN_141662eb0(spTopBase->GetItem().get());
+        if (spTop.get() != NULL && spTop->GetItem().get() != NULL) {
+            bMiss = spTop->GetItem()->FUN_140525e50(nGender, nKind) == 0;
+            if (bUsable == 0 || m_pPC->FUN_141662eb0(spTop->GetItem().get()) == 0)
                 bMiss = true;
         }
-        if (bLayer2 && spTop2.get() != NULL && spTop2->FUN_1411dc7a0().get() != NULL) {
-            bMiss2 = spTop2->FUN_1411dc7a0()->FUN_140525e50(nGender, nKind) == 0;
-            if (bUsable == 0 || m_pPC->FUN_141662eb0(spTop2->FUN_1411dc7a0().get()) == 0)
+        if (bLayer2 && spTop2.get() != NULL && spTop2->GetItem().get() != NULL) {
+            bMiss2 = spTop2->GetItem()->FUN_140525e50(nGender, nKind) == 0;
+            if (bUsable == 0 || m_pPC->FUN_141662eb0(spTop2->GetItem().get()) == 0)
                 bMiss2 = true;
         }
     }
     if (spBottomBase.get() != NULL) {
         int nKind = spBottomBase->FUN_1411dc7f0()->FUN_14053c620();
-        int bUsable = m_pPC->FUN_141662eb0(spBottomBase->FUN_1411dc7a0().get());
-        if (spBottom.get() != NULL && spBottom->FUN_1411dc7a0().get() != NULL) {
-            if (spBottom->FUN_1411dc7a0()->FUN_140525e50(nGender, nKind) == 0)
+        int bUsable = m_pPC->FUN_141662eb0(spBottomBase->GetItem().get());
+        if (spBottom.get() != NULL && spBottom->GetItem().get() != NULL) {
+            if (spBottom->GetItem()->FUN_140525e50(nGender, nKind) == 0)
                 bMiss = true;
-            if (bUsable == 0 || m_pPC->FUN_141662eb0(spBottom->FUN_1411dc7a0().get()) == 0)
+            if (bUsable == 0 || m_pPC->FUN_141662eb0(spBottom->GetItem().get()) == 0)
                 bMiss = true;
         }
-        if (bLayer2 && spBottom2.get() != NULL && spBottom2->FUN_1411dc7a0().get() != NULL) {
-            if (spBottom2->FUN_1411dc7a0()->FUN_140525e50(nGender, nKind) == 0)
+        if (bLayer2 && spBottom2.get() != NULL && spBottom2->GetItem().get() != NULL) {
+            if (spBottom2->GetItem()->FUN_140525e50(nGender, nKind) == 0)
                 bMiss2 = true;
-            if (bUsable == 0 || m_pPC->FUN_141662eb0(spBottom2->FUN_1411dc7a0().get()) == 0)
+            if (bUsable == 0 || m_pPC->FUN_141662eb0(spBottom2->GetItem().get()) == 0)
                 bMiss2 = true;
         }
     }
@@ -2713,7 +2713,7 @@ void CEquipment::FUN_1411ec480(bool bForce)
             MS2Ptr<CEquipItem> spItem = spSlot->m_items[i];
             if (spItem == 0)
                 continue;
-            MS2Ptr<CItem> spCItem = spItem->FUN_1411dc7a0();
+            MS2Ptr<CItem> spCItem = spItem->GetItem();
             if (spCItem == 0 || spCItem->FUN_140528930())
                 continue;
             Unk_EquipItemData* pData = spItem->FUN_1411dc7f0();
@@ -2822,7 +2822,7 @@ void CEquipment::FUN_1411e5c10()
     spCap->FUN_1411dcc80(capModels);
     if (capModels.IsEmpty())
         return;
-    Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spCap->FUN_1411dc7a0()->FUN_140527870());
+    Unk_EquipSkinRecord* pRecord = static_cast<Unk_EquipSkinRecord*>(spCap->GetItem()->FUN_140527870());
     if (pRecord == NULL)
         return;
     MS2Ptr<CEquipItem> spHair = FUN_1411e1860(1, 6, 0);
@@ -2940,7 +2940,7 @@ void CEquipment::FUN_1411e76c0(double fTime)
     }
     if (m_54 != 0) {
         FUN_1411ef740();
-        m_pPC->FUN_1411f9310()->Clear();
+        m_pPC->GetSetItems()->Clear();
     }
     FUN_1411ebde0();
     for (POSITION pos = m_slots.GetHeadPosition(); pos != NULL; m_slots.GetNext(pos)) {
@@ -2953,7 +2953,7 @@ void CEquipment::FUN_1411e76c0(double fTime)
             if (spSlot->m_bShown[i] == 0)
                 continue;
             spItem->FUN_1411dd400(fTime);
-            MS2Ptr<CItem> spCItem = spItem->FUN_1411dc7a0();
+            MS2Ptr<CItem> spCItem = spItem->GetItem();
             if (spCItem == 0)
                 continue;
             if (spCItem->FUN_1405269b0() == 0 && spCItem->FUN_140525c60() != 0 && spCItem->FUN_140528930()) {
@@ -2986,17 +2986,17 @@ void CEquipment::FUN_1411e76c0(double fTime)
             if (i == 2) {
                 bool bChanged = false;
                 eSetItemLayer::T nLayer = FUN_140222fb0(2);
-                bool bActive = m_spLayerInfo.get() != NULL && m_spLayerInfo->FUN_1411df810();
+                bool bActive = m_spLayerInfo.get() != NULL && m_spLayerInfo->IsActive();
                 if (!m_5c) {
                     if (m_54 != 0 && m_pPC->FUN_141662eb0(spCItem.get()) != 0 && bActive)
-                        m_pPC->FUN_1411f9310()->AddItemCount(spCItem->FUN_1405276c0(), spCItem->FUN_140526a50(), nLayer, false);
+                        m_pPC->GetSetItems()->AddItemCount(spCItem->FUN_1405276c0(), spCItem->FUN_140526a50(), nLayer, false);
                 } else {
                     if (!bActive) {
                         FUN_1411e4b30(spItem);
-                        m_pPC->FUN_1411f9310()->RemoveItem(spCItem->FUN_1405276c0(), spCItem->FUN_140526a50(), nLayer);
+                        m_pPC->GetSetItems()->RemoveItem(spCItem->FUN_1405276c0(), spCItem->FUN_140526a50(), nLayer);
                     } else {
                         FUN_1411e46b0(spItem);
-                        m_pPC->FUN_1411f9310()->AddItemCount(spCItem->FUN_1405276c0(), spCItem->FUN_140526a50(), nLayer, false);
+                        m_pPC->GetSetItems()->AddItemCount(spCItem->FUN_1405276c0(), spCItem->FUN_140526a50(), nLayer, false);
                     }
                     bChanged = true;
                 }
@@ -3014,7 +3014,7 @@ void CEquipment::FUN_1411e76c0(double fTime)
                 continue;
             int nItemId = spCItem->FUN_1405276c0();
             eSetItemLayer::T nLayer = FUN_140222fb0(i);
-            m_pPC->FUN_1411f9310()->AddItemCount(nItemId, spCItem->FUN_140526a50(), nLayer, true);
+            m_pPC->GetSetItems()->AddItemCount(nItemId, spCItem->FUN_140526a50(), nLayer, true);
             if (m_pPC->FUN_1416749a0()->FUN_1409703d0(spCItem->FUN_140527a20()))
                 continue;
             CItemData* pData = spCItem->FUN_140527840();
@@ -3059,7 +3059,7 @@ void CEquipment::FUN_1411e76c0(double fTime)
             }
         }
     }
-    m_pPC->FUN_1411f9310()->Refresh();
+    m_pPC->GetSetItems()->Refresh();
     if (m_50 != 0)
         FUN_1411e7320();
     m_4c = 0;
@@ -3111,11 +3111,11 @@ ReplaceObject::~ReplaceObject()
 }
 
 // @0x1411f9310
-MS2Ptr<CSetItemManager> PC::FUN_1411f9310()
+MS2Ptr<CSetItemManager> PC::GetSetItems()
 {
     return m_spSetItems;
 }
-MS2_REPLACE_METHOD(0x1411F9310, PC, FUN_1411f9310, 67, 0x99EF29FF);
+MS2_REPLACE_METHOD(0x1411F9310, PC, GetSetItems, 67, 0x99EF29FF);
 
 // @0x1411f88a0
 void Unk_EqSceneDump::FUN_1411f88a0(bool bCulled, NiAVObject* pObject, unsigned nDepth)

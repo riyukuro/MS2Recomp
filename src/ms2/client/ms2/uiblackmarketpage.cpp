@@ -141,7 +141,7 @@ int FUN_1418fccc0(int nMsg, void* p2, void* p3, const CStringW& strText);   // t
 class InvenSlot : public MS2DragSlot
 {
 public:
-    __int64 FUN_141405a10();                                        // the item uid
+    __int64 GetItemUid();                                        // the item uid
     int FUN_141409150(CItem& item);                                 // may the item be registered on the black market
 };
 
@@ -492,7 +492,7 @@ int BlackMarketPageItemSearch::vfunc_4(const char* szMethod, const Scaleform::GF
     }
     if (_stricmp("OnClickBuy", szMethod) == 0)
     {
-        if (ItemPreviewMgr::GetInstance()->FUN_140d40670() != 0)
+        if (ItemPreviewMgr::GetInstance()->IsHudOn() != 0)
             return 1;
         {
             BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0x26);
@@ -1275,7 +1275,7 @@ int BlackMarketPageItemRegister::vfunc_4(const char* szMethod, const Scaleform::
             efd::SmartPointer<InvenSlot> spSlot = FUN_140f15b80(FUN_1422c8e90(strSlot));
             if (spSlot)
             {
-                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(spSlot->FUN_141405a10());
+                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(spSlot->GetItemUid());
                 if (spItem.get())
                 {
                     if (spSlot->FUN_141409150(*spItem))

@@ -16,8 +16,8 @@ public:
     CLiftableObject();                                          // 0x141447080
     virtual ~CLiftableObject();                                 //  0 0x1414471b0 (??_G 0x141448150)
 
-    CString FUN_1414472a0() const;                              // the name key
-    void FUN_1414472f0(CString strName);                        // set the name key
+    CString GetName() const;                              // the name key
+    void SetName(CString strName);                        // set the name key
     int FUN_141447340() const;                                  // can be picked up now
     int FUN_141447390(Unk_Entity* pEntity, bool bFixed, int nKind);   // bind the prop entity
     void FUN_141447410(Unk_Entity* pEntity);                    // bind and read the entity's properties
@@ -26,11 +26,11 @@ public:
     void FUN_1414478b0(char bValue);                            // set +0xc0
     char FUN_1414478f0() const;                                 // +0xc0
     void FUN_141447910(char bOn);                               // lift-hint sound on/off
-    void FUN_141447a60(int nKind);
-    int FUN_141447a80() const;
+    void SetKind(int nKind);
+    int GetKind() const;
     void FUN_141447aa0(char bValue);
-    float FUN_141447ac0() const;
-    int FUN_141447ae0() const;
+    float GetRange() const;
+    int GetState() const;
     void FUN_141447b00(int nState);                             // set state, collision group
     void FUN_141447c10();                                       // stop the cooldown
     Unk_StreamPoint FUN_141447c80() const;                      // +0xc4

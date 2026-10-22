@@ -805,7 +805,7 @@ void FUN_1408559b0()
 }
 
 // @0x140855540
-void FUN_140855540()
+void LoadTalkScripts()
 {
     {
         ATL::CAtlArray<CString> files;

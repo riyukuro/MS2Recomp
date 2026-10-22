@@ -58,21 +58,21 @@ public:
     virtual bool vfunc_61(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem);   // 61 0x141085e50 same item as now
 
     // non-virtual
-    void FUN_141084cb0(MS2Ptr<CItem> spItem);               // 0x141084cb0 m_spItem = spItem
+    void SetItem(MS2Ptr<CItem> spItem);               // 0x141084cb0 m_spItem = spItem
     void FUN_141084d00(UIModelView* pView);                 // 0x141084d00 set the model view (marks dirty if loaded)
-    UIModelView* FUN_141084d60();                           // 0x141084d60
+    UIModelView* GetModelView();                           // 0x141084d60
     void FUN_141085250();                                   // 0x141085250 re-applies the UGC textures
     void FUN_1410852a0();                                   // 0x1410852a0 hands the model to the model view
     void FUN_1410853e0(bool bVisible);                      // 0x1410853e0
-    bool FUN_141085420();                                   // 0x141085420
+    bool IsVisible();                                   // 0x141085420
     void FUN_141085440();                                   // 0x141085440 marks the model's meshes unlightable
     void FUN_141085530(MS2Ptr<CItem> spItem);               // 0x141085530 vfunc_59 once the model is loaded
     void FUN_1410855b0();                                   // 0x1410855b0 builds the UGC mesh list
     NiTexturePtr FUN_141085700();                           // 0x141085700 UGC texture (or null)
-    MS2Ptr<CItemUgcMeshContainer> FUN_141085830();          // 0x141085830 copy of m_spUgcMesh
-    MS2Ptr<CItemData> FUN_141085880();                      // 0x141085880 copy of m_spItemData
-    void FUN_141085ab0(IAvatarObjectEventListener* p);      // 0x141085ab0
-    IAvatarObjectEventListener* FUN_141085ae0();            // 0x141085ae0
+    MS2Ptr<CItemUgcMeshContainer> GetUgcMesh();          // 0x141085830 copy of m_spUgcMesh
+    MS2Ptr<CItemData> GetItemData();                      // 0x141085880 copy of m_spItemData
+    void SetListener(IAvatarObjectEventListener* p);      // 0x141085ab0
+    IAvatarObjectEventListener* GetListener();            // 0x141085ae0
 
 public:
     MS2_LAYOUT_FRIEND;

@@ -580,7 +580,7 @@ CEffectDataPtr EffectDataManager::FUN_14119f870(CString strPath)
 MS2_REPLACE_METHOD(0x14119f870, EffectDataManager, FUN_14119f870, 482, 0xBC6A47F9);
 
 // @0x14119fa60
-void EffectDataManager::FUN_14119fa60()
+void EffectDataManager::LoadEffectFiles()
 {
     ATL::CAtlArray<CString> files;
     FUN_140399100(".xml", "./Data/Xml/Effect", files, "", false);
@@ -591,7 +591,7 @@ void EffectDataManager::FUN_14119fa60()
         FUN_14119f870(CString(pszFile + nPrefix));
     }
 }
-MS2_REPLACE_METHOD(0x14119fa60, EffectDataManager, FUN_14119fa60, 489, 0x37B27AE7);
+MS2_REPLACE_METHOD(0x14119fa60, EffectDataManager, LoadEffectFiles, 489, 0x37B27AE7);
 
 // @0x14119fc50
 CEffectDataPtr EffectDataManager::FUN_14119fc50(const CString& strPath)
@@ -912,7 +912,7 @@ void EffectNode::CopyMembers(EffectNode* pkDest, NiCloningProcess& kCloning)
     pkDest->FUN_1411a3fd0(m_pTarget);
     pkDest->FUN_1411a4040(m_kTranslate);
     pkDest->FUN_1411a4000(m_kRotate);
-    pkDest->FUN_1411a3fa0(m_bOnGround);
+    pkDest->SetOnGround(m_bOnGround);
 }
 MS2_REPLACE_METHOD(0x1411a3380, EffectNode, CopyMembers, 291, 0xCB6031CB);
 
@@ -1009,8 +1009,8 @@ void EffectNode::FUN_1411a3db0(INodeMovement* pMovement) { m_spMovement.AssignRa
 MS2_REPLACE_METHOD(0x1411a3db0, EffectNode, FUN_1411a3db0, 43, 0x3153449B);
 
 // @0x1411a3fa0
-void EffectNode::FUN_1411a3fa0(int bOnGround) { m_bOnGround = bOnGround; }
-MS2_REPLACE_METHOD(0x1411a3fa0, EffectNode, FUN_1411a3fa0, 25, 0xA75DD37E);
+void EffectNode::SetOnGround(int bOnGround) { m_bOnGround = bOnGround; }
+MS2_REPLACE_METHOD(0x1411a3fa0, EffectNode, SetOnGround, 25, 0xA75DD37E);
 
 // @0x1411a3fc0
 const NiRTTI* EffectNode::GetRTTI() const { return &ms_RTTI; }
@@ -1359,7 +1359,7 @@ MS2_REPLACE_METHOD(0x1411a49c0, CEffectService, FUN_1411a49c0, 43, 0xA316FB5D);
 // MS2-FUNCTIONAL: same calls and flow; the exe spills the param pointer before the call (one extra temp, 13 bytes longer) and calls the second CAtlList GetAt/GetNext copy (see FUN_1411a4800)
 unsigned CEffectService::FUN_1411a4a00(Unk_EffectTarget& kTarget)
 {
-    if (!FUN_1411a7830())
+    if (!IsEnabled())
         return 0;
     if (kTarget.m_strName.IsEmpty())
         return 0;
@@ -1381,7 +1381,7 @@ unsigned CEffectService::FUN_1411a4a00(Unk_EffectTarget& kTarget)
         return nId;
     }
     Unk_EsEffectGroup* pGroup = FUN_1411aac40(nId);
-    pGroup->FUN_1411b3070(kTarget.m_strName);
+    pGroup->SetName(kTarget.m_strName);
     int nCount = 0;
     for (POSITION pos = spData->FUN_14119f540().GetHeadPosition(); pos != 0; spData->FUN_14119f540().GetNext(pos)) {
         CEffectPtr spEffect = FUN_14119eae0(spData->FUN_14119f540().GetAt(pos).get(), &kTarget);
@@ -1419,7 +1419,7 @@ unsigned CEffectService::FUN_1411a4f40(CString strName, const NiPoint3& kPos)
 unsigned CEffectService::FUN_1411a5110(CString strCategory, CString strName, CString strExtra, int nKind,
     NiTransform* pXform, float fVolume, int nOwner)
 {
-    if (!FUN_1411a7830())
+    if (!IsEnabled())
         return 0;
     if (!FUN_1411a91d0(nKind))
         return 0;
@@ -1444,7 +1444,7 @@ unsigned CEffectService::FUN_1411a5110(CString strCategory, CString strName, CSt
         return 0;
     unsigned nId = FUN_1411a9230();
     Unk_EsEffectGroup* pGroup = FUN_1411aac40(nId);
-    pGroup->FUN_1411b3070(strName);
+    pGroup->SetName(strName);
     pGroup->FUN_1411b15b0(spEffect);
     return nId;
 }
@@ -1640,7 +1640,7 @@ inline std::list<CEffectPtr>::iterator Unk_EsEffectGroup::FUN_1411b2df0(std::lis
 inline bool Unk_EsEffectGroup::FUN_1411b2720() { return m_listEffects.empty(); }
 
 // @0x1411b3070
-inline void Unk_EsEffectGroup::FUN_1411b3070(const char* pszName) { m_strName = pszName; }
+inline void Unk_EsEffectGroup::SetName(const char* pszName) { m_strName = pszName; }
 // @0x1411b1e40
 inline const std::string& Unk_EsEffectGroup::FUN_1411b1e40() { return m_strName; }
 
@@ -1938,12 +1938,12 @@ void CEffectService::FUN_1411a7760(unsigned nId, ATL::CAtlArray<CEffectPtr>& aOu
 MS2_REPLACE_METHOD(0x1411a7760, CEffectService, FUN_1411a7760, 200, 0x1C64A78D);
 
 // @0x1411a7830
-bool CEffectService::FUN_1411a7830() { return m_bEnabled; }
-MS2_REPLACE_METHOD(0x1411a7830, CEffectService, FUN_1411a7830, 15, 0x43A40A0D);
+bool CEffectService::IsEnabled() { return m_bEnabled; }
+MS2_REPLACE_METHOD(0x1411a7830, CEffectService, IsEnabled, 15, 0x43A40A0D);
 
 // @0x1411a7850
-void CEffectService::FUN_1411a7850(bool bEnabled) { m_bEnabled = bEnabled; }
-MS2_REPLACE_METHOD(0x1411a7850, CEffectService, FUN_1411a7850, 23, 0x2A7F450D);
+void CEffectService::SetEnabled(bool bEnabled) { m_bEnabled = bEnabled; }
+MS2_REPLACE_METHOD(0x1411a7850, CEffectService, SetEnabled, 23, 0x2A7F450D);
 
 // @0x1411a7870
 void CEffectService::FUN_1411a7870(int nIndex)
@@ -2287,12 +2287,12 @@ void CEffectService::FUN_1411a8dc0()
 MS2_REPLACE_METHOD(0x1411a8dc0, CEffectService, FUN_1411a8dc0, 137, 0x2C9D2F1A);
 
 // @0x1411a8e50
-void CEffectService::FUN_1411a8e50(unsigned nTick) { m_nTick = nTick; }
-MS2_REPLACE_METHOD(0x1411a8e50, CEffectService, FUN_1411a8e50, 25, 0xE801286E);
+void CEffectService::SetTick(unsigned nTick) { m_nTick = nTick; }
+MS2_REPLACE_METHOD(0x1411a8e50, CEffectService, SetTick, 25, 0xE801286E);
 
 // @0x1411a8e70
-unsigned CEffectService::FUN_1411a8e70() { return m_nTick; }
-MS2_REPLACE_METHOD(0x1411a8e70, CEffectService, FUN_1411a8e70, 17, 0xFA964832);
+unsigned CEffectService::GetTick() { return m_nTick; }
+MS2_REPLACE_METHOD(0x1411a8e70, CEffectService, GetTick, 17, 0xFA964832);
 
 // @0x1411a91d0
 bool CEffectService::FUN_1411a91d0(int nType)

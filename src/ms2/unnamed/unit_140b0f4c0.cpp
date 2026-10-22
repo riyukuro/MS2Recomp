@@ -320,7 +320,7 @@ void CPet::vfunc_52(double fTime)
     if (FUN_140b109f0() != 0)
         fScale = fScale * 2.0f;
     FUN_14123c330(fScale);
-    float fRatio = FUN_14123c260() / FUN_14123c2e0();
+    float fRatio = FUN_14123c260() / GetScaleAC();
     if (fRatio != m_fScaleA8)
     {
         int bDown = m_fScaleA8 - fRatio > 0.0f ? 0 : 1;
@@ -338,7 +338,7 @@ void CPet::vfunc_52(double fTime)
             if (fRatio > m_fScaleA8)
                 fRatio = m_fScaleA8;
         }
-        FUN_14123c280(fRatio * FUN_14123c2e0());
+        FUN_14123c280(fRatio * GetScaleAC());
     }
 }
 

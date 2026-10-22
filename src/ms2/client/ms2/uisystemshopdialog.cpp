@@ -267,7 +267,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             }
             else if (nAction == 1)
             {
-                if (CFishingManager::GetInstance()->FUN_140cdbdd0() < 1)
+                if (CFishingManager::GetInstance()->GetAutoCount() < 1)
                 {
                     // extend the auto fishing: the price packages of the push
                     MS2SvrPtr<CSmartPushAutoFishing> spPush = FUN_140cea070()->FUN_FindPush<CSmartPushAutoFishing>();
@@ -387,7 +387,7 @@ void UISystemShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     CStringW strTip;
     if (m_nMode == 4)
     {
-        int nCount = CFishingManager::GetInstance()->FUN_140cdbdd0();
+        int nCount = CFishingManager::GetInstance()->GetAutoCount();
         strTip = FUN_14062b4f0(CStringW(L"s_system_shop_autofishing_icon_tooltip"), nCount);
     }
     else if (m_nMode == 5)
@@ -418,8 +418,8 @@ void UISystemShopDialog::FUN_140fa5bc0()
     if (pPc == 0 || m_nMode != 4 || !m_30.get())
         return;
     MS2Ptr<CItem> spBait(0);
-    if (CFishingManager::GetInstance()->FUN_140cdbe60() != 0)
-        spBait = DAT_143ab2a90.FUN_140a5e2e0(CFishingManager::GetInstance()->FUN_140cdbe60());
+    if (CFishingManager::GetInstance()->GetBaitId() != 0)
+        spBait = DAT_143ab2a90.FUN_140a5e2e0(CFishingManager::GetInstance()->GetBaitId());
     FUN_140d42630(vfunc_1());
     FUN_140d42540(vfunc_1(), 0, spBait);
     ItemScrollSlot* pSlot = FUN_140d42c30(FUN_1422c8e90(vfunc_1()));
@@ -435,7 +435,7 @@ void UISystemShopDialog::FUN_140fa5bc0()
     CStringW strExtend;
     if (reinterpret_cast<Unk_PCBaseBuffs*>(pPc->FUN_1416749a0())->FUN_1409701d0(1) != 0)
     {
-        bCancel = CFishingManager::GetInstance()->FUN_140cdbdd0() > 0;
+        bCancel = CFishingManager::GetInstance()->GetAutoCount() > 0;
         if (bCancel == 0)
             strExtend = FUN_14028b8e0(CStringW(L"s_system_shop_title_extend_autofishing"));
         else
@@ -560,7 +560,7 @@ MS2_REPLACE_METHOD(0x140FA69B0, UISystemShopDialog, FUN_140fa69b0, 244, 0x714CF9
 // @0x140fa6ab0
 void UISystemShopDialog::FUN_140fa6ab0(ItemScrollSlot& slot)
 {
-    CFishingManager::GetInstance()->FUN_140cdbe40(0);
+    CFishingManager::GetInstance()->SetBaitId(0);
 }
 MS2_REPLACE_METHOD(0x140FA6AB0, UISystemShopDialog, FUN_140fa6ab0, 34, 0xC7709242);
 
@@ -571,7 +571,7 @@ void UISystemShopDialog::FUN_140fa6ae0(ItemScrollSlot& slot, DragSlot* pDrag)
     InvenSlot* pSrc = FUN_140a50b50(pDrag);
     if (pSrc == 0)
         return;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pSrc->FUN_141405a10());
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pSrc->GetItemUid());
     if (spItem == 0)
         return;
     if (!spItem->FUN_1405277e0(100))
@@ -581,7 +581,7 @@ void UISystemShopDialog::FUN_140fa6ae0(ItemScrollSlot& slot, DragSlot* pDrag)
     slot.SetItem(MS2Ptr<CItem>(spItem));
     slot.vfunc_10();
     int nBait = pSrc->FUN_141405980();
-    CFishingManager::GetInstance()->FUN_140cdbe40(nBait);
+    CFishingManager::GetInstance()->SetBaitId(nBait);
 }
 MS2_REPLACE_METHOD(0x140FA6AE0, UISystemShopDialog, FUN_140fa6ae0, 371, 0x27C30815);
 

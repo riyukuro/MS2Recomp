@@ -40,7 +40,7 @@ struct Unk_PickApp { int FUN_141b90e30(float* pX, float* pY); };        // curso
 Unk_PickApp* FUN_140aadf80();
 struct Unk_PickRenderer
 {
-    bool FUN_141419be0() const;
+    bool IsFlag() const;
     char m_pad[0x850];
     bool m_bFlag;                                                       // +0x850
 };
@@ -214,7 +214,7 @@ int CItemPickingHelper::PickMesh(NiAVObject* pMesh, CAtlArray<NiRenderObject*>& 
     Unk_PickRenderer* pRenderer = FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
     if (pRenderer == 0)
         return 0;
-    if (pRenderer->FUN_141419be0())
+    if (pRenderer->IsFlag())
         return 0;
     void* pCamMgr = FUN_1413f9a70();
     efd::Point3 hit;
@@ -266,7 +266,7 @@ Unk_PickMeshPtr::Unk_PickMeshPtr(NiAVObject* p)
 }
 
 // @0x141419be0
-bool Unk_PickRenderer::FUN_141419be0() const
+bool Unk_PickRenderer::IsFlag() const
 {
     return m_bFlag;
 }

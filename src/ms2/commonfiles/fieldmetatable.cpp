@@ -154,7 +154,7 @@ CFieldMetaTable::CFieldMetaTable()
       m_pet(17, 0.75f, 0.25f, 2.25f, 10), m_liftable(17, 0.75f, 0.25f, 2.25f, 10)
 {
     CFieldFeatureChecker::BuildNameTable();
-    FUN_1406f9dd0();
+    LoadFieldMetaData();
 }
 
 // @0x1406f9c20
@@ -166,7 +166,7 @@ CFieldMetaTable::~CFieldMetaTable()
 }
 
 // @0x1406f9dd0
-void CFieldMetaTable::FUN_1406f9dd0()
+void CFieldMetaTable::LoadFieldMetaData()
 {
     CString strPath = FUN_14071a5b0(CString("Table"), CString("FieldMetaData.xml"));
     TiXmlDocument doc;

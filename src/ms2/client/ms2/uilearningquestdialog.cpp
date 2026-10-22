@@ -259,7 +259,7 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
 // @0x140ea1c00
 void UILearningQuestDialog::FUN_140ea1c00(NotifyObject*)
 {
-    FUN_140ea2120();
+    LoadLearningQuest();
     FUN_140ea3910();
 }
 
@@ -332,7 +332,7 @@ int UILearningQuestDialog::FUN_140ea1e20(int bNew)
                 if (m_2c8.Lookup(spItem->m_nId, nSeen) && nSeen != 0)
                     continue;
                 m_2c8.SetAt(spItem->m_nId, 1);
-                FUN_140ea26e0();
+                SaveLearningQuest();
             }
             spFound = spItem;
             break;
@@ -350,7 +350,7 @@ int UILearningQuestDialog::FUN_140ea1e20(int bNew)
 
 // MS2-FUNCTIONAL: behaviour-equivalent; temporaries of the path building / xml loading differ from the exe
 // @0x140ea2120
-void UILearningQuestDialog::FUN_140ea2120()
+void UILearningQuestDialog::LoadLearningQuest()
 {
     m_2c8.RemoveAll();
     LqArray all;
@@ -404,7 +404,7 @@ void UILearningQuestDialog::FUN_140ea2120()
 
 // MS2-FUNCTIONAL: behaviour-equivalent; temporaries of the xml writing differ from the exe
 // @0x140ea26e0
-void UILearningQuestDialog::FUN_140ea26e0()
+void UILearningQuestDialog::SaveLearningQuest()
 {
     TiXmlElement* pRoot = FUN_140165cf0(&m_1e8, "ms2");
     if (pRoot == 0)

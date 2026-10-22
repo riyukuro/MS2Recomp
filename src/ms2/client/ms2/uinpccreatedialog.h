@@ -58,7 +58,7 @@ public:
     virtual void vfunc_1(void* pEvt);                   // UIEntityEventListener 1 0x141a6b030
     virtual void vfunc_3(void* pActor);                 // UIEntityEventListener 3 0x141a6b1a0
 
-    void FUN_141a6b2e0();                               // read the npc ids of the xml files
+    void ReadNpcFromFile();                               // read the npc ids of the xml files
     CStringW FUN_141a6b6a0(int nType, int bFriendly);   // npc kind name
     void FUN_141a6b800();                               // log + preload every npc
     void FUN_141a6b8f0();                               // build m_entries

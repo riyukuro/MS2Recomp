@@ -66,11 +66,11 @@ template <class T> inline void Unk_SmLog(CLogString* log, int level, int categor
 }
 
 // Reads the table: language file first, then the plain file; every <mail> becomes a row of the map.
-void FUN_140851750();
+void LoadSystemMailContent();
 #ifndef MS2_HOOK_DLL
 // @0x140851750
 // MS2-FUNCTIONAL: temp slots of the nested path-building calls sit in a different order than the exe (frame 0x10 larger).
-void FUN_140851750()
+void LoadSystemMailContent()
 {
     TiXmlDocument doc;
     CString strPath = FUN_14071ae20(FUN_14038f6d0(FUN_140298360("systemMailContent", FUN_140651390()), ".xml"));
@@ -148,7 +148,7 @@ CSystemMailContent::Ptr CSystemMailContent::GetMail(int nId)
         if (DAT_1439ed00c != 0 && s_mails.Lookup(nId, spMail) && !FUN_1401d1320(spMail.get()))
             return spMail;
     }
-    FUN_140851750();
+    LoadSystemMailContent();
     if (Unk_LockGuard guard2 = g_cacheLock)
     {
     }

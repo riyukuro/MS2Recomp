@@ -909,9 +909,9 @@ struct Unk_SetPieceEquipped
     Unk_SetPieceEquipped(unsigned nPieceId) : m_nPieceId(nPieceId) {}
     bool operator()(MS2Ptr<CEquipItem> spEquip) const
     {
-        if (spEquip == 0 || spEquip->FUN_1411dc7a0() == 0)
+        if (spEquip == 0 || spEquip->GetItem() == 0)
             return false;
-        if (!spEquip->FUN_1411dc7a0()->FUN_140528980())
+        if (!spEquip->GetItem()->FUN_140528980())
             return false;
         if (spEquip->FUN_1411dc7f0()->FUN_14053c560() == m_nPieceId)
             return true;
@@ -1026,7 +1026,7 @@ void ASTooltip::FUN_1409c8020(CItem* pItem)
             strPieces.Append(StringFormat(strRowFormat, nColor, strName));
         }
         nEquipped = nEquipped < nRequired ? nEquipped : nRequired;
-        CStringW strTitle = StringFormat(s_wsSetName, FUN_1401a9d70_p1()->FUN_1418128c0(sets[i]->FUN_1407ad550(), "name"), nEquipped, nRequired);
+        CStringW strTitle = StringFormat(s_wsSetName, FUN_1401a9d70_p1()->GetSetItemName(sets[i]->FUN_1407ad550(), "name"), nEquipped, nRequired);
         strText.Append(strTitle);
         strText.Append(strPieces);
         for (unsigned n = 0; n <= sets[i]->GetItemCount(); n++)
@@ -1094,7 +1094,7 @@ void ASTooltip::FUN_1409c8df0(int nItemId)
         const CStringW& strName = FUN_1401a9d70_p1()->FUN_141811980(1, nPieceId);
         strBody.Append(StringFormat(s_wsUgcSetRow, nColor, strName));
     }
-    CStringW strTitle = StringFormat(s_wsUgcSetName, FUN_1401a9d70_p1()->FUN_141812a80(spHousing->setItemID, "name"));
+    CStringW strTitle = StringFormat(s_wsUgcSetName, FUN_1401a9d70_p1()->GetUGCMapSetItemName(spHousing->setItemID, "name"));
     arr.FUN_1422bbfe0(strTitle);
     arr.FUN_1422bbfe0(strBody);
     FUN_1409eb1d0("itemStatusSet", arr);
@@ -2178,7 +2178,7 @@ void ASTooltip::FUN_1409d0710(CItem* pItem)
         FUN_1407cbb20("itemDescription", strDesc);
     else
     {
-        CStringW strText = FUN_1401a9d70_p3()->FUN_141811c90(pItem->FUN_1405276c0(), "tooltipDescription");
+        CStringW strText = FUN_1401a9d70_p3()->GetItemDescription(pItem->FUN_1405276c0(), "tooltipDescription");
         FUN_1403b4750()->FUN_1416fb340(strText);
         FUN_1407cbb20("itemDescription", strText);
     }
@@ -2203,7 +2203,7 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
             if (pItem->FUN_140527840()->FUN_14053ccc0() && FUN_140166410()->FUN_14036d570(0xad))
             {
                 bCustom = 1;
-                strDesc = FUN_1401a9d70_p3()->FUN_141811c90(pItem->FUN_1405276c0(), "guideDescription");
+                strDesc = FUN_1401a9d70_p3()->GetItemDescription(pItem->FUN_1405276c0(), "guideDescription");
                 strDesc += FUN_14028b8e0(CStringW(L"s_multi_riding_item_desc"));
             }
         }
@@ -2241,7 +2241,7 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
     }
     else
     {
-        CStringW strGuide = FUN_1401a9d70_p3()->FUN_141811c90(pItem->FUN_1405276c0(), "guideDescription");
+        CStringW strGuide = FUN_1401a9d70_p3()->GetItemDescription(pItem->FUN_1405276c0(), "guideDescription");
         if (spData->FUN_14053c5c0() == 0x1a)
         {
             int bExpiring = 0;
@@ -2401,7 +2401,7 @@ void ASTooltip::FUN_1409d1d80(CItem* pItem)
     MS2Ptr<CItemData> spData(pItem->FUN_140527840());
     if (spData.IsNull())
         return;
-    CStringW strMain = FUN_1401a9d70_p3()->FUN_141811c90(pItem->FUN_1405276c0(), "mainDescription");
+    CStringW strMain = FUN_1401a9d70_p3()->GetItemDescription(pItem->FUN_1405276c0(), "mainDescription");
     if (strMain.GetLength() > 0)
     {
         ASObj row(2);
@@ -2469,7 +2469,7 @@ void ASTooltip::FUN_1409d26d0(CItem* pItem)
     Unk_EnchantPtr<CItemEnchantInfo> spEnchant(FUN_140630d60_p2(pItem->FUN_1405278a0()));
     if (!spEnchant)
         return;
-    CStringW strMain = FUN_1401a9d70_p3()->FUN_141811c90(pItem->FUN_1405276c0(), "mainDescription");
+    CStringW strMain = FUN_1401a9d70_p3()->GetItemDescription(pItem->FUN_1405276c0(), "mainDescription");
     if (strMain.GetLength() > 0)
     {
         ASObj row(2);
@@ -2935,7 +2935,7 @@ namespace p3hook { MS2_REPLACE_METHOD(0x1409D5920, ASTooltip, FUN_1409d5920, 363
 // @0x1409d5aa0
 void ASTooltip::FUN_1409d5aa0(int nItemId)
 {
-    CStringW str = FUN_1401a9d70_p3()->FUN_141811c90(nItemId, "tooltipDescription");
+    CStringW str = FUN_1401a9d70_p3()->GetItemDescription(nItemId, "tooltipDescription");
     FUN_1403b4750()->FUN_1416fb340(str);
     FUN_1407cbb20("itemDescription", str);
 }
@@ -2947,7 +2947,7 @@ void ASTooltip::FUN_1409d5b70(int nItemId)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return;
-    CStringW strGuide = FUN_1401a9d70_p3()->FUN_141811c90(nItemId, "guideDescription");
+    CStringW strGuide = FUN_1401a9d70_p3()->GetItemDescription(nItemId, "guideDescription");
     int nObjCode = spData->install.objCode;
     if (nObjCode != 0)
     {
@@ -3008,7 +3008,7 @@ void ASTooltip::FUN_1409d6120(int nItemId)
     if (spData == 0)
         return;
     {
-        CStringW strMain = FUN_1401a9d70_p3()->FUN_141811c90(nItemId, "mainDescription");
+        CStringW strMain = FUN_1401a9d70_p3()->GetItemDescription(nItemId, "mainDescription");
         if (strMain.GetLength() != 0)
         {
             ASObj obj(2);
@@ -3975,7 +3975,7 @@ namespace p4hook { MS2_REPLACE_METHOD(0x1409DBFA0, ASTooltip, FUN_1409dbfa0, 386
 // @0x1409dc130
 void ASTooltip::FUN_1409dc130(int nSkillId, unsigned short nLevel)
 {
-    FUN_1407cbb20("skillDescription", CStringTable::GetInstance()->FUN_141811e50(nSkillId, nLevel, "name"));
+    FUN_1407cbb20("skillDescription", CStringTable::GetInstance()->GetSkillDescription(nSkillId, nLevel, "name"));
 }
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DC130, ASTooltip, FUN_1409dc130, 178, 0x7C4A5F42); }
 

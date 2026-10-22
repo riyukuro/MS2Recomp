@@ -513,7 +513,7 @@ MS2_REPLACE_METHOD(0x141B2BB10, UITriggerEditorDialog, FUN_141b2bb10, 211, 0x1ED
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2bbf0
-int UITriggerEditorDialog::FUN_141b2bbf0()
+int UITriggerEditorDialog::OpenTriggerFile()
 {
     CString strPath = FUN_141b6e500(CString("./Data/Xml/Trigger/"), "xml\0*.xml", CString(""));
     if (strPath.IsEmpty())
@@ -535,7 +535,7 @@ int UITriggerEditorDialog::FUN_141b2bbf0()
     m_spTrigger->LoadEditorTable();
     return 1;
 }
-MS2_REPLACE_METHOD(0x141B2BBF0, UITriggerEditorDialog, FUN_141b2bbf0, 648, 0x1FFA4F1E);
+MS2_REPLACE_METHOD(0x141B2BBF0, UITriggerEditorDialog, OpenTriggerFile, 648, 0x1FFA4F1E);
 
 // ATL operator+(const CString&, const char*) as linked in the exe (0x14038f6d0); the inline one
 // pulls in the dllimport CSimpleStringT<char,1>::CopyChars, which the hook DLL cannot resolve.
@@ -670,7 +670,7 @@ MS2_REPLACE_METHOD(0x141B2BE80, UITriggerEditorDialog, FUN_141b2be80, 4676, 0xC5
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2d0d0
-int UITriggerEditorDialog::FUN_141b2d0d0()
+int UITriggerEditorDialog::SaveTriggerFile()
 {
     CString strPath = FUN_141b6e880(CString("./Data/Xml/Trigger/"), "xml\0*.xml", m_strFileName);
     if (strPath.IsEmpty())
@@ -691,7 +691,7 @@ int UITriggerEditorDialog::FUN_141b2d0d0()
     m_strFileName.Delete(0, strFile.ReverseFind('/') + 1);
     return 1;
 }
-MS2_REPLACE_METHOD(0x141B2D0D0, UITriggerEditorDialog, FUN_141b2d0d0, 618, 0x67870D93);
+MS2_REPLACE_METHOD(0x141B2D0D0, UITriggerEditorDialog, SaveTriggerFile, 618, 0x67870D93);
 
 // MS2-FUNCTIONAL: from the decompile
 // @0x141b2d340

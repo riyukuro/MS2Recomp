@@ -82,7 +82,7 @@ public:
     bool FUN_14096bc20(int nOwner, MS2Ptr<AdditionalCli> spSrc);    // 0x14096bc20 copies spSrc, owned by nOwner
     bool FUN_14096d6b0();                                           // 0x14096d6b0
     unsigned int FUN_14096d2a0();                                   // 0x14096d2a0 data id
-    unsigned short FUN_14096d2c0();                                 // 0x14096d2c0 data sub id
+    unsigned short GetLevel();                                 // 0x14096d2c0 data sub id
     char m_pad_18[0x60];
 };
 MS2_CHECK_SIZE(AdditionalCli, 0x78);
@@ -123,7 +123,7 @@ public:
 class CEquipItem : public CPtred
 {
 public:
-    MS2Ptr<CItem> FUN_1411dc7a0();                                  // 0x1411dc7a0 the item
+    MS2Ptr<CItem> GetItem();                                  // 0x1411dc7a0 the item
     Unk_CloneItemRec* FUN_1411dc7f0();                              // 0x1411dc7f0 the item record
     void FUN_1411dcbb0(ATL::CAtlArray<MS2Ptr<Unk_ClonePart> >* pOut);   // 0x1411dcbb0 the model parts
 };
@@ -325,7 +325,7 @@ void ClonePC::vfunc_149()
                 MS2Ptr<CEquipItem> spEquip(kEquips.GetAt(pos));
                 if (FUN_140b02900(spEquip))
                     continue;
-                MS2Ptr<CItem> spItem = spEquip.get()->FUN_1411dc7a0();
+                MS2Ptr<CItem> spItem = spEquip.get()->GetItem();
                 if (spItem.get() != 0)
                 {
                     MS2Ptr<CItem> spCopy = FUN_140ccac60(MS2Ptr<CItem>(spItem));
@@ -632,7 +632,7 @@ void ClonePC::vfunc_151()
                     if (spSrc.get()->FUN_14096d6b0())
                     {
                         unsigned int nId = spSrc.get()->FUN_14096d2a0();
-                        unsigned short nSub = spSrc.get()->FUN_14096d2c0();
+                        unsigned short nSub = spSrc.get()->GetLevel();
                         if (!(kHave.find(std::make_pair(nId, nSub)) == kHave.end()))
                         {
                             MS2Ptr<AdditionalCli> spNew(new AdditionalCli());

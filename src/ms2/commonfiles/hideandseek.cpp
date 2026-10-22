@@ -184,7 +184,7 @@ void HideAndSeek::FUN_14050a770(unsigned nMapCode, std::vector<int>& out)
     if (guard == 0)
     {
         if (s_ridingTable.empty())
-            FUN_14050a830();
+            LoadHideAndSeek();
         std::map<unsigned, std::vector<int> >::iterator it = s_ridingTable.find(nMapCode);
         if (it != s_ridingTable.end())
             out = it->second;
@@ -194,7 +194,7 @@ void HideAndSeek::FUN_14050a770(unsigned nMapCode, std::vector<int>& out)
 // MS2-FUNCTIONAL: XML loader; register/call-order differences in the tokenise/emplace sequence
 #ifndef MS2_HOOK_DLL
 // @0x14050a830
-void HideAndSeek::FUN_14050a830()
+void HideAndSeek::LoadHideAndSeek()
 {
     CString strPath = FUN_14071a5b0("Table/Server", "hideAndSeek.xml");
     {

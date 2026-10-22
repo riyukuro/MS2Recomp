@@ -791,7 +791,7 @@ InvenSlot::~InvenSlot()
 // @0x1414058f0
 int InvenSlot::FUN_1414058f0()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10());
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
     if (spItem.get() != 0)
         return spItem->FUN_140527840()->FUN_14053dc20();
     return 0;
@@ -801,7 +801,7 @@ MS2_REPLACE_METHOD(0x1414058F0, InvenSlot, FUN_1414058f0, 137, 0x89645CA2);
 // @0x141405980
 int InvenSlot::FUN_141405980()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10());
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
     if (spItem.get() != 0)
         return spItem->FUN_1405276c0();
     return 0;
@@ -809,18 +809,18 @@ int InvenSlot::FUN_141405980()
 MS2_REPLACE_METHOD(0x141405980, InvenSlot, FUN_141405980, 129, 0x5B13475B);
 
 // @0x141405a10
-__int64 InvenSlot::FUN_141405a10()
+__int64 InvenSlot::GetItemUid()
 {
     return m_nItemUid;
 }
-MS2_REPLACE_METHOD(0x141405A10, InvenSlot, FUN_141405a10, 18, 0xB95413A9);
+MS2_REPLACE_METHOD(0x141405A10, InvenSlot, GetItemUid, 18, 0xB95413A9);
 
 // @0x141405a30
-void InvenSlot::FUN_141405a30(__int64 nItemUid)
+void InvenSlot::SetItemUid(__int64 nItemUid)
 {
     m_nItemUid = nItemUid;
 }
-MS2_REPLACE_METHOD(0x141405A30, InvenSlot, FUN_141405a30, 28, 0x932389C7);
+MS2_REPLACE_METHOD(0x141405A30, InvenSlot, SetItemUid, 28, 0x932389C7);
 
 // MS2-FUNCTIONAL: equivalent control flow; branch order / temporaries differ (not tuned)
 // @0x141405a60
@@ -945,7 +945,7 @@ int InvenSlot::vfunc_13()
     }
     else
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10());
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
         if (!(spItem == 0))
         {
             if (FUN_141659690(pPC) == 0)
@@ -1011,7 +1011,7 @@ int InvenSlot::vfunc_13()
                                 else if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4e3b) == 0)
                                 {
                                     int nSlot = FUN_1414056b0(spItem);
-                                    DAT_143ab2a90.FUN_140a621c0(FUN_141405a10(), 0, nSlot);
+                                    DAT_143ab2a90.FUN_140a621c0(GetItemUid(), 0, nSlot);
                                 }
                             }
                             else if (FUN_14140dea0(spItem.get(), pPC) != 0)
@@ -1096,7 +1096,7 @@ MS2_REPLACE_METHOD(0x141405F20, InvenSlot, vfunc_13, 2856, 0x77317826);
 // @0x141406a60
 int InvenSlot::vfunc_14()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10());
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
     if (!spItem)
         return 0;
     UIInventoryDialog* pInventory = FUN_1405344f0(0x4e2d);
@@ -1149,7 +1149,7 @@ int InvenSlot::vfunc_14()
     }
     case 4:
     {
-        MS2Ptr<CItem> spCur = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10());
+        MS2Ptr<CItem> spCur = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
         if (spCur.get() != 0)
             FUN_141405a60(spCur.get(), 0);
         break;
@@ -1159,13 +1159,13 @@ int InvenSlot::vfunc_14()
         int bCodi = 0;
         if (spItem->FUN_1405258b0() != 0)
             bCodi = 1;
-        DAT_143ab2a90.FUN_140a621c0(FUN_141405a10(), 0, bCodi);
+        DAT_143ab2a90.FUN_140a621c0(GetItemUid(), 0, bCodi);
         break;
     }
     case 6:
     {
         int nSlot = FUN_1414056b0(spItem);
-        DAT_143ab2a90.FUN_140a621c0(FUN_141405a10(), 0, nSlot);
+        DAT_143ab2a90.FUN_140a621c0(GetItemUid(), 0, nSlot);
         break;
     }
     case 7:
@@ -1337,10 +1337,10 @@ int InvenSlot::vfunc_18(void* p)
     {
         COutPacket packet(0x17, 0);
         packet.vfunc_o10_1(3);
-        packet.vfunc_o10_4(pInven->FUN_141405a10());
+        packet.vfunc_o10_4(pInven->GetItemUid());
         packet.vfunc_o10_2((short)m_nIndex);
         FUN_140710590(packet);
-        FUN_141404930(pInven->FUN_141405a10());
+        FUN_141404930(pInven->GetItemUid());
         return pInven->vfunc_10();
     }
     EquipSlot* pEquip = FUN_14120d560(pDrag);
@@ -1353,7 +1353,7 @@ int InvenSlot::vfunc_18(void* p)
             if (spMine.get() != 0
                 && spMine->FUN_140527840()->FUN_14053eba0()->FUN_14054b450(spWorn->FUN_140527a20()))
             {
-                DAT_143ab2a90.FUN_140a62270(spMine.get(), spWorn->FUN_140527a20(), pEquip->FUN_14120d190(), 0);
+                DAT_143ab2a90.FUN_140a62270(spMine.get(), spWorn->FUN_140527a20(), pEquip->GetKind(), 0);
             }
             else if (IS_INVENTORY_VIEW.FUN_140a65b70() == DAT_143ab2a90.FUN_140a617f0(spWorn))
             {
@@ -1410,7 +1410,7 @@ int InvenSlot::vfunc_18(void* p)
                 int nKind = spMine->FUN_140527840()->FUN_14053e900();
                 if (nKind == spGem->FUN_140527840()->FUN_14053e900())
                 {
-                    if (pGem->FUN_14126d930() == nKind)
+                    if (pGem->GetGemType() == nKind)
                         FUN_141271960(spMine, spGem->FUN_140526b50(), 0);
                 }
                 else
@@ -1485,7 +1485,7 @@ MS2_REPLACE_METHOD(0x141407C80, InvenSlot, vfunc_18, 4021, 0xF695C1A1);
 // @0x141408c50
 MS2Ptr<CItem> InvenSlot::vfunc_25()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10());
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
     return spItem;
 }
 MS2_REPLACE_METHOD(0x141408C50, InvenSlot, vfunc_25, 108, 0xBDCB37C8);
@@ -1538,7 +1538,7 @@ MS2_REPLACE_METHOD(0x141409060, InvenSlot, FUN_141409060, 86, 0x7F94C302);
 // @0x1414090c0
 int InvenSlot::FUN_1414090c0()
 {
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10());
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(GetItemUid());
     if (!spItem)
         return 0;
     return FUN_141409150(spItem);
@@ -1774,7 +1774,7 @@ int InvenSlot::vfunc_0(void* p)
     if (FUN_1403ed2b0()->FUN_141adcb40() != 0 && spItem->FUN_140527840()->FUN_14053d510())
     {
         MS2Ptr<CEquipItem> spEquip = static_cast<Unk_IsEquipView*>(pPC)->FUN_141655e10(4);
-        bool bDagger = spEquip.get() != 0 && spEquip->FUN_1411dc7a0() == spWorn.get();
+        bool bDagger = spEquip.get() != 0 && spEquip->GetItem() == spWorn.get();
         if (bDagger)
             FUN_141276180(s_strChangeDagger, CString(""));
     }
@@ -1967,7 +1967,7 @@ int InvenSlot::FUN_14140be60(CItem* pItem)
         bAll = false;
     if (!bAll && pItem->FUN_140525c60() == 0)
     {
-        FUN_14140cb90(FUN_141405a10(), FUN_141405980(), pItem->FUN_140526c50(), pItem->FUN_140526c50(),
+        FUN_14140cb90(GetItemUid(), FUN_141405980(), pItem->FUN_140526c50(), pItem->FUN_140526c50(),
             pItem->FUN_140527670(), pItem->FUN_140527b10());
         return 1;
     }
@@ -2437,7 +2437,7 @@ void InventorySlotBag::vfunc_2(void* p)
         InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50()));
         if (pSlot != 0)
         {
-            pSlot->FUN_141405a30(static_cast<CItem*>(p)->FUN_140526a50());
+            pSlot->SetItemUid(static_cast<CItem*>(p)->FUN_140526a50());
             pSlot->vfunc_10();
         }
     }
@@ -2467,7 +2467,7 @@ void InventorySlotBag::vfunc_4(void* p, int n)
         InvenSlot* pSlot = FUN_140a50b50(FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50()));
         if (pSlot != 0)
         {
-            pSlot->FUN_141405a30(static_cast<CItem*>(p)->FUN_140526a50());
+            pSlot->SetItemUid(static_cast<CItem*>(p)->FUN_140526a50());
             pSlot->vfunc_10();
         }
     }
@@ -2489,7 +2489,7 @@ void InventorySlotBag::vfunc_5(void* p, int n)
             MS2Ptr<CItem> spCur = DAT_143ab2a90.FUN_140a5d680(static_cast<CItem*>(p)->FUN_140526a50());
             if (!(spCur == 0) && spCur->FUN_140526b50() == static_cast<CItem*>(p)->FUN_140526b50())
             {
-                pSlot->FUN_141405a30(static_cast<CItem*>(p)->FUN_140526a50());
+                pSlot->SetItemUid(static_cast<CItem*>(p)->FUN_140526a50());
                 pSlot->vfunc_10();
             }
         }

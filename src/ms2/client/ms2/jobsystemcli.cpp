@@ -63,7 +63,7 @@ JobSystemCli::JobSystemCli()
 }
 
 // @0x140a6d8e0
-void JobSystemCli::FUN_140a6d8e0(PCBase* pOwner)
+void JobSystemCli::SetOwner(PCBase* pOwner)
 {
     m_pOwner = pOwner;
 }

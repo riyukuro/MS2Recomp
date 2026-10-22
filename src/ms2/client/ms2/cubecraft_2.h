@@ -28,7 +28,7 @@ public:
     Unk_PCCubeCraft(PC* pOwner, int nMode, CubeItemInfo* pInfo);    // 0x1410a8550
     ~Unk_PCCubeCraft();                                                 // 0x1410a8880
     void SendRequestCubeMode0(int nValue);                                     // send the build-state packet (0x37, 0, nValue)
-    int FUN_1410a8a90();                                                // the mode (0 build, 1 inventory edit, 2 move)
+    int GetMode();                                                // the mode (0 build, 1 inventory edit, 2 move)
     int FUN_1410a8ab0();                                                // mode == 2
     void FUN_1410a8af0(bool bEnable);                                   // enter / leave the build mode
     void FUN_1410a92c0();                                               // create the placement guide (NIF)
@@ -46,7 +46,7 @@ public:
     void FUN_1410aa380(bool bVisible);                                  // show / hide the guide
     bool FUN_1410aa420();                                               // the guide is idle
     void FUN_1410aa4a0(bool bVisible);                                  // show / hide the second guide
-    Unk_StreamPoint FUN_1410aa520();                                    // the cell position
+    Unk_StreamPoint GetPtCell();                                    // the cell position
     void FUN_1410aa550(int nMode);                                      // set the mode
     void FUN_1410aa590();                                               // arm the move timer (200 ms)
     void FUN_1410aa5c0(CubeItemInfo* pInfo);                            // set the item (or clear it)
@@ -60,7 +60,7 @@ public:
     void FUN_1410ac540();                                               // request the cube's message
     void FUN_1410ac960();                                               // second guide vfunc_1
     void FUN_1410ac9b0();                                               // per-frame update
-    char FUN_1410ad5f0();                                               // m_bPending
+    char GetPending();                                               // m_bPending
     int FUN_1410ad610();                                                // the item id
     __int64 FUN_1410ad640();                                            // the item instance id
     CubeItemInfo* FUN_1410ad670();                                      // the item

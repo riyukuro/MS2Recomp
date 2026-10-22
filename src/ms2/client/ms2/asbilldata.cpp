@@ -369,7 +369,7 @@ MS2_REPLACE_METHOD(0x1409AC2C0, ASBillData, FUN_1409ac2c0, 141, 0x06C8075C);
 // @0x1409ac360
 void ASMeratMarketBuyBillData::FUN_1409ac360(MS2Ptr<CMeratMarketProduct> spProduct, int nOption, int nCurrency)
 {
-    FUN_1409b03f0(spProduct);
+    SetProduct(spProduct);
     if (spProduct == 0)
         return;
     FUN_1407cbb20("productOID", spProduct->m_key.FUN_1409b0470());
@@ -447,7 +447,7 @@ MS2_REPLACE_METHOD(0x1409AC6F0, ASMeratMarketBuyBillData, FUN_1409ac6f0, 769, 0x
 // @0x1409aca00
 void ASMeratMarketBuyBillData::FUN_1409aca00(CMeratMarketPremiumProduct* pOption, MS2Ptr<CMeratMarketProduct> spProduct)
 {
-    FUN_1409b03f0(spProduct);
+    SetProduct(spProduct);
     FUN_1409aba80(pOption->GetName());
     CStringW strOption = FUN_140ebd870(pOption);
     FUN_1407cbb20("selectedOption", strOption);
@@ -706,7 +706,7 @@ void ASMeratMarketBuyBillData::FUN_1409b03d0(unsigned __int64 n)
 }
 
 // @0x1409b03f0
-void ASMeratMarketBuyBillData::FUN_1409b03f0(MS2Ptr<CMeratMarketProduct> spProduct)
+void ASMeratMarketBuyBillData::SetProduct(MS2Ptr<CMeratMarketProduct> spProduct)
 {
     m_spProduct = spProduct;
 }

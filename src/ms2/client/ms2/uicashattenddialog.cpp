@@ -182,7 +182,7 @@ class GameEventCashAttendCli : public GameEventCashAttend { public:
     unsigned FUN_140ce3e90();                   // days attended
     int FUN_140ce3ed0();                        // usable points
     CStringW FUN_140ce3f10();                   // event name
-    CStringW FUN_140ce3f70();                   // description (tooltip)
+    CStringW GetDesc();                   // description (tooltip)
     MS2Ptr<Unk_CadDay> FUN_140ce3fc0(unsigned nDay);
     CMsTime FUN_140ce4050();                    // begin
     CMsTime FUN_140ce4090();                    // end
@@ -505,7 +505,7 @@ void UICashAttendDialog::FUN_140bc44b0()
         m_eventButtons[i]->FUN_1422cdfb0(events[i]->FUN_140ce3f10());
         bool bOpened=FUN_140931510()->FUN_140d9f530(events[i]->FUN_1402e1d00());
         FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!bOpened);
-        m_eventButtons[i]->FUN_1422c7b40(events[i]->FUN_140ce3f70());
+        m_eventButtons[i]->FUN_1422c7b40(events[i]->GetDesc());
         m_eventButtons[i]->FUN_1422ce090(events[i]==m_selected.get());
         MS2Ptr<ASItemSlot> spSlot;
         if(m_eventButtons[i]->FUN_140bc7100("m_slot",spSlot).get()) {

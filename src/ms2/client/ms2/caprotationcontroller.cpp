@@ -92,7 +92,7 @@ class CEquipItem : public CPtred
 {
 public:
     Unk_CapItem* FUN_1411dc7f0();                               // the item
-    MS2Ptr<CItem> FUN_1411dc7a0();                              // the item object holding the model record
+    MS2Ptr<CItem> GetItem();                              // the item object holding the model record
     void FUN_1411dca30(int nSlot, CAtlArray<CString>& aParts);  // attach part names of an equip slot
     MS2Ptr<Unk_PickTarget> FUN_1411dc950(const CString& strPart);   // the model of one part
 };
@@ -361,7 +361,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
         if (pScene != 0)
         {
             Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(
-                m_spEquipItem->FUN_1411dc7a0()->FUN_140527870());
+                m_spEquipItem->GetItem()->FUN_140527870());
             if (pData != 0)
             {
                 Unk_CapItem* pItem = m_spEquipItem->FUN_1411dc7f0();
@@ -538,7 +538,7 @@ Unk_StreamPoint CCapRotationController::GetPartEuler()
         return DAT_143b01a60;
     if (spItem->FUN_1411dc7f0()->FUN_14053c620() != 0xd)
         return DAT_143b01a60;
-    Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->FUN_1411dc7a0()->FUN_140527870());
+    Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
     if (pData == 0)
         return DAT_143b01a60;
     return pData->m_kEuler;
@@ -553,7 +553,7 @@ void CCapRotationController::SetPartEuler(Unk_StreamPoint kEuler)
     {
         if (spItem->FUN_1411dc7f0()->FUN_14053c620() == 0xd)
         {
-            Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->FUN_1411dc7a0()->FUN_140527870());
+            Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
             if (pData != 0)
             {
                 Unk_StreamPoint kCur = pData->m_kEuler;

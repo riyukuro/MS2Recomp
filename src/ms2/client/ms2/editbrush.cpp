@@ -103,19 +103,19 @@ void EditBrush::vfunc_2()
 }
 
 // @0x141197470
-void EditBrush::FUN_141197470(const NiColorA& kColor)
+void EditBrush::SetKColor(const NiColorA& kColor)
 {
     m_kColor = kColor;
 }
 
 // @0x1411974a0
-void EditBrush::FUN_1411974a0(Unk_StreamPoint pt)
+void EditBrush::SetPtPos(Unk_StreamPoint pt)
 {
     m_ptPos = pt;
 }
 
 // @0x1411974d0
-Unk_StreamPoint EditBrush::FUN_1411974d0()
+Unk_StreamPoint EditBrush::GetPtPos()
 {
     return m_ptPos;
 }
@@ -155,7 +155,7 @@ void PaintBrush::vfunc_2()
 void PaintBrush::vfunc_3()
 {
     if (m_spMesh)
-        m_spMesh->RenderImmediate(FUN_140994450());
+        m_spMesh->RenderImmediate(GetNiRenderer());
 }
 
 // The service the stamps go to.
@@ -254,7 +254,7 @@ void NoiseBrush::vfunc_2()
 void NoiseBrush::vfunc_3()
 {
     if (m_spMesh)
-        m_spMesh->RenderImmediate(FUN_140994450());
+        m_spMesh->RenderImmediate(GetNiRenderer());
 }
 
 // A random value in [fMin, fMax] (rand() / 32767).

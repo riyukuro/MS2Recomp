@@ -223,8 +223,8 @@ CGroupChat::CGroupChat() : m_oid(0) {}
 // @0x14137b200
 CGroupChat::~CGroupChat() { m_members.RemoveAll(); }
 // @0x14137b260
-unsigned CGroupChat::FUN_14137b260() const { return m_oid; }
-MS2_REPLACE_METHOD(0x14137B260, CGroupChat, FUN_14137b260, 14, 0x72E52537);
+unsigned CGroupChat::GetOid() const { return m_oid; }
+MS2_REPLACE_METHOD(0x14137B260, CGroupChat, GetOid, 14, 0x72E52537);
 // @0x14137b280
 int CGroupChat::FUN_14137b280(CInPacket* packet) {
     m_oid = packet->vfunc_o8_3();
@@ -436,7 +436,7 @@ void CGroupChatManager::FUN_14137e1c0() {
                 CStringW title(L"[Group Chat]");
                 FUN_1412751b0(title, 0x14);
             }
-            line.Format(L"oid = %d", chat->FUN_14137b260());
+            line.Format(L"oid = %d", chat->GetOid());
             FUN_1412751b0(line, 0x14);
             unsigned joined = chat->FUN_14137bb00();
             line.Format(L"member count = %d (%d)", chat->FUN_14137bad0(), joined);
@@ -464,7 +464,7 @@ void CGroupChatManager::FUN_14137e4a0(Unk_ChatPtrChat chat) {
     if (Unk_LockGuard guard = m_lock) {
         __assume(0);
     } else {
-        unsigned oid = chat->FUN_14137b260();
+        unsigned oid = chat->GetOid();
         if (FUN_14137e630(oid) == 0)
             m_chats.SetAt(oid, chat);
     }
@@ -500,7 +500,7 @@ void CGroupChatManager::FUN_14137e6f0(__int64 characterId, ATL::CAtlList<unsigne
             if (chat == 0)
                 continue;
             if (chat->FUN_14137b410(characterId))
-                oids.AddTail(chat->FUN_14137b260());
+                oids.AddTail(chat->GetOid());
         }
     }
 }

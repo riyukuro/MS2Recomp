@@ -701,3 +701,238 @@
 141b44910	UIUGCItemEditDialog::FUN_141b44910	UIUGCItemEditDialog::OnClickAddImage	certain	certain: only call of the "onClickAddImage" branch of the Scaleform method dispatcher UIUGCItemEditDialog::vfunc_28 (_stricmp on the ActionScript method name)	nam1	2026-10-22
 1422f1150	GFxMovieTooltip::FUN_1422f1150	GFxMovieTooltip::CreateTooltip	certain	certain: only call of the "createTooltip" branch of the Scaleform method dispatcher GFxMovieTooltip::vfunc_3 (_stricmp on the ActionScript method name)	nam1	2026-10-22
 1422f12b0	GFxMovieTooltip::FUN_1422f12b0	GFxMovieTooltip::DestroyTooltip	certain	certain: only call of the "destroyTooltip" branch of the Scaleform method dispatcher GFxMovieTooltip::vfunc_3 (+1 more) (_stricmp on the ActionScript method name)	nam1	2026-10-22
+1401bd470	FUN_1401bd470	LoadItemNames	certain	certain: body names the data file String/<lang>/itemName.xml	nam1	2026-10-22
+1401df860	CCharacterAbilityTable::FUN_1401df860	CCharacterAbilityTable::LoadCharacterAbilityCategory	certain	certain: body names the data file Table/CharacterAbilityCategory.xml	nam1	2026-10-22
+1401dfd40	CCharacterAbilityTable::FUN_1401dfd40	CCharacterAbilityTable::LoadCharacterAbility	certain	certain: body names the data file Table/CharacterAbility.xml	nam1	2026-10-22
+1402113f0	CClubDataTable::FUN_1402113f0	CClubDataTable::LoadClubBuff	certain	certain: body names the data file Table/clubBuff.xml	nam1	2026-10-22
+14036cd50	CFeatureManager::FUN_14036cd50	CFeatureManager::LoadFeatureSetting	certain	certain: body names the data file Table/feature_setting.xml	nam1	2026-10-22
+14036d040	CFeatureManager::FUN_14036d040	CFeatureManager::LoadFeature	certain	certain: body names the data file Table/feature.xml	nam1	2026-10-22
+140373340	FUN_140373340	LoadMapSpawnTag	certain	certain: body names the data file table/mapSpawnTag.xml	nam1	2026-10-22
+140373d50	CFieldData::FUN_140373d50	CFieldData::LoadFieldData	certain	certain: body names the data file Table/fieldData.xml	nam1	2026-10-22
+1404c1400	CGloabalFactor::FUN_1404c1400	CGloabalFactor::LoadMultiControl	certain	certain: body names the data file Table/multicontrol.xml	nam1	2026-10-22
+1404d5a50	CGuildXmlData::FUN_1404d5a50	CGuildXmlData::LoadGuildProperty	certain	certain: body names the data file Table/GuildProperty.xml	nam1	2026-10-22
+1404d5d20	CGuildXmlData::FUN_1404d5d20	CGuildXmlData::LoadGuildBuff	certain	certain: body names the data file Table/GuildBuff.xml	nam1	2026-10-22
+1404d5fa0	CGuildXmlData::FUN_1404d5fa0	CGuildXmlData::LoadGuildEvent	certain	certain: body names the data file Table/GuildEvent.xml	nam1	2026-10-22
+1404d6210	CGuildXmlData::FUN_1404d6210	CGuildXmlData::LoadGuildHouse	certain	certain: body names the data file Table/GuildHouse.xml	nam1	2026-10-22
+1404d64c0	CGuildXmlData::FUN_1404d64c0	CGuildXmlData::LoadGuildNpc	certain	certain: body names the data file Table/GuildNpc.xml	nam1	2026-10-22
+1404d67e0	CGuildXmlData::FUN_1404d67e0	CGuildXmlData::LoadGuildRaid	certain	certain: body names the data file Table/GuildRaid.xml	nam1	2026-10-22
+1404d6ac0	CGuildXmlData::FUN_1404d6ac0	CGuildXmlData::LoadGuildQuestRewardFactor	certain	certain: body names the data file Table/GuildQuestRewardFactor.xml	nam1	2026-10-22
+1404d6ec0	CGuildXmlData::FUN_1404d6ec0	CGuildXmlData::LoadGuildContribution	certain	certain: body names the data file Table/GuildContribution.xml	nam1	2026-10-22
+14050a830	HideAndSeek::FUN_14050a830	HideAndSeek::LoadHideAndSeek	certain	certain: body names the data file Table/Server/hideAndSeek.xml	nam1	2026-10-22
+140591630	CItemEnchantTransformTable::FUN_140591630	CItemEnchantTransformTable::LoadItemEnchantTransform	certain	certain: body names the data file Table/ItemEnchantTransform.xml	nam1	2026-10-22
+1405bfc70	CItemMergeOptionTable::FUN_1405bfc70	CItemMergeOptionTable::LoadItemMergeOptionBase	certain	certain: body names the data file Table/itemMergeOptionBase.xml	nam1	2026-10-22
+1405f8310	CItemOptionTable::FUN_1405f8310	CItemOptionTable::LoadItemOptionConstant	certain	certain: body names the data file Table/ItemOptionConstant.xml	nam1	2026-10-22
+1405f8540	CItemOptionTable::FUN_1405f8540	CItemOptionTable::LoadItemOptionRandom	certain	certain: body names the data file Table/ItemOptionRandom.xml	nam1	2026-10-22
+1405f8780	CItemOptionTable::FUN_1405f8780	CItemOptionTable::LoadItemOptionVariation	certain	certain: body names the data file Table/itemOptionVariation.xml	nam1	2026-10-22
+14064f390	CLocaleLanguage::FUN_14064f390	CLocaleLanguage::LoadGameOptionLocale	certain	certain: body names the data file Table/gameOptionLocale.xml	nam1	2026-10-22
+1406df1f0	FUN_1406df1f0	LoadShopMeratGroup	certain	certain: body names the data file Table/Server/shop_meratGroup.xml	nam1	2026-10-22
+1406e55b0	FUN_1406e55b0	LoadShopBeautyCoupon	certain	certain: body names the data file Table/shop_beautyCoupon.xml	nam1	2026-10-22
+1406f9dd0	CFieldMetaTable::FUN_1406f9dd0	CFieldMetaTable::LoadFieldMetaData	certain	certain: body names the data file Table/FieldMetaData.xml	nam1	2026-10-22
+14071a840	FUN_14071a840	GetItemPresetPath	certain	certain: body names the data file ItemPreset/%s%s.xml path builder	nam1	2026-10-22
+14071a940	FUN_14071a940	GetItemModelPath	certain	certain: body names the data file ItemModel/{0:03d}.xml path builder	nam1	2026-10-22
+14071aa00	FUN_14071aa00	GetNpcPath	certain	certain: body names the data file npc/%02d/%02d/%08d.xml path builder	nam1	2026-10-22
+14071ab10	FUN_14071ab10	GetPetPath	certain	certain: body names the data file pet/%08d.xml path builder	nam1	2026-10-22
+14071ace0	FUN_14071ace0	GetAniKeyInfoPath	certain	certain: body names the data file AniKeyInfo/<name>.xml path builder	nam1	2026-10-22
+14074c320	QuestDataTable::FUN_14074c320	QuestDataTable::LoadQuestData	certain	certain: body names the data file QuestData/QuestData.xml	nam1	2026-10-22
+140750120	QuestDataTable::FUN_140750120	QuestDataTable::LoadQuestGroupTable	certain	certain: body names the data file Table/QuestGroupTable.xml	nam1	2026-10-22
+140784a20	FUN_140784a20	LoadRiding	certain	certain: body names the data file Riding/%08d.xml	nam1	2026-10-22
+140784de0	FUN_140784de0	LoadRidingEffectDummy	certain	certain: body names the data file Riding/EffectDummy/%08d.xml	nam1	2026-10-22
+14080bc00	FUN_14080bc00	LoadItemOptionSkillTier	certain	certain: body names the data file Table/itemOptionSkillTier.xml	nam1	2026-10-22
+14081ccd0	FUN_14081ccd0	LoadSpecialAbilityStringTable	certain	certain: body names the data file Table/specialAbilityStringTable.xml	nam1	2026-10-22
+14081d060	FUN_14081d060	LoadStringSpecialAbilityName	certain	certain: body names the data file String/stringSpecialAbilityName.xml	nam1	2026-10-22
+140851750	FUN_140851750	LoadSystemMailContent	certain	certain: body names the data file String/systemMailContent.xml	nam1	2026-10-22
+140855540	FUN_140855540	LoadTalkScripts	certain	certain: body names the data file Script/Quest/questscript*.xml + Script/Npc/npcscript*.xml	nam1	2026-10-22
+1408ad500	FUN_1408ad500	LoadUGCMap	certain	certain: body names the data file UGCMap/%08d.xml	nam1	2026-10-22
+1408b9cb0	FUN_1408b9cb0	LoadExportedUGCMap	certain	certain: body names the data file ExportedUGCMap/%s.xml	nam1	2026-10-22
+140ae8540	FUN_140ae8540	LoadTestCamerValue	certain	certain: body names the data file table/TestCamerValue.xml	nam1	2026-10-22
+140aebb30	CameraMgr::FUN_140aebb30	CameraMgr::LoadMapCamera	certain	certain: body names the data file Camera/Map/%08d.xml <defaultCamera>	nam1	2026-10-22
+140aec0e0	CameraMgr::FUN_140aec0e0	CameraMgr::LoadMapLocalTargetCamera	certain	certain: body names the data file Camera/Map/%08d.xml <localTargetCamera>	nam1	2026-10-22
+140b9e100	CUGCMapSetItemTable::FUN_140b9e100	CUGCMapSetItemTable::LoadUGCMapSetItem	certain	certain: body names the data file Table/UGCMapSetItem.xml	nam1	2026-10-22
+140e2e1d0	UIGameRankingDialog::FUN_140e2e1d0	UIGameRankingDialog::LoadGameRankingCategory	certain	certain: body names the data file Table/gameRankingCategory.xml	nam1	2026-10-22
+140ea2120	UILearningQuestDialog::FUN_140ea2120	UILearningQuestDialog::LoadLearningQuest	certain	certain: body names the data file learningQuestCharacter.xml + learningQuestAccount.xml (read)	nam1	2026-10-22
+140ea26e0	UILearningQuestDialog::FUN_140ea26e0	UILearningQuestDialog::SaveLearningQuest	certain	certain: body names the data file learningQuestCharacter.xml + learningQuestAccount.xml (write)	nam1	2026-10-22
+140f2ef10	UICharacterCreateSelectDialog::FUN_140f2ef10	UICharacterCreateSelectDialog::LoadCharacterCreateSelect	certain	certain: body names the data file Table/characterCreateSelect.xml	nam1	2026-10-22
+1410d3450	CubeMapInformationService::FUN_1410d3450	CubeMapInformationService::ExportUGCMap	certain	certain: body names the data file ExportedUGCMap/{0}.xml (caller prints "UGCMap exported to ...")	nam1	2026-10-22
+14119fa60	EffectDataManager::FUN_14119fa60	EffectDataManager::LoadEffectFiles	certain	certain: body names the data file enumerates ./Data/Xml/Effect/*.xml	nam1	2026-10-22
+141241b60	CGameOption::FUN_141241b60	CGameOption::GetOptionFilePath	certain	certain: body names the data file GameOption/AccountOption/CharacterOption (+Default*) .xml	nam1	2026-10-22
+141241f30	CGameOption::FUN_141241f30	CGameOption::LoadGameOption	certain	certain: body names the data file GameOption.xml ("Failed to read GameOption.xml")	nam1	2026-10-22
+141242570	CGameOption::FUN_141242570	CGameOption::LoadAccountOption	certain	certain: body names the data file AccountOption.xml ("Failed to read AccountOption.xml")	nam1	2026-10-22
+141242990	CGameOption::FUN_141242990	CGameOption::LoadCharacterOption	certain	certain: body names the data file CharacterOption.xml ("Failed to read CharacterOption.xml")	nam1	2026-10-22
+14142f8b0	CKeyTable::FUN_14142f8b0	CKeyTable::SaveKeySetting	certain	certain: body names the data file keySetting_{0}.xml (write)	nam1	2026-10-22
+14142fc10	CKeyTable::FUN_14142fc10	CKeyTable::LoadKeySetting	certain	certain: body names the data file keySetting_{0}.xml (read)	nam1	2026-10-22
+14142fff0	CKeyTable::FUN_14142fff0	CKeyTable::LoadKeySettingTable	certain	certain: body names the data file Table/keySetting.xml	nam1	2026-10-22
+14145c4d0	FUN_14145c4d0	LoadMagicPath	certain	certain: body names the data file table/magicPath.xml	nam1	2026-10-22
+14161c490	COptimizer::FUN_14161c490	COptimizer::LoadOptimization	certain	certain: body names the data file Optimization.xml	nam1	2026-10-22
+141628640	FUN_141628640	LoadUsmSubtitleText	certain	certain: body names the data file String/usmSubtitleText.xml	nam1	2026-10-22
+141628700	FUN_141628700	LoadStringMovie	certain	certain: body names the data file String/stringMovie.xml	nam1	2026-10-22
+1416287c0	FUN_1416287c0	LoadFlashDebug	certain	certain: body names the data file flashDebug.xml	nam1	2026-10-22
+141628880	FUN_141628880	LoadAlignWidget	certain	certain: body names the data file Table/alignWidget.xml	nam1	2026-10-22
+1416e4340	FUN_1416e4340	LoadQuestDescription	certain	certain: body names the data file String/QuestDescription_final.xml	nam1	2026-10-22
+1416e79e0	FUN_1416e79e0	LoadChapterDescriptions	certain	certain: body names the data file chapterdescription*.xml	nam1	2026-10-22
+141811c90	CStringTable::FUN_141811c90	CStringTable::GetItemDescription	certain	certain: body names the data file korItemDescription.xml lookup by item id	nam1	2026-10-22
+141811e50	CStringTable::FUN_141811e50	CStringTable::GetSkillDescription	certain	certain: body names the data file stringSkillDescription.xml lookup by skill id	nam1	2026-10-22
+1418128c0	CStringTable::FUN_1418128c0	CStringTable::GetSetItemName	certain	certain: body names the data file SetItemName.xml lookup	nam1	2026-10-22
+141812a80	CStringTable::FUN_141812a80	CStringTable::GetUGCMapSetItemName	certain	certain: body names the data file UGCMapSetItemName.xml lookup	nam1	2026-10-22
+141815de0	CGFxLanguage::FUN_141815de0	CGFxLanguage::LoadKorFlash	certain	certain: body names the data file String/korFlash.xml	nam1	2026-10-22
+1418de2b0	UICameraEditDialog::FUN_1418de2b0	UICameraEditDialog::LoadCustomizeCamera	certain	certain: body names the data file camera/customize.xml	nam1	2026-10-22
+141995880	UIIntroMovie::FUN_141995880	UIIntroMovie::LoadIntroMovie	certain	certain: body names the data file Table/introMovie.xml	nam1	2026-10-22
+1419db630	UIJobChangeDialog::FUN_1419db630	UIJobChangeDialog::LoadJobPreview	certain	certain: body names the data file Table/jobPreview.xml	nam1	2026-10-22
+1419db970	UIJobChangeDialog::FUN_1419db970	UIJobChangeDialog::LoadJobDescription	certain	certain: body names the data file String/korJobDescription.xml	nam1	2026-10-22
+141a0d930	UIMessenger::FUN_141a0d930	UIMessenger::LoadDebugChatCommand	certain	certain: body names the data file DebugChatCommand.xml	nam1	2026-10-22
+141a54940	UIMinimapEditDialog::FUN_141a54940	UIMinimapEditDialog::GetXBlockPath	certain	certain: body names the data file ./data/xml/MapXblock/{0}.xml	nam1	2026-10-22
+141a6b2e0	UINpcCreateDialog::FUN_141a6b2e0	UINpcCreateDialog::ReadNpcFromFile	certain	certain: body names the data file log string L"ReadNpcFromFile" / L"End ReadNpcFromFile"	nam1	2026-10-22
+141a6ec20	UINpcPreviewDialog::FUN_141a6ec20	UINpcPreviewDialog::LoadNpcName	certain	certain: body names the data file String/npcName.xml	nam1	2026-10-22
+141b2bbf0	UITriggerEditorDialog::FUN_141b2bbf0	UITriggerEditorDialog::OpenTriggerFile	certain	certain: body names the data file open-file dialog ./Data/Xml/Trigger/ *.xml	nam1	2026-10-22
+141b2d0d0	UITriggerEditorDialog::FUN_141b2d0d0	UITriggerEditorDialog::SaveTriggerFile	certain	certain: body names the data file save-file dialog ./Data/Xml/Trigger/ *.xml	nam1	2026-10-22
+1422b1820	GFxManager::FUN_1422b1820	GFxManager::InitIME	certain	certain: body names the data file GFxIMEManagerWin32 Init "ime.xml"	nam1	2026-10-22
+14144e400	CLoadingDescriptionTable::FUN_14144e400	CLoadingDescriptionTable::LoadLoadingDescription	certain	certain: body names the data file String/loadingDescription.xml	nam1	2026-10-22
+141810f70	CStringTable::FUN_141810f70	CStringTable::Load	certain	certain: body loads the string table index Table/string.xml and every String/<name>.xml it lists (v2525 also names it CStringTable::Load)	nam1	2026-10-22
+140953530	Unk_ActionKeyManager::FUN_140953530	Unk_ActionKeyManager::GetCur	descriptive	descriptive (high): getter: body returns m_nCur	nam1	2026-10-22
+140953690	Unk_ActionKeyManager::FUN_140953690	Unk_ActionKeyManager::IsEnabled	descriptive	descriptive (high): getter: body returns m_bEnabled	nam1	2026-10-22
+1409536b0	Unk_ActionKeyManager::FUN_1409536b0	Unk_ActionKeyManager::SetEnabled	descriptive	descriptive (high): setter: body stores the argument in m_bEnabled	nam1	2026-10-22
+140966e00	CInteractObject::FUN_140966e00	CInteractObject::GetRow	descriptive	descriptive (high): getter: body returns m_spRow	nam1	2026-10-22
+140966e50	CReactor::FUN_140966e50	CReactor::GetData	descriptive	descriptive (high): getter: body returns m_spData	nam1	2026-10-22
+140967060	CInteractObject::FUN_140967060	CInteractObject::GetName	descriptive	descriptive (high): getter: body returns m_strName	nam1	2026-10-22
+140967110	CInteractObject::FUN_140967110	CInteractObject::GetRowId	descriptive	descriptive (high): getter: body returns m_nRowId	nam1	2026-10-22
+1409673c0	CInteractObject::FUN_1409673c0	CInteractObject::GetPos	descriptive	descriptive (high): getter: body returns m_vPos	nam1	2026-10-22
+14096d260	AdditionalCli::FUN_14096d260	AdditionalCli::GetKey	descriptive	descriptive (high): getter: body returns m_nKey	nam1	2026-10-22
+14096d280	AdditionalCli::FUN_14096d280	AdditionalCli::GetOwner	descriptive	descriptive (high): getter: body returns m_pOwner	nam1	2026-10-22
+14096d2c0	AdditionalCli::FUN_14096d2c0	AdditionalCli::GetLevel	descriptive	descriptive (high): getter: body returns m_nLevel	nam1	2026-10-22
+140970700	AdditionalCliList::FUN_140970700	AdditionalCliList::GetAlpha	descriptive	descriptive (high): getter: body returns m_fAlpha	nam1	2026-10-22
+140970a20	AdditionalCliList::FUN_140970a20	AdditionalCliList::IsPvpOnOff	descriptive	descriptive (high): getter: body returns m_bPvpOnOff	nam1	2026-10-22
+140970ad0	AdditionalCliList::FUN_140970ad0	AdditionalCliList::IsDisableRevivalHere	descriptive	descriptive (high): getter: body returns m_bDisableRevivalHere	nam1	2026-10-22
+140970af0	AdditionalCliList::FUN_140970af0	AdditionalCliList::GetInvincible	descriptive	descriptive (high): getter: body returns m_nInvincible	nam1	2026-10-22
+140970b10	AdditionalCliList::FUN_140970b10	AdditionalCliList::GetForceApplyTarget	descriptive	descriptive (high): getter: body returns m_nForceApplyTarget	nam1	2026-10-22
+140970d70	AdditionalCliList::FUN_140970d70	AdditionalCliList::IsInfinitySP	descriptive	descriptive (high): getter: body returns m_bInfinitySP	nam1	2026-10-22
+140972690	AdditionalCliList::FUN_140972690	AdditionalCliList::GetShield	descriptive	descriptive (high): getter: body returns m_spShield	nam1	2026-10-22
+140994450	FUN_140994450	GetNiRenderer	descriptive	descriptive (medium): singleton: returns the NiRenderer instance pointer DAT_143afa648	nam1	2026-10-22
+1409a8a80	FUN_1409a8a80	GetNiFogProperty	descriptive	descriptive (medium): singleton: returns the NiFogProperty instance pointer DAT_143afa7f0	nam1	2026-10-22
+1409ab320	CArcController::FUN_1409ab320	CArcController::IsRising	descriptive	descriptive (high): getter: body returns m_bRising	nam1	2026-10-22
+1409ab340	CArcController::FUN_1409ab340	CArcController::GetPosition	descriptive	descriptive (high): getter: body returns m_position	nam1	2026-10-22
+1409b03f0	ASMeratMarketBuyBillData::FUN_1409b03f0	ASMeratMarketBuyBillData::SetProduct	descriptive	descriptive (high): setter: body stores the argument in m_spProduct	nam1	2026-10-22
+1409bc480	ASMeratMarketProductBase::FUN_1409bc480	ASMeratMarketProductBase::SetIndex	descriptive	descriptive (high): setter: body stores the argument in m_nIndex	nam1	2026-10-22
+1409bc4f0	ASMeratMarketProductBase::FUN_1409bc4f0	ASMeratMarketProductBase::SetBanner	descriptive	descriptive (high): setter: body stores the argument in m_spBanner	nam1	2026-10-22
+1409bc680	ASMeratMarketProductBase::FUN_1409bc680	ASMeratMarketProductBase::GetIndex	descriptive	descriptive (high): getter: body returns m_nIndex	nam1	2026-10-22
+1409bc780	ASMeratMarketProductBase::FUN_1409bc780	ASMeratMarketProductBase::GetProductType	descriptive	descriptive (high): getter: body returns m_nProductType	nam1	2026-10-22
+1409f5040	AvatarPC::FUN_1409f5040	AvatarPC::SetListener	descriptive	descriptive (high): setter: body stores the argument in m_pListener	nam1	2026-10-22
+1409f5070	AvatarPC::FUN_1409f5070	AvatarPC::GetListener	descriptive	descriptive (high): getter: body returns m_pListener	nam1	2026-10-22
+1409f6280	AvatarPC::FUN_1409f6280	AvatarPC::SetType	descriptive	descriptive (high): setter: body stores the argument in m_nType	nam1	2026-10-22
+1409f62a0	AvatarPC::FUN_1409f62a0	AvatarPC::GetType	descriptive	descriptive (high): getter: body returns m_nType	nam1	2026-10-22
+1409f6540	AvatarPC::FUN_1409f6540	AvatarPC::SetEnabled	descriptive	descriptive (high): setter: body stores the argument in m_bEnabled	nam1	2026-10-22
+1409f6560	AvatarPC::FUN_1409f6560	AvatarPC::IsEnabled	descriptive	descriptive (high): getter: body returns m_bEnabled	nam1	2026-10-22
+1409f65a0	AvatarPC::FUN_1409f65a0	AvatarPC::IsFishing	descriptive	descriptive (high): getter: body returns m_bFishing	nam1	2026-10-22
+1409fa170	AvatarRidee::FUN_1409fa170	AvatarRidee::GetRow	descriptive	descriptive (high): getter: body returns m_spRow	nam1	2026-10-22
+140a02dd0	CBaseOption::FUN_140a02dd0	CBaseOption::IsEnabled	descriptive	descriptive (high): getter: body returns m_bEnabled	nam1	2026-10-22
+140a02df0	CBaseOption::FUN_140a02df0	CBaseOption::SetEnabled	descriptive	descriptive (high): setter: body stores the argument in m_bEnabled	nam1	2026-10-22
+140a02e10	CBaseOption::FUN_140a02e10	CBaseOption::GetType	descriptive	descriptive (high): getter: body returns m_nType	nam1	2026-10-22
+140a02e30	CBaseOption::FUN_140a02e30	CBaseOption::GetActive	descriptive	descriptive (high): getter: body returns m_nActive	nam1	2026-10-22
+140a32fb0	BoneRotateInterpolator::FUN_140a32fb0	BoneRotateInterpolator::SetKEye	descriptive	descriptive (high): setter: body stores the argument in m_kEye	nam1	2026-10-22
+140a32fe0	BoneRotateInterpolator::FUN_140a32fe0	BoneRotateInterpolator::SetKBone	descriptive	descriptive (high): setter: body stores the argument in m_kBone	nam1	2026-10-22
+140a33010	BoneRotateInterpolator::FUN_140a33010	BoneRotateInterpolator::SetKEuler	descriptive	descriptive (high): setter: body stores the argument in m_kEuler	nam1	2026-10-22
+140a33060	BoneRotateInterpolator::FUN_140a33060	BoneRotateInterpolator::SetYawBias	descriptive	descriptive (high): setter: body stores the argument in m_fYawBias	nam1	2026-10-22
+140a33090	BoneRotateInterpolator::FUN_140a33090	BoneRotateInterpolator::SetPitchBias	descriptive	descriptive (high): setter: body stores the argument in m_fPitchBias	nam1	2026-10-22
+140a330c0	BoneRotateInterpolator::FUN_140a330c0	BoneRotateInterpolator::SetSmooth	descriptive	descriptive (high): setter: body stores the argument in m_bSmooth	nam1	2026-10-22
+140a330e0	BoneRotateInterpolator::FUN_140a330e0	BoneRotateInterpolator::IsSmooth	descriptive	descriptive (high): getter: body returns m_bSmooth	nam1	2026-10-22
+140a357c0	CBoneRotateManager::FUN_140a357c0	CBoneRotateManager::GetCurrent	descriptive	descriptive (high): getter: body returns m_nCurrent	nam1	2026-10-22
+140a358e0	CBoneRotateManager::FUN_140a358e0	CBoneRotateManager::GetOwner	descriptive	descriptive (high): getter: body returns m_pOwner	nam1	2026-10-22
+140adde00	CBreakableObject::FUN_140adde00	CBreakableObject::SetName	descriptive	descriptive (high): setter: body stores the argument in m_strName	nam1	2026-10-22
+140adde50	CBreakableObject::FUN_140adde50	CBreakableObject::GetName	descriptive	descriptive (high): getter: body returns m_strName	nam1	2026-10-22
+140adea80	CBreakableObject::FUN_140adea80	CBreakableObject::GetState	descriptive	descriptive (high): getter: body returns m_nState	nam1	2026-10-22
+140adf330	CBreakableObject::FUN_140adf330	CBreakableObject::IsTombStone	descriptive	descriptive (high): getter: body returns m_bTombStone	nam1	2026-10-22
+140adf8e0	CBreakableObject::FUN_140adf8e0	CBreakableObject::GetPtPos	descriptive	descriptive (high): getter: body returns m_ptPos	nam1	2026-10-22
+140adf980	CBreakableObject::FUN_140adf980	CBreakableObject::GetEntity	descriptive	descriptive (high): getter: body returns m_spEntity	nam1	2026-10-22
+140ae0150	CBreakableObject::FUN_140ae0150	CBreakableObject::GetPtVelocity	descriptive	descriptive (high): getter: body returns m_ptVelocity	nam1	2026-10-22
+140ae0660	CBreakableObject::FUN_140ae0660	CBreakableObject::GetPtSize	descriptive	descriptive (high): getter: body returns m_ptSize	nam1	2026-10-22
+141084cb0	CloneCube::FUN_141084cb0	CloneCube::SetItem	descriptive	descriptive (high): setter: body stores the argument in m_spItem	nam1	2026-10-22
+141084d60	CloneCube::FUN_141084d60	CloneCube::GetModelView	descriptive	descriptive (high): getter: body returns m_pModelView	nam1	2026-10-22
+141085420	CloneCube::FUN_141085420	CloneCube::IsVisible	descriptive	descriptive (high): getter: body returns m_bVisible	nam1	2026-10-22
+141085830	CloneCube::FUN_141085830	CloneCube::GetUgcMesh	descriptive	descriptive (high): getter: body returns m_spUgcMesh	nam1	2026-10-22
+141085880	CloneCube::FUN_141085880	CloneCube::GetItemData	descriptive	descriptive (high): getter: body returns m_spItemData	nam1	2026-10-22
+141085ab0	CloneCube::FUN_141085ab0	CloneCube::SetListener	descriptive	descriptive (high): setter: body stores the argument in m_pListener	nam1	2026-10-22
+141085ae0	CloneCube::FUN_141085ae0	CloneCube::GetListener	descriptive	descriptive (high): getter: body returns m_pListener	nam1	2026-10-22
+1410a6730	CSkillMagicControlGuide::FUN_1410a6730	CSkillMagicControlGuide::IsReleased	descriptive	descriptive (high): getter: body returns m_bReleased	nam1	2026-10-22
+1410a8a90	Unk_PCCubeCraft::FUN_1410a8a90	Unk_PCCubeCraft::GetMode	descriptive	descriptive (high): getter: body returns m_nMode	nam1	2026-10-22
+1410aa520	Unk_PCCubeCraft::FUN_1410aa520	Unk_PCCubeCraft::GetPtCell	descriptive	descriptive (high): getter: body returns m_ptCell	nam1	2026-10-22
+1410ad5f0	Unk_PCCubeCraft::FUN_1410ad5f0	Unk_PCCubeCraft::GetPending	descriptive	descriptive (high): getter: body returns m_bPending	nam1	2026-10-22
+1410af790	FUN_1410af790	GetCubeMotionManager	descriptive	descriptive (medium): singleton: returns the CCubeMotionManager instance pointer DAT_143acf6c8	nam1	2026-10-22
+140a4f1b0	CubeSpawnObject::FUN_140a4f1b0	CubeSpawnObject::GetNpc	descriptive	descriptive (high): getter: body returns m_spNpc	nam1	2026-10-22
+140cd1bd0	Customize::FUN_140cd1bd0	Customize::GetListener	descriptive	descriptive (high): getter: body returns m_pListener	nam1	2026-10-22
+140cd3800	Customize::FUN_140cd3800	Customize::IsPreview	descriptive	descriptive (high): getter: body returns m_bPreview	nam1	2026-10-22
+140cd38b0	Customize::FUN_140cd38b0	Customize::GetPalette	descriptive	descriptive (high): getter: body returns m_nPalette	nam1	2026-10-22
+140cd38d0	Customize::FUN_140cd38d0	Customize::SetPalette	descriptive	descriptive (high): setter: body stores the argument in m_nPalette	nam1	2026-10-22
+1411910a0	CDropItem::FUN_1411910a0	CDropItem::GetOwnerObjId	descriptive	descriptive (high): getter: body returns m_nOwnerObjId	nam1	2026-10-22
+1411910c0	CDropItem::FUN_1411910c0	CDropItem::GetDropKind	descriptive	descriptive (high): getter: body returns m_nDropKind	nam1	2026-10-22
+141197470	EditBrush::FUN_141197470	EditBrush::SetKColor	descriptive	descriptive (high): setter: body stores the argument in m_kColor	nam1	2026-10-22
+1411974a0	EditBrush::FUN_1411974a0	EditBrush::SetPtPos	descriptive	descriptive (high): setter: body stores the argument in m_ptPos	nam1	2026-10-22
+1411974d0	EditBrush::FUN_1411974d0	EditBrush::GetPtPos	descriptive	descriptive (high): getter: body returns m_ptPos	nam1	2026-10-22
+1411a3fa0	EffectNode::FUN_1411a3fa0	EffectNode::SetOnGround	descriptive	descriptive (high): setter: body stores the argument in m_bOnGround	nam1	2026-10-22
+1411a7830	CEffectService::FUN_1411a7830	CEffectService::IsEnabled	descriptive	descriptive (high): getter: body returns m_bEnabled	nam1	2026-10-22
+1411a7850	CEffectService::FUN_1411a7850	CEffectService::SetEnabled	descriptive	descriptive (high): setter: body stores the argument in m_bEnabled	nam1	2026-10-22
+1411a8e50	CEffectService::FUN_1411a8e50	CEffectService::SetTick	descriptive	descriptive (high): setter: body stores the argument in m_nTick	nam1	2026-10-22
+1411a8e70	CEffectService::FUN_1411a8e70	CEffectService::GetTick	descriptive	descriptive (high): getter: body returns m_nTick	nam1	2026-10-22
+1411b3070	Unk_EsEffectGroup::FUN_1411b3070	Unk_EsEffectGroup::SetName	descriptive	descriptive (high): setter: body stores the argument in m_strName	nam1	2026-10-22
+1411dc7a0	CEquipItem::FUN_1411dc7a0	CEquipItem::GetItem	descriptive	descriptive (high): getter: body returns m_spItem	nam1	2026-10-22
+1411dd950	CEquipItem::FUN_1411dd950	CEquipItem::GetUgcMeshes	descriptive	descriptive (high): getter: body returns m_spUgcMeshes	nam1	2026-10-22
+1411df810	CEquipmentSlotLayerInfo::FUN_1411df810	CEquipmentSlotLayerInfo::IsActive	descriptive	descriptive (high): getter: body returns m_bActive	nam1	2026-10-22
+1411eabd0	CEquipment::FUN_1411eabd0	CEquipment::GetSetName	descriptive	descriptive (high): getter: body returns m_strSetName	nam1	2026-10-22
+1411eac20	CEquipment::FUN_1411eac20	CEquipment::IsHasSetName	descriptive	descriptive (high): getter: body returns m_bHasSetName	nam1	2026-10-22
+1411f9310	PC::FUN_1411f9310	PC::GetSetItems	descriptive	descriptive (high): getter: body returns m_spSetItems	nam1	2026-10-22
+1412000d0	CEquipModel::FUN_1412000d0	CEquipModel::GetPos6c	descriptive	descriptive (high): getter: body returns m_pos6c	nam1	2026-10-22
+14120d190	EquipSlot::FUN_14120d190	EquipSlot::GetKind	descriptive	descriptive (high): getter: body returns m_nKind	nam1	2026-10-22
+140cdbdd0	CFishingManager::FUN_140cdbdd0	CFishingManager::GetAutoCount	descriptive	descriptive (high): getter: body returns m_nAutoCount	nam1	2026-10-22
+140cdbe40	CFishingManager::FUN_140cdbe40	CFishingManager::SetBaitId	descriptive	descriptive (high): setter: body stores the argument in m_nBaitId	nam1	2026-10-22
+140cdbe60	CFishingManager::FUN_140cdbe60	CFishingManager::GetBaitId	descriptive	descriptive (high): getter: body returns m_nBaitId	nam1	2026-10-22
+141226e60	CFunctionCubeObject::FUN_141226e60	CFunctionCubeObject::GetEnt	descriptive	descriptive (high): getter: body returns m_ent	nam1	2026-10-22
+14122cb20	CNurturingCubeObject::FUN_14122cb20	CNurturingCubeObject::GetLevel	descriptive	descriptive (high): getter: body returns m_nLevel	nam1	2026-10-22
+14122cb40	CNurturingCubeObject::FUN_14122cb40	CNurturingCubeObject::GetMaxLevel	descriptive	descriptive (high): getter: body returns m_nMaxLevel	nam1	2026-10-22
+14122cba0	CNurturingCubeObject::FUN_14122cba0	CNurturingCubeObject::GetTime	descriptive	descriptive (high): getter: body returns m_nTime	nam1	2026-10-22
+141235d60	UITriggerEditorDialog::FUN_141235d60	UITriggerEditorDialog::GetCubeId	descriptive	descriptive (high): getter: body returns m_strCubeId	nam1	2026-10-22
+141235eb0	Unk_FcAnimSvc::FUN_141235eb0	Unk_FcAnimSvc::GetCatAnim	descriptive	descriptive (high): getter: body returns m_catAnim	nam1	2026-10-22
+140ce3850	GameEventAttendGiftCli::FUN_140ce3850	GameEventAttendGiftCli::GetDesc	descriptive	descriptive (high): getter: body returns m_strDesc	nam1	2026-10-22
+140ce3f70	GameEventCashAttendCli::FUN_140ce3f70	GameEventCashAttendCli::GetDesc	descriptive	descriptive (high): getter: body returns m_strDesc	nam1	2026-10-22
+14123c2e0	GameObject::FUN_14123c2e0	GameObject::GetScaleAC	descriptive	descriptive (high): getter: body returns m_fScaleAC	nam1	2026-10-22
+14123c300	GameObject::FUN_14123c300	GameObject::SetScaleAC	descriptive	descriptive (high): setter: body stores the argument in m_fScaleAC	nam1	2026-10-22
+14123c3e0	GameObject::FUN_14123c3e0	GameObject::SetKEntityID	descriptive	descriptive (high): setter: body stores the argument in m_kEntityID	nam1	2026-10-22
+14123c6f0	GameObject::FUN_14123c6f0	GameObject::GetAnimMgr	descriptive	descriptive (high): getter: body returns m_spAnimMgr	nam1	2026-10-22
+141245aa0	Unk_GoDeviceInfo::FUN_141245aa0	Unk_GoDeviceInfo::GetBandwidth	descriptive	descriptive (high): getter: body returns m_nBandwidth	nam1	2026-10-22
+141245b00	Unk_GoDeviceInfo::FUN_141245b00	Unk_GoDeviceInfo::GetVendor	descriptive	descriptive (high): getter: body returns m_nVendor	nam1	2026-10-22
+141245b10	Unk_GoGpuMgr::FUN_141245b10	Unk_GoGpuMgr::GetVideoMem	descriptive	descriptive (high): getter: body returns m_nVideoMem	nam1	2026-10-22
+14124fea0	Unk_GoGfxDevice::FUN_14124fea0	Unk_GoGfxDevice::GetModes	descriptive	descriptive (high): getter: body returns m_pModes	nam1	2026-10-22
+14124ff40	Unk_GoModeArray::FUN_14124ff40	Unk_GoModeArray::GetCount	descriptive	descriptive (high): getter: body returns m_nCount	nam1	2026-10-22
+1412673f0	CGameSocket::FUN_1412673f0	CGameSocket::GetSequence	descriptive	descriptive (high): getter: body returns m_sequence	nam1	2026-10-22
+1412675d0	CGameSocket::FUN_1412675d0	CGameSocket::GetDisconnect	descriptive	descriptive (high): getter: body returns m_disconnect	nam1	2026-10-22
+141267630	CGameSocket::FUN_141267630	CGameSocket::GetHost	descriptive	descriptive (high): getter: body returns m_host	nam1	2026-10-22
+141267680	CGameSocket::FUN_141267680	CGameSocket::GetPort	descriptive	descriptive (high): getter: body returns m_port	nam1	2026-10-22
+14126a990	CThread::FUN_14126a990	CThread::GetThread	descriptive	descriptive (high): getter: body returns m_thread	nam1	2026-10-22
+14126d930	GemSlot::FUN_14126d930	GemSlot::GetGemType	descriptive	descriptive (high): getter: body returns m_nGemType	nam1	2026-10-22
+14127aaf0	GFxMovieBackground::FUN_14127aaf0	GFxMovieBackground::GetScript	descriptive	descriptive (high): getter: body returns m_spScript	nam1	2026-10-22
+14127ab40	GFxMovieBackground::FUN_14127ab40	GFxMovieBackground::IsLoaded	descriptive	descriptive (high): getter: body returns m_bLoaded	nam1	2026-10-22
+14137b260	CGroupChat::FUN_14137b260	CGroupChat::GetOid	descriptive	descriptive (high): getter: body returns m_oid	nam1	2026-10-22
+1413d6630	HardwareInstancingService::FUN_1413d6630	HardwareInstancingService::SetEnabled	descriptive	descriptive (high): setter: body stores the argument in m_bEnabled	nam1	2026-10-22
+1413d84c0	HardwareInstancingService::FUN_1413d84c0	HardwareInstancingService::IsEnabled	descriptive	descriptive (high): getter: body returns m_bEnabled	nam1	2026-10-22
+140d13c50	UIPlayInstrumentDialog::FUN_140d13c50	UIPlayInstrumentDialog::GetMode	descriptive	descriptive (high): getter: body returns m_nMode	nam1	2026-10-22
+140d13d80	UIPlayInstrumentDialog::FUN_140d13d80	UIPlayInstrumentDialog::SetInstrument	descriptive	descriptive (high): setter: body stores the argument in m_nInstrument	nam1	2026-10-22
+1413fd890	CInteractObject::FUN_1413fd890	CInteractObject::GetEnt	descriptive	descriptive (high): getter: body returns m_ent	nam1	2026-10-22
+141405a10	InvenSlot::FUN_141405a10	InvenSlot::GetItemUid	descriptive	descriptive (high): getter: body returns m_nItemUid	nam1	2026-10-22
+141405a30	InvenSlot::FUN_141405a30	InvenSlot::SetItemUid	descriptive	descriptive (high): setter: body stores the argument in m_nItemUid	nam1	2026-10-22
+141419be0	Unk_PickRenderer::FUN_141419be0	Unk_PickRenderer::IsFlag	descriptive	descriptive (high): getter: body returns m_bFlag	nam1	2026-10-22
+140d3c640	ItemPreview::FUN_140d3c640	ItemPreview::GetPreview	descriptive	descriptive (high): getter: body returns m_spPreview	nam1	2026-10-22
+140d3c710	ItemPreview::FUN_140d3c710	ItemPreview::GetItem	descriptive	descriptive (high): getter: body returns m_spItem	nam1	2026-10-22
+140d3cf00	ItemPreview::FUN_140d3cf00	ItemPreview::GetAvatar	descriptive	descriptive (high): getter: body returns m_spAvatar	nam1	2026-10-22
+140d40620	ItemPreviewMgr::FUN_140d40620	ItemPreviewMgr::GetPreview	descriptive	descriptive (high): getter: body returns m_spPreview	nam1	2026-10-22
+140d40670	ItemPreviewMgr::FUN_140d40670	ItemPreviewMgr::IsHudOn	descriptive	descriptive (high): getter: body returns m_bHudOn	nam1	2026-10-22
+140d40850	ItemPreviewMgr::FUN_140d40850	ItemPreviewMgr::GetArg	descriptive	descriptive (high): getter: body returns m_nArg	nam1	2026-10-22
+140d41400	CItemGem::FUN_140d41400	CItemGem::GetGem	descriptive	descriptive (high): getter: body returns m_spGem	nam1	2026-10-22
+140a6d8e0	JobSystemCli::FUN_140a6d8e0	JobSystemCli::SetOwner	descriptive	descriptive (high): setter: body stores the argument in m_pOwner	nam1	2026-10-22
+14142bad0	CKeyTable::FUN_14142bad0	CKeyTable::SetMode	descriptive	descriptive (high): setter: body stores the argument in m_nMode	nam1	2026-10-22
+14142baf0	CKeyTable::FUN_14142baf0	CKeyTable::GetMode	descriptive	descriptive (high): getter: body returns m_nMode	nam1	2026-10-22
+14142e7a0	CKeyTable::FUN_14142e7a0	CKeyTable::GetLocked	descriptive	descriptive (high): getter: body returns m_nLocked	nam1	2026-10-22
+14143ff20	CKfmModel::FUN_14143ff20	CKfmModel::GetEntity	descriptive	descriptive (high): getter: body returns m_spEntity	nam1	2026-10-22
+140a6f860	LapenshardSlot::FUN_140a6f860	LapenshardSlot::GetSlot	descriptive	descriptive (high): getter: body returns m_nSlot	nam1	2026-10-22
+140a700b0	Unk_LsHud::FUN_140a700b0	Unk_LsHud::GetPage	descriptive	descriptive (high): getter: body returns m_nPage	nam1	2026-10-22
+1414472a0	CLiftableObject::FUN_1414472a0	CLiftableObject::GetName	descriptive	descriptive (high): getter: body returns m_strName	nam1	2026-10-22
+1414472f0	CLiftableObject::FUN_1414472f0	CLiftableObject::SetName	descriptive	descriptive (high): setter: body stores the argument in m_strName	nam1	2026-10-22
+141447a60	CLiftableObject::FUN_141447a60	CLiftableObject::SetKind	descriptive	descriptive (high): setter: body stores the argument in m_nKind	nam1	2026-10-22
+141447a80	CLiftableObject::FUN_141447a80	CLiftableObject::GetKind	descriptive	descriptive (high): getter: body returns m_nKind	nam1	2026-10-22
+141447ac0	CLiftableObject::FUN_141447ac0	CLiftableObject::GetRange	descriptive	descriptive (high): getter: body returns m_fRange	nam1	2026-10-22
+141447ae0	CLiftableObject::FUN_141447ae0	CLiftableObject::GetState	descriptive	descriptive (high): getter: body returns m_nState	nam1	2026-10-22

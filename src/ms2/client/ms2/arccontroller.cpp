@@ -48,18 +48,18 @@ float CArcController::FUN_1409ab300() const
 MS2_REPLACE_METHOD(0x1409ab300, CArcController, FUN_1409ab300, 16, 0xEC6BFF26);
 
 // @0x1409ab320
-bool CArcController::FUN_1409ab320() const
+bool CArcController::IsRising() const
 {
     return m_bRising;
 }
-MS2_REPLACE_METHOD(0x1409ab320, CArcController, FUN_1409ab320, 15, 0x138EA3C5);
+MS2_REPLACE_METHOD(0x1409ab320, CArcController, IsRising, 15, 0x138EA3C5);
 
 // @0x1409ab340
-Unk_StreamPoint CArcController::FUN_1409ab340() const
+Unk_StreamPoint CArcController::GetPosition() const
 {
     return m_position;
 }
-MS2_REPLACE_METHOD(0x1409ab340, CArcController, FUN_1409ab340, 41, 0xC42EA0F4);
+MS2_REPLACE_METHOD(0x1409ab340, CArcController, GetPosition, 41, 0xC42EA0F4);
 
 // @0x1409ab370
 bool CArcController::FUN_1409ab370() const

@@ -1275,7 +1275,7 @@ void FUN_1408273f0(CSpecialDungeonDataTable* p);
 void FUN_140829730(StanceTable* p);
 void FUN_14082e4b0();
 void FUN_140837660();
-void FUN_140851750();
+void LoadSystemMailContent();
 void FUN_14087a4e0(CTitleTable* p);
 void FUN_14087f2f0(CServerString* p);
 void FUN_1408b9c90();
@@ -1809,7 +1809,7 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CommonEffectDummy>::CreateInstance();
     TSingleton<CommonEffectDummy>::GetInstance()->Load();
     Unk_SingletonCreator<NpcDataTableCli>::CreateInstance();
-    CFieldData::FUN_140373d50();
+    CFieldData::LoadFieldData();
     FUN_14029f3f0();
     Unk_SingletonCreator<CItemEnchantUtil>::CreateInstance();
     Unk_SingletonCreator<ItemDropTable>::CreateInstance();
@@ -1913,7 +1913,7 @@ BOOL CGameApp::InitInstance()
     FUN_1408273f0(TSingleton<CSpecialDungeonDataTable>::GetInstance());
     Unk_SingletonCreator<CArcadeDataTable>::CreateInstance();
     FUN_1401a2e40(TSingleton<CArcadeDataTable>::GetInstance());
-    FUN_140851750();
+    LoadSystemMailContent();
     FUN_1408d2640();
     Unk_SingletonCreator<CLuaClient>::CreateInstance();
     Unk_SingletonCreator<StateEffectMgr>::CreateInstance();

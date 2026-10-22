@@ -245,7 +245,7 @@ int CUgcViewerEquip::vfunc_2()
     MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
     if (spEquip == 0)
         return 0;
-    MS2Ptr<CItemUgcMeshContainer> spMeshes = spEquip->FUN_1411dd950();
+    MS2Ptr<CItemUgcMeshContainer> spMeshes = spEquip->GetUgcMeshes();
     if (spMeshes == 0)
         return 0;
     NiTexturePtr spTexture = spMeshes->FUN_141426e30();
@@ -285,7 +285,7 @@ void CUgcViewerEquip::vfunc_4()
     MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
     if (spEquip == 0)
         return;
-    MS2Ptr<CItemUgcMeshContainer> spMeshes = spEquip->FUN_1411dd950();
+    MS2Ptr<CItemUgcMeshContainer> spMeshes = spEquip->GetUgcMeshes();
     if (spMeshes == 0)
         return;
     spMeshes->FUN_141426980();
@@ -300,7 +300,7 @@ void CUgcViewerEquip::vfunc_5()
     MS2Ptr<CEquipItem> spEquip = pWearer->FUN_141655c30(m_item.m_itemUid);
     if (spEquip == 0)
         return;
-    MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+    MS2Ptr<CItem> spItem = spEquip->GetItem();
     if (spItem == 0 || spItem->FUN_140527840() == 0)
         return;
     m_strMesh = spItem->FUN_140527840()->cubeTextureName.mesh;
@@ -391,7 +391,7 @@ int CUgcViewerCube::vfunc_2()
     efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(FUN_1403ed2d0()->FUN_141bd0fa0(FUN_1418a0110()));
     if (spCube == 0)
         return 0;
-    MS2Ptr<CItemUgcMeshContainer> spMeshes = spCube->FUN_141085830();
+    MS2Ptr<CItemUgcMeshContainer> spMeshes = spCube->GetUgcMesh();
     if (spMeshes == 0)
         return 0;
     NiTexturePtr spTexture = spMeshes->FUN_141426e30();
@@ -437,7 +437,7 @@ void CUgcViewerCube::vfunc_5()
     efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(FUN_1403ed2d0()->FUN_141bd0fa0(FUN_1418a0110()));
     if (spCube == 0)
         return;
-    CItemData* pData = spCube->FUN_141085880().get();
+    CItemData* pData = spCube->GetItemData().get();
     if (pData == 0)
         return;
     m_strMesh = pData->cubeTextureName.mesh;
@@ -1059,7 +1059,7 @@ int CUgcViewerRidee::vfunc_2()
     efd::SmartPointer<AvatarRidee> spRidee = efd::DynamicCast<AvatarRidee>(FUN_1403ed2d0()->FUN_141bd0fa0(FUN_1418a2fc0()));
     if (spRidee == 0)
         return 0;
-    MS2Ptr<CItemUgcMeshContainer> spMeshes = spRidee->FUN_141085830();
+    MS2Ptr<CItemUgcMeshContainer> spMeshes = spRidee->GetUgcMesh();
     if (spMeshes == 0)
         return 0;
     NiTexturePtr spTexture = spMeshes->FUN_141426e30();

@@ -63,7 +63,7 @@ inline TSingleton<CubeMapInformationService>::TSingleton() { s_instance = static
 // (0x141122xxx / 0x141125xxx), which allocates/frees the tree's head node. A local definition would win over that
 // binding in the hook DLL and leave head null (the hooked MS2::RegisterServices then AVs in the first f368 lookup).
 // Exceptions: 287's dtor (FUN_1410b7fe0's static, atexit thunk 0x142cac250) has no symbol row, and the 294/295 locals
-// of FUN_1410d3450 are constructed/destroyed by explicit wrapper calls, so their implicit ctor/dtor do nothing.
+// of ExportUGCMap are constructed/destroyed by explicit wrapper calls, so their implicit ctor/dtor do nothing.
 void FUN_1411258b0(Unk_CMISTree<287>*);
 template <> Unk_CMISTree<287>::~Unk_CMISTree() { FUN_1411258b0(this); }
 template <> Unk_CMISTree<294>::Unk_CMISTree() {}
@@ -1531,7 +1531,7 @@ class Unk_CMISLog { public: unsigned __int64 FUN_140353fc0(int nLevel, int nCate
 Unk_CMISLog* FUN_140166440();
 struct Unk_CMISEntId { Unk_CMISEntId(const Unk_CMISEntId&); __int64 m_id; };
 void FUN_14115b260(CCubeMotionManager* pMgr, const Unk_CMISEntityRef* pId, float fFrom, float fTo, unsigned nMs);   // AddRotate
-CCubeMotionManager* FUN_1410af790();
+CCubeMotionManager* GetCubeMotionManager();
 struct Unk_CMISSlot;
 class Unk_CMISMagicCube { public: void FUN_141230df0(CString strKey); void FUN_141232330(int nKey, float fRot); Unk_CMISSlot FUN_141230f60(Unk_StreamPoint ptPos, float fRange, int nPc); };
 Unk_CMISMagicCube* FUN_1409670b0();
@@ -1593,7 +1593,7 @@ bool CubeMapInformationService::FUN_1410c2840(Unk_StreamPoint pt, float fDist)
         FUN_1409618c0(FUN_1408a9280(&spCube->entity), 0x68c7c29d, &kRot);
         spCube->fieldD4 = (int)fDist;
         Unk_CMISEntityRef kId(*FUN_1408b76f0(FUN_1408a9280(&spCube->entity)));
-        FUN_14115b260((CCubeMotionManager*)FUN_1410af790(), &kId, kRot.z, fDist, 200);
+        FUN_14115b260((CCubeMotionManager*)GetCubeMotionManager(), &kId, kRot.z, fDist, 200);
         FUN_1409670b0()->FUN_141232330(nKey, fDist);
         return true;
     }
@@ -5190,7 +5190,7 @@ efd::AsyncResult CubeMapInformationService::OnTick()
         FUN_1410ca170();
         t250.FUN_140868750(200);
     }
-    FUN_14115b540(FUN_1410af790());
+    FUN_14115b540(GetCubeMotionManager());
     FUN_1410c9db0();
     Unk_CMISIter<256> itEnt, itEntEnd;
     for (FUN_14114e860(&f30, &itEnt); FUN_140a16b10(&itEnt, FUN_1411524b0(&f30, &itEntEnd)); FUN_140a17010(&itEnt))
@@ -5281,8 +5281,8 @@ void CubeMapInformationService::FUN_1410c9710()
             FUN_1409618c0(pEnt, 0xfd95ca52, &ptEnt);
             float fStart = *FUN_1408b0470(&f218->floors, &f1e0);
             if (!FUN_140de8e30(strKind, "Stair") || ptEnt.z != fStart) {
-                FUN_14115b430(FUN_1410af790(), FUN_1408b76f0(pEnt));
-                FUN_14115b370(FUN_1410af790(), FUN_1408b76f0(pEnt), 1.0f, 0.0f, 200, false);
+                FUN_14115b430(GetCubeMotionManager(), FUN_1408b76f0(pEnt));
+                FUN_14115b370(GetCubeMotionManager(), FUN_1408b76f0(pEnt), 1.0f, 0.0f, 200, false);
             } else {
                 bool bOff = false;
                 FUN_14098c6e0(pEnt, 0xa0b6b179, &bOff);
@@ -5307,8 +5307,8 @@ void CubeMapInformationService::FUN_1410c9710()
             if (!FUN_140de8e30(strKind, "Stair") || ptEnt.z != fStart) {
                 bool bOn = true;
                 FUN_14098c6e0(pEnt, 0xa0b6b179, &bOn);
-                FUN_14115b430(FUN_1410af790(), FUN_1408b76f0(pEnt));
-                FUN_14115b370(FUN_1410af790(), FUN_1408b76f0(pEnt), 0.0f, 1.0f, 200, true);
+                FUN_14115b430(GetCubeMotionManager(), FUN_1408b76f0(pEnt));
+                FUN_14115b370(GetCubeMotionManager(), FUN_1408b76f0(pEnt), 0.0f, 1.0f, 200, true);
             } else {
                 bool bOn = true;
                 FUN_14098c6e0(pEnt, 0xa0b6b179, &bOn);
@@ -5719,7 +5719,7 @@ static CString Unk_CMISFormatPoint(const Unk_Int3& pt)                          
 }
 // @0x1410d3450
 // MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently; the document is a stack object and the declaration node is not destroyed
-int CubeMapInformationService::FUN_1410d3450(CString strName)
+int CubeMapInformationService::ExportUGCMap(CString strName)
 {
     if (!FUN_140374410(FUN_1403ed2d0()->FUN_141bd3060()))
         return 0;

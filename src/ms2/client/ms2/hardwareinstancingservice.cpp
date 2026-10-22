@@ -596,7 +596,7 @@ void HardwareInstancingService::OnPropertyUpdate(const efd::ClassID& callerID, e
     if (pEntity == NULL)
         return;
     if ((propertyID == 0xfd95ca52 || propertyID == 0x68c7c29d || propertyID == 0x2d7cad2d)
-        && (FUN_1413d84c0() & m_bReady))
+        && (IsEnabled() & m_bReady))
     {
         if (m_mapQueued.Lookup(pEntity->GetEntityIDValue()) == NULL)
         {
@@ -812,7 +812,7 @@ MS2_REPLACE_METHOD(0x1413D5660, HardwareInstancingService, FUN_1413d5660, 158, 0
 void HardwareInstancingService::FUN_1413d5710()
 {
     char szKey[0x100];
-    if (!FUN_1413d84c0())
+    if (!IsEnabled())
         return;
     Unk_HwiNearby kNearby;
     egf::Entity* pEntity;
@@ -968,11 +968,11 @@ void HardwareInstancingService::FUN_1413d5710()
 MS2_REPLACE_METHOD(0x1413D5710, HardwareInstancingService, FUN_1413d5710, 3853, 0xD632A151);
 
 // @0x1413d6630
-void HardwareInstancingService::FUN_1413d6630(bool bEnabled)
+void HardwareInstancingService::SetEnabled(bool bEnabled)
 {
     m_bEnabled = bEnabled;
 }
-MS2_REPLACE_METHOD(0x1413D6630, HardwareInstancingService, FUN_1413d6630, 23, 0xF15E3A79);
+MS2_REPLACE_METHOD(0x1413D6630, HardwareInstancingService, SetEnabled, 23, 0xF15E3A79);
 
 // @0x1413d6650
 int HardwareInstancingService::FUN_1413d6650()
@@ -1122,7 +1122,7 @@ MS2_REPLACE_METHOD(0x1413D6DB0, HardwareInstancingService, FUN_1413d6db0, 158, 0
 // @0x1413d6e60
 int HardwareInstancingService::FUN_1413d6e60(egf::Entity* pEntity, bool bFlag)
 {
-    if (FUN_1413d84c0() && m_bReady && pEntity != NULL)
+    if (IsEnabled() && m_bReady && pEntity != NULL)
     {
         bool bInstanced = false;
         FUN_1408a20a0(pEntity, 0x23f9860e, &bInstanced);
@@ -1142,7 +1142,7 @@ MS2_REPLACE_METHOD(0x1413D6E60, HardwareInstancingService, FUN_1413d6e60, 206, 0
 int HardwareInstancingService::FUN_1413d6f40(egf::Entity* pEntity)
 {
     MeshInstancing* pInstancing;
-    if ((FUN_1413d84c0() & m_bReady) && (pInstancing = FUN_1413d66b0(pEntity)) != NULL
+    if ((IsEnabled() & m_bReady) && (pInstancing = FUN_1413d66b0(pEntity)) != NULL
         && pInstancing->FUN_140ad4bb0() == 0)
     {
         static_cast<EntityInstancing*>(pInstancing)->FUN_1411c6030(pEntity);
@@ -1156,7 +1156,7 @@ MS2_REPLACE_METHOD(0x1413D6F40, HardwareInstancingService, FUN_1413d6f40, 113, 0
 int HardwareInstancingService::FUN_1413d6fc0(egf::Entity* pEntity)
 {
     MeshInstancing* pInstancing;
-    if ((FUN_1413d84c0() & m_bReady) && (pInstancing = FUN_1413d66b0(pEntity)) != NULL
+    if ((IsEnabled() & m_bReady) && (pInstancing = FUN_1413d66b0(pEntity)) != NULL
         && pInstancing->FUN_140ad4bb0() == 0)
         return static_cast<EntityInstancing*>(pInstancing)->FUN_1411c6390(pEntity, true);
     return 0;
@@ -1252,7 +1252,7 @@ MS2_REPLACE_METHOD(0x1413D7570, HardwareInstancingService, FUN_1413d7570, 405, 0
 // @0x1413d7710
 void HardwareInstancingService::FUN_1413d7710(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel)
 {
-    if (FUN_1413d84c0() & m_bReady)
+    if (IsEnabled() & m_bReady)
     {
         bool bInstanced = false;
         FUN_1408a20a0(pMsg->GetEntity(), 0x23f9860e, &bInstanced);
@@ -1273,7 +1273,7 @@ MS2_REPLACE_METHOD(0x1413D7710, HardwareInstancingService, FUN_1413d7710, 226, 0
 // @0x1413d7800
 void HardwareInstancingService::FUN_1413d7800(const egf::EntityChangeMessage* pMsg, efd::Category targetChannel)
 {
-    if (FUN_1413d84c0() & m_bReady)
+    if (IsEnabled() & m_bReady)
     {
         egf::Entity* pEntity = pMsg->GetEntity();
         if (pEntity != NULL)
@@ -1302,7 +1302,7 @@ void HardwareInstancingService::FUN_1413d78e0(egf::Entity* pEntity)
 {
     if (pEntity != NULL)
     {
-        if (FUN_1413d84c0() && m_bReady)
+        if (IsEnabled() && m_bReady)
         {
             MeshInstancing* pInstancing = FUN_1413d66b0(pEntity);
             if (pInstancing != NULL)
@@ -1346,7 +1346,7 @@ void HardwareInstancingService::vfunc_3(int nMap)
         if ((*it)->FUN_140ad4bb0() == 0)
             static_cast<EntityInstancing*>(*it)->FUN_1411c66e0();
     }
-    FUN_1413d6630(false);
+    SetEnabled(false);
     m_mapQueued.RemoveAll();
     m_listPending.clear();
     m_maps[nMap].m_mapDynamic.clear();
@@ -1484,11 +1484,11 @@ void HardwareInstancingService::FUN_1413d83f0(egf::Entity* pEntity)
 MS2_REPLACE_METHOD(0x1413D83F0, HardwareInstancingService, FUN_1413d83f0, 195, 0xBD0271EA);
 
 // @0x1413d84c0
-bool HardwareInstancingService::FUN_1413d84c0()
+bool HardwareInstancingService::IsEnabled()
 {
     return m_bEnabled;
 }
-MS2_REPLACE_METHOD(0x1413D84C0, HardwareInstancingService, FUN_1413d84c0, 15, 0x0A82FF79);
+MS2_REPLACE_METHOD(0x1413D84C0, HardwareInstancingService, IsEnabled, 15, 0x0A82FF79);
 
 // @0x1413d84e0
 bool HardwareInstancingService::FUN_1413d84e0(egf::Entity* pEntity, NiTransform* pTransform, int nArg10, int nArg14)

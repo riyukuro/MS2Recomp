@@ -530,7 +530,7 @@ void CInstrumentManager::SetInstrument(int nInstrument, __int64 nItemUid)
     m_instrumentUid = nItemUid;
     UIPlayInstrumentDialog* pDialog = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
     if (pDialog != 0)
-        pDialog->FUN_140d13d80(m_instrument);
+        pDialog->SetInstrument(m_instrument);
     FUN_1403ed2b0()->FUN_141adc530(0x4eec);
 }
 
@@ -1419,7 +1419,7 @@ void CInstrumentManager::CheckPlayState()
     {
         UIPlayInstrumentDialog* pDialog = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
         if (pDialog != 0)
-            pDialog->FUN_14100e9a0(pDialog->FUN_140d13c50());
+            pDialog->FUN_14100e9a0(pDialog->GetMode());
     }
 }
 
@@ -1456,7 +1456,7 @@ CInstrumentManager::Slot::Slot() { Init(); }
 CSoundEventMgr* TSingleton<CSoundEventMgr>::GetInstance() { return s_instance; }
 
 // @0x140d13c50
-int UIPlayInstrumentDialog::FUN_140d13c50() { return m_nMode; }
+int UIPlayInstrumentDialog::GetMode() { return m_nMode; }
 
 // @0x140d13c70
 Unk_SoundState* CGameOption::FUN_140d13c70() { return &m_sound; }
@@ -1465,7 +1465,7 @@ Unk_SoundState* CGameOption::FUN_140d13c70() { return &m_sound; }
 bool CInstrumentManager::Voice::IsRemote() const { return m_percussion != 0; }
 
 // @0x140d13d80
-void UIPlayInstrumentDialog::FUN_140d13d80(int nInstrument) { m_nInstrument = nInstrument; }
+void UIPlayInstrumentDialog::SetInstrument(int nInstrument) { m_nInstrument = nInstrument; }
 
 // @0x140d1a9d0
 bool Unk_ImNullableInt::HasValue() const { return m_isValueSet; }

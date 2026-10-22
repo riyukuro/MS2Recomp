@@ -84,7 +84,7 @@ MS2_CHECK_OFFSET(TPtredDummy<Unk_MagicList>, value, 0x18);
 // The magicPath.xml table (cached; reloaded when the file changes on disk).
 Unk_MagicListPtr FUN_14145c250(unsigned nMagicId);                  // 0x14145c250 all moves of one id
 Unk_SocketPtr<CMagicData> FUN_14145c300(unsigned nMagicId, int nIndex); // 0x14145c300 one move, index wraps
-int FUN_14145c4d0();                                                // 0x14145c4d0 loads ./data/xml/table/magicPath.xml
+int LoadMagicPath();                                                // 0x14145c4d0 loads ./data/xml/table/magicPath.xml
 
 // ---- the running projectile ----
 struct Unk_MagicTag;

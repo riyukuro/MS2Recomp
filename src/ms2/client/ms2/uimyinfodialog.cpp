@@ -646,7 +646,7 @@ void UIMyInfoDialog::vfunc_dl_3(void* p)
     void* pSlot = FUN_140a50b50(p);
     if (pSlot == 0)
         return;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(static_cast<InvenSlot*>(pSlot)->FUN_141405a10());
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(static_cast<InvenSlot*>(pSlot)->GetItemUid());
     if (spItem.get() == 0)
         return;
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -1267,7 +1267,7 @@ int UIMyInfoDialog::vfunc_o178_1(void* pAvatar)
     if (pObj != 0)
     {
         AvatarPC* pAv = FUN_140a535c0(pObj);
-        if (pAv != 0 && pAv->FUN_1409f62a0() == 1)
+        if (pAv != 0 && pAv->GetType() == 1)
             FUN_1418bee30(&kObj, 10000);
         FUN_1407cbbe0(&kObj, "showActionList", true);
     }

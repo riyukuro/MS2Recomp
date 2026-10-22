@@ -137,7 +137,7 @@ public:
     void FUN_1413d5220(egf::EntityID id);                           // drop the instancing of an entity
     void FUN_1413d5660();
     void FUN_1413d5710();                                           // build the instancings of the current map
-    void FUN_1413d6630(bool bEnabled);
+    void SetEnabled(bool bEnabled);
     int FUN_1413d6650();
     MeshInstancing* FUN_1413d66b0(egf::Entity* pEntity);
     MeshInstancing* FUN_1413d6770(const Unk_MeshInstancingConfig& rConfig);
@@ -169,7 +169,7 @@ public:
     MeshInstancing* FUN_1413d7ef0(int nIndex, bool bOnly);
     MeshInstancing* FUN_1413d80f0(egf::Entity* pEntity);
     void FUN_1413d83f0(egf::Entity* pEntity);
-    bool FUN_1413d84c0();
+    bool IsEnabled();
     bool FUN_1413d84e0(egf::Entity* pEntity, NiTransform* pTransform, int nArg10, int nArg14);
 
     bool m_bEnabled;                                                // +0x34

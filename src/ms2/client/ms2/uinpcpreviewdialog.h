@@ -52,7 +52,7 @@ public:
     virtual int vfunc_48() { return 0x4e89; }           // 48 0x141a71e20 UI type id
 
     int FUN_141a6e7e0(CStringW strFilter);              // refill "m_npcList" with the names matching the text / id
-    int FUN_141a6ec20();                                // load npcName.xml into m_names
+    int LoadNpcName();                                // load npcName.xml into m_names
     int FUN_141a6ee60(int nNpcId);                      // select an npc: build the rows
     int FUN_141a6fd90(int nRow);                        // show the scripts of a row in "m_output"
     int FUN_141a70b90(int nRow);                        // open the talk of a row in the talk window

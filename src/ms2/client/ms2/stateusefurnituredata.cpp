@@ -241,7 +241,7 @@ void StateUseFurniture::vfunc_3(double fTime)
     }
     if (static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_n90 == 0)
         return;
-    Unk_EntRef kEnt = m_spCube->FUN_141226e60();
+    Unk_EntRef kEnt = m_spCube->GetEnt();
     NiNode* pNode = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(kEnt.FUN_1408a9090())));
     if (pNode == 0)
     {

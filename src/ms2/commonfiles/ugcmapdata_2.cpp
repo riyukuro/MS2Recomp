@@ -216,14 +216,14 @@ Unk_UGCMapPtr FUN_1408ad3f0(int mapId) {
         Unk_140163940 lock(s_lock);
         if(static_cast<int>(lock)) {} else if(s_cache.Lookup(mapId,value)) return value;
     }
-    return FUN_1408ad500(mapId);
+    return LoadUGCMap(mapId);
 }
 #endif
 
 // MS2-FUNCTIONAL: typed XML records retain all defaults, conversions and error/cache paths.
 #ifndef MS2_HOOK_DLL
 // @0x1408ad500
-Unk_UGCMapPtr FUN_1408ad500(unsigned mapId) {
+Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
     CString path;
     path.Format("./Data/Xml/UGCMap/%08d.xml",mapId);
     if(FUN_140166420()->FUN_1403987d0(std::string(path))==0) return Unk_UGCMapPtr(0);

@@ -1146,7 +1146,7 @@ void CNifEffect::FUN_14154bdd0(Unk_EffectTarget* pTarget)
                 bool bHasItem = false;
                 if (spEquip.get() != 0)
                 {
-                    MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+                    MS2Ptr<CItem> spItem = spEquip->GetItem();
                     bHasItem = spItem.get() != 0;
                 }
                 if (bHasItem)
@@ -1158,7 +1158,7 @@ void CNifEffect::FUN_14154bdd0(Unk_EffectTarget* pTarget)
                     }
                     else
                     {
-                        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+                        MS2Ptr<CItem> spItem = spEquip->GetItem();
                         bMismatch = FUN_14052a170(spItem.get()) != FUN_140a53480(pTarget);
                     }
                     if (bMismatch)
@@ -1391,7 +1391,7 @@ NiAVObjectPtr CNifEffect::FUN_14154d410(Unk_EffectTarget* pTarget, const char* p
                 }
                 else
                 {
-                    MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+                    MS2Ptr<CItem> spItem = spEquip->GetItem();
                     bSkip = spItem.get() == 0;
                 }
                 if (!bSkip)
@@ -1403,7 +1403,7 @@ NiAVObjectPtr CNifEffect::FUN_14154d410(Unk_EffectTarget* pTarget, const char* p
                     }
                     else
                     {
-                        MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
+                        MS2Ptr<CItem> spItem = spEquip->GetItem();
                         bOther = FUN_14052a170(spItem.get()) != nKind;
                     }
                     if (!bOther)

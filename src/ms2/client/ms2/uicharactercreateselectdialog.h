@@ -55,7 +55,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x140f2ed30 close
     virtual void vfunc_69();                                    // 69 0x140f2ed80
 
-    void FUN_140f2ef10();                                       // 0x140f2ef10 load characterCreateSelect.xml
+    void LoadCharacterCreateSelect();                                       // 0x140f2ef10 load characterCreateSelect.xml
     void FUN_140f2f9c0(int nJobCode);                           // 0x140f2f9c0 remember the job and pop the tab down
     void FUN_140f2fa00(int nJobCode);                           // 0x140f2fa00 create button
     void FUN_140f2fba0(int nIndex, int nJobCode);               // 0x140f2fba0 tab changed

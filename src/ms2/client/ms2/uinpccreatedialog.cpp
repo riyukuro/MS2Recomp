@@ -187,7 +187,7 @@ void UINpcCreateDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     if (!m_bFilesRead)
-        FUN_141a6b2e0();
+        ReadNpcFromFile();
     else
         FUN_141a6be40(m_strFilter);
 }
@@ -345,7 +345,7 @@ void UINpcCreateDialog::vfunc_3(void* pActor)
 }
 
 // @0x141a6b2e0
-void UINpcCreateDialog::FUN_141a6b2e0()
+void UINpcCreateDialog::ReadNpcFromFile()
 {
     FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"ReadNpcFromFile");
     m_files.FUN_141a6dd40();

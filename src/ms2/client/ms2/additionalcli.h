@@ -48,10 +48,10 @@ public:
     int FUN_14096d050();                                    // shown (enabled or time left)
     void FUN_14096d0c0();                                   // stance bar time
     void FUN_14096d130();                                   // stance bar step
-    int FUN_14096d260();                                    // key
-    PCBase* FUN_14096d280();                                // owner
+    int GetKey();                                    // key
+    PCBase* GetOwner();                                // owner
     unsigned FUN_14096d2a0();                               // effect id
-    unsigned short FUN_14096d2c0();                         // level
+    unsigned short GetLevel();                         // level
     unsigned FUN_14096d2e0();                               // remaining ms (0 when unlimited or over)
     unsigned FUN_14096d330();                               // total ms
     int FUN_14096d350();                                    // sort key of the buff strip

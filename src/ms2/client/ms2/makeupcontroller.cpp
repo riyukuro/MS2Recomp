@@ -71,7 +71,7 @@ class CEquipItem : public CPtred
 {
 public:
     Unk_MakeupItem* FUN_1411dc7f0();                            // the item
-    MS2Ptr<CItem> FUN_1411dc7a0();                              // the item object holding the proxy data
+    MS2Ptr<CItem> GetItem();                              // the item object holding the proxy data
 };
 
 // The proxy data of the item (CItem::FUN_140527870): the four makeup values at +0x58..+0x64 (x, y, scale, angle).
@@ -408,7 +408,7 @@ void CMakeupController::vfunc_42(float fValue, NiFloatsExtraData* pExtra)
         m_afValue[m_nCurIndex] = FUN_140a17940(fValue, pRange->m_fMin, pRange->m_fMax);
         float fNow = vfunc_21();
         FUN_141d580c0(pExtra, 3, fNow);
-        Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->FUN_1411dc7a0());
+        Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
         if (pData != 0)
             pData->m_fScale = fNow;
         if (m_pListener != 0)
@@ -427,7 +427,7 @@ void CMakeupController::vfunc_43(float fRadians, NiFloatsExtraData* pExtra)
         if (FUN_141d57ca0(pExtra, 2) != fRadians)
         {
             FUN_141d580c0(pExtra, 2, fRadians);
-            Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->FUN_1411dc7a0());
+            Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
             if (pData != 0)
                 pData->m_fAngle = fRadians;
             if (m_pListener != 0)
@@ -446,7 +446,7 @@ void CMakeupController::vfunc_44(float fX, float fY, NiFloatsExtraData* pExtra)
     {
         FUN_141d580c0(pExtra, 0, fX);
         FUN_141d580c0(pExtra, 1, fY);
-        Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->FUN_1411dc7a0());
+        Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
         if (pData != 0)
         {
             pData->m_fX = fX;
@@ -505,11 +505,11 @@ void CMakeupController::SaveToProxy()
 {
     if (m_spEquipItem.get() == 0)
         return;
-    bool bFace = m_spEquipItem.get() != 0 && FUN_140527a20((CItem*)m_spEquipItem->FUN_1411dc7a0()) == 3;
+    bool bFace = m_spEquipItem.get() != 0 && FUN_140527a20((CItem*)m_spEquipItem->GetItem()) == 3;
     if (bFace && m_spFaceMesh.FUN_141412c90() != 0)
     {
         NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
-        Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->FUN_1411dc7a0());
+        Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
         FUN_141477d40(pData, pExtra);
         FUN_14059a1f0(pData, m_nPresetIndex);
     }
@@ -522,10 +522,10 @@ void CMakeupController::LoadFromProxy()
 {
     if (m_spEquipItem.get() != 0)
     {
-        int nKind = FUN_140527a20((CItem*)m_spEquipItem->FUN_1411dc7a0());
+        int nKind = FUN_140527a20((CItem*)m_spEquipItem->GetItem());
         if (nKind == 3 && m_spFaceMesh.FUN_141412c90() != 0)
         {
-            Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->FUN_1411dc7a0());
+            Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
             FUN_141477cb0(MAKEUP_FACE_EXTRA(), pData);
             if (pData != 0)
             {

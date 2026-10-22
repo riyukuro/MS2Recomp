@@ -205,13 +205,13 @@ void UIJobChangeDialog::vfunc_43()
 // @0x1419db600
 void UIJobChangeDialog::FUN_1419db600()
 {
-    FUN_1419db630();
-    FUN_1419db970();
+    LoadJobPreview();
+    LoadJobDescription();
     FUN_1419dec80(true);
 }
 
 // @0x1419db630
-void UIJobChangeDialog::FUN_1419db630()
+void UIJobChangeDialog::LoadJobPreview()
 {
     TiXmlDocument doc;
     CString path = FUN_14071a5b0(CString("Table"), CString("jobPreview.xml"));
@@ -244,7 +244,7 @@ void UIJobChangeDialog::FUN_1419db630()
 }
 
 // @0x1419db970
-void UIJobChangeDialog::FUN_1419db970()
+void UIJobChangeDialog::LoadJobDescription()
 {
     TiXmlDocument doc;
     CStringA path = FUN_14071ae20(CStringA("korJobDescription.xml"));

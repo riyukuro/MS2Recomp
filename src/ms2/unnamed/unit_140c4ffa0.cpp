@@ -279,7 +279,7 @@ void ItemSocketSystemPageSocketTransfer::FUN_140c51050()
         MS2Ptr<CEquipItem> equip(equipped.GetAt(pos));
         if (equip == 0)
             continue;
-        MS2Ptr<CItem> item = equip->FUN_1411dc7a0();
+        MS2Ptr<CItem> item = equip->GetItem();
         if (item == 0)
             continue;
         if (!item->FUN_140529560())

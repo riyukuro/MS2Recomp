@@ -744,11 +744,11 @@ bool Unk_ActionKeyManager::FUN_140953410()
 MS2_REPLACE_METHOD(0x140953410, Unk_ActionKeyManager, FUN_140953410, 282, 0x61BC001A);
 
 // @0x140953530
-int Unk_ActionKeyManager::FUN_140953530()
+int Unk_ActionKeyManager::GetCur()
 {
     return m_nCur;
 }
-MS2_REPLACE_METHOD(0x140953530, Unk_ActionKeyManager, FUN_140953530, 13, 0xA5869133);
+MS2_REPLACE_METHOD(0x140953530, Unk_ActionKeyManager, GetCur, 13, 0xA5869133);
 
 // @0x140953550
 ActionKeyObject* Unk_ActionKeyManager::FUN_140953550()
@@ -775,18 +775,18 @@ void Unk_ActionKeyManager::FUN_1409535c0()
 MS2_REPLACE_METHOD(0x1409535C0, Unk_ActionKeyManager, FUN_1409535c0, 188, 0xEBB060BC);
 
 // @0x140953690
-int Unk_ActionKeyManager::FUN_140953690()
+int Unk_ActionKeyManager::IsEnabled()
 {
     return m_bEnabled;
 }
-MS2_REPLACE_METHOD(0x140953690, Unk_ActionKeyManager, FUN_140953690, 17, 0x444DCEE7);
+MS2_REPLACE_METHOD(0x140953690, Unk_ActionKeyManager, IsEnabled, 17, 0x444DCEE7);
 
 // @0x1409536b0
-void Unk_ActionKeyManager::FUN_1409536b0(int bEnable)
+void Unk_ActionKeyManager::SetEnabled(int bEnable)
 {
     m_bEnabled = bEnable;
 }
-MS2_REPLACE_METHOD(0x1409536B0, Unk_ActionKeyManager, FUN_1409536b0, 25, 0x79F379CB);
+MS2_REPLACE_METHOD(0x1409536B0, Unk_ActionKeyManager, SetEnabled, 25, 0x79F379CB);
 
 // @0x1409536d0
 void Unk_ActionKeyManager::FUN_1409536d0()
@@ -1563,7 +1563,7 @@ int InteractAction::vfunc_1()
     if (pObject)
     {
         pObject->FUN_1413fdca0(1);
-        m_strObjectId = pObject->FUN_140967060();
+        m_strObjectId = pObject->GetName();
         if (UIGuildFlagTooltip* pTooltip = Unk_GetUI<UIGuildFlagTooltip>(0x4ea8))
             pTooltip->FUN_1412c4050(m_strObjectId);
         return 1;
@@ -1610,7 +1610,7 @@ Unk_AkoTarget InteractAction::vfunc_12()
     Unk_WsB_Prop* pObject = FUN_1403ed2d0()->FUN_141bc66b0(m_strObjectId);
     if (!pObject)
         return ActionKeyObject::vfunc_12();
-    return Unk_AkoTarget(pObject->FUN_1409673c0());
+    return Unk_AkoTarget(pObject->GetPos());
 }
 MS2_REPLACE_METHOD(0x140958D50, InteractAction, vfunc_12, 189, 0x5E259EFC);
 // @0x140958c50
@@ -1634,7 +1634,7 @@ void InteractAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    MS2Ptr<CInteractObjectData> spData = pObject->FUN_140966e00();
+    MS2Ptr<CInteractObjectData> spData = pObject->GetRow();
     if (spData.IsNull())
         return;
     if (pObject->FUN_1413fde40() == 0)
@@ -1673,15 +1673,15 @@ void InteractAction::vfunc_2()
         if (pPlayer->FUN_1416764a0())
         {
             MS2Ptr<RideOffActionInteract> spRideOff(new RideOffActionInteract(0));
-            spRideOff->m_n28 = pObject->FUN_140967110();
-            spRideOff->m_s30 = pObject->FUN_140967060();
+            spRideOff->m_n28 = pObject->GetRowId();
+            spRideOff->m_s30 = pObject->GetName();
             pPlayer->SendRequestRideMode1(spRideOff);
         }
         else
         {
             MS2Ptr<StateInteractData> spState(new StateInteractData);
-            spState->m_nObjectId = pObject->FUN_140967110();
-            spState->m_strObjectId = pObject->FUN_140967060();
+            spState->m_nObjectId = pObject->GetRowId();
+            spState->m_strObjectId = pObject->GetName();
             pPlayer->vfunc_59(0x19, spState, 0x8a, 0);
         }
     }
@@ -1706,7 +1706,7 @@ CStringW InteractAction::vfunc_6()
     Unk_WsB_Prop* pObject = FUN_1403ed2d0()->FUN_141bc66b0(m_strObjectId);
     if (!pObject)
         return L"";
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, pObject->FUN_140967110());
+    CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, pObject->GetRowId());
     if (strName.GetLength() < 1)
         return L"";
     return FUN_140960c30(0x634, strName);
@@ -2571,7 +2571,7 @@ int GatheringAction::vfunc_1()
         MS2Ptr<CInteractGatheringObject> spObject(dynamic_cast<CInteractGatheringObject*>(aObjects[i].get()));
         if (spObject.IsNull())
             continue;
-        float fDist = pPlayer->vfunc_18().FUN_140965c40(spObject->FUN_1409673c0()).FUN_140967ac0();
+        float fDist = pPlayer->vfunc_18().FUN_140965c40(spObject->GetPos()).FUN_140967ac0();
         int bInRange = fDist < *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get() && vfunc_13(spObject);
         if (spObject->FUN_140967150() != bInRange)
             spObject->FUN_1413fdca0(bInRange != 0);
@@ -2586,7 +2586,7 @@ int GatheringAction::vfunc_1()
         }
     }
     if (spNearest)
-        m_strObjectId = spNearest->FUN_140967060();
+        m_strObjectId = spNearest->GetName();
     return spNearest != 0;
 }
 MS2_REPLACE_METHOD(0x14095D0E0, GatheringAction, vfunc_1, 889, 0xD2BF12F5);
@@ -2599,7 +2599,7 @@ CStringW GatheringAction::vfunc_6()
     ATL::CAtlMap<CStringW, int, ATL::CStringElementTraits<CStringW> > counts;
     for (size_t i = 0; i < m_objects.GetCount(); i++)
     {
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, m_objects[i]->FUN_140967110());
+        CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, m_objects[i]->GetRowId());
         int nCount = 0;
         counts.Lookup(strName, nCount);
         nCount++;
@@ -2625,7 +2625,7 @@ int GatheringAction::vfunc_13(CInteractObject* pObject)
     if (FUN_1409331e0()->FUN_14138c900(3) != 0)
         return 0;
     CInteractObject* pGathering = pObject;
-    MS2Ptr<CInteractObjectData> spData = pGathering->FUN_140966e00();
+    MS2Ptr<CInteractObjectData> spData = pGathering->GetRow();
     if (spData.IsNull())
         return 0;
     if (pObject->vfunc_7() == 0)
@@ -2667,7 +2667,7 @@ CStringW BillBoardInteractAction::vfunc_6()
     CInteractBillBoardObject* pBoard = dynamic_cast<CInteractBillBoardObject*>(pObject);
     if (pBoard == 0)
         return L"";
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, pObject->FUN_140967110());
+    CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, pObject->GetRowId());
     if (strName.GetLength() < 1)
         return L"";
     CStringW strText = pBoard->m_strText;
@@ -2983,7 +2983,7 @@ void ReactorAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    MS2Ptr<ReactorData> spData = spReactor->FUN_140966e50();
+    MS2Ptr<ReactorData> spData = spReactor->GetData();
     if (!spData)
         return;
     int nResult = FUN_140b7a3d0(pPlayer, spData->m_nId);
@@ -3406,31 +3406,31 @@ MS2Ptr<ReactorStateData> CReactor::FUN_140966db0()
 }
 
 // @0x140966e50
-MS2Ptr<ReactorData> CReactor::FUN_140966e50()
+MS2Ptr<ReactorData> CReactor::GetData()
 {
     return m_spData;
 }
 
 // @0x140966e00
-MS2Ptr<CInteractObjectData> CInteractObject::FUN_140966e00()
+MS2Ptr<CInteractObjectData> CInteractObject::GetRow()
 {
     return m_spRow;
 }
 
 // @0x140967060
-CString CInteractObject::FUN_140967060()
+CString CInteractObject::GetName()
 {
     return m_strName;
 }
 
 // @0x140967110
-int CInteractObject::FUN_140967110()
+int CInteractObject::GetRowId()
 {
     return m_nRowId;
 }
 
 // @0x1409673c0
-Unk_StreamPoint CInteractObject::FUN_1409673c0()
+Unk_StreamPoint CInteractObject::GetPos()
 {
     return m_vPos;
 }

@@ -743,9 +743,9 @@ bool CFeatureManager::FUN_14036ccb0()
 {
     if (!FUN_14036d3d0())
         return false;
-    if (!FUN_14036cd50())
+    if (!LoadFeatureSetting())
         return false;
-    if (!FUN_14036d040())
+    if (!LoadFeature())
         return false;
     SetInit(true);
     if (FUN_14036d570(2))
@@ -761,7 +761,7 @@ bool CFeatureManager::FUN_14036cd30()
 
 // @0x14036cd50
 // MS2-FUNCTIONAL: XML loader temp layout differs
-bool CFeatureManager::FUN_14036cd50()
+bool CFeatureManager::LoadFeatureSetting()
 {
     CString strPath = FUN_14071a5b0(CString("Table"), CString("feature_setting.xml"));
     TiXmlDocument doc;
@@ -792,7 +792,7 @@ bool CFeatureManager::FUN_14036cd50()
 
 // @0x14036d040
 // MS2-FUNCTIONAL: XML loader temp layout differs
-bool CFeatureManager::FUN_14036d040()
+bool CFeatureManager::LoadFeature()
 {
     CString strPath = FUN_14071a5b0(CString("Table"), CString("feature.xml"));
     TiXmlDocument doc;

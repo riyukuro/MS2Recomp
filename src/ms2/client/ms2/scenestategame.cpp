@@ -2728,7 +2728,7 @@ void CSceneStateGame::OnItemPutOnOrOff(CInPacket& packet)
             return;
         pMyPC->FUN_1416561a0()->FUN_1411e4150(nItemUid, nSlot, nKind);
         Unk_SSGItemHub* pHub = FUN_140a6a840();
-        pHub->vfunc_22(spEquip->FUN_1411dc7a0().get());
+        pHub->vfunc_22(spEquip->GetItem().get());
         break;
     }
     }
@@ -3369,11 +3369,11 @@ void CSceneStateGame::OnItemUpdate(CInPacket& packet)
     if (pHost != 0)
     {
         Unk_SSGItemHub* pHub = FUN_140a6a840();
-        pHub->vfunc_23(pEquip->FUN_1411dc7a0().get());
+        pHub->vfunc_23(pEquip->GetItem().get());
     }
     else
     {
-        pEquip->FUN_1411dc7a0()->FUN_140524eb0(packet);
+        pEquip->GetItem()->FUN_140524eb0(packet);
         pEquip->FUN_1411dd1c0();
     }
 }
@@ -6417,13 +6417,13 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
             if (spObj->vfunc_5() != nKind)
                 return;
             spObj->vfunc_12();
-            int nNotice = spObj->FUN_140966e00()->m_nCollection;
+            int nNotice = spObj->GetRow()->m_nCollection;
             if (nNotice != 0)
             {
-                int nTemplate = spObj->FUN_140967110();
+                int nTemplate = spObj->GetRowId();
                 if (FUN_1402bacf0(DAT_143ab3128, nTemplate) == -1)
                 {
-                    DAT_143ab3128.Add(spObj->FUN_140967110());
+                    DAT_143ab3128.Add(spObj->GetRowId());
                     if (spObj->vfunc_5() == 2)
                     {
                         if (Unk_SSGDlg4e29* pDlg = FUN_140c9b540(0x4e29))
@@ -6446,16 +6446,16 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
             MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(strName);
             if (spObj.IsNull())
                 return;
-            if (spObj->FUN_140966e00().IsNull())
+            if (spObj->GetRow().IsNull())
                 return;
-            Unk_AkoMessage(0x7c9, 1, 1, FUN_1401a9d70()->FUN_141811980(1, spObj->FUN_140966e00()->m_item.m_nCode));
+            Unk_AkoMessage(0x7c9, 1, 1, FUN_1401a9d70()->FUN_141811980(1, spObj->GetRow()->m_item.m_nCode));
         }
         else if (nResult == 13)
         {
             MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(strName);
             if (spObj.IsNull())
                 return;
-            MS2Ptr<CInteractObjectData> spData = spObj->FUN_140966e00();
+            MS2Ptr<CInteractObjectData> spData = spObj->GetRow();
             if (spData.IsNull())
                 return;
             CStringW strMastery = FUN_1409670c0()->FUN_14066bdd0(spData->m_mastery.m_eType);
@@ -6593,7 +6593,7 @@ void CSceneStateGame::OnInteractObject(CInPacket& packet)
             Unk_SSGXform xf;
             FUN_140a332d0(&xf);
             xf.FUN_141d2fab0();
-            Unk_SSGNiPt3 pos(spObj->FUN_1409673c0());
+            Unk_SSGNiPt3 pos(spObj->GetPos());
             FUN_14097faa0(&xf.m_translate, pos);
             Unk_SSGEffectReq req;
             req.m_strName = strEffect;
@@ -7771,7 +7771,7 @@ public:
     void FUN_14096be10(PCBase* pActor, Unk_SSGBuffOwner* pOwner, CInPacket& packet);   // read the buff
     void FUN_14096c3c0(CStringW strTag, int bMine);         // log the buff
     unsigned int FUN_14096d2a0();                           // data id
-    unsigned short FUN_14096d2c0();                         // data sub id
+    unsigned short GetLevel();                         // data sub id
     int m_nCasterId;                                        // +0x18
     char m_pad_1c[0x78 - 0x1c];
 };
@@ -7814,7 +7814,7 @@ void CSceneStateGame::OnBuff(CInPacket& packet)
                 pDlg->FUN_141a5a560();
             if (spCli.get() != 0)
             {
-                MS2Ptr<NotifyChangeBuff> spNotify(new NotifyChangeBuff(spCli->FUN_14096d2a0(), spCli->FUN_14096d2c0()));
+                MS2Ptr<NotifyChangeBuff> spNotify(new NotifyChangeBuff(spCli->FUN_14096d2a0(), spCli->GetLevel()));
                 spNotify->m_spCli = spCli;
                 spNotify->m_bAdded = 1;
                 FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(spNotify.get()));
@@ -7842,7 +7842,7 @@ void CSceneStateGame::OnBuff(CInPacket& packet)
                 pDlg->FUN_141a5a560();
             if (spCli.get() != 0)
             {
-                MS2Ptr<NotifyChangeBuff> spNotify(new NotifyChangeBuff(spCli->FUN_14096d2a0(), spCli->FUN_14096d2c0()));
+                MS2Ptr<NotifyChangeBuff> spNotify(new NotifyChangeBuff(spCli->FUN_14096d2a0(), spCli->GetLevel()));
                 spNotify->m_spCli = spCli;
                 spNotify->m_bAdded = 0;
                 FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(spNotify.get()));
@@ -8762,7 +8762,7 @@ void CSceneStateGame::FUN_14173b420(CInPacket& packet)
             return;
         MS2Ptr<CEquipItem> spEquip = pMyPC->FUN_141655c30(nItemUid);
         if (spEquip.get())
-            spItem = spEquip->FUN_1411dc7a0();
+            spItem = spEquip->GetItem();
         if (spItem == 0)
             return;
     }
@@ -9916,7 +9916,7 @@ void CSceneStateGame::OnFieldAddPet(CInPacket& packet)
     if (spPet->vfunc_124(nNpcId) == 0)
         return;
     if (!FUN_14028d470(fScale, 1.0f))
-        spPet->FUN_14123c300(fScale);
+        spPet->SetScaleAC(fScale);
     spPet->vfunc_90(&packet);
     spPet->FUN_141094790(static_cast<CInputStream&>(packet).vfunc_o8_4());
     spPet->FUN_14174a560(static_cast<CInputStream&>(packet).vfunc_o8_1());
@@ -11250,7 +11250,7 @@ void CSceneStateGame::FUN_141730920(CInPacket& packet)
             if (bMine)
                 FUN_140a6a840()->vfunc_29(spItem.get());
             if (bShow)
-                FUN_1403ed2b0()->FUN_141ad9c40(spItem->FUN_140527900()->FUN_140d41400());
+                FUN_1403ed2b0()->FUN_141ad9c40(spItem->FUN_140527900()->GetGem());
         }
     }
     else if (nMode == 1)
@@ -12425,9 +12425,9 @@ void CSceneStateGame::FUN_14172b350(CInPacket& packet)
             if (pDoll->FUN_14121c710() != 0)
                 nKind = 1;
             MS2Ptr<CEquipItem> spEquip = pDoll->FUN_141655e80(nSlot, nKind);
-            bool bSame = static_cast<bool>(spEquip.get()) && spEquip->FUN_1411dc7a0()->FUN_140527a20() == nSlot;
+            bool bSame = static_cast<bool>(spEquip.get()) && spEquip->GetItem()->FUN_140527a20() == nSlot;
             if (bSame)
-                pDoll->vfunc_128(spEquip->FUN_1411dc7a0().get(), 0);
+                pDoll->vfunc_128(spEquip->GetItem().get(), 0);
         }
         DAT_143af25f8 = 1;
     }

@@ -179,8 +179,8 @@ public:
     int FUN_1411eacf0();                                    // apply the ear / face variant
     int FUN_1411eb3c0();
     int FUN_1411eb550(CString strName);                     // apply the hair variant
-    CString FUN_1411eabd0();                                // the set name
-    bool FUN_1411eac20();                                   // HasSetName
+    CString GetSetName();                                // the set name
+    bool IsHasSetName();                                   // HasSetName
     void FUN_1411eac40(bool b);
     void FUN_1411ebde0();                                   // Update (500 ms)
     void FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag);   // RemoveEquipItem
