@@ -673,13 +673,13 @@ void CNetworkService::FUN_1415397d0(CInPacket& packet) {
     case static_cast<int>(RecvOp::Mentor): FUN_140b719e0(FUN_140c70240(),packet); break;
     case static_cast<int>(RecvOp::BuddyEmote): FUN_14153e280(packet); break;
     case static_cast<int>(RecvOp::BuddyBadge): FUN_14153f6c0(packet); break;
-    case 0x110: FUN_14153a8a0(packet); break;
+    case static_cast<int>(RecvOp::WorldTimeSync): FUN_14153a8a0(packet); break;
     case static_cast<int>(RecvOp::SuperWorldChat): FUN_14153f8c0(packet); break;
     case static_cast<int>(RecvOp::Microgame): FUN_140b73cc0(FUN_1414a5710(),packet); break;
     case static_cast<int>(RecvOp::DynamicBanword): FUN_14153f9d0(packet); break;
     case static_cast<int>(RecvOp::RequestSystemInfo): FUN_14153fa20(packet); break;
     case 0x127: FUN_14153fae0(packet); break;
-    case 0x12d: FUN_140a8afb0(FUN_1409c1740(),packet); break;
+    case static_cast<int>(RecvOp::Payback): FUN_140a8afb0(FUN_1409c1740(),packet); break;
     }
     FUN_1417e27d0(FUN_140aa6d30(),packet);
     FUN_141adbfb0(FUN_1403ed2b0(),packet);

@@ -267,8 +267,8 @@ enum class RecvOp : unsigned short {
     SkillBookTree = 0x010C,  // by-model
     BuddyEmote = 0x010D,
     BuddyBadge = 0x010E,
-    SyncWorld = 0x010F,  // conflict: placement unresolved
-    // 0x0110 SyncWorld: conflict, see opcodes-kms2.tsv
+    SyncWorld = 0x010F,  // int64 server time at login/character select
+    WorldTimeSync = 0x0110,  // int interval at field entry
     BirthdayCard = 0x0111,
     SuperWorldChat = 0x0112,  // by-model
     Microgame = 0x0114,
@@ -293,7 +293,11 @@ enum class RecvOp : unsigned short {
     WeddingBillboard = 0x012A,  // by-model
     HideAndSeek = 0x012B,
     MessengerBrowserStamp = 0x012C,  // by-model
+    Payback = 0x012D,
     LimitBreak = 0x012E,
+    WaterGunSkill = 0x012F,
+    TermTag = 0x0137,
+    HomeBlock = 0x0138,
 };
 
 enum class SendOp : unsigned short {

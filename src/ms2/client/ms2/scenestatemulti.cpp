@@ -529,10 +529,10 @@ void CSceneStateMulti::OnPacket(CInPacket& packet)
     case static_cast<int>(RecvOp::EventReward):
         OnEventReward(packet);
         break;
-    case 0x10f:
+    case static_cast<int>(RecvOp::SyncWorld):
         FUN_14174fcc0(packet);
         break;
-    case 0x137:
+    case static_cast<int>(RecvOp::TermTag):
         FUN_140ad5f00(FUN_1409eed70(), packet);
     }
 }

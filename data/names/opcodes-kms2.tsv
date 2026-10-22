@@ -288,8 +288,8 @@ recv	0x10a	0x10c	Mentor	confirmed	net:FUN_140b719e0; user; shift 2; CMentoringMa
 recv	0x10c	0x10e	SkillBookTree	by-model	no dispatcher case; user; shift +2		none: 138 packets; no full-layout confirmation
 recv	0x10d	0x10f	BuddyEmote	confirmed	net:FUN_14153e280; user; +2: modes 0..6, couple emotion / buddy manager		none: 0 packets; no full-layout confirmation
 recv	0x10e	0x110	BuddyBadge	confirmed	net:FUN_14153f6c0; user; +2: byte kind + long charId (BuddyBadge layout)		none: 76 packets; no full-layout confirmation
-recv	0x10f	0x111	SyncWorld	conflict	multi:FUN_14174fcc0; user; capture: int64 server time in login/character scene; 7 x 8 B; SyncWorld		payload-confirmed: 7 x 8 B int64 server time; login/character scene
-recv	0x110	0x112	WorldTimeSync	conflict	net:FUN_14153a8a0; maple2; capture: int interval updates world clock; 597 x 4 B; time-sync		payload-confirmed: 597 x 4 B int interval; updates world clock at field entry
+recv	0x10f	0x111	SyncWorld	confirmed	multi:FUN_14174fcc0; int64 server time at login/character select; 7 x 8 B		payload-confirmed: 7 x 8 B int64 server time; login/character scene
+recv	0x110	0x112	WorldTimeSync	confirmed	net:FUN_14153a8a0; int interval updates world clock at field entry; 597 x 4 B		payload-confirmed: 597 x 4 B int interval; updates world clock at field entry
 recv	0x111	0x113	BirthdayCard	confirmed	game:FUN_14173c7a0; user; +2: mode 1 int id + long value	Birthday	none: 0 packets; no full-layout confirmation
 recv	0x112	0x114	SuperWorldChat	by-model	net:FUN_14153f8c0; user; shift 2		contradicted: 1 packets; compact fixed prefix exceeds observed payload
 recv	0x113	0x115		by-model	game:FUN_1403ed2d0; -; shift +2		none: 0 packets; no full-layout confirmation
@@ -316,15 +316,15 @@ recv	0x128	0x12a	Wedding	by-model	game:FUN_1409eed90; user; shift 2	Marriage	lay
 recv	0x12a	0x12c	WeddingBillboard	by-model	no dispatcher case; user; shift +2		none: 5 packets; no full-layout confirmation
 recv	0x12b	0x12d	HideAndSeek	confirmed	game:FUN_14173e5b0; user; shift 2; UIHideAndSeekResultDialog		none: 278 packets; no full-layout confirmation
 recv	0x12c	0x12e	MessengerBrowserStamp	by-model	game:FUN_14173f0c0; user; shift 2		layout-fit: 6 packets meet compact prefix; full branch layout not verified
-recv	0x12d	0x12f	Payback	capture-proposed	net:FUN_140a8afb0; -; shift +2; capture: 729 packets, 0/1 status and product-list branches (9 B / 696-704 B)		payload-confirmed: 729 packets; mode 0 is 9 B status, mode 1 product-list payloads 696-704 B
+recv	0x12d	0x12f	Payback	confirmed	net:FUN_140a8afb0; PaybackManagerClient; 0/1 status and product-list branches		payload-confirmed: 729 packets; mode 0 is 9 B status, mode 1 product-list payloads 696-704 B
 recv	0x12e	0x130	LimitBreak	confirmed	game:FUN_14173f1a0; user; shift 2; UIUnlimitedEnchantDialog		none: 10 packets; no full-layout confirmation
-recv	0x12f	0x131	WaterGunSkill	capture-proposed	game:FUN_14173f280; -; shift +2; capture: 2 packets, 0/1 branches (9 B / 696 B); handler updates water-gun/guide-skill state		layout-fit: 2 packets; observed 9 B and 696 B branches include mode and handler fields; variable body not fully decoded
+recv	0x12f	0x131	WaterGunSkill	confirmed	game:FUN_14173f280; updates water-gun state and guide-skill levels; captures share 0x12D sizes, but handler semantics distinguish it		layout-fit: 2 packets; observed 9 B and 696 B branches include mode and handler fields; variable body not fully decoded
 recv	0x130	0x132		by-model	game:FUN_141720c60; -; shift +2	UnknownSync,Init_0x05	none: 0 packets; no full-layout confirmation
-recv	0x131	0x133	CashShopState	capture-proposed	game:FUN_14173f7c0; -; shift +2; capture: 600 one-byte packets at field entry; stores a field-state byte; interpretation tentative		payload-confirmed: 600 one-byte packets; handler stores exactly one state byte
+recv	0x131	0x133		by-model	game:FUN_14173f7c0; handler only stores a one-byte value in generic state; capture activity does not establish CashShopState		payload-confirmed: 600 one-byte packets; handler stores exactly one state byte
 recv	0x135	0x137		by-model	game:FUN_14173f810; -; shift +2		none: 0 packets; no full-layout confirmation
 recv	0x136	0x138		by-model	game:FUN_14173f860; -; shift +2		none: 0 packets; no full-layout confirmation
-recv	0x137	0x139	TermTag	capture-proposed	game:FUN_140ad5f00; -; shift +2; capture: 179 packets, mode 0 load; handler modes 0/1/2 load/start/end term tags		layout-fit: 179 packets; mode 0 tag-load payloads fit handler; start/end branches not observed
-recv	0x138	0x13a	HomeBlock	capture-proposed	game:FUN_14173fc00; -; shift +2; capture: 692 five-byte mode-4 packets; HomeBlockManager mode 4 adds home-block records		payload-confirmed: 692 five-byte mode-4 packets; mode plus zero-count HomeBlock record list
+recv	0x137	0x139	TermTag	confirmed	game:FUN_140ad5f00; handler modes 0/1/2 load/start/end term tags		layout-fit: 179 packets; mode 0 tag-load payloads fit handler; start/end branches not observed
+recv	0x138	0x13a	HomeBlock	confirmed	game:FUN_14173fc00; HomeBlockManager mode 4 adds home-block records		payload-confirmed: 692 five-byte mode-4 packets; mode plus zero-count HomeBlock record list
 recv	0x139	0x13b		by-model	game:FUN_14173fc40; -; shift +2		none: 0 packets; no full-layout confirmation
 send	0x0	0x0	Null	by-model	no sender found; shift +0	NULL	none: 0 packets; no full-layout confirmation
 send	0x1	0x1	ResponseVersion	by-model	CNetworkService; shift +0		none: 610 packets; no full-layout confirmation

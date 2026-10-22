@@ -1888,7 +1888,7 @@ void CSceneStateGame::OnPacket(CInPacket& packet)
     case static_cast<int>(RecvOp::GameEvent):
         FUN_140ceab50(FUN_14015a050(), packet);
         break;
-    case 0x137:
+    case static_cast<int>(RecvOp::TermTag):
         FUN_140ad5f00(FUN_1409eed70(), packet);
         break;
     case static_cast<int>(RecvOp::SetPcBang):
@@ -2089,7 +2089,7 @@ void CSceneStateGame::OnPacket(CInPacket& packet)
     case static_cast<int>(RecvOp::LimitBreak):
         OnLimitBreak(packet);
         break;
-    case 0x12f:
+    case static_cast<int>(RecvOp::WaterGunSkill):
         FUN_14173f280(packet);
         break;
     case static_cast<int>(RecvOp::ItemSocketSystem):
@@ -2104,7 +2104,7 @@ void CSceneStateGame::OnPacket(CInPacket& packet)
     case 0x136:
         FUN_14173f860(packet);
         break;
-    case 0x138:
+    case static_cast<int>(RecvOp::HomeBlock):
         FUN_14173fc00(packet);
         break;
     case 0x139:
