@@ -1030,6 +1030,8 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
     # unwind funclets of matched functions (?dtor$N@...: not in the unit ranges, not counted) are matched only to
     # harvest their callees: a destructor reached only on the exception path is otherwise missing from the symbol map
     for name, va in sorted(funclets.items(), key=lambda kv: kv[1]):
+        if name not in obj.by_name or not obj.defined(obj.by_name[name]):
+            continue            # an external EH handler (__std_terminate of a noexcept function's unwind map)
         snap = dict(bm.HARVEST)
         ok, _ = quiet_match(obj, name, va, exe, False)
         if not ok:
