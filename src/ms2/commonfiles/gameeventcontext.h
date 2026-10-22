@@ -37,7 +37,7 @@ public:
     virtual void vfunc_2();
     virtual void vfunc_3(Unk_GEOut* out);
     virtual void vfunc_4(Unk_GEIn* in);
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
     virtual void vfunc_10();
 protected:   // gameeventcli.cpp (GameEvent*Cli) reads the members
@@ -70,7 +70,7 @@ public:
     virtual void vfunc_2();
     virtual void vfunc_3(Unk_GEOut* out);
     virtual void vfunc_4(Unk_GEIn* in);
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
     virtual void vfunc_10();
     int FUN_1403fbdc0() { return m_i4; }        // 0x1403fbdc0
@@ -181,7 +181,7 @@ public:
 };  // vftable 0x142d441b0
 MS2_CHECK_SIZE(DungeonBuffEventCtx, 0x40);
 
-// The NPC shop give-point event settings (GameEventNpcShopGivePoint::vfunc_5 loads them with Create).
+// The NPC shop give-point event settings (GameEventNpcShopGivePoint::OnStart loads them with Create).
 class CNpcShopProductBase;
 class CNpcShopGivePointContextBase : public CPtred {
 public:

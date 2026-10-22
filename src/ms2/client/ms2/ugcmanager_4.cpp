@@ -771,7 +771,7 @@ void CUgcManager::FUN_14187f590(efd::SmartPointer<egf::Entity> spEntity)
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
     spCtrl->FUN_1418a3ab0(nDialog);
-    FUN_1403ed2b0()->FUN_141adc750((eUIClassID)nDialog);
+    FUN_1403ed2b0()->ToggleDialog((eUIClassID)nDialog);
 }
 MS2_REPLACE_METHOD(0x14187f590, CUgcManager, FUN_14187f590, 1434, 0x6D889E75);
 
@@ -803,7 +803,7 @@ void CUgcManager::FUN_14187fb30()
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
     spCtrl->FUN_1418a3ab0(0x4e56);
-    FUN_1403ed2b0()->FUN_141adc750(eUI_4e56);
+    FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x14187fb30, CUgcManager, FUN_14187fb30, 576, 0x62F8DDA3);
 
@@ -839,7 +839,7 @@ void CUgcManager::FUN_14187fd80()
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
     spCtrl->FUN_1418a3ab0(0x4e56);
-    FUN_1403ed2b0()->FUN_141adc750(eUI_4e56);
+    FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x14187fd80, CUgcManager, FUN_14187fd80, 593, 0x14D4A975);
 
@@ -872,7 +872,7 @@ void CUgcManager::FUN_14187ffe0()
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
     spCtrl->FUN_1418a3ab0(0x4e56);
-    FUN_1403ed2b0()->FUN_141adc750(eUI_4e56);
+    FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x14187ffe0, CUgcManager, FUN_14187ffe0, 575, 0xFFED958F);
 
@@ -899,7 +899,7 @@ void CUgcManager::FUN_141880230(CString strName, int nIndex)
     spCtrl->m_spViewer = spViewer;
     FUN_141882450(spCtrl);
     spCtrl->FUN_1418a3ab0(0x4e56);
-    FUN_1403ed2b0()->FUN_141adc750(eUI_4e56);
+    FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
 }
 MS2_REPLACE_METHOD(0x141880230, CUgcManager, FUN_141880230, 598, 0x8F015935);
 
@@ -921,7 +921,7 @@ bool CUgcManager::FUN_141880490(MS2Ptr<CUgcUploadCtrl> spCtrl)
         return false;
     FUN_141882450(spCtrl);
     spCtrl->FUN_1418a3ab0(0x4e56);
-    FUN_1403ed2b0()->FUN_141adc750(eUI_4e56);
+    FUN_1403ed2b0()->ToggleDialog(eUI_4e56);
     return true;
 }
 MS2_REPLACE_METHOD(0x141880490, CUgcManager, FUN_141880490, 348, 0xE6E12340);

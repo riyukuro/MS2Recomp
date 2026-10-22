@@ -169,7 +169,7 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         {
             unsigned __int64 nId = FUN_140718370(args.FUN_1422b8f40());
             if (nId == 0)
-                TSingleton<CUIService>::GetInstance()->FUN_141adc750((eUIClassID)0x4f96);
+                TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f96);
             else
                 TSingleton<WeddingManager>::GetInstance()->SendInvitation(nId);
         }

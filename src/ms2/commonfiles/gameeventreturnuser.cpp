@@ -67,7 +67,7 @@ void GameEventReturnUser::vfunc_4(Unk_GEIn* in)
 }
 
 // @0x14041cda0
-void GameEventReturnUser::vfunc_5()
+void GameEventReturnUser::OnStart()
 {
     if (0 < m_e0->m_18)
         FUN_140302b00()->GetMentoring()->FUN_140424da0(m_e0);
@@ -91,5 +91,5 @@ MS2_EMIT_CRT_MEMMOVE_S();
 MS2_REPLACE_METHOD(0x14041CBB0, GameEventReturnUser, vfunc_1, 61, 0xE36CC2D1);
 MS2_REPLACE_METHOD(0x14041CD00, GameEventReturnUser, vfunc_3, 66, 0x10EC5821);
 MS2_REPLACE_METHOD(0x14041CD50, GameEventReturnUser, vfunc_4, 66, 0xBAB6C5C6);
-MS2_REPLACE_METHOD(0x14041CDA0, GameEventReturnUser, vfunc_5, 124, 0x2CA4961C);
+MS2_REPLACE_METHOD(0x14041CDA0, GameEventReturnUser, OnStart, 124, 0x2CA4961C);
 MS2_REPLACE_METHOD(0x14041CE30, GameEventReturnUser, vfunc_6, 60, 0xC3839913);

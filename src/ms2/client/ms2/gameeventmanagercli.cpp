@@ -213,7 +213,7 @@ bool GameEventManagerCli::Add(MS2Ptr<GameEvent> gameEvent)
     MS2_ASSERT_AT(MS2_LINE(149), gameEvent->GetID() != 0);
     if (m_events.Lookup(gameEvent->GetID()) != 0)
         return false;
-    gameEvent->vfunc_5();
+    gameEvent->OnStart();
     m_events.SetAt(gameEvent->GetID(), gameEvent);
     ++m_states[gameEvent->GetName()];
     return true;

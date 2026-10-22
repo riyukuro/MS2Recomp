@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The GameEvent subclasses of commonfiles\gameevent.cpp:
 // per class a factory (registered by name in the dynamic initializers), the name (vfunc_1), the ctor, the parser of the
-// event's string fields (vfunc_2), the packet write / read (vfunc_3 / vfunc_4) and the start / end handlers (vfunc_5 /
+// event's string fields (vfunc_2), the packet write / read (vfunc_3 / vfunc_4) and the start / end handlers (OnStart /
 // vfunc_6, mostly forwarding to CGameRule). The ctors of the *Context element types and the template glue follow at
 // the end of the range; the vftables, ??_G and the implicit dtors are COMDATs of unit_1403e9650.
 // MS2-UNIT: commonfiles\gameevent.cpp
@@ -536,8 +536,8 @@ void GameEventSaleChat::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BB700, GameEventSaleChat, vfunc_4, 124, 0x5A130818);
 
 // @0x1403bb790
-void GameEventSaleChat::vfunc_5() { FUN_1401c0d90()->FUN_140477020(m_id, m_d0, m_d4, m_d8); }
-MS2_REPLACE_METHOD(0x1403BB790, GameEventSaleChat, vfunc_5, 74, 0xA2845D21);
+void GameEventSaleChat::OnStart() { FUN_1401c0d90()->FUN_140477020(m_id, m_d0, m_d4, m_d8); }
+MS2_REPLACE_METHOD(0x1403BB790, GameEventSaleChat, OnStart, 74, 0xA2845D21);
 
 // @0x1403bb7e0
 void GameEventSaleChat::vfunc_6() { FUN_1401c0d90()->FUN_1404770e0(m_id); }
@@ -625,7 +625,7 @@ void GameEventSAHotTime::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BBD30, GameEventSAHotTime, vfunc_4, 498, 0x00EAE5C2);
 
 // @0x1403bbf30
-void GameEventSAHotTime::vfunc_5()
+void GameEventSAHotTime::OnStart()
 {
     MS2Ptr<SAHotTimeEventContext> spContext(new SAHotTimeEventContext);
     spContext->m_18 = m_d0;
@@ -634,7 +634,7 @@ void GameEventSAHotTime::vfunc_5()
     FUN_1401c0d90()->FUN_140477360(FUN_1402e1d00(), spContext);
     FUN_1401c0d90()->FUN_14047d820(FUN_1402e1d00(), m_80);
 }
-MS2_REPLACE_METHOD(0x1403BBF30, GameEventSAHotTime, vfunc_5, 392, 0x94BE1A07);
+MS2_REPLACE_METHOD(0x1403BBF30, GameEventSAHotTime, OnStart, 392, 0x94BE1A07);
 
 // @0x1403bc0c0
 void GameEventSAHotTime::vfunc_6()
@@ -706,12 +706,12 @@ void GameEventSaleBeautyShop::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BC430, GameEventSaleBeautyShop, vfunc_4, 172, 0x5BC6B538);
 
 // @0x1403bc4f0
-void GameEventSaleBeautyShop::vfunc_5()
+void GameEventSaleBeautyShop::OnStart()
 {
     BOOL bOn = m_d8 ? FALSE : TRUE;
     FUN_1401c0d90()->FUN_140476b40(m_d0, m_d4, bOn);
 }
-MS2_REPLACE_METHOD(0x1403BC4F0, GameEventSaleBeautyShop, vfunc_5, 95, 0x590385D4);
+MS2_REPLACE_METHOD(0x1403BC4F0, GameEventSaleBeautyShop, OnStart, 95, 0x590385D4);
 
 // @0x1403bc560
 void GameEventSaleBeautyShop::vfunc_6()
@@ -766,13 +766,13 @@ void GameEventUserCondition::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BC7B0, GameEventUserCondition, vfunc_4, 179, 0x9603FC7B);
 
 // @0x1403bc870
-void GameEventUserCondition::vfunc_5()
+void GameEventUserCondition::OnStart()
 {
     if (m_d0 == 0)
         return;
     FUN_1401c0d90()->FUN_140477f20(m_d0, m_d8);
 }
-MS2_REPLACE_METHOD(0x1403BC870, GameEventUserCondition, vfunc_5, 119, 0xA883B333);
+MS2_REPLACE_METHOD(0x1403BC870, GameEventUserCondition, OnStart, 119, 0xA883B333);
 
 // @0x1403bc8f0
 void GameEventUserCondition::vfunc_6() { FUN_1401c0d90()->FUN_140477fb0(m_d0); }
@@ -817,13 +817,13 @@ void GameEventMesoRevival::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BCAC0, GameEventMesoRevival, vfunc_4, 78, 0xD08AD047);
 
 // @0x1403bcb20
-void GameEventMesoRevival::vfunc_5()
+void GameEventMesoRevival::OnStart()
 {
     MS2Ptr<MesoRevivalEventContext> spContext(new MesoRevivalEventContext);
     spContext->m_18 = m_d0;
     FUN_1401c0d90()->FUN_140477bd0(FUN_1402e1d00(), spContext);
 }
-MS2_REPLACE_METHOD(0x1403BCB20, GameEventMesoRevival, vfunc_5, 233, 0x23BFF202);
+MS2_REPLACE_METHOD(0x1403BCB20, GameEventMesoRevival, OnStart, 233, 0x23BFF202);
 
 // @0x1403bcc10
 void GameEventMesoRevival::vfunc_6() { FUN_1401c0d90()->FUN_140477c90(FUN_1402e1d00()); }
@@ -878,8 +878,8 @@ void GameEventItemBuff::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BCEE0, GameEventItemBuff, vfunc_4, 79, 0x4F54C1BA);
 
 // @0x1403bcf40
-void GameEventItemBuff::vfunc_5() { FUN_1401c0d90()->FUN_14047a8c0(m_d0); }
-MS2_REPLACE_METHOD(0x1403BCF40, GameEventItemBuff, vfunc_5, 38, 0xD20048DD);
+void GameEventItemBuff::OnStart() { FUN_1401c0d90()->FUN_14047a8c0(m_d0); }
+MS2_REPLACE_METHOD(0x1403BCF40, GameEventItemBuff, OnStart, 38, 0xD20048DD);
 
 // @0x1403bcf70
 void GameEventItemBuff::vfunc_6() { FUN_1401c0d90()->FUN_14047a8c0(0); }
@@ -936,8 +936,8 @@ void GameEventDungeonBonusReward::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BD270, GameEventDungeonBonusReward, vfunc_4, 62, 0xCEC9B3E2);
 
 // @0x1403bd2c0
-void GameEventDungeonBonusReward::vfunc_5() { FUN_1401c0d90()->FUN_14047a900(m_d0); }
-MS2_REPLACE_METHOD(0x1403BD2C0, GameEventDungeonBonusReward, vfunc_5, 91, 0xA725C0A7);
+void GameEventDungeonBonusReward::OnStart() { FUN_1401c0d90()->FUN_14047a900(m_d0); }
+MS2_REPLACE_METHOD(0x1403BD2C0, GameEventDungeonBonusReward, OnStart, 91, 0xA725C0A7);
 
 // @0x1403bd330
 void GameEventDungeonBonusReward::vfunc_6() { FUN_1401c0d90()->FUN_14047aa00(m_d0); }
@@ -974,8 +974,8 @@ void GameEventFreeAirTaxi::vfunc_4(Unk_GEIn* in) { GameEvent::vfunc_4(in); }
 MS2_REPLACE_METHOD(0x1403BD4F0, GameEventFreeAirTaxi, vfunc_4, 34, 0x52D23EA6);
 
 // @0x1403bd520
-void GameEventFreeAirTaxi::vfunc_5() { FUN_1401c0d90()->FUN_140477dc0(FUN_1402e1d00()); }
-MS2_REPLACE_METHOD(0x1403BD520, GameEventFreeAirTaxi, vfunc_5, 47, 0xE1812CAC);
+void GameEventFreeAirTaxi::OnStart() { FUN_1401c0d90()->FUN_140477dc0(FUN_1402e1d00()); }
+MS2_REPLACE_METHOD(0x1403BD520, GameEventFreeAirTaxi, OnStart, 47, 0xE1812CAC);
 
 // @0x1403bd560
 void GameEventFreeAirTaxi::vfunc_6() { FUN_1401c0d90()->FUN_140477e30(FUN_1402e1d00()); }
@@ -1048,14 +1048,14 @@ void GameEventOntime::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BDBE0, GameEventOntime, vfunc_4, 98, 0x459DA96A);
 
 // @0x1403bdc50
-void GameEventOntime::vfunc_5()
+void GameEventOntime::OnStart()
 {
     if (m_d0.get()) {
         m_d0->m_1c = true;
         FUN_1401c0d90()->FUN_140478170(FUN_1402e1d00(), m_d0);
     }
 }
-MS2_REPLACE_METHOD(0x1403BDC50, GameEventOntime, vfunc_5, 158, 0x302A88DF);
+MS2_REPLACE_METHOD(0x1403BDC50, GameEventOntime, OnStart, 158, 0x302A88DF);
 
 // @0x1403bdd00
 void GameEventOntime::vfunc_6() { FUN_1401c0d90()->FUN_1404781f0(FUN_1402e1d00()); }
@@ -1100,8 +1100,8 @@ void GameEventSaleEnchant::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BDEE0, GameEventSaleEnchant, vfunc_4, 79, 0x936AB3EA);
 
 // @0x1403bdf40
-void GameEventSaleEnchant::vfunc_5() { FUN_1401c0d90()->FUN_140478a80(m_id, m_d0); }
-MS2_REPLACE_METHOD(0x1403BDF40, GameEventSaleEnchant, vfunc_5, 47, 0x97CFC059);
+void GameEventSaleEnchant::OnStart() { FUN_1401c0d90()->FUN_140478a80(m_id, m_d0); }
+MS2_REPLACE_METHOD(0x1403BDF40, GameEventSaleEnchant, OnStart, 47, 0x97CFC059);
 
 // @0x1403bdf80
 void GameEventSaleEnchant::vfunc_6() { FUN_1401c0d90()->FUN_140478af0(m_id); }
@@ -1164,7 +1164,7 @@ void GameEventQuestTag::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BE2B0, GameEventQuestTag, vfunc_4, 301, 0xE08C631B);
 
 // @0x1403be3f0
-void GameEventQuestTag::vfunc_5()
+void GameEventQuestTag::OnStart()
 {
     MS2Ptr<EventQuestContext> spContext(new EventQuestContext);
     spContext->m_strTag = m_d0;
@@ -1174,7 +1174,7 @@ void GameEventQuestTag::vfunc_5()
         spContext->m_newCharacterTime = m_28.Get();
     FUN_1401c0d90()->FUN_140478fd0(m_d0, spContext);
 }
-MS2_REPLACE_METHOD(0x1403BE3F0, GameEventQuestTag, vfunc_5, 458, 0x480EB6B1);
+MS2_REPLACE_METHOD(0x1403BE3F0, GameEventQuestTag, OnStart, 458, 0x480EB6B1);
 
 // @0x1403be5c0
 void GameEventQuestTag::vfunc_6() { FUN_1401c0d90()->FUN_140479070(m_d0); }
@@ -1223,7 +1223,7 @@ void GameEventBlackMarketFeeDiscount::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BE7F0, GameEventBlackMarketFeeDiscount, vfunc_4, 131, 0x2643A841);
 
 // @0x1403be880
-void GameEventBlackMarketFeeDiscount::vfunc_5()
+void GameEventBlackMarketFeeDiscount::OnStart()
 {
     static Unk_GameEventIntRange s_range(0, 10000);
     if (s_range.IsInRange(m_d0))
@@ -1231,7 +1231,7 @@ void GameEventBlackMarketFeeDiscount::vfunc_5()
     else
         MS2_ASSERT_AT(MS2_LINE(841), FALSE);
 }
-MS2_REPLACE_METHOD(0x1403BE880, GameEventBlackMarketFeeDiscount, vfunc_5, 261, 0x9867204A);
+MS2_REPLACE_METHOD(0x1403BE880, GameEventBlackMarketFeeDiscount, OnStart, 261, 0x9867204A);
 
 // @0x1403be990
 void GameEventBlackMarketFeeDiscount::vfunc_6() { FUN_1401c0d90()->FUN_140479510(-1, 0, 0); }
@@ -1276,8 +1276,8 @@ void GameEventUGCMapSaleCoupon::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BEB60, GameEventUGCMapSaleCoupon, vfunc_4, 79, 0x922BFEA6);
 
 // @0x1403bebc0
-void GameEventUGCMapSaleCoupon::vfunc_5() { FUN_1401c0d90()->FUN_140479600(m_d0); }
-MS2_REPLACE_METHOD(0x1403BEBC0, GameEventUGCMapSaleCoupon, vfunc_5, 38, 0x0BEE936B);
+void GameEventUGCMapSaleCoupon::OnStart() { FUN_1401c0d90()->FUN_140479600(m_d0); }
+MS2_REPLACE_METHOD(0x1403BEBC0, GameEventUGCMapSaleCoupon, OnStart, 38, 0x0BEE936B);
 
 // @0x1403bebf0
 void GameEventUGCMapSaleCoupon::vfunc_6() { FUN_1401c0d90()->FUN_140479600(0); }
@@ -1340,7 +1340,7 @@ void GameEventPremiumMarketSale::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BEEE0, GameEventPremiumMarketSale, vfunc_4, 280, 0x92747EB6);
 
 // @0x1403bf000
-void GameEventPremiumMarketSale::vfunc_5()
+void GameEventPremiumMarketSale::OnStart()
 {
     MS2Ptr<PreminmMarketSaleEventContext> pContext(new PreminmMarketSaleEventContext);
     MS2_ASSERT_AT(MS2_LINE(967), pContext != NULL);
@@ -1349,7 +1349,7 @@ void GameEventPremiumMarketSale::vfunc_5()
     pContext->m_30 = m_e8;
     FUN_1403ed2a0()->FUN_1407ce2a0(FUN_1402e1d00(), pContext);
 }
-MS2_REPLACE_METHOD(0x1403BF000, GameEventPremiumMarketSale, vfunc_5, 403, 0x7A587F4F);
+MS2_REPLACE_METHOD(0x1403BF000, GameEventPremiumMarketSale, OnStart, 403, 0x7A587F4F);
 
 // @0x1403bf1a0
 void GameEventPremiumMarketSale::vfunc_6() { FUN_1403ed2a0()->FUN_1407ce320(FUN_1402e1d00()); }
@@ -1400,8 +1400,8 @@ void GameEventGameMenuPopup::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BF3C0, GameEventGameMenuPopup, vfunc_4, 182, 0x7B83F3DF);
 
 // @0x1403bf480
-void GameEventGameMenuPopup::vfunc_5() {}
-MS2_REPLACE_METHOD(0x1403BF480, GameEventGameMenuPopup, vfunc_5, 6, 0xA9AF6E37);
+void GameEventGameMenuPopup::OnStart() {}
+MS2_REPLACE_METHOD(0x1403BF480, GameEventGameMenuPopup, OnStart, 6, 0xA9AF6E37);
 
 // @0x1403bf490
 void GameEventGameMenuPopup::vfunc_6() {}
@@ -1446,8 +1446,8 @@ void GameEventEventFieldPopup::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BF630, GameEventEventFieldPopup, vfunc_4, 79, 0xBAF21AA1);
 
 // @0x1403bf690
-void GameEventEventFieldPopup::vfunc_5() { FUN_1401c0d90()->FUN_1404795c0(m_d0); }
-MS2_REPLACE_METHOD(0x1403BF690, GameEventEventFieldPopup, vfunc_5, 38, 0x672A21AB);
+void GameEventEventFieldPopup::OnStart() { FUN_1401c0d90()->FUN_1404795c0(m_d0); }
+MS2_REPLACE_METHOD(0x1403BF690, GameEventEventFieldPopup, OnStart, 38, 0x672A21AB);
 
 // @0x1403bf6c0
 void GameEventEventFieldPopup::vfunc_6() { FUN_1401c0d90()->FUN_1404795c0(0); }
@@ -1498,12 +1498,12 @@ void GameEventSaleAutoFishing::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BF8D0, GameEventSaleAutoFishing, vfunc_4, 179, 0x96AC65FC);
 
 // @0x1403bf990
-void GameEventSaleAutoFishing::vfunc_5()
+void GameEventSaleAutoFishing::OnStart()
 {
     FUN_1401c0d90()->FUN_1404798e0(m_d0);
     FUN_1401c0d90()->FUN_140479920(m_d8);
 }
-MS2_REPLACE_METHOD(0x1403BF990, GameEventSaleAutoFishing, vfunc_5, 116, 0x7E5DA331);
+MS2_REPLACE_METHOD(0x1403BF990, GameEventSaleAutoFishing, OnStart, 116, 0x7E5DA331);
 
 // @0x1403bfa10
 void GameEventSaleAutoFishing::vfunc_6()
@@ -1557,12 +1557,12 @@ void GameEventSaleAutoPlayInstrument::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403BFC60, GameEventSaleAutoPlayInstrument, vfunc_4, 179, 0xBEF43DC2);
 
 // @0x1403bfd20
-void GameEventSaleAutoPlayInstrument::vfunc_5()
+void GameEventSaleAutoPlayInstrument::OnStart()
 {
     FUN_1401c0d90()->FUN_140479a00(m_d0);
     FUN_1401c0d90()->FUN_140479a40(m_d8);
 }
-MS2_REPLACE_METHOD(0x1403BFD20, GameEventSaleAutoPlayInstrument, vfunc_5, 116, 0x1960A1F7);
+MS2_REPLACE_METHOD(0x1403BFD20, GameEventSaleAutoPlayInstrument, OnStart, 116, 0x1960A1F7);
 
 // @0x1403bfda0
 void GameEventSaleAutoPlayInstrument::vfunc_6()
@@ -1595,8 +1595,8 @@ void GameEventTrafficOptimizer::vfunc_2() {}
 MS2_REPLACE_METHOD(0x1403BFF20, GameEventTrafficOptimizer, vfunc_2, 6, 0xA9AF6E37);
 
 // @0x1403bff30
-void GameEventTrafficOptimizer::vfunc_5() {}
-MS2_REPLACE_METHOD(0x1403BFF30, GameEventTrafficOptimizer, vfunc_5, 6, 0xA9AF6E37);
+void GameEventTrafficOptimizer::OnStart() {}
+MS2_REPLACE_METHOD(0x1403BFF30, GameEventTrafficOptimizer, OnStart, 6, 0xA9AF6E37);
 
 // @0x1403bff40
 void GameEventTrafficOptimizer::vfunc_6() {}
@@ -1636,8 +1636,8 @@ void GameEventDungeonRoomShutdown::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C0090, GameEventDungeonRoomShutdown, vfunc_2, 255, 0x59566783);
 
 // @0x1403c01a0
-void GameEventDungeonRoomShutdown::vfunc_5() { FUN_1401c0d90()->FUN_140479c80(m_d0); }
-MS2_REPLACE_METHOD(0x1403C01A0, GameEventDungeonRoomShutdown, vfunc_5, 91, 0xA67C7DA7);
+void GameEventDungeonRoomShutdown::OnStart() { FUN_1401c0d90()->FUN_140479c80(m_d0); }
+MS2_REPLACE_METHOD(0x1403C01A0, GameEventDungeonRoomShutdown, OnStart, 91, 0xA67C7DA7);
 
 // @0x1403c0210
 void GameEventDungeonRoomShutdown::vfunc_6() { FUN_1401c0d90()->FUN_140479c80(0); }
@@ -1690,7 +1690,7 @@ void GameEventDungeonOpenPeriod::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C0460, GameEventDungeonOpenPeriod, vfunc_4, 114, 0x92CEB667);
 
 // @0x1403c04e0
-void GameEventDungeonOpenPeriod::vfunc_5()
+void GameEventDungeonOpenPeriod::OnStart()
 {
     if (m_d0.IsEmpty())
         return;
@@ -1700,7 +1700,7 @@ void GameEventDungeonOpenPeriod::vfunc_5()
         m_d0.Empty();
     }
 }
-MS2_REPLACE_METHOD(0x1403C04E0, GameEventDungeonOpenPeriod, vfunc_5, 268, 0xBC6FC0A8);
+MS2_REPLACE_METHOD(0x1403C04E0, GameEventDungeonOpenPeriod, OnStart, 268, 0xBC6FC0A8);
 
 // @0x1403c0600
 void GameEventDungeonOpenPeriod::vfunc_6()
@@ -1750,8 +1750,8 @@ void GameEventFieldShutdown::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C07B0, GameEventFieldShutdown, vfunc_2, 280, 0x89FDD054);
 
 // @0x1403c08d0
-void GameEventFieldShutdown::vfunc_5() { FUN_1401c0d90()->FUN_14047a360(m_d0); }
-MS2_REPLACE_METHOD(0x1403C08D0, GameEventFieldShutdown, vfunc_5, 91, 0x94D3BD97);
+void GameEventFieldShutdown::OnStart() { FUN_1401c0d90()->FUN_14047a360(m_d0); }
+MS2_REPLACE_METHOD(0x1403C08D0, GameEventFieldShutdown, OnStart, 91, 0x94D3BD97);
 
 // @0x1403c0940
 void GameEventFieldShutdown::vfunc_6() { FUN_1401c0d90()->FUN_14047a3d0(); }
@@ -1817,7 +1817,7 @@ void GameEventDungeonExtraReward::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C0CE0, GameEventDungeonExtraReward, vfunc_4, 62, 0x41D09D75);
 
 // @0x1403c0d30
-void GameEventDungeonExtraReward::vfunc_5()
+void GameEventDungeonExtraReward::OnStart()
 {
     for (POSITION pos = m_d0.GetStartPosition(); pos; m_d0.GetNext(pos))
     {
@@ -1826,7 +1826,7 @@ void GameEventDungeonExtraReward::vfunc_5()
                                                          m_d0.GetKeyAt(pos)));
     }
 }
-MS2_REPLACE_METHOD(0x1403C0D30, GameEventDungeonExtraReward, vfunc_5, 359, 0x62073F0A);
+MS2_REPLACE_METHOD(0x1403C0D30, GameEventDungeonExtraReward, OnStart, 359, 0x62073F0A);
 
 // @0x1403c0ea0
 void GameEventDungeonExtraReward::vfunc_6()
@@ -1913,8 +1913,8 @@ void GameEventSaleRemake::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C12C0, GameEventSaleRemake, vfunc_4, 127, 0x74CFAF45);
 
 // @0x1403c1350
-void GameEventSaleRemake::vfunc_5() { FUN_1401c0d90()->FUN_140478bd0(m_id, m_d4, m_d0); }
-MS2_REPLACE_METHOD(0x1403C1350, GameEventSaleRemake, vfunc_5, 59, 0xCCEA410C);
+void GameEventSaleRemake::OnStart() { FUN_1401c0d90()->FUN_140478bd0(m_id, m_d4, m_d0); }
+MS2_REPLACE_METHOD(0x1403C1350, GameEventSaleRemake, OnStart, 59, 0xCCEA410C);
 
 // @0x1403c13a0
 void GameEventSaleRemake::vfunc_6() { FUN_1401c0d90()->FUN_140478c50(m_id, m_d4); }
@@ -1939,8 +1939,8 @@ GameEventSaleGemStoneUpgrade::GameEventSaleGemStoneUpgrade()
 }
 
 // @0x1403c14f0
-void GameEventSaleGemStoneUpgrade::vfunc_5() { FUN_1401c0d90()->FUN_140478e80(m_id, m_d0); }
-MS2_REPLACE_METHOD(0x1403C14F0, GameEventSaleGemStoneUpgrade, vfunc_5, 47, 0x689EA1F8);
+void GameEventSaleGemStoneUpgrade::OnStart() { FUN_1401c0d90()->FUN_140478e80(m_id, m_d0); }
+MS2_REPLACE_METHOD(0x1403C14F0, GameEventSaleGemStoneUpgrade, OnStart, 47, 0x689EA1F8);
 
 // @0x1403c1530
 void GameEventSaleGemStoneUpgrade::vfunc_6() { FUN_1401c0d90()->FUN_140478ef0(m_id); }
@@ -1997,7 +1997,7 @@ void GameEventSaleSkillUpgrade::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C1840, GameEventSaleSkillUpgrade, vfunc_4, 482, 0x3A8EF457);
 
 // @0x1403c1a30
-void GameEventSaleSkillUpgrade::vfunc_5()
+void GameEventSaleSkillUpgrade::OnStart()
 {
     ATL::CAtlArray<unsigned> skillIds;
     ATL::CAtlArray<unsigned> levels;
@@ -2019,7 +2019,7 @@ void GameEventSaleSkillUpgrade::vfunc_5()
     }
     FUN_1401c0d90()->FUN_14047b6d0(m_e8);
 }
-MS2_REPLACE_METHOD(0x1403C1A30, GameEventSaleSkillUpgrade, vfunc_5, 789, 0xD857AE3F);
+MS2_REPLACE_METHOD(0x1403C1A30, GameEventSaleSkillUpgrade, OnStart, 789, 0xD857AE3F);
 
 // @0x1403c1d50
 void GameEventSaleSkillUpgrade::vfunc_6()
@@ -2076,12 +2076,12 @@ void GameEventNpcEventDrop::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C1F30, GameEventNpcEventDrop, vfunc_2, 598, 0xB54C8D81);
 
 // @0x1403c2190
-void GameEventNpcEventDrop::vfunc_5()
+void GameEventNpcEventDrop::OnStart()
 {
     if (m_d0.get())
         FUN_1401c0d90()->FUN_14047a6a0(FUN_1402e1d00(), m_d0);
 }
-MS2_REPLACE_METHOD(0x1403C2190, GameEventNpcEventDrop, vfunc_5, 135, 0x8347BC99);
+MS2_REPLACE_METHOD(0x1403C2190, GameEventNpcEventDrop, OnStart, 135, 0x8347BC99);
 
 // @0x1403c2220
 void GameEventNpcEventDrop::vfunc_6() { FUN_1401c0d90()->FUN_14047a730(FUN_1402e1d00()); }
@@ -2161,8 +2161,8 @@ void GameEventBlueMarble::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C27C0, GameEventBlueMarble, vfunc_4, 745, 0x0AF8B17F);
 
 // @0x1403c2ab0
-void GameEventBlueMarble::vfunc_5() { FUN_1401c0d90()->FUN_14047b8f0(m_d0); }
-MS2_REPLACE_METHOD(0x1403C2AB0, GameEventBlueMarble, vfunc_5, 91, 0x52567E0A);
+void GameEventBlueMarble::OnStart() { FUN_1401c0d90()->FUN_14047b8f0(m_d0); }
+MS2_REPLACE_METHOD(0x1403C2AB0, GameEventBlueMarble, OnStart, 91, 0x52567E0A);
 
 // @0x1403c2b20
 void GameEventBlueMarble::vfunc_6() { FUN_1401c0d90()->FUN_14047b8f0(0); }
@@ -2187,8 +2187,8 @@ GameEventSaleUGCDesign::GameEventSaleUGCDesign()
 }
 
 // @0x1403c2c90
-void GameEventSaleUGCDesign::vfunc_5() { FUN_1401c0d90()->FUN_14047b9d0(m_id, m_d0); }
-MS2_REPLACE_METHOD(0x1403C2C90, GameEventSaleUGCDesign, vfunc_5, 47, 0x432176DC);
+void GameEventSaleUGCDesign::OnStart() { FUN_1401c0d90()->FUN_14047b9d0(m_id, m_d0); }
+MS2_REPLACE_METHOD(0x1403C2C90, GameEventSaleUGCDesign, OnStart, 47, 0x432176DC);
 
 // @0x1403c2cd0
 void GameEventSaleUGCDesign::vfunc_6() { FUN_1401c0d90()->FUN_14047ba40(m_id); }
@@ -2225,8 +2225,8 @@ void GameEventMeratMarketNotice::vfunc_4(Unk_GEIn* in) { m_d0 = MS2_GE_R(in)->Re
 MS2_REPLACE_METHOD(0x1403C2EC0, GameEventMeratMarketNotice, vfunc_4, 119, 0xDAD2EB50);
 
 // @0x1403c2f40
-void GameEventMeratMarketNotice::vfunc_5() {}
-MS2_REPLACE_METHOD(0x1403C2F40, GameEventMeratMarketNotice, vfunc_5, 6, 0xA9AF6E37);
+void GameEventMeratMarketNotice::OnStart() {}
+MS2_REPLACE_METHOD(0x1403C2F40, GameEventMeratMarketNotice, OnStart, 6, 0xA9AF6E37);
 
 // @0x1403c2f50
 void GameEventMeratMarketNotice::vfunc_6() {}
@@ -2255,8 +2255,8 @@ void GameEventDungeonEnterTimeLimit::vfunc_2() { FUN_1403c31c0(m_68); }
 MS2_REPLACE_METHOD(0x1403C3080, GameEventDungeonEnterTimeLimit, vfunc_2, 36, 0xE1C0510D);
 
 // @0x1403c30b0
-void GameEventDungeonEnterTimeLimit::vfunc_5() { FUN_1401c0d90()->FUN_140479f30(m_d0); }
-MS2_REPLACE_METHOD(0x1403C30B0, GameEventDungeonEnterTimeLimit, vfunc_5, 51, 0x03061B7D);
+void GameEventDungeonEnterTimeLimit::OnStart() { FUN_1401c0d90()->FUN_140479f30(m_d0); }
+MS2_REPLACE_METHOD(0x1403C30B0, GameEventDungeonEnterTimeLimit, OnStart, 51, 0x03061B7D);
 
 // @0x1403c30f0
 void GameEventDungeonEnterTimeLimit::vfunc_6() { FUN_1401c0d90()->FUN_14047a0a0(FUN_1402e1d00()); }
@@ -2347,8 +2347,8 @@ void GameEventSaleHousing::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C3520, GameEventSaleHousing, vfunc_2, 715, 0x9E5EB17E);
 
 // @0x1403c3800
-void GameEventSaleHousing::vfunc_5() { FUN_1401c0d90()->FUN_14047be80(m_id, m_d0); }
-MS2_REPLACE_METHOD(0x1403C3800, GameEventSaleHousing, vfunc_5, 59, 0x0D886633);
+void GameEventSaleHousing::OnStart() { FUN_1401c0d90()->FUN_14047be80(m_id, m_d0); }
+MS2_REPLACE_METHOD(0x1403C3800, GameEventSaleHousing, OnStart, 59, 0x0D886633);
 
 // @0x1403c3850
 void GameEventSaleHousing::vfunc_6() { FUN_1401c0d90()->FUN_14047bfc0(m_id); }
@@ -2413,8 +2413,8 @@ void GameEventEpicRestart::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C3CF0, GameEventEpicRestart, vfunc_2, 131, 0xE21A7CD6);
 
 // @0x1403c3d80
-void GameEventEpicRestart::vfunc_5() { FUN_1401c0d90()->FUN_14047c020(FUN_1402e1d00(), m_38.Get(), m_d0, m_e0, m_d8); }
-MS2_REPLACE_METHOD(0x1403C3D80, GameEventEpicRestart, vfunc_5, 155, 0xDC91DCFD);
+void GameEventEpicRestart::OnStart() { FUN_1401c0d90()->FUN_14047c020(FUN_1402e1d00(), m_38.Get(), m_d0, m_e0, m_d8); }
+MS2_REPLACE_METHOD(0x1403C3D80, GameEventEpicRestart, OnStart, 155, 0xDC91DCFD);
 
 // @0x1403c3e30
 void GameEventEpicRestart::vfunc_6() { FUN_1401c0d90()->FUN_14047c1e0(); }
@@ -2469,8 +2469,8 @@ void GameEventLevelUpPackage::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C4210, GameEventLevelUpPackage, vfunc_2, 72, 0x151E7A50);
 
 // @0x1403c4260
-void GameEventLevelUpPackage::vfunc_5() { FUN_1401c0d90()->FUN_14047c740(m_d0, m_d8); }
-MS2_REPLACE_METHOD(0x1403C4260, GameEventLevelUpPackage, vfunc_5, 62, 0x4F7D051A);
+void GameEventLevelUpPackage::OnStart() { FUN_1401c0d90()->FUN_14047c740(m_d0, m_d8); }
+MS2_REPLACE_METHOD(0x1403C4260, GameEventLevelUpPackage, OnStart, 62, 0x4F7D051A);
 
 // @0x1403c42b0
 void GameEventLevelUpPackage::vfunc_6() { FUN_1401c0d90()->FUN_14047c7c0(); }
@@ -2518,8 +2518,8 @@ void GameEventUpdateString::vfunc_2() { m_d0 = m_68; }
 MS2_REPLACE_METHOD(0x1403C4540, GameEventUpdateString, vfunc_2, 44, 0xB7A08C4F);
 
 // @0x1403c4580
-void GameEventUpdateString::vfunc_5() {}
-MS2_REPLACE_METHOD(0x1403C4580, GameEventUpdateString, vfunc_5, 6, 0xA9AF6E37);
+void GameEventUpdateString::OnStart() {}
+MS2_REPLACE_METHOD(0x1403C4580, GameEventUpdateString, OnStart, 6, 0xA9AF6E37);
 
 // @0x1403c4590
 void GameEventUpdateString::vfunc_6() {}
@@ -2620,8 +2620,8 @@ void GameEventStampEvent::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C47C0, GameEventStampEvent, vfunc_2, 1758, 0x516243D8);
 
 // @0x1403c4eb0
-void GameEventStampEvent::vfunc_5() { FUN_1401c0d90()->FUN_14047c8e0(m_d8); }
-MS2_REPLACE_METHOD(0x1403C4EB0, GameEventStampEvent, vfunc_5, 91, 0x1128F1EB);
+void GameEventStampEvent::OnStart() { FUN_1401c0d90()->FUN_14047c8e0(m_d8); }
+MS2_REPLACE_METHOD(0x1403C4EB0, GameEventStampEvent, OnStart, 91, 0x1128F1EB);
 
 // @0x1403c4f20
 void GameEventStampEvent::vfunc_6()
@@ -2698,8 +2698,8 @@ void GameEventTimeRunEvent::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C52F0, GameEventTimeRunEvent, vfunc_2, 391, 0x7BB32E72);
 
 // @0x1403c5480
-void GameEventTimeRunEvent::vfunc_5() { FUN_1401c0d90()->FUN_14047d650(m_d0); }
-MS2_REPLACE_METHOD(0x1403C5480, GameEventTimeRunEvent, vfunc_5, 91, 0xE2C6979A);
+void GameEventTimeRunEvent::OnStart() { FUN_1401c0d90()->FUN_14047d650(m_d0); }
+MS2_REPLACE_METHOD(0x1403C5480, GameEventTimeRunEvent, OnStart, 91, 0xE2C6979A);
 
 // @0x1403c54f0
 void GameEventTimeRunEvent::vfunc_6() { FUN_1401c0d90()->FUN_14047d650(0); }
@@ -2855,7 +2855,7 @@ void GameEventMassiveConstructionEvent::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C5E80, GameEventMassiveConstructionEvent, vfunc_4, 343, 0x425DC70D);
 
 // @0x1403c5fe0
-void GameEventMassiveConstructionEvent::vfunc_5()
+void GameEventMassiveConstructionEvent::OnStart()
 {
     for (unsigned i = 0; i < m_d0.GetCount(); i++)
     {
@@ -2868,7 +2868,7 @@ void GameEventMassiveConstructionEvent::vfunc_5()
         FUN_1401c0d90()->FUN_14047df50(id);
     }
 }
-MS2_REPLACE_METHOD(0x1403C5FE0, GameEventMassiveConstructionEvent, vfunc_5, 237, 0x4814B149);
+MS2_REPLACE_METHOD(0x1403C5FE0, GameEventMassiveConstructionEvent, OnStart, 237, 0x4814B149);
 
 // @0x1403c60e0
 void GameEventMassiveConstructionEvent::vfunc_6()
@@ -2907,8 +2907,8 @@ void GameEventEnchantRate::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C6230, GameEventEnchantRate, vfunc_2, 226, 0x01175DDE);
 
 // @0x1403c6320
-void GameEventEnchantRate::vfunc_5() { FUN_1401c0d90()->FUN_14047e530(m_pContext); }
-MS2_REPLACE_METHOD(0x1403C6320, GameEventEnchantRate, vfunc_5, 91, 0x69FE65A3);
+void GameEventEnchantRate::OnStart() { FUN_1401c0d90()->FUN_14047e530(m_pContext); }
+MS2_REPLACE_METHOD(0x1403C6320, GameEventEnchantRate, OnStart, 91, 0x69FE65A3);
 
 // @0x1403c6390
 void GameEventEnchantRate::vfunc_6()
@@ -2968,8 +2968,8 @@ void GameEventRankDuel::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C66F0, GameEventRankDuel, vfunc_2, 101, 0x3F1E221E);
 
 // @0x1403c6760
-void GameEventRankDuel::vfunc_5() { FUN_1401c0d90()->FUN_14047e740(true); }
-MS2_REPLACE_METHOD(0x1403C6760, GameEventRankDuel, vfunc_5, 29, 0xCD62C311);
+void GameEventRankDuel::OnStart() { FUN_1401c0d90()->FUN_14047e740(true); }
+MS2_REPLACE_METHOD(0x1403C6760, GameEventRankDuel, OnStart, 29, 0xCD62C311);
 
 // @0x1403c6790
 void GameEventRankDuel::vfunc_6() { FUN_1401c0d90()->FUN_14047e740(false); }
@@ -3018,13 +3018,13 @@ void GameEventGuildChampionship::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C69C0, GameEventGuildChampionship, vfunc_2, 71, 0x83221AF0);
 
 // @0x1403c6a10
-void GameEventGuildChampionship::vfunc_5()
+void GameEventGuildChampionship::OnStart()
 {
     if (!FUN_140166410()->FUN_14036d570(0x110))
         return;
     FUN_1401c0d90()->FUN_14047e830(true);
 }
-MS2_REPLACE_METHOD(0x1403C6A10, GameEventGuildChampionship, vfunc_5, 56, 0x274DE2BB);
+MS2_REPLACE_METHOD(0x1403C6A10, GameEventGuildChampionship, OnStart, 56, 0x274DE2BB);
 
 // @0x1403c6a50
 void GameEventGuildChampionship::vfunc_6() { FUN_1401c0d90()->FUN_14047e830(false); }
@@ -3061,8 +3061,8 @@ void GameEventQuestAdditionalReward::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C6C10, GameEventQuestAdditionalReward, vfunc_2, 117, 0xF78122DB);
 
 // @0x1403c6c90
-void GameEventQuestAdditionalReward::vfunc_5() { FUN_1401c0d90()->FUN_14047e8e0(m_d0, m_d4, m_d8); }
-MS2_REPLACE_METHOD(0x1403C6C90, GameEventQuestAdditionalReward, vfunc_5, 114, 0x99961A1D);
+void GameEventQuestAdditionalReward::OnStart() { FUN_1401c0d90()->FUN_14047e8e0(m_d0, m_d4, m_d8); }
+MS2_REPLACE_METHOD(0x1403C6C90, GameEventQuestAdditionalReward, OnStart, 114, 0x99961A1D);
 
 // @0x1403c6d10
 void GameEventQuestAdditionalReward::vfunc_6() { FUN_1401c0d90()->FUN_14047e980(m_d0, m_d4); }
@@ -3111,8 +3111,8 @@ void GameEventGuildSkillSale::vfunc_2() { m_d0 = FUN_1407181a0(&m_68); }
 MS2_REPLACE_METHOD(0x1403C6FA0, GameEventGuildSkillSale, vfunc_2, 42, 0x02B16B0B);
 
 // @0x1403c6fd0
-void GameEventGuildSkillSale::vfunc_5() { FUN_1404234a0(FUN_140302b00()->GuildSkillSale(), m_d0); }
-MS2_REPLACE_METHOD(0x1403C6FD0, GameEventGuildSkillSale, vfunc_5, 46, 0x396ECFED);
+void GameEventGuildSkillSale::OnStart() { FUN_1404234a0(FUN_140302b00()->GuildSkillSale(), m_d0); }
+MS2_REPLACE_METHOD(0x1403C6FD0, GameEventGuildSkillSale, OnStart, 46, 0x396ECFED);
 
 // @0x1403c7010
 void GameEventGuildSkillSale::vfunc_6() { FUN_1404234a0(FUN_140302b00()->GuildSkillSale(), 0); }
@@ -3157,8 +3157,8 @@ void GameEventGuildPersonalSkillSale::vfunc_2() { m_d0 = FUN_1407181a0(&m_68); }
 MS2_REPLACE_METHOD(0x1403C7210, GameEventGuildPersonalSkillSale, vfunc_2, 42, 0xE4F2E4E1);
 
 // @0x1403c7240
-void GameEventGuildPersonalSkillSale::vfunc_5() { FUN_1404235b0(FUN_140302b00()->GuildPersonalSkillSale(), m_d0); }
-MS2_REPLACE_METHOD(0x1403C7240, GameEventGuildPersonalSkillSale, vfunc_5, 46, 0xB5FD3289);
+void GameEventGuildPersonalSkillSale::OnStart() { FUN_1404235b0(FUN_140302b00()->GuildPersonalSkillSale(), m_d0); }
+MS2_REPLACE_METHOD(0x1403C7240, GameEventGuildPersonalSkillSale, OnStart, 46, 0xB5FD3289);
 
 // @0x1403c7280
 void GameEventGuildPersonalSkillSale::vfunc_6() { FUN_1404235b0(FUN_140302b00()->GuildPersonalSkillSale(), 0); }
@@ -3203,12 +3203,12 @@ void GameEventGuildExp::vfunc_2() { m_d0 = FUN_1407181a0(&m_68); }
 MS2_REPLACE_METHOD(0x1403C7480, GameEventGuildExp, vfunc_2, 42, 0x65204B4F);
 
 // @0x1403c74b0
-void GameEventGuildExp::vfunc_5()
+void GameEventGuildExp::OnStart()
 {
     FUN_1404236c0(FUN_140302b00()->GuildExp(), m_d0);
     FUN_1403ed290()->FUN_1413bd640(FUN_140423670(FUN_140302b00()->GuildExp()) > 0);
 }
-MS2_REPLACE_METHOD(0x1403C74B0, GameEventGuildExp, vfunc_5, 101, 0xE18D34FE);
+MS2_REPLACE_METHOD(0x1403C74B0, GameEventGuildExp, OnStart, 101, 0xE18D34FE);
 
 // @0x1403c7520
 void GameEventGuildExp::vfunc_6()
@@ -3257,8 +3257,8 @@ void GameEventGuildFund::vfunc_2() { m_d0 = FUN_1407181a0(&m_68); }
 MS2_REPLACE_METHOD(0x1403C7760, GameEventGuildFund, vfunc_2, 42, 0x82DACA1A);
 
 // @0x1403c7790
-void GameEventGuildFund::vfunc_5() { FUN_1404237d0(FUN_140302b00()->GuildFund(), m_d0); }
-MS2_REPLACE_METHOD(0x1403C7790, GameEventGuildFund, vfunc_5, 46, 0x48EF6819);
+void GameEventGuildFund::OnStart() { FUN_1404237d0(FUN_140302b00()->GuildFund(), m_d0); }
+MS2_REPLACE_METHOD(0x1403C7790, GameEventGuildFund, OnStart, 46, 0x48EF6819);
 
 // @0x1403c77d0
 void GameEventGuildFund::vfunc_6() { FUN_1404237d0(FUN_140302b00()->GuildFund(), 0); }
@@ -3303,8 +3303,8 @@ void GameEventGuildCoin::vfunc_2() { m_d0 = FUN_1407181a0(&m_68); }
 MS2_REPLACE_METHOD(0x1403C79D0, GameEventGuildCoin, vfunc_2, 42, 0x0E909E99);
 
 // @0x1403c7a00
-void GameEventGuildCoin::vfunc_5() { FUN_1404238e0(FUN_140302b00()->GuildCoin(), m_d0); }
-MS2_REPLACE_METHOD(0x1403C7A00, GameEventGuildCoin, vfunc_5, 46, 0x16A44E78);
+void GameEventGuildCoin::OnStart() { FUN_1404238e0(FUN_140302b00()->GuildCoin(), m_d0); }
+MS2_REPLACE_METHOD(0x1403C7A00, GameEventGuildCoin, OnStart, 46, 0x16A44E78);
 
 // @0x1403c7a40
 void GameEventGuildCoin::vfunc_6() { FUN_1404238e0(FUN_140302b00()->GuildCoin(), 0); }
@@ -3354,13 +3354,13 @@ void GameEventMasteryReward::vfunc_2()
 MS2_REPLACE_METHOD(0x1403C7C50, GameEventMasteryReward, vfunc_2, 72, 0x8C04152C);
 
 // @0x1403c7ca0
-void GameEventMasteryReward::vfunc_5()
+void GameEventMasteryReward::OnStart()
 {
     if (m_d0 == 0)
         return;
     FUN_140423b10(FUN_140302b00()->MasteryReward(), m_id, m_d0, m_d8);
 }
-MS2_REPLACE_METHOD(0x1403C7CA0, GameEventMasteryReward, vfunc_5, 95, 0xCEFD2DB8);
+MS2_REPLACE_METHOD(0x1403C7CA0, GameEventMasteryReward, OnStart, 95, 0xCEFD2DB8);
 
 // @0x1403c7d10
 void GameEventMasteryReward::vfunc_6() { FUN_140423da0(FUN_140302b00()->MasteryReward(), m_id); }
@@ -3423,8 +3423,8 @@ void GameEventMeratMarketOpenTab::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C8060, GameEventMeratMarketOpenTab, vfunc_4, 134, 0xBFB0DF06);
 
 // @0x1403c80f0
-void GameEventMeratMarketOpenTab::vfunc_5() { FUN_140424040(FUN_140302b00()->MeratMarketOpenTab(), m_d0); }
-MS2_REPLACE_METHOD(0x1403C80F0, GameEventMeratMarketOpenTab, vfunc_5, 59, 0x623AFBA5);
+void GameEventMeratMarketOpenTab::OnStart() { FUN_140424040(FUN_140302b00()->MeratMarketOpenTab(), m_d0); }
+MS2_REPLACE_METHOD(0x1403C80F0, GameEventMeratMarketOpenTab, OnStart, 59, 0x623AFBA5);
 
 // @0x1403c8140
 void GameEventMeratMarketOpenTab::vfunc_6()
@@ -3457,8 +3457,8 @@ void GameEventWorldmapIcon::vfunc_2() { m_d0 = m_68; }
 MS2_REPLACE_METHOD(0x1403C82C0, GameEventWorldmapIcon, vfunc_2, 44, 0x3A4EA00A);
 
 // @0x1403c8300
-void GameEventWorldmapIcon::vfunc_5() {}
-MS2_REPLACE_METHOD(0x1403C8300, GameEventWorldmapIcon, vfunc_5, 6, 0xA9AF6E37);
+void GameEventWorldmapIcon::OnStart() {}
+MS2_REPLACE_METHOD(0x1403C8300, GameEventWorldmapIcon, OnStart, 6, 0xA9AF6E37);
 
 // @0x1403c8310
 void GameEventWorldmapIcon::vfunc_6() {}
@@ -3503,8 +3503,8 @@ void GameEventMasteryReduce::vfunc_2() { m_d0 = FUN_140718200(&m_68); }
 MS2_REPLACE_METHOD(0x1403C8510, GameEventMasteryReduce, vfunc_2, 42, 0xD5B9BC39);
 
 // @0x1403c8540
-void GameEventMasteryReduce::vfunc_5() { FUN_140424130(FUN_140302b00()->MasteryReduce(), m_d0); }
-MS2_REPLACE_METHOD(0x1403C8540, GameEventMasteryReduce, vfunc_5, 46, 0x889011F9);
+void GameEventMasteryReduce::OnStart() { FUN_140424130(FUN_140302b00()->MasteryReduce(), m_d0); }
+MS2_REPLACE_METHOD(0x1403C8540, GameEventMasteryReduce, OnStart, 46, 0x889011F9);
 
 // @0x1403c8580
 void GameEventMasteryReduce::vfunc_6() { FUN_140424130(FUN_140302b00()->MasteryReduce(), 0); }
@@ -3565,8 +3565,8 @@ void GameEventUGCMapContractSale::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C8800, GameEventUGCMapContractSale, vfunc_4, 79, 0x3CEA8454);
 
 // @0x1403c8860
-void GameEventUGCMapContractSale::vfunc_5() { FUN_1401c0d90()->FUN_140479640(m_id, m_d0); }
-MS2_REPLACE_METHOD(0x1403C8860, GameEventUGCMapContractSale, vfunc_5, 47, 0x1E1D85C1);
+void GameEventUGCMapContractSale::OnStart() { FUN_1401c0d90()->FUN_140479640(m_id, m_d0); }
+MS2_REPLACE_METHOD(0x1403C8860, GameEventUGCMapContractSale, OnStart, 47, 0x1E1D85C1);
 
 // @0x1403c88a0
 void GameEventUGCMapContractSale::vfunc_6() { FUN_1401c0d90()->FUN_1404796b0(m_id); }
@@ -3611,8 +3611,8 @@ void GameEventUGCMapExtensionSale::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C8A70, GameEventUGCMapExtensionSale, vfunc_4, 79, 0x4C71D44A);
 
 // @0x1403c8ad0
-void GameEventUGCMapExtensionSale::vfunc_5() { FUN_1401c0d90()->FUN_140479790(m_id, m_d0); }
-MS2_REPLACE_METHOD(0x1403C8AD0, GameEventUGCMapExtensionSale, vfunc_5, 47, 0x7ABE58BB);
+void GameEventUGCMapExtensionSale::OnStart() { FUN_1401c0d90()->FUN_140479790(m_id, m_d0); }
+MS2_REPLACE_METHOD(0x1403C8AD0, GameEventUGCMapExtensionSale, OnStart, 47, 0x7ABE58BB);
 
 // @0x1403c8b10
 void GameEventUGCMapExtensionSale::vfunc_6() { FUN_1401c0d90()->FUN_140479800(m_id); }
@@ -3679,7 +3679,7 @@ void GameEventConstructShowItem::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C8EA0, GameEventConstructShowItem, vfunc_4, 422, 0x0FEEC4C1);
 
 // @0x1403c9050
-void GameEventConstructShowItem::vfunc_5()
+void GameEventConstructShowItem::OnStart()
 {
     if (m_d8.IsEmpty())
         m_108 = FUN_140df20a0(m_d0, m_e0);
@@ -3691,7 +3691,7 @@ void GameEventConstructShowItem::vfunc_5()
         FUN_140df1f40(m_108, nItemId);
     }
 }
-MS2_REPLACE_METHOD(0x1403C9050, GameEventConstructShowItem, vfunc_5, 260, 0xE6FCC000);
+MS2_REPLACE_METHOD(0x1403C9050, GameEventConstructShowItem, OnStart, 260, 0xE6FCC000);
 
 // @0x1403c9160
 void GameEventConstructShowItem::vfunc_6() { FUN_140df2210(m_108); }
@@ -3740,8 +3740,8 @@ void GameEventTransferItemBound::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C9350, GameEventTransferItemBound, vfunc_4, 78, 0x7AF36612);
 
 // @0x1403c93b0
-void GameEventTransferItemBound::vfunc_5() { FUN_1401c0d90()->SetTransferItemBound(m_d0); }
-MS2_REPLACE_METHOD(0x1403C93B0, GameEventTransferItemBound, vfunc_5, 39, 0x1D75E411);
+void GameEventTransferItemBound::OnStart() { FUN_1401c0d90()->SetTransferItemBound(m_d0); }
+MS2_REPLACE_METHOD(0x1403C93B0, GameEventTransferItemBound, OnStart, 39, 0x1D75E411);
 
 // @0x1403c93e0
 void GameEventTransferItemBound::vfunc_6() { FUN_1401c0d90()->SetTransferItemBound(!m_d0); }
@@ -3791,13 +3791,13 @@ void GameEventSaleItemsRestricted::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C9630, GameEventSaleItemsRestricted, vfunc_4, 81, 0x89DCC8A7);
 
 // @0x1403c9690
-void GameEventSaleItemsRestricted::vfunc_5()
+void GameEventSaleItemsRestricted::OnStart()
 {
     if (m_d0.IsEmpty())
         return;
     FUN_1404249f0(FUN_140302b00()->SaleItemsRestricted(), m_d0);
 }
-MS2_REPLACE_METHOD(0x1403C9690, GameEventSaleItemsRestricted, vfunc_5, 87, 0xA29CA15B);
+MS2_REPLACE_METHOD(0x1403C9690, GameEventSaleItemsRestricted, OnStart, 87, 0xA29CA15B);
 
 // @0x1403c96f0
 void GameEventSaleItemsRestricted::vfunc_6() { FUN_140424ae0(FUN_140302b00()->SaleItemsRestricted()); }
@@ -3854,8 +3854,8 @@ void GameEventUgcMapCommendationGM::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C9980, GameEventUgcMapCommendationGM, vfunc_4, 225, 0x40094F89);
 
 // @0x1403c9a70
-void GameEventUgcMapCommendationGM::vfunc_5() { FUN_1401c0d90()->FUN_1404784b0(m_d0, m_d8, m_e0); }
-MS2_REPLACE_METHOD(0x1403C9A70, GameEventUgcMapCommendationGM, vfunc_5, 115, 0x22E4A6EC);
+void GameEventUgcMapCommendationGM::OnStart() { FUN_1401c0d90()->FUN_1404784b0(m_d0, m_d8, m_e0); }
+MS2_REPLACE_METHOD(0x1403C9A70, GameEventUgcMapCommendationGM, OnStart, 115, 0x22E4A6EC);
 
 // @0x1403c9af0
 void GameEventUgcMapCommendationGM::vfunc_6() { FUN_1401c0d90()->FUN_140478640(m_d0); }
@@ -3901,8 +3901,8 @@ void GameEventDeleteUrlCache::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403C9CD0, GameEventDeleteUrlCache, vfunc_4, 82, 0xC85C5644);
 
 // @0x1403c9d30
-void GameEventDeleteUrlCache::vfunc_5() { FUN_1401c0d90()->FUN_140478a40(m_d0); }
-MS2_REPLACE_METHOD(0x1403C9D30, GameEventDeleteUrlCache, vfunc_5, 38, 0x9737F55E);
+void GameEventDeleteUrlCache::OnStart() { FUN_1401c0d90()->FUN_140478a40(m_d0); }
+MS2_REPLACE_METHOD(0x1403C9D30, GameEventDeleteUrlCache, OnStart, 38, 0x9737F55E);
 
 // @0x1403c9d60
 void GameEventDeleteUrlCache::vfunc_6() { FUN_1401c0d90()->FUN_140478a40(0); }
@@ -3966,12 +3966,12 @@ void GameEventPetMastery::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CA0D0, GameEventPetMastery, vfunc_4, 124, 0xD0D78123);
 
 // @0x1403ca160
-void GameEventPetMastery::vfunc_5()
+void GameEventPetMastery::OnStart()
 {
     FUN_1401c0d90()->FUN_14047ef70(m_id, m_d0);
     FUN_1401c0d90()->FUN_14047f180(m_id, m_d4);
 }
-MS2_REPLACE_METHOD(0x1403CA160, GameEventPetMastery, vfunc_5, 80, 0xC297F8CB);
+MS2_REPLACE_METHOD(0x1403CA160, GameEventPetMastery, OnStart, 80, 0xC297F8CB);
 
 // @0x1403ca1c0
 void GameEventPetMastery::vfunc_6()
@@ -4020,8 +4020,8 @@ void GameEventPetBattleExp::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CA3A0, GameEventPetBattleExp, vfunc_4, 79, 0x6B14DA29);
 
 // @0x1403ca400
-void GameEventPetBattleExp::vfunc_5() { FUN_1401c0d90()->FUN_14047f390(m_id, m_d0); }
-MS2_REPLACE_METHOD(0x1403CA400, GameEventPetBattleExp, vfunc_5, 47, 0x87E55C7F);
+void GameEventPetBattleExp::OnStart() { FUN_1401c0d90()->FUN_14047f390(m_id, m_d0); }
+MS2_REPLACE_METHOD(0x1403CA400, GameEventPetBattleExp, OnStart, 47, 0x87E55C7F);
 
 // @0x1403ca440
 void GameEventPetBattleExp::vfunc_6() { FUN_1401c0d90()->FUN_14047f400(m_id); }
@@ -4066,8 +4066,8 @@ void GameEventPetComposeSale::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CA610, GameEventPetComposeSale, vfunc_4, 79, 0x47594ED6);
 
 // @0x1403ca670
-void GameEventPetComposeSale::vfunc_5() { FUN_1401c0d90()->FUN_14047f590(m_id, m_d0); }
-MS2_REPLACE_METHOD(0x1403CA670, GameEventPetComposeSale, vfunc_5, 47, 0x7AD9EAA4);
+void GameEventPetComposeSale::OnStart() { FUN_1401c0d90()->FUN_14047f590(m_id, m_d0); }
+MS2_REPLACE_METHOD(0x1403CA670, GameEventPetComposeSale, OnStart, 47, 0x7AD9EAA4);
 
 // @0x1403ca6b0
 void GameEventPetComposeSale::vfunc_6() { FUN_1401c0d90()->FUN_14047f600(m_id); }
@@ -4127,7 +4127,7 @@ void GameEventItemBox::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CAA20, GameEventItemBox, vfunc_4, 158, 0xEF0D903E);
 
 // The open box dialog of the item box event (RTTI .?AVUIItemEventOpenBoxDialog@@, class id 0x4f42): only the refresh
-// vfunc_5 calls.
+// OnStart calls.
 class UIItemEventOpenBoxDialog : public UIDialog
 {
 public:
@@ -4147,13 +4147,13 @@ template <class T> T* Unk_GameEventDialog(eUIClassID nClass)
 }
 
 // @0x1403caad0
-void GameEventItemBox::vfunc_5()
+void GameEventItemBox::OnStart()
 {
     m_e0 = FUN_1404246b0(FUN_140302b00()->ItemBox(), m_d0);
     if (UIItemEventOpenBoxDialog* pDialog = Unk_GameEventDialog<UIItemEventOpenBoxDialog>(eUI_4f42))
         pDialog->FUN_140e48050();
 }
-MS2_REPLACE_METHOD(0x1403CAAD0, GameEventItemBox, vfunc_5, 143, 0x2230898A);
+MS2_REPLACE_METHOD(0x1403CAAD0, GameEventItemBox, OnStart, 143, 0x2230898A);
 
 // @0x1403cab70
 void GameEventItemBox::vfunc_6()
@@ -4231,12 +4231,12 @@ void GameEventShutdownInteractObjectId::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CAF60, GameEventShutdownInteractObjectId, vfunc_4, 241, 0x23A8AD86);
 
 // @0x1403cb060
-void GameEventShutdownInteractObjectId::vfunc_5()
+void GameEventShutdownInteractObjectId::OnStart()
 {
     for (std::set<std::pair<unsigned, int> >::iterator it = m_d0.begin(), itEnd = m_d0.end(); it != itEnd; ++it)
         FUN_1407d0420(FUN_140302b00()->ShutdownInteractObjectId(), (*it).first, (*it).second);
 }
-MS2_REPLACE_METHOD(0x1403CB060, GameEventShutdownInteractObjectId, vfunc_5, 165, 0x329092AB);
+MS2_REPLACE_METHOD(0x1403CB060, GameEventShutdownInteractObjectId, OnStart, 165, 0x329092AB);
 
 // @0x1403cb110
 void GameEventShutdownInteractObjectId::vfunc_6()
@@ -4308,12 +4308,12 @@ void GameEventShutdownFunctionItem::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CB4E0, GameEventShutdownFunctionItem, vfunc_4, 190, 0x967CA248);
 
 // @0x1403cb5b0
-void GameEventShutdownFunctionItem::vfunc_5()
+void GameEventShutdownFunctionItem::OnStart()
 {
     for (std::set<unsigned>::iterator it = m_d0.begin(), itEnd = m_d0.end(); it != itEnd; ++it)
         FUN_1407d0c30(FUN_140302b00()->ShutdownFunctionItem(), *it);
 }
-MS2_REPLACE_METHOD(0x1403CB5B0, GameEventShutdownFunctionItem, vfunc_5, 141, 0x94440A91);
+MS2_REPLACE_METHOD(0x1403CB5B0, GameEventShutdownFunctionItem, OnStart, 141, 0x94440A91);
 
 // @0x1403cb650
 void GameEventShutdownFunctionItem::vfunc_6()
@@ -4389,7 +4389,7 @@ void GameEventShutdownSkillItem::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CBA00, GameEventShutdownSkillItem, vfunc_4, 190, 0xCDA18DF6);
 
 // @0x1403cbad0
-void GameEventShutdownSkillItem::vfunc_5()
+void GameEventShutdownSkillItem::OnStart()
 {
     std::set<unsigned>& ids = m_d0;
     for (std::set<unsigned>::_Unchecked_iterator it = ids._Unchecked_begin(), itEnd = ids._Unchecked_end(); it != itEnd; ++it)
@@ -4398,7 +4398,7 @@ void GameEventShutdownSkillItem::vfunc_5()
         FUN_140302b00()->ShutdownSkillItem()->SetShutdown(nItemId);
     }
 }
-MS2_REPLACE_METHOD(0x1403CBAD0, GameEventShutdownSkillItem, vfunc_5, 137, 0x54B797D2);
+MS2_REPLACE_METHOD(0x1403CBAD0, GameEventShutdownSkillItem, OnStart, 137, 0x54B797D2);
 
 // @0x1403cbb60
 void GameEventShutdownSkillItem::vfunc_6()
@@ -4455,7 +4455,7 @@ void FUN_1407d1ef0(Unk_GameEventLockedValue<0x40>* pValue, int nEventId, const U
 void FUN_1407d1f70(Unk_GameEventLockedValue<0x40>* pValue, int nEventId);
 
 // @0x1403cbdb0
-void GameEventShutdownUGCUpload::vfunc_5()
+void GameEventShutdownUGCUpload::OnStart()
 {
     Unk_ShutdownUGCUploadInfo info;
     info.m_bFlag = m_f0;
@@ -4463,7 +4463,7 @@ void GameEventShutdownUGCUpload::vfunc_5()
         info.m_ids.insert((Unk_UGCUploadType)m_d0[i]);
     FUN_1407d1ef0(FUN_140302b00()->ShutdownUGCUpload(), FUN_1402e1d00(), info);
 }
-MS2_REPLACE_METHOD(0x1403CBDB0, GameEventShutdownUGCUpload, vfunc_5, 208, 0x414A87F9);
+MS2_REPLACE_METHOD(0x1403CBDB0, GameEventShutdownUGCUpload, OnStart, 208, 0x414A87F9);
 
 // @0x1403cbe90
 void GameEventShutdownUGCUpload::vfunc_6() { FUN_1407d1f70(FUN_140302b00()->ShutdownUGCUpload(), FUN_1402e1d00()); }
@@ -4492,8 +4492,8 @@ void GameEventFindDungeonHelperBonus::vfunc_2() { m_d0 = FUN_140718200(&m_68); }
 MS2_REPLACE_METHOD(0x1403CBFF0, GameEventFindDungeonHelperBonus, vfunc_2, 42, 0xE118841E);
 
 // @0x1403cc020
-void GameEventFindDungeonHelperBonus::vfunc_5() { FUN_140424c80(FUN_140302b00()->FindDungeonHelperBonus(), m_d0); }
-MS2_REPLACE_METHOD(0x1403CC020, GameEventFindDungeonHelperBonus, vfunc_5, 46, 0x48CD8444);
+void GameEventFindDungeonHelperBonus::OnStart() { FUN_140424c80(FUN_140302b00()->FindDungeonHelperBonus(), m_d0); }
+MS2_REPLACE_METHOD(0x1403CC020, GameEventFindDungeonHelperBonus, OnStart, 46, 0x48CD8444);
 
 // @0x1403cc060
 void GameEventFindDungeonHelperBonus::vfunc_6() { FUN_140424cd0(FUN_140302b00()->FindDungeonHelperBonus(), m_d0); }
@@ -4538,12 +4538,12 @@ void GameEventGuildVsGameOpen::vfunc_2() {}
 MS2_REPLACE_METHOD(0x1403CC240, GameEventGuildVsGameOpen, vfunc_2, 6, 0xA9AF6E37);
 
 // @0x1403cc250
-void GameEventGuildVsGameOpen::vfunc_5()
+void GameEventGuildVsGameOpen::OnStart()
 {
     FUN_1401c0d90()->FUN_14047ec80(true);
     FUN_1403ed290()->FUN_1413bd4c0();
 }
-MS2_REPLACE_METHOD(0x1403CC250, GameEventGuildVsGameOpen, vfunc_5, 42, 0xA6426729);
+MS2_REPLACE_METHOD(0x1403CC250, GameEventGuildVsGameOpen, OnStart, 42, 0xA6426729);
 
 // @0x1403cc280
 void GameEventGuildVsGameOpen::vfunc_6() { FUN_1401c0d90()->FUN_14047ec80(false); }
@@ -4597,12 +4597,12 @@ void GameEventChatFiltering::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CC4E0, GameEventChatFiltering, vfunc_4, 199, 0x48D45BA5);
 
 // @0x1403cc5b0
-void GameEventChatFiltering::vfunc_5()
+void GameEventChatFiltering::OnStart()
 {
     if (CBanTextChecker* pChecker = CommonString::GetInstance()->GetChecker())
         pChecker->SetBanWords(m_id, m_d0);
 }
-MS2_REPLACE_METHOD(0x1403CC5B0, GameEventChatFiltering, vfunc_5, 131, 0x69EEFF9B);
+MS2_REPLACE_METHOD(0x1403CC5B0, GameEventChatFiltering, OnStart, 131, 0x69EEFF9B);
 
 // @0x1403cc640
 void GameEventChatFiltering::vfunc_6()
@@ -4639,14 +4639,14 @@ void GameEventBattlePetSpawn::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CC7F0, GameEventBattlePetSpawn, vfunc_2, 72, 0x3DBD65E8);
 
 // @0x1403cc840
-void GameEventBattlePetSpawn::vfunc_5()
+void GameEventBattlePetSpawn::OnStart()
 {
     if (m_d0 == 0)
         FUN_1404255b0(FUN_140302b00()->GetBattlePetSpawn(), FUN_1402e1d00(), m_d8);
     else if (m_d0 == 1)
         FUN_140426380(FUN_140302b00()->GetBattlePetSpawn(), FUN_1402e1d00(), m_d8);
 }
-MS2_REPLACE_METHOD(0x1403CC840, GameEventBattlePetSpawn, vfunc_5, 174, 0xB546D265);
+MS2_REPLACE_METHOD(0x1403CC840, GameEventBattlePetSpawn, OnStart, 174, 0xB546D265);
 
 // @0x1403cc900
 void GameEventBattlePetSpawn::vfunc_6()
@@ -4722,8 +4722,8 @@ void GameEventGallery::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CCC30, GameEventGallery, vfunc_2, 664, 0x6895C365);
 
 // @0x1403cced0
-void GameEventGallery::vfunc_5() { FUN_1401c0d90()->FUN_14047cef0(m_d0); }
-MS2_REPLACE_METHOD(0x1403CCED0, GameEventGallery, vfunc_5, 91, 0x8F4A3CE5);
+void GameEventGallery::OnStart() { FUN_1401c0d90()->FUN_14047cef0(m_d0); }
+MS2_REPLACE_METHOD(0x1403CCED0, GameEventGallery, OnStart, 91, 0x8F4A3CE5);
 
 // @0x1403ccf40
 void GameEventGallery::vfunc_6() { FUN_1401c0d90()->FUN_14047cef0(MS2Ptr<GalleryContext>(0)); }
@@ -4861,7 +4861,7 @@ void GameEventIgnoreConstructionLockEvent::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CD810, GameEventIgnoreConstructionLockEvent, vfunc_4, 167, 0x0652B919);
 
 // @0x1403cd8c0
-void GameEventIgnoreConstructionLockEvent::vfunc_5()
+void GameEventIgnoreConstructionLockEvent::OnStart()
 {
     for (unsigned i = 0; i < m_d0.GetCount(); i++)
     {
@@ -4869,7 +4869,7 @@ void GameEventIgnoreConstructionLockEvent::vfunc_5()
         FUN_1401c0d90()->FUN_14047e230(id);
     }
 }
-MS2_REPLACE_METHOD(0x1403CD8C0, GameEventIgnoreConstructionLockEvent, vfunc_5, 121, 0x7F51EA0E);
+MS2_REPLACE_METHOD(0x1403CD8C0, GameEventIgnoreConstructionLockEvent, OnStart, 121, 0x7F51EA0E);
 
 // @0x1403cd940
 void GameEventIgnoreConstructionLockEvent::vfunc_6() { FUN_1401c0d90()->FUN_14047e300(); }
@@ -4914,8 +4914,8 @@ void GameEventStarShop::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CDB10, GameEventStarShop, vfunc_4, 79, 0x004B9E41);
 
 // @0x1403cdb70
-void GameEventStarShop::vfunc_5() { FUN_140426ff0(FUN_140302b00()->GetStarShop(), m_d0); }
-MS2_REPLACE_METHOD(0x1403CDB70, GameEventStarShop, vfunc_5, 46, 0x6D33F816);
+void GameEventStarShop::OnStart() { FUN_140426ff0(FUN_140302b00()->GetStarShop(), m_d0); }
+MS2_REPLACE_METHOD(0x1403CDB70, GameEventStarShop, OnStart, 46, 0x6D33F816);
 
 // @0x1403cdbb0
 void GameEventStarShop::vfunc_6() { FUN_140426ff0(FUN_140302b00()->GetStarShop(), 0); }
@@ -4962,8 +4962,8 @@ void GameEventSnowman::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CDD50, GameEventSnowman, vfunc_2, 434, 0xBF2FA666);
 
 // @0x1403cdf10
-void GameEventSnowman::vfunc_5() { FUN_1401c0d90()->FUN_14047cfe0(m_d0); }
-MS2_REPLACE_METHOD(0x1403CDF10, GameEventSnowman, vfunc_5, 91, 0xFFE10E1E);
+void GameEventSnowman::OnStart() { FUN_1401c0d90()->FUN_14047cfe0(m_d0); }
+MS2_REPLACE_METHOD(0x1403CDF10, GameEventSnowman, OnStart, 91, 0xFFE10E1E);
 
 // @0x1403cdf80
 void GameEventSnowman::vfunc_6() { FUN_1401c0d90()->FUN_14047cfe0(MS2Ptr<SnowmanContext>(0)); }
@@ -5101,8 +5101,8 @@ void GameEventRps::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CE900, GameEventRps, vfunc_2, 396, 0x7CD51416);
 
 // @0x1403ceaa0
-void GameEventRps::vfunc_5() { FUN_1401c0d90()->FUN_14047d0d0(m_d0); }
-MS2_REPLACE_METHOD(0x1403CEAA0, GameEventRps, vfunc_5, 91, 0x36634EAA);
+void GameEventRps::OnStart() { FUN_1401c0d90()->FUN_14047d0d0(m_d0); }
+MS2_REPLACE_METHOD(0x1403CEAA0, GameEventRps, OnStart, 91, 0x36634EAA);
 
 // @0x1403ceb10
 void GameEventRps::vfunc_6() { FUN_1401c0d90()->FUN_14047d0d0(MS2Ptr<RpsContext>(0)); }
@@ -5213,8 +5213,8 @@ void GameEventNpcShopTalk::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CF240, GameEventNpcShopTalk, vfunc_2, 70, 0x401550DF);
 
 // @0x1403cf290
-void GameEventNpcShopTalk::vfunc_5() { FUN_1404270e0(FUN_140302b00()->GetNpcShopTalk(), m_d0, m_d4); }
-MS2_REPLACE_METHOD(0x1403CF290, GameEventNpcShopTalk, vfunc_5, 58, 0x21F3548C);
+void GameEventNpcShopTalk::OnStart() { FUN_1404270e0(FUN_140302b00()->GetNpcShopTalk(), m_d0, m_d4); }
+MS2_REPLACE_METHOD(0x1403CF290, GameEventNpcShopTalk, OnStart, 58, 0x21F3548C);
 
 // @0x1403cf2d0
 void GameEventNpcShopTalk::vfunc_6() { FUN_140427150(FUN_140302b00()->GetNpcShopTalk(), m_d0); }
@@ -5266,13 +5266,13 @@ void GameEventNpcShopGivePoint::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CF540, GameEventNpcShopGivePoint, vfunc_2, 100, 0x6A4F5517);
 
 // @0x1403cf5b0
-void GameEventNpcShopGivePoint::vfunc_5()
+void GameEventNpcShopGivePoint::OnStart()
 {
     MS2Ptr<CNpcShopGivePointContextBase> spContext = CNpcShopGivePointContextBase::Create(m_d4, m_d8);
     if (spContext.get())
         FUN_1404272b0(FUN_140302b00()->GetNpcShopGivePoint(), m_d0, spContext);
 }
-MS2_REPLACE_METHOD(0x1403CF5B0, GameEventNpcShopGivePoint, vfunc_5, 163, 0x6FC2B2E4);
+MS2_REPLACE_METHOD(0x1403CF5B0, GameEventNpcShopGivePoint, OnStart, 163, 0x6FC2B2E4);
 
 // @0x1403cf660
 void GameEventNpcShopGivePoint::vfunc_6() { FUN_140427330(FUN_140302b00()->GetNpcShopGivePoint(), m_d0); }
@@ -5343,8 +5343,8 @@ void GameEventNpcShopResetPriceSale::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403CFA00, GameEventNpcShopResetPriceSale, vfunc_4, 124, 0xF0C4ABC0);
 
 // @0x1403cfa90
-void GameEventNpcShopResetPriceSale::vfunc_5() { FUN_1404274c0(FUN_140302b00()->GetNpcShopResetPriceSale(), m_d0, m_d4); }
-MS2_REPLACE_METHOD(0x1403CFA90, GameEventNpcShopResetPriceSale, vfunc_5, 58, 0xCCE9A4AF);
+void GameEventNpcShopResetPriceSale::OnStart() { FUN_1404274c0(FUN_140302b00()->GetNpcShopResetPriceSale(), m_d0, m_d4); }
+MS2_REPLACE_METHOD(0x1403CFA90, GameEventNpcShopResetPriceSale, OnStart, 58, 0xCCE9A4AF);
 
 // @0x1403cfad0
 void GameEventNpcShopResetPriceSale::vfunc_6() { FUN_140427530(FUN_140302b00()->GetNpcShopResetPriceSale(), m_d0); }
@@ -5389,8 +5389,8 @@ void GameEventReactor::vfunc_2()
 MS2_REPLACE_METHOD(0x1403CFC50, GameEventReactor, vfunc_2, 374, 0x54D82440);
 
 // @0x1403cfdd0
-void GameEventReactor::vfunc_5() { FUN_1401c0d90()->FUN_14047d1c0(m_d0); }
-MS2_REPLACE_METHOD(0x1403CFDD0, GameEventReactor, vfunc_5, 91, 0x57C06D3C);
+void GameEventReactor::OnStart() { FUN_1401c0d90()->FUN_14047d1c0(m_d0); }
+MS2_REPLACE_METHOD(0x1403CFDD0, GameEventReactor, OnStart, 91, 0x57C06D3C);
 
 // @0x1403cfe40
 void GameEventReactor::vfunc_6() { FUN_1401c0d90()->FUN_14047d1c0(MS2Ptr<ReactorContext>(0)); }
@@ -5470,8 +5470,8 @@ void GameEventCustomTriggerString::vfunc_2()
 MS2_REPLACE_METHOD(0x1403D01C0, GameEventCustomTriggerString, vfunc_2, 369, 0x5AB2DEBE);
 
 // @0x1403d0340
-void GameEventCustomTriggerString::vfunc_5() {}
-MS2_REPLACE_METHOD(0x1403D0340, GameEventCustomTriggerString, vfunc_5, 6, 0xA9AF6E37);
+void GameEventCustomTriggerString::OnStart() {}
+MS2_REPLACE_METHOD(0x1403D0340, GameEventCustomTriggerString, OnStart, 6, 0xA9AF6E37);
 
 // @0x1403d0350
 void GameEventCustomTriggerString::vfunc_6() {}
@@ -5532,13 +5532,13 @@ void GameEventTreeWatering::vfunc_2()
 MS2_REPLACE_METHOD(0x1403D0550, GameEventTreeWatering, vfunc_2, 318, 0x7DF70203);
 
 // @0x1403d06a0
-void GameEventTreeWatering::vfunc_5()
+void GameEventTreeWatering::OnStart()
 {
     if (m_d0 == 0)
         return;
     FUN_1401c0d90()->FUN_14047d2b0(m_d0);
 }
-MS2_REPLACE_METHOD(0x1403D06A0, GameEventTreeWatering, vfunc_5, 121, 0x04F4AC3E);
+MS2_REPLACE_METHOD(0x1403D06A0, GameEventTreeWatering, OnStart, 121, 0x04F4AC3E);
 
 // @0x1403d0720
 void GameEventTreeWatering::vfunc_6()
@@ -5686,8 +5686,8 @@ void GameEventShutdownBillboard::vfunc_2() {}
 MS2_REPLACE_METHOD(0x1403D1350, GameEventShutdownBillboard, vfunc_2, 6, 0xA9AF6E37);
 
 // @0x1403d1360
-void GameEventShutdownBillboard::vfunc_5() { FUN_1407d1c30(FUN_140302b00()->ShutdownBillboard(), m_id); }
-MS2_REPLACE_METHOD(0x1403D1360, GameEventShutdownBillboard, vfunc_5, 43, 0xBFBF27ED);
+void GameEventShutdownBillboard::OnStart() { FUN_1407d1c30(FUN_140302b00()->ShutdownBillboard(), m_id); }
+MS2_REPLACE_METHOD(0x1403D1360, GameEventShutdownBillboard, OnStart, 43, 0xBFBF27ED);
 
 // @0x1403d13a0
 void GameEventShutdownBillboard::vfunc_6() { FUN_1407d1ca0(FUN_140302b00()->ShutdownBillboard(), m_id); }
@@ -5716,8 +5716,8 @@ void GameEventShutdownUGCBanner::vfunc_2() {}
 MS2_REPLACE_METHOD(0x1403D14F0, GameEventShutdownUGCBanner, vfunc_2, 6, 0xA9AF6E37);
 
 // @0x1403d1500
-void GameEventShutdownUGCBanner::vfunc_5() { FUN_1407d1d90(FUN_140302b00()->ShutdownUGCBanner(), m_id); }
-MS2_REPLACE_METHOD(0x1403D1500, GameEventShutdownUGCBanner, vfunc_5, 43, 0x166029F4);
+void GameEventShutdownUGCBanner::OnStart() { FUN_1407d1d90(FUN_140302b00()->ShutdownUGCBanner(), m_id); }
+MS2_REPLACE_METHOD(0x1403D1500, GameEventShutdownUGCBanner, OnStart, 43, 0x166029F4);
 
 // @0x1403d1540
 void GameEventShutdownUGCBanner::vfunc_6() { FUN_1407d1e00(FUN_140302b00()->ShutdownUGCBanner(), m_id); }
@@ -5747,8 +5747,8 @@ void GameEventPublicTest::vfunc_2() {}
 MS2_REPLACE_METHOD(0x1403D16A0, GameEventPublicTest, vfunc_2, 6, 0xA9AF6E37);
 
 // @0x1403d16b0
-void GameEventPublicTest::vfunc_5() { FUN_140428810(FUN_140302b00()->GetPublicTest(), 1); }
-MS2_REPLACE_METHOD(0x1403D16B0, GameEventPublicTest, vfunc_5, 40, 0xC09BDAC0);
+void GameEventPublicTest::OnStart() { FUN_140428810(FUN_140302b00()->GetPublicTest(), 1); }
+MS2_REPLACE_METHOD(0x1403D16B0, GameEventPublicTest, OnStart, 40, 0xC09BDAC0);
 
 // @0x1403d16e0
 void GameEventPublicTest::vfunc_6() {}
@@ -5793,8 +5793,8 @@ void GameEventAdventureLevelBonusExpRate::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D1890, GameEventAdventureLevelBonusExpRate, vfunc_4, 79, 0x36F47E14);
 
 // @0x1403d18f0
-void GameEventAdventureLevelBonusExpRate::vfunc_5() { FUN_1401c0d90()->FUN_140476930(m_id, m_d0); }
-MS2_REPLACE_METHOD(0x1403D18F0, GameEventAdventureLevelBonusExpRate, vfunc_5, 47, 0x54120E91);
+void GameEventAdventureLevelBonusExpRate::OnStart() { FUN_1401c0d90()->FUN_140476930(m_id, m_d0); }
+MS2_REPLACE_METHOD(0x1403D18F0, GameEventAdventureLevelBonusExpRate, OnStart, 47, 0x54120E91);
 
 // @0x1403d1930
 void GameEventAdventureLevelBonusExpRate::vfunc_6() { FUN_1401c0d90()->FUN_1404769a0(m_id); }
@@ -5959,8 +5959,8 @@ void GameEventBurningLevelup::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D2800, GameEventBurningLevelup, vfunc_4, 66, 0xF59C940A);
 
 // @0x1403d2850
-void GameEventBurningLevelup::vfunc_5() { FUN_1404283e0(FUN_140302b00()->GetBurningLevelup(), m_d0); }
-MS2_REPLACE_METHOD(0x1403D2850, GameEventBurningLevelup, vfunc_5, 99, 0x57FF77AF);
+void GameEventBurningLevelup::OnStart() { FUN_1404283e0(FUN_140302b00()->GetBurningLevelup(), m_d0); }
+MS2_REPLACE_METHOD(0x1403D2850, GameEventBurningLevelup, OnStart, 99, 0x57FF77AF);
 
 // @0x1403d28c0
 void GameEventBurningLevelup::vfunc_6() { FUN_1404284a0(FUN_140302b00()->GetBurningLevelup(), m_d0); }
@@ -6019,8 +6019,8 @@ void GameEventFestival::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D2D40, GameEventFestival, vfunc_4, 184, 0x85D0B06A);
 
 // @0x1403d2e00
-void GameEventFestival::vfunc_5() { FUN_140428980(FUN_140302b00()->GetFestival(), FUN_1402e1d00(), m_d0); }
-MS2_REPLACE_METHOD(0x1403D2E00, GameEventFestival, vfunc_5, 119, 0x77406360);
+void GameEventFestival::OnStart() { FUN_140428980(FUN_140302b00()->GetFestival(), FUN_1402e1d00(), m_d0); }
+MS2_REPLACE_METHOD(0x1403D2E00, GameEventFestival, OnStart, 119, 0x77406360);
 
 // @0x1403d2e80
 void GameEventFestival::vfunc_6() { FUN_1404289f0(FUN_140302b00()->GetFestival(), FUN_1402e1d00()); }
@@ -6114,8 +6114,8 @@ void GameEventCoupleDance::vfunc_2()
 MS2_REPLACE_METHOD(0x1403D3170, GameEventCoupleDance, vfunc_2, 643, 0xCAE3F087);
 
 // @0x1403d3400
-void GameEventCoupleDance::vfunc_5() { FUN_140428780(FUN_140302b00()->GetCoupleDance(), m_d0); }
-MS2_REPLACE_METHOD(0x1403D3400, GameEventCoupleDance, vfunc_5, 99, 0x4BEC5AF9);
+void GameEventCoupleDance::OnStart() { FUN_140428780(FUN_140302b00()->GetCoupleDance(), m_d0); }
+MS2_REPLACE_METHOD(0x1403D3400, GameEventCoupleDance, OnStart, 99, 0x4BEC5AF9);
 
 // @0x1403d3470
 void GameEventCoupleDance::vfunc_6()
@@ -6171,7 +6171,7 @@ void GameEventFieldEffect::vfunc_2()
 MS2_REPLACE_METHOD(0x1403D36D0, GameEventFieldEffect, vfunc_2, 272, 0x84A0FAF1);
 
 // @0x1403d37f0
-void GameEventFieldEffect::vfunc_5()
+void GameEventFieldEffect::OnStart()
 {
     FUN_140428b10(FUN_140302b00()->GetFieldEffect(), m_d0);
     if (m_d0.get())
@@ -6180,7 +6180,7 @@ void GameEventFieldEffect::vfunc_5()
             FUN_1403ed280()->FUN_1411a7e00(FUN_1401d4330(m_d0->m_effect, 0));
     }
 }
-MS2_REPLACE_METHOD(0x1403D37F0, GameEventFieldEffect, vfunc_5, 284, 0xD060D530);
+MS2_REPLACE_METHOD(0x1403D37F0, GameEventFieldEffect, OnStart, 284, 0xD060D530);
 
 // @0x1403d3920
 void GameEventFieldEffect::vfunc_6()
@@ -6230,12 +6230,12 @@ void GameEventExchangeScrollSale::vfunc_2()
 MS2_REPLACE_METHOD(0x1403D3C00, GameEventExchangeScrollSale, vfunc_2, 77, 0x926C60E3);
 
 // @0x1403d3c60
-void GameEventExchangeScrollSale::vfunc_5()
+void GameEventExchangeScrollSale::OnStart()
 {
     for (size_t i = 0; i < m_d0.GetCount(); i++)
         FUN_140428bf0(FUN_140302b00()->GetExchangeScrollSale(), m_d0[i], m_f0);
 }
-MS2_REPLACE_METHOD(0x1403D3C60, GameEventExchangeScrollSale, vfunc_5, 135, 0x130BABE3);
+MS2_REPLACE_METHOD(0x1403D3C60, GameEventExchangeScrollSale, OnStart, 135, 0x130BABE3);
 
 // @0x1403d3cf0
 void GameEventExchangeScrollSale::vfunc_6()
@@ -6290,7 +6290,7 @@ void GameEventItemTradeRestriction::vfunc_2()
 MS2_REPLACE_METHOD(0x1403D40A0, GameEventItemTradeRestriction, vfunc_2, 113, 0x65254863);
 
 // @0x1403d4120
-void GameEventItemTradeRestriction::vfunc_5()
+void GameEventItemTradeRestriction::OnStart()
 {
     ATL::CAtlArray<Unk_ItemTradeRestrictionType> types;
     for (size_t i = 0; i < m_d0.GetCount(); i++)
@@ -6324,7 +6324,7 @@ void GameEventItemTradeRestriction::vfunc_5()
     }
     FUN_140429330(FUN_140302b00()->GetItemTradeRestriction(), FUN_1402e1d00(), spData);
 }
-MS2_REPLACE_METHOD(0x1403D4120, GameEventItemTradeRestriction, vfunc_5, 843, 0x984F5098);
+MS2_REPLACE_METHOD(0x1403D4120, GameEventItemTradeRestriction, OnStart, 843, 0x984F5098);
 
 // @0x1403d4480
 void GameEventItemTradeRestriction::vfunc_6()
@@ -6433,8 +6433,8 @@ void GameEventCollectItemGroup::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D4CA0, GameEventCollectItemGroup, vfunc_4, 158, 0x4BD70CD9);
 
 // @0x1403d4d50
-void GameEventCollectItemGroup::vfunc_5() { FUN_140429770(FUN_140302b00()->GetCollectItemGroup(), m_d0); }
-MS2_REPLACE_METHOD(0x1403D4D50, GameEventCollectItemGroup, vfunc_5, 99, 0x47F29891);
+void GameEventCollectItemGroup::OnStart() { FUN_140429770(FUN_140302b00()->GetCollectItemGroup(), m_d0); }
+MS2_REPLACE_METHOD(0x1403D4D50, GameEventCollectItemGroup, OnStart, 99, 0x47F29891);
 
 // @0x1403d4dc0
 void GameEventCollectItemGroup::vfunc_6() { FUN_140429830(FUN_140302b00()->GetCollectItemGroup(), m_d0); }
@@ -6480,8 +6480,8 @@ void GameEventShutdownDummy::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D4FE0, GameEventShutdownDummy, vfunc_4, 79, 0x31D04805);
 
 // @0x1403d5040
-void GameEventShutdownDummy::vfunc_5() {}
-MS2_REPLACE_METHOD(0x1403D5040, GameEventShutdownDummy, vfunc_5, 6, 0xA9AF6E37);
+void GameEventShutdownDummy::OnStart() {}
+MS2_REPLACE_METHOD(0x1403D5040, GameEventShutdownDummy, OnStart, 6, 0xA9AF6E37);
 
 // @0x1403d5050
 void GameEventShutdownDummy::vfunc_6() {}
@@ -6538,8 +6538,8 @@ void GameEventSalePetCrystal::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D5280, GameEventSalePetCrystal, vfunc_4, 79, 0xB32A48BB);
 
 // @0x1403d52e0
-void GameEventSalePetCrystal::vfunc_5() { FUN_1401c0d90()->FUN_14047f7a0(m_id, m_d0); }
-MS2_REPLACE_METHOD(0x1403D52E0, GameEventSalePetCrystal, vfunc_5, 47, 0xCFD5DC47);
+void GameEventSalePetCrystal::OnStart() { FUN_1401c0d90()->FUN_14047f7a0(m_id, m_d0); }
+MS2_REPLACE_METHOD(0x1403D52E0, GameEventSalePetCrystal, OnStart, 47, 0xCFD5DC47);
 
 // @0x1403d5320
 void GameEventSalePetCrystal::vfunc_6() { FUN_1401c0d90()->FUN_14047f810(m_id); }
@@ -6610,8 +6610,8 @@ void GameEventArcadeOpen::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D5740, GameEventArcadeOpen, vfunc_4, 158, 0xF05FCD13);
 
 // @0x1403d57f0
-void GameEventArcadeOpen::vfunc_5() { m_e0 = FUN_140429a30(FUN_140302b00()->GetArcadeOpen(), m_d0); }
-MS2_REPLACE_METHOD(0x1403D57F0, GameEventArcadeOpen, vfunc_5, 110, 0x2C19282F);
+void GameEventArcadeOpen::OnStart() { m_e0 = FUN_140429a30(FUN_140302b00()->GetArcadeOpen(), m_d0); }
+MS2_REPLACE_METHOD(0x1403D57F0, GameEventArcadeOpen, OnStart, 110, 0x2C19282F);
 
 // @0x1403d5870
 void GameEventArcadeOpen::vfunc_6()
@@ -6678,8 +6678,8 @@ void GameEventBingoEvent::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403D5D80, GameEventBingoEvent, vfunc_4, 158, 0x18B38944);
 
 // @0x1403d5e30
-void GameEventBingoEvent::vfunc_5() { FUN_140429d00(FUN_140302b00()->GetBingoEvent(), m_d0); }
-MS2_REPLACE_METHOD(0x1403D5E30, GameEventBingoEvent, vfunc_5, 99, 0x236E2604);
+void GameEventBingoEvent::OnStart() { FUN_140429d00(FUN_140302b00()->GetBingoEvent(), m_d0); }
+MS2_REPLACE_METHOD(0x1403D5E30, GameEventBingoEvent, OnStart, 99, 0x236E2604);
 
 // @0x1403d5ea0
 void GameEventBingoEvent::vfunc_6() { FUN_140429d90(FUN_140302b00()->GetBingoEvent(), m_d0); }
@@ -6708,8 +6708,8 @@ void GameEventFinishPayback::vfunc_2() {}
 MS2_REPLACE_METHOD(0x1403D6020, GameEventFinishPayback, vfunc_2, 6, 0xA9AF6E37);
 
 // @0x1403d6030
-void GameEventFinishPayback::vfunc_5() {}
-MS2_REPLACE_METHOD(0x1403D6030, GameEventFinishPayback, vfunc_5, 6, 0xA9AF6E37);
+void GameEventFinishPayback::OnStart() {}
+MS2_REPLACE_METHOD(0x1403D6030, GameEventFinishPayback, OnStart, 6, 0xA9AF6E37);
 
 // @0x1403d6040
 void GameEventFinishPayback::vfunc_6() {}
@@ -6789,8 +6789,8 @@ void GameEventLongTermAttendGift::vfunc_2()
 MS2_REPLACE_METHOD(0x1403D6190, GameEventLongTermAttendGift, vfunc_2, 1514, 0x3DBC74BB);
 
 // @0x1403d6780
-void GameEventLongTermAttendGift::vfunc_5() { FUN_1401c0d90()->FUN_14047cd30(m_d8); }
-MS2_REPLACE_METHOD(0x1403D6780, GameEventLongTermAttendGift, vfunc_5, 91, 0xDE8151D3);
+void GameEventLongTermAttendGift::OnStart() { FUN_1401c0d90()->FUN_14047cd30(m_d8); }
+MS2_REPLACE_METHOD(0x1403D6780, GameEventLongTermAttendGift, OnStart, 91, 0xDE8151D3);
 
 // @0x1403d67f0
 void GameEventLongTermAttendGift::vfunc_6() { FUN_1401c0d90()->FUN_14047cdd0(m_d8); }
@@ -6830,8 +6830,8 @@ MS2_REPLACE_METHOD(0x1403D69E0, GameEventSaleLapenshardUpgradeRGB, vfunc_1, 61, 
 GameEventSaleLapenshardUpgradeRGB::GameEventSaleLapenshardUpgradeRGB() {}
 
 // @0x1403d6a70
-void GameEventSaleLapenshardUpgradeRGB::vfunc_5() { FUN_1401c0d90()->FUN_14047f8f0(m_id, m_d0); }
-MS2_REPLACE_METHOD(0x1403D6A70, GameEventSaleLapenshardUpgradeRGB, vfunc_5, 47, 0x1B157730);
+void GameEventSaleLapenshardUpgradeRGB::OnStart() { FUN_1401c0d90()->FUN_14047f8f0(m_id, m_d0); }
+MS2_REPLACE_METHOD(0x1403D6A70, GameEventSaleLapenshardUpgradeRGB, OnStart, 47, 0x1B157730);
 
 // @0x1403d6ab0
 void GameEventSaleLapenshardUpgradeRGB::vfunc_6() { FUN_1401c0d90()->FUN_14047f960(m_id); }
@@ -6861,8 +6861,8 @@ void GameEventGuildEventFund::vfunc_2() {}
 MS2_REPLACE_METHOD(0x1403D6C00, GameEventGuildEventFund, vfunc_2, 6, 0xA9AF6E37);
 
 // @0x1403d6c10
-void GameEventGuildEventFund::vfunc_5() {}
-MS2_REPLACE_METHOD(0x1403D6C10, GameEventGuildEventFund, vfunc_5, 6, 0xA9AF6E37);
+void GameEventGuildEventFund::OnStart() {}
+MS2_REPLACE_METHOD(0x1403D6C10, GameEventGuildEventFund, OnStart, 6, 0xA9AF6E37);
 
 // @0x1403d6c20
 void GameEventGuildEventFund::vfunc_6() {}

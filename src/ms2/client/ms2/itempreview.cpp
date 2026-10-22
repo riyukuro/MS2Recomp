@@ -869,7 +869,7 @@ int ItemPreviewMgr::FUN_140d40120(MS2Ptr<CItem> spItem, int nArg)
         return 0;
     }
     m_nArg = nArg;
-    CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4ec2);
+    CUIService::GetInstance()->OpenDialog((eUIClassID)0x4ec2);
     if (m_spPreview == 0)
         m_spPreview.AssignRaw(new ItemPreview(pPC, pDialog, 0));
     return m_spPreview->FUN_140d3bc90(spItem);

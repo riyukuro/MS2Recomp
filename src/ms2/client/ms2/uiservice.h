@@ -150,7 +150,7 @@ public:
     int FUN_141adcb40();                            // 0x141adcb40
     void FUN_141adcb60(int n);                      // 0x141adcb60
     void FUN_141add1b0(int nSlot, bool bOn);        // 0x141add1b0 enable one hot key slot
-    void FUN_141adc530(eUIClassID nClass);          // 0x141adc530 open a dialog
+    void OpenDialog(eUIClassID nClass);          // 0x141adc530 open a dialog
     void FUN_141add040(eUIClassID nClass);          // 0x141add040 close a dialog
     void FUN_141aec3e0();                           // 0x141aec3e0 reset the saved UI layout
     void FUN_141aec690();                           // 0x141aec690
@@ -212,7 +212,7 @@ public:
     void FUN_141adc400();                                              // 0x141adc400
     void FUN_141adc5d0(eUIClassID nClass);                                    // 0x141adc5d0 close a dialog (if open)
     void FUN_141adc690(eUIClassID nClass);                                    // 0x141adc690 close-request a dialog (if open)
-    void FUN_141adc750(eUIClassID nClass);                                    // 0x141adc750 toggle a dialog
+    void ToggleDialog(eUIClassID nClass);                                    // 0x141adc750 toggle a dialog
     int FUN_141adc7f0(eUIClassID nClass);                              // 0x141adc7f0 dialog vfunc_73 (can open)
     int FUN_141adc890(eUIClassID nClass);                              // 0x141adc890 dialog open
     int FUN_141adc940(eUIClassID nClass);                              // 0x141adc940 dialog vfunc_55 (closed)

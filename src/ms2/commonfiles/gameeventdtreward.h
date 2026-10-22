@@ -1,6 +1,6 @@
 // gameeventdtreward.h - GameEventDTReward (RTTI .?AVGameEventDTReward@@, 0xf0 bytes, ctor 0x14041b1f0, vftable 0x142d44450):
 // the daily attendance (DT) reward event. Its four xml strings (the inherited m_68..m_80) are the reward rows, the level
-// limit and two flags; vfunc_2 parses them into the DTRewardEventContext at +0xd0, vfunc_5 / vfunc_6 hand it to / take it
+// limit and two flags; vfunc_2 parses them into the DTRewardEventContext at +0xd0, OnStart / vfunc_6 hand it to / take it
 // from CUserEventManager. Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13); unit `?\gameeventdtreward.cpp`
 // (0x14041b140-0x14041c1a0 .text$mn, dir commonfiles). Member names invented from their use.
 #pragma once
@@ -114,7 +114,7 @@ public:
     virtual void vfunc_2();                     // 0x14041b280: parse the four xml strings
     virtual void vfunc_3(Unk_GEOut* out);       // 0x14041b3c0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x14041b490
-    virtual void vfunc_5();                     // 0x14041b300: hand the context to CUserEventManager
+    virtual void OnStart();                     // 0x14041b300: hand the context to CUserEventManager
     virtual void vfunc_6();                     // 0x14041b380: remove it again
 
     // Builds the context from the rewards ("a,b,...;..." rows of nine ids), the level limit, and two flags.

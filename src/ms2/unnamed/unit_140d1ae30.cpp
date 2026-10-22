@@ -1569,7 +1569,7 @@ int CallMedic(MS2Ptr<CItem> spItem, PC* pPlayer)
 int CallAirTaxi(MS2Ptr<CItem> spItem, PC* pPlayer)
 {
     if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4e42) != 0)
-        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4e42);
+        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4e42);
     return 1;
 }
 

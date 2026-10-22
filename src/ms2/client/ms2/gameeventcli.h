@@ -1,5 +1,5 @@
 // gameeventcli.h - the client side of the GameEvent family: one GameEvent<Name>Cli per event, which opens, refreshes or
-// closes the matching dialog on start (vfunc_5) / end (vfunc_6). Recovered from MapleStory2.exe KMS2_DEV x64
+// closes the matching dialog on start (OnStart) / end (vfunc_6). Recovered from MapleStory2.exe KMS2_DEV x64
 // (2022-04-13); the unit is `client\ms2\gameeventcli.cpp` (0x140ce28a0-0x140ceaa70 .text$mn, 0x1400d0b50-0x1400d1640
 // .text$di). Header name assumed. The Cli classes add no storage of their own (TrafficOptimizerCli excepted).
 #pragma once
@@ -35,7 +35,7 @@ class GameEventOntimeCli : public GameEventOntime
 public:
     GameEventOntimeCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -44,7 +44,7 @@ class GameEventGameMenuPopupCli : public GameEventGameMenuPopup
 public:
     GameEventGameMenuPopupCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -53,7 +53,7 @@ class GameEventEventFieldPopupCli : public GameEventEventFieldPopup
 public:
     GameEventEventFieldPopupCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -63,7 +63,7 @@ public:
     GameEventDTRewardCli();
     void OnNotifyGameStart(NotifyObject* pNotify);   // 0x140ce2ff0
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -72,7 +72,7 @@ class GameEventSaleAutoFishingCli : public GameEventSaleAutoFishing
 public:
     GameEventSaleAutoFishingCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -81,7 +81,7 @@ class GameEventSaleAutoPlayInstrumentCli : public GameEventSaleAutoPlayInstrumen
 public:
     GameEventSaleAutoPlayInstrumentCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -111,7 +111,7 @@ public:
     CMsTime FUN_140ce3aa0();
     CMsTime FUN_140ce3ae0();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
     virtual void vfunc_10();
 };
@@ -131,7 +131,7 @@ public:
     CMsTime FUN_140ce4050();
     CMsTime FUN_140ce4090();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
     virtual void vfunc_10();
 };
@@ -142,7 +142,7 @@ public:
     GameEventTrafficOptimizerCli();
     ATL::CAtlArray<unsigned> m_values;      // +0xd0 the 7 traffic limits
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
     virtual void vfunc_4(Unk_GEIn* in);
 };
@@ -153,7 +153,7 @@ public:
     GameEventItemBuffCli();
     void FUN_140ce4580(NotifyObject* pNotify);   // the return-user buff notice
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -162,7 +162,7 @@ class GameEventDungeonExtraRewardCli : public GameEventDungeonExtraReward
 public:
     GameEventDungeonExtraRewardCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -171,7 +171,7 @@ class GameEventMeratMarketNoticeCli : public GameEventMeratMarketNotice
 public:
     GameEventMeratMarketNoticeCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -185,7 +185,7 @@ public:
     void FUN_140ce4cf0(Unk_140165cf0* pElem);
     void FUN_140ce4d20(Unk_140165cf0* pElem);
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -194,7 +194,7 @@ class GameEventWorldmapIconCli : public GameEventWorldmapIcon
 public:
     GameEventWorldmapIconCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -203,7 +203,7 @@ class GameEventStringBoardCli : public GameEventStringBoard
 public:
     GameEventStringBoardCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -213,7 +213,7 @@ public:
     GameEventSnowmanCli();
     void FUN_140ce56a0(NotifyObject* pNotify);   // the game started
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -222,7 +222,7 @@ class GameEventRpsCli : public GameEventRps
 public:
     GameEventRpsCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -231,7 +231,7 @@ class GameEventCoupleDanceCli : public GameEventCoupleDance
 public:
     GameEventCoupleDanceCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -240,7 +240,7 @@ class GameEventCustomTriggerStringCli : public GameEventCustomTriggerString
 public:
     GameEventCustomTriggerStringCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 
@@ -251,7 +251,7 @@ class GameEventBurningLevelupCli : public GameEventBurningLevelup
 public:
     GameEventBurningLevelupCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
     virtual void vfunc_10(NotifyObject*);   // 0x140ce65f0 NotifyChangeMyLevel handler
     bool FUN_140ce64e0(short nLevel);
@@ -263,6 +263,6 @@ class GameEventLongTermAttendGiftCli : public GameEventLongTermAttendGift
 public:
     GameEventLongTermAttendGiftCli();
     virtual CStringW vfunc_1();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };

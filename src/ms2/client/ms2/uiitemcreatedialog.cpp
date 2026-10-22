@@ -414,7 +414,7 @@ void UIItemCreateDialog::FUN_1419b4e30(const Scaleform::GFx::FunctionHandler::Pa
                 UIItemDropInfoDialog* pDialog = Unk_IcGetDialog<UIItemDropInfoDialog>(0x4f74);
                 if (pDialog) {
                     pDialog->FUN_140c3b7d0(nItemId, nBox);
-                    CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4f74);
+                    CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f74);
                 }
             }
         }

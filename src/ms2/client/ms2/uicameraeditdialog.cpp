@@ -736,7 +736,7 @@ int UICartoonDialog::FUN_1418dfb30(int nBookId, int n2c, int nLayer)
         m_nPage = 0;
         m_e0 = nLayer;
         m_2c = n2c;
-        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4e87);
+        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4e87);
     }
     return 1;
 }
@@ -760,7 +760,7 @@ void UICartoonDialog::FUN_1418dfc60(CInPacket& packet)
     if (FUN_141924630() != 0)
         FUN_1418dfd50();
     else
-        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4e87);
+        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4e87);
 }
 
 // @0x1418dfd50
@@ -1354,7 +1354,7 @@ void UICharacterCreateDialog::OnLoadComplete()
     UIDialog* pSelect = FUN_140b72de0(0x4ef1);
     if (pSelect != 0 && FUN_1418f1c20(pSelect) == 0 && m_bGuideOpened == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4ea7);
+        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ea7);
         m_bGuideOpened = 1;
     }
     m_dOpenTime = FUN_14086d260()->FUN_141473280();
@@ -1463,7 +1463,7 @@ int UICharacterCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     }
     if (_stricmp("OnClickGuide", szMethod) == 0)
     {
-        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4ea7);
+        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ea7);
         return 1;
     }
     return 0;

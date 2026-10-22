@@ -55,7 +55,7 @@ GameEvent* FUN_14041e050();
 GameEvent* FUN_14041e140();
 GameEvent* FUN_14041e230();
 
-// The per-kind shut-down value (gameeventvalue.cpp): vfunc_5 takes a reference on an id, vfunc_6 releases it again.
+// The per-kind shut-down value (gameeventvalue.cpp): OnStart takes a reference on an id, vfunc_6 releases it again.
 class Unk_ShutdownEventValue;
 class CGameEventValueManager;
 CGameEventValueManager* FUN_140302b00();                                   // TSingleton<CGameEventValueManager>::GetInstance
@@ -103,7 +103,7 @@ GameEventShutdown::GameEventShutdown(int nId) : m_nId(nId)
 void GameEventShutdown::vfunc_2() { FUN_140274fc0(m_68, m_items, L","); }
 
 // @0x14041d580
-void GameEventShutdown::vfunc_5()
+void GameEventShutdown::OnStart()
 {
     for (size_t i = 0; i < m_items.GetCount(); i++)
         FUN_1407d10e0(FUN_14046d0d0(FUN_140302b00(), m_nId), m_items[i]);
@@ -137,7 +137,7 @@ GameEventShutdownNoParam::GameEventShutdownNoParam(int nId) : m_nId(nId)
 void GameEventShutdownNoParam::vfunc_2() {}
 
 // @0x14041d790
-void GameEventShutdownNoParam::vfunc_5()
+void GameEventShutdownNoParam::OnStart()
 {
     FUN_1407d10e0(FUN_14046d0d0(FUN_140302b00(), m_nId), m_id);
 }

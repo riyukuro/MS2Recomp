@@ -55,7 +55,7 @@ void GameEventDTReward::vfunc_2()
 }
 
 // @0x14041b300
-void GameEventDTReward::vfunc_5()
+void GameEventDTReward::OnStart()
 {
     if (m_spContext.get() != 0)
         FUN_1408d7cd0(TSingleton<CUserEventManager>::GetInstance(), m_spContext);

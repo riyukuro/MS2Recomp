@@ -23,3 +23,6 @@
 141a844a0	UIPopUpMenu::FUN_141a844a0	UIPopUpMenu::AddPopupMenu	certain	certain: string self-name 'UIPopUpMenu::AddPopupMenu' in log string(s) of 0x141a844a0	nam1	2026-10-22
 1422adf90	GFxManager::FUN_1422adf90	GFxManager::Render	certain	certain: string self-name 'GFxManager::Render' in log string(s) of 0x1422adf90	nam1	2026-10-22
 1422d41b0	UISwfEntityManager::FUN_1422d41b0	UISwfEntityManager::GetUISwfEntity	certain	certain: string self-name 'UISwfEntityManager::GetUISwfEntity' in log string(s) of 0x1422d41b0	nam1	2026-10-22
+1403c0d30	GameEventDungeonExtraReward::vfunc_5	GameEventDungeonExtraReward::OnStart	certain	certain: string self-name 'GameEventDungeonExtraReward::OnStart' in log string(s) of 0x1403c0d30	nam1	2026-10-22
+141adc530	CUIService::FUN_141adc530	CUIService::OpenDialog	certain	certain: string self-name 'CUIService::OpenDialog' in log string(s) of 0x141adc530	nam1	2026-10-22
+141adc750	CUIService::FUN_141adc750	CUIService::ToggleDialog	certain	certain: string self-name 'CUIService::ToggleDialog' in log string(s) of 0x141adc750	nam1	2026-10-22

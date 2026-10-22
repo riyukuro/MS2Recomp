@@ -816,9 +816,9 @@ bool COffscreenWebBrowser::OnProcessMessageReceived(CefRefPtr<CefBrowser> browse
     } else if (message->GetName() == g_szCefMessageOpenUI) {
         CefString strUI = message->GetArgumentList()->GetString(0);
         if (strUI == "cash") {
-            CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4ebc);
+            CUIService::GetInstance()->OpenDialog((eUIClassID)0x4ebc);
         } else if (strUI == "merat") {
-            CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4ec1);
+            CUIService::GetInstance()->OpenDialog((eUIClassID)0x4ec1);
             if (message->GetArgumentList()->GetSize() == 3) {
                 CStringA strKind(message->GetArgumentList()->GetString(1).c_str());
                 CStringA strTarget(message->GetArgumentList()->GetString(2).c_str());

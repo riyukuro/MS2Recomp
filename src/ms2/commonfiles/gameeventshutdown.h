@@ -11,7 +11,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/commonfiles/gameevent.h"   // GameEvent
 
-// 0xf8. The object kind at +0xd0 and the comma separated id list parsed out of m_68 at +0xd8. vfunc_5 takes a
+// 0xf8. The object kind at +0xd0 and the comma separated id list parsed out of m_68 at +0xd8. OnStart takes a
 // reference on every id of the list and vfunc_6 releases it.
 class GameEventShutdown : public GameEvent
 {
@@ -21,7 +21,7 @@ public:
 
     virtual CStringW vfunc_1();                 // 0x14041d470: "GameEventShutdown"
     virtual void vfunc_2();                     // 0x14041d540: parse m_items out of m_68
-    virtual void vfunc_5();                     // 0x14041d580
+    virtual void OnStart();                     // 0x14041d580
     virtual void vfunc_6();                     // 0x14041d610
 
     int m_nId;                                  // +0xd0 the object kind the ids belong to
@@ -29,7 +29,7 @@ public:
 };
 MS2_CHECK_SIZE(GameEventShutdown, 0xf8);
 
-// 0xf8. The same storage, but vfunc_2 does nothing and vfunc_5 / vfunc_6 act on the event id itself instead of the
+// 0xf8. The same storage, but vfunc_2 does nothing and OnStart / vfunc_6 act on the event id itself instead of the
 // list (the shout-down applies to the event, not to objects the xml names).
 class GameEventShutdownNoParam : public GameEvent
 {
@@ -39,7 +39,7 @@ public:
 
     virtual CStringW vfunc_1();                 // 0x14041d6b0: "GameEventShutdownNoParam"
     virtual void vfunc_2();                     // 0x14041d780 (empty)
-    virtual void vfunc_5();                     // 0x14041d790
+    virtual void OnStart();                     // 0x14041d790
     virtual void vfunc_6();                     // 0x14041d7d0
 
     int m_nId;                                  // +0xd0 the object kind

@@ -339,7 +339,7 @@ void CGameOptionInterface::vfunc_10()
     if (FUN_14125bb90(&m_state))
     {
         if (FUN_1408e57f0()->FUN_1422b9e00() == 0x620001d)
-            CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4edf);
+            CUIService::GetInstance()->OpenDialog((eUIClassID)0x4edf);
     }
     else if (!FUN_14125bb90(&m_state))
     {
@@ -348,7 +348,7 @@ void CGameOptionInterface::vfunc_10()
     if (FUN_14125bbe0(&m_state))
     {
         if (TSingleton<CPartyManager>::GetInstance()->FUN_14162ab20())
-            CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4f23);
+            CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f23);
     }
     else if (!FUN_14125bbe0(&m_state))
     {

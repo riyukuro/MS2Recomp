@@ -203,7 +203,7 @@ void GameEvent::vfunc_7(MS2Ptr<GameEvent> spPrev)
 {
     if (spPrev.get())
         spPrev->vfunc_6();
-    vfunc_5();
+    OnStart();
 }
 MS2_REPLACE_METHOD(0x1402E2220, GameEvent, vfunc_7, 101, 0xA9EA75F4);
 

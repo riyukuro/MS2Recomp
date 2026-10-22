@@ -735,7 +735,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (pRank != 0)
             {
                 pRank->FUN_140e2dfc0(1, 0);
-                CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4f24);
+                CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f24);
             }
         }
         else if (CFeatureManager::GetInstance()->FUN_14036d570(0x3b) == true)
@@ -803,7 +803,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (pRank != 0)
             {
                 pRank->FUN_140e2dfc0(1, 0);
-                CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4f24);
+                CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f24);
             }
         }
         else if (CFeatureManager::GetInstance()->FUN_14036d570(0x3b) == true)
@@ -999,7 +999,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (pRank != 0)
             {
                 pRank->FUN_140e2dfc0(5, 0);
-                CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4f24);
+                CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f24);
             }
         }
         else if (CFeatureManager::GetInstance()->FUN_14036d570(0x3b) == true)
@@ -1189,7 +1189,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     }
     if (_stricmp("OpenUpgradePopup", szMethod) == 0)
     {
-        CUIService::GetInstance()->FUN_141adc750((eUIClassID)0x4f2e);
+        CUIService::GetInstance()->ToggleDialog((eUIClassID)0x4f2e);
         return 1;
     }
     if (_stricmp("OnUpgradeNpc", szMethod) == 0)
@@ -1236,7 +1236,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     }
     if (_stricmp("onOpenDungeonDialog", szMethod) == 0)
     {
-        CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4ebd);
+        CUIService::GetInstance()->OpenDialog((eUIClassID)0x4ebd);
         Unk_GdDungeonDialog* pDialog = FUN_140961550(0x4ebd);
         if (pDialog != 0)
         {

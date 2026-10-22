@@ -287,7 +287,7 @@ GameEvent* FUN_140ce27f0() { return new GameEventOntimeCli; }
 CStringW GameEventOntimeCli::vfunc_1() { return CStringW(L"GameEventOntimeCli"); }
 
 // @0x140ce28a0
-void GameEventOntimeCli::vfunc_5()
+void GameEventOntimeCli::OnStart()
 {
     unsigned nValue = 0;
     UISystemMailNotifyDialog* pDlg;
@@ -326,9 +326,9 @@ GameEvent* FUN_140ce29f0() { return new GameEventGameMenuPopupCli; }
 CStringW GameEventGameMenuPopupCli::vfunc_1() { return CStringW(L"GameEventGameMenuPopupCli"); }
 
 // @0x140ce2aa0
-void GameEventGameMenuPopupCli::vfunc_5()
+void GameEventGameMenuPopupCli::OnStart()
 {
-    GameEventGameMenuPopup::vfunc_5();
+    GameEventGameMenuPopup::OnStart();
     UIGameMenuDialog* pDlg = FUN_140938b90(0x4e28);
     if (pDlg) {
         pDlg->FUN_141938490(m_d0, m_d8);
@@ -361,9 +361,9 @@ GameEvent* FUN_140ce2ba0() { return new GameEventEventFieldPopupCli; }
 CStringW GameEventEventFieldPopupCli::vfunc_1() { return CStringW(L"GameEventEventFieldPopupCli"); }
 
 // @0x140ce2c50
-void GameEventEventFieldPopupCli::vfunc_5()
+void GameEventEventFieldPopupCli::OnStart()
 {
-    GameEventEventFieldPopup::vfunc_5();
+    GameEventEventFieldPopup::OnStart();
     UIEnterEventFieldDialog* pDlg = FindCliDialog<UIEnterEventFieldDialog>(0x4f00);
     if (pDlg) {
         if (pDlg->FUN_141924630())
@@ -393,9 +393,9 @@ GameEvent* FUN_140ce2d30() { return new GameEventDTRewardCli; }
 CStringW GameEventDTRewardCli::vfunc_1() { return CStringW(L"GameEventDTRewardCli"); }
 
 // @0x140ce2de0
-void GameEventDTRewardCli::vfunc_5()
+void GameEventDTRewardCli::OnStart()
 {
-    GameEventDTReward::vfunc_5();
+    GameEventDTReward::OnStart();
     UIDTEventDialog* pDlg = FindCliDialog<UIDTEventDialog>(0x4f01);
     if (pDlg) {
         if (pDlg->FUN_141924630() != 0) {
@@ -448,9 +448,9 @@ CStringW GameEventSaleAutoFishingCli::vfunc_1() { return CStringW(L"GameEventSal
 Unk_SingletonObj* FUN_140cea070() { return DAT_143ac0d40; }
 
 // @0x140ce30e0
-void GameEventSaleAutoFishingCli::vfunc_5()
+void GameEventSaleAutoFishingCli::OnStart()
 {
-    GameEventSaleAutoFishing::vfunc_5();
+    GameEventSaleAutoFishing::OnStart();
     reinterpret_cast<Unk_CliAutoSvc*>(FUN_140cea070())->FUN_140dd87d0();
 }
 
@@ -468,9 +468,9 @@ GameEvent* FUN_140ce3140() { return new GameEventSaleAutoPlayInstrumentCli; }
 CStringW GameEventSaleAutoPlayInstrumentCli::vfunc_1() { return CStringW(L"GameEventSaleAutoPlayInstrumentCli"); }
 
 // @0x140ce31f0
-void GameEventSaleAutoPlayInstrumentCli::vfunc_5()
+void GameEventSaleAutoPlayInstrumentCli::OnStart()
 {
-    GameEventSaleAutoPlayInstrument::vfunc_5();
+    GameEventSaleAutoPlayInstrument::OnStart();
     reinterpret_cast<Unk_CliAutoSvc*>(FUN_140cea070())->FUN_140dd87d0();
 }
 
@@ -490,9 +490,9 @@ GameEvent* FUN_140ce3250() { return new GameEventAttendGiftCli; }
 CStringW GameEventAttendGiftCli::vfunc_1() { return CStringW(L"GameEventAttendGiftCli"); }
 
 // @0x140ce3300
-void GameEventAttendGiftCli::vfunc_5()
+void GameEventAttendGiftCli::OnStart()
 {
-    GameEventAttendGift::vfunc_5();
+    GameEventAttendGift::OnStart();
     Unk_CliAttendOps* pDlg = (Unk_CliAttendOps*)FUN_140c053e0(0x4eb8);
     if (pDlg)
         pDlg->FUN_14102c8e0(Unk_14102fe10<Unk_140ce3510>((Unk_140ce3510*)this));
@@ -667,9 +667,9 @@ GameEvent* FUN_140ce3b70() { return new GameEventCashAttendCli; }
 CStringW GameEventCashAttendCli::vfunc_1() { return CStringW(L"GameEventCashAttendCli"); }
 
 // @0x140ce3c20
-void GameEventCashAttendCli::vfunc_5()
+void GameEventCashAttendCli::OnStart()
 {
-    GameEventCashAttend::vfunc_5();
+    GameEventCashAttend::OnStart();
     UICashAttendDialog* pDlg = FindCliDialog<UICashAttendDialog>(0x4eb9);
     if (pDlg)
         pDlg->FUN_140bc3db0(MS2Ptr<GameEventCashAttendCli>(this));
@@ -763,9 +763,9 @@ GameEvent* FUN_140ce40d0() { return new GameEventTrafficOptimizerCli; }
 CStringW GameEventTrafficOptimizerCli::vfunc_1() { return CStringW(L"GameEventTrafficOptimizerCli"); }
 
 // @0x140ce41d0
-void GameEventTrafficOptimizerCli::vfunc_5()
+void GameEventTrafficOptimizerCli::OnStart()
 {
-    GameEventTrafficOptimizer::vfunc_5();
+    GameEventTrafficOptimizer::OnStart();
     for (size_t i = 0; i < 7; i++)
         TSingleton<CTrafficOptimizer>::GetInstance()->FUN_14087d5b0((unsigned)i, m_values[i]);
 }
@@ -795,7 +795,7 @@ GameEvent* FUN_140ce4330() { return new GameEventItemBuffCli; }
 CStringW GameEventItemBuffCli::vfunc_1() { return CStringW(L"GameEventItemBuffCli"); }
 
 // @0x140ce4420
-void GameEventItemBuffCli::vfunc_5()
+void GameEventItemBuffCli::OnStart()
 {
     FUN_140939a10()->RegisterNotify(L"NotifyGameStart",
         Delegate<void(NotifyObject*)>(this, &GameEventItemBuffCli::FUN_140ce4580));
@@ -827,9 +827,9 @@ GameEvent* FUN_140ce4640() { return new GameEventDungeonExtraRewardCli; }
 CStringW GameEventDungeonExtraRewardCli::vfunc_1() { return CStringW(L"GameEventDungeonExtraRewardCli"); }
 
 // @0x140ce46f0
-void GameEventDungeonExtraRewardCli::vfunc_5()
+void GameEventDungeonExtraRewardCli::OnStart()
 {
-    GameEventDungeonExtraReward::vfunc_5();
+    GameEventDungeonExtraReward::OnStart();
     Unk_CliDungeonDlg* pDlg = FUN_140961550(0x4ebd);
     if (pDlg)
         pDlg->FUN_1412b9320();
@@ -854,9 +854,9 @@ CStringW GameEventMeratMarketNoticeCli::vfunc_1() { return CStringW(L"GameEventM
 
 // MS2-FUNCTIONAL: 3 bytes longer (the member reference argument is reloaded through rcx)
 // @0x140ce4820
-void GameEventMeratMarketNoticeCli::vfunc_5()
+void GameEventMeratMarketNoticeCli::OnStart()
 {
-    GameEventMeratMarketNotice::vfunc_5();
+    GameEventMeratMarketNotice::OnStart();
     Unk_CliMeratDlg* pDlg = FUN_140bfed50(0x4ec1);
     if (pDlg) {
         const CStringW* pStr = &m_d0;
@@ -888,9 +888,9 @@ GameEvent* FUN_140ce4970() { return new GameEventUpdateStringCli; }
 CStringW GameEventUpdateStringCli::vfunc_1() { return CStringW(L"GameEventUpdateStringCli"); }
 
 // @0x140ce4a20
-void GameEventUpdateStringCli::vfunc_5()
+void GameEventUpdateStringCli::OnStart()
 {
-    GameEventUpdateString::vfunc_5();
+    GameEventUpdateString::OnStart();
     CStringW strXml(m_d0);
     strXml.Trim();
     if (!strXml.IsEmpty()) {
@@ -950,7 +950,7 @@ CStringW GameEventWorldmapIconCli::vfunc_1() { return CStringW(L"GameEventWorldm
 
 // MS2-FUNCTIONAL: the exe lays the icon pointer temps out in other stack slots (frame and unwind map differ)
 // @0x140ce4e00
-void GameEventWorldmapIconCli::vfunc_5()
+void GameEventWorldmapIconCli::OnStart()
 {
     TiXmlDocument doc;
     const CStringW* pXml = &m_d0;
@@ -1005,7 +1005,7 @@ GameEvent* FUN_140ce51e0() { return new GameEventStringBoardCli; }
 CStringW GameEventStringBoardCli::vfunc_1() { return CStringW(L"GameEventStringBoardCli"); }
 
 // @0x140ce5290
-void GameEventStringBoardCli::vfunc_5()
+void GameEventStringBoardCli::OnStart()
 {
     CStringW strText;
     if (m_nId != 0)
@@ -1028,9 +1028,9 @@ GameEvent* FUN_140ce53c0() { return new GameEventSnowmanCli; }
 CStringW GameEventSnowmanCli::vfunc_1() { return CStringW(L"GameEventSnowmanCli"); }
 
 // @0x140ce5470
-void GameEventSnowmanCli::vfunc_5()
+void GameEventSnowmanCli::OnStart()
 {
-    GameEventSnowman::vfunc_5();
+    GameEventSnowman::OnStart();
     UISnowmanEventDialog* pDlg = FindCliDialog<UISnowmanEventDialog>(0x4f5d);
     if (pDlg) {
         pDlg->FUN_140e96a90(m_e0);
@@ -1075,7 +1075,7 @@ CStringW GameEventRpsCli::vfunc_1() { return CStringW(L"GameEventRpsCli"); }
 
 // MS2-FUNCTIONAL: the exe lays the RpsGameData handle, document and xml pointer out in other stack slots (frame and unwind map differ)
 // @0x140ce5790
-void GameEventRpsCli::vfunc_5()
+void GameEventRpsCli::OnStart()
 {
     MS2Ptr<RpsGameData> spData(new RpsGameData());
     TiXmlDocument doc;
@@ -1091,7 +1091,7 @@ void GameEventRpsCli::vfunc_5()
                 MS2_ASSERT_AT(0x34b, 0);
             } else {
                 m_d0->m_spGameData = spData;
-                GameEventRps::vfunc_5();
+                GameEventRps::OnStart();
             }
         }
     }
@@ -1130,9 +1130,9 @@ CStringW GameEventCoupleDanceCli::vfunc_1() { return CStringW(L"GameEventCoupleD
 
 // MS2-FUNCTIONAL: the dialog's member pointer is 16 bytes in the exe (the real dialog has a second base the header lacks)
 // @0x140ce5b50
-void GameEventCoupleDanceCli::vfunc_5()
+void GameEventCoupleDanceCli::OnStart()
 {
-    GameEventCoupleDance::vfunc_5();
+    GameEventCoupleDance::OnStart();
     UICoupleDanceEventDialog* pDlg = FUN_140b769d0(0x4f71);
     if (pDlg != 0) {
         Unk_CliCoupleFn pfn = reinterpret_cast<Unk_CliCoupleFn>(&UICoupleDanceEventDialog::FUN_140bfe1a0);
@@ -1181,9 +1181,9 @@ CStringW GameEventCustomTriggerStringCli::vfunc_1() { return CStringW(L"GameEven
 
 // MS2-FUNCTIONAL: the exe passes the map entry through a reloaded pointer (argument shuffle differs by 6 bytes)
 // @0x140ce5f80
-void GameEventCustomTriggerStringCli::vfunc_5()
+void GameEventCustomTriggerStringCli::OnStart()
 {
-    GameEventCustomTriggerString::vfunc_5();
+    GameEventCustomTriggerString::OnStart();
     for (POSITION pos = m_d0.GetHeadPosition(); pos != 0; m_d0.GetNext(pos)) {
         const CStringW& strKey = m_d0.GetKeyAt(pos);
         CStringW strText = ((Unk_CliTextMgr*)FUN_140a87680())->FUN_140be95b0()->FUN_14087ede0(strKey);
@@ -1260,9 +1260,9 @@ static void Unk_ShowBurningPopup(const CStringW& strKey)
 typedef void (GameEventBurningLevelupCli::*Unk_CliBurnPktFn)(CInPacket&);
 
 // @0x140ce61d0
-void GameEventBurningLevelupCli::vfunc_5()
+void GameEventBurningLevelupCli::OnStart()
 {
-    GameEventBurningLevelup::vfunc_5();
+    GameEventBurningLevelup::OnStart();
     UIBurningEventWidgetDialog* pDlg = FindCliDialog<UIBurningEventWidgetDialog>(0x4f6a);
     if (pDlg)
         pDlg->FUN_140c5ab30(MS2Ptr<Unk_MyPCBurningEvent>(reinterpret_cast<Unk_MyPCBurningEvent*>(this)));
@@ -1311,9 +1311,9 @@ GameEvent* FUN_140ce7870() { return new GameEventLongTermAttendGiftCli; }
 CStringW GameEventLongTermAttendGiftCli::vfunc_1() { return CStringW(L"GameEventLongTermAttendGiftCli"); }
 
 // @0x140ce7920
-void GameEventLongTermAttendGiftCli::vfunc_5()
+void GameEventLongTermAttendGiftCli::OnStart()
 {
-    GameEventLongTermAttendGift::vfunc_5();
+    GameEventLongTermAttendGift::OnStart();
     COutPacket packet(0x97, 0);
     packet.vfunc_o10_1(0x1b);
     FUN_140710590(packet);

@@ -590,7 +590,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                     {
                         FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4efb);
                         pDialog->FUN_140f25ad0(spIcon->m_20.m_0);
-                        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4efb);
+                        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4efb);
                     }
                 }
             }
@@ -615,7 +615,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 {
                     FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4ebd);
                     if (pDialog->FUN_1412b8f00(nId))
-                        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4ebd);
+                        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ebd);
                 }
             }
         }
@@ -679,7 +679,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             {
                 FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4ebd);
                 pDialog->FUN_1412b8ff0(spTile->m_70);
-                FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4ebd);
+                FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ebd);
             }
             if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0))
             {
@@ -720,7 +720,7 @@ int UIWorldMapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 {
                     FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4ebd);
                     pDialog->FUN_1412b8ff0(nId);
-                    FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4ebd);
+                    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ebd);
                 }
             }
         }

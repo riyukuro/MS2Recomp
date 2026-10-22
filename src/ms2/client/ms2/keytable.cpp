@@ -756,22 +756,22 @@ int CKeyTable::FUN_14142b340(int nAction)
     switch (nAction)
     {
     case 400001:
-        FUN_1403ed2b0()->FUN_141adc750(eUI_4e2d);
+        FUN_1403ed2b0()->ToggleDialog(eUI_4e2d);
         break;
     case 400002:
-        FUN_1403ed2b0()->FUN_141adc750(eUI_2711);
+        FUN_1403ed2b0()->ToggleDialog(eUI_2711);
         break;
     case 400005:
-        FUN_1403ed2b0()->FUN_141adc750(eUI_4f2d);
+        FUN_1403ed2b0()->ToggleDialog(eUI_4f2d);
         break;
     case 400006:
-        FUN_1403ed2b0()->FUN_141adc750(eUI_4e42);
+        FUN_1403ed2b0()->ToggleDialog(eUI_4e42);
         break;
     case 400007:
-        FUN_1403ed2b0()->FUN_141adc750(eUI_4e3e);
+        FUN_1403ed2b0()->ToggleDialog(eUI_4e3e);
         break;
     case 400009:
-        FUN_1403ed2b0()->FUN_141adc750(eUI_4e73);
+        FUN_1403ed2b0()->ToggleDialog(eUI_4e73);
         break;
     case 400010:
     {
@@ -804,52 +804,52 @@ int CKeyTable::FUN_14142b340(int nAction)
         break;
     }
     case 400012:
-        FUN_1403ed2b0()->FUN_141adc750(eUI_4e4d);
+        FUN_1403ed2b0()->ToggleDialog(eUI_4e4d);
         break;
     case 400008:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4e5b);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e5b);
         break;
     case 400013:
-        FUN_1403ed2b0()->FUN_141adc750(eUI_4e49);
+        FUN_1403ed2b0()->ToggleDialog(eUI_4e49);
         break;
     case 400014:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4e4f);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e4f);
         break;
     case 400015:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4e6a);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e6a);
         break;
     case 400016:
-        FUN_1403ed2b0()->FUN_141adc750(eUI_4ec1);
+        FUN_1403ed2b0()->ToggleDialog(eUI_4ec1);
         break;
     case 400017:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4ebc);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4ebc);
         break;
     case 400018:
         if (FUN_140166410()->FUN_14036d570(0xf9))
-            FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f84);
+            FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f84);
         else
-            FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f1c);
+            FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f1c);
         break;
     case 400019:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4ec9);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4ec9);
         break;
     case 400020:
         if (FUN_140166410()->FUN_14036d570(0x4e))
-            FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f04);
+            FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f04);
         else
             FUN_140d73aa0(FUN_140298ea0(L"s_pvp_arena_close_test_season_msg"), 0, 0, L"");
         break;
     case 400021:
-        FUN_1403ed2b0()->FUN_141adc750(eUI_4e97);
+        FUN_1403ed2b0()->ToggleDialog(eUI_4e97);
         break;
     case 400022:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4efa);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4efa);
         break;
     case 400036:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f53);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f53);
         break;
     case 400037:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4ebd);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4ebd);
         break;
     case 400038:
         if (FUN_140166410()->FUN_14036d570(0xd3))
@@ -859,27 +859,27 @@ int CKeyTable::FUN_14142b340(int nAction)
                 FUN_141275260(0x2f7, 1, 1);
                 break;
             }
-            FUN_1403ed2b0()->FUN_141adc750(eUI_4f6d);
+            FUN_1403ed2b0()->ToggleDialog(eUI_4f6d);
         }
         break;
     case 800004:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f63);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f63);
         break;
     case 400023:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4efd);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4efd);
         break;
     case 400024:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4efe);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4efe);
         break;
     case 400025:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f0c);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f0c);
         break;
     case 400026:
         if (FUN_140166410()->FUN_14036d570(0x4a))
-            FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f1b);
+            FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f1b);
         break;
     case 400027:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4eda);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4eda);
         break;
     case 400028:
     {
@@ -889,7 +889,7 @@ int CKeyTable::FUN_14142b340(int nAction)
         break;
     }
     case 400029:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f1e);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f1e);
         break;
     case 400030:
         if (FUN_1403ed2b0()->FUN_141adc890((eUIClassID)0x4f18))
@@ -902,20 +902,20 @@ int CKeyTable::FUN_14142b340(int nAction)
         }
         break;
     case 400031:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4ef6);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4ef6);
         break;
     case 400032:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f0b);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f0b);
         break;
     case 400033:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f24);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f24);
         break;
     case 400034:
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4f25);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4f25);
         break;
     case 400035:
         if (FUN_140166410()->FUN_14036d570(0x8c))
-            FUN_1403ed2b0()->FUN_141adc750(eUI_4f38);
+            FUN_1403ed2b0()->ToggleDialog(eUI_4f38);
         break;
     }
     return 1;

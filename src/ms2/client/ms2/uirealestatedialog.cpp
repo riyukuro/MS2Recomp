@@ -320,7 +320,7 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 return 0;
             }
             if (_stricmp("onSell", szMethod) == 0)
-                FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4e82);
+                FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e82);
         }
         return 0;
     }
@@ -466,7 +466,7 @@ void UIRealEstateDialog::FUN_141ab38e0()
         if (pDlg != 0)
             FUN_140faf6b0(pDlg, m_nGroup);
         if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4f3f) != 0)
-            FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4f3f);
+            FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f3f);
     }
 }
 

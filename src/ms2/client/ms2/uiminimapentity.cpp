@@ -721,7 +721,7 @@ void UIMinimapEntityProxy::vfunc_3()
             if (pDialog) {
                 FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4ebd);
                 if (pDialog->FUN_1412b8f00(spPortal->m_nId))
-                    FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4ebd);
+                    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ebd);
             }
         }
     } else if (spProxy->FUN_1416c2090()) {
@@ -729,7 +729,7 @@ void UIMinimapEntityProxy::vfunc_3()
         if (pDialog) {
             FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4efb);
             if (pDialog->FUN_140f25ad0(spProxy->FUN_1416c2350()))
-                FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4efb);
+                FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4efb);
         }
     }
     }
@@ -1283,7 +1283,7 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         }
         return 1;
     } else if (_stricmp("OnWorldMap", szMethod) == 0) {
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4e42);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e42);
         return 1;
     } else if (_stricmp("OnMorePlayers", szMethod) == 0) {
         if (FUN_1403ed2b0()->FUN_141adc940((eUIClassID)0x4e4d)) {
@@ -1291,7 +1291,7 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             if (pDialog != 0)
                 pDialog->FUN_1418d6930(0);
         }
-        FUN_1403ed2b0()->FUN_141adc750((eUIClassID)0x4e4d);
+        FUN_1403ed2b0()->ToggleDialog((eUIClassID)0x4e4d);
         return 1;
     } else if (_stricmp("OnCheckIcon", szMethod) == 0) {
         ASData data;

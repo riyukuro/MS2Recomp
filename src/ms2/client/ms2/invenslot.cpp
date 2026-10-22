@@ -961,7 +961,7 @@ int InvenSlot::vfunc_13()
                             if (pEdit->vfunc_55() == 1)
                             {
                                 spEdit.get()->FUN_141b463b0(spItem);
-                                FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4e69);
+                                FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4e69);
                             }
                         }
                     }
@@ -1067,7 +1067,7 @@ int InvenSlot::vfunc_13()
                     }
                     else
                     {
-                        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4eed);
+                        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4eed);
                         Unk_IsInstrumentDialog* pDialog = FUN_140d0c0e0(0x4eed);
                         if (pDialog != 0)
                             pDialog->FUN_140fef7b0(spItem);
@@ -1639,7 +1639,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
                     if (DAT_143ab2a90.FUN_140a65770(spItem.get()) == 7)
                     {
                         strError = FUN_14028b8e0(CStringW(L"s_item_err_cannot_vip_drop"));
-                        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4f1b);
+                        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f1b);
                     }
                     else
                     {

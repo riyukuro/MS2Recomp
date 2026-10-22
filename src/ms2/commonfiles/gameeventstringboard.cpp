@@ -81,7 +81,7 @@ void GameEventStringBoard::vfunc_4(Unk_GEIn* in)
 }
 
 // @0x14041eb60
-void GameEventStringBoard::vfunc_5() {}
+void GameEventStringBoard::OnStart() {}
 
 // @0x14041eb70
 void GameEventStringBoard::vfunc_6() {}
@@ -119,7 +119,7 @@ void GameEventStringBoardLink::vfunc_4(Unk_GEIn* in)
 }
 
 // @0x14041ed30
-void GameEventStringBoardLink::vfunc_5() { FUN_1401c0d90()->FUN_14047dae0(m_68); }
+void GameEventStringBoardLink::OnStart() { FUN_1401c0d90()->FUN_14047dae0(m_68); }
 
 // @0x14041ed90
 void GameEventStringBoardLink::vfunc_6() { FUN_1401c0d90()->FUN_14047dae0(CStringW(L"")); }

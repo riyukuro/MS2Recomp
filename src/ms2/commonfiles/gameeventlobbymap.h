@@ -9,7 +9,7 @@ public:
     virtual void vfunc_2();
     virtual void vfunc_3(Unk_GEOut* out);
     virtual void vfunc_4(Unk_GEIn* in);
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 private:
     MS2_LAYOUT_FRIEND;
@@ -23,7 +23,7 @@ public:
     GameEventLoginNotice();
     virtual CStringW vfunc_1();
     virtual void vfunc_2();
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 MS2_CHECK_SIZE(GameEventLoginNotice, 0xd0);
@@ -35,7 +35,7 @@ public:
     virtual void vfunc_2();
     virtual void vfunc_3(Unk_GEOut* out);
     virtual void vfunc_4(Unk_GEIn* in);
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 private:
     int m_limit;            // +0xd0
@@ -50,7 +50,7 @@ public:
     virtual void vfunc_2();
     virtual void vfunc_3(Unk_GEOut* out);
     virtual void vfunc_4(Unk_GEIn* in);
-    virtual void vfunc_5();
+    virtual void OnStart();
     virtual void vfunc_6();
 };
 MS2_CHECK_SIZE(GameEventOnlinePatch, 0xd0);

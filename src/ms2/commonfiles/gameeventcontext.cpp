@@ -445,8 +445,8 @@ void GameEventAttendGift::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403fb770, GameEventAttendGift, vfunc_4, 492, 0x9553F7C9);
 
 // @0x1403fb970
-void GameEventAttendGift::vfunc_5() {}
-MS2_REPLACE_METHOD(0x1403fb970, GameEventAttendGift, vfunc_5, 6, 0xA9AF6E37);
+void GameEventAttendGift::OnStart() {}
+MS2_REPLACE_METHOD(0x1403fb970, GameEventAttendGift, OnStart, 6, 0xA9AF6E37);
 
 // @0x1403fb980
 void GameEventAttendGift::vfunc_6() {}
@@ -508,8 +508,8 @@ void GameEventCashAttend::vfunc_4(Unk_GEIn* in)
 MS2_REPLACE_METHOD(0x1403fbc70, GameEventCashAttend, vfunc_4, 275, 0x71A9551D);
 
 // @0x1403fbd90
-void GameEventCashAttend::vfunc_5() {}
-MS2_REPLACE_METHOD(0x1403fbd90, GameEventCashAttend, vfunc_5, 6, 0xA9AF6E37);
+void GameEventCashAttend::OnStart() {}
+MS2_REPLACE_METHOD(0x1403fbd90, GameEventCashAttend, OnStart, 6, 0xA9AF6E37);
 
 // @0x1403fbda0
 void GameEventCashAttend::vfunc_6() {}

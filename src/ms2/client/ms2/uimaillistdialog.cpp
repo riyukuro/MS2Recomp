@@ -621,7 +621,7 @@ void UIMailListDialog::FUN_1419e6360(__int64 nMailId)
     UIMailSendDialog* pSend = FUN_141742fb0(0x4e4a);
     if (pSend != 0)
         pSend->FUN_1419ecbb0(pMail);
-    CUIService::GetInstance()->FUN_141adc750((eUIClassID)0x4e4a);
+    CUIService::GetInstance()->ToggleDialog((eUIClassID)0x4e4a);
 }
 MS2_REPLACE_METHOD(0x1419E6360, UIMailListDialog, FUN_1419e6360, 156, 0x946298AD); // FUN_1419e6360
 
@@ -867,7 +867,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0xb);
         if (spBlock.get() == 0)
         {
-            CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4e4a);
+            CUIService::GetInstance()->OpenDialog((eUIClassID)0x4e4a);
             return 1;
         }
         FUN_140a30ad0(spBlock, 0xb, 0);
@@ -1345,7 +1345,7 @@ bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
     spParam->FUN_140eab9a0(nPrice);
     MS2Ptr<TMarketBillDataParam> spBase(spParam);
     pBillDialog->FUN_140ea7770(spBase);
-    CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4f17);
+    CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f17);
     return true;
 }
 MS2_REPLACE_METHOD(0x1419E8080, UIMailListDialog, FUN_1419e8080, 1421, 0x80A67988); // FUN_1419e8080

@@ -14,7 +14,7 @@ public:
     virtual void vfunc_2();                     // 0x14041ccf0
     virtual void vfunc_3(Unk_GEOut* out);       // 0x14041cd00
     virtual void vfunc_4(Unk_GEIn* in);         // 0x14041cd50
-    virtual void vfunc_5();                     // 0x14041cda0
+    virtual void OnStart();                     // 0x14041cda0
     virtual void vfunc_6();                     // 0x14041ce30
 private:
     MS2_LAYOUT_FRIEND;

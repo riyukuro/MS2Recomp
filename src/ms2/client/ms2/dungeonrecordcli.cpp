@@ -330,7 +330,7 @@ void DungeonRecordManagerCli::OnClosingPhoto(CInPacket& packet)
 // @0x140b21190
 void DungeonRecordManagerCli::OnOpenDialog(CInPacket& packet)
 {
-    CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4ef9);
+    CUIService::GetInstance()->OpenDialog((eUIClassID)0x4ef9);
 }
 
 // @0x140b211c0

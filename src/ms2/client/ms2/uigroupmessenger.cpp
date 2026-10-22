@@ -698,7 +698,7 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (pInvite != 0)
         {
             pInvite->FUN_14199fcf0(m_nGroupId);
-            CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4e90);
+            CUIService::GetInstance()->OpenDialog((eUIClassID)0x4e90);
         }
         return 1;
     }
@@ -760,7 +760,7 @@ int UIGroupMessenger::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         }
         else if (_stricmp("eventChatEmoticonOpen", szMethod) == 0)
         {
-            CUIService::GetInstance()->FUN_141adc750((eUIClassID)0x4f80);
+            CUIService::GetInstance()->ToggleDialog((eUIClassID)0x4f80);
         }
         else if (_stricmp("eventChatEmoticonPush", szMethod) == 0)
         {

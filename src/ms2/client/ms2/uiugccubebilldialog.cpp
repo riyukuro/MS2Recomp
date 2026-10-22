@@ -253,7 +253,7 @@ void FUN_140ee8190(CInPacket& packet)
     FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4f27);
     if (nCount > 0)
     {
-        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4f29);
+        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f29);
     }
     else
     {
@@ -300,7 +300,7 @@ void FUN_140ee83f0(CInPacket& packet)
     FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4f27);
     if (nCount > 0 || bPreview == 1)
     {
-        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4f29);
+        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f29);
     }
     else if (bPreview == 0)
     {

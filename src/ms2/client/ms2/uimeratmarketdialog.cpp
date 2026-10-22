@@ -4058,7 +4058,7 @@ void UIMeratMarketDialog::OnClickBuyEquipAll(const CStringA& strMovie)
     spParam->SetGift(bGift);
     MS2Ptr<TMarketBillDataParam> spBase = spParam;
     pDialog->FUN_140ea7770(spBase);
-    FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4f17);
+    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f17);
 }
 
 // @0x141301260
@@ -4105,7 +4105,7 @@ void UIMeratMarketDialog::OnClickRecipe(ASData& data)
         if (pDialog->vfunc_55() == 0)
             pDialog->FUN_1412db6c0();
         else
-            FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4ecb);
+            FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ecb);
     }
 }
 
@@ -4207,7 +4207,7 @@ void UIMeratMarketDialog::OnClickBasket(ASData& data)
                 }
                 MS2Ptr<TMarketBillDataParam> spBase = spParam;
                 pDialog->FUN_140ea7770(spBase);
-                FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4f17);
+                FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f17);
                 return;
             }
         }
@@ -4379,7 +4379,7 @@ void UIMeratMarketDialog::BuyItems(MS2Ptr<TMeratMarketBillDataParam> spParam, AS
     spParam->SetGift(bGift);
     MS2Ptr<TMarketBillDataParam> spBase = spParam;
     pDialog->FUN_140ea7770(spBase);
-    FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4f17);
+    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f17);
 }
 
 // @0x1413034c0
@@ -4435,7 +4435,7 @@ void UIMeratMarketDialog::OnBuyBasketItem(const CStringA& strName, ASData& data)
     spParam->SetGift(bGift);
     MS2Ptr<TMarketBillDataParam> spBase = spParam;
     pDialog->FUN_140ea7770(spBase);
-    FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4f17);
+    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f17);
 }
 
 // @0x141303b50
@@ -4612,7 +4612,7 @@ void UIMeratMarketDialog::OnClickRemoveSale(ASData& data)
                 UIMeratMarketRegisterDialog* pDialog = FUN_140d61d50(0x4ec5);
                 if (pDialog != 0)
                     FUN_1413190c0(pDialog, 1, key);
-                FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4ec5);
+                FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ec5);
             }
         }
     }

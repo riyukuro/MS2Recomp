@@ -344,7 +344,7 @@ void CGuideActionOpenDialog::vfunc_3()
 {
     if (m_dialogID != 0)
     {
-        CUIService::GetInstance()->FUN_141adc530((eUIClassID)m_dialogID);
+        CUIService::GetInstance()->OpenDialog((eUIClassID)m_dialogID);
     }
     else
     {
@@ -1207,7 +1207,7 @@ void CGuideActionSmartRecommend::vfunc_3()
         pDialog->FUN_14134dc50(m_recommendCode);
     if (CUIService::GetInstance()->FUN_141adc940((eUIClassID)0x4e9e) == 0)
         CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4e9e);
-    CUIService::GetInstance()->FUN_141adc530((eUIClassID)0x4e9e);
+    CUIService::GetInstance()->OpenDialog((eUIClassID)0x4e9e);
 }
 MS2_REPLACE_METHOD(0x141385CD0, CGuideActionSmartRecommend, vfunc_3, 113, 0x6D6DCE77);
 

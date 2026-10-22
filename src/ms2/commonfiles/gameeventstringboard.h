@@ -20,14 +20,14 @@ public:
     virtual void vfunc_2();                     // 0x14041ea50: m_nId = the string id of m_68
     virtual void vfunc_3(Unk_GEOut* out);       // 0x14041eaa0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x14041eb00
-    virtual void vfunc_5();                     // 0x14041eb60 (empty)
+    virtual void OnStart();                     // 0x14041eb60 (empty)
     virtual void vfunc_6();                     // 0x14041eb70 (empty)
 
     int m_nId;                                  // +0xd0 the string id FUN_140718200 derives from m_68
 };
 MS2_CHECK_SIZE(GameEventStringBoard, 0xd8);
 
-// 0xd0 (no extra storage). vfunc_2 does nothing and vfunc_3 / vfunc_4 stream the inherited m_68 itself; vfunc_5 hands
+// 0xd0 (no extra storage). vfunc_2 does nothing and vfunc_3 / vfunc_4 stream the inherited m_68 itself; OnStart hands
 // it to CGameRule (link the board) and vfunc_6 hands over the empty string (unlink it).
 class GameEventStringBoardLink : public GameEvent
 {
@@ -39,7 +39,7 @@ public:
     virtual void vfunc_2();                     // 0x14041ec90 (empty)
     virtual void vfunc_3(Unk_GEOut* out);       // 0x14041eca0
     virtual void vfunc_4(Unk_GEIn* in);         // 0x14041ece0
-    virtual void vfunc_5();                     // 0x14041ed30
+    virtual void OnStart();                     // 0x14041ed30
     virtual void vfunc_6();                     // 0x14041ed90
 };
 MS2_CHECK_SIZE(GameEventStringBoardLink, 0xd0);

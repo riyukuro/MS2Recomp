@@ -1356,7 +1356,7 @@ bool CUIService::FUN_141add880(int nResult, const CMsgBoxData& box)
     if (nResult == 0) {
         CStringW str = box.FUN_141a02fd0(0, CStringW());
         if (str.IsEmpty()) {
-            FUN_141adc530(eUI_4ec1);
+            OpenDialog(eUI_4ec1);
         } else {
             UIMeratMarketDialog* pDlg = FUN_140bfed50(eUI_4ec1);
             if (pDlg != 0) {
@@ -1507,7 +1507,7 @@ void CUIService::FUN_141adc400()
 MS2_REPLACE_METHOD(0x141adc400, CUIService, FUN_141adc400, 285, 0xED7BEC9E);
 
 // @0x141adc530
-void CUIService::FUN_141adc530(eUIClassID nClass)
+void CUIService::OpenDialog(eUIClassID nClass)
 {
     MS2Ptr<UIDialog> spDlg = 0;
     if (m_mapDlg.Lookup(nClass, spDlg))
@@ -1515,7 +1515,7 @@ void CUIService::FUN_141adc530(eUIClassID nClass)
     else
         Unk_UisLog1(FUN_140166440(), 2, 0x1a, L"CUIService::OpenDialog error. eUIClassID = {0}", nClass);
 }
-MS2_REPLACE_METHOD(0x141adc530, CUIService, FUN_141adc530, 148, 0x5BAEB13D);
+MS2_REPLACE_METHOD(0x141adc530, CUIService, OpenDialog, 148, 0x5BAEB13D);
 
 // @0x141adc5d0
 void CUIService::FUN_141adc5d0(eUIClassID nClass)
@@ -1542,7 +1542,7 @@ void CUIService::FUN_141adc690(eUIClassID nClass)
 MS2_REPLACE_METHOD(0x141adc690, CUIService, FUN_141adc690, 179, 0xACF0C5DA);
 
 // @0x141adc750
-void CUIService::FUN_141adc750(eUIClassID nClass)
+void CUIService::ToggleDialog(eUIClassID nClass)
 {
     MS2Ptr<UIDialog> spDlg = 0;
     if (m_mapDlg.Lookup(nClass, spDlg))
@@ -1550,7 +1550,7 @@ void CUIService::FUN_141adc750(eUIClassID nClass)
     else
         Unk_UisLog1(FUN_140166440(), 2, 0x1a, L"CUIService::ToggleDialog error. eUIClassID = {0}", nClass);
 }
-MS2_REPLACE_METHOD(0x141adc750, CUIService, FUN_141adc750, 148, 0x411CFA63);
+MS2_REPLACE_METHOD(0x141adc750, CUIService, ToggleDialog, 148, 0x411CFA63);
 
 // @0x141adc7f0
 int CUIService::FUN_141adc7f0(eUIClassID nClass)
@@ -1849,7 +1849,7 @@ efd::AsyncResult CUIService::OnTick()
     if (!m_listOpen.IsEmpty())
     {
         for (unsigned i = 0; i < 3 && !m_listOpen.IsEmpty(); ++i)
-            FUN_141adc530(m_listOpen.RemoveHead());
+            OpenDialog(m_listOpen.RemoveHead());
     }
     if (!m_listClose.IsEmpty())
     {
@@ -4584,11 +4584,11 @@ void CUIService::FUN_141aec690()
         return;
     if (FUN_14116d9c0(FUN_14025e7c0(), 0x19, 1, 0) && FUN_14116d950(FUN_14025e7c0(), 0x1d, 1, 0))
     {
-        FUN_141adc750((eUIClassID)0x4e7d);
+        ToggleDialog((eUIClassID)0x4e7d);
         return;
     }
     if (FUN_14116d9c0(FUN_14025e7c0(), 0x3b, 1, 0) && FUN_14116d950(FUN_14025e7c0(), 0x1d, 1, 0))
-        FUN_141adc750((eUIClassID)0x4ea9);
+        ToggleDialog((eUIClassID)0x4ea9);
 }
 
 // @0x141aec760

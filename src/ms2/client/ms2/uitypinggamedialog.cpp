@@ -336,7 +336,7 @@ void UITypingGameDialog::FUN_140ee6190(unsigned nLimitMs)
     FUN_1403ed2d0()->FUN_141bc6f60(FUN_141472bc0(), nLimitMs, 1);
     if (nLimitMs > 0)
     {
-        FUN_1403ed2b0()->FUN_141adc530((eUIClassID)0x4e95);
+        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4e95);
         UITriggerTimerDialog* pTimer = FindTimerDialog(0x4e95);
         if (pTimer != 0)
         {
