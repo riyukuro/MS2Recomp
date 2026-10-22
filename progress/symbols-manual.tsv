@@ -8280,3 +8280,10 @@ compress2	142724100	func
 ?Set@?$VectorBase@V?$Ptr@UASStringNode@GFx@Scaleform@@@Scaleform@@@AS3@GFx@Scaleform@@QEAA?AVCheckResult@234@KAEBVValue@234@AEBVTraits@ClassTraits@234@@Z	1425638c0	func
 ??0Error@VM@AS3@GFx@Scaleform@@QEAA@W4ErrorID@1234@AEAV1234@HH@Z	1424d74d0	func
 ?ToString@RegExp@fl@Instances@AS3@GFx@Scaleform@@QEAA?AVASString@56@XZ	142425890	func
+?AS3Constructor@Vector_String@fl_vec@Instances@AS3@GFx@Scaleform@@UEAAXIPEBVValue@456@@Z	142557110	func
+?AS3Constructor@Vector_double@fl_vec@Instances@AS3@GFx@Scaleform@@UEAAXIPEBVValue@456@@Z	142557180	func
+?AS3Constructor@Vector_int@fl_vec@Instances@AS3@GFx@Scaleform@@UEAAXIPEBVValue@456@@Z	1425571f0	func
+?AS3Constructor@Vector_object@fl_vec@Instances@AS3@GFx@Scaleform@@UEAAXIPEBVValue@456@@Z	1425572c0	func
+?AS3Constructor@Vector_uint@fl_vec@Instances@AS3@GFx@Scaleform@@UEAAXIPEBVValue@456@@Z	142557330	func
+?ForEachChild_GC@Vector_object@fl_vec@Instances@AS3@GFx@Scaleform@@UEBAXPEAV?$RefCountCollector@$0BED@@456@P6AX0PEAPEBV?$RefCountBaseGC@$0BED@@456@@Z@Z	14255c220	func
+?SetProperty@Vector_object@fl_vec@Instances@AS3@GFx@Scaleform@@UEAA?AVCheckResult@456@AEBVMultiname@456@AEBVValue@456@@Z	142563cd0	func
