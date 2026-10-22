@@ -62,7 +62,7 @@ public:
     void FUN_141b58200();                                                   // 0x141b58200
     void FUN_141b58220();                                                   // 0x141b58220 update the additional infos
     void FUN_141b58350(MS2Ptr<UIWorldMap::MapTile> spTile);                 // 0x141b58350 "updateAdditional"
-    void FUN_141b58670(unsigned int nFieldId, int nQuestId, short nLevel, int bRelated);   // 0x141b58670 add a quest line
+    void FUN_141b58670(unsigned int nFieldId, int nQuestId, int nLevel, int bRelated);   // 0x141b58670 add a quest line
     void FUN_141b58830(unsigned int nFieldId, int nNpcField, int nNpcId, int nKind, int nQuestId, short nLevel, int nState);   // 0x141b58830 add an npc quest line
     void SendRequestWorldmapMode0();                                                   // 0x141b58e80 request the tiles (packet 0x4a)
     void FUN_141b58f00();                                                   // 0x141b58f00
@@ -79,7 +79,7 @@ public:
     bool FUN_141b5ae00(int nButton, const CMsgBoxData& data);               // 0x141b5ae00 the merat air taxi prompt
     bool FUN_141b5aec0(int nButton, const CMsgBoxData& data);               // 0x141b5aec0 the cash taxi prompt
     void FUN_141b5af80(int n);                                              // 0x141b5af80 (TaxiStationAction)
-    int FUN_141b5afe0(int nFieldId);                                        // 0x141b5afe0 move by portal (packet 0x54)
+    bool FUN_141b5afe0(int nFieldId);                                       // 0x141b5afe0 move by portal (packet 0x54)
     void FUN_141b5b190();                                                   // 0x141b5b190 flush the queued tiles
     CStringW FUN_141b5b380(MS2Ptr<UIWorldMap::MapTile> spTile);             // 0x141b5b380 the tile tooltip
     void FUN_141b5b790(MS2Ptr<UIWorldMap::MapTile> spTile);                 // 0x141b5b790 "createMap"
